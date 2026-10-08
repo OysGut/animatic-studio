@@ -5,7 +5,7 @@ Gå gjennom de seksjonene som berøres. Avkrysning dokumenteres i `CURRENT_WORK.
 ## 1. Hemmeligheter og API-nøkler (mandat 19.1, 28.3; REQ-0270–REQ-0272, REQ-0413, REQ-0414)
 - [ ] Nøkkelen ligger bare i Lovable Cloud-hemmeligheter (MVP) – eller senere i kryptert server-side tabell per prosjekt (krever egen ADR).
 - [ ] Leses bare i serverkode (edge/server function, adapter i `src/adapters/providers/`). Ingen import av serveradaptere fra klientkode.
-- [ ] Ikke `VITE_`-prefiks; ikke i `.env`; ikke i `supabase/migrations/`; ikke i testdata.
+- [ ] Ikke `VITE_`-prefiks; ikke i `.env`; ikke i `db/migrations/`; ikke i testdata.
 - [ ] Ikke i prosjekteksport/backup (REQ-0412) – bare referanse/«koblet til»-status.
 - [ ] Feilmeldinger fra leverandør normaliseres (`normalizeError`) og vaskes for nøkler/headers før logging og visning.
 - [ ] UI viser bare «Tilkoblet / ikke tilkoblet» og siste 4 tegn om nødvendig – aldri nøkkelen.
@@ -16,7 +16,7 @@ Gå gjennom de seksjonene som berøres. Avkrysning dokumenteres i `CURRENT_WORK.
 - [ ] **Bare `select`-policy** `to authenticated using (private.is_project_member(project_id))`; `(select auth.uid())` i hjelpefunksjonene; indeks på `project_id`.
 - [ ] `revoke insert, update, delete on <tabell> from authenticated` (og `anon`) – ingen skrivepolicyer for klienten (DEC-0020 pkt. 1). Unntak bare for rene brukerinnstillinger, listet eksplisitt.
 - [ ] Hjelpefunksjonene `private.is_project_member(uuid)`, `private.has_project_role(uuid, text)` og `private.can_approve_costs(uuid)` er `security definer`, `set search_path = ''`, i skjemaet `private` som ikke eksponeres via API-et (DEC-0020 pkt. 2).
-- [ ] Skriving skjer bare via `public.apply_command(project_id, command, base_revisions)` som sjekker medlemskap, rolle og `revision` (avvik → `P0409`), validerer kommandoen og kaller `private.cmd_<kommando>`. `private.cmd_*` kan ikke kalles direkte av klienten.
+- [ ] Skriving skjer bare via serverfunksjonen `runCommand` (sjekker medlemskap og rolle ≥ editor, validerer i `src/core` med `applyCommand`) → `public.apply_changes` (bare `service_role`; sjekker rolle for `p_actor`, at radene tilhører prosjektet og `revision` per rad, avvik → `P0409`). Ingen SQL-funksjoner per kommando; klienten kan ikke kalle `apply_changes` (DEC-0022).
 - [ ] `commenter`/`viewer` kan ikke skrive produksjonsdata; bare `owner` kan endre medlemskap og nøkler; bare medlemmer der `private.can_approve_costs(project_id)` er sann kan godkjenne kostnad (INV-C3).
 - [ ] Invitasjon: token lagres som hash, har utløp, kan trekkes tilbake, er engangs; aksept via serverfunksjon som validerer token og e-post.
 - [ ] Fjerning av medlem sletter ikke medlemmets arbeid (REQ-0529).
@@ -42,7 +42,7 @@ Gå gjennom de seksjonene som berøres. Avkrysning dokumenteres i `CURRENT_WORK.
 
 ## 5. Backend-autorisering og kostnad (INV-12, INV-C3; midlertidig eier inntil `ai-cost-quality-governance`, DEC-0020 pkt. 11)
 - [ ] Følger `docs/architecture/API_INTEGRATIONS.md` §2.
-- [ ] `start_job` (via `apply_command`) kontrollerer godkjenning, kostnadsrett (`private.can_approve_costs`) og alle budsjettnivåer (strengeste gjelder, brukt beløp, retries og ekstrarunder teller) – i backend, ikke klient.
+- [ ] Start av betalt jobb (kommando via `runCommand` på serveren) kontrollerer godkjenning, kostnadsrett (`private.can_approve_costs`) og alle budsjettnivåer (strengeste gjelder, brukt beløp, retries og ekstrarunder teller) – i backend, ikke klient.
 - [ ] Segmenterte jobber: samlet estimat og én godkjenning for jobbgruppen; overskridelse under kjøring stopper videre kall.
 - [ ] Ingen automatisk prosess (avviksanalyse, ressursendring) kan opprette betalt jobb uten godkjenning.
 - [ ] Rate limiting på kostnadsdrivende og invitasjonsendepunkter.

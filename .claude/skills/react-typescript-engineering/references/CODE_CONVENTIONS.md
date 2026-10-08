@@ -5,7 +5,7 @@ Gjelder `src/core`, `src/engine`, `src/adapters` og egen UI-kode. Lovable-genere
 ## 1. TypeScript
 - `strict: true`. Hvis Lovables `tsconfig` ikke er strict og en global endring vil gi mange feil i generert kode: lag `tsconfig.strict.json` som dekker `src/core`, `src/engine`, `src/adapters` og kjør `tsc -p tsconfig.strict.json --noEmit` i testene. Registrer valget i KNOWN_ISSUES.
 - Anbefalte tillegg i strict-konfigen: `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes` (vurder), `noImplicitOverride`.
-- Ingen `any` i core. Grenser (RPC-svar, filimport, `jsonb`) parses til typer med validering (eksisterende bibliotek i `package.json`, f.eks. zod hvis det finnes; ellers små håndskrevne guards).
+- Ingen `any` i core. Grenser (svar fra serverfunksjoner/RPC, filimport, `jsonb`) parses til typer med validering (eksisterende bibliotek i `package.json`, f.eks. zod hvis det finnes; ellers små håndskrevne guards).
 - Uttømmende `switch` over unioner med `assertNever`.
 - `readonly` på domenetyper; kommandoer lager nye objekter.
 
@@ -55,7 +55,7 @@ export type DomainError =
   | { kind: 'validation'; field: string; message: string };
 ```
 - Core kaster ikke for forventede feil; returnerer `Result`.
-- Adaptere mapper Postgres-/nettverksfeil til `DomainError` (kontrakt med RPC-feilkodene, se `database-domain-modeling`).
+- Adaptere mapper Postgres-/nettverksfeil til domenefeil (kontrakt: `runCommand` gir `revision_conflict` for `P0409`, `forbidden`, `storage_error` og kjernens `CommandErrorCode`; se `database-domain-modeling`).
 - UI: norsk melding, hva som skjedde, hva brukeren kan gjøre. Logg uten hemmeligheter (REQ-0414).
 
 ## 6. Navn og filer

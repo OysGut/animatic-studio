@@ -2,7 +2,7 @@
 name: test-quality-engineering
 description: Teststrategi og testkvalitet for Animatic Studio – Vitest (enhetstester og egenskapsbaserte tester med fast-check for invariantene INV-01–INV-14, INV-C1/C2 via tilfeldige kommandosekvenser), integrasjonstester mot database og RLS (rollematrise, to klienter/flerbruker, revisjonskonflikt), Playwright i TypeScript (e2e, visuell regresjon med skjermbilder, tastaturinteraksjon, drag-and-drop på tidslinjen), import/eksport-tester med gyldne filer (referansemanus), dataintegritet, feilsituasjoner og spinoff-isolasjon. Mappestruktur tests/{unit,invariants,integration,rls,e2e,visual,fixtures}. Definition of done = grønn test registrert i requirements.yaml verification. Bruk når du skriver eller planlegger tester, setter opp testverktøy, vurderer om en funksjon er «ferdig»/«verifisert», feilsøker ustabile tester, eller når oppgaven nevner «test», «Vitest», «Playwright», «fast-check», «property-based», «golden file», «regresjon», «skjermbilde», «e2e», «verifisert».
 metadata:
-  version: "0.2.0"
+  version: "0.2.1"
   owner: "animatic-studio"
   last-reviewed: "2026-10-08"
 ---
@@ -36,10 +36,10 @@ Hvordan Animatic Studio testes slik at «Verifisert» betyr noe. Skillen lager i
 
 ## 4. Arbeidsprosedyre
 1. **Hent akseptansekriteriene** fra kravene (Gitt/når/så) og skriv dem som testnavn før koden. Mangler et krav testbart kriterium: noter det for `requirements-traceability`, ikke finn opp produktatferd.
-2. **Velg nivå** (laveste som kan bevise kravet) etter [TEST_STRATEGY](references/TEST_STRATEGY.md): ren logikk → `tests/unit` / ved siden av koden; invariant → `tests/invariants` med fast-check; database/tilgang → `tests/integration` / `tests/rls`; brukerflyt → `tests/e2e`; bilde → `tests/visual`.
+2. **Velg nivå** (laveste som kan bevise kravet) etter [TEST_STRATEGY](references/TEST_STRATEGY.md): ren logikk → `tests/unit` / ved siden av koden; invariant → `tests/invariants` med fast-check; database/tilgang → `tests/db/run-db-tests.ts` (senere ev. `tests/integration` / `tests/rls`); brukerflyt → `tests/e2e`; bilde → `tests/visual`.
 3. **Invariant berørt?** Utvid generatoren av tilfeldige kommandosekvenser og invariantkontrollene etter [INVARIANT_TESTING](references/INVARIANT_TESTING.md). Hver ny kommandotype skal inn i generatoren.
 4. **Data:** bygg testdata med fabrikker i `tests/fixtures/` (prosjekt med hovedfilm + spinoff, scener med hull i nummerrekken, takes, ressursversjoner). Manusutdrag fra referansen bare anonymisert (DEC-0004). Ingen hele manusfiler i repoet.
-5. **Flerbruker og tilgang:** to klienter/brukere for samtidighet (INV-C1) og rollematrise for hver tabell/RPC (INV-C2).
+5. **Flerbruker og tilgang:** to klienter/brukere for samtidighet (INV-C1) og rollematrise for hver tabell, klient-RPC og `apply_changes` (INV-C2).
 6. **Feilsituasjoner:** test tilbakerulling, nettverksbrudd, revisjonskonflikt, ugyldig fil, AI-adapter som «feiler hvis kalt» (INV-11), budsjett overskredet (INV-12).
 7. **E2E/visuelt** etter [E2E_PATTERNS](references/E2E_PATTERNS.md): tilgjengelige locators, tastatur, drag-and-drop på tidslinjen, deterministiske skjermbilder.
 8. **Kjør alt lokalt** (`npm test`, `npx playwright test` når satt opp) og `python3 scripts/kb/check_kb.py`. En test som hoppes over (f.eks. referansemanus mangler) rapporteres som hoppet over, ikke som grønn.
@@ -53,7 +53,7 @@ Hvordan Animatic Studio testes slik at «Verifisert» betyr noe. Skillen lager i
 ## 6. Kontrollpunkter
 - [ ] Hver P0-invariant som koden berører, har en grønn test i `tests/invariants/`.
 - [ ] Hver ny kommando er med i den tilfeldige kommandogeneratoren og har invers-test (utfør → inverse → identisk tilstand).
-- [ ] Nye tabeller/RPC-er er med i rollematrisen; revisjonskonflikt testet med to klienter.
+- [ ] Nye tabeller og funksjoner er med i rollematrisen (`tests/db/`); revisjonskonflikt testet med to klienter.
 - [ ] Testene er deterministiske: fast seed logges, fast klokke og ID-generator, ingen ventetid med `sleep`.
 - [ ] Ingen test er avhengig av rekkefølge eller av andre testers data.
 - [ ] Ingen hemmeligheter, ekte API-nøkler eller betalte kall i tester; AI-adaptere er stubber.
@@ -74,7 +74,7 @@ Hvordan Animatic Studio testes slik at «Verifisert» betyr noe. Skillen lager i
 
 ## 8. Akseptansekriterier / tester
 - `tests/invariants/` har én fil per INV-01–INV-14 når tilhørende funksjon finnes, pluss `invC1-revision-conflict`; egenskapsbasert kjøring med minst 200 sekvenser i CI (flere ved nattlig/manuell kjøring).
-- `tests/rls/role-matrix` dekker alle prosjekttabeller og skrivende RPC-er (INV-C2).
+- Rollematrisen (i dag `tests/db/run-db-tests.ts`) dekker alle prosjekttabeller, klient-RPC-ene og at `apply_changes` bare kan kalles av `service_role` (INV-C2).
 - `tests/architecture/core-purity.test.ts` grønn (ADR-0003).
 - Gyldne import-/eksporttester for manus består (fixtures i CI, referansemanus lokalt).
 - E2E: kjerneflyter (importer manus → flytt scene i manus → se samme rekkefølge i tidslinjen) grønn i Chromium.

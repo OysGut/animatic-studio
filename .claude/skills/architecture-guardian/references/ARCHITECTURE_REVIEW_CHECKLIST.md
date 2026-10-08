@@ -36,16 +36,16 @@ For endringen – hvordan påvirkes:
 
 ## D. Kommandoer og transaksjoner (ADR-0005)
 - [ ] Endringen er en kommando med `type`, `payload`, `inverse`, `affected_ids`, `base_revisions`.
-- [ ] Samme validering i core og i backend (`apply_command` → `private.cmd_<kommando>`); én transaksjon.
+- [ ] Validering bare i core (`applyCommand`), kjørt autoritativt på serveren i `runCommand`; lagring i én transaksjon via `public.apply_changes` (DEC-0022). Ingen domeneregler i SQL.
 - [ ] `change_log` skrives i samme transaksjon.
 - [ ] `inverse` gir identisk tilstand (test).
 - [ ] Strukturkommandoer oppdaterer manus og montering i samme operasjon (de er samme data).
 - [ ] Ingen automatisk destruktiv effekt (mandat 2.2): ingen sletting av takes, ingen bytte av aktiv take, ingen endring av annen produksjon, ingen betalt jobb.
 
 ## E. Database, RLS og revisjon (ADR-0004, DATA_RELATIONSHIPS)
-- [ ] Migrasjon i `supabase/migrations/` (aldri endring direkte i Lovable Cloud).
+- [ ] Migrasjon i `db/migrations/NNNN_navn.sql` (aldri endring direkte i Lovable Cloud, aldri i `drizzle/`).
 - [ ] Felles kolonner: `id uuid`, `project_id`, `created_at`, `created_by`, `revision`.
-- [ ] RLS aktivert; bare select-policy via `private.is_project_member(project_id)`; `insert/update/delete` revoket for `authenticated`; skriving via `apply_command` med rollekontroll (`private.has_project_role`); hjelpefunksjoner `security definer` med `search_path = ''` (DEC-0020 pkt. 1–2).
+- [ ] RLS aktivert; bare select-policy via `private.is_project_member(project_id)`; `insert/update/delete` revoket for `authenticated`; skriving via `runCommand` → `apply_changes` (bare `service_role`, rolle ≥ editor for aktøren); hjelpefunksjoner `security definer` med `search_path = ''` (DEC-0020 pkt. 2, DEC-0022).
 - [ ] Revisjonskontroll: skriving med utdatert `revision` avvises (INV-C1).
 - [ ] Ingen `on delete cascade` på produksjonsdata; ingen hard sletting.
 - [ ] Ingen FK/unik nøkkel med scenenummer (INV-02).

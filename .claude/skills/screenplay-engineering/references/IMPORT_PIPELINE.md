@@ -53,7 +53,7 @@ interface BlockCandidate {
 
 **[6] Validering og rapport.** Antall sider, scener (nummererte/unummererte), hull, usikre blokker med side/linje, ukjente tidsangivelser, mistenkt dobbel dialog. Brukeren kan korrigere før og etter lagring (REQ-0059).
 
-**[7] Importkommando.** Én transaksjon (RPC) som oppretter alle objekter med nye permanente ID-er og `sourceRef`, setter `ScreenplayVersion.previousVersionId` ved reimport, og skriver `change_log`. Strukturell kopi = ny versjon; tidligere versjoner røres ikke.
+**[7] Importkommando.** Én kommando i `src/core/commands`, kjørt via serverfunksjonen `runCommand` og lagret i én transaksjon av `public.apply_changes` (DEC-0022), som oppretter alle objekter med nye permanente ID-er og `sourceRef`, setter `ScreenplayVersion.previousVersionId` ved reimport, og skriver `change_log`. Strukturell kopi = ny versjon; tidligere versjoner røres ikke.
 
 ## Engelsk manus (23.2, REQ-0332–REQ-0335)
 Samme rørledning, `language: 'en'`. Kobling til norske scener foreslås med flere signaler (scenenummer, overskriftens lokasjon, karakterer, rekkefølge, handlingslengde) og en samlet sikkerhetsgrad; aldri bare nummer eller ordrett tekst (REQ-0334). Usikre koblinger godkjennes manuelt. Engelsk import endrer aldri norske blokker (INV-06).

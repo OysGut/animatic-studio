@@ -6,8 +6,8 @@ Kommandonavnene følger `DOMAIN_MODEL.md` §3 (kanonisk: `MoveOccurrence` – ik
 
 ## Felles for alle kommandoer
 - Har `projectId`, `productionId` (kontekst), `author`, `base_revisions`, `inverse`.
-- Utføres atomisk i én transaksjon via `public.apply_command(project_id, command, base_revisions)` → `private.cmd_<kommando>` og skrives til `change_log` (ADR-0005, DEC-0020 pkt. 1). Ingen egne RPC-er per kommando eksponert for klienten.
-- Avvises ved utdatert `revision` (INV-C1, SQLSTATE `P0409`) og manglende rolle (INV-C2). `revision` er bare samtidighetskontroll; innholdsversjoner av tekst er `script_block_revisions.rev` (DEC-0020 pkt. 5).
+- Logikken finnes bare i `src/core` (`applyCommand`, DEC-0022). Klienten kaller serverfunksjonen `runCommand`, som kjører kommandoen i kjernen og lagrer endringssettet (`diffStates`) atomisk i én transaksjon via `public.apply_changes`, som skriver `change_log` (ADR-0005). Ingen SQL-funksjon eller RPC per kommando.
+- Avvises ved utdatert `revision` (INV-C1: `baseRevisions` i kjernen gir `revision_conflict`; avvik per rad i `apply_changes` gir SQLSTATE `P0409`) og manglende rolle (INV-C2: `runCommand` og `apply_changes` krever rolle ≥ editor). `revision` er bare samtidighetskontroll; innholdsversjoner av tekst er `script_block_revisions.rev` (DEC-0020 pkt. 5).
 - Refererer alltid til `occurrenceId`, aldri til `(productionId, sceneId)`: samme scene kan forekomme flere ganger i én produksjon (DEC-0020 pkt. 10).
 - Endrer aldri: andre prosjekter; uforanderlige tabeller (`screenplay_versions`, `resource_versions`, `takes`-filpekere, `change_log`, `imported_documents`, `export_versions`); starter aldri betalt jobb (INV-12).
 - Felles tester: `inverse` → identisk tilstand; revisjonskonflikt avvises; invariantkontrollene i `src/core/invariants/` passerer etterpå.

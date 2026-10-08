@@ -1,8 +1,8 @@
 ---
 name: lovable-development
-description: Holder Animatic Studio kompatibel med Lovable og styrer samspillet GitHub ↔ Lovable (DEC-0005 – Claude skriver all kode i repoet; Lovable brukes til kjøring, Lovable Cloud backend, hemmeligheter, forhåndsvisning og publisering). Dekker Lovables genererte stack (les package.json; TanStack Start/SSR fra mai 2026), filer Lovable eier, synkdisiplin på main (ingen force-push/rebase/squash, lovable-sync-gren ved konflikt), at Lovable ikke kjører migrasjoner eller deployer funksjoner fra Git (synkmelding), .env med VITE_-variabler, filstørrelsesgrenser, AGENTS.md, og presise Lovable-meldinger (mandat 33.3) for oppsett, hemmeligheter, migrasjoner og deploy. Bruk ved push/synk, nye migrasjoner i supabase/migrations, server-/edge-funksjoner, nye avhengigheter, endringer i package.json, vite/tanstack-konfig, .env, AGENTS.md, eller når noen nevner Lovable, preview, publish, Cloud, secrets eller «sync».
+description: Holder Animatic Studio kompatibel med Lovable og styrer samspillet GitHub ↔ Lovable (DEC-0005 – Claude skriver all kode i repoet; Lovable brukes til kjøring, Lovable Cloud backend, hemmeligheter, forhåndsvisning og publisering). Dekker Lovables genererte stack (les package.json; TanStack Start/SSR fra mai 2026), filer Lovable eier, synkdisiplin på main (ingen force-push/rebase/squash, lovable-sync-gren ved konflikt), at Lovable ikke kjører migrasjoner eller deployer funksjoner fra Git (synkmelding), .env med VITE_-variabler, filstørrelsesgrenser, AGENTS.md, og presise Lovable-meldinger (mandat 33.3) for oppsett, hemmeligheter, migrasjoner og deploy. Bruk ved push/synk, nye migrasjoner i db/migrations (ikke drizzle/), server-/edge-funksjoner, nye avhengigheter, endringer i package.json, vite/tanstack-konfig, .env, AGENTS.md, eller når noen nevner Lovable, preview, publish, Cloud, secrets eller «sync».
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
   owner: "animatic-studio"
   last-reviewed: "2026-10-08"
 ---
@@ -21,7 +21,7 @@ metadata:
 ## 2. Når den brukes
 - Før første kodeendring i et nytt klonet repo (stackverifisering).
 - Ved hver leveranse som skal testes i Lovable (push til `main`).
-- Ved ny/endret fil i `supabase/migrations/`, `supabase/functions/`, server functions, `package.json`, `vite.config.*`, `.env`, `AGENTS.md`.
+- Ved ny/endret fil i `db/migrations/`, `supabase/functions/`, server functions (`createServerFn`, f.eks. `src/adapters/storage/commands.functions.ts`), `package.json`, `vite.config.*`, `.env`, `AGENTS.md`.
 - Når Lovable-preview feiler, synken henger («GitHub ahead»), eller en `lovable-sync`-gren dukker opp.
 - Når en plattformspesifikk anbefaling (grenser, funksjoner, priser) skal gis.
 
@@ -37,10 +37,10 @@ metadata:
 1. **Sjekk gjeldende dokumentasjon** før du påstår noe plattformspesifikt: hent `https://docs.lovable.dev/llms.txt` og relevante sider som `.md`-varianter (f.eks. `…/integrations/github.md`). Står det ikke der, merk påstanden **[UVERIFISERT]** og foreslå en test (mandat 33.4, REQ-0469–REQ-0473). Oppdater PLATFORM_CONSTRAINTS ved endringer.
 2. **Verifiser stacken fra repoet**, ikke fra hukommelsen: les `package.json` (`@tanstack/react-start`? `@lovable.dev/vite-tanstack-config`? Tailwind-versjon?), `components.json`, `vite.config.*`, rutemappe (`src/routes/`). Avvik fra ARCHITECTURE.md §1 → `KNOWN_ISSUES.md` + oppdater arkitekturen.
 3. **Hold koden SSR-sikker:** Canvas, WebGL, WebCodecs, Web Audio, pdf.js og `window`/`document` lastes bare på klient (dynamisk import i klient-effekt eller klient-only-komponent). `src/engine/` importeres aldri på servernivå. Bygg (`npm run build`) skal passere uten nettleser-API-er.
-4. **Respekter filer Lovable eier/bruker** (PLATFORM_CONSTRAINTS §3): ikke flytt eller gi nytt navn til genererte konfigfiler, `src/integrations/supabase/*` (hvis generert), `.lovable/`, `.env`. Legg egen kode i `src/core`, `src/engine`, `src/adapters`, `src/app`.
+4. **Respekter filer Lovable eier/bruker** (PLATFORM_CONSTRAINTS §3): ikke flytt eller gi nytt navn til genererte konfigfiler, `src/integrations/supabase/*` (hvis generert), `.lovable/`, `.env`, `drizzle/` (eies av Lovable – rør ikke). Legg egen kode i `src/core`, `src/engine`, `src/adapters`, `src/app`.
 5. **Avhengigheter:** legg til bare det som trengs, eksakt versjon i lockfila, og sjekk at Lovables avhengighetsrevisjon ikke avviser den (se `secure-development`). Ingen native-binærer som krever byggesteg Lovable ikke har.
 6. **Commit og push** etter SYNC_PROCEDURE: små commits med krav-ID, aldri force-push/rebase/squash på `main`, aldri filer > 10 MB, aldri mediefiler/manus/hemmeligheter.
-7. **Avgjør om Lovable må gjøre noe:** ny migrasjon → «kjør migrasjoner»; endret funksjon → «deploy funksjoner»; ny hemmelighet → Mars legger den inn via «Add secret»-skjemaet (aldri i chat). Lag meldingen fra LOVABLE_MESSAGE_TEMPLATES. Ingen endring i disse → ingen melding.
+7. **Avgjør om Lovable må gjøre noe:** ny migrasjon → Mars ber Lovable kjøre SQL-filen `db/migrations/NNNN_navn.sql` uendret (DEC-0022, `docs/development/LOVABLE_SYNC.md`); endret funksjon → «deploy funksjoner»; ny hemmelighet → Mars legger den inn via «Add secret»-skjemaet (aldri i chat). Lag meldingen fra LOVABLE_MESSAGE_TEMPLATES. Ingen endring i disse → ingen melding.
 8. **Gi Mars en kort norsk sjekkliste:** «1) Trykk Push i GitHub Desktop. 2) Lim inn denne meldingen i Lovable. 3) Sjekk at forhåndsvisningen viser X.» Ingen sjargong.
 9. **Verifiser etterpå** (når Mars har kjørt den): skjemaversjonen appen forventer = databasens (`schema_version`-tabell, ARCHITECTURE §7); `docs/` og `.claude/` er uendret i neste Lovable-commit (`git diff`).
 

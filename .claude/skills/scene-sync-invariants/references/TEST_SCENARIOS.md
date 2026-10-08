@@ -107,17 +107,17 @@ Konkrete scenarier som skal bli automatiserte tester. Hver har ID (TS-xx), berø
 ## TS-11 Samtidig redigering
 - **Krav/INV:** REQ-0526, REQ-0524 · INV-C1, INV-C2 · `tests/invariants/invC1-revision-conflict.test.ts`
 - **Gitt** to redaktører som har lest forekomsten av scene S med `revision = 7`
-- **Når** begge sender `MoveOccurrence` for S via `apply_command` med `base_revisions = 7`
-- **Så** lykkes den første, og den andre avvises med `P0409` (revision_conflict); ingen endring går tapt i stillhet
+- **Når** begge sender `MoveOccurrence` for S via `runCommand` med `baseRevisions = { S: 7 }`
+- **Så** lykkes den første, og den andre avvises med `revision_conflict` (fra kjernen, eller `P0409` fra `apply_changes` hvis de kom samtidig); ingen endring går tapt i stillhet
 - **Gitt** (a) to redaktører A og B som har lest samme replikkblokk r med samme `revision`
 - **Når** begge sender `EditBlockText` for r
-- **Så** lykkes A (ny `script_block_revisions`-rad), og B avvises med `P0409`; B får konfliktvisning med valgene behold / bruk min på nytt / flett manuelt – B's tekst forkastes ikke stille
+- **Så** lykkes A (ny `script_block_revisions`-rad), og B avvises med `revision_conflict` (`P0409` i databasen); B får konfliktvisning med valgene behold / bruk min på nytt / flett manuelt – B's tekst forkastes ikke stille
 - **Gitt** (b) at A redigerer replikk r1 og B samtidig redigerer replikk r2 i samme scene
 - **Så** lykkes begge (revisjonskontrollen ligger på blokken, ikke på varianten)
 - **Gitt** (c) at A har endret r og B deretter endrer r igjen
 - **Når** A angrer sin endring
 - **Så** gir angringen konflikt (ikke en stille invers som overskriver B)
-- **Og** et medlem med rollen `viewer` får avslag fra `apply_command`, direkte `insert/update/delete` fra klienten feiler for alle roller (også owner), og et ikke-medlem ser ingen rader.
+- **Og** et medlem med rollen `viewer` får avslag fra `runCommand` (`forbidden`), direkte `insert/update/delete` og kall til `apply_changes` fra klienten feiler for alle roller (også owner), og et ikke-medlem ser ingen rader.
 
 ## TS-12 Tilfeldige kommandosekvenser (egenskapsbasert)
 - **Krav/INV:** REQ-0041–REQ-0043 · INV-01, INV-03, INV-04, INV-10, INV-14 · `tests/invariants/inv01-structure-sync.test.ts`

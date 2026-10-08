@@ -30,9 +30,11 @@ Regler: DEC-ID-er er permanente. En beslutning endres aldri i ettertid; den erst
 | DEC-0015 | 2026-10-08 | Begrepsavklaringer i domenemodellen | Teknisk anbefaling | Gjeldende | – |
 | DEC-0016 | 2026-10-08 | Skills: egne P0-skills, eksterne bare etter vurdering og pinning | Teknisk anbefaling | Gjeldende | – |
 | DEC-0017 | 2026-10-08 | Mørkt tema som standard; norsk UI med oversettbar struktur | Midlertidig antakelse | Åpen | – |
-| DEC-0018 | 2026-10-08 | Bare brukerens egne API-nøkler, eid av prosjekteier | Midlertidig antakelse | Åpen | – |
+| DEC-0018 | 2026-10-08 | Bare brukerens egne API-nøkler, eid av prosjekteier | Midlertidig antakelse | Delvis bekreftet av DEC-0021 | – |
 | DEC-0019 | 2026-10-08 | Etableringsoppdraget (del A–K) og invariantlisten i del B3 | Bekreftet av bruker | Gjeldende | – |
-| DEC-0020 | 2026-10-08 | Presiseringer etter revisjon: skrivevei, skjema, lagringssti, modellhull | Teknisk anbefaling | Gjeldende | ADR-0004, ADR-0005 |
+| DEC-0020 | 2026-10-08 | Presiseringer etter revisjon: skrivevei, skjema, lagringssti, modellhull | Teknisk anbefaling | Gjeldende (pkt. 1 og 3 erstattet av DEC-0022) | ADR-0004, ADR-0005 |
+| DEC-0021 | 2026-10-08 | Mars betaler API-kostnader i testfasen; kostnadsdeling i samarbeid avtales utenfor appen | Bekreftet av bruker | Gjeldende | – |
+| DEC-0022 | 2026-10-08 | Domenekjernen kjøres på serveren; databasen lagrer endringssett atomisk; migrasjoner i db/migrations | Teknisk anbefaling | Gjeldende | ADR-0009 |
 
 ---
 
@@ -172,3 +174,23 @@ Regler: DEC-ID-er er permanente. En beslutning endres aldri i ettertid; den erst
   9. **Sammenslåing:** `MergeScenes` setter `scenes.merged_into` på den sammenslåtte scenen; den kan ikke gjenaktiveres som egen scene uten `UnmergeScene` (invers kommando). Fortellingstid og aktiv versjon: se Q-07.
   10. **Samme scene flere ganger i én produksjon:** Tillatt (f.eks. trailer med to utdrag fra samme scene). Ingen unik nøkkel på `(production_id, scene_id)`.
   11. **Kostnadsporten (INV-12/INV-C3)** eies av skillen `ai-cost-quality-governance` når den opprettes i M5. Inntil da: `API_INTEGRATIONS.md` §2 og `secure-development`.
+
+## DEC-0021 – API-kostnader i testfasen
+- **Dato:** 2026-10-08 · **Type:** Bekreftet av bruker
+- **Mars' ord:** «i begynnelsen betaler jeg alt sammen med mine API-kreditter … dette er i testfasen uansett – men når flere samarbeider om et prosjekt er API-kostnadene avklart allerede, så det er ikke et problem enda.»
+- **Beslutning:** I testfasen legger Mars inn egne API-nøkler og betaler alle AI-kostnader. Fordeling av kostnader når flere samarbeider avtales mellom partene utenfor appen.
+- **Konsekvenser:** Q-01 er avklart for testfasen. DEC-0018 (nøkler eies av prosjekteier) er i praksis bekreftet for testfasen. Kostnadsgodkjenning før betalte kall (INV-12) og budsjettgrenser gjelder fortsatt – de beskytter også Mars' egne kreditter. Rollestyrt kostnadsrett (REQ-0528, INV-C3) beholdes som teknisk anbefaling.
+
+## DEC-0022 – Domenekjernen på serveren, atomiske endringssett, migrasjoner i db/migrations
+- **Dato:** 2026-10-08 · **Type:** Teknisk anbefaling · **ADR:** ADR-0009 · **Erstatter:** DEC-0020 pkt. 1 og 3
+- **Problemstilling:** DEC-0020 la opp til én SQL-funksjon per kommando (`private.cmd_*`). Det ville duplisert all domenelogikk i SQL og svekket portabiliteten (prinsipp 28). Samtidig viste Lovables dokumentasjon at Lovable Cloud styrer migrasjoner med Drizzle i `drizzle/` og ikke kjører migrasjonsfiler som kommer via Git.
+- **Valgt løsning:**
+  1. Klienten kaller serverfunksjonen `runCommand` (TanStack Start). Den krever innlogging, sjekker rolle ≥ redaktør, laster prosjektet, kjører `applyCommand` i `src/core` (validering + invarianter) og lager et endringssett (`diffStates`).
+  2. `public.apply_changes(...)` (bare `service_role`) lagrer endringssettet atomisk: sjekker rolle, at alle rader tilhører prosjektet og revisjon per rad (SQLSTATE `P0409`), og skriver `change_log`. Takes kan ikke slettes/overskrives; historikk og logg er uforanderlige (triggere).
+  3. Klienten har bare lesetilgang (RLS). Øvrige RPC-er: `create_project`, `create_invitation`, `accept_invitation`.
+  4. Valgfri kommando-ID fra klienten gjør nye forsøk etter nettverksbrudd idempotente.
+  5. Migrasjoner skrives som `db/migrations/NNNN_navn.sql` og kjøres i Lovable Cloud ved at Mars ber Lovable kjøre filen uendret (LOVABLE_SYNC.md B). Lovable registrerer dem selv i `drizzle/`, som vi ikke rører.
+  6. Appen sjekker `schema_version` og viser et varsel hvis migrasjonen ikke er kjørt.
+- **Alternativer:** Per-kommando SQL (forkastet: dobbel logikk), skriving direkte fra klienten med RLS-skrivepolicyer (forkastet: invarianter kan omgås).
+- **Konsekvenser:** All domenelogikk testes én gang (kjernen) og gjelder både klient og server. Hver kommando laster hele prosjektet på serveren – akseptabelt for én film (~100 scener, ~5 000 blokker), men må optimaliseres senere (KI-12).
+- **Verifisering:** `tests/db/run-db-tests.ts` (15 tester mot lokal Postgres med Supabase-emulering).

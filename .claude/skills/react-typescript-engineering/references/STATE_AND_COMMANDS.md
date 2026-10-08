@@ -7,7 +7,7 @@ Grunnlag: ADR-0005 (kommandologg), ADR-0004 (revisjon, angre per bruker), ARCHIT
 |---|---|---|---|
 | **Server-tilstand** | sceneforekomster, varianter, blokker, takes, ressurser, medlemmer | Cache i klient (TanStack Query hvis installert, ellers egen store) | Databasen |
 | **Lokal redigeringstilstand** | utkast i en blokk før commit, markering, avspillingshode, zoom, åpne paneler, ViewFilter | Komponent/arbeidsflate-store | Klienten (ikke kritisk; ViewFilter lagres per bruker) |
-| **Kommandoer** | `MoveOccurrence`, `EditBlockText`, `SetActiveTake` | `src/core/commands` + adapter | Bekreftes av RPC, logges i `change_log` |
+| **Kommandoer** | `MoveOccurrence`, `EditBlockText`, `SetActiveTake` | `src/core/commands` + serverfunksjonen `runCommand` | Bekreftes av serveren (kjernen + `apply_changes`), logges i `change_log` |
 
 Avledede verdier (tidskoder, varighet, nummerering, paginering, gjeldende kontinuitetstilstand) **lagres ikke** i state – de beregnes med rene funksjoner fra server-tilstand og memoiseres.
 
@@ -16,19 +16,20 @@ Avledede verdier (tidskoder, varighet, nummerering, paginering, gjeldende kontin
 UI-hendelse
   → core.validate(state, cmd)            // rask tilbakemelding, invarianter
   → optimistisk: state' = core.apply(state, cmd)   (merket «venter»)
-  → adapter.execute(cmd, baseRevisions)  // RPC, én transaksjon
-      ok        → erstatt optimistiske verdier med svarets revisjoner
-      conflict  → rull tilbake, hent ferske objekter, vis konflikt (aldri stille overskriving)
-      forbidden → rull tilbake, vis rollemelding
-      nettverk  → behold «venter», prøv igjen med samme kommando-ID (idempotent)
+  → runCommand({ projectId, command, baseRevisions })  // serverfunksjon (DEC-0022): rolle → applyCommand i core → diffStates → apply_changes, én transaksjon
+      ok: true               → { changeId, affected }: hent/invalider berørte objekter (nye revisjoner)
+      revision_conflict      → rull tilbake, hent ferske objekter, vis konflikt (aldri stille overskriving)
+      forbidden              → rull tilbake, vis rollemelding
+      kjernefeil (invalid, not_found, invariant_violation …) → rull tilbake, vis norsk melding
+      storage_error/nettverk → rull tilbake eller behold «venter»; hent fersk tilstand før nytt forsøk
   → Realtime fra andre klienter → invalider/hent berørte objekter
 ```
-- Kommandoen bærer `id` (UUID v7), `type`, `payload`, `baseRevisions`. `inverse` beregnes i core og verifiseres i backend.
+- Klienten sender `command` (med `type` og felter) og `baseRevisions`. Kommando-ID (= `change_log.id`), aktør og tidspunkt settes av serveren; `inverse` beregnes av kjernen på serveren. Fordi ID-en lages per kall, er et blindt nytt forsøk **ikke** idempotent – hent fersk tilstand først (revisjonskontrollen avviser dobbel anvendelse av samme endring når `baseRevisions` er satt).
 - Strukturkommandoer endrer **én** liste (sceneforekomster). Manusvisning og tidslinje er selektorer over den (INV-01). Tidslinjekomponenten har aldri egen rekkefølge.
 
 ## 3. Angre og gjør om (per bruker)
 - Angrestabel = liste av brukerens egne bekreftede kommando-ID-er i denne økten (+ kan hentes fra `change_log`).
-- Angre = send inversen som ny kommando med gjeldende revisjoner. Er objektet endret av andre siden, gir RPC konflikt → vis valg i stedet for å overskrive (ADR-0005 selektiv tilbakeføring).
+- Angre = send inversen som ny kommando med gjeldende revisjoner. Er objektet endret av andre siden, gir `runCommand` `revision_conflict` → vis valg i stedet for å overskrive (ADR-0005 selektiv tilbakeføring).
 - Gjør om = send original kommando på nytt med ny ID.
 
 ## 4. Redigering av tekst

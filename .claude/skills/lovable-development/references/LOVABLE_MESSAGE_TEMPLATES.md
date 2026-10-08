@@ -11,14 +11,14 @@ Etter DEC-0005 skal Lovable **ikke** bygge funksjoner. Meldinger sendes bare for
 - Send i **Build mode** bare når noe skal utføres; spørsmål i **Chat mode** (billigere, endrer ingenting – [VERIFISERT]).
 
 ## 1. Standard synkmelding (migrasjoner + funksjoner)
-Bruk når leveransen har nye filer i `supabase/migrations/` og/eller endrede funksjoner. Kopieres også til `docs/development/LOVABLE_SYNC.md`.
+Bruk når leveransen har nye filer i `db/migrations/` (DEC-0022; ikke `supabase/migrations/`, og aldri `drizzle/`) og/eller endrede funksjoner som må deployes. Kopieres også til `docs/development/LOVABLE_SYNC.md`.
 
 ```
 Sync task – do not write or change any code.
 
-1. Apply these pending database migrations from the repository, in filename order, exactly as written (do not edit them):
-   - supabase/migrations/<FILNAVN_1>.sql
-   - supabase/migrations/<FILNAVN_2>.sql
+1. Run these SQL files from the repository against the Lovable Cloud database, in filename order, exactly as written (do not edit them, do not copy them into supabase/migrations/ or drizzle/):
+   - db/migrations/<NNNN_navn_1>.sql
+   - db/migrations/<NNNN_navn_2>.sql
 2. Deploy these functions from the repository without changing their contents:
    - <supabase/functions/NAVN | server function NAVN>
 3. Do not modify any files in the repository. Do not change application code, docs/, .claude/, src/core/ or tests/.
@@ -28,7 +28,7 @@ If anything fails, stop and report the error. Do not try to fix it.
 
 ## 2. Bare migrasjon
 ```
-Apply the pending migration supabase/migrations/<FILNAVN>.sql exactly as written. Do not edit it and do not modify any other files or code.
+Run the SQL file db/migrations/<NNNN_navn>.sql from the repository against the Lovable Cloud database exactly as written. Do not edit it, do not copy it elsewhere, and do not modify any other files or code.
 Report: success or the exact error message, and the resulting value in public.schema_version.
 If it fails, stop and report. Do not attempt a fix.
 ```

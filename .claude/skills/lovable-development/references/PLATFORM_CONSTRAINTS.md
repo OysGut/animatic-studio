@@ -39,7 +39,8 @@ Når en påstand testes i prosjektet, oppdater merkingen her med dato.
 | Project knowledge (≤ 10 000 tegn) har prioritet over repo-filer | [VERIFISERT] | Kort versjon av AGENTS-reglene kan legges der av Mars |
 | `.lovable/plan.md`, `.lovable/plan/` (Plan mode) | [VERIFISERT] | Ikke rør |
 | `.env` med `VITE_`-variabler skal committes | [VERIFISERT] | Bare offentlige verdier |
-| `supabase/functions/`, `supabase/migrations/` (og `drizzle/migrations/`) | [VERIFISERT] | Våre filer, men kjøres ikke automatisk (§4) |
+| `supabase/functions/`, `supabase/migrations/` (og `drizzle/migrations/`) | [VERIFISERT] | Kjøres ikke automatisk (§4). Våre migrasjoner ligger i `db/migrations/` (DEC-0022); `drizzle/` eies av Lovable og røres ikke |
+| `db/migrations/NNNN_navn.sql` | Prosjektregel (DEC-0022) | Våre SQL-filer; Mars ber Lovable kjøre filen uendret (`docs/development/LOVABLE_SYNC.md`) |
 | Genererte konfigfiler (vite/tanstack-konfig, `components.json`, Supabase-klient) | [DELVIS] | Endre minst mulig; noter hvorfor i commit |
 | Lovable-skills leses fra workspace, ikke fra `.claude/skills/` | [UVERIFISERT] | Kan importeres manuelt fra GitHub-undermappe |
 

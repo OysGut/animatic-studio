@@ -2,7 +2,7 @@
 name: react-typescript-engineering
 description: Kodekvalitet for Animatic Studios frontend og domenekode i TypeScript/React – TypeScript strict, komponentarkitektur, tilstand (server-tilstand vs. lokal redigeringstilstand vs. kommandoer i src/core/commands), asynkrone operasjoner og feilhåndtering, ytelse (virtualisering av manus og tidslinje, canvas utenfor React-render, memo, Web Workers), SSR-sikkerhet i TanStack Start (nettleserbiblioteker som pdf.js, canvas, WebCodecs, Web Audio bare på klient), modulgrenser (src/core uten React/Supabase, src/engine, src/adapters, src/app) og testbarhet. Starter alltid med å lese package.json og tsconfig fordi stacken Lovable genererer ikke er endelig verifisert. Bruk når du skriver eller gjennomgår .ts/.tsx-kode, komponenter, hooks, tilstandshåndtering, ytelsesproblemer, hydration-/SSR-feil, eller ved refaktorering. Triggere – «komponent», «React», «TypeScript», «hook», «state», «re-render», «treg», «SSR», «hydration», «TanStack», «refactor», «kodekvalitet».
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
   owner: "animatic-studio"
   last-reviewed: "2026-10-08"
 ---
@@ -17,7 +17,7 @@ Hvordan TypeScript- og React-koden skrives slik at domenekjernen forblir ren, re
 - Hvilke lag som finnes og hva de skal inneholde → `architecture-guardian` (ADR-0003).
 - Visuelt designsystem, tokens, shadcn-bruk → `design-system-director`; interaksjonsmønstre og tastatursnarveier → `ux-interaction-design`.
 - Kommandoenes semantikk og invarianter → `scene-sync-invariants`.
-- Skjema, RPC-er, RLS → `database-domain-modeling`.
+- Skjema, `apply_changes`/RPC-er, RLS → `database-domain-modeling`.
 - Lovable-synk og filer Lovable eier → `lovable-development`.
 - Teststrategi og verktøyoppsett → `test-quality-engineering`.
 - Manusformatlogikk → `screenplay-engineering`.
@@ -40,8 +40,8 @@ Hvordan TypeScript- og React-koden skrives slik at domenekjernen forblir ren, re
 ## 4. Arbeidsprosedyre
 1. **Verifiser stacken** (se «Les først»). Tilpass mønstrene til det som faktisk er installert; legg ikke til et bibliotek som dupliserer et eksisterende (f.eks. en ny state-lib når én finnes). Ny avhengighet: sjekk lisens, størrelse, SSR-kompatibilitet, vedlikehold; noter i commit og ved større valg som DEC (Teknisk anbefaling).
 2. **Plasser koden i riktig lag:** domenelogikk i `src/core/` (ren TS), nettlesermotorer i `src/engine/`, Supabase/AI/medie i `src/adapters/`, UI i Lovables ruter/komponenter + `src/app/`. Er du i tvil: kan det testes uten DOM og database? Da hører det hjemme i core.
-3. **Typer først:** definer domenetyper og brandede ID-typer i `src/core/model/`; `strict` på. `any` er forbudt i core; `unknown` + validering ved grenser (RPC-svar, filimport).
-4. **Tilstand etter [STATE_AND_COMMANDS](references/STATE_AND_COMMANDS.md):** server-tilstand (hentet, cachet, invalidert av Realtime), lokal redigeringstilstand (utkast, markering, zoom), og endringer som kommandoer: UI → `core` validerer → optimistisk visning → adapter-RPC → bekreft eller rull tilbake / vis konflikt. UI skriver aldri direkte til tabeller.
+3. **Typer først:** definer domenetyper og brandede ID-typer i `src/core/model/`; `strict` på. `any` er forbudt i core; `unknown` + validering ved grenser (svar fra serverfunksjoner, filimport).
+4. **Tilstand etter [STATE_AND_COMMANDS](references/STATE_AND_COMMANDS.md):** server-tilstand (hentet, cachet, invalidert av Realtime), lokal redigeringstilstand (utkast, markering, zoom), og endringer som kommandoer: UI → `core` validerer → optimistisk visning → serverfunksjonen `runCommand` (kjører kjernen autoritativt og lagrer via `apply_changes`, DEC-0022) → bekreft eller rull tilbake / vis konflikt. UI skriver aldri direkte til tabeller.
 5. **Async og feil:** domenefeil som `Result`-verdier i core; adaptere mapper databasefeil (revisjonskonflikt, ingen tilgang) til typede feil; UI viser norsk melding og en vei videre. Avbryt foreldede kall (`AbortController`). Ingen tomme `catch`.
 6. **SSR-sikkerhet:** ingen `window`/`document`/`HTMLCanvasElement`/`AudioContext`/`VideoEncoder` på modulnivå. Tunge nettleserbiblioteker (pdf.js, mp4-muxer, WebGL-hjelpere) lastes med dynamisk `import()` i effekt/hendelse eller i en klient-only-komponent/Web Worker. Hemmeligheter bare i server functions/edge functions.
 7. **Ytelse etter [PERFORMANCE_PATTERNS](references/PERFORMANCE_PATTERNS.md):** virtualiser manussider og tidslinjespor, tegn canvas imperativt utenfor React-render, smale abonnementer/selektorer, stabile props og `memo` der målinger viser behov. Mål før og etter.
@@ -58,7 +58,7 @@ Hvordan TypeScript- og React-koden skrives slik at domenekjernen forblir ren, re
 - [ ] Ingen `any` i core; ingen ikke-null-påstander (`!`) uten kommentar.
 - [ ] React-nøkler, ruter, cache-nøkler og filnavn bruker ID-er, aldri scenenummer (INV-02).
 - [ ] Ingen separat rekkefølge i tidslinje-tilstand; tidslinje og manus leser samme sceneforekomstliste (INV-01).
-- [ ] Alle skrivinger går via kommandoer/adapter-RPC med forventet revisjon (INV-C1).
+- [ ] Alle skrivinger går via kommandoer → `runCommand` med `baseRevisions` (INV-C1).
 - [ ] Ingen nettleser-API på modulnivå; tunge biblioteker lastes dynamisk på klient.
 - [ ] Ingen hemmeligheter eller `VITE_`-variabler med nøkler i klientkode.
 - [ ] Laste-, tom-, feil- og konflikttilstand er håndtert i UI.
@@ -74,7 +74,7 @@ Hvordan TypeScript- og React-koden skrives slik at domenekjernen forblir ren, re
 - Importere fra «barrel»-filer som drar med seg hele motorer inn i hovedbundelen.
 - Bruke Next.js-spesifikke råd (RSC, server actions, `next/dynamic`, `React.cache`) – gjelder ikke her.
 - Endre Lovable-genererte kjernefiler (ruter-oppsett, Vite-konfig) uten grunn; det kan krasje med Lovables egne endringer.
-- Svelge feil fra RPC slik at brukeren tror noe er lagret.
+- Svelge feil fra `runCommand` (`ok: false`) slik at brukeren tror noe er lagret.
 
 ## 8. Akseptansekriterier / tester
 - `tsc --noEmit` uten feil; lint uten feil.

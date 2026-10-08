@@ -38,7 +38,7 @@ Scenehodet og klipp har ulike markører og pekere, slik at brukeren ser forskjel
 ## 2. Dra og slipp
 - **Scener i manus og i tidslinje bruker samme kommando `MoveOccurrence`** med ny `orderKey` beregnet fra naboene. Det finnes ingen separat «tidslinjerekkefølge».
 - Under dra: halvgjennomsiktig «spøkelse», innsettingslinje mellom scener, og en liten etikett («Flytt scene 42 etter 45»). `Esc` avbryter uten endring.
-- Etter slipp: optimistisk visning → RPC `apply_command` → ved avvisning (revisjon/tilgang) rulles visningen tilbake og årsaken vises.
+- Etter slipp: optimistisk visning → serverfunksjonen `runCommand` (DEC-0022) → ved avvisning (revisjon/tilgang) rulles visningen tilbake og årsaken vises.
 - Flere valgte scener flyttes som én kommando (én angre).
 - Ressurs fra bibliotek → lerret/tidslinje: lager referanse til en *bestemt ressursversjon* (INV-13).
 - Filer fra filsystemet → importflyt (validering, se `secure-development`), aldri direkte inn i en scene uten importdialog.

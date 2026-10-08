@@ -9,7 +9,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground shadow hover:bg-primary/90",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:
           "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
@@ -18,10 +18,11 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
-        default: "h-9 px-4 py-2",
-        sm: "h-8 rounded-md px-3 text-xs",
-        lg: "h-10 rounded-md px-8",
-        icon: "h-9 w-9",
+        // Animatic Studio: komfortabel 32 px / kompakt 24 px (DESIGN_SYSTEM §4)
+        default: "h-8 px-3 text-[13px]",
+        sm: "h-6 rounded-sm px-2 text-xs",
+        lg: "h-9 px-4 text-sm",
+        icon: "h-8 w-8",
       },
     },
     defaultVariants: {

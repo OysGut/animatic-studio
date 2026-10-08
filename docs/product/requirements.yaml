@@ -164,13 +164,19 @@ requirements:
   - Ingen brukerflate, vindustittel, metadata, eksport eller dokumentasjon bruker «AI Animatic Studio» som navn.
   tests:
   - 'enhet: søk i kildekode/ressursfiler etter strengen «AI Animatic Studio» gir null treff'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/app/shell/AppHeader.tsx
+  - src/app/auth/AuthScreen.tsx
+  verification:
+  - 'manuell: 2026-10-08 visuell QA av M1-skjermbilder (tests/visual/screens.mjs)'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: Jf. kap. 34 pkt. 1.
 - id: REQ-0006
   title: Første versjon utvikles i Lovable
@@ -191,13 +197,17 @@ requirements:
   - Første versjon kjører som Lovable-prosjekt (web), eventuelt med tilknyttede backend-tjenester.
   tests:
   - 'manuell: verifiser at MVP er bygd og publisert via Lovable'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - package.json
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: delvis implementert (se implementation)'
   notes: ''
 - id: REQ-0007
   title: Portabilitet til macOS og Windows
@@ -223,13 +233,17 @@ requirements:
     eller Lovable-spesifikke biblioteker.
   tests:
   - 'enhet: kjernemoduler kan kjøres/testes i et ikke-nettleser-miljø (f.eks. Node) uten DOM'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - src/core/
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: delvis implementert (se implementation)'
   notes: Linje 33 og 34 er duplikater. Jf. kap. 34 pkt. 28.
 - id: REQ-0008
   title: Unngå unødvendige plattformbindinger
@@ -285,13 +299,20 @@ requirements:
     grensesnitt.
   tests:
   - 'enhet: avhengighetsregler (f.eks. lint/import-regler) hindrer at domenemodellen importerer UI- eller leverandørkode'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/
+  - src/adapters/
+  - src/app/
+  verification:
+  - tests/architecture/core-purity.test.ts::importerer ikke rammeverk, backend eller plattform-API-er
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: Jf. modulinndelingen i kap. 31.
 - id: REQ-0010
   title: Backend-tjenester for tunge medieoperasjoner
@@ -370,13 +391,17 @@ requirements:
   - Standardtemaet er et mørkt tema egnet for filmproduksjon, definert som design-tokens.
   tests:
   - 'visuell: skjermbildegjennomgang av hovedvisninger i standardtema'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - src/styles.css
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: delvis implementert (se implementation)'
   notes: «Gjerne mørk» er en preferanse, ikke absolutt krav.
 - id: REQ-0013
   title: Troverdig kreativt verktøy, ikke chatbot
@@ -490,9 +515,13 @@ requirements:
   tests:
   - 'enhet: datamodellen har én kilde for scenerekkefølge per produksjon'
   - 'integrasjon: endring via manus-API er umiddelbart synlig via tidslinje-API uten synkroniseringsjobb'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/model.ts
+  - src/core/views.ts
+  verification:
+  - 'tests/invariants/random-sequences.test.ts::INV-01: manus og film har alltid samme aktive rekkefølge i alle
+    produksjoner'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -500,6 +529,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0001
     change: 'Revisjon: forpliktelsen i l. 63 tatt inn i kravteksten'
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: Høyeste prioritet i mandatet. Linje 64 og 65 er duplikater. Jf. kap. 34 pkt. 2.
 - id: REQ-0017
   title: Flytting i manus flytter i film
@@ -524,13 +556,19 @@ requirements:
   - Gitt scenene A, B, C, når B flyttes etter C i manuset, så er filmens aktive rekkefølge A, C, B.
   tests:
   - 'integrasjon: flytt i manus → verifiser tidslinjerekkefølge'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Under arbeid
+  implementation:
+  - src/core/commands/apply.ts#MoveOccurrence
+  - src/core/views.ts
+  verification:
+  - tests/unit/commands.test.ts::én kommando endrer rekkefølgen i både manus og film, uten nye ID-er
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: kjernen verifisert; manusvisning med dra-og-slipp kommer i M2'
   notes: ''
 - id: REQ-0018
   title: Flytting i tidslinje flytter i manus
@@ -589,13 +627,18 @@ requirements:
     og inngår ikke i eksport (med mindre eksportvalg eksplisitt inkluderer den, jf. REQ-0085).
   tests:
   - 'integrasjon: deaktiver scene og verifiser alle fire konsumenter'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Under arbeid
+  implementation:
+  - src/core/views.ts
+  verification:
+  - tests/unit/commands.test.ts::utelates fra manus og film, men ingenting slettes og den kan gjenaktiveres
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: kjernen verifisert; varighet og eksport kommer i M2/M4'
   notes: ''
 - id: REQ-0020
   title: Skjult materiale slettes ikke
@@ -618,13 +661,19 @@ requirements:
     tilbake.
   tests:
   - 'dataintegritet: deaktiver/gjenaktiver rundtur bevarer alle relasjoner'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/commands/apply.ts#SetOccurrenceActive
+  verification:
+  - tests/unit/commands.test.ts::utelates fra manus og film, men ingenting slettes og den kan gjenaktiveres
+  - 'tests/invariants/random-sequences.test.ts::INV-14: deaktivering sletter ingenting'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert (datanivå)'
   notes: ''
 - id: REQ-0021
   title: Skille UI-skjuling og produksjonsdeaktivering
@@ -681,13 +730,18 @@ requirements:
     fra strukturell plassering.
   tests:
   - 'enhet: datamodell har separate felt for struktur og kildeversjon'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Under arbeid
+  implementation:
+  - src/core/views.ts#outdatedTakes
+  verification:
+  - tests/unit/commands.test.ts::ferdig materiale endres ikke, men blir markert som utdatert for berørte blokker
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: grunnlag for avvik på plass; avviksflyt i M6'
   notes: ''
 - id: REQ-0023
   title: Strukturell synkronisering er automatisk
@@ -709,13 +763,19 @@ requirements:
   - Ingen brukerhandling er nødvendig for at manus og film skal ha samme struktur etter en strukturendring.
   tests:
   - 'integrasjon: tilfeldige strukturoperasjoner (property-based) → manus- og filmstruktur er alltid like'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/views.ts
+  - src/core/commands/apply.ts
+  verification:
+  - tests/unit/commands.test.ts::én kommando endrer rekkefølgen i både manus og film, uten nye ID-er
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: ''
 - id: REQ-0024
   title: Produsert materiale endres ikke ved manusendring
@@ -738,13 +798,20 @@ requirements:
   - Gitt en scene med produsert film, når dialogen endres, så er filmklippet og dets metadata byte-identisk uendret.
   tests:
   - 'dataintegritet: hash av produsert materiale før/etter manusendring'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/commands/apply.ts
+  - db/migrations/0001_core.sql#protect_takes
+  verification:
+  - tests/unit/commands.test.ts::ferdig materiale endres ikke, men blir markert som utdatert for berørte blokker
+  - 'tests/db/run-db-tests.ts::INV-07: produsert materiale kan ikke slettes eller overskrives'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: ''
 - id: REQ-0025
   title: Flagging av innhold ute av synk
@@ -828,13 +895,21 @@ requirements:
   - 'For hver av de fire endringstypene: eksisterende filmklipp finnes fortsatt etter endringen.'
   tests:
   - 'dataintegritet: parametrisert test over endringstypene'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/commands/apply.ts
+  - db/migrations/0001_core.sql#protect_takes
+  verification:
+  - 'tests/invariants/random-sequences.test.ts::INV-07/13: produsert materiale og historikk endres eller slettes
+    aldri'
+  - 'tests/db/run-db-tests.ts::INV-07: produsert materiale kan ikke slettes eller overskrives'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: ''
 - id: REQ-0028
   title: Ingen automatisk overskriving av godkjente ressurser
@@ -916,13 +991,17 @@ requirements:
   - Aktiv sceneversjon-ID er uendret etter hver av de fire endringstypene.
   tests:
   - 'enhet: aktiv versjon endres kun via eksplisitt brukerkommando'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - src/core/commands/apply.ts
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: delvis implementert (se implementation)'
   notes: ''
 - id: REQ-0031
   title: Ingen automatisk endring av annen produksjon
@@ -945,13 +1024,20 @@ requirements:
     uendret.
   tests:
   - 'dataintegritet: endring i produksjon X gir ingen diff i produksjon Y'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/commands/apply.ts#assertCanEditVariant
+  - src/core/invariants.ts
+  verification:
+  - 'tests/invariants/random-sequences.test.ts::INV-04: kommandoer i én produksjon endrer aldri en annen produksjons
+    forekomster'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: ''
 - id: REQ-0032
   title: Historiske manusversjoner bevares
@@ -1001,13 +1087,18 @@ requirements:
   - Hver vesentlig oppdatering logges med hvem/når/hva, kan reverseres, og er initiert av en brukerhandling.
   tests:
   - 'integrasjon: endringslogg og reversering for hver oppdateringstype'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - db/migrations/0001_core.sql#change_log
+  - src/core/commands/apply.ts
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: delvis implementert (se implementation)'
   notes: Jf. kap. 34 pkt. 27. «Vesentlig» er ikke definert – se OPEN_QUESTIONS B («Vesentlig oppdatering» = alle
     kommandoer i change_log, ADR-0005).
 - id: REQ-0034
@@ -1032,13 +1123,20 @@ requirements:
   - For hver av de åtte operasjonene er scenens interne ID uendret etter operasjonen.
   tests:
   - 'enhet: parametrisert test over de åtte operasjonene'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/ids.ts
+  - src/core/model.ts
+  verification:
+  - 'tests/invariants/random-sequences.test.ts::INV-02/03: ingen scene, forekomst eller produksjonsnummer forsvinner
+    eller bytter scene'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: Jf. kap. 34 pkt. 3.
 - id: REQ-0035
   title: Scenenumre og versjon som egne attributter
@@ -1091,13 +1189,21 @@ requirements:
   tests:
   - 'enhet: skjemaanalyse – alle scenereferanser peker på scene-ID'
   - 'integrasjon: omnummerering bryter ingen relasjoner'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/model.ts
+  - db/migrations/0001_core.sql
+  verification:
+  - 'tests/invariants/random-sequences.test.ts::INV-02/03: ingen scene, forekomst eller produksjonsnummer forsvinner
+    eller bytter scene'
+  - 'manuell: 2026-10-08 ingen fremmednøkkel eller unik nøkkel i 0001_core.sql bruker scenenummer'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: ''
 - id: REQ-0037
   title: Stabile identifikatorer for alle domeneobjekter
@@ -1121,13 +1227,17 @@ requirements:
   - Hver av de 21 entitetstypene har et uforanderlig ID-felt.
   tests:
   - 'enhet: skjemavalidering av ID-felt for alle 21 typer'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - src/core/ids.ts
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: delvis implementert (se implementation)'
   notes: ''
 - id: REQ-0038
   title: ID-er uavhengige av navn, språk og plassering
@@ -1150,13 +1260,18 @@ requirements:
     flytting eller omnummerering.
   tests:
   - 'enhet: ID-generator inneholder ingen avledning fra navn/posisjon'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/ids.ts
+  verification:
+  - tests/unit/core-basics.test.ts::lager gyldige UUID v7 som sorteres etter tid
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: ''
 - id: REQ-0039
   title: Skille scene, sceneforekomst og scenevariant
@@ -1180,13 +1295,19 @@ requirements:
   - Plassering, synlighet, tidsutdrag og aktiv versjon lagres på sceneforekomsten, ikke på scenen.
   tests:
   - 'enhet: skjema har tre separate entiteter med riktige felt'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/model.ts
+  - db/migrations/0001_core.sql
+  verification:
+  - tests/unit/commands.test.ts::krever egen variant og lar hovedfilmen være uendret
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: Linje 137/138 og 139/140 er duplikater.
 - id: REQ-0040
   title: Gjenbruk av scene uten delte redaksjonelle endringer
@@ -1208,13 +1329,18 @@ requirements:
   - Gitt scene S i produksjon P1 og P2, når S redigeres som variant i P2, så er S i P1 uendret.
   tests:
   - 'dataintegritet: variantredigering isolert per produksjon'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/commands/apply.ts#ForkVariant
+  verification:
+  - tests/unit/commands.test.ts::krever egen variant og lar hovedfilmen være uendret
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: ''
 - id: REQ-0041
   title: Transaksjonelle strukturoperasjoner
@@ -1238,13 +1364,19 @@ requirements:
     konsistente tilstand.
   tests:
   - 'integrasjon: feilinjeksjon under hver operasjonstype → ingen delvis tilstand'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - db/migrations/0001_core.sql#apply_changes
+  - src/adapters/storage/commands.functions.ts
+  verification:
+  - tests/db/run-db-tests.ts::hele endringssettet rulles tilbake ved feil (atomisk)
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: ''
 - id: REQ-0042
   title: Angre/gjør om for strukturoperasjoner
@@ -1267,13 +1399,17 @@ requirements:
   - 'For hver operasjonstype: utfør → angre gir identisk modell som før; gjør om gir identisk modell som etter.'
   tests:
   - 'enhet: undo/redo-rundtur for alle seks operasjonstyper'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - src/core/commands/apply.ts#inverse
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: delvis implementert (se implementation)'
   notes: ''
 - id: REQ-0043
   title: Manus og film kan aldri divergere strukturelt
@@ -1297,13 +1433,20 @@ requirements:
     inkludert angre/gjør om.
   tests:
   - 'integrasjon: property-based test med tilfeldige operasjonssekvenser'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/views.ts
+  - db/migrations/0001_core.sql
+  verification:
+  - 'tests/invariants/random-sequences.test.ts::INV-01: manus og film har alltid samme aktive rekkefølge i alle
+    produksjoner'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: ''
 - id: REQ-0044
   title: Import av manusdokumenter
@@ -2159,13 +2302,19 @@ requirements:
   - Gitt en scene delt i tre produksjonssegmenter, så er manusets scenenumre og sceneantall uendret.
   tests:
   - 'integrasjon: segmentering → manusnummerering uendret'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/commands/apply.ts#CreateSegments
+  verification:
+  - tests/unit/commands.test.ts::segmentering ved utseendeendring midt i scene endrer ikke manus eller nummer (INV-10)
+  - 'tests/invariants/random-sequences.test.ts::INV-10: segmentering endrer aldri scener, manusblokker eller rekkefølge'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: ''
 - id: REQ-0073
   title: Søk og filtrering i manus
@@ -3112,13 +3261,18 @@ requirements:
   - Et tidspunkt kan konverteres korrekt mellom alle fire tidsrom.
   tests:
   - 'enhet: konverteringsfunksjoner mellom tidsrom'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - src/core/time.ts
+  - src/core/views.ts
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: delvis implementert (se implementation)'
   notes: ''
 - id: REQ-0106
   title: Bildepresis tidsmodell
@@ -3140,13 +3294,17 @@ requirements:
     23.976/29.97).
   tests:
   - 'enhet: rundtur-konvertering uten drift'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - src/core/time.ts
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: delvis implementert (se implementation)'
   notes: ''
 - id: REQ-0107
   title: Tidskoblinger bevares ved flytting
@@ -8925,13 +9083,18 @@ requirements:
   - Alle produksjonsobjekter (manus, ressurser, lyd, scener, genereringer) har versjonsreferanser fra første datamodell.
   tests:
   - 'manuell: datamodellgjennomgang for versjonsfelt'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - src/core/commands/apply.ts
+  - db/migrations/0001_core.sql
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: delvis implementert (se implementation)'
   notes: ''
 - id: REQ-0305
   title: Endringsdeteksjon for berørt materiale
@@ -9284,13 +9447,21 @@ requirements:
   - Ingen automatisk prosess (opprydding, regenerering, import) sletter produksjonsversjoner.
   tests:
   - 'dataintegritet: antall versjoner synker aldri uten eksplisitt brukerhandling'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/commands/apply.ts
+  - db/migrations/0001_core.sql#protect_takes
+  verification:
+  - 'tests/invariants/random-sequences.test.ts::INV-07/13: produsert materiale og historikk endres eller slettes
+    aldri'
+  - 'tests/db/run-db-tests.ts::INV-07: produsert materiale kan ikke slettes eller overskrives'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: Ufravikelig prinsipp nr. 6 og 27 i kap. 34.
 - id: REQ-0317
   title: Åpne og gjenaktivere tidligere resultater
@@ -9635,13 +9806,18 @@ requirements:
   tests:
   - 'enhet: språkversjon har referanse til hovedmanus'
   - 'manuell: datamodellgjennomgang'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - src/core/model.ts
+  - db/migrations/0001_core.sql
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: delvis implementert (se implementation)'
   notes: Ufravikelig prinsipp nr. 5 i kap. 34.
 - id: REQ-0329
   title: Engelsk som tilknyttet språkversjon
@@ -12088,13 +12264,19 @@ requirements:
   - Gitt lagret prosjektinformasjon, så slettes den aldri automatisk av applikasjonen uten brukerens handling.
   tests:
   - 'dataintegritet: ingen automatisk sletting'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - db/migrations/0001_core.sql
+  - src/adapters/storage/project-rows.ts
+  verification:
+  - 'tests/db/run-db-tests.ts::DEC-0022: kommandoer fra kjernen lagres atomisk og leses tilbake identisk'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: ''
 - id: REQ-0410
   title: Ikke kritiske data kun i nettlesertilstand
@@ -12116,13 +12298,19 @@ requirements:
     lagring.
   tests:
   - 'e2e: tøm localStorage/IndexedDB og åpne prosjekt'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/adapters/storage/commands.functions.ts
+  - src/adapters/storage/project-rows.ts
+  verification:
+  - 'tests/db/run-db-tests.ts::DEC-0022: kommandoer fra kjernen lagres atomisk og leses tilbake identisk'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: ''
 - id: REQ-0411
   title: Portabel eksport/sikkerhetskopi av prosjekt
@@ -12233,13 +12421,17 @@ requirements:
   tests:
   - 'enhet: logg-redigering av hemmeligheter'
   - 'integrasjon: søk etter nøkkel i logger'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - src/adapters/storage/commands.functions.ts
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: delvis implementert (se implementation)'
   notes: ''
 - id: REQ-0415
   title: Skille mellom lagringskategorier
@@ -12768,13 +12960,20 @@ requirements:
   tests:
   - 'manuell: arkitekturgjennomgang'
   - 'enhet: avhengighetsregler (f.eks. lint/import-regler)'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/
+  - src/adapters/
+  - src/app/
+  verification:
+  - tests/architecture/core-purity.test.ts::importerer ikke rammeverk, backend eller plattform-API-er
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: Jf. kap. 1.2 og prinsipp 28.
 - id: REQ-0433
   title: 'Modul: Project Core'
@@ -12797,13 +12996,17 @@ requirements:
     og dette ansvaret ligger ikke i andre moduler.'
   tests:
   - 'manuell: arkitekturgjennomgang av ansvarsgrenser'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - src/core/
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: delvis implementert (se implementation)'
   notes: Linje 1307/1308 duplikat.
 - id: REQ-0434
   title: 'Modul: Screenplay Engine'
@@ -13145,13 +13348,18 @@ requirements:
     endringsanalyse og ikke-destruktive oppdateringer, og dette ansvaret ligger ikke i andre moduler.'
   tests:
   - 'manuell: arkitekturgjennomgang av ansvarsgrenser'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - src/core/commands/apply.ts
+  - db/migrations/0001_core.sql
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: delvis implementert (se implementation)'
   notes: Versjoner defineres i fase 1; avviksdeteksjon/endringsanalyse i fase 6.
 - id: REQ-0446
   title: 'Modul: Localization Engine'
@@ -13261,13 +13469,17 @@ requirements:
     og dataintegritet, og dette ansvaret ligger ikke i andre moduler.'
   tests:
   - 'manuell: arkitekturgjennomgang av ansvarsgrenser'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - db/migrations/0001_core.sql
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: delvis implementert (se implementation)'
   notes: Linje 1348/1349 duplikat. «Tilgangskontroll» – flerbruker registreres separat.
 - id: REQ-0450
   title: Faseinndelt utvikling
@@ -13317,13 +13529,18 @@ requirements:
     i foregående fase.
   tests:
   - 'manuell: fasegjennomgang/milepælsrevisjon'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - src/core/
+  - db/migrations/0001_core.sql
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: delvis implementert (se implementation)'
   notes: Prosesskrav (rekkefølge); de enkelte funksjonene er spesifisert som funksjonskrav i sine fagkapitler. Fase
     1 sier «Definer» (datamodell), ikke «Implementer».
 - id: REQ-0452
@@ -14116,13 +14333,19 @@ requirements:
   - Etter enhver strukturell operasjon (flytt, deaktiver, splitt) er aktiv scenestruktur i manus og film identisk.
   tests:
   - 'dataintegritet: egenskapsbaserte tester på strukturell synk'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/views.ts
+  verification:
+  - 'tests/invariants/random-sequences.test.ts::INV-01: manus og film har alltid samme aktive rekkefølge i alle
+    produksjoner'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: Oppsummerer kap. 2, 2.1, 3.4, 6, 15.2. Linje 1488/1489 duplikat.
 - id: REQ-0481
   title: 'Prinsipp 3: Scenenummer aldri permanent identitet'
@@ -14230,13 +14453,17 @@ requirements:
   - En scene med flere versjoner beholder alle tidligere versjoner etter at ny aktiv versjon velges.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - src/core/model.ts
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: delvis implementert (se implementation)'
   notes: Oppsummerer kap. 3.3, 15.3, 16.4, 17.4, 21.5. Linje 1499/1500 duplikat.
 - id: REQ-0485
   title: 'Prinsipp 7: Manusendringer flagger berørt materiale'
@@ -14815,13 +15042,18 @@ requirements:
   - Ingen operasjon sletter eller overskriver produksjonsmateriale uten eksplisitt brukerbekreftelse; alt er reverserbart.
   tests:
   - 'dataintegritet: regresjonstester for ikke-destruktivitet'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - src/core/commands/apply.ts
+  - db/migrations/0001_core.sql
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: delvis implementert (se implementation)'
   notes: Oppsummerer kap. 2.2, 21.5, 24.5, 25.2, 28.1. Linje 1540/1541 duplikat.
 - id: REQ-0506
   title: 'Prinsipp 28: Portabel arkitektur fra Lovable til desktop'
@@ -14843,13 +15075,17 @@ requirements:
     nettleser.
   tests:
   - 'manuell: arkitekturgjennomgang av plattformbindinger'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - src/core/
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: delvis implementert (se implementation)'
   notes: Oppsummerer kap. 1.2, 31, 28.2.
 - id: REQ-0507
   title: Ikke implementere alt umiddelbart
@@ -15218,13 +15454,18 @@ requirements:
     og det samme manuset.
   tests:
   - 'integrasjon: to testbrukere med medlemskap leser samme prosjekt; tredje bruker uten medlemskap får avslag'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - db/migrations/0001_core.sql
+  verification:
+  - 'tests/db/run-db-tests.ts::REQ-0521: eier inviterer, mottaker aksepterer og får lesetilgang'
   history:
   - date: '2026-10-08'
     decision: DEC-0003
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: Ikke nevnt i mandatet v14. Lagt til av Mars 2026-10-08 som viktig for arbeidsdeling og arbeidsflyt.
 - id: REQ-0521
   title: Invitere brukere inn i prosjekt
@@ -15249,13 +15490,21 @@ requirements:
   tests:
   - 'e2e: eier inviterer, mottaker aksepterer, medlem ser prosjektet'
   - 'integrasjon: invitasjonstoken for prosjekt X gir ikke tilgang til prosjekt Y'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - db/migrations/0001_core.sql#create_invitation
+  - src/app/projects/ProjectOverview.tsx
+  - src/routes/invitasjon.tsx
+  verification:
+  - 'tests/db/run-db-tests.ts::REQ-0521: eier inviterer, mottaker aksepterer og får lesetilgang'
+  - 'tests/db/run-db-tests.ts::INV-C2: invitasjon for prosjekt X gir ikke tilgang til prosjekt Y'
   history:
   - date: '2026-10-08'
     decision: DEC-0003
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: ''
 - id: REQ-0522
   title: Flere brukere på samme manus
@@ -15284,13 +15533,17 @@ requirements:
   tests:
   - 'integrasjon: samtidig redigering av ulike blokker – begge bevart'
   - 'integrasjon: samtidig redigering av samme blokk – konflikt oppdages, ingen stille overskriving'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - src/core/commands/apply.ts
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0003
     change: Opprettet
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: delvis implementert (se implementation)'
   notes: Mekanismen (låsing, sammenslåing eller sanntidssamarbeid) er en teknisk beslutning – se ADR-0004.
 - id: REQ-0523
   title: Prosjektroller
@@ -15314,9 +15567,11 @@ requirements:
   - Bare eier kan endre roller, fjerne eier eller slette prosjektet.
   tests:
   - 'integrasjon: rollematrise – hver rolle prøver hver skriveoperasjon mot backend'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - db/migrations/0001_core.sql
+  verification:
+  - 'tests/db/run-db-tests.ts::REQ-0523: leser kan ikke invitere eller skrive'
   history:
   - date: '2026-10-08'
     decision: DEC-0003
@@ -15324,6 +15579,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0010
     change: 'Revisjon: kilde satt til DEC-0010 (teknisk anbefaling)'
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: Teknisk utledning av DEC-0003 (bekreftet). Selve løsningen er teknisk anbefaling (DEC-0010). Rollesettet
     er Claudes anbefaling, ikke vedtatt av Mars. Kan justeres.
 - id: REQ-0524
@@ -15349,9 +15607,13 @@ requirements:
   tests:
   - 'integrasjon: direkte databasekall som ikke-medlem returnerer tomt / avslag for alle prosjekttabeller'
   - 'integrasjon: signert medie-URL kan ikke genereres av ikke-medlem'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - db/migrations/0001_core.sql
+  verification:
+  - 'tests/db/run-db-tests.ts::INV-C2: ikke-medlem ser ingenting'
+  - 'tests/db/run-db-tests.ts::INV-C2: klienten kan ikke skrive direkte i tabellene'
+  - 'tests/db/run-db-tests.ts::INV-C2: klienten kan ikke kalle apply_changes'
   history:
   - date: '2026-10-08'
     decision: DEC-0003
@@ -15359,6 +15621,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0010
     change: 'Revisjon: kilde satt til DEC-0010 (teknisk anbefaling)'
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: Teknisk utledning av DEC-0003 (bekreftet). Selve løsningen er teknisk anbefaling (DEC-0010). Sikkerhetskritisk;
     nødvendig for REQ-0521.
 - id: REQ-0525
@@ -15382,9 +15647,11 @@ requirements:
   - Historikken for en scene viser hvem som gjorde hver endring.
   tests:
   - 'dataintegritet: alle versjonsposter har forfatter-ID og tidspunkt'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - db/migrations/0001_core.sql#change_log
+  verification:
+  - tests/db/run-db-tests.ts::redigering av replikk gir ny historikkrad med forfatter
   history:
   - date: '2026-10-08'
     decision: DEC-0003
@@ -15392,6 +15659,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0010
     change: 'Revisjon: kilde satt til DEC-0010 (teknisk anbefaling)'
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: Teknisk utledning av DEC-0003 (bekreftet). Selve løsningen er teknisk anbefaling (DEC-0010).
 - id: REQ-0526
   title: Samtidighet uten datatap
@@ -15419,9 +15689,13 @@ requirements:
   tests:
   - 'integrasjon: optimistisk versjonskontroll – skriving med gammel revisjon avvises'
   - 'e2e: tilstedeværelse vises for to samtidige brukere'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/commands/apply.ts
+  - db/migrations/0001_core.sql#apply_changes
+  verification:
+  - tests/unit/commands.test.ts::en skriving basert på gammel revisjon avvises og endrer ingenting
+  - 'tests/db/run-db-tests.ts::INV-C1: en endring basert på gammel revisjon avvises av databasen (P0409)'
   history:
   - date: '2026-10-08'
     decision: DEC-0003
@@ -15429,6 +15703,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0010
     change: 'Revisjon: kilde satt til DEC-0010 (teknisk anbefaling)'
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: status Verifisert'
   notes: Teknisk utledning av DEC-0003 (bekreftet). Selve løsningen er teknisk anbefaling (DEC-0010).
 - id: REQ-0527
   title: Angre per bruker
@@ -15451,8 +15728,9 @@ requirements:
   - Gitt at A og B har endret ulike blokker, når A angrer, så reverseres bare A sin endring.
   tests:
   - 'integrasjon: angre for bruker A berører ikke B sine endringer'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - src/core/commands/apply.ts
   verification: []
   history:
   - date: '2026-10-08'
@@ -15461,6 +15739,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0010
     change: 'Revisjon: kilde satt til DEC-0010 (teknisk anbefaling)'
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: 'M1: delvis implementert (se implementation)'
   notes: Teknisk utledning av DEC-0003 (bekreftet). Selve løsningen er teknisk anbefaling (DEC-0010). Samsvarer
     med kap. 21.2 C («uten å overskrive andre uavhengige redigeringer»).
 - id: REQ-0528
@@ -15496,8 +15777,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0010
     change: 'Revisjon: kilde satt til DEC-0010 (teknisk anbefaling)'
-  notes: Teknisk utledning av DEC-0003 (bekreftet). Selve løsningen er teknisk anbefaling (DEC-0010). Hvem som eier
-    API-nøklene i et delt prosjekt er et åpent spørsmål (OPEN_QUESTIONS Q-01, DEC-0018 – midlertidig antakelse).
+  notes: 'Teknisk utledning av DEC-0003 (bekreftet). Selve løsningen er teknisk anbefaling (DEC-0010). Hvem som
+    eier API-nøklene i et delt prosjekt er et åpent spørsmål (OPEN_QUESTIONS Q-01, DEC-0018 – midlertidig antakelse).
+    DEC-0021: Mars betaler alle API-kostnader i testfasen; kostnadsdeling avtales utenfor appen.'
 - id: REQ-0529
   title: Fjerning av medlem er ikke-destruktiv
   text: Når et medlem fjernes eller en invitasjon trekkes tilbake, skal medlemmets tidligere bidrag og historikk

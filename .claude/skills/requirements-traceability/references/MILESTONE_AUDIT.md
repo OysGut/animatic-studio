@@ -39,7 +39,7 @@ Lim nøkkeltall inn i revisjonsnotatet: krav per status, per fase, P0 uten autom
 - [ ] Teknisk anbefaling som har vist seg feil er erstattet med ny DEC/ADR.
 
 ## 7. Plattform og drift
-- [ ] Migrasjoner i `supabase/migrations/` er kjørt i Lovable Cloud etter siste synk (skjemaversjon i `schema_version` stemmer) – ellers står det i `KNOWN_ISSUES.md`.
+- [ ] Migrasjoner i `db/migrations/` er kjørt i Lovable Cloud etter siste synk (skjemaversjon i `schema_version` stemmer) – ellers står det i `KNOWN_ISSUES.md`.
 - [ ] Ingen hemmeligheter, mediefiler eller hele manus i repoet.
 - [ ] Påstander om Lovable/Supabase/AI-egenskaper i dokumentene er verifisert eller merket usikre (33.4).
 

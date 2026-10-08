@@ -5,7 +5,7 @@ For Mars. Ingen kommandolinje trengs. Bakgrunn: DEC-0005, ADR-0002.
 ## A. Engangsoppsett (ca. 15 minutter)
 
 1. **Lovable:** Logg inn på lovable.dev → nytt prosjekt med navnet **Animatic Studio**. Skriv bare: «Opprett et tomt prosjekt. Ikke bygg noe ennå.»
-2. **Backend:** Hvis Lovable spør om backend, velg **Lovable Cloud** (DEC-0008). Velg EU-region hvis du får spørsmål om region – den kan ikke endres senere.
+2. **Backend:** ✅ Gjort 2026-10-08 – Lovable Cloud er slått på (DEC-0008).
 3. **GitHub:** I Lovable: prosjektinnstillinger → **GitHub** → koble til (lag GitHub-konto om du ikke har). Lovable lager repoet `animatic-studio` (privat).
 4. **GitHub Desktop:** Installer fra desktop.github.com og logg inn med samme GitHub-konto.
 5. **Hent repoet:** GitHub Desktop → *File → Clone repository* → velg `animatic-studio` → *Local path*: `Claude/Projects/Animatic Studio` (mappen som allerede er koblet til Claude). Resultatet blir `Claude/Projects/Animatic Studio/animatic-studio`.
@@ -15,9 +15,11 @@ For Mars. Ingen kommandolinje trengs. Bakgrunn: DEC-0005, ADR-0002.
 
 1. Åpne GitHub Desktop. Du ser endrede filer og en ferdig commit-melding som Claude har lagt i `docs/development/NEXT_COMMIT_MESSAGE.txt` – lim den inn i «Summary».
 2. Trykk **Commit to main** og deretter **Push origin**.
-3. Gå til Lovable-prosjektet. Endringene kommer inn automatisk etter litt. Hvis leveransen inneholder databaseendringer eller backend-funksjoner, lim inn denne meldingen i Lovable-chatten (Build-modus):
+3. Gå til Lovable-prosjektet. Kodeendringene kommer inn automatisk etter litt. **Databaseendringer kommer ikke automatisk** (Lovable kjører ikke databasefiler fra GitHub). Når Claude skriver at leveransen har en ny migrasjon (f.eks. `db/migrations/0001_core.sql`), lim inn denne meldingen i Lovable-chatten og bytt ut filnavnet:
 
-> Kjør alle migrasjoner i `supabase/migrations/` som ikke er kjørt ennå, i filnavnrekkefølge, uten å endre innholdet i dem. Deploy deretter alle backend-funksjoner i repoet uten å endre koden. Ikke endre filer i `docs/`, `.claude/`, `scripts/`, `src/core/` eller `tests/`. Svar med en liste over hvilke migrasjoner og funksjoner som ble kjørt/deployet, og eventuelle feilmeldinger ordrett.
+> Kjør SQL-filen `db/migrations/0001_core.sql` mot databasen nøyaktig slik den står i repoet, som én databaseendring. Ikke endre, del opp, oversett eller omskriv SQL-en, og ikke lag egne tabeller i tillegg. Ikke endre filer i `docs/`, `.claude/`, `scripts/`, `db/`, `src/core/`, `src/adapters/` eller `tests/`. Når den er kjørt, kjør `select version, description from public.schema_version order by version` og svar med resultatet og eventuelle feilmeldinger ordrett.
+
+   Appen viser et oransje varsel øverst så lenge databasen mangler en migrasjon. Når varselet er borte, er alt på plass.
 
 4. Lim Lovables svar inn til Claude hvis noe feilet.
 

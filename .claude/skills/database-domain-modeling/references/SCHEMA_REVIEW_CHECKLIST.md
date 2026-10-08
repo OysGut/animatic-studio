@@ -3,10 +3,10 @@
 Gå gjennom før hver migrasjon committes. Skriv «OK/ikke relevant/avvik + begrunnelse» per punkt i PR-/commit-beskrivelsen eller `CURRENT_WORK.md`.
 
 ## A. Fil og levering
-- [ ] Ny fil med tidsstempel; ingen tidligere migrasjon er endret.
+- [ ] Ny fil `db/migrations/NNNN_navn.sql` (neste løpenummer); ingen tidligere migrasjon er endret; ingenting i `drizzle/`.
 - [ ] Toppkommentar med formål, krav-ID-er, invarianter, skjemaversjon.
 - [ ] Versjonsvakt i starten og `insert into public.schema_version` til slutt.
-- [ ] `EXPECTED_SCHEMA_VERSION` i adapterlaget er økt.
+- [ ] `EXPECTED_SCHEMA_VERSION` i `src/adapters/storage/project-rows.ts` er økt.
 - [ ] Synkmelding til Mars er klar (LOVABLE_SYNC.md).
 
 ## B. Domene og identitet
@@ -23,14 +23,15 @@ Gå gjennom før hver migrasjon committes. Skriv «OK/ikke relevant/avvik + begr
 ## C. Historikk og ikke-destruktivitet
 - [ ] Ingen `on delete cascade`; ingen `delete`-vei for produksjonsdata (INV-14, REQ-0316, REQ-0505).
 - [ ] Versjonstabeller har uforanderlighetstrigger (INV-07, INV-13), også `script_block_revisions` (DEC-0020 pkt. 5); `script_blocks.current_rev` peker på siste `rev`, og `revision` brukes bare til samtidighetskontroll.
-- [ ] Endringer skjer via RPC som skriver `change_log` med `inverse` (ADR-0005).
+- [ ] Endringer skjer via `runCommand` → `public.apply_changes`, som skriver `change_log` med `inverse` (ADR-0005, DEC-0022).
 - [ ] Ressursversjon byttes aldri automatisk i scener (INV-13).
 
 ## D. Tilgang
 - [ ] `enable row level security` på alle nye tabeller.
 - [ ] Lese-policy `to authenticated` med `private.is_project_member(project_id)`.
-- [ ] Ingen skrivepolicy for prosjektdata (skriving bare via `public.apply_command` → `private.cmd_*`); `revoke insert, update, delete` fra `anon, authenticated` (DEC-0020 pkt. 1).
-- [ ] `apply_command`/`private.cmd_*`: `security definer`, `set search_path = ''`, sjekk av `auth.uid()`, rollekrav, revisjon (`P0409`), `for update`-lås, idempotens på kommando-ID; `execute` på `apply_command` bare til `authenticated`, ingen `execute` på `private.cmd_*`.
+- [ ] Ingen skrivepolicy for prosjektdata (skriving bare via `runCommand` → `public.apply_changes`); `revoke insert, update, delete, truncate` fra `anon, authenticated` og `grant select` til `authenticated` (DEC-0022).
+- [ ] Skrivbar tabell er lagt til i `v_tables` i `public.apply_changes` (ny migrasjon) og i `TABLE_ORDER` i `src/core/patch.ts`, i FK-rekkefølge. `apply_changes`: `security definer`, `set search_path = ''`, rolle ≥ editor for `p_actor`, rader må tilhøre `p_project`, revisjon per rad (`P0409`); `execute` bare til `service_role`. Ingen SQL-funksjon per kommando.
+- [ ] Nye klient-RPC-er (som `create_project`, `create_invitation`, `accept_invitation`) er få, begrunnet, sjekker `auth.uid()` og rolle, og har `execute` bare til `authenticated`.
 - [ ] Kostnadsrelaterte kommandoer sjekker `private.can_approve_costs` og budsjetter (INV-12, INV-C3, REQ-0528; regler i `API_INTEGRATIONS.md` §2).
 - [ ] Storage-sti og bøtter som i `DATA_RELATIONSHIPS.md` «Lagringsstruktur»; policy følger prosjekt-ID i stien; ingen overskriving; ingen sletting i `sources/`.
 - [ ] Ingen hemmeligheter eller API-nøkler i tabeller (bare referanser, REQ-0413).
@@ -42,7 +43,7 @@ Gå gjennom før hver migrasjon committes. Skriv «OK/ikke relevant/avvik + begr
 - [ ] Spørringene i DATA_RELATIONSHIPS «Viktige spørringer» er sjekket med `explain` på testdata (150 scener, 120 sider).
 
 ## F. Tester
-- [ ] Rollematrise i `tests/rls/` utvidet med den nye tabellen/RPC-en (INV-C2).
-- [ ] Revisjonskonflikt-test for nye skrivende RPC-er (INV-C1).
-- [ ] Tilbakerulling ved feil midt i RPC.
+- [ ] Rollematrise i `tests/db/run-db-tests.ts` utvidet med den nye tabellen/funksjonen (INV-C2).
+- [ ] Revisjonskonflikt-test (`P0409`) for nye skrivbare tabeller (INV-C1).
+- [ ] Tilbakerulling ved feil midt i `apply_changes`.
 - [ ] Statiske skjemasjekker (ingen `cascade`, ingen nummer-FK) består.

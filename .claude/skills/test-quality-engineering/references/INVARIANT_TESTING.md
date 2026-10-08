@@ -4,15 +4,14 @@ Grunnlag: `INVARIANTS.md` (kontroller som rene funksjoner i `src/core/invariants
 
 ## 1. Byggesteiner
 ```ts
-// src/core/invariants/index.ts
-export type InvariantId = 'INV-01' | 'INV-02' | /* … */ 'INV-14' | 'INV-C1';
-export interface Violation { invariant: InvariantId; message: string; ids: string[] }
-export function checkAll(state: ProjectState): Violation[];
+// src/core/invariants.ts
+export function checkInvariants(s: ProjectState): Violation[];
 
-// src/core/commands
-export function apply(state: ProjectState, cmd: Command): Result<{ state: ProjectState; inverse: Command }>;
+// src/core/commands/apply.ts
+export function applyCommand(state: ProjectState, env: CommandEnvelope): ApplyResult;
+// ApplyResult = { ok: true; state; inverse; affected } | { ok: false; error: CommandError }
 ```
-Testene bruker den samme rene `apply` som klienten. Integrasjonstester gjentar et utvalg sekvenser mot RPC-ene for å bevise at backend gir samme resultat.
+Testene bruker den samme rene `applyCommand` som klienten og serverfunksjonen `runCommand` (DEC-0022). Databasetester (`tests/db/run-db-tests.ts`) lagrer kjernens endringssett (`diffStates`) via `public.apply_changes`, leser tilbake (`stateFromRows`) og sjekker at tilstanden er identisk.
 
 ## 2. Generator for tilfeldige kommandosekvenser
 Kommandoer må genereres **ut fra gjeldende tilstand** (gyldige ID-er), derfor brukes fast-checks modellbaserte testing (`fc.commands` + `fc.modelRun`) eller en egen generator som trekker et frø og bygger sekvensen steg for steg.

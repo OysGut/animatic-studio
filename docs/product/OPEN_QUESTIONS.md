@@ -8,7 +8,7 @@ Uklarheter funnet under kravuttrekket (60 stk., 2026-10-08) og senere arbeid.
 
 | ID | Spørsmål | Midlertidig løsning | Trengs før |
 |---|---|---|---|
-| Q-01 | Hvem eier API-nøklene og betaler for AI i et delt prosjekt? Hvem kan godkjenne kostnader? | Prosjekteier legger inn nøkler; bare medlemmer med kostnadsrett kan starte betalte jobber (DEC-0018, REQ-0528) | Fase 5 |
+| Q-01 | ~~Hvem eier API-nøklene og betaler for AI i et delt prosjekt?~~ **Avklart for testfasen (DEC-0021):** Mars betaler med egne nøkler; kostnadsdeling avtales utenfor appen. Gjenstår: hvem i et delt prosjekt kan godkjenne kostnader (foreslått: eier + medlemmer med kostnadsrett) | Prosjekteier legger inn nøkler; bare medlemmer med kostnadsrett kan starte betalte jobber (REQ-0528) | Fase 5 |
 | Q-02 | Trengs lyst tema og/eller engelsk grensesnitt tidlig (f.eks. for internasjonale samarbeidspartnere)? | Mørkt tema; norsk UI med oversettbar struktur (DEC-0017) | Fase 2 |
 | Q-03 | Hvor avansert skal karakteranimasjon i 2D-editoren være: flytting/skalering av hele figurbilder, utskiftbare poser/munnformer, eller riggede cut-out-figurer? (mandat 14.1, 23.7) | Hele figurbilder + utskiftbare bilder (poser) i fase 3; rigging vurderes senere | Fase 3 |
 | Q-04 | Hvilke plakatformater i tillegg til 70 × 100 cm, og hvilke trykkverdier (DPI, utfallende, fargeprofil) bruker trykkeriet? | 300 dpi, 3 mm utfallende, PDF/X-4 | Fase 8 |

@@ -8,7 +8,7 @@
 | Manus (norsk/engelsk, alle versjoner) | Upublisert verk eid av Trollfilm/Anita Killi (DEC-0004) | Postgres (blokker), Storage (original) |
 | Produksjonsmateriale (takes, 2D-scener, ressurser, lyd) | Kreativt arbeid; ikke-destruktivt krav (INV-07, INV-13) | Storage, Postgres |
 | API-nøkler til AI-leverandører | Direkte økonomisk skade ved misbruk | Cloud-hemmeligheter |
-| Kostnadsgodkjenning og budsjett | Hindre ukontrollerte betalte kall (INV-12) | Postgres, server-RPC |
+| Kostnadsgodkjenning og budsjett | Hindre ukontrollerte betalte kall (INV-12) | Postgres, serverfunksjon (`runCommand`) |
 | Medlemskap, roller, invitasjoner | Grunnlaget for all tilgang (INV-C2) | Postgres |
 | Historikk og kommandologg | Revisjonsspor, angre, avvik | `change_log` |
 | Repo, CI og skills | Forsyningskjede for koden | GitHub, `.claude/` |
@@ -28,9 +28,9 @@
 |---|---|---|---|---|
 | T1 | API-nøkkel lekker via klientbundle, repo, logg eller eksport | Kostnad, misbruk | Bare server-hemmeligheter; aldri `VITE_`; loggmaskering; bundle-skann | Bundle-skann, maskeringstest |
 | T2 | Ikke-medlem leser/skriver prosjektdata (IDOR via ID i URL) | Manuslekkasje | RLS (`private.is_project_member`) på alle tabeller + Storage-policyer på prosjektsti (kanonisk sti i `DATA_RELATIONSHIPS.md`) | `tests/rls/role-matrix` (INV-C2) |
-| T3 | Viewer/commenter skriver via direkte API-kall | Uautoriserte endringer | Klienten har bare `select`; `insert/update/delete` revoket for `authenticated`; skriving bare via `public.apply_command` → `private.cmd_*` med rollesjekk (`private.has_project_role`) (DEC-0020 pkt. 1) | Rollematrise (direkte skriving feiler for alle roller) |
-| T4 | Betalt jobb startes uten godkjenning / over budsjett (også via retry) | Kostnad | `start_job` (via `apply_command`) i backend sjekker godkjenning, kostnadsrett (`private.can_approve_costs`), alle budsjetter; se `API_INTEGRATIONS.md` §2 og SKILL §4 punkt 4 | `inv12-cost-approval.test.ts`, `invC3-cost-role.test.ts` |
-| T5 | Stille overskriving av en annen brukers endring | Datatap | `revision` på objekter; `apply_command` avviser utdatert skriving med `P0409` | `invC1-revision-conflict.test.ts` |
+| T3 | Viewer/commenter skriver via direkte API-kall | Uautoriserte endringer | Klienten har bare `select`; `insert/update/delete` revoket for `authenticated`; skriving bare via serverfunksjonen `runCommand` (rollesjekk + validering i `src/core`) → `public.apply_changes`, som bare `service_role` kan kalle og som sjekker rolle for `p_actor` (DEC-0022) | Rollematrise (direkte skriving og kall til `apply_changes` feiler for alle roller) |
+| T4 | Betalt jobb startes uten godkjenning / over budsjett (også via retry) | Kostnad | Start av betalt jobb (kommando via `runCommand`) sjekker på serveren godkjenning, kostnadsrett (`private.can_approve_costs`), alle budsjetter; se `API_INTEGRATIONS.md` §2 og SKILL §4 punkt 4 | `inv12-cost-approval.test.ts`, `invC3-cost-role.test.ts` |
+| T5 | Stille overskriving av en annen brukers endring | Datatap | `revision` på objekter; `applyCommand` avviser utdaterte `baseRevisions`, og `apply_changes` avviser utdatert rad med `P0409` | `invC1-revision-conflict.test.ts` |
 | T6 | Ondsinnet PDF (skript, enorme sider) eller DOCX (makro, XXE, ekstern relasjon, zip-bombe) | Kodekjøring, frys, minnebrudd | Worker-parsing, grenser, ingen makro/ekstern ref., XXE av | Importtester med ondsinnede eksempelfiler (syntetiske) |
 | T7 | XSS via manustekst, ressursnavn eller prompt | Kontoovertakelse | Tekst rendres som tekst; ingen `dangerouslySetInnerHTML` | Komponenttest med `<script>` i manus |
 | T8 | Lekket signert URL eller offentlig bøtte | Medielekkasje | Private bøtter, korte signerte URL-er | Storage-policytest |
@@ -39,7 +39,7 @@
 | T11 | Kompromittert npm-pakke eller ekstern skill/plugin/hook (upinnet `npx @latest`, hook som sender diff) | Kodekjøring, datalekkasje | Pinning, `npm audit`, lese kode før installasjon, DEC-0016 | CI-audit, manuell vurdering |
 | T12 | Lovables agent endrer `src/core/`, `docs/`, `.claude/` eller migrasjoner | Brutte invarianter, tapt dokumentasjon | AGENTS.md, rekkverk i meldinger, diff-kontroll etter synk, CI (`check_kb`, kontrollsum) | CI + `git log --author=lovable` |
 | T13 | Data bare i nettleseren går tapt | Tap av arbeid | Alt lagres i backend; lokal cache bare cache (REQ-0410) | Frakoblingstest |
-| T14 | Sletting av historikk/takes via API | Tap av materiale | `delete` revoket for `authenticated`; ingen `cmd_*` sletter historiske rader; arkivering i stedet (INV-14) | Rollematrise (delete avvist) |
+| T14 | Sletting av historikk/takes via API | Tap av materiale | `delete` revoket for `authenticated`; `apply_changes` sletter bare rader ved angre av opprettelse; triggere hindrer sletting av takes og historikk; arkivering i stedet (INV-14) | Rollematrise (delete avvist) |
 
 ## 4. Utenfor omfang (nå)
 - Ondsinnet prosjekteier mot eget prosjekt.

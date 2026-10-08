@@ -2,7 +2,7 @@
 name: ux-interaction-design
 description: Utformer arbeidsflyter og interaksjoner for profesjonelle filmskapere i Animatic Studio – tidslinje (trim, ripple, snapping, zoom, avspillingshode/playhead), drag-and-drop av scener i manus og filmtidslinje (samme kommando MoveOccurrence), paneler som kan endres/dokkes, tastatursnarveier (J/K/L, I/O, mellomrom, Cmd/Ctrl+Z, Shift+Z), angre/gjør om per bruker, kontekstmenyer, tilbakemelding ved langvarige jobber, feilhåndtering, ingen datatap, samarbeid (presence, konflikter) og informasjonsarkitektur for de 14 hovedområdene (mandat 30.2). Bruk når du designer eller bygger en arbeidsflate, interaksjon, snarvei, dialog, meny, feilmelding, flyt eller navigasjon, eller når noen nevner UX, brukeropplevelse, workflow, keyboard shortcuts, undo, drag, timeline eller «hvordan skal dette fungere for brukeren».
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
   owner: "animatic-studio"
   last-reviewed: "2026-10-08"
 ---

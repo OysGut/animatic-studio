@@ -1,34 +1,29 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useSession } from "@/app/auth/use-session";
+import { AuthScreen } from "@/app/auth/AuthScreen";
+import { ProjectsScreen } from "@/app/projects/ProjectsScreen";
+import { AppHeader } from "@/app/shell/AppHeader";
+import { SchemaBanner } from "@/app/shell/SchemaBanner";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Animatic Studio" },
-      {
-        name: "description",
-        content: "Animatic Studio – lag animatics og storyboards.",
-      },
-      { property: "og:title", content: "Animatic Studio" },
-      {
-        property: "og:description",
-        content: "Animatic Studio – lag animatics og storyboards.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
+      { name: "description", content: "Animatic Studio – fra manus til ferdig film." },
     ],
   }),
   component: Index,
 });
 
 function Index() {
+  const session = useSession();
+  if (session.status === "loading") return <div className="min-h-screen bg-bg-app" aria-busy />;
+  if (session.status === "signed-out") return <AuthScreen />;
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
-      <h1 className="text-5xl font-bold tracking-tight text-foreground">
-        Animatic Studio
-      </h1>
-      <p className="mt-4 text-lg text-muted-foreground">
-        Vi setter i gang snart.
-      </p>
+    <div className="flex min-h-screen flex-col bg-bg-app">
+      <AppHeader email={session.session.user.email} />
+      <SchemaBanner />
+      <ProjectsScreen userId={session.session.user.id} />
     </div>
   );
 }

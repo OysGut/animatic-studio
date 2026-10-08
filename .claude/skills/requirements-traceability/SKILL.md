@@ -2,7 +2,7 @@
 name: requirements-traceability
 description: Vedlikeholder kravregisteret og sporbarheten i Animatic Studio - docs/product/requirements.yaml (eneste redigerbare kilde), genererte REQUIREMENTS.md og TRACEABILITY_MATRIX.md, spec_coverage.yaml, via scripts/kb/build_docs.py og scripts/kb/check_kb.py. Bruk når et krav skal få ny status, når kode eller tester er skrevet og skal registreres (implementation, verification), når et nytt krav skal legges til (neste ledige REQ-ID), når check_kb.py feiler, ved fase- eller milepælsrevisjon (milestone audit, coverage report), og når noen spør «hvor langt har vi kommet», «hva mangler tester», «er dette ferdig». Triggere - requirements.yaml, REQ-xxxx, status, Verifisert, traceability, sporbarhet, dekning, coverage, milepæl.
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
   owner: "animatic-studio"
   last-reviewed: "2026-10-08"
 ---
@@ -34,7 +34,7 @@ Holder kravregisteret sant: hvert krav kan spores fra mandat/beslutning → modu
 
 ### A. Registrere implementering og verifikasjon
 1. Finn krav-ID-ene i planen i `CURRENT_WORK.md`.
-2. Fyll `implementation` med **`filsti[#symbol]`** relativt til repo-rot, én post per sentral fil, f.eks. `src/core/commands/moveOccurrence.ts#moveOccurrence`, `supabase/migrations/20261010_scene_occurrences.sql`.
+2. Fyll `implementation` med **`filsti[#symbol]`** relativt til repo-rot, én post per sentral fil, f.eks. `src/core/commands/apply.ts#applyCommand`, `db/migrations/0001_core.sql#apply_changes`.
 3. Fyll `verification` med:
    - automatisert: **`testfil::testnavn`**, f.eks. `tests/invariants/inv01-structure-sync.test.ts::flytt i manus gir samme rekkefølge i montering`;
    - manuell: **`manuell: ÅÅÅÅ-MM-DD beskrivelse`**, f.eks. `manuell: 2026-11-02 Mars testet invitasjon i Lovable-forhåndsvisning`.

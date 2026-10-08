@@ -34,7 +34,7 @@ Relaterte dokumenter: `DOMAIN_MODEL.md`, `DATA_RELATIONSHIPS.md`, `INVARIANTS.md
 | Motorer | `src/engine/` | Komposisjon/avspilling (Canvas2D/WebGL), kamera, lyd (Web Audio), eksport (WebCodecs), PDF/DOCX-uttrekk | core + nettleser-API-er; lastes bare på klient (SSR-sikkert) |
 | Adaptere | `src/adapters/` | `storage/` (Supabase-repositorier og RPC-kall), `providers/` (AI-leverandører, kjøres på server), `media/` (medietjeneste-klient) | core-grensesnitt |
 | Applikasjon/UI | Lovables struktur (`src/routes/`, `src/components/`) + `src/app/` | Arbeidsflater, designsystem, tilstand, tastatursnarveier, angre/gjør om | core, engine, adapters |
-| Backend | `supabase/migrations/`, `supabase/functions/` eller server functions | Skjema, RLS, transaksjonelle RPC-er per kommando, kostnadsporter, jobbkø | – |
+| Backend | `db/migrations/` (SQL), serverfunksjoner i `src/adapters/**/*.functions.ts` | Skjema, RLS, `apply_changes`, invitasjoner, senere kostnadsport og jobbkø | – |
 | Medietjeneste | `services/media-worker/` (senere) | Container med FFmpeg; henter jobber, rendrer, laster opp | Storage, jobbtabell |
 
 ### Kobling til mandatets moduler (kap. 31)
@@ -78,8 +78,8 @@ Relaterte dokumenter: `DOMAIN_MODEL.md`, `DATA_RELATIONSHIPS.md`, `INVARIANTS.md
 
 ## 4. Dataflyt for kjerneoperasjoner
 1. UI sender kommando → `core` validerer mot lokal tilstand og invarianter (rask tilbakemelding).
-2. `adapters/storage` kaller RPC `apply_command(project_id, command, base_revisions)`.
-3. RPC sjekker medlemskap/rolle, revisjoner, validerer på nytt, utfører atomisk, skriver `change_log`, returnerer nye revisjoner.
+2. Klienten kaller serverfunksjonen `runCommand` (`src/adapters/storage/commands.functions.ts`).
+3. Serveren sjekker rolle, laster prosjektet, kjører samme kjerne autoritativt og lagrer endringssettet atomisk med `public.apply_changes` (revisjon per rad, `change_log`) – ADR-0009/DEC-0022.
 4. Realtime varsler andre klienter; de henter endrede objekter.
 5. Etter endring i manus/ressurser: konsekvensanalyse lager `discrepancies` (aldri endring av takes).
 

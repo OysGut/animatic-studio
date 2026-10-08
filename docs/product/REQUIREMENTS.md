@@ -8,7 +8,7 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 - Antall krav: **530**
 - Prioritet: P0: 141, P1: 220, P2: 130, P3: 39
 - Opprinnelse: mandat: 520, brukerbeslutning: 3, teknisk-anbefaling: 7
-- Status: Ikke startet: 530
+- Status: Ikke startet: 479, Verifisert: 27, Under arbeid: 24
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -78,11 +78,12 @@ Produktets eneste offisielle navn er «Animatic Studio». «AI Animatic Studio»
 
 - **Kilde:** Kap. 1.1 (l. 27-30) · **Opprinnelse:** mandat · **Type:** design · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** UI
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Ingen brukerflate, vindustittel, metadata, eksport eller dokumentasjon bruker «AI Animatic Studio» som navn.
 - **Tester:**
   - enhet: søk i kildekode/ressursfiler etter strengen «AI Animatic Studio» gir null treff
+- **Implementering:** src/app/shell/AppHeader.tsx, src/app/auth/AuthScreen.tsx
 - **Merknad:** Jf. kap. 34 pkt. 1.
 
 #### REQ-0006 – Første versjon utvikles i Lovable
@@ -90,11 +91,12 @@ Den første versjonen skal utvikles med utgangspunkt i Lovable.
 
 - **Kilde:** Kap. 1.2 (l. 32) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** 1
 - **Moduler:** PROCESS, CORE
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Første versjon kjører som Lovable-prosjekt (web), eventuelt med tilknyttede backend-tjenester.
 - **Tester:**
   - manuell: verifiser at MVP er bygd og publisert via Lovable
+- **Implementering:** package.json
 
 #### REQ-0007 – Portabilitet til macOS og Windows
 Løsningen skal arkitekteres slik at kjernefunksjonalitet, datamodell, genereringsmotor, mediebehandling og produksjonslogikk kan flyttes til eller gjenbrukes i senere desktop-versjoner for macOS og Windows.
@@ -102,11 +104,12 @@ Løsningen skal arkitekteres slik at kjernefunksjonalitet, datamodell, genererin
 - **Kilde:** Kap. 1.2 (l. 33-34) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE, PROMPT, COMPOSE, TIMELINE
 - **Avhengigheter:** REQ-0009
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Domene-, datamodell-, generering- og produksjonslogikk ligger i moduler uten avhengighet til nettleser-API-er eller Lovable-spesifikke biblioteker.
 - **Tester:**
   - enhet: kjernemoduler kan kjøres/testes i et ikke-nettleser-miljø (f.eks. Node) uten DOM
+- **Implementering:** src/core/
 - **Merknad:** Linje 33 og 34 er duplikater. Jf. kap. 34 pkt. 28.
 
 #### REQ-0008 – Unngå unødvendige plattformbindinger
@@ -126,11 +129,12 @@ Arkitekturen skal skille tydelig mellom: 1) domene- og datamodell, 2) brukergren
 
 - **Kilde:** Kap. 1.2 (l. 36-43) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** 1
 - **Moduler:** CORE, UI, COMPOSE, PROVIDER, QUEUE, VERSION, SECURITY, EXPORT
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Kodebasen har adskilte moduler for hvert av de sju lagene, og UI-laget aksesserer domenet kun via definerte grensesnitt.
 - **Tester:**
   - enhet: avhengighetsregler (f.eks. lint/import-regler) hindrer at domenemodellen importerer UI- eller leverandørkode
+- **Implementering:** src/core/, src/adapters/, src/app/
 - **Merknad:** Jf. modulinndelingen i kap. 31.
 
 #### REQ-0010 – Backend-tjenester for tunge medieoperasjoner
@@ -162,11 +166,12 @@ Grensesnittet skal ha en sofistikert, moderne og gjerne mørk visuell utforming 
 
 - **Kilde:** Kap. 1.3 (l. 56) · **Opprinnelse:** mandat · **Type:** design · **Prioritet:** P1 · **Fase:** 1
 - **Moduler:** UI
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Standardtemaet er et mørkt tema egnet for filmproduksjon, definert som design-tokens.
 - **Tester:**
   - visuell: skjermbildegjennomgang av hovedvisninger i standardtema
+- **Implementering:** src/styles.css
 - **Merknad:** «Gjerne mørk» er en preferanse, ikke absolutt krav.
 
 #### REQ-0013 – Troverdig kreativt verktøy, ikke chatbot
@@ -210,13 +215,14 @@ Prinsippet om at manus og film er to visninger av den samme produksjonen har hø
 
 - **Kilde:** Kap. 2 (l. 62-66) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE, SCRIPT, TIMELINE, COMPOSE, AUDIO · **Invarianter:** INV-01
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Manusvisning og filmtidslinje leser scenerekkefølge og aktivstatus fra samme datastruktur (sceneforekomster), ikke fra separate kopier.
   - Hver ADR og teknisk DEC dokumenterer at valget er forenlig med INV-01.
 - **Tester:**
   - enhet: datamodellen har én kilde for scenerekkefølge per produksjon
   - integrasjon: endring via manus-API er umiddelbart synlig via tidslinje-API uten synkroniseringsjobb
+- **Implementering:** src/core/model.ts, src/core/views.ts
 - **Merknad:** Høyeste prioritet i mandatet. Linje 64 og 65 er duplikater. Jf. kap. 34 pkt. 2.
 
 #### REQ-0017 – Flytting i manus flytter i film
@@ -225,11 +231,12 @@ Når en scene flyttes i manuset, skal den også flyttes i filmens aktive rekkef�
 - **Kilde:** Kap. 2 (l. 67) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 2
 - **Moduler:** SCRIPT, TIMELINE, CORE · **Invarianter:** INV-01, INV-03
 - **Avhengigheter:** REQ-0016
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Gitt scenene A, B, C, når B flyttes etter C i manuset, så er filmens aktive rekkefølge A, C, B.
 - **Tester:**
   - integrasjon: flytt i manus → verifiser tidslinjerekkefølge
+- **Implementering:** src/core/commands/apply.ts#MoveOccurrence, src/core/views.ts
 
 #### REQ-0018 – Flytting i tidslinje flytter i manus
 Når en scene flyttes i filmens overordnede tidslinje, skal manuset vise tilsvarende rekkefølge.
@@ -249,11 +256,12 @@ Når en scene eller delsekvens deaktiveres, skal den utelates fra både aktiv ma
 - **Kilde:** Kap. 2 (l. 69) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 2
 - **Moduler:** CORE, SCRIPT, TIMELINE, EXPORT · **Invarianter:** INV-01, INV-14
 - **Avhengigheter:** REQ-0016
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Gitt en deaktivert scene, så vises den ikke i aktiv manusvisning, spilles ikke av, inngår ikke i total spilletid og inngår ikke i eksport (med mindre eksportvalg eksplisitt inkluderer den, jf. REQ-0085).
 - **Tester:**
   - integrasjon: deaktiver scene og verifiser alle fire konsumenter
+- **Implementering:** src/core/views.ts
 
 #### REQ-0020 – Skjult materiale slettes ikke
 Skjult materiale skal ikke slettes, men kunne gjenaktiveres senere.
@@ -261,11 +269,12 @@ Skjult materiale skal ikke slettes, men kunne gjenaktiveres senere.
 - **Kilde:** Kap. 2 (l. 70) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P0 · **Fase:** 2
 - **Moduler:** CORE · **Invarianter:** INV-14
 - **Avhengigheter:** REQ-0019
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en deaktivert scene med tilknyttet materiale, når den gjenaktiveres, så er alt innhold og materiale uendret tilbake.
 - **Tester:**
   - dataintegritet: deaktiver/gjenaktiver rundtur bevarer alle relasjoner
+- **Implementering:** src/core/commands/apply.ts#SetOccurrenceActive
 
 #### REQ-0021 – Skille UI-skjuling og produksjonsdeaktivering
 Programmet skal skille mellom midlertidig skjuling av et grensesnittelement og produksjonsmessig deaktivering av en scene. Bare produksjonsmessig deaktivering skal endre filmens aktive innhold.
@@ -285,11 +294,12 @@ Systemet skal skille mellom strukturell synkronisering (scener, delsekvenser, re
 
 - **Kilde:** Kap. 2.1 (l. 76-78) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE, VERSION · **Invarianter:** INV-01, INV-07
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Hvert produsert materiale lagrer referanse til manusversjon og ressursversjoner det er produsert fra, adskilt fra strukturell plassering.
 - **Tester:**
   - enhet: datamodell har separate felt for struktur og kildeversjon
+- **Implementering:** src/core/views.ts#outdatedTakes
 
 #### REQ-0023 – Strukturell synkronisering er automatisk
 Strukturell synkronisering skal opprettholdes automatisk.
@@ -297,11 +307,12 @@ Strukturell synkronisering skal opprettholdes automatisk.
 - **Kilde:** Kap. 2.1 (l. 79) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE · **Invarianter:** INV-01
 - **Avhengigheter:** REQ-0016
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Ingen brukerhandling er nødvendig for at manus og film skal ha samme struktur etter en strukturendring.
 - **Tester:**
   - integrasjon: tilfeldige strukturoperasjoner (property-based) → manus- og filmstruktur er alltid like
+- **Implementering:** src/core/views.ts, src/core/commands/apply.ts
 
 #### REQ-0024 – Produsert materiale endres ikke ved manusendring
 Hvis manusinnhold endres etter at film er produsert, skal eksisterende materiale ikke endres automatisk.
@@ -309,11 +320,12 @@ Hvis manusinnhold endres etter at film er produsert, skal eksisterende materiale
 - **Kilde:** Kap. 2.1 (l. 80) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** VERSION, CORE · **Invarianter:** INV-07
 - **Avhengigheter:** REQ-0022
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en scene med produsert film, når dialogen endres, så er filmklippet og dets metadata byte-identisk uendret.
 - **Tester:**
   - dataintegritet: hash av produsert materiale før/etter manusendring
+- **Implementering:** src/core/commands/apply.ts, db/migrations/0001_core.sql#protect_takes
 
 #### REQ-0025 – Flagging av innhold ute av synk
 Når manusinnhold endres etter at film er produsert, skal eksisterende materiale flagges som potensielt ute av synkronisering.
@@ -346,11 +358,12 @@ En manusendring, ressursendring, omnummerering eller endring av stil skal aldri 
 
 - **Kilde:** Kap. 2.2 (l. 83-84) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** VERSION, CORE · **Invarianter:** INV-07, INV-13
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - For hver av de fire endringstypene: eksisterende filmklipp finnes fortsatt etter endringen.
 - **Tester:**
   - dataintegritet: parametrisert test over endringstypene
+- **Implementering:** src/core/commands/apply.ts, db/migrations/0001_core.sql#protect_takes
 
 #### REQ-0028 – Ingen automatisk overskriving av godkjente ressurser
 En manusendring, ressursendring, omnummerering eller endring av stil skal aldri automatisk overskrive godkjente ressurser.
@@ -379,22 +392,24 @@ En manusendring, ressursendring, omnummerering eller endring av stil skal aldri 
 
 - **Kilde:** Kap. 2.2 (l. 83, 87) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** VERSION, TIMELINE · **Invarianter:** INV-07
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Aktiv sceneversjon-ID er uendret etter hver av de fire endringstypene.
 - **Tester:**
   - enhet: aktiv versjon endres kun via eksplisitt brukerkommando
+- **Implementering:** src/core/commands/apply.ts
 
 #### REQ-0031 – Ingen automatisk endring av annen produksjon
 En manusendring, ressursendring, omnummerering eller endring av stil skal aldri automatisk endre en annen produksjon.
 
 - **Kilde:** Kap. 2.2 (l. 83, 88) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE · **Invarianter:** INV-04
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt hovedfilm og spinoff som deler en scene, når scenen endres i spinoffen, så er hovedfilmens sceneforekomst/variant uendret.
 - **Tester:**
   - dataintegritet: endring i produksjon X gir ingen diff i produksjon Y
+- **Implementering:** src/core/commands/apply.ts#assertCanEditVariant, src/core/invariants.ts
 
 #### REQ-0032 – Historiske manusversjoner bevares
 En manusendring, ressursendring, omnummerering eller endring av stil skal aldri automatisk ødelegge en historisk manusversjon.
@@ -412,11 +427,12 @@ All vesentlig oppdatering skal være sporbar, reverserbar og brukerinitiert.
 
 - **Kilde:** Kap. 2.2 (l. 90) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** VERSION, CORE · **Invarianter:** INV-08
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Hver vesentlig oppdatering logges med hvem/når/hva, kan reverseres, og er initiert av en brukerhandling.
 - **Tester:**
   - integrasjon: endringslogg og reversering for hver oppdateringstype
+- **Implementering:** db/migrations/0001_core.sql#change_log, src/core/commands/apply.ts
 - **Merknad:** Jf. kap. 34 pkt. 27. «Vesentlig» er ikke definert – se OPEN_QUESTIONS B («Vesentlig oppdatering» = alle kommandoer i change_log, ADR-0005).
 
 ### Kapittel 3
@@ -426,11 +442,12 @@ Hver scene skal ha en permanent intern identifikator som ikke endres når scenen
 
 - **Kilde:** Kap. 3.1 (l. 94-102) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE · **Invarianter:** INV-02, INV-03
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - For hver av de åtte operasjonene er scenens interne ID uendret etter operasjonen.
 - **Tester:**
   - enhet: parametrisert test over de åtte operasjonene
+- **Implementering:** src/core/ids.ts, src/core/model.ts
 - **Merknad:** Jf. kap. 34 pkt. 3.
 
 #### REQ-0035 – Scenenumre og versjon som egne attributter
@@ -452,23 +469,25 @@ Den interne sceneidentiteten skal brukes i alle relasjoner, aldri scenenummeret 
 - **Kilde:** Kap. 3.1 (l. 109) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE · **Invarianter:** INV-02
 - **Avhengigheter:** REQ-0034
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Ingen fremmednøkkel/relasjon i datamodellen refererer til scenenummer.
 - **Tester:**
   - enhet: skjemaanalyse – alle scenereferanser peker på scene-ID
   - integrasjon: omnummerering bryter ingen relasjoner
+- **Implementering:** src/core/model.ts, db/migrations/0001_core.sql
 
 #### REQ-0037 – Stabile identifikatorer for alle domeneobjekter
 Separate, stabile identifikatorer skal finnes for: prosjekt, produksjon, manusversjon, manusscene, manusblokk, replikk, produksjonsdelsekvens, sceneforekomst i en bestemt produksjon, karakter, karakterens utseendetilstand, visuell stilvariant, objekt eller rekvisitt, lokasjon eller miljø, lydressurs, medieressurs, genereringsjobb, genereringsprompt, sceneversjon, filmmontering, plakat og eksportversjon.
 
 - **Kilde:** Kap. 3.2 (l. 111-132) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE · **Invarianter:** INV-02
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Hver av de 21 entitetstypene har et uforanderlig ID-felt.
 - **Tester:**
   - enhet: skjemavalidering av ID-felt for alle 21 typer
+- **Implementering:** src/core/ids.ts
 
 #### REQ-0038 – ID-er uavhengige av navn, språk og plassering
 Identifikatorene skal være uavhengige av navn, språk, plassering og synlige løpenumre.
@@ -476,11 +495,12 @@ Identifikatorene skal være uavhengige av navn, språk, plassering og synlige l�
 - **Kilde:** Kap. 3.2 (l. 133) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE · **Invarianter:** INV-02
 - **Avhengigheter:** REQ-0037
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - ID-er genereres som opake verdier (f.eks. UUID/prefiks+tilfeldig) og endres ikke ved omdøping, oversettelse, flytting eller omnummerering.
 - **Tester:**
   - enhet: ID-generator inneholder ingen avledning fra navn/posisjon
+- **Implementering:** src/core/ids.ts
 
 #### REQ-0039 – Skille scene, sceneforekomst og scenevariant
 Datamodellen skal skille mellom scene (permanent identifisert narrativ enhet), sceneforekomst (hvordan en scene brukes i en bestemt produksjon, inkludert plassering, synlighet, tidsutdrag og aktiv versjon) og scenevariant (redigert eller alternativ utgave av scenen som kan være unik for én produksjon).
@@ -488,11 +508,12 @@ Datamodellen skal skille mellom scene (permanent identifisert narrativ enhet), s
 - **Kilde:** Kap. 3.3 (l. 135-140) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE · **Invarianter:** INV-04
 - **Avhengigheter:** REQ-0037
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Plassering, synlighet, tidsutdrag og aktiv versjon lagres på sceneforekomsten, ikke på scenen.
 - **Tester:**
   - enhet: skjema har tre separate entiteter med riktige felt
+- **Implementering:** src/core/model.ts, db/migrations/0001_core.sql
 - **Merknad:** Linje 137/138 og 139/140 er duplikater.
 
 #### REQ-0040 – Gjenbruk av scene uten delte redaksjonelle endringer
@@ -501,22 +522,24 @@ Samme scene skal kunne brukes i flere produksjoner uten at de automatisk deler a
 - **Kilde:** Kap. 3.3 (l. 141) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE · **Invarianter:** INV-04
 - **Avhengigheter:** REQ-0039
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt scene S i produksjon P1 og P2, når S redigeres som variant i P2, så er S i P1 uendret.
 - **Tester:**
   - dataintegritet: variantredigering isolert per produksjon
+- **Implementering:** src/core/commands/apply.ts#ForkVariant
 
 #### REQ-0041 – Transaksjonelle strukturoperasjoner
 Operasjoner som påvirker flere deler av prosjektmodellen skal gjennomføres som konsistente endringer, særlig flytting av scener, aktivering og deaktivering, splitting og sammenslåing, endring av manusstruktur, overføring mellom produksjoner og endring av aktiv filmversjon.
 
 - **Kilde:** Kap. 3.4 (l. 143-150) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE · **Invarianter:** INV-01
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en feil midt i en av de seks operasjonene, så rulles hele operasjonen tilbake og modellen er i forrige konsistente tilstand.
 - **Tester:**
   - integrasjon: feilinjeksjon under hver operasjonstype → ingen delvis tilstand
+- **Implementering:** db/migrations/0001_core.sql#apply_changes, src/adapters/storage/commands.functions.ts
 
 #### REQ-0042 – Angre/gjør om for strukturoperasjoner
 De transaksjonelle strukturoperasjonene skal støtte angre og gjør om.
@@ -524,11 +547,12 @@ De transaksjonelle strukturoperasjonene skal støtte angre og gjør om.
 - **Kilde:** Kap. 3.4 (l. 151) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE, UI · **Invarianter:** INV-08
 - **Avhengigheter:** REQ-0041
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - For hver operasjonstype: utfør → angre gir identisk modell som før; gjør om gir identisk modell som etter.
 - **Tester:**
   - enhet: undo/redo-rundtur for alle seks operasjonstyper
+- **Implementering:** src/core/commands/apply.ts#inverse
 
 #### REQ-0043 – Manus og film kan aldri divergere strukturelt
 Systemet skal ikke kunne ende i en tilstand der manus og film har forskjellige aktive scenestrukturer.
@@ -536,11 +560,12 @@ Systemet skal ikke kunne ende i en tilstand der manus og film har forskjellige a
 - **Kilde:** Kap. 3.4 (l. 152) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE · **Invarianter:** INV-01
 - **Avhengigheter:** REQ-0016; REQ-0041
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - En konsistenssjekk av aktiv manusstruktur mot aktiv filmstruktur lykkes etter enhver sekvens av operasjoner, inkludert angre/gjør om.
 - **Tester:**
   - integrasjon: property-based test med tilfeldige operasjonssekvenser
+- **Implementering:** src/core/views.ts, db/migrations/0001_core.sql
 
 ### Kapittel 4
 
@@ -898,11 +923,12 @@ Produksjonsteknisk oppdeling skal ikke endre manusets scenenummerering.
 - **Kilde:** Kap. 4.4 (l. 225) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE, SCRIPT · **Invarianter:** INV-10
 - **Avhengigheter:** REQ-0071
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en scene delt i tre produksjonssegmenter, så er manusets scenenumre og sceneantall uendret.
 - **Tester:**
   - integrasjon: segmentering → manusnummerering uendret
+- **Implementering:** src/core/commands/apply.ts#CreateSegments
 
 #### REQ-0073 – Søk og filtrering i manus
 Manuset skal kunne søkes og filtreres etter karakter, objekt eller rekvisitt, lokasjon, scene, dialoginnhold, produksjonsstatus, synkroniseringsavvik og andre relevante metadata.
@@ -1304,11 +1330,12 @@ Systemet skal kunne håndtere lokal tid innenfor en scene, tid innenfor en delse
 
 - **Kilde:** Kap. 6.4 (l. 306-310) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P1 · **Fase:** 1
 - **Moduler:** TIMELINE, CORE
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Et tidspunkt kan konverteres korrekt mellom alle fire tidsrom.
 - **Tester:**
   - enhet: konverteringsfunksjoner mellom tidsrom
+- **Implementering:** src/core/time.ts, src/core/views.ts
 
 #### REQ-0106 – Bildepresis tidsmodell
 Tidsmodellen skal være presis i forhold til prosjektets bildefrekvens.
@@ -1316,11 +1343,12 @@ Tidsmodellen skal være presis i forhold til prosjektets bildefrekvens.
 - **Kilde:** Kap. 6.4 (l. 311) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P1 · **Fase:** 1
 - **Moduler:** TIMELINE
 - **Avhengigheter:** REQ-0105
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Tid lagres i heltallige rammer/rasjonelle tall; ingen avrundingsdrift etter gjentatte konverteringer (inkl. 23.976/29.97).
 - **Tester:**
   - enhet: rundtur-konvertering uten drift
+- **Implementering:** src/core/time.ts
 
 #### REQ-0107 – Tidskoblinger bevares ved flytting
 Når en scene flyttes, skal dens interne tidskoblinger bevares mens den samlede filmens tidskoder beregnes på nytt.
@@ -3802,11 +3830,12 @@ Versjonerings- og synkroniseringsavvikssystemet skal være dypt integrert i hele
 
 - **Kilde:** Kap. 21 (l. 864-865) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** VERSION, CORE · **Invarianter:** INV-07, INV-13
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Alle produksjonsobjekter (manus, ressurser, lyd, scener, genereringer) har versjonsreferanser fra første datamodell.
 - **Tester:**
   - manuell: datamodellgjennomgang for versjonsfelt
+- **Implementering:** src/core/commands/apply.ts, db/migrations/0001_core.sql
 
 #### REQ-0305 – Endringsdeteksjon for berørt materiale
 Når manus eller ressurser endres, skal systemet identifisere hvilke produksjonselementer som kan være påvirket – f.eks. ved at en replikk endres, handling endres, rekvisitt byttes, karaktervariant endres, scene forkortes, lyd byttes eller en kontinuitetshendelse flyttes.
@@ -3949,11 +3978,12 @@ Programmet skal aldri automatisk kassere eksisterende produksjonsversjoner.
 
 - **Kilde:** Kap. 21.5 (l. 900-901) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** VERSION, SECURITY · **Invarianter:** INV-07, INV-14
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Ingen automatisk prosess (opprydding, regenerering, import) sletter produksjonsversjoner.
 - **Tester:**
   - dataintegritet: antall versjoner synker aldri uten eksplisitt brukerhandling
+- **Implementering:** src/core/commands/apply.ts, db/migrations/0001_core.sql#protect_takes
 - **Merknad:** Ufravikelig prinsipp nr. 6 og 27 i kap. 34.
 
 #### REQ-0317 – Åpne og gjenaktivere tidligere resultater
@@ -4097,12 +4127,13 @@ Norsk er prosjektets primære manusspråk og redaksjonelle hovedkilde.
 
 - **Kilde:** Kap. 23.1 (l. 917-918) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** L10N, SCRIPT, CORE · **Invarianter:** INV-05
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Datamodellen markerer norsk som hovedspråk; andre språkversjoner refererer til norske manusobjekter.
 - **Tester:**
   - enhet: språkversjon har referanse til hovedmanus
   - manuell: datamodellgjennomgang
+- **Implementering:** src/core/model.ts, db/migrations/0001_core.sql
 - **Merknad:** Ufravikelig prinsipp nr. 5 i kap. 34.
 
 #### REQ-0329 – Engelsk som tilknyttet språkversjon
@@ -5122,22 +5153,24 @@ Prosjektinformasjon skal bevares til brukeren selv velger å endre eller slette 
 
 - **Kilde:** Kap. 28.1 (l. 1193-1194) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P1 · **Fase:** 1
 - **Moduler:** SECURITY · **Invarianter:** INV-14
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt lagret prosjektinformasjon, så slettes den aldri automatisk av applikasjonen uten brukerens handling.
 - **Tester:**
   - dataintegritet: ingen automatisk sletting
+- **Implementering:** db/migrations/0001_core.sql, src/adapters/storage/project-rows.ts
 
 #### REQ-0410 – Ikke kritiske data kun i nettlesertilstand
 Kritisk produksjonsdata skal ikke bygges utelukkende på midlertidig nettlesertilstand.
 
 - **Kilde:** Kap. 28.1 (l. 1195) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** 1
 - **Moduler:** SECURITY, CORE
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt at nettleserens lokale lagring tømmes, så er alle kritiske prosjektdata fortsatt tilgjengelige fra varig lagring.
 - **Tester:**
   - e2e: tøm localStorage/IndexedDB og åpne prosjekt
+- **Implementering:** src/adapters/storage/commands.functions.ts, src/adapters/storage/project-rows.ts
 
 #### REQ-0411 – Portabel eksport/sikkerhetskopi av prosjekt
 Prosjektet skal kunne eksporteres eller sikkerhetskopieres i et dokumentert, portabelt format.
@@ -5184,12 +5217,13 @@ Loggføring må ikke avsløre sensitive tilgangsopplysninger.
 
 - **Kilde:** Kap. 28.3 (l. 1209) · **Opprinnelse:** mandat · **Type:** sikkerhet · **Prioritet:** P1 · **Fase:** 1
 - **Moduler:** SECURITY
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Gitt et API-kall med nøkkel som feiler, så inneholder ingen logglinje nøkkelen eller andre hemmeligheter.
 - **Tester:**
   - enhet: logg-redigering av hemmeligheter
   - integrasjon: søk etter nøkkel i logger
+- **Implementering:** src/adapters/storage/commands.functions.ts
 
 #### REQ-0415 – Skille mellom lagringskategorier
 Systemet må skille mellom: redigerbare prosjektdata, kildemedier, genererte mediefiler, midlertidige renderingsfiler, eksportfiler og historiske versjoner. Dette er nødvendig for pålitelig lagring, backup og senere migrering.
@@ -5409,13 +5443,14 @@ Utviklingen skal bygge på en tydelig separasjon mellom domener. Det skal foresl
 
 - **Kilde:** Kap. 31 (l. 1304-1306, 1351) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** 1
 - **Moduler:** CORE, SCRIPT, TIMELINE, LIBRARY, CONTINUITY, COMPOSE, CAMERA, AUDIO, PROMPT, PROVIDER, QUALITYCOST, QUEUE, VERSION, L10N, PRESENT, EXPORT, SECURITY
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Arkitekturdokumentasjonen har én komponent per modul i kap. 31 med definert ansvarsområde og grensesnitt.
   - Ingen modul har direkte avhengighet til en annen moduls interne data utenom definerte grensesnitt.
 - **Tester:**
   - manuell: arkitekturgjennomgang
   - enhet: avhengighetsregler (f.eks. lint/import-regler)
+- **Implementering:** src/core/, src/adapters/, src/app/
 - **Merknad:** Jf. kap. 1.2 og prinsipp 28.
 
 #### REQ-0433 – Modul: Project Core
@@ -5424,11 +5459,12 @@ Arkitekturen skal ha en logisk komponent «Project Core» med ansvarsområdet: P
 - **Kilde:** Kap. 31 (l. 1307-1309) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** 1
 - **Moduler:** CORE
 - **Avhengigheter:** REQ-0432
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Arkitekturdokumentasjonen definerer Project Core med ansvar for: prosjekter, produksjoner, identiteter og relasjoner, og dette ansvaret ligger ikke i andre moduler.
 - **Tester:**
   - manuell: arkitekturgjennomgang av ansvarsgrenser
+- **Implementering:** src/core/
 - **Merknad:** Linje 1307/1308 duplikat.
 
 #### REQ-0434 – Modul: Screenplay Engine
@@ -5575,11 +5611,12 @@ Arkitekturen skal ha en logisk komponent «Version & Dependency Engine» med ans
 - **Kilde:** Kap. 31 (l. 1338-1339) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** 1
 - **Moduler:** VERSION
 - **Avhengigheter:** REQ-0432
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Arkitekturdokumentasjonen definerer Version & Dependency Engine med ansvar for: versjonering, avviksdeteksjon, endringsanalyse og ikke-destruktive oppdateringer, og dette ansvaret ligger ikke i andre moduler.
 - **Tester:**
   - manuell: arkitekturgjennomgang av ansvarsgrenser
+- **Implementering:** src/core/commands/apply.ts, db/migrations/0001_core.sql
 - **Merknad:** Versjoner defineres i fase 1; avviksdeteksjon/endringsanalyse i fase 6.
 
 #### REQ-0446 – Modul: Localization Engine
@@ -5626,11 +5663,12 @@ Arkitekturen skal ha en logisk komponent «Security & Storage» med ansvarsområ
 - **Kilde:** Kap. 31 (l. 1348-1350) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** 1
 - **Moduler:** SECURITY
 - **Avhengigheter:** REQ-0432
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Arkitekturdokumentasjonen definerer Security & Storage med ansvar for: tilgangskontroll, api-nøkler, medielagring og dataintegritet, og dette ansvaret ligger ikke i andre moduler.
 - **Tester:**
   - manuell: arkitekturgjennomgang av ansvarsgrenser
+- **Implementering:** db/migrations/0001_core.sql
 - **Merknad:** Linje 1348/1349 duplikat. «Tilgangskontroll» – flerbruker registreres separat.
 
 ### Kapittel 32
@@ -5654,11 +5692,12 @@ Fase 1: Arkitektur og datamodell skal definere prosjekt, produksjon, scene, manu
 - **Kilde:** Kap. Fase 1 (l. 1356-1368) · **Opprinnelse:** mandat · **Type:** prosess · **Prioritet:** P1 · **Fase:** 1
 - **Moduler:** PROCESS
 - **Avhengigheter:** REQ-0450
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Når fase 1 avsluttes, er alle listede leveranser ferdige med testbare akseptansekriterier, og de bygger på leveransene i foregående fase.
 - **Tester:**
   - manuell: fasegjennomgang/milepælsrevisjon
+- **Implementering:** src/core/, db/migrations/0001_core.sql
 - **Merknad:** Prosesskrav (rekkefølge); de enkelte funksjonene er spesifisert som funksjonskrav i sine fagkapitler. Fase 1 sier «Definer» (datamodell), ikke «Implementer».
 
 #### REQ-0452 – Fundament uten omfattende omskriving
@@ -6017,11 +6056,12 @@ Manus og film skal alltid være strukturelt synkronisert. De skal bygge på samm
 
 - **Kilde:** Kap. 34 (l. 1488-1490) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE, SCRIPT, TIMELINE · **Invarianter:** INV-01
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Etter enhver strukturell operasjon (flytt, deaktiver, splitt) er aktiv scenestruktur i manus og film identisk.
 - **Tester:**
   - dataintegritet: egenskapsbaserte tester på strukturell synk
+- **Implementering:** src/core/views.ts
 - **Merknad:** Oppsummerer kap. 2, 2.1, 3.4, 6, 15.2. Linje 1488/1489 duplikat.
 
 #### REQ-0481 – Prinsipp 3: Scenenummer aldri permanent identitet
@@ -6065,11 +6105,12 @@ En scene kan ha mange produksjonsversjoner. Tidligere versjoner skal bevares.
 
 - **Kilde:** Kap. 34 (l. 1499-1501) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** VERSION, CORE · **Invarianter:** INV-13
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - En scene med flere versjoner beholder alle tidligere versjoner etter at ny aktiv versjon velges.
 - **Tester:**
   - manuell: verifiseres mot underliggende funksjonskrav
+- **Implementering:** src/core/model.ts
 - **Merknad:** Oppsummerer kap. 3.3, 15.3, 16.4, 17.4, 21.5. Linje 1499/1500 duplikat.
 
 #### REQ-0485 – Prinsipp 7: Manusendringer flagger berørt materiale
@@ -6317,11 +6358,12 @@ Eksisterende produksjonsmateriale skal aldri endres destruktivt uten brukerens e
 
 - **Kilde:** Kap. 34 (l. 1540-1541) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** VERSION, CORE, SECURITY · **Invarianter:** INV-07, INV-13, INV-14
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Ingen operasjon sletter eller overskriver produksjonsmateriale uten eksplisitt brukerbekreftelse; alt er reverserbart.
 - **Tester:**
   - dataintegritet: regresjonstester for ikke-destruktivitet
+- **Implementering:** src/core/commands/apply.ts, db/migrations/0001_core.sql
 - **Merknad:** Oppsummerer kap. 2.2, 21.5, 24.5, 25.2, 28.1. Linje 1540/1541 duplikat.
 
 #### REQ-0506 – Prinsipp 28: Portabel arkitektur fra Lovable til desktop
@@ -6329,11 +6371,12 @@ Arkitekturen skal kunne videreutvikles fra Lovable til macOS- og Windows-applika
 
 - **Kilde:** Kap. 34 (l. 1542) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE, PROCESS
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Domene-/datamodell og produksjonslogikk har ingen avhengighet til Lovable-spesifikke API-er og kan kjøres utenfor nettleser.
 - **Tester:**
   - manuell: arkitekturgjennomgang av plattformbindinger
+- **Implementering:** src/core/
 - **Merknad:** Oppsummerer kap. 1.2, 31, 28.2.
 
 ### Kapittel 35
@@ -6498,11 +6541,12 @@ Et prosjekt skal kunne ha flere brukere (prosjektmedlemmer) som arbeider i det s
 
 - **Kilde:** Beslutning DEC-0003 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 1
 - **Moduler:** COLLAB, CORE, SECURITY · **Invarianter:** INV-C2
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et prosjekt med eier A, når B blir medlem, så ser både A og B det samme prosjektet, de samme produksjonene og det samme manuset.
 - **Tester:**
   - integrasjon: to testbrukere med medlemskap leser samme prosjekt; tredje bruker uten medlemskap får avslag
+- **Implementering:** db/migrations/0001_core.sql
 - **Merknad:** Ikke nevnt i mandatet v14. Lagt til av Mars 2026-10-08 som viktig for arbeidsdeling og arbeidsflyt.
 
 #### REQ-0521 – Invitere brukere inn i prosjekt
@@ -6511,13 +6555,14 @@ Brukeren som oppretter et prosjekt skal kunne invitere andre brukere inn i prosj
 - **Kilde:** Beslutning DEC-0003 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** COLLAB, SECURITY, UI
 - **Avhengigheter:** REQ-0520
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt prosjekteier A, når A inviterer en e-postadresse og mottakeren aksepterer, så blir mottakeren medlem av prosjektet.
   - En invitasjon gir aldri tilgang til andre prosjekter enn det den gjelder.
 - **Tester:**
   - e2e: eier inviterer, mottaker aksepterer, medlem ser prosjektet
   - integrasjon: invitasjonstoken for prosjekt X gir ikke tilgang til prosjekt Y
+- **Implementering:** db/migrations/0001_core.sql#create_invitation, src/app/projects/ProjectOverview.tsx, src/routes/invitasjon.tsx
 
 #### REQ-0522 – Flere brukere på samme manus
 Flere prosjektmedlemmer skal kunne arbeide på det samme manuset uten at hverandres endringer går tapt.
@@ -6525,13 +6570,14 @@ Flere prosjektmedlemmer skal kunne arbeide på det samme manuset uten at hverand
 - **Kilde:** Beslutning DEC-0003 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** COLLAB, SCRIPT, VERSION · **Invarianter:** INV-01, INV-03, INV-C1
 - **Avhengigheter:** REQ-0520; REQ-0526
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Gitt to medlemmer som redigerer ulike manusblokker samtidig, så bevares begge endringene.
   - Gitt to medlemmer som redigerer samme manusblokk samtidig, så tapes ingen av endringene i stillhet; konflikten vises og kan løses.
 - **Tester:**
   - integrasjon: samtidig redigering av ulike blokker – begge bevart
   - integrasjon: samtidig redigering av samme blokk – konflikt oppdages, ingen stille overskriving
+- **Implementering:** src/core/commands/apply.ts
 - **Merknad:** Mekanismen (låsing, sammenslåing eller sanntidssamarbeid) er en teknisk beslutning – se ADR-0004.
 
 #### REQ-0523 – Prosjektroller
@@ -6540,12 +6586,13 @@ Prosjektmedlemskap skal ha en rolle som styrer hva medlemmet kan gjøre. Foresl�
 - **Kilde:** Beslutning DEC-0010 · **Opprinnelse:** teknisk-anbefaling · **Type:** sikkerhet · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** COLLAB, SECURITY · **Invarianter:** INV-C2
 - **Avhengigheter:** REQ-0520
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - En leser kan ikke endre manus, ressurser, produksjoner eller innstillinger.
   - Bare eier kan endre roller, fjerne eier eller slette prosjektet.
 - **Tester:**
   - integrasjon: rollematrise – hver rolle prøver hver skriveoperasjon mot backend
+- **Implementering:** db/migrations/0001_core.sql
 - **Merknad:** Teknisk utledning av DEC-0003 (bekreftet). Selve løsningen er teknisk anbefaling (DEC-0010). Rollesettet er Claudes anbefaling, ikke vedtatt av Mars. Kan justeres.
 
 #### REQ-0524 – Tilgangskontroll håndheves i backend
@@ -6554,12 +6601,13 @@ Tilgang til alle prosjektdata og mediefiler skal håndheves i backend (radnivås
 - **Kilde:** Beslutning DEC-0010 · **Opprinnelse:** teknisk-anbefaling · **Type:** sikkerhet · **Prioritet:** P1 · **Fase:** 1
 - **Moduler:** COLLAB, SECURITY, CORE · **Invarianter:** INV-C2
 - **Avhengigheter:** REQ-0520
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - En innlogget bruker uten medlemskap får ingen rader og ingen mediefiler fra prosjektet ved direkte API-kall.
 - **Tester:**
   - integrasjon: direkte databasekall som ikke-medlem returnerer tomt / avslag for alle prosjekttabeller
   - integrasjon: signert medie-URL kan ikke genereres av ikke-medlem
+- **Implementering:** db/migrations/0001_core.sql
 - **Merknad:** Teknisk utledning av DEC-0003 (bekreftet). Selve løsningen er teknisk anbefaling (DEC-0010). Sikkerhetskritisk; nødvendig for REQ-0521.
 
 #### REQ-0525 – Endringer registreres med bruker
@@ -6568,11 +6616,12 @@ Alle vesentlige endringer og beslutninger (godkjenning av avvik, aktiv versjon, 
 - **Kilde:** Beslutning DEC-0010 · **Opprinnelse:** teknisk-anbefaling · **Type:** data · **Prioritet:** P1 · **Fase:** 1
 - **Moduler:** COLLAB, VERSION · **Invarianter:** INV-08
 - **Avhengigheter:** REQ-0520
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Historikken for en scene viser hvem som gjorde hver endring.
 - **Tester:**
   - dataintegritet: alle versjonsposter har forfatter-ID og tidspunkt
+- **Implementering:** db/migrations/0001_core.sql#change_log
 - **Merknad:** Teknisk utledning av DEC-0003 (bekreftet). Selve løsningen er teknisk anbefaling (DEC-0010).
 
 #### REQ-0526 – Samtidighet uten datatap
@@ -6581,13 +6630,14 @@ Systemet skal oppdage samtidige endringer på samme objekt og aldri overskrive e
 - **Kilde:** Beslutning DEC-0010 · **Opprinnelse:** teknisk-anbefaling · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** COLLAB, CORE, VERSION · **Invarianter:** INV-13, INV-C1
 - **Avhengigheter:** REQ-0520
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - En skriving basert på en utdatert versjon av et objekt avvises eller flettes kontrollert, aldri overskrives blindt.
   - Når to medlemmer har samme scene åpen, ser begge at den andre er der.
 - **Tester:**
   - integrasjon: optimistisk versjonskontroll – skriving med gammel revisjon avvises
   - e2e: tilstedeværelse vises for to samtidige brukere
+- **Implementering:** src/core/commands/apply.ts, db/migrations/0001_core.sql#apply_changes
 - **Merknad:** Teknisk utledning av DEC-0003 (bekreftet). Selve løsningen er teknisk anbefaling (DEC-0010).
 
 #### REQ-0527 – Angre per bruker
@@ -6596,11 +6646,12 @@ Angre og gjør om skal gjelde brukerens egne endringer og ikke reversere andre m
 - **Kilde:** Beslutning DEC-0010 · **Opprinnelse:** teknisk-anbefaling · **Type:** ux · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** COLLAB, VERSION, UI · **Invarianter:** INV-08
 - **Avhengigheter:** REQ-0522
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Gitt at A og B har endret ulike blokker, når A angrer, så reverseres bare A sin endring.
 - **Tester:**
   - integrasjon: angre for bruker A berører ikke B sine endringer
+- **Implementering:** src/core/commands/apply.ts
 - **Merknad:** Teknisk utledning av DEC-0003 (bekreftet). Selve løsningen er teknisk anbefaling (DEC-0010). Samsvarer med kap. 21.2 C («uten å overskrive andre uavhengige redigeringer»).
 
 #### REQ-0528 – Kostnadsgodkjenning er rollestyrt
@@ -6614,7 +6665,7 @@ Bare medlemmer med rett til å godkjenne kostnader skal kunne starte betalte AI-
   - En redaktør uten kostnadsrett får ikke startet en betalt jobb; forsøket gir tydelig melding.
 - **Tester:**
   - integrasjon: backend avviser betalt jobb fra medlem uten kostnadsrett
-- **Merknad:** Teknisk utledning av DEC-0003 (bekreftet). Selve løsningen er teknisk anbefaling (DEC-0010). Hvem som eier API-nøklene i et delt prosjekt er et åpent spørsmål (OPEN_QUESTIONS Q-01, DEC-0018 – midlertidig antakelse).
+- **Merknad:** Teknisk utledning av DEC-0003 (bekreftet). Selve løsningen er teknisk anbefaling (DEC-0010). Hvem som eier API-nøklene i et delt prosjekt er et åpent spørsmål (OPEN_QUESTIONS Q-01, DEC-0018 – midlertidig antakelse). DEC-0021: Mars betaler alle API-kostnader i testfasen; kostnadsdeling avtales utenfor appen.
 
 #### REQ-0529 – Fjerning av medlem er ikke-destruktiv
 Når et medlem fjernes eller en invitasjon trekkes tilbake, skal medlemmets tidligere bidrag og historikk bevares i prosjektet.

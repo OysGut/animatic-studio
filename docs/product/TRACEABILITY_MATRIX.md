@@ -9,55 +9,55 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 
 | Invariant | Beskrivelse | Krav | Verifiserte |
 |---|---|---|---|
-| INV-01 | Manus og film er to visninger av samme aktive produksjonsstruktur. | 21 | 0 |
-| INV-02 | Scenenumre er ikke permanente identifikatorer. | 24 | 0 |
-| INV-03 | En scene beholder identitet gjennom flytting og omnummerering. | 16 | 0 |
-| INV-04 | Spinoffer kan bruke samme kildescene med selvstendig rekkefølge og lokale endringer. | 19 | 0 |
+| INV-01 | Manus og film er to visninger av samme aktive produksjonsstruktur. | 21 | 5 |
+| INV-02 | Scenenumre er ikke permanente identifikatorer. | 24 | 3 |
+| INV-03 | En scene beholder identitet gjennom flytting og omnummerering. | 16 | 1 |
+| INV-04 | Spinoffer kan bruke samme kildescene med selvstendig rekkefølge og lokale endringer. | 19 | 3 |
 | INV-05 | Norsk er hovedmanus. | 7 | 0 |
 | INV-06 | Andre språkversjoner endrer ikke norsk hovedmanus automatisk. | 4 | 0 |
-| INV-07 | Ferdige filmsekvenser overskrives ikke automatisk etter manusendringer. | 25 | 0 |
-| INV-08 | Brukeren kan godkjenne avvik, oppdatere produksjonsmateriale eller angre relevant endring. | 27 | 0 |
+| INV-07 | Ferdige filmsekvenser overskrives ikke automatisk etter manusendringer. | 25 | 3 |
+| INV-08 | Brukeren kan godkjenne avvik, oppdatere produksjonsmateriale eller angre relevant endring. | 27 | 1 |
 | INV-09 | Karakterkontinuitet følger fortellingstid, også ved flashbacks. | 16 | 0 |
-| INV-10 | Produksjonsteknisk segmentering endrer ikke manusscenenes identiteter. | 11 | 0 |
+| INV-10 | Produksjonsteknisk segmentering endrer ikke manusscenenes identiteter. | 11 | 1 |
 | INV-11 | Generativ AI er valgfritt for ordinær 2D-animatic-avspilling og eksport. | 13 | 0 |
 | INV-12 | Betalte API-kall følger eksplisitte kostnadsgodkjenninger. | 20 | 0 |
-| INV-13 | Delte ressurser er versjonerte og ikke-destruktive. | 25 | 0 |
-| INV-14 | Deaktivering/skjuling er aldri sletting; materiale kan gjenaktiveres. | 16 | 0 |
-| INV-C1 | Ingen stille overskriving ved samarbeid (revisjonskontroll) – DEC-0003/DEC-0010. | 2 | 0 |
-| INV-C2 | Tilgang håndheves i backend (RLS) – teknisk, DEC-0010. | 3 | 0 |
+| INV-13 | Delte ressurser er versjonerte og ikke-destruktive. | 25 | 2 |
+| INV-14 | Deaktivering/skjuling er aldri sletting; materiale kan gjenaktiveres. | 16 | 3 |
+| INV-C1 | Ingen stille overskriving ved samarbeid (revisjonskontroll) – DEC-0003/DEC-0010. | 2 | 1 |
+| INV-C2 | Tilgang håndheves i backend (RLS) – teknisk, DEC-0010. | 3 | 3 |
 | INV-C3 | Bare medlemmer med kostnadsrett kan godkjenne betalte kall – midlertidig, DEC-0018/Q-01. | 1 | 0 |
 
 ## Dekning per modul
 
 | Modul | Navn | Krav | P0 | Implementert | Verifisert |
 |---|---|---|---|---|---|
-| CORE | Project Core | 118 | 57 | 0 | 0 |
-| SCRIPT | Screenplay Engine | 109 | 32 | 0 | 0 |
-| TIMELINE | Timeline & Assembly Engine | 92 | 28 | 0 | 0 |
-| LIBRARY | Resource Library | 51 | 9 | 0 | 0 |
-| CONTINUITY | Continuity Engine | 39 | 11 | 0 | 0 |
-| COMPOSE | 2D Composition Engine | 39 | 14 | 0 | 0 |
-| CAMERA | Camera & Motion Engine | 28 | 2 | 0 | 0 |
-| AUDIO | Audio Engine | 31 | 1 | 0 | 0 |
-| PROMPT | Prompt Orchestration Engine | 45 | 14 | 0 | 0 |
-| PROVIDER | Provider Adapters | 23 | 6 | 0 | 0 |
-| QUALITYCOST | Quality & Cost Engine | 25 | 6 | 0 | 0 |
-| QUEUE | Render Queue | 34 | 12 | 0 | 0 |
-| VERSION | Version & Dependency Engine | 90 | 36 | 0 | 0 |
-| L10N | Localization Engine | 38 | 4 | 0 | 0 |
-| PRESENT | Presentation Engine | 30 | 3 | 0 | 0 |
-| EXPORT | Export Engine | 53 | 12 | 0 | 0 |
-| SECURITY | Security & Storage | 26 | 5 | 0 | 0 |
-| COLLAB | Collaboration & Access | 10 | 0 | 0 | 0 |
-| UI | Brukergrensesnitt og designsystem | 102 | 19 | 0 | 0 |
-| PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 0 | 0 |
+| CORE | Project Core | 118 | 57 | 36 | 21 |
+| SCRIPT | Screenplay Engine | 109 | 32 | 8 | 4 |
+| TIMELINE | Timeline & Assembly Engine | 92 | 28 | 9 | 3 |
+| LIBRARY | Resource Library | 51 | 9 | 1 | 1 |
+| CONTINUITY | Continuity Engine | 39 | 11 | 1 | 1 |
+| COMPOSE | 2D Composition Engine | 39 | 14 | 4 | 3 |
+| CAMERA | Camera & Motion Engine | 28 | 2 | 1 | 1 |
+| AUDIO | Audio Engine | 31 | 1 | 2 | 2 |
+| PROMPT | Prompt Orchestration Engine | 45 | 14 | 2 | 1 |
+| PROVIDER | Provider Adapters | 23 | 6 | 2 | 2 |
+| QUALITYCOST | Quality & Cost Engine | 25 | 6 | 1 | 1 |
+| QUEUE | Render Queue | 34 | 12 | 2 | 2 |
+| VERSION | Version & Dependency Engine | 90 | 36 | 16 | 7 |
+| L10N | Localization Engine | 38 | 4 | 2 | 1 |
+| PRESENT | Presentation Engine | 30 | 3 | 1 | 1 |
+| EXPORT | Export Engine | 53 | 12 | 3 | 2 |
+| SECURITY | Security & Storage | 26 | 5 | 12 | 9 |
+| COLLAB | Collaboration & Access | 10 | 0 | 8 | 6 |
+| UI | Brukergrensesnitt og designsystem | 102 | 19 | 6 | 3 |
+| PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 3 | 0 |
 
 ## Dekning per fase
 
 | Fase | Krav | Verifisert |
 |---|---|---|
-| 1 | 70 | 0 |
-| 2 | 84 | 0 |
+| 1 | 70 | 23 |
+| 2 | 84 | 4 |
 | 3 | 48 | 0 |
 | 4 | 68 | 0 |
 | 5 | 70 | 0 |
@@ -74,45 +74,45 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0002 | Kap. 1 (l. 8-23) | CORE, SCRIPT, LIBRARY, COMPOSE, CAMERA, TIMELINE, AUDIO, PROMPT, PROVIDER, VERSION, CONTINUITY, QUEUE, L10N, PRESENT, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0003 | Kap. 1 (l. 24) | TIMELINE, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0004 | Kap. 1 (l. 25) | CORE, COMPOSE, TIMELINE, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0005 | Kap. 1.1 (l. 27-30) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0006 | Kap. 1.2 (l. 32) | PROCESS, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0007 | Kap. 1.2 (l. 33-34) | CORE, PROMPT, COMPOSE, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0005 | Kap. 1.1 (l. 27-30) | UI | src/app/shell/AppHeader.tsx, src/app/auth/AuthScreen.tsx | 1 | manuell: 2026-10-08 visuell QA av M1-skjermbilder (tests/visual/screens.mjs) | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
+| REQ-0006 | Kap. 1.2 (l. 32) | PROCESS, CORE | package.json | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
+| REQ-0007 | Kap. 1.2 (l. 33-34) | CORE, PROMPT, COMPOSE, TIMELINE | src/core/ | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0008 | Kap. 1.2 (l. 35) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0009 | Kap. 1.2 (l. 36-43) | CORE, UI, COMPOSE, PROVIDER, QUEUE, VERSION, SECURITY, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0009 | Kap. 1.2 (l. 36-43) | CORE, UI, COMPOSE, PROVIDER, QUEUE, VERSION, SECURITY, EXPORT | src/core/, src/adapters/, src/app/ | 1 | tests/architecture/core-purity.test.ts::importerer ikke rammeverk, backend eller plattform-API-er | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
 | REQ-0010 | Kap. 1.2 (l. 44) | QUEUE, CORE, PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0011 | Kap. 1.3 (l. 46-55) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0012 | Kap. 1.3 (l. 56) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0012 | Kap. 1.3 (l. 56) | UI | src/styles.css | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0013 | Kap. 1.3 (l. 57) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0014 | Kap. 1.3 (l. 58) | UI, L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0015 | Kap. 1.3 (l. 59) | PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0016 | Kap. 2 (l. 62-66) | CORE, SCRIPT, TIMELINE, COMPOSE, AUDIO | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Revisjon: forpliktelsen i l. 63 tatt inn i kravteksten |
-| REQ-0017 | Kap. 2 (l. 67) | SCRIPT, TIMELINE, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0016 | Kap. 2 (l. 62-66) | CORE, SCRIPT, TIMELINE, COMPOSE, AUDIO | src/core/model.ts, src/core/views.ts | 2 | tests/invariants/random-sequences.test.ts::INV-01: manus og film har alltid samme aktive rekkefølge i alle produksjoner | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
+| REQ-0017 | Kap. 2 (l. 67) | SCRIPT, TIMELINE, CORE | src/core/commands/apply.ts#MoveOccurrence, src/core/views.ts | 1 | tests/unit/commands.test.ts::én kommando endrer rekkefølgen i både manus og film, uten nye ID-er | Under arbeid | 2026-10-08 DEC-0022: M1: kjernen verifisert; manusvisning med dra-og-slipp kommer i M2 |
 | REQ-0018 | Kap. 2 (l. 68) | TIMELINE, SCRIPT, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0019 | Kap. 2 (l. 69) | CORE, SCRIPT, TIMELINE, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0020 | Kap. 2 (l. 70) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0019 | Kap. 2 (l. 69) | CORE, SCRIPT, TIMELINE, EXPORT | src/core/views.ts | 1 | tests/unit/commands.test.ts::utelates fra manus og film, men ingenting slettes og den kan gjenaktiveres | Under arbeid | 2026-10-08 DEC-0022: M1: kjernen verifisert; varighet og eksport kommer i M2/M4 |
+| REQ-0020 | Kap. 2 (l. 70) | CORE | src/core/commands/apply.ts#SetOccurrenceActive | 1 | tests/unit/commands.test.ts::utelates fra manus og film, men ingenting slettes og den kan gjenaktiveres, tests/invariants/random-sequences.test.ts::INV-14: deaktivering sletter ingenting | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert (datanivå) |
 | REQ-0021 | Kap. 2 (l. 71-74) | CORE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0022 | Kap. 2.1 (l. 76-78) | CORE, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0023 | Kap. 2.1 (l. 79) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0024 | Kap. 2.1 (l. 80) | VERSION, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0022 | Kap. 2.1 (l. 76-78) | CORE, VERSION | src/core/views.ts#outdatedTakes | 1 | tests/unit/commands.test.ts::ferdig materiale endres ikke, men blir markert som utdatert for berørte blokker | Under arbeid | 2026-10-08 DEC-0022: M1: grunnlag for avvik på plass; avviksflyt i M6 |
+| REQ-0023 | Kap. 2.1 (l. 79) | CORE | src/core/views.ts, src/core/commands/apply.ts | 1 | tests/unit/commands.test.ts::én kommando endrer rekkefølgen i både manus og film, uten nye ID-er | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
+| REQ-0024 | Kap. 2.1 (l. 80) | VERSION, CORE | src/core/commands/apply.ts, db/migrations/0001_core.sql#protect_takes | 1 | tests/unit/commands.test.ts::ferdig materiale endres ikke, men blir markert som utdatert for berørte blokker, tests/db/run-db-tests.ts::INV-07: produsert materiale kan ikke slettes eller overskrives | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
 | REQ-0025 | Kap. 2.1 (l. 80) | VERSION, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0026 | Kap. 2.1 (l. 81) | VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0027 | Kap. 2.2 (l. 83-84) | VERSION, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0027 | Kap. 2.2 (l. 83-84) | VERSION, CORE | src/core/commands/apply.ts, db/migrations/0001_core.sql#protect_takes | 1 | tests/invariants/random-sequences.test.ts::INV-07/13: produsert materiale og historikk endres eller slettes aldri, tests/db/run-db-tests.ts::INV-07: produsert materiale kan ikke slettes eller overskrives | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
 | REQ-0028 | Kap. 2.2 (l. 83, 85) | VERSION, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0029 | Kap. 2.2 (l. 83, 86) | QUEUE, QUALITYCOST, PROVIDER | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0030 | Kap. 2.2 (l. 83, 87) | VERSION, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0031 | Kap. 2.2 (l. 83, 88) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0030 | Kap. 2.2 (l. 83, 87) | VERSION, TIMELINE | src/core/commands/apply.ts | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
+| REQ-0031 | Kap. 2.2 (l. 83, 88) | CORE | src/core/commands/apply.ts#assertCanEditVariant, src/core/invariants.ts | 1 | tests/invariants/random-sequences.test.ts::INV-04: kommandoer i én produksjon endrer aldri en annen produksjons forekomster | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
 | REQ-0032 | Kap. 2.2 (l. 83, 89) | VERSION, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0033 | Kap. 2.2 (l. 90) | VERSION, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0034 | Kap. 3.1 (l. 94-102) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0033 | Kap. 2.2 (l. 90) | VERSION, CORE | db/migrations/0001_core.sql#change_log, src/core/commands/apply.ts | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
+| REQ-0034 | Kap. 3.1 (l. 94-102) | CORE | src/core/ids.ts, src/core/model.ts | 1 | tests/invariants/random-sequences.test.ts::INV-02/03: ingen scene, forekomst eller produksjonsnummer forsvinner eller bytter scene | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
 | REQ-0035 | Kap. 3.1 (l. 103-108) | CORE, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0036 | Kap. 3.1 (l. 109) | CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0037 | Kap. 3.2 (l. 111-132) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0038 | Kap. 3.2 (l. 133) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0039 | Kap. 3.3 (l. 135-140) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0040 | Kap. 3.3 (l. 141) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0041 | Kap. 3.4 (l. 143-150) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0042 | Kap. 3.4 (l. 151) | CORE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0043 | Kap. 3.4 (l. 152) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0036 | Kap. 3.1 (l. 109) | CORE | src/core/model.ts, db/migrations/0001_core.sql | 2 | tests/invariants/random-sequences.test.ts::INV-02/03: ingen scene, forekomst eller produksjonsnummer forsvinner eller bytter scene, manuell: 2026-10-08 ingen fremmednøkkel eller unik nøkkel i 0001_core.sql bruker scenenummer | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
+| REQ-0037 | Kap. 3.2 (l. 111-132) | CORE | src/core/ids.ts | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
+| REQ-0038 | Kap. 3.2 (l. 133) | CORE | src/core/ids.ts | 1 | tests/unit/core-basics.test.ts::lager gyldige UUID v7 som sorteres etter tid | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
+| REQ-0039 | Kap. 3.3 (l. 135-140) | CORE | src/core/model.ts, db/migrations/0001_core.sql | 1 | tests/unit/commands.test.ts::krever egen variant og lar hovedfilmen være uendret | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
+| REQ-0040 | Kap. 3.3 (l. 141) | CORE | src/core/commands/apply.ts#ForkVariant | 1 | tests/unit/commands.test.ts::krever egen variant og lar hovedfilmen være uendret | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
+| REQ-0041 | Kap. 3.4 (l. 143-150) | CORE | db/migrations/0001_core.sql#apply_changes, src/adapters/storage/commands.functions.ts | 1 | tests/db/run-db-tests.ts::hele endringssettet rulles tilbake ved feil (atomisk) | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
+| REQ-0042 | Kap. 3.4 (l. 151) | CORE, UI | src/core/commands/apply.ts#inverse | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
+| REQ-0043 | Kap. 3.4 (l. 152) | CORE | src/core/views.ts, db/migrations/0001_core.sql | 1 | tests/invariants/random-sequences.test.ts::INV-01: manus og film har alltid samme aktive rekkefølge i alle produksjoner | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
 | REQ-0044 | Kap. 4.1 (l. 156) | SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0002: Akseptanse/merknad tilpasset nytt referansemanus |
 | REQ-0045 | Kap. 4.1 (l. 157) | PROCESS, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0002: Akseptanse/merknad tilpasset nytt referansemanus |
 | REQ-0046 | Kap. 4.1 (l. 158-172) | SCRIPT | – | 2 | – | Ikke startet | 2026-10-08 DEC-0002: Akseptanse/merknad tilpasset nytt referansemanus |
@@ -141,7 +141,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0069 | Kap. 4.4 (l. 222) | SCRIPT, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0070 | Kap. 4.4 (l. 223) | SCRIPT, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0071 | Kap. 4.4 (l. 224) | CORE, SCRIPT, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0072 | Kap. 4.4 (l. 225) | CORE, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0072 | Kap. 4.4 (l. 225) | CORE, SCRIPT | src/core/commands/apply.ts#CreateSegments | 1 | tests/unit/commands.test.ts::segmentering ved utseendeendring midt i scene endrer ikke manus eller nummer (INV-10), tests/invariants/random-sequences.test.ts::INV-10: segmentering endrer aldri scener, manusblokker eller rekkefølge | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
 | REQ-0073 | Kap. 4.5 (l. 227-235) | SCRIPT, UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0074 | Kap. 4.5 (l. 236) | SCRIPT, LIBRARY, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0075 | Kap. 4.5 (l. 237) | SCRIPT, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -174,8 +174,8 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0102 | Kap. 6.3 (l. 301-302) | SCRIPT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0103 | Kap. 6.3 (l. 303) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0104 | Kap. 6.3 (l. 304) | EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0105 | Kap. 6.4 (l. 306-310) | TIMELINE, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0106 | Kap. 6.4 (l. 311) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0105 | Kap. 6.4 (l. 306-310) | TIMELINE, CORE | src/core/time.ts, src/core/views.ts | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
+| REQ-0106 | Kap. 6.4 (l. 311) | TIMELINE | src/core/time.ts | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0107 | Kap. 6.4 (l. 312) | TIMELINE, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0108 | Kap. 7.1 (l. 316) | SCRIPT, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0109 | Kap. 7.1 (l. 317-323) | SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -373,7 +373,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0301 | Kap. 20.5 (l. 860) | QUEUE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0302 | Kap. 20.5 (l. 861) | QUEUE, QUALITYCOST | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0303 | Kap. 20.5 (l. 862) | QUEUE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0304 | Kap. 21 (l. 864-865) | VERSION, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0304 | Kap. 21 (l. 864-865) | VERSION, CORE | src/core/commands/apply.ts, db/migrations/0001_core.sql | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0305 | Kap. 21.1 (l. 866-875) | VERSION, CONTINUITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0306 | Kap. 21.2 (l. 876-888) | VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0307 | Kap. 21.2 (l. 880-881) | VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -385,7 +385,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0313 | Kap. 21.3 (l. 891) | VERSION, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0314 | Kap. 21.3 (l. 892) | VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0315 | Kap. 21.4 (l. 893-899) | VERSION, UI, SCRIPT, COMPOSE, TIMELINE, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0316 | Kap. 21.5 (l. 900-901) | VERSION, SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0316 | Kap. 21.5 (l. 900-901) | VERSION, SECURITY | src/core/commands/apply.ts, db/migrations/0001_core.sql#protect_takes | 1 | tests/invariants/random-sequences.test.ts::INV-07/13: produsert materiale og historikk endres eller slettes aldri, tests/db/run-db-tests.ts::INV-07: produsert materiale kan ikke slettes eller overskrives | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
 | REQ-0317 | Kap. 21.5 (l. 902) | VERSION, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0318 | Kap. 21.5 (l. 902) | VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0319 | Kap. 22 (l. 904-905) | CONTINUITY, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -397,7 +397,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0325 | Kap. 22 (l. 912) | CONTINUITY, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0326 | Kap. 22 (l. 913) | CONTINUITY, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0327 | Kap. 22 (l. 914) | CONTINUITY, SCRIPT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0328 | Kap. 23.1 (l. 917-918) | L10N, SCRIPT, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0328 | Kap. 23.1 (l. 917-918) | L10N, SCRIPT, CORE | src/core/model.ts, db/migrations/0001_core.sql | 2 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0329 | Kap. 23.1 (l. 919) | L10N, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0330 | Kap. 23.1 (l. 920) | L10N, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0331 | Kap. 23.1 (l. 921) | L10N, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -478,12 +478,12 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0406 | Kap. 27.2 (l. 1169-1178) | UI, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0407 | Kap. 27.3 (l. 1179-1189) | CORE, SECURITY, QUEUE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0408 | Kap. 28 (l. 1191-1192) | SECURITY, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0409 | Kap. 28.1 (l. 1193-1194) | SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0410 | Kap. 28.1 (l. 1195) | SECURITY, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0409 | Kap. 28.1 (l. 1193-1194) | SECURITY | db/migrations/0001_core.sql, src/adapters/storage/project-rows.ts | 1 | tests/db/run-db-tests.ts::DEC-0022: kommandoer fra kjernen lagres atomisk og leses tilbake identisk | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
+| REQ-0410 | Kap. 28.1 (l. 1195) | SECURITY, CORE | src/adapters/storage/commands.functions.ts, src/adapters/storage/project-rows.ts | 1 | tests/db/run-db-tests.ts::DEC-0022: kommandoer fra kjernen lagres atomisk og leses tilbake identisk | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
 | REQ-0411 | Kap. 28.2 (l. 1196-1197) | EXPORT, SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0412 | Kap. 28.2 (l. 1198-1206) | EXPORT, SECURITY, VERSION | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0413 | Kap. 28.3 (l. 1207-1208) | SECURITY, PROVIDER | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0414 | Kap. 28.3 (l. 1209) | SECURITY | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0414 | Kap. 28.3 (l. 1209) | SECURITY | src/adapters/storage/commands.functions.ts | 2 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0415 | Kap. 28.4 (l. 1210-1218) | SECURITY, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0416 | Kap. 29 (l. 1220-1221) | EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0417 | Kap. 29.1 (l. 1222-1229) | EXPORT, TIMELINE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -501,8 +501,8 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0429 | Kap. 30.2 (l. 1287) | UI, PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0430 | Kap. 30.3 (l. 1288-1301) | UI, L10N | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0431 | Kap. 30.3 (l. 1302) | UI, PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0432 | Kap. 31 (l. 1304-1306, 1351) | CORE, SCRIPT, TIMELINE, LIBRARY, CONTINUITY, COMPOSE, CAMERA, AUDIO, PROMPT, PROVIDER, QUALITYCOST, QUEUE, VERSION, L10N, PRESENT, EXPORT, SECURITY | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0433 | Kap. 31 (l. 1307-1309) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0432 | Kap. 31 (l. 1304-1306, 1351) | CORE, SCRIPT, TIMELINE, LIBRARY, CONTINUITY, COMPOSE, CAMERA, AUDIO, PROMPT, PROVIDER, QUALITYCOST, QUEUE, VERSION, L10N, PRESENT, EXPORT, SECURITY | src/core/, src/adapters/, src/app/ | 2 | tests/architecture/core-purity.test.ts::importerer ikke rammeverk, backend eller plattform-API-er | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
+| REQ-0433 | Kap. 31 (l. 1307-1309) | CORE | src/core/ | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0434 | Kap. 31 (l. 1310-1312) | SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0435 | Kap. 31 (l. 1313-1314) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0436 | Kap. 31 (l. 1315-1317) | LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -514,13 +514,13 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0442 | Kap. 31 (l. 1331-1333) | PROVIDER | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0443 | Kap. 31 (l. 1334-1335) | QUALITYCOST | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0444 | Kap. 31 (l. 1336-1337) | QUEUE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0445 | Kap. 31 (l. 1338-1339) | VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0445 | Kap. 31 (l. 1338-1339) | VERSION | src/core/commands/apply.ts, db/migrations/0001_core.sql | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0446 | Kap. 31 (l. 1340-1342) | L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0447 | Kap. 31 (l. 1343-1344) | PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0448 | Kap. 31 (l. 1345-1347) | EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0449 | Kap. 31 (l. 1348-1350) | SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0449 | Kap. 31 (l. 1348-1350) | SECURITY | db/migrations/0001_core.sql | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0450 | Kap. 32 (l. 1353-1355) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0451 | Kap. Fase 1 (l. 1356-1368) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0451 | Kap. Fase 1 (l. 1356-1368) | PROCESS | src/core/, db/migrations/0001_core.sql | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0452 | Kap. Fase 1 (l. 1369) | CORE, PROCESS | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0453 | Kap. Fase 2 (l. 1370-1379) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0454 | Kap. Fase 3 (l. 1380-1388) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -549,11 +549,11 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0477 | Kap. 33.6 (l. 1481) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0478 | Kap. 33.6 (l. 1482) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0479 | Kap. 34 (l. 1486-1487) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0480 | Kap. 34 (l. 1488-1490) | CORE, SCRIPT, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0480 | Kap. 34 (l. 1488-1490) | CORE, SCRIPT, TIMELINE | src/core/views.ts | 1 | tests/invariants/random-sequences.test.ts::INV-01: manus og film har alltid samme aktive rekkefølge i alle produksjoner | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
 | REQ-0481 | Kap. 34 (l. 1491-1492) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0482 | Kap. 34 (l. 1493-1495) | EXPORT, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0483 | Kap. 34 (l. 1496-1498) | SCRIPT, L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0484 | Kap. 34 (l. 1499-1501) | VERSION, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0484 | Kap. 34 (l. 1499-1501) | VERSION, CORE | src/core/model.ts | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0485 | Kap. 34 (l. 1502-1504) | VERSION, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0486 | Kap. 34 (l. 1505-1506) | VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0487 | Kap. 34 (l. 1507-1508) | COMPOSE, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -574,8 +574,8 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0502 | Kap. 34 (l. 1534-1535) | PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0503 | Kap. 34 (l. 1536-1537) | LIBRARY, PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0504 | Kap. 34 (l. 1538-1539) | QUEUE, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0505 | Kap. 34 (l. 1540-1541) | VERSION, CORE, SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0506 | Kap. 34 (l. 1542) | CORE, PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0505 | Kap. 34 (l. 1540-1541) | VERSION, CORE, SECURITY | src/core/commands/apply.ts, db/migrations/0001_core.sql | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
+| REQ-0506 | Kap. 34 (l. 1542) | CORE, PROCESS | src/core/ | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0507 | Kap. 35 (l. 1545) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0508 | Kap. 35 (l. 1546) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0509 | Kap. 35 (l. 1548) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -589,14 +589,14 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0517 | Kap. 35 (l. 1556) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0518 | Kap. 35 (l. 1557) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0519 | Kap. 35 (l. 1558-1559) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0520 | Beslutning DEC-0003 | COLLAB, CORE, SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0003: Opprettet |
-| REQ-0521 | Beslutning DEC-0003 | COLLAB, SECURITY, UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0003: Opprettet |
-| REQ-0522 | Beslutning DEC-0003 | COLLAB, SCRIPT, VERSION | – | 2 | – | Ikke startet | 2026-10-08 DEC-0003: Opprettet |
-| REQ-0523 | Beslutning DEC-0010 | COLLAB, SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0010: Revisjon: kilde satt til DEC-0010 (teknisk anbefaling) |
-| REQ-0524 | Beslutning DEC-0010 | COLLAB, SECURITY, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0010: Revisjon: kilde satt til DEC-0010 (teknisk anbefaling) |
-| REQ-0525 | Beslutning DEC-0010 | COLLAB, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0010: Revisjon: kilde satt til DEC-0010 (teknisk anbefaling) |
-| REQ-0526 | Beslutning DEC-0010 | COLLAB, CORE, VERSION | – | 2 | – | Ikke startet | 2026-10-08 DEC-0010: Revisjon: kilde satt til DEC-0010 (teknisk anbefaling) |
-| REQ-0527 | Beslutning DEC-0010 | COLLAB, VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0010: Revisjon: kilde satt til DEC-0010 (teknisk anbefaling) |
+| REQ-0520 | Beslutning DEC-0003 | COLLAB, CORE, SECURITY | db/migrations/0001_core.sql | 1 | tests/db/run-db-tests.ts::REQ-0521: eier inviterer, mottaker aksepterer og får lesetilgang | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
+| REQ-0521 | Beslutning DEC-0003 | COLLAB, SECURITY, UI | db/migrations/0001_core.sql#create_invitation, src/app/projects/ProjectOverview.tsx, src/routes/invitasjon.tsx | 2 | tests/db/run-db-tests.ts::REQ-0521: eier inviterer, mottaker aksepterer og får lesetilgang, tests/db/run-db-tests.ts::INV-C2: invitasjon for prosjekt X gir ikke tilgang til prosjekt Y | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
+| REQ-0522 | Beslutning DEC-0003 | COLLAB, SCRIPT, VERSION | src/core/commands/apply.ts | 2 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
+| REQ-0523 | Beslutning DEC-0010 | COLLAB, SECURITY | db/migrations/0001_core.sql | 1 | tests/db/run-db-tests.ts::REQ-0523: leser kan ikke invitere eller skrive | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
+| REQ-0524 | Beslutning DEC-0010 | COLLAB, SECURITY, CORE | db/migrations/0001_core.sql | 2 | tests/db/run-db-tests.ts::INV-C2: ikke-medlem ser ingenting, tests/db/run-db-tests.ts::INV-C2: klienten kan ikke skrive direkte i tabellene, tests/db/run-db-tests.ts::INV-C2: klienten kan ikke kalle apply_changes | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
+| REQ-0525 | Beslutning DEC-0010 | COLLAB, VERSION | db/migrations/0001_core.sql#change_log | 1 | tests/db/run-db-tests.ts::redigering av replikk gir ny historikkrad med forfatter | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
+| REQ-0526 | Beslutning DEC-0010 | COLLAB, CORE, VERSION | src/core/commands/apply.ts, db/migrations/0001_core.sql#apply_changes | 2 | tests/unit/commands.test.ts::en skriving basert på gammel revisjon avvises og endrer ingenting, tests/db/run-db-tests.ts::INV-C1: en endring basert på gammel revisjon avvises av databasen (P0409) | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
+| REQ-0527 | Beslutning DEC-0010 | COLLAB, VERSION, UI | src/core/commands/apply.ts | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0528 | Beslutning DEC-0010, DEC-0018 | COLLAB, QUALITYCOST, SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0010: Revisjon: kilde satt til DEC-0010 (teknisk anbefaling) |
 | REQ-0529 | Beslutning DEC-0010 | COLLAB, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0010: Revisjon: kilde satt til DEC-0010 (teknisk anbefaling) |
 | REQ-0530 | Kap. 1 (l. 6) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet (lagt til ved dekningskontroll – linje 6 manglet) |

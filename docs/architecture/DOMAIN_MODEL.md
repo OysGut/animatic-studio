@@ -1,7 +1,7 @@
 # Domenemodell – Animatic Studio
 
 Status: Teknisk anbefaling (DEC-0009, DEC-0015). Kravgrunnlag: mandat kap. 2, 3, 5, 6, 8–10, 15, 18, 21, 23–25, 32 fase 1, og DEC-0003.
-Denne modellen implementeres i `src/core/model/` (typer) og `supabase/migrations/` (tabeller). Navn i kode er engelske; norske begreper i parentes.
+Denne modellen implementeres i `src/core/model.ts` (typer) og `db/migrations/` (tabeller, DEC-0022). Navn i kode er engelske; norske begreper i parentes.
 
 ## 0. Begrepsavklaringer (DEC-0015)
 

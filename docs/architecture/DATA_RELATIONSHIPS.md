@@ -1,10 +1,10 @@
 # Datarelasjoner – Animatic Studio
 
-Status: Teknisk anbefaling. Utkast til databaseskjema (Postgres/Lovable Cloud) som realiserer `DOMAIN_MODEL.md`. Første migrasjon skrives i fase 1 (`supabase/migrations/`). Navn er engelske.
+Status: Teknisk anbefaling. Utkast til databaseskjema (Postgres/Lovable Cloud) som realiserer `DOMAIN_MODEL.md`. Implementert i `db/migrations/0001_core.sql` (DEC-0022). Navn er engelske.
 
 ## Felles regler
 - Alle tabeller: `id uuid primary key` (UUID v7 generert i klient eller med funksjon), `project_id uuid not null references projects`, `created_at`, `created_by uuid references auth.users`, `revision int not null default 1`.
-- RLS aktivert på alle tabeller; lese = `private.is_project_member(project_id)`. Skriving bare via `public.apply_command(...)` (`security definer`) som kaller `private.cmd_*`; `insert/update/delete` tilbakekalt for `authenticated` (DEC-0020).
+- RLS aktivert på alle tabeller; lese = `private.is_project_member(project_id)`. Skriving bare via serverfunksjonen `runCommand` → `public.apply_changes(...)` (kun `service_role`, DEC-0022); `insert/update/delete` tilbakekalt for `authenticated`. Implementert i `db/migrations/0001_core.sql`.
 - Ingen `on delete cascade` på produksjonsdata. Sletting av prosjekt er en egen, eksplisitt og bekreftet eieroperasjon.
 - Ingen fremmednøkkel eller unik nøkkel inneholder scenenummer (INV-02).
 - Uforanderlige tabeller (bare insert): `screenplay_versions`, `resource_versions`, `takes` (filpekere), `change_log`, `imported_documents`, `export_versions`, `generation_prompts` (versjonert).

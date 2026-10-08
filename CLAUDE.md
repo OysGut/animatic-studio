@@ -23,7 +23,7 @@ Ved motstrid: pek på motsetningen og hvilken beslutning som løser den. Velg al
 - Kontinuitet følger fortellingstid, ikke visnings- eller produksjonsrekkefølge.
 - Produksjonsteknisk segmentering endrer aldri manusstruktur eller scenenumre.
 - 2D-animatic kan spilles av og eksporteres uten generativ AI. Betalte API-kall krever eksplisitt kostnadsgodkjenning innen budsjett.
-- Flere brukere per prosjekt (DEC-0003, REQ-0520–0522): ingen av andres endringer skal gå tapt. Teknisk løsning (DEC-0010/0020): tilgang håndheves i backend, all skriving via `apply_command`-RPC med revisjonskontroll.
+- Flere brukere per prosjekt (DEC-0003, REQ-0520–0522): ingen av andres endringer skal gå tapt. Teknisk løsning (DEC-0010/0022): tilgang håndheves i backend; all skriving går via serverfunksjonen `runCommand` → `public.apply_changes` med revisjonskontroll. Migrasjoner i `db/migrations/` (aldri i `drizzle/`, som Lovable eier).
 - Domenekjernen (`src/core/`) er plattformnøytral TypeScript uten React/Lovable/Supabase-avhengigheter (portabilitet til macOS/Windows).
 
 ## Før du endrer kode

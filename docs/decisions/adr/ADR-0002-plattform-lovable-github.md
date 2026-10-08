@@ -11,7 +11,7 @@ Mars vil ikke skrive funksjonsprompter i Lovable. Claude skal bygge alt i GitHub
 - Lovable leser `AGENTS.md`/`CLAUDE.md` i repoet.
 ## Beslutning
 1. Mars oppretter Lovable-prosjektet og kobler GitHub. Claude bygger i det genererte repoet og følger stacken Lovable genererer (verifiseres fra `package.json` ved første klone).
-2. Backend: Lovable Cloud. Skjema, RLS og funksjoner skrives som filer i repoet (`supabase/migrations/`, `supabase/functions/` eller server functions). Etter hver leveranse sender Mars én fast melding i Lovable (`docs/development/LOVABLE_SYNC.md`).
+2. Backend: Lovable Cloud. Skjema, RLS og funksjoner skrives som filer i repoet (`db/migrations/` og serverfunksjoner – presisert i DEC-0022/ADR-0009; Lovable eier `drizzle/`). Etter hver leveranse sender Mars én fast melding i Lovable (`docs/development/LOVABLE_SYNC.md`).
 3. Mediefiler lagres i Storage, aldri i repoet.
 4. `AGENTS.md` instruerer Lovables agent om hva den ikke skal endre.
 ## Alternativer

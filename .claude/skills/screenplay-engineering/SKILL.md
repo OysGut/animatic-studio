@@ -2,7 +2,7 @@
 name: screenplay-engineering
 description: Arbeidsmetode for profesjonelle filmmanus (screenplay) i Animatic Studio – import av DOCX og PDF (Final Draft-eksport), scenedeteksjon, sceneoverskrifter (INT./EXT., lokasjon, tid, scenenummer i begge marger), handling, karakterbetegnelser, extensions (CONT'D, O.S., V.O.), parentetiske instruksjoner, dialog, overganger, paginering (US Letter/Courier 12 og A4), sideskiftregler (MORE/CONT'D), eksportnummerering (fortløpende, bevar produksjonsnummer 42A/42B, historisk, OMITTED), eksport til DOCX/PDF (Fountain senere) og bevaring av originalen. Bruk når du skriver eller endrer kode i src/core/screenplay, src/engine/import eller src/core/export/screenplay, lager gyldne tester mot referansemanuset, eller feilsøker manusvisning, ombrytning eller sideskift. Triggere er manusimport, manusformat, PDF-manus, DOCX-manus, sceneoverskrift, scenenummerering, eksportnummerering, paginering, sideskift, manuseksport, Final Draft, Fountain, screenplay parser. Ikke bare fordi oppgaven nevner manus.
 metadata:
-  version: "0.2.0"
+  version: "0.2.1"
   owner: "animatic-studio"
   last-reviewed: "2026-10-08"
 ---

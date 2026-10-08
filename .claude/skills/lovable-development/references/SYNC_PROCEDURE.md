@@ -10,8 +10,8 @@ Flyt (ARCHITECTURE.md §1): Claude skriver i repoet på Mars' Mac → Mars trykk
 ## 2. Under arbeid
 - Små, sammenhengende commits med krav-ID: `REQ-0228: MoveOccurrence i tidslinje (INV-01)`.
 - Større arbeid kan gjøres på en lokal gren og flettes inn i `main` med vanlig merge (ikke rebase/squash av commits som allerede er på `main`).
-- Migrasjoner: ny fil `supabase/migrations/<YYYYMMDDHHMMSS>_<beskrivelse>.sql`. **Endre aldri en migrasjon som kan være kjørt** – lag en ny.
-- Oppdater forventet skjemaversjon i appen når en migrasjon legges til.
+- Migrasjoner: ny fil `db/migrations/NNNN_<beskrivelse>.sql` (neste løpenummer; DEC-0022). Ikke `supabase/migrations/`, og aldri noe i `drizzle/` (eies av Lovable). **Endre aldri en migrasjon som kan være kjørt** – lag en ny. Test lokalt med `bun tests/db/run-db-tests.ts`.
+- Oppdater `EXPECTED_SCHEMA_VERSION` (`src/adapters/storage/project-rows.ts`) når en migrasjon legges til.
 
 ## 3. Leveranse
 1. Lokalt: `npm run build`, `npm test`, `python3 scripts/kb/check_kb.py` – alt grønt.

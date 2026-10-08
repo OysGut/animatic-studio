@@ -1,8 +1,8 @@
 ---
 name: architecture-guardian
-description: Holder arkitekturen i Animatic Studio konsistent mellom domene (src/core), database (supabase/migrations, RLS), tjenester/adaptere (src/adapters, src/engine) og UI. Bruk ved ny modul, ny tabell eller migrasjon, ny eller endret kommando, ny RPC, nye avhengigheter, refaktorering, kodegjennomgang (code review), når noe «bare skal fikses i komponenten», og ved spørsmål om hvordan noe skal lagres, kobles eller modelleres, hvor data eller logikk hører hjemme, eller endringer som berører flere moduler eller både manus og film. Passer på skillet prosjekt/produksjon/scene/sceneforekomst/scenevariant/segment/take, lagreglene (ren TypeScript i src/core – ADR-0003), kommandomønsteret apply_command og change_log (ADR-0005, DEC-0020), RLS og revision-kontroll (ADR-0004), tidsmodellen (ADR-0006). Triggere - arkitektur, domenemodell, datamodell, hvordan skal X lagres eller kobles, migrasjon, tabell, RLS, Supabase, adapter, lagdeling, refaktorering, portabilitet, technical debt.
+description: Holder arkitekturen i Animatic Studio konsistent mellom domene (src/core), database (db/migrations, RLS), tjenester/adaptere (src/adapters, src/engine) og UI. Bruk ved ny modul, ny tabell eller migrasjon, ny eller endret kommando, ny RPC, nye avhengigheter, refaktorering, kodegjennomgang (code review), når noe «bare skal fikses i komponenten», og ved spørsmål om hvordan noe skal lagres, kobles eller modelleres, hvor data eller logikk hører hjemme, eller endringer som berører flere moduler eller både manus og film. Passer på skillet prosjekt/produksjon/scene/sceneforekomst/scenevariant/segment/take, lagreglene (ren TypeScript i src/core – ADR-0003), kommandomønsteret runCommand → applyCommand i kjernen → apply_changes og change_log (ADR-0005, DEC-0022), RLS og revision-kontroll (ADR-0004), tidsmodellen (ADR-0006). Triggere - arkitektur, domenemodell, datamodell, hvordan skal X lagres eller kobles, migrasjon, tabell, RLS, Supabase, adapter, lagdeling, refaktorering, portabilitet, technical debt.
 metadata:
-  version: "0.2.0"
+  version: "0.2.1"
   owner: "animatic-studio"
   last-reviewed: "2026-10-08"
 ---
@@ -42,24 +42,24 @@ Sørger for at hver ny bit passer inn i én sammenhengende struktur, slik mandat
    - produsert resultat → `Take` (aldri overskrevet);
    - fortellingstid → `Scene.storyTime`; kontinuitet → `ContinuityEvent`.
    Er du i tvil om et felt hører til scene, forekomst eller variant: spør «endres dette når scenen brukes i en spinoff?» Ja → forekomst/variant.
-3. **Uttrykk endringen som kommando** i `src/core/commands` (tilstand + kommando → ny tilstand | feil, med `inverse`), speilet av én transaksjonell RPC `public.apply_command(project_id, command, base_revisions)` som sjekker medlemskap, rolle og `base_revisions` (avvik → `P0409`), kaller den interne `private.cmd_<kommando>` og skriver `change_log` (ADR-0004/0005, DEC-0020 pkt. 1–3). Ingen egne klienteksponerte RPC-er per kommando.
-4. **Tilgang:** ny tabell har `project_id`, `revision`, RLS aktivert, bare select-policy via `private.is_project_member(project_id)`, `insert/update/delete` revoket for `authenticated`; skriving bare via `apply_command` → `private.cmd_*` (rolle via `private.has_project_role`). Ingen `on delete cascade` på produksjonsdata. Ingen nøkkel med scenenummer, og ingen `UNIQUE(production_id, scene_id)` – samme scene kan forekomme flere ganger i én produksjon (DEC-0020 pkt. 10). Lagringssti: se `DATA_RELATIONSHIPS.md` «Lagringsstruktur».
+3. **Uttrykk endringen som kommando** i `src/core/commands` (tilstand + kommando → ny tilstand | feil, med `inverse`; `applyCommand` i `apply.ts`). Kjernen er eneste sted domenelogikken finnes (DEC-0022, erstatter DEC-0020 pkt. 1 og 3). Klienten kaller serverfunksjonen `runCommand` (`src/adapters/storage/commands.functions.ts`), som sjekker medlemskap/rolle (≥ editor), laster prosjektet med admin-klienten, kjører `applyCommand`, lager endringssett med `diffStates` (`src/core/patch.ts`) og lagrer det atomisk via `public.apply_changes` (bare `service_role`; sjekker rolle, prosjekttilhørighet og revisjon per rad – avvik → `P0409` – og skriver `change_log`). Ingen SQL-funksjon per kommando; de eneste RPC-ene klienten kan kalle er `public.create_project`, `public.create_invitation` og `public.accept_invitation`.
+4. **Tilgang:** ny tabell har `project_id`, `revision`, RLS aktivert, bare select-policy via `private.is_project_member(project_id)`, `insert/update/delete` revoket for `authenticated`; skriving bare via `runCommand` → `public.apply_changes` (ny skrivbar tabell legges inn i `apply_changes` og `TABLE_ORDER`). Ingen `on delete cascade` på produksjonsdata. Ingen nøkkel med scenenummer, og ingen `UNIQUE(production_id, scene_id)` – samme scene kan forekomme flere ganger i én produksjon (DEC-0020 pkt. 10). Lagringssti: se `DATA_RELATIONSHIPS.md` «Lagringsstruktur».
 5. **Tid:** heltall bilder + rasjonell bildefrekvens; lagre lokal tid (scene/segment/kildeklipp), beregn absolutt filmtid (ADR-0006).
 6. **Kjør [sjekklisten](references/ARCHITECTURE_REVIEW_CHECKLIST.md)** og søk etter [faresignalene](references/DEBT_SIGNALS.md) i diffen.
 7. **Store eller nye tekniske valg:** skriv ADR (`docs/decisions/adr/TEMPLATE.md`) + DEC (Teknisk anbefaling). Påstander om Lovable/Supabase-egenskaper som ikke er verifisert merkes som usikre (33.4; se `docs/references/technical/LOVABLE_PLATFORM_NOTES.md`).
 8. **Gjeld som ikke rettes nå:** registrer i `KNOWN_ISSUES.md` med faresignal, risiko (hvilken INV/REQ), og plan.
 
 ## 5. Leveranse
-- Kort arkitekturnotat i planen (`CURRENT_WORK.md`): lag, entiteter, kommandoer/RPC, migrasjoner, berørte INV/REQ, ev. ADR.
+- Kort arkitekturnotat i planen (`CURRENT_WORK.md`): lag, entiteter, kommandoer, migrasjoner, berørte INV/REQ, ev. ADR.
 - Oppdaterte `DOMAIN_MODEL.md`/`DATA_RELATIONSHIPS.md`/`ARCHITECTURE.md` i samme commit som koden når modellen endres.
 - Til Mars bare hvis valget koster penger, gjelder sikkerhet eller påvirker hva produktet gjør – i klartekst.
 
 ## 6. Kontrollpunkter
 - [ ] `src/core` importerer ikke React, TanStack, Supabase, Lovable eller nettleser-API-er (ADR-0003; `tests/architecture/core-purity.test.ts`).
-- [ ] Ingen UI-kode skriver direkte til tabeller; alt går via kommando → RPC.
+- [ ] Ingen UI-kode skriver direkte til tabeller; alt går via kommando → `runCommand` → `apply_changes`.
 - [ ] Rekkefølge finnes bare som `scene_occurrences.order_key` (INV-01).
 - [ ] Ingen ID, URL, filnavn, cache-nøkkel eller relasjon bygger på scenenummer (INV-02).
-- [ ] Ny tabell: RLS, `revision`, `project_id`, ingen cascade, migrasjon i `supabase/migrations/`.
+- [ ] Ny tabell: RLS, `revision`, `project_id`, ingen cascade, migrasjon i `db/migrations/NNNN_navn.sql`.
 - [ ] Domenemodell-dokumentene stemmer med koden.
 
 ## 7. Typiske feil som må unngås

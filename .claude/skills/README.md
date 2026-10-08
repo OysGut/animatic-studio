@@ -11,14 +11,14 @@ Formatet kontrolleres av `python3 scripts/kb/check_kb.py`. Vurdering av eksterne
 | `requirements-traceability` | Krav legges til/endres, status oppdateres, tester knyttes til krav, milepælsrevisjon | alle |
 | `architecture-guardian` | Ny modul, tabell, migrasjon, kommando, RPC, adapter; «hvordan skal X lagres/kobles»; endringer som berører flere moduler; mistanke om strukturell gjeld | database-domain-modeling |
 | `scene-sync-invariants` | Alt som berører rekkefølge, aktivering, identitet, tidskoblinger, montering, spinoffer, segmenter, replikk-/oversettelsesendringer, samtidig redigering (INV-C1), kontinuitet | test-quality-engineering |
-| `database-domain-modeling` | Skjema, migrasjoner, RLS, RPC-er, versjonstabeller | secure-development |
+| `database-domain-modeling` | Skjema, migrasjoner (`db/migrations/`), RLS, `apply_changes` og klient-RPC-er, versjonstabeller | secure-development |
 | `screenplay-engineering` | Manusimport (PDF/DOCX), scenedeteksjon, visning, paginering, nummerering, eksport | scene-sync-invariants |
 | `react-typescript-engineering` | All frontend- og domenekode i TypeScript/React | test-quality-engineering |
 | `test-quality-engineering` | Teststrategi, nye tester, «er dette ferdig?» | requirements-traceability |
 | `design-system-director` | Visuell utforming, tokens, komponenter, visuell QA | ux-interaction-design |
 | `ux-interaction-design` | Arbeidsflyter, tidslinje, drag-and-drop, snarveier, angre/gjør om, feiltilstander | design-system-director |
 | `lovable-development` | Kompatibilitet med Lovable, synk GitHub↔Lovable, migrasjoner/deploy via Lovable, meldinger til Lovable | secure-development |
-| `secure-development` | Nøkler, tilgang (skriving bare via `apply_command`), filimport, lagring, avhengigheter, logging, eksterne plugins; kostnadsporten (INV-12/INV-C3) inntil `ai-cost-quality-governance` finnes (M5, DEC-0020) | database-domain-modeling |
+| `secure-development` | Nøkler, tilgang (skriving bare via `runCommand` → `apply_changes`, DEC-0022), filimport, lagring, avhengigheter, logging, eksterne plugins; kostnadsporten (INV-12/INV-C3) inntil `ai-cost-quality-governance` finnes (M5, DEC-0020) | database-domain-modeling |
 
 ## Planlagt (opprettes ved behov – se `docs/development/ROADMAP.md`)
 Fagskills (del D): screenplay-version-control, narrative-continuity-analysis, duration-estimation, production-branching, multiplane-2d-engine, camera-motion-editor, character-continuity, asset-style-consistency, editorial-timeline, audio-dialogue-engine, media-pipeline, multilingual-localization, ai-provider-adapters, generation-prompt-engineering, render-queue-orchestration, ai-cost-quality-governance, cinematic-poster-design, print-prepress-export.
