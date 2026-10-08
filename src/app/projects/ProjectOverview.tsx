@@ -62,9 +62,16 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
     return <p className="p-6 text-[13px] text-text-tertiary">Henter prosjektet …</p>;
   if (state.isError || !state.data)
     return (
-      <p className="p-6 text-[13px] text-status-danger">
-        Prosjektet finnes ikke, eller du har ikke tilgang.
-      </p>
+      <div role="alert" className="p-6">
+        <p className="text-[13px] text-status-danger">
+          Prosjektet kunne ikke hentes. Det finnes ikke, du har ikke tilgang, eller noe gikk galt.
+        </p>
+        {state.error ? (
+          <p className="mt-2 font-mono text-xs text-text-tertiary">
+            Teknisk detalj (send gjerne til Claude): {state.error.message}
+          </p>
+        ) : null}
+      </div>
     );
   const s = state.data;
   const main = mainProduction(s);

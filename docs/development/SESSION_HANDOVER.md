@@ -25,6 +25,10 @@ Nye: `src/core/**`, `src/adapters/storage/**`, `src/app/**`, `src/routes/prosjek
 ## Uavklarte risikoer
 KI-04 (første migrasjonskjøring i Lovable), KI-12 (full lasting per kommando), KI-14 (utypet klient til types.ts regenereres), KI-15 (e-postbekreftelse), KI-16 (lockfil), KI-17 (CI). Produktspørsmål Q-02–Q-10 (Q-01 avklart for testfasen).
 
+## Etter levering av M1 (samme dag)
+- Mars pushet, Lovable kjørte `0001_core.sql` uten feil (schema_version = 1) og regenererte `types.ts`.
+- Mars fant en feil: prosjektsiden kunne ikke åpnes (KI-18). Rettet + kontrakttest. 38 Vitest-tester grønne.
+
 ## Neste konkrete steg
 1. Mars: Commit + Push → synkmelding for `0001_core.sql` → logg inn i forhåndsvisningen og opprett «Jula på Dovre».
 2. Claude: rett eventuelle feil fra første kjøring, bytt til typet klient, start M2 (manusimport fra referansemanuset).

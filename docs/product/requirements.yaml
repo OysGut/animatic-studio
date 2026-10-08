@@ -12270,6 +12270,7 @@ requirements:
   - src/adapters/storage/project-rows.ts
   verification:
   - 'tests/db/run-db-tests.ts::DEC-0022: kommandoer fra kjernen lagres atomisk og leses tilbake identisk'
+  - tests/unit/storage-contract.test.ts::loadProjectRows spør bare etter tabeller og kolonner som finnes
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -12277,6 +12278,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: status Verifisert'
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: Feil KI-18 rettet; kontrakttest lagt til
   notes: ''
 - id: REQ-0410
   title: Ikke kritiske data kun i nettlesertilstand
@@ -12304,6 +12308,7 @@ requirements:
   - src/adapters/storage/project-rows.ts
   verification:
   - 'tests/db/run-db-tests.ts::DEC-0022: kommandoer fra kjernen lagres atomisk og leses tilbake identisk'
+  - tests/unit/storage-contract.test.ts::loadProjectRows spør bare etter tabeller og kolonner som finnes
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -12311,6 +12316,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: status Verifisert'
+  - date: '2026-10-08'
+    decision: DEC-0022
+    change: Feil KI-18 rettet; kontrakttest lagt til
   notes: ''
 - id: REQ-0411
   title: Portabel eksport/sikkerhetskopi av prosjekt

@@ -10,6 +10,11 @@ export const EXPECTED_SCHEMA_VERSION = 1;
 
 const PAGE = 1000;
 
+/** Stabil sortering for sidevis lesing. Ikke alle tabeller har kolonnen `id` (historikk har (block_id, rev)). */
+export const ORDER_COLUMNS: Readonly<Record<string, readonly string[]>> = {
+  script_block_revisions: ["block_id", "rev"],
+};
+
 // Typene i src/integrations/supabase/types.ts genereres av Lovable etter at migrasjonen er kjørt.
 // Til da brukes en utypet klient her.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,12 +23,9 @@ export type AnyClient = SupabaseClient<any, any, any>;
 async function fetchAll(db: AnyClient, table: string, projectId: string): Promise<Row[]> {
   const out: Row[] = [];
   for (let from = 0; ; from += PAGE) {
-    const { data, error } = await db
-      .from(table)
-      .select("*")
-      .eq("project_id", projectId)
-      .order("id")
-      .range(from, from + PAGE - 1);
+    let query = db.from(table).select("*").eq("project_id", projectId);
+    for (const col of ORDER_COLUMNS[table] ?? ["id"]) query = query.order(col);
+    const { data, error } = await query.range(from, from + PAGE - 1);
     if (error) throw new Error(`Kunne ikke lese ${table}: ${error.message}`);
     out.push(...((data ?? []) as Row[]));
     if (!data || data.length < PAGE) return out;
