@@ -1,0 +1,19 @@
+# Manifest for den autoritative produktspesifikasjonen. Ikke rediger MASTER_SPECIFICATION.md.
+file: docs/product/MASTER_SPECIFICATION.md
+title: "ANIMATIC STUDIO – Komplett prosjektmandat, produktvisjon og utviklingsinstruksjoner – samlet versjon 14"
+version: 14
+received: "2026-10-08"
+received_from: "Mars (mars@gutu.no), lastet opp i Claude-prosjektet «Animatic Studio» som Prosjektmandat.md"
+also_stored_at: "Mars' Mac: Claude/Projects/Animatic Studio/Prosjektmandat/Prosjektmandat.md (identisk kontrollsum)"
+sha256: 9dc65608975b94f9c5dc88576b8b11e99b5cb5f153cbce5b019f968183328b52
+bytes: 68705
+lines: 1559
+chapters: 35
+known_artifacts:
+  - "Mange linjer forekommer to ganger etter hverandre (redigeringsartefakt). De er bevart uendret. Et duplikat er ikke to krav."
+  - "Linje 173–176: tom kodeblokk (redigeringsartefakt)."
+  - "Kap. 4.1 viser til «DEL 2.docx». Erstattet som referanse av hele norsk og engelsk manus – se DEC-0002."
+protection: >
+  Filen er skrivebeskyttet i arbeidsmappen og kontrollsummen sjekkes av scripts/kb/check_kb.py og GitHub Actions.
+  Endringer i produktkravene registreres som beslutninger (docs/decisions/DECISION_LOG.md), aldri ved å redigere denne filen.
+  En ny mandatversjon lagres som en NY fil (f.eks. MASTER_SPECIFICATION_v15.md) med eget manifest.

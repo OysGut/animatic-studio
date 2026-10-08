@@ -30,3 +30,26 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# --- Animatic Studio (DEC-0004, ADR-0002) ---
+# Manus og mediefiler skal aldri i repoet. Manus ligger i ../Manus/ utenfor repoet.
+*.pdf
+*.docx
+*.fdx
+*.fountain
+!tests/fixtures/**/*.fountain
+*.mp4
+*.mov
+*.mxf
+*.wav
+*.aif
+*.aiff
+*.mp3
+*.psd
+# Hemmeligheter
+.env.local
+.env.*.local
+*.pem
+*.key
+# Python-cache fra kontrollskript
+__pycache__/

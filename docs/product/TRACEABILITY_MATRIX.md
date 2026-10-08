@@ -1,0 +1,602 @@
+<!-- GENERERT FIL – ikke rediger. Kilde: docs/product/requirements.yaml. Kjør: python3 scripts/kb/build_docs.py -->
+# Sporbarhetsmatrise – Animatic Studio
+
+Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke filer som implementerer det, hvordan det testes, om det er implementert, om det er endret og hvilken beslutning som tillot endringen.
+
+**Regel:** Et krav er ikke ferdig fordi kode er skrevet. Status *Verifisert* krever registrert verifikasjon (test eller kontroll) – håndheves av `scripts/kb/check_kb.py`.
+
+## Invarianter (kritiske systemregler)
+
+| Invariant | Beskrivelse | Krav | Verifiserte |
+|---|---|---|---|
+| INV-01 | Manus og film er to visninger av samme aktive produksjonsstruktur. | 21 | 0 |
+| INV-02 | Scenenumre er ikke permanente identifikatorer. | 24 | 0 |
+| INV-03 | En scene beholder identitet gjennom flytting og omnummerering. | 16 | 0 |
+| INV-04 | Spinoffer kan bruke samme kildescene med selvstendig rekkefølge og lokale endringer. | 19 | 0 |
+| INV-05 | Norsk er hovedmanus. | 7 | 0 |
+| INV-06 | Andre språkversjoner endrer ikke norsk hovedmanus automatisk. | 4 | 0 |
+| INV-07 | Ferdige filmsekvenser overskrives ikke automatisk etter manusendringer. | 25 | 0 |
+| INV-08 | Brukeren kan godkjenne avvik, oppdatere produksjonsmateriale eller angre relevant endring. | 27 | 0 |
+| INV-09 | Karakterkontinuitet følger fortellingstid, også ved flashbacks. | 16 | 0 |
+| INV-10 | Produksjonsteknisk segmentering endrer ikke manusscenenes identiteter. | 11 | 0 |
+| INV-11 | Generativ AI er valgfritt for ordinær 2D-animatic-avspilling og eksport. | 13 | 0 |
+| INV-12 | Betalte API-kall følger eksplisitte kostnadsgodkjenninger. | 20 | 0 |
+| INV-13 | Delte ressurser er versjonerte og ikke-destruktive. | 25 | 0 |
+| INV-14 | Deaktivering/skjuling er aldri sletting; materiale kan gjenaktiveres. | 16 | 0 |
+| INV-C1 | Ingen stille overskriving ved samarbeid (revisjonskontroll) – DEC-0003/DEC-0010. | 2 | 0 |
+| INV-C2 | Tilgang håndheves i backend (RLS) – teknisk, DEC-0010. | 3 | 0 |
+| INV-C3 | Bare medlemmer med kostnadsrett kan godkjenne betalte kall – midlertidig, DEC-0018/Q-01. | 1 | 0 |
+
+## Dekning per modul
+
+| Modul | Navn | Krav | P0 | Implementert | Verifisert |
+|---|---|---|---|---|---|
+| CORE | Project Core | 118 | 57 | 0 | 0 |
+| SCRIPT | Screenplay Engine | 109 | 32 | 0 | 0 |
+| TIMELINE | Timeline & Assembly Engine | 92 | 28 | 0 | 0 |
+| LIBRARY | Resource Library | 51 | 9 | 0 | 0 |
+| CONTINUITY | Continuity Engine | 39 | 11 | 0 | 0 |
+| COMPOSE | 2D Composition Engine | 39 | 14 | 0 | 0 |
+| CAMERA | Camera & Motion Engine | 28 | 2 | 0 | 0 |
+| AUDIO | Audio Engine | 31 | 1 | 0 | 0 |
+| PROMPT | Prompt Orchestration Engine | 45 | 14 | 0 | 0 |
+| PROVIDER | Provider Adapters | 23 | 6 | 0 | 0 |
+| QUALITYCOST | Quality & Cost Engine | 25 | 6 | 0 | 0 |
+| QUEUE | Render Queue | 34 | 12 | 0 | 0 |
+| VERSION | Version & Dependency Engine | 90 | 36 | 0 | 0 |
+| L10N | Localization Engine | 38 | 4 | 0 | 0 |
+| PRESENT | Presentation Engine | 30 | 3 | 0 | 0 |
+| EXPORT | Export Engine | 53 | 12 | 0 | 0 |
+| SECURITY | Security & Storage | 26 | 5 | 0 | 0 |
+| COLLAB | Collaboration & Access | 10 | 0 | 0 | 0 |
+| UI | Brukergrensesnitt og designsystem | 102 | 19 | 0 | 0 |
+| PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 0 | 0 |
+
+## Dekning per fase
+
+| Fase | Krav | Verifisert |
+|---|---|---|
+| 1 | 70 | 0 |
+| 2 | 84 | 0 |
+| 3 | 48 | 0 |
+| 4 | 68 | 0 |
+| 5 | 70 | 0 |
+| 6 | 48 | 0 |
+| 7 | 63 | 0 |
+| 8 | 39 | 0 |
+| Tverrgående/prosess | 40 | 0 |
+
+## Matrise
+
+| Krav | Kilde | Moduler | Implementering | Tester (plan) | Verifikasjon | Status | Siste endring |
+|---|---|---|---|---|---|---|---|
+| REQ-0001 | Kap. 1 (l. 7, 24) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0002 | Kap. 1 (l. 8-23) | CORE, SCRIPT, LIBRARY, COMPOSE, CAMERA, TIMELINE, AUDIO, PROMPT, PROVIDER, VERSION, CONTINUITY, QUEUE, L10N, PRESENT, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0003 | Kap. 1 (l. 24) | TIMELINE, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0004 | Kap. 1 (l. 25) | CORE, COMPOSE, TIMELINE, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0005 | Kap. 1.1 (l. 27-30) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0006 | Kap. 1.2 (l. 32) | PROCESS, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0007 | Kap. 1.2 (l. 33-34) | CORE, PROMPT, COMPOSE, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0008 | Kap. 1.2 (l. 35) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0009 | Kap. 1.2 (l. 36-43) | CORE, UI, COMPOSE, PROVIDER, QUEUE, VERSION, SECURITY, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0010 | Kap. 1.2 (l. 44) | QUEUE, CORE, PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0011 | Kap. 1.3 (l. 46-55) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0012 | Kap. 1.3 (l. 56) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0013 | Kap. 1.3 (l. 57) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0014 | Kap. 1.3 (l. 58) | UI, L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0015 | Kap. 1.3 (l. 59) | PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0016 | Kap. 2 (l. 62-66) | CORE, SCRIPT, TIMELINE, COMPOSE, AUDIO | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Revisjon: forpliktelsen i l. 63 tatt inn i kravteksten |
+| REQ-0017 | Kap. 2 (l. 67) | SCRIPT, TIMELINE, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0018 | Kap. 2 (l. 68) | TIMELINE, SCRIPT, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0019 | Kap. 2 (l. 69) | CORE, SCRIPT, TIMELINE, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0020 | Kap. 2 (l. 70) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0021 | Kap. 2 (l. 71-74) | CORE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0022 | Kap. 2.1 (l. 76-78) | CORE, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0023 | Kap. 2.1 (l. 79) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0024 | Kap. 2.1 (l. 80) | VERSION, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0025 | Kap. 2.1 (l. 80) | VERSION, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0026 | Kap. 2.1 (l. 81) | VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0027 | Kap. 2.2 (l. 83-84) | VERSION, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0028 | Kap. 2.2 (l. 83, 85) | VERSION, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0029 | Kap. 2.2 (l. 83, 86) | QUEUE, QUALITYCOST, PROVIDER | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0030 | Kap. 2.2 (l. 83, 87) | VERSION, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0031 | Kap. 2.2 (l. 83, 88) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0032 | Kap. 2.2 (l. 83, 89) | VERSION, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0033 | Kap. 2.2 (l. 90) | VERSION, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0034 | Kap. 3.1 (l. 94-102) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0035 | Kap. 3.1 (l. 103-108) | CORE, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0036 | Kap. 3.1 (l. 109) | CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0037 | Kap. 3.2 (l. 111-132) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0038 | Kap. 3.2 (l. 133) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0039 | Kap. 3.3 (l. 135-140) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0040 | Kap. 3.3 (l. 141) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0041 | Kap. 3.4 (l. 143-150) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0042 | Kap. 3.4 (l. 151) | CORE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0043 | Kap. 3.4 (l. 152) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0044 | Kap. 4.1 (l. 156) | SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0002: Akseptanse/merknad tilpasset nytt referansemanus |
+| REQ-0045 | Kap. 4.1 (l. 157) | PROCESS, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0002: Akseptanse/merknad tilpasset nytt referansemanus |
+| REQ-0046 | Kap. 4.1 (l. 158-172) | SCRIPT | – | 2 | – | Ikke startet | 2026-10-08 DEC-0002: Akseptanse/merknad tilpasset nytt referansemanus |
+| REQ-0047 | Kap. 4.1 (l. 177-178) | SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0002: Akseptanse/merknad tilpasset nytt referansemanus |
+| REQ-0048 | Kap. 4.1 (l. 179) | SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0002: Akseptanse/merknad tilpasset nytt referansemanus |
+| REQ-0049 | Kap. 4.1 (l. 180) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0002: Akseptanse/merknad tilpasset nytt referansemanus |
+| REQ-0050 | Kap. 4.2 (l. 182-194) | SCRIPT, UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0002: Akseptanse/merknad tilpasset nytt referansemanus |
+| REQ-0051 | Kap. 4.2 (l. 195) | SCRIPT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0052 | Kap. 4.2 (l. 196) | SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0053 | Kap. 4.2 (l. 197) | SCRIPT, VERSION, SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0054 | Kap. 4.2 (l. 198) | SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0055 | Kap. 4.3 (l. 200-206) | SCRIPT, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0002: Akseptanse/merknad tilpasset nytt referansemanus |
+| REQ-0056 | Kap. 4.3 (l. 207) | SCRIPT, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0057 | Kap. 4.3 (l. 208) | SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0058 | Kap. 4.3 (l. 209) | SCRIPT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0059 | Kap. 4.3 (l. 210) | SCRIPT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0060 | Kap. 4.3 (l. 211) | SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0061 | Kap. 4.4 (l. 213-214) | SCRIPT, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0062 | Kap. 4.4 (l. 215) | SCRIPT, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0063 | Kap. 4.4 (l. 216) | SCRIPT, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0064 | Kap. 4.4 (l. 217) | SCRIPT, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0065 | Kap. 4.4 (l. 218) | SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0066 | Kap. 4.4 (l. 219) | SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0067 | Kap. 4.4 (l. 220) | SCRIPT, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0068 | Kap. 4.4 (l. 221) | SCRIPT, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0069 | Kap. 4.4 (l. 222) | SCRIPT, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0070 | Kap. 4.4 (l. 223) | SCRIPT, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0071 | Kap. 4.4 (l. 224) | CORE, SCRIPT, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0072 | Kap. 4.4 (l. 225) | CORE, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0073 | Kap. 4.5 (l. 227-235) | SCRIPT, UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0074 | Kap. 4.5 (l. 236) | SCRIPT, LIBRARY, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0075 | Kap. 4.5 (l. 237) | SCRIPT, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0076 | Kap. 5.1 (l. 241) | VERSION, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0077 | Kap. 5.1 (l. 242-248) | VERSION, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0078 | Kap. 5.1 (l. 249-256) | VERSION, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0079 | Kap. 5.1 (l. 257) | VERSION, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0080 | Kap. 5.2 (l. 259) | EXPORT, SCRIPT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0081 | Kap. 5.2 (l. 261-262) | EXPORT, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0082 | Kap. 5.2 (l. 263-264) | EXPORT, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0083 | Kap. 5.2 (l. 265) | EXPORT, SCRIPT, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0084 | Kap. 5.2 (l. 266) | EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0085 | Kap. 5.2 (l. 267) | EXPORT, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0086 | Kap. 5.2 (l. 268) | EXPORT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0087 | Kap. 5.3 (l. 270-272) | EXPORT, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0088 | Kap. 5.3 (l. 270, 273) | EXPORT, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0089 | Kap. 5.3 (l. 274) | EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0090 | Kap. 5.3 (l. 275) | EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0091 | Kap. 5.3 (l. 276) | EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0092 | Kap. 6 (l. 279) | SCRIPT, TIMELINE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0093 | Kap. 6.1 (l. 281) | SCRIPT, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0094 | Kap. 6.1 (l. 282) | CORE, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0095 | Kap. 6.1 (l. 283-287) | SCRIPT, AUDIO, COMPOSE, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0096 | Kap. 6.1 (l. 288) | SCRIPT, COMPOSE, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0097 | Kap. 6.2 (l. 290) | SCRIPT, TIMELINE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0098 | Kap. 6.2 (l. 291) | SCRIPT, TIMELINE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0099 | Kap. 6.2 (l. 292-297) | TIMELINE, SCRIPT, COMPOSE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0100 | Kap. 6.2 (l. 298) | UI, SCRIPT, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0101 | Kap. 6.2 (l. 299) | UI, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0102 | Kap. 6.3 (l. 301-302) | SCRIPT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0103 | Kap. 6.3 (l. 303) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0104 | Kap. 6.3 (l. 304) | EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0105 | Kap. 6.4 (l. 306-310) | TIMELINE, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0106 | Kap. 6.4 (l. 311) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0107 | Kap. 6.4 (l. 312) | TIMELINE, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0108 | Kap. 7.1 (l. 316) | SCRIPT, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0109 | Kap. 7.1 (l. 317-323) | SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0110 | Kap. 7.1 (l. 324) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0111 | Kap. 7.1 (l. 325) | TIMELINE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0112 | Kap. 7.2 (l. 327) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0113 | Kap. 7.2 (l. 328-333) | TIMELINE, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0114 | Kap. 7.2 (l. 334) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0115 | Kap. 7.2 (l. 335) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0116 | Kap. 7.3 (l. 337) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0117 | Kap. 7.3 (l. 338) | UI, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0118 | Kap. 7.3 (l. 339-348) | UI, TIMELINE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0119 | Kap. 7.3 (l. 349) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0120 | Kap. 7.4 (l. 351) | TIMELINE, VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0121 | Kap. 8 (l. 354-366) | LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0122 | Kap. 8.1 (l. 368) | LIBRARY, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0123 | Kap. 8.1 (l. 369) | LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0124 | Kap. 8.1 (l. 370) | LIBRARY, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0125 | Kap. 8.2 (l. 372) | LIBRARY, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0126 | Kap. 8.2 (l. 373-378) | LIBRARY, L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0127 | Kap. 8.2 (l. 379) | LIBRARY, SCRIPT, CONTINUITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0128 | Kap. 8.2 (l. 380) | LIBRARY, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0129 | Kap. 8.2 (l. 381) | LIBRARY, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0130 | Kap. 8.3 (l. 383) | VERSION, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0131 | Kap. 8.3 (l. 384) | LIBRARY, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0132 | Kap. 8.3 (l. 385) | VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0133 | Kap. 8.3 (l. 386) | VERSION, QUEUE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0134 | Kap. 8.3 (l. 387) | VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0135 | Kap. 9.1 (l. 391-401) | LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0136 | Kap. 9.1 (l. 402) | LIBRARY, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0137 | Kap. 9.2 (l. 404) | PROMPT, PROVIDER, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0138 | Kap. 9.2 (l. 405-411) | PROMPT, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0139 | Kap. 9.2 (l. 412) | PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0140 | Kap. 9.2 (l. 413) | UI, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0141 | Kap. 9.3 (l. 415-416) | LIBRARY, PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0142 | Kap. 9.3 (l. 417) | LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0143 | Kap. 9.3 (l. 418) | LIBRARY, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0144 | Kap. 9.3 (l. 419) | LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0145 | Kap. 9.3 (l. 420) | LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0146 | Kap. 9.3 (l. 421) | LIBRARY, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0147 | Kap. 9.4 (l. 423) | LIBRARY, PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0148 | Kap. 9.4 (l. 424-430) | LIBRARY, PROMPT, COMPOSE, PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0149 | Kap. 9.4 (l. 431) | LIBRARY, CONTINUITY, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0150 | Kap. 10 (l. 434-436) | CONTINUITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0151 | Kap. 10.1 (l. 438-446) | CONTINUITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0152 | Kap. 10.1 (l. 447-448) | CONTINUITY, PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0153 | Kap. 10.2 (l. 450-461) | CONTINUITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0154 | Kap. 10.2 (l. 462) | CONTINUITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0155 | Kap. 10.3 (l. 464) | CONTINUITY, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0156 | Kap. 10.3 (l. 465-466) | CONTINUITY, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0157 | Kap. 10.4 (l. 468-469) | CONTINUITY, SCRIPT, PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0158 | Kap. 10.4 (l. 470) | CONTINUITY, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0159 | Kap. 10.5 (l. 472) | CONTINUITY, PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0160 | Kap. 10.5 (l. 473) | CONTINUITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0161 | Kap. 10.6 (l. 475-477) | CONTINUITY, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0162 | Kap. 10.6 (l. 478) | CONTINUITY, PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0163 | Kap. 10.6 (l. 479-481) | CORE, CONTINUITY, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0164 | Kap. 10.7 (l. 483-488) | CONTINUITY, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0165 | Kap. 10.7 (l. 489) | CONTINUITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0166 | Kap. 10.8 (l. 491) | CONTINUITY, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0167 | Kap. 10.8 (l. 492) | CONTINUITY, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0168 | Kap. 11 (l. 494-495) | COMPOSE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0169 | Kap. 11 (l. 496) | COMPOSE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0170 | Kap. 11 (l. 497) | COMPOSE, UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0171 | Kap. 11.1 (l. 498-506) | COMPOSE, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0172 | Kap. 11.1 (l. 507) | COMPOSE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0173 | Kap. 11.1 (l. 508) | COMPOSE, CAMERA | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0174 | Kap. 11.2 (l. 509-517) | COMPOSE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0175 | Kap. 11.2 (l. 518) | COMPOSE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Revisjon 2026-10-08: tekst/prioritet justert mot mandatet |
+| REQ-0176 | Kap. 11.3 (l. 519-520) | COMPOSE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0177 | Kap. 11.3 (l. 521) | COMPOSE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0178 | Kap. 11.3 (l. 522) | COMPOSE, CAMERA | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0179 | Kap. 11.4 (l. 523-524) | COMPOSE, CAMERA, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0180 | Kap. 11.4 (l. 525) | COMPOSE, VERSION, PROVIDER | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0181 | Kap. 12 (l. 527-528) | CAMERA, COMPOSE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0182 | Kap. 12.1 (l. 529-530) | CAMERA | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0183 | Kap. 12.1 (l. 531) | CAMERA, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0184 | Kap. 12.2 (l. 532-533) | CAMERA, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0185 | Kap. 12.2 (l. 534-536) | CAMERA, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0186 | Kap. 12.2 (l. 537) | CAMERA, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0187 | Kap. 12.2 (l. 538) | CAMERA, EXPORT | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0188 | Kap. 12.3 (l. 539-540) | CAMERA | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0189 | Kap. 12.3 (l. 541-545) | CAMERA | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0190 | Kap. 12.3 (l. 546) | CAMERA, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0191 | Kap. 12.3 (l. 547) | CAMERA, UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0192 | Kap. 12.4 (l. 548-554) | CAMERA | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0193 | Kap. 12.4 (l. 555) | CAMERA, TIMELINE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0194 | Kap. 12.4 (l. 556) | CAMERA, COMPOSE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0195 | Kap. 12.5 (l. 557-558) | CAMERA, TIMELINE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0196 | Kap. 12.5 (l. 559-563) | CAMERA | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0197 | Kap. 12.5 (l. 564) | CAMERA, COMPOSE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0198 | Kap. 12.5 (l. 565) | CAMERA | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0199 | Kap. 13 (l. 567-568) | AUDIO | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0200 | Kap. 13.1 (l. 569-575) | AUDIO | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0201 | Kap. 13.1 (l. 576) | AUDIO, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0202 | Kap. 13.2 (l. 577-578) | AUDIO, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0203 | Kap. 13.2 (l. 578) | AUDIO, PROVIDER | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0204 | Kap. 13.2 (l. 579-585) | AUDIO, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0205 | Kap. 13.2 (l. 586) | AUDIO, LIBRARY, VERSION | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0206 | Kap. 13.3 (l. 587-588) | AUDIO, SCRIPT, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0207 | Kap. 13.3 (l. 589) | AUDIO, TIMELINE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0208 | Kap. 13.3 (l. 590) | AUDIO, EXPORT | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0209 | Kap. 14 (l. 592-593) | COMPOSE, TIMELINE, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0210 | Kap. 14.1 (l. 594-602) | COMPOSE, CAMERA, AUDIO | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0211 | Kap. 14.2 (l. 603-604) | EXPORT, COMPOSE, QUEUE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0212 | Kap. 14.2 (l. 605) | EXPORT, COMPOSE, QUEUE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Revisjon 2026-10-08: tekst/prioritet justert mot mandatet |
+| REQ-0213 | Kap. 14.2 (l. 606) | EXPORT, COMPOSE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0214 | Kap. 14.3 (l. 607-613) | TIMELINE, EXPORT, AUDIO | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0215 | Kap. 14.3 (l. 614) | CORE, COMPOSE, PROVIDER | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0216 | Kap. 15 (l. 616-618) | TIMELINE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0217 | Kap. 15.1 (l. 621) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0218 | Kap. 15.1 (l. 622) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0219 | Kap. 15.1 (l. 623) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0220 | Kap. 15.1 (l. 624) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0221 | Kap. 15.1 (l. 625) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0222 | Kap. 15.1 (l. 626) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0223 | Kap. 15.1 (l. 627) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0224 | Kap. 15.1 (l. 628) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0225 | Kap. 15.1 (l. 629) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0226 | Kap. 15.1 (l. 630) | TIMELINE, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0227 | Kap. 15.1 (l. 631) | TIMELINE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0228 | Kap. 15.2 (l. 632-633) | TIMELINE, SCRIPT, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0229 | Kap. 15.2 (l. 634-638) | TIMELINE, CORE, SCRIPT | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0230 | Kap. 15.2 (l. 639) | TIMELINE, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0231 | Kap. 15.2 (l. 640) | TIMELINE, VERSION, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0232 | Kap. 15.3 (l. 641-642) | TIMELINE, VERSION, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0233 | Kap. 15.3 (l. 643-645) | TIMELINE, VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0234 | Kap. 15.3 (l. 646) | VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0235 | Kap. 16 (l. 648-649) | LIBRARY, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0236 | Kap. 16.1 (l. 650-655) | TIMELINE, SCRIPT, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0237 | Kap. 16.1 (l. 656) | TIMELINE, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0238 | Kap. 16.2 (l. 657-663) | LIBRARY, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0239 | Kap. 16.3 (l. 664-665) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0240 | Kap. 16.3 (l. 666) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0241 | Kap. 16.4 (l. 667-672) | VERSION, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0242 | Kap. 16.4 (l. 673) | LIBRARY, VERSION, SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0243 | Kap. 17 (l. 675-677) | PROMPT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0244 | Kap. 17 (l. 678) | PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0245 | Kap. 17.1 (l. 679-698) | PROMPT, CONTINUITY, LIBRARY, COMPOSE, CAMERA | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0246 | Kap. 17.1 (l. 699) | PROMPT, PROVIDER | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0247 | Kap. 17.2 (l. 700-702) | PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0248 | Kap. 17.2 (l. 703) | PROMPT, L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0249 | Kap. 17.2 (l. 704) | PROMPT, L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0250 | Kap. 17.3 (l. 706-707) | PROMPT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0251 | Kap. 17.3 (l. 708) | PROMPT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0252 | Kap. 17.3 (l. 709) | PROMPT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0253 | Kap. 17.3 (l. 710) | PROMPT, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0254 | Kap. 17.3 (l. 711) | PROMPT, QUEUE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0255 | Kap. 17.3 (l. 712) | PROMPT, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0256 | Kap. 17.3 (l. 713) | PROMPT, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0257 | Kap. 17.4 (l. 714-725) | VERSION, PROMPT, QUALITYCOST, QUEUE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0258 | Kap. 17.4 (l. 726) | VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0259 | Kap. 18 (l. 728-730) | PROMPT, QUEUE, PROVIDER | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0260 | Kap. 18.1 (l. 731-732) | PROMPT, TIMELINE, QUEUE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0261 | Kap. 18.1 (l. 733) | PROMPT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0262 | Kap. 18.2 (l. 734-742) | PROMPT, CONTINUITY, CAMERA | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0263 | Kap. 18.2 (l. 743) | PROMPT, PROVIDER | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0264 | Kap. 18.3 (l. 744-745) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0265 | Kap. 18.3 (l. 746) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0266 | Kap. 18.3 (l. 747) | TIMELINE, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0267 | Kap. 18.4 (l. 748-752) | CORE, SCRIPT, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0268 | Kap. 18.4 (l. 753) | CORE, TIMELINE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0269 | Kap. 19 (l. 755-756) | PROVIDER, PROMPT | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0270 | Kap. 19.1 (l. 757-758) | PROVIDER, SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0271 | Kap. 19.1 (l. 759) | SECURITY, PROVIDER | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0272 | Kap. 19.1 (l. 760) | SECURITY, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0273 | Kap. 19.2 (l. 761-772) | PROVIDER, QUALITYCOST | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0274 | Kap. 19.2 (l. 773) | PROVIDER, PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0275 | Kap. 19.3 (l. 774-783) | QUALITYCOST, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0276 | Kap. 19.3 (l. 784) | QUALITYCOST, PROVIDER | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0277 | Kap. 19.3 (l. 785) | QUALITYCOST, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0278 | Kap. 19.4 (l. 786-796) | QUALITYCOST, PROVIDER, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0279 | Kap. 19.5 (l. 797-798) | QUALITYCOST, QUEUE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0280 | Kap. 19.5 (l. 799-806) | QUALITYCOST, UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0281 | Kap. 19.5 (l. 807) | QUALITYCOST, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0282 | Kap. 19.6 (l. 808-814) | QUALITYCOST | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0283 | Kap. 19.6 (l. 815) | QUALITYCOST, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0284 | Kap. 19.6 (l. 816) | QUALITYCOST, QUEUE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0285 | Kap. 19.7 (l. 817-818) | QUALITYCOST, VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0286 | Kap. 19.7 (l. 819) | VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Revisjon 2026-10-08: tekst/prioritet justert mot mandatet |
+| REQ-0287 | Kap. 19.8 (l. 820-826) | QUALITYCOST, CONTINUITY | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0288 | Kap. 19.8 (l. 827) | QUALITYCOST, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0289 | Kap. 20 (l. 829-830) | QUEUE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0290 | Kap. 20.1 (l. 831-833) | QUEUE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0291 | Kap. 20.2 (l. 834-835) | QUEUE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0292 | Kap. 20.2 (l. 836) | QUEUE, SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0293 | Kap. 20.2 (l. 837) | QUEUE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0294 | Kap. 20.3 (l. 838-846) | QUEUE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0295 | Kap. 20.3 (l. 847) | QUEUE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0296 | Kap. 20.4 (l. 848-853) | QUEUE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0297 | Kap. 20.5 (l. 854-856) | QUEUE, QUALITYCOST | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Revisjon 2026-10-08: tekst/prioritet justert mot mandatet |
+| REQ-0298 | Kap. 20.5 (l. 857) | QUEUE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0299 | Kap. 20.5 (l. 858) | QUEUE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0300 | Kap. 20.5 (l. 859) | QUEUE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0301 | Kap. 20.5 (l. 860) | QUEUE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0302 | Kap. 20.5 (l. 861) | QUEUE, QUALITYCOST | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0303 | Kap. 20.5 (l. 862) | QUEUE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0304 | Kap. 21 (l. 864-865) | VERSION, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0305 | Kap. 21.1 (l. 866-875) | VERSION, CONTINUITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0306 | Kap. 21.2 (l. 876-888) | VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0307 | Kap. 21.2 (l. 880-881) | VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0308 | Kap. 21.2 (l. 884) | VERSION, PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0309 | Kap. 21.2 (l. 885) | QUALITYCOST, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0310 | Kap. 21.2 (l. 886) | VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0311 | Kap. 21.2 (l. 887-888) | VERSION, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0312 | Kap. 21.3 (l. 889-890) | VERSION, TIMELINE, AUDIO | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0313 | Kap. 21.3 (l. 891) | VERSION, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0314 | Kap. 21.3 (l. 892) | VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0315 | Kap. 21.4 (l. 893-899) | VERSION, UI, SCRIPT, COMPOSE, TIMELINE, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0316 | Kap. 21.5 (l. 900-901) | VERSION, SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0317 | Kap. 21.5 (l. 902) | VERSION, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0318 | Kap. 21.5 (l. 902) | VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0319 | Kap. 22 (l. 904-905) | CONTINUITY, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0320 | Kap. 22 (l. 906-907) | CONTINUITY, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0321 | Kap. 22 (l. 908) | CONTINUITY, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0322 | Kap. 22 (l. 909) | CONTINUITY, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0323 | Kap. 22 (l. 910) | CONTINUITY, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0324 | Kap. 22 (l. 911) | CONTINUITY, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0325 | Kap. 22 (l. 912) | CONTINUITY, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0326 | Kap. 22 (l. 913) | CONTINUITY, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0327 | Kap. 22 (l. 914) | CONTINUITY, SCRIPT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0328 | Kap. 23.1 (l. 917-918) | L10N, SCRIPT, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0329 | Kap. 23.1 (l. 919) | L10N, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0330 | Kap. 23.1 (l. 920) | L10N, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0331 | Kap. 23.1 (l. 921) | L10N, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0332 | Kap. 23.2 (l. 922-923) | L10N, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0002: Akseptanse/merknad tilpasset nytt referansemanus |
+| REQ-0333 | Kap. 23.2 (l. 924-930) | L10N, SCRIPT, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0002: Akseptanse/merknad tilpasset nytt referansemanus |
+| REQ-0334 | Kap. 23.2 (l. 931) | L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0335 | Kap. 23.2 (l. 932) | L10N, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0336 | Kap. 23.3 (l. 933-940) | L10N, CORE, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0337 | Kap. 23.3 (l. 941) | L10N, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0338 | Kap. 23.4 (l. 942-943) | AUDIO, L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0339 | Kap. 23.4 (l. 944-948) | AUDIO, L10N, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0340 | Kap. 23.5 (l. 949-950) | AUDIO, L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0341 | Kap. 23.5 (l. 951) | AUDIO, L10N, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0342 | Kap. 23.5 (l. 952) | AUDIO, L10N, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0343 | Kap. 23.6 (l. 953-955) | L10N, AUDIO, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0344 | Kap. 23.6 (l. 956) | L10N, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0345 | Kap. 23.7 (l. 957-963) | L10N, VERSION, AUDIO | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0346 | Kap. 23.7 (l. 964-966) | L10N, AUDIO, PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0347 | Kap. 23.7 (l. 966) | L10N, QUEUE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0348 | Kap. 23.8 (l. 967-970) | EXPORT, L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0349 | Kap. 23.8 (l. 971-972) | EXPORT, L10N, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0350 | Kap. 23.8 (l. 973) | EXPORT, AUDIO, L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0351 | Kap. 23.8 (l. 974) | EXPORT, L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0352 | Kap. 23.8 (l. 975) | L10N, UI, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0353 | Kap. 24 (l. 977-987) | CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0354 | Kap. 24.1 (l. 988-989) | CORE, TIMELINE, UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0355 | Kap. 24.1 (l. 990-997) | CORE, SCRIPT, TIMELINE, EXPORT | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0356 | Kap. 24.2 (l. 998-999) | CORE, TIMELINE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0357 | Kap. 24.2 (l. 1000) | CORE, SCRIPT, TIMELINE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0358 | Kap. 24.2 (l. 1001) | CORE, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0359 | Kap. 24.3 (l. 1002-1012) | CORE, LIBRARY, TIMELINE, AUDIO | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0360 | Kap. 24.3 (l. 1013) | CORE, VERSION, LIBRARY | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0361 | Kap. 24.4 (l. 1014-1015) | SCRIPT, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0362 | Kap. 24.4 (l. 1016) | CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0363 | Kap. 24.4 (l. 1017) | CORE, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0364 | Kap. 24.4 (l. 1018) | LIBRARY, COMPOSE, AUDIO, PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0365 | Kap. 24.5 (l. 1019-1023) | CORE, VERSION, SCRIPT | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0366 | Kap. 24.5 (l. 1024) | CORE, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0367 | Kap. 24.6 (l. 1025-1027) | TIMELINE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0368 | Kap. 24.6 (l. 1028) | TIMELINE, SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0369 | Kap. 24.7 (l. 1029-1030) | CONTINUITY | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0370 | Kap. 24.7 (l. 1031) | SCRIPT, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0371 | Kap. 24.8 (l. 1032-1033) | L10N, AUDIO, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0372 | Kap. 24.8 (l. 1034) | L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0373 | Kap. 25 (l. 1036-1037) | CORE, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0374 | Kap. 25 (l. 1038) | CORE, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0375 | Kap. 25.1 (l. 1039-1047) | VERSION, UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0376 | Kap. 25.2 (l. 1050) | CORE, VERSION, UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0377 | Kap. 25.2 (l. 1051) | CORE, VERSION, UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0378 | Kap. 25.2 (l. 1052) | CORE, VERSION, UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0379 | Kap. 25.2 (l. 1053) | CORE, VERSION, UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0380 | Kap. 25.2 (l. 1054) | CORE, VERSION, UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0381 | Kap. 25.2 (l. 1055) | CORE, VERSION, UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0382 | Kap. 25.2 (l. 1056) | VERSION, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0383 | Kap. 25.2 (l. 1057) | VERSION, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0384 | Kap. 26 (l. 1059-1060) | PRESENT | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0385 | Kap. 26 (l. 1061) | PRESENT, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0386 | Kap. 26.1 (l. 1062-1065) | PRESENT, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0387 | Kap. 26.1 (l. 1066-1072) | PRESENT, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0388 | Kap. 26.2 A (l. 1073-1083) | PRESENT | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0389 | Kap. 26.2 B (l. 1084-1093) | PRESENT | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0390 | Kap. 26.3 (l. 1094-1109) | PRESENT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0391 | Kap. 26.3 (l. 1110) | PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0392 | Kap. 26.3 (l. 1111) | PRESENT, UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0393 | Kap. 26.4 (l. 1112-1122) | PRESENT, LIBRARY | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0394 | Kap. 26.4 (l. 1123) | PRESENT, SCRIPT, PROMPT | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0395 | Kap. 26.4 (l. 1124) | PRESENT, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0396 | Kap. 26.5 (l. 1125-1132) | PRESENT, PROMPT, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0397 | Kap. 26.6 (l. 1133-1143) | PRESENT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0398 | Kap. 26.6 (l. 1144) | PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0399 | Kap. 26.6 (l. 1145) | PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0400 | Kap. 26.7 (l. 1146-1147) | PRESENT, PROMPT, PROVIDER | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0401 | Kap. 26.7 (l. 1148) | QUALITYCOST, PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0402 | Kap. 26.7 (l. 1149) | LIBRARY, PRESENT, VERSION | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0403 | Kap. 26.8 (l. 1150-1152) | PRESENT, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0404 | Kap. 26.8 (l. 1153) | PRESENT, L10N, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0405 | Kap. 27.1 (l. 1155-1168) | UI, CORE, QUEUE, QUALITYCOST, VERSION | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0406 | Kap. 27.2 (l. 1169-1178) | UI, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0407 | Kap. 27.3 (l. 1179-1189) | CORE, SECURITY, QUEUE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0408 | Kap. 28 (l. 1191-1192) | SECURITY, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0409 | Kap. 28.1 (l. 1193-1194) | SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0410 | Kap. 28.1 (l. 1195) | SECURITY, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0411 | Kap. 28.2 (l. 1196-1197) | EXPORT, SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0412 | Kap. 28.2 (l. 1198-1206) | EXPORT, SECURITY, VERSION | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0413 | Kap. 28.3 (l. 1207-1208) | SECURITY, PROVIDER | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0414 | Kap. 28.3 (l. 1209) | SECURITY | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0415 | Kap. 28.4 (l. 1210-1218) | SECURITY, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0416 | Kap. 29 (l. 1220-1221) | EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0417 | Kap. 29.1 (l. 1222-1229) | EXPORT, TIMELINE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0418 | Kap. 29.2 (l. 1230-1238) | EXPORT, COMPOSE, AUDIO | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0419 | Kap. 29.3 (l. 1239-1240) | EXPORT, SCRIPT | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0420 | Kap. 29.4 (l. 1241-1242) | EXPORT, L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0421 | Kap. 29.5 (l. 1243-1244) | EXPORT, PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0422 | Kap. 29.6 (l. 1245-1254) | EXPORT, VERSION | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0423 | Kap. 29.6 (l. 1255) | EXPORT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0424 | Kap. 30 (l. 1257-1258) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0425 | Kap. 30.1 (l. 1259-1268) | UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0426 | Kap. 30.1 (l. 1269) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0427 | Kap. 30.2 (l. 1270-1285) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0428 | Kap. 30.2 (l. 1286) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0429 | Kap. 30.2 (l. 1287) | UI, PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0430 | Kap. 30.3 (l. 1288-1301) | UI, L10N | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0431 | Kap. 30.3 (l. 1302) | UI, PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0432 | Kap. 31 (l. 1304-1306, 1351) | CORE, SCRIPT, TIMELINE, LIBRARY, CONTINUITY, COMPOSE, CAMERA, AUDIO, PROMPT, PROVIDER, QUALITYCOST, QUEUE, VERSION, L10N, PRESENT, EXPORT, SECURITY | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0433 | Kap. 31 (l. 1307-1309) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0434 | Kap. 31 (l. 1310-1312) | SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0435 | Kap. 31 (l. 1313-1314) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0436 | Kap. 31 (l. 1315-1317) | LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0437 | Kap. 31 (l. 1318-1320) | CONTINUITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0438 | Kap. 31 (l. 1321-1322) | COMPOSE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0439 | Kap. 31 (l. 1323-1324) | CAMERA | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0440 | Kap. 31 (l. 1325-1327) | AUDIO | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0441 | Kap. 31 (l. 1328-1330) | PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0442 | Kap. 31 (l. 1331-1333) | PROVIDER | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0443 | Kap. 31 (l. 1334-1335) | QUALITYCOST | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0444 | Kap. 31 (l. 1336-1337) | QUEUE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0445 | Kap. 31 (l. 1338-1339) | VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0446 | Kap. 31 (l. 1340-1342) | L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0447 | Kap. 31 (l. 1343-1344) | PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0448 | Kap. 31 (l. 1345-1347) | EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0449 | Kap. 31 (l. 1348-1350) | SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0450 | Kap. 32 (l. 1353-1355) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0451 | Kap. Fase 1 (l. 1356-1368) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0452 | Kap. Fase 1 (l. 1369) | CORE, PROCESS | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0453 | Kap. Fase 2 (l. 1370-1379) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0454 | Kap. Fase 3 (l. 1380-1388) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0455 | Kap. Fase 4 (l. 1389-1395) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0456 | Kap. Fase 5 (l. 1396-1404) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0457 | Kap. Fase 6 (l. 1405-1412) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0458 | Kap. Fase 7 (l. 1413-1420) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0459 | Kap. Fase 8 (l. 1421-1428) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0460 | Kap. Fase 8 (l. 1429) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0461 | Kap. Fase 8 (l. 1430) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0462 | Kap. 33 (l. 1432-1433) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0463 | Kap. 33.1 (l. 1434-1444) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0464 | Kap. 33.1 (l. 1445) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0465 | Kap. 33.2 (l. 1446-1457) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0466 | Kap. 33.3 (l. 1458-1459) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0467 | Kap. 33.3 (l. 1460-1466) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0468 | Kap. 33.3 (l. 1467) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0469 | Kap. 33.4 (l. 1468-1469) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0470 | Kap. 33.4 (l. 1470-1471) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0471 | Kap. 33.4 (l. 1472) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0472 | Kap. 33.4 (l. 1473) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0473 | Kap. 33.4 (l. 1474) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0474 | Kap. 33.5 (l. 1475-1477) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0475 | Kap. 33.5 (l. 1478) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0476 | Kap. 33.6 (l. 1479-1480) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0477 | Kap. 33.6 (l. 1481) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0478 | Kap. 33.6 (l. 1482) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0479 | Kap. 34 (l. 1486-1487) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0480 | Kap. 34 (l. 1488-1490) | CORE, SCRIPT, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0481 | Kap. 34 (l. 1491-1492) | CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0482 | Kap. 34 (l. 1493-1495) | EXPORT, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0483 | Kap. 34 (l. 1496-1498) | SCRIPT, L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0484 | Kap. 34 (l. 1499-1501) | VERSION, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0485 | Kap. 34 (l. 1502-1504) | VERSION, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0486 | Kap. 34 (l. 1505-1506) | VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0487 | Kap. 34 (l. 1507-1508) | COMPOSE, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0488 | Kap. 34 (l. 1509-1510) | COMPOSE, CAMERA | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0489 | Kap. 34 (l. 1511) | PROMPT, PROVIDER | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0490 | Kap. 34 (l. 1512) | PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0491 | Kap. 34 (l. 1513) | QUALITYCOST, PROVIDER | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0492 | Kap. 34 (l. 1514) | PROMPT, TIMELINE, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0493 | Kap. 34 (l. 1515-1516) | TIMELINE, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0494 | Kap. 34 (l. 1517-1518) | TIMELINE, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0495 | Kap. 34 (l. 1519) | UI, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0496 | Kap. 34 (l. 1520-1522) | CONTINUITY, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0497 | Kap. 34 (l. 1523-1524) | CONTINUITY, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0498 | Kap. 34 (l. 1525-1526) | CORE, LIBRARY, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0499 | Kap. 34 (l. 1527-1529) | CORE, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0500 | Kap. 34 (l. 1530-1531) | VERSION, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0501 | Kap. 34 (l. 1532-1533) | PRESENT, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0502 | Kap. 34 (l. 1534-1535) | PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0503 | Kap. 34 (l. 1536-1537) | LIBRARY, PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0504 | Kap. 34 (l. 1538-1539) | QUEUE, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0505 | Kap. 34 (l. 1540-1541) | VERSION, CORE, SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0506 | Kap. 34 (l. 1542) | CORE, PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0507 | Kap. 35 (l. 1545) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0508 | Kap. 35 (l. 1546) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0509 | Kap. 35 (l. 1548) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0510 | Kap. 35 (l. 1549) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0511 | Kap. 35 (l. 1550) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0512 | Kap. 35 (l. 1551) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0513 | Kap. 35 (l. 1552) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0514 | Kap. 35 (l. 1553) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0515 | Kap. 35 (l. 1554) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0516 | Kap. 35 (l. 1555) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0517 | Kap. 35 (l. 1556) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0518 | Kap. 35 (l. 1557) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0519 | Kap. 35 (l. 1558-1559) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0520 | Beslutning DEC-0003 | COLLAB, CORE, SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0003: Opprettet |
+| REQ-0521 | Beslutning DEC-0003 | COLLAB, SECURITY, UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0003: Opprettet |
+| REQ-0522 | Beslutning DEC-0003 | COLLAB, SCRIPT, VERSION | – | 2 | – | Ikke startet | 2026-10-08 DEC-0003: Opprettet |
+| REQ-0523 | Beslutning DEC-0010 | COLLAB, SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0010: Revisjon: kilde satt til DEC-0010 (teknisk anbefaling) |
+| REQ-0524 | Beslutning DEC-0010 | COLLAB, SECURITY, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0010: Revisjon: kilde satt til DEC-0010 (teknisk anbefaling) |
+| REQ-0525 | Beslutning DEC-0010 | COLLAB, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0010: Revisjon: kilde satt til DEC-0010 (teknisk anbefaling) |
+| REQ-0526 | Beslutning DEC-0010 | COLLAB, CORE, VERSION | – | 2 | – | Ikke startet | 2026-10-08 DEC-0010: Revisjon: kilde satt til DEC-0010 (teknisk anbefaling) |
+| REQ-0527 | Beslutning DEC-0010 | COLLAB, VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0010: Revisjon: kilde satt til DEC-0010 (teknisk anbefaling) |
+| REQ-0528 | Beslutning DEC-0010, DEC-0018 | COLLAB, QUALITYCOST, SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0010: Revisjon: kilde satt til DEC-0010 (teknisk anbefaling) |
+| REQ-0529 | Beslutning DEC-0010 | COLLAB, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0010: Revisjon: kilde satt til DEC-0010 (teknisk anbefaling) |
+| REQ-0530 | Kap. 1 (l. 6) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet (lagt til ved dekningskontroll – linje 6 manglet) |

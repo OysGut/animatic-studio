@@ -1,0 +1,1079 @@
+coverage:
+- section: '0'
+  heading: ANIMATIC STUDIO / Komplett prosjektmandat, produktvisjon og utviklingsinstruksjoner / Hovedspesifikasjon
+    – samlet versjon 14
+  reqs: []
+  no_req_reason: Dokumenttittel (linje 1–3) uten krav
+- section: '1'
+  heading: DIN ROLLE OG PROSJEKTETS FORMÅL
+  reqs:
+  - REQ-0001
+  - REQ-0002
+  - REQ-0003
+  - REQ-0004
+- section: '1.1'
+  heading: Produktnavn
+  reqs:
+  - REQ-0005
+- section: '1.2'
+  heading: Utviklingsplattform og videre portabilitet
+  reqs:
+  - REQ-0006
+  - REQ-0007
+  - REQ-0008
+  - REQ-0009
+  - REQ-0010
+- section: '1.3'
+  heading: Overordnet designfilosofi
+  reqs:
+  - REQ-0011
+  - REQ-0012
+  - REQ-0013
+  - REQ-0014
+  - REQ-0015
+- section: '2'
+  heading: ABSOLUTT VIKTIGSTE ARKITEKTURPRINSIPP / Manus og film er to visninger av den samme produksjonen
+  reqs:
+  - REQ-0016
+  - REQ-0017
+  - REQ-0018
+  - REQ-0019
+  - REQ-0020
+  - REQ-0021
+- section: '2.1'
+  heading: Struktur og innhold er forskjellige typer synkronisering
+  reqs:
+  - REQ-0022
+  - REQ-0023
+  - REQ-0024
+  - REQ-0025
+  - REQ-0026
+- section: '2.2'
+  heading: Ingen destruktive automatiske endringer
+  reqs:
+  - REQ-0027
+  - REQ-0028
+  - REQ-0029
+  - REQ-0030
+  - REQ-0031
+  - REQ-0032
+  - REQ-0033
+- section: '3'
+  heading: PERMANENT IDENTITET OG INTERN DATAMODELL
+  reqs: []
+  no_req_reason: Kapitteloverskrift uten egen tekst; krav i 3.1–3.4
+- section: '3.1'
+  heading: Scenenummer er ikke en sceneidentitet
+  reqs:
+  - REQ-0034
+  - REQ-0035
+  - REQ-0036
+- section: '3.2'
+  heading: Andre permanente identiteter
+  reqs:
+  - REQ-0037
+  - REQ-0038
+- section: '3.3'
+  heading: Skill scene, sceneforekomst og scenevariant
+  reqs:
+  - REQ-0039
+  - REQ-0040
+- section: '3.4'
+  heading: Transaksjonell konsistens
+  reqs:
+  - REQ-0041
+  - REQ-0042
+  - REQ-0043
+- section: '4'
+  heading: PROFESJONELL MANUSMODUL
+  reqs: []
+  no_req_reason: Kapitteloverskrift uten egen tekst; krav i 4.1–4.5
+- section: '4.1'
+  heading: Import av eksisterende filmmanus
+  reqs:
+  - REQ-0044
+  - REQ-0045
+  - REQ-0046
+  - REQ-0047
+  - REQ-0048
+  - REQ-0049
+- section: '4.2'
+  heading: Bevar original visning
+  reqs:
+  - REQ-0050
+  - REQ-0051
+  - REQ-0052
+  - REQ-0053
+  - REQ-0054
+- section: '4.3'
+  heading: Automatisk scenedeteksjon
+  reqs:
+  - REQ-0055
+  - REQ-0056
+  - REQ-0057
+  - REQ-0058
+  - REQ-0059
+  - REQ-0060
+- section: '4.4'
+  heading: Nye og endrede scener
+  reqs:
+  - REQ-0061
+  - REQ-0062
+  - REQ-0063
+  - REQ-0064
+  - REQ-0065
+  - REQ-0066
+  - REQ-0067
+  - REQ-0068
+  - REQ-0069
+  - REQ-0070
+  - REQ-0071
+  - REQ-0072
+- section: '4.5'
+  heading: Søk og filtrering
+  reqs:
+  - REQ-0073
+  - REQ-0074
+  - REQ-0075
+- section: '5'
+  heading: MANUSVERSJONERING OG EKSPORTNUMMERERING
+  reqs: []
+  no_req_reason: Kapitteloverskrift uten egen tekst; krav i 5.1–5.3
+- section: '5.1'
+  heading: Flere komplette manusversjoner
+  reqs:
+  - REQ-0076
+  - REQ-0077
+  - REQ-0078
+  - REQ-0079
+- section: '5.2'
+  heading: Eksportnummerering velges hver gang
+  reqs:
+  - REQ-0080
+  - REQ-0081
+  - REQ-0082
+  - REQ-0083
+  - REQ-0084
+  - REQ-0085
+  - REQ-0086
+- section: '5.3'
+  heading: Profesjonell manuseksport
+  reqs:
+  - REQ-0087
+  - REQ-0088
+  - REQ-0089
+  - REQ-0090
+  - REQ-0091
+- section: '6'
+  heading: INTERAKTIVT MANUS MED TOVEIS TIDSLINJESYNKRONISERING
+  reqs:
+  - REQ-0092
+- section: '6.1'
+  heading: Manusblokker med tidskoblinger
+  reqs:
+  - REQ-0093
+  - REQ-0094
+  - REQ-0095
+  - REQ-0096
+- section: '6.2'
+  heading: Toveis navigasjon
+  reqs:
+  - REQ-0097
+  - REQ-0098
+  - REQ-0099
+  - REQ-0100
+  - REQ-0101
+- section: '6.3'
+  heading: Skjul tekniske detaljer i ordinær manusvisning
+  reqs:
+  - REQ-0102
+  - REQ-0103
+  - REQ-0104
+- section: '6.4'
+  heading: Presis tidsmodell
+  reqs:
+  - REQ-0105
+  - REQ-0106
+  - REQ-0107
+- section: '7'
+  heading: VARIGHETSESTIMERING OG PRODUKSJONSOVERSIKT
+  reqs: []
+  no_req_reason: Kapitteloverskrift uten egen tekst; krav i 7.1–7.4
+- section: '7.1'
+  heading: Automatisk estimering
+  reqs:
+  - REQ-0108
+  - REQ-0109
+  - REQ-0110
+  - REQ-0111
+- section: '7.2'
+  heading: Gradvis økende presisjon
+  reqs:
+  - REQ-0112
+  - REQ-0113
+  - REQ-0114
+  - REQ-0115
+- section: '7.3'
+  heading: Egen oversiktsside
+  reqs:
+  - REQ-0116
+  - REQ-0117
+  - REQ-0118
+  - REQ-0119
+- section: '7.4'
+  heading: Historiske varighetsprognoser
+  reqs:
+  - REQ-0120
+- section: '8'
+  heading: GLOBALT RESSURSBIBLIOTEK
+  reqs:
+  - REQ-0121
+- section: '8.1'
+  heading: Gjenbruk
+  reqs:
+  - REQ-0122
+  - REQ-0123
+  - REQ-0124
+- section: '8.2'
+  heading: Permanent identitet og navnekontroll
+  reqs:
+  - REQ-0125
+  - REQ-0126
+  - REQ-0127
+  - REQ-0128
+  - REQ-0129
+- section: '8.3'
+  heading: Endringer og konsekvensanalyse
+  reqs:
+  - REQ-0130
+  - REQ-0131
+  - REQ-0132
+  - REQ-0133
+  - REQ-0134
+- section: '9'
+  heading: KARAKTERBIBLIOTEK OG VISUELLE STILVARIANTER
+  reqs: []
+  no_req_reason: Kapitteloverskrift uten egen tekst; krav i 9.1–9.4
+- section: '9.1'
+  heading: Én karakter, mange utseender
+  reqs:
+  - REQ-0135
+  - REQ-0136
+- section: '9.2'
+  heading: Stilharmonisering
+  reqs:
+  - REQ-0137
+  - REQ-0138
+  - REQ-0139
+  - REQ-0140
+- section: '9.3'
+  heading: Publisering til globalt bibliotek
+  reqs:
+  - REQ-0141
+  - REQ-0142
+  - REQ-0143
+  - REQ-0144
+  - REQ-0145
+  - REQ-0146
+- section: '9.4'
+  heading: Stilprofiler
+  reqs:
+  - REQ-0147
+  - REQ-0148
+  - REQ-0149
+- section: '10'
+  heading: KARAKTERKONTINUITET OG UTVIKLING GJENNOM FILMEN
+  reqs:
+  - REQ-0150
+- section: '10.1'
+  heading: 'Konkret eksempel: Maja klipper håret'
+  reqs:
+  - REQ-0151
+  - REQ-0152
+- section: '10.2'
+  heading: Flere kontinuitetstyper
+  reqs:
+  - REQ-0153
+  - REQ-0154
+- section: '10.3'
+  heading: Kontinuitetshendelser
+  reqs:
+  - REQ-0155
+  - REQ-0156
+- section: '10.4'
+  heading: Automatisk deteksjon og forslag
+  reqs:
+  - REQ-0157
+  - REQ-0158
+- section: '10.5'
+  heading: Automatisk valg av riktig referanse
+  reqs:
+  - REQ-0159
+  - REQ-0160
+- section: '10.6'
+  heading: Forandring midt i en scene
+  reqs:
+  - REQ-0161
+  - REQ-0162
+  - REQ-0163
+- section: '10.7'
+  heading: Ikke-lineær fortelling
+  reqs:
+  - REQ-0164
+  - REQ-0165
+- section: '10.8'
+  heading: Kontinuitet og spinoffer
+  reqs:
+  - REQ-0166
+  - REQ-0167
+- section: '11'
+  heading: 2D-SCENEEDITOR BASERT PÅ TRADISJONELL MULTIPLAN-ANIMASJON
+  reqs:
+  - REQ-0168
+  - REQ-0169
+  - REQ-0170
+- section: '11.1'
+  heading: Lagbasert sceneoppbygging
+  reqs:
+  - REQ-0171
+  - REQ-0172
+  - REQ-0173
+- section: '11.2'
+  heading: Transformasjoner
+  reqs:
+  - REQ-0174
+  - REQ-0175
+- section: '11.3'
+  heading: Nøkkelbilder
+  reqs:
+  - REQ-0176
+  - REQ-0177
+  - REQ-0178
+- section: '11.4'
+  heading: Redigerbar kilde
+  reqs:
+  - REQ-0179
+  - REQ-0180
+- section: '12'
+  heading: KAMERAEDITOR OG BEVEGELSESBANER
+  reqs:
+  - REQ-0181
+- section: '12.1'
+  heading: Kamerautsnitt
+  reqs:
+  - REQ-0182
+  - REQ-0183
+- section: '12.2'
+  heading: Start- og sluttramme
+  reqs:
+  - REQ-0184
+  - REQ-0185
+  - REQ-0186
+  - REQ-0187
+- section: '12.3'
+  heading: Bevegelsesbaner
+  reqs:
+  - REQ-0188
+  - REQ-0189
+  - REQ-0190
+  - REQ-0191
+- section: '12.4'
+  heading: Kameraegenskaper
+  reqs:
+  - REQ-0192
+  - REQ-0193
+  - REQ-0194
+- section: '12.5'
+  heading: Tidslinje og easing
+  reqs:
+  - REQ-0195
+  - REQ-0196
+  - REQ-0197
+  - REQ-0198
+- section: '13'
+  heading: LYD, DIALOG OG MUSIKK
+  reqs:
+  - REQ-0199
+- section: '13.1'
+  heading: Lydtyper
+  reqs:
+  - REQ-0200
+  - REQ-0201
+- section: '13.2'
+  heading: Lydressursbibliotek
+  reqs:
+  - REQ-0202
+  - REQ-0203
+  - REQ-0204
+  - REQ-0205
+- section: '13.3'
+  heading: Redigering og synkronisering
+  reqs:
+  - REQ-0206
+  - REQ-0207
+  - REQ-0208
+- section: '14'
+  heading: SELVSTENDIG ANIMATIC-MOTOR UTEN GENERATIV AI
+  reqs:
+  - REQ-0209
+- section: '14.1'
+  heading: Direkte forhåndsvisning
+  reqs:
+  - REQ-0210
+- section: '14.2'
+  heading: Lokal eller ordinær medieeksport
+  reqs:
+  - REQ-0211
+  - REQ-0212
+  - REQ-0213
+- section: '14.3'
+  heading: Hybrid produksjon
+  reqs:
+  - REQ-0214
+  - REQ-0215
+- section: '15'
+  heading: OVERORDNET FILMTIDSLINJE OG SAMMENSTILLING
+  reqs:
+  - REQ-0216
+- section: '15.1'
+  heading: Funksjoner
+  reqs:
+  - REQ-0217
+  - REQ-0218
+  - REQ-0219
+  - REQ-0220
+  - REQ-0221
+  - REQ-0222
+  - REQ-0223
+  - REQ-0224
+  - REQ-0225
+  - REQ-0226
+  - REQ-0227
+- section: '15.2'
+  heading: Manus og filmtidslinje må forbli synkronisert
+  reqs:
+  - REQ-0228
+  - REQ-0229
+  - REQ-0230
+  - REQ-0231
+- section: '15.3'
+  heading: Aktiv filmversjon
+  reqs:
+  - REQ-0232
+  - REQ-0233
+  - REQ-0234
+- section: '16'
+  heading: IMPORT AV EKSISTERENDE FERDIG FILM
+  reqs:
+  - REQ-0235
+- section: '16.1'
+  heading: Kobling til manus
+  reqs:
+  - REQ-0236
+  - REQ-0237
+- section: '16.2'
+  heading: Mediemetadata
+  reqs:
+  - REQ-0238
+- section: '16.3'
+  heading: Delvis ferdige scener
+  reqs:
+  - REQ-0239
+  - REQ-0240
+- section: '16.4'
+  heading: Status og versjonering
+  reqs:
+  - REQ-0241
+  - REQ-0242
+- section: '17'
+  heading: AUTOMATISK GENERERING AV SCENER
+  reqs:
+  - REQ-0243
+  - REQ-0244
+- section: '17.1'
+  heading: Promptmotoren
+  reqs:
+  - REQ-0245
+  - REQ-0246
+- section: '17.2'
+  heading: Engelske instruksjoner
+  reqs:
+  - REQ-0247
+  - REQ-0248
+  - REQ-0249
+- section: '17.3'
+  heading: Prompter skal være synlige og redigerbare
+  reqs:
+  - REQ-0250
+  - REQ-0251
+  - REQ-0252
+  - REQ-0253
+  - REQ-0254
+  - REQ-0255
+  - REQ-0256
+- section: '17.4'
+  heading: Full sporbarhet
+  reqs:
+  - REQ-0257
+  - REQ-0258
+- section: '18'
+  heading: AUTOMATISK OPPDELING AV LANGE SCENER
+  reqs:
+  - REQ-0259
+- section: '18.1'
+  heading: Usynlig produksjonsteknisk oppdeling
+  reqs:
+  - REQ-0260
+  - REQ-0261
+- section: '18.2'
+  heading: Bevar kontinuitet
+  reqs:
+  - REQ-0262
+  - REQ-0263
+- section: '18.3'
+  heading: Automatisk sammensetting
+  reqs:
+  - REQ-0264
+  - REQ-0265
+  - REQ-0266
+- section: '18.4'
+  heading: Narrativ scene versus API-segment
+  reqs:
+  - REQ-0267
+  - REQ-0268
+- section: '19'
+  heading: AI-MODELLER, LEVERANDØRER OG KOSTNADSKONTROLL
+  reqs:
+  - REQ-0269
+- section: '19.1'
+  heading: Egne API-nøkler
+  reqs:
+  - REQ-0270
+  - REQ-0271
+  - REQ-0272
+- section: '19.2'
+  heading: Modelladaptere
+  reqs:
+  - REQ-0273
+  - REQ-0274
+- section: '19.3'
+  heading: Valg av innsatsnivå
+  reqs:
+  - REQ-0275
+  - REQ-0276
+  - REQ-0277
+- section: '19.4'
+  heading: Modellspesifikke kvalitetsmekanismer
+  reqs:
+  - REQ-0278
+- section: '19.5'
+  heading: Kostnadsestimat før generering
+  reqs:
+  - REQ-0279
+  - REQ-0280
+  - REQ-0281
+- section: '19.6'
+  heading: Budsjettgrenser
+  reqs:
+  - REQ-0282
+  - REQ-0283
+  - REQ-0284
+- section: '19.7'
+  heading: Flere kandidater
+  reqs:
+  - REQ-0285
+  - REQ-0286
+- section: '19.8'
+  heading: Kvalitetskontroll
+  reqs:
+  - REQ-0287
+  - REQ-0288
+- section: '20'
+  heading: RENDERINGSKØ OG BAKGRUNNSPRODUKSJON
+  reqs:
+  - REQ-0289
+- section: '20.1'
+  heading: Massegenerering
+  reqs:
+  - REQ-0290
+- section: '20.2'
+  heading: Vedvarende jobber
+  reqs:
+  - REQ-0291
+  - REQ-0292
+  - REQ-0293
+- section: '20.3'
+  heading: Jobbstatus
+  reqs:
+  - REQ-0294
+  - REQ-0295
+- section: '20.4'
+  heading: Gjenopptakelse
+  reqs:
+  - REQ-0296
+- section: '20.5'
+  heading: Feilhåndtering
+  reqs:
+  - REQ-0297
+  - REQ-0298
+  - REQ-0299
+  - REQ-0300
+  - REQ-0301
+  - REQ-0302
+  - REQ-0303
+- section: '21'
+  heading: VERSJONERING OG SYNKRONISERINGSAVVIK
+  reqs:
+  - REQ-0304
+- section: '21.1'
+  heading: Endringsdeteksjon
+  reqs:
+  - REQ-0305
+- section: '21.2'
+  heading: Brukerens tre hovedvalg
+  reqs:
+  - REQ-0306
+  - REQ-0307
+  - REQ-0308
+  - REQ-0309
+  - REQ-0310
+  - REQ-0311
+- section: '21.3'
+  heading: Presis konsekvensanalyse
+  reqs:
+  - REQ-0312
+  - REQ-0313
+  - REQ-0314
+- section: '21.4'
+  heading: Synlige avvik
+  reqs:
+  - REQ-0315
+- section: '21.5'
+  heading: Ikke-destruktiv håndtering
+  reqs:
+  - REQ-0316
+  - REQ-0317
+  - REQ-0318
+- section: '22'
+  heading: NARRATIV KONTINUITET OG MANUSKONTROLL
+  reqs:
+  - REQ-0319
+  - REQ-0320
+  - REQ-0321
+  - REQ-0322
+  - REQ-0323
+  - REQ-0324
+  - REQ-0325
+  - REQ-0326
+  - REQ-0327
+- section: '23'
+  heading: FLERSPRÅKLIG MANUS OG PRODUKSJON
+  reqs: []
+  no_req_reason: Kapitteloverskrift uten egen brødtekst; kravene ligger under 23.1–23.8
+- section: '23.1'
+  heading: Norsk som hovedmanus
+  reqs:
+  - REQ-0328
+  - REQ-0329
+  - REQ-0330
+  - REQ-0331
+- section: '23.2'
+  heading: Import av engelsk manus
+  reqs:
+  - REQ-0332
+  - REQ-0333
+  - REQ-0334
+  - REQ-0335
+- section: '23.3'
+  heading: Én film med flere språkversjoner
+  reqs:
+  - REQ-0336
+  - REQ-0337
+- section: '23.4'
+  heading: Separate dialogspor
+  reqs:
+  - REQ-0338
+  - REQ-0339
+- section: '23.5'
+  heading: Gjenbruk av øvrig lyd
+  reqs:
+  - REQ-0340
+  - REQ-0341
+  - REQ-0342
+- section: '23.6'
+  heading: Forskjellig replikkvarighet
+  reqs:
+  - REQ-0343
+  - REQ-0344
+- section: '23.7'
+  heading: Leppesynkronisering
+  reqs:
+  - REQ-0345
+  - REQ-0346
+  - REQ-0347
+- section: '23.8'
+  heading: Språkspesifikk eksport
+  reqs:
+  - REQ-0348
+  - REQ-0349
+  - REQ-0350
+  - REQ-0351
+  - REQ-0352
+- section: '24'
+  heading: AVLEDEDE PRODUKSJONER, SPINOFFS OG KORTFILMER
+  reqs:
+  - REQ-0353
+- section: '24.1'
+  heading: Oppretting
+  reqs:
+  - REQ-0354
+  - REQ-0355
+- section: '24.2'
+  heading: Uavhengig struktur
+  reqs:
+  - REQ-0356
+  - REQ-0357
+  - REQ-0358
+- section: '24.3'
+  heading: Gjenbruk
+  reqs:
+  - REQ-0359
+  - REQ-0360
+- section: '24.4'
+  heading: Nye scener som bare tilhører spinoffen
+  reqs:
+  - REQ-0361
+  - REQ-0362
+  - REQ-0363
+  - REQ-0364
+- section: '24.5'
+  heading: Lokale scenevarianter
+  reqs:
+  - REQ-0365
+  - REQ-0366
+- section: '24.6'
+  heading: Utdrag fra eksisterende film
+  reqs:
+  - REQ-0367
+  - REQ-0368
+- section: '24.7'
+  heading: Kontinuitetsanalyse
+  reqs:
+  - REQ-0369
+  - REQ-0370
+- section: '24.8'
+  heading: Egne språkversjoner
+  reqs:
+  - REQ-0371
+  - REQ-0372
+- section: '25'
+  heading: TILBAKEFØRING FRA SPINOFF TIL HOVEDFILM
+  reqs:
+  - REQ-0373
+  - REQ-0374
+- section: '25.1'
+  heading: Sammenligning
+  reqs:
+  - REQ-0375
+- section: '25.2'
+  heading: Brukervalg
+  reqs:
+  - REQ-0376
+  - REQ-0377
+  - REQ-0378
+  - REQ-0379
+  - REQ-0380
+  - REQ-0381
+  - REQ-0382
+  - REQ-0383
+- section: '26'
+  heading: PROSJEKTPLAKATER OG PRESENTASJONSMATERIELL
+  reqs:
+  - REQ-0384
+  - REQ-0385
+- section: '26.1'
+  heading: Plakatformat
+  reqs:
+  - REQ-0386
+  - REQ-0387
+- section: '26.2'
+  heading: To hovedtyper plakat
+  reqs:
+  - REQ-0388
+  - REQ-0389
+  no_req_reason: Samleoverskrift uten egne krav; kravene ligger under A og B
+- section: 26.2 A
+  heading: A. Kinopitch-plakat
+  reqs:
+  - REQ-0388
+- section: 26.2 B
+  heading: B. Karakter- og universkart
+  reqs:
+  - REQ-0389
+- section: '26.3'
+  heading: Valgfritt informasjonsnivå
+  reqs:
+  - REQ-0390
+  - REQ-0391
+  - REQ-0392
+- section: '26.4'
+  heading: Relasjonskart
+  reqs:
+  - REQ-0393
+  - REQ-0394
+  - REQ-0395
+- section: '26.5'
+  heading: Automatisk førsteutkast
+  reqs:
+  - REQ-0396
+- section: '26.6'
+  heading: Redigerbar plakat
+  reqs:
+  - REQ-0397
+  - REQ-0398
+  - REQ-0399
+- section: '26.7'
+  heading: Stilharmonisering
+  reqs:
+  - REQ-0400
+  - REQ-0401
+  - REQ-0402
+- section: '26.8'
+  heading: Flere plakater
+  reqs:
+  - REQ-0403
+  - REQ-0404
+- section: '27'
+  heading: PLANKONTROLL OG PRODUKSJONSOVERSIKTER
+  reqs:
+  - REQ-0405
+  no_req_reason: Innledningssetningen (linje 1156) er tatt inn i hovedoversikt-kravet under 27.1
+- section: '27.1'
+  heading: Hovedoversikt
+  reqs:
+  - REQ-0405
+- section: '27.2'
+  heading: Filtrering
+  reqs:
+  - REQ-0406
+- section: '27.3'
+  heading: Langvarige prosjekter
+  reqs:
+  - REQ-0407
+- section: '28'
+  heading: PROSJEKTLAGRING, SIKKERHET OG DATAEIERSKAP
+  reqs:
+  - REQ-0408
+- section: '28.1'
+  heading: Vedvarende lagring
+  reqs:
+  - REQ-0409
+  - REQ-0410
+- section: '28.2'
+  heading: Portabilitet
+  reqs:
+  - REQ-0411
+  - REQ-0412
+- section: '28.3'
+  heading: Sikker API-håndtering
+  reqs:
+  - REQ-0413
+  - REQ-0414
+- section: '28.4'
+  heading: Lagringsstruktur
+  reqs:
+  - REQ-0415
+- section: '29'
+  heading: EKSPORTSYSTEM
+  reqs:
+  - REQ-0416
+- section: '29.1'
+  heading: Filmeksport
+  reqs:
+  - REQ-0417
+- section: '29.2'
+  heading: Hybrid eksport
+  reqs:
+  - REQ-0418
+- section: '29.3'
+  heading: Manuseksport
+  reqs:
+  - REQ-0419
+- section: '29.4'
+  heading: Språkeksport
+  reqs:
+  - REQ-0420
+- section: '29.5'
+  heading: Plakateksport
+  reqs:
+  - REQ-0421
+- section: '29.6'
+  heading: Eksportkontroll
+  reqs:
+  - REQ-0422
+  - REQ-0423
+- section: '30'
+  heading: DESIGN OG BRUKEROPPLEVELSE
+  reqs:
+  - REQ-0424
+- section: '30.1'
+  heading: Overordnet uttrykk
+  reqs:
+  - REQ-0425
+  - REQ-0426
+- section: '30.2'
+  heading: Foreslåtte hovedområder
+  reqs:
+  - REQ-0427
+  - REQ-0428
+  - REQ-0429
+- section: '30.3'
+  heading: Norske betegnelser
+  reqs:
+  - REQ-0430
+  - REQ-0431
+- section: '31'
+  heading: FORESLÅTT TEKNISK MODULINNDELING
+  reqs:
+  - REQ-0432
+  - REQ-0433
+  - REQ-0434
+  - REQ-0435
+  - REQ-0436
+  - REQ-0437
+  - REQ-0438
+  - REQ-0439
+  - REQ-0440
+  - REQ-0441
+  - REQ-0442
+  - REQ-0443
+  - REQ-0444
+  - REQ-0445
+  - REQ-0446
+  - REQ-0447
+  - REQ-0448
+  - REQ-0449
+- section: '32'
+  heading: PRIORITERT UTVIKLINGSREKKEFØLGE
+  reqs:
+  - REQ-0450
+- section: Fase 1
+  heading: 'Fase 1: Arkitektur og datamodell'
+  reqs:
+  - REQ-0451
+  - REQ-0452
+- section: Fase 2
+  heading: 'Fase 2: Manus og prosjektoversikt'
+  reqs:
+  - REQ-0453
+- section: Fase 3
+  heading: 'Fase 3: Ressursbibliotek og 2D-sceneeditor'
+  reqs:
+  - REQ-0454
+- section: Fase 4
+  heading: 'Fase 4: Tidslinje, lyd og filmmontering'
+  reqs:
+  - REQ-0455
+- section: Fase 5
+  heading: 'Fase 5: Genereringsmotor og AI-integrasjoner'
+  reqs:
+  - REQ-0456
+- section: Fase 6
+  heading: 'Fase 6: Avansert produksjonskontroll'
+  reqs:
+  - REQ-0457
+- section: Fase 7
+  heading: 'Fase 7: Flerspråklighet og avledede produksjoner'
+  reqs:
+  - REQ-0458
+- section: Fase 8
+  heading: 'Fase 8: Presentasjonsmodul og videre kvalitetssystem'
+  reqs:
+  - REQ-0459
+  - REQ-0460
+  - REQ-0461
+- section: '33'
+  heading: HVORDAN DU SKAL ARBEIDE MED MEG I CLAUDE
+  reqs:
+  - REQ-0462
+- section: '33.1'
+  heading: Forstå helheten
+  reqs:
+  - REQ-0463
+  - REQ-0464
+- section: '33.2'
+  heading: Arbeid strukturert
+  reqs:
+  - REQ-0465
+- section: '33.3'
+  heading: Lag presise Lovable-instruksjoner
+  reqs:
+  - REQ-0466
+  - REQ-0467
+  - REQ-0468
+- section: '33.4'
+  heading: Vær ærlig om tekniske begrensninger
+  reqs:
+  - REQ-0469
+  - REQ-0470
+  - REQ-0471
+  - REQ-0472
+  - REQ-0473
+- section: '33.5'
+  heading: Ikke fjern krav uten å si fra
+  reqs:
+  - REQ-0474
+  - REQ-0475
+- section: '33.6'
+  heading: Arbeid iterativt
+  reqs:
+  - REQ-0476
+  - REQ-0477
+  - REQ-0478
+- section: '34'
+  heading: UFRAVIKELIGE PRODUKTPRINSIPPER – OPPSUMMERING
+  reqs:
+  - REQ-0479
+  - REQ-0480
+  - REQ-0481
+  - REQ-0482
+  - REQ-0483
+  - REQ-0484
+  - REQ-0485
+  - REQ-0486
+  - REQ-0487
+  - REQ-0488
+  - REQ-0489
+  - REQ-0490
+  - REQ-0491
+  - REQ-0492
+  - REQ-0493
+  - REQ-0494
+  - REQ-0495
+  - REQ-0496
+  - REQ-0497
+  - REQ-0498
+  - REQ-0499
+  - REQ-0500
+  - REQ-0501
+  - REQ-0502
+  - REQ-0503
+  - REQ-0504
+  - REQ-0505
+  - REQ-0506
+- section: '35'
+  heading: FØRSTE OPPGAVE NÅR DU MOTTAR DETTE PROSJEKTMANDATET
+  reqs:
+  - REQ-0507
+  - REQ-0508
+  - REQ-0509
+  - REQ-0510
+  - REQ-0511
+  - REQ-0512
+  - REQ-0513
+  - REQ-0514
+  - REQ-0515
+  - REQ-0516
+  - REQ-0517
+  - REQ-0518
+  - REQ-0519

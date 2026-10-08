@@ -1,0 +1,9 @@
+M0: Fundament – mandat v14, kravregister (530 krav), beslutninger, arkitektur, 12 P0-skills
+
+- docs/product: MASTER_SPECIFICATION (uendret, kontrollsum), requirements.yaml + REQUIREMENTS/TRACEABILITY (generert), OPEN_QUESTIONS, ESTABLISHMENT_BRIEF
+- docs/decisions: DEC-0001–DEC-0020, ADR-0001–0008
+- docs/architecture, docs/design, docs/development, docs/references
+- .claude/skills: 12 prosjektskills (v0.2.0)
+- scripts/kb: kontroll og generering; .github/workflows/knowledge-base.yml
+- CLAUDE.md; AGENTS.md og .gitignore utvidet (Lovables innhold beholdt)
+Ingen produktkode endret.
