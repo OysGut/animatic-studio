@@ -3,7 +3,7 @@
  * Eksporten endrer ingenting i prosjektet (REQ-0085).
  */
 import { Download } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   exportNumbering,
   exportPaginationInput,
@@ -32,15 +32,35 @@ interface Props {
 
 type Format = "pdf" | "docx";
 
-function download(bytes: Uint8Array, name: string, type: string) {
+interface ReadyFile {
+  readonly url: string;
+  readonly name: string;
+}
+
+/** Lager fillenke og prøver å starte nedlastingen. Lenken beholdes så brukeren kan klikke selv. */
+function prepareDownload(bytes: Uint8Array, name: string, type: string): ReadyFile {
   const url = URL.createObjectURL(new Blob([bytes as unknown as ArrayBuffer], { type }));
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = name;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 5000);
+  try {
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = name;
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  } catch {
+    // Nedlasting blokkert (f.eks. i en innebygd forhåndsvisning) – lenken i dialogen brukes i stedet
+  }
+  return { url, name };
+}
+
+/** Kjører appen inne i en annen side (f.eks. Lovables forhåndsvisning)? Da kan nedlastinger være blokkert. */
+function isEmbedded(): boolean {
+  try {
+    return window.self !== window.top;
+  } catch {
+    return true;
+  }
 }
 
 function safeName(s: string) {
@@ -56,6 +76,16 @@ export function ExportDialog({ open, onOpenChange, state, productionId, lockedPa
   const [titleText, setTitleText] = useState(state.project.name);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [ready, setReady] = useState<ReadyFile | null>(null);
+  useEffect(() => {
+    if (!open) setReady(null);
+  }, [open]);
+  useEffect(
+    () => () => {
+      if (ready) URL.revokeObjectURL(ready.url);
+    },
+    [ready],
+  );
   const production = state.productions[productionId];
   const opts = { method, includeInactive, fillMissing };
   const preview = useMemo(
@@ -85,17 +115,18 @@ export function ExportDialog({ open, onOpenChange, state, productionId, lockedPa
           title: state.project.name,
           titlePage,
         });
-        download(bytes, `${base}.pdf`, "application/pdf");
+        setReady(prepareDownload(bytes, `${base}.pdf`, "application/pdf"));
       } else {
         const { screenplayDocx } = await import("@/engine/export/screenplay-docx");
         const bytes = screenplayDocx(input, { title: state.project.name, titlePage });
-        download(
-          bytes,
-          `${base}.docx`,
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        setReady(
+          prepareDownload(
+            bytes,
+            `${base}.docx`,
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          ),
         );
       }
-      onOpenChange(false);
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -283,9 +314,36 @@ export function ExportDialog({ open, onOpenChange, state, productionId, lockedPa
           </p>
         ) : null}
 
+        {ready ? (
+          <div
+            role="status"
+            className="border border-status-success/40 bg-status-success-bg p-3 text-xs text-text-primary"
+          >
+            <p>
+              Filen er laget:{" "}
+              <a
+                href={ready.url}
+                download={ready.name}
+                target="_blank"
+                rel="noopener"
+                className="font-medium text-accent-brand underline underline-offset-2"
+              >
+                Last ned «{ready.name}»
+              </a>
+            </p>
+            {isEmbedded() ? (
+              <p className="mt-1.5 text-text-secondary">
+                Startet ikke nedlastingen? Forhåndsvisningen i Lovable kan blokkere nedlastinger.
+                Åpne appen i en egen fane (knappen for ny fane øverst i forhåndsvisningen) og
+                eksporter derfra.
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Avbryt
+            {ready ? "Lukk" : "Avbryt"}
           </Button>
           <Button onClick={() => void doExport()} disabled={busy || preview.length === 0}>
             <Download />

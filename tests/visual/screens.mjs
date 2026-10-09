@@ -162,6 +162,17 @@ await shot("12-eksport-dialog", manus, {
     await page.waitForTimeout(400);
   },
 });
+await shot("14-eksport-ferdig", manus, {
+  act: async (page) => {
+    await page.getByRole("button", { name: "Eksporter" }).first().click();
+    const [dl] = await Promise.all([
+      page.waitForEvent("download", { timeout: 15000 }),
+      page.getByRole("button", { name: /Eksporter PDF/ }).click(),
+    ]);
+    console.error("nedlasting:", dl.suggestedFilename());
+    await page.waitForTimeout(400);
+  },
+});
 // Lagring uten server (mock): optimistisk endring, så feilmelding og ny henting
 await shot("13-lagringsfeil", manus, {
   act: async (page) => {

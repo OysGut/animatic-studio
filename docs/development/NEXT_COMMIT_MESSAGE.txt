@@ -1,9 +1,6 @@
-M2 del 1: manusimport, manusvisning med sider, redigering med angre, eksport PDF/DOCX
+Eksport: tydelig nedlasting med lenke og hjelp i Lovables forhåndsvisning (KI-25)
 
-- Import av «Jula på Dovre» fra PDF og Word i nettleseren med forhåndsvisning; originalen lagres uendret (REQ-0044–0060, DEC-0023)
-- Arbeidsflaten Manus: scenenavigator (dra-og-slipp, aktiver/deaktiver), sider som originalen (låste sider), inspektør for tekst, elementtype, overskrift, del/slå sammen, fjern/hent tilbake (REQ-0050–0068, DEC-0024/0025)
-- Angre/gjør om per bruker med revisjonskontroll, sanntid mellom medlemmer, profilnavn (REQ-0070, REQ-0522, KI-13)
-- Eksport til PDF og Word med valg av nummerering og forhåndsvisning (REQ-0080–0091, DEC-0024/0026)
-- Migrasjon db/migrations/0002_import_profiles.sql (må kjøres i Lovable, se LOVABLE_SYNC.md B)
-- Kodegjennomgang: 15 funn rettet med regresjonstester; CI kjører nå typekontroll, Vitest og databasetester
-- 85 Vitest-tester og 19 databasetester grønne
+- Eksportdialogen blir stående etter eksport og viser «Last ned»-lenke til filen
+- I innebygd visning (Lovable-forhåndsvisning) forklares at appen må åpnes i egen fane hvis nedlastingen blokkeres
+- Skjermbildetest 14 laster ned og kontrollerer PDF-en
+- Dokumentasjon: migrasjon 0002 kjørt, KI-19 lukket, KI-25 ny
