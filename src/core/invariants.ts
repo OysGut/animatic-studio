@@ -35,6 +35,12 @@ export function checkInvariants(s: ProjectState): Violation[] {
     ) {
       add("INV-09", `Scene ${sc.id}: fortellingstid ankret til ukjent scene`);
     }
+    if (
+      sc.mergedIntoSceneId !== null &&
+      Object.values(s.occurrences).some((o) => o.sceneId === sc.id && o.active)
+    ) {
+      add("INV-01", `Scene ${sc.id} er slått sammen, men har fortsatt aktiv forekomst`);
+    }
     if (sc.mergedIntoSceneId !== null && !s.scenes[sc.mergedIntoSceneId])
       add("MODEL", `Scene ${sc.id}: ukjent sammenslåingsmål`);
   }
@@ -52,7 +58,11 @@ export function checkInvariants(s: ProjectState): Violation[] {
     list.push({ rev: r.rev, text: r.text });
     revsByBlock.set(r.blockId, list);
   }
+  const blockKeys = new Set<string>();
   for (const b of Object.values(s.blocks)) {
+    const k = `${b.variantId}|${b.orderKey}`;
+    if (blockKeys.has(k)) add("MODEL", `Blokk ${b.id}: to blokker har samme plass i varianten`);
+    blockKeys.add(k);
     if (!s.variants[b.variantId]) add("MODEL", `Blokk ${b.id}: ukjent variant`);
     if (b.language !== PRIMARY_LANGUAGE)
       add("INV-05", `Blokk ${b.id}: hovedmanusblokk er ikke norsk`);

@@ -26,7 +26,7 @@ export function activeStructure(
 
 export function blocksOfVariant(s: ProjectState, variantId: string): ScriptBlock[] {
   return Object.values(s.blocks)
-    .filter((b) => b.variantId === variantId)
+    .filter((b) => b.variantId === variantId && !b.removed)
     .sort((a, b) => compareKeys(a.orderKey, b.orderKey));
 }
 

@@ -15,11 +15,15 @@ For Mars. Ingen kommandolinje trengs. Bakgrunn: DEC-0005, ADR-0002.
 
 1. Åpne GitHub Desktop. Du ser endrede filer og en ferdig commit-melding som Claude har lagt i `docs/development/NEXT_COMMIT_MESSAGE.txt` – lim den inn i «Summary».
 2. Trykk **Commit to main** og deretter **Push origin**.
-3. Gå til Lovable-prosjektet. Kodeendringene kommer inn automatisk etter litt. **Databaseendringer kommer ikke automatisk** (Lovable kjører ikke databasefiler fra GitHub). Når Claude skriver at leveransen har en ny migrasjon (f.eks. `db/migrations/0001_core.sql`), lim inn denne meldingen i Lovable-chatten og bytt ut filnavnet:
+3. Gå til Lovable-prosjektet. Kodeendringene kommer inn automatisk etter litt. **Databaseendringer kommer ikke automatisk** (Lovable kjører ikke databasefiler fra GitHub). Når Claude skriver at leveransen har en ny migrasjon (f.eks. `db/migrations/0002_import_profiles.sql`), lim inn denne meldingen i Lovable-chatten og bytt ut filnavnet:
 
 > Kjør SQL-filen `db/migrations/0001_core.sql` mot databasen nøyaktig slik den står i repoet, som én databaseendring. Ikke endre, del opp, oversett eller omskriv SQL-en, og ikke lag egne tabeller i tillegg. Ikke endre filer i `docs/`, `.claude/`, `scripts/`, `db/`, `src/core/`, `src/adapters/` eller `tests/`. Når den er kjørt, kjør `select version, description from public.schema_version order by version` og svar med resultatet og eventuelle feilmeldinger ordrett.
 
    Appen viser et oransje varsel øverst så lenge databasen mangler en migrasjon. Når varselet er borte, er alt på plass.
+
+   **Kjørte migrasjoner:** `0001_core.sql` (2026-10-08). **Neste:** `0002_import_profiles.sql` (leveranse M2, 2026-10-09). Ferdig utfylt melding for 0002:
+
+> Kjør SQL-filen `db/migrations/0002_import_profiles.sql` mot databasen nøyaktig slik den står i repoet, som én databaseendring. Ikke endre, del opp, oversett eller omskriv SQL-en, og ikke lag egne tabeller, bøtter eller policyer i tillegg. Ikke endre filer i `docs/`, `.claude/`, `scripts/`, `db/`, `src/core/`, `src/adapters/`, `src/engine/`, `src/app/` eller `tests/`. Når den er kjørt, kjør `select version, description from public.schema_version order by version` og `select id, public from storage.buckets where id = 'sources'`, og svar med resultatene og eventuelle feilmeldinger ordrett.
 
 4. Lim Lovables svar inn til Claude hvis noe feilet.
 

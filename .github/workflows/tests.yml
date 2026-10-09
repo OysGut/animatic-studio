@@ -1,0 +1,33 @@
+name: Tester
+# Typekontroll, enhets-/invariant-/kontrakttester og databasetester (RLS, revisjon, migrasjoner) – KI-17.
+# Gyldne tester mot referansemanuset hoppes over her (manus ligger aldri i repoet, DEC-0004).
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 54329:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install
+      - name: Typekontroll
+        run: bunx tsc --noEmit
+      - name: Enhets-, invariant- og kontrakttester
+        run: bunx vitest run
+      - name: Databasetester (migrasjoner, RLS, revisjonskontroll)
+        env:
+          DATABASE_URL: postgres://postgres@localhost:54329/postgres
+        run: bun tests/db/run-db-tests.ts

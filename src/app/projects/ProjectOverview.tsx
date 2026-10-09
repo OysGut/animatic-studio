@@ -1,9 +1,10 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { Clapperboard, FileText, Film, Layers, Send, Users } from "lucide-react";
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
+import { FileText, Send } from "lucide-react";
+import { useState, type FormEvent } from "react";
 import { activeStructure, mainProduction, orderedOccurrences } from "@/core";
-import { loadProjectState } from "@/adapters/storage/project-rows";
 import { db } from "@/app/db";
+import { useMembers, useProfiles, useProjectState } from "@/app/project/use-project";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -25,37 +26,10 @@ const KIND_LABEL: Record<string, string> = {
   other: "Annen versjon",
 };
 
-interface MemberRow {
-  user_id: string;
-  role: string;
-  joined_at: string;
-}
-
-/** Arbeidsflatene (INFORMATION_ARCHITECTURE.md). Bare prosjektoversikten finnes i M1. */
-const WORKSPACES: { label: string; icon: ReactNode; milestone: string }[] = [
-  { label: "Manus", icon: <FileText />, milestone: "M2" },
-  { label: "Sceneeditor", icon: <Layers />, milestone: "M3" },
-  { label: "Montering", icon: <Film />, milestone: "M4" },
-  { label: "Utgivelse", icon: <Clapperboard />, milestone: "M8" },
-];
-
 export function ProjectOverview({ projectId, userId }: { projectId: string; userId: string }) {
-  const state = useQuery({
-    queryKey: ["project-state", projectId],
-    queryFn: () => loadProjectState(db, projectId),
-  });
-  const members = useQuery({
-    queryKey: ["project-members", projectId],
-    queryFn: async (): Promise<MemberRow[]> => {
-      const { data, error } = await db
-        .from("project_members")
-        .select("user_id, role, joined_at")
-        .eq("project_id", projectId)
-        .is("removed_at", null);
-      if (error) throw new Error(error.message);
-      return (data ?? []) as MemberRow[];
-    },
-  });
+  const state = useProjectState(projectId);
+  const members = useMembers(projectId);
+  const profiles = useProfiles((members.data ?? []).map((m) => m.user_id));
   const myRole = members.data?.find((m) => m.user_id === userId)?.role;
 
   if (state.isLoading)
@@ -81,28 +55,6 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
 
   return (
     <div className="flex min-h-0 flex-1">
-      <nav
-        aria-label="Arbeidsflater"
-        className="flex w-[200px] shrink-0 flex-col gap-0.5 border-r border-border bg-surface-1 p-2"
-      >
-        <span className="flex h-8 items-center gap-2 rounded-sm bg-accent-selection px-2 text-[13px] font-medium text-text-primary">
-          <Users className="size-4" aria-hidden />
-          Prosjektoversikt
-        </span>
-        {WORKSPACES.map((w) => (
-          <span
-            key={w.label}
-            aria-disabled
-            title={`Kommer i ${w.milestone}`}
-            className="flex h-8 cursor-not-allowed items-center gap-2 px-2 text-[13px] text-text-disabled [&_svg]:size-4"
-          >
-            {w.icon}
-            {w.label}
-            <span className="ml-auto font-mono text-[11px] text-text-disabled">{w.milestone}</span>
-          </span>
-        ))}
-      </nav>
-
       <div className="min-w-0 flex-1 overflow-auto">
         <div className="mx-auto max-w-[960px] px-6 py-8">
           <h1 className="text-2xl font-semibold tracking-tight text-text-primary">
@@ -144,9 +96,15 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
               ))}
             </div>
             {main && orderedOccurrences(s, main.id).length === 0 ? (
-              <p className="mt-3 text-xs text-text-tertiary">
-                Hovedfilmen har ingen scener ennå. Manusimport kommer i neste milepæl (M2).
-              </p>
+              <div className="mt-3 flex items-center gap-3 text-xs text-text-tertiary">
+                <span>Hovedfilmen har ingen scener ennå.</span>
+                <Button asChild size="sm" variant="secondary">
+                  <Link to="/prosjekt/$projectId/manus" params={{ projectId }}>
+                    <FileText />
+                    Importer manus
+                  </Link>
+                </Button>
+              </div>
             ) : null}
           </section>
 
@@ -160,8 +118,13 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
                   key={m.user_id}
                   className="flex items-center justify-between border-b border-border px-4 py-2 text-[13px] last:border-b-0"
                 >
-                  <span className="font-mono text-xs text-text-secondary">
-                    {m.user_id === userId ? "Deg" : m.user_id.slice(0, 8)}
+                  <span className="text-text-secondary">
+                    {profiles.data?.[m.user_id]?.display_name || (
+                      <span className="font-mono text-xs">{m.user_id.slice(0, 8)}</span>
+                    )}
+                    {m.user_id === userId ? (
+                      <span className="ml-2 text-text-tertiary">(deg)</span>
+                    ) : null}
                   </span>
                   <span className="text-text-secondary">{ROLE_LABEL[m.role] ?? m.role}</span>
                 </li>

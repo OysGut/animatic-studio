@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as InvitasjonRouteImport } from './routes/invitasjon'
 import { Route as ProsjektProjectIdRouteImport } from './routes/prosjekt.$projectId'
+import { Route as ProsjektProjectIdIndexRouteImport } from './routes/prosjekt.$projectId.index'
+import { Route as ProsjektProjectIdManusRouteImport } from './routes/prosjekt.$projectId.manus'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,35 +30,62 @@ const ProsjektProjectIdRoute = ProsjektProjectIdRouteImport.update({
   path: '/prosjekt/$projectId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProsjektProjectIdIndexRoute = ProsjektProjectIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProsjektProjectIdRoute,
+} as any)
+const ProsjektProjectIdManusRoute = ProsjektProjectIdManusRouteImport.update({
+  id: '/manus',
+  path: '/manus',
+  getParentRoute: () => ProsjektProjectIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/invitasjon': typeof InvitasjonRoute
-  '/prosjekt/$projectId': typeof ProsjektProjectIdRoute
+  '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
+  '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
+  '/prosjekt/$projectId/': typeof ProsjektProjectIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/invitasjon': typeof InvitasjonRoute
-  '/prosjekt/$projectId': typeof ProsjektProjectIdRoute
+  '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
+  '/prosjekt/$projectId': typeof ProsjektProjectIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/invitasjon': typeof InvitasjonRoute
-  '/prosjekt/$projectId': typeof ProsjektProjectIdRoute
+  '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
+  '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
+  '/prosjekt/$projectId/': typeof ProsjektProjectIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/invitasjon' | '/prosjekt/$projectId'
+  fullPaths:
+    | '/'
+    | '/invitasjon'
+    | '/prosjekt/$projectId'
+    | '/prosjekt/$projectId/manus'
+    | '/prosjekt/$projectId/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/invitasjon' | '/prosjekt/$projectId'
-  id: '__root__' | '/' | '/invitasjon' | '/prosjekt/$projectId'
+  to:
+    '/' | '/invitasjon' | '/prosjekt/$projectId/manus' | '/prosjekt/$projectId'
+  id:
+    | '__root__'
+    | '/'
+    | '/invitasjon'
+    | '/prosjekt/$projectId'
+    | '/prosjekt/$projectId/manus'
+    | '/prosjekt/$projectId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   InvitasjonRoute: typeof InvitasjonRoute
-  ProsjektProjectIdRoute: typeof ProsjektProjectIdRoute
+  ProsjektProjectIdRoute: typeof ProsjektProjectIdRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -82,13 +111,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProsjektProjectIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/prosjekt/$projectId/': {
+      id: '/prosjekt/$projectId/'
+      path: '/'
+      fullPath: '/prosjekt/$projectId/'
+      preLoaderRoute: typeof ProsjektProjectIdIndexRouteImport
+      parentRoute: typeof ProsjektProjectIdRoute
+    }
+    '/prosjekt/$projectId/manus': {
+      id: '/prosjekt/$projectId/manus'
+      path: '/manus'
+      fullPath: '/prosjekt/$projectId/manus'
+      preLoaderRoute: typeof ProsjektProjectIdManusRouteImport
+      parentRoute: typeof ProsjektProjectIdRoute
+    }
   }
 }
+
+interface ProsjektProjectIdRouteChildren {
+  ProsjektProjectIdManusRoute: typeof ProsjektProjectIdManusRoute
+  ProsjektProjectIdIndexRoute: typeof ProsjektProjectIdIndexRoute
+}
+
+const ProsjektProjectIdRouteChildren: ProsjektProjectIdRouteChildren = {
+  ProsjektProjectIdManusRoute: ProsjektProjectIdManusRoute,
+  ProsjektProjectIdIndexRoute: ProsjektProjectIdIndexRoute,
+}
+
+const ProsjektProjectIdRouteWithChildren =
+  ProsjektProjectIdRoute._addFileChildren(ProsjektProjectIdRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   InvitasjonRoute: InvitasjonRoute,
-  ProsjektProjectIdRoute: ProsjektProjectIdRoute,
+  ProsjektProjectIdRoute: ProsjektProjectIdRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

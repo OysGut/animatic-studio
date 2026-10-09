@@ -35,6 +35,10 @@ Regler: DEC-ID-er er permanente. En beslutning endres aldri i ettertid; den erst
 | DEC-0020 | 2026-10-08 | Presiseringer etter revisjon: skrivevei, skjema, lagringssti, modellhull | Teknisk anbefaling | Gjeldende (pkt. 1 og 3 erstattet av DEC-0022) | ADR-0004, ADR-0005 |
 | DEC-0021 | 2026-10-08 | Mars betaler API-kostnader i testfasen; kostnadsdeling i samarbeid avtales utenfor appen | Bekreftet av bruker | Gjeldende | – |
 | DEC-0022 | 2026-10-08 | Domenekjernen kjøres på serveren; databasen lagrer endringssett atomisk; migrasjoner i db/migrations | Teknisk anbefaling | Gjeldende | ADR-0009 |
+| DEC-0023 | 2026-10-09 | Manusimport i nettleseren; originalen i privat bøtte; import som én kommando | Teknisk anbefaling | Gjeldende | ADR-0007, ADR-0010 |
+| DEC-0024 | 2026-10-09 | Sidebryting i kjernen (kalibrert mot Final Draft, låste sider) og manuseksport til PDF/DOCX | Teknisk anbefaling | Gjeldende | ADR-0010 |
+| DEC-0025 | 2026-10-09 | Redigering i manus: fjerning er et flagg, splitting av delt scene krever egen variant, angre per bruker med revisjonskontroll | Teknisk anbefaling | Gjeldende | ADR-0005, ADR-0010 |
+| DEC-0026 | 2026-10-09 | Deaktiverte og unummererte scener i manuseksport | Midlertidig antakelse | Åpen (Q-08) | ADR-0010 |
 
 ---
 
@@ -194,3 +198,42 @@ Regler: DEC-ID-er er permanente. En beslutning endres aldri i ettertid; den erst
 - **Alternativer:** Per-kommando SQL (forkastet: dobbel logikk), skriving direkte fra klienten med RLS-skrivepolicyer (forkastet: invarianter kan omgås).
 - **Konsekvenser:** All domenelogikk testes én gang (kjernen) og gjelder både klient og server. Hver kommando laster hele prosjektet på serveren – akseptabelt for én film (~100 scener, ~5 000 blokker), men må optimaliseres senere (KI-12).
 - **Verifisering:** `tests/db/run-db-tests.ts` (15 tester mot lokal Postgres med Supabase-emulering).
+
+## DEC-0023 – Manusimport i nettleseren; originalen i privat bøtte; import som én kommando
+- **Dato:** 2026-10-09 · **Type:** Teknisk anbefaling · **ADR:** ADR-0007, ADR-0010
+- **Valgt løsning:**
+  1. Filen leses i nettleseren: PDF med pdf.js (`pdfjs-dist` 4.10, Apache-2.0, arbeider lastes ved behov), DOCX med egen leser (fflate, MIT). Ingen manustekst sendes til tredjepart.
+  2. Brukeren ser en forhåndsvisning (scener, numre, usikre tolkninger, merknader, mulig dobbeltimport) før noe lagres.
+  3. Originalen lastes opp uendret til den private bøtten `sources` (`<prosjekt>/<sha256>/<filnavn>`, maks 100 MB) og registreres i `imported_documents` (uforanderlig, med kobling til endringen). Mislykket opplasting stopper importen.
+  4. Hele manuset lagres som én atomisk kommando `ImportScreenplay` som kan angres samlet. Hver blokk får kildereferanse (side, høyde) og ev. usikkerhet; overskrifter uten nummer markeres.
+  5. Manuelle linjeskift og ekstra tomme linjer fra originalen bevares i teksten (avgjøres ut fra linjebredden 61/35 tegn), slik at sidene blir som i originalen.
+- **Alternativer:** Tolkning på serveren (forkastet: tyngre i Lovable/Cloudflare, manus må uansett leses i klienten for forhåndsvisning); én kommando per scene (forkastet: kan ikke angres samlet, halvferdig import ved feil).
+- **Konsekvenser:** Tittelsiden lagres ikke ennå som egen metadata (KI-20). Skannede PDF-er uten tekst kan ikke importeres (gir tydelig melding).
+- **Verifisering:** `tests/golden/reference-screenplay.test.ts` (97 scener, numre, rundtur), `tests/unit/import-split-merge.test.ts`, DB-test «0002: import …», skjermbilde 11 (forhåndsvisning med ekte fil i nettleser).
+
+## DEC-0024 – Sidebryting i kjernen og manuseksport til PDF/DOCX
+- **Dato:** 2026-10-09 · **Type:** Teknisk anbefaling · **ADR:** ADR-0010
+- **Valgt løsning:** `src/core/screenplay/paginate.ts` bryter manus i sider etter målte verdier fra referansemanuset (US Letter, 54 linjer, handling 61 tegn, replikk 35, parentes 25; deling bare ved setningsslutt; (MORE)/(CONT'D) i toppmargen). For importert tekst følger visningen og PDF-eksporten originalens sideskift («låste sider», bransjepraksis når et manus er i produksjon); ny eller flyttet tekst flyter fritt, og et låst sideskift kan aldri hoppe over sider. Låste sider kan slås av i verktøylinjen.
+- **Eksport (mandat 5.2–5.3):** Nummereringsmetode velges ved hver eksport med forhåndsvisning (`src/core/screenplay/numbering.ts`): fortløpende eller bevart produksjonsnummerering med mellomnumre (42A, 42B, uten kollisjoner); historisk kommer med manusversjoner. PDF skrives direkte fra sidene (Courier, standardfont, WinAnsi – norske tegn og typografiske anførselstegn), slik at PDF = skjerm. DOCX skrives som redigerbar flyt med faste innrykk, scenenumre i begge marger og sidetall fra side 2 (Word bryter sidene selv, KI-21). Eksport endrer aldri prosjektet.
+- **Begrunnelse:** Final Draft sine regler er ikke dokumentert. Fri bryting treffer 63 av 97 scenestarter eksakt og alle innen én side; låste sider treffer 97 av 97.
+- **Verifisering:** `tests/golden/reference-screenplay.test.ts` (låst: 97/97 og 105 sider; fri: alle innen ±1 side, ≥ 60 eksakt; eksportert PDF og DOCX leses inn igjen med samme scener, numre og tekst), `tests/unit/{paginate,numbering,export}.test.ts`.
+
+## DEC-0025 – Redigering i manus: fjerning, splitting, angre
+- **Dato:** 2026-10-09 · **Type:** Teknisk anbefaling · **ADR:** ADR-0005, ADR-0010
+- **Valgt løsning:**
+  1. «Fjern blokk» setter `script_blocks.removed` (kommandoene `RemoveBlock`/`RestoreBlock`). Tekst og historikk beholdes og kan hentes tilbake fra scenen. Ferdig film som bygget på blokken blir utdatert (avvik), ikke endret.
+  2. `SplitScene` flytter blokkene (samme ID-er) til en ny, avledet scene rett etter. Brukes scenen også i en annen produksjon, må det lages en egen variant først (INV-04). `MergeScenes` krever at kildescenen bare brukes ett sted; den beholdes som «sammenslått» og kan ikke slås sammen to ganger.
+  3. Angre/gjør om er per bruker og per økt. Hver kommando – også angring – sendes med revisjonene brukeren ser, så serveren avviser alt som bygger på en utdatert visning. Har en annen bruker endret noe angringen ville rørt (sanntidsvarsel med `affected_ids`), stoppes angringen med forklaring (ingen stille overskriving, INV-C1).
+  4. Endringer vises straks (kjernen kjøres lokalt), lagres i rekkefølge, og andres endringer hentes via sanntid på `change_log`. Ny innlasting utsettes til egne endringer er lagret; feiler en lagring, sendes ikke kommandoer som var bygget oppå den.
+  5. Kommandoer som bare finnes som invers (`Undo*`, `UnmergeScenes`) godtas av serveren bare når de er identiske med inversen til brukerens egen lagrede endring i `change_log`. Kjernen validerer dem i tillegg strukturelt (riktig scene/variant/forekomst, ingen tekst lagt til av andre, ingen kolliderende plass). Databasen har unik plass per blokk i en variant (`script_blocks_variant_order_unique`, utsatt kontroll).
+  6. Kommandoer over 6 MB avvises.
+- **Kodegjennomgang 2026-10-09:** en uavhengig gjennomgang fant 15 forhold (bl.a. at inverskommandoer kunne misbrukes, falske konflikter ved dobbel angring, tap av egne endringer ved ny innlasting, sletting av andres tekst ved angring av import). Alle er rettet og har regresjonstester (`tests/unit/review-regressions.test.ts`, DB-test for samtidige innsettinger).
+- **Verifisering:** egenskapstester i `tests/invariants/random-sequences.test.ts` (nå med Split, Merge, Fjern/Gjenopprett, elementtype, overskrift og usikkerhet – hver kommando + invers gir samme innhold), `tests/unit/import-split-merge.test.ts`, DB-test for `removed`.
+
+## DEC-0026 – Deaktiverte og unummererte scener i manuseksport
+- **Dato:** 2026-10-09 · **Type:** Midlertidig antakelse (Q-08) · **ADR:** ADR-0010
+- **Antakelse:**
+  1. Med «Bevar produksjonsnummerering» og «Ta med deaktiverte scener» vises en deaktivert scene som «NN UTGÅR» uten innhold (norsk for bransjens «OMITTED»). Med «Fortløpende» tas den med i sin helhet, uten nummer og merket «[DEAKTIVERT SCENE – IKKE MED I FILMEN]».
+  2. Scener som var unummerert i originalmanuset beholder ingen nummer som standard; nye scener laget i appen får mellomnummer (42A). Brukeren kan krysse av for å gi også de opprinnelig unummererte et mellomnummer.
+  3. «Bevar valgt historisk nummerering» kommer når manusversjoner finnes (M2+).
+- **Må avklares med Trollfilm:** ønsket ordlyd («UTGÅR»/«OMITTED»), og om den unummererte scenen i «Jula på Dovre» skal få nummer.

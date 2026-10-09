@@ -49,7 +49,7 @@ async function mock(page, { projects = [project], schema = true }) {
     const table = path.replace("/rest/v1/", "");
     if (table === "schema_version")
       return schema
-        ? json([{ version: 1 }])
+        ? json([{ version: 2 }])
         : json({ message: "relation does not exist", code: "42P01" }, 404);
     if (table === "projects") {
       if (single) return json(projects[0] ?? null);
@@ -67,6 +67,14 @@ async function mock(page, { projects = [project], schema = true }) {
         },
       ]);
     }
+    if (table === "profiles") {
+      return json([
+        { user_id: USER.id, display_name: "Mars" },
+        { user_id: "b0b00000-0000-7000-8000-000000000002", display_name: "Anita" },
+      ]);
+    }
+    if (path.startsWith("/rest/v1/rpc/")) return json(null);
+    if (path.startsWith("/realtime/")) return route.abort();
     if (fx.rows[table]) {
       const offset = Number(url.searchParams.get("offset") ?? 0);
       return json(offset > 0 ? [] : fx.rows[table]);
@@ -80,6 +88,7 @@ const browser = await chromium
   .catch(() => chromium.launch());
 const shots = [];
 async function shot(name, path, opts = {}) {
+  if (ONLY && !ONLY.includes(name)) return;
   const ctx = await browser.newContext({
     viewport: { width: 1440, height: 900 },
     deviceScaleFactor: 1,
@@ -98,12 +107,14 @@ async function shot(name, path, opts = {}) {
   }
   await page.goto(base + path, { waitUntil: "networkidle" });
   await page.waitForTimeout(600);
+  if (opts.act) await opts.act(page);
   const file = `${out}/${name}.png`;
   await page.screenshot({ path: file, fullPage: false });
   shots.push({ name, file, errors: errors.filter((e) => !e.includes("favicon")) });
   await ctx.close();
 }
 
+const ONLY = process.env.ONLY?.split(",");
 await shot("01-innlogging", "/", { signedIn: false });
 await shot("02-prosjekter", "/", {
   projects: [
@@ -119,5 +130,54 @@ await shot("02-prosjekter", "/", {
 await shot("03-prosjekter-tom", "/", { projects: [] });
 await shot("04-prosjektoversikt", `/prosjekt/${project.id}`, {});
 await shot("05-database-mangler", "/", { schema: false });
+const manus = `/prosjekt/${project.id}/manus`;
+await shot("06-manus", manus, {});
+await shot("07-manus-scene-valgt", manus, {
+  act: async (page) => {
+    await page.locator("[id^=nav-]").nth(3).click();
+    await page.waitForTimeout(800);
+  },
+});
+await shot("08-manus-blokk-valgt", manus, {
+  act: async (page) => {
+    await page.locator("[data-block]").nth(12).click();
+    await page.waitForTimeout(500);
+  },
+});
+await shot("09-manus-usikker", manus, {
+  act: async (page) => {
+    await page.getByRole("button", { name: /neste usikre/i }).click();
+    await page.waitForTimeout(800);
+  },
+});
+await shot("10-import-dialog", manus, {
+  act: async (page) => {
+    await page.getByRole("button", { name: "Importer manus" }).first().click();
+    await page.waitForTimeout(400);
+  },
+});
+await shot("12-eksport-dialog", manus, {
+  act: async (page) => {
+    await page.getByRole("button", { name: "Eksporter" }).first().click();
+    await page.waitForTimeout(400);
+  },
+});
+// Lagring uten server (mock): optimistisk endring, så feilmelding og ny henting
+await shot("13-lagringsfeil", manus, {
+  act: async (page) => {
+    await page.getByRole("switch", { name: "Deaktiver scene 3", exact: true }).click();
+    await page.waitForTimeout(3000);
+  },
+});
+// Forhåndsvisning av import med en ekte fil (ligger utenfor repoet): IMPORT_FILE=/sti/til/manus.pdf
+if (process.env.IMPORT_FILE) {
+  await shot("11-import-forhandsvisning", manus, {
+    act: async (page) => {
+      await page.getByRole("button", { name: "Importer manus" }).first().click();
+      await page.locator("input[type=file]").setInputFiles(process.env.IMPORT_FILE);
+      await page.getByRole("button", { name: /^Importer \d+ scener/ }).waitFor({ timeout: 60000 });
+    },
+  });
+}
 await browser.close();
 console.log(JSON.stringify(shots, null, 1));

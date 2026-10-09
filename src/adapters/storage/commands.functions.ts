@@ -5,7 +5,15 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { applyCommand, diffStates, isEmptyChangeSet, isUuid, newId, type Command } from "@/core";
+import {
+  applyCommand,
+  diffStates,
+  isEmptyChangeSet,
+  isUuid,
+  newId,
+  revisionsOf,
+  type Command,
+} from "@/core";
 import { loadProjectState, type AnyClient } from "./project-rows";
 
 export interface RunCommandInput {
@@ -17,7 +25,15 @@ export interface RunCommandInput {
 }
 
 export type RunCommandResult =
-  | { readonly ok: true; readonly changeId: string; readonly affected: readonly string[] }
+  | {
+      readonly ok: true;
+      readonly changeId: string;
+      readonly affected: readonly string[];
+      /** Kommandoen som angrer denne (null ved nytt forsøk eller ingen endring). */
+      readonly inverse: Command | null;
+      /** Revisjon per berørt entitet etter endringen – brukes som baseRevisions ved angre (ingen andres endringer overskrives). */
+      readonly revisions: Readonly<Record<string, number>>;
+    }
   | {
       readonly ok: false;
       readonly code: string;
@@ -26,6 +42,40 @@ export type RunCommandResult =
     };
 
 const ROLE_RANK: Record<string, number> = { owner: 4, editor: 3, commenter: 2, viewer: 1 };
+
+/** Største kommando som tas imot (et helt manus på ~100 sider er ~0,5 MB). */
+const MAX_COMMAND_CHARS = 6_000_000;
+
+/**
+ * Kommandoer som bare finnes som invers (angre). De godtas bare når de er identiske med inversen til en
+ * endring som samme bruker selv har gjort i prosjektet – ellers kunne de brukes til å slette eller flytte
+ * vilkårlig innhold.
+ */
+const INVERSE_ONLY = new Set<string>([
+  "UndoCreateProduction",
+  "UndoCreateScene",
+  "UndoInsertBlock",
+  "UndoForkVariant",
+  "UndoAddOccurrence",
+  "UndoCreateSegments",
+  "UndoImportScreenplay",
+  "UndoSplitScene",
+  "UnmergeScenes",
+]);
+
+/** JSON med sorterte nøkler, for sammenligning med jsonb fra databasen. */
+export function canonicalJson(v: unknown): string {
+  if (Array.isArray(v)) return `[${v.map(canonicalJson).join(",")}]`;
+  if (v && typeof v === "object") {
+    const o = v as Record<string, unknown>;
+    return `{${Object.keys(o)
+      .filter((k) => o[k] !== undefined)
+      .sort()
+      .map((k) => `${JSON.stringify(k)}:${canonicalJson(o[k])}`)
+      .join(",")}}`;
+  }
+  return JSON.stringify(v);
+}
 
 function validateInput(d: unknown): RunCommandInput {
   if (!d || typeof d !== "object") throw new Error("Ugyldig forespørsel");
@@ -37,6 +87,7 @@ function validateInput(d: unknown): RunCommandInput {
   const base = x["baseRevisions"];
   if (base !== undefined && (typeof base !== "object" || base === null))
     throw new Error("Ugyldige revisjoner");
+  if (JSON.stringify(cmd).length > MAX_COMMAND_CHARS) throw new Error("Endringen er for stor");
   const cid = x["commandId"];
   if (cid !== undefined && (typeof cid !== "string" || !isUuid(cid)))
     throw new Error("Ugyldig kommando-ID");
@@ -78,7 +129,29 @@ export const runCommand = createServerFn({ method: "POST" })
         .eq("id", data.commandId)
         .eq("project_id", data.projectId)
         .maybeSingle();
-      if (done) return { ok: true, changeId: data.commandId, affected: [] }; // allerede utført (nytt forsøk)
+      if (done)
+        return { ok: true, changeId: data.commandId, affected: [], inverse: null, revisions: {} }; // allerede utført (nytt forsøk)
+    }
+    if (INVERSE_ONLY.has(data.command.type)) {
+      const { data: rows } = await admin
+        .from("change_log")
+        .select("inverse")
+        .eq("project_id", data.projectId)
+        .eq("actor", context.userId)
+        .eq("inverse->>type", data.command.type)
+        .order("created_at", { ascending: false })
+        .limit(25);
+      const wanted = canonicalJson(data.command);
+      const match = ((rows ?? []) as { inverse: unknown }[]).some(
+        (r) => canonicalJson(r.inverse) === wanted,
+      );
+      if (!match) {
+        return {
+          ok: false,
+          code: "forbidden",
+          message: "Bare dine egne siste endringer kan angres på denne måten.",
+        };
+      }
     }
     const state = await loadProjectState(admin, data.projectId);
     const id = (data.commandId ?? newId<"command">()) as ReturnType<typeof newId<"command">>;
@@ -98,7 +171,8 @@ export const runCommand = createServerFn({ method: "POST" })
       };
     }
     const changes = diffStates(state, result.state);
-    if (isEmptyChangeSet(changes)) return { ok: true, changeId: id, affected: [] };
+    if (isEmptyChangeSet(changes))
+      return { ok: true, changeId: id, affected: [], inverse: null, revisions: {} };
 
     const { error } = await admin.rpc("apply_changes", {
       p_project: data.projectId,
@@ -109,9 +183,22 @@ export const runCommand = createServerFn({ method: "POST" })
       p_changes: changes,
     });
     if (error) {
-      if (error.code === "23505" && data.commandId) {
-        // Samme kommando-ID er allerede lagret: et tidligere forsøk lyktes (idempotent nytt forsøk).
-        return { ok: true, changeId: id, affected: [] };
+      if (error.code === "23505") {
+        // Enten et nytt forsøk av en kommando som allerede er lagret (idempotent), eller to samtidige
+        // endringer som ville gitt samme plass i rekkefølgen.
+        if (data.commandId) {
+          const { data: done } = await admin
+            .from("change_log")
+            .select("id")
+            .eq("id", data.commandId)
+            .maybeSingle();
+          if (done) return { ok: true, changeId: id, affected: [], inverse: null, revisions: {} };
+        }
+        return {
+          ok: false,
+          code: "revision_conflict",
+          message: "Noen andre endret det samme samtidig. Hent siste versjon og prøv igjen.",
+        };
       }
       if (error.code === "P0409") {
         return {
@@ -127,5 +214,11 @@ export const runCommand = createServerFn({ method: "POST" })
         message: "Endringen kunne ikke lagres. Prøv igjen.",
       };
     }
-    return { ok: true, changeId: id, affected: result.affected };
+    return {
+      ok: true,
+      changeId: id,
+      affected: result.affected,
+      inverse: result.inverse,
+      revisions: revisionsOf(result.state, result.affected),
+    };
   });

@@ -29,6 +29,27 @@ export interface NewBlock {
   readonly kind: BlockKind;
   readonly text: string;
   readonly orderKey: string;
+  readonly sourceRef?: { readonly page: number; readonly y: number } | null;
+  readonly uncertainty?: string | null;
+  readonly removed?: boolean;
+}
+
+/** Én scene i en import (samme felter som CreateScene uten produksjon). */
+export interface ImportedScene {
+  readonly sceneId: SceneId;
+  readonly variantId: VariantId;
+  readonly occurrenceId: OccurrenceId;
+  readonly orderKey: string;
+  readonly heading: SceneHeading;
+  readonly headingUncertainty?: string | null;
+  readonly productionNumber: string | null;
+  readonly blocks: readonly NewBlock[];
+}
+
+export interface BlockPlacement {
+  readonly blockId: BlockId;
+  readonly variantId: VariantId;
+  readonly orderKey: string;
 }
 
 export type Command =
@@ -50,6 +71,89 @@ export type Command =
       readonly blocks: readonly NewBlock[];
       readonly storyTime?: StoryTime;
       readonly productionNumber?: string | null;
+      readonly headingUncertainty?: string | null;
+    }
+  | {
+      /** Hele manuset importeres i én atomisk kommando som kan angres samlet (mandat 4.1–4.3). */
+      readonly type: "ImportScreenplay";
+      readonly productionId: ProductionId;
+      readonly scenes: readonly ImportedScene[];
+    }
+  | {
+      readonly type: "UndoImportScreenplay";
+      readonly productionId: ProductionId;
+      readonly scenes: readonly ImportedScene[];
+    }
+  | {
+      /** Korriger tolket elementtype (mandat 4.3: manuell korrigering). */
+      readonly type: "SetBlockKind";
+      readonly productionId: ProductionId;
+      readonly blockId: BlockId;
+      readonly kind: BlockKind;
+    }
+  | {
+      readonly type: "EditSceneHeading";
+      readonly productionId: ProductionId;
+      readonly variantId: VariantId;
+      readonly heading: SceneHeading;
+    }
+  | {
+      /** Marker eller avklar usikker tolkning på blokk eller sceneoverskrift (variant). */
+      readonly type: "SetUncertainty";
+      readonly productionId: ProductionId;
+      readonly targetId: string;
+      readonly uncertainty: string | null;
+    }
+  | {
+      /** Narrativ splitting: blokkene fra atBlockId flyttes til en ny scene (DEC-0015). */
+      readonly type: "SplitScene";
+      readonly productionId: ProductionId;
+      readonly occurrenceId: OccurrenceId;
+      readonly atBlockId: BlockId;
+      readonly newSceneId: SceneId;
+      readonly newVariantId: VariantId;
+      /** Ny forekomst for hver forekomst som bruker samme variant (gammel forekomst-ID → ny). */
+      readonly newOccurrenceIds: Readonly<Record<string, OccurrenceId>>;
+      readonly heading: SceneHeading;
+    }
+  | {
+      readonly type: "UndoSplitScene";
+      readonly split: {
+        readonly productionId: ProductionId;
+        readonly occurrenceId: OccurrenceId;
+        readonly atBlockId: BlockId;
+        readonly newSceneId: SceneId;
+        readonly newVariantId: VariantId;
+        readonly newOccurrenceIds: Readonly<Record<string, OccurrenceId>>;
+        readonly heading: SceneHeading;
+      };
+      readonly originalVariantId: VariantId;
+    }
+  | {
+      /** Slå kildescenen inn i målscenen (mandat 4.4). Kildescenen beholdes som «sammenslått» (DEC-0020 pkt. 9). */
+      readonly type: "MergeScenes";
+      readonly productionId: ProductionId;
+      readonly targetOccurrenceId: OccurrenceId;
+      readonly sourceOccurrenceId: OccurrenceId;
+    }
+  | {
+      readonly type: "UnmergeScenes";
+      readonly productionId: ProductionId;
+      readonly targetOccurrenceId: OccurrenceId;
+      readonly sourceOccurrenceId: OccurrenceId;
+      readonly placements: readonly BlockPlacement[];
+      readonly sourceWasActive: boolean;
+    }
+  | {
+      /** Fjern en manusblokk. Teksten og historikken beholdes og kan gjenopprettes (ingen sletting av historikk). */
+      readonly type: "RemoveBlock";
+      readonly productionId: ProductionId;
+      readonly blockId: BlockId;
+    }
+  | {
+      readonly type: "RestoreBlock";
+      readonly productionId: ProductionId;
+      readonly blockId: BlockId;
     }
   | {
       readonly type: "MoveOccurrence";
@@ -123,6 +227,8 @@ export type Command =
       readonly sceneId: SceneId;
       readonly variantId: VariantId;
       readonly occurrenceId: OccurrenceId;
+      /** Blokkene opprettelsen laget. Angring nektes hvis scenen har fått andre blokker siden (ingen andres tekst slettes). */
+      readonly blockIds: readonly BlockId[];
     }
   | { readonly type: "UndoInsertBlock"; readonly blockId: BlockId }
   | {

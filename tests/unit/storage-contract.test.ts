@@ -17,15 +17,25 @@ const MIGRATIONS = join(__dirname, "../../db/migrations");
 /** Enkel uttrekking av kolonner per tabell fra CREATE TABLE-setningene. */
 function schemaColumns(): Map<string, Set<string>> {
   const out = new Map<string, Set<string>>();
-  for (const f of readdirSync(MIGRATIONS).filter((x) => x.endsWith(".sql")).sort()) {
+  for (const f of readdirSync(MIGRATIONS)
+    .filter((x) => x.endsWith(".sql"))
+    .sort()) {
     const sql = readFileSync(join(MIGRATIONS, f), "utf8");
-    for (const m of sql.matchAll(/create table (?:if not exists )?public\.(\w+) \(([\s\S]*?)\n\);/g)) {
+    for (const m of sql.matchAll(
+      /create table (?:if not exists )?public\.(\w+) \(([\s\S]*?)\n\);/g,
+    )) {
       const cols = new Set<string>();
       for (const line of m[2]!.split("\n")) {
-        const c = /^\s+([a-z_]+)\s+(uuid|text|integer|boolean|double|jsonb|timestamptz|uuid\[\])/.exec(line);
+        const c =
+          /^\s+([a-z_]+)\s+(uuid|text|integer|boolean|double|jsonb|timestamptz|uuid\[\])/.exec(
+            line,
+          );
         if (c) cols.add(c[1]!);
       }
       out.set(m[1]!, cols);
+    }
+    for (const m of sql.matchAll(/alter table public\.(\w+) add column if not exists (\w+)/g)) {
+      out.get(m[1]!)?.add(m[2]!);
     }
   }
   return out;
@@ -79,7 +89,8 @@ describe("Kontrakt: lagringsadapter ↔ databaseskjema", () => {
         problems.push(`ukjent tabell ${c.table}`);
         continue;
       }
-      for (const col of c.columns) if (!cols.has(col)) problems.push(`${c.table}.${col} finnes ikke`);
+      for (const col of c.columns)
+        if (!cols.has(col)) problems.push(`${c.table}.${col} finnes ikke`);
     }
     expect(problems).toEqual([]);
   });
@@ -94,7 +105,8 @@ describe("Kontrakt: lagringsadapter ↔ databaseskjema", () => {
         problems.push(`ukjent tabell ${table}`);
         continue;
       }
-      for (const key of Object.keys(rows[0] ?? {})) if (!cols.has(key)) problems.push(`${table}.${key} finnes ikke`);
+      for (const key of Object.keys(rows[0] ?? {}))
+        if (!cols.has(key)) problems.push(`${table}.${key} finnes ikke`);
     }
     const revCols = schema.get("script_block_revisions")!;
     for (const key of Object.keys(cs.blockRevisions[0] ?? {})) {

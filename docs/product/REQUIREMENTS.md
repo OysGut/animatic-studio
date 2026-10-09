@@ -8,7 +8,7 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 - Antall krav: **530**
 - Prioritet: P0: 141, P1: 220, P2: 130, P3: 39
 - Opprinnelse: mandat: 520, brukerbeslutning: 3, teknisk-anbefaling: 7
-- Status: Ikke startet: 479, Verifisert: 27, Under arbeid: 24
+- Status: Ikke startet: 442, Verifisert: 62, Under arbeid: 22, Implementert – ikke verifisert: 4
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -231,12 +231,12 @@ Når en scene flyttes i manuset, skal den også flyttes i filmens aktive rekkef�
 - **Kilde:** Kap. 2 (l. 67) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 2
 - **Moduler:** SCRIPT, TIMELINE, CORE · **Invarianter:** INV-01, INV-03
 - **Avhengigheter:** REQ-0016
-- **Status:** Under arbeid
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt scenene A, B, C, når B flyttes etter C i manuset, så er filmens aktive rekkefølge A, C, B.
 - **Tester:**
   - integrasjon: flytt i manus → verifiser tidslinjerekkefølge
-- **Implementering:** src/core/commands/apply.ts#MoveOccurrence, src/core/views.ts
+- **Implementering:** src/core/commands/apply.ts#MoveOccurrence, src/core/views.ts, src/app/script/SceneNavigator.tsx
 
 #### REQ-0018 – Flytting i tidslinje flytter i manus
 Når en scene flyttes i filmens overordnede tidslinje, skal manuset vise tilsvarende rekkefølge.
@@ -256,12 +256,12 @@ Når en scene eller delsekvens deaktiveres, skal den utelates fra både aktiv ma
 - **Kilde:** Kap. 2 (l. 69) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 2
 - **Moduler:** CORE, SCRIPT, TIMELINE, EXPORT · **Invarianter:** INV-01, INV-14
 - **Avhengigheter:** REQ-0016
-- **Status:** Under arbeid
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en deaktivert scene, så vises den ikke i aktiv manusvisning, spilles ikke av, inngår ikke i total spilletid og inngår ikke i eksport (med mindre eksportvalg eksplisitt inkluderer den, jf. REQ-0085).
 - **Tester:**
   - integrasjon: deaktiver scene og verifiser alle fire konsumenter
-- **Implementering:** src/core/views.ts
+- **Implementering:** src/core/views.ts, src/core/screenplay/numbering.ts, src/app/script/SceneNavigator.tsx
 
 #### REQ-0020 – Skjult materiale slettes ikke
 Skjult materiale skal ikke slettes, men kunne gjenaktiveres senere.
@@ -574,12 +574,13 @@ Programmet skal kunne importere eksisterende manusdokumenter, særlig DOCX og re
 
 - **Kilde:** Kap. 4.1 (l. 156) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt det engelske referansemanuset (DOCX), når det importeres, så opprettes en strukturert manusversjon.
   - Gitt det norske referansemanuset (PDF fra Final Draft 11), når det importeres, så opprettes en strukturert manusversjon.
 - **Tester:**
   - import/eksport: import av referansemanus DOCX og PDF
+- **Implementering:** src/engine/import/docx-lines.ts, src/app/script/ImportDialog.tsx, src/engine/import/browser.ts, src/engine/import/pdf-lines.ts
 - **Merknad:** Referansen «DEL 2.docx» er erstattet av hele norsk manus (PDF, Final Draft 11, 106 s., US Letter) og hele engelsk manus (DOCX). PDF-import er dermed i praksis nødvendig; se DEC-0013 (PDF-import).
 
 #### REQ-0045 – Referansemanus som formatreferanse
@@ -587,11 +588,12 @@ Ved utvikling skal et konkret referansemanus brukes som eksempel på forventet m
 
 - **Kilde:** Kap. 4.1 (l. 157) · **Opprinnelse:** mandat · **Type:** prosess · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** PROCESS, SCRIPT
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Parser- og layouttester bruker referansemanusene som testfixtures.
 - **Tester:**
   - manuell: testsuite inneholder referansemanus som fixtures
+- **Implementering:** src/core/screenplay/paginate.ts, src/core/screenplay/parse.ts
 - **Merknad:** Opprinnelig «DEL 2.docx»; erstattet (bekreftet 2026-10-08) av hele norsk manus (PDF, 96 nummererte scener med hull opp til 109 og minst én unummerert scene) og hele engelsk manus (DOCX).
 
 #### REQ-0046 – Gjenkjenning av profesjonelle manuselementer
@@ -600,12 +602,13 @@ Import skal håndtere manus med nummererte scener, sceneoverskrifter med INT./EX
 - **Kilde:** Kap. 4.1 (l. 158-172) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT
 - **Avhengigheter:** REQ-0044
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt referansemanuset, så klassifiseres hver linje korrekt som sceneoverskrift, handling, karakter, dialog, parentetisk, overgang e.l., og CONT'D/O.S. tolkes som utvidelser og ikke som del av karakternavnet.
 - **Tester:**
   - enhet: parser-fixtures for hvert elementtype
   - import/eksport: elementklassifisering mot fasit for referansemanus
+- **Implementering:** src/core/screenplay/parse.ts
 - **Merknad:** Opprinnelig beskrevet for «DEL 2.docx»; gjelder fortsatt for nye referansemanus.
 
 #### REQ-0047 – Manusdeler som starter/slutter midt i scene
@@ -614,11 +617,12 @@ Programmet må håndtere manusdeler som starter eller slutter midt i en scene.
 - **Kilde:** Kap. 4.1 (l. 177-178) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT
 - **Avhengigheter:** REQ-0044
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et manusutdrag som begynner med fortsettelse av en scene, så importeres teksten uten tap og uten at det opprettes en fiktiv scene.
 - **Tester:**
   - import/eksport: fixture som starter midt i scene og slutter midt i scene
+- **Implementering:** src/core/screenplay/plan.ts, src/core/screenplay/parse.ts
 - **Merknad:** Se også REQ-0060 (passasjer før første sceneoverskrift).
 
 #### REQ-0048 – Uregelmessige scenenumre uten oppdiktede scener
@@ -627,11 +631,12 @@ Programmet må håndtere manglende eller uregelmessige scenenumre uten å finne 
 - **Kilde:** Kap. 4.1 (l. 179) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT · **Invarianter:** INV-02
 - **Avhengigheter:** REQ-0044
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt det norske referansemanuset med 96 nummererte scener med hull opp til 109 og minst én unummerert scene, så importeres nøyaktig de scenene som finnes (inkl. den unummererte), og numrene bevares som de står.
 - **Tester:**
   - import/eksport: antall scener og originalnumre mot fasit
+- **Implementering:** src/core/screenplay/parse.ts
 - **Merknad:** Referansemanusets kjente egenskaper (hull opp til 109, unummerert scene) brukt i akseptanse.
 
 #### REQ-0049 – Be om manglende referansefiler
@@ -652,12 +657,13 @@ Manuset skal vises slik et profesjonelt filmmanus vises, og følgende skal bevar
 - **Kilde:** Kap. 4.2 (l. 182-194) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT, UI
 - **Avhengigheter:** REQ-0044
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Gitt det importerte norske referansemanuset (US Letter), så gir manusvisningen samme sideantall (106) og samme sideskift som originalen innenfor definert toleranse.
 - **Tester:**
   - visuell: side-ved-side-sammenligning mot original-PDF
   - enhet: pagineringsmotor mot fasit
+- **Implementering:** src/core/screenplay/script-pages.ts, src/app/script/ScriptPageView.tsx
 
 #### REQ-0051 – Manusvisning er ikke notat/tabell/kort
 Manusvisningen skal ikke erstattes av en vanlig notateditor, en tabell eller en kortvisning.
@@ -665,11 +671,12 @@ Manusvisningen skal ikke erstattes av en vanlig notateditor, en tabell eller en 
 - **Kilde:** Kap. 4.2 (l. 195) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT, UI
 - **Avhengigheter:** REQ-0050
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Hovedmanusvisningen er en paginert manusside-visning; eventuelle tabell-/kortvisninger er tilleggsvisninger.
 - **Tester:**
   - manuell: UX-gjennomgang
+- **Implementering:** src/app/script/ScriptPageView.tsx
 
 #### REQ-0052 – Korrekt ombrytning og paginering ved redigering
 Ved redigering skal tekst ombrytes og pagineres korrekt etter filmmanusregler.
@@ -677,11 +684,12 @@ Ved redigering skal tekst ombrytes og pagineres korrekt etter filmmanusregler.
 - **Kilde:** Kap. 4.2 (l. 196) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT
 - **Avhengigheter:** REQ-0050
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Gitt en replikk som forlenges over sideskift, så brytes den med (MORE)/(CONT'D) etter manusregler og etterfølgende sider repagineres.
 - **Tester:**
   - enhet: pagineringsregler (dialogbrudd, sceneoverskrift ikke nederst på side o.l.)
+- **Implementering:** src/core/screenplay/paginate.ts
 
 #### REQ-0053 – Originaldokumentet bevares uendret
 Originaldokumentet skal bevares uendret som historisk referanse.
@@ -689,11 +697,12 @@ Originaldokumentet skal bevares uendret som historisk referanse.
 - **Kilde:** Kap. 4.2 (l. 197) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT, VERSION, SECURITY
 - **Avhengigheter:** REQ-0044
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Importert originalfil lagres med hash og kan lastes ned byte-identisk etter vilkårlige redigeringer.
 - **Tester:**
   - dataintegritet: hash av originalfil før/etter redigering
+- **Implementering:** db/migrations/0002_import_profiles.sql, src/app/script/ImportDialog.tsx
 
 #### REQ-0054 – Analyse ødelegger ikke visuell gjengivelse
 Intern analyse og strukturering av manuset skal ikke ødelegge den visuelle gjengivelsen.
@@ -701,11 +710,12 @@ Intern analyse og strukturering av manuset skal ikke ødelegge den visuelle gjen
 - **Kilde:** Kap. 4.2 (l. 198) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT
 - **Avhengigheter:** REQ-0050
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et importert manus, når scenedeteksjon/strukturering kjøres, så er visningen uendret i layout.
 - **Tester:**
   - visuell: regresjonstest av manusvisning før/etter analyse
+- **Implementering:** src/core/screenplay/parse.ts
 
 #### REQ-0055 – Automatisk tolkning av manusstruktur ved import
 Når et manus importeres, skal systemet automatisk identifisere scener, lese scenenumre, identifisere sceneoverskrifter, registrere lokasjoner, registrere tidspunkt og identifisere dialog, handling og karakterer.
@@ -713,11 +723,12 @@ Når et manus importeres, skal systemet automatisk identifisere scener, lese sce
 - **Kilde:** Kap. 4.3 (l. 200-206) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT, LIBRARY
 - **Avhengigheter:** REQ-0044
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt referansemanuset, så har hver scene registrert nummer, overskrift, lokasjon og tidspunkt, og karakterlisten samsvarer med fasit.
 - **Tester:**
   - import/eksport: deteksjonspresisjon mot fasit
+- **Implementering:** src/core/screenplay/parse.ts
 - **Merknad:** Punkt 1–6 i listen.
 
 #### REQ-0056 – Permanente scene-ID-er opprettes ved import
@@ -726,11 +737,12 @@ Ved manusimport skal systemet automatisk opprette permanente sceneidentiteter.
 - **Kilde:** Kap. 4.3 (l. 207) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT, CORE · **Invarianter:** INV-02
 - **Avhengigheter:** REQ-0034; REQ-0055
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Hver detektert scene har en intern ID uavhengig av scenenummeret.
 - **Tester:**
   - enhet: importer oppretter ID per scene
+- **Implementering:** src/core/screenplay/plan.ts, src/core/commands/apply.ts#ImportScreenplay
 - **Merknad:** Punkt 7.
 
 #### REQ-0057 – Strukturert manuskopi ved import
@@ -739,11 +751,12 @@ Ved manusimport skal systemet automatisk opprette en strukturert manuskopi.
 - **Kilde:** Kap. 4.3 (l. 208) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT
 - **Avhengigheter:** REQ-0053; REQ-0055
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Etter import finnes både uendret original og en strukturert (blokkbasert) manusversjon.
 - **Tester:**
   - enhet: import gir to adskilte representasjoner
+- **Implementering:** db/migrations/0002_import_profiles.sql, src/core/screenplay/plan.ts
 - **Merknad:** Punkt 8.
 
 #### REQ-0058 – Markering av usikre tolkninger
@@ -752,11 +765,12 @@ Ved manusimport skal systemet markere usikre tolkninger.
 - **Kilde:** Kap. 4.3 (l. 209) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT, UI
 - **Avhengigheter:** REQ-0055
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en tvetydig linje (f.eks. sceneoverskrift uten INT./EXT.), så markeres tolkningen som usikker og vises i en gjennomgangsliste.
 - **Tester:**
   - enhet: tvetydige fixtures gir usikkerhetsflagg
+- **Implementering:** src/app/script/Inspector.tsx, src/app/script/ScriptPageView.tsx, src/core/screenplay/parse.ts
 - **Merknad:** Punkt 9.
 
 #### REQ-0059 – Manuell korrigering av scenedeteksjon
@@ -765,11 +779,12 @@ Brukeren skal kunne korrigere feilaktig scenedeteksjon manuelt.
 - **Kilde:** Kap. 4.3 (l. 210) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT, UI · **Invarianter:** INV-03
 - **Avhengigheter:** REQ-0055
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan endre elementtype på en linje, slå sammen feilaktig delte scener og dele feilaktig sammenslåtte scener etter import.
 - **Tester:**
   - e2e: korriger deteksjonsfeil
+- **Implementering:** src/core/commands/apply.ts#SetBlockKind,EditSceneHeading,SetUncertainty,SplitScene,MergeScenes, src/app/script/Inspector.tsx
 
 #### REQ-0060 – Passasjer før første sceneoverskrift
 Manuspassasjer før første sceneoverskrift skal bevares og kunne kobles til en tidligere scene.
@@ -777,22 +792,24 @@ Manuspassasjer før første sceneoverskrift skal bevares og kunne kobles til en 
 - **Kilde:** Kap. 4.3 (l. 211) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT
 - **Avhengigheter:** REQ-0047
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt tekst før første sceneoverskrift, så bevares den som egen blokk og kan kobles til en eksisterende scene.
 - **Tester:**
   - import/eksport: fixture med innledende scenefortsettelse
+- **Implementering:** src/core/screenplay/plan.ts, src/app/script/ImportDialog.tsx
 
 #### REQ-0061 – Opprette scener
 Brukeren skal kunne opprette scener.
 
 - **Kilde:** Kap. 4.4 (l. 213-214) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT, CORE · **Invarianter:** INV-01
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Ny scene får permanent ID og vises i både manus og filmstruktur.
 - **Tester:**
   - integrasjon: opprett scene
+- **Implementering:** src/app/script/Inspector.tsx, src/core/commands/apply.ts#CreateScene
 
 #### REQ-0062 – Flytte scener
 Brukeren skal kunne flytte scener.
@@ -800,11 +817,12 @@ Brukeren skal kunne flytte scener.
 - **Kilde:** Kap. 4.4 (l. 215) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT, CORE · **Invarianter:** INV-01, INV-03
 - **Avhengigheter:** REQ-0017
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Flyttet scene beholder ID og rekkefølgen oppdateres i manus og film.
 - **Tester:**
   - integrasjon: flytt scene
+- **Implementering:** src/core/commands/apply.ts#MoveOccurrence, src/app/script/SceneNavigator.tsx
 
 #### REQ-0063 – Skjule eller deaktivere scener
 Brukeren skal kunne skjule eller deaktivere scener.
@@ -812,11 +830,12 @@ Brukeren skal kunne skjule eller deaktivere scener.
 - **Kilde:** Kap. 4.4 (l. 216) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT, CORE · **Invarianter:** INV-14
 - **Avhengigheter:** REQ-0019; REQ-0021
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Deaktivert scene utelates fra aktivt innhold men er ikke slettet.
 - **Tester:**
   - integrasjon: deaktiver scene
+- **Implementering:** src/core/commands/apply.ts#SetOccurrenceActive, src/app/script/SceneNavigator.tsx
 - **Merknad:** «Skjule eller deaktivere» – se DEC-0015 (skjul vs. deaktiver) og REQ-0021.
 
 #### REQ-0064 – Gjenaktivere scener
@@ -825,11 +844,12 @@ Brukeren skal kunne aktivere skjulte eller deaktiverte scener igjen.
 - **Kilde:** Kap. 4.4 (l. 217) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT, CORE · **Invarianter:** INV-14
 - **Avhengigheter:** REQ-0020
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gjenaktivert scene vises igjen på sin plass med alt materiale.
 - **Tester:**
   - integrasjon: gjenaktiver scene
+- **Implementering:** src/core/commands/apply.ts#SetOccurrenceActive, src/app/script/SceneNavigator.tsx
 
 #### REQ-0065 – Redigere dialog
 Brukeren skal kunne redigere dialog.
@@ -837,11 +857,12 @@ Brukeren skal kunne redigere dialog.
 - **Kilde:** Kap. 4.4 (l. 218) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT · **Invarianter:** INV-07
 - **Avhengigheter:** REQ-0052
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Endret replikk beholder replikk-ID og lagres i ny manustilstand.
 - **Tester:**
   - enhet: rediger replikk
+- **Implementering:** src/core/commands/apply.ts#EditBlockText, src/app/script/Inspector.tsx
 
 #### REQ-0066 – Redigere handling
 Brukeren skal kunne redigere handling.
@@ -849,11 +870,12 @@ Brukeren skal kunne redigere handling.
 - **Kilde:** Kap. 4.4 (l. 219) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT · **Invarianter:** INV-07
 - **Avhengigheter:** REQ-0052
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Endret handlingsblokk beholder blokk-ID.
 - **Tester:**
   - enhet: rediger handlingsblokk
+- **Implementering:** src/core/commands/apply.ts#EditBlockText,InsertBlock,RemoveBlock, src/app/script/Inspector.tsx
 
 #### REQ-0067 – Splitte scener
 Brukeren skal kunne splitte scener.
@@ -861,11 +883,12 @@ Brukeren skal kunne splitte scener.
 - **Kilde:** Kap. 4.4 (l. 220) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT, CORE · **Invarianter:** INV-03
 - **Avhengigheter:** REQ-0041
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Narrativ splitting gir to manusscener; den opprinnelige beholder sin ID og den nye får ny ID; operasjonen kan angres.
 - **Tester:**
   - integrasjon: splitt scene og angre
+- **Implementering:** src/core/commands/apply.ts#SplitScene
 - **Merknad:** Hvilken del som beholder opprinnelig ID er ikke spesifisert – se DEC-0015 (narrativ splitting).
 
 #### REQ-0068 – Slå sammen scener
@@ -874,11 +897,12 @@ Brukeren skal kunne slå sammen scener.
 - **Kilde:** Kap. 4.4 (l. 221) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT, CORE · **Invarianter:** INV-03
 - **Avhengigheter:** REQ-0041
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Sammenslåing gir én scene; tilknyttet materiale fra begge bevares; operasjonen kan angres.
 - **Tester:**
   - integrasjon: slå sammen og angre
+- **Implementering:** src/core/commands/apply.ts#MergeScenes
 
 #### REQ-0069 – Sammenligne manusversjoner
 Brukeren skal kunne sammenligne manusversjoner.
@@ -899,22 +923,24 @@ Brukeren skal kunne angre og gjøre om endringer i manuset.
 - **Kilde:** Kap. 4.4 (l. 223) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT, CORE · **Invarianter:** INV-08
 - **Avhengigheter:** REQ-0042
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Alle manusredigeringer og sceneoperasjoner kan angres og gjøres om.
 - **Tester:**
   - enhet: undo/redo-stakk for manusoperasjoner
+- **Implementering:** src/app/project/use-commands.ts, src/core/commands/apply.ts
 
 #### REQ-0071 – Narrativ splitting vs. produksjonsteknisk oppdeling
 En narrativ splitting som skaper to selvstendige manusscener skal behandles annerledes enn en produksjonsteknisk oppdeling for videogenerering.
 
 - **Kilde:** Kap. 4.4 (l. 224) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE, SCRIPT, TIMELINE · **Invarianter:** INV-10
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Datamodellen har adskilte begreper for manusscene og produksjonsdelsekvens/segment.
 - **Tester:**
   - enhet: produksjonssegment opprettes uten ny manusscene
+- **Implementering:** src/core/commands/apply.ts#SplitScene
 - **Merknad:** Jf. kap. 34 pkt. 14.
 
 #### REQ-0072 – Produksjonsoppdeling endrer ikke scenenummerering
@@ -1023,11 +1049,12 @@ Ved hver manuseksport skal brukeren kunne velge nummereringsmetode.
 
 - **Kilde:** Kap. 5.2 (l. 259) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 2
 - **Moduler:** EXPORT, SCRIPT, UI
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Eksportdialogen krever/tilbyr valg av nummereringsmetode hver gang.
 - **Tester:**
   - e2e: eksportdialog viser nummereringsvalg
+- **Implementering:** src/app/script/ExportDialog.tsx
 - **Merknad:** Jf. kap. 34 pkt. 4.
 
 #### REQ-0081 – Fortløpende nummerering
@@ -1036,11 +1063,12 @@ Nummereringsvalgene skal omfatte fortløpende nummerering, der alle aktive scene
 - **Kilde:** Kap. 5.2 (l. 261-262) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** EXPORT, SCRIPT · **Invarianter:** INV-02
 - **Avhengigheter:** REQ-0080
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt 5 aktive scener, så nummereres de 1–5 i eksporten.
 - **Tester:**
   - enhet: nummereringsalgoritme fortløpende
+- **Implementering:** src/core/screenplay/numbering.ts
 - **Merknad:** Linje 261 og 262 er duplikater.
 
 #### REQ-0082 – Bevar produksjonsnummerering med mellomnumre
@@ -1049,11 +1077,12 @@ Nummereringsvalgene skal omfatte bevaring av produksjonsnummerering, der etabler
 - **Kilde:** Kap. 5.2 (l. 263-264) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** EXPORT, SCRIPT · **Invarianter:** INV-02
 - **Avhengigheter:** REQ-0080
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt to nye scener mellom 42 og 43, så eksporteres de som 42A og 42B, og øvrige numre er uendret.
 - **Tester:**
   - enhet: nummereringsalgoritme med mellomnumre, inkl. kanttilfeller (42A→42AA e.l.)
+- **Implementering:** src/core/screenplay/numbering.ts
 - **Merknad:** Linje 263 og 264 er duplikater.
 
 #### REQ-0083 – Bevar valgt historisk nummerering
@@ -1075,11 +1104,12 @@ Brukeren skal kunne velge om skjulte eller deaktiverte scener skal inkluderes i 
 - **Kilde:** Kap. 5.2 (l. 266) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** EXPORT · **Invarianter:** INV-14
 - **Avhengigheter:** REQ-0080
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Med valget av utelates deaktiverte scener; med valget på inkluderes de (med tydelig markering).
 - **Tester:**
   - import/eksport: eksport med og uten deaktiverte scener
+- **Implementering:** src/app/script/ExportDialog.tsx, src/core/screenplay/numbering.ts
 - **Merknad:** Hvordan inkluderte deaktiverte scener markeres og nummereres er ikke spesifisert.
 
 #### REQ-0085 – Eksportvalg endrer ikke interne ID-er
@@ -1088,11 +1118,12 @@ Eksportvalg skal ikke endre prosjektets interne sceneidentiteter.
 - **Kilde:** Kap. 5.2 (l. 267) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 2
 - **Moduler:** EXPORT, CORE · **Invarianter:** INV-02
 - **Avhengigheter:** REQ-0080
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Etter eksport med hvilken som helst nummereringsmetode er alle scene-ID-er og relasjoner uendret.
 - **Tester:**
   - dataintegritet: ID-sett før/etter eksport
+- **Implementering:** src/core/screenplay/numbering.ts
 - **Merknad:** Jf. kap. 34 pkt. 4.
 
 #### REQ-0086 – Forhåndsvisning av nummerering før eksport
@@ -1101,11 +1132,12 @@ Programmet skal vise en forhåndsvisning av nummereringen før eksport.
 - **Kilde:** Kap. 5.2 (l. 268) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** EXPORT, UI
 - **Avhengigheter:** REQ-0080
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Eksportdialogen viser liste over scener med resulterende numre før brukeren bekrefter.
 - **Tester:**
   - e2e: forhåndsvisning oppdateres ved bytte av metode
+- **Implementering:** src/app/script/ExportDialog.tsx
 
 #### REQ-0087 – Manuseksport til DOCX
 Programmet skal kunne eksportere korrekt formatert manus til DOCX (prioritert format).
@@ -1113,11 +1145,12 @@ Programmet skal kunne eksportere korrekt formatert manus til DOCX (prioritert fo
 - **Kilde:** Kap. 5.3 (l. 270-272) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** EXPORT, SCRIPT
 - **Avhengigheter:** REQ-0050
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Eksportert DOCX åpnes i Word med korrekt manuslayout.
 - **Tester:**
   - import/eksport: DOCX-eksport og reimport-rundtur
+- **Implementering:** src/engine/export/screenplay-docx.ts
 
 #### REQ-0088 – Manuseksport til PDF
 Programmet skal kunne eksportere korrekt formatert manus til PDF (prioritert format).
@@ -1125,11 +1158,12 @@ Programmet skal kunne eksportere korrekt formatert manus til PDF (prioritert for
 - **Kilde:** Kap. 5.3 (l. 270, 273) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** EXPORT, SCRIPT
 - **Avhengigheter:** REQ-0050
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Eksportert PDF har samme paginering som manusvisningen.
 - **Tester:**
   - visuell: PDF mot manusvisning
+- **Implementering:** src/engine/export/screenplay-pdf.ts
 
 #### REQ-0089 – Andre profesjonelle manusformater
 Programmet skal kunne eksportere til andre relevante profesjonelle manusformater dersom implementeringen støtter dem pålitelig.
@@ -1149,22 +1183,24 @@ Eksportert manus skal opprettholde korrekt layout, sceneorden og nummerering.
 - **Kilde:** Kap. 5.3 (l. 275) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** EXPORT
 - **Avhengigheter:** REQ-0087; REQ-0088
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Eksportert scenerekkefølge og numre samsvarer med forhåndsvisningen og aktiv struktur.
 - **Tester:**
   - import/eksport: verifiser rekkefølge og numre i eksportfil
+- **Implementering:** src/engine/export/screenplay-pdf.ts, src/engine/export/screenplay-docx.ts
 
 #### REQ-0091 – Manuseksport krever ikke AI
 Manuseksport skal ikke kreve AI-generering.
 
 - **Kilde:** Kap. 5.3 (l. 276) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 2
 - **Moduler:** EXPORT · **Invarianter:** INV-11
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Eksport fungerer uten nettverkstilgang til AI-leverandører.
 - **Tester:**
   - integrasjon: eksport med AI-adaptere deaktivert
+- **Implementering:** src/engine/export/screenplay-pdf.ts, src/engine/export/screenplay-docx.ts
 
 ### Kapittel 6
 
@@ -5282,12 +5318,13 @@ Systemet skal eksportere korrekt formatert manus med nummereringsmetode valgt ve
 
 - **Kilde:** Kap. 29.3 (l. 1239-1240) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** EXPORT, SCRIPT · **Invarianter:** INV-02
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt manuseksport, så må brukeren velge nummereringsmetode ved hver eksport, og interne scene-ID-er er uendret etterpå.
 - **Tester:**
   - import/eksport: manuseksport med to nummereringsmetoder
   - dataintegritet: ID-er uendret
+- **Implementering:** src/app/script/ExportDialog.tsx, src/core/screenplay/numbering.ts
 - **Merknad:** Jf. kap. 5.2 og prinsipp 4.
 
 #### REQ-0420 – Språkeksport av film og manus

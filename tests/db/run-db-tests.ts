@@ -5,7 +5,7 @@
  * historikk kan ikke endres (INV-13), invitasjoner (REQ-0521), rundtur domenekjerne ↔ database (DEC-0022).
  */
 import postgres from "postgres";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -119,7 +119,11 @@ async function runCommand(
 console.log(`Databasetester (${DB})`);
 try {
   await sql.unsafe(readFileSync(join(root, "tests/db/supabase-emulation.sql"), "utf8"));
-  await sql.unsafe(readFileSync(join(root, "db/migrations/0001_core.sql"), "utf8"));
+  for (const f of readdirSync(join(root, "db/migrations"))
+    .filter((x) => x.endsWith(".sql"))
+    .sort()) {
+    await sql.unsafe(readFileSync(join(root, "db/migrations", f), "utf8"));
+  }
   await sql`insert into auth.users (id, email) values (${ALICE}, 'alice@example.no'), (${BOB}, 'bob@example.no'), (${CAROL}, 'carol@example.no')`;
 
   let projectId = "";
@@ -406,9 +410,180 @@ try {
     assert(revs.length === 2 && revs[1]!["author"] === ALICE, "historikk mangler");
   });
 
-  await test("schema_version er lesbar for alle og viser versjon 1", async () => {
-    const v = await as("anon", null, (tx) => tx`select version from public.schema_version`);
-    assert(v.length === 1 && v[0]!["version"] === 1, "skjemaversjon mangler");
+  await test("schema_version er lesbar for alle og viser siste versjon", async () => {
+    const v = await as(
+      "anon",
+      null,
+      (tx) => tx`select max(version) as v from public.schema_version`,
+    );
+    assert(v[0]!["v"] === 2, `skjemaversjon ${v[0]!["v"]}`);
+  });
+
+  await test("0002: redaktør kan registrere originaldokument, leser kan ikke; dokumentet er uforanderlig", async () => {
+    const mainId2 = Object.values(state.productions)[0]!.id;
+    const sha = "a".repeat(64);
+    const id = await as(
+      "authenticated",
+      ALICE,
+      async (tx) =>
+        (
+          await tx`select public.register_imported_document(${projectId}, ${mainId2}, ${projectId + "/x/manus.pdf"}, 'manus.pdf', ${sha}, 'pdf', 106, 1588473) as id`
+        )[0]!["id"],
+    );
+    assert(typeof id === "string", "ingen id");
+    await expectError(
+      as(
+        "authenticated",
+        BOB,
+        (tx) =>
+          tx`select public.register_imported_document(${projectId}, ${mainId2}, ${projectId + "/y/m.pdf"}, 'm.pdf', ${sha}, 'pdf', 1, 10)`,
+      ),
+      "42501",
+    );
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) =>
+          tx`select public.register_imported_document(${projectId}, ${mainId2}, ${"annet/y/m.pdf"}, 'm.pdf', ${sha}, 'pdf', 1, 10)`,
+      ),
+      "22023",
+    );
+    await expectError(sql`update public.imported_documents set file_name = 'x'`, /INV-13/);
+    const seen = await as(
+      "authenticated",
+      BOB,
+      (tx) => tx`select id from public.imported_documents where project_id = ${projectId}`,
+    );
+    assert(seen.length === 1, "medlem ser ikke dokumentet");
+    const carol = await as(
+      "authenticated",
+      CAROL,
+      (tx) => tx`select id from public.imported_documents`,
+    );
+    assert(carol.length === 0, "ikke-medlem ser dokumentet");
+  });
+
+  await test("0002: profiler er synlige for medlemmer i samme prosjekt, ikke for andre", async () => {
+    await as("authenticated", ALICE, (tx) => tx`select public.upsert_my_profile('Mars')`);
+    await as("authenticated", CAROL, (tx) => tx`select public.upsert_my_profile(null)`);
+    const bobSees = await as(
+      "authenticated",
+      BOB,
+      (tx) => tx`select display_name from public.profiles order by display_name`,
+    );
+    assert(
+      bobSees.length === 1 && bobSees[0]!["display_name"] === "Mars",
+      `Bob ser ${JSON.stringify(bobSees)}`,
+    );
+    const carolSees = await as(
+      "authenticated",
+      CAROL,
+      (tx) => tx`select display_name from public.profiles`,
+    );
+    assert(
+      carolSees.length === 1 && carolSees[0]!["display_name"] === "carol",
+      `Carol ser ${JSON.stringify(carolSees)}`,
+    );
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`update public.profiles set display_name = 'x'`),
+      "42501",
+    );
+  });
+
+  await test("0002: import av manus lagres atomisk med kildereferanser og usikkerhet", async () => {
+    const { planImport } = await import("../../src/core/screenplay/plan");
+    const parsed = {
+      format: "pdf" as const,
+      pageCount: 1,
+      titlePage: [],
+      warnings: [],
+      stats: { numbered: 2, unnumbered: 0, uncertain: 1, duplicateNumbers: [] },
+      scenes: [
+        {
+          number: "10",
+          rawHeading: "INT. A - DAG",
+          heading: { intExt: "INT.", location: "A", time: "DAG" },
+          source: { page: 1, y: 72 },
+          warnings: [],
+          elements: [
+            { kind: "action" as const, text: "Hei.", source: { page: 1, y: 96 } },
+            {
+              kind: "action" as const,
+              text: "rar",
+              source: { page: 1, y: 120 },
+              uncertain: "usikker",
+            },
+          ],
+        },
+        {
+          number: "11",
+          rawHeading: "EXT. B - NATT",
+          heading: { intExt: "EXT.", location: "B", time: "NATT" },
+          source: { page: 1, y: 200 },
+          warnings: [],
+          elements: [
+            { kind: "character" as const, text: "MAJA", source: { page: 1, y: 220 } },
+            { kind: "dialogue" as const, text: "Ja.", source: { page: 1, y: 232 } },
+          ],
+        },
+      ],
+    };
+    const cmd = planImport(state, parsed, {
+      productionId: Object.values(state.productions)[0]!.id,
+    });
+    state = await runCommand(state, ALICE, cmd);
+    const loaded = await loadState(projectId);
+    const unc = Object.values(loaded.blocks).filter((b) => b.uncertainty === "usikker");
+    assert(
+      unc.length === 1 && unc[0]!.sourceRef?.page === 1,
+      "usikkerhet/kildereferanse ikke lagret",
+    );
+    const nums = Object.values(loaded.occurrences).map((o) => o.productionNumber);
+    assert(nums.includes("10") && nums.includes("11"), "scenenumre mangler");
+    // Fjerning av blokk lagres som flagg; historikken beholdes; kan gjenopprettes
+    const target = unc[0]!;
+    const prod = Object.values(state.productions)[0]!.id;
+    state = await runCommand(state, ALICE, {
+      type: "RemoveBlock",
+      productionId: prod,
+      blockId: target.id,
+    });
+    let again = await loadState(projectId);
+    assert(again.blocks[target.id]!.removed === true, "removed ble ikke lagret");
+    assert(
+      again.blockRevisions.some((r) => r.blockId === target.id),
+      "historikk forsvant",
+    );
+    state = await runCommand(state, ALICE, {
+      type: "RestoreBlock",
+      productionId: prod,
+      blockId: target.id,
+    });
+    again = await loadState(projectId);
+    assert(again.blocks[target.id]!.removed === false, "gjenoppretting ble ikke lagret");
+  });
+
+  await test("0002: to samtidige innsettinger på samme plass i en scene gir konflikt, ikke uklar rekkefølge", async () => {
+    const fresh = await loadState(projectId);
+    const block = Object.values(fresh.blocks).find((b) => !b.removed)!;
+    const prod = Object.values(fresh.productions)[0]!.id;
+    const insert = (blockId: string) =>
+      ({
+        type: "InsertBlock",
+        productionId: prod,
+        variantId: block.variantId,
+        block: { blockId, kind: "action", text: "Samtidig", orderKey: block.orderKey + "k" },
+      }) as Command;
+    // Begge brukerne bygger på samme utgangspunkt
+    await runCommand(fresh, ALICE, insert("66666666-6666-7666-8666-0000000000a1"));
+    let failed = false;
+    try {
+      await runCommand(fresh, ALICE, insert("66666666-6666-7666-8666-0000000000a2"));
+    } catch (e) {
+      failed = /duplicate|unik|unique/i.test(String((e as Error).message));
+    }
+    assert(failed, "andre innsetting på samme plass ble ikke avvist med unik-feil");
   });
 } finally {
   await sql.end();

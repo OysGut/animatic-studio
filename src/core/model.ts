@@ -84,6 +84,8 @@ export interface SceneVariant extends Entity<VariantId> {
   readonly ownerProductionId: ProductionId | null;
   readonly basedOnVariantId: VariantId | null;
   readonly heading: SceneHeading;
+  /** Usikker tolkning av overskriften ved import (mandat 4.3 punkt 9). null = avklart. */
+  readonly uncertainty: string | null;
 }
 
 export interface ScriptBlock extends Entity<BlockId> {
@@ -93,6 +95,12 @@ export interface ScriptBlock extends Entity<BlockId> {
   readonly currentRev: number;
   readonly text: string; // tekst i gjeldende revisjon (current_rev)
   readonly language: typeof PRIMARY_LANGUAGE;
+  /** Hvor blokken kom fra i originaldokumentet (side og høyde), for sammenligning med originalen (mandat 4.2). */
+  readonly sourceRef: { readonly page: number; readonly y: number } | null;
+  /** Usikker tolkning ved import (mandat 4.3 punkt 9). null = avklart. */
+  readonly uncertainty: string | null;
+  /** Fjernet fra manuset (historikken beholdes; kan gjenopprettes). Fjernede blokker vises ikke. */
+  readonly removed: boolean;
 }
 
 /** Uforanderlig historikk for blokktekst (DEC-0020 pkt. 5). */

@@ -6,4 +6,5 @@ export * from "./invariants";
 export * from "./views";
 export * from "./patch";
 export * from "./commands/types";
-export { applyCommand, revisionOf, type ApplyResult } from "./commands/apply";
+export { applyCommand, revisionOf, revisionsOf, type ApplyResult } from "./commands/apply";
+export * from "./screenplay";

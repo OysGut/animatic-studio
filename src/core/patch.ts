@@ -69,6 +69,7 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         heading_int_ext: v.heading.intExt,
         heading_location: v.heading.location,
         heading_time: v.heading.time,
+        uncertainty: v.uncertainty,
       };
     }
     case "blocks": {
@@ -81,6 +82,9 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         current_rev: b.currentRev,
         text: b.text,
         language: b.language,
+        source_ref: b.sourceRef,
+        uncertainty: b.uncertainty,
+        removed: b.removed,
       };
     }
     case "occurrences": {
@@ -258,6 +262,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
           location: str(x["heading_location"]),
           time: str(x["heading_time"]),
         },
+        uncertainty: optStr(x["uncertainty"]),
       })),
     ),
     blocks: byId(
@@ -270,6 +275,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         currentRev: num(x["current_rev"]),
         text: str(x["text"]),
         language: "nb" as const,
+        sourceRef: (x["source_ref"] as { page: number; y: number } | null | undefined) ?? null,
+        uncertainty: optStr(x["uncertainty"]),
+        removed: x["removed"] === true,
       })),
     ),
     blockRevisions: r.script_block_revisions

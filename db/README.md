@@ -8,3 +8,4 @@
 | Versjon | Fil | Innhold |
 |---|---|---|
 | 1 | `0001_core.sql` | Prosjekt, medlemskap, invitasjoner, produksjoner, scener, varianter, blokker + historikk, forekomster, segmenter, takes, kommandologg, RLS, `create_project`, `apply_changes`, invitasjons-RPC-er |
+| 2 | `0002_import_profiles.sql` | Kildereferanse, usikkerhet og «fjernet» på manusblokker; usikkerhet på scenevarianter; `imported_documents` + `register_imported_document`; privat bøtte `sources` med lese-/opplastingspolicyer; `profiles` + `upsert_my_profile` |

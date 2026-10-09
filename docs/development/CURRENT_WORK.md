@@ -1,22 +1,24 @@
 # Pågående arbeid
 
-Oppdatert: 2026-10-08 (økt 2)
+Oppdatert: 2026-10-09 (økt 3)
 
-## Nå: M1 Skjelett og kjerne – kode ferdig, venter på Lovable
-- [x] Lovable Cloud aktivert (Mars) og første synk OK; `docs/`/`.claude/` overlevde (KI-07 lukket)
-- [x] Domenekjerne `src/core` med kommandoer, invers, invarianter, visninger, fortellingstid, endringssett
-- [x] 35 Vitest-tester inkl. egenskapsbaserte invarianttester (INV-01/02/03/04/07/10/13/14, C1)
-- [x] Migrasjon `db/migrations/0001_core.sql` + 15 databasetester mot lokal Postgres
-- [x] Serverfunksjon `runCommand` (DEC-0022), idempotente nye forsøk
-- [x] Innlogging, prosjektliste, prosjektoversikt, invitasjon – visuell QA med skjermbilder
-- [ ] **Mars:** Commit + Push, deretter synkmeldingen for `0001_core.sql` i Lovable (LOVABLE_SYNC.md B)
-- [ ] **Mars:** Logg inn i Lovable-forhåndsvisningen, opprett prosjektet «Jula på Dovre», si fra om noe ser rart ut
-- [ ] Claude: når 0001 er kjørt – bytt til typet Supabase-klient (KI-14), verifiser auth-innstillinger (KI-15)
+## Nå: M2 Manus – første del ferdig, venter på Mars
+- [x] Tolkning av PDF (pdf.js) og DOCX, gyldne tester mot «Jula på Dovre» (97 scener, numre, (MORE)/(CONT'D), O.S., manuelle linjeskift)
+- [x] `ImportScreenplay` (atomisk, kan angres), `SplitScene`/`MergeScenes`, `SetBlockKind`, `EditSceneHeading`, `SetUncertainty`, `RemoveBlock`/`RestoreBlock`
+- [x] Migrasjon `0002_import_profiles.sql` (kildereferanse, usikkerhet, fjernet, unik plass, originaldokumenter, bøtte `sources`, profiler) + databasetester
+- [x] Sidebryting kalibrert mot Final Draft; låste sider
+- [x] Arbeidsflaten «Manus»: scenenavigator (dra-og-slipp, Alt+pil, aktiv-bryter), sidevisning, inspektør, import- og eksportdialog
+- [x] Angre/gjør om per bruker, sanntid mellom medlemmer, profilnavn
+- [x] Eksport PDF/DOCX med nummereringsvalg og forhåndsvisning
+- [x] Uavhengig kodegjennomgang; 15 funn rettet med regresjonstester
+- [x] CI: `tests.yml` (typekontroll, Vitest, databasetester)
+- [ ] **Mars:** Commit + Push (melding i `NEXT_COMMIT_MESSAGE.txt`), deretter synkmeldingen for `0002_import_profiles.sql` (LOVABLE_SYNC.md B)
+- [ ] **Mars:** Åpne prosjektet → Manus → Importer manus → velg «Jula på Dovre» PDF fra `Manus/`. Si fra om noe ser rart ut
+- [ ] Claude: følge opp første ekte import (KI-19, KI-23), CI-kjøring (KI-17)
 
-## Neste: M2 Manus og oversikt
-1. Manusimport fra referansemanuset: PDF (pdf.js, posisjonsbasert) og DOCX – gyldne tester lokalt mot `../Manus/`, anonymiserte utdrag i `tests/fixtures/screenplay/`.
-2. Kommando `ImportScreenplay` (mange scener i én transaksjon), `SplitScene`/`MergeScenes`.
-3. Manusvisning med originaltro paginering (Courier Prime-metrikk verifiseres, KI-08), dra-og-slipp = `MoveOccurrence`.
-4. Angre/gjør om per bruker i UI, sanntidsoppdatering mellom medlemmer, profilnavn (KI-13).
-5. Manuseksport (DOCX/PDF) med valg av nummerering.
-Akseptanse M2: referansemanuset importeres med 96 nummererte scener + unummererte, uten oppdiktede scener; fase 2-P0-krav har tester.
+## Neste: M2 andre del
+1. Manusversjoner (uforanderlige øyeblikksbilder) og sammenligning med endringstyper (REQ-0032, REQ-0069, REQ-0076–0078); historisk nummerering ved eksport (REQ-0083).
+2. Søk og filtrering i manus, «bare scener med valgt karakter» (REQ-0073–0075).
+3. Varighetsestimat per scene (sideåttendedeler).
+4. Tilstedeværelse (hvem ser på hva) og typet Supabase-klient (KI-14).
+5. Lagre tittelside ved import (KI-20).

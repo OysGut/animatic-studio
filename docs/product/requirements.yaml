@@ -556,12 +556,14 @@ requirements:
   - Gitt scenene A, B, C, når B flyttes etter C i manuset, så er filmens aktive rekkefølge A, C, B.
   tests:
   - 'integrasjon: flytt i manus → verifiser tidslinjerekkefølge'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - src/core/commands/apply.ts#MoveOccurrence
   - src/core/views.ts
+  - src/app/script/SceneNavigator.tsx
   verification:
   - tests/unit/commands.test.ts::én kommando endrer rekkefølgen i både manus og film, uten nye ID-er
+  - tests/visual/screens.mjs::06-manus (dra-og-slipp i scenenavigatoren, manuell kontroll 2026-10-09)
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -569,6 +571,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: kjernen verifisert; manusvisning med dra-og-slipp kommer i M2'
+  - date: '2026-10-09'
+    decision: DEC-0023
+    change: 'M2: flytting i scenenavigatoren (dra-og-slipp, Alt+pil); status Verifisert'
   notes: ''
 - id: REQ-0018
   title: Flytting i tidslinje flytter i manus
@@ -627,11 +632,14 @@ requirements:
     og inngår ikke i eksport (med mindre eksportvalg eksplisitt inkluderer den, jf. REQ-0085).
   tests:
   - 'integrasjon: deaktiver scene og verifiser alle fire konsumenter'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - src/core/views.ts
+  - src/core/screenplay/numbering.ts
+  - src/app/script/SceneNavigator.tsx
   verification:
   - tests/unit/commands.test.ts::utelates fra manus og film, men ingenting slettes og den kan gjenaktiveres
+  - tests/unit/numbering.test.ts::deaktiverte scener utelates, eller tas med som UTGÅR / merket (REQ-0084, Q-08)
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -639,6 +647,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: kjernen verifisert; varighet og eksport kommer i M2/M4'
+  - date: '2026-10-09'
+    decision: DEC-0023
+    change: 'M2: deaktiverte scener utelates i manusvisning, sider og eksport; status Verifisert'
   notes: ''
 - id: REQ-0020
   title: Skjult materiale slettes ikke
@@ -1467,9 +1478,16 @@ requirements:
   - Gitt det norske referansemanuset (PDF fra Final Draft 11), når det importeres, så opprettes en strukturert manusversjon.
   tests:
   - 'import/eksport: import av referansemanus DOCX og PDF'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/engine/import/docx-lines.ts
+  - src/app/script/ImportDialog.tsx
+  - src/engine/import/browser.ts
+  - src/engine/import/pdf-lines.ts
+  verification:
+  - tests/golden/reference-screenplay.test.ts::tolker alle scener, numre, tittelside og elementer
+  - tests/golden/reference-screenplay.test.ts::har samme scenestruktur som det norske manuset
+  - tests/visual/screens.mjs::11-import-forhandsvisning (ekte PDF i nettleser)
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -1477,6 +1495,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0002
     change: Akseptanse/merknad tilpasset nytt referansemanus
+  - date: '2026-10-09'
+    decision: DEC-0023
+    change: 'M2: import av PDF og DOCX i nettleseren (DEC-0023); status Verifisert'
   notes: Referansen «DEL 2.docx» er erstattet av hele norsk manus (PDF, Final Draft 11, 106 s., US Letter) og hele
     engelsk manus (DOCX). PDF-import er dermed i praksis nødvendig; se DEC-0013 (PDF-import).
 - id: REQ-0045
@@ -1498,9 +1519,12 @@ requirements:
   - Parser- og layouttester bruker referansemanusene som testfixtures.
   tests:
   - 'manuell: testsuite inneholder referansemanus som fixtures'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/screenplay/paginate.ts
+  - src/core/screenplay/parse.ts
+  verification:
+  - tests/golden/reference-screenplay.test.ts
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -1508,6 +1532,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0002
     change: Akseptanse/merknad tilpasset nytt referansemanus
+  - date: '2026-10-09'
+    decision: DEC-0023
+    change: 'M2: referansemanuset brukt som fasit for tolkning og sidebryting; status Verifisert'
   notes: Opprinnelig «DEL 2.docx»; erstattet (bekreftet 2026-10-08) av hele norsk manus (PDF, 96 nummererte scener
     med hull opp til 109 og minst én unummerert scene) og hele engelsk manus (DOCX).
 - id: REQ-0046
@@ -1534,9 +1561,12 @@ requirements:
   tests:
   - 'enhet: parser-fixtures for hvert elementtype'
   - 'import/eksport: elementklassifisering mot fasit for referansemanus'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/screenplay/parse.ts
+  verification:
+  - tests/golden/reference-screenplay.test.ts::tolker alle scener, numre, tittelside og elementer
+  - tests/unit/screenplay-parse.test.ts
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -1544,6 +1574,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0002
     change: Akseptanse/merknad tilpasset nytt referansemanus
+  - date: '2026-10-09'
+    decision: DEC-0023
+    change: 'M2: overskrifter, handling, karakter, replikk, parentes, overgang, (MORE)/(CONT''D), O.S.; status Verifisert'
   notes: Opprinnelig beskrevet for «DEL 2.docx»; gjelder fortsatt for nye referansemanus.
 - id: REQ-0047
   title: Manusdeler som starter/slutter midt i scene
@@ -1565,9 +1598,13 @@ requirements:
     opprettes en fiktiv scene.
   tests:
   - 'import/eksport: fixture som starter midt i scene og slutter midt i scene'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/screenplay/plan.ts
+  - src/core/screenplay/parse.ts
+  verification:
+  - tests/unit/screenplay-parse.test.ts::håndterer delmanus som starter midt i en scene (mandat 4.1) uten å finne
+    opp en ny scene
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -1575,6 +1612,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0002
     change: Akseptanse/merknad tilpasset nytt referansemanus
+  - date: '2026-10-09'
+    decision: DEC-0023
+    change: 'M2: tekst før første overskrift blir fortsettelsesscene (valgfritt); status Verifisert'
   notes: Se også REQ-0060 (passasjer før første sceneoverskrift).
 - id: REQ-0048
   title: Uregelmessige scenenumre uten oppdiktede scener
@@ -1597,9 +1637,11 @@ requirements:
     så importeres nøyaktig de scenene som finnes (inkl. den unummererte), og numrene bevares som de står.
   tests:
   - 'import/eksport: antall scener og originalnumre mot fasit'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/screenplay/parse.ts
+  verification:
+  - tests/golden/reference-screenplay.test.ts::tolker alle scener, numre, tittelside og elementer
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -1607,6 +1649,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0002
     change: Akseptanse/merknad tilpasset nytt referansemanus
+  - date: '2026-10-09'
+    decision: DEC-0023
+    change: 'M2: 96 nummererte + 1 unummerert, hull opp til 109, ingen oppdiktede; status Verifisert'
   notes: Referansemanusets kjente egenskaper (hull opp til 109, unummerert scene) brukt i akseptanse.
 - id: REQ-0049
   title: Be om manglende referansefiler
@@ -1662,9 +1707,13 @@ requirements:
   tests:
   - 'visuell: side-ved-side-sammenligning mot original-PDF'
   - 'enhet: pagineringsmotor mot fasit'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/screenplay/script-pages.ts
+  - src/app/script/ScriptPageView.tsx
+  verification:
+  - tests/golden/reference-screenplay.test.ts::hele manuset importeres atomisk, raskt, uten brudd på invarianter,
+    og kan angres
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -1672,6 +1721,10 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0002
     change: Akseptanse/merknad tilpasset nytt referansemanus
+  - date: '2026-10-09'
+    decision: DEC-0024
+    change: 'M2: sidevisning i Courier med låste sider (97/97 scenestarter som originalen); må vurderes av Trollfilm;
+      status Implementert – ikke verifisert'
   notes: ''
 - id: REQ-0051
   title: Manusvisning er ikke notat/tabell/kort
@@ -1693,13 +1746,18 @@ requirements:
   - Hovedmanusvisningen er en paginert manusside-visning; eventuelle tabell-/kortvisninger er tilleggsvisninger.
   tests:
   - 'manuell: UX-gjennomgang'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/app/script/ScriptPageView.tsx
+  verification:
+  - 'tests/visual/screens.mjs::06-manus (manuell kontroll 2026-10-09: manusside, ikke tabell/kort)'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0023
+    change: 'M2: manuset vises som manussider; status Verifisert'
   notes: ''
 - id: REQ-0052
   title: Korrekt ombrytning og paginering ved redigering
@@ -1721,13 +1779,19 @@ requirements:
     sider repagineres.
   tests:
   - 'enhet: pagineringsregler (dialogbrudd, sceneoverskrift ikke nederst på side o.l.)'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/screenplay/paginate.ts
+  verification:
+  - tests/unit/paginate.test.ts
+  - tests/golden/reference-screenplay.test.ts::gir samme sideantall og scenestart innen én side av Final Draft
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0024
+    change: 'M2: sidene brytes på nytt ved hver endring (DEC-0024); status Implementert – ikke verifisert'
   notes: ''
 - id: REQ-0053
   title: Originaldokumentet bevares uendret
@@ -1750,13 +1814,19 @@ requirements:
   - Importert originalfil lagres med hash og kan lastes ned byte-identisk etter vilkårlige redigeringer.
   tests:
   - 'dataintegritet: hash av originalfil før/etter redigering'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - db/migrations/0002_import_profiles.sql
+  - src/app/script/ImportDialog.tsx
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0023
+    change: 'M2: originalen lastes opp uendret til bøtten sources med sha256; ikke testet mot Lovable Cloud ennå
+      (KI-19); status Implementert – ikke verifisert'
   notes: ''
 - id: REQ-0054
   title: Analyse ødelegger ikke visuell gjengivelse
@@ -1777,13 +1847,18 @@ requirements:
   - Gitt et importert manus, når scenedeteksjon/strukturering kjøres, så er visningen uendret i layout.
   tests:
   - 'visuell: regresjonstest av manusvisning før/etter analyse'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/screenplay/parse.ts
+  verification:
+  - tests/golden/reference-screenplay.test.ts::eksportert PDF leses inn igjen med samme scener, numre og tekst
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0023
+    change: 'M2: manuelle linjeskift og tomme linjer bevares; rundtur gir identisk tekst og sider; status Verifisert'
   notes: ''
 - id: REQ-0055
   title: Automatisk tolkning av manusstruktur ved import
@@ -1807,9 +1882,11 @@ requirements:
     samsvarer med fasit.
   tests:
   - 'import/eksport: deteksjonspresisjon mot fasit'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/screenplay/parse.ts
+  verification:
+  - tests/golden/reference-screenplay.test.ts::tolker alle scener, numre, tittelside og elementer
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -1817,6 +1894,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0002
     change: Akseptanse/merknad tilpasset nytt referansemanus
+  - date: '2026-10-09'
+    decision: DEC-0023
+    change: M2; status Verifisert
   notes: Punkt 1–6 i listen.
 - id: REQ-0056
   title: Permanente scene-ID-er opprettes ved import
@@ -1840,13 +1920,20 @@ requirements:
   - Hver detektert scene har en intern ID uavhengig av scenenummeret.
   tests:
   - 'enhet: importer oppretter ID per scene'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/screenplay/plan.ts
+  - src/core/commands/apply.ts#ImportScreenplay
+  verification:
+  - tests/unit/import-split-merge.test.ts::lager permanente scener etter eksisterende scener, med nummer, kildereferanse
+    og usikkerhet
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0023
+    change: M2; status Verifisert
   notes: Punkt 7.
 - id: REQ-0057
   title: Strukturert manuskopi ved import
@@ -1868,13 +1955,19 @@ requirements:
   - Etter import finnes både uendret original og en strukturert (blokkbasert) manusversjon.
   tests:
   - 'enhet: import gir to adskilte representasjoner'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - db/migrations/0002_import_profiles.sql
+  - src/core/screenplay/plan.ts
+  verification:
+  - 'tests/db/run-db-tests.ts::0002: import av manus lagres atomisk med kildereferanser og usikkerhet'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0023
+    change: 'M2: strukturert kopi med kildereferanse per blokk; status Verifisert'
   notes: Punkt 8.
 - id: REQ-0058
   title: Markering av usikre tolkninger
@@ -1897,13 +1990,21 @@ requirements:
     i en gjennomgangsliste.
   tests:
   - 'enhet: tvetydige fixtures gir usikkerhetsflagg'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/app/script/Inspector.tsx
+  - src/app/script/ScriptPageView.tsx
+  - src/core/screenplay/parse.ts
+  verification:
+  - 'tests/db/run-db-tests.ts::0002: import av manus lagres atomisk med kildereferanser og usikkerhet'
+  - tests/visual/screens.mjs::09-manus-usikker
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0023
+    change: 'M2: usikre tolkninger markeres i margen og i scenelisten; status Verifisert'
   notes: Punkt 9.
 - id: REQ-0059
   title: Manuell korrigering av scenedeteksjon
@@ -1927,13 +2028,19 @@ requirements:
     scener etter import.
   tests:
   - 'e2e: korriger deteksjonsfeil'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/commands/apply.ts#SetBlockKind,EditSceneHeading,SetUncertainty,SplitScene,MergeScenes
+  - src/app/script/Inspector.tsx
+  verification:
+  - tests/unit/import-split-merge.test.ts::elementtype, overskrift og usikkerhet kan endres og angres
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0023
+    change: M2; status Verifisert
   notes: ''
 - id: REQ-0060
   title: Passasjer før første sceneoverskrift
@@ -1954,13 +2061,19 @@ requirements:
   - Gitt tekst før første sceneoverskrift, så bevares den som egen blokk og kan kobles til en eksisterende scene.
   tests:
   - 'import/eksport: fixture med innledende scenefortsettelse'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/screenplay/plan.ts
+  - src/app/script/ImportDialog.tsx
+  verification:
+  - tests/unit/import-split-merge.test.ts::kan hoppe over fortsettelsesteksten før første overskrift
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0023
+    change: 'M2: brukeren velger om teksten tas med som egen unummerert scene; status Verifisert'
   notes: ''
 - id: REQ-0061
   title: Opprette scener
@@ -1982,13 +2095,20 @@ requirements:
   - Ny scene får permanent ID og vises i både manus og filmstruktur.
   tests:
   - 'integrasjon: opprett scene'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/app/script/Inspector.tsx
+  - src/core/commands/apply.ts#CreateScene
+  verification:
+  - tests/unit/commands.test.ts
+  - tests/invariants/random-sequences.test.ts
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0025
+    change: 'M2: «Ny scene etter denne» i inspektøren; status Verifisert'
   notes: ''
 - id: REQ-0062
   title: Flytte scener
@@ -2012,13 +2132,19 @@ requirements:
   - Flyttet scene beholder ID og rekkefølgen oppdateres i manus og film.
   tests:
   - 'integrasjon: flytt scene'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/commands/apply.ts#MoveOccurrence
+  - src/app/script/SceneNavigator.tsx
+  verification:
+  - tests/unit/commands.test.ts::én kommando endrer rekkefølgen i både manus og film, uten nye ID-er
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0025
+    change: M2; status Verifisert
   notes: ''
 - id: REQ-0063
   title: Skjule eller deaktivere scener
@@ -2042,13 +2168,20 @@ requirements:
   - Deaktivert scene utelates fra aktivt innhold men er ikke slettet.
   tests:
   - 'integrasjon: deaktiver scene'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/commands/apply.ts#SetOccurrenceActive
+  - src/app/script/SceneNavigator.tsx
+  verification:
+  - tests/unit/commands.test.ts
+  - 'tests/invariants/random-sequences.test.ts::INV-14: deaktivering sletter ingenting'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0025
+    change: M2; status Verifisert
   notes: «Skjule eller deaktivere» – se DEC-0015 (skjul vs. deaktiver) og REQ-0021.
 - id: REQ-0064
   title: Gjenaktivere scener
@@ -2071,13 +2204,19 @@ requirements:
   - Gjenaktivert scene vises igjen på sin plass med alt materiale.
   tests:
   - 'integrasjon: gjenaktiver scene'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/commands/apply.ts#SetOccurrenceActive
+  - src/app/script/SceneNavigator.tsx
+  verification:
+  - tests/unit/commands.test.ts
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0025
+    change: M2; status Verifisert
   notes: ''
 - id: REQ-0065
   title: Redigere dialog
@@ -2099,13 +2238,20 @@ requirements:
   - Endret replikk beholder replikk-ID og lagres i ny manustilstand.
   tests:
   - 'enhet: rediger replikk'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/commands/apply.ts#EditBlockText
+  - src/app/script/Inspector.tsx
+  verification:
+  - tests/unit/commands.test.ts
+  - tests/invariants/random-sequences.test.ts
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0025
+    change: M2; status Verifisert
   notes: ''
 - id: REQ-0066
   title: Redigere handling
@@ -2127,13 +2273,19 @@ requirements:
   - Endret handlingsblokk beholder blokk-ID.
   tests:
   - 'enhet: rediger handlingsblokk'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/commands/apply.ts#EditBlockText,InsertBlock,RemoveBlock
+  - src/app/script/Inspector.tsx
+  verification:
+  - tests/unit/import-split-merge.test.ts::skjuler blokken i manuset, beholder historikken og gjør ferdig film utdatert
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0025
+    change: M2; status Verifisert
   notes: ''
 - id: REQ-0067
   title: Splitte scener
@@ -2157,13 +2309,19 @@ requirements:
     angres.
   tests:
   - 'integrasjon: splitt scene og angre'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/commands/apply.ts#SplitScene
+  verification:
+  - tests/unit/import-split-merge.test.ts::flytter blokkene fra splittpunktet til en ny scene rett etter, med samme
+    blokk-ID-er
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0025
+    change: M2 (DEC-0025); status Verifisert
   notes: Hvilken del som beholder opprinnelig ID er ikke spesifisert – se DEC-0015 (narrativ splitting).
 - id: REQ-0068
   title: Slå sammen scener
@@ -2186,13 +2344,19 @@ requirements:
   - Sammenslåing gir én scene; tilknyttet materiale fra begge bevares; operasjonen kan angres.
   tests:
   - 'integrasjon: slå sammen og angre'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/commands/apply.ts#MergeScenes
+  verification:
+  - tests/unit/import-split-merge.test.ts::legger kildescenens blokker sist i målscenen, beholder kildescenen som
+    sammenslått og deaktivert
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0025
+    change: M2 (DEC-0025); status Verifisert
   notes: ''
 - id: REQ-0069
   title: Sammenligne manusversjoner
@@ -2243,13 +2407,20 @@ requirements:
   - Alle manusredigeringer og sceneoperasjoner kan angres og gjøres om.
   tests:
   - 'enhet: undo/redo-stakk for manusoperasjoner'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/app/project/use-commands.ts
+  - src/core/commands/apply.ts
+  verification:
+  - 'tests/invariants/random-sequences.test.ts::ADR-0005: hver kommando etterfulgt av sin invers gir samme innhold'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0025
+    change: 'M2: angre/gjør om per bruker med revisjonskontroll; UI-delen er ikke automatisk testet; status Implementert
+      – ikke verifisert'
   notes: ''
 - id: REQ-0071
   title: Narrativ splitting vs. produksjonsteknisk oppdeling
@@ -2273,13 +2444,19 @@ requirements:
   - Datamodellen har adskilte begreper for manusscene og produksjonsdelsekvens/segment.
   tests:
   - 'enhet: produksjonssegment opprettes uten ny manusscene'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/commands/apply.ts#SplitScene
+  verification:
+  - 'tests/invariants/random-sequences.test.ts::INV-10: segmentering endrer aldri scener, manusblokker eller rekkefølge'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0025
+    change: 'M2: narrativ splitting er egen kommando; nekter hvis produksjonssegmenter peker på blokkene; status
+      Verifisert'
   notes: Jf. kap. 34 pkt. 14.
 - id: REQ-0072
   title: Produksjonsoppdeling endrer ikke scenenummerering
@@ -2543,13 +2720,18 @@ requirements:
   - Eksportdialogen krever/tilbyr valg av nummereringsmetode hver gang.
   tests:
   - 'e2e: eksportdialog viser nummereringsvalg'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/app/script/ExportDialog.tsx
+  verification:
+  - tests/visual/screens.mjs::12-eksport-dialog
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0024
+    change: M2; status Verifisert
   notes: Jf. kap. 34 pkt. 4.
 - id: REQ-0081
   title: Fortløpende nummerering
@@ -2572,13 +2754,18 @@ requirements:
   - Gitt 5 aktive scener, så nummereres de 1–5 i eksporten.
   tests:
   - 'enhet: nummereringsalgoritme fortløpende'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/screenplay/numbering.ts
+  verification:
+  - 'tests/unit/numbering.test.ts::fortløpende: aktive scener får 1..N (REQ-0081)'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0024
+    change: M2; status Verifisert
   notes: Linje 261 og 262 er duplikater.
 - id: REQ-0082
   title: Bevar produksjonsnummerering med mellomnumre
@@ -2602,13 +2789,18 @@ requirements:
   - Gitt to nye scener mellom 42 og 43, så eksporteres de som 42A og 42B, og øvrige numre er uendret.
   tests:
   - 'enhet: nummereringsalgoritme med mellomnumre, inkl. kanttilfeller (42A→42AA e.l.)'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/screenplay/numbering.ts
+  verification:
+  - 'tests/unit/numbering.test.ts::bevar produksjonsnummerering: nye scener mellom 42 og 43 blir 42A og 42B (REQ-0082)'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0024
+    change: M2; status Verifisert
   notes: Linje 263 og 264 er duplikater.
 - id: REQ-0083
   title: Bevar valgt historisk nummerering
@@ -2662,13 +2854,19 @@ requirements:
   - Med valget av utelates deaktiverte scener; med valget på inkluderes de (med tydelig markering).
   tests:
   - 'import/eksport: eksport med og uten deaktiverte scener'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/app/script/ExportDialog.tsx
+  - src/core/screenplay/numbering.ts
+  verification:
+  - tests/unit/numbering.test.ts::deaktiverte scener utelates, eller tas med som UTGÅR / merket (REQ-0084, Q-08)
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0026
+    change: M2 (DEC-0026, midlertidig antakelse); status Verifisert
   notes: Hvordan inkluderte deaktiverte scener markeres og nummereres er ikke spesifisert.
 - id: REQ-0085
   title: Eksportvalg endrer ikke interne ID-er
@@ -2691,13 +2889,18 @@ requirements:
   - Etter eksport med hvilken som helst nummereringsmetode er alle scene-ID-er og relasjoner uendret.
   tests:
   - 'dataintegritet: ID-sett før/etter eksport'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/screenplay/numbering.ts
+  verification:
+  - tests/unit/numbering.test.ts::eksport endrer ikke prosjektet (REQ-0085)
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0024
+    change: M2; status Verifisert
   notes: Jf. kap. 34 pkt. 4.
 - id: REQ-0086
   title: Forhåndsvisning av nummerering før eksport
@@ -2719,13 +2922,18 @@ requirements:
   - Eksportdialogen viser liste over scener med resulterende numre før brukeren bekrefter.
   tests:
   - 'e2e: forhåndsvisning oppdateres ved bytte av metode'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/app/script/ExportDialog.tsx
+  verification:
+  - tests/visual/screens.mjs::12-eksport-dialog
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0024
+    change: M2; status Verifisert
   notes: ''
 - id: REQ-0087
   title: Manuseksport til DOCX
@@ -2747,13 +2955,20 @@ requirements:
   - Eksportert DOCX åpnes i Word med korrekt manuslayout.
   tests:
   - 'import/eksport: DOCX-eksport og reimport-rundtur'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/engine/export/screenplay-docx.ts
+  verification:
+  - tests/golden/reference-screenplay.test.ts::eksportert DOCX leses inn igjen med samme scener, numre og elementer
+  - tests/unit/export.test.ts
+  - 'manuell: 2026-10-09 DOCX åpnet i LibreOffice, 105 sider med manusformat'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0024
+    change: M2; status Verifisert
   notes: ''
 - id: REQ-0088
   title: Manuseksport til PDF
@@ -2775,13 +2990,19 @@ requirements:
   - Eksportert PDF har samme paginering som manusvisningen.
   tests:
   - 'visuell: PDF mot manusvisning'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/engine/export/screenplay-pdf.ts
+  verification:
+  - tests/golden/reference-screenplay.test.ts::eksportert PDF leses inn igjen med samme scener, numre og tekst
+  - tests/unit/export.test.ts
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0024
+    change: M2; status Verifisert
   notes: ''
 - id: REQ-0089
   title: Andre profesjonelle manusformater
@@ -2830,13 +3051,19 @@ requirements:
   - Eksportert scenerekkefølge og numre samsvarer med forhåndsvisningen og aktiv struktur.
   tests:
   - 'import/eksport: verifiser rekkefølge og numre i eksportfil'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/engine/export/screenplay-pdf.ts
+  - src/engine/export/screenplay-docx.ts
+  verification:
+  - tests/golden/reference-screenplay.test.ts::eksportert PDF leses inn igjen med samme scener, numre og tekst
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0024
+    change: M2; status Verifisert
   notes: ''
 - id: REQ-0091
   title: Manuseksport krever ikke AI
@@ -2857,13 +3084,19 @@ requirements:
   - Eksport fungerer uten nettverkstilgang til AI-leverandører.
   tests:
   - 'integrasjon: eksport med AI-adaptere deaktivert'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/engine/export/screenplay-pdf.ts
+  - src/engine/export/screenplay-docx.ts
+  verification:
+  - 'manuell: 2026-10-09 eksportkoden har ingen nettverkskall (ren funksjon, kjøres i nettleseren)'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0024
+    change: M2; status Verifisert
   notes: ''
 - id: REQ-0092
   title: Manus som aktivt navigasjonsverktøy
@@ -12583,13 +12816,19 @@ requirements:
   tests:
   - 'import/eksport: manuseksport med to nummereringsmetoder'
   - 'dataintegritet: ID-er uendret'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/app/script/ExportDialog.tsx
+  - src/core/screenplay/numbering.ts
+  verification:
+  - tests/unit/numbering.test.ts
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0024
+    change: M2; status Verifisert
   notes: Jf. kap. 5.2 og prinsipp 4.
 - id: REQ-0420
   title: Språkeksport av film og manus

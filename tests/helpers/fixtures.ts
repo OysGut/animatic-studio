@@ -66,7 +66,7 @@ export interface Seed {
   spinoffId: string;
 }
 
-export function seedProject(sceneCount = NUMBER_PATTERN.length): Seed {
+export function seedProject(sceneCount: number = NUMBER_PATTERN.length): Seed {
   let s = emptyProjectState({
     id: tid<"project">(),
     revision: 1,
@@ -153,6 +153,14 @@ export function rng(seed: number) {
   };
 }
 
+const BLOCK_KINDS = ["action", "character", "dialogue", "parenthetical", "transition"] as const;
+
+function blocksOf(s: ProjectState, variantId: string) {
+  return Object.values(s.blocks)
+    .filter((b) => b.variantId === variantId)
+    .sort((a, b) => (a.orderKey < b.orderKey ? -1 : a.orderKey > b.orderKey ? 1 : 0));
+}
+
 function pick<T>(r: () => number, list: readonly T[]): T | undefined {
   return list.length ? list[Math.floor(r() * list.length)] : undefined;
 }
@@ -164,7 +172,7 @@ export function randomCommand(s: ProjectState, r: () => number): Command | null 
   if (!prod) return null;
   const occs = orderedOccurrences(s, prod.id);
   const occ = pick(r, occs);
-  const choice = Math.floor(r() * 9);
+  const choice = Math.floor(r() * 15);
   switch (choice) {
     case 0: {
       if (!occ) return null;
@@ -244,6 +252,80 @@ export function randomCommand(s: ProjectState, r: () => number): Command | null 
         orderKey: keyBetween(last, null),
         heading: { intExt: "INT.", location: "NY", time: "NATT" },
         blocks: [{ blockId: tid(), kind: "action", text: "Ny handling", orderKey: "i" }],
+      };
+    }
+    case 8: {
+      if (!occ) return null;
+      const b = pick(r, blocksOf(s, occ.variantId));
+      if (!b) return null;
+      const kind = pick(
+        r,
+        BLOCK_KINDS.filter((k) => k !== b.kind),
+      )!;
+      return { type: "SetBlockKind", productionId: prod.id, blockId: b.id, kind };
+    }
+    case 9: {
+      if (!occ) return null;
+      return {
+        type: "EditSceneHeading",
+        productionId: prod.id,
+        variantId: occ.variantId,
+        heading: {
+          intExt: r() < 0.5 ? "INT." : "EXT.",
+          location: `ENDRET ${Math.floor(r() * 99)}`,
+          time: "KVELD",
+        },
+      };
+    }
+    case 10: {
+      if (!occ) return null;
+      const b = r() < 0.5 ? pick(r, blocksOf(s, occ.variantId)) : undefined;
+      return {
+        type: "SetUncertainty",
+        productionId: prod.id,
+        targetId: b ? b.id : occ.variantId,
+        uncertainty: r() < 0.5 ? null : "Usikker tolkning",
+      };
+    }
+    case 11: {
+      if (!occ) return null;
+      const blocks = blocksOf(s, occ.variantId);
+      if (blocks.length < 2) return null;
+      const at = blocks[1 + Math.floor(r() * (blocks.length - 1))]!;
+      const map: Record<string, never> = {};
+      for (const o of Object.values(s.occurrences))
+        if (o.variantId === occ.variantId) map[o.id] = tid() as never;
+      return {
+        type: "SplitScene",
+        productionId: prod.id,
+        occurrenceId: occ.id,
+        atBlockId: at.id,
+        newSceneId: tid(),
+        newVariantId: tid(),
+        newOccurrenceIds: map,
+        heading: { intExt: "INT.", location: "DELT", time: "DAG" },
+      };
+    }
+    case 12: {
+      const i = occs.findIndex((o) => o === occ);
+      const next = occs[i + 1];
+      if (!occ || !next) return null;
+      return {
+        type: "MergeScenes",
+        productionId: prod.id,
+        targetOccurrenceId: occ.id,
+        sourceOccurrenceId: next.id,
+      };
+    }
+    case 13: {
+      if (!occ) return null;
+      const all = Object.values(s.blocks).filter((b) => b.variantId === occ.variantId);
+      const b = pick(r, all);
+      if (!b) return null;
+      return {
+        type: b.removed ? "RestoreBlock" : "RemoveBlock",
+        productionId: prod.id,
+        blockId: b.id,
       };
     }
     default: {

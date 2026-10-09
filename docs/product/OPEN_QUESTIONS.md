@@ -15,7 +15,7 @@ Uklarheter funnet under kravuttrekket (60 stk., 2026-10-08) og senere arbeid.
 | Q-05 | Skal en spinoff kunne dele endringer med *andre spinoffer*, eller bare tilbakeføre til hovedfilmen? (mandat 24.5) | Bare tilbakeføring til hovedfilm (kap. 25) | Fase 7 |
 | Q-06 | Er norsk alltid hovedmanus også i spinoffer, eller kan en spinoff ha engelsk hovedmanus? | Norsk er hovedmanus i alle produksjoner (INV-05) | Fase 7 |
 | Q-07 | Sammenslåing av to scener: hvilken fortellingstid og hvilken aktiv versjon skal den sammenslåtte scenen få? | Første scenes verdier; brukeren bekrefter i dialog | Fase 2 |
-| Q-08 | Hvordan skal deaktiverte scener se ut når de tas med i en manuseksport med fortløpende nummerering? | Bransjepraksis: «OMITTED» bare ved bevart nummerering; ved fortløpende nummerering utelates de | Fase 2 |
+| Q-08 | Hvordan skal deaktiverte scener se ut når de tas med i en manuseksport med fortløpende nummerering? | Bransjepraksis: «OMITTED» bare ved bevart nummerering; ved fortløpende nummerering utelates de. **Midlertidig antakelse DEC-0026:** «NN UTGÅR» ved bevart nummerering; ved fortløpende tas de med merket og uten nummer. Den unummererte scenen i «Jula på Dovre» beholdes uten nummer som standard | Fase 2 |
 | Q-09 | Arbeidsflatene: passer fem hovedarbeidsflater (Prosjekt, Manus, Sceneeditor, Montering, Utgivelse) for Trollfilms måte å jobbe på? | Brukes som utgangspunkt (`ux-interaction-design/references/INFORMATION_ARCHITECTURE.md`) | Fase 2 |
 | Q-10 | Skal manuset pagineres som Final Draft (US Letter) eller A4 som standard? | US Letter (referansemanuset), A4 som valg | Fase 2 |
 
