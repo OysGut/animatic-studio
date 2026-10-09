@@ -148,25 +148,35 @@ export function PreviewWindow({
 }) {
   const { composition } = p;
   const aspect = composition.height / composition.width;
-  const rootRef = useRef<HTMLDivElement | null>(null);
+  // Usynlig markør i arbeidsflaten: gir standardplassen (nede til høyre på lerretet)
+  const markerRef = useRef<HTMLSpanElement | null>(null);
   const [area, setArea] = useState<{ w: number; h: number } | null>(null);
+  const [stage, setStage] = useState<{ right: number; bottom: number } | null>(null);
   const [storedW, setStoredW] = usePaneSize("scene-editor-preview", 360, MIN_W, 8000, {
     viewportShare: 1,
   });
-  const [storedX, setX] = useStoredNumber("scene-editor-preview-x");
-  const [storedY, setY] = useStoredNumber("scene-editor-preview-y");
+  // Plassering i nettleservinduet (DEC-0042): vinduet kan flyttes fritt over hele programmet
+  const [storedX, setX] = useStoredNumber("scene-editor-preview-left");
+  const [storedY, setY] = useStoredNumber("scene-editor-preview-top");
   const [storedZoom, setZoom] = useStoredNumber("scene-editor-preview-zoom");
   const zoom = PREVIEW_ZOOMS.includes((storedZoom ?? 0) as never) ? (storedZoom ?? 0) : 0;
 
-  // Mål flaten vinduet kan bevege seg på (arbeidsflaten), så det alltid holdes innenfor
+  // Vinduet holdes innenfor nettleservinduet; arbeidsflaten gir bare standardplassen
   useLayoutEffect(() => {
-    const parent = rootRef.current?.parentElement;
-    if (!parent) return;
-    const measure = () => setArea({ w: parent.clientWidth, h: parent.clientHeight });
+    const marker = markerRef.current;
+    const measure = () => {
+      setArea({ w: window.innerWidth, h: window.innerHeight });
+      const r = marker?.getBoundingClientRect();
+      if (r) setStage({ right: r.right, bottom: r.bottom });
+    };
     measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(parent);
-    return () => ro.disconnect();
+    window.addEventListener("resize", measure);
+    const ro = marker ? new ResizeObserver(measure) : null;
+    if (marker) ro?.observe(marker);
+    return () => {
+      window.removeEventListener("resize", measure);
+      ro?.disconnect();
+    };
   }, []);
 
   const maxW = area
@@ -180,8 +190,10 @@ export function PreviewWindow({
   const clampX = (x: number) => (area ? Math.max(0, Math.min(area.w - w, x)) : x);
   const clampY = (y: number) => (area ? Math.max(0, Math.min(area.h - totalH, y)) : y);
   // Standardplass: nede til høyre, over verktøylinjen på lerretet
-  const x = clampX(storedX ?? (area ? area.w - w - 12 : 0));
-  const y = clampY(storedY ?? (area ? area.h - totalH - 52 : 0));
+  const x = clampX(storedX ?? (stage ? stage.right - w - 12 : area ? area.w - w - 12 : 0));
+  const y = clampY(
+    storedY ?? (stage ? stage.bottom - totalH - 52 : area ? area.h - totalH - 52 : 0),
+  );
 
   const dpr = typeof window === "undefined" ? 1 : window.devicePixelRatio || 1;
   const canvasW = zoom === 0 ? inner : Math.round((composition.width * zoom) / 100 / dpr);
@@ -206,19 +218,20 @@ export function PreviewWindow({
     const dh = real * aspect;
     setStoredW(nw);
     setZoom(0); // dra i hjørnet = bildet følger vinduet
-    if (c === "nw" || c === "sw") setX(Math.round(from.x - real));
-    else setX(Math.round(from.x));
-    if (c === "nw" || c === "ne") setY(Math.round(from.y - dh));
-    else setY(Math.round(from.y));
+    // Plassen holdes innenfor nettleservinduet (ellers vokser vinduet feil vei ved kanten)
+    const nh = Math.round((nw - 2) * aspect) + HEADER + 2;
+    const cx = (v: number) => (area ? Math.max(0, Math.min(area.w - nw, v)) : v);
+    const cy = (v: number) => (area ? Math.max(0, Math.min(area.h - nh, v)) : v);
+    setX(Math.round(cx(c === "nw" || c === "sw" ? from.x - real : from.x)));
+    setY(Math.round(cy(c === "nw" || c === "ne" ? from.y - dh : from.y)));
   }
 
-  return (
+  const win = (
     <div
-      ref={rootRef}
       role="region"
       aria-label="Forhåndsvisning av ferdig utsnitt"
       style={{ left: x, top: y, width: w, visibility: area ? "visible" : "hidden" }}
-      className="absolute z-30 flex flex-col rounded-md border border-border bg-surface-1 shadow-[var(--shadow-float)]"
+      className="fixed z-40 flex flex-col rounded-md border border-border bg-surface-1 shadow-[var(--shadow-float)]"
     >
       <div
         className="flex shrink-0 cursor-move touch-none select-none items-center gap-1.5 border-b border-border px-2"
@@ -363,6 +376,12 @@ export function PreviewWindow({
         />
       ))}
     </div>
+  );
+  return (
+    <>
+      <span ref={markerRef} aria-hidden className="pointer-events-none absolute inset-0" />
+      {typeof document === "undefined" ? null : createPortal(win, document.body)}
+    </>
   );
 }
 

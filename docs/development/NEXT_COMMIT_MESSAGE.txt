@@ -1,13 +1,15 @@
-Forhåndsvisningen: flytt, størrelse fra hjørnet, zoom 1:1 og eget vindu (DEC-0041)
+Montering: filmtidslinje, avspilling av hele filmen og eksport av animatic (M4 del 1, DEC-0042/0043)
 
-Ingen databaseendring. Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push
-(den ber bare Lovable bekrefte at databasen står på versjon 8).
+Ingen databaseendring, men én ny npm-pakke (mediabunny 1.59.1). Lim inn hele innholdet i
+docs/development/LOVABLE_SYNC.md i Lovable etter push.
 
-- Forhåndsvisningen flyttes ved å dra i tittellinjen og endres fra alle fire hjørner (sideforholdet følger bildet).
-- Zoom: «Tilpass», 25 %, 50 %, 1:1 (100 %) og 200 %. Et fast nivå gjør vinduet akkurat så stort som bildet.
-- «Åpne i eget vindu» legger forhåndsvisningen i et eget nettleservindu som kan flyttes til en annen skjerm.
-  Mellomrom der starter/stopper avspillingen; en knapp legger den tilbake i redigeringsvinduet.
-- Størrelse, plassering og zoom huskes for begge former, også når vinduet lukkes og åpnes igjen
-  (manuelt eller automatisk ved avspilling) og mellom økter.
-- Tester: 241 Vitest-tester grønne; skjermbilder 43–44.
-- Dokumentasjon: DEC-0041, REQ-0555–0556, KI-50–51.
+- Ny arbeidsflate «Montering» i menyen: filmen, panel med valgt scene og manus, og filmtidslinje.
+- Alle aktive scener i manusets rekkefølge. Scener uten 2D-scene vises som tittelkort med lengde fra manuset.
+- Dra et klipp (eller Alt+pil) for å flytte scenen – manuset endres likt. Dra i høyre kant for å endre lengden.
+- Spill av hele filmen: mellomrom, piler, pil opp/ned for forrige/neste scene, Enter åpner sceneeditoren.
+  «Følg avspillingen» lar panelet og manuset følge avspillingshodet.
+- «Eksporter animatic»: hele filmen, valgt scene eller fra–til scene, full eller halv størrelse.
+  Kontroll før eksport. Videoen (MP4, ellers WebM) lages i nettleseren – uten AI og uten kostnader. Ingen lyd ennå.
+- Forhåndsvisningen i sceneeditoren kan nå flyttes fritt over hele programmet (DEC-0042).
+- Tester: 248 Vitest-tester grønne; skjermbilder 42–48; eksportert video kontrollert (lengde, størrelse, bildefrekvens).
+- Dokumentasjon: DEC-0042–0043, REQ-0557 og statuser for 24 M4-krav, KI-52–55, ROADMAP.

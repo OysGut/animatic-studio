@@ -373,3 +373,20 @@ Regler: DEC-ID-er er permanente. En beslutning endres aldri i ettertid; den erst
   3. «Åpne i eget vindu» legger forhåndsvisningen i et eget nettleservindu som kan flyttes til en annen skjerm. Mellomrom der starter/stopper avspillingen, og en knapp legger den tilbake i redigeringsvinduet.
   4. Størrelse, plassering og zoom huskes for begge former (i nettleseren), også når vinduet lukkes og åpnes igjen – manuelt eller automatisk ved avspilling – og mellom økter.
 - **Teknisk:** Eget vindu = `window.open` med samme opprinnelse og React-portal; stilene kopieres. Plasseringen lagres jevnlig. Plassering på en annen skjerm bruker nettleserens skjermtillatelse der den finnes (Chrome: «Vindusbehandling»); ellers kan nettleseren legge vinduet på hovedskjermen (KI-50).
+
+## DEC-0042 – Forhåndsvisningen kan flyttes fritt over hele programmet
+- **Dato:** 2026-10-09 · **Type:** Bekreftet av bruker
+- **Mars' ord:** «forhåndsvisningsvinduet må kunne flyttes fritt over det hele»
+- **Beslutning:** Det flytende forhåndsvisningsvinduet kan flyttes hvor som helst i programvinduet (over menyen, panelene og tidslinjen), ikke bare innenfor lerretet. Det holdes innenfor programvinduet. Standardplassen er fortsatt nede til høyre på lerretet; plasseringen huskes.
+- **Teknisk:** Vinduet tegnes i en portal i `document.body` med `position: fixed`; plassering lagres som `scene-editor-preview-left/top` (nye nøkler, så gamle plasser innenfor lerretet ikke gir et hopp).
+
+## DEC-0043 – M4 del 1: Montering (filmtidslinje, avspilling av hele filmen og eksport av animatic)
+- **Dato:** 2026-10-09 · **Type:** Bekreftet av bruker (Mars: «nå tar du neste store ting vi skal lage … ellers OK – neste!»); innhold og avgrensning er teknisk anbefaling innenfor mandat kap. 14–15 og 29
+- **Beslutning:**
+  1. Ny arbeidsflate **Montering** (menyen): visning av filmen, panel med valgt scene og manus, og filmtidslinje under.
+  2. Filmen er de aktive scenene i manusets rekkefølge (INV-01). Klippets materiale er scenens 2D-scene; scener uten 2D-scene vises som **tittelkort** (nummer og sceneoverskrift) med lengde beregnet fra manuset, så hele filmen kan spilles og eksporteres også når produksjonen er ufullstendig (REQ-0240).
+  3. **Flytte scene:** dra klippet (eller Alt+pil). Det er samme kommando som i manuset (MoveOccurrence), så manuset endres likt (REQ-0018/0228). **Lengde:** dra i høyre kant av en 2D-scene eller skriv sekunder i panelet; «Fra manus» går tilbake til beregnet lengde. Lengdeendring rører aldri manus (REQ-0230). **Deaktiver** er egen handling (scenen slettes ikke).
+  4. **Avspilling** av hele filmen med tastene mellomrom/K, piler (bilde, Shift = sekund), pil opp/ned (forrige/neste scene), Home/End og Enter (åpne i sceneeditoren). Panelet viser manuset for scenen; «Følg avspillingen» lar valget og manuset følge avspillingshodet (scenenivå av mandat 6.2).
+  5. **Eksporter animatic:** hele filmen, valgt scene eller fra–til scene; full eller halv størrelse. Kontroll før eksport (aktive scener og rekkefølge, deaktiverte scener, tittelkort, beregnede lengder, lag uten bilde) og «Eksporter likevel» (REQ-0422/0423). Videoen lages i nettleseren uten AI og uten kostnader (REQ-0213/0416).
+  6. Avgrensning – kommer i M4 del 2: lyd (dialog, musikk, effekter) i avspilling og eksport, import av ferdig film og «Bruk denne» (aktivt materiale), overganger og splitting av klipp, tidskoblinger per replikk (klikk på replikk → avspillingshodet).
+- **Teknisk:** `src/core/assembly/film.ts` (klipp, tidskoder, utvalg – lagres aldri, ADR-0006), `src/engine/compositor/film.ts` (samme tegning i avspilling og eksport), `src/engine/export/animatic.ts`. Ny avhengighet **mediabunny 1.59.1** (MPL-2.0, ingen egne avhengigheter, ingen nettverkskall) for WebCodecs-koding og MP4/WebM. MP4 (H.264) når nettleseren kan kode det (Chrome, Edge, Safari), ellers WebM (VP9/AV1). Ingen databaseendring.

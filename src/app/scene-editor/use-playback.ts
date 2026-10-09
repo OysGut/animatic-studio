@@ -16,10 +16,10 @@ export interface Playback {
   setLoop: (on: boolean) => void;
 }
 
-export function usePlayback(durationFrames: number, fps: Rational): Playback {
+export function usePlayback(durationFrames: number, fps: Rational, initialLoop = true): Playback {
   const [frame, setFrameState] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const [loop, setLoop] = useState(true);
+  const [loop, setLoop] = useState(initialLoop);
   const last = Math.max(0, durationFrames - 1);
   const start = useRef<{ t: number; frame: number } | null>(null);
   const frameRef = useRef(0);

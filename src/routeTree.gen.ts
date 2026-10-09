@@ -15,6 +15,7 @@ import { Route as ProsjektProjectIdRouteImport } from './routes/prosjekt.$projec
 import { Route as ProsjektProjectIdIndexRouteImport } from './routes/prosjekt.$projectId.index'
 import { Route as ProsjektProjectIdBibliotekRouteImport } from './routes/prosjekt.$projectId.bibliotek'
 import { Route as ProsjektProjectIdManusRouteImport } from './routes/prosjekt.$projectId.manus'
+import { Route as ProsjektProjectIdMonteringRouteImport } from './routes/prosjekt.$projectId.montering'
 import { Route as ProsjektProjectIdSceneRouteImport } from './routes/prosjekt.$projectId.scene'
 
 const IndexRoute = IndexRouteImport.update({
@@ -48,6 +49,12 @@ const ProsjektProjectIdManusRoute = ProsjektProjectIdManusRouteImport.update({
   path: '/manus',
   getParentRoute: () => ProsjektProjectIdRoute,
 } as any)
+const ProsjektProjectIdMonteringRoute =
+  ProsjektProjectIdMonteringRouteImport.update({
+    id: '/montering',
+    path: '/montering',
+    getParentRoute: () => ProsjektProjectIdRoute,
+  } as any)
 const ProsjektProjectIdSceneRoute = ProsjektProjectIdSceneRouteImport.update({
   id: '/scene',
   path: '/scene',
@@ -60,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
+  '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
   '/prosjekt/$projectId/scene': typeof ProsjektProjectIdSceneRoute
   '/prosjekt/$projectId/': typeof ProsjektProjectIdIndexRoute
 }
@@ -68,6 +76,7 @@ export interface FileRoutesByTo {
   '/invitasjon': typeof InvitasjonRoute
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
+  '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
   '/prosjekt/$projectId/scene': typeof ProsjektProjectIdSceneRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdIndexRoute
 }
@@ -78,6 +87,7 @@ export interface FileRoutesById {
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
+  '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
   '/prosjekt/$projectId/scene': typeof ProsjektProjectIdSceneRoute
   '/prosjekt/$projectId/': typeof ProsjektProjectIdIndexRoute
 }
@@ -89,6 +99,7 @@ export interface FileRouteTypes {
     | '/prosjekt/$projectId'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
+    | '/prosjekt/$projectId/montering'
     | '/prosjekt/$projectId/scene'
     | '/prosjekt/$projectId/'
   fileRoutesByTo: FileRoutesByTo
@@ -97,6 +108,7 @@ export interface FileRouteTypes {
     | '/invitasjon'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
+    | '/prosjekt/$projectId/montering'
     | '/prosjekt/$projectId/scene'
     | '/prosjekt/$projectId'
   id:
@@ -106,6 +118,7 @@ export interface FileRouteTypes {
     | '/prosjekt/$projectId'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
+    | '/prosjekt/$projectId/montering'
     | '/prosjekt/$projectId/scene'
     | '/prosjekt/$projectId/'
   fileRoutesById: FileRoutesById
@@ -160,6 +173,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProsjektProjectIdManusRouteImport
       parentRoute: typeof ProsjektProjectIdRoute
     }
+    '/prosjekt/$projectId/montering': {
+      id: '/prosjekt/$projectId/montering'
+      path: '/montering'
+      fullPath: '/prosjekt/$projectId/montering'
+      preLoaderRoute: typeof ProsjektProjectIdMonteringRouteImport
+      parentRoute: typeof ProsjektProjectIdRoute
+    }
     '/prosjekt/$projectId/scene': {
       id: '/prosjekt/$projectId/scene'
       path: '/scene'
@@ -173,6 +193,7 @@ declare module '@tanstack/react-router' {
 interface ProsjektProjectIdRouteChildren {
   ProsjektProjectIdBibliotekRoute: typeof ProsjektProjectIdBibliotekRoute
   ProsjektProjectIdManusRoute: typeof ProsjektProjectIdManusRoute
+  ProsjektProjectIdMonteringRoute: typeof ProsjektProjectIdMonteringRoute
   ProsjektProjectIdSceneRoute: typeof ProsjektProjectIdSceneRoute
   ProsjektProjectIdIndexRoute: typeof ProsjektProjectIdIndexRoute
 }
@@ -180,6 +201,7 @@ interface ProsjektProjectIdRouteChildren {
 const ProsjektProjectIdRouteChildren: ProsjektProjectIdRouteChildren = {
   ProsjektProjectIdBibliotekRoute: ProsjektProjectIdBibliotekRoute,
   ProsjektProjectIdManusRoute: ProsjektProjectIdManusRoute,
+  ProsjektProjectIdMonteringRoute: ProsjektProjectIdMonteringRoute,
   ProsjektProjectIdSceneRoute: ProsjektProjectIdSceneRoute,
   ProsjektProjectIdIndexRoute: ProsjektProjectIdIndexRoute,
 }

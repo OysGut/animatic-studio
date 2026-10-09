@@ -9,20 +9,20 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 
 | Invariant | Beskrivelse | Krav | Verifiserte |
 |---|---|---|---|
-| INV-01 | Manus og film er to visninger av samme aktive produksjonsstruktur. | 21 | 9 |
+| INV-01 | Manus og film er to visninger av samme aktive produksjonsstruktur. | 21 | 13 |
 | INV-02 | Scenenumre er ikke permanente identifikatorer. | 24 | 11 |
-| INV-03 | En scene beholder identitet gjennom flytting og omnummerering. | 16 | 6 |
+| INV-03 | En scene beholder identitet gjennom flytting og omnummerering. | 16 | 8 |
 | INV-04 | Spinoffer kan bruke samme kildescene med selvstendig rekkefølge og lokale endringer. | 19 | 3 |
 | INV-05 | Norsk er hovedmanus. | 7 | 0 |
 | INV-06 | Andre språkversjoner endrer ikke norsk hovedmanus automatisk. | 4 | 0 |
 | INV-07 | Ferdige filmsekvenser overskrives ikke automatisk etter manusendringer. | 25 | 5 |
-| INV-08 | Brukeren kan godkjenne avvik, oppdatere produksjonsmateriale eller angre relevant endring. | 27 | 2 |
+| INV-08 | Brukeren kan godkjenne avvik, oppdatere produksjonsmateriale eller angre relevant endring. | 27 | 3 |
 | INV-09 | Karakterkontinuitet følger fortellingstid, også ved flashbacks. | 16 | 1 |
 | INV-10 | Produksjonsteknisk segmentering endrer ikke manusscenenes identiteter. | 11 | 3 |
-| INV-11 | Generativ AI er valgfritt for ordinær 2D-animatic-avspilling og eksport. | 13 | 1 |
-| INV-12 | Betalte API-kall følger eksplisitte kostnadsgodkjenninger. | 20 | 0 |
+| INV-11 | Generativ AI er valgfritt for ordinær 2D-animatic-avspilling og eksport. | 13 | 3 |
+| INV-12 | Betalte API-kall følger eksplisitte kostnadsgodkjenninger. | 20 | 1 |
 | INV-13 | Delte ressurser er versjonerte og ikke-destruktive. | 25 | 4 |
-| INV-14 | Deaktivering/skjuling er aldri sletting; materiale kan gjenaktiveres. | 17 | 10 |
+| INV-14 | Deaktivering/skjuling er aldri sletting; materiale kan gjenaktiveres. | 17 | 11 |
 | INV-C1 | Ingen stille overskriving ved samarbeid (revisjonskontroll) – DEC-0003/DEC-0010. | 2 | 1 |
 | INV-C2 | Tilgang håndheves i backend (RLS) – teknisk, DEC-0010. | 3 | 3 |
 | INV-C3 | Bare medlemmer med kostnadsrett kan godkjenne betalte kall – midlertidig, DEC-0018/Q-01. | 1 | 0 |
@@ -31,26 +31,26 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 
 | Modul | Navn | Krav | P0 | Implementert | Verifisert |
 |---|---|---|---|---|---|
-| CORE | Project Core | 118 | 57 | 52 | 38 |
-| SCRIPT | Screenplay Engine | 127 | 32 | 70 | 60 |
-| TIMELINE | Timeline & Assembly Engine | 93 | 28 | 14 | 10 |
+| CORE | Project Core | 118 | 57 | 55 | 40 |
+| SCRIPT | Screenplay Engine | 127 | 32 | 77 | 63 |
+| TIMELINE | Timeline & Assembly Engine | 93 | 28 | 31 | 20 |
 | LIBRARY | Resource Library | 57 | 9 | 20 | 17 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 2 | 2 |
-| COMPOSE | 2D Composition Engine | 45 | 14 | 21 | 18 |
+| COMPOSE | 2D Composition Engine | 46 | 14 | 24 | 20 |
 | CAMERA | Camera & Motion Engine | 29 | 2 | 23 | 19 |
 | AUDIO | Audio Engine | 31 | 1 | 3 | 2 |
 | PROMPT | Prompt Orchestration Engine | 45 | 14 | 2 | 1 |
 | PROVIDER | Provider Adapters | 23 | 6 | 2 | 2 |
 | QUALITYCOST | Quality & Cost Engine | 25 | 6 | 1 | 1 |
-| QUEUE | Render Queue | 34 | 12 | 2 | 2 |
-| VERSION | Version & Dependency Engine | 90 | 36 | 25 | 12 |
+| QUEUE | Render Queue | 34 | 12 | 3 | 2 |
+| VERSION | Version & Dependency Engine | 90 | 36 | 26 | 13 |
 | L10N | Localization Engine | 38 | 4 | 3 | 2 |
 | PRESENT | Presentation Engine | 30 | 3 | 1 | 1 |
-| EXPORT | Export Engine | 54 | 12 | 17 | 16 |
+| EXPORT | Export Engine | 54 | 12 | 24 | 21 |
 | SECURITY | Security & Storage | 26 | 5 | 13 | 9 |
 | COLLAB | Collaboration & Access | 10 | 0 | 8 | 6 |
-| UI | Brukergrensesnitt og designsystem | 128 | 19 | 50 | 44 |
-| PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 4 | 1 |
+| UI | Brukergrensesnitt og designsystem | 129 | 19 | 56 | 47 |
+| PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 5 | 1 |
 
 ## Dekning per fase
 
@@ -58,8 +58,8 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 |---|---|---|
 | 1 | 70 | 27 |
 | 2 | 97 | 61 |
-| 3 | 61 | 40 |
-| 4 | 68 | 0 |
+| 3 | 62 | 41 |
+| 4 | 68 | 14 |
 | 5 | 70 | 0 |
 | 6 | 48 | 0 |
 | 7 | 63 | 0 |
@@ -87,7 +87,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0015 | Kap. 1.3 (l. 59) | PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0016 | Kap. 2 (l. 62-66) | CORE, SCRIPT, TIMELINE, COMPOSE, AUDIO | src/core/model.ts, src/core/views.ts | 2 | tests/invariants/random-sequences.test.ts::INV-01: manus og film har alltid samme aktive rekkefølge i alle produksjoner | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
 | REQ-0017 | Kap. 2 (l. 67) | SCRIPT, TIMELINE, CORE | src/core/commands/apply.ts#MoveOccurrence, src/core/views.ts, src/app/script/SceneNavigator.tsx | 1 | tests/unit/commands.test.ts::én kommando endrer rekkefølgen i både manus og film, uten nye ID-er, tests/visual/screens.mjs::06-manus (dra-og-slipp i scenenavigatoren, manuell kontroll 2026-10-09) | Verifisert | 2026-10-09 DEC-0023: M2: flytting i scenenavigatoren (dra-og-slipp, Alt+pil); status Verifisert |
-| REQ-0018 | Kap. 2 (l. 68) | TIMELINE, SCRIPT, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0018 | Kap. 2 (l. 68) | TIMELINE, SCRIPT, CORE | src/app/assembly/AssemblyWorkspace.tsx, src/core/assembly/film.ts | 1 | tests/unit/assembly.test.ts::tidskodene beregnes på nytt når en scene flyttes, tests/visual/screens.mjs::46-montering-flytt | Verifisert | 2026-10-09 DEC-0043: Filmtidslinjen flytter scener med MoveOccurrence (samme kommando som manuset) |
 | REQ-0019 | Kap. 2 (l. 69) | CORE, SCRIPT, TIMELINE, EXPORT | src/core/views.ts, src/core/screenplay/numbering.ts, src/app/script/SceneNavigator.tsx | 1 | tests/unit/commands.test.ts::utelates fra manus og film, men ingenting slettes og den kan gjenaktiveres, tests/unit/numbering.test.ts::deaktiverte scener utelates, eller tas med som UTGÅR / merket (REQ-0084, Q-08) | Verifisert | 2026-10-09 DEC-0023: M2: deaktiverte scener utelates i manusvisning, sider og eksport; status Verifisert |
 | REQ-0020 | Kap. 2 (l. 70) | CORE | src/core/commands/apply.ts#SetOccurrenceActive | 1 | tests/unit/commands.test.ts::utelates fra manus og film, men ingenting slettes og den kan gjenaktiveres, tests/invariants/random-sequences.test.ts::INV-14: deaktivering sletter ingenting | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert (datanivå) |
 | REQ-0021 | Kap. 2 (l. 71-74) | CORE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -167,10 +167,10 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0095 | Kap. 6.1 (l. 283-287) | SCRIPT, AUDIO, COMPOSE, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0096 | Kap. 6.1 (l. 288) | SCRIPT, COMPOSE, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0097 | Kap. 6.2 (l. 290) | SCRIPT, TIMELINE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0098 | Kap. 6.2 (l. 291) | SCRIPT, TIMELINE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0098 | Kap. 6.2 (l. 291) | SCRIPT, TIMELINE, UI | src/app/assembly/ClipPanel.tsx | 1 | – | Under arbeid | 2026-10-09 DEC-0043: Avspillingshodet viser scenens manus (scenenivå); markering per replikk kommer med tidskoblinger |
 | REQ-0099 | Kap. 6.2 (l. 292-297) | TIMELINE, SCRIPT, COMPOSE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0100 | Kap. 6.2 (l. 298) | UI, SCRIPT, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0101 | Kap. 6.2 (l. 299) | UI, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0100 | Kap. 6.2 (l. 298) | UI, SCRIPT, TIMELINE | src/app/assembly/ClipPanel.tsx | 1 | – | Under arbeid | 2026-10-09 DEC-0043: Monteringen viser manuset for scenen ved siden av filmen; presis kobling per replikk kommer med tidskoblinger |
+| REQ-0101 | Kap. 6.2 (l. 299) | UI, SCRIPT | src/app/assembly/ClipPanel.tsx | 1 | – | Under arbeid | 2026-10-09 DEC-0043: «Følg avspillingen» av/på i monteringen (scenenivå) |
 | REQ-0102 | Kap. 6.3 (l. 301-302) | SCRIPT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0103 | Kap. 6.3 (l. 303) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0104 | Kap. 6.3 (l. 304) | EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -280,26 +280,26 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0208 | Kap. 13.3 (l. 590) | AUDIO, EXPORT | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0209 | Kap. 14 (l. 592-593) | COMPOSE, TIMELINE, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0210 | Kap. 14.1 (l. 594-602) | COMPOSE, CAMERA, AUDIO | src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts | 2 | tests/unit/animate.test.ts, tests/unit/composition.test.ts, tests/unit/camera-overlay.test.ts, tests/visual/screens.mjs (33–36) | Implementert – ikke verifisert | 2026-10-09 DEC-0036: Avspilling av lag, kamera og nøkkelbilder; dialog og lyd kommer i M4; status Implementert – ikke verifisert |
-| REQ-0211 | Kap. 14.2 (l. 603-604) | EXPORT, COMPOSE, QUEUE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0211 | Kap. 14.2 (l. 603-604) | EXPORT, COMPOSE, QUEUE | src/engine/export/animatic.ts | 1 | tests/visual/screens.mjs::48-montering-eksport-ferdig | Under arbeid | 2026-10-09 DEC-0043: Videoeksport i nettleseren (WebCodecs/mediabunny) uten AI; lyd kommer i M4 del 2 |
 | REQ-0212 | Kap. 14.2 (l. 605) | EXPORT, COMPOSE, QUEUE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Revisjon 2026-10-08: tekst/prioritet justert mot mandatet |
-| REQ-0213 | Kap. 14.2 (l. 606) | EXPORT, COMPOSE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0213 | Kap. 14.2 (l. 606) | EXPORT, COMPOSE | src/engine/export/animatic.ts | 1 | tests/visual/screens.mjs::48-montering-eksport-ferdig | Verifisert | 2026-10-09 DEC-0043: Eksporten bruker bare nettleserens egen koder; ingen nettverkskall |
 | REQ-0214 | Kap. 14.3 (l. 607-613) | TIMELINE, EXPORT, AUDIO | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0215 | Kap. 14.3 (l. 614) | CORE, COMPOSE, PROVIDER | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0216 | Kap. 15 (l. 616-618) | TIMELINE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0217 | Kap. 15.1 (l. 621) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0218 | Kap. 15.1 (l. 622) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0219 | Kap. 15.1 (l. 623) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0216 | Kap. 15 (l. 616-618) | TIMELINE, UI | src/app/assembly/AssemblyWorkspace.tsx, src/routes/prosjekt.$projectId.montering.tsx | 1 | tests/visual/screens.mjs::45-montering | Verifisert | 2026-10-09 DEC-0043: Montering: egen filmtidslinje adskilt fra sceneeditoren |
+| REQ-0217 | Kap. 15.1 (l. 621) | TIMELINE | src/core/assembly/film.ts | 1 | tests/unit/assembly.test.ts::følger manusets rekkefølge og utelater deaktiverte scener | Verifisert | 2026-10-09 DEC-0043: Alle aktive scener i manusets rekkefølge |
+| REQ-0218 | Kap. 15.1 (l. 622) | TIMELINE | src/app/assembly/AssemblyWorkspace.tsx | 1 | tests/visual/screens.mjs::45-montering | Verifisert | 2026-10-09 DEC-0043: Klikk på klipp, pil opp/ned og knapper for forrige/neste scene; dobbeltklikk åpner sceneeditoren |
+| REQ-0219 | Kap. 15.1 (l. 623) | TIMELINE | src/app/assembly/FilmTimeline.tsx, src/engine/compositor/film.ts | 1 | – | Under arbeid | 2026-10-09 DEC-0043: Viser 2D-scenen (miniatyr og visning) eller tittelkort; importert film og AI-video kommer senere |
 | REQ-0220 | Kap. 15.1 (l. 624) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0221 | Kap. 15.1 (l. 625) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0222 | Kap. 15.1 (l. 626) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0223 | Kap. 15.1 (l. 627) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0224 | Kap. 15.1 (l. 628) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0225 | Kap. 15.1 (l. 629) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0226 | Kap. 15.1 (l. 630) | TIMELINE, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0224 | Kap. 15.1 (l. 628) | TIMELINE | src/app/assembly/FilmTimeline.tsx, src/app/assembly/ClipPanel.tsx | 1 | tests/unit/assembly.test.ts::å endre lengden på en scene endrer verken manus eller rekkefølge | Verifisert | 2026-10-09 DEC-0043: Lengden endres ved å dra i høyre kant eller i panelet |
+| REQ-0225 | Kap. 15.1 (l. 629) | TIMELINE | src/app/assembly/FilmViewer.tsx, src/engine/compositor/film.ts | 1 | tests/visual/screens.mjs::45-montering | Verifisert | 2026-10-09 DEC-0043: Avspilling av hele filmen i monteringen |
+| REQ-0226 | Kap. 15.1 (l. 630) | TIMELINE, EXPORT | src/app/assembly/ExportAnimaticDialog.tsx, src/engine/export/animatic.ts | 1 | tests/visual/screens.mjs::48-montering-eksport-ferdig | Verifisert | 2026-10-09 DEC-0043: Eksport av hele filmen som video (uten lyd i del 1) |
 | REQ-0227 | Kap. 15.1 (l. 631) | TIMELINE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0228 | Kap. 15.2 (l. 632-633) | TIMELINE, SCRIPT, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0229 | Kap. 15.2 (l. 634-638) | TIMELINE, CORE, SCRIPT | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0230 | Kap. 15.2 (l. 639) | TIMELINE, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0228 | Kap. 15.2 (l. 632-633) | TIMELINE, SCRIPT, CORE | src/app/assembly/FilmTimeline.tsx, src/app/assembly/AssemblyWorkspace.tsx | 2 | tests/unit/assembly.test.ts::tidskodene beregnes på nytt når en scene flyttes, tests/unit/commands.test.ts | Verifisert | 2026-10-09 DEC-0043: Flytting i filmtidslinjen er MoveOccurrence; manus og film leses fra samme struktur |
+| REQ-0229 | Kap. 15.2 (l. 634-638) | TIMELINE, CORE, SCRIPT | src/app/assembly/AssemblyWorkspace.tsx | 2 | – | Under arbeid | 2026-10-09 DEC-0043: Flytte scene, endre lengde og deaktivere er egne handlinger i monteringen; utsnitt av klipp kommer med importert film |
+| REQ-0230 | Kap. 15.2 (l. 639) | TIMELINE, SCRIPT | src/app/assembly/FilmTimeline.tsx | 1 | tests/unit/assembly.test.ts::å endre lengden på en scene endrer verken manus eller rekkefølge | Verifisert | 2026-10-09 DEC-0043: Lengdeendring i filmtidslinjen endrer bare 2D-scenens lengde |
 | REQ-0231 | Kap. 15.2 (l. 640) | TIMELINE, VERSION, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0232 | Kap. 15.3 (l. 641-642) | TIMELINE, VERSION, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0233 | Kap. 15.3 (l. 643-645) | TIMELINE, VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -308,8 +308,8 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0236 | Kap. 16.1 (l. 650-655) | TIMELINE, SCRIPT, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0237 | Kap. 16.1 (l. 656) | TIMELINE, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0238 | Kap. 16.2 (l. 657-663) | LIBRARY, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0239 | Kap. 16.3 (l. 664-665) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0240 | Kap. 16.3 (l. 666) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0239 | Kap. 16.3 (l. 664-665) | TIMELINE | src/engine/compositor/film.ts | 1 | – | Under arbeid | 2026-10-09 DEC-0043: Scener uten 2D-scene vises som tittelkort; delvis importert film kommer i del 2 |
+| REQ-0240 | Kap. 16.3 (l. 666) | TIMELINE | src/core/assembly/film.ts, src/engine/compositor/film.ts | 1 | tests/unit/assembly.test.ts::bruker 2D-scenens lengde, ellers beregnet lengde fra manus, tests/visual/screens.mjs::45-montering | Verifisert | 2026-10-09 DEC-0043: Monteringen spiller og eksporterer også når scener mangler 2D-scene (tittelkort med beregnet lengde) |
 | REQ-0241 | Kap. 16.4 (l. 667-672) | VERSION, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0242 | Kap. 16.4 (l. 673) | LIBRARY, VERSION, SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0243 | Kap. 17 (l. 675-677) | PROMPT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -485,14 +485,14 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0413 | Kap. 28.3 (l. 1207-1208) | SECURITY, PROVIDER | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0414 | Kap. 28.3 (l. 1209) | SECURITY | src/adapters/storage/commands.functions.ts | 2 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0415 | Kap. 28.4 (l. 1210-1218) | SECURITY, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0416 | Kap. 29 (l. 1220-1221) | EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0417 | Kap. 29.1 (l. 1222-1229) | EXPORT, TIMELINE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0416 | Kap. 29 (l. 1220-1221) | EXPORT | src/engine/export/animatic.ts | 1 | tests/visual/screens.mjs::48-montering-eksport-ferdig | Verifisert | 2026-10-09 DEC-0043: Eksportmodul uten AI |
+| REQ-0417 | Kap. 29.1 (l. 1222-1229) | EXPORT, TIMELINE | src/core/assembly/film.ts, src/app/assembly/ExportAnimaticDialog.tsx | 2 | tests/unit/assembly.test.ts::hele filmen, én scene og et utvalg | Under arbeid | 2026-10-09 DEC-0043: Hele filmen, valgt scene og fra–til scene; spinoff og trailer kommer med M7 |
 | REQ-0418 | Kap. 29.2 (l. 1230-1238) | EXPORT, COMPOSE, AUDIO | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0419 | Kap. 29.3 (l. 1239-1240) | EXPORT, SCRIPT | src/app/script/ExportDialog.tsx, src/core/screenplay/numbering.ts | 2 | tests/unit/numbering.test.ts | Verifisert | 2026-10-09 DEC-0024: M2; status Verifisert |
 | REQ-0420 | Kap. 29.4 (l. 1241-1242) | EXPORT, L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0421 | Kap. 29.5 (l. 1243-1244) | EXPORT, PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0422 | Kap. 29.6 (l. 1245-1254) | EXPORT, VERSION | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0423 | Kap. 29.6 (l. 1255) | EXPORT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0422 | Kap. 29.6 (l. 1245-1254) | EXPORT, VERSION | src/app/assembly/ExportAnimaticDialog.tsx | 2 | tests/visual/screens.mjs::47-montering-eksport | Verifisert | 2026-10-09 DEC-0043: Kontroll før eksport: sceneorden, deaktiverte scener, scener uten 2D-scene, beregnede lengder og manglende bilder |
+| REQ-0423 | Kap. 29.6 (l. 1255) | EXPORT, UI | src/app/assembly/ExportAnimaticDialog.tsx | 1 | tests/visual/screens.mjs::47-montering-eksport | Verifisert | 2026-10-09 DEC-0043: «Eksporter likevel» når kontrollen har merknader |
 | REQ-0424 | Kap. 30 (l. 1257-1258) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0425 | Kap. 30.1 (l. 1259-1268) | UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0426 | Kap. 30.1 (l. 1269) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -504,7 +504,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0432 | Kap. 31 (l. 1304-1306, 1351) | CORE, SCRIPT, TIMELINE, LIBRARY, CONTINUITY, COMPOSE, CAMERA, AUDIO, PROMPT, PROVIDER, QUALITYCOST, QUEUE, VERSION, L10N, PRESENT, EXPORT, SECURITY | src/core/, src/adapters/, src/app/ | 2 | tests/architecture/core-purity.test.ts::importerer ikke rammeverk, backend eller plattform-API-er | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
 | REQ-0433 | Kap. 31 (l. 1307-1309) | CORE | src/core/ | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0434 | Kap. 31 (l. 1310-1312) | SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0435 | Kap. 31 (l. 1313-1314) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0435 | Kap. 31 (l. 1313-1314) | TIMELINE | src/core/assembly/film.ts | 1 | – | Under arbeid | 2026-10-09 DEC-0043: Timeline & Assembly Engine del 1 |
 | REQ-0436 | Kap. 31 (l. 1315-1317) | LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0437 | Kap. 31 (l. 1318-1320) | CONTINUITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0438 | Kap. 31 (l. 1321-1322) | COMPOSE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -524,7 +524,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0452 | Kap. Fase 1 (l. 1369) | CORE, PROCESS | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0453 | Kap. Fase 2 (l. 1370-1379) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0454 | Kap. Fase 3 (l. 1380-1388) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0455 | Kap. Fase 4 (l. 1389-1395) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0455 | Kap. Fase 4 (l. 1389-1395) | PROCESS | src/app/assembly/ | 1 | – | Under arbeid | 2026-10-09 DEC-0043: M4 del 1 levert: filmtidslinje, avspilling og eksport |
 | REQ-0456 | Kap. Fase 5 (l. 1396-1404) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0457 | Kap. Fase 6 (l. 1405-1412) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0458 | Kap. Fase 7 (l. 1413-1420) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -626,3 +626,4 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0554 | Beslutning DEC-0040 | COMPOSE, CAMERA, UI | src/app/scene-editor/PreviewWindow.tsx, src/app/scene-editor/SceneEditorWorkspace.tsx | 1 | tests/visual/screens.mjs (42-forhandsvisning) | Verifisert | 2026-10-09 DEC-0040: Opprettet etter beslutning fra Mars og bygget samme dag |
 | REQ-0555 | Beslutning DEC-0041 | COMPOSE, UI | src/app/scene-editor/PreviewWindow.tsx, src/app/shell/pane-size.tsx | 1 | tests/visual/screens.mjs (43-forhandsvisning-flyttet-zoom) | Verifisert | 2026-10-09 DEC-0041: Opprettet etter beslutning fra Mars og bygget samme dag |
 | REQ-0556 | Beslutning DEC-0041 | COMPOSE, UI | src/app/scene-editor/PreviewWindow.tsx, src/app/scene-editor/SceneEditorWorkspace.tsx | 1 | tests/visual/screens.mjs (44-forhandsvisning-eget-vindu) | Verifisert | 2026-10-09 DEC-0041: Opprettet etter beslutning fra Mars og bygget samme dag |
+| REQ-0557 | Beslutning DEC-0042 | COMPOSE, UI | src/app/scene-editor/PreviewWindow.tsx | 1 | tests/visual/screens.mjs::43-forhandsvisning-flyttet-zoom | Verifisert | 2026-10-09 DEC-0042: Opprettet etter beslutning fra Mars og bygget samme dag |

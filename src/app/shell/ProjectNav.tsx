@@ -14,7 +14,6 @@ import { PaneResizer, usePaneSize, useStoredFlag } from "./pane-size";
 
 /** Arbeidsflatene (INFORMATION_ARCHITECTURE.md). Flatene som ikke er bygget ennå vises deaktivert med milepæl. */
 const LATER: { label: string; icon: ReactNode; milestone: string }[] = [
-  { label: "Montering", icon: <Film />, milestone: "M4" },
   { label: "Utgivelse", icon: <Clapperboard />, milestone: "M8" },
 ];
 
@@ -41,6 +40,12 @@ const LINKS = [
     to: "/prosjekt/$projectId/scene",
     label: "Sceneeditor",
     icon: <Layers aria-hidden />,
+    exact: false,
+  },
+  {
+    to: "/prosjekt/$projectId/montering",
+    label: "Montering",
+    icon: <Film aria-hidden />,
     exact: false,
   },
 ] as const;

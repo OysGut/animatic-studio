@@ -32,11 +32,11 @@ Oppdatert: 2026-10-09 (økt 4). Detaljert status per krav: `docs/product/TRACEAB
 |---|---|---|
 | CORE | Under arbeid | Kommandoer med invers (40 typer), invarianter, visninger, endringssett, notater |
 | SCRIPT | Under arbeid | Tolkning PDF/DOCX, import, sidebryting, låste sider, nummerering, arbeidsflaten «Manus» |
-| EXPORT | Under arbeid | Manus til PDF (sidetro) og DOCX (redigerbar) |
+| EXPORT | Under arbeid | Manus til PDF (sidetro) og DOCX (redigerbar); animatic-video (MP4/WebM) i nettleseren uten lyd (DEC-0043) |
 | VERSION | Under arbeid | Blokkrevisjoner, kommandologg, angre/gjør om per bruker, `outdatedTakes`, manusversjoner med sammenligning linje for linje |
 | LIBRARY | Under arbeid | Ressursbibliotek med alternative navn, varianter, bildeversjoner, godkjenning, bruk i manus, forslag (DEC-0030) |
 | COLLAB | Under arbeid | Medlemskap, roller, invitasjoner, profiler, sanntid, revisjonskontroll |
 | SECURITY | Under arbeid | RLS, `apply_changes` bare for service_role, inverskommandoer bare fra egen historikk, privat bøtte for originaler |
-| TIMELINE / CONTINUITY | Under arbeid | Tidsmodell, fortellingstid |
+| TIMELINE / CONTINUITY | Under arbeid | Tidsmodell, fortellingstid; filmtidslinjen «Montering» med flytting, lengder, avspilling av hele filmen (DEC-0043) |
 | UI | Under arbeid | Prosjekt, manus (navigator, sider, inspektør, import, eksport, versjoner, notater, søketreff), ressursbibliotek |
 | Øvrige moduler | Ikke startet | – |

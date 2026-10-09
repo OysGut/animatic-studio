@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **556**
-- Prioritet: P0: 141, P1: 238, P2: 138, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 29, teknisk-anbefaling: 7
-- Status: Ikke startet: 392, Verifisert: 128, Under arbeid: 25, Implementert – ikke verifisert: 11
+- Antall krav: **557**
+- Prioritet: P0: 141, P1: 239, P2: 138, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 30, teknisk-anbefaling: 7
+- Status: Ikke startet: 368, Verifisert: 143, Under arbeid: 35, Implementert – ikke verifisert: 11
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -244,11 +244,12 @@ Når en scene flyttes i filmens overordnede tidslinje, skal manuset vise tilsvar
 - **Kilde:** Kap. 2 (l. 68) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 4
 - **Moduler:** TIMELINE, SCRIPT, CORE · **Invarianter:** INV-01, INV-03
 - **Avhengigheter:** REQ-0016
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt scenene A, B, C, når C flyttes først i tidslinjen, så viser manuset C, A, B.
 - **Tester:**
   - integrasjon: flytt i tidslinje → verifiser manusrekkefølge
+- **Implementering:** src/app/assembly/AssemblyWorkspace.tsx, src/core/assembly/film.ts
 
 #### REQ-0019 – Deaktivering utelater overalt
 Når en scene eller delsekvens deaktiveres, skal den utelates fra både aktiv manusvisning, filmavspilling, spilletidsberegning og eksport.
@@ -1291,11 +1292,12 @@ Når brukeren flytter avspillingshodet, skal programmet kunne markere den aktuel
 - **Kilde:** Kap. 6.2 (l. 291) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** SCRIPT, TIMELINE, UI · **Invarianter:** INV-01
 - **Avhengigheter:** REQ-0093
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Gitt avspillingshode innenfor en koblet replikks intervall, så er replikken markert i manuset.
 - **Tester:**
   - e2e: scrubbing → markering
+- **Implementering:** src/app/assembly/ClipPanel.tsx
 
 #### REQ-0099 – Toveis navigasjon for alle materialtyper
 Toveis navigasjon skal fungere for planlagte animatics, redigerbare 2D-scener, AI-generert video, importert ferdig film og sammensatte scener med flere klipp.
@@ -1315,11 +1317,12 @@ Manus og film skal kunne vises side ved side.
 
 - **Kilde:** Kap. 6.2 (l. 298) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** UI, SCRIPT, TIMELINE
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Et arbeidsoppsett viser manus og filmavspiller samtidig.
 - **Tester:**
   - visuell: side-ved-side-layout
+- **Implementering:** src/app/assembly/ClipPanel.tsx
 
 #### REQ-0101 – Automatisk rulling av/på
 Automatisk rulling av manuset under avspilling skal kunne slås av og på.
@@ -1327,11 +1330,12 @@ Automatisk rulling av manuset under avspilling skal kunne slås av og på.
 - **Kilde:** Kap. 6.2 (l. 299) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** UI, SCRIPT
 - **Avhengigheter:** REQ-0098
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Med autorulling på følger manuset avspillingen; med av står manuset stille mens markeringen fortsatt oppdateres.
 - **Tester:**
   - e2e: veksle autorulling
+- **Implementering:** src/app/assembly/ClipPanel.tsx
 
 #### REQ-0102 – Teknisk metadata forstyrrer ikke manuslayout
 Manuset skal fremdeles se ut som et profesjonelt filmmanus; tidskoder, produksjonsmarkeringer og annen teknisk metadata skal normalt ikke forstyrre manuslayouten.
@@ -2749,11 +2753,12 @@ Programmet skal kunne rendre og eksportere 2D-animatics ved hjelp av applikasjon
 - **Kilde:** Kap. 14.2 (l. 603-604) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 4
 - **Moduler:** EXPORT, COMPOSE, QUEUE · **Invarianter:** INV-11
 - **Avhengigheter:** REQ-0210
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Gitt en 2D-animatic, når brukeren eksporterer, så produseres en videofil med bilde og lyd uten bruk av eksterne AI-tjenester.
 - **Tester:**
   - import/eksport: eksportert video har forventet varighet, oppløsning og bildefrekvens
+- **Implementering:** src/engine/export/animatic.ts
 - **Merknad:** Ufravikelig prinsipp nr. 9 i kap. 34.
 
 #### REQ-0212 – Renderer i klient, backend eller desktop
@@ -2776,11 +2781,12 @@ Rendering og eksport av 2D-animatics skal ikke kreve generativ AI eller betalte 
 - **Kilde:** Kap. 14.2 (l. 606) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 4
 - **Moduler:** EXPORT, COMPOSE · **Invarianter:** INV-11, INV-12
 - **Avhengigheter:** REQ-0211
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Eksport av en 2D-animatic gjennomføres uten noen kall til AI-leverandører og uten kostnadsregistrering.
 - **Tester:**
   - integrasjon: overvåk utgående kall under eksport – ingen AI-API-kall
+- **Implementering:** src/engine/export/animatic.ts
 
 #### REQ-0214 – Hybrid filmmontering
 Den samme filmmonteringen skal kunne kombinere redigerbare 2D-animatics, AI-genererte videoklipp, importert ferdig film, stillbilder med definert varighet og lyd fra ulike kilder.
@@ -2814,11 +2820,12 @@ Animatic Studio skal ha en egen overordnet filmtidslinje, adskilt fra detaljredi
 
 - **Kilde:** Kap. 15 (l. 616-618) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE, UI · **Invarianter:** INV-01
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Filmtidslinjen er en egen visning som viser hele den aktive filmen, adskilt fra scenens detaljtidslinje i 2D-editoren.
 - **Tester:**
   - e2e: åpne filmtidslinje og naviger til scene-editor og tilbake
+- **Implementering:** src/app/assembly/AssemblyWorkspace.tsx, src/routes/prosjekt.$projectId.montering.tsx
 
 #### REQ-0217 – Se aktive scener i rekkefølge
 Brukeren skal kunne se alle aktive scener i riktig rekkefølge i filmtidslinjen.
@@ -2826,11 +2833,12 @@ Brukeren skal kunne se alle aktive scener i riktig rekkefølge i filmtidslinjen.
 - **Kilde:** Kap. 15.1 (l. 621) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE · **Invarianter:** INV-01
 - **Avhengigheter:** REQ-0216
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt deaktiverte scener, så vises bare aktive scener, i samme rekkefølge som i aktiv manusvisning.
 - **Tester:**
   - e2e: se aktive scener i rekkefølge i filmtidslinjen
+- **Implementering:** src/core/assembly/film.ts
 
 #### REQ-0218 – Navigere mellom scener
 Brukeren skal kunne navigere mellom scener i filmtidslinjen.
@@ -2838,11 +2846,12 @@ Brukeren skal kunne navigere mellom scener i filmtidslinjen.
 - **Kilde:** Kap. 15.1 (l. 622) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE
 - **Avhengigheter:** REQ-0216
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan hoppe til neste/forrige scene og til en valgt scene, og avspillingshodet flyttes dit.
 - **Tester:**
   - e2e: navigere mellom scener i filmtidslinjen
+- **Implementering:** src/app/assembly/AssemblyWorkspace.tsx
 
 #### REQ-0219 – Se aktivt filmmateriale per scene
 Brukeren skal kunne se aktivt filmmateriale for hver scene i filmtidslinjen.
@@ -2850,11 +2859,12 @@ Brukeren skal kunne se aktivt filmmateriale for hver scene i filmtidslinjen.
 - **Kilde:** Kap. 15.1 (l. 623) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE
 - **Avhengigheter:** REQ-0216
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Hver scene i tidslinjen viser materialet som er valgt som aktiv filmversjon.
 - **Tester:**
   - e2e: se aktivt filmmateriale per scene i filmtidslinjen
+- **Implementering:** src/app/assembly/FilmTimeline.tsx, src/engine/compositor/film.ts
 
 #### REQ-0220 – Trimme klipp
 Brukeren skal kunne trimme klipp i filmtidslinjen.
@@ -2911,11 +2921,12 @@ Brukeren skal kunne justere timing i filmtidslinjen.
 - **Kilde:** Kap. 15.1 (l. 628) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE
 - **Avhengigheter:** REQ-0216
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan endre plassering/varighet av klipp, og samlede tidskoder beregnes på nytt.
 - **Tester:**
   - e2e: justere timing i filmtidslinjen
+- **Implementering:** src/app/assembly/FilmTimeline.tsx, src/app/assembly/ClipPanel.tsx
 
 #### REQ-0225 – Forhåndsvise hele filmen
 Brukeren skal kunne forhåndsvise hele den samlede filmen.
@@ -2923,11 +2934,12 @@ Brukeren skal kunne forhåndsvise hele den samlede filmen.
 - **Kilde:** Kap. 15.1 (l. 629) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE
 - **Avhengigheter:** REQ-0216
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Avspilling fra start til slutt av aktiv film fungerer uten avbrudd mellom scener av ulik materialtype.
 - **Tester:**
   - e2e: forhåndsvise hele filmen i filmtidslinjen
+- **Implementering:** src/app/assembly/FilmViewer.tsx, src/engine/compositor/film.ts
 
 #### REQ-0226 – Eksportere samlet film
 Brukeren skal kunne eksportere den samlede filmen fra filmtidslinjen.
@@ -2935,11 +2947,12 @@ Brukeren skal kunne eksportere den samlede filmen fra filmtidslinjen.
 - **Kilde:** Kap. 15.1 (l. 630) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE, EXPORT
 - **Avhengigheter:** REQ-0216
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Eksport av aktiv film gir én fil der rekkefølge og varighet samsvarer med tidslinjen.
 - **Tester:**
   - e2e: eksportere samlet film i filmtidslinjen
+- **Implementering:** src/app/assembly/ExportAnimaticDialog.tsx, src/engine/export/animatic.ts
 
 #### REQ-0227 – Inspirasjon fra klippeprogrammer
 Filmtidslinjens grensesnitt kan hente inspirasjon fra profesjonelle klippeprogrammer, men trenger ikke kopiere hele funksjonsbredden deres.
@@ -2960,12 +2973,13 @@ Flytting av en narrativ scene i filmtidslinjen skal gjenspeiles i manus.
 - **Kilde:** Kap. 15.2 (l. 632-633) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 4
 - **Moduler:** TIMELINE, SCRIPT, CORE · **Invarianter:** INV-01, INV-03
 - **Avhengigheter:** Transaksjonell konsistens (kap. 3.4)
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt scene A før B, når brukeren flytter A etter B i filmtidslinjen, så viser manuset umiddelbart A etter B, og scenens ID er uendret.
 - **Tester:**
   - integrasjon: flytting i tidslinje oppdaterer manusrekkefølge i samme transaksjon
   - dataintegritet: scene-ID uendret etter flytting
+- **Implementering:** src/app/assembly/FilmTimeline.tsx, src/app/assembly/AssemblyWorkspace.tsx
 - **Merknad:** Ufravikelig prinsipp nr. 2 i kap. 34.
 
 #### REQ-0229 – Skille fire typer tidslinjeoperasjoner
@@ -2974,12 +2988,13 @@ Systemet skal skille mellom å flytte en hel narrativ scene, å trimme et bestem
 - **Kilde:** Kap. 15.2 (l. 634-638) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P0 · **Fase:** 4
 - **Moduler:** TIMELINE, CORE, SCRIPT · **Invarianter:** INV-01, INV-14
 - **Avhengigheter:** REQ-0228
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Hver av de fire operasjonene har egen semantikk: bare flytting og deaktivering endrer manusstrukturen; trimming og utsnittsendring endrer kun medie-/forekomstdata.
 - **Tester:**
   - enhet: operasjonstyper og deres effekt på manusmodellen
   - integrasjon: trimming endrer ikke manusrekkefølge eller synlighet
+- **Implementering:** src/app/assembly/AssemblyWorkspace.tsx
 - **Merknad:** «Å endre et utsnitt fra en scene» er tvetydig (tidsutdrag vs. kamerautsnitt) – se OPEN_QUESTIONS B («Endre et utsnitt»).
 
 #### REQ-0230 – Trimming sletter ikke manus
@@ -2988,11 +3003,12 @@ Systemet skal skille mellom å flytte en hel narrativ scene, å trimme et bestem
 - **Kilde:** Kap. 15.2 (l. 639) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 4
 - **Moduler:** TIMELINE, SCRIPT · **Invarianter:** INV-14
 - **Avhengigheter:** REQ-0229
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et klipp som dekker en hel manusscene, når klippet trimmes, så er manusteksten uendret.
 - **Tester:**
   - dataintegritet: manusinnhold før/etter trimming er identisk
+- **Implementering:** src/app/assembly/FilmTimeline.tsx
 
 #### REQ-0231 – Avvik når manus ikke dekkes av film
 Hvis en redigering gjør at en manuspassasje ikke lenger dekkes av aktiv film, skal dette kunne markeres som et avvik.
@@ -3103,11 +3119,12 @@ Hvis bare en del av en scene er ferdig produsert, skal den ferdige delen kunne b
 - **Kilde:** Kap. 16.3 (l. 664-665) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE
 - **Avhengigheter:** REQ-0236; REQ-0214
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Gitt en scene der første halvdel er importert film, så kan andre halvdel dekkes av 2D-animatic, og avspilling går sømløst mellom dem.
 - **Tester:**
   - e2e: avspilling av delvis ferdig scene
+- **Implementering:** src/engine/compositor/film.ts
 
 #### REQ-0240 – Montering fungerer ved ufullstendig produksjon
 Den samlede filmmonteringen skal fungere også når produksjonen er ufullstendig.
@@ -3115,11 +3132,12 @@ Den samlede filmmonteringen skal fungere også når produksjonen er ufullstendig
 - **Kilde:** Kap. 16.3 (l. 666) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE
 - **Avhengigheter:** REQ-0216
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt scener uten produsert materiale, så kan filmen likevel spilles av og eksporteres (f.eks. med plassholder for manglende materiale).
 - **Tester:**
   - e2e: avspilling av film med scener uten materiale
+- **Implementering:** src/core/assembly/film.ts, src/engine/compositor/film.ts
 - **Merknad:** Hvordan manglende materiale vises (plassholder, sort, manustekst) er ikke spesifisert.
 
 #### REQ-0241 – Status for importert film
@@ -5330,11 +5348,12 @@ Eksport skal være en selvstendig modul som ikke krever nye AI-genereringer for 
 
 - **Kilde:** Kap. 29 (l. 1220-1221) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P0 · **Fase:** 4
 - **Moduler:** EXPORT · **Invarianter:** INV-11
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et prosjekt uten AI-leverandør konfigurert, så kan eksisterende materiale eksporteres uten feil og uten AI-kall.
 - **Tester:**
   - integrasjon: eksport med AI-adaptere deaktivert
+- **Implementering:** src/engine/export/animatic.ts
 
 #### REQ-0417 – Filmeksport av ulike omfang
 Brukeren skal kunne eksportere: én scene, valgte scener, en del av filmen, hele hovedfilmen, en spinoff, og en trailer eller pitchfilm.
@@ -5342,12 +5361,13 @@ Brukeren skal kunne eksportere: én scene, valgte scener, en del av filmen, hele
 - **Kilde:** Kap. 29.1 (l. 1222-1229) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** EXPORT, TIMELINE
 - **Avhengigheter:** REQ-0416
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Gitt et prosjekt, så kan brukeren eksportere hvert av de seks omfangene, og eksportert varighet samsvarer med valgt omfang.
 - **Tester:**
   - import/eksport: eksport per omfang
   - e2e: eksporter valgte scener
+- **Implementering:** src/core/assembly/film.ts, src/app/assembly/ExportAnimaticDialog.tsx
 - **Merknad:** Spinoff/trailer-eksport avhenger av fase 7.
 
 #### REQ-0418 – Hybrid eksport av blandet materiale
@@ -5407,12 +5427,13 @@ Før eksport skal programmet kontrollere: aktiv sceneorden, skjulte scener, akti
 - **Kilde:** Kap. 29.6 (l. 1245-1254) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** EXPORT, VERSION
 - **Avhengigheter:** REQ-0416
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et prosjekt med en manglende mediefil og et uavklart avvik, når brukeren starter eksport, så rapporteres begge før eksporten kjøres, sammen med resultatet av de øvrige kontrollene.
 - **Tester:**
   - enhet: hver kontroll
   - e2e: eksportkontroll-rapport
+- **Implementering:** src/app/assembly/ExportAnimaticDialog.tsx
 
 #### REQ-0423 – Eksport tross avvik etter varsel
 Brukeren skal kunne velge å eksportere selv om enkelte avvik er uavklarte, etter et tydelig varsel.
@@ -5420,11 +5441,12 @@ Brukeren skal kunne velge å eksportere selv om enkelte avvik er uavklarte, ette
 - **Kilde:** Kap. 29.6 (l. 1255) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** EXPORT, UI · **Invarianter:** INV-08
 - **Avhengigheter:** REQ-0422
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt uavklarte avvik, så vises et tydelig varsel, og brukeren kan bekrefte og eksportere likevel.
 - **Tester:**
   - e2e: eksport etter bekreftet varsel
+- **Implementering:** src/app/assembly/ExportAnimaticDialog.tsx
 
 ### Kapittel 30
 
@@ -5573,11 +5595,12 @@ Arkitekturen skal ha en logisk komponent «Timeline & Assembly Engine» med ansv
 - **Kilde:** Kap. 31 (l. 1313-1314) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE
 - **Avhengigheter:** REQ-0432
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Arkitekturdokumentasjonen definerer Timeline & Assembly Engine med ansvar for: sceneforekomster, filmrekkefølge, tidskoder, klipp og sammenstilling, og dette ansvaret ligger ikke i andre moduler.
 - **Tester:**
   - manuell: arkitekturgjennomgang av ansvarsgrenser
+- **Implementering:** src/core/assembly/film.ts
 
 #### REQ-0436 – Modul: Resource Library
 Arkitekturen skal ha en logisk komponent «Resource Library» med ansvarsområdet: Karakterer, objekter, miljøer, mediefiler og stilprofiler.
@@ -5838,11 +5861,12 @@ Fase 4: Tidslinje, lyd og filmmontering skal implementere toveis manussynkronise
 - **Kilde:** Kap. Fase 4 (l. 1389-1395) · **Opprinnelse:** mandat · **Type:** prosess · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** PROCESS
 - **Avhengigheter:** REQ-0454
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Når fase 4 avsluttes, er alle listede leveranser ferdige med testbare akseptansekriterier, og de bygger på leveransene i foregående fase.
 - **Tester:**
   - manuell: fasegjennomgang/milepælsrevisjon
+- **Implementering:** src/app/assembly/
 - **Merknad:** Prosesskrav (rekkefølge); de enkelte funksjonene er spesifisert som funksjonskrav i sine fagkapitler.
 
 ### Kapittel Fase 5
@@ -7181,3 +7205,17 @@ Forhåndsvisningen skal kunne åpnes i et eget vindu som kan legges på en annen
   - visuell: eget vindu, gjenåpnet med husket størrelse
 - **Implementering:** src/app/scene-editor/PreviewWindow.tsx, src/app/scene-editor/SceneEditorWorkspace.tsx
 - **Merknad:** Plassering på en annen skjerm avhenger av nettleseren (KI-50). Selve flyttingen mellom skjermer kan ikke testes automatisk (hodeløs nettleser).
+
+#### REQ-0557 – Forhåndsvisningen kan flyttes fritt over hele programmet
+Det flytende forhåndsvisningsvinduet i sceneeditoren skal kunne flyttes hvor som helst i programvinduet (også over menyen og panelene), ikke bare innenfor lerretet. Plasseringen huskes.
+
+- **Kilde:** Beslutning DEC-0042 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, UI
+- **Avhengigheter:** REQ-0555
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Vinduet kan dras over menyen til venstre og panelene til høyre, og holdes innenfor programvinduet.
+  - Plasseringen er den samme etter at vinduet er lukket og åpnet igjen.
+- **Tester:**
+  - visuell: forhåndsvisning dratt helt til venstre
+- **Implementering:** src/app/scene-editor/PreviewWindow.tsx

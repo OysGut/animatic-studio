@@ -420,7 +420,8 @@ await shot("43-forhandsvisning-flyttet-zoom", scene, {
     const b = await bar.boundingBox();
     await page.mouse.move(b.x + 40, b.y + 10);
     await page.mouse.down();
-    await page.mouse.move(b.x - 300, b.y - 250, { steps: 8 });
+    // Fritt over hele programmet (DEC-0042): helt til venstre, over menyen
+    await page.mouse.move(b.x - 900, b.y - 250, { steps: 8 });
     await page.mouse.up();
     const c = page.getByLabel(/hjørne nede til høyre/);
     const cb = await c.boundingBox();
@@ -504,6 +505,93 @@ await shot("44-forhandsvisning-eget-vindu", scene, {
     await pop2.screenshot({ path: out + "/44b-eget-vindu.png" });
     await pop2.getByRole("button", { name: "Tilbake til redigeringsvinduet" }).click();
     await page.waitForTimeout(600);
+  },
+});
+const montering = `/prosjekt/${project.id}/montering`;
+await shot("45-montering", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(900);
+    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("ArrowDown");
+    await page.waitForTimeout(400);
+  },
+});
+await shot("46-montering-flytt", montering, {
+  act: async (page, file) => {
+    await page.waitForTimeout(900);
+    const clips = page.getByRole("group", { name: "Scener i filmen" }).getByRole("button");
+    console.log("klipp:", await clips.count());
+    const a = await clips.nth(1).boundingBox();
+    const c = await clips.nth(3).boundingBox();
+    await page.mouse.move(a.x + 20, a.y + 30);
+    await page.mouse.down();
+    await page.mouse.move(c.x + c.width - 10, c.y + 30, { steps: 10 });
+    await page.screenshot({ path: file });
+    await page.mouse.up();
+    await page.waitForTimeout(30);
+    console.log(
+      "rekkefølge etter flytting:",
+      await page
+        .getByRole("group", { name: "Scener i filmen" })
+        .getByRole("button")
+        .evaluateAll((els) => els.map((e) => e.getAttribute("aria-label")?.slice(0, 30))),
+    );
+    return "tatt";
+  },
+});
+await shot("47-montering-eksport", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(900);
+    await page.getByRole("button", { name: "Eksporter animatic" }).click();
+    await page.waitForTimeout(500);
+  },
+});
+await shot("48-montering-eksport-ferdig", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(900);
+    await page.getByRole("group", { name: "Scener i filmen" }).getByRole("button").first().click();
+    await page.getByRole("button", { name: "Eksporter animatic" }).click();
+    await page
+      .getByLabel("Valgt scene")
+      .check()
+      .catch(() => page.getByText("Valgt scene").click());
+    await page
+      .getByLabel("Halv størrelse")
+      .check()
+      .catch(() => page.getByText("Halv størrelse").click());
+    const t0 = Date.now();
+    const dl = page.waitForEvent("download", { timeout: 60000 }).catch(() => null);
+    await page
+      .getByRole("button", { name: /Eksporter/ })
+      .last()
+      .click();
+    await page.getByText(/^Ferdig:/).waitFor({ timeout: 90000 });
+    const d = await dl;
+    console.log("eksport:", Date.now() - t0, "ms", d ? d.suggestedFilename() : "ingen nedlasting");
+    if (d) {
+      const p = await d.path();
+      const { statSync, readFileSync } = await import("node:fs");
+      const head = readFileSync(p).subarray(0, 12);
+      console.log("fil:", statSync(p).size, "byte", head.toString("hex"));
+      // Kontroll av videoen (REQ-0211): varighet, oppløsning og bildefrekvens
+      // Skriptet kjøres fra en egen mappe: MEDIABUNNY peker på pakken i repoet
+      const mod = await import(process.env.MEDIABUNNY ?? "mediabunny");
+      const mb = mod.BufferSource ? mod : mod.default;
+      const input = new mb.Input({
+        source: new mb.BufferSource(readFileSync(p)),
+        formats: mb.ALL_FORMATS,
+      });
+      const track = await input.getPrimaryVideoTrack();
+      const stats = await track.computePacketStats();
+      console.log("video:", {
+        width: track.displayWidth,
+        height: track.displayHeight,
+        duration: Number((await input.computeDuration()).toFixed(3)),
+        frames: stats.packetCount,
+        fps: Number(stats.averagePacketRate.toFixed(2)),
+        codec: track.codec,
+      });
+    }
   },
 });
 await shot("18-oversikt-varighet", `/prosjekt/${project.id}`, {

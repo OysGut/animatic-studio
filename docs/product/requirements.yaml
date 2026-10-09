@@ -598,13 +598,20 @@ requirements:
   - Gitt scenene A, B, C, når C flyttes først i tidslinjen, så viser manuset C, A, B.
   tests:
   - 'integrasjon: flytt i tidslinje → verifiser manusrekkefølge'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/AssemblyWorkspace.tsx"
+  - "src/core/assembly/film.ts"
+  verification:
+  - "tests/unit/assembly.test.ts::tidskodene beregnes på nytt når en scene flyttes"
+  - "tests/visual/screens.mjs::46-montering-flytt"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "Filmtidslinjen flytter scener med MoveOccurrence (samme kommando som manuset)"
   notes: ''
 - id: REQ-0019
   title: Deaktivering utelater overalt
@@ -3362,13 +3369,17 @@ requirements:
   - Gitt avspillingshode innenfor en koblet replikks intervall, så er replikken markert i manuset.
   tests:
   - 'e2e: scrubbing → markering'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/app/assembly/ClipPanel.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "Avspillingshodet viser scenens manus (scenenivå); markering per replikk kommer med tidskoblinger"
   notes: ''
 - id: REQ-0099
   title: Toveis navigasjon for alle materialtyper
@@ -3421,13 +3432,17 @@ requirements:
   - Et arbeidsoppsett viser manus og filmavspiller samtidig.
   tests:
   - 'visuell: side-ved-side-layout'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/app/assembly/ClipPanel.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "Monteringen viser manuset for scenen ved siden av filmen; presis kobling per replikk kommer med tidskoblinger"
   notes: ''
 - id: REQ-0101
   title: Automatisk rulling av/på
@@ -3449,13 +3464,17 @@ requirements:
   - Med autorulling på følger manuset avspillingen; med av står manuset stille mens markeringen fortsatt oppdateres.
   tests:
   - 'e2e: veksle autorulling'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/app/assembly/ClipPanel.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "«Følg avspillingen» av/på i monteringen (scenenivå)"
   notes: ''
 - id: REQ-0102
   title: Teknisk metadata forstyrrer ikke manuslayout
@@ -7145,13 +7164,18 @@ requirements:
     AI-tjenester.
   tests:
   - 'import/eksport: eksportert video har forventet varighet, oppløsning og bildefrekvens'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Under arbeid
+  implementation:
+  - "src/engine/export/animatic.ts"
+  verification:
+  - "tests/visual/screens.mjs::48-montering-eksport-ferdig"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "Videoeksport i nettleseren (WebCodecs/mediabunny) uten AI; lyd kommer i M4 del 2"
   notes: Ufravikelig prinsipp nr. 9 i kap. 34.
 - id: REQ-0212
   title: Renderer i klient, backend eller desktop
@@ -7210,13 +7234,18 @@ requirements:
   - Eksport av en 2D-animatic gjennomføres uten noen kall til AI-leverandører og uten kostnadsregistrering.
   tests:
   - 'integrasjon: overvåk utgående kall under eksport – ingen AI-API-kall'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/engine/export/animatic.ts"
+  verification:
+  - "tests/visual/screens.mjs::48-montering-eksport-ferdig"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "Eksporten bruker bare nettleserens egen koder; ingen nettverkskall"
   notes: ''
 - id: REQ-0214
   title: Hybrid filmmontering
@@ -7303,13 +7332,19 @@ requirements:
   - Filmtidslinjen er en egen visning som viser hele den aktive filmen, adskilt fra scenens detaljtidslinje i 2D-editoren.
   tests:
   - 'e2e: åpne filmtidslinje og naviger til scene-editor og tilbake'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/AssemblyWorkspace.tsx"
+  - "src/routes/prosjekt.$projectId.montering.tsx"
+  verification:
+  - "tests/visual/screens.mjs::45-montering"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "Montering: egen filmtidslinje adskilt fra sceneeditoren"
   notes: ''
 - id: REQ-0217
   title: Se aktive scener i rekkefølge
@@ -7331,13 +7366,18 @@ requirements:
   - Gitt deaktiverte scener, så vises bare aktive scener, i samme rekkefølge som i aktiv manusvisning.
   tests:
   - 'e2e: se aktive scener i rekkefølge i filmtidslinjen'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/assembly/film.ts"
+  verification:
+  - "tests/unit/assembly.test.ts::følger manusets rekkefølge og utelater deaktiverte scener"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "Alle aktive scener i manusets rekkefølge"
   notes: ''
 - id: REQ-0218
   title: Navigere mellom scener
@@ -7358,13 +7398,18 @@ requirements:
   - Brukeren kan hoppe til neste/forrige scene og til en valgt scene, og avspillingshodet flyttes dit.
   tests:
   - 'e2e: navigere mellom scener i filmtidslinjen'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/AssemblyWorkspace.tsx"
+  verification:
+  - "tests/visual/screens.mjs::45-montering"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "Klikk på klipp, pil opp/ned og knapper for forrige/neste scene; dobbeltklikk åpner sceneeditoren"
   notes: ''
 - id: REQ-0219
   title: Se aktivt filmmateriale per scene
@@ -7385,13 +7430,18 @@ requirements:
   - Hver scene i tidslinjen viser materialet som er valgt som aktiv filmversjon.
   tests:
   - 'e2e: se aktivt filmmateriale per scene i filmtidslinjen'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/app/assembly/FilmTimeline.tsx"
+  - "src/engine/compositor/film.ts"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "Viser 2D-scenen (miniatyr og visning) eller tittelkort; importert film og AI-video kommer senere"
   notes: ''
 - id: REQ-0220
   title: Trimme klipp
@@ -7521,13 +7571,19 @@ requirements:
   - Brukeren kan endre plassering/varighet av klipp, og samlede tidskoder beregnes på nytt.
   tests:
   - 'e2e: justere timing i filmtidslinjen'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/FilmTimeline.tsx"
+  - "src/app/assembly/ClipPanel.tsx"
+  verification:
+  - "tests/unit/assembly.test.ts::å endre lengden på en scene endrer verken manus eller rekkefølge"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "Lengden endres ved å dra i høyre kant eller i panelet"
   notes: ''
 - id: REQ-0225
   title: Forhåndsvise hele filmen
@@ -7548,13 +7604,19 @@ requirements:
   - Avspilling fra start til slutt av aktiv film fungerer uten avbrudd mellom scener av ulik materialtype.
   tests:
   - 'e2e: forhåndsvise hele filmen i filmtidslinjen'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/FilmViewer.tsx"
+  - "src/engine/compositor/film.ts"
+  verification:
+  - "tests/visual/screens.mjs::45-montering"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "Avspilling av hele filmen i monteringen"
   notes: ''
 - id: REQ-0226
   title: Eksportere samlet film
@@ -7576,13 +7638,19 @@ requirements:
   - Eksport av aktiv film gir én fil der rekkefølge og varighet samsvarer med tidslinjen.
   tests:
   - 'e2e: eksportere samlet film i filmtidslinjen'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/ExportAnimaticDialog.tsx"
+  - "src/engine/export/animatic.ts"
+  verification:
+  - "tests/visual/screens.mjs::48-montering-eksport-ferdig"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "Eksport av hele filmen som video (uten lyd i del 1)"
   notes: ''
 - id: REQ-0227
   title: Inspirasjon fra klippeprogrammer
@@ -7639,13 +7707,20 @@ requirements:
   tests:
   - 'integrasjon: flytting i tidslinje oppdaterer manusrekkefølge i samme transaksjon'
   - 'dataintegritet: scene-ID uendret etter flytting'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/FilmTimeline.tsx"
+  - "src/app/assembly/AssemblyWorkspace.tsx"
+  verification:
+  - "tests/unit/assembly.test.ts::tidskodene beregnes på nytt når en scene flyttes"
+  - "tests/unit/commands.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "Flytting i filmtidslinjen er MoveOccurrence; manus og film leses fra samme struktur"
   notes: Ufravikelig prinsipp nr. 2 i kap. 34.
 - id: REQ-0229
   title: Skille fire typer tidslinjeoperasjoner
@@ -7673,13 +7748,17 @@ requirements:
   tests:
   - 'enhet: operasjonstyper og deres effekt på manusmodellen'
   - 'integrasjon: trimming endrer ikke manusrekkefølge eller synlighet'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/app/assembly/AssemblyWorkspace.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "Flytte scene, endre lengde og deaktivere er egne handlinger i monteringen; utsnitt av klipp kommer med importert film"
   notes: «Å endre et utsnitt fra en scene» er tvetydig (tidsutdrag vs. kamerautsnitt) – se OPEN_QUESTIONS B («Endre
     et utsnitt»).
 - id: REQ-0230
@@ -7703,13 +7782,18 @@ requirements:
   - Gitt et klipp som dekker en hel manusscene, når klippet trimmes, så er manusteksten uendret.
   tests:
   - 'dataintegritet: manusinnhold før/etter trimming er identisk'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/FilmTimeline.tsx"
+  verification:
+  - "tests/unit/assembly.test.ts::å endre lengden på en scene endrer verken manus eller rekkefølge"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "Lengdeendring i filmtidslinjen endrer bare 2D-scenens lengde"
   notes: ''
 - id: REQ-0231
   title: Avvik når manus ikke dekkes av film
@@ -7970,13 +8054,17 @@ requirements:
     går sømløst mellom dem.
   tests:
   - 'e2e: avspilling av delvis ferdig scene'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/engine/compositor/film.ts"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "Scener uten 2D-scene vises som tittelkort; delvis importert film kommer i del 2"
   notes: ''
 - id: REQ-0240
   title: Montering fungerer ved ufullstendig produksjon
@@ -7998,13 +8086,20 @@ requirements:
     for manglende materiale).
   tests:
   - 'e2e: avspilling av film med scener uten materiale'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/assembly/film.ts"
+  - "src/engine/compositor/film.ts"
+  verification:
+  - "tests/unit/assembly.test.ts::bruker 2D-scenens lengde, ellers beregnet lengde fra manus"
+  - "tests/visual/screens.mjs::45-montering"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "Monteringen spiller og eksporterer også når scener mangler 2D-scene (tittelkort med beregnet lengde)"
   notes: Hvordan manglende materiale vises (plassholder, sort, manustekst) er ikke spesifisert.
 - id: REQ-0241
   title: Status for importert film
@@ -13278,13 +13373,18 @@ requirements:
     AI-kall.
   tests:
   - 'integrasjon: eksport med AI-adaptere deaktivert'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/engine/export/animatic.ts"
+  verification:
+  - "tests/visual/screens.mjs::48-montering-eksport-ferdig"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "Eksportmodul uten AI"
   notes: ''
 - id: REQ-0417
   title: Filmeksport av ulike omfang
@@ -13309,13 +13409,19 @@ requirements:
   tests:
   - 'import/eksport: eksport per omfang'
   - 'e2e: eksporter valgte scener'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Under arbeid
+  implementation:
+  - "src/core/assembly/film.ts"
+  - "src/app/assembly/ExportAnimaticDialog.tsx"
+  verification:
+  - "tests/unit/assembly.test.ts::hele filmen, én scene og et utvalg"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "Hele filmen, valgt scene og fra–til scene; spinoff og trailer kommer med M7"
   notes: Spinoff/trailer-eksport avhenger av fase 7.
 - id: REQ-0418
   title: Hybrid eksport av blandet materiale
@@ -13464,13 +13570,18 @@ requirements:
   tests:
   - 'enhet: hver kontroll'
   - 'e2e: eksportkontroll-rapport'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/ExportAnimaticDialog.tsx"
+  verification:
+  - "tests/visual/screens.mjs::47-montering-eksport"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "Kontroll før eksport: sceneorden, deaktiverte scener, scener uten 2D-scene, beregnede lengder og manglende bilder"
   notes: ''
 - id: REQ-0423
   title: Eksport tross avvik etter varsel
@@ -13493,13 +13604,18 @@ requirements:
   - Gitt uavklarte avvik, så vises et tydelig varsel, og brukeren kan bekrefte og eksportere likevel.
   tests:
   - 'e2e: eksport etter bekreftet varsel'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/ExportAnimaticDialog.tsx"
+  verification:
+  - "tests/visual/screens.mjs::47-montering-eksport"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "«Eksporter likevel» når kontrollen har merknader"
   notes: ''
 - id: REQ-0424
   title: Helhetlig profesjonell visuell identitet
@@ -13860,13 +13976,17 @@ requirements:
     tidskoder, klipp og sammenstilling, og dette ansvaret ligger ikke i andre moduler.'
   tests:
   - 'manuell: arkitekturgjennomgang av ansvarsgrenser'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/core/assembly/film.ts"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "Timeline & Assembly Engine del 1"
   notes: ''
 - id: REQ-0436
   title: 'Modul: Resource Library'
@@ -14454,13 +14574,17 @@ requirements:
     i foregående fase.
   tests:
   - 'manuell: fasegjennomgang/milepælsrevisjon'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/app/assembly/"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0043
+    change: "M4 del 1 levert: filmtidslinje, avspilling og eksport"
   notes: Prosesskrav (rekkefølge); de enkelte funksjonene er spesifisert som funksjonskrav i sine fagkapitler.
 - id: REQ-0456
   title: 'Fase 5: Genereringsmotor og AI-integrasjoner'
@@ -17517,3 +17641,33 @@ requirements:
     decision: DEC-0041
     change: "Opprettet etter beslutning fra Mars og bygget samme dag"
   notes: "Plassering på en annen skjerm avhenger av nettleseren (KI-50). Selve flyttingen mellom skjermer kan ikke testes automatisk (hodeløs nettleser)."
+- id: REQ-0557
+  title: "Forhåndsvisningen kan flyttes fritt over hele programmet"
+  text: "Det flytende forhåndsvisningsvinduet i sceneeditoren skal kunne flyttes hvor som helst i programvinduet (også over menyen og panelene), ikke bare innenfor lerretet. Plasseringen huskes."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0042
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - COMPOSE
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0555
+  acceptance:
+  - "Vinduet kan dras over menyen til venstre og panelene til høyre, og holdes innenfor programvinduet."
+  - "Plasseringen er den samme etter at vinduet er lukket og åpnet igjen."
+  tests:
+  - "visuell: forhåndsvisning dratt helt til venstre"
+  status: Verifisert
+  implementation:
+  - "src/app/scene-editor/PreviewWindow.tsx"
+  verification:
+  - "tests/visual/screens.mjs::43-forhandsvisning-flyttet-zoom"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0042
+    change: "Opprettet etter beslutning fra Mars og bygget samme dag"
+  notes: ''

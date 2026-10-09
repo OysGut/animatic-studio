@@ -118,7 +118,7 @@ function compositionFieldsOf(c: Composition): CompositionFields {
 }
 
 /** Skal tastetrykk i dette elementet være i fred for tidslinjens snarveier? */
-function isTypingTarget(t: EventTarget | null): boolean {
+export function isTypingTarget(t: EventTarget | null): boolean {
   if (!(t instanceof HTMLElement)) return false;
   return (
     t instanceof HTMLInputElement ||
@@ -128,10 +128,10 @@ function isTypingTarget(t: EventTarget | null): boolean {
   );
 }
 
-const iconButton =
+export const iconButton =
   "inline-flex size-6 shrink-0 items-center justify-center rounded-sm text-text-secondary hover:bg-surface-3 hover:text-text-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent";
 
-function IconButton({
+export function IconButton({
   label,
   onClick,
   active,
@@ -163,7 +163,7 @@ function IconButton({
 
 const TICK_STEPS = [1, 2, 5, 10, 15, 30, 60, 120, 300, 600, 1800, 3600];
 
-const RulerTicks = memo(function RulerTicks({
+export const RulerTicks = memo(function RulerTicks({
   ppf,
   durationFrames,
   fps,
