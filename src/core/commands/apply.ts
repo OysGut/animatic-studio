@@ -5,6 +5,13 @@
 import { isUuid, type BlockId, type TakeId, type VariantId } from "../ids";
 import { checkInvariants } from "../invariants";
 import {
+  formatMapping,
+  isAllowedFps,
+  rescaleComposition,
+  rescaleLayer,
+  sameFps,
+} from "../composition/format";
+import {
   normalizeCamera,
   normalizeCompositionFields,
   normalizeLayerFields,
@@ -1891,6 +1898,135 @@ function run(
       };
     }
 
+    // ---------- Prosjektets format (DEC-0039) ----------
+
+    case "SetProjectFormat": {
+      if (!Number.isInteger(c.width) || c.width < 16 || c.width > 16384)
+        fail("invalid", "Bredden må være et helt tall mellom 16 og 16384");
+      if (!Number.isInteger(c.height) || c.height < 16 || c.height > 16384)
+        fail("invalid", "Høyden må være et helt tall mellom 16 og 16384");
+      if (!isAllowedFps(c.fps)) fail("invalid", "Ukjent bildefrekvens");
+      const p = s.project;
+      const from = { width: p.frameWidth, height: p.frameHeight, fps: p.fps };
+      const to = { width: c.width, height: c.height, fps: c.fps };
+      if (
+        from.width === to.width &&
+        from.height === to.height &&
+        sameFps(from.fps, to.fps) &&
+        // Scener med eget format (laget før 0008) gjør at samme format likevel er en endring
+        Object.values(s.compositions).every((x) => x.width === to.width && x.height === to.height)
+      )
+        fail("invalid", "Ingen endring");
+      const m = formatMapping(from, to);
+      const compositions = { ...s.compositions };
+      const layers = { ...s.layers };
+      const productions = { ...s.productions };
+      const affected: string[] = [p.id];
+      const oldComps = Object.values(s.compositions);
+      const oldLayers = Object.values(s.layers);
+      for (const comp of oldComps) {
+        // Scener med eget format fra før (laget før 0008) regnes om fra sitt eget format
+        const own = { width: comp.width, height: comp.height, fps: p.fps };
+        const cm =
+          own.width === from.width && own.height === from.height ? m : formatMapping(own, to);
+        compositions[comp.id] = { ...rescaleComposition(comp, cm, to), revision: rev(comp) };
+        affected.push(comp.id);
+        for (const l of oldLayers)
+          if (l.compositionId === comp.id) {
+            layers[l.id] = { ...rescaleLayer(l, cm), revision: rev(l) };
+            affected.push(l.id);
+          }
+      }
+      const prodFps = Object.values(s.productions).map((x) => ({ productionId: x.id, fps: x.fps }));
+      for (const x of Object.values(s.productions))
+        if (!sameFps(x.fps, c.fps)) {
+          productions[x.id] = { ...x, fps: c.fps, revision: rev(x) };
+          affected.push(x.id);
+        }
+      return {
+        state: {
+          ...s,
+          project: {
+            ...p,
+            frameWidth: c.width,
+            frameHeight: c.height,
+            fps: c.fps,
+            revision: rev(p),
+          },
+          productions,
+          compositions,
+          layers,
+        },
+        inverse: {
+          type: "UndoSetProjectFormat",
+          project: from,
+          productionFps: prodFps,
+          compositions: oldComps,
+          layers: oldLayers,
+        },
+        affected,
+      };
+    }
+
+    case "UndoSetProjectFormat": {
+      const p = s.project;
+      const compositions = { ...s.compositions };
+      const layers = { ...s.layers };
+      const productions = { ...s.productions };
+      const affected: string[] = [p.id];
+      // Det som fantes før endringen, settes tilbake nøyaktig (det som er fjernet siden, hoppes over);
+      // 2D-scener og lag som er laget etterpå, regnes om tilbake til det gamle formatet
+      const back = formatMapping(
+        { width: p.frameWidth, height: p.frameHeight, fps: p.fps },
+        { width: c.project.width, height: c.project.height, fps: c.project.fps },
+      );
+      const oldComp = new Map(c.compositions.map((x) => [x.id, x]));
+      const oldLayer = new Map(c.layers.map((x) => [x.id, x]));
+      for (const cur of Object.values(s.compositions)) {
+        const old = oldComp.get(cur.id);
+        compositions[cur.id] = old
+          ? { ...old, revision: rev(cur) }
+          : { ...rescaleComposition(cur, back, c.project), revision: rev(cur) };
+        affected.push(cur.id);
+      }
+      for (const cur of Object.values(s.layers)) {
+        const old = oldLayer.get(cur.id);
+        layers[cur.id] = old
+          ? { ...old, revision: rev(cur) }
+          : { ...rescaleLayer(cur, back), revision: rev(cur) };
+        affected.push(cur.id);
+      }
+      for (const x of c.productionFps) {
+        const cur = s.productions[x.productionId];
+        if (cur && !sameFps(cur.fps, x.fps)) {
+          productions[cur.id] = { ...cur, fps: x.fps, revision: rev(cur) };
+          affected.push(cur.id);
+        }
+      }
+      return {
+        state: {
+          ...s,
+          project: {
+            ...p,
+            frameWidth: c.project.width,
+            frameHeight: c.project.height,
+            fps: c.project.fps,
+            revision: rev(p),
+          },
+          productions,
+          compositions,
+          layers,
+        },
+        inverse: {
+          type: "SetProjectFormat",
+          width: p.frameWidth,
+          height: p.frameHeight,
+          fps: p.fps,
+        },
+        affected,
+      };
+    }
+
     // ---------- 2D-sceneeditor (M3 del 2, DEC-0035) ----------
 
     case "CreateComposition": {
@@ -1898,7 +2034,12 @@ function run(
       need(s.variants[c.variantId], "Scenen");
       if (Object.values(s.compositions).some((x) => x.variantId === c.variantId && !x.removed))
         fail("invalid", "Scenen har allerede en 2D-scene");
-      const fields = compositionFields(c.fields);
+      // Formatet følger alltid prosjektet (DEC-0039)
+      const fields = compositionFields({
+        ...c.fields,
+        width: s.project.frameWidth,
+        height: s.project.frameHeight,
+      });
       return {
         state: {
           ...s,
@@ -1945,7 +2086,8 @@ function run(
 
     case "UpdateComposition": {
       const comp = need(s.compositions[c.compositionId], "2D-scenen");
-      const fields = compositionFields(c.fields);
+      // Formatet endres bare samlet for prosjektet (SetProjectFormat, DEC-0039)
+      const fields = compositionFields({ ...c.fields, width: comp.width, height: comp.height });
       let camera = comp.camera;
       if (c.camera !== undefined) {
         const r = normalizeCamera(c.camera);

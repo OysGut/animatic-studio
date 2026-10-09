@@ -72,6 +72,8 @@ export function seedProject(sceneCount: number = NUMBER_PATTERN.length): Seed {
     revision: 1,
     name: "Testprosjekt",
     fps: FPS_25,
+    frameWidth: 1920,
+    frameHeight: 1080,
     primaryLanguage: "nb",
   });
   const mainId = tid<"production">();

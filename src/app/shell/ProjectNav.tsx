@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Clapperboard, FileText, Film, Layers, Library, Users } from "lucide-react";
 import type { ReactNode } from "react";
+import { PaneResizer, usePaneSize } from "./pane-size";
 
 /** Arbeidsflatene (INFORMATION_ARCHITECTURE.md). Flatene som ikke er bygget ennå vises deaktivert med milepæl. */
 const LATER: { label: string; icon: ReactNode; milestone: string }[] = [
@@ -13,11 +14,21 @@ const item =
 const active = "bg-accent-selection font-medium text-text-primary";
 
 export function ProjectNav({ projectId }: { projectId: string }) {
+  const [width, setWidth] = usePaneSize("project-nav", 184, 140, 320);
   return (
     <nav
       aria-label="Arbeidsflater"
-      className="flex w-[184px] shrink-0 flex-col gap-0.5 border-r border-border bg-surface-1 p-2"
+      style={{ width }}
+      className="relative flex shrink-0 flex-col gap-0.5 border-r border-border bg-surface-1 p-2"
     >
+      <PaneResizer
+        edge="right"
+        size={width}
+        onSize={setWidth}
+        min={140}
+        max={320}
+        label="Bredde på menyen"
+      />
       <Link
         to="/prosjekt/$projectId"
         params={{ projectId }}

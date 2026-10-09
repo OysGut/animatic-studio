@@ -8,6 +8,8 @@ import { DEFAULT_PARALLAX, IDENTITY_TRANSFORM } from "./fields";
 
 export * from "./fields";
 export * from "./render";
+export * from "./animate";
+export * from "./format";
 
 /** Lagtypen et bilde fra biblioteket får som standard. */
 export const LAYER_KIND_FOR_ASSET: Record<AssetKind, LayerKind> = {

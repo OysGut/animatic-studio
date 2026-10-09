@@ -67,15 +67,26 @@ export function applyMatrix(m: Matrix, x: number, y: number): { x: number; y: nu
 
 // ---------- Lag og bilder ----------
 
+/** Per lagsamling (uforanderlig): lagene per 2D-scene, sortert. Avspilling ber om dette hvert bilde. */
+const layerCache = new WeakMap<object, Map<string, CompositionLayer[]>>();
+
 /** Lagene i 2D-scenen, bakerst først. Slettede lag er med bare når det bes om. */
 export function layersOf(
   s: ProjectState,
   compositionId: string,
   opts: { includeRemoved?: boolean } = {},
 ): CompositionLayer[] {
-  return Object.values(s.layers)
-    .filter((l) => l.compositionId === compositionId && (opts.includeRemoved || !l.removed))
-    .sort((a, b) => compareKeys(a.orderKey, b.orderKey));
+  const key = `${compositionId}|${opts.includeRemoved ? 1 : 0}`;
+  let byComp = layerCache.get(s.layers);
+  if (!byComp) layerCache.set(s.layers, (byComp = new Map()));
+  let list = byComp.get(key);
+  if (!list) {
+    list = Object.values(s.layers)
+      .filter((l) => l.compositionId === compositionId && (opts.includeRemoved || !l.removed))
+      .sort((a, b) => compareKeys(a.orderKey, b.orderKey));
+    byComp.set(key, list);
+  }
+  return [...list];
 }
 
 /** 2D-scenen for en scenevariant (den første som ikke er slettet), eller null. */

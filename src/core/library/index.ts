@@ -176,6 +176,36 @@ export function allAssetUsage(
   return m;
 }
 
+/**
+ * Ressursene i biblioteket som er brukt i én scene (sceneforekomst), med hvordan de er brukt:
+ * karakterer først, så steder, objekter og resten; arkiverte utelates.
+ */
+export function assetsInScene(
+  s: ProjectState,
+  productionId: string,
+  occurrenceId: string,
+): { readonly asset: Asset; readonly how: UsageHow }[] {
+  const order: Record<AssetKind, number> = {
+    character: 0,
+    animal: 1,
+    location: 2,
+    environment: 3,
+    object: 4,
+    other: 5,
+  };
+  const out: { asset: Asset; how: UsageHow }[] = [];
+  for (const [assetId, uses] of allAssetUsage(s, productionId)) {
+    const asset = s.assets[assetId];
+    if (!asset || asset.archived) continue;
+    const u = uses.find((x) => x.occurrenceId === occurrenceId);
+    if (u) out.push({ asset, how: u.how });
+  }
+  return out.sort(
+    (a, b) =>
+      order[a.asset.kind] - order[b.asset.kind] || a.asset.name.localeCompare(b.asset.name, "nb"),
+  );
+}
+
 // ---------- Forslag fra manuset (REQ-0128, DEC-0034) – se suggest.ts ----------
 export * from "./suggest";
 

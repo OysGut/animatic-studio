@@ -892,6 +892,75 @@ try {
     );
   });
 
+  await test("0008: prosjektets format og bildefrekvens endres med revisjonskontroll, og 2D-scener tilpasses", async () => {
+    let st = await loadState(projectId);
+    const variant = Object.values(st.variants)[1]!;
+    const comp = "abcdef00-0000-7000-8000-0000000000d1";
+    const layer = "abcdef00-0000-7000-8000-0000000000d2";
+    st = await runCommand(st, ALICE, {
+      type: "CreateComposition",
+      compositionId: comp as never,
+      variantId: variant.id,
+      fields: DEFAULT_COMPOSITION,
+    });
+    st = await runCommand(st, ALICE, {
+      type: "AddLayers",
+      layers: [
+        {
+          layerId: layer as never,
+          compositionId: comp as never,
+          fields: defaultLayerFields(st, st.compositions[comp]!, { fill: "#112233" }),
+        },
+      ],
+    });
+    const before = st;
+    st = await runCommand(st, ALICE, {
+      type: "SetProjectFormat",
+      width: 3840,
+      height: 2160,
+      fps: { num: 24, den: 1 },
+    });
+    const back = await loadState(projectId);
+    assert(back.project.frameWidth === 3840 && back.project.frameHeight === 2160, "format");
+    assert(back.project.fps.num === 24, "bildefrekvens");
+    assert(back.compositions[comp]!.width === 3840, "2D-scenen fulgte ikke formatet");
+    assert(
+      back.layers[layer]!.transform.x === 1920,
+      `laget ble ikke flyttet: ${back.layers[layer]!.transform.x}`,
+    );
+    assert(
+      Object.values(back.productions).every((p) => p.fps.num === 24),
+      "produksjonene fikk ikke ny bildefrekvens",
+    );
+    // Gammelt utgangspunkt gir revisjonskonflikt på prosjektraden
+    await expectError(
+      runCommand(before, ALICE, {
+        type: "SetProjectFormat",
+        width: 1080,
+        height: 1080,
+        fps: { num: 25, den: 1 },
+      }),
+      /Revisjonskonflikt/,
+    );
+    // Angre gir alt tilbake
+    const inv = applyCommand(back, {
+      id: "44444444-4444-7444-8444-0000000009f1" as never,
+      actor: ALICE,
+      at: new Date().toISOString(),
+      command: { type: "SetProjectFormat", width: 1920, height: 1080, fps: { num: 25, den: 1 } },
+    });
+    assert(inv.ok, "kjernen avviste tilbakestilling");
+    st = await runCommand(back, ALICE, {
+      type: "SetProjectFormat",
+      width: 1920,
+      height: 1080,
+      fps: { num: 25, den: 1 },
+    });
+    const again = await loadState(projectId);
+    assert(again.project.frameWidth === 1920 && again.project.fps.num === 25, "tilbake");
+    assert(again.layers[layer]!.transform.x === 960, "laget tilbake");
+  });
+
   await test("0004: notater lagres med stempel, kan slettes og angres, og følger blokken", async () => {
     let st = await loadState(projectId);
     const block = Object.values(st.blocks).find((b) => !b.removed && b.text.length > 4)!;

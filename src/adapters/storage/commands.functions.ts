@@ -67,6 +67,7 @@ const INVERSE_ONLY = new Set<string>([
   "UndoAddAnnotations",
   "UndoCreateComposition",
   "UndoAddLayers",
+  "UndoSetProjectFormat",
 ]);
 
 /** Kommandoer som skriver til tabellene fra migrasjon 0004 (ressursbibliotek og notater). */
@@ -249,6 +250,17 @@ export const runCommand = createServerFn({ method: "POST" })
           code: "schema",
           message:
             "Databasen mangler ressursbiblioteket og notatene. Kjør migrasjon 0004 i Lovable (se LOVABLE_SYNC.md).",
+        };
+    }
+    // Prosjektets format krever migrasjon 0008
+    if (data.command.type === "SetProjectFormat" || data.command.type === "UndoSetProjectFormat") {
+      const schema = await checkSchema(admin);
+      if (schema.kind !== "ok" || schema.version < 8)
+        return {
+          ok: false,
+          code: "schema",
+          message:
+            "Databasen mangler prosjektformatet. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0008.",
         };
     }
     // 2D-sceneeditoren krever migrasjon 0007

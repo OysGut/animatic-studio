@@ -52,7 +52,11 @@ export interface Entity<I> {
 
 export interface Project extends Entity<ProjectId> {
   readonly name: string;
+  /** Bildefrekvens for hele prosjektet (DEC-0039). */
   readonly fps: Rational;
+  /** Bildeformat for hele prosjektet i piksler (DEC-0039); alle 2D-scener følger det. */
+  readonly frameWidth: number;
+  readonly frameHeight: number;
   readonly primaryLanguage: typeof PRIMARY_LANGUAGE;
 }
 

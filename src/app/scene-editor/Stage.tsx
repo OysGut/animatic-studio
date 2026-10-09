@@ -6,7 +6,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   applyMatrix,
+  cameraAt,
+  fieldsWithTransformAt,
   layerFieldsOf,
+  shotAt,
+  toggleCurve,
+  transformAt,
+  withShot,
+  type CameraShot,
   type CompositionLayer,
   hitTest,
   invert,
@@ -19,13 +26,24 @@ import {
   type Composition,
   type DrawItem,
   type Frame,
-  type LayerFields,
   type LayerId,
   type LayerTransform,
   type ProjectState,
+  defaultLayerFields,
+  newId,
 } from "@/core";
+import { ASSET_DRAG_TYPE } from "./SceneAssetsPanel";
 import { ImageCache, drawFrame } from "@/engine/compositor/canvas";
 import { Button } from "@/components/ui/button";
+import {
+  cursorFor,
+  dragCameraShot,
+  dragLabel,
+  drawCameraOverlay,
+  pickCamera,
+  updateCameraCommand,
+  type CameraTarget,
+} from "./camera-overlay";
 
 interface StageProps {
   state: ProjectState;
@@ -35,6 +53,15 @@ interface StageProps {
   onSelect: (id: string | null) => void;
   run: (command: Command, label: string) => string | null;
   imageUrls: Readonly<Record<string, string>>;
+  selectedShotId: string | null;
+  onSelectShot: (id: string | null) => void;
+  frame: number;
+  playing: boolean;
+  view: "scene" | "camera";
+  onViewChange: (v: "scene" | "camera") => void;
+  autoKey: boolean;
+  /** Mellomrom uten å dra: spill av / pause. */
+  onTogglePlay?: () => void;
 }
 
 interface Size {
@@ -67,6 +94,17 @@ interface Drag {
   moved: boolean;
   latest: LayerTransform;
   cursor: string;
+}
+interface CamDrag {
+  pointerId: number;
+  shotId: string;
+  target: CameraTarget;
+  startScreen: Pt;
+  startScene: Pt;
+  startShot: CameraShot;
+  startView: View;
+  moved: boolean;
+  latest: CameraShot;
 }
 interface Colors {
   border: string;
@@ -112,9 +150,11 @@ function isTextTarget(t: EventTarget | null): boolean {
   return t.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(t.tagName);
 }
 
-function fieldsOf(l: CompositionLayer, transform: LayerTransform): LayerFields {
-  return { ...layerFieldsOf(l), transform };
-}
+/** Komposisjonen med ett kamerautsnitt erstattet (for å regne ut kameraet med utkastet). */
+const compWithCam = (c: Composition, shot: CameraShot): Composition => ({
+  ...c,
+  camera: withShot(c.camera, shot),
+});
 
 function roundTransform(t: LayerTransform): LayerTransform {
   let rot = round(t.rotation, 0.1) % 360;
@@ -230,25 +270,38 @@ export function Stage({
   onSelect,
   run,
   imageUrls,
+  selectedShotId,
+  onSelectShot,
+  frame: time,
+  playing,
+  view: mode,
+  onViewChange,
+  autoKey,
+  onTogglePlay,
 }: StageProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const cacheRef = useRef<ImageCache | null>(null);
   const colorsRef = useRef<Colors>(FALLBACK);
   const dragRef = useRef<Drag | null>(null);
+  const camDragRef = useRef<CamDrag | null>(null);
   const spaceRef = useRef(false);
+  /** Ble mellomrom brukt til å panorere? Ellers er et kort trykk spill/pause. */
+  const spacePanned = useRef(false);
   const sizeRef = useRef<Size>({ w: 0, h: 0, dpr: 1 });
   const userViewRef = useRef<View | null>(null);
 
   const [size, setSize] = useState<Size>({ w: 0, h: 0, dpr: 1 });
   const [userView, setUserView] = useState<View | null>(null);
   const [draft, setDraft] = useState<{ layerId: string; transform: LayerTransform } | null>(null);
+  const [camDraft, setCamDraft] = useState<CameraShot | null>(null);
   const [imageTick, setImageTick] = useState(0);
   const [cursor, setCursor] = useState("default");
   const [panning, setPanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const view = userView ?? fitView(size, composition);
+  const cameraMode = mode === "camera";
+  const view = cameraMode || !userView ? fitView(size, composition) : userView;
   const viewRef = useRef(view);
   const compRef = useRef(composition);
   useEffect(() => {
@@ -310,13 +363,33 @@ export function Stage({
     };
   }, [state, draft]);
   const frame = useMemo(
-    () => renderFrame(stateWithDraft, composition.id, 0, { view: "scene", includeHidden: true }),
-    [stateWithDraft, composition],
+    () =>
+      cameraMode
+        ? renderFrame(state, composition.id, time, { view: "camera" })
+        : renderFrame(stateWithDraft, composition.id, time, { view: "scene", includeHidden: true }),
+    [state, stateWithDraft, composition, time, cameraMode],
   );
-  const selectedItem = selectedLayerId
-    ? frame.items.find((i) => i.layerId === selectedLayerId)
-    : undefined;
-  const canEditSelected = editable && !!selectedItem && !selectedItem.locked;
+  const canEdit = editable && !playing && !cameraMode;
+  // Kamerautsnittet som vises: valgt, ellers det som gjelder på bildet (med utkast under dra)
+  const overlayShot = useMemo<CameraShot | null>(() => {
+    if (cameraMode) return null;
+    const shots = composition.camera.shots;
+    const base = selectedShotId
+      ? (shots.find((s) => s.id === selectedShotId) ?? null)
+      : shotAt(composition.camera, time);
+    if (!base) return null;
+    return camDraft && camDraft.id === base.id ? camDraft : base;
+  }, [composition, selectedShotId, time, camDraft, cameraMode]);
+  const shotSelected = !!overlayShot && overlayShot.id === selectedShotId;
+  const currentCamera = useMemo(
+    () => (overlayShot ? cameraAt(compWithCam(composition, overlayShot), time) : null),
+    [composition, overlayShot, time],
+  );
+  const selectedItem =
+    selectedLayerId && !cameraMode
+      ? frame.items.find((i) => i.layerId === selectedLayerId)
+      : undefined;
+  const canEditSelected = canEdit && !!selectedItem && !selectedItem.locked;
 
   // Tegn (begrenset til én gang per bilde)
   useEffect(() => {
@@ -335,24 +408,58 @@ export function Stage({
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, pw, ph);
       const images = cacheRef.current?.images ?? new Map();
+      ctx.save();
+      // Kameravisningen viser bare det filmen viser: alt utenfor bildeformatet klippes bort
+      if (cameraMode) {
+        ctx.beginPath();
+        ctx.rect(
+          view.x * dpr,
+          view.y * dpr,
+          frame.width * view.zoom * dpr,
+          frame.height * view.zoom * dpr,
+        );
+        ctx.clip();
+      }
       drawFrame(ctx, frame, {
         view: [dpr * view.zoom, 0, 0, dpr * view.zoom, dpr * view.x, dpr * view.y],
         images,
+        placeholders: !cameraMode, // «uten bilde»-merkingen er redigeringshjelp
       });
+      ctx.restore();
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       const colors = colorsRef.current;
-      ctx.strokeStyle = colors.border;
-      ctx.lineWidth = 1;
-      ctx.strokeRect(
-        Math.round(view.x) - 0.5,
-        Math.round(view.y) - 0.5,
-        Math.round(frame.width * view.zoom) + 1,
-        Math.round(frame.height * view.zoom) + 1,
-      );
+      if (!cameraMode) {
+        // Rammen rundt bildeformatet er redigeringshjelp og vises ikke i kameravisningen
+        ctx.strokeStyle = colors.border;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(
+          Math.round(view.x) - 0.5,
+          Math.round(view.y) - 0.5,
+          Math.round(frame.width * view.zoom) + 1,
+          Math.round(frame.height * view.zoom) + 1,
+        );
+      }
       if (selectedItem) drawOverlay(ctx, selectedItem, view, colors, canEditSelected);
+      if (overlayShot)
+        drawCameraOverlay(ctx, overlayShot, composition, view, {
+          selected: shotSelected,
+          current: currentCamera,
+        });
     });
     return () => cancelAnimationFrame(id);
-  }, [frame, view, size, selectedItem, canEditSelected, imageTick]);
+  }, [
+    frame,
+    view,
+    size,
+    selectedItem,
+    canEditSelected,
+    imageTick,
+    overlayShot,
+    shotSelected,
+    currentCamera,
+    composition,
+    cameraMode,
+  ]);
 
   // Rullehjul: ⌘/Ctrl zoomer rundt pekeren, ellers panorerer
   useEffect(() => {
@@ -360,6 +467,7 @@ export function Stage({
     if (!el) return;
     const onWheel = (e: WheelEvent) => {
       e.preventDefault();
+      if (cameraMode) return;
       const v = currentView();
       if (e.ctrlKey || e.metaKey) {
         const r = el.getBoundingClientRect();
@@ -371,17 +479,30 @@ export function Stage({
     };
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);
-  }, [commitView, currentView]);
+  }, [commitView, currentView, cameraMode]);
 
   // ---------- Pekerhåndtering ----------
 
-  function screenPoint(e: React.PointerEvent): Pt {
+  function screenPoint(e: React.PointerEvent | React.MouseEvent): Pt {
     const r = e.currentTarget.getBoundingClientRect();
     return { x: e.clientX - r.left, y: e.clientY - r.top };
   }
 
-  /** Hva ligger under pekeren? Håndtak i valgt lag går foran selve lagene. */
+  /** Kamerahåndtak under pekeren (bare redigerbar scenevisning). «inside» teller bare når ingen lag ligger under. */
+  function pickShot(p: Pt): CameraTarget | null {
+    if (!canEdit || !overlayShot) return null;
+    const t = pickCamera(overlayShot, composition, view, p, shotSelected);
+    if (t?.kind !== "inside") return t;
+    const s = toScene(view, p);
+    return hitTest(frame, s.x, s.y) ? null : t;
+  }
+
+  /** Hva ligger under pekeren? Kamerahåndtak i valgt utsnitt og håndtak i valgt lag går foran selve lagene. */
   function pick(p: Pt) {
+    if (cameraMode) return null;
+    const cam = pickShot(p);
+    if (cam && (shotSelected || cam.kind !== "path"))
+      return { kind: "camera" as const, target: cam };
     if (canEditSelected && selectedItem) {
       const h = handlesOf(selectedItem, view);
       if (dist(p, h.rotateAt) <= HANDLE + 2) return { kind: "rotate" as const, cursor: "grab" };
@@ -391,7 +512,8 @@ export function Stage({
     }
     const s = toScene(view, p);
     const hit = hitTest(frame, s.x, s.y);
-    return hit ? { kind: "layer" as const, hit, cursor: editable ? "move" : "default" } : null;
+    if (hit) return { kind: "layer" as const, hit, cursor: canEdit ? "move" : "default" };
+    return cam ? { kind: "camera" as const, target: cam } : null;
   }
 
   function startDrag(e: React.PointerEvent, kind: DragKind, layerId: string, p: Pt) {
@@ -399,6 +521,7 @@ export function Stage({
     const item = frame.items.find((i) => i.layerId === layerId);
     if (!layer || !item) return;
     const labels = { move: "Flytt lag", scale: "Skaler lag", rotate: "Roter lag", pan: "" };
+    const start = transformAt(layer, time);
     dragRef.current = {
       kind,
       pointerId: e.pointerId,
@@ -406,22 +529,43 @@ export function Stage({
       label: labels[kind],
       startScreen: p,
       startScene: toScene(view, p),
-      start: layer.transform,
+      start,
       startView: view,
       size: { x: item.width, y: item.height },
       moved: false,
-      latest: layer.transform,
+      latest: start,
       cursor: kind === "scale" ? cursor : kind === "rotate" ? "grabbing" : "move",
+    };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  }
+
+  function startCamDrag(e: React.PointerEvent, target: CameraTarget, p: Pt) {
+    if (!overlayShot || target.kind === "path") return;
+    camDragRef.current = {
+      pointerId: e.pointerId,
+      shotId: overlayShot.id,
+      target,
+      startScreen: p,
+      startScene: toScene(view, p),
+      startShot: overlayShot,
+      startView: view,
+      moved: false,
+      latest: overlayShot,
     };
     e.currentTarget.setPointerCapture(e.pointerId);
   }
 
   function onPointerDown(e: React.PointerEvent<HTMLCanvasElement>) {
     wrapRef.current?.focus();
-    if (dragRef.current) return;
+    if (dragRef.current || camDragRef.current) {
+      // En dragning som aldri ble avsluttet (pekeren forsvant): start på nytt i stedet for å henge
+      if (!e.currentTarget.hasPointerCapture(e.pointerId)) endDrag(false);
+      else return;
+    }
     const p = screenPoint(e);
-    if (e.button === 1 || (e.button === 0 && spaceRef.current)) {
+    if (!cameraMode && (e.button === 1 || (e.button === 0 && spaceRef.current))) {
       e.preventDefault();
+      if (spaceRef.current) spacePanned.current = true;
       dragRef.current = {
         kind: "pan",
         pointerId: e.pointerId,
@@ -440,16 +584,23 @@ export function Stage({
       setPanning(true);
       return;
     }
-    if (e.button !== 0) return;
+    if (e.button !== 0 || cameraMode) return;
     setError(null);
     const target = pick(p);
+    if (target?.kind === "camera") {
+      onSelect(null);
+      onSelectShot(overlayShot?.id ?? null);
+      startCamDrag(e, target.target, p);
+      return;
+    }
     if (target?.kind === "rotate" || target?.kind === "scale") {
       if (selectedLayerId) startDrag(e, target.kind, selectedLayerId, p);
       return;
     }
+    if (selectedShotId) onSelectShot(null);
     if (target?.kind === "layer") {
       onSelect(target.hit.layerId);
-      if (editable) startDrag(e, "move", target.hit.layerId, p);
+      if (canEdit) startDrag(e, "move", target.hit.layerId, p);
     } else {
       onSelect(null);
     }
@@ -457,9 +608,29 @@ export function Stage({
 
   function onPointerMove(e: React.PointerEvent<HTMLCanvasElement>) {
     const p = screenPoint(e);
+    const cd = camDragRef.current;
+    if (cd && cd.pointerId === e.pointerId) {
+      if (!cd.moved && dist(p, cd.startScreen) < 2) return;
+      cd.moved = true;
+      cd.latest = dragCameraShot(
+        cd.startShot,
+        composition,
+        cd.target,
+        cd.startScene,
+        toScene(cd.startView, p),
+        e.shiftKey,
+      );
+      setCamDraft(cd.latest);
+      return;
+    }
     const d = dragRef.current;
     if (!d || d.pointerId !== e.pointerId) {
-      const next = spaceRef.current ? "grab" : (pick(p)?.cursor ?? "default");
+      let next = "default";
+      if (spaceRef.current && !cameraMode) next = "grab";
+      else {
+        const t = pick(p);
+        next = (t?.kind === "camera" ? cursorFor(t.target) : t?.cursor) ?? "default";
+      }
       if (next !== cursor) setCursor(next);
       return;
     }
@@ -478,6 +649,20 @@ export function Stage({
   }
 
   function endDrag(commit: boolean) {
+    const cd = camDragRef.current;
+    camDragRef.current = null;
+    if (cd) {
+      setCamDraft(null);
+      if (commit && cd.moved) {
+        setError(
+          run(
+            updateCameraCommand(composition, withShot(composition.camera, cd.latest)),
+            dragLabel(cd.target),
+          ),
+        );
+      }
+      return;
+    }
     const d = dragRef.current;
     dragRef.current = null;
     setDraft(null);
@@ -496,7 +681,12 @@ export function Stage({
     const err = run(
       {
         type: "UpdateLayers",
-        layers: [{ layerId: layer.id, fields: fieldsOf(layer, t) }],
+        layers: [
+          {
+            layerId: layer.id,
+            fields: fieldsWithTransformAt(layer, layerFieldsOf(layer), time, t, { autoKey }),
+          },
+        ],
       },
       label,
     );
@@ -504,29 +694,47 @@ export function Stage({
   }
 
   function onPointerUp(e: React.PointerEvent<HTMLCanvasElement>) {
-    if (dragRef.current?.pointerId === e.pointerId) endDrag(true);
+    if (dragRef.current?.pointerId === e.pointerId || camDragRef.current?.pointerId === e.pointerId)
+      endDrag(true);
+  }
+
+  /** Dobbeltklikk på banen bytter mellom rett og kurvet (mandat 12.3). */
+  function onDoubleClick(e: React.MouseEvent<HTMLCanvasElement>) {
+    if (!overlayShot) return;
+    const t = pickShot(screenPoint(e));
+    if (t?.kind !== "path") return;
+    onSelect(null);
+    onSelectShot(overlayShot.id);
+    setError(
+      run(
+        updateCameraCommand(composition, withShot(composition.camera, toggleCurve(overlayShot))),
+        overlayShot.curve ? "Rett kamerabane" : "Kurvet kamerabane",
+      ),
+    );
   }
 
   // ---------- Tastatur ----------
 
   function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
     if (isTextTarget(e.target)) return;
+    if (cameraMode) return;
     if (e.key === " " && e.target === e.currentTarget) {
       e.preventDefault();
       if (!spaceRef.current) {
         spaceRef.current = true;
+        spacePanned.current = false;
         setCursor("grab");
       }
       return;
     }
-    if (e.key === "Escape" && dragRef.current) {
+    if (e.key === "Escape" && (dragRef.current || camDragRef.current)) {
       e.preventDefault();
       endDrag(false);
       return;
     }
     // Piltaster og sletting bare når selve scenen har fokus (ikke knappene i hjørnet)
     if (e.target !== e.currentTarget && e.target !== canvasRef.current) return;
-    if (dragRef.current || !editable || !selectedLayerId) return;
+    if (dragRef.current || camDragRef.current || !canEdit || !selectedLayerId) return;
     const layer = state.layers[selectedLayerId];
     if (!layer || layer.locked) return;
     if (e.key === "Delete" || e.key === "Backspace") {
@@ -544,7 +752,7 @@ export function Stage({
     const dy = e.key === "ArrowUp" ? -step : e.key === "ArrowDown" ? step : 0;
     if (!dx && !dy) return;
     e.preventDefault();
-    const t = layer.transform;
+    const t = transformAt(layer, time);
     submit(layer, roundTransform({ ...t, x: t.x + dx, y: t.y + dy }), "Flytt lag");
   }
 
@@ -552,6 +760,7 @@ export function Stage({
     if (e.key === " " && spaceRef.current) {
       spaceRef.current = false;
       setCursor("default");
+      if (!spacePanned.current) onTogglePlay?.();
     }
   }
 
@@ -560,17 +769,51 @@ export function Stage({
     commitView(zoomAround(v, { x: size.w / 2, y: size.h / 2 }, 1));
   }
 
-  const label = `2D-scene: ${composition.name.trim() || "Uten navn"}, ${frame.items.length} lag`;
+  const label = `${cameraMode ? "Kameravisning" : "2D-scene"}: ${composition.name.trim() || "Uten navn"}, ${frame.items.length} lag`;
   const shownCursor = panning ? "grabbing" : cursor;
 
   return (
     <div
       ref={wrapRef}
+      data-stage
       tabIndex={0}
       onKeyDown={onKeyDown}
       onKeyUp={onKeyUp}
       onBlur={() => {
         spaceRef.current = false;
+      }}
+      onDragOver={(e) => {
+        if (!canEdit || cameraMode || !e.dataTransfer.types.includes(ASSET_DRAG_TYPE)) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "copy";
+      }}
+      onDrop={(e) => {
+        const assetId = e.dataTransfer.getData(ASSET_DRAG_TYPE);
+        if (!assetId || !canEdit || cameraMode) return;
+        e.preventDefault();
+        // Ressurs fra «I denne scenen»: nytt lag øverst, med midten der den slippes
+        const r = e.currentTarget.getBoundingClientRect();
+        const at = toScene(view, { x: e.clientX - r.left, y: e.clientY - r.top });
+        const f = defaultLayerFields(state, composition, { assetId });
+        const layerId = newId<"composition_layer">();
+        const err = run(
+          {
+            type: "AddLayers",
+            layers: [
+              {
+                layerId,
+                compositionId: composition.id,
+                fields: {
+                  ...f,
+                  transform: { ...f.transform, x: Math.round(at.x), y: Math.round(at.y) },
+                },
+              },
+            ],
+          },
+          `Nytt lag «${f.name}»`,
+        );
+        setError(err);
+        if (!err) onSelect(layerId);
       }}
       className="relative min-h-0 flex-1 overflow-hidden bg-surface-0 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus-ring"
     >
@@ -584,14 +827,40 @@ export function Stage({
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={() => endDrag(false)}
+        onDoubleClick={onDoubleClick}
       />
+      <div
+        role="group"
+        aria-label="Visning"
+        className="absolute left-3 top-3 flex items-center rounded-md border border-border bg-surface-2 p-0.5"
+      >
+        {(
+          [
+            ["scene", "Scene", "Hele scenen med redigeringshjelp"],
+            ["camera", "Kamera", "Kamera: det filmen viser"],
+          ] as const
+        ).map(([id, text, title]) => (
+          <Button
+            key={id}
+            size="sm"
+            variant={mode === id ? "secondary" : "ghost"}
+            aria-pressed={mode === id}
+            title={id === "camera" ? "Kamera: det filmen viser" : title}
+            onClick={() => onViewChange(id)}
+          >
+            {text}
+          </Button>
+        ))}
+      </div>
       <div className="absolute bottom-3 right-3 flex flex-col items-end gap-1">
         {error ? (
           <p role="alert" className="rounded-sm bg-surface-2 px-2 py-1 text-xs text-status-danger">
             {error}
           </p>
         ) : null}
-        <div className="flex items-center gap-1 rounded-md border border-border bg-surface-2 px-1 py-0.5">
+        <div
+          className={`flex items-center gap-1 rounded-md border border-border bg-surface-2 px-1 py-0.5 ${cameraMode ? "hidden" : ""}`}
+        >
           <span className="min-w-10 px-1 text-right text-xs tabular-nums text-text-secondary">
             {Math.round(view.zoom * 100)} %
           </span>

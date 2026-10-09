@@ -258,5 +258,9 @@ export function normalizeCamera(c: CompositionCamera): Result<CompositionCamera>
     });
   }
   shots.sort((a, b) => a.startFrame - b.startFrame || a.id.localeCompare(b.id));
+  // Ett kamera om gangen: utsnittene kan møtes, men ikke overlappe
+  for (let i = 1; i < shots.length; i++)
+    if (shots[i]!.startFrame < shots[i - 1]!.endFrame)
+      return { ok: false, error: "Kamerautsnittene overlapper. Flytt eller forkort ett av dem." };
   return { ok: true, value: { shots } };
 }

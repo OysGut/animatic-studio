@@ -66,7 +66,7 @@ async function mock(page, { projects = [project], schema = true }) {
     const table = path.replace("/rest/v1/", "");
     if (table === "schema_version")
       return schema
-        ? json([{ version: 7 }])
+        ? json([{ version: 8 }])
         : json({ message: "relation does not exist", code: "42P01" }, 404);
     if (table === "projects") {
       if (single) return json(projects[0] ?? null);
@@ -125,9 +125,10 @@ async function shot(name, path, opts = {}) {
   }
   await page.goto(base + path, { waitUntil: "networkidle" });
   await page.waitForTimeout(600);
-  if (opts.act) await opts.act(page);
   const file = `${out}/${name}.png`;
-  await page.screenshot({ path: file, fullPage: false });
+  // act kan returnere «tatt» etter selv å ha tatt skjermbildet (for tilstand som er borte et øyeblikk senere)
+  const taken = opts.act ? (await opts.act(page, file)) === "tatt" : false;
+  if (!taken) await page.screenshot({ path: file, fullPage: false });
   if (errors.length) console.error(`konsoll-feil i ${name}:`, errors);
   shots.push({ name, file, errors: errors.filter((e) => !e.includes("favicon")) });
   await ctx.close();
@@ -333,6 +334,49 @@ await shot("31-sceneeditor-legg-til", scene, {
     await page.waitForTimeout(700);
   },
 });
+// Tidslinje og kamera (2D-scenen «Stua – åpning» har nøkkelbilder på Maja og ett kamerautsnitt)
+const tidslinje = (page) => page.getByRole("region", { name: "Tidslinje" });
+const gaTilBilde = async (page, frame, total = 100) => {
+  const ruler = tidslinje(page).locator(".cursor-col-resize");
+  const box = await ruler.boundingBox();
+  await page.mouse.click(box.x + (box.width * frame) / total, box.y + box.height / 2);
+  await page.waitForTimeout(300);
+};
+await shot("33-sceneeditor-tidslinje", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(800);
+    await page
+      .getByRole("button", { name: /Maja/ })
+      .filter({ hasText: "Karakter" })
+      .first()
+      .click();
+    await gaTilBilde(page, 25);
+  },
+});
+await shot("34-sceneeditor-kamera", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(800);
+    await tidslinje(page)
+      .getByRole("button", { name: /^Kamerautsnitt/ })
+      .click();
+    await page.waitForTimeout(500);
+  },
+});
+await shot("35-sceneeditor-kameravisning", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(800);
+    await gaTilBilde(page, 40);
+    await page.getByRole("button", { name: "Kamera", exact: true }).click();
+    await page.waitForTimeout(500);
+  },
+});
+await shot("36-sceneeditor-avspilling", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(800);
+    await page.getByRole("button", { name: "Spill av" }).click();
+    await page.waitForTimeout(1000);
+  },
+});
 await shot("18-oversikt-varighet", `/prosjekt/${project.id}`, {
   act: async (page) => {
     await page.getByRole("button", { name: "Per scene" }).click();
@@ -358,5 +402,77 @@ if (process.env.IMPORT_FILE) {
     },
   });
 }
+// Prosjektets format (DEC-0039): endring av bildefrekvens viser advarselen om tilpasning
+await shot("37-oversikt-format", `/prosjekt/${project.id}`, {
+  act: async (page) => {
+    await page
+      .getByRole("heading", { name: "Bildeformat og bildefrekvens" })
+      .scrollIntoViewIfNeeded();
+    await page.getByLabel("Bilder per sekund").selectOption({ label: "50" });
+    await page.waitForTimeout(400);
+  },
+});
+// «I denne scenen» (DEC-0037): dra Maja fra panelet inn på lerretet (faller tilbake til «+»)
+await shot("38-sceneeditor-i-scenen", scene, {
+  act: async (page, file) => {
+    await page.waitForTimeout(800);
+    // Lagringen mockes ikke: forespørselen får aldri svar, så endringen blir stående som «lagrer»
+    await page.route("**/_serverFn/**", () => {});
+    const panel = page.getByRole("region", { name: "I denne scenen" });
+    const card = panel.locator("li", { hasText: "Maja" }).first();
+    const canvas = page.locator("canvas").first();
+    const layerCount = async () =>
+      /\((\d+)\)/.exec(await page.getByRole("heading", { name: /^Lag \(/ }).innerText())?.[1];
+    const before = await layerCount();
+    try {
+      await card.dragTo(canvas, { targetPosition: { x: 200, y: 150 }, timeout: 5000 });
+    } catch (e) {
+      console.error("dragTo feilet:", String(e).split("\n")[0]);
+    }
+    await page.waitForTimeout(400);
+    const after = await layerCount();
+    if (after === before) {
+      console.error("dra-og-slipp la ikke til lag, bruker «+»");
+      await card.hover();
+      await panel
+        .getByRole("button", { name: /Legg «Maja»/ })
+        .first()
+        .click();
+      await page.waitForTimeout(400);
+    }
+    console.error(`lag før ${before}, etter ${await layerCount()}`);
+  },
+});
+// Justerbare paneler (DEC-0038): bredden på scenelisten huskes etter navigasjon til biblioteket og tilbake
+await shot("39-paneler-justert", manus, {
+  act: async (page) => {
+    const bar = page.getByRole("separator", { name: "Bredde på scenelisten" });
+    const b = await bar.boundingBox();
+    const w0 = Number(await bar.getAttribute("aria-valuenow"));
+    await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(b.x + b.width / 2 + 60, b.y + b.height / 2, { steps: 5 });
+    await page.mouse.move(b.x + b.width / 2 + 120, b.y + b.height / 2, { steps: 5 });
+    await page.mouse.up();
+    await page.waitForTimeout(300);
+    const w1 = Number(await bar.getAttribute("aria-valuenow"));
+    await page
+      .getByRole("link", { name: /Ressursbibliotek/ })
+      .first()
+      .click();
+    await page.waitForTimeout(800);
+    await page
+      .getByRole("link", { name: /^Manus/ })
+      .first()
+      .click();
+    await page.waitForTimeout(800);
+    const w2 = Number(
+      await page
+        .getByRole("separator", { name: "Bredde på scenelisten" })
+        .getAttribute("aria-valuenow"),
+    );
+    console.error(`panelbredde: start ${w0}, etter drag ${w1}, etter navigasjon ${w2}`);
+  },
+});
 await browser.close();
 console.log(JSON.stringify(shots, null, 1));

@@ -194,4 +194,37 @@ describe("Kontrakt: lagringsadapter ↔ databaseskjema", () => {
     }
     expect(problems).toEqual([]);
   });
+
+  it("prosjektraden i endringssettet (format og bildefrekvens) passer til projects og apply_changes", () => {
+    const { state } = seedProject();
+    const next = mustApply(state, {
+      type: "SetProjectFormat",
+      width: 1080,
+      height: 1080,
+      fps: { num: 50, den: 1 },
+    });
+    const cs = diffStates(state, next);
+    const rows = cs.updates["projects"] ?? [];
+    expect(rows).toHaveLength(1);
+    expect(cs.inserts["projects"]).toBeUndefined();
+    expect(cs.deletes["projects"]).toBeUndefined();
+    const cols = schema.get("projects")!;
+    const keys = Object.keys(rows[0]!).filter((k) => k !== "expected_revision");
+    expect(keys).toEqual(
+      expect.arrayContaining([
+        "id",
+        "revision",
+        "name",
+        "fps_num",
+        "fps_den",
+        "frame_width",
+        "frame_height",
+      ]),
+    );
+    const sql = readFileSync(join(MIGRATIONS, "0008_project_format.sql"), "utf8");
+    for (const k of keys) {
+      expect(cols.has(k), `projects.${k} finnes ikke`).toBe(true);
+      if (k !== "id" && k !== "revision") expect(sql).toContain(`v_row ->> '${k}'`);
+    }
+  });
 });

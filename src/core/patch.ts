@@ -300,6 +300,20 @@ export function diffStates(before: ProjectState, after: ProjectState): ChangeSet
       if (!a[id]) (deletes[table] ??= []).push({ id, expected_revision: old.revision });
     }
   }
+  // Prosjektraden (bare endringer, aldri ny eller slettet): format og bildefrekvens (DEC-0039)
+  if (before.project !== after.project)
+    updates["projects"] = [
+      {
+        id: after.project.id,
+        revision: after.project.revision,
+        expected_revision: before.project.revision,
+        name: after.project.name,
+        fps_num: after.project.fps.num,
+        fps_den: after.project.fps.den,
+        frame_width: after.project.frameWidth,
+        frame_height: after.project.frameHeight,
+      },
+    ];
   const known = new Set(before.blockRevisions.map((r) => `${r.blockId}:${r.rev}`));
   const blockRevisions = after.blockRevisions
     .filter((r) => !known.has(`${r.blockId}:${r.rev}`))
@@ -355,6 +369,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
       revision: num(p["revision"]),
       name: str(p["name"]),
       fps: { num: num(p["fps_num"]), den: num(p["fps_den"]) },
+      // Før migrasjon 0008 finnes ikke kolonnene: HD 16:9
+      frameWidth: num(p["frame_width"] ?? 1920),
+      frameHeight: num(p["frame_height"] ?? 1080),
       primaryLanguage: "nb",
     },
     productions: byId(

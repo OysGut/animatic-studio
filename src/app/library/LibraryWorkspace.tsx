@@ -29,8 +29,17 @@ import { Input } from "@/components/ui/input";
 import { AssetDetail } from "./AssetDetail";
 import { useImageUrls } from "./asset-images";
 import { SuggestionsDialog } from "./SuggestionsDialog";
+import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 
-export function LibraryWorkspace({ projectId, userId }: { projectId: string; userId: string }) {
+export function LibraryWorkspace({
+  projectId,
+  userId,
+  initialAssetId = null,
+}: {
+  projectId: string;
+  userId: string;
+  initialAssetId?: string | null;
+}) {
   const query = useProjectState(projectId);
   const members = useMembers(projectId);
   const role = members.data?.find((m) => m.user_id === userId)?.role;
@@ -56,6 +65,7 @@ export function LibraryWorkspace({ projectId, userId }: { projectId: string; use
       editable={editable}
       roleKnown={members.isSuccess}
       cmds={cmds}
+      initialAssetId={initialAssetId}
     />
   );
 }
@@ -68,12 +78,14 @@ function Library({
   editable,
   roleKnown,
   cmds,
+  initialAssetId,
 }: {
   state: ProjectState;
   projectId: string;
   editable: boolean;
   roleKnown: boolean;
   cmds: Commands;
+  initialAssetId: string | null;
 }) {
   const navigate = useNavigate();
   const productions = useMemo(
@@ -89,7 +101,15 @@ function Library({
   const [kind, setKind] = useState<KindFilter>("all");
   const [search, setSearch] = useState("");
   const [showArchived, setShowArchived] = useState(false);
-  const [selected, setSelected] = useState<string | null>(null);
+  const [listWidth, setListWidth] = usePaneSize("library-list", 300, 220, 560);
+  const [selected, setSelected] = useState<string | null>(() =>
+    initialAssetId && state.assets[initialAssetId] ? initialAssetId : null,
+  );
+  // Ny ?asset= mens biblioteket er åpent (f.eks. fra sceneeditoren)
+  useEffect(() => {
+    if (initialAssetId && state.assets[initialAssetId]) setSelected(initialAssetId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialAssetId]);
   const [newKind, setNewKind] = useState<AssetKind>("character");
   const [newName, setNewName] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -223,9 +243,20 @@ function Library({
         </div>
       </div>
 
-      <div className="grid min-h-0 flex-1 grid-cols-[300px_minmax(0,1fr)]">
+      <div
+        className="grid min-h-0 flex-1"
+        style={{ gridTemplateColumns: `${listWidth}px minmax(0,1fr)` }}
+      >
         {/* Liste */}
-        <div className="flex min-h-0 flex-col border-r border-border bg-surface-1">
+        <div className="relative flex min-h-0 flex-col border-r border-border bg-surface-1">
+          <PaneResizer
+            edge="right"
+            size={listWidth}
+            onSize={setListWidth}
+            min={220}
+            max={560}
+            label="Bredde på ressurslisten"
+          />
           <div className="flex shrink-0 flex-col gap-1.5 border-b border-border px-2 py-2">
             <div className="relative">
               <Search

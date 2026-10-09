@@ -5648,18 +5648,29 @@ requirements:
   tests:
   - 'enhet: beregnet skjermforskyvning per lag som funksjon av dybde og kamerabevegelse'
   - 'visuell: avspilling av panorering over tre lag'
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - "src/core/composition/*"
   - "src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved)"
   - "db/migrations/0007_compositions.sql"
   - "src/app/scene-editor/*"
   - "src/engine/compositor/canvas.ts"
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/render.ts#renderFrame, cameraAt, valueAt"
+  - "src/app/scene-editor/Timeline.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  - "src/app/scene-editor/use-playback.ts"
   verification:
   - "tests/unit/composition.test.ts"
   - "tests/db/run-db-tests.ts (0007)"
   - "tests/unit/storage-contract.test.ts"
   - "tests/visual/screens.mjs (28–31)"
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/composition.test.ts"
+  - "tests/unit/camera-overlay.test.ts"
+  - "tests/visual/screens.mjs (33–36)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -5667,7 +5678,10 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0035
     change: "Parallakse per lag og viewMatrix finnes og er enhetstestet; status Implementert – ikke verifisert"
-  notes: "Parallakse per lag og viewMatrix finnes og er enhetstestet, men kamerabevegelse i brukergrensesnittet kommer i neste leveranse (M3 del 2b). Ikke Verifisert før panorering kan vises i avspilling."
+  - date: '2026-10-09'
+    decision: DEC-0036
+    change: "Parallakse vises når kameraet beveger seg (kameravisning og avspilling); status Verifisert"
+  notes: ''
 - id: REQ-0174
   title: Redigerbare transformasjoner per element
   text: Hvert element i 2D-scenen skal kunne ha redigerbare egenskaper som posisjon, skalering, rotasjon, transparens,
@@ -5763,13 +5777,24 @@ requirements:
   tests:
   - 'enhet: interpolering mellom keyframes'
   - 'e2e: sett keyframes og spill av'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/core/composition/*"
   - "src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved)"
   - "db/migrations/0007_compositions.sql"
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/render.ts#renderFrame, cameraAt, valueAt"
+  - "src/app/scene-editor/Timeline.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  - "src/app/scene-editor/use-playback.ts"
   verification:
   - "tests/unit/composition.test.ts"
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/composition.test.ts"
+  - "tests/unit/camera-overlay.test.ts"
+  - "tests/visual/screens.mjs (33–36)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -5777,7 +5802,10 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0035
     change: "Datamodell, interpolering og validering bygget og enhetstestet; brukergrensesnitt kommer i M3 del 2b; status Under arbeid"
-  notes: "Datamodell, interpolering (valueAt) og validering finnes og er enhetstestet. Tidslinje- og keyframe-editor i brukergrensesnittet kommer i M3 del 2b."
+  - date: '2026-10-09'
+    decision: DEC-0036
+    change: "Nøkkelbilder i tidslinjen og egenskapspanelet, automatiske nøkkelbilder, avspilling; status Verifisert"
+  notes: ''
 - id: REQ-0177
   title: Tidsstyrte endringer og hastighetskurver
   text: Systemet skal støtte tidsstyrte endringer og justerbare hastighetskurver for animerte elementer.
@@ -5799,13 +5827,24 @@ requirements:
   tests:
   - 'enhet: kurveevaluering for lineær og bézier-baserte hastighetskurver'
   - 'visuell: sammenligning av bevegelse før og etter kurveendring'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/core/composition/*"
   - "src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved)"
   - "db/migrations/0007_compositions.sql"
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/render.ts#renderFrame, cameraAt, valueAt"
+  - "src/app/scene-editor/Timeline.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  - "src/app/scene-editor/use-playback.ts"
   verification:
   - "tests/unit/composition.test.ts"
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/composition.test.ts"
+  - "tests/unit/camera-overlay.test.ts"
+  - "tests/visual/screens.mjs (33–36)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -5813,7 +5852,10 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0035
     change: "Datamodell, interpolering og validering bygget og enhetstestet; brukergrensesnitt kommer i M3 del 2b; status Under arbeid"
-  notes: "Datamodell, hastighetskurver (ease) og validering finnes og er enhetstestet. Kurveeditor i brukergrensesnittet kommer i M3 del 2b."
+  - date: '2026-10-09'
+    decision: DEC-0036
+    change: "Hastighetskurver per nøkkelbilde (jevn, myk start/slutt, hold); status Verifisert"
+  notes: ''
 - id: REQ-0178
   title: Enkel animatic uten generativ AI
   text: Brukeren skal kunne produsere en enkel animatic med stillbilder, objekter og bevegelse uten å bruke generativ
@@ -5837,13 +5879,27 @@ requirements:
     så kan scenen spilles av fullt ut.
   tests:
   - 'e2e: bygg og spill av animatic med AI-integrasjoner deaktivert og nettverkskall til AI-leverandører blokkert'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/render.ts#renderFrame, cameraAt, valueAt"
+  - "src/app/scene-editor/Timeline.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  - "src/app/scene-editor/use-playback.ts"
+  verification:
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/composition.test.ts"
+  - "tests/unit/camera-overlay.test.ts"
+  - "tests/visual/screens.mjs (33–36)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0036
+    change: "Enkel animatic uten AI: lag, nøkkelbilder, kamera og avspilling; INV-11-testen og eksport kommer; status Implementert – ikke verifisert"
   notes: Ufravikelig prinsipp nr. 9 i kap. 34.
 - id: REQ-0179
   title: 2D-scenen bevares som redigerbare data
@@ -5968,13 +6024,24 @@ requirements:
   tests:
   - 'enhet: beregning av utsnittsdimensjoner per format'
   - 'visuell: eksportert ramme samsvarer med kamerautsnitt'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/core/composition/*"
   - "src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved)"
   - "db/migrations/0007_compositions.sql"
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/render.ts#renderFrame, cameraAt, valueAt"
+  - "src/app/scene-editor/Timeline.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  - "src/app/scene-editor/use-playback.ts"
   verification:
   - "tests/unit/composition.test.ts"
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/composition.test.ts"
+  - "tests/unit/camera-overlay.test.ts"
+  - "tests/visual/screens.mjs (33–36)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -5982,7 +6049,10 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0035
     change: "Datamodell, interpolering og validering bygget og enhetstestet; brukergrensesnitt kommer i M3 del 2b; status Under arbeid"
-  notes: "Datamodell og kamerautsnitt (cameraAt) finnes og er enhetstestet. Kameraeditor i brukergrensesnittet kommer i M3 del 2b."
+  - date: '2026-10-09'
+    decision: DEC-0036
+    change: "Kamerautsnitt følger 2D-scenens format; status Verifisert"
+  notes: ''
 - id: REQ-0183
   title: Støtte for ulike bildeformater
   text: Brukeren skal kunne arbeide med ulike relevante bildeformater.
@@ -6042,13 +6112,27 @@ requirements:
     og visningen kan slås på.
   tests:
   - 'visuell: skjermbilde av editor med start- og sluttramme'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/render.ts#renderFrame, cameraAt, valueAt"
+  - "src/app/scene-editor/Timeline.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  - "src/app/scene-editor/use-playback.ts"
+  verification:
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/composition.test.ts"
+  - "tests/unit/camera-overlay.test.ts"
+  - "tests/visual/screens.mjs (33–36)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0036
+    change: "Start- og sluttramme vises i scenevisning; status Verifisert"
   notes: ''
 - id: REQ-0185
   title: Blå startramme, rød sluttramme
@@ -6071,13 +6155,27 @@ requirements:
   - Startrammen tegnes blå og sluttrammen rød i arbeidsflaten.
   tests:
   - 'visuell: pikselsjekk av farge på start- og sluttramme'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/render.ts#renderFrame, cameraAt, valueAt"
+  - "src/app/scene-editor/Timeline.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  - "src/app/scene-editor/use-playback.ts"
+  verification:
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/composition.test.ts"
+  - "tests/unit/camera-overlay.test.ts"
+  - "tests/visual/screens.mjs (33–36)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0036
+    change: "Blå startramme, rød sluttramme; status Verifisert"
   notes: Formulert som «den ønskede visuelle konvensjonen».
 - id: REQ-0186
   title: Rammekonturer omtrent 1 piksel
@@ -6099,13 +6197,27 @@ requirements:
   - Rammekonturene tegnes med ca. 1 piksels linjebredde uavhengig av zoomnivå i editoren.
   tests:
   - 'visuell: mål linjebredde ved ulike zoomnivåer'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/render.ts#renderFrame, cameraAt, valueAt"
+  - "src/app/scene-editor/Timeline.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  - "src/app/scene-editor/use-playback.ts"
+  verification:
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/composition.test.ts"
+  - "tests/unit/camera-overlay.test.ts"
+  - "tests/visual/screens.mjs (33–36)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0036
+    change: "Rammene tegnes 1 piksel tykke uansett zoom; status Verifisert"
   notes: ''
 - id: REQ-0187
   title: Kamerarammer utelates fra eksport
@@ -6129,13 +6241,27 @@ requirements:
   tests:
   - 'visuell: eksportert bilde inneholder ikke rammekonturer'
   - 'integrasjon: renderer ignorerer redigeringshjelpemidler'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/render.ts#renderFrame, cameraAt, valueAt"
+  - "src/app/scene-editor/Timeline.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  - "src/app/scene-editor/use-playback.ts"
+  verification:
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/composition.test.ts"
+  - "tests/unit/camera-overlay.test.ts"
+  - "tests/visual/screens.mjs (33–36)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0036
+    change: "Rammene vises aldri i kameravisningen; eksport kommer senere; status Implementert – ikke verifisert"
   notes: ''
 - id: REQ-0188
   title: Kamerabevegelse via redigerbare baner
@@ -6157,13 +6283,27 @@ requirements:
   tests:
   - 'enhet: posisjon langs bane som funksjon av tid'
   - 'e2e: tegn og endre bane'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/render.ts#renderFrame, cameraAt, valueAt"
+  - "src/app/scene-editor/Timeline.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  - "src/app/scene-editor/use-playback.ts"
+  verification:
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/composition.test.ts"
+  - "tests/unit/camera-overlay.test.ts"
+  - "tests/visual/screens.mjs (33–36)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0036
+    change: "Kamerabane per utsnitt, redigerbar på lerretet; status Verifisert"
   notes: ''
 - id: REQ-0189
   title: Rette, kurvede og Bézier-baner
@@ -6186,13 +6326,27 @@ requirements:
   tests:
   - 'enhet: Bézier-evaluering og håndtaksoppdatering'
   - 'visuell: bane tegnes i samsvar med kontrollpunkter'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/render.ts#renderFrame, cameraAt, valueAt"
+  - "src/app/scene-editor/Timeline.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  - "src/app/scene-editor/use-playback.ts"
+  verification:
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/composition.test.ts"
+  - "tests/unit/camera-overlay.test.ts"
+  - "tests/visual/screens.mjs (33–36)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0036
+    change: "Rette og kurvede (Bézier) baner; status Verifisert"
   notes: ''
 - id: REQ-0190
   title: Direkte visuell manipulering av baner
@@ -6214,13 +6368,27 @@ requirements:
   - Brukeren kan dra banepunkter og håndtak direkte på lerretet uten å bruke numeriske felt.
   tests:
   - 'e2e: dra-og-slipp av banepunkt endrer banedata'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/render.ts#renderFrame, cameraAt, valueAt"
+  - "src/app/scene-editor/Timeline.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  - "src/app/scene-editor/use-playback.ts"
+  verification:
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/composition.test.ts"
+  - "tests/unit/camera-overlay.test.ts"
+  - "tests/visual/screens.mjs (33–36)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0036
+    change: "Dra rammer, hjørner (zoom) og kontrollpunkter direkte; status Verifisert"
   notes: ''
 - id: REQ-0191
   title: Dobbeltklikk veksler rett/kurvet
@@ -6245,13 +6413,27 @@ requirements:
   tests:
   - 'e2e: dobbeltklikk veksler segmenttype'
   - 'manuell: brukertest av intuitivitet'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/render.ts#renderFrame, cameraAt, valueAt"
+  - "src/app/scene-editor/Timeline.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  - "src/app/scene-editor/use-playback.ts"
+  verification:
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/composition.test.ts"
+  - "tests/unit/camera-overlay.test.ts"
+  - "tests/visual/screens.mjs (33–36)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0036
+    change: "Dobbeltklikk på banen veksler rett/kurvet; status Verifisert"
   notes: Betinget krav («dersom det lar seg implementere …»).
 - id: REQ-0192
   title: Kamerabevegelsestyper
@@ -6274,13 +6456,27 @@ requirements:
   tests:
   - 'enhet: kameratransformasjon for hver bevegelsestype'
   - 'visuell: avspilling av hver bevegelsestype'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/render.ts#renderFrame, cameraAt, valueAt"
+  - "src/app/scene-editor/Timeline.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  - "src/app/scene-editor/use-playback.ts"
+  verification:
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/composition.test.ts"
+  - "tests/unit/camera-overlay.test.ts"
+  - "tests/visual/screens.mjs (33–36)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0036
+    change: "Panorering, zoom, rotasjon og posisjon; tilt (3D) finnes ikke i 2D-modellen; status Implementert – ikke verifisert"
   notes: «Tilt» i en 2D-editor er ikke definert (vertikal panorering vs. perspektivsimulering) – se OPEN_QUESTIONS
     B («Tilt» i 2D).
 - id: REQ-0193
@@ -6306,13 +6502,24 @@ requirements:
   tests:
   - 'enhet: shot-liste per scene'
   - 'e2e: opprett tre shots og spill av'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/core/composition/*"
   - "src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved)"
   - "db/migrations/0007_compositions.sql"
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/render.ts#renderFrame, cameraAt, valueAt"
+  - "src/app/scene-editor/Timeline.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  - "src/app/scene-editor/use-playback.ts"
   verification:
   - "tests/unit/composition.test.ts"
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/composition.test.ts"
+  - "tests/unit/camera-overlay.test.ts"
+  - "tests/visual/screens.mjs (33–36)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -6320,7 +6527,10 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0035
     change: "Datamodell, interpolering og validering bygget og enhetstestet; brukergrensesnitt kommer i M3 del 2b; status Under arbeid"
-  notes: "Datamodell for kamera og validering finnes og er enhetstestet. Flere shots per scene i brukergrensesnittet kommer i M3 del 2b."
+  - date: '2026-10-09'
+    decision: DEC-0036
+    change: "Flere kamerautsnitt per scene på kamerasporet (uten overlapp); status Verifisert"
+  notes: ''
 - id: REQ-0194
   title: Kamerabevegelse kombinert med elementanimasjon
   text: Det skal være mulig å kombinere kamerabevegelse med separat animasjon av sceneelementer.
@@ -6344,13 +6554,27 @@ requirements:
   tests:
   - 'visuell: samtidig kamera- og elementanimasjon'
   - 'enhet: separate animasjonskanaler for kamera og elementer'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/render.ts#renderFrame, cameraAt, valueAt"
+  - "src/app/scene-editor/Timeline.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  - "src/app/scene-editor/use-playback.ts"
+  verification:
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/composition.test.ts"
+  - "tests/unit/camera-overlay.test.ts"
+  - "tests/visual/screens.mjs (33–36)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0036
+    change: "Kamerabevegelse kombineres med nøkkelbilder på lagene; status Verifisert"
   notes: ''
 - id: REQ-0195
   title: Kamera synkronisert med scenetidslinje
@@ -6372,13 +6596,27 @@ requirements:
   tests:
   - 'enhet: kameratilstand som funksjon av scenetid'
   - 'e2e: skrubbing gir korrekt kameraposisjon'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/render.ts#renderFrame, cameraAt, valueAt"
+  - "src/app/scene-editor/Timeline.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  - "src/app/scene-editor/use-playback.ts"
+  verification:
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/composition.test.ts"
+  - "tests/unit/camera-overlay.test.ts"
+  - "tests/visual/screens.mjs (33–36)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0036
+    change: "Kameraet følger scenens tidslinje; status Verifisert"
   notes: ''
 - id: REQ-0196
   title: Kamera-keyframes, egenskapskanaler og easing
@@ -6402,13 +6640,24 @@ requirements:
   tests:
   - 'enhet: separate keyframe-kanaler per kameraegenskap'
   - 'enhet: easing-funksjoner'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/core/composition/*"
   - "src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved)"
   - "db/migrations/0007_compositions.sql"
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/render.ts#renderFrame, cameraAt, valueAt"
+  - "src/app/scene-editor/Timeline.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  - "src/app/scene-editor/use-playback.ts"
   verification:
   - "tests/unit/composition.test.ts"
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/composition.test.ts"
+  - "tests/unit/camera-overlay.test.ts"
+  - "tests/visual/screens.mjs (33–36)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -6416,7 +6665,10 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0035
     change: "Datamodell, interpolering og validering bygget og enhetstestet; brukergrensesnitt kommer i M3 del 2b; status Under arbeid"
-  notes: "Datamodell, kamerakanaler (cameraAt), easing (ease) og validering finnes og er enhetstestet. Kamera-keyframe-editor i brukergrensesnittet kommer i M3 del 2b."
+  - date: '2026-10-09'
+    decision: DEC-0036
+    change: "Kameraets start/slutt og hastighetskurve per utsnitt; lag har egne kanaler per egenskap; status Verifisert"
+  notes: ''
 - id: REQ-0197
   title: Visuell forhåndsvisning av kamerabevegelse
   text: Systemet skal støtte visuell forhåndsvisning av kamerabevegelser.
@@ -6437,13 +6689,27 @@ requirements:
   - Brukeren kan spille av kamerabevegelsen i editoren og se resultatet gjennom kamerautsnittet.
   tests:
   - 'e2e: forhåndsvisning av kamerabevegelse'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/render.ts#renderFrame, cameraAt, valueAt"
+  - "src/app/scene-editor/Timeline.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  - "src/app/scene-editor/use-playback.ts"
+  verification:
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/composition.test.ts"
+  - "tests/unit/camera-overlay.test.ts"
+  - "tests/visual/screens.mjs (33–36)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0036
+    change: "Kameravisning og avspilling viser bevegelsen; status Verifisert"
   notes: ''
 - id: REQ-0198
   title: Justere varighet på bevegelser
@@ -6464,13 +6730,27 @@ requirements:
   - Gitt en kamerabevegelse på 4 s, når brukeren endrer varigheten til 6 s, så skaleres bevegelsen til 6 s ved avspilling.
   tests:
   - 'enhet: tidsskalering av keyframes'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/render.ts#renderFrame, cameraAt, valueAt"
+  - "src/app/scene-editor/Timeline.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  - "src/app/scene-editor/use-playback.ts"
+  verification:
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/composition.test.ts"
+  - "tests/unit/camera-overlay.test.ts"
+  - "tests/visual/screens.mjs (33–36)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0036
+    change: "Dra start/slutt på kamerasporet, flytte nøkkelbilder, sette scenens varighet; status Verifisert"
   notes: ''
 - id: REQ-0199
   title: Strukturert lydsystem
@@ -6819,14 +7099,28 @@ requirements:
   tests:
   - 'e2e: avspilling av sammensatt testscene'
   - 'visuell: bilde/lyd-synk ved definerte tidspunkter'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/render.ts#renderFrame, cameraAt, valueAt"
+  - "src/app/scene-editor/Timeline.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  - "src/app/scene-editor/use-playback.ts"
+  verification:
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/composition.test.ts"
+  - "tests/unit/camera-overlay.test.ts"
+  - "tests/visual/screens.mjs (33–36)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: Lyddelene avhenger av fase 4. «Karakterbevegelser» er ikke nærmere definert (rigging/cut-out?).
+  - date: '2026-10-09'
+    decision: DEC-0036
+    change: "Avspilling av lag, kamera og nøkkelbilder; dialog og lyd kommer i M4; status Implementert – ikke verifisert"
+  notes: Lyddelene avhenger av fase 4. «Karakterbevegelser» er ikke nærmere definert (rigging/cut-out?). Avspilling av lag og kamera finnes (DEC-0036).
 - id: REQ-0211
   title: Rendre og eksportere 2D-animatics
   text: Programmet skal kunne rendre og eksportere 2D-animatics ved hjelp av applikasjonens egen animasjons- og
@@ -16969,3 +17263,105 @@ requirements:
     decision: DEC-0034
     change: "Opprettet etter beslutning fra Mars og bygget samme dag; visuelt kontrollert (skjermbilde 32-bibliotek-forslag-ny); status Implementert – ikke verifisert"
   notes: "Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (gratis regelbasert gjenkjenning av ressurser i manuset)."
+- id: REQ-0549
+  title: "Ressursene i scenen kan dras inn i sceneeditoren"
+  text: "Når en scene er åpnet i sceneeditoren, skal karakterene, stedene, objektene og andre ressurser fra biblioteket som er brukt i scenen vises med bilde. De skal kunne dras inn på lerretet som nye lag øverst, og et klikk skal åpne ressursen i biblioteket der bilder legges inn."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0037
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - COMPOSE
+  - LIBRARY
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0171
+  acceptance:
+  - "Gitt en scene der Maja har replikk og Maja finnes i biblioteket, så vises Maja under «I denne scenen»."
+  - "Når Maja dras inn på lerretet, får scenen et nytt lag øverst der hun slippes."
+  - "Når navnet klikkes, åpnes Maja i Ressursbiblioteket."
+  tests:
+  - "enhet: assetsInScene"
+  - "visuell: dra ressurs inn på lerretet"
+  status: Verifisert
+  implementation:
+  - "src/core/library/index.ts#assetsInScene"
+  - "src/app/scene-editor/SceneAssetsPanel.tsx"
+  - "src/app/scene-editor/Stage.tsx (onDrop)"
+  - "src/routes/prosjekt.$projectId.bibliotek.tsx (?asset=)"
+  verification:
+  - "tests/unit/library.test.ts"
+  - "tests/visual/screens.mjs (38-sceneeditor-i-scenen)"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0037
+    change: "Opprettet etter beslutning fra Mars og bygget samme dag"
+  notes: "Ikke i mandatet v14. Generering av bilder fra biblioteket kommer med AI-fasen (M5)."
+- id: REQ-0550
+  title: "Justerbare paneler som huskes"
+  text: "Der løsningen har paneler som ruller hver for seg, skal brukeren kunne endre bredden (eller høyden) ved å dra i rammen, og størrelsen skal huskes når brukeren går rundt i løsningen."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0038
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Når scenelisten i manuset gjøres bredere og brukeren går til biblioteket og tilbake, har scenelisten samme bredde."
+  - "Dobbeltklikk på rammen gir standardbredden."
+  tests:
+  - "visuell: justert panel huskes"
+  status: Verifisert
+  implementation:
+  - "src/app/shell/pane-size.tsx"
+  verification:
+  - "tests/visual/screens.mjs (39-paneler-justert)"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0038
+    change: "Opprettet etter beslutning fra Mars og bygget samme dag"
+  notes: "Ikke i mandatet v14. Størrelsene lagres i nettleseren (KI-47)."
+- id: REQ-0551
+  title: "Bildeformat og bildefrekvens for hele prosjektet"
+  text: "Bildeformat og bildefrekvens skal settes på prosjektoversikten og gjelde alle scener. Ved endring skal alle 2D-scener tilpasses i én endring som kan angres."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0039
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - COMPOSE
+  - TIMELINE
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0183
+  acceptance:
+  - "Gitt prosjektet i 1920 × 1080 og 25 bilder/s, når det endres til 3840 × 2160 og 24 bilder/s, så får alle 2D-scener nytt format, lag og kamera skaleres og tider regnes om."
+  - "Når endringen angres, er alt som før."
+  tests:
+  - "enhet: formatMapping, SetProjectFormat og angre"
+  - "database: prosjektraden endres med revisjonskontroll"
+  status: Verifisert
+  implementation:
+  - "src/core/composition/format.ts"
+  - "src/core/commands/apply.ts (SetProjectFormat, UndoSetProjectFormat)"
+  - "db/migrations/0008_project_format.sql"
+  - "src/app/projects/ProjectFormat.tsx"
+  verification:
+  - "tests/unit/format.test.ts"
+  - "tests/db/run-db-tests.ts (0008)"
+  - "tests/visual/screens.mjs (37-oversikt-format)"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0039
+    change: "Opprettet etter beslutning fra Mars og bygget samme dag"
+  notes: "Ikke i mandatet v14 som eget punkt; presiserer 12.1 (format) for hele prosjektet."

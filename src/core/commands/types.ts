@@ -24,7 +24,9 @@ import type {
   AssetKind,
   AssetName,
   BlockKind,
+  Composition,
   CompositionCamera,
+  CompositionLayer,
   Keyframe,
   LayerKind,
   LayerTransform,
@@ -36,6 +38,7 @@ import type {
   TakeStatus,
   VisualStyle,
 } from "../model";
+import type { Rational } from "../time";
 
 /** Redigerbare felter på en 2D-scene (format, varighet, bakgrunn). */
 export interface CompositionFields {
@@ -397,6 +400,25 @@ export type Command =
       readonly type: "SetAnnotationRemoved";
       readonly annotationId: AnnotationId;
       readonly removed: boolean;
+    }
+  // ---------- Prosjektets format (DEC-0039) ----------
+  | {
+      /** Bildeformat og bildefrekvens for hele prosjektet. Alle 2D-scener tilpasses. */
+      readonly type: "SetProjectFormat";
+      readonly width: number;
+      readonly height: number;
+      readonly fps: Rational;
+    }
+  | {
+      /** Angre SetProjectFormat: alt slik det var (bare som invers). */
+      readonly type: "UndoSetProjectFormat";
+      readonly project: { readonly width: number; readonly height: number; readonly fps: Rational };
+      readonly productionFps: readonly {
+        readonly productionId: ProductionId;
+        readonly fps: Rational;
+      }[];
+      readonly compositions: readonly Composition[];
+      readonly layers: readonly CompositionLayer[];
     }
   // ---------- 2D-sceneeditor (M3 del 2, DEC-0035) ----------
   | {

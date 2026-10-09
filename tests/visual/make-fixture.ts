@@ -13,7 +13,11 @@ import {
   emptyProjectState,
   keyBetween,
   keysEvenly,
+  layerFieldsOf,
+  newShot,
   orderedOccurrences,
+  toggleCurve,
+  withShot,
   snapshotFromState,
   FPS_25,
   type ProjectState,
@@ -36,6 +40,8 @@ let s: ProjectState = emptyProjectState({
   revision: 1,
   name: "Jula på Dovre",
   fps: FPS_25,
+  frameWidth: 1920,
+  frameHeight: 1080,
   primaryLanguage: "nb",
 });
 const mainId = tid<"production">();
@@ -290,6 +296,46 @@ s = mustApply(s, {
   ],
 });
 
+// Tid og kamera: Maja går mot høyre (nøkkelbilder), og kameraet kjører inn mot henne langs en kurvet bane
+const majaLayer = Object.values(s.layers).find(
+  (l) => l.assetId === maja && l.compositionId === compId,
+)!;
+s = mustApply(s, {
+  type: "UpdateLayers",
+  layers: [
+    {
+      layerId: majaLayer.id as never,
+      fields: {
+        ...layerFieldsOf(majaLayer),
+        keyframes: [
+          { frame: 0, property: "x", value: 640, easing: "ease-in-out" },
+          { frame: 50, property: "x", value: 900, easing: "ease-in-out" },
+        ],
+      },
+    },
+  ],
+});
+const shot0 = toggleCurve({
+  ...newShot(s.compositions[compId]!, "shot-1", 0, 75, "Inn mot Maja"),
+  to: { x: 900, y: 520, zoom: 1.6, rotation: 0 },
+});
+const shot1 = shot0.curve
+  ? { ...shot0, curve: { ...shot0.curve, c1y: shot0.curve.c1y + 260, c2y: shot0.curve.c2y - 120 } }
+  : shot0;
+const compNow = s.compositions[compId]!;
+s = mustApply(s, {
+  type: "UpdateComposition",
+  compositionId: compId,
+  fields: {
+    name: compNow.name,
+    width: compNow.width,
+    height: compNow.height,
+    durationFrames: 100,
+    background: compNow.background,
+  },
+  camera: withShot(compNow.camera, shot1),
+});
+
 // Notater: på tekst og som nål på scenen
 const firstAction = Object.values(s.blocks).find((b) => b.text.startsWith("Snøen ligger"))!;
 const q = "setter vasen i vinduet";
@@ -352,6 +398,8 @@ const project = {
   id: s.project.id,
   name: "Jula på Dovre",
   fps_num: 25,
+  frame_width: s.project.frameWidth,
+  frame_height: s.project.frameHeight,
   fps_den: 1,
   primary_language: "nb",
   revision: 1,

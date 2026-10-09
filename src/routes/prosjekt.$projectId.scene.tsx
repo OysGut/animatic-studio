@@ -6,7 +6,7 @@ import { SceneEditorWorkspace } from "@/app/scene-editor/SceneEditorWorkspace";
 export const Route = createFileRoute("/prosjekt/$projectId/scene")({
   head: () => ({ meta: [{ title: "Sceneeditor – Animatic Studio" }] }),
   validateSearch: (s: Record<string, unknown>): { scene?: string } =>
-    typeof s["scene"] === "string" && /^[0-9a-f-]{36}$/.test(s["scene"])
+    typeof s["scene"] === "string" && /^[0-9a-f-]{36}$/i.test(s["scene"])
       ? { scene: s["scene"] }
       : {},
   component: SceneEditorRoute,

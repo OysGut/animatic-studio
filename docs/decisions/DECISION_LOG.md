@@ -328,3 +328,31 @@ Regler: DEC-ID-er er permanente. En beslutning endres aldri i ettertid; den erst
 - **Vern:** en scene med 2D-scene kan ikke fjernes ved angre av import/oppdeling, og en ressurs som brukes i et lag kan ikke fjernes – brukeren får en tydelig melding.
 - **Migrasjon:** `0007_compositions.sql`.
 
+## DEC-0036 – Sceneeditor del 2: kamera, tidslinje og avspilling (M3 del 2b)
+- **Dato:** 2026-10-09 · **Type:** Bekreftet av bruker (omfang: «ja takk, fortsett på den smarteste måten og bruk din egen vurdering») + Teknisk anbefaling (utforming)
+- **Beslutning:**
+  1. **Tidslinje** under lerretet: spill av / pause (mellomrom), bilde for bilde, løkke, tidskode, scenens varighet (standard fra manusets varighetsestimat, kan settes), kamerasporet og ett spor per lag med nøkkelbilder.
+  2. **Nøkkelbilder:** settes med «Nøkkelbilde» (alle egenskaper), per egenskap i egenskapspanelet, eller automatisk når «Automatiske nøkkelbilder» er på. En egenskap som allerede er animert, får alltid nøkkelbilde når den endres på et bilde; ellers endres grunnverdien. Nøkkelbilder kan flyttes, slettes og få hastighetskurve (jevn, myk start, myk slutt, myk start og slutt, hold).
+  3. **Kamera:** flere kamerautsnitt per scene (uten overlapp) på kamerasporet. Hvert utsnitt har blå startramme og rød sluttramme (1 piksel), rett eller kurvet (Bézier) bane med kontrollpunkter, og redigeres direkte på lerretet (flytt, hjørne = zoom, dobbeltklikk på banen = rett/kurvet) eller i kamerapanelet. Rammene er hjelpemidler og vises aldri i kameravisningen.
+  4. **Kameravisning** («Kamera») viser det filmen viser, med parallakse; «Scene» er redigeringsvisningen.
+  5. **«Tilt»** (mandat 12.4) er ikke definert i en 2D-editor (åpent spørsmål B); panorering, zoom, rotasjon og posisjon er med.
+- **Ingen databaseendring:** kamera og nøkkelbilder lagres i feltene fra 0007.
+- **Samtidig redigering:** kameraet lagres samlet per 2D-scene; to som endrer kameraet i samme scene samtidig får revisjonskonflikt (ingen endring går tapt i stillhet), mens lag fortsatt kan endres hver for seg.
+
+## DEC-0037 – «I denne scenen»: ressursene fra scenen klare til bruk i sceneeditoren
+- **Dato:** 2026-10-09 · **Type:** Bekreftet av bruker
+- **Mars' ord:** «når en bruker har åpnet en scene i sceneeditoren - så bør alle karakterene, objektene, stedene og alt som er trukket ut av scenen vises som assets som bare kan trekkes ned og inn i scenen og da vil de bare legge seg oppå hverandre i lagene og det må være mulig å klikke på et av disse og bli satt over i editoren der en kan genere eller legge inn nye bilder»
+- **Beslutning:** Under scenelisten i sceneeditoren vises ressursene fra biblioteket som er brukt i den valgte scenen (karakterer, dyr, steder, miljøer, objekter), med bilde. En ressurs dras inn på lerretet og blir et nytt lag øverst der den slippes («+» legger den midt i bildet). Klikk på navnet åpner ressursen i Ressursbiblioteket, der bilder lastes opp (generering kommer med AI-fasen, M5).
+- **Avgrensning:** Navn fra manuset som ikke er lagt inn i biblioteket ennå, vises ikke her; de legges til via «Forslag fra manuset».
+
+## DEC-0038 – Justerbare paneler som huskes
+- **Dato:** 2026-10-09 · **Type:** Bekreftet av bruker
+- **Mars' ord:** «alle steder i løsningen der du har ulike vinduer som kan scrolle uavengig av hverandre bør brukeren kunne justere vindusbreddene ved å trekke i rammen, disse endringene i vindusbredde bør huskes selv om brukeren beveger seg rundt i løsningen»
+- **Beslutning:** Rammene mellom paneler kan dras: menyen, manusets sceneliste og inspektør, bibliotekets liste og «Brukt i scener», sceneeditorens to sidepaneler og tidslinjens høyde. Dobbeltklikk gir standard, piltaster virker også. Størrelsene huskes i nettleseren per panel (gjelder for den som justerer, på den maskinen) og deles mellom alle visninger. Et panel tar aldri så mye plass at midtfeltet forsvinner.
+
+## DEC-0039 – Bildeformat og bildefrekvens gjelder hele prosjektet
+- **Dato:** 2026-10-09 · **Type:** Bekreftet av bruker (+ Teknisk anbefaling for omregningen)
+- **Mars' ord:** «Bildeformatet og antall bilder per sekund bør legges inn i prosjektoversikten, slik at dette blir likt over det hele for alle scener»
+- **Beslutning:** Bildeformat (piksler) og bildefrekvens settes på prosjektoversikten og gjelder alle scener og produksjoner. Sceneeditoren velger ikke lenger format. Endres formatet eller frekvensen, tilpasses alle 2D-scener i samme endring (kan angres): plassering og kamera skaleres slik at høyden i bildet beholdes og midten står fast, og nøkkelbilder, kamerautsnitt og varighet regnes om til ny frekvens. Erstatter formatvalget per 2D-scene i DEC-0035.
+- **Migrasjon:** `0008_project_format.sql` (kolonner for format på prosjektet; `apply_changes` kan endre prosjektraden med revisjonskontroll).
+

@@ -5,7 +5,8 @@ import { useState, type FormEvent } from "react";
 import { activeStructure, mainProduction, orderedOccurrences } from "@/core";
 import { db } from "@/app/db";
 import { DurationOverview } from "./DurationOverview";
-import { useMembers, useProfiles, useProjectState } from "@/app/project/use-project";
+import { canEdit, useMembers, useProfiles, useProjectState } from "@/app/project/use-project";
+import { ProjectFormat } from "./ProjectFormat";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -68,6 +69,13 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
             </span>{" "}
             bilder/s
           </p>
+
+          <ProjectFormat
+            state={s}
+            projectId={projectId}
+            userId={userId}
+            editable={canEdit(myRole)}
+          />
 
           <section aria-labelledby="prod-title" className="mt-8">
             <h2 id="prod-title" className="mb-2 text-base font-semibold text-text-primary">

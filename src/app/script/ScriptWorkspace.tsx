@@ -57,6 +57,7 @@ import { VersionsDialog } from "./VersionsDialog";
 import { Inspector } from "./Inspector";
 import { SceneNavigator, type CharacterOption } from "./SceneNavigator";
 import { ScriptPageView, type Selection } from "./ScriptPageView";
+import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 
 const ZOOMS = ["fit", "0.75", "1", "1.25", "1.5"] as const;
 type Zoom = (typeof ZOOMS)[number];
@@ -120,6 +121,8 @@ function Workspace({
   userId: string;
   initialOccurrenceId: string | null;
 }) {
+  const [navWidth, setNavWidth] = usePaneSize("script-nav", 280, 200, 520);
+  const [inspWidth, setInspWidth] = usePaneSize("script-inspector", 320, 240, 640);
   const productions = useMemo(
     () =>
       Object.values(state.productions).sort((a, b) =>
@@ -655,8 +658,19 @@ function Workspace({
       </div>
 
       {hasScenes ? (
-        <div className="grid min-h-0 flex-1 grid-cols-[280px_minmax(0,1fr)_320px]">
-          <div className="flex min-h-0 flex-col border-r border-border bg-surface-1">
+        <div
+          className="grid min-h-0 flex-1"
+          style={{ gridTemplateColumns: `${navWidth}px minmax(0,1fr) ${inspWidth}px` }}
+        >
+          <div className="relative flex min-h-0 flex-col border-r border-border bg-surface-1">
+            <PaneResizer
+              edge="right"
+              size={navWidth}
+              onSize={setNavWidth}
+              min={200}
+              max={520}
+              label="Bredde på scenelisten"
+            />
             <SceneNavigator
               state={state}
               productionId={productionId}
@@ -755,7 +769,15 @@ function Workspace({
               )}
             </div>
           ) : null}
-          <div className="flex min-h-0 flex-col border-l border-border bg-surface-1">
+          <div className="relative flex min-h-0 flex-col border-l border-border bg-surface-1">
+            <PaneResizer
+              edge="left"
+              size={inspWidth}
+              onSize={setInspWidth}
+              min={240}
+              max={640}
+              label="Bredde på inspektøren"
+            />
             <Inspector
               state={state}
               productionId={productionId}

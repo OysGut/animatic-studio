@@ -2,7 +2,7 @@
  * Egenskaper for valgt lag (plassering, dybde, bilde, synlighet) og for selve 2D-scenen når ingen lag er valgt.
  * Hver endring er én kommando som kan angres. UpdateLayers erstatter alle felter, så vi bygger alltid fra laget.
  */
-import { Copy, Trash2 } from "lucide-react";
+import { Copy, Diamond, Trash2 } from "lucide-react";
 import { useRef, useState, type ReactNode } from "react";
 import {
   COMPOSITION_FORMATS,
@@ -10,14 +10,20 @@ import {
   LAYER_KINDS,
   LAYER_KIND_LABEL,
   keyBetween,
+  fieldsWithTransformAt,
+  isAnimated,
   layersOf,
   newId,
+  removeKeyframesAt,
+  setKeyframe,
+  transformAt,
   normalizeColor,
   variantsOf,
   versionsOf,
   type Command,
   type Composition,
   type CompositionFields,
+  type AnimatedProperty,
   type CompositionLayer,
   type LayerFields,
   type LayerKind,
@@ -58,12 +64,62 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-function Field({ label, children }: { label: string; children: ReactNode }) {
+function Field({
+  label,
+  children,
+  marker,
+}: {
+  label: string;
+  children: ReactNode;
+  marker?: ReactNode;
+}) {
   return (
     <label className="flex min-w-0 flex-col gap-1 text-xs text-text-secondary">
-      {label}
+      {marker ? (
+        <span className="flex items-center gap-1">
+          {label}
+          {marker}
+        </span>
+      ) : (
+        label
+      )}
       {children}
     </label>
+  );
+}
+
+/** Nøkkelbilde-markør ved en egenskap: fylt = nøkkelbilde på dette bildet, åpen = animert, svak = ikke animert. */
+function KeyMarker({
+  label,
+  animated,
+  keyed,
+  disabled,
+  onToggle,
+}: {
+  label: string;
+  animated: boolean;
+  keyed: boolean;
+  disabled: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      aria-pressed={keyed}
+      aria-label={keyed ? `Fjern nøkkelbilde for ${label}` : `Sett nøkkelbilde for ${label}`}
+      title={keyed ? "Fjern nøkkelbilde på dette bildet" : "Sett nøkkelbilde på dette bildet"}
+      onClick={(e) => {
+        e.preventDefault();
+        onToggle();
+      }}
+      className={
+        "inline-flex size-4 shrink-0 items-center justify-center rounded-sm hover:bg-surface-3 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-40 " +
+        (animated ? "text-accent-brand" : "text-text-tertiary")
+      }
+    >
+      <Diamond className="size-2.5" fill={keyed ? "currentColor" : "none"} aria-hidden="true" />
+    </button>
   );
 }
 
@@ -146,8 +202,10 @@ function NumberField({
   max,
   integer,
   valid,
+  marker,
 }: {
   label: string;
+  marker?: ReactNode;
   value: number;
   onCommit: (n: number) => void;
   disabled: boolean;
@@ -177,7 +235,7 @@ function NumberField({
     onCommit(n);
   }
   return (
-    <Field label={label}>
+    <Field label={label} marker={marker}>
       <input
         type="number"
         inputMode="decimal"
@@ -275,12 +333,16 @@ export function LayerInspector({
   layer,
   editable,
   run,
+  frame,
+  autoKey,
 }: {
   state: ProjectState;
   composition: Composition;
   layer: CompositionLayer;
   editable: boolean;
   run: Run;
+  frame: number;
+  autoKey: boolean;
 }) {
   const [error, setError] = useState<string | null>(null);
   const off = !editable;
@@ -296,8 +358,47 @@ export function LayerInspector({
       ),
     );
   }
+  /** Verdiene på gjeldende bilde (animerte egenskaper følger nøkkelbildene). */
+  const t = transformAt(layer, frame);
   const setT = (label: string, patch: Partial<LayerTransform>) =>
-    apply(label, { transform: { ...layer.transform, ...patch } });
+    setError(
+      run(
+        {
+          type: "UpdateLayers",
+          layers: [
+            {
+              layerId: layer.id,
+              fields: fieldsWithTransformAt(
+                layer,
+                fieldsOf(layer),
+                frame,
+                { ...t, ...patch },
+                { autoKey },
+              ),
+            },
+          ],
+        },
+        label,
+      ),
+    );
+
+  /** Setter eller fjerner nøkkelbildet for én egenskap på gjeldende bilde. */
+  function toggleKey(property: AnimatedProperty) {
+    const has = layer.keyframes.some((k) => k.property === property && k.frame === frame);
+    const keyframes = has
+      ? removeKeyframesAt(layer.keyframes, frame, [property])
+      : setKeyframe(layer.keyframes, property, frame, t[property]);
+    apply(has ? "Fjern nøkkelbilde" : "Sett nøkkelbilde", { keyframes });
+  }
+  const marker = (property: AnimatedProperty, label: string) => (
+    <KeyMarker
+      label={label}
+      animated={isAnimated(layer, property)}
+      keyed={layer.keyframes.some((k) => k.property === property && k.frame === frame)}
+      disabled={off}
+      onToggle={() => toggleKey(property)}
+    />
+  );
 
   function changeKind(kind: LayerKind) {
     if (kind === layer.kind) return;
@@ -335,6 +436,10 @@ export function LayerInspector({
                 ...f,
                 name: `${f.name} (kopi)`.slice(0, 200),
                 transform: { ...f.transform, x: f.transform.x + 40, y: f.transform.y + 40 },
+                // Animert posisjon flyttes også, ellers havner kopien oppå originalen
+                keyframes: f.keyframes.map((k) =>
+                  k.property === "x" || k.property === "y" ? { ...k, value: k.value + 40 } : k,
+                ),
               },
             },
           ],
@@ -361,7 +466,6 @@ export function LayerInspector({
   const approvedId = layer.assetVariantId
     ? (state.assetVariants[layer.assetVariantId]?.approvedVersionId ?? null)
     : null;
-  const t = layer.transform;
   const selectClass = inputClass;
 
   return (
@@ -396,18 +500,21 @@ export function LayerInspector({
         <div className="grid grid-cols-2 gap-2">
           <NumberField
             label="X (px)"
+            marker={marker("x", "X (px)")}
             value={t.x}
             disabled={off}
             onCommit={(x) => setT("Flytt lag", { x })}
           />
           <NumberField
             label="Y (px)"
+            marker={marker("y", "Y (px)")}
             value={t.y}
             disabled={off}
             onCommit={(y) => setT("Flytt lag", { y })}
           />
           <NumberField
             label="Skalering X (%)"
+            marker={marker("scaleX", "Skalering X (%)")}
             value={t.scaleX * 100}
             disabled={off}
             valid={(n) => n !== 0}
@@ -415,6 +522,7 @@ export function LayerInspector({
           />
           <NumberField
             label="Skalering Y (%)"
+            marker={marker("scaleY", "Skalering Y (%)")}
             value={t.scaleY * 100}
             disabled={off}
             valid={(n) => n !== 0}
@@ -422,12 +530,14 @@ export function LayerInspector({
           />
           <NumberField
             label="Rotasjon (°)"
+            marker={marker("rotation", "Rotasjon (°)")}
             value={t.rotation}
             disabled={off}
             onCommit={(rotation) => setT("Roter lag", { rotation })}
           />
           <NumberField
             label="Gjennomsiktighet (%)"
+            marker={marker("opacity", "Gjennomsiktighet (%)")}
             value={t.opacity * 100}
             disabled={off}
             min={0}
@@ -597,12 +707,6 @@ export function CompositionInspector({
   run: Run;
 }) {
   const [error, setError] = useState<string | null>(null);
-  const preset = COMPOSITION_FORMATS.findIndex(
-    (f) => f.width === composition.width && f.height === composition.height,
-  );
-  const [customChosen, setCustom] = useState(false);
-  // Egendefinert når brukeren har valgt det, eller når formatet (f.eks. etter angre) ikke er et av de faste
-  const custom = customChosen || preset < 0;
   const off = !editable;
 
   function apply(label: string, patch: Partial<CompositionFields>) {
@@ -633,53 +737,12 @@ export function CompositionInspector({
       </Section>
 
       <Section title="Format">
-        <Field label="Bildeformat">
-          <select
-            value={custom ? "custom" : String(preset)}
-            disabled={off}
-            onChange={(e) => {
-              if (e.target.value === "custom") {
-                setCustom(true);
-                return;
-              }
-              const f = COMPOSITION_FORMATS[Number(e.target.value)];
-              if (!f) return;
-              setCustom(false);
-              if (f.width !== composition.width || f.height !== composition.height)
-                apply("Endre format", { width: f.width, height: f.height });
-            }}
-            className={inputClass}
-          >
-            {COMPOSITION_FORMATS.map((f, i) => (
-              <option key={f.label} value={i}>
-                {f.label}
-              </option>
-            ))}
-            <option value="custom">Egendefinert</option>
-          </select>
-        </Field>
-        {custom ? (
-          <div className="grid grid-cols-2 gap-2">
-            <NumberField
-              label="Bredde (px)"
-              value={composition.width}
-              disabled={off}
-              integer
-              min={16}
-              max={16384}
-              onCommit={(width) => apply("Endre format", { width })}
-            />
-            <NumberField
-              label="Høyde (px)"
-              value={composition.height}
-              disabled={off}
-              integer
-              min={16}
-              max={16384}
-              onCommit={(height) => apply("Endre format", { height })}
-            />
-          </div>
-        ) : null}
+        <p className="text-[13px] text-text-secondary">
+          {composition.width} × {composition.height} px
+        </p>
+        <p className="text-xs text-text-tertiary">
+          Bildeformat og bildefrekvens gjelder hele prosjektet og endres på prosjektoversikten.
+        </p>
       </Section>
 
       <Section title="Bakgrunn">

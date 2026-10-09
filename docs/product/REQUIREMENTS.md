@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **548**
-- Prioritet: P0: 141, P1: 233, P2: 135, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 21, teknisk-anbefaling: 7
-- Status: Ikke startet: 407, Verifisert: 103, Under arbeid: 30, Implementert – ikke verifisert: 8
+- Antall krav: **551**
+- Prioritet: P0: 141, P1: 235, P2: 136, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 24, teknisk-anbefaling: 7
+- Status: Ikke startet: 392, Verifisert: 123, Under arbeid: 25, Implementert – ikke verifisert: 11
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -2238,14 +2238,13 @@ Systemet skal støtte parallakseffekter og kontrollert kamerabevegelse gjennom l
 - **Kilde:** Kap. 11.1 (l. 508) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** COMPOSE, CAMERA
 - **Avhengigheter:** REQ-0172
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt lag med ulik dybde, når kameraet panorerer, så forflytter nærere lag seg mer på skjermen enn fjernere lag i samsvar med dybdeverdien.
 - **Tester:**
   - enhet: beregnet skjermforskyvning per lag som funksjon av dybde og kamerabevegelse
   - visuell: avspilling av panorering over tre lag
-- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql, src/app/scene-editor/*, src/engine/compositor/canvas.ts
-- **Merknad:** Parallakse per lag og viewMatrix finnes og er enhetstestet, men kamerabevegelse i brukergrensesnittet kommer i neste leveranse (M3 del 2b). Ikke Verifisert før panorering kan vises i avspilling.
+- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql, src/app/scene-editor/*, src/engine/compositor/canvas.ts, src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts
 
 #### REQ-0174 – Redigerbare transformasjoner per element
 Hvert element i 2D-scenen skal kunne ha redigerbare egenskaper som posisjon, skalering, rotasjon, transparens, synlighet, gruppering og lagrekkefølge.
@@ -2281,14 +2280,13 @@ Elementer i 2D-scenen skal kunne animeres med keyframes (nøkkelbilder).
 - **Kilde:** Kap. 11.3 (l. 519-520) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** COMPOSE
 - **Avhengigheter:** REQ-0174
-- **Status:** Under arbeid
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et element med to keyframes for posisjon på ulike tidspunkter, når scenen spilles av, så interpoleres posisjonen mellom dem.
 - **Tester:**
   - enhet: interpolering mellom keyframes
   - e2e: sett keyframes og spill av
-- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql
-- **Merknad:** Datamodell, interpolering (valueAt) og validering finnes og er enhetstestet. Tidslinje- og keyframe-editor i brukergrensesnittet kommer i M3 del 2b.
+- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql, src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts
 
 #### REQ-0177 – Tidsstyrte endringer og hastighetskurver
 Systemet skal støtte tidsstyrte endringer og justerbare hastighetskurver for animerte elementer.
@@ -2296,14 +2294,13 @@ Systemet skal støtte tidsstyrte endringer og justerbare hastighetskurver for an
 - **Kilde:** Kap. 11.3 (l. 521) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** COMPOSE
 - **Avhengigheter:** REQ-0176
-- **Status:** Under arbeid
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en animasjon mellom to keyframes, når brukeren endrer hastighetskurven (f.eks. lineær til ease-in-out), så endres interpoleringen tilsvarende ved avspilling.
 - **Tester:**
   - enhet: kurveevaluering for lineær og bézier-baserte hastighetskurver
   - visuell: sammenligning av bevegelse før og etter kurveendring
-- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql
-- **Merknad:** Datamodell, hastighetskurver (ease) og validering finnes og er enhetstestet. Kurveeditor i brukergrensesnittet kommer i M3 del 2b.
+- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql, src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts
 
 #### REQ-0178 – Enkel animatic uten generativ AI
 Brukeren skal kunne produsere en enkel animatic med stillbilder, objekter og bevegelse uten å bruke generativ AI.
@@ -2311,11 +2308,12 @@ Brukeren skal kunne produsere en enkel animatic med stillbilder, objekter og bev
 - **Kilde:** Kap. 11.3 (l. 522) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 3
 - **Moduler:** COMPOSE, CAMERA · **Invarianter:** INV-11
 - **Avhengigheter:** REQ-0176
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Gitt at alle AI-leverandører er frakoblet, når brukeren bygger en scene med stillbilder, objekter og keyframe-bevegelse, så kan scenen spilles av fullt ut.
 - **Tester:**
   - e2e: bygg og spill av animatic med AI-integrasjoner deaktivert og nettverkskall til AI-leverandører blokkert
+- **Implementering:** src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts
 - **Merknad:** Ufravikelig prinsipp nr. 9 i kap. 34.
 
 #### REQ-0179 – 2D-scenen bevares som redigerbare data
@@ -2363,14 +2361,13 @@ Kameraet skal ha et definert utsnitt basert på valgt filmformat og sideforhold.
 
 - **Kilde:** Kap. 12.1 (l. 529-530) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CAMERA
-- **Status:** Under arbeid
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt valgt sideforhold (f.eks. 2.39:1 eller 16:9), så har kamerautsnittet nøyaktig dette sideforholdet, og eksportert bilde tilsvarer utsnittet.
 - **Tester:**
   - enhet: beregning av utsnittsdimensjoner per format
   - visuell: eksportert ramme samsvarer med kamerautsnitt
-- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql
-- **Merknad:** Datamodell og kamerautsnitt (cameraAt) finnes og er enhetstestet. Kameraeditor i brukergrensesnittet kommer i M3 del 2b.
+- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql, src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts
 
 #### REQ-0183 – Støtte for ulike bildeformater
 Brukeren skal kunne arbeide med ulike relevante bildeformater.
@@ -2393,11 +2390,12 @@ I editoren skal kameraets start- og sluttramme kunne vises som tydelige, tynne k
 - **Kilde:** Kap. 12.2 (l. 532-533) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CAMERA, UI
 - **Avhengigheter:** REQ-0182
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et kamera med bevegelse, så vises rammen ved start og rammen ved slutt samtidig som konturer i arbeidsflaten, og visningen kan slås på.
 - **Tester:**
   - visuell: skjermbilde av editor med start- og sluttramme
+- **Implementering:** src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts
 
 #### REQ-0185 – Blå startramme, rød sluttramme
 Kameraets startramme skal vises med blå kontur (kameraposisjon ved start) og sluttrammen med rød kontur (kameraposisjon ved slutt).
@@ -2405,11 +2403,12 @@ Kameraets startramme skal vises med blå kontur (kameraposisjon ved start) og sl
 - **Kilde:** Kap. 12.2 (l. 534-536) · **Opprinnelse:** mandat · **Type:** design · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CAMERA, UI
 - **Avhengigheter:** REQ-0184
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Startrammen tegnes blå og sluttrammen rød i arbeidsflaten.
 - **Tester:**
   - visuell: pikselsjekk av farge på start- og sluttramme
+- **Implementering:** src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts
 - **Merknad:** Formulert som «den ønskede visuelle konvensjonen».
 
 #### REQ-0186 – Rammekonturer omtrent 1 piksel
@@ -2418,11 +2417,12 @@ Konturene for kameraets start- og sluttramme skal være omtrent 1 piksel tykke.
 - **Kilde:** Kap. 12.2 (l. 537) · **Opprinnelse:** mandat · **Type:** design · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CAMERA, UI
 - **Avhengigheter:** REQ-0184
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Rammekonturene tegnes med ca. 1 piksels linjebredde uavhengig av zoomnivå i editoren.
 - **Tester:**
   - visuell: mål linjebredde ved ulike zoomnivåer
+- **Implementering:** src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts
 
 #### REQ-0187 – Kamerarammer utelates fra eksport
 Kameraets start- og sluttrammer er redigeringshjelpemidler og skal ikke inngå i eksportert film.
@@ -2430,24 +2430,26 @@ Kameraets start- og sluttrammer er redigeringshjelpemidler og skal ikke inngå i
 - **Kilde:** Kap. 12.2 (l. 538) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CAMERA, EXPORT
 - **Avhengigheter:** REQ-0184
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Gitt at rammene er synlige i editoren, når scenen eksporteres eller forhåndsvises i avspillingsmodus, så finnes ingen blå/røde rammekonturer i bildet.
 - **Tester:**
   - visuell: eksportert bilde inneholder ikke rammekonturer
   - integrasjon: renderer ignorerer redigeringshjelpemidler
+- **Implementering:** src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts
 
 #### REQ-0188 – Kamerabevegelse via redigerbare baner
 Kamerabevegelse skal kunne styres med redigerbare baner.
 
 - **Kilde:** Kap. 12.3 (l. 539-540) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CAMERA
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et kamera, når brukeren definerer en bane med flere punkter, så følger kameraet banen ved avspilling, og banen kan endres i etterkant.
 - **Tester:**
   - enhet: posisjon langs bane som funksjon av tid
   - e2e: tegn og endre bane
+- **Implementering:** src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts
 
 #### REQ-0189 – Rette, kurvede og Bézier-baner
 Kamerabanene skal støtte rette baner, kurvede baner og Bézier-kurver med redigerbare håndtak og kontrollpunkter.
@@ -2455,12 +2457,13 @@ Kamerabanene skal støtte rette baner, kurvede baner og Bézier-kurver med redig
 - **Kilde:** Kap. 12.3 (l. 541-545) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CAMERA
 - **Avhengigheter:** REQ-0188
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan lage en rett bane, en kurvet bane og en Bézier-bane, og flytte kontrollpunkter og håndtak slik at banen endres tilsvarende.
 - **Tester:**
   - enhet: Bézier-evaluering og håndtaksoppdatering
   - visuell: bane tegnes i samsvar med kontrollpunkter
+- **Implementering:** src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts
 
 #### REQ-0190 – Direkte visuell manipulering av baner
 Kamerabaner skal kunne manipuleres visuelt direkte i arbeidsflaten.
@@ -2468,11 +2471,12 @@ Kamerabaner skal kunne manipuleres visuelt direkte i arbeidsflaten.
 - **Kilde:** Kap. 12.3 (l. 546) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CAMERA, UI
 - **Avhengigheter:** REQ-0189
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan dra banepunkter og håndtak direkte på lerretet uten å bruke numeriske felt.
 - **Tester:**
   - e2e: dra-og-slipp av banepunkt endrer banedata
+- **Implementering:** src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts
 
 #### REQ-0191 – Dobbeltklikk veksler rett/kurvet
 Dobbeltklikk på et relevant banepunkt eller segment skal kunne brukes til å veksle mellom rett og kurvet bevegelse, dersom det lar seg implementere på en intuitiv og konsistent måte.
@@ -2480,12 +2484,13 @@ Dobbeltklikk på et relevant banepunkt eller segment skal kunne brukes til å ve
 - **Kilde:** Kap. 12.3 (l. 547) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P3 · **Fase:** 3
 - **Moduler:** CAMERA, UI
 - **Avhengigheter:** REQ-0189
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt at funksjonen er implementert, når brukeren dobbeltklikker på et banesegment eller -punkt, så veksler segmentet mellom rett og kurvet, og handlingen kan angres.
 - **Tester:**
   - e2e: dobbeltklikk veksler segmenttype
   - manuell: brukertest av intuitivitet
+- **Implementering:** src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts
 - **Merknad:** Betinget krav («dersom det lar seg implementere …»).
 
 #### REQ-0192 – Kamerabevegelsestyper
@@ -2494,12 +2499,13 @@ Kameraet skal støtte blant annet panorering, zoom, tilt, rotasjon og posisjonsb
 - **Kilde:** Kap. 12.4 (l. 548-554) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CAMERA
 - **Avhengigheter:** REQ-0188
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Hver av bevegelsene panorering, zoom, tilt, rotasjon og posisjonsbevegelse kan animeres og gir forventet resultat ved avspilling.
 - **Tester:**
   - enhet: kameratransformasjon for hver bevegelsestype
   - visuell: avspilling av hver bevegelsestype
+- **Implementering:** src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts
 - **Merknad:** «Tilt» i en 2D-editor er ikke definert (vertikal panorering vs. perspektivsimulering) – se OPEN_QUESTIONS B («Tilt» i 2D).
 
 #### REQ-0193 – Flere kamerautsnitt og shots per scene
@@ -2508,14 +2514,13 @@ Kameraet skal støtte flere kamerautsnitt og shots i samme scene.
 - **Kilde:** Kap. 12.4 (l. 555) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CAMERA, TIMELINE · **Invarianter:** INV-10
 - **Avhengigheter:** REQ-0182
-- **Status:** Under arbeid
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt én manusscene, når brukeren oppretter flere shots med ulike kamerautsnitt, så spilles de av i rekkefølge innen scenen, uten at det opprettes nye manusscener.
 - **Tester:**
   - enhet: shot-liste per scene
   - e2e: opprett tre shots og spill av
-- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql
-- **Merknad:** Datamodell for kamera og validering finnes og er enhetstestet. Flere shots per scene i brukergrensesnittet kommer i M3 del 2b.
+- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql, src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts
 
 #### REQ-0194 – Kamerabevegelse kombinert med elementanimasjon
 Det skal være mulig å kombinere kamerabevegelse med separat animasjon av sceneelementer.
@@ -2523,24 +2528,26 @@ Det skal være mulig å kombinere kamerabevegelse med separat animasjon av scene
 - **Kilde:** Kap. 12.4 (l. 556) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CAMERA, COMPOSE
 - **Avhengigheter:** REQ-0176; REQ-0188
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et element animert med keyframes og et kamera som beveger seg, så spilles begge animasjonene samtidig og uavhengig av hverandre.
 - **Tester:**
   - visuell: samtidig kamera- og elementanimasjon
   - enhet: separate animasjonskanaler for kamera og elementer
+- **Implementering:** src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts
 
 #### REQ-0195 – Kamera synkronisert med scenetidslinje
 Kamerabevegelsene skal være synkronisert med scenens tidslinje.
 
 - **Kilde:** Kap. 12.5 (l. 557-558) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CAMERA, TIMELINE
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Når avspillingshodet flyttes til et tidspunkt i scenen, så viser kameraet posisjonen som tilsvarer dette tidspunktet.
 - **Tester:**
   - enhet: kameratilstand som funksjon av scenetid
   - e2e: skrubbing gir korrekt kameraposisjon
+- **Implementering:** src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts
 
 #### REQ-0196 – Kamera-keyframes, egenskapskanaler og easing
 Kameraanimasjon skal støtte nøkkelbilder, separat animasjonsstyring for ulike egenskaper, hastighetskurver og easing.
@@ -2548,14 +2555,13 @@ Kameraanimasjon skal støtte nøkkelbilder, separat animasjonsstyring for ulike 
 - **Kilde:** Kap. 12.5 (l. 559-563) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CAMERA
 - **Avhengigheter:** REQ-0195
-- **Status:** Under arbeid
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan sette keyframes for f.eks. posisjon og zoom uavhengig av hverandre, og velge hastighetskurve/easing for hver.
 - **Tester:**
   - enhet: separate keyframe-kanaler per kameraegenskap
   - enhet: easing-funksjoner
-- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql
-- **Merknad:** Datamodell, kamerakanaler (cameraAt), easing (ease) og validering finnes og er enhetstestet. Kamera-keyframe-editor i brukergrensesnittet kommer i M3 del 2b.
+- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql, src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts
 
 #### REQ-0197 – Visuell forhåndsvisning av kamerabevegelse
 Systemet skal støtte visuell forhåndsvisning av kamerabevegelser.
@@ -2563,11 +2569,12 @@ Systemet skal støtte visuell forhåndsvisning av kamerabevegelser.
 - **Kilde:** Kap. 12.5 (l. 564) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CAMERA, COMPOSE
 - **Avhengigheter:** REQ-0195
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan spille av kamerabevegelsen i editoren og se resultatet gjennom kamerautsnittet.
 - **Tester:**
   - e2e: forhåndsvisning av kamerabevegelse
+- **Implementering:** src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts
 
 #### REQ-0198 – Justere varighet på bevegelser
 Brukeren skal kunne justere varigheten av kamerabevegelsene.
@@ -2575,11 +2582,12 @@ Brukeren skal kunne justere varigheten av kamerabevegelsene.
 - **Kilde:** Kap. 12.5 (l. 565) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CAMERA
 - **Avhengigheter:** REQ-0195
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en kamerabevegelse på 4 s, når brukeren endrer varigheten til 6 s, så skaleres bevegelsen til 6 s ved avspilling.
 - **Tester:**
   - enhet: tidsskalering av keyframes
+- **Implementering:** src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts
 
 ### Kapittel 13
 
@@ -2726,13 +2734,14 @@ Programmet skal kunne spille av lagbaserte komposisjoner, kamerabevegelser, obje
 - **Kilde:** Kap. 14.1 (l. 594-602) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** COMPOSE, CAMERA, AUDIO · **Invarianter:** INV-11
 - **Avhengigheter:** REQ-0176; REQ-0188; REQ-0201
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Gitt en scene med lag, kamerabevegelse, objekt- og karakteranimasjon, dialog, effekter og musikk, så spilles alt av synkront i forhåndsvisningen.
 - **Tester:**
   - e2e: avspilling av sammensatt testscene
   - visuell: bilde/lyd-synk ved definerte tidspunkter
-- **Merknad:** Lyddelene avhenger av fase 4. «Karakterbevegelser» er ikke nærmere definert (rigging/cut-out?).
+- **Implementering:** src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts
+- **Merknad:** Lyddelene avhenger av fase 4. «Karakterbevegelser» er ikke nærmere definert (rigging/cut-out?). Avspilling av lag og kamera finnes (DEC-0036).
 
 #### REQ-0211 – Rendre og eksportere 2D-animatics
 Programmet skal kunne rendre og eksportere 2D-animatics ved hjelp av applikasjonens egen animasjons- og mediepipeline.
@@ -7052,3 +7061,50 @@ Forslagene skal vise bevis (scenenumre og andre skrivemåter); usikre forslag sk
   - visuell: forslagsdialog med bevis
 - **Implementering:** src/app/library/SuggestionsDialog.tsx
 - **Merknad:** Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (gratis regelbasert gjenkjenning av ressurser i manuset).
+
+#### REQ-0549 – Ressursene i scenen kan dras inn i sceneeditoren
+Når en scene er åpnet i sceneeditoren, skal karakterene, stedene, objektene og andre ressurser fra biblioteket som er brukt i scenen vises med bilde. De skal kunne dras inn på lerretet som nye lag øverst, og et klikk skal åpne ressursen i biblioteket der bilder legges inn.
+
+- **Kilde:** Beslutning DEC-0037 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, LIBRARY, UI
+- **Avhengigheter:** REQ-0171
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Gitt en scene der Maja har replikk og Maja finnes i biblioteket, så vises Maja under «I denne scenen».
+  - Når Maja dras inn på lerretet, får scenen et nytt lag øverst der hun slippes.
+  - Når navnet klikkes, åpnes Maja i Ressursbiblioteket.
+- **Tester:**
+  - enhet: assetsInScene
+  - visuell: dra ressurs inn på lerretet
+- **Implementering:** src/core/library/index.ts#assetsInScene, src/app/scene-editor/SceneAssetsPanel.tsx, src/app/scene-editor/Stage.tsx (onDrop), src/routes/prosjekt.$projectId.bibliotek.tsx (?asset=)
+- **Merknad:** Ikke i mandatet v14. Generering av bilder fra biblioteket kommer med AI-fasen (M5).
+
+#### REQ-0550 – Justerbare paneler som huskes
+Der løsningen har paneler som ruller hver for seg, skal brukeren kunne endre bredden (eller høyden) ved å dra i rammen, og størrelsen skal huskes når brukeren går rundt i løsningen.
+
+- **Kilde:** Beslutning DEC-0038 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Når scenelisten i manuset gjøres bredere og brukeren går til biblioteket og tilbake, har scenelisten samme bredde.
+  - Dobbeltklikk på rammen gir standardbredden.
+- **Tester:**
+  - visuell: justert panel huskes
+- **Implementering:** src/app/shell/pane-size.tsx
+- **Merknad:** Ikke i mandatet v14. Størrelsene lagres i nettleseren (KI-47).
+
+#### REQ-0551 – Bildeformat og bildefrekvens for hele prosjektet
+Bildeformat og bildefrekvens skal settes på prosjektoversikten og gjelde alle scener. Ved endring skal alle 2D-scener tilpasses i én endring som kan angres.
+
+- **Kilde:** Beslutning DEC-0039 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, TIMELINE, UI
+- **Avhengigheter:** REQ-0183
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Gitt prosjektet i 1920 × 1080 og 25 bilder/s, når det endres til 3840 × 2160 og 24 bilder/s, så får alle 2D-scener nytt format, lag og kamera skaleres og tider regnes om.
+  - Når endringen angres, er alt som før.
+- **Tester:**
+  - enhet: formatMapping, SetProjectFormat og angre
+  - database: prosjektraden endres med revisjonskontroll
+- **Implementering:** src/core/composition/format.ts, src/core/commands/apply.ts (SetProjectFormat, UndoSetProjectFormat), db/migrations/0008_project_format.sql, src/app/projects/ProjectFormat.tsx
+- **Merknad:** Ikke i mandatet v14 som eget punkt; presiserer 12.1 (format) for hele prosjektet.

@@ -68,7 +68,14 @@ function base() {
   const assetId = tid<"asset">();
   const assetVariantId = tid<"asset_variant">();
   const versionId = tid<"asset_version">();
-  let s = mustApply(state, { type: "CreateAssets", assets: [{ assetId, fields: assetFields }] });
+  // Prosjektets format (DEC-0039) styrer 2D-scenenes størrelse
+  let s = mustApply(state, {
+    type: "SetProjectFormat",
+    width: COMP_FIELDS.width,
+    height: COMP_FIELDS.height,
+    fps: { num: 25, den: 1 },
+  });
+  s = mustApply(s, { type: "CreateAssets", assets: [{ assetId, fields: assetFields }] });
   s = mustApply(s, {
     type: "CreateAssetVariant",
     variantId: assetVariantId,

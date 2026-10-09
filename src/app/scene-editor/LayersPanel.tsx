@@ -2,7 +2,7 @@
  * Lagliste for 2D-scenen: forreste lag øverst. Valg, synlighet, lås og rekkefølge (knapper og dra-og-slipp).
  */
 import { ChevronDown, ChevronUp, Eye, EyeOff, Lock, Unlock } from "lucide-react";
-import { useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import {
   LAYER_KIND_LABEL,
   layerVersion,
@@ -27,7 +27,8 @@ interface Props {
 const iconButton =
   "inline-flex size-6 shrink-0 items-center justify-center rounded-sm text-text-secondary hover:bg-surface-3 hover:text-text-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent";
 
-export function LayersPanel({
+/** Memoisert: tegnes ikke om for hvert bilde under avspilling. */
+export const LayersPanel = memo(function LayersPanel({
   state,
   composition,
   editable,
@@ -272,4 +273,4 @@ export function LayersPanel({
       ) : null}
     </section>
   );
-}
+});

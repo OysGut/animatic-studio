@@ -7,7 +7,9 @@ import {
   coverVersion,
   displayName,
   editDistance,
+  assetsInScene,
   librarySuggestions,
+  orderedOccurrences,
   matchingOccurrences,
   parseScreenplayLines,
   planImport,
@@ -283,6 +285,27 @@ describe("Bruk i manuset (REQ-0131) og karakterfilter med alternative navn (KI-2
     expect([
       ...matchingOccurrences(x, mainId, { character: "Bestemor Anne", characterNames: names }),
     ]).toEqual([occ[0], occ[1]]);
+  });
+});
+
+describe("Ressurser i én scene (DEC-0037)", () => {
+  it("viser bibliotekets ressurser som er brukt i scenen, karakterer først", () => {
+    const { s, mainId } = project();
+    const maja = tid<"asset">();
+    const stua = tid<"asset">();
+    const x = mustApply(s, {
+      type: "CreateAssets",
+      assets: [
+        { assetId: stua, fields: fields({ kind: "location", name: "STUA" }) },
+        { assetId: maja, fields: fields({ name: "Maja" }) },
+      ],
+    });
+    const occ = orderedOccurrences(x, mainId);
+    const first = assetsInScene(x, mainId, occ[0]!.id);
+    expect(first.map((a) => a.asset.name)).toEqual(["Maja", "STUA"]);
+    expect(first[0]!.how).toBe("speaks");
+    // Scene 2 (gårdsplassen) har verken Maja eller stua
+    expect(assetsInScene(x, mainId, occ[1]!.id).map((a) => a.asset.name)).toEqual([]);
   });
 });
 

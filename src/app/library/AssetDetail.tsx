@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { uploadAssetImage, useImageUrls } from "./asset-images";
+import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 
 const NAME_KIND_LABEL: Record<AssetNameKind, string> = {
   alias: "Alternativt navn",
@@ -74,6 +75,7 @@ export function AssetDetail(props: Props) {
   const [draft, setDraft] = useState<AssetFields>(() => fieldsOf(asset));
   const [tagsText, setTagsText] = useState(asset.tags.join(", "));
   const [err, setErr] = useState<string | null>(null);
+  const [usedWidth, setUsedWidth] = usePaneSize("asset-used-in", 280, 200, 520);
   const last = useRef(fieldsOf(asset));
   // Ta inn endringer utenfra (andre brukere, angre) bare hvis brukeren ikke har ulagrede endringer.
   // Lagres bare når innholdet faktisk er endret (ny innlasting gir nye objekter med samme innhold).
@@ -330,7 +332,15 @@ export function AssetDetail(props: Props) {
       </div>
 
       {/* Bruk i manuset */}
-      <aside aria-label="Brukt i scener" className="w-[280px] shrink-0">
+      <aside aria-label="Brukt i scener" style={{ width: usedWidth }} className="relative shrink-0">
+        <PaneResizer
+          edge="left"
+          size={usedWidth}
+          onSize={setUsedWidth}
+          min={200}
+          max={520}
+          label="Bredde på «Brukt i scener»"
+        />
         <div className="border border-border bg-surface-1">
           <div className="flex h-8 items-center justify-between border-b border-border px-3 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
             <span>Brukt i scener</span>

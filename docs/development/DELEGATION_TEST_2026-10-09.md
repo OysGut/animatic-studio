@@ -41,3 +41,32 @@ meste er hurtigbufret og billigere).
 - **Anbefaling:** fortsett med Sonnet for brukerflate, tester, skjermbilder, dokumentasjon og første gjennomgang;
   behold kjerne, datamodell, migrasjoner og synkregler hos Opus. Slå sammen små oppgaver til færre, større
   bestillinger for å spare innlesing.
+
+## Runde 2: kamera, tidslinje og avspilling (samme dag, med lærdommen fra runde 1)
+Endring: færre og større bestillinger (3 i stedet for 8), og visuell kontroll + gjennomgang i én bestilling.
+
+| Del | Hvem | Tokens (underagent) | Tid |
+|---|---|---|---|
+| Kjernen: nøkkelbilder, kamerautsnitt, varighet, avspillingskrok, kobling i arbeidsflaten | Opus | – | – |
+| Tidslinje + nøkkelbilder i egenskapspanelet + 23 tester | Sonnet | 148 894 | 4 min |
+| Kamera på lerretet + kamerapanel + 8 tester | Sonnet | 136 538 | 3 min |
+| Skjermbilder 33–36, 4 visuelle rettinger + gjennomgang (10 funn) | Sonnet | 209 695 | 5,5 min |
+| **Sum Sonnet** | | **495 127** | |
+
+Opus' samtale vokste med ca. 70 000 tokens i runde 2.
+
+**Merarbeid:** gjennomgangen fant 10 punkter, de fleste i Sonnets egen kode (utkast som kunne gå tapt ved raskt slipp,
+en dragning som kunne «henge», mellomrom virket ikke når scenen hadde fokus, kamerautsnitt kunne overlappe,
+ytelse under avspilling). Opus rettet 8 av dem (ca. 15 minutter), resten er registrert (KI-43, KI-46).
+Opus fant selv 2 ting ved gjennomlesing (kopi av animert lag havnet oppå originalen, kurvens kontrollpunkt fulgte
+ikke med når rammen ble flyttet).
+
+**Vurdering etter runde 2:** halvparten så mange Sonnet-tokens for en like stor leveranse, fordi hver agent leste
+seg inn én gang. Mønsteret «Opus: kjerne + kontrakt → Sonnet: stor bestilling → Sonnet: kontroll og gjennomgang →
+Opus: retting» fungerer. Gjennomgangen er den viktigste delen å beholde.
+
+## Runde 3: ressurser i scenen, justerbare paneler, prosjektformat
+Opus skrev kjerne, migrasjon 0008, databasetest og brukerflaten selv (små, sammenvevde endringer der en
+oppgavebeskrivelse ville vært like lang som koden). Én Sonnet-bestilling: tester + skjermbilder + gjennomgang
+(165 894 tokens, 5 min, 16 tester, 3 skjermbilder, 1 retting, 7 funn – 6 rettet av Opus).
+Lærdom: små endringer tett på kjernen gjør Opus raskest selv; Sonnet brukes til kontrollrunden.
