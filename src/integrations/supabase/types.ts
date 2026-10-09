@@ -84,6 +84,7 @@ export type Database = {
           byte_size_big: number
           created_at: string
           created_by: string | null
+          duration_ms: number | null
           height: number | null
           id: string
           media_path: string
@@ -101,6 +102,7 @@ export type Database = {
           byte_size_big: number
           created_at?: string
           created_by?: string | null
+          duration_ms?: number | null
           height?: number | null
           id: string
           media_path: string
@@ -118,6 +120,7 @@ export type Database = {
           byte_size_big?: number
           created_at?: string
           created_by?: string | null
+          duration_ms?: number | null
           height?: number | null
           id?: string
           media_path?: string
@@ -196,6 +199,118 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      audio_clips: {
+        Row: {
+          asset_id: string
+          asset_variant_id: string | null
+          block_id: string | null
+          created_at: string
+          created_by: string | null
+          fade_in_ms: number
+          fade_out_ms: number
+          gain_db: number
+          id: string
+          kind: string
+          length_ms: number
+          muted: boolean
+          name: string
+          occurrence_id: string
+          offset_ms: number
+          project_id: string
+          removed: boolean
+          revision: number
+          source_in_ms: number
+          version_id: string | null
+        }
+        Insert: {
+          asset_id: string
+          asset_variant_id?: string | null
+          block_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          fade_in_ms?: number
+          fade_out_ms?: number
+          gain_db?: number
+          id: string
+          kind: string
+          length_ms: number
+          muted?: boolean
+          name?: string
+          occurrence_id: string
+          offset_ms: number
+          project_id: string
+          removed?: boolean
+          revision?: number
+          source_in_ms?: number
+          version_id?: string | null
+        }
+        Update: {
+          asset_id?: string
+          asset_variant_id?: string | null
+          block_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          fade_in_ms?: number
+          fade_out_ms?: number
+          gain_db?: number
+          id?: string
+          kind?: string
+          length_ms?: number
+          muted?: boolean
+          name?: string
+          occurrence_id?: string
+          offset_ms?: number
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          source_in_ms?: number
+          version_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audio_clips_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audio_clips_asset_variant_id_fkey"
+            columns: ["asset_variant_id"]
+            isOneToOne: false
+            referencedRelation: "asset_variants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audio_clips_block_id_fkey"
+            columns: ["block_id"]
+            isOneToOne: false
+            referencedRelation: "script_blocks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audio_clips_occurrence_id_fkey"
+            columns: ["occurrence_id"]
+            isOneToOne: false
+            referencedRelation: "scene_occurrences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audio_clips_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audio_clips_version_id_fkey"
+            columns: ["version_id"]
+            isOneToOne: false
+            referencedRelation: "asset_versions"
             referencedColumns: ["id"]
           },
         ]
