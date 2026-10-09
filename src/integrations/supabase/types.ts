@@ -14,6 +14,189 @@ export type Database = {
   }
   public: {
     Tables: {
+      asset_variants: {
+        Row: {
+          appearance: string
+          approved_version_id: string | null
+          archived: boolean
+          asset_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          project_id: string
+          revision: number
+          style: string
+        }
+        Insert: {
+          appearance?: string
+          approved_version_id?: string | null
+          archived?: boolean
+          asset_id: string
+          created_at?: string
+          created_by?: string | null
+          id: string
+          name: string
+          project_id: string
+          revision?: number
+          style: string
+        }
+        Update: {
+          appearance?: string
+          approved_version_id?: string | null
+          archived?: boolean
+          asset_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+          project_id?: string
+          revision?: number
+          style?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_variants_approved_fk"
+            columns: ["approved_version_id"]
+            isOneToOne: false
+            referencedRelation: "asset_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "asset_variants_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "asset_variants_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      asset_versions: {
+        Row: {
+          byte_size: number
+          created_at: string
+          created_by: string | null
+          height: number | null
+          id: string
+          media_path: string
+          mime_type: string
+          note: string
+          number: number
+          project_id: string
+          revision: number
+          sha256: string
+          variant_id: string
+          width: number | null
+        }
+        Insert: {
+          byte_size: number
+          created_at?: string
+          created_by?: string | null
+          height?: number | null
+          id: string
+          media_path: string
+          mime_type: string
+          note?: string
+          number: number
+          project_id: string
+          revision?: number
+          sha256: string
+          variant_id: string
+          width?: number | null
+        }
+        Update: {
+          byte_size?: number
+          created_at?: string
+          created_by?: string | null
+          height?: number | null
+          id?: string
+          media_path?: string
+          mime_type?: string
+          note?: string
+          number?: number
+          project_id?: string
+          revision?: number
+          sha256?: string
+          variant_id?: string
+          width?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_versions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "asset_versions_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "asset_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assets: {
+        Row: {
+          archived: boolean
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string
+          id: string
+          kind: string
+          name: string
+          names: Json
+          project_id: string
+          revision: number
+          tags: Json
+        }
+        Insert: {
+          archived?: boolean
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          id: string
+          kind: string
+          name: string
+          names?: Json
+          project_id: string
+          revision?: number
+          tags?: Json
+        }
+        Update: {
+          archived?: boolean
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          id?: string
+          kind?: string
+          name?: string
+          names?: Json
+          project_id?: string
+          revision?: number
+          tags?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assets_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       change_log: {
         Row: {
           actor: string
@@ -638,6 +821,79 @@ export type Database = {
           version?: number
         }
         Relationships: []
+      }
+      script_annotations: {
+        Row: {
+          author_name: string
+          block_id: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          project_id: string
+          quote: string
+          range_end: number
+          range_start: number
+          removed: boolean
+          revision: number
+          stamp_at: string
+          text: string
+          variant_id: string | null
+        }
+        Insert: {
+          author_name?: string
+          block_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id: string
+          project_id: string
+          quote?: string
+          range_end?: number
+          range_start?: number
+          removed?: boolean
+          revision?: number
+          stamp_at?: string
+          text: string
+          variant_id?: string | null
+        }
+        Update: {
+          author_name?: string
+          block_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          project_id?: string
+          quote?: string
+          range_end?: number
+          range_start?: number
+          removed?: boolean
+          revision?: number
+          stamp_at?: string
+          text?: string
+          variant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "script_annotations_block_id_fkey"
+            columns: ["block_id"]
+            isOneToOne: false
+            referencedRelation: "script_blocks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "script_annotations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "script_annotations_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "scene_variants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       script_block_revisions: {
         Row: {
