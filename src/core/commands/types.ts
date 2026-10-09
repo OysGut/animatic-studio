@@ -4,6 +4,10 @@
  * og dens invers er deterministiske og kan lagres i change_log.
  */
 import type {
+  AnnotationId,
+  AssetId,
+  AssetVariantId,
+  AssetVersionId,
   BlockId,
   CommandId,
   OccurrenceId,
@@ -15,6 +19,8 @@ import type {
   VariantId,
 } from "../ids";
 import type {
+  AssetKind,
+  AssetName,
   BlockKind,
   ProductionKind,
   SceneHeading,
@@ -22,7 +28,48 @@ import type {
   StoryTime,
   TakeKind,
   TakeStatus,
+  VisualStyle,
 } from "../model";
+
+/** Redigerbare felter på en ressurs (ressursbiblioteket, REQ-0121–0126). */
+export interface AssetFields {
+  readonly kind: AssetKind;
+  readonly name: string;
+  readonly names: readonly AssetName[];
+  readonly description: string;
+  readonly category: string;
+  readonly tags: readonly string[];
+}
+
+export interface AssetVariantFields {
+  readonly name: string;
+  readonly style: VisualStyle;
+  readonly appearance: string;
+}
+
+/** Et nytt notat (DEC-0031). Enten blockId med tegnområde, eller variantId (nål på scenen). */
+export interface NewAnnotation {
+  readonly annotationId: AnnotationId;
+  readonly blockId: BlockId | null;
+  readonly variantId: VariantId | null;
+  readonly start: number;
+  readonly end: number;
+  readonly quote: string;
+  readonly text: string;
+  readonly authorName: string;
+  /** Tidsstempel (ISO). Utelatt = nå. Ved import fra fil: originalens tidspunkt. */
+  readonly stampAt?: string;
+}
+
+/** Opplastet bilde for en ressursversjon (filen ligger i den private bøtten «assets»). */
+export interface AssetMedia {
+  readonly path: string;
+  readonly mimeType: string;
+  readonly width: number | null;
+  readonly height: number | null;
+  readonly byteSize: number;
+  readonly sha256: string;
+}
 
 export interface NewBlock {
   readonly blockId: BlockId;
@@ -220,6 +267,51 @@ export type Command =
       readonly takeId: TakeId | null;
     }
   | { readonly type: "SetStoryTime"; readonly sceneId: SceneId; readonly storyTime: StoryTime }
+  // ---------- Ressursbiblioteket (M3 del 1) ----------
+  | {
+      /** Én eller flere nye ressurser (flere: «Legg til alle» fra forslag i manuset). */
+      readonly type: "CreateAssets";
+      readonly assets: readonly {
+        readonly assetId: AssetId;
+        readonly fields: AssetFields;
+        /** Bare ved gjør om etter angre (tilstanden ressursen hadde). */
+        readonly archived?: boolean;
+      }[];
+    }
+  | { readonly type: "UpdateAsset"; readonly assetId: AssetId; readonly fields: AssetFields }
+  | { readonly type: "SetAssetArchived"; readonly assetId: AssetId; readonly archived: boolean }
+  | {
+      readonly type: "CreateAssetVariant";
+      readonly variantId: AssetVariantId;
+      readonly assetId: AssetId;
+      readonly fields: AssetVariantFields;
+      readonly archived?: boolean;
+    }
+  | {
+      readonly type: "UpdateAssetVariant";
+      readonly variantId: AssetVariantId;
+      readonly fields: AssetVariantFields;
+    }
+  | {
+      readonly type: "SetAssetVariantArchived";
+      readonly variantId: AssetVariantId;
+      readonly archived: boolean;
+    }
+  | {
+      readonly type: "AddAssetVersion";
+      readonly versionId: AssetVersionId;
+      readonly variantId: AssetVariantId;
+      readonly media: AssetMedia;
+      readonly note: string;
+      /** Bare ved gjør om etter angre: opprinnelig versjonsnummer (brukes hvis ledig). */
+      readonly number?: number;
+    }
+  | {
+      /** Eksplisitt godkjenning (REQ-0136, REQ-0145). null = ingen godkjent versjon. */
+      readonly type: "ApproveAssetVersion";
+      readonly variantId: AssetVariantId;
+      readonly versionId: AssetVersionId | null;
+    }
   // Interne inverser for opprettelse (brukes bare av angre; feiler hvis materialet er tatt i bruk).
   | { readonly type: "UndoCreateProduction"; readonly productionId: ProductionId }
   | {
@@ -238,7 +330,25 @@ export type Command =
       readonly newVariantId: VariantId;
     }
   | { readonly type: "UndoAddOccurrence"; readonly occurrenceId: OccurrenceId }
-  | { readonly type: "UndoCreateSegments"; readonly segmentIds: readonly SegmentId[] };
+  | { readonly type: "UndoCreateSegments"; readonly segmentIds: readonly SegmentId[] }
+  | { readonly type: "UndoCreateAssets"; readonly assetIds: readonly AssetId[] }
+  | { readonly type: "UndoCreateAssetVariant"; readonly variantId: AssetVariantId }
+  | { readonly type: "UndoAddAssetVersion"; readonly versionId: AssetVersionId }
+  // ---------- Notater i manus (DEC-0031) ----------
+  | {
+      readonly type: "AddAnnotations";
+      readonly annotations: readonly NewAnnotation[];
+      /** Fra en importert fil: navn og tidspunkt fra filen beholdes. Ellers setter serveren stempelet. */
+      readonly imported?: boolean;
+    }
+  | { readonly type: "UndoAddAnnotations"; readonly annotationIds: readonly AnnotationId[] }
+  | { readonly type: "EditAnnotation"; readonly annotationId: AnnotationId; readonly text: string }
+  | {
+      /** Slett (eller hent tilbake) et notat. Historikken beholdes og kan angres. */
+      readonly type: "SetAnnotationRemoved";
+      readonly annotationId: AnnotationId;
+      readonly removed: boolean;
+    };
 
 export type CommandType = Command["type"];
 

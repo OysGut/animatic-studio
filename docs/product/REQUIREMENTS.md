@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **531**
-- Prioritet: P0: 141, P1: 220, P2: 131, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 4, teknisk-anbefaling: 7
-- Status: Ikke startet: 428, Verifisert: 73, Under arbeid: 24, Implementert – ikke verifisert: 6
+- Antall krav: **543**
+- Prioritet: P0: 141, P1: 228, P2: 135, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 16, teknisk-anbefaling: 7
+- Status: Ikke startet: 418, Verifisert: 94, Under arbeid: 25, Implementert – ikke verifisert: 6
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -979,12 +979,12 @@ Brukeren skal kunne velge en karakter og få vist bare scener der denne karakter
 - **Kilde:** Kap. 4.5 (l. 236) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT, LIBRARY, UI
 - **Avhengigheter:** REQ-0073
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt karakteren Maja, så vises nøyaktig scenene der Maja opptrer (inkl. via aliaser).
 - **Tester:**
   - integrasjon: karakterfilter mot fasit
-- **Implementering:** src/core/screenplay/filter.ts#sceneHasCharacter
+- **Implementering:** src/core/screenplay/filter.ts#sceneHasCharacter, src/core/screenplay/filter.ts#matchingOccurrences, src/app/script/ScriptWorkspace.tsx
 
 #### REQ-0075 – Filtrering er ikke deaktivering
 Filtrering av manusvisningen skal ikke være det samme som å deaktivere scener i produksjonen, og skal ikke endre produksjonens aktive innhold.
@@ -1582,11 +1582,12 @@ Animatic Studio skal ha et sentralt bibliotek for alle ressurser som brukes i pr
 
 - **Kilde:** Kap. 8 (l. 354-366) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** LIBRARY
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Hver av de 11 ressurstypene kan opprettes og vises i biblioteket.
 - **Tester:**
   - integrasjon: CRUD per ressurstype
+- **Implementering:** src/core/model.ts#Asset, src/core/commands/apply.ts#CreateAssets, src/core/library/index.ts, src/app/library/LibraryWorkspace.tsx, src/app/library/AssetDetail.tsx, db/migrations/0004_library_notes.sql
 
 #### REQ-0122 – Ressurser gjenbrukes på tvers av scener og produksjoner
 Ressurser skal kunne brukes i mange scener og flere produksjoner.
@@ -1618,11 +1619,12 @@ Biblioteket skal støtte metadata, kategorier, søk, filtrering og hensiktsmessi
 - **Kilde:** Kap. 8.1 (l. 370) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** LIBRARY, UI
 - **Avhengigheter:** REQ-0121
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan tagge/kategorisere ressurser og søke/filtrere på dem.
 - **Tester:**
   - e2e: søk og filter i bibliotek
+- **Implementering:** src/app/library/LibraryWorkspace.tsx, src/core/library/index.ts
 
 #### REQ-0125 – Permanente ressurs-ID-er
 Karakterer og andre ressurser skal ha permanente identifikatorer.
@@ -1630,11 +1632,12 @@ Karakterer og andre ressurser skal ha permanente identifikatorer.
 - **Kilde:** Kap. 8.2 (l. 372) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** LIBRARY, CORE · **Invarianter:** INV-02
 - **Avhengigheter:** REQ-0037
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Omdøping av en ressurs endrer ikke ID-en eller bryter referanser.
 - **Tester:**
   - dataintegritet: omdøping bevarer referanser
+- **Implementering:** src/core/model.ts#Asset, db/migrations/0004_library_notes.sql
 - **Merknad:** Jf. kap. 34 pkt. 3.
 
 #### REQ-0126 – Navnekontroll med alternative navn
@@ -1643,11 +1646,12 @@ Systemet skal støtte foretrukket navn, alternative navn, kallenavn, tidligere n
 - **Kilde:** Kap. 8.2 (l. 373-378) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** LIBRARY, L10N
 - **Avhengigheter:** REQ-0125
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - En karakter kan lagre alle fem navnetypene, og søk på alias finner karakteren.
 - **Tester:**
   - enhet: aliasoppslag
+- **Implementering:** src/core/commands/apply.ts#normalizeAssetFields, src/app/library/AssetDetail.tsx
 
 #### REQ-0127 – Kontekstuell kobling av betegnelser
 Ulike betegnelser (f.eks. «Laurits» og «onkel») skal kunne kobles til samme karakter der konteksten tilsier det.
@@ -1668,11 +1672,12 @@ Usikre koblinger mellom navn og ressurser skal foreslås, ikke gjennomføres ukr
 - **Kilde:** Kap. 8.2 (l. 380) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** LIBRARY, UI · **Invarianter:** INV-08
 - **Avhengigheter:** REQ-0127
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Usikre koblinger vises som forslag som brukeren må godta før de brukes.
 - **Tester:**
   - enhet: forslag har status «foreslått» til godkjent
+- **Implementering:** src/core/library/index.ts#librarySuggestions, src/app/library/SuggestionsDialog.tsx
 
 #### REQ-0129 – Deteksjon av stavefeil og inkonsistente navn
 Programmet skal kunne identifisere mulige stavefeil og inkonsistente karakternavn, lokasjonsnavn og rekvisittbetegnelser.
@@ -1704,11 +1709,12 @@ Systemet skal kunne finne scener der en bestemt ressurs er brukt (f.eks. når en
 - **Kilde:** Kap. 8.3 (l. 384) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** LIBRARY, CORE
 - **Avhengigheter:** REQ-0122
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - For en gitt ressurs vises en «brukt i»-liste med scener.
 - **Tester:**
   - enhet: omvendt oppslag ressurs → scener
+- **Implementering:** src/core/library/index.ts#assetUsage, src/app/library/AssetDetail.tsx
 
 #### REQ-0132 – Berørte scener flagges for gjennomgang
 Scener berørt av en ressursendring skal flagges for gjennomgang.
@@ -1754,11 +1760,12 @@ En karakter skal ha én permanent identitet, men kunne ha flere visuelle variant
 - **Kilde:** Kap. 9.1 (l. 391-401) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** LIBRARY
 - **Avhengigheter:** REQ-0125
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - En karakter kan ha varianter av hver av de ni typene under samme karakter-ID.
 - **Tester:**
   - enhet: karakter med flere varianter
+- **Implementering:** src/core/model.ts#AssetVariant, src/app/library/AssetDetail.tsx
 
 #### REQ-0136 – Varianter versjoneres og godkjennes separat
 Hver visuell variant skal kunne versjoneres og godkjennes separat.
@@ -1766,11 +1773,12 @@ Hver visuell variant skal kunne versjoneres og godkjennes separat.
 - **Kilde:** Kap. 9.1 (l. 402) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** LIBRARY, VERSION · **Invarianter:** INV-13
 - **Avhengigheter:** REQ-0135
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Godkjenning av én variant påvirker ikke status på andre; nye versjoner bevarer tidligere.
 - **Tester:**
   - enhet: variantversjonering og godkjenningsstatus
+- **Implementering:** src/core/commands/apply.ts#ApproveAssetVersion, db/migrations/0004_library_notes.sql
 
 #### REQ-0137 – AI-basert stilharmonisering
 Når bilder fra forskjellige kilder brukes sammen, skal programmet kunne tilby AI-basert stilharmonisering.
@@ -1888,11 +1896,12 @@ Eksisterende scener skal ikke automatisk bytte til en nylig publisert variant.
 
 - **Kilde:** Kap. 9.3 (l. 421) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 3
 - **Moduler:** LIBRARY, VERSION · **Invarianter:** INV-07, INV-13
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Etter publisering av ny variant refererer eksisterende scener fortsatt til sin tidligere variant/versjon.
 - **Tester:**
   - dataintegritet: scenereferanser uendret etter publisering
+- **Implementering:** src/core/commands/apply.ts#AddAssetVersion
 - **Merknad:** Krever versjonslåste ressursreferanser fra fase 3.
 
 #### REQ-0147 – Gjenbrukbare stilprofiler
@@ -1926,11 +1935,12 @@ Systemet må skille mellom hvem karakteren er (identitet), hvordan karakteren se
 - **Kilde:** Kap. 9.4 (l. 431) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P1 · **Fase:** 1
 - **Moduler:** LIBRARY, CONTINUITY, CORE · **Invarianter:** INV-09
 - **Avhengigheter:** REQ-0037
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Datamodellen har tre adskilte dimensjoner: karakter-ID, utseendetilstand og stilvariant, som kan kombineres fritt.
 - **Tester:**
   - enhet: skjema for karakter × tilstand × stil
+- **Implementering:** src/core/model.ts#Asset, src/core/model.ts#AssetVariant
 - **Merknad:** Grunnleggende datamodellvalg; bør defineres i fase 1.
 
 ### Kapittel 10
@@ -6763,3 +6773,186 @@ Manusvisningen skal ha en avkrysningsboks «Vis kun valgt scene». Når den er k
   - visuell: skjermbilde med boksen avkrysset
 - **Implementering:** src/core/screenplay/filter.ts#filterPages, src/app/script/ScriptWorkspace.tsx
 - **Merknad:** Ikke i mandatet v14. Lagt til av Mars 2026-10-09 («I denne visningen av manus ønsker jeg en avkrysningsboks som sier vis kun valgte scene»).
+
+#### REQ-0532 – Rekkefølge og synlighet endres bare i redigeringsmodus
+Scenerekkefølgen og om en scene er aktiv eller deaktivert skal bare kunne endres når brukeren har slått på en egen bryter «Endre rekkefølge og synlighet». Bryteren er av som standard.
+
+- **Kilde:** Beslutning DEC-0029 · **Opprinnelse:** brukerbeslutning · **Type:** ux · **Prioritet:** P1 · **Fase:** 2
+- **Moduler:** SCRIPT, UI
+- **Avhengigheter:** REQ-0062
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Når bryteren er av, kan scener ikke dras eller flyttes med tastaturet, og aktiv/deaktivert kan ikke endres.
+  - Når bryteren er på, kan scener flyttes og slås av og på som før.
+  - Bryteren endrer ikke filmen; den gjelder bare redigeringen.
+- **Tester:**
+  - visuell: scenelisten uten håndtak og brytere når redigeringsmodus er av
+- **Implementering:** src/app/script/SceneNavigator.tsx, src/app/script/Inspector.tsx#ScenePanel
+- **Merknad:** Ikke i mandatet v14. Lagt til av Mars 2026-10-09 («det er litt for enkelt å endre rekkefølge på scener … en funksjon som bør slåes på»).
+
+#### REQ-0533 – Flyttede scener markeres til ny versjon er lagret
+Scener som er flyttet siden siste lagrede manusversjon, skal ha en annen bakgrunnsfarge i scenelisten til en ny versjon er lagret.
+
+- **Kilde:** Beslutning DEC-0029 · **Opprinnelse:** brukerbeslutning · **Type:** ux · **Prioritet:** P2 · **Fase:** 2
+- **Moduler:** SCRIPT, UI
+- **Avhengigheter:** REQ-0078
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Gitt en lagret versjon, når scene 12 flyttes, så får scene 12 (og bare den) en annen bakgrunnsfarge.
+  - Når en ny versjon lagres, forsvinner markeringen.
+  - Finnes ingen lagret versjon, markeres ingen scener.
+- **Tester:**
+  - enhet: flyttede scener mot siste versjon
+  - visuell: markert scene i scenelisten
+- **Implementering:** src/core/screenplay/versions.ts#movedOccurrences, src/app/script/SceneNavigator.tsx
+- **Merknad:** Ikke i mandatet v14. Lagt til av Mars 2026-10-09 («scener som er flyttet på bør også ha en litt annen bakgrunnsfarge inntill de er lagret i ny versjon»).
+
+#### REQ-0534 – Sammenligning viser hva som er endret
+Sammenligningen av manusversjoner skal vise hva som faktisk er endret i hver scene: endrede linjer med tekst før og etter, nye og fjernede linjer, og for flyttede scener hvor scenen sto før og står nå.
+
+- **Kilde:** Beslutning DEC-0029 · **Opprinnelse:** brukerbeslutning · **Type:** ux · **Prioritet:** P1 · **Fase:** 2
+- **Moduler:** SCRIPT, UI
+- **Avhengigheter:** REQ-0078
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Når en replikk er endret, vises gammel og ny tekst med de endrede ordene uthevet.
+  - Når en scene er flyttet, vises gammel og ny plassering (for eksempel «fra plass 12 til plass 4, etter scene 3»).
+  - Nye og fjernede linjer vises med tekst.
+- **Tester:**
+  - enhet: linjeforskjeller per scene
+- **Implementering:** src/core/screenplay/versions.ts#sceneLineChanges, src/core/screenplay/versions.ts#wordDiff, src/app/script/VersionsDialog.tsx
+- **Merknad:** Ikke i mandatet v14. Lagt til av Mars 2026-10-09 («beskrivelsen om hva som er endret er litt kort»).
+
+#### REQ-0535 – Notater på ord, setninger og scener
+Brukeren skal kunne legge inn frie notater festet til et ord eller en setning i manuset, eller som en nål på scenen.
+
+- **Kilde:** Beslutning DEC-0031 · **Opprinnelse:** brukerbeslutning · **Type:** ux · **Prioritet:** P1 · **Fase:** 2
+- **Moduler:** SCRIPT, UI
+- **Avhengigheter:** REQ-0070
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Når brukeren merker «den blå vasen» og legger inn et notat, markeres de ordene og notatet vises i inspektøren.
+  - En nål på scenen vises ved sceneoverskriften.
+  - Endres teksten, finnes de markerte ordene igjen; er de borte, sier notatet det.
+- **Tester:**
+  - enhet: notater på tekst og scene, ny plassering etter tekstendring
+  - visuell: markert notat og nytt notat fra markert tekst
+- **Implementering:** src/core/notes/index.ts, src/core/commands/apply.ts#AddAnnotations, src/app/script/NotesPanel.tsx, src/app/script/ScriptWorkspace.tsx
+- **Merknad:** Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (notater i manus).
+
+#### REQ-0536 – Notater stemples med hvem og når
+Hvert notat skal vise i hjørnet, med liten tekst, hvem som la det inn og når.
+
+- **Kilde:** Beslutning DEC-0031 · **Opprinnelse:** brukerbeslutning · **Type:** ux · **Prioritet:** P1 · **Fase:** 2
+- **Moduler:** SCRIPT, UI
+- **Avhengigheter:** REQ-0535
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Et notat Mars skriver kl. 14.32 viser «Mars · 9. okt. 2026 kl. 14:32» i hjørnet.
+- **Tester:**
+  - visuell: stempel i hjørnet
+- **Implementering:** src/core/notes/index.ts#formatStamp, src/app/script/NotesPanel.tsx
+- **Merknad:** Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (notater i manus).
+
+#### REQ-0537 – Sletting av notat med advarsel
+Notater skal enkelt kunne slettes, med en liten advarsel før sletting.
+
+- **Kilde:** Beslutning DEC-0031 · **Opprinnelse:** brukerbeslutning · **Type:** ux · **Prioritet:** P1 · **Fase:** 2
+- **Moduler:** SCRIPT, UI
+- **Avhengigheter:** REQ-0535
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - «Slett» viser en bekreftelse; «Avbryt» lar notatet stå.
+  - Sletting kan angres.
+- **Tester:**
+  - enhet: sletting og angre
+- **Implementering:** src/app/script/NotesPanel.tsx, src/core/commands/apply.ts#SetAnnotationRemoved
+- **Merknad:** Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (notater i manus).
+
+#### REQ-0538 – Vis eller skjul notater
+Grensesnittet skal ha en avkrysningsboks for å vise eller skjule notater i manuset.
+
+- **Kilde:** Beslutning DEC-0031 · **Opprinnelse:** brukerbeslutning · **Type:** ux · **Prioritet:** P1 · **Fase:** 2
+- **Moduler:** SCRIPT, UI
+- **Avhengigheter:** REQ-0535
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Når «Vis notater» er tatt av, vises ingen notatmarkeringer eller symboler på sidene.
+- **Tester:**
+  - visuell: notater vist
+- **Implementering:** src/app/script/ScriptWorkspace.tsx, src/core/notes/index.ts#pageDecorations
+- **Merknad:** Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (notater i manus).
+
+#### REQ-0539 – Søk i notater
+Søkefunksjonen skal også gi treff i notatene.
+
+- **Kilde:** Beslutning DEC-0031 · **Opprinnelse:** brukerbeslutning · **Type:** ux · **Prioritet:** P1 · **Fase:** 2
+- **Moduler:** SCRIPT, UI
+- **Avhengigheter:** REQ-0073
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Søk etter et ord som bare står i et notat, viser scenen med notatet.
+- **Tester:**
+  - enhet: søk treffer notater
+- **Implementering:** src/core/screenplay/filter.ts#matchingOccurrences, src/core/notes/index.ts#searchHits
+- **Merknad:** Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (notater i manus).
+
+#### REQ-0540 – Notater i eksport og ny import
+Notater skal kunne tas med i eksporten (av som standard), slik at en ny import av dokumentet gjenskaper notatene på samme sted med samme navn og tidspunkt.
+
+- **Kilde:** Beslutning DEC-0031 · **Opprinnelse:** brukerbeslutning · **Type:** ux · **Prioritet:** P1 · **Fase:** 2
+- **Moduler:** SCRIPT, EXPORT, UI
+- **Avhengigheter:** REQ-0087; REQ-0088; REQ-0535
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Eksport til Word med «Ta med notater» gir Word-kommentarer på riktig tekst.
+  - Eksport til PDF gir PDF-merknader.
+  - Import av filen lager de samme notatene igjen.
+  - Uten avkrysning har eksporten ingen notater.
+- **Tester:**
+  - enhet: rundtur Word og PDF med notater
+- **Implementering:** src/core/notes/transfer.ts, src/engine/export/screenplay-docx.ts, src/engine/export/screenplay-pdf.ts, src/engine/import/docx-lines.ts#docxToLinesAndNotes, src/engine/import/pdf-lines.ts#pdfToLinesAndNotes, src/app/script/ExportDialog.tsx, src/app/script/ImportDialog.tsx
+- **Merknad:** Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (notater i manus).
+
+#### REQ-0541 – Søketreff vises tydelig, men diskret
+Søket skal vise hva det traff, tydelig men diskret: treffene markeres i manuset, og scenelisten sier hva som ble truffet.
+
+- **Kilde:** Beslutning DEC-0031 · **Opprinnelse:** brukerbeslutning · **Type:** ux · **Prioritet:** P2 · **Fase:** 2
+- **Moduler:** SCRIPT, UI
+- **Avhengigheter:** REQ-0073
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Søk etter «vasen» markerer ordet på sidene og viser «Treff: handling» ved scenen.
+- **Tester:**
+  - enhet: hva søket traff
+  - visuell: søketreff
+- **Implementering:** src/core/notes/index.ts#searchHits, src/app/script/ScriptPageView.tsx, src/app/script/SceneNavigator.tsx
+- **Merknad:** Ikke i mandatet v14. Lagt til av Mars 2026-10-09.
+
+#### REQ-0542 – Scenelisten følger manuset når du blar
+Når brukeren blar i manuset, skal scenelisten til venstre vise hvilken scene som vises.
+
+- **Kilde:** Beslutning DEC-0031 · **Opprinnelse:** brukerbeslutning · **Type:** ux · **Prioritet:** P2 · **Fase:** 2
+- **Moduler:** SCRIPT, UI
+- **Avhengigheter:** REQ-0217
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Når scene 11 står øverst i visningen, er scene 11 markert i listen og synlig der.
+- **Tester:**
+  - visuell: blaing i manus
+- **Implementering:** src/app/script/ScriptWorkspace.tsx#updateInView, src/app/script/SceneNavigator.tsx
+- **Merknad:** Ikke i mandatet v14. Lagt til av Mars 2026-10-09.
+
+#### REQ-0543 – Valgt scene vises øverst
+Når brukeren klikker en scene i scenelisten, skal sceneoverskriften vises øverst i manusvisningen.
+
+- **Kilde:** Beslutning DEC-0031 · **Opprinnelse:** brukerbeslutning · **Type:** ux · **Prioritet:** P2 · **Fase:** 2
+- **Moduler:** SCRIPT, UI
+- **Avhengigheter:** REQ-0217
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Klikk på scene 3 i listen gir scene 3 sin overskrift øverst i visningen.
+- **Tester:**
+  - visuell: valgt scene øverst
+- **Implementering:** src/app/script/ScriptWorkspace.tsx#scrollTo, src/app/script/ScriptPageView.tsx
+- **Merknad:** Ikke i mandatet v14. Lagt til av Mars 2026-10-09 («det bør være i toppen»).

@@ -7,8 +7,10 @@ import { useEffect, useMemo, useState } from "react";
 import {
   numbersByOccurrence,
   exportNumbering,
+  exportNotes,
   exportPaginationInput,
   formatHeading,
+  placeNotes,
   paginate,
   type NumberingMethod,
   type ProjectState,
@@ -46,6 +48,12 @@ export function ExportDialog({ open, onOpenChange, state, productionId, lockedPa
   const [method, setMethod] = useState<NumberingMethod>("production");
   const [includeInactive, setIncludeInactive] = useState(false);
   const [fillOriginal, setFillOriginal] = useState(false);
+  // Notater i eksporten (REQ-0540): av som standard
+  const [withNotes, setWithNotes] = useState(false);
+  const noteCount = useMemo(
+    () => Object.values(state.annotations).filter((a) => !a.removed).length,
+    [state.annotations],
+  );
   const fillMissing = fillOriginal ? ("all" as const) : ("new" as const);
   const [titleText, setTitleText] = useState(state.project.name);
   const [busy, setBusy] = useState(false);
@@ -101,14 +109,27 @@ export function ExportDialog({ open, onOpenChange, state, productionId, lockedPa
         .filter(Boolean);
       const date = new Date().toISOString().slice(0, 10);
       const base = safeName(`${state.project.name} – ${production?.name ?? "manus"} – ${date}`);
+      const notes = withNotes
+        ? exportNotes(
+            state,
+            input.map((x) => x.occurrenceId),
+          )
+        : undefined;
       if (format === "pdf") {
-        const bytes = screenplayPdf(paginate(input).pages, {
+        const pages = paginate(input).pages;
+        const texts = new Map(input.flatMap((x) => x.blocks.map((b) => [b.id, b.text] as const)));
+        const bytes = screenplayPdf(pages, {
           title: state.project.name,
           titlePage,
+          ...(notes ? { notes: placeNotes(pages, texts, notes) } : {}),
         });
         setReady(prepareDownload(bytes, `${base}.pdf`, "application/pdf"));
       } else {
-        const bytes = screenplayDocx(input, { title: state.project.name, titlePage });
+        const bytes = screenplayDocx(input, {
+          title: state.project.name,
+          titlePage,
+          ...(notes ? { notes } : {}),
+        });
         setReady(
           prepareDownload(
             bytes,
@@ -261,6 +282,17 @@ export function ExportDialog({ open, onOpenChange, state, productionId, lockedPa
               får det alltid.
             </label>
           ) : null}
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={withNotes}
+              onChange={(e) => setWithNotes(e.target.checked)}
+              disabled={noteCount === 0}
+            />
+            Ta med notater ({noteCount}) –{" "}
+            {format === "pdf" ? "som PDF-merknader" : "som Word-kommentarer"}, med navn og
+            tidspunkt. De gjenopprettes hvis filen importeres igjen.
+          </label>
           {format === "pdf" && lockedPages ? (
             <p className="text-text-tertiary">
               Låste sider: sideskiftene følger originalen der teksten er uendret.

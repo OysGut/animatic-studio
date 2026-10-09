@@ -10,7 +10,10 @@ import {
   paginate,
   snapshotFromState,
   snapshotPaginationInput,
+  wordDiff,
   type ChangeType,
+  type LineChange,
+  type SceneChange,
   type ProjectState,
   type ScriptSnapshot,
 } from "@/core";
@@ -33,6 +36,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ScriptPageView } from "./ScriptPageView";
+import { KIND_LABEL } from "./script-helpers";
 
 interface Props {
   readonly open: boolean;
@@ -336,42 +340,163 @@ function Compare({
               .map((t) => `${CHANGE_LABEL[t]}: ${changes.filter((c) => c.type === t).length}`)
               .join(" · ")}
           </p>
-          <ul className="max-h-[50vh] overflow-y-auto border border-border bg-surface-1">
-            {changes.map((c, i) => (
+          <ul className="max-h-[60vh] overflow-y-auto border border-border bg-surface-1">
+            {groupByScene(changes).map((g) => (
               <li
-                key={i}
-                className="flex items-center gap-3 border-b border-border px-3 py-1.5 text-[13px] last:border-b-0"
+                key={g.occurrenceId}
+                className="border-b border-border px-3 py-2 text-[13px] last:border-b-0"
               >
-                <span className="w-44 shrink-0 text-xs font-medium text-text-secondary">
-                  {CHANGE_LABEL[c.type]}
-                </span>
-                <span className="tabular w-10 shrink-0 font-mono text-xs text-text-tertiary">
-                  {c.number ?? "–"}
-                </span>
-                <span className="min-w-0 flex-1 truncate text-text-primary">
-                  {c.heading}
-                  {c.detail ? (
-                    <span className="ml-2 text-xs text-text-tertiary">{c.detail}</span>
+                <div className="flex items-center gap-3">
+                  <span className="tabular w-10 shrink-0 font-mono text-xs text-text-tertiary">
+                    {g.number ?? "–"}
+                  </span>
+                  <span className="min-w-0 flex-1 truncate font-medium text-text-primary">
+                    {g.heading}
+                  </span>
+                  <span className="flex shrink-0 flex-wrap justify-end gap-1">
+                    {g.changes.map((c) => (
+                      <span
+                        key={c.type}
+                        className="rounded-sm bg-surface-3 px-1.5 py-0.5 text-[11px] text-text-secondary"
+                      >
+                        {CHANGE_LABEL[c.type]}
+                      </span>
+                    ))}
+                  </span>
+                  {current.has(g.occurrenceId) ? (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        onGoToScene(g.occurrenceId);
+                        onOpenChange(false);
+                      }}
+                    >
+                      Gå til
+                    </Button>
                   ) : null}
-                </span>
-                {current.has(c.occurrenceId) ? (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => {
-                      onGoToScene(c.occurrenceId);
-                      onOpenChange(false);
-                    }}
-                  >
-                    Gå til
-                  </Button>
-                ) : null}
+                </div>
+                <div className="ml-[52px] mt-1 flex flex-col gap-1">
+                  {g.changes.map((c) => (
+                    <ChangeDetail key={c.type} change={c} />
+                  ))}
+                </div>
               </li>
             ))}
           </ul>
         </>
       )}
     </div>
+  );
+}
+
+interface SceneGroup {
+  readonly occurrenceId: string;
+  readonly number: string | null;
+  readonly heading: string;
+  readonly changes: SceneChange[];
+}
+
+/** Samler endringene per scene (i rekkefølgen de står i den nyeste versjonen). */
+function groupByScene(changes: readonly SceneChange[]): SceneGroup[] {
+  const out: SceneGroup[] = [];
+  const at = new Map<string, SceneGroup>();
+  for (const c of changes) {
+    let g = at.get(c.occurrenceId);
+    if (!g) {
+      g = { occurrenceId: c.occurrenceId, number: c.number, heading: c.heading, changes: [] };
+      at.set(c.occurrenceId, g);
+      out.push(g);
+    }
+    g.changes.push(c);
+  }
+  return out;
+}
+
+const MAX_LINES = 12;
+
+function ChangeDetail({ change }: { change: SceneChange }) {
+  const [all, setAll] = useState(false);
+  const lines = change.lines ?? [];
+  // Hele innholdet i nye/fjernede scener kan være langt: vis de første linjene
+  const shown = all ? lines : lines.slice(0, MAX_LINES);
+  if (!change.detail && lines.length === 0) return null;
+  return (
+    <div className="text-xs text-text-secondary">
+      {change.detail ? (
+        <p>
+          <span className="text-text-tertiary">{CHANGE_LABEL[change.type]}: </span>
+          {change.detail}
+        </p>
+      ) : null}
+      {shown.length ? (
+        <ul className="mt-1 flex flex-col gap-1 border-l-2 border-border pl-2">
+          {shown.map((l, i) => (
+            <LineRow key={i} line={l} />
+          ))}
+        </ul>
+      ) : null}
+      {lines.length > MAX_LINES && !all ? (
+        <button
+          type="button"
+          onClick={() => setAll(true)}
+          className="mt-1 text-accent-brand underline-offset-2 hover:underline"
+        >
+          Vis alle {lines.length} linjer
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+function LineRow({ line }: { line: LineChange }) {
+  const who = line.speaker ? ` – ${line.speaker}` : "";
+  const label = `${KIND_LABEL[line.kind]}${who}`;
+  return (
+    <li className="grid grid-cols-[14px_1fr] gap-1">
+      <span
+        aria-hidden
+        className={
+          "font-mono " +
+          (line.op === "added"
+            ? "text-status-success"
+            : line.op === "removed"
+              ? "text-status-danger"
+              : "text-status-uncertain")
+        }
+      >
+        {line.op === "added" ? "+" : line.op === "removed" ? "−" : "~"}
+      </span>
+      <span className="min-w-0">
+        <span className="block text-[11px] text-text-tertiary">
+          {label}
+          <span className="sr-only">
+            {line.op === "added" ? " (ny)" : line.op === "removed" ? " (fjernet)" : " (endret)"}
+          </span>
+        </span>
+        <span className="block whitespace-pre-wrap font-script text-[12px] text-text-primary">
+          {line.op === "changed" ? (
+            wordDiff(line.before ?? "", line.after ?? "").map((p, i) =>
+              p.op === "same" ? (
+                <span key={i}>{p.text}</span>
+              ) : p.op === "removed" ? (
+                <del key={i} className="bg-status-danger-bg text-status-danger">
+                  {p.text}
+                </del>
+              ) : (
+                <ins key={i} className="bg-status-success-bg text-status-success no-underline">
+                  {p.text}
+                </ins>
+              ),
+            )
+          ) : line.op === "added" ? (
+            line.after
+          ) : (
+            <del className="text-text-tertiary">{line.before}</del>
+          )}
+        </span>
+      </span>
+    </li>
   );
 }
 

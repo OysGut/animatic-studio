@@ -2566,11 +2566,15 @@ requirements:
   - Gitt karakteren Maja, så vises nøyaktig scenene der Maja opptrer (inkl. via aliaser).
   tests:
   - 'integrasjon: karakterfilter mot fasit'
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/screenplay/filter.ts#sceneHasCharacter
+  - src/core/screenplay/filter.ts#matchingOccurrences
+  - src/app/script/ScriptWorkspace.tsx
   verification:
   - tests/unit/filter.test.ts::karakterfilter gir nøyaktig scenene der karakteren opptrer (REQ-0074)
+  - tests/unit/library.test.ts::finner scener for karakter under alle navn, lokasjon og objekt
+  - tests/visual/screens.mjs::15-filter-karakter
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -2579,6 +2583,9 @@ requirements:
     decision: DEC-0028
     change: Replikk eller navn nevnt i handling/overskrift. Aliaser kommer med ressursbiblioteket (M3); status Implementert
       – ikke verifisert
+  - date: '2026-10-09'
+    decision: DEC-0030
+    change: Karakterfilteret bruker alle navnene fra ressursbiblioteket (KI-29 løst); status Verifisert
   notes: ''
 - id: REQ-0075
   title: Filtrering er ikke deaktivering
@@ -4032,13 +4039,24 @@ requirements:
   - Hver av de 11 ressurstypene kan opprettes og vises i biblioteket.
   tests:
   - 'integrasjon: CRUD per ressurstype'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Under arbeid
+  implementation:
+  - src/core/model.ts#Asset
+  - src/core/commands/apply.ts#CreateAssets
+  - src/core/library/index.ts
+  - src/app/library/LibraryWorkspace.tsx
+  - src/app/library/AssetDetail.tsx
+  - db/migrations/0004_library_notes.sql
+  verification:
+  - tests/unit/library.test.ts
+  - tests/visual/screens.mjs::20-bibliotek
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0030
+    change: Bibliotek for karakterer, objekter, lokasjoner, dyr og miljøer med bilder (M3 del 1). Lyd, genererte ressurser og stilprofiler gjenstår; status Under arbeid
   notes: ''
 - id: REQ-0122
   title: Ressurser gjenbrukes på tvers av scener og produksjoner
@@ -4116,13 +4134,20 @@ requirements:
   - Brukeren kan tagge/kategorisere ressurser og søke/filtrere på dem.
   tests:
   - 'e2e: søk og filter i bibliotek'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/app/library/LibraryWorkspace.tsx
+  - src/core/library/index.ts
+  verification:
+  - tests/visual/screens.mjs::20-bibliotek
+  - tests/visual/screens.mjs::21-bibliotek-ressurs
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0030
+    change: Kategori, stikkord, søk og filter på type; status Verifisert
   notes: ''
 - id: REQ-0125
   title: Permanente ressurs-ID-er
@@ -4145,13 +4170,20 @@ requirements:
   - Omdøping av en ressurs endrer ikke ID-en eller bryter referanser.
   tests:
   - 'dataintegritet: omdøping bevarer referanser'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/model.ts#Asset
+  - db/migrations/0004_library_notes.sql
+  verification:
+  - tests/unit/library.test.ts::endring, arkivering og angre gir samme innhold tilbake
+  - tests/db/run-db-tests.ts::0004: ressurs, variant og bildeversjon lagres og leses tilbake
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0030
+    change: Ressurser har permanente UUID-er; status Verifisert
   notes: Jf. kap. 34 pkt. 3.
 - id: REQ-0126
   title: Navnekontroll med alternative navn
@@ -4174,13 +4206,19 @@ requirements:
   - En karakter kan lagre alle fem navnetypene, og søk på alias finner karakteren.
   tests:
   - 'enhet: aliasoppslag'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/commands/apply.ts#normalizeAssetFields
+  - src/app/library/AssetDetail.tsx
+  verification:
+  - tests/unit/library.test.ts::lagrer foretrukket og alternative navn ryddet, og avviser tomt navn
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0030
+    change: Foretrukket navn, alternative navn, kallenavn, tidligere navn og språknavn; status Verifisert
   notes: ''
 - id: REQ-0127
   title: Kontekstuell kobling av betegnelser
@@ -4234,13 +4272,20 @@ requirements:
   - Usikre koblinger vises som forslag som brukeren må godta før de brukes.
   tests:
   - 'enhet: forslag har status «foreslått» til godkjent'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/library/index.ts#librarySuggestions
+  - src/app/library/SuggestionsDialog.tsx
+  verification:
+  - tests/unit/library.test.ts::foreslår karakterer og lokasjoner som mangler, med mulige treff som må bekreftes
+  - tests/visual/screens.mjs::22-bibliotek-forslag
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0030
+    change: Forslag fra manuset; usikre koblinger må velges av brukeren; status Verifisert
   notes: ''
 - id: REQ-0129
   title: Deteksjon av stavefeil og inkonsistente navn
@@ -4318,13 +4363,20 @@ requirements:
   - For en gitt ressurs vises en «brukt i»-liste med scener.
   tests:
   - 'enhet: omvendt oppslag ressurs → scener'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/library/index.ts#assetUsage
+  - src/app/library/AssetDetail.tsx
+  verification:
+  - tests/unit/library.test.ts::finner scener for karakter under alle navn, lokasjon og objekt
+  - tests/visual/screens.mjs::21-bibliotek-ressurs
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0030
+    change: «Brukt i scener» ut fra navnene i manuset (bruk i 2D-scener kommer i M3 del 2); status Verifisert
   notes: ''
 - id: REQ-0132
   title: Berørte scener flagges for gjennomgang
@@ -4434,13 +4486,19 @@ requirements:
   - En karakter kan ha varianter av hver av de ni typene under samme karakter-ID.
   tests:
   - 'enhet: karakter med flere varianter'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/model.ts#AssetVariant
+  - src/app/library/AssetDetail.tsx
+  verification:
+  - tests/unit/library.test.ts::nummererer versjoner, og ny versjon endrer ikke godkjent versjon
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0030
+    change: Visuelle varianter med stil og utseende; status Verifisert
   notes: ''
 - id: REQ-0136
   title: Varianter versjoneres og godkjennes separat
@@ -4463,13 +4521,21 @@ requirements:
   - Godkjenning av én variant påvirker ikke status på andre; nye versjoner bevarer tidligere.
   tests:
   - 'enhet: variantversjonering og godkjenningsstatus'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/commands/apply.ts#ApproveAssetVersion
+  - db/migrations/0004_library_notes.sql
+  verification:
+  - tests/unit/library.test.ts::nummererer versjoner, og ny versjon endrer ikke godkjent versjon
+  - tests/unit/library.test.ts::godkjenning av en annen variants versjon avvises
+  - tests/db/run-db-tests.ts::0004: ressurs, variant og bildeversjon lagres og leses tilbake
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0030
+    change: Versjoner per variant (uforanderlige) og egen godkjenning; status Verifisert
   notes: ''
 - id: REQ-0137
   title: AI-basert stilharmonisering
@@ -4746,13 +4812,18 @@ requirements:
   - Etter publisering av ny variant refererer eksisterende scener fortsatt til sin tidligere variant/versjon.
   tests:
   - 'dataintegritet: scenereferanser uendret etter publisering'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/commands/apply.ts#AddAssetVersion
+  verification:
+  - tests/unit/library.test.ts::nummererer versjoner, og ny versjon endrer ikke godkjent versjon
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0030
+    change: Nye bilder endrer ikke godkjent versjon; scener som bruker ressurser kommer i M3 del 2
   notes: Krever versjonslåste ressursreferanser fra fase 3.
 - id: REQ-0147
   title: Gjenbrukbare stilprofiler
@@ -4837,13 +4908,19 @@ requirements:
     fritt.'
   tests:
   - 'enhet: skjema for karakter × tilstand × stil'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/model.ts#Asset
+  - src/core/model.ts#AssetVariant
+  verification:
+  - tests/unit/library.test.ts::nummererer versjoner, og ny versjon endrer ikke godkjent versjon
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0030
+    change: Identitet (ressurs), utseendetilstand og stil (variant) er atskilt; status Verifisert
   notes: Grunnleggende datamodellvalg; bør defineres i fase 1.
 - id: REQ-0150
   title: Tidsstyrte utseendeendringer
@@ -16212,3 +16289,412 @@ requirements:
     change: Bygget i M2 del 2; status Verifisert
   notes: Ikke i mandatet v14. Lagt til av Mars 2026-10-09 («I denne visningen av manus ønsker jeg en avkrysningsboks
     som sier vis kun valgte scene»).
+- id: REQ-0532
+  title: "Rekkefølge og synlighet endres bare i redigeringsmodus"
+  text: "Scenerekkefølgen og om en scene er aktiv eller deaktivert skal bare kunne endres når brukeren har slått på en egen bryter «Endre rekkefølge og synlighet». Bryteren er av som standard."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0029
+  type: ux
+  priority: P1
+  phase: 2
+  modules:
+  - SCRIPT
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0062
+  acceptance:
+  - "Når bryteren er av, kan scener ikke dras eller flyttes med tastaturet, og aktiv/deaktivert kan ikke endres."
+  - "Når bryteren er på, kan scener flyttes og slås av og på som før."
+  - "Bryteren endrer ikke filmen; den gjelder bare redigeringen."
+  tests:
+  - "visuell: scenelisten uten håndtak og brytere når redigeringsmodus er av"
+  status: Verifisert
+  implementation:
+  - src/app/script/SceneNavigator.tsx
+  - src/app/script/Inspector.tsx#ScenePanel
+  verification:
+  - tests/visual/screens.mjs::06-manus
+  - tests/visual/screens.mjs::19-manus-endre-rekkefolge
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0029
+    change: Opprettet etter ønske fra Mars
+  - date: '2026-10-09'
+    decision: DEC-0029
+    change: Bygget med bryteren «Endre rekkefølge og synlighet»; status Verifisert
+  notes: "Ikke i mandatet v14. Lagt til av Mars 2026-10-09 («det er litt for enkelt å endre rekkefølge på scener … en funksjon som bør slåes på»)."
+- id: REQ-0533
+  title: "Flyttede scener markeres til ny versjon er lagret"
+  text: "Scener som er flyttet siden siste lagrede manusversjon, skal ha en annen bakgrunnsfarge i scenelisten til en ny versjon er lagret."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0029
+  type: ux
+  priority: P2
+  phase: 2
+  modules:
+  - SCRIPT
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0078
+  acceptance:
+  - "Gitt en lagret versjon, når scene 12 flyttes, så får scene 12 (og bare den) en annen bakgrunnsfarge."
+  - "Når en ny versjon lagres, forsvinner markeringen."
+  - "Finnes ingen lagret versjon, markeres ingen scener."
+  tests:
+  - "enhet: flyttede scener mot siste versjon"
+  - "visuell: markert scene i scenelisten"
+  status: Verifisert
+  implementation:
+  - src/core/screenplay/versions.ts#movedOccurrences
+  - src/app/script/SceneNavigator.tsx
+  verification:
+  - tests/unit/versions.test.ts::markerer bare scenen som er flyttet, ikke scenene den hoppet over
+  - tests/visual/screens.mjs::06-manus
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0029
+    change: Opprettet etter ønske fra Mars
+  - date: '2026-10-09'
+    decision: DEC-0029
+    change: Bygget; status Verifisert
+  notes: "Ikke i mandatet v14. Lagt til av Mars 2026-10-09 («scener som er flyttet på bør også ha en litt annen bakgrunnsfarge inntill de er lagret i ny versjon»)."
+- id: REQ-0534
+  title: "Sammenligning viser hva som er endret"
+  text: "Sammenligningen av manusversjoner skal vise hva som faktisk er endret i hver scene: endrede linjer med tekst før og etter, nye og fjernede linjer, og for flyttede scener hvor scenen sto før og står nå."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0029
+  type: ux
+  priority: P1
+  phase: 2
+  modules:
+  - SCRIPT
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0078
+  acceptance:
+  - "Når en replikk er endret, vises gammel og ny tekst med de endrede ordene uthevet."
+  - "Når en scene er flyttet, vises gammel og ny plassering (for eksempel «fra plass 12 til plass 4, etter scene 3»)."
+  - "Nye og fjernede linjer vises med tekst."
+  tests:
+  - "enhet: linjeforskjeller per scene"
+  status: Verifisert
+  implementation:
+  - src/core/screenplay/versions.ts#sceneLineChanges
+  - src/core/screenplay/versions.ts#wordDiff
+  - src/app/script/VersionsDialog.tsx
+  verification:
+  - tests/unit/versions.test.ts::viser endrede, nye og fjernede linjer med hvem som snakker
+  - tests/unit/versions.test.ts::forteller hvor en flyttet scene sto og står
+  - tests/visual/screens.mjs::17b-versjon-sammenlign
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0029
+    change: Opprettet etter ønske fra Mars
+  - date: '2026-10-09'
+    decision: DEC-0029
+    change: Bygget; status Verifisert
+  notes: "Ikke i mandatet v14. Lagt til av Mars 2026-10-09 («beskrivelsen om hva som er endret er litt kort»)."
+- id: REQ-0535
+  title: "Notater på ord, setninger og scener"
+  text: "Brukeren skal kunne legge inn frie notater festet til et ord eller en setning i manuset, eller som en nål på scenen."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0031
+  type: ux
+  priority: P1
+  phase: 2
+  modules:
+  - SCRIPT
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0070
+  acceptance:
+  - "Når brukeren merker «den blå vasen» og legger inn et notat, markeres de ordene og notatet vises i inspektøren."
+  - "En nål på scenen vises ved sceneoverskriften."
+  - "Endres teksten, finnes de markerte ordene igjen; er de borte, sier notatet det."
+  tests:
+  - "enhet: notater på tekst og scene, ny plassering etter tekstendring"
+  - "visuell: markert notat og nytt notat fra markert tekst"
+  status: Verifisert
+  implementation:
+  - "src/core/notes/index.ts"
+  - "src/core/commands/apply.ts#AddAnnotations"
+  - "src/app/script/NotesPanel.tsx"
+  - "src/app/script/ScriptWorkspace.tsx"
+  verification:
+  - "tests/unit/notes.test.ts::notat på tekst og nål på scenen, med stempel; sletting kan angres"
+  - "tests/unit/notes.test.ts::notatet finner teksten igjen når manuset endres, og står ved blokkens start hvis den er borte"
+  - "tests/visual/screens.mjs::23-notater"
+  - "tests/visual/screens.mjs::25-nytt-notat"
+  - "tests/db/run-db-tests.ts::0004: notater lagres med stempel"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0031
+    change: Opprettet etter ønske fra Mars og bygget samme dag
+  notes: "Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (notater i manus)."
+- id: REQ-0536
+  title: "Notater stemples med hvem og når"
+  text: "Hvert notat skal vise i hjørnet, med liten tekst, hvem som la det inn og når."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0031
+  type: ux
+  priority: P1
+  phase: 2
+  modules:
+  - SCRIPT
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0535
+  acceptance:
+  - "Et notat Mars skriver kl. 14.32 viser «Mars · 9. okt. 2026 kl. 14:32» i hjørnet."
+  tests:
+  - "visuell: stempel i hjørnet"
+  status: Verifisert
+  implementation:
+  - "src/core/notes/index.ts#formatStamp"
+  - "src/app/script/NotesPanel.tsx"
+  verification:
+  - "tests/unit/notes.test.ts::notat på tekst og nål på scenen, med stempel; sletting kan angres"
+  - "tests/visual/screens.mjs::23-notater"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0031
+    change: Opprettet etter ønske fra Mars og bygget samme dag
+  notes: "Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (notater i manus)."
+- id: REQ-0537
+  title: "Sletting av notat med advarsel"
+  text: "Notater skal enkelt kunne slettes, med en liten advarsel før sletting."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0031
+  type: ux
+  priority: P1
+  phase: 2
+  modules:
+  - SCRIPT
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0535
+  acceptance:
+  - "«Slett» viser en bekreftelse; «Avbryt» lar notatet stå."
+  - "Sletting kan angres."
+  tests:
+  - "enhet: sletting og angre"
+  status: Verifisert
+  implementation:
+  - "src/app/script/NotesPanel.tsx"
+  - "src/core/commands/apply.ts#SetAnnotationRemoved"
+  verification:
+  - "tests/unit/notes.test.ts::notat på tekst og nål på scenen, med stempel; sletting kan angres"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0031
+    change: Opprettet etter ønske fra Mars og bygget samme dag
+  notes: "Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (notater i manus)."
+- id: REQ-0538
+  title: "Vis eller skjul notater"
+  text: "Grensesnittet skal ha en avkrysningsboks for å vise eller skjule notater i manuset."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0031
+  type: ux
+  priority: P1
+  phase: 2
+  modules:
+  - SCRIPT
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0535
+  acceptance:
+  - "Når «Vis notater» er tatt av, vises ingen notatmarkeringer eller symboler på sidene."
+  tests:
+  - "visuell: notater vist"
+  status: Verifisert
+  implementation:
+  - "src/app/script/ScriptWorkspace.tsx"
+  - "src/core/notes/index.ts#pageDecorations"
+  verification:
+  - "tests/unit/notes.test.ts::markerer søketreff og notater på riktige kolonner i linjene"
+  - "tests/visual/screens.mjs::23-notater"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0031
+    change: Opprettet etter ønske fra Mars og bygget samme dag
+  notes: "Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (notater i manus)."
+- id: REQ-0539
+  title: "Søk i notater"
+  text: "Søkefunksjonen skal også gi treff i notatene."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0031
+  type: ux
+  priority: P1
+  phase: 2
+  modules:
+  - SCRIPT
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0073
+  acceptance:
+  - "Søk etter et ord som bare står i et notat, viser scenen med notatet."
+  tests:
+  - "enhet: søk treffer notater"
+  status: Verifisert
+  implementation:
+  - "src/core/screenplay/filter.ts#matchingOccurrences"
+  - "src/core/notes/index.ts#searchHits"
+  verification:
+  - "tests/unit/notes.test.ts::søk treffer notater og forteller hva som ble truffet"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0031
+    change: Opprettet etter ønske fra Mars og bygget samme dag
+  notes: "Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (notater i manus)."
+- id: REQ-0540
+  title: "Notater i eksport og ny import"
+  text: "Notater skal kunne tas med i eksporten (av som standard), slik at en ny import av dokumentet gjenskaper notatene på samme sted med samme navn og tidspunkt."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0031
+  type: ux
+  priority: P1
+  phase: 2
+  modules:
+  - SCRIPT
+  - EXPORT
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0087
+  - REQ-0088
+  - REQ-0535
+  acceptance:
+  - "Eksport til Word med «Ta med notater» gir Word-kommentarer på riktig tekst."
+  - "Eksport til PDF gir PDF-merknader."
+  - "Import av filen lager de samme notatene igjen."
+  - "Uten avkrysning har eksporten ingen notater."
+  tests:
+  - "enhet: rundtur Word og PDF med notater"
+  status: Verifisert
+  implementation:
+  - "src/core/notes/transfer.ts"
+  - "src/engine/export/screenplay-docx.ts"
+  - "src/engine/export/screenplay-pdf.ts"
+  - "src/engine/import/docx-lines.ts#docxToLinesAndNotes"
+  - "src/engine/import/pdf-lines.ts#pdfToLinesAndNotes"
+  - "src/app/script/ExportDialog.tsx"
+  - "src/app/script/ImportDialog.tsx"
+  verification:
+  - "tests/unit/notes.test.ts::Word: notatene blir kommentarer og gjenopprettes ved import"
+  - "tests/unit/notes.test.ts::PDF: notatene blir merknader og gjenopprettes ved import"
+  - "tests/visual/screens.mjs::27-eksport-notater"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0031
+    change: Opprettet etter ønske fra Mars og bygget samme dag
+  notes: "Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (notater i manus)."
+- id: REQ-0541
+  title: "Søketreff vises tydelig, men diskret"
+  text: "Søket skal vise hva det traff, tydelig men diskret: treffene markeres i manuset, og scenelisten sier hva som ble truffet."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0031
+  type: ux
+  priority: P2
+  phase: 2
+  modules:
+  - SCRIPT
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0073
+  acceptance:
+  - "Søk etter «vasen» markerer ordet på sidene og viser «Treff: handling» ved scenen."
+  tests:
+  - "enhet: hva søket traff"
+  - "visuell: søketreff"
+  status: Verifisert
+  implementation:
+  - "src/core/notes/index.ts#searchHits"
+  - "src/app/script/ScriptPageView.tsx"
+  - "src/app/script/SceneNavigator.tsx"
+  verification:
+  - "tests/unit/notes.test.ts::søk treffer notater og forteller hva som ble truffet"
+  - "tests/visual/screens.mjs::24-sok-treff"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0031
+    change: Opprettet etter ønske fra Mars og bygget samme dag
+  notes: "Ikke i mandatet v14. Lagt til av Mars 2026-10-09."
+- id: REQ-0542
+  title: "Scenelisten følger manuset når du blar"
+  text: "Når brukeren blar i manuset, skal scenelisten til venstre vise hvilken scene som vises."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0031
+  type: ux
+  priority: P2
+  phase: 2
+  modules:
+  - SCRIPT
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0217
+  acceptance:
+  - "Når scene 11 står øverst i visningen, er scene 11 markert i listen og synlig der."
+  tests:
+  - "visuell: blaing i manus"
+  status: Verifisert
+  implementation:
+  - "src/app/script/ScriptWorkspace.tsx#updateInView"
+  - "src/app/script/SceneNavigator.tsx"
+  verification:
+  - "tests/visual/screens.mjs::26-bla-i-manus"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0031
+    change: Opprettet etter ønske fra Mars og bygget samme dag
+  notes: "Ikke i mandatet v14. Lagt til av Mars 2026-10-09."
+- id: REQ-0543
+  title: "Valgt scene vises øverst"
+  text: "Når brukeren klikker en scene i scenelisten, skal sceneoverskriften vises øverst i manusvisningen."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0031
+  type: ux
+  priority: P2
+  phase: 2
+  modules:
+  - SCRIPT
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0217
+  acceptance:
+  - "Klikk på scene 3 i listen gir scene 3 sin overskrift øverst i visningen."
+  tests:
+  - "visuell: valgt scene øverst"
+  status: Verifisert
+  implementation:
+  - "src/app/script/ScriptWorkspace.tsx#scrollTo"
+  - "src/app/script/ScriptPageView.tsx"
+  verification:
+  - "tests/visual/screens.mjs::07-manus-scene-valgt"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0031
+    change: Opprettet etter ønske fra Mars og bygget samme dag
+  notes: "Ikke i mandatet v14. Lagt til av Mars 2026-10-09 («det bør være i toppen»)."

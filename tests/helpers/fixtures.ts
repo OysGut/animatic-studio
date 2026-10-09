@@ -172,7 +172,7 @@ export function randomCommand(s: ProjectState, r: () => number): Command | null 
   if (!prod) return null;
   const occs = orderedOccurrences(s, prod.id);
   const occ = pick(r, occs);
-  const choice = Math.floor(r() * 15);
+  const choice = Math.floor(r() * 18);
   switch (choice) {
     case 0: {
       if (!occ) return null;
@@ -326,6 +326,129 @@ export function randomCommand(s: ProjectState, r: () => number): Command | null 
         type: b.removed ? "RestoreBlock" : "RemoveBlock",
         productionId: prod.id,
         blockId: b.id,
+      };
+    }
+    case 14:
+    case 15: {
+      // Ressursbiblioteket: ny ressurs, endring, variant, bilde, godkjenning, arkivering
+      const asset = pick(r, Object.values(s.assets));
+      const variant = pick(r, Object.values(s.assetVariants));
+      const k = Math.floor(r() * 6);
+      if (k === 0 || !asset)
+        return {
+          type: "CreateAssets",
+          assets: [
+            {
+              assetId: tid(),
+              fields: {
+                kind: pick(r, ["character", "object", "location"] as const)!,
+                name: `Ressurs ${Math.floor(r() * 1000)}`,
+                names: r() < 0.5 ? [{ name: "Kallenavn", kind: "nickname", language: null }] : [],
+                description: "",
+                category: "",
+                tags: [],
+              },
+            },
+          ],
+        };
+      if (k === 1)
+        return {
+          type: "UpdateAsset",
+          assetId: asset.id,
+          fields: {
+            kind: asset.kind,
+            name: `${asset.name} *`,
+            names: asset.names,
+            description: "Endret",
+            category: "Kategori",
+            tags: ["a", "b"],
+          },
+        };
+      if (k === 2 || !variant)
+        return {
+          type: "CreateAssetVariant",
+          variantId: tid(),
+          assetId: asset.id,
+          fields: { name: "Animatic", style: "animatic", appearance: "" },
+        };
+      if (k === 3) {
+        const versionId = tid<"asset_version">();
+        return {
+          type: "AddAssetVersion",
+          versionId,
+          variantId: variant.id,
+          media: {
+            path: `${s.project.id}/${asset.id}/${versionId}/bilde.png`,
+            mimeType: "image/png",
+            width: 800,
+            height: 600,
+            byteSize: 1234,
+            sha256: "a".repeat(64),
+          },
+          note: "",
+        };
+      }
+      if (k === 4) {
+        const ver = pick(
+          r,
+          Object.values(s.assetVersions).filter((x) => x.variantId === variant.id),
+        );
+        return { type: "ApproveAssetVersion", variantId: variant.id, versionId: ver?.id ?? null };
+      }
+      return r() < 0.5
+        ? { type: "SetAssetArchived", assetId: asset.id, archived: !asset.archived }
+        : { type: "SetAssetVariantArchived", variantId: variant.id, archived: !variant.archived };
+    }
+    case 16: {
+      // Notater: på tekst, nål på scenen, endre, slette/hente tilbake
+      const note = pick(r, Object.values(s.annotations));
+      const k = Math.floor(r() * 4);
+      if (note && k === 0)
+        return {
+          type: "EditAnnotation",
+          annotationId: note.id,
+          text: `Endret ${Math.floor(r() * 99)}`,
+        };
+      if (note && k === 1)
+        return { type: "SetAnnotationRemoved", annotationId: note.id, removed: !note.removed };
+      if (!occ) return null;
+      const b = pick(
+        r,
+        blocksOf(s, occ.variantId).filter((x) => !x.removed && x.text.length > 2),
+      );
+      if (b && k === 2) {
+        const start = Math.floor(r() * (b.text.length - 1));
+        const end = start + 1 + Math.floor(r() * (b.text.length - start - 1));
+        return {
+          type: "AddAnnotations",
+          annotations: [
+            {
+              annotationId: tid(),
+              blockId: b.id,
+              variantId: null,
+              start,
+              end,
+              quote: b.text.slice(start, end),
+              text: "Notat",
+              authorName: "Test",
+            },
+          ],
+        };
+      }
+      return {
+        type: "AddAnnotations",
+        annotations: [
+          {
+            annotationId: tid(),
+            blockId: null,
+            variantId: occ.variantId,
+            start: 0,
+            end: 0,
+            quote: "",
+            text: "Nål",
+            authorName: "Test",
+          },
+        ],
       };
     }
     default: {

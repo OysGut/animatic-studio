@@ -67,6 +67,9 @@ Status vises **alltid med ikon + tekst**, aldri bare farge (WCAG 1.4.1).
 | `--status-danger` | `#F27272` | 6,7 → 5,2 | Mislykket, feil, destruktiv handling i dialog |
 | `--status-discrepancy` | `#F0904A` | 8,0 → 6,2 | Åpent avvik (mandat 21.4) – egen farge fordi avvik er et kjernebegrep |
 | `--status-uncertain` | `#E5B54A` | 10,0 → 7,8 | Usikker tolkning/estimat, oversettelse `needs_review`, usikker konsekvens (REQ-0058, REQ-0110, REQ-0314) |
+| `--status-moved` | `#B699EB` | ca. 7 | Scene flyttet siden siste lagrede manusversjon (REQ-0533). Bakgrunn 16 % alfa + 3 px kant til venstre |
+| `--note` | `oklch(0.8 0.12 70)` (lys rav) | ca. 9 | Notater i manus (DEC-0031): prikket understrek + 18 % bakgrunn, symbol i høyre marg, kant på notatkort |
+| `--mark-search` | `oklch(0.86 0.16 115 / 34 %)` | – | Søketreff på sidene og «Treff»-merke i scenelisten (REQ-0541) – diskret, men skiller seg fra valg (cyan), usikker (gul bølge) og notat (rav) |
 | `--status-*-bg` | samme farge, 14 % alfa | – | Bakgrunn for merkelapper/rader; tekst på dem bruker `--text-primary` |
 
 Kobling til modell: `GenerationJob.status` (`queued`→neutral, `preparing`/`generating`/`post_processing`→running, `completed`→success, `failed`→danger, `cancelled`→neutral) og `Discrepancy.resolution` (`open`→discrepancy, `accepted`/`updated`/`reverted`→success med ulik tekst).

@@ -6,7 +6,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { stateFromRows, type ProjectRows, type ProjectState, type Row } from "@/core";
 
 /** Skjemaversjonen denne koden forventer (db/migrations). Øk ved hver ny migrasjon. */
-export const EXPECTED_SCHEMA_VERSION = 3;
+export const EXPECTED_SCHEMA_VERSION = 4;
 
 const PAGE = 1000;
 
@@ -32,6 +32,16 @@ async function fetchAll(db: AnyClient, table: string, projectId: string): Promis
   }
 }
 
+/** Tabeller fra en nyere migrasjon: mangler de (migrasjonen er ikke kjørt ennå), brukes en tom liste. */
+async function fetchOptional(db: AnyClient, table: string, projectId: string): Promise<Row[]> {
+  try {
+    return await fetchAll(db, table, projectId);
+  } catch (e) {
+    if (/does not exist|schema cache|Could not find the table/i.test(String(e))) return [];
+    throw e;
+  }
+}
+
 export async function loadProjectRows(db: AnyClient, projectId: string): Promise<ProjectRows> {
   const { data: project, error } = await db
     .from("projects")
@@ -40,17 +50,33 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     .maybeSingle();
   if (error) throw new Error(`Kunne ikke lese prosjektet: ${error.message}`);
   if (!project) throw new Error("Prosjektet finnes ikke, eller du har ikke tilgang");
-  const [productions, scenes, variants, blocks, revisions, occurrences, segments, takes] =
-    await Promise.all([
-      fetchAll(db, "productions", projectId),
-      fetchAll(db, "scenes", projectId),
-      fetchAll(db, "scene_variants", projectId),
-      fetchAll(db, "script_blocks", projectId),
-      fetchAll(db, "script_block_revisions", projectId),
-      fetchAll(db, "scene_occurrences", projectId),
-      fetchAll(db, "production_segments", projectId),
-      fetchAll(db, "takes", projectId),
-    ]);
+  const [
+    productions,
+    scenes,
+    variants,
+    blocks,
+    revisions,
+    occurrences,
+    segments,
+    takes,
+    assets,
+    assetVariants,
+    assetVersions,
+    annotations,
+  ] = await Promise.all([
+    fetchAll(db, "productions", projectId),
+    fetchAll(db, "scenes", projectId),
+    fetchAll(db, "scene_variants", projectId),
+    fetchAll(db, "script_blocks", projectId),
+    fetchAll(db, "script_block_revisions", projectId),
+    fetchAll(db, "scene_occurrences", projectId),
+    fetchAll(db, "production_segments", projectId),
+    fetchAll(db, "takes", projectId),
+    fetchOptional(db, "assets", projectId),
+    fetchOptional(db, "asset_variants", projectId),
+    fetchOptional(db, "asset_versions", projectId),
+    fetchOptional(db, "script_annotations", projectId),
+  ]);
   return {
     project: project as Row,
     productions,
@@ -61,6 +87,10 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     scene_occurrences: occurrences,
     production_segments: segments,
     takes,
+    assets,
+    asset_variants: assetVariants,
+    asset_versions: assetVersions,
+    script_annotations: annotations,
   };
 }
 

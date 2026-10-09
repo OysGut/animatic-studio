@@ -5,6 +5,7 @@
  */
 import { strFromU8, unzipSync } from "fflate";
 import type { RawLine } from "@/core/screenplay/types";
+import type { ImportedNote } from "@/core/notes";
 
 const CHAR_WIDTH = 7.2;
 const LEFT_MARGIN = 72;
@@ -22,12 +23,42 @@ function decodeXml(s: string): string {
 }
 
 export function docxToLines(data: Uint8Array): RawLine[] {
+  return docxToLinesAndNotes(data).lines;
+}
+
+/** Kommentarene i dokumentet (word/comments.xml): id → forfatter, dato og tekst. */
+function readComments(
+  xml: string,
+): Map<string, { author: string; date: string | null; text: string }> {
+  const out = new Map<string, { author: string; date: string | null; text: string }>();
+  for (const m of xml.matchAll(/<w:comment\b([^>]*)>([\s\S]*?)<\/w:comment>/g)) {
+    const attrs = m[1]!;
+    const id = /w:id="(-?\d+)"/.exec(attrs)?.[1];
+    if (id === undefined) continue;
+    const author = decodeXml(/w:author="([^"]*)"/.exec(attrs)?.[1] ?? "");
+    const date = /w:date="([^"]*)"/.exec(attrs)?.[1] ?? null;
+    const paras = [...m[2]!.matchAll(/<w:p\b[^>]*?(?:\/>|>([\s\S]*?)<\/w:p>)/g)].map((p) =>
+      [...(p[1] ?? "").matchAll(/<w:t(?:\s[^>]*)?>([\s\S]*?)<\/w:t>/g)]
+        .map((t) => decodeXml(t[1] ?? ""))
+        .join(""),
+    );
+    out.set(id, { author, date, text: paras.join("\n").trim() });
+  }
+  return out;
+}
+
+/** Linjer og notater (Word-kommentarer) fra et Word-dokument (DEC-0031). */
+export function docxToLinesAndNotes(data: Uint8Array): { lines: RawLine[]; notes: ImportedNote[] } {
   let total = 0;
   const files = unzipSync(data, {
     filter: (f) => {
       total += f.originalSize;
       if (total > MAX_UNZIPPED) throw new Error("DOCX-filen er for stor eller skadet");
-      return f.name === "word/document.xml" || f.name === "word/styles.xml";
+      return (
+        f.name === "word/document.xml" ||
+        f.name === "word/styles.xml" ||
+        f.name === "word/comments.xml"
+      );
     },
   });
   const docBytes = files["word/document.xml"];
@@ -46,6 +77,10 @@ export function docxToLines(data: Uint8Array): RawLine[] {
     }
   }
 
+  const commentBytes = files["word/comments.xml"];
+  const comments = commentBytes ? readComments(strFromU8(commentBytes)) : new Map();
+  const notes: ImportedNote[] = [];
+  const open = new Map<string, { page: number; y: number; quote: string }>();
   const lines: RawLine[] = [];
   let page = 1;
   let y = 72;
@@ -61,9 +96,37 @@ export function docxToLines(data: Uint8Array): RawLine[] {
     let text = "";
     // Manuelle linjeskift (<w:br/>) i et avsnitt gir egne linjer i samme element
     const softLines: string[] = [];
-    for (const r of p.matchAll(/<w:t(?:\s[^>]*)?>([\s\S]*?)<\/w:t>|<w:tab\/>|<w:br\b[^>]*\/>/g)) {
-      if (r[0].startsWith("<w:tab")) text += "    ";
-      else if (r[0].startsWith("<w:br")) {
+    for (const r of p.matchAll(
+      /<w:t(?:\s[^>]*)?>([\s\S]*?)<\/w:t>|<w:tab\/>|<w:br\b[^>]*\/>|<w:commentRange(Start|End)\b[^>]*w:id="(-?\d+)"[^>]*\/>/g,
+    )) {
+      if (r[2]) {
+        // Kommentar (notat) begynner eller slutter her
+        const id = r[3]!;
+        if (r[2] === "Start") open.set(id, { page, y: y + softLines.length * 12, quote: "" });
+        else {
+          const o = open.get(id);
+          const c = comments.get(id);
+          open.delete(id);
+          if (o && c && c.text)
+            notes.push({
+              page: o.page,
+              y: o.y,
+              quote: o.quote.trim(),
+              text: c.text,
+              author: c.author,
+              date: c.date,
+            });
+        }
+        continue;
+      }
+      if (r[0].startsWith("<w:tab")) {
+        text += "    ";
+        for (const o of open.values()) o.quote += " ";
+        continue;
+      }
+      // Linjeskift inne i et notat blir mellomrom i sitatet (som i teksten)
+      if (r[0].startsWith("<w:br")) {
+        for (const o of open.values()) o.quote += " ";
         if (/w:type="page"/.test(r[0])) {
           page++;
           y = 72;
@@ -71,8 +134,14 @@ export function docxToLines(data: Uint8Array): RawLine[] {
           softLines.push(text);
           text = "";
         }
-      } else text += decodeXml(r[1] ?? "");
+      } else {
+        const t = decodeXml(r[1] ?? "");
+        text += t;
+        for (const o of open.values()) o.quote += t;
+      }
     }
+    // Kommentarer over flere avsnitt: avsnittsskift blir mellomrom i sitatet
+    for (const o of open.values()) o.quote += " ";
     if (softLines.length) {
       // Alle linjer unntatt den siste skrives her; den siste behandles som vanlig under
       const lead0 = softLines[0]!.length - softLines[0]!.trimStart().length;
@@ -129,5 +198,5 @@ export function docxToLines(data: Uint8Array): RawLine[] {
       y = 72;
     }
   }
-  return lines;
+  return { lines, notes };
 }

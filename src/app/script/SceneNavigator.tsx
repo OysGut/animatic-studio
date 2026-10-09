@@ -1,20 +1,32 @@
 /**
  * Scenenavigator (mandat 2, 4.4): alle sceneforekomster i produksjonen i rekkefølge, også deaktiverte.
  * Flytting her er samme handling som i filmtidslinjen (MoveOccurrence, UX P5). Deaktivering er ikke sletting.
+ * Rekkefølge og synlighet endres bare når «Endre rekkefølge og synlighet» er slått på (REQ-0532).
+ * Scener som er flyttet siden siste lagrede versjon, har egen bakgrunnsfarge (REQ-0533).
  */
-import { AlertTriangle, GripVertical, Search, X } from "lucide-react";
-import { useState, type DragEvent, type KeyboardEvent } from "react";
+import { AlertTriangle, GripVertical, MessageSquare, Search, X } from "lucide-react";
+import { useEffect, useRef, useState, type DragEvent, type KeyboardEvent } from "react";
 import {
+  HIT_LABEL,
   formatHeading,
   keyBetween,
+  type HitKind,
   orderedOccurrences,
-  type CharacterInfo,
   type ProjectState,
   type SceneFilter,
   type SceneOccurrence,
 } from "@/core";
 import { Switch } from "@/components/ui/switch";
 import { uncertainVariants } from "./script-helpers";
+
+/** Valg i karakterfilteret: fra biblioteket (alle navn) eller et navn i manuset. */
+export interface CharacterOption {
+  readonly value: string;
+  readonly label: string;
+  readonly scenes: number;
+  readonly names: readonly string[];
+  readonly fromLibrary: boolean;
+}
 
 interface Props {
   readonly state: ProjectState;
@@ -27,11 +39,24 @@ interface Props {
   readonly onToggleActive: (occurrenceId: string, active: boolean) => void;
   readonly filter: SceneFilter;
   readonly onFilterChange: (f: SceneFilter) => void;
-  readonly characters: readonly CharacterInfo[];
+  readonly characters: readonly CharacterOption[];
   /** Forekomster som passer med filteret (null = intet filter). */
   readonly visible: ReadonlySet<string> | null;
   /** Andre medlemmer som står i scenen nå (tilstedeværelse). */
   readonly presence?: ReadonlyMap<string, readonly { userId: string; name: string }[]>;
+  /** Redigeringsmodus for rekkefølge og synlighet (REQ-0532). */
+  readonly structureEditing: boolean;
+  readonly onStructureEditingChange: (on: boolean) => void;
+  /** Forekomster flyttet siden siste lagrede versjon (REQ-0533); null = ingen versjon å sammenligne med. */
+  readonly moved: ReadonlySet<string> | null;
+  /** Navn på versjonen det sammenlignes med, f.eks. «versjon 3». */
+  readonly movedBaseline: string | null;
+  /** Hva fritekstsøket traff per scene (REQ-0541); null = intet søk. */
+  readonly hits: ReadonlyMap<string, readonly HitKind[]> | null;
+  /** Antall notater per scene (null = notater skjult). */
+  readonly noteCounts: ReadonlyMap<string, number> | null;
+  /** Scenen som vises øverst i manuset nå. */
+  readonly inView: string | null;
 }
 
 export function SceneNavigator({
@@ -48,17 +73,42 @@ export function SceneNavigator({
   characters,
   visible,
   presence,
+  structureEditing,
+  onStructureEditingChange,
+  moved,
+  movedBaseline,
+  hits,
+  noteCounts,
+  inView,
 }: Props) {
   const allOccs = orderedOccurrences(state, productionId);
   const occs = visible ? allOccs.filter((o) => visible.has(o.id)) : allOccs;
   // Flytting krever hele listen synlig, ellers blir plasseringen uklar
-  const canReorder = editable && !visible;
+  const canReorder = editable && structureEditing && !visible;
+  const canToggle = editable && structureEditing;
+  const movedCount = moved ? allOccs.filter((o) => moved.has(o.id)).length : 0;
   // Er valgt scene filtrert bort, må første synlige scene kunne nås med Tab
   const selectedVisible = selectedOcc !== null && occs.some((o) => o.id === selectedOcc);
   const [dragId, setDragId] = useState<string | null>(null);
   const [dropIndex, setDropIndex] = useState<number | null>(null);
   const uncertain = uncertainVariants(state);
   const uncertainSet = new Set(occs.filter((o) => uncertain.has(o.variantId)).map((o) => o.id));
+
+  // Listen følger manuset når du blar (uten å flytte fokus eller endre valget)
+  const listRef = useRef<HTMLOListElement | null>(null);
+  useEffect(() => {
+    if (!inView || dragId) return;
+    const item = document.getElementById(`nav-${inView}`)?.closest("li");
+    const list = listRef.current;
+    if (!item || !list) return;
+    const r = item.getBoundingClientRect();
+    const lr = list.getBoundingClientRect();
+    if (r.top < lr.top || r.bottom > lr.bottom)
+      list.scrollTo({
+        top: list.scrollTop + (r.top - lr.top) - lr.height / 3,
+        behavior: "smooth",
+      });
+  }, [inView, dragId]);
 
   function moveTo(id: string, index: number) {
     const from = occs.findIndex((o) => o.id === id);
@@ -103,6 +153,38 @@ export function SceneNavigator({
             : `${allOccs.filter((o) => o.active).length} aktive av ${allOccs.length}`}
         </span>
       </div>
+      {editable ? (
+        <div
+          className={
+            "flex shrink-0 flex-col gap-1 border-b border-border px-3 py-2 " +
+            (structureEditing ? "bg-surface-3" : "")
+          }
+        >
+          <label className="flex items-center justify-between gap-2 text-xs text-text-secondary">
+            <span>Endre rekkefølge og synlighet</span>
+            <Switch
+              checked={structureEditing}
+              onCheckedChange={onStructureEditingChange}
+              aria-label="Endre rekkefølge og synlighet"
+              className="scale-75"
+            />
+          </label>
+          {structureEditing ? (
+            <p className="text-[11px] text-text-tertiary">
+              {visible
+                ? "Fjern filteret for å flytte scener. Synlighet kan endres."
+                : "Dra scener for å flytte dem (eller Alt + pil). Bryteren til høyre slår en scene av og på."}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+      {moved && movedCount > 0 ? (
+        <div className="flex shrink-0 items-center gap-1.5 border-b border-border px-3 py-1.5 text-[11px] text-text-secondary">
+          <span className="size-2.5 rounded-sm bg-status-moved" aria-hidden />
+          {movedCount === 1 ? "1 scene" : `${movedCount} scener`} flyttet siden{" "}
+          {movedBaseline ?? "siste versjon"}
+        </div>
+      ) : null}
       <div className="flex shrink-0 flex-col gap-1.5 border-b border-border px-2 py-2">
         <div className="relative">
           <Search
@@ -123,17 +205,37 @@ export function SceneNavigator({
             aria-label="Vis bare scener med karakter"
             value={filter.character ?? ""}
             onChange={(e) => {
-              const { character: _c, ...rest } = filter;
-              onFilterChange(e.target.value ? { ...rest, character: e.target.value } : rest);
+              const { character: _c, characterNames: _n, ...rest } = filter;
+              const opt = characters.find((c) => c.value === e.target.value);
+              onFilterChange(
+                opt ? { ...rest, character: opt.value, characterNames: opt.names } : rest,
+              );
             }}
             className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
           >
             <option value="">Alle karakterer</option>
-            {characters.map((c) => (
-              <option key={c.name} value={c.name}>
-                {c.name} ({c.scenes})
-              </option>
-            ))}
+            {characters.some((c) => c.fromLibrary) ? (
+              <optgroup label="Fra ressursbiblioteket">
+                {characters
+                  .filter((c) => c.fromLibrary)
+                  .map((c) => (
+                    <option key={c.value} value={c.value}>
+                      {c.label} ({c.scenes})
+                    </option>
+                  ))}
+              </optgroup>
+            ) : null}
+            {characters.some((c) => !c.fromLibrary) ? (
+              <optgroup label="Navn i manuset">
+                {characters
+                  .filter((c) => !c.fromLibrary)
+                  .map((c) => (
+                    <option key={c.value} value={c.value}>
+                      {c.label} ({c.scenes})
+                    </option>
+                  ))}
+              </optgroup>
+            ) : null}
           </select>
           {visible ? (
             <button
@@ -154,6 +256,7 @@ export function SceneNavigator({
         ) : null}
       </div>
       <ol
+        ref={listRef}
         aria-label={
           canReorder
             ? "Scener i produksjonen. Alt + pil flytter valgt scene."
@@ -167,6 +270,10 @@ export function SceneNavigator({
           const v = state.variants[o.variantId];
           const merged = state.scenes[o.sceneId]?.mergedIntoSceneId != null;
           const selected = o.id === selectedOcc;
+          const isMoved = moved?.has(o.id) ?? false;
+          const isInView = o.id === inView && !selected;
+          const hit = hits?.get(o.id);
+          const notes = noteCounts?.get(o.id) ?? 0;
           return (
             <li
               key={o.id}
@@ -192,7 +299,16 @@ export function SceneNavigator({
                 }}
                 className={
                   "group grid grid-cols-[14px_1fr_auto] items-center gap-1.5 px-2 py-1.5 text-[13px] " +
-                  (selected ? "bg-accent-selection" : "hover:bg-surface-3") +
+                  (selected
+                    ? "bg-accent-selection"
+                    : isMoved
+                      ? "bg-status-moved-bg hover:bg-surface-3"
+                      : "hover:bg-surface-3") +
+                  (isMoved
+                    ? " shadow-[inset_3px_0_0_var(--status-moved)]"
+                    : isInView
+                      ? " bg-surface-3/60 shadow-[inset_3px_0_0_var(--accent-brand)]"
+                      : "") +
                   (o.active ? "" : " opacity-60") +
                   (dragId === o.id ? " opacity-40" : "")
                 }
@@ -234,6 +350,16 @@ export function SceneNavigator({
                           Usikker
                         </span>
                       ) : null}
+                      {isMoved ? <span className="text-status-moved">Flyttet</span> : null}
+                      {notes ? (
+                        <span
+                          className="flex items-center gap-0.5 text-note"
+                          title={notes === 1 ? "1 notat" : `${notes} notater`}
+                        >
+                          <MessageSquare className="size-3" aria-hidden />
+                          {notes}
+                        </span>
+                      ) : null}
                       {v && v.ownerProductionId !== null ? <span>Egen variant</span> : null}
                       {presence?.get(o.id)?.length ? (
                         <span className="text-accent-brand" title="Står i scenen nå">
@@ -245,15 +371,25 @@ export function SceneNavigator({
                         </span>
                       ) : null}
                     </span>
+                    {hit?.length ? (
+                      <span className="block truncate text-[11px] text-text-secondary">
+                        <span className="mark-search-chip mr-1 rounded-[2px] px-1">Treff</span>
+                        {hit.map((h) => HIT_LABEL[h]).join(", ")}
+                      </span>
+                    ) : null}
                   </span>
                 </button>
-                <Switch
-                  checked={o.active}
-                  disabled={!editable || merged}
-                  onCheckedChange={(on) => onToggleActive(o.id, on)}
-                  aria-label={`${o.active ? "Deaktiver" : "Aktiver"} scene ${o.productionNumber ?? "uten nummer"}`}
-                  className="scale-75"
-                />
+                {canToggle ? (
+                  <Switch
+                    checked={o.active}
+                    disabled={merged}
+                    onCheckedChange={(on) => onToggleActive(o.id, on)}
+                    aria-label={`${o.active ? "Deaktiver" : "Aktiver"} scene ${o.productionNumber ?? "uten nummer"}`}
+                    className="scale-75"
+                  />
+                ) : (
+                  <span />
+                )}
               </div>
             </li>
           );

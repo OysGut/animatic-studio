@@ -6,5 +6,17 @@ export * from "./invariants";
 export * from "./views";
 export * from "./patch";
 export * from "./commands/types";
-export { applyCommand, revisionOf, revisionsOf, type ApplyResult } from "./commands/apply";
+export {
+  applyCommand,
+  revisionOf,
+  revisionsOf,
+  ASSET_KINDS,
+  ASSET_NAME_KINDS,
+  ASSET_MAX_BYTES,
+  ASSET_MIME_TYPES,
+  VISUAL_STYLES,
+  type ApplyResult,
+} from "./commands/apply";
 export * from "./screenplay";
+export * from "./library";
+export * from "./notes";

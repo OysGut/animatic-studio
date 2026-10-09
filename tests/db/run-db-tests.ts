@@ -86,6 +86,10 @@ async function loadState(projectId: string): Promise<ProjectState> {
     scene_occurrences: await q("scene_occurrences"),
     production_segments: await q("production_segments"),
     takes: await q("takes"),
+    assets: await q("assets"),
+    asset_variants: await q("asset_variants"),
+    asset_versions: await q("asset_versions"),
+    script_annotations: await q("script_annotations"),
   };
   return stateFromRows(rows);
 }
@@ -648,6 +652,166 @@ try {
       (tx) => tx`select id from public.script_versions`,
     );
     assert(carol.length === 0, "ikke-medlem ser versjoner");
+  });
+
+  await test("0004: ressurs, variant og bildeversjon lagres og leses tilbake; versjonen er uforanderlig", async () => {
+    let st = await loadState(projectId);
+    const assetId = "abcdef00-0000-7000-8000-0000000000a1";
+    const variantId = "abcdef00-0000-7000-8000-0000000000a2";
+    const v1 = "abcdef00-0000-7000-8000-0000000000a3";
+    st = await runCommand(st, ALICE, {
+      type: "CreateAssets",
+      assets: [
+        {
+          assetId: assetId as never,
+          fields: {
+            kind: "character",
+            name: "Bestemor Anne",
+            names: [{ name: "BESTEMOR", kind: "alias", language: null }],
+            description: "Majas bestemor",
+            category: "Familie",
+            tags: ["hovedrolle"],
+          },
+        },
+      ],
+    });
+    st = await runCommand(st, ALICE, {
+      type: "CreateAssetVariant",
+      variantId: variantId as never,
+      assetId: assetId as never,
+      fields: { name: "Animatic", style: "animatic", appearance: "vinterklær" },
+    });
+    const addVersion: Command = {
+      type: "AddAssetVersion",
+      versionId: v1 as never,
+      variantId: variantId as never,
+      media: {
+        path: `${projectId}/${assetId}/${v1}/anne.png`,
+        mimeType: "image/png",
+        width: 800,
+        height: 1200,
+        byteSize: 4096,
+        sha256: "c".repeat(64),
+      },
+      note: "Første skisse",
+    };
+    const withVersion = await runCommand(st, ALICE, addVersion);
+    // Angre opplastingen (sletting via apply_changes) og gjør om
+    const undone = await runCommand(withVersion, ALICE, {
+      type: "UndoAddAssetVersion",
+      versionId: v1 as never,
+    });
+    assert(
+      (await sql`select 1 from public.asset_versions where id = ${v1}`).length === 0,
+      "angre fjernet ikke versjonen",
+    );
+    st = await runCommand(undone, ALICE, addVersion);
+    st = await runCommand(st, ALICE, {
+      type: "ApproveAssetVersion",
+      variantId: variantId as never,
+      versionId: v1 as never,
+    });
+    const back = await loadState(projectId);
+    const strip = (x: object) => JSON.stringify(x, (k, v) => (k === "createdAt" ? undefined : v));
+    assert(strip(back.assets[assetId]!) === strip(st.assets[assetId]!), "ressursen avviker");
+    assert(
+      strip(back.assetVariants[variantId]!) === strip(st.assetVariants[variantId]!),
+      "varianten avviker",
+    );
+    assert(strip(back.assetVersions[v1]!) === strip(st.assetVersions[v1]!), "versjonen avviker");
+    assert(back.assetVersions[v1]!.createdBy === ALICE, "opplaster");
+    await expectError(sql`update public.asset_versions set note = 'x'`, /INV-13/);
+    // Bare via apply_changes: klienten kan ikke skrive, leseren ser, ikke-medlem ser ingenting
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) =>
+          tx`insert into public.assets (id, project_id, kind, name) values (gen_random_uuid(), ${projectId}, 'object', 'Vase')`,
+      ),
+      "42501",
+    );
+    const bobSees = await as("authenticated", BOB, (tx) => tx`select id from public.assets`);
+    assert(bobSees.length === 1, "medlem med lesetilgang ser ikke ressursen");
+    const carolSees = await as(
+      "authenticated",
+      CAROL,
+      (tx) => tx`select id from public.asset_versions`,
+    );
+    assert(carolSees.length === 0, "ikke-medlem ser bildeversjoner");
+    // Sti utenfor prosjektet avvises også av databasen
+    await expectError(
+      sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size, sha256) values (gen_random_uuid(), ${projectId}, ${variantId}, 9, 'annet/x.png', 'image/png', 1, ${"d".repeat(64)})`,
+      /asset_versions_media_path_check|check constraint/,
+    );
+  });
+
+  await test("0004: notater lagres med stempel, kan slettes og angres, og følger blokken", async () => {
+    let st = await loadState(projectId);
+    const block = Object.values(st.blocks).find((b) => !b.removed && b.text.length > 4)!;
+    const variant = Object.values(st.variants)[0]!;
+    const n1 = "abcdef00-0000-7000-8000-0000000000b1";
+    const n2 = "abcdef00-0000-7000-8000-0000000000b2";
+    st = await runCommand(st, ALICE, {
+      type: "AddAnnotations",
+      annotations: [
+        {
+          annotationId: n1 as never,
+          blockId: block.id,
+          variantId: null,
+          start: 0,
+          end: 4,
+          quote: block.text.slice(0, 4),
+          text: "Notat på tekst",
+          authorName: "Mars",
+          stampAt: "2026-10-01T10:00:00.000Z",
+        },
+        {
+          annotationId: n2 as never,
+          blockId: null,
+          variantId: variant.id,
+          start: 0,
+          end: 0,
+          quote: "",
+          text: "Nål på scenen",
+          authorName: "Anita",
+        },
+      ],
+    });
+    st = await runCommand(st, ALICE, {
+      type: "SetAnnotationRemoved",
+      annotationId: n2 as never,
+      removed: true,
+    });
+    const back = await loadState(projectId);
+    assert(back.annotations[n1]!.authorName === "Mars", "stempel");
+    assert(back.annotations[n1]!.stampAt === "2026-10-01T10:00:00.000Z", "tidspunkt");
+    assert(back.annotations[n2]!.removed === true, "slettet");
+    assert(
+      JSON.stringify(back.annotations[n1]) === JSON.stringify(st.annotations[n1]),
+      "notatet avviker fra kjernens",
+    );
+    // Databasen krever enten tekst eller scene
+    await expectError(
+      sql`insert into public.script_annotations (id, project_id, text) values (gen_random_uuid(), ${projectId}, 'x')`,
+      /check constraint/,
+    );
+    const carol = await as(
+      "authenticated",
+      CAROL,
+      (tx) => tx`select id from public.script_annotations`,
+    );
+    assert(carol.length === 0, "ikke-medlem ser notater");
+    // Ukjent tabell i endringssettet avvises (ingenting går tapt i stillhet)
+    await expectError(
+      as(
+        "service_role",
+        null,
+        (tx) =>
+          tx`select public.apply_changes(${projectId}, ${ALICE}, gen_random_uuid(), '{"type":"X"}'::jsonb, null, '{"inserts":{"ukjent":[{"id":"x"}]}}'::jsonb)`,
+      ),
+      /ukjent tabell/,
+    );
   });
 } finally {
   await sql.end();

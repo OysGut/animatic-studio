@@ -4,7 +4,14 @@
  */
 import { AlertTriangle, CheckCircle2, FileUp, Loader2 } from "lucide-react";
 import { useRef, useState } from "react";
-import { orderedOccurrences, planImport, type ProductionId, type ProjectState } from "@/core";
+import {
+  orderedOccurrences,
+  planImport,
+  planImportNotes,
+  type Command,
+  type ProductionId,
+  type ProjectState,
+} from "@/core";
 import { readScreenplayFile, sourceStorageKey, type ReadScreenplay } from "@/engine/import/browser";
 import { db } from "@/app/db";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,7 +30,7 @@ type Step =
   | { kind: "reading"; fileName: string }
   | { kind: "preview"; file: File; read: ReadScreenplay; previous: string | null }
   | { kind: "importing"; progress: string }
-  | { kind: "done"; scenes: number }
+  | { kind: "done"; scenes: number; notes: number; notesError: string | null }
   | { kind: "error"; message: string };
 
 interface Props {
@@ -33,9 +40,11 @@ interface Props {
   readonly productionId: string;
   readonly state: ProjectState;
   readonly runAndWait: (
-    command: ReturnType<typeof planImport>,
+    command: Command,
     label: string,
   ) => Promise<{ error: string | null; commandId: string | null }>;
+  /** Navn som brukes på notater i filen som mangler forfatter. */
+  readonly authorName: string;
 }
 
 export function ImportDialog({
@@ -45,6 +54,7 @@ export function ImportDialog({
   productionId,
   state,
   runAndWait,
+  authorName,
 }: Props) {
   const [step, setStep] = useState<Step>({ kind: "choose" });
   const [includeContinuation, setIncludeContinuation] = useState(true);
@@ -120,7 +130,27 @@ export function ImportDialog({
         p_change_id: res.commandId,
       });
       if (reg.error) console.warn("[import] registrering av original feilet", reg.error.message);
-      setStep({ kind: "done", scenes: command.scenes.length });
+      // Notater i filen (Word-kommentarer / PDF-merknader) gjenopprettes på samme sted (REQ-0540)
+      let notes = 0;
+      let notesError: string | null = null;
+      const planned = planImportNotes(read.parsed, command, read.notes, {
+        skipContinuation: !includeContinuation,
+        fallbackAuthor: authorName,
+      });
+      if (planned.length) {
+        setStep({ kind: "importing", progress: `Legger inn ${planned.length} notater …` });
+        // I biter, så ett stort dokument ikke overskrider grensen per endring
+        for (let i = 0; i < planned.length && !notesError; i += 1000) {
+          const part = planned.slice(i, i + 1000);
+          const r = await runAndWait(
+            { type: "AddAnnotations", annotations: part, imported: true },
+            `${part.length} notater fra importen`,
+          );
+          if (r.error) notesError = r.error;
+          else notes += part.length;
+        }
+      }
+      setStep({ kind: "done", scenes: command.scenes.length, notes, notesError });
     } catch (e) {
       setStep({ kind: "error", message: (e as Error).message });
     }
@@ -187,7 +217,14 @@ export function ImportDialog({
         {step.kind === "done" ? (
           <p className="flex items-center gap-2 py-6 text-[13px] text-text-primary" role="status">
             <CheckCircle2 className="size-4 text-status-success" aria-hidden />
-            {step.scenes} scener er importert. Hele importen kan angres med ⌘/Ctrl + Z.
+            {step.scenes} scener
+            {step.notes ? ` og ${step.notes} notater` : ""} er importert. Hele importen kan angres
+            med ⌘/Ctrl + Z.
+          </p>
+        ) : null}
+        {step.kind === "done" && step.notesError ? (
+          <p role="alert" className="text-xs text-status-danger">
+            Notatene i filen ble ikke lagret: {step.notesError}
           </p>
         ) : null}
 
@@ -249,6 +286,14 @@ function Preview({
         <dd className="tabular text-right text-text-primary">
           {p.scenes.length} ({p.stats.numbered} med nummer, {p.stats.unnumbered} uten)
         </dd>
+        {step.read.notes.length ? (
+          <>
+            <dt className="text-text-secondary">Notater i filen</dt>
+            <dd className="tabular text-right text-text-primary">
+              {step.read.notes.length} (legges inn på samme sted, med navn og tidspunkt)
+            </dd>
+          </>
+        ) : null}
         <dt className="text-text-secondary">Usikre tolkninger</dt>
         <dd className="tabular text-right text-text-primary">
           {p.stats.uncertain} elementer · {uncertainScenes} overskrifter

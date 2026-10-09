@@ -3,6 +3,7 @@
  * Originalfilen leses bare; den lastes opp uendret (mandat 4.2). pdf.js og arbeideren lastes først når de trengs.
  */
 import { parseScreenplayLines, type ParsedScreenplay } from "@/core/screenplay";
+import type { ImportedNote } from "@/core/notes";
 
 export const MAX_IMPORT_BYTES = 100 * 1024 * 1024;
 
@@ -11,6 +12,8 @@ export interface ReadScreenplay {
   readonly bytes: Uint8Array;
   readonly sha256: string;
   readonly format: "pdf" | "docx";
+  /** Notater i filen (Word-kommentarer eller PDF-merknader) – gjenopprettes ved import (DEC-0031). */
+  readonly notes: readonly ImportedNote[];
 }
 
 export function formatOf(name: string): "pdf" | "docx" | null {
@@ -42,13 +45,14 @@ export async function readScreenplayFile(file: File): Promise<ReadScreenplay> {
   const bytes = new Uint8Array(await file.arrayBuffer());
   const sha256 = await sha256Hex(bytes);
   let lines;
+  let notes: ImportedNote[];
   if (format === "pdf") {
-    const { pdfToLines } = await import("./pdf-lines");
+    const { pdfToLinesAndNotes } = await import("./pdf-lines");
     // pdf.js kan overta bufferen; gi den en kopi så originalen er urørt for opplasting
-    lines = await pdfToLines(bytes.slice(), loadPdfJs as never);
+    ({ lines, notes } = await pdfToLinesAndNotes(bytes.slice(), loadPdfJs as never));
   } else {
-    const { docxToLines } = await import("./docx-lines");
-    lines = docxToLines(bytes);
+    const { docxToLinesAndNotes } = await import("./docx-lines");
+    ({ lines, notes } = docxToLinesAndNotes(bytes));
   }
   if (lines.length === 0) {
     throw new Error(
@@ -57,7 +61,7 @@ export async function readScreenplayFile(file: File): Promise<ReadScreenplay> {
         : "Fant ingen tekst i Word-filen.",
     );
   }
-  return { parsed: parseScreenplayLines(lines, { format }), bytes, sha256, format };
+  return { parsed: parseScreenplayLines(lines, { format }), bytes, sha256, format, notes };
 }
 
 /** Lagringsnøkkel for originalen: <prosjekt>/<sha256>/<trygt filnavn> (DEC-0020 pkt. 4). */

@@ -4,6 +4,11 @@
  * revisjon i mellomtiden (INV-C1). Radformatet (snake_case) er lagringsformatet i DATA_RELATIONSHIPS.md.
  */
 import type {
+  Annotation,
+  Asset,
+  AssetName,
+  AssetVariant,
+  AssetVersion,
   BlockRevision,
   CollectionName,
   Production,
@@ -31,7 +36,17 @@ export interface ChangeSet {
 }
 
 type AnyEntity =
-  Production | Scene | SceneVariant | ScriptBlock | SceneOccurrence | ProductionSegment | Take;
+  | Production
+  | Scene
+  | SceneVariant
+  | ScriptBlock
+  | SceneOccurrence
+  | ProductionSegment
+  | Take
+  | Asset
+  | AssetVariant
+  | AssetVersion
+  | Annotation;
 
 export function toRow(collection: CollectionName, e: AnyEntity, projectId: string): Row {
   const base = { id: e.id, project_id: projectId, revision: e.revision };
@@ -126,6 +141,62 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         media_ref: t.mediaRef,
       };
     }
+    case "assets": {
+      const a = e as Asset;
+      return {
+        ...base,
+        kind: a.kind,
+        name: a.name,
+        names: a.names,
+        description: a.description,
+        category: a.category,
+        tags: a.tags,
+        archived: a.archived,
+      };
+    }
+    case "assetVariants": {
+      const v = e as AssetVariant;
+      return {
+        ...base,
+        asset_id: v.assetId,
+        name: v.name,
+        style: v.style,
+        appearance: v.appearance,
+        approved_version_id: v.approvedVersionId,
+        archived: v.archived,
+      };
+    }
+    case "assetVersions": {
+      // created_at og created_by settes av databasen (apply_changes)
+      const v = e as AssetVersion;
+      return {
+        ...base,
+        variant_id: v.variantId,
+        number: v.number,
+        media_path: v.mediaPath,
+        mime_type: v.mimeType,
+        width: v.width,
+        height: v.height,
+        byte_size: v.byteSize,
+        sha256: v.sha256,
+        note: v.note,
+      };
+    }
+    case "annotations": {
+      const n = e as Annotation;
+      return {
+        ...base,
+        variant_id: n.variantId,
+        block_id: n.blockId,
+        range_start: n.start,
+        range_end: n.end,
+        quote: n.quote,
+        text: n.text,
+        author_name: n.authorName,
+        stamp_at: n.stampAt,
+        removed: n.removed,
+      };
+    }
   }
 }
 
@@ -155,6 +226,10 @@ export const TABLE_ORDER: readonly string[] = [
   "scene_occurrences",
   "production_segments",
   "takes",
+  "assets",
+  "asset_variants",
+  "asset_versions",
+  "script_annotations",
 ];
 
 export function diffStates(before: ProjectState, after: ProjectState): ChangeSet {
@@ -204,6 +279,11 @@ export interface ProjectRows {
   readonly scene_occurrences: readonly Row[];
   readonly production_segments: readonly Row[];
   readonly takes: readonly Row[];
+  /** Ressursbiblioteket (migrasjon 0004). Tomt hvis migrasjonen ikke er kjørt ennå. */
+  readonly assets?: readonly Row[];
+  readonly asset_variants?: readonly Row[];
+  readonly asset_versions?: readonly Row[];
+  readonly script_annotations?: readonly Row[];
 }
 
 const str = (v: unknown) => String(v);
@@ -330,6 +410,67 @@ export function stateFromRows(r: ProjectRows): ProjectState {
           blockRevisions: {},
         },
         mediaRef: optStr(x["media_ref"]),
+      })),
+    ),
+    assets: byId(
+      (r.assets ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        kind: str(x["kind"]) as never,
+        name: str(x["name"]),
+        names: ((x["names"] as AssetName[] | null | undefined) ?? []).map((n) => ({
+          name: String(n.name),
+          kind: n.kind,
+          language: n.language ?? null,
+        })),
+        description: str(x["description"] ?? ""),
+        category: str(x["category"] ?? ""),
+        tags: ((x["tags"] as string[] | null | undefined) ?? []).map(String),
+        archived: x["archived"] === true,
+      })),
+    ),
+    assetVariants: byId(
+      (r.asset_variants ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        assetId: str(x["asset_id"]) as never,
+        name: str(x["name"]),
+        style: str(x["style"]) as never,
+        appearance: str(x["appearance"] ?? ""),
+        approvedVersionId: optStr(x["approved_version_id"]) as never,
+        archived: x["archived"] === true,
+      })),
+    ),
+    assetVersions: byId(
+      (r.asset_versions ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        variantId: str(x["variant_id"]) as never,
+        number: num(x["number"]),
+        mediaPath: str(x["media_path"]),
+        mimeType: str(x["mime_type"]),
+        width: optNum(x["width"]),
+        height: optNum(x["height"]),
+        byteSize: num(x["byte_size"]),
+        sha256: str(x["sha256"]),
+        note: str(x["note"] ?? ""),
+        createdAt: iso(x["created_at"]),
+        createdBy: str(x["created_by"] ?? ""),
+      })),
+    ),
+    annotations: byId(
+      (r.script_annotations ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        variantId: optStr(x["variant_id"]) as never,
+        blockId: optStr(x["block_id"]) as never,
+        start: num(x["range_start"]),
+        end: num(x["range_end"]),
+        quote: str(x["quote"] ?? ""),
+        text: str(x["text"] ?? ""),
+        authorName: str(x["author_name"] ?? ""),
+        stampAt: iso(x["stamp_at"]),
+        removed: x["removed"] === true,
       })),
     ),
   };

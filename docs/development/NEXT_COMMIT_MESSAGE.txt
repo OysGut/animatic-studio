@@ -1,11 +1,39 @@
-M2 del 2: manusversjoner, sammenligning, søk/filter, «Vis kun valgt scene», varighet, tilstedeværelse
+M3 del 1: ressursbibliotek, notater i manus og Mars' ønsker etter M2 (REQ-0532–0543, DEC-0029–0031)
 
-- Nytt krav fra Mars: «Vis kun valgt scene» i manusvisningen (REQ-0531, DEC-0027)
-- Manusversjoner: lagre uforanderlige versjoner, vise, sammenligne (ny/fjernet/flyttet/endret dialog, handling, overskrift, karakterer …) og eksportere en versjon som PDF (REQ-0032, 0069, 0076–0078)
-- Eksport med «bevar valgt historisk nummerering» (REQ-0083)
-- Søk i manus og filter på karakter – bare visning, filmen endres ikke (REQ-0073–0075)
-- Varighetsestimat med justerbare antakelser på prosjektoversikten (REQ-0109, 0115–0117)
-- Tilstedeværelse: se hvem andre som er i prosjektet og hvilken scene de står i
-- Raskere: blokker indekseres per tilstand (filter og sidebryting på millisekunder)
-- Migrasjon db/migrations/0003_script_versions.sql (må kjøres i Lovable, se LOVABLE_SYNC.md B)
-- Kodegjennomgang: 12 funn rettet; 101 Vitest-tester og 20 databasetester grønne
+Ny databaseendring: db/migrations/0004_library_notes.sql må kjøres i Lovable etter push
+(ferdig melding i docs/development/LOVABLE_SYNC.md, del B). Den lager også lagringsbøtten «assets» for bilder.
+
+Manus – Mars' ønsker etter M2 (DEC-0029)
+- Rekkefølge og synlighet endres bare når «Endre rekkefølge og synlighet» er slått på øverst i scenelisten
+  (REQ-0532). Uten den kan scener ikke dras, Alt+pil flytter ikke, og av/på-bryterne er skjult (også i inspektøren).
+- Scener som er flyttet siden siste lagrede manusversjon, har lilla bakgrunn og kant i scenelisten til en ny
+  versjon lagres (REQ-0533). Bare scenene som faktisk er flyttet markeres.
+- Sammenligning av versjoner viser nå hva som er endret (REQ-0534): endrede replikker og handling linje for
+  linje med endrede ord uthevet, nye og fjernede linjer, hvem som snakker, og hvor en flyttet scene sto og står.
+
+Notater i manus (DEC-0031)
+- Notater på ord og setninger (merk teksten → «Legg til notat»), på hele elementet eller som nål på scenen
+  (REQ-0535). Hvem og når står i hjørnet (REQ-0536); stempelet settes av serveren.
+- Sletting med bekreftelse, og kan angres (REQ-0537). «Vis notater» i verktøylinjen (REQ-0538).
+- Søket treffer også notater (REQ-0539). Treff markeres diskret på sidene, og scenelisten viser hva søket traff,
+  f.eks. «Treff: replikk, notat» (REQ-0541).
+- Eksport: «Ta med notater» (av som standard) gir Word-kommentarer eller PDF-merknader med navn og tidspunkt.
+  Import av en slik fil lager notatene igjen på samme sted – også kommentarer skrevet i Word (REQ-0540).
+- Scenelisten følger manuset når du blar (REQ-0542). Klikk på en scene viser overskriften øverst (REQ-0543).
+
+Ressursbibliotek (M3 del 1, DEC-0030)
+- Ny arbeidsflate «Ressursbibliotek»: karakterer, objekter, lokasjoner, dyr og miljøer med permanent ID,
+  foretrukket navn og alternative navn (alias, kallenavn, tidligere navn, andre språk), kategori, stikkord og søk.
+- Visuelle varianter (stil og utseende) med bildeversjoner og egen godkjenning. Nye bilder tas aldri i bruk
+  automatisk. Arkivering i stedet for sletting.
+- «Brukt i scener» ut fra navnene i manuset, med lenke til scenen i Manus.
+- «Forslag fra manuset»: karakterer og steder som mangler; navn som ligner en ressurs foreslås som alternativt
+  navn – ingenting legges til før du velger det.
+- Karakterfilteret i Manus bruker alle navnene til en karakter fra biblioteket (KI-29 løst).
+
+Kvalitet
+- To uavhengige kodegjennomganger (20 funn), alle rettet med tester unntatt KI-36 (spørsmål til Mars).
+- 126 Vitest-tester (inkl. rundtur Word/PDF med notater og tilfeldige kommandosekvenser med bibliotek og notater),
+  22 databasetester, 27 skjermbilder. Typekontroll og bygg uten feil.
+- Dokumentasjon: DEC-0029–0031, REQ-0532–0543, KNOWN_ISSUES (KI-29 lukket, KI-30–36 nye), LOVABLE_SYNC,
+  IMPLEMENTATION_STATUS, CURRENT_WORK, SESSION_HANDOVER, DESIGN_SYSTEM (nye fargetokens).

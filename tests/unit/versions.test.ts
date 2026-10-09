@@ -5,6 +5,7 @@ import {
   diffSnapshots,
   exportNumbering,
   keyBetween,
+  movedOccurrences,
   numbersByOccurrence,
   orderedOccurrences,
   paginate,
@@ -13,6 +14,8 @@ import {
   scriptView,
   snapshotFromState,
   snapshotPaginationInput,
+  sceneLineChanges,
+  wordDiff,
   type ProductionId,
 } from "@/core";
 import { mustApply, seedProject, tid } from "../helpers/fixtures";
@@ -209,5 +212,80 @@ describe("Samme scene brukt to ganger", () => {
     expect(new Set(nums).size).toBe(nums.length);
     expect(n.find((e) => e.occurrenceId === a.occurrenceId)!.exportNumber).toBe("1");
     expect(n.find((e) => e.occurrenceId === second)!.exportNumber).not.toBe("1");
+  });
+});
+
+describe("Flyttede scener mot siste versjon (REQ-0533)", () => {
+  it("markerer bare scenen som er flyttet, ikke scenene den hoppet over", () => {
+    const { s, mainId, cmd } = project();
+    const v1 = snapshotFromState(s, mainId);
+    const d = cmd.scenes[3]!;
+    const first = orderedOccurrences(s, mainId)[0]!;
+    const x = mustApply(s, {
+      type: "MoveOccurrence",
+      occurrenceId: d.occurrenceId,
+      orderKey: keyBetween(null, first.orderKey),
+    });
+    const order = orderedOccurrences(x, mainId).map((o) => o.id as string);
+    expect([...movedOccurrences(v1, order)]).toEqual([d.occurrenceId]);
+    // Etter ny versjon er ingenting flyttet
+    expect(movedOccurrences(snapshotFromState(x, mainId), order).size).toBe(0);
+    // Nye scener (ikke i versjonen) regnes ikke som flyttet
+    expect(movedOccurrences(v1, [...order, "ny"]).has("ny")).toBe(false);
+  });
+});
+
+describe("Hva som er endret (REQ-0534)", () => {
+  it("viser endrede, nye og fjernede linjer med hvem som snakker", () => {
+    const { s, mainId, cmd } = project();
+    const before = snapshotFromState(s, mainId);
+    const a = cmd.scenes[0]!;
+    let x = mustApply(s, {
+      type: "EditBlockText",
+      productionId: mainId,
+      blockId: a.blocks[2]!.blockId,
+      text: "Hei på deg.",
+    });
+    x = mustApply(x, { type: "RemoveBlock", productionId: mainId, blockId: a.blocks[0]!.blockId });
+    const after = snapshotFromState(x, mainId);
+    const lines = sceneLineChanges(before.scenes[0]!, after.scenes[0]!);
+    expect(lines).toEqual([
+      { op: "removed", kind: "action", speaker: null, before: "Handling A.", after: null },
+      { op: "changed", kind: "dialogue", speaker: "MAJA", before: "Hei.", after: "Hei på deg." },
+    ]);
+    const ch = diffSnapshots(before, after);
+    const dlg = ch.find((c) => c.type === "dialogue")!;
+    expect(dlg.detail).toBe("1 linje endret");
+    expect(dlg.lines).toHaveLength(1);
+    expect(ch.find((c) => c.type === "action")!.detail).toBe("1 fjernet");
+  });
+
+  it("forteller hvor en flyttet scene sto og står", () => {
+    const { s, mainId, cmd } = project();
+    const before = snapshotFromState(s, mainId);
+    const d = cmd.scenes[3]!;
+    const first = orderedOccurrences(s, mainId)[0]!;
+    const x = mustApply(s, {
+      type: "MoveOccurrence",
+      occurrenceId: d.occurrenceId,
+      orderKey: keyBetween(null, first.orderKey),
+    });
+    const m = diffSnapshots(before, snapshotFromState(x, mainId)).find((c) => c.type === "moved")!;
+    expect(m.detail).toBe("Sto på plass 4, etter scene 3. Står nå på plass 1, først.");
+  });
+
+  it("ord-for-ord-forskjell", () => {
+    expect(wordDiff("Hei der.", "Hei på deg.")).toEqual([
+      { op: "same", text: "Hei " },
+      { op: "removed", text: "der." },
+      { op: "added", text: "på deg." },
+    ]);
+    const join = (op: string) =>
+      wordDiff("a b c", "a x c")
+        .filter((p) => p.op !== op)
+        .map((p) => p.text)
+        .join("");
+    expect(join("added")).toBe("a b c");
+    expect(join("removed")).toBe("a x c");
   });
 });

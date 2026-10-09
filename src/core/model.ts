@@ -4,6 +4,10 @@
  * (samtidighetskontroll, INV-C1). Ingen entitet har scenenummer som nøkkel (INV-02).
  */
 import type {
+  AnnotationId,
+  AssetId,
+  AssetVariantId,
+  AssetVersionId,
   BlockId,
   OccurrenceId,
   ProductionId,
@@ -143,6 +147,90 @@ export interface Take extends Entity<TakeId> {
   readonly mediaRef: string | null;
 }
 
+// ---------- Ressursbibliotek (M3 del 1; mandat kap. 8–9, REQ-0121–0136, REQ-0146, REQ-0149) ----------
+
+export type AssetKind = "character" | "object" | "location" | "animal" | "environment" | "other";
+
+/** Type alternativt navn (REQ-0126). */
+export type AssetNameKind = "alias" | "nickname" | "former" | "language";
+
+export interface AssetName {
+  readonly name: string;
+  readonly kind: AssetNameKind;
+  /** Språkkode for språkspesifikke betegnelser (f.eks. "en"); ellers null. */
+  readonly language: string | null;
+}
+
+/** Felles ressurs med permanent identitet (REQ-0125). Arkivering er ikke sletting. */
+export interface Asset extends Entity<AssetId> {
+  readonly kind: AssetKind;
+  /** Foretrukket navn. */
+  readonly name: string;
+  readonly names: readonly AssetName[];
+  readonly description: string;
+  readonly category: string;
+  readonly tags: readonly string[];
+  readonly archived: boolean;
+}
+
+/** Fremstillingsstil for en visuell variant (REQ-0135, REQ-0149: stil er ikke identitet eller tilstand). */
+export type VisualStyle =
+  "reference" | "illustrated" | "realistic" | "animatic" | "poster" | "other";
+
+/**
+ * Visuell variant av en ressurs (REQ-0135): stil (hvordan den tegnes) og utseendetilstand (antrekk, alder, frisyre).
+ * Hver variant versjoneres og godkjennes for seg (REQ-0136).
+ */
+export interface AssetVariant extends Entity<AssetVariantId> {
+  readonly assetId: AssetId;
+  readonly name: string;
+  readonly style: VisualStyle;
+  /** Utseendetilstand i historien, f.eks. «kort hår» eller «vinterklær». Tom = standard. */
+  readonly appearance: string;
+  /** Godkjent versjon. Endres bare ved eksplisitt godkjenning (REQ-0028, REQ-0146). */
+  readonly approvedVersionId: AssetVersionId | null;
+  readonly archived: boolean;
+}
+
+/** Uforanderlig versjon (bilde) av en visuell variant. */
+export interface AssetVersion extends Entity<AssetVersionId> {
+  readonly variantId: AssetVariantId;
+  /** Løpenummer per variant (1, 2, 3 …). */
+  readonly number: number;
+  /** Sti i den private lagringsbøtten «assets»: <prosjekt>/<ressurs>/<versjon>/<filnavn>. */
+  readonly mediaPath: string;
+  readonly mimeType: string;
+  readonly width: number | null;
+  readonly height: number | null;
+  readonly byteSize: number;
+  readonly sha256: string;
+  readonly note: string;
+  readonly createdAt: string;
+  readonly createdBy: string;
+}
+
+// ---------- Notater i manus (DEC-0031, REQ-0535–0540) ----------
+
+/**
+ * Et notat festet til et tekstutsnitt i en manusblokk, eller som nål på scenen (blockId = null).
+ * Plasseringen lagres som tegnposisjoner + den markerte teksten, så notatet finnes igjen etter tekstendringer.
+ * Stempelet (navn og tidspunkt) vises i hjørnet; ved import fra fil beholdes originalens stempel.
+ */
+export interface Annotation extends Entity<AnnotationId> {
+  /** Nål på scenen: scenevarianten (følger scenen dit den flyttes). null for notater på tekst. */
+  readonly variantId: VariantId | null;
+  /** Notat på tekst: blokken (scenen er blokkens variant). null for nål på scenen. */
+  readonly blockId: BlockId | null;
+  readonly start: number;
+  readonly end: number;
+  readonly quote: string;
+  readonly text: string;
+  readonly authorName: string;
+  readonly stampAt: string;
+  /** Slettet (kan angres). Slettede notater vises og eksporteres ikke. */
+  readonly removed: boolean;
+}
+
 export interface ProjectState {
   readonly project: Project;
   readonly productions: Readonly<Record<string, Production>>;
@@ -153,6 +241,10 @@ export interface ProjectState {
   readonly occurrences: Readonly<Record<string, SceneOccurrence>>;
   readonly segments: Readonly<Record<string, ProductionSegment>>;
   readonly takes: Readonly<Record<string, Take>>;
+  readonly assets: Readonly<Record<string, Asset>>;
+  readonly assetVariants: Readonly<Record<string, AssetVariant>>;
+  readonly assetVersions: Readonly<Record<string, AssetVersion>>;
+  readonly annotations: Readonly<Record<string, Annotation>>;
 }
 
 /** Tabellnavn i databasen for hver samling (brukes av patch/adapter). */
@@ -164,6 +256,10 @@ export const COLLECTION_TABLES = {
   occurrences: "scene_occurrences",
   segments: "production_segments",
   takes: "takes",
+  assets: "assets",
+  assetVariants: "asset_variants",
+  assetVersions: "asset_versions",
+  annotations: "script_annotations",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_TABLES;
@@ -179,6 +275,10 @@ export function emptyProjectState(project: Project): ProjectState {
     occurrences: {},
     segments: {},
     takes: {},
+    assets: {},
+    assetVariants: {},
+    assetVersions: {},
+    annotations: {},
   };
 }
 

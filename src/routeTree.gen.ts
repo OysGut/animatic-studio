@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as InvitasjonRouteImport } from './routes/invitasjon'
 import { Route as ProsjektProjectIdRouteImport } from './routes/prosjekt.$projectId'
 import { Route as ProsjektProjectIdIndexRouteImport } from './routes/prosjekt.$projectId.index'
+import { Route as ProsjektProjectIdBibliotekRouteImport } from './routes/prosjekt.$projectId.bibliotek'
 import { Route as ProsjektProjectIdManusRouteImport } from './routes/prosjekt.$projectId.manus'
 
 const IndexRoute = IndexRouteImport.update({
@@ -35,6 +36,12 @@ const ProsjektProjectIdIndexRoute = ProsjektProjectIdIndexRouteImport.update({
   path: '/',
   getParentRoute: () => ProsjektProjectIdRoute,
 } as any)
+const ProsjektProjectIdBibliotekRoute =
+  ProsjektProjectIdBibliotekRouteImport.update({
+    id: '/bibliotek',
+    path: '/bibliotek',
+    getParentRoute: () => ProsjektProjectIdRoute,
+  } as any)
 const ProsjektProjectIdManusRoute = ProsjektProjectIdManusRouteImport.update({
   id: '/manus',
   path: '/manus',
@@ -45,12 +52,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/invitasjon': typeof InvitasjonRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
+  '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/': typeof ProsjektProjectIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/invitasjon': typeof InvitasjonRoute
+  '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdIndexRoute
 }
@@ -59,6 +68,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/invitasjon': typeof InvitasjonRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
+  '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/': typeof ProsjektProjectIdIndexRoute
 }
@@ -68,16 +78,22 @@ export interface FileRouteTypes {
     | '/'
     | '/invitasjon'
     | '/prosjekt/$projectId'
+    | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/invitasjon' | '/prosjekt/$projectId/manus' | '/prosjekt/$projectId'
+    | '/'
+    | '/invitasjon'
+    | '/prosjekt/$projectId/bibliotek'
+    | '/prosjekt/$projectId/manus'
+    | '/prosjekt/$projectId'
   id:
     | '__root__'
     | '/'
     | '/invitasjon'
     | '/prosjekt/$projectId'
+    | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/'
   fileRoutesById: FileRoutesById
@@ -118,6 +134,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProsjektProjectIdIndexRouteImport
       parentRoute: typeof ProsjektProjectIdRoute
     }
+    '/prosjekt/$projectId/bibliotek': {
+      id: '/prosjekt/$projectId/bibliotek'
+      path: '/bibliotek'
+      fullPath: '/prosjekt/$projectId/bibliotek'
+      preLoaderRoute: typeof ProsjektProjectIdBibliotekRouteImport
+      parentRoute: typeof ProsjektProjectIdRoute
+    }
     '/prosjekt/$projectId/manus': {
       id: '/prosjekt/$projectId/manus'
       path: '/manus'
@@ -129,11 +152,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface ProsjektProjectIdRouteChildren {
+  ProsjektProjectIdBibliotekRoute: typeof ProsjektProjectIdBibliotekRoute
   ProsjektProjectIdManusRoute: typeof ProsjektProjectIdManusRoute
   ProsjektProjectIdIndexRoute: typeof ProsjektProjectIdIndexRoute
 }
 
 const ProsjektProjectIdRouteChildren: ProsjektProjectIdRouteChildren = {
+  ProsjektProjectIdBibliotekRoute: ProsjektProjectIdBibliotekRoute,
   ProsjektProjectIdManusRoute: ProsjektProjectIdManusRoute,
   ProsjektProjectIdIndexRoute: ProsjektProjectIdIndexRoute,
 }

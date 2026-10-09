@@ -6,6 +6,21 @@
 import { zipSync, strToU8 } from "fflate";
 import type { BlockKind } from "@/core";
 import type { PaginationScene } from "@/core/screenplay";
+import type { ExportNote } from "@/core/notes";
+
+/** Kommentar i dokumentet (notat, DEC-0031). */
+interface CommentMark {
+  readonly id: number;
+  readonly start: number;
+  readonly end: number;
+}
+
+function commentStart(id: number): string {
+  return `<w:commentRangeStart w:id="${id}"/>`;
+}
+function commentEnd(id: number): string {
+  return `<w:commentRangeEnd w:id="${id}"/><w:r><w:commentReference w:id="${id}"/></w:r>`;
+}
 
 const TW = 20; // twips per punkt
 const PAGE_W = 612 * TW;
@@ -51,32 +66,67 @@ function esc(s: string): string {
     .replace(/"/g, "&quot;");
 }
 
-function runs(text: string): string {
+function plainRuns(text: string): string {
   return text
     .split("\n")
     .map(
       (line, i) =>
-        `${i > 0 ? "<w:r><w:br/></w:r>" : ""}<w:r><w:t xml:space="preserve">${esc(line)}</w:t></w:r>`,
+        `${i > 0 ? "<w:r><w:br/></w:r>" : ""}${line ? `<w:r><w:t xml:space="preserve">${esc(line)}</w:t></w:r>` : ""}`,
     )
     .join("");
 }
 
-function para(kind: BlockKind, text: string, first: boolean, extra = ""): string {
+/** Tekstløp med kommentarområder (notater) satt inn på riktige tegnposisjoner. */
+function runs(text: string, rawMarks: readonly CommentMark[] = []): string {
+  if (!rawMarks.length) return plainRuns(text) || `<w:r><w:t xml:space="preserve"></w:t></w:r>`;
+  // Klem områdene inn i teksten; et tomt område blir en punktkommentar (ingen notater går tapt)
+  const clamp = (n: number) => Math.max(0, Math.min(text.length, n));
+  const marks = rawMarks.map((m) => {
+    const start = clamp(m.start);
+    return { id: m.id, start, end: Math.max(start, clamp(m.end)) };
+  });
+  const cuts = [...new Set([0, text.length, ...marks.flatMap((m) => [m.start, m.end])])].sort(
+    (a, b) => a - b,
+  );
+  let out = "";
+  for (let i = 0; i < cuts.length; i++) {
+    const at = cuts[i]!;
+    for (const m of marks) if (m.end === at && m.end > m.start) out += commentEnd(m.id);
+    for (const m of marks) if (m.start === at) out += commentStart(m.id);
+    for (const m of marks) if (m.start === at && m.end === m.start) out += commentEnd(m.id);
+    const next = cuts[i + 1];
+    if (next !== undefined) out += plainRuns(text.slice(at, next));
+  }
+  return out;
+}
+
+function para(
+  kind: BlockKind,
+  text: string,
+  first: boolean,
+  marks: readonly CommentMark[] = [],
+): string {
   const st = STYLES[kind];
   // Innledende linjeskift = forfatterens ekstra tomme linjer
   const lead = /^\n*/.exec(text)![0].length;
   const body = text.slice(lead);
+  const shifted = marks.map((m) => ({ ...m, start: m.start - lead, end: m.end - lead }));
   const before = (first ? 0 : st.before + lead) * LINE;
   const left = Math.round(st.left * CH);
   const right =
     st.width === null ? 0 : Math.max(0, Math.round(COLUMN - left - st.width * CH - SLACK));
   const ppr =
     `<w:pPr>${st.keepNext ? "<w:keepNext/>" : ""}<w:spacing w:before="${before}" w:after="0" w:line="${LINE}" w:lineRule="exact"/>` +
-    `<w:ind w:left="${left}" w:right="${right}"/>${st.align ? `<w:jc w:val="${st.align}"/>` : ""}${extra}</w:pPr>`;
-  return `<w:p>${ppr}${runs(st.upper ? body.toUpperCase() : body)}</w:p>`;
+    `<w:ind w:left="${left}" w:right="${right}"/>${st.align ? `<w:jc w:val="${st.align}"/>` : ""}</w:pPr>`;
+  return `<w:p>${ppr}${runs(st.upper ? body.toUpperCase() : body, shifted)}</w:p>`;
 }
 
-function headingPara(number: string | null, text: string, first: boolean): string {
+function headingPara(
+  number: string | null,
+  text: string,
+  first: boolean,
+  pins: readonly number[] = [],
+): string {
   const before = first ? 0 : 2 * LINE;
   const hang = Math.round(54 * TW); // nummeret står 0,75" fra papirkanten
   const rightTab = Math.round((516.6 - 108) * TW);
@@ -85,10 +135,30 @@ function headingPara(number: string | null, text: string, first: boolean): strin
     `<w:tabs><w:tab w:val="left" w:pos="0"/><w:tab w:val="left" w:pos="${rightTab}"/></w:tabs>` +
     `<w:ind w:left="0" w:hanging="${hang}"/></w:pPr>`;
   const t = esc(text.toUpperCase());
+  // Nåler på scenen: kommentar på hele sceneoverskriften
+  const open = pins.map(commentStart).join("");
+  const close = pins.map(commentEnd).join("");
   if (number === null)
-    return `<w:p>${ppr}<w:r><w:tab/><w:t xml:space="preserve">${t}</w:t></w:r></w:p>`;
+    return `<w:p>${ppr}${open}<w:r><w:tab/><w:t xml:space="preserve">${t}</w:t></w:r>${close}</w:p>`;
   const n = esc(number);
-  return `<w:p>${ppr}<w:r><w:t>${n}</w:t></w:r><w:r><w:tab/><w:t xml:space="preserve">${t}</w:t></w:r><w:r><w:tab/><w:t>${n}</w:t></w:r></w:p>`;
+  return `<w:p>${ppr}${open}<w:r><w:t>${n}</w:t></w:r><w:r><w:tab/><w:t xml:space="preserve">${t}</w:t></w:r><w:r><w:tab/><w:t>${n}</w:t></w:r>${close}</w:p>`;
+}
+
+function commentXml(id: number, n: ExportNote): string {
+  const initials = n.author
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 4);
+  const date = Number.isNaN(Date.parse(n.stampAt))
+    ? ""
+    : ` w:date="${new Date(n.stampAt).toISOString().replace(/\.\d{3}Z$/, "Z")}"`;
+  const paras = n.text
+    .split("\n")
+    .map((line) => `<w:p><w:r><w:t xml:space="preserve">${esc(line)}</w:t></w:r></w:p>`)
+    .join("");
+  return `<w:comment w:id="${id}" w:author="${esc(n.author || "Ukjent")}"${date} w:initials="${esc(initials)}">${paras}</w:comment>`;
 }
 
 const RPR = `<w:rFonts w:ascii="Courier New" w:hAnsi="Courier New" w:cs="Courier New" w:eastAsia="Courier New"/><w:sz w:val="24"/><w:szCs w:val="24"/><w:lang w:val="nb-NO"/>`;
@@ -105,6 +175,11 @@ function sectPr(opts: { header: boolean; titlePg: boolean; start?: number }): st
 export interface DocxOptions {
   readonly title?: string;
   readonly titlePage?: readonly string[];
+  /** Notater som Word-kommentarer (DEC-0031). Nøkler: blokk-ID og forekomst-ID. */
+  readonly notes?: {
+    readonly byBlock: ReadonlyMap<string, readonly ExportNote[]>;
+    readonly pins: ReadonlyMap<string, readonly ExportNote[]>;
+  };
 }
 
 export function screenplayDocx(
@@ -122,10 +197,24 @@ export function screenplayDocx(
     body.push(`<w:p><w:pPr>${sectPr({ header: false, titlePg: false })}</w:pPr></w:p>`);
   }
   let first = true;
+  const comments: string[] = [];
+  const register = (n: ExportNote) => {
+    const id = comments.length;
+    comments.push(commentXml(id, n));
+    return id;
+  };
   for (const sc of scenes) {
-    body.push(headingPara(sc.number, sc.headingText, first));
+    const pins = (opts.notes?.pins.get(sc.occurrenceId) ?? []).map(register);
+    body.push(headingPara(sc.number, sc.headingText, first, pins));
     first = false;
-    for (const b of sc.blocks) body.push(para(b.kind, b.text, false));
+    for (const b of sc.blocks) {
+      const marks = (opts.notes?.byBlock.get(b.id) ?? []).map((n) => ({
+        id: register(n),
+        start: n.start,
+        end: n.end,
+      }));
+      body.push(para(b.kind, b.text, false, marks));
+    }
   }
   const document =
     `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n` +
@@ -156,6 +245,9 @@ export function screenplayDocx(
         `<Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>` +
         `<Override PartName="/word/header1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml"/>` +
         `<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>` +
+        (comments.length
+          ? `<Override PartName="/word/comments.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.comments+xml"/>`
+          : "") +
         `</Types>`,
     ),
     "_rels/.rels": strToU8(
@@ -168,11 +260,21 @@ export function screenplayDocx(
       `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">` +
         `<Relationship Id="rIdStyles" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>` +
         `<Relationship Id="rIdHeader" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/header" Target="header1.xml"/>` +
+        (comments.length
+          ? `<Relationship Id="rIdComments" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" Target="comments.xml"/>`
+          : "") +
         `</Relationships>`,
     ),
     "word/document.xml": strToU8(document),
     "word/styles.xml": strToU8(styles),
     "word/header1.xml": strToU8(header),
+    ...(comments.length
+      ? {
+          "word/comments.xml": strToU8(
+            `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:comments xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">${comments.join("")}</w:comments>`,
+          ),
+        }
+      : {}),
     "docProps/core.xml": strToU8(
       `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/">` +
         `<dc:title>${esc(opts.title ?? "Manus")}</dc:title><dc:creator>Animatic Studio</dc:creator></cp:coreProperties>`,

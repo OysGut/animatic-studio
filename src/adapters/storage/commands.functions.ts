@@ -14,7 +14,7 @@ import {
   revisionsOf,
   type Command,
 } from "@/core";
-import { loadProjectState, type AnyClient } from "./project-rows";
+import { checkSchema, loadProjectState, type AnyClient } from "./project-rows";
 
 export interface RunCommandInput {
   readonly projectId: string;
@@ -61,6 +61,28 @@ const INVERSE_ONLY = new Set<string>([
   "UndoImportScreenplay",
   "UndoSplitScene",
   "UnmergeScenes",
+  "UndoCreateAssets",
+  "UndoCreateAssetVariant",
+  "UndoAddAssetVersion",
+  "UndoAddAnnotations",
+]);
+
+/** Kommandoer som skriver til tabellene fra migrasjon 0004 (ressursbibliotek og notater). */
+const LIBRARY_COMMANDS = new Set<string>([
+  "CreateAssets",
+  "UndoCreateAssets",
+  "UpdateAsset",
+  "SetAssetArchived",
+  "CreateAssetVariant",
+  "UndoCreateAssetVariant",
+  "UpdateAssetVariant",
+  "SetAssetVariantArchived",
+  "AddAssetVersion",
+  "UndoAddAssetVersion",
+  "ApproveAssetVersion",
+  "AddAnnotations",
+  "EditAnnotation",
+  "SetAnnotationRemoved",
 ]);
 
 /** JSON med sorterte nøkler, for sammenligning med jsonb fra databasen. */
@@ -152,6 +174,53 @@ export const runCommand = createServerFn({ method: "POST" })
           message: "Bare dine egne siste endringer kan angres på denne måten.",
         };
       }
+    }
+    // En bildeversjon som noen gang har vært godkjent, er tatt i bruk og kan ikke angres bort (REQ-0136)
+    if (data.command.type === "UndoAddAssetVersion") {
+      const { data: approvals } = await admin
+        .from("change_log")
+        .select("id")
+        .eq("project_id", data.projectId)
+        .eq("command_type", "ApproveAssetVersion")
+        .eq("command->>versionId", data.command.versionId)
+        .limit(1);
+      if ((approvals ?? []).length > 0)
+        return {
+          ok: false,
+          code: "referenced",
+          message: "Bildet har vært godkjent og kan ikke fjernes.",
+        };
+    }
+    // Stempelet på nye notater settes av serveren (navnet i profilen og tidspunktet nå), så ingen kan
+    // skrive notater i andres navn. Bare notater fra en importert fil beholder filens navn og tid (DEC-0031).
+    if (data.command.type === "AddAnnotations" && !data.command.imported) {
+      const { data: profile } = await admin
+        .from("profiles")
+        .select("display_name")
+        .eq("user_id", context.userId)
+        .maybeSingle();
+      const name = (profile as { display_name?: string } | null)?.display_name?.trim();
+      data = {
+        ...data,
+        command: {
+          ...data.command,
+          annotations: data.command.annotations.map((a) => {
+            const { stampAt: _s, ...rest } = a;
+            return { ...rest, authorName: name || a.authorName };
+          }),
+        },
+      };
+    }
+    // Ressursbiblioteket krever migrasjon 0004 (ellers ville endringen bare blitt logget, ikke lagret)
+    if (LIBRARY_COMMANDS.has(data.command.type)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind !== "ok" || schema.version < 4)
+        return {
+          ok: false,
+          code: "schema",
+          message:
+            "Databasen mangler ressursbiblioteket og notatene. Kjør migrasjon 0004 i Lovable (se LOVABLE_SYNC.md).",
+        };
     }
     const state = await loadProjectState(admin, data.projectId);
     const id = (data.commandId ?? newId<"command">()) as ReturnType<typeof newId<"command">>;

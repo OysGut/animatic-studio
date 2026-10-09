@@ -46,10 +46,27 @@ async function mock(page, { projects = [project], schema = true }) {
       route.fulfill({ status, contentType: "application/json", body: JSON.stringify(body) });
     if (path.startsWith("/auth/v1/user")) return json(USER);
     if (path.startsWith("/auth/v1/")) return json({});
+    // Lagring: midlertidige lenker og bilder (enkel figur i stedet for ekte bilder)
+    if (path.startsWith("/storage/v1/object/sign/") && req.method() === "POST") {
+      const body = JSON.parse(req.postData() ?? "{}");
+      const bucket = path.split("/").pop();
+      return json(
+        (body.paths ?? []).map((p) => ({
+          path: p,
+          signedURL: `/object/sign/${bucket}/${p}?token=t`,
+          error: null,
+        })),
+      );
+    }
+    if (path.startsWith("/storage/v1/object/sign/")) {
+      const n = (path.length * 37) % 360;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400"><rect width="300" height="400" fill="hsl(${n} 25% 22%)"/><circle cx="150" cy="120" r="60" fill="hsl(${n} 45% 70%)"/><path d="M60 380 Q150 170 240 380Z" fill="hsl(${n} 45% 60%)"/></svg>`;
+      return route.fulfill({ status: 200, contentType: "image/svg+xml", body: svg });
+    }
     const table = path.replace("/rest/v1/", "");
     if (table === "schema_version")
       return schema
-        ? json([{ version: 3 }])
+        ? json([{ version: 4 }])
         : json({ message: "relation does not exist", code: "42P01" }, 404);
     if (table === "projects") {
       if (single) return json(projects[0] ?? null);
@@ -176,7 +193,9 @@ await shot("14-eksport-ferdig", manus, {
 });
 await shot("15-filter-karakter", manus, {
   act: async (page) => {
-    await page.getByLabel("Vis bare scener med karakter").selectOption("ANNE");
+    const sel = page.getByLabel("Vis bare scener med karakter");
+    const value = await sel.locator("option", { hasText: "Bestemor Anne" }).getAttribute("value");
+    await sel.selectOption(value);
     await page.waitForTimeout(600);
   },
 });
@@ -200,6 +219,82 @@ await shot("17b-versjon-sammenlign", manus, {
     await page.waitForTimeout(800);
   },
 });
+await shot("19-manus-endre-rekkefolge", manus, {
+  act: async (page) => {
+    await page.getByRole("switch", { name: "Endre rekkefølge og synlighet" }).click();
+    await page.locator("[id^=nav-]").nth(1).click();
+    await page.waitForTimeout(600);
+  },
+});
+await shot("23-notater", manus, {
+  act: async (page) => {
+    await page
+      .getByRole("button", { name: /Notat – vis/ })
+      .first()
+      .click();
+    await page.waitForTimeout(700);
+  },
+});
+await shot("24-sok-treff", manus, {
+  act: async (page) => {
+    await page.getByLabel("Søk i manus").fill("vasen");
+    await page.waitForTimeout(700);
+  },
+});
+await shot("25-nytt-notat", manus, {
+  act: async (page) => {
+    // Merk «tung over tunet» i første handlingslinje
+    await page.evaluate(() => {
+      const el = [...document.querySelectorAll("[data-line]")].find((e) =>
+        e.textContent?.includes("tung over tunet"),
+      );
+      const node = [...el.childNodes].find((n) => n.textContent.includes("tung"));
+      const t = node.nodeType === 3 ? node : node.firstChild;
+      const i = t.textContent.indexOf("tung over tunet");
+      const r = document.createRange();
+      r.setStart(t, i);
+      r.setEnd(t, i + "tung over tunet".length);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+      el.dispatchEvent(new MouseEvent("mouseup", { bubbles: true }));
+    });
+    await page.getByRole("button", { name: "Legg til notat" }).click();
+    await page.getByPlaceholder("Skriv notatet …").fill("Vind i snøen her – lyd?");
+    await page.waitForTimeout(300);
+  },
+});
+await shot("26-bla-i-manus", manus, {
+  act: async (page) => {
+    await page.getByLabel(/Manussider/).evaluate((el) => (el.scrollTop = 2200));
+    await page.waitForTimeout(900);
+  },
+});
+await shot("27-eksport-notater", manus, {
+  act: async (page) => {
+    await page.getByRole("button", { name: "Eksporter" }).first().click();
+    await page.getByLabel(/Ta med notater/).check();
+    await page.waitForTimeout(300);
+  },
+});
+const bibliotek = `/prosjekt/${project.id}/bibliotek`;
+await shot("20-bibliotek", bibliotek, {});
+await shot("21-bibliotek-ressurs", bibliotek, {
+  act: async (page) => {
+    await page
+      .getByRole("button", { name: /^MA Maja/ })
+      .or(page.getByRole("button", { name: /Maja Karakter/ }))
+      .first()
+      .click();
+    await page.waitForTimeout(1200);
+  },
+});
+await shot("22-bibliotek-forslag", bibliotek, {
+  act: async (page) => {
+    await page.getByRole("button", { name: /Forslag fra manuset/ }).click();
+    await page.waitForTimeout(500);
+  },
+});
 await shot("18-oversikt-varighet", `/prosjekt/${project.id}`, {
   act: async (page) => {
     await page.getByRole("button", { name: "Per scene" }).click();
@@ -210,6 +305,7 @@ await shot("18-oversikt-varighet", `/prosjekt/${project.id}`, {
 // Lagring uten server (mock): optimistisk endring, så feilmelding og ny henting
 await shot("13-lagringsfeil", manus, {
   act: async (page) => {
+    await page.getByRole("switch", { name: "Endre rekkefølge og synlighet" }).click();
     await page.getByRole("switch", { name: "Deaktiver scene 3", exact: true }).click();
     await page.waitForTimeout(3000);
   },

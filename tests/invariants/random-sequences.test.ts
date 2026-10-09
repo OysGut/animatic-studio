@@ -68,6 +68,10 @@ function content(s: ProjectState) {
     occurrences: strip(s.occurrences),
     segments: strip(s.segments),
     takes: strip(s.takes),
+    assets: strip(s.assets),
+    assetVariants: strip(s.assetVariants),
+    assetVersions: strip(s.assetVersions),
+    annotations: strip(s.annotations),
   };
 }
 

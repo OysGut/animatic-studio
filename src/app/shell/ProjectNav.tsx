@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Clapperboard, FileText, Film, Layers, Users } from "lucide-react";
+import { Clapperboard, FileText, Film, Layers, Library, Users } from "lucide-react";
 import type { ReactNode } from "react";
 
 /** Arbeidsflatene (INFORMATION_ARCHITECTURE.md). Flatene som ikke er bygget ennå vises deaktivert med milepæl. */
@@ -37,6 +37,15 @@ export function ProjectNav({ projectId }: { projectId: string }) {
       >
         <FileText aria-hidden />
         Manus
+      </Link>
+      <Link
+        to="/prosjekt/$projectId/bibliotek"
+        params={{ projectId }}
+        className={item}
+        activeProps={{ className: active, "aria-current": "page" }}
+      >
+        <Library aria-hidden />
+        Ressursbibliotek
       </Link>
       {LATER.map((w) => (
         <span

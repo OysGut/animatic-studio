@@ -16,6 +16,12 @@ export type OccurrenceId = Id<"scene_occurrence">;
 export type SegmentId = Id<"production_segment">;
 export type TakeId = Id<"take">;
 export type CommandId = Id<"command">;
+/** Ressursbiblioteket (M3, mandat kap. 8–9). */
+export type AssetId = Id<"asset">;
+export type AssetVariantId = Id<"asset_variant">;
+export type AssetVersionId = Id<"asset_version">;
+/** Notater i manus (DEC-0031). */
+export type AnnotationId = Id<"annotation">;
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 

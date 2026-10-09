@@ -1,20 +1,17 @@
 # Pågående arbeid
 
-Oppdatert: 2026-10-09 (økt 3, del 2)
+Oppdatert: 2026-10-09 (økt 4)
 
-## Nå: M2 del 2 – ferdig, venter på Mars
-- [x] M2 del 1 testet av Mars i Lovable (import, sider, redigering, eksport; Safari-feil rettet, KI-25)
-- [x] Nytt krav REQ-0531 «Vis kun valgt scene» (DEC-0027)
-- [x] Manusversjoner (migrasjon 0003), vis, sammenlign, eksporter versjon, historisk nummerering
-- [x] Søk og karakterfilter (bare visning)
-- [x] Varighetsestimat på prosjektoversikten
-- [x] Tilstedeværelse (private Realtime-kanaler)
-- [x] Kodegjennomgang (12 funn rettet), ytelse (indeks per tilstand)
-- [ ] **Mars:** Commit + Push, deretter synkmeldingen for `0003_script_versions.sql` (LOVABLE_SYNC.md B)
-- [ ] **Mars:** Prøv: Versjoner → Lagre versjon; gjør en endring; Sammenlign mot nå. Filter på karakter. «Vis kun valgt scene». Varighet på Prosjektoversikt. Gjerne to brukere samtidig for tilstedeværelse
-- [ ] Claude: følge opp KI-26 (tilstedeværelse i Lovable)
+## Nå: Mars' ønsker + notater + M3 del 1 (ressursbibliotek) – ferdig, venter på Mars
+- [x] M2 del 2 testet av Mars; migrasjon 0003 kjørt i Lovable
+- [x] REQ-0532–0534 (DEC-0029): «Endre rekkefølge og synlighet»-bryter, flyttede scener markert, sammenligning linje for linje
+- [x] REQ-0535–0543 (DEC-0031): notater (ord/setning/nål, stempel, sletting med advarsel, vis/skjul, søk, eksport og ny import), søketreff markert, scenelisten følger manuset, valgt scene øverst
+- [x] M3 del 1 (DEC-0030): ressursbibliotek med alternative navn, varianter, bildeversjoner, godkjenning, bruk i manus, forslag fra manuset; karakterfilter med alle navn (KI-29)
+- [x] Migrasjon 0004 (`0004_library_notes.sql`), DB-tester, kodegjennomgang (9 funn rettet)
+- [ ] **Mars:** Commit + Push, deretter synkmeldingen for `0004_library_notes.sql` (LOVABLE_SYNC.md B)
+- [ ] **Mars:** Prøv: Ressursbibliotek → «Forslag fra manuset», legg til bilde og godkjenn; Manus → merk ord → «Legg til notat»; søk; eksporter med notater og importer filen igjen i et testprosjekt
 
-## Neste (forslag – M3 Ressurser og 2D-sceneeditor)
-1. Ressursbibliotek: karakterer (med aliaser – KI-29), objekter, lokasjoner, stilprofil.
-2. Lagbasert 2D-komposisjon og kamera med blå/rød ramme (mandat kap. 12).
-3. Gjenoppretting av manusversjon (KI-27), lagrede varighetsantakelser (KI-28), tittelside (KI-20).
+## Neste (forslag – M3 del 2: 2D-sceneeditor)
+1. Lagbasert 2D-komposisjon per scene med ressurser fra biblioteket (bakgrunn, mellomgrunn, forgrunn, karakterer, objekter).
+2. Transformasjoner, keyframes/easing, kamera med blå/rød ramme og Bézier-bane, avspilling i nettleseren.
+3. Avklaring Q-03 (hvor mye karakteranimasjon) før animasjonsdelen.

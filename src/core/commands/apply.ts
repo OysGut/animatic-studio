@@ -7,12 +7,21 @@ import { checkInvariants } from "../invariants";
 import { compareKeys, isValidOrderKey, keyBetween } from "../order-key";
 import {
   PRIMARY_LANGUAGE,
+  type Annotation,
   type BlockRevision,
   type ProjectState,
   type ScriptBlock,
   type Take,
 } from "../model";
-import type { Command, CommandEnvelope, CommandError, CommandErrorCode } from "./types";
+import type {
+  NewAnnotation,
+  AssetFields,
+  AssetVariantFields,
+  Command,
+  CommandEnvelope,
+  CommandError,
+  CommandErrorCode,
+} from "./types";
 
 export type ApplyResult =
   | {
@@ -40,14 +49,186 @@ function fail(code: CommandErrorCode, message: string, details?: readonly string
 }
 
 function need<T>(value: T | undefined, what: string): T {
-  if (value === undefined) fail("not_found", `${what} finnes ikke`);
+  // Samlingene er vanlige objekter: «__proto__» eller «constructor» som ID må ikke gi treff
+  if (
+    value === undefined ||
+    value === null ||
+    typeof value === "function" ||
+    (typeof value === "object" && !Object.prototype.hasOwnProperty.call(value, "id"))
+  )
+    fail("not_found", `${what} finnes ikke`);
   return value;
 }
 
 function assertNewId(s: ProjectState, id: string) {
   if (!isUuid(id)) fail("invalid", `Ugyldig ID ${id}`);
-  const all = [s.productions, s.scenes, s.variants, s.blocks, s.occurrences, s.segments, s.takes];
+  const all = [
+    s.productions,
+    s.scenes,
+    s.variants,
+    s.blocks,
+    s.occurrences,
+    s.segments,
+    s.takes,
+    s.assets,
+    s.assetVariants,
+    s.assetVersions,
+    s.annotations,
+  ];
   if (all.some((c) => c[id] !== undefined)) fail("duplicate_id", `ID ${id} er allerede i bruk`);
+}
+
+// ---------- Ressursbiblioteket ----------
+
+export const ASSET_KINDS = [
+  "character",
+  "object",
+  "location",
+  "animal",
+  "environment",
+  "other",
+] as const;
+export const ASSET_NAME_KINDS = ["alias", "nickname", "former", "language"] as const;
+export const VISUAL_STYLES = [
+  "reference",
+  "illustrated",
+  "realistic",
+  "animatic",
+  "poster",
+  "other",
+] as const;
+export const ASSET_MIME_TYPES: readonly string[] = [
+  "image/png",
+  "image/jpeg",
+  "image/webp",
+  "image/gif",
+];
+export const ASSET_MAX_BYTES = 50 * 1024 * 1024;
+
+/** Kontrollerer og rydder feltene (trimmer, fjerner duplikater). Samme regler i klient og server. */
+function normalizeAssetFields(f: AssetFields): AssetFields {
+  if (
+    !f ||
+    typeof f.name !== "string" ||
+    typeof f.description !== "string" ||
+    typeof f.category !== "string" ||
+    !Array.isArray(f.names) ||
+    !Array.isArray(f.tags) ||
+    f.names.some(
+      (n) =>
+        !n ||
+        typeof n.name !== "string" ||
+        (n.language !== null && n.language !== undefined && typeof n.language !== "string"),
+    ) ||
+    f.tags.some((t) => typeof t !== "string")
+  )
+    fail("invalid", "Ufullstendige ressursfelter");
+  if (!(ASSET_KINDS as readonly string[]).includes(f.kind)) fail("invalid", "Ukjent ressurstype");
+  const name = f.name.trim();
+  if (!name || name.length > 200) fail("invalid", "Ressursen må ha et navn (maks 200 tegn)");
+  if (f.description.length > 5000) fail("invalid", "Beskrivelsen er for lang");
+  if (f.category.trim().length > 100) fail("invalid", "Kategorien er for lang");
+  if (f.names.length > 50) fail("invalid", "For mange alternative navn");
+  if (f.tags.length > 30) fail("invalid", "For mange stikkord");
+  const seenNames = new Set([name.toLocaleLowerCase("nb")]);
+  const names = [];
+  for (const n of f.names) {
+    const t = n.name.trim();
+    if (!t) continue;
+    if (t.length > 200) fail("invalid", "Et alternativt navn er for langt");
+    if (!(ASSET_NAME_KINDS as readonly string[]).includes(n.kind))
+      fail("invalid", "Ukjent navnetype");
+    const key = t.toLocaleLowerCase("nb");
+    if (seenNames.has(key)) continue;
+    seenNames.add(key);
+    const language = n.language?.trim() || null;
+    if (language !== null && !/^[a-z]{2,3}(-[A-Za-z0-9]{2,8})?$/.test(language))
+      fail("invalid", "Ugyldig språkkode");
+    names.push({ name: t, kind: n.kind, language });
+  }
+  const tags: string[] = [];
+  for (const t of f.tags) {
+    const x = t.trim();
+    if (!x) continue;
+    if (x.length > 50) fail("invalid", "Et stikkord er for langt");
+    if (!tags.some((y) => y.toLocaleLowerCase("nb") === x.toLocaleLowerCase("nb"))) tags.push(x);
+  }
+  return {
+    kind: f.kind,
+    name,
+    names,
+    description: f.description.trim(),
+    category: f.category.trim(),
+    tags,
+  };
+}
+
+function normalizeVariantFields(f: AssetVariantFields): AssetVariantFields {
+  if (!f || typeof f.name !== "string" || typeof f.appearance !== "string")
+    fail("invalid", "Ufullstendige variantfelter");
+  const name = f.name.trim();
+  if (!name || name.length > 200) fail("invalid", "Varianten må ha et navn (maks 200 tegn)");
+  if (!(VISUAL_STYLES as readonly string[]).includes(f.style)) fail("invalid", "Ukjent stil");
+  if (f.appearance.trim().length > 500) fail("invalid", "Utseendebeskrivelsen er for lang");
+  return { name, style: f.style, appearance: f.appearance.trim() };
+}
+
+// ---------- Notater ----------
+
+function normalizeAnnotation(s: ProjectState, n: NewAnnotation, now: string): Annotation {
+  const text = n.text.trim();
+  if (!text || text.length > 10_000) fail("invalid", "Notatet må ha tekst (maks 10 000 tegn)");
+  const authorName = n.authorName.trim().slice(0, 100);
+  const stampAt = n.stampAt ?? now;
+  if (typeof stampAt !== "string" || Number.isNaN(Date.parse(stampAt)))
+    fail("invalid", "Ugyldig tidspunkt for notatet");
+  if (typeof n.quote !== "string" || n.quote.length > 5000) fail("invalid", "Ugyldig sitat");
+  if (n.blockId !== null) {
+    const b = need(s.blocks[n.blockId], "Blokken");
+    if (b.removed) fail("invalid", "Blokken er fjernet");
+    if (n.variantId !== null) fail("invalid", "Et notat på tekst har ikke scene i tillegg");
+    if (n.quote === "") {
+      // Notat på hele elementet: ingen tekstområde, følger hele teksten også etter endringer
+      if (n.start !== 0 || n.end !== 0) fail("invalid", "Ugyldig tekstområde for notatet");
+    } else {
+      if (!Number.isInteger(n.start) || !Number.isInteger(n.end) || n.start < 0 || n.end <= n.start)
+        fail("invalid", "Ugyldig tekstområde for notatet");
+      if (b.text.slice(n.start, n.end) !== n.quote) {
+        // Teksten er endret siden (f.eks. gjør om etter angre): finn det markerte nærmest samme sted
+        let best = -1;
+        for (let i = b.text.indexOf(n.quote); i >= 0; i = b.text.indexOf(n.quote, i + 1))
+          if (best < 0 || Math.abs(i - n.start) < Math.abs(best - n.start)) best = i;
+        if (best < 0) fail("invalid", "Den markerte teksten finnes ikke i manuset");
+        return {
+          ...base(),
+          start: best,
+          end: best + n.quote.length,
+        };
+      }
+    }
+  } else {
+    if (n.variantId === null) fail("invalid", "Notatet må høre til en scene eller tekst");
+    need(s.variants[n.variantId], "Scenen");
+    if (n.start !== 0 || n.end !== 0 || n.quote !== "")
+      fail("invalid", "En nål på scenen har ikke tekstområde");
+  }
+  return base();
+
+  function base(): Annotation {
+    return {
+      id: n.annotationId,
+      revision: 1,
+      variantId: n.variantId,
+      blockId: n.blockId,
+      start: n.start,
+      end: n.end,
+      quote: n.quote,
+      text,
+      authorName: authorName || "Ukjent",
+      stampAt: new Date(stampAt as string).toISOString(),
+      removed: false,
+    };
+  }
 }
 
 function assertKey(key: string) {
@@ -75,6 +256,10 @@ export function revisionOf(s: ProjectState, id: string): number | undefined {
     s.occurrences,
     s.segments,
     s.takes,
+    s.assets,
+    s.assetVariants,
+    s.assetVersions,
+    s.annotations,
   ]) {
     const e = c[id];
     if (e) return e.revision;
@@ -1242,6 +1427,372 @@ function run(
         affected: [sc.id],
       };
     }
+
+    // ---------- Ressursbiblioteket (M3 del 1) ----------
+    case "CreateAssets": {
+      if (c.assets.length === 0) fail("invalid", "Ingen ressurser å legge til");
+      if (c.assets.length > 500) fail("invalid", "For mange ressurser i én endring");
+      const seen = new Set<string>();
+      const assets = { ...s.assets };
+      for (const x of c.assets) {
+        assertNewId(s, x.assetId);
+        if (seen.has(x.assetId)) fail("duplicate_id", `ID ${x.assetId} er brukt to ganger`);
+        seen.add(x.assetId);
+        assets[x.assetId] = {
+          id: x.assetId,
+          revision: 1,
+          ...normalizeAssetFields(x.fields),
+          archived: x.archived === true,
+        };
+      }
+      return {
+        state: { ...s, assets },
+        inverse: { type: "UndoCreateAssets", assetIds: c.assets.map((x) => x.assetId) },
+        affected: [...seen],
+      };
+    }
+
+    case "UndoCreateAssets": {
+      const assets = { ...s.assets };
+      for (const id of c.assetIds) {
+        need(s.assets[id], "Ressursen");
+        if (Object.values(s.assetVariants).some((v) => v.assetId === id))
+          fail(
+            "referenced",
+            "Ressursen har fått visuelle varianter og kan ikke fjernes. Arkiver den i stedet.",
+          );
+        delete assets[id];
+      }
+      return {
+        state: { ...s, assets },
+        inverse: {
+          type: "CreateAssets",
+          assets: c.assetIds.map((id) => {
+            const a = s.assets[id]!;
+            return {
+              assetId: a.id,
+              fields: {
+                kind: a.kind,
+                name: a.name,
+                names: a.names,
+                description: a.description,
+                category: a.category,
+                tags: a.tags,
+              },
+              ...(a.archived ? { archived: true } : {}),
+            };
+          }),
+        },
+        affected: [...c.assetIds],
+      };
+    }
+
+    case "UpdateAsset": {
+      const a = need(s.assets[c.assetId], "Ressursen");
+      return {
+        state: {
+          ...s,
+          assets: {
+            ...s.assets,
+            [a.id]: { ...a, ...normalizeAssetFields(c.fields), revision: rev(a) },
+          },
+        },
+        inverse: {
+          type: "UpdateAsset",
+          assetId: a.id,
+          fields: {
+            kind: a.kind,
+            name: a.name,
+            names: a.names,
+            description: a.description,
+            category: a.category,
+            tags: a.tags,
+          },
+        },
+        affected: [a.id],
+      };
+    }
+
+    case "SetAssetArchived": {
+      const a = need(s.assets[c.assetId], "Ressursen");
+      return {
+        state: {
+          ...s,
+          assets: { ...s.assets, [a.id]: { ...a, archived: c.archived, revision: rev(a) } },
+        },
+        inverse: { type: "SetAssetArchived", assetId: a.id, archived: a.archived },
+        affected: [a.id],
+      };
+    }
+
+    case "CreateAssetVariant": {
+      assertNewId(s, c.variantId);
+      need(s.assets[c.assetId], "Ressursen");
+      return {
+        state: {
+          ...s,
+          assetVariants: {
+            ...s.assetVariants,
+            [c.variantId]: {
+              id: c.variantId,
+              revision: 1,
+              assetId: c.assetId,
+              ...normalizeVariantFields(c.fields),
+              approvedVersionId: null,
+              archived: c.archived === true,
+            },
+          },
+        },
+        inverse: { type: "UndoCreateAssetVariant", variantId: c.variantId },
+        affected: [c.variantId],
+      };
+    }
+
+    case "UndoCreateAssetVariant": {
+      const va = need(s.assetVariants[c.variantId], "Varianten");
+      if (Object.values(s.assetVersions).some((x) => x.variantId === va.id))
+        fail("referenced", "Varianten har bilder og kan ikke fjernes. Arkiver den i stedet.");
+      const assetVariants = { ...s.assetVariants };
+      delete assetVariants[va.id];
+      return {
+        state: { ...s, assetVariants },
+        inverse: {
+          type: "CreateAssetVariant",
+          variantId: va.id,
+          assetId: va.assetId,
+          fields: { name: va.name, style: va.style, appearance: va.appearance },
+          ...(va.archived ? { archived: true } : {}),
+        },
+        affected: [va.id],
+      };
+    }
+
+    case "UpdateAssetVariant": {
+      const va = need(s.assetVariants[c.variantId], "Varianten");
+      return {
+        state: {
+          ...s,
+          assetVariants: {
+            ...s.assetVariants,
+            [va.id]: { ...va, ...normalizeVariantFields(c.fields), revision: rev(va) },
+          },
+        },
+        inverse: {
+          type: "UpdateAssetVariant",
+          variantId: va.id,
+          fields: { name: va.name, style: va.style, appearance: va.appearance },
+        },
+        affected: [va.id],
+      };
+    }
+
+    case "SetAssetVariantArchived": {
+      const va = need(s.assetVariants[c.variantId], "Varianten");
+      return {
+        state: {
+          ...s,
+          assetVariants: {
+            ...s.assetVariants,
+            [va.id]: { ...va, archived: c.archived, revision: rev(va) },
+          },
+        },
+        inverse: { type: "SetAssetVariantArchived", variantId: va.id, archived: va.archived },
+        affected: [va.id],
+      };
+    }
+
+    case "AddAssetVersion": {
+      assertNewId(s, c.versionId);
+      const va = need(s.assetVariants[c.variantId], "Varianten");
+      const m = c.media;
+      if (
+        !m ||
+        typeof m.path !== "string" ||
+        typeof m.mimeType !== "string" ||
+        typeof m.sha256 !== "string" ||
+        typeof c.note !== "string"
+      )
+        fail("invalid", "Ufullstendige bildedata");
+      if (!m.path.startsWith(`${s.project.id}/`) || m.path.length > 600 || m.path.includes(".."))
+        fail("invalid", "Ugyldig lagringssti for bildet");
+      if (!ASSET_MIME_TYPES.includes(m.mimeType))
+        fail("invalid", "Bildet må være PNG, JPEG, WebP eller GIF");
+      if (!Number.isInteger(m.byteSize) || m.byteSize <= 0 || m.byteSize > ASSET_MAX_BYTES)
+        fail("invalid", "Bildet er for stort (maks 50 MB)");
+      if (!/^[0-9a-f]{64}$/.test(m.sha256)) fail("invalid", "Ugyldig kontrollsum");
+      for (const d of [m.width, m.height])
+        if (d !== null && (!Number.isInteger(d) || d <= 0 || d > 100_000))
+          fail("invalid", "Ugyldige bildemål");
+      if (c.note.length > 2000) fail("invalid", "Merknaden er for lang");
+      const siblings = Object.values(s.assetVersions).filter((x) => x.variantId === va.id);
+      // Gjør om etter angre: behold det opprinnelige nummeret hvis det er ledig
+      const number =
+        c.number !== undefined &&
+        Number.isInteger(c.number) &&
+        c.number >= 1 &&
+        !siblings.some((x) => x.number === c.number)
+          ? c.number
+          : siblings.reduce((n, x) => Math.max(n, x.number), 0) + 1;
+      return {
+        state: {
+          ...s,
+          assetVersions: {
+            ...s.assetVersions,
+            [c.versionId]: {
+              id: c.versionId,
+              revision: 1,
+              variantId: va.id,
+              number,
+              mediaPath: m.path,
+              mimeType: m.mimeType,
+              width: m.width,
+              height: m.height,
+              byteSize: m.byteSize,
+              sha256: m.sha256,
+              note: c.note.trim(),
+              createdAt: env.at,
+              createdBy: env.actor,
+            },
+          },
+        },
+        inverse: { type: "UndoAddAssetVersion", versionId: c.versionId },
+        affected: [c.versionId],
+      };
+    }
+
+    case "UndoAddAssetVersion": {
+      const ver = need(s.assetVersions[c.versionId], "Versjonen");
+      const va = s.assetVariants[ver.variantId];
+      if (va?.approvedVersionId === ver.id)
+        fail("referenced", "Versjonen er godkjent og kan ikke fjernes");
+      // Bare det nyeste bildet kan angres bort (en versjon andre kan ha brukt, beholdes)
+      if (
+        Object.values(s.assetVersions).some(
+          (x) => x.variantId === ver.variantId && x.number > ver.number,
+        )
+      )
+        fail("referenced", "Det er lastet opp nyere bilder etter dette. Det kan ikke fjernes.");
+      const assetVersions = { ...s.assetVersions };
+      delete assetVersions[ver.id];
+      return {
+        state: { ...s, assetVersions },
+        inverse: {
+          type: "AddAssetVersion",
+          versionId: ver.id,
+          variantId: ver.variantId,
+          media: {
+            path: ver.mediaPath,
+            mimeType: ver.mimeType,
+            width: ver.width,
+            height: ver.height,
+            byteSize: ver.byteSize,
+            sha256: ver.sha256,
+          },
+          note: ver.note,
+          number: ver.number,
+        },
+        affected: [ver.id],
+      };
+    }
+
+    // ---------- Notater i manus (DEC-0031) ----------
+    case "AddAnnotations": {
+      if (!Array.isArray(c.annotations) || c.annotations.length === 0)
+        fail("invalid", "Ingen notater å legge til");
+      if (c.annotations.length > 2000) fail("invalid", "For mange notater i én endring");
+      const annotations = { ...s.annotations };
+      const ids: string[] = [];
+      for (const n of c.annotations) {
+        if (!n || typeof n.text !== "string" || typeof n.authorName !== "string")
+          fail("invalid", "Ufullstendige notatdata");
+        assertNewId(s, n.annotationId);
+        if (annotations[n.annotationId]) fail("duplicate_id", "Samme notat-ID to ganger");
+        annotations[n.annotationId] = normalizeAnnotation(s, n, env.at);
+        ids.push(n.annotationId);
+      }
+      return {
+        state: { ...s, annotations },
+        inverse: { type: "UndoAddAnnotations", annotationIds: ids as never },
+        affected: ids,
+      };
+    }
+
+    case "UndoAddAnnotations": {
+      const annotations = { ...s.annotations };
+      const back = [];
+      for (const id of c.annotationIds) {
+        const a = need(s.annotations[id], "Notatet");
+        back.push({
+          annotationId: a.id,
+          blockId: a.blockId,
+          variantId: a.variantId,
+          start: a.start,
+          end: a.end,
+          quote: a.quote,
+          text: a.text,
+          authorName: a.authorName,
+          stampAt: a.stampAt,
+        });
+        delete annotations[id];
+      }
+      return {
+        state: { ...s, annotations },
+        inverse: { type: "AddAnnotations", annotations: back },
+        affected: [...c.annotationIds],
+      };
+    }
+
+    case "EditAnnotation": {
+      const a = need(s.annotations[c.annotationId], "Notatet");
+      const text = typeof c.text === "string" ? c.text.trim() : "";
+      if (!text || text.length > 10_000) fail("invalid", "Notatet må ha tekst (maks 10 000 tegn)");
+      return {
+        state: {
+          ...s,
+          annotations: { ...s.annotations, [a.id]: { ...a, text, revision: rev(a) } },
+        },
+        inverse: { type: "EditAnnotation", annotationId: a.id, text: a.text },
+        affected: [a.id],
+      };
+    }
+
+    case "SetAnnotationRemoved": {
+      const a = need(s.annotations[c.annotationId], "Notatet");
+      return {
+        state: {
+          ...s,
+          annotations: {
+            ...s.annotations,
+            [a.id]: { ...a, removed: c.removed === true, revision: rev(a) },
+          },
+        },
+        inverse: { type: "SetAnnotationRemoved", annotationId: a.id, removed: a.removed },
+        affected: [a.id],
+      };
+    }
+
+    case "ApproveAssetVersion": {
+      const va = need(s.assetVariants[c.variantId], "Varianten");
+      if (c.versionId !== null) {
+        const ver = need(s.assetVersions[c.versionId], "Versjonen");
+        if (ver.variantId !== va.id) fail("invalid", "Versjonen tilhører en annen variant");
+      }
+      return {
+        state: {
+          ...s,
+          assetVariants: {
+            ...s.assetVariants,
+            [va.id]: { ...va, approvedVersionId: c.versionId, revision: rev(va) },
+          },
+        },
+        inverse: {
+          type: "ApproveAssetVersion",
+          variantId: va.id,
+          versionId: va.approvedVersionId,
+        },
+        affected: [va.id],
+      };
+    }
   }
 }
 
@@ -1264,7 +1815,30 @@ export function applyCommand(state: ProjectState, env: CommandEnvelope): ApplyRe
         };
       }
     }
-    const { state: next, inverse, affected } = run(state, env);
+    const ran = run(state, env);
+    const { inverse, affected } = ran;
+    let next = ran.state;
+    // Notater på tekst eller scener som forsvinner (angre av import, ny scene, innsetting …):
+    // slettede notater fjernes med, synlige notater stopper endringen med en tydelig melding (DEC-0031)
+    const orphans = Object.values(next.annotations).filter(
+      (a) =>
+        (a.blockId !== null && !Object.prototype.hasOwnProperty.call(next.blocks, a.blockId)) ||
+        (a.variantId !== null && !Object.prototype.hasOwnProperty.call(next.variants, a.variantId)),
+    );
+    if (orphans.length) {
+      const visible = orphans.filter((a) => !a.removed);
+      if (visible.length)
+        fail(
+          "referenced",
+          visible.length === 1
+            ? "Det finnes et notat på denne teksten. Slett notatet først hvis endringen skal angres."
+            : `Det finnes ${visible.length} notater på denne teksten. Slett notatene først hvis endringen skal angres.`,
+          visible.map((a) => a.id),
+        );
+      const annotations = { ...next.annotations };
+      for (const a of orphans) delete annotations[a.id];
+      next = { ...next, annotations };
+    }
     const violations = checkInvariants(next);
     if (violations.length > 0) {
       return {

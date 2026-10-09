@@ -4,6 +4,7 @@
  * Ren funksjon uten avhengigheter: samme inndata gir byte-identisk PDF (bortsett fra valgfri dato).
  */
 import type { Page } from "@/core/screenplay";
+import type { NotePlacement } from "@/core/notes";
 
 const PAGE_W = 612;
 const PAGE_H = 792;
@@ -77,6 +78,51 @@ export interface PdfOptions {
   readonly titlePage?: readonly string[];
   /** Vis sidetall fra og med side 2 (Final Draft-standard). */
   readonly pageNumbers?: boolean;
+  /** Notater som PDF-merknader (markering + tekst, navn og tidspunkt) – DEC-0031. */
+  readonly notes?: readonly NotePlacement[];
+}
+
+/** Tekststreng i UTF-16 (tåler alle tegn, også i navn og notater). */
+function pdfText(text: string): string {
+  let hex = "FEFF";
+  for (let i = 0; i < text.length; i++) hex += text.charCodeAt(i).toString(16).padStart(4, "0");
+  return `<${hex.toUpperCase()}>`;
+}
+
+/** ISO-tid → PDF-dato «D:YYYYMMDDHHmmSSZ». */
+function pdfDate(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `(D:${d.getUTCFullYear()}${p(d.getUTCMonth() + 1)}${p(d.getUTCDate())}${p(d.getUTCHours())}${p(d.getUTCMinutes())}${p(d.getUTCSeconds())}Z)`;
+}
+
+/** Gul markering med notatet som merknad (åpnes i alle vanlige PDF-lesere). */
+function highlight(n: NotePlacement): string {
+  const quads: number[] = [];
+  let x1 = Infinity;
+  let y1 = Infinity;
+  let x2 = -Infinity;
+  let y2 = -Infinity;
+  for (const part of n.parts) {
+    const base = PAGE_H - (BODY_TOP + part.row * LINE);
+    const top = base + 9.5;
+    const bottom = base - 2.5;
+    const l = part.left * CHAR;
+    const r = part.right * CHAR;
+    quads.push(l, top, r, top, l, bottom, r, bottom);
+    x1 = Math.min(x1, l);
+    x2 = Math.max(x2, r);
+    y1 = Math.min(y1, bottom);
+    y2 = Math.max(y2, top);
+  }
+  const date = pdfDate(n.note.stampAt);
+  return (
+    `<< /Type /Annot /Subtype /Highlight /F 4 /Rect [${[x1, y1, x2, y2].map(fmt).join(" ")}]` +
+    ` /QuadPoints [${quads.map(fmt).join(" ")}] /C [1 0.82 0.3] /CA 0.45` +
+    ` /T ${pdfText(n.note.author)} /Contents ${pdfText(n.note.text)} /Subj (Notat)` +
+    ` /NM ${pdfString(n.note.id)}${date ? ` /M ${date} /CreationDate ${date}` : ""} >>`
+  );
 }
 
 function pageContent(page: Page, opts: PdfOptions): string {
@@ -120,15 +166,27 @@ export function screenplayPdf(pages: readonly Page[], opts: PdfOptions = {}): Ui
   for (const p of pages) contents.push(pageContent(p, opts));
   if (contents.length === 0) contents.push("");
 
-  // Objekter: 1 katalog, 2 sidetre, 3 font, 4 info, deretter (side, innhold) parvis
+  // Objekter: 1 katalog, 2 sidetre, 3 font, 4 info, deretter (side, innhold) parvis, til slutt merknader
   const objs: string[] = [];
   const pageIds: number[] = [];
   const first = 5;
+  const titleOffset = opts.titlePage?.length ? 1 : 0;
+  const contentIndex = new Map(pages.map((p, i) => [p.number, i + titleOffset]));
+  const annotsByContent = new Map<number, string[]>();
+  let nextId = first + contents.length * 2;
+  for (const n of opts.notes ?? []) {
+    const ci = contentIndex.get(n.page);
+    if (ci === undefined || !n.parts.length) continue;
+    const id = nextId++;
+    objs[id] = highlight(n);
+    annotsByContent.set(ci, [...(annotsByContent.get(ci) ?? []), `${id} 0 R`]);
+  }
   contents.forEach((c, i) => {
     const pageId = first + i * 2;
     pageIds.push(pageId);
+    const annots = annotsByContent.get(i);
     objs[pageId] =
-      `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PAGE_W} ${PAGE_H}] /Resources << /Font << /F1 3 0 R >> >> /Contents ${pageId + 1} 0 R >>`;
+      `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PAGE_W} ${PAGE_H}] /Resources << /Font << /F1 3 0 R >> >> /Contents ${pageId + 1} 0 R${annots ? ` /Annots [${annots.join(" ")}]` : ""} >>`;
     objs[pageId + 1] = `<< /Length ${c.length} >>\nstream\n${c}\nendstream`;
   });
   objs[1] = "<< /Type /Catalog /Pages 2 0 R >>";

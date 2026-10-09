@@ -14,7 +14,7 @@ import {
   type AnyClient,
 } from "@/adapters/storage/project-rows";
 import { diffStates, emptyProjectState } from "@/core";
-import { seedProject } from "../helpers/fixtures";
+import { mustApply, seedProject, tid } from "../helpers/fixtures";
 
 const MIGRATIONS = join(__dirname, "../../db/migrations");
 
@@ -31,7 +31,7 @@ function schemaColumns(): Map<string, Set<string>> {
       const cols = new Set<string>();
       for (const line of m[2]!.split("\n")) {
         const c =
-          /^\s+([a-z_]+)\s+(uuid|text|integer|boolean|double|jsonb|timestamptz|uuid\[\])/.exec(
+          /^\s+([a-z_][a-z0-9_]*)\s+(uuid|text|integer|boolean|double|jsonb|timestamptz|uuid\[\])/.exec(
             line,
           );
         if (c) cols.add(c[1]!);
@@ -105,8 +105,51 @@ describe("Kontrakt: lagringsadapter ↔ databaseskjema", () => {
   });
 
   it("radformatet fra kjernen (endringssett) passer til tabellene", () => {
-    const { state } = seedProject();
+    const { state: seeded } = seedProject();
+    // Med ressursbibliotek (0004), så også de nye tabellene kontrolleres
+    const assetId = tid<"asset">();
+    const variantId = tid<"asset_variant">();
+    const versionId = tid<"asset_version">();
+    let state = mustApply(seeded, {
+      type: "CreateAssets",
+      assets: [
+        {
+          assetId,
+          fields: {
+            kind: "character",
+            name: "Maja",
+            names: [],
+            description: "",
+            category: "",
+            tags: [],
+          },
+        },
+      ],
+    });
+    state = mustApply(state, {
+      type: "CreateAssetVariant",
+      variantId,
+      assetId,
+      fields: { name: "Animatic", style: "animatic", appearance: "" },
+    });
+    state = mustApply(state, {
+      type: "AddAssetVersion",
+      versionId,
+      variantId,
+      media: {
+        path: `${state.project.id}/${assetId}/${versionId}/maja.png`,
+        mimeType: "image/png",
+        width: 10,
+        height: 10,
+        byteSize: 10,
+        sha256: "e".repeat(64),
+      },
+      note: "",
+    });
     const cs = diffStates(emptyProjectState(state.project), state);
+    expect(Object.keys(cs.inserts)).toEqual(
+      expect.arrayContaining(["assets", "asset_variants", "asset_versions"]),
+    );
     const problems: string[] = [];
     for (const [table, rows] of Object.entries(cs.inserts)) {
       const cols = schema.get(table);

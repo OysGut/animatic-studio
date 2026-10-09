@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import {
+  annotationsOfVariant,
   blocksOfVariant,
   compareKeys,
   formatHeading,
@@ -30,6 +31,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { KIND_LABEL } from "./script-helpers";
+import { NotesPanel } from "./NotesPanel";
 import type { Selection } from "./ScriptPageView";
 
 const EDITABLE_KINDS: BlockKind[] = [
@@ -54,6 +56,12 @@ interface Props {
   readonly onSelect: (sel: Selection) => void;
   readonly onNextUncertain: () => void;
   readonly uncertainCount: number;
+  /** Rekkefølge og synlighet kan bare endres i redigeringsmodus (REQ-0532). */
+  readonly structureEditing: boolean;
+  /** Navnet nye notater stemples med (DEC-0031). */
+  readonly authorName: string;
+  /** Notat som skal fremheves (klikket i margen). */
+  readonly focusNote: string | null;
 }
 
 export function Inspector(props: Props) {
@@ -195,6 +203,8 @@ function BlockPanel({
   textRef,
   run,
   onSelect,
+  authorName,
+  focusNote,
 }: Props) {
   const block = state.blocks[selection.blockId!]!;
   const occ = state.occurrences[selection.occurrenceId!]!;
@@ -353,6 +363,21 @@ function BlockPanel({
           Lagres når du går ut av feltet (eller ⌘/Ctrl + Enter). Esc angrer.
         </p>
       </Section>
+      <Section title="Notater">
+        <NotesPanel
+          state={state}
+          notes={annotationsOfVariant(state, block.variantId).filter((a) => a.blockId === block.id)}
+          editable={editable}
+          run={run}
+          focusId={focusNote}
+          authorName={authorName}
+          newTarget={{ blockId: block.id, variantId: null, start: 0, end: 0, quote: "" }}
+          newLabel="Notat på hele elementet"
+        />
+        <p className="mt-1 text-[11px] text-text-tertiary">
+          Notat på enkeltord: merk teksten i manuset og velg «Legg til notat».
+        </p>
+      </Section>
       {variantEditable ? (
         <Section title="Handlinger">
           <div className="flex flex-col items-stretch gap-1.5">
@@ -410,6 +435,9 @@ function ScenePanel({
   startPages,
   run,
   onSelect,
+  structureEditing,
+  authorName,
+  focusNote,
 }: Props) {
   const occ = state.occurrences[selection.occurrenceId!]!;
   const v = state.variants[occ.variantId]!;
@@ -456,21 +484,30 @@ function ScenePanel({
             </span>
           ) : null}
         </p>
-        <label className="flex items-center gap-2 text-xs text-text-secondary">
+        <label
+          className="flex items-center gap-2 text-xs text-text-secondary"
+          title={
+            structureEditing || !editable
+              ? undefined
+              : "Slå på «Endre rekkefølge og synlighet» i scenelisten for å endre"
+          }
+        >
           {occ.active ? "Aktiv" : merged ? "Sammenslått" : "Deaktivert"}
-          <Switch
-            checked={occ.active}
-            disabled={!editable || merged}
-            onCheckedChange={(on) =>
-              setErr(
-                run(
-                  { type: "SetOccurrenceActive", occurrenceId: occ.id, active: on },
-                  on ? "Aktiver scene" : "Deaktiver scene",
-                ),
-              )
-            }
-            aria-label={occ.active ? "Deaktiver scenen" : "Aktiver scenen"}
-          />
+          {structureEditing ? (
+            <Switch
+              checked={occ.active}
+              disabled={!editable || merged}
+              onCheckedChange={(on) =>
+                setErr(
+                  run(
+                    { type: "SetOccurrenceActive", occurrenceId: occ.id, active: on },
+                    on ? "Aktiver scene" : "Deaktiver scene",
+                  ),
+                )
+              }
+              aria-label={occ.active ? "Deaktiver scenen" : "Aktiver scenen"}
+            />
+          ) : null}
         </label>
       </div>
       {!occ.active && !merged ? (
@@ -569,6 +606,18 @@ function ScenePanel({
           Scenenummeret ({occ.productionNumber ?? "ingen"}) er produksjonens nummer og endres ikke
           når scener flyttes. Ny nummerering velges ved eksport.
         </p>
+      </Section>
+      <Section title="Notater i scenen">
+        <NotesPanel
+          state={state}
+          notes={annotationsOfVariant(state, v.id)}
+          editable={editable}
+          run={run}
+          focusId={focusNote}
+          authorName={authorName}
+          newTarget={{ blockId: null, variantId: v.id, start: 0, end: 0, quote: "" }}
+          newLabel="Nål på scenen"
+        />
       </Section>
       {usedIn.length ? (
         <Section title="Brukes også i">
@@ -730,8 +779,8 @@ function SummaryPanel({ state, productionId, startPages, uncertainCount, onNextU
       ) : null}
       <p className="mt-4 text-xs text-text-tertiary">
         Klikk på en linje i manuset for å rette elementtype eller tekst. Dobbeltklikk for å skrive.
-        Dra scener i listen til venstre for å flytte dem – manus og film følger alltid samme
-        rekkefølge.
+        Scener flyttes og slås av og på i listen til venstre etter at du har slått på «Endre
+        rekkefølge og synlighet» – manus og film følger alltid samme rekkefølge.
       </p>
     </div>
   );

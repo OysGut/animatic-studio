@@ -91,6 +91,11 @@
   --color-status-danger-bg: var(--status-danger-bg);
   --color-status-discrepancy-bg: var(--status-discrepancy-bg);
   --color-status-uncertain-bg: var(--status-uncertain-bg);
+  --color-status-moved: var(--status-moved);
+  --color-status-moved-bg: var(--status-moved-bg);
+  --color-note: var(--note);
+  --color-note-bg: var(--note-bg);
+  --color-mark-search: var(--mark-search);
   --color-camera-start: var(--camera-start);
   --color-camera-end: var(--camera-end);
   --color-script-paper: var(--script-paper);
@@ -158,6 +163,8 @@
   --status-danger: oklch(0.704 0.158 22);
   --status-discrepancy: oklch(0.742 0.144 54.4);
   --status-uncertain: oklch(0.797 0.134 84.3);
+  /* Flyttet siden siste lagrede versjon (REQ-0533) */
+  --status-moved: oklch(0.74 0.12 300);
   --camera-start: oklch(0.648 0.189 258.5);
   --camera-end: oklch(0.665 0.222 25.7);
   --script-paper: oklch(0.222 0.006 271.1);
@@ -172,6 +179,11 @@
   --status-danger-bg: oklch(0.704 0.158 22 / 14%);
   --status-discrepancy-bg: oklch(0.742 0.144 54.4 / 14%);
   --status-uncertain-bg: oklch(0.797 0.134 84.3 / 14%);
+  --status-moved-bg: oklch(0.74 0.12 300 / 16%);
+  /* Notater (DEC-0031) og søketreff (REQ-0541) */
+  --note: oklch(0.8 0.12 70);
+  --note-bg: oklch(0.8 0.12 70 / 18%);
+  --mark-search: oklch(0.86 0.16 115 / 34%);
   --overlay-scrim: oklch(0 0 0 / 55%);
   --shadow-float: 0 8px 24px oklch(0 0 0 / 45%);
   --motion-fast: 80ms;
@@ -216,4 +228,23 @@
   .tabular {
     font-variant-numeric: tabular-nums;
   }
+}
+
+/* Markeringer i manussidene: søketreff og notater (DEC-0031, REQ-0541) */
+mark.mark-search {
+  background: var(--mark-search);
+  border-radius: 1px;
+  box-shadow: 0 0 0 1px oklch(0.86 0.16 115 / 45%);
+}
+mark.mark-note {
+  text-decoration: underline dotted var(--note);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
+}
+mark.mark-note:not(.mark-search) {
+  background: var(--note-bg);
+}
+span.mark-search-chip {
+  background: var(--mark-search);
+  color: var(--text-primary);
 }

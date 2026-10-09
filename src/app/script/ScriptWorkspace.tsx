@@ -2,36 +2,76 @@
  * Arbeidsflaten «Manus» (M2): import, sidevisning, scenenavigator, korrigering og redigering med angre.
  * Manus og film bygger på samme aktive struktur (INV-01); alt her er kommandoer mot domenekjernen.
  */
-import { Download, FileUp, History, Loader2, Lock, Redo2, Undo2 } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import {
+  Download,
+  FileUp,
+  History,
+  Loader2,
+  Lock,
+  MessageSquarePlus,
+  Redo2,
+  Undo2,
+} from "lucide-react";
+import {
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from "react";
+import {
+  assetNames,
+  allAssetUsage,
   charactersInProduction,
   filterPages,
   isFilterActive,
   mainProduction,
   matchingOccurrences,
+  alignBlockLines,
+  annotationsByVariant,
+  movedOccurrences,
+  newId,
+  pageDecorations,
+  resolveRange,
+  searchHits,
+  type Annotation,
+  nameKey,
+  orderedOccurrences,
   scriptPages,
   scriptView,
+  sortedAssets,
   type ProjectState,
   type SceneFilter,
 } from "@/core";
 import { canEdit, useMembers, useProfiles, useProjectState } from "@/app/project/use-project";
 import { initials, usePresence, type PresentUser } from "@/app/project/use-presence";
 import { useCommands, type Commands } from "@/app/project/use-commands";
+import { useVersionList, useVersionSnapshot } from "@/app/project/use-versions";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { ExportDialog } from "./ExportDialog";
 import { ImportDialog } from "./ImportDialog";
 import { VersionsDialog } from "./VersionsDialog";
 import { Inspector } from "./Inspector";
-import { SceneNavigator } from "./SceneNavigator";
+import { SceneNavigator, type CharacterOption } from "./SceneNavigator";
 import { ScriptPageView, type Selection } from "./ScriptPageView";
 
 const ZOOMS = ["fit", "0.75", "1", "1.25", "1.5"] as const;
 type Zoom = (typeof ZOOMS)[number];
 const PAGE_PX = 51 * 16; // sidebredde ved 100 %
 
-export function ScriptWorkspace({ projectId, userId }: { projectId: string; userId: string }) {
+export function ScriptWorkspace({
+  projectId,
+  userId,
+  initialOccurrenceId = null,
+}: {
+  projectId: string;
+  userId: string;
+  /** Scene som skal være valgt når manuset åpnes (f.eks. fra ressursbiblioteket). */
+  initialOccurrenceId?: string | null;
+}) {
   const query = useProjectState(projectId);
   const members = useMembers(projectId);
   const role = members.data?.find((m) => m.user_id === userId)?.role;
@@ -58,6 +98,7 @@ export function ScriptWorkspace({ projectId, userId }: { projectId: string; user
       roleKnown={members.isSuccess}
       cmds={cmds}
       userId={userId}
+      initialOccurrenceId={initialOccurrenceId}
     />
   );
 }
@@ -69,6 +110,7 @@ function Workspace({
   roleKnown,
   cmds,
   userId,
+  initialOccurrenceId,
 }: {
   state: ProjectState;
   projectId: string;
@@ -76,6 +118,7 @@ function Workspace({
   roleKnown: boolean;
   cmds: Commands;
   userId: string;
+  initialOccurrenceId: string | null;
 }) {
   const productions = useMemo(
     () =>
@@ -84,10 +127,14 @@ function Workspace({
       ),
     [state.productions],
   );
+  const initialOcc = initialOccurrenceId ? state.occurrences[initialOccurrenceId] : undefined;
   const [productionId, setProductionId] = useState<string>(
-    () => mainProduction(state)?.id ?? productions[0]?.id ?? "",
+    () => initialOcc?.productionId ?? mainProduction(state)?.id ?? productions[0]?.id ?? "",
   );
-  const [selection, setSelection] = useState<Selection>({ occurrenceId: null, blockId: null });
+  const [selection, setSelection] = useState<Selection>({
+    occurrenceId: initialOcc?.id ?? null,
+    blockId: null,
+  });
   const [lockedPages, setLockedPages] = useState(true);
   const [zoomChoice, setZoom] = useState<Zoom>("fit");
   const [fitZoom, setFitZoom] = useState(1);
@@ -97,10 +144,20 @@ function Workspace({
   // Visningsvalg (REQ-0531, REQ-0073–0075): endrer aldri produksjonen
   const [onlySelected, setOnlySelected] = useState(false);
   const [filter, setFilter] = useState<SceneFilter>({});
+  // Rekkefølge og synlighet endres bare når brukeren har slått det på (REQ-0532)
+  const [structureEditing, setStructureEditing] = useState(false);
+  // Notater (DEC-0031): vis/skjul, og hvilket notat som er klikket
+  const [showNotes, setShowNotes] = useState(true);
+  const [focusNote, setFocusNote] = useState<string | null>(null);
+  // Scenen som vises øverst i manuset nå (oppdateres når du blar)
+  const [inView, setInView] = useState<string | null>(null);
+  // Markert tekst som kan få et notat
+  const [pendingNote, setPendingNote] = useState<PendingNote | null>(null);
   const textRef = useRef<HTMLTextAreaElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   // Tilstedeværelse: hvem andre er i prosjektet, og hvilken scene de står i
   const me = useProfiles([userId]);
+  const myName = me.data?.[userId]?.display_name || "Medlem";
   const others = usePresence(
     projectId,
     userId,
@@ -115,6 +172,18 @@ function Workspace({
   }, [others]);
 
   const hasScenes = Object.values(state.occurrences).some((o) => o.productionId === productionId);
+  // Flyttet siden siste lagrede versjon (REQ-0533)
+  const versionList = useVersionList(productionId, hasScenes);
+  const latestVersion = versionList.data?.[0] ?? null;
+  const latestSnapshot = useVersionSnapshot(latestVersion?.id ?? null);
+  const moved = useMemo(() => {
+    const snap = latestSnapshot.data;
+    if (!snap || snap.productionId !== productionId) return null;
+    return movedOccurrences(
+      snap,
+      orderedOccurrences(state, productionId).map((o) => o.id),
+    );
+  }, [latestSnapshot.data, state, productionId]);
   // «Tilpass bredde»: siden fyller midtfeltet
   useEffect(() => {
     const el = scrollRef.current;
@@ -131,10 +200,30 @@ function Workspace({
     () => scriptPages(state, productionId, { lockedPages }),
     [state, productionId, lockedPages],
   );
-  const characters = useMemo(
-    () => charactersInProduction(state, productionId),
-    [state, productionId],
-  );
+  // Karakterfilter: karakterer fra biblioteket (med alle navn, KI-29) og navn i manuset som ikke er der ennå
+  const characters = useMemo<CharacterOption[]>(() => {
+    const lib = sortedAssets(state, "character").filter((a) => !a.archived);
+    const known = new Set(lib.flatMap(assetNames).map(nameKey));
+    const usage = allAssetUsage(state, productionId);
+    return [
+      ...lib.map((a) => ({
+        value: `asset:${a.id}`,
+        label: a.name,
+        scenes: usage.get(a.id)?.length ?? 0,
+        names: assetNames(a),
+        fromLibrary: true,
+      })),
+      ...charactersInProduction(state, productionId)
+        .filter((c) => !known.has(c.name))
+        .map((c) => ({
+          value: c.name,
+          label: c.name,
+          scenes: c.scenes,
+          names: [c.name],
+          fromLibrary: false,
+        })),
+    ];
+  }, [state, productionId]);
   const matching = useMemo(
     () => (isFilterActive(filter) ? matchingOccurrences(state, productionId, filter) : null),
     [state, productionId, filter],
@@ -148,6 +237,27 @@ function Workspace({
     () => (visibleOcc ? filterPages(pagination.pages, visibleOcc) : pagination.pages),
     [pagination, visibleOcc],
   );
+  // Søketreff og notater markert på sidene (REQ-0538, REQ-0541)
+  // Søket markeres litt etter tastetrykket, så skrivingen ikke hakker i lange manus
+  const query = useDeferredValue(filter.text ?? "");
+  const decor = useMemo(
+    () => pageDecorations(shownPages, state, { query, notes: showNotes }),
+    [shownPages, state, query, showNotes],
+  );
+  const hits = useMemo(
+    () => (query.trim() ? searchHits(state, productionId, query) : null),
+    [state, productionId, query],
+  );
+  const noteCounts = useMemo(() => {
+    const m = new Map<string, number>();
+    const byVariant = annotationsByVariant(state);
+    for (const o of Object.values(state.occurrences)) {
+      if (o.productionId !== productionId) continue;
+      const n = byVariant.get(o.variantId)?.length ?? 0;
+      if (n) m.set(o.id, n);
+    }
+    return m;
+  }, [state, productionId]);
   const uncertainCount = useMemo(() => {
     let n = 0;
     for (const sc of scriptView(state, productionId)) {
@@ -176,7 +286,8 @@ function Workspace({
         : sel.occurrenceId
           ? document.getElementById(`scene-${sel.occurrenceId}`)
           : null;
-      el?.scrollIntoView({ block: "center", behavior: "smooth" });
+      // Valgt scene: overskriften øverst (REQ-0542). Valgt linje: midt i visningen.
+      el?.scrollIntoView({ block: sel.blockId ? "center" : "start", behavior: "smooth" });
     });
   }, []);
 
@@ -187,6 +298,11 @@ function Workspace({
     },
     [scrollTo],
   );
+  // Åpnet med en valgt scene: vis den når sidene er tegnet
+  useEffect(() => {
+    if (initialOcc) setTimeout(() => scrollTo({ occurrenceId: initialOcc.id, blockId: null }), 60);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Rekkefølge av synlige blokker og overskrifter, for tastaturnavigasjon og «neste usikre»
   const order = useMemo(() => {
@@ -233,6 +349,162 @@ function Workspace({
   }
 
   const run = cmds.run;
+
+  // Stabile funksjoner til manussidene, så sider som ikke er endret, ikke tegnes på nytt (memo)
+  const stateRef = useRef(state);
+  stateRef.current = state;
+  const onPageSelect = useCallback((s: Selection) => select(s), [select]);
+  const onPageActivate = useCallback(
+    (s: Selection) => {
+      select(s);
+      setTimeout(() => textRef.current?.focus(), 30);
+    },
+    [select],
+  );
+  const onPageNoteClick = useCallback(
+    (ids: readonly string[], s: Selection) => {
+      const a = stateRef.current.annotations[ids[0]!];
+      select(a && a.blockId === null ? { occurrenceId: s.occurrenceId, blockId: null } : s);
+      setFocusNote(ids[0] ?? null);
+    },
+    [select],
+  );
+
+  /** Hvilken scene står øverst i visningen? Regnes ut fra sidenes plassering (rask, også for lange manus). */
+  const updateInView = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const sheets = el.querySelectorAll<HTMLElement>("section[data-page]");
+    const first = sheets[0];
+    if (!first) return;
+    const stride = sheets[1] ? sheets[1].offsetTop - first.offsetTop : first.offsetHeight;
+    const probe = el.scrollTop + Math.min(160, el.clientHeight / 4) - first.offsetTop;
+    const idx = Math.max(0, Math.min(shownPages.length - 1, Math.floor(probe / stride)));
+    const page = shownPages[idx];
+    if (!page) return;
+    const em = first.offsetHeight / 66;
+    const row = (probe - idx * stride) / em - 6;
+    let occ = page.lines[0]?.occurrenceId ?? null;
+    for (const l of page.lines) if (l.row <= row) occ = l.occurrenceId;
+    setInView((cur) => (cur === occ ? cur : occ));
+  }, [shownPages]);
+  const scrollTick = useRef<number | null>(null);
+  useEffect(() => {
+    updateInView();
+  }, [updateInView, zoom]);
+
+  /** Markert tekst i manuset → mulig notat på akkurat de ordene (REQ-0535). */
+  function onPagesMouseUp() {
+    const sel = window.getSelection();
+    if (!editable || !sel || sel.isCollapsed || sel.rangeCount === 0) {
+      setPendingNote(null);
+      return;
+    }
+    const range = sel.getRangeAt(0);
+    const lineOf = (n: Node | null) =>
+      (n instanceof Element ? n : n?.parentElement)?.closest<HTMLElement>("[data-line]") ?? null;
+    const startLine = lineOf(range.startContainer);
+    const endLine = lineOf(range.endContainer);
+    const blockId = startLine?.dataset["block"];
+    if (!startLine || !endLine || !blockId || endLine.dataset["block"] !== blockId) {
+      setPendingNote(null);
+      return;
+    }
+    const block = state.blocks[blockId];
+    if (!block) return;
+    // Kolonne i linjen: lengden av teksten fra linjens start til punktet
+    const col = (line: HTMLElement, node: Node, offset: number) => {
+      const r = document.createRange();
+      r.setStart(line, 0);
+      r.setEnd(node, offset);
+      return r.toString().length;
+    };
+    const lines = shownPages.flatMap((p) =>
+      p.lines
+        .map((l, i) => ({ key: `${p.number}:${i}`, l }))
+        .filter((x) => x.l.blockId === blockId),
+    );
+    const cols = alignBlockLines(
+      block.text,
+      lines.map((x) => x.l.text),
+    );
+    const offsetAt = (key: string | undefined, c: number, isEnd: boolean) => {
+      const i = lines.findIndex((x) => x.key === key);
+      const row = cols[i];
+      if (!row || !row.length) return -1;
+      // Start etter siste tegn på linjen = like etter det; slutt i kolonne 0 = før første tegn
+      if (isEnd) return c <= 0 ? row[0]! : row[Math.min(c, row.length) - 1]! + 1;
+      return c >= row.length ? row[row.length - 1]! + 1 : row[Math.max(0, c)]!;
+    };
+    let start = offsetAt(
+      startLine.dataset["line"],
+      col(startLine, range.startContainer, range.startOffset),
+      false,
+    );
+    let end = offsetAt(
+      endLine.dataset["line"],
+      col(endLine, range.endContainer, range.endOffset),
+      true,
+    );
+    // Ikke start eller slutt midt i et mellomrom
+    while (start < end && /\s/.test(block.text[start] ?? "")) start++;
+    while (end > start && /\s/.test(block.text[end - 1] ?? "")) end--;
+    if (start < 0 || end <= start) {
+      setPendingNote(null);
+      return;
+    }
+    const rect = range.getBoundingClientRect();
+    end = Math.min(end, start + 5000);
+    setPendingNote({
+      blockId,
+      occurrenceId: startLine.dataset["occ"] ?? "",
+      start,
+      end,
+      // Det markerte huskes, så notatet havner riktig selv om teksten endres mens du skriver
+      quote: block.text.slice(start, end),
+      x: rect.left,
+      y: rect.bottom + 6,
+      open: false,
+    });
+  }
+
+  function savePendingNote(text: string) {
+    const p = pendingNote;
+    if (!p || !text.trim()) return;
+    const block = state.blocks[p.blockId];
+    if (!block) return;
+    const at = resolveRange(
+      { start: p.start, end: p.end, quote: p.quote } as Annotation,
+      block.text,
+    );
+    if (!at.found) {
+      setPendingNote({ ...p, error: "Teksten er endret mens du skrev – merk ordene på nytt." });
+      return;
+    }
+    const err = run(
+      {
+        type: "AddAnnotations",
+        annotations: [
+          {
+            annotationId: newId<"annotation">(),
+            blockId: block.id,
+            variantId: null,
+            start: at.start,
+            end: at.end,
+            quote: p.quote,
+            text,
+            authorName: myName,
+          },
+        ],
+      },
+      "Nytt notat",
+    );
+    if (!err) {
+      setPendingNote(null);
+      window.getSelection()?.removeAllRanges();
+      if (!showNotes) setShowNotes(true);
+    } else setPendingNote({ ...p, error: err });
+  }
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -320,6 +592,18 @@ function Workspace({
           <SaveIndicator cmds={cmds} />
           <label
             className="flex items-center gap-1.5 text-xs text-text-secondary"
+            title="Vis eller skjul notater i manuset (REQ-0538)"
+          >
+            <input
+              type="checkbox"
+              checked={showNotes}
+              onChange={(e) => setShowNotes(e.target.checked)}
+              className="size-3.5 accent-[var(--accent-brand)]"
+            />
+            Vis notater
+          </label>
+          <label
+            className="flex items-center gap-1.5 text-xs text-text-secondary"
             title="Vis bare scenen som er valgt i scenelisten. Endrer ikke filmen."
           >
             <input
@@ -384,6 +668,13 @@ function Workspace({
               characters={characters}
               visible={matching}
               presence={presenceByOcc}
+              hits={hits}
+              noteCounts={showNotes ? noteCounts : null}
+              inView={inView}
+              structureEditing={structureEditing}
+              onStructureEditingChange={setStructureEditing}
+              moved={moved}
+              movedBaseline={latestVersion ? `versjon ${latestVersion.number}` : null}
               onSelect={(id) => select({ occurrenceId: id, blockId: null }, true)}
               onMove={(id, orderKey, label) =>
                 run({ type: "MoveOccurrence", occurrenceId: id as never, orderKey }, label)
@@ -401,7 +692,16 @@ function Workspace({
             tabIndex={0}
             aria-label="Manussider. Pil opp og ned velger linje, Enter redigerer."
             onKeyDown={onPagesKey}
-            className="min-h-0 overflow-auto bg-bg-app outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus-ring"
+            onMouseUp={onPagesMouseUp}
+            onScroll={() => {
+              setPendingNote((p) => (p && !p.open ? null : p));
+              if (scrollTick.current !== null) return;
+              scrollTick.current = requestAnimationFrame(() => {
+                scrollTick.current = null;
+                updateInView();
+              });
+            }}
+            className="relative min-h-0 overflow-auto bg-bg-app outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus-ring"
           >
             {onlySelected && !selection.occurrenceId ? (
               <p className="px-6 pt-4 text-xs text-text-tertiary">
@@ -412,7 +712,7 @@ function Workspace({
             {visibleOcc && shownPages.length === 0 ? (
               <p className="px-6 pt-6 text-[13px] text-text-secondary">
                 {showOnlySelected && !state.occurrences[selection.occurrenceId!]?.active
-                  ? "Den valgte scenen er deaktivert og står derfor ikke på manussidene. Slå den på i listen for å se den."
+                  ? "Den valgte scenen er deaktivert og står derfor ikke på manussidene. Slå den på i listen (med «Endre rekkefølge og synlighet») for å se den."
                   : "Ingen aktive scener passer med filteret. Deaktiverte scener vises ikke på sidene."}
               </p>
             ) : null}
@@ -421,13 +721,40 @@ function Workspace({
               state={state}
               selection={selection}
               zoom={zoom}
-              onSelect={(s) => select(s)}
-              onActivate={(s) => {
-                select(s);
-                setTimeout(() => textRef.current?.focus(), 30);
-              }}
+              onSelect={onPageSelect}
+              onActivate={onPageActivate}
+              decor={decor}
+              onNoteClick={onPageNoteClick}
             />
           </div>
+          {pendingNote ? (
+            <div
+              className="fixed z-40 flex w-[300px] flex-col gap-1.5 border border-note/50 bg-surface-2 p-2 shadow-[var(--shadow-float)]"
+              style={{
+                left: Math.min(pendingNote.x, window.innerWidth - 316),
+                top: Math.min(pendingNote.y, window.innerHeight - 180),
+              }}
+              onMouseUp={(e) => e.stopPropagation()}
+            >
+              {pendingNote.open ? (
+                <PendingNoteForm
+                  quote={pendingNote.quote}
+                  error={pendingNote.error}
+                  onSave={savePendingNote}
+                  onCancel={() => setPendingNote(null)}
+                />
+              ) : (
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => setPendingNote({ ...pendingNote, open: true })}
+                >
+                  <MessageSquarePlus />
+                  Legg til notat
+                </Button>
+              )}
+            </div>
+          ) : null}
           <div className="flex min-h-0 flex-col border-l border-border bg-surface-1">
             <Inspector
               state={state}
@@ -440,6 +767,9 @@ function Workspace({
               onSelect={(s) => select(s, true)}
               onNextUncertain={nextUncertain}
               uncertainCount={uncertainCount}
+              structureEditing={structureEditing}
+              authorName={myName}
+              focusNote={focusNote}
             />
           </div>
         </div>
@@ -492,6 +822,7 @@ function Workspace({
           productionId={productionId}
           state={state}
           runAndWait={cmds.runAndWait}
+          authorName={myName}
         />
       ) : null}
       {/* Skjult for skjermlesere: varsler om lagring og feil */}
@@ -502,7 +833,66 @@ function Workspace({
   );
 }
 
-function SaveIndicator({ cmds }: { cmds: Commands }) {
+interface PendingNote {
+  readonly blockId: string;
+  readonly occurrenceId: string;
+  readonly start: number;
+  readonly end: number;
+  readonly quote: string;
+  /** Skjermposisjon for boksen. */
+  readonly x: number;
+  readonly y: number;
+  readonly open: boolean;
+  readonly error?: string;
+}
+
+/** Skrivefeltet for et nytt notat har egen tilstand, så manussidene ikke tegnes på nytt for hvert tastetrykk. */
+function PendingNoteForm({
+  quote,
+  error,
+  onSave,
+  onCancel,
+}: {
+  quote: string;
+  error: string | undefined;
+  onSave: (text: string) => void;
+  onCancel: () => void;
+}) {
+  const [text, setText] = useState("");
+  return (
+    <>
+      <p className="truncate text-[11px] italic text-text-tertiary">«{quote}»</p>
+      <textarea
+        autoFocus
+        rows={3}
+        maxLength={10000}
+        value={text}
+        placeholder="Skriv notatet …"
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) onSave(text);
+          if (e.key === "Escape") onCancel();
+        }}
+        className="rounded-sm border border-border-control bg-surface-3 p-1.5 text-[13px] text-text-primary"
+      />
+      <div className="flex gap-1.5">
+        <Button size="sm" onClick={() => onSave(text)} disabled={!text.trim()}>
+          Lagre notat
+        </Button>
+        <Button size="sm" variant="ghost" onClick={onCancel}>
+          Avbryt
+        </Button>
+      </div>
+      {error ? (
+        <p role="alert" className="text-xs text-status-danger">
+          {error}
+        </p>
+      ) : null}
+    </>
+  );
+}
+
+export function SaveIndicator({ cmds }: { cmds: Commands }) {
   const s = cmds.status;
   if (s.kind === "saving")
     return (

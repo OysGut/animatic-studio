@@ -135,5 +135,34 @@ export function checkInvariants(s: ProjectState): Violation[] {
     }
   }
 
+  // Ressursbiblioteket (REQ-0125, REQ-0136, REQ-0146)
+  for (const a of Object.values(s.assets)) {
+    if (!a.name.trim()) add("MODEL", `Ressurs ${a.id}: mangler navn`);
+  }
+  const versionNumbers = new Set<string>();
+  for (const ver of Object.values(s.assetVersions)) {
+    if (!s.assetVariants[ver.variantId]) add("MODEL", `Ressursversjon ${ver.id}: ukjent variant`);
+    const k = `${ver.variantId}|${ver.number}`;
+    if (versionNumbers.has(k)) add("MODEL", `Ressursversjon ${ver.id}: samme nummer to ganger`);
+    versionNumbers.add(k);
+  }
+  for (const va of Object.values(s.assetVariants)) {
+    if (!s.assets[va.assetId]) add("MODEL", `Ressursvariant ${va.id}: ukjent ressurs`);
+    if (va.approvedVersionId !== null) {
+      const ver = s.assetVersions[va.approvedVersionId];
+      if (!ver || ver.variantId !== va.id)
+        add("REQ-0136", `Ressursvariant ${va.id}: godkjent versjon tilhører ikke varianten`);
+    }
+  }
+
+  // Notater (DEC-0031): festet til en blokk som finnes, eller til en scenevariant som finnes
+  for (const n of Object.values(s.annotations)) {
+    if ((n.blockId === null) === (n.variantId === null))
+      add("MODEL", `Notat ${n.id}: må høre til enten tekst eller scene`);
+    if (n.blockId !== null && !s.blocks[n.blockId]) add("MODEL", `Notat ${n.id}: ukjent blokk`);
+    if (n.variantId !== null && !s.variants[n.variantId])
+      add("MODEL", `Notat ${n.id}: ukjent scene`);
+  }
+
   return v;
 }

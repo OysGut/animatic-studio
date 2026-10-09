@@ -10,18 +10,18 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | Invariant | Beskrivelse | Krav | Verifiserte |
 |---|---|---|---|
 | INV-01 | Manus og film er to visninger av samme aktive produksjonsstruktur. | 21 | 9 |
-| INV-02 | Scenenumre er ikke permanente identifikatorer. | 24 | 10 |
+| INV-02 | Scenenumre er ikke permanente identifikatorer. | 24 | 11 |
 | INV-03 | En scene beholder identitet gjennom flytting og omnummerering. | 16 | 6 |
 | INV-04 | Spinoffer kan bruke samme kildescene med selvstendig rekkefølge og lokale endringer. | 19 | 3 |
 | INV-05 | Norsk er hovedmanus. | 7 | 0 |
 | INV-06 | Andre språkversjoner endrer ikke norsk hovedmanus automatisk. | 4 | 0 |
 | INV-07 | Ferdige filmsekvenser overskrives ikke automatisk etter manusendringer. | 25 | 5 |
-| INV-08 | Brukeren kan godkjenne avvik, oppdatere produksjonsmateriale eller angre relevant endring. | 27 | 1 |
-| INV-09 | Karakterkontinuitet følger fortellingstid, også ved flashbacks. | 16 | 0 |
+| INV-08 | Brukeren kan godkjenne avvik, oppdatere produksjonsmateriale eller angre relevant endring. | 27 | 2 |
+| INV-09 | Karakterkontinuitet følger fortellingstid, også ved flashbacks. | 16 | 1 |
 | INV-10 | Produksjonsteknisk segmentering endrer ikke manusscenenes identiteter. | 11 | 2 |
 | INV-11 | Generativ AI er valgfritt for ordinær 2D-animatic-avspilling og eksport. | 13 | 1 |
 | INV-12 | Betalte API-kall følger eksplisitte kostnadsgodkjenninger. | 20 | 0 |
-| INV-13 | Delte ressurser er versjonerte og ikke-destruktive. | 25 | 2 |
+| INV-13 | Delte ressurser er versjonerte og ikke-destruktive. | 25 | 3 |
 | INV-14 | Deaktivering/skjuling er aldri sletting; materiale kan gjenaktiveres. | 17 | 10 |
 | INV-C1 | Ingen stille overskriving ved samarbeid (revisjonskontroll) – DEC-0003/DEC-0010. | 2 | 1 |
 | INV-C2 | Tilgang håndheves i backend (RLS) – teknisk, DEC-0010. | 3 | 3 |
@@ -31,11 +31,11 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 
 | Modul | Navn | Krav | P0 | Implementert | Verifisert |
 |---|---|---|---|---|---|
-| CORE | Project Core | 118 | 57 | 47 | 33 |
-| SCRIPT | Screenplay Engine | 110 | 32 | 53 | 43 |
+| CORE | Project Core | 118 | 57 | 50 | 36 |
+| SCRIPT | Screenplay Engine | 122 | 32 | 65 | 56 |
 | TIMELINE | Timeline & Assembly Engine | 92 | 28 | 11 | 7 |
-| LIBRARY | Resource Library | 51 | 9 | 3 | 2 |
-| CONTINUITY | Continuity Engine | 39 | 11 | 1 | 1 |
+| LIBRARY | Resource Library | 51 | 9 | 13 | 11 |
+| CONTINUITY | Continuity Engine | 39 | 11 | 2 | 2 |
 | COMPOSE | 2D Composition Engine | 39 | 14 | 4 | 3 |
 | CAMERA | Camera & Motion Engine | 28 | 2 | 1 | 1 |
 | AUDIO | Audio Engine | 31 | 1 | 2 | 2 |
@@ -43,22 +43,22 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | PROVIDER | Provider Adapters | 23 | 6 | 2 | 2 |
 | QUALITYCOST | Quality & Cost Engine | 25 | 6 | 1 | 1 |
 | QUEUE | Render Queue | 34 | 12 | 2 | 2 |
-| VERSION | Version & Dependency Engine | 90 | 36 | 23 | 11 |
-| L10N | Localization Engine | 38 | 4 | 2 | 1 |
+| VERSION | Version & Dependency Engine | 90 | 36 | 25 | 12 |
+| L10N | Localization Engine | 38 | 4 | 3 | 2 |
 | PRESENT | Presentation Engine | 30 | 3 | 1 | 1 |
-| EXPORT | Export Engine | 53 | 12 | 15 | 15 |
+| EXPORT | Export Engine | 54 | 12 | 16 | 16 |
 | SECURITY | Security & Storage | 26 | 5 | 13 | 9 |
 | COLLAB | Collaboration & Access | 10 | 0 | 8 | 6 |
-| UI | Brukergrensesnitt og designsystem | 103 | 19 | 18 | 12 |
+| UI | Brukergrensesnitt og designsystem | 115 | 19 | 32 | 27 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 4 | 1 |
 
 ## Dekning per fase
 
 | Fase | Krav | Verifisert |
 |---|---|---|
-| 1 | 70 | 25 |
-| 2 | 85 | 48 |
-| 3 | 48 | 0 |
+| 1 | 70 | 27 |
+| 2 | 97 | 61 |
+| 3 | 48 | 6 |
 | 4 | 68 | 0 |
 | 5 | 70 | 0 |
 | 6 | 48 | 0 |
@@ -143,7 +143,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0071 | Kap. 4.4 (l. 224) | CORE, SCRIPT, TIMELINE | src/core/commands/apply.ts#SplitScene | 1 | tests/invariants/random-sequences.test.ts::INV-10: segmentering endrer aldri scener, manusblokker eller rekkefølge | Verifisert | 2026-10-09 DEC-0025: M2: narrativ splitting er egen kommando; nekter hvis produksjonssegmenter peker på blokkene; status Verifisert |
 | REQ-0072 | Kap. 4.4 (l. 225) | CORE, SCRIPT | src/core/commands/apply.ts#CreateSegments | 1 | tests/unit/commands.test.ts::segmentering ved utseendeendring midt i scene endrer ikke manus eller nummer (INV-10), tests/invariants/random-sequences.test.ts::INV-10: segmentering endrer aldri scener, manusblokker eller rekkefølge | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
 | REQ-0073 | Kap. 4.5 (l. 227-235) | SCRIPT, UI | src/core/screenplay/filter.ts, src/app/script/SceneNavigator.tsx | 2 | tests/unit/filter.test.ts | Under arbeid | 2026-10-09 DEC-0028: Søk i tekst, sted, nummer og filter på karakter. Objekter, produksjonsstatus og avvik kommer når de finnes; status Under arbeid |
-| REQ-0074 | Kap. 4.5 (l. 236) | SCRIPT, LIBRARY, UI | src/core/screenplay/filter.ts#sceneHasCharacter | 1 | tests/unit/filter.test.ts::karakterfilter gir nøyaktig scenene der karakteren opptrer (REQ-0074) | Implementert – ikke verifisert | 2026-10-09 DEC-0028: Replikk eller navn nevnt i handling/overskrift. Aliaser kommer med ressursbiblioteket (M3); status Implementert – ikke verifisert |
+| REQ-0074 | Kap. 4.5 (l. 236) | SCRIPT, LIBRARY, UI | src/core/screenplay/filter.ts#sceneHasCharacter, src/core/screenplay/filter.ts#matchingOccurrences, src/app/script/ScriptWorkspace.tsx | 1 | tests/unit/filter.test.ts::karakterfilter gir nøyaktig scenene der karakteren opptrer (REQ-0074), tests/unit/library.test.ts::finner scener for karakter under alle navn, lokasjon og objekt, tests/visual/screens.mjs::15-filter-karakter | Verifisert | 2026-10-09 DEC-0030: Karakterfilteret bruker alle navnene fra ressursbiblioteket (KI-29 løst); status Verifisert |
 | REQ-0075 | Kap. 4.5 (l. 237) | SCRIPT, CORE | src/core/screenplay/filter.ts | 1 | tests/unit/filter.test.ts::filtrering endrer ikke produksjonens aktive innhold (REQ-0075) | Verifisert | 2026-10-09 DEC-0028: Filteret er bare visning; status Verifisert |
 | REQ-0076 | Kap. 5.1 (l. 241) | VERSION, SCRIPT | db/migrations/0003_script_versions.sql, src/app/script/VersionsDialog.tsx | 1 | tests/db/run-db-tests.ts::0003: manusversjon er et uforanderlig øyeblikksbilde lik kjernens, med løpenummer og forelder, tests/visual/screens.mjs::17-versjoner | Verifisert | 2026-10-09 DEC-0028: Lagre, liste og åpne versjoner; status Verifisert |
 | REQ-0077 | Kap. 5.1 (l. 242-248) | VERSION, SCRIPT | src/core/screenplay/versions.ts | 1 | tests/unit/versions.test.ts | Under arbeid | 2026-10-09 DEC-0028: Innhold, rekkefølge, synlighet, nummer, forelder og aktiv filmversjon lagres. Å gjøre en gammel versjon til gjeldende manus (gjenoppretting) er ikke bygget ennå; status Under arbeid |
@@ -190,22 +190,22 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0118 | Kap. 7.3 (l. 339-348) | UI, TIMELINE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0119 | Kap. 7.3 (l. 349) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0120 | Kap. 7.4 (l. 351) | TIMELINE, VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0121 | Kap. 8 (l. 354-366) | LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0121 | Kap. 8 (l. 354-366) | LIBRARY | src/core/model.ts#Asset, src/core/commands/apply.ts#CreateAssets, src/core/library/index.ts, src/app/library/LibraryWorkspace.tsx, src/app/library/AssetDetail.tsx, db/migrations/0004_library_notes.sql | 1 | tests/unit/library.test.ts, tests/visual/screens.mjs::20-bibliotek | Under arbeid | 2026-10-09 DEC-0030: Bibliotek for karakterer, objekter, lokasjoner, dyr og miljøer med bilder (M3 del 1). Lyd, genererte ressurser og stilprofiler gjenstår; status Under arbeid |
 | REQ-0122 | Kap. 8.1 (l. 368) | LIBRARY, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0123 | Kap. 8.1 (l. 369) | LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0124 | Kap. 8.1 (l. 370) | LIBRARY, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0125 | Kap. 8.2 (l. 372) | LIBRARY, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0126 | Kap. 8.2 (l. 373-378) | LIBRARY, L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0124 | Kap. 8.1 (l. 370) | LIBRARY, UI | src/app/library/LibraryWorkspace.tsx, src/core/library/index.ts | 1 | tests/visual/screens.mjs::20-bibliotek, tests/visual/screens.mjs::21-bibliotek-ressurs | Verifisert | 2026-10-09 DEC-0030: Kategori, stikkord, søk og filter på type; status Verifisert |
+| REQ-0125 | Kap. 8.2 (l. 372) | LIBRARY, CORE | src/core/model.ts#Asset, db/migrations/0004_library_notes.sql | 1 | tests/unit/library.test.ts::endring, arkivering og angre gir samme innhold tilbake, {'tests/db/run-db-tests.ts::0004': 'ressurs, variant og bildeversjon lagres og leses tilbake'} | Verifisert | 2026-10-09 DEC-0030: Ressurser har permanente UUID-er; status Verifisert |
+| REQ-0126 | Kap. 8.2 (l. 373-378) | LIBRARY, L10N | src/core/commands/apply.ts#normalizeAssetFields, src/app/library/AssetDetail.tsx | 1 | tests/unit/library.test.ts::lagrer foretrukket og alternative navn ryddet, og avviser tomt navn | Verifisert | 2026-10-09 DEC-0030: Foretrukket navn, alternative navn, kallenavn, tidligere navn og språknavn; status Verifisert |
 | REQ-0127 | Kap. 8.2 (l. 379) | LIBRARY, SCRIPT, CONTINUITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0128 | Kap. 8.2 (l. 380) | LIBRARY, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0128 | Kap. 8.2 (l. 380) | LIBRARY, UI | src/core/library/index.ts#librarySuggestions, src/app/library/SuggestionsDialog.tsx | 1 | tests/unit/library.test.ts::foreslår karakterer og lokasjoner som mangler, med mulige treff som må bekreftes, tests/visual/screens.mjs::22-bibliotek-forslag | Verifisert | 2026-10-09 DEC-0030: Forslag fra manuset; usikre koblinger må velges av brukeren; status Verifisert |
 | REQ-0129 | Kap. 8.2 (l. 381) | LIBRARY, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0130 | Kap. 8.3 (l. 383) | VERSION, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0131 | Kap. 8.3 (l. 384) | LIBRARY, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0131 | Kap. 8.3 (l. 384) | LIBRARY, CORE | src/core/library/index.ts#assetUsage, src/app/library/AssetDetail.tsx | 1 | tests/unit/library.test.ts::finner scener for karakter under alle navn, lokasjon og objekt, tests/visual/screens.mjs::21-bibliotek-ressurs | Verifisert | 2026-10-09 DEC-0030: «Brukt i scener» ut fra navnene i manuset (bruk i 2D-scener kommer i M3 del 2); status Verifisert |
 | REQ-0132 | Kap. 8.3 (l. 385) | VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0133 | Kap. 8.3 (l. 386) | VERSION, QUEUE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0134 | Kap. 8.3 (l. 387) | VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0135 | Kap. 9.1 (l. 391-401) | LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0136 | Kap. 9.1 (l. 402) | LIBRARY, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0135 | Kap. 9.1 (l. 391-401) | LIBRARY | src/core/model.ts#AssetVariant, src/app/library/AssetDetail.tsx | 1 | tests/unit/library.test.ts::nummererer versjoner, og ny versjon endrer ikke godkjent versjon | Verifisert | 2026-10-09 DEC-0030: Visuelle varianter med stil og utseende; status Verifisert |
+| REQ-0136 | Kap. 9.1 (l. 402) | LIBRARY, VERSION | src/core/commands/apply.ts#ApproveAssetVersion, db/migrations/0004_library_notes.sql | 1 | tests/unit/library.test.ts::nummererer versjoner, og ny versjon endrer ikke godkjent versjon, tests/unit/library.test.ts::godkjenning av en annen variants versjon avvises, {'tests/db/run-db-tests.ts::0004': 'ressurs, variant og bildeversjon lagres og leses tilbake'} | Verifisert | 2026-10-09 DEC-0030: Versjoner per variant (uforanderlige) og egen godkjenning; status Verifisert |
 | REQ-0137 | Kap. 9.2 (l. 404) | PROMPT, PROVIDER, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0138 | Kap. 9.2 (l. 405-411) | PROMPT, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0139 | Kap. 9.2 (l. 412) | PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -215,10 +215,10 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0143 | Kap. 9.3 (l. 418) | LIBRARY, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0144 | Kap. 9.3 (l. 419) | LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0145 | Kap. 9.3 (l. 420) | LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0146 | Kap. 9.3 (l. 421) | LIBRARY, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0146 | Kap. 9.3 (l. 421) | LIBRARY, VERSION | src/core/commands/apply.ts#AddAssetVersion | 1 | tests/unit/library.test.ts::nummererer versjoner, og ny versjon endrer ikke godkjent versjon | Implementert – ikke verifisert | 2026-10-09 DEC-0030: Nye bilder endrer ikke godkjent versjon; scener som bruker ressurser kommer i M3 del 2 |
 | REQ-0147 | Kap. 9.4 (l. 423) | LIBRARY, PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0148 | Kap. 9.4 (l. 424-430) | LIBRARY, PROMPT, COMPOSE, PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0149 | Kap. 9.4 (l. 431) | LIBRARY, CONTINUITY, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0149 | Kap. 9.4 (l. 431) | LIBRARY, CONTINUITY, CORE | src/core/model.ts#Asset, src/core/model.ts#AssetVariant | 1 | tests/unit/library.test.ts::nummererer versjoner, og ny versjon endrer ikke godkjent versjon | Verifisert | 2026-10-09 DEC-0030: Identitet (ressurs), utseendetilstand og stil (variant) er atskilt; status Verifisert |
 | REQ-0150 | Kap. 10 (l. 434-436) | CONTINUITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0151 | Kap. 10.1 (l. 438-446) | CONTINUITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0152 | Kap. 10.1 (l. 447-448) | CONTINUITY, PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -601,3 +601,15 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0529 | Beslutning DEC-0010 | COLLAB, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0010: Revisjon: kilde satt til DEC-0010 (teknisk anbefaling) |
 | REQ-0530 | Kap. 1 (l. 6) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet (lagt til ved dekningskontroll – linje 6 manglet) |
 | REQ-0531 | Beslutning DEC-0027 | SCRIPT, UI | src/core/screenplay/filter.ts#filterPages, src/app/script/ScriptWorkspace.tsx | 2 | tests/unit/filter.test.ts::viser bare den valgte scenens linjer med samme sidetall som i hele manuset, tests/visual/screens.mjs::16-vis-kun-valgt-scene | Verifisert | 2026-10-09 DEC-0027: Bygget i M2 del 2; status Verifisert |
+| REQ-0532 | Beslutning DEC-0029 | SCRIPT, UI | src/app/script/SceneNavigator.tsx, src/app/script/Inspector.tsx#ScenePanel | 1 | tests/visual/screens.mjs::06-manus, tests/visual/screens.mjs::19-manus-endre-rekkefolge | Verifisert | 2026-10-09 DEC-0029: Bygget med bryteren «Endre rekkefølge og synlighet»; status Verifisert |
+| REQ-0533 | Beslutning DEC-0029 | SCRIPT, UI | src/core/screenplay/versions.ts#movedOccurrences, src/app/script/SceneNavigator.tsx | 2 | tests/unit/versions.test.ts::markerer bare scenen som er flyttet, ikke scenene den hoppet over, tests/visual/screens.mjs::06-manus | Verifisert | 2026-10-09 DEC-0029: Bygget; status Verifisert |
+| REQ-0534 | Beslutning DEC-0029 | SCRIPT, UI | src/core/screenplay/versions.ts#sceneLineChanges, src/core/screenplay/versions.ts#wordDiff, src/app/script/VersionsDialog.tsx | 1 | tests/unit/versions.test.ts::viser endrede, nye og fjernede linjer med hvem som snakker, tests/unit/versions.test.ts::forteller hvor en flyttet scene sto og står, tests/visual/screens.mjs::17b-versjon-sammenlign | Verifisert | 2026-10-09 DEC-0029: Bygget; status Verifisert |
+| REQ-0535 | Beslutning DEC-0031 | SCRIPT, UI | src/core/notes/index.ts, src/core/commands/apply.ts#AddAnnotations, src/app/script/NotesPanel.tsx, src/app/script/ScriptWorkspace.tsx | 2 | tests/unit/notes.test.ts::notat på tekst og nål på scenen, med stempel; sletting kan angres, tests/unit/notes.test.ts::notatet finner teksten igjen når manuset endres, og står ved blokkens start hvis den er borte, tests/visual/screens.mjs::23-notater, tests/visual/screens.mjs::25-nytt-notat, tests/db/run-db-tests.ts::0004: notater lagres med stempel | Verifisert | 2026-10-09 DEC-0031: Opprettet etter ønske fra Mars og bygget samme dag |
+| REQ-0536 | Beslutning DEC-0031 | SCRIPT, UI | src/core/notes/index.ts#formatStamp, src/app/script/NotesPanel.tsx | 1 | tests/unit/notes.test.ts::notat på tekst og nål på scenen, med stempel; sletting kan angres, tests/visual/screens.mjs::23-notater | Verifisert | 2026-10-09 DEC-0031: Opprettet etter ønske fra Mars og bygget samme dag |
+| REQ-0537 | Beslutning DEC-0031 | SCRIPT, UI | src/app/script/NotesPanel.tsx, src/core/commands/apply.ts#SetAnnotationRemoved | 1 | tests/unit/notes.test.ts::notat på tekst og nål på scenen, med stempel; sletting kan angres | Verifisert | 2026-10-09 DEC-0031: Opprettet etter ønske fra Mars og bygget samme dag |
+| REQ-0538 | Beslutning DEC-0031 | SCRIPT, UI | src/app/script/ScriptWorkspace.tsx, src/core/notes/index.ts#pageDecorations | 1 | tests/unit/notes.test.ts::markerer søketreff og notater på riktige kolonner i linjene, tests/visual/screens.mjs::23-notater | Verifisert | 2026-10-09 DEC-0031: Opprettet etter ønske fra Mars og bygget samme dag |
+| REQ-0539 | Beslutning DEC-0031 | SCRIPT, UI | src/core/screenplay/filter.ts#matchingOccurrences, src/core/notes/index.ts#searchHits | 1 | tests/unit/notes.test.ts::søk treffer notater og forteller hva som ble truffet | Verifisert | 2026-10-09 DEC-0031: Opprettet etter ønske fra Mars og bygget samme dag |
+| REQ-0540 | Beslutning DEC-0031 | SCRIPT, EXPORT, UI | src/core/notes/transfer.ts, src/engine/export/screenplay-docx.ts, src/engine/export/screenplay-pdf.ts, src/engine/import/docx-lines.ts#docxToLinesAndNotes, src/engine/import/pdf-lines.ts#pdfToLinesAndNotes, src/app/script/ExportDialog.tsx, src/app/script/ImportDialog.tsx | 1 | tests/unit/notes.test.ts::Word: notatene blir kommentarer og gjenopprettes ved import, tests/unit/notes.test.ts::PDF: notatene blir merknader og gjenopprettes ved import, tests/visual/screens.mjs::27-eksport-notater | Verifisert | 2026-10-09 DEC-0031: Opprettet etter ønske fra Mars og bygget samme dag |
+| REQ-0541 | Beslutning DEC-0031 | SCRIPT, UI | src/core/notes/index.ts#searchHits, src/app/script/ScriptPageView.tsx, src/app/script/SceneNavigator.tsx | 2 | tests/unit/notes.test.ts::søk treffer notater og forteller hva som ble truffet, tests/visual/screens.mjs::24-sok-treff | Verifisert | 2026-10-09 DEC-0031: Opprettet etter ønske fra Mars og bygget samme dag |
+| REQ-0542 | Beslutning DEC-0031 | SCRIPT, UI | src/app/script/ScriptWorkspace.tsx#updateInView, src/app/script/SceneNavigator.tsx | 1 | tests/visual/screens.mjs::26-bla-i-manus | Verifisert | 2026-10-09 DEC-0031: Opprettet etter ønske fra Mars og bygget samme dag |
+| REQ-0543 | Beslutning DEC-0031 | SCRIPT, UI | src/app/script/ScriptWorkspace.tsx#scrollTo, src/app/script/ScriptPageView.tsx | 1 | tests/visual/screens.mjs::07-manus-scene-valgt | Verifisert | 2026-10-09 DEC-0031: Opprettet etter ønske fra Mars og bygget samme dag |
