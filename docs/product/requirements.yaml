@@ -17453,3 +17453,67 @@ requirements:
     decision: DEC-0040
     change: "Opprettet etter beslutning fra Mars og bygget samme dag"
   notes: "Ikke i mandatet v14 som eget punkt; utdyper 12.5 (visuell forhåndsvisning)."
+- id: REQ-0555
+  title: "Forhåndsvisning: flytt, størrelse fra hjørnet og zoom"
+  text: "Forhåndsvisningen av ferdig utsnitt skal kunne flyttes, endres i størrelse fra hjørnene og vises med zoom «Tilpass», 25 %, 50 %, 1:1 og 200 %. Størrelse, plassering og zoom huskes når vinduet lukkes og åpnes igjen, også automatisk ved avspilling."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0041
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - COMPOSE
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0554
+  acceptance:
+  - "Å dra i et hjørne endrer størrelsen med bildets sideforhold, og zoom går til «Tilpass»."
+  - "Å velge 1:1 viser ett bildepunkt per skjermpunkt og gjør vinduet så stort som bildet (eller rullbart)."
+  - "Etter lukking og ny visning (manuelt eller ved avspilling) står vinduet på samme plass og i samme størrelse."
+  tests:
+  - "visuell: forhåndsvisning flyttet, endret og zoomet; plassering husket"
+  status: Verifisert
+  implementation:
+  - "src/app/scene-editor/PreviewWindow.tsx"
+  - "src/app/shell/pane-size.tsx"
+  verification:
+  - "tests/visual/screens.mjs (43-forhandsvisning-flyttet-zoom)"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0041
+    change: "Opprettet etter beslutning fra Mars og bygget samme dag"
+  notes: "Utdyper 12.5 (visuell forhåndsvisning)."
+- id: REQ-0556
+  title: "Forhåndsvisning i eget vindu (flere skjermer)"
+  text: "Forhåndsvisningen skal kunne åpnes i et eget vindu som kan legges på en annen skjerm. Vinduets plassering, størrelse og zoom huskes, og det kan legges tilbake i redigeringsvinduet."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0041
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - COMPOSE
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0554
+  acceptance:
+  - "«Åpne i eget vindu» viser det ferdige utsnittet i et eget vindu som følger avspillingen."
+  - "Neste gang det åpnes, får det samme størrelse og (der nettleseren tillater det) samme plassering."
+  - "Mellomrom i det egne vinduet starter og stopper avspillingen."
+  tests:
+  - "visuell: eget vindu, gjenåpnet med husket størrelse"
+  status: Verifisert
+  implementation:
+  - "src/app/scene-editor/PreviewWindow.tsx"
+  - "src/app/scene-editor/SceneEditorWorkspace.tsx"
+  verification:
+  - "tests/visual/screens.mjs (44-forhandsvisning-eget-vindu)"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0041
+    change: "Opprettet etter beslutning fra Mars og bygget samme dag"
+  notes: "Plassering på en annen skjerm avhenger av nettleseren (KI-50). Selve flyttingen mellom skjermer kan ikke testes automatisk (hodeløs nettleser)."

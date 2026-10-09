@@ -364,3 +364,12 @@ Regler: DEC-ID-er er permanente. En beslutning endres aldri i ettertid; den erst
   2. Sceneeditoren velger scene med en nedtrekksliste i verktøylinjen (søk på nummer, sted eller tid, piltaster, ‹ › for forrige/neste). Den faste scenelisten er fjernet; venstre kolonne viser bare «I denne scenen».
   3. «Forhåndsvisning» åpner et eget vindu med det ferdige utsnittet (kamera, parallakse og animerte lag) på gjeldende bilde. Avkrysningen «Automatisk visning» (verktøytips «Vis automatisk ved avspilling») viser vinduet mens scenen spilles av. Begge valg og vinduets bredde huskes.
 
+## DEC-0041 – Forhåndsvisningen: størrelse fra hjørnet, zoom (1:1) og eget vindu som husker plassen
+- **Dato:** 2026-10-09 · **Type:** Bekreftet av bruker
+- **Mars' ord:** «brukeren kan endre størrelse på forhåndsvisningsvinduet ved å trekke i et hjørne og lett endre til 1:1.. og ulike zoom nivåer - og at den husker størrelsen og skjermplassering (om brukeren har flere skjermer, om en slår av og på preview eller jobber litt før neste avspilling»
+- **Beslutning:**
+  1. Det flytende forhåndsvisningsvinduet kan flyttes ved å dra i tittellinjen (dobbeltklikk = standardplass) og endres fra alle fire hjørner. Sideforholdet følger bildeformatet.
+  2. Zoom: «Tilpass» (bildet følger vinduet; nåværende prosent vises) og 25 %, 50 %, 1:1 (100 %) og 200 %. 1:1 er ett bildepunkt per skjermpunkt. Et fast nivå gjør vinduet akkurat stort nok til bildet; er det ikke plass, kan man rulle. Å dra i et hjørne går tilbake til «Tilpass».
+  3. «Åpne i eget vindu» legger forhåndsvisningen i et eget nettleservindu som kan flyttes til en annen skjerm. Mellomrom der starter/stopper avspillingen, og en knapp legger den tilbake i redigeringsvinduet.
+  4. Størrelse, plassering og zoom huskes for begge former (i nettleseren), også når vinduet lukkes og åpnes igjen – manuelt eller automatisk ved avspilling – og mellom økter.
+- **Teknisk:** Eget vindu = `window.open` med samme opprinnelse og React-portal; stilene kopieres. Plasseringen lagres jevnlig. Plassering på en annen skjerm bruker nettleserens skjermtillatelse der den finnes (Chrome: «Vindusbehandling»); ellers kan nettleseren legge vinduet på hovedskjermen (KI-50).

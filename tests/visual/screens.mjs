@@ -37,7 +37,8 @@ function session() {
 }
 
 async function mock(page, { projects = [project], schema = true }) {
-  await page.route(`${supaUrl}/**`, async (route) => {
+  // På konteksten (ikke siden), så også egne vinduer (forhåndsvisning) får svar
+  await page.context().route(`${supaUrl}/**`, async (route) => {
     const req = route.request();
     const url = new URL(req.url());
     const path = url.pathname;
@@ -406,6 +407,103 @@ await shot("42-forhandsvisning", scene, {
     await gaTilBilde(page, 40);
     await page.getByRole("button", { name: "Forhåndsvisning" }).click();
     await page.waitForTimeout(700);
+  },
+});
+await shot("43-forhandsvisning-flyttet-zoom", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(800);
+    await gaTilBilde(page, 40);
+    await page.getByRole("button", { name: "Forhåndsvisning" }).click();
+    await page.waitForTimeout(400);
+    // Flytt opp til venstre, gjør større fra hjørnet, så 50 %
+    const bar = page.getByLabel("Flytt forhåndsvisningen (piltaster)");
+    const b = await bar.boundingBox();
+    await page.mouse.move(b.x + 40, b.y + 10);
+    await page.mouse.down();
+    await page.mouse.move(b.x - 300, b.y - 250, { steps: 8 });
+    await page.mouse.up();
+    const c = page.getByLabel(/hjørne nede til høyre/);
+    const cb = await c.boundingBox();
+    await page.mouse.move(cb.x + 6, cb.y + 6);
+    await page.mouse.down();
+    await page.mouse.move(cb.x + 120, cb.y + 60, { steps: 8 });
+    await page.mouse.up();
+    await page.waitForTimeout(300);
+    console.log(
+      "etter hjørne:",
+      await page.getByLabel("Zoom i forhåndsvisningen").inputValue(),
+      await page.getByRole("region", { name: "Forhåndsvisning av ferdig utsnitt" }).boundingBox(),
+    );
+    await page.getByLabel("Zoom i forhåndsvisningen").selectOption("25");
+    await page.waitForTimeout(500);
+    const region = page.getByRole("region", { name: "Forhåndsvisning av ferdig utsnitt" });
+    const before = await region.boundingBox();
+    await page.getByRole("button", { name: "Lukk forhåndsvisningen" }).click();
+    await page.getByRole("button", { name: "Spill av" }).click();
+    await page.waitForTimeout(300);
+    const auto = await region.boundingBox();
+    await page.getByRole("button", { name: "Pause" }).click();
+    console.log("husket plass:", JSON.stringify(before) === JSON.stringify(auto), before, auto);
+    await page.getByRole("button", { name: "Forhåndsvisning" }).click();
+  },
+});
+await shot("44-forhandsvisning-eget-vindu", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(800);
+    await page.getByRole("button", { name: "Forhåndsvisning" }).click();
+    await page.waitForTimeout(300);
+    // Playwright-feil: med avskjæring av nettverket henger forespørsler fra tomme sprettoppvinduer
+    // (skrifter lastes aldri). Dataene er allerede hentet, så slå avskjæringen av her.
+    await page.context().unrouteAll({ behavior: "ignoreErrors" });
+    const [pop] = await Promise.all([
+      page.waitForEvent("popup"),
+      page.getByRole("button", { name: "Åpne i eget vindu" }).click(),
+    ]);
+    await pop.waitForTimeout(1200);
+    console.log(
+      "eget vindu:",
+      await pop.evaluate(() => [
+        innerWidth,
+        innerHeight,
+        document.title,
+        document.querySelectorAll("canvas").length,
+      ]),
+    );
+    await pop.screenshot({ path: out + "/44b-eget-vindu.png" });
+    await pop.keyboard.press(" ");
+    await pop.waitForTimeout(600);
+    await pop.screenshot({ path: out + "/44c-eget-vindu-avspilling.png" });
+    await pop.keyboard.press(" ");
+    await pop.evaluate(() => {
+      window.moveTo(200, 150);
+      window.resizeTo(800, 520);
+    });
+    await pop.waitForTimeout(1500);
+    await page.getByRole("button", { name: "Forhåndsvisning" }).click(); // lukk
+    await page.waitForTimeout(400);
+    // Hodeløs Chromium flytter ikke vinduer: simuler at brukeren gjorde det, og se at det huskes ved neste åpning
+    await page.evaluate(() => {
+      localStorage.setItem("animatic:pane:scene-editor-popup-width", "800");
+      localStorage.setItem("animatic:pane:scene-editor-popup-height", "520");
+      window.dispatchEvent(
+        new StorageEvent("storage", { key: "animatic:pane:scene-editor-popup-width" }),
+      );
+      window.dispatchEvent(
+        new StorageEvent("storage", { key: "animatic:pane:scene-editor-popup-height" }),
+      );
+    });
+    const [pop2] = await Promise.all([
+      page.waitForEvent("popup"),
+      page.getByRole("button", { name: "Forhåndsvisning" }).click(),
+    ]);
+    await pop2.waitForTimeout(800);
+    console.log(
+      "gjenåpnet:",
+      await pop2.evaluate(() => [screenX, screenY, innerWidth, innerHeight]),
+    );
+    await pop2.screenshot({ path: out + "/44b-eget-vindu.png" });
+    await pop2.getByRole("button", { name: "Tilbake til redigeringsvinduet" }).click();
+    await page.waitForTimeout(600);
   },
 });
 await shot("18-oversikt-varighet", `/prosjekt/${project.id}`, {

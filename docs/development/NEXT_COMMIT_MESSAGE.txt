@@ -1,12 +1,13 @@
-Mer plass i sceneeditoren: sammenleggbar meny, scenevelger og forhåndsvisning (DEC-0040)
+Forhåndsvisningen: flytt, størrelse fra hjørnet, zoom 1:1 og eget vindu (DEC-0041)
 
 Ingen databaseendring. Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push
 (den ber bare Lovable bekrefte at databasen står på versjon 8).
 
-- Menyen til venstre kan legges sammen til en smal stripe med ikoner (knappen øverst). Valget huskes.
-- Sceneeditoren: scenen velges i en nedtrekksliste i verktøylinjen med søk (nummer, sted, tid) og
-  ‹ › for forrige/neste. Den faste scenelisten er borte, så lerretet får mer plass.
-- «Forhåndsvisning» viser det ferdige utsnittet (kamera og bevegelser) i et eget vindu.
-  «Automatisk visning» viser det automatisk ved avspilling. Valgene og vindusbredden huskes.
-- Tester: 241 Vitest-tester og 25 databasetester grønne; skjermbilder 28–42.
-- Dokumentasjon: DEC-0040, REQ-0552–0554, LOVABLE_SYNC, LOVABLE_GUIDE (0008 kjørt).
+- Forhåndsvisningen flyttes ved å dra i tittellinjen og endres fra alle fire hjørner (sideforholdet følger bildet).
+- Zoom: «Tilpass», 25 %, 50 %, 1:1 (100 %) og 200 %. Et fast nivå gjør vinduet akkurat så stort som bildet.
+- «Åpne i eget vindu» legger forhåndsvisningen i et eget nettleservindu som kan flyttes til en annen skjerm.
+  Mellomrom der starter/stopper avspillingen; en knapp legger den tilbake i redigeringsvinduet.
+- Størrelse, plassering og zoom huskes for begge former, også når vinduet lukkes og åpnes igjen
+  (manuelt eller automatisk ved avspilling) og mellom økter.
+- Tester: 241 Vitest-tester grønne; skjermbilder 43–44.
+- Dokumentasjon: DEC-0041, REQ-0555–0556, KI-50–51.

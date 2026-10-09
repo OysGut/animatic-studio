@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **554**
-- Prioritet: P0: 141, P1: 237, P2: 137, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 27, teknisk-anbefaling: 7
-- Status: Ikke startet: 392, Verifisert: 126, Under arbeid: 25, Implementert – ikke verifisert: 11
+- Antall krav: **556**
+- Prioritet: P0: 141, P1: 238, P2: 138, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 29, teknisk-anbefaling: 7
+- Status: Ikke startet: 392, Verifisert: 128, Under arbeid: 25, Implementert – ikke verifisert: 11
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -7149,3 +7149,35 @@ Sceneeditoren skal ha et eget vindu som viser det ferdige utsnittet (kamera, par
   - visuell: forhåndsvisning med kamera
 - **Implementering:** src/app/scene-editor/PreviewWindow.tsx, src/app/scene-editor/SceneEditorWorkspace.tsx
 - **Merknad:** Ikke i mandatet v14 som eget punkt; utdyper 12.5 (visuell forhåndsvisning).
+
+#### REQ-0555 – Forhåndsvisning: flytt, størrelse fra hjørnet og zoom
+Forhåndsvisningen av ferdig utsnitt skal kunne flyttes, endres i størrelse fra hjørnene og vises med zoom «Tilpass», 25 %, 50 %, 1:1 og 200 %. Størrelse, plassering og zoom huskes når vinduet lukkes og åpnes igjen, også automatisk ved avspilling.
+
+- **Kilde:** Beslutning DEC-0041 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, UI
+- **Avhengigheter:** REQ-0554
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Å dra i et hjørne endrer størrelsen med bildets sideforhold, og zoom går til «Tilpass».
+  - Å velge 1:1 viser ett bildepunkt per skjermpunkt og gjør vinduet så stort som bildet (eller rullbart).
+  - Etter lukking og ny visning (manuelt eller ved avspilling) står vinduet på samme plass og i samme størrelse.
+- **Tester:**
+  - visuell: forhåndsvisning flyttet, endret og zoomet; plassering husket
+- **Implementering:** src/app/scene-editor/PreviewWindow.tsx, src/app/shell/pane-size.tsx
+- **Merknad:** Utdyper 12.5 (visuell forhåndsvisning).
+
+#### REQ-0556 – Forhåndsvisning i eget vindu (flere skjermer)
+Forhåndsvisningen skal kunne åpnes i et eget vindu som kan legges på en annen skjerm. Vinduets plassering, størrelse og zoom huskes, og det kan legges tilbake i redigeringsvinduet.
+
+- **Kilde:** Beslutning DEC-0041 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** COMPOSE, UI
+- **Avhengigheter:** REQ-0554
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - «Åpne i eget vindu» viser det ferdige utsnittet i et eget vindu som følger avspillingen.
+  - Neste gang det åpnes, får det samme størrelse og (der nettleseren tillater det) samme plassering.
+  - Mellomrom i det egne vinduet starter og stopper avspillingen.
+- **Tester:**
+  - visuell: eget vindu, gjenåpnet med husket størrelse
+- **Implementering:** src/app/scene-editor/PreviewWindow.tsx, src/app/scene-editor/SceneEditorWorkspace.tsx
+- **Merknad:** Plassering på en annen skjerm avhenger av nettleseren (KI-50). Selve flyttingen mellom skjermer kan ikke testes automatisk (hodeløs nettleser).

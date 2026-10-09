@@ -31,7 +31,7 @@ import { Stage } from "./Stage";
 import { SceneAssetsPanel } from "./SceneAssetsPanel";
 import { ScenePicker } from "./ScenePicker";
 import { PaneResizer, usePaneSize, useStoredFlag } from "@/app/shell/pane-size";
-import { PreviewWindow } from "./PreviewWindow";
+import { PopoutPreview, PreviewWindow } from "./PreviewWindow";
 import { CameraPanel } from "./CameraPanel";
 import { Timeline } from "./Timeline";
 import { usePlayback } from "./use-playback";
@@ -126,6 +126,9 @@ function Editor({
   /** Forhåndsvisning av ferdig utsnitt: åpnet manuelt, eller automatisk ved avspilling (huskes). */
   const [previewOpen, setPreviewOpen] = useStoredFlag("scene-editor-preview-open", false);
   const [autoPreview, setAutoPreview] = useStoredFlag("scene-editor-preview-auto", true);
+  /** Forhåndsvisningen i et eget nettleservindu (kan ligge på en annen skjerm, DEC-0041). */
+  const [popout, setPopout] = useStoredFlag("scene-editor-preview-popout", false);
+  const [previewNote, setPreviewNote] = useState<string | null>(null);
   const duration = useMemo(
     () => (composition ? compositionDuration(state, composition) : 1),
     [state, composition],
@@ -133,6 +136,10 @@ function Editor({
   const playback = usePlayback(duration, state.project.fps);
   // I kameravisningen viser lerretet allerede det ferdige utsnittet
   const showPreview = view === "scene" && (previewOpen || (autoPreview && playback.playing));
+  const closePreview = useCallback(() => {
+    setPreviewOpen(false);
+    if (playback.playing) setAutoPreview(false);
+  }, [playback.playing, setPreviewOpen, setAutoPreview]);
   const selectedShot =
     composition && selectedShotId
       ? (composition.camera.shots.find((x) => x.id === selectedShotId) ?? null)
@@ -373,16 +380,32 @@ function Editor({
                   autoKey={autoKey}
                   onTogglePlay={playback.toggle}
                 />
-                {showPreview ? (
+                {showPreview && popout ? (
+                  <PopoutPreview
+                    state={state}
+                    composition={composition}
+                    frame={playback.frame}
+                    imageUrls={urls.data ?? {}}
+                    onClose={closePreview}
+                    onDock={() => setPopout(false)}
+                    onBlocked={() => {
+                      setPopout(false);
+                      setPreviewNote("Nettleseren stoppet det egne vinduet");
+                    }}
+                    onTogglePlay={playback.toggle}
+                  />
+                ) : showPreview ? (
                   <PreviewWindow
                     state={state}
                     composition={composition}
                     frame={playback.frame}
                     imageUrls={urls.data ?? {}}
-                    onClose={() => {
-                      setPreviewOpen(false);
-                      if (playback.playing) setAutoPreview(false);
+                    onClose={closePreview}
+                    onPopOut={() => {
+                      setPreviewNote(null);
+                      setPopout(true);
                     }}
+                    note={previewNote}
                   />
                 ) : null}
               </div>

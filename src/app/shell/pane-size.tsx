@@ -105,6 +105,23 @@ export function useStoredFlag(key: string, fallback: boolean) {
   return [value, set] as const;
 }
 
+/** Lagret tall (f.eks. plassering eller zoom). `null` = ikke satt ennå; `set(null)` glemmer verdien. */
+export function useStoredNumber(key: string) {
+  const stored = useSyncExternalStore(
+    subscribe,
+    () => read(key),
+    () => null,
+  );
+  const set = useCallback((n: number | null) => write(key, n), [key]);
+  return [stored, set] as const;
+}
+
+/** Les/skriv lagrede tall utenfor React (f.eks. størrelsen på et eget vindu når det lukkes). */
+export const storedNumber = {
+  get: (key: string): number | null => (typeof window === "undefined" ? null : read(key)),
+  set: (key: string, n: number | null) => write(key, n),
+};
+
 /**
  * Håndtaket i rammen. `edge` sier hvilken kant av panelet det sitter på: «right» = panelet er til venstre
  * og blir bredere når man drar mot høyre; «left» = panelet er til høyre; «top» = panelet er under (høyde).
