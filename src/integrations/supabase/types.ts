@@ -55,6 +55,69 @@ export type Database = {
           },
         ]
       }
+      imported_documents: {
+        Row: {
+          byte_size: number
+          change_id: string | null
+          created_at: string
+          created_by: string
+          file_name: string
+          format: string
+          id: string
+          language: string
+          page_count: number | null
+          production_id: string
+          project_id: string
+          sha256: string
+          storage_key: string
+        }
+        Insert: {
+          byte_size: number
+          change_id?: string | null
+          created_at?: string
+          created_by: string
+          file_name: string
+          format: string
+          id?: string
+          language?: string
+          page_count?: number | null
+          production_id: string
+          project_id: string
+          sha256: string
+          storage_key: string
+        }
+        Update: {
+          byte_size?: number
+          change_id?: string | null
+          created_at?: string
+          created_by?: string
+          file_name?: string
+          format?: string
+          id?: string
+          language?: string
+          page_count?: number | null
+          production_id?: string
+          project_id?: string
+          sha256?: string
+          storage_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "imported_documents_production_id_fkey"
+            columns: ["production_id"]
+            isOneToOne: false
+            referencedRelation: "productions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "imported_documents_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       production_segments: {
         Row: {
           created_at: string
@@ -176,6 +239,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      profiles: {
+        Row: {
+          display_name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          display_name?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          display_name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       project_invitations: {
         Row: {
@@ -398,6 +479,7 @@ export type Database = {
           project_id: string
           revision: number
           scene_id: string
+          uncertainty: string | null
         }
         Insert: {
           based_on_variant_id?: string | null
@@ -411,6 +493,7 @@ export type Database = {
           project_id: string
           revision?: number
           scene_id: string
+          uncertainty?: string | null
         }
         Update: {
           based_on_variant_id?: string | null
@@ -424,6 +507,7 @@ export type Database = {
           project_id?: string
           revision?: number
           scene_id?: string
+          uncertainty?: string | null
         }
         Relationships: [
           {
@@ -604,8 +688,11 @@ export type Database = {
           language: string
           order_key: string
           project_id: string
+          removed: boolean
           revision: number
+          source_ref: Json | null
           text: string
+          uncertainty: string | null
           variant_id: string
         }
         Insert: {
@@ -617,8 +704,11 @@ export type Database = {
           language?: string
           order_key: string
           project_id: string
+          removed?: boolean
           revision?: number
+          source_ref?: Json | null
           text?: string
+          uncertainty?: string | null
           variant_id: string
         }
         Update: {
@@ -630,8 +720,11 @@ export type Database = {
           language?: string
           order_key?: string
           project_id?: string
+          removed?: boolean
           revision?: number
+          source_ref?: Json | null
           text?: string
+          uncertainty?: string | null
           variant_id?: string
         }
         Relationships: [
@@ -742,6 +835,25 @@ export type Database = {
       create_project: {
         Args: { p_fps_den?: number; p_fps_num?: number; p_name: string }
         Returns: string
+      }
+      register_imported_document: {
+        Args: {
+          p_byte_size: number
+          p_change_id?: string
+          p_file_name: string
+          p_format: string
+          p_language?: string
+          p_page_count: number
+          p_production: string
+          p_project: string
+          p_sha256: string
+          p_storage_key: string
+        }
+        Returns: string
+      }
+      upsert_my_profile: {
+        Args: { p_display_name?: string }
+        Returns: undefined
       }
     }
     Enums: {
