@@ -6,6 +6,9 @@
  */
 import { writeFileSync } from "node:fs";
 import {
+  DEFAULT_COMPOSITION,
+  IDENTITY_TRANSFORM,
+  defaultLayerFields,
   diffStates,
   emptyProjectState,
   keyBetween,
@@ -19,6 +22,14 @@ import { mustApply, tid } from "../helpers/fixtures";
 
 const PEOPLE = ["MAJA", "BESTEMOR ANNE", "FAR", "BESTEMOR", "NISSEN"];
 const PLACES = ["STUA - HJEMME HOS MAJA", "GÅRDSPLASSEN", "FJØSET", "SKOGEN"];
+
+// Handlingslinjer som gir forslag i biblioteket: en navngitt ting uten replikk (Svarten) og et objekt (sekk)
+const ACTION: Record<number, string> = {
+  1: "Det knirker i gulvet. Maja klapper Svarten bak øret.",
+  2: "Faren løfter en sekk opp på kjerra.",
+  5: "Det er stille. Maja ser at Svarten legger seg ved ovnen. Sekken står igjen ved døra.",
+  8: "Hun drar sekken etter seg over tunet.",
+};
 
 let s: ProjectState = emptyProjectState({
   id: tid<"project">(),
@@ -38,7 +49,7 @@ s = mustApply(s, {
 const N = 14;
 const keys = keysEvenly(N);
 for (let i = 0; i < N; i++) {
-  const who = PEOPLE[i % PEOPLE.length]!;
+  const who = i === 6 ? "MAJJA" : PEOPLE[i % PEOPLE.length]!;
   const other = PEOPLE[(i + 2) % PEOPLE.length]!;
   const bk = keysEvenly(7);
   s = mustApply(s, {
@@ -58,9 +69,10 @@ for (let i = 0; i < N; i++) {
         blockId: tid(),
         kind: "action",
         text:
-          i % 4 === 0
+          ACTION[i] ??
+          (i % 4 === 0
             ? "Snøen ligger tung over tunet. Maja setter vasen i vinduet og ser etter lys i skogen."
-            : "Det knirker i gulvet. En katt stryker forbi døra.",
+            : "Det knirker i gulvet. En katt stryker forbi døra."),
         orderKey: bk[0]!,
       },
       { blockId: tid(), kind: "character", text: who, orderKey: bk[1]! },
@@ -216,6 +228,66 @@ s = mustApply(s, {
   type: "ApproveAssetVersion",
   variantId: variant,
   versionId: versionIds[1]! as never,
+});
+
+// 2D-scene for første scene i hovedproduksjonen
+const firstOcc = orderedOccurrences(s, mainId)[0]!;
+const compId = tid<"composition">();
+s = mustApply(s, {
+  type: "CreateComposition",
+  compositionId: compId,
+  variantId: firstOcc.variantId,
+  fields: { ...DEFAULT_COMPOSITION, name: "Stua – åpning" },
+});
+const anneVariant = tid<"asset_variant">();
+s = mustApply(s, {
+  type: "CreateAssetVariant",
+  variantId: anneVariant,
+  assetId: anne,
+  fields: { name: "Animatic", style: "animatic", appearance: "" },
+});
+const anneVersion = tid<"asset_version">();
+s = mustApply(s, {
+  type: "AddAssetVersion",
+  versionId: anneVersion,
+  variantId: anneVariant,
+  media: {
+    path: `${s.project.id}/${anne}/${anneVersion}/anne-1.png`,
+    mimeType: "image/png",
+    width: 1200,
+    height: 1600,
+    byteSize: 120_000,
+    sha256: "e".repeat(64),
+  },
+  note: "",
+});
+const comp = s.compositions[compId]!;
+const layerOf = (fields: ReturnType<typeof defaultLayerFields>) => ({
+  layerId: tid<"composition_layer">(),
+  compositionId: compId,
+  fields,
+});
+s = mustApply(s, {
+  type: "AddLayers",
+  layers: [
+    layerOf(defaultLayerFields(s, comp, { fill: "#24324a", name: "Himmel" })),
+    layerOf({
+      ...defaultLayerFields(s, comp, { assetId: maja }),
+      transform: { ...IDENTITY_TRANSFORM, x: 640, y: 560, scaleX: 0.5, scaleY: 0.5 },
+    }),
+    layerOf({
+      ...defaultLayerFields(s, comp, { assetId: anne }),
+      transform: { ...IDENTITY_TRANSFORM, x: 1280, y: 540, scaleX: 0.55, scaleY: 0.55 },
+    }),
+    layerOf({ ...defaultLayerFields(s, comp, { assetId: vase }), visible: false }),
+    layerOf({
+      ...defaultLayerFields(s, comp, { fill: "#8fa3c4", name: "Snødis" }),
+      kind: "effect",
+      locked: true,
+      height: 300,
+      transform: { ...IDENTITY_TRANSFORM, x: 960, y: 930, opacity: 0.35 },
+    }),
+  ],
 });
 
 // Notater: på tekst og som nål på scenen

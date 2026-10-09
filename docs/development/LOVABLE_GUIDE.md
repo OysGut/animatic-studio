@@ -21,7 +21,7 @@ For Mars. Ingen kommandolinje trengs. Bakgrunn: DEC-0005, ADR-0002, DEC-0033.
 
    Appen viser et oransje varsel øverst så lenge databasen mangler en migrasjon. Når varselet er borte, er alt på plass.
 
-   **Kjørte migrasjoner:** `0001_core.sql` (2026-10-08), `0002_import_profiles.sql` (2026-10-09; bøtta laget med Lovables lagringsverktøy fordi SQL mot `storage.buckets` ikke er tillatt), `0003_script_versions.sql` (2026-10-09), `0004_library_notes.sql` (2026-10-09; bøtta `assets` laget med lagringsverktøyet), `0005_note_edits_large_files.sql` (2026-10-09; Lovable la til kolonnen `byte_size_big` i stedet for å endre typen på `byte_size`, og bøtta `assets` ble satt til 2 GB), `0006_byte_size_big.sql` (2026-10-09, uten avvik).
+   **Kjørte migrasjoner:** `0001_core.sql` (2026-10-08), `0002_import_profiles.sql` (2026-10-09; bøtta laget med Lovables lagringsverktøy fordi SQL mot `storage.buckets` ikke er tillatt), `0003_script_versions.sql` (2026-10-09), `0004_library_notes.sql` (2026-10-09; bøtta `assets` laget med lagringsverktøyet), `0005_note_edits_large_files.sql` (2026-10-09; Lovable la til kolonnen `byte_size_big` i stedet for å endre typen på `byte_size`, og bøtta `assets` ble satt til 2 GB), `0006_byte_size_big.sql` (2026-10-09, uten avvik). **Neste:** `0007_compositions.sql` (sceneeditoren).
 
 4. Lim Lovables svar inn til Claude hvis noe feilet.
 

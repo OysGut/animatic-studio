@@ -163,6 +163,33 @@ export function checkInvariants(s: ProjectState): Violation[] {
     if (n.variantId !== null && !s.variants[n.variantId])
       add("MODEL", `Notat ${n.id}: ukjent scene`);
   }
+  // 2D-scener og lag (DEC-0035): koblet til scener og ressurser som finnes, unik lagrekkefølge
+  const activeComp = new Set<string>();
+  for (const c of Object.values(s.compositions)) {
+    if (!s.variants[c.variantId]) add("MODEL", `2D-scene ${c.id}: ukjent scene`);
+    if (c.removed) continue;
+    if (activeComp.has(c.variantId)) add("MODEL", `2D-scene ${c.id}: scenen har to 2D-scener`);
+    activeComp.add(c.variantId);
+  }
+  const keysByComp = new Map<string, Set<string>>();
+  for (const l of Object.values(s.layers)) {
+    if (!s.compositions[l.compositionId]) add("MODEL", `Lag ${l.id}: ukjent 2D-scene`);
+    if (l.assetId !== null && !s.assets[l.assetId]) add("MODEL", `Lag ${l.id}: ukjent ressurs`);
+    if (l.assetVariantId !== null) {
+      const va = s.assetVariants[l.assetVariantId];
+      if (!va || va.assetId !== l.assetId) add("MODEL", `Lag ${l.id}: ugyldig variant`);
+    }
+    if (l.versionId !== null) {
+      const ve = s.assetVersions[l.versionId];
+      if (!ve || ve.variantId !== l.assetVariantId) add("MODEL", `Lag ${l.id}: ugyldig versjon`);
+    }
+    if (l.assetId === null && l.fill === null) add("MODEL", `Lag ${l.id}: viser ingenting`);
+    let keys = keysByComp.get(l.compositionId);
+    if (!keys) keysByComp.set(l.compositionId, (keys = new Set()));
+    if (keys.has(l.orderKey))
+      add("MODEL", `Lag ${l.id}: samme plass i lagrekkefølgen som et annet lag`);
+    keys.add(l.orderKey);
+  }
 
   return v;
 }

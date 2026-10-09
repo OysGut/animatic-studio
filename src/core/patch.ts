@@ -11,6 +11,8 @@ import type {
   AssetVersion,
   BlockRevision,
   CollectionName,
+  Composition,
+  CompositionLayer,
   Production,
   ProductionSegment,
   ProjectState,
@@ -46,7 +48,9 @@ type AnyEntity =
   | Asset
   | AssetVariant
   | AssetVersion
-  | Annotation;
+  | Annotation
+  | Composition
+  | CompositionLayer;
 
 export function toRow(collection: CollectionName, e: AnyEntity, projectId: string): Row {
   const base = { id: e.id, project_id: projectId, revision: e.revision };
@@ -200,6 +204,43 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         removed: n.removed,
       };
     }
+    case "compositions": {
+      const c = e as Composition;
+      return {
+        ...base,
+        variant_id: c.variantId,
+        name: c.name,
+        width: c.width,
+        height: c.height,
+        duration_frames: c.durationFrames,
+        background: c.background,
+        camera: c.camera,
+        removed: c.removed,
+      };
+    }
+    case "layers": {
+      const l = e as CompositionLayer;
+      return {
+        ...base,
+        composition_id: l.compositionId,
+        order_key: l.orderKey,
+        kind: l.kind,
+        name: l.name,
+        asset_id: l.assetId,
+        asset_variant_id: l.assetVariantId,
+        version_id: l.versionId,
+        fill: l.fill,
+        width: l.width,
+        height: l.height,
+        parallax: l.parallax,
+        transform: l.transform,
+        keyframes: l.keyframes,
+        visible: l.visible,
+        locked: l.locked,
+        group_id: l.groupId,
+        removed: l.removed,
+      };
+    }
   }
 }
 
@@ -233,6 +274,8 @@ export const TABLE_ORDER: readonly string[] = [
   "asset_variants",
   "asset_versions",
   "script_annotations",
+  "compositions",
+  "composition_layers",
 ];
 
 export function diffStates(before: ProjectState, after: ProjectState): ChangeSet {
@@ -287,6 +330,9 @@ export interface ProjectRows {
   readonly asset_variants?: readonly Row[];
   readonly asset_versions?: readonly Row[];
   readonly script_annotations?: readonly Row[];
+  /** 2D-sceneeditoren (migrasjon 0007). Tomt hvis migrasjonen ikke er kjørt ennå. */
+  readonly compositions?: readonly Row[];
+  readonly composition_layers?: readonly Row[];
 }
 
 const str = (v: unknown) => String(v);
@@ -294,6 +340,8 @@ const optStr = (v: unknown) => (v === null || v === undefined ? null : String(v)
 const num = (v: unknown) => Number(v);
 const optNum = (v: unknown) => (v === null || v === undefined ? null : Number(v));
 const iso = (v: unknown) => (v instanceof Date ? v.toISOString() : String(v));
+/** jsonb kommer som objekt fra databasen, men kan komme som tekst fra enkelte klienter. */
+const json = (v: unknown): unknown => (typeof v === "string" ? (JSON.parse(v) as unknown) : v);
 
 function byId<T extends { id: string }>(list: T[]): Record<string, T> {
   return Object.fromEntries(list.map((x) => [x.id, x]));
@@ -476,6 +524,43 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         editedByName: optStr(x["edited_by_name"]),
         editedAt:
           x["edited_at"] === null || x["edited_at"] === undefined ? null : iso(x["edited_at"]),
+        removed: x["removed"] === true,
+      })),
+    ),
+    compositions: byId(
+      (r.compositions ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        variantId: str(x["variant_id"]) as never,
+        name: str(x["name"] ?? ""),
+        width: num(x["width"]),
+        height: num(x["height"]),
+        durationFrames: num(x["duration_frames"] ?? 0),
+        background: str(x["background"] ?? "#000000"),
+        camera: { shots: [], ...(json(x["camera"]) as object | null) } as never,
+        removed: x["removed"] === true,
+      })),
+    ),
+    layers: byId(
+      (r.composition_layers ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        compositionId: str(x["composition_id"]) as never,
+        orderKey: str(x["order_key"]),
+        kind: str(x["kind"]) as never,
+        name: str(x["name"] ?? ""),
+        assetId: optStr(x["asset_id"]) as never,
+        assetVariantId: optStr(x["asset_variant_id"]) as never,
+        versionId: optStr(x["version_id"]) as never,
+        fill: optStr(x["fill"]),
+        width: num(x["width"]),
+        height: num(x["height"]),
+        parallax: num(x["parallax"]),
+        transform: json(x["transform"]) as never,
+        keyframes: (json(x["keyframes"]) ?? []) as never,
+        visible: x["visible"] !== false,
+        locked: x["locked"] === true,
+        groupId: optStr(x["group_id"]),
         removed: x["removed"] === true,
       })),
     ),

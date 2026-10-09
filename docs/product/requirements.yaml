@@ -4286,6 +4286,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0030
     change: Forslag fra manuset; usikre koblinger må velges av brukeren; status Verifisert
+  - date: '2026-10-09'
+    decision: DEC-0034
+    change: "Forslagene fra manuset utvidet med gratis regelbasert gjenkjenning av ressurser (REQ-0544–REQ-0548); status uendret Verifisert"
   notes: ''
 - id: REQ-0129
   title: Deteksjon av stavefeil og inkonsistente navn
@@ -5563,13 +5566,25 @@ requirements:
     objekt, visuell effekt og annet bildeelement, så vises de i scenen og lagres i prosjektdataene.
   tests:
   - 'e2e: legg til ett element av hver type og verifiser at de vises og persisteres etter omlasting'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/composition/*"
+  - "src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved)"
+  - "db/migrations/0007_compositions.sql"
+  - "src/app/scene-editor/*"
+  - "src/engine/compositor/canvas.ts"
+  verification:
+  - "tests/unit/composition.test.ts"
+  - "tests/db/run-db-tests.ts (0007)"
+  - "tests/unit/storage-contract.test.ts"
+  - "tests/visual/screens.mjs (28–31)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0035
+    change: "2D-sceneeditor del 1 (datamodell og lagbasert komposisjon) bygget; status Verifisert"
   notes: ''
 - id: REQ-0172
   title: Lag med definert dybdeforhold
@@ -5591,13 +5606,25 @@ requirements:
   tests:
   - 'enhet: sortering/tegnerekkefølge etter dybdeverdi'
   - 'visuell: referansebilde av overlappende lag'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/composition/*"
+  - "src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved)"
+  - "db/migrations/0007_compositions.sql"
+  - "src/app/scene-editor/*"
+  - "src/engine/compositor/canvas.ts"
+  verification:
+  - "tests/unit/composition.test.ts"
+  - "tests/db/run-db-tests.ts (0007)"
+  - "tests/unit/storage-contract.test.ts"
+  - "tests/visual/screens.mjs (28–31)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0035
+    change: "2D-sceneeditor del 1 (datamodell og lagbasert komposisjon) bygget; status Verifisert"
   notes: Ufravikelig prinsipp nr. 10 (lagbasert) i kap. 34.
 - id: REQ-0173
   title: Parallakse og kamerabevegelse gjennom lag
@@ -5621,14 +5648,26 @@ requirements:
   tests:
   - 'enhet: beregnet skjermforskyvning per lag som funksjon av dybde og kamerabevegelse'
   - 'visuell: avspilling av panorering over tre lag'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/composition/*"
+  - "src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved)"
+  - "db/migrations/0007_compositions.sql"
+  - "src/app/scene-editor/*"
+  - "src/engine/compositor/canvas.ts"
+  verification:
+  - "tests/unit/composition.test.ts"
+  - "tests/db/run-db-tests.ts (0007)"
+  - "tests/unit/storage-contract.test.ts"
+  - "tests/visual/screens.mjs (28–31)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
+  - date: '2026-10-09'
+    decision: DEC-0035
+    change: "Parallakse per lag og viewMatrix finnes og er enhetstestet; status Implementert – ikke verifisert"
+  notes: "Parallakse per lag og viewMatrix finnes og er enhetstestet, men kamerabevegelse i brukergrensesnittet kommer i neste leveranse (M3 del 2b). Ikke Verifisert før panorering kan vises i avspilling."
 - id: REQ-0174
   title: Redigerbare transformasjoner per element
   text: Hvert element i 2D-scenen skal kunne ha redigerbare egenskaper som posisjon, skalering, rotasjon, transparens,
@@ -5650,14 +5689,26 @@ requirements:
   tests:
   - 'enhet: transformasjonsmatrise og opasitet per element'
   - 'e2e: endre hver egenskap og verifiser persistens og visning'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/composition/*"
+  - "src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved)"
+  - "db/migrations/0007_compositions.sql"
+  - "src/app/scene-editor/*"
+  - "src/engine/compositor/canvas.ts"
+  verification:
+  - "tests/unit/composition.test.ts"
+  - "tests/db/run-db-tests.ts (0007)"
+  - "tests/unit/storage-contract.test.ts"
+  - "tests/visual/screens.mjs (28–31)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
+  - date: '2026-10-09'
+    decision: DEC-0035
+    change: "2D-sceneeditor del 1 (datamodell og lagbasert komposisjon) bygget; status Verifisert. Gruppering finnes i datamodellen, men ikke i brukergrensesnittet ennå"
+  notes: "Gruppering finnes i datamodellen, men er ikke tilgjengelig i brukergrensesnittet ennå (kommer senere). Posisjon, skalering, rotasjon, transparens, synlighet og lagrekkefølge er verifisert."
 - id: REQ-0175
   title: Maskering og komposisjonsfunksjoner
   text: Elementer i 2D-scenen skal kunne ha eventuelle maskerings- og komposisjonsfunksjoner som er hensiktsmessige.
@@ -5712,14 +5763,21 @@ requirements:
   tests:
   - 'enhet: interpolering mellom keyframes'
   - 'e2e: sett keyframes og spill av'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Under arbeid
+  implementation:
+  - "src/core/composition/*"
+  - "src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved)"
+  - "db/migrations/0007_compositions.sql"
+  verification:
+  - "tests/unit/composition.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
+  - date: '2026-10-09'
+    decision: DEC-0035
+    change: "Datamodell, interpolering og validering bygget og enhetstestet; brukergrensesnitt kommer i M3 del 2b; status Under arbeid"
+  notes: "Datamodell, interpolering (valueAt) og validering finnes og er enhetstestet. Tidslinje- og keyframe-editor i brukergrensesnittet kommer i M3 del 2b."
 - id: REQ-0177
   title: Tidsstyrte endringer og hastighetskurver
   text: Systemet skal støtte tidsstyrte endringer og justerbare hastighetskurver for animerte elementer.
@@ -5741,14 +5799,21 @@ requirements:
   tests:
   - 'enhet: kurveevaluering for lineær og bézier-baserte hastighetskurver'
   - 'visuell: sammenligning av bevegelse før og etter kurveendring'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Under arbeid
+  implementation:
+  - "src/core/composition/*"
+  - "src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved)"
+  - "db/migrations/0007_compositions.sql"
+  verification:
+  - "tests/unit/composition.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
+  - date: '2026-10-09'
+    decision: DEC-0035
+    change: "Datamodell, interpolering og validering bygget og enhetstestet; brukergrensesnitt kommer i M3 del 2b; status Under arbeid"
+  notes: "Datamodell, hastighetskurver (ease) og validering finnes og er enhetstestet. Kurveeditor i brukergrensesnittet kommer i M3 del 2b."
 - id: REQ-0178
   title: Enkel animatic uten generativ AI
   text: Brukeren skal kunne produsere en enkel animatic med stillbilder, objekter og bevegelse uten å bruke generativ
@@ -5803,13 +5868,25 @@ requirements:
   tests:
   - 'dataintegritet: rundtur lagre/laste av komposisjon gir identisk datastruktur'
   - 'e2e: rediger et lag etter omlasting'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/composition/*"
+  - "src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved)"
+  - "db/migrations/0007_compositions.sql"
+  - "src/app/scene-editor/*"
+  - "src/engine/compositor/canvas.ts"
+  verification:
+  - "tests/unit/composition.test.ts"
+  - "tests/db/run-db-tests.ts (0007)"
+  - "tests/unit/storage-contract.test.ts"
+  - "tests/visual/screens.mjs (28–31)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0035
+    change: "2D-sceneeditor del 1 (datamodell og lagbasert komposisjon) bygget; status Verifisert"
   notes: ''
 - id: REQ-0180
   title: AI-video overskriver ikke 2D-scenen
@@ -5891,14 +5968,21 @@ requirements:
   tests:
   - 'enhet: beregning av utsnittsdimensjoner per format'
   - 'visuell: eksportert ramme samsvarer med kamerautsnitt'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Under arbeid
+  implementation:
+  - "src/core/composition/*"
+  - "src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved)"
+  - "db/migrations/0007_compositions.sql"
+  verification:
+  - "tests/unit/composition.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
+  - date: '2026-10-09'
+    decision: DEC-0035
+    change: "Datamodell, interpolering og validering bygget og enhetstestet; brukergrensesnitt kommer i M3 del 2b; status Under arbeid"
+  notes: "Datamodell og kamerautsnitt (cameraAt) finnes og er enhetstestet. Kameraeditor i brukergrensesnittet kommer i M3 del 2b."
 - id: REQ-0183
   title: Støtte for ulike bildeformater
   text: Brukeren skal kunne arbeide med ulike relevante bildeformater.
@@ -5921,15 +6005,22 @@ requirements:
   tests:
   - 'enhet: formatkatalog og validering'
   - 'e2e: bytt format og verifiser kamerautsnitt'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/composition/* (COMPOSITION_FORMATS)"
+  - "src/app/scene-editor/*"
+  - "src/engine/compositor/canvas.ts"
+  verification:
+  - "tests/unit/composition.test.ts"
+  - "tests/visual/screens.mjs (28)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: Hvilke formater som er «relevante», og om formatet settes per prosjekt, produksjon eller scene, er ikke
-    spesifisert.
+  - date: '2026-10-09'
+    decision: DEC-0035
+    change: "Bildeformat velges ved opprettelse av 2D-scene og i sceneinspektøren (COMPOSITION_FORMATS); status Verifisert"
+  notes: "Format velges per 2D-scene, ved opprettelse og i sceneinspektøren."
 - id: REQ-0184
   title: Vise kameraets start- og sluttramme
   text: I editoren skal kameraets start- og sluttramme kunne vises som tydelige, tynne konturer.
@@ -6215,14 +6306,21 @@ requirements:
   tests:
   - 'enhet: shot-liste per scene'
   - 'e2e: opprett tre shots og spill av'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Under arbeid
+  implementation:
+  - "src/core/composition/*"
+  - "src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved)"
+  - "db/migrations/0007_compositions.sql"
+  verification:
+  - "tests/unit/composition.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
+  - date: '2026-10-09'
+    decision: DEC-0035
+    change: "Datamodell, interpolering og validering bygget og enhetstestet; brukergrensesnitt kommer i M3 del 2b; status Under arbeid"
+  notes: "Datamodell for kamera og validering finnes og er enhetstestet. Flere shots per scene i brukergrensesnittet kommer i M3 del 2b."
 - id: REQ-0194
   title: Kamerabevegelse kombinert med elementanimasjon
   text: Det skal være mulig å kombinere kamerabevegelse med separat animasjon av sceneelementer.
@@ -6304,14 +6402,21 @@ requirements:
   tests:
   - 'enhet: separate keyframe-kanaler per kameraegenskap'
   - 'enhet: easing-funksjoner'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Under arbeid
+  implementation:
+  - "src/core/composition/*"
+  - "src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved)"
+  - "db/migrations/0007_compositions.sql"
+  verification:
+  - "tests/unit/composition.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
+  - date: '2026-10-09'
+    decision: DEC-0035
+    change: "Datamodell, interpolering og validering bygget og enhetstestet; brukergrensesnitt kommer i M3 del 2b; status Under arbeid"
+  notes: "Datamodell, kamerakanaler (cameraAt), easing (ease) og validering finnes og er enhetstestet. Kamera-keyframe-editor i brukergrensesnittet kommer i M3 del 2b."
 - id: REQ-0197
   title: Visuell forhåndsvisning av kamerabevegelse
   text: Systemet skal støtte visuell forhåndsvisning av kamerabevegelser.
@@ -16701,3 +16806,166 @@ requirements:
     decision: DEC-0031
     change: Opprettet etter ønske fra Mars og bygget samme dag
   notes: "Ikke i mandatet v14. Lagt til av Mars 2026-10-09 («det bør være i toppen»)."
+- id: REQ-0544
+  title: "Ryddige karakternavn i forslag"
+  text: "Karakterforslag fra manuset skal ha ryddige navn: replikknavn med tall, grupper («X OG Y»), «X TIL Y» og beskrivelser («OLA SMILENDE») ryddes, og nesten like skrivemåter slås sammen som mulig skrivefeil."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0034
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - LIBRARY
+  - SCRIPT
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0128
+  acceptance:
+  - "Gitt replikknavnene «OLA 2», «OLA SMILENDE» og «OLA TIL KARI», når forslagene lages, så foreslås ett navn «OLA»; «X OG Y» gir to karakterer."
+  - "Gitt to nesten like skrivemåter, så slås de sammen til ett forslag og den andre skrivemåten vises som mulig skrivefeil."
+  tests:
+  - "enhet: rydding av replikknavn (cleanSpeaker)"
+  - "enhet: sammenslåing av skrivefeil (mergeTypos)"
+  status: Verifisert
+  implementation:
+  - "src/core/library/suggest.ts#cleanSpeaker"
+  - "src/core/library/suggest.ts#mergeTypos"
+  verification:
+  - "tests/unit/suggest.test.ts"
+  - "tests/unit/library.test.ts"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0034
+    change: "Opprettet etter beslutning fra Mars og bygget samme dag; status Verifisert"
+  notes: "Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (gratis regelbasert gjenkjenning av ressurser i manuset)."
+- id: REQ-0545
+  title: "Navngitte ting uten replikk foreslås"
+  text: "Navngitte ting som aldri har replikk skal foreslås: navn med stor forbokstav midt i setning som forekommer minst to ganger i minst to scener; eieform av kjente navn utelates. Typen er en gjetning som brukeren velger."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0034
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - LIBRARY
+  - SCRIPT
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0128
+  acceptance:
+  - "Gitt et navn med stor forbokstav midt i setning som står minst to ganger i minst to scener, så foreslås det, og brukeren velger type."
+  - "Gitt eieform av et kjent navn (f.eks. «Olas»), så foreslås det ikke som egen ting."
+  tests:
+  - "enhet: forslag av navngitte ting uten replikk"
+  status: Verifisert
+  implementation:
+  - "src/core/library/suggest.ts"
+  verification:
+  - "tests/unit/suggest.test.ts"
+  - "tests/unit/library.test.ts"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0034
+    change: "Opprettet etter beslutning fra Mars og bygget samme dag; status Verifisert"
+  notes: "Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (gratis regelbasert gjenkjenning av ressurser i manuset)."
+- id: REQ-0546
+  title: "Lokasjoner slås sammen i forslag"
+  text: "Lokasjoner med preposisjon, annen bøyning eller sammensatt sted skal slås sammen til én lokasjon i forslagene («PÅ TUNET», «KJØKKENET», «GÅRD, TUNET» gir TUNET og KJØKKEN)."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0034
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - LIBRARY
+  - SCRIPT
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0128
+  acceptance:
+  - "Gitt «PÅ TUNET», «TUNET» og «GÅRD, TUNET» i scenoverskrifter, så foreslås lokasjonen TUNET én gang."
+  - "Gitt «KJØKKENET» og «KJØKKEN», så foreslås KJØKKEN én gang."
+  tests:
+  - "enhet: sammenslåing av lokasjoner"
+  status: Verifisert
+  implementation:
+  - "src/core/library/suggest.ts"
+  verification:
+  - "tests/unit/suggest.test.ts"
+  - "tests/unit/library.test.ts"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0034
+    change: "Opprettet etter beslutning fra Mars og bygget samme dag; status Verifisert"
+  notes: "Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (gratis regelbasert gjenkjenning av ressurser i manuset)."
+- id: REQ-0547
+  title: "Objekter og rekvisitter foreslås som usikre"
+  text: "Objekter og rekvisitter som går igjen i handlingen (substantiv etter en/ei/et eller foran sin/hans, i minst 3 scener) skal foreslås som usikre forslag."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0034
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - LIBRARY
+  - SCRIPT
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0128
+  acceptance:
+  - "Gitt et substantiv etter «en», «ei» eller «et», eller foran «sin»/«hans», i minst tre scener, så foreslås det som usikkert objekt."
+  - "Gitt et substantiv i færre enn tre scener, så foreslås det ikke."
+  tests:
+  - "enhet: forslag av objekter og rekvisitter"
+  status: Verifisert
+  implementation:
+  - "src/core/library/suggest.ts"
+  verification:
+  - "tests/unit/suggest.test.ts"
+  - "tests/unit/library.test.ts"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0034
+    change: "Opprettet etter beslutning fra Mars og bygget samme dag; status Verifisert"
+  notes: "Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (gratis regelbasert gjenkjenning av ressurser i manuset)."
+- id: REQ-0548
+  title: "Forslag viser bevis og kan skjules"
+  text: "Forslagene skal vise bevis (scenenumre og andre skrivemåter); usikre forslag skal ikke være valgt på forhånd; skrivemåtene blir alternative navn; og forslag kan skjules per bruker."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0034
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - LIBRARY
+  - SCRIPT
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0128
+  acceptance:
+  - "Gitt et forslag, så vises scenenumre og andre skrivemåter som bevis."
+  - "Gitt et usikkert forslag, så er det ikke avkrysset på forhånd."
+  - "Når forslaget godtas, lagres skrivemåtene som alternative navn."
+  - "Når brukeren skjuler et forslag, forsvinner det for den brukeren."
+  tests:
+  - "visuell: forslagsdialog med bevis"
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/library/SuggestionsDialog.tsx"
+  verification:
+  - "tests/visual/screens.mjs (32-bibliotek-forslag-ny)"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0034
+    change: "Opprettet etter beslutning fra Mars og bygget samme dag; visuelt kontrollert (skjermbilde 32-bibliotek-forslag-ny); status Implementert – ikke verifisert"
+  notes: "Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (gratis regelbasert gjenkjenning av ressurser i manuset)."

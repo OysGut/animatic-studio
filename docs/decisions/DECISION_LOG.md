@@ -308,3 +308,23 @@ Regler: DEC-ID-er er permanente. En beslutning endres aldri i ettertid; den erst
 - **Mars' ord:** «i Fremtiden kan du gjøre det slik at du fornyer "LOVABLE_SYNC.md" slik at jeg bare kopierer og limer inn alt som står i "LOVABLE_SYNC.md" - det er mye enklere for meg.»
 - **Beslutning:** `docs/development/LOVABLE_SYNC.md` skrives helt på nytt ved hver leveranse og inneholder bare den ferdige meldingen til Lovable, uten overskrifter eller forklaring. Veiledningen (oppsett, steg etter leveranse, API-nøkler, feilsituasjoner) og listen over kjørte migrasjoner flyttes til `docs/development/LOVABLE_GUIDE.md`. Når en leveranse ikke har databaseendring, ber meldingen Lovable bare bekrefte skjemaversjonen.
 
+## DEC-0034 – Gratis gjenkjenning av ressurser i manuset (forslag 1–5)
+- **Dato:** 2026-10-09 · **Type:** Bekreftet av bruker (omfang) + Teknisk anbefaling (reglene)
+- **Mars' ord:** «OK kjør begge i samme økt!» (svar på forslag 1–5 om bedre gjenkjenning uten AI).
+- **Beslutning:** Forslagene fra manuset (REQ-0128) utvides uten AI og uten kostnad:
+  1. Replikknavn ryddes: tall («MARTIN 9»), grupper («LAURITS OG ROLF» → to karakterer), «MALIN TIL MAJA» → MALIN, beskrivelser («OLA SMILENDE» → OLA); sjeldne, nesten like skrivemåter slås sammen som mulig skrivefeil («LAURIT» → LAURITS).
+  2. Navngitte ting uten replikk («Svarten»): stor forbokstav midt i en setning, minst to ganger i minst to scener. Typen (karakter, dyr, objekt) velges av brukeren.
+  3. Lokasjoner: «PÅ TUNET», «KJØKKENET»/«KJØKKEN» og «GÅRD, TUNET» slås sammen med hovedformen når det er entydig.
+  4. Objekter og rekvisitter: substantiv som går igjen i handlingen i minst tre scener (etter en/ei/et eller foran sin/hans), merket usikre.
+  5. Hvert forslag viser scenenumre og andre skrivemåter; usikre forslag er ikke valgt på forhånd; skrivemåtene blir alternative navn; forslag kan skjules (lagres i nettleseren per bruker, KI-39).
+- **Målt på «Jula på Dovre»:** karakterstøyen er borte (MARTIN 9, LAURIT, MALIN TIL MAJA, OLA SMILENDE, LAURITS OG ROLF slått sammen), «Svarten» foreslås, og 39 objekter foreslås (dør, hest, slede, stige, nattkjole, kurv …). Beregningen tar ca. 50 ms.
+- **AI-analyse** (bedre presisjon, kontinuitetshendelser) krever kostnadsgodkjenning og kommer tidligst i M5.
+
+## DEC-0035 – Sceneeditor del 1: 2D-scener og lag (M3 del 2a)
+- **Dato:** 2026-10-09 · **Type:** Bekreftet av bruker (omfang, «Kjør på gjør begge oppgavene du beskrev») + Teknisk anbefaling (datamodell)
+- **Beslutning (omfang):** Første leveranse av sceneeditoren er grunnmuren: én 2D-scene per scene i manuset (format velges), lag med bilder fra ressursbiblioteket eller fargeflater, plassering/skalering/rotasjon/gjennomsiktighet direkte på lerretet og i egenskapspanelet, lagrekkefølge, synlighet, lås og parallakseverdi per lag. Kamera med blå/rød ramme og baner, tidslinje med nøkkelbilder og avspilling kommer i neste leveranse (M3 del 2b).
+- **Datamodell (Teknisk anbefaling):** tabell `compositions` (én per scenevariant – følger spinoff-isolasjonen, INV-04) med format, varighet, bakgrunn og kamera (`shots` som jsonb) og tabell `composition_layers` med ett lag per rad. Lag som egne rader gjør at to personer kan endre hvert sitt lag samtidig uten konflikt (INV-C1). Nøkkelbilder lagres per lag (jsonb) og kamera per 2D-scene; datamodell, validering og interpolasjon (`valueAt`, `cameraAt`, `viewMatrix` med parallakse) er på plass og testet, slik at del 2b bare trenger brukerflaten.
+- **Rendring:** én deterministisk funksjon `renderFrame` i kjernen (ADR-0008) brukes av editoren og senere avspilling og eksport. Kamerarull gjelder alle lag; parallakse gjelder forflytning og zoom.
+- **Vern:** en scene med 2D-scene kan ikke fjernes ved angre av import/oppdeling, og en ressurs som brukes i et lag kan ikke fjernes – brukeren får en tydelig melding.
+- **Migrasjon:** `0007_compositions.sql`.
+

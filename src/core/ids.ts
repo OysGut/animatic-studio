@@ -22,6 +22,9 @@ export type AssetVariantId = Id<"asset_variant">;
 export type AssetVersionId = Id<"asset_version">;
 /** Notater i manus (DEC-0031). */
 export type AnnotationId = Id<"annotation">;
+/** 2D-sceneeditoren (M3 del 2, mandat kap. 11–12). */
+export type CompositionId = Id<"composition">;
+export type LayerId = Id<"composition_layer">;
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 

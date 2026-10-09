@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **543**
-- Prioritet: P0: 141, P1: 228, P2: 135, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 16, teknisk-anbefaling: 7
-- Status: Ikke startet: 418, Verifisert: 94, Under arbeid: 25, Implementert – ikke verifisert: 6
+- Antall krav: **548**
+- Prioritet: P0: 141, P1: 233, P2: 135, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 21, teknisk-anbefaling: 7
+- Status: Ikke startet: 407, Verifisert: 103, Under arbeid: 30, Implementert – ikke verifisert: 8
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -2211,23 +2211,25 @@ Brukeren skal kunne plassere følgende elementtyper i 2D-scenen: bakgrunner, mel
 - **Kilde:** Kap. 11.1 (l. 498-506) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** COMPOSE, LIBRARY
 - **Avhengigheter:** Ressursbibliotek (kap. 8)
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en tom 2D-scene, når brukeren legger til hver av elementtypene bakgrunn, mellomgrunn, forgrunn, karakter, objekt, visuell effekt og annet bildeelement, så vises de i scenen og lagres i prosjektdataene.
 - **Tester:**
   - e2e: legg til ett element av hver type og verifiser at de vises og persisteres etter omlasting
+- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql, src/app/scene-editor/*, src/engine/compositor/canvas.ts
 
 #### REQ-0172 – Lag med definert dybdeforhold
 Elementene i 2D-scenen skal kunne organiseres i lag med definert dybdeforhold.
 
 - **Kilde:** Kap. 11.1 (l. 507) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 3
 - **Moduler:** COMPOSE
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt flere elementer, når brukeren tildeler dem til lag med ulike dybdeverdier, så tegnes de i riktig rekkefølge og dybdeverdien lagres per lag.
 - **Tester:**
   - enhet: sortering/tegnerekkefølge etter dybdeverdi
   - visuell: referansebilde av overlappende lag
+- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql, src/app/scene-editor/*, src/engine/compositor/canvas.ts
 - **Merknad:** Ufravikelig prinsipp nr. 10 (lagbasert) i kap. 34.
 
 #### REQ-0173 – Parallakse og kamerabevegelse gjennom lag
@@ -2236,24 +2238,28 @@ Systemet skal støtte parallakseffekter og kontrollert kamerabevegelse gjennom l
 - **Kilde:** Kap. 11.1 (l. 508) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** COMPOSE, CAMERA
 - **Avhengigheter:** REQ-0172
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Gitt lag med ulik dybde, når kameraet panorerer, så forflytter nærere lag seg mer på skjermen enn fjernere lag i samsvar med dybdeverdien.
 - **Tester:**
   - enhet: beregnet skjermforskyvning per lag som funksjon av dybde og kamerabevegelse
   - visuell: avspilling av panorering over tre lag
+- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql, src/app/scene-editor/*, src/engine/compositor/canvas.ts
+- **Merknad:** Parallakse per lag og viewMatrix finnes og er enhetstestet, men kamerabevegelse i brukergrensesnittet kommer i neste leveranse (M3 del 2b). Ikke Verifisert før panorering kan vises i avspilling.
 
 #### REQ-0174 – Redigerbare transformasjoner per element
 Hvert element i 2D-scenen skal kunne ha redigerbare egenskaper som posisjon, skalering, rotasjon, transparens, synlighet, gruppering og lagrekkefølge.
 
 - **Kilde:** Kap. 11.2 (l. 509-517) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** COMPOSE
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - For et valgt element kan brukeren endre posisjon, skalering, rotasjon, transparens, synlighet, gruppering og lagrekkefølge, og endringene vises umiddelbart og lagres.
 - **Tester:**
   - enhet: transformasjonsmatrise og opasitet per element
   - e2e: endre hver egenskap og verifiser persistens og visning
+- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql, src/app/scene-editor/*, src/engine/compositor/canvas.ts
+- **Merknad:** Gruppering finnes i datamodellen, men er ikke tilgjengelig i brukergrensesnittet ennå (kommer senere). Posisjon, skalering, rotasjon, transparens, synlighet og lagrekkefølge er verifisert.
 
 #### REQ-0175 – Maskering og komposisjonsfunksjoner
 Elementer i 2D-scenen skal kunne ha eventuelle maskerings- og komposisjonsfunksjoner som er hensiktsmessige.
@@ -2275,12 +2281,14 @@ Elementer i 2D-scenen skal kunne animeres med keyframes (nøkkelbilder).
 - **Kilde:** Kap. 11.3 (l. 519-520) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** COMPOSE
 - **Avhengigheter:** REQ-0174
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Gitt et element med to keyframes for posisjon på ulike tidspunkter, når scenen spilles av, så interpoleres posisjonen mellom dem.
 - **Tester:**
   - enhet: interpolering mellom keyframes
   - e2e: sett keyframes og spill av
+- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql
+- **Merknad:** Datamodell, interpolering (valueAt) og validering finnes og er enhetstestet. Tidslinje- og keyframe-editor i brukergrensesnittet kommer i M3 del 2b.
 
 #### REQ-0177 – Tidsstyrte endringer og hastighetskurver
 Systemet skal støtte tidsstyrte endringer og justerbare hastighetskurver for animerte elementer.
@@ -2288,12 +2296,14 @@ Systemet skal støtte tidsstyrte endringer og justerbare hastighetskurver for an
 - **Kilde:** Kap. 11.3 (l. 521) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** COMPOSE
 - **Avhengigheter:** REQ-0176
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Gitt en animasjon mellom to keyframes, når brukeren endrer hastighetskurven (f.eks. lineær til ease-in-out), så endres interpoleringen tilsvarende ved avspilling.
 - **Tester:**
   - enhet: kurveevaluering for lineær og bézier-baserte hastighetskurver
   - visuell: sammenligning av bevegelse før og etter kurveendring
+- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql
+- **Merknad:** Datamodell, hastighetskurver (ease) og validering finnes og er enhetstestet. Kurveeditor i brukergrensesnittet kommer i M3 del 2b.
 
 #### REQ-0178 – Enkel animatic uten generativ AI
 Brukeren skal kunne produsere en enkel animatic med stillbilder, objekter og bevegelse uten å bruke generativ AI.
@@ -2313,12 +2323,13 @@ Alle lag, objekter, bevegelser og kamerainnstillinger skal bevares som redigerba
 
 - **Kilde:** Kap. 11.4 (l. 523-524) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** COMPOSE, CAMERA, CORE · **Invarianter:** INV-13
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en lagret scene, når prosjektet lukkes og åpnes igjen, så er alle lag, objekter, keyframes og kamerainnstillinger fortsatt redigerbare (ikke bakt inn i en ferdig fil).
 - **Tester:**
   - dataintegritet: rundtur lagre/laste av komposisjon gir identisk datastruktur
   - e2e: rediger et lag etter omlasting
+- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql, src/app/scene-editor/*, src/engine/compositor/canvas.ts
 
 #### REQ-0180 – AI-video overskriver ikke 2D-scenen
 En AI-generert videofil skal ikke erstatte eller overskrive den underliggende 2D-scenen.
@@ -2352,12 +2363,14 @@ Kameraet skal ha et definert utsnitt basert på valgt filmformat og sideforhold.
 
 - **Kilde:** Kap. 12.1 (l. 529-530) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CAMERA
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Gitt valgt sideforhold (f.eks. 2.39:1 eller 16:9), så har kamerautsnittet nøyaktig dette sideforholdet, og eksportert bilde tilsvarer utsnittet.
 - **Tester:**
   - enhet: beregning av utsnittsdimensjoner per format
   - visuell: eksportert ramme samsvarer med kamerautsnitt
+- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql
+- **Merknad:** Datamodell og kamerautsnitt (cameraAt) finnes og er enhetstestet. Kameraeditor i brukergrensesnittet kommer i M3 del 2b.
 
 #### REQ-0183 – Støtte for ulike bildeformater
 Brukeren skal kunne arbeide med ulike relevante bildeformater.
@@ -2365,13 +2378,14 @@ Brukeren skal kunne arbeide med ulike relevante bildeformater.
 - **Kilde:** Kap. 12.1 (l. 531) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CAMERA, CORE
 - **Avhengigheter:** REQ-0182
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan velge mellom flere forhåndsdefinerte bildeformater/sideforhold (og evt. egendefinert), og valget lagres i prosjektet/produksjonen.
 - **Tester:**
   - enhet: formatkatalog og validering
   - e2e: bytt format og verifiser kamerautsnitt
-- **Merknad:** Hvilke formater som er «relevante», og om formatet settes per prosjekt, produksjon eller scene, er ikke spesifisert.
+- **Implementering:** src/core/composition/* (COMPOSITION_FORMATS), src/app/scene-editor/*, src/engine/compositor/canvas.ts
+- **Merknad:** Format velges per 2D-scene, ved opprettelse og i sceneinspektøren.
 
 #### REQ-0184 – Vise kameraets start- og sluttramme
 I editoren skal kameraets start- og sluttramme kunne vises som tydelige, tynne konturer.
@@ -2494,12 +2508,14 @@ Kameraet skal støtte flere kamerautsnitt og shots i samme scene.
 - **Kilde:** Kap. 12.4 (l. 555) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CAMERA, TIMELINE · **Invarianter:** INV-10
 - **Avhengigheter:** REQ-0182
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Gitt én manusscene, når brukeren oppretter flere shots med ulike kamerautsnitt, så spilles de av i rekkefølge innen scenen, uten at det opprettes nye manusscener.
 - **Tester:**
   - enhet: shot-liste per scene
   - e2e: opprett tre shots og spill av
+- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql
+- **Merknad:** Datamodell for kamera og validering finnes og er enhetstestet. Flere shots per scene i brukergrensesnittet kommer i M3 del 2b.
 
 #### REQ-0194 – Kamerabevegelse kombinert med elementanimasjon
 Det skal være mulig å kombinere kamerabevegelse med separat animasjon av sceneelementer.
@@ -2532,12 +2548,14 @@ Kameraanimasjon skal støtte nøkkelbilder, separat animasjonsstyring for ulike 
 - **Kilde:** Kap. 12.5 (l. 559-563) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CAMERA
 - **Avhengigheter:** REQ-0195
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Brukeren kan sette keyframes for f.eks. posisjon og zoom uavhengig av hverandre, og velge hastighetskurve/easing for hver.
 - **Tester:**
   - enhet: separate keyframe-kanaler per kameraegenskap
   - enhet: easing-funksjoner
+- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql
+- **Merknad:** Datamodell, kamerakanaler (cameraAt), easing (ease) og validering finnes og er enhetstestet. Kamera-keyframe-editor i brukergrensesnittet kommer i M3 del 2b.
 
 #### REQ-0197 – Visuell forhåndsvisning av kamerabevegelse
 Systemet skal støtte visuell forhåndsvisning av kamerabevegelser.
@@ -6956,3 +6974,81 @@ Når brukeren klikker en scene i scenelisten, skal sceneoverskriften vises øver
   - visuell: valgt scene øverst
 - **Implementering:** src/app/script/ScriptWorkspace.tsx#scrollTo, src/app/script/ScriptPageView.tsx
 - **Merknad:** Ikke i mandatet v14. Lagt til av Mars 2026-10-09 («det bør være i toppen»).
+
+#### REQ-0544 – Ryddige karakternavn i forslag
+Karakterforslag fra manuset skal ha ryddige navn: replikknavn med tall, grupper («X OG Y»), «X TIL Y» og beskrivelser («OLA SMILENDE») ryddes, og nesten like skrivemåter slås sammen som mulig skrivefeil.
+
+- **Kilde:** Beslutning DEC-0034 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** LIBRARY, SCRIPT, UI
+- **Avhengigheter:** REQ-0128
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Gitt replikknavnene «OLA 2», «OLA SMILENDE» og «OLA TIL KARI», når forslagene lages, så foreslås ett navn «OLA»; «X OG Y» gir to karakterer.
+  - Gitt to nesten like skrivemåter, så slås de sammen til ett forslag og den andre skrivemåten vises som mulig skrivefeil.
+- **Tester:**
+  - enhet: rydding av replikknavn (cleanSpeaker)
+  - enhet: sammenslåing av skrivefeil (mergeTypos)
+- **Implementering:** src/core/library/suggest.ts#cleanSpeaker, src/core/library/suggest.ts#mergeTypos
+- **Merknad:** Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (gratis regelbasert gjenkjenning av ressurser i manuset).
+
+#### REQ-0545 – Navngitte ting uten replikk foreslås
+Navngitte ting som aldri har replikk skal foreslås: navn med stor forbokstav midt i setning som forekommer minst to ganger i minst to scener; eieform av kjente navn utelates. Typen er en gjetning som brukeren velger.
+
+- **Kilde:** Beslutning DEC-0034 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** LIBRARY, SCRIPT, UI
+- **Avhengigheter:** REQ-0128
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Gitt et navn med stor forbokstav midt i setning som står minst to ganger i minst to scener, så foreslås det, og brukeren velger type.
+  - Gitt eieform av et kjent navn (f.eks. «Olas»), så foreslås det ikke som egen ting.
+- **Tester:**
+  - enhet: forslag av navngitte ting uten replikk
+- **Implementering:** src/core/library/suggest.ts
+- **Merknad:** Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (gratis regelbasert gjenkjenning av ressurser i manuset).
+
+#### REQ-0546 – Lokasjoner slås sammen i forslag
+Lokasjoner med preposisjon, annen bøyning eller sammensatt sted skal slås sammen til én lokasjon i forslagene («PÅ TUNET», «KJØKKENET», «GÅRD, TUNET» gir TUNET og KJØKKEN).
+
+- **Kilde:** Beslutning DEC-0034 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** LIBRARY, SCRIPT, UI
+- **Avhengigheter:** REQ-0128
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Gitt «PÅ TUNET», «TUNET» og «GÅRD, TUNET» i scenoverskrifter, så foreslås lokasjonen TUNET én gang.
+  - Gitt «KJØKKENET» og «KJØKKEN», så foreslås KJØKKEN én gang.
+- **Tester:**
+  - enhet: sammenslåing av lokasjoner
+- **Implementering:** src/core/library/suggest.ts
+- **Merknad:** Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (gratis regelbasert gjenkjenning av ressurser i manuset).
+
+#### REQ-0547 – Objekter og rekvisitter foreslås som usikre
+Objekter og rekvisitter som går igjen i handlingen (substantiv etter en/ei/et eller foran sin/hans, i minst 3 scener) skal foreslås som usikre forslag.
+
+- **Kilde:** Beslutning DEC-0034 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** LIBRARY, SCRIPT, UI
+- **Avhengigheter:** REQ-0128
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Gitt et substantiv etter «en», «ei» eller «et», eller foran «sin»/«hans», i minst tre scener, så foreslås det som usikkert objekt.
+  - Gitt et substantiv i færre enn tre scener, så foreslås det ikke.
+- **Tester:**
+  - enhet: forslag av objekter og rekvisitter
+- **Implementering:** src/core/library/suggest.ts
+- **Merknad:** Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (gratis regelbasert gjenkjenning av ressurser i manuset).
+
+#### REQ-0548 – Forslag viser bevis og kan skjules
+Forslagene skal vise bevis (scenenumre og andre skrivemåter); usikre forslag skal ikke være valgt på forhånd; skrivemåtene blir alternative navn; og forslag kan skjules per bruker.
+
+- **Kilde:** Beslutning DEC-0034 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** LIBRARY, SCRIPT, UI
+- **Avhengigheter:** REQ-0128
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Gitt et forslag, så vises scenenumre og andre skrivemåter som bevis.
+  - Gitt et usikkert forslag, så er det ikke avkrysset på forhånd.
+  - Når forslaget godtas, lagres skrivemåtene som alternative navn.
+  - Når brukeren skjuler et forslag, forsvinner det for den brukeren.
+- **Tester:**
+  - visuell: forslagsdialog med bevis
+- **Implementering:** src/app/library/SuggestionsDialog.tsx
+- **Merknad:** Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (gratis regelbasert gjenkjenning av ressurser i manuset).

@@ -1,8 +1,23 @@
-LOVABLE_SYNC.md er nå bare meldingen til Lovable – kopier alt (DEC-0033)
+Sceneeditor del 1 og bedre forslag fra manuset (DEC-0034, DEC-0035)
 
-Ingen databaseendring. Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push.
+Ny databaseendring: db/migrations/0007_compositions.sql. Lim inn hele innholdet i
+docs/development/LOVABLE_SYNC.md i Lovable etter push.
 
-- LOVABLE_SYNC.md skrives helt på nytt ved hver leveranse og inneholder bare den ferdige meldingen.
-- Veiledningen (oppsett, steg, API-nøkler, feilsituasjoner) og listen over kjørte migrasjoner er flyttet til
-  docs/development/LOVABLE_GUIDE.md. 0006_byte_size_big.sql er registrert som kjørt 2026-10-09 (KI-38 løst).
-- Skill lovable-development og henvisninger oppdatert.
+Sceneeditor (ny arbeidsflate «Sceneeditor» i menyen):
+- Én 2D-scene per scene i manuset, med valgt bildeformat (HD, 4K, kino, scope, kvadrat, stående).
+- Lag med bilder fra ressursbiblioteket eller fargeflater. Flytt, skaler og roter direkte på lerretet
+  (håndtak), eller skriv inn verdier. Lagrekkefølge (knapper og dra), vis/skjul, lås, gjennomsiktighet,
+  parallakse, dupliser og slett. Alt kan angres. Zoom og panorering i arbeidsflaten.
+- Datamodell og beregninger for kamera (shots med bane), nøkkelbilder og parallakse er på plass;
+  brukerflaten for kamera, tidslinje og avspilling kommer i neste leveranse.
+- Lagene lagres hver for seg, så to personer kan endre hvert sitt lag samtidig.
+
+Forslag fra manuset (Ressursbibliotek → Forslag fra manuset):
+- Ryddigere karakternavn («MARTIN 9», «LAURITS OG ROLF», «MALIN TIL MAJA», «OLA SMILENDE», «LAURIT»).
+- Navngitte ting uten replikk («Svarten»), objekter og rekvisitter som går igjen, og sammenslåtte steder
+  («PÅ TUNET», «KJØKKENET», «GÅRD, TUNET»).
+- Viser scenenumre og andre skrivemåter, merker usikre forslag, og forslag kan skjules.
+
+Tester: 193 Vitest-tester og 24 databasetester grønne; skjermbilder 28–32.
+Dokumentasjon: DEC-0034, DEC-0035, REQ-0544–0548 og statuser i kap. 11–12, KNOWN_ISSUES KI-39–42,
+LOVABLE_SYNC (0007), db/README.

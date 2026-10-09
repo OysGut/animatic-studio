@@ -291,8 +291,13 @@ describe("Forslag fra manuset (REQ-0128)", () => {
     const { s, mainId } = project();
     const before = librarySuggestions(s, mainId);
     expect(before.filter((x) => x.kind === "character").map((x) => x.name)).toEqual(
-      expect.arrayContaining(["MAJA", "BESTEMOR", "MAJJA"]),
+      expect.arrayContaining(["MAJA", "BESTEMOR"]),
     );
+    // MAJJA (1 scene) staves nesten som MAJA (2 scener): slås sammen som mulig skrivefeil og blir alternativt navn
+    expect(before.find((x) => x.name === "MAJA")!.sources).toEqual([
+      { name: "MAJJA", scenes: 1, note: "typo" },
+    ]);
+    expect(before.some((x) => x.name === "MAJJA")).toBe(false);
     expect(before.filter((x) => x.kind === "location").map((x) => [x.name, x.scenes])).toEqual([
       ["STUA - HJEMME HOS MAJA", 2],
       ["GÅRDSPLASSEN", 1],

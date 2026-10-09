@@ -15,6 +15,7 @@ import { Route as ProsjektProjectIdRouteImport } from './routes/prosjekt.$projec
 import { Route as ProsjektProjectIdIndexRouteImport } from './routes/prosjekt.$projectId.index'
 import { Route as ProsjektProjectIdBibliotekRouteImport } from './routes/prosjekt.$projectId.bibliotek'
 import { Route as ProsjektProjectIdManusRouteImport } from './routes/prosjekt.$projectId.manus'
+import { Route as ProsjektProjectIdSceneRouteImport } from './routes/prosjekt.$projectId.scene'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -47,6 +48,11 @@ const ProsjektProjectIdManusRoute = ProsjektProjectIdManusRouteImport.update({
   path: '/manus',
   getParentRoute: () => ProsjektProjectIdRoute,
 } as any)
+const ProsjektProjectIdSceneRoute = ProsjektProjectIdSceneRouteImport.update({
+  id: '/scene',
+  path: '/scene',
+  getParentRoute: () => ProsjektProjectIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
+  '/prosjekt/$projectId/scene': typeof ProsjektProjectIdSceneRoute
   '/prosjekt/$projectId/': typeof ProsjektProjectIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/invitasjon': typeof InvitasjonRoute
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
+  '/prosjekt/$projectId/scene': typeof ProsjektProjectIdSceneRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdIndexRoute
 }
 export interface FileRoutesById {
@@ -70,6 +78,7 @@ export interface FileRoutesById {
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
+  '/prosjekt/$projectId/scene': typeof ProsjektProjectIdSceneRoute
   '/prosjekt/$projectId/': typeof ProsjektProjectIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -80,6 +89,7 @@ export interface FileRouteTypes {
     | '/prosjekt/$projectId'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
+    | '/prosjekt/$projectId/scene'
     | '/prosjekt/$projectId/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -87,6 +97,7 @@ export interface FileRouteTypes {
     | '/invitasjon'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
+    | '/prosjekt/$projectId/scene'
     | '/prosjekt/$projectId'
   id:
     | '__root__'
@@ -95,6 +106,7 @@ export interface FileRouteTypes {
     | '/prosjekt/$projectId'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
+    | '/prosjekt/$projectId/scene'
     | '/prosjekt/$projectId/'
   fileRoutesById: FileRoutesById
 }
@@ -148,18 +160,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProsjektProjectIdManusRouteImport
       parentRoute: typeof ProsjektProjectIdRoute
     }
+    '/prosjekt/$projectId/scene': {
+      id: '/prosjekt/$projectId/scene'
+      path: '/scene'
+      fullPath: '/prosjekt/$projectId/scene'
+      preLoaderRoute: typeof ProsjektProjectIdSceneRouteImport
+      parentRoute: typeof ProsjektProjectIdRoute
+    }
   }
 }
 
 interface ProsjektProjectIdRouteChildren {
   ProsjektProjectIdBibliotekRoute: typeof ProsjektProjectIdBibliotekRoute
   ProsjektProjectIdManusRoute: typeof ProsjektProjectIdManusRoute
+  ProsjektProjectIdSceneRoute: typeof ProsjektProjectIdSceneRoute
   ProsjektProjectIdIndexRoute: typeof ProsjektProjectIdIndexRoute
 }
 
 const ProsjektProjectIdRouteChildren: ProsjektProjectIdRouteChildren = {
   ProsjektProjectIdBibliotekRoute: ProsjektProjectIdBibliotekRoute,
   ProsjektProjectIdManusRoute: ProsjektProjectIdManusRoute,
+  ProsjektProjectIdSceneRoute: ProsjektProjectIdSceneRoute,
   ProsjektProjectIdIndexRoute: ProsjektProjectIdIndexRoute,
 }
 

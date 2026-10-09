@@ -21,7 +21,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | INV-10 | Produksjonsteknisk segmentering endrer ikke manusscenenes identiteter. | 11 | 2 |
 | INV-11 | Generativ AI er valgfritt for ordinær 2D-animatic-avspilling og eksport. | 13 | 1 |
 | INV-12 | Betalte API-kall følger eksplisitte kostnadsgodkjenninger. | 20 | 0 |
-| INV-13 | Delte ressurser er versjonerte og ikke-destruktive. | 25 | 3 |
+| INV-13 | Delte ressurser er versjonerte og ikke-destruktive. | 25 | 4 |
 | INV-14 | Deaktivering/skjuling er aldri sletting; materiale kan gjenaktiveres. | 17 | 10 |
 | INV-C1 | Ingen stille overskriving ved samarbeid (revisjonskontroll) – DEC-0003/DEC-0010. | 2 | 1 |
 | INV-C2 | Tilgang håndheves i backend (RLS) – teknisk, DEC-0010. | 3 | 3 |
@@ -31,13 +31,13 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 
 | Modul | Navn | Krav | P0 | Implementert | Verifisert |
 |---|---|---|---|---|---|
-| CORE | Project Core | 118 | 57 | 50 | 36 |
-| SCRIPT | Screenplay Engine | 122 | 32 | 65 | 56 |
-| TIMELINE | Timeline & Assembly Engine | 92 | 28 | 11 | 7 |
-| LIBRARY | Resource Library | 51 | 9 | 13 | 11 |
+| CORE | Project Core | 118 | 57 | 52 | 38 |
+| SCRIPT | Screenplay Engine | 127 | 32 | 70 | 60 |
+| TIMELINE | Timeline & Assembly Engine | 92 | 28 | 12 | 7 |
+| LIBRARY | Resource Library | 56 | 9 | 19 | 16 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 2 | 2 |
-| COMPOSE | 2D Composition Engine | 39 | 14 | 4 | 3 |
-| CAMERA | Camera & Motion Engine | 28 | 2 | 1 | 1 |
+| COMPOSE | 2D Composition Engine | 39 | 14 | 11 | 7 |
+| CAMERA | Camera & Motion Engine | 28 | 2 | 7 | 3 |
 | AUDIO | Audio Engine | 31 | 1 | 2 | 2 |
 | PROMPT | Prompt Orchestration Engine | 45 | 14 | 2 | 1 |
 | PROVIDER | Provider Adapters | 23 | 6 | 2 | 2 |
@@ -49,7 +49,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | EXPORT | Export Engine | 54 | 12 | 16 | 16 |
 | SECURITY | Security & Storage | 26 | 5 | 13 | 9 |
 | COLLAB | Collaboration & Access | 10 | 0 | 8 | 6 |
-| UI | Brukergrensesnitt og designsystem | 115 | 19 | 32 | 27 |
+| UI | Brukergrensesnitt og designsystem | 120 | 19 | 37 | 31 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 4 | 1 |
 
 ## Dekning per fase
@@ -58,7 +58,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 |---|---|---|
 | 1 | 70 | 27 |
 | 2 | 97 | 61 |
-| 3 | 48 | 6 |
+| 3 | 53 | 15 |
 | 4 | 68 | 0 |
 | 5 | 70 | 0 |
 | 6 | 48 | 0 |
@@ -197,7 +197,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0125 | Kap. 8.2 (l. 372) | LIBRARY, CORE | src/core/model.ts#Asset, db/migrations/0004_library_notes.sql | 1 | tests/unit/library.test.ts::endring, arkivering og angre gir samme innhold tilbake, {'tests/db/run-db-tests.ts::0004': 'ressurs, variant og bildeversjon lagres og leses tilbake'} | Verifisert | 2026-10-09 DEC-0030: Ressurser har permanente UUID-er; status Verifisert |
 | REQ-0126 | Kap. 8.2 (l. 373-378) | LIBRARY, L10N | src/core/commands/apply.ts#normalizeAssetFields, src/app/library/AssetDetail.tsx | 1 | tests/unit/library.test.ts::lagrer foretrukket og alternative navn ryddet, og avviser tomt navn | Verifisert | 2026-10-09 DEC-0030: Foretrukket navn, alternative navn, kallenavn, tidligere navn og språknavn; status Verifisert |
 | REQ-0127 | Kap. 8.2 (l. 379) | LIBRARY, SCRIPT, CONTINUITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0128 | Kap. 8.2 (l. 380) | LIBRARY, UI | src/core/library/index.ts#librarySuggestions, src/app/library/SuggestionsDialog.tsx | 1 | tests/unit/library.test.ts::foreslår karakterer og lokasjoner som mangler, med mulige treff som må bekreftes, tests/visual/screens.mjs::22-bibliotek-forslag | Verifisert | 2026-10-09 DEC-0030: Forslag fra manuset; usikre koblinger må velges av brukeren; status Verifisert |
+| REQ-0128 | Kap. 8.2 (l. 380) | LIBRARY, UI | src/core/library/index.ts#librarySuggestions, src/app/library/SuggestionsDialog.tsx | 1 | tests/unit/library.test.ts::foreslår karakterer og lokasjoner som mangler, med mulige treff som må bekreftes, tests/visual/screens.mjs::22-bibliotek-forslag | Verifisert | 2026-10-09 DEC-0034: Forslagene fra manuset utvidet med gratis regelbasert gjenkjenning av ressurser (REQ-0544–REQ-0548); status uendret Verifisert |
 | REQ-0129 | Kap. 8.2 (l. 381) | LIBRARY, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0130 | Kap. 8.3 (l. 383) | VERSION, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0131 | Kap. 8.3 (l. 384) | LIBRARY, CORE | src/core/library/index.ts#assetUsage, src/app/library/AssetDetail.tsx | 1 | tests/unit/library.test.ts::finner scener for karakter under alle navn, lokasjon og objekt, tests/visual/screens.mjs::21-bibliotek-ressurs | Verifisert | 2026-10-09 DEC-0030: «Brukt i scener» ut fra navnene i manuset (bruk i 2D-scener kommer i M3 del 2); status Verifisert |
@@ -240,19 +240,19 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0168 | Kap. 11 (l. 494-495) | COMPOSE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0169 | Kap. 11 (l. 496) | COMPOSE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0170 | Kap. 11 (l. 497) | COMPOSE, UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0171 | Kap. 11.1 (l. 498-506) | COMPOSE, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0172 | Kap. 11.1 (l. 507) | COMPOSE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0173 | Kap. 11.1 (l. 508) | COMPOSE, CAMERA | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0174 | Kap. 11.2 (l. 509-517) | COMPOSE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0171 | Kap. 11.1 (l. 498-506) | COMPOSE, LIBRARY | src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql, src/app/scene-editor/*, src/engine/compositor/canvas.ts | 1 | tests/unit/composition.test.ts, tests/db/run-db-tests.ts (0007), tests/unit/storage-contract.test.ts, tests/visual/screens.mjs (28–31) | Verifisert | 2026-10-09 DEC-0035: 2D-sceneeditor del 1 (datamodell og lagbasert komposisjon) bygget; status Verifisert |
+| REQ-0172 | Kap. 11.1 (l. 507) | COMPOSE | src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql, src/app/scene-editor/*, src/engine/compositor/canvas.ts | 2 | tests/unit/composition.test.ts, tests/db/run-db-tests.ts (0007), tests/unit/storage-contract.test.ts, tests/visual/screens.mjs (28–31) | Verifisert | 2026-10-09 DEC-0035: 2D-sceneeditor del 1 (datamodell og lagbasert komposisjon) bygget; status Verifisert |
+| REQ-0173 | Kap. 11.1 (l. 508) | COMPOSE, CAMERA | src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql, src/app/scene-editor/*, src/engine/compositor/canvas.ts | 2 | tests/unit/composition.test.ts, tests/db/run-db-tests.ts (0007), tests/unit/storage-contract.test.ts, tests/visual/screens.mjs (28–31) | Implementert – ikke verifisert | 2026-10-09 DEC-0035: Parallakse per lag og viewMatrix finnes og er enhetstestet; status Implementert – ikke verifisert |
+| REQ-0174 | Kap. 11.2 (l. 509-517) | COMPOSE | src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql, src/app/scene-editor/*, src/engine/compositor/canvas.ts | 2 | tests/unit/composition.test.ts, tests/db/run-db-tests.ts (0007), tests/unit/storage-contract.test.ts, tests/visual/screens.mjs (28–31) | Verifisert | 2026-10-09 DEC-0035: 2D-sceneeditor del 1 (datamodell og lagbasert komposisjon) bygget; status Verifisert. Gruppering finnes i datamodellen, men ikke i brukergrensesnittet ennå |
 | REQ-0175 | Kap. 11.2 (l. 518) | COMPOSE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Revisjon 2026-10-08: tekst/prioritet justert mot mandatet |
-| REQ-0176 | Kap. 11.3 (l. 519-520) | COMPOSE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0177 | Kap. 11.3 (l. 521) | COMPOSE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0176 | Kap. 11.3 (l. 519-520) | COMPOSE | src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql | 2 | tests/unit/composition.test.ts | Under arbeid | 2026-10-09 DEC-0035: Datamodell, interpolering og validering bygget og enhetstestet; brukergrensesnitt kommer i M3 del 2b; status Under arbeid |
+| REQ-0177 | Kap. 11.3 (l. 521) | COMPOSE | src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql | 2 | tests/unit/composition.test.ts | Under arbeid | 2026-10-09 DEC-0035: Datamodell, interpolering og validering bygget og enhetstestet; brukergrensesnitt kommer i M3 del 2b; status Under arbeid |
 | REQ-0178 | Kap. 11.3 (l. 522) | COMPOSE, CAMERA | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0179 | Kap. 11.4 (l. 523-524) | COMPOSE, CAMERA, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0179 | Kap. 11.4 (l. 523-524) | COMPOSE, CAMERA, CORE | src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql, src/app/scene-editor/*, src/engine/compositor/canvas.ts | 2 | tests/unit/composition.test.ts, tests/db/run-db-tests.ts (0007), tests/unit/storage-contract.test.ts, tests/visual/screens.mjs (28–31) | Verifisert | 2026-10-09 DEC-0035: 2D-sceneeditor del 1 (datamodell og lagbasert komposisjon) bygget; status Verifisert |
 | REQ-0180 | Kap. 11.4 (l. 525) | COMPOSE, VERSION, PROVIDER | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0181 | Kap. 12 (l. 527-528) | CAMERA, COMPOSE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0182 | Kap. 12.1 (l. 529-530) | CAMERA | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0183 | Kap. 12.1 (l. 531) | CAMERA, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0182 | Kap. 12.1 (l. 529-530) | CAMERA | src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql | 2 | tests/unit/composition.test.ts | Under arbeid | 2026-10-09 DEC-0035: Datamodell, interpolering og validering bygget og enhetstestet; brukergrensesnitt kommer i M3 del 2b; status Under arbeid |
+| REQ-0183 | Kap. 12.1 (l. 531) | CAMERA, CORE | src/core/composition/* (COMPOSITION_FORMATS), src/app/scene-editor/*, src/engine/compositor/canvas.ts | 2 | tests/unit/composition.test.ts, tests/visual/screens.mjs (28) | Verifisert | 2026-10-09 DEC-0035: Bildeformat velges ved opprettelse av 2D-scene og i sceneinspektøren (COMPOSITION_FORMATS); status Verifisert |
 | REQ-0184 | Kap. 12.2 (l. 532-533) | CAMERA, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0185 | Kap. 12.2 (l. 534-536) | CAMERA, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0186 | Kap. 12.2 (l. 537) | CAMERA, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -262,10 +262,10 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0190 | Kap. 12.3 (l. 546) | CAMERA, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0191 | Kap. 12.3 (l. 547) | CAMERA, UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0192 | Kap. 12.4 (l. 548-554) | CAMERA | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0193 | Kap. 12.4 (l. 555) | CAMERA, TIMELINE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0193 | Kap. 12.4 (l. 555) | CAMERA, TIMELINE | src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql | 2 | tests/unit/composition.test.ts | Under arbeid | 2026-10-09 DEC-0035: Datamodell, interpolering og validering bygget og enhetstestet; brukergrensesnitt kommer i M3 del 2b; status Under arbeid |
 | REQ-0194 | Kap. 12.4 (l. 556) | CAMERA, COMPOSE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0195 | Kap. 12.5 (l. 557-558) | CAMERA, TIMELINE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0196 | Kap. 12.5 (l. 559-563) | CAMERA | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0196 | Kap. 12.5 (l. 559-563) | CAMERA | src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql | 2 | tests/unit/composition.test.ts | Under arbeid | 2026-10-09 DEC-0035: Datamodell, interpolering og validering bygget og enhetstestet; brukergrensesnitt kommer i M3 del 2b; status Under arbeid |
 | REQ-0197 | Kap. 12.5 (l. 564) | CAMERA, COMPOSE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0198 | Kap. 12.5 (l. 565) | CAMERA | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0199 | Kap. 13 (l. 567-568) | AUDIO | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -613,3 +613,8 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0541 | Beslutning DEC-0031 | SCRIPT, UI | src/core/notes/index.ts#searchHits, src/app/script/ScriptPageView.tsx, src/app/script/SceneNavigator.tsx | 2 | tests/unit/notes.test.ts::søk treffer notater og forteller hva som ble truffet, tests/visual/screens.mjs::24-sok-treff | Verifisert | 2026-10-09 DEC-0031: Opprettet etter ønske fra Mars og bygget samme dag |
 | REQ-0542 | Beslutning DEC-0031 | SCRIPT, UI | src/app/script/ScriptWorkspace.tsx#updateInView, src/app/script/SceneNavigator.tsx | 1 | tests/visual/screens.mjs::26-bla-i-manus | Verifisert | 2026-10-09 DEC-0031: Opprettet etter ønske fra Mars og bygget samme dag |
 | REQ-0543 | Beslutning DEC-0031 | SCRIPT, UI | src/app/script/ScriptWorkspace.tsx#scrollTo, src/app/script/ScriptPageView.tsx | 1 | tests/visual/screens.mjs::07-manus-scene-valgt | Verifisert | 2026-10-09 DEC-0031: Opprettet etter ønske fra Mars og bygget samme dag |
+| REQ-0544 | Beslutning DEC-0034 | LIBRARY, SCRIPT, UI | src/core/library/suggest.ts#cleanSpeaker, src/core/library/suggest.ts#mergeTypos | 2 | tests/unit/suggest.test.ts, tests/unit/library.test.ts | Verifisert | 2026-10-09 DEC-0034: Opprettet etter beslutning fra Mars og bygget samme dag; status Verifisert |
+| REQ-0545 | Beslutning DEC-0034 | LIBRARY, SCRIPT, UI | src/core/library/suggest.ts | 1 | tests/unit/suggest.test.ts, tests/unit/library.test.ts | Verifisert | 2026-10-09 DEC-0034: Opprettet etter beslutning fra Mars og bygget samme dag; status Verifisert |
+| REQ-0546 | Beslutning DEC-0034 | LIBRARY, SCRIPT, UI | src/core/library/suggest.ts | 1 | tests/unit/suggest.test.ts, tests/unit/library.test.ts | Verifisert | 2026-10-09 DEC-0034: Opprettet etter beslutning fra Mars og bygget samme dag; status Verifisert |
+| REQ-0547 | Beslutning DEC-0034 | LIBRARY, SCRIPT, UI | src/core/library/suggest.ts | 1 | tests/unit/suggest.test.ts, tests/unit/library.test.ts | Verifisert | 2026-10-09 DEC-0034: Opprettet etter beslutning fra Mars og bygget samme dag; status Verifisert |
+| REQ-0548 | Beslutning DEC-0034 | LIBRARY, SCRIPT, UI | src/app/library/SuggestionsDialog.tsx | 1 | tests/visual/screens.mjs (32-bibliotek-forslag-ny) | Implementert – ikke verifisert | 2026-10-09 DEC-0034: Opprettet etter beslutning fra Mars og bygget samme dag; visuelt kontrollert (skjermbilde 32-bibliotek-forslag-ny); status Implementert – ikke verifisert |

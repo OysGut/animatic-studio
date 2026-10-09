@@ -6,7 +6,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { stateFromRows, type ProjectRows, type ProjectState, type Row } from "@/core";
 
 /** Skjemaversjonen denne koden forventer (db/migrations). Øk ved hver ny migrasjon. */
-export const EXPECTED_SCHEMA_VERSION = 6;
+export const EXPECTED_SCHEMA_VERSION = 7;
 
 const PAGE = 1000;
 
@@ -63,6 +63,8 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     assetVariants,
     assetVersions,
     annotations,
+    compositions,
+    compositionLayers,
   ] = await Promise.all([
     fetchAll(db, "productions", projectId),
     fetchAll(db, "scenes", projectId),
@@ -76,6 +78,8 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     fetchOptional(db, "asset_variants", projectId),
     fetchOptional(db, "asset_versions", projectId),
     fetchOptional(db, "script_annotations", projectId),
+    fetchOptional(db, "compositions", projectId),
+    fetchOptional(db, "composition_layers", projectId),
   ]);
   return {
     project: project as Row,
@@ -91,6 +95,8 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     asset_variants: assetVariants,
     asset_versions: assetVersions,
     script_annotations: annotations,
+    compositions,
+    composition_layers: compositionLayers,
   };
 }
 

@@ -10,6 +10,8 @@ import type {
   AssetVersionId,
   BlockId,
   CommandId,
+  CompositionId,
+  LayerId,
   OccurrenceId,
   ProductionId,
   SceneId,
@@ -22,6 +24,10 @@ import type {
   AssetKind,
   AssetName,
   BlockKind,
+  CompositionCamera,
+  Keyframe,
+  LayerKind,
+  LayerTransform,
   ProductionKind,
   SceneHeading,
   SegmentReason,
@@ -30,6 +36,41 @@ import type {
   TakeStatus,
   VisualStyle,
 } from "../model";
+
+/** Redigerbare felter på en 2D-scene (format, varighet, bakgrunn). */
+export interface CompositionFields {
+  readonly name: string;
+  readonly width: number;
+  readonly height: number;
+  readonly durationFrames: number;
+  readonly background: string;
+}
+
+/** Redigerbare felter på et lag (mandat 11.1–11.3). Alt erstattes samlet (som UpdateAsset). */
+export interface LayerFields {
+  readonly kind: LayerKind;
+  readonly name: string;
+  readonly assetId: AssetId | null;
+  readonly assetVariantId: AssetVariantId | null;
+  readonly versionId: AssetVersionId | null;
+  readonly fill: string | null;
+  readonly width: number;
+  readonly height: number;
+  readonly parallax: number;
+  readonly transform: LayerTransform;
+  readonly keyframes: readonly Keyframe[];
+  readonly visible: boolean;
+  readonly locked: boolean;
+  readonly groupId: string | null;
+}
+
+export interface NewLayer {
+  readonly layerId: LayerId;
+  readonly compositionId: CompositionId;
+  /** Plassering i lagrekkefølgen. Utelatt = øverst. */
+  readonly orderKey?: string;
+  readonly fields: LayerFields;
+}
 
 /** Redigerbare felter på en ressurs (ressursbiblioteket, REQ-0121–0126). */
 export interface AssetFields {
@@ -355,6 +396,44 @@ export type Command =
       /** Slett (eller hent tilbake) et notat. Historikken beholdes og kan angres. */
       readonly type: "SetAnnotationRemoved";
       readonly annotationId: AnnotationId;
+      readonly removed: boolean;
+    }
+  // ---------- 2D-sceneeditor (M3 del 2, DEC-0035) ----------
+  | {
+      readonly type: "CreateComposition";
+      readonly compositionId: CompositionId;
+      readonly variantId: VariantId;
+      readonly fields: CompositionFields;
+    }
+  | { readonly type: "UndoCreateComposition"; readonly compositionId: CompositionId }
+  | {
+      readonly type: "UpdateComposition";
+      readonly compositionId: CompositionId;
+      readonly fields: CompositionFields;
+      /** Kamera (kameraeditoren). Utelatt = uendret. */
+      readonly camera?: CompositionCamera;
+    }
+  | {
+      readonly type: "SetCompositionRemoved";
+      readonly compositionId: CompositionId;
+      readonly removed: boolean;
+    }
+  | { readonly type: "AddLayers"; readonly layers: readonly NewLayer[] }
+  | { readonly type: "UndoAddLayers"; readonly layerIds: readonly LayerId[] }
+  | {
+      /** Endre ett eller flere lag samtidig (f.eks. flytte en gruppe). Én angring. */
+      readonly type: "UpdateLayers";
+      readonly layers: readonly { readonly layerId: LayerId; readonly fields: LayerFields }[];
+    }
+  | {
+      /** Flytt et lag i lagrekkefølgen: rett bak `beforeLayerId` (tegnes før det). null = helt foran. */
+      readonly type: "MoveLayer";
+      readonly layerId: LayerId;
+      readonly beforeLayerId: LayerId | null;
+    }
+  | {
+      readonly type: "SetLayersRemoved";
+      readonly layerIds: readonly LayerId[];
       readonly removed: boolean;
     };
 

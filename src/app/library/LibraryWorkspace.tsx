@@ -403,6 +403,7 @@ function Library({
           state={state}
           suggestions={suggestions}
           cmds={cmds}
+          projectId={projectId}
         />
       ) : null}
     </div>

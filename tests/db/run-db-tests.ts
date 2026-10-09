@@ -17,6 +17,9 @@ import {
   type ProjectRows,
   type ProjectState,
   type UserId,
+  DEFAULT_COMPOSITION,
+  defaultLayerFields,
+  layerFieldsOf,
 } from "../../src/core";
 
 const ADMIN_URL = process.env["DATABASE_URL"] ?? "postgres://postgres@localhost:54329/postgres";
@@ -90,6 +93,8 @@ async function loadState(projectId: string): Promise<ProjectState> {
     asset_variants: await q("asset_variants"),
     asset_versions: await q("asset_versions"),
     script_annotations: await q("script_annotations"),
+    compositions: await q("compositions"),
+    composition_layers: await q("composition_layers"),
   };
   return stateFromRows(rows);
 }
@@ -766,8 +771,12 @@ try {
       note: "",
     });
     const back = await loadState(projectId);
-    assert(back.assetVersions[big]!.byteSize === size, `størrelse ${back.assetVersions[big]!.byteSize}`);
-    const old = await sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size, sha256)
+    assert(
+      back.assetVersions[big]!.byteSize === size,
+      `størrelse ${back.assetVersions[big]!.byteSize}`,
+    );
+    const old =
+      await sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size, sha256)
       values (gen_random_uuid(), ${projectId}, ${variantId}, 99, ${`${projectId}/x/y/z.png`}, 'image/png', 60000000, ${"f".repeat(64)}) returning byte_size_big`;
     assert(Number(old[0]!["byte_size_big"]) === 60000000, "byte_size_big ble ikke fylt");
     await sql`delete from public.asset_versions where number = 99 and variant_id = ${variantId}`;
@@ -775,6 +784,111 @@ try {
       sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256)
         values (gen_random_uuid(), ${projectId}, ${variantId}, 98, ${`${projectId}/x/y/z.png`}, 'image/png', 6000000000, ${"f".repeat(64)})`,
       /byte_size_big_check|check constraint/,
+    );
+  });
+
+  await test("0007: 2D-scene og lag lagres og leses tilbake; to personer kan endre hvert sitt lag samtidig", async () => {
+    let st = await loadState(projectId);
+    const variant = Object.values(st.variants)[0]!;
+    const comp = "abcdef00-0000-7000-8000-0000000000c1";
+    const l1 = "abcdef00-0000-7000-8000-0000000000c2";
+    const l2 = "abcdef00-0000-7000-8000-0000000000c3";
+    const assetId = "abcdef00-0000-7000-8000-0000000000a1";
+    st = await runCommand(st, ALICE, {
+      type: "CreateComposition",
+      compositionId: comp as never,
+      variantId: variant.id,
+      fields: { ...DEFAULT_COMPOSITION, name: "Åpning" },
+    });
+    const c = st.compositions[comp]!;
+    st = await runCommand(st, ALICE, {
+      type: "AddLayers",
+      layers: [
+        {
+          layerId: l1 as never,
+          compositionId: comp as never,
+          fields: defaultLayerFields(st, c, { fill: "#24324a", name: "Himmel" }),
+        },
+        {
+          layerId: l2 as never,
+          compositionId: comp as never,
+          fields: defaultLayerFields(st, c, {
+            assetId,
+            assetVariantId: "abcdef00-0000-7000-8000-0000000000a2",
+          }),
+        },
+      ],
+    });
+    st = await runCommand(st, ALICE, {
+      type: "UpdateComposition",
+      compositionId: comp as never,
+      fields: { ...DEFAULT_COMPOSITION, name: "Åpning" },
+      camera: {
+        shots: [
+          {
+            id: "s1",
+            name: "Inn mot Maja",
+            startFrame: 0,
+            endFrame: 50,
+            from: { x: 960, y: 540, zoom: 1, rotation: 0 },
+            to: { x: 700, y: 500, zoom: 2.5, rotation: 0 },
+            curve: { c1x: 900, c1y: 400, c2x: 750, c2y: 450 },
+            easing: "ease-in-out",
+          },
+        ],
+      },
+    });
+    const back = await loadState(projectId);
+    // jsonb lagrer nøklene i egen rekkefølge: sammenlign med sorterte nøkler
+    const canon = (v: unknown): unknown =>
+      Array.isArray(v)
+        ? v.map(canon)
+        : v && typeof v === "object"
+          ? Object.fromEntries(
+              Object.keys(v)
+                .filter((k) => k !== "createdAt")
+                .sort()
+                .map((k) => [k, canon((v as Record<string, unknown>)[k])]),
+            )
+          : v;
+    const same = (a: unknown, b: unknown) => JSON.stringify(canon(a)) === JSON.stringify(canon(b));
+    assert(same(back.compositions[comp], st.compositions[comp]), "2D-scenen avviker");
+    assert(same(back.layers[l1], st.layers[l1]), "fargeflaten avviker");
+    assert(same(back.layers[l2], st.layers[l2]), "bildelaget avviker");
+    // To personer endrer hvert sitt lag fra samme utgangspunkt: begge lagres (revisjon per lag, INV-C1)
+    const moved = (id: string, dx: number) => {
+      const l = st.layers[id]!;
+      return {
+        type: "UpdateLayers" as const,
+        layers: [
+          {
+            layerId: l.id,
+            fields: { ...layerFieldsOf(l), transform: { ...l.transform, x: l.transform.x + dx } },
+          },
+        ],
+      };
+    };
+    await runCommand(st, ALICE, moved(l1, 10));
+    await runCommand(st, ALICE, moved(l2, 20));
+    const both = await loadState(projectId);
+    assert(both.layers[l1]!.transform.x === st.layers[l1]!.transform.x + 10, "lag 1 tapt");
+    assert(both.layers[l2]!.transform.x === st.layers[l2]!.transform.x + 20, "lag 2 tapt");
+    // Samme lag fra gammelt utgangspunkt gir revisjonskonflikt, ikke stille overskriving
+    await expectError(runCommand(st, ALICE, moved(l1, 99)), /Revisjonskonflikt/);
+    // Ressursen kan ikke fjernes i databasen mens et lag viser den
+    await expectError(sql`delete from public.assets where id = ${assetId}`, /foreign key|violates/);
+    // Angre lagene sletter radene
+    let cur = await loadState(projectId);
+    cur = await runCommand(cur, ALICE, { type: "UndoAddLayers", layerIds: [l1, l2] as never });
+    assert(
+      (await sql`select 1 from public.composition_layers where composition_id = ${comp}`).length ===
+        0,
+      "lagene ble ikke fjernet",
+    );
+    await runCommand(cur, ALICE, { type: "UndoCreateComposition", compositionId: comp as never });
+    assert(
+      (await sql`select 1 from public.compositions where id = ${comp}`).length === 0,
+      "2D-scenen ble ikke fjernet",
     );
   });
 

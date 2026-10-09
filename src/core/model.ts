@@ -6,6 +6,8 @@
 import type {
   AnnotationId,
   AssetId,
+  CompositionId,
+  LayerId,
   AssetVariantId,
   AssetVersionId,
   BlockId,
@@ -234,6 +236,111 @@ export interface Annotation extends Entity<AnnotationId> {
   readonly removed: boolean;
 }
 
+// ---------- 2D-sceneeditor (M3 del 2, mandat kap. 11–12, DEC-0035) ----------
+
+/** Lagtype (mandat 11.1). Bestemmer standard dybde og hvordan laget vises i listen. */
+export type LayerKind =
+  "background" | "midground" | "foreground" | "character" | "object" | "effect" | "other";
+
+/** Plassering av et lag i scenen. Posisjon er midtpunktet i scenens koordinater (piksler). */
+export interface LayerTransform {
+  readonly x: number;
+  readonly y: number;
+  readonly scaleX: number;
+  readonly scaleY: number;
+  /** Grader, med klokka. */
+  readonly rotation: number;
+  /** 0–1 (mandat 11.2 transparens). */
+  readonly opacity: number;
+}
+
+export type AnimatedProperty = keyof LayerTransform;
+export type Easing = "linear" | "ease-in" | "ease-out" | "ease-in-out" | "hold";
+
+/** Nøkkelbilde for én egenskap (mandat 11.3, 12.5). Brukes av tidslinjen i neste leveranse. */
+export interface Keyframe {
+  readonly frame: number;
+  readonly property: AnimatedProperty;
+  readonly value: number;
+  /** Hastighetskurve fram til neste nøkkelbilde. */
+  readonly easing: Easing;
+}
+
+/** Kameraets utsnitt: midtpunkt i scenens koordinater, zoom (1 = hele formatet) og rotasjon i grader. */
+export interface CameraFrame {
+  readonly x: number;
+  readonly y: number;
+  readonly zoom: number;
+  readonly rotation: number;
+}
+
+/**
+ * Ett kamerautsnitt/shot i scenen (mandat 12.2–12.5): fra blå ramme (start) til rød ramme (slutt)
+ * mellom to bilder, langs en rett eller kurvet (Bézier) bane.
+ */
+export interface CameraShot {
+  readonly id: string;
+  readonly name: string;
+  readonly startFrame: number;
+  readonly endFrame: number;
+  readonly from: CameraFrame;
+  readonly to: CameraFrame;
+  /** Kontrollpunkter for kurvet bane (scenekoordinater). null = rett bane. */
+  readonly curve: {
+    readonly c1x: number;
+    readonly c1y: number;
+    readonly c2x: number;
+    readonly c2y: number;
+  } | null;
+  readonly easing: Easing;
+}
+
+export interface CompositionCamera {
+  readonly shots: readonly CameraShot[];
+}
+
+/** En 2D-scene for én scenevariant: lerretets format og kamera. Lagene er egne rader (samtidig redigering). */
+export interface Composition extends Entity<CompositionId> {
+  readonly variantId: VariantId;
+  readonly name: string;
+  /** Bildeformatet i piksler (mandat 12.1). */
+  readonly width: number;
+  readonly height: number;
+  /** Varighet i bilder. 0 = ikke satt (følger scenens beregnede varighet). */
+  readonly durationFrames: number;
+  /** Bakgrunnsfarge (#rrggbb). */
+  readonly background: string;
+  /** Kamera og shots (mandat kap. 12). Fylles av kameraeditoren i neste leveranse. */
+  readonly camera: CompositionCamera;
+  readonly removed: boolean;
+}
+
+export interface CompositionLayer extends Entity<LayerId> {
+  readonly compositionId: CompositionId;
+  /** Lagrekkefølge: lavere nøkkel tegnes først (bakerst). */
+  readonly orderKey: string;
+  readonly kind: LayerKind;
+  readonly name: string;
+  /** Bildet laget viser: ressurs, eventuelt variant, eventuelt låst versjon (null = godkjent/nyeste). */
+  readonly assetId: AssetId | null;
+  readonly assetVariantId: AssetVariantId | null;
+  readonly versionId: AssetVersionId | null;
+  /** Fargeflate (#rrggbb) når laget ikke viser et bilde. */
+  readonly fill: string | null;
+  /** Fargeflatens størrelse i piksler (bilder bruker bildets egen størrelse). */
+  readonly width: number;
+  readonly height: number;
+  /** Parallakse: 0 står stille når kameraet beveger seg, 1 følger scenen, over 1 er nærmere enn scenen. */
+  readonly parallax: number;
+  readonly transform: LayerTransform;
+  readonly keyframes: readonly Keyframe[];
+  readonly visible: boolean;
+  readonly locked: boolean;
+  /** Gruppe (mandat 11.2). Lag med samme gruppe-ID flyttes sammen. */
+  readonly groupId: string | null;
+  readonly removed: boolean;
+}
+
 export interface ProjectState {
   readonly project: Project;
   readonly productions: Readonly<Record<string, Production>>;
@@ -248,6 +355,8 @@ export interface ProjectState {
   readonly assetVariants: Readonly<Record<string, AssetVariant>>;
   readonly assetVersions: Readonly<Record<string, AssetVersion>>;
   readonly annotations: Readonly<Record<string, Annotation>>;
+  readonly compositions: Readonly<Record<string, Composition>>;
+  readonly layers: Readonly<Record<string, CompositionLayer>>;
 }
 
 /** Tabellnavn i databasen for hver samling (brukes av patch/adapter). */
@@ -263,6 +372,8 @@ export const COLLECTION_TABLES = {
   assetVariants: "asset_variants",
   assetVersions: "asset_versions",
   annotations: "script_annotations",
+  compositions: "compositions",
+  layers: "composition_layers",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_TABLES;
@@ -282,6 +393,8 @@ export function emptyProjectState(project: Project): ProjectState {
     assetVariants: {},
     assetVersions: {},
     annotations: {},
+    compositions: {},
+    layers: {},
   };
 }
 

@@ -66,7 +66,7 @@ async function mock(page, { projects = [project], schema = true }) {
     const table = path.replace("/rest/v1/", "");
     if (table === "schema_version")
       return schema
-        ? json([{ version: 4 }])
+        ? json([{ version: 7 }])
         : json({ message: "relation does not exist", code: "42P01" }, 404);
     if (table === "projects") {
       if (single) return json(projects[0] ?? null);
@@ -128,6 +128,7 @@ async function shot(name, path, opts = {}) {
   if (opts.act) await opts.act(page);
   const file = `${out}/${name}.png`;
   await page.screenshot({ path: file, fullPage: false });
+  if (errors.length) console.error(`konsoll-feil i ${name}:`, errors);
   shots.push({ name, file, errors: errors.filter((e) => !e.includes("favicon")) });
   await ctx.close();
 }
@@ -293,6 +294,43 @@ await shot("22-bibliotek-forslag", bibliotek, {
   act: async (page) => {
     await page.getByRole("button", { name: /Forslag fra manuset/ }).click();
     await page.waitForTimeout(500);
+  },
+});
+await shot("32-bibliotek-forslag-ny", bibliotek, {
+  act: async (page) => {
+    await page.getByRole("button", { name: /Forslag fra manuset/ }).click();
+    await page.getByLabel("Legg til Svarten").check();
+    await page.waitForTimeout(700);
+  },
+});
+const scene = `/prosjekt/${project.id}/scene`;
+await shot("28-sceneeditor-tom", scene, {
+  act: async (page) => {
+    await page.getByRole("navigation", { name: "Scener" }).getByRole("button").nth(1).click();
+    await page.waitForTimeout(600);
+  },
+});
+await shot("29-sceneeditor", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(800);
+  },
+});
+await shot("30-sceneeditor-valgt", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(800);
+    await page
+      .getByRole("button", { name: /Maja/ })
+      .filter({ hasText: "Karakter" })
+      .first()
+      .click();
+    await page.waitForTimeout(500);
+  },
+});
+await shot("31-sceneeditor-legg-til", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(800);
+    await page.getByRole("button", { name: "Legg til lag" }).click();
+    await page.waitForTimeout(700);
   },
 });
 await shot("18-oversikt-varighet", `/prosjekt/${project.id}`, {

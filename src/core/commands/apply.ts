@@ -4,11 +4,17 @@
  */
 import { isUuid, type BlockId, type TakeId, type VariantId } from "../ids";
 import { checkInvariants } from "../invariants";
+import {
+  normalizeCamera,
+  normalizeCompositionFields,
+  normalizeLayerFields,
+} from "../composition/fields";
 import { compareKeys, isValidOrderKey, keyBetween } from "../order-key";
 import {
   PRIMARY_LANGUAGE,
   type Annotation,
   type BlockRevision,
+  type CompositionLayer,
   type ProjectState,
   type ScriptBlock,
   type Take,
@@ -18,6 +24,8 @@ import type {
   AssetFields,
   AssetVariantFields,
   Command,
+  CompositionFields,
+  LayerFields,
   CommandEnvelope,
   CommandError,
   CommandErrorCode,
@@ -74,6 +82,8 @@ function assertNewId(s: ProjectState, id: string) {
     s.assetVariants,
     s.assetVersions,
     s.annotations,
+    s.compositions,
+    s.layers,
   ];
   if (all.some((c) => c[id] !== undefined)) fail("duplicate_id", `ID ${id} er allerede i bruk`);
 }
@@ -263,6 +273,8 @@ export function revisionOf(s: ProjectState, id: string): number | undefined {
     s.assetVariants,
     s.assetVersions,
     s.annotations,
+    s.compositions,
+    s.layers,
   ]) {
     const e = c[id];
     if (e) return e.revision;
@@ -292,6 +304,58 @@ function assertCanEditVariant(s: ProjectState, productionId: string, variantId: 
     fail("must_fork_variant", "Varianten tilhører en annen produksjon");
   }
 }
+
+// ---------- 2D-sceneeditor (M3 del 2, DEC-0035) ----------
+
+function compositionFields(f: CompositionFields): CompositionFields {
+  const r = normalizeCompositionFields(f);
+  if (!r.ok) fail("invalid", r.error);
+  return r.value;
+}
+
+function layerFields(s: ProjectState, f: LayerFields): LayerFields {
+  const r = normalizeLayerFields(f);
+  if (!r.ok) fail("invalid", r.error);
+  const v = r.value;
+  if (v.assetId !== null) need(s.assets[v.assetId], "Ressursen");
+  if (v.assetVariantId !== null) {
+    const va = need(s.assetVariants[v.assetVariantId], "Varianten av ressursen");
+    if (va.assetId !== v.assetId) fail("invalid", "Varianten hører til en annen ressurs");
+  }
+  if (v.versionId !== null) {
+    const ve = need(s.assetVersions[v.versionId], "Bildeversjonen");
+    if (ve.variantId !== v.assetVariantId) fail("invalid", "Versjonen hører til en annen variant");
+  }
+  return v;
+}
+
+function fieldsOfLayer(l: CompositionLayer): LayerFields {
+  return {
+    kind: l.kind,
+    name: l.name,
+    assetId: l.assetId,
+    assetVariantId: l.assetVariantId,
+    versionId: l.versionId,
+    fill: l.fill,
+    width: l.width,
+    height: l.height,
+    parallax: l.parallax,
+    transform: l.transform,
+    keyframes: l.keyframes,
+    visible: l.visible,
+    locked: l.locked,
+    groupId: l.groupId,
+  };
+}
+
+function sortedLayerKeys(s: ProjectState, compositionId: string, except?: string): string[] {
+  return Object.values(s.layers)
+    .filter((l) => l.compositionId === compositionId && l.id !== except)
+    .map((l) => l.orderKey)
+    .sort(compareKeys);
+}
+
+const MAX_CAMERA_JSON = 64 * 1024;
 
 function run(
   s: ProjectState,
@@ -1826,6 +1890,235 @@ function run(
         affected: [va.id],
       };
     }
+
+    // ---------- 2D-sceneeditor (M3 del 2, DEC-0035) ----------
+
+    case "CreateComposition": {
+      assertNewId(s, c.compositionId);
+      need(s.variants[c.variantId], "Scenen");
+      if (Object.values(s.compositions).some((x) => x.variantId === c.variantId && !x.removed))
+        fail("invalid", "Scenen har allerede en 2D-scene");
+      const fields = compositionFields(c.fields);
+      return {
+        state: {
+          ...s,
+          compositions: {
+            ...s.compositions,
+            [c.compositionId]: {
+              id: c.compositionId,
+              revision: 1,
+              variantId: c.variantId,
+              ...fields,
+              camera: { shots: [] },
+              removed: false,
+            },
+          },
+        },
+        inverse: { type: "UndoCreateComposition", compositionId: c.compositionId },
+        affected: [c.compositionId],
+      };
+    }
+
+    case "UndoCreateComposition": {
+      const comp = need(s.compositions[c.compositionId], "2D-scenen");
+      if (Object.values(s.layers).some((l) => l.compositionId === comp.id))
+        fail("referenced", "2D-scenen har lag og kan ikke fjernes. Slett den i stedet.");
+      const compositions = { ...s.compositions };
+      delete compositions[comp.id];
+      return {
+        state: { ...s, compositions },
+        inverse: {
+          type: "CreateComposition",
+          compositionId: comp.id,
+          variantId: comp.variantId,
+          fields: {
+            name: comp.name,
+            width: comp.width,
+            height: comp.height,
+            durationFrames: comp.durationFrames,
+            background: comp.background,
+          },
+        },
+        affected: [comp.id],
+      };
+    }
+
+    case "UpdateComposition": {
+      const comp = need(s.compositions[c.compositionId], "2D-scenen");
+      const fields = compositionFields(c.fields);
+      let camera = comp.camera;
+      if (c.camera !== undefined) {
+        const r = normalizeCamera(c.camera);
+        if (!r.ok) fail("invalid", r.error);
+        if (JSON.stringify(r.value).length > MAX_CAMERA_JSON)
+          fail("invalid", "Kameraet er for stort");
+        camera = r.value;
+      }
+      return {
+        state: {
+          ...s,
+          compositions: {
+            ...s.compositions,
+            [comp.id]: { ...comp, ...fields, camera, revision: rev(comp) },
+          },
+        },
+        inverse: {
+          type: "UpdateComposition",
+          compositionId: comp.id,
+          fields: {
+            name: comp.name,
+            width: comp.width,
+            height: comp.height,
+            durationFrames: comp.durationFrames,
+            background: comp.background,
+          },
+          ...(c.camera !== undefined ? { camera: comp.camera } : {}),
+        },
+        affected: [comp.id],
+      };
+    }
+
+    case "SetCompositionRemoved": {
+      const comp = need(s.compositions[c.compositionId], "2D-scenen");
+      if (
+        !c.removed &&
+        Object.values(s.compositions).some(
+          (x) => x.id !== comp.id && x.variantId === comp.variantId && !x.removed,
+        )
+      )
+        fail("invalid", "Scenen har allerede en annen 2D-scene");
+      return {
+        state: {
+          ...s,
+          compositions: {
+            ...s.compositions,
+            [comp.id]: { ...comp, removed: c.removed, revision: rev(comp) },
+          },
+        },
+        inverse: { type: "SetCompositionRemoved", compositionId: comp.id, removed: comp.removed },
+        affected: [comp.id],
+      };
+    }
+
+    case "AddLayers": {
+      if (c.layers.length === 0) fail("invalid", "Ingen lag å legge til");
+      if (c.layers.length > 500) fail("invalid", "For mange lag på én gang (maks 500)");
+      const layers = { ...s.layers };
+      const ids = new Set<string>();
+      for (const n of c.layers) {
+        assertNewId(s, n.layerId);
+        if (ids.has(n.layerId)) fail("duplicate_id", `ID ${n.layerId} er brukt to ganger`);
+        ids.add(n.layerId);
+        const comp = need(s.compositions[n.compositionId], "2D-scenen");
+        if (comp.removed) fail("invalid", "2D-scenen er slettet");
+        const fields = layerFields(s, n.fields);
+        let orderKey = n.orderKey;
+        const keys = Object.values(layers)
+          .filter((l) => l.compositionId === comp.id)
+          .map((l) => l.orderKey)
+          .sort(compareKeys);
+        if (orderKey === undefined) orderKey = keyBetween(keys[keys.length - 1] ?? null, null);
+        else if (!isValidOrderKey(orderKey) || keys.includes(orderKey))
+          fail("invalid", "Ugyldig plassering i lagrekkefølgen");
+        layers[n.layerId] = {
+          id: n.layerId,
+          revision: 1,
+          compositionId: comp.id,
+          orderKey,
+          ...fields,
+          removed: false,
+        };
+      }
+      return {
+        state: { ...s, layers },
+        inverse: { type: "UndoAddLayers", layerIds: c.layers.map((n) => n.layerId) },
+        affected: c.layers.map((n) => n.layerId),
+      };
+    }
+
+    case "UndoAddLayers": {
+      const layers = { ...s.layers };
+      const restored = c.layerIds.map((id) => {
+        const l = need(s.layers[id], "Laget");
+        delete layers[id];
+        return l;
+      });
+      return {
+        state: { ...s, layers },
+        inverse: {
+          type: "AddLayers",
+          layers: restored.map((l) => ({
+            layerId: l.id,
+            compositionId: l.compositionId,
+            orderKey: l.orderKey,
+            fields: fieldsOfLayer(l),
+          })),
+        },
+        affected: [...c.layerIds],
+      };
+    }
+
+    case "UpdateLayers": {
+      if (c.layers.length === 0) fail("invalid", "Ingen lag å endre");
+      if (new Set(c.layers.map((x) => x.layerId)).size !== c.layers.length)
+        fail("invalid", "Samme lag er med to ganger");
+      const layers = { ...s.layers };
+      const before: { layerId: CompositionLayer["id"]; fields: LayerFields }[] = [];
+      for (const u of c.layers) {
+        const l = need(s.layers[u.layerId], "Laget");
+        before.push({ layerId: l.id, fields: fieldsOfLayer(l) });
+        layers[l.id] = { ...l, ...layerFields(s, u.fields), revision: rev(l) };
+      }
+      return {
+        state: { ...s, layers },
+        inverse: { type: "UpdateLayers", layers: before },
+        affected: c.layers.map((x) => x.layerId),
+      };
+    }
+
+    case "MoveLayer": {
+      const l = need(s.layers[c.layerId], "Laget");
+      const keys = sortedLayerKeys(s, l.compositionId, l.id);
+      let orderKey: string;
+      if (c.beforeLayerId === null) {
+        orderKey = keyBetween(keys[keys.length - 1] ?? null, null);
+      } else {
+        const target = need(s.layers[c.beforeLayerId], "Laget det skal flyttes bak");
+        if (target.compositionId !== l.compositionId || target.id === l.id)
+          fail("invalid", "Lagene hører ikke til samme 2D-scene");
+        const i = keys.indexOf(target.orderKey);
+        orderKey = keyBetween(keys[i - 1] ?? null, target.orderKey);
+      }
+      // Angre: tilbake rett bak laget som lå foran før flyttingen (eller helt foran)
+      const inFront = Object.values(s.layers)
+        .filter((x) => x.compositionId === l.compositionId && x.id !== l.id)
+        .filter((x) => compareKeys(x.orderKey, l.orderKey) > 0)
+        .sort((a, b) => compareKeys(a.orderKey, b.orderKey))[0];
+      return {
+        state: { ...s, layers: { ...s.layers, [l.id]: { ...l, orderKey, revision: rev(l) } } },
+        inverse: { type: "MoveLayer", layerId: l.id, beforeLayerId: inFront?.id ?? null },
+        affected: [l.id],
+      };
+    }
+
+    case "SetLayersRemoved": {
+      if (c.layerIds.length === 0) fail("invalid", "Ingen lag valgt");
+      const layers = { ...s.layers };
+      const changed = [...new Set(c.layerIds)]
+        .map((id) => need(s.layers[id], "Laget"))
+        .filter((l) => l.removed !== c.removed);
+      if (changed.length === 0) fail("invalid", "Ingen endring");
+      for (const l of changed) layers[l.id] = { ...l, removed: c.removed, revision: rev(l) };
+      return {
+        state: { ...s, layers },
+        inverse: {
+          type: "SetLayersRemoved",
+          layerIds: changed.map((l) => l.id),
+          removed: !c.removed,
+        },
+        affected: changed.map((l) => l.id),
+      };
+    }
   }
 }
 
@@ -1871,6 +2164,38 @@ export function applyCommand(state: ProjectState, env: CommandEnvelope): ApplyRe
       const annotations = { ...next.annotations };
       for (const a of orphans) delete annotations[a.id];
       next = { ...next, annotations };
+    }
+    // 2D-scener på scener som forsvinner, og lag som viser ressurser som forsvinner (DEC-0035)
+    if (next.variants !== state.variants || next.compositions !== state.compositions) {
+      const lost = Object.values(next.compositions).filter(
+        (c) => !Object.prototype.hasOwnProperty.call(next.variants, c.variantId),
+      );
+      if (lost.length)
+        fail(
+          "referenced",
+          "Scenen har en 2D-scene i sceneeditoren og kan ikke fjernes. Slett 2D-scenen først.",
+          lost.map((c) => c.id),
+        );
+    }
+    if (
+      next.assets !== state.assets ||
+      next.assetVariants !== state.assetVariants ||
+      next.assetVersions !== state.assetVersions
+    ) {
+      const has = (o: object, id: string | null) =>
+        id === null || Object.prototype.hasOwnProperty.call(o, id);
+      const lost = Object.values(next.layers).filter(
+        (l) =>
+          !has(next.assets, l.assetId) ||
+          !has(next.assetVariants, l.assetVariantId) ||
+          !has(next.assetVersions, l.versionId),
+      );
+      if (lost.length)
+        fail(
+          "referenced",
+          "Ressursen er brukt i en 2D-scene og kan ikke fjernes. Arkiver den i stedet.",
+          lost.map((l) => l.id),
+        );
     }
     const violations = checkInvariants(next);
     if (violations.length > 0) {

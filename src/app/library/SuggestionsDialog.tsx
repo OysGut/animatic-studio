@@ -7,10 +7,14 @@ import { Loader2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
   ASSET_KIND_LABEL,
+  SOURCE_NOTE_LABEL,
   displayName,
+  nameKey,
   newId,
+  suggestionAliases,
   type Asset,
   type AssetFields,
+  type AssetKind,
   type LibrarySuggestion,
   type ProjectState,
 } from "@/core";
@@ -25,12 +29,63 @@ import {
 } from "@/components/ui/dialog";
 
 type Choice = "skip" | "new" | "alias";
+type PickableKind = "character" | "animal" | "object" | "other";
 
-const key = (x: LibrarySuggestion) => `${x.kind}|${x.name}`;
+const KIND_CHOICES: readonly PickableKind[] = ["character", "animal", "object", "other"];
 
-/** Navnet en ny ressurs får: karakterer med stor forbokstav (MAJA → Maja), steder slik de står. */
+const key = (x: LibrarySuggestion) => `${x.reason}|${x.name}`;
+
+const GROUPS: readonly { reason: LibrarySuggestion["reason"]; title: string }[] = [
+  { reason: "speaker", title: "Karakterer" },
+  { reason: "named", title: "Navngitte ting uten replikk" },
+  { reason: "heading", title: "Lokasjoner" },
+  { reason: "object", title: "Objekter og rekvisitter" },
+];
+
+const hiddenStorageKey = (projectId: string) => `animatic:hidden-suggestions:${projectId}`;
+
+function readHidden(projectId: string): string[] {
+  try {
+    const raw = window.localStorage.getItem(hiddenStorageKey(projectId));
+    if (!raw) return [];
+    const v: unknown = JSON.parse(raw);
+    return Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeHidden(projectId: string, keys: readonly string[]): void {
+  try {
+    if (keys.length) window.localStorage.setItem(hiddenStorageKey(projectId), JSON.stringify(keys));
+    else window.localStorage.removeItem(hiddenStorageKey(projectId));
+  } catch {
+    // Uten lagring fungerer skjuling bare så lenge siden er åpen
+  }
+}
+
+const scenesLabel = (n: number) => (n === 1 ? "1 scene" : `${n} scener`);
+
+/** Navnet en ny ressurs får: karakterer med stor forbokstav (MAJA → Maja), objekter med stor forbokstav, ellers som de står. */
 function suggestedName(x: LibrarySuggestion): string {
-  return x.kind === "character" ? displayName(x.name) : x.name;
+  if (x.kind === "character") return displayName(x.name);
+  if (x.kind === "object") return x.name.charAt(0).toLocaleUpperCase("nb") + x.name.slice(1);
+  return x.name;
+}
+
+/** Beviset under navnet: scenenumre og andre skrivemåter som er slått sammen. */
+function evidence(x: LibrarySuggestion): string {
+  const parts: string[] = [];
+  if (x.sceneNumbers.length)
+    parts.push(`Scene ${x.sceneNumbers.join(", ")}${x.scenes > x.sceneNumbers.length ? " …" : ""}`);
+  let text = parts.join("");
+  if (x.sources.length) {
+    const also = x.sources
+      .map((r) => `${r.name} (${SOURCE_NOTE_LABEL[r.note]}, ${scenesLabel(r.scenes)})`)
+      .join(", ");
+    text += `${text ? " · " : ""}også: ${also}`;
+  }
+  return text;
 }
 
 function fieldsOf(a: Asset): AssetFields {
@@ -50,32 +105,54 @@ export function SuggestionsDialog({
   state,
   suggestions,
   cmds,
+  projectId,
 }: {
   open: boolean;
   onOpenChange: (o: boolean) => void;
   state: ProjectState;
   suggestions: readonly LibrarySuggestion[];
   cmds: Commands;
+  projectId: string;
 }) {
-  // Standard: nye navn uten likhet krysses av; mulige treff må brukeren ta stilling til selv
+  // Standard: sikre nye navn krysses av; mulige treff og gjetninger må brukeren ta stilling til selv
   const initial = useMemo(() => {
     const m: Record<string, Choice> = {};
-    for (const s of suggestions) m[key(s)] = s.possibleMatch ? "skip" : "new";
+    for (const s of suggestions) m[key(s)] = s.possibleMatch || s.uncertain ? "skip" : "new";
     return m;
   }, [suggestions]);
   const [choice, setChoice] = useState<Record<string, Choice>>(initial);
+  const [kindChoice, setKindChoice] = useState<Record<string, PickableKind>>({});
+  const [hidden, setHidden] = useState<readonly string[]>([]);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   useEffect(() => {
     if (open) {
       setChoice(initial);
+      setKindChoice({});
+      setHidden(readHidden(projectId));
       setErr(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
-  const chosenNew = suggestions.filter((s) => choice[key(s)] === "new");
-  const chosenAlias = suggestions.filter((s) => choice[key(s)] === "alias" && s.possibleMatch);
+  const hiddenSet = useMemo(() => new Set(hidden), [hidden]);
+  const visible = suggestions.filter((s) => !hiddenSet.has(key(s)));
+  const kindOf = (s: LibrarySuggestion): AssetKind =>
+    s.kindUncertain ? (kindChoice[key(s)] ?? "character") : s.kind;
+
+  function hide(k: string) {
+    const next = [...new Set([...hidden, k])];
+    setHidden(next);
+    writeHidden(projectId, next);
+  }
+  function showHidden() {
+    setHidden([]);
+    writeHidden(projectId, []);
+  }
+
+  const chosenNew = visible.filter((s) => choice[key(s)] === "new");
+  const chosenAlias = visible.filter((s) => choice[key(s)] === "alias" && s.possibleMatch);
+  const hiddenCount = suggestions.filter((s) => hiddenSet.has(key(s))).length;
 
   async function apply() {
     setBusy(true);
@@ -88,9 +165,13 @@ export function SuggestionsDialog({
             assets: chosenNew.map((s) => ({
               assetId: newId<"asset">(),
               fields: {
-                kind: s.kind,
+                kind: kindOf(s),
                 name: suggestedName(s),
-                names: [],
+                names: suggestionAliases(s, suggestedName(s)).map((n) => ({
+                  name: n,
+                  kind: "alias" as const,
+                  language: null,
+                })),
                 description: "",
                 category: "",
                 tags: [],
@@ -110,12 +191,23 @@ export function SuggestionsDialog({
       const byAsset = new Map<string, string[]>();
       for (const s of chosenAlias) {
         const id = s.possibleMatch!.assetId;
-        byAsset.set(id, [...(byAsset.get(id) ?? []), s.name]);
+        const a = state.assets[id];
+        if (!a) continue;
+        byAsset.set(id, [...(byAsset.get(id) ?? []), s.name, ...suggestionAliases(s, a.name)]);
       }
       for (const [id, names] of byAsset) {
         const a = state.assets[id];
         if (!a) continue;
         const f = fieldsOf(a);
+        const seen = new Set([a.name, ...f.names.map((n) => n.name)].map(nameKey));
+        const add: string[] = [];
+        for (const n of names) {
+          const k = nameKey(n);
+          if (!k || seen.has(k)) continue;
+          seen.add(k);
+          add.push(n);
+        }
+        if (!add.length) continue;
         const r = await cmds.runAndWait(
           {
             type: "UpdateAsset",
@@ -124,7 +216,7 @@ export function SuggestionsDialog({
               ...f,
               names: [
                 ...f.names,
-                ...names.map((n) => ({ name: n, kind: "alias" as const, language: null })),
+                ...add.map((n) => ({ name: n, kind: "alias" as const, language: null })),
               ],
             },
           },
@@ -141,9 +233,9 @@ export function SuggestionsDialog({
     }
   }
 
-  const groups = (["character", "location"] as const).map((k) => ({
-    kind: k,
-    items: suggestions.filter((s) => s.kind === k),
+  const groups = GROUPS.map((g) => ({
+    ...g,
+    items: visible.filter((s) => s.reason === g.reason),
   }));
   const total = chosenNew.length + chosenAlias.length;
 
@@ -153,20 +245,20 @@ export function SuggestionsDialog({
         <DialogHeader>
           <DialogTitle>Forslag fra manuset</DialogTitle>
           <DialogDescription>
-            Karakterer med replikk og steder i sceneoverskriftene som ikke finnes i biblioteket
-            ennå. Ingenting legges til før du velger det. Navn som ligner en ressurs du allerede
-            har, kan legges til som alternativt navn i stedet.
+            Karakterer, navngitte ting, steder og ting som går igjen i manuset, men som ikke finnes
+            i biblioteket ennå. Ingenting legges til før du velger det. Usikre forslag er ikke valgt
+            på forhånd. Andre skrivemåter blir alternative navn, så ressursen finnes i alle scenene.
           </DialogDescription>
         </DialogHeader>
-        {suggestions.length === 0 ? (
+        {visible.length === 0 && hiddenCount === 0 ? (
           <p className="text-[13px] text-text-secondary">Ingen forslag – alt er i biblioteket.</p>
         ) : null}
         {groups.map((g) =>
           g.items.length ? (
-            <section key={g.kind} className="flex flex-col gap-1">
+            <section key={g.reason} className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <h3 className="text-xs font-medium uppercase tracking-[0.04em] text-text-tertiary">
-                  {g.kind === "character" ? "Karakterer" : "Lokasjoner"} ({g.items.length})
+                  {g.title} ({g.items.length})
                 </h3>
                 <button
                   type="button"
@@ -199,6 +291,7 @@ export function SuggestionsDialog({
                 {g.items.map((s) => {
                   const k = key(s);
                   const c = choice[k] ?? "skip";
+                  const kind = kindOf(s);
                   return (
                     <li
                       key={k}
@@ -216,12 +309,41 @@ export function SuggestionsDialog({
                         }
                         className="size-3.5 accent-[var(--accent-brand)]"
                       />
-                      <span className="min-w-0 flex-1 truncate text-text-primary">
-                        {s.name}
-                        <span className="ml-2 text-xs text-text-tertiary">
-                          {s.scenes === 1 ? "1 scene" : `${s.scenes} scener`}
-                        </span>
-                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div className="truncate text-text-primary">
+                          {s.name}
+                          <span className="ml-2 text-xs text-text-tertiary">
+                            {scenesLabel(s.scenes)}
+                          </span>
+                          {s.uncertain ? (
+                            <span
+                              className="ml-2 text-xs text-status-uncertain"
+                              title="Gjetning fra teksten – sjekk før du legger til"
+                            >
+                              usikker
+                            </span>
+                          ) : null}
+                        </div>
+                        <div className="truncate text-xs text-text-tertiary" title={evidence(s)}>
+                          {evidence(s)}
+                        </div>
+                      </div>
+                      {s.kindUncertain && c === "new" ? (
+                        <select
+                          aria-label={`Hva slags type er ${s.name}?`}
+                          value={kindChoice[k] ?? "character"}
+                          onChange={(e) =>
+                            setKindChoice((x) => ({ ...x, [k]: e.target.value as PickableKind }))
+                          }
+                          className="h-7 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
+                        >
+                          {KIND_CHOICES.map((o) => (
+                            <option key={o} value={o}>
+                              {ASSET_KIND_LABEL[o]}
+                            </option>
+                          ))}
+                        </select>
+                      ) : null}
                       {s.possibleMatch ? (
                         <select
                           aria-label={`Hva skal ${s.name} bli?`}
@@ -235,11 +357,19 @@ export function SuggestionsDialog({
                           <option value="alias">
                             Alternativt navn for «{s.possibleMatch.assetName}»?
                           </option>
-                          <option value="new">Ny {ASSET_KIND_LABEL[s.kind].toLowerCase()}</option>
+                          <option value="new">Ny {ASSET_KIND_LABEL[kind].toLowerCase()}</option>
                         </select>
                       ) : (
                         <span className="text-xs text-text-tertiary">→ {suggestedName(s)}</span>
                       )}
+                      <button
+                        type="button"
+                        className="text-xs text-text-tertiary hover:text-text-primary"
+                        title="Ikke foreslå igjen"
+                        onClick={() => hide(k)}
+                      >
+                        Skjul
+                      </button>
                     </li>
                   );
                 })}
@@ -252,7 +382,16 @@ export function SuggestionsDialog({
             {err}
           </p>
         ) : null}
-        <div className="flex justify-end gap-2">
+        <div className="flex items-center justify-end gap-2">
+          {hiddenCount > 0 ? (
+            <button
+              type="button"
+              className="mr-auto text-xs text-text-tertiary hover:text-text-primary hover:underline"
+              onClick={showHidden}
+            >
+              Vis skjulte ({hiddenCount})
+            </button>
+          ) : null}
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
             Avbryt
           </Button>

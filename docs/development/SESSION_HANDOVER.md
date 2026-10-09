@@ -1,6 +1,6 @@
 # Handover – Animatic Studio
 
-**Sist oppdatert:** 2026-10-09 (økt 4, Claude i Cowork). Arbeidsstatus – mandatet og beslutningsloggen er fortsatt autoritative.
+**Sist oppdatert:** 2026-10-09 (økt 5, Claude i Cowork). Arbeidsstatus – mandatet og beslutningsloggen er fortsatt autoritative.
 
 ## Slik starter du en ny økt
 1. Les `CLAUDE.md`, denne fila og `CURRENT_WORK.md`.
@@ -10,6 +10,7 @@
 5. Kontroller: `bun run test`, `bun tests/db/run-db-tests.ts`, `npx tsc --noEmit`, `python3 scripts/kb/check_kb.py`. Dev-server: `bunx vite dev --host 127.0.0.1`.
 
 ## Hva er gjort
+- **Økt 5:** 0005 kjørt med avvik i Lovable (`byte_size_big`) → rettet med 0006 (kjørt). `LOVABLE_SYNC.md` inneholder nå bare meldingen Mars limer inn (DEC-0033; veiledningen i `LOVABLE_GUIDE.md`). Bedre forslag fra manuset uten AI (DEC-0034, `src/core/library/suggest.ts`). Sceneeditor del 1 (DEC-0035): `src/core/composition/*`, `src/engine/compositor/canvas.ts`, `src/app/scene-editor/*`, rute `/prosjekt/$projectId/scene`, migrasjon `0007_compositions.sql` (**ikke kjørt ennå**). Test av arbeidsdeling: Sonnet-underagenter skrev brukerflate, tester, skjermbilder og kravregister etter presise beskrivelser; Opus skrev kjerne, migrasjon og kontrollerte (se `DELEGATION_TEST_2026-10-09.md`). Tester: 193 Vitest, 24 databasetester, skjermbilder 28–32. **Neste:** M3 del 2b – kamera med blå/rød ramme og baner, tidslinje med nøkkelbilder, avspilling (KI-41).
 - **Økt 1 (M0):** kunnskapsbase, kravregister, beslutninger, arkitektur, skills.
 - **Økt 2 (M1):** kjerne, migrasjon 0001 (kjørt i Lovable), `runCommand`, innlogging/prosjekter. Feil KI-18 funnet av Mars og rettet.
 - **Økt 3 (M2 del 1):** import, sider, redigering, angre, eksport. DEC-0023–0026, ADR-0010. Testet av Mars i Lovable; Safari-nedlasting rettet (KI-25). Migrasjon 0002 kjørt.

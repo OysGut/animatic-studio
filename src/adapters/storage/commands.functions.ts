@@ -65,6 +65,8 @@ const INVERSE_ONLY = new Set<string>([
   "UndoCreateAssetVariant",
   "UndoAddAssetVersion",
   "UndoAddAnnotations",
+  "UndoCreateComposition",
+  "UndoAddLayers",
 ]);
 
 /** Kommandoer som skriver til tabellene fra migrasjon 0004 (ressursbibliotek og notater). */
@@ -83,6 +85,19 @@ const LIBRARY_COMMANDS = new Set<string>([
   "AddAnnotations",
   "EditAnnotation",
   "SetAnnotationRemoved",
+]);
+
+/** Kommandoer som skriver til tabellene fra migrasjon 0007 (2D-sceneeditoren). */
+const COMPOSITION_COMMANDS = new Set<string>([
+  "CreateComposition",
+  "UndoCreateComposition",
+  "UpdateComposition",
+  "SetCompositionRemoved",
+  "AddLayers",
+  "UndoAddLayers",
+  "UpdateLayers",
+  "MoveLayer",
+  "SetLayersRemoved",
 ]);
 
 /** JSON med sorterte nøkler, for sammenligning med jsonb fra databasen. */
@@ -234,6 +249,17 @@ export const runCommand = createServerFn({ method: "POST" })
           code: "schema",
           message:
             "Databasen mangler ressursbiblioteket og notatene. Kjør migrasjon 0004 i Lovable (se LOVABLE_SYNC.md).",
+        };
+    }
+    // 2D-sceneeditoren krever migrasjon 0007
+    if (COMPOSITION_COMMANDS.has(data.command.type)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind !== "ok" || schema.version < 7)
+        return {
+          ok: false,
+          code: "schema",
+          message:
+            "Databasen mangler sceneeditoren. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0007.",
         };
     }
     const state = await loadProjectState(admin, data.projectId);

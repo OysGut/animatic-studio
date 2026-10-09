@@ -13,7 +13,7 @@ import {
   loadProjectRows,
   type AnyClient,
 } from "@/adapters/storage/project-rows";
-import { diffStates, emptyProjectState } from "@/core";
+import { DEFAULT_COMPOSITION, defaultLayerFields, diffStates, emptyProjectState } from "@/core";
 import { mustApply, seedProject, tid } from "../helpers/fixtures";
 
 const MIGRATIONS = join(__dirname, "../../db/migrations");
@@ -146,9 +146,37 @@ describe("Kontrakt: lagringsadapter ↔ databaseskjema", () => {
       },
       note: "",
     });
+    // Med 2D-scene og lag (0007)
+    const compositionId = tid<"composition">();
+    const variant = Object.values(state.variants)[0]!;
+    state = mustApply(state, {
+      type: "CreateComposition",
+      compositionId,
+      variantId: variant.id,
+      fields: DEFAULT_COMPOSITION,
+    });
+    state = mustApply(state, {
+      type: "AddLayers",
+      layers: [
+        {
+          layerId: tid<"composition_layer">(),
+          compositionId,
+          fields: defaultLayerFields(state, state.compositions[compositionId]!, {
+            assetId,
+            assetVariantId: variantId,
+          }),
+        },
+      ],
+    });
     const cs = diffStates(emptyProjectState(state.project), state);
     expect(Object.keys(cs.inserts)).toEqual(
-      expect.arrayContaining(["assets", "asset_variants", "asset_versions"]),
+      expect.arrayContaining([
+        "assets",
+        "asset_variants",
+        "asset_versions",
+        "compositions",
+        "composition_layers",
+      ]),
     );
     const problems: string[] = [];
     for (const [table, rows] of Object.entries(cs.inserts)) {

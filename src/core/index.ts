@@ -20,3 +20,4 @@ export {
 export * from "./screenplay";
 export * from "./library";
 export * from "./notes";
+export * from "./composition";

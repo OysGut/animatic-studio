@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 
 /** Arbeidsflatene (INFORMATION_ARCHITECTURE.md). Flatene som ikke er bygget ennå vises deaktivert med milepæl. */
 const LATER: { label: string; icon: ReactNode; milestone: string }[] = [
-  { label: "Sceneeditor", icon: <Layers />, milestone: "M3" },
   { label: "Montering", icon: <Film />, milestone: "M4" },
   { label: "Utgivelse", icon: <Clapperboard />, milestone: "M8" },
 ];
@@ -46,6 +45,15 @@ export function ProjectNav({ projectId }: { projectId: string }) {
       >
         <Library aria-hidden />
         Ressursbibliotek
+      </Link>
+      <Link
+        to="/prosjekt/$projectId/scene"
+        params={{ projectId }}
+        className={item}
+        activeProps={{ className: active, "aria-current": "page" }}
+      >
+        <Layers aria-hidden />
+        Sceneeditor
       </Link>
       {LATER.map((w) => (
         <span

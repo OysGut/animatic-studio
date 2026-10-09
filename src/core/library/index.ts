@@ -7,7 +7,6 @@ import type { Asset, AssetKind, AssetVariant, AssetVersion, ProjectState } from 
 import { orderedOccurrences } from "../views";
 import {
   characterName,
-  charactersInProduction,
   sceneHasWordPrefix,
   sceneMentions,
   sceneSpeakers,
@@ -177,102 +176,8 @@ export function allAssetUsage(
   return m;
 }
 
-// ---------- Forslag fra manuset (REQ-0128) ----------
-
-export interface LibrarySuggestion {
-  readonly kind: AssetKind;
-  /** Navnet slik det står i manuset (karakterer med store bokstaver). */
-  readonly name: string;
-  /** Antall scener der navnet opptrer. */
-  readonly scenes: number;
-  /** Mulig samme som en eksisterende ressurs (usikker kobling – brukeren avgjør). */
-  readonly possibleMatch: { readonly assetId: string; readonly assetName: string } | null;
-}
-
-/** Avstand mellom to ord (antall tegn som må endres), for å finne mulige stavevarianter. */
-export function editDistance(a: string, b: string): number {
-  if (a === b) return 0;
-  const prev = Array.from({ length: b.length + 1 }, (_, j) => j);
-  for (let i = 1; i <= a.length; i++) {
-    let diag = prev[0]!;
-    prev[0] = i;
-    for (let j = 1; j <= b.length; j++) {
-      const tmp = prev[j]!;
-      prev[j] = Math.min(prev[j]! + 1, prev[j - 1]! + 1, diag + (a[i - 1] === b[j - 1] ? 0 : 1));
-      diag = tmp;
-    }
-  }
-  return prev[b.length]!;
-}
-
-/** Ligner navnet på et eksisterende navn? (inneholder det som eget ord, eller nesten lik stavemåte) */
-function similar(candidate: string, existing: string): boolean {
-  if (!candidate || !existing) return false;
-  const words = (x: string) => x.split(/[^\p{L}\p{N}]+/u).filter((w) => w.length >= 3);
-  const cw = words(candidate);
-  const ew = words(existing);
-  if (cw.some((w) => ew.includes(w))) return true;
-  if (Math.min(candidate.length, existing.length) >= 4) {
-    const limit = Math.min(candidate.length, existing.length) >= 7 ? 2 : 1;
-    return editDistance(candidate, existing) <= limit;
-  }
-  return false;
-}
-
-function findSimilar(
-  key: string,
-  assets: readonly Asset[],
-): { assetId: string; assetName: string } | null {
-  for (const a of assets)
-    for (const n of assetNames(a))
-      if (similar(key, nameKey(n))) return { assetId: a.id, assetName: a.name };
-  return null;
-}
-
-/**
- * Karakterer (replikknavn) og lokasjoner (steder i sceneoverskriftene) i manuset som ikke finnes i biblioteket
- * under noe navn. Navn som ligner en eksisterende ressurs, får den som mulig treff.
- */
-export function librarySuggestions(s: ProjectState, productionId: string): LibrarySuggestion[] {
-  const all = Object.values(s.assets);
-  const known = (kind: AssetKind) =>
-    new Set(
-      all
-        .filter((a) => a.kind === kind)
-        .flatMap(assetNames)
-        .map(nameKey),
-    );
-  const out: LibrarySuggestion[] = [];
-
-  const chars = known("character");
-  const charAssets = all.filter((a) => a.kind === "character" && !a.archived);
-  for (const c of charactersInProduction(s, productionId)) {
-    if (chars.has(c.name)) continue;
-    out.push({
-      kind: "character",
-      name: c.name,
-      scenes: c.scenes,
-      possibleMatch: findSimilar(c.name, charAssets),
-    });
-  }
-
-  const locs = known("location");
-  const locAssets = all.filter((a) => a.kind === "location" && !a.archived);
-  const counts = new Map<string, number>();
-  for (const o of orderedOccurrences(s, productionId)) {
-    const loc = s.variants[o.variantId]?.heading.location.trim();
-    if (!loc) continue;
-    const key = nameKey(loc);
-    counts.set(key, (counts.get(key) ?? 0) + 1);
-  }
-  for (const [name, scenes] of [...counts].sort(
-    (a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "nb"),
-  )) {
-    if (locs.has(name)) continue;
-    out.push({ kind: "location", name, scenes, possibleMatch: findSimilar(name, locAssets) });
-  }
-  return out;
-}
+// ---------- Forslag fra manuset (REQ-0128, DEC-0034) – se suggest.ts ----------
+export * from "./suggest";
 
 /** Visningsnavn for et navn fra manuset: «BESTEMOR ANNE» → «Bestemor Anne». */
 export function displayName(name: string): string {
