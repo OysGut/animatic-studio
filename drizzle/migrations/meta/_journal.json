@@ -36,6 +36,13 @@
       "when": 1791541443517,
       "tag": "0004_0005_note_edits_large_files",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791545726283,
+      "tag": "0005_0006_byte_size_big",
+      "breakpoints": true
     }
   ]
 }
