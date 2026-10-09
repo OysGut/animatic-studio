@@ -43,6 +43,13 @@
       "when": 1791545726283,
       "tag": "0005_0006_byte_size_big",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791549102344,
+      "tag": "0006_0007_compositions",
+      "breakpoints": true
     }
   ]
 }
