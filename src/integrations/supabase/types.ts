@@ -715,6 +715,8 @@ export type Database = {
           created_by: string
           fps_den: number
           fps_num: number
+          frame_height: number
+          frame_width: number
           id: string
           name: string
           primary_language: string
@@ -725,6 +727,8 @@ export type Database = {
           created_by: string
           fps_den?: number
           fps_num?: number
+          frame_height?: number
+          frame_width?: number
           id: string
           name: string
           primary_language?: string
@@ -735,6 +739,8 @@ export type Database = {
           created_by?: string
           fps_den?: number
           fps_num?: number
+          frame_height?: number
+          frame_width?: number
           id?: string
           name?: string
           primary_language?: string
