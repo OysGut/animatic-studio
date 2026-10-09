@@ -1,6 +1,6 @@
 # Handover – Animatic Studio
 
-**Sist oppdatert:** 2026-10-09 (økt 3, Claude i Cowork, natt – Mars sov). Arbeidsstatus – mandatet og beslutningsloggen er fortsatt autoritative.
+**Sist oppdatert:** 2026-10-09 (økt 3 del 2, Claude i Cowork). Arbeidsstatus – mandatet og beslutningsloggen er fortsatt autoritative.
 
 ## Slik starter du en ny økt
 1. Les `CLAUDE.md`, denne fila og `CURRENT_WORK.md`.
@@ -12,7 +12,8 @@
 ## Hva er gjort
 - **Økt 1 (M0):** kunnskapsbase, kravregister, beslutninger, arkitektur, skills.
 - **Økt 2 (M1):** kjerne, migrasjon 0001 (kjørt i Lovable), `runCommand`, innlogging/prosjekter. Feil KI-18 funnet av Mars og rettet.
-- **Økt 3 (M2 del 1):** se `CURRENT_WORK.md`. Nye beslutninger DEC-0023–0026, ADR-0010. Kodegjennomgang med 15 funn, alle rettet.
+- **Økt 3 (M2 del 1):** import, sider, redigering, angre, eksport. DEC-0023–0026, ADR-0010. Testet av Mars i Lovable; Safari-nedlasting rettet (KI-25). Migrasjon 0002 kjørt.
+- **Økt 3 del 2 (M2 del 2):** manusversjoner (migrasjon 0003), sammenligning, historisk nummerering, søk/karakterfilter, «Vis kun valgt scene» (REQ-0531/DEC-0027, Mars' ønske), varighetsestimat, tilstedeværelse. DEC-0028. To uavhengige kodegjennomganger, alle funn rettet.
 
 ## Hva er testet
 - 85 Vitest-tester (inkl. 6 gyldne mot referansemanuset, 9 egenskapsbaserte), 19 databasetester, 13 skjermbilder + ekte PDF-import i nettleser (forhåndsvisning).
@@ -22,8 +23,8 @@
 Nye: `src/core/screenplay/{paginate,script-pages,numbering}.ts`, `src/engine/import/browser.ts`, `src/engine/export/*`, `src/app/project/*`, `src/app/script/*`, `src/app/shell/ProjectNav.tsx`, `src/routes/prosjekt.$projectId.{index,manus}.tsx`, `db/migrations/0002_import_profiles.sql`, `tests/unit/{import-split-merge,paginate,numbering,export,review-regressions}.test.ts`, `.github/workflows/tests.yml`, ADR-0010. Endret: `src/core/**` (nye kommandoer, `removed`, invarianter), `parse.ts`, `docx-lines.ts`, `commands.functions.ts`, `project-rows.ts`, `ProjectOverview.tsx`, `prosjekt.$projectId.tsx` (nå layout med meny), `routeTree.gen.ts`, `package.json` (`test:db`), dokumentasjon og kravregister.
 
 ## Uavklarte risikoer
-KI-12, KI-14, KI-15, KI-16, KI-17 (første CI-kjøring), KI-19 (Storage), KI-20 (tittelside), KI-21 (DOCX-sider), KI-22 (angre per fane), KI-23 (store kommandoer), KI-24 (spinoff-UI). Produktspørsmål Q-02–Q-10; Q-08 har midlertidig antakelse DEC-0026.
+KI-12, KI-14, KI-15, KI-16, KI-17 (første CI-kjøring), KI-19 (Storage), KI-20 (tittelside), KI-21 (DOCX-sider), KI-22 (angre per fane), KI-23 (store kommandoer), KI-24 (spinoff-UI), KI-26 (tilstedeværelse i Lovable), KI-27 (gjenoppretting av versjon), KI-28, KI-29. Produktspørsmål Q-02–Q-10; Q-08 har midlertidig antakelse DEC-0026.
 
 ## Neste konkrete steg
-1. Mars: Commit + Push → synkmelding for `0002_import_profiles.sql` → importer «Jula på Dovre» i Manus.
-2. Claude: rette det som dukker opp, deretter M2 del 2 (manusversjoner, søk/filter, varighet, tilstedeværelse).
+1. Mars: Commit + Push → synkmelding for `0003_script_versions.sql` → prøv versjoner, filter, «Vis kun valgt scene», varighet.
+2. Claude: rette det som dukker opp; deretter M3 (ressursbibliotek og 2D-sceneeditor) etter OK fra Mars.

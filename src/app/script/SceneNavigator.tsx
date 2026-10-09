@@ -2,13 +2,15 @@
  * Scenenavigator (mandat 2, 4.4): alle sceneforekomster i produksjonen i rekkefølge, også deaktiverte.
  * Flytting her er samme handling som i filmtidslinjen (MoveOccurrence, UX P5). Deaktivering er ikke sletting.
  */
-import { AlertTriangle, GripVertical } from "lucide-react";
+import { AlertTriangle, GripVertical, Search, X } from "lucide-react";
 import { useState, type DragEvent, type KeyboardEvent } from "react";
 import {
   formatHeading,
   keyBetween,
   orderedOccurrences,
+  type CharacterInfo,
   type ProjectState,
+  type SceneFilter,
   type SceneOccurrence,
 } from "@/core";
 import { Switch } from "@/components/ui/switch";
@@ -23,6 +25,13 @@ interface Props {
   readonly onSelect: (occurrenceId: string) => void;
   readonly onMove: (occurrenceId: string, orderKey: string, label: string) => void;
   readonly onToggleActive: (occurrenceId: string, active: boolean) => void;
+  readonly filter: SceneFilter;
+  readonly onFilterChange: (f: SceneFilter) => void;
+  readonly characters: readonly CharacterInfo[];
+  /** Forekomster som passer med filteret (null = intet filter). */
+  readonly visible: ReadonlySet<string> | null;
+  /** Andre medlemmer som står i scenen nå (tilstedeværelse). */
+  readonly presence?: ReadonlyMap<string, readonly { userId: string; name: string }[]>;
 }
 
 export function SceneNavigator({
@@ -34,8 +43,18 @@ export function SceneNavigator({
   onSelect,
   onMove,
   onToggleActive,
+  filter,
+  onFilterChange,
+  characters,
+  visible,
+  presence,
 }: Props) {
-  const occs = orderedOccurrences(state, productionId);
+  const allOccs = orderedOccurrences(state, productionId);
+  const occs = visible ? allOccs.filter((o) => visible.has(o.id)) : allOccs;
+  // Flytting krever hele listen synlig, ellers blir plasseringen uklar
+  const canReorder = editable && !visible;
+  // Er valgt scene filtrert bort, må første synlige scene kunne nås med Tab
+  const selectedVisible = selectedOcc !== null && occs.some((o) => o.id === selectedOcc);
   const [dragId, setDragId] = useState<string | null>(null);
   const [dropIndex, setDropIndex] = useState<number | null>(null);
   const uncertain = uncertainVariants(state);
@@ -59,7 +78,7 @@ export function SceneNavigator({
   }
 
   function onKey(e: KeyboardEvent, o: SceneOccurrence, i: number) {
-    if (e.altKey && editable && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
+    if (e.altKey && canReorder && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
       e.preventDefault();
       moveTo(o.id, e.key === "ArrowUp" ? i - 1 : i + 2);
       return;
@@ -79,11 +98,67 @@ export function SceneNavigator({
       <div className="flex h-8 shrink-0 items-center justify-between border-b border-border px-3 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
         <span>Scener</span>
         <span className="tabular normal-case tracking-normal">
-          {occs.filter((o) => o.active).length} aktive av {occs.length}
+          {visible
+            ? `${occs.length} av ${allOccs.length} vises`
+            : `${allOccs.filter((o) => o.active).length} aktive av ${allOccs.length}`}
         </span>
       </div>
+      <div className="flex shrink-0 flex-col gap-1.5 border-b border-border px-2 py-2">
+        <div className="relative">
+          <Search
+            className="pointer-events-none absolute left-2 top-1/2 size-3.5 -translate-y-1/2 text-text-tertiary"
+            aria-hidden
+          />
+          <input
+            type="search"
+            aria-label="Søk i manus"
+            placeholder="Søk i manus (tekst, sted, nummer)"
+            value={filter.text ?? ""}
+            onChange={(e) => onFilterChange({ ...filter, text: e.target.value })}
+            className="h-7 w-full rounded-sm border border-border-control bg-surface-3 pl-7 pr-2 text-[13px] text-text-primary placeholder:text-text-tertiary"
+          />
+        </div>
+        <div className="flex items-center gap-1.5">
+          <select
+            aria-label="Vis bare scener med karakter"
+            value={filter.character ?? ""}
+            onChange={(e) => {
+              const { character: _c, ...rest } = filter;
+              onFilterChange(e.target.value ? { ...rest, character: e.target.value } : rest);
+            }}
+            className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
+          >
+            <option value="">Alle karakterer</option>
+            {characters.map((c) => (
+              <option key={c.name} value={c.name}>
+                {c.name} ({c.scenes})
+              </option>
+            ))}
+          </select>
+          {visible ? (
+            <button
+              type="button"
+              onClick={() => onFilterChange({})}
+              className="flex h-7 items-center gap-1 rounded-sm px-1.5 text-xs text-text-secondary hover:bg-surface-3 hover:text-text-primary"
+              title="Fjern filter"
+            >
+              <X className="size-3.5" aria-hidden />
+              Nullstill
+            </button>
+          ) : null}
+        </div>
+        {visible ? (
+          <p className="text-[11px] text-text-tertiary">
+            Filteret gjelder bare visningen. Filmen er uendret. Flytting er av mens filteret er på.
+          </p>
+        ) : null}
+      </div>
       <ol
-        aria-label="Scener i produksjonen. Alt + pil flytter valgt scene."
+        aria-label={
+          canReorder
+            ? "Scener i produksjonen. Alt + pil flytter valgt scene."
+            : "Scener i produksjonen"
+        }
         className="min-h-0 flex-1 overflow-y-auto py-1"
         onDragOver={(e) => e.preventDefault()}
         onDrop={onDrop}
@@ -105,7 +180,7 @@ export function SceneNavigator({
             >
               {dropIndex === i && dragId ? <DropLine /> : null}
               <div
-                draggable={editable && !merged}
+                draggable={canReorder && !merged}
                 onDragStart={(e) => {
                   setDragId(o.id);
                   e.dataTransfer.effectAllowed = "move";
@@ -125,7 +200,7 @@ export function SceneNavigator({
                 <GripVertical
                   className={
                     "size-3.5 text-text-tertiary " +
-                    (editable && !merged
+                    (canReorder && !merged
                       ? "cursor-grab opacity-0 group-hover:opacity-100"
                       : "opacity-0")
                   }
@@ -134,7 +209,7 @@ export function SceneNavigator({
                 <button
                   type="button"
                   id={`nav-${o.id}`}
-                  tabIndex={selected || (!selectedOcc && i === 0) ? 0 : -1}
+                  tabIndex={selected || (!selectedVisible && i === 0) ? 0 : -1}
                   aria-current={selected ? "true" : undefined}
                   onClick={() => onSelect(o.id)}
                   onKeyDown={(e) => onKey(e, o, i)}
@@ -160,6 +235,15 @@ export function SceneNavigator({
                         </span>
                       ) : null}
                       {v && v.ownerProductionId !== null ? <span>Egen variant</span> : null}
+                      {presence?.get(o.id)?.length ? (
+                        <span className="text-accent-brand" title="Står i scenen nå">
+                          ●{" "}
+                          {presence
+                            .get(o.id)!
+                            .map((p) => p.name)
+                            .join(", ")}
+                        </span>
+                      ) : null}
                     </span>
                   </span>
                 </button>

@@ -6,7 +6,7 @@ import type { ProjectState, SceneHeading } from "../model";
 import { orderedOccurrences, blocksOfVariant } from "../views";
 import { formatHeading, type PaginationScene } from "./paginate";
 
-export type NumberingMethod = "continuous" | "production";
+export type NumberingMethod = "continuous" | "production" | "historical";
 
 export interface NumberingOptions {
   readonly method: NumberingMethod;
@@ -20,6 +20,11 @@ export interface NumberingOptions {
   readonly fillMissing?: "new" | "all" | "none";
   /** Tekst for utgåtte scener ved bevart nummerering (bransjens «OMITTED»). */
   readonly omittedText?: string;
+  /**
+   * «Bevar valgt historisk nummerering» (REQ-0083): nummer per sceneforekomst fra en tidligere manusversjon
+   * (numbersByOccurrence). Scener som finnes i versjonen får versjonens nummer; nye scener får mellomnumre.
+   */
+  readonly historical?: ReadonlyMap<string, string>;
 }
 
 export interface NumberedScene {
@@ -83,15 +88,22 @@ export function exportNumbering(
     return out;
   }
   // Alle numre i produksjonen er opptatt – også deaktiverte scener sine, så et «UTGÅR»-nummer aldri gjenbrukes
+  const hist = opts.method === "historical" ? (opts.historical ?? new Map<string, string>()) : null;
+  const baseNumber = (o: { id: string; productionNumber: string | null }) =>
+    hist ? (hist.get(o.id) ?? null) : o.productionNumber;
   const used = new Set(
     orderedOccurrences(s, productionId)
-      .map((o) => o.productionNumber)
+      .map((o) => baseNumber(o))
       .filter((x): x is string => x !== null),
   );
+  if (hist) for (const n of hist.values()) used.add(n);
   let prev: string | null = null;
+  const assigned = new Set<string>();
   for (const o of occs) {
     const heading = s.variants[o.variantId]?.heading ?? { intExt: "", location: "", time: "" };
-    let num = o.productionNumber;
+    let num = baseNumber(o);
+    // Samme nummer to ganger (f.eks. en scene brukt to ganger): den andre får mellomnummer
+    if (num !== null && assigned.has(num)) num = null;
     const fill = opts.fillMissing ?? "new";
     // Unummerert i originalmanuset = importert (kildereferanse) og ikke laget ved deling i appen
     const importedUnnumbered =
@@ -101,7 +113,10 @@ export function exportNumbering(
       num = nextInsertNumber(prev, used);
       used.add(num);
     }
-    if (num !== null) prev = num;
+    if (num !== null) {
+      prev = num;
+      assigned.add(num);
+    }
     out.push({
       occurrenceId: o.id,
       heading,

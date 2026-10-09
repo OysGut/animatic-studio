@@ -416,7 +416,10 @@ try {
       null,
       (tx) => tx`select max(version) as v from public.schema_version`,
     );
-    assert(v[0]!["v"] === 2, `skjemaversjon ${v[0]!["v"]}`);
+    const expected = readdirSync(join(root, "db/migrations")).filter((x) =>
+      x.endsWith(".sql"),
+    ).length;
+    assert(v[0]!["v"] === expected, `skjemaversjon ${v[0]!["v"]}, forventet ${expected}`);
   });
 
   await test("0002: redaktør kan registrere originaldokument, leser kan ikke; dokumentet er uforanderlig", async () => {
@@ -584,6 +587,67 @@ try {
       failed = /duplicate|unik|unique/i.test(String((e as Error).message));
     }
     assert(failed, "andre innsetting på samme plass ble ikke avvist med unik-feil");
+  });
+
+  await test("0003: manusversjon er et uforanderlig øyeblikksbilde lik kjernens, med løpenummer og forelder", async () => {
+    const { snapshotFromState, sameSnapshot } = await import("../../src/core/screenplay/versions");
+    const st = await loadState(projectId);
+    const prod =
+      Object.values(st.productions).find((p) => p.kind === "main") ??
+      Object.values(st.productions)[0]!;
+    const v1 = await as(
+      "authenticated",
+      ALICE,
+      async (tx) =>
+        (
+          await tx`select public.create_script_version(${projectId}, ${prod.id}, 'Draft 9.3', 'Importert') as id`
+        )[0]!["id"],
+    );
+    const v2 = await as(
+      "authenticated",
+      ALICE,
+      async (tx) =>
+        (
+          await tx`select public.create_script_version(${projectId}, ${prod.id}, 'Etter møte') as id`
+        )[0]!["id"],
+    );
+    const rows =
+      await sql`select id, number, parent_version_id, snapshot from public.script_versions where production_id = ${prod.id} order by number`;
+    assert(rows.length === 2 && rows[0]!["number"] === 1 && rows[1]!["number"] === 2, "løpenummer");
+    assert(
+      rows[0]!["id"] === v1 && rows[1]!["parent_version_id"] === v1 && rows[1]!["id"] === v2,
+      "forelder",
+    );
+    const snap = rows[0]!["snapshot"] as never;
+    assert(
+      sameSnapshot(snap, snapshotFromState(st, prod.id)),
+      "databasens øyeblikksbilde avviker fra kjernens",
+    );
+    await expectError(sql`update public.script_versions set name = 'x'`, /INV-13/);
+    await expectError(sql`delete from public.script_versions`, /INV-13/);
+    await expectError(
+      as(
+        "authenticated",
+        BOB,
+        (tx) => tx`select public.create_script_version(${projectId}, ${prod.id}, 'Leser')`,
+      ),
+      "42501",
+    );
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) =>
+          tx`insert into public.script_versions (project_id, production_id, number, name, snapshot, created_by) values (${projectId}, ${prod.id}, 9, 'x', '{}', ${ALICE})`,
+      ),
+      "42501",
+    );
+    const carol = await as(
+      "authenticated",
+      CAROL,
+      (tx) => tx`select id from public.script_versions`,
+    );
+    assert(carol.length === 0, "ikke-medlem ser versjoner");
   });
 } finally {
   await sql.end();

@@ -12,7 +12,8 @@ export interface Selection {
 
 interface Props {
   readonly pages: readonly Page[];
-  readonly state: ProjectState;
+  /** Tilstanden (for usikkerhetsmarkører). Utelates ved visning av en historisk versjon. */
+  readonly state?: ProjectState | undefined;
   readonly selection: Selection;
   readonly zoom: number;
   readonly onSelect: (sel: Selection) => void;
@@ -45,7 +46,8 @@ export function ScriptPageView({ pages, state, selection, zoom, onSelect, onActi
 
 interface SheetProps {
   readonly page: Page;
-  readonly state: ProjectState;
+  /** Tilstanden (for usikkerhetsmarkører). Utelates ved visning av en historisk versjon. */
+  readonly state?: ProjectState | undefined;
   readonly selectedBlock: string | null;
   readonly selectedOcc: string | null;
   readonly onSelect: (sel: Selection) => void;
@@ -106,16 +108,16 @@ function Line({
   onActivate,
 }: {
   line: PageLine;
-  state: ProjectState;
+  state?: ProjectState | undefined;
   selected: boolean;
   onSelect: (sel: Selection) => void;
   onActivate: (sel: Selection) => void;
 }) {
   const top = `${BODY_TOP_EM + line.row}em`;
   const sel: Selection = { occurrenceId: line.occurrenceId, blockId: line.blockId };
-  const block = line.blockId ? state.blocks[line.blockId] : undefined;
-  const occ = state.occurrences[line.occurrenceId];
-  const variant = occ ? state.variants[occ.variantId] : undefined;
+  const block = line.blockId && state ? state.blocks[line.blockId] : undefined;
+  const occ = state?.occurrences[line.occurrenceId];
+  const variant = occ ? state?.variants[occ.variantId] : undefined;
   const uncertain =
     line.first && (line.kind === "heading" ? variant?.uncertainty : block?.uncertainty);
   const interactive = line.kind !== "more" && line.kind !== "contd";

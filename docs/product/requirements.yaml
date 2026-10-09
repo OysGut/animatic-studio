@@ -1070,13 +1070,21 @@ requirements:
   - Historiske manusversjoner er uforanderlige snapshots som kan åpnes og eksporteres identisk etter senere endringer.
   tests:
   - 'dataintegritet: hash av historisk versjon er uendret etter senere redigering'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - db/migrations/0003_script_versions.sql
+  - src/core/screenplay/versions.ts
+  verification:
+  - 'tests/db/run-db-tests.ts::0003: manusversjon er et uforanderlig øyeblikksbilde lik kjernens, med løpenummer
+    og forelder'
+  - tests/unit/versions.test.ts
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0028
+    change: Uforanderlige øyeblikksbilder som kan vises og eksporteres; status Verifisert
   notes: ''
 - id: REQ-0033
   title: Vesentlige oppdateringer sporbare og reverserbare
@@ -2378,13 +2386,20 @@ requirements:
   - Brukeren kan velge to manusversjoner og se forskjellene.
   tests:
   - 'e2e: velg to versjoner og vis diff'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/screenplay/versions.ts#diffSnapshots
+  - src/app/script/VersionsDialog.tsx
+  verification:
+  - tests/unit/versions.test.ts
+  - tests/visual/screens.mjs::17b-versjon-sammenlign
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0028
+    change: Sammenligning av to versjoner eller versjon mot nå; status Verifisert
   notes: Detaljert i 5.1 (REQ-0078).
 - id: REQ-0070
   title: Angre og gjøre om i manus
@@ -2515,13 +2530,20 @@ requirements:
   tests:
   - 'enhet: filterlogikk per kriterium'
   - 'e2e: fritekstsøk i dialog'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Under arbeid
+  implementation:
+  - src/core/screenplay/filter.ts
+  - src/app/script/SceneNavigator.tsx
+  verification:
+  - tests/unit/filter.test.ts
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0028
+    change: Søk i tekst, sted, nummer og filter på karakter. Objekter, produksjonsstatus og avvik kommer når de
+      finnes; status Under arbeid
   notes: Filter på synkroniseringsavvik forutsetter REQ-0025.
 - id: REQ-0074
   title: Vis bare scener med valgt karakter
@@ -2544,13 +2566,19 @@ requirements:
   - Gitt karakteren Maja, så vises nøyaktig scenene der Maja opptrer (inkl. via aliaser).
   tests:
   - 'integrasjon: karakterfilter mot fasit'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/screenplay/filter.ts#sceneHasCharacter
+  verification:
+  - tests/unit/filter.test.ts::karakterfilter gir nøyaktig scenene der karakteren opptrer (REQ-0074)
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0028
+    change: Replikk eller navn nevnt i handling/overskrift. Aliaser kommer med ressursbiblioteket (M3); status Implementert
+      – ikke verifisert
   notes: ''
 - id: REQ-0075
   title: Filtrering er ikke deaktivering
@@ -2574,13 +2602,18 @@ requirements:
   - Gitt et aktivt filter, så er filmens aktive innhold og spilletid uendret.
   tests:
   - 'integrasjon: filter påvirker ikke aktiv struktur'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/screenplay/filter.ts
+  verification:
+  - tests/unit/filter.test.ts::filtrering endrer ikke produksjonens aktive innhold (REQ-0075)
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0028
+    change: Filteret er bare visning; status Verifisert
   notes: ''
 - id: REQ-0076
   title: Mange manusversjoner med full historikk
@@ -2601,13 +2634,21 @@ requirements:
   - Brukeren kan opprette, liste og åpne et vilkårlig antall manusversjoner.
   tests:
   - 'integrasjon: opprett og åpne flere versjoner'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - db/migrations/0003_script_versions.sql
+  - src/app/script/VersionsDialog.tsx
+  verification:
+  - 'tests/db/run-db-tests.ts::0003: manusversjon er et uforanderlig øyeblikksbilde lik kjernens, med løpenummer
+    og forelder'
+  - tests/visual/screens.mjs::17-versjoner
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0028
+    change: Lagre, liste og åpne versjoner; status Verifisert
   notes: ''
 - id: REQ-0077
   title: Innhold i hver manusversjon
@@ -2631,13 +2672,19 @@ requirements:
     slik de var.
   tests:
   - 'dataintegritet: snapshot-rundtur for alle seks elementer'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Under arbeid
+  implementation:
+  - src/core/screenplay/versions.ts
+  verification:
+  - tests/unit/versions.test.ts
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0028
+    change: Innhold, rekkefølge, synlighet, nummer, forelder og aktiv filmversjon lagres. Å gjøre en gammel versjon
+      til gjeldende manus (gjenoppretting) er ikke bygget ennå; status Under arbeid
   notes: ''
 - id: REQ-0078
   title: Versjonssammenligning med endringstyper
@@ -2661,13 +2708,19 @@ requirements:
   - Gitt to versjoner med kjente endringer av hver type, så rapporteres hver endring med korrekt type.
   tests:
   - 'enhet: diff-motor med fixtures per endringstype'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/screenplay/versions.ts#diffSnapshots
+  verification:
+  - tests/unit/versions.test.ts::finner hver endringstype med riktig type (REQ-0078)
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0028
+    change: Alle typer unntatt objekter (objekter finnes ikke før ressursbiblioteket, M3); status Implementert –
+      ikke verifisert
   notes: «Sammenligning av versjoner» er plassert i fase 6; enkel sammenligning (REQ-0069) kan komme tidligere.
 - id: REQ-0079
   title: Omnummerert scene er ikke ny scene
@@ -2826,13 +2879,19 @@ requirements:
   - Gitt valgt historisk versjon V, så får scener som finnes i V samme nummer som i V.
   tests:
   - 'enhet: nummerering basert på historisk versjon'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/screenplay/numbering.ts
+  - src/app/script/ExportDialog.tsx
+  verification:
+  - tests/unit/versions.test.ts::scener i versjonen får versjonens nummer, nye scener mellomnummer
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0028
+    change: Historisk nummerering ved eksport; status Verifisert
   notes: «Der det er hensiktsmessig» er udefinert – se OPEN_QUESTIONS B (historisk nummerering).
 - id: REQ-0084
   title: Valg om å inkludere skjulte scener i eksport
@@ -3618,13 +3677,18 @@ requirements:
   - Estimatoren tar hensyn til minst dialogmengde og handlingsbeskrivelser, og antakelsene er dokumentert/justerbare.
   tests:
   - 'enhet: estimat endres når dialog/handling endres'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/screenplay/duration.ts
+  verification:
+  - tests/unit/duration.test.ts::bygger på dialog og handling med justerbare antakelser
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0028
+    change: Estimat fra dialog og handling med justerbare antakelser; status Verifisert
   notes: «Kan» – listen er mulige faktorer, ikke absolutte krav.
 - id: REQ-0110
   title: Usikre estimater presenteres som usikre
@@ -3783,13 +3847,18 @@ requirements:
   - Deaktivering av en scene reduserer totalvarigheten tilsvarende; gjenaktivering legger den til.
   tests:
   - 'enhet: total med deaktiverte scener'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/core/screenplay/duration.ts
+  verification:
+  - tests/unit/duration.test.ts::deaktiverte scener utelates fra totalen og legges til igjen ved aktivering (REQ-0115)
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0028
+    change: status Verifisert
   notes: Gjentar kap. 2 (spilletidsberegning).
 - id: REQ-0116
   title: Varighet på egen prosjektoversikt
@@ -3809,13 +3878,18 @@ requirements:
   - Det finnes en egen prosjektoversiktsside med varighetsinformasjon.
   tests:
   - 'e2e: naviger til prosjektoversikt'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/app/projects/DurationOverview.tsx
+  verification:
+  - tests/visual/screens.mjs::18-oversikt-varighet
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0028
+    change: Varighet på prosjektoversikten; status Verifisert
   notes: Jf. kap. 34 pkt. 17.
 - id: REQ-0117
   title: Ingen varighetstall i ordinær manusvisning
@@ -3837,13 +3911,18 @@ requirements:
   - Ordinær manusvisning viser ingen varighetstall per scene.
   tests:
   - 'visuell: manusvisning uten varighetstall'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/app/script/ScriptPageView.tsx
+  verification:
+  - 'manuell: 2026-10-09 skjermbilde 06 – ingen varighetstall i manusvisningen'
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0028
+    change: status Verifisert
   notes: Jf. kap. 34 pkt. 17.
 - id: REQ-0118
   title: Innhold i prosjektoversikten
@@ -15007,13 +15086,18 @@ requirements:
   - Ordinær manusvisning viser ikke varighetsdata; oversiktssiden gjør det.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - src/app/projects/DurationOverview.tsx
+  verification:
+  - tests/visual/screens.mjs::18-oversikt-varighet
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0028
+    change: status Verifisert
   notes: Oppsummerer kap. 7.3, 6.3.
 - id: REQ-0496
   title: 'Prinsipp 18: Tidsstyrte utseendeendringer for karakterer'
@@ -16087,3 +16171,44 @@ requirements:
     decision: DEC-0001
     change: Opprettet (lagt til ved dekningskontroll – linje 6 manglet)
   notes: Tilføyd etter automatisk linjedekningskontroll.
+- id: REQ-0531
+  title: Vis kun valgt scene i manusvisningen
+  text: Manusvisningen skal ha en avkrysningsboks «Vis kun valgt scene». Når den er krysset av, viser manussidene
+    bare scenen som er valgt i scenelisten. Dette er bare et visningsvalg og endrer ikke produksjonens aktive innhold.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0027
+  type: ux
+  priority: P2
+  phase: 2
+  modules:
+  - SCRIPT
+  - UI
+  invariants:
+  - INV-14
+  dependencies:
+  - REQ-0075
+  acceptance:
+  - Gitt at scene 13 er valgt og boksen er krysset av, så viser manussidene bare scene 13, med samme sidetall som
+    i hele manuset.
+  - Når en annen scene velges, vises den i stedet; når boksen tas av, vises hele manuset igjen.
+  - Filmens aktive innhold, scenerekkefølge og eksport er uendret (REQ-0075).
+  tests:
+  - 'enhet: filtrering av sider på valgt scene'
+  - 'visuell: skjermbilde med boksen avkrysset'
+  status: Verifisert
+  implementation:
+  - src/core/screenplay/filter.ts#filterPages
+  - src/app/script/ScriptWorkspace.tsx
+  verification:
+  - tests/unit/filter.test.ts::viser bare den valgte scenens linjer med samme sidetall som i hele manuset
+  - tests/visual/screens.mjs::16-vis-kun-valgt-scene
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0027
+    change: Opprettet etter ønske fra Mars
+  - date: '2026-10-09'
+    decision: DEC-0027
+    change: Bygget i M2 del 2; status Verifisert
+  notes: Ikke i mandatet v14. Lagt til av Mars 2026-10-09 («I denne visningen av manus ønsker jeg en avkrysningsboks
+    som sier vis kun valgte scene»).

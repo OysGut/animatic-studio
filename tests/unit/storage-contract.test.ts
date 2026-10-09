@@ -8,7 +8,11 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { loadProjectRows, type AnyClient } from "@/adapters/storage/project-rows";
+import {
+  EXPECTED_SCHEMA_VERSION,
+  loadProjectRows,
+  type AnyClient,
+} from "@/adapters/storage/project-rows";
 import { diffStates, emptyProjectState } from "@/core";
 import { seedProject } from "../helpers/fixtures";
 
@@ -72,6 +76,11 @@ function recordingClient(calls: Call[]): AnyClient {
 
 describe("Kontrakt: lagringsadapter ↔ databaseskjema", () => {
   const schema = schemaColumns();
+
+  it("appen forventer skjemaversjonen til siste migrasjon", () => {
+    const files = readdirSync(MIGRATIONS).filter((x) => x.endsWith(".sql"));
+    expect(EXPECTED_SCHEMA_VERSION).toBe(files.length);
+  });
 
   it("finner tabellene i migrasjonene", () => {
     for (const t of ["projects", "script_block_revisions", "scene_occurrences", "takes"]) {

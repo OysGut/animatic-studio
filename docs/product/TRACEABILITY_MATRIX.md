@@ -10,7 +10,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | Invariant | Beskrivelse | Krav | Verifiserte |
 |---|---|---|---|
 | INV-01 | Manus og film er to visninger av samme aktive produksjonsstruktur. | 21 | 9 |
-| INV-02 | Scenenumre er ikke permanente identifikatorer. | 24 | 9 |
+| INV-02 | Scenenumre er ikke permanente identifikatorer. | 24 | 10 |
 | INV-03 | En scene beholder identitet gjennom flytting og omnummerering. | 16 | 6 |
 | INV-04 | Spinoffer kan bruke samme kildescene med selvstendig rekkefølge og lokale endringer. | 19 | 3 |
 | INV-05 | Norsk er hovedmanus. | 7 | 0 |
@@ -22,7 +22,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | INV-11 | Generativ AI er valgfritt for ordinær 2D-animatic-avspilling og eksport. | 13 | 1 |
 | INV-12 | Betalte API-kall følger eksplisitte kostnadsgodkjenninger. | 20 | 0 |
 | INV-13 | Delte ressurser er versjonerte og ikke-destruktive. | 25 | 2 |
-| INV-14 | Deaktivering/skjuling er aldri sletting; materiale kan gjenaktiveres. | 16 | 7 |
+| INV-14 | Deaktivering/skjuling er aldri sletting; materiale kan gjenaktiveres. | 17 | 10 |
 | INV-C1 | Ingen stille overskriving ved samarbeid (revisjonskontroll) – DEC-0003/DEC-0010. | 2 | 1 |
 | INV-C2 | Tilgang håndheves i backend (RLS) – teknisk, DEC-0010. | 3 | 3 |
 | INV-C3 | Bare medlemmer med kostnadsrett kan godkjenne betalte kall – midlertidig, DEC-0018/Q-01. | 1 | 0 |
@@ -31,10 +31,10 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 
 | Modul | Navn | Krav | P0 | Implementert | Verifisert |
 |---|---|---|---|---|---|
-| CORE | Project Core | 118 | 57 | 46 | 32 |
-| SCRIPT | Screenplay Engine | 109 | 32 | 40 | 34 |
-| TIMELINE | Timeline & Assembly Engine | 92 | 28 | 10 | 6 |
-| LIBRARY | Resource Library | 51 | 9 | 2 | 2 |
+| CORE | Project Core | 118 | 57 | 47 | 33 |
+| SCRIPT | Screenplay Engine | 110 | 32 | 53 | 43 |
+| TIMELINE | Timeline & Assembly Engine | 92 | 28 | 11 | 7 |
+| LIBRARY | Resource Library | 51 | 9 | 3 | 2 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 1 | 1 |
 | COMPOSE | 2D Composition Engine | 39 | 14 | 4 | 3 |
 | CAMERA | Camera & Motion Engine | 28 | 2 | 1 | 1 |
@@ -43,21 +43,21 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | PROVIDER | Provider Adapters | 23 | 6 | 2 | 2 |
 | QUALITYCOST | Quality & Cost Engine | 25 | 6 | 1 | 1 |
 | QUEUE | Render Queue | 34 | 12 | 2 | 2 |
-| VERSION | Version & Dependency Engine | 90 | 36 | 17 | 7 |
+| VERSION | Version & Dependency Engine | 90 | 36 | 23 | 11 |
 | L10N | Localization Engine | 38 | 4 | 2 | 1 |
 | PRESENT | Presentation Engine | 30 | 3 | 1 | 1 |
-| EXPORT | Export Engine | 53 | 12 | 14 | 14 |
+| EXPORT | Export Engine | 53 | 12 | 15 | 15 |
 | SECURITY | Security & Storage | 26 | 5 | 13 | 9 |
 | COLLAB | Collaboration & Access | 10 | 0 | 8 | 6 |
-| UI | Brukergrensesnitt og designsystem | 102 | 19 | 12 | 8 |
+| UI | Brukergrensesnitt og designsystem | 103 | 19 | 18 | 12 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 4 | 1 |
 
 ## Dekning per fase
 
 | Fase | Krav | Verifisert |
 |---|---|---|
-| 1 | 70 | 24 |
-| 2 | 84 | 38 |
+| 1 | 70 | 25 |
+| 2 | 85 | 48 |
 | 3 | 48 | 0 |
 | 4 | 68 | 0 |
 | 5 | 70 | 0 |
@@ -101,7 +101,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0029 | Kap. 2.2 (l. 83, 86) | QUEUE, QUALITYCOST, PROVIDER | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0030 | Kap. 2.2 (l. 83, 87) | VERSION, TIMELINE | src/core/commands/apply.ts | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0031 | Kap. 2.2 (l. 83, 88) | CORE | src/core/commands/apply.ts#assertCanEditVariant, src/core/invariants.ts | 1 | tests/invariants/random-sequences.test.ts::INV-04: kommandoer i én produksjon endrer aldri en annen produksjons forekomster | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
-| REQ-0032 | Kap. 2.2 (l. 83, 89) | VERSION, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0032 | Kap. 2.2 (l. 83, 89) | VERSION, SCRIPT | db/migrations/0003_script_versions.sql, src/core/screenplay/versions.ts | 1 | tests/db/run-db-tests.ts::0003: manusversjon er et uforanderlig øyeblikksbilde lik kjernens, med løpenummer og forelder, tests/unit/versions.test.ts | Verifisert | 2026-10-09 DEC-0028: Uforanderlige øyeblikksbilder som kan vises og eksporteres; status Verifisert |
 | REQ-0033 | Kap. 2.2 (l. 90) | VERSION, CORE | db/migrations/0001_core.sql#change_log, src/core/commands/apply.ts | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0034 | Kap. 3.1 (l. 94-102) | CORE | src/core/ids.ts, src/core/model.ts | 1 | tests/invariants/random-sequences.test.ts::INV-02/03: ingen scene, forekomst eller produksjonsnummer forsvinner eller bytter scene | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
 | REQ-0035 | Kap. 3.1 (l. 103-108) | CORE, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -138,21 +138,21 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0066 | Kap. 4.4 (l. 219) | SCRIPT | src/core/commands/apply.ts#EditBlockText,InsertBlock,RemoveBlock, src/app/script/Inspector.tsx | 1 | tests/unit/import-split-merge.test.ts::skjuler blokken i manuset, beholder historikken og gjør ferdig film utdatert | Verifisert | 2026-10-09 DEC-0025: M2; status Verifisert |
 | REQ-0067 | Kap. 4.4 (l. 220) | SCRIPT, CORE | src/core/commands/apply.ts#SplitScene | 1 | tests/unit/import-split-merge.test.ts::flytter blokkene fra splittpunktet til en ny scene rett etter, med samme blokk-ID-er | Verifisert | 2026-10-09 DEC-0025: M2 (DEC-0025); status Verifisert |
 | REQ-0068 | Kap. 4.4 (l. 221) | SCRIPT, CORE | src/core/commands/apply.ts#MergeScenes | 1 | tests/unit/import-split-merge.test.ts::legger kildescenens blokker sist i målscenen, beholder kildescenen som sammenslått og deaktivert | Verifisert | 2026-10-09 DEC-0025: M2 (DEC-0025); status Verifisert |
-| REQ-0069 | Kap. 4.4 (l. 222) | SCRIPT, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0069 | Kap. 4.4 (l. 222) | SCRIPT, VERSION | src/core/screenplay/versions.ts#diffSnapshots, src/app/script/VersionsDialog.tsx | 1 | tests/unit/versions.test.ts, tests/visual/screens.mjs::17b-versjon-sammenlign | Verifisert | 2026-10-09 DEC-0028: Sammenligning av to versjoner eller versjon mot nå; status Verifisert |
 | REQ-0070 | Kap. 4.4 (l. 223) | SCRIPT, CORE | src/app/project/use-commands.ts, src/core/commands/apply.ts | 1 | tests/invariants/random-sequences.test.ts::ADR-0005: hver kommando etterfulgt av sin invers gir samme innhold | Implementert – ikke verifisert | 2026-10-09 DEC-0025: M2: angre/gjør om per bruker med revisjonskontroll; UI-delen er ikke automatisk testet; status Implementert – ikke verifisert |
 | REQ-0071 | Kap. 4.4 (l. 224) | CORE, SCRIPT, TIMELINE | src/core/commands/apply.ts#SplitScene | 1 | tests/invariants/random-sequences.test.ts::INV-10: segmentering endrer aldri scener, manusblokker eller rekkefølge | Verifisert | 2026-10-09 DEC-0025: M2: narrativ splitting er egen kommando; nekter hvis produksjonssegmenter peker på blokkene; status Verifisert |
 | REQ-0072 | Kap. 4.4 (l. 225) | CORE, SCRIPT | src/core/commands/apply.ts#CreateSegments | 1 | tests/unit/commands.test.ts::segmentering ved utseendeendring midt i scene endrer ikke manus eller nummer (INV-10), tests/invariants/random-sequences.test.ts::INV-10: segmentering endrer aldri scener, manusblokker eller rekkefølge | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
-| REQ-0073 | Kap. 4.5 (l. 227-235) | SCRIPT, UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0074 | Kap. 4.5 (l. 236) | SCRIPT, LIBRARY, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0075 | Kap. 4.5 (l. 237) | SCRIPT, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0076 | Kap. 5.1 (l. 241) | VERSION, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0077 | Kap. 5.1 (l. 242-248) | VERSION, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0078 | Kap. 5.1 (l. 249-256) | VERSION, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0073 | Kap. 4.5 (l. 227-235) | SCRIPT, UI | src/core/screenplay/filter.ts, src/app/script/SceneNavigator.tsx | 2 | tests/unit/filter.test.ts | Under arbeid | 2026-10-09 DEC-0028: Søk i tekst, sted, nummer og filter på karakter. Objekter, produksjonsstatus og avvik kommer når de finnes; status Under arbeid |
+| REQ-0074 | Kap. 4.5 (l. 236) | SCRIPT, LIBRARY, UI | src/core/screenplay/filter.ts#sceneHasCharacter | 1 | tests/unit/filter.test.ts::karakterfilter gir nøyaktig scenene der karakteren opptrer (REQ-0074) | Implementert – ikke verifisert | 2026-10-09 DEC-0028: Replikk eller navn nevnt i handling/overskrift. Aliaser kommer med ressursbiblioteket (M3); status Implementert – ikke verifisert |
+| REQ-0075 | Kap. 4.5 (l. 237) | SCRIPT, CORE | src/core/screenplay/filter.ts | 1 | tests/unit/filter.test.ts::filtrering endrer ikke produksjonens aktive innhold (REQ-0075) | Verifisert | 2026-10-09 DEC-0028: Filteret er bare visning; status Verifisert |
+| REQ-0076 | Kap. 5.1 (l. 241) | VERSION, SCRIPT | db/migrations/0003_script_versions.sql, src/app/script/VersionsDialog.tsx | 1 | tests/db/run-db-tests.ts::0003: manusversjon er et uforanderlig øyeblikksbilde lik kjernens, med løpenummer og forelder, tests/visual/screens.mjs::17-versjoner | Verifisert | 2026-10-09 DEC-0028: Lagre, liste og åpne versjoner; status Verifisert |
+| REQ-0077 | Kap. 5.1 (l. 242-248) | VERSION, SCRIPT | src/core/screenplay/versions.ts | 1 | tests/unit/versions.test.ts | Under arbeid | 2026-10-09 DEC-0028: Innhold, rekkefølge, synlighet, nummer, forelder og aktiv filmversjon lagres. Å gjøre en gammel versjon til gjeldende manus (gjenoppretting) er ikke bygget ennå; status Under arbeid |
+| REQ-0078 | Kap. 5.1 (l. 249-256) | VERSION, SCRIPT | src/core/screenplay/versions.ts#diffSnapshots | 1 | tests/unit/versions.test.ts::finner hver endringstype med riktig type (REQ-0078) | Implementert – ikke verifisert | 2026-10-09 DEC-0028: Alle typer unntatt objekter (objekter finnes ikke før ressursbiblioteket, M3); status Implementert – ikke verifisert |
 | REQ-0079 | Kap. 5.1 (l. 257) | VERSION, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0080 | Kap. 5.2 (l. 259) | EXPORT, SCRIPT, UI | src/app/script/ExportDialog.tsx | 1 | tests/visual/screens.mjs::12-eksport-dialog | Verifisert | 2026-10-09 DEC-0024: M2; status Verifisert |
 | REQ-0081 | Kap. 5.2 (l. 261-262) | EXPORT, SCRIPT | src/core/screenplay/numbering.ts | 1 | tests/unit/numbering.test.ts::fortløpende: aktive scener får 1..N (REQ-0081) | Verifisert | 2026-10-09 DEC-0024: M2; status Verifisert |
 | REQ-0082 | Kap. 5.2 (l. 263-264) | EXPORT, SCRIPT | src/core/screenplay/numbering.ts | 1 | tests/unit/numbering.test.ts::bevar produksjonsnummerering: nye scener mellom 42 og 43 blir 42A og 42B (REQ-0082) | Verifisert | 2026-10-09 DEC-0024: M2; status Verifisert |
-| REQ-0083 | Kap. 5.2 (l. 265) | EXPORT, SCRIPT, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0083 | Kap. 5.2 (l. 265) | EXPORT, SCRIPT, VERSION | src/core/screenplay/numbering.ts, src/app/script/ExportDialog.tsx | 1 | tests/unit/versions.test.ts::scener i versjonen får versjonens nummer, nye scener mellomnummer | Verifisert | 2026-10-09 DEC-0028: Historisk nummerering ved eksport; status Verifisert |
 | REQ-0084 | Kap. 5.2 (l. 266) | EXPORT | src/app/script/ExportDialog.tsx, src/core/screenplay/numbering.ts | 1 | tests/unit/numbering.test.ts::deaktiverte scener utelates, eller tas med som UTGÅR / merket (REQ-0084, Q-08) | Verifisert | 2026-10-09 DEC-0026: M2 (DEC-0026, midlertidig antakelse); status Verifisert |
 | REQ-0085 | Kap. 5.2 (l. 267) | EXPORT, CORE | src/core/screenplay/numbering.ts | 1 | tests/unit/numbering.test.ts::eksport endrer ikke prosjektet (REQ-0085) | Verifisert | 2026-10-09 DEC-0024: M2; status Verifisert |
 | REQ-0086 | Kap. 5.2 (l. 268) | EXPORT, UI | src/app/script/ExportDialog.tsx | 1 | tests/visual/screens.mjs::12-eksport-dialog | Verifisert | 2026-10-09 DEC-0024: M2; status Verifisert |
@@ -178,15 +178,15 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0106 | Kap. 6.4 (l. 311) | TIMELINE | src/core/time.ts | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0107 | Kap. 6.4 (l. 312) | TIMELINE, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0108 | Kap. 7.1 (l. 316) | SCRIPT, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0109 | Kap. 7.1 (l. 317-323) | SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0109 | Kap. 7.1 (l. 317-323) | SCRIPT | src/core/screenplay/duration.ts | 1 | tests/unit/duration.test.ts::bygger på dialog og handling med justerbare antakelser | Verifisert | 2026-10-09 DEC-0028: Estimat fra dialog og handling med justerbare antakelser; status Verifisert |
 | REQ-0110 | Kap. 7.1 (l. 324) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0111 | Kap. 7.1 (l. 325) | TIMELINE, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0112 | Kap. 7.2 (l. 327) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0113 | Kap. 7.2 (l. 328-333) | TIMELINE, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0114 | Kap. 7.2 (l. 334) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0115 | Kap. 7.2 (l. 335) | TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0116 | Kap. 7.3 (l. 337) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0117 | Kap. 7.3 (l. 338) | UI, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0115 | Kap. 7.2 (l. 335) | TIMELINE | src/core/screenplay/duration.ts | 1 | tests/unit/duration.test.ts::deaktiverte scener utelates fra totalen og legges til igjen ved aktivering (REQ-0115) | Verifisert | 2026-10-09 DEC-0028: status Verifisert |
+| REQ-0116 | Kap. 7.3 (l. 337) | UI | src/app/projects/DurationOverview.tsx | 1 | tests/visual/screens.mjs::18-oversikt-varighet | Verifisert | 2026-10-09 DEC-0028: Varighet på prosjektoversikten; status Verifisert |
+| REQ-0117 | Kap. 7.3 (l. 338) | UI, SCRIPT | src/app/script/ScriptPageView.tsx | 1 | manuell: 2026-10-09 skjermbilde 06 – ingen varighetstall i manusvisningen | Verifisert | 2026-10-09 DEC-0028: status Verifisert |
 | REQ-0118 | Kap. 7.3 (l. 339-348) | UI, TIMELINE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0119 | Kap. 7.3 (l. 349) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0120 | Kap. 7.4 (l. 351) | TIMELINE, VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -564,7 +564,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0492 | Kap. 34 (l. 1514) | PROMPT, TIMELINE, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0493 | Kap. 34 (l. 1515-1516) | TIMELINE, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0494 | Kap. 34 (l. 1517-1518) | TIMELINE, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0495 | Kap. 34 (l. 1519) | UI, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0495 | Kap. 34 (l. 1519) | UI, SCRIPT | src/app/projects/DurationOverview.tsx | 1 | tests/visual/screens.mjs::18-oversikt-varighet | Verifisert | 2026-10-09 DEC-0028: status Verifisert |
 | REQ-0496 | Kap. 34 (l. 1520-1522) | CONTINUITY, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0497 | Kap. 34 (l. 1523-1524) | CONTINUITY, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0498 | Kap. 34 (l. 1525-1526) | CORE, LIBRARY, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -600,3 +600,4 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0528 | Beslutning DEC-0010, DEC-0018 | COLLAB, QUALITYCOST, SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0010: Revisjon: kilde satt til DEC-0010 (teknisk anbefaling) |
 | REQ-0529 | Beslutning DEC-0010 | COLLAB, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0010: Revisjon: kilde satt til DEC-0010 (teknisk anbefaling) |
 | REQ-0530 | Kap. 1 (l. 6) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet (lagt til ved dekningskontroll – linje 6 manglet) |
+| REQ-0531 | Beslutning DEC-0027 | SCRIPT, UI | src/core/screenplay/filter.ts#filterPages, src/app/script/ScriptWorkspace.tsx | 2 | tests/unit/filter.test.ts::viser bare den valgte scenens linjer med samme sidetall som i hele manuset, tests/visual/screens.mjs::16-vis-kun-valgt-scene | Verifisert | 2026-10-09 DEC-0027: Bygget i M2 del 2; status Verifisert |

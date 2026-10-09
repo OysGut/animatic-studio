@@ -21,9 +21,9 @@ For Mars. Ingen kommandolinje trengs. Bakgrunn: DEC-0005, ADR-0002.
 
    Appen viser et oransje varsel øverst så lenge databasen mangler en migrasjon. Når varselet er borte, er alt på plass.
 
-   **Kjørte migrasjoner:** `0001_core.sql` (2026-10-08), `0002_import_profiles.sql` (2026-10-09; bøtta laget med Lovables lagringsverktøy fordi SQL mot `storage.buckets` ikke er tillatt – nye bøtter må derfor be Lovable om å opprette dem). Meldingen som ble brukt for 0002:
+   **Kjørte migrasjoner:** `0001_core.sql` (2026-10-08), `0002_import_profiles.sql` (2026-10-09; bøtta laget med Lovables lagringsverktøy fordi SQL mot `storage.buckets` ikke er tillatt). **Neste:** `0003_script_versions.sql`. Ferdig utfylt melding:
 
-> Kjør SQL-filen `db/migrations/0002_import_profiles.sql` mot databasen nøyaktig slik den står i repoet, som én databaseendring. Ikke endre, del opp, oversett eller omskriv SQL-en, og ikke lag egne tabeller, bøtter eller policyer i tillegg. Ikke endre filer i `docs/`, `.claude/`, `scripts/`, `db/`, `src/core/`, `src/adapters/`, `src/engine/`, `src/app/` eller `tests/`. Når den er kjørt, kjør `select version, description from public.schema_version order by version` og `select id, public from storage.buckets where id = 'sources'`, og svar med resultatene og eventuelle feilmeldinger ordrett.
+> Kjør SQL-filen `db/migrations/0003_script_versions.sql` mot databasen nøyaktig slik den står i repoet, som én databaseendring. Ikke endre, del opp, oversett eller omskriv SQL-en, og ikke lag egne tabeller eller policyer i tillegg. Hvis plattformen ikke tillater policyene på `realtime.messages` (delen om tilstedeværelse), si fra ordrett hva som skjedde i stedet for å endre dem. Ikke endre filer i `docs/`, `.claude/`, `scripts/`, `db/`, `src/` eller `tests/`. Når den er kjørt, kjør `select version, description from public.schema_version order by version` og svar med resultatet og eventuelle feilmeldinger ordrett.
 
 4. Lim Lovables svar inn til Claude hvis noe feilet.
 

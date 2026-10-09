@@ -5,7 +5,8 @@
 - Hver migrasjon legger inn en rad i `public.schema_version`. Appen sammenligner med `EXPECTED_SCHEMA_VERSION` i `src/adapters/storage/project-rows.ts` og viser et varsel hvis databasen er bak.
 - Lokal test: `DATABASE_URL=postgres://… bun tests/db/run-db-tests.ts` (emulerer Supabase-roller og `auth.uid()` med `tests/db/supabase-emulation.sql`). Nye migrasjoner må legges til i testskriptet.
 
-| Versjon | Fil | Innhold |
-|---|---|---|
-| 1 | `0001_core.sql` | Prosjekt, medlemskap, invitasjoner, produksjoner, scener, varianter, blokker + historikk, forekomster, segmenter, takes, kommandologg, RLS, `create_project`, `apply_changes`, invitasjons-RPC-er |
-| 2 | `0002_import_profiles.sql` | Kildereferanse, usikkerhet og «fjernet» på manusblokker; usikkerhet på scenevarianter; `imported_documents` + `register_imported_document`; privat bøtte `sources` med lese-/opplastingspolicyer; `profiles` + `upsert_my_profile` |
+| Versjon | Fil                        | Innhold                                                                                                                                                                                                                            |
+| ------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1       | `0001_core.sql`            | Prosjekt, medlemskap, invitasjoner, produksjoner, scener, varianter, blokker + historikk, forekomster, segmenter, takes, kommandologg, RLS, `create_project`, `apply_changes`, invitasjons-RPC-er                                  |
+| 2       | `0002_import_profiles.sql` | Kildereferanse, usikkerhet og «fjernet» på manusblokker; usikkerhet på scenevarianter; `imported_documents` + `register_imported_document`; privat bøtte `sources` med lese-/opplastingspolicyer; `profiles` + `upsert_my_profile` |
+| 3 | `0003_script_versions.sql` | Manusversjoner (`script_versions`, `private.script_snapshot`, `create_script_version`), fortløpende `change_log.seq`, tilstedeværelse bare for medlemmer (policyer på `realtime.messages`) |

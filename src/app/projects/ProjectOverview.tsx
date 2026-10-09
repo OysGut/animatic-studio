@@ -4,6 +4,7 @@ import { FileText, Send } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { activeStructure, mainProduction, orderedOccurrences } from "@/core";
 import { db } from "@/app/db";
+import { DurationOverview } from "./DurationOverview";
 import { useMembers, useProfiles, useProjectState } from "@/app/project/use-project";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -107,6 +108,8 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
               </div>
             ) : null}
           </section>
+
+          <DurationOverview state={s} />
 
           <section aria-labelledby="members-title" className="mt-10">
             <h2 id="members-title" className="mb-2 text-base font-semibold text-text-primary">

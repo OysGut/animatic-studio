@@ -2,15 +2,27 @@
  * Arbeidsflaten «Manus» (M2): import, sidevisning, scenenavigator, korrigering og redigering med angre.
  * Manus og film bygger på samme aktive struktur (INV-01); alt her er kommandoer mot domenekjernen.
  */
-import { Download, FileUp, Loader2, Lock, Redo2, Undo2 } from "lucide-react";
+import { Download, FileUp, History, Loader2, Lock, Redo2, Undo2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
-import { mainProduction, scriptPages, scriptView, type ProjectState } from "@/core";
-import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
+import {
+  charactersInProduction,
+  filterPages,
+  isFilterActive,
+  mainProduction,
+  matchingOccurrences,
+  scriptPages,
+  scriptView,
+  type ProjectState,
+  type SceneFilter,
+} from "@/core";
+import { canEdit, useMembers, useProfiles, useProjectState } from "@/app/project/use-project";
+import { initials, usePresence, type PresentUser } from "@/app/project/use-presence";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { ExportDialog } from "./ExportDialog";
 import { ImportDialog } from "./ImportDialog";
+import { VersionsDialog } from "./VersionsDialog";
 import { Inspector } from "./Inspector";
 import { SceneNavigator } from "./SceneNavigator";
 import { ScriptPageView, type Selection } from "./ScriptPageView";
@@ -45,6 +57,7 @@ export function ScriptWorkspace({ projectId, userId }: { projectId: string; user
       editable={editable}
       roleKnown={members.isSuccess}
       cmds={cmds}
+      userId={userId}
     />
   );
 }
@@ -55,12 +68,14 @@ function Workspace({
   editable,
   roleKnown,
   cmds,
+  userId,
 }: {
   state: ProjectState;
   projectId: string;
   editable: boolean;
   roleKnown: boolean;
   cmds: Commands;
+  userId: string;
 }) {
   const productions = useMemo(
     () =>
@@ -78,8 +93,26 @@ function Workspace({
   const [fitZoom, setFitZoom] = useState(1);
   const [importOpen, setImportOpen] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
+  const [versionsOpen, setVersionsOpen] = useState(false);
+  // Visningsvalg (REQ-0531, REQ-0073–0075): endrer aldri produksjonen
+  const [onlySelected, setOnlySelected] = useState(false);
+  const [filter, setFilter] = useState<SceneFilter>({});
   const textRef = useRef<HTMLTextAreaElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  // Tilstedeværelse: hvem andre er i prosjektet, og hvilken scene de står i
+  const me = useProfiles([userId]);
+  const others = usePresence(
+    projectId,
+    userId,
+    me.data?.[userId]?.display_name || "Medlem",
+    selection.occurrenceId,
+  );
+  const presenceByOcc = useMemo(() => {
+    const m = new Map<string, PresentUser[]>();
+    for (const o of others)
+      if (o.occurrenceId) m.set(o.occurrenceId, [...(m.get(o.occurrenceId) ?? []), o]);
+    return m;
+  }, [others]);
 
   const hasScenes = Object.values(state.occurrences).some((o) => o.productionId === productionId);
   // «Tilpass bredde»: siden fyller midtfeltet
@@ -97,6 +130,23 @@ function Workspace({
   const pagination = useMemo(
     () => scriptPages(state, productionId, { lockedPages }),
     [state, productionId, lockedPages],
+  );
+  const characters = useMemo(
+    () => charactersInProduction(state, productionId),
+    [state, productionId],
+  );
+  const matching = useMemo(
+    () => (isFilterActive(filter) ? matchingOccurrences(state, productionId, filter) : null),
+    [state, productionId, filter],
+  );
+  const showOnlySelected = onlySelected && selection.occurrenceId !== null;
+  const visibleOcc = useMemo<ReadonlySet<string> | null>(
+    () => (showOnlySelected ? new Set([selection.occurrenceId!]) : matching),
+    [showOnlySelected, selection.occurrenceId, matching],
+  );
+  const shownPages = useMemo(
+    () => (visibleOcc ? filterPages(pagination.pages, visibleOcc) : pagination.pages),
+    [pagination, visibleOcc],
   );
   const uncertainCount = useMemo(() => {
     let n = 0;
@@ -142,11 +192,12 @@ function Workspace({
   const order = useMemo(() => {
     const out: Selection[] = [];
     for (const sc of scriptView(state, productionId)) {
+      if (visibleOcc && !visibleOcc.has(sc.occurrenceId)) continue;
       out.push({ occurrenceId: sc.occurrenceId, blockId: null });
       for (const b of sc.blocks) out.push({ occurrenceId: sc.occurrenceId, blockId: b.id });
     }
     return out;
-  }, [state, productionId]);
+  }, [state, productionId, visibleOcc]);
 
   function nextUncertain() {
     const at = order.findIndex(
@@ -234,13 +285,54 @@ function Workspace({
           </Button>
         ) : null}
         {hasScenes ? (
-          <Button size="sm" variant="ghost" onClick={() => setExportOpen(true)}>
-            <Download />
-            Eksporter
-          </Button>
+          <>
+            <Button size="sm" variant="ghost" onClick={() => setVersionsOpen(true)}>
+              <History />
+              Versjoner
+            </Button>
+            <Button size="sm" variant="ghost" onClick={() => setExportOpen(true)}>
+              <Download />
+              Eksporter
+            </Button>
+          </>
         ) : null}
         <div className="ml-auto flex items-center gap-3">
+          {others.length ? (
+            <div
+              className="flex -space-x-1.5"
+              aria-label={`Også her nå: ${others.map((o) => o.name).join(", ")}`}
+            >
+              {others.slice(0, 5).map((o) => (
+                <button
+                  key={o.userId}
+                  type="button"
+                  title={`${o.name}${o.occurrenceId ? " – se hvor" : ""}`}
+                  onClick={() =>
+                    o.occurrenceId && select({ occurrenceId: o.occurrenceId, blockId: null }, true)
+                  }
+                  className="flex size-6 items-center justify-center rounded-full border-2 border-surface-2 bg-accent-brand text-[10px] font-semibold text-accent-fg"
+                >
+                  {initials(o.name)}
+                </button>
+              ))}
+            </div>
+          ) : null}
           <SaveIndicator cmds={cmds} />
+          <label
+            className="flex items-center gap-1.5 text-xs text-text-secondary"
+            title="Vis bare scenen som er valgt i scenelisten. Endrer ikke filmen."
+          >
+            <input
+              type="checkbox"
+              checked={onlySelected}
+              onChange={(e) => {
+                setOnlySelected(e.target.checked);
+                requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
+              }}
+              className="size-3.5 accent-[var(--accent-brand)]"
+            />
+            Vis kun valgt scene
+          </label>
           {roleKnown && !editable ? (
             <span className="text-xs text-text-tertiary">Bare lesetilgang</span>
           ) : null}
@@ -270,7 +362,10 @@ function Workspace({
             ))}
           </select>
           <span className="tabular text-xs text-text-tertiary">
-            {pagination.pages.length} sider
+            {visibleOcc
+              ? `${shownPages.length} av ${pagination.pages.length}`
+              : pagination.pages.length}{" "}
+            sider
           </span>
         </div>
       </div>
@@ -284,6 +379,11 @@ function Workspace({
               startPages={pagination.sceneStartPage}
               selectedOcc={selection.occurrenceId}
               editable={editable}
+              filter={filter}
+              onFilterChange={setFilter}
+              characters={characters}
+              visible={matching}
+              presence={presenceByOcc}
               onSelect={(id) => select({ occurrenceId: id, blockId: null }, true)}
               onMove={(id, orderKey, label) =>
                 run({ type: "MoveOccurrence", occurrenceId: id as never, orderKey }, label)
@@ -303,8 +403,21 @@ function Workspace({
             onKeyDown={onPagesKey}
             className="min-h-0 overflow-auto bg-bg-app outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus-ring"
           >
+            {onlySelected && !selection.occurrenceId ? (
+              <p className="px-6 pt-4 text-xs text-text-tertiary">
+                «Vis kun valgt scene» er på – velg en scene i listen til venstre. Hele manuset vises
+                til da.
+              </p>
+            ) : null}
+            {visibleOcc && shownPages.length === 0 ? (
+              <p className="px-6 pt-6 text-[13px] text-text-secondary">
+                {showOnlySelected && !state.occurrences[selection.occurrenceId!]?.active
+                  ? "Den valgte scenen er deaktivert og står derfor ikke på manussidene. Slå den på i listen for å se den."
+                  : "Ingen aktive scener passer med filteret. Deaktiverte scener vises ikke på sidene."}
+              </p>
+            ) : null}
             <ScriptPageView
-              pages={pagination.pages}
+              pages={shownPages}
               state={state}
               selection={selection}
               zoom={zoom}
@@ -348,6 +461,20 @@ function Workspace({
         </div>
       )}
 
+      {hasScenes ? (
+        <VersionsDialog
+          open={versionsOpen}
+          onOpenChange={setVersionsOpen}
+          projectId={projectId}
+          productionId={productionId}
+          state={state}
+          editable={editable}
+          saving={cmds.status.kind === "saving"}
+          onGoToScene={(occurrenceId) => {
+            if (state.occurrences[occurrenceId]) select({ occurrenceId, blockId: null }, true);
+          }}
+        />
+      ) : null}
       {hasScenes ? (
         <ExportDialog
           open={exportOpen}

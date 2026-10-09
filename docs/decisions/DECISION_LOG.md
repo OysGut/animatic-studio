@@ -39,6 +39,8 @@ Regler: DEC-ID-er er permanente. En beslutning endres aldri i ettertid; den erst
 | DEC-0024 | 2026-10-09 | Sidebryting i kjernen (kalibrert mot Final Draft, låste sider) og manuseksport til PDF/DOCX | Teknisk anbefaling | Gjeldende | ADR-0010 |
 | DEC-0025 | 2026-10-09 | Redigering i manus: fjerning er et flagg, splitting av delt scene krever egen variant, angre per bruker med revisjonskontroll | Teknisk anbefaling | Gjeldende | ADR-0005, ADR-0010 |
 | DEC-0026 | 2026-10-09 | Deaktiverte og unummererte scener i manuseksport | Midlertidig antakelse | Åpen (Q-08) | ADR-0010 |
+| DEC-0027 | 2026-10-09 | «Vis kun valgt scene» i manusvisningen | Bekreftet av bruker | Gjeldende | – |
+| DEC-0028 | 2026-10-09 | M2 del 2: manusversjoner, sammenligning, søk/filter, varighetsestimat, tilstedeværelse | Teknisk anbefaling | Gjeldende | ADR-0010 |
 
 ---
 
@@ -237,3 +239,20 @@ Regler: DEC-ID-er er permanente. En beslutning endres aldri i ettertid; den erst
   2. Scener som var unummerert i originalmanuset beholder ingen nummer som standard; nye scener laget i appen får mellomnummer (42A). Brukeren kan krysse av for å gi også de opprinnelig unummererte et mellomnummer.
   3. «Bevar valgt historisk nummerering» kommer når manusversjoner finnes (M2+).
 - **Må avklares med Trollfilm:** ønsket ordlyd («UTGÅR»/«OMITTED»), og om den unummererte scenen i «Jula på Dovre» skal få nummer.
+
+## DEC-0027 – «Vis kun valgt scene» i manusvisningen
+- **Dato:** 2026-10-09 · **Type:** Bekreftet av bruker
+- **Mars' ord:** «Nytt krav til UI, du legger det inn i listen der det hører hjemme … I denne visningen av manus ønsker jeg en avkrysningsboks som sier vis kun valgte scene.» Haster ikke; tas med i neste leveranse.
+- **Beslutning:** Nytt krav REQ-0531 (modul SCRIPT/UI), plassert sammen med søk og filtrering (REQ-0073–REQ-0075).
+- **Teknisk tolkning (Teknisk anbefaling):** Boksen står i verktøylinjen i Manus. Avkrysset viser sidene bare linjene i valgt scene, men med samme sidetall og plassering som i hele manuset (sidene brytes ikke på nytt). Uten valgt scene vises hele manuset med en kort forklaring. Valget er bare visning (REQ-0075) og huskes ikke mellom økter.
+
+## DEC-0028 – M2 del 2: manusversjoner, sammenligning, søk/filter, varighet, tilstedeværelse
+- **Dato:** 2026-10-09 · **Type:** Teknisk anbefaling (tolker mandat 2.2, 4.5, 5.1–5.2, 6 og DEC-0010) · **ADR:** ADR-0010
+- **Manusversjoner (migrasjon 0003):** `script_versions` med løpenummer per produksjon, navn, merknad, forelder og et uforanderlig øyeblikksbilde (JSON) som databasen lager selv fra lagrede data (`private.script_snapshot`), i samme setning som siste endring i loggen leses (`change_log.seq`). Kjernen har samme format (`snapshotFromState`), og en DB-test kontrollerer at de er like. En versjon kan vises, sammenlignes og eksporteres som PDF slik den var. Å gjøre en gammel versjon til gjeldende manus er ikke bygget ennå.
+- **Sammenligning:** per sceneforekomst (permanent i produksjonen). Typer: ny, fjernet, deaktivert, aktivert, flyttet (lengste felles rekkefølge – bare scener som faktisk er flyttet), nytt nummer (ikke ny scene, mandat 5.1), endret overskrift, dialog, handling, karakterer, aktiv filmversjon og scenevariant. Objekter kommer med ressursbiblioteket.
+- **Historisk nummerering (REQ-0083):** nummer per forekomst fra valgt versjon; nye scener får mellomnumre; samme nummer brukes aldri to ganger.
+- **Søk og filter (REQ-0073–0075):** fritekst og karakter. En karakter «opptrer» når den har replikk eller nevnes i handling/overskrift med stor forbokstav eller store bokstaver (så FAR ikke treffer «far»). Filteret er bare visning; flytting er av mens filteret er på.
+- **Varighet (REQ-0109, 0115–0117):** estimat = etablering per scene + replikkord / taletempo + linjer handling × sekunder per linje. Standardverdier (150 ord/min, 2 s per linje, 2 s per scene, minst 5 s) er kalibrert så «Jula på Dovre» blir omtrent ett minutt per side (1:44 for 105 sider). Antakelsene kan justeres på prosjektoversikten, men lagres ikke ennå. Vises bare på oversikten, aldri i manuset.
+- **Tilstedeværelse:** private Realtime-kanaler per prosjekt med policy på `realtime.messages` (bare medlemmer). Viser initialer i verktøylinjen og hvem som står i hvilken scene. Ingenting lagres.
+- **Ytelse:** blokker per variant indekseres én gang per tilstand (WeakMap), så filter, sidebryting og estimat tar millisekunder også for et helt manus.
+- **Kodegjennomgang:** uavhengig gjennomgang fant 12 forhold (bl.a. tregt karakterfilter, offentlig tilstedeværelseskanal, feil versjon ved produksjonsbytte, sammenligning på scene i stedet for forekomst). Alle er rettet.

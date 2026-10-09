@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **530**
-- Prioritet: P0: 141, P1: 220, P2: 130, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 3, teknisk-anbefaling: 7
-- Status: Ikke startet: 442, Verifisert: 62, Under arbeid: 22, Implementert – ikke verifisert: 4
+- Antall krav: **531**
+- Prioritet: P0: 141, P1: 220, P2: 131, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 4, teknisk-anbefaling: 7
+- Status: Ikke startet: 428, Verifisert: 73, Under arbeid: 24, Implementert – ikke verifisert: 6
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -416,11 +416,12 @@ En manusendring, ressursendring, omnummerering eller endring av stil skal aldri 
 
 - **Kilde:** Kap. 2.2 (l. 83, 89) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** VERSION, SCRIPT
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Historiske manusversjoner er uforanderlige snapshots som kan åpnes og eksporteres identisk etter senere endringer.
 - **Tester:**
   - dataintegritet: hash av historisk versjon er uendret etter senere redigering
+- **Implementering:** db/migrations/0003_script_versions.sql, src/core/screenplay/versions.ts
 
 #### REQ-0033 – Vesentlige oppdateringer sporbare og reverserbare
 All vesentlig oppdatering skal være sporbar, reverserbar og brukerinitiert.
@@ -910,11 +911,12 @@ Brukeren skal kunne sammenligne manusversjoner.
 - **Kilde:** Kap. 4.4 (l. 222) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT, VERSION
 - **Avhengigheter:** REQ-0078
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan velge to manusversjoner og se forskjellene.
 - **Tester:**
   - e2e: velg to versjoner og vis diff
+- **Implementering:** src/core/screenplay/versions.ts#diffSnapshots, src/app/script/VersionsDialog.tsx
 - **Merknad:** Detaljert i 5.1 (REQ-0078).
 
 #### REQ-0070 – Angre og gjøre om i manus
@@ -962,12 +964,13 @@ Manuset skal kunne søkes og filtreres etter karakter, objekt eller rekvisitt, l
 - **Kilde:** Kap. 4.5 (l. 227-235) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT, UI
 - **Avhengigheter:** REQ-0055
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - For hvert filterkriterium gir filtrering kun scener/passasjer som matcher.
 - **Tester:**
   - enhet: filterlogikk per kriterium
   - e2e: fritekstsøk i dialog
+- **Implementering:** src/core/screenplay/filter.ts, src/app/script/SceneNavigator.tsx
 - **Merknad:** Filter på synkroniseringsavvik forutsetter REQ-0025.
 
 #### REQ-0074 – Vis bare scener med valgt karakter
@@ -976,11 +979,12 @@ Brukeren skal kunne velge en karakter og få vist bare scener der denne karakter
 - **Kilde:** Kap. 4.5 (l. 236) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT, LIBRARY, UI
 - **Avhengigheter:** REQ-0073
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Gitt karakteren Maja, så vises nøyaktig scenene der Maja opptrer (inkl. via aliaser).
 - **Tester:**
   - integrasjon: karakterfilter mot fasit
+- **Implementering:** src/core/screenplay/filter.ts#sceneHasCharacter
 
 #### REQ-0075 – Filtrering er ikke deaktivering
 Filtrering av manusvisningen skal ikke være det samme som å deaktivere scener i produksjonen, og skal ikke endre produksjonens aktive innhold.
@@ -988,11 +992,12 @@ Filtrering av manusvisningen skal ikke være det samme som å deaktivere scener 
 - **Kilde:** Kap. 4.5 (l. 237) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 2
 - **Moduler:** SCRIPT, CORE · **Invarianter:** INV-14
 - **Avhengigheter:** REQ-0021
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et aktivt filter, så er filmens aktive innhold og spilletid uendret.
 - **Tester:**
   - integrasjon: filter påvirker ikke aktiv struktur
+- **Implementering:** src/core/screenplay/filter.ts
 
 ### Kapittel 5
 
@@ -1001,11 +1006,12 @@ Animatic Studio skal støtte mange manusversjoner med full historikk.
 
 - **Kilde:** Kap. 5.1 (l. 241) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** VERSION, SCRIPT
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan opprette, liste og åpne et vilkårlig antall manusversjoner.
 - **Tester:**
   - integrasjon: opprett og åpne flere versjoner
+- **Implementering:** db/migrations/0003_script_versions.sql, src/app/script/VersionsDialog.tsx
 
 #### REQ-0077 – Innhold i hver manusversjon
 Hver manusversjon skal bevare manusinnhold, scenerekkefølge, synlighet, scenenummerering, relasjoner til tidligere versjoner og koblinger til produsert materiale.
@@ -1013,11 +1019,12 @@ Hver manusversjon skal bevare manusinnhold, scenerekkefølge, synlighet, scenenu
 - **Kilde:** Kap. 5.1 (l. 242-248) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** VERSION, SCRIPT
 - **Avhengigheter:** REQ-0076
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Gjenåpning av en eldre versjon gjenskaper innhold, rekkefølge, synlighet, nummerering, foreldreversjon og materialkoblinger slik de var.
 - **Tester:**
   - dataintegritet: snapshot-rundtur for alle seks elementer
+- **Implementering:** src/core/screenplay/versions.ts
 
 #### REQ-0078 – Versjonssammenligning med endringstyper
 Systemet skal kunne sammenligne manusversjoner og identifisere nye scener, fjernede eller skjulte scener, flyttede scener, endret dialog, endret handling, endrede sceneoverskrifter og endringer i karakterer og objekter.
@@ -1025,11 +1032,12 @@ Systemet skal kunne sammenligne manusversjoner og identifisere nye scener, fjern
 - **Kilde:** Kap. 5.1 (l. 249-256) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** VERSION, SCRIPT · **Invarianter:** INV-03
 - **Avhengigheter:** REQ-0077
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Gitt to versjoner med kjente endringer av hver type, så rapporteres hver endring med korrekt type.
 - **Tester:**
   - enhet: diff-motor med fixtures per endringstype
+- **Implementering:** src/core/screenplay/versions.ts#diffSnapshots
 - **Merknad:** «Sammenligning av versjoner» er plassert i fase 6; enkel sammenligning (REQ-0069) kan komme tidligere.
 
 #### REQ-0079 – Omnummerert scene er ikke ny scene
@@ -1091,11 +1099,12 @@ Nummereringsvalgene skal omfatte bevaring av valgt historisk nummerering, der nu
 - **Kilde:** Kap. 5.2 (l. 265) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** EXPORT, SCRIPT, VERSION · **Invarianter:** INV-02
 - **Avhengigheter:** REQ-0080; REQ-0077
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt valgt historisk versjon V, så får scener som finnes i V samme nummer som i V.
 - **Tester:**
   - enhet: nummerering basert på historisk versjon
+- **Implementering:** src/core/screenplay/numbering.ts, src/app/script/ExportDialog.tsx
 - **Merknad:** «Der det er hensiktsmessig» er udefinert – se OPEN_QUESTIONS B (historisk nummerering).
 
 #### REQ-0084 – Valg om å inkludere skjulte scener i eksport
@@ -1418,11 +1427,12 @@ Estimatene kan baseres på dialogmengde, handlingsbeskrivelser, pauser, montasje
 - **Kilde:** Kap. 7.1 (l. 317-323) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** SCRIPT
 - **Avhengigheter:** REQ-0108
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Estimatoren tar hensyn til minst dialogmengde og handlingsbeskrivelser, og antakelsene er dokumentert/justerbare.
 - **Tester:**
   - enhet: estimat endres når dialog/handling endres
+- **Implementering:** src/core/screenplay/duration.ts
 - **Merknad:** «Kan» – listen er mulige faktorer, ikke absolutte krav.
 
 #### REQ-0110 – Usikre estimater presenteres som usikre
@@ -1491,11 +1501,12 @@ Skjulte scener skal utelates fra aktiv totalvarighet.
 - **Kilde:** Kap. 7.2 (l. 335) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 2
 - **Moduler:** TIMELINE · **Invarianter:** INV-14
 - **Avhengigheter:** REQ-0019
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Deaktivering av en scene reduserer totalvarigheten tilsvarende; gjenaktivering legger den til.
 - **Tester:**
   - enhet: total med deaktiverte scener
+- **Implementering:** src/core/screenplay/duration.ts
 - **Merknad:** Gjentar kap. 2 (spilletidsberegning).
 
 #### REQ-0116 – Varighet på egen prosjektoversikt
@@ -1503,11 +1514,12 @@ Varighetsinformasjon skal hovedsakelig vises på en egen prosjektoversikt.
 
 - **Kilde:** Kap. 7.3 (l. 337) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P0 · **Fase:** 2
 - **Moduler:** UI
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Det finnes en egen prosjektoversiktsside med varighetsinformasjon.
 - **Tester:**
   - e2e: naviger til prosjektoversikt
+- **Implementering:** src/app/projects/DurationOverview.tsx
 - **Merknad:** Jf. kap. 34 pkt. 17.
 
 #### REQ-0117 – Ingen varighetstall i ordinær manusvisning
@@ -1516,11 +1528,12 @@ Den ordinære manusvisningen skal ikke fylles med varighetstall ved hver scene.
 - **Kilde:** Kap. 7.3 (l. 338) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P0 · **Fase:** 2
 - **Moduler:** UI, SCRIPT
 - **Avhengigheter:** REQ-0102
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Ordinær manusvisning viser ingen varighetstall per scene.
 - **Tester:**
   - visuell: manusvisning uten varighetstall
+- **Implementering:** src/app/script/ScriptPageView.tsx
 - **Merknad:** Jf. kap. 34 pkt. 17.
 
 #### REQ-0118 – Innhold i prosjektoversikten
@@ -6275,11 +6288,12 @@ Varighetsinformasjon skal primært vises på en egen oversiktsside, ikke inne i 
 
 - **Kilde:** Kap. 34 (l. 1519) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 2
 - **Moduler:** UI, SCRIPT
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Ordinær manusvisning viser ikke varighetsdata; oversiktssiden gjør det.
 - **Tester:**
   - manuell: verifiseres mot underliggende funksjonskrav
+- **Implementering:** src/app/projects/DurationOverview.tsx
 - **Merknad:** Oppsummerer kap. 7.3, 6.3.
 
 #### REQ-0496 – Prinsipp 18: Tidsstyrte utseendeendringer for karakterer
@@ -6730,3 +6744,22 @@ Claude skal være Mars' langsiktige tekniske arkitekt, produktdesigner, UX-desig
 - **Tester:**
   - manuell: milepælsrevisjon kontrollerer at arbeidsprosessen er fulgt
 - **Merknad:** Tilføyd etter automatisk linjedekningskontroll.
+
+### Tillegg etter mandatet (brukerbeslutninger og tekniske anbefalinger)
+
+#### REQ-0531 – Vis kun valgt scene i manusvisningen
+Manusvisningen skal ha en avkrysningsboks «Vis kun valgt scene». Når den er krysset av, viser manussidene bare scenen som er valgt i scenelisten. Dette er bare et visningsvalg og endrer ikke produksjonens aktive innhold.
+
+- **Kilde:** Beslutning DEC-0027 · **Opprinnelse:** brukerbeslutning · **Type:** ux · **Prioritet:** P2 · **Fase:** 2
+- **Moduler:** SCRIPT, UI · **Invarianter:** INV-14
+- **Avhengigheter:** REQ-0075
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Gitt at scene 13 er valgt og boksen er krysset av, så viser manussidene bare scene 13, med samme sidetall som i hele manuset.
+  - Når en annen scene velges, vises den i stedet; når boksen tas av, vises hele manuset igjen.
+  - Filmens aktive innhold, scenerekkefølge og eksport er uendret (REQ-0075).
+- **Tester:**
+  - enhet: filtrering av sider på valgt scene
+  - visuell: skjermbilde med boksen avkrysset
+- **Implementering:** src/core/screenplay/filter.ts#filterPages, src/app/script/ScriptWorkspace.tsx
+- **Merknad:** Ikke i mandatet v14. Lagt til av Mars 2026-10-09 («I denne visningen av manus ønsker jeg en avkrysningsboks som sier vis kun valgte scene»).

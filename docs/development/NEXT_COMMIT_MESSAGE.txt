@@ -1,5 +1,11 @@
-Eksport virker i Safari: filen lages og lastes ned i samme klikk (KI-25)
+M2 del 2: manusversjoner, sammenligning, søk/filter, «Vis kun valgt scene», varighet, tilstedeværelse
 
-- Eksportkoden lastes på forhånd i stedet for ved klikk, så Safari godtar nedlastingen
-- Dialogen blir stående og viser «Last ned»-lenke til filen, med hjelp hvis forhåndsvisningen blokkerer
-- Dokumentasjon: migrasjon 0002 kjørt, KI-19 lukket, KI-25 ny
+- Nytt krav fra Mars: «Vis kun valgt scene» i manusvisningen (REQ-0531, DEC-0027)
+- Manusversjoner: lagre uforanderlige versjoner, vise, sammenligne (ny/fjernet/flyttet/endret dialog, handling, overskrift, karakterer …) og eksportere en versjon som PDF (REQ-0032, 0069, 0076–0078)
+- Eksport med «bevar valgt historisk nummerering» (REQ-0083)
+- Søk i manus og filter på karakter – bare visning, filmen endres ikke (REQ-0073–0075)
+- Varighetsestimat med justerbare antakelser på prosjektoversikten (REQ-0109, 0115–0117)
+- Tilstedeværelse: se hvem andre som er i prosjektet og hvilken scene de står i
+- Raskere: blokker indekseres per tilstand (filter og sidebryting på millisekunder)
+- Migrasjon db/migrations/0003_script_versions.sql (må kjøres i Lovable, se LOVABLE_SYNC.md B)
+- Kodegjennomgang: 12 funn rettet; 101 Vitest-tester og 20 databasetester grønne

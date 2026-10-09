@@ -24,10 +24,30 @@ export function activeStructure(
   return orderedOccurrences(s, productionId).filter((o) => o.active);
 }
 
+/**
+ * Indeks variant → synlige blokker i rekkefølge. Bygges én gang per blokksamling (tilstanden er uforanderlig,
+ * så samme objekt betyr samme innhold) – ellers ville hvert oppslag gå gjennom alle blokker i prosjektet.
+ */
+const blockIndex = new WeakMap<object, Map<string, ScriptBlock[]>>();
+
+function indexOf(s: ProjectState): Map<string, ScriptBlock[]> {
+  let idx = blockIndex.get(s.blocks);
+  if (!idx) {
+    idx = new Map();
+    for (const b of Object.values(s.blocks)) {
+      if (b.removed) continue;
+      const list = idx.get(b.variantId);
+      if (list) list.push(b);
+      else idx.set(b.variantId, [b]);
+    }
+    for (const list of idx.values()) list.sort((a, b) => compareKeys(a.orderKey, b.orderKey));
+    blockIndex.set(s.blocks, idx);
+  }
+  return idx;
+}
+
 export function blocksOfVariant(s: ProjectState, variantId: string): ScriptBlock[] {
-  return Object.values(s.blocks)
-    .filter((b) => b.variantId === variantId && !b.removed)
-    .sort((a, b) => compareKeys(a.orderKey, b.orderKey));
+  return [...(indexOf(s).get(variantId) ?? [])];
 }
 
 export interface ScriptSceneView {

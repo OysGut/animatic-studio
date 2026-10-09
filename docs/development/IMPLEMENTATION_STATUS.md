@@ -1,22 +1,23 @@
 # Implementeringsstatus – Animatic Studio
 
-Oppdatert: 2026-10-09 (økt 3). Detaljert status per krav: `docs/product/TRACEABILITY_MATRIX.md` (generert).
+Oppdatert: 2026-10-09 (økt 3, del 2). Detaljert status per krav: `docs/product/TRACEABILITY_MATRIX.md` (generert).
 
 ## Sammendrag
 - **M0 Fundament:** ferdig.
 - **M1 Skjelett og kjerne:** ferdig og kjørt i Lovable (migrasjon 0001, innlogging, prosjekt).
-- **M2 Manus (første del):** kode og tester ferdig – import av PDF/DOCX, manusvisning med sider, scenenavigator, redigering, deling/sammenslåing, angre/gjør om, sanntid, profiler, eksport til PDF/DOCX med nummereringsvalg. Venter på at Mars pusher og kjører migrasjon 0002 i Lovable. Gjenstår i M2: manusversjoner og sammenligning, søk/filtrering, varighetsestimat, tilstedeværelse.
-- **Krav:** 62 verifisert, 4 implementert – ikke verifisert, 22 under arbeid, 442 ikke startet.
+- **M2 Manus del 1:** levert og testet av Mars i Lovable (import, visning, redigering, eksport – også i Safari).
+- **M2 Manus del 2:** kode og tester ferdig – manusversjoner og sammenligning, historisk nummerering, søk og karakterfilter, «Vis kun valgt scene» (REQ-0531), varighetsestimat på oversikten, tilstedeværelse. Venter på push og migrasjon 0003.
+- **Krav:** 73 verifisert, 6 implementert – ikke verifisert, 24 under arbeid, 428 ikke startet (av 531).
 
 ## Tester (alle grønne 2026-10-09)
 | Testsett | Antall | Kjøres med |
 |---|---|---|
-| Enhet, scenarier, kontrakt, eksport, nummerering, regresjoner (`tests/unit`, + 1 Lovable-test) | 62 | `bun run test` |
+| Enhet, scenarier, kontrakt, eksport, nummerering, versjoner, filter, varighet, regresjoner (`tests/unit`, + 1 Lovable-test) | 78 | `bun run test` |
 | Egenskapsbaserte invarianttester (`tests/invariants`) – 150 tilfeldige sekvenser × 40 kommandoer, 15 kommandotyper | 9 | `bun run test` |
 | Gyldne tester mot referansemanuset (`tests/golden`) – hoppes over uten manusfilene | 6 | `bun run test` (lokalt hos Claude) |
 | Arkitektur (`tests/architecture`) | 1 | `bun run test` |
-| Database (`tests/db`) – RLS, revisjon, atomisitet, invitasjoner, uforanderlighet, import, profiler, unik plass | 19 | `bun tests/db/run-db-tests.ts` |
-| Visuell QA (`tests/visual`) – 13 skjermbilder med mockede data, pluss import av ekte PDF i nettleseren | manuell vurdering | `node tests/visual/screens.mjs` |
+| Database (`tests/db`) – RLS, revisjon, atomisitet, invitasjoner, uforanderlighet, import, profiler, unik plass | 20 | `bun tests/db/run-db-tests.ts` |
+| Visuell QA (`tests/visual`) – 19 skjermbilder med mockede data, pluss import av ekte PDF i nettleseren | manuell vurdering | `node tests/visual/screens.mjs` |
 | GitHub Actions | `knowledge-base.yml`, `tests.yml` (ny: typekontroll, Vitest, databasetester) | automatisk ved push |
 
 ## Målinger mot «Jula på Dovre» (norsk PDF, 106 sider)

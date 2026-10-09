@@ -1,24 +1,20 @@
 # Pågående arbeid
 
-Oppdatert: 2026-10-09 (økt 3)
+Oppdatert: 2026-10-09 (økt 3, del 2)
 
-## Nå: M2 Manus – første del ferdig, venter på Mars
-- [x] Tolkning av PDF (pdf.js) og DOCX, gyldne tester mot «Jula på Dovre» (97 scener, numre, (MORE)/(CONT'D), O.S., manuelle linjeskift)
-- [x] `ImportScreenplay` (atomisk, kan angres), `SplitScene`/`MergeScenes`, `SetBlockKind`, `EditSceneHeading`, `SetUncertainty`, `RemoveBlock`/`RestoreBlock`
-- [x] Migrasjon `0002_import_profiles.sql` (kildereferanse, usikkerhet, fjernet, unik plass, originaldokumenter, bøtte `sources`, profiler) + databasetester
-- [x] Sidebryting kalibrert mot Final Draft; låste sider
-- [x] Arbeidsflaten «Manus»: scenenavigator (dra-og-slipp, Alt+pil, aktiv-bryter), sidevisning, inspektør, import- og eksportdialog
-- [x] Angre/gjør om per bruker, sanntid mellom medlemmer, profilnavn
-- [x] Eksport PDF/DOCX med nummereringsvalg og forhåndsvisning
-- [x] Uavhengig kodegjennomgang; 15 funn rettet med regresjonstester
-- [x] CI: `tests.yml` (typekontroll, Vitest, databasetester)
-- [ ] **Mars:** Commit + Push (melding i `NEXT_COMMIT_MESSAGE.txt`), deretter synkmeldingen for `0002_import_profiles.sql` (LOVABLE_SYNC.md B)
-- [ ] **Mars:** Åpne prosjektet → Manus → Importer manus → velg «Jula på Dovre» PDF fra `Manus/`. Si fra om noe ser rart ut
-- [ ] Claude: følge opp første ekte import (KI-19, KI-23), CI-kjøring (KI-17)
+## Nå: M2 del 2 – ferdig, venter på Mars
+- [x] M2 del 1 testet av Mars i Lovable (import, sider, redigering, eksport; Safari-feil rettet, KI-25)
+- [x] Nytt krav REQ-0531 «Vis kun valgt scene» (DEC-0027)
+- [x] Manusversjoner (migrasjon 0003), vis, sammenlign, eksporter versjon, historisk nummerering
+- [x] Søk og karakterfilter (bare visning)
+- [x] Varighetsestimat på prosjektoversikten
+- [x] Tilstedeværelse (private Realtime-kanaler)
+- [x] Kodegjennomgang (12 funn rettet), ytelse (indeks per tilstand)
+- [ ] **Mars:** Commit + Push, deretter synkmeldingen for `0003_script_versions.sql` (LOVABLE_SYNC.md B)
+- [ ] **Mars:** Prøv: Versjoner → Lagre versjon; gjør en endring; Sammenlign mot nå. Filter på karakter. «Vis kun valgt scene». Varighet på Prosjektoversikt. Gjerne to brukere samtidig for tilstedeværelse
+- [ ] Claude: følge opp KI-26 (tilstedeværelse i Lovable)
 
-## Neste: M2 andre del
-1. Manusversjoner (uforanderlige øyeblikksbilder) og sammenligning med endringstyper (REQ-0032, REQ-0069, REQ-0076–0078); historisk nummerering ved eksport (REQ-0083).
-2. Søk og filtrering i manus, «bare scener med valgt karakter» (REQ-0073–0075).
-3. Varighetsestimat per scene (sideåttendedeler).
-4. Tilstedeværelse (hvem ser på hva) og typet Supabase-klient (KI-14).
-5. Lagre tittelside ved import (KI-20).
+## Neste (forslag – M3 Ressurser og 2D-sceneeditor)
+1. Ressursbibliotek: karakterer (med aliaser – KI-29), objekter, lokasjoner, stilprofil.
+2. Lagbasert 2D-komposisjon og kamera med blå/rød ramme (mandat kap. 12).
+3. Gjenoppretting av manusversjon (KI-27), lagrede varighetsantakelser (KI-28), tittelside (KI-20).

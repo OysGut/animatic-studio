@@ -49,7 +49,7 @@ async function mock(page, { projects = [project], schema = true }) {
     const table = path.replace("/rest/v1/", "");
     if (table === "schema_version")
       return schema
-        ? json([{ version: 2 }])
+        ? json([{ version: 3 }])
         : json({ message: "relation does not exist", code: "42P01" }, 404);
     if (table === "projects") {
       if (single) return json(projects[0] ?? null);
@@ -75,6 +75,7 @@ async function mock(page, { projects = [project], schema = true }) {
     }
     if (path.startsWith("/rest/v1/rpc/")) return json(null);
     if (path.startsWith("/realtime/")) return route.abort();
+    if (fx.rows[table] && single) return json(fx.rows[table][0] ?? null);
     if (fx.rows[table]) {
       const offset = Number(url.searchParams.get("offset") ?? 0);
       return json(offset > 0 ? [] : fx.rows[table]);
@@ -170,6 +171,39 @@ await shot("14-eksport-ferdig", manus, {
       page.getByRole("button", { name: /Eksporter PDF/ }).click(),
     ]);
     console.error("nedlasting:", dl.suggestedFilename());
+    await page.waitForTimeout(400);
+  },
+});
+await shot("15-filter-karakter", manus, {
+  act: async (page) => {
+    await page.getByLabel("Vis bare scener med karakter").selectOption("ANNE");
+    await page.waitForTimeout(600);
+  },
+});
+await shot("16-vis-kun-valgt-scene", manus, {
+  act: async (page) => {
+    await page.locator("[id^=nav-]").nth(4).click();
+    await page.getByLabel("Vis kun valgt scene").check();
+    await page.waitForTimeout(800);
+  },
+});
+await shot("17-versjoner", manus, {
+  act: async (page) => {
+    await page.getByRole("button", { name: "Versjoner" }).click();
+    await page.waitForTimeout(500);
+  },
+});
+await shot("17b-versjon-sammenlign", manus, {
+  act: async (page) => {
+    await page.getByRole("button", { name: "Versjoner" }).click();
+    await page.getByRole("button", { name: "Mot nå" }).first().click();
+    await page.waitForTimeout(800);
+  },
+});
+await shot("18-oversikt-varighet", `/prosjekt/${project.id}`, {
+  act: async (page) => {
+    await page.getByRole("button", { name: "Per scene" }).click();
+    await page.mouse.wheel(0, 500);
     await page.waitForTimeout(400);
   },
 });

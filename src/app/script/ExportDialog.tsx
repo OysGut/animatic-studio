@@ -5,6 +5,7 @@
 import { Download } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
+  numbersByOccurrence,
   exportNumbering,
   exportPaginationInput,
   formatHeading,
@@ -14,6 +15,8 @@ import {
 } from "@/core";
 import { screenplayDocx } from "@/engine/export/screenplay-docx";
 import { screenplayPdf } from "@/engine/export/screenplay-pdf";
+import { isEmbedded, prepareDownload, type ReadyFile } from "@/app/download";
+import { useVersionList, useVersionSnapshot } from "@/app/project/use-versions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -33,37 +36,6 @@ interface Props {
 }
 
 type Format = "pdf" | "docx";
-
-interface ReadyFile {
-  readonly url: string;
-  readonly name: string;
-}
-
-/** Lager fillenke og prøver å starte nedlastingen. Lenken beholdes så brukeren kan klikke selv. */
-function prepareDownload(bytes: Uint8Array, name: string, type: string): ReadyFile {
-  const url = URL.createObjectURL(new Blob([bytes as unknown as ArrayBuffer], { type }));
-  try {
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = name;
-    a.rel = "noopener";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-  } catch {
-    // Nedlasting blokkert (f.eks. i en innebygd forhåndsvisning) – lenken i dialogen brukes i stedet
-  }
-  return { url, name };
-}
-
-/** Kjører appen inne i en annen side (f.eks. Lovables forhåndsvisning)? Da kan nedlastinger være blokkert. */
-function isEmbedded(): boolean {
-  try {
-    return window.self !== window.top;
-  } catch {
-    return true;
-  }
-}
 
 function safeName(s: string) {
   return s.replace(/[\\/:*?"<>|]+/g, "-").trim();
@@ -89,11 +61,29 @@ export function ExportDialog({ open, onOpenChange, state, productionId, lockedPa
     [ready],
   );
   const production = state.productions[productionId];
-  const opts = { method, includeInactive, fillMissing };
+  // Historisk nummerering (REQ-0083): nummer fra en valgt manusversjon
+  const versions = useVersionList(productionId, open);
+  const [historicalId, setHistoricalId] = useState<string | null>(null);
+  // Bare en versjon fra denne produksjonen kan brukes (valget nullstilles ellers)
+  const histId =
+    (historicalId && versions.data?.some((v) => v.id === historicalId) ? historicalId : null) ??
+    versions.data?.[0]?.id ??
+    null;
+  const histSnap = useVersionSnapshot(method === "historical" ? histId : null);
+  const historical = useMemo(
+    () => (histSnap.data ? numbersByOccurrence(histSnap.data) : undefined),
+    [histSnap.data],
+  );
+  const opts = {
+    method,
+    includeInactive,
+    fillMissing,
+    ...(method === "historical" && historical ? { historical } : {}),
+  };
   const preview = useMemo(
     () => exportNumbering(state, productionId, opts),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [state, productionId, method, includeInactive, fillOriginal],
+    [state, productionId, method, includeInactive, fillOriginal, historical],
   );
   const changed = preview.filter((p) => p.exportNumber !== p.productionNumber).length;
 
@@ -215,13 +205,36 @@ export function ExportDialog({ open, onOpenChange, state, productionId, lockedPa
                 </span>
               </span>
             </label>
-            <label className={radio + " opacity-60"}>
-              <input type="radio" name="num" disabled className="mt-1" />
+            <label className={radio + (versions.data?.length ? "" : " opacity-60")}>
+              <input
+                type="radio"
+                name="num"
+                disabled={!versions.data?.length}
+                checked={method === "historical"}
+                onChange={() => setMethod("historical")}
+                className="mt-1"
+              />
               <span>
                 Bevar valgt historisk nummerering
                 <span className="block text-xs text-text-tertiary">
-                  Kommer når manusversjoner er på plass
+                  {versions.data?.length
+                    ? "Scener som fantes i versjonen får numrene derfra"
+                    : "Lagre en manusversjon først (Versjoner)"}
                 </span>
+                {method === "historical" && versions.data?.length ? (
+                  <select
+                    aria-label="Versjon"
+                    value={histId ?? ""}
+                    onChange={(e) => setHistoricalId(e.target.value)}
+                    className="mt-1 h-7 max-w-[280px] rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
+                  >
+                    {versions.data.map((v) => (
+                      <option key={v.id} value={v.id}>
+                        v{v.number} – {v.name}
+                      </option>
+                    ))}
+                  </select>
+                ) : null}
               </span>
             </label>
           </fieldset>
@@ -235,9 +248,9 @@ export function ExportDialog({ open, onOpenChange, state, productionId, lockedPa
               onChange={(e) => setIncludeInactive(e.target.checked)}
             />
             Ta med deaktiverte scener (
-            {method === "production" ? "som «UTGÅR»" : "tydelig merket, uten nummer"})
+            {method === "continuous" ? "tydelig merket, uten nummer" : "som «UTGÅR»"})
           </label>
-          {method === "production" ? (
+          {method !== "continuous" ? (
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
@@ -265,7 +278,12 @@ export function ExportDialog({ open, onOpenChange, state, productionId, lockedPa
           />
         </label>
 
-        <div>
+        {method === "historical" && !historical ? (
+          <p role={histSnap.isError ? "alert" : "status"} className="text-xs text-text-secondary">
+            {histSnap.isError ? "Kunne ikke hente versjonen. Prøv igjen." : "Henter versjonen …"}
+          </p>
+        ) : null}
+        <div className={method === "historical" && !historical ? "hidden" : undefined}>
           <p className="mb-1 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
             Forhåndsvisning av nummerering {changed ? `· ${changed} endret` : "· ingen endringer"}
           </p>
@@ -345,7 +363,10 @@ export function ExportDialog({ open, onOpenChange, state, productionId, lockedPa
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
             {ready ? "Lukk" : "Avbryt"}
           </Button>
-          <Button onClick={doExport} disabled={busy || preview.length === 0}>
+          <Button
+            onClick={doExport}
+            disabled={busy || preview.length === 0 || (method === "historical" && !historical)}
+          >
             <Download />
             Eksporter {format === "pdf" ? "PDF" : "Word"}
           </Button>
