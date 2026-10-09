@@ -15,6 +15,13 @@
       "when": 1791525965494,
       "tag": "0001_0002_import_profiles",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791529940656,
+      "tag": "0002_0003_script_versions",
+      "breakpoints": true
     }
   ]
 }
