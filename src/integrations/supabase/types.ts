@@ -244,6 +244,180 @@ export type Database = {
           },
         ]
       }
+      composition_layers: {
+        Row: {
+          asset_id: string | null
+          asset_variant_id: string | null
+          composition_id: string
+          created_at: string
+          created_by: string | null
+          fill: string | null
+          group_id: string | null
+          height: number
+          id: string
+          keyframes: Json
+          kind: string
+          locked: boolean
+          name: string
+          order_key: string
+          parallax: number
+          project_id: string
+          removed: boolean
+          revision: number
+          transform: Json
+          version_id: string | null
+          visible: boolean
+          width: number
+        }
+        Insert: {
+          asset_id?: string | null
+          asset_variant_id?: string | null
+          composition_id: string
+          created_at?: string
+          created_by?: string | null
+          fill?: string | null
+          group_id?: string | null
+          height: number
+          id: string
+          keyframes?: Json
+          kind: string
+          locked?: boolean
+          name?: string
+          order_key: string
+          parallax?: number
+          project_id: string
+          removed?: boolean
+          revision?: number
+          transform: Json
+          version_id?: string | null
+          visible?: boolean
+          width: number
+        }
+        Update: {
+          asset_id?: string | null
+          asset_variant_id?: string | null
+          composition_id?: string
+          created_at?: string
+          created_by?: string | null
+          fill?: string | null
+          group_id?: string | null
+          height?: number
+          id?: string
+          keyframes?: Json
+          kind?: string
+          locked?: boolean
+          name?: string
+          order_key?: string
+          parallax?: number
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          transform?: Json
+          version_id?: string | null
+          visible?: boolean
+          width?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "composition_layers_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "composition_layers_asset_variant_id_fkey"
+            columns: ["asset_variant_id"]
+            isOneToOne: false
+            referencedRelation: "asset_variants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "composition_layers_composition_id_fkey"
+            columns: ["composition_id"]
+            isOneToOne: false
+            referencedRelation: "compositions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "composition_layers_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "composition_layers_version_id_fkey"
+            columns: ["version_id"]
+            isOneToOne: false
+            referencedRelation: "asset_versions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      compositions: {
+        Row: {
+          background: string
+          camera: Json
+          created_at: string
+          created_by: string | null
+          duration_frames: number
+          height: number
+          id: string
+          name: string
+          project_id: string
+          removed: boolean
+          revision: number
+          variant_id: string
+          width: number
+        }
+        Insert: {
+          background?: string
+          camera?: Json
+          created_at?: string
+          created_by?: string | null
+          duration_frames?: number
+          height?: number
+          id: string
+          name?: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          variant_id: string
+          width?: number
+        }
+        Update: {
+          background?: string
+          camera?: Json
+          created_at?: string
+          created_by?: string | null
+          duration_frames?: number
+          height?: number
+          id?: string
+          name?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          variant_id?: string
+          width?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "compositions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "compositions_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "scene_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       imported_documents: {
         Row: {
           byte_size: number
