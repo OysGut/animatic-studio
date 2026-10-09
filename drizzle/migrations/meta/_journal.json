@@ -50,6 +50,13 @@
       "when": 1791549102344,
       "tag": "0006_0007_compositions",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1791557041035,
+      "tag": "0007_0008_project_format",
+      "breakpoints": true
     }
   ]
 }
