@@ -10,7 +10,8 @@
 import type { CompositionId, OccurrenceId, SceneId, VariantId } from "../ids";
 import type { Composition, ProjectState, SceneHeading } from "../model";
 import { estimateProduction } from "../screenplay/duration";
-import { secondsToFrames } from "../time";
+import { msToFramesCeil, secondsToFrames } from "../time";
+import { sceneAudioEndMs } from "../audio";
 import { activeStructure } from "../views";
 
 /** Hva klippet viser: scenens 2D-scene, eller et tittelkort fordi 2D-scenen ikke er laget ennå. */
@@ -64,12 +65,16 @@ export function filmClips(s: ProjectState, productionId: string): FilmClip[] {
   const hit = byProd?.get(productionId);
   if (hit) return hit;
   const estimates = estimatedSceneFrames(s, productionId);
+  const audioEnd = sceneAudioEndMs(s);
   const comps = compositionsByVariant(s);
   let cursor = 0;
   const clips = activeStructure(s, productionId).map((o): FilmClip => {
     const c = comps.get(o.variantId) ?? null;
-    const estimate =
-      estimates.get(o.id) ?? secondsToFrames(MIN_ESTIMATED_SCENE_SECONDS, s.project.fps);
+    // Uten satt lengde: beregnet fra manuset, men aldri kortere enn lyden i scenen (DEC-0044)
+    const estimate = Math.max(
+      estimates.get(o.id) ?? secondsToFrames(MIN_ESTIMATED_SCENE_SECONDS, s.project.fps),
+      msToFramesCeil(audioEnd.get(o.id) ?? 0, s.project.fps),
+    );
     const set = c !== null && c.durationFrames > 0;
     const durationFrames = set ? c.durationFrames : estimate;
     const clip: FilmClip = {

@@ -36,6 +36,32 @@ function session() {
   };
 }
 
+/** Enkel WAV (mono, 8 kHz) med en tone som svinger i styrke, så bølgeformen synes. */
+function wav(seconds) {
+  const rate = 8000;
+  const n = Math.round(seconds * rate);
+  const buf = Buffer.alloc(44 + n * 2);
+  buf.write("RIFF", 0);
+  buf.writeUInt32LE(36 + n * 2, 4);
+  buf.write("WAVEfmt ", 8);
+  buf.writeUInt32LE(16, 16);
+  buf.writeUInt16LE(1, 20);
+  buf.writeUInt16LE(1, 22);
+  buf.writeUInt32LE(rate, 24);
+  buf.writeUInt32LE(rate * 2, 28);
+  buf.writeUInt16LE(2, 32);
+  buf.writeUInt16LE(16, 34);
+  buf.write("data", 36);
+  buf.writeUInt32LE(n * 2, 40);
+  for (let i = 0; i < n; i++) {
+    const t = i / rate;
+    const env = 0.25 + 0.75 * Math.abs(Math.sin(t * 1.7)) * Math.abs(Math.sin(t * 0.31 + 1));
+    const v = Math.sin(2 * Math.PI * 220 * t) * env * 0.8;
+    buf.writeInt16LE(Math.round(v * 32767), 44 + i * 2);
+  }
+  return buf;
+}
+
 async function mock(page, { projects = [project], schema = true }) {
   // På konteksten (ikke siden), så også egne vinduer (forhåndsvisning) får svar
   await page.context().route(`${supaUrl}/**`, async (route) => {
@@ -59,6 +85,13 @@ async function mock(page, { projects = [project], schema = true }) {
         })),
       );
     }
+    if (path.startsWith("/storage/v1/object/sign/") && path.endsWith(".wav")) {
+      return route.fulfill({
+        status: 200,
+        contentType: "audio/wav",
+        body: wav(path.includes("maja") ? 3.5 : 20),
+      });
+    }
     if (path.startsWith("/storage/v1/object/sign/")) {
       const n = (path.length * 37) % 360;
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400"><rect width="300" height="400" fill="hsl(${n} 25% 22%)"/><circle cx="150" cy="120" r="60" fill="hsl(${n} 45% 70%)"/><path d="M60 380 Q150 170 240 380Z" fill="hsl(${n} 45% 60%)"/></svg>`;
@@ -67,7 +100,7 @@ async function mock(page, { projects = [project], schema = true }) {
     const table = path.replace("/rest/v1/", "");
     if (table === "schema_version")
       return schema
-        ? json([{ version: 8 }])
+        ? json([{ version: 9 }])
         : json({ message: "relation does not exist", code: "42P01" }, 404);
     if (table === "projects") {
       if (single) return json(projects[0] ?? null);
@@ -591,7 +624,46 @@ await shot("48-montering-eksport-ferdig", montering, {
         fps: Number(stats.averagePacketRate.toFixed(2)),
         codec: track.codec,
       });
+      const at = await input.getPrimaryAudioTrack();
+      console.log(
+        "lyd:",
+        at
+          ? {
+              codec: at.codec,
+              channels: at.numberOfChannels,
+              rate: at.sampleRate,
+              duration: Number((await at.computeDuration()).toFixed(2)),
+            }
+          : "ingen lydspor",
+      );
     }
+  },
+});
+await shot("49-lag-bilde", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(900);
+    await page
+      .getByRole("region", { name: "Lag" })
+      .or(page.locator('section[aria-label="Lag"]'))
+      .first()
+      .getByRole("button", { name: /Maja/ })
+      .first()
+      .dblclick();
+    await page.waitForTimeout(700);
+  },
+});
+await shot("50-montering-lyd", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(1200);
+    await page.getByRole("button", { name: /^Vind i trærne/ }).click();
+    await page.waitForTimeout(600);
+  },
+});
+await shot("51-legg-til-lyd", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(900);
+    await page.getByRole("button", { name: "Legg til lyd" }).click();
+    await page.waitForTimeout(700);
   },
 });
 await shot("18-oversikt-varighet", `/prosjekt/${project.id}`, {

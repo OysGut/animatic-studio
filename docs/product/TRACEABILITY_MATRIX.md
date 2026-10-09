@@ -19,7 +19,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | INV-08 | Brukeren kan godkjenne avvik, oppdatere produksjonsmateriale eller angre relevant endring. | 27 | 3 |
 | INV-09 | Karakterkontinuitet følger fortellingstid, også ved flashbacks. | 16 | 1 |
 | INV-10 | Produksjonsteknisk segmentering endrer ikke manusscenenes identiteter. | 11 | 3 |
-| INV-11 | Generativ AI er valgfritt for ordinær 2D-animatic-avspilling og eksport. | 13 | 3 |
+| INV-11 | Generativ AI er valgfritt for ordinær 2D-animatic-avspilling og eksport. | 13 | 5 |
 | INV-12 | Betalte API-kall følger eksplisitte kostnadsgodkjenninger. | 20 | 1 |
 | INV-13 | Delte ressurser er versjonerte og ikke-destruktive. | 25 | 4 |
 | INV-14 | Deaktivering/skjuling er aldri sletting; materiale kan gjenaktiveres. | 17 | 11 |
@@ -31,25 +31,25 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 
 | Modul | Navn | Krav | P0 | Implementert | Verifisert |
 |---|---|---|---|---|---|
-| CORE | Project Core | 118 | 57 | 55 | 40 |
-| SCRIPT | Screenplay Engine | 127 | 32 | 77 | 63 |
-| TIMELINE | Timeline & Assembly Engine | 93 | 28 | 31 | 20 |
-| LIBRARY | Resource Library | 57 | 9 | 20 | 17 |
+| CORE | Project Core | 118 | 57 | 56 | 40 |
+| SCRIPT | Screenplay Engine | 127 | 32 | 78 | 63 |
+| TIMELINE | Timeline & Assembly Engine | 94 | 28 | 36 | 23 |
+| LIBRARY | Resource Library | 58 | 9 | 23 | 18 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 2 | 2 |
-| COMPOSE | 2D Composition Engine | 46 | 14 | 24 | 20 |
+| COMPOSE | 2D Composition Engine | 47 | 14 | 26 | 21 |
 | CAMERA | Camera & Motion Engine | 29 | 2 | 23 | 19 |
-| AUDIO | Audio Engine | 31 | 1 | 3 | 2 |
+| AUDIO | Audio Engine | 32 | 1 | 16 | 9 |
 | PROMPT | Prompt Orchestration Engine | 45 | 14 | 2 | 1 |
 | PROVIDER | Provider Adapters | 23 | 6 | 2 | 2 |
 | QUALITYCOST | Quality & Cost Engine | 25 | 6 | 1 | 1 |
-| QUEUE | Render Queue | 34 | 12 | 3 | 2 |
-| VERSION | Version & Dependency Engine | 90 | 36 | 26 | 13 |
+| QUEUE | Render Queue | 34 | 12 | 3 | 3 |
+| VERSION | Version & Dependency Engine | 90 | 36 | 27 | 13 |
 | L10N | Localization Engine | 38 | 4 | 3 | 2 |
 | PRESENT | Presentation Engine | 30 | 3 | 1 | 1 |
-| EXPORT | Export Engine | 54 | 12 | 24 | 21 |
+| EXPORT | Export Engine | 54 | 12 | 27 | 23 |
 | SECURITY | Security & Storage | 26 | 5 | 13 | 9 |
 | COLLAB | Collaboration & Access | 10 | 0 | 8 | 6 |
-| UI | Brukergrensesnitt og designsystem | 129 | 19 | 56 | 47 |
+| UI | Brukergrensesnitt og designsystem | 130 | 19 | 57 | 47 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 5 | 1 |
 
 ## Dekning per fase
@@ -58,8 +58,8 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 |---|---|---|
 | 1 | 70 | 27 |
 | 2 | 97 | 61 |
-| 3 | 62 | 41 |
-| 4 | 68 | 14 |
+| 3 | 63 | 41 |
+| 4 | 69 | 22 |
 | 5 | 70 | 0 |
 | 6 | 48 | 0 |
 | 7 | 63 | 0 |
@@ -268,22 +268,22 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0196 | Kap. 12.5 (l. 559-563) | CAMERA | src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql, src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts | 2 | tests/unit/composition.test.ts, tests/unit/animate.test.ts, tests/unit/composition.test.ts, tests/unit/camera-overlay.test.ts, tests/visual/screens.mjs (33–36) | Verifisert | 2026-10-09 DEC-0036: Kameraets start/slutt og hastighetskurve per utsnitt; lag har egne kanaler per egenskap; status Verifisert |
 | REQ-0197 | Kap. 12.5 (l. 564) | CAMERA, COMPOSE | src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts | 1 | tests/unit/animate.test.ts, tests/unit/composition.test.ts, tests/unit/camera-overlay.test.ts, tests/visual/screens.mjs (33–36) | Verifisert | 2026-10-09 DEC-0036: Kameravisning og avspilling viser bevegelsen; status Verifisert |
 | REQ-0198 | Kap. 12.5 (l. 565) | CAMERA | src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts | 1 | tests/unit/animate.test.ts, tests/unit/composition.test.ts, tests/unit/camera-overlay.test.ts, tests/visual/screens.mjs (33–36) | Verifisert | 2026-10-09 DEC-0036: Dra start/slutt på kamerasporet, flytte nøkkelbilder, sette scenens varighet; status Verifisert |
-| REQ-0199 | Kap. 13 (l. 567-568) | AUDIO | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0200 | Kap. 13.1 (l. 569-575) | AUDIO | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0201 | Kap. 13.1 (l. 576) | AUDIO, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0202 | Kap. 13.2 (l. 577-578) | AUDIO, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0199 | Kap. 13 (l. 567-568) | AUDIO | src/core/audio/index.ts, src/app/assembly/AudioTracks.tsx | 1 | tests/unit/audio.test.ts::lydklipp, tests/visual/screens.mjs::50-montering-lyd | Verifisert | 2026-10-09 DEC-0044: Lydsystem: lydfiler i biblioteket og lydklipp i filmen |
+| REQ-0200 | Kap. 13.1 (l. 569-575) | AUDIO | src/core/audio/index.ts | 1 | tests/unit/audio.test.ts::avviser ugyldige verdier og lydfiler som ikke er lyd | Verifisert | 2026-10-09 DEC-0044: Dialog, forteller, effekter, atmosfære og musikk |
+| REQ-0201 | Kap. 13.1 (l. 576) | AUDIO, TIMELINE | src/app/assembly/AudioTracks.tsx | 1 | tests/visual/screens.mjs::50-montering-lyd | Verifisert | 2026-10-09 DEC-0044: Ett spor per lydtype i filmtidslinjen; overlappende klipp på egne linjer |
+| REQ-0202 | Kap. 13.2 (l. 577-578) | AUDIO, LIBRARY | src/app/library/asset-audio.ts, src/app/assembly/AddAudioDialog.tsx | 1 | tests/db/run-db-tests.ts::0009, tests/visual/screens.mjs::51-legg-til-lyd | Verifisert | 2026-10-09 DEC-0044: Opplasting av lyd i monteringen og i biblioteket (generering kommer med M5) |
 | REQ-0203 | Kap. 13.2 (l. 578) | AUDIO, PROVIDER | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0204 | Kap. 13.2 (l. 579-585) | AUDIO, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0205 | Kap. 13.2 (l. 586) | AUDIO, LIBRARY, VERSION | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0206 | Kap. 13.3 (l. 587-588) | AUDIO, SCRIPT, TIMELINE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0207 | Kap. 13.3 (l. 589) | AUDIO, TIMELINE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0208 | Kap. 13.3 (l. 590) | AUDIO, EXPORT | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0204 | Kap. 13.2 (l. 579-585) | AUDIO, CORE | src/core/commands/apply.ts, db/migrations/0009_audio.sql | 2 | tests/unit/audio.test.ts::avviser ugyldige verdier og lydfiler som ikke er lyd | Under arbeid | 2026-10-09 DEC-0044: Lydklipp knyttes til scene og replikk; kobling til karakter, delsekvens og hendelse kommer senere |
+| REQ-0205 | Kap. 13.2 (l. 586) | AUDIO, LIBRARY, VERSION | src/app/library/AssetDetail.tsx, src/app/library/LibraryWorkspace.tsx | 2 | – | Under arbeid | 2026-10-09 DEC-0044: Lyd er ressurser i biblioteket (søk, filter, versjoner); egne lydfiltre kommer senere |
+| REQ-0206 | Kap. 13.3 (l. 587-588) | AUDIO, SCRIPT, TIMELINE | src/app/assembly/AudioClipPanel.tsx | 1 | – | Under arbeid | 2026-10-09 DEC-0044: Dialoglyd kan kobles til replikken; tidskobling per replikk og avspillingshode kommer med tidskoblingene |
+| REQ-0207 | Kap. 13.3 (l. 589) | AUDIO, TIMELINE | src/app/assembly/AudioTracks.tsx, src/app/assembly/AudioClipPanel.tsx, src/engine/audio/mixer.ts | 2 | tests/unit/audio.test.ts::volumkurve, tests/db/run-db-tests.ts::0009 | Verifisert | 2026-10-09 DEC-0044: Flytte, kutte start og slutt, lengde, volum, inn-/uttoning og demping |
+| REQ-0208 | Kap. 13.3 (l. 590) | AUDIO, EXPORT | src/app/audio/use-audio-playback.ts, src/engine/export/animatic.ts | 2 | tests/visual/screens.mjs::48-montering-eksport-ferdig | Verifisert | 2026-10-09 DEC-0044: Lyd i avspilling (montering og sceneeditor) og i eksporten |
 | REQ-0209 | Kap. 14 (l. 592-593) | COMPOSE, TIMELINE, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0210 | Kap. 14.1 (l. 594-602) | COMPOSE, CAMERA, AUDIO | src/core/composition/animate.ts, src/core/composition/render.ts#renderFrame, cameraAt, valueAt, src/app/scene-editor/Timeline.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/CameraPanel.tsx, src/app/scene-editor/use-playback.ts | 2 | tests/unit/animate.test.ts, tests/unit/composition.test.ts, tests/unit/camera-overlay.test.ts, tests/visual/screens.mjs (33–36) | Implementert – ikke verifisert | 2026-10-09 DEC-0036: Avspilling av lag, kamera og nøkkelbilder; dialog og lyd kommer i M4; status Implementert – ikke verifisert |
-| REQ-0211 | Kap. 14.2 (l. 603-604) | EXPORT, COMPOSE, QUEUE | src/engine/export/animatic.ts | 1 | tests/visual/screens.mjs::48-montering-eksport-ferdig | Under arbeid | 2026-10-09 DEC-0043: Videoeksport i nettleseren (WebCodecs/mediabunny) uten AI; lyd kommer i M4 del 2 |
+| REQ-0211 | Kap. 14.2 (l. 603-604) | EXPORT, COMPOSE, QUEUE | src/engine/export/animatic.ts, src/engine/export/animatic.ts | 1 | tests/visual/screens.mjs::48-montering-eksport-ferdig, tests/visual/screens.mjs::48-montering-eksport-ferdig | Verifisert | 2026-10-09 DEC-0044: Eksportert video har bilde og lyd; kontrollert lengde, størrelse, bildefrekvens og lydspor |
 | REQ-0212 | Kap. 14.2 (l. 605) | EXPORT, COMPOSE, QUEUE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Revisjon 2026-10-08: tekst/prioritet justert mot mandatet |
 | REQ-0213 | Kap. 14.2 (l. 606) | EXPORT, COMPOSE | src/engine/export/animatic.ts | 1 | tests/visual/screens.mjs::48-montering-eksport-ferdig | Verifisert | 2026-10-09 DEC-0043: Eksporten bruker bare nettleserens egen koder; ingen nettverkskall |
-| REQ-0214 | Kap. 14.3 (l. 607-613) | TIMELINE, EXPORT, AUDIO | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0214 | Kap. 14.3 (l. 607-613) | TIMELINE, EXPORT, AUDIO | src/engine/compositor/film.ts, src/engine/export/animatic.ts | 2 | – | Under arbeid | 2026-10-09 DEC-0044: Monteringen kombinerer 2D-scener, tittelkort og lyd; importert film og AI-video kommer senere |
 | REQ-0215 | Kap. 14.3 (l. 614) | CORE, COMPOSE, PROVIDER | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0216 | Kap. 15 (l. 616-618) | TIMELINE, UI | src/app/assembly/AssemblyWorkspace.tsx, src/routes/prosjekt.$projectId.montering.tsx | 1 | tests/visual/screens.mjs::45-montering | Verifisert | 2026-10-09 DEC-0043: Montering: egen filmtidslinje adskilt fra sceneeditoren |
 | REQ-0217 | Kap. 15.1 (l. 621) | TIMELINE | src/core/assembly/film.ts | 1 | tests/unit/assembly.test.ts::følger manusets rekkefølge og utelater deaktiverte scener | Verifisert | 2026-10-09 DEC-0043: Alle aktive scener i manusets rekkefølge |
@@ -487,7 +487,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0415 | Kap. 28.4 (l. 1210-1218) | SECURITY, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0416 | Kap. 29 (l. 1220-1221) | EXPORT | src/engine/export/animatic.ts | 1 | tests/visual/screens.mjs::48-montering-eksport-ferdig | Verifisert | 2026-10-09 DEC-0043: Eksportmodul uten AI |
 | REQ-0417 | Kap. 29.1 (l. 1222-1229) | EXPORT, TIMELINE | src/core/assembly/film.ts, src/app/assembly/ExportAnimaticDialog.tsx | 2 | tests/unit/assembly.test.ts::hele filmen, én scene og et utvalg | Under arbeid | 2026-10-09 DEC-0043: Hele filmen, valgt scene og fra–til scene; spinoff og trailer kommer med M7 |
-| REQ-0418 | Kap. 29.2 (l. 1230-1238) | EXPORT, COMPOSE, AUDIO | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0418 | Kap. 29.2 (l. 1230-1238) | EXPORT, COMPOSE, AUDIO | src/engine/export/animatic.ts | 2 | – | Under arbeid | 2026-10-09 DEC-0044: Eksport av 2D-animasjon med dialog, musikk og effekter; importert og AI-generert film kommer senere |
 | REQ-0419 | Kap. 29.3 (l. 1239-1240) | EXPORT, SCRIPT | src/app/script/ExportDialog.tsx, src/core/screenplay/numbering.ts | 2 | tests/unit/numbering.test.ts | Verifisert | 2026-10-09 DEC-0024: M2; status Verifisert |
 | REQ-0420 | Kap. 29.4 (l. 1241-1242) | EXPORT, L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0421 | Kap. 29.5 (l. 1243-1244) | EXPORT, PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -509,7 +509,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0437 | Kap. 31 (l. 1318-1320) | CONTINUITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0438 | Kap. 31 (l. 1321-1322) | COMPOSE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0439 | Kap. 31 (l. 1323-1324) | CAMERA | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0440 | Kap. 31 (l. 1325-1327) | AUDIO | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0440 | Kap. 31 (l. 1325-1327) | AUDIO | src/engine/audio/mixer.ts | 1 | – | Under arbeid | 2026-10-09 DEC-0044: Audio Engine del 1: dekoding, plassering, miksing og eksport |
 | REQ-0441 | Kap. 31 (l. 1328-1330) | PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0442 | Kap. 31 (l. 1331-1333) | PROVIDER | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0443 | Kap. 31 (l. 1334-1335) | QUALITYCOST | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -627,3 +627,5 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0555 | Beslutning DEC-0041 | COMPOSE, UI | src/app/scene-editor/PreviewWindow.tsx, src/app/shell/pane-size.tsx | 1 | tests/visual/screens.mjs (43-forhandsvisning-flyttet-zoom) | Verifisert | 2026-10-09 DEC-0041: Opprettet etter beslutning fra Mars og bygget samme dag |
 | REQ-0556 | Beslutning DEC-0041 | COMPOSE, UI | src/app/scene-editor/PreviewWindow.tsx, src/app/scene-editor/SceneEditorWorkspace.tsx | 1 | tests/visual/screens.mjs (44-forhandsvisning-eget-vindu) | Verifisert | 2026-10-09 DEC-0041: Opprettet etter beslutning fra Mars og bygget samme dag |
 | REQ-0557 | Beslutning DEC-0042 | COMPOSE, UI | src/app/scene-editor/PreviewWindow.tsx | 1 | tests/visual/screens.mjs::43-forhandsvisning-flyttet-zoom | Verifisert | 2026-10-09 DEC-0042: Opprettet etter beslutning fra Mars og bygget samme dag |
+| REQ-0558 | Beslutning DEC-0044 | AUDIO, TIMELINE | src/core/assembly/film.ts, src/core/composition/animate.ts, src/app/audio/use-audio-playback.ts | 1 | tests/unit/audio.test.ts::følger scenen når den flyttes, og en scene uten 2D-scene blir minst så lang som lyden | Verifisert | 2026-10-09 DEC-0044: Opprettet etter beslutning fra Mars og bygget samme dag |
+| REQ-0559 | Beslutning DEC-0044 | COMPOSE, LIBRARY, UI | src/app/scene-editor/LayerImageDialog.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/LayersPanel.tsx | 1 | tests/visual/screens.mjs::49-lag-bilde | Under arbeid | 2026-10-09 DEC-0044: Opprettet etter beslutning fra Mars; velg og last opp bygget, AI-generering venter på M5 (kostnader) |

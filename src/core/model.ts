@@ -6,6 +6,7 @@
 import type {
   AnnotationId,
   AssetId,
+  AudioClipId,
   CompositionId,
   LayerId,
   AssetVariantId,
@@ -155,7 +156,9 @@ export interface Take extends Entity<TakeId> {
 
 // ---------- Ressursbibliotek (M3 del 1; mandat kap. 8–9, REQ-0121–0136, REQ-0146, REQ-0149) ----------
 
-export type AssetKind = "character" | "object" | "location" | "animal" | "environment" | "other";
+/** Ressurstype. «sound» = lydfil (dialog, musikk, effekter …) i samme bibliotek (mandat 13.2, DEC-0044). */
+export type AssetKind =
+  "character" | "object" | "location" | "animal" | "environment" | "other" | "sound";
 
 /** Type alternativt navn (REQ-0126). */
 export type AssetNameKind = "alias" | "nickname" | "former" | "language";
@@ -213,6 +216,8 @@ export interface AssetVersion extends Entity<AssetVersionId> {
   readonly note: string;
   readonly createdAt: string;
   readonly createdBy: string;
+  /** Lengde i millisekunder for lydfiler (null for bilder). */
+  readonly durationMs: number | null;
 }
 
 // ---------- Notater i manus (DEC-0031, REQ-0535–0540) ----------
@@ -345,6 +350,38 @@ export interface CompositionLayer extends Entity<LayerId> {
   readonly removed: boolean;
 }
 
+/** Lydtyper på egne spor (mandat 13.1). */
+export type AudioKind = "dialogue" | "narration" | "sfx" | "ambience" | "music";
+
+/**
+ * Et lydklipp i filmen (M4 del 2, mandat 13, DEC-0044). Festet til en scene (sceneforekomst) med start
+ * målt fra scenens begynnelse, så lyden følger scenen når den flyttes (mandat 6.4). Tid i millisekunder
+ * (uavhengig av bildefrekvensen). Lyden kan være lengre enn scenen og fortsette inn i neste.
+ */
+export interface AudioClip extends Entity<AudioClipId> {
+  readonly occurrenceId: OccurrenceId;
+  readonly kind: AudioKind;
+  readonly name: string;
+  /** Lydfilen: ressurs (type «sound»), eventuelt variant og låst versjon (null = godkjent/nyeste). */
+  readonly assetId: AssetId;
+  readonly assetVariantId: AssetVariantId | null;
+  readonly versionId: AssetVersionId | null;
+  /** Replikken lyden hører til (dialog), eller null. */
+  readonly blockId: BlockId | null;
+  /** Start i scenen (ms fra scenens begynnelse). */
+  readonly offsetMs: number;
+  /** Hvor i lydfilen klippet begynner (ms). */
+  readonly sourceInMs: number;
+  /** Klippets lengde (ms). */
+  readonly lengthMs: number;
+  /** Volum i desibel (0 = uendret). */
+  readonly gainDb: number;
+  readonly fadeInMs: number;
+  readonly fadeOutMs: number;
+  readonly muted: boolean;
+  readonly removed: boolean;
+}
+
 export interface ProjectState {
   readonly project: Project;
   readonly productions: Readonly<Record<string, Production>>;
@@ -361,6 +398,7 @@ export interface ProjectState {
   readonly annotations: Readonly<Record<string, Annotation>>;
   readonly compositions: Readonly<Record<string, Composition>>;
   readonly layers: Readonly<Record<string, CompositionLayer>>;
+  readonly audioClips: Readonly<Record<string, AudioClip>>;
 }
 
 /** Tabellnavn i databasen for hver samling (brukes av patch/adapter). */
@@ -378,6 +416,7 @@ export const COLLECTION_TABLES = {
   annotations: "script_annotations",
   compositions: "compositions",
   layers: "composition_layers",
+  audioClips: "audio_clips",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_TABLES;
@@ -399,6 +438,7 @@ export function emptyProjectState(project: Project): ProjectState {
     annotations: {},
     compositions: {},
     layers: {},
+    audioClips: {},
   };
 }
 

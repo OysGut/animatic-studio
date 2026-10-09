@@ -14,6 +14,10 @@ export {
   ASSET_NAME_KINDS,
   ASSET_MAX_BYTES,
   ASSET_MIME_TYPES,
+  AUDIO_KINDS,
+  AUDIO_MAX_MS,
+  AUDIO_MIME_TYPES,
+  audioClipFieldsOf,
   VISUAL_STYLES,
   type ApplyResult,
 } from "./commands/apply";
@@ -22,3 +26,4 @@ export * from "./library";
 export * from "./notes";
 export * from "./composition";
 export * from "./assembly";
+export * from "./audio";

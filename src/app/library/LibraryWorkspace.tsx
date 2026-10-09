@@ -5,7 +5,7 @@
  * når brukeren velger det (REQ-0128).
  */
 import { useNavigate } from "@tanstack/react-router";
-import { Archive, Lightbulb, Plus, Redo2, Search, Undo2 } from "lucide-react";
+import { Archive, Lightbulb, Music, Plus, Redo2, Search, Undo2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
   ASSET_KIND_LABEL,
@@ -369,7 +369,9 @@ function Library({
                     }
                   >
                     <span className="flex size-9 items-center justify-center overflow-hidden rounded-sm bg-surface-3 text-[11px] font-medium text-text-tertiary">
-                      {url ? (
+                      {a.kind === "sound" ? (
+                        <Music className="size-4" aria-hidden />
+                      ) : url ? (
                         <img src={url} alt="" className="size-full object-cover" />
                       ) : (
                         a.name.slice(0, 2).toUpperCase()

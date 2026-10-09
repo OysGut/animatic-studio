@@ -1,15 +1,17 @@
-Montering: filmtidslinje, avspilling av hele filmen og eksport av animatic (M4 del 1, DEC-0042/0043)
+Lyd i filmen og bildevalg for lag (M4 del 2, DEC-0044)
 
-Ingen databaseendring, men én ny npm-pakke (mediabunny 1.59.1). Lim inn hele innholdet i
-docs/development/LOVABLE_SYNC.md i Lovable etter push.
+Databaseendring: migrasjon 0009 (lyd). Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i
+Lovable etter push.
 
-- Ny arbeidsflate «Montering» i menyen: filmen, panel med valgt scene og manus, og filmtidslinje.
-- Alle aktive scener i manusets rekkefølge. Scener uten 2D-scene vises som tittelkort med lengde fra manuset.
-- Dra et klipp (eller Alt+pil) for å flytte scenen – manuset endres likt. Dra i høyre kant for å endre lengden.
-- Spill av hele filmen: mellomrom, piler, pil opp/ned for forrige/neste scene, Enter åpner sceneeditoren.
-  «Følg avspillingen» lar panelet og manuset følge avspillingshodet.
-- «Eksporter animatic»: hele filmen, valgt scene eller fra–til scene, full eller halv størrelse.
-  Kontroll før eksport. Videoen (MP4, ellers WebM) lages i nettleseren – uten AI og uten kostnader. Ingen lyd ennå.
-- Forhåndsvisningen i sceneeditoren kan nå flyttes fritt over hele programmet (DEC-0042).
-- Tester: 248 Vitest-tester grønne; skjermbilder 42–48; eksportert video kontrollert (lengde, størrelse, bildefrekvens).
-- Dokumentasjon: DEC-0042–0043, REQ-0557 og statuser for 24 M4-krav, KI-52–55, ROADMAP.
+- Lydfiler i ressursbiblioteket (ny type «Lyd»: MP3, WAV, OGG, M4A, FLAC) med versjoner og lengde.
+- Monteringen har lydspor for dialog, forteller, effekter, atmosfære og musikk, med bølgeform.
+  «Legg til lyd» (eller + på sporet) legger lyd ved avspillingshodet – fra biblioteket eller en ny fil.
+- Lyden er festet til scenen og følger den når den flyttes. Dra for å flytte, dra i kantene for å kutte.
+  Panelet: navn, spor, versjon, start, lengde, volum, inn-/uttoning, replikk, demping. Delete fjerner (kan angres).
+- Lyden spilles også der animasjonen ikke er laget (tittelkort), og en slik scene varer minst like lenge
+  som lyden. Lyden spilles også i sceneeditoren og er med i eksportert video.
+- Dobbeltklikk på et lag (lerretet eller lagslisten): velg et annet bilde av ressursen (alle varianter og
+  versjoner), last opp et nytt (blir ny versjon i biblioteket), eller «Generer med AI» (kommer med M5 –
+  krever kostnadsgodkjenning først).
+- Tester: 256 Vitest-tester og 26 databasetester grønne; skjermbilder 45–51; eksportert video med lydspor kontrollert.
+- Dokumentasjon: DEC-0044, REQ-0558–0559 og statuser for 13 lydkrav, KI-56–60, db/README.

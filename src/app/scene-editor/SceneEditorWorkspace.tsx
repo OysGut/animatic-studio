@@ -11,11 +11,13 @@ import {
   defaultLayerFields,
   compositionOfVariant,
   formatHeading,
+  framesToSeconds,
   layerVersion,
   layersOf,
   mainProduction,
   newId,
   orderedOccurrences,
+  sceneAudioItems,
   type Composition,
   type ProjectState,
 } from "@/core";
@@ -23,6 +25,7 @@ import { canEdit, useMembers, useProjectState } from "@/app/project/use-project"
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { SaveIndicator } from "@/app/script/ScriptWorkspace";
 import { useImageUrls } from "@/app/library/asset-images";
+import { useAudioPlayback } from "@/app/audio/use-audio-playback";
 import { Button } from "@/components/ui/button";
 import { AddLayerDialog } from "./AddLayerDialog";
 import { CompositionInspector, LayerInspector } from "./LayerInspector";
@@ -34,6 +37,7 @@ import { PaneResizer, usePaneSize, useStoredFlag } from "@/app/shell/pane-size";
 import { PopoutPreview, PreviewWindow } from "./PreviewWindow";
 import { CameraPanel } from "./CameraPanel";
 import { Timeline } from "./Timeline";
+import { LayerImageDialog } from "./LayerImageDialog";
 import { usePlayback } from "./use-playback";
 
 export function SceneEditorWorkspace({
@@ -134,6 +138,22 @@ function Editor({
     [state, composition],
   );
   const playback = usePlayback(duration, state.project.fps);
+  // Lyden i scenen spilles med (DEC-0044)
+  const sceneSound = useMemo(
+    () => (occurrenceId ? sceneAudioItems(state, occurrenceId) : []),
+    [state, occurrenceId],
+  );
+  const soundPaths = useMemo(
+    () => [...new Set(sceneSound.flatMap((it) => (it.version ? [it.version.mediaPath] : [])))],
+    [sceneSound],
+  );
+  const soundUrls = useImageUrls(soundPaths);
+  useAudioPlayback({
+    items: sceneSound,
+    urls: soundUrls.data ?? null,
+    playing: playback.playing,
+    time: framesToSeconds(playback.frame, state.project.fps),
+  });
   // I kameravisningen viser lerretet allerede det ferdige utsnittet
   const showPreview = view === "scene" && (previewOpen || (autoPreview && playback.playing));
   const closePreview = useCallback(() => {
@@ -145,6 +165,15 @@ function Editor({
       ? (composition.camera.shots.find((x) => x.id === selectedShotId) ?? null)
       : null;
   const [addOpen, setAddOpen] = useState(false);
+  /** Laget som får nytt bilde (dobbeltklikk, DEC-0044). */
+  const [imageLayerId, setImageLayerId] = useState<string | null>(null);
+  const openLayerImage = useCallback(
+    (id: string) => {
+      setSelectedLayerId(id);
+      setImageLayerId(id);
+    },
+    [setSelectedLayerId],
+  );
   const [leftWidth, setLeftWidth] = usePaneSize("scene-editor-left", 220, 180, 480);
   const [rightWidth, setRightWidth] = usePaneSize("scene-editor-right", 300, 240, 560);
   const [error, setError] = useState<string | null>(null);
@@ -379,6 +408,7 @@ function Editor({
                   onViewChange={setView}
                   autoKey={autoKey}
                   onTogglePlay={playback.toggle}
+                  onOpenLayerImage={openLayerImage}
                 />
                 {showPreview && popout ? (
                   <PopoutPreview
@@ -449,6 +479,7 @@ function Editor({
               selectedLayerId={selectedLayer?.id ?? null}
               onSelect={setSelectedLayerId}
               run={cmds.run}
+              onOpenImage={openLayerImage}
             />
             <div className="border-t border-border">
               {selectedShot ? (
@@ -472,6 +503,7 @@ function Editor({
                   run={cmds.run}
                   frame={playback.frame}
                   autoKey={autoKey}
+                  onOpenImage={() => openLayerImage(selectedLayer.id)}
                 />
               ) : (
                 <CompositionInspector
@@ -486,6 +518,17 @@ function Editor({
         ) : null}
       </div>
 
+      <LayerImageDialog
+        open={imageLayerId !== null}
+        onOpenChange={(o) => {
+          if (!o) setImageLayerId(null);
+        }}
+        state={state}
+        projectId={projectId}
+        layer={imageLayerId ? (state.layers[imageLayerId] ?? null) : null}
+        editable={editable}
+        cmds={cmds}
+      />
       {composition && editable ? (
         <AddLayerDialog
           open={addOpen}

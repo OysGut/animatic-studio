@@ -19,6 +19,7 @@ export const ASSET_KIND_LABEL: Record<AssetKind, string> = {
   animal: "Dyr",
   environment: "Miljø / bakgrunn",
   other: "Annet",
+  sound: "Lyd",
 };
 
 export const ASSET_KIND_PLURAL: Record<AssetKind, string> = {
@@ -28,6 +29,7 @@ export const ASSET_KIND_PLURAL: Record<AssetKind, string> = {
   animal: "Dyr",
   environment: "Miljøer",
   other: "Annet",
+  sound: "Lyd",
 };
 
 /** Foretrukket navn og alle alternative navn (REQ-0126). */
@@ -192,11 +194,13 @@ export function assetsInScene(
     environment: 3,
     object: 4,
     other: 5,
+    sound: 6,
   };
   const out: { asset: Asset; how: UsageHow }[] = [];
   for (const [assetId, uses] of allAssetUsage(s, productionId)) {
     const asset = s.assets[assetId];
-    if (!asset || asset.archived) continue;
+    // Lyd er ikke noe som kan legges inn som lag (DEC-0044)
+    if (!asset || asset.archived || asset.kind === "sound") continue;
     const u = uses.find((x) => x.occurrenceId === occurrenceId);
     if (u) out.push({ asset, how: u.how });
   }

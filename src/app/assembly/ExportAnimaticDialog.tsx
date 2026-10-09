@@ -14,6 +14,8 @@ import {
   layerVersion,
   layersOf,
   orderedOccurrences,
+  type AudioKind,
+  type FilmAudioItem,
   type FilmClip,
   type FilmRange,
   type ProjectState,
@@ -29,6 +31,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { audioBank } from "@/app/audio/use-audio-playback";
 import { formatSeconds } from "./FilmTimeline";
 
 type Scope = "film" | "selected" | "range";
@@ -51,6 +54,9 @@ export function ExportAnimaticDialog({
   clips,
   selectedId,
   urls,
+  audioItems,
+  audioUrls,
+  mutedKinds,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -60,6 +66,10 @@ export function ExportAnimaticDialog({
   selectedId: string | null;
   /** Mediesti → signert lenke for bildene i filmen (null mens de hentes). */
   urls: Readonly<Record<string, string>> | null;
+  /** Lyden i filmen (DEC-0044) og lenker til lydfilene. */
+  audioItems: readonly FilmAudioItem[];
+  audioUrls: Readonly<Record<string, string>> | null;
+  mutedKinds: ReadonlySet<AudioKind>;
 }) {
   const [scope, setScope] = useState<Scope>("film");
   const [fromId, setFromId] = useState<string>("");
@@ -109,7 +119,7 @@ export function ExportAnimaticDialog({
   const outH = size === "full" ? fullH : Math.round(fullH / 2);
 
   // Eksportkontroll (mandat 29.6): sceneorden, skjulte scener, materiale og manglende filer
-  const { checks, paths } = useMemo(() => {
+  const { checks, paths, audioPaths } = useMemo(() => {
     const out: Check[] = [];
     const n = sel.clips.length;
     out.push({
@@ -164,8 +174,33 @@ export function ExportAnimaticDialog({
           missingVersions === 1 ? "lag mangler" : "lag mangler"
         } bilde i biblioteket og blir usynlige.`,
       });
-    return { checks: out, paths: [...need] };
-  }, [sel, scope, state, productionId, fps]);
+    // Lyd i utvalget
+    const from = framesToSeconds(sel.startFrame, fps);
+    const to = framesToSeconds(sel.endFrame, fps);
+    const sounds = audioItems.filter(
+      (it) => !it.clip.muted && it.start < to && it.start + it.length > from,
+    );
+    const audible = sounds.filter((it) => !mutedKinds.has(it.clip.kind));
+    if (sounds.length > 0)
+      out.push({
+        level: "ok",
+        text: `${audible.length} ${audible.length === 1 ? "lydklipp" : "lydklipp"} med i videoen${
+          audible.length < sounds.length
+            ? ` (${sounds.length - audible.length} i dempede spor er ikke med)`
+            : ""
+        }.`,
+      });
+    const noFile = sounds.filter((it) => it.version === null).length;
+    if (noFile > 0)
+      out.push({
+        level: "warn",
+        text: `${noFile} ${noFile === 1 ? "lydklipp mangler" : "lydklipp mangler"} lydfil og blir stille.`,
+      });
+    const audioPaths = [
+      ...new Set(audible.flatMap((it) => (it.version ? [it.version.mediaPath] : []))),
+    ];
+    return { checks: out, paths: [...need], audioPaths };
+  }, [sel, scope, state, productionId, fps, audioItems, mutedKinds]);
 
   const warnings = checks.some((c) => c.level === "warn");
   const busy = progress !== null && ready === null && error === null;
@@ -185,7 +220,16 @@ export function ExportAnimaticDialog({
         if (u) subset[p] = u;
         else missingUrl.push(p);
       }
-      const { images, failed } = await loadImages(subset);
+      const audioSubset: Record<string, string> = {};
+      for (const p of audioPaths) {
+        const u = audioUrls?.[p];
+        if (u) audioSubset[p] = u;
+      }
+      const [{ images, failed }] = await Promise.all([
+        loadImages(subset),
+        audioBank.loadAll(audioSubset),
+      ]);
+      const lostAudio = audioPaths.filter((p) => !audioBank.get(p)).length;
       if (ctrl.signal.aborted) throw new DOMException("Avbrutt", "AbortError");
       const file = await exportAnimatic({
         state,
@@ -197,6 +241,7 @@ export function ExportAnimaticDialog({
         fps,
         images,
         signal: ctrl.signal,
+        audio: { items: audioItems, bank: audioBank, mutedKinds },
         onProgress: (done, total) => {
           if (abort.current === ctrl) setProgress({ done, total });
         },
@@ -216,10 +261,18 @@ export function ExportAnimaticDialog({
       const f = prepareDownload(file.bytes, name, file.mimeType);
       setReady({ ...f, bytes: file.bytes.byteLength });
       const lost = failed.length + missingUrl.length;
+      const notes: string[] = [];
       if (lost > 0)
-        setError(
-          `Ferdig, men ${lost} ${lost === 1 ? "bilde" : "bilder"} kunne ikke lastes og mangler i videoen.`,
+        notes.push(
+          `${lost} ${lost === 1 ? "bilde" : "bilder"} kunne ikke lastes og mangler i videoen`,
         );
+      if (lostAudio > 0)
+        notes.push(
+          `${lostAudio} ${lostAudio === 1 ? "lydfil" : "lydfiler"} kunne ikke leses og mangler`,
+        );
+      if (audioPaths.length > lostAudio && file.audioCodec === null)
+        notes.push("nettleseren kunne ikke kode lyd, så videoen er uten lyd");
+      if (notes.length) setError(`Ferdig, men ${notes.join("; ")}.`);
     } catch (e) {
       if (abort.current !== ctrl) return;
       if ((e as Error).name === "AbortError") setProgress(null);
@@ -246,8 +299,8 @@ export function ExportAnimaticDialog({
         <DialogHeader>
           <DialogTitle>Eksporter animatic</DialogTitle>
           <DialogDescription>
-            Videoen lages her i nettleseren fra 2D-scenene – uten AI og uten kostnader. Eksporten
-            endrer ingenting i prosjektet.
+            Videoen lages her i nettleseren fra 2D-scenene og lydsporene – uten AI og uten
+            kostnader. Eksporten endrer ingenting i prosjektet.
           </DialogDescription>
         </DialogHeader>
 
@@ -369,7 +422,8 @@ export function ExportAnimaticDialog({
               </span>
             </label>
             <p className="pt-1 text-xs text-text-tertiary">
-              MP4 (H.264) der nettleseren kan, ellers WebM. Uten lyd i denne utgaven.
+              MP4 (H.264) der nettleseren kan, ellers WebM. Med lyden fra lydsporene (dempede spor
+              er ikke med).
             </p>
           </fieldset>
         </div>

@@ -6789,13 +6789,20 @@ requirements:
   - Lyd modelleres som egne ressurser og spor i prosjektmodellen, med typer, koblinger og versjoner (jf. 13.1–13.3).
   tests:
   - 'manuell: arkitekturgjennomgang av lydmodell'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/audio/index.ts"
+  - "src/app/assembly/AudioTracks.tsx"
+  verification:
+  - "tests/unit/audio.test.ts::lydklipp"
+  - "tests/visual/screens.mjs::50-montering-lyd"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0044
+    change: "Lydsystem: lydfiler i biblioteket og lydklipp i filmen"
   notes: ''
 - id: REQ-0200
   title: Skille mellom lydtyper
@@ -6817,13 +6824,18 @@ requirements:
     kan brukes til filtrering og sporplassering.
   tests:
   - 'enhet: lydtype-enum og validering'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/audio/index.ts"
+  verification:
+  - "tests/unit/audio.test.ts::avviser ugyldige verdier og lydfiler som ikke er lyd"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0044
+    change: "Dialog, forteller, effekter, atmosfære og musikk"
   notes: ''
 - id: REQ-0201
   title: Lyd på separate spor
@@ -6845,13 +6857,18 @@ requirements:
   - Brukeren kan plassere dialog, musikk og effekter på separate spor som kan justeres hver for seg.
   tests:
   - 'e2e: plasser lyd på tre spor og spill av'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/AudioTracks.tsx"
+  verification:
+  - "tests/visual/screens.mjs::50-montering-lyd"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0044
+    change: "Ett spor per lydtype i filmtidslinjen; overlappende klipp på egne linjer"
   notes: ''
 - id: REQ-0202
   title: Laste opp lyd
@@ -6872,13 +6889,20 @@ requirements:
   - Brukeren kan laste opp vanlige lydformater (f.eks. WAV, MP3), og filen blir en lydressurs i biblioteket.
   tests:
   - 'import/eksport: opplasting av WAV og MP3'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/library/asset-audio.ts"
+  - "src/app/assembly/AddAudioDialog.tsx"
+  verification:
+  - "tests/db/run-db-tests.ts::0009"
+  - "tests/visual/screens.mjs::51-legg-til-lyd"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0044
+    change: "Opplasting av lyd i monteringen og i biblioteket (generering kommer med M5)"
   notes: ''
 - id: REQ-0203
   title: Generere lyd
@@ -6932,13 +6956,19 @@ requirements:
   tests:
   - 'enhet: relasjonsmodell lyd–objekt'
   - 'dataintegritet: koblinger overlever omnummerering av scener'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Under arbeid
+  implementation:
+  - "src/core/commands/apply.ts"
+  - "db/migrations/0009_audio.sql"
+  verification:
+  - "tests/unit/audio.test.ts::avviser ugyldige verdier og lydfiler som ikke er lyd"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0044
+    change: "Lydklipp knyttes til scene og replikk; kobling til karakter, delsekvens og hendelse kommer senere"
   notes: ''
 - id: REQ-0205
   title: Organisere, søke, filtrere og versjonere lyd
@@ -6964,13 +6994,18 @@ requirements:
   tests:
   - 'enhet: søk/filter på lydmetadata'
   - 'dataintegritet: versjonering bevarer tidligere lydfil'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/app/library/AssetDetail.tsx"
+  - "src/app/library/LibraryWorkspace.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0044
+    change: "Lyd er ressurser i biblioteket (søk, filter, versjoner); egne lydfiltre kommer senere"
   notes: ''
 - id: REQ-0206
   title: Dialoglyd synkronisert med manus
@@ -6994,13 +7029,17 @@ requirements:
     koblet slik at klikk på replikken finner opptaket.
   tests:
   - 'integrasjon: replikk–lyd–tidskobling'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/app/assembly/AudioClipPanel.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0044
+    change: "Dialoglyd kan kobles til replikken; tidskobling per replikk og avspillingshode kommer med tidskoblingene"
   notes: ''
 - id: REQ-0207
   title: Justere lydklipp
@@ -7023,13 +7062,21 @@ requirements:
   tests:
   - 'e2e: flytt, trim og volumendring'
   - 'dataintegritet: kildelydfil uendret'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/AudioTracks.tsx"
+  - "src/app/assembly/AudioClipPanel.tsx"
+  - "src/engine/audio/mixer.ts"
+  verification:
+  - "tests/unit/audio.test.ts::volumkurve"
+  - "tests/db/run-db-tests.ts::0009"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0044
+    change: "Flytte, kutte start og slutt, lengde, volum, inn-/uttoning og demping"
   notes: «Relevante lydinnstillinger» er ikke spesifisert.
 - id: REQ-0208
   title: Lyd i avspilling og eksport
@@ -7053,13 +7100,19 @@ requirements:
   tests:
   - 'import/eksport: eksportert fil har lydspor med korrekt offset'
   - 'e2e: lokal avspilling med lyd'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/audio/use-audio-playback.ts"
+  - "src/engine/export/animatic.ts"
+  verification:
+  - "tests/visual/screens.mjs::48-montering-eksport-ferdig"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0044
+    change: "Lyd i avspilling (montering og sceneeditor) og i eksporten"
   notes: ''
 - id: REQ-0209
   title: Komplette animatics uten ekstern AI
@@ -7164,10 +7217,12 @@ requirements:
     AI-tjenester.
   tests:
   - 'import/eksport: eksportert video har forventet varighet, oppløsning og bildefrekvens'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/engine/export/animatic.ts"
+  - "src/engine/export/animatic.ts"
   verification:
+  - "tests/visual/screens.mjs::48-montering-eksport-ferdig"
   - "tests/visual/screens.mjs::48-montering-eksport-ferdig"
   history:
   - date: '2026-10-08'
@@ -7176,6 +7231,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0043
     change: "Videoeksport i nettleseren (WebCodecs/mediabunny) uten AI; lyd kommer i M4 del 2"
+  - date: '2026-10-09'
+    decision: DEC-0044
+    change: "Eksportert video har bilde og lyd; kontrollert lengde, størrelse, bildefrekvens og lydspor"
   notes: Ufravikelig prinsipp nr. 9 i kap. 34.
 - id: REQ-0212
   title: Renderer i klient, backend eller desktop
@@ -7272,13 +7330,18 @@ requirements:
   tests:
   - 'e2e: hybrid montering avspilling og eksport'
   - 'import/eksport: varighet = sum av elementer'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/engine/compositor/film.ts"
+  - "src/engine/export/animatic.ts"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0044
+    change: "Monteringen kombinerer 2D-scener, tittelkort og lyd; importert film og AI-video kommer senere"
   notes: ''
 - id: REQ-0215
   title: AI som valgfritt produksjonslag
@@ -13447,13 +13510,17 @@ requirements:
   tests:
   - 'import/eksport: hybrid eksport'
   - 'visuell: kontroller overganger'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/engine/export/animatic.ts"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0044
+    change: "Eksport av 2D-animasjon med dialog, musikk og effekter; importert og AI-generert film kommer senere"
   notes: ''
 - id: REQ-0419
   title: Manuseksport med valgt nummerering
@@ -14125,13 +14192,17 @@ requirements:
     synkronisering, og dette ansvaret ligger ikke i andre moduler.'
   tests:
   - 'manuell: arkitekturgjennomgang av ansvarsgrenser'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/engine/audio/mixer.ts"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0044
+    change: "Audio Engine del 1: dekoding, plassering, miksing og eksport"
   notes: Linje 1325/1326 duplikat.
 - id: REQ-0441
   title: 'Modul: Prompt Orchestration Engine'
@@ -17671,3 +17742,70 @@ requirements:
     decision: DEC-0042
     change: "Opprettet etter beslutning fra Mars og bygget samme dag"
   notes: ''
+- id: REQ-0558
+  title: "Lyd spilles også der animasjonen ikke er laget"
+  text: "Lyd i en scene skal spilles av og eksporteres selv om scenen ikke har 2D-scene ennå. En scene uten satt lengde skal være minst så lang som lyden i den."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0044
+  type: funksjonell
+  priority: P1
+  phase: 4
+  modules:
+  - AUDIO
+  - TIMELINE
+  invariants: []
+  dependencies:
+  - REQ-0208
+  - REQ-0240
+  acceptance:
+  - "Lyd i en scene med tittelkort høres ved avspilling og er med i eksportert video."
+  - "En scene uten satt lengde varer minst til den siste lyden i scenen slutter."
+  tests:
+  - "enhet: lengde forlenges av lyd"
+  status: Verifisert
+  implementation:
+  - "src/core/assembly/film.ts"
+  - "src/core/composition/animate.ts"
+  - "src/app/audio/use-audio-playback.ts"
+  verification:
+  - "tests/unit/audio.test.ts::følger scenen når den flyttes, og en scene uten 2D-scene blir minst så lang som lyden"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0044
+    change: "Opprettet etter beslutning fra Mars og bygget samme dag"
+  notes: ''
+- id: REQ-0559
+  title: "Dobbeltklikk på et lag: velg, last opp eller generer bilde"
+  text: "Dobbeltklikk på et lag i sceneeditoren skal åpne et vindu der brukeren kan velge et annet bilde laget for samme ressurs (alle varianter og versjoner), laste opp et nytt bilde, eller starte AI-generering av et nytt bilde for ressursen."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0044
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - COMPOSE
+  - LIBRARY
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0557
+  acceptance:
+  - "Dobbeltklikk på laget i lerretet eller lagslisten åpner bildevalget for laget."
+  - "Et valgt bilde brukes på laget med én gang; et opplastet bilde blir ny versjon i biblioteket."
+  - "AI-generering krever kostnadsgodkjenning før noe sendes (kommer med M5)."
+  tests:
+  - "visuell: bildevalg for lag"
+  status: Under arbeid
+  implementation:
+  - "src/app/scene-editor/LayerImageDialog.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  - "src/app/scene-editor/LayersPanel.tsx"
+  verification:
+  - "tests/visual/screens.mjs::49-lag-bilde"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0044
+    change: "Opprettet etter beslutning fra Mars; velg og last opp bygget, AI-generering venter på M5 (kostnader)"
+  notes: "AI-delen henger sammen med REQ for genereringsmotor og kostnadsport (fase 5)."

@@ -20,7 +20,10 @@ import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 import { RulerTicks } from "@/app/scene-editor/Timeline";
 import { filmImageCache } from "./film-images";
 
-const PAD = 12;
+/** Sporoverskriftene til venstre. */
+export const LABEL_W = 132;
+/** Avstand fra venstre kant til bilde 0. */
+const PAD = LABEL_W + 8;
 const RULER_H = 20;
 const CLIP_H = 64;
 const MAX_ZOOM = 200;
@@ -44,6 +47,19 @@ export interface FilmTimelineProps {
   tick: number;
   /** Verktøylinjen over sporet (transport m.m.). */
   toolbar: ReactNode;
+  /** Lydsporene under bildesporet (DEC-0044). Får skala og hjelpefunksjoner fra tidslinjen. */
+  audio?: (t: TimelineGeometry) => ReactNode;
+}
+
+/** Skala og plassering som lydsporene trenger. */
+export interface TimelineGeometry {
+  /** Piksler per bilde. */
+  readonly ppf: number;
+  /** Venstre kant for bilde 0 i innholdet. */
+  readonly pad: number;
+  readonly trackW: number;
+  /** Klientens x → x i innholdet (med rulling). */
+  readonly xIn: (clientX: number) => number;
 }
 
 type Drag =
@@ -54,7 +70,10 @@ export function FilmTimeline(p: FilmTimelineProps) {
   const { clips, durationFrames, frame } = p;
   const fps = p.state.project.fps;
   const fpsN = fpsToNumber(fps);
-  const [height, setHeight] = usePaneSize("assembly-timeline", 210, 140, 520, { axis: "y" });
+  const [height, setHeight] = usePaneSize("assembly-timeline", 300, 140, 720, {
+    axis: "y",
+    viewportShare: 0.7,
+  });
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [viewW, setViewW] = useState(800);
   const [zoom, setZoom] = useState(1);
@@ -157,7 +176,7 @@ export function FilmTimeline(p: FilmTimelineProps) {
         size={height}
         onSize={setHeight}
         min={140}
-        max={520}
+        max={720}
         label="Høyde på filmtidslinjen"
       />
       <div className="flex min-h-9 shrink-0 flex-wrap items-center gap-x-1.5 gap-y-1 border-b border-border px-2 py-1">
@@ -185,115 +204,133 @@ export function FilmTimeline(p: FilmTimelineProps) {
         </span>
       </div>
 
-      <div ref={scrollRef} className="relative min-h-0 flex-1 overflow-x-auto overflow-y-hidden">
-        <div className="relative h-full" style={{ width: trackW + 2 * PAD }}>
+      <div ref={scrollRef} className="relative min-h-0 flex-1 overflow-auto">
+        <div className="relative min-h-full" style={{ width: trackW + PAD + 24 }}>
           {/* Linjal: klikk eller dra for å flytte avspillingshodet */}
-          <div
-            className="relative cursor-col-resize touch-none border-b border-border"
-            style={{ height: RULER_H, marginLeft: PAD, width: trackW }}
-            onPointerDown={(e) => {
-              if (e.button !== 0) return;
-              e.currentTarget.setPointerCapture(e.pointerId);
-              p.onFrame(frameFromX(e.clientX));
-            }}
-            onPointerMove={(e) => {
-              if (e.currentTarget.hasPointerCapture(e.pointerId)) p.onFrame(frameFromX(e.clientX));
-            }}
-          >
-            <RulerTicks ppf={ppf} durationFrames={shownDuration} fps={fpsN} />
+          <div className="sticky top-0 z-20 flex border-b border-border bg-surface-1">
+            <div
+              className="sticky left-0 z-10 shrink-0 bg-surface-1"
+              style={{ width: PAD, height: RULER_H }}
+              aria-hidden
+            />
+            <div
+              className="relative cursor-col-resize touch-none"
+              style={{ height: RULER_H, width: trackW }}
+              onPointerDown={(e) => {
+                if (e.button !== 0) return;
+                e.currentTarget.setPointerCapture(e.pointerId);
+                p.onFrame(frameFromX(e.clientX));
+              }}
+              onPointerMove={(e) => {
+                if (e.currentTarget.hasPointerCapture(e.pointerId))
+                  p.onFrame(frameFromX(e.clientX));
+              }}
+            >
+              <RulerTicks ppf={ppf} durationFrames={shownDuration} fps={fpsN} />
+              <div
+                aria-hidden
+                className="pointer-events-none absolute top-0 size-2.5 -translate-x-1/2 rounded-b-sm bg-accent-brand"
+                style={{ left: frame * ppf }}
+              />
+            </div>
           </div>
 
           {/* Klippene */}
-          <div
-            role="group"
-            aria-label="Scener i filmen"
-            className="relative"
-            style={{ height: CLIP_H, marginLeft: PAD, marginTop: 10, width: trackW }}
-            onPointerDown={(e) => {
-              if (e.target === e.currentTarget) p.onFrame(frameFromX(e.clientX));
-            }}
-          >
-            {shown.map((c, i) => (
-              <ClipBlock
-                key={c.occurrenceId}
-                state={p.state}
-                clip={c}
-                index={i}
-                ppf={ppf}
-                selected={c.occurrenceId === p.selectedId}
-                dragging={drag?.kind === "move" && drag.started && drag.id === c.occurrenceId}
-                dragOffset={
-                  drag?.kind === "move" && drag.started && drag.id === c.occurrenceId
-                    ? drag.x - drag.px
-                    : 0
-                }
-                trimmable={p.editable && c.source === "composition"}
-                movable={p.editable}
-                tick={p.tick}
-                onPointerDownBody={(e) => {
-                  if (e.button !== 0) return;
-                  e.currentTarget.setPointerCapture(e.pointerId);
-                  const x = xIn(e.clientX);
-                  p.onSelect(c.occurrenceId);
-                  setDrag({ kind: "move", id: c.occurrenceId, px: x, started: false, x });
-                }}
-                onPointerDownEdge={(e) => {
-                  if (e.button !== 0) return;
-                  e.stopPropagation();
-                  e.currentTarget.setPointerCapture(e.pointerId);
-                  p.onSelect(c.occurrenceId);
-                  setDrag({
-                    kind: "trim",
-                    id: c.occurrenceId,
-                    px: xIn(e.clientX),
-                    from: c.durationFrames,
-                    frames: c.durationFrames,
-                  });
-                }}
-                onPointerMove={(e) => {
-                  const d = drag;
-                  if (!d || d.id !== c.occurrenceId) return;
-                  const x = xIn(e.clientX);
-                  if (d.kind === "move") {
-                    const started = d.started || Math.abs(x - d.px) > DRAG_THRESHOLD;
-                    if (started && !p.editable) return;
-                    setDrag({ ...d, started, x });
-                  } else {
-                    const frames = Math.max(minFrames, Math.round(d.from + (x - d.px) / ppf));
-                    setDrag({ ...d, frames });
+          <div className="flex pt-2">
+            <TrackLabel>Bilde</TrackLabel>
+            <div
+              role="group"
+              aria-label="Scener i filmen"
+              className="relative"
+              style={{ height: CLIP_H, width: trackW }}
+              onPointerDown={(e) => {
+                if (e.target === e.currentTarget) p.onFrame(frameFromX(e.clientX));
+              }}
+            >
+              {shown.map((c, i) => (
+                <ClipBlock
+                  key={c.occurrenceId}
+                  state={p.state}
+                  clip={c}
+                  index={i}
+                  ppf={ppf}
+                  selected={c.occurrenceId === p.selectedId}
+                  dragging={drag?.kind === "move" && drag.started && drag.id === c.occurrenceId}
+                  dragOffset={
+                    drag?.kind === "move" && drag.started && drag.id === c.occurrenceId
+                      ? drag.x - drag.px
+                      : 0
                   }
-                }}
-                onPointerUp={() => {
-                  const d = drag;
-                  if (d?.kind === "move" && !d.started) {
-                    // Et vanlig klikk: gå til scenen
-                    p.onFrame(c.startFrame);
-                    setDrag(null);
-                    return;
-                  }
-                  endDrag(true);
-                }}
-                onPointerCancel={() => setDrag(null)}
-                onDoubleClick={() => p.onOpen(c.occurrenceId)}
-              />
-            ))}
-            {dropIndex !== null && dropChanges ? (
-              <div
-                aria-hidden
-                className="pointer-events-none absolute -top-1 z-20 w-0.5 rounded-full bg-accent-brand"
-                style={{
-                  height: CLIP_H + 8,
-                  left:
-                    (dropIndex < clips.length
-                      ? clips[dropIndex]!.startFrame
-                      : (clips[clips.length - 1]?.startFrame ?? 0) +
-                        (clips[clips.length - 1]?.durationFrames ?? 0)) *
-                      ppf -
-                    1,
-                }}
-              />
-            ) : null}
+                  trimmable={p.editable && c.source === "composition"}
+                  movable={p.editable}
+                  tick={p.tick}
+                  onPointerDownBody={(e) => {
+                    if (e.button !== 0) return;
+                    e.currentTarget.setPointerCapture(e.pointerId);
+                    const x = xIn(e.clientX);
+                    p.onSelect(c.occurrenceId);
+                    setDrag({ kind: "move", id: c.occurrenceId, px: x, started: false, x });
+                  }}
+                  onPointerDownEdge={(e) => {
+                    if (e.button !== 0) return;
+                    e.stopPropagation();
+                    e.currentTarget.setPointerCapture(e.pointerId);
+                    p.onSelect(c.occurrenceId);
+                    setDrag({
+                      kind: "trim",
+                      id: c.occurrenceId,
+                      px: xIn(e.clientX),
+                      from: c.durationFrames,
+                      frames: c.durationFrames,
+                    });
+                  }}
+                  onPointerMove={(e) => {
+                    const d = drag;
+                    if (!d || d.id !== c.occurrenceId) return;
+                    const x = xIn(e.clientX);
+                    if (d.kind === "move") {
+                      const started = d.started || Math.abs(x - d.px) > DRAG_THRESHOLD;
+                      if (started && !p.editable) return;
+                      setDrag({ ...d, started, x });
+                    } else {
+                      const frames = Math.max(minFrames, Math.round(d.from + (x - d.px) / ppf));
+                      setDrag({ ...d, frames });
+                    }
+                  }}
+                  onPointerUp={() => {
+                    const d = drag;
+                    if (d?.kind === "move" && !d.started) {
+                      // Et vanlig klikk: gå til scenen
+                      p.onFrame(c.startFrame);
+                      setDrag(null);
+                      return;
+                    }
+                    endDrag(true);
+                  }}
+                  onPointerCancel={() => setDrag(null)}
+                  onDoubleClick={() => p.onOpen(c.occurrenceId)}
+                />
+              ))}
+              {dropIndex !== null && dropChanges ? (
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute -top-1 z-20 w-0.5 rounded-full bg-accent-brand"
+                  style={{
+                    height: CLIP_H + 8,
+                    left:
+                      (dropIndex < clips.length
+                        ? clips[dropIndex]!.startFrame
+                        : (clips[clips.length - 1]?.startFrame ?? 0) +
+                          (clips[clips.length - 1]?.durationFrames ?? 0)) *
+                        ppf -
+                      1,
+                  }}
+                />
+              ) : null}
+            </div>
           </div>
+
+          {p.audio?.({ ppf, pad: PAD, trackW, xIn })}
 
           {drag?.kind === "trim" ? (
             <p
@@ -310,11 +347,21 @@ export function FilmTimeline(p: FilmTimelineProps) {
             aria-hidden
             className="pointer-events-none absolute top-0 z-10 h-full w-px bg-accent-brand"
             style={{ left: PAD + frame * ppf }}
-          >
-            <div className="absolute -left-[5px] top-0 size-2.5 rounded-b-sm bg-accent-brand" />
-          </div>
+          ></div>
         </div>
       </div>
+    </div>
+  );
+}
+
+/** Sporoverskrift som blir stående når tidslinjen rulles sidelengs. */
+export function TrackLabel({ children, height }: { children: ReactNode; height?: number }) {
+  return (
+    <div
+      className="sticky left-0 z-10 flex shrink-0 items-start gap-1 border-r border-border bg-surface-1 px-2 pt-1 text-xs text-text-secondary"
+      style={{ width: LABEL_W, marginRight: PAD - LABEL_W, ...(height ? { height } : {}) }}
+    >
+      {children}
     </div>
   );
 }

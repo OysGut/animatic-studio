@@ -2,6 +2,8 @@
  * Montering (M4 del 1, mandat kap. 15, DEC-0043): den samlede filmen – alle aktive scener i manusets
  * rekkefølge, med 2D-scenene som materiale og tittelkort der 2D-scenen mangler. Forhåndsvis hele filmen,
  * flytt scener (speiles i manuset), juster lengder og eksporter animatic.
+ * M4 del 2 (DEC-0044): lydspor med dialog, forteller, effekter, atmosfære og musikk. Lyden spilles og
+ * eksporteres også der animasjonen ikke er laget.
  */
 import { useNavigate } from "@tanstack/react-router";
 import {
@@ -10,6 +12,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Download,
+  Music,
   Pause,
   Play,
   Redo2,
@@ -21,7 +24,9 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   DEFAULT_COMPOSITION,
+  audioClipFieldsOf,
   clipAtFrame,
+  filmAudio,
   filmClips,
   filmDurationFrames,
   formatTimecode,
@@ -29,9 +34,16 @@ import {
   keyBetween,
   mainProduction,
   newId,
+  type AudioClipFields,
+  type AudioKind,
   type Composition,
   type ProjectState,
 } from "@/core";
+import { useImageUrls } from "@/app/library/asset-images";
+import { useAudioLoaded, useAudioPlayback } from "@/app/audio/use-audio-playback";
+import { AudioTracks, type AudioChange } from "./AudioTracks";
+import { AudioClipPanel } from "./AudioClipPanel";
+import { AddAudioDialog } from "./AddAudioDialog";
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { SaveIndicator } from "@/app/script/ScriptWorkspace";
@@ -109,6 +121,29 @@ function Assembly({
   const [exportOpen, setExportOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [panelW, setPanelW] = useStoredPanel();
+
+  // ---------- Lyd (DEC-0044) ----------
+  const audioItems = useMemo(() => filmAudio(state, clips, fps), [state, clips, fps]);
+  const audioPaths = useMemo(
+    () => [...new Set(audioItems.flatMap((it) => (it.version ? [it.version.mediaPath] : [])))],
+    [audioItems],
+  );
+  const audioUrls = useImageUrls(audioPaths);
+  const [mutedKinds, setMutedKinds] = useState<ReadonlySet<AudioKind>>(new Set());
+  const [selectedAudioId, setSelectedAudioId] = useState<string | null>(null);
+  const selectedAudio = selectedAudioId ? state.audioClips[selectedAudioId] : undefined;
+  const audioLoaded = useAudioLoaded();
+  useAudioPlayback({
+    items: audioItems,
+    urls: audioUrls.data ?? null,
+    playing: playback.playing,
+    time: framesToSeconds(playback.frame, fps),
+    mutedKinds,
+  });
+  const [addAudio, setAddAudio] = useState<AudioKind | null>(null);
+  useEffect(() => {
+    if (selectedAudioId && (!selectedAudio || selectedAudio.removed)) setSelectedAudioId(null);
+  }, [selectedAudioId, selectedAudio]);
 
   const at = clipAtFrame(clips, playback.frame);
   // «Følg avspillingen»: valget følger scenen under avspillingshodet
@@ -191,6 +226,64 @@ function Assembly({
     [clips, state.compositions, run],
   );
 
+  /** Ny plassering fra tidslinjen: lyden festes til scenen den starter i (mandat 6.4). */
+  const changeAudio = useCallback(
+    (clipId: string, ch: AudioChange) => {
+      const a = state.audioClips[clipId];
+      if (!a) return;
+      // Kutt beholder scenen så lenge lyden fortsatt starter i den; bare flytting fester den på nytt
+      const own = clips.find((c) => c.occurrenceId === a.occurrenceId);
+      const ownStart = own ? framesToSeconds(own.startFrame, fps) : null;
+      const keep = ch.mode !== "move" && ownStart !== null && ch.start >= ownStart - 1e-6;
+      const at2 = keep
+        ? { clip: own! }
+        : clipAtFrame(clips, Math.floor(ch.start * (fps.num / fps.den) + 1e-6));
+      if (!at2) return;
+      const sceneStart = framesToSeconds(at2.clip.startFrame, fps);
+      const moved = at2.clip.occurrenceId !== a.occurrenceId;
+      const block = a.blockId ? state.blocks[a.blockId] : undefined;
+      const fields: AudioClipFields = {
+        ...audioClipFieldsOf(a),
+        occurrenceId: at2.clip.occurrenceId,
+        // Kutt i slutten: start og start i filen er uendret (ingen avrunding)
+        offsetMs:
+          keep && ch.mode === "out"
+            ? a.offsetMs
+            : Math.max(0, Math.round((ch.start - sceneStart) * 1000)),
+        sourceInMs:
+          keep && ch.mode === "out" ? a.sourceInMs : Math.max(0, Math.round(ch.sourceIn * 1000)),
+        lengthMs: Math.max(1, Math.round(ch.length * 1000)),
+        // Replikken hører til en annen scene enn den lyden flyttes til: koblingen tas bort
+        blockId: block && block.variantId === at2.clip.variantId ? a.blockId : null,
+      };
+      run(
+        { type: "UpdateAudioClips", clips: [{ clipId: a.id, fields }] },
+        moved ? "Flytt lyd til annen scene" : "Flytt eller kutt lyd",
+      );
+    },
+    [state.audioClips, state.blocks, clips, fps, run],
+  );
+
+  function patchAudio(label: string, patch: Partial<AudioClipFields>) {
+    if (!selectedAudio) return;
+    run(
+      {
+        type: "UpdateAudioClips",
+        clips: [
+          { clipId: selectedAudio.id, fields: { ...audioClipFieldsOf(selectedAudio), ...patch } },
+        ],
+      },
+      label,
+    );
+  }
+
+  function removeAudio(clipId: string) {
+    if (
+      run({ type: "SetAudioClipsRemoved", clipIds: [clipId as never], removed: true }, "Fjern lyd")
+    )
+      setSelectedAudioId(null);
+  }
+
   function createComposition(occurrenceId: string) {
     const clip = clips.find((c) => c.occurrenceId === occurrenceId);
     if (!clip) return;
@@ -248,6 +341,8 @@ function Assembly({
   }, []);
   function onKeyDown(e: React.KeyboardEvent) {
     if (isTypingTarget(e.target) || e.metaKey || e.ctrlKey) return;
+    // Taster fra dialoger (portaler) bobler hit i React, men hører ikke til arbeidsflaten
+    if (!(e.currentTarget as Node).contains(e.target as Node)) return;
     const f = playback.frame;
     const sec = Math.round(fps.num / fps.den);
     const idx = at?.index ?? 0;
@@ -289,6 +384,13 @@ function Assembly({
       case "End":
         e.preventDefault();
         playback.setFrame(duration - 1);
+        break;
+      case "Delete":
+      case "Backspace":
+        if (selectedAudio && editable) {
+          e.preventDefault();
+          removeAudio(selectedAudio.id);
+        }
         break;
       case "Enter":
         if (selected && !(e.target as HTMLElement).closest("button,a,select")) {
@@ -406,6 +508,18 @@ function Assembly({
           2D-scene
         </span>
         <div className="ml-auto flex items-center gap-3">
+          {editable ? (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setAddAudio("dialogue")}
+              disabled={clips.length === 0}
+              title="Legg til lyd ved avspillingshodet"
+            >
+              <Music />
+              Legg til lyd
+            </Button>
+          ) : null}
           <Button
             size="sm"
             variant="secondary"
@@ -448,19 +562,31 @@ function Assembly({
             max={620}
             label="Bredde på scenepanelet"
           />
-          <ClipPanel
-            state={state}
-            projectId={projectId}
-            clip={selected}
-            clipCount={clips.length}
-            editable={editable}
-            follow={follow}
-            onFollowChange={setFollow}
-            onDuration={(frames) => selected && setDuration(selected.occurrenceId, frames)}
-            onEstimate={() => selected && setDuration(selected.occurrenceId, 0)}
-            onCreateComposition={() => selected && createComposition(selected.occurrenceId)}
-            onDeactivate={() => selected && deactivate(selected.occurrenceId)}
-          />
+          {selectedAudio && !selectedAudio.removed ? (
+            <AudioClipPanel
+              key={selectedAudio.id}
+              state={state}
+              projectId={projectId}
+              clip={selectedAudio}
+              editable={editable}
+              onChange={patchAudio}
+              onRemove={() => removeAudio(selectedAudio.id)}
+            />
+          ) : (
+            <ClipPanel
+              state={state}
+              projectId={projectId}
+              clip={selected}
+              clipCount={clips.length}
+              editable={editable}
+              follow={follow}
+              onFollowChange={setFollow}
+              onDuration={(frames) => selected && setDuration(selected.occurrenceId, frames)}
+              onEstimate={() => selected && setDuration(selected.occurrenceId, 0)}
+              onCreateComposition={() => selected && createComposition(selected.occurrenceId)}
+              onDeactivate={() => selected && deactivate(selected.occurrenceId)}
+            />
+          )}
         </aside>
       </div>
 
@@ -474,7 +600,7 @@ function Assembly({
         selectedId={selected?.occurrenceId ?? null}
         onSelect={(id) => {
           setSelectedId(id);
-          // Et valg mens man står stille slår ikke av «Følg avspillingen», men hodet flyttes til scenen
+          setSelectedAudioId(null);
         }}
         onOpen={openInEditor}
         editable={editable}
@@ -482,6 +608,31 @@ function Assembly({
         onDuration={setDuration}
         tick={images.tick}
         toolbar={toolbar}
+        audio={(g) => (
+          <AudioTracks
+            state={state}
+            items={audioItems}
+            clips={clips}
+            g={g}
+            frame={playback.frame}
+            editable={editable}
+            selectedId={selectedAudioId}
+            onSelect={setSelectedAudioId}
+            onChange={changeAudio}
+            onFrame={playback.setFrame}
+            mutedKinds={mutedKinds}
+            onToggleMute={(k) =>
+              setMutedKinds((m) => {
+                const n = new Set(m);
+                if (n.has(k)) n.delete(k);
+                else n.add(k);
+                return n;
+              })
+            }
+            onAdd={(k) => setAddAudio(k)}
+            loaded={audioLoaded}
+          />
+        )}
       />
 
       <ExportAnimaticDialog
@@ -492,6 +643,22 @@ function Assembly({
         clips={clips}
         selectedId={selected?.occurrenceId ?? null}
         urls={images.urls}
+        audioItems={audioItems}
+        audioUrls={audioUrls.data ?? null}
+        mutedKinds={mutedKinds}
+      />
+      <AddAudioDialog
+        open={addAudio !== null}
+        onOpenChange={(o) => {
+          if (!o) setAddAudio(null);
+        }}
+        state={state}
+        projectId={projectId}
+        cmds={cmds}
+        clip={at?.clip ?? null}
+        offsetMs={at ? Math.round(framesToSeconds(at.localFrame, fps) * 1000) : 0}
+        initialKind={addAudio ?? "dialogue"}
+        onAdded={(id) => setSelectedAudioId(id)}
       />
     </div>
   );

@@ -62,6 +62,8 @@ interface StageProps {
   autoKey: boolean;
   /** Mellomrom uten å dra: spill av / pause. */
   onTogglePlay?: () => void;
+  /** Dobbeltklikk på et lag: velg bilde for laget (DEC-0044). */
+  onOpenLayerImage?: (layerId: string) => void;
 }
 
 interface Size {
@@ -278,6 +280,7 @@ export function Stage({
   onViewChange,
   autoKey,
   onTogglePlay,
+  onOpenLayerImage,
 }: StageProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -700,9 +703,19 @@ export function Stage({
 
   /** Dobbeltklikk på banen bytter mellom rett og kurvet (mandat 12.3). */
   function onDoubleClick(e: React.MouseEvent<HTMLCanvasElement>) {
-    if (!overlayShot) return;
-    const t = pickShot(screenPoint(e));
-    if (t?.kind !== "path") return;
+    const p = screenPoint(e);
+    const t = overlayShot ? pickShot(p) : null;
+    if (!overlayShot || t?.kind !== "path") {
+      // Dobbeltklikk på et lag: velg et annet bilde for det (DEC-0044)
+      if (cameraMode || !onOpenLayerImage) return;
+      const sp = toScene(view, p);
+      const hit = hitTest(frame, sp.x, sp.y, { includeLocked: true });
+      if (hit) {
+        onSelect(hit.layerId);
+        onOpenLayerImage(hit.layerId);
+      }
+      return;
+    }
     onSelect(null);
     onSelectShot(overlayShot.id);
     setError(

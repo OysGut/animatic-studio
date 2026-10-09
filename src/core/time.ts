@@ -28,6 +28,12 @@ export function secondsToFrames(seconds: number, fps: Rational): number {
   return Math.round((seconds * fps.num) / fps.den);
 }
 
+/** Millisekunder → antall hele bilder som dekker tiden (rundet opp, heltallsregning). */
+export function msToFramesCeil(ms: number, fps: Rational): number {
+  validateFps(fps);
+  return Math.ceil((Math.round(ms) * fps.num) / (1000 * fps.den));
+}
+
 export function framesToSeconds(frames: number, fps: Rational): number {
   validateFps(fps);
   return (frames * fps.den) / fps.num;

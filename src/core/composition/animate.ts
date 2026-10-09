@@ -17,7 +17,8 @@ import type {
 import type { LayerFields } from "../commands/types";
 import { estimateProduction } from "../screenplay/duration";
 import { mainProduction } from "../model";
-import { secondsToFrames } from "../time";
+import { msToFramesCeil, secondsToFrames } from "../time";
+import { sceneAudioEndMs } from "../audio";
 import { ANIMATED_PROPERTIES } from "./fields";
 import { applyMatrix, fullFrameCamera, multiply, rotate, transformAt, translate } from "./render";
 
@@ -35,6 +36,7 @@ export function compositionDuration(s: ProjectState, c: Composition): number {
   const fps = s.project.fps;
   const prod = mainProduction(s);
   let seconds = 5;
+  let audioFrames = 0;
   if (prod) {
     const occ = Object.values(s.occurrences).find(
       (o) => o.variantId === c.variantId && o.productionId === prod.id,
@@ -43,8 +45,10 @@ export function compositionDuration(s: ProjectState, c: Composition): number {
       ? estimateProduction(s, prod.id).scenes.find((x) => x.occurrenceId === occ.id)
       : undefined;
     if (est) seconds = Math.max(5, est.seconds);
+    // Aldri kortere enn lyden i scenen (DEC-0044) – samme regel som i filmtidslinjen
+    if (occ) audioFrames = msToFramesCeil(sceneAudioEndMs(s).get(occ.id) ?? 0, fps);
   }
-  return Math.max(1, secondsToFrames(seconds, fps));
+  return Math.max(1, secondsToFrames(seconds, fps), audioFrames);
 }
 
 // ---------- Nøkkelbilder ----------

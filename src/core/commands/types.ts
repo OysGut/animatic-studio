@@ -8,6 +8,7 @@ import type {
   AssetId,
   AssetVariantId,
   AssetVersionId,
+  AudioClipId,
   BlockId,
   CommandId,
   CompositionId,
@@ -23,6 +24,7 @@ import type {
 import type {
   AssetKind,
   AssetName,
+  AudioKind,
   BlockKind,
   Composition,
   CompositionCamera,
@@ -39,6 +41,24 @@ import type {
   VisualStyle,
 } from "../model";
 import type { Rational } from "../time";
+
+/** Redigerbare felter på et lydklipp (mandat 13.3, DEC-0044). Alt erstattes samlet. */
+export interface AudioClipFields {
+  readonly occurrenceId: OccurrenceId;
+  readonly kind: AudioKind;
+  readonly name: string;
+  readonly assetId: AssetId;
+  readonly assetVariantId: AssetVariantId | null;
+  readonly versionId: AssetVersionId | null;
+  readonly blockId: BlockId | null;
+  readonly offsetMs: number;
+  readonly sourceInMs: number;
+  readonly lengthMs: number;
+  readonly gainDb: number;
+  readonly fadeInMs: number;
+  readonly fadeOutMs: number;
+  readonly muted: boolean;
+}
 
 /** Redigerbare felter på en 2D-scene (format, varighet, bakgrunn). */
 export interface CompositionFields {
@@ -113,6 +133,8 @@ export interface AssetMedia {
   readonly height: number | null;
   readonly byteSize: number;
   readonly sha256: string;
+  /** Lengde i millisekunder (bare lydfiler). */
+  readonly durationMs?: number | null;
 }
 
 export interface NewBlock {
@@ -456,6 +478,21 @@ export type Command =
   | {
       readonly type: "SetLayersRemoved";
       readonly layerIds: readonly LayerId[];
+      readonly removed: boolean;
+    }
+  // ---------- Lyd i filmen (M4 del 2, DEC-0044) ----------
+  | {
+      readonly type: "AddAudioClips";
+      readonly clips: readonly { readonly clipId: AudioClipId; readonly fields: AudioClipFields }[];
+    }
+  | { readonly type: "UndoAddAudioClips"; readonly clipIds: readonly AudioClipId[] }
+  | {
+      readonly type: "UpdateAudioClips";
+      readonly clips: readonly { readonly clipId: AudioClipId; readonly fields: AudioClipFields }[];
+    }
+  | {
+      readonly type: "SetAudioClipsRemoved";
+      readonly clipIds: readonly AudioClipId[];
       readonly removed: boolean;
     };
 

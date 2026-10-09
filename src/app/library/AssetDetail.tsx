@@ -3,7 +3,7 @@
  * visuelle varianter med bildeversjoner og godkjenning (REQ-0135, REQ-0136, REQ-0146, REQ-0149)
  * og scenene der ressursen er brukt (REQ-0131).
  */
-import { Archive, ArchiveRestore, Check, ImagePlus, Loader2, Plus, X } from "lucide-react";
+import { Archive, ArchiveRestore, Check, ImagePlus, Loader2, Music, Plus, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   ASSET_KIND_LABEL,
@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { uploadAssetImage, useImageUrls } from "./asset-images";
+import { uploadAssetAudio } from "./asset-audio";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 
 const NAME_KIND_LABEL: Record<AssetNameKind, string> = {
@@ -558,7 +559,11 @@ function VariantCard({
     setErr(null);
     setUploading(true);
     try {
-      const { versionId, media } = await uploadAssetImage(projectId, asset.id, file);
+      // Lydfiler (DEC-0044) og bilder lastes opp hver for seg
+      const sound = asset.kind === "sound";
+      const { versionId, media } = sound
+        ? await uploadAssetAudio(projectId, asset.id, file)
+        : await uploadAssetImage(projectId, asset.id, file);
       const r = await cmds.runAndWait(
         {
           type: "AddAssetVersion",
@@ -658,7 +663,11 @@ function VariantCard({
             <input
               ref={input}
               type="file"
-              accept={ASSET_MIME_TYPES.join(",")}
+              accept={
+                asset.kind === "sound"
+                  ? "audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac,.webm"
+                  : ASSET_MIME_TYPES.join(",")
+              }
               className="hidden"
               aria-hidden
               tabIndex={-1}
@@ -673,8 +682,18 @@ function VariantCard({
               disabled={uploading}
               onClick={() => input.current?.click()}
             >
-              {uploading ? <Loader2 className="animate-spin" /> : <ImagePlus />}
-              {uploading ? "Laster opp …" : "Last opp bilde"}
+              {uploading ? (
+                <Loader2 className="animate-spin" />
+              ) : asset.kind === "sound" ? (
+                <Music />
+              ) : (
+                <ImagePlus />
+              )}
+              {uploading
+                ? "Laster opp …"
+                : asset.kind === "sound"
+                  ? "Last opp lyd"
+                  : "Last opp bilde"}
             </Button>
             <Button
               size="sm"
@@ -727,23 +746,40 @@ function VariantCard({
                   (approved ? "border-status-success bg-status-success-bg" : "border-border")
                 }
               >
-                <a
-                  href={url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex h-[120px] items-center justify-center overflow-hidden bg-surface-3"
-                  title="Åpne bildet i full størrelse"
-                >
-                  {url ? (
-                    <img
-                      src={url}
-                      alt={`${asset.name} – ${variant.name}, versjon ${ver.number}`}
-                      className="max-h-full max-w-full object-contain"
-                    />
-                  ) : (
-                    <Loader2 className="size-4 animate-spin text-text-tertiary" aria-hidden />
-                  )}
-                </a>
+                {asset.kind === "sound" ? (
+                  <div className="flex h-[120px] flex-col items-center justify-center gap-2 bg-surface-3 px-1">
+                    <Music className="size-6 text-text-tertiary" aria-hidden />
+                    {url ? (
+                      <audio
+                        src={url}
+                        controls
+                        preload="none"
+                        className="h-7 w-full"
+                        aria-label={`${asset.name}, versjon ${ver.number}`}
+                      />
+                    ) : (
+                      <Loader2 className="size-4 animate-spin text-text-tertiary" aria-hidden />
+                    )}
+                  </div>
+                ) : (
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex h-[120px] items-center justify-center overflow-hidden bg-surface-3"
+                    title="Åpne bildet i full størrelse"
+                  >
+                    {url ? (
+                      <img
+                        src={url}
+                        alt={`${asset.name} – ${variant.name}, versjon ${ver.number}`}
+                        className="max-h-full max-w-full object-contain"
+                      />
+                    ) : (
+                      <Loader2 className="size-4 animate-spin text-text-tertiary" aria-hidden />
+                    )}
+                  </a>
+                )}
                 <div className="flex items-center justify-between text-[11px]">
                   <span className="tabular font-mono text-text-secondary">v{ver.number}</span>
                   {approved ? (
@@ -762,6 +798,9 @@ function VariantCard({
                     ? ` · ${profiles.data[ver.createdBy]!.display_name}`
                     : ""}
                   {ver.width && ver.height ? ` · ${ver.width}×${ver.height}` : ""}
+                  {ver.durationMs
+                    ? ` · ${(ver.durationMs / 1000).toLocaleString("nb-NO", { maximumFractionDigits: 1 })} s`
+                    : ""}
                 </span>
                 {editable ? (
                   approved ? (

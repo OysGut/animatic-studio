@@ -68,6 +68,7 @@ const INVERSE_ONLY = new Set<string>([
   "UndoCreateComposition",
   "UndoAddLayers",
   "UndoSetProjectFormat",
+  "UndoAddAudioClips",
 ]);
 
 /** Kommandoer som skriver til tabellene fra migrasjon 0004 (ressursbibliotek og notater). */
@@ -100,6 +101,30 @@ const COMPOSITION_COMMANDS = new Set<string>([
   "MoveLayer",
   "SetLayersRemoved",
 ]);
+
+/** Kommandoer som skriver til tabellen fra migrasjon 0009 (lyd i filmen). */
+const AUDIO_COMMANDS = new Set<string>([
+  "AddAudioClips",
+  "UndoAddAudioClips",
+  "UpdateAudioClips",
+  "SetAudioClipsRemoved",
+]);
+
+/** Lydfiler i biblioteket krever også migrasjon 0009 (ny ressurstype og lydformater). */
+function needsAudioSchema(command: { type: string } & Record<string, unknown>): boolean {
+  if (AUDIO_COMMANDS.has(command.type)) return true;
+  if (command.type === "CreateAssets")
+    return ((command["assets"] as { fields?: { kind?: string } }[] | undefined) ?? []).some(
+      (a) => a.fields?.kind === "sound",
+    );
+  if (command.type === "UpdateAsset")
+    return (command["fields"] as { kind?: string } | undefined)?.kind === "sound";
+  if (command.type === "AddAssetVersion")
+    return String(
+      (command["media"] as { mimeType?: string } | undefined)?.mimeType ?? "",
+    ).startsWith("audio/");
+  return false;
+}
 
 /** JSON med sorterte nøkler, for sammenligning med jsonb fra databasen. */
 export function canonicalJson(v: unknown): string {
@@ -244,7 +269,7 @@ export const runCommand = createServerFn({ method: "POST" })
     // Ressursbiblioteket krever migrasjon 0004 (ellers ville endringen bare blitt logget, ikke lagret)
     if (LIBRARY_COMMANDS.has(data.command.type)) {
       const schema = await checkSchema(admin);
-      if (schema.kind !== "ok" || schema.version < 4)
+      if (schema.kind === "missing" || schema.version < 4)
         return {
           ok: false,
           code: "schema",
@@ -255,7 +280,7 @@ export const runCommand = createServerFn({ method: "POST" })
     // Prosjektets format krever migrasjon 0008
     if (data.command.type === "SetProjectFormat" || data.command.type === "UndoSetProjectFormat") {
       const schema = await checkSchema(admin);
-      if (schema.kind !== "ok" || schema.version < 8)
+      if (schema.kind === "missing" || schema.version < 8)
         return {
           ok: false,
           code: "schema",
@@ -263,10 +288,21 @@ export const runCommand = createServerFn({ method: "POST" })
             "Databasen mangler prosjektformatet. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0008.",
         };
     }
+    // Lyd krever migrasjon 0009
+    if (needsAudioSchema(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 9)
+        return {
+          ok: false,
+          code: "schema",
+          message:
+            "Databasen mangler lyd. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0009.",
+        };
+    }
     // 2D-sceneeditoren krever migrasjon 0007
     if (COMPOSITION_COMMANDS.has(data.command.type)) {
       const schema = await checkSchema(admin);
-      if (schema.kind !== "ok" || schema.version < 7)
+      if (schema.kind === "missing" || schema.version < 7)
         return {
           ok: false,
           code: "schema",

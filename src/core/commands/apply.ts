@@ -20,6 +20,7 @@ import { compareKeys, isValidOrderKey, keyBetween } from "../order-key";
 import {
   PRIMARY_LANGUAGE,
   type Annotation,
+  type AudioClip,
   type BlockRevision,
   type CompositionLayer,
   type ProjectState,
@@ -29,6 +30,7 @@ import {
 import type {
   NewAnnotation,
   AssetFields,
+  AudioClipFields,
   AssetVariantFields,
   Command,
   CompositionFields,
@@ -91,6 +93,7 @@ function assertNewId(s: ProjectState, id: string) {
     s.annotations,
     s.compositions,
     s.layers,
+    s.audioClips,
   ];
   if (all.some((c) => c[id] !== undefined)) fail("duplicate_id", `ID ${id} er allerede i bruk`);
 }
@@ -104,6 +107,7 @@ export const ASSET_KINDS = [
   "animal",
   "environment",
   "other",
+  "sound",
 ] as const;
 export const ASSET_NAME_KINDS = ["alias", "nickname", "former", "language"] as const;
 export const VISUAL_STYLES = [
@@ -120,6 +124,22 @@ export const ASSET_MIME_TYPES: readonly string[] = [
   "image/webp",
   "image/gif",
 ];
+/** Lydformater for ressurser av typen «sound» (DEC-0044). */
+export const AUDIO_MIME_TYPES: readonly string[] = [
+  "audio/mpeg",
+  "audio/wav",
+  "audio/x-wav",
+  "audio/wave",
+  "audio/ogg",
+  "audio/webm",
+  "audio/mp4",
+  "audio/x-m4a",
+  "audio/aac",
+  "audio/flac",
+  "audio/x-flac",
+];
+/** Lengste lydfil og lengste lydklipp: 10 timer. */
+export const AUDIO_MAX_MS = 36_000_000;
 /** Maks filstørrelse for et bilde: 2 GB (Lovable Clouds standard per fil, DEC-0032). */
 export const ASSET_MAX_BYTES = 2 * 1024 * 1024 * 1024;
 
@@ -282,6 +302,7 @@ export function revisionOf(s: ProjectState, id: string): number | undefined {
     s.annotations,
     s.compositions,
     s.layers,
+    s.audioClips,
   ]) {
     const e = c[id];
     if (e) return e.revision;
@@ -324,7 +345,8 @@ function layerFields(s: ProjectState, f: LayerFields): LayerFields {
   const r = normalizeLayerFields(f);
   if (!r.ok) fail("invalid", r.error);
   const v = r.value;
-  if (v.assetId !== null) need(s.assets[v.assetId], "Ressursen");
+  if (v.assetId !== null && need(s.assets[v.assetId], "Ressursen").kind === "sound")
+    fail("invalid", "En lydfil kan ikke vises som lag");
   if (v.assetVariantId !== null) {
     const va = need(s.assetVariants[v.assetVariantId], "Varianten av ressursen");
     if (va.assetId !== v.assetId) fail("invalid", "Varianten hører til en annen ressurs");
@@ -363,6 +385,77 @@ function sortedLayerKeys(s: ProjectState, compositionId: string, except?: string
 }
 
 const MAX_CAMERA_JSON = 64 * 1024;
+
+export const AUDIO_KINDS = ["dialogue", "narration", "sfx", "ambience", "music"] as const;
+
+/** Kontroll av et lydklipp (DEC-0044). */
+function audioFields(s: ProjectState, f: AudioClipFields): AudioClipFields {
+  if (!f || typeof f !== "object") fail("invalid", "Ugyldig lydklipp");
+  if (!(AUDIO_KINDS as readonly string[]).includes(f.kind)) fail("invalid", "Ukjent lydtype");
+  if (typeof f.name !== "string" || f.name.length > 200) fail("invalid", "Navnet er for langt");
+  need(s.occurrences[f.occurrenceId], "Scenen");
+  const asset = need(s.assets[f.assetId], "Lydfilen");
+  if (asset.kind !== "sound") fail("invalid", "Ressursen er ikke en lydfil");
+  if (f.assetVariantId !== null) {
+    const va = need(s.assetVariants[f.assetVariantId], "Varianten av lydfilen");
+    if (va.assetId !== f.assetId) fail("invalid", "Varianten hører til en annen ressurs");
+  }
+  if (f.versionId !== null) {
+    const ve = need(s.assetVersions[f.versionId], "Lydversjonen");
+    if (ve.variantId !== f.assetVariantId) fail("invalid", "Versjonen hører til en annen variant");
+  }
+  if (f.blockId !== null) {
+    const b = need(s.blocks[f.blockId], "Replikken");
+    const occ = s.occurrences[f.occurrenceId]!;
+    if (b.variantId !== occ.variantId) fail("invalid", "Replikken hører til en annen scene");
+  }
+  const int = (v: number, lo: number, hi: number, what: string) => {
+    if (!Number.isInteger(v) || v < lo || v > hi) fail("invalid", `Ugyldig ${what}`);
+  };
+  int(f.offsetMs, 0, AUDIO_MAX_MS, "start i scenen");
+  int(f.sourceInMs, 0, AUDIO_MAX_MS, "start i lydfilen");
+  int(f.lengthMs, 1, AUDIO_MAX_MS, "lengde");
+  int(f.fadeInMs, 0, 600_000, "inntoning");
+  int(f.fadeOutMs, 0, 600_000, "uttoning");
+  if (typeof f.gainDb !== "number" || !Number.isFinite(f.gainDb) || f.gainDb < -60 || f.gainDb > 12)
+    fail("invalid", "Volumet må være mellom −60 og +12 dB");
+  if (typeof f.muted !== "boolean") fail("invalid", "Ugyldig demping");
+  return {
+    occurrenceId: f.occurrenceId,
+    kind: f.kind,
+    name: f.name.trim(),
+    assetId: f.assetId,
+    assetVariantId: f.assetVariantId,
+    versionId: f.versionId,
+    blockId: f.blockId,
+    offsetMs: f.offsetMs,
+    sourceInMs: f.sourceInMs,
+    lengthMs: f.lengthMs,
+    gainDb: Math.round(f.gainDb * 10) / 10,
+    fadeInMs: f.fadeInMs,
+    fadeOutMs: f.fadeOutMs,
+    muted: f.muted,
+  };
+}
+
+export function audioClipFieldsOf(a: AudioClip): AudioClipFields {
+  return {
+    occurrenceId: a.occurrenceId,
+    kind: a.kind,
+    name: a.name,
+    assetId: a.assetId,
+    assetVariantId: a.assetVariantId,
+    versionId: a.versionId,
+    blockId: a.blockId,
+    offsetMs: a.offsetMs,
+    sourceInMs: a.sourceInMs,
+    lengthMs: a.lengthMs,
+    gainDb: a.gainDb,
+    fadeInMs: a.fadeInMs,
+    fadeOutMs: a.fadeOutMs,
+    muted: a.muted,
+  };
+}
 
 function run(
   s: ProjectState,
@@ -1689,7 +1782,14 @@ function run(
         fail("invalid", "Ufullstendige bildedata");
       if (!m.path.startsWith(`${s.project.id}/`) || m.path.length > 600 || m.path.includes(".."))
         fail("invalid", "Ugyldig lagringssti for bildet");
-      if (!ASSET_MIME_TYPES.includes(m.mimeType))
+      const sound = s.assets[va.assetId]?.kind === "sound";
+      if (sound) {
+        if (!AUDIO_MIME_TYPES.includes(m.mimeType))
+          fail("invalid", "Lyden må være MP3, WAV, OGG, WebM, M4A/AAC eller FLAC");
+        const d = m.durationMs ?? null;
+        if (d !== null && (!Number.isInteger(d) || d <= 0 || d > AUDIO_MAX_MS))
+          fail("invalid", "Ugyldig lengde på lydfilen");
+      } else if (!ASSET_MIME_TYPES.includes(m.mimeType))
         fail("invalid", "Bildet må være PNG, JPEG, WebP eller GIF");
       if (!Number.isInteger(m.byteSize) || m.byteSize <= 0 || m.byteSize > ASSET_MAX_BYTES)
         fail("invalid", "Bildet er for stort (maks 2 GB)");
@@ -1726,6 +1826,7 @@ function run(
               note: c.note.trim(),
               createdAt: env.at,
               createdBy: env.actor,
+              durationMs: sound ? (m.durationMs ?? null) : null,
             },
           },
         },
@@ -2261,6 +2362,85 @@ function run(
         affected: changed.map((l) => l.id),
       };
     }
+
+    // ---------- Lyd i filmen (DEC-0044) ----------
+
+    case "AddAudioClips": {
+      if (!Array.isArray(c.clips) || c.clips.length === 0) fail("invalid", "Ingen lyd å legge til");
+      if (c.clips.length > 500) fail("invalid", "For mange lydklipp på én gang (maks 500)");
+      const audioClips = { ...s.audioClips };
+      const ids = new Set<string>();
+      for (const n of c.clips) {
+        assertNewId(s, n.clipId);
+        if (ids.has(n.clipId)) fail("duplicate_id", `ID ${n.clipId} er brukt to ganger`);
+        ids.add(n.clipId);
+        audioClips[n.clipId] = {
+          id: n.clipId,
+          revision: 1,
+          ...audioFields(s, n.fields),
+          removed: false,
+        };
+      }
+      return {
+        state: { ...s, audioClips },
+        inverse: { type: "UndoAddAudioClips", clipIds: c.clips.map((n) => n.clipId) },
+        affected: c.clips.map((n) => n.clipId),
+      };
+    }
+
+    case "UndoAddAudioClips": {
+      const audioClips = { ...s.audioClips };
+      const restored = c.clipIds.map((id) => {
+        const a = need(s.audioClips[id], "Lydklippet");
+        delete audioClips[id];
+        return a;
+      });
+      return {
+        state: { ...s, audioClips },
+        inverse: {
+          type: "AddAudioClips",
+          clips: restored.map((a) => ({ clipId: a.id, fields: audioClipFieldsOf(a) })),
+        },
+        affected: [...c.clipIds],
+      };
+    }
+
+    case "UpdateAudioClips": {
+      if (!Array.isArray(c.clips) || c.clips.length === 0) fail("invalid", "Ingen lyd å endre");
+      if (new Set(c.clips.map((x) => x.clipId)).size !== c.clips.length)
+        fail("invalid", "Samme lydklipp er med to ganger");
+      const audioClips = { ...s.audioClips };
+      const before: { clipId: AudioClip["id"]; fields: AudioClipFields }[] = [];
+      for (const u of c.clips) {
+        const a = need(s.audioClips[u.clipId], "Lydklippet");
+        before.push({ clipId: a.id, fields: audioClipFieldsOf(a) });
+        audioClips[a.id] = { ...a, ...audioFields(s, u.fields), revision: rev(a) };
+      }
+      return {
+        state: { ...s, audioClips },
+        inverse: { type: "UpdateAudioClips", clips: before },
+        affected: c.clips.map((x) => x.clipId),
+      };
+    }
+
+    case "SetAudioClipsRemoved": {
+      if (!Array.isArray(c.clipIds) || c.clipIds.length === 0) fail("invalid", "Ingen lyd valgt");
+      const audioClips = { ...s.audioClips };
+      const changed = [...new Set(c.clipIds)]
+        .map((id) => need(s.audioClips[id], "Lydklippet"))
+        .filter((a) => a.removed !== c.removed);
+      if (changed.length === 0) fail("invalid", "Ingen endring");
+      for (const a of changed) audioClips[a.id] = { ...a, removed: c.removed, revision: rev(a) };
+      return {
+        state: { ...s, audioClips },
+        inverse: {
+          type: "SetAudioClipsRemoved",
+          clipIds: changed.map((a) => a.id),
+          removed: !c.removed,
+        },
+        affected: changed.map((a) => a.id),
+      };
+    }
   }
 }
 
@@ -2337,6 +2517,31 @@ export function applyCommand(state: ProjectState, env: CommandEnvelope): ApplyRe
           "referenced",
           "Ressursen er brukt i en 2D-scene og kan ikke fjernes. Arkiver den i stedet.",
           lost.map((l) => l.id),
+        );
+    }
+    // Lyd i scener eller fra lydfiler som forsvinner (angre av opprettelse, DEC-0044)
+    if (
+      next.occurrences !== state.occurrences ||
+      next.blocks !== state.blocks ||
+      next.assets !== state.assets ||
+      next.assetVariants !== state.assetVariants ||
+      next.assetVersions !== state.assetVersions
+    ) {
+      const has = (o: object, id: string | null) =>
+        id === null || Object.prototype.hasOwnProperty.call(o, id);
+      const lost = Object.values(next.audioClips).filter(
+        (a) =>
+          !has(next.occurrences, a.occurrenceId) ||
+          !has(next.blocks, a.blockId) ||
+          !has(next.assets, a.assetId) ||
+          !has(next.assetVariants, a.assetVariantId) ||
+          !has(next.assetVersions, a.versionId),
+      );
+      if (lost.length)
+        fail(
+          "referenced",
+          "Det ligger lyd på dette i filmen. Fjern lyden først hvis endringen skal angres.",
+          lost.map((a) => a.id),
         );
     }
     const violations = checkInvariants(next);

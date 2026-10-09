@@ -336,6 +336,130 @@ s = mustApply(s, {
   camera: withShot(compNow.camera, shot1),
 });
 
+// Lyd (DEC-0044): to lydfiler i biblioteket og lydklipp i tre scener
+const wind = tid<"asset">();
+const line = tid<"asset">();
+s = mustApply(s, {
+  type: "CreateAssets",
+  assets: [
+    {
+      assetId: wind,
+      fields: {
+        kind: "sound",
+        name: "Vind i trærne",
+        names: [],
+        description: "",
+        category: "Atmosfære",
+        tags: [],
+      },
+    },
+    {
+      assetId: line,
+      fields: {
+        kind: "sound",
+        name: "Maja – Hører du det",
+        names: [],
+        description: "",
+        category: "Dialog",
+        tags: [],
+      },
+    },
+  ],
+});
+const soundVersions: Record<string, string> = {};
+for (const [a, ms, file] of [
+  [wind, 20000, "vind.wav"],
+  [line, 3500, "maja.wav"],
+] as const) {
+  const va = tid<"asset_variant">();
+  s = mustApply(s, {
+    type: "CreateAssetVariant",
+    variantId: va,
+    assetId: a,
+    fields: { name: "Lyd", style: "other", appearance: "" },
+  });
+  const ve = tid<"asset_version">();
+  soundVersions[a] = ve;
+  s = mustApply(s, {
+    type: "AddAssetVersion",
+    versionId: ve,
+    variantId: va,
+    media: {
+      path: `${s.project.id}/${a}/${ve}/${file}`,
+      mimeType: "audio/wav",
+      width: null,
+      height: null,
+      byteSize: 160_000,
+      sha256: "d".repeat(64),
+      durationMs: ms,
+    },
+    note: "",
+  });
+}
+{
+  const occs = orderedOccurrences(s, mainId).filter((o) => o.active);
+  const o1 = occs[0]!;
+  const dlg = Object.values(s.blocks).find(
+    (b) => b.variantId === o1.variantId && b.kind === "dialogue",
+  );
+  const base = {
+    assetVariantId: null,
+    versionId: null,
+    sourceInMs: 0,
+    gainDb: 0,
+    fadeInMs: 0,
+    fadeOutMs: 0,
+    muted: false,
+  };
+  s = mustApply(s, {
+    type: "AddAudioClips",
+    clips: [
+      {
+        clipId: tid(),
+        fields: {
+          ...base,
+          occurrenceId: o1.id,
+          kind: "dialogue",
+          name: "Maja: Hører du det?",
+          assetId: line,
+          blockId: (dlg?.id ?? null) as never,
+          offsetMs: 600,
+          lengthMs: 3500,
+        },
+      },
+      {
+        clipId: tid(),
+        fields: {
+          ...base,
+          occurrenceId: occs[1]!.id,
+          kind: "ambience",
+          name: "Vind i trærne",
+          assetId: wind,
+          blockId: null,
+          offsetMs: 0,
+          lengthMs: 20000,
+          fadeInMs: 1500,
+          fadeOutMs: 2000,
+        },
+      },
+      {
+        clipId: tid(),
+        fields: {
+          ...base,
+          occurrenceId: o1.id,
+          kind: "music",
+          name: "Tema",
+          assetId: wind,
+          blockId: null,
+          offsetMs: 2000,
+          lengthMs: 18000,
+          gainDb: -6,
+        },
+      },
+    ],
+  });
+}
+
 // Notater: på tekst og som nål på scenen
 const firstAction = Object.values(s.blocks).find((b) => b.text.startsWith("Snøen ligger"))!;
 const q = "setter vasen i vinduet";

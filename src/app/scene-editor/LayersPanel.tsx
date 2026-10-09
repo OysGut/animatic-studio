@@ -22,6 +22,8 @@ interface Props {
   readonly selectedLayerId: string | null;
   readonly onSelect: (id: string | null) => void;
   readonly run: (command: Command, label: string) => string | null;
+  /** Dobbeltklikk på et lag: velg bilde for laget (DEC-0044). */
+  readonly onOpenImage?: (layerId: string) => void;
 }
 
 const iconButton =
@@ -35,6 +37,7 @@ export const LayersPanel = memo(function LayersPanel({
   selectedLayerId,
   onSelect,
   run,
+  onOpenImage,
 }: Props) {
   // Bakerst først (som i modellen); listen vises med forreste lag øverst
   const back = useMemo(() => layersOf(state, composition.id), [state, composition.id]);
@@ -175,6 +178,8 @@ export const LayersPanel = memo(function LayersPanel({
                 <button
                   type="button"
                   onClick={() => onSelect(l.id)}
+                  onDoubleClick={() => onOpenImage?.(l.id)}
+                  title="Dobbeltklikk for å velge et annet bilde"
                   aria-pressed={on}
                   className="flex min-w-0 flex-1 items-center gap-2 py-1 pl-3 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 >

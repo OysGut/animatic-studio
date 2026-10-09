@@ -390,3 +390,21 @@ Regler: DEC-ID-er er permanente. En beslutning endres aldri i ettertid; den erst
   5. **Eksporter animatic:** hele filmen, valgt scene eller fra–til scene; full eller halv størrelse. Kontroll før eksport (aktive scener og rekkefølge, deaktiverte scener, tittelkort, beregnede lengder, lag uten bilde) og «Eksporter likevel» (REQ-0422/0423). Videoen lages i nettleseren uten AI og uten kostnader (REQ-0213/0416).
   6. Avgrensning – kommer i M4 del 2: lyd (dialog, musikk, effekter) i avspilling og eksport, import av ferdig film og «Bruk denne» (aktivt materiale), overganger og splitting av klipp, tidskoblinger per replikk (klikk på replikk → avspillingshodet).
 - **Teknisk:** `src/core/assembly/film.ts` (klipp, tidskoder, utvalg – lagres aldri, ADR-0006), `src/engine/compositor/film.ts` (samme tegning i avspilling og eksport), `src/engine/export/animatic.ts`. Ny avhengighet **mediabunny 1.59.1** (MPL-2.0, ingen egne avhengigheter, ingen nettverkskall) for WebCodecs-koding og MP4/WebM. MP4 (H.264) når nettleseren kan kode det (Chrome, Edge, Safari), ellers WebM (VP9/AV1). Ingen databaseendring.
+
+## DEC-0044 – Lyd i filmen (M4 del 2) og bildevalg for lag
+- **Dato:** 2026-10-09 · **Type:** Bekreftet av bruker
+- **Mars' ord:** «når du legger til lyd er det fint om lyden spilles selv om animasjon ikke er laget, og jeg trenger at om brukeren dobbeltklikker på et lag for en et popup der en kan velge et annet bilde for dette laget som er laget for dette objektet og eventuelt laste opp et nytt, eller sette igang en aigenerering av et nytt bidet for dette objektet eller karakteren eller bagrunnen eller hva det måtte være.»
+- **Beslutning – lyd:**
+  1. Lydfiler er ressurser i biblioteket av typen «Lyd» (MP3, WAV, OGG, WebM, M4A/AAC, FLAC), med versjoner og lengde.
+  2. Monteringen har ett spor per lydtype: dialog, forteller, effekter, atmosfære og musikk (mandat 13.1). Overlappende klipp legges på egne linjer i sporet.
+  3. Et lydklipp er festet til en scene, med start målt fra scenens begynnelse, så lyden følger scenen når den flyttes (mandat 6.4). Dialog kan kobles til en replikk.
+  4. Lyden kan flyttes (festes til scenen den havner i), kuttes i start og slutt, og få volum, inn-/uttoning og demping. Spor kan dempes.
+  5. **Lyden spilles og eksporteres også der animasjonen ikke er laget** (tittelkort). En scene uten satt lengde er minst så lang som lyden i den.
+  6. Lyden spilles også av i sceneeditoren, for den valgte scenen.
+  7. Eksporten mikser lyden med samme plassering som avspillingen (AAC i MP4, ellers Opus).
+- **Beslutning – bilde for lag:** Dobbeltklikk på et lag (i lerretet eller lagslisten), eller «Velg eller last opp bilde …» i panelet, åpner et vindu der man kan:
+  - velge et annet bilde av samme ressurs (alle varianter og versjoner), eller la laget følge forsidebildet eller variantens godkjente bilde;
+  - laste opp et nytt bilde, som blir en ny versjon i biblioteket og brukes med én gang.
+
+  Fargeflater kan kobles til en ressurs. «Generer med AI» vises, men er ikke aktiv: generering koster penger og kommer med M5 etter at Mars har valgt leverandør og godkjent kostnadene (mandat 17–19).
+- **Teknisk:** Migrasjon `0009_audio.sql` (ressurstypen «sound», lydformater, `asset_versions.duration_ms`, tabellen `audio_clips`, `apply_changes`). Kjernen: `src/core/audio`. Motor: `src/engine/audio/mixer.ts` (Web Audio). Avspilling: `src/app/audio/use-audio-playback.ts`. Tider i millisekunder (uavhengig av bildefrekvensen).

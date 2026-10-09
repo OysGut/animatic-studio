@@ -9,6 +9,7 @@ import type {
   AssetName,
   AssetVariant,
   AssetVersion,
+  AudioClip,
   BlockRevision,
   CollectionName,
   Composition,
@@ -50,7 +51,8 @@ type AnyEntity =
   | AssetVersion
   | Annotation
   | Composition
-  | CompositionLayer;
+  | CompositionLayer
+  | AudioClip;
 
 export function toRow(collection: CollectionName, e: AnyEntity, projectId: string): Row {
   const base = { id: e.id, project_id: projectId, revision: e.revision };
@@ -185,6 +187,9 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         byte_size_big: v.byteSize,
         sha256: v.sha256,
         note: v.note,
+        // Lengde (bare lydfiler). Kolonnen finnes fra migrasjon 0009; apply_changes ser bort fra
+        // felter tabellen ikke har, så eldre databaser tåler den
+        duration_ms: v.durationMs,
       };
     }
     case "annotations": {
@@ -241,6 +246,27 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         removed: l.removed,
       };
     }
+    case "audioClips": {
+      const a = e as AudioClip;
+      return {
+        ...base,
+        occurrence_id: a.occurrenceId,
+        kind: a.kind,
+        name: a.name,
+        asset_id: a.assetId,
+        asset_variant_id: a.assetVariantId,
+        version_id: a.versionId,
+        block_id: a.blockId,
+        offset_ms: a.offsetMs,
+        source_in_ms: a.sourceInMs,
+        length_ms: a.lengthMs,
+        gain_db: a.gainDb,
+        fade_in_ms: a.fadeInMs,
+        fade_out_ms: a.fadeOutMs,
+        muted: a.muted,
+        removed: a.removed,
+      };
+    }
   }
 }
 
@@ -276,6 +302,7 @@ export const TABLE_ORDER: readonly string[] = [
   "script_annotations",
   "compositions",
   "composition_layers",
+  "audio_clips",
 ];
 
 export function diffStates(before: ProjectState, after: ProjectState): ChangeSet {
@@ -347,6 +374,8 @@ export interface ProjectRows {
   /** 2D-sceneeditoren (migrasjon 0007). Tomt hvis migrasjonen ikke er kjørt ennå. */
   readonly compositions?: readonly Row[];
   readonly composition_layers?: readonly Row[];
+  /** Lyd i filmen (migrasjon 0009). Tomt hvis migrasjonen ikke er kjørt ennå. */
+  readonly audio_clips?: readonly Row[];
 }
 
 const str = (v: unknown) => String(v);
@@ -524,6 +553,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         note: str(x["note"] ?? ""),
         createdAt: iso(x["created_at"]),
         createdBy: str(x["created_by"] ?? ""),
+        durationMs: optNum(x["duration_ms"]),
       })),
     ),
     annotations: byId(
@@ -578,6 +608,27 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         visible: x["visible"] !== false,
         locked: x["locked"] === true,
         groupId: optStr(x["group_id"]),
+        removed: x["removed"] === true,
+      })),
+    ),
+    audioClips: byId(
+      (r.audio_clips ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        occurrenceId: str(x["occurrence_id"]) as never,
+        kind: str(x["kind"]) as never,
+        name: str(x["name"] ?? ""),
+        assetId: str(x["asset_id"]) as never,
+        assetVariantId: optStr(x["asset_variant_id"]) as never,
+        versionId: optStr(x["version_id"]) as never,
+        blockId: optStr(x["block_id"]) as never,
+        offsetMs: num(x["offset_ms"]),
+        sourceInMs: num(x["source_in_ms"] ?? 0),
+        lengthMs: num(x["length_ms"]),
+        gainDb: num(x["gain_db"] ?? 0),
+        fadeInMs: num(x["fade_in_ms"] ?? 0),
+        fadeOutMs: num(x["fade_out_ms"] ?? 0),
+        muted: x["muted"] === true,
         removed: x["removed"] === true,
       })),
     ),

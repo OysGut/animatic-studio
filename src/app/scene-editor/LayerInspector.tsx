@@ -2,7 +2,7 @@
  * Egenskaper for valgt lag (plassering, dybde, bilde, synlighet) og for selve 2D-scenen når ingen lag er valgt.
  * Hver endring er én kommando som kan angres. UpdateLayers erstatter alle felter, så vi bygger alltid fra laget.
  */
-import { Copy, Diamond, Trash2 } from "lucide-react";
+import { Copy, Diamond, Image as ImageIcon, Trash2 } from "lucide-react";
 import { useRef, useState, type ReactNode } from "react";
 import {
   COMPOSITION_FORMATS,
@@ -335,6 +335,7 @@ export function LayerInspector({
   run,
   frame,
   autoKey,
+  onOpenImage,
 }: {
   state: ProjectState;
   composition: Composition;
@@ -343,6 +344,8 @@ export function LayerInspector({
   run: Run;
   frame: number;
   autoKey: boolean;
+  /** Åpne bildevalget for laget (samme som dobbeltklikk, DEC-0044). */
+  onOpenImage?: () => void;
 }) {
   const [error, setError] = useState<string | null>(null);
   const off = !editable;
@@ -563,6 +566,12 @@ export function LayerInspector({
       </Section>
 
       <Section title="Bilde">
+        {onOpenImage ? (
+          <Button size="sm" variant="secondary" className="self-start" onClick={onOpenImage}>
+            <ImageIcon />
+            {layer.assetId ? "Velg eller last opp bilde …" : "Koble til ressurs …"}
+          </Button>
+        ) : null}
         {layer.assetId ? (
           <>
             <p className="truncate text-[13px] text-text-primary">

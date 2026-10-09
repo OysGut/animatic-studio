@@ -57,7 +57,11 @@ export function AddLayerDialog({
   const [fillName, setFillName] = useState("Fargeflate");
   const [error, setError] = useState<string | null>(null);
 
-  const assets = useMemo(() => sortedAssets(state).filter((a) => !a.archived), [state]);
+  // Lyd kan ikke være et lag (DEC-0044)
+  const assets = useMemo(
+    () => sortedAssets(state).filter((a) => !a.archived && a.kind !== "sound"),
+    [state],
+  );
   const kinds = useMemo(() => {
     const present = new Set(assets.map((a) => a.kind));
     return (Object.keys(ASSET_KIND_LABEL) as AssetKind[]).filter((k) => present.has(k));

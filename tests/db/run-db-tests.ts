@@ -20,6 +20,7 @@ import {
   DEFAULT_COMPOSITION,
   defaultLayerFields,
   layerFieldsOf,
+  audioClipFieldsOf,
 } from "../../src/core";
 
 const ADMIN_URL = process.env["DATABASE_URL"] ?? "postgres://postgres@localhost:54329/postgres";
@@ -95,6 +96,7 @@ async function loadState(projectId: string): Promise<ProjectState> {
     script_annotations: await q("script_annotations"),
     compositions: await q("compositions"),
     composition_layers: await q("composition_layers"),
+    audio_clips: await q("audio_clips"),
   };
   return stateFromRows(rows);
 }
@@ -959,6 +961,143 @@ try {
     const again = await loadState(projectId);
     assert(again.project.frameWidth === 1920 && again.project.fps.num === 25, "tilbake");
     assert(again.layers[layer]!.transform.x === 960, "laget tilbake");
+  });
+
+  await test("0009: lydfil i biblioteket og lydklipp i en scene lagres, endres og angres; ressursen kan ikke slettes", async () => {
+    let st = await loadState(projectId);
+    const occ = Object.values(st.occurrences).find((o) => o.active)!;
+    const block = Object.values(st.blocks).find((b) => b.variantId === occ.variantId)!;
+    const asset = "abcdef00-0000-7000-8000-0000000000e1";
+    const variant = "abcdef00-0000-7000-8000-0000000000e2";
+    const version = "abcdef00-0000-7000-8000-0000000000e3";
+    const clip = "abcdef00-0000-7000-8000-0000000000e4";
+    st = await runCommand(st, ALICE, {
+      type: "CreateAssets",
+      assets: [
+        {
+          assetId: asset as never,
+          fields: {
+            kind: "sound",
+            name: "Vind i trærne",
+            names: [],
+            description: "",
+            category: "",
+            tags: [],
+          },
+        },
+      ],
+    });
+    st = await runCommand(st, ALICE, {
+      type: "CreateAssetVariant",
+      variantId: variant as never,
+      assetId: asset as never,
+      fields: { name: "Lyd", style: "other", appearance: "" },
+    });
+    st = await runCommand(st, ALICE, {
+      type: "AddAssetVersion",
+      versionId: version as never,
+      variantId: variant as never,
+      media: {
+        path: `${projectId}/${asset}/${version}/vind.mp3`,
+        mimeType: "audio/mpeg",
+        width: null,
+        height: null,
+        byteSize: 123456,
+        sha256: "b".repeat(64),
+        durationMs: 8250,
+      },
+      note: "",
+    });
+    st = await runCommand(st, ALICE, {
+      type: "AddAudioClips",
+      clips: [
+        {
+          clipId: clip as never,
+          fields: {
+            occurrenceId: occ.id,
+            kind: "dialogue",
+            name: "Maja",
+            assetId: asset as never,
+            assetVariantId: null,
+            versionId: null,
+            blockId: block.id,
+            offsetMs: 1500,
+            sourceInMs: 250,
+            lengthMs: 4000,
+            gainDb: -3,
+            fadeInMs: 100,
+            fadeOutMs: 400,
+            muted: false,
+          },
+        },
+      ],
+    });
+    const back = await loadState(projectId);
+    assert(back.assets[asset]!.kind === "sound", "lydressursen");
+    assert(back.assetVersions[version]!.durationMs === 8250, "lengden på lydfilen");
+    assert(back.assetVersions[version]!.mimeType === "audio/mpeg", "lydformatet");
+    const a = back.audioClips[clip]!;
+    assert(
+      a.offsetMs === 1500 && a.lengthMs === 4000 && a.gainDb === -3 && a.blockId === block.id,
+      `lydklippet avviker: ${JSON.stringify(a)}`,
+    );
+    // Flytte lyden til senere i scenen (revisjonskontroll som andre rader)
+    st = await runCommand(back, ALICE, {
+      type: "UpdateAudioClips",
+      clips: [{ clipId: clip as never, fields: { ...audioClipFieldsOf(a), offsetMs: 3000 } }],
+    });
+    await expectError(
+      runCommand(back, ALICE, {
+        type: "UpdateAudioClips",
+        clips: [{ clipId: clip as never, fields: { ...audioClipFieldsOf(a), offsetMs: 10 } }],
+      }),
+      /Revisjonskonflikt/,
+    );
+    assert((await loadState(projectId)).audioClips[clip]!.offsetMs === 3000, "flyttingen");
+    // Databasen nekter ugyldige verdier selv om kjernen skulle slippe dem gjennom
+    await expectError(
+      as(
+        "service_role",
+        null,
+        (tx) => tx`update public.audio_clips set gain_db = 40 where id = ${clip}`,
+      ),
+      /check|violates/,
+    );
+    // Lydfilen kan ikke slettes mens et klipp bruker den
+    await expectError(sql`delete from public.assets where id = ${asset}`, /foreign key|violates/);
+    // Fjerne og angre fjerningen
+    st = await runCommand(st, ALICE, {
+      type: "SetAudioClipsRemoved",
+      clipIds: [clip as never],
+      removed: true,
+    });
+    assert((await loadState(projectId)).audioClips[clip]!.removed, "fjernet");
+    st = await runCommand(st, ALICE, { type: "UndoAddAudioClips", clipIds: [clip as never] });
+    assert(
+      (await sql`select 1 from public.audio_clips where id = ${clip}`).length === 0,
+      "klippet ble ikke slettet ved angre",
+    );
+    // Bilder kan fortsatt ikke ha lydformat, og lyd ikke bildeformat (kjernen)
+    const bad = applyCommand(st, {
+      id: "44444444-4444-7444-8444-0000000009f2" as never,
+      actor: ALICE,
+      at: new Date().toISOString(),
+      command: {
+        type: "AddAssetVersion",
+        versionId: "abcdef00-0000-7000-8000-0000000000e5" as never,
+        variantId: variant as never,
+        media: {
+          path: `${projectId}/${asset}/x/bilde.png`,
+          mimeType: "image/png",
+          width: 10,
+          height: 10,
+          byteSize: 10,
+          sha256: "c".repeat(64),
+        },
+        note: "",
+      },
+    });
+    assert(!bad.ok, "en PNG ble godtatt som lyd");
   });
 
   await test("0004: notater lagres med stempel, kan slettes og angres, og følger blokken", async () => {

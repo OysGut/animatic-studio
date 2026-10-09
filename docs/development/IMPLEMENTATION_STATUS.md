@@ -39,4 +39,5 @@ Oppdatert: 2026-10-09 (økt 4). Detaljert status per krav: `docs/product/TRACEAB
 | SECURITY | Under arbeid | RLS, `apply_changes` bare for service_role, inverskommandoer bare fra egen historikk, privat bøtte for originaler |
 | TIMELINE / CONTINUITY | Under arbeid | Tidsmodell, fortellingstid; filmtidslinjen «Montering» med flytting, lengder, avspilling av hele filmen (DEC-0043) |
 | UI | Under arbeid | Prosjekt, manus (navigator, sider, inspektør, import, eksport, versjoner, notater, søketreff), ressursbibliotek |
+| AUDIO | Under arbeid | Lydfiler i biblioteket, lydspor i monteringen (dialog, forteller, effekter, atmosfære, musikk), Web Audio-avspilling og miksing i eksporten (DEC-0044) |
 | Øvrige moduler | Ikke startet | – |

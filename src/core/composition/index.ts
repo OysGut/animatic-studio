@@ -19,6 +19,8 @@ export const LAYER_KIND_FOR_ASSET: Record<AssetKind, LayerKind> = {
   location: "background",
   environment: "background",
   other: "other",
+  // Lyd vises aldri som lag (filtreres bort i lagvalget)
+  sound: "other",
 };
 
 /**

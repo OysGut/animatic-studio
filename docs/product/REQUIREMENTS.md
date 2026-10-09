@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **557**
-- Prioritet: P0: 141, P1: 239, P2: 138, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 30, teknisk-anbefaling: 7
-- Status: Ikke startet: 368, Verifisert: 143, Under arbeid: 35, Implementert – ikke verifisert: 11
+- Antall krav: **559**
+- Prioritet: P0: 141, P1: 241, P2: 138, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 32, teknisk-anbefaling: 7
+- Status: Ikke startet: 356, Verifisert: 151, Under arbeid: 41, Implementert – ikke verifisert: 11
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -2600,22 +2600,24 @@ Animatic Studio skal ha et strukturert lydsystem.
 
 - **Kilde:** Kap. 13 (l. 567-568) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** AUDIO
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Lyd modelleres som egne ressurser og spor i prosjektmodellen, med typer, koblinger og versjoner (jf. 13.1–13.3).
 - **Tester:**
   - manuell: arkitekturgjennomgang av lydmodell
+- **Implementering:** src/core/audio/index.ts, src/app/assembly/AudioTracks.tsx
 
 #### REQ-0200 – Skille mellom lydtyper
 Systemet skal skille mellom lydtypene dialog, fortellerstemme, lydeffekter, atmosfære og bakgrunnslyd, og musikk.
 
 - **Kilde:** Kap. 13.1 (l. 569-575) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** AUDIO
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Hver lydressurs har en av typene dialog, fortellerstemme, lydeffekt, atmosfære/bakgrunn eller musikk, og typen kan brukes til filtrering og sporplassering.
 - **Tester:**
   - enhet: lydtype-enum og validering
+- **Implementering:** src/core/audio/index.ts
 
 #### REQ-0201 – Lyd på separate spor
 Lydene skal kunne plasseres på separate spor.
@@ -2623,22 +2625,24 @@ Lydene skal kunne plasseres på separate spor.
 - **Kilde:** Kap. 13.1 (l. 576) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** AUDIO, TIMELINE
 - **Avhengigheter:** REQ-0200
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan plassere dialog, musikk og effekter på separate spor som kan justeres hver for seg.
 - **Tester:**
   - e2e: plasser lyd på tre spor og spill av
+- **Implementering:** src/app/assembly/AudioTracks.tsx
 
 #### REQ-0202 – Laste opp lyd
 Brukeren skal kunne laste opp lyd.
 
 - **Kilde:** Kap. 13.2 (l. 577-578) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** AUDIO, LIBRARY
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan laste opp vanlige lydformater (f.eks. WAV, MP3), og filen blir en lydressurs i biblioteket.
 - **Tester:**
   - import/eksport: opplasting av WAV og MP3
+- **Implementering:** src/app/library/asset-audio.ts, src/app/assembly/AddAudioDialog.tsx
 
 #### REQ-0203 – Generere lyd
 Brukeren skal kunne generere lyd.
@@ -2659,12 +2663,13 @@ Lydfiler skal kunne knyttes til karakterer, replikker, scener, delsekvenser, hen
 - **Kilde:** Kap. 13.2 (l. 579-585) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** AUDIO, CORE
 - **Avhengigheter:** Permanente identiteter (kap. 3.2)
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - En lydfil kan kobles til hver av objekttypene karakter, replikk, scene, delsekvens, hendelse og produksjon via deres permanente ID-er.
 - **Tester:**
   - enhet: relasjonsmodell lyd–objekt
   - dataintegritet: koblinger overlever omnummerering av scener
+- **Implementering:** src/core/commands/apply.ts, db/migrations/0009_audio.sql
 
 #### REQ-0205 – Organisere, søke, filtrere og versjonere lyd
 Programmet skal støtte organisering, søk, filtrering og versjonering av lyd.
@@ -2672,12 +2677,13 @@ Programmet skal støtte organisering, søk, filtrering og versjonering av lyd.
 - **Kilde:** Kap. 13.2 (l. 586) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** AUDIO, LIBRARY, VERSION · **Invarianter:** INV-13
 - **Avhengigheter:** REQ-0202
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Brukeren kan søke og filtrere lyd på navn, type og kobling, og en ny versjon av en lydressurs bevarer tidligere versjoner.
 - **Tester:**
   - enhet: søk/filter på lydmetadata
   - dataintegritet: versjonering bevarer tidligere lydfil
+- **Implementering:** src/app/library/AssetDetail.tsx, src/app/library/LibraryWorkspace.tsx
 
 #### REQ-0206 – Dialoglyd synkronisert med manus
 Dialoglyd skal kunne synkroniseres med manusblokker og visuelle hendelser.
@@ -2685,11 +2691,12 @@ Dialoglyd skal kunne synkroniseres med manusblokker og visuelle hendelser.
 - **Kilde:** Kap. 13.3 (l. 587-588) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** AUDIO, SCRIPT, TIMELINE
 - **Avhengigheter:** Manusblokker med tidskoblinger (kap. 6.1)
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Gitt en replikk med tilknyttet dialogopptak, når opptaket plasseres på tidslinjen, så er replikken og opptaket koblet slik at klikk på replikken finner opptaket.
 - **Tester:**
   - integrasjon: replikk–lyd–tidskobling
+- **Implementering:** src/app/assembly/AudioClipPanel.tsx
 
 #### REQ-0207 – Justere lydklipp
 Brukeren skal kunne justere plassering, varighet, klipp og relevante lydinnstillinger.
@@ -2697,12 +2704,13 @@ Brukeren skal kunne justere plassering, varighet, klipp og relevante lydinnstill
 - **Kilde:** Kap. 13.3 (l. 589) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** AUDIO, TIMELINE
 - **Avhengigheter:** REQ-0201
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan flytte et lydklipp, trimme det, endre varighet og justere f.eks. volum/fade, ikke-destruktivt.
 - **Tester:**
   - e2e: flytt, trim og volumendring
   - dataintegritet: kildelydfil uendret
+- **Implementering:** src/app/assembly/AudioTracks.tsx, src/app/assembly/AudioClipPanel.tsx, src/engine/audio/mixer.ts
 - **Merknad:** «Relevante lydinnstillinger» er ikke spesifisert.
 
 #### REQ-0208 – Lyd i avspilling og eksport
@@ -2711,12 +2719,13 @@ Lyden skal være del av både lokal animatic-avspilling og endelig eksport.
 - **Kilde:** Kap. 13.3 (l. 590) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** AUDIO, EXPORT · **Invarianter:** INV-11
 - **Avhengigheter:** REQ-0201
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Lyd høres ved lokal avspilling og finnes i eksportert filmfil med korrekt timing.
 - **Tester:**
   - import/eksport: eksportert fil har lydspor med korrekt offset
   - e2e: lokal avspilling med lyd
+- **Implementering:** src/app/audio/use-audio-playback.ts, src/engine/export/animatic.ts
 
 ### Kapittel 14
 
@@ -2753,12 +2762,12 @@ Programmet skal kunne rendre og eksportere 2D-animatics ved hjelp av applikasjon
 - **Kilde:** Kap. 14.2 (l. 603-604) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 4
 - **Moduler:** EXPORT, COMPOSE, QUEUE · **Invarianter:** INV-11
 - **Avhengigheter:** REQ-0210
-- **Status:** Under arbeid
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en 2D-animatic, når brukeren eksporterer, så produseres en videofil med bilde og lyd uten bruk av eksterne AI-tjenester.
 - **Tester:**
   - import/eksport: eksportert video har forventet varighet, oppløsning og bildefrekvens
-- **Implementering:** src/engine/export/animatic.ts
+- **Implementering:** src/engine/export/animatic.ts, src/engine/export/animatic.ts
 - **Merknad:** Ufravikelig prinsipp nr. 9 i kap. 34.
 
 #### REQ-0212 – Renderer i klient, backend eller desktop
@@ -2794,12 +2803,13 @@ Den samme filmmonteringen skal kunne kombinere redigerbare 2D-animatics, AI-gene
 - **Kilde:** Kap. 14.3 (l. 607-613) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE, EXPORT, AUDIO
 - **Avhengigheter:** REQ-0216; REQ-0235
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Gitt en montering med én 2D-scene, ett AI-klipp, ett importert filmklipp og ett stillbilde med 3 s varighet pluss lyd fra flere kilder, så spilles og eksporteres alt som én film.
 - **Tester:**
   - e2e: hybrid montering avspilling og eksport
   - import/eksport: varighet = sum av elementer
+- **Implementering:** src/engine/compositor/film.ts, src/engine/export/animatic.ts
 
 #### REQ-0215 – AI som valgfritt produksjonslag
 AI skal være et valgfritt produksjonslag over den underliggende animatic-strukturen.
@@ -5376,12 +5386,13 @@ Eksportmotoren skal kunne kombinere: lokal 2D-animasjon, AI-generert film, impor
 - **Kilde:** Kap. 29.2 (l. 1230-1238) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** EXPORT, COMPOSE, AUDIO
 - **Avhengigheter:** REQ-0416
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Gitt en tidslinje med alle sju materialtyper, så produserer eksporten én sammenhengende fil med korrekt rekkefølge og lydmiks.
 - **Tester:**
   - import/eksport: hybrid eksport
   - visuell: kontroller overganger
+- **Implementering:** src/engine/export/animatic.ts
 
 #### REQ-0419 – Manuseksport med valgt nummerering
 Systemet skal eksportere korrekt formatert manus med nummereringsmetode valgt ved hver eksport.
@@ -5658,11 +5669,12 @@ Arkitekturen skal ha en logisk komponent «Audio Engine» med ansvarsområdet: D
 - **Kilde:** Kap. 31 (l. 1325-1327) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** AUDIO
 - **Avhengigheter:** REQ-0432
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Arkitekturdokumentasjonen definerer Audio Engine med ansvar for: dialog, språkspor, musikk, lydeffekter og synkronisering, og dette ansvaret ligger ikke i andre moduler.
 - **Tester:**
   - manuell: arkitekturgjennomgang av ansvarsgrenser
+- **Implementering:** src/engine/audio/mixer.ts
 - **Merknad:** Linje 1325/1326 duplikat.
 
 #### REQ-0441 – Modul: Prompt Orchestration Engine
@@ -7219,3 +7231,33 @@ Det flytende forhåndsvisningsvinduet i sceneeditoren skal kunne flyttes hvor so
 - **Tester:**
   - visuell: forhåndsvisning dratt helt til venstre
 - **Implementering:** src/app/scene-editor/PreviewWindow.tsx
+
+#### REQ-0558 – Lyd spilles også der animasjonen ikke er laget
+Lyd i en scene skal spilles av og eksporteres selv om scenen ikke har 2D-scene ennå. En scene uten satt lengde skal være minst så lang som lyden i den.
+
+- **Kilde:** Beslutning DEC-0044 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
+- **Moduler:** AUDIO, TIMELINE
+- **Avhengigheter:** REQ-0208; REQ-0240
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Lyd i en scene med tittelkort høres ved avspilling og er med i eksportert video.
+  - En scene uten satt lengde varer minst til den siste lyden i scenen slutter.
+- **Tester:**
+  - enhet: lengde forlenges av lyd
+- **Implementering:** src/core/assembly/film.ts, src/core/composition/animate.ts, src/app/audio/use-audio-playback.ts
+
+#### REQ-0559 – Dobbeltklikk på et lag: velg, last opp eller generer bilde
+Dobbeltklikk på et lag i sceneeditoren skal åpne et vindu der brukeren kan velge et annet bilde laget for samme ressurs (alle varianter og versjoner), laste opp et nytt bilde, eller starte AI-generering av et nytt bilde for ressursen.
+
+- **Kilde:** Beslutning DEC-0044 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, LIBRARY, UI
+- **Avhengigheter:** REQ-0557
+- **Status:** Under arbeid
+- **Akseptansekriterier:**
+  - Dobbeltklikk på laget i lerretet eller lagslisten åpner bildevalget for laget.
+  - Et valgt bilde brukes på laget med én gang; et opplastet bilde blir ny versjon i biblioteket.
+  - AI-generering krever kostnadsgodkjenning før noe sendes (kommer med M5).
+- **Tester:**
+  - visuell: bildevalg for lag
+- **Implementering:** src/app/scene-editor/LayerImageDialog.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/LayersPanel.tsx
+- **Merknad:** AI-delen henger sammen med REQ for genereringsmotor og kostnadsport (fase 5).
