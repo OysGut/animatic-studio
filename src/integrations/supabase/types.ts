@@ -80,7 +80,7 @@ export type Database = {
       }
       asset_versions: {
         Row: {
-          byte_size: number
+          byte_size: number | null
           byte_size_big: number
           created_at: string
           created_by: string | null
@@ -97,7 +97,7 @@ export type Database = {
           width: number | null
         }
         Insert: {
-          byte_size: number
+          byte_size?: number | null
           byte_size_big: number
           created_at?: string
           created_by?: string | null
@@ -114,7 +114,7 @@ export type Database = {
           width?: number | null
         }
         Update: {
-          byte_size?: number
+          byte_size?: number | null
           byte_size_big?: number
           created_at?: string
           created_by?: string | null
