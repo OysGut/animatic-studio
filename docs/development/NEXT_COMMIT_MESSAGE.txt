@@ -1,12 +1,8 @@
-Retter bildeopplasting etter 0005: filstørrelse i byte_size_big (KI-38, DEC-0032)
+LOVABLE_SYNC.md er nå bare meldingen til Lovable – kopier alt (DEC-0033)
 
-Ny databaseendring: db/migrations/0006_byte_size_big.sql må kjøres i Lovable etter push
-(ferdig melding i docs/development/LOVABLE_SYNC.md, del B).
+Ingen databaseendring. Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push.
 
-- Lovable kjørte 0005 med en ny kolonne byte_size_big i stedet for å endre byte_size. Den gamle kolonnen
-  sto igjen påkrevd med 50 MB-grense, så ingen bilder kunne lastes opp.
-- db/migrations/0005 er oppdatert til nøyaktig det Lovable kjørte (repoet speiler databasen).
-- 0006: byte_size blir valgfri uten grense; byte_size_big fylles automatisk om bare byte_size sendes.
-- Appen skriver og leser byte_size_big (faller tilbake til byte_size for gamle rader). Forventer skjema 6.
-- Tester: 127 Vitest-tester og 23 databasetester grønne (ny test: 2 GB-bilde og eldre klient).
-- Dokumentasjon: DEC-0032 (tillegg), KNOWN_ISSUES KI-38, LOVABLE_SYNC (0005 kjørt, 0006 neste), db/README.
+- LOVABLE_SYNC.md skrives helt på nytt ved hver leveranse og inneholder bare den ferdige meldingen.
+- Veiledningen (oppsett, steg, API-nøkler, feilsituasjoner) og listen over kjørte migrasjoner er flyttet til
+  docs/development/LOVABLE_GUIDE.md. 0006_byte_size_big.sql er registrert som kjørt 2026-10-09 (KI-38 løst).
+- Skill lovable-development og henvisninger oppdatert.

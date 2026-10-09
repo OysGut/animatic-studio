@@ -30,7 +30,7 @@ metadata:
 - [references/PLATFORM_CONSTRAINTS.md](references/PLATFORM_CONSTRAINTS.md) – plattformfakta med verifiseringsstatus (kilde: `docs/references/technical/LOVABLE_PLATFORM_NOTES.md`).
 - [references/SYNC_PROCEDURE.md](references/SYNC_PROCEDURE.md) – leveranse- og konfliktprosedyre.
 - [references/LOVABLE_MESSAGE_TEMPLATES.md](references/LOVABLE_MESSAGE_TEMPLATES.md) – maler.
-- `docs/development/LOVABLE_SYNC.md` (fast synkmelding; opprettes ved første leveranse hvis den ikke finnes), `AGENTS.md`, `package.json`.
+- `docs/development/LOVABLE_SYNC.md` (bare den ferdige meldingen til Lovable – Mars kopierer hele filen, DEC-0033), `docs/development/LOVABLE_GUIDE.md` (veiledning og liste over kjørte migrasjoner), `AGENTS.md`, `package.json`.
 - Krav: REQ-0466–REQ-0473 (mandat 33.3–33.4), REQ-0009 (lagdeling).
 
 ## 4. Arbeidsprosedyre
@@ -40,7 +40,7 @@ metadata:
 4. **Respekter filer Lovable eier/bruker** (PLATFORM_CONSTRAINTS §3): ikke flytt eller gi nytt navn til genererte konfigfiler, `src/integrations/supabase/*` (hvis generert), `.lovable/`, `.env`, `drizzle/` (eies av Lovable – rør ikke). Legg egen kode i `src/core`, `src/engine`, `src/adapters`, `src/app`.
 5. **Avhengigheter:** legg til bare det som trengs, eksakt versjon i lockfila, og sjekk at Lovables avhengighetsrevisjon ikke avviser den (se `secure-development`). Ingen native-binærer som krever byggesteg Lovable ikke har.
 6. **Commit og push** etter SYNC_PROCEDURE: små commits med krav-ID, aldri force-push/rebase/squash på `main`, aldri filer > 10 MB, aldri mediefiler/manus/hemmeligheter.
-7. **Avgjør om Lovable må gjøre noe:** ny migrasjon → Mars ber Lovable kjøre SQL-filen `db/migrations/NNNN_navn.sql` uendret (DEC-0022, `docs/development/LOVABLE_SYNC.md`); endret funksjon → «deploy funksjoner»; ny hemmelighet → Mars legger den inn via «Add secret»-skjemaet (aldri i chat). Lag meldingen fra LOVABLE_MESSAGE_TEMPLATES. Ingen endring i disse → ingen melding.
+7. **Avgjør om Lovable må gjøre noe:** ny migrasjon → Mars ber Lovable kjøre SQL-filen `db/migrations/NNNN_navn.sql` uendret (DEC-0022, `docs/development/LOVABLE_SYNC.md`); endret funksjon → «deploy funksjoner»; ny hemmelighet → Mars legger den inn via «Add secret»-skjemaet (aldri i chat). Lag meldingen fra LOVABLE_MESSAGE_TEMPLATES. **Skriv alltid hele `LOVABLE_SYNC.md` på nytt ved hver leveranse, slik at filen bare inneholder meldingen og Mars kan kopiere alt (DEC-0033).** Ingen endring i disse → filen ber Lovable bare bekrefte skjemaversjonen. Oppdater listen over kjørte migrasjoner i `LOVABLE_GUIDE.md` når Lovable bekrefter.
 8. **Gi Mars en kort norsk sjekkliste:** «1) Trykk Push i GitHub Desktop. 2) Lim inn denne meldingen i Lovable. 3) Sjekk at forhåndsvisningen viser X.» Ingen sjargong.
 9. **Verifiser etterpå** (når Mars har kjørt den): skjemaversjonen appen forventer = databasens (`schema_version`-tabell, ARCHITECTURE §7); `docs/` og `.claude/` er uendret i neste Lovable-commit (`git diff`).
 

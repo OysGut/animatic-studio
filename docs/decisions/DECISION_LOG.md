@@ -302,3 +302,9 @@ Regler: DEC-ID-er er permanente. En beslutning endres aldri i ettertid; den erst
   3. Film (M4) får egen bøtte og opplasting i biter som kan gjenopptas (TUS), avklares når filmimport bygges.
 - **Migrasjon:** `0005_note_edits_large_files.sql` (kolonner for endringsstempel, filstørrelse opptil 5 GB). Bøttens egen grense endres i Lovables lagringsverktøy.
 - **Tillegg 2026-10-09 (Teknisk):** Lovable kjørte 0005 med et avvik: ny kolonne `byte_size_big` (bigint) i stedet for å endre typen på `byte_size`. Den gamle kolonnen ble stående påkrevd med 50 MB-grense, så ingen bilder kunne lastes opp. Repoets 0005 er oppdatert til det som faktisk ble kjørt (repoet skal speile databasen), og `0006_byte_size_big.sql` gjør `byte_size` valgfri uten grense og fyller `byte_size_big` automatisk for eldre klienter. Appen bruker nå `byte_size_big` (KI-38).
+
+## DEC-0033 – LOVABLE_SYNC.md inneholder bare meldingen som skal limes inn
+- **Dato:** 2026-10-09 · **Type:** Bekreftet av bruker
+- **Mars' ord:** «i Fremtiden kan du gjøre det slik at du fornyer "LOVABLE_SYNC.md" slik at jeg bare kopierer og limer inn alt som står i "LOVABLE_SYNC.md" - det er mye enklere for meg.»
+- **Beslutning:** `docs/development/LOVABLE_SYNC.md` skrives helt på nytt ved hver leveranse og inneholder bare den ferdige meldingen til Lovable, uten overskrifter eller forklaring. Veiledningen (oppsett, steg etter leveranse, API-nøkler, feilsituasjoner) og listen over kjørte migrasjoner flyttes til `docs/development/LOVABLE_GUIDE.md`. Når en leveranse ikke har databaseendring, ber meldingen Lovable bare bekrefte skjemaversjonen.
+
