@@ -12,6 +12,8 @@ import {
   type NumberingMethod,
   type ProjectState,
 } from "@/core";
+import { screenplayDocx } from "@/engine/export/screenplay-docx";
+import { screenplayPdf } from "@/engine/export/screenplay-pdf";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -95,7 +97,7 @@ export function ExportDialog({ open, onOpenChange, state, productionId, lockedPa
   );
   const changed = preview.filter((p) => p.exportNumber !== p.productionNumber).length;
 
-  async function doExport() {
+  function doExport() {
     setBusy(true);
     setError(null);
     try {
@@ -110,14 +112,12 @@ export function ExportDialog({ open, onOpenChange, state, productionId, lockedPa
       const date = new Date().toISOString().slice(0, 10);
       const base = safeName(`${state.project.name} – ${production?.name ?? "manus"} – ${date}`);
       if (format === "pdf") {
-        const { screenplayPdf } = await import("@/engine/export/screenplay-pdf");
         const bytes = screenplayPdf(paginate(input).pages, {
           title: state.project.name,
           titlePage,
         });
         setReady(prepareDownload(bytes, `${base}.pdf`, "application/pdf"));
       } else {
-        const { screenplayDocx } = await import("@/engine/export/screenplay-docx");
         const bytes = screenplayDocx(input, { title: state.project.name, titlePage });
         setReady(
           prepareDownload(
@@ -345,7 +345,7 @@ export function ExportDialog({ open, onOpenChange, state, productionId, lockedPa
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
             {ready ? "Lukk" : "Avbryt"}
           </Button>
-          <Button onClick={() => void doExport()} disabled={busy || preview.length === 0}>
+          <Button onClick={doExport} disabled={busy || preview.length === 0}>
             <Download />
             Eksporter {format === "pdf" ? "PDF" : "Word"}
           </Button>

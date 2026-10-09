@@ -1,6 +1,5 @@
-Eksport: tydelig nedlasting med lenke og hjelp i Lovables forhåndsvisning (KI-25)
+Eksport virker i Safari: filen lages og lastes ned i samme klikk (KI-25)
 
-- Eksportdialogen blir stående etter eksport og viser «Last ned»-lenke til filen
-- I innebygd visning (Lovable-forhåndsvisning) forklares at appen må åpnes i egen fane hvis nedlastingen blokkeres
-- Skjermbildetest 14 laster ned og kontrollerer PDF-en
+- Eksportkoden lastes på forhånd i stedet for ved klikk, så Safari godtar nedlastingen
+- Dialogen blir stående og viser «Last ned»-lenke til filen, med hjelp hvis forhåndsvisningen blokkerer
 - Dokumentasjon: migrasjon 0002 kjørt, KI-19 lukket, KI-25 ny
