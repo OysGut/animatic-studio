@@ -24,6 +24,7 @@ export type Database = {
           id: string
           inverse: Json | null
           project_id: string
+          seq: number
         }
         Insert: {
           actor: string
@@ -34,6 +35,7 @@ export type Database = {
           id: string
           inverse?: Json | null
           project_id: string
+          seq?: never
         }
         Update: {
           actor?: string
@@ -44,6 +46,7 @@ export type Database = {
           id?: string
           inverse?: Json | null
           project_id?: string
+          seq?: never
         }
         Relationships: [
           {
@@ -744,6 +747,70 @@ export type Database = {
           },
         ]
       }
+      script_versions: {
+        Row: {
+          based_on_change_id: string | null
+          created_at: string
+          created_by: string
+          id: string
+          name: string
+          note: string | null
+          number: number
+          parent_version_id: string | null
+          production_id: string
+          project_id: string
+          snapshot: Json
+        }
+        Insert: {
+          based_on_change_id?: string | null
+          created_at?: string
+          created_by: string
+          id?: string
+          name: string
+          note?: string | null
+          number: number
+          parent_version_id?: string | null
+          production_id: string
+          project_id: string
+          snapshot: Json
+        }
+        Update: {
+          based_on_change_id?: string | null
+          created_at?: string
+          created_by?: string
+          id?: string
+          name?: string
+          note?: string | null
+          number?: number
+          parent_version_id?: string | null
+          production_id?: string
+          project_id?: string
+          snapshot?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "script_versions_parent_version_id_fkey"
+            columns: ["parent_version_id"]
+            isOneToOne: false
+            referencedRelation: "script_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "script_versions_production_id_fkey"
+            columns: ["production_id"]
+            isOneToOne: false
+            referencedRelation: "productions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "script_versions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       takes: {
         Row: {
           created_at: string
@@ -834,6 +901,15 @@ export type Database = {
       }
       create_project: {
         Args: { p_fps_den?: number; p_fps_num?: number; p_name: string }
+        Returns: string
+      }
+      create_script_version: {
+        Args: {
+          p_name: string
+          p_note?: string
+          p_production: string
+          p_project: string
+        }
         Returns: string
       }
       register_imported_document: {
