@@ -5,6 +5,7 @@
 import { MessageSquarePlus, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import {
+  formatEdited,
   formatStamp,
   newId,
   resolveRange,
@@ -87,6 +88,7 @@ export function NotesPanel({
           run={run}
           focused={n.id === focusId}
           showQuote={showQuotes}
+          authorName={authorName}
         />
       ))}
       {editable && newTarget ? (
@@ -137,7 +139,9 @@ function NoteCard({
   run,
   focused,
   showQuote,
+  authorName,
 }: {
+  authorName: string;
   state: ProjectState;
   note: Annotation;
   editable: boolean;
@@ -164,11 +168,17 @@ function NoteCard({
         (focused ? "outline outline-1 outline-note" : "")
       }
     >
-      <span className="absolute right-1.5 top-1 text-[10px] leading-none text-text-tertiary">
+      <span className="absolute right-1.5 top-1 text-right text-[10px] leading-tight text-text-tertiary">
         {formatStamp(note)}
+        {formatEdited(note) ? <span className="block">{formatEdited(note)}</span> : null}
       </span>
       {showQuote && block ? (
-        <p className="mt-2.5 truncate text-[11px] italic text-text-tertiary">
+        <p
+          className={
+            "truncate text-[11px] italic text-text-tertiary " +
+            (formatEdited(note) ? "mt-5" : "mt-2.5")
+          }
+        >
           {range?.found
             ? note.quote === ""
               ? "Hele elementet"
@@ -181,7 +191,7 @@ function NoteCard({
           ) : null}
         </p>
       ) : (
-        <span className="h-2.5" aria-hidden />
+        <span className={formatEdited(note) ? "h-5" : "h-2.5"} aria-hidden />
       )}
       {editing ? (
         <>
@@ -199,7 +209,7 @@ function NoteCard({
               disabled={!text.trim()}
               onClick={() => {
                 const e = run(
-                  { type: "EditAnnotation", annotationId: note.id, text },
+                  { type: "EditAnnotation", annotationId: note.id, text, editedByName: authorName },
                   "Endre notat",
                 );
                 setErr(e);

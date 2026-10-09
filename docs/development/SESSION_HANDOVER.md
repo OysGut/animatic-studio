@@ -13,7 +13,7 @@
 - **Økt 1 (M0):** kunnskapsbase, kravregister, beslutninger, arkitektur, skills.
 - **Økt 2 (M1):** kjerne, migrasjon 0001 (kjørt i Lovable), `runCommand`, innlogging/prosjekter. Feil KI-18 funnet av Mars og rettet.
 - **Økt 3 (M2 del 1):** import, sider, redigering, angre, eksport. DEC-0023–0026, ADR-0010. Testet av Mars i Lovable; Safari-nedlasting rettet (KI-25). Migrasjon 0002 kjørt.
-- **Økt 4:** Mars' ønsker etter M2 (DEC-0029: redigeringsmodus for rekkefølge/synlighet, flyttede scener markert, sammenligning linje for linje), notater i manus med eksport/import som Word-kommentarer og PDF-merknader, søketreff, scenelisten følger manuset, valgt scene øverst (DEC-0031, REQ-0535–0543), og M3 del 1 ressursbibliotek (DEC-0030). Migrasjon `0004_library_notes.sql` (ikke kjørt ennå). Kodegjennomgang med 9 funn – rettet.
+- **Økt 4:** «Endret av …» på notater og bilder opptil 2 GB (DEC-0032, migrasjon 0005 – ikke kjørt ennå). Mars' ønsker etter M2 (DEC-0029: redigeringsmodus for rekkefølge/synlighet, flyttede scener markert, sammenligning linje for linje), notater i manus med eksport/import som Word-kommentarer og PDF-merknader, søketreff, scenelisten følger manuset, valgt scene øverst (DEC-0031, REQ-0535–0543), og M3 del 1 ressursbibliotek (DEC-0030). Migrasjon `0004_library_notes.sql` (ikke kjørt ennå). Kodegjennomgang med 9 funn – rettet.
 - **Økt 3 del 2 (M2 del 2):** manusversjoner (migrasjon 0003), sammenligning, historisk nummerering, søk/karakterfilter, «Vis kun valgt scene» (REQ-0531/DEC-0027, Mars' ønske), varighetsestimat, tilstedeværelse. DEC-0028. To uavhengige kodegjennomganger, alle funn rettet.
 
 ## Hva er testet

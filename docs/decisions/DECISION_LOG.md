@@ -292,3 +292,12 @@ Regler: DEC-ID-er er permanente. En beslutning endres aldri i ettertid; den erst
   6. Søk treffer også notater. Treff markeres på sidene med diskret gulgrønn bakgrunn, og scenelisten viser «Treff: replikk, notat …».
   7. Når du blar, markeres scenen øverst i visningen i scenelisten (stripe til venstre), og listen ruller med – uten å endre valget eller inspektøren.
   8. Klikk på en scene i listen viser sceneoverskriften øverst i manusvisningen.
+
+## DEC-0032 – «Endret av …» på notater; bilder opptil 2 GB
+- **Dato:** 2026-10-09 · **Type:** Bekreftet av bruker (endret av) + Teknisk anbefaling (filstørrelse)
+- **Mars' ord:** «Vi går for: «endret av …»». Og: «50 MB er alt for lite til så mange assets og etter hvert til genererte filmer. Er vi nødt til å sette et tak? Eller er det 50MB per fil?»
+- **Beslutning:**
+  1. Alle med skrivetilgang kan endre et notat. Notatet beholder forfatter og tidspunkt, og viser i tillegg «endret av [navn] · [tid]» (bare «endret · [tid]» når forfatteren selv endrer). Navnet settes av serveren fra profilen. Angre fjerner endringsstempelet igjen. Løser KI-36.
+  2. 50 MB var grensen per fil (ikke totalt) som Claude hadde valgt for bilder. Den heves til 2 GB per fil, som er Lovable Clouds standard (maks 5 GB per fil kan stilles inn i Lovable). Det finnes ingen fast grense for total lagring; lagring faktureres etter bruk i Lovable Cloud.
+  3. Film (M4) får egen bøtte og opplasting i biter som kan gjenopptas (TUS), avklares når filmimport bygges.
+- **Migrasjon:** `0005_note_edits_large_files.sql` (kolonner for endringsstempel, `byte_size` som bigint opptil 5 GB). Bøttens egen grense endres i Lovables lagringsverktøy.

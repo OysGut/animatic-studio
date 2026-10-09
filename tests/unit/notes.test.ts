@@ -5,6 +5,7 @@ import {
   applyCommand,
   emptyProjectState,
   exportNotes,
+  formatEdited,
   exportPaginationInput,
   lineKey,
   matchingOccurrences,
@@ -472,5 +473,34 @@ describe("Notater: grensetilfeller (kodegjennomgang)", () => {
       ["Punkt", ""],
       ["Over linjeskift", "faller tett"],
     ]);
+  });
+});
+
+describe("«Endret av …» (DEC-0032)", () => {
+  it("endring stemples med hvem og når; angre fjerner stempelet igjen", () => {
+    const { s: s0, cmd } = project();
+    const { s, id } = addNote(s0, cmd.scenes[0]!.blocks[0]!.blockId, "vasen", "Første", "Mars");
+    const r = applyCommand(
+      s,
+      envelope({
+        type: "EditAnnotation",
+        annotationId: id as never,
+        text: "Andre",
+        editedByName: "Anita",
+      }),
+    );
+    if (!r.ok) throw new Error(r.error.message);
+    const a = r.state.annotations[id]!;
+    expect([a.authorName, a.editedByName, a.editedAt]).toEqual([
+      "Mars",
+      "Anita",
+      "2026-10-08T12:00:00.000Z",
+    ]);
+    expect(formatEdited(a)).toMatch(/^endret av Anita · /);
+    expect(formatEdited({ ...a, editedByName: "Mars" })).toMatch(/^endret · /);
+    const back = applyCommand(r.state, envelope(r.inverse));
+    expect(
+      back.ok && [back.state.annotations[id]!.editedByName, back.state.annotations[id]!.editedAt],
+    ).toEqual([null, null]);
   });
 });

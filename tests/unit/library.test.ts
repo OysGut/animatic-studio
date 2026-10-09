@@ -201,7 +201,7 @@ describe("Visuelle varianter og versjoner (REQ-0135, REQ-0136, REQ-0146)", () =>
     expect(bad({ path: `annet-prosjekt/${id}/a.png` })).toBe("invalid");
     expect(bad({ path: `${x.project.id}/../a.png` })).toBe("invalid");
     expect(bad({ mimeType: "image/svg+xml" })).toBe("invalid");
-    expect(bad({ byteSize: 60 * 1024 * 1024 })).toBe("invalid");
+    expect(bad({ byteSize: 3 * 1024 * 1024 * 1024 })).toBe("invalid");
     expect(bad({ sha256: "x" })).toBe("invalid");
   });
 

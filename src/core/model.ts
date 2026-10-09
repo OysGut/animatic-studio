@@ -227,6 +227,9 @@ export interface Annotation extends Entity<AnnotationId> {
   readonly text: string;
   readonly authorName: string;
   readonly stampAt: string;
+  /** Sist endret av (navn) og når – vises som «endret av …» (DEC-0032). null = aldri endret. */
+  readonly editedByName: string | null;
+  readonly editedAt: string | null;
   /** Slettet (kan angres). Slettede notater vises og eksporteres ikke. */
   readonly removed: boolean;
 }

@@ -103,7 +103,8 @@ export const ASSET_MIME_TYPES: readonly string[] = [
   "image/webp",
   "image/gif",
 ];
-export const ASSET_MAX_BYTES = 50 * 1024 * 1024;
+/** Maks filstørrelse for et bilde: 2 GB (Lovable Clouds standard per fil, DEC-0032). */
+export const ASSET_MAX_BYTES = 2 * 1024 * 1024 * 1024;
 
 /** Kontrollerer og rydder feltene (trimmer, fjerner duplikater). Samme regler i klient og server. */
 function normalizeAssetFields(f: AssetFields): AssetFields {
@@ -226,6 +227,8 @@ function normalizeAnnotation(s: ProjectState, n: NewAnnotation, now: string): An
       text,
       authorName: authorName || "Ukjent",
       stampAt: new Date(stampAt as string).toISOString(),
+      editedByName: null,
+      editedAt: null,
       removed: false,
     };
   }
@@ -1618,7 +1621,7 @@ function run(
       if (!ASSET_MIME_TYPES.includes(m.mimeType))
         fail("invalid", "Bildet må være PNG, JPEG, WebP eller GIF");
       if (!Number.isInteger(m.byteSize) || m.byteSize <= 0 || m.byteSize > ASSET_MAX_BYTES)
-        fail("invalid", "Bildet er for stort (maks 50 MB)");
+        fail("invalid", "Bildet er for stort (maks 2 GB)");
       if (!/^[0-9a-f]{64}$/.test(m.sha256)) fail("invalid", "Ugyldig kontrollsum");
       for (const d of [m.width, m.height])
         if (d !== null && (!Number.isInteger(d) || d <= 0 || d > 100_000))
@@ -1746,12 +1749,42 @@ function run(
       const a = need(s.annotations[c.annotationId], "Notatet");
       const text = typeof c.text === "string" ? c.text.trim() : "";
       if (!text || text.length > 10_000) fail("invalid", "Notatet må ha tekst (maks 10 000 tegn)");
+      // «Endret av …» (DEC-0032): navn fra den som endrer, tid = nå (eller oppgitt ved angre)
+      const editedByName =
+        c.editedByName === undefined
+          ? a.editedByName
+          : c.editedByName === null
+            ? null
+            : String(c.editedByName).trim().slice(0, 100) || "Ukjent";
+      const editedAt =
+        c.editedAt !== undefined
+          ? c.editedAt
+          : c.editedByName === undefined || c.editedByName === null
+            ? a.editedAt
+            : env.at;
+      if (editedAt !== null && Number.isNaN(Date.parse(editedAt)))
+        fail("invalid", "Ugyldig tidspunkt for endringen");
       return {
         state: {
           ...s,
-          annotations: { ...s.annotations, [a.id]: { ...a, text, revision: rev(a) } },
+          annotations: {
+            ...s.annotations,
+            [a.id]: {
+              ...a,
+              text,
+              editedByName,
+              editedAt: editedAt === null ? null : new Date(editedAt).toISOString(),
+              revision: rev(a),
+            },
+          },
         },
-        inverse: { type: "EditAnnotation", annotationId: a.id, text: a.text },
+        inverse: {
+          type: "EditAnnotation",
+          annotationId: a.id,
+          text: a.text,
+          editedByName: a.editedByName,
+          editedAt: a.editedAt,
+        },
         affected: [a.id],
       };
     }

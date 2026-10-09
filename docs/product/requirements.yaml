@@ -16469,6 +16469,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0031
     change: Opprettet etter ønske fra Mars og bygget samme dag
+  - date: '2026-10-09'
+    decision: DEC-0032
+    change: Endringer av andres notater vises som «endret av [navn] · [tid]»
   notes: "Ikke i mandatet v14. Lagt til av Mars 2026-10-09 (notater i manus)."
 - id: REQ-0537
   title: "Sletting av notat med advarsel"

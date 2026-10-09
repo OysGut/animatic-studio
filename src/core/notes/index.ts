@@ -324,12 +324,24 @@ export function searchHits(
   return out;
 }
 
+function formatDate(iso: string): string {
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime())
+    ? iso
+    : `${d.toLocaleDateString("nb-NO", { day: "numeric", month: "short", year: "numeric" })} kl. ${d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" })}`;
+}
+
 /** Stempel for visning: «Mars · 9. okt. 2026 kl. 14:32». */
 export function formatStamp(a: Pick<Annotation, "authorName" | "stampAt">): string {
-  const d = new Date(a.stampAt);
-  const date = Number.isNaN(d.getTime())
-    ? a.stampAt
-    : `${d.toLocaleDateString("nb-NO", { day: "numeric", month: "short", year: "numeric" })} kl. ${d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" })}`;
-  return `${a.authorName || "Ukjent"} · ${date}`;
+  return `${a.authorName || "Ukjent"} · ${formatDate(a.stampAt)}`;
+}
+
+/** «endret av Anita · 10. okt. 2026 kl. 09:15» (DEC-0032), eller tom tekst hvis notatet ikke er endret. */
+export function formatEdited(
+  a: Pick<Annotation, "authorName" | "editedByName" | "editedAt">,
+): string {
+  if (!a.editedAt) return "";
+  const who = a.editedByName && a.editedByName !== a.authorName ? ` av ${a.editedByName}` : "";
+  return `endret${who} · ${formatDate(a.editedAt)}`;
 }
 export * from "./transfer";

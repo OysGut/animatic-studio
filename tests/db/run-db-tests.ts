@@ -783,8 +783,16 @@ try {
       annotationId: n2 as never,
       removed: true,
     });
+    st = await runCommand(st, ALICE, {
+      type: "EditAnnotation",
+      annotationId: n1 as never,
+      text: "Endret tekst",
+      editedByName: "Anita",
+    });
     const back = await loadState(projectId);
     assert(back.annotations[n1]!.authorName === "Mars", "stempel");
+    assert(back.annotations[n1]!.editedByName === "Anita", "endret av");
+    assert(back.annotations[n1]!.editedAt === st.annotations[n1]!.editedAt, "endret når");
     assert(back.annotations[n1]!.stampAt === "2026-10-01T10:00:00.000Z", "tidspunkt");
     assert(back.annotations[n2]!.removed === true, "slettet");
     assert(

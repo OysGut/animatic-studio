@@ -194,6 +194,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         text: n.text,
         author_name: n.authorName,
         stamp_at: n.stampAt,
+        edited_by_name: n.editedByName,
+        edited_at: n.editedAt,
         removed: n.removed,
       };
     }
@@ -470,6 +472,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         text: str(x["text"] ?? ""),
         authorName: str(x["author_name"] ?? ""),
         stampAt: iso(x["stamp_at"]),
+        editedByName: optStr(x["edited_by_name"]),
+        editedAt:
+          x["edited_at"] === null || x["edited_at"] === undefined ? null : iso(x["edited_at"]),
         removed: x["removed"] === true,
       })),
     ),

@@ -211,6 +211,20 @@ export const runCommand = createServerFn({ method: "POST" })
         },
       };
     }
+    // «Endret av …» på notater: navnet hentes fra profilen, ikke fra klienten (DEC-0032)
+    if (
+      data.command.type === "EditAnnotation" &&
+      typeof data.command.editedByName === "string" &&
+      data.command.editedAt === undefined
+    ) {
+      const { data: profile } = await admin
+        .from("profiles")
+        .select("display_name")
+        .eq("user_id", context.userId)
+        .maybeSingle();
+      const name = (profile as { display_name?: string } | null)?.display_name?.trim();
+      if (name) data = { ...data, command: { ...data.command, editedByName: name } };
+    }
     // Ressursbiblioteket krever migrasjon 0004 (ellers ville endringen bare blitt logget, ikke lagret)
     if (LIBRARY_COMMANDS.has(data.command.type)) {
       const schema = await checkSchema(admin);

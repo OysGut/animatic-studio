@@ -342,7 +342,15 @@ export type Command =
       readonly imported?: boolean;
     }
   | { readonly type: "UndoAddAnnotations"; readonly annotationIds: readonly AnnotationId[] }
-  | { readonly type: "EditAnnotation"; readonly annotationId: AnnotationId; readonly text: string }
+  | {
+      readonly type: "EditAnnotation";
+      readonly annotationId: AnnotationId;
+      readonly text: string;
+      /** Hvem som endrer (stemples «endret av …»). Settes av serveren fra profilen ved vanlige endringer. */
+      readonly editedByName?: string | null;
+      /** Bare ved angre: tidspunktet som skal tilbake. Ellers settes det til nå. */
+      readonly editedAt?: string | null;
+    }
   | {
       /** Slett (eller hent tilbake) et notat. Historikken beholdes og kan angres. */
       readonly type: "SetAnnotationRemoved";

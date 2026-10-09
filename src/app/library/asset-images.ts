@@ -38,7 +38,7 @@ async function imageSize(file: File): Promise<{ width: number | null; height: nu
 
 export function checkImageFile(file: File): string | null {
   if (!ASSET_MIME_TYPES.includes(file.type)) return "Bildet må være PNG, JPEG, WebP eller GIF.";
-  if (file.size > ASSET_MAX_BYTES) return "Bildet er større enn 50 MB.";
+  if (file.size > ASSET_MAX_BYTES) return "Bildet er større enn 2 GB.";
   if (file.size === 0) return "Filen er tom.";
   return null;
 }
