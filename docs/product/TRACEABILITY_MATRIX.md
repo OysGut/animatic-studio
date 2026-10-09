@@ -36,8 +36,8 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | TIMELINE | Timeline & Assembly Engine | 93 | 28 | 14 | 10 |
 | LIBRARY | Resource Library | 57 | 9 | 20 | 17 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 2 | 2 |
-| COMPOSE | 2D Composition Engine | 41 | 14 | 17 | 14 |
-| CAMERA | Camera & Motion Engine | 28 | 2 | 22 | 18 |
+| COMPOSE | 2D Composition Engine | 43 | 14 | 19 | 16 |
+| CAMERA | Camera & Motion Engine | 29 | 2 | 23 | 19 |
 | AUDIO | Audio Engine | 31 | 1 | 3 | 2 |
 | PROMPT | Prompt Orchestration Engine | 45 | 14 | 2 | 1 |
 | PROVIDER | Provider Adapters | 23 | 6 | 2 | 2 |
@@ -49,7 +49,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | EXPORT | Export Engine | 54 | 12 | 17 | 16 |
 | SECURITY | Security & Storage | 26 | 5 | 13 | 9 |
 | COLLAB | Collaboration & Access | 10 | 0 | 8 | 6 |
-| UI | Brukergrensesnitt og designsystem | 123 | 19 | 45 | 39 |
+| UI | Brukergrensesnitt og designsystem | 126 | 19 | 48 | 42 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 4 | 1 |
 
 ## Dekning per fase
@@ -58,7 +58,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 |---|---|---|
 | 1 | 70 | 27 |
 | 2 | 97 | 61 |
-| 3 | 56 | 35 |
+| 3 | 59 | 38 |
 | 4 | 68 | 0 |
 | 5 | 70 | 0 |
 | 6 | 48 | 0 |
@@ -621,3 +621,6 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0549 | Beslutning DEC-0037 | COMPOSE, LIBRARY, UI | src/core/library/index.ts#assetsInScene, src/app/scene-editor/SceneAssetsPanel.tsx, src/app/scene-editor/Stage.tsx (onDrop), src/routes/prosjekt.$projectId.bibliotek.tsx (?asset=) | 2 | tests/unit/library.test.ts, tests/visual/screens.mjs (38-sceneeditor-i-scenen) | Verifisert | 2026-10-09 DEC-0037: Opprettet etter beslutning fra Mars og bygget samme dag |
 | REQ-0550 | Beslutning DEC-0038 | UI | src/app/shell/pane-size.tsx | 1 | tests/visual/screens.mjs (39-paneler-justert) | Verifisert | 2026-10-09 DEC-0038: Opprettet etter beslutning fra Mars og bygget samme dag |
 | REQ-0551 | Beslutning DEC-0039 | COMPOSE, TIMELINE, UI | src/core/composition/format.ts, src/core/commands/apply.ts (SetProjectFormat, UndoSetProjectFormat), db/migrations/0008_project_format.sql, src/app/projects/ProjectFormat.tsx | 2 | tests/unit/format.test.ts, tests/db/run-db-tests.ts (0008), tests/visual/screens.mjs (37-oversikt-format) | Verifisert | 2026-10-09 DEC-0039: Opprettet etter beslutning fra Mars og bygget samme dag |
+| REQ-0552 | Beslutning DEC-0040 | UI | src/app/shell/ProjectNav.tsx, src/app/shell/pane-size.tsx#useStoredFlag | 1 | tests/visual/screens.mjs (40-meny-sammenslatt) | Verifisert | 2026-10-09 DEC-0040: Opprettet etter beslutning fra Mars og bygget samme dag |
+| REQ-0553 | Beslutning DEC-0040 | UI, COMPOSE | src/app/scene-editor/ScenePicker.tsx | 1 | tests/visual/screens.mjs (41-scenevelger) | Verifisert | 2026-10-09 DEC-0040: Opprettet etter beslutning fra Mars og bygget samme dag |
+| REQ-0554 | Beslutning DEC-0040 | COMPOSE, CAMERA, UI | src/app/scene-editor/PreviewWindow.tsx, src/app/scene-editor/SceneEditorWorkspace.tsx | 1 | tests/visual/screens.mjs (42-forhandsvisning) | Verifisert | 2026-10-09 DEC-0040: Opprettet etter beslutning fra Mars og bygget samme dag |

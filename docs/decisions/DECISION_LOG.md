@@ -356,3 +356,11 @@ Regler: DEC-ID-er er permanente. En beslutning endres aldri i ettertid; den erst
 - **Beslutning:** Bildeformat (piksler) og bildefrekvens settes på prosjektoversikten og gjelder alle scener og produksjoner. Sceneeditoren velger ikke lenger format. Endres formatet eller frekvensen, tilpasses alle 2D-scener i samme endring (kan angres): plassering og kamera skaleres slik at høyden i bildet beholdes og midten står fast, og nøkkelbilder, kamerautsnitt og varighet regnes om til ny frekvens. Erstatter formatvalget per 2D-scene i DEC-0035.
 - **Migrasjon:** `0008_project_format.sql` (kolonner for format på prosjektet; `apply_changes` kan endre prosjektraden med revisjonskontroll).
 
+## DEC-0040 – Mer plass i sceneeditoren: sammenleggbar meny, scenevelger og forhåndsvisning
+- **Dato:** 2026-10-09 · **Type:** Bekreftet av bruker
+- **Mars' ord:** «Første kolonne bør vi kunne kolapse til et lite ikon i toppen. Scenevelgeren trenger vi ikke å ha fremme hele tiden, og det kan jo være en nedtreksliste som en kan få utvide om en ønsker å bla igjennom og søke opp noe spesielt […] vi trenger også et eget vindu som viser preview av resultatet av kamera bevegelser og bevegelser på objekter slik det vil fremkomme i ferdig utsnitt, dette previewbildet kan en krysse av eller på for "vis automatisk ved avspilling" (tooltip) og "Automatisk visning"»
+- **Beslutning:**
+  1. Menyen til venstre kan legges sammen til en smal stripe med ikoner med knappen øverst; valget huskes.
+  2. Sceneeditoren velger scene med en nedtrekksliste i verktøylinjen (søk på nummer, sted eller tid, piltaster, ‹ › for forrige/neste). Den faste scenelisten er fjernet; venstre kolonne viser bare «I denne scenen».
+  3. «Forhåndsvisning» åpner et eget vindu med det ferdige utsnittet (kamera, parallakse og animerte lag) på gjeldende bilde. Avkrysningen «Automatisk visning» (verktøytips «Vis automatisk ved avspilling») viser vinduet mens scenen spilles av. Begge valg og vinduets bredde huskes.
+

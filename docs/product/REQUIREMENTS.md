@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **551**
-- Prioritet: P0: 141, P1: 235, P2: 136, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 24, teknisk-anbefaling: 7
-- Status: Ikke startet: 392, Verifisert: 123, Under arbeid: 25, Implementert – ikke verifisert: 11
+- Antall krav: **554**
+- Prioritet: P0: 141, P1: 237, P2: 137, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 27, teknisk-anbefaling: 7
+- Status: Ikke startet: 392, Verifisert: 126, Under arbeid: 25, Implementert – ikke verifisert: 11
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -7108,3 +7108,44 @@ Bildeformat og bildefrekvens skal settes på prosjektoversikten og gjelde alle s
   - database: prosjektraden endres med revisjonskontroll
 - **Implementering:** src/core/composition/format.ts, src/core/commands/apply.ts (SetProjectFormat, UndoSetProjectFormat), db/migrations/0008_project_format.sql, src/app/projects/ProjectFormat.tsx
 - **Merknad:** Ikke i mandatet v14 som eget punkt; presiserer 12.1 (format) for hele prosjektet.
+
+#### REQ-0552 – Sammenleggbar meny
+Menyen til venstre skal kunne legges sammen til en smal stripe med ikoner, og valget skal huskes.
+
+- **Kilde:** Beslutning DEC-0040 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Når knappen øverst i menyen trykkes, vises bare ikonene, og valget står seg når brukeren går til en annen arbeidsflate.
+- **Tester:**
+  - visuell: sammenslått meny
+- **Implementering:** src/app/shell/ProjectNav.tsx, src/app/shell/pane-size.tsx#useStoredFlag
+- **Merknad:** Ikke i mandatet v14.
+
+#### REQ-0553 – Scenevelger med søk i sceneeditoren
+Sceneeditoren skal velge scene med en nedtrekksliste med søk (nummer, sted, tid) og knapper for forrige og neste scene, i stedet for en fast sceneliste.
+
+- **Kilde:** Beslutning DEC-0040 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** UI, COMPOSE
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Når brukeren skriver «fjøset» i scenevelgeren, vises bare scenene på fjøset, og Enter åpner den markerte.
+- **Tester:**
+  - visuell: scenevelger med søk
+- **Implementering:** src/app/scene-editor/ScenePicker.tsx
+- **Merknad:** Ikke i mandatet v14.
+
+#### REQ-0554 – Forhåndsvisning av ferdig utsnitt
+Sceneeditoren skal ha et eget vindu som viser det ferdige utsnittet (kamera, parallakse og animerte lag) på gjeldende bilde. Det kan vises manuelt eller automatisk ved avspilling («Automatisk visning»).
+
+- **Kilde:** Beslutning DEC-0040 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, CAMERA, UI
+- **Avhengigheter:** REQ-0197
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Når «Forhåndsvisning» er på, viser vinduet bildet slik det blir i filmen på gjeldende bilde.
+  - Når «Automatisk visning» er på og scenen spilles av, vises vinduet uten at det er slått på manuelt.
+- **Tester:**
+  - visuell: forhåndsvisning med kamera
+- **Implementering:** src/app/scene-editor/PreviewWindow.tsx, src/app/scene-editor/SceneEditorWorkspace.tsx
+- **Merknad:** Ikke i mandatet v14 som eget punkt; utdyper 12.5 (visuell forhåndsvisning).

@@ -17365,3 +17365,91 @@ requirements:
     decision: DEC-0039
     change: "Opprettet etter beslutning fra Mars og bygget samme dag"
   notes: "Ikke i mandatet v14 som eget punkt; presiserer 12.1 (format) for hele prosjektet."
+- id: REQ-0552
+  title: "Sammenleggbar meny"
+  text: "Menyen til venstre skal kunne legges sammen til en smal stripe med ikoner, og valget skal huskes."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0040
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Når knappen øverst i menyen trykkes, vises bare ikonene, og valget står seg når brukeren går til en annen arbeidsflate."
+  tests:
+  - "visuell: sammenslått meny"
+  status: Verifisert
+  implementation:
+  - "src/app/shell/ProjectNav.tsx"
+  - "src/app/shell/pane-size.tsx#useStoredFlag"
+  verification:
+  - "tests/visual/screens.mjs (40-meny-sammenslatt)"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0040
+    change: "Opprettet etter beslutning fra Mars og bygget samme dag"
+  notes: "Ikke i mandatet v14."
+- id: REQ-0553
+  title: "Scenevelger med søk i sceneeditoren"
+  text: "Sceneeditoren skal velge scene med en nedtrekksliste med søk (nummer, sted, tid) og knapper for forrige og neste scene, i stedet for en fast sceneliste."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0040
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - UI
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Når brukeren skriver «fjøset» i scenevelgeren, vises bare scenene på fjøset, og Enter åpner den markerte."
+  tests:
+  - "visuell: scenevelger med søk"
+  status: Verifisert
+  implementation:
+  - "src/app/scene-editor/ScenePicker.tsx"
+  verification:
+  - "tests/visual/screens.mjs (41-scenevelger)"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0040
+    change: "Opprettet etter beslutning fra Mars og bygget samme dag"
+  notes: "Ikke i mandatet v14."
+- id: REQ-0554
+  title: "Forhåndsvisning av ferdig utsnitt"
+  text: "Sceneeditoren skal ha et eget vindu som viser det ferdige utsnittet (kamera, parallakse og animerte lag) på gjeldende bilde. Det kan vises manuelt eller automatisk ved avspilling («Automatisk visning»)."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0040
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - COMPOSE
+  - CAMERA
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0197
+  acceptance:
+  - "Når «Forhåndsvisning» er på, viser vinduet bildet slik det blir i filmen på gjeldende bilde."
+  - "Når «Automatisk visning» er på og scenen spilles av, vises vinduet uten at det er slått på manuelt."
+  tests:
+  - "visuell: forhåndsvisning med kamera"
+  status: Verifisert
+  implementation:
+  - "src/app/scene-editor/PreviewWindow.tsx"
+  - "src/app/scene-editor/SceneEditorWorkspace.tsx"
+  verification:
+  - "tests/visual/screens.mjs (42-forhandsvisning)"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0040
+    change: "Opprettet etter beslutning fra Mars og bygget samme dag"
+  notes: "Ikke i mandatet v14 som eget punkt; utdyper 12.5 (visuell forhåndsvisning)."

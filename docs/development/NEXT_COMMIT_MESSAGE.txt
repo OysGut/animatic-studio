@@ -1,24 +1,12 @@
-Sceneeditor del 2, ressurser i scenen, justerbare paneler og prosjektformat (DEC-0036–0039)
+Mer plass i sceneeditoren: sammenleggbar meny, scenevelger og forhåndsvisning (DEC-0040)
 
-Ny databaseendring: db/migrations/0008_project_format.sql. Lim inn hele innholdet i
-docs/development/LOVABLE_SYNC.md i Lovable etter push.
+Ingen databaseendring. Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push
+(den ber bare Lovable bekrefte at databasen står på versjon 8).
 
-Sceneeditor – kamera, nøkkelbilder, tidslinje og avspilling (DEC-0036):
-- Tidslinje: spill av/pause (mellomrom), bilde for bilde, løkke, scenens varighet (fra manuset eller satt).
-- Nøkkelbilder via knapp, egenskapspanelet eller «Automatiske nøkkelbilder»; flytt, slett, hastighetskurve.
-- Kamerautsnitt med blå startramme og rød sluttramme, rett eller kurvet bane, redigeres direkte på lerretet.
-- «Kamera»-visningen viser det filmen viser, med parallakse.
-
-«I denne scenen» (DEC-0037):
-- Under scenelisten vises karakterene, stedene og objektene fra biblioteket som er i scenen. Dra dem inn på
-  lerretet (nytt lag øverst der du slipper), eller trykk «+». Klikk på navnet åpner ressursen i biblioteket.
-
-Justerbare paneler (DEC-0038):
-- Dra i rammen mellom paneler i manus, bibliotek og sceneeditor (og tidslinjens høyde). Størrelsen huskes.
-  Dobbeltklikk på rammen gir standard.
-
-Bildeformat og bildefrekvens for hele prosjektet (DEC-0039):
-- Settes på prosjektoversikten og gjelder alle scener. Endring tilpasser alle 2D-scener og kan angres.
-
-Tester: 241 Vitest-tester og 25 databasetester grønne; skjermbilder 28–39.
-Dokumentasjon: DEC-0036–0039, krav, KNOWN_ISSUES KI-41 lukket og KI-43–49, LOVABLE_SYNC (0008), db/README.
+- Menyen til venstre kan legges sammen til en smal stripe med ikoner (knappen øverst). Valget huskes.
+- Sceneeditoren: scenen velges i en nedtrekksliste i verktøylinjen med søk (nummer, sted, tid) og
+  ‹ › for forrige/neste. Den faste scenelisten er borte, så lerretet får mer plass.
+- «Forhåndsvisning» viser det ferdige utsnittet (kamera og bevegelser) i et eget vindu.
+  «Automatisk visning» viser det automatisk ved avspilling. Valgene og vindusbredden huskes.
+- Tester: 241 Vitest-tester og 25 databasetester grønne; skjermbilder 28–42.
+- Dokumentasjon: DEC-0040, REQ-0552–0554, LOVABLE_SYNC, LOVABLE_GUIDE (0008 kjørt).

@@ -3,7 +3,7 @@
  * (bakgrunner, mellomgrunner, karakterer, objekter …) med bilder fra ressursbiblioteket eller fargeflater.
  * Kamera, tidslinje og avspilling kommer i neste leveranse (mandat kap. 12).
  */
-import { Layers, Plus, Redo2, Undo2 } from "lucide-react";
+import { Layers, MonitorPlay, Plus, Redo2, Undo2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   DEFAULT_COMPOSITION,
@@ -29,7 +29,9 @@ import { CompositionInspector, LayerInspector } from "./LayerInspector";
 import { LayersPanel } from "./LayersPanel";
 import { Stage } from "./Stage";
 import { SceneAssetsPanel } from "./SceneAssetsPanel";
-import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
+import { ScenePicker } from "./ScenePicker";
+import { PaneResizer, usePaneSize, useStoredFlag } from "@/app/shell/pane-size";
+import { PreviewWindow } from "./PreviewWindow";
 import { CameraPanel } from "./CameraPanel";
 import { Timeline } from "./Timeline";
 import { usePlayback } from "./use-playback";
@@ -96,6 +98,12 @@ function Editor({
         ? initialOccurrenceId
         : occurrences[0]?.id) ?? null,
   );
+  // Scenen er borte (annen bruker, angre) eller ingen var valgt (tomt prosjekt før import): velg første
+  useEffect(() => {
+    if (!occurrences.length) return;
+    if (!occurrenceId || !occurrences.some((o) => o.id === occurrenceId))
+      setOccurrenceId(occurrences[0]!.id);
+  }, [occurrences, occurrenceId]);
   const occurrence = occurrenceId ? state.occurrences[occurrenceId] : undefined;
   const variant = occurrence ? state.variants[occurrence.variantId] : undefined;
   const composition = variant ? compositionOfVariant(state, variant.id) : null;
@@ -115,17 +123,22 @@ function Editor({
   const [view, setView] = useState<"scene" | "camera">("scene");
   /** Automatiske nøkkelbilder: endringer på et bilde blir nøkkelbilder (mandat 11.3). */
   const [autoKey, setAutoKey] = useState(false);
+  /** Forhåndsvisning av ferdig utsnitt: åpnet manuelt, eller automatisk ved avspilling (huskes). */
+  const [previewOpen, setPreviewOpen] = useStoredFlag("scene-editor-preview-open", false);
+  const [autoPreview, setAutoPreview] = useStoredFlag("scene-editor-preview-auto", true);
   const duration = useMemo(
     () => (composition ? compositionDuration(state, composition) : 1),
     [state, composition],
   );
   const playback = usePlayback(duration, state.project.fps);
+  // I kameravisningen viser lerretet allerede det ferdige utsnittet
+  const showPreview = view === "scene" && (previewOpen || (autoPreview && playback.playing));
   const selectedShot =
     composition && selectedShotId
       ? (composition.camera.shots.find((x) => x.id === selectedShotId) ?? null)
       : null;
   const [addOpen, setAddOpen] = useState(false);
-  const [leftWidth, setLeftWidth] = usePaneSize("scene-editor-left", 232, 180, 480);
+  const [leftWidth, setLeftWidth] = usePaneSize("scene-editor-left", 220, 180, 480);
   const [rightWidth, setRightWidth] = usePaneSize("scene-editor-right", 300, 240, 560);
   const [error, setError] = useState<string | null>(null);
 
@@ -161,6 +174,14 @@ function Editor({
     for (const c of Object.values(state.compositions)) if (!c.removed) set.add(c.variantId);
     return set;
   }, [state.compositions]);
+
+  function pickScene(id: string) {
+    setOccurrenceId(id);
+    setSelectedLayerId(null);
+    setSelectedShotId(null);
+    playback.pause();
+    playback.setFrame(0);
+  }
 
   /** Ressurs fra «I denne scenen» med «+»: nytt lag øverst, midt i bildet (litt forskjøvet per lag). */
   const addAsset = useCallback(
@@ -216,6 +237,14 @@ function Editor({
       <div className="flex h-10 shrink-0 items-center gap-2 border-b border-border bg-surface-2 px-3">
         <span className="text-[13px] font-medium text-text-primary">Sceneeditor</span>
         <div className="mx-1 h-5 w-px bg-border" aria-hidden />
+        <ScenePicker
+          state={state}
+          occurrences={occurrences}
+          occurrenceId={occurrenceId}
+          hasComposition={hasComposition}
+          onPick={pickScene}
+        />
+        <div className="mx-1 h-5 w-px bg-border" aria-hidden />
         <Button
           size="sm"
           variant="ghost"
@@ -243,6 +272,33 @@ function Editor({
           </Button>
         ) : null}
         <div className="ml-auto flex items-center gap-3">
+          {composition ? (
+            <>
+              <Button
+                size="sm"
+                variant={previewOpen ? "secondary" : "ghost"}
+                onClick={() => setPreviewOpen(!previewOpen)}
+                aria-pressed={previewOpen}
+                title="Vis det ferdige utsnittet (kamera og bevegelser) i et eget vindu"
+              >
+                <MonitorPlay />
+                Forhåndsvisning
+              </Button>
+              <label
+                className="flex items-center gap-1.5 text-xs text-text-secondary"
+                title="Vis automatisk ved avspilling"
+              >
+                <input
+                  type="checkbox"
+                  checked={autoPreview}
+                  onChange={(e) => setAutoPreview(e.target.checked)}
+                  className="size-3.5 accent-[var(--accent-brand)]"
+                />
+                Automatisk visning
+              </label>
+              <div className="h-5 w-px bg-border" aria-hidden />
+            </>
+          ) : null}
           <SaveIndicator cmds={cmds} />
           {roleKnown && !editable ? (
             <span className="text-xs text-text-tertiary">Bare lesetilgang</span>
@@ -251,7 +307,7 @@ function Editor({
       </div>
 
       <div className="flex min-h-0 flex-1">
-        {/* Scenene i manuset */}
+        {/* Ressursene i scenen */}
         <div
           style={{ width: leftWidth }}
           className="relative flex shrink-0 flex-col border-r border-border bg-surface-1"
@@ -262,58 +318,15 @@ function Editor({
             onSize={setLeftWidth}
             min={180}
             max={480}
-            label="Bredde på scenelisten"
+            label="Bredde på «I denne scenen»"
           />
-          <nav aria-label="Scener" className="flex min-h-0 flex-1 flex-col overflow-y-auto py-1">
-            <h2 className="px-3 pb-1 pt-2 text-xs font-medium uppercase tracking-[0.04em] text-text-tertiary">
-              Scener
-            </h2>
-            {occurrences.length === 0 ? (
-              <p className="px-3 text-xs text-text-tertiary">
-                Ingen scener. Importer manuset først.
-              </p>
-            ) : null}
-            {occurrences.map((o) => {
-              const v = state.variants[o.variantId];
-              const on = o.id === occurrenceId;
-              return (
-                <button
-                  key={o.id}
-                  type="button"
-                  onClick={() => {
-                    setOccurrenceId(o.id);
-                    setSelectedLayerId(null);
-                    setSelectedShotId(null);
-                    playback.pause();
-                    playback.setFrame(0);
-                  }}
-                  aria-current={on ? "true" : undefined}
-                  className={
-                    "flex items-baseline gap-2 px-3 py-1 text-left text-[12px] " +
-                    (on
-                      ? "bg-accent-selection text-text-primary"
-                      : "text-text-secondary hover:bg-surface-3 hover:text-text-primary") +
-                    (o.active ? "" : " opacity-50")
-                  }
-                >
-                  <span className="w-7 shrink-0 font-mono text-[11px] text-text-tertiary">
-                    {o.productionNumber ?? "–"}
-                  </span>
-                  <span className="min-w-0 flex-1 truncate">
-                    {v ? formatHeading(v.heading) : "?"}
-                  </span>
-                  {v && hasComposition.has(v.id) ? (
-                    <Layers
-                      className="size-3 shrink-0 text-accent-brand"
-                      aria-label="Har 2D-scene"
-                    />
-                  ) : null}
-                </button>
-              );
-            })}
-          </nav>
+          {occurrences.length === 0 ? (
+            <p className="px-3 py-3 text-xs text-text-tertiary">
+              Ingen scener. Importer manuset først.
+            </p>
+          ) : null}
           {occurrence ? (
-            <div className="flex max-h-[50%] min-h-[160px] flex-col">
+            <div className="flex min-h-0 flex-1 flex-col">
               <SceneAssetsPanel
                 state={state}
                 projectId={projectId}
@@ -329,7 +342,9 @@ function Editor({
         {/* Arbeidsflaten */}
         <main className="flex min-w-0 flex-1 flex-col bg-surface-0">
           {!occurrence || !variant ? (
-            <p className="m-auto text-[13px] text-text-tertiary">Velg en scene.</p>
+            <p className="m-auto text-[13px] text-text-tertiary">
+              {occurrences.length === 0 ? "Ingen scener i prosjektet ennå." : "Velg en scene."}
+            </p>
           ) : !composition ? (
             <EmptyScene
               title={formatHeading(variant.heading)}
@@ -340,23 +355,37 @@ function Editor({
             />
           ) : (
             <>
-              <Stage
-                state={state}
-                composition={composition}
-                editable={editable}
-                selectedLayerId={selectedLayer?.id ?? null}
-                onSelect={setSelectedLayerId}
-                selectedShotId={selectedShot?.id ?? null}
-                onSelectShot={setSelectedShotId}
-                run={cmds.run}
-                imageUrls={urls.data ?? {}}
-                frame={playback.frame}
-                playing={playback.playing}
-                view={view}
-                onViewChange={setView}
-                autoKey={autoKey}
-                onTogglePlay={playback.toggle}
-              />
+              <div className="relative flex min-h-0 flex-1 flex-col">
+                <Stage
+                  state={state}
+                  composition={composition}
+                  editable={editable}
+                  selectedLayerId={selectedLayer?.id ?? null}
+                  onSelect={setSelectedLayerId}
+                  selectedShotId={selectedShot?.id ?? null}
+                  onSelectShot={setSelectedShotId}
+                  run={cmds.run}
+                  imageUrls={urls.data ?? {}}
+                  frame={playback.frame}
+                  playing={playback.playing}
+                  view={view}
+                  onViewChange={setView}
+                  autoKey={autoKey}
+                  onTogglePlay={playback.toggle}
+                />
+                {showPreview ? (
+                  <PreviewWindow
+                    state={state}
+                    composition={composition}
+                    frame={playback.frame}
+                    imageUrls={urls.data ?? {}}
+                    onClose={() => {
+                      setPreviewOpen(false);
+                      if (playback.playing) setAutoPreview(false);
+                    }}
+                  />
+                ) : null}
+              </div>
               <Timeline
                 state={state}
                 composition={composition}

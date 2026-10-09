@@ -93,6 +93,18 @@ export function usePaneSize(
   return [size, set] as const;
 }
 
+/** Lagret av/på-valg (f.eks. sammenslått meny, automatisk forhåndsvisning). Standard til lasting er ferdig. */
+export function useStoredFlag(key: string, fallback: boolean) {
+  const stored = useSyncExternalStore(
+    subscribe,
+    () => read(key),
+    () => null,
+  );
+  const value = stored === null ? fallback : stored === 1;
+  const set = useCallback((on: boolean) => write(key, on ? 1 : 0), [key]);
+  return [value, set] as const;
+}
+
 /**
  * Håndtaket i rammen. `edge` sier hvilken kant av panelet det sitter på: «right» = panelet er til venstre
  * og blir bredere når man drar mot høyre; «left» = panelet er til høyre; «top» = panelet er under (høyde).

@@ -70,3 +70,9 @@ Opus skrev kjerne, migrasjon 0008, databasetest og brukerflaten selv (små, samm
 oppgavebeskrivelse ville vært like lang som koden). Én Sonnet-bestilling: tester + skjermbilder + gjennomgang
 (165 894 tokens, 5 min, 16 tester, 3 skjermbilder, 1 retting, 7 funn – 6 rettet av Opus).
 Lærdom: små endringer tett på kjernen gjør Opus raskest selv; Sonnet brukes til kontrollrunden.
+
+## Runde 4: sammenleggbar meny, scenevelger, forhåndsvisning
+Opus bygde alt (ca. 400 linjer brukerflate). Én Sonnet-bestilling for skjermbilder + gjennomgang
+(139 907 tokens, 4,5 min): 9 småforbedringer rettet av Sonnet selv (tilgjengelighet, plassering, smale vinduer),
+8 funn rapportert – 3 rettet av Opus (felles bildebuffer, ingen forhåndsvisning i kameravisning, valgt scene
+som forsvinner).

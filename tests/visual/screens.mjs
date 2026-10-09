@@ -305,9 +305,17 @@ await shot("32-bibliotek-forslag-ny", bibliotek, {
   },
 });
 const scene = `/prosjekt/${project.id}/scene`;
+// Scenevelgeren i verktøylinjen: åpne, søk og velg med Enter (DEC-0040)
+const velgScene = async (page, sok) => {
+  await page.getByRole("button", { name: "Velg scene" }).click();
+  await page.getByLabel("Søk etter scene").fill(sok);
+  await page.waitForTimeout(200);
+  await page.keyboard.press("Enter");
+  await page.waitForTimeout(500);
+};
 await shot("28-sceneeditor-tom", scene, {
   act: async (page) => {
-    await page.getByRole("navigation", { name: "Scener" }).getByRole("button").nth(1).click();
+    await page.getByRole("button", { name: "Neste scene" }).click();
     await page.waitForTimeout(600);
   },
 });
@@ -375,6 +383,29 @@ await shot("36-sceneeditor-avspilling", scene, {
     await page.waitForTimeout(800);
     await page.getByRole("button", { name: "Spill av" }).click();
     await page.waitForTimeout(1000);
+  },
+});
+await shot("40-meny-sammenslatt", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(800);
+    await page.getByRole("button", { name: "Skjul menyen" }).click();
+    await page.waitForTimeout(500);
+  },
+});
+await shot("41-scenevelger", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(800);
+    await page.getByRole("button", { name: "Velg scene" }).click();
+    await page.getByLabel("Søk etter scene").fill("fjøset");
+    await page.waitForTimeout(500);
+  },
+});
+await shot("42-forhandsvisning", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(800);
+    await gaTilBilde(page, 40);
+    await page.getByRole("button", { name: "Forhåndsvisning" }).click();
+    await page.waitForTimeout(700);
   },
 });
 await shot("18-oversikt-varighet", `/prosjekt/${project.id}`, {
