@@ -1,6 +1,6 @@
 Lyd i filmen og bildevalg for lag (M4 del 2, DEC-0044)
 
-Databaseendring: migrasjon 0009 (lyd). Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i
+Databaseendring: migrasjon 0009 (lyd) – rettet utgave uten SQL mot lagringen. Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i
 Lovable etter push.
 
 - Lydfiler i ressursbiblioteket (ny type «Lyd»: MP3, WAV, OGG, M4A, FLAC) med versjoner og lengde.

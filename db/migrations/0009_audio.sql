@@ -4,8 +4,8 @@
 -- 2. audio_clips: lydklipp festet til en scene (sceneforekomst) med start i scenen, lengde, kutt,
 --    volum, inn-/uttoning og eventuell replikk. Tider i millisekunder.
 -- 3. Lesing for medlemmer; all skriving via apply_changes (som får den nye tabellen). Ellers uendret fra 0008.
--- 4. Bøtta «assets» får lov til lydformater (hvis plattformen tillater SQL mot lagringen; ellers gjøres
---    det med lagringsverktøyet, se LOVABLE_SYNC.md).
+-- 4. Ingen SQL mot lagringen (Lovable Cloud avviser det). Bøtta «assets» har ingen begrensning på
+--    filtyper og tar allerede imot lydfiler (bekreftet av Lovable 2026-10-09).
 -- Ingen eksisterende data endres. Kjøres ÉN gang i Lovable Cloud etter 0008. Endres aldri etter kjøring.
 -- =====================================================================================
 
@@ -66,22 +66,6 @@ create policy audio_clips_read on public.audio_clips for select to authenticated
   using (private.is_project_member(project_id));
 revoke insert, update, delete, truncate on public.audio_clips from anon, authenticated;
 grant select on public.audio_clips to authenticated;
-
--- ---------- Lydformater i bøtta «assets» ----------
-do $$
-begin
-  if exists (select 1 from pg_namespace where nspname = 'storage') then
-    begin
-      update storage.buckets
-        set allowed_mime_types = array['image/png','image/jpeg','image/webp','image/gif',
-                                       'audio/mpeg','audio/wav','audio/x-wav','audio/wave','audio/ogg','audio/webm',
-                                       'audio/mp4','audio/x-m4a','audio/aac','audio/flac','audio/x-flac']
-        where id = 'assets' and allowed_mime_types is not null;
-    exception when insufficient_privilege then
-      raise notice 'Bøtta «assets» må få lydformatene med lagringsverktøyet (se LOVABLE_SYNC.md)';
-    end;
-  end if;
-end $$;
 
 -- ---------- apply_changes med lydklippene (ellers uendret fra 0008) ----------
 create or replace function public.apply_changes(
