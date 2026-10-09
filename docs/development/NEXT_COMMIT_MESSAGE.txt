@@ -1,12 +1,12 @@
-«Endret av …» på notater og bilder opptil 2 GB (DEC-0032)
+Retter bildeopplasting etter 0005: filstørrelse i byte_size_big (KI-38, DEC-0032)
 
-Ny databaseendring: db/migrations/0005_note_edits_large_files.sql må kjøres i Lovable etter push
-(ferdig melding i docs/development/LOVABLE_SYNC.md, del B – den ber også Lovable sette bøtta «assets» til 2 GB per fil).
+Ny databaseendring: db/migrations/0006_byte_size_big.sql må kjøres i Lovable etter push
+(ferdig melding i docs/development/LOVABLE_SYNC.md, del B).
 
-- Når noen endrer et notat, står «endret av [navn] · [tid]» under forfatterstempelet (bare «endret · [tid]» når
-  forfatteren selv endrer). Navnet settes av serveren fra profilen. Angre fjerner endringsstempelet igjen.
-  Løser KI-36 (Mars' valg).
-- Bilder i ressursbiblioteket kan være opptil 2 GB per fil (var 50 MB). 50 MB var grensen per fil, ikke totalt;
-  total lagring har ingen fast grense i Lovable Cloud (faktureres etter bruk). Film får egen løsning i M4.
-- Tester: 127 Vitest-tester og 22 databasetester grønne (nye tester for endringsstempel og filstørrelse).
-- Dokumentasjon: DEC-0032, LOVABLE_SYNC (0005), KNOWN_ISSUES (KI-36 lukket, KI-37 ny), db/README, krav REQ-0536.
+- Lovable kjørte 0005 med en ny kolonne byte_size_big i stedet for å endre byte_size. Den gamle kolonnen
+  sto igjen påkrevd med 50 MB-grense, så ingen bilder kunne lastes opp.
+- db/migrations/0005 er oppdatert til nøyaktig det Lovable kjørte (repoet speiler databasen).
+- 0006: byte_size blir valgfri uten grense; byte_size_big fylles automatisk om bare byte_size sendes.
+- Appen skriver og leser byte_size_big (faller tilbake til byte_size for gamle rader). Forventer skjema 6.
+- Tester: 127 Vitest-tester og 23 databasetester grønne (ny test: 2 GB-bilde og eldre klient).
+- Dokumentasjon: DEC-0032 (tillegg), KNOWN_ISSUES KI-38, LOVABLE_SYNC (0005 kjørt, 0006 neste), db/README.

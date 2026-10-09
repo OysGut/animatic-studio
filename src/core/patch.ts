@@ -177,7 +177,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         mime_type: v.mimeType,
         width: v.width,
         height: v.height,
-        byte_size: v.byteSize,
+        // byte_size (integer) er utgått etter 0005/0006; størrelsen lagres i byte_size_big
+        byte_size_big: v.byteSize,
         sha256: v.sha256,
         note: v.note,
       };
@@ -453,7 +454,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         mimeType: str(x["mime_type"]),
         width: optNum(x["width"]),
         height: optNum(x["height"]),
-        byteSize: num(x["byte_size"]),
+        byteSize: num(x["byte_size_big"] ?? x["byte_size"]),
         sha256: str(x["sha256"]),
         note: str(x["note"] ?? ""),
         createdAt: iso(x["created_at"]),

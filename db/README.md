@@ -11,4 +11,5 @@
 | 2       | `0002_import_profiles.sql` | Kildereferanse, usikkerhet og «fjernet» på manusblokker; usikkerhet på scenevarianter; `imported_documents` + `register_imported_document`; privat bøtte `sources` med lese-/opplastingspolicyer; `profiles` + `upsert_my_profile` |
 | 3 | `0003_script_versions.sql` | Manusversjoner (`script_versions`, `private.script_snapshot`, `create_script_version`), fortløpende `change_log.seq`, tilstedeværelse bare for medlemmer (policyer på `realtime.messages`) |
 | 4 | `0004_library_notes.sql` | Ressursbibliotek (`assets`, `asset_variants`, `asset_versions`, privat bøtte `assets` for bilder), notater i manus (`script_annotations`), `apply_changes` med de nye tabellene og avvisning av ukjente tabeller |
-| 5 | `0005_note_edits_large_files.sql` | «Endret av» på notater (`edited_by_name`, `edited_at`), bildefiler opptil 5 GB i databasen (`byte_size` bigint) |
+| 5 | `0005_note_edits_large_files.sql` | «Endret av» på notater (`edited_by_name`, `edited_at`), bildefiler opptil 5 GB i databasen. Lovable la til ny kolonne `byte_size_big` (bigint) i stedet for å endre `byte_size`; filen er oppdatert til det som faktisk ble kjørt |
+| 6 | `0006_byte_size_big.sql` | Den utgåtte `byte_size` blir valgfri og mister 50 MB-grensen; `byte_size_big` fylles automatisk hvis bare `byte_size` sendes. Appen skriver og leser `byte_size_big` |

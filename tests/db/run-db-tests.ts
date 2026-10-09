@@ -741,8 +741,40 @@ try {
     assert(carolSees.length === 0, "ikke-medlem ser bildeversjoner");
     // Sti utenfor prosjektet avvises også av databasen
     await expectError(
-      sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size, sha256) values (gen_random_uuid(), ${projectId}, ${variantId}, 9, 'annet/x.png', 'image/png', 1, ${"d".repeat(64)})`,
+      sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256) values (gen_random_uuid(), ${projectId}, ${variantId}, 9, 'annet/x.png', 'image/png', 1, ${"d".repeat(64)})`,
       /asset_versions_media_path_check|check constraint/,
+    );
+  });
+
+  await test("0006: bildeversjoner over 50 MB og opptil 2 GB lagres i byte_size_big; eldre klient fyller den via byte_size", async () => {
+    let st = await loadState(projectId);
+    const variantId = "abcdef00-0000-7000-8000-0000000000a2";
+    const big = "abcdef00-0000-7000-8000-0000000000a4";
+    const size = 2 * 1024 * 1024 * 1024; // 2 GB – over integer-grensen i den gamle kolonnen
+    st = await runCommand(st, ALICE, {
+      type: "AddAssetVersion",
+      versionId: big as never,
+      variantId: variantId as never,
+      media: {
+        path: `${projectId}/abcdef00-0000-7000-8000-0000000000a1/${big}/stor.png`,
+        mimeType: "image/png",
+        width: 20000,
+        height: 20000,
+        byteSize: size,
+        sha256: "e".repeat(64),
+      },
+      note: "",
+    });
+    const back = await loadState(projectId);
+    assert(back.assetVersions[big]!.byteSize === size, `størrelse ${back.assetVersions[big]!.byteSize}`);
+    const old = await sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size, sha256)
+      values (gen_random_uuid(), ${projectId}, ${variantId}, 99, ${`${projectId}/x/y/z.png`}, 'image/png', 60000000, ${"f".repeat(64)}) returning byte_size_big`;
+    assert(Number(old[0]!["byte_size_big"]) === 60000000, "byte_size_big ble ikke fylt");
+    await sql`delete from public.asset_versions where number = 99 and variant_id = ${variantId}`;
+    await expectError(
+      sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256)
+        values (gen_random_uuid(), ${projectId}, ${variantId}, 98, ${`${projectId}/x/y/z.png`}, 'image/png', 6000000000, ${"f".repeat(64)})`,
+      /byte_size_big_check|check constraint/,
     );
   });
 
