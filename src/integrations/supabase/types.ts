@@ -81,6 +81,7 @@ export type Database = {
       asset_versions: {
         Row: {
           byte_size: number
+          byte_size_big: number
           created_at: string
           created_by: string | null
           height: number | null
@@ -97,6 +98,7 @@ export type Database = {
         }
         Insert: {
           byte_size: number
+          byte_size_big: number
           created_at?: string
           created_by?: string | null
           height?: number | null
@@ -113,6 +115,7 @@ export type Database = {
         }
         Update: {
           byte_size?: number
+          byte_size_big?: number
           created_at?: string
           created_by?: string | null
           height?: number | null
@@ -828,6 +831,8 @@ export type Database = {
           block_id: string | null
           created_at: string
           created_by: string | null
+          edited_at: string | null
+          edited_by_name: string | null
           id: string
           project_id: string
           quote: string
@@ -844,6 +849,8 @@ export type Database = {
           block_id?: string | null
           created_at?: string
           created_by?: string | null
+          edited_at?: string | null
+          edited_by_name?: string | null
           id: string
           project_id: string
           quote?: string
@@ -860,6 +867,8 @@ export type Database = {
           block_id?: string | null
           created_at?: string
           created_by?: string | null
+          edited_at?: string | null
+          edited_by_name?: string | null
           id?: string
           project_id?: string
           quote?: string
