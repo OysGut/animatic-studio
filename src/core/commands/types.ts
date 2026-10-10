@@ -38,6 +38,8 @@ import type {
   StoryTime,
   TakeKind,
   TakeStatus,
+  TakeMedia,
+  Transition,
   VisualStyle,
   VolumeKey,
 } from "../model";
@@ -329,6 +331,14 @@ export type Command =
       readonly status: TakeStatus;
       readonly durationFrames: number | null;
       readonly mediaRef: string | null;
+      /** Importert film: filinformasjon (DEC-0047). */
+      readonly media?: TakeMedia;
+    }
+  | {
+      /** Overgangen inn i scenen i filmen (DEC-0047). */
+      readonly type: "SetTransition";
+      readonly occurrenceId: OccurrenceId;
+      readonly transition: Transition;
     }
   | {
       readonly type: "SetActiveTake";

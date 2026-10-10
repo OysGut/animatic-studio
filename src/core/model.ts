@@ -133,7 +133,21 @@ export interface SceneOccurrence extends Entity<OccurrenceId> {
   readonly activeTakeId: TakeId | null;
   /** Etablert produksjonsnummer (visning, f.eks. "42A"). Aldri identitet. */
   readonly productionNumber: string | null;
+  /** Overgangen inn i scenen i filmen (DEC-0047). Mangler = kutt. */
+  readonly transition?: Transition;
 }
+
+/** Overgang mellom scener (mandat 15, REQ-0223): kutt, overtoning eller via svart. */
+export type TransitionKind = "cut" | "dissolve" | "dip";
+
+export interface Transition {
+  readonly kind: TransitionKind;
+  /** Lengde i bilder (sentrert om klippet; 0 for kutt). */
+  readonly frames: number;
+}
+
+/** Lengste overgang i bilder. */
+export const MAX_TRANSITION_FRAMES = 600;
 
 export interface ProductionSegment extends Entity<SegmentId> {
   readonly occurrenceId: OccurrenceId;
@@ -152,6 +166,22 @@ export interface Take extends Entity<TakeId> {
   /** Grunnlag for avviksdeteksjon: hvilke blokkrevisjoner materialet ble laget fra. */
   readonly producedFrom: { readonly blockRevisions: Readonly<Record<string, number>> };
   readonly mediaRef: string | null;
+  /** Filinformasjon for importert film (DEC-0047). Uforanderlig, som mediaRef. */
+  readonly media?: TakeMedia;
+}
+
+/** Metadata for en importert filmfil (REQ-0238), lest i nettleseren ved import. */
+export interface TakeMedia {
+  readonly fileName: string;
+  readonly mimeType: string;
+  readonly byteSize: number;
+  readonly width: number | null;
+  readonly height: number | null;
+  /** Bilder per sekund i filen (gjennomsnitt), om det er kjent. */
+  readonly fps: number | null;
+  readonly durationMs: number;
+  readonly videoCodec: string | null;
+  readonly hasAudio: boolean;
 }
 
 // ---------- Ressursbibliotek (M3 del 1; mandat kap. 8–9, REQ-0121–0136, REQ-0146, REQ-0149) ----------

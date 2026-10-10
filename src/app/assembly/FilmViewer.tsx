@@ -3,7 +3,7 @@
  */
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { FilmClip, ProjectState } from "@/core";
-import { drawFilmFrame } from "@/engine/compositor/film";
+import { drawFilmFrame, type FilmDrawOptions } from "@/engine/compositor/film";
 import { filmImageCache } from "./film-images";
 
 export function FilmViewer({
@@ -11,12 +11,18 @@ export function FilmViewer({
   clips,
   frame,
   tick,
+  video,
+  onDrawn,
 }: {
   state: ProjectState;
   clips: readonly FilmClip[];
   frame: number;
   /** Øker når et bilde er lastet. */
   tick: number;
+  /** Bilder fra importert film (DEC-0047). */
+  video?: FilmDrawOptions["video"];
+  /** Etter hver tegning (filmer som ikke vises, settes på pause). */
+  onDrawn?: () => void;
 }) {
   const boxRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -53,8 +59,10 @@ export function FilmViewer({
       height: h,
       images: filmImageCache.images,
       placeholders: true,
+      ...(video ? { video } : {}),
     });
-  }, [state, clips, frame, cssW, cssH, tick]);
+    onDrawn?.();
+  }, [state, clips, frame, cssW, cssH, tick, video, onDrawn]);
 
   return (
     <div ref={boxRef} className="flex min-h-0 min-w-0 flex-1 items-center justify-center">

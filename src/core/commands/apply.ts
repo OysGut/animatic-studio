@@ -18,6 +18,7 @@ import {
 } from "../composition/fields";
 import { compareKeys, isValidOrderKey, keyBetween } from "../order-key";
 import {
+  MAX_TRANSITION_FRAMES,
   PRIMARY_LANGUAGE,
   type Annotation,
   type AudioClip,
@@ -26,6 +27,8 @@ import {
   type ProjectState,
   type ScriptBlock,
   type Take,
+  type TakeMedia,
+  type Transition,
 } from "../model";
 import type {
   NewAnnotation,
@@ -385,6 +388,66 @@ function sortedLayerKeys(s: ProjectState, compositionId: string, except?: string
 }
 
 const MAX_CAMERA_JSON = 64 * 1024;
+
+/** Filmformater som kan importeres (DEC-0047). */
+export const FILM_MIME_TYPES: readonly string[] = ["video/mp4", "video/quicktime", "video/webm"];
+
+/** Kontroll av filinformasjonen for importert film. */
+function takeMediaOf(m: unknown): TakeMedia {
+  if (!m || typeof m !== "object") fail("invalid", "Ugyldig filinformasjon for filmen");
+  const x = m as Record<string, unknown>;
+  const optPos = (v: unknown, max: number) =>
+    v === null || (typeof v === "number" && Number.isFinite(v) && v > 0 && v <= max);
+  if (
+    typeof x["fileName"] !== "string" ||
+    x["fileName"].length < 1 ||
+    x["fileName"].length > 255 ||
+    typeof x["mimeType"] !== "string" ||
+    !FILM_MIME_TYPES.includes(x["mimeType"]) ||
+    !Number.isInteger(x["byteSize"]) ||
+    (x["byteSize"] as number) <= 0 ||
+    (x["byteSize"] as number) > ASSET_MAX_BYTES ||
+    !optPos(x["width"], 16384) ||
+    !optPos(x["height"], 16384) ||
+    !optPos(x["fps"], 1000) ||
+    !Number.isInteger(x["durationMs"]) ||
+    (x["durationMs"] as number) <= 0 ||
+    (x["durationMs"] as number) > AUDIO_MAX_MS ||
+    !(
+      x["videoCodec"] === null ||
+      (typeof x["videoCodec"] === "string" && x["videoCodec"].length <= 40)
+    ) ||
+    typeof x["hasAudio"] !== "boolean"
+  )
+    fail("invalid", "Ugyldig filinformasjon for filmen");
+  return {
+    fileName: x["fileName"] as string,
+    mimeType: x["mimeType"] as string,
+    byteSize: x["byteSize"] as number,
+    width: x["width"] as number | null,
+    height: x["height"] as number | null,
+    fps: x["fps"] as number | null,
+    durationMs: x["durationMs"] as number,
+    videoCodec: x["videoCodec"] as string | null,
+    hasAudio: x["hasAudio"] as boolean,
+  };
+}
+
+function transitionOf(t: unknown): Transition {
+  if (!t || typeof t !== "object") fail("invalid", "Ugyldig overgang");
+  const x = t as Record<string, unknown>;
+  const kind = x["kind"];
+  if (kind !== "cut" && kind !== "dissolve" && kind !== "dip") fail("invalid", "Ugyldig overgang");
+  if (kind === "cut") return { kind, frames: 0 };
+  const frames = x["frames"];
+  if (
+    !Number.isInteger(frames) ||
+    (frames as number) < 1 ||
+    (frames as number) > MAX_TRANSITION_FRAMES
+  )
+    fail("invalid", `Overgangen må vare mellom 1 og ${MAX_TRANSITION_FRAMES} bilder`);
+  return { kind, frames: frames as number };
+}
 
 export const AUDIO_KINDS = ["dialogue", "narration", "sfx", "ambience", "music"] as const;
 
@@ -1044,6 +1107,18 @@ function run(
       ) {
         fail("invalid", "Varighet må være et ikke-negativt heltall bilder");
       }
+      // Filen må ligge i prosjektets egen mappe (ellers kunne sletting av prosjektet nå andres filer)
+      if (
+        c.mediaRef !== null &&
+        (typeof c.mediaRef !== "string" ||
+          c.mediaRef.length > 600 ||
+          !c.mediaRef.startsWith(`${s.project.id}/`) ||
+          c.mediaRef.includes(".."))
+      )
+        fail("invalid", "Ugyldig mediesti");
+      if (c.media !== undefined && c.kind !== "imported_film")
+        fail("invalid", "Filinformasjon gjelder bare importert film");
+      const media = c.media === undefined ? undefined : takeMediaOf(c.media);
       const take: Take = {
         id: c.takeId,
         revision: 1,
@@ -1054,12 +1129,29 @@ function run(
         durationFrames: c.durationFrames,
         producedFrom: { blockRevisions: currentBlockRevisions(s, o.variantId) },
         mediaRef: c.mediaRef,
+        ...(media ? { media } : {}),
       };
       return {
         state: { ...s, takes: { ...s.takes, [take.id]: take } },
         // Produsert materiale kastes aldri (INV-07, 21.5). Angre av «legg til» betyr bare at den ikke er aktiv.
         inverse: { type: "SetActiveTake", occurrenceId: o.id, takeId: o.activeTakeId },
         affected: [take.id],
+      };
+    }
+
+    case "SetTransition": {
+      const o = need(s.occurrences[c.occurrenceId], "Forekomsten");
+      const t = transitionOf(c.transition);
+      const prev: Transition = o.transition ?? { kind: "cut", frames: 0 };
+      const { transition: _old, ...rest } = o;
+      const next = t.kind === "cut" ? rest : { ...rest, transition: t };
+      return {
+        state: {
+          ...s,
+          occurrences: { ...s.occurrences, [o.id]: { ...next, revision: rev(o) } },
+        },
+        inverse: { type: "SetTransition", occurrenceId: o.id, transition: prev },
+        affected: [o.id],
       };
     }
 

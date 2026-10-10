@@ -5,7 +5,7 @@
  * når brukeren velger det (REQ-0128).
  */
 import { useNavigate } from "@tanstack/react-router";
-import { Archive, Lightbulb, Music, Plus, Redo2, Search, Undo2 } from "lucide-react";
+import { Archive, Download, Lightbulb, Music, Plus, Redo2, Search, Undo2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
   ASSET_KIND_LABEL,
@@ -29,6 +29,7 @@ import { Input } from "@/components/ui/input";
 import { AssetDetail } from "./AssetDetail";
 import { useImageUrls } from "./asset-images";
 import { SuggestionsDialog } from "./SuggestionsDialog";
+import { AssetZipDialog } from "./AssetZip";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 
 export function LibraryWorkspace({
@@ -114,6 +115,7 @@ function Library({
   const [newName, setNewName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [suggestOpen, setSuggestOpen] = useState(false);
+  const [zipOpen, setZipOpen] = useState(false);
 
   const all = useMemo(() => sortedAssets(state), [state]);
   const usageCount = useMemo(() => {
@@ -218,6 +220,15 @@ function Library({
             Forslag fra manuset{suggestions.length ? ` (${suggestions.length})` : ""}
           </Button>
         ) : null}
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={() => setZipOpen(true)}
+          title="Last ned ressursene som zip, per kategori eller alt samlet"
+        >
+          <Download />
+          Last ned som zip
+        </Button>
         <div className="ml-auto flex items-center gap-3">
           <SaveIndicator cmds={cmds} />
           {roleKnown && !editable ? (
@@ -429,6 +440,13 @@ function Library({
         </div>
       </div>
 
+      <AssetZipDialog
+        open={zipOpen}
+        onOpenChange={setZipOpen}
+        projectId={projectId}
+        projectName={state.project.name}
+        state={state}
+      />
       {editable ? (
         <SuggestionsDialog
           open={suggestOpen}

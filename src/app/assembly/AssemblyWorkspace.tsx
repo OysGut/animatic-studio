@@ -28,6 +28,7 @@ import {
   audioVersion,
   clipAtFrame,
   filmAudio,
+  filmTakeAudio,
   filmClips,
   filmDurationFrames,
   formatTimecode,
@@ -41,6 +42,8 @@ import {
   type ProjectState,
 } from "@/core";
 import { useImageUrls } from "@/app/library/asset-images";
+import { useFilmVideo } from "./film-video";
+import { uploadFilm } from "./film-import";
 import { useAudioLoaded, useAudioPlayback } from "@/app/audio/use-audio-playback";
 import { AudioTracks, type AudioChange } from "./AudioTracks";
 import { AudioClipPanel } from "./AudioClipPanel";
@@ -126,17 +129,29 @@ function Assembly({
 
   // ---------- Lyd (DEC-0044) ----------
   const audioItems = useMemo(() => filmAudio(state, clips, fps), [state, clips, fps]);
-  const audioPaths = useMemo(
-    () => [...new Set(audioItems.flatMap((it) => (it.version ? [it.version.mediaPath] : [])))],
-    [audioItems],
+  // Det som høres: lydklippene og lyden i importert film som er tatt i bruk (DEC-0047)
+  const playItems = useMemo(
+    () => [...audioItems, ...filmTakeAudio(clips, fps)],
+    [audioItems, clips, fps],
   );
+  const audioPaths = useMemo(
+    () => [...new Set(playItems.flatMap((it) => (it.version ? [it.version.mediaPath] : [])))],
+    [playItems],
+  );
+  // ---------- Importert film (DEC-0047) ----------
+  const filmPaths = useMemo(
+    () => [...new Set(clips.flatMap((c) => (c.take?.mediaRef ? [c.take.mediaRef] : [])))],
+    [clips],
+  );
+  const filmUrls = useImageUrls(filmPaths);
   const audioUrls = useImageUrls(audioPaths);
   const [mutedKinds, setMutedKinds] = useState<ReadonlySet<AudioKind>>(new Set());
   const [selectedAudioId, setSelectedAudioId] = useState<string | null>(null);
   const selectedAudio = selectedAudioId ? state.audioClips[selectedAudioId] : undefined;
   const audioLoaded = useAudioLoaded();
+  const filmVideo = useFilmVideo(filmUrls.data ?? null, playback.playing);
   useAudioPlayback({
-    items: audioItems,
+    items: playItems,
     urls: audioUrls.data ?? null,
     playing: playback.playing,
     time: framesToSeconds(playback.frame, fps),
@@ -168,6 +183,38 @@ function Assembly({
       return err === null;
     },
     [cmds],
+  );
+
+  /** Importer ferdig film til scenen og ta den i bruk (DEC-0047). Returnerer feilmelding eller null. */
+  const importFilm = useCallback(
+    async (occurrenceId: string, file: File): Promise<string | null> => {
+      try {
+        const f = await uploadFilm(projectId, file, fps);
+        const r = await cmds.runAndWait(
+          {
+            type: "AddTake",
+            takeId: f.takeId as never,
+            occurrenceId: occurrenceId as never,
+            segmentId: null,
+            kind: "imported_film",
+            status: "approved",
+            durationFrames: f.durationFrames,
+            mediaRef: f.mediaRef,
+            media: f.media,
+          },
+          `Importer film «${f.media.fileName}»`,
+        );
+        if (r.error) return r.error;
+        const err = cmds.run(
+          { type: "SetActiveTake", occurrenceId: occurrenceId as never, takeId: f.takeId as never },
+          "Bruk importert film",
+        );
+        return err;
+      } catch (e) {
+        return (e as Error).message || "Filmen kunne ikke importeres.";
+      }
+    },
+    [projectId, fps, cmds],
   );
 
   // Etter en flytting: hodet følger den flyttede scenen (samme sted i scenen), så valget blir stående
@@ -558,7 +605,14 @@ function Assembly({
 
       <div className="flex min-h-0 flex-1">
         <main className="flex min-w-0 flex-1 flex-col bg-surface-0 p-3">
-          <FilmViewer state={state} clips={clips} frame={playback.frame} tick={images.tick} />
+          <FilmViewer
+            state={state}
+            clips={clips}
+            frame={playback.frame}
+            tick={images.tick + filmVideo.tick}
+            video={filmVideo.provider}
+            onDrawn={filmVideo.settle}
+          />
         </main>
         <aside
           aria-label="Scene og manus"
@@ -597,6 +651,29 @@ function Assembly({
               onEstimate={() => selected && setDuration(selected.occurrenceId, 0)}
               onCreateComposition={() => selected && createComposition(selected.occurrenceId)}
               onDeactivate={() => selected && deactivate(selected.occurrenceId)}
+              frame={playback.frame}
+              onSeek={playback.setFrame}
+              onUseTake={(takeId) =>
+                selected &&
+                run(
+                  {
+                    type: "SetActiveTake",
+                    occurrenceId: selected.occurrenceId,
+                    takeId: takeId as never,
+                  },
+                  takeId ? "Bruk importert film" : "Bruk animatic",
+                )
+              }
+              onImportFilm={(file) =>
+                selected ? importFilm(selected.occurrenceId, file) : Promise.resolve(null)
+              }
+              onTransition={(t) =>
+                selected &&
+                run(
+                  { type: "SetTransition", occurrenceId: selected.occurrenceId, transition: t },
+                  "Endre overgang",
+                )
+              }
             />
           )}
         </aside>
@@ -659,9 +736,10 @@ function Assembly({
         clips={clips}
         selectedId={selected?.occurrenceId ?? null}
         urls={images.urls}
-        audioItems={audioItems}
+        audioItems={playItems}
         audioUrls={audioUrls.data ?? null}
         mutedKinds={mutedKinds}
+        filmUrls={filmUrls.data ?? null}
       />
       <AudioClipEditor
         open={profileClip !== null}

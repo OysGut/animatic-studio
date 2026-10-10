@@ -4,6 +4,8 @@
  * revisjon i mellomtiden (INV-C1). Radformatet (snake_case) er lagringsformatet i DATA_RELATIONSHIPS.md.
  */
 import type {
+  TakeMedia,
+  Transition,
   Annotation,
   Asset,
   AssetName,
@@ -121,6 +123,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         excerpt_out: o.excerpt?.outFrame ?? null,
         active_take_id: o.activeTakeId,
         production_number: o.productionNumber,
+        transition_kind: o.transition?.kind ?? "cut",
+        transition_frames: o.transition?.frames ?? 0,
       };
     }
     case "segments": {
@@ -145,6 +149,7 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         duration_frames: t.durationFrames,
         produced_from: t.producedFrom,
         media_ref: t.mediaRef,
+        metadata: t.media ?? {},
       };
     }
     case "assets": {
@@ -389,6 +394,34 @@ const iso = (v: unknown) => (v instanceof Date ? v.toISOString() : String(v));
 /** jsonb kommer som objekt fra databasen, men kan komme som tekst fra enkelte klienter. */
 const json = (v: unknown): unknown => (typeof v === "string" ? (JSON.parse(v) as unknown) : v);
 
+/** Overgang fra raden (migrasjon 0011); kutt og manglende kolonner gir ingen overgang. */
+function transitionFromRow(x: Row): { transition?: Transition } {
+  const kind = x["transition_kind"];
+  const frames = Number(x["transition_frames"] ?? 0);
+  if ((kind === "dissolve" || kind === "dip") && frames > 0)
+    return { transition: { kind, frames } };
+  return {};
+}
+
+/** Filinformasjon for importert film fra raden (migrasjon 0011); tomt objekt gir ingen. */
+function takeMediaFromRow(v: unknown): { media?: TakeMedia } {
+  const m = v === undefined || v === null ? null : (json(v) as Record<string, unknown>);
+  if (!m || typeof m !== "object" || typeof m["fileName"] !== "string") return {};
+  return {
+    media: {
+      fileName: String(m["fileName"]),
+      mimeType: String(m["mimeType"] ?? ""),
+      byteSize: Number(m["byteSize"] ?? 0),
+      width: optNum(m["width"]),
+      height: optNum(m["height"]),
+      fps: optNum(m["fps"]),
+      durationMs: Number(m["durationMs"] ?? 0),
+      videoCodec: optStr(m["videoCodec"]),
+      hasAudio: Boolean(m["hasAudio"]),
+    },
+  };
+}
+
 function byId<T extends { id: string }>(list: T[]): Record<string, T> {
   return Object.fromEntries(list.map((x) => [x.id, x]));
 }
@@ -484,6 +517,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
             : { inFrame: num(x["excerpt_in"]), outFrame: num(x["excerpt_out"]) },
         activeTakeId: optStr(x["active_take_id"]) as never,
         productionNumber: optStr(x["production_number"]),
+        ...transitionFromRow(x),
       })),
     ),
     segments: byId(
@@ -510,6 +544,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
           blockRevisions: {},
         },
         mediaRef: optStr(x["media_ref"]),
+        ...takeMediaFromRow(x["metadata"]),
       })),
     ),
     assets: byId(

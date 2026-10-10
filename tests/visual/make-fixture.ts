@@ -502,6 +502,44 @@ s = mustApply(s, {
   ],
 });
 
+// Importert ferdig film i scene 2, og overganger (DEC-0047)
+{
+  const occs = orderedOccurrences(s, mainId).filter((o) => o.active);
+  const takeId = tid<"take">();
+  s = mustApply(s, {
+    type: "AddTake",
+    takeId,
+    occurrenceId: occs[1]!.id,
+    segmentId: null,
+    kind: "imported_film",
+    status: "approved",
+    durationFrames: 300,
+    mediaRef: `${s.project.id}/films/${takeId}/fjoset_ferdig.mp4`,
+    media: {
+      fileName: "fjøset_ferdig.mp4",
+      mimeType: "video/mp4",
+      byteSize: 48_000_000,
+      width: 1920,
+      height: 1080,
+      fps: 25,
+      durationMs: 12000,
+      videoCodec: "avc",
+      hasAudio: true,
+    },
+  });
+  s = mustApply(s, { type: "SetActiveTake", occurrenceId: occs[1]!.id, takeId });
+  s = mustApply(s, {
+    type: "SetTransition",
+    occurrenceId: occs[1]!.id,
+    transition: { kind: "dissolve", frames: 25 },
+  });
+  s = mustApply(s, {
+    type: "SetTransition",
+    occurrenceId: occs[2]!.id,
+    transition: { kind: "dip", frames: 20 },
+  });
+}
+
 const cs = diffStates(emptyProjectState(s.project), s);
 const rows: Record<string, unknown[]> = {};
 for (const [t, list] of Object.entries(cs.inserts))

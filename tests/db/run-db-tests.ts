@@ -391,7 +391,7 @@ try {
       kind: "composition2d",
       status: "approved",
       durationFrames: 250,
-      mediaRef: "resources/x.mp4",
+      mediaRef: `${projectId}/resources/x.mp4`,
     });
     await expectError(
       sql`delete from public.takes where id = 'aaaaaaaa-aaaa-7aaa-8aaa-000000000001'`,
@@ -1227,6 +1227,216 @@ try {
       ),
       /ukjent tabell/,
     );
+  });
+  await test("0011: importert film (metadata) og overgang lagres via apply_changes og leses tilbake; metadata er uforanderlig", async () => {
+    let st = await loadState(projectId);
+    const occ = Object.values(st.occurrences).find((o) => o.active)!;
+    const takeId = "abcdef00-0000-7000-8000-0000000000c1";
+    const media = {
+      fileName: "scene_ferdig.mp4",
+      mimeType: "video/mp4",
+      byteSize: 1234567,
+      width: 1920,
+      height: 1080,
+      fps: 25,
+      durationMs: 6000,
+      videoCodec: "avc",
+      hasAudio: true,
+    };
+    st = await runCommand(st, ALICE, {
+      type: "AddTake",
+      takeId: takeId as never,
+      occurrenceId: occ.id,
+      segmentId: null,
+      kind: "imported_film",
+      status: "approved",
+      durationFrames: 150,
+      mediaRef: `${projectId}/films/${takeId}/scene_ferdig.mp4`,
+      media,
+    });
+    st = await runCommand(st, ALICE, {
+      type: "SetActiveTake",
+      occurrenceId: occ.id,
+      takeId: takeId as never,
+    });
+    st = await runCommand(st, ALICE, {
+      type: "SetTransition",
+      occurrenceId: occ.id,
+      transition: { kind: "dip", frames: 20 },
+    });
+    const back = await loadState(projectId);
+    const canon = (v: unknown): string =>
+      JSON.stringify(v, (_k, x: unknown) =>
+        x && typeof x === "object" && !Array.isArray(x)
+          ? Object.fromEntries(
+              Object.entries(x as Record<string, unknown>).sort(([a], [b]) => a.localeCompare(b)),
+            )
+          : x,
+      );
+    assert(
+      canon(back.takes[takeId]) === canon(st.takes[takeId]),
+      `versjonen med filinformasjon ble ikke lest tilbake identisk: ${canon(back.takes[takeId])} ≠ ${canon(st.takes[takeId])}`,
+    );
+    const o = back.occurrences[occ.id]!;
+    assert(o.activeTakeId === takeId, "versjonen ble ikke tatt i bruk");
+    assert(
+      o.transition?.kind === "dip" && o.transition.frames === 20,
+      "overgangen ble ikke lagret",
+    );
+    await expectError(
+      sql`update public.takes set metadata = '{}'::jsonb where id = ${takeId}`,
+      /INV-07/,
+    );
+    // En versjon kan ikke peke på en fil i et annet prosjekts mappe (sletting kunne ellers nå den)
+    await expectError(
+      sql`insert into public.takes (id, project_id, occurrence_id, kind, status, media_ref) values (gen_random_uuid(), ${projectId}, ${occ.id}, 'imported_film', 'approved', ${"00000000-0000-7000-8000-000000000099/x/y.mp4"})`,
+      /takes_media_ref_in_project/,
+    );
+  });
+
+  // ---------- 0011: forlate og slette prosjekt (DEC-0046). Kjøres sist: sletter testprosjektet ----------
+  await test("0011: medlem kan forlate prosjektet; eneste eier kan ikke", async () => {
+    const p2 = await as(
+      "authenticated",
+      ALICE,
+      async (tx) => (await tx`select public.create_project('Forlat-test') as id`)[0]!["id"],
+    );
+    await sql`insert into public.project_members (project_id, user_id, role) values (${p2}, ${BOB}, 'editor')`;
+    await as("authenticated", BOB, (tx) => tx`select public.leave_project(${p2})`);
+    const seen = await as(
+      "authenticated",
+      BOB,
+      (tx) => tx`select 1 from public.projects where id = ${p2}`,
+    );
+    assert(seen.length === 0, "medlemmet ser prosjektet etter å ha forlatt det");
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`select public.leave_project(${p2})`),
+      /eneste eier/,
+    );
+    await sql`insert into public.project_members (project_id, user_id, role) values (${p2}, ${CAROL}, 'owner')`;
+    await as("authenticated", ALICE, (tx) => tx`select public.leave_project(${p2})`);
+    const left =
+      await sql`select removed_at from public.project_members where project_id = ${p2} and user_id = ${ALICE}`;
+    assert(
+      left[0]!["removed_at"] !== null,
+      "eieren ble ikke fjernet selv om det finnes en annen eier",
+    );
+    // Ressursene kan ikke slettes for godt før prosjektet er slettet
+    await expectError(
+      as("service_role", null, (tx) => tx`select public.purge_project_assets(${p2}, ${CAROL})`),
+      /må være slettet/,
+    );
+  });
+
+  await test("0011: bare eieren kan slette, og bare via serveren", async () => {
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`select public.delete_project(${projectId}, ${ALICE})`),
+      /permission denied/,
+    );
+    await expectError(
+      as("service_role", null, (tx) => tx`select public.delete_project(${projectId}, ${CAROL})`),
+      /Bare prosjekteieren/,
+    );
+  });
+
+  const projectTables = async () =>
+    (
+      await sql`select table_name from information_schema.columns where table_schema = 'public' and column_name = 'project_id' order by 1`
+    ).map((r) => r["table_name"] as string);
+  const count = async (t: string, p: string) =>
+    Number(
+      (
+        await sql.unsafe(`select count(*)::int as n from public.${t} where project_id = $1`, [p])
+      )[0]!["n"],
+    );
+
+  await test("0011: sletting fjerner alt innhold unntatt ressursene; ingen kan skrive etterpå", async () => {
+    const keep = [
+      "assets",
+      "asset_variants",
+      "asset_versions",
+      "generation_jobs",
+      "project_members",
+    ];
+    const before: Record<string, number> = {};
+    for (const t of await projectTables()) before[t] = await count(t, projectId);
+    assert(
+      (before["takes"] ?? 0) > 0 && (before["change_log"] ?? 0) > 0,
+      "testprosjektet mangler innhold",
+    );
+    assert((before["assets"] ?? 0) > 0, "testprosjektet mangler ressurser");
+    const members =
+      await sql`select user_id, role from public.project_members where project_id = ${projectId} and removed_at is null`;
+    assert(
+      members.some((m) => m["role"] !== "owner"),
+      "testprosjektet mangler andre medlemmer",
+    );
+    const res = await as(
+      "service_role",
+      null,
+      async (tx) => (await tx`select public.delete_project(${projectId}, ${ALICE}) as r`)[0]!["r"],
+    );
+    const r = res as { sources: string[]; films: string[]; removed_members: number };
+    assert(r.sources.length === before["imported_documents"], "lista over manusfiler stemmer ikke");
+    assert(r.removed_members > 0, "andre medlemmer ble ikke fjernet");
+    for (const t of await projectTables()) {
+      const n = await count(t, projectId);
+      if (keep.includes(t)) {
+        if (t !== "project_members")
+          assert(n === before[t], `${t} skulle vært bevart (${before[t]} → ${n})`);
+      } else assert(n === 0, `${t} har fortsatt ${n} rader`);
+    }
+    const aliceSees = await as(
+      "authenticated",
+      ALICE,
+      (tx) => tx`select deleted_at from public.projects where id = ${projectId}`,
+    );
+    assert(
+      aliceSees.length === 1 && aliceSees[0]!["deleted_at"] !== null,
+      "eieren ser ikke det slettede prosjektet",
+    );
+    const aliceAssets = await as(
+      "authenticated",
+      ALICE,
+      (tx) => tx`select count(*)::int as n from public.assets where project_id = ${projectId}`,
+    );
+    assert(aliceAssets[0]!["n"] === before["assets"], "eieren ser ikke ressursene");
+    const bob = await as(
+      "authenticated",
+      BOB,
+      (tx) => tx`select 1 from public.assets where project_id = ${projectId}`,
+    );
+    assert(bob.length === 0, "et fjernet medlem ser fortsatt ressursene");
+    await expectError(
+      as(
+        "service_role",
+        null,
+        (tx) =>
+          tx`select public.apply_changes(${projectId}, ${ALICE}, gen_random_uuid(), '{"type":"X"}'::jsonb, null, '{}'::jsonb)`,
+      ),
+      /skriverett/,
+    );
+    await expectError(
+      as("service_role", null, (tx) => tx`select public.delete_project(${projectId}, ${ALICE})`),
+      /allerede slettet/,
+    );
+    // Vernet mot sletting gjelder fortsatt utenfor slettingen (INV-07/INV-13)
+    await expectError(sql`delete from public.change_log`, /INV-13/);
+  });
+
+  await test("0011: ressursene i et slettet prosjekt slettes for godt i en egen operasjon", async () => {
+    const res = await as(
+      "service_role",
+      null,
+      async (tx) =>
+        (await tx`select public.purge_project_assets(${projectId}, ${ALICE}) as r`)[0]!["r"],
+    );
+    const r = res as { paths: string[] };
+    assert(r.paths.length > 0, "ingen filstier å slette i lagringen");
+    for (const t of await projectTables())
+      assert((await count(t, projectId)) === 0, `${t} har fortsatt rader`);
+    const p = await sql`select 1 from public.projects where id = ${projectId}`;
+    assert(p.length === 0, "prosjektraden finnes fortsatt");
   });
 } finally {
   await sql.end();

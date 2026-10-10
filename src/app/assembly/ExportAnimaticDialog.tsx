@@ -32,6 +32,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { audioBank } from "@/app/audio/use-audio-playback";
+import { signedUrls } from "@/app/library/asset-images";
 import { formatSeconds } from "./FilmTimeline";
 
 type Scope = "film" | "selected" | "range";
@@ -40,6 +41,19 @@ type Size = "full" | "half";
 interface Check {
   readonly level: "ok" | "info" | "warn";
   readonly text: string;
+}
+
+async function freshFilmUrls(
+  clips: readonly FilmClip[],
+  fallback: Readonly<Record<string, string>> | null,
+): Promise<Record<string, string>> {
+  const paths = [...new Set(clips.flatMap((c) => (c.take?.mediaRef ? [c.take.mediaRef] : [])))];
+  if (paths.length === 0) return {};
+  try {
+    return await signedUrls(paths, 4 * 60 * 60);
+  } catch {
+    return { ...(fallback ?? {}) };
+  }
 }
 
 function safeName(s: string) {
@@ -57,6 +71,7 @@ export function ExportAnimaticDialog({
   audioItems,
   audioUrls,
   mutedKinds,
+  filmUrls,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -70,6 +85,8 @@ export function ExportAnimaticDialog({
   audioItems: readonly FilmAudioItem[];
   audioUrls: Readonly<Record<string, string>> | null;
   mutedKinds: ReadonlySet<AudioKind>;
+  /** Importert film (DEC-0047): mediesti → signert lenke. */
+  filmUrls: Readonly<Record<string, string>> | null;
 }) {
   const [scope, setScope] = useState<Scope>("film");
   const [fromId, setFromId] = useState<string>("");
@@ -150,6 +167,12 @@ export function ExportAnimaticDialog({
           .map((c) => c.productionNumber ?? formatHeading(c.heading))
           .join(", ")}${placeholders.length > 4 ? " …" : ""}).`,
       });
+    const films = sel.clips.filter((c) => c.source === "film");
+    if (films.length > 0)
+      out.push({
+        level: films.some((c) => c.take?.mediaRef && !filmUrls?.[c.take.mediaRef]) ? "warn" : "ok",
+        text: `${films.length} ${films.length === 1 ? "scene bruker" : "scener bruker"} importert film.`,
+      });
     const estimated = sel.clips.filter((c) => c.durationKind === "estimate").length;
     if (estimated > 0)
       out.push({
@@ -159,7 +182,7 @@ export function ExportAnimaticDialog({
     const need = new Set<string>();
     let missingVersions = 0;
     for (const c of sel.clips) {
-      if (!c.compositionId) continue;
+      if (!c.compositionId || c.source === "film") continue;
       for (const l of layersOf(state, c.compositionId)) {
         if (!l.visible) continue;
         const v = layerVersion(state, l);
@@ -200,7 +223,7 @@ export function ExportAnimaticDialog({
       ...new Set(audible.flatMap((it) => (it.version ? [it.version.mediaPath] : []))),
     ];
     return { checks: out, paths: [...need], audioPaths };
-  }, [sel, scope, state, productionId, fps, audioItems, mutedKinds]);
+  }, [sel, scope, state, productionId, fps, audioItems, mutedKinds, filmUrls]);
 
   const warnings = checks.some((c) => c.level === "warn");
   const busy = progress !== null && ready === null && error === null;
@@ -242,6 +265,8 @@ export function ExportAnimaticDialog({
         images,
         signal: ctrl.signal,
         audio: { items: audioItems, bank: audioBank, mutedKinds },
+        // Nye lenker rett før eksporten (en lang eksport skal ikke treffe lenker som går ut)
+        filmUrls: await freshFilmUrls(sel.clips, filmUrls),
         onProgress: (done, total) => {
           if (abort.current === ctrl) setProgress({ done, total });
         },

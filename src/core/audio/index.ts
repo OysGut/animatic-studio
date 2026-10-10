@@ -184,3 +184,57 @@ export function neighbourSceneAudio(
   const c = i < 0 ? undefined : clips[i + step];
   return { clip: c ?? null, audio: c ? sceneAudio(s, c.occurrenceId) : [] };
 }
+
+/** Største filmfil som lyden spilles fra (hele filen hentes og dekodes i nettleseren). */
+export const FILM_AUDIO_MAX_BYTES = 400 * 1024 * 1024;
+
+/**
+ * Lyden i importert film som er tatt i bruk (DEC-0047): spilles og eksporteres sammen med lydklippene, på
+ * filmens plass og bare så lenge klippet varer. Den følger sporet «Dialog» når spor dempes. Klippet her er
+ * ikke en lagret rad, bare en beskrivelse for mikseren (id = versjonens id).
+ */
+export function filmTakeAudio(clips: readonly FilmClip[], fps: Rational): FilmAudioItem[] {
+  const out: FilmAudioItem[] = [];
+  for (const c of clips) {
+    const t = c.take;
+    if (!t || !t.mediaRef || t.media?.hasAudio === false) continue;
+    // Lyden dekodes ved å hente hele filen; store filer hoppes over (KI)
+    if ((t.media?.byteSize ?? 0) > FILM_AUDIO_MAX_BYTES) continue;
+    const length = framesToSeconds(c.durationFrames, fps);
+    const clip = {
+      id: t.id,
+      revision: t.revision,
+      occurrenceId: c.occurrenceId,
+      kind: "dialogue",
+      name: t.media?.fileName ?? "Filmlyd",
+      assetId: t.id,
+      assetVariantId: null,
+      versionId: null,
+      blockId: null,
+      offsetMs: 0,
+      sourceInMs: 0,
+      lengthMs: Math.round(length * 1000),
+      gainDb: 0,
+      fadeInMs: 0,
+      fadeOutMs: 0,
+      muted: false,
+      continues: false,
+      volumeKeys: [],
+      removed: false,
+    } as unknown as AudioClip;
+    const version = { mediaPath: t.mediaRef } as unknown as AssetVersion;
+    out.push({
+      clip,
+      version,
+      start: framesToSeconds(c.startFrame, fps),
+      length,
+      fullLength: length,
+      sourceIn: 0,
+      gain: 1,
+      fadeIn: 0,
+      fadeOut: 0,
+      keys: [],
+    });
+  }
+  return out;
+}

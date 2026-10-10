@@ -2,7 +2,14 @@
 
 Oppdatert: 2026-10-09 (økt 5, DEC-0045)
 
-## Nå: DEC-0045 – lyd over flere scener, lydprofil, varmgult kamerautsnitt, AI-bilder – ferdig, venter på Mars
+## Nå: DEC-0046/0047 – slett/forlat prosjekt, zip, importert film, overganger – ferdig, venter på Mars
+- [x] Slett prosjekt (eier), forlat prosjekt, ressurser fra slettede prosjekter, zip (REQ-0567–0571)
+- [x] Importert ferdig film, «Bruk denne», overganger, replikk → avspillingshode (DEC-0047)
+- [x] Migrasjon 0011, 273 Vitest, 32 DB-tester, skjermbilder 56–62, kodegjennomgang (10 funn rettet)
+- [ ] **Mars:** Commit + Push, lim inn `LOVABLE_SYNC.md` (kjør 0011)
+- [ ] **Mars:** Prøv: Montering → velg scene → «Importer ferdig film …»; overgang; klikk på replikk; prosjektlisten → ⋯
+
+## Forrige: DEC-0045 – lyd over flere scener, lydprofil, varmgult kamerautsnitt, AI-bilder – ferdig, venter på Mars
 - [x] Lyd i scenene rundt med «Bruk i scenen» (REQ-0560)
 - [x] «Løper videre» over flere scener, varmgult (REQ-0561)
 - [x] Lydprofil med volumpunkter som i After Effects (REQ-0562); bølgeformer i sceneeditoren (REQ-0563)

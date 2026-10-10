@@ -98,3 +98,20 @@ export function useImageUrls(paths: readonly string[]) {
     },
   });
 }
+
+/** Midlertidige lenker for mange filer (zip-nedlasting), hentet i porsjoner. */
+export async function signedUrls(
+  paths: readonly string[],
+  seconds = 6 * 60 * 60,
+): Promise<Record<string, string>> {
+  const list = [...new Set(paths)];
+  const out: Record<string, string> = {};
+  for (let i = 0; i < list.length; i += 200) {
+    const { data, error } = await supabase.storage
+      .from(ASSET_BUCKET)
+      .createSignedUrls(list.slice(i, i + 200), seconds);
+    if (error) throw new Error(error.message);
+    for (const d of data ?? []) if (d.path && d.signedUrl) out[d.path] = d.signedUrl;
+  }
+  return out;
+}

@@ -11,6 +11,7 @@ import type { AudioKind, FilmAudioItem, FilmClip, ProjectState, Rational } from 
 import { type AudioBank, hasAudioIn, renderAudio } from "../audio/mixer";
 import type { ImageSource } from "../compositor/canvas";
 import { drawFilmFrame } from "../compositor/film";
+import { FilmVideoFrames } from "./film-video";
 
 export interface AnimaticExportOptions {
   readonly state: ProjectState;
@@ -31,6 +32,8 @@ export interface AnimaticExportOptions {
     readonly bank: AudioBank;
     readonly mutedKinds?: ReadonlySet<AudioKind>;
   };
+  /** Importert film (DEC-0047): mediesti → signert lenke for filene som brukes. */
+  readonly filmUrls?: Readonly<Record<string, string>>;
 }
 
 export interface AnimaticFile {
@@ -124,17 +127,21 @@ export async function exportAnimatic(o: AnimaticExportOptions): Promise<Animatic
     }
   };
 
+  const hasFilm = o.clips.some((c) => c.take !== null);
+  const video = hasFilm ? new FilmVideoFrames(mb, o.filmUrls ?? {}) : null;
   try {
     await output.start();
     for (let i = 0; i < total; i++) {
       if (o.signal?.aborted) throw new DOMException("Avbrutt", "AbortError");
       // Lyden ligger litt foran bildet, så filen flettes jevnt
       if (i * step >= audioDone - 1) await addAudioUntil(i * step + AUDIO_CHUNK);
+      if (video) await video.prepare(o.state, o.clips, o.startFrame + i);
       drawFilmFrame(ctx, o.state, o.clips, o.startFrame + i, {
         width,
         height,
         images: o.images,
         placeholders: false,
+        ...(video ? { video: video.provider } : {}),
       });
       await source.add(i * step, step);
       if (i % 6 === 0 || i === total - 1) {
@@ -148,6 +155,8 @@ export async function exportAnimatic(o: AnimaticExportOptions): Promise<Animatic
   } catch (e) {
     await output.cancel().catch(() => undefined);
     throw e;
+  } finally {
+    await video?.close().catch(() => undefined);
   }
   const buffer = target.buffer;
   if (!buffer) throw new ExportError("Videoen ble tom.");

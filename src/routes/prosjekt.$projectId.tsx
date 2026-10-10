@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useSession } from "@/app/auth/use-session";
@@ -21,8 +21,9 @@ function ProjectLayout() {
     queryKey: ["project-name", projectId],
     enabled: signedIn,
     queryFn: async () => {
-      const { data } = await db.from("projects").select("name").eq("id", projectId).maybeSingle();
-      return (data as { name: string } | null)?.name ?? "";
+      const { data } = await db.from("projects").select("*").eq("id", projectId).maybeSingle();
+      const p = data as { name: string; deleted_at?: string | null } | null;
+      return { name: p?.name ?? "", deleted: Boolean(p?.deleted_at) };
     },
   });
   // Visningsnavn for medlemslisten (migrasjon 0002). Feiler stille hvis migrasjonen ikke er kjørt.
@@ -33,12 +34,29 @@ function ProjectLayout() {
   if (session.status === "signed-out") return <AuthScreen />;
   return (
     <div className="flex h-screen flex-col bg-bg-app">
-      <AppHeader email={session.session.user.email} trail={name.data} />
+      <AppHeader email={session.session.user.email} trail={name.data?.name} />
       <SchemaBanner />
       <div className="flex min-h-0 flex-1">
         <ProjectNav projectId={projectId} />
         <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-          <Outlet />
+          {name.data?.deleted ? (
+            // Slettet prosjekt (DEC-0046): bare ressursene finnes, og de håndteres fra prosjektlisten
+            <div className="mx-auto mt-16 max-w-[460px] px-6 text-center">
+              <h1 className="text-lg font-semibold text-text-primary">Prosjektet er slettet</h1>
+              <p className="mt-2 text-[13px] text-text-secondary">
+                Ressursene (bilder og lyd) er tatt vare på. Du finner dem under «Ressurser fra
+                slettede prosjekter» i prosjektlisten.
+              </p>
+              <Link
+                to="/"
+                className="mt-4 inline-block text-[13px] text-accent-brand underline-offset-2 hover:underline"
+              >
+                Til prosjektlisten
+              </Link>
+            </div>
+          ) : (
+            <Outlet />
+          )}
         </div>
       </div>
     </div>

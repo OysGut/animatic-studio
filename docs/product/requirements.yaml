@@ -104,13 +104,17 @@ requirements:
     en scene/manuspassasje.
   tests:
   - 'import/eksport: import av videofil og plassering i montering'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/app/assembly/film-import.ts"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0047
+    change: "Ferdig film per scene kan importeres; import av lengre film med deling på scener gjenstår"
   notes: Jf. kap. 34 pkt. 15 (ferdig film skal kunne importeres og knyttes til manuspassasjer).
 - id: REQ-0004
   title: Fungerer fullt uten generativ AI
@@ -3347,13 +3351,20 @@ requirements:
   - Gitt en koblet replikk, når den klikkes, så står avspillingshodet på koblingens starttidspunkt (bilderiktig).
   tests:
   - 'e2e: klikk replikk → avspillingshode'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/assembly/film.ts"
+  - "src/app/assembly/ClipPanel.tsx"
+  verification:
+  - "tests/unit/film-and-delete.test.ts::replikk"
+  - "tests/visual/screens.mjs::61-replikk-klikk"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0047
+    change: "Klikk på en replikk i monteringens manus flytter avspillingshodet (koblet lyd eller beregnet tid)"
   notes: ''
 - id: REQ-0098
   title: Avspillingshode markerer manuspassasje
@@ -3377,10 +3388,12 @@ requirements:
   - Gitt avspillingshode innenfor en koblet replikks intervall, så er replikken markert i manuset.
   tests:
   - 'e2e: scrubbing → markering'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/app/assembly/ClipPanel.tsx"
-  verification: []
+  - "src/app/assembly/ClipPanel.tsx"
+  verification:
+  - "tests/visual/screens.mjs::61-replikk-klikk"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -3388,6 +3401,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0043
     change: "Avspillingshodet viser scenens manus (scenenivå); markering per replikk kommer med tidskoblinger"
+  - date: '2026-10-10'
+    decision: DEC-0047
+    change: "Blokken under avspillingshodet markeres og holdes synlig"
   notes: ''
 - id: REQ-0099
   title: Toveis navigasjon for alle materialtyper
@@ -7501,11 +7517,13 @@ requirements:
   - Hver scene i tidslinjen viser materialet som er valgt som aktiv filmversjon.
   tests:
   - 'e2e: se aktivt filmmateriale per scene i filmtidslinjen'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/app/assembly/FilmTimeline.tsx"
   - "src/engine/compositor/film.ts"
-  verification: []
+  - "src/app/assembly/FilmTimeline.tsx"
+  verification:
+  - "tests/visual/screens.mjs::60-montering-film"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -7513,6 +7531,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0043
     change: "Viser 2D-scenen (miniatyr og visning) eller tittelkort; importert film og AI-video kommer senere"
+  - date: '2026-10-10'
+    decision: DEC-0047
+    change: "Tidslinjen viser hvilke scener som bruker importert film"
   notes: ''
 - id: REQ-0220
   title: Trimme klipp
@@ -7614,13 +7635,21 @@ requirements:
   - Brukeren kan legge til, endre varighet på og fjerne en overgang (minst kutt og krysstoning) mellom to klipp.
   tests:
   - 'e2e: arbeide med overganger i filmtidslinjen'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/assembly/film.ts"
+  - "src/engine/compositor/film.ts"
+  - "src/app/assembly/ClipPanel.tsx"
+  verification:
+  - "tests/unit/film-and-delete.test.ts::overganger"
+  - "tests/visual/screens.mjs::60-montering-film"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0047
+    change: "Kutt, overtoning og via svart, sentrert om klippet, i avspilling og eksport"
   notes: «Minst kutt og krysstoning» i akseptansekriteriet er en foreslått minimumstolkning – ikke spesifisert i
     mandatet.
 - id: REQ-0224
@@ -7920,13 +7949,19 @@ requirements:
   - Hver sceneforekomst har nøyaktig én aktiv versjon (eller eksplisitt ingen), og den vises tydelig i scenevisningen.
   tests:
   - 'enhet: maks én aktiv versjon per sceneforekomst'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/ClipPanel.tsx"
+  - "src/core/assembly/film.ts"
+  verification:
+  - "tests/unit/film-and-delete.test.ts::Bruk denne"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0047
+    change: "Versjoner av scenen vises med hvilken som er i bruk"
   notes: ''
 - id: REQ-0233
   title: Handlingen «Bruk denne»
@@ -7950,13 +7985,19 @@ requirements:
     kan angres.
   tests:
   - 'e2e: bytt aktiv variant og verifiser i filmavspilling'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/ClipPanel.tsx"
+  verification:
+  - "tests/unit/film-and-delete.test.ts::Bruk denne"
+  - "tests/visual/screens.mjs::60-montering-film"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0047
+    change: "«Bruk denne» velger animatic eller importert film"
   notes: Linjen «Bruk denne» er duplisert (l. 644–645).
 - id: REQ-0234
   title: Andre varianter bevares
@@ -7978,13 +8019,18 @@ requirements:
   - Etter bytte av aktiv variant finnes alle tidligere varianter fortsatt og kan gjenaktiveres.
   tests:
   - 'dataintegritet: antall varianter uendret etter aktivering'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/commands/apply.ts"
+  verification:
+  - "tests/unit/film-and-delete.test.ts::Bruk denne"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0047
+    change: "Andre versjoner bevares når en annen tas i bruk"
   notes: Ufravikelig prinsipp nr. 6 i kap. 34.
 - id: REQ-0235
   title: Importere eksisterende ferdig film
@@ -8005,13 +8051,23 @@ requirements:
   - Brukeren kan importere vanlige videoformater (f.eks. MP4/MOV), og filen blir en medieressurs i prosjektet.
   tests:
   - 'import/eksport: import av MP4 og MOV'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/film-import.ts"
+  - "src/app/assembly/ClipPanel.tsx"
+  - "src/core/commands/apply.ts"
+  - "src/core/assembly/film.ts"
+  verification:
+  - "tests/unit/film-and-delete.test.ts::importert film"
+  - "tests/db/run-db-tests.ts::0011 importert film"
+  - "tests/visual/screens.mjs::60-montering-film"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0047
+    change: "Ferdig film importeres til en scene og vises/eksporteres i filmen"
   notes: Ufravikelig prinsipp nr. 15 i kap. 34.
 - id: REQ-0236
   title: Koble importert klipp til manus
@@ -8038,13 +8094,20 @@ requirements:
   tests:
   - 'enhet: koblingsmodell for alle fire varianter'
   - 'dataintegritet: kobling overlever omnummerering'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/film-import.ts"
+  - "src/app/assembly/ClipPanel.tsx"
+  - "src/core/commands/apply.ts"
+  verification:
+  - "tests/unit/film-and-delete.test.ts::importert film"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0047
+    change: "Importert film kobles til scenen (sceneforekomsten) den importeres i"
   notes: Ufravikelig prinsipp nr. 15 i kap. 34.
 - id: REQ-0237
   title: Angi nøyaktig manusdekning
@@ -8095,13 +8158,20 @@ requirements:
   - Etter import vises varighet, oppløsning, bildefrekvens og antall/type lydspor korrekt for testfiler.
   tests:
   - 'import/eksport: metadata for kjente testfiler samsvarer med ffprobe-referanse'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/film-import.ts"
+  - "src/core/model.ts"
+  verification:
+  - "tests/unit/film-and-delete.test.ts::filinformasjonen"
+  - "tests/db/run-db-tests.ts::0011 importert film"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0047
+    change: "Lengde, oppløsning, bildefrekvens, kodek og lyd leses ved import og lagres uforanderlig"
   notes: ''
 - id: REQ-0239
   title: Delvis ferdig scene med animatic-rest
@@ -8226,13 +8296,19 @@ requirements:
     uendret og tilgjengelig.
   tests:
   - 'dataintegritet: hash av eksisterende mediefiler uendret etter ny import'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/film-import.ts"
+  - "db/migrations/0011_project_delete_film.sql"
+  verification:
+  - "tests/db/run-db-tests.ts::0011 importert film (metadata uforanderlig)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0047
+    change: "Filen lastes opp uendret; filinformasjonen kan ikke overskrives"
   notes: Ufravikelig prinsipp nr. 27 i kap. 34.
 - id: REQ-0243
   title: Brukerhandlingen «Generer scene»
@@ -10458,13 +10534,18 @@ requirements:
   - Brukeren kan åpne en tidligere versjon og gjøre den til aktiv versjon igjen.
   tests:
   - 'e2e: gjenaktiver tidligere versjon'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/ClipPanel.tsx"
+  verification:
+  - "tests/unit/film-and-delete.test.ts::Bruk denne"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0047
+    change: "Tidligere versjoner kan tas i bruk igjen"
   notes: Ufravikelig prinsipp nr. 6 i kap. 34.
 - id: REQ-0318
   title: Sammenligne tidligere resultater
@@ -18091,3 +18172,170 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0045
     change: "Opprettet etter beslutning fra Mars"
+- id: REQ-0567
+  title: "Slett prosjekt (bare eier)"
+  text: "Eieren skal kunne slette et prosjekt fra prosjektlisten. Et alvorlig vindu sier at handlingen ikke kan angres, viser hva som slettes og hvor mange som mister tilgangen, og krever at prosjektnavnet skrives inn. Ressursene (bilder og lyd) slettes ikke sammen med prosjektet."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0046
+  type: funksjonell
+  priority: P1
+  phase: 4
+  modules:
+  - UI
+  - SECURITY
+  - COLLAB
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Bare eieren ser og kan bruke «Slett prosjekt …»; serveren og databasen kontrollerer eierskapet på nytt."
+  - "Knappen er låst til prosjektnavnet er skrevet inn riktig."
+  - "Manus, versjoner, scener, 2D-scener, lydklipp, notater, historikk, importerte manusfiler og importert film slettes; andre medlemmer mister tilgangen."
+  - "Ressursene og loggen over AI-genereringer bevares hos eierne; ingen kan skrive i prosjektet etterpå."
+  tests:
+  - "db: 0011 sletting"
+  - "visuell: 56/57"
+  status: Verifisert
+  implementation:
+  - "db/migrations/0011_project_delete_film.sql"
+  - "src/adapters/storage/project-admin.functions.ts"
+  - "src/app/projects/ProjectDangerDialogs.tsx"
+  - "src/app/projects/ProjectsScreen.tsx"
+  verification:
+  - "tests/db/run-db-tests.ts::0011"
+  - "tests/visual/screens.mjs::57-slett-prosjekt"
+  history:
+  - date: '2026-10-10'
+    decision: DEC-0046
+    change: "Opprettet etter beslutning fra Mars"
+  notes: "Mandatets vern av produsert materiale og historikk (INV-07, INV-13) gjelder i et prosjekt som er i bruk; sletting av hele prosjektet er en bevisst handling fra eieren (DEC-0046)."
+- id: REQ-0568
+  title: "Forlat prosjekt"
+  text: "Den som er invitert inn i et prosjekt, skal kunne forlate det fra prosjektlisten, med et vindu som sier at det ikke kan angres. En eier kan bare forlate prosjektet når det finnes en annen eier."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0046
+  type: funksjonell
+  priority: P1
+  phase: 4
+  modules:
+  - UI
+  - COLLAB
+  - SECURITY
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "«Forlat prosjekt …» vises for inviterte (og for eiere når det finnes en annen eier)."
+  - "Etter at man har forlatt prosjektet, ser man det ikke lenger; prosjektet og innholdet består."
+  - "Eneste eier får beskjed om å slette prosjektet eller gjøre en annen til eier."
+  tests:
+  - "db: 0011 forlat"
+  - "visuell: 58"
+  status: Verifisert
+  implementation:
+  - "db/migrations/0011_project_delete_film.sql"
+  - "src/app/projects/ProjectDangerDialogs.tsx"
+  verification:
+  - "tests/db/run-db-tests.ts::0011 forlat"
+  - "tests/visual/screens.mjs::58-forlat-prosjekt"
+  history:
+  - date: '2026-10-10'
+    decision: DEC-0046
+    change: "Opprettet etter beslutning fra Mars"
+- id: REQ-0569
+  title: "Last ned ressurser som zip"
+  text: "Prosjektets ressurser skal kunne lastes ned som én zip-fil, per kategori (karakterer, objekter, lokasjoner, lyd, importert film …) eller alt samlet, før sletting, fra et slettet prosjekt og fra ressursbiblioteket."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0046
+  type: funksjonell
+  priority: P1
+  phase: 4
+  modules:
+  - LIBRARY
+  - EXPORT
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Én mappe per kategori, ressurs og variant; alle versjoner med originalt filnavn; godkjent versjon merket."
+  - "Kategorier kan velges bort; antall filer og størrelse vises."
+  - "Store filer skrives rett til disk der nettleseren støtter det; filer som ikke kan hentes, listes i MANGLER.txt."
+  - "Over 3,8 GB må det lastes ned i flere omganger."
+  tests:
+  - "enhet: zip med ressurser"
+  - "visuell: 62 (med nedlasting og innholdskontroll)"
+  status: Verifisert
+  implementation:
+  - "src/core/library/zip.ts"
+  - "src/engine/export/zip.ts"
+  - "src/app/library/AssetZip.tsx"
+  verification:
+  - "tests/unit/film-and-delete.test.ts::zip med ressurser"
+  - "tests/visual/screens.mjs::62-bibliotek-zip"
+  history:
+  - date: '2026-10-10'
+    decision: DEC-0046
+    change: "Opprettet etter beslutning fra Mars"
+- id: REQ-0570
+  title: "Slett ressursene fra et slettet prosjekt i egen operasjon"
+  text: "Ressursene i et slettet prosjekt skal bare kunne slettes for godt i en egen operasjon, av eieren, med eget vindu og navnebekreftelse."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0046
+  type: funksjonell
+  priority: P1
+  phase: 4
+  modules:
+  - LIBRARY
+  - SECURITY
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0567
+  acceptance:
+  - "Ressursene vises under «Ressurser fra slettede prosjekter» med «Last ned …» og «Slett for godt …»."
+  - "Sletting for godt fjerner alle bilder og lydfiler, versjoner, AI-logg og prosjektet; filer i lagringen under prosjektets mappe slettes."
+  - "Kan ikke gjøres før prosjektet er slettet."
+  tests:
+  - "db: 0011 purge"
+  - "visuell: 59"
+  status: Verifisert
+  implementation:
+  - "db/migrations/0011_project_delete_film.sql"
+  - "src/adapters/storage/project-admin.functions.ts"
+  - "src/app/projects/ProjectDangerDialogs.tsx"
+  verification:
+  - "tests/db/run-db-tests.ts::0011 ressursene slettes for godt"
+  - "tests/visual/screens.mjs::59-slettede-prosjekter"
+  history:
+  - date: '2026-10-10'
+    decision: DEC-0046
+    change: "Opprettet etter beslutning fra Mars"
+- id: REQ-0571
+  title: "Globale ressurser på tvers av prosjekter"
+  text: "Ressurser (alle typer) skal kunne gjøres globale, slik at de kan brukes i flere prosjekter. Ressurser fra slettede prosjekter skal kunne flyttes dit."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0046
+  type: funksjonell
+  priority: P2
+  phase: 5
+  modules:
+  - LIBRARY
+  - SECURITY
+  invariants: []
+  dependencies:
+  - REQ-0570
+  acceptance:
+  - "En ressurs kan gjøres global og brukes i et annet prosjekt uten kopiering av filer."
+  - "Tilgang og sletting av globale ressurser er tydelig og trygg."
+  tests:
+  - "planlagt"
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-10'
+    decision: DEC-0046
+    change: "Opprettet etter beslutning fra Mars (begrunnelse for at ressurser slettes i egen operasjon)"

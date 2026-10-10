@@ -92,6 +92,36 @@ async function mock(page, { projects = [project], schema = true }) {
         body: wav(path.includes("maja") ? 3.5 : 20),
       });
     }
+    // Importert film (DEC-0047): en ekte testfilm når TEST_FILM peker på en fil (WebM fra ffmpeg)
+    if (
+      path.startsWith("/storage/v1/object/sign/") &&
+      path.includes("/films/") &&
+      process.env.TEST_FILM
+    ) {
+      const { readFileSync: rf } = await import("node:fs");
+      const body = rf(process.env.TEST_FILM);
+      const range = req.headers()["range"];
+      const m = range && /bytes=(\d+)-(\d*)/.exec(range);
+      if (m) {
+        const start = Number(m[1]);
+        const end = m[2] ? Math.min(Number(m[2]), body.length - 1) : body.length - 1;
+        return route.fulfill({
+          status: 206,
+          contentType: "video/webm",
+          headers: {
+            "content-range": `bytes ${start}-${end}/${body.length}`,
+            "accept-ranges": "bytes",
+          },
+          body: body.subarray(start, end + 1),
+        });
+      }
+      return route.fulfill({
+        status: 200,
+        contentType: "video/webm",
+        headers: { "accept-ranges": "bytes" },
+        body,
+      });
+    }
     if (path.startsWith("/storage/v1/object/sign/")) {
       const n = (path.length * 37) % 360;
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400"><rect width="300" height="400" fill="hsl(${n} 25% 22%)"/><circle cx="150" cy="120" r="60" fill="hsl(${n} 45% 70%)"/><path d="M60 380 Q150 170 240 380Z" fill="hsl(${n} 45% 60%)"/></svg>`;
@@ -100,12 +130,18 @@ async function mock(page, { projects = [project], schema = true }) {
     const table = path.replace("/rest/v1/", "");
     if (table === "schema_version")
       return schema
-        ? json([{ version: 10 }])
+        ? json([{ version: 11 }])
         : json({ message: "relation does not exist", code: "42P01" }, 404);
     if (table === "projects") {
       if (single) return json(projects[0] ?? null);
+      const idEq = url.searchParams.get("id")?.replace(/^eq\./, "");
       return json(
-        projects.map((p) => ({ ...p, project_members: [{ role: "owner", user_id: USER.id }] })),
+        projects
+          .filter((p) => !idEq || p.id === idEq)
+          .map((p) => ({
+            ...p,
+            project_members: p.project_members ?? [{ role: "owner", user_id: USER.id }],
+          })),
       );
     }
     if (table === "project_members") {
@@ -712,6 +748,101 @@ await shot("55-scene-lyd-inn", scene, {
       "lyd i scene 2:",
       (await rows.count()) ? (await rows.innerText()).replace(/\n/g, " | ") : "ingen tidslinje",
     );
+  },
+});
+// DEC-0046: slett og forlat prosjekt, ressurser fra slettede prosjekter, zip
+const flereProsjekter = [
+  {
+    ...project,
+    project_members: [
+      { role: "owner", user_id: USER.id },
+      { role: "editor", user_id: "b0b00000-0000-7000-8000-000000000002" },
+    ],
+  },
+  {
+    ...project,
+    id: "00000000-0000-7000-8000-00000000beef",
+    name: "Trailer-test",
+    created_at: "2026-10-01T10:00:00Z",
+    project_members: [
+      { role: "owner", user_id: "b0b00000-0000-7000-8000-000000000002" },
+      { role: "editor", user_id: USER.id },
+    ],
+  },
+  {
+    ...project,
+    id: "00000000-0000-7000-8000-00000000dead",
+    name: "Gammel pilot",
+    created_at: "2026-06-01T10:00:00Z",
+    deleted_at: "2026-10-09T15:00:00Z",
+  },
+];
+await shot("56-prosjekter-handlinger", "/", {
+  projects: flereProsjekter,
+  act: async (page) => {
+    await page.getByRole("button", { name: "Handlinger for Jula på Dovre" }).click();
+    await page.waitForTimeout(400);
+  },
+});
+await shot("57-slett-prosjekt", "/", {
+  projects: flereProsjekter,
+  act: async (page) => {
+    await page.getByRole("button", { name: "Handlinger for Jula på Dovre" }).click();
+    await page.getByRole("menuitem", { name: /Slett prosjekt/ }).click();
+    await page
+      .getByRole("button", { name: /Last ned valgte/ })
+      .waitFor({ timeout: 15000 })
+      .catch(() => console.error("zip-panelet ble ikke lastet"));
+    await page.getByLabel("Prosjektnavnet").fill("Jula på Dov");
+    await page.waitForTimeout(300);
+  },
+});
+await shot("58-forlat-prosjekt", "/", {
+  projects: flereProsjekter,
+  act: async (page) => {
+    await page.getByRole("button", { name: "Handlinger for Trailer-test" }).click();
+    await page.getByRole("menuitem", { name: /Forlat prosjekt/ }).click();
+    await page.waitForTimeout(500);
+  },
+});
+await shot("59-slettede-prosjekter", "/", { projects: flereProsjekter });
+await shot("60-montering-film", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    await page.getByRole("button", { name: /^Scene 7: .*ferdig film/ }).click();
+    await page.waitForTimeout(800);
+    // Midt i overtoningen fra scene 1 til filmen
+    await page.keyboard.press("ArrowRight");
+    await page.waitForTimeout(1500);
+  },
+});
+await shot("61-replikk-klikk", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    const panel = page.getByRole("region", { name: "Manus for scenen" });
+    await panel.locator("[data-block]").nth(2).click();
+    await page.waitForTimeout(600);
+    console.error(
+      "aktiv blokk:",
+      await panel
+        .locator('[aria-current="true"]')
+        .first()
+        .innerText()
+        .catch(() => "ingen"),
+      "| tid:",
+      await page
+        .locator("text=/^\\d\\d:\\d\\d:\\d\\d:\\d\\d$/")
+        .first()
+        .innerText()
+        .catch(() => "?"),
+    );
+  },
+});
+await shot("62-bibliotek-zip", `/prosjekt/${project.id}/bibliotek`, {
+  act: async (page) => {
+    await page.waitForTimeout(900);
+    await page.getByRole("button", { name: "Last ned som zip" }).click();
+    await page.waitForTimeout(800);
   },
 });
 await shot("18-oversikt-varighet", `/prosjekt/${project.id}`, {

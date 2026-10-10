@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **566**
-- Prioritet: P0: 141, P1: 246, P2: 140, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 39, teknisk-anbefaling: 7
-- Status: Ikke startet: 348, Verifisert: 156, Under arbeid: 49, Implementert – ikke verifisert: 13
+- Antall krav: **571**
+- Prioritet: P0: 141, P1: 250, P2: 141, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 44, teknisk-anbefaling: 7
+- Status: Ikke startet: 338, Under arbeid: 48, Verifisert: 172, Implementert – ikke verifisert: 13
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -55,11 +55,12 @@ Eksisterende filmmateriale skal kunne importeres og inngå i produksjonen.
 - **Kilde:** Kap. 1 (l. 24) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE, LIBRARY
 - **Avhengigheter:** REQ-0098; REQ-0100
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Gitt en videofil med ferdig film, når den importeres, så kan den plasseres på filmtidslinjen og knyttes til en scene/manuspassasje.
 - **Tester:**
   - import/eksport: import av videofil og plassering i montering
+- **Implementering:** src/app/assembly/film-import.ts
 - **Merknad:** Jf. kap. 34 pkt. 15 (ferdig film skal kunne importeres og knyttes til manuspassasjer).
 
 #### REQ-0004 – Fungerer fullt uten generativ AI
@@ -1282,11 +1283,12 @@ Når brukeren klikker på en replikk, skal avspillingshodet kunne flyttes til ti
 - **Kilde:** Kap. 6.2 (l. 290) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** SCRIPT, TIMELINE, UI · **Invarianter:** INV-01
 - **Avhengigheter:** REQ-0093
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en koblet replikk, når den klikkes, så står avspillingshodet på koblingens starttidspunkt (bilderiktig).
 - **Tester:**
   - e2e: klikk replikk → avspillingshode
+- **Implementering:** src/core/assembly/film.ts, src/app/assembly/ClipPanel.tsx
 
 #### REQ-0098 – Avspillingshode markerer manuspassasje
 Når brukeren flytter avspillingshodet, skal programmet kunne markere den aktuelle manuspassasjen.
@@ -1294,12 +1296,12 @@ Når brukeren flytter avspillingshodet, skal programmet kunne markere den aktuel
 - **Kilde:** Kap. 6.2 (l. 291) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** SCRIPT, TIMELINE, UI · **Invarianter:** INV-01
 - **Avhengigheter:** REQ-0093
-- **Status:** Under arbeid
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt avspillingshode innenfor en koblet replikks intervall, så er replikken markert i manuset.
 - **Tester:**
   - e2e: scrubbing → markering
-- **Implementering:** src/app/assembly/ClipPanel.tsx
+- **Implementering:** src/app/assembly/ClipPanel.tsx, src/app/assembly/ClipPanel.tsx
 
 #### REQ-0099 – Toveis navigasjon for alle materialtyper
 Toveis navigasjon skal fungere for planlagte animatics, redigerbare 2D-scener, AI-generert video, importert ferdig film og sammensatte scener med flere klipp.
@@ -2871,12 +2873,12 @@ Brukeren skal kunne se aktivt filmmateriale for hver scene i filmtidslinjen.
 - **Kilde:** Kap. 15.1 (l. 623) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE
 - **Avhengigheter:** REQ-0216
-- **Status:** Under arbeid
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Hver scene i tidslinjen viser materialet som er valgt som aktiv filmversjon.
 - **Tester:**
   - e2e: se aktivt filmmateriale per scene i filmtidslinjen
-- **Implementering:** src/app/assembly/FilmTimeline.tsx, src/engine/compositor/film.ts
+- **Implementering:** src/app/assembly/FilmTimeline.tsx, src/engine/compositor/film.ts, src/app/assembly/FilmTimeline.tsx
 
 #### REQ-0220 – Trimme klipp
 Brukeren skal kunne trimme klipp i filmtidslinjen.
@@ -2920,11 +2922,12 @@ Brukeren skal kunne arbeide med overganger mellom klipp i filmtidslinjen.
 - **Kilde:** Kap. 15.1 (l. 627) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE
 - **Avhengigheter:** REQ-0216
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan legge til, endre varighet på og fjerne en overgang (minst kutt og krysstoning) mellom to klipp.
 - **Tester:**
   - e2e: arbeide med overganger i filmtidslinjen
+- **Implementering:** src/core/assembly/film.ts, src/engine/compositor/film.ts, src/app/assembly/ClipPanel.tsx
 - **Merknad:** «Minst kutt og krysstoning» i akseptansekriteriet er en foreslått minimumstolkning – ikke spesifisert i mandatet.
 
 #### REQ-0224 – Justere timing
@@ -3041,11 +3044,12 @@ Hver scene skal ha et tydelig valg for hvilket produksjonsresultat som represent
 - **Kilde:** Kap. 15.3 (l. 641-642) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE, VERSION, CORE
 - **Avhengigheter:** Sceneforekomst (kap. 3.3)
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Hver sceneforekomst har nøyaktig én aktiv versjon (eller eksplisitt ingen), og den vises tydelig i scenevisningen.
 - **Tester:**
   - enhet: maks én aktiv versjon per sceneforekomst
+- **Implementering:** src/app/assembly/ClipPanel.tsx, src/core/assembly/film.ts
 
 #### REQ-0233 – Handlingen «Bruk denne»
 Brukeren skal kunne velge en aktiv variant, for eksempel gjennom en handling som «Bruk denne».
@@ -3053,11 +3057,12 @@ Brukeren skal kunne velge en aktiv variant, for eksempel gjennom en handling som
 - **Kilde:** Kap. 15.3 (l. 643-645) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE, VERSION, UI
 - **Avhengigheter:** REQ-0232
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Når brukeren klikker «Bruk denne» på en variant, så blir den aktiv versjon i filmmonteringen, og handlingen kan angres.
 - **Tester:**
   - e2e: bytt aktiv variant og verifiser i filmavspilling
+- **Implementering:** src/app/assembly/ClipPanel.tsx
 - **Merknad:** Linjen «Bruk denne» er duplisert (l. 644–645).
 
 #### REQ-0234 – Andre varianter bevares
@@ -3066,11 +3071,12 @@ Når en aktiv variant velges, skal andre varianter bevares.
 - **Kilde:** Kap. 15.3 (l. 646) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 4
 - **Moduler:** VERSION · **Invarianter:** INV-07
 - **Avhengigheter:** REQ-0233
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Etter bytte av aktiv variant finnes alle tidligere varianter fortsatt og kan gjenaktiveres.
 - **Tester:**
   - dataintegritet: antall varianter uendret etter aktivering
+- **Implementering:** src/core/commands/apply.ts
 - **Merknad:** Ufravikelig prinsipp nr. 6 i kap. 34.
 
 ### Kapittel 16
@@ -3080,11 +3086,12 @@ Brukeren skal kunne importere film som allerede er produsert utenfor Animatic St
 
 - **Kilde:** Kap. 16 (l. 648-649) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 4
 - **Moduler:** LIBRARY, TIMELINE
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan importere vanlige videoformater (f.eks. MP4/MOV), og filen blir en medieressurs i prosjektet.
 - **Tester:**
   - import/eksport: import av MP4 og MOV
+- **Implementering:** src/app/assembly/film-import.ts, src/app/assembly/ClipPanel.tsx, src/core/commands/apply.ts, src/core/assembly/film.ts
 - **Merknad:** Ufravikelig prinsipp nr. 15 i kap. 34.
 
 #### REQ-0236 – Koble importert klipp til manus
@@ -3093,12 +3100,13 @@ Et importert filmklipp skal kunne knyttes til en hel manusscene, en del av en ma
 - **Kilde:** Kap. 16.1 (l. 650-655) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P0 · **Fase:** 4
 - **Moduler:** TIMELINE, SCRIPT, CORE · **Invarianter:** INV-02
 - **Avhengigheter:** REQ-0235
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Et klipp kan kobles til hver av: én hel scene, en del av en scene, flere sammenhengende scener og et tidsintervall; koblingen bruker permanente ID-er.
 - **Tester:**
   - enhet: koblingsmodell for alle fire varianter
   - dataintegritet: kobling overlever omnummerering
+- **Implementering:** src/app/assembly/film-import.ts, src/app/assembly/ClipPanel.tsx, src/core/commands/apply.ts
 - **Merknad:** Ufravikelig prinsipp nr. 15 i kap. 34.
 
 #### REQ-0237 – Angi nøyaktig manusdekning
@@ -3119,11 +3127,12 @@ Programmet skal kunne hente relevante metadata fra importert film, for eksempel 
 - **Kilde:** Kap. 16.2 (l. 657-663) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** LIBRARY, EXPORT
 - **Avhengigheter:** REQ-0235
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Etter import vises varighet, oppløsning, bildefrekvens og antall/type lydspor korrekt for testfiler.
 - **Tester:**
   - import/eksport: metadata for kjente testfiler samsvarer med ffprobe-referanse
+- **Implementering:** src/app/assembly/film-import.ts, src/core/model.ts
 
 #### REQ-0239 – Delvis ferdig scene med animatic-rest
 Hvis bare en del av en scene er ferdig produsert, skal den ferdige delen kunne brukes sammen med animatic-materiale for resten.
@@ -3171,11 +3180,12 @@ Import av film skal ikke ødelegge eller erstatte eksisterende kildemateriale.
 - **Kilde:** Kap. 16.4 (l. 673) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 4
 - **Moduler:** LIBRARY, VERSION, SECURITY · **Invarianter:** INV-07, INV-13
 - **Avhengigheter:** REQ-0235
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt eksisterende materiale for en scene, når ny film importeres for samme scene, så er alt tidligere materiale uendret og tilgjengelig.
 - **Tester:**
   - dataintegritet: hash av eksisterende mediefiler uendret etter ny import
+- **Implementering:** src/app/assembly/film-import.ts, db/migrations/0011_project_delete_film.sql
 - **Merknad:** Ufravikelig prinsipp nr. 27 i kap. 34.
 
 ### Kapittel 17
@@ -4113,11 +4123,12 @@ Tidligere produksjonsresultater skal kunne åpnes og gjenaktiveres.
 - **Kilde:** Kap. 21.5 (l. 902) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 4
 - **Moduler:** VERSION, TIMELINE · **Invarianter:** INV-14
 - **Avhengigheter:** REQ-0316
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan åpne en tidligere versjon og gjøre den til aktiv versjon igjen.
 - **Tester:**
   - e2e: gjenaktiver tidligere versjon
+- **Implementering:** src/app/assembly/ClipPanel.tsx
 - **Merknad:** Ufravikelig prinsipp nr. 6 i kap. 34.
 
 #### REQ-0318 – Sammenligne tidligere resultater
@@ -7378,5 +7389,82 @@ Etter testfasen skal brukerne kunne koble Animatic Studio til ulike AI-tjenester
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
   - Brukeren kan velge leverandør og legge inn egen nøkkel på en sikker måte (REQ-0413).
+- **Tester:**
+  - planlagt
+
+#### REQ-0567 – Slett prosjekt (bare eier)
+Eieren skal kunne slette et prosjekt fra prosjektlisten. Et alvorlig vindu sier at handlingen ikke kan angres, viser hva som slettes og hvor mange som mister tilgangen, og krever at prosjektnavnet skrives inn. Ressursene (bilder og lyd) slettes ikke sammen med prosjektet.
+
+- **Kilde:** Beslutning DEC-0046 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
+- **Moduler:** UI, SECURITY, COLLAB
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Bare eieren ser og kan bruke «Slett prosjekt …»; serveren og databasen kontrollerer eierskapet på nytt.
+  - Knappen er låst til prosjektnavnet er skrevet inn riktig.
+  - Manus, versjoner, scener, 2D-scener, lydklipp, notater, historikk, importerte manusfiler og importert film slettes; andre medlemmer mister tilgangen.
+  - Ressursene og loggen over AI-genereringer bevares hos eierne; ingen kan skrive i prosjektet etterpå.
+- **Tester:**
+  - db: 0011 sletting
+  - visuell: 56/57
+- **Implementering:** db/migrations/0011_project_delete_film.sql, src/adapters/storage/project-admin.functions.ts, src/app/projects/ProjectDangerDialogs.tsx, src/app/projects/ProjectsScreen.tsx
+- **Merknad:** Mandatets vern av produsert materiale og historikk (INV-07, INV-13) gjelder i et prosjekt som er i bruk; sletting av hele prosjektet er en bevisst handling fra eieren (DEC-0046).
+
+#### REQ-0568 – Forlat prosjekt
+Den som er invitert inn i et prosjekt, skal kunne forlate det fra prosjektlisten, med et vindu som sier at det ikke kan angres. En eier kan bare forlate prosjektet når det finnes en annen eier.
+
+- **Kilde:** Beslutning DEC-0046 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
+- **Moduler:** UI, COLLAB, SECURITY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - «Forlat prosjekt …» vises for inviterte (og for eiere når det finnes en annen eier).
+  - Etter at man har forlatt prosjektet, ser man det ikke lenger; prosjektet og innholdet består.
+  - Eneste eier får beskjed om å slette prosjektet eller gjøre en annen til eier.
+- **Tester:**
+  - db: 0011 forlat
+  - visuell: 58
+- **Implementering:** db/migrations/0011_project_delete_film.sql, src/app/projects/ProjectDangerDialogs.tsx
+
+#### REQ-0569 – Last ned ressurser som zip
+Prosjektets ressurser skal kunne lastes ned som én zip-fil, per kategori (karakterer, objekter, lokasjoner, lyd, importert film …) eller alt samlet, før sletting, fra et slettet prosjekt og fra ressursbiblioteket.
+
+- **Kilde:** Beslutning DEC-0046 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
+- **Moduler:** LIBRARY, EXPORT, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Én mappe per kategori, ressurs og variant; alle versjoner med originalt filnavn; godkjent versjon merket.
+  - Kategorier kan velges bort; antall filer og størrelse vises.
+  - Store filer skrives rett til disk der nettleseren støtter det; filer som ikke kan hentes, listes i MANGLER.txt.
+  - Over 3,8 GB må det lastes ned i flere omganger.
+- **Tester:**
+  - enhet: zip med ressurser
+  - visuell: 62 (med nedlasting og innholdskontroll)
+- **Implementering:** src/core/library/zip.ts, src/engine/export/zip.ts, src/app/library/AssetZip.tsx
+
+#### REQ-0570 – Slett ressursene fra et slettet prosjekt i egen operasjon
+Ressursene i et slettet prosjekt skal bare kunne slettes for godt i en egen operasjon, av eieren, med eget vindu og navnebekreftelse.
+
+- **Kilde:** Beslutning DEC-0046 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
+- **Moduler:** LIBRARY, SECURITY, UI
+- **Avhengigheter:** REQ-0567
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Ressursene vises under «Ressurser fra slettede prosjekter» med «Last ned …» og «Slett for godt …».
+  - Sletting for godt fjerner alle bilder og lydfiler, versjoner, AI-logg og prosjektet; filer i lagringen under prosjektets mappe slettes.
+  - Kan ikke gjøres før prosjektet er slettet.
+- **Tester:**
+  - db: 0011 purge
+  - visuell: 59
+- **Implementering:** db/migrations/0011_project_delete_film.sql, src/adapters/storage/project-admin.functions.ts, src/app/projects/ProjectDangerDialogs.tsx
+
+#### REQ-0571 – Globale ressurser på tvers av prosjekter
+Ressurser (alle typer) skal kunne gjøres globale, slik at de kan brukes i flere prosjekter. Ressurser fra slettede prosjekter skal kunne flyttes dit.
+
+- **Kilde:** Beslutning DEC-0046 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 5
+- **Moduler:** LIBRARY, SECURITY
+- **Avhengigheter:** REQ-0570
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - En ressurs kan gjøres global og brukes i et annet prosjekt uten kopiering av filer.
+  - Tilgang og sletting av globale ressurser er tydelig og trygg.
 - **Tester:**
   - planlagt

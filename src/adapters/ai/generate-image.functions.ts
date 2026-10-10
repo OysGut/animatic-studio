@@ -131,6 +131,15 @@ export const generateImage = createServerFn({ method: "POST" })
           "AI er ikke slått på for prosjektet i Lovable (LOVABLE_API_KEY mangler). Se LOVABLE_SYNC.md.",
       };
 
+    // Et slettet prosjekt kan ikke få nye bilder (DEC-0046)
+    const { data: proj } = await admin
+      .from("projects")
+      .select("*")
+      .eq("id", data.projectId)
+      .maybeSingle();
+    if (!proj || (proj as { deleted_at?: string | null }).deleted_at)
+      return { ok: false, message: "Prosjektet er slettet." };
+
     const { data: asset } = await admin
       .from("assets")
       .select("id, kind")

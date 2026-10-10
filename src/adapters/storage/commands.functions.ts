@@ -121,6 +121,12 @@ function needsAudioFlowSchema(command: { type: string } & Record<string, unknown
 }
 
 /** Lydfiler i biblioteket krever også migrasjon 0009 (ny ressurstype og lydformater). */
+/** Importert film og overganger krever migrasjon 0011 (DEC-0047). */
+function needsFilmSchema(command: { type: string } & Record<string, unknown>): boolean {
+  if (command.type === "SetTransition") return true;
+  return command.type === "AddTake" && command["media"] !== undefined;
+}
+
 function needsAudioSchema(command: { type: string } & Record<string, unknown>): boolean {
   if (AUDIO_COMMANDS.has(command.type)) return true;
   if (command.type === "CreateAssets")
@@ -309,6 +315,16 @@ export const runCommand = createServerFn({ method: "POST" })
             "Databasen mangler lyd. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0009.",
         };
     }
+    if (needsFilmSchema(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 11)
+        return {
+          ok: false,
+          code: "schema",
+          message:
+            "Databasen mangler importert film og overganger. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0011.",
+        };
+    }
     if (needsAudioFlowSchema(data.command as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 10)
@@ -382,6 +398,13 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "revision_conflict",
           message: "Noen andre har endret dette i mellomtiden. Hent siste versjon og prøv igjen.",
+        };
+      }
+      if (error.code === "42501") {
+        return {
+          ok: false,
+          code: "forbidden",
+          message: "Prosjektet er slettet, eller du har ikke lenger skriverett i det.",
         };
       }
       console.error("[apply_changes]", error.code, error.message); // ingen hemmeligheter i feilen

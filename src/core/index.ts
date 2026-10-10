@@ -17,12 +17,14 @@ export {
   AUDIO_KINDS,
   AUDIO_MAX_MS,
   AUDIO_MIME_TYPES,
+  FILM_MIME_TYPES,
   audioClipFieldsOf,
   VISUAL_STYLES,
   type ApplyResult,
 } from "./commands/apply";
 export * from "./screenplay";
 export * from "./library";
+export * from "./library/zip";
 export * from "./notes";
 export * from "./composition";
 export * from "./assembly";

@@ -3,7 +3,7 @@
  * manuset. Dra et klipp for å flytte scenen (samme kommando som i manuset, REQ-0228), dra i høyre kant av en
  * 2D-scene for å endre lengden (REQ-0224). Å endre lengden sletter aldri manus (REQ-0230).
  */
-import { Clapperboard, Layers } from "lucide-react";
+import { Clapperboard, Film, Layers } from "lucide-react";
 import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   formatHeading,
@@ -427,13 +427,13 @@ const ClipBlock = memo(function ClipBlock({
         }
       }}
       aria-label={`Scene ${clip.productionNumber ?? index + 1}: ${heading}, ${formatSeconds(seconds)}${
-        placeholder ? ", uten 2D-scene" : ""
-      }`}
+        placeholder ? ", uten 2D-scene" : clip.source === "film" ? ", ferdig film" : ""
+      }${clip.transition.kind === "dissolve" ? ", overtoning inn" : clip.transition.kind === "dip" ? ", via svart inn" : ""}`}
       title={`${clip.productionNumber ?? ""} ${heading}\n${formatSeconds(seconds)}${
         clip.durationKind === "estimate" ? " (beregnet fra manus)" : ""
-      }${placeholder ? "\nIngen 2D-scene ennå – vises som tittelkort" : ""}\n${
-        movable ? "Dra for å flytte scenen. " : ""
-      }Dobbeltklikk for å åpne i sceneeditoren.`}
+      }${placeholder ? "\nIngen 2D-scene ennå – vises som tittelkort" : ""}${
+        clip.source === "film" ? `\nFerdig film: ${clip.take?.media?.fileName ?? ""}` : ""
+      }\n${movable ? "Dra for å flytte scenen. " : ""}Dobbeltklikk for å åpne i sceneeditoren.`}
       onPointerDown={onPointerDownBody}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
@@ -456,6 +456,24 @@ const ClipBlock = memo(function ClipBlock({
         (dragging ? "z-20 opacity-80 shadow-[var(--shadow-float)] " : "")
       }
     >
+      {clip.transition.kind !== "cut" ? (
+        <span
+          aria-hidden
+          title={
+            clip.transition.kind === "dissolve"
+              ? "Overtoning inn i scenen"
+              : "Via svart inn i scenen"
+          }
+          className="pointer-events-none absolute left-0 top-0 z-10 h-full"
+          style={{
+            width: Math.max(4, Math.min(w / 2, (clip.transition.frames / 2) * ppf)),
+            background:
+              clip.transition.kind === "dissolve"
+                ? "linear-gradient(90deg, color-mix(in oklab, var(--accent-brand) 45%, transparent), transparent)"
+                : "linear-gradient(90deg, rgba(0,0,0,0.85), transparent)",
+          }}
+        />
+      ) : null}
       {showThumb ? <Thumb state={state} clip={clip} tick={tick} /> : null}
       {showText ? (
         <div className="flex min-w-0 flex-1 flex-col justify-between px-1.5 py-1">
@@ -463,7 +481,9 @@ const ClipBlock = memo(function ClipBlock({
             <span className="shrink-0 font-mono text-[10px] text-text-tertiary">
               {clip.productionNumber ?? "–"}
             </span>
-            {placeholder ? (
+            {clip.source === "film" ? (
+              <Film className="size-3 shrink-0 text-accent-warm" aria-hidden />
+            ) : placeholder ? (
               <Clapperboard className="size-3 shrink-0 text-text-tertiary" aria-hidden />
             ) : (
               <Layers className="size-3 shrink-0 text-accent-brand" aria-hidden />
@@ -519,11 +539,18 @@ function Thumb({ state, clip, tick }: { state: ProjectState; clip: FilmClip; tic
     const dpr = window.devicePixelRatio || 1;
     c.width = Math.round(w * dpr);
     c.height = Math.round(h * dpr);
-    drawFilmFrame(ctx, state, [{ ...clip, startFrame: 0 }], 0, {
-      width: c.width,
-      height: c.height,
-      images: filmImageCache.images,
-    });
+    drawFilmFrame(
+      ctx,
+      state,
+      [{ ...clip, startFrame: 0, transition: { kind: "cut", frames: 0 } }],
+      0,
+      {
+        width: c.width,
+        height: c.height,
+        images: filmImageCache.images,
+        placeholders: clip.source === "film",
+      },
+    );
     // Tegnes på nytt når 2D-scenen, lagene eller bildene endres
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [comp, state.layers, tick, w, h]);
