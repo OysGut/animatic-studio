@@ -900,6 +900,8 @@ export type Database = {
         Row: {
           created_at: string
           created_by: string
+          deleted_at: string | null
+          deleted_by: string | null
           fps_den: number
           fps_num: number
           frame_height: number
@@ -912,6 +914,8 @@ export type Database = {
         Insert: {
           created_at?: string
           created_by: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           fps_den?: number
           fps_num?: number
           frame_height?: number
@@ -924,6 +928,8 @@ export type Database = {
         Update: {
           created_at?: string
           created_by?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           fps_den?: number
           fps_num?: number
           frame_height?: number
@@ -950,6 +956,8 @@ export type Database = {
           project_id: string
           revision: number
           scene_id: string
+          transition_frames: number
+          transition_kind: string
           variant_id: string
         }
         Insert: {
@@ -966,6 +974,8 @@ export type Database = {
           project_id: string
           revision?: number
           scene_id: string
+          transition_frames?: number
+          transition_kind?: string
           variant_id: string
         }
         Update: {
@@ -982,6 +992,8 @@ export type Database = {
           project_id?: string
           revision?: number
           scene_id?: string
+          transition_frames?: number
+          transition_kind?: string
           variant_id?: string
         }
         Relationships: [
@@ -1451,6 +1463,7 @@ export type Database = {
           id: string
           kind: string
           media_ref: string | null
+          metadata: Json
           occurrence_id: string
           produced_from: Json
           project_id: string
@@ -1465,6 +1478,7 @@ export type Database = {
           id: string
           kind: string
           media_ref?: string | null
+          metadata?: Json
           occurrence_id: string
           produced_from?: Json
           project_id: string
@@ -1479,6 +1493,7 @@ export type Database = {
           id?: string
           kind?: string
           media_ref?: string | null
+          metadata?: Json
           occurrence_id?: string
           produced_from?: Json
           project_id?: string
@@ -1543,6 +1558,15 @@ export type Database = {
           p_project: string
         }
         Returns: string
+      }
+      delete_project: {
+        Args: { p_actor: string; p_project: string }
+        Returns: Json
+      }
+      leave_project: { Args: { p_project: string }; Returns: undefined }
+      purge_project_assets: {
+        Args: { p_actor: string; p_project: string }
+        Returns: Json
       }
       register_imported_document: {
         Args: {
