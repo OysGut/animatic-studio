@@ -57,6 +57,13 @@
       "when": 1791557041035,
       "tag": "0007_0008_project_format",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791580844608,
+      "tag": "0008_0009_audio",
+      "breakpoints": true
     }
   ]
 }
