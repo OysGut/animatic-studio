@@ -36,3 +36,17 @@
   - avspillingen bruker videoelementer
   
   Krav: REQ-0003 (delvis), REQ-0097/0098, REQ-0219, REQ-0223, REQ-0232–0236, REQ-0238, REQ-0242, REQ-0317.
+
+## DEC-0048 – Montering del 4: klipping, presise tidskoblinger, lang film over flere scener
+- **Dato:** 2026-10-10 · **Type:** Bekreftet av bruker (Mars: «ok, kjør i gang med neste store ting!», etter anbefalt alternativ 1 «fullføre monteringen»)
+- **Beslutning:**
+  1. **Klippe i monteringen** (REQ-0220–0222): et klipp kan bestå av flere **deler**. Hver del har kilde (importert film eller animatic), inn- og utpunkt bildepresist (±1 bilde-knapper), og kan fjernes. **Splitt ved avspillingshodet** (tasten S). Trim i tidslinjen virker også for film og klippede scener. Kildemediet endres aldri; alt kan angres. «Hele klippet» fjerner kutt og splitting.
+  2. **Animatic-rest** (REQ-0239): en scene kan settes sammen av film og animatic, f.eks. ferdig film for første halvdel og animatic for resten.
+  3. **Presise tidskoblinger per replikk** (REQ-0093–0095, REQ-0107, REQ-0231): «Synk replikker» (tasten T) setter tiden for neste replikk der avspillingshodet står. Koblingene er relative til scenen og følger scenen når den flyttes. En kobling som ligger utenfor klippet (scenen er kuttet), markeres med bølget understrek.
+  4. **Importer lang film** (REQ-0003, REQ-0235–0237): én filmfil fordeles på flere scener etter starttider (forslag etter scenenes lengde; justeres ved å spole og trykke på nålen). Filen lastes opp én gang; hver scene får filmen som egen versjon med sin del. Et nytt forsøk etter feil fortsetter der det stoppet.
+  5. **Status for importert film** (REQ-0241): Godkjent / Utkast / Referanse / Avvist, kan endres og angres.
+- **Teknisk:**
+  - Migrasjon `0012_clip_parts_time_links.sql`: tabellene `clip_parts` og `time_links` (RLS: medlemmer leser, skriving bare via `apply_changes`), `apply_changes` med de nye tabellene og lås `for key share` på prosjektet (slettet prosjekt avvises), `delete_project`/`purge_project_assets` sletter også de nye tabellene, `schema_version` 12.
+  - Kommandoene `SetSceneEdit` (erstatter delene samlet, revisjonen økes alltid), `SetTakeStatus`, `AddTimeLinks`, `UpdateTimeLinks`, `SetTimeLinksRemoved`. Angre av opprettelse stoppes når deler eller koblinger viser til det som ville forsvunnet.
+  - Kjernen: `src/core/assembly/edit.ts`, `partAt`/`sourceAt`/`filmMediaPaths` i `film.ts`; lyd og eksport følger delene (én dekoder per fil).
+  - Opprydding: `.inputValidator` → `.validator` i serverfunksjonene.

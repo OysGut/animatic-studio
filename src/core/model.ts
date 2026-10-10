@@ -7,7 +7,9 @@ import type {
   AnnotationId,
   AssetId,
   AudioClipId,
+  ClipPartId,
   CompositionId,
+  TimeLinkId,
   LayerId,
   AssetVariantId,
   AssetVersionId,
@@ -444,6 +446,37 @@ export interface ProjectState {
   readonly compositions: Readonly<Record<string, Composition>>;
   readonly layers: Readonly<Record<string, CompositionLayer>>;
   readonly audioClips: Readonly<Record<string, AudioClip>>;
+  readonly clipParts: Readonly<Record<string, ClipPart>>;
+  readonly timeLinks: Readonly<Record<string, TimeLink>>;
+}
+
+/**
+ * En del av et klipp i filmen (DEC-0048, REQ-0220–0222, REQ-0239): et utsnitt [inMs, outMs) av en importert
+ * film (versjon) eller av scenens 2D-scene. Har forekomsten deler, er klippet delene etter hverandre
+ * (sortert på orderKey); ellers er klippet hele den aktive versjonen eller hele 2D-scenen. Kildemediet
+ * endres aldri (trimming og splitting endrer bare delene).
+ */
+export interface ClipPart extends Entity<ClipPartId> {
+  readonly occurrenceId: OccurrenceId;
+  readonly orderKey: string;
+  readonly source: "take" | "composition";
+  readonly takeId: TakeId | null;
+  readonly inMs: number;
+  readonly outMs: number;
+  readonly removed: boolean;
+}
+
+/**
+ * Tidskobling for en manusblokk (DEC-0048, REQ-0093–0095, REQ-0107): når replikken eller handlingen skjer
+ * i scenen, målt i ms fra scenens begynnelse (lokal tid, så den følger scenen når den flyttes). En blokk kan
+ * ha flere koblinger. endMs null = varer til neste blokk.
+ */
+export interface TimeLink extends Entity<TimeLinkId> {
+  readonly occurrenceId: OccurrenceId;
+  readonly blockId: BlockId;
+  readonly startMs: number;
+  readonly endMs: number | null;
+  readonly removed: boolean;
 }
 
 /** Tabellnavn i databasen for hver samling (brukes av patch/adapter). */
@@ -462,6 +495,8 @@ export const COLLECTION_TABLES = {
   compositions: "compositions",
   layers: "composition_layers",
   audioClips: "audio_clips",
+  clipParts: "clip_parts",
+  timeLinks: "time_links",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_TABLES;
@@ -484,6 +519,8 @@ export function emptyProjectState(project: Project): ProjectState {
     compositions: {},
     layers: {},
     audioClips: {},
+    clipParts: {},
+    timeLinks: {},
   };
 }
 

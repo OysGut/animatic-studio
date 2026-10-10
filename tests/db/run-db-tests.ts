@@ -97,6 +97,8 @@ async function loadState(projectId: string): Promise<ProjectState> {
     compositions: await q("compositions"),
     composition_layers: await q("composition_layers"),
     audio_clips: await q("audio_clips"),
+    clip_parts: await q("clip_parts"),
+    time_links: await q("time_links"),
   };
   return stateFromRows(rows);
 }
@@ -897,8 +899,8 @@ try {
   await test("0008: prosjektets format og bildefrekvens endres med revisjonskontroll, og 2D-scener tilpasses", async () => {
     let st = await loadState(projectId);
     const variant = Object.values(st.variants)[1]!;
-    const comp = "abcdef00-0000-7000-8000-0000000000d1";
-    const layer = "abcdef00-0000-7000-8000-0000000000d2";
+    const comp = "abcdef00-0000-7000-8000-00000000c0d1";
+    const layer = "abcdef00-0000-7000-8000-00000000c0d2";
     st = await runCommand(st, ALICE, {
       type: "CreateComposition",
       compositionId: comp as never,
@@ -967,7 +969,7 @@ try {
     let st = await loadState(projectId);
     const occ = Object.values(st.occurrences).find((o) => o.active)!;
     const block = Object.values(st.blocks).find((b) => b.variantId === occ.variantId)!;
-    const asset = "abcdef00-0000-7000-8000-0000000000e1";
+    const asset = "abcdef00-0000-7000-8000-00000000c0e1";
     const variant = "abcdef00-0000-7000-8000-0000000000e2";
     const version = "abcdef00-0000-7000-8000-0000000000e3";
     const clip = "abcdef00-0000-7000-8000-0000000000e4";
@@ -1294,6 +1296,72 @@ try {
     );
   });
 
+  await test("0012: deler av klipp, tidskoblinger og status lagres via apply_changes og leses tilbake", async () => {
+    let st = await loadState(projectId);
+    const takeId = "abcdef00-0000-7000-8000-0000000000c1";
+    const take = st.takes[takeId]!;
+    const occ = st.occurrences[take.occurrenceId]!;
+    const p1 = "abcdef00-0000-7000-8000-0000000d2201";
+    const p2 = "abcdef00-0000-7000-8000-0000000d2202";
+    st = await runCommand(st, ALICE, {
+      type: "SetSceneEdit",
+      occurrenceId: occ.id,
+      activeTakeId: takeId as never,
+      parts: [
+        { partId: p1 as never, source: "take", takeId: takeId as never, inMs: 500, outMs: 2500 },
+        { partId: p2 as never, source: "take", takeId: takeId as never, inMs: 4000, outMs: 6000 },
+      ],
+    });
+    const block = Object.values(st.blocks).find(
+      (b) => b.variantId === occ.variantId && !b.removed,
+    )!;
+    const link = "abcdef00-0000-7000-8000-0000000d2203";
+    st = await runCommand(st, ALICE, {
+      type: "AddTimeLinks",
+      links: [
+        {
+          linkId: link as never,
+          fields: { occurrenceId: occ.id, blockId: block.id, startMs: 1200, endMs: null },
+        },
+      ],
+    });
+    st = await runCommand(st, ALICE, {
+      type: "SetTakeStatus",
+      takeId: takeId as never,
+      status: "reference",
+    });
+    // Fjern den andre delen igjen (merkes fjernet, ingen sletting)
+    st = await runCommand(st, ALICE, {
+      type: "SetSceneEdit",
+      occurrenceId: occ.id,
+      activeTakeId: takeId as never,
+      parts: [
+        { partId: p1 as never, source: "take", takeId: takeId as never, inMs: 500, outMs: 2500 },
+      ],
+    });
+    const back = await loadState(projectId);
+    assert(
+      back.clipParts[p1]?.inMs === 500 && !back.clipParts[p1].removed,
+      "del 1 ble ikke lagret",
+    );
+    assert(back.clipParts[p2]?.removed === true, "del 2 skulle vært merket fjernet");
+    assert(back.timeLinks[link]?.startMs === 1200, "tidskoblingen ble ikke lagret");
+    assert(back.takes[takeId]?.status === "reference", "statusen ble ikke lagret");
+    await expectError(
+      sql`insert into public.clip_parts (id, project_id, occurrence_id, order_key, source, take_id, in_ms, out_ms) values (gen_random_uuid(), ${projectId}, ${occ.id}, 'a', 'take', null, 0, 10)`,
+      /check/,
+    );
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) =>
+          tx`insert into public.time_links (id, project_id, occurrence_id, block_id, start_ms) values (gen_random_uuid(), ${projectId}, ${occ.id}, ${block.id}, 0)`,
+      ),
+      /permission denied/,
+    );
+  });
+
   // ---------- 0011: forlate og slette prosjekt (DEC-0046). Kjøres sist: sletter testprosjektet ----------
   await test("0011: medlem kan forlate prosjektet; eneste eier kan ikke", async () => {
     const p2 = await as(
@@ -1414,7 +1482,7 @@ try {
         (tx) =>
           tx`select public.apply_changes(${projectId}, ${ALICE}, gen_random_uuid(), '{"type":"X"}'::jsonb, null, '{}'::jsonb)`,
       ),
-      /skriverett/,
+      /slettet|skriverett/,
     );
     await expectError(
       as("service_role", null, (tx) => tx`select public.delete_project(${projectId}, ${ALICE})`),

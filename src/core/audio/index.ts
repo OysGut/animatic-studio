@@ -195,46 +195,47 @@ export const FILM_AUDIO_MAX_BYTES = 400 * 1024 * 1024;
  */
 export function filmTakeAudio(clips: readonly FilmClip[], fps: Rational): FilmAudioItem[] {
   const out: FilmAudioItem[] = [];
-  for (const c of clips) {
-    const t = c.take;
-    if (!t || !t.mediaRef || t.media?.hasAudio === false) continue;
-    // Lyden dekodes ved å hente hele filen; store filer hoppes over (KI)
-    if ((t.media?.byteSize ?? 0) > FILM_AUDIO_MAX_BYTES) continue;
-    const length = framesToSeconds(c.durationFrames, fps);
-    const clip = {
-      id: t.id,
-      revision: t.revision,
-      occurrenceId: c.occurrenceId,
-      kind: "dialogue",
-      name: t.media?.fileName ?? "Filmlyd",
-      assetId: t.id,
-      assetVariantId: null,
-      versionId: null,
-      blockId: null,
-      offsetMs: 0,
-      sourceInMs: 0,
-      lengthMs: Math.round(length * 1000),
-      gainDb: 0,
-      fadeInMs: 0,
-      fadeOutMs: 0,
-      muted: false,
-      continues: false,
-      volumeKeys: [],
-      removed: false,
-    } as unknown as AudioClip;
-    const version = { mediaPath: t.mediaRef } as unknown as AssetVersion;
-    out.push({
-      clip,
-      version,
-      start: framesToSeconds(c.startFrame, fps),
-      length,
-      fullLength: length,
-      sourceIn: 0,
-      gain: 1,
-      fadeIn: 0,
-      fadeOut: 0,
-      keys: [],
-    });
-  }
+  for (const c of clips)
+    for (const part of c.parts) {
+      const t = part.take;
+      if (part.source !== "take" || !t || !t.mediaRef || t.media?.hasAudio === false) continue;
+      // Lyden dekodes ved å hente hele filen; store filer hoppes over (KI)
+      if ((t.media?.byteSize ?? 0) > FILM_AUDIO_MAX_BYTES) continue;
+      const length = framesToSeconds(part.durationFrames, fps);
+      const clip = {
+        id: part.id ?? t.id,
+        revision: t.revision,
+        occurrenceId: c.occurrenceId,
+        kind: "dialogue",
+        name: t.media?.fileName ?? "Filmlyd",
+        assetId: t.id,
+        assetVariantId: null,
+        versionId: null,
+        blockId: null,
+        offsetMs: 0,
+        sourceInMs: 0,
+        lengthMs: Math.round(length * 1000),
+        gainDb: 0,
+        fadeInMs: 0,
+        fadeOutMs: 0,
+        muted: false,
+        continues: false,
+        volumeKeys: [],
+        removed: false,
+      } as unknown as AudioClip;
+      const version = { mediaPath: t.mediaRef } as unknown as AssetVersion;
+      out.push({
+        clip,
+        version,
+        start: framesToSeconds(c.startFrame + part.startFrame, fps),
+        length,
+        fullLength: length,
+        sourceIn: part.inMs / 1000,
+        gain: 1,
+        fadeIn: 0,
+        fadeOut: 0,
+        keys: [],
+      });
+    }
   return out;
 }

@@ -10,6 +10,7 @@ import type {
   AssetVersionId,
   AudioClipId,
   BlockId,
+  ClipPartId,
   CommandId,
   CompositionId,
   LayerId,
@@ -18,6 +19,7 @@ import type {
   SceneId,
   SegmentId,
   TakeId,
+  TimeLinkId,
   UserId,
   VariantId,
 } from "../ids";
@@ -507,7 +509,49 @@ export type Command =
       readonly type: "SetAudioClipsRemoved";
       readonly clipIds: readonly AudioClipId[];
       readonly removed: boolean;
+    }
+  // ---------- Montering del 4 (DEC-0048) ----------
+  | {
+      /**
+       * Materialet i en scene: aktiv versjon og eventuelle deler (kutt, splitting, animatic-rest). Delene
+       * erstatter de forrige (som merkes fjernet). Tom liste = hele den aktive versjonen eller 2D-scenen.
+       */
+      readonly type: "SetSceneEdit";
+      readonly occurrenceId: OccurrenceId;
+      readonly activeTakeId: TakeId | null;
+      readonly parts: readonly ClipPartFields[];
+    }
+  | { readonly type: "SetTakeStatus"; readonly takeId: TakeId; readonly status: TakeStatus }
+  | {
+      readonly type: "AddTimeLinks";
+      readonly links: readonly { readonly linkId: TimeLinkId; readonly fields: TimeLinkFields }[];
+    }
+  | {
+      readonly type: "UpdateTimeLinks";
+      readonly links: readonly { readonly linkId: TimeLinkId; readonly fields: TimeLinkFields }[];
+    }
+  | {
+      readonly type: "SetTimeLinksRemoved";
+      readonly linkIds: readonly TimeLinkId[];
+      readonly removed: boolean;
     };
+
+/** En del av et klipp (DEC-0048). Rekkefølgen er rekkefølgen i lista. */
+export interface ClipPartFields {
+  readonly partId: ClipPartId;
+  readonly source: "take" | "composition";
+  readonly takeId: TakeId | null;
+  readonly inMs: number;
+  readonly outMs: number;
+}
+
+/** Tidskobling for en manusblokk (DEC-0048). */
+export interface TimeLinkFields {
+  readonly occurrenceId: OccurrenceId;
+  readonly blockId: BlockId;
+  readonly startMs: number;
+  readonly endMs: number | null;
+}
 
 export type CommandType = Command["type"];
 

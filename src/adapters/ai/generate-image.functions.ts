@@ -122,7 +122,7 @@ function gatewayError(status: number, body: string): string {
 
 export const generateImage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator(validate)
+  .validator(validate)
   .handler(async ({ data, context }): Promise<GenerateImageResult> => {
     const userDb = context.supabase as unknown as AnyClient;
     const { data: member } = await userDb

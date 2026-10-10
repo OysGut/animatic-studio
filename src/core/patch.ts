@@ -4,6 +4,8 @@
  * revisjon i mellomtiden (INV-C1). Radformatet (snake_case) er lagringsformatet i DATA_RELATIONSHIPS.md.
  */
 import type {
+  ClipPart,
+  TimeLink,
   TakeMedia,
   Transition,
   Annotation,
@@ -47,6 +49,8 @@ type AnyEntity =
   | ScriptBlock
   | SceneOccurrence
   | ProductionSegment
+  | ClipPart
+  | TimeLink
   | Take
   | Asset
   | AssetVariant
@@ -275,6 +279,30 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         removed: a.removed,
       };
     }
+    case "clipParts": {
+      const c = e as ClipPart;
+      return {
+        ...base,
+        occurrence_id: c.occurrenceId,
+        order_key: c.orderKey,
+        source: c.source,
+        take_id: c.takeId,
+        in_ms: c.inMs,
+        out_ms: c.outMs,
+        removed: c.removed,
+      };
+    }
+    case "timeLinks": {
+      const t = e as TimeLink;
+      return {
+        ...base,
+        occurrence_id: t.occurrenceId,
+        block_id: t.blockId,
+        start_ms: t.startMs,
+        end_ms: t.endMs,
+        removed: t.removed,
+      };
+    }
   }
 }
 
@@ -311,6 +339,8 @@ export const TABLE_ORDER: readonly string[] = [
   "compositions",
   "composition_layers",
   "audio_clips",
+  "clip_parts",
+  "time_links",
 ];
 
 export function diffStates(before: ProjectState, after: ProjectState): ChangeSet {
@@ -384,6 +414,9 @@ export interface ProjectRows {
   readonly composition_layers?: readonly Row[];
   /** Lyd i filmen (migrasjon 0009). Tomt hvis migrasjonen ikke er kjørt ennå. */
   readonly audio_clips?: readonly Row[];
+  /** Montering del 4 (migrasjon 0012). Tomt hvis migrasjonen ikke er kjørt ennå. */
+  readonly clip_parts?: readonly Row[];
+  readonly time_links?: readonly Row[];
 }
 
 const str = (v: unknown) => String(v);
@@ -671,6 +704,30 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         volumeKeys: ((json(x["volume_keys"]) as { t: number; db: number }[] | null) ?? []).map(
           (k) => ({ t: Number(k.t), db: Number(k.db) }),
         ),
+        removed: x["removed"] === true,
+      })),
+    ),
+    clipParts: byId(
+      (r.clip_parts ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        occurrenceId: str(x["occurrence_id"]) as never,
+        orderKey: str(x["order_key"]),
+        source: (x["source"] === "take" ? "take" : "composition") as ClipPart["source"],
+        takeId: optStr(x["take_id"]) as never,
+        inMs: num(x["in_ms"]),
+        outMs: num(x["out_ms"]),
+        removed: x["removed"] === true,
+      })),
+    ),
+    timeLinks: byId(
+      (r.time_links ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        occurrenceId: str(x["occurrence_id"]) as never,
+        blockId: str(x["block_id"]) as never,
+        startMs: num(x["start_ms"]),
+        endMs: optNum(x["end_ms"]),
         removed: x["removed"] === true,
       })),
     ),

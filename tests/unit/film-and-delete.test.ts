@@ -76,6 +76,19 @@ function clip(i: number, start: number, len: number, t: FilmClip["transition"]):
     durationKind: "estimate",
     take: null,
     transition: t,
+    parts: [
+      {
+        id: null,
+        source: "placeholder",
+        take: null,
+        startFrame: 0,
+        durationFrames: len,
+        inMs: 0,
+        outMs: len * 40,
+        inFrame: 0,
+      },
+    ],
+    edited: false,
   };
 }
 
@@ -142,9 +155,12 @@ describe("importert film og «Bruk denne»", () => {
     expect(items).toHaveLength(1);
     expect(items[0]!.start).toBe(0);
     expect(items[0]!.length).toBeCloseTo(7, 6);
-    const silent = clips.map((c) =>
-      c.take ? { ...c, take: { ...c.take, media: { ...MEDIA, hasAudio: false } } } : c,
-    );
+    const silent = clips.map((c) => ({
+      ...c,
+      parts: c.parts.map((p) =>
+        p.take ? { ...p, take: { ...p.take, media: { ...MEDIA, hasAudio: false } } } : p,
+      ),
+    }));
     expect(filmTakeAudio(silent, s.project.fps)).toHaveLength(0);
   });
 });

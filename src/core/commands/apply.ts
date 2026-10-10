@@ -16,7 +16,8 @@ import {
   normalizeCompositionFields,
   normalizeLayerFields,
 } from "../composition/fields";
-import { compareKeys, isValidOrderKey, keyBetween } from "../order-key";
+import { compareKeys, isValidOrderKey, keyBetween, keysEvenly } from "../order-key";
+import { compositionOfVariant } from "../composition/render";
 import {
   MAX_TRANSITION_FRAMES,
   PRIMARY_LANGUAGE,
@@ -26,8 +27,10 @@ import {
   type CompositionLayer,
   type ProjectState,
   type ScriptBlock,
+  type ClipPart,
   type Take,
   type TakeMedia,
+  type TimeLink,
   type Transition,
 } from "../model";
 import type {
@@ -35,8 +38,10 @@ import type {
   AssetFields,
   AudioClipFields,
   AssetVariantFields,
+  ClipPartFields,
   Command,
   CompositionFields,
+  TimeLinkFields,
   LayerFields,
   CommandEnvelope,
   CommandError,
@@ -97,6 +102,8 @@ function assertNewId(s: ProjectState, id: string) {
     s.compositions,
     s.layers,
     s.audioClips,
+    s.clipParts,
+    s.timeLinks,
   ];
   if (all.some((c) => c[id] !== undefined)) fail("duplicate_id", `ID ${id} er allerede i bruk`);
 }
@@ -306,6 +313,8 @@ export function revisionOf(s: ProjectState, id: string): number | undefined {
     s.compositions,
     s.layers,
     s.audioClips,
+    s.clipParts,
+    s.timeLinks,
   ]) {
     const e = c[id];
     if (e) return e.revision;
@@ -388,6 +397,49 @@ function sortedLayerKeys(s: ProjectState, compositionId: string, except?: string
 }
 
 const MAX_CAMERA_JSON = 64 * 1024;
+
+/** Flest deler i ett klipp (DEC-0048). */
+export const MAX_CLIP_PARTS = 200;
+
+function partFieldsOf(p: ClipPartFields): ClipPartFields {
+  if (!p || typeof p !== "object" || !isUuid(String(p.partId))) fail("invalid", "Ugyldig del");
+  if (p.source !== "take" && p.source !== "composition") fail("invalid", "Ugyldig kilde for delen");
+  if ((p.source === "take") !== (p.takeId !== null && p.takeId !== undefined))
+    fail("invalid", "Delen må ha versjon bare når kilden er film");
+  if (
+    !Number.isInteger(p.inMs) ||
+    !Number.isInteger(p.outMs) ||
+    p.inMs < 0 ||
+    p.outMs <= p.inMs ||
+    p.outMs > AUDIO_MAX_MS
+  )
+    fail("invalid", "Inn- og utpunkt må være hele millisekunder, og ut må være etter inn");
+  return {
+    partId: p.partId,
+    source: p.source,
+    takeId: p.source === "take" ? p.takeId : null,
+    inMs: p.inMs,
+    outMs: p.outMs,
+  };
+}
+
+function timeLinkFieldsOf(
+  s: ProjectState,
+  f: TimeLinkFields,
+): Omit<TimeLink, "id" | "revision" | "removed"> {
+  if (!f || typeof f !== "object") fail("invalid", "Ugyldig tidskobling");
+  const o = need(s.occurrences[f.occurrenceId], "Forekomsten");
+  const b = need(s.blocks[f.blockId], "Manusblokken");
+  if (b.variantId !== o.variantId) fail("invalid", "Blokken hører ikke til scenen");
+  if (!Number.isInteger(f.startMs) || f.startMs < 0 || f.startMs > AUDIO_MAX_MS)
+    fail("invalid", "Ugyldig tid for tidskoblingen");
+  if (
+    f.endMs !== null &&
+    (!Number.isInteger(f.endMs) || f.endMs <= f.startMs || f.endMs > AUDIO_MAX_MS)
+  )
+    fail("invalid", "Slutten på tidskoblingen må være etter starten");
+  return { occurrenceId: o.id, blockId: b.id, startMs: f.startMs, endMs: f.endMs };
+}
 
 /** Filmformater som kan importeres (DEC-0047). */
 export const FILM_MIME_TYPES: readonly string[] = ["video/mp4", "video/quicktime", "video/webm"];
@@ -1152,6 +1204,175 @@ function run(
         },
         inverse: { type: "SetTransition", occurrenceId: o.id, transition: prev },
         affected: [o.id],
+      };
+    }
+
+    case "SetSceneEdit": {
+      const o = need(s.occurrences[c.occurrenceId], "Forekomsten");
+      if (c.activeTakeId !== null) {
+        const t = need(s.takes[c.activeTakeId], "Versjonen");
+        if (s.occurrences[t.occurrenceId]?.sceneId !== o.sceneId)
+          fail("invalid", "Versjonen tilhører en annen scene");
+      }
+      if (!Array.isArray(c.parts) || c.parts.length > MAX_CLIP_PARTS)
+        fail("invalid", `For mange deler (maks ${MAX_CLIP_PARTS})`);
+      const comp = compositionOfVariant(s, o.variantId);
+      const fps = s.project.fps.num / s.project.fps.den;
+      const compMs =
+        comp && comp.durationFrames > 0
+          ? Math.round((comp.durationFrames / fps) * 1000)
+          : AUDIO_MAX_MS;
+      const seen = new Set<string>();
+      const keys = keysEvenly(Math.max(1, c.parts.length));
+      const next: Record<string, ClipPart> = { ...s.clipParts };
+      const affected: string[] = [o.id];
+      c.parts.forEach((p, i) => {
+        const f = partFieldsOf(p);
+        if (seen.has(f.partId)) fail("invalid", "Samme del to ganger");
+        seen.add(f.partId);
+        const prev = s.clipParts[f.partId];
+        const unchanged =
+          prev !== undefined &&
+          prev.source === f.source &&
+          prev.takeId === f.takeId &&
+          prev.inMs === f.inMs &&
+          prev.outMs === f.outMs;
+        if (unchanged) {
+          // Uendrede deler kontrolleres ikke mot kilden på nytt (2D-scenen kan ha blitt kortere)
+        } else if (f.source === "take") {
+          const t = need(s.takes[f.takeId!], "Versjonen");
+          if (s.occurrences[t.occurrenceId]?.sceneId !== o.sceneId)
+            fail("invalid", "Versjonen tilhører en annen scene");
+          if (t.kind !== "imported_film" || !t.mediaRef)
+            fail("invalid", "Bare importert film kan brukes som del");
+          const max = t.media?.durationMs ?? AUDIO_MAX_MS;
+          if (f.outMs > max) fail("invalid", "Utpunktet er etter slutten av filmen");
+        } else {
+          if (!comp) fail("invalid", "Scenen har ingen 2D-scene");
+          if (f.outMs > compMs) fail("invalid", "Utpunktet er etter slutten av 2D-scenen");
+        }
+        const old = s.clipParts[f.partId];
+        if (old && old.occurrenceId !== o.id) fail("invalid", "Delen tilhører en annen scene");
+        if (!old) assertNewId(s, f.partId);
+        const part: ClipPart = {
+          id: f.partId as never,
+          revision: old ? rev(old) : 1,
+          occurrenceId: o.id,
+          orderKey: keys[i]!,
+          source: f.source,
+          takeId: f.takeId as never,
+          inMs: f.inMs,
+          outMs: f.outMs,
+          removed: false,
+        };
+        if (
+          !old ||
+          old.removed ||
+          old.orderKey !== part.orderKey ||
+          old.source !== part.source ||
+          old.takeId !== part.takeId ||
+          old.inMs !== part.inMs ||
+          old.outMs !== part.outMs
+        ) {
+          next[part.id] = part;
+          affected.push(part.id);
+        }
+      });
+      const before = Object.values(s.clipParts)
+        .filter((p) => p.occurrenceId === o.id && !p.removed)
+        .sort((a, b) => compareKeys(a.orderKey, b.orderKey));
+      for (const p of before)
+        if (!seen.has(p.id)) {
+          next[p.id] = { ...p, removed: true, revision: rev(p) };
+          affected.push(p.id);
+        }
+      // Revisjonen økes alltid: to som klipper samme scene samtidig, får konflikt i stedet for at den
+      // enes deler forsvinner (INV-C1)
+      const occ = { ...o, activeTakeId: c.activeTakeId as TakeId | null, revision: rev(o) };
+      return {
+        state: { ...s, occurrences: { ...s.occurrences, [o.id]: occ }, clipParts: next },
+        inverse: {
+          type: "SetSceneEdit",
+          occurrenceId: o.id,
+          activeTakeId: o.activeTakeId,
+          parts: before.map((p) => ({
+            partId: p.id,
+            source: p.source,
+            takeId: p.takeId,
+            inMs: p.inMs,
+            outMs: p.outMs,
+          })),
+        },
+        affected,
+      };
+    }
+
+    case "SetTakeStatus": {
+      const t = need(s.takes[c.takeId], "Versjonen");
+      if (c.status !== "reference" && c.status !== "in_progress" && c.status !== "approved")
+        fail("invalid", "Ugyldig status");
+      return {
+        state: {
+          ...s,
+          takes: { ...s.takes, [t.id]: { ...t, status: c.status, revision: rev(t) } },
+        },
+        inverse: { type: "SetTakeStatus", takeId: t.id, status: t.status },
+        affected: [t.id],
+      };
+    }
+
+    case "AddTimeLinks": {
+      if (!Array.isArray(c.links) || c.links.length === 0 || c.links.length > 500)
+        fail("invalid", "Ugyldig antall tidskoblinger");
+      const next = { ...s.timeLinks };
+      for (const l of c.links) {
+        assertNewId(s, l.linkId);
+        if (next[l.linkId]) fail("invalid", "Samme tidskobling to ganger");
+        const f = timeLinkFieldsOf(s, l.fields);
+        next[l.linkId] = { id: l.linkId, revision: 1, ...f, removed: false };
+      }
+      const ids = c.links.map((l) => l.linkId);
+      return {
+        state: { ...s, timeLinks: next },
+        inverse: { type: "SetTimeLinksRemoved", linkIds: ids, removed: true },
+        affected: ids,
+      };
+    }
+
+    case "UpdateTimeLinks": {
+      const next = { ...s.timeLinks };
+      const old: { linkId: TimeLink["id"]; fields: TimeLinkFields }[] = [];
+      for (const l of c.links) {
+        const t = need(s.timeLinks[l.linkId], "Tidskoblingen");
+        const f = timeLinkFieldsOf(s, l.fields);
+        old.push({
+          linkId: t.id,
+          fields: {
+            occurrenceId: t.occurrenceId,
+            blockId: t.blockId,
+            startMs: t.startMs,
+            endMs: t.endMs,
+          },
+        });
+        next[t.id] = { ...t, ...f, revision: rev(t) };
+      }
+      return {
+        state: { ...s, timeLinks: next },
+        inverse: { type: "UpdateTimeLinks", links: old },
+        affected: c.links.map((l) => l.linkId),
+      };
+    }
+
+    case "SetTimeLinksRemoved": {
+      const next = { ...s.timeLinks };
+      for (const id of c.linkIds) {
+        const t = need(s.timeLinks[id], "Tidskoblingen");
+        next[id] = { ...t, removed: c.removed, revision: rev(t) };
+      }
+      return {
+        state: { ...s, timeLinks: next },
+        inverse: { type: "SetTimeLinksRemoved", linkIds: c.linkIds, removed: !c.removed },
+        affected: [...c.linkIds],
       };
     }
 
@@ -2659,6 +2880,30 @@ export function applyCommand(state: ProjectState, env: CommandEnvelope): ApplyRe
           "referenced",
           "Det ligger lyd på dette i filmen. Fjern lyden først hvis endringen skal angres.",
           lost.map((a) => a.id),
+        );
+    }
+    // Klippdeler og tidskoblinger som peker på noe som forsvinner (angre av opprettelse, DEC-0048).
+    // Også fjernede rader: de ligger fortsatt i databasen med fremmednøkkel.
+    if (
+      next.occurrences !== state.occurrences ||
+      next.blocks !== state.blocks ||
+      next.takes !== state.takes
+    ) {
+      const has = (o: object, id: string | null) =>
+        id === null || Object.prototype.hasOwnProperty.call(o, id);
+      const lost = [
+        ...Object.values(next.clipParts).filter(
+          (p) => !has(next.occurrences, p.occurrenceId) || !has(next.takes, p.takeId),
+        ),
+        ...Object.values(next.timeLinks).filter(
+          (l) => !has(next.occurrences, l.occurrenceId) || !has(next.blocks, l.blockId),
+        ),
+      ];
+      if (lost.length)
+        fail(
+          "referenced",
+          "Scenen er klippet eller har tidskoblinger i monteringen, så dette kan ikke angres.",
+          lost.map((x) => x.id),
         );
     }
     const violations = checkInvariants(next);

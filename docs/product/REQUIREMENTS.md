@@ -8,7 +8,7 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 - Antall krav: **571**
 - Prioritet: P0: 141, P1: 250, P2: 141, P3: 39
 - Opprinnelse: mandat: 520, brukerbeslutning: 44, teknisk-anbefaling: 7
-- Status: Ikke startet: 338, Under arbeid: 48, Verifisert: 172, Implementert – ikke verifisert: 13
+- Status: Ikke startet: 328, Verifisert: 182, Under arbeid: 48, Implementert – ikke verifisert: 13
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -55,12 +55,12 @@ Eksisterende filmmateriale skal kunne importeres og inngå i produksjonen.
 - **Kilde:** Kap. 1 (l. 24) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE, LIBRARY
 - **Avhengigheter:** REQ-0098; REQ-0100
-- **Status:** Under arbeid
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en videofil med ferdig film, når den importeres, så kan den plasseres på filmtidslinjen og knyttes til en scene/manuspassasje.
 - **Tester:**
   - import/eksport: import av videofil og plassering i montering
-- **Implementering:** src/app/assembly/film-import.ts
+- **Implementering:** src/app/assembly/film-import.ts, src/app/assembly/LongFilmImportDialog.tsx, src/core/assembly/edit.ts
 - **Merknad:** Jf. kap. 34 pkt. 15 (ferdig film skal kunne importeres og knyttes til manuspassasjer).
 
 #### REQ-0004 – Fungerer fullt uten generativ AI
@@ -1235,11 +1235,12 @@ Hver replikk og handlingsbeskrivelse skal kunne kobles til ett eller flere tidsi
 - **Kilde:** Kap. 6.1 (l. 281) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** SCRIPT, TIMELINE
 - **Avhengigheter:** REQ-0105
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan knytte en replikk til to adskilte intervaller, og begge vises.
 - **Tester:**
   - enhet: manusblokk ↔ intervaller (1:n)
+- **Implementering:** src/core/commands/apply.ts, src/core/assembly/film.ts, src/app/assembly/ClipPanel.tsx, db/migrations/0012_clip_parts_time_links.sql
 
 #### REQ-0094 – Tidskoblinger med permanente ID-er
 Koblinger mellom manusblokker og tidsintervaller skal lagres med permanente identifikatorer.
@@ -1247,11 +1248,12 @@ Koblinger mellom manusblokker og tidsintervaller skal lagres med permanente iden
 - **Kilde:** Kap. 6.1 (l. 282) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** CORE, TIMELINE · **Invarianter:** INV-02
 - **Avhengigheter:** REQ-0037
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Koblingen refererer til blokk-ID og klipp-/hendelses-ID, ikke posisjon eller tekst.
 - **Tester:**
   - dataintegritet: kobling overlever omnummerering og flytting
+- **Implementering:** src/core/model.ts, db/migrations/0012_clip_parts_time_links.sql
 
 #### REQ-0095 – Replikk-koblingstyper
 En replikk skal kunne knyttes til et dialogopptak, et bestemt tidspunkt, en hendelse i 2D-scenen og ett eller flere filmklipp.
@@ -1259,11 +1261,12 @@ En replikk skal kunne knyttes til et dialogopptak, et bestemt tidspunkt, en hend
 - **Kilde:** Kap. 6.1 (l. 283-287) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** SCRIPT, AUDIO, COMPOSE, TIMELINE
 - **Avhengigheter:** REQ-0093
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - For hver av de fire koblingstypene kan en replikk kobles og koblingen vises.
 - **Tester:**
   - integrasjon: koblingstyper per replikk
+- **Implementering:** src/app/assembly/ClipPanel.tsx
 
 #### REQ-0096 – Handling koblet til flere visuelle hendelser
 En handlingsbeskrivelse skal kunne knyttes til flere visuelle hendelser.
@@ -1409,11 +1412,12 @@ Når en scene flyttes, skal dens interne tidskoblinger bevares mens den samlede 
 - **Kilde:** Kap. 6.4 (l. 312) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE, CORE · **Invarianter:** INV-01, INV-03
 - **Avhengigheter:** REQ-0105
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en scene med koblinger, når den flyttes, så er lokale tider uendret og absolutte tider oppdatert.
 - **Tester:**
   - integrasjon: flytt scene → lokale vs. absolutte tider
+- **Implementering:** src/core/assembly/film.ts
 
 ### Kapittel 7
 
@@ -2886,11 +2890,12 @@ Brukeren skal kunne trimme klipp i filmtidslinjen.
 - **Kilde:** Kap. 15.1 (l. 624) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE
 - **Avhengigheter:** REQ-0216
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan forkorte et klipp i start eller slutt uten at kildemediet endres.
 - **Tester:**
   - e2e: trimme klipp i filmtidslinjen
+- **Implementering:** src/core/assembly/edit.ts, src/app/assembly/ClipParts.tsx, src/app/assembly/FilmTimeline.tsx
 
 #### REQ-0221 – Splitte klipp
 Brukeren skal kunne splitte klipp i filmtidslinjen.
@@ -2898,11 +2903,12 @@ Brukeren skal kunne splitte klipp i filmtidslinjen.
 - **Kilde:** Kap. 15.1 (l. 625) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE
 - **Avhengigheter:** REQ-0216
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan dele et klipp i to på avspillingshodet; begge deler refererer samme kildemedie.
 - **Tester:**
   - e2e: splitte klipp i filmtidslinjen
+- **Implementering:** src/core/assembly/edit.ts, src/app/assembly/AssemblyWorkspace.tsx
 
 #### REQ-0222 – Justere inn- og utpunkter
 Brukeren skal kunne justere inn- og utpunkter for klipp.
@@ -2910,11 +2916,12 @@ Brukeren skal kunne justere inn- og utpunkter for klipp.
 - **Kilde:** Kap. 15.1 (l. 626) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE
 - **Avhengigheter:** REQ-0216
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan sette inn- og utpunkt bildepresist i forhold til prosjektets bildefrekvens.
 - **Tester:**
   - e2e: justere inn- og utpunkter i filmtidslinjen
+- **Implementering:** src/app/assembly/ClipParts.tsx
 
 #### REQ-0223 – Arbeide med overganger
 Brukeren skal kunne arbeide med overganger mellom klipp i filmtidslinjen.
@@ -3031,11 +3038,12 @@ Hvis en redigering gjør at en manuspassasje ikke lenger dekkes av aktiv film, s
 - **Kilde:** Kap. 15.2 (l. 640) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE, VERSION, SCRIPT
 - **Avhengigheter:** REQ-0230; Manusblokker med tidskoblinger (kap. 6.1)
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en replikk koblet til et klipp, når klippet trimmes slik at replikken faller utenfor, så markeres replikken som avvik «ikke dekket av aktiv film».
 - **Tester:**
   - integrasjon: dekningsberegning mellom manusblokker og aktive klipp
+- **Implementering:** src/core/assembly/film.ts, src/app/assembly/ClipPanel.tsx
 - **Merknad:** Kan alternativt høre til fase 6 (avviksdeteksjon).
 
 #### REQ-0232 – Valg av aktivt produksjonsresultat
@@ -3115,11 +3123,12 @@ Brukeren skal kunne angi nøyaktig hvilken del av manuset et importert klipp dek
 - **Kilde:** Kap. 16.1 (l. 656) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE, SCRIPT
 - **Avhengigheter:** REQ-0236
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Brukeren kan markere start- og sluttpunkt i manuset (manusblokk) som klippet dekker, og markeringen lagres.
 - **Tester:**
   - e2e: marker manusdekning for importert klipp
+- **Implementering:** src/app/assembly/LongFilmImportDialog.tsx
 
 #### REQ-0238 – Hente mediemetadata
 Programmet skal kunne hente relevante metadata fra importert film, for eksempel varighet, oppløsning, bildefrekvens, lydspor og andre relevante tekniske egenskaper.
@@ -3140,12 +3149,12 @@ Hvis bare en del av en scene er ferdig produsert, skal den ferdige delen kunne b
 - **Kilde:** Kap. 16.3 (l. 664-665) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE
 - **Avhengigheter:** REQ-0236; REQ-0214
-- **Status:** Under arbeid
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en scene der første halvdel er importert film, så kan andre halvdel dekkes av 2D-animatic, og avspilling går sømløst mellom dem.
 - **Tester:**
   - e2e: avspilling av delvis ferdig scene
-- **Implementering:** src/engine/compositor/film.ts
+- **Implementering:** src/engine/compositor/film.ts, src/core/assembly/film.ts, src/engine/compositor/film.ts, src/engine/export/film-video.ts
 
 #### REQ-0240 – Montering fungerer ved ufullstendig produksjon
 Den samlede filmmonteringen skal fungere også når produksjonen er ufullstendig.
@@ -3167,11 +3176,12 @@ Importert film skal kunne få status som referanse, under arbeid, godkjent eller
 - **Kilde:** Kap. 16.4 (l. 667-672) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** VERSION, LIBRARY
 - **Avhengigheter:** REQ-0235; REQ-0232
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan sette hver av statusene referanse, under arbeid, godkjent og aktiv filmversjon på et importert klipp, og statusen vises og lagres.
 - **Tester:**
   - enhet: statusoverganger
+- **Implementering:** src/core/commands/apply.ts, src/app/assembly/ClipPanel.tsx
 - **Merknad:** Forhold mellom status «aktiv filmversjon» og valg av aktiv variant (15.3) er uavklart.
 
 #### REQ-0242 – Import bevarer kildemateriale

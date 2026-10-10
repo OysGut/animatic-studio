@@ -8,9 +8,10 @@
  * ufullstendig (REQ-0240). Tidskoder beregnes alltid på nytt og lagres aldri (ADR-0006).
  */
 import type { CompositionId, OccurrenceId, SceneId, VariantId } from "../ids";
-import type { Composition, ProjectState, SceneHeading, Take, Transition } from "../model";
+import type { ClipPart, Composition, ProjectState, SceneHeading, Take, Transition } from "../model";
+import { compareKeys } from "../order-key";
 import { estimateProduction } from "../screenplay/duration";
-import { msToFramesCeil, secondsToFrames } from "../time";
+import { framesToSeconds, msToFramesCeil, secondsToFrames, type Rational } from "../time";
 import { sceneAudioEndMs } from "../audio";
 import { activeStructure, blocksOfVariant } from "../views";
 
@@ -37,6 +38,65 @@ export interface FilmClip {
   readonly take: Take | null;
   /** Overgangen inn i klippet (kutt når den ikke er satt). */
   readonly transition: Transition;
+  /** Delene klippet består av, etter hverandre (minst én). */
+  readonly parts: readonly ResolvedPart[];
+  /** Klippet er satt sammen av lagrede deler (kuttet eller splittet, DEC-0048). */
+  readonly edited: boolean;
+}
+
+/**
+ * En del av et klipp med plassering (DEC-0048): importert film fra `inMs`, 2D-scenen fra bilde
+ * `inFrame`, eller tittelkort. `startFrame` er bildet i scenen der delen begynner.
+ */
+export interface ResolvedPart {
+  /** Den lagrede delens id, eller null for et klipp uten deler. */
+  readonly id: string | null;
+  readonly source: "take" | "composition" | "placeholder";
+  readonly take: Take | null;
+  readonly startFrame: number;
+  readonly durationFrames: number;
+  readonly inMs: number;
+  readonly outMs: number;
+  readonly inFrame: number;
+}
+
+/** Delen på et bilde i scenen og bildet inne i delen. */
+export function partAt(
+  clip: FilmClip,
+  localFrame: number,
+): { readonly part: ResolvedPart; readonly offset: number } {
+  const parts = clip.parts;
+  let p = parts[0]!;
+  for (const x of parts) if (x.startFrame <= localFrame) p = x;
+  return {
+    part: p,
+    offset: Math.max(0, Math.min(p.durationFrames - 1, localFrame - p.startFrame)),
+  };
+}
+
+/** Hva som vises på et bilde i scenen: tid i en filmfil, bilde i 2D-scenen eller tittelkort. */
+export type SourceFrame =
+  | { readonly kind: "take"; readonly take: Take; readonly seconds: number }
+  | { readonly kind: "composition"; readonly frame: number }
+  | { readonly kind: "placeholder" };
+
+export function sourceAt(clip: FilmClip, localFrame: number, fps: Rational): SourceFrame {
+  const { part, offset } = partAt(clip, localFrame);
+  if (part.source === "take" && part.take)
+    return {
+      kind: "take",
+      take: part.take,
+      seconds: part.inMs / 1000 + framesToSeconds(offset, fps),
+    };
+  if (part.source === "composition") return { kind: "composition", frame: part.inFrame + offset };
+  return { kind: "placeholder" };
+}
+
+/** Lagrede deler i en forekomst, i rekkefølge. */
+export function partsOf(s: ProjectState, occurrenceId: string): ClipPart[] {
+  return Object.values(s.clipParts)
+    .filter((p) => p.occurrenceId === occurrenceId && !p.removed)
+    .sort((a, b) => compareKeys(a.orderKey, b.orderKey));
 }
 
 const CUT: Transition = { kind: "cut", frames: 0 };
@@ -91,19 +151,66 @@ export function filmClips(s: ProjectState, productionId: string): FilmClip[] {
       msToFramesCeil(audioEnd.get(o.id) ?? 0, s.project.fps),
     );
     const set = c !== null && c.durationFrames > 0;
-    const take = activeFilmTake(s, o.activeTakeId);
-    const durationFrames = take ? take.durationFrames! : set ? c.durationFrames : estimate;
+    const fps = s.project.fps;
+    const stored = partsOf(s, o.id);
+    let parts: ResolvedPart[];
+    let take: Take | null;
+    if (stored.length > 0) {
+      // Klippet er kuttet eller splittet: delene etter hverandre
+      let at = 0;
+      parts = stored.map((p) => {
+        const t = p.source === "take" && p.takeId ? (s.takes[p.takeId] ?? null) : null;
+        const frames = Math.max(1, Math.round(((p.outMs - p.inMs) / 1000) * (fps.num / fps.den)));
+        const r: ResolvedPart = {
+          id: p.id,
+          source:
+            p.source === "take" ? (t ? "take" : "placeholder") : c ? "composition" : "placeholder",
+          take: t,
+          startFrame: at,
+          durationFrames: frames,
+          inMs: p.inMs,
+          outMs: p.outMs,
+          inFrame: Math.round((p.inMs / 1000) * (fps.num / fps.den)),
+        };
+        at += frames;
+        return r;
+      });
+      take = parts.find((p) => p.take)?.take ?? null;
+    } else {
+      take = activeFilmTake(s, o.activeTakeId);
+      const frames = take ? take.durationFrames! : set ? c.durationFrames : estimate;
+      parts = [
+        {
+          id: null,
+          source: take ? "take" : c ? "composition" : "placeholder",
+          take,
+          startFrame: 0,
+          durationFrames: frames,
+          inMs: 0,
+          // Aldri etter slutten av filen (lengden i bilder er avrundet)
+          outMs: Math.min(
+            Math.round(framesToSeconds(frames, fps) * 1000),
+            take?.media?.durationMs ?? Number.MAX_SAFE_INTEGER,
+          ),
+          inFrame: 0,
+        },
+      ];
+    }
+    const edited = stored.length > 0;
+    const durationFrames = parts.reduce((t, p) => t + p.durationFrames, 0);
     const clip: FilmClip = {
       occurrenceId: o.id,
       sceneId: o.sceneId,
       variantId: o.variantId,
       compositionId: c?.id ?? null,
       source: take ? "film" : c ? "composition" : "placeholder",
+      parts,
+      edited,
       heading: s.variants[o.variantId]?.heading ?? { intExt: "", location: "", time: "" },
       productionNumber: o.productionNumber,
       startFrame: cursor,
       durationFrames,
-      durationKind: take ? "film" : set ? "set" : "estimate",
+      durationKind: take ? "film" : edited || set ? "set" : "estimate",
       take,
       transition: o.transition ?? CUT,
     };
@@ -242,8 +349,13 @@ export interface BlockSpan {
   readonly blockId: string;
   readonly startFrame: number;
   readonly endFrame: number;
-  /** «linked»: fra et lydklipp koblet til replikken. «estimate»: beregnet fra teksten. */
-  readonly kind: "linked" | "estimate";
+  /**
+   * «time»: tidskobling satt av brukeren (DEC-0048). «linked»: fra et lydklipp koblet til replikken.
+   * «estimate»: beregnet fra teksten.
+   */
+  readonly kind: "time" | "linked" | "estimate";
+  /** Tidskoblingen ligger etter slutten av klippet (klippet er kuttet): ikke dekket av filmen (REQ-0231). */
+  readonly uncovered?: boolean;
 }
 
 const SPOKEN_WORDS_PER_SECOND = 150 / 60;
@@ -280,6 +392,18 @@ export function blockSpans(s: ProjectState, clip: FilmClip): BlockSpan[] {
     if (!prev || st < prev.start)
       linked.set(a.blockId, { start: st, end: st + Math.max(1, msToFramesCeil(a.lengthMs, fps)) });
   }
+  // Tidskoblinger satt av brukeren går foran alt annet (tidligste kobling per blokk)
+  const timed = new Map<string, { start: number; end: number | null }>();
+  for (const l of Object.values(s.timeLinks)) {
+    if (l.removed || l.occurrenceId !== clip.occurrenceId) continue;
+    const st = clip.startFrame + Math.round((l.startMs / 1000) * (fps.num / fps.den));
+    const en =
+      l.endMs === null
+        ? null
+        : clip.startFrame + Math.round((l.endMs / 1000) * (fps.num / fps.den));
+    const prev = timed.get(l.blockId);
+    if (!prev || st < prev.start) timed.set(l.blockId, { start: st, end: en });
+  }
   const out: BlockSpan[] = [];
   let cursor = clip.startFrame + 2 * scale;
   for (let i = 0; i < blocks.length; i++) {
@@ -296,8 +420,19 @@ export function blockSpans(s: ProjectState, clip: FilmClip): BlockSpan[] {
         w = weights[blocks.indexOf(next)] ?? 0;
       }
     }
+    const time = timed.get(b.id) ?? (owner !== b ? timed.get(owner.id) : undefined);
     const link = linked.get(owner.id);
-    if (link) {
+    if (time) {
+      const est = Math.max(1, Math.round(w * scale));
+      const en = time.end ?? time.start + est;
+      out.push({
+        blockId: b.id,
+        startFrame: clamp(time.start),
+        endFrame: clamp(Math.max(time.start + 1, en)),
+        kind: "time",
+        ...(time.start >= end ? { uncovered: true } : {}),
+      });
+    } else if (link) {
       out.push({
         blockId: b.id,
         startFrame: clamp(link.start),
@@ -327,4 +462,12 @@ export function blockAtFrame(spans: readonly BlockSpan[], frame: number): BlockS
     }
   }
   return hit;
+}
+
+/** Filmfilene (mediestier) klippene bruker. */
+export function filmMediaPaths(clips: readonly FilmClip[]): string[] {
+  const out = new Set<string>();
+  for (const c of clips)
+    for (const p of c.parts) if (p.source === "take" && p.take?.mediaRef) out.add(p.take.mediaRef);
+  return [...out];
 }

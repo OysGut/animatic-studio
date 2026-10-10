@@ -1,10 +1,11 @@
-AI-bilder: riktig modell for frilagte figurer, nye forsøk ved feil 400 (KI-71, DEC-0045)
+Montering del 4: klipping, tidskoblinger per replikk, lang film over flere scener (DEC-0048, REQ-0220–0222, REQ-0093/0094/0107/0231, REQ-0239, REQ-0241, REQ-0003)
 
-Ingen databaseendring. Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push.
+Databaseendring: migrasjon 0012. Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push.
 
-- Årsaken til «feil 400» (fra loggen): GPT Image 2 kan ikke lage gjennomsiktig bakgrunn.
-  Figurer, dyr og objekter (frilagte lag) lages nå med GPT Image 2.5 Sunburst, som kan det.
-  Bakgrunner og steder lages fortsatt med GPT Image 2.
-- Avviser AI-tjenesten forespørselen (feil 400), prøves den igjen med færre valg. Alle forsøk logges.
-- Feilmeldingen viser tjenestens egen forklaring, ikke bare «feil 400».
-- Forbildet sendes med riktig filtype (PNG, JPEG eller WebP).
+- Klipp kan deles opp: splitt ved avspillingshodet (tasten S), trim, inn- og utpunkt med ett bilde fram/tilbake, fjern del, «Hele klippet» tilbakestiller. Kildefilen endres aldri.
+- En scene kan settes sammen av ferdig film og animatic (animatic-rest).
+- «Synk replikker» (tasten T): sett tiden for hver replikk mens filmen spilles. Tidene følger scenen når den flyttes; replikker som havner utenfor klippet markeres.
+- «Importer lang film»: én filmfil fordeles på flere scener etter starttider.
+- Status for importert film (godkjent, utkast, referanse, avvist).
+- Eksport og lyd følger delene. Rettelser etter kodegjennomgang (låsing, angre, revisjon).
+- Opprydding: .inputValidator → .validator i serverfunksjonene.

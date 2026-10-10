@@ -26,6 +26,9 @@ export type AnnotationId = Id<"annotation">;
 export type CompositionId = Id<"composition">;
 export type LayerId = Id<"composition_layer">;
 export type AudioClipId = Id<"audio_clip">;
+/** Montering del 4 (DEC-0048): deler av et klipp og tidskoblinger for manusblokker. */
+export type ClipPartId = Id<"clip_part">;
+export type TimeLinkId = Id<"time_link">;
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 

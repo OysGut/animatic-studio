@@ -18,6 +18,7 @@ export {
   AUDIO_MAX_MS,
   AUDIO_MIME_TYPES,
   FILM_MIME_TYPES,
+  MAX_CLIP_PARTS,
   audioClipFieldsOf,
   VISUAL_STYLES,
   type ApplyResult,

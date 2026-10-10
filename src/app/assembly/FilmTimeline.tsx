@@ -261,7 +261,7 @@ export function FilmTimeline(p: FilmTimelineProps) {
                       ? drag.x - drag.px
                       : 0
                   }
-                  trimmable={p.editable && c.source === "composition"}
+                  trimmable={p.editable && c.source !== "placeholder"}
                   movable={p.editable}
                   tick={p.tick}
                   onPointerDownBody={(e) => {
@@ -432,6 +432,10 @@ const ClipBlock = memo(function ClipBlock({
       title={`${clip.productionNumber ?? ""} ${heading}\n${formatSeconds(seconds)}${
         clip.durationKind === "estimate" ? " (beregnet fra manus)" : ""
       }${placeholder ? "\nIngen 2D-scene ennå – vises som tittelkort" : ""}${
+        clip.edited
+          ? `\nKlippet: ${clip.parts.length} ${clip.parts.length === 1 ? "del" : "deler"}`
+          : ""
+      }${
         clip.source === "film" ? `\nFerdig film: ${clip.take?.media?.fileName ?? ""}` : ""
       }\n${movable ? "Dra for å flytte scenen. " : ""}Dobbeltklikk for å åpne i sceneeditoren.`}
       onPointerDown={onPointerDownBody}
@@ -475,6 +479,15 @@ const ClipBlock = memo(function ClipBlock({
         />
       ) : null}
       {showThumb ? <Thumb state={state} clip={clip} tick={tick} /> : null}
+      {clip.parts.slice(1).map((part) => (
+        <span
+          key={part.id ?? part.startFrame}
+          aria-hidden
+          title="Splitt"
+          className="pointer-events-none absolute top-0 z-10 h-full w-px bg-accent-warm/80"
+          style={{ left: part.startFrame * ppf }}
+        />
+      ))}
       {showText ? (
         <div className="flex min-w-0 flex-1 flex-col justify-between px-1.5 py-1">
           <div className="flex min-w-0 items-center gap-1">

@@ -7,6 +7,7 @@
 import { AlertTriangle, CheckCircle2, Download, Info } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  filmMediaPaths,
   filmRange,
   formatHeading,
   formatTimecode,
@@ -47,7 +48,7 @@ async function freshFilmUrls(
   clips: readonly FilmClip[],
   fallback: Readonly<Record<string, string>> | null,
 ): Promise<Record<string, string>> {
-  const paths = [...new Set(clips.flatMap((c) => (c.take?.mediaRef ? [c.take.mediaRef] : [])))];
+  const paths = filmMediaPaths(clips);
   if (paths.length === 0) return {};
   try {
     return await signedUrls(paths, 4 * 60 * 60);
@@ -170,7 +171,7 @@ export function ExportAnimaticDialog({
     const films = sel.clips.filter((c) => c.source === "film");
     if (films.length > 0)
       out.push({
-        level: films.some((c) => c.take?.mediaRef && !filmUrls?.[c.take.mediaRef]) ? "warn" : "ok",
+        level: filmMediaPaths(films).some((p) => !filmUrls?.[p]) ? "warn" : "ok",
         text: `${films.length} ${films.length === 1 ? "scene bruker" : "scener bruker"} importert film.`,
       });
     const estimated = sel.clips.filter((c) => c.durationKind === "estimate").length;
@@ -182,7 +183,7 @@ export function ExportAnimaticDialog({
     const need = new Set<string>();
     let missingVersions = 0;
     for (const c of sel.clips) {
-      if (!c.compositionId || c.source === "film") continue;
+      if (!c.compositionId || !c.parts.some((p) => p.source === "composition")) continue;
       for (const l of layersOf(state, c.compositionId)) {
         if (!l.visible) continue;
         const v = layerVersion(state, l);

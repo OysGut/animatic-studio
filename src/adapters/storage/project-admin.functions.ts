@@ -135,7 +135,7 @@ function dbMessage(e: { message?: string } | null): string {
 
 export const deleteProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator(validate)
+  .validator(validate)
   .handler(async ({ data, context }): Promise<ProjectAdminResult> => {
     const ctx = await ownerContext(
       context.supabase as unknown as AnyClient,
@@ -168,7 +168,7 @@ export const deleteProject = createServerFn({ method: "POST" })
 
 export const purgeProjectAssets = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator(validate)
+  .validator(validate)
   .handler(async ({ data, context }): Promise<ProjectAdminResult> => {
     const ctx = await ownerContext(
       context.supabase as unknown as AnyClient,

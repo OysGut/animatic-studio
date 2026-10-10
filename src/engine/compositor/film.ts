@@ -7,8 +7,8 @@
 import {
   formatHeading,
   frameMix,
-  framesToSeconds,
   renderFrame,
+  sourceAt,
   type ClipFrame,
   type FilmClip,
   type ProjectState,
@@ -87,17 +87,16 @@ export function drawFilmFrame(
   return m.b && m.mix >= 0.5 ? m.b.clip : m.a.clip;
 }
 
-/** Ett klipp på et bilde i scenen: importert film, 2D-scenen eller tittelkort. */
+/** Ett klipp på et bilde i scenen: delen som vises (importert film, 2D-scenen eller tittelkort). */
 function drawClipFrame(
   ctx: CanvasRenderingContext2D,
   state: ProjectState,
   at: ClipFrame,
   o: FilmDrawOptions,
 ): void {
-  const take = at.clip.take;
-  if (take) {
-    const img =
-      o.video?.(take, framesToSeconds(at.localFrame, state.project.fps), at.held ?? false) ?? null;
+  const src = sourceAt(at.clip, at.localFrame, state.project.fps);
+  if (src.kind === "take") {
+    const img = o.video?.(src.take, src.seconds, at.held ?? false) ?? null;
     if (img && img.width > 0 && img.height > 0) {
       const k = Math.min(o.width / img.width, o.height / img.height);
       const w = img.width * k;
@@ -107,17 +106,17 @@ function drawClipFrame(
       ctx.drawImage(img, (o.width - w) / 2, (o.height - h) / 2, w, h);
       ctx.restore();
     } else if (o.placeholders ?? false) {
-      drawTitleCard(ctx, at.clip, o.width, o.height, take.media?.fileName ?? "Ferdig film");
+      drawTitleCard(ctx, at.clip, o.width, o.height, src.take.media?.fileName ?? "Ferdig film");
     }
     return;
   }
   const c = at.clip.compositionId ? state.compositions[at.clip.compositionId] : undefined;
-  if (c) {
+  if (src.kind === "composition" && c) {
     // Scenen i formatet sitt, sentrert (skulle en 2D-scene ha et annet format, får den svarte kanter)
     const k = Math.min(o.width / c.width, o.height / c.height);
     const ox = (o.width - c.width * k) / 2;
     const oy = (o.height - c.height * k) / 2;
-    const out = renderFrame(state, c.id, at.localFrame, { view: "camera" });
+    const out = renderFrame(state, c.id, src.frame, { view: "camera" });
     ctx.save();
     ctx.beginPath();
     ctx.rect(ox, oy, c.width * k, c.height * k);

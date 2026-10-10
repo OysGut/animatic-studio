@@ -104,10 +104,14 @@ requirements:
     en scene/manuspassasje.
   tests:
   - 'import/eksport: import av videofil og plassering i montering'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/app/assembly/film-import.ts"
-  verification: []
+  - "src/app/assembly/LongFilmImportDialog.tsx"
+  - "src/core/assembly/edit.ts"
+  verification:
+  - "tests/unit/clip-edit.test.ts::foreslår delinger etter scenenes lengde og kontrollerer starttidene"
+  - "tests/visual/screens.mjs::65-lang-film"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -115,6 +119,9 @@ requirements:
   - date: '2026-10-10'
     decision: DEC-0047
     change: "Ferdig film per scene kan importeres; import av lengre film med deling på scener gjenstår"
+  - date: '2026-10-10'
+    decision: DEC-0048
+    change: "Ferdig film importeres per scene eller som én lang film fordelt på flere scener"
   notes: Jf. kap. 34 pkt. 15 (ferdig film skal kunne importeres og knyttes til manuspassasjer).
 - id: REQ-0004
   title: Fungerer fullt uten generativ AI
@@ -3232,13 +3239,23 @@ requirements:
   - Brukeren kan knytte en replikk til to adskilte intervaller, og begge vises.
   tests:
   - 'enhet: manusblokk ↔ intervaller (1:n)'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/commands/apply.ts"
+  - "src/core/assembly/film.ts"
+  - "src/app/assembly/ClipPanel.tsx"
+  - "db/migrations/0012_clip_parts_time_links.sql"
+  verification:
+  - "tests/unit/clip-edit.test.ts::styrer når replikken skjer, følger scenen når den flyttes, og flagges når klippet er kuttet bort"
+  - "tests/db/run-db-tests.ts::0012"
+  - "tests/visual/screens.mjs::64-synk-replikker"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0048
+    change: "Manusblokker kobles til tidsintervall i scenen (Synk replikker, tasten T)"
   notes: ''
 - id: REQ-0094
   title: Tidskoblinger med permanente ID-er
@@ -3261,13 +3278,19 @@ requirements:
   - Koblingen refererer til blokk-ID og klipp-/hendelses-ID, ikke posisjon eller tekst.
   tests:
   - 'dataintegritet: kobling overlever omnummerering og flytting'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/model.ts"
+  - "db/migrations/0012_clip_parts_time_links.sql"
+  verification:
+  - "tests/db/run-db-tests.ts::0012"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0048
+    change: "Tidskoblinger har permanente ID-er og viser til blokk- og forekomst-ID, aldri scenenummer"
   notes: ''
 - id: REQ-0095
   title: Replikk-koblingstyper
@@ -3292,13 +3315,18 @@ requirements:
   - For hver av de fire koblingstypene kan en replikk kobles og koblingen vises.
   tests:
   - 'integrasjon: koblingstyper per replikk'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Under arbeid
+  implementation:
+  - "src/app/assembly/ClipPanel.tsx"
+  verification:
+  - "tests/visual/screens.mjs::64-synk-replikker"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0048
+    change: "Replikk kan kobles til tidspunkt og dialogopptak; kobling til hendelse i 2D-scenen og til flere filmklipp kommer senere"
   notes: ''
 - id: REQ-0096
   title: Handling koblet til flere visuelle hendelser
@@ -3671,13 +3699,18 @@ requirements:
   - Gitt en scene med koblinger, når den flyttes, så er lokale tider uendret og absolutte tider oppdatert.
   tests:
   - 'integrasjon: flytt scene → lokale vs. absolutte tider'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/assembly/film.ts"
+  verification:
+  - "tests/unit/clip-edit.test.ts::styrer når replikken skjer, følger scenen når den flyttes, og flagges når klippet er kuttet bort"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0048
+    change: "Tidskoblinger er relative til scenen og følger den når den flyttes"
   notes: ''
 - id: REQ-0108
   title: Estimering av spilletid etter import
@@ -7554,13 +7587,21 @@ requirements:
   - Brukeren kan forkorte et klipp i start eller slutt uten at kildemediet endres.
   tests:
   - 'e2e: trimme klipp i filmtidslinjen'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/assembly/edit.ts"
+  - "src/app/assembly/ClipParts.tsx"
+  - "src/app/assembly/FilmTimeline.tsx"
+  verification:
+  - "tests/unit/clip-edit.test.ts::kutt og fjerning endrer lengden; angre gir delene tilbake"
+  - "tests/visual/screens.mjs::63-klipp-deler"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0048
+    change: "Trimme klipp (film, animatic og klippede scener) i tidslinjen og panelet"
   notes: ''
 - id: REQ-0221
   title: Splitte klipp
@@ -7581,13 +7622,20 @@ requirements:
   - Brukeren kan dele et klipp i to på avspillingshodet; begge deler refererer samme kildemedie.
   tests:
   - 'e2e: splitte klipp i filmtidslinjen'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/assembly/edit.ts"
+  - "src/app/assembly/AssemblyWorkspace.tsx"
+  verification:
+  - "tests/unit/clip-edit.test.ts::splitter et filmklipp på avspillingshodet; begge deler bruker samme fil"
+  - "tests/visual/screens.mjs::63-klipp-deler"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0048
+    change: "Splitte klipp ved avspillingshodet (tasten S)"
   notes: ''
 - id: REQ-0222
   title: Justere inn- og utpunkter
@@ -7608,13 +7656,19 @@ requirements:
   - Brukeren kan sette inn- og utpunkt bildepresist i forhold til prosjektets bildefrekvens.
   tests:
   - 'e2e: justere inn- og utpunkter i filmtidslinjen'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/ClipParts.tsx"
+  verification:
+  - "tests/unit/clip-edit.test.ts::delene kontrolleres mot kilden"
+  - "tests/visual/screens.mjs::63-klipp-deler"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0048
+    change: "Inn- og utpunkt bildepresist med ±1 bilde"
   notes: ''
 - id: REQ-0223
   title: Arbeide med overganger
@@ -7919,13 +7973,19 @@ requirements:
     som avvik «ikke dekket av aktiv film».
   tests:
   - 'integrasjon: dekningsberegning mellom manusblokker og aktive klipp'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/assembly/film.ts"
+  - "src/app/assembly/ClipPanel.tsx"
+  verification:
+  - "tests/unit/clip-edit.test.ts::styrer når replikken skjer, følger scenen når den flyttes, og flagges når klippet er kuttet bort"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0048
+    change: "Replikk med tidskobling utenfor klippet markeres som ikke dekket"
   notes: Kan alternativt høre til fase 6 (avviksdeteksjon).
 - id: REQ-0232
   title: Valg av aktivt produksjonsresultat
@@ -8129,13 +8189,18 @@ requirements:
   - Brukeren kan markere start- og sluttpunkt i manuset (manusblokk) som klippet dekker, og markeringen lagres.
   tests:
   - 'e2e: marker manusdekning for importert klipp'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Under arbeid
+  implementation:
+  - "src/app/assembly/LongFilmImportDialog.tsx"
+  verification:
+  - "tests/visual/screens.mjs::65-lang-film"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0048
+    change: "Lang film fordeles på scener med presise starttider, og replikker kan tidsfestes; markering av start- og sluttblokk i manuset kommer senere"
   notes: ''
 - id: REQ-0238
   title: Hente mediemetadata
@@ -8195,10 +8260,14 @@ requirements:
     går sømløst mellom dem.
   tests:
   - 'e2e: avspilling av delvis ferdig scene'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/engine/compositor/film.ts"
-  verification: []
+  - "src/core/assembly/film.ts"
+  - "src/engine/compositor/film.ts"
+  - "src/engine/export/film-video.ts"
+  verification:
+  - "tests/unit/clip-edit.test.ts::film og animatic kan settes sammen (animatic-rest), og lyden følger filmdelen"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -8206,6 +8275,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0043
     change: "Scener uten 2D-scene vises som tittelkort; delvis importert film kommer i del 2"
+  - date: '2026-10-10'
+    decision: DEC-0048
+    change: "Scene settes sammen av film og animatic (animatic-rest)"
   notes: ''
 - id: REQ-0240
   title: Montering fungerer ved ufullstendig produksjon
@@ -8264,13 +8336,20 @@ requirements:
     klipp, og statusen vises og lagres.
   tests:
   - 'enhet: statusoverganger'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/commands/apply.ts"
+  - "src/app/assembly/ClipPanel.tsx"
+  verification:
+  - "tests/unit/clip-edit.test.ts::status for importert film kan endres og angres"
+  - "tests/db/run-db-tests.ts::0012"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0048
+    change: "Status for importert film (godkjent, utkast, referanse, avvist), kan angres"
   notes: Forhold mellom status «aktiv filmversjon» og valg av aktiv variant (15.3) er uavklart.
 - id: REQ-0242
   title: Import bevarer kildemateriale

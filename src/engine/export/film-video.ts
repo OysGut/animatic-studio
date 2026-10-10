@@ -2,7 +2,7 @@
  * Bilder fra importert film til eksporten (DEC-0047): filene leses med mediabunny (WebCodecs) og dekodes i
  * rekkefølge, så hvert bilde bare dekodes én gang. Bare på klienten.
  */
-import { frameMix, framesToSeconds, type FilmClip, type ProjectState, type Take } from "@/core";
+import { frameMix, sourceAt, type FilmClip, type ProjectState, type Take } from "@/core";
 import type { ImageSource } from "../compositor/canvas";
 
 type Mb = typeof import("mediabunny");
@@ -18,7 +18,8 @@ class TakeReader {
   ) {}
 
   async at(t: number): Promise<Wrapped | null> {
-    if (!this.it || t < this.last) {
+    // Bakover, eller et langt hopp fram (ny del lenger ut i filen): start lesingen på nytt der
+    if (!this.it || t < this.last || t > this.last + 2) {
       await this.it?.return();
       this.it = this.sink.canvases(t);
       this.current = (await this.it.next()).value ?? null;
@@ -40,6 +41,7 @@ class TakeReader {
 export class FilmVideoFrames {
   private readonly readers = new Map<string, TakeReader | null>();
   private readonly frame = new Map<string, ImageSource>();
+  private readonly slots: (OffscreenCanvas | undefined)[] = [];
   private readonly inputs: { dispose?: () => void }[] = [];
   constructor(
     private readonly mb: Mb,
@@ -48,7 +50,9 @@ export class FilmVideoFrames {
   ) {}
 
   private async reader(take: Take): Promise<TakeReader | null> {
-    if (this.readers.has(take.id)) return this.readers.get(take.id)!;
+    // Én leser per fil: flere versjoner kan dele samme fil (lang film fordelt på scener)
+    const key = take.mediaRef ?? take.id;
+    if (this.readers.has(key)) return this.readers.get(key)!;
     let r: TakeReader | null = null;
     const url = take.mediaRef ? this.urls[take.mediaRef] : undefined;
     if (url) {
@@ -67,7 +71,7 @@ export class FilmVideoFrames {
         r = null;
       }
     }
-    this.readers.set(take.id, r);
+    this.readers.set(key, r);
     return r;
   }
 
@@ -77,11 +81,21 @@ export class FilmVideoFrames {
     const m = frameMix(clips, frame);
     if (!m) return;
     for (const cf of [m.a, m.b]) {
-      const take = cf?.clip.take;
-      if (!cf || !take) continue;
-      const r = await this.reader(take);
-      const w = await r?.at(framesToSeconds(cf.localFrame, state.project.fps));
-      if (w) this.frame.set(take.id, w.canvas as unknown as ImageSource);
+      if (!cf) continue;
+      const src = sourceAt(cf.clip, cf.localFrame, state.project.fps);
+      if (src.kind !== "take") continue;
+      const r = await this.reader(src.take);
+      const w = await r?.at(src.seconds);
+      if (w) {
+        // Kopier bildet: to klipp fra samme fil (overgang) deler leser og bildebuffer
+        const slot = (this.slots[cf === m.a ? 0 : 1] ??= new OffscreenCanvas(1, 1));
+        if (slot.width !== w.canvas.width) slot.width = w.canvas.width;
+        if (slot.height !== w.canvas.height) slot.height = w.canvas.height;
+        const g = slot.getContext("2d");
+        g?.clearRect(0, 0, slot.width, slot.height);
+        g?.drawImage(w.canvas as CanvasImageSource, 0, 0);
+        this.frame.set(src.take.id, slot as unknown as ImageSource);
+      }
     }
   }
 

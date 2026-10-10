@@ -130,7 +130,7 @@ async function mock(page, { projects = [project], schema = true }) {
     const table = path.replace("/rest/v1/", "");
     if (table === "schema_version")
       return schema
-        ? json([{ version: 11 }])
+        ? json([{ version: 12 }])
         : json({ message: "relation does not exist", code: "42P01" }, 404);
     if (table === "projects") {
       if (single) return json(projects[0] ?? null);
@@ -845,6 +845,37 @@ await shot("62-bibliotek-zip", `/prosjekt/${project.id}/bibliotek`, {
     await page.waitForTimeout(800);
   },
 });
+// DEC-0048: klipp i deler, synk replikker, lang film
+await shot("63-klipp-deler", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    await page.getByRole("button", { name: /^Scene 7: .*ferdig film/ }).click();
+    await page.waitForTimeout(600);
+    await page.getByRole("region", { name: "Klipp" }).scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
+  },
+});
+await shot("64-synk-replikker", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    await page.getByRole("button", { name: "Synk replikker" }).click();
+    await page.waitForTimeout(400);
+    await page.getByRole("region", { name: "Manus for scenen" }).scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
+  },
+});
+if (process.env.TEST_FILM) {
+  await shot("65-lang-film", montering, {
+    act: async (page) => {
+      await page.waitForTimeout(1200);
+      await page.getByRole("button", { name: "Importer lang film" }).click();
+      await page.waitForTimeout(400);
+      await page.getByLabel("Velg lang filmfil").setInputFiles(process.env.TEST_FILM);
+      await page.getByRole("button", { name: /Importer og fordel/ }).waitFor({ timeout: 20000 });
+      await page.waitForTimeout(1200);
+    },
+  });
+}
 await shot("18-oversikt-varighet", `/prosjekt/${project.id}`, {
   act: async (page) => {
     await page.getByRole("button", { name: "Per scene" }).click();

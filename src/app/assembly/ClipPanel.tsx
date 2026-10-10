@@ -13,6 +13,7 @@ import {
   Layers,
   Loader2,
   Plus,
+  Timer,
   Upload,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -33,11 +34,15 @@ import {
   type ProjectState,
   type ScriptBlock,
   type Take,
+  type TakeStatus,
+  type TimeLink,
+  type ClipPartFields,
   type Transition,
   type TransitionKind,
 } from "@/core";
 import { Button } from "@/components/ui/button";
 import { formatSeconds } from "./FilmTimeline";
+import { ClipParts } from "./ClipParts";
 
 const label = "text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary";
 
@@ -58,6 +63,15 @@ export function ClipPanel({
   onUseTake,
   onImportFilm,
   onTransition,
+  onTakeStatus,
+  maxMsOf,
+  onEditParts,
+  onResetParts,
+  onSplit,
+  sync,
+  onSync,
+  onLink,
+  onRemoveLink,
 }: {
   state: ProjectState;
   projectId: string;
@@ -80,6 +94,19 @@ export function ClipPanel({
   /** Importer en filmfil til scenen. Returnerer feilmelding eller null. */
   onImportFilm: (file: File) => Promise<string | null>;
   onTransition: (t: Transition) => void;
+  /** Status for en importert film (REQ-0241). */
+  onTakeStatus: (takeId: string, status: TakeStatus) => void;
+  /** Lengste utpunkt (ms) for en kilde (film eller 2D-scenen). */
+  maxMsOf: (takeId: string | null) => number;
+  onEditParts: (parts: ClipPartFields[], label: string) => void;
+  onResetParts: () => void;
+  onSplit: () => void;
+  /** «Synk replikker»: blokken som står for tur (tasten T), eller null. */
+  sync: { readonly occurrenceId: string; readonly blockId: string } | null;
+  onSync: (blockId: string | null) => void;
+  /** Koble blokken til avspillingshodet («replace»: flytt koblingen, «add»: nytt tidsrom). */
+  onLink: (blockId: string, mode: "replace" | "add") => void;
+  onRemoveLink: (linkId: string) => void;
 }) {
   const fps = state.project.fps;
   const [draft, setDraft] = useState<string | null>(null);
@@ -93,7 +120,7 @@ export function ClipPanel({
     );
   const seconds = Math.round(framesToSeconds(clip.durationFrames, fps) * 100) / 100;
   const placeholder = clip.source === "placeholder";
-  const film = clip.source === "film";
+  const film = clip.source === "film" || clip.edited;
   const comp = clip.compositionId ? state.compositions[clip.compositionId] : undefined;
 
   function commit() {
@@ -127,7 +154,7 @@ export function ClipPanel({
         <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 text-xs">
           <dt className="text-text-tertiary">Materiale</dt>
           <dd className="flex items-center gap-1.5 text-text-primary">
-            {film ? (
+            {clip.source === "film" ? (
               <span className="flex min-w-0 items-center gap-1.5">
                 <Film className="size-3.5 shrink-0 text-accent-warm" aria-hidden />
                 <span className="truncate" title={clip.take?.media?.fileName}>
@@ -153,7 +180,9 @@ export function ClipPanel({
             {film ? (
               <span className="text-text-secondary">
                 {formatSeconds(seconds)}{" "}
-                <span className="text-text-tertiary">(filmens lengde)</span>
+                <span className="text-text-tertiary">
+                  ({clip.edited ? "summen av delene" : "filmens lengde"})
+                </span>
               </span>
             ) : placeholder ? (
               <span className="italic text-text-secondary">
@@ -247,6 +276,17 @@ export function ClipPanel({
         editable={editable}
         onUseTake={onUseTake}
         onImportFilm={onImportFilm}
+        onTakeStatus={onTakeStatus}
+      />
+      <ClipParts
+        state={state}
+        clip={clip}
+        films={scenesFilms(state, clip)}
+        editable={editable}
+        maxMsOf={maxMsOf}
+        onEdit={onEditParts}
+        onReset={onResetParts}
+        onSplit={onSplit}
       />
       <TransitionRow
         key={clip.occurrenceId}
@@ -259,6 +299,31 @@ export function ClipPanel({
       <section aria-label="Manus for scenen" className="flex min-h-[280px] flex-1 flex-col">
         <div className="flex items-center gap-2 px-3 pb-1 pt-2">
           <h2 className={label}>Manus</h2>
+          {editable ? (
+            <button
+              type="button"
+              aria-pressed={sync !== null && sync.occurrenceId === clip.occurrenceId}
+              onClick={() => {
+                if (sync && sync.occurrenceId === clip.occurrenceId) onSync(null);
+                else {
+                  const first = blocksOfVariant(state, clip.variantId).find(
+                    (b) => b.kind === "dialogue" || b.kind === "action" || b.kind === "shot",
+                  );
+                  if (first) onSync(first.id);
+                }
+              }}
+              className={
+                "flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-[11px] " +
+                (sync && sync.occurrenceId === clip.occurrenceId
+                  ? "bg-accent-warm/20 text-text-primary ring-1 ring-accent-warm"
+                  : "text-text-secondary hover:bg-surface-3 hover:text-text-primary")
+              }
+              title="Synk replikker: spill av, og trykk T hver gang replikken eller handlingen som står for tur, begynner. Klikk på en blokk for å begynne der."
+            >
+              <Timer className="size-3" aria-hidden />
+              {sync && sync.occurrenceId === clip.occurrenceId ? "Synker (T)" : "Synk replikker"}
+            </button>
+          ) : null}
           <label
             className="ml-auto flex items-center gap-1.5 text-xs text-text-secondary"
             title="Manuset viser scenen under avspillingshodet"
@@ -272,7 +337,18 @@ export function ClipPanel({
             Følg avspillingen
           </label>
         </div>
-        <SceneText state={state} clip={clip} frame={frame} follow={follow} onSeek={onSeek} />
+        <SceneText
+          state={state}
+          clip={clip}
+          frame={frame}
+          follow={follow}
+          onSeek={onSeek}
+          editable={editable}
+          syncBlockId={sync && sync.occurrenceId === clip.occurrenceId ? sync.blockId : null}
+          onSync={onSync}
+          onLink={onLink}
+          onRemoveLink={onRemoveLink}
+        />
       </section>
     </div>
   );
@@ -285,13 +361,33 @@ function SceneText({
   frame,
   follow,
   onSeek,
+  editable,
+  syncBlockId,
+  onSync,
+  onLink,
+  onRemoveLink,
 }: {
   state: ProjectState;
   clip: FilmClip;
   frame: number;
   follow: boolean;
   onSeek: (frame: number) => void;
+  editable: boolean;
+  syncBlockId: string | null;
+  onSync: (blockId: string | null) => void;
+  onLink: (blockId: string, mode: "replace" | "add") => void;
+  onRemoveLink: (linkId: string) => void;
 }) {
+  const links = useMemo(() => {
+    const m = new Map<string, TimeLink[]>();
+    for (const l of Object.values(state.timeLinks))
+      if (!l.removed && l.occurrenceId === clip.occurrenceId)
+        m.set(
+          l.blockId,
+          [...(m.get(l.blockId) ?? []), l].sort((a, b) => a.startMs - b.startMs),
+        );
+    return m;
+  }, [state.timeLinks, clip.occurrenceId]);
   const blocks = blocksOfVariant(state, clip.variantId);
   const spans = useMemo(() => blockSpans(state, clip), [state, clip]);
   const spanOf = useMemo(() => new Map(spans.map((x) => [x.blockId, x])), [spans]);
@@ -336,7 +432,21 @@ function SceneText({
               span={sp}
               active={on}
               fps={state.project.fps.num / state.project.fps.den}
-              onSeek={onSeek}
+              onSeek={(f) => {
+                // I synkmodus velger klikket også hvor synkingen fortsetter
+                if (
+                  syncBlockId &&
+                  (b.kind === "dialogue" || b.kind === "action" || b.kind === "shot")
+                )
+                  onSync(b.id);
+                onSeek(f);
+              }}
+              clipStart={clip.startFrame}
+              links={links.get(b.id) ?? []}
+              linkable={editable && b.kind !== "character" && b.kind !== "parenthetical"}
+              syncing={syncBlockId === b.id}
+              onLink={(mode) => onLink(b.id, mode)}
+              onRemoveLink={onRemoveLink}
             />
           );
         })
@@ -351,12 +461,24 @@ function Block({
   active,
   fps,
   onSeek,
+  clipStart,
+  links,
+  linkable,
+  syncing,
+  onLink,
+  onRemoveLink,
 }: {
   b: ScriptBlock;
   span: BlockSpan | undefined;
   active: boolean;
   fps: number;
   onSeek: (frame: number) => void;
+  clipStart: number;
+  links: readonly TimeLink[];
+  linkable: boolean;
+  syncing: boolean;
+  onLink: (mode: "replace" | "add") => void;
+  onRemoveLink: (linkId: string) => void;
 }) {
   if (b.kind === "heading") return null;
   const cls =
@@ -373,30 +495,114 @@ function Block({
               : "mt-2 whitespace-pre-wrap";
   const text = b.kind === "note" ? `[${b.text}]` : b.text;
   if (!span) return <p className={cls}>{text}</p>;
-  const at = `${(Math.floor((span.startFrame / fps) * 10) / 10).toLocaleString("nb-NO")} s`;
+  const sec = (f: number) => `${(Math.floor((f / fps) * 10) / 10).toLocaleString("nb-NO")} s`;
+  const how =
+    span.kind === "time" ? "satt tid" : span.kind === "linked" ? "fra lydklippet" : "beregnet";
   return (
-    <p
-      data-block={b.id}
-      role="button"
-      tabIndex={0}
-      onClick={() => onSeek(span.startFrame)}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onSeek(span.startFrame);
+    <div className={"group relative " + (syncing ? "rounded-sm ring-1 ring-accent-warm" : "")}>
+      <p
+        data-block={b.id}
+        role="button"
+        tabIndex={0}
+        onClick={() => onSeek(span.startFrame)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onSeek(span.startFrame);
+          }
+        }}
+        title={`Gå hit i filmen (${sec(span.startFrame)}, ${how})${
+          span.uncovered
+            ? "\nTidskoblingen ligger etter slutten av klippet – ikke dekket av filmen"
+            : ""
+        }`}
+        aria-current={active ? "true" : undefined}
+        className={
+          cls +
+          " -mx-1 cursor-pointer rounded-sm px-1 outline-none hover:bg-surface-3 focus-visible:ring-2 focus-visible:ring-ring" +
+          (active ? " bg-accent-selection" : "") +
+          (span.uncovered ? " underline decoration-status-danger decoration-wavy" : "")
         }
-      }}
-      title={`Gå hit i filmen (${at}${span.kind === "linked" ? ", fra lydklippet" : ", beregnet"})`}
-      aria-current={active ? "true" : undefined}
-      className={
-        cls +
-        " -mx-1 cursor-pointer rounded-sm px-1 outline-none hover:bg-surface-3 focus-visible:ring-2 focus-visible:ring-ring" +
-        (active ? " bg-accent-selection" : "")
-      }
-    >
-      {text}
-    </p>
+      >
+        {text}
+      </p>
+      {links.length > 0 || linkable ? (
+        <div className="-mt-0.5 flex flex-wrap items-center justify-end gap-1 font-sans text-[10px]">
+          {syncing ? (
+            <span className="rounded-sm bg-accent-warm/20 px-1 text-text-primary">neste: T</span>
+          ) : null}
+          {links.map((l) => (
+            <span
+              key={l.id}
+              className={
+                "flex items-center gap-0.5 rounded-sm px-1 " +
+                (span.uncovered
+                  ? "bg-status-danger-bg text-status-danger"
+                  : "bg-surface-3 text-text-secondary")
+              }
+              title="Tidskobling (tid fra scenens begynnelse)"
+            >
+              <button
+                type="button"
+                onClick={() => onSeek(clipStart + Math.round((l.startMs / 1000) * fps))}
+                className="hover:text-text-primary"
+              >
+                ⏱ {(Math.round(l.startMs / 100) / 10).toLocaleString("nb-NO")} s
+              </button>
+              {linkable ? (
+                <button
+                  type="button"
+                  onClick={() => onRemoveLink(l.id)}
+                  aria-label="Fjern tidskobling"
+                  className="px-0.5 hover:text-status-danger"
+                >
+                  ×
+                </button>
+              ) : null}
+            </span>
+          ))}
+          {linkable ? (
+            <span className="hidden items-center gap-1 group-focus-within:flex group-hover:flex">
+              <button
+                type="button"
+                onClick={() => onLink("replace")}
+                className="rounded-sm px-1 text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
+                title={
+                  links.length
+                    ? "Flytt tidskoblingen til avspillingshodet"
+                    : "Koble blokken til avspillingshodet"
+                }
+              >
+                ⏱ {links.length ? "Flytt hit" : "Sett tid her"}
+              </button>
+              {links.length ? (
+                <button
+                  type="button"
+                  onClick={() => onLink("add")}
+                  className="rounded-sm px-1 text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
+                  title="Legg til et tidsrom til (en replikk kan høres flere ganger)"
+                >
+                  + tid
+                </button>
+              ) : null}
+            </span>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
   );
+}
+
+/** Importerte filmer for scenen. */
+function scenesFilms(state: ProjectState, clip: FilmClip): Take[] {
+  return Object.values(state.takes)
+    .filter(
+      (t) =>
+        t.kind === "imported_film" &&
+        t.mediaRef !== null &&
+        state.occurrences[t.occurrenceId]?.sceneId === clip.sceneId,
+    )
+    .sort((a, b) => a.id.localeCompare(b.id));
 }
 
 /** Versjonene av scenen: animatic (2D-scene/tittelkort) og importert film. «Bruk denne» velger (REQ-0233). */
@@ -406,12 +612,14 @@ function Versions({
   editable,
   onUseTake,
   onImportFilm,
+  onTakeStatus,
 }: {
   state: ProjectState;
   clip: FilmClip;
   editable: boolean;
   onUseTake: (takeId: string | null) => void;
   onImportFilm: (file: File) => Promise<string | null>;
+  onTakeStatus: (takeId: string, status: TakeStatus) => void;
 }) {
   const fps = state.project.fps;
   const films = useMemo(
@@ -426,7 +634,9 @@ function Versions({
         .sort((a, b) => a.id.localeCompare(b.id)),
     [state.takes, state.occurrences, clip.sceneId],
   );
-  const activeId = clip.take?.id ?? null;
+  const activeId = clip.edited
+    ? "__deler__"
+    : (state.occurrences[clip.occurrenceId]?.activeTakeId ?? null);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -468,6 +678,12 @@ function Versions({
       className="flex flex-col gap-1.5 border-b border-border p-3"
     >
       <h2 className={label}>Versjoner av scenen</h2>
+      {clip.edited ? (
+        <p className="text-[11px] text-text-tertiary">
+          Scenen er klippet sammen av deler (se «Klipp»). «Bruk denne» starter på nytt med hele
+          versjonen.
+        </p>
+      ) : null}
       <div className={row(activeId === null)}>
         {clip.compositionId ? (
           <Layers className="size-3.5 shrink-0 text-accent-brand" aria-hidden />
@@ -481,6 +697,18 @@ function Versions({
       </div>
       {films.map((t) => (
         <FilmRow key={t.id} take={t} fps={fps.num / fps.den} className={row(activeId === t.id)}>
+          <select
+            aria-label={`Status for ${t.media?.fileName ?? "filmen"}`}
+            value={t.status}
+            disabled={!editable}
+            onChange={(e) => onTakeStatus(t.id, e.target.value as TakeStatus)}
+            className="h-5 shrink-0 rounded-sm border border-border-control bg-surface-3 px-0.5 text-[10px] text-text-secondary disabled:opacity-50"
+            title="Status for filmen"
+          >
+            <option value="reference">Referanse</option>
+            <option value="in_progress">Under arbeid</option>
+            <option value="approved">Godkjent</option>
+          </select>
           {use(activeId === t.id, t.id, t.media?.fileName ?? "filmen")}
         </FilmRow>
       ))}

@@ -127,7 +127,7 @@ export async function exportAnimatic(o: AnimaticExportOptions): Promise<Animatic
     }
   };
 
-  const hasFilm = o.clips.some((c) => c.take !== null);
+  const hasFilm = o.clips.some((c) => c.parts.some((p) => p.source === "take"));
   const video = hasFilm ? new FilmVideoFrames(mb, o.filmUrls ?? {}) : null;
   try {
     await output.start();

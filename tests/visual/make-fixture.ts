@@ -538,6 +538,29 @@ s = mustApply(s, {
     occurrenceId: occs[2]!.id,
     transition: { kind: "dip", frames: 20 },
   });
+  // Montering del 4 (DEC-0048): filmen i scene 2 er kuttet og splittet, og en replikk i scene 1 har tid
+  s = mustApply(s, {
+    type: "SetSceneEdit",
+    occurrenceId: occs[1]!.id,
+    activeTakeId: takeId,
+    parts: [
+      { partId: tid(), source: "take", takeId, inMs: 0, outMs: 4000 },
+      { partId: tid(), source: "take", takeId, inMs: 6000, outMs: 11000 },
+    ],
+  });
+  const dlg1 = Object.values(s.blocks).find(
+    (b) => b.variantId === occs[0]!.variantId && b.kind === "dialogue",
+  );
+  if (dlg1)
+    s = mustApply(s, {
+      type: "AddTimeLinks",
+      links: [
+        {
+          linkId: tid(),
+          fields: { occurrenceId: occs[0]!.id, blockId: dlg1.id, startMs: 1200, endMs: null },
+        },
+      ],
+    });
 }
 
 const cs = diffStates(emptyProjectState(s.project), s);

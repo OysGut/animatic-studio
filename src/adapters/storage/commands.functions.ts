@@ -121,6 +121,15 @@ function needsAudioFlowSchema(command: { type: string } & Record<string, unknown
 }
 
 /** Lydfiler i biblioteket krever også migrasjon 0009 (ny ressurstype og lydformater). */
+/** Deler av klipp, tidskoblinger og status for versjoner krever migrasjon 0012 (DEC-0048). */
+const EDIT_COMMANDS = new Set([
+  "SetSceneEdit",
+  "SetTakeStatus",
+  "AddTimeLinks",
+  "UpdateTimeLinks",
+  "SetTimeLinksRemoved",
+]);
+
 /** Importert film og overganger krever migrasjon 0011 (DEC-0047). */
 function needsFilmSchema(command: { type: string } & Record<string, unknown>): boolean {
   if (command.type === "SetTransition") return true;
@@ -180,7 +189,7 @@ function validateInput(d: unknown): RunCommandInput {
 
 export const runCommand = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator(validateInput)
+  .validator(validateInput)
   .handler(async ({ data, context }): Promise<RunCommandResult> => {
     const userDb = context.supabase as unknown as AnyClient;
     const { data: member } = await userDb
@@ -313,6 +322,16 @@ export const runCommand = createServerFn({ method: "POST" })
           code: "schema",
           message:
             "Databasen mangler lyd. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0009.",
+        };
+    }
+    if (EDIT_COMMANDS.has(data.command.type)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 12)
+        return {
+          ok: false,
+          code: "schema",
+          message:
+            "Databasen mangler klipping og tidskoblinger. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0012.",
         };
     }
     if (needsFilmSchema(data.command as never)) {

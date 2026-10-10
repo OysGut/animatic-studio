@@ -20,14 +20,21 @@ import {
   SkipBack,
   SkipForward,
   Undo2,
+  Film,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+  AUDIO_MAX_MS,
   DEFAULT_COMPOSITION,
+  blocksOfVariant,
+  editableParts,
+  splitParts,
+  trimPart,
   audioClipFieldsOf,
   audioVersion,
   clipAtFrame,
   filmAudio,
+  filmMediaPaths,
   filmTakeAudio,
   filmClips,
   filmDurationFrames,
@@ -38,12 +45,15 @@ import {
   newId,
   type AudioClipFields,
   type AudioKind,
+  type ClipPartFields,
+  type FilmClip,
   type Composition,
   type ProjectState,
 } from "@/core";
 import { useImageUrls } from "@/app/library/asset-images";
 import { useFilmVideo } from "./film-video";
 import { uploadFilm } from "./film-import";
+import { LongFilmImportDialog } from "./LongFilmImportDialog";
 import { useAudioLoaded, useAudioPlayback } from "@/app/audio/use-audio-playback";
 import { AudioTracks, type AudioChange } from "./AudioTracks";
 import { AudioClipPanel } from "./AudioClipPanel";
@@ -139,10 +149,7 @@ function Assembly({
     [playItems],
   );
   // ---------- Importert film (DEC-0047) ----------
-  const filmPaths = useMemo(
-    () => [...new Set(clips.flatMap((c) => (c.take?.mediaRef ? [c.take.mediaRef] : [])))],
-    [clips],
-  );
+  const filmPaths = useMemo(() => filmMediaPaths(clips), [clips]);
   const filmUrls = useImageUrls(filmPaths);
   const audioUrls = useImageUrls(audioPaths);
   const [mutedKinds, setMutedKinds] = useState<ReadonlySet<AudioKind>>(new Set());
@@ -158,6 +165,7 @@ function Assembly({
     mutedKinds,
   });
   const [addAudio, setAddAudio] = useState<AudioKind | null>(null);
+  const [longFilm, setLongFilm] = useState(false);
   useEffect(() => {
     if (selectedAudioId && (!selectedAudio || selectedAudio.removed)) setSelectedAudioId(null);
   }, [selectedAudioId, selectedAudio]);
@@ -205,16 +213,22 @@ function Assembly({
           `Importer film «${f.media.fileName}»`,
         );
         if (r.error) return r.error;
-        const err = cmds.run(
-          { type: "SetActiveTake", occurrenceId: occurrenceId as never, takeId: f.takeId as never },
+        // Tas i bruk som hele versjonen (eventuelle kutt i scenen fjernes; de kan angres)
+        const ok = run(
+          {
+            type: "SetSceneEdit",
+            occurrenceId: occurrenceId as never,
+            activeTakeId: f.takeId as never,
+            parts: [],
+          },
           "Bruk importert film",
         );
-        return err;
+        return ok ? null : "Filmen er lagret som versjon, men kunne ikke tas i bruk.";
       } catch (e) {
         return (e as Error).message || "Filmen kunne ikke importeres.";
       }
     },
-    [projectId, fps, cmds],
+    [projectId, fps, cmds, run],
   );
 
   // Etter en flytting: hodet følger den flyttede scenen (samme sted i scenen), så valget blir stående
@@ -258,9 +272,129 @@ function Assembly({
     [clips, state.occurrences, run, playback.frame],
   );
 
+  // ---------- Klipping (DEC-0048) ----------
+  /** Lengste mulige utpunkt (ms) for en del: filmens lengde eller 2D-scenens lengde. */
+  const maxMsOf = useCallback(
+    (clip: FilmClip, takeId: string | null) => {
+      if (takeId) return state.takes[takeId]?.media?.durationMs ?? AUDIO_MAX_MS;
+      const comp = clip.compositionId ? state.compositions[clip.compositionId] : undefined;
+      return comp && comp.durationFrames > 0
+        ? Math.round(framesToSeconds(comp.durationFrames, fps) * 1000)
+        : AUDIO_MAX_MS;
+    },
+    [state.takes, state.compositions, fps],
+  );
+  const editScene = useCallback(
+    (
+      occurrenceId: string,
+      parts: readonly ClipPartFields[],
+      label: string,
+      takeId?: string | null,
+    ) => {
+      const o = state.occurrences[occurrenceId];
+      if (!o) return false;
+      return run(
+        {
+          type: "SetSceneEdit",
+          occurrenceId: o.id,
+          activeTakeId: (takeId === undefined ? o.activeTakeId : takeId) as never,
+          parts,
+        },
+        label,
+      );
+    },
+    [state.occurrences, run],
+  );
+  const splitAtPlayhead = useCallback(() => {
+    const a = clipAtFrame(clips, playback.frame);
+    if (!a) return;
+    const parts = splitParts(a.clip, playback.frame - a.clip.startFrame, fps, () => newId());
+    if (!parts) {
+      setError(
+        a.clip.source === "placeholder"
+          ? "Et tittelkort kan ikke splittes. Lag en 2D-scene eller importer film først."
+          : "Avspillingshodet står på en grense mellom deler – flytt det litt og prøv igjen.",
+      );
+      return;
+    }
+    editScene(a.clip.occurrenceId, parts, "Splitt klipp");
+  }, [clips, playback.frame, fps, editScene]);
+
+  // ---------- Tidskoblinger for manus (DEC-0048) ----------
+  /** «Synk replikker»: T setter tiden for blokken som står for tur, og går videre til neste. */
+  const [sync, setSync] = useState<{ occurrenceId: string; blockId: string } | null>(null);
+  const linkBlock = useCallback(
+    (occurrenceId: string, blockId: string, ms: number, mode: "replace" | "add") => {
+      const existing = Object.values(state.timeLinks).filter(
+        (l) => !l.removed && l.occurrenceId === occurrenceId && l.blockId === blockId,
+      );
+      const fields = {
+        occurrenceId: occurrenceId as never,
+        blockId: blockId as never,
+        startMs: Math.max(0, Math.round(ms)),
+        endMs: null,
+      };
+      if (mode === "replace" && existing.length > 0) {
+        const first = existing.sort((a, b) => a.startMs - b.startMs)[0]!;
+        return run(
+          { type: "UpdateTimeLinks", links: [{ linkId: first.id, fields }] },
+          "Flytt tidskobling",
+        );
+      }
+      return run(
+        { type: "AddTimeLinks", links: [{ linkId: newId() as never, fields }] },
+        "Koble replikk til tid",
+      );
+    },
+    [state.timeLinks, run],
+  );
+  const removeLink = useCallback(
+    (linkId: string) =>
+      run(
+        { type: "SetTimeLinksRemoved", linkIds: [linkId as never], removed: true },
+        "Fjern tidskobling",
+      ),
+    [run],
+  );
+  const stampSync = useCallback(() => {
+    if (!sync) return;
+    const c = clips.find((x) => x.occurrenceId === sync.occurrenceId);
+    if (!c) return;
+    const local = playback.frame - c.startFrame;
+    if (local < 0 || local >= c.durationFrames) {
+      setError(
+        "Avspillingshodet er utenfor scenen du synker. Gå tilbake til scenen og prøv igjen.",
+      );
+      return;
+    }
+    if (!linkBlock(c.occurrenceId, sync.blockId, framesToSeconds(local, fps) * 1000, "replace"))
+      return;
+    // Neste replikk eller handling i scenen
+    const blocks = blocksOfVariant(state, c.variantId).filter(
+      (b) => b.kind === "dialogue" || b.kind === "action" || b.kind === "shot",
+    );
+    const i = blocks.findIndex((b) => b.id === sync.blockId);
+    const next = blocks[i + 1];
+    setSync(next ? { occurrenceId: c.occurrenceId, blockId: next.id } : null);
+  }, [sync, clips, playback.frame, fps, linkBlock, state]);
+
   const setDuration = useCallback(
     (occurrenceId: string, frames: number) => {
       const clip = clips.find((c) => c.occurrenceId === occurrenceId);
+      // Kuttet klipp eller importert film: flytt utpunktet til den siste delen
+      if (clip && (clip.edited || clip.source === "film")) {
+        const parts = editableParts(clip, () => newId());
+        if (!parts) return;
+        const i = parts.length - 1;
+        const last = parts[i]!;
+        const delta = Math.round(((frames - clip.durationFrames) * 1000 * fps.den) / fps.num);
+        editScene(
+          occurrenceId,
+          trimPart(parts, i, { outMs: last.outMs + delta }, maxMsOf(clip, last.takeId)),
+          "Kutt slutten av klippet",
+        );
+        return;
+      }
       const c = clip?.compositionId ? state.compositions[clip.compositionId] : undefined;
       if (!c) return;
       run(
@@ -272,7 +406,7 @@ function Assembly({
         "Endre lengde på scene",
       );
     },
-    [clips, state.compositions, run],
+    [clips, state.compositions, run, fps, editScene, maxMsOf],
   );
 
   /** Ny plassering fra tidslinjen: lyden festes til scenen den starter i (mandat 6.4). */
@@ -450,6 +584,20 @@ function Assembly({
           removeAudio(selectedAudio.id);
         }
         break;
+      case "s":
+      case "S":
+        if (editable) {
+          e.preventDefault();
+          splitAtPlayhead();
+        }
+        break;
+      case "t":
+      case "T":
+        if (editable && sync) {
+          e.preventDefault();
+          stampSync();
+        }
+        break;
       case "Enter":
         if (selected && !(e.target as HTMLElement).closest("button,a,select")) {
           e.preventDefault();
@@ -570,6 +718,18 @@ function Assembly({
             <Button
               size="sm"
               variant="ghost"
+              onClick={() => setLongFilm(true)}
+              disabled={clips.length === 0}
+              title="Én filmfil som dekker flere scener: last opp én gang og del den på scenene"
+            >
+              <Film />
+              Importer lang film
+            </Button>
+          ) : null}
+          {editable ? (
+            <Button
+              size="sm"
+              variant="ghost"
               onClick={() => setAddAudio("dialogue")}
               disabled={clips.length === 0}
               title="Legg til lyd ved avspillingshodet"
@@ -655,15 +815,56 @@ function Assembly({
               onSeek={playback.setFrame}
               onUseTake={(takeId) =>
                 selected &&
-                run(
-                  {
-                    type: "SetActiveTake",
-                    occurrenceId: selected.occurrenceId,
-                    takeId: takeId as never,
-                  },
+                editScene(
+                  selected.occurrenceId,
+                  [],
                   takeId ? "Bruk importert film" : "Bruk animatic",
+                  takeId,
                 )
               }
+              onTakeStatus={(takeId, status) =>
+                run(
+                  { type: "SetTakeStatus", takeId: takeId as never, status },
+                  "Endre status for film",
+                )
+              }
+              maxMsOf={(takeId) => (selected ? maxMsOf(selected, takeId) : AUDIO_MAX_MS)}
+              onEditParts={(parts, label) =>
+                selected && editScene(selected.occurrenceId, parts, label)
+              }
+              onResetParts={() =>
+                selected && editScene(selected.occurrenceId, [], "Hele klippet igjen")
+              }
+              onSplit={() => {
+                // Splitt i den valgte scenen; står hodet utenfor, flyttes det til midten av scenen først
+                if (
+                  selected &&
+                  clipAtFrame(clips, playback.frame)?.clip.occurrenceId !== selected.occurrenceId
+                ) {
+                  playback.setFrame(selected.startFrame + Math.floor(selected.durationFrames / 2));
+                  setError(
+                    "Avspillingshodet er flyttet til scenen. Plasser det der klippet skal deles, og trykk igjen.",
+                  );
+                  return;
+                }
+                splitAtPlayhead();
+              }}
+              sync={sync}
+              onSync={(blockId) =>
+                setSync(
+                  blockId && selected ? { occurrenceId: selected.occurrenceId, blockId } : null,
+                )
+              }
+              onLink={(blockId, mode) => {
+                if (!selected) return;
+                const local = playback.frame - selected.startFrame;
+                if (local < 0 || local >= selected.durationFrames) {
+                  setError("Avspillingshodet er utenfor scenen. Flytt det inn i scenen først.");
+                  return;
+                }
+                linkBlock(selected.occurrenceId, blockId, framesToSeconds(local, fps) * 1000, mode);
+              }}
+              onRemoveLink={removeLink}
               onImportFilm={(file) =>
                 selected ? importFilm(selected.occurrenceId, file) : Promise.resolve(null)
               }
@@ -752,6 +953,15 @@ function Assembly({
         editable={editable}
         url={profileVersion ? (audioUrls.data?.[profileVersion.mediaPath] ?? null) : null}
         onChange={(label, patch) => profileClip && patchAudioClip(profileClip.id, label, patch)}
+      />
+      <LongFilmImportDialog
+        open={longFilm}
+        onOpenChange={setLongFilm}
+        projectId={projectId}
+        clips={clips}
+        firstOccurrenceId={selected?.occurrenceId ?? null}
+        cmds={cmds}
+        fps={fps}
       />
       <AddAudioDialog
         open={addAudio !== null}
