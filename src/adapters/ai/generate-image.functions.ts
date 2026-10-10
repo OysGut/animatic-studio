@@ -96,7 +96,22 @@ function gatewayError(status: number, body: string): string {
     return "AI-tjenesten i Lovable godtok ikke nøkkelen. Sjekk at Lovable AI er slått på for prosjektet.";
   if (status === 400 && /safety|policy|moderation/i.test(body))
     return "AI-tjenesten avviste beskrivelsen (innholdsregler). Endre beskrivelsen og prøv igjen.";
-  return `AI-tjenesten svarte med feil ${status}.`;
+  // Tjenestens egen forklaring (ingen hemmeligheter), kortet ned, så feilen kan forstås og rettes
+  const detail = (() => {
+    try {
+      const j = JSON.parse(body.slice(body.indexOf("{"))) as {
+        error?: { message?: string } | string;
+        message?: string;
+      };
+      return typeof j.error === "string" ? j.error : (j.error?.message ?? j.message ?? "");
+    } catch {
+      return body;
+    }
+  })()
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 220);
+  return `AI-tjenesten svarte med feil ${status}${detail ? `: ${detail}` : "."}`;
 }
 
 export const generateImage = createServerFn({ method: "POST" })
@@ -201,40 +216,59 @@ export const generateImage = createServerFn({ method: "POST" })
       const size = data.purpose === "cutout" ? "1024x1536" : "1536x1024";
       const background = data.purpose === "cutout" ? "transparent" : "opaque";
       const headers = { Authorization: `Bearer ${key}`, "Lovable-API-Key": key };
-      let res: Response;
+      let reference: Blob | null = null;
       if (data.referencePath) {
         const { data: blob, error } = await admin.storage.from(BUCKET).download(data.referencePath);
         if (error || !blob) throw new Error("Forbildet kunne ikke hentes fra lagringen.");
-        const form = new FormData();
-        form.append("model", model);
-        form.append("prompt", data.prompt);
-        form.append("n", "1");
-        form.append("size", size);
-        if (model.startsWith("openai/")) {
-          form.append("background", background);
-          form.append("output_format", "png");
+        reference = blob;
+      }
+      // Ikke alle modeller tar imot alle valg (f.eks. gjennomsiktig bakgrunn). Avviser tjenesten
+      // forespørselen (400), prøves den igjen med færre valg – hvert forsøk logges.
+      const attempts: Record<string, string>[] = [
+        { size, ...(model.startsWith("openai/") ? { background, output_format: "png" } : {}) },
+        { size },
+        {},
+      ];
+      const send = (extra: Record<string, string>) => {
+        if (reference) {
+          const form = new FormData();
+          form.append("model", model);
+          form.append("prompt", data.prompt);
+          form.append("n", "1");
+          for (const [k, v] of Object.entries(extra)) form.append(k, v);
+          const type =
+            reference.type && reference.type.startsWith("image/") ? reference.type : "image/png";
+          const ext = type === "image/jpeg" ? "jpg" : type === "image/webp" ? "webp" : "png";
+          form.append("image", new File([reference], `reference.${ext}`, { type }));
+          return fetch(`${GATEWAY}/images/edits`, { method: "POST", headers, body: form });
         }
-        form.append("image", new File([blob], "reference.png", { type: blob.type || "image/png" }));
-        res = await fetch(`${GATEWAY}/images/edits`, { method: "POST", headers, body: form });
-      } else {
-        res = await fetch(`${GATEWAY}/images/generations`, {
+        return fetch(`${GATEWAY}/images/generations`, {
           method: "POST",
           headers: { ...headers, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model,
-            prompt: data.prompt,
-            n: 1,
-            size,
-            ...(model.startsWith("openai/") ? { background, output_format: "png" } : {}),
-          }),
+          body: JSON.stringify({ model, prompt: data.prompt, n: 1, ...extra }),
         });
-      }
-      if (!res.ok) {
+      };
+      let res: Response | null = null;
+      const log: string[] = [];
+      for (const extra of attempts) {
+        res = await send(extra);
+        if (res.ok) break;
         const body = await res.text().catch(() => "");
-        const message = gatewayError(res.status, body);
-        await finish({ status: "failed", error: `${res.status}: ${body.slice(0, 500)}` });
-        return { ok: false, message };
+        log.push(
+          `${res.status} [${Object.keys(extra).join(",") || "ingen valg"}]: ${body.slice(0, 400)}`,
+        );
+        const retry = res.status === 400 && !/safety|policy|moderation/i.test(body);
+        if (!retry) break;
       }
+      if (!res || !res.ok) {
+        const last = log[log.length - 1] ?? "";
+        const status = res?.status ?? 0;
+        await finish({ status: "failed", error: log.join("\n").slice(0, 2000) });
+        return { ok: false, message: gatewayError(status, last) };
+      }
+      if (log.length > 0)
+        // Vellykket etter færre valg: noter hvorfor, så det kan rettes
+        console.warn("[generateImage] lyktes etter nye forsøk:", log.join(" | ").slice(0, 600));
       const json = (await res.json()) as { data?: { b64_json?: string; url?: string }[] };
       const first = json.data?.[0];
       let bytes: Uint8Array;

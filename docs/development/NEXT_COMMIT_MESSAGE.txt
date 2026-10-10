@@ -1,16 +1,9 @@
-Slett/forlat prosjekt, ressurser som zip, importert film og overganger (DEC-0046, DEC-0047)
+AI-bilder: nye forsøk ved feil 400 og tydeligere feilmelding (KI-71, DEC-0045)
 
-Databaseendring: migrasjon 0011. Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable
-etter push.
+Ingen databaseendring. Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push
+(den ber Lovable vise loggen over AI-genereringer, så vi ser nøyaktig hva tjenesten svarte).
 
-- Prosjektlisten: ⋯ på hvert prosjekt. «Slett prosjekt …» (bare eier) med alvorlig vindu, liste over hva
-  som slettes og prosjektnavnet som bekreftelse. «Forlat prosjekt …» for inviterte.
-- Ressursene (bilder og lyd) slettes ikke med prosjektet: de ligger under «Ressurser fra slettede
-  prosjekter», der de kan lastes ned eller slettes for godt i en egen operasjon.
-- Last ned ressurser som zip, per kategori eller alt samlet (også fra ressursbiblioteket og før sletting).
-- Montering: «Importer ferdig film …» til en scene (MP4/MOV/WebM). Versjoner av scenen med «Bruk denne»;
-  ingen versjon kastes. Filmen vises, spilles med lyd og eksporteres.
-- Overgang inn i scenen: kutt, overtoning eller via svart, med lengde.
-- Klikk på en replikk i monteringens manus flytter avspillingshodet dit; replikken under hodet markeres.
-- Tester: 273 Vitest-tester og 32 databasetester grønne; skjermbilder 56–62; eksport med ekte testfilm kontrollert.
-- Dokumentasjon: DEC-0046, DEC-0047, REQ-0567–0571 og statuser for 13 krav, KI-65–70, db/README.
+- Avviser AI-tjenesten forespørselen (feil 400), prøves den igjen med færre valg: først uten
+  gjennomsiktig bakgrunn og PNG-valget, så med bare beskrivelse og modell. Alle forsøk logges.
+- Feilmeldingen viser nå tjenestens egen forklaring, ikke bare «feil 400».
+- Forbildet sendes med riktig filtype (PNG, JPEG eller WebP).
