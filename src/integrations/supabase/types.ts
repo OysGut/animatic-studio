@@ -208,6 +208,7 @@ export type Database = {
           asset_id: string
           asset_variant_id: string | null
           block_id: string | null
+          continues: boolean
           created_at: string
           created_by: string | null
           fade_in_ms: number
@@ -225,11 +226,13 @@ export type Database = {
           revision: number
           source_in_ms: number
           version_id: string | null
+          volume_keys: Json
         }
         Insert: {
           asset_id: string
           asset_variant_id?: string | null
           block_id?: string | null
+          continues?: boolean
           created_at?: string
           created_by?: string | null
           fade_in_ms?: number
@@ -247,11 +250,13 @@ export type Database = {
           revision?: number
           source_in_ms?: number
           version_id?: string | null
+          volume_keys?: Json
         }
         Update: {
           asset_id?: string
           asset_variant_id?: string | null
           block_id?: string | null
+          continues?: boolean
           created_at?: string
           created_by?: string | null
           fade_in_ms?: number
@@ -269,6 +274,7 @@ export type Database = {
           revision?: number
           source_in_ms?: number
           version_id?: string | null
+          volume_keys?: Json
         }
         Relationships: [
           {
@@ -529,6 +535,72 @@ export type Database = {
             columns: ["variant_id"]
             isOneToOne: false
             referencedRelation: "scene_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      generation_jobs: {
+        Row: {
+          asset_id: string | null
+          created_at: string
+          created_by: string
+          error: string | null
+          finished_at: string | null
+          id: string
+          kind: string
+          model: string
+          project_id: string
+          prompt: string
+          provider: string
+          reference_path: string | null
+          result_path: string | null
+          status: string
+        }
+        Insert: {
+          asset_id?: string | null
+          created_at?: string
+          created_by: string
+          error?: string | null
+          finished_at?: string | null
+          id: string
+          kind: string
+          model: string
+          project_id: string
+          prompt: string
+          provider: string
+          reference_path?: string | null
+          result_path?: string | null
+          status?: string
+        }
+        Update: {
+          asset_id?: string | null
+          created_at?: string
+          created_by?: string
+          error?: string | null
+          finished_at?: string | null
+          id?: string
+          kind?: string
+          model?: string
+          project_id?: string
+          prompt?: string
+          provider?: string
+          reference_path?: string | null
+          result_path?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generation_jobs_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generation_jobs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
         ]
