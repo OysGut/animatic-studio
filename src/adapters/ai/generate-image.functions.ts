@@ -13,7 +13,13 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { isUuid, newId, MAX_PROMPT_CHARS, type AssetMedia } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 
+/** Bakgrunner og andre hele bilder. */
 export const IMAGE_MODEL = "openai/gpt-image-2";
+/**
+ * Frilagte figurer (lag): GPT Image 2 kan ikke lage gjennomsiktig bakgrunn (Lovable 2026-10-10:
+ * «Transparent background is not supported for this model»); GPT Image 2.5 Sunburst kan (KI-71).
+ */
+export const CUTOUT_MODEL = "openai/gpt-image-2.5-sunburst";
 const GATEWAY = "https://ai.gateway.lovable.dev/v1";
 const BUCKET = "assets";
 /** Grenser som sikring mot løpske kostnader. */
@@ -189,7 +195,10 @@ export const generateImage = createServerFn({ method: "POST" })
         message: `Prosjektets grense på ${MAX_PER_PROJECT_PER_DAY} genereringer i døgnet er nådd.`,
       };
 
-    const model = process.env["ANIMATIC_IMAGE_MODEL"] || IMAGE_MODEL;
+    const model =
+      data.purpose === "cutout"
+        ? process.env["ANIMATIC_CUTOUT_MODEL"] || CUTOUT_MODEL
+        : process.env["ANIMATIC_IMAGE_MODEL"] || IMAGE_MODEL;
     const jobId = newId<"generation_job">();
     const { error: logErr } = await admin.from("generation_jobs").insert({
       id: jobId,

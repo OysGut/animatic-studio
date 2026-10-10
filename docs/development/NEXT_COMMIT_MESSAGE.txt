@@ -1,9 +1,10 @@
-AI-bilder: nye forsøk ved feil 400 og tydeligere feilmelding (KI-71, DEC-0045)
+AI-bilder: riktig modell for frilagte figurer, nye forsøk ved feil 400 (KI-71, DEC-0045)
 
-Ingen databaseendring. Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push
-(den ber Lovable vise loggen over AI-genereringer, så vi ser nøyaktig hva tjenesten svarte).
+Ingen databaseendring. Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push.
 
-- Avviser AI-tjenesten forespørselen (feil 400), prøves den igjen med færre valg: først uten
-  gjennomsiktig bakgrunn og PNG-valget, så med bare beskrivelse og modell. Alle forsøk logges.
-- Feilmeldingen viser nå tjenestens egen forklaring, ikke bare «feil 400».
+- Årsaken til «feil 400» (fra loggen): GPT Image 2 kan ikke lage gjennomsiktig bakgrunn.
+  Figurer, dyr og objekter (frilagte lag) lages nå med GPT Image 2.5 Sunburst, som kan det.
+  Bakgrunner og steder lages fortsatt med GPT Image 2.
+- Avviser AI-tjenesten forespørselen (feil 400), prøves den igjen med færre valg. Alle forsøk logges.
+- Feilmeldingen viser tjenestens egen forklaring, ikke bare «feil 400».
 - Forbildet sendes med riktig filtype (PNG, JPEG eller WebP).
