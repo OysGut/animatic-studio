@@ -3,7 +3,7 @@
  * scenen, lengde og kutt, volum, inn-/uttoning, replikk og demping.
  */
 import { Link } from "@tanstack/react-router";
-import { Library, Trash2 } from "lucide-react";
+import { AudioWaveform, Library, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import {
   AUDIO_KIND_LABEL,
@@ -33,6 +33,7 @@ export function AudioClipPanel({
   editable,
   onChange,
   onRemove,
+  onOpenProfile,
 }: {
   state: ProjectState;
   projectId: string;
@@ -40,6 +41,8 @@ export function AudioClipPanel({
   editable: boolean;
   onChange: (label: string, patch: Partial<AudioClipFields>) => void;
   onRemove: () => void;
+  /** Åpne lydprofilen med volumpunkter (DEC-0045). */
+  onOpenProfile: () => void;
 }) {
   const asset = state.assets[clip.assetId];
   const occ = state.occurrences[clip.occurrenceId];
@@ -217,6 +220,34 @@ export function AudioClipPanel({
         />
         Dempet (spilles ikke og kommer ikke med i eksporten)
       </label>
+
+      <label
+        className="flex items-center gap-2 text-xs text-text-secondary"
+        title="Starten er festet i denne scenen, men lyden fortsetter inn i de neste scenene"
+      >
+        <input
+          type="checkbox"
+          checked={clip.continues}
+          disabled={off}
+          onChange={(e) =>
+            onChange(e.target.checked ? "La lyden løpe videre" : "Stopp lyden ved scenens slutt", {
+              continues: e.target.checked,
+            })
+          }
+          className="size-3.5 accent-[var(--accent-warm)]"
+        />
+        <span>
+          Løper videre over flere scener
+          <span className="block text-[11px] text-text-tertiary">
+            Ellers stopper lyden ved slutten av scenen
+          </span>
+        </span>
+      </label>
+
+      <Button size="sm" variant="secondary" className="self-start" onClick={onOpenProfile}>
+        <AudioWaveform />
+        Lydprofil og volumpunkter …{clip.volumeKeys.length ? ` (${clip.volumeKeys.length})` : ""}
+      </Button>
 
       <div className="flex flex-wrap gap-1.5 pt-1">
         {asset ? (

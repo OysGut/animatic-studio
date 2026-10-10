@@ -17,7 +17,10 @@ import {
   mainProduction,
   newId,
   orderedOccurrences,
-  sceneAudioItems,
+  audioClipFieldsOf,
+  audioVersion,
+  filmClips,
+  sceneWindowAudio,
   type Composition,
   type ProjectState,
 } from "@/core";
@@ -25,7 +28,10 @@ import { canEdit, useMembers, useProjectState } from "@/app/project/use-project"
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { SaveIndicator } from "@/app/script/ScriptWorkspace";
 import { useImageUrls } from "@/app/library/asset-images";
-import { useAudioPlayback } from "@/app/audio/use-audio-playback";
+import { useAudioLoaded, useAudioPlayback } from "@/app/audio/use-audio-playback";
+import { AudioClipEditor } from "@/app/audio/AudioClipEditor";
+import { SceneAudioRows } from "./SceneAudioRows";
+import { NearbyAudioPanel } from "./NearbyAudioPanel";
 import { Button } from "@/components/ui/button";
 import { AddLayerDialog } from "./AddLayerDialog";
 import { CompositionInspector, LayerInspector } from "./LayerInspector";
@@ -139,10 +145,19 @@ function Editor({
   );
   const playback = usePlayback(duration, state.project.fps);
   // Lyden i scenen spilles med (DEC-0044)
+  // Filmens scener (for lyd som løper inn fra tidligere scener og lyd i scenene rundt, DEC-0045)
+  const film = useMemo(() => filmClips(state, productionId), [state, productionId]);
   const sceneSound = useMemo(
-    () => (occurrenceId ? sceneAudioItems(state, occurrenceId) : []),
-    [state, occurrenceId],
+    () => (occurrenceId ? sceneWindowAudio(state, film, occurrenceId, state.project.fps) : []),
+    [state, film, occurrenceId],
   );
+  const audioLoaded = useAudioLoaded();
+  const [profileId, setProfileId] = useState<string | null>(null);
+  const profileClip = profileId ? (state.audioClips[profileId] ?? null) : null;
+  const profileScene = profileClip
+    ? film.find((c) => c.occurrenceId === profileClip.occurrenceId)
+    : undefined;
+  const profileVersion = profileClip ? audioVersion(state, profileClip) : null;
   const soundPaths = useMemo(
     () => [...new Set(sceneSound.flatMap((it) => (it.version ? [it.version.mediaPath] : [])))],
     [sceneSound],
@@ -371,6 +386,13 @@ function Editor({
                 editable={editable}
                 onAdd={composition ? addAsset : null}
               />
+              <NearbyAudioPanel
+                state={state}
+                clips={film}
+                occurrenceId={occurrence.id}
+                editable={editable}
+                run={cmds.run}
+              />
             </div>
           ) : null}
         </div>
@@ -452,6 +474,17 @@ function Editor({
                 autoKey={autoKey}
                 onAutoKeyChange={setAutoKey}
                 run={cmds.run}
+                audioRows={(g) => (
+                  <SceneAudioRows
+                    state={state}
+                    occurrenceId={occurrence.id}
+                    items={sceneSound}
+                    g={g}
+                    loaded={audioLoaded}
+                    onFrame={playback.setFrame}
+                    onOpen={setProfileId}
+                  />
+                )}
               />
             </>
           )}
@@ -518,6 +551,36 @@ function Editor({
         ) : null}
       </div>
 
+      <AudioClipEditor
+        open={profileClip !== null}
+        onOpenChange={(o) => {
+          if (!o) setProfileId(null);
+        }}
+        state={state}
+        clip={profileClip}
+        sceneSeconds={
+          profileScene ? framesToSeconds(profileScene.durationFrames, state.project.fps) : null
+        }
+        editable={editable}
+        url={profileVersion ? (soundUrls.data?.[profileVersion.mediaPath] ?? null) : null}
+        onChange={(label, patch) => {
+          if (!profileClip) return;
+          setError(
+            cmds.run(
+              {
+                type: "UpdateAudioClips",
+                clips: [
+                  {
+                    clipId: profileClip.id,
+                    fields: { ...audioClipFieldsOf(profileClip), ...patch },
+                  },
+                ],
+              },
+              label,
+            ),
+          );
+        }}
+      />
       <LayerImageDialog
         open={imageLayerId !== null}
         onOpenChange={(o) => {

@@ -264,6 +264,9 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         fade_in_ms: a.fadeInMs,
         fade_out_ms: a.fadeOutMs,
         muted: a.muted,
+        // Fra migrasjon 0010 (apply_changes ser bort fra kolonner tabellen ikke har ennå)
+        continues: a.continues,
+        volume_keys: a.volumeKeys,
         removed: a.removed,
       };
     }
@@ -629,6 +632,10 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         fadeInMs: num(x["fade_in_ms"] ?? 0),
         fadeOutMs: num(x["fade_out_ms"] ?? 0),
         muted: x["muted"] === true,
+        continues: x["continues"] === true,
+        volumeKeys: ((json(x["volume_keys"]) as { t: number; db: number }[] | null) ?? []).map(
+          (k) => ({ t: Number(k.t), db: Number(k.db) }),
+        ),
         removed: x["removed"] === true,
       })),
     ),

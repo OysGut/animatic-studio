@@ -409,3 +409,24 @@ Regler: DEC-ID-er er permanente. En beslutning endres aldri i ettertid; den erst
   Fargeflater kan kobles til en ressurs. «Generer med AI» vises, men er ikke aktiv: generering koster penger og kommer med M5 etter at Mars har valgt leverandør og godkjent kostnadene (mandat 17–19).
 - **Teknisk:** Migrasjon `0009_audio.sql` (ressurstypen «sound», lydformater, `asset_versions.duration_ms`, tabellen `audio_clips`, `apply_changes`). Kjernen: `src/core/audio`. Motor: `src/engine/audio/mixer.ts` (Web Audio). Avspilling: `src/app/audio/use-audio-playback.ts`. Tider i millisekunder (uavhengig av bildefrekvensen).
 - **Tillegg 2026-10-09:** Lovable avviste første utgave av 0009 fordi den skrev til `storage.buckets` (ikke tillatt i Lovable Cloud). Ingenting ble kjørt. Siden filen aldri er kjørt, er den rettet på stedet: lagringsdelen er fjernet. Bøtta `assets` har ingen begrensning på filtyper og tar allerede imot lyd. Regel videre: migrasjoner skriver aldri til `storage`; bøtter endres med Lovables lagringsverktøy.
+
+## DEC-0045 – Lyd over flere scener, lydprofil og AI-bilder med Lovable-kreditter
+- **Dato:** 2026-10-09 · **Type:** Bekreftet av bruker
+- **Mars' ord:** «når en jobber med en scene så kan en enkelt se lydressurser som var i bruk i forrige scene og i scenen før der (kanskje en kan enkelt "bla bakover og fremover" i lydressurser som har vært i bruk og at en da enkelt kan marker for å "bruk i scene" og da importeres disse inn i scenen... Noe annet som er viktig er at lydspor, f.eks. et musikkstykke må kunne gå over flere scener, mao den forankres (starten) i en scene og så angis det at denne skal løpe videre, dette laget/navnet gies en egen farge (varmgul)... Lydklipp må alle kunne åpnes slik at en kan se lydprofilen og time når ting skal skje i forhold til lyden. det skal også være mulig å trekke lyden opp og ned slik som i after effects. Jeg ønsker også at aktivt bildeutsnitt endrer farge fra grå til varmgul. Jeg har så utrolig mange kreditter på Lovable så jeg tenker at vi åpner opp og tester med Lovable sine egne kreditter slik at vi får generering på plass og kan teste det, så kan vi senere gjøre det mulig for brukerene å koble tjenesten opp mot ulike tjeenste api vi legger til rette for.»
+- **Beslutning – lyd:**
+  1. **Lyd i scenene rundt** (sceneeditoren): et panel viser lyden i forrige scene (neste for første scene); pilene blar scene for scene. «Bruk i scenen» legger samme lyd (spor, volum, toninger, volumpunkter) inn fra starten av scenen.
+  2. **Løper videre:** et lydklipp forankres i én scene og kan merkes «Løper videre over flere scener». Det spilles og eksporteres da videre inn i de neste scenene og vises **varmgult** (klipp, navn, prikk). Lyd uten merket stopper ved slutten av scenen sin, og en scene uten 2D-scene blir minst så lang som slik lyd. Musikk som legges til, merkes «løper videre» fra start. Lydtypene har fått farger som ikke ligner varmgult.
+  3. **Lydprofil:** dobbeltklikk på et lydklipp (montering eller sceneeditor) eller «Lydprofil og volumpunkter …» åpner bølgeformen i stort format med tidslinjal og avspilling.
+  4. **Volumpunkter som i After Effects:** klikk på kurven legger til punkt, dra flytter, dobbeltklikk/Delete fjerner, piltaster justerer. −60 til +12 dB, rett linje mellom punktene, ganges med klippets volum og toninger; gjelder avspilling og eksport.
+  5. **Bølgeformer i sceneeditorens tidslinje** under lagene, også for lyd som løper inn fra tidligere scener.
+- **Beslutning – kamera:** Utsnittet kameraet viser nå tegnes varmgult på lerretet (også når det er start- eller sluttrammen), og kamerautsnittet under avspillingshodet får varmgul ramme i kamerasporet.
+- **Beslutning – AI-bilder (kostnad godkjent av Mars):** Testfasen bruker Lovable AI Gateway og Lovable-arbeidsområdets egne kreditter. «Generer et nytt bilde med AI» i bildevalget for et lag:
+  - beskrivelsen (prompten, på engelsk) bygges fra ressurs, variant, stil og filmtittel, vises og kan endres før sending;
+  - dagens bilde kan sendes med som forbilde;
+  - hver generering bekreftes i to steg («bruker kreditter … Ja, generer»);
+  - bare redaktører og eiere; maks 30 per bruker per time og 200 per prosjekt per døgn;
+  - alt logges i `generation_jobs` (modell, prompt, forbilde, status, feil, resultat);
+  - resultatet blir en ny versjon i biblioteket og tas i bruk på laget (kan angres).
+  
+  Senere skal brukerne kunne koble egne AI-tjenester og nøkler (REQ-0566). Pris per bilde vises ikke ennå.
+- **Teknisk:** Migrasjon `0010_audio_flow_generation.sql` (`audio_clips.continues`, `audio_clips.volume_keys`, tabellen `generation_jobs` med lesetilgang for medlemmer og skriving bare fra serveren; ingen SQL mot `storage`). Serverfunksjonen `src/adapters/ai/generate-image.functions.ts` (modell `openai/gpt-image-2`, kan endres med `ANIMATIC_IMAGE_MODEL`; nøkkelen `LOVABLE_API_KEY` finnes bare på serveren). Beskrivelser: `src/core/generation/prompt.ts`. Krav: REQ-0560–0566.

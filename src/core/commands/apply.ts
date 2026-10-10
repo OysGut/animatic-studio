@@ -420,6 +420,27 @@ function audioFields(s: ProjectState, f: AudioClipFields): AudioClipFields {
   if (typeof f.gainDb !== "number" || !Number.isFinite(f.gainDb) || f.gainDb < -60 || f.gainDb > 12)
     fail("invalid", "Volumet må være mellom −60 og +12 dB");
   if (typeof f.muted !== "boolean") fail("invalid", "Ugyldig demping");
+  if (typeof f.continues !== "boolean") fail("invalid", "Ugyldig valg for «løper videre»");
+  if (!Array.isArray(f.volumeKeys) || f.volumeKeys.length > 500)
+    fail("invalid", "For mange volumpunkter (maks 500)");
+  const keys = [...f.volumeKeys]
+    .map((k) => {
+      if (
+        !k ||
+        !Number.isInteger(k.t) ||
+        k.t < 0 ||
+        k.t > AUDIO_MAX_MS ||
+        typeof k.db !== "number" ||
+        !Number.isFinite(k.db) ||
+        k.db < -60 ||
+        k.db > 12
+      )
+        fail("invalid", "Ugyldig volumpunkt (tid i ms, nivå mellom −60 og +12 dB)");
+      return { t: k.t, db: Math.round(k.db * 10) / 10 };
+    })
+    .sort((a, b) => a.t - b.t);
+  for (let i = 1; i < keys.length; i++)
+    if (keys[i]!.t === keys[i - 1]!.t) fail("invalid", "To volumpunkter på samme tid");
   return {
     occurrenceId: f.occurrenceId,
     kind: f.kind,
@@ -435,6 +456,8 @@ function audioFields(s: ProjectState, f: AudioClipFields): AudioClipFields {
     fadeInMs: f.fadeInMs,
     fadeOutMs: f.fadeOutMs,
     muted: f.muted,
+    continues: f.continues,
+    volumeKeys: keys,
   };
 }
 
@@ -454,6 +477,8 @@ export function audioClipFieldsOf(a: AudioClip): AudioClipFields {
     fadeInMs: a.fadeInMs,
     fadeOutMs: a.fadeOutMs,
     muted: a.muted,
+    continues: a.continues,
+    volumeKeys: a.volumeKeys,
   };
 }
 

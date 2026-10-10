@@ -100,7 +100,7 @@ async function mock(page, { projects = [project], schema = true }) {
     const table = path.replace("/rest/v1/", "");
     if (table === "schema_version")
       return schema
-        ? json([{ version: 9 }])
+        ? json([{ version: 10 }])
         : json({ message: "relation does not exist", code: "42P01" }, 404);
     if (table === "projects") {
       if (single) return json(projects[0] ?? null);
@@ -664,6 +664,54 @@ await shot("51-legg-til-lyd", montering, {
     await page.waitForTimeout(900);
     await page.getByRole("button", { name: "Legg til lyd" }).click();
     await page.waitForTimeout(700);
+  },
+});
+// DEC-0045: lyd i sceneeditoren (bølgeformer under lagene), lyd i scenene rundt og varmgult kamerautsnitt
+await shot("52-scene-lyd", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    const rows = page.getByRole("group", { name: "Lyd i scenen" });
+    await rows.scrollIntoViewIfNeeded().catch(() => {});
+    console.error("lydrader i scenen:", await rows.locator("button").count());
+    const near = page.getByRole("region", { name: "Lyd i scenene rundt" });
+    console.error("lyd i scenene rundt:", (await near.innerText()).replace(/\n/g, " | "));
+    // Utsnittet kameraet viser nå (her startrammen) er varmgult
+    await page.waitForTimeout(400);
+  },
+});
+await shot("53-lydprofil", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    await page.getByRole("button", { name: /^Tema/ }).first().dblclick();
+    await page.waitForTimeout(1200);
+  },
+});
+await shot("54-ai-generering", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(900);
+    await page
+      .locator('section[aria-label="Lag"]')
+      .first()
+      .getByRole("button", { name: /Maja/ })
+      .first()
+      .dblclick();
+    await page.waitForTimeout(600);
+    await page.getByRole("button", { name: "Generer …" }).click();
+    await page.waitForTimeout(300);
+    await page.getByRole("alertdialog", { name: "Bekreft generering" }).scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
+  },
+});
+await shot("55-scene-lyd-inn", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(900);
+    await page.getByRole("button", { name: "Neste scene" }).click();
+    await page.waitForTimeout(1500);
+    const rows = page.getByRole("group", { name: "Lyd i scenen" });
+    console.error(
+      "lyd i scene 2:",
+      (await rows.count()) ? (await rows.innerText()).replace(/\n/g, " | ") : "ingen tidslinje",
+    );
   },
 });
 await shot("18-oversikt-varighet", `/prosjekt/${project.id}`, {

@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **559**
-- Prioritet: P0: 141, P1: 241, P2: 138, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 32, teknisk-anbefaling: 7
-- Status: Ikke startet: 356, Verifisert: 151, Under arbeid: 41, Implementert – ikke verifisert: 11
+- Antall krav: **566**
+- Prioritet: P0: 141, P1: 246, P2: 140, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 39, teknisk-anbefaling: 7
+- Status: Ikke startet: 348, Verifisert: 156, Under arbeid: 49, Implementert – ikke verifisert: 13
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -201,11 +201,12 @@ Tekniske systeminstruksjoner og genereringsprompter til AI-modeller skal som hov
 
 - **Kilde:** Kap. 1.3 (l. 59) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 5
 - **Moduler:** PROMPT
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Gitt et norsk manus, når en genereringsprompt bygges, så er prompten på engelsk med mindre brukeren eksplisitt har valgt annet.
 - **Tester:**
   - enhet: promptbygger produserer engelskspråklig tekst for norsk kildemateriale
+- **Implementering:** src/adapters/ai/generate-image.functions.ts
 - **Merknad:** «Som hovedregel» – unntak tillatt. Jf. kap. 34 pkt. 12.
 
 ### Kapittel 2
@@ -382,11 +383,12 @@ En manusendring, ressursendring, omnummerering eller endring av stil skal aldri 
 
 - **Kilde:** Kap. 2.2 (l. 83, 86) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** QUEUE, QUALITYCOST, PROVIDER · **Invarianter:** INV-12
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Ingen genereringsjobb mot betalt leverandør opprettes uten en eksplisitt brukerinitiert bestilling/godkjenning.
 - **Tester:**
   - integrasjon: endringshendelser utløser ingen kall mot leverandøradaptere (mock)
+- **Implementering:** src/adapters/ai/generate-image.functions.ts
 
 #### REQ-0030 – Ingen automatisk bytte av aktiv sceneversjon
 En manusendring, ressursendring, omnummerering eller endring av stil skal aldri automatisk erstatte aktiv sceneversjon.
@@ -3232,11 +3234,12 @@ Tekniske systeminstruksjoner og genereringsprompter skal som hovedregel formuler
 
 - **Kilde:** Kap. 17.2 (l. 700-702) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 5
 - **Moduler:** PROMPT
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Gitt et norsk manus og norsk UI, så er genererte systeminstruksjoner og prompter på engelsk (unntatt ordrett dialog).
 - **Tester:**
   - enhet: språkdeteksjon på genererte prompter
+- **Implementering:** src/adapters/ai/generate-image.functions.ts
 - **Merknad:** Ufravikelig prinsipp nr. 12 i kap. 34.
 
 #### REQ-0248 – Bevare norsk dialog ordrett
@@ -3269,11 +3272,12 @@ Brukeren skal kunne åpne genereringsprompten.
 - **Kilde:** Kap. 17.3 (l. 706-707) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 5
 - **Moduler:** PROMPT, UI
 - **Avhengigheter:** REQ-0244
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Fra scenen kan brukeren åpne gjeldende genereringsprompt i en egen visning.
 - **Tester:**
   - e2e: åpne prompt
+- **Implementering:** src/adapters/ai/generate-image.functions.ts
 - **Merknad:** Ufravikelig prinsipp nr. 11 (synlige prompter) i kap. 34.
 
 #### REQ-0251 – Lese genereringsprompten
@@ -3282,11 +3286,12 @@ Brukeren skal kunne lese genereringsprompten i sin helhet.
 - **Kilde:** Kap. 17.3 (l. 708) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P0 · **Fase:** 5
 - **Moduler:** PROMPT, UI
 - **Avhengigheter:** REQ-0250
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Hele prompten, inkludert systeminstruksjon, vises i lesbar form uten avkorting.
 - **Tester:**
   - e2e: prompttekst i UI er identisk med prompt som sendes
+- **Implementering:** src/adapters/ai/generate-image.functions.ts
 
 #### REQ-0252 – Redigere prompt manuelt
 Brukeren skal kunne redigere genereringsprompten manuelt.
@@ -3294,11 +3299,12 @@ Brukeren skal kunne redigere genereringsprompten manuelt.
 - **Kilde:** Kap. 17.3 (l. 709) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 5
 - **Moduler:** PROMPT, UI
 - **Avhengigheter:** REQ-0251
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Brukeren kan endre prompttekst, og endringen brukes ved neste generering.
 - **Tester:**
   - e2e: rediger prompt og verifiser sendt payload (mock)
+- **Implementering:** src/adapters/ai/generate-image.functions.ts
 - **Merknad:** Ufravikelig prinsipp nr. 11 (redigerbare prompter) i kap. 34.
 
 #### REQ-0253 – Lagre redigert prompt
@@ -3356,12 +3362,13 @@ For hver generering skal programmet bevare systeminstruksjon, genereringsprompt,
 - **Kilde:** Kap. 17.4 (l. 714-725) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P2 · **Fase:** 5
 - **Moduler:** VERSION, PROMPT, QUALITYCOST, QUEUE · **Invarianter:** INV-13
 - **Avhengigheter:** REQ-0244
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Hver genereringsjobb har en uforanderlig post med alle ti feltene utfylt (eller eksplisitt tomme).
 - **Tester:**
   - dataintegritet: genereringslogg inneholder alle felt
   - enhet: postene kan ikke endres etter fullføring
+- **Implementering:** src/adapters/ai/generate-image.functions.ts
 
 #### REQ-0258 – Sammenligne genereringsforsøk
 Det skal være mulig å sammenligne genereringsforsøk.
@@ -5318,12 +5325,13 @@ API-nøkler og andre hemmeligheter skal håndteres sikkert.
 
 - **Kilde:** Kap. 28.3 (l. 1207-1208) · **Opprinnelse:** mandat · **Type:** sikkerhet · **Prioritet:** P1 · **Fase:** 1
 - **Moduler:** SECURITY, PROVIDER
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - API-nøkler lagres kryptert/i hemmelighetslager og eksponeres ikke i klientkode, eksportfiler eller backup i klartekst.
 - **Tester:**
   - integrasjon: nøkkel ikke lesbar fra klient
   - manuell: sikkerhetsgjennomgang
+- **Implementering:** src/adapters/ai/generate-image.functions.ts
 - **Merknad:** Nøkler brukes fra fase 5, men arkitekturen for hemmeligheter bør være på plass i fundamentet.
 
 #### REQ-0414 – Logging avslører ikke tilgangsopplysninger
@@ -6784,11 +6792,12 @@ Bare medlemmer med rett til å godkjenne kostnader skal kunne starte betalte AI-
 - **Kilde:** Beslutning DEC-0010, DEC-0018 · **Opprinnelse:** teknisk-anbefaling · **Type:** sikkerhet · **Prioritet:** P2 · **Fase:** 5
 - **Moduler:** COLLAB, QUALITYCOST, SECURITY · **Invarianter:** INV-12, INV-C3
 - **Avhengigheter:** REQ-0523
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - En redaktør uten kostnadsrett får ikke startet en betalt jobb; forsøket gir tydelig melding.
 - **Tester:**
   - integrasjon: backend avviser betalt jobb fra medlem uten kostnadsrett
+- **Implementering:** src/adapters/ai/generate-image.functions.ts
 - **Merknad:** Teknisk utledning av DEC-0003 (bekreftet). Selve løsningen er teknisk anbefaling (DEC-0010). Hvem som eier API-nøklene i et delt prosjekt er et åpent spørsmål (OPEN_QUESTIONS Q-01, DEC-0018 – midlertidig antakelse). DEC-0021: Mars betaler alle API-kostnader i testfasen; kostnadsdeling avtales utenfor appen.
 
 #### REQ-0529 – Fjerning av medlem er ikke-destruktiv
@@ -7252,12 +7261,122 @@ Dobbeltklikk på et lag i sceneeditoren skal åpne et vindu der brukeren kan vel
 - **Kilde:** Beslutning DEC-0044 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** COMPOSE, LIBRARY, UI
 - **Avhengigheter:** REQ-0557
-- **Status:** Under arbeid
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Dobbeltklikk på laget i lerretet eller lagslisten åpner bildevalget for laget.
   - Et valgt bilde brukes på laget med én gang; et opplastet bilde blir ny versjon i biblioteket.
   - AI-generering krever kostnadsgodkjenning før noe sendes (kommer med M5).
 - **Tester:**
   - visuell: bildevalg for lag
-- **Implementering:** src/app/scene-editor/LayerImageDialog.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/LayersPanel.tsx
+- **Implementering:** src/app/scene-editor/LayerImageDialog.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/LayersPanel.tsx, src/app/library/GenerateImagePanel.tsx, src/adapters/ai/generate-image.functions.ts
 - **Merknad:** AI-delen henger sammen med REQ for genereringsmotor og kostnadsport (fase 5).
+
+#### REQ-0560 – Lyd i scenene rundt: bla og bruk i scenen
+Når brukeren jobber med en scene, skal lydressursene som er brukt i scenen før, scenen før der osv. (og scenene etter) være lett synlige. Brukeren kan bla bakover og framover, lytte, og velge «Bruk i scenen» for å legge samme lyd inn i scenen.
+
+- **Kilde:** Beslutning DEC-0045 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
+- **Moduler:** AUDIO, COMPOSE, UI
+- **Avhengigheter:** REQ-0555
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Panelet viser lyden i forrige scene som standard (neste scene for første scene).
+  - Pilene blar scene for scene gjennom filmen.
+  - «Bruk i scenen» legger inn samme lyd med spor, volum, toninger og volumpunkter fra starten av scenen; lyd som allerede finnes, merkes «I bruk».
+- **Tester:**
+  - enhet: lyd i scenene rundt
+  - visuell: 52-scene-lyd
+- **Implementering:** src/app/scene-editor/NearbyAudioPanel.tsx, src/core/audio/index.ts
+
+#### REQ-0561 – Lyd som løper videre over flere scener
+Et lydklipp (f.eks. et musikkstykke) forankres med starten i én scene og kan merkes «løper videre», slik at det fortsetter over de neste scenene. Slike klipp vises i en egen varmgul farge. Klipp uten merket stopper ved slutten av scenen sin.
+
+- **Kilde:** Beslutning DEC-0045 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
+- **Moduler:** AUDIO, TIMELINE, UI
+- **Avhengigheter:** REQ-0555
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Lyd uten «løper videre» kuttes ved slutten av scenen den er festet til; en scene uten 2D-scene blir minst så lang som slik lyd.
+  - Lyd med «løper videre» spilles og eksporteres videre inn i scenene etter, og gjør ikke scenen sin lengre.
+  - Klippene og navnet deres vises varmgult i monteringen og sceneeditoren; ingen lydtype bruker den fargen.
+  - Lyd som løper inn fra en tidligere scene vises i sceneeditoren for scenen den høres i.
+- **Tester:**
+  - enhet: lyd som løper videre
+  - visuell: 50-montering-lyd, 55-scene-lyd-inn
+- **Implementering:** src/core/audio/index.ts, src/app/assembly/AudioTracks.tsx, src/app/assembly/AudioClipPanel.tsx, db/migrations/0010_audio_flow_generation.sql
+
+#### REQ-0562 – Lydprofil og volumpunkter
+Hvert lydklipp skal kunne åpnes i et vindu som viser lydprofilen (bølgeformen) i stort format med tidslinjal, slik at hendelser kan times mot lyden. Volumet skal kunne trekkes opp og ned med punkter på en kurve, som i After Effects.
+
+- **Kilde:** Beslutning DEC-0045 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
+- **Moduler:** AUDIO, UI
+- **Avhengigheter:** REQ-0555
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Dobbeltklikk på et lydklipp (montering eller sceneeditor) eller knappen i panelet åpner lydprofilen.
+  - Klikk på kurven legger til et punkt, dra flytter, dobbeltklikk eller Delete fjerner; piltaster justerer.
+  - Kurven (−60 til +12 dB, rett linje mellom punktene) ganges med klippets volum og toninger og brukes både i avspilling og eksport.
+  - Punktene lagres med klippet og kan angres.
+- **Tester:**
+  - enhet: volumpunkter
+  - visuell: 53-lydprofil
+- **Implementering:** src/app/audio/AudioClipEditor.tsx, src/engine/audio/mixer.ts, src/core/commands/apply.ts
+
+#### REQ-0563 – Lydbølger i sceneeditorens tidslinje
+Sceneeditorens tidslinje skal vise lyden i scenen som bølgeformer under lagene, på samme tidsakse som nøkkelbilder og kamerautsnitt, slik at bevegelser kan times mot lyden.
+
+- **Kilde:** Beslutning DEC-0045 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
+- **Moduler:** AUDIO, COMPOSE, UI
+- **Avhengigheter:** REQ-0562
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Scenens lyd og lyd som løper inn fra tidligere scener vises som egne rader.
+  - Klikk går til starten av klippet; dobbeltklikk åpner lydprofilen.
+- **Tester:**
+  - visuell: 52-scene-lyd
+- **Implementering:** src/app/scene-editor/SceneAudioRows.tsx, src/app/scene-editor/Timeline.tsx
+
+#### REQ-0564 – Aktivt kamerautsnitt er varmgult
+Bildeutsnittet kameraet viser i øyeblikket skal skifte farge fra grått til varmgult, både på lerretet og i kamerasporet i tidslinjen.
+
+- **Kilde:** Beslutning DEC-0045 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 4
+- **Moduler:** CAMERA, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Utsnittet under avspillingshodet tegnes varmgult på lerretet, også når det faller sammen med start- eller sluttrammen.
+  - Kamerautsnittet under avspillingshodet får varmgul ramme i kamerasporet.
+- **Tester:**
+  - visuell: 52-scene-lyd
+- **Implementering:** src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/Timeline.tsx, src/styles.css
+
+#### REQ-0565 – AI-bildegenerering med Lovable-kreditter (testfase)
+Brukeren skal kunne generere et nytt bilde av en ressurs med AI fra bildevalget for et lag. I testfasen brukes Lovable AI Gateway og Lovable-arbeidsområdets egne kreditter. Beskrivelsen (prompten) bygges fra ressurs, variant og stil, vises og kan endres før sending, og hver generering må bekreftes.
+
+- **Kilde:** Beslutning DEC-0045 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** PROVIDER, PROMPT, QUALITYCOST, LIBRARY, SECURITY
+- **Avhengigheter:** REQ-0559
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Beskrivelsen vises i et redigerbart felt og er på engelsk.
+  - Ingenting sendes før brukeren har bekreftet at genereringen bruker kreditter.
+  - Bare redaktører og eiere kan generere; grenser per bruker per time og per prosjekt per døgn.
+  - Hver generering logges (modell, prompt, forbilde, status, feil) i generation_jobs.
+  - Resultatet blir en ny versjon i biblioteket og tas i bruk på laget; det kan angres.
+  - Nøkkelen finnes bare på serveren.
+- **Tester:**
+  - enhet: AI-beskrivelse
+  - db: generation_jobs (0010)
+  - visuell: 54-ai-generering
+- **Implementering:** src/adapters/ai/generate-image.functions.ts, src/core/generation/prompt.ts, src/app/library/GenerateImagePanel.tsx, src/app/scene-editor/LayerImageDialog.tsx, db/migrations/0010_audio_flow_generation.sql
+- **Merknad:** Ikke verifisert mot ekte gateway ennå (krever LOVABLE_API_KEY i Lovable Cloud). Pris vises ikke før generering (REQ-0279 gjenstår).
+
+#### REQ-0566 – Brukerne kobler egne AI-tjenester senere
+Etter testfasen skal brukerne kunne koble Animatic Studio til ulike AI-tjenesters API-er (egne nøkler) som applikasjonen legger til rette for.
+
+- **Kilde:** Beslutning DEC-0045 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 5
+- **Moduler:** PROVIDER, SECURITY
+- **Avhengigheter:** REQ-0565; REQ-0269
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Brukeren kan velge leverandør og legge inn egen nøkkel på en sikker måte (REQ-0413).
+- **Tester:**
+  - planlagt

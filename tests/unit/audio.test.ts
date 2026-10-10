@@ -77,6 +77,8 @@ function fields(
     fadeInMs: 0,
     fadeOutMs: 0,
     muted: false,
+    continues: false,
+    volumeKeys: [],
     ...over,
   };
 }
@@ -325,6 +327,8 @@ describe("volumkurve", () => {
       gain: 0.5,
       fadeIn: 1,
       fadeOut: 2,
+      keys: [],
+      fullLength: 4,
     };
     expect(envelopeAt(it0, 9)).toBe(0);
     expect(envelopeAt(it0, 10)).toBe(0);

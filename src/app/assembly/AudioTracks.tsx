@@ -29,8 +29,9 @@ export const AUDIO_KIND_COLOR: Record<AudioKind, string> = {
   dialogue: "var(--chart-1)",
   narration: "var(--chart-2)",
   sfx: "var(--chart-3)",
-  ambience: "var(--chart-4)",
-  music: "var(--chart-5)",
+  // Gule og oransje toner er holdt av til lyd som løper videre (varmgul, DEC-0045)
+  ambience: "oklch(0.72 0.11 305)",
+  music: "oklch(0.72 0.13 355)",
 };
 
 /** Endring fra tidslinjen: ny start i filmen (s), start i lydfilen og lengde (s). */
@@ -81,6 +82,7 @@ export function AudioTracks({
   mutedKinds,
   onToggleMute,
   onAdd,
+  onOpen,
   loaded,
 }: {
   state: ProjectState;
@@ -96,6 +98,8 @@ export function AudioTracks({
   mutedKinds: ReadonlySet<AudioKind>;
   onToggleMute: (kind: AudioKind) => void;
   onAdd: (kind: AudioKind) => void;
+  /** Dobbeltklikk: åpne lydprofilen (DEC-0045). */
+  onOpen: (clipId: string) => void;
   loaded: number;
 }) {
   const fps = fpsToNumber(state.project.fps);
@@ -281,6 +285,7 @@ export function AudioTracks({
                     onMove={move}
                     onUp={end}
                     onCancel={() => setDrag(null)}
+                    onOpen={onOpen}
                   />
                 );
               })}
@@ -313,6 +318,7 @@ const AudioBlock = memo(function AudioBlock({
   onMove,
   onUp,
   onCancel,
+  onOpen,
 }: {
   item: FilmAudioItem;
   left: number;
@@ -329,9 +335,11 @@ const AudioBlock = memo(function AudioBlock({
   onMove: (e: React.PointerEvent<HTMLElement>) => void;
   onUp: (e: React.PointerEvent<HTMLElement>) => void;
   onCancel: () => void;
+  onOpen: (clipId: string) => void;
 }) {
   const c = item.clip;
-  const color = AUDIO_KIND_COLOR[c.kind];
+  // Lyd som løper videre over flere scener er varmgul (DEC-0045)
+  const color = c.continues ? "var(--accent-warm)" : AUDIO_KIND_COLOR[c.kind];
   const missing = item.version === null;
   const failed = item.version ? audioBank.hasFailed(item.version.mediaPath) : false;
   const label = c.name || "Lyd";
@@ -341,19 +349,20 @@ const AudioBlock = memo(function AudioBlock({
       role="button"
       tabIndex={selected ? 0 : -1}
       aria-pressed={selected}
-      aria-label={`${label}, ${formatSeconds(length)}${c.muted ? ", dempet" : ""}${
+      aria-label={`${label}, ${formatSeconds(length)}${c.continues ? ", løper videre" : ""}${c.muted ? ", dempet" : ""}${
         blockText ? `, replikk: ${blockText.slice(0, 60)}` : ""
       }`}
       title={`${label}\n${formatSeconds(length)}${
         blockText ? `\nReplikk: ${blockText.slice(0, 120)}` : ""
       }${missing ? "\nLydfilen mangler" : failed ? "\nLydfilen kunne ikke leses" : ""}${
-        editable ? "\nDra for å flytte, dra i kantene for å kutte" : ""
-      }`}
+        c.continues ? "\nLøper videre over flere scener" : ""
+      }${editable ? "\nDra for å flytte, dra i kantene for å kutte" : ""}\nDobbeltklikk for lydprofil og volumpunkter`}
       onPointerDown={(e) => onDown(e, item, "move")}
       onPointerMove={onMove}
       onPointerUp={onUp}
       onPointerCancel={onCancel}
       onLostPointerCapture={onCancel}
+      onDoubleClick={() => onOpen(c.id)}
       style={{
         left,
         width,
@@ -385,6 +394,11 @@ const AudioBlock = memo(function AudioBlock({
         <span className="relative z-[1] flex min-w-0 items-center gap-1 px-1.5 text-[11px] text-text-primary [text-shadow:0_0_3px_var(--surface-1)]">
           {c.blockId ? <Link2 className="size-3 shrink-0" aria-hidden /> : null}
           <span className="truncate">{label}</span>
+          {c.continues ? (
+            <span className="shrink-0 text-[10px] text-accent-warm" aria-hidden>
+              →
+            </span>
+          ) : null}
         </span>
       ) : null}
       {editable && width >= 14 ? (
@@ -418,7 +432,7 @@ const AudioBlock = memo(function AudioBlock({
 });
 
 /** Bølgeform for utsnittet av lydfilen klippet spiller. */
-function Wave({
+export function Wave({
   path,
   sourceIn,
   length,

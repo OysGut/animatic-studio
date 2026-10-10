@@ -1028,6 +1028,11 @@ try {
             fadeInMs: 100,
             fadeOutMs: 400,
             muted: false,
+            continues: false,
+            volumeKeys: [
+              { t: 0, db: 0 },
+              { t: 2000, db: -12 },
+            ],
           },
         },
       ],
@@ -1040,6 +1045,15 @@ try {
     assert(
       a.offsetMs === 1500 && a.lengthMs === 4000 && a.gainDb === -3 && a.blockId === block.id,
       `lydklippet avviker: ${JSON.stringify(a)}`,
+    );
+    // 0010: volumpunkter lagres og leses tilbake
+    assert(
+      JSON.stringify(a.volumeKeys) ===
+        JSON.stringify([
+          { t: 0, db: 0 },
+          { t: 2000, db: -12 },
+        ]),
+      `volumpunktene avviker: ${JSON.stringify(a.volumeKeys)}`,
     );
     // Flytte lyden til senere i scenen (revisjonskontroll som andre rader)
     st = await runCommand(back, ALICE, {
@@ -1098,6 +1112,45 @@ try {
       },
     });
     assert(!bad.ok, "en PNG ble godtatt som lyd");
+  });
+
+  await test("0010: logg for AI-generering kan bare skrives av serveren og leses av medlemmer", async () => {
+    const job = "abcdef00-0000-7000-8000-0000000000f1";
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) =>
+          tx`insert into public.generation_jobs (id, project_id, kind, provider, model, prompt, created_by) values (${job}, ${projectId}, 'image', 'lovable', 'openai/gpt-image-2', 'x', ${ALICE})`,
+      ),
+      /permission denied/,
+    );
+    await as(
+      "service_role",
+      null,
+      (tx) =>
+        tx`insert into public.generation_jobs (id, project_id, kind, provider, model, prompt, created_by) values (${job}, ${projectId}, 'image', 'lovable', 'openai/gpt-image-2', 'A girl in a red coat', ${ALICE})`,
+    );
+    const mine = await as(
+      "authenticated",
+      ALICE,
+      (tx) => tx`select status from public.generation_jobs where id = ${job}`,
+    );
+    assert(mine.length === 1 && mine[0]!["status"] === "running", "medlemmet ser ikke loggen");
+    const other = await as(
+      "authenticated",
+      CAROL,
+      (tx) => tx`select 1 from public.generation_jobs where id = ${job}`,
+    );
+    assert(other.length === 0, "ikke-medlem ser loggen");
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) => tx`update public.generation_jobs set status = 'done' where id = ${job}`,
+      ),
+      /permission denied/,
+    );
   });
 
   await test("0004: notater lagres med stempel, kan slettes og angres, og følger blokken", async () => {

@@ -25,6 +25,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   DEFAULT_COMPOSITION,
   audioClipFieldsOf,
+  audioVersion,
   clipAtFrame,
   filmAudio,
   filmClips,
@@ -44,6 +45,7 @@ import { useAudioLoaded, useAudioPlayback } from "@/app/audio/use-audio-playback
 import { AudioTracks, type AudioChange } from "./AudioTracks";
 import { AudioClipPanel } from "./AudioClipPanel";
 import { AddAudioDialog } from "./AddAudioDialog";
+import { AudioClipEditor } from "@/app/audio/AudioClipEditor";
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { SaveIndicator } from "@/app/script/ScriptWorkspace";
@@ -264,18 +266,27 @@ function Assembly({
     [state.audioClips, state.blocks, clips, fps, run],
   );
 
-  function patchAudio(label: string, patch: Partial<AudioClipFields>) {
-    if (!selectedAudio) return;
+  function patchAudioClip(clipId: string, label: string, patch: Partial<AudioClipFields>) {
+    const a = state.audioClips[clipId];
+    if (!a) return;
     run(
       {
         type: "UpdateAudioClips",
-        clips: [
-          { clipId: selectedAudio.id, fields: { ...audioClipFieldsOf(selectedAudio), ...patch } },
-        ],
+        clips: [{ clipId: a.id, fields: { ...audioClipFieldsOf(a), ...patch } }],
       },
       label,
     );
   }
+  function patchAudio(label: string, patch: Partial<AudioClipFields>) {
+    if (selectedAudio) patchAudioClip(selectedAudio.id, label, patch);
+  }
+  /** Lydprofilen som er åpen (DEC-0045). */
+  const [profileId, setProfileId] = useState<string | null>(null);
+  const profileClip = profileId ? (state.audioClips[profileId] ?? null) : null;
+  const profileScene = profileClip
+    ? clips.find((c) => c.occurrenceId === profileClip.occurrenceId)
+    : undefined;
+  const profileVersion = profileClip ? audioVersion(state, profileClip) : null;
 
   function removeAudio(clipId: string) {
     if (
@@ -571,6 +582,7 @@ function Assembly({
               editable={editable}
               onChange={patchAudio}
               onRemove={() => removeAudio(selectedAudio.id)}
+              onOpenProfile={() => setProfileId(selectedAudio.id)}
             />
           ) : (
             <ClipPanel
@@ -630,6 +642,10 @@ function Assembly({
               })
             }
             onAdd={(k) => setAddAudio(k)}
+            onOpen={(id) => {
+              setSelectedAudioId(id);
+              setProfileId(id);
+            }}
             loaded={audioLoaded}
           />
         )}
@@ -646,6 +662,18 @@ function Assembly({
         audioItems={audioItems}
         audioUrls={audioUrls.data ?? null}
         mutedKinds={mutedKinds}
+      />
+      <AudioClipEditor
+        open={profileClip !== null}
+        onOpenChange={(o) => {
+          if (!o) setProfileId(null);
+        }}
+        state={state}
+        clip={profileClip}
+        sceneSeconds={profileScene ? framesToSeconds(profileScene.durationFrames, fps) : null}
+        editable={editable}
+        url={profileVersion ? (audioUrls.data?.[profileVersion.mediaPath] ?? null) : null}
+        onChange={(label, patch) => profileClip && patchAudioClip(profileClip.id, label, patch)}
       />
       <AddAudioDialog
         open={addAudio !== null}

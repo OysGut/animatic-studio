@@ -3,7 +3,7 @@
  * tid med volum og inn-/uttoning. Samme plassering brukes ved avspilling (AudioContext) og eksport
  * (OfflineAudioContext), så det du hører er det som eksporteres. Bare på klienten (Web Audio).
  */
-import type { AudioKind, FilmAudioItem } from "@/core";
+import { volumeKeyDbAt, type AudioKind, type FilmAudioItem } from "@/core";
 
 /** Dekodede lydfiler per mediesti, delt mellom avspilling og eksport. */
 export class AudioBank {
@@ -65,7 +65,8 @@ export function envelopeAt(it: FilmAudioItem, t: number): number {
     fi *= k;
     fo *= k;
   }
-  let g = it.gain;
+  // Volumpunkter (dB, som i After Effects) ganges med klippets volum
+  let g = it.gain * (it.keys.length ? Math.pow(10, volumeKeyDbAt(it.keys, t - it.start) / 20) : 1);
   if (fi > 0 && t < it.start + fi) g *= (t - it.start) / fi;
   if (fo > 0 && t > end - fo) g *= (end - t) / fo;
   return Math.max(0, g);
@@ -132,7 +133,16 @@ export function scheduleOne(
     fi *= k;
     fo *= k;
   }
-  const points = [t0, it.start + fi, it.start + it.length - fo, t0 + dur]
+  // Volumpunktene, og mellompunkter hvert 100. ms mellom dem (kurven er rett i dB, ikke i styrke)
+  const keyTimes: number[] = [];
+  for (let i = 0; i < it.keys.length; i++) {
+    const k = it.keys[i]!;
+    keyTimes.push(it.start + k.t);
+    const next = it.keys[i + 1];
+    if (next && next.db !== k.db)
+      for (let x = k.t + 0.1; x < next.t; x += 0.1) keyTimes.push(it.start + x);
+  }
+  const points = [t0, it.start + fi, it.start + it.length - fo, t0 + dur, ...keyTimes]
     .filter((t) => t >= t0 && t <= t0 + dur)
     .sort((a, b) => a - b);
   gain.gain.setValueAtTime(envelopeAt(it, t0), when);

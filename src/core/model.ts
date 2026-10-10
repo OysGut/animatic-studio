@@ -379,7 +379,22 @@ export interface AudioClip extends Entity<AudioClipId> {
   readonly fadeInMs: number;
   readonly fadeOutMs: number;
   readonly muted: boolean;
+  /**
+   * Løper videre over flere scener (DEC-0045): starten er festet i scenen, men lyden fortsetter inn i de
+   * neste scenene. Ellers stopper lyden ved slutten av scenen sin.
+   */
+  readonly continues: boolean;
+  /** Volumpunkter (DEC-0045): nivå i dB på tidspunkter fra klippets start (ms), som i After Effects. */
+  readonly volumeKeys: readonly VolumeKey[];
   readonly removed: boolean;
+}
+
+/** Et volumpunkt i et lydklipp. */
+export interface VolumeKey {
+  /** Tid fra klippets start (ms). */
+  readonly t: number;
+  /** Nivå i desibel (0 = uendret). */
+  readonly db: number;
 }
 
 export interface ProjectState {

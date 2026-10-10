@@ -110,6 +110,16 @@ const AUDIO_COMMANDS = new Set<string>([
   "SetAudioClipsRemoved",
 ]);
 
+/** Lyd over flere scener og volumpunkter krever migrasjon 0010 (ellers ville de gått tapt i stillhet). */
+function needsAudioFlowSchema(command: { type: string } & Record<string, unknown>): boolean {
+  const clips =
+    (command["clips"] as { fields?: { continues?: boolean; volumeKeys?: unknown[] } }[]) ?? [];
+  return (
+    (command.type === "AddAudioClips" || command.type === "UpdateAudioClips") &&
+    clips.some((c) => c.fields?.continues === true || (c.fields?.volumeKeys?.length ?? 0) > 0)
+  );
+}
+
 /** Lydfiler i biblioteket krever også migrasjon 0009 (ny ressurstype og lydformater). */
 function needsAudioSchema(command: { type: string } & Record<string, unknown>): boolean {
   if (AUDIO_COMMANDS.has(command.type)) return true;
@@ -297,6 +307,16 @@ export const runCommand = createServerFn({ method: "POST" })
           code: "schema",
           message:
             "Databasen mangler lyd. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0009.",
+        };
+    }
+    if (needsAudioFlowSchema(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 10)
+        return {
+          ok: false,
+          code: "schema",
+          message:
+            "Databasen mangler lyd over flere scener og volumpunkter. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0010.",
         };
     }
     // 2D-sceneeditoren krever migrasjon 0007

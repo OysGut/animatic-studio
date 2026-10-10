@@ -39,6 +39,7 @@ import type {
   TakeKind,
   TakeStatus,
   VisualStyle,
+  VolumeKey,
 } from "../model";
 import type { Rational } from "../time";
 
@@ -58,6 +59,8 @@ export interface AudioClipFields {
   readonly fadeInMs: number;
   readonly fadeOutMs: number;
   readonly muted: boolean;
+  readonly continues: boolean;
+  readonly volumeKeys: readonly VolumeKey[];
 }
 
 /** Redigerbare felter på en 2D-scene (format, varighet, bakgrunn). */

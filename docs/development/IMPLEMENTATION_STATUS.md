@@ -9,7 +9,9 @@ Oppdatert: 2026-10-09 (økt 4). Detaljert status per krav: `docs/product/TRACEAB
 - **M2 Manus del 2:** levert og testet av Mars (versjoner, sammenligning, historisk nummerering, søk/filter, «Vis kun valgt scene», varighet, tilstedeværelse). Migrasjon 0003 kjørt.
 - **Mars' ønsker etter M2 (DEC-0029, DEC-0031):** rekkefølge/synlighet bare i redigeringsmodus, flyttede scener markert til ny versjon, fyldigere sammenligning (linje for linje), notater i manus (på ord og som nål, stempel, sletting med advarsel, vis/skjul, søk, eksport/import som Word-kommentarer og PDF-merknader), søketreff markert, scenelisten følger manuset, valgt scene øverst. Kode og tester ferdig.
 - **M3 del 1 Ressursbibliotek (DEC-0030):** karakterer, objekter, lokasjoner, dyr, miljøer; alternative navn; visuelle varianter med bildeversjoner og godkjenning; «brukt i scener»; forslag fra manuset; karakterfilter med alle navn. Kode og tester ferdig. Venter på push og migrasjon 0004.
-- **Krav:** 94 verifisert, 6 implementert – ikke verifisert, 25 under arbeid, 418 ikke startet (av 543).
+- **M3 del 2 Sceneeditor og M4 Montering og lyd (DEC-0035–0045):** 2D-scener med lag, nøkkelbilder og kamera; filmtidslinje og eksport av animatic; lydspor, lyd over flere scener, lydprofil med volumpunkter. Se `SESSION_HANDOVER.md`.
+- **M5 del 1 AI-bilder (DEC-0045):** generering av ressursbilder via Lovable AI Gateway med synlig prompt, bekreftelse, grenser og logg. Ikke prøvd mot ekte gateway ennå (KI-61).
+- **Krav:** 156 verifisert, 13 implementert – ikke verifisert, 49 under arbeid, 348 ikke startet (av 566).
 
 ## Tester (alle grønne 2026-10-09)
 | Testsett | Antall | Kjøres med |
@@ -39,5 +41,5 @@ Oppdatert: 2026-10-09 (økt 4). Detaljert status per krav: `docs/product/TRACEAB
 | SECURITY | Under arbeid | RLS, `apply_changes` bare for service_role, inverskommandoer bare fra egen historikk, privat bøtte for originaler |
 | TIMELINE / CONTINUITY | Under arbeid | Tidsmodell, fortellingstid; filmtidslinjen «Montering» med flytting, lengder, avspilling av hele filmen (DEC-0043) |
 | UI | Under arbeid | Prosjekt, manus (navigator, sider, inspektør, import, eksport, versjoner, notater, søketreff), ressursbibliotek |
-| AUDIO | Under arbeid | Lydfiler i biblioteket, lydspor i monteringen (dialog, forteller, effekter, atmosfære, musikk), Web Audio-avspilling og miksing i eksporten (DEC-0044) |
+| AUDIO | Under arbeid | Lydfiler i biblioteket, lydspor i monteringen (dialog, forteller, effekter, atmosfære, musikk), Web Audio-avspilling og miksing i eksporten (DEC-0044); lyd som løper over flere scener, lydprofil med volumpunkter, lyd i scenene rundt og bølgeformer i sceneeditoren (DEC-0045) |
 | Øvrige moduler | Ikke startet | – |

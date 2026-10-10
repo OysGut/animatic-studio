@@ -33,23 +33,23 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 |---|---|---|---|---|---|
 | CORE | Project Core | 118 | 57 | 56 | 40 |
 | SCRIPT | Screenplay Engine | 127 | 32 | 78 | 63 |
-| TIMELINE | Timeline & Assembly Engine | 94 | 28 | 36 | 23 |
-| LIBRARY | Resource Library | 58 | 9 | 23 | 18 |
+| TIMELINE | Timeline & Assembly Engine | 95 | 28 | 37 | 24 |
+| LIBRARY | Resource Library | 59 | 9 | 24 | 18 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 2 | 2 |
-| COMPOSE | 2D Composition Engine | 47 | 14 | 26 | 21 |
-| CAMERA | Camera & Motion Engine | 29 | 2 | 23 | 19 |
-| AUDIO | Audio Engine | 32 | 1 | 16 | 9 |
-| PROMPT | Prompt Orchestration Engine | 45 | 14 | 2 | 1 |
-| PROVIDER | Provider Adapters | 23 | 6 | 2 | 2 |
-| QUALITYCOST | Quality & Cost Engine | 25 | 6 | 1 | 1 |
-| QUEUE | Render Queue | 34 | 12 | 3 | 3 |
-| VERSION | Version & Dependency Engine | 90 | 36 | 27 | 13 |
+| COMPOSE | 2D Composition Engine | 49 | 14 | 28 | 23 |
+| CAMERA | Camera & Motion Engine | 30 | 2 | 24 | 20 |
+| AUDIO | Audio Engine | 36 | 1 | 20 | 13 |
+| PROMPT | Prompt Orchestration Engine | 46 | 14 | 9 | 1 |
+| PROVIDER | Provider Adapters | 25 | 6 | 5 | 2 |
+| QUALITYCOST | Quality & Cost Engine | 26 | 6 | 5 | 1 |
+| QUEUE | Render Queue | 34 | 12 | 5 | 3 |
+| VERSION | Version & Dependency Engine | 90 | 36 | 28 | 13 |
 | L10N | Localization Engine | 38 | 4 | 3 | 2 |
 | PRESENT | Presentation Engine | 30 | 3 | 1 | 1 |
 | EXPORT | Export Engine | 54 | 12 | 27 | 23 |
-| SECURITY | Security & Storage | 26 | 5 | 13 | 9 |
-| COLLAB | Collaboration & Access | 10 | 0 | 8 | 6 |
-| UI | Brukergrensesnitt og designsystem | 130 | 19 | 57 | 47 |
+| SECURITY | Security & Storage | 28 | 5 | 16 | 9 |
+| COLLAB | Collaboration & Access | 10 | 0 | 9 | 6 |
+| UI | Brukergrensesnitt og designsystem | 135 | 19 | 65 | 52 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 5 | 1 |
 
 ## Dekning per fase
@@ -59,8 +59,8 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | 1 | 70 | 27 |
 | 2 | 97 | 61 |
 | 3 | 63 | 41 |
-| 4 | 69 | 22 |
-| 5 | 70 | 0 |
+| 4 | 74 | 27 |
+| 5 | 72 | 0 |
 | 6 | 48 | 0 |
 | 7 | 63 | 0 |
 | 8 | 39 | 0 |
@@ -84,7 +84,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0012 | Kap. 1.3 (l. 56) | UI | src/styles.css | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0013 | Kap. 1.3 (l. 57) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0014 | Kap. 1.3 (l. 58) | UI, L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0015 | Kap. 1.3 (l. 59) | PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0015 | Kap. 1.3 (l. 59) | PROMPT | src/adapters/ai/generate-image.functions.ts | 1 | – | Under arbeid | 2026-10-09 DEC-0045: Under arbeid: bildebeskrivelser for AI er på engelsk (src/core/generation/prompt.ts) |
 | REQ-0016 | Kap. 2 (l. 62-66) | CORE, SCRIPT, TIMELINE, COMPOSE, AUDIO | src/core/model.ts, src/core/views.ts | 2 | tests/invariants/random-sequences.test.ts::INV-01: manus og film har alltid samme aktive rekkefølge i alle produksjoner | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
 | REQ-0017 | Kap. 2 (l. 67) | SCRIPT, TIMELINE, CORE | src/core/commands/apply.ts#MoveOccurrence, src/core/views.ts, src/app/script/SceneNavigator.tsx | 1 | tests/unit/commands.test.ts::én kommando endrer rekkefølgen i både manus og film, uten nye ID-er, tests/visual/screens.mjs::06-manus (dra-og-slipp i scenenavigatoren, manuell kontroll 2026-10-09) | Verifisert | 2026-10-09 DEC-0023: M2: flytting i scenenavigatoren (dra-og-slipp, Alt+pil); status Verifisert |
 | REQ-0018 | Kap. 2 (l. 68) | TIMELINE, SCRIPT, CORE | src/app/assembly/AssemblyWorkspace.tsx, src/core/assembly/film.ts | 1 | tests/unit/assembly.test.ts::tidskodene beregnes på nytt når en scene flyttes, tests/visual/screens.mjs::46-montering-flytt | Verifisert | 2026-10-09 DEC-0043: Filmtidslinjen flytter scener med MoveOccurrence (samme kommando som manuset) |
@@ -98,7 +98,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0026 | Kap. 2.1 (l. 81) | VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0027 | Kap. 2.2 (l. 83-84) | VERSION, CORE | src/core/commands/apply.ts, db/migrations/0001_core.sql#protect_takes | 1 | tests/invariants/random-sequences.test.ts::INV-07/13: produsert materiale og historikk endres eller slettes aldri, tests/db/run-db-tests.ts::INV-07: produsert materiale kan ikke slettes eller overskrives | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
 | REQ-0028 | Kap. 2.2 (l. 83, 85) | VERSION, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0029 | Kap. 2.2 (l. 83, 86) | QUEUE, QUALITYCOST, PROVIDER | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0029 | Kap. 2.2 (l. 83, 86) | QUEUE, QUALITYCOST, PROVIDER | src/adapters/ai/generate-image.functions.ts | 1 | – | Under arbeid | 2026-10-09 DEC-0045: Under arbeid: AI-bilder genereres bare etter eksplisitt bekreftelse per generering |
 | REQ-0030 | Kap. 2.2 (l. 83, 87) | VERSION, TIMELINE | src/core/commands/apply.ts | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0031 | Kap. 2.2 (l. 83, 88) | CORE | src/core/commands/apply.ts#assertCanEditVariant, src/core/invariants.ts | 1 | tests/invariants/random-sequences.test.ts::INV-04: kommandoer i én produksjon endrer aldri en annen produksjons forekomster | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
 | REQ-0032 | Kap. 2.2 (l. 83, 89) | VERSION, SCRIPT | db/migrations/0003_script_versions.sql, src/core/screenplay/versions.ts | 1 | tests/db/run-db-tests.ts::0003: manusversjon er et uforanderlig øyeblikksbilde lik kjernens, med løpenummer og forelder, tests/unit/versions.test.ts | Verifisert | 2026-10-09 DEC-0028: Uforanderlige øyeblikksbilder som kan vises og eksporteres; status Verifisert |
@@ -316,17 +316,17 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0244 | Kap. 17 (l. 678) | PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0245 | Kap. 17.1 (l. 679-698) | PROMPT, CONTINUITY, LIBRARY, COMPOSE, CAMERA | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0246 | Kap. 17.1 (l. 699) | PROMPT, PROVIDER | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0247 | Kap. 17.2 (l. 700-702) | PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0247 | Kap. 17.2 (l. 700-702) | PROMPT | src/adapters/ai/generate-image.functions.ts | 1 | – | Under arbeid | 2026-10-09 DEC-0045: Under arbeid: bildebeskrivelser for AI er på engelsk |
 | REQ-0248 | Kap. 17.2 (l. 703) | PROMPT, L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0249 | Kap. 17.2 (l. 704) | PROMPT, L10N | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0250 | Kap. 17.3 (l. 706-707) | PROMPT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0251 | Kap. 17.3 (l. 708) | PROMPT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0252 | Kap. 17.3 (l. 709) | PROMPT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0250 | Kap. 17.3 (l. 706-707) | PROMPT, UI | src/adapters/ai/generate-image.functions.ts | 1 | – | Under arbeid | 2026-10-09 DEC-0045: Under arbeid: beskrivelsen for AI-bilder vises før sending |
+| REQ-0251 | Kap. 17.3 (l. 708) | PROMPT, UI | src/adapters/ai/generate-image.functions.ts | 1 | – | Under arbeid | 2026-10-09 DEC-0045: Under arbeid: beskrivelsen for AI-bilder kan leses i bildevalget |
+| REQ-0252 | Kap. 17.3 (l. 709) | PROMPT, UI | src/adapters/ai/generate-image.functions.ts | 1 | – | Under arbeid | 2026-10-09 DEC-0045: Under arbeid: beskrivelsen for AI-bilder kan redigeres før sending |
 | REQ-0253 | Kap. 17.3 (l. 710) | PROMPT, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0254 | Kap. 17.3 (l. 711) | PROMPT, QUEUE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0255 | Kap. 17.3 (l. 712) | PROMPT, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0256 | Kap. 17.3 (l. 713) | PROMPT, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0257 | Kap. 17.4 (l. 714-725) | VERSION, PROMPT, QUALITYCOST, QUEUE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0257 | Kap. 17.4 (l. 714-725) | VERSION, PROMPT, QUALITYCOST, QUEUE | src/adapters/ai/generate-image.functions.ts | 2 | – | Under arbeid | 2026-10-09 DEC-0045: Under arbeid: hver AI-generering logges i generation_jobs |
 | REQ-0258 | Kap. 17.4 (l. 726) | VERSION, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0259 | Kap. 18 (l. 728-730) | PROMPT, QUEUE, PROVIDER | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0260 | Kap. 18.1 (l. 731-732) | PROMPT, TIMELINE, QUEUE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -482,7 +482,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0410 | Kap. 28.1 (l. 1195) | SECURITY, CORE | src/adapters/storage/commands.functions.ts, src/adapters/storage/project-rows.ts | 1 | tests/db/run-db-tests.ts::DEC-0022: kommandoer fra kjernen lagres atomisk og leses tilbake identisk, tests/unit/storage-contract.test.ts::loadProjectRows spør bare etter tabeller og kolonner som finnes | Verifisert | 2026-10-08 DEC-0022: Feil KI-18 rettet; kontrakttest lagt til |
 | REQ-0411 | Kap. 28.2 (l. 1196-1197) | EXPORT, SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0412 | Kap. 28.2 (l. 1198-1206) | EXPORT, SECURITY, VERSION | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0413 | Kap. 28.3 (l. 1207-1208) | SECURITY, PROVIDER | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0413 | Kap. 28.3 (l. 1207-1208) | SECURITY, PROVIDER | src/adapters/ai/generate-image.functions.ts | 2 | – | Under arbeid | 2026-10-09 DEC-0045: Under arbeid: Lovable-nøkkelen ligger bare på serveren |
 | REQ-0414 | Kap. 28.3 (l. 1209) | SECURITY | src/adapters/storage/commands.functions.ts | 2 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0415 | Kap. 28.4 (l. 1210-1218) | SECURITY, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0416 | Kap. 29 (l. 1220-1221) | EXPORT | src/engine/export/animatic.ts | 1 | tests/visual/screens.mjs::48-montering-eksport-ferdig | Verifisert | 2026-10-09 DEC-0043: Eksportmodul uten AI |
@@ -597,7 +597,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0525 | Beslutning DEC-0010 | COLLAB, VERSION | db/migrations/0001_core.sql#change_log | 1 | tests/db/run-db-tests.ts::redigering av replikk gir ny historikkrad med forfatter | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
 | REQ-0526 | Beslutning DEC-0010 | COLLAB, CORE, VERSION | src/core/commands/apply.ts, db/migrations/0001_core.sql#apply_changes | 2 | tests/unit/commands.test.ts::en skriving basert på gammel revisjon avvises og endrer ingenting, tests/db/run-db-tests.ts::INV-C1: en endring basert på gammel revisjon avvises av databasen (P0409) | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
 | REQ-0527 | Beslutning DEC-0010 | COLLAB, VERSION, UI | src/core/commands/apply.ts | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
-| REQ-0528 | Beslutning DEC-0010, DEC-0018 | COLLAB, QUALITYCOST, SECURITY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0010: Revisjon: kilde satt til DEC-0010 (teknisk anbefaling) |
+| REQ-0528 | Beslutning DEC-0010, DEC-0018 | COLLAB, QUALITYCOST, SECURITY | src/adapters/ai/generate-image.functions.ts | 1 | – | Under arbeid | 2026-10-09 DEC-0045: Under arbeid: bare redaktører og eiere kan generere |
 | REQ-0529 | Beslutning DEC-0010 | COLLAB, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0010: Revisjon: kilde satt til DEC-0010 (teknisk anbefaling) |
 | REQ-0530 | Kap. 1 (l. 6) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet (lagt til ved dekningskontroll – linje 6 manglet) |
 | REQ-0531 | Beslutning DEC-0027 | SCRIPT, UI | src/core/screenplay/filter.ts#filterPages, src/app/script/ScriptWorkspace.tsx | 2 | tests/unit/filter.test.ts::viser bare den valgte scenens linjer med samme sidetall som i hele manuset, tests/visual/screens.mjs::16-vis-kun-valgt-scene | Verifisert | 2026-10-09 DEC-0027: Bygget i M2 del 2; status Verifisert |
@@ -628,4 +628,11 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0556 | Beslutning DEC-0041 | COMPOSE, UI | src/app/scene-editor/PreviewWindow.tsx, src/app/scene-editor/SceneEditorWorkspace.tsx | 1 | tests/visual/screens.mjs (44-forhandsvisning-eget-vindu) | Verifisert | 2026-10-09 DEC-0041: Opprettet etter beslutning fra Mars og bygget samme dag |
 | REQ-0557 | Beslutning DEC-0042 | COMPOSE, UI | src/app/scene-editor/PreviewWindow.tsx | 1 | tests/visual/screens.mjs::43-forhandsvisning-flyttet-zoom | Verifisert | 2026-10-09 DEC-0042: Opprettet etter beslutning fra Mars og bygget samme dag |
 | REQ-0558 | Beslutning DEC-0044 | AUDIO, TIMELINE | src/core/assembly/film.ts, src/core/composition/animate.ts, src/app/audio/use-audio-playback.ts | 1 | tests/unit/audio.test.ts::følger scenen når den flyttes, og en scene uten 2D-scene blir minst så lang som lyden | Verifisert | 2026-10-09 DEC-0044: Opprettet etter beslutning fra Mars og bygget samme dag |
-| REQ-0559 | Beslutning DEC-0044 | COMPOSE, LIBRARY, UI | src/app/scene-editor/LayerImageDialog.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/LayersPanel.tsx | 1 | tests/visual/screens.mjs::49-lag-bilde | Under arbeid | 2026-10-09 DEC-0044: Opprettet etter beslutning fra Mars; velg og last opp bygget, AI-generering venter på M5 (kostnader) |
+| REQ-0559 | Beslutning DEC-0044 | COMPOSE, LIBRARY, UI | src/app/scene-editor/LayerImageDialog.tsx, src/app/scene-editor/Stage.tsx, src/app/scene-editor/LayersPanel.tsx, src/app/library/GenerateImagePanel.tsx, src/adapters/ai/generate-image.functions.ts | 1 | tests/visual/screens.mjs::49-lag-bilde, tests/visual/screens.mjs::54-ai-generering | Implementert – ikke verifisert | 2026-10-09 DEC-0045: AI-generering bygget (Lovable-kreditter, bekreftelse per generering); ikke prøvd mot ekte gateway ennå |
+| REQ-0560 | Beslutning DEC-0045 | AUDIO, COMPOSE, UI | src/app/scene-editor/NearbyAudioPanel.tsx, src/core/audio/index.ts | 2 | tests/unit/audio-flow.test.ts::lyd i scenene rundt, tests/visual/screens.mjs::52-scene-lyd | Verifisert | 2026-10-09 DEC-0045: Opprettet etter beslutning fra Mars |
+| REQ-0561 | Beslutning DEC-0045 | AUDIO, TIMELINE, UI | src/core/audio/index.ts, src/app/assembly/AudioTracks.tsx, src/app/assembly/AudioClipPanel.tsx, db/migrations/0010_audio_flow_generation.sql | 2 | tests/unit/audio-flow.test.ts::lyd som løper videre, tests/db/run-db-tests.ts::0009/0010, tests/visual/screens.mjs::50-montering-lyd | Verifisert | 2026-10-09 DEC-0045: Opprettet etter beslutning fra Mars |
+| REQ-0562 | Beslutning DEC-0045 | AUDIO, UI | src/app/audio/AudioClipEditor.tsx, src/engine/audio/mixer.ts, src/core/commands/apply.ts | 2 | tests/unit/audio-flow.test.ts::volumpunkter, tests/visual/screens.mjs::53-lydprofil | Verifisert | 2026-10-09 DEC-0045: Opprettet etter beslutning fra Mars |
+| REQ-0563 | Beslutning DEC-0045 | AUDIO, COMPOSE, UI | src/app/scene-editor/SceneAudioRows.tsx, src/app/scene-editor/Timeline.tsx | 1 | tests/visual/screens.mjs::52-scene-lyd | Verifisert | 2026-10-09 DEC-0045: Opprettet etter beslutning fra Mars |
+| REQ-0564 | Beslutning DEC-0045 | CAMERA, UI | src/app/scene-editor/camera-overlay.ts, src/app/scene-editor/Timeline.tsx, src/styles.css | 1 | tests/visual/screens.mjs::52-scene-lyd | Verifisert | 2026-10-09 DEC-0045: Opprettet etter beslutning fra Mars |
+| REQ-0565 | Beslutning DEC-0045 | PROVIDER, PROMPT, QUALITYCOST, LIBRARY, SECURITY | src/adapters/ai/generate-image.functions.ts, src/core/generation/prompt.ts, src/app/library/GenerateImagePanel.tsx, src/app/scene-editor/LayerImageDialog.tsx, db/migrations/0010_audio_flow_generation.sql | 3 | tests/unit/audio-flow.test.ts::AI-beskrivelse, tests/db/run-db-tests.ts::0010, tests/visual/screens.mjs::54-ai-generering | Implementert – ikke verifisert | 2026-10-09 DEC-0045: Opprettet etter beslutning fra Mars (godkjente bruk av Lovable-kreditter) |
+| REQ-0566 | Beslutning DEC-0045 | PROVIDER, SECURITY | – | 1 | – | Ikke startet | 2026-10-09 DEC-0045: Opprettet etter beslutning fra Mars |

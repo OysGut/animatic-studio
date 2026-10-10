@@ -1,13 +1,13 @@
 /**
  * Bilde for et lag (DEC-0044): dobbeltklikk på et lag i lerretet eller i lagslisten. Velg et annet bilde av
  * samme ressurs (alle varianter og versjoner), last opp et nytt (blir en ny versjon i biblioteket og tas i
- * bruk med én gang), eller – senere – generer et nytt med AI. AI-generering koster penger og kommer først
- * med kostnadsgodkjenning (M5, mandat 17–19); knappen forklarer dette.
+ * bruk med én gang), eller generer et nytt med AI (DEC-0045: Lovable-kreditter, bekreftes for hver
+ * generering).
  *
  * Lag uten ressurs (fargeflater) kan kobles til en ressurs fra biblioteket her.
  */
 import { Link } from "@tanstack/react-router";
-import { Check, ImageOff, Library, Loader2, Sparkles, Upload } from "lucide-react";
+import { Check, ImageOff, Library, Loader2, Upload } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import {
   ASSET_KIND_LABEL,
@@ -18,6 +18,7 @@ import {
   sortedAssets,
   variantsOf,
   versionsOf,
+  type AssetMedia,
   type AssetVariant,
   type CompositionLayer,
   type LayerFields,
@@ -25,6 +26,7 @@ import {
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { uploadAssetImage, useImageUrls } from "@/app/library/asset-images";
+import { GenerateImagePanel } from "@/app/library/GenerateImagePanel";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -141,6 +143,49 @@ function Body({
     return err === null;
   }
 
+  /** Lagrer et nytt bilde (opplastet eller generert) som versjon og tar det i bruk på laget. */
+  async function saveVersion(
+    versionId: string,
+    media: AssetMedia,
+    note: string,
+    label: string,
+  ): Promise<string | null> {
+    if (!asset) return "Laget har ingen ressurs.";
+    let variantId = target;
+    if (!variantId || !state.assetVariants[variantId]) {
+      // Ressursen har ingen variant ennå: lag en
+      variantId = newId<"asset_variant">();
+      const r = await cmds.runAndWait(
+        {
+          type: "CreateAssetVariant",
+          variantId: variantId as never,
+          assetId: asset.id,
+          fields: { name: "Animatic", style: "animatic", appearance: "" },
+        },
+        `Ny variant for «${asset.name}»`,
+      );
+      if (r.error) return r.error;
+      // Et nytt forsøk bruker den samme varianten
+      setTarget(variantId);
+    }
+    const r = await cmds.runAndWait(
+      {
+        type: "AddAssetVersion",
+        versionId: versionId as never,
+        variantId: variantId as never,
+        media,
+        note,
+      },
+      label,
+    );
+    if (r.error) return r.error;
+    const ok = setLayer("Bruk nytt bilde", {
+      assetVariantId: variantId as LayerFields["assetVariantId"],
+      versionId: versionId as LayerFields["versionId"],
+    });
+    return ok ? null : "Bildet ble lagret, men kunne ikke tas i bruk på laget.";
+  }
+
   async function upload(file: File) {
     if (!asset) return;
     setError(null);
@@ -148,38 +193,13 @@ function Body({
     try {
       // Last opp først: feiler opplastingen, lages ingenting
       const { versionId, media } = await uploadAssetImage(projectId, asset.id, file);
-      let variantId = target;
-      if (!variantId || !state.assetVariants[variantId]) {
-        // Ressursen har ingen variant ennå: lag en
-        variantId = newId<"asset_variant">();
-        const r = await cmds.runAndWait(
-          {
-            type: "CreateAssetVariant",
-            variantId: variantId as never,
-            assetId: asset.id,
-            fields: { name: "Animatic", style: "animatic", appearance: "" },
-          },
-          `Ny variant for «${asset.name}»`,
-        );
-        if (r.error) throw new Error(r.error);
-        // Et nytt forsøk bruker den samme varianten
-        setTarget(variantId);
-      }
-      const r = await cmds.runAndWait(
-        {
-          type: "AddAssetVersion",
-          versionId: versionId as never,
-          variantId: variantId as never,
-          media,
-          note: "Lastet opp fra sceneeditoren",
-        },
+      const err = await saveVersion(
+        versionId,
+        media,
+        "Lastet opp fra sceneeditoren",
         `Nytt bilde av «${asset.name}»`,
       );
-      if (r.error) throw new Error(r.error);
-      setLayer("Bruk nytt bilde", {
-        assetVariantId: variantId as LayerFields["assetVariantId"],
-        versionId: versionId as LayerFields["versionId"],
-      });
+      if (err) setError(err);
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -379,20 +399,23 @@ function Body({
                 {busy ? "Laster opp …" : "Velg fil …"}
               </Button>
             </div>
-            <div className="flex flex-col gap-2 rounded-sm border border-dashed border-border-control bg-surface-1 p-3">
-              <h3 className="flex items-center gap-1.5 text-[13px] font-medium text-text-primary">
-                <Sparkles className="size-4" aria-hidden /> Generer et nytt bilde med AI
-              </h3>
-              <p className="text-xs text-text-tertiary">
-                Kommer når du har valgt AI-leverandør (M5). Animatic Studio bygger da beskrivelsen
-                fra ressursen, stilen og scenen, viser prisen og venter på din godkjenning før noe
-                sendes. Ingen kostnader nå.
-              </p>
-              <Button size="sm" variant="secondary" disabled className="self-start">
-                <Sparkles />
-                Generer …
-              </Button>
-            </div>
+            <GenerateImagePanel
+              projectId={projectId}
+              filmTitle={state.project.name}
+              asset={asset}
+              variant={state.assetVariants[target] ?? null}
+              reference={shown}
+              editable={editable}
+              disabled={busy}
+              onGenerated={(img) =>
+                saveVersion(
+                  img.versionId,
+                  img.media,
+                  `Generert med AI (${img.model})`,
+                  `AI-bilde av «${asset.name}»`,
+                )
+              }
+            />
           </section>
         </div>
       ) : (

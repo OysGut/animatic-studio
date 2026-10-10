@@ -76,6 +76,7 @@
   --color-text-tertiary: var(--text-tertiary);
   --color-text-disabled: var(--text-disabled);
   --color-accent-brand: var(--accent-brand);
+  --color-accent-warm: var(--accent-warm);
   --color-accent-fg: var(--accent-fg);
   --color-accent-selection: var(--accent-selection);
   --color-focus-ring: var(--focus-ring);
@@ -172,6 +173,8 @@
   --script-paper-light: oklch(0.925 0.01 87.5);
   --script-ink-light: oklch(0.222 0 0);
   --accent-brand: oklch(0.727 0.098 207.2);
+  /* Varmgul: lyd som løper over flere scener og det aktive bildeutsnittet (DEC-0045) */
+  --accent-warm: oklch(0.84 0.15 82);
   --accent-selection: oklch(0.727 0.098 207.2 / 22%);
   --status-neutral-bg: oklch(0.763 0.011 261.8 / 14%);
   --status-running-bg: oklch(0.725 0.128 256.3 / 14%);

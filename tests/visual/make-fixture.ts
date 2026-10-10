@@ -410,6 +410,8 @@ for (const [a, ms, file] of [
     fadeInMs: 0,
     fadeOutMs: 0,
     muted: false,
+    continues: false,
+    volumeKeys: [] as { t: number; db: number }[],
   };
   s = mustApply(s, {
     type: "AddAudioClips",
@@ -454,6 +456,13 @@ for (const [a, ms, file] of [
           offsetMs: 2000,
           lengthMs: 18000,
           gainDb: -6,
+          continues: true,
+          volumeKeys: [
+            { t: 0, db: -18 },
+            { t: 3000, db: 0 },
+            { t: 12000, db: 0 },
+            { t: 16000, db: -24 },
+          ],
         },
       },
     ],

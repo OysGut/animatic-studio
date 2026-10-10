@@ -33,6 +33,8 @@ export type CameraTarget =
 
 export const CAMERA_BLUE = "oklch(0.65 0.18 250)";
 export const CAMERA_RED = "oklch(0.62 0.2 25)";
+/** Det aktive bildeutsnittet (kameraet på gjeldende bilde): varmgult (DEC-0045). */
+export const CAMERA_ACTIVE = "oklch(0.84 0.15 82)";
 export const MIN_CAMERA_ZOOM = 0.1;
 export const MAX_CAMERA_ZOOM = 20;
 const EDGE_TOLERANCE = 6;
@@ -256,9 +258,14 @@ export function drawCameraOverlay(
   const qFrom = screenCorners(comp, shot.from, v);
   const qTo = screenCorners(comp, shot.to, v);
   const cur = opts.current;
-  if (cur && !sameFrame(cur, shot.from) && !sameFrame(cur, shot.to)) {
-    ctx.strokeStyle = "rgba(255,255,255,0.4)";
+  // Utsnittet kameraet viser nå er varmgult (DEC-0045), også når det er start- eller sluttrammen
+  const atFrom = cur !== null && sameFrame(cur, shot.from);
+  const atTo = cur !== null && !atFrom && sameFrame(cur, shot.to);
+  if (cur && !atFrom && !atTo) {
+    ctx.strokeStyle = CAMERA_ACTIVE;
+    ctx.lineWidth = 1.5;
     outline(ctx, screenCorners(comp, cur, v));
+    ctx.lineWidth = 1;
   }
   // Bane
   const path = shotPath(shot).map((p) => toScreen(v, p));
@@ -294,6 +301,12 @@ export function drawCameraOverlay(
   outline(ctx, qFrom);
   ctx.strokeStyle = CAMERA_RED;
   outline(ctx, qTo);
+  if (atFrom || atTo) {
+    ctx.strokeStyle = CAMERA_ACTIVE;
+    ctx.lineWidth = 1.5;
+    outline(ctx, atFrom ? qFrom : qTo);
+    ctx.lineWidth = 1;
+  }
   label(ctx, qFrom, "Start", CAMERA_BLUE);
   label(ctx, qTo, "Slutt", CAMERA_RED);
   if (opts.selected) {

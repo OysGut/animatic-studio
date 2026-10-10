@@ -1,17 +1,17 @@
-Lyd i filmen og bildevalg for lag (M4 del 2, DEC-0044)
+Lyd over flere scener, lydprofil og AI-bilder (DEC-0045, REQ-0560–0566)
 
-Databaseendring: migrasjon 0009 (lyd) – rettet utgave uten SQL mot lagringen. Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i
-Lovable etter push.
+Databaseendring: migrasjon 0010. Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable
+etter push (kjører 0010 og slår på Lovable AI).
 
-- Lydfiler i ressursbiblioteket (ny type «Lyd»: MP3, WAV, OGG, M4A, FLAC) med versjoner og lengde.
-- Monteringen har lydspor for dialog, forteller, effekter, atmosfære og musikk, med bølgeform.
-  «Legg til lyd» (eller + på sporet) legger lyd ved avspillingshodet – fra biblioteket eller en ny fil.
-- Lyden er festet til scenen og følger den når den flyttes. Dra for å flytte, dra i kantene for å kutte.
-  Panelet: navn, spor, versjon, start, lengde, volum, inn-/uttoning, replikk, demping. Delete fjerner (kan angres).
-- Lyden spilles også der animasjonen ikke er laget (tittelkort), og en slik scene varer minst like lenge
-  som lyden. Lyden spilles også i sceneeditoren og er med i eksportert video.
-- Dobbeltklikk på et lag (lerretet eller lagslisten): velg et annet bilde av ressursen (alle varianter og
-  versjoner), last opp et nytt (blir ny versjon i biblioteket), eller «Generer med AI» (kommer med M5 –
-  krever kostnadsgodkjenning først).
-- Tester: 256 Vitest-tester og 26 databasetester grønne; skjermbilder 45–51; eksportert video med lydspor kontrollert.
-- Dokumentasjon: DEC-0044, REQ-0558–0559 og statuser for 13 lydkrav, KI-56–60, db/README.
+- Sceneeditoren: «Lyd i scenene rundt» – bla bakover og framover og se lyden i scenene før og etter,
+  lytt, og «Bruk i scenen» legger samme lyd inn i scenen.
+- Lyd kan merkes «Løper videre over flere scener» (f.eks. musikk): den forankres i én scene og
+  fortsetter inn i de neste, vist i varmgult. Annen lyd stopper ved slutten av scenen sin.
+- Lydprofil: dobbeltklikk på et lydklipp viser bølgeformen i stort format med tidslinjal og avspilling.
+  Volumpunkter som i After Effects: klikk for punkt, dra, dobbeltklikk/Delete fjerner. Gjelder også eksport.
+- Lydbølger under lagene i sceneeditorens tidslinje, så bevegelser kan times mot lyden.
+- Kamerautsnittet som vises nå er varmgult på lerretet og i kamerasporet.
+- AI-bilder: «Generer et nytt bilde med AI» i bildevalget for et lag. Beskrivelsen lages fra ressursen
+  og stilen og kan endres; hver generering bekreftes; bruker Lovable-kreditter; grenser og logg.
+- Tester: 264 Vitest-tester og 27 databasetester grønne; skjermbilder 52–55.
+- Dokumentasjon: DEC-0045, REQ-0560–0566 og statuser, KI-61–64, db/README.

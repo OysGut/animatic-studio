@@ -478,13 +478,17 @@ requirements:
     har valgt annet.
   tests:
   - 'enhet: promptbygger produserer engelskspråklig tekst for norsk kildemateriale'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/adapters/ai/generate-image.functions.ts"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0045
+    change: "Under arbeid: bildebeskrivelser for AI er på engelsk (src/core/generation/prompt.ts)"
   notes: «Som hovedregel» – unntak tillatt. Jf. kap. 34 pkt. 12.
 - id: REQ-0016
   title: Én felles strukturert prosjektmodell
@@ -980,13 +984,17 @@ requirements:
   - Ingen genereringsjobb mot betalt leverandør opprettes uten en eksplisitt brukerinitiert bestilling/godkjenning.
   tests:
   - 'integrasjon: endringshendelser utløser ingen kall mot leverandøradaptere (mock)'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/adapters/ai/generate-image.functions.ts"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0045
+    change: "Under arbeid: AI-bilder genereres bare etter eksplisitt bekreftelse per generering"
   notes: ''
 - id: REQ-0030
   title: Ingen automatisk bytte av aktiv sceneversjon
@@ -8370,13 +8378,17 @@ requirements:
     dialog).
   tests:
   - 'enhet: språkdeteksjon på genererte prompter'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/adapters/ai/generate-image.functions.ts"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0045
+    change: "Under arbeid: bildebeskrivelser for AI er på engelsk"
   notes: Ufravikelig prinsipp nr. 12 i kap. 34.
 - id: REQ-0248
   title: Bevare norsk dialog ordrett
@@ -8456,13 +8468,17 @@ requirements:
   - Fra scenen kan brukeren åpne gjeldende genereringsprompt i en egen visning.
   tests:
   - 'e2e: åpne prompt'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/adapters/ai/generate-image.functions.ts"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0045
+    change: "Under arbeid: beskrivelsen for AI-bilder vises før sending"
   notes: Ufravikelig prinsipp nr. 11 (synlige prompter) i kap. 34.
 - id: REQ-0251
   title: Lese genereringsprompten
@@ -8484,13 +8500,17 @@ requirements:
   - Hele prompten, inkludert systeminstruksjon, vises i lesbar form uten avkorting.
   tests:
   - 'e2e: prompttekst i UI er identisk med prompt som sendes'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/adapters/ai/generate-image.functions.ts"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0045
+    change: "Under arbeid: beskrivelsen for AI-bilder kan leses i bildevalget"
   notes: ''
 - id: REQ-0252
   title: Redigere prompt manuelt
@@ -8512,13 +8532,17 @@ requirements:
   - Brukeren kan endre prompttekst, og endringen brukes ved neste generering.
   tests:
   - 'e2e: rediger prompt og verifiser sendt payload (mock)'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/adapters/ai/generate-image.functions.ts"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0045
+    change: "Under arbeid: beskrivelsen for AI-bilder kan redigeres før sending"
   notes: Ufravikelig prinsipp nr. 11 (redigerbare prompter) i kap. 34.
 - id: REQ-0253
   title: Lagre redigert prompt
@@ -8661,13 +8685,17 @@ requirements:
   tests:
   - 'dataintegritet: genereringslogg inneholder alle felt'
   - 'enhet: postene kan ikke endres etter fullføring'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/adapters/ai/generate-image.functions.ts"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0045
+    change: "Under arbeid: hver AI-generering logges i generation_jobs"
   notes: ''
 - id: REQ-0258
   title: Sammenligne genereringsforsøk
@@ -13348,13 +13376,17 @@ requirements:
   tests:
   - 'integrasjon: nøkkel ikke lesbar fra klient'
   - 'manuell: sikkerhetsgjennomgang'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/adapters/ai/generate-image.functions.ts"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-09'
+    decision: DEC-0045
+    change: "Under arbeid: Lovable-nøkkelen ligger bare på serveren"
   notes: Nøkler brukes fra fase 5, men arkitekturen for hemmeligheter bør være på plass i fundamentet.
 - id: REQ-0414
   title: Logging avslører ikke tilgangsopplysninger
@@ -16769,8 +16801,9 @@ requirements:
   - En redaktør uten kostnadsrett får ikke startet en betalt jobb; forsøket gir tydelig melding.
   tests:
   - 'integrasjon: backend avviser betalt jobb fra medlem uten kostnadsrett'
-  status: Ikke startet
-  implementation: []
+  status: Under arbeid
+  implementation:
+  - "src/adapters/ai/generate-image.functions.ts"
   verification: []
   history:
   - date: '2026-10-08'
@@ -16779,6 +16812,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0010
     change: 'Revisjon: kilde satt til DEC-0010 (teknisk anbefaling)'
+  - date: '2026-10-09'
+    decision: DEC-0045
+    change: "Under arbeid: bare redaktører og eiere kan generere"
   notes: 'Teknisk utledning av DEC-0003 (bekreftet). Selve løsningen er teknisk anbefaling (DEC-0010). Hvem som
     eier API-nøklene i et delt prosjekt er et åpent spørsmål (OPEN_QUESTIONS Q-01, DEC-0018 – midlertidig antakelse).
     DEC-0021: Mars betaler alle API-kostnader i testfasen; kostnadsdeling avtales utenfor appen.'
@@ -17797,15 +17833,261 @@ requirements:
   - "AI-generering krever kostnadsgodkjenning før noe sendes (kommer med M5)."
   tests:
   - "visuell: bildevalg for lag"
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - "src/app/scene-editor/LayerImageDialog.tsx"
   - "src/app/scene-editor/Stage.tsx"
   - "src/app/scene-editor/LayersPanel.tsx"
+  - "src/app/library/GenerateImagePanel.tsx"
+  - "src/adapters/ai/generate-image.functions.ts"
   verification:
   - "tests/visual/screens.mjs::49-lag-bilde"
+  - "tests/visual/screens.mjs::54-ai-generering"
   history:
   - date: '2026-10-09'
     decision: DEC-0044
     change: "Opprettet etter beslutning fra Mars; velg og last opp bygget, AI-generering venter på M5 (kostnader)"
+  - date: '2026-10-09'
+    decision: DEC-0045
+    change: "AI-generering bygget (Lovable-kreditter, bekreftelse per generering); ikke prøvd mot ekte gateway ennå"
   notes: "AI-delen henger sammen med REQ for genereringsmotor og kostnadsport (fase 5)."
+- id: REQ-0560
+  title: "Lyd i scenene rundt: bla og bruk i scenen"
+  text: "Når brukeren jobber med en scene, skal lydressursene som er brukt i scenen før, scenen før der osv. (og scenene etter) være lett synlige. Brukeren kan bla bakover og framover, lytte, og velge «Bruk i scenen» for å legge samme lyd inn i scenen."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0045
+  type: funksjonell
+  priority: P1
+  phase: 4
+  modules:
+  - AUDIO
+  - COMPOSE
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0555
+  acceptance:
+  - "Panelet viser lyden i forrige scene som standard (neste scene for første scene)."
+  - "Pilene blar scene for scene gjennom filmen."
+  - "«Bruk i scenen» legger inn samme lyd med spor, volum, toninger og volumpunkter fra starten av scenen; lyd som allerede finnes, merkes «I bruk»."
+  tests:
+  - "enhet: lyd i scenene rundt"
+  - "visuell: 52-scene-lyd"
+  status: Verifisert
+  implementation:
+  - "src/app/scene-editor/NearbyAudioPanel.tsx"
+  - "src/core/audio/index.ts"
+  verification:
+  - "tests/unit/audio-flow.test.ts::lyd i scenene rundt"
+  - "tests/visual/screens.mjs::52-scene-lyd"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0045
+    change: "Opprettet etter beslutning fra Mars"
+- id: REQ-0561
+  title: "Lyd som løper videre over flere scener"
+  text: "Et lydklipp (f.eks. et musikkstykke) forankres med starten i én scene og kan merkes «løper videre», slik at det fortsetter over de neste scenene. Slike klipp vises i en egen varmgul farge. Klipp uten merket stopper ved slutten av scenen sin."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0045
+  type: funksjonell
+  priority: P1
+  phase: 4
+  modules:
+  - AUDIO
+  - TIMELINE
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0555
+  acceptance:
+  - "Lyd uten «løper videre» kuttes ved slutten av scenen den er festet til; en scene uten 2D-scene blir minst så lang som slik lyd."
+  - "Lyd med «løper videre» spilles og eksporteres videre inn i scenene etter, og gjør ikke scenen sin lengre."
+  - "Klippene og navnet deres vises varmgult i monteringen og sceneeditoren; ingen lydtype bruker den fargen."
+  - "Lyd som løper inn fra en tidligere scene vises i sceneeditoren for scenen den høres i."
+  tests:
+  - "enhet: lyd som løper videre"
+  - "visuell: 50-montering-lyd, 55-scene-lyd-inn"
+  status: Verifisert
+  implementation:
+  - "src/core/audio/index.ts"
+  - "src/app/assembly/AudioTracks.tsx"
+  - "src/app/assembly/AudioClipPanel.tsx"
+  - "db/migrations/0010_audio_flow_generation.sql"
+  verification:
+  - "tests/unit/audio-flow.test.ts::lyd som løper videre"
+  - "tests/db/run-db-tests.ts::0009/0010"
+  - "tests/visual/screens.mjs::50-montering-lyd"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0045
+    change: "Opprettet etter beslutning fra Mars"
+- id: REQ-0562
+  title: "Lydprofil og volumpunkter"
+  text: "Hvert lydklipp skal kunne åpnes i et vindu som viser lydprofilen (bølgeformen) i stort format med tidslinjal, slik at hendelser kan times mot lyden. Volumet skal kunne trekkes opp og ned med punkter på en kurve, som i After Effects."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0045
+  type: funksjonell
+  priority: P1
+  phase: 4
+  modules:
+  - AUDIO
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0555
+  acceptance:
+  - "Dobbeltklikk på et lydklipp (montering eller sceneeditor) eller knappen i panelet åpner lydprofilen."
+  - "Klikk på kurven legger til et punkt, dra flytter, dobbeltklikk eller Delete fjerner; piltaster justerer."
+  - "Kurven (−60 til +12 dB, rett linje mellom punktene) ganges med klippets volum og toninger og brukes både i avspilling og eksport."
+  - "Punktene lagres med klippet og kan angres."
+  tests:
+  - "enhet: volumpunkter"
+  - "visuell: 53-lydprofil"
+  status: Verifisert
+  implementation:
+  - "src/app/audio/AudioClipEditor.tsx"
+  - "src/engine/audio/mixer.ts"
+  - "src/core/commands/apply.ts"
+  verification:
+  - "tests/unit/audio-flow.test.ts::volumpunkter"
+  - "tests/visual/screens.mjs::53-lydprofil"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0045
+    change: "Opprettet etter beslutning fra Mars"
+- id: REQ-0563
+  title: "Lydbølger i sceneeditorens tidslinje"
+  text: "Sceneeditorens tidslinje skal vise lyden i scenen som bølgeformer under lagene, på samme tidsakse som nøkkelbilder og kamerautsnitt, slik at bevegelser kan times mot lyden."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0045
+  type: funksjonell
+  priority: P1
+  phase: 4
+  modules:
+  - AUDIO
+  - COMPOSE
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0562
+  acceptance:
+  - "Scenens lyd og lyd som løper inn fra tidligere scener vises som egne rader."
+  - "Klikk går til starten av klippet; dobbeltklikk åpner lydprofilen."
+  tests:
+  - "visuell: 52-scene-lyd"
+  status: Verifisert
+  implementation:
+  - "src/app/scene-editor/SceneAudioRows.tsx"
+  - "src/app/scene-editor/Timeline.tsx"
+  verification:
+  - "tests/visual/screens.mjs::52-scene-lyd"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0045
+    change: "Opprettet etter beslutning fra Mars"
+- id: REQ-0564
+  title: "Aktivt kamerautsnitt er varmgult"
+  text: "Bildeutsnittet kameraet viser i øyeblikket skal skifte farge fra grått til varmgult, både på lerretet og i kamerasporet i tidslinjen."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0045
+  type: funksjonell
+  priority: P2
+  phase: 4
+  modules:
+  - CAMERA
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Utsnittet under avspillingshodet tegnes varmgult på lerretet, også når det faller sammen med start- eller sluttrammen."
+  - "Kamerautsnittet under avspillingshodet får varmgul ramme i kamerasporet."
+  tests:
+  - "visuell: 52-scene-lyd"
+  status: Verifisert
+  implementation:
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/Timeline.tsx"
+  - "src/styles.css"
+  verification:
+  - "tests/visual/screens.mjs::52-scene-lyd"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0045
+    change: "Opprettet etter beslutning fra Mars"
+- id: REQ-0565
+  title: "AI-bildegenerering med Lovable-kreditter (testfase)"
+  text: "Brukeren skal kunne generere et nytt bilde av en ressurs med AI fra bildevalget for et lag. I testfasen brukes Lovable AI Gateway og Lovable-arbeidsområdets egne kreditter. Beskrivelsen (prompten) bygges fra ressurs, variant og stil, vises og kan endres før sending, og hver generering må bekreftes."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0045
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - PROVIDER
+  - PROMPT
+  - QUALITYCOST
+  - LIBRARY
+  - SECURITY
+  invariants: []
+  dependencies:
+  - REQ-0559
+  acceptance:
+  - "Beskrivelsen vises i et redigerbart felt og er på engelsk."
+  - "Ingenting sendes før brukeren har bekreftet at genereringen bruker kreditter."
+  - "Bare redaktører og eiere kan generere; grenser per bruker per time og per prosjekt per døgn."
+  - "Hver generering logges (modell, prompt, forbilde, status, feil) i generation_jobs."
+  - "Resultatet blir en ny versjon i biblioteket og tas i bruk på laget; det kan angres."
+  - "Nøkkelen finnes bare på serveren."
+  tests:
+  - "enhet: AI-beskrivelse"
+  - "db: generation_jobs (0010)"
+  - "visuell: 54-ai-generering"
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/adapters/ai/generate-image.functions.ts"
+  - "src/core/generation/prompt.ts"
+  - "src/app/library/GenerateImagePanel.tsx"
+  - "src/app/scene-editor/LayerImageDialog.tsx"
+  - "db/migrations/0010_audio_flow_generation.sql"
+  verification:
+  - "tests/unit/audio-flow.test.ts::AI-beskrivelse"
+  - "tests/db/run-db-tests.ts::0010"
+  - "tests/visual/screens.mjs::54-ai-generering"
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0045
+    change: "Opprettet etter beslutning fra Mars (godkjente bruk av Lovable-kreditter)"
+  notes: "Ikke verifisert mot ekte gateway ennå (krever LOVABLE_API_KEY i Lovable Cloud). Pris vises ikke før generering (REQ-0279 gjenstår)."
+- id: REQ-0566
+  title: "Brukerne kobler egne AI-tjenester senere"
+  text: "Etter testfasen skal brukerne kunne koble Animatic Studio til ulike AI-tjenesters API-er (egne nøkler) som applikasjonen legger til rette for."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0045
+  type: funksjonell
+  priority: P2
+  phase: 5
+  modules:
+  - PROVIDER
+  - SECURITY
+  invariants: []
+  dependencies:
+  - REQ-0565
+  - REQ-0269
+  acceptance:
+  - "Brukeren kan velge leverandør og legge inn egen nøkkel på en sikker måte (REQ-0413)."
+  tests:
+  - "planlagt"
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-09'
+    decision: DEC-0045
+    change: "Opprettet etter beslutning fra Mars"

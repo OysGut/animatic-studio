@@ -27,3 +27,4 @@ export * from "./notes";
 export * from "./composition";
 export * from "./assembly";
 export * from "./audio";
+export * from "./generation/prompt";

@@ -51,7 +51,8 @@ export function sceneAudioEndMs(s: ProjectState): Map<string, number> {
   if (!m) {
     m = new Map();
     for (const a of Object.values(s.audioClips)) {
-      if (a.removed) continue;
+      // Lyd som løper videre gjør ikke scenen lengre (DEC-0045)
+      if (a.removed || a.continues) continue;
       const end = a.offsetMs + a.lengthMs;
       if (end > (m.get(a.occurrenceId) ?? 0)) m.set(a.occurrenceId, end);
     }
@@ -73,14 +74,25 @@ export interface FilmAudioItem {
   readonly gain: number;
   readonly fadeIn: number;
   readonly fadeOut: number;
+  /** Volumpunkter: tid fra klippets start (s) og nivå (dB). */
+  readonly keys: readonly { readonly t: number; readonly db: number }[];
+  /** Klippets fulle lengde (s), også den delen som er kuttet ved scenens slutt. */
+  readonly fullLength: number;
 }
 
-function item(clip: AudioClip, version: AssetVersion | null, start: number): FilmAudioItem {
+function item(
+  clip: AudioClip,
+  version: AssetVersion | null,
+  start: number,
+  maxLength = Infinity,
+): FilmAudioItem {
   return {
     clip,
     version,
     start,
-    length: clip.lengthMs / 1000,
+    length: Math.min(clip.lengthMs / 1000, maxLength),
+    fullLength: clip.lengthMs / 1000,
+    keys: clip.volumeKeys.map((k) => ({ t: k.t / 1000, db: k.db })),
     sourceIn: clip.sourceInMs / 1000,
     gain: Math.pow(10, clip.gainDb / 20),
     fadeIn: clip.fadeInMs / 1000,
@@ -94,18 +106,81 @@ export function filmAudio(
   clips: readonly FilmClip[],
   fps: Rational,
 ): FilmAudioItem[] {
-  const startOf = new Map(clips.map((c) => [c.occurrenceId, framesToSeconds(c.startFrame, fps)]));
+  const sceneOf = new Map(clips.map((c) => [c.occurrenceId, c]));
   const out: FilmAudioItem[] = [];
   for (const a of Object.values(s.audioClips)) {
     if (a.removed) continue;
-    const sceneStart = startOf.get(a.occurrenceId);
-    if (sceneStart === undefined) continue;
-    out.push(item(a, audioVersion(s, a), sceneStart + a.offsetMs / 1000));
+    const scene = sceneOf.get(a.occurrenceId);
+    if (!scene) continue;
+    const sceneStart = framesToSeconds(scene.startFrame, fps);
+    // Uten «løper videre» stopper lyden ved slutten av scenen sin (DEC-0045)
+    const room = a.continues
+      ? Infinity
+      : framesToSeconds(scene.durationFrames, fps) - a.offsetMs / 1000;
+    if (room <= 0) continue;
+    out.push(item(a, audioVersion(s, a), sceneStart + a.offsetMs / 1000, room));
   }
   return out.sort((x, y) => x.start - y.start || x.clip.id.localeCompare(y.clip.id));
 }
 
-/** Lyden i én scene, med start fra scenens begynnelse (sceneeditoren). */
-export function sceneAudioItems(s: ProjectState, occurrenceId: string): FilmAudioItem[] {
-  return sceneAudio(s, occurrenceId).map((a) => item(a, audioVersion(s, a), a.offsetMs / 1000));
+/**
+ * Lyden i én scene, med start fra scenens begynnelse (sceneeditoren). `sceneSeconds`: scenens lengde; lyd
+ * som ikke løper videre, kuttes der. Lyd som løper videre fra tidligere scener er ikke med.
+ */
+export function sceneAudioItems(
+  s: ProjectState,
+  occurrenceId: string,
+  sceneSeconds = Infinity,
+): FilmAudioItem[] {
+  return sceneAudio(s, occurrenceId)
+    .map((a) => item(a, audioVersion(s, a), a.offsetMs / 1000, sceneSeconds - a.offsetMs / 1000))
+    .filter((it) => it.length > 0);
+}
+
+/**
+ * Lyden som høres i én scene i filmen, med tider fra scenens begynnelse (sceneeditoren, DEC-0045): scenens
+ * egen lyd og lyd som løper videre inn fra tidligere scener (den får negativ start).
+ */
+export function sceneWindowAudio(
+  s: ProjectState,
+  clips: readonly FilmClip[],
+  occurrenceId: string,
+  fps: Rational,
+): FilmAudioItem[] {
+  const c = clips.find((x) => x.occurrenceId === occurrenceId);
+  if (!c) return [];
+  const start = framesToSeconds(c.startFrame, fps);
+  const end = start + framesToSeconds(c.durationFrames, fps);
+  return filmAudio(s, clips, fps)
+    .filter((it) => it.start < end && it.start + it.length > start)
+    .map((it) => ({ ...it, start: it.start - start }));
+}
+
+/** Volumnivået (dB) i et klipp på tid `t` fra klippets start (s): mellom punktene rett linje. */
+export function volumeKeyDbAt(keys: readonly { t: number; db: number }[], t: number): number {
+  if (keys.length === 0) return 0;
+  if (t <= keys[0]!.t) return keys[0]!.db;
+  for (let i = 1; i < keys.length; i++) {
+    const b = keys[i]!;
+    if (t <= b.t) {
+      const a = keys[i - 1]!;
+      return a.db + ((b.db - a.db) * (t - a.t)) / Math.max(1e-9, b.t - a.t);
+    }
+  }
+  return keys[keys.length - 1]!.db;
+}
+
+/**
+ * Lyd brukt i scenene rundt (DEC-0045): lydklipp i scenen `step` plasser før (negativ) eller etter
+ * (positiv) i filmens rekkefølge. Brukes for å føre atmosfære og musikk videre.
+ */
+export function neighbourSceneAudio(
+  s: ProjectState,
+  clips: readonly FilmClip[],
+  occurrenceId: string,
+  step: number,
+): { readonly clip: FilmClip | null; readonly audio: AudioClip[] } {
+  const i = clips.findIndex((c) => c.occurrenceId === occurrenceId);
+  const c = i < 0 ? undefined : clips[i + step];
+  return { clip: c ?? null, audio: c ? sceneAudio(s, c.occurrenceId) : [] };
 }

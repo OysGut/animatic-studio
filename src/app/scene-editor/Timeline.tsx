@@ -88,6 +88,17 @@ interface Props {
   readonly autoKey: boolean;
   readonly onAutoKeyChange: (on: boolean) => void;
   readonly run: Run;
+  /** Lydradene under lagene (DEC-0045): bølgeformene i scenen, så bevegelser kan treffe lyden. */
+  readonly audioRows?: (g: TimelineRowGeometry) => ReactNode;
+}
+
+/** Plassering for ekstra rader i tidslinjen. */
+export interface TimelineRowGeometry {
+  readonly ppf: number;
+  readonly labelW: number;
+  readonly gutter: number;
+  readonly rowH: number;
+  readonly fps: number;
 }
 
 interface ShotDraft {
@@ -210,6 +221,7 @@ const CameraRow = memo(function CameraRow({
   shots,
   draft,
   selectedShotId,
+  activeShotId,
   ppf,
   editable,
   onShotPointerDown,
@@ -219,6 +231,8 @@ const CameraRow = memo(function CameraRow({
   shots: readonly CameraShot[];
   draft: ShotDraft | null;
   selectedShotId: string | null;
+  /** Utsnittet under avspillingshodet (vises varmgult, DEC-0045). */
+  activeShotId: string | null;
   ppf: number;
   editable: boolean;
   onShotPointerDown: (
@@ -263,7 +277,11 @@ const CameraRow = memo(function CameraRow({
             onPointerCancel={onShotPointerUp}
             className={
               "absolute top-[3px] h-[18px] overflow-hidden rounded-sm border text-[10px] leading-[16px] text-white/90 " +
-              (selected ? "border-text-primary" : "border-white/20") +
+              (sh.id === activeShotId
+                ? "border-accent-warm outline outline-1 outline-accent-warm"
+                : selected
+                  ? "border-text-primary"
+                  : "border-white/20") +
               (editable ? " cursor-grab active:cursor-grabbing" : "")
             }
             style={{
@@ -382,6 +400,7 @@ export function Timeline({
   autoKey,
   onAutoKeyChange,
   run,
+  audioRows,
 }: Props) {
   const [height, setHeight] = usePaneSize("scene-editor-timeline", 252, 150, 560, {
     axis: "y",
@@ -998,6 +1017,10 @@ export function Timeline({
                 shots={composition.camera.shots}
                 draft={shotDraft}
                 selectedShotId={selectedShotId}
+                activeShotId={
+                  composition.camera.shots.find((x) => frame >= x.startFrame && frame <= x.endFrame)
+                    ?.id ?? null
+                }
                 ppf={ppf}
                 editable={editable}
                 onShotPointerDown={onShotPointerDown}
@@ -1028,6 +1051,8 @@ export function Timeline({
               />
             ))
           )}
+
+          {audioRows?.({ ppf, labelW: LABEL_W, gutter: GUTTER, rowH: ROW_H, fps: fpsN })}
 
           {/* Avspillingshodet (den eneste delen som følger bildet) */}
           <div

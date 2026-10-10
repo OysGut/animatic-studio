@@ -138,6 +138,9 @@ export function AddAudioDialog({
                 fadeInMs: 0,
                 fadeOutMs: 0,
                 muted: false,
+                // Atmosfære og musikk løper som regel videre over scenene
+                continues: kind === "music",
+                volumeKeys: [],
               },
             },
           ],

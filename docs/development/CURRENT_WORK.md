@@ -1,6 +1,18 @@
 # Pågående arbeid
 
-Oppdatert: 2026-10-09 (økt 4)
+Oppdatert: 2026-10-09 (økt 5, DEC-0045)
+
+## Nå: DEC-0045 – lyd over flere scener, lydprofil, varmgult kamerautsnitt, AI-bilder – ferdig, venter på Mars
+- [x] Lyd i scenene rundt med «Bruk i scenen» (REQ-0560)
+- [x] «Løper videre» over flere scener, varmgult (REQ-0561)
+- [x] Lydprofil med volumpunkter som i After Effects (REQ-0562); bølgeformer i sceneeditoren (REQ-0563)
+- [x] Aktivt kamerautsnitt varmgult (REQ-0564)
+- [x] AI-bilder med Lovable-kreditter: synlig prompt, bekreftelse, grenser, logg (REQ-0565)
+- [x] Migrasjon 0010, 264 Vitest, 27 DB-tester, skjermbilder 52–55
+- [ ] **Mars:** Commit + Push, lim inn `LOVABLE_SYNC.md` (kjør 0010, slå på Lovable AI)
+- [ ] **Mars:** Prøv én AI-generering (dobbeltklikk på et lag → «Generer …»), musikk som løper videre og volumpunkter
+
+## Tidligere (økt 4)
 
 ## Nå: Mars' ønsker + notater + M3 del 1 (ressursbibliotek) – ferdig, venter på Mars
 - [x] M2 del 2 testet av Mars; migrasjon 0003 kjørt i Lovable
