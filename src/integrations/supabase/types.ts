@@ -618,6 +618,113 @@ export type Database = {
           },
         ]
       }
+      continuity_events: {
+        Row: {
+          asset_id: string
+          block_id: string | null
+          created_at: string
+          created_by: string | null
+          description: string
+          duration: string
+          from_variant_id: string | null
+          id: string
+          kind: string
+          project_id: string
+          removed: boolean
+          revision: number
+          scene_id: string
+          status: string
+          to_variant_id: string | null
+          until_scene_id: string | null
+        }
+        Insert: {
+          asset_id: string
+          block_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          duration: string
+          from_variant_id?: string | null
+          id: string
+          kind: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          scene_id: string
+          status?: string
+          to_variant_id?: string | null
+          until_scene_id?: string | null
+        }
+        Update: {
+          asset_id?: string
+          block_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          duration?: string
+          from_variant_id?: string | null
+          id?: string
+          kind?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          scene_id?: string
+          status?: string
+          to_variant_id?: string | null
+          until_scene_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "continuity_events_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "continuity_events_block_id_fkey"
+            columns: ["block_id"]
+            isOneToOne: false
+            referencedRelation: "script_blocks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "continuity_events_from_variant_id_fkey"
+            columns: ["from_variant_id"]
+            isOneToOne: false
+            referencedRelation: "asset_variants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "continuity_events_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "continuity_events_scene_id_fkey"
+            columns: ["scene_id"]
+            isOneToOne: false
+            referencedRelation: "scenes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "continuity_events_to_variant_id_fkey"
+            columns: ["to_variant_id"]
+            isOneToOne: false
+            referencedRelation: "asset_variants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "continuity_events_until_scene_id_fkey"
+            columns: ["until_scene_id"]
+            isOneToOne: false
+            referencedRelation: "scenes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       generation_jobs: {
         Row: {
           asset_id: string | null
