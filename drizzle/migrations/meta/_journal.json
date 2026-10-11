@@ -85,6 +85,13 @@
       "when": 1791664759626,
       "tag": "0011_0012_clip_parts_time_links",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1791735949514,
+      "tag": "0012_0013_transitions_monochrome",
+      "breakpoints": true
     }
   ]
 }

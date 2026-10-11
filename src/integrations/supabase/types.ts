@@ -434,6 +434,7 @@ export type Database = {
       }
       composition_layers: {
         Row: {
+          anchor: Json | null
           asset_id: string | null
           asset_variant_id: string | null
           composition_id: string
@@ -443,9 +444,11 @@ export type Database = {
           group_id: string | null
           height: number
           id: string
+          image_swaps: Json
           keyframes: Json
           kind: string
           locked: boolean
+          motion_path: Json | null
           name: string
           order_key: string
           parallax: number
@@ -458,6 +461,7 @@ export type Database = {
           width: number
         }
         Insert: {
+          anchor?: Json | null
           asset_id?: string | null
           asset_variant_id?: string | null
           composition_id: string
@@ -467,9 +471,11 @@ export type Database = {
           group_id?: string | null
           height: number
           id: string
+          image_swaps?: Json
           keyframes?: Json
           kind: string
           locked?: boolean
+          motion_path?: Json | null
           name?: string
           order_key: string
           parallax?: number
@@ -482,6 +488,7 @@ export type Database = {
           width: number
         }
         Update: {
+          anchor?: Json | null
           asset_id?: string | null
           asset_variant_id?: string | null
           composition_id?: string
@@ -491,9 +498,11 @@ export type Database = {
           group_id?: string | null
           height?: number
           id?: string
+          image_swaps?: Json
           keyframes?: Json
           kind?: string
           locked?: boolean
+          motion_path?: Json | null
           name?: string
           order_key?: string
           parallax?: number
@@ -967,6 +976,9 @@ export type Database = {
         Row: {
           created_at: string
           created_by: string
+          default_transition_frames: number
+          default_transition_kind: string
+          default_transition_overlap: boolean
           deleted_at: string | null
           deleted_by: string | null
           fps_den: number
@@ -981,6 +993,9 @@ export type Database = {
         Insert: {
           created_at?: string
           created_by: string
+          default_transition_frames?: number
+          default_transition_kind?: string
+          default_transition_overlap?: boolean
           deleted_at?: string | null
           deleted_by?: string | null
           fps_den?: number
@@ -995,6 +1010,9 @@ export type Database = {
         Update: {
           created_at?: string
           created_by?: string
+          default_transition_frames?: number
+          default_transition_kind?: string
+          default_transition_overlap?: boolean
           deleted_at?: string | null
           deleted_by?: string | null
           fps_den?: number
@@ -1017,14 +1035,17 @@ export type Database = {
           excerpt_in: number | null
           excerpt_out: number | null
           id: string
+          monochrome: boolean
           order_key: string
           production_id: string
           production_number: string | null
           project_id: string
           revision: number
           scene_id: string
+          transition_custom: boolean
           transition_frames: number
           transition_kind: string
+          transition_overlap: boolean
           variant_id: string
         }
         Insert: {
@@ -1035,14 +1056,17 @@ export type Database = {
           excerpt_in?: number | null
           excerpt_out?: number | null
           id: string
+          monochrome?: boolean
           order_key: string
           production_id: string
           production_number?: string | null
           project_id: string
           revision?: number
           scene_id: string
+          transition_custom?: boolean
           transition_frames?: number
           transition_kind?: string
+          transition_overlap?: boolean
           variant_id: string
         }
         Update: {
@@ -1053,14 +1077,17 @@ export type Database = {
           excerpt_in?: number | null
           excerpt_out?: number | null
           id?: string
+          monochrome?: boolean
           order_key?: string
           production_id?: string
           production_number?: string | null
           project_id?: string
           revision?: number
           scene_id?: string
+          transition_custom?: boolean
           transition_frames?: number
           transition_kind?: string
+          transition_overlap?: boolean
           variant_id?: string
         }
         Relationships: [
@@ -1599,6 +1626,7 @@ export type Database = {
           created_by: string | null
           end_ms: number | null
           id: string
+          layer_id: string | null
           occurrence_id: string
           project_id: string
           removed: boolean
@@ -1611,6 +1639,7 @@ export type Database = {
           created_by?: string | null
           end_ms?: number | null
           id: string
+          layer_id?: string | null
           occurrence_id: string
           project_id: string
           removed?: boolean
@@ -1623,6 +1652,7 @@ export type Database = {
           created_by?: string | null
           end_ms?: number | null
           id?: string
+          layer_id?: string | null
           occurrence_id?: string
           project_id?: string
           removed?: boolean
@@ -1635,6 +1665,13 @@ export type Database = {
             columns: ["block_id"]
             isOneToOne: false
             referencedRelation: "script_blocks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "time_links_layer_id_fkey"
+            columns: ["layer_id"]
+            isOneToOne: false
+            referencedRelation: "composition_layers"
             referencedColumns: ["id"]
           },
           {
