@@ -216,6 +216,7 @@ export type Database = {
           gain_db: number
           id: string
           kind: string
+          language: string | null
           length_ms: number
           muted: boolean
           name: string
@@ -240,6 +241,7 @@ export type Database = {
           gain_db?: number
           id: string
           kind: string
+          language?: string | null
           length_ms: number
           muted?: boolean
           name?: string
@@ -264,6 +266,7 @@ export type Database = {
           gain_db?: number
           id?: string
           kind?: string
+          language?: string | null
           length_ms?: number
           muted?: boolean
           name?: string
@@ -434,6 +437,7 @@ export type Database = {
       }
       composition_layers: {
         Row: {
+          anchor: Json | null
           asset_id: string | null
           asset_variant_id: string | null
           composition_id: string
@@ -443,9 +447,12 @@ export type Database = {
           group_id: string | null
           height: number
           id: string
+          image_swaps: Json
           keyframes: Json
           kind: string
+          language_images: Json
           locked: boolean
+          motion_path: Json | null
           name: string
           order_key: string
           parallax: number
@@ -458,6 +465,7 @@ export type Database = {
           width: number
         }
         Insert: {
+          anchor?: Json | null
           asset_id?: string | null
           asset_variant_id?: string | null
           composition_id: string
@@ -467,9 +475,12 @@ export type Database = {
           group_id?: string | null
           height: number
           id: string
+          image_swaps?: Json
           keyframes?: Json
           kind: string
+          language_images?: Json
           locked?: boolean
+          motion_path?: Json | null
           name?: string
           order_key: string
           parallax?: number
@@ -482,6 +493,7 @@ export type Database = {
           width: number
         }
         Update: {
+          anchor?: Json | null
           asset_id?: string | null
           asset_variant_id?: string | null
           composition_id?: string
@@ -491,9 +503,12 @@ export type Database = {
           group_id?: string | null
           height?: number
           id?: string
+          image_swaps?: Json
           keyframes?: Json
           kind?: string
+          language_images?: Json
           locked?: boolean
+          motion_path?: Json | null
           name?: string
           order_key?: string
           parallax?: number
@@ -553,6 +568,7 @@ export type Database = {
           height: number
           id: string
           name: string
+          produced_from: Json
           project_id: string
           removed: boolean
           revision: number
@@ -568,6 +584,7 @@ export type Database = {
           height?: number
           id: string
           name?: string
+          produced_from?: Json
           project_id: string
           removed?: boolean
           revision?: number
@@ -583,6 +600,7 @@ export type Database = {
           height?: number
           id?: string
           name?: string
+          produced_from?: Json
           project_id?: string
           removed?: boolean
           revision?: number
@@ -606,21 +624,144 @@ export type Database = {
           },
         ]
       }
+      continuity_events: {
+        Row: {
+          asset_id: string
+          block_id: string | null
+          created_at: string
+          created_by: string | null
+          description: string
+          disabled_in: Json
+          duration: string
+          from_variant_id: string | null
+          id: string
+          kind: string
+          production_id: string | null
+          project_id: string
+          removed: boolean
+          revision: number
+          scene_id: string
+          status: string
+          to_variant_id: string | null
+          until_scene_id: string | null
+        }
+        Insert: {
+          asset_id: string
+          block_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          disabled_in?: Json
+          duration: string
+          from_variant_id?: string | null
+          id: string
+          kind: string
+          production_id?: string | null
+          project_id: string
+          removed?: boolean
+          revision?: number
+          scene_id: string
+          status?: string
+          to_variant_id?: string | null
+          until_scene_id?: string | null
+        }
+        Update: {
+          asset_id?: string
+          block_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          disabled_in?: Json
+          duration?: string
+          from_variant_id?: string | null
+          id?: string
+          kind?: string
+          production_id?: string | null
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          scene_id?: string
+          status?: string
+          to_variant_id?: string | null
+          until_scene_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "continuity_events_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "continuity_events_block_id_fkey"
+            columns: ["block_id"]
+            isOneToOne: false
+            referencedRelation: "script_blocks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "continuity_events_from_variant_id_fkey"
+            columns: ["from_variant_id"]
+            isOneToOne: false
+            referencedRelation: "asset_variants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "continuity_events_production_id_fkey"
+            columns: ["production_id"]
+            isOneToOne: false
+            referencedRelation: "productions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "continuity_events_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "continuity_events_scene_id_fkey"
+            columns: ["scene_id"]
+            isOneToOne: false
+            referencedRelation: "scenes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "continuity_events_to_variant_id_fkey"
+            columns: ["to_variant_id"]
+            isOneToOne: false
+            referencedRelation: "asset_variants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "continuity_events_until_scene_id_fkey"
+            columns: ["until_scene_id"]
+            isOneToOne: false
+            referencedRelation: "scenes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       generation_jobs: {
         Row: {
           asset_id: string | null
           created_at: string
           created_by: string
           error: string | null
+          estimated_cost: number | null
           finished_at: string | null
           id: string
           kind: string
           model: string
+          occurrence_id: string | null
           project_id: string
           prompt: string
           provider: string
           reference_path: string | null
           result_path: string | null
+          segment_id: string | null
           status: string
         }
         Insert: {
@@ -628,15 +769,18 @@ export type Database = {
           created_at?: string
           created_by: string
           error?: string | null
+          estimated_cost?: number | null
           finished_at?: string | null
           id: string
           kind: string
           model: string
+          occurrence_id?: string | null
           project_id: string
           prompt: string
           provider: string
           reference_path?: string | null
           result_path?: string | null
+          segment_id?: string | null
           status?: string
         }
         Update: {
@@ -644,15 +788,18 @@ export type Database = {
           created_at?: string
           created_by?: string
           error?: string | null
+          estimated_cost?: number | null
           finished_at?: string | null
           id?: string
           kind?: string
           model?: string
+          occurrence_id?: string | null
           project_id?: string
           prompt?: string
           provider?: string
           reference_path?: string | null
           result_path?: string | null
+          segment_id?: string | null
           status?: string
         }
         Relationships: [
@@ -664,10 +811,85 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "generation_jobs_occurrence_id_fkey"
+            columns: ["occurrence_id"]
+            isOneToOne: false
+            referencedRelation: "scene_occurrences"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "generation_jobs_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generation_jobs_segment_id_fkey"
+            columns: ["segment_id"]
+            isOneToOne: false
+            referencedRelation: "production_segments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      generation_prompts: {
+        Row: {
+          based_on: string
+          created_at: string
+          created_by: string | null
+          id: string
+          occurrence_id: string
+          project_id: string
+          removed: boolean
+          revision: number
+          segment_id: string
+          text: string
+        }
+        Insert: {
+          based_on?: string
+          created_at?: string
+          created_by?: string | null
+          id: string
+          occurrence_id: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          segment_id: string
+          text: string
+        }
+        Update: {
+          based_on?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          occurrence_id?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          segment_id?: string
+          text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generation_prompts_occurrence_id_fkey"
+            columns: ["occurrence_id"]
+            isOneToOne: false
+            referencedRelation: "scene_occurrences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generation_prompts_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generation_prompts_segment_id_fkey"
+            columns: ["segment_id"]
+            isOneToOne: false
+            referencedRelation: "production_segments"
             referencedColumns: ["id"]
           },
         ]
@@ -740,6 +962,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           end_block_id: string | null
+          end_ms: number | null
           id: string
           occurrence_id: string
           order_key: string
@@ -747,11 +970,13 @@ export type Database = {
           reason: string
           revision: number
           start_block_id: string | null
+          start_ms: number | null
         }
         Insert: {
           created_at?: string
           created_by?: string | null
           end_block_id?: string | null
+          end_ms?: number | null
           id: string
           occurrence_id: string
           order_key: string
@@ -759,11 +984,13 @@ export type Database = {
           reason: string
           revision?: number
           start_block_id?: string | null
+          start_ms?: number | null
         }
         Update: {
           created_at?: string
           created_by?: string | null
           end_block_id?: string | null
+          end_ms?: number | null
           id?: string
           occurrence_id?: string
           order_key?: string
@@ -771,6 +998,7 @@ export type Database = {
           reason?: string
           revision?: number
           start_block_id?: string | null
+          start_ms?: number | null
         }
         Relationships: [
           {
@@ -965,8 +1193,13 @@ export type Database = {
       }
       projects: {
         Row: {
+          ai_month_limit: number | null
+          ai_price_per_image: number | null
           created_at: string
           created_by: string
+          default_transition_frames: number
+          default_transition_kind: string
+          default_transition_overlap: boolean
           deleted_at: string | null
           deleted_by: string | null
           fps_den: number
@@ -979,8 +1212,13 @@ export type Database = {
           revision: number
         }
         Insert: {
+          ai_month_limit?: number | null
+          ai_price_per_image?: number | null
           created_at?: string
           created_by: string
+          default_transition_frames?: number
+          default_transition_kind?: string
+          default_transition_overlap?: boolean
           deleted_at?: string | null
           deleted_by?: string | null
           fps_den?: number
@@ -993,8 +1231,13 @@ export type Database = {
           revision?: number
         }
         Update: {
+          ai_month_limit?: number | null
+          ai_price_per_image?: number | null
           created_at?: string
           created_by?: string
+          default_transition_frames?: number
+          default_transition_kind?: string
+          default_transition_overlap?: boolean
           deleted_at?: string | null
           deleted_by?: string | null
           fps_den?: number
@@ -1017,14 +1260,17 @@ export type Database = {
           excerpt_in: number | null
           excerpt_out: number | null
           id: string
+          monochrome: boolean
           order_key: string
           production_id: string
           production_number: string | null
           project_id: string
           revision: number
           scene_id: string
+          transition_custom: boolean
           transition_frames: number
           transition_kind: string
+          transition_overlap: boolean
           variant_id: string
         }
         Insert: {
@@ -1035,14 +1281,17 @@ export type Database = {
           excerpt_in?: number | null
           excerpt_out?: number | null
           id: string
+          monochrome?: boolean
           order_key: string
           production_id: string
           production_number?: string | null
           project_id: string
           revision?: number
           scene_id: string
+          transition_custom?: boolean
           transition_frames?: number
           transition_kind?: string
+          transition_overlap?: boolean
           variant_id: string
         }
         Update: {
@@ -1053,14 +1302,17 @@ export type Database = {
           excerpt_in?: number | null
           excerpt_out?: number | null
           id?: string
+          monochrome?: boolean
           order_key?: string
           production_id?: string
           production_number?: string | null
           project_id?: string
           revision?: number
           scene_id?: string
+          transition_custom?: boolean
           transition_frames?: number
           transition_kind?: string
+          transition_overlap?: boolean
           variant_id?: string
         }
         Relationships: [
@@ -1524,6 +1776,8 @@ export type Database = {
       }
       takes: {
         Row: {
+          accepted_from: Json
+          audio_language: string | null
           created_at: string
           created_by: string | null
           duration_frames: number | null
@@ -1539,6 +1793,8 @@ export type Database = {
           status: string
         }
         Insert: {
+          accepted_from?: Json
+          audio_language?: string | null
           created_at?: string
           created_by?: string | null
           duration_frames?: number | null
@@ -1554,6 +1810,8 @@ export type Database = {
           status: string
         }
         Update: {
+          accepted_from?: Json
+          audio_language?: string | null
           created_at?: string
           created_by?: string | null
           duration_frames?: number | null
@@ -1599,6 +1857,7 @@ export type Database = {
           created_by: string | null
           end_ms: number | null
           id: string
+          layer_id: string | null
           occurrence_id: string
           project_id: string
           removed: boolean
@@ -1611,6 +1870,7 @@ export type Database = {
           created_by?: string | null
           end_ms?: number | null
           id: string
+          layer_id?: string | null
           occurrence_id: string
           project_id: string
           removed?: boolean
@@ -1623,6 +1883,7 @@ export type Database = {
           created_by?: string | null
           end_ms?: number | null
           id?: string
+          layer_id?: string | null
           occurrence_id?: string
           project_id?: string
           removed?: boolean
@@ -1638,6 +1899,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "time_links_layer_id_fkey"
+            columns: ["layer_id"]
+            isOneToOne: false
+            referencedRelation: "composition_layers"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "time_links_occurrence_id_fkey"
             columns: ["occurrence_id"]
             isOneToOne: false
@@ -1649,6 +1917,73 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      translations: {
+        Row: {
+          based_on_rev: number
+          block_id: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          language: string
+          project_id: string
+          removed: boolean
+          revision: number
+          status: string
+          text: string
+          variant_id: string | null
+        }
+        Insert: {
+          based_on_rev?: number
+          block_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id: string
+          language: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          status?: string
+          text: string
+          variant_id?: string | null
+        }
+        Update: {
+          based_on_rev?: number
+          block_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          language?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          status?: string
+          text?: string
+          variant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "translations_block_id_fkey"
+            columns: ["block_id"]
+            isOneToOne: false
+            referencedRelation: "script_blocks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "translations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "translations_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "scene_variants"
             referencedColumns: ["id"]
           },
         ]
