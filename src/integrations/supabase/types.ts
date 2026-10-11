@@ -1899,6 +1899,73 @@ export type Database = {
           },
         ]
       }
+      translations: {
+        Row: {
+          based_on_rev: number
+          block_id: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          language: string
+          project_id: string
+          removed: boolean
+          revision: number
+          status: string
+          text: string
+          variant_id: string | null
+        }
+        Insert: {
+          based_on_rev?: number
+          block_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id: string
+          language: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          status?: string
+          text: string
+          variant_id?: string | null
+        }
+        Update: {
+          based_on_rev?: number
+          block_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          language?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          status?: string
+          text?: string
+          variant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "translations_block_id_fkey"
+            columns: ["block_id"]
+            isOneToOne: false
+            referencedRelation: "script_blocks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "translations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "translations_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "scene_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
