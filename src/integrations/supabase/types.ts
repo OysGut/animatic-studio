@@ -562,6 +562,7 @@ export type Database = {
           height: number
           id: string
           name: string
+          produced_from: Json
           project_id: string
           removed: boolean
           revision: number
@@ -577,6 +578,7 @@ export type Database = {
           height?: number
           id: string
           name?: string
+          produced_from?: Json
           project_id: string
           removed?: boolean
           revision?: number
@@ -592,6 +594,7 @@ export type Database = {
           height?: number
           id?: string
           name?: string
+          produced_from?: Json
           project_id?: string
           removed?: boolean
           revision?: number
@@ -621,15 +624,18 @@ export type Database = {
           created_at: string
           created_by: string
           error: string | null
+          estimated_cost: number | null
           finished_at: string | null
           id: string
           kind: string
           model: string
+          occurrence_id: string | null
           project_id: string
           prompt: string
           provider: string
           reference_path: string | null
           result_path: string | null
+          segment_id: string | null
           status: string
         }
         Insert: {
@@ -637,15 +643,18 @@ export type Database = {
           created_at?: string
           created_by: string
           error?: string | null
+          estimated_cost?: number | null
           finished_at?: string | null
           id: string
           kind: string
           model: string
+          occurrence_id?: string | null
           project_id: string
           prompt: string
           provider: string
           reference_path?: string | null
           result_path?: string | null
+          segment_id?: string | null
           status?: string
         }
         Update: {
@@ -653,15 +662,18 @@ export type Database = {
           created_at?: string
           created_by?: string
           error?: string | null
+          estimated_cost?: number | null
           finished_at?: string | null
           id?: string
           kind?: string
           model?: string
+          occurrence_id?: string | null
           project_id?: string
           prompt?: string
           provider?: string
           reference_path?: string | null
           result_path?: string | null
+          segment_id?: string | null
           status?: string
         }
         Relationships: [
@@ -673,10 +685,85 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "generation_jobs_occurrence_id_fkey"
+            columns: ["occurrence_id"]
+            isOneToOne: false
+            referencedRelation: "scene_occurrences"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "generation_jobs_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generation_jobs_segment_id_fkey"
+            columns: ["segment_id"]
+            isOneToOne: false
+            referencedRelation: "production_segments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      generation_prompts: {
+        Row: {
+          based_on: string
+          created_at: string
+          created_by: string | null
+          id: string
+          occurrence_id: string
+          project_id: string
+          removed: boolean
+          revision: number
+          segment_id: string
+          text: string
+        }
+        Insert: {
+          based_on?: string
+          created_at?: string
+          created_by?: string | null
+          id: string
+          occurrence_id: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          segment_id: string
+          text: string
+        }
+        Update: {
+          based_on?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          occurrence_id?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          segment_id?: string
+          text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generation_prompts_occurrence_id_fkey"
+            columns: ["occurrence_id"]
+            isOneToOne: false
+            referencedRelation: "scene_occurrences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generation_prompts_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generation_prompts_segment_id_fkey"
+            columns: ["segment_id"]
+            isOneToOne: false
+            referencedRelation: "production_segments"
             referencedColumns: ["id"]
           },
         ]
@@ -749,6 +836,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           end_block_id: string | null
+          end_ms: number | null
           id: string
           occurrence_id: string
           order_key: string
@@ -756,11 +844,13 @@ export type Database = {
           reason: string
           revision: number
           start_block_id: string | null
+          start_ms: number | null
         }
         Insert: {
           created_at?: string
           created_by?: string | null
           end_block_id?: string | null
+          end_ms?: number | null
           id: string
           occurrence_id: string
           order_key: string
@@ -768,11 +858,13 @@ export type Database = {
           reason: string
           revision?: number
           start_block_id?: string | null
+          start_ms?: number | null
         }
         Update: {
           created_at?: string
           created_by?: string | null
           end_block_id?: string | null
+          end_ms?: number | null
           id?: string
           occurrence_id?: string
           order_key?: string
@@ -780,6 +872,7 @@ export type Database = {
           reason?: string
           revision?: number
           start_block_id?: string | null
+          start_ms?: number | null
         }
         Relationships: [
           {
@@ -974,6 +1067,8 @@ export type Database = {
       }
       projects: {
         Row: {
+          ai_month_limit: number | null
+          ai_price_per_image: number | null
           created_at: string
           created_by: string
           default_transition_frames: number
@@ -991,6 +1086,8 @@ export type Database = {
           revision: number
         }
         Insert: {
+          ai_month_limit?: number | null
+          ai_price_per_image?: number | null
           created_at?: string
           created_by: string
           default_transition_frames?: number
@@ -1008,6 +1105,8 @@ export type Database = {
           revision?: number
         }
         Update: {
+          ai_month_limit?: number | null
+          ai_price_per_image?: number | null
           created_at?: string
           created_by?: string
           default_transition_frames?: number
@@ -1551,6 +1650,7 @@ export type Database = {
       }
       takes: {
         Row: {
+          accepted_from: Json
           created_at: string
           created_by: string | null
           duration_frames: number | null
@@ -1566,6 +1666,7 @@ export type Database = {
           status: string
         }
         Insert: {
+          accepted_from?: Json
           created_at?: string
           created_by?: string | null
           duration_frames?: number | null
@@ -1581,6 +1682,7 @@ export type Database = {
           status: string
         }
         Update: {
+          accepted_from?: Json
           created_at?: string
           created_by?: string | null
           duration_frames?: number | null
