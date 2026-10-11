@@ -2176,6 +2176,15 @@ export type Database = {
         }
         Returns: string
       }
+      revoke_invitation: { Args: { p_invitation: string }; Returns: undefined }
+      set_invitation_role: {
+        Args: { p_invitation: string; p_role: string }
+        Returns: undefined
+      }
+      set_member_role: {
+        Args: { p_project: string; p_role: string; p_user: string }
+        Returns: undefined
+      }
       upsert_my_profile: {
         Args: { p_display_name?: string }
         Returns: undefined
