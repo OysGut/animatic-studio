@@ -25,6 +25,30 @@ export const AUDIO_TRACK_ORDER: readonly AudioKind[] = [
   "music",
 ];
 
+// ---------- Språk (DEC-0059) ----------
+
+/** Hovedspråket (norsk er prosjektets hovedmanus, mandat 23.1). */
+export const MAIN_LANGUAGE = "nb";
+
+/** Språkene filmen kan vises, spilles og eksporteres på. */
+export const FILM_LANGUAGES: readonly string[] = ["nb", "en"];
+
+/** Lydtyper med tale: hører til hovedspråket når ikke annet er valgt. */
+export function isVoiceKind(kind: AudioKind): boolean {
+  return kind === "dialogue" || kind === "narration";
+}
+
+/** Språket lyden hører til: språkkode, eller «*» for felles i alle språk. */
+export function clipLanguage(a: Pick<AudioClip, "kind" | "language">): string {
+  return a.language ?? (isVoiceKind(a.kind) ? MAIN_LANGUAGE : "*");
+}
+
+/** Lyden spilles i språkversjonen. */
+export function playsIn(a: Pick<AudioClip, "kind" | "language">, lang: string): boolean {
+  const l = clipLanguage(a);
+  return l === "*" || l === lang;
+}
+
 /** Lydfilen klippet spiller: låst versjon, ellers variantens godkjente/nyeste, ellers ressursens nyeste. */
 export function audioVersion(s: ProjectState, a: AudioClip): AssetVersion | null {
   if (a.versionId !== null) return s.assetVersions[a.versionId] ?? null;
@@ -36,23 +60,29 @@ export function audioVersion(s: ProjectState, a: AudioClip): AssetVersion | null
   return coverVersion(s, a.assetId);
 }
 
-/** Lyden i én scene (ikke fjernet), etter start. */
-export function sceneAudio(s: ProjectState, occurrenceId: string): AudioClip[] {
+/** Lyden i én scene (ikke fjernet), etter start. Med språk: bare lyden som spilles i det språket. */
+export function sceneAudio(s: ProjectState, occurrenceId: string, lang?: string): AudioClip[] {
   return Object.values(s.audioClips)
-    .filter((a) => a.occurrenceId === occurrenceId && !a.removed)
+    .filter(
+      (a) =>
+        a.occurrenceId === occurrenceId && !a.removed && (lang === undefined || playsIn(a, lang)),
+    )
     .sort((a, b) => a.offsetMs - b.offsetMs || a.id.localeCompare(b.id));
 }
 
 const endCache = new WeakMap<object, Map<string, number>>();
 
-/** Slutten på den siste lyden i hver scene (ms fra scenens begynnelse). */
+/**
+ * Slutten på den siste lyden i hver scene (ms fra scenens begynnelse). Bare lyden i hovedspråket teller, så
+ * scenene er like lange i alle språkversjoner (DEC-0059, REQ-0344).
+ */
 export function sceneAudioEndMs(s: ProjectState): Map<string, number> {
   let m = endCache.get(s.audioClips);
   if (!m) {
     m = new Map();
     for (const a of Object.values(s.audioClips)) {
       // Lyd som løper videre gjør ikke scenen lengre (DEC-0045)
-      if (a.removed || a.continues) continue;
+      if (a.removed || a.continues || !playsIn(a, MAIN_LANGUAGE)) continue;
       const end = a.offsetMs + a.lengthMs;
       if (end > (m.get(a.occurrenceId) ?? 0)) m.set(a.occurrenceId, end);
     }
@@ -78,6 +108,11 @@ export interface FilmAudioItem {
   readonly keys: readonly { readonly t: number; readonly db: number }[];
   /** Klippets fulle lengde (s), også den delen som er kuttet ved scenens slutt. */
   readonly fullLength: number;
+  /**
+   * Lyden i en importert film (DEC-0047), ikke et lydklipp: språket til dialogen som er blandet inn
+   * (DEC-0059), «none» for bare musikk og effekter.
+   */
+  readonly film?: { readonly audioLanguage: string };
 }
 
 function item(
@@ -100,16 +135,20 @@ function item(
   };
 }
 
-/** All lyd i filmen, plassert etter scenenes nåværende plass. Lyd i deaktiverte scener er ikke med. */
+/**
+ * All lyd i filmen i et språk (DEC-0059; standard hovedspråket), plassert etter scenenes nåværende plass.
+ * Lyd i deaktiverte scener er ikke med.
+ */
 export function filmAudio(
   s: ProjectState,
   clips: readonly FilmClip[],
   fps: Rational,
+  lang: string = MAIN_LANGUAGE,
 ): FilmAudioItem[] {
   const sceneOf = new Map(clips.map((c) => [c.occurrenceId, c]));
   const out: FilmAudioItem[] = [];
   for (const a of Object.values(s.audioClips)) {
-    if (a.removed) continue;
+    if (a.removed || !playsIn(a, lang)) continue;
     const scene = sceneOf.get(a.occurrenceId);
     if (!scene) continue;
     const sceneStart = framesToSeconds(scene.startFrame, fps);
@@ -131,8 +170,9 @@ export function sceneAudioItems(
   s: ProjectState,
   occurrenceId: string,
   sceneSeconds = Infinity,
+  lang: string = MAIN_LANGUAGE,
 ): FilmAudioItem[] {
-  return sceneAudio(s, occurrenceId)
+  return sceneAudio(s, occurrenceId, lang)
     .map((a) => item(a, audioVersion(s, a), a.offsetMs / 1000, sceneSeconds - a.offsetMs / 1000))
     .filter((it) => it.length > 0);
 }
@@ -146,12 +186,13 @@ export function sceneWindowAudio(
   clips: readonly FilmClip[],
   occurrenceId: string,
   fps: Rational,
+  lang: string = MAIN_LANGUAGE,
 ): FilmAudioItem[] {
   const c = clips.find((x) => x.occurrenceId === occurrenceId);
   if (!c) return [];
   const start = framesToSeconds(c.startFrame, fps);
   const end = start + framesToSeconds(c.durationFrames, fps);
-  return filmAudio(s, clips, fps)
+  return filmAudio(s, clips, fps, lang)
     .filter((it) => it.start < end && it.start + it.length > start)
     .map((it) => ({ ...it, start: it.start - start }));
 }
@@ -235,6 +276,7 @@ export function filmTakeAudio(clips: readonly FilmClip[], fps: Rational): FilmAu
         fadeIn: 0,
         fadeOut: 0,
         keys: [],
+        film: { audioLanguage: t.audioLanguage ?? "nb" },
       });
     }
   return out;

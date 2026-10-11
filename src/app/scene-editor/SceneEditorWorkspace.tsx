@@ -3,7 +3,18 @@
  * (bakgrunner, mellomgrunner, karakterer, objekter …) med bilder fra ressursbiblioteket eller fargeflater.
  * Kamera, tidslinje og avspilling kommer i neste leveranse (mandat kap. 12).
  */
-import { Layers, MonitorPlay, Plus, Redo2, Undo2 } from "lucide-react";
+import { ProductionPicker, useActiveProduction } from "@/app/project/use-production";
+import {
+  AlertTriangle,
+  Clapperboard,
+  Copy,
+  Layers,
+  Mic,
+  MonitorPlay,
+  Plus,
+  Redo2,
+  Undo2,
+} from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   DEFAULT_COMPOSITION,
@@ -13,9 +24,14 @@ import {
   formatHeading,
   framesToSeconds,
   layerVersion,
+  layerVersions,
+  layerFieldsOf,
   layersOf,
-  mainProduction,
+  newMotionPath,
+  pathPointsFromDrawing,
+  isSharedIn,
   newId,
+  ownCopyCommands,
   orderedOccurrences,
   audioClipFieldsOf,
   audioVersion,
@@ -23,6 +39,7 @@ import {
   sceneWindowAudio,
   type Composition,
   type ProjectState,
+  sceneContinuityVariant,
 } from "@/core";
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
@@ -44,6 +61,17 @@ import { PopoutPreview, PreviewWindow } from "./PreviewWindow";
 import { CameraPanel } from "./CameraPanel";
 import { Timeline } from "./Timeline";
 import { LayerImageDialog } from "./LayerImageDialog";
+import { RecordAudioDialog } from "./RecordAudioDialog";
+import { NeighbourScenes } from "./NeighbourScenes";
+import { useFilmLanguage } from "@/app/assembly/use-film-language";
+import { ScriptChanges, useSceneDiscrepancies } from "@/app/assembly/ScriptChanges";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { usePlayback } from "./use-playback";
 
 export function SceneEditorWorkspace({
@@ -88,7 +116,7 @@ export function SceneEditorWorkspace({
 function Editor({
   projectId,
   state,
-  editable,
+  editable: roleEditable,
   roleKnown,
   cmds,
   initialOccurrenceId,
@@ -100,7 +128,13 @@ function Editor({
   initialOccurrenceId: string | null;
   projectId: string;
 }) {
-  const productionId = mainProduction(state)?.id ?? Object.keys(state.productions)[0] ?? "";
+  const [copyError, setCopyError] = useState<string | null>(null);
+  // Valgt produksjon (DEC-0057)
+  const [productionId, setProductionId] = useActiveProduction(
+    projectId,
+    state,
+    initialOccurrenceId,
+  );
   const occurrences = useMemo(() => orderedOccurrences(state, productionId), [state, productionId]);
   const [occurrenceId, setOccurrenceId] = useState<string | null>(
     () =>
@@ -117,6 +151,24 @@ function Editor({
   const occurrence = occurrenceId ? state.occurrences[occurrenceId] : undefined;
   const variant = occurrence ? state.variants[occurrence.variantId] : undefined;
   const composition = variant ? compositionOfVariant(state, variant.id) : null;
+  // Scenen deles med hovedfilmen i en avledet produksjon (DEC-0057): 2D-scenen kan ikke endres her før
+  // produksjonen har fått sin egen kopi – ellers ville hovedfilmen endres (REQ-0365)
+  const shared = !!occurrence && isSharedIn(state, productionId, occurrence.variantId);
+  const editable = roleEditable && !shared;
+  function makeOwnCopy() {
+    if (!occurrence) return;
+    const commands = ownCopyCommands(state, occurrence.id);
+    if (!commands) return;
+    const group = newId();
+    for (const c of commands) {
+      const err = cmds.run(c, "Egen versjon av scenen", group);
+      if (err) {
+        setCopyError(err);
+        return;
+      }
+    }
+    setCopyError(null);
+  }
   const [selectedLayerId, setSelectedLayerIdState] = useState<string | null>(null);
   const [selectedShotId, setSelectedShotIdState] = useState<string | null>(null);
   // Ett valg om gangen: et lag eller et kamerautsnitt
@@ -146,10 +198,15 @@ function Editor({
   const playback = usePlayback(duration, state.project.fps);
   // Lyden i scenen spilles med (DEC-0044)
   // Filmens scener (for lyd som løper inn fra tidligere scener og lyd i scenene rundt, DEC-0045)
+  // Språkversjonen som er valgt i monteringen (DEC-0059): bare den lyden spilles
+  const [filmLang] = useFilmLanguage(projectId);
   const film = useMemo(() => filmClips(state, productionId), [state, productionId]);
   const sceneSound = useMemo(
-    () => (occurrenceId ? sceneWindowAudio(state, film, occurrenceId, state.project.fps) : []),
-    [state, film, occurrenceId],
+    () =>
+      occurrenceId
+        ? sceneWindowAudio(state, film, occurrenceId, state.project.fps, filmLang.dialogue)
+        : [],
+    [state, film, occurrenceId, filmLang.dialogue],
   );
   const audioLoaded = useAudioLoaded();
   const [profileId, setProfileId] = useState<string | null>(null);
@@ -180,6 +237,12 @@ function Editor({
       ? (composition.camera.shots.find((x) => x.id === selectedShotId) ?? null)
       : null;
   const [addOpen, setAddOpen] = useState(false);
+  const [recordOpen, setRecordOpen] = useState(false);
+  /** Avvik ved manusendring for scenen (DEC-0054). */
+  const found = useSceneDiscrepancies(state, occurrenceId);
+  const [changesOpen, setChangesOpen] = useState(false);
+  /** Naboscenene som film før og etter scenen (DEC-0052, REQ-0578). */
+  const [neighbours, setNeighbours] = useStoredFlag("scene-editor-neighbours", false);
   /** Laget som får nytt bilde (dobbeltklikk, DEC-0044). */
   const [imageLayerId, setImageLayerId] = useState<string | null>(null);
   const openLayerImage = useCallback(
@@ -189,6 +252,8 @@ function Editor({
     },
     [setSelectedLayerId],
   );
+  /** Laget som får tegnet en bevegelsesbane i scenen (DEC-0052). */
+  const [drawPathFor, setDrawPathFor] = useState<string | null>(null);
   const [leftWidth, setLeftWidth] = usePaneSize("scene-editor-left", 220, 180, 480);
   const [rightWidth, setRightWidth] = usePaneSize("scene-editor-right", 300, 240, 560);
   const [error, setError] = useState<string | null>(null);
@@ -207,14 +272,40 @@ function Editor({
   useEffect(() => {
     if (selectedShotId && !selectedShot) setSelectedShotIdState(null);
   }, [selectedShotId, selectedShot]);
+  const drawingPath = !!selectedLayer && drawPathFor === selectedLayer.id && view === "scene";
+  useEffect(() => {
+    if (drawPathFor && (!selectedLayer || selectedLayer.id !== drawPathFor)) setDrawPathFor(null);
+  }, [drawPathFor, selectedLayer]);
+
+  /** En tegnet bane blir lagets bevegelsesbane (tidene beholdes når banen tegnes på nytt). */
+  function pathDrawn(points: { x: number; y: number }[]) {
+    setDrawPathFor(null);
+    if (!selectedLayer || !composition) return;
+    const pts = pathPointsFromDrawing(points);
+    if (!pts) return;
+    const fps = state.project.fps.num / state.project.fps.den;
+    const path = selectedLayer.path
+      ? { ...selectedLayer.path, points: pts }
+      : newMotionPath(pts, playback.frame, duration, fps);
+    setError(
+      cmds.run(
+        {
+          type: "UpdateLayers",
+          layers: [
+            { layerId: selectedLayer.id, fields: { ...layerFieldsOf(selectedLayer), path } },
+          ],
+        },
+        selectedLayer.path ? "Tegn banen på nytt" : "Ny bevegelsesbane",
+      ),
+    );
+  }
 
   // Signerte lenker for bildene i scenen
   const paths = useMemo(() => {
     if (!composition) return [];
     const out: string[] = [];
     for (const l of layersOf(state, composition.id)) {
-      const v = layerVersion(state, l);
-      if (v) out.push(v.mediaPath);
+      for (const v of layerVersions(state, l)) out.push(v.mediaPath);
     }
     return out;
   }, [state, composition]);
@@ -238,7 +329,11 @@ function Editor({
   const addAsset = useCallback(
     (assetId: string) => {
       if (!composition) return;
-      const f = defaultLayerFields(state, composition, { assetId });
+      // Utseendet kontinuiteten gir i denne scenen (DEC-0055)
+      const f = defaultLayerFields(state, composition, {
+        assetId,
+        assetVariantId: sceneContinuityVariant(state, assetId, composition.variantId),
+      });
       const n = layersOf(state, composition.id).length % 8;
       const layerId = newId<"composition_layer">();
       const err = cmds.run(
@@ -264,13 +359,27 @@ function Editor({
   );
 
   function create() {
-    if (!variant) return;
+    if (!variant || !occurrence) return;
+    // Delt med hovedfilmen i en avledet produksjon: egen versjon av scenen først (DEC-0057)
+    let variantId: string = variant.id;
+    let group: string | undefined;
+    if (shared) {
+      group = newId();
+      for (const c of ownCopyCommands(state, occurrence.id) ?? []) {
+        const e = cmds.run(c, "Egen versjon av scenen", group);
+        if (e) {
+          setError(e);
+          return;
+        }
+        if (c.type === "ForkVariant") variantId = c.newVariantId;
+      }
+    }
     setError(
       cmds.run(
         {
           type: "CreateComposition",
           compositionId: newId<"composition">(),
-          variantId: variant.id,
+          variantId: variantId as never,
           // Formatet følger prosjektet (DEC-0039)
           fields: {
             ...DEFAULT_COMPOSITION,
@@ -279,6 +388,7 @@ function Editor({
           },
         },
         "Ny 2D-scene",
+        group,
       ),
     );
   }
@@ -287,6 +397,7 @@ function Editor({
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex h-10 shrink-0 items-center gap-2 border-b border-border bg-surface-2 px-3">
         <span className="text-[13px] font-medium text-text-primary">Sceneeditor</span>
+        <ProductionPicker state={state} value={productionId} onChange={setProductionId} />
         <div className="mx-1 h-5 w-px bg-border" aria-hidden />
         <ScenePicker
           state={state}
@@ -322,9 +433,33 @@ function Editor({
             Legg til lag
           </Button>
         ) : null}
+        {editable && occurrence ? (
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => {
+              playback.pause();
+              setRecordOpen(true);
+            }}
+            title="Ta opp en replikk eller lyd fra avspillingshodet"
+          >
+            <Mic />
+            Opptak
+          </Button>
+        ) : null}
         <div className="ml-auto flex items-center gap-3">
           {composition ? (
             <>
+              <Button
+                size="sm"
+                variant={neighbours ? "secondary" : "ghost"}
+                onClick={() => setNeighbours(!neighbours)}
+                aria-pressed={neighbours}
+                title="Spill scenen før og etter som ferdig film, i sammenheng med denne"
+              >
+                <Clapperboard />
+                Naboscener
+              </Button>
               <Button
                 size="sm"
                 variant={previewOpen ? "secondary" : "ghost"}
@@ -351,7 +486,7 @@ function Editor({
             </>
           ) : null}
           <SaveIndicator cmds={cmds} />
-          {roleKnown && !editable ? (
+          {roleKnown && !roleEditable ? (
             <span className="text-xs text-text-tertiary">Bare lesetilgang</span>
           ) : null}
         </div>
@@ -406,13 +541,49 @@ function Editor({
           ) : !composition ? (
             <EmptyScene
               title={formatHeading(variant.heading)}
-              editable={editable}
+              editable={roleEditable}
               onCreate={create}
               format={`${state.project.frameWidth} × ${state.project.frameHeight} px · ${formatFps(state.project.fps)} bilder/s`}
               error={error}
             />
           ) : (
             <>
+              {shared && roleEditable ? (
+                <div
+                  role="status"
+                  className="flex min-h-8 shrink-0 flex-wrap items-center gap-2 border-b border-border bg-surface-2 px-3 py-1 text-xs text-text-primary"
+                >
+                  <Copy className="size-3.5 text-text-tertiary" aria-hidden />
+                  2D-scenen deles med hovedfilmen. Lag en egen versjon for å endre den her –
+                  hovedfilmen endres ikke.
+                  <Button size="sm" variant="secondary" className="h-6" onClick={makeOwnCopy}>
+                    Lag egen versjon for «{state.productions[productionId]?.name}»
+                  </Button>
+                  {copyError ? <span className="text-status-danger">{copyError}</span> : null}
+                </div>
+              ) : null}
+              {found.length > 0 ? (
+                <div
+                  role="status"
+                  className="flex h-8 shrink-0 items-center gap-2 border-b border-status-danger/40 bg-status-danger-bg px-3 text-xs text-text-primary"
+                >
+                  <AlertTriangle className="size-3.5 text-status-danger" aria-hidden />
+                  Manuset er endret etter at materialet ble laget (
+                  {(() => {
+                    const n = new Set(found.flatMap((d) => d.changes.map((c) => c.blockId))).size;
+                    return n === 1 ? "1 endring" : `${n} endringer`;
+                  })()}
+                  ).
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-6"
+                    onClick={() => setChangesOpen(true)}
+                  >
+                    Vis og velg …
+                  </Button>
+                </div>
+              ) : null}
               <div className="relative flex min-h-0 flex-1 flex-col">
                 <Stage
                   state={state}
@@ -431,6 +602,9 @@ function Editor({
                   autoKey={autoKey}
                   onTogglePlay={playback.toggle}
                   onOpenLayerImage={openLayerImage}
+                  drawPath={drawingPath}
+                  onPathDrawn={pathDrawn}
+                  onDrawCancel={() => setDrawPathFor(null)}
                 />
                 {showPreview && popout ? (
                   <PopoutPreview
@@ -458,6 +632,18 @@ function Editor({
                       setPopout(true);
                     }}
                     note={previewNote}
+                  />
+                ) : null}
+                {neighbours && occurrence ? (
+                  <NeighbourScenes
+                    state={state}
+                    language={filmLang.dialogue}
+                    film={film}
+                    occurrenceId={occurrence.id}
+                    sceneFrame={playback.frame}
+                    scenePlaying={playback.playing}
+                    onSceneFrame={playback.setFrame}
+                    onPauseScene={playback.pause}
                   />
                 ) : null}
               </div>
@@ -513,6 +699,7 @@ function Editor({
               onSelect={setSelectedLayerId}
               run={cmds.run}
               onOpenImage={openLayerImage}
+              frame={playback.playing ? 0 : playback.frame}
             />
             <div className="border-t border-border">
               {selectedShot ? (
@@ -537,6 +724,13 @@ function Editor({
                   frame={playback.frame}
                   autoKey={autoKey}
                   onOpenImage={() => openLayerImage(selectedLayer.id)}
+                  onSeek={playback.setFrame}
+                  durationFrames={duration}
+                  drawingPath={drawingPath}
+                  onDrawingPathChange={(on) => {
+                    if (on) setView("scene");
+                    setDrawPathFor(on ? selectedLayer.id : null);
+                  }}
                 />
               ) : (
                 <CompositionInspector
@@ -581,6 +775,28 @@ function Editor({
           );
         }}
       />
+      <Dialog open={changesOpen && found.length > 0} onOpenChange={setChangesOpen}>
+        <DialogContent className="max-h-[86vh] max-w-[620px] overflow-y-auto border-border bg-surface-2">
+          <DialogHeader>
+            <DialogTitle>Manusendringer i scenen</DialogTitle>
+            <DialogDescription>
+              Oppdater 2D-scenen her i editoren og godkjenn etterpå, godkjenn slik den er, eller
+              angre manusendringen.
+            </DialogDescription>
+          </DialogHeader>
+          {occurrenceId ? (
+            <ScriptChanges
+              state={state}
+              projectId={projectId}
+              occurrenceId={occurrenceId}
+              found={found}
+              editable={editable}
+              run={cmds.run}
+              showEditorLink={false}
+            />
+          ) : null}
+        </DialogContent>
+      </Dialog>
       <LayerImageDialog
         open={imageLayerId !== null}
         onOpenChange={(o) => {
@@ -592,6 +808,21 @@ function Editor({
         editable={editable}
         cmds={cmds}
       />
+      {occurrence && editable ? (
+        <RecordAudioDialog
+          open={recordOpen}
+          onOpenChange={setRecordOpen}
+          state={state}
+          projectId={projectId}
+          cmds={cmds}
+          occurrenceId={occurrence.id}
+          variantId={occurrence.variantId}
+          frame={playback.frame}
+          onPlay={playback.play}
+          onStop={playback.pause}
+          onAdded={(id) => setProfileId(id)}
+        />
+      ) : null}
       {composition && editable ? (
         <AddLayerDialog
           open={addOpen}

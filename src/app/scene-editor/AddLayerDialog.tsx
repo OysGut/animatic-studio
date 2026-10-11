@@ -16,6 +16,7 @@ import {
   type Composition,
   type NewLayer,
   type ProjectState,
+  sceneContinuityVariant,
 } from "@/core";
 import { useImageUrls } from "@/app/library/asset-images";
 import { Button } from "@/components/ui/button";
@@ -92,6 +93,9 @@ export function AddLayerDialog({
   function chosenVariant(assetId: string): string {
     const explicit = variantChoice[assetId];
     if (explicit !== undefined) return explicit;
+    // Kontinuiteten bestemmer utseendet i denne scenen (DEC-0055)
+    const fromContinuity = sceneContinuityVariant(state, assetId, composition.variantId);
+    if (fromContinuity) return fromContinuity;
     return variantsFor(assetId).find((v) => v.approvedVersionId)?.id ?? "";
   }
 

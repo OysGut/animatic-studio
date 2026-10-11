@@ -7,9 +7,12 @@ import type {
   CameraFrame,
   CompositionCamera,
   Easing,
+  ImageSwap,
   Keyframe,
+  LanguageImage,
   LayerKind,
   LayerTransform,
+  MotionPath,
 } from "../model";
 import type { CompositionFields, LayerFields } from "../commands/types";
 
@@ -21,6 +24,7 @@ export const LAYER_KINDS: readonly LayerKind[] = [
   "object",
   "effect",
   "other",
+  "group",
 ];
 
 export const LAYER_KIND_LABEL: Record<LayerKind, string> = {
@@ -31,6 +35,7 @@ export const LAYER_KIND_LABEL: Record<LayerKind, string> = {
   object: "Objekt",
   effect: "Effekt",
   other: "Annet",
+  group: "Gruppe",
 };
 
 /** Standard parallakse per lagtype: bakgrunnen beveger seg minst, forgrunnen mest. */
@@ -42,6 +47,7 @@ export const DEFAULT_PARALLAX: Record<LayerKind, number> = {
   object: 1,
   effect: 1,
   other: 1,
+  group: 1,
 };
 
 export const ANIMATED_PROPERTIES: readonly AnimatedProperty[] = [
@@ -150,14 +156,94 @@ export function normalizeKeyframes(list: readonly Keyframe[]): Result<readonly K
       return { ok: false, error: "Ugyldig egenskap i nøkkelbilde" };
     if (!finite(k.value)) return { ok: false, error: "Ugyldig verdi i nøkkelbilde" };
     if (!EASINGS.includes(k.easing)) return { ok: false, error: "Ugyldig hastighetskurve" };
+    for (const v of [k.easeOut, k.easeIn])
+      if (v !== undefined && (!finite(v) || v < 0 || v > 1))
+        return { ok: false, error: "Styrken på ease må være mellom 0 og 100 %" };
     const key = `${k.property}@${k.frame}`;
     if (seen.has(key)) return { ok: false, error: "To nøkkelbilder på samme bilde og egenskap" };
     seen.add(key);
   }
   const sorted = [...list]
-    .map((k) => ({ frame: k.frame, property: k.property, value: k.value, easing: k.easing }))
+    .map((k): Keyframe => ({
+      frame: k.frame,
+      property: k.property,
+      value: k.value,
+      easing: k.easing,
+      ...(k.easeOut !== undefined ? { easeOut: k.easeOut } : {}),
+      ...(k.easeIn !== undefined ? { easeIn: k.easeIn } : {}),
+    }))
     .sort((a, b) => a.property.localeCompare(b.property) || a.frame - b.frame);
   return { ok: true, value: sorted };
+}
+
+const MAX_SWAPS = 200;
+const MAX_PATH_POINTS = 500;
+const MAX_TEMPO_POINTS = 20;
+
+/** Bildeskifter: hele bilder fra 1, ett per bilde, sortert (DEC-0052). */
+export function normalizeSwaps(list: readonly ImageSwap[]): Result<readonly ImageSwap[]> {
+  if (!Array.isArray(list)) return { ok: false, error: "Ugyldige bildeskifter" };
+  if (list.length > MAX_SWAPS) return { ok: false, error: "For mange bildeskifter" };
+  const frames = new Set<number>();
+  const out: ImageSwap[] = [];
+  for (const w of list) {
+    if (!w || !Number.isInteger(w.frame) || w.frame < 1)
+      return { ok: false, error: "Ugyldig bildeskifte" };
+    if (frames.has(w.frame)) return { ok: false, error: "To bildeskifter på samme bilde" };
+    frames.add(w.frame);
+    if (typeof w.assetId !== "string" || !w.assetId)
+      return { ok: false, error: "Bildeskiftet mangler bilde" };
+    if (w.versionId !== null && w.assetVariantId === null)
+      return { ok: false, error: "Versjon uten variant" };
+    out.push({
+      frame: w.frame,
+      assetId: w.assetId,
+      assetVariantId: w.assetVariantId ?? null,
+      versionId: w.versionId ?? null,
+    });
+  }
+  out.sort((a, b) => a.frame - b.frame);
+  return { ok: true, value: out };
+}
+
+/** Bevegelsesbane (DEC-0052): minst to punkter, slutt etter start, ease 0–1, stigende tempokurve. */
+export function normalizePath(p: MotionPath | null): Result<MotionPath | null> {
+  if (p === null) return { ok: true, value: null };
+  if (typeof p !== "object" || !Array.isArray(p.points))
+    return { ok: false, error: "Ugyldig bevegelsesbane" };
+  if (p.points.length < 2 || p.points.length > MAX_PATH_POINTS)
+    return { ok: false, error: `Banen må ha mellom 2 og ${MAX_PATH_POINTS} punkter` };
+  for (const q of p.points)
+    if (!finite(q.x) || !finite(q.y) || Math.abs(q.x) > MAX_COORD || Math.abs(q.y) > MAX_COORD)
+      return { ok: false, error: "Ugyldig punkt i banen" };
+  if (!Number.isInteger(p.startFrame) || !Number.isInteger(p.endFrame) || p.startFrame < 0)
+    return { ok: false, error: "Ugyldig tid for banen" };
+  if (p.endFrame <= p.startFrame)
+    return { ok: false, error: "Banen må slutte etter at den starter" };
+  for (const v of [p.easeOut, p.easeIn])
+    if (!finite(v) || v < 0 || v > 1)
+      return { ok: false, error: "Styrken på ease må være mellom 0 og 100 %" };
+  if (!Array.isArray(p.tempo) || p.tempo.length > MAX_TEMPO_POINTS)
+    return { ok: false, error: "Ugyldig tempokurve" };
+  let lastT = 0;
+  let lastP = 0;
+  for (const q of p.tempo) {
+    if (!finite(q.t) || !finite(q.p) || q.t <= lastT || q.t >= 1 || q.p < lastP || q.p > 1)
+      return { ok: false, error: "Punktene i tempokurven må stige fra start til slutt" };
+    lastT = q.t;
+    lastP = q.p;
+  }
+  return {
+    ok: true,
+    value: {
+      points: p.points.map((q) => ({ x: q.x, y: q.y, smooth: q.smooth === true })),
+      startFrame: p.startFrame,
+      endFrame: p.endFrame,
+      easeOut: p.easeOut,
+      easeIn: p.easeIn,
+      tempo: p.tempo.map((q) => ({ t: q.t, p: q.p })),
+    },
+  };
 }
 
 export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
@@ -167,8 +253,13 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
   if (!validText(name)) return { ok: false, error: "Navnet inneholder ugyldige tegn" };
   const fill = f.fill === null ? null : normalizeColor(f.fill);
   if (f.fill !== null && !fill) return { ok: false, error: "Fargen må være på formen #rrggbb" };
-  if (f.assetId === null && fill === null)
+  const group = f.kind === "group";
+  if (group && (f.assetId !== null || fill !== null || (f.swaps ?? []).length > 0))
+    return { ok: false, error: "En gruppe viser ikke noe bilde selv" };
+  if (!group && f.assetId === null && fill === null)
     return { ok: false, error: "Laget må vise et bilde fra biblioteket eller en fargeflate" };
+  if (group && f.groupId !== null)
+    return { ok: false, error: "En gruppe kan ikke ligge i en gruppe" };
   if (f.assetId === null && (f.assetVariantId !== null || f.versionId !== null))
     return { ok: false, error: "Variant eller versjon uten ressurs" };
   if (f.versionId !== null && f.assetVariantId === null)
@@ -184,6 +275,21 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
   const k = normalizeKeyframes(f.keyframes);
   if (!k.ok) return k;
   if (f.groupId !== null && f.groupId.length > 64) return { ok: false, error: "Ugyldig gruppe" };
+  const swaps = normalizeSwaps(f.swaps ?? []);
+  if (!swaps.ok) return swaps;
+  const path = normalizePath(f.path ?? null);
+  if (!path.ok) return path;
+  const anchor =
+    f.anchor === null || f.anchor === undefined
+      ? null
+      : finite(f.anchor.x) && finite(f.anchor.y)
+        ? { x: f.anchor.x, y: f.anchor.y }
+        : undefined;
+  if (anchor === undefined) return { ok: false, error: "Ugyldig ankerpunkt" };
+  const langs = normalizeLanguageImages(f.languageImages ?? []);
+  if (!langs.ok) return langs;
+  if (langs.value.length > 0 && (group || f.assetId === null))
+    return { ok: false, error: "Bare et lag med bilde kan ha et eget bilde per språk" };
   return {
     ok: true,
     value: {
@@ -201,8 +307,38 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
       visible: f.visible === true,
       locked: f.locked === true,
       groupId: f.groupId,
+      swaps: swaps.value,
+      path: path.value,
+      anchor: group ? anchor : null,
+      ...(langs.value.length ? { languageImages: langs.value } : {}),
     },
   };
+}
+
+/** Språkavhengige bilder (DEC-0059): ett per språk, ikke hovedspråket, sortert etter språk. */
+export function normalizeLanguageImages(
+  list: readonly LanguageImage[],
+): Result<readonly LanguageImage[]> {
+  if (!Array.isArray(list) || list.length > 20)
+    return { ok: false, error: "Ugyldige bilder per språk" };
+  const seen = new Set<string>();
+  const out: LanguageImage[] = [];
+  for (const li of list) {
+    if (!li || typeof li.language !== "string" || !/^[a-z]{2}(-[A-Z]{2})?$/.test(li.language))
+      return { ok: false, error: "Ugyldig språk for bildet" };
+    if (li.language === "nb") return { ok: false, error: "Norsk bruker lagets eget bilde" };
+    if (seen.has(li.language)) return { ok: false, error: "To bilder for samme språk" };
+    seen.add(li.language);
+    if (typeof li.assetVariantId !== "string" || !li.assetVariantId)
+      return { ok: false, error: "Bildet for språket mangler variant" };
+    out.push({
+      language: li.language,
+      assetVariantId: li.assetVariantId,
+      versionId: li.versionId ?? null,
+    });
+  }
+  out.sort((a, b) => a.language.localeCompare(b.language));
+  return { ok: true, value: out };
 }
 
 const MAX_SHOTS = 200;

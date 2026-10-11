@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/dialog";
 
 /** Største zip-fil (formatet uten ZIP64 tåler 4 GB). */
-const ZIP_MAX_BYTES = 3.8 * 1024 * 1024 * 1024;
+export const ZIP_MAX_BYTES = 3.8 * 1024 * 1024 * 1024;
 
 export function formatBytes(n: number): string {
   if (n < 1024) return `${n} B`;
@@ -38,7 +38,7 @@ export function formatBytes(n: number): string {
   return `${(n / 1024 / 1024 / 1024).toLocaleString("nb-NO", { maximumFractionDigits: 2 })} GB`;
 }
 
-function asciiFileName(s: string): string {
+export function asciiFileName(s: string): string {
   return s
     .replace(/[æÆ]/g, (c) => (c === "æ" ? "ae" : "Ae"))
     .replace(/[øØ]/g, (c) => (c === "ø" ? "o" : "O"))

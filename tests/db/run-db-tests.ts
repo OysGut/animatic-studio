@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from "node:util";
 /**
  * Databasetester mot en lokal Postgres med Supabase-emulering (KI-05: Claude når ikke Lovable Cloud direkte).
  * Kjør: DATABASE_URL=postgres://postgres@localhost:54329/postgres bun tests/db/run-db-tests.ts
@@ -21,6 +22,22 @@ import {
   defaultLayerFields,
   layerFieldsOf,
   audioClipFieldsOf,
+  backupIdMap,
+  makeBackup,
+  parseBackup,
+  restoredExtras,
+  restoredState,
+  scriptView,
+  deriveProductionCommands,
+  ownCopyCommands,
+  blocksOfVariant,
+  comparePromotion,
+  keyBetween,
+  newMainVariantCommands,
+  orderedOccurrences,
+  promotionCommands,
+  scriptOnlyChoice,
+  transferSceneCommands,
 } from "../../src/core";
 
 const ADMIN_URL = process.env["DATABASE_URL"] ?? "postgres://postgres@localhost:54329/postgres";
@@ -99,6 +116,9 @@ async function loadState(projectId: string): Promise<ProjectState> {
     audio_clips: await q("audio_clips"),
     clip_parts: await q("clip_parts"),
     time_links: await q("time_links"),
+    generation_prompts: await q("generation_prompts"),
+    continuity_events: await q("continuity_events"),
+    translations: await q("translations"),
   };
   return stateFromRows(rows);
 }
@@ -1359,6 +1379,870 @@ try {
           tx`insert into public.time_links (id, project_id, occurrence_id, block_id, start_ms) values (gen_random_uuid(), ${projectId}, ${occ.id}, ${block.id}, 0)`,
       ),
       /permission denied/,
+    );
+  });
+
+  await test("0013: overganger med overlapp, standardovergang, svart-hvitt og hendelser i 2D-scenen lagres og leses tilbake", async () => {
+    let st = await loadState(projectId);
+    const layer = Object.values(st.layers).find((l) => !l.removed)!;
+    const comp = st.compositions[layer.compositionId]!;
+    const occ = Object.values(st.occurrences).find((o) => o.variantId === comp.variantId)!;
+    const other = Object.values(st.occurrences).find((o) => o.id !== occ.id)!;
+    const block = Object.values(st.blocks).find(
+      (b) => b.variantId === occ.variantId && !b.removed,
+    )!;
+    st = await runCommand(st, ALICE, {
+      type: "SetDefaultTransition",
+      transition: { kind: "dipWhite", frames: 12 },
+    });
+    st = await runCommand(st, ALICE, {
+      type: "SetTransition",
+      occurrenceId: other.id,
+      transition: { kind: "push", frames: 10, overlap: true },
+    });
+    st = await runCommand(st, ALICE, {
+      type: "SetOccurrenceMonochrome",
+      occurrenceId: occ.id,
+      monochrome: true,
+    });
+    const link = "abcdef00-0000-7000-8000-0000000d1301";
+    st = await runCommand(st, ALICE, {
+      type: "AddTimeLinks",
+      links: [
+        {
+          linkId: link as never,
+          fields: {
+            occurrenceId: occ.id,
+            blockId: block.id,
+            startMs: 700,
+            endMs: null,
+            layerId: layer.id,
+          },
+        },
+      ],
+    });
+    const back = await loadState(projectId);
+    assert(
+      back.project.defaultTransition?.kind === "dipWhite" &&
+        back.project.defaultTransition.frames === 12,
+      "standardovergangen ble ikke lagret",
+    );
+    assert(
+      back.occurrences[other.id]?.transition?.kind === "push" &&
+        back.occurrences[other.id]?.transition?.overlap === true,
+      "overgangen med overlapp ble ikke lagret",
+    );
+    assert(back.occurrences[occ.id]?.monochrome === true, "svart-hvitt ble ikke lagret");
+    assert(back.timeLinks[link]?.layerId === layer.id, "hendelsen ble ikke lagret med laget");
+    // Tilbake til standarden: lagres som «ingen egen overgang»
+    st = await runCommand(back, ALICE, {
+      type: "SetTransition",
+      occurrenceId: other.id,
+      transition: null,
+    });
+    const again = await loadState(projectId);
+    assert(again.occurrences[other.id]?.transition === undefined, "skulle fulgt standarden");
+    await expectError(
+      sql`update public.scene_occurrences set transition_kind = 'spin' where id = ${occ.id}`,
+      /check/,
+    );
+  });
+
+  await test("0013 (DEC-0052): grupper, bildeskifte, bevegelsesbane og ankerpunkt lagres og leses tilbake", async () => {
+    let st = await loadState(projectId);
+    const layer = Object.values(st.layers).find((l) => !l.removed && l.kind !== "group")!;
+    const image = Object.values(st.assets).find((a) => a.kind !== "sound" && !a.archived);
+    assert(image, "testprosjektet mangler en bilderessurs");
+    const groupId = "abcdef00-0000-7000-8000-0000000d1302";
+    const fields = (l: typeof layer) => ({
+      kind: l.kind,
+      name: l.name,
+      assetId: l.assetId,
+      assetVariantId: l.assetVariantId,
+      versionId: l.versionId,
+      fill: l.fill,
+      width: l.width,
+      height: l.height,
+      parallax: l.parallax,
+      transform: l.transform,
+      keyframes: l.keyframes,
+      visible: l.visible,
+      locked: l.locked,
+      groupId: l.groupId,
+      swaps: l.swaps,
+      path: l.path,
+      anchor: l.anchor,
+    });
+    st = await runCommand(st, ALICE, {
+      type: "AddLayers",
+      layers: [
+        {
+          layerId: groupId as never,
+          compositionId: layer.compositionId,
+          fields: {
+            ...fields(layer),
+            kind: "group",
+            name: "Gruppe 1",
+            assetId: null,
+            assetVariantId: null,
+            versionId: null,
+            fill: null,
+            width: 1,
+            height: 1,
+            groupId: null,
+            swaps: [],
+            path: null,
+            anchor: { x: 300, y: 200 },
+          },
+        },
+      ],
+    });
+    const path = {
+      points: [
+        { x: 0, y: 0, smooth: true },
+        { x: 120, y: 40, smooth: false },
+        { x: 300, y: 10, smooth: true },
+      ],
+      startFrame: 5,
+      endFrame: 40,
+      easeOut: 0.4,
+      easeIn: 0.7,
+      tempo: [{ t: 0.3, p: 0.6 }],
+    };
+    st = await runCommand(st, ALICE, {
+      type: "UpdateLayers",
+      layers: [
+        {
+          layerId: layer.id,
+          fields: {
+            ...fields(st.layers[layer.id]!),
+            groupId: groupId as never,
+            swaps: [{ frame: 12, assetId: image!.id, assetVariantId: null, versionId: null }],
+            path,
+          },
+        },
+      ],
+    });
+    const back = await loadState(projectId);
+    const g = back.layers[groupId]!;
+    const l = back.layers[layer.id]!;
+    assert(g.kind === "group" && g.assetId === null && g.fill === null, "gruppen ble ikke lagret");
+    assert(g.anchor?.x === 300 && g.anchor.y === 200, "ankerpunktet ble ikke lagret");
+    assert(l.groupId === groupId, "laget ble ikke lagt i gruppen");
+    assert(
+      l.swaps.length === 1 && l.swaps[0]!.frame === 12 && l.swaps[0]!.assetId === image!.id,
+      "bildeskiftet ble ikke lagret",
+    );
+    assert(
+      isDeepStrictEqual(l.path, path),
+      `bevegelsesbanen ble ikke lagret likt: ${JSON.stringify(l.path)}`,
+    );
+    // Et vanlig lag må fortsatt vise noe; en gruppe trenger ikke
+    await expectError(
+      sql`update public.composition_layers set asset_id = null, asset_variant_id = null, version_id = null, fill = null where id = ${layer.id}`,
+      /composition_layers_shows_something/,
+    );
+    await expectError(
+      sql`update public.composition_layers set image_swaps = '{}'::jsonb where id = ${layer.id}`,
+      /check/,
+    );
+    // Rydd opp: laget ut av gruppen og gruppen slettet (testene etter forventer lagene som før)
+    st = await runCommand(back, ALICE, {
+      type: "UpdateLayers",
+      layers: [
+        {
+          layerId: layer.id,
+          fields: { ...fields(back.layers[layer.id]!), groupId: null, swaps: [], path: null },
+        },
+      ],
+    });
+    st = await runCommand(st, ALICE, {
+      type: "SetLayersRemoved",
+      layerIds: [groupId as never],
+      removed: true,
+    });
+  });
+
+  await test("0014 (DEC-0053): AI-budsjett, inndeling og egne beskrivelser lagres; slettede beskrivelser følger segmentet", async () => {
+    let st = await loadState(projectId);
+    st = await runCommand(st, ALICE, { type: "SetAiBudget", monthLimit: 25, pricePerImage: 1.5 });
+    let back = await loadState(projectId);
+    assert(
+      back.project.aiMonthLimit === 25 && back.project.aiPricePerImage === 1.5,
+      "budsjettet ble ikke lagret",
+    );
+    st = await runCommand(back, ALICE, {
+      type: "SetAiBudget",
+      monthLimit: null,
+      pricePerImage: null,
+    });
+    back = await loadState(projectId);
+    assert(
+      back.project.aiMonthLimit === undefined && back.project.aiPricePerImage === undefined,
+      "budsjettet ble ikke fjernet",
+    );
+    const occ = Object.values(back.occurrences).find((o) => o.active)!;
+    const seg1 = "abcdef00-0000-7000-8000-0000000d1401";
+    const seg2 = "abcdef00-0000-7000-8000-0000000d1402";
+    const prompt = "abcdef00-0000-7000-8000-0000000d1403";
+    st = await runCommand(back, ALICE, {
+      type: "ReplaceSegments",
+      occurrenceId: occ.id,
+      reason: "model_limit",
+      removeSegmentIds: [],
+      segments: [
+        {
+          segmentId: seg1 as never,
+          orderKey: "m",
+          startBlockId: null,
+          endBlockId: null,
+          startMs: 0,
+          endMs: 4000,
+        },
+      ],
+    });
+    st = await runCommand(st, ALICE, {
+      type: "SetGenerationPrompt",
+      promptId: prompt as never,
+      occurrenceId: occ.id,
+      segmentId: seg1 as never,
+      text: "A quiet winter night. MAJA: «Hører du det?»",
+      basedOn: "auto",
+    });
+    back = await loadState(projectId);
+    assert(
+      back.generationPrompts[prompt]?.text.includes("«Hører du det?»") === true,
+      "beskrivelsen ble ikke lagret",
+    );
+    st = await runCommand(back, ALICE, {
+      type: "SetGenerationPrompt",
+      promptId: prompt as never,
+      occurrenceId: occ.id,
+      segmentId: seg1 as never,
+      text: null,
+      basedOn: "",
+    });
+    // Ny inndeling: segmentet og den fjernede beskrivelsen slettes i samme endring
+    st = await runCommand(st, ALICE, {
+      type: "ReplaceSegments",
+      occurrenceId: occ.id,
+      reason: "model_limit",
+      removeSegmentIds: [seg1 as never],
+      segments: [
+        {
+          segmentId: seg2 as never,
+          orderKey: "m",
+          startBlockId: null,
+          endBlockId: null,
+          startMs: 0,
+          endMs: 2000,
+        },
+      ],
+    });
+    back = await loadState(projectId);
+    assert(!back.segments[seg1] && !!back.segments[seg2], "inndelingen ble ikke byttet");
+    assert(
+      back.segments[seg2]?.startMs === 0 && back.segments[seg2]?.endMs === 2000,
+      "tiden for segmentet ble ikke lagret",
+    );
+    await expectError(
+      sql`update public.production_segments set start_ms = 5, end_ms = 3 where id = ${seg2}`,
+      /check/,
+    );
+    await expectError(sql`update public.generation_jobs set status = 'odd'`, /check/);
+    assert(!back.generationPrompts[prompt], "den fjernede beskrivelsen ble ikke slettet");
+    const [job] =
+      await sql`select column_name from information_schema.columns where table_name = 'generation_jobs' and column_name = 'estimated_cost'`;
+    assert(!!job, "generation_jobs mangler estimated_cost");
+    await expectError(
+      sql`update public.projects set ai_month_limit = -1 where id = ${projectId}`,
+      /check/,
+    );
+  });
+
+  await test("0014 (DEC-0054): grunnlaget for 2D-scenen lagres; godkjenning og angring av avvik", async () => {
+    let st = await loadState(projectId);
+    const comp = Object.values(st.compositions).find((c) => !c.removed)!;
+    const occ = Object.values(st.occurrences).find((o) => o.variantId === comp.variantId)!;
+    const before = { ...(comp.producedFrom?.blockRevisions ?? {}) };
+    st = await runCommand(st, ALICE, {
+      type: "AcceptScriptChanges",
+      occurrenceId: occ.id,
+      compositionIds: [comp.id],
+      takeIds: [],
+    });
+    let back = await loadState(projectId);
+    const now = back.compositions[comp.id]!.producedFrom?.blockRevisions ?? {};
+    assert(Object.keys(now).length > 0, "grunnlaget ble ikke lagret");
+    // Angre: tilbake til det gamle grunnlaget (også tomt)
+    st = await runCommand(back, ALICE, {
+      type: "SetProducedFrom",
+      compositions: [{ compositionId: comp.id, blockRevisions: before }],
+      takes: [],
+    });
+    back = await loadState(projectId);
+    assert(
+      isDeepStrictEqual(back.compositions[comp.id]!.producedFrom?.blockRevisions ?? {}, before),
+      "grunnlaget ble ikke satt tilbake",
+    );
+    // Versjoner: godkjenning lagres i accepted_from; produced_from er uforanderlig (INV-07, utløseren)
+    const take = Object.values(back.takes)[0];
+    if (take) {
+      st = await runCommand(back, ALICE, {
+        type: "AcceptScriptChanges",
+        occurrenceId: take.occurrenceId,
+        compositionIds: [],
+        takeIds: [take.id],
+      });
+      back = await loadState(projectId);
+      assert(
+        isDeepStrictEqual(back.takes[take.id]!.producedFrom, take.producedFrom),
+        "produced_from ble endret",
+      );
+      assert(!!back.takes[take.id]!.acceptedFrom, "godkjenningen av versjonen ble ikke lagret");
+    }
+  });
+
+  await test("0015 (DEC-0055): kontinuitetshendelser lagres, endres og fjernes; ugyldige verdier avvises", async () => {
+    let st = await loadState(projectId);
+    const asset = Object.values(st.assets).find(
+      (a) => a.kind === "character" || a.kind === "object",
+    )!;
+    const variants = Object.values(st.assetVariants).filter((v) => v.assetId === asset.id);
+    let to = variants[0]?.id ?? null;
+    if (!to) {
+      to = "abcdef00-0000-7000-8000-0000000d1501" as never;
+      st = await runCommand(st, ALICE, {
+        type: "CreateAssetVariant",
+        variantId: to as never,
+        assetId: asset.id,
+        fields: { name: "Kort hår", style: "animatic", appearance: "kort hår" },
+      });
+    }
+    const occs = Object.values(st.occurrences).filter((o) => o.active);
+    const scene = st.scenes[occs[0]!.sceneId]!;
+    const later = occs.find((o) => o.sceneId !== scene.id)!.sceneId;
+    const block = Object.values(st.blocks).find(
+      (b) => !b.removed && st.variants[b.variantId]?.sceneId === scene.id,
+    )!;
+    const ev = "abcdef00-0000-7000-8000-0000000d1502";
+    const fields = {
+      assetId: asset.id,
+      kind: "haircut" as const,
+      description: "Klipper håret",
+      fromVariantId: null,
+      toVariantId: to as never,
+      duration: "permanent" as const,
+      sceneId: scene.id,
+      blockId: block.id,
+      untilSceneId: null,
+      status: "approved" as const,
+    };
+    st = await runCommand(st, ALICE, {
+      type: "AddContinuityEvents",
+      events: [{ eventId: ev as never, fields }],
+    });
+    let back = await loadState(projectId);
+    assert(
+      isDeepStrictEqual(back.continuityEvents[ev], st.continuityEvents[ev]),
+      "hendelsen ble ikke lest tilbake likt",
+    );
+    st = await runCommand(back, ALICE, {
+      type: "UpdateContinuityEvents",
+      events: [
+        {
+          eventId: ev as never,
+          fields: { ...fields, duration: "temporary", untilSceneId: later, blockId: null },
+        },
+      ],
+    });
+    back = await loadState(projectId);
+    assert(
+      back.continuityEvents[ev]?.untilSceneId === later &&
+        back.continuityEvents[ev]?.blockId === null,
+      "endringen ble ikke lagret",
+    );
+    await expectError(
+      sql`update public.continuity_events set duration = 'permanent' where id = ${ev}`,
+      /check/,
+    );
+    await expectError(
+      sql`update public.continuity_events set kind = 'tattoo' where id = ${ev}`,
+      /check/,
+    );
+    // Leserett for medlemmer, ingen direkte skriving
+    const seen = await as(
+      "authenticated",
+      ALICE,
+      (tx) => tx`select id from public.continuity_events where id = ${ev}`,
+    );
+    assert(seen.length === 1, "medlemmet ser ikke hendelsen");
+    const notSeen = await as(
+      "authenticated",
+      CAROL,
+      (tx) => tx`select id from public.continuity_events where id = ${ev}`,
+    );
+    assert(notSeen.length === 0, "andre ser hendelsen");
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`delete from public.continuity_events where id = ${ev}`),
+      "42501",
+    );
+    st = await runCommand(back, ALICE, {
+      type: "SetContinuityEventsRemoved",
+      eventIds: [ev as never],
+      removed: true,
+    });
+    back = await loadState(projectId);
+    assert(back.continuityEvents[ev]?.removed === true, "hendelsen ble ikke fjernet");
+    // Tilbake (sikkerhetskopien under tar den med)
+    st = await runCommand(back, ALICE, {
+      type: "SetContinuityEventsRemoved",
+      eventIds: [ev as never],
+      removed: false,
+    });
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 15, "schema_version er ikke 15");
+  });
+
+  await test("DEC-0057: avledet produksjon med gjenbrukte scener, egen variant og kopi av 2D-scenen lagres", async () => {
+    let st = await loadState(projectId);
+    const main = Object.values(st.productions).find((p) => p.kind === "main")!;
+    const comp = Object.values(st.compositions).find((c) => !c.removed)!;
+    const occ = Object.values(st.occurrences).find(
+      (o) => o.productionId === main.id && o.variantId === comp.variantId,
+    )!;
+    const pid = "abcdef00-0000-7000-8000-0000000d5701";
+    for (const c of deriveProductionCommands(st, {
+      productionId: pid,
+      name: "Spinoff",
+      kind: "spinoff",
+      parentProductionId: main.id,
+      occurrenceIds: [occ.id],
+    }))
+      st = await runCommand(st, ALICE, c);
+    const own = Object.values(st.occurrences).find((o) => o.productionId === pid)!;
+    for (const c of ownCopyCommands(st, own.id)!) st = await runCommand(st, ALICE, c);
+    const back = await loadState(projectId);
+    const v = back.occurrences[own.id]!.variantId;
+    assert(back.variants[v]?.ownerProductionId === pid, "spinoffen fikk ikke egen variant");
+    const copy = Object.values(back.compositions).find((c) => c.variantId === v && !c.removed);
+    assert(!!copy && copy.id !== comp.id, "2D-scenen ble ikke kopiert");
+    const n = (id: string) =>
+      Object.values(back.layers).filter((l) => l.compositionId === id && !l.removed).length;
+    assert(n(copy!.id) === n(comp.id), "lagene ble ikke kopiert");
+    assert(back.occurrences[occ.id]!.variantId === comp.variantId, "hovedfilmen ble endret");
+  });
+
+  await test("0016 (DEC-0058): oversettelser lagres, endres og fjernes; norsk språkkode og to mål avvises", async () => {
+    let st = await loadState(projectId);
+    const block = Object.values(st.blocks).find((b) => !b.removed && b.kind !== "heading")!;
+    const variant = Object.values(st.variants)[0]!;
+    const t1 = "abcdef00-0000-7000-8000-0000000d5801";
+    const t2 = "abcdef00-0000-7000-8000-0000000d5802";
+    st = await runCommand(st, ALICE, {
+      type: "AddTranslations",
+      items: [
+        {
+          translationId: t1 as never,
+          fields: {
+            blockId: block.id,
+            variantId: null,
+            language: "en",
+            text: "Hello.",
+            basedOnRev: block.currentRev,
+            status: "uncertain",
+          },
+        },
+        {
+          translationId: t2 as never,
+          fields: {
+            blockId: null,
+            variantId: variant.id,
+            language: "en",
+            text: "INT. KITCHEN - DAY",
+            basedOnRev: 0,
+            status: "approved",
+          },
+        },
+      ],
+    });
+    let back = await loadState(projectId);
+    assert(
+      isDeepStrictEqual(back.translations[t1], st.translations[t1]),
+      "oversettelsen ble ikke lest tilbake likt",
+    );
+    st = await runCommand(back, ALICE, {
+      type: "UpdateTranslations",
+      items: [
+        {
+          translationId: t1 as never,
+          fields: {
+            blockId: block.id,
+            variantId: null,
+            language: "en",
+            text: "Hello there.",
+            basedOnRev: block.currentRev,
+            status: "approved",
+          },
+        },
+      ],
+    });
+    back = await loadState(projectId);
+    assert(
+      back.translations[t1]?.text === "Hello there." &&
+        back.translations[t1]?.status === "approved",
+      "endringen ble ikke lagret",
+    );
+    await expectError(
+      sql`update public.translations set language = 'nb' where id = ${t1}`,
+      /check/,
+    );
+    await expectError(
+      sql`update public.translations set variant_id = ${variant.id} where id = ${t1}`,
+      /check/,
+    );
+    const seen = await as(
+      "authenticated",
+      CAROL,
+      (tx) => tx`select id from public.translations where id = ${t1}`,
+    );
+    assert(seen.length === 0, "andre ser oversettelsen");
+    st = await runCommand(back, ALICE, {
+      type: "SetTranslationsRemoved",
+      translationIds: [t1 as never, t2 as never],
+      removed: true,
+    });
+    back = await loadState(projectId);
+    assert(back.translations[t1]?.removed === true, "oversettelsen ble ikke fjernet");
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 16, "schema_version er ikke 16");
+  });
+
+  await test("0017 (DEC-0059): språk på lyd, dialog i filmlyden og bilder per språk lagres og leses tilbake", async () => {
+    let st = await loadState(projectId);
+    const sound = Object.values(st.assets).find((x) => x.kind === "sound")!;
+    const occ = Object.values(st.occurrences).find((o) => o.active)!;
+    const block = Object.values(st.blocks).find(
+      (b) => b.variantId === occ.variantId && b.kind === "dialogue" && !b.removed,
+    );
+    const clip = "abcdef00-0000-7000-8000-0000000d5901";
+    st = await runCommand(st, ALICE, {
+      type: "AddAudioClips",
+      clips: [
+        {
+          clipId: clip as never,
+          fields: {
+            occurrenceId: occ.id,
+            kind: "dialogue",
+            name: "Maja (EN)",
+            assetId: sound.id,
+            assetVariantId: null,
+            versionId: null,
+            blockId: block?.id ?? null,
+            offsetMs: 500,
+            sourceInMs: 0,
+            lengthMs: 3000,
+            gainDb: 0,
+            fadeInMs: 0,
+            fadeOutMs: 0,
+            muted: false,
+            continues: false,
+            volumeKeys: [],
+            language: "en",
+          },
+        },
+      ],
+    });
+    let back = await loadState(projectId);
+    assert(back.audioClips[clip]?.language === "en", "språket på lyden ble ikke lagret");
+    // Tilbake til standard (null i databasen)
+    st = await runCommand(back, ALICE, {
+      type: "UpdateAudioClips",
+      clips: [
+        {
+          clipId: clip as never,
+          fields: { ...audioClipFieldsOf(back.audioClips[clip]!), language: null },
+        },
+      ],
+    });
+    back = await loadState(projectId);
+    assert(back.audioClips[clip]!.language === undefined, "språket ble ikke fjernet");
+    await expectError(
+      sql`update public.audio_clips set language = 'norsk' where id = ${clip}`,
+      /check/,
+    );
+    // Dialogen i filmlyden (importert film)
+    const take = Object.values(back.takes).find((x) => x.kind === "imported_film");
+    if (take) {
+      st = await runCommand(back, ALICE, {
+        type: "SetTakeAudioLanguage",
+        takeId: take.id,
+        audioLanguage: "none",
+      });
+      back = await loadState(projectId);
+      assert(back.takes[take.id]!.audioLanguage === "none", "dialogspråket i filmlyden");
+      await expectError(
+        sql`update public.takes set audio_language = 'tysk' where id = ${take.id}`,
+        /check/,
+      );
+    }
+    // Bilder per språk: kolonnen må være en liste
+    const layer = Object.values(back.layers)[0];
+    if (layer)
+      await expectError(
+        sql`update public.composition_layers set language_images = '{}'::jsonb where id = ${layer.id}`,
+        /check/,
+      );
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 17, "schema_version er ikke 17");
+  });
+
+  await test("0018 (DEC-0060): tilbakeføring fra spinoff og kontinuitet per produksjon lagres og leses tilbake", async () => {
+    let st = await loadState(projectId);
+    const main = Object.values(st.productions).find((p) => p.kind === "main")!;
+    const pid = "abcdef00-0000-7000-8000-0000000d5701";
+    const own = Object.values(st.occurrences).find((o) => o.productionId === pid)!;
+    const mainOcc = Object.values(st.occurrences).find(
+      (o) => o.productionId === main.id && o.sceneId === own.sceneId,
+    )!;
+    // Endre en linje i spinoffens versjon og før bare manuset tilbake
+    const line = blocksOfVariant(st, own.variantId).find((b) => b.kind !== "heading")!;
+    st = await runCommand(st, ALICE, {
+      type: "EditBlockText",
+      productionId: pid as never,
+      blockId: line.id,
+      text: "Endret i spinoffen.",
+    });
+    const plan = promotionCommands(st, own.id, scriptOnlyChoice(comparePromotion(st, own.id)!));
+    assert(plan.blocked === null && plan.commands.length > 0, "ingen tilbakeføring");
+    for (const c of plan.commands) st = await runCommand(st, ALICE, c);
+    let back = await loadState(projectId);
+    assert(
+      blocksOfVariant(back, mainOcc.variantId).some((b) => b.text === "Endret i spinoffen."),
+      "manusendringen ble ikke ført tilbake",
+    );
+    // Ny hovedfilmvariant fra spinoffens versjon
+    const oldVariant = mainOcc.variantId;
+    for (const c of newMainVariantCommands(back, own.id).commands)
+      back = await runCommand(back, ALICE, c);
+    back = await loadState(projectId);
+    const nv = back.occurrences[mainOcc.id]!.variantId;
+    assert(nv !== oldVariant, "hovedfilmen fikk ikke ny versjon");
+    assert(back.variants[nv]!.basedOnVariantId === own.variantId, "relasjonen mangler");
+    assert(!!back.variants[oldVariant], "den gamle versjonen er borte");
+    // Ny scene i spinoffen overføres til hovedfilmen
+    const spinOccs = orderedOccurrences(back, pid);
+    const occId = "abcdef00-0000-7000-8000-0000000d6001";
+    back = await runCommand(back, ALICE, {
+      type: "CreateScene",
+      productionId: pid as never,
+      sceneId: "abcdef00-0000-7000-8000-0000000d6002" as never,
+      variantId: "abcdef00-0000-7000-8000-0000000d6003" as never,
+      occurrenceId: occId as never,
+      orderKey: keyBetween(spinOccs.at(-1)!.orderKey, null),
+      heading: { intExt: "EXT.", location: "VEIEN", time: "NATT" },
+      blocks: [
+        {
+          blockId: "abcdef00-0000-7000-8000-0000000d6004" as never,
+          kind: "action",
+          text: "Ny scene.",
+          orderKey: keyBetween(null, null),
+        },
+      ],
+    });
+    for (const c of transferSceneCommands(back, occId).commands)
+      back = await runCommand(back, ALICE, c);
+    back = await loadState(projectId);
+    const added = Object.values(back.occurrences).find(
+      (o) => o.productionId === main.id && o.sceneId === "abcdef00-0000-7000-8000-0000000d6002",
+    );
+    assert(
+      !!added && back.variants[added.variantId]!.ownerProductionId === null,
+      "scenen ble ikke overført",
+    );
+    // Kontinuitet: lokal hendelse og hendelse slått av i spinoffen
+    const asset = Object.values(back.assets).find((a) => a.kind === "character");
+    if (asset) {
+      const ev = "abcdef00-0000-7000-8000-0000000d6005";
+      back = await runCommand(back, ALICE, {
+        type: "AddContinuityEvents",
+        events: [
+          {
+            eventId: ev as never,
+            fields: {
+              assetId: asset.id,
+              kind: "other",
+              description: "Bare i spinoffen",
+              fromVariantId: null,
+              toVariantId: null,
+              duration: "permanent",
+              sceneId: own.sceneId,
+              blockId: null,
+              untilSceneId: null,
+              status: "approved",
+              productionId: pid as never,
+            },
+          },
+        ],
+      });
+      const global = Object.values(back.continuityEvents).find(
+        (e) => !e.productionId && !e.removed,
+      );
+      if (global)
+        back = await runCommand(back, ALICE, {
+          type: "SetContinuityEventDisabled",
+          eventId: global.id,
+          productionId: pid as never,
+          disabled: true,
+        });
+      const read = await loadState(projectId);
+      assert(read.continuityEvents[ev]?.productionId === pid, "lokal hendelse ble ikke lagret");
+      if (global)
+        assert(
+          isDeepStrictEqual(read.continuityEvents[global.id]?.disabledIn, [pid]),
+          "avslått hendelse ble ikke lagret",
+        );
+      await expectError(
+        sql`update public.continuity_events set disabled_in = '{}'::jsonb where id = ${ev}`,
+        /check/,
+      );
+    }
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 18, "schema_version er ikke 18");
+  });
+
+  // ---------- Sikkerhetskopi (DEC-0049): gjenopprett testprosjektet som nytt prosjekt ----------
+  await test("DEC-0049: sikkerhetskopi gjenopprettes som nytt prosjekt via apply_changes; alt leses tilbake likt", async () => {
+    const q = (t: string) =>
+      sql.unsafe(`select * from public.${t} where project_id = $1`, [projectId]);
+    const [project] = await sql`select * from public.projects where id = ${projectId}`;
+    const rows = {
+      project: project!,
+      productions: await q("productions"),
+      scenes: await q("scenes"),
+      scene_variants: await q("scene_variants"),
+      script_blocks: await q("script_blocks"),
+      script_block_revisions: await q("script_block_revisions"),
+      scene_occurrences: await q("scene_occurrences"),
+      production_segments: await q("production_segments"),
+      takes: await q("takes"),
+      assets: await q("assets"),
+      asset_variants: await q("asset_variants"),
+      asset_versions: await q("asset_versions"),
+      script_annotations: await q("script_annotations"),
+      compositions: await q("compositions"),
+      composition_layers: await q("composition_layers"),
+      audio_clips: await q("audio_clips"),
+      clip_parts: await q("clip_parts"),
+      time_links: await q("time_links"),
+      continuity_events: await q("continuity_events"),
+      translations: await q("translations"),
+    } as unknown as ProjectRows;
+    const versions = await q("script_versions");
+    const docs = await q("imported_documents");
+    assert(
+      versions.length > 0 && docs.length > 0,
+      "testprosjektet mangler versjoner eller dokumenter",
+    );
+    const backup = parseBackup(
+      JSON.parse(
+        JSON.stringify(
+          makeBackup({
+            rows,
+            scriptVersions: versions,
+            importedDocuments: docs,
+            changeLog: await q("change_log"),
+            generationJobs: [],
+            schemaVersion: 12,
+            createdAt: new Date().toISOString(),
+            include: new Set(["bilde", "lyd", "film", "manusfil"]),
+          }),
+        ),
+      ),
+      12,
+    );
+    // BOB lager et nytt, tomt prosjekt og gjenoppretter dit (som serverfunksjonen restoreBackup)
+    const [created] = await as(
+      "authenticated",
+      BOB,
+      (tx) => tx`select public.create_project('Gjenopprettet') as id`,
+    );
+    const newId = String(created!["id"]);
+    const base = await loadState(newId);
+    const main = Object.values(base.productions).find((p) => p.kind === "main")!;
+    const map = await backupIdMap(backup, newId, main.id);
+    const target = restoredState(backup, map, base, BOB);
+    const changes = diffStates(base, target);
+    await as(
+      "service_role",
+      null,
+      (tx) =>
+        tx`select public.apply_changes(${newId}, ${BOB}, ${"55555555-5555-7555-8555-000000000001"}, ${tx.json({ type: "RestoreBackup" })}, ${null}, ${tx.json(changes as never)})`,
+    );
+    const extras = restoredExtras(backup, map, BOB);
+    await as("service_role", null, async (tx) => {
+      for (const v of extras.scriptVersions)
+        await tx`insert into public.script_versions ${tx(v as never)}`;
+      for (const d of extras.importedDocuments)
+        await tx`insert into public.imported_documents ${tx(d as never)}`;
+    });
+    const old = await loadState(projectId);
+    const back = await loadState(newId);
+    const oldMain = Object.values(old.productions).find((p) => p.kind === "main")!;
+    const text = (st: ProjectState, m: string) =>
+      JSON.stringify(
+        scriptView(st, m as never).map((x) => [
+          x.productionNumber,
+          x.heading,
+          x.blocks.map((b) => b.text),
+        ]),
+      );
+    assert(text(back, main.id) === text(old, oldMain.id), "manuset ble ikke likt");
+    for (const k of [
+      "scenes",
+      "blocks",
+      "occurrences",
+      "takes",
+      "assets",
+      "assetVersions",
+      "compositions",
+      "layers",
+      "audioClips",
+      "clipParts",
+      "timeLinks",
+      "annotations",
+    ] as const)
+      assert(
+        Object.keys(back[k]).length === Object.keys(old[k]).length,
+        `${k}: ${Object.keys(back[k]).length} mot ${Object.keys(old[k]).length}`,
+      );
+    assert(
+      back.blockRevisions.length === old.blockRevisions.length,
+      "teksthistorikken ble ikke lik",
+    );
+    const [{ n }] =
+      (await sql`select count(*)::int as n from public.script_versions where project_id = ${newId}`) as unknown as [
+        { n: number },
+      ];
+    assert(n === versions.length, "manusversjonene ble ikke gjenopprettet");
+    // Det gamle prosjektet er uendret, og ingen ID-er er delt
+    assert(
+      Object.keys(back.blocks).every((id) => !old.blocks[id]),
+      "ID-er ble gjenbrukt",
+    );
+    // Det gjenopprettede prosjektet kan redigeres videre
+    const someBlock = Object.values(back.blocks).find(
+      (b) => !b.removed && b.kind === "action" && !back.variants[b.variantId]?.ownerProductionId,
+    )!;
+    const edited = await runCommand(back, BOB, {
+      type: "EditBlockText",
+      productionId: main.id,
+      blockId: someBlock.id,
+      text: "Endret etter gjenoppretting.",
+    });
+    assert(
+      edited.blocks[someBlock.id]?.text === "Endret etter gjenoppretting.",
+      "redigering feilet",
     );
   });
 

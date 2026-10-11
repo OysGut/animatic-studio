@@ -4,6 +4,7 @@
  * bildeversjoner. Alt er kommandoer som kan angres (ADR-0005); forslag fra manuset gjennomføres bare
  * når brukeren velger det (REQ-0128).
  */
+import { useActiveProduction } from "@/app/project/use-production";
 import { useNavigate } from "@tanstack/react-router";
 import { Archive, Download, Lightbulb, Music, Plus, Redo2, Search, Undo2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -15,7 +16,6 @@ import {
   allAssetUsage,
   coverVersion,
   librarySuggestions,
-  mainProduction,
   newId,
   sortedAssets,
   type AssetKind,
@@ -96,9 +96,7 @@ function Library({
       ),
     [state.productions],
   );
-  const [productionId, setProductionId] = useState(
-    () => mainProduction(state)?.id ?? productions[0]?.id ?? "",
-  );
+  const [productionId, setProductionId] = useActiveProduction(projectId, state);
   const [kind, setKind] = useState<KindFilter>("all");
   const [search, setSearch] = useState("");
   const [showArchived, setShowArchived] = useState(false);
@@ -236,9 +234,10 @@ function Library({
           ) : null}
           {productions.length > 1 ? (
             <label className="flex items-center gap-1.5 text-xs text-text-secondary">
-              Bruk i
+              Produksjon
               <select
-                aria-label="Produksjon for «brukt i scener»"
+                aria-label="Produksjon for bruk i scener og kontinuitet"
+                title="Bruk i scener og kontinuitet gjelder denne produksjonen"
                 value={productionId}
                 onChange={(e) => setProductionId(e.target.value)}
                 className="h-7 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary"

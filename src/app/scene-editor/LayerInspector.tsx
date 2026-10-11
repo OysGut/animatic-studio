@@ -2,8 +2,21 @@
  * Egenskaper for valgt lag (plassering, dybde, bilde, synlighet) og for selve 2D-scenen når ingen lag er valgt.
  * Hver endring er én kommando som kan angres. UpdateLayers erstatter alle felter, så vi bygger alltid fra laget.
  */
-import { Copy, Diamond, Image as ImageIcon, Trash2 } from "lucide-react";
-import { useRef, useState, type ReactNode } from "react";
+import { LayerEvents } from "./LayerEvents";
+import { LayerSwaps } from "./LayerSwaps";
+import { LayerMotion } from "./LayerMotion";
+import { AlertTriangle, Copy, Image as ImageIcon, Trash2 } from "lucide-react";
+import { useRef, useState } from "react";
+import {
+  ErrorText,
+  Field,
+  Hint,
+  KeyMarker,
+  NumberField,
+  Section,
+  TextField,
+  inputClass,
+} from "./inspector-fields";
 import {
   COMPOSITION_FORMATS,
   DEFAULT_PARALLAX,
@@ -29,11 +42,14 @@ import {
   type LayerKind,
   type LayerTransform,
   type ProjectState,
+  layerContinuity,
+  outdatedLayers,
 } from "@/core";
-import { layerFieldsOf } from "@/core";
+import { layerFieldsOf, regroupFields, translatePath } from "@/core";
+import { removeLayer } from "./layer-actions";
 import { Button } from "@/components/ui/button";
 
-type Run = (command: Command, label: string) => string | null;
+type Run = (command: Command, label: string, group?: string) => string | null;
 
 /** Alle redigerbare felter på et lag (grunnlaget for UpdateLayers). */
 const fieldsOf = layerFieldsOf;
@@ -46,219 +62,6 @@ function compositionFieldsOf(c: Composition): CompositionFields {
     durationFrames: c.durationFrames,
     background: c.background,
   };
-}
-
-// ---------- Små skjemaelementer ----------
-
-const inputClass =
-  "h-7 w-full min-w-0 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary placeholder:text-text-tertiary disabled:cursor-not-allowed disabled:opacity-50";
-
-function Section({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <section className="mb-4">
-      <h3 className="mb-1.5 text-xs font-medium uppercase tracking-[0.04em] text-text-tertiary">
-        {title}
-      </h3>
-      <div className="flex flex-col gap-2">{children}</div>
-    </section>
-  );
-}
-
-function Field({
-  label,
-  children,
-  marker,
-}: {
-  label: string;
-  children: ReactNode;
-  marker?: ReactNode;
-}) {
-  return (
-    <label className="flex min-w-0 flex-col gap-1 text-xs text-text-secondary">
-      {marker ? (
-        <span className="flex items-center gap-1">
-          {label}
-          {marker}
-        </span>
-      ) : (
-        label
-      )}
-      {children}
-    </label>
-  );
-}
-
-/** Nøkkelbilde-markør ved en egenskap: fylt = nøkkelbilde på dette bildet, åpen = animert, svak = ikke animert. */
-function KeyMarker({
-  label,
-  animated,
-  keyed,
-  disabled,
-  onToggle,
-}: {
-  label: string;
-  animated: boolean;
-  keyed: boolean;
-  disabled: boolean;
-  onToggle: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      disabled={disabled}
-      aria-pressed={keyed}
-      aria-label={keyed ? `Fjern nøkkelbilde for ${label}` : `Sett nøkkelbilde for ${label}`}
-      title={keyed ? "Fjern nøkkelbilde på dette bildet" : "Sett nøkkelbilde på dette bildet"}
-      onClick={(e) => {
-        e.preventDefault();
-        onToggle();
-      }}
-      className={
-        "inline-flex size-4 shrink-0 items-center justify-center rounded-sm hover:bg-surface-3 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-40 " +
-        (animated ? "text-accent-brand" : "text-text-tertiary")
-      }
-    >
-      <Diamond className="size-2.5" fill={keyed ? "currentColor" : "none"} aria-hidden="true" />
-    </button>
-  );
-}
-
-function Hint({ children }: { children: ReactNode }) {
-  return <p className="text-xs text-text-tertiary">{children}</p>;
-}
-
-function ErrorText({ message }: { message: string | null }) {
-  return message ? (
-    <p role="alert" className="mb-3 text-xs text-status-danger">
-      {message}
-    </p>
-  ) : null;
-}
-
-const fmt = (n: number) => String(Math.round(n * 100) / 100);
-
-/** Tekstfelt som lagres når du forlater det eller trykker Enter. Esc forkaster. */
-function TextField({
-  label,
-  value,
-  onCommit,
-  disabled,
-  placeholder,
-  allowEmpty,
-}: {
-  label: string;
-  value: string;
-  onCommit: (v: string) => void;
-  disabled: boolean;
-  placeholder?: string;
-  allowEmpty?: boolean;
-}) {
-  const [draft, setDraft] = useState<string | null>(null);
-  const cancelled = useRef(false); // Esc forkaster (blur kjører med forrige utkast)
-  function commit() {
-    const text = (draft ?? value).trim();
-    setDraft(null);
-    if (cancelled.current) {
-      cancelled.current = false;
-      return;
-    }
-    if (text === value) return;
-    if (text === "" && !allowEmpty) return;
-    onCommit(text);
-  }
-  return (
-    <Field label={label}>
-      <input
-        type="text"
-        value={draft ?? value}
-        disabled={disabled}
-        placeholder={placeholder}
-        maxLength={200}
-        onFocus={() => setDraft(value)}
-        onChange={(e) => setDraft(e.target.value)}
-        onBlur={commit}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") e.currentTarget.blur();
-          else if (e.key === "Escape") {
-            cancelled.current = true;
-            setDraft(null);
-            e.currentTarget.blur();
-          }
-        }}
-        className={inputClass}
-      />
-    </Field>
-  );
-}
-
-/** Tallfelt med kladd: ugyldige tall forkastes, gyldige lagres ved blur eller Enter. */
-function NumberField({
-  label,
-  value,
-  onCommit,
-  disabled,
-  step = 1,
-  min,
-  max,
-  integer,
-  valid,
-  marker,
-}: {
-  label: string;
-  marker?: ReactNode;
-  value: number;
-  onCommit: (n: number) => void;
-  disabled: boolean;
-  step?: number;
-  min?: number;
-  max?: number;
-  integer?: boolean;
-  valid?: (n: number) => boolean;
-}) {
-  const [draft, setDraft] = useState<string | null>(null);
-  const cancelled = useRef(false);
-  function commit() {
-    const text = draft;
-    setDraft(null);
-    if (cancelled.current) {
-      cancelled.current = false;
-      return;
-    }
-    if (text === null) return;
-    let n = Number(text.trim().replace(",", "."));
-    if (text.trim() === "" || !Number.isFinite(n)) return;
-    if (integer) n = Math.round(n);
-    if (min !== undefined) n = Math.max(min, n);
-    if (max !== undefined) n = Math.min(max, n);
-    if (valid && !valid(n)) return;
-    if (fmt(n) === fmt(value)) return;
-    onCommit(n);
-  }
-  return (
-    <Field label={label} marker={marker}>
-      <input
-        type="number"
-        inputMode="decimal"
-        value={draft ?? fmt(value)}
-        disabled={disabled}
-        step={step}
-        min={min}
-        max={max}
-        onFocus={() => setDraft(fmt(value))}
-        onChange={(e) => setDraft(e.target.value)}
-        onBlur={commit}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") e.currentTarget.blur();
-          else if (e.key === "Escape") {
-            cancelled.current = true;
-            setDraft(null);
-            e.currentTarget.blur();
-          }
-        }}
-        className={inputClass}
-      />
-    </Field>
-  );
 }
 
 /** Fargevelger og hex-felt. Fargen lagres når du er ferdig med velgeren eller forlater hex-feltet. */
@@ -336,16 +139,26 @@ export function LayerInspector({
   frame,
   autoKey,
   onOpenImage,
+  onSeek,
+  durationFrames,
+  drawingPath = false,
+  onDrawingPathChange,
 }: {
   state: ProjectState;
   composition: Composition;
   layer: CompositionLayer;
+  durationFrames: number;
+  /** Tegnes en bevegelsesbane i scenen nå (DEC-0052)? */
+  drawingPath?: boolean;
+  onDrawingPathChange?: (on: boolean) => void;
   editable: boolean;
   run: Run;
   frame: number;
   autoKey: boolean;
   /** Åpne bildevalget for laget (samme som dobbeltklikk, DEC-0044). */
   onOpenImage?: () => void;
+  /** Flytt avspillingshodet (hendelser i manuset). */
+  onSeek?: (frame: number) => void;
 }) {
   const [error, setError] = useState<string | null>(null);
   const off = !editable;
@@ -363,7 +176,14 @@ export function LayerInspector({
   }
   /** Verdiene på gjeldende bilde (animerte egenskaper følger nøkkelbildene). */
   const t = transformAt(layer, frame);
-  const setT = (label: string, patch: Partial<LayerTransform>) =>
+  const setT = (label: string, patch: Partial<LayerTransform>) => {
+    // Lag med bevegelsesbane: X/Y flytter hele banen (posisjonen ellers følger banen, DEC-0052)
+    if (layer.path && (patch.x !== undefined || patch.y !== undefined)) {
+      const dx = (patch.x ?? t.x) - t.x;
+      const dy = (patch.y ?? t.y) - t.y;
+      apply(label, { path: translatePath(layer.path, dx, dy) });
+      return;
+    }
     setError(
       run(
         {
@@ -384,6 +204,7 @@ export function LayerInspector({
         label,
       ),
     );
+  };
 
   /** Setter eller fjerner nøkkelbildet for én egenskap på gjeldende bilde. */
   function toggleKey(property: AnimatedProperty) {
@@ -443,6 +264,7 @@ export function LayerInspector({
                 keyframes: f.keyframes.map((k) =>
                   k.property === "x" || k.property === "y" ? { ...k, value: k.value + 40 } : k,
                 ),
+                path: f.path ? translatePath(f.path, 40, 40) : null,
               },
             },
           ],
@@ -453,12 +275,7 @@ export function LayerInspector({
   }
 
   function remove() {
-    setError(
-      run(
-        { type: "SetLayersRemoved", layerIds: [layer.id], removed: true },
-        `Slett lag «${layer.name}»`,
-      ),
-    );
+    setError(removeLayer(run, state, layer, frame, `Slett lag «${layer.name}»`));
   }
 
   const asset = layer.assetId ? state.assets[layer.assetId] : undefined;
@@ -469,7 +286,14 @@ export function LayerInspector({
   const approvedId = layer.assetVariantId
     ? (state.assetVariants[layer.assetVariantId]?.approvedVersionId ?? null)
     : null;
+  // Kontinuitet (DEC-0055): utseendet karakteren skal ha i denne scenen ifølge fortellingstiden
+  const sceneId = state.variants[composition.variantId]?.sceneId;
+  const continuity = sceneId ? layerContinuity(state, layer, sceneId) : null;
+  // Låst til en eldre versjon enn den godkjente (DEC-0056, REQ-0132)
+  const outdated = outdatedLayers(state, composition.id).find((x) => x.layerId === layer.id);
   const selectClass = inputClass;
+  const isGroup = layer.kind === "group";
+  const groups = isGroup ? [] : layersOf(state, composition.id).filter((l) => l.kind === "group");
 
   return (
     <div aria-label="Egenskaper for lag" className="p-3">
@@ -483,20 +307,60 @@ export function LayerInspector({
         <Field label="Type">
           <select
             value={layer.kind}
-            disabled={off}
+            disabled={off || isGroup}
             onChange={(e) => {
               const k = LAYER_KINDS.find((x) => x === e.target.value);
               if (k) changeKind(k);
             }}
             className={selectClass}
           >
-            {LAYER_KINDS.map((k) => (
+            {LAYER_KINDS.filter((k) => (k === "group") === isGroup).map((k) => (
               <option key={k} value={k}>
                 {LAYER_KIND_LABEL[k]}
               </option>
             ))}
           </select>
         </Field>
+        {groups.length > 0 || layer.groupId ? (
+          <Field label="Gruppe">
+            <select
+              value={layer.groupId ?? ""}
+              disabled={off}
+              onChange={(e) => {
+                const g = e.target.value ? state.layers[e.target.value] : undefined;
+                // Laget blir stående der det er (plassering regnes om til gruppens koordinater)
+                setError(
+                  run(
+                    {
+                      type: "UpdateLayers",
+                      layers: [
+                        {
+                          layerId: layer.id,
+                          fields: regroupFields(state, layer, g?.id ?? null, frame),
+                        },
+                      ],
+                    },
+                    g ? `Legg «${layer.name}» i «${g.name}»` : "Ta ut av gruppe",
+                  ),
+                );
+              }}
+              className={selectClass}
+            >
+              <option value="">Ingen gruppe</option>
+              {groups.map((g) => (
+                <option key={g.id} value={g.id}>
+                  {g.name || "Gruppe"}
+                </option>
+              ))}
+            </select>
+          </Field>
+        ) : null}
+        {isGroup ? (
+          <Hint>
+            Lagene i gruppen flyttes, roteres og skaleres sammen rundt gruppens ankerpunkt. Velg
+            gruppe for et lag under «Gruppe» i lagets egenskaper.
+          </Hint>
+        ) : null}
       </Section>
 
       <Section title="Plassering">
@@ -550,109 +414,222 @@ export function LayerInspector({
         </div>
       </Section>
 
-      <Section title="Dybde">
-        <NumberField
-          label="Parallakse"
-          value={layer.parallax}
-          disabled={off}
-          step={0.05}
-          min={0}
-          max={4}
-          onCommit={(parallax) => apply("Endre parallakse", { parallax })}
-        />
-        <Hint>
-          0 = står stille når kameraet beveger seg · 1 = følger scenen · over 1 = nærmere enn scenen
-        </Hint>
-      </Section>
+      {isGroup ? null : (
+        <Section title="Dybde">
+          <NumberField
+            label="Parallakse"
+            value={layer.parallax}
+            disabled={off}
+            step={0.05}
+            min={0}
+            max={4}
+            onCommit={(parallax) => apply("Endre parallakse", { parallax })}
+          />
+          <Hint>
+            0 = står stille når kameraet beveger seg · 1 = følger scenen · over 1 = nærmere enn
+            scenen
+          </Hint>
+        </Section>
+      )}
 
-      <Section title="Bilde">
-        {onOpenImage ? (
-          <Button size="sm" variant="secondary" className="self-start" onClick={onOpenImage}>
-            <ImageIcon />
-            {layer.assetId ? "Velg eller last opp bilde …" : "Koble til ressurs …"}
-          </Button>
-        ) : null}
-        {layer.assetId ? (
-          <>
-            <p className="truncate text-[13px] text-text-primary">
-              {asset?.name ?? "Ukjent ressurs"}
-            </p>
-            <Field label="Variant">
-              <select
-                value={layer.assetVariantId ?? ""}
+      {isGroup ? null : (
+        <Section title="Bilde">
+          {onOpenImage ? (
+            <Button size="sm" variant="secondary" className="self-start" onClick={onOpenImage}>
+              <ImageIcon />
+              {layer.assetId ? "Velg eller last opp bilde …" : "Koble til ressurs …"}
+            </Button>
+          ) : null}
+          {layer.assetId ? (
+            <>
+              <p className="truncate text-[13px] text-text-primary">
+                {asset?.name ?? "Ukjent ressurs"}
+              </p>
+              <Field label="Variant">
+                <select
+                  value={layer.assetVariantId ?? ""}
+                  disabled={off}
+                  onChange={(e) =>
+                    apply("Bytt bilde", {
+                      assetVariantId: (e.target.value || null) as LayerFields["assetVariantId"],
+                      versionId: null,
+                    })
+                  }
+                  className={selectClass}
+                >
+                  <option value="">Standard (forsidebildet)</option>
+                  {variants.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.name || "Uten navn"}
+                      {v.archived ? " (arkivert)" : ""}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              <Field label="Versjon">
+                <select
+                  value={layer.versionId ?? ""}
+                  disabled={off || layer.assetVariantId === null}
+                  onChange={(e) =>
+                    apply("Bytt bilde", {
+                      versionId: (e.target.value || null) as LayerFields["versionId"],
+                    })
+                  }
+                  className={selectClass}
+                >
+                  <option value="">Godkjent / nyeste</option>
+                  {versions.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      v{v.number}
+                      {v.id === approvedId ? " (godkjent)" : ""}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              {layer.assetVariantId === null ? (
+                <Hint>Velg en variant for å låse en bestemt versjon.</Hint>
+              ) : null}
+              {outdated ? (
+                <div className="flex flex-col gap-1.5 rounded-sm border border-border bg-surface-2 p-2 text-xs text-text-primary">
+                  <span>
+                    Laget viser v{state.assetVersions[outdated.versionId]?.number}, men v
+                    {state.assetVersions[outdated.approvedVersionId]?.number} er godkjent nå.
+                  </span>
+                  {editable ? (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      className="self-start"
+                      onClick={() =>
+                        apply("Bruk den godkjente versjonen", {
+                          versionId: outdated.approvedVersionId as LayerFields["versionId"],
+                        })
+                      }
+                    >
+                      Bruk v{state.assetVersions[outdated.approvedVersionId]?.number}
+                    </Button>
+                  ) : null}
+                </div>
+              ) : null}
+              {continuity?.mismatch && continuity.expected ? (
+                <div
+                  role="alert"
+                  className="flex flex-col gap-1.5 rounded-sm border border-status-moved/50 bg-status-uncertain-bg p-2 text-xs text-text-primary"
+                >
+                  <span className="flex items-start gap-1.5">
+                    <AlertTriangle
+                      className="mt-0.5 size-3.5 shrink-0 text-status-moved"
+                      aria-hidden
+                    />
+                    <span>
+                      Kontinuitet: i denne scenen skal {asset?.name ?? "ressursen"} ha utseendet «
+                      {continuity.expected.name}».
+                    </span>
+                  </span>
+                  {editable ? (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      className="self-start"
+                      onClick={() =>
+                        apply("Bruk utseendet fra kontinuiteten", {
+                          assetVariantId: continuity.expected!.id,
+                          versionId: null,
+                        })
+                      }
+                    >
+                      Bruk «{continuity.expected.name}»
+                    </Button>
+                  ) : null}
+                </div>
+              ) : null}
+              {variants.length > 0 ? (
+                // Språkavhengig bilde (DEC-0059, REQ-0337): f.eks. et skilt med engelsk tekst
+                <Field label="Bilde i engelsk versjon">
+                  <select
+                    aria-label="Bilde i engelsk versjon"
+                    value={
+                      layer.languageImages?.find((x) => x.language === "en")?.assetVariantId ?? ""
+                    }
+                    disabled={off}
+                    onChange={(e) => {
+                      const id = e.target.value;
+                      const rest = (layer.languageImages ?? []).filter((x) => x.language !== "en");
+                      apply(id ? "Eget bilde i engelsk versjon" : "Samme bilde i engelsk versjon", {
+                        languageImages: id
+                          ? [
+                              ...rest,
+                              { language: "en", assetVariantId: id as never, versionId: null },
+                            ]
+                          : rest,
+                      });
+                    }}
+                    className={selectClass}
+                    title="Vis en annen variant av ressursen når filmen spilles eller eksporteres på engelsk. Den norske versjonen endres ikke."
+                  >
+                    <option value="">Samme som norsk</option>
+                    {variants.map((v) => (
+                      <option key={v.id} value={v.id}>
+                        {v.name || "Uten navn"}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+              ) : null}
+            </>
+          ) : (
+            <>
+              <ColorField
+                label="Farge"
+                value={layer.fill ?? "#000000"}
                 disabled={off}
-                onChange={(e) =>
-                  apply("Bytt bilde", {
-                    assetVariantId: (e.target.value || null) as LayerFields["assetVariantId"],
-                    versionId: null,
-                  })
-                }
-                className={selectClass}
-              >
-                <option value="">Standard (forsidebildet)</option>
-                {variants.map((v) => (
-                  <option key={v.id} value={v.id}>
-                    {v.name || "Uten navn"}
-                    {v.archived ? " (arkivert)" : ""}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label="Versjon">
-              <select
-                value={layer.versionId ?? ""}
-                disabled={off || layer.assetVariantId === null}
-                onChange={(e) =>
-                  apply("Bytt bilde", {
-                    versionId: (e.target.value || null) as LayerFields["versionId"],
-                  })
-                }
-                className={selectClass}
-              >
-                <option value="">Godkjent / nyeste</option>
-                {versions.map((v) => (
-                  <option key={v.id} value={v.id}>
-                    v{v.number}
-                    {v.id === approvedId ? " (godkjent)" : ""}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            {layer.assetVariantId === null ? (
-              <Hint>Velg en variant for å låse en bestemt versjon.</Hint>
-            ) : null}
-          </>
-        ) : (
-          <>
-            <ColorField
-              label="Farge"
-              value={layer.fill ?? "#000000"}
-              disabled={off}
-              onCommit={(fill) => apply("Endre farge", { fill })}
-            />
-            <div className="grid grid-cols-2 gap-2">
-              <NumberField
-                label="Bredde (px)"
-                value={layer.width}
-                disabled={off}
-                integer
-                min={1}
-                max={16384}
-                onCommit={(width) => apply("Endre størrelse", { width })}
+                onCommit={(fill) => apply("Endre farge", { fill })}
               />
-              <NumberField
-                label="Høyde (px)"
-                value={layer.height}
-                disabled={off}
-                integer
-                min={1}
-                max={16384}
-                onCommit={(height) => apply("Endre størrelse", { height })}
-              />
-            </div>
-          </>
-        )}
-      </Section>
+              <div className="grid grid-cols-2 gap-2">
+                <NumberField
+                  label="Bredde (px)"
+                  value={layer.width}
+                  disabled={off}
+                  integer
+                  min={1}
+                  max={16384}
+                  onCommit={(width) => apply("Endre størrelse", { width })}
+                />
+                <NumberField
+                  label="Høyde (px)"
+                  value={layer.height}
+                  disabled={off}
+                  integer
+                  min={1}
+                  max={16384}
+                  onCommit={(height) => apply("Endre størrelse", { height })}
+                />
+              </div>
+            </>
+          )}
+        </Section>
+      )}
+
+      {isGroup || !layer.assetId ? null : (
+        <LayerSwaps
+          state={state}
+          layer={layer}
+          editable={editable}
+          frame={frame}
+          run={run}
+          {...(onSeek ? { onSeek } : {})}
+        />
+      )}
+
+      <LayerMotion
+        state={state}
+        layer={layer}
+        editable={editable}
+        durationFrames={durationFrames}
+        run={run}
+        drawing={drawingPath}
+        onDrawingChange={(on) => onDrawingPathChange?.(on)}
+      />
 
       <Section title="Synlighet">
         <label className="flex items-center gap-2 text-[13px] text-text-primary">
@@ -680,6 +657,16 @@ export function LayerInspector({
           Låst
         </label>
       </Section>
+
+      <LayerEvents
+        state={state}
+        composition={composition}
+        layer={layer}
+        editable={editable}
+        frame={frame}
+        run={run}
+        {...(onSeek ? { onSeek } : {})}
+      />
 
       <ErrorText message={error} />
 

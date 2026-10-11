@@ -10,7 +10,9 @@ import type {
   Composition,
   CompositionLayer,
   Easing,
+  Keyframe,
   LayerTransform,
+  MotionPath,
   ProjectState,
 } from "../model";
 import { compareKeys } from "../order-key";
@@ -98,26 +100,66 @@ export function compositionOfVariant(s: ProjectState, variantId: string): Compos
   );
 }
 
+/** Bildet laget viser på et bilde: siste bildeskifte fram til bildet, ellers lagets eget (DEC-0052). */
+export function layerImageAt(
+  l: CompositionLayer,
+  frame: number,
+): Pick<CompositionLayer, "assetId" | "assetVariantId" | "versionId"> {
+  let img: Pick<CompositionLayer, "assetId" | "assetVariantId" | "versionId"> = l;
+  for (const w of l.swaps) if (w.frame <= frame) img = w;
+  return img;
+}
+
 /**
  * Bildet laget viser: låst versjon, ellers variantens godkjente versjon, ellers variantens nyeste,
- * ellers ressursens forsidebilde. null for fargeflater og ressurser uten bilder.
+ * ellers ressursens forsidebilde. null for fargeflater og ressurser uten bilder. Med `frame` gjelder
+ * bildeskiftene i laget.
  */
-export function layerVersion(s: ProjectState, l: CompositionLayer): AssetVersion | null {
-  if (l.assetId === null) return null;
-  if (l.versionId !== null) return s.assetVersions[l.versionId] ?? null;
-  if (l.assetVariantId !== null) {
-    const va = s.assetVariants[l.assetVariantId];
+export function layerVersion(
+  s: ProjectState,
+  l: CompositionLayer,
+  frame?: number,
+): AssetVersion | null {
+  const img = frame === undefined ? l : layerImageAt(l, frame);
+  if (img.assetId === null) return null;
+  if (img.versionId !== null) return s.assetVersions[img.versionId] ?? null;
+  if (img.assetVariantId !== null) {
+    const va = s.assetVariants[img.assetVariantId];
     if (va?.approvedVersionId) return s.assetVersions[va.approvedVersionId] ?? null;
-    return versionsOf(s, l.assetVariantId)[0] ?? null; // nyeste først
+    return versionsOf(s, img.assetVariantId)[0] ?? null; // nyeste først
   }
-  return coverVersion(s, l.assetId);
+  return coverVersion(s, img.assetId);
+}
+
+/** Alle bildene laget kan vise (eget bilde og bildeskiftene), for innlasting og eksport. */
+export function layerVersions(s: ProjectState, l: CompositionLayer): AssetVersion[] {
+  const out: AssetVersion[] = [];
+  const own = layerVersion(s, l);
+  if (own) out.push(own);
+  for (const w of l.swaps) {
+    const v = layerVersion(s, l, w.frame);
+    if (v && !out.includes(v)) out.push(v);
+  }
+  return out;
 }
 
 /** Størrelse laget tegnes i før skalering (bildets egen størrelse, ellers lagets lagrede størrelse). */
-export function layerSize(s: ProjectState, l: CompositionLayer): { width: number; height: number } {
-  const v = layerVersion(s, l);
-  if (v && v.width && v.height) return { width: v.width, height: v.height };
-  return { width: l.width, height: l.height };
+export function layerSize(
+  s: ProjectState,
+  l: CompositionLayer,
+  frame?: number,
+): { width: number; height: number } {
+  const own = layerVersion(s, l);
+  const box =
+    own && own.width && own.height
+      ? { width: own.width, height: own.height }
+      : { width: l.width, height: l.height };
+  if (frame === undefined || layerImageAt(l, frame) === l) return box;
+  // Bildeskifte (DEC-0052): det nye bildet tegnes innenfor lagets egen ramme, med sitt eget sideforhold
+  const v = layerVersion(s, l, frame);
+  if (!v || !v.width || !v.height) return box;
+  const k = Math.min(box.width / v.width, box.height / v.height);
+  return { width: v.width * k, height: v.height * k };
 }
 
 // ---------- Tid: nøkkelbilder og hastighetskurver ----------
@@ -138,6 +180,42 @@ export function ease(e: Easing, t: number): number {
   }
 }
 
+/** Standard styrke (ut, inn) for hastighetskurvene, brukt når bare den ene styrken er satt. */
+export const EASE_STRENGTH: Record<Exclude<Easing, "hold">, [number, number]> = {
+  linear: [0, 0],
+  "ease-in": [0.42, 0],
+  "ease-out": [0, 0.42],
+  "ease-in-out": [0.42, 0.42],
+};
+
+/**
+ * Ease med styrke som «influence» i After Effects (DEC-0052, REQ-0582): kurven cubic-bezier(ut, 0,
+ * 1 − inn, 1). 0/0 er lineær; høyere styrke gir mykere start (ut) og slutt (inn).
+ */
+export function easeStrength(out: number, inn: number, t: number): number {
+  const x = Math.min(1, Math.max(0, t));
+  const x1 = Math.min(1, Math.max(0, out));
+  const x2 = 1 - Math.min(1, Math.max(0, inn));
+  // Finn u der bezier-x(u) = x (stigende), og gi bezier-y(u)
+  const bx = (u: number) => 3 * (1 - u) * (1 - u) * u * x1 + 3 * (1 - u) * u * u * x2 + u * u * u;
+  const by = (u: number) => 3 * (1 - u) * u * u + u * u * u;
+  let lo = 0;
+  let hi = 1;
+  for (let i = 0; i < 40; i++) {
+    const mid = (lo + hi) / 2;
+    if (bx(mid) < x) lo = mid;
+    else hi = mid;
+  }
+  return by((lo + hi) / 2);
+}
+
+function segmentEase(a: Keyframe, b: Keyframe, t: number): number {
+  if (a.easing === "hold" || (a.easeOut === undefined && b.easeIn === undefined))
+    return ease(a.easing, t);
+  const [o, i] = EASE_STRENGTH[a.easing];
+  return easeStrength(a.easeOut ?? o, b.easeIn ?? i, t);
+}
+
 /** Verdien av én egenskap på et gitt bilde (mellom nøkkelbilder etter hastighetskurven). */
 export function valueAt(l: CompositionLayer, property: AnimatedProperty, frame: number): number {
   const keys = l.keyframes.filter((k) => k.property === property);
@@ -150,17 +228,144 @@ export function valueAt(l: CompositionLayer, property: AnimatedProperty, frame: 
     const b = keys[i + 1]!;
     if (frame >= a.frame && frame <= b.frame) {
       const t = b.frame === a.frame ? 1 : (frame - a.frame) / (b.frame - a.frame);
-      return a.value + (b.value - a.value) * ease(a.easing, t);
+      return a.value + (b.value - a.value) * segmentEase(a, b, t);
     }
   }
   return last.value;
 }
 
+// ---------- Bevegelsesbane (DEC-0052) ----------
+
+type Seg = readonly [number, number, number, number, number, number, number, number];
+
+/** Kubiske Bézier-segmenter gjennom punktene: kurvet (Catmull-Rom) gjennom «smooth»-punkter, ellers rett. */
+export function pathSegments(path: Pick<MotionPath, "points">): Seg[] {
+  const p = path.points;
+  const out: Seg[] = [];
+  const tangent = (i: number) => {
+    const q = p[i]!;
+    if (!q.smooth) return { x: 0, y: 0 };
+    const a = p[Math.max(0, i - 1)]!;
+    const b = p[Math.min(p.length - 1, i + 1)]!;
+    return { x: (b.x - a.x) / 6, y: (b.y - a.y) / 6 };
+  };
+  for (let i = 0; i < p.length - 1; i++) {
+    const a = p[i]!;
+    const b = p[i + 1]!;
+    const ta = tangent(i);
+    const tb = tangent(i + 1);
+    out.push([a.x, a.y, a.x + ta.x, a.y + ta.y, b.x - tb.x, b.y - tb.y, b.x, b.y]);
+  }
+  return out;
+}
+
+function segPoint(g: Seg, t: number): { x: number; y: number } {
+  return { x: bezier(g[0], g[2], g[4], g[6], t), y: bezier(g[1], g[3], g[5], g[7], t) };
+}
+
+const pathCache = new WeakMap<
+  object,
+  { lengths: number[]; samples: { x: number; y: number; d: number }[] }
+>();
+
+/** Punkter langs banen med avstand fra start (for jevn fart). */
+function pathTable(path: MotionPath) {
+  let hit = pathCache.get(path);
+  if (hit) return hit;
+  const samples: { x: number; y: number; d: number }[] = [];
+  let d = 0;
+  let prev: { x: number; y: number } | null = null;
+  for (const g of pathSegments(path)) {
+    for (let k = 0; k <= 24; k++) {
+      if (prev && k === 0) continue;
+      const q = segPoint(g, k / 24);
+      if (prev) d += Math.hypot(q.x - prev.x, q.y - prev.y);
+      samples.push({ x: q.x, y: q.y, d });
+      prev = q;
+    }
+  }
+  hit = { lengths: [d], samples };
+  pathCache.set(path, hit);
+  return hit;
+}
+
+/**
+ * Tempokurven (andel av tiden → andel av veien) gjennom (0,0), punktene og (1,1), monoton og myk
+ * (Fritsch–Carlson). Uten punkter er den rett (jevn fart).
+ */
+export function tempoAt(tempo: MotionPath["tempo"], t: number): number {
+  const x = Math.min(1, Math.max(0, t));
+  if (tempo.length === 0) return x;
+  const xs = [0, ...tempo.map((q) => q.t), 1];
+  const ys = [0, ...tempo.map((q) => q.p), 1];
+  const n = xs.length;
+  const dx = xs.slice(1).map((v, i) => v - xs[i]!);
+  const sl = ys.slice(1).map((v, i) => (v - ys[i]!) / (dx[i]! || 1e-9));
+  const m: number[] = [sl[0]!];
+  for (let i = 1; i < n - 1; i++) m.push(sl[i - 1]! * sl[i]! <= 0 ? 0 : (sl[i - 1]! + sl[i]!) / 2);
+  m.push(sl[n - 2]!);
+  for (let i = 0; i < n - 1; i++) {
+    if (sl[i] === 0) {
+      m[i] = 0;
+      m[i + 1] = 0;
+      continue;
+    }
+    const a = m[i]! / sl[i]!;
+    const b = m[i + 1]! / sl[i]!;
+    const h = a * a + b * b;
+    if (h > 9) {
+      const k = 3 / Math.sqrt(h);
+      m[i] = k * a * sl[i]!;
+      m[i + 1] = k * b * sl[i]!;
+    }
+  }
+  let i = 0;
+  while (i < n - 2 && x > xs[i + 1]!) i++;
+  const h = dx[i]! || 1e-9;
+  const u = (x - xs[i]!) / h;
+  const h00 = 2 * u ** 3 - 3 * u ** 2 + 1;
+  const h10 = u ** 3 - 2 * u ** 2 + u;
+  const h01 = -2 * u ** 3 + 3 * u ** 2;
+  const h11 = u ** 3 - u ** 2;
+  return Math.min(
+    1,
+    Math.max(0, h00 * ys[i]! + h10 * h * m[i]! + h01 * ys[i + 1]! + h11 * h * m[i + 1]!),
+  );
+}
+
+/** Hvor langt (0–1) laget har kommet langs banen på et bilde: ease ut/inn og tempokurven. */
+export function pathProgress(path: MotionPath, frame: number): number {
+  const span = path.endFrame - path.startFrame;
+  const t = span <= 0 ? 1 : (frame - path.startFrame) / span;
+  return tempoAt(path.tempo, easeStrength(path.easeOut, path.easeIn, t));
+}
+
+/** Punktet på banen ved andelen `progress` av veien (jevn fart langs banen). */
+export function pathPointAt(path: MotionPath, progress: number): { x: number; y: number } {
+  const { lengths, samples } = pathTable(path);
+  const total = lengths[0]!;
+  if (samples.length === 0) return { x: path.points[0]!.x, y: path.points[0]!.y };
+  const want = Math.min(1, Math.max(0, progress)) * total;
+  let lo = 0;
+  let hi = samples.length - 1;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (samples[mid]!.d < want) lo = mid + 1;
+    else hi = mid;
+  }
+  const b = samples[lo]!;
+  const a = samples[Math.max(0, lo - 1)]!;
+  const k = b.d === a.d ? 0 : (want - a.d) / (b.d - a.d);
+  return { x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k };
+}
+
 export function transformAt(l: CompositionLayer, frame: number): LayerTransform {
-  if (l.keyframes.length === 0) return l.transform;
+  // Bevegelsesbanen styrer posisjonen (DEC-0052)
+  const at = l.path ? pathPointAt(l.path, pathProgress(l.path, frame)) : null;
+  if (l.keyframes.length === 0) return at ? { ...l.transform, x: at.x, y: at.y } : l.transform;
   return {
-    x: valueAt(l, "x", frame),
-    y: valueAt(l, "y", frame),
+    x: at ? at.x : valueAt(l, "x", frame),
+    y: at ? at.y : valueAt(l, "y", frame),
     scaleX: valueAt(l, "scaleX", frame),
     scaleY: valueAt(l, "scaleY", frame),
     rotation: valueAt(l, "rotation", frame),
@@ -229,7 +434,8 @@ export function modelMatrix(t: LayerTransform): Matrix {
 
 export interface DrawItem {
   readonly layerId: string;
-  readonly kind: "image" | "fill";
+  /** «group»: en gruppe (tegnes ikke; rammen rundt lagene i gruppen, for markering i editoren). */
+  readonly kind: "image" | "fill" | "group";
   /** Bildet som skal tegnes (bare «image»). */
   readonly version: AssetVersion | null;
   readonly fill: string | null;
@@ -256,6 +462,23 @@ export interface RenderOptions {
   readonly includeHidden?: boolean;
 }
 
+/**
+ * Gruppens transformasjon på et bilde (DEC-0052): lagene i gruppen flyttes, roteres og skaleres rundt
+ * gruppens ankerpunkt. I hvile (gruppen står på ankerpunktet, uten rotasjon og skalering) er den nøytral.
+ */
+export function groupMatrixAt(group: CompositionLayer, frame: number): Matrix {
+  const t = transformAt(group, frame);
+  const a = group.anchor ?? { x: group.transform.x, y: group.transform.y };
+  return multiply(modelMatrix(t), translate(-a.x, -a.y));
+}
+
+/** Gruppelaget et lag hører til (som ikke er slettet), eller null. */
+export function groupOf(s: ProjectState, l: CompositionLayer): CompositionLayer | null {
+  if (l.groupId === null) return null;
+  const g = s.layers[l.groupId];
+  return g && g.kind === "group" && !g.removed && g.compositionId === l.compositionId ? g : null;
+}
+
 /** Tegnelisten for ett bilde av 2D-scenen (bakerst først). */
 export function renderFrame(
   s: ProjectState,
@@ -267,25 +490,70 @@ export function renderFrame(
   if (!c) return { width: 0, height: 0, background: "#000000", items: [] };
   const cam = opts.view === "camera" ? cameraAt(c, frame) : null;
   const items: DrawItem[] = [];
-  for (const l of layersOf(s, compositionId)) {
-    if (!l.visible && !opts.includeHidden) continue;
+  const layers = layersOf(s, compositionId);
+  const groups = new Map<string, { matrix: Matrix; opacity: number; visible: boolean }>();
+  for (const l of layers)
+    if (l.kind === "group")
+      groups.set(l.id, {
+        matrix: groupMatrixAt(l, frame),
+        opacity: transformAt(l, frame).opacity,
+        visible: l.visible,
+      });
+  for (const l of layers) {
+    if (l.kind === "group") continue;
+    const g = l.groupId ? groups.get(l.groupId) : undefined;
+    const visible = l.visible && (g?.visible ?? true);
+    if (!visible && !opts.includeHidden) continue;
     const t = transformAt(l, frame);
     const view = cam ? viewMatrix(c, cam, l.parallax) : IDENTITY;
-    const version = layerVersion(s, l);
-    const size = layerSize(s, l);
+    const version = layerVersion(s, l, frame);
+    const size = layerSize(s, l, frame);
+    const model = g ? multiply(g.matrix, modelMatrix(t)) : modelMatrix(t);
+    const opacity = t.opacity * (g?.opacity ?? 1);
     items.push({
       layerId: l.id,
-      kind: l.assetId === null ? "fill" : "image",
+      kind: layerImageAt(l, frame).assetId === null ? "fill" : "image",
       version,
       fill: l.fill,
       width: size.width,
       height: size.height,
-      matrix: multiply(view, modelMatrix(t)),
-      opacity: l.visible ? t.opacity : t.opacity * 0.25,
+      matrix: multiply(view, model),
+      opacity: visible ? opacity : opacity * 0.25,
       locked: l.locked,
       name: l.name,
     });
   }
+  // Grupper i editoren: en ramme rundt lagene i gruppen (tegnes ikke)
+  if (!cam)
+    for (const l of layers) {
+      if (l.kind !== "group") continue;
+      const corners = items
+        .filter((it) => s.layers[it.layerId]?.groupId === l.id)
+        .flatMap((it) => itemCorners(it));
+      const t = transformAt(l, frame);
+      const xs = corners.map((p) => p.x);
+      const ys = corners.map((p) => p.y);
+      const box = corners.length
+        ? {
+            x: (Math.min(...xs) + Math.max(...xs)) / 2,
+            y: (Math.min(...ys) + Math.max(...ys)) / 2,
+            w: Math.max(1, Math.max(...xs) - Math.min(...xs)),
+            h: Math.max(1, Math.max(...ys) - Math.min(...ys)),
+          }
+        : { x: t.x, y: t.y, w: 40, h: 40 };
+      items.push({
+        layerId: l.id,
+        kind: "group",
+        version: null,
+        fill: null,
+        width: box.w,
+        height: box.h,
+        matrix: translate(box.x, box.y),
+        opacity: 0,
+        locked: l.locked,
+        name: l.name,
+      });
+    }
   return { width: c.width, height: c.height, background: c.background, items };
 }
 
@@ -298,6 +566,7 @@ export function hitTest(
 ): DrawItem | null {
   for (let i = frame.items.length - 1; i >= 0; i--) {
     const it = frame.items[i]!;
+    if (it.kind === "group") continue; // grupper velges i lagpanelet (eller ved å dra rammen)
     if (it.locked && !opts.includeLocked) continue;
     const inv = invert(it.matrix);
     if (!inv) continue;

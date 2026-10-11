@@ -1,11 +1,93 @@
-Montering del 4: klipping, tidskoblinger per replikk, lang film over flere scener (DEC-0048, REQ-0220–0222, REQ-0093/0094/0107/0231, REQ-0239, REQ-0241, REQ-0003)
+Sikkerhetskopi, manus ↔ film, overganger, svart-hvitt, eget vindu, hendelser i 2D-scenen, sceneeditor del 3, AI med kontroll, avvik ved manusendring kontinuitet for karakterene, kontinuitetsanalyse, spinoffer, engelsk manus, engelsk film og tilbakeføring (DEC-0049–0060)
 
-Databaseendring: migrasjon 0012. Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push.
+Databaseendring: migrasjon 0013, 0014, 0015, 0016, 0017 og 0018. Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push.
 
-- Klipp kan deles opp: splitt ved avspillingshodet (tasten S), trim, inn- og utpunkt med ett bilde fram/tilbake, fjern del, «Hele klippet» tilbakestiller. Kildefilen endres aldri.
-- En scene kan settes sammen av ferdig film og animatic (animatic-rest).
-- «Synk replikker» (tasten T): sett tiden for hver replikk mens filmen spilles. Tidene følger scenen når den flyttes; replikker som havner utenfor klippet markeres.
-- «Importer lang film»: én filmfil fordeles på flere scener etter starttider.
-- Status for importert film (godkjent, utkast, referanse, avvist).
-- Eksport og lyd følger delene. Rettelser etter kodegjennomgang (låsing, angre, revisjon).
-- Opprydding: .inputValidator → .validator i serverfunksjonene.
+Sikkerhetskopi og navigasjon (DEC-0049, REQ-0411/0412/0448, REQ-0092/0100):
+- Prosjekter → ⋯ → «Sikkerhetskopi …»: hele prosjektet som én zip-fil (format i LES-MEG.txt og
+  docs/architecture/BACKUP_FORMAT.md). «Gjenopprett fra sikkerhetskopi …» lager alltid et nytt prosjekt.
+- «Vis i filmen» fra manuset og «Vis i manus» fra monteringen går til replikken.
+- «Importer lang film» og «Importer ferdig film» angres som ett steg.
+- Beslutningsloggen er gjenopprettet (DEC-0001–0045 manglet etter en tidligere leveranse, KI-78).
+
+Mars' ønsker (DEC-0050): registrert som krav REQ-0572–0583 og plassert i leveransene.
+
+Montering del 6 (DEC-0051, REQ-0572–0577, REQ-0096):
+- Overganger: kutt, overtoning, via svart, via hvitt, tørk, skyv og iris, med lengde og overlapp
+  (filmen blir kortere). «Standardovergang» for hele prosjektet; hver scene kan ha sin egen.
+- «Svart-hvitt» for hele filmen (og som valg i eksporten), og per scene (også i eksporten).
+- «Eget vindu» for monteringens forhåndsvisning.
+- Sceneeditoren: «Hendelser i manuset» kobler en handling eller replikk til det et lag gjør.
+
+Sceneeditor del 3 (DEC-0052, REQ-0174, REQ-0578, REQ-0579, REQ-0581–0583):
+- Bildeskifte i lag: «Bytt bilde ved …» (hardt kutt, hvilket som helst bilde), merke i tidslinjen som kan dras.
+- Grupper: «Ny gruppe» i lagpanelet; lagene flyttes, roteres og skaleres sammen rundt ankerpunktet.
+- Bevegelsesbane: tegn på frihånd, «Glatt ut», «Rett linje», dra punktene; ease ut/inn med styrke og
+  tempokurve. Ease-styrke også på nøkkelbilder i tidslinjen.
+- «Naboscener»: forrige, denne og neste scene spilles som ferdig film i en stripe under scenen.
+- «Opptak»: lydopptak fra avspillingshodet, lagres i biblioteket og legges i scenen.
+- Rettet: fargeflater ble skalert to ganger ved formatbytte (KI-90).
+
+AI med kontroll (DEC-0053, M5 del 2, REQ-0580, REQ-0243–0267, REQ-0279–0303, REQ-0528):
+- «Frilegg …» (gratis, i nettleseren): bakgrunnen fjernes ut fra kantfargen, rett med pensel; ny versjon.
+- AI-budsjett på prosjektoversikten (eieren): høyst antall genereringer per måned og anslått pris per
+  bilde; serveren stopper over rammen. Liste over AI-jobber med status og «Prøv igjen».
+- Montering → «Generer scene …»: inndeling i segmenter og beskrivelser (engelsk, replikker ordrett) som
+  kan endres, lagres og kopieres. Selve genereringen venter på at en leverandør godkjennes.
+
+Avvik ved manusendring (DEC-0054, M6 del 1, REQ-0026, REQ-0305–0315, REQ-0485/0486):
+- Endres manuset etter at 2D-scene eller film er laget, flagges det: røde merker i tidslinjen, i manuset,
+  i sceneeditoren og på prosjektoversikten.
+- Tre valg: Godkjenn, Oppdater (sceneeditoren / ny film) eller Angre manusendringen (hele scenen eller én
+  linje). Ingenting endres automatisk.
+
+Kontinuitet for karakterene (DEC-0055, M6 del 2, REQ-0150–0163, REQ-0165, REQ-0496):
+- Biblioteket → karakter → «Kontinuitet»: hendelser som endrer utseendet (hårklipp, kostyme, skade,
+  snø/vann …) med utseendet før og etter, scene/linje og varighet (for godt, til en scene, bare scenen).
+- Tidslinje i fortellingstid: riktig utseende i hver scene, også i tilbakeblikk.
+- Forslag fra manuset som godkjennes eller avvises.
+- Sceneeditoren bruker riktig utseende, viser det og advarer ved feil utseende («Bruk …»).
+- «Generer scene» beskriver riktig utseende og deler segmentene ved en endring midt i scenen.
+
+Konsekvenser og kontinuitetsanalyse (DEC-0056, M6 del 3, REQ-0129/0130/0132/0134/0314/0319–0324):
+- «Godkjenn» på et nytt bilde viser scenene som berøres; velg scene for scene om de skal få det nye
+  bildet. Ferdig film vises som «kan være påvirket».
+- Sceneeditoren viser når et lag har en eldre versjon enn den godkjente («Bruk vN»).
+- Prosjektoversikten: «Kontinuitetsanalyse» med råd (skrivefeil i navn, før introduksjon, «vasen» før
+  «en vase», deaktiverte scener, utseende uten årsak, motsetninger i fortellingstiden).
+
+Spinoffer del 1 (DEC-0057, M7 del 1, REQ-0353–0366, REQ-0498/0499):
+- Prosjektoversikt → «Ny produksjon …»: spinoff, trailer, kortfilm m.m. fra utvalgte scener.
+  «Legg til scener …» og «Skriv ny scene» i manuset for produksjonen.
+- Produksjonen velges øverst i manus, montering og sceneeditor (huskes mellom dem).
+- Endres en gjenbrukt scene i spinoffen, får spinoffen automatisk egen versjon (med 2D-scene);
+  hovedfilmen endres ikke. Kan angres i ett steg.
+
+Engelsk manus (DEC-0058, M7 del 2, REQ-0329–0335, REQ-0349, REQ-0351):
+- Manus → språkvalg «Engelsk»: oversettelsen vises, linjer som mangler vises dempet på norsk, endret
+  norsk merkes «må gjennomgås». Oversettelsen redigeres i inspektøren med norsk ved siden av.
+- «Importer engelsk manus …»: et oversatt manus (PDF/Word) kobles automatisk til scener og replikker;
+  usikre koblinger godkjennes. Norsk endres aldri.
+- Eksport av engelsk manus, og undertekster (.srt/.vtt) på norsk eller engelsk fra monteringen.
+
+Engelsk film (DEC-0059, M7 del 3, REQ-0336–0348, REQ-0350, REQ-0352, REQ-0371):
+- Montering: «Dialog» og «Tekst» øverst velger dialogspråk og undertekster i bildet, uavhengig av hverandre.
+  Samme film og timing i alle språk.
+- Lyd har språk (standard: dialog = norsk, musikk/effekter = felles); en replikk kan ha lyd på begge språk.
+  Ny lyd og opptak får dialogspråket som er valgt.
+- Sceneeditoren: «Bilde i engelsk versjon» (f.eks. skilt med engelsk tekst). Scenepanelet: om lyden i
+  importert film har norsk/engelsk dialog eller bare musikk og effekter.
+- «Språkversjon …»: oversatt/med lyd per scene, råd om leppesynk, blandet filmlyd og timingkonflikter med
+  forslag («Flytt» starter den engelske replikken tidligere). Ingenting lages på nytt automatisk.
+- Eksport: video på valgt språk med ev. innbrente undertekster, eller bare dialogspor (WAV).
+
+Tilbakeføring og kontinuitet i spinoffer (DEC-0060, M7 del 4, REQ-0166/0167, REQ-0325, REQ-0367–0383, REQ-0500):
+- «Tilbakefør» (prosjektoversikten og manuset for en spinoff): spinoffens og hovedfilmens versjon side om
+  side – manus linje for linje, lag, kamera, lyd, timing og klipping. Velg hva som føres over, «Bare manus»,
+  eller hele spinoff-versjonen som ny versjon i hovedfilmen. Nye spinoff-scener kan overføres. Godkjent film
+  byttes bare med egen bekreftelse. Alt kan angres; gamle versjoner tas vare på.
+- Biblioteket → kontinuitet med en spinoff valgt: hovedfilmens hendelser kan slås av i spinoffen, og
+  spinoffen kan få egne hendelser. Hovedfilmen endres ikke.
+- Kontinuitetsanalysen kan velges per produksjon og varsler om hull i en spinoff, med «Ta med scenen» og
+  «Slå av i …».
+- Spinoffer kan bruke utdrag av hovedfilmens ferdige film og egne sammenbindende scener og overganger.
+

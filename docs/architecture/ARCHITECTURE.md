@@ -56,7 +56,7 @@ Relaterte dokumenter: `DOMAIN_MODEL.md`, `DATA_RELATIONSHIPS.md`, `INVARIANTS.md
 | Version & Dependency Engine | `core/versioning`, `change_log`, `discrepancies` |
 | Localization Engine | `core/l10n` (språkversjoner, koblingsforslag, timing), UI-i18n |
 | Presentation Engine | `core/poster` (layoutmodell), `engine/poster` (rendering/PDF) |
-| Export Engine | `core/export`, `engine/export`, worker for tunge eksporter, prosjektbackup (ZIP: JSON + medieliste) |
+| Export Engine | Film, manus, lyd, plakater og prosjektbackup. `engine/export` (animatic-video, manus PDF/DOCX, zip), `core/backup` + `app/projects/backup.ts` (sikkerhetskopi: ZIP med `animatic-backup.json`, mediefiler og LES-MEG; format i `BACKUP_FORMAT.md`), gjenoppretting via `adapters/storage/backup.functions.ts`. Ingen andre moduler lager eksportfiler |
 | Security & Storage | RLS, Storage-policyer, hemmeligheter, `adapters/storage` |
 | Collaboration & Access (DEC-0003) | `project_members`, `project_invitations`, Realtime presence |
 

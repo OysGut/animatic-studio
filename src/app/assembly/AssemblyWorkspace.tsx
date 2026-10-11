@@ -5,12 +5,17 @@
  * M4 del 2 (DEC-0044): lydspor med dialog, forteller, effekter, atmosfære og musikk. Lyden spilles og
  * eksporteres også der animasjonen ikke er laget.
  */
+import { SubtitleDialog } from "./SubtitleDialog";
+import { FilmLanguagePicker, useFilmLanguage } from "./use-film-language";
+import { LanguageVersionDialog } from "./LanguageVersionDialog";
+import { ProductionPicker, useActiveProduction } from "@/app/project/use-production";
 import { useNavigate } from "@tanstack/react-router";
 import {
   ChevronFirst,
   ChevronLast,
   ChevronLeft,
   ChevronRight,
+  Captions,
   Download,
   Music,
   Pause,
@@ -21,9 +26,14 @@ import {
   SkipForward,
   Undo2,
   Film,
+  Blend,
+  Contrast,
+  ExternalLink,
+  Languages,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+  discrepancies,
   AUDIO_MAX_MS,
   DEFAULT_COMPOSITION,
   blocksOfVariant,
@@ -37,18 +47,24 @@ import {
   filmMediaPaths,
   filmTakeAudio,
   filmClips,
+  blockSpans,
   filmDurationFrames,
   formatTimecode,
   framesToSeconds,
   keyBetween,
-  mainProduction,
+  isSharedIn,
   newId,
+  ownCopyCommands,
   type AudioClipFields,
   type AudioKind,
   type ClipPartFields,
   type FilmClip,
   type Composition,
   type ProjectState,
+  MAIN_LANGUAGE,
+  cueAt,
+  languageState,
+  subtitleCues,
 } from "@/core";
 import { useImageUrls } from "@/app/library/asset-images";
 import { useFilmVideo } from "./film-video";
@@ -68,11 +84,35 @@ import { usePlayback } from "@/app/scene-editor/use-playback";
 import { IconButton, iconButton, isTypingTarget } from "@/app/scene-editor/Timeline";
 import { useFilmImages } from "./film-images";
 import { FilmViewer } from "./FilmViewer";
+import { GenerateSceneDialog } from "./GenerateSceneDialog";
 import { FilmTimeline, formatSeconds } from "./FilmTimeline";
 import { ClipPanel } from "./ClipPanel";
+import { FilmPopout } from "./FilmPopout";
+import { TransitionEditor } from "./TransitionEditor";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { ExportAnimaticDialog } from "./ExportAnimaticDialog";
 
-export function AssemblyWorkspace({ projectId, userId }: { projectId: string; userId: string }) {
+/** Scene og blokk som skal vises når monteringen åpnes (fra manuset). */
+export interface AssemblyFocus {
+  readonly occurrenceId: string;
+  readonly blockId: string | null;
+}
+
+export function AssemblyWorkspace({
+  projectId,
+  userId,
+  focus = null,
+}: {
+  projectId: string;
+  userId: string;
+  focus?: AssemblyFocus | null;
+}) {
   const query = useProjectState(projectId);
   const members = useMembers(projectId);
   const role = members.data?.find((m) => m.user_id === userId)?.role;
@@ -97,6 +137,7 @@ export function AssemblyWorkspace({ projectId, userId }: { projectId: string; us
       editable={editable}
       roleKnown={members.isSuccess}
       cmds={cmds}
+      focus={focus}
     />
   );
 }
@@ -117,28 +158,64 @@ function Assembly({
   editable,
   roleKnown,
   cmds,
+  focus,
 }: {
   projectId: string;
   state: ProjectState;
   editable: boolean;
   roleKnown: boolean;
   cmds: Commands;
+  focus: AssemblyFocus | null;
 }) {
   const navigate = useNavigate();
-  const productionId = mainProduction(state)?.id ?? Object.keys(state.productions)[0] ?? "";
-  const clips = useMemo(() => filmClips(state, productionId), [state, productionId]);
+  // Valgt produksjon (DEC-0057): hovedfilm eller avledet produksjon
+  const [productionId, setProductionId] = useActiveProduction(
+    projectId,
+    state,
+    focus?.occurrenceId ?? null,
+  );
+  // Språkversjon (DEC-0059): dialogspråket bestemmer lyden og språkavhengige bilder i visningen,
+  // avspillingen og eksporten. Endringer gjøres alltid på den egentlige tilstanden.
+  const [filmLang, setFilmLang] = useFilmLanguage(projectId);
+  const view = useMemo(() => languageState(state, filmLang.dialogue), [state, filmLang.dialogue]);
+  const clips = useMemo(() => filmClips(view, productionId), [view, productionId]);
+  const subtitleList = useMemo(
+    () => (filmLang.subtitles ? subtitleCues(view, productionId, filmLang.subtitles).cues : []),
+    [view, productionId, filmLang.subtitles],
+  );
+  const [languageOpen, setLanguageOpen] = useState(false);
+  // Avvik ved manusendring: berørte tidsrom per scene (DEC-0054)
+  const flagged = useMemo(() => {
+    const m = new Map<string, { startFrame: number; endFrame: number }[]>();
+    for (const d of discrepancies(state, clips)) {
+      const list = m.get(d.occurrenceId) ?? [];
+      for (const sp of d.spans)
+        if (!list.some((x) => x.startFrame === sp.startFrame && x.endFrame === sp.endFrame))
+          list.push(sp);
+      m.set(d.occurrenceId, list);
+    }
+    return m;
+  }, [state, clips]);
   const duration = Math.max(1, filmDurationFrames(clips));
   const fps = state.project.fps;
   const playback = usePlayback(duration, fps, false);
-  const images = useFilmImages(state, clips);
+  const images = useFilmImages(view, clips);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [follow, setFollow] = useStoredFlag("assembly-follow", true);
+  // Hele filmen i svart-hvitt (visning; foreslås i eksporten, REQ-0573)
+  const [monochrome, setMonochrome] = useStoredFlag("assembly-monochrome", false);
+  const [popout, setPopout] = useState(false);
+  const [standardOpen, setStandardOpen] = useState(false);
+  const [subtitlesOpen, setSubtitlesOpen] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [panelW, setPanelW] = useStoredPanel();
 
   // ---------- Lyd (DEC-0044) ----------
-  const audioItems = useMemo(() => filmAudio(state, clips, fps), [state, clips, fps]);
+  const audioItems = useMemo(
+    () => filmAudio(view, clips, fps, filmLang.dialogue),
+    [view, clips, fps, filmLang.dialogue],
+  );
   // Det som høres: lydklippene og lyden i importert film som er tatt i bruk (DEC-0047)
   const playItems = useMemo(
     () => [...audioItems, ...filmTakeAudio(clips, fps)],
@@ -166,11 +243,16 @@ function Assembly({
   });
   const [addAudio, setAddAudio] = useState<AudioKind | null>(null);
   const [longFilm, setLongFilm] = useState(false);
+  /** «Generer scene» (DEC-0053). */
+  const [generateOpen, setGenerateOpen] = useState(false);
   useEffect(() => {
     if (selectedAudioId && (!selectedAudio || selectedAudio.removed)) setSelectedAudioId(null);
   }, [selectedAudioId, selectedAudio]);
 
   const at = clipAtFrame(clips, playback.frame);
+  const subtitle = filmLang.subtitles
+    ? (cueAt(subtitleList, framesToSeconds(playback.frame, fps) * 1000)?.text ?? null)
+    : null;
   // «Følg avspillingen»: valget følger scenen under avspillingshodet
   // (bare når hodet flyttes – ikke når klippene byttes om under et stillestående hode)
   useEffect(() => {
@@ -184,9 +266,31 @@ function Assembly({
     if (selectedId && !clips.some((c) => c.occurrenceId === selectedId)) setSelectedId(null);
   }, [clips, selectedId]);
 
+  // Åpnet fra manuset (DEC-0049, REQ-0092/0099): avspillingshodet til scenen eller replikken
+  const focused = useRef<string | null>(null);
+  useEffect(() => {
+    if (!focus) return;
+    const key = `${focus.occurrenceId}:${focus.blockId ?? ""}`;
+    if (focused.current === key) return;
+    const clip = clips.find((c) => c.occurrenceId === focus.occurrenceId);
+    if (!clip) {
+      // Prøves igjen hvis klippene endres (f.eks. når siste versjon er hentet)
+      setError("Scenen er ikke med i filmen (den er deaktivert eller hører til en spinoff).");
+      return;
+    }
+    focused.current = key;
+    setError(null);
+    const span = focus.blockId
+      ? blockSpans(state, clip).find((x) => x.blockId === focus.blockId)
+      : undefined;
+    setSelectedId(clip.occurrenceId);
+    playback.setFrame(span ? span.startFrame : clip.startFrame);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focus?.occurrenceId, focus?.blockId, clips.length]);
+
   const run = useCallback(
-    (command: Parameters<Commands["run"]>[0], label: string) => {
-      const err = cmds.run(command, label);
+    (command: Parameters<Commands["run"]>[0], label: string, group?: string) => {
+      const err = cmds.run(command, label, group);
       setError(err);
       return err === null;
     },
@@ -198,6 +302,9 @@ function Assembly({
     async (occurrenceId: string, file: File): Promise<string | null> => {
       try {
         const f = await uploadFilm(projectId, file, fps);
+        // Importen og «ta i bruk» angres som ett steg (DEC-0049)
+        const group = newId();
+        const label = `Importer film «${f.media.fileName}»`;
         const r = await cmds.runAndWait(
           {
             type: "AddTake",
@@ -210,25 +317,27 @@ function Assembly({
             mediaRef: f.mediaRef,
             media: f.media,
           },
-          `Importer film «${f.media.fileName}»`,
+          label,
+          group,
         );
         if (r.error) return r.error;
         // Tas i bruk som hele versjonen (eventuelle kutt i scenen fjernes; de kan angres)
-        const ok = run(
+        const err = cmds.run(
           {
             type: "SetSceneEdit",
             occurrenceId: occurrenceId as never,
             activeTakeId: f.takeId as never,
             parts: [],
           },
-          "Bruk importert film",
+          label,
+          group,
         );
-        return ok ? null : "Filmen er lagret som versjon, men kunne ikke tas i bruk.";
+        return err === null ? null : "Filmen er lagret som versjon, men kunne ikke tas i bruk.";
       } catch (e) {
         return (e as Error).message || "Filmen kunne ikke importeres.";
       }
     },
-    [projectId, fps, cmds, run],
+    [projectId, fps, cmds],
   );
 
   // Etter en flytting: hodet følger den flyttede scenen (samme sted i scenen), så valget blir stående
@@ -325,8 +434,9 @@ function Assembly({
   const [sync, setSync] = useState<{ occurrenceId: string; blockId: string } | null>(null);
   const linkBlock = useCallback(
     (occurrenceId: string, blockId: string, ms: number, mode: "replace" | "add") => {
+      // Hendelser i 2D-scenen (med lag) flyttes ikke herfra
       const existing = Object.values(state.timeLinks).filter(
-        (l) => !l.removed && l.occurrenceId === occurrenceId && l.blockId === blockId,
+        (l) => !l.removed && !l.layerId && l.occurrenceId === occurrenceId && l.blockId === blockId,
       );
       const fields = {
         occurrenceId: occurrenceId as never,
@@ -378,6 +488,28 @@ function Assembly({
     setSync(next ? { occurrenceId: c.occurrenceId, blockId: next.id } : null);
   }, [sync, clips, playback.frame, fps, linkBlock, state]);
 
+  /**
+   * Scenen deles med hovedfilmen i en avledet produksjon (DEC-0057): lag egen versjon (og kopi av 2D-scenen)
+   * først, så hovedfilmen ikke endres. null = ikke nødvendig; false = feilet.
+   */
+  const ownFirst = useCallback(
+    (occurrenceId: string) => {
+      const o = state.occurrences[occurrenceId];
+      if (!o || !isSharedIn(state, o.productionId, o.variantId)) return null;
+      const commands = ownCopyCommands(state, o.id) ?? [];
+      const group = newId();
+      for (const c of commands) if (!run(c, "Egen versjon av scenen", group)) return false;
+      const fork = commands.find((c) => c.type === "ForkVariant");
+      const comp = commands.find((c) => c.type === "CreateComposition");
+      return {
+        group,
+        variantId: fork?.type === "ForkVariant" ? (fork.newVariantId as string) : o.variantId,
+        compositionId: comp?.type === "CreateComposition" ? (comp.compositionId as string) : null,
+      };
+    },
+    [state, run],
+  );
+
   const setDuration = useCallback(
     (occurrenceId: string, frames: number) => {
       const clip = clips.find((c) => c.occurrenceId === occurrenceId);
@@ -397,16 +529,20 @@ function Assembly({
       }
       const c = clip?.compositionId ? state.compositions[clip.compositionId] : undefined;
       if (!c) return;
+      // 2D-scenen deles med hovedfilmen i en avledet produksjon: egen kopi først (DEC-0057)
+      const own = ownFirst(occurrenceId);
+      if (own === false) return;
       run(
         {
           type: "UpdateComposition",
-          compositionId: c.id,
+          compositionId: (own?.compositionId ?? c.id) as never,
           fields: { ...fieldsOf(c), durationFrames: frames },
         },
         "Endre lengde på scene",
+        own?.group,
       );
     },
-    [clips, state.compositions, run, fps, editScene, maxMsOf],
+    [clips, state.compositions, run, fps, editScene, maxMsOf, ownFirst],
   );
 
   /** Ny plassering fra tidslinjen: lyden festes til scenen den starter i (mandat 6.4). */
@@ -479,11 +615,13 @@ function Assembly({
   function createComposition(occurrenceId: string) {
     const clip = clips.find((c) => c.occurrenceId === occurrenceId);
     if (!clip) return;
+    const own = ownFirst(occurrenceId);
+    if (own === false) return;
     run(
       {
         type: "CreateComposition",
         compositionId: newId<"composition">(),
-        variantId: clip.variantId,
+        variantId: (own?.variantId ?? clip.variantId) as never,
         fields: {
           ...DEFAULT_COMPOSITION,
           width: state.project.frameWidth,
@@ -491,6 +629,7 @@ function Assembly({
         },
       },
       "Ny 2D-scene",
+      own?.group,
     );
   }
 
@@ -687,6 +826,8 @@ function Assembly({
     >
       <div className="flex h-10 shrink-0 items-center gap-2 border-b border-border bg-surface-2 px-3">
         <span className="text-[13px] font-medium text-text-primary">Montering</span>
+        <ProductionPicker state={state} value={productionId} onChange={setProductionId} />
+        <FilmLanguagePicker value={filmLang} onChange={setFilmLang} compact />
         <div className="mx-1 h-5 w-px bg-border" aria-hidden />
         <Button
           size="sm"
@@ -713,9 +854,44 @@ function Assembly({
           {formatSeconds(framesToSeconds(filmDurationFrames(clips), fps))} · {withComposition} med
           2D-scene
         </span>
-        <div className="ml-auto flex items-center gap-3">
+        <div className="ml-auto flex items-center gap-1.5 2xl:gap-3">
+          <Button
+            aria-label="Svart-hvitt"
+            size="sm"
+            variant="ghost"
+            aria-pressed={monochrome}
+            onClick={() => setMonochrome(!monochrome)}
+            title="Vis hele filmen i svart-hvitt (foreslås også i eksporten). Enkeltscener settes i panelet."
+            className={monochrome ? "bg-surface-3 text-text-primary" : ""}
+          >
+            <Contrast />
+            <span className="hidden 2xl:inline">Svart-hvitt</span>
+          </Button>
+          <Button
+            aria-label="Standardovergang"
+            size="sm"
+            variant="ghost"
+            onClick={() => setStandardOpen(true)}
+            title="Overgangen alle scener får når de ikke har sin egen"
+          >
+            <Blend />
+            <span className="hidden 2xl:inline">Standardovergang</span>
+          </Button>
+          <Button
+            aria-label="Eget vindu"
+            size="sm"
+            variant="ghost"
+            aria-pressed={popout}
+            onClick={() => setPopout((x) => !x)}
+            disabled={clips.length === 0}
+            title="Vis filmen i et eget vindu, f.eks. på en annen skjerm"
+          >
+            <ExternalLink />
+            <span className="hidden 2xl:inline">Eget vindu</span>
+          </Button>
           {editable ? (
             <Button
+              aria-label="Importer lang film"
               size="sm"
               variant="ghost"
               onClick={() => setLongFilm(true)}
@@ -723,11 +899,12 @@ function Assembly({
               title="Én filmfil som dekker flere scener: last opp én gang og del den på scenene"
             >
               <Film />
-              Importer lang film
+              <span className="hidden 2xl:inline">Importer lang film</span>
             </Button>
           ) : null}
           {editable ? (
             <Button
+              aria-label="Legg til lyd"
               size="sm"
               variant="ghost"
               onClick={() => setAddAudio("dialogue")}
@@ -735,7 +912,7 @@ function Assembly({
               title="Legg til lyd ved avspillingshodet"
             >
               <Music />
-              Legg til lyd
+              <span className="hidden 2xl:inline">Legg til lyd</span>
             </Button>
           ) : null}
           <Button
@@ -747,6 +924,28 @@ function Assembly({
           >
             <Download />
             Eksporter animatic
+          </Button>
+          <Button
+            aria-label="Språkversjon"
+            size="sm"
+            variant="ghost"
+            onClick={() => setLanguageOpen(true)}
+            disabled={clips.length === 0}
+            title="Engelsk versjon: oversettelse, dialoglyd, timing og leppesynk scene for scene"
+          >
+            <Languages />
+            <span className="hidden 2xl:inline">Språkversjon …</span>
+          </Button>
+          <Button
+            aria-label="Undertekster"
+            size="sm"
+            variant="ghost"
+            onClick={() => setSubtitlesOpen(true)}
+            disabled={clips.length === 0}
+            title="Undertekster (.srt eller .vtt) på norsk eller engelsk"
+          >
+            <Captions />
+            <span className="hidden 2xl:inline">Undertekster …</span>
           </Button>
           <SaveIndicator cmds={cmds} />
           {roleKnown && !editable ? (
@@ -766,13 +965,34 @@ function Assembly({
       <div className="flex min-h-0 flex-1">
         <main className="flex min-w-0 flex-1 flex-col bg-surface-0 p-3">
           <FilmViewer
-            state={state}
+            state={view}
             clips={clips}
             frame={playback.frame}
             tick={images.tick + filmVideo.tick}
             video={filmVideo.provider}
             onDrawn={filmVideo.settle}
+            monochrome={monochrome}
+            subtitle={subtitle}
           />
+          {popout ? (
+            <FilmPopout
+              state={view}
+              clips={clips}
+              frame={playback.frame}
+              tick={images.tick + filmVideo.tick}
+              video={filmVideo.provider}
+              monochrome={monochrome}
+              subtitle={subtitle}
+              onClose={() => setPopout(false)}
+              onBlocked={() => {
+                setPopout(false);
+                setError(
+                  "Nettleseren stoppet det egne vinduet. Tillat sprettoppvinduer for siden.",
+                );
+              }}
+              onTogglePlay={playback.toggle}
+            />
+          ) : null}
         </main>
         <aside
           aria-label="Scene og manus"
@@ -811,6 +1031,8 @@ function Assembly({
               onEstimate={() => selected && setDuration(selected.occurrenceId, 0)}
               onCreateComposition={() => selected && createComposition(selected.occurrenceId)}
               onDeactivate={() => selected && deactivate(selected.occurrenceId)}
+              onGenerateScene={() => setGenerateOpen(true)}
+              run={cmds.run}
               frame={playback.frame}
               onSeek={playback.setFrame}
               onUseTake={(takeId) =>
@@ -875,14 +1097,26 @@ function Assembly({
                   "Endre overgang",
                 )
               }
+              onMonochrome={(on) =>
+                selected &&
+                run(
+                  {
+                    type: "SetOccurrenceMonochrome",
+                    occurrenceId: selected.occurrenceId,
+                    monochrome: on,
+                  },
+                  on ? "Svart-hvitt for scenen" : "Farger for scenen",
+                )
+              }
             />
           )}
         </aside>
       </div>
 
       <FilmTimeline
-        state={state}
+        state={view}
         clips={clips}
+        flagged={flagged}
         durationFrames={duration}
         frame={playback.frame}
         playing={playback.playing}
@@ -900,7 +1134,7 @@ function Assembly({
         toolbar={toolbar}
         audio={(g) => (
           <AudioTracks
-            state={state}
+            state={view}
             items={audioItems}
             clips={clips}
             g={g}
@@ -929,10 +1163,16 @@ function Assembly({
         )}
       />
 
+      <SubtitleDialog
+        state={state}
+        productionId={productionId}
+        open={subtitlesOpen}
+        onOpenChange={setSubtitlesOpen}
+      />
       <ExportAnimaticDialog
         open={exportOpen}
         onOpenChange={setExportOpen}
-        state={state}
+        state={view}
         productionId={productionId}
         clips={clips}
         selectedId={selected?.occurrenceId ?? null}
@@ -941,7 +1181,56 @@ function Assembly({
         audioUrls={audioUrls.data ?? null}
         mutedKinds={mutedKinds}
         filmUrls={filmUrls.data ?? null}
+        monochrome={monochrome}
+        language={filmLang}
+        onLanguage={setFilmLang}
+        subtitles={subtitleList}
       />
+      <LanguageVersionDialog
+        open={languageOpen}
+        onOpenChange={setLanguageOpen}
+        state={state}
+        productionId={productionId}
+        language={filmLang.dialogue === MAIN_LANGUAGE ? "en" : filmLang.dialogue}
+        editable={editable}
+        run={run}
+        onSeek={(occurrenceId, ms) => {
+          const c = clips.find((x) => x.occurrenceId === occurrenceId);
+          if (!c) return;
+          setSelectedId(occurrenceId);
+          playback.setFrame(
+            c.startFrame +
+              Math.min(c.durationFrames - 1, Math.round((ms / 1000) * (fps.num / fps.den))),
+          );
+        }}
+      />
+      <Dialog open={standardOpen} onOpenChange={setStandardOpen}>
+        <DialogContent className="max-w-[440px] border-border bg-surface-2">
+          <DialogHeader>
+            <DialogTitle>Standardovergang</DialogTitle>
+            <DialogDescription>
+              Overgangen alle scener får når de ikke har sin egen. Scener med eget valg endres ikke.
+            </DialogDescription>
+          </DialogHeader>
+          <TransitionEditor
+            idPrefix="standardovergang"
+            value={state.project.defaultTransition ?? { kind: "cut", frames: 0 }}
+            fps={fps.num / fps.den}
+            editable={editable}
+            onChange={(t) => {
+              const next = t && t.kind !== "cut" ? t : null;
+              const now = state.project.defaultTransition ?? null;
+              if (JSON.stringify(next) === JSON.stringify(now)) return;
+              run({ type: "SetDefaultTransition", transition: next }, "Endre standardovergang");
+            }}
+          />
+          {error ? (
+            <p role="alert" className="text-xs text-status-danger">
+              {error}
+            </p>
+          ) : null}
+        </DialogContent>
+      </Dialog>
       <AudioClipEditor
         open={profileClip !== null}
         onOpenChange={(o) => {
@@ -953,6 +1242,15 @@ function Assembly({
         editable={editable}
         url={profileVersion ? (audioUrls.data?.[profileVersion.mediaPath] ?? null) : null}
         onChange={(label, patch) => profileClip && patchAudioClip(profileClip.id, label, patch)}
+      />
+      <GenerateSceneDialog
+        open={generateOpen}
+        onOpenChange={setGenerateOpen}
+        state={state}
+        productionId={productionId}
+        clip={selected}
+        editable={editable}
+        cmds={cmds}
       />
       <LongFilmImportDialog
         open={longFilm}
@@ -975,6 +1273,7 @@ function Assembly({
         offsetMs={at ? Math.round(framesToSeconds(at.localFrame, fps) * 1000) : 0}
         initialKind={addAudio ?? "dialogue"}
         onAdded={(id) => setSelectedAudioId(id)}
+        language={filmLang.dialogue}
       />
     </div>
   );

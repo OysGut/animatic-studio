@@ -130,7 +130,7 @@ async function mock(page, { projects = [project], schema = true }) {
     const table = path.replace("/rest/v1/", "");
     if (table === "schema_version")
       return schema
-        ? json([{ version: 12 }])
+        ? json([{ version: 18 }])
         : json({ message: "relation does not exist", code: "42P01" }, 404);
     if (table === "projects") {
       if (single) return json(projects[0] ?? null);
@@ -187,6 +187,11 @@ async function shot(name, path, opts = {}) {
   page.on("pageerror", (e) => errors.push(String(e)));
   page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
   await mock(page, opts);
+  // Lagringsvinduet (showSaveFilePicker) avbrytes alltid i hodeløs Chromium: bruk vanlig nedlasting
+  if (opts.plainDownload)
+    await page.addInitScript(() => {
+      delete window.showSaveFilePicker;
+    });
   if (opts.signedIn !== false) {
     await page.addInitScript(
       ([k, v]) => localStorage.setItem(k, v),
@@ -876,6 +881,422 @@ if (process.env.TEST_FILM) {
     },
   });
 }
+// DEC-0049: sikkerhetskopi, gjenoppretting og manus ↔ film
+const BACKUP_ZIP = process.env.BACKUP_OUT ?? `${out}/sikkerhetskopi.zip`;
+await shot("66-sikkerhetskopi", "/", {
+  plainDownload: true,
+  act: async (page) => {
+    await page.getByRole("button", { name: `Handlinger for ${project.name}` }).click();
+    await page.getByRole("menuitem", { name: /Sikkerhetskopi/ }).click();
+    await page.getByRole("button", { name: /Last ned sikkerhetskopi/ }).waitFor({ timeout: 15000 });
+    const dl = page.waitForEvent("download", { timeout: 60000 }).catch(() => null);
+    await page.getByRole("button", { name: /Last ned sikkerhetskopi/ }).click();
+    const d = await dl;
+    if (d) await d.saveAs(BACKUP_ZIP);
+    console.error(
+      "sikkerhetskopi:",
+      d ? d.suggestedFilename() : "ingen nedlasting",
+      "|",
+      await page
+        .getByRole("dialog")
+        .locator('[role="status"], [role="alert"]')
+        .first()
+        .innerText()
+        .catch(() => "ingen melding"),
+    );
+    await page.waitForTimeout(800);
+  },
+});
+await shot("67-gjenopprett", "/", {
+  act: async (page) => {
+    await page.getByRole("button", { name: /Gjenopprett fra sikkerhetskopi/ }).click();
+    await page.getByLabel("Velg sikkerhetskopi").setInputFiles(BACKUP_ZIP);
+    await page.getByText(/manusblokker/).waitFor({ timeout: 15000 });
+    await page.waitForTimeout(400);
+  },
+});
+{
+  const occ7 = fx.rows.scene_occurrences.find((o) => o.production_number === "7");
+  const blk = occ7
+    ? fx.rows.script_blocks.filter(
+        (b) => b.variant_id === occ7.variant_id && b.kind === "dialogue",
+      )[1]
+    : null;
+  if (occ7 && blk)
+    await shot("68b-montering-fra-manus", `${manus}?scene=${occ7.id}&blokk=${blk.id}`, {
+      act: async (page) => {
+        await page.waitForTimeout(800);
+        await page.screenshot({ path: `${out}/68-manus-vis-i-filmen.png` });
+        await page.getByRole("link", { name: "Vis i filmen" }).click();
+        await page.waitForTimeout(2500);
+        console.error(
+          "fra manus: tid",
+          await page
+            .locator("text=/^\\d\\d:\\d\\d:\\d\\d:\\d\\d$/")
+            .first()
+            .innerText()
+            .catch(() => "?"),
+          "| aktiv:",
+          await page
+            .getByRole("region", { name: "Manus for scenen" })
+            .locator('[aria-current="true"]')
+            .first()
+            .innerText()
+            .catch(() => "ingen"),
+        );
+      },
+    });
+}
+// DEC-0051: overganger, svart-hvitt, eget vindu, hendelser i 2D-scenen
+await shot("69-overgang-iris", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    await page.getByRole("button", { name: /^Scene 3: / }).click();
+    await page.waitForTimeout(400);
+    for (let i = 0; i < 6; i++) await page.keyboard.press("ArrowRight");
+    await page.waitForTimeout(1200);
+  },
+});
+await shot("70-standardovergang", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(1200);
+    await page.getByRole("button", { name: "Standardovergang" }).click();
+    await page.waitForTimeout(400);
+  },
+});
+await shot("71-svart-hvitt", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    await page.getByRole("button", { name: /^Scene 7: .*ferdig film/ }).click();
+    await page.waitForTimeout(400);
+    await page.getByRole("button", { name: "Svart-hvitt" }).click();
+    await page.waitForTimeout(1200);
+  },
+});
+await shot("72-hendelser-i-manus", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    const layer = page.getByRole("region", { name: "Lag" }).getByRole("button").first();
+    await layer.click().catch(() => {});
+    await page.waitForTimeout(500);
+    await page.getByRole("region", { name: "Hendelser i manuset" }).scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
+  },
+});
+// DEC-0052: gruppe, bildeskifte, bevegelsesbane, naboscener og lydopptak
+const velgAnne = async (page) => {
+  await page
+    .getByRole("region", { name: "Lag" })
+    .getByRole("button", { name: /Anne/ })
+    .first()
+    .click();
+  await page.waitForTimeout(500);
+};
+await shot("73-gruppe-og-bane", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    await velgAnne(page);
+    await gaTilBilde(page, 30);
+  },
+});
+await shot("74-bildeskifte-og-tempo", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    await velgAnne(page);
+    await gaTilBilde(page, 45);
+    await page.getByRole("region", { name: "Bildeskifte" }).scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
+  },
+});
+await shot("75-naboscener", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    await page.getByRole("button", { name: "Naboscener" }).click();
+    await page.waitForTimeout(800);
+    const strip = page.getByRole("region", { name: "Naboscener" });
+    const box = await page.locator('[aria-label="Naboscener"] div.cursor-pointer').boundingBox();
+    if (box) await page.mouse.click(box.x + box.width * 0.9, box.y + box.height / 2);
+    await page.waitForTimeout(1200);
+    void strip;
+  },
+});
+await shot("76-lydopptak", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    await page.getByRole("button", { name: "Opptak" }).click();
+    await page.waitForTimeout(500);
+  },
+});
+// DEC-0053: frilegging, AI-budsjett og jobber, «Generer scene»
+await shot("77-frilegging", bibliotek, {
+  act: async (page) => {
+    await page
+      .getByRole("button", { name: /^MA Maja/ })
+      .or(page.getByRole("button", { name: /Maja Karakter/ }))
+      .first()
+      .click();
+    await page.waitForTimeout(1200);
+    await page
+      .getByRole("button", { name: /Frilegg/ })
+      .first()
+      .click();
+    await page.waitForTimeout(2500);
+  },
+});
+await shot("78-ai-budsjett-og-jobber", `/prosjekt/${project.id}`, {
+  act: async (page) => {
+    await page.waitForTimeout(1200);
+    await page.getByRole("list", { name: "AI-jobber" }).scrollIntoViewIfNeeded();
+    await page.mouse.wheel(0, 300);
+    await page.waitForTimeout(600);
+  },
+});
+await shot("79-generer-scene", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    await page
+      .getByRole("button", { name: /^Scene 1: / })
+      .first()
+      .click();
+    await page.waitForTimeout(400);
+    await page.getByRole("button", { name: /Generer scene/ }).click();
+    await page.waitForTimeout(800);
+  },
+});
+// DEC-0054: avvik ved manusendring – monteringen, manuset og sceneeditoren
+await shot("80-avvik-montering", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    await page
+      .getByRole("button", { name: /^Scene 1: / })
+      .first()
+      .click();
+    await page.waitForTimeout(600);
+    await page
+      .getByRole("region", { name: "Manuset er endret etter materialet" })
+      .scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
+  },
+});
+await shot("81-avvik-manus", manus, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    await page.getByText("Hører du det? Noen banker på døra!").first().click();
+    await page.waitForTimeout(800);
+  },
+});
+await shot("82-avvik-sceneeditor", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    await page.getByRole("button", { name: "Vis og velg …" }).click();
+    await page.waitForTimeout(600);
+  },
+});
+// DEC-0055: kontinuitet for Maja – hendelser, forslag, tidslinje og advarsel i sceneeditoren
+const openMaja = async (page) => {
+  await page
+    .getByRole("button", { name: /^MA Maja/ })
+    .or(page.getByRole("button", { name: /Maja Karakter/ }))
+    .first()
+    .click();
+  await page.waitForTimeout(1200);
+};
+await shot("83-kontinuitet", bibliotek, {
+  act: async (page) => {
+    await openMaja(page);
+    await page.getByRole("region", { name: "Kontinuitet" }).scrollIntoViewIfNeeded();
+    await page.waitForTimeout(400);
+  },
+});
+await shot("84-kontinuitet-tidslinje", bibliotek, {
+  act: async (page) => {
+    await openMaja(page);
+    await page.getByLabel("Kontinuitetstidslinje").scrollIntoViewIfNeeded();
+    await page.waitForTimeout(400);
+  },
+});
+await shot("85-kontinuitet-godkjenn-forslag", bibliotek, {
+  act: async (page) => {
+    await openMaja(page);
+    await page
+      .getByRole("button", { name: /Godkjenn …/ })
+      .first()
+      .click();
+    await page.waitForTimeout(300);
+    await page.getByRole("form", { name: "Ny kontinuitetshendelse" }).scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
+  },
+});
+await shot("86-kontinuitet-sceneeditor", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(800);
+    await page
+      .getByRole("button", { name: /Maja/ })
+      .filter({ hasText: "Karakter" })
+      .first()
+      .click();
+    await page.waitForTimeout(500);
+    await page.getByText(/^Kontinuitet: i denne scenen/).scrollIntoViewIfNeeded();
+    await page.waitForTimeout(400);
+  },
+});
+// DEC-0056: kontinuitetsanalyse og konsekvenser ved godkjenning av nytt bilde
+await shot("87-kontinuitetsanalyse", `/prosjekt/${project.id}`, {
+  act: async (page) => {
+    await page.waitForTimeout(1200);
+    await page.getByRole("heading", { name: "Kontinuitetsanalyse" }).scrollIntoViewIfNeeded();
+    await page.mouse.wheel(0, 200);
+    await page.waitForTimeout(400);
+  },
+});
+await shot("88-godkjenn-konsekvenser", bibliotek, {
+  act: async (page) => {
+    await openMaja(page);
+    await page.getByRole("button", { name: "Godkjenn", exact: true }).first().click();
+    await page.waitForTimeout(700);
+  },
+});
+// DEC-0057: avledede produksjoner (spinoff)
+await shot("89-produksjoner", `/prosjekt/${project.id}`, {
+  act: async (page) => {
+    await page.waitForTimeout(1000);
+    await page.getByRole("heading", { name: "Produksjoner" }).scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
+  },
+});
+await shot("90-ny-produksjon", `/prosjekt/${project.id}`, {
+  act: async (page) => {
+    await page.waitForTimeout(1000);
+    await page.getByRole("button", { name: /Ny produksjon/ }).click();
+    await page.getByPlaceholder(/Majas jul/).fill("Trailer til premieren");
+    await page.getByRole("list", { name: "Scener" }).getByRole("checkbox").nth(0).check();
+    await page.getByRole("list", { name: "Scener" }).getByRole("checkbox").nth(4).check();
+    await page.waitForTimeout(300);
+  },
+});
+await shot("91-spinoff-manus", manus, {
+  act: async (page) => {
+    await page.waitForTimeout(1200);
+    await page
+      .getByLabel("Produksjon")
+      .first()
+      .selectOption({ label: "Majas jul – kortversjon (spinoff)" });
+    await page.waitForTimeout(800);
+    await page.getByText("Hører du det? Det er julenissen!").first().click();
+    await page.waitForTimeout(600);
+  },
+});
+await shot("92-spinoff-sceneeditor", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(1000);
+    await page
+      .getByLabel("Produksjon")
+      .first()
+      .selectOption({ label: "Majas jul – kortversjon (spinoff)" });
+    await page.waitForTimeout(1000);
+  },
+});
+// DEC-0058: engelsk manus og undertekster
+await shot("93-engelsk-manus", manus, {
+  act: async (page) => {
+    await page.waitForTimeout(1200);
+    await page.getByLabel("Manusspråk").selectOption("en");
+    await page.waitForTimeout(800);
+  },
+});
+await shot("94-oversettelse-inspektor", manus, {
+  act: async (page) => {
+    await page.waitForTimeout(1200);
+    await page.getByLabel("Manusspråk").selectOption("en");
+    await page.waitForTimeout(600);
+    await page.getByText("knocking on the door!").first().click();
+    await page.waitForTimeout(600);
+  },
+});
+await shot("95-undertekster", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(1200);
+    await page.getByRole("button", { name: /Undertekster/ }).click();
+    await page.getByRole("dialog").locator("select").first().selectOption("en");
+    await page.waitForTimeout(500);
+  },
+});
+// DEC-0059: engelsk versjon av filmen
+await shot("96-engelsk-film", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(1200);
+    await page.getByLabel("Dialogspråk").selectOption("en");
+    await page.getByLabel("Undertekster i bildet").selectOption("en");
+    await page.waitForTimeout(400);
+    // Avspillingshodet inn i den første replikken
+    await page.keyboard.press("ArrowRight");
+    for (let i = 0; i < 30; i++) await page.keyboard.press("ArrowRight");
+    await page.waitForTimeout(800);
+  },
+});
+await shot("97-sprakversjon", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(1200);
+    await page.getByRole("button", { name: /Språkversjon/ }).click();
+    await page.waitForTimeout(600);
+  },
+});
+await shot("98-eksport-sprak", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(1200);
+    await page.getByLabel("Dialogspråk").selectOption("en");
+    await page.getByRole("button", { name: /Eksporter animatic/ }).click();
+    await page.getByRole("dialog").getByText("Bare dialogspor (WAV)").click();
+    await page.waitForTimeout(500);
+  },
+});
+await shot("99-lyd-sprak", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(1200);
+    await page.getByLabel("Dialogspråk").selectOption("en");
+    await page.waitForTimeout(400);
+    // Lydklippet i dialogsporet (scene 1)
+    await page
+      .getByRole("button", { name: /Maja: Can you hear that/ })
+      .first()
+      .click();
+    await page.waitForTimeout(500);
+  },
+});
+// DEC-0060: tilbakeføring fra spinoff, kontinuitet i spinoffen og varsler om hull
+await shot("100-tilbakefor", `/prosjekt/${project.id}`, {
+  act: async (page) => {
+    await page.waitForTimeout(1000);
+    await page
+      .getByRole("button", { name: /Tilbakefør/ })
+      .first()
+      .click();
+    await page.waitForTimeout(600);
+  },
+});
+await shot("101-analyse-spinoff", `/prosjekt/${project.id}`, {
+  act: async (page) => {
+    await page.waitForTimeout(1000);
+    await page
+      .getByLabel("Produksjon for analysen")
+      .selectOption({ label: "Majas jul – kortversjon" });
+    await page.waitForTimeout(500);
+    await page.getByRole("heading", { name: "Kontinuitetsanalyse" }).scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
+  },
+});
+await shot("102-kontinuitet-spinoff", bibliotek, {
+  act: async (page) => {
+    await page.waitForTimeout(800);
+    await page
+      .getByLabel("Produksjon for bruk i scener og kontinuitet")
+      .selectOption({ label: "Majas jul – kortversjon" });
+    await page.waitForTimeout(500);
+    await openMaja(page);
+    await page.getByRole("region", { name: "Kontinuitet" }).scrollIntoViewIfNeeded();
+    await page.waitForTimeout(400);
+  },
+});
 await shot("18-oversikt-varighet", `/prosjekt/${project.id}`, {
   act: async (page) => {
     await page.getByRole("button", { name: "Per scene" }).click();

@@ -1,6 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Download, LogOut, MoreHorizontal, Plus, Trash2 } from "lucide-react";
+import {
+  ArchiveRestore,
+  DatabaseBackup,
+  Download,
+  LogOut,
+  MoreHorizontal,
+  Plus,
+  Trash2,
+} from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { db } from "@/app/db";
 import { Button } from "@/components/ui/button";
@@ -19,6 +27,7 @@ import {
   PurgeAssetsDialog,
   type ProjectTarget,
 } from "./ProjectDangerDialogs";
+import { BackupDialog, RestoreBackupDialog } from "./BackupDialogs";
 
 interface ProjectRow {
   id: string;
@@ -58,10 +67,11 @@ export function ProjectsScreen({ userId }: { userId: string }) {
   const [name, setName] = useState("");
   const [creating, setCreating] = useState(false);
   const [dialog, setDialog] = useState<{
-    kind: "delete" | "leave" | "purge" | "zip";
+    kind: "delete" | "leave" | "purge" | "zip" | "backup";
     target: ProjectTarget;
   } | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [restoring, setRestoring] = useState(false);
   const all = projects.data ?? [];
   const live = all.filter((p) => !p.deleted_at);
   const deleted = all.filter((p) => p.deleted_at);
@@ -108,10 +118,16 @@ export function ProjectsScreen({ userId }: { userId: string }) {
           </p>
         </div>
         {!creating ? (
-          <Button onClick={() => setCreating(true)}>
-            <Plus />
-            Nytt prosjekt
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="secondary" onClick={() => setRestoring(true)}>
+              <ArchiveRestore />
+              Gjenopprett fra sikkerhetskopi …
+            </Button>
+            <Button onClick={() => setCreating(true)}>
+              <Plus />
+              Nytt prosjekt
+            </Button>
+          </div>
         ) : null}
       </div>
 
@@ -214,6 +230,11 @@ export function ProjectsScreen({ userId }: { userId: string }) {
                       >
                         <Download /> Last ned ressurser …
                       </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onSelect={() => setDialog({ kind: "backup", target: target(p) })}
+                      >
+                        <DatabaseBackup /> Sikkerhetskopi …
+                      </DropdownMenuItem>
                       {canLeave || role === "owner" ? <DropdownMenuSeparator /> : null}
                       {canLeave ? (
                         <DropdownMenuItem
@@ -296,6 +317,23 @@ export function ProjectsScreen({ userId }: { userId: string }) {
         target={dialog?.kind === "purge" ? dialog.target : null}
         onClose={() => setDialog(null)}
         onDone={(m) => void closeWith(m)}
+      />
+      {dialog?.kind === "backup" ? (
+        <BackupDialog
+          open
+          onOpenChange={(o) => !o && setDialog(null)}
+          projectId={dialog.target.id}
+          projectName={dialog.target.name}
+        />
+      ) : null}
+      <RestoreBackupDialog
+        open={restoring}
+        onOpenChange={setRestoring}
+        onRestored={() => void qc.invalidateQueries({ queryKey: ["projects"] })}
+        onOpenProject={(id) => {
+          setRestoring(false);
+          void navigate({ to: "/prosjekt/$projectId", params: { projectId: id } });
+        }}
       />
       {dialog?.kind === "zip" ? (
         <AssetZipDialog

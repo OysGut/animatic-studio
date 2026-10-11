@@ -2,7 +2,17 @@
  * Utfører én kommando mot prosjekttilstanden. Ren funksjon: (tilstand, kommando) → ny tilstand + invers.
  * Samme funksjon brukes i klienten (rask tilbakemelding) og på serveren (autoritativ, DEC-0022).
  */
-import { isUuid, type BlockId, type TakeId, type VariantId } from "../ids";
+import {
+  isUuid,
+  type AssetVariantId,
+  type BlockId,
+  type ContinuityEventId,
+  type TranslationId,
+  type LayerId,
+  type SceneId,
+  type TakeId,
+  type VariantId,
+} from "../ids";
 import { checkInvariants } from "../invariants";
 import {
   formatMapping,
@@ -20,6 +30,10 @@ import { compareKeys, isValidOrderKey, keyBetween, keysEvenly } from "../order-k
 import { compositionOfVariant } from "../composition/render";
 import {
   MAX_TRANSITION_FRAMES,
+  TRANSITION_KINDS,
+  CONTINUITY_KINDS,
+  type ContinuityEvent,
+  type Translation,
   PRIMARY_LANGUAGE,
   type Annotation,
   type AudioClip,
@@ -32,7 +46,11 @@ import {
   type TakeMedia,
   type TimeLink,
   type Transition,
+  type TransitionKind,
+  type ProductionSegment,
+  type SegmentReason,
 } from "../model";
+import { MAX_PROMPT_CHARS } from "../generation/prompt";
 import type {
   NewAnnotation,
   AssetFields,
@@ -42,6 +60,8 @@ import type {
   Command,
   CompositionFields,
   TimeLinkFields,
+  ContinuityEventFields,
+  TranslationFields,
   LayerFields,
   CommandEnvelope,
   CommandError,
@@ -104,6 +124,9 @@ function assertNewId(s: ProjectState, id: string) {
     s.audioClips,
     s.clipParts,
     s.timeLinks,
+    s.generationPrompts,
+    s.continuityEvents,
+    s.translations,
   ];
   if (all.some((c) => c[id] !== undefined)) fail("duplicate_id", `ID ${id} er allerede i bruk`);
 }
@@ -315,6 +338,9 @@ export function revisionOf(s: ProjectState, id: string): number | undefined {
     s.audioClips,
     s.clipParts,
     s.timeLinks,
+    s.generationPrompts,
+    s.continuityEvents,
+    s.translations,
   ]) {
     const e = c[id];
     if (e) return e.revision;
@@ -337,11 +363,11 @@ function assertCanEditVariant(s: ProjectState, productionId: string, variantId: 
     if (production.kind !== "main") {
       fail(
         "must_fork_variant",
-        "Scenen deles med hovedfilmen. Endringer i denne produksjonen lagres som egen scenevariant (ForkVariant først).",
+        "Scenen deles med hovedfilmen. Endringer i denne produksjonen lagres som egen versjon av scenen.",
       );
     }
   } else if (variant.ownerProductionId !== productionId) {
-    fail("must_fork_variant", "Varianten tilhører en annen produksjon");
+    fail("must_fork_variant", "Denne versjonen av scenen tilhører en annen produksjon");
   }
 }
 
@@ -353,7 +379,42 @@ function compositionFields(f: CompositionFields): CompositionFields {
   return r.value;
 }
 
-function layerFields(s: ProjectState, f: LayerFields): LayerFields {
+/**
+ * Brukes ressursen, varianten eller versjonen av et lag (eget bilde eller bildeskifte, også slettede lag som
+ * kan hentes tilbake)? Da kan den ikke angres bort (DEC-0052).
+ */
+function usedByLayer(
+  s: ProjectState,
+  key: "assetId" | "assetVariantId" | "versionId",
+  id: string,
+): boolean {
+  return Object.values(s.layers).some(
+    (l) =>
+      l[key] === id ||
+      l.swaps.some((w) => w[key] === id) ||
+      (key !== "assetId" && (l.languageImages ?? []).some((li) => li[key] === id)),
+  );
+}
+
+function layerFields(s: ProjectState, f: LayerFields, prev?: CompositionLayer): LayerFields {
+  // En eldre klient uten feltene for bildeskifte, bane og ankerpunkt skal ikke slette dem (DEC-0052)
+  if (prev)
+    f = {
+      ...f,
+      swaps: f.swaps ?? prev.swaps,
+      path: f.path === undefined ? prev.path : f.path,
+      anchor: f.anchor === undefined ? prev.anchor : f.anchor,
+      // Språkavhengige bilder (DEC-0059): utelatt = uendret
+      languageImages: f.languageImages ?? prev.languageImages ?? [],
+    };
+  // Nytt bilde i laget (annen ressurs): bilder per språk av den gamle ressursen passer ikke lenger
+  if (prev && f.assetId !== prev.assetId)
+    f = {
+      ...f,
+      languageImages: (f.languageImages ?? []).filter(
+        (li) => f.assetId !== null && s.assetVariants[li.assetVariantId]?.assetId === f.assetId,
+      ),
+    };
   const r = normalizeLayerFields(f);
   if (!r.ok) fail("invalid", r.error);
   const v = r.value;
@@ -366,6 +427,36 @@ function layerFields(s: ProjectState, f: LayerFields): LayerFields {
   if (v.versionId !== null) {
     const ve = need(s.assetVersions[v.versionId], "Bildeversjonen");
     if (ve.variantId !== v.assetVariantId) fail("invalid", "Versjonen hører til en annen variant");
+  }
+  // Bildeskifter: samme kontroll som lagets eget bilde (uendrede skifter kontrolleres ikke på nytt)
+  const old = new Set((prev?.swaps ?? []).map((w) => JSON.stringify(w)));
+  for (const w of v.swaps) {
+    if (old.has(JSON.stringify(w))) continue;
+    if (need(s.assets[w.assetId], "Bildet i bildeskiftet").kind === "sound")
+      fail("invalid", "En lydfil kan ikke vises som lag");
+    if (w.assetVariantId !== null) {
+      const va = need(s.assetVariants[w.assetVariantId], "Varianten av ressursen");
+      if (va.assetId !== w.assetId) fail("invalid", "Varianten hører til en annen ressurs");
+    }
+    if (w.versionId !== null) {
+      const ve = need(s.assetVersions[w.versionId], "Bildeversjonen");
+      if (ve.variantId !== w.assetVariantId)
+        fail("invalid", "Versjonen hører til en annen variant");
+    }
+  }
+  // Språkavhengige bilder (DEC-0059, REQ-0337): en variant av lagets egen ressurs (uendrede kontrolleres
+  // ikke på nytt, som bildeskifter)
+  const oldLang = new Set((prev?.languageImages ?? []).map((x) => JSON.stringify(x)));
+  for (const li of v.languageImages ?? []) {
+    if (prev && prev.assetId === v.assetId && oldLang.has(JSON.stringify(li))) continue;
+    const va = need(s.assetVariants[li.assetVariantId], "Varianten for språket");
+    if (va.assetId !== v.assetId)
+      fail("invalid", "Bildet for et språk må være en variant av samme ressurs som laget");
+    if (li.versionId !== null) {
+      const ve = need(s.assetVersions[li.versionId], "Bildeversjonen for språket");
+      if (ve.variantId !== li.assetVariantId)
+        fail("invalid", "Versjonen hører til en annen variant");
+    }
   }
   return v;
 }
@@ -386,7 +477,26 @@ function fieldsOfLayer(l: CompositionLayer): LayerFields {
     visible: l.visible,
     locked: l.locked,
     groupId: l.groupId,
+    swaps: l.swaps,
+    path: l.path,
+    anchor: l.anchor,
+    ...(l.languageImages?.length ? { languageImages: l.languageImages } : {}),
   };
+}
+
+/**
+ * Grupper (DEC-0052): et lag som legges i en gruppe, må peke på et gruppelag i samme 2D-scene som ikke er
+ * slettet. Bare lag som får ny gruppe kontrolleres (en slettet gruppe gjør bare at lagene står fritt).
+ */
+function checkGroups(before: ProjectState, after: ProjectState, ids: readonly string[]): void {
+  for (const id of ids) {
+    const l = after.layers[id];
+    if (!l || l.groupId === null || before.layers[id]?.groupId === l.groupId) continue;
+    const g = after.layers[l.groupId];
+    if (!g || g.kind !== "group" || g.compositionId !== l.compositionId || g.id === l.id)
+      fail("invalid", "Gruppen finnes ikke i denne 2D-scenen");
+    if (g.removed) fail("invalid", "Gruppen er slettet");
+  }
 }
 
 function sortedLayerKeys(s: ProjectState, compositionId: string, except?: string): string[] {
@@ -423,6 +533,202 @@ function partFieldsOf(p: ClipPartFields): ClipPartFields {
   };
 }
 
+/** Lengste beskrivelse av en kontinuitetshendelse. */
+export const CONTINUITY_DESCRIPTION_MAX = 2000;
+
+function continuityFieldsOf(
+  s: ProjectState,
+  f: ContinuityEventFields,
+  prev?: ContinuityEvent,
+): Omit<ContinuityEvent, "id" | "revision" | "removed" | "disabledIn"> {
+  if (!f || typeof f !== "object") fail("invalid", "Ugyldig kontinuitetshendelse");
+  const a = need(s.assets[f.assetId], "Ressursen");
+  if (a.kind === "sound" || a.kind === "location" || a.kind === "environment")
+    fail("invalid", "Denne typen ressurs har ikke kontinuitet");
+  if (!(CONTINUITY_KINDS as readonly string[]).includes(f.kind))
+    fail("invalid", "Ukjent type kontinuitetshendelse");
+  if (f.duration !== "permanent" && f.duration !== "temporary" && f.duration !== "scene")
+    fail("invalid", "Ukjent varighet");
+  if (f.status !== "approved" && f.status !== "dismissed") fail("invalid", "Ugyldig status");
+  if (typeof f.description !== "string" || f.description.length > CONTINUITY_DESCRIPTION_MAX)
+    fail("invalid", "Beskrivelsen er for lang");
+  const variant = (id: AssetVariantId | null, what: string) => {
+    if (id === null || id === undefined) return null;
+    const v = need(s.assetVariants[id], what);
+    if (v.assetId !== a.id) fail("invalid", `${what} hører ikke til ressursen`);
+    return v.id;
+  };
+  let scene = need(s.scenes[f.sceneId], "Scenen");
+  let blockId: BlockId | null = null;
+  if (f.blockId !== null && f.blockId !== undefined) {
+    const b = need(s.blocks[f.blockId], "Manusblokken");
+    const lineScene = s.variants[b.variantId]?.sceneId;
+    if (!lineScene) fail("invalid", "Manuslinjen hører ikke til en scene");
+    // Scenen følger linjen (den kan ha flyttet ved deling eller sammenslåing siden hendelsen ble laget)
+    scene = need(s.scenes[lineScene], "Scenen");
+    blockId = b.id;
+  }
+  let untilSceneId: SceneId | null = null;
+  if (f.duration === "temporary") {
+    if (f.untilSceneId === null || f.untilSceneId === undefined)
+      fail("invalid", "Velg scenen der endringen er over");
+    untilSceneId = need(s.scenes[f.untilSceneId], "Scenen der endringen er over").id;
+    if (untilSceneId === scene.id) fail("invalid", "Endringen må vare til en senere scene");
+  }
+  // Lokal for en avledet produksjon (DEC-0060); utelatt ved endring = uendret
+  const productionId = f.productionId === undefined ? (prev?.productionId ?? null) : f.productionId;
+  if (productionId !== null) {
+    const p = need(s.productions[productionId], "Produksjonen");
+    if (p.kind === "main") fail("invalid", "Hovedfilmens hendelser er ikke lokale");
+    if (prev && !prev.productionId)
+      fail(
+        "invalid",
+        "En hendelse fra hovedfilmen kan ikke gjøres lokal. Slå den av i spinoffen i stedet.",
+      );
+  } else if (prev?.productionId)
+    fail("invalid", "En lokal hendelse kan ikke flyttes til hovedfilmen");
+  return {
+    ...(productionId !== null ? { productionId: productionId as never } : {}),
+    assetId: a.id,
+    kind: f.kind,
+    description: f.description.trim(),
+    fromVariantId: variant(f.fromVariantId, "Utseendet før"),
+    toVariantId: variant(f.toVariantId, "Utseendet etter"),
+    duration: f.duration,
+    sceneId: scene.id,
+    blockId,
+    untilSceneId,
+    status: f.status,
+  };
+}
+
+/** Lengste oversatte tekst (som manusblokker). */
+const TRANSLATION_MAX = 20000;
+
+function translationFieldsOf(
+  s: ProjectState,
+  f: TranslationFields,
+): Omit<Translation, "id" | "revision" | "removed"> {
+  if (!f || typeof f !== "object") fail("invalid", "Ugyldig oversettelse");
+  if (typeof f.language !== "string" || !/^[a-z]{2}(-[A-Z]{2})?$/.test(f.language))
+    fail("invalid", "Ugyldig språkkode");
+  if (f.language === "nb" || f.language === "no")
+    fail("invalid", "Norsk er hovedmanuset og oversettes ikke");
+  if (typeof f.text !== "string" || f.text.length > TRANSLATION_MAX)
+    fail("invalid", "Oversettelsen er for lang");
+  if (!f.text.trim()) fail("invalid", "Oversettelsen er tom. Fjern den i stedet.");
+  if (f.status !== "approved" && f.status !== "uncertain") fail("invalid", "Ugyldig status");
+  const hasBlock = f.blockId !== null && f.blockId !== undefined;
+  const hasVariant = f.variantId !== null && f.variantId !== undefined;
+  if (hasBlock === hasVariant)
+    fail("invalid", "En oversettelse gjelder én linje eller ett scenehode");
+  if (!Number.isInteger(f.basedOnRev) || f.basedOnRev < 0) fail("invalid", "Ugyldig revisjon");
+  if (hasBlock) {
+    const b = need(s.blocks[f.blockId!], "Manusblokken");
+    if (f.basedOnRev > b.currentRev) fail("invalid", "Revisjonen finnes ikke");
+    return {
+      blockId: b.id,
+      variantId: null,
+      language: f.language,
+      text: f.text,
+      basedOnRev: f.basedOnRev,
+      status: f.status,
+    };
+  }
+  const v = need(s.variants[f.variantId!], "Scenen");
+  // Scenehodet: revisjonen av scenevarianten da det ble oversatt (endret hode → gjennomgå)
+  if (f.basedOnRev > v.revision) fail("invalid", "Revisjonen finnes ikke");
+  return {
+    blockId: null,
+    variantId: v.id,
+    language: f.language,
+    text: f.text,
+    basedOnRev: f.basedOnRev,
+    status: f.status,
+  };
+}
+
+const translationKey = (t: Pick<Translation, "blockId" | "variantId" | "language">) =>
+  `${t.blockId ?? t.variantId}:${t.language}`;
+
+function continuityFieldsFrom(e: ContinuityEvent): ContinuityEventFields {
+  return {
+    assetId: e.assetId,
+    kind: e.kind,
+    description: e.description,
+    fromVariantId: e.fromVariantId,
+    toVariantId: e.toVariantId,
+    duration: e.duration,
+    sceneId: e.sceneId,
+    blockId: e.blockId,
+    untilSceneId: e.untilSceneId,
+    status: e.status,
+    ...(e.productionId ? { productionId: e.productionId } : {}),
+  };
+}
+
+/**
+ * Når en forekomst får egen scenevariant (ForkVariant) eller går tilbake (angre), følger forekomstens
+ * lydkoblinger, tidskoblinger og produksjonssegmenter med til de tilsvarende blokkene (DEC-0057).
+ */
+function remapOccurrenceBlocks(
+  s: ProjectState,
+  occurrenceId: string,
+  map: Readonly<Record<string, BlockId>>,
+): {
+  state: Pick<ProjectState, "audioClips" | "timeLinks" | "segments" | "takes">;
+  affected: string[];
+} {
+  const affected: string[] = [];
+  // Godkjent grunnlag for forekomstens versjoner (DEC-0054) følger blokkene
+  const takes = { ...s.takes };
+  for (const t of Object.values(s.takes)) {
+    if (t.occurrenceId !== occurrenceId) continue;
+    const base = (t.acceptedFrom ?? t.producedFrom).blockRevisions;
+    if (!Object.keys(base).some((k) => map[k])) continue;
+    const next: Record<string, number> = {};
+    for (const [k, v] of Object.entries(base)) next[map[k] ?? k] = v;
+    // Tilbake til det opprinnelige grunnlaget (angre): ingen egen godkjenning
+    const pf = t.producedFrom.blockRevisions;
+    const back =
+      Object.keys(next).length === Object.keys(pf).length &&
+      Object.entries(next).every(([k, v]) => pf[k] === v);
+    const { acceptedFrom: _a, ...rest } = t;
+    takes[t.id] = back
+      ? { ...rest, revision: t.revision + 1 }
+      : { ...t, acceptedFrom: { blockRevisions: next }, revision: t.revision + 1 };
+    affected.push(t.id);
+  }
+  const to = (id: BlockId | null) => (id && map[id] ? map[id]! : id);
+  const audioClips = { ...s.audioClips };
+  for (const a of Object.values(s.audioClips))
+    if (a.occurrenceId === occurrenceId && a.blockId && map[a.blockId]) {
+      audioClips[a.id] = { ...a, blockId: to(a.blockId), revision: a.revision + 1 };
+      affected.push(a.id);
+    }
+  const timeLinks = { ...s.timeLinks };
+  for (const t of Object.values(s.timeLinks))
+    if (t.occurrenceId === occurrenceId && map[t.blockId]) {
+      timeLinks[t.id] = { ...t, blockId: to(t.blockId)!, revision: t.revision + 1 };
+      affected.push(t.id);
+    }
+  const segments = { ...s.segments };
+  for (const g of Object.values(s.segments))
+    if (
+      g.occurrenceId === occurrenceId &&
+      ((g.startBlockId && map[g.startBlockId]) || (g.endBlockId && map[g.endBlockId]))
+    ) {
+      segments[g.id] = {
+        ...g,
+        startBlockId: to(g.startBlockId),
+        endBlockId: to(g.endBlockId),
+        revision: g.revision + 1,
+      };
+      affected.push(g.id);
+    }
+  return { state: { audioClips, timeLinks, segments, takes }, affected };
+}
+
 function timeLinkFieldsOf(
   s: ProjectState,
   f: TimeLinkFields,
@@ -438,7 +744,15 @@ function timeLinkFieldsOf(
     (!Number.isInteger(f.endMs) || f.endMs <= f.startMs || f.endMs > AUDIO_MAX_MS)
   )
     fail("invalid", "Slutten på tidskoblingen må være etter starten");
-  return { occurrenceId: o.id, blockId: b.id, startMs: f.startMs, endMs: f.endMs };
+  let layerId: LayerId | null = null;
+  if (f.layerId !== undefined && f.layerId !== null) {
+    const l = need(s.layers[f.layerId], "Laget");
+    const comp = compositionOfVariant(s, o.variantId);
+    if (!comp || l.compositionId !== comp.id)
+      fail("invalid", "Laget hører ikke til scenens 2D-scene");
+    layerId = l.id;
+  }
+  return { occurrenceId: o.id, blockId: b.id, startMs: f.startMs, endMs: f.endMs, layerId };
 }
 
 /** Filmformater som kan importeres (DEC-0047). */
@@ -489,8 +803,8 @@ function transitionOf(t: unknown): Transition {
   if (!t || typeof t !== "object") fail("invalid", "Ugyldig overgang");
   const x = t as Record<string, unknown>;
   const kind = x["kind"];
-  if (kind !== "cut" && kind !== "dissolve" && kind !== "dip") fail("invalid", "Ugyldig overgang");
-  if (kind === "cut") return { kind, frames: 0 };
+  if (!(TRANSITION_KINDS as readonly unknown[]).includes(kind)) fail("invalid", "Ugyldig overgang");
+  if (kind === "cut") return { kind: "cut", frames: 0 };
   const frames = x["frames"];
   if (
     !Number.isInteger(frames) ||
@@ -498,13 +812,20 @@ function transitionOf(t: unknown): Transition {
     (frames as number) > MAX_TRANSITION_FRAMES
   )
     fail("invalid", `Overgangen må vare mellom 1 og ${MAX_TRANSITION_FRAMES} bilder`);
-  return { kind, frames: frames as number };
+  if (x["overlap"] !== undefined && typeof x["overlap"] !== "boolean")
+    fail("invalid", "Ugyldig overgang");
+  return x["overlap"] === true
+    ? { kind: kind as TransitionKind, frames: frames as number, overlap: true }
+    : { kind: kind as TransitionKind, frames: frames as number };
 }
 
 export const AUDIO_KINDS = ["dialogue", "narration", "sfx", "ambience", "music"] as const;
 
 /** Kontroll av et lydklipp (DEC-0044). */
-function audioFields(s: ProjectState, f: AudioClipFields): AudioClipFields {
+function audioFields(
+  s: ProjectState,
+  f: AudioClipFields,
+): Omit<AudioClipFields, "language"> & { language?: string } {
   if (!f || typeof f !== "object") fail("invalid", "Ugyldig lydklipp");
   if (!(AUDIO_KINDS as readonly string[]).includes(f.kind)) fail("invalid", "Ukjent lydtype");
   if (typeof f.name !== "string" || f.name.length > 200) fail("invalid", "Navnet er for langt");
@@ -556,6 +877,10 @@ function audioFields(s: ProjectState, f: AudioClipFields): AudioClipFields {
     .sort((a, b) => a.t - b.t);
   for (let i = 1; i < keys.length; i++)
     if (keys[i]!.t === keys[i - 1]!.t) fail("invalid", "To volumpunkter på samme tid");
+  // Språk (DEC-0059): språkkode eller «*» (felles); utelatt = standard for lydtypen
+  const language = f.language ?? null;
+  if (language !== null && language !== "*" && !LANGUAGE_CODE.test(String(language)))
+    fail("invalid", "Ugyldig språk for lyden");
   return {
     occurrenceId: f.occurrenceId,
     kind: f.kind,
@@ -573,8 +898,12 @@ function audioFields(s: ProjectState, f: AudioClipFields): AudioClipFields {
     muted: f.muted,
     continues: f.continues,
     volumeKeys: keys,
+    ...(language !== null ? { language } : {}),
   };
 }
+
+/** Språkkode (DEC-0058/0059), f.eks. «nb», «en» eller «en-GB». */
+const LANGUAGE_CODE = /^[a-z]{2}(-[A-Z]{2})?$/;
 
 export function audioClipFieldsOf(a: AudioClip): AudioClipFields {
   return {
@@ -594,6 +923,7 @@ export function audioClipFieldsOf(a: AudioClip): AudioClipFields {
     muted: a.muted,
     continues: a.continues,
     volumeKeys: a.volumeKeys,
+    ...(a.language !== undefined ? { language: a.language } : {}),
   };
 }
 
@@ -645,6 +975,12 @@ function run(
       if (Object.values(s.occurrences).some((o) => o.productionId === c.productionId)) {
         fail("referenced", "Produksjonen inneholder scener og kan ikke angres");
       }
+      if (
+        Object.values(s.continuityEvents).some(
+          (e) => e.productionId === c.productionId || e.disabledIn?.includes(c.productionId),
+        )
+      )
+        fail("referenced", "Produksjonen har egen kontinuitet og kan ikke angres");
       const { [c.productionId]: _removed, ...productions } = s.productions;
       return {
         state: { ...s, productions },
@@ -940,32 +1276,109 @@ function run(
 
     case "ForkVariant": {
       const o = need(s.occurrences[c.occurrenceId], "Forekomsten");
-      const source = need(s.variants[o.variantId], "Varianten");
+      // Tilbakeføring (DEC-0060): innholdet kopieres fra en annen variant av scenen (spinoffens versjon)
+      const source = need(s.variants[c.sourceVariantId ?? o.variantId], "Varianten");
+      if (source.sceneId !== o.sceneId) fail("invalid", "Varianten tilhører en annen scene");
       if (source.ownerProductionId === o.productionId)
         fail("invalid", "Varianten eies allerede av produksjonen");
+      if (c.sourceVariantId && c.sourceVariantId === o.variantId)
+        fail("invalid", "Forekomsten bruker allerede denne varianten");
       assertNewId(s, c.newVariantId);
       const sourceBlocks = Object.values(s.blocks).filter((b) => b.variantId === source.id);
       const blocks = { ...s.blocks };
       const revisions = [...s.blockRevisions];
+      // Teksthistorikken følger med (samme revisjonsnumre), så avvikskontroll og «gammel tekst» virker
+      // også i den nye versjonen (DEC-0057)
+      const history = new Map<string, BlockRevision[]>();
+      for (const r of s.blockRevisions) {
+        const list = history.get(r.blockId);
+        if (list) list.push(r);
+        else history.set(r.blockId, [r]);
+      }
       for (const b of sourceBlocks) {
         const nid = c.blockIdMap[b.id];
-        if (!nid) fail("invalid", `Mangler ny ID for blokk ${b.id}`);
+        if (!nid)
+          fail(
+            "invalid",
+            "Scenen er endret i den andre produksjonen i mellomtiden. Lag egen versjon på nytt.",
+          );
         assertNewId(s, nid);
-        blocks[nid] = { ...b, id: nid, revision: 1, variantId: c.newVariantId, currentRev: 1 };
-        revisions.push(newRevision(nid, 1, b.text));
+        blocks[nid] = { ...b, id: nid, revision: 1, variantId: c.newVariantId };
+        const old = history.get(b.id) ?? [];
+        // Historikken kopieres som nye rader skrevet av den som lager versjonen (teksten er den samme)
+        if (old.length) for (const r of old) revisions.push(newRevision(nid, r.rev, r.text));
+        else revisions.push(newRevision(nid, b.currentRev, b.text));
       }
       if (new Set(Object.values(c.blockIdMap)).size !== sourceBlocks.length)
         fail("invalid", "Blokk-ID-kartet er ufullstendig");
+      // Forekomstens koblinger (lyd, tid, segmenter, godkjent grunnlag) følger blokkene. Kommer innholdet fra
+      // en annen variant, finnes de tilsvarende blokkene via rekkefølgenøkkelen (samme opphav)
+      let occMap: Record<string, BlockId> = { ...c.blockIdMap };
+      if (c.sourceVariantId) {
+        const byKey = new Map(sourceBlocks.map((b) => [b.orderKey, b]));
+        occMap = {};
+        for (const b of Object.values(s.blocks)) {
+          if (b.variantId !== o.variantId) continue;
+          const src = byKey.get(b.orderKey);
+          if (src && src.kind === b.kind) occMap[b.id] = c.blockIdMap[src.id]!;
+        }
+        const own = new Set(
+          Object.values(s.blocks)
+            .filter((b) => b.variantId === o.variantId)
+            .map((b) => b.id as string),
+        );
+        const lost = (id: string | null) => id !== null && own.has(id) && !occMap[id];
+        if (
+          Object.values(s.audioClips).some((a) => a.occurrenceId === o.id && lost(a.blockId)) ||
+          Object.values(s.timeLinks).some(
+            (l) => l.occurrenceId === o.id && !l.removed && lost(l.blockId),
+          ) ||
+          Object.values(s.segments).some(
+            (g) => g.occurrenceId === o.id && (lost(g.startBlockId) || lost(g.endBlockId)),
+          )
+        )
+          fail(
+            "referenced",
+            "Lyd, tidskoblinger eller segmenter er koblet til linjer som ikke finnes i den nye versjonen. Fjern koblingene først.",
+          );
+      }
+      const remapped = remapOccurrenceBlocks(s, o.id, occMap);
+      // Oversettelsene følger med til den nye versjonen (DEC-0058)
+      const translations = { ...s.translations };
+      const copied: string[] = [];
+      for (const t of Object.values(s.translations)) {
+        if (t.removed) continue;
+        const onBlock = t.blockId && c.blockIdMap[t.blockId];
+        const onHeading = t.variantId === source.id;
+        if (!onBlock && !onHeading) continue;
+        const nid = c.translationIdMap?.[t.id];
+        if (!nid) continue;
+        assertNewId(s, nid);
+        translations[nid] = {
+          ...t,
+          id: nid,
+          revision: 1,
+          blockId: onBlock ? c.blockIdMap[t.blockId!]! : null,
+          variantId: onHeading ? c.newVariantId : null,
+          // Scenehodet i den nye versjonen har revisjon 1; må det gjennomgås, må det fortsatt det
+          basedOnRev: onHeading ? (source.revision > t.basedOnRev ? 0 : 1) : t.basedOnRev,
+        };
+        copied.push(nid);
+      }
       return {
         state: {
           ...s,
+          ...remapped.state,
+          translations,
           variants: {
             ...s.variants,
             [c.newVariantId]: {
               id: c.newVariantId,
               revision: 1,
               sceneId: source.sceneId,
-              ownerProductionId: o.productionId,
+              // Hovedfilmens versjoner deles (null), så spinoffer kan gjenbruke dem (DEC-0060)
+              ownerProductionId:
+                s.productions[o.productionId]?.kind === "main" ? null : o.productionId,
               basedOnVariantId: source.id,
               heading: source.heading,
               uncertainty: source.uncertainty,
@@ -981,10 +1394,17 @@ function run(
         inverse: {
           type: "UndoForkVariant",
           occurrenceId: o.id,
-          previousVariantId: source.id,
+          previousVariantId: o.variantId,
           newVariantId: c.newVariantId,
+          ...(c.sourceVariantId ? { sourceVariantId: c.sourceVariantId } : {}),
         },
-        affected: [c.newVariantId, o.id, ...Object.values(c.blockIdMap)],
+        affected: [
+          c.newVariantId,
+          o.id,
+          ...Object.values(c.blockIdMap),
+          ...remapped.affected,
+          ...copied,
+        ],
       };
     }
 
@@ -996,23 +1416,100 @@ function run(
       if (Object.values(s.occurrences).some((x) => x.variantId === nv.id && x.id !== o.id))
         fail("referenced", "Varianten brukes andre steder");
       const forked = Object.values(s.blocks).filter((b) => b.variantId === nv.id);
-      if (forked.some((b) => b.currentRev > 1))
-        fail("referenced", "Varianten er redigert; angre redigeringene først");
+      // Innholdet kom fra kilden (ved tilbakeføring spinoffens versjon, ellers den forrige varianten)
+      const contentId = c.sourceVariantId ?? c.previousVariantId;
+      need(s.variants[contentId], "Kildevarianten");
+      const original = Object.values(s.blocks).filter((b) => b.variantId === contentId);
+      // Kan angres når innholdet er som i originalen (endringer som er angret, teller ikke)
+      const byKey = new Map(original.map((b) => [b.orderKey, b]));
+      // Ved tilbakeføring kan spinoffens versjon ha blitt endret etterpå: da avgjør revisjonen at kopien
+      // ikke er endret siden (alle endringer øker revisjonen), ikke likhet med kilden (DEC-0060)
+      const same = c.sourceVariantId
+        ? nv.revision === 1 && forked.every((b) => b.revision === 1 && byKey.has(b.orderKey))
+        : forked.length === original.length &&
+          forked.every((b) => {
+            const src = byKey.get(b.orderKey);
+            return !!src && src.text === b.text && src.kind === b.kind && src.removed === b.removed;
+          });
+      if (!same) fail("referenced", "Den egne versjonen er endret; angre endringene i den først");
+      if (Object.values(s.compositions).some((x) => x.variantId === nv.id))
+        fail("referenced", "Den egne versjonen har en 2D-scene; angre den først");
+      // Oversettelser i den egne versjonen: kan angres når de er kopier av originalens
+      const toSource = new Map<string, string>();
+      for (const b of forked) {
+        const src = byKey.get(b.orderKey);
+        if (src) toSource.set(b.id, src.id);
+      }
+      toSource.set(nv.id, contentId);
+      const translationIdMap: Record<string, TranslationId> = {};
+      const dropTranslations: string[] = [];
+      for (const t of Object.values(s.translations)) {
+        const target = t.blockId ?? t.variantId;
+        if (!target || !toSource.has(target)) continue;
+        dropTranslations.push(t.id);
+        if (t.removed) continue;
+        const srcTarget = toSource.get(target)!;
+        if (c.sourceVariantId) {
+          // Kopi som ikke er endret siden (revisjon 1); kilden kan være endret etterpå
+          if (t.revision !== 1)
+            fail("referenced", "Den egne versjonen har egne oversettelser; angre dem først");
+          const orig = Object.values(s.translations).find(
+            (x) =>
+              !x.removed && (x.blockId ?? x.variantId) === srcTarget && x.language === t.language,
+          );
+          if (orig) translationIdMap[orig.id] = t.id;
+          continue;
+        }
+        const orig = Object.values(s.translations).find(
+          (x) =>
+            !x.removed &&
+            (x.blockId ?? x.variantId) === srcTarget &&
+            x.language === t.language &&
+            x.text === t.text,
+        );
+        if (!orig) fail("referenced", "Den egne versjonen har egne oversettelser; angre dem først");
+        translationIdMap[orig.id] = t.id;
+      }
       const ids = new Set(forked.map((b) => b.id as string));
       const blocks = { ...s.blocks };
       for (const id of ids) delete blocks[id];
       const { [nv.id]: _nv, ...variants } = s.variants;
-      // Gjenskap blokk-kartet for inversen
+      // Gjenskap blokk-kartet for inversen (kilde → ny) og koblingene tilbake (ny → forrige variant)
       const map: Record<string, BlockId> = {};
       for (const b of forked) {
-        const src = Object.values(s.blocks).find(
-          (x) => x.variantId === c.previousVariantId && x.orderKey === b.orderKey,
-        );
+        const src = byKey.get(b.orderKey);
         if (src) map[src.id] = b.id;
       }
+      const prevByKey = new Map(
+        Object.values(s.blocks)
+          .filter((b) => b.variantId === c.previousVariantId)
+          .map((b) => [b.orderKey, b]),
+      );
+      const back: Record<string, BlockId> = {};
+      for (const b of forked) {
+        const p = prevByKey.get(b.orderKey);
+        if (p && p.kind === b.kind) back[b.id] = p.id;
+      }
+      const stranded = (id: string | null) => id !== null && ids.has(id) && !back[id];
+      if (
+        Object.values(s.audioClips).some((a) => a.occurrenceId === o.id && stranded(a.blockId)) ||
+        Object.values(s.timeLinks).some((l) => l.occurrenceId === o.id && stranded(l.blockId)) ||
+        Object.values(s.segments).some(
+          (g) => g.occurrenceId === o.id && (stranded(g.startBlockId) || stranded(g.endBlockId)),
+        )
+      )
+        fail(
+          "referenced",
+          "Lyd eller tidskoblinger er koblet til linjer bare den nye versjonen har",
+        );
+      const remapped = remapOccurrenceBlocks(s, o.id, back);
+      const translations = { ...s.translations };
+      for (const id of dropTranslations) delete translations[id];
       return {
         state: {
           ...s,
+          ...remapped.state,
+          translations,
           variants,
           blocks,
           blockRevisions: s.blockRevisions.filter((r) => !ids.has(r.blockId)),
@@ -1021,8 +1518,119 @@ function run(
             [o.id]: { ...o, variantId: c.previousVariantId, revision: rev(o) },
           },
         },
-        inverse: { type: "ForkVariant", occurrenceId: o.id, newVariantId: nv.id, blockIdMap: map },
-        affected: [nv.id, o.id, ...ids],
+        inverse: {
+          type: "ForkVariant",
+          occurrenceId: o.id,
+          newVariantId: nv.id,
+          blockIdMap: map,
+          ...(Object.keys(translationIdMap).length ? { translationIdMap } : {}),
+          ...(c.sourceVariantId ? { sourceVariantId: c.sourceVariantId } : {}),
+        },
+        affected: [nv.id, o.id, ...ids, ...remapped.affected, ...dropTranslations],
+      };
+    }
+
+    case "TransferScene": {
+      const production = need(s.productions[c.productionId], "Produksjonen");
+      const source = need(s.variants[c.sourceVariantId], "Varianten");
+      if (source.ownerProductionId === null || source.ownerProductionId === c.productionId)
+        fail("invalid", "Bare en scene som tilhører en annen produksjon kan overføres");
+      if (
+        Object.values(s.occurrences).some(
+          (o) => o.productionId === c.productionId && o.sceneId === source.sceneId,
+        )
+      )
+        fail("invalid", `Scenen er allerede med i ${production.name}`);
+      assertNewId(s, c.occurrenceId);
+      assertKey(c.orderKey);
+      // Forekomsten peker først på spinoffens versjon; ForkVariant gir den en egen kopi med en gang
+      const staged: ProjectState = {
+        ...s,
+        occurrences: {
+          ...s.occurrences,
+          [c.occurrenceId]: {
+            id: c.occurrenceId,
+            revision: 0,
+            productionId: c.productionId,
+            sceneId: source.sceneId,
+            variantId: source.id,
+            orderKey: c.orderKey,
+            active: true,
+            excerpt: null,
+            activeTakeId: null,
+            productionNumber: null,
+          },
+        },
+      };
+      const forked = run(staged, {
+        ...env,
+        command: {
+          type: "ForkVariant",
+          occurrenceId: c.occurrenceId,
+          newVariantId: c.newVariantId,
+          blockIdMap: c.blockIdMap,
+          ...(c.translationIdMap ? { translationIdMap: c.translationIdMap } : {}),
+        },
+      });
+      const occ = forked.state.occurrences[c.occurrenceId]!;
+      return {
+        state: {
+          ...forked.state,
+          occurrences: { ...forked.state.occurrences, [occ.id]: { ...occ, revision: 1 } },
+        },
+        inverse: {
+          type: "UndoTransferScene",
+          occurrenceId: c.occurrenceId,
+          sourceVariantId: source.id,
+          newVariantId: c.newVariantId,
+        },
+        affected: forked.affected,
+      };
+    }
+
+    case "UndoTransferScene": {
+      const o = need(s.occurrences[c.occurrenceId], "Forekomsten");
+      // Tidskoblinger som er fjernet (angret i samme gruppe), slettes sammen med forekomsten
+      const deadLinks = Object.values(s.timeLinks).filter(
+        (l) => l.occurrenceId === o.id && l.removed,
+      );
+      if (
+        Object.values(s.takes).some((t) => t.occurrenceId === o.id) ||
+        Object.values(s.segments).some((g) => g.occurrenceId === o.id) ||
+        Object.values(s.audioClips).some((a) => a.occurrenceId === o.id) ||
+        Object.values(s.timeLinks).some((l) => l.occurrenceId === o.id && !l.removed) ||
+        Object.values(s.clipParts).some((p) => p.occurrenceId === o.id) ||
+        Object.values(s.generationPrompts).some((g) => g.occurrenceId === o.id)
+      )
+        fail("referenced", "Scenen har fått materiale i produksjonen. Deaktiver den i stedet.");
+      const undone = run(s, {
+        ...env,
+        command: {
+          type: "UndoForkVariant",
+          occurrenceId: o.id,
+          previousVariantId: c.sourceVariantId,
+          newVariantId: c.newVariantId,
+          // Spinoffens versjon kan være endret etter overføringen
+          sourceVariantId: c.sourceVariantId,
+        },
+      });
+      const inv = undone.inverse as Extract<Command, { type: "ForkVariant" }>;
+      const { [o.id]: _o, ...occurrences } = undone.state.occurrences;
+      const timeLinks = { ...undone.state.timeLinks };
+      for (const l of deadLinks) delete timeLinks[l.id];
+      return {
+        state: { ...undone.state, occurrences, timeLinks },
+        inverse: {
+          type: "TransferScene",
+          productionId: o.productionId,
+          occurrenceId: o.id,
+          orderKey: o.orderKey,
+          sourceVariantId: c.sourceVariantId,
+          newVariantId: c.newVariantId,
+          blockIdMap: inv.blockIdMap,
+          ...(inv.translationIdMap ? { translationIdMap: inv.translationIdMap } : {}),
+        },
+        affected: [...undone.affected, ...deadLinks.map((l) => l.id)],
       };
     }
 
@@ -1032,7 +1640,7 @@ function run(
       const variant = need(s.variants[c.variantId], "Varianten");
       if (variant.sceneId !== scene.id) fail("invalid", "Varianten tilhører en annen scene");
       if (variant.ownerProductionId !== null && variant.ownerProductionId !== c.productionId) {
-        fail("must_fork_variant", "Varianten tilhører en annen produksjon");
+        fail("must_fork_variant", "Denne versjonen av scenen tilhører en annen produksjon");
       }
       assertNewId(s, c.occurrenceId);
       assertKey(c.orderKey);
@@ -1126,11 +1734,17 @@ function run(
       if (Object.values(s.takes).some((t) => t.segmentId !== null && ids.has(t.segmentId))) {
         fail("referenced", "Segmentet har produsert materiale og kan ikke fjernes");
       }
+      if (Object.values(s.generationPrompts).some((p) => ids.has(p.segmentId) && !p.removed))
+        fail("referenced", "Segmentet har en egen genereringsbeskrivelse");
       const segments = { ...s.segments };
       for (const id of ids) delete segments[id];
+      // Tilbakestilte beskrivelser forsvinner med segmentet (DEC-0053)
+      const generationPrompts = { ...s.generationPrompts };
+      for (const p of Object.values(s.generationPrompts))
+        if (ids.has(p.segmentId)) delete generationPrompts[p.id];
       const first = list[0]!;
       return {
-        state: { ...s, segments },
+        state: { ...s, segments, generationPrompts },
         inverse: {
           type: "CreateSegments",
           occurrenceId: first.occurrenceId,
@@ -1193,16 +1807,316 @@ function run(
 
     case "SetTransition": {
       const o = need(s.occurrences[c.occurrenceId], "Forekomsten");
-      const t = transitionOf(c.transition);
-      const prev: Transition = o.transition ?? { kind: "cut", frames: 0 };
+      const t = c.transition === null ? null : transitionOf(c.transition);
+      const prev: Transition | null = o.transition ?? null;
       const { transition: _old, ...rest } = o;
-      const next = t.kind === "cut" ? rest : { ...rest, transition: t };
+      const next = t === null ? rest : { ...rest, transition: t };
       return {
         state: {
           ...s,
           occurrences: { ...s.occurrences, [o.id]: { ...next, revision: rev(o) } },
         },
         inverse: { type: "SetTransition", occurrenceId: o.id, transition: prev },
+        affected: [o.id],
+      };
+    }
+
+    case "SetDefaultTransition": {
+      const t = c.transition === null ? null : transitionOf(c.transition);
+      const prev: Transition | null = s.project.defaultTransition ?? null;
+      const { defaultTransition: _old, ...rest } = s.project;
+      const project = t === null || t.kind === "cut" ? rest : { ...rest, defaultTransition: t };
+      return {
+        state: { ...s, project: { ...project, revision: s.project.revision + 1 } },
+        inverse: { type: "SetDefaultTransition", transition: prev },
+        affected: [s.project.id],
+      };
+    }
+
+    case "SetAiBudget": {
+      const lim = c.monthLimit;
+      const price = c.pricePerImage;
+      if (lim !== null && (!Number.isInteger(lim) || lim < 0 || lim > 100000))
+        fail("invalid", "Grensen må være et helt tall mellom 0 og 100 000");
+      if (price !== null && (!Number.isFinite(price) || price < 0 || price > 100000))
+        fail("invalid", "Prisen må være et tall mellom 0 og 100 000");
+      const { aiMonthLimit: oldLim, aiPricePerImage: oldPrice, ...rest } = s.project;
+      const project = {
+        ...rest,
+        ...(lim !== null ? { aiMonthLimit: lim } : {}),
+        ...(price !== null ? { aiPricePerImage: Math.round(price * 100) / 100 } : {}),
+        revision: s.project.revision + 1,
+      };
+      return {
+        state: { ...s, project },
+        inverse: {
+          type: "SetAiBudget",
+          monthLimit: oldLim ?? null,
+          pricePerImage: oldPrice ?? null,
+        },
+        affected: [s.project.id],
+      };
+    }
+
+    case "SetGenerationPrompt": {
+      const o = need(s.occurrences[c.occurrenceId], "Scenen");
+      const seg = need(s.segments[c.segmentId], "Segmentet");
+      if (seg.occurrenceId !== o.id) fail("invalid", "Segmentet hører til en annen scene");
+      if (typeof c.basedOn !== "string" || c.basedOn.length > MAX_PROMPT_CHARS)
+        fail("invalid", "Ugyldig grunnlag");
+      const text = c.text === null ? null : c.text.trim();
+      if (text !== null && (text.length === 0 || text.length > MAX_PROMPT_CHARS))
+        fail("invalid", `Beskrivelsen må ha mellom 1 og ${MAX_PROMPT_CHARS} tegn`);
+      const old = s.generationPrompts[c.promptId];
+      const prompts = { ...s.generationPrompts };
+      if (old) {
+        if (old.occurrenceId !== o.id || old.segmentId !== seg.id)
+          fail("invalid", "Beskrivelsen hører til et annet segment");
+        if (
+          text !== null &&
+          old.removed &&
+          Object.values(s.generationPrompts).some(
+            (p) => p.segmentId === seg.id && !p.removed && p.id !== old.id,
+          )
+        )
+          fail("referenced", "Segmentet har fått en annen egen beskrivelse i mellomtiden");
+        prompts[old.id] =
+          text === null
+            ? { ...old, basedOn: c.basedOn, removed: true, revision: rev(old) }
+            : { ...old, text, basedOn: c.basedOn, removed: false, revision: rev(old) };
+      } else {
+        if (text === null) fail("invalid", "Ingen beskrivelse å fjerne");
+        assertNewId(s, c.promptId);
+        if (Object.values(s.generationPrompts).some((p) => p.segmentId === seg.id && !p.removed))
+          fail("invalid", "Segmentet har allerede en egen beskrivelse");
+        prompts[c.promptId] = {
+          id: c.promptId,
+          revision: 1,
+          occurrenceId: o.id,
+          segmentId: seg.id,
+          text: text!,
+          basedOn: c.basedOn,
+          removed: false,
+        };
+      }
+      return {
+        state: { ...s, generationPrompts: prompts },
+        inverse: {
+          type: "SetGenerationPrompt",
+          promptId: c.promptId,
+          occurrenceId: o.id,
+          segmentId: seg.id,
+          text: old && !old.removed ? old.text : null,
+          basedOn: old?.basedOn ?? "",
+        },
+        affected: [c.promptId],
+      };
+    }
+
+    case "ReplaceSegments": {
+      const o = need(s.occurrences[c.occurrenceId], "Scenen");
+      if (c.removeSegmentIds.length === 0 && c.segments.length === 0)
+        fail("invalid", "Ingen endring");
+      if (c.segments.length > 200) fail("invalid", "For mange segmenter");
+      // Samtidige endringer: det som fjernes, må være nøyaktig inndelingen som gjelder nå
+      const current = Object.values(s.segments)
+        .filter((g) => g.occurrenceId === o.id && g.reason === c.reason)
+        .map((g) => g.id as string)
+        .sort();
+      const asked = [...new Set(c.removeSegmentIds as readonly string[])].sort();
+      if (current.length !== asked.length || current.some((id, i) => id !== asked[i]))
+        fail(
+          "revision_conflict",
+          "Inndelingen er endret i mellomtiden (av deg eller noen andre). Lukk og åpne vinduet igjen.",
+        );
+      const segments = { ...s.segments };
+      const prompts = { ...s.generationPrompts };
+      const removedOld: ProductionSegment[] = [];
+      for (const id of c.removeSegmentIds) {
+        const g = need(s.segments[id], "Segmentet");
+        if (g.occurrenceId !== o.id) fail("invalid", "Segmentet hører til en annen scene");
+        if (Object.values(s.takes).some((t) => t.segmentId === id))
+          fail("referenced", "Segmentet har produsert materiale og kan ikke endres");
+        if (Object.values(s.generationPrompts).some((p) => p.segmentId === id && !p.removed))
+          fail("referenced", "Segmentet har en egen beskrivelse. Tilbakestill den først.");
+        // Fjernede beskrivelser for segmentet forsvinner med det
+        for (const p of Object.values(s.generationPrompts))
+          if (p.segmentId === id) delete prompts[p.id];
+        removedOld.push(g);
+        delete segments[id];
+      }
+      const reasons: readonly SegmentReason[] = [
+        "narrative_subsequence",
+        "continuity_change",
+        "model_limit",
+        "manual",
+      ];
+      if (!reasons.includes(c.reason)) fail("invalid", "Ugyldig grunn");
+      for (const g of c.segments) {
+        // Et segment som fjernes, kan ikke legges til igjen i samme endring (lagres i én transaksjon)
+        if (segments[g.segmentId] || removedOld.some((x) => x.id === g.segmentId))
+          fail("duplicate_id", `ID ${g.segmentId} er allerede i bruk`);
+        assertNewId({ ...s, segments, generationPrompts: prompts }, g.segmentId);
+        assertKey(g.orderKey);
+        for (const bid of [g.startBlockId, g.endBlockId]) {
+          if (bid === null) continue;
+          const b = need(s.blocks[bid], "Blokken");
+          if (b.variantId !== o.variantId)
+            fail("invalid", "Segmentet viser til en blokk i en annen variant");
+        }
+        const timed = g.startMs !== undefined || g.endMs !== undefined;
+        if (c.reason === "model_limit" && !timed)
+          fail("invalid", "Segmenter til generering må ha tid");
+        if (
+          timed &&
+          (!Number.isInteger(g.startMs) ||
+            !Number.isInteger(g.endMs) ||
+            g.startMs! < 0 ||
+            g.endMs! <= g.startMs! ||
+            g.endMs! > 36_000_000)
+        )
+          fail("invalid", "Ugyldig tid for segmentet");
+        segments[g.segmentId] = {
+          id: g.segmentId,
+          revision: 1,
+          occurrenceId: o.id,
+          reason: c.reason,
+          orderKey: g.orderKey,
+          startBlockId: g.startBlockId,
+          endBlockId: g.endBlockId,
+          ...(timed ? { startMs: g.startMs!, endMs: g.endMs! } : {}),
+        };
+      }
+      return {
+        state: { ...s, segments, generationPrompts: prompts },
+        inverse: {
+          type: "ReplaceSegments",
+          occurrenceId: o.id,
+          reason: removedOld[0]?.reason ?? c.reason,
+          removeSegmentIds: c.segments.map((g) => g.segmentId),
+          segments: removedOld.map((g) => ({
+            segmentId: g.id,
+            orderKey: g.orderKey,
+            startBlockId: g.startBlockId,
+            endBlockId: g.endBlockId,
+            ...(g.startMs !== undefined
+              ? { startMs: g.startMs, endMs: g.endMs ?? g.startMs + 1 }
+              : {}),
+          })),
+        },
+        affected: [...c.removeSegmentIds, ...c.segments.map((g) => g.segmentId)],
+      };
+    }
+
+    case "AcceptScriptChanges": {
+      const o = need(s.occurrences[c.occurrenceId], "Scenen");
+      if (c.compositionIds.length === 0 && c.takeIds.length === 0)
+        fail("invalid", "Ingenting å godkjenne");
+      const now = currentBlockRevisions(s, o.variantId);
+      const compositions = { ...s.compositions };
+      const takes = { ...s.takes };
+      const inverse: Extract<Command, { type: "SetProducedFrom" }> = {
+        type: "SetProducedFrom",
+        compositions: [],
+        takes: [],
+      };
+      for (const id of c.compositionIds) {
+        const comp = need(s.compositions[id], "2D-scenen");
+        if (comp.variantId !== o.variantId) fail("invalid", "2D-scenen hører til en annen scene");
+        (
+          inverse.compositions as {
+            compositionId: typeof id;
+            blockRevisions: Record<string, number>;
+          }[]
+        ).push({
+          compositionId: id,
+          blockRevisions: comp.producedFrom?.blockRevisions ?? {},
+        });
+        compositions[id] = { ...comp, producedFrom: { blockRevisions: now }, revision: rev(comp) };
+      }
+      for (const id of c.takeIds) {
+        const t = need(s.takes[id], "Versjonen");
+        if (t.occurrenceId !== o.id) fail("invalid", "Versjonen hører til en annen scene");
+        (inverse.takes as { takeId: typeof id; blockRevisions: Record<string, number> }[]).push({
+          takeId: id,
+          blockRevisions: t.acceptedFrom?.blockRevisions ?? {},
+        });
+        // producedFrom er uforanderlig (INV-07); godkjenningen lagres ved siden av
+        takes[id] = { ...t, acceptedFrom: { blockRevisions: now }, revision: rev(t) };
+      }
+      return {
+        state: { ...s, compositions, takes },
+        inverse,
+        affected: [...c.compositionIds, ...c.takeIds],
+      };
+    }
+
+    case "SetProducedFrom": {
+      const clean = (m: Readonly<Record<string, number>>) => {
+        if (!m || typeof m !== "object") fail("invalid", "Ugyldig grunnlag");
+        const out: Record<string, number> = {};
+        for (const [k, v] of Object.entries(m)) {
+          if (!isUuid(k) || !Number.isInteger(v) || v < 1) fail("invalid", "Ugyldig grunnlag");
+          out[k] = v;
+        }
+        return out;
+      };
+      const compositions = { ...s.compositions };
+      const takes = { ...s.takes };
+      const inverse: Extract<Command, { type: "SetProducedFrom" }> = {
+        type: "SetProducedFrom",
+        compositions: c.compositions.map((x) => ({
+          compositionId: x.compositionId,
+          blockRevisions:
+            need(s.compositions[x.compositionId], "2D-scenen").producedFrom?.blockRevisions ?? {},
+        })),
+        takes: c.takes.map((x) => ({
+          takeId: x.takeId,
+          blockRevisions: need(s.takes[x.takeId], "Versjonen").acceptedFrom?.blockRevisions ?? {},
+        })),
+      };
+      for (const x of c.compositions) {
+        const comp = s.compositions[x.compositionId]!;
+        const revs = clean(x.blockRevisions);
+        const { producedFrom: _old, ...rest } = comp;
+        compositions[comp.id] = {
+          ...rest,
+          ...(Object.keys(revs).length ? { producedFrom: { blockRevisions: revs } } : {}),
+          revision: rev(comp),
+        };
+      }
+      for (const x of c.takes) {
+        const t = s.takes[x.takeId]!;
+        const revs = clean(x.blockRevisions);
+        const { acceptedFrom: _old, ...restTake } = t;
+        takes[t.id] = {
+          ...restTake,
+          ...(Object.keys(revs).length ? { acceptedFrom: { blockRevisions: revs } } : {}),
+          revision: rev(t),
+        };
+      }
+      return {
+        state: { ...s, compositions, takes },
+        inverse,
+        affected: [...c.compositions.map((x) => x.compositionId), ...c.takes.map((x) => x.takeId)],
+      };
+    }
+
+    case "SetOccurrenceMonochrome": {
+      const o = need(s.occurrences[c.occurrenceId], "Forekomsten");
+      if (typeof c.monochrome !== "boolean") fail("invalid", "Ugyldig valg");
+      const { monochrome: _old, ...rest } = o;
+      const next = c.monochrome ? { ...rest, monochrome: true } : rest;
+      return {
+        state: {
+          ...s,
+          occurrences: { ...s.occurrences, [o.id]: { ...next, revision: rev(o) } },
+        },
+        inverse: {
+          type: "SetOccurrenceMonochrome",
+          occurrenceId: o.id,
+          monochrome: o.monochrome === true,
+        },
         affected: [o.id],
       };
     }
@@ -1321,6 +2235,30 @@ function run(
       };
     }
 
+    case "SetTakeAudioLanguage": {
+      const t = need(s.takes[c.takeId], "Versjonen");
+      const v = c.audioLanguage;
+      if (v !== null && v !== "none" && (typeof v !== "string" || !LANGUAGE_CODE.test(v)))
+        fail("invalid", "Ugyldig språk for filmlyden");
+      if ((t.audioLanguage ?? null) === v) fail("invalid", "Ingen endring");
+      const { audioLanguage: _old, ...rest } = t;
+      return {
+        state: {
+          ...s,
+          takes: {
+            ...s.takes,
+            [t.id]: { ...rest, ...(v !== null ? { audioLanguage: v } : {}), revision: rev(t) },
+          },
+        },
+        inverse: {
+          type: "SetTakeAudioLanguage",
+          takeId: t.id,
+          audioLanguage: t.audioLanguage ?? null,
+        },
+        affected: [t.id],
+      };
+    }
+
     case "AddTimeLinks": {
       if (!Array.isArray(c.links) || c.links.length === 0 || c.links.length > 500)
         fail("invalid", "Ugyldig antall tidskoblinger");
@@ -1344,7 +2282,13 @@ function run(
       const old: { linkId: TimeLink["id"]; fields: TimeLinkFields }[] = [];
       for (const l of c.links) {
         const t = need(s.timeLinks[l.linkId], "Tidskoblingen");
-        const f = timeLinkFieldsOf(s, l.fields);
+        // Uten layerId beholdes laget koblingen gjelder
+        const f = timeLinkFieldsOf(
+          s,
+          l.fields && l.fields.layerId === undefined
+            ? { ...l.fields, layerId: t.layerId }
+            : l.fields,
+        );
         old.push({
           linkId: t.id,
           fields: {
@@ -1352,6 +2296,7 @@ function run(
             blockId: t.blockId,
             startMs: t.startMs,
             endMs: t.endMs,
+            layerId: t.layerId,
           },
         });
         next[t.id] = { ...t, ...f, revision: rev(t) };
@@ -1373,6 +2318,171 @@ function run(
         state: { ...s, timeLinks: next },
         inverse: { type: "SetTimeLinksRemoved", linkIds: c.linkIds, removed: !c.removed },
         affected: [...c.linkIds],
+      };
+    }
+
+    case "AddContinuityEvents": {
+      if (!Array.isArray(c.events) || c.events.length === 0 || c.events.length > 500)
+        fail("invalid", "Ugyldig antall kontinuitetshendelser");
+      const next = { ...s.continuityEvents };
+      for (const e of c.events) {
+        assertNewId(s, e.eventId);
+        if (next[e.eventId]) fail("invalid", "Samme hendelse to ganger");
+        next[e.eventId] = {
+          id: e.eventId,
+          revision: 1,
+          ...continuityFieldsOf(s, e.fields),
+          removed: false,
+        };
+      }
+      const ids = c.events.map((e) => e.eventId);
+      return {
+        state: { ...s, continuityEvents: next },
+        inverse: { type: "SetContinuityEventsRemoved", eventIds: ids, removed: true },
+        affected: ids,
+      };
+    }
+
+    case "UpdateContinuityEvents": {
+      if (!Array.isArray(c.events) || c.events.length === 0 || c.events.length > 500)
+        fail("invalid", "Ugyldig antall kontinuitetshendelser");
+      const next = { ...s.continuityEvents };
+      const old: { eventId: ContinuityEventId; fields: ContinuityEventFields }[] = [];
+      for (const e of c.events) {
+        const ev = need(s.continuityEvents[e.eventId], "Kontinuitetshendelsen");
+        old.push({ eventId: ev.id, fields: continuityFieldsFrom(ev) });
+        const { productionId: _p, ...rest } = ev;
+        next[ev.id] = { ...rest, ...continuityFieldsOf(s, e.fields, ev), revision: rev(ev) };
+      }
+      return {
+        state: { ...s, continuityEvents: next },
+        inverse: { type: "UpdateContinuityEvents", events: old },
+        affected: c.events.map((e) => e.eventId),
+      };
+    }
+
+    case "SetContinuityEventDisabled": {
+      const ev = need(s.continuityEvents[c.eventId], "Kontinuitetshendelsen");
+      const p = need(s.productions[c.productionId], "Produksjonen");
+      if (p.kind === "main")
+        fail("invalid", "Hovedfilmens hendelser fjernes i stedet for å slås av");
+      if (ev.productionId) fail("invalid", "En lokal hendelse fjernes i stedet for å slås av");
+      const list = ev.disabledIn ?? [];
+      if (list.includes(p.id) === c.disabled) fail("invalid", "Ingen endring");
+      const nextList = c.disabled ? [...list, p.id].sort() : list.filter((x) => x !== p.id);
+      const { disabledIn: _d, ...rest } = ev;
+      return {
+        state: {
+          ...s,
+          continuityEvents: {
+            ...s.continuityEvents,
+            [ev.id]: {
+              ...rest,
+              ...(nextList.length ? { disabledIn: nextList } : {}),
+              revision: rev(ev),
+            },
+          },
+        },
+        inverse: { ...c, disabled: !c.disabled },
+        affected: [ev.id],
+      };
+    }
+
+    case "SetContinuityEventsRemoved": {
+      const next = { ...s.continuityEvents };
+      for (const id of c.eventIds) {
+        const ev = need(s.continuityEvents[id], "Kontinuitetshendelsen");
+        next[id] = { ...ev, removed: c.removed, revision: rev(ev) };
+      }
+      return {
+        state: { ...s, continuityEvents: next },
+        inverse: { type: "SetContinuityEventsRemoved", eventIds: c.eventIds, removed: !c.removed },
+        affected: [...c.eventIds],
+      };
+    }
+
+    case "AddTranslations": {
+      if (!Array.isArray(c.items) || c.items.length === 0 || c.items.length > 2000)
+        fail("invalid", "Ugyldig antall oversettelser");
+      const next = { ...s.translations };
+      const taken = new Set(
+        Object.values(s.translations)
+          .filter((t) => !t.removed)
+          .map(translationKey),
+      );
+      for (const it of c.items) {
+        assertNewId(s, it.translationId);
+        if (next[it.translationId]) fail("invalid", "Samme oversettelse to ganger");
+        const f = translationFieldsOf(s, it.fields);
+        // Én gjeldende oversettelse per linje og språk
+        if (taken.has(translationKey(f)))
+          fail("invalid", "Linjen har allerede en oversettelse til dette språket");
+        taken.add(translationKey(f));
+        next[it.translationId] = { id: it.translationId, revision: 1, ...f, removed: false };
+      }
+      const ids = c.items.map((x) => x.translationId);
+      return {
+        state: { ...s, translations: next },
+        inverse: { type: "SetTranslationsRemoved", translationIds: ids, removed: true },
+        affected: ids,
+      };
+    }
+
+    case "UpdateTranslations": {
+      if (!Array.isArray(c.items) || c.items.length === 0 || c.items.length > 2000)
+        fail("invalid", "Ugyldig antall oversettelser");
+      const next = { ...s.translations };
+      const old: { translationId: TranslationId; fields: TranslationFields }[] = [];
+      for (const it of c.items) {
+        const t = need(s.translations[it.translationId], "Oversettelsen");
+        const f = translationFieldsOf(s, it.fields);
+        if (translationKey(f) !== translationKey(t))
+          fail(
+            "invalid",
+            "En oversettelse kan ikke flyttes til en annen linje eller et annet språk",
+          );
+        old.push({
+          translationId: t.id,
+          fields: {
+            blockId: t.blockId,
+            variantId: t.variantId,
+            language: t.language,
+            text: t.text,
+            basedOnRev: t.basedOnRev,
+            status: t.status,
+          },
+        });
+        next[t.id] = { ...t, ...f, revision: rev(t) };
+      }
+      return {
+        state: { ...s, translations: next },
+        inverse: { type: "UpdateTranslations", items: old },
+        affected: c.items.map((x) => x.translationId),
+      };
+    }
+
+    case "SetTranslationsRemoved": {
+      const next = { ...s.translations };
+      const live = new Set(
+        Object.values(s.translations)
+          .filter((t) => !t.removed && !c.translationIds.includes(t.id))
+          .map(translationKey),
+      );
+      for (const id of c.translationIds) {
+        const t = need(s.translations[id], "Oversettelsen");
+        if (!c.removed && live.has(translationKey(t)))
+          fail("invalid", "Linjen har fått en annen oversettelse i mellomtiden");
+        if (!c.removed) live.add(translationKey(t));
+        next[id] = { ...t, removed: c.removed, revision: rev(t) };
+      }
+      return {
+        state: { ...s, translations: next },
+        inverse: {
+          type: "SetTranslationsRemoved",
+          translationIds: c.translationIds,
+          removed: !c.removed,
+        },
+        affected: [...c.translationIds],
       };
     }
 
@@ -1582,7 +2692,7 @@ function run(
       if (users.some((u) => u.productionId !== c.productionId)) {
         fail(
           "must_fork_variant",
-          "Scenen brukes også i en annen produksjon. Lag en egen variant før du splitter den.",
+          "Scenen brukes også i en annen produksjon (for eksempel en spinoff) og kan ikke deles herfra. Gi den andre produksjonen egen versjon av scenen først.",
         );
       }
       for (const u of users) {
@@ -1779,7 +2889,7 @@ function run(
       ) {
         fail(
           "must_fork_variant",
-          "Målscenen brukes også i en annen produksjon. Lag en egen variant før du slår sammen.",
+          "Målscenen brukes også i en annen produksjon (for eksempel en spinoff) og kan ikke slås sammen herfra. Gi den andre produksjonen egen versjon av scenen først.",
         );
       }
       const targetBlocks = Object.values(s.blocks)
@@ -1961,6 +3071,11 @@ function run(
       const assets = { ...s.assets };
       for (const id of c.assetIds) {
         need(s.assets[id], "Ressursen");
+        if (usedByLayer(s, "assetId", id))
+          fail(
+            "referenced",
+            "Ressursen brukes i en 2D-scene og kan ikke fjernes. Arkiver den i stedet.",
+          );
         if (Object.values(s.assetVariants).some((v) => v.assetId === id))
           fail(
             "referenced",
@@ -2057,6 +3172,8 @@ function run(
       const va = need(s.assetVariants[c.variantId], "Varianten");
       if (Object.values(s.assetVersions).some((x) => x.variantId === va.id))
         fail("referenced", "Varianten har bilder og kan ikke fjernes. Arkiver den i stedet.");
+      if (usedByLayer(s, "assetVariantId", va.id))
+        fail("referenced", "Varianten brukes i en 2D-scene og kan ikke fjernes.");
       const assetVariants = { ...s.assetVariants };
       delete assetVariants[va.id];
       return {
@@ -2178,6 +3295,8 @@ function run(
       const va = s.assetVariants[ver.variantId];
       if (va?.approvedVersionId === ver.id)
         fail("referenced", "Versjonen er godkjent og kan ikke fjernes");
+      if (usedByLayer(s, "versionId", ver.id))
+        fail("referenced", "Bildet brukes i en 2D-scene og kan ikke fjernes.");
       // Bare det nyeste bildet kan angres bort (en versjon andre kan ha brukt, beholdes)
       if (
         Object.values(s.assetVersions).some(
@@ -2491,6 +3610,10 @@ function run(
               ...fields,
               camera: { shots: [] },
               removed: false,
+              // Laget fra manuset slik det er nå (avvik ved senere endringer, DEC-0054)
+              producedFrom: c.producedFrom ?? {
+                blockRevisions: currentBlockRevisions(s, c.variantId),
+              },
             },
           },
         },
@@ -2518,6 +3641,7 @@ function run(
             durationFrames: comp.durationFrames,
             background: comp.background,
           },
+          ...(comp.producedFrom ? { producedFrom: comp.producedFrom } : {}),
         },
         affected: [comp.id],
       };
@@ -2610,6 +3734,11 @@ function run(
           removed: false,
         };
       }
+      checkGroups(
+        s,
+        { ...s, layers },
+        c.layers.map((n) => n.layerId),
+      );
       return {
         state: { ...s, layers },
         inverse: { type: "UndoAddLayers", layerIds: c.layers.map((n) => n.layerId) },
@@ -2647,9 +3776,18 @@ function run(
       const before: { layerId: CompositionLayer["id"]; fields: LayerFields }[] = [];
       for (const u of c.layers) {
         const l = need(s.layers[u.layerId], "Laget");
-        before.push({ layerId: l.id, fields: fieldsOfLayer(l) });
-        layers[l.id] = { ...l, ...layerFields(s, u.fields), revision: rev(l) };
+        before.push({
+          layerId: l.id,
+          fields: { ...fieldsOfLayer(l), languageImages: l.languageImages ?? [] },
+        });
+        const { languageImages: _li, ...rest } = l;
+        layers[l.id] = { ...rest, ...layerFields(s, u.fields, l), revision: rev(l) };
       }
+      checkGroups(
+        s,
+        { ...s, layers },
+        c.layers.map((x) => x.layerId),
+      );
       return {
         state: { ...s, layers },
         inverse: { type: "UpdateLayers", layers: before },
@@ -2752,7 +3890,9 @@ function run(
       for (const u of c.clips) {
         const a = need(s.audioClips[u.clipId], "Lydklippet");
         before.push({ clipId: a.id, fields: audioClipFieldsOf(a) });
-        audioClips[a.id] = { ...a, ...audioFields(s, u.fields), revision: rev(a) };
+        // Alle feltene erstattes; språket fjernes når det ikke er med (standard for lydtypen)
+        const { language: _lang, ...rest } = a;
+        audioClips[a.id] = { ...rest, ...audioFields(s, u.fields), revision: rev(a) };
       }
       return {
         state: { ...s, audioClips },
@@ -2887,7 +4027,8 @@ export function applyCommand(state: ProjectState, env: CommandEnvelope): ApplyRe
     if (
       next.occurrences !== state.occurrences ||
       next.blocks !== state.blocks ||
-      next.takes !== state.takes
+      next.takes !== state.takes ||
+      next.layers !== state.layers
     ) {
       const has = (o: object, id: string | null) =>
         id === null || Object.prototype.hasOwnProperty.call(o, id);
@@ -2896,7 +4037,10 @@ export function applyCommand(state: ProjectState, env: CommandEnvelope): ApplyRe
           (p) => !has(next.occurrences, p.occurrenceId) || !has(next.takes, p.takeId),
         ),
         ...Object.values(next.timeLinks).filter(
-          (l) => !has(next.occurrences, l.occurrenceId) || !has(next.blocks, l.blockId),
+          (l) =>
+            !has(next.occurrences, l.occurrenceId) ||
+            !has(next.blocks, l.blockId) ||
+            !has(next.layers, l.layerId),
         ),
       ];
       if (lost.length)
@@ -2905,6 +4049,75 @@ export function applyCommand(state: ProjectState, env: CommandEnvelope): ApplyRe
           "Scenen er klippet eller har tidskoblinger i monteringen, så dette kan ikke angres.",
           lost.map((x) => x.id),
         );
+    }
+    // Kontinuitetshendelser (DEC-0055) når manus, scener eller ressurser endres
+    if (
+      next.scenes !== state.scenes ||
+      next.blocks !== state.blocks ||
+      next.variants !== state.variants ||
+      next.assets !== state.assets ||
+      next.assetVariants !== state.assetVariants
+    ) {
+      const has = (o: object, id: string | null) =>
+        id === null || Object.prototype.hasOwnProperty.call(o, id);
+      let events: Record<string, ContinuityEvent> | null = null;
+      const lost: string[] = [];
+      for (const e of Object.values(next.continuityEvents)) {
+        const gone =
+          !has(next.assets, e.assetId) ||
+          !has(next.assetVariants, e.fromVariantId) ||
+          !has(next.assetVariants, e.toVariantId) ||
+          !has(next.scenes, e.untilSceneId) ||
+          !has(next.blocks, e.blockId);
+        // Linjen har flyttet til en annen scene (deling, sammenslåing, angring av dem): hendelsen følger linjen
+        const b = e.blockId ? next.blocks[e.blockId] : undefined;
+        const lineScene = b ? next.variants[b.variantId]?.sceneId : undefined;
+        if (!gone && lineScene && lineScene !== e.sceneId) {
+          events ??= { ...next.continuityEvents };
+          const was = state.continuityEvents[e.id];
+          events[e.id] = {
+            ...e,
+            sceneId: lineScene,
+            revision: was ? was.revision + 1 : e.revision,
+          };
+          continue;
+        }
+        if (!gone && has(next.scenes, e.sceneId)) continue;
+        // Fjernede hendelser og avviste forslag slettes sammen med det de pekte på (angre av opprettelse)
+        if (e.removed || e.status === "dismissed") {
+          events ??= { ...next.continuityEvents };
+          delete events[e.id];
+        } else lost.push(e.id);
+      }
+      if (lost.length)
+        fail(
+          "referenced",
+          "Det er registrert kontinuitet (utseende) på dette. Fjern hendelsen først hvis endringen skal angres.",
+          lost,
+        );
+      if (events) next = { ...next, continuityEvents: events };
+    }
+    // Oversettelser av linjer eller scener som forsvinner (angre av opprettelse, DEC-0058): fjernede slettes
+    // med, gjeldende stopper endringen
+    if (next.blocks !== state.blocks || next.variants !== state.variants) {
+      const has = (o: object, id: string | null) =>
+        id === null || Object.prototype.hasOwnProperty.call(o, id);
+      let translations: Record<string, Translation> | null = null;
+      const lost: string[] = [];
+      for (const t of Object.values(next.translations)) {
+        if (has(next.blocks, t.blockId) && has(next.variants, t.variantId)) continue;
+        if (t.removed) {
+          translations ??= { ...next.translations };
+          delete translations[t.id];
+        } else lost.push(t.id);
+      }
+      if (lost.length)
+        fail(
+          "referenced",
+          "Teksten har oversettelser (for eksempel engelsk). Angre importen av oversettelsen eller fjern oversettelsene av disse linjene først.",
+          lost,
+        );
+      if (translations) next = { ...next, translations };
     }
     const violations = checkInvariants(next);
     if (violations.length > 0) {

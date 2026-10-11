@@ -6,7 +6,10 @@
  */
 import { Loader2, RotateCcw, Sparkles } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import {
+  aiUsage,
+  formatCredits,
   buildImagePrompt,
   IMAGE_PURPOSE_FOR_KIND,
   MAX_PROMPT_CHARS,
@@ -14,7 +17,9 @@ import {
   type AssetMedia,
   type AssetVariant,
   type AssetVersion,
+  type Project,
 } from "@/core";
+import { aiJobsKey, useAiJobs } from "@/app/ai/use-ai-jobs";
 import { generateImage } from "@/adapters/ai/generate-image.functions";
 import { Button } from "@/components/ui/button";
 
@@ -33,7 +38,13 @@ export function GenerateImagePanel({
   editable,
   disabled,
   onGenerated,
+  budget,
+  initialPrompt,
 }: {
+  /** Prosjektets AI-budsjett (DEC-0053): anslag og månedens forbruk vises før generering. */
+  budget?: Pick<Project, "aiMonthLimit" | "aiPricePerImage">;
+  /** Start med en bestemt beskrivelse (f.eks. «Prøv igjen» fra jobblisten). */
+  initialPrompt?: string;
   projectId: string;
   filmTitle: string;
   asset: Asset;
@@ -58,8 +69,14 @@ export function GenerateImagePanel({
       }),
     [asset, variant, filmTitle, withRef, reference],
   );
-  const [prompt, setPrompt] = useState(auto);
-  const [edited, setEdited] = useState(false);
+  const [prompt, setPrompt] = useState(initialPrompt ?? auto);
+  const [edited, setEdited] = useState(initialPrompt !== undefined && initialPrompt !== auto);
+  const queryClient = useQueryClient();
+  const jobs = useAiJobs(projectId, editable);
+  const usage = budget
+    ? aiUsage(budget, jobs.data?.jobs ?? [], new Date(), jobs.data?.monthCount ?? undefined)
+    : null;
+  const overBudget = usage !== null && usage.remaining === 0;
   // Følg den automatiske beskrivelsen til brukeren har endret den selv
   useEffect(() => {
     if (!edited) setPrompt(auto);
@@ -91,16 +108,18 @@ export function GenerateImagePanel({
       }
       const err = await onGenerated({ versionId: r.versionId, media: r.media, model: r.model });
       if (err) setError(err);
-      else setDone("Nytt bilde laget og tatt i bruk.");
+      else setDone("Nytt bilde laget og lagret som ny versjon.");
     } catch (e) {
       setError((e as Error).message || "Genereringen feilet.");
     } finally {
       setRunning(false);
+      void queryClient.invalidateQueries({ queryKey: aiJobsKey(projectId) });
     }
   }
 
   const tooLong = prompt.length > MAX_PROMPT_CHARS;
-  const canRun = editable && !disabled && !running && prompt.trim().length > 0 && !tooLong;
+  const canRun =
+    editable && !disabled && !running && prompt.trim().length > 0 && !tooLong && !overBudget;
 
   return (
     <div className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-3">
@@ -167,7 +186,11 @@ export function GenerateImagePanel({
           className="flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-2 p-2"
         >
           <p className="text-xs text-text-primary">
-            Dette bruker kreditter i Lovable-arbeidsområdet (ett bilde). Vil du generere nå?
+            Dette bruker kreditter i Lovable-arbeidsområdet (ett bilde
+            {usage?.nextCost !== null && usage?.nextCost !== undefined
+              ? `, anslått ${formatCredits(usage.nextCost)} – et anslag`
+              : ", prisen er ukjent"}
+            ). Vil du generere nå?
           </p>
           <div className="flex gap-2">
             <Button size="sm" onClick={() => void run()} disabled={!canRun}>
@@ -190,6 +213,16 @@ export function GenerateImagePanel({
           {running ? "Genererer … (kan ta opptil ett minutt)" : "Generer …"}
         </Button>
       )}
+      {usage ? (
+        <p className={"text-[11px] " + (overBudget ? "text-status-danger" : "text-text-tertiary")}>
+          {usage.limit !== null
+            ? `Denne måneden: ${usage.used} av ${usage.limit} genereringer i prosjektets budsjett.`
+            : `Denne måneden: ${usage.used} genereringer (ingen egen ramme – faste grenser gjelder).`}
+          {overBudget
+            ? " Budsjettet er brukt opp; eieren kan endre det på prosjektoversikten."
+            : ""}
+        </p>
+      ) : null}
       {error ? (
         <p role="alert" className="text-xs text-status-danger">
           {error}

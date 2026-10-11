@@ -82,10 +82,13 @@ export function LongFilmImportDialog({
     up: Awaited<ReturnType<typeof uploadFilm>> | null;
     done: Set<string>;
     takes: Map<string, string>;
+    /** Alle endringene i importen angres som ett steg (DEC-0049). */
+    group: string;
   }>({
     up: null,
     done: new Set(),
     takes: new Map(),
+    group: newId(),
   });
   useEffect(
     () => () => {
@@ -129,7 +132,7 @@ export function LongFilmImportDialog({
     setBusy("Leser filmen …");
     try {
       const m = await readFilmMetadata(f);
-      progress.current = { up: null, done: new Set(), takes: new Map() };
+      progress.current = { up: null, done: new Set(), takes: new Map(), group: newId() };
       setFile(f);
       setMedia(m);
       if (url) URL.revokeObjectURL(url);
@@ -156,6 +159,7 @@ export function LongFilmImportDialog({
         prog.up = await uploadFilm(projectId, file, fps);
       }
       const up = prog.up;
+      const label = `Importer lang film (${range.length} ${range.length === 1 ? "scene" : "scener"})`;
       for (let i = 0; i < range.length; i++) {
         const c = range[i]!;
         const r = ranges[i]!;
@@ -178,7 +182,8 @@ export function LongFilmImportDialog({
               mediaRef: up.mediaRef,
               media: up.media,
             },
-            `Importer film for scene ${c.productionNumber ?? i + 1}`,
+            label,
+            prog.group,
           );
           if (add.error) throw new Error(add.error);
           prog.takes.set(c.occurrenceId, takeId);
@@ -198,12 +203,13 @@ export function LongFilmImportDialog({
               },
             ],
           },
-          `Bruk filmen i scene ${c.productionNumber ?? i + 1}`,
+          label,
+          prog.group,
         );
         if (edit.error) throw new Error(edit.error);
         prog.done.add(c.occurrenceId);
       }
-      progress.current = { up: null, done: new Set(), takes: new Map() };
+      progress.current = { up: null, done: new Set(), takes: new Map(), group: newId() };
       setBusy(null);
       onOpenChange(false);
       setFile(null);

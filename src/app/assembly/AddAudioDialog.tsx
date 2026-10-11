@@ -6,6 +6,10 @@ import { Loader2, Upload } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AUDIO_KIND_LABEL,
+  FILM_LANGUAGES,
+  LANGUAGE_LABEL,
+  MAIN_LANGUAGE,
+  isVoiceKind,
   AUDIO_TRACK_ORDER,
   blocksOfVariant,
   coverVersion,
@@ -40,6 +44,7 @@ export function AddAudioDialog({
   offsetMs,
   initialKind,
   onAdded,
+  language = "nb",
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -52,8 +57,16 @@ export function AddAudioDialog({
   offsetMs: number;
   initialKind: AudioKind;
   onAdded: (clipId: string) => void;
+  /** Dialogspråket i monteringen (DEC-0059): ny dialog i et annet språk hører til det språket. */
+  language?: string;
 }) {
   const [kind, setKind] = useState<AudioKind>(initialKind);
+  /** Språket (DEC-0059): "" = standard for lydtypen, «*» = felles, ellers språkkode. */
+  const [lang, setLang] = useState("");
+  /** Brukeren har valgt språk selv: endres ikke når sporet byttes. */
+  const [langTouched, setLangTouched] = useState(false);
+  const defaultLang = (k: AudioKind) =>
+    language !== MAIN_LANGUAGE && isVoiceKind(k) ? language : "";
   const [assetId, setAssetId] = useState<string | null>(null);
   const [blockId, setBlockId] = useState<string>("");
   const [query, setQuery] = useState("");
@@ -64,10 +77,13 @@ export function AddAudioDialog({
   useEffect(() => {
     if (!open) return;
     setKind(initialKind);
+    setLang(defaultLang(initialKind));
+    setLangTouched(false);
     setAssetId(null);
     setBlockId("");
     setError(null);
     setQuery("");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, initialKind]);
 
   const sounds = useMemo(() => sortedAssets(state, "sound").filter((a) => !a.archived), [state]);
@@ -141,6 +157,7 @@ export function AddAudioDialog({
                 // Atmosfære og musikk løper som regel videre over scenene
                 continues: kind === "music",
                 volumeKeys: [],
+                ...(lang ? { language: lang } : {}),
               },
             },
           ],
@@ -176,12 +193,16 @@ export function AddAudioDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-3 gap-3">
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
             <span className={legend}>Spor</span>
             <select
               value={kind}
-              onChange={(e) => setKind(e.target.value as AudioKind)}
+              onChange={(e) => {
+                const k = e.target.value as AudioKind;
+                setKind(k);
+                if (!langTouched) setLang(defaultLang(k));
+              }}
               className={select}
             >
               {AUDIO_TRACK_ORDER.map((k) => (
@@ -203,6 +224,28 @@ export function AddAudioDialog({
               {lines.map((l) => (
                 <option key={l.id} value={l.id}>
                   {l.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="flex flex-col gap-1 text-xs text-text-secondary">
+            <span className={legend}>Språk</span>
+            <select
+              aria-label="Språk"
+              value={lang}
+              onChange={(e) => {
+                setLang(e.target.value);
+                setLangTouched(true);
+              }}
+              className={select}
+            >
+              <option value="">
+                Standard ({isVoiceKind(kind) ? LANGUAGE_LABEL[MAIN_LANGUAGE] : "felles"})
+              </option>
+              <option value="*">Felles for alle språk</option>
+              {FILM_LANGUAGES.map((l) => (
+                <option key={l} value={l}>
+                  Bare {(LANGUAGE_LABEL[l] ?? l).toLowerCase()}
                 </option>
               ))}
             </select>

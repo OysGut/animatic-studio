@@ -183,12 +183,26 @@ export function checkInvariants(s: ProjectState): Violation[] {
       const ve = s.assetVersions[l.versionId];
       if (!ve || ve.variantId !== l.assetVariantId) add("MODEL", `Lag ${l.id}: ugyldig versjon`);
     }
-    if (l.assetId === null && l.fill === null) add("MODEL", `Lag ${l.id}: viser ingenting`);
+    if (l.kind !== "group" && l.assetId === null && l.fill === null)
+      add("MODEL", `Lag ${l.id}: viser ingenting`);
     let keys = keysByComp.get(l.compositionId);
     if (!keys) keysByComp.set(l.compositionId, (keys = new Set()));
     if (keys.has(l.orderKey))
       add("MODEL", `Lag ${l.id}: samme plass i lagrekkefølgen som et annet lag`);
     keys.add(l.orderKey);
+  }
+
+  // Egne genereringsbeskrivelser (DEC-0053): hører til et segment i samme scene; høyst én aktiv per segment
+  const promptSegments = new Set<string>();
+  for (const g of Object.values(s.generationPrompts ?? {})) {
+    const seg = s.segments[g.segmentId];
+    if (!s.occurrences[g.occurrenceId]) add("MODEL", `Beskrivelse ${g.id}: ukjent scene`);
+    if (!seg || seg.occurrenceId !== g.occurrenceId)
+      add("MODEL", `Beskrivelse ${g.id}: segmentet hører ikke til scenen`);
+    if (g.removed) continue;
+    if (promptSegments.has(g.segmentId))
+      add("MODEL", `Segment ${g.segmentId}: to egne beskrivelser`);
+    promptSegments.add(g.segmentId);
   }
 
   return v;

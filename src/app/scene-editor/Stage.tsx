@@ -7,6 +7,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   applyMatrix,
   cameraAt,
+  groupMatrixAt,
+  groupOf,
+  pathPointAt,
+  pathProgress,
+  pathSegments,
+  translatePath,
+  type Matrix,
+  type MotionPath,
   fieldsWithTransformAt,
   layerFieldsOf,
   shotAt,
@@ -31,8 +39,10 @@ import {
   type ProjectState,
   defaultLayerFields,
   newId,
+  sceneContinuityVariant,
 } from "@/core";
 import { ASSET_DRAG_TYPE } from "./SceneAssetsPanel";
+import { removeLayer } from "./layer-actions";
 import { ImageCache, drawFrame } from "@/engine/compositor/canvas";
 import { Button } from "@/components/ui/button";
 import {
@@ -51,7 +61,7 @@ interface StageProps {
   editable: boolean;
   selectedLayerId: string | null;
   onSelect: (id: string | null) => void;
-  run: (command: Command, label: string) => string | null;
+  run: (command: Command, label: string, group?: string) => string | null;
   imageUrls: Readonly<Record<string, string>>;
   selectedShotId: string | null;
   onSelectShot: (id: string | null) => void;
@@ -64,6 +74,11 @@ interface StageProps {
   onTogglePlay?: () => void;
   /** Dobbeltklikk på et lag: velg bilde for laget (DEC-0044). */
   onOpenLayerImage?: (layerId: string) => void;
+  /** Tegn en bevegelsesbane for valgt lag (DEC-0052): punktene i lagets koordinater. */
+  drawPath?: boolean;
+  onPathDrawn?: (points: { x: number; y: number }[]) => void;
+  /** Esc mens du skal tegne en bane: avbryt. */
+  onDrawCancel?: () => void;
 }
 
 interface Size {
@@ -91,6 +106,12 @@ interface Drag {
   startScene: Pt;
   start: LayerTransform;
   startView: View;
+  /** Scene → lagets koordinater når laget ligger i en gruppe (DEC-0052). */
+  toLocal: Matrix | null;
+  /** Gruppens ankerpunkt (beholdes når gruppen flyttes). */
+  anchor: Pt | null;
+  /** Bevegelsesbanen når dra-operasjonen startet (flyttes med laget). */
+  path: MotionPath | null;
   /** Lagets bredde og høyde i lagets egne enheter. */
   size: Pt;
   moved: boolean;
@@ -107,6 +128,17 @@ interface CamDrag {
   startView: View;
   moved: boolean;
   latest: CameraShot;
+}
+/** Dra et punkt på bevegelsesbanen (DEC-0052). */
+interface PathDrag {
+  pointerId: number;
+  layerId: string;
+  index: number;
+  start: MotionPath;
+  toLocal: Matrix | null;
+  startScreen: Pt;
+  moved: boolean;
+  latest: MotionPath;
 }
 interface Colors {
   border: string;
@@ -262,6 +294,76 @@ function drawOverlay(
   ctx.restore();
 }
 
+/** Bevegelsesbanen i scenen: kurven, punktene og hvor laget er nå. */
+function drawPathOverlay(
+  ctx: CanvasRenderingContext2D,
+  path: MotionPath,
+  toScene: Matrix | null,
+  v: View,
+  colors: Colors,
+  current: Pt | null,
+) {
+  const sc = (x: number, y: number) => toScreen(v, toScene ? applyMatrix(toScene, x, y) : { x, y });
+  ctx.save();
+  ctx.strokeStyle = colors.accent;
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([5, 4]);
+  ctx.beginPath();
+  let first = true;
+  for (const g of pathSegments(path)) {
+    for (let k = 0; k <= 16; k++) {
+      const u = k / 16;
+      const m = 1 - u;
+      const x = m * m * m * g[0] + 3 * m * m * u * g[2] + 3 * m * u * u * g[4] + u * u * u * g[6];
+      const y = m * m * m * g[1] + 3 * m * m * u * g[3] + 3 * m * u * u * g[5] + u * u * u * g[7];
+      const q = sc(x, y);
+      if (first) ctx.moveTo(q.x, q.y);
+      else ctx.lineTo(q.x, q.y);
+      first = false;
+    }
+  }
+  ctx.stroke();
+  ctx.setLineDash([]);
+  path.points.forEach((p, i) => {
+    const q = sc(p.x, p.y);
+    ctx.fillStyle = i === 0 ? colors.accent : "#ffffff";
+    ctx.beginPath();
+    if (p.smooth) ctx.arc(q.x, q.y, 4, 0, Math.PI * 2);
+    else ctx.rect(q.x - 3.5, q.y - 3.5, 7, 7);
+    ctx.fill();
+    ctx.stroke();
+  });
+  if (current) {
+    const q = sc(current.x, current.y);
+    ctx.fillStyle = colors.accent;
+    ctx.beginPath();
+    ctx.arc(q.x, q.y, 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+/** Streken mens en bane tegnes (skjermkoordinater). */
+function drawStroke(ctx: CanvasRenderingContext2D, pts: readonly Pt[], colors: Colors) {
+  if (pts.length < 2) return;
+  ctx.save();
+  ctx.strokeStyle = colors.accent;
+  ctx.lineWidth = 2;
+  ctx.lineJoin = "round";
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  pts.forEach((p, i) => (i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)));
+  ctx.stroke();
+  ctx.restore();
+}
+
+const insideItem = (it: DrawItem, p: Pt) => {
+  const inv = invert(it.matrix);
+  if (!inv) return false;
+  const q = applyMatrix(inv, p.x, p.y);
+  return Math.abs(q.x) <= it.width / 2 && Math.abs(q.y) <= it.height / 2;
+};
+
 // ---------- Komponenten ----------
 
 export function Stage({
@@ -281,6 +383,9 @@ export function Stage({
   autoKey,
   onTogglePlay,
   onOpenLayerImage,
+  drawPath = false,
+  onPathDrawn,
+  onDrawCancel,
 }: StageProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -288,6 +393,8 @@ export function Stage({
   const colorsRef = useRef<Colors>(FALLBACK);
   const dragRef = useRef<Drag | null>(null);
   const camDragRef = useRef<CamDrag | null>(null);
+  const pathDragRef = useRef<PathDrag | null>(null);
+  const drawRef = useRef<{ pointerId: number; scene: Pt[] } | null>(null);
   const spaceRef = useRef(false);
   /** Ble mellomrom brukt til å panorere? Ellers er et kort trykk spill/pause. */
   const spacePanned = useRef(false);
@@ -296,7 +403,14 @@ export function Stage({
 
   const [size, setSize] = useState<Size>({ w: 0, h: 0, dpr: 1 });
   const [userView, setUserView] = useState<View | null>(null);
-  const [draft, setDraft] = useState<{ layerId: string; transform: LayerTransform } | null>(null);
+  const [draft, setDraft] = useState<{
+    layerId: string;
+    transform: LayerTransform;
+    anchor: Pt | null;
+    path: MotionPath | null;
+  } | null>(null);
+  const [pathDraft, setPathDraft] = useState<{ layerId: string; path: MotionPath } | null>(null);
+  const [stroke, setStroke] = useState<Pt[] | null>(null);
   const [camDraft, setCamDraft] = useState<CameraShot | null>(null);
   const [imageTick, setImageTick] = useState(0);
   const [cursor, setCursor] = useState("default");
@@ -355,16 +469,30 @@ export function Stage({
 
   // Utkastet gjelder bare mens laget finnes og ikke er låst
   const stateWithDraft = useMemo(() => {
+    if (pathDraft) {
+      const layer = state.layers[pathDraft.layerId];
+      if (layer)
+        return {
+          ...state,
+          layers: { ...state.layers, [layer.id]: { ...layer, path: pathDraft.path } },
+        };
+    }
     const layer = draft ? state.layers[draft.layerId] : undefined;
     if (!draft || !layer) return state;
     return {
       ...state,
       layers: {
         ...state.layers,
-        [draft.layerId]: { ...layer, transform: draft.transform, keyframes: [] },
+        [draft.layerId]: {
+          ...layer,
+          transform: draft.transform,
+          keyframes: [],
+          anchor: draft.anchor,
+          path: draft.path,
+        },
       },
     };
-  }, [state, draft]);
+  }, [state, draft, pathDraft]);
   const frame = useMemo(
     () =>
       cameraMode
@@ -393,6 +521,19 @@ export function Stage({
       ? frame.items.find((i) => i.layerId === selectedLayerId)
       : undefined;
   const canEditSelected = canEdit && !!selectedItem && !selectedItem.locked;
+  // Bevegelsesbanen til valgt lag (i gruppens koordinater når laget ligger i en gruppe)
+  const pathLayer =
+    selectedLayerId && !cameraMode ? (stateWithDraft.layers[selectedLayerId] ?? null) : null;
+  const shownPath = pathLayer?.path ?? null;
+  const pathGroup = pathLayer ? groupOf(stateWithDraft, pathLayer) : null;
+  const pathToScene = pathGroup ? groupMatrixAt(pathGroup, time) : null;
+  const pathNow = shownPath ? pathPointAt(shownPath, pathProgress(shownPath, time)) : null;
+  /** Scene → koordinatene til laget (gjennom gruppen det ligger i). */
+  const toLocalOf = (layerId: string): Matrix | null => {
+    const l = state.layers[layerId];
+    const g = l ? groupOf(state, l) : null;
+    return g ? invert(groupMatrixAt(g, time)) : null;
+  };
 
   // Tegn (begrenset til én gang per bilde)
   useEffect(() => {
@@ -442,7 +583,10 @@ export function Stage({
           Math.round(frame.height * view.zoom) + 1,
         );
       }
-      if (selectedItem) drawOverlay(ctx, selectedItem, view, colors, canEditSelected);
+      if (selectedItem) drawOverlay(ctx, selectedItem, view, colors, canEditSelected && !drawPath);
+      if (shownPath && !drawPath)
+        drawPathOverlay(ctx, shownPath, pathToScene, view, colors, pathNow);
+      if (stroke) drawStroke(ctx, stroke, colors);
       if (overlayShot)
         drawCameraOverlay(ctx, overlayShot, composition, view, {
           selected: shotSelected,
@@ -462,6 +606,11 @@ export function Stage({
     currentCamera,
     composition,
     cameraMode,
+    shownPath,
+    pathToScene,
+    pathNow,
+    stroke,
+    drawPath,
   ]);
 
   // Rullehjul: ⌘/Ctrl zoomer rundt pekeren, ellers panorerer
@@ -501,8 +650,20 @@ export function Stage({
   }
 
   /** Hva ligger under pekeren? Kamerahåndtak i valgt utsnitt og håndtak i valgt lag går foran selve lagene. */
+  /** Punkt på bevegelsesbanen til valgt lag under pekeren. */
+  function pickPathPoint(p: Pt): number {
+    if (!canEditSelected || !shownPath) return -1;
+    return shownPath.points.findIndex((q) => {
+      const sp = pathToScene ? applyMatrix(pathToScene, q.x, q.y) : q;
+      return dist(p, toScreen(view, sp)) <= HANDLE;
+    });
+  }
+
   function pick(p: Pt) {
     if (cameraMode) return null;
+    if (drawPath) return canEditSelected ? { kind: "draw" as const, cursor: "crosshair" } : null;
+    const pi = pickPathPoint(p);
+    if (pi >= 0) return { kind: "pathPoint" as const, index: pi, cursor: "move" };
     const cam = pickShot(p);
     if (cam && (shotSelected || cam.kind !== "path"))
       return { kind: "camera" as const, target: cam };
@@ -515,6 +676,18 @@ export function Stage({
     }
     const s = toScene(view, p);
     const hit = hitTest(frame, s.x, s.y);
+    // Valgt gruppe: dra i rammen eller i et lag i gruppen flytter hele gruppen (DEC-0052)
+    if (
+      selectedItem?.kind === "group" &&
+      !selectedItem.locked &&
+      insideItem(selectedItem, s) &&
+      (!hit || state.layers[hit.layerId]?.groupId === selectedItem.layerId)
+    )
+      return {
+        kind: "layer" as const,
+        hit: selectedItem,
+        cursor: canEditSelected ? "move" : "default",
+      };
     if (hit) return { kind: "layer" as const, hit, cursor: canEdit ? "move" : "default" };
     return cam ? { kind: "camera" as const, target: cam } : null;
   }
@@ -523,17 +696,28 @@ export function Stage({
     const layer = state.layers[layerId];
     const item = frame.items.find((i) => i.layerId === layerId);
     if (!layer || !item) return;
-    const labels = { move: "Flytt lag", scale: "Skaler lag", rotate: "Roter lag", pan: "" };
+    const labels =
+      layer.kind === "group"
+        ? { move: "Flytt gruppe", scale: "Skaler gruppe", rotate: "Roter gruppe", pan: "" }
+        : { move: "Flytt lag", scale: "Skaler lag", rotate: "Roter lag", pan: "" };
     const start = transformAt(layer, time);
+    const toLocal = toLocalOf(layerId);
+    const sc = toScene(view, p);
     dragRef.current = {
       kind,
       pointerId: e.pointerId,
       layerId,
       label: labels[kind],
       startScreen: p,
-      startScene: toScene(view, p),
+      startScene: toLocal ? applyMatrix(toLocal, sc.x, sc.y) : sc,
       start,
       startView: view,
+      toLocal,
+      anchor:
+        layer.kind === "group"
+          ? (layer.anchor ?? { x: layer.transform.x, y: layer.transform.y })
+          : null,
+      path: layer.path,
       size: { x: item.width, y: item.height },
       moved: false,
       latest: start,
@@ -560,7 +744,7 @@ export function Stage({
 
   function onPointerDown(e: React.PointerEvent<HTMLCanvasElement>) {
     wrapRef.current?.focus();
-    if (dragRef.current || camDragRef.current) {
+    if (dragRef.current || camDragRef.current || pathDragRef.current || drawRef.current) {
       // En dragning som aldri ble avsluttet (pekeren forsvant): start på nytt i stedet for å henge
       if (!e.currentTarget.hasPointerCapture(e.pointerId)) endDrag(false);
       else return;
@@ -578,6 +762,9 @@ export function Stage({
         startScene: p,
         start: { x: 0, y: 0, scaleX: 1, scaleY: 1, rotation: 0, opacity: 1 },
         startView: view,
+        toLocal: null,
+        anchor: null,
+        path: null,
         size: { x: 0, y: 0 },
         moved: false,
         latest: { x: 0, y: 0, scaleX: 1, scaleY: 1, rotation: 0, opacity: 1 },
@@ -596,14 +783,46 @@ export function Stage({
       startCamDrag(e, target.target, p);
       return;
     }
+    if (target?.kind === "draw") {
+      drawRef.current = { pointerId: e.pointerId, scene: [toScene(view, p)] };
+      setStroke([p]);
+      e.currentTarget.setPointerCapture(e.pointerId);
+      return;
+    }
+    if (target?.kind === "pathPoint" && selectedLayerId && shownPath) {
+      if (e.altKey) {
+        // Alt-klikk fjerner punktet (banen må ha minst to)
+        if (shownPath.points.length > 2)
+          setError(
+            commitPath(
+              selectedLayerId,
+              { ...shownPath, points: shownPath.points.filter((_, i) => i !== target.index) },
+              "Fjern punkt i banen",
+            ),
+          );
+        return;
+      }
+      pathDragRef.current = {
+        pointerId: e.pointerId,
+        layerId: selectedLayerId,
+        index: target.index,
+        start: shownPath,
+        toLocal: pathToScene ? invert(pathToScene) : null,
+        startScreen: p,
+        moved: false,
+        latest: shownPath,
+      };
+      e.currentTarget.setPointerCapture(e.pointerId);
+      return;
+    }
     if (target?.kind === "rotate" || target?.kind === "scale") {
       if (selectedLayerId) startDrag(e, target.kind, selectedLayerId, p);
       return;
     }
     if (selectedShotId) onSelectShot(null);
     if (target?.kind === "layer") {
-      onSelect(target.hit.layerId);
-      if (canEdit) startDrag(e, "move", target.hit.layerId, p);
+      if (target.hit.layerId !== selectedLayerId) onSelect(target.hit.layerId);
+      if (canEdit && !target.hit.locked) startDrag(e, "move", target.hit.layerId, p);
     } else {
       onSelect(null);
     }
@@ -611,6 +830,32 @@ export function Stage({
 
   function onPointerMove(e: React.PointerEvent<HTMLCanvasElement>) {
     const p = screenPoint(e);
+    const dr = drawRef.current;
+    if (dr && dr.pointerId === e.pointerId) {
+      const last = dr.scene[dr.scene.length - 1]!;
+      const sp = toScene(view, p);
+      if (dist(toScreen(view, last), p) < 3) return;
+      dr.scene.push(sp);
+      setStroke(dr.scene.map((q) => toScreen(view, q)));
+      return;
+    }
+    const pd = pathDragRef.current;
+    if (pd && pd.pointerId === e.pointerId) {
+      if (!pd.moved && dist(p, pd.startScreen) < 2) return;
+      pd.moved = true;
+      const sp = toScene(view, p);
+      const lp = pd.toLocal ? applyMatrix(pd.toLocal, sp.x, sp.y) : sp;
+      pd.latest = {
+        ...pd.start,
+        points: pd.start.points.map((q, i) =>
+          i === pd.index
+            ? { ...q, x: Math.round(lp.x * 10) / 10, y: Math.round(lp.y * 10) / 10 }
+            : q,
+        ),
+      };
+      setPathDraft({ layerId: pd.layerId, path: pd.latest });
+      return;
+    }
     const cd = camDragRef.current;
     if (cd && cd.pointerId === e.pointerId) {
       if (!cd.moved && dist(p, cd.startScreen) < 2) return;
@@ -647,11 +892,53 @@ export function Stage({
     }
     if (!d.moved && dist(p, d.startScreen) < 2) return;
     d.moved = true;
-    d.latest = roundTransform(draftFor(d, toScene(d.startView, p), e.shiftKey));
-    setDraft({ layerId: d.layerId, transform: d.latest });
+    const sp = toScene(d.startView, p);
+    d.latest = roundTransform(
+      draftFor(d, d.toLocal ? applyMatrix(d.toLocal, sp.x, sp.y) : sp, e.shiftKey),
+    );
+    setDraft({
+      layerId: d.layerId,
+      transform: d.latest,
+      anchor: d.anchor,
+      path: movedPath(d),
+    });
+  }
+
+  /** Banen flyttes med laget når laget dras (DEC-0052). */
+  function movedPath(d: Drag): MotionPath | null {
+    if (!d.path || d.kind !== "move") return d.path;
+    return translatePath(d.path, d.latest.x - d.start.x, d.latest.y - d.start.y);
+  }
+
+  function commitPath(layerId: string, path: MotionPath, label: string): string | null {
+    const layer = state.layers[layerId];
+    if (!layer) return null;
+    return run(
+      {
+        type: "UpdateLayers",
+        layers: [{ layerId: layer.id, fields: { ...layerFieldsOf(layer), path } }],
+      },
+      label,
+    );
   }
 
   function endDrag(commit: boolean) {
+    const dr = drawRef.current;
+    if (dr) {
+      drawRef.current = null;
+      setStroke(null);
+      const toLocal = selectedLayerId ? toLocalOf(selectedLayerId) : null;
+      if (commit && dr.scene.length > 1)
+        onPathDrawn?.(dr.scene.map((q) => (toLocal ? applyMatrix(toLocal, q.x, q.y) : q)));
+      return;
+    }
+    const pd = pathDragRef.current;
+    if (pd) {
+      pathDragRef.current = null;
+      setPathDraft(null);
+      if (commit && pd.moved) setError(commitPath(pd.layerId, pd.latest, "Flytt punkt i banen"));
+      return;
+    }
     const cd = camDragRef.current;
     camDragRef.current = null;
     if (cd) {
@@ -673,23 +960,30 @@ export function Stage({
     if (!d || d.kind === "pan" || !commit || !d.moved) return;
     const layer = state.layers[d.layerId];
     if (!layer) return;
-    submit(layer, d.latest, d.label);
+    submit(layer, d.latest, d.label, d.kind === "move" ? movedPath(d) : undefined);
   }
 
   function submit(
     layer: NonNullable<ProjectState["layers"][string]>,
     t: LayerTransform,
     label: string,
+    path?: MotionPath | null,
   ) {
+    const base = layerFieldsOf(layer);
+    // Gruppens ankerpunkt ligger fast når gruppen flyttes (ellers flytter lagene seg ikke)
+    const anchor =
+      layer.kind === "group"
+        ? (layer.anchor ?? { x: layer.transform.x, y: layer.transform.y })
+        : null;
+    // Lag med bevegelsesbane: flytting flytter banen; posisjonen ellers følger banen
+    const moved =
+      layer.path && path !== undefined
+        ? { ...base, path }
+        : fieldsWithTransformAt(layer, base, time, t, { autoKey });
     const err = run(
       {
         type: "UpdateLayers",
-        layers: [
-          {
-            layerId: layer.id,
-            fields: fieldsWithTransformAt(layer, layerFieldsOf(layer), time, t, { autoKey }),
-          },
-        ],
+        layers: [{ layerId: layer.id, fields: { ...moved, anchor } }],
       },
       label,
     );
@@ -697,13 +991,35 @@ export function Stage({
   }
 
   function onPointerUp(e: React.PointerEvent<HTMLCanvasElement>) {
-    if (dragRef.current?.pointerId === e.pointerId || camDragRef.current?.pointerId === e.pointerId)
+    if (
+      dragRef.current?.pointerId === e.pointerId ||
+      camDragRef.current?.pointerId === e.pointerId ||
+      pathDragRef.current?.pointerId === e.pointerId ||
+      drawRef.current?.pointerId === e.pointerId
+    )
       endDrag(true);
   }
 
   /** Dobbeltklikk på banen bytter mellom rett og kurvet (mandat 12.3). */
   function onDoubleClick(e: React.MouseEvent<HTMLCanvasElement>) {
     const p = screenPoint(e);
+    if (drawPath) return; // tegnemodus: dobbeltklikk åpner ikke bildevalget
+    // Dobbeltklikk på et punkt i bevegelsesbanen: kurvet ↔ hjørne
+    const pi = pickPathPoint(p);
+    if (pi >= 0 && selectedLayerId && shownPath) {
+      const q = shownPath.points[pi]!;
+      setError(
+        commitPath(
+          selectedLayerId,
+          {
+            ...shownPath,
+            points: shownPath.points.map((x, i) => (i === pi ? { ...x, smooth: !x.smooth } : x)),
+          },
+          q.smooth ? "Hjørne i banen" : "Kurve i banen",
+        ),
+      );
+      return;
+    }
     const t = overlayShot ? pickShot(p) : null;
     if (!overlayShot || t?.kind !== "path") {
       // Dobbeltklikk på et lag: velg et annet bilde for det (DEC-0044)
@@ -740,24 +1056,34 @@ export function Stage({
       }
       return;
     }
-    if (e.key === "Escape" && (dragRef.current || camDragRef.current)) {
+    if (e.key === "Escape" && drawPath && !drawRef.current) {
+      e.preventDefault();
+      onDrawCancel?.();
+      return;
+    }
+    if (
+      e.key === "Escape" &&
+      (dragRef.current || camDragRef.current || pathDragRef.current || drawRef.current)
+    ) {
       e.preventDefault();
       endDrag(false);
       return;
     }
     // Piltaster og sletting bare når selve scenen har fokus (ikke knappene i hjørnet)
     if (e.target !== e.currentTarget && e.target !== canvasRef.current) return;
-    if (dragRef.current || camDragRef.current || !canEdit || !selectedLayerId) return;
+    if (
+      dragRef.current ||
+      camDragRef.current ||
+      pathDragRef.current ||
+      !canEdit ||
+      !selectedLayerId
+    )
+      return;
     const layer = state.layers[selectedLayerId];
     if (!layer || layer.locked) return;
     if (e.key === "Delete" || e.key === "Backspace") {
       e.preventDefault();
-      setError(
-        run(
-          { type: "SetLayersRemoved", layerIds: [layer.id as LayerId], removed: true },
-          "Slett lag",
-        ),
-      );
+      setError(removeLayer(run, state, layer, time, "Slett lag"));
       return;
     }
     const step = e.shiftKey ? 10 : 1;
@@ -766,7 +1092,12 @@ export function Stage({
     if (!dx && !dy) return;
     e.preventDefault();
     const t = transformAt(layer, time);
-    submit(layer, roundTransform({ ...t, x: t.x + dx, y: t.y + dy }), "Flytt lag");
+    submit(
+      layer,
+      roundTransform({ ...t, x: t.x + dx, y: t.y + dy }),
+      "Flytt lag",
+      layer.path ? translatePath(layer.path, dx, dy) : undefined,
+    );
   }
 
   function onKeyUp(e: React.KeyboardEvent<HTMLDivElement>) {
@@ -807,7 +1138,10 @@ export function Stage({
         // Ressurs fra «I denne scenen»: nytt lag øverst, med midten der den slippes
         const r = e.currentTarget.getBoundingClientRect();
         const at = toScene(view, { x: e.clientX - r.left, y: e.clientY - r.top });
-        const f = defaultLayerFields(state, composition, { assetId });
+        const f = defaultLayerFields(state, composition, {
+          assetId,
+          assetVariantId: sceneContinuityVariant(state, assetId, composition.variantId),
+        });
         const layerId = newId<"composition_layer">();
         const err = run(
           {

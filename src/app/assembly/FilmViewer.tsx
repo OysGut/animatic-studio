@@ -13,6 +13,8 @@ export function FilmViewer({
   tick,
   video,
   onDrawn,
+  monochrome = false,
+  subtitle = null,
 }: {
   state: ProjectState;
   clips: readonly FilmClip[];
@@ -23,6 +25,10 @@ export function FilmViewer({
   video?: FilmDrawOptions["video"];
   /** Etter hver tegning (filmer som ikke vises, settes på pause). */
   onDrawn?: () => void;
+  /** Hele filmen i svart-hvitt (REQ-0573). */
+  monochrome?: boolean;
+  /** Undertekst på avspillingshodet (DEC-0059). */
+  subtitle?: string | null;
 }) {
   const boxRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -59,10 +65,12 @@ export function FilmViewer({
       height: h,
       images: filmImageCache.images,
       placeholders: true,
+      monochrome,
+      subtitle,
       ...(video ? { video } : {}),
     });
     onDrawn?.();
-  }, [state, clips, frame, cssW, cssH, tick, video, onDrawn]);
+  }, [state, clips, frame, cssW, cssH, tick, video, onDrawn, monochrome, subtitle]);
 
   return (
     <div ref={boxRef} className="flex min-h-0 min-w-0 flex-1 items-center justify-center">

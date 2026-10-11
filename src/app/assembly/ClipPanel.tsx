@@ -3,6 +3,8 @@
  * scenen (mandat 6.2 på scenenivå: manus og film side ved side, «Følg avspillingen» av/på – REQ-0100/0101).
  * Tekniske detaljer vises her, ikke i manuset (mandat 6.3).
  */
+import { TransitionEditor } from "./TransitionEditor";
+import { ScriptChanges, useSceneDiscrepancies } from "./ScriptChanges";
 import { Link } from "@tanstack/react-router";
 import {
   Check,
@@ -14,6 +16,7 @@ import {
   Loader2,
   Plus,
   Timer,
+  Sparkles,
   Upload,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -23,6 +26,7 @@ import {
   MAX_TRANSITION_FRAMES,
   MIN_DURATION_SECONDS,
   blockAtFrame,
+  compositionFrameInClip,
   blockSpans,
   blocksOfVariant,
   formatHeading,
@@ -30,6 +34,7 @@ import {
   framesToSeconds,
   secondsToFrames,
   type BlockSpan,
+  type Command,
   type FilmClip,
   type ProjectState,
   type ScriptBlock,
@@ -63,6 +68,7 @@ export function ClipPanel({
   onUseTake,
   onImportFilm,
   onTransition,
+  onMonochrome,
   onTakeStatus,
   maxMsOf,
   onEditParts,
@@ -72,7 +78,13 @@ export function ClipPanel({
   onSync,
   onLink,
   onRemoveLink,
+  onGenerateScene,
+  run,
 }: {
+  /** Kjør en kommando (avvik ved manusendring: godkjenn eller angre, DEC-0054). */
+  run?: (command: Command, label: string, group?: string) => string | null;
+  /** «Generer scene …» (DEC-0053): beskrivelser og inndeling for AI-video. */
+  onGenerateScene?: () => void;
   state: ProjectState;
   projectId: string;
   clip: FilmClip | null;
@@ -93,7 +105,9 @@ export function ClipPanel({
   onUseTake: (takeId: string | null) => void;
   /** Importer en filmfil til scenen. Returnerer feilmelding eller null. */
   onImportFilm: (file: File) => Promise<string | null>;
-  onTransition: (t: Transition) => void;
+  onTransition: (t: Transition | null) => void;
+  /** Svart-hvitt for scenen (REQ-0574). */
+  onMonochrome: (on: boolean) => void;
   /** Status for en importert film (REQ-0241). */
   onTakeStatus: (takeId: string, status: TakeStatus) => void;
   /** Lengste utpunkt (ms) for en kilde (film eller 2D-scenen). */
@@ -108,10 +122,16 @@ export function ClipPanel({
   onLink: (blockId: string, mode: "replace" | "add") => void;
   onRemoveLink: (linkId: string) => void;
 }) {
+  // Blokken under avspillingshodet (for «Vis i manus»)
+  const hereBlock =
+    clip && frame >= clip.startFrame && frame < clip.startFrame + clip.durationFrames
+      ? (blockAtFrame(blockSpans(state, clip), frame)?.blockId ?? null)
+      : null;
   const fps = state.project.fps;
   const [draft, setDraft] = useState<string | null>(null);
   const cancelled = useRef(false);
   useEffect(() => setDraft(null), [clip?.occurrenceId]);
+  const found = useSceneDiscrepancies(state, clip?.occurrenceId ?? null);
   if (!clip)
     return (
       <p className="p-3 text-[13px] text-text-tertiary">
@@ -250,12 +270,27 @@ export function ClipPanel({
             <Link
               to="/prosjekt/$projectId/manus"
               params={{ projectId }}
-              search={{ scene: clip.occurrenceId }}
+              search={{
+                scene: clip.occurrenceId,
+                ...(hereBlock ? { blokk: hereBlock } : {}),
+              }}
+              title="Åpne manuset med replikken eller handlingen under avspillingshodet valgt"
             >
               <FileText />
               Vis i manus
             </Link>
           </Button>
+          {onGenerateScene ? (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={onGenerateScene}
+              title="Les og forbered beskrivelsene for AI-video av scenen"
+            >
+              <Sparkles />
+              Generer scene …
+            </Button>
+          ) : null}
           {editable ? (
             <Button
               size="sm"
@@ -270,6 +305,19 @@ export function ClipPanel({
         </div>
       </section>
 
+      {run && found.length > 0 ? (
+        <div className="px-3 pb-3">
+          <ScriptChanges
+            state={state}
+            projectId={projectId}
+            occurrenceId={clip.occurrenceId}
+            found={found}
+            editable={editable}
+            run={run}
+          />
+        </div>
+      ) : null}
+
       <Versions
         state={state}
         clip={clip}
@@ -277,6 +325,7 @@ export function ClipPanel({
         onUseTake={onUseTake}
         onImportFilm={onImportFilm}
         onTakeStatus={onTakeStatus}
+        {...(run ? { run } : {})}
       />
       <ClipParts
         state={state}
@@ -291,9 +340,11 @@ export function ClipPanel({
       <TransitionRow
         key={clip.occurrenceId}
         clip={clip}
+        standard={state.project.defaultTransition ?? { kind: "cut", frames: 0 }}
         fps={fps.num / fps.den}
         editable={editable}
         onTransition={onTransition}
+        onMonochrome={onMonochrome}
       />
 
       <section aria-label="Manus for scenen" className="flex min-h-[280px] flex-1 flex-col">
@@ -443,6 +494,14 @@ function SceneText({
               }}
               clipStart={clip.startFrame}
               links={links.get(b.id) ?? []}
+              linkFrame={(l) => {
+                const fpsN = state.project.fps.num / state.project.fps.den;
+                const f = Math.round((l.startMs / 1000) * fpsN);
+                if (!l.layerId) return clip.startFrame + f;
+                const local = compositionFrameInClip(clip, f);
+                return local === null ? null : clip.startFrame + local;
+              }}
+              layerName={(id) => state.layers[id]?.name ?? null}
               linkable={editable && b.kind !== "character" && b.kind !== "parenthetical"}
               syncing={syncBlockId === b.id}
               onLink={(mode) => onLink(b.id, mode)}
@@ -467,6 +526,8 @@ function Block({
   syncing,
   onLink,
   onRemoveLink,
+  linkFrame,
+  layerName,
 }: {
   b: ScriptBlock;
   span: BlockSpan | undefined;
@@ -479,6 +540,9 @@ function Block({
   syncing: boolean;
   onLink: (mode: "replace" | "add") => void;
   onRemoveLink: (linkId: string) => void;
+  /** Bildet i filmen en kobling peker på (null: kuttet bort), og navnet på laget for hendelser. */
+  linkFrame: (l: TimeLink) => number | null;
+  layerName: (layerId: string) => string | null;
 }) {
   if (b.kind === "heading") return null;
   const cls =
@@ -540,14 +604,22 @@ function Block({
                   ? "bg-status-danger-bg text-status-danger"
                   : "bg-surface-3 text-text-secondary")
               }
-              title="Tidskobling (tid fra scenens begynnelse)"
+              title={
+                l.layerId
+                  ? `Hendelse i 2D-scenen: ${layerName(l.layerId) ?? "lag"} (tid i 2D-scenen)${linkFrame(l) === null ? " – kuttet bort i klippet" : ""}`
+                  : "Tidskobling (tid fra scenens begynnelse)"
+              }
             >
               <button
                 type="button"
-                onClick={() => onSeek(clipStart + Math.round((l.startMs / 1000) * fps))}
+                onClick={() => {
+                  const f = linkFrame(l);
+                  if (f !== null) onSeek(f);
+                }}
                 className="hover:text-text-primary"
               >
                 ⏱ {(Math.round(l.startMs / 100) / 10).toLocaleString("nb-NO")} s
+                {l.layerId ? ` · ${layerName(l.layerId) ?? "lag"}` : ""}
               </button>
               {linkable ? (
                 <button
@@ -613,6 +685,7 @@ function Versions({
   onUseTake,
   onImportFilm,
   onTakeStatus,
+  run,
 }: {
   state: ProjectState;
   clip: FilmClip;
@@ -620,6 +693,7 @@ function Versions({
   onUseTake: (takeId: string | null) => void;
   onImportFilm: (file: File) => Promise<string | null>;
   onTakeStatus: (takeId: string, status: TakeStatus) => void;
+  run?: (command: Command, label: string, group?: string) => string | null;
 }) {
   const fps = state.project.fps;
   const films = useMemo(
@@ -712,6 +786,38 @@ function Versions({
           {use(activeId === t.id, t.id, t.media?.fileName ?? "filmen")}
         </FilmRow>
       ))}
+      {films
+        .filter((t) => t.media?.hasAudio !== false)
+        .map((t) => (
+          // Dialogen i filmlyden (DEC-0059, REQ-0341/0342): språkversjoner varsler om blandet lyd
+          <label
+            key={`lyd:${t.id}`}
+            className="flex items-center gap-2 pl-6 text-[11px] text-text-tertiary"
+          >
+            <span className="min-w-0 truncate">Lyden i {t.media?.fileName ?? "filmen"}</span>
+            <select
+              aria-label={`Lyden i ${t.media?.fileName ?? "filmen"}`}
+              value={t.audioLanguage === "nb" ? "" : (t.audioLanguage ?? "")}
+              disabled={!editable || !run}
+              onChange={(e) =>
+                run?.(
+                  {
+                    type: "SetTakeAudioLanguage",
+                    takeId: t.id,
+                    audioLanguage: e.target.value || null,
+                  },
+                  "Endre dialog i filmlyden",
+                )
+              }
+              className="ml-auto h-5 shrink-0 rounded-sm border border-border-control bg-surface-3 px-0.5 text-[10px] text-text-secondary disabled:opacity-50"
+              title="Er dialogen blandet inn i filmens lyd? Da kan den ikke byttes helt ut i en annen språkversjon."
+            >
+              <option value="">Med norsk dialog</option>
+              <option value="en">Med engelsk dialog</option>
+              <option value="none">Bare musikk og effekter</option>
+            </select>
+          </label>
+        ))}
       {editable ? (
         <>
           <input
@@ -786,94 +892,51 @@ function FilmRow({
   );
 }
 
-const TRANSITION_LABEL: Record<TransitionKind, string> = {
-  cut: "Kutt",
-  dissolve: "Overtoning",
-  dip: "Via svart",
-};
-
-/** Overgangen inn i scenen (REQ-0223): kutt, overtoning eller via svart, med lengde i sekunder. */
+/** Overgangen inn i scenen og svart-hvitt (DEC-0051). */
 function TransitionRow({
   clip,
+  standard,
   fps,
   editable,
   onTransition,
+  onMonochrome,
 }: {
   clip: FilmClip;
+  standard: Transition;
   fps: number;
   editable: boolean;
-  onTransition: (t: Transition) => void;
+  onTransition: (t: Transition | null) => void;
+  onMonochrome: (on: boolean) => void;
 }) {
-  const t = clip.transition;
-  const [draft, setDraft] = useState<string | null>(null);
-  const seconds = Math.round((t.frames / fps) * 100) / 100;
   const first = clip.startFrame === 0;
-  function setSeconds(text: string) {
-    const v = Number(text.trim().replace(",", "."));
-    if (!Number.isFinite(v) || v <= 0) return;
-    const frames = Math.max(1, Math.min(MAX_TRANSITION_FRAMES, Math.round(v * fps)));
-    if (frames !== t.frames) onTransition({ kind: t.kind, frames });
-  }
   return (
     <section
       aria-label="Overgang inn i scenen"
       className="flex flex-col gap-1.5 border-b border-border p-3"
     >
       <h2 className={label}>{first ? "Starten av filmen" : "Overgang inn i scenen"}</h2>
-      <div className="flex flex-wrap items-center gap-1.5 text-xs">
-        <select
-          aria-label="Overgang"
-          value={t.kind}
+      <TransitionEditor
+        idPrefix={`overgang-${clip.occurrenceId}`}
+        value={clip.transitionInherited ? null : clip.transition}
+        standard={standard}
+        fps={fps}
+        editable={editable}
+        first={first}
+        onChange={onTransition}
+      />
+      <label
+        className="mt-1 flex items-center gap-1.5 text-xs text-text-secondary"
+        title="Scenen vises og eksporteres i svart-hvitt"
+      >
+        <input
+          type="checkbox"
+          checked={clip.monochrome}
           disabled={!editable}
-          onChange={(e) => {
-            const kind = e.target.value as TransitionKind;
-            onTransition(
-              kind === "cut" ? { kind, frames: 0 } : { kind, frames: t.frames || Math.round(fps) },
-            );
-          }}
-          className="h-6 rounded-sm border border-border-control bg-surface-3 px-1 text-xs text-text-primary disabled:opacity-50"
-        >
-          {(["cut", "dissolve", "dip"] as const).map((k) => (
-            <option key={k} value={k}>
-              {first && k !== "cut" ? "Inntoning fra svart" : TRANSITION_LABEL[k]}
-            </option>
-          ))}
-        </select>
-        {t.kind !== "cut" ? (
-          <>
-            <input
-              type="number"
-              inputMode="decimal"
-              aria-label="Overgangens lengde i sekunder"
-              step={0.1}
-              min={0.04}
-              max={MAX_TRANSITION_FRAMES / fps}
-              disabled={!editable}
-              value={draft ?? String(seconds)}
-              onFocus={() => setDraft(String(seconds))}
-              onChange={(e) => setDraft(e.target.value)}
-              onBlur={() => {
-                if (draft !== null) setSeconds(draft);
-                setDraft(null);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") e.currentTarget.blur();
-                else if (e.key === "Escape") {
-                  setDraft(null);
-                  e.currentTarget.blur();
-                }
-              }}
-              className="h-6 w-14 rounded-sm border border-border-control bg-surface-3 px-1.5 font-mono text-xs text-text-primary disabled:opacity-50"
-            />
-            <span className="text-text-tertiary">s</span>
-          </>
-        ) : null}
-      </div>
-      {t.kind !== "cut" && !first ? (
-        <p className="text-[11px] text-text-tertiary">
-          Midt på klippet: halvparten før og halvparten etter. Filmens lengde endres ikke.
-        </p>
-      ) : null}
+          onChange={(e) => onMonochrome(e.target.checked)}
+          className="size-3.5 accent-[var(--accent-brand)]"
+        />
+        Svart-hvitt (også i eksporten)
+      </label>
     </section>
   );
 }

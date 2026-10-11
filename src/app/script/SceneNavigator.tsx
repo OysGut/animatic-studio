@@ -360,7 +360,7 @@ export function SceneNavigator({
                           {notes}
                         </span>
                       ) : null}
-                      {v && v.ownerProductionId !== null ? <span>Egen variant</span> : null}
+                      {v && v.ownerProductionId !== null ? <span>Egen versjon</span> : null}
                       {presence?.get(o.id)?.length ? (
                         <span className="text-accent-brand" title="Står i scenen nå">
                           ●{" "}

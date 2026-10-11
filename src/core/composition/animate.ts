@@ -125,6 +125,30 @@ export function setKeyframeEasing(
   );
 }
 
+/**
+ * Styrken på ease ut/inn for nøkkelbildene på et bilde (DEC-0052, REQ-0582): «ut» gjelder bevegelsen
+ * videre fra bildet, «inn» bevegelsen fram til det. null fjerner styrken (hastighetskurven gjelder).
+ */
+export function setKeyframeEase(
+  list: readonly Keyframe[],
+  frame: number,
+  patch: { readonly easeOut?: number | null; readonly easeIn?: number | null },
+): Keyframe[] {
+  return list.map((k) => {
+    if (k.frame !== frame) return k;
+    let next: Keyframe = k;
+    for (const key of ["easeOut", "easeIn"] as const) {
+      const v = patch[key];
+      if (v === undefined) continue;
+      if (v === null) {
+        const { [key]: _drop, ...rest } = next;
+        next = rest;
+      } else next = { ...next, [key]: Math.min(1, Math.max(0, v)) };
+    }
+    return next;
+  });
+}
+
 /** Nøkkelbilder for alle egenskaper på bildet, med verdiene laget har der nå. */
 export function keyAllAt(l: CompositionLayer, frame: number): Keyframe[] {
   const t = transformAt(l, frame);
@@ -150,6 +174,8 @@ export function fieldsWithTransformAt(
   const base: { -readonly [K in AnimatedProperty]: number } = { ...fields.transform };
   for (const p of ANIMATED_PROPERTIES) {
     if (next[p] === now[p]) continue;
+    // Bevegelsesbanen styrer posisjonen (DEC-0052): x/y endres ved å flytte banen, ikke her
+    if (l.path && (p === "x" || p === "y")) continue;
     if (isAnimated(l, p) || opts.autoKey) {
       // Første nøkkelbilde for en egenskap: start fra grunnverdien på bilde 0, så endringen blir en bevegelse
       if (!isAnimated(l, p) && frame > 0) keyframes = setKeyframe(keyframes, p, 0, now[p]);

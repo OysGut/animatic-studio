@@ -76,6 +76,9 @@ function clip(i: number, start: number, len: number, t: FilmClip["transition"]):
     durationKind: "estimate",
     take: null,
     transition: t,
+    transitionInherited: false,
+    overlapFrames: 0,
+    monochrome: false,
     parts: [
       {
         id: null,

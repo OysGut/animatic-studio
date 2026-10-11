@@ -2,9 +2,12 @@
  * Inspektør for manus: korriger tolkning (mandat 4.3), rediger tekst og overskrift, del og slå sammen scener (4.4).
  * Alle endringer er kommandoer som kan angres (ADR-0005).
  */
+import { TranslationPanel } from "./TranslationPanel";
+import { ScriptChanges, useSceneDiscrepancies } from "@/app/assembly/ScriptChanges";
 import {
   AlertTriangle,
   Check,
+  Clapperboard,
   CopyPlus,
   Eye,
   GitMerge,
@@ -13,6 +16,7 @@ import {
   Trash2,
   Undo2,
 } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import {
   annotationsOfVariant,
@@ -20,7 +24,9 @@ import {
   compareKeys,
   formatHeading,
   keyBetween,
+  isSharedIn,
   newId,
+  ownCopyCommands,
   orderedOccurrences,
   type BlockKind,
   type Command,
@@ -46,13 +52,14 @@ const EDITABLE_KINDS: BlockKind[] = [
 const INT_EXT = ["INT.", "EXT.", "INT./EXT.", "EXT./INT.", "I/E."];
 
 interface Props {
+  readonly projectId: string;
   readonly state: ProjectState;
   readonly productionId: string;
   readonly selection: Selection;
   readonly editable: boolean;
   readonly startPages: Readonly<Record<string, number>>;
   readonly textRef: RefObject<HTMLTextAreaElement | null>;
-  readonly run: (command: Command, label: string) => string | null;
+  readonly run: (command: Command, label: string, group?: string) => string | null;
   readonly onSelect: (sel: Selection) => void;
   readonly onNextUncertain: () => void;
   readonly uncertainCount: number;
@@ -62,6 +69,8 @@ interface Props {
   readonly authorName: string;
   /** Notat som skal fremheves (klikket i margen). */
   readonly focusNote: string | null;
+  /** Manusspråket i visningen (DEC-0058). Annet enn «nb»: inspektøren viser oversettelsen. */
+  readonly language?: string;
 }
 
 export function Inspector(props: Props) {
@@ -72,9 +81,35 @@ export function Inspector(props: Props) {
     <aside aria-label="Inspektør" className="flex min-h-0 flex-col">
       <div className="flex h-8 shrink-0 items-center border-b border-border px-3 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
         {block ? "Manusblokk" : occ ? "Scene" : "Manus"}
+        {occ && occ.active && state.productions[occ.productionId]?.kind === "main" ? (
+          <Link
+            to="/prosjekt/$projectId/montering"
+            params={{ projectId: props.projectId }}
+            search={{ scene: occ.id, ...(block ? { blokk: block.id } : {}) }}
+            className="ml-auto flex items-center gap-1 rounded-sm px-1 normal-case tracking-normal text-text-secondary hover:bg-surface-3 hover:text-text-primary"
+            title={
+              block
+                ? "Åpne monteringen med avspillingshodet der denne replikken eller handlingen er i filmen"
+                : "Åpne monteringen med avspillingshodet ved starten av scenen"
+            }
+          >
+            <Clapperboard className="size-3.5" aria-hidden /> Vis i filmen
+          </Link>
+        ) : null}
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto p-3">
-        {block && occ ? (
+        {occ ? <SceneChanges {...props} occurrenceId={occ.id} /> : null}
+        {props.language && props.language !== "nb" && occ ? (
+          <TranslationPanel
+            key={`${block?.id ?? occ.variantId}:${props.language}`}
+            state={state}
+            language={props.language}
+            blockId={block?.id ?? null}
+            variantId={block ? null : occ.variantId}
+            editable={props.editable}
+            run={props.run}
+          />
+        ) : block && occ ? (
           <BlockPanel {...props} key={block.id} />
         ) : occ ? (
           <ScenePanel {...props} key={occ.id} />
@@ -83,6 +118,24 @@ export function Inspector(props: Props) {
         )}
       </div>
     </aside>
+  );
+}
+
+/** Avvik ved manusendring for scenen (DEC-0054): vises øverst i inspektøren. */
+function SceneChanges(props: Props & { occurrenceId: string }) {
+  const found = useSceneDiscrepancies(props.state, props.occurrenceId);
+  if (found.length === 0) return null;
+  return (
+    <div className="mb-4">
+      <ScriptChanges
+        state={props.state}
+        projectId={props.projectId}
+        occurrenceId={props.occurrenceId}
+        found={found}
+        editable={props.editable}
+        run={props.run}
+      />
+    </div>
   );
 }
 
@@ -155,28 +208,25 @@ function ForkNotice({
   return (
     <div className="mb-4 border border-border bg-surface-2 p-2.5 text-xs text-text-secondary">
       <p>
-        Denne scenen deles med hovedfilmen. For å endre den i «{prod.name}» lages en egen versjon;
-        hovedfilmen endres ikke.
+        Denne scenen deles med hovedfilmen. Endrer du den her, får «{prod.name}» automatisk sin egen
+        versjon av scenen – hovedfilmen endres ikke.
       </p>
       <Button
         size="sm"
         variant="secondary"
         className="mt-2"
         onClick={() => {
-          const map: Record<string, never> = {};
-          for (const b of Object.values(state.blocks))
-            if (b.variantId === v.id) map[b.id] = newId() as never;
-          setErr(
-            run(
-              {
-                type: "ForkVariant",
-                occurrenceId: occ.id as never,
-                newVariantId: newId(),
-                blockIdMap: map,
-              },
-              "Lag egen versjon av scenen",
-            ),
-          );
+          // Egen versjon av teksten og kopi av 2D-scenen (DEC-0057)
+          const commands = ownCopyCommands(state, occ.id) ?? [];
+          const group = newId();
+          for (const c of commands) {
+            const e = run(c, "Lag egen versjon av scenen", group);
+            if (e) {
+              setErr(e);
+              return;
+            }
+          }
+          setErr(null);
         }}
       >
         <CopyPlus />
@@ -191,7 +241,8 @@ function canEditVariant(state: ProjectState, productionId: string, variantId: st
   const v = state.variants[variantId];
   const p = state.productions[productionId];
   if (!v || !p) return false;
-  return v.ownerProductionId === null ? p.kind === "main" : v.ownerProductionId === productionId;
+  // Delt med hovedfilmen i en avledet produksjon: endringen lager automatisk en egen versjon (DEC-0057)
+  return v.ownerProductionId === null ? true : v.ownerProductionId === productionId;
 }
 
 function BlockPanel({
@@ -656,7 +707,11 @@ function ScenePanel({
           </Button>
         </Section>
       ) : null}
-      {variantEditable && next && !merged ? (
+      {variantEditable &&
+      next &&
+      !merged &&
+      !isSharedIn(state, productionId, v.id) &&
+      !isSharedIn(state, productionId, state.occurrences[next.id]?.variantId ?? "") ? (
         <Section title="Slå sammen">
           {!confirmMerge ? (
             <Button

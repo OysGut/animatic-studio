@@ -5,6 +5,9 @@
  */
 import type {
   ClipPart,
+  ContinuityEvent,
+  Translation,
+  GenerationPrompt,
   TimeLink,
   TakeMedia,
   Transition,
@@ -18,6 +21,7 @@ import type {
   CollectionName,
   Composition,
   CompositionLayer,
+  LanguageImage,
   Production,
   ProductionSegment,
   ProjectState,
@@ -26,8 +30,10 @@ import type {
   SceneVariant,
   ScriptBlock,
   Take,
+  TransitionKind,
 } from "./model";
-import { COLLECTION_TABLES } from "./model";
+import { COLLECTION_TABLES, CONTINUITY_KINDS, TRANSITION_KINDS } from "./model";
+import type { ContinuityDuration, ContinuityKind } from "./model";
 
 export type Row = Record<string, unknown>;
 
@@ -51,6 +57,9 @@ type AnyEntity =
   | ProductionSegment
   | ClipPart
   | TimeLink
+  | GenerationPrompt
+  | ContinuityEvent
+  | Translation
   | Take
   | Asset
   | AssetVariant
@@ -127,8 +136,12 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         excerpt_out: o.excerpt?.outFrame ?? null,
         active_take_id: o.activeTakeId,
         production_number: o.productionNumber,
-        transition_kind: o.transition?.kind ?? "cut",
+        transition_kind: transitionKindToDb(o.transition?.kind ?? "cut"),
         transition_frames: o.transition?.frames ?? 0,
+        // Migrasjon 0013 (DEC-0051); ukjente kolonner hoppes over av apply_changes før den er kjørt
+        transition_custom: o.transition !== undefined,
+        transition_overlap: o.transition?.overlap ?? false,
+        monochrome: o.monochrome ?? false,
       };
     }
     case "segments": {
@@ -140,6 +153,7 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         order_key: g.orderKey,
         start_block_id: g.startBlockId,
         end_block_id: g.endBlockId,
+        ...(g.startMs !== undefined ? { start_ms: g.startMs, end_ms: g.endMs ?? null } : {}),
       };
     }
     case "takes": {
@@ -154,6 +168,10 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         produced_from: t.producedFrom,
         media_ref: t.mediaRef,
         metadata: t.media ?? {},
+        // Godkjent grunnlag (migrasjon 0014; ignoreres før). Tomt = som produced_from.
+        accepted_from: t.acceptedFrom ?? {},
+        // Dialogen i filmlyden (migrasjon 0017, DEC-0059)
+        audio_language: t.audioLanguage ?? null,
       };
     }
     case "assets": {
@@ -230,6 +248,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         background: c.background,
         camera: c.camera,
         removed: c.removed,
+        // Alltid med (også tomt), så et tilbakestilt grunnlag lagres (migrasjon 0014; ignoreres før)
+        produced_from: c.producedFrom ?? {},
       };
     }
     case "layers": {
@@ -252,6 +272,12 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         visible: l.visible,
         locked: l.locked,
         group_id: l.groupId,
+        // Migrasjon 0013 (DEC-0052); ukjente kolonner hoppes over av apply_changes før den er kjørt
+        image_swaps: l.swaps,
+        motion_path: l.path,
+        anchor: l.anchor,
+        // Migrasjon 0017 (DEC-0059)
+        language_images: l.languageImages ?? [],
         removed: l.removed,
       };
     }
@@ -276,6 +302,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         // Fra migrasjon 0010 (apply_changes ser bort fra kolonner tabellen ikke har ennå)
         continues: a.continues,
         volume_keys: a.volumeKeys,
+        // Migrasjon 0017 (DEC-0059): null = standard for lydtypen
+        language: a.language ?? null,
         removed: a.removed,
       };
     }
@@ -300,6 +328,53 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         block_id: t.blockId,
         start_ms: t.startMs,
         end_ms: t.endMs,
+        // Alltid med (også null): innsetting bruker kolonnene i første rad, og endring bare kolonnene som er med
+        layer_id: t.layerId,
+        removed: t.removed,
+      };
+    }
+    case "generationPrompts": {
+      const g = e as GenerationPrompt;
+      return {
+        ...base,
+        occurrence_id: g.occurrenceId,
+        segment_id: g.segmentId,
+        text: g.text,
+        based_on: g.basedOn,
+        removed: g.removed,
+      };
+    }
+    case "continuityEvents": {
+      const c = e as ContinuityEvent;
+      // Alle kolonner alltid med (også null), se timeLinks
+      return {
+        ...base,
+        asset_id: c.assetId,
+        kind: c.kind,
+        description: c.description,
+        from_variant_id: c.fromVariantId,
+        to_variant_id: c.toVariantId,
+        duration: c.duration,
+        scene_id: c.sceneId,
+        block_id: c.blockId,
+        until_scene_id: c.untilSceneId,
+        status: c.status,
+        // Migrasjon 0018 (DEC-0060): lokal for en produksjon, slått av i produksjoner
+        production_id: c.productionId ?? null,
+        disabled_in: c.disabledIn ?? [],
+        removed: c.removed,
+      };
+    }
+    case "translations": {
+      const t = e as Translation;
+      return {
+        ...base,
+        block_id: t.blockId,
+        variant_id: t.variantId,
+        language: t.language,
+        text: t.text,
+        based_on_rev: t.basedOnRev,
+        status: t.status,
         removed: t.removed,
       };
     }
@@ -341,6 +416,9 @@ export const TABLE_ORDER: readonly string[] = [
   "audio_clips",
   "clip_parts",
   "time_links",
+  "generation_prompts",
+  "continuity_events",
+  "translations",
 ];
 
 export function diffStates(before: ProjectState, after: ProjectState): ChangeSet {
@@ -377,6 +455,23 @@ export function diffStates(before: ProjectState, after: ProjectState): ChangeSet
         fps_den: after.project.fps.den,
         frame_width: after.project.frameWidth,
         frame_height: after.project.frameHeight,
+        ...(after.project.defaultTransition !== before.project.defaultTransition
+          ? {
+              default_transition_kind: transitionKindToDb(
+                after.project.defaultTransition?.kind ?? "cut",
+              ),
+              default_transition_frames: after.project.defaultTransition?.frames ?? 0,
+              default_transition_overlap: after.project.defaultTransition?.overlap ?? false,
+            }
+          : {}),
+        // AI-budsjett (DEC-0053): bare når det er endret (null = ingen egen grense / ukjent pris)
+        ...(after.project.aiMonthLimit !== before.project.aiMonthLimit ||
+        after.project.aiPricePerImage !== before.project.aiPricePerImage
+          ? {
+              ai_month_limit: after.project.aiMonthLimit ?? null,
+              ai_price_per_image: after.project.aiPricePerImage ?? null,
+            }
+          : {}),
       },
     ];
   const known = new Set(before.blockRevisions.map((r) => `${r.blockId}:${r.rev}`));
@@ -417,6 +512,12 @@ export interface ProjectRows {
   /** Montering del 4 (migrasjon 0012). Tomt hvis migrasjonen ikke er kjørt ennå. */
   readonly clip_parts?: readonly Row[];
   readonly time_links?: readonly Row[];
+  /** M5 del 2 (migrasjon 0014). Tomt hvis migrasjonen ikke er kjørt ennå. */
+  readonly generation_prompts?: readonly Row[];
+  /** M6 del 2 (migrasjon 0015). Tomt hvis migrasjonen ikke er kjørt ennå. */
+  readonly continuity_events?: readonly Row[];
+  /** M7 del 2 (migrasjon 0016). Tomt hvis migrasjonen ikke er kjørt ennå. */
+  readonly translations?: readonly Row[];
 }
 
 const str = (v: unknown) => String(v);
@@ -427,13 +528,80 @@ const iso = (v: unknown) => (v instanceof Date ? v.toISOString() : String(v));
 /** jsonb kommer som objekt fra databasen, men kan komme som tekst fra enkelte klienter. */
 const json = (v: unknown): unknown => (typeof v === "string" ? (JSON.parse(v) as unknown) : v);
 
-/** Overgang fra raden (migrasjon 0011); kutt og manglende kolonner gir ingen overgang. */
+/** Overgangstypen i databasen (snake_case, migrasjon 0013). */
+export function transitionKindToDb(k: TransitionKind): string {
+  return k === "dipWhite" ? "dip_white" : k;
+}
+
+function transitionKindFromDb(v: unknown): TransitionKind | null {
+  const k = v === "dip_white" ? "dipWhite" : v;
+  return (TRANSITION_KINDS as readonly unknown[]).includes(k) ? (k as TransitionKind) : null;
+}
+
+/** En overgang fra kolonnene (null = ingen gyldig overgang). */
+function transitionFrom(kind: unknown, framesRaw: unknown, overlap: unknown): Transition | null {
+  const k = transitionKindFromDb(kind);
+  if (!k) return null;
+  const frames = Number(framesRaw ?? 0);
+  if (k === "cut") return { kind: "cut", frames: 0 };
+  if (!(frames > 0)) return null;
+  return overlap === true ? { kind: k, frames, overlap: true } : { kind: k, frames };
+}
+
+/**
+ * Scenens egen overgang (migrasjon 0011/0013). Uten egen overgang følger scenen prosjektets standard.
+ * Før 0013 fantes ikke `transition_custom`: da var kutt det samme som standard.
+ */
 function transitionFromRow(x: Row): { transition?: Transition } {
-  const kind = x["transition_kind"];
-  const frames = Number(x["transition_frames"] ?? 0);
-  if ((kind === "dissolve" || kind === "dip") && frames > 0)
-    return { transition: { kind, frames } };
-  return {};
+  const t = transitionFrom(x["transition_kind"], x["transition_frames"], x["transition_overlap"]);
+  if (!t) return {};
+  const custom =
+    x["transition_custom"] === undefined || x["transition_custom"] === null
+      ? t.kind !== "cut"
+      : x["transition_custom"] === true;
+  return custom ? { transition: t } : {};
+}
+
+function defaultTransitionFromRow(p: Row): { defaultTransition?: Transition } {
+  const t = transitionFrom(
+    p["default_transition_kind"],
+    p["default_transition_frames"],
+    p["default_transition_overlap"],
+  );
+  return t && t.kind !== "cut" ? { defaultTransition: t } : {};
+}
+
+/** Godkjent grunnlag for en versjon (migrasjon 0014): tomt eller manglende = som produced_from. */
+/** Språkavhengige bilder i et lag (migrasjon 0017, DEC-0059): tom liste = ingen. */
+function languageImagesFromRow(v: unknown): { languageImages?: LanguageImage[] } {
+  const list = json(v) as LanguageImage[] | null | undefined;
+  if (!Array.isArray(list) || list.length === 0) return {};
+  return {
+    languageImages: list.map((li) => ({
+      language: String(li.language),
+      assetVariantId: String(li.assetVariantId) as never,
+      versionId: (li.versionId ?? null) as never,
+    })),
+  };
+}
+
+function takeAcceptedFrom(v: unknown): {
+  acceptedFrom?: { blockRevisions: Record<string, number> };
+} {
+  const r = compositionProducedFrom(v);
+  return r.producedFrom ? { acceptedFrom: r.producedFrom } : {};
+}
+
+/** Grunnlaget for 2D-scenen (migrasjon 0014): tomt eller manglende = ukjent. */
+function compositionProducedFrom(v: unknown): {
+  producedFrom?: { blockRevisions: Record<string, number> };
+} {
+  const p = json(v) as { blockRevisions?: Record<string, unknown> } | null;
+  const revs = p?.blockRevisions;
+  if (!revs || typeof revs !== "object" || Object.keys(revs).length === 0) return {};
+  const out: Record<string, number> = {};
+  for (const [k, n] of Object.entries(revs)) if (Number.isFinite(Number(n))) out[k] = Number(n);
+  return { producedFrom: { blockRevisions: out } };
 }
 
 /** Filinformasjon for importert film fra raden (migrasjon 0011); tomt objekt gir ingen. */
@@ -471,6 +639,13 @@ export function stateFromRows(r: ProjectRows): ProjectState {
       frameWidth: num(p["frame_width"] ?? 1920),
       frameHeight: num(p["frame_height"] ?? 1080),
       primaryLanguage: "nb",
+      ...defaultTransitionFromRow(p),
+      ...(p["ai_month_limit"] === null || p["ai_month_limit"] === undefined
+        ? {}
+        : { aiMonthLimit: Number(p["ai_month_limit"]) }),
+      ...(p["ai_price_per_image"] === null || p["ai_price_per_image"] === undefined
+        ? {}
+        : { aiPricePerImage: Number(p["ai_price_per_image"]) }),
     },
     productions: byId(
       r.productions.map((x) => ({
@@ -551,6 +726,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         activeTakeId: optStr(x["active_take_id"]) as never,
         productionNumber: optStr(x["production_number"]),
         ...transitionFromRow(x),
+        ...(x["monochrome"] === true ? { monochrome: true } : {}),
       })),
     ),
     segments: byId(
@@ -562,6 +738,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         orderKey: str(x["order_key"]),
         startBlockId: optStr(x["start_block_id"]) as never,
         endBlockId: optStr(x["end_block_id"]) as never,
+        ...(x["start_ms"] === null || x["start_ms"] === undefined
+          ? {}
+          : { startMs: num(x["start_ms"]), endMs: num(x["end_ms"] ?? x["start_ms"]) }),
       })),
     ),
     takes: byId(
@@ -578,6 +757,10 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         },
         mediaRef: optStr(x["media_ref"]),
         ...takeMediaFromRow(x["metadata"]),
+        ...takeAcceptedFrom(x["accepted_from"]),
+        ...(typeof x["audio_language"] === "string" && x["audio_language"]
+          ? { audioLanguage: x["audio_language"] }
+          : {}),
       })),
     ),
     assets: byId(
@@ -657,6 +840,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         background: str(x["background"] ?? "#000000"),
         camera: { shots: [], ...(json(x["camera"]) as object | null) } as never,
         removed: x["removed"] === true,
+        ...compositionProducedFrom(x["produced_from"]),
       })),
     ),
     layers: byId(
@@ -679,6 +863,10 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         visible: x["visible"] !== false,
         locked: x["locked"] === true,
         groupId: optStr(x["group_id"]),
+        swaps: ((json(x["image_swaps"]) as unknown[] | null | undefined) ?? []) as never,
+        path: (json(x["motion_path"]) ?? null) as never,
+        anchor: (json(x["anchor"]) ?? null) as never,
+        ...languageImagesFromRow(x["language_images"]),
         removed: x["removed"] === true,
       })),
     ),
@@ -704,6 +892,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         volumeKeys: ((json(x["volume_keys"]) as { t: number; db: number }[] | null) ?? []).map(
           (k) => ({ t: Number(k.t), db: Number(k.db) }),
         ),
+        ...(typeof x["language"] === "string" && x["language"] ? { language: x["language"] } : {}),
         removed: x["removed"] === true,
       })),
     ),
@@ -728,6 +917,58 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         blockId: str(x["block_id"]) as never,
         startMs: num(x["start_ms"]),
         endMs: optNum(x["end_ms"]),
+        layerId: optStr(x["layer_id"]) as never,
+        removed: x["removed"] === true,
+      })),
+    ),
+    generationPrompts: byId(
+      (r.generation_prompts ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        occurrenceId: str(x["occurrence_id"]) as never,
+        segmentId: str(x["segment_id"]) as never,
+        text: str(x["text"] ?? ""),
+        basedOn: str(x["based_on"] ?? ""),
+        removed: x["removed"] === true,
+      })),
+    ),
+    continuityEvents: byId(
+      (r.continuity_events ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        assetId: str(x["asset_id"]) as never,
+        kind: (CONTINUITY_KINDS as readonly string[]).includes(String(x["kind"]))
+          ? (String(x["kind"]) as ContinuityKind)
+          : "other",
+        description: str(x["description"] ?? ""),
+        fromVariantId: optStr(x["from_variant_id"]) as never,
+        toVariantId: optStr(x["to_variant_id"]) as never,
+        duration: (x["duration"] === "temporary" || x["duration"] === "scene"
+          ? x["duration"]
+          : "permanent") as ContinuityDuration,
+        sceneId: str(x["scene_id"]) as never,
+        blockId: optStr(x["block_id"]) as never,
+        untilSceneId: optStr(x["until_scene_id"]) as never,
+        status: x["status"] === "dismissed" ? "dismissed" : "approved",
+        ...(optStr(x["production_id"])
+          ? { productionId: optStr(x["production_id"]) as never }
+          : {}),
+        ...(Array.isArray(json(x["disabled_in"])) && (json(x["disabled_in"]) as unknown[]).length
+          ? { disabledIn: (json(x["disabled_in"]) as unknown[]).map(String).sort() as never }
+          : {}),
+        removed: x["removed"] === true,
+      })),
+    ),
+    translations: byId(
+      (r.translations ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        blockId: optStr(x["block_id"]) as never,
+        variantId: optStr(x["variant_id"]) as never,
+        language: str(x["language"] ?? "en"),
+        text: str(x["text"] ?? ""),
+        basedOnRev: num(x["based_on_rev"] ?? 0),
+        status: (x["status"] === "uncertain" ? "uncertain" : "approved") as Translation["status"],
         removed: x["removed"] === true,
       })),
     ),

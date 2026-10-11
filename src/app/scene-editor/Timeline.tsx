@@ -42,6 +42,8 @@ import {
   removeKeyframesAt,
   secondsToFrames,
   setKeyframeEasing,
+  setKeyframeEase,
+  EASE_STRENGTH,
   withShot,
   type CameraShot,
   type Command,
@@ -107,6 +109,12 @@ interface ShotDraft {
   readonly endFrame: number;
 }
 interface KeyDraft {
+  readonly layerId: string;
+  readonly from: number;
+  readonly to: number;
+}
+/** Bildeskifte som dras (DEC-0052). */
+interface SwapDraft {
   readonly layerId: string;
   readonly from: number;
   readonly to: number;
@@ -316,8 +324,18 @@ const LayerRow = memo(function LayerRow({
   onKeyPointerDown,
   onKeyPointerMove,
   onKeyPointerUp,
+  swapDraft,
+  inGroup,
+  onSwapPointerDown,
+  onSwapPointerMove,
+  onSwapPointerUp,
 }: {
   layer: CompositionLayer;
+  swapDraft: SwapDraft | null;
+  inGroup: boolean;
+  onSwapPointerDown: (e: ReactPointerEvent<HTMLElement>, layerId: string, frame: number) => void;
+  onSwapPointerMove: (e: ReactPointerEvent<HTMLElement>) => void;
+  onSwapPointerUp: (e: ReactPointerEvent<HTMLElement>) => void;
   selected: boolean;
   selectedKeyFrame: number | null;
   draft: KeyDraft | null;
@@ -339,7 +357,7 @@ const LayerRow = memo(function LayerRow({
           "sticky left-0 z-20 flex shrink-0 items-center border-r border-border px-2 text-[13px] " +
           (selected ? "bg-surface-2 text-text-primary" : "bg-surface-1 text-text-secondary")
         }
-        style={{ width: LABEL_W }}
+        style={{ width: LABEL_W, paddingLeft: inGroup ? 20 : undefined }}
       >
         <span className="truncate" title={layer.name}>
           {layer.name}
@@ -351,6 +369,40 @@ const LayerRow = memo(function LayerRow({
         style={{ height: ROW_H, flex: "1 0 auto" }}
         onPointerDown={(e) => onTrackPointerDown(e, layer.id)}
       >
+        {layer.path ? (
+          <span
+            aria-hidden
+            title="Bevegelsesbane"
+            className="pointer-events-none absolute bottom-1 h-0.5 rounded-full bg-accent-brand/60"
+            style={{
+              left: layer.path.startFrame * ppf,
+              width: Math.max(2, (layer.path.endFrame - layer.path.startFrame) * ppf),
+            }}
+          />
+        ) : null}
+        {layer.swaps.map((w) => (
+          <div
+            key={`swap-${w.frame}`}
+            role="button"
+            tabIndex={-1}
+            aria-label={`Bildeskifte på bilde ${w.frame}`}
+            title="Bildeskifte (dra for å flytte)"
+            onPointerDown={(e) => onSwapPointerDown(e, layer.id, w.frame)}
+            onPointerMove={onSwapPointerMove}
+            onPointerUp={onSwapPointerUp}
+            onPointerCancel={onSwapPointerUp}
+            className={
+              "absolute top-0 z-10 flex h-full w-3 justify-center " +
+              (editable ? "cursor-ew-resize" : "cursor-pointer")
+            }
+            style={{
+              left: (swapDraft && swapDraft.from === w.frame ? swapDraft.to : w.frame) * ppf - 6,
+            }}
+          >
+            <span className="block h-full w-0.5 bg-status-moved" />
+            <span className="absolute top-0.5 size-2 rounded-[1px] bg-status-moved" />
+          </div>
+        ))}
         {frames.map((f) => {
           const isSel = selectedKeyFrame === f;
           return (
@@ -417,6 +469,7 @@ export function Timeline({
   const [keySel, setKeySel] = useState<KeySel | null>(null);
   const [shotDraft, setShotDraft] = useState<ShotDraft | null>(null);
   const [keyDraft, setKeyDraft] = useState<KeyDraft | null>(null);
+  const [swapDraft, setSwapDraft] = useState<SwapDraft | null>(null);
 
   const rootRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -627,6 +680,72 @@ export function Timeline({
       }
     },
     [updateKeys],
+  );
+
+  // Bildeskifter (DEC-0052): klikk går dit, dra flytter skiftet
+  const swapDrag = useRef<{
+    layerId: string;
+    from: number;
+    startX: number;
+    to: number;
+    moved: boolean;
+  } | null>(null);
+  const onSwapPointerDown = useCallback(
+    (e: ReactPointerEvent<HTMLElement>, layerId: string, f: number) => {
+      if (e.button !== 0) return;
+      e.stopPropagation();
+      e.currentTarget.setPointerCapture(e.pointerId);
+      onSelectLayer(layerId);
+      setKeySel(null);
+      latest.current.playback.setFrame(f);
+      swapDrag.current = { layerId, from: f, startX: e.clientX, to: f, moved: false };
+    },
+    [onSelectLayer],
+  );
+  const onSwapPointerMove = useCallback((e: ReactPointerEvent<HTMLElement>) => {
+    const d = swapDrag.current;
+    if (!d || !latest.current.editable) return;
+    const delta = Math.round((e.clientX - d.startX) / latest.current.ppf);
+    if (delta === 0 && !d.moved) return;
+    d.moved = true;
+    d.to = clamp(d.from + delta, 1, Math.max(1, latest.current.last));
+    const next = { layerId: d.layerId, from: d.from, to: d.to };
+    setSwapDraft((old) => (old && old.to === next.to && old.from === next.from ? old : next));
+  }, []);
+  const onSwapPointerUp = useCallback(
+    (e: ReactPointerEvent<HTMLElement>) => {
+      const d = swapDrag.current;
+      swapDrag.current = null;
+      setSwapDraft(null);
+      if (e.currentTarget.hasPointerCapture(e.pointerId))
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      if (!d || !d.moved || e.type === "pointercancel" || d.to === d.from) return;
+      const layer = latest.current.state.layers[d.layerId];
+      if (!layer) return;
+      if (layer.swaps.some((w) => w.frame === d.to)) {
+        setError("Det er allerede et bildeskifte på det bildet.");
+        return;
+      }
+      const ok = exec(
+        {
+          type: "UpdateLayers",
+          layers: [
+            {
+              layerId: layer.id,
+              fields: {
+                ...layerFieldsOf(layer),
+                swaps: layer.swaps
+                  .map((w) => (w.frame === d.from ? { ...w, frame: d.to } : w))
+                  .sort((a, b) => a.frame - b.frame),
+              },
+            },
+          ],
+        },
+        "Flytt bildeskifte",
+      );
+      if (ok) latest.current.playback.setFrame(d.to);
+    },
+    [exec],
   );
 
   // Kamerautsnitt: dra flytter, kantene endrer lengden
@@ -935,6 +1054,41 @@ export function Timeline({
             </select>
           </label>
         ) : null}
+        {keyValid && keyLayer && easingNow !== "hold" ? (
+          <span
+            className="flex shrink-0 items-center gap-1.5 text-xs text-text-secondary"
+            title="Styrken på myk start og slutt (som «influence» i After Effects)"
+          >
+            Ease
+            {(["easeIn", "easeOut"] as const).map((key) => {
+              const k0 = keyHere[0]!;
+              const def = EASE_STRENGTH[easingNow][key === "easeOut" ? 0 : 1];
+              const v = k0[key] ?? def;
+              return (
+                <PercentInput
+                  key={key}
+                  label={key === "easeIn" ? "inn" : "ut"}
+                  title={
+                    key === "easeIn"
+                      ? "Ease inn: hvor mykt bevegelsen bremser inn mot dette nøkkelbildet"
+                      : "Ease ut: hvor mykt bevegelsen starter fra dette nøkkelbildet"
+                  }
+                  value={v}
+                  disabled={!editable}
+                  className={ctl}
+                  onCommit={(n) =>
+                    keySel &&
+                    updateKeys(
+                      keyLayer,
+                      key === "easeIn" ? "Endre ease inn" : "Endre ease ut",
+                      setKeyframeEase(keyLayer.keyframes, keySel.frame, { [key]: n }),
+                    )
+                  }
+                />
+              );
+            })}
+          </span>
+        ) : null}
 
         <span className="ml-auto flex shrink-0 items-center gap-1.5 pl-2 text-xs text-text-tertiary">
           Zoom
@@ -1048,6 +1202,15 @@ export function Timeline({
                 onKeyPointerDown={onKeyPointerDown}
                 onKeyPointerMove={onKeyPointerMove}
                 onKeyPointerUp={onKeyPointerUp}
+                swapDraft={swapDraft && swapDraft.layerId === l.id ? swapDraft : null}
+                inGroup={
+                  !!l.groupId &&
+                  state.layers[l.groupId]?.kind === "group" &&
+                  !state.layers[l.groupId]?.removed
+                }
+                onSwapPointerDown={onSwapPointerDown}
+                onSwapPointerMove={onSwapPointerMove}
+                onSwapPointerUp={onSwapPointerUp}
               />
             ))
           )}
@@ -1063,5 +1226,71 @@ export function Timeline({
         </div>
       </div>
     </div>
+  );
+}
+
+/** Prosent (0–100) som lagres når du forlater feltet eller trykker Enter. */
+function PercentInput({
+  label,
+  title,
+  value,
+  disabled,
+  className,
+  onCommit,
+}: {
+  label: string;
+  title: string;
+  value: number;
+  disabled: boolean;
+  className: string;
+  onCommit: (v: number) => void;
+}) {
+  const [draft, setDraft] = useState<string | null>(null);
+  const cancelled = useRef(false);
+  /** Lagres på nøkkelbildet som var valgt da du begynte å skrive (valget kan endres før feltet forlates). */
+  const target = useRef(onCommit);
+  const shown = String(Math.round(value * 100));
+  function commit() {
+    const t = draft;
+    setDraft(null);
+    if (cancelled.current) {
+      cancelled.current = false;
+      return;
+    }
+    if (t === null) return;
+    const n = Number(t.replace(",", "."));
+    if (!Number.isFinite(n) || t.trim() === "") return;
+    const v = Math.min(100, Math.max(0, Math.round(n)));
+    if (String(v) !== shown) target.current(v / 100);
+  }
+  return (
+    <label className="flex items-center gap-1" title={title}>
+      {label}
+      <input
+        type="number"
+        min={0}
+        max={100}
+        step={5}
+        value={draft ?? shown}
+        disabled={disabled}
+        onFocus={() => {
+          target.current = onCommit;
+          setDraft(shown);
+        }}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={commit}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") e.currentTarget.blur();
+          else if (e.key === "Escape") {
+            cancelled.current = true;
+            setDraft(null);
+            e.currentTarget.blur();
+          }
+        }}
+        aria-label={`Ease ${label} i prosent`}
+        className={className + " w-12"}
+      />
+      %
+    </label>
   );
 }

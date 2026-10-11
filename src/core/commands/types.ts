@@ -20,6 +20,9 @@ import type {
   SegmentId,
   TakeId,
   TimeLinkId,
+  ContinuityEventId,
+  TranslationId,
+  GenerationPromptId,
   UserId,
   VariantId,
 } from "../ids";
@@ -31,7 +34,10 @@ import type {
   Composition,
   CompositionCamera,
   CompositionLayer,
+  ContinuityDuration,
+  ContinuityKind,
   Keyframe,
+  LanguageImage,
   LayerKind,
   LayerTransform,
   ProductionKind,
@@ -44,6 +50,8 @@ import type {
   Transition,
   VisualStyle,
   VolumeKey,
+  ImageSwap,
+  MotionPath,
 } from "../model";
 import type { Rational } from "../time";
 
@@ -65,6 +73,8 @@ export interface AudioClipFields {
   readonly muted: boolean;
   readonly continues: boolean;
   readonly volumeKeys: readonly VolumeKey[];
+  /** Språket (DEC-0059): språkkode eller «*» (felles). Utelatt/null = standard for lydtypen. */
+  readonly language?: string | null;
 }
 
 /** Redigerbare felter på en 2D-scene (format, varighet, bakgrunn). */
@@ -92,6 +102,12 @@ export interface LayerFields {
   readonly visible: boolean;
   readonly locked: boolean;
   readonly groupId: string | null;
+  /** Bildeskifter, bevegelsesbane og gruppens ankerpunkt (DEC-0052). */
+  readonly swaps: readonly ImageSwap[];
+  readonly path: MotionPath | null;
+  readonly anchor: { readonly x: number; readonly y: number } | null;
+  /** Språkavhengige bilder (DEC-0059). Utelatt = uendret ved endring, ingen ved nytt lag. */
+  readonly languageImages?: readonly LanguageImage[];
 }
 
 export interface NewLayer {
@@ -304,6 +320,13 @@ export type Command =
       readonly newVariantId: VariantId;
       /** Ny blokk-ID for hver blokk i varianten som kopieres. */
       readonly blockIdMap: Readonly<Record<string, BlockId>>;
+      /** Ny ID for hver gjeldende oversettelse av scenen som følger med (DEC-0058). Utelatt = ingen kopi. */
+      readonly translationIdMap?: Readonly<Record<string, TranslationId>>;
+      /**
+       * Tilbakeføring (DEC-0060): kopier innholdet fra denne varianten av scenen (f.eks. spinoffens versjon)
+       * i stedet for forekomstens nåværende. Utelatt = forekomstens variant.
+       */
+      readonly sourceVariantId?: VariantId;
     }
   | {
       readonly type: "AddOccurrence";
@@ -340,7 +363,83 @@ export type Command =
       /** Overgangen inn i scenen i filmen (DEC-0047). */
       readonly type: "SetTransition";
       readonly occurrenceId: OccurrenceId;
-      readonly transition: Transition;
+      /** null: scenen følger prosjektets standardovergang (DEC-0051). */
+      readonly transition: Transition | null;
+    }
+  | {
+      /** Prosjektets standardovergang (DEC-0051, REQ-0577). null = kutt. */
+      readonly type: "SetDefaultTransition";
+      readonly transition: Transition | null;
+    }
+  | {
+      /**
+       * AI-budsjett for prosjektet (DEC-0053, REQ-0282/0284/0528): høyeste antall genereringer per måned
+       * (null = bare de faste grensene) og anslått pris per bilde (null = ukjent). Bare eieren.
+       */
+      readonly type: "SetAiBudget";
+      readonly monthLimit: number | null;
+      readonly pricePerImage: number | null;
+    }
+  | {
+      /**
+       * Egen genereringsbeskrivelse for et segment (DEC-0053, REQ-0252/0253/0256). Finnes beskrivelsen,
+       * endres den; ellers lages den. `text` null = tilbake til den automatiske (beskrivelsen fjernes).
+       */
+      readonly type: "SetGenerationPrompt";
+      readonly promptId: GenerationPromptId;
+      readonly occurrenceId: OccurrenceId;
+      readonly segmentId: SegmentId;
+      readonly text: string | null;
+      readonly basedOn: string;
+    }
+  | {
+      /**
+       * Ny inndeling av scenen i segmenter for generering (DEC-0053, REQ-0260/0267): segmentene i
+       * `removeSegmentIds` fjernes og `segments` legges til. Manusets struktur endres aldri. Segmenter med
+       * materiale eller en egen beskrivelse kan ikke fjernes.
+       */
+      readonly type: "ReplaceSegments";
+      readonly occurrenceId: OccurrenceId;
+      readonly reason: SegmentReason;
+      /** Må være nøyaktig de nåværende segmentene med samme grunn (ellers har noen endret dem samtidig). */
+      readonly removeSegmentIds: readonly SegmentId[];
+      readonly segments: readonly {
+        readonly segmentId: SegmentId;
+        readonly orderKey: string;
+        readonly startBlockId: BlockId | null;
+        readonly endBlockId: BlockId | null;
+        /** Tidsrom i scenen (ms); påkrevd for segmenter til generering («model_limit»). */
+        readonly startMs?: number;
+        readonly endMs?: number;
+      }[];
+    }
+  | {
+      /**
+       * Godkjenn manusendringene for materiale (DEC-0054, REQ-0306/0307): 2D-scenen og/eller versjonene
+       * regnes som laget fra manuset slik det er nå. Avviket forsvinner; endringen logges.
+       */
+      readonly type: "AcceptScriptChanges";
+      readonly occurrenceId: OccurrenceId;
+      readonly compositionIds: readonly CompositionId[];
+      readonly takeIds: readonly TakeId[];
+    }
+  | {
+      /** Sett grunnlaget for materiale direkte (angre av AcceptScriptChanges). */
+      readonly type: "SetProducedFrom";
+      readonly compositions: readonly {
+        readonly compositionId: CompositionId;
+        readonly blockRevisions: Readonly<Record<string, number>>;
+      }[];
+      readonly takes: readonly {
+        readonly takeId: TakeId;
+        readonly blockRevisions: Readonly<Record<string, number>>;
+      }[];
+    }
+  | {
+      /** Svart-hvitt for scenen, i visning og eksport (DEC-0051, REQ-0574). */
+      readonly type: "SetOccurrenceMonochrome";
+      readonly occurrenceId: OccurrenceId;
+      readonly monochrome: boolean;
     }
   | {
       readonly type: "SetActiveTake";
@@ -409,8 +508,31 @@ export type Command =
       readonly occurrenceId: OccurrenceId;
       readonly previousVariantId: VariantId;
       readonly newVariantId: VariantId;
+      /** Varianten innholdet ble kopiert fra, når det ikke var den forrige (tilbakeføring, DEC-0060). */
+      readonly sourceVariantId?: VariantId;
     }
   | { readonly type: "UndoAddOccurrence"; readonly occurrenceId: OccurrenceId }
+  | {
+      /**
+       * Overfør en ny scene fra en avledet produksjon til en annen produksjon (hovedfilmen, DEC-0060,
+       * REQ-0381): ny forekomst med egen kopi av spinoffens versjon (blokker, historikk, oversettelser).
+       * Spinoffens versjon endres ikke.
+       */
+      readonly type: "TransferScene";
+      readonly productionId: ProductionId;
+      readonly occurrenceId: OccurrenceId;
+      readonly orderKey: string;
+      readonly sourceVariantId: VariantId;
+      readonly newVariantId: VariantId;
+      readonly blockIdMap: Readonly<Record<string, BlockId>>;
+      readonly translationIdMap?: Readonly<Record<string, TranslationId>>;
+    }
+  | {
+      readonly type: "UndoTransferScene";
+      readonly occurrenceId: OccurrenceId;
+      readonly sourceVariantId: VariantId;
+      readonly newVariantId: VariantId;
+    }
   | { readonly type: "UndoCreateSegments"; readonly segmentIds: readonly SegmentId[] }
   | { readonly type: "UndoCreateAssets"; readonly assetIds: readonly AssetId[] }
   | { readonly type: "UndoCreateAssetVariant"; readonly variantId: AssetVariantId }
@@ -463,6 +585,8 @@ export type Command =
       readonly compositionId: CompositionId;
       readonly variantId: VariantId;
       readonly fields: CompositionFields;
+      /** Grunnlaget (gjør om etter angre beholder det opprinnelige, DEC-0054). Mangler = manuset nå. */
+      readonly producedFrom?: { readonly blockRevisions: Readonly<Record<string, number>> };
     }
   | { readonly type: "UndoCreateComposition"; readonly compositionId: CompositionId }
   | {
@@ -522,6 +646,13 @@ export type Command =
       readonly parts: readonly ClipPartFields[];
     }
   | { readonly type: "SetTakeStatus"; readonly takeId: TakeId; readonly status: TakeStatus }
+  // ---------- Språkversjoner av filmen (M7 del 3, DEC-0059) ----------
+  | {
+      /** Dialogen i filmens egen lyd: språkkode, «none» (bare musikk og effekter) eller null (ikke angitt). */
+      readonly type: "SetTakeAudioLanguage";
+      readonly takeId: TakeId;
+      readonly audioLanguage: string | null;
+    }
   | {
       readonly type: "AddTimeLinks";
       readonly links: readonly { readonly linkId: TimeLinkId; readonly fields: TimeLinkFields }[];
@@ -534,7 +665,80 @@ export type Command =
       readonly type: "SetTimeLinksRemoved";
       readonly linkIds: readonly TimeLinkId[];
       readonly removed: boolean;
+    }
+  | {
+      /** Kontinuitetshendelser (M6 del 2, DEC-0055): godkjent eller avvist forslag, eller lagt inn selv. */
+      readonly type: "AddContinuityEvents";
+      readonly events: readonly {
+        readonly eventId: ContinuityEventId;
+        readonly fields: ContinuityEventFields;
+      }[];
+    }
+  | {
+      readonly type: "UpdateContinuityEvents";
+      readonly events: readonly {
+        readonly eventId: ContinuityEventId;
+        readonly fields: ContinuityEventFields;
+      }[];
+    }
+  | {
+      /** Slå en arvet kontinuitetshendelse av eller på i en avledet produksjon (DEC-0060, REQ-0166/0167). */
+      readonly type: "SetContinuityEventDisabled";
+      readonly eventId: ContinuityEventId;
+      readonly productionId: ProductionId;
+      readonly disabled: boolean;
+    }
+  | {
+      readonly type: "SetContinuityEventsRemoved";
+      readonly eventIds: readonly ContinuityEventId[];
+      readonly removed: boolean;
+    }
+  | {
+      /** Oversettelser (språkversjon, DEC-0058). Endrer aldri det norske manuset (REQ-0331). */
+      readonly type: "AddTranslations";
+      readonly items: readonly {
+        readonly translationId: TranslationId;
+        readonly fields: TranslationFields;
+      }[];
+    }
+  | {
+      readonly type: "UpdateTranslations";
+      readonly items: readonly {
+        readonly translationId: TranslationId;
+        readonly fields: TranslationFields;
+      }[];
+    }
+  | {
+      readonly type: "SetTranslationsRemoved";
+      readonly translationIds: readonly TranslationId[];
+      readonly removed: boolean;
     };
+
+/** En oversettelse av en manuslinje eller et scenehode (DEC-0058). */
+export interface TranslationFields {
+  readonly blockId: BlockId | null;
+  readonly variantId: VariantId | null;
+  readonly language: string;
+  readonly text: string;
+  readonly basedOnRev: number;
+  readonly status: "approved" | "uncertain";
+}
+
+/** En kontinuitetshendelse (DEC-0055). */
+export interface ContinuityEventFields {
+  readonly assetId: AssetId;
+  readonly kind: ContinuityKind;
+  readonly description: string;
+  readonly fromVariantId: AssetVariantId | null;
+  readonly toVariantId: AssetVariantId | null;
+  readonly duration: ContinuityDuration;
+  readonly sceneId: SceneId;
+  readonly blockId: BlockId | null;
+  readonly untilSceneId: SceneId | null;
+  readonly status: "approved" | "dismissed";
+  /** Lokal for en avledet produksjon (DEC-0060). Utelatt ved endring = uendret; null = hovedfilmens. */
+  readonly productionId?: ProductionId | null;
+}
 
 /** En del av et klipp (DEC-0048). Rekkefølgen er rekkefølgen i lista. */
 export interface ClipPartFields {
@@ -551,6 +755,8 @@ export interface TimeLinkFields {
   readonly blockId: BlockId;
   readonly startMs: number;
   readonly endMs: number | null;
+  /** Hendelse i 2D-scenen: laget den gjelder (tiden er da i 2D-scenens egen tid). DEC-0051. */
+  readonly layerId?: LayerId | null;
 }
 
 export type CommandType = Command["type"];

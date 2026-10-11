@@ -10,6 +10,9 @@ import type {
   ClipPartId,
   CompositionId,
   TimeLinkId,
+  GenerationPromptId,
+  ContinuityEventId,
+  TranslationId,
   LayerId,
   AssetVariantId,
   AssetVersionId,
@@ -61,6 +64,15 @@ export interface Project extends Entity<ProjectId> {
   readonly frameWidth: number;
   readonly frameHeight: number;
   readonly primaryLanguage: typeof PRIMARY_LANGUAGE;
+  /** Overgangen scener får når de ikke har en egen (DEC-0051, REQ-0577). Mangler = kutt. */
+  readonly defaultTransition?: Transition;
+  /**
+   * AI-budsjett (DEC-0053, REQ-0282/0284): høyeste antall AI-genereringer per kalendermåned for hele
+   * prosjektet. Mangler = bare de faste grensene. Settes av eieren.
+   */
+  readonly aiMonthLimit?: number;
+  /** Anslått pris per AI-bilde (kreditter), satt av eieren; mangler = ukjent (REQ-0279–0281). */
+  readonly aiPricePerImage?: number;
 }
 
 export interface Production extends Entity<ProductionId> {
@@ -137,15 +149,35 @@ export interface SceneOccurrence extends Entity<OccurrenceId> {
   readonly productionNumber: string | null;
   /** Overgangen inn i scenen i filmen (DEC-0047). Mangler = kutt. */
   readonly transition?: Transition;
+  /** Scenen vises og eksporteres i svart-hvitt (DEC-0051, REQ-0574). */
+  readonly monochrome?: boolean;
 }
 
-/** Overgang mellom scener (mandat 15, REQ-0223): kutt, overtoning eller via svart. */
-export type TransitionKind = "cut" | "dissolve" | "dip";
+/**
+ * Overgang mellom scener (mandat 15, REQ-0223, DEC-0051): kutt, overtoning, via svart, via hvitt, tørk
+ * (wipe), skyv (push) og iris.
+ */
+export type TransitionKind = "cut" | "dissolve" | "dip" | "dipWhite" | "wipe" | "push" | "iris";
+
+export const TRANSITION_KINDS: readonly TransitionKind[] = [
+  "cut",
+  "dissolve",
+  "dip",
+  "dipWhite",
+  "wipe",
+  "push",
+  "iris",
+];
 
 export interface Transition {
   readonly kind: TransitionKind;
-  /** Lengde i bilder (sentrert om klippet; 0 for kutt). */
+  /** Lengde i bilder (0 for kutt). */
   readonly frames: number;
+  /**
+   * Overlapp (DEC-0051, REQ-0576): scenen skyves inn over slutten av forrige scene, og filmen blir kortere
+   * med overgangens lengde. Uten overlapp ligger overgangen midt på klippet, og lengden endres ikke.
+   */
+  readonly overlap?: boolean;
 }
 
 /** Lengste overgang i bilder. */
@@ -157,6 +189,13 @@ export interface ProductionSegment extends Entity<SegmentId> {
   readonly orderKey: string;
   readonly startBlockId: BlockId | null;
   readonly endBlockId: BlockId | null;
+  /**
+   * Tidsrommet i scenen (ms fra scenens start) for segmenter til generering (DEC-0053). Slike segmenter
+   * er ikke festet til manusblokker, så manuset kan redigeres fritt; blokkene i segmentet regnes ut fra
+   * tiden.
+   */
+  readonly startMs?: number;
+  readonly endMs?: number;
 }
 
 export interface Take extends Entity<TakeId> {
@@ -167,9 +206,20 @@ export interface Take extends Entity<TakeId> {
   readonly durationFrames: number | null;
   /** Grunnlag for avviksdeteksjon: hvilke blokkrevisjoner materialet ble laget fra. */
   readonly producedFrom: { readonly blockRevisions: Readonly<Record<string, number>> };
+  /**
+   * Manuset versjonen sist er godkjent mot (DEC-0054). `producedFrom` er uforanderlig (INV-07); en
+   * godkjenning av manusendringer lagres her. Mangler = som `producedFrom`.
+   */
+  readonly acceptedFrom?: { readonly blockRevisions: Readonly<Record<string, number>> };
   readonly mediaRef: string | null;
   /** Filinformasjon for importert film (DEC-0047). Uforanderlig, som mediaRef. */
   readonly media?: TakeMedia;
+  /**
+   * Dialogen i filmens egen lyd (DEC-0059, REQ-0341/0342): språkkoden når dialog og øvrig lyd er blandet,
+   * eller «none» når lyden bare er musikk og effekter. Mangler = ikke angitt (regnes som blandet med
+   * norsk dialog, hovedspråket).
+   */
+  readonly audioLanguage?: string;
 }
 
 /** Metadata for en importert filmfil (REQ-0238), lest i nettleseren ved import. */
@@ -281,7 +331,15 @@ export interface Annotation extends Entity<AnnotationId> {
 
 /** Lagtype (mandat 11.1). Bestemmer standard dybde og hvordan laget vises i listen. */
 export type LayerKind =
-  "background" | "midground" | "foreground" | "character" | "object" | "effect" | "other";
+  | "background"
+  | "midground"
+  | "foreground"
+  | "character"
+  | "object"
+  | "effect"
+  | "other"
+  /** Gruppe (DEC-0052, REQ-0174): viser ikke noe selv; lagene i gruppen følger dens bevegelse, synlighet og skalering. */
+  | "group";
 
 /** Plassering av et lag i scenen. Posisjon er midtpunktet i scenens koordinater (piksler). */
 export interface LayerTransform {
@@ -305,6 +363,41 @@ export interface Keyframe {
   readonly value: number;
   /** Hastighetskurve fram til neste nøkkelbilde. */
   readonly easing: Easing;
+  /**
+   * Styrken på ease ut av dette nøkkelbildet og inn i det neste, 0–1, som «influence» i After Effects
+   * (DEC-0052, REQ-0582). Når en av dem er satt, brukes de i stedet for `easing` (unntatt «hold»).
+   */
+  readonly easeOut?: number;
+  readonly easeIn?: number;
+}
+
+/** Bildeskifte i et lag (DEC-0052, REQ-0579): fra og med `frame` viser laget et annet bilde (hardt kutt). */
+export interface ImageSwap {
+  readonly frame: number;
+  readonly assetId: AssetId;
+  readonly assetVariantId: AssetVariantId | null;
+  readonly versionId: AssetVersionId | null;
+}
+
+/** Punkt på en bevegelsesbane. `smooth`: kurvet gjennom punktet; ellers et hjørne (rette linjer). */
+export interface PathPoint {
+  readonly x: number;
+  readonly y: number;
+  readonly smooth: boolean;
+}
+
+/**
+ * Bevegelsesbane for et lag (DEC-0052, REQ-0581/0582): laget følger banen fra `startFrame` til `endFrame`
+ * med jevn fart langs banen, justert av ease ut/inn (0–1) og en tempokurve. Tempokurven er punkter
+ * (andel av tiden → andel av veien) mellom start og slutt; de kan dras som midtpunktet i nivåer i Photoshop.
+ */
+export interface MotionPath {
+  readonly points: readonly PathPoint[];
+  readonly startFrame: number;
+  readonly endFrame: number;
+  readonly easeOut: number;
+  readonly easeIn: number;
+  readonly tempo: readonly { readonly t: number; readonly p: number }[];
 }
 
 /** Kameraets utsnitt: midtpunkt i scenens koordinater, zoom (1 = hele formatet) og rotasjon i grader. */
@@ -354,6 +447,11 @@ export interface Composition extends Entity<CompositionId> {
   /** Kamera og shots (mandat kap. 12). Fylles av kameraeditoren i neste leveranse. */
   readonly camera: CompositionCamera;
   readonly removed: boolean;
+  /**
+   * Manusblokkenes revisjoner 2D-scenen er laget fra eller sist kontrollert mot (DEC-0054). Mangler eller
+   * tomt = ukjent (laget før kontrollen fantes); da flagges ingen avvik.
+   */
+  readonly producedFrom?: { readonly blockRevisions: Readonly<Record<string, number>> };
 }
 
 export interface CompositionLayer extends Entity<LayerId> {
@@ -377,9 +475,28 @@ export interface CompositionLayer extends Entity<LayerId> {
   readonly keyframes: readonly Keyframe[];
   readonly visible: boolean;
   readonly locked: boolean;
-  /** Gruppe (mandat 11.2). Lag med samme gruppe-ID flyttes sammen. */
+  /** Gruppe (mandat 11.2): ID-en til gruppelaget laget hører til (DEC-0052), eller null. */
   readonly groupId: string | null;
+  /** Bildeskifter i laget, sortert etter bilde (DEC-0052). */
+  readonly swaps: readonly ImageSwap[];
+  /** Bevegelsesbane som styrer posisjonen (DEC-0052), eller null. */
+  readonly path: MotionPath | null;
+  /** Gruppens ankerpunkt i scenen (bare gruppelag): der gruppen roteres og skaleres rundt. */
+  readonly anchor: { readonly x: number; readonly y: number } | null;
+  /**
+   * Språkavhengige bilder (DEC-0059, REQ-0337): en annen variant av samme ressurs i en språkversjon (f.eks.
+   * et skilt med engelsk tekst). Mangler = samme bilde i alle språk. Bildeskifter i laget gjelder fortsatt.
+   */
+  readonly languageImages?: readonly LanguageImage[];
   readonly removed: boolean;
+}
+
+/** Et språkavhengig bilde i et lag (DEC-0059). */
+export interface LanguageImage {
+  readonly language: string;
+  readonly assetVariantId: AssetVariantId;
+  /** Låst versjon, eller null = variantens godkjente/nyeste. */
+  readonly versionId: AssetVersionId | null;
 }
 
 /** Lydtyper på egne spor (mandat 13.1). */
@@ -418,6 +535,11 @@ export interface AudioClip extends Entity<AudioClipId> {
   readonly continues: boolean;
   /** Volumpunkter (DEC-0045): nivå i dB på tidspunkter fra klippets start (ms), som i After Effects. */
   readonly volumeKeys: readonly VolumeKey[];
+  /**
+   * Språket lyden hører til (DEC-0059, REQ-0338/0340): språkkode, eller «*» for felles i alle språk.
+   * Mangler = dialog og forteller hører til hovedspråket (norsk); musikk, atmosfære og effekter er felles.
+   */
+  readonly language?: string;
   readonly removed: boolean;
 }
 
@@ -448,6 +570,10 @@ export interface ProjectState {
   readonly audioClips: Readonly<Record<string, AudioClip>>;
   readonly clipParts: Readonly<Record<string, ClipPart>>;
   readonly timeLinks: Readonly<Record<string, TimeLink>>;
+  readonly generationPrompts: Readonly<Record<string, GenerationPrompt>>;
+  readonly continuityEvents: Readonly<Record<string, ContinuityEvent>>;
+  /** Oversettelser av manuset (språkversjoner, DEC-0058). */
+  readonly translations: Readonly<Record<string, Translation>>;
 }
 
 /**
@@ -474,8 +600,104 @@ export interface ClipPart extends Entity<ClipPartId> {
 export interface TimeLink extends Entity<TimeLinkId> {
   readonly occurrenceId: OccurrenceId;
   readonly blockId: BlockId;
+  /**
+   * Ms fra scenens begynnelse. For en hendelse i 2D-scenen (`layerId` satt) er tiden i 2D-scenens egen tid
+   * (bildet i sceneeditoren), så den følger 2D-scenen også når klippet kuttes (DEC-0051).
+   */
   readonly startMs: number;
   readonly endMs: number | null;
+  /** Laget i 2D-scenen hendelsen gjelder (REQ-0095/0096), eller null for en tidskobling i scenen. */
+  readonly layerId: LayerId | null;
+  readonly removed: boolean;
+}
+
+/**
+ * Egen beskrivelse for generering av et segment av en scene (DEC-0053, REQ-0252/0253/0256): det brukeren
+ * har skrevet selv. Den automatiske beskrivelsen lagres ikke (den bygges alltid på nytt fra manus og
+ * ressurser); `basedOn` er den automatiske slik den var da brukeren skrev sin, så det kan vises at
+ * grunnlaget har endret seg. Fjernet = «bruk den automatiske».
+ */
+export interface GenerationPrompt extends Entity<GenerationPromptId> {
+  readonly occurrenceId: OccurrenceId;
+  readonly segmentId: SegmentId;
+  readonly text: string;
+  readonly basedOn: string;
+  readonly removed: boolean;
+}
+
+/** Typer kontinuitetshendelser (REQ-0153). */
+export const CONTINUITY_KINDS = [
+  "haircut",
+  "hair_color",
+  "costume",
+  "injury",
+  "scar",
+  "dirt",
+  "snow_water",
+  "beard",
+  "aging",
+  "carried_object",
+  "other",
+] as const;
+export type ContinuityKind = (typeof CONTINUITY_KINDS)[number];
+
+/**
+ * Hvor lenge forandringen varer (REQ-0154): «permanent» fra hendelsen og fremover i fortellingstid,
+ * «temporary» fram til og med `untilSceneId`, «scene» bare i scenen der den skjer.
+ */
+export type ContinuityDuration = "permanent" | "temporary" | "scene";
+
+/**
+ * Kontinuitetshendelse (DEC-0055, REQ-0150–0165): en karakter (eller annen ressurs) forandrer utseende i en
+ * scene (og ev. ved en bestemt manusblokk). Utseendet før og etter er varianter av ressursen. Hvilket
+ * utseende som gjelder i en scene, regnes etter fortellingstid (INV-09), ikke rekkefølge i filmen.
+ * Forslag fra manuset lagres først når brukeren godkjenner eller avviser dem (REQ-0157/0158).
+ */
+/**
+ * Oversettelse av en manuslinje eller et scenehode til et annet språk (M7 del 2, DEC-0058, REQ-0329–0339).
+ * Hører til samme narrative replikk (blokk-ID-en). Endrer aldri det norske manuset (REQ-0331).
+ * `basedOnRev`: revisjonen av den norske teksten som ble oversatt – er norsk endret siden, må oversettelsen
+ * gjennomgås (REQ-0330). For scenehoder: 0.
+ */
+export interface Translation extends Entity<TranslationId> {
+  /** Manuslinjen (null for scenehode). */
+  readonly blockId: BlockId | null;
+  /** Scenevarianten (scenehodet); null for manuslinjer. */
+  readonly variantId: VariantId | null;
+  /** Språkkode, f.eks. «en». */
+  readonly language: string;
+  readonly text: string;
+  readonly basedOnRev: number;
+  /** «uncertain»: automatisk koblet ved import og ikke godkjent ennå (REQ-0335). */
+  readonly status: "approved" | "uncertain";
+  readonly removed: boolean;
+}
+
+export interface ContinuityEvent extends Entity<ContinuityEventId> {
+  readonly assetId: AssetId;
+  readonly kind: ContinuityKind;
+  /** Hva som skjer («klipper håret»). */
+  readonly description: string;
+  /** Utseendet før (null = ressursens standard). */
+  readonly fromVariantId: AssetVariantId | null;
+  /** Utseendet etter. */
+  readonly toVariantId: AssetVariantId | null;
+  readonly duration: ContinuityDuration;
+  /** Scenen der forandringen skjer (stabil identitet, REQ-0156). */
+  readonly sceneId: SceneId;
+  /** Manusblokken der det skjer (null = fra starten av scenen). */
+  readonly blockId: BlockId | null;
+  /** Midlertidig tilstand: siste scene den gjelder i. */
+  readonly untilSceneId: SceneId | null;
+  /** «approved» brukes; «dismissed» er et avvist forslag (vises ikke, foreslås ikke igjen). */
+  readonly status: "approved" | "dismissed";
+  /**
+   * Lokal hendelse (DEC-0060, REQ-0166): gjelder bare i denne avledede produksjonen. Mangler = hovedfilmens
+   * hendelse, som spinoffene arver.
+   */
+  readonly productionId?: ProductionId;
+  /** Avledede produksjoner der en arvet hendelse er slått av (REQ-0166/0167). Mangler = ingen. */
+  readonly disabledIn?: readonly ProductionId[];
   readonly removed: boolean;
 }
 
@@ -497,6 +719,9 @@ export const COLLECTION_TABLES = {
   audioClips: "audio_clips",
   clipParts: "clip_parts",
   timeLinks: "time_links",
+  generationPrompts: "generation_prompts",
+  continuityEvents: "continuity_events",
+  translations: "translations",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_TABLES;
@@ -521,6 +746,9 @@ export function emptyProjectState(project: Project): ProjectState {
     audioClips: {},
     clipParts: {},
     timeLinks: {},
+    generationPrompts: {},
+    continuityEvents: {},
+    translations: {},
   };
 }
 

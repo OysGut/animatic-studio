@@ -35,6 +35,8 @@ interface Props {
   readonly state: ProjectState;
   readonly productionId: string;
   readonly lockedPages: boolean;
+  /** Språket som eksporteres (DEC-0058). Annet enn «nb»: notater tas ikke med, og språket står i filnavnet. */
+  readonly language?: string;
 }
 
 type Format = "pdf" | "docx";
@@ -43,7 +45,14 @@ function safeName(s: string) {
   return s.replace(/[\\/:*?"<>|]+/g, "-").trim();
 }
 
-export function ExportDialog({ open, onOpenChange, state, productionId, lockedPages }: Props) {
+export function ExportDialog({
+  open,
+  onOpenChange,
+  state,
+  productionId,
+  lockedPages,
+  language = "nb",
+}: Props) {
   const [format, setFormat] = useState<Format>("pdf");
   const [method, setMethod] = useState<NumberingMethod>("production");
   const [includeInactive, setIncludeInactive] = useState(false);
@@ -108,13 +117,17 @@ export function ExportDialog({ open, onOpenChange, state, productionId, lockedPa
         .map((l) => l.trim())
         .filter(Boolean);
       const date = new Date().toISOString().slice(0, 10);
-      const base = safeName(`${state.project.name} – ${production?.name ?? "manus"} – ${date}`);
-      const notes = withNotes
-        ? exportNotes(
-            state,
-            input.map((x) => x.occurrenceId),
-          )
-        : undefined;
+      const base = safeName(
+        `${state.project.name} – ${production?.name ?? "manus"}${language === "nb" ? "" : ` – ${language}`} – ${date}`,
+      );
+      // Notatene står i den norske teksten og passer ikke på en oversettelse
+      const notes =
+        withNotes && language === "nb"
+          ? exportNotes(
+              state,
+              input.map((x) => x.occurrenceId),
+            )
+          : undefined;
       if (format === "pdf") {
         const pages = paginate(input).pages;
         const texts = new Map(input.flatMap((x) => x.blocks.map((b) => [b.id, b.text] as const)));
@@ -285,9 +298,9 @@ export function ExportDialog({ open, onOpenChange, state, productionId, lockedPa
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
-              checked={withNotes}
+              checked={withNotes && language === "nb"}
               onChange={(e) => setWithNotes(e.target.checked)}
-              disabled={noteCount === 0}
+              disabled={noteCount === 0 || language !== "nb"}
             />
             Ta med notater ({noteCount}) –{" "}
             {format === "pdf" ? "som PDF-merknader" : "som Word-kommentarer"}, med navn og

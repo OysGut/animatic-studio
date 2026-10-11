@@ -2,15 +2,23 @@
  * Arbeidsflaten «Manus» (M2): import, sidevisning, scenenavigator, korrigering og redigering med angre.
  * Manus og film bygger på samme aktive struktur (INV-01); alt her er kommandoer mot domenekjernen.
  */
+import { ProductionPicker, useActiveProduction } from "@/app/project/use-production";
+import { ProductionDialog } from "@/app/projects/ProductionDialog";
+import { PromotionDialog } from "@/app/projects/PromotionDialog";
+import { TranslationImportDialog } from "./TranslationImportDialog";
 import {
   Download,
   FileUp,
+  Languages,
+  ListPlus,
+  Plus,
   History,
   Loader2,
   Lock,
   MessageSquarePlus,
   Redo2,
   Undo2,
+  CornerUpLeft,
 } from "lucide-react";
 import {
   useCallback,
@@ -22,16 +30,22 @@ import {
   type KeyboardEvent,
 } from "react";
 import {
+  changedBlockIds,
+  discrepancies,
+  filmClips,
   assetNames,
   allAssetUsage,
   charactersInProduction,
   filterPages,
   isFilterActive,
-  mainProduction,
   matchingOccurrences,
   alignBlockLines,
   annotationsByVariant,
   movedOccurrences,
+  keysEvenly,
+  LANGUAGE_LABEL,
+  translatedState,
+  translationStatus,
   newId,
   pageDecorations,
   resolveRange,
@@ -44,6 +58,7 @@ import {
   sortedAssets,
   type ProjectState,
   type SceneFilter,
+  promotionCandidates,
 } from "@/core";
 import { canEdit, useMembers, useProfiles, useProjectState } from "@/app/project/use-project";
 import { initials, usePresence, type PresentUser } from "@/app/project/use-presence";
@@ -67,11 +82,14 @@ export function ScriptWorkspace({
   projectId,
   userId,
   initialOccurrenceId = null,
+  initialBlockId = null,
 }: {
   projectId: string;
   userId: string;
   /** Scene som skal være valgt når manuset åpnes (f.eks. fra ressursbiblioteket). */
   initialOccurrenceId?: string | null;
+  /** Blokk som skal være valgt (fra monteringen). */
+  initialBlockId?: string | null;
 }) {
   const query = useProjectState(projectId);
   const members = useMembers(projectId);
@@ -100,6 +118,7 @@ export function ScriptWorkspace({
       cmds={cmds}
       userId={userId}
       initialOccurrenceId={initialOccurrenceId}
+      initialBlockId={initialBlockId}
     />
   );
 }
@@ -112,6 +131,7 @@ function Workspace({
   cmds,
   userId,
   initialOccurrenceId,
+  initialBlockId,
 }: {
   state: ProjectState;
   projectId: string;
@@ -120,6 +140,7 @@ function Workspace({
   cmds: Commands;
   userId: string;
   initialOccurrenceId: string | null;
+  initialBlockId: string | null;
 }) {
   const [navWidth, setNavWidth] = usePaneSize("script-nav", 280, 200, 520);
   const [inspWidth, setInspWidth] = usePaneSize("script-inspector", 320, 240, 640);
@@ -131,17 +152,77 @@ function Workspace({
     [state.productions],
   );
   const initialOcc = initialOccurrenceId ? state.occurrences[initialOccurrenceId] : undefined;
-  const [productionId, setProductionId] = useState<string>(
-    () => initialOcc?.productionId ?? mainProduction(state)?.id ?? productions[0]?.id ?? "",
+  const initialBlock =
+    initialOcc && initialBlockId && state.blocks[initialBlockId]?.variantId === initialOcc.variantId
+      ? initialBlockId
+      : null;
+  // Valgt produksjon, felles for arbeidsflatene (DEC-0057)
+  const [productionId, setProductionId] = useActiveProduction(
+    projectId,
+    state,
+    initialOcc?.id ?? null,
   );
   const [selection, setSelection] = useState<Selection>({
     occurrenceId: initialOcc?.id ?? null,
-    blockId: null,
+    blockId: initialBlock,
   });
+  // Scenen har fått egen versjon (ForkVariant, DEC-0057): valgt linje flyttes til den nye versjonen
+  useEffect(() => {
+    const o = selection.occurrenceId ? state.occurrences[selection.occurrenceId] : undefined;
+    const b = selection.blockId ? state.blocks[selection.blockId] : undefined;
+    if (!o || !b || b.variantId === o.variantId) return;
+    if (state.variants[o.variantId]?.basedOnVariantId !== b.variantId) return;
+    const twin = Object.values(state.blocks).find(
+      (x) => x.variantId === o.variantId && x.orderKey === b.orderKey,
+    );
+    setSelection({ occurrenceId: o.id, blockId: twin?.id ?? null });
+  }, [selection.occurrenceId, selection.blockId, state.occurrences, state.blocks, state.variants]);
+  // Produksjonen er byttet (her eller i en annen arbeidsflate): valget gjelder ikke lenger
+  useEffect(() => {
+    const o = selection.occurrenceId ? state.occurrences[selection.occurrenceId] : undefined;
+    if (o && o.productionId !== productionId) setSelection({ occurrenceId: null, blockId: null });
+  }, [productionId, selection.occurrenceId, state.occurrences]);
   const [lockedPages, setLockedPages] = useState(true);
+  // Manusspråk i visningen (DEC-0058): norsk hovedmanus eller en oversettelse. Huskes per prosjekt.
+  const [lang, setLangState] = useState<string>(() => {
+    try {
+      const l = window.localStorage.getItem(`animatic:script-lang:${projectId}`) ?? "nb";
+      return LANGUAGE_LABEL[l] ? l : "nb";
+    } catch {
+      return "nb";
+    }
+  });
+  const setLang = (l: string) => {
+    setLangState(l);
+    try {
+      window.localStorage.setItem(`animatic:script-lang:${projectId}`, l);
+    } catch {
+      // Ikke tilgjengelig: valget gjelder bare denne visningen
+    }
+  };
+  const [importLangOpen, setImportLangOpen] = useState(false);
+  const viewState = useMemo(() => translatedState(state, lang), [state, lang]);
+  const langStatus = useMemo(
+    () => (lang === "nb" ? null : translationStatus(state, productionId, lang)),
+    [state, productionId, lang],
+  );
+  const langMarks = useMemo(
+    () =>
+      langStatus
+        ? {
+            missing: langStatus.missingIds,
+            uncertain: langStatus.uncertainIds,
+            review: langStatus.reviewIds,
+          }
+        : undefined,
+    [langStatus],
+  );
   const [zoomChoice, setZoom] = useState<Zoom>("fit");
   const [fitZoom, setFitZoom] = useState(1);
   const [importOpen, setImportOpen] = useState(false);
+  const [addScenesOpen, setAddScenesOpen] = useState(false);
+  /** Tilbakeføring til hovedfilmen (DEC-0060). */
+  const [promoteOpen, setPromoteOpen] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
   const [versionsOpen, setVersionsOpen] = useState(false);
   // Visningsvalg (REQ-0531, REQ-0073–0075): endrer aldri produksjonen
@@ -200,8 +281,8 @@ function Workspace({
   const zoom = zoomChoice === "fit" ? fitZoom : Number(zoomChoice);
 
   const pagination = useMemo(
-    () => scriptPages(state, productionId, { lockedPages }),
-    [state, productionId, lockedPages],
+    () => scriptPages(viewState, productionId, { lockedPages }),
+    [viewState, productionId, lockedPages],
   );
   // Karakterfilter: karakterer fra biblioteket (med alle navn, KI-29) og navn i manuset som ikke er der ennå
   const characters = useMemo<CharacterOption[]>(() => {
@@ -228,8 +309,8 @@ function Workspace({
     ];
   }, [state, productionId]);
   const matching = useMemo(
-    () => (isFilterActive(filter) ? matchingOccurrences(state, productionId, filter) : null),
-    [state, productionId, filter],
+    () => (isFilterActive(filter) ? matchingOccurrences(viewState, productionId, filter) : null),
+    [viewState, productionId, filter],
   );
   const showOnlySelected = onlySelected && selection.occurrenceId !== null;
   const visibleOcc = useMemo<ReadonlySet<string> | null>(
@@ -244,8 +325,26 @@ function Workspace({
   // Søket markeres litt etter tastetrykket, så skrivingen ikke hakker i lange manus
   const query = useDeferredValue(filter.text ?? "");
   const decor = useMemo(
-    () => pageDecorations(shownPages, state, { query, notes: showNotes }),
-    [shownPages, state, query, showNotes],
+    // Notatene står i den norske teksten; i en annen språkvisning markeres bare søketreff
+    () =>
+      pageDecorations(shownPages, viewState, {
+        query,
+        notes: showNotes && lang === "nb",
+      }),
+    [shownPages, viewState, query, showNotes, lang],
+  );
+  // Blokker endret etter at 2D-scene eller film ble laget (DEC-0054)
+  const changedKey = useMemo(
+    () =>
+      [...changedBlockIds(discrepancies(state, filmClips(state, productionId), { spans: false }))]
+        .sort()
+        .join(","),
+    [state, productionId],
+  );
+  // Samme sett så lenge innholdet er likt (sidene er memoisert og skal ikke tegnes om ved hver endring)
+  const changedBlocks = useMemo(
+    () => new Set(changedKey ? changedKey.split(",") : []),
+    [changedKey],
   );
   const hits = useMemo(
     () => (query.trim() ? searchHits(state, productionId, query) : null),
@@ -303,7 +402,8 @@ function Workspace({
   );
   // Åpnet med en valgt scene: vis den når sidene er tegnet
   useEffect(() => {
-    if (initialOcc) setTimeout(() => scrollTo({ occurrenceId: initialOcc.id, blockId: null }), 60);
+    if (initialOcc)
+      setTimeout(() => scrollTo({ occurrenceId: initialOcc.id, blockId: initialBlock }), 60);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -398,6 +498,11 @@ function Workspace({
 
   /** Markert tekst i manuset → mulig notat på akkurat de ordene (REQ-0535). */
   function onPagesMouseUp() {
+    // Notater festes til den norske teksten; i en annen språkvisning kan ikke markeringen brukes
+    if (lang !== "nb") {
+      setPendingNote(null);
+      return;
+    }
     const sel = window.getSelection();
     if (!editable || !sel || sel.isCollapsed || sel.rangeCount === 0) {
       setPendingNote(null);
@@ -514,24 +619,39 @@ function Workspace({
       {/* Verktøylinje */}
       <div className="flex h-10 shrink-0 items-center gap-2 border-b border-border bg-surface-2 px-3">
         {productions.length > 1 ? (
-          <select
-            aria-label="Produksjon"
-            value={productionId}
-            onChange={(e) => {
-              setProductionId(e.target.value);
-              setSelection({ occurrenceId: null, blockId: null });
-            }}
-            className="h-7 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary"
-          >
-            {productions.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
+          <ProductionPicker state={state} value={productionId} onChange={setProductionId} />
         ) : (
           <span className="text-[13px] font-medium text-text-primary">{productions[0]?.name}</span>
         )}
+        <select
+          aria-label="Manusspråk"
+          value={lang}
+          onChange={(e) => setLang(e.target.value)}
+          title="Språket manuset vises på. Norsk er hovedmanuset; oversettelser endrer det aldri."
+          className="h-7 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary"
+        >
+          {Object.entries(LANGUAGE_LABEL).map(([k, v]) => (
+            <option key={k} value={k}>
+              {v}
+            </option>
+          ))}
+        </select>
+        {langStatus ? (
+          <span
+            className="whitespace-nowrap text-xs text-text-tertiary"
+            title="Linjer som er oversatt, og linjer der norsk er endret etter oversettelsen"
+          >
+            {langStatus.translated} av {langStatus.lines} oversatt
+            {langStatus.review ? ` · ${langStatus.review} må gjennomgås` : ""}
+            {langStatus.uncertain ? ` · ${langStatus.uncertain} usikre` : ""}
+          </span>
+        ) : null}
+        {langStatus && editable ? (
+          <Button size="sm" variant="ghost" onClick={() => setImportLangOpen(true)}>
+            <Languages />
+            Importer engelsk manus …
+          </Button>
+        ) : null}
         <div className="mx-1 h-5 w-px bg-border" aria-hidden />
         <Button
           size="sm"
@@ -553,10 +673,33 @@ function Workspace({
         >
           <Redo2 />
         </Button>
-        {editable ? (
+        {editable && state.productions[productionId]?.kind !== "main" ? (
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => setAddScenesOpen(true)}
+            title="Gjenbruk scener fra hovedfilmen eller en annen produksjon"
+          >
+            <ListPlus />
+            Legg til scener …
+          </Button>
+        ) : editable ? (
           <Button size="sm" variant="secondary" onClick={() => setImportOpen(true)}>
             <FileUp />
             Importer manus
+          </Button>
+        ) : null}
+        {state.productions[productionId]?.kind !== "main" &&
+        promotionCandidates(state, productionId).length > 0 ? (
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setPromoteOpen(true)}
+            title="Før endringer eller nye scener fra denne produksjonen tilbake til hovedfilmen"
+            aria-label="Tilbakefør"
+          >
+            <CornerUpLeft />
+            <span className="hidden 2xl:inline">Tilbakefør …</span>
           </Button>
         ) : null}
         {hasScenes ? (
@@ -739,6 +882,8 @@ function Workspace({
               onActivate={onPageActivate}
               decor={decor}
               onNoteClick={onPageNoteClick}
+              changed={changedBlocks}
+              language={langMarks}
             />
           </div>
           {pendingNote ? (
@@ -779,6 +924,7 @@ function Workspace({
               label="Bredde på inspektøren"
             />
             <Inspector
+              projectId={projectId}
               state={state}
               productionId={productionId}
               selection={selection}
@@ -792,6 +938,7 @@ function Workspace({
               structureEditing={structureEditing}
               authorName={myName}
               focusNote={focusNote}
+              language={lang}
             />
           </div>
         </div>
@@ -800,16 +947,59 @@ function Workspace({
           <p className="text-base font-medium text-text-primary">
             Ingen scener i «{state.productions[productionId]?.name}» ennå
           </p>
-          <p className="max-w-[420px] text-[13px] text-text-secondary">
-            Importer manuset som PDF (for eksempel fra Final Draft) eller Word. Du ser en
-            forhåndsvisning før noe lagres, og importen kan angres.
-          </p>
-          {editable ? (
-            <Button onClick={() => setImportOpen(true)}>
-              <FileUp />
-              Importer manus
-            </Button>
-          ) : null}
+          {state.productions[productionId]?.kind !== "main" ? (
+            <>
+              <p className="max-w-[440px] text-[13px] text-text-secondary">
+                Gjenbruk scener fra hovedfilmen, eller skriv nye scener som bare finnes her. Nye
+                scener legges aldri inn i hovedfilmen automatisk.
+              </p>
+              {editable ? (
+                <div className="flex gap-2">
+                  <Button onClick={() => setAddScenesOpen(true)}>
+                    <ListPlus />
+                    Legg til scener …
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      const occurrenceId = newId<"scene_occurrence">();
+                      const e = cmds.run(
+                        {
+                          type: "CreateScene",
+                          productionId: productionId as never,
+                          sceneId: newId(),
+                          variantId: newId(),
+                          occurrenceId,
+                          orderKey: keysEvenly(1)[0]!,
+                          heading: { intExt: "INT.", location: "NY SCENE", time: "DAG" },
+                          blocks: [{ blockId: newId(), kind: "action", text: "", orderKey: "i" }],
+                          productionNumber: null,
+                        },
+                        "Ny scene",
+                      );
+                      if (!e) setSelection({ occurrenceId, blockId: null });
+                    }}
+                  >
+                    <Plus />
+                    Skriv ny scene
+                  </Button>
+                </div>
+              ) : null}
+            </>
+          ) : (
+            <>
+              <p className="max-w-[420px] text-[13px] text-text-secondary">
+                Importer manuset som PDF (for eksempel fra Final Draft) eller Word. Du ser en
+                forhåndsvisning før noe lagres, og importen kan angres.
+              </p>
+              {editable ? (
+                <Button onClick={() => setImportOpen(true)}>
+                  <FileUp />
+                  Importer manus
+                </Button>
+              ) : null}
+            </>
+          )}
         </div>
       )}
 
@@ -831,11 +1021,39 @@ function Workspace({
         <ExportDialog
           open={exportOpen}
           onOpenChange={setExportOpen}
-          state={state}
+          state={viewState}
           productionId={productionId}
           lockedPages={lockedPages}
+          language={lang}
         />
       ) : null}
+      <TranslationImportDialog
+        state={state}
+        cmds={cmds}
+        productionId={productionId}
+        language={lang === "nb" ? "en" : lang}
+        open={importLangOpen}
+        onOpenChange={setImportLangOpen}
+      />
+      {promoteOpen ? (
+        <PromotionDialog
+          state={state}
+          cmds={cmds}
+          productionId={productionId}
+          initialOccurrenceId={selection.occurrenceId}
+          editable={editable}
+          open
+          onOpenChange={setPromoteOpen}
+        />
+      ) : null}
+      <ProductionDialog
+        key={`add-${productionId}`}
+        state={state}
+        cmds={cmds}
+        open={addScenesOpen}
+        addTo={productionId}
+        onOpenChange={setAddScenesOpen}
+      />
       {editable ? (
         <ImportDialog
           open={importOpen}

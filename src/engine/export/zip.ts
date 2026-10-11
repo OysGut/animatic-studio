@@ -91,15 +91,27 @@ export interface ZipProgress {
  */
 export async function writeZip(
   sink: ZipSink,
-  entries: readonly ZipEntry[],
+  entries: readonly Pick<ZipEntry, "path" | "mediaPath" | "byteSize">[],
   urls: Readonly<Record<string, string>>,
-  o: { onProgress?: (p: ZipProgress) => void; signal?: AbortSignal } = {},
+  o: {
+    onProgress?: (p: ZipProgress) => void;
+    signal?: AbortSignal;
+    /** Filer laget i minnet (f.eks. sikkerhetskopiens data), skrives først. */
+    extra?: readonly { readonly path: string; readonly data: Uint8Array }[];
+  } = {},
 ): Promise<{ missing: string[] }> {
   let chain = Promise.resolve();
   let failure: unknown = null;
+  let written = 0;
   const zip = new Zip((err, data, final) => {
     if (err) {
       failure = err;
+      return;
+    }
+    // Zip uten ZIP64 tåler ikke over 4 GB: stopp heller enn å lage en fil som ikke kan leses
+    written += data.byteLength;
+    if (written > 4_200_000_000) {
+      failure = new Error("Zip-filen ble større enn 4 GB. Ta med færre filer og prøv igjen.");
       return;
     }
     chain = chain.then(() => sink.write(data));
@@ -109,6 +121,13 @@ export async function writeZip(
   let bytes = 0;
   const missing: string[] = [];
   try {
+    for (const x of o.extra ?? []) {
+      const f = new ZipPassThrough(x.path);
+      zip.add(f);
+      f.push(x.data, true);
+      await chain;
+      if (failure) throw failure;
+    }
     for (let i = 0; i < entries.length; i++) {
       if (o.signal?.aborted) throw new DOMException("Avbrutt", "AbortError");
       const e = entries[i]!;

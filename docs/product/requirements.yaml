@@ -898,13 +898,26 @@ requirements:
   - Gitt et flagget avvik, så kan brukeren velge å godkjenne avviket, oppdatere materialet eller angre endringen.
   tests:
   - 'e2e: håndter avvik med hvert av de tre valgene'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/assembly/discrepancy.ts"
+  - "src/core/commands/apply.ts (AcceptScriptChanges, SetProducedFrom)"
+  - "db/migrations/0014_ai_control.sql (compositions.produced_from, takes.accepted_from)"
+  - "src/app/assembly/ScriptChanges.tsx"
+  - "src/app/assembly/FilmTimeline.tsx (merker)"
+  - "src/app/script/ScriptPageView.tsx (merker)"
+  - "src/app/scene-editor/SceneEditorWorkspace.tsx (varsel)"
+  verification:
+  - "tests/unit/discrepancy.test.ts"
+  - "tests/db/run-db-tests.ts (0014 DEC-0054)"
+  - "tests/visual/screens.mjs (80–82)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0054
+    change: "Avvik flagges; brukeren velger godkjenn, oppdater eller angre – ingenting endres automatisk"
   notes: Valgene er hentet fra kap. 34 pkt. 8.
 - id: REQ-0027
   title: Ingen automatisk sletting av film
@@ -3211,13 +3224,20 @@ requirements:
   - Fra manuset kan brukeren navigere til tilsvarende sted i film/tidslinje (jf. REQ-0097).
   tests:
   - 'e2e: navigasjon fra manus'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/script/Inspector.tsx"
+  - "src/app/assembly/AssemblyWorkspace.tsx"
+  - "src/routes/prosjekt.$projectId.montering.tsx"
+  verification:
+  - "tests/visual/screens.mjs::68b-montering-fra-manus"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0049
+    change: "«Vis i filmen» fra manuset åpner monteringen med avspillingshodet på replikken"
   notes: Paraply for 6.1–6.4.
 - id: REQ-0093
   title: Manusblokker koblet til tidsintervaller
@@ -3318,8 +3338,10 @@ requirements:
   status: Under arbeid
   implementation:
   - "src/app/assembly/ClipPanel.tsx"
+  - "src/app/scene-editor/LayerEvents.tsx"
   verification:
   - "tests/visual/screens.mjs::64-synk-replikker"
+  - "tests/unit/transitions.test.ts::en handling kan ha flere hendelser, og tiden følger 2D-scenen når klippet kuttes"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -3327,6 +3349,9 @@ requirements:
   - date: '2026-10-10'
     decision: DEC-0048
     change: "Replikk kan kobles til tidspunkt og dialogopptak; kobling til hendelse i 2D-scenen og til flere filmklipp kommer senere"
+  - date: '2026-10-11'
+    decision: DEC-0051
+    change: "Replikk kan kobles til tidspunkt, dialogopptak og hendelse i 2D-scenen; kobling til flere filmklipp gjenstår"
   notes: ''
 - id: REQ-0096
   title: Handling koblet til flere visuelle hendelser
@@ -3349,13 +3374,22 @@ requirements:
   - En handlingsblokk kan ha flere tilknyttede visuelle hendelser.
   tests:
   - 'enhet: handlingsblokk ↔ hendelser (1:n)'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/scene-editor/LayerEvents.tsx"
+  - "src/core/assembly/film.ts"
+  - "db/migrations/0013_transitions_monochrome.sql"
+  verification:
+  - "tests/unit/transitions.test.ts::en handling kan ha flere hendelser, og tiden følger 2D-scenen når klippet kuttes"
+  - "tests/db/run-db-tests.ts::0013"
+  - "tests/visual/screens.mjs::72-hendelser-i-manus"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0051
+    change: "En handling kan kobles til flere hendelser på lag i 2D-scenen"
   notes: ''
 - id: REQ-0097
   title: Klikk på replikk flytter avspillingshodet
@@ -3456,13 +3490,21 @@ requirements:
   - For hver av de fem materialtypene fungerer både klikk-til-tid og tid-til-markering.
   tests:
   - 'e2e: parametrisert over materialtyper'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Under arbeid
+  implementation:
+  - "src/core/assembly/film.ts"
+  - "src/app/assembly/ClipPanel.tsx"
+  - "src/app/script/Inspector.tsx"
+  verification:
+  - "tests/visual/screens.mjs::68b-montering-fra-manus"
+  - "tests/visual/screens.mjs::61-replikk-klikk"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0049
+    change: "Toveis navigasjon for animatic, 2D-scener, importert film og klipp med flere deler; AI-video finnes ikke ennå"
   notes: AI-generert video-delen forutsetter fase 5. Jf. kap. 34 pkt. 15.
 - id: REQ-0100
   title: Manus og film side ved side
@@ -3484,10 +3526,13 @@ requirements:
   - Et arbeidsoppsett viser manus og filmavspiller samtidig.
   tests:
   - 'visuell: side-ved-side-layout'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/app/assembly/ClipPanel.tsx"
-  verification: []
+  - "src/app/assembly/ClipPanel.tsx"
+  - "src/routes/prosjekt.$projectId.manus.tsx"
+  verification:
+  - "tests/visual/screens.mjs::68b-montering-fra-manus"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -3495,6 +3540,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0043
     change: "Monteringen viser manuset for scenen ved siden av filmen; presis kobling per replikk kommer med tidskoblinger"
+  - date: '2026-10-10'
+    decision: DEC-0049
+    change: "Monteringen viser manuset ved siden av filmen, med replikken under avspillingshodet markert; «Vis i manus» åpner manusvisningen på samme replikk"
   notes: ''
 - id: REQ-0101
   title: Automatisk rulling av/på
@@ -4386,13 +4434,20 @@ requirements:
   - Gitt «Maja» og «Maia» i manuset, så foreslås de som mulig samme karakter.
   tests:
   - 'enhet: likhetsdeteksjon på navn'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/analysis.ts"
+  - "src/app/continuity/ContinuityAnalysisPanel.tsx"
+  verification:
+  - "tests/unit/analysis.test.ts"
+  - "tests/visual/screens.mjs (87–88)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0056
+    change: "Mulige skrivefeil i replikknavn"
   notes: ''
 - id: REQ-0130
   title: Konsekvensanalyse ved ressursendring
@@ -4414,13 +4469,20 @@ requirements:
   - Ved endring av ressurs R listes alle scener (alle produksjoner) som bruker R.
   tests:
   - 'integrasjon: endring → liste over berørte scener'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/library/impact.ts"
+  - "src/app/library/ApproveImpactDialog.tsx"
+  verification:
+  - "tests/unit/analysis.test.ts"
+  - "tests/visual/screens.mjs (87–88)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0056
+    change: "Godkjenning viser scenene som berøres (2D-scener, bildeskifter, andre produksjoner, film)"
   notes: ''
 - id: REQ-0131
   title: Finne scener der en ressurs er brukt
@@ -4478,13 +4540,23 @@ requirements:
   - Berørte scener får status «til gjennomgang» synlig i oversikten.
   tests:
   - 'integrasjon: ressursendring → flagg'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/library/impact.ts"
+  - "src/app/library/ApproveImpactDialog.tsx"
+  - "src/app/scene-editor/LayerInspector.tsx"
+  - "src/core/continuity/analysis.ts"
+  - "src/app/continuity/ContinuityAnalysisPanel.tsx"
+  verification:
+  - "tests/unit/analysis.test.ts"
+  - "tests/visual/screens.mjs (87–88)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0056
+    change: "Eldre versjoner flagges i sceneeditoren og kontinuitetsanalysen"
   notes: ''
 - id: REQ-0133
   title: Ingen automatisk regenerering ved ressursendring
@@ -4536,13 +4608,20 @@ requirements:
   - Fra listen over berørte scener kan brukeren velge et delsett for oppdatering; øvrige forblir uendret.
   tests:
   - 'e2e: selektiv oppdatering'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/library/impact.ts"
+  - "src/app/library/ApproveImpactDialog.tsx"
+  verification:
+  - "tests/unit/analysis.test.ts"
+  - "tests/visual/screens.mjs (87–88)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0056
+    change: "Brukeren velger scene for scene om det nye bildet skal brukes"
   notes: P0 fordi det uttrykker INV-08; selve funksjonen leveres i fase 6.
 - id: REQ-0135
   title: Én karakter, flere visuelle varianter
@@ -5022,13 +5101,23 @@ requirements:
   - For en karakter med registrert endring kan systemet for enhver scene svare hvilken referanse som gjelder.
   tests:
   - 'enhet: tilstandsoppslag per scene'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/index.ts"
+  - "src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved)"
+  - "db/migrations/0015_continuity.sql"
+  - "src/app/library/ContinuityPanel.tsx"
+  verification:
+  - "tests/unit/continuity.test.ts"
+  - "tests/db/run-db-tests.ts (0015 DEC-0055)"
+  - "tests/visual/screens.mjs (83–86)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0055
+    change: "Kontinuitetshendelser med utseende før og etter; riktig utseende per scene"
   notes: Beskrevet som sentral funksjon; jf. kap. 34 pkt. 18. Datamodellen må støtte dette fra fase 1.
 - id: REQ-0151
   title: Registrering av kontinuitetshendelse
@@ -5052,13 +5141,23 @@ requirements:
   - Hendelsen Maja klipper håret kan lagres med alle seks feltene.
   tests:
   - 'enhet: kontinuitetshendelse-skjema'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/index.ts"
+  - "src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved)"
+  - "db/migrations/0015_continuity.sql"
+  - "src/app/library/ContinuityPanel.tsx"
+  verification:
+  - "tests/unit/continuity.test.ts"
+  - "tests/db/run-db-tests.ts (0015 DEC-0055)"
+  - "tests/visual/screens.mjs (83–86)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0055
+    change: "Hendelse med karakter, type, beskrivelse, scene/linje, utseende før/etter og varighet"
   notes: ''
 - id: REQ-0152
   title: Riktig referanse etter fortellingens kronologi
@@ -5083,13 +5182,22 @@ requirements:
     kort-hår-referansen.
   tests:
   - 'integrasjon: referansevalg før/etter hendelse'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/index.ts"
+  - "src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved)"
+  - "db/migrations/0015_continuity.sql"
+  verification:
+  - "tests/unit/continuity.test.ts"
+  - "tests/db/run-db-tests.ts (0015 DEC-0055)"
+  - "tests/visual/screens.mjs (83–86)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0055
+    change: "Utseendet før hendelsen brukes før den i fortellingstiden"
   notes: ''
 - id: REQ-0153
   title: Støttede kontinuitetstyper
@@ -5111,13 +5219,23 @@ requirements:
   - Hver av de 11 typene kan registreres (inkl. en generell «annen fysisk forandring»).
   tests:
   - 'enhet: kontinuitetstype-enum/utvidbar liste'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/index.ts"
+  - "src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved)"
+  - "db/migrations/0015_continuity.sql"
+  - "src/app/library/ContinuityPanel.tsx"
+  verification:
+  - "tests/unit/continuity.test.ts"
+  - "tests/db/run-db-tests.ts (0015 DEC-0055)"
+  - "tests/visual/screens.mjs (83–86)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0055
+    change: "11 typer: hårklipp, hårfarge, kostyme, skade, arr, skitt, snø/vann, skjegg, alder, gjenstand, annet"
   notes: ''
 - id: REQ-0154
   title: Permanente, midlertidige og sceneavhengige tilstander
@@ -5139,13 +5257,23 @@ requirements:
   - En midlertidig tilstand (f.eks. våt) gjelder kun i angitt intervall; en permanent gjelder fra hendelsen og fremover.
   tests:
   - 'enhet: gyldighetsregler per tilstandstype'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/index.ts"
+  - "src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved)"
+  - "db/migrations/0015_continuity.sql"
+  - "src/app/library/ContinuityPanel.tsx"
+  verification:
+  - "tests/unit/continuity.test.ts"
+  - "tests/db/run-db-tests.ts (0015 DEC-0055)"
+  - "tests/visual/screens.mjs (83–86)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0055
+    change: "Varighet: for godt, til en bestemt scene, bare denne scenen"
   notes: ''
 - id: REQ-0155
   title: Visuell kontinuitetstidslinje per karakter
@@ -5168,13 +5296,23 @@ requirements:
   - En karaktervisning viser utseendetilstander langs fortellingstiden med hendelsene markert.
   tests:
   - 'visuell: kontinuitetstidslinje'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/index.ts"
+  - "src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved)"
+  - "db/migrations/0015_continuity.sql"
+  - "src/app/library/ContinuityPanel.tsx"
+  verification:
+  - "tests/unit/continuity.test.ts"
+  - "tests/db/run-db-tests.ts (0015 DEC-0055)"
+  - "tests/visual/screens.mjs (83–86)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0055
+    change: "Tidslinje i fortellingstid per karakter i biblioteket"
   notes: ''
 - id: REQ-0156
   title: Kontinuitetshendelser knyttet til stabile ID-er
@@ -5199,13 +5337,22 @@ requirements:
   - Omnummerering eller flytting av scener endrer ikke hvilken scene/blokk en hendelse er knyttet til.
   tests:
   - 'dataintegritet: hendelse overlever omnummerering'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/index.ts"
+  - "src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved)"
+  - "db/migrations/0015_continuity.sql"
+  verification:
+  - "tests/unit/continuity.test.ts"
+  - "tests/db/run-db-tests.ts (0015 DEC-0055)"
+  - "tests/visual/screens.mjs (83–86)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0055
+    change: "Knyttet til scene-ID og blokk-ID; følger linjen ved deling/sammenslåing"
   notes: ''
 - id: REQ-0157
   title: Forslag til kontinuitetshendelser fra manus
@@ -5229,13 +5376,23 @@ requirements:
   - Gitt en manuspassasje om hårklipp, så opprettes et forslag til kontinuitetshendelse.
   tests:
   - 'integrasjon: analyse av fixtures med kjente hendelser'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/index.ts"
+  - "src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved)"
+  - "db/migrations/0015_continuity.sql"
+  - "src/app/library/ContinuityPanel.tsx"
+  verification:
+  - "tests/unit/continuity.test.ts"
+  - "tests/db/run-db-tests.ts (0015 DEC-0055)"
+  - "tests/visual/screens.mjs (83–86)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0055
+    change: "Forslag fra handlingslinjer der karakteren nevnes (norske nøkkelord)"
   notes: Kan være AI-basert; analyse skal i så fall ikke være eneste vei (manuell registrering).
 - id: REQ-0158
   title: Brukeren godkjenner foreslått tolkning
@@ -5258,13 +5415,23 @@ requirements:
   - Foreslåtte hendelser påvirker ikke referansevalg før de er godkjent.
   tests:
   - 'enhet: forslag ignoreres i referansevalg til godkjent'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/index.ts"
+  - "src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved)"
+  - "db/migrations/0015_continuity.sql"
+  - "src/app/library/ContinuityPanel.tsx"
+  verification:
+  - "tests/unit/continuity.test.ts"
+  - "tests/db/run-db-tests.ts (0015 DEC-0055)"
+  - "tests/visual/screens.mjs (83–86)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0055
+    change: "Forslag brukes først når de er godkjent; avviste lagres og foreslås ikke igjen"
   notes: ''
 - id: REQ-0159
   title: Automatisk valg av karaktertilstand ved generering
@@ -5288,13 +5455,24 @@ requirements:
   - Genereringsprompten for en scene inneholder referansene til gjeldende tilstand for hver karakter i scenen.
   tests:
   - 'integrasjon: promptinnhold per scene'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/index.ts"
+  - "src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved)"
+  - "db/migrations/0015_continuity.sql"
+  - "src/core/generation/scene-prompt.ts (describeAsset)"
+  - "src/app/assembly/GenerateSceneDialog.tsx"
+  verification:
+  - "tests/unit/continuity.test.ts"
+  - "tests/db/run-db-tests.ts (0015 DEC-0055)"
+  - "tests/visual/screens.mjs (83–86)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0055
+    change: "«Generer scene» beskriver karakterene med utseendet som gjelder"
   notes: ''
 - id: REQ-0160
   title: Riktig tilstand uavhengig av produksjonsrekkefølge
@@ -5316,13 +5494,22 @@ requirements:
   - Generering av scener i rekkefølgen 50, 10, 30 gir samme tilstandsvalg som i rekkefølgen 10, 30, 50.
   tests:
   - 'enhet: referansevalg er rekkefølgeuavhengig'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/index.ts"
+  - "src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved)"
+  - "db/migrations/0015_continuity.sql"
+  verification:
+  - "tests/unit/continuity.test.ts"
+  - "tests/db/run-db-tests.ts (0015 DEC-0055)"
+  - "tests/visual/screens.mjs (83–86)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0055
+    change: "Utseendet regnes fra fortellingstid, uavhengig av rekkefølge"
   notes: ''
 - id: REQ-0161
   title: Forslag om produksjonssegmenter ved endring midt i scene
@@ -5347,13 +5534,24 @@ requirements:
   - Gitt hendelse knyttet til en manusblokk midt i en scene, så foreslås to segmenter delt ved den blokken.
   tests:
   - 'integrasjon: segmentforslag'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/index.ts"
+  - "src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved)"
+  - "db/migrations/0015_continuity.sql"
+  - "src/core/generation/scene-prompt.ts (planSegments, continuityCuts)"
+  - "src/app/assembly/GenerateSceneDialog.tsx"
+  verification:
+  - "tests/unit/continuity.test.ts"
+  - "tests/db/run-db-tests.ts (0015 DEC-0055)"
+  - "tests/visual/screens.mjs (83–86)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0055
+    change: "Forslag om segmentgrense ved endring midt i scenen"
   notes: Jf. kap. 34 pkt. 19.
 - id: REQ-0162
   title: Segmenter får riktig karakterreferanse
@@ -5376,13 +5574,23 @@ requirements:
   - Segment før bruker langt-hår-referanse, segment etter bruker kort-hår-referanse.
   tests:
   - 'integrasjon: referanse per segment'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/index.ts"
+  - "src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved)"
+  - "db/migrations/0015_continuity.sql"
+  - "src/core/generation/scene-prompt.ts (buildScenePrompt)"
+  verification:
+  - "tests/unit/continuity.test.ts"
+  - "tests/db/run-db-tests.ts (0015 DEC-0055)"
+  - "tests/visual/screens.mjs (83–86)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0055
+    change: "Hvert segment får utseendet ved sin første linje"
   notes: ''
 - id: REQ-0163
   title: Segmentering bevarer manusscene og nummerering
@@ -5408,13 +5616,23 @@ requirements:
   - Etter segmentering er antall manusscener, scenenumre og scene-ID uendret.
   tests:
   - 'dataintegritet: manusstruktur før/etter segmentering'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/index.ts"
+  - "src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved)"
+  - "db/migrations/0015_continuity.sql"
+  - "src/core/generation/scene-prompt.ts"
+  verification:
+  - "tests/unit/continuity.test.ts"
+  - "tests/db/run-db-tests.ts (0015 DEC-0055)"
+  - "tests/visual/screens.mjs (83–86)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0055
+    change: "Segmentering endrer ikke manus eller scenenumre (tidsrom, ikke nye scener)"
   notes: Linje 479 og 480 er duplikater. Jf. kap. 34 pkt. 19.
 - id: REQ-0164
   title: Støtte for ikke-lineær fortelling
@@ -5466,13 +5684,22 @@ requirements:
     hår.
   tests:
   - 'integrasjon: flashback-scenario'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/index.ts"
+  - "src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved)"
+  - "db/migrations/0015_continuity.sql"
+  verification:
+  - "tests/unit/continuity.test.ts"
+  - "tests/db/run-db-tests.ts (0015 DEC-0055)"
+  - "tests/visual/screens.mjs (83–86)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0055
+    change: "Kontinuitet følger fortellingstid (storyTimes), også tilbakeblikk"
   notes: ''
 - id: REQ-0166
   title: Spinoffer gjenbruker kontinuitet med lokale avvik
@@ -5495,13 +5722,23 @@ requirements:
   - En spinoff arver hovedfilmens kontinuitetshendelser og kan overstyre/fjerne enkelte lokalt.
   tests:
   - 'integrasjon: arv og lokal overstyring'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/index.ts (continuityFor)"
+  - "src/core/commands/apply.ts (SetContinuityEventDisabled, ContinuityEvent.productionId)"
+  - "db/migrations/0018_spinoff_continuity.sql"
+  - "src/app/library/ContinuityPanel.tsx"
+  verification:
+  - "tests/unit/spinoff-continuity.test.ts"
+  - "tests/db/run-db-tests.ts (0018 DEC-0060)"
+  - "tests/visual/screens.mjs (101–102)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0060
+    change: "Spinoffen arver hovedfilmens kontinuitet og kan ha egne og avslåtte hendelser"
   notes: ''
 - id: REQ-0167
   title: Spinoff-kontinuitet endrer ikke hovedfilmen
@@ -5525,13 +5762,23 @@ requirements:
   - Fjerning av hårklipp-hendelsen i spinoffen gir ingen endring i hovedfilmens kontinuitet.
   tests:
   - 'dataintegritet: hovedfilmens kontinuitet uendret etter spinoff-endring'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/index.ts (continuityFor)"
+  - "src/core/commands/apply.ts (SetContinuityEventDisabled, ContinuityEvent.productionId)"
+  - "db/migrations/0018_spinoff_continuity.sql"
+  - "src/app/library/ContinuityPanel.tsx"
+  verification:
+  - "tests/unit/spinoff-continuity.test.ts"
+  - "tests/db/run-db-tests.ts (0018 DEC-0060)"
+  - "tests/visual/screens.mjs (101–102)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0060
+    change: "Avslått hendelse i spinoffen endrer ikke hovedfilmen"
   notes: ''
 - id: REQ-0168
   title: Sceneeditor som sentral arbeidsflate
@@ -5786,11 +6033,17 @@ requirements:
   - "db/migrations/0007_compositions.sql"
   - "src/app/scene-editor/*"
   - "src/engine/compositor/canvas.ts"
+  - "src/core/composition/group.ts"
+  - "src/app/scene-editor/LayersPanel.tsx (Ny gruppe)"
+  - "src/app/scene-editor/layer-actions.ts"
   verification:
   - "tests/unit/composition.test.ts"
   - "tests/db/run-db-tests.ts (0007)"
   - "tests/unit/storage-contract.test.ts"
   - "tests/visual/screens.mjs (28–31)"
+  - "tests/unit/scene-editor-3.test.ts (grupper, regroupFields)"
+  - "tests/db/run-db-tests.ts (0013 DEC-0052)"
+  - "tests/visual/screens.mjs (73)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -5798,6 +6051,12 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0035
     change: "2D-sceneeditor del 1 (datamodell og lagbasert komposisjon) bygget; status Verifisert. Gruppering finnes i datamodellen, men ikke i brukergrensesnittet ennå"
+  - date: '2026-10-11'
+    decision: DEC-0050
+    change: "Grupper i brukerflaten (felles bevegelse, synlighet og skalering) er planlagt i sceneeditor del 3; gruppering finnes bare i datamodellen"
+  - date: '2026-10-11'
+    decision: DEC-0052
+    change: "Gruppering: grupper med ankerpunkt; lag flyttes inn og ut uten å hoppe. Alle egenskapene i kravet er nå med"
   notes: "Gruppering finnes i datamodellen, men er ikke tilgjengelig i brukergrensesnittet ennå (kommer senere). Posisjon, skalering, rotasjon, transparens, synlighet og lagrekkefølge er verifisert."
 - id: REQ-0175
   title: Maskering og komposisjonsfunksjoner
@@ -7694,9 +7953,11 @@ requirements:
   - "src/core/assembly/film.ts"
   - "src/engine/compositor/film.ts"
   - "src/app/assembly/ClipPanel.tsx"
+  - "src/app/assembly/TransitionEditor.tsx"
   verification:
   - "tests/unit/film-and-delete.test.ts::overganger"
   - "tests/visual/screens.mjs::60-montering-film"
+  - "tests/unit/transitions.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -7704,6 +7965,9 @@ requirements:
   - date: '2026-10-10'
     decision: DEC-0047
     change: "Kutt, overtoning og via svart, sentrert om klippet, i avspilling og eksport"
+  - date: '2026-10-11'
+    decision: DEC-0051
+    change: "Sju overgangstyper med lengde og overlapp"
   notes: «Minst kutt og krysstoning» i akseptansekriteriet er en foreslått minimumstolkning – ikke spesifisert i
     mandatet.
 - id: REQ-0224
@@ -8408,13 +8672,19 @@ requirements:
   - Handlingen «Generer scene» er tilgjengelig fra scenevisningen.
   tests:
   - 'e2e: handlingen finnes og starter genereringsflyt'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Under arbeid
+  implementation:
+  - "src/core/generation/scene-prompt.ts#buildScenePrompt"
+  - "src/app/assembly/GenerateSceneDialog.tsx"
+  verification:
+  - "tests/unit/ai-control.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "«Generer scene …» i monteringen: inndeling og beskrivelser; selve genereringen venter på godkjent leverandør (kostnad)"
   notes: ''
 - id: REQ-0244
   title: Samle info og bygge genereringsinstruksjon
@@ -8436,13 +8706,20 @@ requirements:
     jobb starter.
   tests:
   - 'integrasjon: promptbygging fra testscene gir forventet struktur'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/scene-prompt.ts#buildScenePrompt"
+  - "src/app/assembly/GenerateSceneDialog.tsx"
+  verification:
+  - "tests/unit/ai-control.test.ts"
+  - "tests/visual/screens.mjs (79)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Beskrivelsen bygges fra manus, ressurser og kamera"
   notes: ''
 - id: REQ-0245
   title: Promptmotorens informasjonskilder
@@ -8474,13 +8751,19 @@ requirements:
   tests:
   - 'enhet: kontekstinnsamling per kategori'
   - 'integrasjon: karaktertilstand før/etter kontinuitetshendelse velges korrekt'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/scene-prompt.ts#buildScenePrompt"
+  - "src/app/assembly/GenerateSceneDialog.tsx"
+  verification:
+  - "tests/unit/ai-control.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Kilder: scenehode, handling, replikker, ressurser i scenen, kamerabevegelse"
   notes: ''
 - id: REQ-0246
   title: Modellspesifikk prompt
@@ -8533,10 +8816,13 @@ requirements:
     dialog).
   tests:
   - 'enhet: språkdeteksjon på genererte prompter'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/adapters/ai/generate-image.functions.ts"
-  verification: []
+  - "src/core/generation/scene-prompt.ts#buildScenePrompt"
+  - "src/app/assembly/GenerateSceneDialog.tsx"
+  verification:
+  - "tests/unit/ai-control.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -8544,6 +8830,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0045
     change: "Under arbeid: bildebeskrivelser for AI er på engelsk"
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Beskrivelsen er på engelsk"
   notes: Ufravikelig prinsipp nr. 12 i kap. 34.
 - id: REQ-0248
   title: Bevare norsk dialog ordrett
@@ -8566,13 +8855,19 @@ requirements:
   - Gitt en replikk som skal sies ordrett, så finnes replikkens norske tekst tegn-for-tegn identisk i prompten.
   tests:
   - 'enhet: ordrett dialog i prompt er identisk med manustekst'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/scene-prompt.ts#buildScenePrompt"
+  - "src/app/assembly/GenerateSceneDialog.tsx"
+  verification:
+  - "tests/unit/ai-control.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Replikkene tas med ordrett på norsk"
   notes: ''
 - id: REQ-0249
   title: Ingen utilsiktet omskriving av replikker
@@ -8595,13 +8890,20 @@ requirements:
   - Replikker som er merket som ordrett dialog sendes aldri gjennom oversettelsessteget.
   tests:
   - 'enhet: dialog-segmenter er beskyttet/markert i promptbyggeren'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/scene-prompt.ts#buildScenePrompt"
+  - "src/app/assembly/GenerateSceneDialog.tsx"
+  - "src/core/generation/scene-prompt.ts#missingDialogue"
+  verification:
+  - "tests/unit/ai-control.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Advarsel når en egen beskrivelse ikke har replikkene ordrett"
   notes: ''
 - id: REQ-0250
   title: Åpne genereringsprompten
@@ -8623,10 +8925,13 @@ requirements:
   - Fra scenen kan brukeren åpne gjeldende genereringsprompt i en egen visning.
   tests:
   - 'e2e: åpne prompt'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/adapters/ai/generate-image.functions.ts"
-  verification: []
+  - "src/core/generation/scene-prompt.ts#buildScenePrompt"
+  - "src/app/assembly/GenerateSceneDialog.tsx"
+  verification:
+  - "tests/visual/screens.mjs (79)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -8634,6 +8939,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0045
     change: "Under arbeid: beskrivelsen for AI-bilder vises før sending"
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Beskrivelsen per segment kan åpnes i «Generer scene …»"
   notes: Ufravikelig prinsipp nr. 11 (synlige prompter) i kap. 34.
 - id: REQ-0251
   title: Lese genereringsprompten
@@ -8655,10 +8963,13 @@ requirements:
   - Hele prompten, inkludert systeminstruksjon, vises i lesbar form uten avkorting.
   tests:
   - 'e2e: prompttekst i UI er identisk med prompt som sendes'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/adapters/ai/generate-image.functions.ts"
-  verification: []
+  - "src/core/generation/scene-prompt.ts#buildScenePrompt"
+  - "src/app/assembly/GenerateSceneDialog.tsx"
+  verification:
+  - "tests/visual/screens.mjs (79)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -8666,6 +8977,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0045
     change: "Under arbeid: beskrivelsen for AI-bilder kan leses i bildevalget"
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Beskrivelsen vises i sin helhet"
   notes: ''
 - id: REQ-0252
   title: Redigere prompt manuelt
@@ -8687,10 +9001,15 @@ requirements:
   - Brukeren kan endre prompttekst, og endringen brukes ved neste generering.
   tests:
   - 'e2e: rediger prompt og verifiser sendt payload (mock)'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/adapters/ai/generate-image.functions.ts"
-  verification: []
+  - "src/core/commands/apply.ts (SetGenerationPrompt)"
+  - "db/migrations/0014_ai_control.sql (generation_prompts)"
+  - "src/app/assembly/GenerateSceneDialog.tsx"
+  verification:
+  - "tests/unit/ai-control.test.ts"
+  - "tests/db/run-db-tests.ts (0014 DEC-0053)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -8698,6 +9017,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0045
     change: "Under arbeid: beskrivelsen for AI-bilder kan redigeres før sending"
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Beskrivelsen kan endres"
   notes: Ufravikelig prinsipp nr. 11 (redigerbare prompter) i kap. 34.
 - id: REQ-0253
   title: Lagre redigert prompt
@@ -8719,13 +9041,21 @@ requirements:
   - Redigert prompt lagres som egen versjon og finnes etter omlasting.
   tests:
   - 'dataintegritet: redigert prompt persisteres med versjon'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/commands/apply.ts (SetGenerationPrompt)"
+  - "db/migrations/0014_ai_control.sql (generation_prompts)"
+  - "src/app/assembly/GenerateSceneDialog.tsx"
+  verification:
+  - "tests/unit/ai-control.test.ts"
+  - "tests/db/run-db-tests.ts (0014 DEC-0053)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Egne beskrivelser lagres (generation_prompts)"
   notes: ''
 - id: REQ-0254
   title: Kjøre «Generer scene» på nytt
@@ -8778,13 +9108,21 @@ requirements:
     er manuelt endret.
   tests:
   - 'enhet: promptmodell med auto- og overstyringslag'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/commands/apply.ts (SetGenerationPrompt)"
+  - "db/migrations/0014_ai_control.sql (generation_prompts)"
+  - "src/app/assembly/GenerateSceneDialog.tsx"
+  verification:
+  - "tests/unit/ai-control.test.ts"
+  - "tests/visual/screens.mjs (79)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Merket «Automatisk» / «Egen beskrivelse», og varsel når grunnlaget er endret"
   notes: ''
 - id: REQ-0256
   title: Manuelle promptendringer forsvinner ikke
@@ -8807,13 +9145,21 @@ requirements:
     eller brukeren varsles eksplisitt om konflikt.
   tests:
   - 'integrasjon: ombygging av prompt med manuell overstyring'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/commands/apply.ts (SetGenerationPrompt)"
+  - "db/migrations/0014_ai_control.sql (generation_prompts)"
+  - "src/app/assembly/GenerateSceneDialog.tsx"
+  verification:
+  - "tests/unit/ai-control.test.ts"
+  - "tests/db/run-db-tests.ts (0014 DEC-0053)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Egne beskrivelser overskrives aldri av den automatiske; ny inndeling avvises mens de finnes"
   notes: Knyttes til ufravikelig prinsipp nr. 27 (ingen destruktive endringer uten eksplisitt beslutning).
 - id: REQ-0257
   title: Full sporbarhet per generering
@@ -8904,13 +9250,20 @@ requirements:
     må dele scenen manuelt.
   tests:
   - 'integrasjon: segmentplan for lang scene med mock-adapter'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/scene-prompt.ts#planSegments, segmentTimes"
+  - "src/core/commands/apply.ts (ReplaceSegments)"
+  - "db/migrations/0014_ai_control.sql (production_segments.start_ms/end_ms)"
+  verification:
+  - "tests/unit/ai-control.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Lange scener deles automatisk"
   notes: ''
 - id: REQ-0260
   title: Dele generering i segmenter
@@ -8935,13 +9288,21 @@ requirements:
   - Gitt maks varighet M, så har alle segmenter varighet ≤ M og samlet dekker de hele scenen.
   tests:
   - 'enhet: segmenteringsalgoritme dekker scenen uten hull/overlapp utover planlagt overlapp'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/scene-prompt.ts#planSegments, segmentTimes"
+  - "src/core/commands/apply.ts (ReplaceSegments)"
+  - "db/migrations/0014_ai_control.sql (production_segments.start_ms/end_ms)"
+  verification:
+  - "tests/unit/ai-control.test.ts"
+  - "tests/db/run-db-tests.ts (0014 DEC-0053)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Segmenter som tidsrom i scenen, fortrinnsvis ved blokkgrenser"
   notes: Ufravikelig prinsipp nr. 14 i kap. 34.
 - id: REQ-0261
   title: Skjule API-begrensninger for brukeren
@@ -8996,13 +9357,19 @@ requirements:
   tests:
   - 'enhet: segmentgrenser respekterer replikk- og bevegelsesgrenser'
   - 'integrasjon: segmentprompter inneholder naboreferanser'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/scene-prompt.ts#buildScenePrompt"
+  - "src/app/assembly/GenerateSceneDialog.tsx"
+  verification:
+  - "tests/unit/ai-control.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Beskrivelsen ber om kontinuitet fra forrige segment"
   notes: ''
 - id: REQ-0263
   title: Kontinuitetsmekanismer mellom segmenter
@@ -9142,13 +9509,20 @@ requirements:
   - Etter segmentering av en scene er antall manusscener, scenenumre og scene-ID-er uendret.
   tests:
   - 'dataintegritet: manusstruktur før/etter segmentering er identisk'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/scene-prompt.ts#planSegments, segmentTimes"
+  - "src/core/commands/apply.ts (ReplaceSegments)"
+  - "db/migrations/0014_ai_control.sql (production_segments.start_ms/end_ms)"
+  verification:
+  - "tests/unit/ai-control.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Segmentene er ikke festet til manusblokker; manuset kan redigeres fritt"
   notes: Ufravikelig prinsipp nr. 14 i kap. 34.
 - id: REQ-0268
   title: Skille manusstruktur og genereringsstruktur
@@ -9492,13 +9866,21 @@ requirements:
   - Ingen betalt jobb sendes til leverandør før brukeren har sett estimat og godkjent det.
   tests:
   - 'integrasjon: jobb uten godkjent estimat blokkeres'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/cost.ts"
+  - "src/app/ai/AiPanel.tsx"
+  - "src/app/library/GenerateImagePanel.tsx"
+  verification:
+  - "tests/unit/ai-control.test.ts"
+  - "tests/visual/screens.mjs (78)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Anslag vises før generering (eierens pris per bilde)"
   notes: Ufravikelig prinsipp nr. 13 i kap. 34.
 - id: REQ-0280
   title: Innhold i kostnadsestimat
@@ -9550,13 +9932,20 @@ requirements:
   - Når adapteret oppgir usikker pris (f.eks. variabelt antall runder), vises estimatet med tydelig usikkerhetsmerking/intervall.
   tests:
   - 'visuell: usikkerhetsmerking i estimatdialog'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/cost.ts"
+  - "src/app/ai/AiPanel.tsx"
+  - "src/app/library/GenerateImagePanel.tsx"
+  verification:
+  - "tests/unit/ai-control.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Beløp er alltid merket som anslag; ukjent pris vises som ukjent"
   notes: ''
 - id: REQ-0282
   title: Budsjettrammer på flere nivåer
@@ -9579,13 +9968,24 @@ requirements:
   - Brukeren kan sette ramme på hvert av de fem nivåene, og den strengeste gjeldende rammen håndheves.
   tests:
   - 'enhet: budsjetthierarki og håndheving'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/cost.ts"
+  - "src/app/ai/AiPanel.tsx"
+  - "src/app/library/GenerateImagePanel.tsx"
+  - "src/adapters/ai/generate-image.functions.ts (budsjettport)"
+  - "src/core/commands/apply.ts (SetAiBudget)"
+  - "src/adapters/storage/commands.functions.ts (bare eier)"
+  verification:
+  - "tests/unit/ai-control.test.ts"
+  - "tests/db/run-db-tests.ts (0014 DEC-0053)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Månedsramme for prosjektet i tillegg til faste grenser per time og døgn"
   notes: ''
 - id: REQ-0283
   title: Vise estimert og faktisk forbruk
@@ -9607,13 +10007,21 @@ requirements:
   - En forbruksoversikt viser estimert og faktisk kostnad per jobb og aggregert per nivå.
   tests:
   - 'integrasjon: faktisk kostnad registreres fra adapter'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/cost.ts"
+  - "src/app/ai/AiPanel.tsx"
+  - "src/app/library/GenerateImagePanel.tsx"
+  verification:
+  - "tests/unit/ai-control.test.ts"
+  - "tests/visual/screens.mjs (78)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Forbruk denne måneden og anslått kostnad"
   notes: ''
 - id: REQ-0284
   title: Ingen generering utenfor rammer
@@ -9638,13 +10046,20 @@ requirements:
   tests:
   - 'integrasjon: kø stopper jobb som overskrider ramme'
   - 'enhet: automatiske retries teller mot rammen'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/adapters/ai/generate-image.functions.ts (budsjettport)"
+  - "src/core/commands/apply.ts (SetAiBudget)"
+  - "src/adapters/storage/commands.functions.ts (bare eier)"
+  verification:
+  - "tests/unit/ai-control.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Serveren stopper genereringer når månedens ramme er nådd (også ved samtidige forespørsler)"
   notes: ''
 - id: REQ-0285
   title: Generere og sammenligne kandidater
@@ -9873,13 +10288,21 @@ requirements:
   - Status for alle jobber er persistent og kan hentes etter ny innlogging fra en annen nettleser.
   tests:
   - 'integrasjon: hent jobbstatus i ny økt'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/ai/use-ai-jobs.ts"
+  - "src/app/ai/AiPanel.tsx"
+  - "src/core/generation/cost.ts#jobState"
+  verification:
+  - "tests/unit/ai-control.test.ts"
+  - "tests/visual/screens.mjs (78)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Jobbene og status leses fra loggen"
   notes: Ufravikelig prinsipp nr. 26 i kap. 34.
 - id: REQ-0293
   title: Vedvarende backend-jobbarkitektur
@@ -9929,13 +10352,21 @@ requirements:
   - Hver jobb har til enhver tid én av de sju statusene, og overganger vises i køvisningen.
   tests:
   - 'enhet: tilstandsmaskin for jobbstatus'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/ai/use-ai-jobs.ts"
+  - "src/app/ai/AiPanel.tsx"
+  - "src/core/generation/cost.ts#jobState"
+  verification:
+  - "tests/unit/ai-control.test.ts"
+  - "tests/visual/screens.mjs (78)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Statuser: pågår, ferdig, feilet, betalt men ikke lagret, stoppet underveis"
   notes: ''
 - id: REQ-0295
   title: Vise pålitelig fremdrift
@@ -9986,13 +10417,20 @@ requirements:
   - 'Ved innlogging etter fravær vises en oppsummering med fire grupper: ferdig, kjører, feilet, klar til gjennomgang.'
   tests:
   - 'e2e: gjenopptakelsesvisning etter simulert fravær'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/ai/use-ai-jobs.ts"
+  - "src/app/ai/AiPanel.tsx"
+  - "src/core/generation/cost.ts#jobState"
+  verification:
+  - "tests/visual/screens.mjs (78)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Oversikt over jobbene på prosjektoversikten"
   notes: ''
 - id: REQ-0297
   title: Forsøk på nytt
@@ -10015,9 +10453,13 @@ requirements:
   - En mislykket jobb kan startes på nytt; automatiske nye forsøk respekterer kostnadsrammer.
   tests:
   - 'integrasjon: forsøk på nytt med mock-leverandør'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/ai/use-ai-jobs.ts"
+  - "src/app/ai/AiPanel.tsx"
+  - "src/core/generation/cost.ts#jobState"
+  verification:
+  - "tests/visual/screens.mjs (78)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -10025,6 +10467,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0001
     change: 'Revisjon 2026-10-08: tekst/prioritet justert mot mandatet'
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "«Prøv igjen» med samme beskrivelse; nytt resultat blir ny versjon"
   notes: ''
 - id: REQ-0298
   title: Håndtering av API-begrensninger
@@ -10072,13 +10517,20 @@ requirements:
   - Mislykkede jobber viser en forståelig feilmelding og teknisk detalj (uten hemmeligheter).
   tests:
   - 'integrasjon: feilmeldinger med mock-leverandør'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/ai/use-ai-jobs.ts"
+  - "src/app/ai/AiPanel.tsx"
+  - "src/core/generation/cost.ts#jobState"
+  verification:
+  - "tests/visual/screens.mjs (78)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Feilmeldingen fra tjenesten vises ved jobben"
   notes: ''
 - id: REQ-0300
   title: Køprioritering
@@ -10183,13 +10635,21 @@ requirements:
   - Gitt en massejobb der jobb 8 av 15 feiler, så er resultatene fra jobb 1–7 bevart og tilgjengelige.
   tests:
   - 'integrasjon: bevare fullførte resultater med mock-leverandør'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/ai/use-ai-jobs.ts"
+  - "src/app/ai/AiPanel.tsx"
+  - "src/core/generation/cost.ts#jobState"
+  - "src/adapters/ai/generate-image.functions.ts"
+  verification:
+  - "tests/visual/screens.mjs (78)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Ferdige resultater ligger som versjoner i biblioteket og røres ikke av nye forsøk"
   notes: Ufravikelig prinsipp nr. 27 i kap. 34.
 - id: REQ-0304
   title: Versjonering dypt integrert
@@ -10248,13 +10708,20 @@ requirements:
   - For hver av de sju eksempelendringene flagges de produksjonselementene som er avhengige av det endrede objektet.
   tests:
   - 'integrasjon: avhengighetsgraf og flagging for hver eksempelendring'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/assembly/discrepancy.ts"
+  - "src/core/commands/apply.ts (AcceptScriptChanges, SetProducedFrom)"
+  - "db/migrations/0014_ai_control.sql (compositions.produced_from, takes.accepted_from)"
+  verification:
+  - "tests/unit/discrepancy.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0054
+    change: "Endringer i manuset etter at materialet ble laget, oppdages (sammenlignet på tekst)"
   notes: Ufravikelig prinsipp nr. 7 i kap. 34.
 - id: REQ-0306
   title: Tre valg ved avvik
@@ -10279,13 +10746,25 @@ requirements:
   - For et flagget avvik tilbys nøyaktig de tre valgene A, B og C.
   tests:
   - 'e2e: avviksdialog med tre valg'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/assembly/discrepancy.ts"
+  - "src/core/commands/apply.ts (AcceptScriptChanges, SetProducedFrom)"
+  - "db/migrations/0014_ai_control.sql (compositions.produced_from, takes.accepted_from)"
+  - "src/app/assembly/ScriptChanges.tsx"
+  - "src/app/assembly/FilmTimeline.tsx (merker)"
+  - "src/app/script/ScriptPageView.tsx (merker)"
+  - "src/app/scene-editor/SceneEditorWorkspace.tsx (varsel)"
+  verification:
+  - "tests/unit/discrepancy.test.ts"
+  - "tests/visual/screens.mjs (80–82)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0054
+    change: "Tre valg: godkjenn, oppdater i sceneeditoren / importer ny film, angre manusendringen"
   notes: Linjene «A. Godkjenn eksisterende materiale» (l. 878–879) og «B. Oppdater eller generer på nytt» (l. 882–883)
     er duplisert. Ufravikelig prinsipp nr. 8.
 - id: REQ-0307
@@ -10310,13 +10789,21 @@ requirements:
     vises ikke lenger som uavklart.
   tests:
   - 'dataintegritet: beslutningspost inneholder versjonsreferanser'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/assembly/discrepancy.ts"
+  - "src/core/commands/apply.ts (AcceptScriptChanges, SetProducedFrom)"
+  - "db/migrations/0014_ai_control.sql (compositions.produced_from, takes.accepted_from)"
+  verification:
+  - "tests/unit/discrepancy.test.ts"
+  - "tests/db/run-db-tests.ts (0014 DEC-0054)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0054
+    change: "Godkjenning lagres som nytt grunnlag (2D-scene: produced_from, versjon: accepted_from) og logges"
   notes: ''
 - id: REQ-0308
   title: Lokal oppdatering eller AI vurderes
@@ -10427,13 +10914,21 @@ requirements:
     mens Y beholdes.
   tests:
   - 'integrasjon: selektiv revert med uavhengige endringer'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/assembly/ScriptChanges.tsx"
+  - "src/app/assembly/FilmTimeline.tsx (merker)"
+  - "src/app/script/ScriptPageView.tsx (merker)"
+  - "src/app/scene-editor/SceneEditorWorkspace.tsx (varsel)"
+  verification:
+  - "tests/visual/screens.mjs (80–82)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0054
+    change: "Angre manusendringen for hele scenen eller én linje; prøves på en kopi først"
   notes: Krever endringslogg på blokk-/feltnivå, ikke bare lineær angre-stakk – se ADR-0005 / OPEN_QUESTIONS B (selektiv
     angre).
 - id: REQ-0312
@@ -10457,13 +10952,25 @@ requirements:
   - Endring av én replikk flagger kun replikkens dialoglyd og tidsintervallet koblet til replikken, ikke hele scenen.
   tests:
   - 'integrasjon: granularitet på flagging ved replikkendring'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/assembly/discrepancy.ts"
+  - "src/core/commands/apply.ts (AcceptScriptChanges, SetProducedFrom)"
+  - "db/migrations/0014_ai_control.sql (compositions.produced_from, takes.accepted_from)"
+  - "src/app/assembly/ScriptChanges.tsx"
+  - "src/app/assembly/FilmTimeline.tsx (merker)"
+  - "src/app/script/ScriptPageView.tsx (merker)"
+  - "src/app/scene-editor/SceneEditorWorkspace.tsx (varsel)"
+  verification:
+  - "tests/unit/discrepancy.test.ts"
+  - "tests/visual/screens.mjs (80–82)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0054
+    change: "Bare berørt tidsrom flagges (røde merker i tidslinjen)"
   notes: ''
 - id: REQ-0313
   title: Sen endring påvirker ikke tidlig sekvens
@@ -10486,13 +10993,20 @@ requirements:
     uflagget.
   tests:
   - 'integrasjon: flagging per delsekvens'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/assembly/discrepancy.ts"
+  - "src/core/commands/apply.ts (AcceptScriptChanges, SetProducedFrom)"
+  - "db/migrations/0014_ai_control.sql (compositions.produced_from, takes.accepted_from)"
+  verification:
+  - "tests/unit/discrepancy.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0054
+    change: "Endringer flagger bare sitt tidsrom, ikke hele scenen"
   notes: ''
 - id: REQ-0314
   title: Vise usikre konsekvenser
@@ -10514,13 +11028,22 @@ requirements:
   - Flagg med usikker konsekvens har egen visuell markering («mulig berørt»).
   tests:
   - 'visuell: skille sikre og usikre avviksflagg'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/library/impact.ts"
+  - "src/app/library/ApproveImpactDialog.tsx"
+  - "src/core/continuity/analysis.ts"
+  - "src/app/continuity/ContinuityAnalysisPanel.tsx"
+  verification:
+  - "tests/unit/analysis.test.ts"
+  - "tests/visual/screens.mjs (87–88)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0056
+    change: "Usikre konsekvenser og funn merkes som usikre"
   notes: ''
 - id: REQ-0315
   title: Avvik synlige i alle arbeidsflater
@@ -10547,13 +11070,22 @@ requirements:
   - Et uavklart avvik på en scene vises i alle fem visningene.
   tests:
   - 'e2e: avvik synlig i hver av de fem visningene'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/ScriptChanges.tsx"
+  - "src/app/assembly/FilmTimeline.tsx (merker)"
+  - "src/app/script/ScriptPageView.tsx (merker)"
+  - "src/app/scene-editor/SceneEditorWorkspace.tsx (varsel)"
+  - "src/app/projects/ProjectOverview.tsx"
+  verification:
+  - "tests/visual/screens.mjs (80–82)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0054
+    change: "Avvik vises i monteringen, manuset, sceneeditoren og på prosjektoversikten"
   notes: Avvik skal ikke forstyrre ordinær manuslayout (jf. kap. 6.3) – derfor «manusrelaterte arbeidsvisninger».
 - id: REQ-0316
   title: Aldri kassere produksjonsversjoner
@@ -10673,13 +11205,20 @@ requirements:
   - Brukeren kan kjøre kontinuitetsanalyse og få en liste med funn som kan avvises eller følges opp.
   tests:
   - 'integrasjon: analyse på testmanus gir forventede funn'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/analysis.ts"
+  - "src/app/continuity/ContinuityAnalysisPanel.tsx"
+  verification:
+  - "tests/unit/analysis.test.ts"
+  - "tests/visual/screens.mjs (87–88)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0056
+    change: "Rådgivende kontinuitetsanalyse på prosjektoversikten"
   notes: ''
 - id: REQ-0320
   title: Karakter omtalt før introduksjon
@@ -10703,13 +11242,20 @@ requirements:
     scene/manusblokk.
   tests:
   - 'integrasjon: analyse av konstruert testtilfelle'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/analysis.ts"
+  - "src/app/continuity/ContinuityAnalysisPanel.tsx"
+  verification:
+  - "tests/unit/analysis.test.ts"
+  - "tests/visual/screens.mjs (87–88)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0056
+    change: "Karakter med i handlingen før introduksjonen"
   notes: ''
 - id: REQ-0321
   title: Objekt brukt før etablering
@@ -10732,13 +11278,20 @@ requirements:
     scene/manusblokk.
   tests:
   - 'integrasjon: analyse av konstruert testtilfelle'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/analysis.ts"
+  - "src/app/continuity/ContinuityAnalysisPanel.tsx"
+  verification:
+  - "tests/unit/analysis.test.ts"
+  - "tests/visual/screens.mjs (87–88)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0056
+    change: "Gjenstand i bestemt form før den er etablert"
   notes: ''
 - id: REQ-0322
   title: Dialog viser til deaktivert scene
@@ -10762,13 +11315,20 @@ requirements:
     scene/manusblokk.
   tests:
   - 'integrasjon: analyse av konstruert testtilfelle'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/analysis.ts"
+  - "src/app/continuity/ContinuityAnalysisPanel.tsx"
+  verification:
+  - "tests/unit/analysis.test.ts"
+  - "tests/visual/screens.mjs (87–88)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0056
+    change: "Replikk viser til noe som bare finnes i en deaktivert scene"
   notes: ''
 - id: REQ-0323
   title: Fysisk forandring uten årsak
@@ -10792,13 +11352,20 @@ requirements:
     scene/manusblokk.
   tests:
   - 'integrasjon: analyse av konstruert testtilfelle'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/analysis.ts"
+  - "src/app/continuity/ContinuityAnalysisPanel.tsx"
+  verification:
+  - "tests/unit/analysis.test.ts"
+  - "tests/visual/screens.mjs (87–88)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0056
+    change: "Utseende avviker fra kontinuiteten eller byttes uten hendelse"
   notes: ''
 - id: REQ-0324
   title: Tidsmessige motsetninger i sceneorden
@@ -10822,13 +11389,20 @@ requirements:
     scene/manusblokk.
   tests:
   - 'integrasjon: analyse av konstruert testtilfelle'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/analysis.ts"
+  - "src/app/continuity/ContinuityAnalysisPanel.tsx"
+  verification:
+  - "tests/unit/analysis.test.ts"
+  - "tests/visual/screens.mjs (87–88)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0056
+    change: "Motsetninger i fortellingstid og kontinuitet"
   notes: ''
 - id: REQ-0325
   title: Spinoff mangler nødvendig informasjon
@@ -10853,13 +11427,21 @@ requirements:
     scene/manusblokk.
   tests:
   - 'integrasjon: analyse av konstruert testtilfelle'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/analysis.ts (spinoff_gap)"
+  - "src/app/continuity/ContinuityAnalysisPanel.tsx"
+  verification:
+  - "tests/unit/spinoff-continuity.test.ts"
+  - "tests/db/run-db-tests.ts (0018 DEC-0060)"
+  - "tests/visual/screens.mjs (101–102)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0060
+    change: "Analysen finner informasjon spinoffen mangler"
   notes: Avhenger av spinoff-modellen (kap. 24).
 - id: REQ-0326
   title: Ingen automatisk omskriving av historien
@@ -10974,13 +11556,24 @@ requirements:
   - Brukeren kan legge til en engelsk språkversjon som er koblet til de norske scene- og replikk-ID-ene.
   tests:
   - 'integrasjon: opprett engelsk versjon koblet til norsk'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/translation/index.ts"
+  - "src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved)"
+  - "db/migrations/0016_translations.sql"
+  - "src/app/script/ScriptWorkspace.tsx"
+  verification:
+  - "tests/unit/translation.test.ts"
+  - "tests/golden/translation.test.ts (referansemanuset)"
+  - "tests/db/run-db-tests.ts (0016 DEC-0058)"
+  - "tests/visual/screens.mjs (93–95)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0058
+    change: "Engelsk som tilknyttet språkversjon (oversettelse per linje og scenehode)"
   notes: Ufravikelig prinsipp nr. 5 (engelsk er tilknyttet) gjør koblingsprinsippet P0 i datamodellen, selve funksjonen
     er fase 7.
 - id: REQ-0330
@@ -11003,13 +11596,24 @@ requirements:
   - Gitt en norsk replikk endres, så flagges tilsvarende engelsk replikk som «må gjennomgås».
   tests:
   - 'integrasjon: flagging av oversettelse ved norsk endring'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/translation/index.ts"
+  - "src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved)"
+  - "db/migrations/0016_translations.sql"
+  - "src/app/script/TranslationPanel.tsx"
+  verification:
+  - "tests/unit/translation.test.ts"
+  - "tests/golden/translation.test.ts (referansemanuset)"
+  - "tests/db/run-db-tests.ts (0016 DEC-0058)"
+  - "tests/visual/screens.mjs (93–95)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0058
+    change: "Endret norsk tekst eller scenehode merker oversettelsen «må gjennomgås»"
   notes: ''
 - id: REQ-0331
   title: Engelsk endrer ikke norsk
@@ -11032,13 +11636,23 @@ requirements:
   - Etter redigering av engelsk replikk er norsk replikk uendret.
   tests:
   - 'dataintegritet: norsk manus uendret etter engelsk redigering'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/translation/index.ts"
+  - "src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved)"
+  - "db/migrations/0016_translations.sql"
+  verification:
+  - "tests/unit/translation.test.ts"
+  - "tests/golden/translation.test.ts (referansemanuset)"
+  - "tests/db/run-db-tests.ts (0016 DEC-0058)"
+  - "tests/visual/screens.mjs (93–95)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0058
+    change: "Oversettelser endrer aldri det norske manuset"
   notes: ''
 - id: REQ-0332
   title: Importere oversatt engelsk manus
@@ -11060,9 +11674,17 @@ requirements:
   - Brukeren kan importere engelsk manus (DOCX), og det parses som en språkversjon, ikke som et nytt hovedmanus.
   tests:
   - 'import/eksport: import av engelsk referansemanus (DOCX)'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/translation/index.ts"
+  - "src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved)"
+  - "db/migrations/0016_translations.sql"
+  - "src/app/script/TranslationImportDialog.tsx"
+  verification:
+  - "tests/unit/translation.test.ts"
+  - "tests/golden/translation.test.ts (referansemanuset)"
+  - "tests/db/run-db-tests.ts (0016 DEC-0058)"
+  - "tests/visual/screens.mjs (93–95)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -11070,6 +11692,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0002
     change: Akseptanse/merknad tilpasset nytt referansemanus
+  - date: '2026-10-11'
+    decision: DEC-0058
+    change: "Import av ferdig oversatt manus (PDF/Word)"
   notes: Engelsk referansemanus (DOCX) er bekreftet tilgjengelig (jf. DEC-0002).
 - id: REQ-0333
   title: Automatisk kobling engelsk–norsk
@@ -11094,9 +11719,16 @@ requirements:
   - For referansemanusene kobles en høy andel scener og replikker korrekt, og hver kobling har en sikkerhetsgrad.
   tests:
   - 'integrasjon: koblingsnøyaktighet mot manuelt fasitsett for referansemanusene'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/translation/index.ts"
+  - "src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved)"
+  - "db/migrations/0016_translations.sql"
+  verification:
+  - "tests/unit/translation.test.ts"
+  - "tests/golden/translation.test.ts (referansemanuset)"
+  - "tests/db/run-db-tests.ts (0016 DEC-0058)"
+  - "tests/visual/screens.mjs (93–95)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -11104,6 +11736,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0002
     change: Akseptanse/merknad tilpasset nytt referansemanus
+  - date: '2026-10-11'
+    decision: DEC-0058
+    change: "Automatisk kobling av scener og linjer etter struktur, karakterer og rekkefølge"
   notes: ''
 - id: REQ-0334
   title: Ikke bare scenenumre eller ordrett tekst
@@ -11126,13 +11761,23 @@ requirements:
   - Gitt et engelsk manus der scenenumre er forskjøvet, så kobles scener likevel korrekt basert på innhold.
   tests:
   - 'integrasjon: kobling med forskjøvne scenenumre'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/translation/index.ts"
+  - "src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved)"
+  - "db/migrations/0016_translations.sql"
+  verification:
+  - "tests/unit/translation.test.ts"
+  - "tests/golden/translation.test.ts (referansemanuset)"
+  - "tests/db/run-db-tests.ts (0016 DEC-0058)"
+  - "tests/visual/screens.mjs (93–95)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0058
+    change: "Koblingen bruker ikke bare scenenumre eller ordrett tekst (testet uten numre og med manglende scene)"
   notes: ''
 - id: REQ-0335
   title: Manuell godkjenning av usikre koblinger
@@ -11155,13 +11800,25 @@ requirements:
   - Koblinger under en sikkerhetsterskel vises i en gjennomgangsliste der brukeren kan godkjenne, endre eller avvise.
   tests:
   - 'e2e: gjennomgang av usikre koblinger'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/translation/index.ts"
+  - "src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved)"
+  - "db/migrations/0016_translations.sql"
+  - "src/app/script/TranslationImportDialog.tsx"
+  - "src/app/script/TranslationPanel.tsx"
+  verification:
+  - "tests/unit/translation.test.ts"
+  - "tests/golden/translation.test.ts (referansemanuset)"
+  - "tests/db/run-db-tests.ts (0016 DEC-0058)"
+  - "tests/visual/screens.mjs (93–95)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0058
+    change: "Usikre koblinger godkjennes manuelt"
   notes: ''
 - id: REQ-0336
   title: Delt produksjonsmateriale mellom språk
@@ -11186,13 +11843,24 @@ requirements:
     norsk, uten kopiering.
   tests:
   - 'dataintegritet: delte referanser, ikke kopier'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/language/index.ts"
+  - "src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk)"
+  - "src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage)"
+  - "db/migrations/0017_language_versions.sql"
+  - "src/app/assembly/AssemblyWorkspace.tsx"
+  verification:
+  - "tests/unit/language.test.ts"
+  - "tests/db/run-db-tests.ts (0017 DEC-0059)"
+  - "tests/visual/screens.mjs (96–99)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0059
+    change: "Språkversjonen bruker samme scener, 2D-scener, kamera, ressurser og klipp; like scenelengder"
   notes: ''
 - id: REQ-0337
   title: Bytte språkavhengige ressurser
@@ -11214,13 +11882,24 @@ requirements:
   - Brukeren kan bytte f.eks. et skilt med tekst eller et dialogklipp i engelsk versjon uten at norsk endres.
   tests:
   - 'integrasjon: språkspesifikk overstyring av ressurs'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/language/index.ts"
+  - "src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk)"
+  - "src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage)"
+  - "db/migrations/0017_language_versions.sql"
+  - "src/app/scene-editor/LayerInspector.tsx"
+  verification:
+  - "tests/unit/language.test.ts"
+  - "tests/db/run-db-tests.ts (0017 DEC-0059)"
+  - "tests/visual/screens.mjs (96–99)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0059
+    change: "Bilde per språk i lag (annen variant av samme ressurs)"
   notes: ''
 - id: REQ-0338
   title: Flere språkspesifikke lydfiler per replikk
@@ -11242,13 +11921,25 @@ requirements:
   - En replikk kan ha både norsk og engelsk lydfil.
   tests:
   - 'enhet: replikk–lydfil-relasjon per språk'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/language/index.ts"
+  - "src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk)"
+  - "src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage)"
+  - "db/migrations/0017_language_versions.sql"
+  - "src/app/assembly/AudioClipPanel.tsx"
+  - "src/app/assembly/AddAudioDialog.tsx"
+  verification:
+  - "tests/unit/language.test.ts"
+  - "tests/db/run-db-tests.ts (0017 DEC-0059)"
+  - "tests/visual/screens.mjs (96–99)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0059
+    change: "Lydklipp per språk; en replikk kan ha lydfil per språk"
   notes: ''
 - id: REQ-0339
   title: Én narrativ replikk på tvers av språk
@@ -11273,13 +11964,34 @@ requirements:
   - Norsk og engelsk tekst og lyd for samme replikk deler én replikk-ID.
   tests:
   - 'dataintegritet: språkvarianter refererer samme replikk-ID'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/translation/index.ts"
+  - "src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved)"
+  - "db/migrations/0016_translations.sql"
+  - "src/core/language/index.ts"
+  - "src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk)"
+  - "src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage)"
+  - "db/migrations/0017_language_versions.sql"
+  - "src/core/translation/index.ts"
+  verification:
+  - "tests/unit/translation.test.ts"
+  - "tests/golden/translation.test.ts (referansemanuset)"
+  - "tests/db/run-db-tests.ts (0016 DEC-0058)"
+  - "tests/visual/screens.mjs (93–95)"
+  - "tests/unit/language.test.ts"
+  - "tests/db/run-db-tests.ts (0017 DEC-0059)"
+  - "tests/visual/screens.mjs (96–99)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0058
+    change: "Tekster på ulike språk hører til samme replikk-ID; lydfiler per språk gjenstår"
+  - date: '2026-10-11'
+    decision: DEC-0059
+    change: "Tekst og lyd på flere språk hører til samme replikk-ID"
   notes: Krever at replikk-ID finnes fra fase 1 (kap. 3.2).
 - id: REQ-0340
   title: Gjenbruk av ikke-dialoglyd
@@ -11301,13 +12013,23 @@ requirements:
   - Engelsk versjon bruker samme musikk-, atmosfære- og effektspor som norsk uten kopiering.
   tests:
   - 'integrasjon: delt ikke-dialoglyd mellom språk'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/language/index.ts"
+  - "src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk)"
+  - "src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage)"
+  - "db/migrations/0017_language_versions.sql"
+  verification:
+  - "tests/unit/language.test.ts"
+  - "tests/db/run-db-tests.ts (0017 DEC-0059)"
+  - "tests/visual/screens.mjs (96–99)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0059
+    change: "Musikk, atmosfære og effekter er felles i alle språk"
   notes: ''
 - id: REQ-0341
   title: Importert film med blandet lyd
@@ -11330,13 +12052,24 @@ requirements:
   - Importert film kan merkes som «blandet lydspor», og systemet håndterer da språkbytte uten å anta separat dialogspor.
   tests:
   - 'integrasjon: språkversjon av scene med blandet lyd'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/language/index.ts"
+  - "src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk)"
+  - "src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage)"
+  - "db/migrations/0017_language_versions.sql"
+  - "src/app/assembly/ClipPanel.tsx"
+  verification:
+  - "tests/unit/language.test.ts"
+  - "tests/db/run-db-tests.ts (0017 DEC-0059)"
+  - "tests/visual/screens.mjs (96–99)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0059
+    change: "Importert film merkes med dialogspråk i lyden eller «bare musikk og effekter»"
   notes: ''
 - id: REQ-0342
   title: Ikke love perfekt dialogutskifting
@@ -11359,13 +12092,25 @@ requirements:
   - For scener med blandet lyd vises en tydelig begrensning ved språkbytte.
   tests:
   - 'manuell: UI-tekst ved blandet lyd'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/language/index.ts"
+  - "src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk)"
+  - "src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage)"
+  - "db/migrations/0017_language_versions.sql"
+  - "src/app/assembly/LanguageVersionDialog.tsx"
+  - "src/app/assembly/ExportAnimaticDialog.tsx"
+  verification:
+  - "tests/unit/language.test.ts"
+  - "tests/db/run-db-tests.ts (0017 DEC-0059)"
+  - "tests/visual/screens.mjs (96–99)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0059
+    change: "Varsel om blandet filmlyd i språkversjonen og eksporten"
   notes: ''
 - id: REQ-0343
   title: Identifisere timingkonflikter
@@ -11390,13 +12135,24 @@ requirements:
     forlenge pause, justere klipp).
   tests:
   - 'integrasjon: deteksjon av timingkonflikt'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/language/index.ts"
+  - "src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk)"
+  - "src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage)"
+  - "db/migrations/0017_language_versions.sql"
+  - "src/app/assembly/LanguageVersionDialog.tsx"
+  verification:
+  - "tests/unit/language.test.ts"
+  - "tests/db/run-db-tests.ts (0017 DEC-0059)"
+  - "tests/visual/screens.mjs (96–99)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0059
+    change: "Timingkonflikter med forslag (start tidligere, kort ned, overlapp, pause)"
   notes: ''
 - id: REQ-0344
   title: Språktiming endrer ikke hovedfilm
@@ -11419,13 +12175,23 @@ requirements:
   - Etter timingjustering i engelsk versjon er norsk filmmontering uendret.
   tests:
   - 'dataintegritet: norsk tidslinje uendret etter engelsk justering'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/language/index.ts"
+  - "src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk)"
+  - "src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage)"
+  - "db/migrations/0017_language_versions.sql"
+  verification:
+  - "tests/unit/language.test.ts"
+  - "tests/db/run-db-tests.ts (0017 DEC-0059)"
+  - "tests/visual/screens.mjs (96–99)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0059
+    change: "Språktiming endrer aldri hovedfilmen; forslag flytter bare språkets lyd"
   notes: INV-06 gjelder ordlyden manus; her brukes det analogt for filmtiming.
 - id: REQ-0345
   title: Skille materialtyper for leppesynk
@@ -11448,13 +12214,23 @@ requirements:
   - Hvert klipp har en materialtype blant de fem, som brukes i vurdering av leppesynkbehov.
   tests:
   - 'enhet: materialtype-klassifisering'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/language/index.ts"
+  - "src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk)"
+  - "src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage)"
+  - "db/migrations/0017_language_versions.sql"
+  verification:
+  - "tests/unit/language.test.ts"
+  - "tests/db/run-db-tests.ts (0017 DEC-0059)"
+  - "tests/visual/screens.mjs (96–99)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0059
+    change: "Fem materialtyper per klipp"
   notes: ''
 - id: REQ-0346
   title: Vurdere behov for leppesynk
@@ -11478,13 +12254,24 @@ requirements:
   - For et stillbilde foreslås direkte dialogbytte; for AI-video med synlig munn foreslås leppesynk/målrettet oppdatering.
   tests:
   - 'integrasjon: anbefaling per materialtype'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/language/index.ts"
+  - "src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk)"
+  - "src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage)"
+  - "db/migrations/0017_language_versions.sql"
+  - "src/app/assembly/LanguageVersionDialog.tsx"
+  verification:
+  - "tests/unit/language.test.ts"
+  - "tests/db/run-db-tests.ts (0017 DEC-0059)"
+  - "tests/visual/screens.mjs (96–99)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0059
+    change: "Råd om direkte dialogbytte eller leppesynk per materialtype"
   notes: ''
 - id: REQ-0347
   title: Ingen automatisk full regenerering
@@ -11508,13 +12295,23 @@ requirements:
   - Språkbytte starter aldri en regenerering uten brukerens beslutning og kostnadsgodkjenning.
   tests:
   - 'integrasjon: ingen jobber opprettes automatisk ved språkbytte'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/language/index.ts"
+  - "src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk)"
+  - "src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage)"
+  - "db/migrations/0017_language_versions.sql"
+  verification:
+  - "tests/unit/language.test.ts"
+  - "tests/db/run-db-tests.ts (0017 DEC-0059)"
+  - "tests/visual/screens.mjs (96–99)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0059
+    change: "Språkbytte starter aldri regenerering; bare råd"
   notes: ''
 - id: REQ-0348
   title: Språkspesifikk filmeksport
@@ -11536,13 +12333,25 @@ requirements:
   - Eksport kan gjøres per språk og gir film med språkets dialog og ellers felles materiale.
   tests:
   - 'import/eksport: norsk og engelsk filmeksport'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/language/index.ts"
+  - "src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk)"
+  - "src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage)"
+  - "db/migrations/0017_language_versions.sql"
+  - "src/app/assembly/ExportAnimaticDialog.tsx"
+  - "src/engine/export/animatic.ts"
+  verification:
+  - "tests/unit/language.test.ts"
+  - "tests/db/run-db-tests.ts (0017 DEC-0059)"
+  - "tests/visual/screens.mjs (96–99)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0059
+    change: "Eksport av film per dialogspråk"
   notes: ''
 - id: REQ-0349
   title: Språkspesifikk manuseksport
@@ -11565,13 +12374,24 @@ requirements:
   - Manuseksport kan velges per språk med korrekt manusformat.
   tests:
   - 'import/eksport: norsk og engelsk manuseksport'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/translation/index.ts"
+  - "src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved)"
+  - "db/migrations/0016_translations.sql"
+  - "src/app/script/ExportDialog.tsx"
+  verification:
+  - "tests/unit/translation.test.ts"
+  - "tests/golden/translation.test.ts (referansemanuset)"
+  - "tests/db/run-db-tests.ts (0016 DEC-0058)"
+  - "tests/visual/screens.mjs (93–95)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0058
+    change: "Eksport av norsk og engelsk manus"
   notes: ''
 - id: REQ-0350
   title: Eksport av separate dialogspor
@@ -11594,13 +12414,25 @@ requirements:
   - Dialog kan eksporteres som egen lydfil per språk, adskilt fra musikk og effekter.
   tests:
   - 'import/eksport: separat dialogspor'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/language/index.ts"
+  - "src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk)"
+  - "src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage)"
+  - "db/migrations/0017_language_versions.sql"
+  - "src/engine/export/audio-stem.ts"
+  - "src/app/assembly/ExportAnimaticDialog.tsx"
+  verification:
+  - "tests/unit/language.test.ts"
+  - "tests/db/run-db-tests.ts (0017 DEC-0059)"
+  - "tests/visual/screens.mjs (96–99)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0059
+    change: "Eksport av dialogspor (WAV) per språk"
   notes: ''
 - id: REQ-0351
   title: Eksport av undertekstfiler
@@ -11622,13 +12454,24 @@ requirements:
   - Undertekstfil genereres fra replikkenes tidskoblinger i aktiv film med korrekt timing.
   tests:
   - 'import/eksport: undertekstfil validerer og har tider i samsvar med aktiv film'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/translation/index.ts"
+  - "src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved)"
+  - "db/migrations/0016_translations.sql"
+  - "src/app/assembly/SubtitleDialog.tsx"
+  verification:
+  - "tests/unit/translation.test.ts"
+  - "tests/golden/translation.test.ts (referansemanuset)"
+  - "tests/db/run-db-tests.ts (0016 DEC-0058)"
+  - "tests/visual/screens.mjs (93–95)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0058
+    change: "Eksport av undertekstfiler (SRT/WebVTT)"
   notes: Undertekstformat (SRT/VTT/annet) er ikke spesifisert.
 - id: REQ-0352
   title: Uavhengige språkvalg
@@ -11650,13 +12493,36 @@ requirements:
   - Gitt norsk UI, kan brukeren vise engelsk manus, spille av med norsk dialog og engelske undertekster.
   tests:
   - 'e2e: kombinasjon av fire uavhengige språkvalg'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/translation/index.ts"
+  - "src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved)"
+  - "db/migrations/0016_translations.sql"
+  - "src/app/assembly/SubtitleDialog.tsx"
+  - "src/core/language/index.ts"
+  - "src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk)"
+  - "src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage)"
+  - "db/migrations/0017_language_versions.sql"
+  - "src/app/assembly/use-film-language.tsx"
+  - "src/engine/compositor/film.ts (drawSubtitle)"
+  verification:
+  - "tests/unit/translation.test.ts"
+  - "tests/golden/translation.test.ts (referansemanuset)"
+  - "tests/db/run-db-tests.ts (0016 DEC-0058)"
+  - "tests/visual/screens.mjs (93–95)"
+  - "tests/unit/language.test.ts"
+  - "tests/db/run-db-tests.ts (0017 DEC-0059)"
+  - "tests/visual/screens.mjs (96–99)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0058
+    change: "Manusspråk og undertekstspråk velges uavhengig; grensesnitt- og dialogspråk gjenstår"
+  - date: '2026-10-11'
+    decision: DEC-0059
+    change: "Dialogspråk og undertekster velges uavhengig av manusspråk"
   notes: ''
 - id: REQ-0353
   title: Avledede produksjoner i samme prosjekt
@@ -11683,13 +12549,21 @@ requirements:
   tests:
   - 'enhet: produksjonstype-enum inneholder alle åtte typer'
   - 'integrasjon: flere produksjoner under ett prosjekt-ID'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/production/index.ts"
+  - "src/app/projects/ProductionList.tsx"
+  verification:
+  - "tests/unit/production.test.ts"
+  - "tests/db/run-db-tests.ts (DEC-0057)"
+  - "tests/visual/screens.mjs (89–92)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0057
+    change: "Flere produksjoner i prosjektet: spinoff, trailer, teaser, kortfilm, pitch, pilot, alternativ, annen"
   notes: Datamodellen (fase 1) må ha produksjon som eget objekt selv om funksjonen kommer i fase 7.
 - id: REQ-0354
   title: Opprette avledet produksjon fra utvalgte scener
@@ -11715,13 +12589,21 @@ requirements:
   tests:
   - 'integrasjon: oppretting gir nye sceneforekomster som refererer samme scene-ID'
   - 'e2e: velg scener og opprett spinoff'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/production/index.ts"
+  - "src/app/projects/ProductionDialog.tsx"
+  verification:
+  - "tests/unit/production.test.ts"
+  - "tests/db/run-db-tests.ts (DEC-0057)"
+  - "tests/visual/screens.mjs (89–92)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0057
+    change: "Ny produksjon fra utvalgte scener"
   notes: ''
 - id: REQ-0355
   title: Egne egenskaper per avledet produksjon
@@ -11749,13 +12631,21 @@ requirements:
   tests:
   - 'enhet: varighetsberegning per produksjon'
   - 'dataintegritet: endring i spinoffens egenskaper berører ikke hovedfilmen'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Under arbeid
+  implementation:
+  - "src/core/production/index.ts"
+  - "src/app/project/use-production.tsx"
+  verification:
+  - "tests/unit/production.test.ts"
+  - "tests/db/run-db-tests.ts (DEC-0057)"
+  - "tests/visual/screens.mjs (89–92)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0057
+    change: "Eget navn, rekkefølge, manus, filmtidslinje og materiale per produksjon; varighet per produksjon gjenstår"
   notes: ''
 - id: REQ-0356
   title: Flytte/skjule scene i spinoff uavhengig av hovedfilm
@@ -11781,13 +12671,20 @@ requirements:
   tests:
   - 'dataintegritet: sceneforekomster per produksjon er uavhengige'
   - 'e2e: skjul scene i spinoff, kontroller hovedfilm'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/production/index.ts"
+  verification:
+  - "tests/unit/production.test.ts"
+  - "tests/db/run-db-tests.ts (DEC-0057)"
+  - "tests/visual/screens.mjs (89–92)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0057
+    change: "Flytte og skjule scener i spinoffen uten å endre hovedfilmen"
   notes: ''
 - id: REQ-0357
   title: Spinoffens manus og tidslinje synkronisert
@@ -11813,13 +12710,20 @@ requirements:
   tests:
   - 'integrasjon: toveis strukturell synk per produksjon'
   - 'dataintegritet: ingen tilstand der spinoffens manus og tidslinje har ulik aktiv struktur'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/production/index.ts"
+  verification:
+  - "tests/unit/production.test.ts"
+  - "tests/db/run-db-tests.ts (DEC-0057)"
+  - "tests/visual/screens.mjs (89–92)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0057
+    change: "Spinoffens manus og film bygger på samme forekomster (synkronisert)"
   notes: Anvendelse av kap. 2/INV-01 på hver produksjon.
 - id: REQ-0358
   title: Egen aktiv scene- og monteringsstruktur per produksjon
@@ -11876,13 +12780,20 @@ requirements:
   tests:
   - 'integrasjon: gjenbruk av hver ressurstype i spinoff'
   - 'e2e: bygg spinoff kun av gjenbrukt materiale'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Under arbeid
+  implementation:
+  - "src/core/production/index.ts"
+  verification:
+  - "tests/unit/production.test.ts"
+  - "tests/db/run-db-tests.ts (DEC-0057)"
+  - "tests/visual/screens.mjs (89–92)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0057
+    change: "Gjenbruk av manusscener, 2D-animatics, ressurser og lyd; ferdig film og AI-video gjenstår (KI-109)"
   notes: ''
 - id: REQ-0360
   title: Referansebasert gjenbruk av versjonert kildemateriale
@@ -11911,13 +12822,20 @@ requirements:
   tests:
   - 'dataintegritet: ingen duplisert mediefil ved gjenbruk'
   - 'enhet: referanse inneholder versjons-ID'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/production/index.ts"
+  verification:
+  - "tests/unit/production.test.ts"
+  - "tests/db/run-db-tests.ts (DEC-0057)"
+  - "tests/visual/screens.mjs (89–92)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0057
+    change: "Gjenbruk som referanse til samme scenevariant"
   notes: «i utgangspunktet» – standardatferd, unntak tillatt.
 - id: REQ-0361
   title: Nye scener som bare finnes i spinoffen
@@ -11941,13 +12859,20 @@ requirements:
     i noen annen produksjon.
   tests:
   - 'e2e: skriv og produser ny scene i spinoff'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/script/ScriptWorkspace.tsx"
+  verification:
+  - "tests/unit/production.test.ts"
+  - "tests/db/run-db-tests.ts (DEC-0057)"
+  - "tests/visual/screens.mjs (89–92)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0057
+    change: "Nye scener som bare finnes i spinoffen"
   notes: ''
 - id: REQ-0362
   title: Permanente identiteter for spinoff-scener
@@ -11972,13 +12897,20 @@ requirements:
   tests:
   - 'enhet: ID-generering for spinoff-scene'
   - 'dataintegritet: ID uendret etter flytting/omnummerering'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/commands/apply.ts (CreateScene)"
+  verification:
+  - "tests/unit/production.test.ts"
+  - "tests/db/run-db-tests.ts (DEC-0057)"
+  - "tests/visual/screens.mjs (89–92)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0057
+    change: "Nye spinoff-scener får egne permanente ID-er"
   notes: ''
 - id: REQ-0363
   title: Spinoff-scener legges ikke automatisk i hovedmanus
@@ -12001,13 +12933,20 @@ requirements:
   - Gitt en ny spinoff-scene, når den lagres, så er hovedmanuset og hovedfilmens tidslinje uendret.
   tests:
   - 'dataintegritet: hovedmanusets scenesett før/etter er identisk'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/commands/apply.ts (CreateScene)"
+  verification:
+  - "tests/unit/production.test.ts"
+  - "tests/db/run-db-tests.ts (DEC-0057)"
+  - "tests/visual/screens.mjs (89–92)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0057
+    change: "Spinoff-scener legges ikke i hovedmanuset"
   notes: Gjentas som prinsipp 21 i kap. 34.
 - id: REQ-0364
   title: Spinoff-scener bruker globale ressurser og eget materiale
@@ -12032,13 +12971,20 @@ requirements:
     animatics, lydfiler og genererte filmklipp til den.
   tests:
   - 'integrasjon: globale ressurser tilgjengelige i spinoff-scene'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/scene-editor/SceneEditorWorkspace.tsx"
+  verification:
+  - "tests/unit/production.test.ts"
+  - "tests/db/run-db-tests.ts (DEC-0057)"
+  - "tests/visual/screens.mjs (89–92)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0057
+    change: "Spinoff-scener bruker globale ressurser og eget materiale"
   notes: ''
 - id: REQ-0365
   title: Endring i gjenbrukt scene blir lokal variant
@@ -12067,13 +13013,21 @@ requirements:
   tests:
   - 'dataintegritet: hovedfilmens scene byte-lik før/etter spinoff-redigering'
   - 'enhet: variant knyttet til produksjon-ID'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/production/index.ts"
+  - "src/app/project/use-commands.ts"
+  verification:
+  - "tests/unit/production.test.ts"
+  - "tests/db/run-db-tests.ts (DEC-0057)"
+  - "tests/visual/screens.mjs (89–92)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0057
+    change: "Endring av gjenbrukt scene lagres som egen versjon for produksjonen"
   notes: ''
 - id: REQ-0366
   title: Variant tilhører spinoffen til brukeren deler
@@ -12096,13 +13050,20 @@ requirements:
   - Gitt en spinoff-variant, så er den bare synlig i spinoffen inntil brukeren eksplisitt velger å dele den.
   tests:
   - 'integrasjon: deling krever eksplisitt brukerhandling'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/production/index.ts"
+  verification:
+  - "tests/unit/production.test.ts"
+  - "tests/db/run-db-tests.ts (DEC-0057)"
+  - "tests/visual/screens.mjs (89–92)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0057
+    change: "Varianten tilhører spinoffen (deling/tilbakeføring kommer senere)"
   notes: Mekanismen for «dele» er beskrevet i kap. 25 (tilbakeføring).
 - id: REQ-0367
   title: Bruke utdrag av ferdig filmklipp
@@ -12126,13 +13087,21 @@ requirements:
   tests:
   - 'enhet: inn-/utpunkt på sceneforekomst'
   - 'e2e: trailer med utdrag'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/commands/apply.ts (SetSceneEdit)"
+  - "src/app/assembly/ClipParts.tsx"
+  verification:
+  - "tests/unit/promote.test.ts"
+  - "tests/db/run-db-tests.ts (0018 DEC-0060)"
+  - "tests/visual/screens.mjs (100)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0060
+    change: "Utdrag av hovedfilmens ferdige film i spinoffen"
   notes: ''
 - id: REQ-0368
   title: Utdrag påvirker ikke originalfil
@@ -12156,13 +13125,20 @@ requirements:
   - Gitt et utdrag brukt i en trailer, så er originalfilens innhold, varighet og sjekksum uendret.
   tests:
   - 'dataintegritet: sjekksum av original før/etter'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/commands/apply.ts (SetSceneEdit)"
+  verification:
+  - "tests/unit/promote.test.ts"
+  - "tests/db/run-db-tests.ts (0018 DEC-0060)"
+  - "tests/visual/screens.mjs (100)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0060
+    change: "Utdraget endrer ikke originalfilen"
   notes: ''
 - id: REQ-0369
   title: Varsel om narrative problemer i spinoff
@@ -12186,13 +13162,21 @@ requirements:
   tests:
   - 'integrasjon: kontinuitetsanalyse per produksjon'
   - 'manuell: vurdering av varslenes relevans'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/analysis.ts (spinoff_gap)"
+  - "src/app/continuity/ContinuityAnalysisPanel.tsx"
+  verification:
+  - "tests/unit/spinoff-continuity.test.ts"
+  - "tests/db/run-db-tests.ts (0018 DEC-0060)"
+  - "tests/visual/screens.mjs (101–102)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0060
+    change: "Varsel når spinoffen utelater noe en scene forutsetter"
   notes: ''
 - id: REQ-0370
   title: Opprette sammenbindende scener og overganger
@@ -12214,13 +13198,21 @@ requirements:
   - Gitt en spinoff, så kan brukeren sette inn en ny sammenbindende scene eller en overgang mellom to sceneforekomster.
   tests:
   - 'e2e: legg til overgang i spinoff'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/script/ScriptWorkspace.tsx (Skriv ny scene)"
+  - "src/core/commands/apply.ts (CreateScene, SetTransition)"
+  verification:
+  - "tests/unit/promote.test.ts"
+  - "tests/db/run-db-tests.ts (0018 DEC-0060)"
+  - "tests/visual/screens.mjs (100)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0060
+    change: "Sammenbindende scener og overganger i spinoffen"
   notes: ''
 - id: REQ-0371
   title: Egne norske og engelske manus og lydspor for spinoff
@@ -12246,13 +13238,23 @@ requirements:
     av hovedfilmens.
   tests:
   - 'integrasjon: språkversjoner per produksjon'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/language/index.ts"
+  - "src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk)"
+  - "src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage)"
+  - "db/migrations/0017_language_versions.sql"
+  verification:
+  - "tests/unit/language.test.ts"
+  - "tests/db/run-db-tests.ts (0017 DEC-0059)"
+  - "tests/visual/screens.mjs (96–99)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0059
+    change: "Spinoff kan ha egen lyd per språk og egne oversettelser"
   notes: ''
 - id: REQ-0372
   title: Gjenbruk av eksisterende oversettelser i spinoff
@@ -12273,13 +13275,24 @@ requirements:
     engelske manus.
   tests:
   - 'integrasjon: oversettelsesreferanse gjenbrukes'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/translation/index.ts"
+  - "src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved)"
+  - "db/migrations/0016_translations.sql"
+  - "src/core/production/index.ts"
+  verification:
+  - "tests/unit/translation.test.ts"
+  - "tests/golden/translation.test.ts (referansemanuset)"
+  - "tests/db/run-db-tests.ts (0016 DEC-0058)"
+  - "tests/visual/screens.mjs (93–95)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0058
+    change: "Spinoffer bruker eksisterende oversettelser; egen versjon tar dem med"
   notes: ''
 - id: REQ-0373
   title: Foreslå tilbakeføring fra spinoff til hovedfilm
@@ -12302,13 +13315,22 @@ requirements:
   - Gitt en spinoff-variant, så kan brukeren starte et forslag om overføring til hovedfilmen.
   tests:
   - 'e2e: start tilbakeføringsforslag'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/production/promote.ts"
+  - "src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled)"
+  - "src/app/projects/PromotionDialog.tsx"
+  verification:
+  - "tests/unit/promote.test.ts"
+  - "tests/db/run-db-tests.ts (0018 DEC-0060)"
+  - "tests/visual/screens.mjs (100)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0060
+    change: "«Tilbakefør …» foreslår spinoffens versjoner og nye scener for hovedfilmen"
   notes: ''
 - id: REQ-0374
   title: Tilbakeføring skjer aldri automatisk
@@ -12332,13 +13354,22 @@ requirements:
   - Gitt endringer i en spinoff-variant, så endres hovedfilmen ikke før brukeren har tatt en eksplisitt beslutning.
   tests:
   - 'dataintegritet: hovedfilm uendret uten brukerbeslutning'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/production/promote.ts"
+  - "src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled)"
+  - "src/app/projects/PromotionDialog.tsx"
+  verification:
+  - "tests/unit/promote.test.ts"
+  - "tests/db/run-db-tests.ts (0018 DEC-0060)"
+  - "tests/visual/screens.mjs (100)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0060
+    change: "Tilbakeføring skjer bare når brukeren trykker «Overfør»"
   notes: ''
 - id: REQ-0375
   title: Sammenligning original vs. spinoff-variant
@@ -12363,13 +13394,22 @@ requirements:
   tests:
   - 'integrasjon: diff-beregning per kategori'
   - 'visuell: sammenligningsvisning'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/production/promote.ts"
+  - "src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled)"
+  - "src/app/projects/PromotionDialog.tsx"
+  verification:
+  - "tests/unit/promote.test.ts"
+  - "tests/db/run-db-tests.ts (0018 DEC-0060)"
+  - "tests/visual/screens.mjs (100)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0060
+    change: "Sammenligning: original, spinoff-versjon og endringer i manus, lyd, kamera, timing og bilde"
   notes: ''
 - id: REQ-0376
   title: Beholde alt uendret
@@ -12395,13 +13435,22 @@ requirements:
   tests:
   - 'integrasjon: selektiv tilbakeføring'
   - 'dataintegritet: kun valgt kategori endret'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/production/promote.ts"
+  - "src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled)"
+  - "src/app/projects/PromotionDialog.tsx"
+  verification:
+  - "tests/unit/promote.test.ts"
+  - "tests/db/run-db-tests.ts (0018 DEC-0060)"
+  - "tests/visual/screens.mjs (100)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0060
+    change: "«Behold alt uendret» endrer ingenting"
   notes: ''
 - id: REQ-0377
   title: Tilbakeføre bare manusendringer
@@ -12427,13 +13476,22 @@ requirements:
   tests:
   - 'integrasjon: selektiv tilbakeføring'
   - 'dataintegritet: kun valgt kategori endret'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/production/promote.ts"
+  - "src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled)"
+  - "src/app/projects/PromotionDialog.tsx"
+  verification:
+  - "tests/unit/promote.test.ts"
+  - "tests/db/run-db-tests.ts (0018 DEC-0060)"
+  - "tests/visual/screens.mjs (100)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0060
+    change: "Bare manusendringer (linje for linje, med historikk)"
   notes: ''
 - id: REQ-0378
   title: Tilbakeføre bestemte visuelle endringer
@@ -12459,13 +13517,22 @@ requirements:
   tests:
   - 'integrasjon: selektiv tilbakeføring'
   - 'dataintegritet: kun valgt kategori endret'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/production/promote.ts"
+  - "src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled)"
+  - "src/app/projects/PromotionDialog.tsx"
+  verification:
+  - "tests/unit/promote.test.ts"
+  - "tests/db/run-db-tests.ts (0018 DEC-0060)"
+  - "tests/visual/screens.mjs (100)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0060
+    change: "Bestemte lag, kamera og klipping kan føres over"
   notes: ''
 - id: REQ-0379
   title: Tilbakeføre lyd eller timing
@@ -12491,13 +13558,22 @@ requirements:
   tests:
   - 'integrasjon: selektiv tilbakeføring'
   - 'dataintegritet: kun valgt kategori endret'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/production/promote.ts"
+  - "src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled)"
+  - "src/app/projects/PromotionDialog.tsx"
+  verification:
+  - "tests/unit/promote.test.ts"
+  - "tests/db/run-db-tests.ts (0018 DEC-0060)"
+  - "tests/visual/screens.mjs (100)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0060
+    change: "Lyd og timing kan føres over"
   notes: ''
 - id: REQ-0380
   title: Ny hovedfilmvariant fra spinoff-versjon
@@ -12523,13 +13599,22 @@ requirements:
   tests:
   - 'integrasjon: selektiv tilbakeføring'
   - 'dataintegritet: kun valgt kategori endret'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/production/promote.ts"
+  - "src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled)"
+  - "src/app/projects/PromotionDialog.tsx"
+  verification:
+  - "tests/unit/promote.test.ts"
+  - "tests/db/run-db-tests.ts (0018 DEC-0060)"
+  - "tests/visual/screens.mjs (100)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0060
+    change: "Ny hovedfilmversjon fra spinoffens versjon (egen kopi)"
   notes: ''
 - id: REQ-0381
   title: Overføre ny spinoff-scene til hovedfilm
@@ -12555,13 +13640,22 @@ requirements:
   tests:
   - 'integrasjon: selektiv tilbakeføring'
   - 'dataintegritet: kun valgt kategori endret'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/production/promote.ts"
+  - "src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled)"
+  - "src/app/projects/PromotionDialog.tsx"
+  verification:
+  - "tests/unit/promote.test.ts"
+  - "tests/db/run-db-tests.ts (0018 DEC-0060)"
+  - "tests/visual/screens.mjs (100)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0060
+    change: "Ny spinoff-scene overføres til hovedfilmen"
   notes: ''
 - id: REQ-0382
   title: Tilbakeføring overskriver ikke godkjent materiale
@@ -12586,13 +13680,22 @@ requirements:
     og uten den beholdes materialet.
   tests:
   - 'dataintegritet: godkjent materiale uendret uten bekreftelse'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/production/promote.ts"
+  - "src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled)"
+  - "src/app/projects/PromotionDialog.tsx"
+  verification:
+  - "tests/unit/promote.test.ts"
+  - "tests/db/run-db-tests.ts (0018 DEC-0060)"
+  - "tests/visual/screens.mjs (100)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0060
+    change: "Godkjent film i hovedfilmen byttes bare med egen bekreftelse"
   notes: ''
 - id: REQ-0383
   title: Bevare relasjoner og historiske versjoner ved tilbakeføring
@@ -12616,13 +13719,21 @@ requirements:
     sporbar relasjon mellom dem.
   tests:
   - 'dataintegritet: versjonshistorikk komplett etter tilbakeføring'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/production/promote.ts"
+  - "src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled)"
+  verification:
+  - "tests/unit/promote.test.ts"
+  - "tests/db/run-db-tests.ts (0018 DEC-0060)"
+  - "tests/visual/screens.mjs (100)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0060
+    change: "Gamle versjoner bevares; ny versjon peker til spinoffens"
   notes: ''
 - id: REQ-0384
   title: Profesjonelle visuelle prosjektpresentasjoner
@@ -13474,13 +14585,25 @@ requirements:
   - Gitt et prosjekt, så kan det eksporteres til et dokumentert format, og formatet er beskrevet i dokumentasjon.
   tests:
   - 'import/eksport: eksport → reimport gir likt prosjekt'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/backup/index.ts"
+  - "src/app/projects/backup.ts"
+  - "src/app/projects/BackupDialogs.tsx"
+  - "src/adapters/storage/backup.functions.ts"
+  - "docs/architecture/BACKUP_FORMAT.md"
+  verification:
+  - "tests/unit/backup.test.ts::gjenoppretter som nytt prosjekt med nye ID-er; manus, film og filer er de samme"
+  - "tests/db/run-db-tests.ts::DEC-0049"
+  - "tests/visual/screens.mjs::66-sikkerhetskopi"
+  - "tests/visual/screens.mjs::67-gjenopprett"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0049
+    change: "Sikkerhetskopi som én zip-fil i et dokumentert format (BACKUP_FORMAT.md og LES-MEG.txt), gjenopprettes som nytt prosjekt"
   notes: Fase ikke angitt i kap. 32; satt til fase 4 (eksport). Jf. prinsipp 28.
 - id: REQ-0412
   title: Innhold i sikkerhetskopi
@@ -13507,13 +14630,19 @@ requirements:
   tests:
   - 'import/eksport: innholdskontroll av backup'
   - 'dataintegritet: reimport bevarer ID-er og relasjoner'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/backup/index.ts"
+  verification:
+  - "tests/unit/backup.test.ts::tar med alle prosjektdata, manusversjoner, historikk og en liste over alle filer"
+  - "tests/unit/backup.test.ts::filer som ikke tas med, står i oversikten (eksterne avhengigheter)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0049
+    change: "Prosjektdata, manusversjoner, ressurser med versjoner, 2D-scener, AI-prompter (logg), historikk og mediefiler – eller en liste over filer som ikke er med. Kontinuitetsdata finnes ikke ennå"
   notes: «så langt praktisk mulig».
 - id: REQ-0413
   title: Sikker håndtering av API-nøkler
@@ -13770,13 +14899,35 @@ requirements:
   - Gitt norsk og engelsk språkversjon, så kan film og manus eksporteres på hvert valgt språk.
   tests:
   - 'import/eksport: eksport per språk'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/translation/index.ts"
+  - "src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved)"
+  - "db/migrations/0016_translations.sql"
+  - "src/core/language/index.ts"
+  - "src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk)"
+  - "src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage)"
+  - "db/migrations/0017_language_versions.sql"
+  - "src/app/assembly/ExportAnimaticDialog.tsx"
+  - "src/app/script/ExportDialog.tsx"
+  verification:
+  - "tests/unit/translation.test.ts"
+  - "tests/golden/translation.test.ts (referansemanuset)"
+  - "tests/db/run-db-tests.ts (0016 DEC-0058)"
+  - "tests/visual/screens.mjs (93–95)"
+  - "tests/unit/language.test.ts"
+  - "tests/db/run-db-tests.ts (0017 DEC-0059)"
+  - "tests/visual/screens.mjs (96–99)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0058
+    change: "Manus eksporteres på valgt språk; film på språk gjenstår"
+  - date: '2026-10-11'
+    decision: DEC-0059
+    change: "Film og manus eksporteres på valgt språk"
   notes: ''
 - id: REQ-0421
   title: Plakateksport i trykk- og digitalformater
@@ -14297,13 +15448,21 @@ requirements:
     utseendeendringer og konsekvensanalyse, og dette ansvaret ligger ikke i andre moduler.'
   tests:
   - 'manuell: arkitekturgjennomgang av ansvarsgrenser'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/index.ts"
+  - "src/core/continuity/analysis.ts"
+  - "src/core/library/impact.ts"
+  verification:
+  - "tests/unit/continuity.test.ts"
+  - "tests/unit/analysis.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0056
+    change: "Continuity Engine: fortellingstid, utseende, analyse og konsekvenser"
   notes: Linje 1318/1319 duplikat.
 - id: REQ-0438
   title: 'Modul: 2D Composition Engine'
@@ -14567,13 +15726,23 @@ requirements:
     og produksjonsvarianter, og dette ansvaret ligger ikke i andre moduler.'
   tests:
   - 'manuell: arkitekturgjennomgang av ansvarsgrenser'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/translation/index.ts"
+  - "src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved)"
+  - "db/migrations/0016_translations.sql"
+  verification:
+  - "tests/unit/translation.test.ts"
+  - "tests/golden/translation.test.ts (referansemanuset)"
+  - "tests/db/run-db-tests.ts (0016 DEC-0058)"
+  - "tests/visual/screens.mjs (93–95)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0058
+    change: "Localization Engine: src/core/translation"
   notes: Linje 1340/1341 duplikat.
 - id: REQ-0447
   title: 'Modul: Presentation Engine'
@@ -14625,13 +15794,18 @@ requirements:
     og dette ansvaret ligger ikke i andre moduler.'
   tests:
   - 'manuell: arkitekturgjennomgang av ansvarsgrenser'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "docs/architecture/ARCHITECTURE.md"
+  verification:
+  - "docs/architecture/ARCHITECTURE.md (kontrollert 2026-10-10)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-10'
+    decision: DEC-0049
+    change: "Export Engine har ansvar for film, manus, lyd, plakater og prosjektbackup (ARCHITECTURE.md)"
   notes: Linje 1345/1346 duplikat. Grunnleggende manuseksport i fase 2, filmeksport fase 4.
 - id: REQ-0449
   title: 'Modul: Security & Storage'
@@ -15674,13 +16848,25 @@ requirements:
   - Etter manusendring er berørt materiale flagget og filmfilene uendret.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/assembly/discrepancy.ts"
+  - "src/core/commands/apply.ts (AcceptScriptChanges, SetProducedFrom)"
+  - "db/migrations/0014_ai_control.sql (compositions.produced_from, takes.accepted_from)"
+  - "src/app/assembly/ScriptChanges.tsx"
+  - "src/app/assembly/FilmTimeline.tsx (merker)"
+  - "src/app/script/ScriptPageView.tsx (merker)"
+  - "src/app/scene-editor/SceneEditorWorkspace.tsx (varsel)"
+  verification:
+  - "tests/unit/discrepancy.test.ts"
+  - "tests/visual/screens.mjs (80–82)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0054
+    change: "Manusendringer flagger berørt materiale"
   notes: Oppsummerer kap. 2.1, 2.2, 21.1, 21.4. Linje 1502/1503 duplikat.
 - id: REQ-0486
   title: 'Prinsipp 8: Godkjenne avvik, oppdatere eller angre'
@@ -15702,13 +16888,25 @@ requirements:
   - For hvert flagget avvik tilbys de tre valgene, og hvert valg gir forventet tilstand.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/assembly/discrepancy.ts"
+  - "src/core/commands/apply.ts (AcceptScriptChanges, SetProducedFrom)"
+  - "db/migrations/0014_ai_control.sql (compositions.produced_from, takes.accepted_from)"
+  - "src/app/assembly/ScriptChanges.tsx"
+  - "src/app/assembly/FilmTimeline.tsx (merker)"
+  - "src/app/script/ScriptPageView.tsx (merker)"
+  - "src/app/scene-editor/SceneEditorWorkspace.tsx (varsel)"
+  verification:
+  - "tests/unit/discrepancy.test.ts"
+  - "tests/visual/screens.mjs (80–82)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0054
+    change: "Godkjenne avvik, oppdatere eller angre"
   notes: Oppsummerer kap. 21.2, 2.2. Linje 1505/1506 duplikat.
 - id: REQ-0487
   title: 'Prinsipp 9: Animatics uten generativ AI'
@@ -15983,13 +17181,25 @@ requirements:
   - Maja har langt hår før og kort hår etter klippehendelsen i fortellingstid, også ved flashback.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/continuity/index.ts"
+  - "src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved)"
+  - "db/migrations/0015_continuity.sql"
+  - "src/app/library/ContinuityPanel.tsx"
+  - "src/app/scene-editor/LayerInspector.tsx"
+  - "src/app/scene-editor/SceneAssetsPanel.tsx"
+  verification:
+  - "tests/unit/continuity.test.ts"
+  - "tests/db/run-db-tests.ts (0015 DEC-0055)"
+  - "tests/visual/screens.mjs (83–86)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0055
+    change: "Tidsstyrte utseendeendringer (Maja klipper håret)"
   notes: Oppsummerer kap. 9.1, 10, 10.1, 10.3, 10.5, 10.7. Linje 1520/1521 duplikat.
 - id: REQ-0497
   title: 'Prinsipp 19: Separate segmenter ved endring midt i scene'
@@ -16012,13 +17222,19 @@ requirements:
   - Ved utseendeendring midt i scene foreslås segmenter, og scene-ID og scenenummer er uendret.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/scene-prompt.ts (planSegments, continuityCuts)"
+  - "src/app/assembly/GenerateSceneDialog.tsx"
+  verification:
+  - "tests/unit/continuity.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0055
+    change: "Segmenter før og etter en utseendeendring midt i scenen; scenen beholder identitet og nummer"
   notes: Oppsummerer kap. 10.6, 18.
 - id: REQ-0498
   title: 'Prinsipp 20: Delte ressurser, uavhengig manus og montering'
@@ -16041,13 +17257,20 @@ requirements:
   - En ressurs brukes i begge produksjoner; omorganisering i én endrer ikke den andres manus/montering.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/production/index.ts"
+  verification:
+  - "tests/unit/production.test.ts"
+  - "tests/db/run-db-tests.ts (DEC-0057)"
+  - "tests/visual/screens.mjs (89–92)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0057
+    change: "Delte ressurser, uavhengig manus og montering"
   notes: Oppsummerer kap. 3.3, 8.1, 24.2, 24.3. Linje 1525/1526 duplikat.
 - id: REQ-0499
   title: 'Prinsipp 21: Spinoffer med egne nye scener'
@@ -16069,13 +17292,20 @@ requirements:
   - En ny spinoff-scene finnes ikke i hovedfilmen før eksplisitt overføring.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/production/index.ts"
+  verification:
+  - "tests/unit/production.test.ts"
+  - "tests/db/run-db-tests.ts (DEC-0057)"
+  - "tests/visual/screens.mjs (89–92)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0057
+    change: "Spinoffer med egne nye scener, ikke automatisk i hovedfilmen"
   notes: Oppsummerer kap. 24.4. Linje 1527/1528 duplikat.
 - id: REQ-0500
   title: 'Prinsipp 22: Tilbakeføring krever godkjenning'
@@ -16097,13 +17327,22 @@ requirements:
   - Tilbakeføring skjer kun etter eksplisitt brukergodkjenning.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/production/promote.ts"
+  - "src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled)"
+  - "src/app/projects/PromotionDialog.tsx"
+  verification:
+  - "tests/unit/promote.test.ts"
+  - "tests/db/run-db-tests.ts (0018 DEC-0060)"
+  - "tests/visual/screens.mjs (100)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0060
+    change: "Tilbakeføring krever brukerens godkjenning"
   notes: Oppsummerer kap. 24.5, 25, 25.2.
 - id: REQ-0501
   title: 'Prinsipp 23: Plakater som selvstendige redigerbare eksportprodukter'
@@ -16961,10 +18200,14 @@ requirements:
   - En redaktør uten kostnadsrett får ikke startet en betalt jobb; forsøket gir tydelig melding.
   tests:
   - 'integrasjon: backend avviser betalt jobb fra medlem uten kostnadsrett'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - "src/adapters/ai/generate-image.functions.ts"
-  verification: []
+  - "src/adapters/ai/generate-image.functions.ts (budsjettport)"
+  - "src/core/commands/apply.ts (SetAiBudget)"
+  - "src/adapters/storage/commands.functions.ts (bare eier)"
+  verification:
+  - "tests/unit/ai-control.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0003
@@ -16975,6 +18218,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0045
     change: "Under arbeid: bare redaktører og eiere kan generere"
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Bare eieren kan endre AI-budsjettet"
   notes: 'Teknisk utledning av DEC-0003 (bekreftet). Selve løsningen er teknisk anbefaling (DEC-0010). Hvem som
     eier API-nøklene i et delt prosjekt er et åpent spørsmål (OPEN_QUESTIONS Q-01, DEC-0018 – midlertidig antakelse).
     DEC-0021: Mars betaler alle API-kostnader i testfasen; kostnadsdeling avtales utenfor appen.'
@@ -18418,3 +19664,416 @@ requirements:
   - date: '2026-10-10'
     decision: DEC-0046
     change: "Opprettet etter beslutning fra Mars (begrunnelse for at ressurser slettes i egen operasjon)"
+- id: REQ-0572
+  title: "Forhåndsvisning av monteringen i eget vindu"
+  text: "Forhåndsvisningen i monteringen (animatic) skal kunne åpnes i et eget nettleservindu, som i sceneeditoren."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0050
+  type: funksjonell
+  priority: P1
+  phase: 4
+  modules:
+  - TIMELINE
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0556
+  acceptance:
+  - "Monteringen har en knapp som åpner forhåndsvisningen i eget vindu; avspilling og avspillingshode følger hovedvinduet."
+  tests:
+  - "planlagt"
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/FilmPopout.tsx"
+  - "src/app/scene-editor/PreviewWindow.tsx"
+  verification:
+  - "tests/visual/screens.mjs::71-svart-hvitt (knappen i verktøylinjen); egne vinduer kan ikke tas skjermbilde av i testmiljøet"
+  history:
+  - date: '2026-10-11'
+    decision: DEC-0050
+    change: "Opprettet etter Mars' ønsker 2026-10-11"
+  - date: '2026-10-11'
+    decision: DEC-0051
+    change: "«Eget vindu» i monteringen"
+- id: REQ-0573
+  title: "Svart-hvitt for hele filmen"
+  text: "Hele animaticen skal kunne vises og eksporteres i svart-hvitt med én global kontroll."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0050
+  type: funksjonell
+  priority: P2
+  phase: 4
+  modules:
+  - TIMELINE
+  - EXPORT
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Global svart-hvitt slår om visningen i monteringen."
+  - "Eksporten kan lages i svart-hvitt."
+  tests:
+  - "planlagt"
+  status: Verifisert
+  implementation:
+  - "src/engine/compositor/film.ts"
+  - "src/app/assembly/AssemblyWorkspace.tsx"
+  - "src/app/assembly/ExportAnimaticDialog.tsx"
+  - "src/engine/export/animatic.ts"
+  verification:
+  - "tests/visual/screens.mjs::71-svart-hvitt"
+  history:
+  - date: '2026-10-11'
+    decision: DEC-0050
+    change: "Opprettet etter Mars' ønsker 2026-10-11"
+  - date: '2026-10-11'
+    decision: DEC-0051
+    change: "Global svart-hvitt i visningen og som valg i eksporten"
+- id: REQ-0574
+  title: "Svart-hvitt per scene"
+  text: "En scene skal kunne settes til svart-hvitt. Valget gjelder både visning og eksport, uten egen varsling."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0050
+  type: funksjonell
+  priority: P2
+  phase: 4
+  modules:
+  - TIMELINE
+  - COMPOSE
+  - EXPORT
+  invariants: []
+  dependencies:
+  - REQ-0573
+  acceptance:
+  - "En scene satt til svart-hvitt vises og eksporteres i svart-hvitt; andre scener påvirkes ikke."
+  tests:
+  - "planlagt"
+  status: Verifisert
+  implementation:
+  - "src/core/commands/apply.ts"
+  - "src/app/assembly/ClipPanel.tsx"
+  - "src/engine/compositor/film.ts"
+  verification:
+  - "tests/unit/transitions.test.ts::settes og angres"
+  - "tests/db/run-db-tests.ts::0013"
+  history:
+  - date: '2026-10-11'
+    decision: DEC-0050
+    change: "Opprettet etter Mars' ønsker 2026-10-11"
+  - date: '2026-10-11'
+    decision: DEC-0051
+    change: "Svart-hvitt per scene, også i eksporten"
+- id: REQ-0575
+  title: "Flere overgangstyper"
+  text: "Overgangene skal minst omfatte kutt, overtoning, via svart, via hvitt, tørk (wipe), skyv (push) og iris, hver med lengde."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0050
+  type: funksjonell
+  priority: P1
+  phase: 4
+  modules:
+  - TIMELINE
+  - EXPORT
+  invariants: []
+  dependencies:
+  - REQ-0223
+  acceptance:
+  - "Hver type kan velges for en overgang og vises likt i avspilling og eksport."
+  tests:
+  - "planlagt"
+  status: Verifisert
+  implementation:
+  - "src/core/assembly/film.ts"
+  - "src/engine/compositor/film.ts"
+  - "src/app/assembly/TransitionEditor.tsx"
+  verification:
+  - "tests/unit/transitions.test.ts::via hvitt toner til hvitt; første scene tones inn fra hvitt"
+  - "tests/visual/screens.mjs::69-overgang-iris"
+  history:
+  - date: '2026-10-11'
+    decision: DEC-0050
+    change: "Opprettet etter Mars' ønsker 2026-10-11"
+  - date: '2026-10-11'
+    decision: DEC-0051
+    change: "Kutt, overtoning, via svart, via hvitt, tørk, skyv og iris"
+- id: REQ-0576
+  title: "Overgang med overlapp"
+  text: "En overgang skal kunne la scenene overlappe, slik at filmen blir kortere med overgangens lengde (som i klippeprogrammer)."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0050
+  type: funksjonell
+  priority: P1
+  phase: 4
+  modules:
+  - TIMELINE
+  invariants: []
+  dependencies:
+  - REQ-0575
+  acceptance:
+  - "Med overlapp blir filmens lengde kortere med overgangens lengde; uten overlapp er lengden uendret."
+  tests:
+  - "planlagt"
+  status: Verifisert
+  implementation:
+  - "src/core/assembly/film.ts"
+  verification:
+  - "tests/unit/transitions.test.ts::overlapp gjør filmen kortere, og begge klippene spilles i overlappen"
+  history:
+  - date: '2026-10-11'
+    decision: DEC-0050
+    change: "Opprettet etter Mars' ønsker 2026-10-11"
+  - date: '2026-10-11'
+    decision: DEC-0051
+    change: "Overlapp gjør filmen kortere; begge scenene spilles i overlappen"
+- id: REQ-0577
+  title: "Standard overgang for prosjektet"
+  text: "Prosjektet skal ha en standard overgang (type og lengde) som gjelder der ingen egen overgang er valgt, og hver overgang skal kunne overstyres enkeltvis."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0050
+  type: funksjonell
+  priority: P1
+  phase: 4
+  modules:
+  - TIMELINE
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0575
+  acceptance:
+  - "Endring av prosjektets standard endrer alle overganger uten eget valg, ikke de som er overstyrt."
+  tests:
+  - "planlagt"
+  status: Verifisert
+  implementation:
+  - "src/core/commands/apply.ts"
+  - "src/core/patch.ts"
+  - "src/app/assembly/AssemblyWorkspace.tsx"
+  verification:
+  - "tests/unit/transitions.test.ts::prosjektets standard gjelder scener uten egen overgang; egen overgang og «Kutt» overstyrer"
+  - "tests/visual/screens.mjs::70-standardovergang"
+  history:
+  - date: '2026-10-11'
+    decision: DEC-0050
+    change: "Opprettet etter Mars' ønsker 2026-10-11"
+  - date: '2026-10-11'
+    decision: DEC-0051
+    change: "Standardovergang for prosjektet; hver scene kan følge den eller ha sin egen"
+- id: REQ-0578
+  title: "Naboscener i sceneeditorens avspilling"
+  text: "I sceneeditoren skal forrige og neste scene kunne vises som ferdige filmsnutter før og etter scenen, med lyd og overganger, slik at avspillingshodet kan stå og spilles i dem. Lagene i naboscenene vises ikke og kan ikke endres."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0050
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - COMPOSE
+  - TIMELINE
+  - AUDIO
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Med «vis forrige/neste scene» på kan avspillingshodet flyttes inn i naboscenen og spilles i kontinuitet med lyd og overgang."
+  - "Lagvelgeren viser bare lagene i scenen som redigeres."
+  tests:
+  - "planlagt"
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/scene-editor/NeighbourScenes.tsx"
+  - "src/core/assembly/film.ts#neighbourRange, clipFrameToComposition"
+  verification:
+  - "tests/unit/transitions.test.ts (naboscener)"
+  - "tests/visual/screens.mjs (75)"
+  history:
+  - date: '2026-10-11'
+    decision: DEC-0050
+    change: "Opprettet etter Mars' ønsker 2026-10-11"
+  - date: '2026-10-11'
+    decision: DEC-0052
+    change: "Bygd som en stripe under scenen (forrige · denne · neste) med egen avspilling; avspilling i nettleser ikke automatisk testet"
+- id: REQ-0579
+  title: "Bildeskifte i et lag"
+  text: "Et lag i en 2D-scene skal kunne bytte til et annet bilde (hvilket som helst bilde) på et tidspunkt i scenen. Skiftet er et hardt kutt og vises som et punkt på lagets linje i tidslinjen som kan dras."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0050
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - COMPOSE
+  - LIBRARY
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0174
+  acceptance:
+  - "Et lag med to bilder viser tydelig de to delene i tidslinjen; skiftepunktet kan dras og angres."
+  tests:
+  - "planlagt"
+  status: Verifisert
+  implementation:
+  - "src/core/composition/render.ts#layerImageAt, layerVersion, layerSize"
+  - "src/app/scene-editor/LayerSwaps.tsx"
+  - "src/app/scene-editor/Timeline.tsx (merker som kan dras)"
+  - "db/migrations/0013_transitions_monochrome.sql (image_swaps)"
+  verification:
+  - "tests/unit/scene-editor-3.test.ts (bildeskifte)"
+  - "tests/db/run-db-tests.ts (0013 DEC-0052)"
+  - "tests/visual/screens.mjs (74)"
+  history:
+  - date: '2026-10-11'
+    decision: DEC-0050
+    change: "Opprettet etter Mars' ønsker 2026-10-11"
+  - date: '2026-10-11'
+    decision: DEC-0052
+    change: "Bygd: bildeskifte ved avspillingshodet, hvilket som helst bilde, merke i tidslinjen som kan dras; det nye bildet tegnes i lagets ramme"
+- id: REQ-0580
+  title: "Frilegge bilde (fjerne bakgrunn)"
+  text: "Et opplastet eller generert bilde skal kunne friklippes uten kostnad, med en pensel for å legge til og fjerne manuelt. Resultatet lagres som ny versjon; originalen beholdes."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0050
+  type: funksjonell
+  priority: P2
+  phase: 5
+  modules:
+  - LIBRARY
+  - COMPOSE
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0175
+  acceptance:
+  - "Frilegging fra bildevinduet gir en ny versjon med gjennomsiktig bakgrunn uten betalt kall."
+  - "Penselen kan legge til og fjerne, og hvert strøk kan angres."
+  tests:
+  - "planlagt"
+  status: Verifisert
+  implementation:
+  - "src/core/cutout/index.ts"
+  - "src/app/library/CutoutDialog.tsx"
+  verification:
+  - "tests/unit/cutout.test.ts"
+  - "tests/visual/screens.mjs (77)"
+  history:
+  - date: '2026-10-11'
+    decision: DEC-0050
+    change: "Opprettet etter Mars' ønsker 2026-10-11"
+  - date: '2026-10-11'
+    decision: DEC-0053
+    change: "Bygd gratis i nettleseren: automatisk forslag fra kantfargen, pensel legg til/fjern med angre, lagres som ny versjon"
+- id: REQ-0581
+  title: "Tegne bevegelsesbane for et lag"
+  text: "Bevegelsen til et lag skal kunne tegnes på frihånd (med «Glatt ut») eller lages som rette linjer og Bézier-kurver, som kamerabanene."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0050
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - COMPOSE
+  - CAMERA
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0188
+  - REQ-0189
+  acceptance:
+  - "En frihåndstegnet bane blir lagets bevegelse; «Glatt ut» gir en redigerbar kurve."
+  tests:
+  - "planlagt"
+  status: Verifisert
+  implementation:
+  - "src/core/composition/path.ts"
+  - "src/core/composition/render.ts#pathSegments, pathPointAt"
+  - "src/app/scene-editor/LayerMotion.tsx"
+  - "src/app/scene-editor/Stage.tsx (tegning, punkter)"
+  verification:
+  - "tests/unit/scene-editor-3.test.ts (bane, tegning, glatt ut)"
+  - "tests/db/run-db-tests.ts (0013 DEC-0052)"
+  - "tests/visual/screens.mjs (73)"
+  history:
+  - date: '2026-10-11'
+    decision: DEC-0050
+    change: "Opprettet etter Mars' ønsker 2026-10-11"
+  - date: '2026-10-11'
+    decision: DEC-0052
+    change: "Bygd: frihånd med «Glatt ut», rett linje, punkter som dras, kurve/hjørne med dobbeltklikk"
+- id: REQ-0582
+  title: "Tempo i bevegelser"
+  text: "Tempoet i en bevegelse skal kunne styres med ease inn/ut med justerbar styrke, og med en tempokurve der punkter kan dras (som midtpunktet i nivåer i Photoshop) slik at bevegelsen går ulikt før og etter punktet."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0050
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - COMPOSE
+  - CAMERA
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0581
+  acceptance:
+  - "Å dra et punkt i tempokurven endrer hvor raskt laget beveger seg før og etter punktet, uten å endre banen."
+  tests:
+  - "planlagt"
+  status: Verifisert
+  implementation:
+  - "src/core/composition/render.ts#easeStrength, tempoAt, pathProgress"
+  - "src/core/composition/animate.ts#setKeyframeEase"
+  - "src/app/scene-editor/LayerMotion.tsx (ease og tempokurve)"
+  - "src/app/scene-editor/Timeline.tsx (ease inn/ut på nøkkelbilder)"
+  verification:
+  - "tests/unit/scene-editor-3.test.ts (ease og tempo)"
+  - "tests/visual/screens.mjs (74)"
+  history:
+  - date: '2026-10-11'
+    decision: DEC-0050
+    change: "Opprettet etter Mars' ønsker 2026-10-11"
+  - date: '2026-10-11'
+    decision: DEC-0052
+    change: "Bygd: ease ut/inn med styrke (bane og nøkkelbilder) og tempokurve med punkter som dras"
+- id: REQ-0583
+  title: "Lydopptak i sceneeditoren"
+  text: "Brukeren skal kunne ta opp lyd direkte (mikrofon) i sceneeditoren. Opptaket blir en lydressurs og et lydklipp i scenen som kan klippes ikke-destruktivt."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0050
+  type: funksjonell
+  priority: P1
+  phase: 4
+  modules:
+  - AUDIO
+  - COMPOSE
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0207
+  acceptance:
+  - "Opptak startes og stoppes i sceneeditoren og legges ved avspillingshodet."
+  - "Opptaket kan kuttes og utvides igjen uten at filen endres."
+  tests:
+  - "planlagt"
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/scene-editor/RecordAudioDialog.tsx"
+  verification:
+  - "tests/visual/screens.mjs (76)"
+  history:
+  - date: '2026-10-11'
+    decision: DEC-0050
+    change: "Opprettet etter Mars' ønsker 2026-10-11"
+  - date: '2026-10-11'
+    decision: DEC-0052
+    change: "Bygd: opptak fra avspillingshodet mens scenen spilles, lagres i biblioteket og legges i scenen; trimmes uten å endre opptaket. Opptak med mikrofon er ikke automatisk testet"

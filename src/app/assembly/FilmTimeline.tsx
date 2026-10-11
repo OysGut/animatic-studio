@@ -3,7 +3,8 @@
  * manuset. Dra et klipp for å flytte scenen (samme kommando som i manuset, REQ-0228), dra i høyre kant av en
  * 2D-scene for å endre lengden (REQ-0224). Å endre lengden sletter aldri manus (REQ-0230).
  */
-import { Clapperboard, Film, Layers } from "lucide-react";
+import { TRANSITION_LABEL, transitionMarkBackground } from "./transitions";
+import { AlertTriangle, Clapperboard, Film, Layers } from "lucide-react";
 import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   formatHeading,
@@ -49,6 +50,8 @@ export interface FilmTimelineProps {
   toolbar: ReactNode;
   /** Lydsporene under bildesporet (DEC-0044). Får skala og hjelpefunksjoner fra tidslinjen. */
   audio?: (t: TimelineGeometry) => ReactNode;
+  /** Avvik ved manusendring per scene: berørte tidsrom i filmen (DEC-0054). */
+  flagged?: ReadonlyMap<string, readonly { startFrame: number; endFrame: number }[]>;
 }
 
 /** Skala og plassering som lydsporene trenger. */
@@ -95,6 +98,8 @@ export function FilmTimeline(p: FilmTimelineProps) {
     let cursor = 0;
     return clips.map((c) => {
       const d = c.occurrenceId === drag.id ? drag.frames : c.durationFrames;
+      // Overlapp (DEC-0051): scenen begynner før forrige er ferdig
+      cursor -= Math.min(c.overlapFrames, Math.max(0, d - 1));
       const out = { ...c, startFrame: cursor, durationFrames: d };
       cursor += d;
       return out;
@@ -264,6 +269,7 @@ export function FilmTimeline(p: FilmTimelineProps) {
                   trimmable={p.editable && c.source !== "placeholder"}
                   movable={p.editable}
                   tick={p.tick}
+                  flags={p.flagged?.get(c.occurrenceId) ?? null}
                   onPointerDownBody={(e) => {
                     if (e.button !== 0) return;
                     e.currentTarget.setPointerCapture(e.pointerId);
@@ -384,6 +390,7 @@ const ClipBlock = memo(function ClipBlock({
   trimmable,
   movable,
   tick,
+  flags,
   onPointerDownBody,
   onPointerDownEdge,
   onPointerMove,
@@ -401,6 +408,8 @@ const ClipBlock = memo(function ClipBlock({
   trimmable: boolean;
   movable: boolean;
   tick: number;
+  /** Berørte tidsrom etter manusendring (DEC-0054), eller null. */
+  flags: readonly { startFrame: number; endFrame: number }[] | null;
   onPointerDownBody: (e: React.PointerEvent<HTMLDivElement>) => void;
   onPointerDownEdge: (e: React.PointerEvent<HTMLDivElement>) => void;
   onPointerMove: (e: React.PointerEvent<HTMLDivElement>) => void;
@@ -428,7 +437,7 @@ const ClipBlock = memo(function ClipBlock({
       }}
       aria-label={`Scene ${clip.productionNumber ?? index + 1}: ${heading}, ${formatSeconds(seconds)}${
         placeholder ? ", uten 2D-scene" : clip.source === "film" ? ", ferdig film" : ""
-      }${clip.transition.kind === "dissolve" ? ", overtoning inn" : clip.transition.kind === "dip" ? ", via svart inn" : ""}`}
+      }${clip.transition.kind !== "cut" ? `, ${TRANSITION_LABEL[clip.transition.kind].toLocaleLowerCase("nb")} inn${clip.overlapFrames > 0 ? " med overlapp" : ""}` : ""}${clip.monochrome ? ", svart-hvitt" : ""}${flags ? ", manuset er endret etter materialet" : ""}`}
       title={`${clip.productionNumber ?? ""} ${heading}\n${formatSeconds(seconds)}${
         clip.durationKind === "estimate" ? " (beregnet fra manus)" : ""
       }${placeholder ? "\nIngen 2D-scene ennå – vises som tittelkort" : ""}${
@@ -463,22 +472,37 @@ const ClipBlock = memo(function ClipBlock({
       {clip.transition.kind !== "cut" ? (
         <span
           aria-hidden
-          title={
-            clip.transition.kind === "dissolve"
-              ? "Overtoning inn i scenen"
-              : "Via svart inn i scenen"
-          }
+          title={`${TRANSITION_LABEL[clip.transition.kind]} inn i scenen${
+            clip.overlapFrames > 0 ? " (overlapper forrige scene)" : ""
+          }${clip.transitionInherited ? " – prosjektets standard" : ""}`}
           className="pointer-events-none absolute left-0 top-0 z-10 h-full"
           style={{
-            width: Math.max(4, Math.min(w / 2, (clip.transition.frames / 2) * ppf)),
-            background:
-              clip.transition.kind === "dissolve"
-                ? "linear-gradient(90deg, color-mix(in oklab, var(--accent-brand) 45%, transparent), transparent)"
-                : "linear-gradient(90deg, rgba(0,0,0,0.85), transparent)",
+            width: Math.max(
+              4,
+              Math.min(
+                w / 2,
+                (clip.overlapFrames > 0 ? clip.overlapFrames : clip.transition.frames / 2) * ppf,
+              ),
+            ),
+            background: transitionMarkBackground(clip.transition.kind),
           }}
         />
       ) : null}
       {showThumb ? <Thumb state={state} clip={clip} tick={tick} /> : null}
+      {flags
+        ? flags.map((f) => (
+            <span
+              key={f.startFrame}
+              aria-hidden
+              title="Manuset er endret her etter at materialet ble laget"
+              className="pointer-events-none absolute bottom-0 z-10 h-1 bg-status-danger"
+              style={{
+                left: Math.max(0, (f.startFrame - clip.startFrame) * ppf),
+                width: Math.max(3, (f.endFrame - f.startFrame) * ppf),
+              }}
+            />
+          ))
+        : null}
       {clip.parts.slice(1).map((part) => (
         <span
           key={part.id ?? part.startFrame}
@@ -494,6 +518,9 @@ const ClipBlock = memo(function ClipBlock({
             <span className="shrink-0 font-mono text-[10px] text-text-tertiary">
               {clip.productionNumber ?? "–"}
             </span>
+            {flags ? (
+              <AlertTriangle className="size-3 shrink-0 text-status-danger" aria-hidden />
+            ) : null}
             {clip.source === "film" ? (
               <Film className="size-3 shrink-0 text-accent-warm" aria-hidden />
             ) : placeholder ? (
@@ -555,7 +582,7 @@ function Thumb({ state, clip, tick }: { state: ProjectState; clip: FilmClip; tic
     drawFilmFrame(
       ctx,
       state,
-      [{ ...clip, startFrame: 0, transition: { kind: "cut", frames: 0 } }],
+      [{ ...clip, startFrame: 0, transition: { kind: "cut", frames: 0 }, overlapFrames: 0 }],
       0,
       {
         width: c.width,

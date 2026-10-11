@@ -28,7 +28,7 @@ export function drawFrame(ctx: CanvasRenderingContext2D, frame: Frame, opts: Dra
 }
 
 function drawItem(ctx: CanvasRenderingContext2D, it: DrawItem, v: Matrix, opts: DrawOptions) {
-  if (it.opacity <= 0) return;
+  if (it.opacity <= 0 || it.kind === "group") return;
   const m = it.matrix;
   ctx.save();
   // lerret ← scene (v) ← lag (m)

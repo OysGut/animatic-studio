@@ -7,7 +7,7 @@
  * Lag uten ressurs (fargeflater) kan kobles til en ressurs fra biblioteket her.
  */
 import { Link } from "@tanstack/react-router";
-import { Check, ImageOff, Library, Loader2, Upload } from "lucide-react";
+import { Check, ImageOff, Library, Loader2, Scissors, Upload } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import {
   ASSET_KIND_LABEL,
@@ -27,6 +27,7 @@ import {
 import type { Commands } from "@/app/project/use-commands";
 import { uploadAssetImage, useImageUrls } from "@/app/library/asset-images";
 import { GenerateImagePanel } from "@/app/library/GenerateImagePanel";
+import { CutoutDialog } from "@/app/library/CutoutDialog";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -130,6 +131,7 @@ function Body({
   const [busy, setBusy] = useState(false);
   const [target, setTarget] = useState<string>(layer.assetVariantId ?? variants[0]?.id ?? "");
   const fileRef = useRef<HTMLInputElement | null>(null);
+  const [cutout, setCutout] = useState(false);
 
   function setLayer(label: string, patch: Partial<LayerFields>) {
     const err = cmds.run(
@@ -407,6 +409,7 @@ function Body({
               reference={shown}
               editable={editable}
               disabled={busy}
+              budget={state.project}
               onGenerated={(img) =>
                 saveVersion(
                   img.versionId,
@@ -440,6 +443,23 @@ function Body({
         </p>
       ) : null}
 
+      {asset && shown ? (
+        <CutoutDialog
+          open={cutout}
+          onOpenChange={setCutout}
+          projectId={projectId}
+          asset={asset}
+          version={shown}
+          cmds={cmds}
+          onSaved={(versionId, variantId) =>
+            setLayer("Bruk frilagt bilde", {
+              assetVariantId: variantId as LayerFields["assetVariantId"],
+              versionId: versionId as LayerFields["versionId"],
+            })
+          }
+        />
+      ) : null}
+
       <DialogFooter className="sm:justify-between">
         {asset ? (
           <Button variant="ghost" size="sm" asChild>
@@ -455,6 +475,17 @@ function Body({
         ) : (
           <span />
         )}
+        {asset && shown && editable ? (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setCutout(true)}
+            title="Fjern bakgrunnen i bildet som vises nå (gratis, ny versjon)"
+          >
+            <Scissors />
+            Frilegg bildet …
+          </Button>
+        ) : null}
         <Button variant="secondary" onClick={onClose}>
           Ferdig
         </Button>
@@ -463,7 +494,7 @@ function Body({
   );
 }
 
-function AssetPicker({
+export function AssetPicker({
   state,
   candidates,
   urls,
@@ -517,7 +548,7 @@ function AssetPicker({
   );
 }
 
-function Thumb({ url }: { url: string | undefined }) {
+export function Thumb({ url }: { url: string | undefined }) {
   return (
     <span className="flex h-20 items-center justify-center bg-surface-3">
       {url ? (

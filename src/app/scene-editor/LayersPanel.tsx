@@ -1,12 +1,20 @@
 /**
  * Lagliste for 2D-scenen: forreste lag øverst. Valg, synlighet, lås og rekkefølge (knapper og dra-og-slipp).
  */
-import { ChevronDown, ChevronUp, Eye, EyeOff, Lock, Unlock } from "lucide-react";
+import { ChevronDown, ChevronUp, Eye, EyeOff, Group, Lock, Unlock } from "lucide-react";
 import { memo, useMemo, useState } from "react";
 import {
   LAYER_KIND_LABEL,
   layerVersion,
+  layerVersions,
   layersOf,
+  newId,
+  transformAt,
+  applyMatrix,
+  groupMatrixAt,
+  groupOf,
+  regroupFields,
+  IDENTITY_TRANSFORM,
   type Command,
   type Composition,
   type CompositionLayer,
@@ -21,7 +29,9 @@ interface Props {
   readonly editable: boolean;
   readonly selectedLayerId: string | null;
   readonly onSelect: (id: string | null) => void;
-  readonly run: (command: Command, label: string) => string | null;
+  readonly run: (command: Command, label: string, group?: string) => string | null;
+  /** Bildet avspillingshodet står på (plassering for en ny gruppe). */
+  readonly frame?: number;
   /** Dobbeltklikk på et lag: velg bilde for laget (DEC-0044). */
   readonly onOpenImage?: (layerId: string) => void;
 }
@@ -38,6 +48,7 @@ export const LayersPanel = memo(function LayersPanel({
   onSelect,
   run,
   onOpenImage,
+  frame = 0,
 }: Props) {
   // Bakerst først (som i modellen); listen vises med forreste lag øverst
   const back = useMemo(() => layersOf(state, composition.id), [state, composition.id]);
@@ -45,8 +56,7 @@ export const LayersPanel = memo(function LayersPanel({
   const paths = useMemo(() => {
     const out: string[] = [];
     for (const l of back) {
-      const v = layerVersion(state, l);
-      if (v) out.push(v.mediaPath);
+      for (const v of layerVersions(state, l)) out.push(v.mediaPath);
     }
     return out;
   }, [state, back]);
@@ -72,6 +82,75 @@ export const LayersPanel = memo(function LayersPanel({
           ? "Lås opp lag"
           : "Lås lag",
     );
+  }
+
+  /**
+   * Ny gruppe (DEC-0052, REQ-0174). Er et lag valgt, legges det i gruppen, og gruppens ankerpunkt blir
+   * lagets midtpunkt; ellers midt i scenen. Begge stegene angres samlet.
+   */
+  function newGroup() {
+    const sel = selectedLayerId ? state.layers[selectedLayerId] : undefined;
+    const member = sel && sel.kind !== "group" && !sel.removed ? sel : undefined;
+    // Ankerpunktet i scenens koordinater (laget kan ligge i en annen gruppe fra før)
+    const at = member
+      ? (() => {
+          const t = transformAt(member, frame);
+          const g = groupOf(state, member);
+          return g ? applyMatrix(groupMatrixAt(g, frame), t.x, t.y) : t;
+        })()
+      : { x: composition.width / 2, y: composition.height / 2 };
+    const anchor = { x: Math.round(at.x), y: Math.round(at.y) };
+    const n = back.filter((l) => l.kind === "group").length + 1;
+    const layerId = newId<"composition_layer">();
+    const undoGroup = newId();
+    const err = run(
+      {
+        type: "AddLayers",
+        layers: [
+          {
+            layerId,
+            compositionId: composition.id,
+            fields: {
+              kind: "group",
+              name: `Gruppe ${n}`,
+              assetId: null,
+              assetVariantId: null,
+              versionId: null,
+              fill: null,
+              width: 1,
+              height: 1,
+              parallax: 1,
+              transform: { ...IDENTITY_TRANSFORM, ...anchor },
+              keyframes: [],
+              visible: true,
+              locked: false,
+              groupId: null,
+              swaps: [],
+              path: null,
+              anchor,
+            },
+          },
+        ],
+      },
+      "Ny gruppe",
+      undoGroup,
+    );
+    if (err) return setError(err);
+    if (member)
+      exec2(
+        {
+          type: "UpdateLayers",
+          // Den nye gruppen står i ro (nøytral), så laget regnes bare ut av en eventuell gammel gruppe
+          layers: [{ layerId: member.id, fields: regroupFields(state, member, layerId, frame) }],
+        },
+        "Ny gruppe",
+        undoGroup,
+      );
+    onSelect(layerId);
+  }
+
+  function exec2(command: Command, label: string, group: string) {
+    setError(run(command, label, group));
   }
 
   function moveBefore(layerId: string, beforeLayerId: string | null, label: string) {
@@ -115,9 +194,22 @@ export const LayersPanel = memo(function LayersPanel({
 
   return (
     <section aria-label="Lag" className="flex flex-col py-1">
-      <h2 className="px-3 pb-1 pt-2 text-xs font-medium uppercase tracking-[0.04em] text-text-tertiary">
-        Lag ({back.length})
-      </h2>
+      <div className="flex items-center px-3 pb-1 pt-2">
+        <h2 className="text-xs font-medium uppercase tracking-[0.04em] text-text-tertiary">
+          Lag ({back.length})
+        </h2>
+        {editable && back.length > 0 ? (
+          <button
+            type="button"
+            onClick={newGroup}
+            className="ml-auto inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-[11px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
+            title="Lag i en gruppe flyttes, roteres og skaleres sammen. Valgt lag legges i gruppen."
+          >
+            <Group className="size-3.5" aria-hidden />
+            Ny gruppe
+          </button>
+        ) : null}
+      </div>
       {back.length === 0 ? (
         <p className="px-3 pb-2 text-xs text-text-tertiary">Ingen lag ennå. Bruk «Legg til lag».</p>
       ) : (
@@ -129,6 +221,9 @@ export const LayersPanel = memo(function LayersPanel({
             const isFront = idx === 0;
             const isBack = idx === front.length - 1;
             const dropping = drop?.id === l.id && dragId !== null && dragId !== l.id;
+            const group = l.groupId ? state.layers[l.groupId] : undefined;
+            const inGroup = !!group && group.kind === "group" && !group.removed;
+            const members = l.kind === "group" ? back.filter((x) => x.groupId === l.id).length : 0;
             return (
               <li
                 key={l.id}
@@ -181,14 +276,21 @@ export const LayersPanel = memo(function LayersPanel({
                   onDoubleClick={() => onOpenImage?.(l.id)}
                   title="Dobbeltklikk for å velge et annet bilde"
                   aria-pressed={on}
-                  className="flex min-w-0 flex-1 items-center gap-2 py-1 pl-3 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  className={
+                    "flex min-w-0 flex-1 items-center gap-2 py-1 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring " +
+                    (inGroup ? "pl-7" : "pl-3")
+                  }
                 >
                   <span
                     aria-hidden
                     className="h-5 w-8 shrink-0 overflow-hidden rounded-sm border border-border bg-surface-3"
                     style={l.fill && l.assetId === null ? { backgroundColor: l.fill } : undefined}
                   >
-                    {url ? <img src={url} alt="" className="size-full object-cover" /> : null}
+                    {url ? (
+                      <img src={url} alt="" className="size-full object-cover" />
+                    ) : l.kind === "group" ? (
+                      <Group className="m-auto mt-0.5 size-3.5 text-text-tertiary" />
+                    ) : null}
                   </span>
                   <span className="min-w-0 flex-1">
                     <span
@@ -201,6 +303,8 @@ export const LayersPanel = memo(function LayersPanel({
                     </span>
                     <span className="block truncate text-[11px] text-text-tertiary">
                       {LAYER_KIND_LABEL[l.kind]}
+                      {l.kind === "group" ? ` · ${members} lag` : ""}
+                      {inGroup ? ` · i «${group.name}»` : ""}
                     </span>
                   </span>
                 </button>

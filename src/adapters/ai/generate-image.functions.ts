@@ -10,7 +10,7 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { isUuid, newId, MAX_PROMPT_CHARS, type AssetMedia } from "@/core";
+import { isUuid, monthStartUtc, newId, MAX_PROMPT_CHARS, type AssetMedia } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 
 /** Bakgrunner og andre hele bilder. */
@@ -195,6 +195,18 @@ export const generateImage = createServerFn({ method: "POST" })
         message: `Prosjektets grense på ${MAX_PER_PROJECT_PER_DAY} genereringer i døgnet er nådd.`,
       };
 
+    // Prosjektets AI-budsjett (DEC-0053, REQ-0282/0284): kontrolleres etter at jobben er registrert
+    // (se under), så samtidige genereringer ikke kan gå forbi rammen
+    const budgeted = schema.version >= 14;
+    const pr = proj as {
+      ai_month_limit?: number | null;
+      ai_price_per_image?: number | string | null;
+    };
+    const price =
+      budgeted && pr.ai_price_per_image !== null && pr.ai_price_per_image !== undefined
+        ? Number(pr.ai_price_per_image)
+        : null;
+
     const model =
       data.purpose === "cutout"
         ? process.env["ANIMATIC_CUTOUT_MODEL"] || CUTOUT_MODEL
@@ -211,8 +223,25 @@ export const generateImage = createServerFn({ method: "POST" })
       reference_path: data.referencePath,
       status: "running",
       created_by: context.userId,
+      ...(budgeted ? { estimated_cost: price } : {}),
     } as never);
     if (logErr) return { ok: false, message: `Genereringen kunne ikke logges: ${logErr.message}` };
+    if (budgeted && pr.ai_month_limit !== null && pr.ai_month_limit !== undefined) {
+      const { count: used } = await admin
+        .from("generation_jobs")
+        .select("id", { count: "exact", head: true })
+        .eq("project_id", data.projectId)
+        .neq("status", "failed")
+        .gte("created_at", monthStartUtc(new Date()).toISOString());
+      if ((used ?? 0) > Number(pr.ai_month_limit)) {
+        // Denne jobben (og eventuelle samtidige) går over rammen: den fjernes igjen, ingenting sendes
+        await admin.from("generation_jobs").delete().eq("id", jobId);
+        return {
+          ok: false,
+          message: `Prosjektets AI-budsjett for denne måneden (${pr.ai_month_limit} genereringer) er brukt opp. Eieren kan endre budsjettet på prosjektoversikten.`,
+        };
+      }
+    }
 
     const finish = async (patch: Record<string, unknown>) => {
       await admin
@@ -221,6 +250,8 @@ export const generateImage = createServerFn({ method: "POST" })
         .eq("id", jobId);
     };
 
+    /** Tjenesten har laget bildet (og tatt betalt): feiler lagringen etterpå, teller jobben likevel. */
+    let charged = false;
     try {
       const size = data.purpose === "cutout" ? "1024x1536" : "1536x1024";
       const background = data.purpose === "cutout" ? "transparent" : "opaque";
@@ -269,6 +300,7 @@ export const generateImage = createServerFn({ method: "POST" })
         const retry = res.status === 400 && !/safety|policy|moderation/i.test(body);
         if (!retry) break;
       }
+      if (res?.ok) charged = true;
       if (!res || !res.ok) {
         const last = log[log.length - 1] ?? "";
         const status = res?.status ?? 0;
@@ -313,7 +345,10 @@ export const generateImage = createServerFn({ method: "POST" })
       };
     } catch (e) {
       const message = (e as Error).message || "Ukjent feil";
-      await finish({ status: "failed", error: message.slice(0, 2000) });
+      await finish({
+        status: charged && budgeted ? "lost" : "failed",
+        error: message.slice(0, 2000),
+      });
       return { ok: false, message: `Genereringen stoppet: ${message}` };
     }
   });

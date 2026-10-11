@@ -12,7 +12,7 @@ import type { ClipPart, Composition, ProjectState, SceneHeading, Take, Transitio
 import { compareKeys } from "../order-key";
 import { estimateProduction } from "../screenplay/duration";
 import { framesToSeconds, msToFramesCeil, secondsToFrames, type Rational } from "../time";
-import { sceneAudioEndMs } from "../audio";
+import { MAIN_LANGUAGE, playsIn, sceneAudioEndMs } from "../audio";
 import { activeStructure, blocksOfVariant } from "../views";
 
 /**
@@ -36,8 +36,14 @@ export interface FilmClip {
   readonly durationKind: "set" | "estimate" | "film";
   /** Den importerte filmen som vises (kilde «film»), ellers null. */
   readonly take: Take | null;
-  /** Overgangen inn i klippet (kutt når den ikke er satt). */
+  /** Overgangen inn i klippet: scenens egen, ellers prosjektets standard (DEC-0051). */
   readonly transition: Transition;
+  /** Scenen har ingen egen overgang og følger prosjektets standard. */
+  readonly transitionInherited: boolean;
+  /** Bilder klippet overlapper forrige klipp (overgang med overlapp, REQ-0576); 0 ellers. */
+  readonly overlapFrames: number;
+  /** Scenen vises og eksporteres i svart-hvitt (REQ-0574). */
+  readonly monochrome: boolean;
   /** Delene klippet består av, etter hverandre (minst én). */
   readonly parts: readonly ResolvedPart[];
   /** Klippet er satt sammen av lagrede deler (kuttet eller splittet, DEC-0048). */
@@ -143,7 +149,11 @@ export function filmClips(s: ProjectState, productionId: string): FilmClip[] {
   const audioEnd = sceneAudioEndMs(s);
   const comps = compositionsByVariant(s);
   let cursor = 0;
-  const clips = activeStructure(s, productionId).map((o): FilmClip => {
+  // Bildene i forrige klipp etter dets egen innkommende overgang, og bildet i filmen der den slutter
+  let prevFree = 0;
+  let prevIn = 0;
+  const standard = s.project.defaultTransition ?? CUT;
+  const clips = activeStructure(s, productionId).map((o, index): FilmClip => {
     const c = comps.get(o.variantId) ?? null;
     // Uten satt lengde: beregnet fra manuset, men aldri kortere enn lyden i scenen (DEC-0044)
     const estimate = Math.max(
@@ -198,6 +208,29 @@ export function filmClips(s: ProjectState, productionId: string): FilmClip[] {
     }
     const edited = stored.length > 0;
     const durationFrames = parts.reduce((t, p) => t + p.durationFrames, 0);
+    const transition = o.transition ?? standard;
+    // Overlapp: scenen begynner før forrige er ferdig (aldri mer enn noen av klippene er lange)
+    // Aldri inn i forrige klipps egen overgang (da ville tre klipp blandes), og aldri første bilde i
+    // filmen (inntoningen fra svart)
+    const overlapFrames =
+      index > 0 && transition.overlap === true && transition.kind !== "cut"
+        ? Math.max(
+            0,
+            Math.min(transition.frames, prevFree - 1, durationFrames - 1, cursor - prevIn - 1),
+          )
+        : 0;
+    cursor -= overlapFrames;
+    // Første klipp tones inn fra svart over hele overgangens lengde; ellers er overgangen sentrert
+    const myIn =
+      transition.kind === "cut"
+        ? 0
+        : overlapFrames > 0
+          ? overlapFrames
+          : index === 0
+            ? Math.min(transition.frames, durationFrames)
+            : Math.ceil(transition.frames / 2);
+    prevFree = durationFrames - myIn;
+    prevIn = cursor + myIn;
     const clip: FilmClip = {
       occurrenceId: o.id,
       sceneId: o.sceneId,
@@ -212,7 +245,10 @@ export function filmClips(s: ProjectState, productionId: string): FilmClip[] {
       durationFrames,
       durationKind: take ? "film" : edited || set ? "set" : "estimate",
       take,
-      transition: o.transition ?? CUT,
+      transition,
+      transitionInherited: o.transition === undefined,
+      overlapFrames,
+      monochrome: o.monochrome === true,
     };
     cursor += durationFrames;
     return clip;
@@ -264,7 +300,10 @@ export function filmRange(
   let b = clips.findIndex((c) => c.occurrenceId === range.toOccurrenceId);
   if (a < 0 || b < 0) return { startFrame: 0, endFrame: 0, clips: [] };
   if (b < a) [a, b] = [b, a];
-  const sel = clips.slice(a, b + 1);
+  // Utvalget begynner og slutter rent: ingen overgang inn fra (eller ut i) scener utenfor utvalget
+  const sel = clips
+    .slice(a, b + 1)
+    .map((c, i) => (i === 0 ? { ...c, transition: CUT, overlapFrames: 0 } : c));
   const first = sel[0]!;
   const last = sel[sel.length - 1]!;
   return {
@@ -291,12 +330,21 @@ export interface ClipFrame {
 export interface FrameMix {
   readonly a: ClipFrame;
   readonly b: ClipFrame | null;
+  /** Hvor langt overgangen har kommet (0–1): andel av b for overtoning, tørk, skyv og iris. */
   readonly mix: number;
   readonly kind: Transition["kind"];
   /** Andel svart over bildet (overgang via svart og inntoning fra svart). */
   readonly black: number;
+  /** Andel hvitt over bildet (overgang via hvitt og inntoning fra hvitt). */
+  readonly white: number;
 }
 
+/**
+ * Hva som vises på et bilde, med overganger (DEC-0047, DEC-0051): `a` alene, eller `a` og `b` med
+ * overgangen `kind` som har kommet `mix` (0–1) på vei. Uten overlapp ligger overgangen midt på klippet
+ * (halvparten før, halvparten etter) og første/siste bilde holdes utenfor klippets egen tid; med overlapp
+ * spilles begge klippene i overlappen. Overgang inn i første klipp tones inn fra svart (eller hvitt).
+ */
 export function frameMix(clips: readonly FilmClip[], frame: number): FrameMix | null {
   const at = clipAtFrame(clips, frame);
   if (!at) return null;
@@ -312,36 +360,106 @@ export function frameMix(clips: readonly FilmClip[], frame: number): FrameMix | 
     mix: 0,
     kind: "cut",
     black: 0,
+    white: 0,
   };
-  // Første klipp: inntoning fra svart
+  // Første klipp: inntoning fra svart (via hvitt: fra hvitt)
   const first = clips[0]!;
   if (at.index === 0 && first.transition.kind !== "cut") {
     const d = Math.min(first.transition.frames, first.durationFrames);
-    if (frame < d) return { ...plain, kind: first.transition.kind, black: 1 - (frame + 0.5) / d };
+    if (frame < d) {
+      const amount = 1 - (frame + 0.5) / d;
+      return first.transition.kind === "dipWhite"
+        ? { ...plain, kind: "dipWhite", white: amount }
+        : { ...plain, kind: first.transition.kind, black: amount };
+    }
   }
   // Overgangen inn i dette klippet eller det neste kan dekke bildet
   for (const i of [at.index, at.index + 1]) {
     if (i <= 0 || i >= clips.length) continue;
     const prev = clips[i - 1]!;
     const next = clips[i]!;
-    // Overgangen kan ikke være lengre enn klippene på hver side (ellers ville vinduene overlappe)
     const t0 = next.transition;
-    const frames = Math.min(t0.frames, prev.durationFrames, next.durationFrames);
-    if (t0.kind === "cut" || frames <= 0) continue;
-    const t = { kind: t0.kind, frames };
-    const before = Math.floor(t.frames / 2);
-    const from = next.startFrame - before;
-    if (frame < from || frame >= from + t.frames) continue;
-    const p = (frame - from + 0.5) / t.frames;
+    if (t0.kind === "cut") continue;
+    // Med overlapp: overgangen er overlappen. Ellers sentrert, aldri lengre enn klippene på hver side.
+    const frames =
+      next.overlapFrames > 0
+        ? next.overlapFrames
+        : Math.min(t0.frames, prev.durationFrames, next.durationFrames);
+    if (frames <= 0) continue;
+    const from =
+      next.overlapFrames > 0 ? next.startFrame : next.startFrame - Math.floor(frames / 2);
+    if (frame < from || frame >= from + frames) continue;
+    const p = (frame - from + 0.5) / frames;
     const a = local(prev, frame);
     const b = local(next, frame);
-    if (t.kind === "dissolve") return { a, b, mix: p, kind: "dissolve", black: 0 };
-    // Via svart: første halvdel toner a ut, andre halvdel toner b inn
-    return p < 0.5
-      ? { a, b: null, mix: 0, kind: "dip", black: p * 2 }
-      : { a: b, b: null, mix: 0, kind: "dip", black: (1 - p) * 2 };
+    if (t0.kind === "dip" || t0.kind === "dipWhite") {
+      // Via svart/hvitt: første halvdel toner a ut, andre halvdel toner b inn
+      const amount = p < 0.5 ? p * 2 : (1 - p) * 2;
+      const shown = p < 0.5 ? a : b;
+      return {
+        a: shown,
+        b: null,
+        mix: 0,
+        kind: t0.kind,
+        black: t0.kind === "dip" ? amount : 0,
+        white: t0.kind === "dipWhite" ? amount : 0,
+      };
+    }
+    return { a, b, mix: p, kind: t0.kind, black: 0, white: 0 };
   }
   return plain;
+}
+
+/**
+ * Bildet i klippet (fra klippets start) der 2D-scenens bilde `compFrame` vises, eller null hvis det er
+ * kuttet bort. Viser klippet ingen del av 2D-scenen (importert film i stedet), brukes tiden som tid i
+ * scenen.
+ */
+export function compositionFrameInClip(clip: FilmClip, compFrame: number): number | null {
+  if (!clip.parts.some((p) => p.source === "composition"))
+    return compFrame < clip.durationFrames ? compFrame : null;
+  for (const p of clip.parts)
+    if (
+      p.source === "composition" &&
+      compFrame >= p.inFrame &&
+      compFrame < p.inFrame + p.durationFrames
+    )
+      return p.startFrame + (compFrame - p.inFrame);
+  return null;
+}
+
+/**
+ * Omvendt av compositionFrameInClip (DEC-0052, naboscener): 2D-scenens bilde som vises på bildet
+ * `localFrame` i klippet, eller null når klippet viser noe annet der (importert film, plassholder).
+ */
+export function clipFrameToComposition(clip: FilmClip, localFrame: number): number | null {
+  if (!clip.parts.some((p) => p.source === "composition"))
+    return localFrame >= 0 && localFrame < clip.durationFrames ? localFrame : null;
+  for (const p of clip.parts)
+    if (
+      p.source === "composition" &&
+      localFrame >= p.startFrame &&
+      localFrame < p.startFrame + p.durationFrames
+    )
+      return p.inFrame + (localFrame - p.startFrame);
+  return null;
+}
+
+/**
+ * Scenen med nabosceneene før og etter (DEC-0052, REQ-0578): bildene i filmen fra starten av forrige
+ * scene til slutten av neste, med overgangene mellom dem. Første scene i utvalget starter rent.
+ */
+export function neighbourRange(clips: readonly FilmClip[], occurrenceId: string) {
+  const i = clips.findIndex((c) => c.occurrenceId === occurrenceId);
+  if (i < 0) return null;
+  const prev = clips[i - 1] ?? null;
+  const next = clips[i + 1] ?? null;
+  const range = filmRange(clips, {
+    kind: "scenes",
+    fromOccurrenceId: (prev ?? clips[i]!).occurrenceId,
+    toOccurrenceId: (next ?? clips[i]!).occurrenceId,
+  });
+  return { ...range, current: clips[i]!, prev, next };
 }
 
 /** Tidsrommet (bilder i filmen) en manusblokk dekker i klippet (DEC-0047, REQ-0097/0098). */
@@ -386,7 +504,14 @@ export function blockSpans(s: ProjectState, clip: FilmClip): BlockSpan[] {
   const scale = clip.durationFrames / total;
   const linked = new Map<string, { start: number; end: number }>();
   for (const a of Object.values(s.audioClips)) {
-    if (a.removed || a.occurrenceId !== clip.occurrenceId || !a.blockId) continue;
+    // Bare lyd i hovedspråket: replikkene har samme tid i alle språk (DEC-0059)
+    if (
+      a.removed ||
+      a.occurrenceId !== clip.occurrenceId ||
+      !a.blockId ||
+      !playsIn(a, MAIN_LANGUAGE)
+    )
+      continue;
     const st = clip.startFrame + msToFramesCeil(a.offsetMs, fps);
     const prev = linked.get(a.blockId);
     if (!prev || st < prev.start)
@@ -394,13 +519,18 @@ export function blockSpans(s: ProjectState, clip: FilmClip): BlockSpan[] {
   }
   // Tidskoblinger satt av brukeren går foran alt annet (tidligste kobling per blokk)
   const timed = new Map<string, { start: number; end: number | null }>();
+  const toFrames = (ms: number) => Math.round((ms / 1000) * (fps.num / fps.den));
   for (const l of Object.values(s.timeLinks)) {
     if (l.removed || l.occurrenceId !== clip.occurrenceId) continue;
-    const st = clip.startFrame + Math.round((l.startMs / 1000) * (fps.num / fps.den));
+    // Hendelse i 2D-scenen: tiden er i 2D-scenens egen tid; finn hvor i klippet det bildet vises
+    const local = l.layerId
+      ? compositionFrameInClip(clip, toFrames(l.startMs))
+      : toFrames(l.startMs);
+    const st = local === null ? end : clip.startFrame + local;
     const en =
-      l.endMs === null
+      l.endMs === null || local === null
         ? null
-        : clip.startFrame + Math.round((l.endMs / 1000) * (fps.num / fps.den));
+        : clip.startFrame + local + Math.max(1, toFrames(l.endMs) - toFrames(l.startMs));
     const prev = timed.get(l.blockId);
     if (!prev || st < prev.start) timed.set(l.blockId, { start: st, end: en });
   }

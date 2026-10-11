@@ -1,12 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { FileText, Send } from "lucide-react";
+import { AlertTriangle, FileText, Send } from "lucide-react";
 import { useState, type FormEvent } from "react";
-import { activeStructure, mainProduction, orderedOccurrences } from "@/core";
+import { discrepancies, filmClips, mainProduction, orderedOccurrences } from "@/core";
 import { db } from "@/app/db";
 import { DurationOverview } from "./DurationOverview";
 import { canEdit, useMembers, useProfiles, useProjectState } from "@/app/project/use-project";
 import { ProjectFormat } from "./ProjectFormat";
+import { AiPanel } from "@/app/ai/AiPanel";
+import { ProductionList } from "./ProductionList";
+import { ContinuityAnalysisPanel } from "@/app/continuity/ContinuityAnalysisPanel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -15,17 +18,6 @@ const ROLE_LABEL: Record<string, string> = {
   editor: "Redaktør",
   commenter: "Kommentator",
   viewer: "Leser",
-};
-const KIND_LABEL: Record<string, string> = {
-  main: "Hovedfilm",
-  spinoff: "Spinoff",
-  trailer: "Trailer",
-  teaser: "Teaser",
-  short: "Kortfilm",
-  pitch: "Pitchfilm",
-  pilot: "Pilotsekvens",
-  alternative: "Alternativ fortelling",
-  other: "Annen versjon",
 };
 
 export function ProjectOverview({ projectId, userId }: { projectId: string; userId: string }) {
@@ -51,9 +43,6 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
     );
   const s = state.data;
   const main = mainProduction(s);
-  const productions = Object.values(s.productions).sort((a, b) =>
-    a.kind === "main" ? -1 : b.kind === "main" ? 1 : a.name.localeCompare(b.name, "nb"),
-  );
 
   return (
     <div className="flex min-h-0 flex-1">
@@ -81,29 +70,36 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
             <h2 id="prod-title" className="mb-2 text-base font-semibold text-text-primary">
               Produksjoner
             </h2>
-            <div className="border border-border bg-surface-1">
-              <div className="grid grid-cols-[1fr_160px_100px_100px] border-b border-border px-4 py-2 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
-                <span>Navn</span>
-                <span>Type</span>
-                <span className="text-right">Scener</span>
-                <span className="text-right">Aktive</span>
-              </div>
-              {productions.map((p) => (
-                <div
-                  key={p.id}
-                  className="grid grid-cols-[1fr_160px_100px_100px] border-b border-border px-4 py-2 text-[13px] last:border-b-0"
-                >
-                  <span className="font-medium text-text-primary">{p.name}</span>
-                  <span className="text-text-secondary">{KIND_LABEL[p.kind] ?? p.kind}</span>
-                  <span className="tabular text-right text-text-secondary">
-                    {orderedOccurrences(s, p.id).length}
-                  </span>
-                  <span className="tabular text-right text-text-secondary">
-                    {activeStructure(s, p.id).length}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <ProductionList
+              state={s}
+              projectId={projectId}
+              userId={userId}
+              editable={canEdit(myRole)}
+            />
+            {main
+              ? (() => {
+                  // Avvik ved manusendring (DEC-0054, REQ-0315)
+                  const n = new Set(
+                    discrepancies(s, filmClips(s, main.id), { spans: false }).map(
+                      (d) => d.occurrenceId,
+                    ),
+                  ).size;
+                  return n > 0 ? (
+                    <p className="mt-3 flex items-center gap-2 text-xs text-text-secondary">
+                      <AlertTriangle className="size-3.5 text-status-danger" aria-hidden />
+                      {n === 1 ? "Én scene har" : `${n} scener har`} manusendringer etter at
+                      2D-scene eller film ble laget.
+                      <Link
+                        to="/prosjekt/$projectId/montering"
+                        params={{ projectId }}
+                        className="text-accent-brand hover:underline"
+                      >
+                        Se i monteringen
+                      </Link>
+                    </p>
+                  ) : null;
+                })()
+              : null}
             {main && orderedOccurrences(s, main.id).length === 0 ? (
               <div className="mt-3 flex items-center gap-3 text-xs text-text-tertiary">
                 <span>Hovedfilmen har ingen scener ennå.</span>
@@ -117,7 +113,25 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
             ) : null}
           </section>
 
+          {main && orderedOccurrences(s, main.id).length > 0 ? (
+            <ContinuityAnalysisPanel
+              state={s}
+              projectId={projectId}
+              productionId={main.id}
+              userId={userId}
+              editable={canEdit(myRole)}
+            />
+          ) : null}
+
           <DurationOverview state={s} />
+
+          <AiPanel
+            state={s}
+            projectId={projectId}
+            userId={userId}
+            isOwner={myRole === "owner"}
+            editable={canEdit(myRole)}
+          />
 
           <section aria-labelledby="members-title" className="mt-10">
             <h2 id="members-title" className="mb-2 text-base font-semibold text-text-primary">

@@ -153,8 +153,14 @@ describe("Invarianter under tilfeldige kommandosekvenser", () => {
       fc.property(seeds, (seed) => {
         const { steps } = runSequence(seed, LEN);
         for (const st of steps) {
+          // Godkjent grunnlag (acceptedFrom, DEC-0054/0057) kan endres; resten av materialet aldri
+          const fixed = (t: object | undefined) => {
+            if (!t) return t;
+            const { acceptedFrom: _a, revision: _r, ...rest } = t as Record<string, unknown>;
+            return rest;
+          };
           for (const [id, t] of Object.entries(st.before.takes))
-            expect(st.after.takes[id]).toEqual(t);
+            expect(fixed(st.after.takes[id])).toEqual(fixed(t));
           const after = new Set(
             st.after.blockRevisions.map((r) => `${r.blockId}:${r.rev}:${r.text}`),
           );

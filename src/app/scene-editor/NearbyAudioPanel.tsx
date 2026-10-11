@@ -11,6 +11,7 @@ import {
   audioVersion,
   formatHeading,
   neighbourSceneAudio,
+  LANGUAGE_LABEL,
   newId,
   type AudioClip,
   type Command,
@@ -194,6 +195,9 @@ export const NearbyAudioPanel = memo(function NearbyAudioPanel({
                   />
                   <span className="truncate text-[12px] text-text-primary" title={a.name}>
                     {a.name || "Lyd"}
+                    {a.language && a.language !== "*"
+                      ? ` (${(LANGUAGE_LABEL[a.language] ?? a.language).toLowerCase()})`
+                      : ""}
                   </span>
                 </span>
                 <span className="flex min-w-0 items-center gap-1 pl-3.5">

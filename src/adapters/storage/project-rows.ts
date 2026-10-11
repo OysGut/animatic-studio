@@ -6,7 +6,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { stateFromRows, type ProjectRows, type ProjectState, type Row } from "@/core";
 
 /** Skjemaversjonen denne koden forventer (db/migrations). Øk ved hver ny migrasjon. */
-export const EXPECTED_SCHEMA_VERSION = 12;
+export const EXPECTED_SCHEMA_VERSION = 18;
 
 const PAGE = 1000;
 
@@ -42,6 +42,16 @@ async function fetchOptional(db: AnyClient, table: string, projectId: string): P
   }
 }
 
+/** Alle rader i en tabell for prosjektet (sidevis). `optional`: tabell som mangler, gir tom liste. */
+export function fetchProjectTable(
+  db: AnyClient,
+  table: string,
+  projectId: string,
+  optional = true,
+): Promise<Row[]> {
+  return optional ? fetchOptional(db, table, projectId) : fetchAll(db, table, projectId);
+}
+
 export async function loadProjectRows(db: AnyClient, projectId: string): Promise<ProjectRows> {
   const { data: project, error } = await db
     .from("projects")
@@ -68,6 +78,9 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     audioClips,
     clipParts,
     timeLinks,
+    generationPrompts,
+    continuityEvents,
+    translations,
   ] = await Promise.all([
     fetchAll(db, "productions", projectId),
     fetchAll(db, "scenes", projectId),
@@ -86,6 +99,9 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     fetchOptional(db, "audio_clips", projectId),
     fetchOptional(db, "clip_parts", projectId),
     fetchOptional(db, "time_links", projectId),
+    fetchOptional(db, "generation_prompts", projectId),
+    fetchOptional(db, "continuity_events", projectId),
+    fetchOptional(db, "translations", projectId),
   ]);
   return {
     project: project as Row,
@@ -106,6 +122,9 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     audio_clips: audioClips,
     clip_parts: clipParts,
     time_links: timeLinks,
+    generation_prompts: generationPrompts,
+    continuity_events: continuityEvents,
+    translations,
   };
 }
 

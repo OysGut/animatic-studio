@@ -7,6 +7,10 @@ import { AudioWaveform, Library, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import {
   AUDIO_KIND_LABEL,
+  FILM_LANGUAGES,
+  LANGUAGE_LABEL,
+  MAIN_LANGUAGE,
+  isVoiceKind,
   AUDIO_MAX_MS,
   AUDIO_TRACK_ORDER,
   audioClipFieldsOf,
@@ -121,6 +125,28 @@ export function AudioClipPanel({
           </select>
         </Field>
       </div>
+
+      <Field label="Språk">
+        <select
+          aria-label="Språk"
+          value={clip.language ?? ""}
+          disabled={off}
+          onChange={(e) => onChange("Endre språk for lyd", { language: e.target.value || null })}
+          className={ctl}
+          title="Hvilken språkversjon lyden spilles i. Musikk og effekter er vanligvis felles."
+        >
+          <option value="">
+            Standard (
+            {isVoiceKind(clip.kind) ? LANGUAGE_LABEL[MAIN_LANGUAGE] : "felles for alle språk"})
+          </option>
+          <option value="*">Felles for alle språk</option>
+          {FILM_LANGUAGES.map((l) => (
+            <option key={l} value={l}>
+              Bare {(LANGUAGE_LABEL[l] ?? l).toLowerCase()}
+            </option>
+          ))}
+        </select>
+      </Field>
 
       <p className="text-xs text-text-tertiary">
         Fil: {asset?.name ?? "ukjent"}

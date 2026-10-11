@@ -23,6 +23,16 @@ interface Props {
   readonly decor?: ReadonlyMap<string, LineDecor> | undefined;
   /** Klikk på et notatsymbol i margen. */
   readonly onNoteClick?: ((annotationIds: readonly string[], sel: Selection) => void) | undefined;
+  /** Blokker som er endret etter at materiale ble laget (DEC-0054). */
+  readonly changed?: ReadonlySet<string> | undefined;
+  /** Språkvisning (DEC-0058): linjer uten oversettelse, usikre og som må gjennomgås. */
+  readonly language?: LanguageMarks | undefined;
+}
+
+export interface LanguageMarks {
+  readonly missing: ReadonlySet<string>;
+  readonly uncertain: ReadonlySet<string>;
+  readonly review: ReadonlySet<string>;
 }
 
 const BODY_TOP_EM = 6; // 1 tomme
@@ -37,6 +47,8 @@ export function ScriptPageView({
   onActivate,
   decor,
   onNoteClick,
+  changed,
+  language,
 }: Props) {
   return (
     <div
@@ -54,6 +66,8 @@ export function ScriptPageView({
           onActivate={onActivate}
           decor={decor}
           onNoteClick={onNoteClick}
+          changed={changed}
+          language={language}
         />
       ))}
     </div>
@@ -70,6 +84,8 @@ interface SheetProps {
   readonly onActivate: (sel: Selection) => void;
   readonly decor?: ReadonlyMap<string, LineDecor> | undefined;
   readonly onNoteClick?: ((annotationIds: readonly string[], sel: Selection) => void) | undefined;
+  readonly changed?: ReadonlySet<string> | undefined;
+  readonly language?: LanguageMarks | undefined;
 }
 
 const PageSheet = memo(function PageSheet({
@@ -81,6 +97,8 @@ const PageSheet = memo(function PageSheet({
   onActivate,
   decor,
   onNoteClick,
+  changed,
+  language,
 }: SheetProps) {
   return (
     <section
@@ -111,6 +129,19 @@ const PageSheet = memo(function PageSheet({
           decor={decor?.get(lineKey(page.number, i))}
           onNoteClick={onNoteClick}
           line={l}
+          changed={!!l.blockId && l.first && !!changed?.has(l.blockId)}
+          lang={
+            !language || !l.blockId
+              ? null
+              : language.missing.has(l.blockId)
+                ? "missing"
+                : language.review.has(l.blockId)
+                  ? "review"
+                  : language.uncertain.has(l.blockId)
+                    ? "uncertain"
+                    : null
+          }
+          langFirst={l.first}
           state={state}
           selected={
             (l.blockId !== null && l.blockId === selectedBlock) ||
@@ -172,7 +203,13 @@ function Line({
   selected,
   onSelect,
   onActivate,
+  changed,
+  lang,
+  langFirst,
 }: {
+  changed?: boolean;
+  lang?: "missing" | "review" | "uncertain" | null;
+  langFirst?: boolean;
   line: PageLine;
   lineId: string;
   decor?: LineDecor | undefined;
@@ -217,6 +254,29 @@ function Line({
           </span>
         </span>
       ) : null}
+      {changed ? (
+        <span
+          className="absolute select-none rounded-sm bg-status-danger"
+          style={{ top, left: "3.4em", width: "0.25em", height: "1em" }}
+          title="Endret etter at materialet (2D-scene eller film) ble laget – se inspektøren"
+          aria-label="Endret etter materialet"
+        />
+      ) : null}
+      {lang && lang !== "missing" && langFirst ? (
+        <span
+          className={
+            "absolute select-none rounded-sm " +
+            (lang === "review" ? "bg-status-moved" : "bg-status-uncertain")
+          }
+          style={{ top, left: "2.9em", width: "0.25em", height: "1em" }}
+          title={
+            lang === "review"
+              ? "Den norske teksten er endret etter oversettelsen – gjennomgå den"
+              : "Usikker kobling fra import – godkjenn eller rett oversettelsen"
+          }
+          aria-label={lang === "review" ? "Oversettelsen må gjennomgås" : "Usikker oversettelse"}
+        />
+      ) : null}
       {decor?.notesHere.length ? (
         <button
           type="button"
@@ -251,8 +311,11 @@ function Line({
               : "") +
           (uncertain
             ? " decoration-status-uncertain underline decoration-wavy underline-offset-4"
-            : "")
+            : "") +
+          // Ikke oversatt ennå: norsk tekst vises dempet
+          (lang === "missing" ? " italic opacity-45" : "")
         }
+        title={lang === "missing" ? "Ikke oversatt ennå (norsk tekst vises)" : undefined}
         style={{
           top,
           left: `${line.left * CHAR_EM}em`,

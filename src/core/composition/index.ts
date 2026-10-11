@@ -10,6 +10,8 @@ export * from "./fields";
 export * from "./render";
 export * from "./animate";
 export * from "./format";
+export * from "./path";
+export * from "./group";
 
 /** Lagtypen et bilde fra biblioteket får som standard. */
 export const LAYER_KIND_FOR_ASSET: Record<AssetKind, LayerKind> = {
@@ -51,6 +53,9 @@ export function defaultLayerFields(
       visible: true,
       locked: false,
       groupId: null,
+      swaps: [],
+      path: null,
+      anchor: null,
     };
   }
   const asset = s.assets[src.assetId];
@@ -84,6 +89,9 @@ export function defaultLayerFields(
     visible: true,
     locked: false,
     groupId: null,
+    swaps: [],
+    path: null,
+    anchor: null,
   };
 }
 
@@ -104,5 +112,9 @@ export function layerFieldsOf(l: CompositionLayer): LayerFields {
     visible: l.visible,
     locked: l.locked,
     groupId: l.groupId,
+    swaps: l.swaps,
+    path: l.path,
+    anchor: l.anchor,
+    ...(l.languageImages?.length ? { languageImages: l.languageImages } : {}),
   };
 }

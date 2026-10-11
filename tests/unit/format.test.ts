@@ -50,6 +50,9 @@ function layer(over: Partial<CompositionLayer> = {}): CompositionLayer {
     visible: true,
     locked: false,
     groupId: null,
+    swaps: [],
+    path: null,
+    anchor: null,
     ...over,
   } as CompositionLayer;
 }
@@ -101,6 +104,8 @@ describe("rescaleLayer", () => {
   it("fargeflatens størrelse skaleres, bildelags størrelse beholdes", () => {
     const fill = rescaleLayer(layer(), m);
     expect([fill.width, fill.height]).toEqual([3840, 2160]);
+    // Fargeflaten skaleres gjennom størrelsen alene (ellers dobbelt så stor, DEC-0052-gjennomgang)
+    expect(fill.transform.scaleX).toBe(1);
     const img = rescaleLayer(
       layer({ kind: "character", fill: null, assetId: tid(), width: 800, height: 400 }),
       m,
@@ -121,6 +126,8 @@ describe("rescaleLayer", () => {
           kf(5, "opacity", 0.5),
           kf(5, "rotation", 30),
         ],
+        fill: null,
+        assetId: tid(),
       }),
       m,
     );

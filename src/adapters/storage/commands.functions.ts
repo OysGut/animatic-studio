@@ -130,6 +130,90 @@ const EDIT_COMMANDS = new Set([
   "SetTimeLinksRemoved",
 ]);
 
+/**
+ * Nye overgangstyper, overlapp, prosjektets standardovergang, svart-hvitt per scene og hendelser i
+ * 2D-scenen krever migrasjon 0013 (DEC-0051).
+ */
+function needsSchema13(command: { type: string } & Record<string, unknown>): boolean {
+  if (command.type === "SetDefaultTransition" || command.type === "SetOccurrenceMonochrome")
+    return true;
+  if (command.type === "SetTransition") {
+    // null («følg standarden») lagres som kutt før 0013, og er da det samme som før
+    const t = command["transition"] as { kind?: string; overlap?: boolean } | null;
+    if (t === null) return false;
+    return !["cut", "dissolve", "dip"].includes(t.kind ?? "") || t.overlap === true;
+  }
+  // Grupper, bildeskifter, bevegelsesbaner og ankerpunkt (DEC-0052)
+  if (command.type === "AddLayers" || command.type === "UpdateLayers")
+    return (
+      (command["layers"] as {
+        fields?: { kind?: string; swaps?: unknown[]; path?: unknown; anchor?: unknown };
+      }[]) ?? []
+    ).some(
+      (l) =>
+        l.fields?.kind === "group" ||
+        (l.fields?.swaps?.length ?? 0) > 0 ||
+        (l.fields?.path !== null && l.fields?.path !== undefined) ||
+        (l.fields?.anchor !== null && l.fields?.anchor !== undefined),
+    );
+  if (command.type === "AddTimeLinks" || command.type === "UpdateTimeLinks")
+    return ((command["links"] as { fields?: { layerId?: unknown } }[] | undefined) ?? []).some(
+      (l) => l.fields?.layerId !== undefined && l.fields?.layerId !== null,
+    );
+  return false;
+}
+
+/** M5 del 2 (DEC-0053): krever migrasjon 0014. */
+const SCHEMA14_COMMANDS = new Set([
+  "SetAiBudget",
+  "SetGenerationPrompt",
+  "ReplaceSegments",
+  // Avvik ved manusendring (DEC-0054): grunnlaget for 2D-scener lagres fra 0014
+  "AcceptScriptChanges",
+  "SetProducedFrom",
+]);
+
+/** Kontinuitet for karakterer (M6 del 2, DEC-0055): krever migrasjon 0015. */
+const SCHEMA15_COMMANDS = new Set([
+  "AddContinuityEvents",
+  "UpdateContinuityEvents",
+  "SetContinuityEventsRemoved",
+]);
+
+/** Engelsk og andre språkversjoner av manuset (M7 del 2, DEC-0058): krever migrasjon 0016. */
+const SCHEMA16_COMMANDS = new Set([
+  "AddTranslations",
+  "UpdateTranslations",
+  "SetTranslationsRemoved",
+]);
+
+/**
+ * Språkversjoner av filmen (M7 del 3, DEC-0059) krever migrasjon 0017: språk på lydklipp, språkavhengige
+ * bilder i lag og dialogspråket i filmlyden. Uten kolonnene ville valgene forsvinne uten varsel.
+ */
+export function needsSchema17(command: { type: string } & Record<string, unknown>): boolean {
+  if (command.type === "SetTakeAudioLanguage") return true;
+  if (command.type === "AddAudioClips" || command.type === "UpdateAudioClips")
+    return ((command["clips"] as { fields?: { language?: unknown } }[] | undefined) ?? []).some(
+      (c) => c.fields?.language !== undefined && c.fields?.language !== null,
+    );
+  if (command.type === "AddLayers" || command.type === "UpdateLayers")
+    return ((command["layers"] as { fields?: { languageImages?: unknown[] } }[]) ?? []).some(
+      (l) => (l.fields?.languageImages?.length ?? 0) > 0,
+    );
+  return false;
+}
+
+/** Kontinuitet i avledede produksjoner (DEC-0060) krever migrasjon 0018. */
+export function needsSchema18(command: { type: string } & Record<string, unknown>): boolean {
+  if (command.type === "SetContinuityEventDisabled") return true;
+  if (command.type === "AddContinuityEvents" || command.type === "UpdateContinuityEvents")
+    return (
+      (command["events"] as { fields?: { productionId?: unknown } }[] | undefined) ?? []
+    ).some((e) => e.fields?.productionId !== undefined && e.fields?.productionId !== null);
+  return false;
+}
+
 /** Importert film og overganger krever migrasjon 0011 (DEC-0047). */
 function needsFilmSchema(command: { type: string } & Record<string, unknown>): boolean {
   if (command.type === "SetTransition") return true;
@@ -205,6 +289,15 @@ export const runCommand = createServerFn({ method: "POST" })
         ok: false,
         code: "forbidden",
         message: "Du har ikke tilgang til å endre dette prosjektet",
+      };
+    }
+
+    // AI-budsjettet bestemmes av eieren (DEC-0053, REQ-0528)
+    if (data.command.type === "SetAiBudget" && rank < ROLE_RANK["owner"]!) {
+      return {
+        ok: false,
+        code: "forbidden",
+        message: "Bare eieren av prosjektet kan endre AI-budsjettet.",
       };
     }
 
@@ -332,6 +425,67 @@ export const runCommand = createServerFn({ method: "POST" })
           code: "schema",
           message:
             "Databasen mangler klipping og tidskoblinger. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0012.",
+        };
+    }
+    if (needsSchema13(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 13)
+        return {
+          ok: false,
+          code: "schema",
+          message:
+            "Databasen mangler de nye funksjonene (overganger, svart-hvitt, grupper, bildeskifter og bevegelsesbaner). Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0013.",
+        };
+    }
+    // AI-budsjett, egne beskrivelser og inndeling for generering krever migrasjon 0014 (DEC-0053)
+    if (SCHEMA14_COMMANDS.has(data.command.type)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 14)
+        return {
+          ok: false,
+          code: "schema",
+          message:
+            "Databasen mangler AI-budsjett og genereringsbeskrivelser. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0014.",
+        };
+    }
+    if (SCHEMA15_COMMANDS.has(data.command.type)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 15)
+        return {
+          ok: false,
+          code: "schema",
+          message:
+            "Databasen mangler kontinuitet for karakterene. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0015.",
+        };
+    }
+    if (SCHEMA16_COMMANDS.has(data.command.type)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 16)
+        return {
+          ok: false,
+          code: "schema",
+          message:
+            "Databasen mangler språkversjoner av manuset. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0016.",
+        };
+    }
+    if (needsSchema17(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 17)
+        return {
+          ok: false,
+          code: "schema",
+          message:
+            "Databasen mangler språkversjoner av filmen (lyd og bilder per språk). Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0017.",
+        };
+    }
+    if (needsSchema18(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 18)
+        return {
+          ok: false,
+          code: "schema",
+          message:
+            "Databasen mangler kontinuitet for spinoffer. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0018.",
         };
     }
     if (needsFilmSchema(data.command as never)) {

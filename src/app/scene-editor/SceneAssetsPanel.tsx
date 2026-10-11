@@ -11,6 +11,9 @@ import {
   USAGE_LABEL,
   assetsInScene,
   coverVersion,
+  sceneContinuityVariant,
+  versionsOf,
+  type AssetVersion,
   type ProjectState,
 } from "@/core";
 import { useImageUrls } from "@/app/library/asset-images";
@@ -39,13 +42,27 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
     () => assetsInScene(state, productionId, occurrenceId),
     [state, productionId, occurrenceId],
   );
+  // Bildet som vises: utseendet kontinuiteten gir i scenen (DEC-0055), ellers forsidebildet
+  const sceneVariantId = state.occurrences[occurrenceId]?.variantId ?? null;
+  const looks = useMemo(() => {
+    const m = new Map<string, { variantId: string | null; version: AssetVersion | null }>();
+    for (const { asset } of items) {
+      const variantId = sceneVariantId
+        ? sceneContinuityVariant(state, asset.id, sceneVariantId)
+        : null;
+      const va = variantId ? state.assetVariants[variantId] : undefined;
+      const own = va
+        ? va.approvedVersionId
+          ? (state.assetVersions[va.approvedVersionId] ?? null)
+          : (versionsOf(state, va.id)[0] ?? null)
+        : null;
+      m.set(asset.id, { variantId, version: own ?? coverVersion(state, asset.id) });
+    }
+    return m;
+  }, [items, state, sceneVariantId]);
   const paths = useMemo(
-    () =>
-      items.flatMap(({ asset }) => {
-        const v = coverVersion(state, asset.id);
-        return v ? [v.mediaPath] : [];
-      }),
-    [items, state],
+    () => [...looks.values()].flatMap((l) => (l.version ? [l.version.mediaPath] : [])),
+    [looks],
   );
   const urls = useImageUrls(paths);
 
@@ -66,8 +83,12 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
           ) : null}
           <ul className="grid grid-cols-2 gap-1.5 overflow-y-auto px-2 pb-2">
             {items.map(({ asset, how }) => {
-              const v = coverVersion(state, asset.id);
+              const look = looks.get(asset.id);
+              const v = look?.version ?? null;
               const url = v ? urls.data?.[v.mediaPath] : undefined;
+              const lookName = look?.variantId
+                ? state.assetVariants[look.variantId]?.name
+                : undefined;
               const draggable = !!onAdd && editable;
               return (
                 <li
@@ -77,7 +98,7 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                     e.dataTransfer.setData(ASSET_DRAG_TYPE, asset.id);
                     e.dataTransfer.effectAllowed = "copy";
                   }}
-                  title={`${asset.name} – ${ASSET_KIND_LABEL[asset.kind]}, ${USAGE_LABEL[how]}`}
+                  title={`${asset.name} – ${ASSET_KIND_LABEL[asset.kind]}, ${USAGE_LABEL[how]}${lookName ? `. Utseende i denne scenen (kontinuitet): ${lookName}` : ""}`}
                   className={
                     "group relative flex flex-col overflow-hidden rounded-sm border border-border bg-surface-2 " +
                     (draggable ? "cursor-grab active:cursor-grabbing" : "")
@@ -110,7 +131,7 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                     {asset.name}
                   </button>
                   <span className="truncate px-1.5 pb-1 text-[10px] text-text-tertiary">
-                    {ASSET_KIND_LABEL[asset.kind]}
+                    {lookName ? lookName : ASSET_KIND_LABEL[asset.kind]}
                     {v ? "" : " · uten bilde"}
                   </span>
                   {onAdd && editable ? (

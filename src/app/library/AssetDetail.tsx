@@ -1,9 +1,22 @@
 /**
  * Detaljer for én ressurs: navn og alternative navn (REQ-0126), kategori og stikkord (REQ-0124),
  * visuelle varianter med bildeversjoner og godkjenning (REQ-0135, REQ-0136, REQ-0146, REQ-0149)
- * og scenene der ressursen er brukt (REQ-0131).
+ * og scenene der ressursen er brukt (REQ-0131). Kontinuitet (DEC-0055) i ContinuityPanel.
  */
-import { Archive, ArchiveRestore, Check, ImagePlus, Loader2, Music, Plus, X } from "lucide-react";
+import {
+  Archive,
+  ArchiveRestore,
+  Check,
+  ImagePlus,
+  Loader2,
+  Music,
+  Plus,
+  Scissors,
+  X,
+} from "lucide-react";
+import { CutoutDialog } from "./CutoutDialog";
+import { ContinuityPanel } from "./ContinuityPanel";
+import { ApproveImpactDialog } from "./ApproveImpactDialog";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   ASSET_KIND_LABEL,
@@ -12,7 +25,9 @@ import {
   USAGE_LABEL,
   VISUAL_STYLES,
   allAssetUsage,
+  assetVersionImpact,
   formatHeading,
+  hasContinuity,
   newId,
   variantsOf,
   versionsOf,
@@ -20,6 +35,7 @@ import {
   type AssetFields,
   type AssetNameKind,
   type AssetVariant,
+  type AssetVersion,
   type ProjectState,
   type VisualStyle,
 } from "@/core";
@@ -330,6 +346,16 @@ export function AssetDetail(props: Props) {
         </section>
 
         <Variants {...props} />
+        {hasContinuity(asset) ? (
+          <ContinuityPanel
+            state={state}
+            asset={asset}
+            editable={editable}
+            cmds={cmds}
+            productionId={productionId}
+            onGoToScene={props.onGoToScene}
+          />
+        ) : null}
       </div>
 
       {/* Bruk i manuset */}
@@ -399,7 +425,7 @@ export function AssetDetail(props: Props) {
 
 // ---------- Visuelle varianter og bildeversjoner ----------
 
-function Variants({ state, projectId, asset, editable, cmds }: Props) {
+function Variants({ state, projectId, productionId, asset, editable, cmds }: Props) {
   const variants = variantsOf(state, asset.id);
   const [name, setName] = useState("");
   const [style, setStyle] = useState<VisualStyle>("animatic");
@@ -438,6 +464,7 @@ function Variants({ state, projectId, asset, editable, cmds }: Props) {
           key={v.id}
           state={state}
           projectId={projectId}
+          productionId={productionId}
           asset={asset}
           variant={v}
           editable={editable}
@@ -531,6 +558,7 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 function VariantCard({
   state,
   projectId,
+  productionId,
   asset,
   variant,
   editable,
@@ -539,6 +567,7 @@ function VariantCard({
 }: {
   state: ProjectState;
   projectId: string;
+  productionId: string;
   asset: Asset;
   variant: AssetVariant;
   editable: boolean;
@@ -554,6 +583,9 @@ function VariantCard({
   const [vStyle, setVStyle] = useState(variant.style);
   const [vAppearance, setVAppearance] = useState(variant.appearance);
   const input = useRef<HTMLInputElement | null>(null);
+  const [cutoutId, setCutoutId] = useState<string | null>(null);
+  // Godkjenning med konsekvenser (DEC-0056): berørte scener vises først
+  const [approving, setApproving] = useState<AssetVersion | null>(null);
 
   async function upload(file: File) {
     setErr(null);
@@ -802,6 +834,17 @@ function VariantCard({
                     ? ` · ${(ver.durationMs / 1000).toLocaleString("nb-NO", { maximumFractionDigits: 1 })} s`
                     : ""}
                 </span>
+                {editable && asset.kind !== "sound" ? (
+                  <button
+                    type="button"
+                    className="flex items-center gap-1 text-left text-[11px] text-text-tertiary hover:text-text-primary"
+                    onClick={() => setCutoutId(ver.id)}
+                    title="Fjern bakgrunnen (gratis, lagres som ny versjon)"
+                  >
+                    <Scissors className="size-3" aria-hidden />
+                    Frilegg …
+                  </button>
+                ) : null}
                 {editable ? (
                   approved ? (
                     <button
@@ -823,7 +866,11 @@ function VariantCard({
                       size="sm"
                       variant="ghost"
                       className="h-6 justify-start px-1 text-xs"
-                      onClick={() =>
+                      onClick={() => {
+                        if (assetVersionImpact(state, productionId, variant.id, ver.id).length) {
+                          setApproving(ver);
+                          return;
+                        }
                         setErr(
                           cmds.run(
                             {
@@ -833,8 +880,8 @@ function VariantCard({
                             },
                             `Godkjenn v${ver.number} av «${variant.name}»`,
                           ),
-                        )
-                      }
+                        );
+                      }}
                     >
                       Godkjenn
                     </Button>
@@ -847,8 +894,8 @@ function VariantCard({
       )}
       {versions.length > 1 ? (
         <p className="text-[11px] text-text-tertiary">
-          Nye bilder tas aldri i bruk automatisk. Scener som bruker en godkjent versjon, beholder
-          den til du selv bytter.
+          Når du godkjenner et bilde, ser du hvilke scener som berøres, og velger selv hvilke som
+          skal få det. Uten godkjent bilde viser scenene det nyeste.
         </p>
       ) : null}
       {err ? (
@@ -856,6 +903,24 @@ function VariantCard({
           {err}
         </p>
       ) : null}
+      <ApproveImpactDialog
+        state={state}
+        productionId={productionId}
+        variant={variant}
+        version={approving}
+        cmds={cmds}
+        onClose={() => setApproving(null)}
+      />
+      <CutoutDialog
+        open={cutoutId !== null}
+        onOpenChange={(o) => {
+          if (!o) setCutoutId(null);
+        }}
+        projectId={projectId}
+        asset={asset}
+        version={cutoutId ? (versions.find((v) => v.id === cutoutId) ?? null) : null}
+        cmds={cmds}
+      />
     </div>
   );
 }

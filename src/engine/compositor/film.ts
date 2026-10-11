@@ -23,26 +23,112 @@ export interface FilmDrawOptions {
   readonly images: ReadonlyMap<string, ImageSource>;
   /** Tegn plassholdere for bilder som ikke er lastet (redigering). Eksporten tegner dem ikke. */
   readonly placeholders?: boolean;
-  /** Bildet i en importert film på et tidspunkt (s i filmfilen), eller null hvis det ikke er klart. */
-  readonly video?: (take: Take, seconds: number, held: boolean) => ImageSource | null;
+  /**
+   * Bildet i en importert film på et tidspunkt (s i filmfilen), eller null hvis det ikke er klart.
+   * `slot`: 0 for klippet som vises (eller det første i en overgang), 1 for det andre i en overgang.
+   */
+  readonly video?: (take: Take, seconds: number, held: boolean, slot: number) => ImageSource | null;
+  /** Hele filmen i svart-hvitt (global kontroll og valg i eksporten, REQ-0573). */
+  readonly monochrome?: boolean;
+  /** Undertekst som vises i bildet (DEC-0059, REQ-0352), eller null. */
+  readonly subtitle?: string | null;
 }
 
-let scratch: HTMLCanvasElement | OffscreenCanvas | null = null;
-function scratchCanvas(w: number, h: number) {
-  if (!scratch)
-    scratch =
+type Canvas2D = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+
+/** Hjelpelerreter for overganger, per størrelse (visningen, eget vindu og eksporten tegner i ulike størrelser). */
+const scratches = new Map<string, (HTMLCanvasElement | OffscreenCanvas)[]>();
+function scratchCanvas(i: number, w: number, h: number) {
+  const key = `${w}x${h}`;
+  let list = scratches.get(key);
+  if (!list) {
+    if (scratches.size >= 4) scratches.clear();
+    list = [];
+    scratches.set(key, list);
+  }
+  let c = list[i];
+  if (!c) {
+    c =
       typeof OffscreenCanvas !== "undefined"
         ? new OffscreenCanvas(w, h)
         : document.createElement("canvas");
-  if (scratch.width !== w) scratch.width = w;
-  if (scratch.height !== h) scratch.height = h;
-  return scratch;
+    c.width = w;
+    c.height = h;
+    list[i] = c;
+  }
+  return c;
+}
+
+function fill(ctx: Canvas2D, color: string, alpha: number, w: number, h: number) {
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = color;
+  ctx.fillRect(0, 0, w, h);
+  ctx.restore();
+}
+
+/** Gjør det som er tegnet, svart-hvitt (fargemetning 0, lysstyrken beholdes). */
+export function desaturate(ctx: Canvas2D, w: number, h: number): void {
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.globalAlpha = 1;
+  ctx.globalCompositeOperation = "saturation";
+  ctx.fillStyle = "#808080";
+  ctx.fillRect(0, 0, w, h);
+  ctx.restore();
+}
+
+/** Ett klipp tegnet på et eget lerret (svart bakgrunn, svart-hvitt hvis scenen er det). */
+function clipLayer(
+  i: number,
+  state: ProjectState,
+  at: ClipFrame,
+  o: FilmDrawOptions,
+): HTMLCanvasElement | OffscreenCanvas | null {
+  const c = scratchCanvas(i, o.width, o.height);
+  const cx = c.getContext("2d") as CanvasRenderingContext2D | null;
+  if (!cx) return null;
+  fill(cx, "#000", 1, o.width, o.height);
+  drawClipFrame(cx, state, at, o, i);
+  if (at.clip.monochrome) desaturate(cx, o.width, o.height);
+  return c;
 }
 
 /**
- * Tegner bildet `frame` i filmen, med overganger (kutt, overtoning, via svart – DEC-0047). Returnerer
- * klippet som dominerer bildet (eller null for en tom film).
+ * Tegner bildet `frame` i filmen, med overganger (kutt, overtoning, via svart/hvitt, tørk, skyv og iris –
+ * DEC-0047, DEC-0051) og svart-hvitt per scene og for hele filmen. Returnerer klippet som dominerer
+ * bildet (eller null for en tom film).
  */
+/**
+ * Undertekst nederst i bildet (DEC-0059): hvit tekst med mørk kant, høyst to linjer, sentrert. Samme
+ * tegning i visningen og eksporten.
+ */
+export function drawSubtitle(ctx: Canvas2D, text: string, w: number, h: number): void {
+  const lines = text.split("\n").filter((x) => x.trim());
+  if (!lines.length) return;
+  const size = Math.max(10, Math.round(h * 0.048));
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.globalAlpha = 1;
+  ctx.globalCompositeOperation = "source-over";
+  ctx.font = `600 ${size}px system-ui, -apple-system, "Segoe UI", sans-serif`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "alphabetic";
+  ctx.lineJoin = "round";
+  ctx.lineWidth = Math.max(2, size * 0.16);
+  ctx.strokeStyle = "rgba(0,0,0,0.85)";
+  ctx.fillStyle = "#ffffff";
+  const lineH = size * 1.25;
+  const bottom = h - h * 0.06;
+  lines.forEach((line, i) => {
+    const y = bottom - (lines.length - 1 - i) * lineH;
+    ctx.strokeText(line, w / 2, y, w * 0.92);
+    ctx.fillText(line, w / 2, y, w * 0.92);
+  });
+  ctx.restore();
+}
+
 export function drawFilmFrame(
   ctx: CanvasRenderingContext2D,
   state: ProjectState,
@@ -50,40 +136,44 @@ export function drawFilmFrame(
   frame: number,
   o: FilmDrawOptions,
 ): FilmClip | null {
-  ctx.save();
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.globalAlpha = 1;
-  ctx.fillStyle = "#000";
-  ctx.fillRect(0, 0, o.width, o.height);
-  ctx.restore();
+  const W = o.width;
+  const H = o.height;
+  fill(ctx, "#000", 1, W, H);
   const m = frameMix(clips, frame);
   if (!m) return null;
-  drawClipFrame(ctx, state, m.a, o);
-  if (m.b && m.mix > 0) {
-    const sc = scratchCanvas(o.width, o.height);
-    const sctx = sc.getContext("2d") as CanvasRenderingContext2D | null;
-    if (sctx) {
-      sctx.save();
-      sctx.setTransform(1, 0, 0, 1, 0, 0);
-      sctx.fillStyle = "#000";
-      sctx.fillRect(0, 0, o.width, o.height);
-      sctx.restore();
-      drawClipFrame(sctx, state, m.b, o);
-      ctx.save();
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.globalAlpha = m.mix;
-      ctx.drawImage(sc as CanvasImageSource, 0, 0);
-      ctx.restore();
-    }
-  }
-  if (m.black > 0) {
+  if (!m.b) {
+    drawClipFrame(ctx, state, m.a, o);
+    if (m.a.clip.monochrome) desaturate(ctx, W, H);
+  } else {
+    const A = clipLayer(0, state, m.a, o);
+    const B = clipLayer(1, state, m.b, o);
+    const p = Math.max(0, Math.min(1, m.mix));
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.globalAlpha = Math.min(1, m.black);
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, o.width, o.height);
+    if (A) ctx.drawImage(A as CanvasImageSource, m.kind === "push" ? -p * W : 0, 0);
+    if (B) {
+      if (m.kind === "push") ctx.drawImage(B as CanvasImageSource, (1 - p) * W, 0);
+      else if (m.kind === "wipe") {
+        ctx.beginPath();
+        ctx.rect(0, 0, p * W, H);
+        ctx.clip();
+        ctx.drawImage(B as CanvasImageSource, 0, 0);
+      } else if (m.kind === "iris") {
+        ctx.beginPath();
+        ctx.arc(W / 2, H / 2, (p * Math.hypot(W, H)) / 2, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.drawImage(B as CanvasImageSource, 0, 0);
+      } else {
+        ctx.globalAlpha = p;
+        ctx.drawImage(B as CanvasImageSource, 0, 0);
+      }
+    }
     ctx.restore();
   }
+  if (m.black > 0) fill(ctx, "#000", Math.min(1, m.black), W, H);
+  if (m.white > 0) fill(ctx, "#fff", Math.min(1, m.white), W, H);
+  if (o.monochrome) desaturate(ctx, W, H);
+  if (o.subtitle) drawSubtitle(ctx, o.subtitle, W, H);
   return m.b && m.mix >= 0.5 ? m.b.clip : m.a.clip;
 }
 
@@ -93,10 +183,11 @@ function drawClipFrame(
   state: ProjectState,
   at: ClipFrame,
   o: FilmDrawOptions,
+  slot = 0,
 ): void {
   const src = sourceAt(at.clip, at.localFrame, state.project.fps);
   if (src.kind === "take") {
-    const img = o.video?.(src.take, src.seconds, at.held ?? false) ?? null;
+    const img = o.video?.(src.take, src.seconds, at.held ?? false, slot) ?? null;
     if (img && img.width > 0 && img.height > 0) {
       const k = Math.min(o.width / img.width, o.height / img.height);
       const w = img.width * k;

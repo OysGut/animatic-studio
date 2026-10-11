@@ -680,3 +680,22 @@ export function PopoutPreview({
     container,
   );
 }
+
+/**
+ * Det egne vinduet brukt av andre forhåndsvisninger (monteringen, DEC-0051): samme vindu, plass og
+ * størrelse som sceneeditorens, så det kan stå på en annen skjerm for begge.
+ */
+export const previewPopup = {
+  open: (defaultW: number, defaultH: number) => openPopup(defaultW, defaultH),
+  container: (): HTMLDivElement | null => container,
+  close: () => scheduleClose(),
+  save: (w: Window) => saveGeometry(w),
+  closingByUs: () => closingByUs,
+  /** Brukeren lukket vinduet selv. */
+  forget: () => {
+    popup = null;
+    container = null;
+  },
+  header: HEADER,
+  iconButton,
+};

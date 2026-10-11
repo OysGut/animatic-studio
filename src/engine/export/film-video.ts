@@ -49,9 +49,10 @@ export class FilmVideoFrames {
     private readonly urls: Readonly<Record<string, string>>,
   ) {}
 
-  private async reader(take: Take): Promise<TakeReader | null> {
-    // Én leser per fil: flere versjoner kan dele samme fil (lang film fordelt på scener)
-    const key = take.mediaRef ?? take.id;
+  private async reader(take: Take, slot: number): Promise<TakeReader | null> {
+    // Én leser per fil og plass i overgangen: flere versjoner kan dele samme fil (lang film fordelt på
+    // scener), og i en overgang mellom to slike scener leses filen to steder samtidig (DEC-0051)
+    const key = `${take.mediaRef ?? take.id}#${slot}`;
     if (this.readers.has(key)) return this.readers.get(key)!;
     let r: TakeReader | null = null;
     const url = take.mediaRef ? this.urls[take.mediaRef] : undefined;
@@ -84,7 +85,7 @@ export class FilmVideoFrames {
       if (!cf) continue;
       const src = sourceAt(cf.clip, cf.localFrame, state.project.fps);
       if (src.kind !== "take") continue;
-      const r = await this.reader(src.take);
+      const r = await this.reader(src.take, cf === m.a ? 0 : 1);
       const w = await r?.at(src.seconds);
       if (w) {
         // Kopier bildet: to klipp fra samme fil (overgang) deler leser og bildebuffer
@@ -104,7 +105,11 @@ export class FilmVideoFrames {
 
   /** Takes som ikke kunne leses (vises som svart i eksporten). */
   failed(): string[] {
-    return [...this.readers.entries()].filter(([, r]) => r === null).map(([id]) => id);
+    return [
+      ...new Set(
+        [...this.readers.entries()].filter(([, r]) => r === null).map(([k]) => k.split("#")[0]!),
+      ),
+    ];
   }
 
   async close(): Promise<void> {

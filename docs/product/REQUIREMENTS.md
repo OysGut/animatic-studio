@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **571**
-- Prioritet: P0: 141, P1: 250, P2: 141, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 44, teknisk-anbefaling: 7
-- Status: Ikke startet: 328, Verifisert: 182, Under arbeid: 48, Implementert – ikke verifisert: 13
+- Antall krav: **583**
+- Prioritet: P0: 141, P1: 259, P2: 144, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 56, teknisk-anbefaling: 7
+- Status: Ikke startet: 198, Verifisert: 319, Under arbeid: 46, Implementert – ikke verifisert: 20
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -349,11 +349,12 @@ Ved innholdsavvik skal brukeren bestemme hva som skal skje med eksisterende mate
 - **Kilde:** Kap. 2.1 (l. 81) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P0 · **Fase:** 6
 - **Moduler:** VERSION, UI · **Invarianter:** INV-08
 - **Avhengigheter:** REQ-0025
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et flagget avvik, så kan brukeren velge å godkjenne avviket, oppdatere materialet eller angre endringen.
 - **Tester:**
   - e2e: håndter avvik med hvert av de tre valgene
+- **Implementering:** src/core/assembly/discrepancy.ts, src/core/commands/apply.ts (AcceptScriptChanges, SetProducedFrom), db/migrations/0014_ai_control.sql (compositions.produced_from, takes.accepted_from), src/app/assembly/ScriptChanges.tsx, src/app/assembly/FilmTimeline.tsx (merker), src/app/script/ScriptPageView.tsx (merker), src/app/scene-editor/SceneEditorWorkspace.tsx (varsel)
 - **Merknad:** Valgene er hentet fra kap. 34 pkt. 8.
 
 #### REQ-0027 – Ingen automatisk sletting av film
@@ -1222,11 +1223,12 @@ Manuset skal ikke bare være en tekstlig beskrivelse av filmen, men et aktivt na
 
 - **Kilde:** Kap. 6 (l. 279) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** SCRIPT, TIMELINE, UI · **Invarianter:** INV-01
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Fra manuset kan brukeren navigere til tilsvarende sted i film/tidslinje (jf. REQ-0097).
 - **Tester:**
   - e2e: navigasjon fra manus
+- **Implementering:** src/app/script/Inspector.tsx, src/app/assembly/AssemblyWorkspace.tsx, src/routes/prosjekt.$projectId.montering.tsx
 - **Merknad:** Paraply for 6.1–6.4.
 
 #### REQ-0093 – Manusblokker koblet til tidsintervaller
@@ -1266,7 +1268,7 @@ En replikk skal kunne knyttes til et dialogopptak, et bestemt tidspunkt, en hend
   - For hver av de fire koblingstypene kan en replikk kobles og koblingen vises.
 - **Tester:**
   - integrasjon: koblingstyper per replikk
-- **Implementering:** src/app/assembly/ClipPanel.tsx
+- **Implementering:** src/app/assembly/ClipPanel.tsx, src/app/scene-editor/LayerEvents.tsx
 
 #### REQ-0096 – Handling koblet til flere visuelle hendelser
 En handlingsbeskrivelse skal kunne knyttes til flere visuelle hendelser.
@@ -1274,11 +1276,12 @@ En handlingsbeskrivelse skal kunne knyttes til flere visuelle hendelser.
 - **Kilde:** Kap. 6.1 (l. 288) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** SCRIPT, COMPOSE, TIMELINE
 - **Avhengigheter:** REQ-0093
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - En handlingsblokk kan ha flere tilknyttede visuelle hendelser.
 - **Tester:**
   - enhet: handlingsblokk ↔ hendelser (1:n)
+- **Implementering:** src/app/scene-editor/LayerEvents.tsx, src/core/assembly/film.ts, db/migrations/0013_transitions_monochrome.sql
 
 #### REQ-0097 – Klikk på replikk flytter avspillingshodet
 Når brukeren klikker på en replikk, skal avspillingshodet kunne flyttes til tilsvarende tidspunkt i filmen.
@@ -1312,11 +1315,12 @@ Toveis navigasjon skal fungere for planlagte animatics, redigerbare 2D-scener, A
 - **Kilde:** Kap. 6.2 (l. 292-297) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** TIMELINE, SCRIPT, COMPOSE
 - **Avhengigheter:** REQ-0097; REQ-0098
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - For hver av de fem materialtypene fungerer både klikk-til-tid og tid-til-markering.
 - **Tester:**
   - e2e: parametrisert over materialtyper
+- **Implementering:** src/core/assembly/film.ts, src/app/assembly/ClipPanel.tsx, src/app/script/Inspector.tsx
 - **Merknad:** AI-generert video-delen forutsetter fase 5. Jf. kap. 34 pkt. 15.
 
 #### REQ-0100 – Manus og film side ved side
@@ -1324,12 +1328,12 @@ Manus og film skal kunne vises side ved side.
 
 - **Kilde:** Kap. 6.2 (l. 298) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** UI, SCRIPT, TIMELINE
-- **Status:** Under arbeid
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Et arbeidsoppsett viser manus og filmavspiller samtidig.
 - **Tester:**
   - visuell: side-ved-side-layout
-- **Implementering:** src/app/assembly/ClipPanel.tsx
+- **Implementering:** src/app/assembly/ClipPanel.tsx, src/app/assembly/ClipPanel.tsx, src/routes/prosjekt.$projectId.manus.tsx
 
 #### REQ-0101 – Automatisk rulling av/på
 Automatisk rulling av manuset under avspilling skal kunne slås av og på.
@@ -1697,11 +1701,12 @@ Programmet skal kunne identifisere mulige stavefeil og inkonsistente karakternav
 - **Kilde:** Kap. 8.2 (l. 381) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** LIBRARY, SCRIPT
 - **Avhengigheter:** REQ-0126
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt «Maja» og «Maia» i manuset, så foreslås de som mulig samme karakter.
 - **Tester:**
   - enhet: likhetsdeteksjon på navn
+- **Implementering:** src/core/continuity/analysis.ts, src/app/continuity/ContinuityAnalysisPanel.tsx
 
 #### REQ-0130 – Konsekvensanalyse ved ressursendring
 Hvis en global ressurs endres, skal programmet identifisere scener som kan være påvirket.
@@ -1709,11 +1714,12 @@ Hvis en global ressurs endres, skal programmet identifisere scener som kan være
 - **Kilde:** Kap. 8.3 (l. 383) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** VERSION, LIBRARY
 - **Avhengigheter:** REQ-0131
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Ved endring av ressurs R listes alle scener (alle produksjoner) som bruker R.
 - **Tester:**
   - integrasjon: endring → liste over berørte scener
+- **Implementering:** src/core/library/impact.ts, src/app/library/ApproveImpactDialog.tsx
 
 #### REQ-0131 – Finne scener der en ressurs er brukt
 Systemet skal kunne finne scener der en bestemt ressurs er brukt (f.eks. når en vase erstattes av en tekanne).
@@ -1734,11 +1740,12 @@ Scener berørt av en ressursendring skal flagges for gjennomgang.
 - **Kilde:** Kap. 8.3 (l. 385) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** VERSION, UI · **Invarianter:** INV-07
 - **Avhengigheter:** REQ-0130
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Berørte scener får status «til gjennomgang» synlig i oversikten.
 - **Tester:**
   - integrasjon: ressursendring → flagg
+- **Implementering:** src/core/library/impact.ts, src/app/library/ApproveImpactDialog.tsx, src/app/scene-editor/LayerInspector.tsx, src/core/continuity/analysis.ts, src/app/continuity/ContinuityAnalysisPanel.tsx
 
 #### REQ-0133 – Ingen automatisk regenerering ved ressursendring
 Ingen ferdige scener skal regenereres automatisk når en global ressurs endres.
@@ -1757,11 +1764,12 @@ Brukeren skal kunne velge hvilke scener som skal oppdateres etter en ressursendr
 - **Kilde:** Kap. 8.3 (l. 387) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 6
 - **Moduler:** VERSION, UI · **Invarianter:** INV-08
 - **Avhengigheter:** REQ-0132
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Fra listen over berørte scener kan brukeren velge et delsett for oppdatering; øvrige forblir uendret.
 - **Tester:**
   - e2e: selektiv oppdatering
+- **Implementering:** src/core/library/impact.ts, src/app/library/ApproveImpactDialog.tsx
 - **Merknad:** P0 fordi det uttrykker INV-08; selve funksjonen leveres i fase 6.
 
 ### Kapittel 9
@@ -1963,11 +1971,12 @@ Karakterer skal kunne endre utseende underveis i fortellingen, og systemet må f
 - **Kilde:** Kap. 10 (l. 434-436) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 6
 - **Moduler:** CONTINUITY · **Invarianter:** INV-09
 - **Avhengigheter:** REQ-0149
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - For en karakter med registrert endring kan systemet for enhver scene svare hvilken referanse som gjelder.
 - **Tester:**
   - enhet: tilstandsoppslag per scene
+- **Implementering:** src/core/continuity/index.ts, src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved), db/migrations/0015_continuity.sql, src/app/library/ContinuityPanel.tsx
 - **Merknad:** Beskrevet som sentral funksjon; jf. kap. 34 pkt. 18. Datamodellen må støtte dette fra fase 1.
 
 #### REQ-0151 – Registrering av kontinuitetshendelse
@@ -1976,11 +1985,12 @@ Programmet skal kunne registrere en kontinuitetshendelse med karakter (f.eks. Ma
 - **Kilde:** Kap. 10.1 (l. 438-446) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** CONTINUITY · **Invarianter:** INV-02
 - **Avhengigheter:** REQ-0150
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Hendelsen Maja klipper håret kan lagres med alle seks feltene.
 - **Tester:**
   - enhet: kontinuitetshendelse-skjema
+- **Implementering:** src/core/continuity/index.ts, src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved), db/migrations/0015_continuity.sql, src/app/library/ContinuityPanel.tsx
 
 #### REQ-0152 – Riktig referanse etter fortellingens kronologi
 Fra punktet i fortellingens kronologi der forandringen skjer, skal riktig referanse brukes, og programmet må ikke feilaktig generere scener før hendelsen med utseendet etter hendelsen (f.eks. kort hår før hårklippingen).
@@ -1988,11 +1998,12 @@ Fra punktet i fortellingens kronologi der forandringen skjer, skal riktig refera
 - **Kilde:** Kap. 10.1 (l. 447-448) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 6
 - **Moduler:** CONTINUITY, PROMPT · **Invarianter:** INV-09
 - **Avhengigheter:** REQ-0151
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt hårklipp i scene 40, når scene 20 genereres, så brukes langt-hår-referansen; når scene 50 genereres, brukes kort-hår-referansen.
 - **Tester:**
   - integrasjon: referansevalg før/etter hendelse
+- **Implementering:** src/core/continuity/index.ts, src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved), db/migrations/0015_continuity.sql
 
 #### REQ-0153 – Støttede kontinuitetstyper
 Systemet skal blant annet støtte kontinuitetstypene hårklipp og frisyre, hårfarge, kostymeskifte, skader og bandasjer, arr, skitt, snø og vann, skjeggvekst, aldring, objekter karakteren bærer og andre fysiske forandringer.
@@ -2000,11 +2011,12 @@ Systemet skal blant annet støtte kontinuitetstypene hårklipp og frisyre, hårf
 - **Kilde:** Kap. 10.2 (l. 450-461) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** CONTINUITY
 - **Avhengigheter:** REQ-0151
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Hver av de 11 typene kan registreres (inkl. en generell «annen fysisk forandring»).
 - **Tester:**
   - enhet: kontinuitetstype-enum/utvidbar liste
+- **Implementering:** src/core/continuity/index.ts, src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved), db/migrations/0015_continuity.sql, src/app/library/ContinuityPanel.tsx
 
 #### REQ-0154 – Permanente, midlertidige og sceneavhengige tilstander
 Systemet skal skille mellom permanente endringer, midlertidige tilstander og sceneavhengige varianter.
@@ -2012,11 +2024,12 @@ Systemet skal skille mellom permanente endringer, midlertidige tilstander og sce
 - **Kilde:** Kap. 10.2 (l. 462) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** CONTINUITY · **Invarianter:** INV-09
 - **Avhengigheter:** REQ-0151
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - En midlertidig tilstand (f.eks. våt) gjelder kun i angitt intervall; en permanent gjelder fra hendelsen og fremover.
 - **Tester:**
   - enhet: gyldighetsregler per tilstandstype
+- **Implementering:** src/core/continuity/index.ts, src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved), db/migrations/0015_continuity.sql, src/app/library/ContinuityPanel.tsx
 
 #### REQ-0155 – Visuell kontinuitetstidslinje per karakter
 Hver karakter skal kunne ha en visuell kontinuitetstidslinje.
@@ -2024,11 +2037,12 @@ Hver karakter skal kunne ha en visuell kontinuitetstidslinje.
 - **Kilde:** Kap. 10.3 (l. 464) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** CONTINUITY, UI · **Invarianter:** INV-09
 - **Avhengigheter:** REQ-0151
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - En karaktervisning viser utseendetilstander langs fortellingstiden med hendelsene markert.
 - **Tester:**
   - visuell: kontinuitetstidslinje
+- **Implementering:** src/core/continuity/index.ts, src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved), db/migrations/0015_continuity.sql, src/app/library/ContinuityPanel.tsx
 
 #### REQ-0156 – Kontinuitetshendelser knyttet til stabile ID-er
 Kontinuitetshendelser skal knyttes til stabile sceneidentiteter og ved behov bestemte manusblokker eller tidsintervaller; scenenummer alene skal ikke brukes som referanse.
@@ -2036,11 +2050,12 @@ Kontinuitetshendelser skal knyttes til stabile sceneidentiteter og ved behov bes
 - **Kilde:** Kap. 10.3 (l. 465-466) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P0 · **Fase:** 6
 - **Moduler:** CONTINUITY, CORE · **Invarianter:** INV-02
 - **Avhengigheter:** REQ-0034; REQ-0094
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Omnummerering eller flytting av scener endrer ikke hvilken scene/blokk en hendelse er knyttet til.
 - **Tester:**
   - dataintegritet: hendelse overlever omnummerering
+- **Implementering:** src/core/continuity/index.ts, src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved), db/migrations/0015_continuity.sql
 
 #### REQ-0157 – Forslag til kontinuitetshendelser fra manus
 Systemet skal kunne analysere manus og foreslå relevante kontinuitetshendelser (f.eks. foreslå en hendelse når manus beskriver at Maja klipper håret).
@@ -2048,11 +2063,12 @@ Systemet skal kunne analysere manus og foreslå relevante kontinuitetshendelser 
 - **Kilde:** Kap. 10.4 (l. 468-469) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** CONTINUITY, SCRIPT, PROMPT
 - **Avhengigheter:** REQ-0151
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en manuspassasje om hårklipp, så opprettes et forslag til kontinuitetshendelse.
 - **Tester:**
   - integrasjon: analyse av fixtures med kjente hendelser
+- **Implementering:** src/core/continuity/index.ts, src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved), db/migrations/0015_continuity.sql, src/app/library/ContinuityPanel.tsx
 - **Merknad:** Kan være AI-basert; analyse skal i så fall ikke være eneste vei (manuell registrering).
 
 #### REQ-0158 – Brukeren godkjenner foreslått tolkning
@@ -2061,11 +2077,12 @@ Brukeren skal godkjenne tolkningen før en foreslått kontinuitetshendelse tas i
 - **Kilde:** Kap. 10.4 (l. 470) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** CONTINUITY, UI · **Invarianter:** INV-08
 - **Avhengigheter:** REQ-0157
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Foreslåtte hendelser påvirker ikke referansevalg før de er godkjent.
 - **Tester:**
   - enhet: forslag ignoreres i referansevalg til godkjent
+- **Implementering:** src/core/continuity/index.ts, src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved), db/migrations/0015_continuity.sql, src/app/library/ContinuityPanel.tsx
 
 #### REQ-0159 – Automatisk valg av karaktertilstand ved generering
 Når «Generer scene» aktiveres, skal systemet automatisk velge relevante karaktertilstander ut fra fortellingens kronologi.
@@ -2073,11 +2090,12 @@ Når «Generer scene» aktiveres, skal systemet automatisk velge relevante karak
 - **Kilde:** Kap. 10.5 (l. 472) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** CONTINUITY, PROMPT · **Invarianter:** INV-09
 - **Avhengigheter:** REQ-0152
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Genereringsprompten for en scene inneholder referansene til gjeldende tilstand for hver karakter i scenen.
 - **Tester:**
   - integrasjon: promptinnhold per scene
+- **Implementering:** src/core/continuity/index.ts, src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved), db/migrations/0015_continuity.sql, src/core/generation/scene-prompt.ts (describeAsset), src/app/assembly/GenerateSceneDialog.tsx
 
 #### REQ-0160 – Riktig tilstand uavhengig av produksjonsrekkefølge
 Automatisk valg av karaktertilstand skal fungere selv om scenene produseres i tilfeldig rekkefølge.
@@ -2085,11 +2103,12 @@ Automatisk valg av karaktertilstand skal fungere selv om scenene produseres i ti
 - **Kilde:** Kap. 10.5 (l. 473) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** CONTINUITY · **Invarianter:** INV-09
 - **Avhengigheter:** REQ-0159
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Generering av scener i rekkefølgen 50, 10, 30 gir samme tilstandsvalg som i rekkefølgen 10, 30, 50.
 - **Tester:**
   - enhet: referansevalg er rekkefølgeuavhengig
+- **Implementering:** src/core/continuity/index.ts, src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved), db/migrations/0015_continuity.sql
 
 #### REQ-0161 – Forslag om produksjonssegmenter ved endring midt i scene
 Hvis en forandring skjer midt i en scene, skal systemet kunne foreslå å dele produksjonen i et segment før endringen og et segment etter endringen.
@@ -2097,11 +2116,12 @@ Hvis en forandring skjer midt i en scene, skal systemet kunne foreslå å dele p
 - **Kilde:** Kap. 10.6 (l. 475-477) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** CONTINUITY, TIMELINE · **Invarianter:** INV-10
 - **Avhengigheter:** REQ-0071; REQ-0156
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt hendelse knyttet til en manusblokk midt i en scene, så foreslås to segmenter delt ved den blokken.
 - **Tester:**
   - integrasjon: segmentforslag
+- **Implementering:** src/core/continuity/index.ts, src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved), db/migrations/0015_continuity.sql, src/core/generation/scene-prompt.ts (planSegments, continuityCuts), src/app/assembly/GenerateSceneDialog.tsx
 - **Merknad:** Jf. kap. 34 pkt. 19.
 
 #### REQ-0162 – Segmenter får riktig karakterreferanse
@@ -2110,11 +2130,12 @@ Hvert produksjonssegment skal få riktig karakterreferanse.
 - **Kilde:** Kap. 10.6 (l. 478) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** CONTINUITY, PROMPT · **Invarianter:** INV-09
 - **Avhengigheter:** REQ-0161
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Segment før bruker langt-hår-referanse, segment etter bruker kort-hår-referanse.
 - **Tester:**
   - integrasjon: referanse per segment
+- **Implementering:** src/core/continuity/index.ts, src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved), db/migrations/0015_continuity.sql, src/core/generation/scene-prompt.ts (buildScenePrompt)
 
 #### REQ-0163 – Segmentering bevarer manusscene og nummerering
 Oppdeling i produksjonssegmenter ved kontinuitetsendring skal ikke opprette nye manusscener eller endre scenenummereringen; den eksisterende manusscenen skal beholde sin identitet.
@@ -2122,11 +2143,12 @@ Oppdeling i produksjonssegmenter ved kontinuitetsendring skal ikke opprette nye 
 - **Kilde:** Kap. 10.6 (l. 479-481) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 6
 - **Moduler:** CORE, CONTINUITY, SCRIPT · **Invarianter:** INV-10, INV-03
 - **Avhengigheter:** REQ-0072
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Etter segmentering er antall manusscener, scenenumre og scene-ID uendret.
 - **Tester:**
   - dataintegritet: manusstruktur før/etter segmentering
+- **Implementering:** src/core/continuity/index.ts, src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved), db/migrations/0015_continuity.sql, src/core/generation/scene-prompt.ts
 - **Merknad:** Linje 479 og 480 er duplikater. Jf. kap. 34 pkt. 19.
 
 #### REQ-0164 – Støtte for ikke-lineær fortelling
@@ -2147,11 +2169,12 @@ Kontinuitet skal følge fortellingens faktiske hendelsestid, ikke bare rekkeføl
 
 - **Kilde:** Kap. 10.7 (l. 489) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 6
 - **Moduler:** CONTINUITY · **Invarianter:** INV-09
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en flashback-scene plassert etter hårklippet i visningsrekkefølge men før i fortellingstid, så brukes langt hår.
 - **Tester:**
   - integrasjon: flashback-scenario
+- **Implementering:** src/core/continuity/index.ts, src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved), db/migrations/0015_continuity.sql
 
 #### REQ-0166 – Spinoffer gjenbruker kontinuitet med lokale avvik
 Spinoffer skal kunne gjenbruke hovedfilmens kontinuitetsinformasjon, men også ha egne lokale avvik.
@@ -2159,11 +2182,12 @@ Spinoffer skal kunne gjenbruke hovedfilmens kontinuitetsinformasjon, men også h
 - **Kilde:** Kap. 10.8 (l. 491) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** CONTINUITY, CORE · **Invarianter:** INV-04
 - **Avhengigheter:** REQ-0151
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - En spinoff arver hovedfilmens kontinuitetshendelser og kan overstyre/fjerne enkelte lokalt.
 - **Tester:**
   - integrasjon: arv og lokal overstyring
+- **Implementering:** src/core/continuity/index.ts (continuityFor), src/core/commands/apply.ts (SetContinuityEventDisabled, ContinuityEvent.productionId), db/migrations/0018_spinoff_continuity.sql, src/app/library/ContinuityPanel.tsx
 
 #### REQ-0167 – Spinoff-kontinuitet endrer ikke hovedfilmen
 En alternativ spinoff (f.eks. der Maja ikke klipper håret) skal kunne beholde sin egen kontinuitet uten å endre hovedfilmen.
@@ -2171,11 +2195,12 @@ En alternativ spinoff (f.eks. der Maja ikke klipper håret) skal kunne beholde s
 - **Kilde:** Kap. 10.8 (l. 492) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 7
 - **Moduler:** CONTINUITY, CORE · **Invarianter:** INV-04
 - **Avhengigheter:** REQ-0166
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Fjerning av hårklipp-hendelsen i spinoffen gir ingen endring i hovedfilmens kontinuitet.
 - **Tester:**
   - dataintegritet: hovedfilmens kontinuitet uendret etter spinoff-endring
+- **Implementering:** src/core/continuity/index.ts (continuityFor), src/core/commands/apply.ts (SetContinuityEventDisabled, ContinuityEvent.productionId), db/migrations/0018_spinoff_continuity.sql, src/app/library/ContinuityPanel.tsx
 
 ### Kapittel 11
 
@@ -2269,7 +2294,7 @@ Hvert element i 2D-scenen skal kunne ha redigerbare egenskaper som posisjon, ska
 - **Tester:**
   - enhet: transformasjonsmatrise og opasitet per element
   - e2e: endre hver egenskap og verifiser persistens og visning
-- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql, src/app/scene-editor/*, src/engine/compositor/canvas.ts
+- **Implementering:** src/core/composition/*, src/core/commands/apply.ts#applyCommand (CreateComposition, AddLayers, UpdateLayers, MoveLayer, SetLayersRemoved), db/migrations/0007_compositions.sql, src/app/scene-editor/*, src/engine/compositor/canvas.ts, src/core/composition/group.ts, src/app/scene-editor/LayersPanel.tsx (Ny gruppe), src/app/scene-editor/layer-actions.ts
 - **Merknad:** Gruppering finnes i datamodellen, men er ikke tilgjengelig i brukergrensesnittet ennå (kommer senere). Posisjon, skalering, rotasjon, transparens, synlighet og lagrekkefølge er verifisert.
 
 #### REQ-0175 – Maskering og komposisjonsfunksjoner
@@ -2934,7 +2959,7 @@ Brukeren skal kunne arbeide med overganger mellom klipp i filmtidslinjen.
   - Brukeren kan legge til, endre varighet på og fjerne en overgang (minst kutt og krysstoning) mellom to klipp.
 - **Tester:**
   - e2e: arbeide med overganger i filmtidslinjen
-- **Implementering:** src/core/assembly/film.ts, src/engine/compositor/film.ts, src/app/assembly/ClipPanel.tsx
+- **Implementering:** src/core/assembly/film.ts, src/engine/compositor/film.ts, src/app/assembly/ClipPanel.tsx, src/app/assembly/TransitionEditor.tsx
 - **Merknad:** «Minst kutt og krysstoning» i akseptansekriteriet er en foreslått minimumstolkning – ikke spesifisert i mandatet.
 
 #### REQ-0224 – Justere timing
@@ -3205,11 +3230,12 @@ En sentral brukerhandling skal være «Generer scene».
 
 - **Kilde:** Kap. 17 (l. 675-677) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P2 · **Fase:** 5
 - **Moduler:** PROMPT, UI
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Handlingen «Generer scene» er tilgjengelig fra scenevisningen.
 - **Tester:**
   - e2e: handlingen finnes og starter genereringsflyt
+- **Implementering:** src/core/generation/scene-prompt.ts#buildScenePrompt, src/app/assembly/GenerateSceneDialog.tsx
 
 #### REQ-0244 – Samle info og bygge genereringsinstruksjon
 Når «Generer scene» aktiveres, skal systemet samle all relevant informasjon og bygge presise genereringsinstruksjoner.
@@ -3217,11 +3243,12 @@ Når «Generer scene» aktiveres, skal systemet samle all relevant informasjon o
 - **Kilde:** Kap. 17 (l. 678) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 5
 - **Moduler:** PROMPT
 - **Avhengigheter:** REQ-0243
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Når «Generer scene» aktiveres, så produseres en strukturert instruksjon som brukeren kan se før noen betalt jobb starter.
 - **Tester:**
   - integrasjon: promptbygging fra testscene gir forventet struktur
+- **Implementering:** src/core/generation/scene-prompt.ts#buildScenePrompt, src/app/assembly/GenerateSceneDialog.tsx
 
 #### REQ-0245 – Promptmotorens informasjonskilder
 Promptmotoren skal kunne hente informasjon om manusets handling, replikker, karakterer, karakterenes aktive utseendetilstander, godkjente karakterreferanser, objekter og rekvisitter, lokasjon, miljø, visuell stil, kamerautsnitt, kamerabevegelser, laginformasjon fra 2D-editoren, scenevarighet, tidslinje, kontinuitetskrav, relevant materiale fra forrige og neste sekvens, ønsket AI-modell og modellens tekniske krav.
@@ -3229,12 +3256,13 @@ Promptmotoren skal kunne hente informasjon om manusets handling, replikker, kara
 - **Kilde:** Kap. 17.1 (l. 679-698) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 5
 - **Moduler:** PROMPT, CONTINUITY, LIBRARY, COMPOSE, CAMERA · **Invarianter:** INV-09
 - **Avhengigheter:** REQ-0244; Kontinuitetsmotor (kap. 10)
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - For en testscene inneholder promptmotorens innsamlede kontekst alle 18 kategorier (der data finnes), inkludert aktiv utseendetilstand etter fortellingstid.
 - **Tester:**
   - enhet: kontekstinnsamling per kategori
   - integrasjon: karaktertilstand før/etter kontinuitetshendelse velges korrekt
+- **Implementering:** src/core/generation/scene-prompt.ts#buildScenePrompt, src/app/assembly/GenerateSceneDialog.tsx
 
 #### REQ-0246 – Modellspesifikk prompt
 Den innsamlede informasjonen skal omformes til en egnet genereringsprompt for den valgte modellen.
@@ -3254,12 +3282,12 @@ Tekniske systeminstruksjoner og genereringsprompter skal som hovedregel formuler
 
 - **Kilde:** Kap. 17.2 (l. 700-702) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 5
 - **Moduler:** PROMPT
-- **Status:** Under arbeid
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et norsk manus og norsk UI, så er genererte systeminstruksjoner og prompter på engelsk (unntatt ordrett dialog).
 - **Tester:**
   - enhet: språkdeteksjon på genererte prompter
-- **Implementering:** src/adapters/ai/generate-image.functions.ts
+- **Implementering:** src/adapters/ai/generate-image.functions.ts, src/core/generation/scene-prompt.ts#buildScenePrompt, src/app/assembly/GenerateSceneDialog.tsx
 - **Merknad:** Ufravikelig prinsipp nr. 12 i kap. 34.
 
 #### REQ-0248 – Bevare norsk dialog ordrett
@@ -3268,11 +3296,12 @@ Systemet skal bevare den opprinnelige norske dialogen når dialogen skal brukes 
 - **Kilde:** Kap. 17.2 (l. 703) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 5
 - **Moduler:** PROMPT, L10N · **Invarianter:** INV-05
 - **Avhengigheter:** REQ-0247
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en replikk som skal sies ordrett, så finnes replikkens norske tekst tegn-for-tegn identisk i prompten.
 - **Tester:**
   - enhet: ordrett dialog i prompt er identisk med manustekst
+- **Implementering:** src/core/generation/scene-prompt.ts#buildScenePrompt, src/app/assembly/GenerateSceneDialog.tsx
 
 #### REQ-0249 – Ingen utilsiktet omskriving av replikker
 Oversettelse av instruksjoner må ikke føre til utilsiktet omskriving av replikkene.
@@ -3280,11 +3309,12 @@ Oversettelse av instruksjoner må ikke føre til utilsiktet omskriving av replik
 - **Kilde:** Kap. 17.2 (l. 704) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 5
 - **Moduler:** PROMPT, L10N · **Invarianter:** INV-05
 - **Avhengigheter:** REQ-0248
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Replikker som er merket som ordrett dialog sendes aldri gjennom oversettelsessteget.
 - **Tester:**
   - enhet: dialog-segmenter er beskyttet/markert i promptbyggeren
+- **Implementering:** src/core/generation/scene-prompt.ts#buildScenePrompt, src/app/assembly/GenerateSceneDialog.tsx, src/core/generation/scene-prompt.ts#missingDialogue
 
 #### REQ-0250 – Åpne genereringsprompten
 Brukeren skal kunne åpne genereringsprompten.
@@ -3292,12 +3322,12 @@ Brukeren skal kunne åpne genereringsprompten.
 - **Kilde:** Kap. 17.3 (l. 706-707) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 5
 - **Moduler:** PROMPT, UI
 - **Avhengigheter:** REQ-0244
-- **Status:** Under arbeid
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Fra scenen kan brukeren åpne gjeldende genereringsprompt i en egen visning.
 - **Tester:**
   - e2e: åpne prompt
-- **Implementering:** src/adapters/ai/generate-image.functions.ts
+- **Implementering:** src/adapters/ai/generate-image.functions.ts, src/core/generation/scene-prompt.ts#buildScenePrompt, src/app/assembly/GenerateSceneDialog.tsx
 - **Merknad:** Ufravikelig prinsipp nr. 11 (synlige prompter) i kap. 34.
 
 #### REQ-0251 – Lese genereringsprompten
@@ -3306,12 +3336,12 @@ Brukeren skal kunne lese genereringsprompten i sin helhet.
 - **Kilde:** Kap. 17.3 (l. 708) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P0 · **Fase:** 5
 - **Moduler:** PROMPT, UI
 - **Avhengigheter:** REQ-0250
-- **Status:** Under arbeid
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Hele prompten, inkludert systeminstruksjon, vises i lesbar form uten avkorting.
 - **Tester:**
   - e2e: prompttekst i UI er identisk med prompt som sendes
-- **Implementering:** src/adapters/ai/generate-image.functions.ts
+- **Implementering:** src/adapters/ai/generate-image.functions.ts, src/core/generation/scene-prompt.ts#buildScenePrompt, src/app/assembly/GenerateSceneDialog.tsx
 
 #### REQ-0252 – Redigere prompt manuelt
 Brukeren skal kunne redigere genereringsprompten manuelt.
@@ -3319,12 +3349,12 @@ Brukeren skal kunne redigere genereringsprompten manuelt.
 - **Kilde:** Kap. 17.3 (l. 709) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 5
 - **Moduler:** PROMPT, UI
 - **Avhengigheter:** REQ-0251
-- **Status:** Under arbeid
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan endre prompttekst, og endringen brukes ved neste generering.
 - **Tester:**
   - e2e: rediger prompt og verifiser sendt payload (mock)
-- **Implementering:** src/adapters/ai/generate-image.functions.ts
+- **Implementering:** src/adapters/ai/generate-image.functions.ts, src/core/commands/apply.ts (SetGenerationPrompt), db/migrations/0014_ai_control.sql (generation_prompts), src/app/assembly/GenerateSceneDialog.tsx
 - **Merknad:** Ufravikelig prinsipp nr. 11 (redigerbare prompter) i kap. 34.
 
 #### REQ-0253 – Lagre redigert prompt
@@ -3333,11 +3363,12 @@ Brukeren skal kunne lagre en redigert versjon av genereringsprompten.
 - **Kilde:** Kap. 17.3 (l. 710) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P0 · **Fase:** 5
 - **Moduler:** PROMPT, VERSION
 - **Avhengigheter:** REQ-0252
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Redigert prompt lagres som egen versjon og finnes etter omlasting.
 - **Tester:**
   - dataintegritet: redigert prompt persisteres med versjon
+- **Implementering:** src/core/commands/apply.ts (SetGenerationPrompt), db/migrations/0014_ai_control.sql (generation_prompts), src/app/assembly/GenerateSceneDialog.tsx
 
 #### REQ-0254 – Kjøre «Generer scene» på nytt
 Brukeren skal kunne kjøre «Generer scene» på nytt med endringene i prompten.
@@ -3357,11 +3388,12 @@ Systemet skal skille mellom automatisk generert promptinnhold og manuelle overst
 - **Kilde:** Kap. 17.3 (l. 712) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P2 · **Fase:** 5
 - **Moduler:** PROMPT, VERSION
 - **Avhengigheter:** REQ-0252
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Promptdata lagrer automatisk generert del og manuelle overstyringer separat, og UI markerer hvilke deler som er manuelt endret.
 - **Tester:**
   - enhet: promptmodell med auto- og overstyringslag
+- **Implementering:** src/core/commands/apply.ts (SetGenerationPrompt), db/migrations/0014_ai_control.sql (generation_prompts), src/app/assembly/GenerateSceneDialog.tsx
 
 #### REQ-0256 – Manuelle promptendringer forsvinner ikke
 Manuelle endringer i prompter skal ikke forsvinne ubemerket ved senere regenerering.
@@ -3369,11 +3401,12 @@ Manuelle endringer i prompter skal ikke forsvinne ubemerket ved senere regenerer
 - **Kilde:** Kap. 17.3 (l. 713) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 5
 - **Moduler:** PROMPT, VERSION
 - **Avhengigheter:** REQ-0255
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en manuelt endret prompt, når underliggende data endres og prompten bygges på nytt, så beholdes overstyringen eller brukeren varsles eksplisitt om konflikt.
 - **Tester:**
   - integrasjon: ombygging av prompt med manuell overstyring
+- **Implementering:** src/core/commands/apply.ts (SetGenerationPrompt), db/migrations/0014_ai_control.sql (generation_prompts), src/app/assembly/GenerateSceneDialog.tsx
 - **Merknad:** Knyttes til ufravikelig prinsipp nr. 27 (ingen destruktive endringer uten eksplisitt beslutning).
 
 #### REQ-0257 – Full sporbarhet per generering
@@ -3410,11 +3443,12 @@ Manusscener som er lengre enn en videomodell tillater i ett API-kall, skal hånd
 - **Kilde:** Kap. 18 (l. 728-730) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 5
 - **Moduler:** PROMPT, QUEUE, PROVIDER · **Invarianter:** INV-10
 - **Avhengigheter:** REQ-0273
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en scene på 40 s og en modell med maks 10 s, så foreslår/planlegger systemet generering uten at brukeren må dele scenen manuelt.
 - **Tester:**
   - integrasjon: segmentplan for lang scene med mock-adapter
+- **Implementering:** src/core/generation/scene-prompt.ts#planSegments, segmentTimes, src/core/commands/apply.ts (ReplaceSegments), db/migrations/0014_ai_control.sql (production_segments.start_ms/end_ms)
 
 #### REQ-0260 – Dele generering i segmenter
 Når en scene overstiger modellens begrensninger, skal systemet kunne dele genereringsarbeidet i kortere segmenter.
@@ -3422,11 +3456,12 @@ Når en scene overstiger modellens begrensninger, skal systemet kunne dele gener
 - **Kilde:** Kap. 18.1 (l. 731-732) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 5
 - **Moduler:** PROMPT, TIMELINE, QUEUE · **Invarianter:** INV-10
 - **Avhengigheter:** REQ-0259
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt maks varighet M, så har alle segmenter varighet ≤ M og samlet dekker de hele scenen.
 - **Tester:**
   - enhet: segmenteringsalgoritme dekker scenen uten hull/overlapp utover planlagt overlapp
+- **Implementering:** src/core/generation/scene-prompt.ts#planSegments, segmentTimes, src/core/commands/apply.ts (ReplaceSegments), db/migrations/0014_ai_control.sql (production_segments.start_ms/end_ms)
 - **Merknad:** Ufravikelig prinsipp nr. 14 i kap. 34.
 
 #### REQ-0261 – Skjule API-begrensninger for brukeren
@@ -3447,12 +3482,13 @@ Segmenteringen skal ta hensyn til narrative hendelser, dialog, kamerabevegelser,
 - **Kilde:** Kap. 18.2 (l. 734-742) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 5
 - **Moduler:** PROMPT, CONTINUITY, CAMERA · **Invarianter:** INV-09
 - **Avhengigheter:** REQ-0260
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Segmentgrenser legges ikke midt i en replikk eller midt i en kamerabevegelse når et alternativ finnes, og hvert segment får riktige karaktertilstander, objekter, stil og referanse fra naboen.
 - **Tester:**
   - enhet: segmentgrenser respekterer replikk- og bevegelsesgrenser
   - integrasjon: segmentprompter inneholder naboreferanser
+- **Implementering:** src/core/generation/scene-prompt.ts#buildScenePrompt, src/app/assembly/GenerateSceneDialog.tsx
 
 #### REQ-0263 – Kontinuitetsmekanismer mellom segmenter
 Referansebilder eller andre støttede kontinuitetsmekanismer skal brukes når det er relevant.
@@ -3508,11 +3544,12 @@ Automatisk segmentering skal ikke opprette nye manusscener, endre scenenummer el
 - **Kilde:** Kap. 18.4 (l. 748-752) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 5
 - **Moduler:** CORE, SCRIPT, TIMELINE · **Invarianter:** INV-02, INV-03, INV-10
 - **Avhengigheter:** REQ-0260
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Etter segmentering av en scene er antall manusscener, scenenumre og scene-ID-er uendret.
 - **Tester:**
   - dataintegritet: manusstruktur før/etter segmentering er identisk
+- **Implementering:** src/core/generation/scene-prompt.ts#planSegments, segmentTimes, src/core/commands/apply.ts (ReplaceSegments), db/migrations/0014_ai_control.sql (production_segments.start_ms/end_ms)
 - **Merknad:** Ufravikelig prinsipp nr. 14 i kap. 34.
 
 #### REQ-0268 – Skille manusstruktur og genereringsstruktur
@@ -3658,11 +3695,12 @@ Før en betalt oppgave starter, skal brukeren få et tydelig kostnadsestimat.
 - **Kilde:** Kap. 19.5 (l. 797-798) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 5
 - **Moduler:** QUALITYCOST, QUEUE, UI · **Invarianter:** INV-12
 - **Avhengigheter:** REQ-0273
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Ingen betalt jobb sendes til leverandør før brukeren har sett estimat og godkjent det.
 - **Tester:**
   - integrasjon: jobb uten godkjent estimat blokkeres
+- **Implementering:** src/core/generation/cost.ts, src/app/ai/AiPanel.tsx, src/app/library/GenerateImagePanel.tsx
 - **Merknad:** Ufravikelig prinsipp nr. 13 i kap. 34.
 
 #### REQ-0280 – Innhold i kostnadsestimat
@@ -3684,11 +3722,12 @@ Usikre kostnadsestimater skal merkes tydelig.
 - **Kilde:** Kap. 19.5 (l. 807) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P2 · **Fase:** 5
 - **Moduler:** QUALITYCOST, UI
 - **Avhengigheter:** REQ-0280
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Når adapteret oppgir usikker pris (f.eks. variabelt antall runder), vises estimatet med tydelig usikkerhetsmerking/intervall.
 - **Tester:**
   - visuell: usikkerhetsmerking i estimatdialog
+- **Implementering:** src/core/generation/cost.ts, src/app/ai/AiPanel.tsx, src/app/library/GenerateImagePanel.tsx
 
 #### REQ-0282 – Budsjettrammer på flere nivåer
 Brukeren skal kunne sette kostnadsrammer for en enkelt jobb, en scene, en gruppe scener, en produksjon og et helt prosjekt.
@@ -3696,11 +3735,12 @@ Brukeren skal kunne sette kostnadsrammer for en enkelt jobb, en scene, en gruppe
 - **Kilde:** Kap. 19.6 (l. 808-814) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 5
 - **Moduler:** QUALITYCOST · **Invarianter:** INV-12
 - **Avhengigheter:** REQ-0279
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan sette ramme på hvert av de fem nivåene, og den strengeste gjeldende rammen håndheves.
 - **Tester:**
   - enhet: budsjetthierarki og håndheving
+- **Implementering:** src/core/generation/cost.ts, src/app/ai/AiPanel.tsx, src/app/library/GenerateImagePanel.tsx, src/adapters/ai/generate-image.functions.ts (budsjettport), src/core/commands/apply.ts (SetAiBudget), src/adapters/storage/commands.functions.ts (bare eier)
 
 #### REQ-0283 – Vise estimert og faktisk forbruk
 Det skal være mulig å se estimert og registrert faktisk API-forbruk.
@@ -3708,11 +3748,12 @@ Det skal være mulig å se estimert og registrert faktisk API-forbruk.
 - **Kilde:** Kap. 19.6 (l. 815) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 5
 - **Moduler:** QUALITYCOST, UI
 - **Avhengigheter:** REQ-0257
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - En forbruksoversikt viser estimert og faktisk kostnad per jobb og aggregert per nivå.
 - **Tester:**
   - integrasjon: faktisk kostnad registreres fra adapter
+- **Implementering:** src/core/generation/cost.ts, src/app/ai/AiPanel.tsx, src/app/library/GenerateImagePanel.tsx
 
 #### REQ-0284 – Ingen generering utenfor rammer
 Ingen ekstra betalte genereringer skal utføres utenfor brukerens godkjente rammer.
@@ -3720,12 +3761,13 @@ Ingen ekstra betalte genereringer skal utføres utenfor brukerens godkjente ramm
 - **Kilde:** Kap. 19.6 (l. 816) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 5
 - **Moduler:** QUALITYCOST, QUEUE · **Invarianter:** INV-12
 - **Avhengigheter:** REQ-0282
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Gitt et oppbrukt budsjett, når en ny betalt jobb eller automatisk ekstrarunde forsøkes, så stoppes den og brukeren varsles.
 - **Tester:**
   - integrasjon: kø stopper jobb som overskrider ramme
   - enhet: automatiske retries teller mot rammen
+- **Implementering:** src/adapters/ai/generate-image.functions.ts (budsjettport), src/core/commands/apply.ts (SetAiBudget), src/adapters/storage/commands.functions.ts (bare eier)
 
 #### REQ-0285 – Generere og sammenligne kandidater
 Brukeren skal kunne generere flere kandidater og sammenligne dem side ved side.
@@ -3822,11 +3864,12 @@ Jobbstatus skal kunne lagres og hentes igjen senere.
 - **Kilde:** Kap. 20.2 (l. 836) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P0 · **Fase:** 5
 - **Moduler:** QUEUE, SECURITY
 - **Avhengigheter:** REQ-0289
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Status for alle jobber er persistent og kan hentes etter ny innlogging fra en annen nettleser.
 - **Tester:**
   - integrasjon: hent jobbstatus i ny økt
+- **Implementering:** src/app/ai/use-ai-jobs.ts, src/app/ai/AiPanel.tsx, src/core/generation/cost.ts#jobState
 - **Merknad:** Ufravikelig prinsipp nr. 26 i kap. 34.
 
 #### REQ-0293 – Vedvarende backend-jobbarkitektur
@@ -3848,11 +3891,12 @@ Køen skal vise statusene venter, klargjøres, genereres, etterbehandles, fullf�
 - **Kilde:** Kap. 20.3 (l. 838-846) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 5
 - **Moduler:** QUEUE, UI
 - **Avhengigheter:** REQ-0292
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Hver jobb har til enhver tid én av de sju statusene, og overganger vises i køvisningen.
 - **Tester:**
   - enhet: tilstandsmaskin for jobbstatus
+- **Implementering:** src/app/ai/use-ai-jobs.ts, src/app/ai/AiPanel.tsx, src/core/generation/cost.ts#jobState
 
 #### REQ-0295 – Vise pålitelig fremdrift
 Køen skal vise fremdrift når dette kan beregnes pålitelig.
@@ -3872,11 +3916,12 @@ Når brukeren åpner programmet igjen, skal vedkommende kunne se hva som er ferd
 - **Kilde:** Kap. 20.4 (l. 848-853) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 5
 - **Moduler:** QUEUE, UI
 - **Avhengigheter:** REQ-0292
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Ved innlogging etter fravær vises en oppsummering med fire grupper: ferdig, kjører, feilet, klar til gjennomgang.
 - **Tester:**
   - e2e: gjenopptakelsesvisning etter simulert fravær
+- **Implementering:** src/app/ai/use-ai-jobs.ts, src/app/ai/AiPanel.tsx, src/core/generation/cost.ts#jobState
 
 #### REQ-0297 – Forsøk på nytt
 Systemet skal kunne støtte forsøk på nytt for mislykkede jobber.
@@ -3884,11 +3929,12 @@ Systemet skal kunne støtte forsøk på nytt for mislykkede jobber.
 - **Kilde:** Kap. 20.5 (l. 854-856) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 5
 - **Moduler:** QUEUE, QUALITYCOST · **Invarianter:** INV-12
 - **Avhengigheter:** REQ-0289
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - En mislykket jobb kan startes på nytt; automatiske nye forsøk respekterer kostnadsrammer.
 - **Tester:**
   - integrasjon: forsøk på nytt med mock-leverandør
+- **Implementering:** src/app/ai/use-ai-jobs.ts, src/app/ai/AiPanel.tsx, src/core/generation/cost.ts#jobState
 
 #### REQ-0298 – Håndtering av API-begrensninger
 Køen skal støtte håndtering av API-begrensninger (f.eks. ratebegrensning).
@@ -3908,11 +3954,12 @@ Køen skal gi feilmeldinger for mislykkede jobber.
 - **Kilde:** Kap. 20.5 (l. 858) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P2 · **Fase:** 5
 - **Moduler:** QUEUE
 - **Avhengigheter:** REQ-0289
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Mislykkede jobber viser en forståelig feilmelding og teknisk detalj (uten hemmeligheter).
 - **Tester:**
   - integrasjon: feilmeldinger med mock-leverandør
+- **Implementering:** src/app/ai/use-ai-jobs.ts, src/app/ai/AiPanel.tsx, src/core/generation/cost.ts#jobState
 
 #### REQ-0300 – Køprioritering
 Køen skal støtte køprioritering.
@@ -3957,11 +4004,12 @@ Ved feil skal allerede fullførte resultater bevares.
 - **Kilde:** Kap. 20.5 (l. 862) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 5
 - **Moduler:** QUEUE · **Invarianter:** INV-07
 - **Avhengigheter:** REQ-0289
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en massejobb der jobb 8 av 15 feiler, så er resultatene fra jobb 1–7 bevart og tilgjengelige.
 - **Tester:**
   - integrasjon: bevare fullførte resultater med mock-leverandør
+- **Implementering:** src/app/ai/use-ai-jobs.ts, src/app/ai/AiPanel.tsx, src/core/generation/cost.ts#jobState, src/adapters/ai/generate-image.functions.ts
 - **Merknad:** Ufravikelig prinsipp nr. 27 i kap. 34.
 
 ### Kapittel 21
@@ -3984,11 +4032,12 @@ Når manus eller ressurser endres, skal systemet identifisere hvilke produksjons
 - **Kilde:** Kap. 21.1 (l. 866-875) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 6
 - **Moduler:** VERSION, CONTINUITY · **Invarianter:** INV-07
 - **Avhengigheter:** REQ-0304
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - For hver av de sju eksempelendringene flagges de produksjonselementene som er avhengige av det endrede objektet.
 - **Tester:**
   - integrasjon: avhengighetsgraf og flagging for hver eksempelendring
+- **Implementering:** src/core/assembly/discrepancy.ts, src/core/commands/apply.ts (AcceptScriptChanges, SetProducedFrom), db/migrations/0014_ai_control.sql (compositions.produced_from, takes.accepted_from)
 - **Merknad:** Ufravikelig prinsipp nr. 7 i kap. 34.
 
 #### REQ-0306 – Tre valg ved avvik
@@ -3997,11 +4046,12 @@ Når eksisterende film ikke lenger samsvarer med gjeldende manus, skal brukeren 
 - **Kilde:** Kap. 21.2 (l. 876-888) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 6
 - **Moduler:** VERSION, UI · **Invarianter:** INV-07, INV-08
 - **Avhengigheter:** REQ-0305
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - For et flagget avvik tilbys nøyaktig de tre valgene A, B og C.
 - **Tester:**
   - e2e: avviksdialog med tre valg
+- **Implementering:** src/core/assembly/discrepancy.ts, src/core/commands/apply.ts (AcceptScriptChanges, SetProducedFrom), db/migrations/0014_ai_control.sql (compositions.produced_from, takes.accepted_from), src/app/assembly/ScriptChanges.tsx, src/app/assembly/FilmTimeline.tsx (merker), src/app/script/ScriptPageView.tsx (merker), src/app/scene-editor/SceneEditorWorkspace.tsx (varsel)
 - **Merknad:** Linjene «A. Godkjenn eksisterende materiale» (l. 878–879) og «B. Oppdater eller generer på nytt» (l. 882–883) er duplisert. Ufravikelig prinsipp nr. 8.
 
 #### REQ-0307 – Godkjenning registreres med versjoner
@@ -4010,11 +4060,12 @@ Ved valg A (godkjenn eksisterende materiale) bekrefter brukeren at avviket er ak
 - **Kilde:** Kap. 21.2 (l. 880-881) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** VERSION · **Invarianter:** INV-08
 - **Avhengigheter:** REQ-0306
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Etter godkjenning lagres en beslutningspost med bruker, tidspunkt, manusversjon og materialversjon, og avviket vises ikke lenger som uavklart.
 - **Tester:**
   - dataintegritet: beslutningspost inneholder versjonsreferanser
+- **Implementering:** src/core/assembly/discrepancy.ts, src/core/commands/apply.ts (AcceptScriptChanges, SetProducedFrom), db/migrations/0014_ai_control.sql (compositions.produced_from, takes.accepted_from)
 
 #### REQ-0308 – Lokal oppdatering eller AI vurderes
 Ved valg B skal systemet undersøke om oppdateringen kan utføres lokalt eller krever AI.
@@ -4058,11 +4109,12 @@ Ved valg C skal programmet reversere den relevante manusendringen uten å oversk
 - **Kilde:** Kap. 21.2 (l. 887-888) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 6
 - **Moduler:** VERSION, SCRIPT · **Invarianter:** INV-08
 - **Avhengigheter:** REQ-0306
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Gitt to uavhengige manusendringer X og Y, når brukeren velger C for avviket forårsaket av X, så reverseres X mens Y beholdes.
 - **Tester:**
   - integrasjon: selektiv revert med uavhengige endringer
+- **Implementering:** src/app/assembly/ScriptChanges.tsx, src/app/assembly/FilmTimeline.tsx (merker), src/app/script/ScriptPageView.tsx (merker), src/app/scene-editor/SceneEditorWorkspace.tsx (varsel)
 - **Merknad:** Krever endringslogg på blokk-/feltnivå, ikke bare lineær angre-stakk – se ADR-0005 / OPEN_QUESTIONS B (selektiv angre).
 
 #### REQ-0312 – Flagge bare berørt område
@@ -4071,11 +4123,12 @@ Hvis bare én replikk endres, skal systemet så langt mulig flagge bare berørt 
 - **Kilde:** Kap. 21.3 (l. 889-890) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** VERSION, TIMELINE, AUDIO
 - **Avhengigheter:** REQ-0305
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Endring av én replikk flagger kun replikkens dialoglyd og tidsintervallet koblet til replikken, ikke hele scenen.
 - **Tester:**
   - integrasjon: granularitet på flagging ved replikkendring
+- **Implementering:** src/core/assembly/discrepancy.ts, src/core/commands/apply.ts (AcceptScriptChanges, SetProducedFrom), db/migrations/0014_ai_control.sql (compositions.produced_from, takes.accepted_from), src/app/assembly/ScriptChanges.tsx, src/app/assembly/FilmTimeline.tsx (merker), src/app/script/ScriptPageView.tsx (merker), src/app/scene-editor/SceneEditorWorkspace.tsx (varsel)
 
 #### REQ-0313 – Sen endring påvirker ikke tidlig sekvens
 En endring sent i en scene skal ikke automatisk gjøre en uavhengig sekvens i begynnelsen av scenen utdatert.
@@ -4083,11 +4136,12 @@ En endring sent i en scene skal ikke automatisk gjøre en uavhengig sekvens i be
 - **Kilde:** Kap. 21.3 (l. 891) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** VERSION, TIMELINE
 - **Avhengigheter:** REQ-0312
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en scene med to uavhengige delsekvenser, når en replikk i siste del endres, så forblir første delsekvens uflagget.
 - **Tester:**
   - integrasjon: flagging per delsekvens
+- **Implementering:** src/core/assembly/discrepancy.ts, src/core/commands/apply.ts (AcceptScriptChanges, SetProducedFrom), db/migrations/0014_ai_control.sql (compositions.produced_from, takes.accepted_from)
 
 #### REQ-0314 – Vise usikre konsekvenser
 Når konsekvensene av en endring er usikre, skal dette fremgå.
@@ -4095,11 +4149,12 @@ Når konsekvensene av en endring er usikre, skal dette fremgå.
 - **Kilde:** Kap. 21.3 (l. 892) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** VERSION, UI
 - **Avhengigheter:** REQ-0312
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Flagg med usikker konsekvens har egen visuell markering («mulig berørt»).
 - **Tester:**
   - visuell: skille sikre og usikre avviksflagg
+- **Implementering:** src/core/library/impact.ts, src/app/library/ApproveImpactDialog.tsx, src/core/continuity/analysis.ts, src/app/continuity/ContinuityAnalysisPanel.tsx
 
 #### REQ-0315 – Avvik synlige i alle arbeidsflater
 Uavklarte avvik skal kunne vises i manusrelaterte arbeidsvisninger, sceneeditor, filmtidslinje, produksjonsoversikt og eksportkontroll.
@@ -4107,11 +4162,12 @@ Uavklarte avvik skal kunne vises i manusrelaterte arbeidsvisninger, sceneeditor,
 - **Kilde:** Kap. 21.4 (l. 893-899) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** VERSION, UI, SCRIPT, COMPOSE, TIMELINE, EXPORT
 - **Avhengigheter:** REQ-0305
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Et uavklart avvik på en scene vises i alle fem visningene.
 - **Tester:**
   - e2e: avvik synlig i hver av de fem visningene
+- **Implementering:** src/app/assembly/ScriptChanges.tsx, src/app/assembly/FilmTimeline.tsx (merker), src/app/script/ScriptPageView.tsx (merker), src/app/scene-editor/SceneEditorWorkspace.tsx (varsel), src/app/projects/ProjectOverview.tsx
 - **Merknad:** Avvik skal ikke forstyrre ordinær manuslayout (jf. kap. 6.3) – derfor «manusrelaterte arbeidsvisninger».
 
 #### REQ-0316 – Aldri kassere produksjonsversjoner
@@ -4160,11 +4216,12 @@ Systemet skal kunne tilby rådgivende kontinuitetsanalyse av manus og produksjon
 
 - **Kilde:** Kap. 22 (l. 904-905) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** CONTINUITY, SCRIPT
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan kjøre kontinuitetsanalyse og få en liste med funn som kan avvises eller følges opp.
 - **Tester:**
   - integrasjon: analyse på testmanus gir forventede funn
+- **Implementering:** src/core/continuity/analysis.ts, src/app/continuity/ContinuityAnalysisPanel.tsx
 
 #### REQ-0320 – Karakter omtalt før introduksjon
 Kontinuitetsanalysen skal kunne oppdage at en karakter omtales før vedkommende introduseres.
@@ -4172,11 +4229,12 @@ Kontinuitetsanalysen skal kunne oppdage at en karakter omtales før vedkommende 
 - **Kilde:** Kap. 22 (l. 906-907) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** CONTINUITY, SCRIPT · **Invarianter:** INV-09
 - **Avhengigheter:** REQ-0319
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et testmanus/-produksjon konstruert med dette problemet, så rapporterer analysen et funn som peker på riktig scene/manusblokk.
 - **Tester:**
   - integrasjon: analyse av konstruert testtilfelle
+- **Implementering:** src/core/continuity/analysis.ts, src/app/continuity/ContinuityAnalysisPanel.tsx
 
 #### REQ-0321 – Objekt brukt før etablering
 Kontinuitetsanalysen skal kunne oppdage at et objekt brukes før det etableres.
@@ -4184,11 +4242,12 @@ Kontinuitetsanalysen skal kunne oppdage at et objekt brukes før det etableres.
 - **Kilde:** Kap. 22 (l. 908) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** CONTINUITY, SCRIPT
 - **Avhengigheter:** REQ-0319
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et testmanus/-produksjon konstruert med dette problemet, så rapporterer analysen et funn som peker på riktig scene/manusblokk.
 - **Tester:**
   - integrasjon: analyse av konstruert testtilfelle
+- **Implementering:** src/core/continuity/analysis.ts, src/app/continuity/ContinuityAnalysisPanel.tsx
 
 #### REQ-0322 – Dialog viser til deaktivert scene
 Kontinuitetsanalysen skal kunne oppdage at dialog viser til en hendelse i en deaktivert scene.
@@ -4196,11 +4255,12 @@ Kontinuitetsanalysen skal kunne oppdage at dialog viser til en hendelse i en dea
 - **Kilde:** Kap. 22 (l. 909) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** CONTINUITY, SCRIPT · **Invarianter:** INV-14
 - **Avhengigheter:** REQ-0319
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et testmanus/-produksjon konstruert med dette problemet, så rapporterer analysen et funn som peker på riktig scene/manusblokk.
 - **Tester:**
   - integrasjon: analyse av konstruert testtilfelle
+- **Implementering:** src/core/continuity/analysis.ts, src/app/continuity/ContinuityAnalysisPanel.tsx
 
 #### REQ-0323 – Fysisk forandring uten årsak
 Kontinuitetsanalysen skal kunne oppdage at en fysisk forandring mangler årsak.
@@ -4208,11 +4268,12 @@ Kontinuitetsanalysen skal kunne oppdage at en fysisk forandring mangler årsak.
 - **Kilde:** Kap. 22 (l. 910) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** CONTINUITY, SCRIPT · **Invarianter:** INV-09
 - **Avhengigheter:** REQ-0319
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et testmanus/-produksjon konstruert med dette problemet, så rapporterer analysen et funn som peker på riktig scene/manusblokk.
 - **Tester:**
   - integrasjon: analyse av konstruert testtilfelle
+- **Implementering:** src/core/continuity/analysis.ts, src/app/continuity/ContinuityAnalysisPanel.tsx
 
 #### REQ-0324 – Tidsmessige motsetninger i sceneorden
 Kontinuitetsanalysen skal kunne oppdage at sceneorden skaper tidsmessige motsetninger.
@@ -4220,11 +4281,12 @@ Kontinuitetsanalysen skal kunne oppdage at sceneorden skaper tidsmessige motsetn
 - **Kilde:** Kap. 22 (l. 911) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** CONTINUITY, SCRIPT · **Invarianter:** INV-09
 - **Avhengigheter:** REQ-0319
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et testmanus/-produksjon konstruert med dette problemet, så rapporterer analysen et funn som peker på riktig scene/manusblokk.
 - **Tester:**
   - integrasjon: analyse av konstruert testtilfelle
+- **Implementering:** src/core/continuity/analysis.ts, src/app/continuity/ContinuityAnalysisPanel.tsx
 
 #### REQ-0325 – Spinoff mangler nødvendig informasjon
 Kontinuitetsanalysen skal kunne oppdage at en spinoff mangler informasjon som tidligere var nødvendig for forståelsen.
@@ -4232,11 +4294,12 @@ Kontinuitetsanalysen skal kunne oppdage at en spinoff mangler informasjon som ti
 - **Kilde:** Kap. 22 (l. 912) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** CONTINUITY, SCRIPT · **Invarianter:** INV-04
 - **Avhengigheter:** REQ-0319
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et testmanus/-produksjon konstruert med dette problemet, så rapporterer analysen et funn som peker på riktig scene/manusblokk.
 - **Tester:**
   - integrasjon: analyse av konstruert testtilfelle
+- **Implementering:** src/core/continuity/analysis.ts (spinoff_gap), src/app/continuity/ContinuityAnalysisPanel.tsx
 - **Merknad:** Avhenger av spinoff-modellen (kap. 24).
 
 #### REQ-0326 – Ingen automatisk omskriving av historien
@@ -4284,11 +4347,12 @@ Engelsk skal kunne legges til som en tilknyttet språkversjon av manuset.
 - **Kilde:** Kap. 23.1 (l. 919) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** L10N, SCRIPT · **Invarianter:** INV-05
 - **Avhengigheter:** REQ-0328
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan legge til en engelsk språkversjon som er koblet til de norske scene- og replikk-ID-ene.
 - **Tester:**
   - integrasjon: opprett engelsk versjon koblet til norsk
+- **Implementering:** src/core/translation/index.ts, src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved), db/migrations/0016_translations.sql, src/app/script/ScriptWorkspace.tsx
 - **Merknad:** Ufravikelig prinsipp nr. 5 (engelsk er tilknyttet) gjør koblingsprinsippet P0 i datamodellen, selve funksjonen er fase 7.
 
 #### REQ-0330 – Varsle om oversettelse som må gjennomgås
@@ -4297,11 +4361,12 @@ Endringer i norsk hovedmanus skal kunne varsle om at engelsk oversettelse må gj
 - **Kilde:** Kap. 23.1 (l. 920) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** L10N, VERSION
 - **Avhengigheter:** REQ-0329
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en norsk replikk endres, så flagges tilsvarende engelsk replikk som «må gjennomgås».
 - **Tester:**
   - integrasjon: flagging av oversettelse ved norsk endring
+- **Implementering:** src/core/translation/index.ts, src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved), db/migrations/0016_translations.sql, src/app/script/TranslationPanel.tsx
 
 #### REQ-0331 – Engelsk endrer ikke norsk
 Endringer i engelsk oversettelse skal ikke automatisk endre norsk hovedmanus.
@@ -4309,11 +4374,12 @@ Endringer i engelsk oversettelse skal ikke automatisk endre norsk hovedmanus.
 - **Kilde:** Kap. 23.1 (l. 921) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 7
 - **Moduler:** L10N, SCRIPT · **Invarianter:** INV-06
 - **Avhengigheter:** REQ-0329
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Etter redigering av engelsk replikk er norsk replikk uendret.
 - **Tester:**
   - dataintegritet: norsk manus uendret etter engelsk redigering
+- **Implementering:** src/core/translation/index.ts, src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved), db/migrations/0016_translations.sql
 
 #### REQ-0332 – Importere oversatt engelsk manus
 Brukeren skal kunne importere et allerede oversatt engelsk manus.
@@ -4321,11 +4387,12 @@ Brukeren skal kunne importere et allerede oversatt engelsk manus.
 - **Kilde:** Kap. 23.2 (l. 922-923) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** L10N, SCRIPT
 - **Avhengigheter:** Manusimport (kap. 4.1)
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan importere engelsk manus (DOCX), og det parses som en språkversjon, ikke som et nytt hovedmanus.
 - **Tester:**
   - import/eksport: import av engelsk referansemanus (DOCX)
+- **Implementering:** src/core/translation/index.ts, src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved), db/migrations/0016_translations.sql, src/app/script/TranslationImportDialog.tsx
 - **Merknad:** Engelsk referansemanus (DOCX) er bekreftet tilgjengelig (jf. DEC-0002).
 
 #### REQ-0333 – Automatisk kobling engelsk–norsk
@@ -4334,11 +4401,12 @@ Systemet skal forsøke å koble engelske scener, replikker og handlinger til eks
 - **Kilde:** Kap. 23.2 (l. 924-930) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** L10N, SCRIPT, CORE · **Invarianter:** INV-02
 - **Avhengigheter:** REQ-0332
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - For referansemanusene kobles en høy andel scener og replikker korrekt, og hver kobling har en sikkerhetsgrad.
 - **Tester:**
   - integrasjon: koblingsnøyaktighet mot manuelt fasitsett for referansemanusene
+- **Implementering:** src/core/translation/index.ts, src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved), db/migrations/0016_translations.sql
 
 #### REQ-0334 – Ikke bare scenenumre eller ordrett tekst
 Koblingen mellom engelsk og norsk manus skal ikke baseres utelukkende på identiske scenenumre eller ordrett tekst.
@@ -4346,11 +4414,12 @@ Koblingen mellom engelsk og norsk manus skal ikke baseres utelukkende på identi
 - **Kilde:** Kap. 23.2 (l. 931) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** L10N · **Invarianter:** INV-02
 - **Avhengigheter:** REQ-0333
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et engelsk manus der scenenumre er forskjøvet, så kobles scener likevel korrekt basert på innhold.
 - **Tester:**
   - integrasjon: kobling med forskjøvne scenenumre
+- **Implementering:** src/core/translation/index.ts, src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved), db/migrations/0016_translations.sql
 
 #### REQ-0335 – Manuell godkjenning av usikre koblinger
 Usikre koblinger mellom engelsk og norsk manus skal kunne godkjennes manuelt.
@@ -4358,11 +4427,12 @@ Usikre koblinger mellom engelsk og norsk manus skal kunne godkjennes manuelt.
 - **Kilde:** Kap. 23.2 (l. 932) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** L10N, UI · **Invarianter:** INV-08
 - **Avhengigheter:** REQ-0333
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Koblinger under en sikkerhetsterskel vises i en gjennomgangsliste der brukeren kan godkjenne, endre eller avvise.
 - **Tester:**
   - e2e: gjennomgang av usikre koblinger
+- **Implementering:** src/core/translation/index.ts, src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved), db/migrations/0016_translations.sql, src/app/script/TranslationImportDialog.tsx, src/app/script/TranslationPanel.tsx
 
 #### REQ-0336 – Delt produksjonsmateriale mellom språk
 Norsk og engelsk film skal som hovedregel kunne bruke samme sceneidentiteter, samme visuelle komposisjoner, samme kamerabevegelser, samme miljøer, samme objekter og samme genererte filmklipp når de er egnede.
@@ -4370,11 +4440,12 @@ Norsk og engelsk film skal som hovedregel kunne bruke samme sceneidentiteter, sa
 - **Kilde:** Kap. 23.3 (l. 933-940) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** L10N, CORE, TIMELINE
 - **Avhengigheter:** REQ-0329
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Engelsk filmversjon refererer de samme scene-, komposisjons-, kamera-, miljø-, objekt- og klippobjektene som norsk, uten kopiering.
 - **Tester:**
   - dataintegritet: delte referanser, ikke kopier
+- **Implementering:** src/core/language/index.ts, src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk), src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage), db/migrations/0017_language_versions.sql, src/app/assembly/AssemblyWorkspace.tsx
 
 #### REQ-0337 – Bytte språkavhengige ressurser
 Språkavhengige ressurser skal kunne byttes separat per språkversjon.
@@ -4382,11 +4453,12 @@ Språkavhengige ressurser skal kunne byttes separat per språkversjon.
 - **Kilde:** Kap. 23.3 (l. 941) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** L10N, LIBRARY
 - **Avhengigheter:** REQ-0336
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Brukeren kan bytte f.eks. et skilt med tekst eller et dialogklipp i engelsk versjon uten at norsk endres.
 - **Tester:**
   - integrasjon: språkspesifikk overstyring av ressurs
+- **Implementering:** src/core/language/index.ts, src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk), src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage), db/migrations/0017_language_versions.sql, src/app/scene-editor/LayerInspector.tsx
 
 #### REQ-0338 – Flere språkspesifikke lydfiler per replikk
 Hver replikk skal kunne ha flere språkspesifikke lydfiler.
@@ -4394,11 +4466,12 @@ Hver replikk skal kunne ha flere språkspesifikke lydfiler.
 - **Kilde:** Kap. 23.4 (l. 942-943) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** AUDIO, L10N
 - **Avhengigheter:** REQ-0204
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - En replikk kan ha både norsk og engelsk lydfil.
 - **Tester:**
   - enhet: replikk–lydfil-relasjon per språk
+- **Implementering:** src/core/language/index.ts, src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk), src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage), db/migrations/0017_language_versions.sql, src/app/assembly/AudioClipPanel.tsx, src/app/assembly/AddAudioDialog.tsx
 
 #### REQ-0339 – Én narrativ replikk på tvers av språk
 Tekster og lydfiler på ulike språk skal tilhøre samme underliggende narrative replikk (f.eks. replikk-ID dlg_294 med norsk «Hvor er Ola?» og engelsk «Where is Ola?»).
@@ -4406,11 +4479,12 @@ Tekster og lydfiler på ulike språk skal tilhøre samme underliggende narrative
 - **Kilde:** Kap. 23.4 (l. 944-948) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** AUDIO, L10N, CORE · **Invarianter:** INV-05
 - **Avhengigheter:** REQ-0338
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Norsk og engelsk tekst og lyd for samme replikk deler én replikk-ID.
 - **Tester:**
   - dataintegritet: språkvarianter refererer samme replikk-ID
+- **Implementering:** src/core/translation/index.ts, src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved), db/migrations/0016_translations.sql, src/core/language/index.ts, src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk), src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage), db/migrations/0017_language_versions.sql, src/core/translation/index.ts
 - **Merknad:** Krever at replikk-ID finnes fra fase 1 (kap. 3.2).
 
 #### REQ-0340 – Gjenbruk av ikke-dialoglyd
@@ -4419,11 +4493,12 @@ Musikk, atmosfære og lydeffekter skal i utgangspunktet kunne gjenbrukes mellom 
 - **Kilde:** Kap. 23.5 (l. 949-950) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** AUDIO, L10N
 - **Avhengigheter:** REQ-0200
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Engelsk versjon bruker samme musikk-, atmosfære- og effektspor som norsk uten kopiering.
 - **Tester:**
   - integrasjon: delt ikke-dialoglyd mellom språk
+- **Implementering:** src/core/language/index.ts, src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk), src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage), db/migrations/0017_language_versions.sql
 
 #### REQ-0341 – Importert film med blandet lyd
 Programmet skal kunne håndtere at importert ferdig film kan ha dialog og øvrig lyd blandet sammen.
@@ -4431,11 +4506,12 @@ Programmet skal kunne håndtere at importert ferdig film kan ha dialog og øvrig
 - **Kilde:** Kap. 23.5 (l. 951) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** AUDIO, L10N, LIBRARY
 - **Avhengigheter:** REQ-0235
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Importert film kan merkes som «blandet lydspor», og systemet håndterer da språkbytte uten å anta separat dialogspor.
 - **Tester:**
   - integrasjon: språkversjon av scene med blandet lyd
+- **Implementering:** src/core/language/index.ts, src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk), src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage), db/migrations/0017_language_versions.sql, src/app/assembly/ClipPanel.tsx
 
 #### REQ-0342 – Ikke love perfekt dialogutskifting
 Programmet skal ikke love perfekt utskifting av dialog dersom separate lydspor ikke finnes.
@@ -4443,11 +4519,12 @@ Programmet skal ikke love perfekt utskifting av dialog dersom separate lydspor i
 - **Kilde:** Kap. 23.5 (l. 952) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** AUDIO, L10N, UI
 - **Avhengigheter:** REQ-0341
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - For scener med blandet lyd vises en tydelig begrensning ved språkbytte.
 - **Tester:**
   - manuell: UI-tekst ved blandet lyd
+- **Implementering:** src/core/language/index.ts, src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk), src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage), db/migrations/0017_language_versions.sql, src/app/assembly/LanguageVersionDialog.tsx, src/app/assembly/ExportAnimaticDialog.tsx
 
 #### REQ-0343 – Identifisere timingkonflikter
 Systemet skal kunne identifisere timingkonflikter som følge av at engelske replikker kan være lengre eller kortere enn norske, og foreslå justeringer.
@@ -4455,11 +4532,12 @@ Systemet skal kunne identifisere timingkonflikter som følge av at engelske repl
 - **Kilde:** Kap. 23.6 (l. 953-955) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** L10N, AUDIO, TIMELINE
 - **Avhengigheter:** REQ-0339
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en engelsk replikk som er lengre enn tilgjengelig tidsintervall, så flagges konflikten med et forslag (f.eks. forlenge pause, justere klipp).
 - **Tester:**
   - integrasjon: deteksjon av timingkonflikt
+- **Implementering:** src/core/language/index.ts, src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk), src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage), db/migrations/0017_language_versions.sql, src/app/assembly/LanguageVersionDialog.tsx
 
 #### REQ-0344 – Språktiming endrer ikke hovedfilm
 Språkspesifikke timingendringer skal ikke automatisk endre hovedfilmens originale timing.
@@ -4467,11 +4545,12 @@ Språkspesifikke timingendringer skal ikke automatisk endre hovedfilmens origina
 - **Kilde:** Kap. 23.6 (l. 956) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** L10N, TIMELINE · **Invarianter:** INV-06
 - **Avhengigheter:** REQ-0343
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Etter timingjustering i engelsk versjon er norsk filmmontering uendret.
 - **Tester:**
   - dataintegritet: norsk tidslinje uendret etter engelsk justering
+- **Implementering:** src/core/language/index.ts, src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk), src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage), db/migrations/0017_language_versions.sql
 - **Merknad:** INV-06 gjelder ordlyden manus; her brukes det analogt for filmtiming.
 
 #### REQ-0345 – Skille materialtyper for leppesynk
@@ -4479,11 +4558,12 @@ Systemet skal ved språkbytte skille mellom stillbilder, enkle 2D-animatics, red
 
 - **Kilde:** Kap. 23.7 (l. 957-963) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** L10N, VERSION, AUDIO
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Hvert klipp har en materialtype blant de fem, som brukes i vurdering av leppesynkbehov.
 - **Tester:**
   - enhet: materialtype-klassifisering
+- **Implementering:** src/core/language/index.ts, src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk), src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage), db/migrations/0017_language_versions.sql
 
 #### REQ-0346 – Vurdere behov for leppesynk
 Programmet skal vurdere om dialog kan byttes direkte (ofte for enkle animatics) eller om synlige munnbevegelser krever ny leppesynkronisering eller målrettet oppdatering.
@@ -4491,11 +4571,12 @@ Programmet skal vurdere om dialog kan byttes direkte (ofte for enkle animatics) 
 - **Kilde:** Kap. 23.7 (l. 964-966) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** L10N, AUDIO, PROMPT
 - **Avhengigheter:** REQ-0345
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - For et stillbilde foreslås direkte dialogbytte; for AI-video med synlig munn foreslås leppesynk/målrettet oppdatering.
 - **Tester:**
   - integrasjon: anbefaling per materialtype
+- **Implementering:** src/core/language/index.ts, src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk), src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage), db/migrations/0017_language_versions.sql, src/app/assembly/LanguageVersionDialog.tsx
 
 #### REQ-0347 – Ingen automatisk full regenerering
 Ved språkbytte skal programmet ikke automatisk regenerere hele scenen.
@@ -4503,11 +4584,12 @@ Ved språkbytte skal programmet ikke automatisk regenerere hele scenen.
 - **Kilde:** Kap. 23.7 (l. 966) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 7
 - **Moduler:** L10N, QUEUE · **Invarianter:** INV-07, INV-12
 - **Avhengigheter:** REQ-0346
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Språkbytte starter aldri en regenerering uten brukerens beslutning og kostnadsgodkjenning.
 - **Tester:**
   - integrasjon: ingen jobber opprettes automatisk ved språkbytte
+- **Implementering:** src/core/language/index.ts, src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk), src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage), db/migrations/0017_language_versions.sql
 
 #### REQ-0348 – Språkspesifikk filmeksport
 Brukeren skal kunne eksportere norsk film og engelsk film.
@@ -4515,11 +4597,12 @@ Brukeren skal kunne eksportere norsk film og engelsk film.
 - **Kilde:** Kap. 23.8 (l. 967-970) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** EXPORT, L10N
 - **Avhengigheter:** REQ-0336
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Eksport kan gjøres per språk og gir film med språkets dialog og ellers felles materiale.
 - **Tester:**
   - import/eksport: norsk og engelsk filmeksport
+- **Implementering:** src/core/language/index.ts, src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk), src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage), db/migrations/0017_language_versions.sql, src/app/assembly/ExportAnimaticDialog.tsx, src/engine/export/animatic.ts
 
 #### REQ-0349 – Språkspesifikk manuseksport
 Brukeren skal kunne eksportere norsk manus og engelsk manus.
@@ -4527,11 +4610,12 @@ Brukeren skal kunne eksportere norsk manus og engelsk manus.
 - **Kilde:** Kap. 23.8 (l. 971-972) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** EXPORT, L10N, SCRIPT
 - **Avhengigheter:** REQ-0329
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Manuseksport kan velges per språk med korrekt manusformat.
 - **Tester:**
   - import/eksport: norsk og engelsk manuseksport
+- **Implementering:** src/core/translation/index.ts, src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved), db/migrations/0016_translations.sql, src/app/script/ExportDialog.tsx
 
 #### REQ-0350 – Eksport av separate dialogspor
 Brukeren skal kunne eksportere separate dialogspor.
@@ -4539,11 +4623,12 @@ Brukeren skal kunne eksportere separate dialogspor.
 - **Kilde:** Kap. 23.8 (l. 973) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** EXPORT, AUDIO, L10N
 - **Avhengigheter:** REQ-0338
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Dialog kan eksporteres som egen lydfil per språk, adskilt fra musikk og effekter.
 - **Tester:**
   - import/eksport: separat dialogspor
+- **Implementering:** src/core/language/index.ts, src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk), src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage), db/migrations/0017_language_versions.sql, src/engine/export/audio-stem.ts, src/app/assembly/ExportAnimaticDialog.tsx
 
 #### REQ-0351 – Eksport av undertekstfiler
 Brukeren skal kunne eksportere undertekstfiler.
@@ -4551,11 +4636,12 @@ Brukeren skal kunne eksportere undertekstfiler.
 - **Kilde:** Kap. 23.8 (l. 974) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** EXPORT, L10N
 - **Avhengigheter:** REQ-0339
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Undertekstfil genereres fra replikkenes tidskoblinger i aktiv film med korrekt timing.
 - **Tester:**
   - import/eksport: undertekstfil validerer og har tider i samsvar med aktiv film
+- **Implementering:** src/core/translation/index.ts, src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved), db/migrations/0016_translations.sql, src/app/assembly/SubtitleDialog.tsx
 - **Merknad:** Undertekstformat (SRT/VTT/annet) er ikke spesifisert.
 
 #### REQ-0352 – Uavhengige språkvalg
@@ -4563,11 +4649,12 @@ Grensesnittspråk, manusspråk, dialogspråk og undertekstspråk skal kunne velg
 
 - **Kilde:** Kap. 23.8 (l. 975) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** L10N, UI, EXPORT
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt norsk UI, kan brukeren vise engelsk manus, spille av med norsk dialog og engelske undertekster.
 - **Tester:**
   - e2e: kombinasjon av fire uavhengige språkvalg
+- **Implementering:** src/core/translation/index.ts, src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved), db/migrations/0016_translations.sql, src/app/assembly/SubtitleDialog.tsx, src/core/language/index.ts, src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk), src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage), db/migrations/0017_language_versions.sql, src/app/assembly/use-film-language.tsx, src/engine/compositor/film.ts (drawSubtitle)
 
 ### Kapittel 24
 
@@ -4577,12 +4664,13 @@ Animatic Studio skal støtte flere selvstendige produksjoner innenfor samme over
 - **Kilde:** Kap. 24 (l. 977-987) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** CORE · **Invarianter:** INV-04
 - **Avhengigheter:** Project Core med produksjonsbegrep (fase 1)
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et prosjekt med hovedfilm, når brukeren oppretter en avledet produksjon av hver av typene kortfilm, spinoff, trailer, teaser, pitchfilm, pilotsekvens, alternativ fortelling og annen avgrenset filmversjon, så finnes alle som selvstendige produksjoner i samme prosjekt.
 - **Tester:**
   - enhet: produksjonstype-enum inneholder alle åtte typer
   - integrasjon: flere produksjoner under ett prosjekt-ID
+- **Implementering:** src/core/production/index.ts, src/app/projects/ProductionList.tsx
 - **Merknad:** Datamodellen (fase 1) må ha produksjon som eget objekt selv om funksjonen kommer i fase 7.
 
 #### REQ-0354 – Opprette avledet produksjon fra utvalgte scener
@@ -4591,12 +4679,13 @@ Brukeren skal kunne opprette en avledet produksjon ved å velge ut scener fra ho
 - **Kilde:** Kap. 24.1 (l. 988-989) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** CORE, TIMELINE, UI · **Invarianter:** INV-04
 - **Avhengigheter:** REQ-0353
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt hovedfilmen med N scener, når brukeren velger M scener og oppretter en avledet produksjon, så inneholder den nye produksjonen sceneforekomster for nøyaktig de M valgte scenene, og hovedfilmen er uendret.
 - **Tester:**
   - integrasjon: oppretting gir nye sceneforekomster som refererer samme scene-ID
   - e2e: velg scener og opprett spinoff
+- **Implementering:** src/core/production/index.ts, src/app/projects/ProductionDialog.tsx
 
 #### REQ-0355 – Egne egenskaper per avledet produksjon
 Den nye avledede produksjonen skal kunne få: eget navn, egen sceneorden, eget manus, egen filmtidslinje, egen varighetsberegning, egne aktive filmversjoner og egne eksportfiler.
@@ -4604,12 +4693,13 @@ Den nye avledede produksjonen skal kunne få: eget navn, egen sceneorden, eget m
 - **Kilde:** Kap. 24.1 (l. 990-997) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** CORE, SCRIPT, TIMELINE, EXPORT · **Invarianter:** INV-04
 - **Avhengigheter:** REQ-0354
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Gitt en spinoff, så kan navn, sceneorden, manus, filmtidslinje, varighetsberegning, aktive filmversjoner og eksportfiler endres/beregnes uten at tilsvarende verdier i hovedfilmen endres.
 - **Tester:**
   - enhet: varighetsberegning per produksjon
   - dataintegritet: endring i spinoffens egenskaper berører ikke hovedfilmen
+- **Implementering:** src/core/production/index.ts, src/app/project/use-production.tsx
 
 #### REQ-0356 – Flytte/skjule scene i spinoff uavhengig av hovedfilm
 En scene skal kunne flyttes eller skjules i en spinoff uten at den flyttes eller skjules i hovedfilmen.
@@ -4617,12 +4707,13 @@ En scene skal kunne flyttes eller skjules i en spinoff uten at den flyttes eller
 - **Kilde:** Kap. 24.2 (l. 998-999) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** CORE, TIMELINE · **Invarianter:** INV-04, INV-14
 - **Avhengigheter:** REQ-0354
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en scene brukt i både hovedfilm og spinoff, når brukeren flytter eller skjuler den i spinoffen, så er dens plassering og synlighet i hovedfilmen uendret.
 - **Tester:**
   - dataintegritet: sceneforekomster per produksjon er uavhengige
   - e2e: skjul scene i spinoff, kontroller hovedfilm
+- **Implementering:** src/core/production/index.ts
 
 #### REQ-0357 – Spinoffens manus og tidslinje synkronisert
 Spinoffens manus og filmtidslinje skal likevel være fullt synkronisert med hverandre.
@@ -4630,12 +4721,13 @@ Spinoffens manus og filmtidslinje skal likevel være fullt synkronisert med hver
 - **Kilde:** Kap. 24.2 (l. 1000) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P0 · **Fase:** 7
 - **Moduler:** CORE, SCRIPT, TIMELINE · **Invarianter:** INV-01
 - **Avhengigheter:** REQ-0356
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en spinoff, når en scene flyttes eller deaktiveres i spinoffens manus, så vises samme endring i spinoffens filmtidslinje (og omvendt), i samme transaksjon.
 - **Tester:**
   - integrasjon: toveis strukturell synk per produksjon
   - dataintegritet: ingen tilstand der spinoffens manus og tidslinje har ulik aktiv struktur
+- **Implementering:** src/core/production/index.ts
 - **Merknad:** Anvendelse av kap. 2/INV-01 på hver produksjon.
 
 #### REQ-0358 – Egen aktiv scene- og monteringsstruktur per produksjon
@@ -4656,12 +4748,13 @@ Spinoffen skal kunne gjenbruke: manusscener, ferdige filmklipp, AI-genererte sce
 - **Kilde:** Kap. 24.3 (l. 1002-1012) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** CORE, LIBRARY, TIMELINE, AUDIO · **Invarianter:** INV-04
 - **Avhengigheter:** REQ-0354
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Gitt en spinoff, så kan hver av ressurstypene manusscener, ferdige filmklipp, AI-genererte scener, 2D-animatics, karakterer, objekter, lokasjoner, lyd og stilprofiler fra prosjektet brukes i spinoffen.
 - **Tester:**
   - integrasjon: gjenbruk av hver ressurstype i spinoff
   - e2e: bygg spinoff kun av gjenbrukt materiale
+- **Implementering:** src/core/production/index.ts
 
 #### REQ-0360 – Referansebasert gjenbruk av versjonert kildemateriale
 Gjenbruk skal i utgangspunktet være basert på referanser til versjonert kildemateriale, slik at unødvendig duplisering unngås.
@@ -4669,13 +4762,14 @@ Gjenbruk skal i utgangspunktet være basert på referanser til versjonert kildem
 - **Kilde:** Kap. 24.3 (l. 1013) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** CORE, VERSION, LIBRARY · **Invarianter:** INV-13
 - **Avhengigheter:** Version & Dependency Engine
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et filmklipp gjenbrukt i en spinoff, så lagres en referanse til klippets versjons-ID og ikke en kopi av mediefilen.
   - Gitt at kildematerialet får ny versjon, så peker spinoffens referanse fortsatt på den versjonen den ble koblet til inntil brukeren velger annet.
 - **Tester:**
   - dataintegritet: ingen duplisert mediefil ved gjenbruk
   - enhet: referanse inneholder versjons-ID
+- **Implementering:** src/core/production/index.ts
 - **Merknad:** «i utgangspunktet» – standardatferd, unntak tillatt.
 
 #### REQ-0361 – Nye scener som bare finnes i spinoffen
@@ -4684,11 +4778,12 @@ Brukeren skal kunne skrive og produsere helt nye scener som bare finnes i spinof
 - **Kilde:** Kap. 24.4 (l. 1014-1015) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** SCRIPT, CORE · **Invarianter:** INV-04
 - **Avhengigheter:** REQ-0354
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en spinoff, når brukeren skriver en ny scene der, så vises scenen i spinoffens manus og tidslinje og ikke i noen annen produksjon.
 - **Tester:**
   - e2e: skriv og produser ny scene i spinoff
+- **Implementering:** src/app/script/ScriptWorkspace.tsx
 
 #### REQ-0362 – Permanente identiteter for spinoff-scener
 Nye scener i spinoffen skal få egne permanente sceneidentiteter.
@@ -4696,12 +4791,13 @@ Nye scener i spinoffen skal få egne permanente sceneidentiteter.
 - **Kilde:** Kap. 24.4 (l. 1016) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** CORE · **Invarianter:** INV-02, INV-03
 - **Avhengigheter:** REQ-0361
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en ny spinoff-scene, så får den en unik permanent scene-ID som er uavhengig av scenenummer og ikke kolliderer med hovedfilmens scene-ID-er.
 - **Tester:**
   - enhet: ID-generering for spinoff-scene
   - dataintegritet: ID uendret etter flytting/omnummerering
+- **Implementering:** src/core/commands/apply.ts (CreateScene)
 
 #### REQ-0363 – Spinoff-scener legges ikke automatisk i hovedmanus
 Nye scener i spinoffen skal ikke automatisk legges til hovedmanuset.
@@ -4709,11 +4805,12 @@ Nye scener i spinoffen skal ikke automatisk legges til hovedmanuset.
 - **Kilde:** Kap. 24.4 (l. 1017) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 7
 - **Moduler:** CORE, SCRIPT · **Invarianter:** INV-04
 - **Avhengigheter:** REQ-0361
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en ny spinoff-scene, når den lagres, så er hovedmanuset og hovedfilmens tidslinje uendret.
 - **Tester:**
   - dataintegritet: hovedmanusets scenesett før/etter er identisk
+- **Implementering:** src/core/commands/apply.ts (CreateScene)
 - **Merknad:** Gjentas som prinsipp 21 i kap. 34.
 
 #### REQ-0364 – Spinoff-scener bruker globale ressurser og eget materiale
@@ -4722,11 +4819,12 @@ Nye spinoff-scener skal kunne bruke globale ressurser og få egne animatics, lyd
 - **Kilde:** Kap. 24.4 (l. 1018) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** LIBRARY, COMPOSE, AUDIO, PROMPT
 - **Avhengigheter:** REQ-0361
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en ny spinoff-scene, så kan brukeren knytte globale karakterer/objekter/miljøer til den og knytte egne animatics, lydfiler og genererte filmklipp til den.
 - **Tester:**
   - integrasjon: globale ressurser tilgjengelige i spinoff-scene
+- **Implementering:** src/app/scene-editor/SceneEditorWorkspace.tsx
 
 #### REQ-0365 – Endring i gjenbrukt scene blir lokal variant
 Hvis en gjenbrukt scene endres i spinoffen, skal endringen som standard lagres som en produksjonsspesifikk variant. Hovedfilmens scene skal ikke endres. Eksempel: spinoffen bruker en scene fra hovedfilmen, men forkorter dialogen og velger et annet kamerautsnitt.
@@ -4734,12 +4832,13 @@ Hvis en gjenbrukt scene endres i spinoffen, skal endringen som standard lagres s
 - **Kilde:** Kap. 24.5 (l. 1019-1023) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P0 · **Fase:** 7
 - **Moduler:** CORE, VERSION, SCRIPT · **Invarianter:** INV-04, INV-13
 - **Avhengigheter:** REQ-0354
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en gjenbrukt scene, når brukeren forkorter dialogen og velger et annet kamerautsnitt i spinoffen, så opprettes en scenevariant knyttet til spinoffen, og hovedfilmens scene (manus, kamera) er uendret.
 - **Tester:**
   - dataintegritet: hovedfilmens scene byte-lik før/etter spinoff-redigering
   - enhet: variant knyttet til produksjon-ID
+- **Implementering:** src/core/production/index.ts, src/app/project/use-commands.ts
 
 #### REQ-0366 – Variant tilhører spinoffen til brukeren deler
 Den nye varianten tilhører spinoffen inntil brukeren eventuelt velger å dele endringene.
@@ -4747,11 +4846,12 @@ Den nye varianten tilhører spinoffen inntil brukeren eventuelt velger å dele e
 - **Kilde:** Kap. 24.5 (l. 1024) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** CORE, VERSION · **Invarianter:** INV-04
 - **Avhengigheter:** REQ-0365
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en spinoff-variant, så er den bare synlig i spinoffen inntil brukeren eksplisitt velger å dele den.
 - **Tester:**
   - integrasjon: deling krever eksplisitt brukerhandling
+- **Implementering:** src/core/production/index.ts
 - **Merknad:** Mekanismen for «dele» er beskrevet i kap. 25 (tilbakeføring).
 
 #### REQ-0367 – Bruke utdrag av ferdig filmklipp
@@ -4760,12 +4860,13 @@ Brukeren skal kunne bruke bare deler av et ferdig filmklipp. En scene på 90 sek
 - **Kilde:** Kap. 24.6 (l. 1025-1027) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** TIMELINE
 - **Avhengigheter:** REQ-0354
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et klipp på 90 s, når brukeren velger et utdrag på 20 s til en trailer, så spiller traileren nøyaktig det valgte tidsintervallet.
 - **Tester:**
   - enhet: inn-/utpunkt på sceneforekomst
   - e2e: trailer med utdrag
+- **Implementering:** src/core/commands/apply.ts (SetSceneEdit), src/app/assembly/ClipParts.tsx
 
 #### REQ-0368 – Utdrag påvirker ikke originalfil
 Bruk av utdrag fra et ferdig filmklipp skal ikke påvirke originalfilen.
@@ -4773,11 +4874,12 @@ Bruk av utdrag fra et ferdig filmklipp skal ikke påvirke originalfilen.
 - **Kilde:** Kap. 24.6 (l. 1028) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P0 · **Fase:** 7
 - **Moduler:** TIMELINE, SECURITY · **Invarianter:** INV-13, INV-07
 - **Avhengigheter:** REQ-0367
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et utdrag brukt i en trailer, så er originalfilens innhold, varighet og sjekksum uendret.
 - **Tester:**
   - dataintegritet: sjekksum av original før/etter
+- **Implementering:** src/core/commands/apply.ts (SetSceneEdit)
 
 #### REQ-0369 – Varsel om narrative problemer i spinoff
 Systemet skal kunne varsle når en spinoff kombinerer scener på en måte som skaper mulige narrative problemer.
@@ -4785,12 +4887,13 @@ Systemet skal kunne varsle når en spinoff kombinerer scener på en måte som sk
 - **Kilde:** Kap. 24.7 (l. 1029-1030) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** CONTINUITY
 - **Avhengigheter:** REQ-0354; Continuity Engine (fase 6)
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en spinoff der en scene forutsetter en hendelse fra en utelatt scene, så vises et varsel om mulig narrativt problem.
 - **Tester:**
   - integrasjon: kontinuitetsanalyse per produksjon
   - manuell: vurdering av varslenes relevans
+- **Implementering:** src/core/continuity/analysis.ts (spinoff_gap), src/app/continuity/ContinuityAnalysisPanel.tsx
 
 #### REQ-0370 – Opprette sammenbindende scener og overganger
 Brukeren skal kunne opprette nye sammenbindende scener og overganger i en spinoff.
@@ -4798,11 +4901,12 @@ Brukeren skal kunne opprette nye sammenbindende scener og overganger i en spinof
 - **Kilde:** Kap. 24.7 (l. 1031) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** SCRIPT, TIMELINE
 - **Avhengigheter:** REQ-0361
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en spinoff, så kan brukeren sette inn en ny sammenbindende scene eller en overgang mellom to sceneforekomster.
 - **Tester:**
   - e2e: legg til overgang i spinoff
+- **Implementering:** src/app/script/ScriptWorkspace.tsx (Skriv ny scene), src/core/commands/apply.ts (CreateScene, SetTransition)
 
 #### REQ-0371 – Egne norske og engelske manus og lydspor for spinoff
 Spinoffer skal kunne ha egne norske og engelske manus og lydspor.
@@ -4810,22 +4914,24 @@ Spinoffer skal kunne ha egne norske og engelske manus og lydspor.
 - **Kilde:** Kap. 24.8 (l. 1032-1033) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** L10N, AUDIO, SCRIPT · **Invarianter:** INV-05, INV-06
 - **Avhengigheter:** REQ-0354
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en spinoff, så kan den ha et eget norsk manus, et eget engelsk manus og egne lydspor per språk, uavhengig av hovedfilmens.
 - **Tester:**
   - integrasjon: språkversjoner per produksjon
+- **Implementering:** src/core/language/index.ts, src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk), src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage), db/migrations/0017_language_versions.sql
 
 #### REQ-0372 – Gjenbruk av eksisterende oversettelser i spinoff
 Eksisterende oversettelser skal gjenbrukes der det passer.
 
 - **Kilde:** Kap. 24.8 (l. 1034) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** L10N
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en gjenbrukt scene med eksisterende engelsk oversettelse, så foreslås/brukes denne oversettelsen i spinoffens engelske manus.
 - **Tester:**
   - integrasjon: oversettelsesreferanse gjenbrukes
+- **Implementering:** src/core/translation/index.ts, src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved), db/migrations/0016_translations.sql, src/core/production/index.ts
 
 ### Kapittel 25
 
@@ -4835,11 +4941,12 @@ En forbedret scenevariant som er utviklet i en spinoff skal kunne foreslås over
 - **Kilde:** Kap. 25 (l. 1036-1037) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** CORE, VERSION · **Invarianter:** INV-08
 - **Avhengigheter:** REQ-0365
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en spinoff-variant, så kan brukeren starte et forslag om overføring til hovedfilmen.
 - **Tester:**
   - e2e: start tilbakeføringsforslag
+- **Implementering:** src/core/production/promote.ts, src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled), src/app/projects/PromotionDialog.tsx
 
 #### REQ-0374 – Tilbakeføring skjer aldri automatisk
 Tilbakeføring fra spinoff til hovedfilm skal aldri skje automatisk.
@@ -4847,11 +4954,12 @@ Tilbakeføring fra spinoff til hovedfilm skal aldri skje automatisk.
 - **Kilde:** Kap. 25 (l. 1038) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 7
 - **Moduler:** CORE, VERSION · **Invarianter:** INV-04, INV-08
 - **Avhengigheter:** REQ-0373
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt endringer i en spinoff-variant, så endres hovedfilmen ikke før brukeren har tatt en eksplisitt beslutning.
 - **Tester:**
   - dataintegritet: hovedfilm uendret uten brukerbeslutning
+- **Implementering:** src/core/production/promote.ts, src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled), src/app/projects/PromotionDialog.tsx
 
 #### REQ-0375 – Sammenligning original vs. spinoff-variant
 Systemet skal ved tilbakeføring vise: originalscene, spinoff-variant, endringer i manus, endringer i lyd, endringer i kamera, endringer i timing og endringer i visuelt materiale.
@@ -4859,12 +4967,13 @@ Systemet skal ved tilbakeføring vise: originalscene, spinoff-variant, endringer
 - **Kilde:** Kap. 25.1 (l. 1039-1047) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** VERSION, UI
 - **Avhengigheter:** REQ-0373
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en spinoff-variant med endringer i manus, lyd, kamera, timing og visuelt materiale, så viser sammenligningen originalscene, varianten og hver endringskategori separat.
 - **Tester:**
   - integrasjon: diff-beregning per kategori
   - visuell: sammenligningsvisning
+- **Implementering:** src/core/production/promote.ts, src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled), src/app/projects/PromotionDialog.tsx
 
 #### REQ-0376 – Beholde alt uendret
 Brukeren skal kunne velge å beholde alt uendret.
@@ -4872,12 +4981,13 @@ Brukeren skal kunne velge å beholde alt uendret.
 - **Kilde:** Kap. 25.2 (l. 1050) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** CORE, VERSION, UI · **Invarianter:** INV-08
 - **Avhengigheter:** REQ-0373
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et tilbakeføringsforslag, når brukeren velger «beholde alt uendret», så overføres nøyaktig det valgte (og ikke noe annet) til hovedfilmen, og alle relasjoner bevares.
 - **Tester:**
   - integrasjon: selektiv tilbakeføring
   - dataintegritet: kun valgt kategori endret
+- **Implementering:** src/core/production/promote.ts, src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled), src/app/projects/PromotionDialog.tsx
 
 #### REQ-0377 – Tilbakeføre bare manusendringer
 Brukeren skal kunne velge å tilbakeføre bare manusendringer.
@@ -4885,12 +4995,13 @@ Brukeren skal kunne velge å tilbakeføre bare manusendringer.
 - **Kilde:** Kap. 25.2 (l. 1051) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** CORE, VERSION, UI · **Invarianter:** INV-08
 - **Avhengigheter:** REQ-0373
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et tilbakeføringsforslag, når brukeren velger «tilbakeføre bare manusendringer», så overføres nøyaktig det valgte (og ikke noe annet) til hovedfilmen, og alle relasjoner bevares.
 - **Tester:**
   - integrasjon: selektiv tilbakeføring
   - dataintegritet: kun valgt kategori endret
+- **Implementering:** src/core/production/promote.ts, src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled), src/app/projects/PromotionDialog.tsx
 
 #### REQ-0378 – Tilbakeføre bestemte visuelle endringer
 Brukeren skal kunne velge å tilbakeføre bestemte visuelle endringer.
@@ -4898,12 +5009,13 @@ Brukeren skal kunne velge å tilbakeføre bestemte visuelle endringer.
 - **Kilde:** Kap. 25.2 (l. 1052) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** CORE, VERSION, UI · **Invarianter:** INV-08
 - **Avhengigheter:** REQ-0373
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et tilbakeføringsforslag, når brukeren velger «tilbakeføre bestemte visuelle endringer», så overføres nøyaktig det valgte (og ikke noe annet) til hovedfilmen, og alle relasjoner bevares.
 - **Tester:**
   - integrasjon: selektiv tilbakeføring
   - dataintegritet: kun valgt kategori endret
+- **Implementering:** src/core/production/promote.ts, src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled), src/app/projects/PromotionDialog.tsx
 
 #### REQ-0379 – Tilbakeføre lyd eller timing
 Brukeren skal kunne velge å tilbakeføre lyd eller timing.
@@ -4911,12 +5023,13 @@ Brukeren skal kunne velge å tilbakeføre lyd eller timing.
 - **Kilde:** Kap. 25.2 (l. 1053) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** CORE, VERSION, UI · **Invarianter:** INV-08
 - **Avhengigheter:** REQ-0373
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et tilbakeføringsforslag, når brukeren velger «tilbakeføre lyd eller timing», så overføres nøyaktig det valgte (og ikke noe annet) til hovedfilmen, og alle relasjoner bevares.
 - **Tester:**
   - integrasjon: selektiv tilbakeføring
   - dataintegritet: kun valgt kategori endret
+- **Implementering:** src/core/production/promote.ts, src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled), src/app/projects/PromotionDialog.tsx
 
 #### REQ-0380 – Ny hovedfilmvariant fra spinoff-versjon
 Brukeren skal kunne velge å opprette en ny hovedfilmvariant fra spinoff-versjonen.
@@ -4924,12 +5037,13 @@ Brukeren skal kunne velge å opprette en ny hovedfilmvariant fra spinoff-versjon
 - **Kilde:** Kap. 25.2 (l. 1054) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** CORE, VERSION, UI · **Invarianter:** INV-08
 - **Avhengigheter:** REQ-0373
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et tilbakeføringsforslag, når brukeren velger «ny hovedfilmvariant fra spinoff-versjon», så overføres nøyaktig det valgte (og ikke noe annet) til hovedfilmen, og alle relasjoner bevares.
 - **Tester:**
   - integrasjon: selektiv tilbakeføring
   - dataintegritet: kun valgt kategori endret
+- **Implementering:** src/core/production/promote.ts, src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled), src/app/projects/PromotionDialog.tsx
 
 #### REQ-0381 – Overføre ny spinoff-scene til hovedfilm
 Brukeren skal kunne velge å overføre en helt ny spinoff-scene til hovedfilmen.
@@ -4937,12 +5051,13 @@ Brukeren skal kunne velge å overføre en helt ny spinoff-scene til hovedfilmen.
 - **Kilde:** Kap. 25.2 (l. 1055) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** CORE, VERSION, UI · **Invarianter:** INV-08
 - **Avhengigheter:** REQ-0373
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et tilbakeføringsforslag, når brukeren velger «overføre ny spinoff-scene til hovedfilm», så overføres nøyaktig det valgte (og ikke noe annet) til hovedfilmen, og alle relasjoner bevares.
 - **Tester:**
   - integrasjon: selektiv tilbakeføring
   - dataintegritet: kun valgt kategori endret
+- **Implementering:** src/core/production/promote.ts, src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled), src/app/projects/PromotionDialog.tsx
 
 #### REQ-0382 – Tilbakeføring overskriver ikke godkjent materiale
 Ingen tilbakeføring skal overskrive eksisterende godkjent materiale uten en eksplisitt beslutning.
@@ -4950,11 +5065,12 @@ Ingen tilbakeføring skal overskrive eksisterende godkjent materiale uten en eks
 - **Kilde:** Kap. 25.2 (l. 1056) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P0 · **Fase:** 7
 - **Moduler:** VERSION, CORE · **Invarianter:** INV-07, INV-13
 - **Avhengigheter:** REQ-0373
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt godkjent materiale i hovedfilmen, når en tilbakeføring ville erstatte det, så kreves en eksplisitt bekreftelse, og uten den beholdes materialet.
 - **Tester:**
   - dataintegritet: godkjent materiale uendret uten bekreftelse
+- **Implementering:** src/core/production/promote.ts, src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled), src/app/projects/PromotionDialog.tsx
 
 #### REQ-0383 – Bevare relasjoner og historiske versjoner ved tilbakeføring
 Alle relasjoner og historiske versjoner skal bevares ved tilbakeføring.
@@ -4962,11 +5078,12 @@ Alle relasjoner og historiske versjoner skal bevares ved tilbakeføring.
 - **Kilde:** Kap. 25.2 (l. 1057) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P0 · **Fase:** 7
 - **Moduler:** VERSION, CORE · **Invarianter:** INV-13
 - **Avhengigheter:** REQ-0373
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en gjennomført tilbakeføring, så finnes original, spinoff-variant og ny hovedfilmversjon fortsatt, med sporbar relasjon mellom dem.
 - **Tester:**
   - dataintegritet: versjonshistorikk komplett etter tilbakeføring
+- **Implementering:** src/core/production/promote.ts, src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled)
 
 ### Kapittel 26
 
@@ -5320,11 +5437,12 @@ Prosjektet skal kunne eksporteres eller sikkerhetskopieres i et dokumentert, por
 - **Kilde:** Kap. 28.2 (l. 1196-1197) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** EXPORT, SECURITY
 - **Avhengigheter:** Project Core
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et prosjekt, så kan det eksporteres til et dokumentert format, og formatet er beskrevet i dokumentasjon.
 - **Tester:**
   - import/eksport: eksport → reimport gir likt prosjekt
+- **Implementering:** src/core/backup/index.ts, src/app/projects/backup.ts, src/app/projects/BackupDialogs.tsx, src/adapters/storage/backup.functions.ts, docs/architecture/BACKUP_FORMAT.md
 - **Merknad:** Fase ikke angitt i kap. 32; satt til fase 4 (eksport). Jf. prinsipp 28.
 
 #### REQ-0412 – Innhold i sikkerhetskopi
@@ -5333,12 +5451,13 @@ Sikkerhetskopien skal så langt praktisk mulig omfatte: strukturert prosjektdata
 - **Kilde:** Kap. 28.2 (l. 1198-1206) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** EXPORT, SECURITY, VERSION
 - **Avhengigheter:** REQ-0411
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en sikkerhetskopi, så inneholder den alle åtte kategorier, eller en oversikt over eksterne mediefiler som ikke er inkludert.
 - **Tester:**
   - import/eksport: innholdskontroll av backup
   - dataintegritet: reimport bevarer ID-er og relasjoner
+- **Implementering:** src/core/backup/index.ts
 - **Merknad:** «så langt praktisk mulig».
 
 #### REQ-0413 – Sikker håndtering av API-nøkler
@@ -5443,11 +5562,12 @@ Systemet skal eksportere film og manus på valgte språk.
 - **Kilde:** Kap. 29.4 (l. 1241-1242) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** EXPORT, L10N
 - **Avhengigheter:** REQ-0416
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt norsk og engelsk språkversjon, så kan film og manus eksporteres på hvert valgt språk.
 - **Tester:**
   - import/eksport: eksport per språk
+- **Implementering:** src/core/translation/index.ts, src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved), db/migrations/0016_translations.sql, src/core/language/index.ts, src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk), src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage), db/migrations/0017_language_versions.sql, src/app/assembly/ExportAnimaticDialog.tsx, src/app/script/ExportDialog.tsx
 
 #### REQ-0421 – Plakateksport i trykk- og digitalformater
 Systemet skal eksportere kinopitch-plakater og karakterkart i relevante trykk- og digitalformater.
@@ -5661,11 +5781,12 @@ Arkitekturen skal ha en logisk komponent «Continuity Engine» med ansvarsområd
 - **Kilde:** Kap. 31 (l. 1318-1320) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** CONTINUITY
 - **Avhengigheter:** REQ-0432
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Arkitekturdokumentasjonen definerer Continuity Engine med ansvar for: narrativ kronologi, karaktertilstander, utseendeendringer og konsekvensanalyse, og dette ansvaret ligger ikke i andre moduler.
 - **Tester:**
   - manuell: arkitekturgjennomgang av ansvarsgrenser
+- **Implementering:** src/core/continuity/index.ts, src/core/continuity/analysis.ts, src/core/library/impact.ts
 - **Merknad:** Linje 1318/1319 duplikat.
 
 #### REQ-0438 – Modul: 2D Composition Engine
@@ -5776,11 +5897,12 @@ Arkitekturen skal ha en logisk komponent «Localization Engine» med ansvarsomr�
 - **Kilde:** Kap. 31 (l. 1340-1342) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P2 · **Fase:** 7
 - **Moduler:** L10N
 - **Avhengigheter:** REQ-0432
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Arkitekturdokumentasjonen definerer Localization Engine med ansvar for: flerspråklig manus, dialog, undertekster og produksjonsvarianter, og dette ansvaret ligger ikke i andre moduler.
 - **Tester:**
   - manuell: arkitekturgjennomgang av ansvarsgrenser
+- **Implementering:** src/core/translation/index.ts, src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved), db/migrations/0016_translations.sql
 - **Merknad:** Linje 1340/1341 duplikat.
 
 #### REQ-0447 – Modul: Presentation Engine
@@ -5801,11 +5923,12 @@ Arkitekturen skal ha en logisk komponent «Export Engine» med ansvarsområdet: 
 - **Kilde:** Kap. 31 (l. 1345-1347) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** EXPORT
 - **Avhengigheter:** REQ-0432
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Arkitekturdokumentasjonen definerer Export Engine med ansvar for: film, manus, lyd, plakater og prosjektbackup, og dette ansvaret ligger ikke i andre moduler.
 - **Tester:**
   - manuell: arkitekturgjennomgang av ansvarsgrenser
+- **Implementering:** docs/architecture/ARCHITECTURE.md
 - **Merknad:** Linje 1345/1346 duplikat. Grunnleggende manuseksport i fase 2, filmeksport fase 4.
 
 #### REQ-0449 – Modul: Security & Storage
@@ -6270,11 +6393,12 @@ Manusendringer skal flagge berørt materiale. De skal ikke automatisk overskrive
 
 - **Kilde:** Kap. 34 (l. 1502-1504) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 6
 - **Moduler:** VERSION, SCRIPT · **Invarianter:** INV-07
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Etter manusendring er berørt materiale flagget og filmfilene uendret.
 - **Tester:**
   - manuell: verifiseres mot underliggende funksjonskrav
+- **Implementering:** src/core/assembly/discrepancy.ts, src/core/commands/apply.ts (AcceptScriptChanges, SetProducedFrom), db/migrations/0014_ai_control.sql (compositions.produced_from, takes.accepted_from), src/app/assembly/ScriptChanges.tsx, src/app/assembly/FilmTimeline.tsx (merker), src/app/script/ScriptPageView.tsx (merker), src/app/scene-editor/SceneEditorWorkspace.tsx (varsel)
 - **Merknad:** Oppsummerer kap. 2.1, 2.2, 21.1, 21.4. Linje 1502/1503 duplikat.
 
 #### REQ-0486 – Prinsipp 8: Godkjenne avvik, oppdatere eller angre
@@ -6282,11 +6406,12 @@ Brukeren skal kunne godkjenne avvik, oppdatere materiale eller angre endringen.
 
 - **Kilde:** Kap. 34 (l. 1505-1506) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 6
 - **Moduler:** VERSION, UI · **Invarianter:** INV-08
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - For hvert flagget avvik tilbys de tre valgene, og hvert valg gir forventet tilstand.
 - **Tester:**
   - manuell: verifiseres mot underliggende funksjonskrav
+- **Implementering:** src/core/assembly/discrepancy.ts, src/core/commands/apply.ts (AcceptScriptChanges, SetProducedFrom), db/migrations/0014_ai_control.sql (compositions.produced_from, takes.accepted_from), src/app/assembly/ScriptChanges.tsx, src/app/assembly/FilmTimeline.tsx (merker), src/app/script/ScriptPageView.tsx (merker), src/app/scene-editor/SceneEditorWorkspace.tsx (varsel)
 - **Merknad:** Oppsummerer kap. 21.2, 2.2. Linje 1505/1506 duplikat.
 
 #### REQ-0487 – Prinsipp 9: Animatics uten generativ AI
@@ -6403,11 +6528,12 @@ Karakterer skal kunne ha tidsstyrte utseendeendringer. Dette inkluderer blant an
 
 - **Kilde:** Kap. 34 (l. 1520-1522) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 6
 - **Moduler:** CONTINUITY, LIBRARY · **Invarianter:** INV-09
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Maja har langt hår før og kort hår etter klippehendelsen i fortellingstid, også ved flashback.
 - **Tester:**
   - manuell: verifiseres mot underliggende funksjonskrav
+- **Implementering:** src/core/continuity/index.ts, src/core/commands/apply.ts (AddContinuityEvents, UpdateContinuityEvents, SetContinuityEventsRemoved), db/migrations/0015_continuity.sql, src/app/library/ContinuityPanel.tsx, src/app/scene-editor/LayerInspector.tsx, src/app/scene-editor/SceneAssetsPanel.tsx
 - **Merknad:** Oppsummerer kap. 9.1, 10, 10.1, 10.3, 10.5, 10.7. Linje 1520/1521 duplikat.
 
 #### REQ-0497 – Prinsipp 19: Separate segmenter ved endring midt i scene
@@ -6415,11 +6541,12 @@ Ved en utseendeendring midt i en scene skal systemet kunne foreslå separate pro
 
 - **Kilde:** Kap. 34 (l. 1523-1524) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 6
 - **Moduler:** CONTINUITY, TIMELINE · **Invarianter:** INV-10
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Ved utseendeendring midt i scene foreslås segmenter, og scene-ID og scenenummer er uendret.
 - **Tester:**
   - manuell: verifiseres mot underliggende funksjonskrav
+- **Implementering:** src/core/generation/scene-prompt.ts (planSegments, continuityCuts), src/app/assembly/GenerateSceneDialog.tsx
 - **Merknad:** Oppsummerer kap. 10.6, 18.
 
 #### REQ-0498 – Prinsipp 20: Delte ressurser, uavhengig manus og montering
@@ -6427,11 +6554,12 @@ Hovedfilm og spinoffer skal kunne dele ressurser, men ha uavhengig manus og film
 
 - **Kilde:** Kap. 34 (l. 1525-1526) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 7
 - **Moduler:** CORE, LIBRARY, TIMELINE · **Invarianter:** INV-04
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - En ressurs brukes i begge produksjoner; omorganisering i én endrer ikke den andres manus/montering.
 - **Tester:**
   - manuell: verifiseres mot underliggende funksjonskrav
+- **Implementering:** src/core/production/index.ts
 - **Merknad:** Oppsummerer kap. 3.3, 8.1, 24.2, 24.3. Linje 1525/1526 duplikat.
 
 #### REQ-0499 – Prinsipp 21: Spinoffer med egne nye scener
@@ -6439,11 +6567,12 @@ Spinoffer skal kunne inneholde egne nye scener. Disse skal ikke automatisk legge
 
 - **Kilde:** Kap. 34 (l. 1527-1529) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 7
 - **Moduler:** CORE, SCRIPT · **Invarianter:** INV-04
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - En ny spinoff-scene finnes ikke i hovedfilmen før eksplisitt overføring.
 - **Tester:**
   - manuell: verifiseres mot underliggende funksjonskrav
+- **Implementering:** src/core/production/index.ts
 - **Merknad:** Oppsummerer kap. 24.4. Linje 1527/1528 duplikat.
 
 #### REQ-0500 – Prinsipp 22: Tilbakeføring krever godkjenning
@@ -6451,11 +6580,12 @@ Forbedringer fra spinoffer skal kunne foreslås tilbakeført til hovedfilmen. Br
 
 - **Kilde:** Kap. 34 (l. 1530-1531) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 7
 - **Moduler:** VERSION, CORE · **Invarianter:** INV-08
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Tilbakeføring skjer kun etter eksplisitt brukergodkjenning.
 - **Tester:**
   - manuell: verifiseres mot underliggende funksjonskrav
+- **Implementering:** src/core/production/promote.ts, src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled), src/app/projects/PromotionDialog.tsx
 - **Merknad:** Oppsummerer kap. 24.5, 25, 25.2.
 
 #### REQ-0501 – Prinsipp 23: Plakater som selvstendige redigerbare eksportprodukter
@@ -6813,12 +6943,12 @@ Bare medlemmer med rett til å godkjenne kostnader skal kunne starte betalte AI-
 - **Kilde:** Beslutning DEC-0010, DEC-0018 · **Opprinnelse:** teknisk-anbefaling · **Type:** sikkerhet · **Prioritet:** P2 · **Fase:** 5
 - **Moduler:** COLLAB, QUALITYCOST, SECURITY · **Invarianter:** INV-12, INV-C3
 - **Avhengigheter:** REQ-0523
-- **Status:** Under arbeid
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - En redaktør uten kostnadsrett får ikke startet en betalt jobb; forsøket gir tydelig melding.
 - **Tester:**
   - integrasjon: backend avviser betalt jobb fra medlem uten kostnadsrett
-- **Implementering:** src/adapters/ai/generate-image.functions.ts
+- **Implementering:** src/adapters/ai/generate-image.functions.ts, src/adapters/ai/generate-image.functions.ts (budsjettport), src/core/commands/apply.ts (SetAiBudget), src/adapters/storage/commands.functions.ts (bare eier)
 - **Merknad:** Teknisk utledning av DEC-0003 (bekreftet). Selve løsningen er teknisk anbefaling (DEC-0010). Hvem som eier API-nøklene i et delt prosjekt er et åpent spørsmål (OPEN_QUESTIONS Q-01, DEC-0018 – midlertidig antakelse). DEC-0021: Mars betaler alle API-kostnader i testfasen; kostnadsdeling avtales utenfor appen.
 
 #### REQ-0529 – Fjerning av medlem er ikke-destruktiv
@@ -7478,3 +7608,161 @@ Ressurser (alle typer) skal kunne gjøres globale, slik at de kan brukes i flere
   - Tilgang og sletting av globale ressurser er tydelig og trygg.
 - **Tester:**
   - planlagt
+
+#### REQ-0572 – Forhåndsvisning av monteringen i eget vindu
+Forhåndsvisningen i monteringen (animatic) skal kunne åpnes i et eget nettleservindu, som i sceneeditoren.
+
+- **Kilde:** Beslutning DEC-0050 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
+- **Moduler:** TIMELINE, UI
+- **Avhengigheter:** REQ-0556
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Monteringen har en knapp som åpner forhåndsvisningen i eget vindu; avspilling og avspillingshode følger hovedvinduet.
+- **Tester:**
+  - planlagt
+- **Implementering:** src/app/assembly/FilmPopout.tsx, src/app/scene-editor/PreviewWindow.tsx
+
+#### REQ-0573 – Svart-hvitt for hele filmen
+Hele animaticen skal kunne vises og eksporteres i svart-hvitt med én global kontroll.
+
+- **Kilde:** Beslutning DEC-0050 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 4
+- **Moduler:** TIMELINE, EXPORT, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Global svart-hvitt slår om visningen i monteringen.
+  - Eksporten kan lages i svart-hvitt.
+- **Tester:**
+  - planlagt
+- **Implementering:** src/engine/compositor/film.ts, src/app/assembly/AssemblyWorkspace.tsx, src/app/assembly/ExportAnimaticDialog.tsx, src/engine/export/animatic.ts
+
+#### REQ-0574 – Svart-hvitt per scene
+En scene skal kunne settes til svart-hvitt. Valget gjelder både visning og eksport, uten egen varsling.
+
+- **Kilde:** Beslutning DEC-0050 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 4
+- **Moduler:** TIMELINE, COMPOSE, EXPORT
+- **Avhengigheter:** REQ-0573
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - En scene satt til svart-hvitt vises og eksporteres i svart-hvitt; andre scener påvirkes ikke.
+- **Tester:**
+  - planlagt
+- **Implementering:** src/core/commands/apply.ts, src/app/assembly/ClipPanel.tsx, src/engine/compositor/film.ts
+
+#### REQ-0575 – Flere overgangstyper
+Overgangene skal minst omfatte kutt, overtoning, via svart, via hvitt, tørk (wipe), skyv (push) og iris, hver med lengde.
+
+- **Kilde:** Beslutning DEC-0050 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
+- **Moduler:** TIMELINE, EXPORT
+- **Avhengigheter:** REQ-0223
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Hver type kan velges for en overgang og vises likt i avspilling og eksport.
+- **Tester:**
+  - planlagt
+- **Implementering:** src/core/assembly/film.ts, src/engine/compositor/film.ts, src/app/assembly/TransitionEditor.tsx
+
+#### REQ-0576 – Overgang med overlapp
+En overgang skal kunne la scenene overlappe, slik at filmen blir kortere med overgangens lengde (som i klippeprogrammer).
+
+- **Kilde:** Beslutning DEC-0050 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
+- **Moduler:** TIMELINE
+- **Avhengigheter:** REQ-0575
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Med overlapp blir filmens lengde kortere med overgangens lengde; uten overlapp er lengden uendret.
+- **Tester:**
+  - planlagt
+- **Implementering:** src/core/assembly/film.ts
+
+#### REQ-0577 – Standard overgang for prosjektet
+Prosjektet skal ha en standard overgang (type og lengde) som gjelder der ingen egen overgang er valgt, og hver overgang skal kunne overstyres enkeltvis.
+
+- **Kilde:** Beslutning DEC-0050 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
+- **Moduler:** TIMELINE, UI
+- **Avhengigheter:** REQ-0575
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Endring av prosjektets standard endrer alle overganger uten eget valg, ikke de som er overstyrt.
+- **Tester:**
+  - planlagt
+- **Implementering:** src/core/commands/apply.ts, src/core/patch.ts, src/app/assembly/AssemblyWorkspace.tsx
+
+#### REQ-0578 – Naboscener i sceneeditorens avspilling
+I sceneeditoren skal forrige og neste scene kunne vises som ferdige filmsnutter før og etter scenen, med lyd og overganger, slik at avspillingshodet kan stå og spilles i dem. Lagene i naboscenene vises ikke og kan ikke endres.
+
+- **Kilde:** Beslutning DEC-0050 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, TIMELINE, AUDIO
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Med «vis forrige/neste scene» på kan avspillingshodet flyttes inn i naboscenen og spilles i kontinuitet med lyd og overgang.
+  - Lagvelgeren viser bare lagene i scenen som redigeres.
+- **Tester:**
+  - planlagt
+- **Implementering:** src/app/scene-editor/NeighbourScenes.tsx, src/core/assembly/film.ts#neighbourRange, clipFrameToComposition
+
+#### REQ-0579 – Bildeskifte i et lag
+Et lag i en 2D-scene skal kunne bytte til et annet bilde (hvilket som helst bilde) på et tidspunkt i scenen. Skiftet er et hardt kutt og vises som et punkt på lagets linje i tidslinjen som kan dras.
+
+- **Kilde:** Beslutning DEC-0050 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, LIBRARY, UI
+- **Avhengigheter:** REQ-0174
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Et lag med to bilder viser tydelig de to delene i tidslinjen; skiftepunktet kan dras og angres.
+- **Tester:**
+  - planlagt
+- **Implementering:** src/core/composition/render.ts#layerImageAt, layerVersion, layerSize, src/app/scene-editor/LayerSwaps.tsx, src/app/scene-editor/Timeline.tsx (merker som kan dras), db/migrations/0013_transitions_monochrome.sql (image_swaps)
+
+#### REQ-0580 – Frilegge bilde (fjerne bakgrunn)
+Et opplastet eller generert bilde skal kunne friklippes uten kostnad, med en pensel for å legge til og fjerne manuelt. Resultatet lagres som ny versjon; originalen beholdes.
+
+- **Kilde:** Beslutning DEC-0050 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 5
+- **Moduler:** LIBRARY, COMPOSE, UI
+- **Avhengigheter:** REQ-0175
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Frilegging fra bildevinduet gir en ny versjon med gjennomsiktig bakgrunn uten betalt kall.
+  - Penselen kan legge til og fjerne, og hvert strøk kan angres.
+- **Tester:**
+  - planlagt
+- **Implementering:** src/core/cutout/index.ts, src/app/library/CutoutDialog.tsx
+
+#### REQ-0581 – Tegne bevegelsesbane for et lag
+Bevegelsen til et lag skal kunne tegnes på frihånd (med «Glatt ut») eller lages som rette linjer og Bézier-kurver, som kamerabanene.
+
+- **Kilde:** Beslutning DEC-0050 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, CAMERA, UI
+- **Avhengigheter:** REQ-0188; REQ-0189
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - En frihåndstegnet bane blir lagets bevegelse; «Glatt ut» gir en redigerbar kurve.
+- **Tester:**
+  - planlagt
+- **Implementering:** src/core/composition/path.ts, src/core/composition/render.ts#pathSegments, pathPointAt, src/app/scene-editor/LayerMotion.tsx, src/app/scene-editor/Stage.tsx (tegning, punkter)
+
+#### REQ-0582 – Tempo i bevegelser
+Tempoet i en bevegelse skal kunne styres med ease inn/ut med justerbar styrke, og med en tempokurve der punkter kan dras (som midtpunktet i nivåer i Photoshop) slik at bevegelsen går ulikt før og etter punktet.
+
+- **Kilde:** Beslutning DEC-0050 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, CAMERA, UI
+- **Avhengigheter:** REQ-0581
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Å dra et punkt i tempokurven endrer hvor raskt laget beveger seg før og etter punktet, uten å endre banen.
+- **Tester:**
+  - planlagt
+- **Implementering:** src/core/composition/render.ts#easeStrength, tempoAt, pathProgress, src/core/composition/animate.ts#setKeyframeEase, src/app/scene-editor/LayerMotion.tsx (ease og tempokurve), src/app/scene-editor/Timeline.tsx (ease inn/ut på nøkkelbilder)
+
+#### REQ-0583 – Lydopptak i sceneeditoren
+Brukeren skal kunne ta opp lyd direkte (mikrofon) i sceneeditoren. Opptaket blir en lydressurs og et lydklipp i scenen som kan klippes ikke-destruktivt.
+
+- **Kilde:** Beslutning DEC-0050 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 4
+- **Moduler:** AUDIO, COMPOSE, UI
+- **Avhengigheter:** REQ-0207
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Opptak startes og stoppes i sceneeditoren og legges ved avspillingshodet.
+  - Opptaket kan kuttes og utvides igjen uten at filen endres.
+- **Tester:**
+  - planlagt
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx

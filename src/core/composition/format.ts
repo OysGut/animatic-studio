@@ -101,11 +101,35 @@ function mapKeyframe(m: Mapping, k: Keyframe): Keyframe {
 
 /** Laget tilpasset nytt format. Nøkkelbilder som havner på samme bilde, slås sammen (det siste vinner). */
 export function rescaleLayer(l: CompositionLayer, m: Mapping): CompositionLayer {
+  // En gruppe skalerer allerede lagene sine; dens egen skalering beholdes (ellers skaleres de to ganger)
+  const group = l.kind === "group";
+  // Fargeflater skaleres gjennom størrelsen; en gruppe skalerer allerede lagene sine. Ellers blir de
+  // skalert to ganger.
+  const keepScale = group || l.fill !== null;
   const keys = new Map<string, Keyframe>();
   for (const k of l.keyframes) {
-    const n = mapKeyframe(m, k);
+    const n =
+      keepScale && (k.property === "scaleX" || k.property === "scaleY")
+        ? { ...k, frame: m.frame(k.frame) }
+        : mapKeyframe(m, k);
     keys.set(`${n.property}@${n.frame}`, n);
   }
+  const swaps = new Map<number, CompositionLayer["swaps"][number]>();
+  for (const w of l.swaps) {
+    const f = Math.max(1, m.frame(w.frame));
+    swaps.set(f, { ...w, frame: f });
+  }
+  const path = l.path
+    ? (() => {
+        const start = m.frame(l.path.startFrame);
+        return {
+          ...l.path,
+          points: l.path.points.map((q) => ({ ...q, x: m.x(q.x), y: m.y(q.y) })),
+          startFrame: start,
+          endFrame: Math.max(start + 1, m.frame(l.path.endFrame)),
+        };
+      })()
+    : null;
   return {
     ...l,
     width: l.fill !== null ? m.size(l.width) : l.width,
@@ -114,11 +138,14 @@ export function rescaleLayer(l: CompositionLayer, m: Mapping): CompositionLayer 
       ...l.transform,
       x: m.x(l.transform.x),
       y: m.y(l.transform.y),
-      scaleX: m.scale(l.transform.scaleX),
-      scaleY: m.scale(l.transform.scaleY),
+      scaleX: keepScale ? l.transform.scaleX : m.scale(l.transform.scaleX),
+      scaleY: keepScale ? l.transform.scaleY : m.scale(l.transform.scaleY),
     },
     keyframes: [...keys.values()].sort(
       (a, b) => a.property.localeCompare(b.property) || a.frame - b.frame,
     ),
+    swaps: [...swaps.values()].sort((a, b) => a.frame - b.frame),
+    path,
+    anchor: l.anchor ? { x: m.x(l.anchor.x), y: m.y(l.anchor.y) } : null,
   };
 }

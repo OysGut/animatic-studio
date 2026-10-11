@@ -3,7 +3,7 @@
  * bildebuffer for visningen og miniatyrene i monteringen.
  */
 import { useEffect, useMemo, useState } from "react";
-import { layerVersion, layersOf, type FilmClip, type ProjectState } from "@/core";
+import { layerVersions, layersOf, type FilmClip, type ProjectState } from "@/core";
 import { ImageCache } from "@/engine/compositor/canvas";
 import { useImageUrls } from "@/app/library/asset-images";
 
@@ -18,8 +18,7 @@ export function filmImagePaths(state: ProjectState, clips: readonly FilmClip[]):
   for (const c of clips) {
     if (!c.compositionId) continue;
     for (const l of layersOf(state, c.compositionId)) {
-      const v = layerVersion(state, l);
-      if (v) out.add(v.mediaPath);
+      for (const v of layerVersions(state, l)) out.add(v.mediaPath);
     }
   }
   return [...out];

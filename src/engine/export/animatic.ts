@@ -7,7 +7,15 @@
  * i biter på 20 sekunder med samme plassering som avspillingen og kodes som AAC eller Opus.
  * Bare på klienten.
  */
-import type { AudioKind, FilmAudioItem, FilmClip, ProjectState, Rational } from "@/core";
+import {
+  cueAt,
+  type AudioKind,
+  type FilmAudioItem,
+  type FilmClip,
+  type ProjectState,
+  type Rational,
+  type SubtitleCue,
+} from "@/core";
 import { type AudioBank, hasAudioIn, renderAudio } from "../audio/mixer";
 import type { ImageSource } from "../compositor/canvas";
 import { drawFilmFrame } from "../compositor/film";
@@ -23,6 +31,8 @@ export interface AnimaticExportOptions {
   readonly width: number;
   readonly height: number;
   readonly fps: Rational;
+  /** Hele filmen i svart-hvitt (REQ-0573). Scener satt til svart-hvitt blir det uansett. */
+  readonly monochrome?: boolean;
   readonly images: ReadonlyMap<string, ImageSource>;
   readonly onProgress?: (done: number, total: number) => void;
   readonly signal?: AbortSignal;
@@ -34,6 +44,8 @@ export interface AnimaticExportOptions {
   };
   /** Importert film (DEC-0047): mediesti → signert lenke for filene som brukes. */
   readonly filmUrls?: Readonly<Record<string, string>>;
+  /** Undertekster som brennes inn i bildet (DEC-0059), tider i ms i den samlede filmen. */
+  readonly subtitles?: readonly SubtitleCue[];
 }
 
 export interface AnimaticFile {
@@ -141,7 +153,11 @@ export async function exportAnimatic(o: AnimaticExportOptions): Promise<Animatic
         height,
         images: o.images,
         placeholders: false,
+        monochrome: o.monochrome ?? false,
         ...(video ? { video: video.provider } : {}),
+        ...(o.subtitles?.length
+          ? { subtitle: cueAt(o.subtitles, (o.startFrame + i) * step * 1000)?.text ?? null }
+          : {}),
       });
       await source.add(i * step, step);
       if (i % 6 === 0 || i === total - 1) {

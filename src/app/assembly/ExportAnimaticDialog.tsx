@@ -13,8 +13,12 @@ import {
   formatTimecode,
   framesToSeconds,
   layerVersion,
+  layerVersions,
   layersOf,
   orderedOccurrences,
+  LANGUAGE_LABEL,
+  MAIN_LANGUAGE,
+  type SubtitleCue,
   type AudioKind,
   type FilmAudioItem,
   type FilmClip,
@@ -22,6 +26,8 @@ import {
   type ProjectState,
 } from "@/core";
 import { ExportError, canExportVideo, exportAnimatic, loadImages } from "@/engine/export/animatic";
+import { STEM_MAX_SECONDS, dialogueItems, exportDialogueStem } from "@/engine/export/audio-stem";
+import { FilmLanguagePicker, type FilmLanguage } from "./use-film-language";
 import { isEmbedded, prepareDownload, type ReadyFile } from "@/app/download";
 import { Button } from "@/components/ui/button";
 import {
@@ -73,6 +79,10 @@ export function ExportAnimaticDialog({
   audioUrls,
   mutedKinds,
   filmUrls,
+  monochrome = false,
+  language,
+  onLanguage,
+  subtitles,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -88,11 +98,24 @@ export function ExportAnimaticDialog({
   mutedKinds: ReadonlySet<AudioKind>;
   /** Importert film (DEC-0047): mediesti → signert lenke. */
   filmUrls: Readonly<Record<string, string>> | null;
+  /** Svart-hvitt er slått på i visningen: foreslås for eksporten (REQ-0573). */
+  monochrome?: boolean;
+  /**
+   * Språkversjonen (DEC-0059, REQ-0348/0352): dialogspråket og undertekstene som brennes inn. Endres her og i
+   * monteringen samtidig; `state`, `clips` og `audioItems` er allerede for dialogspråket.
+   */
+  language: FilmLanguage;
+  onLanguage: (patch: Partial<FilmLanguage>) => void;
+  subtitles: readonly SubtitleCue[];
 }) {
   const [scope, setScope] = useState<Scope>("film");
   const [fromId, setFromId] = useState<string>("");
   const [toId, setToId] = useState<string>("");
   const [size, setSize] = useState<Size>("full");
+  const [mono, setMono] = useState(monochrome);
+  /** «video»: film med lyd. «dialogue»: bare dialogsporet som WAV (REQ-0350). */
+  const [output, setOutput] = useState<"video" | "dialogue">("video");
+  const langName = (LANGUAGE_LABEL[language.dialogue] ?? language.dialogue).toLowerCase();
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState<(ReadyFile & { bytes: number }) | null>(null);
@@ -108,6 +131,7 @@ export function ExportAnimaticDialog({
     const last = clips[clips.length - 1]?.occurrenceId ?? "";
     setFromId(selectedId ?? first);
     setToId(last);
+    setMono(monochrome);
     if (scope === "selected" && !selectedId) setScope("film");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -186,9 +210,9 @@ export function ExportAnimaticDialog({
       if (!c.compositionId || !c.parts.some((p) => p.source === "composition")) continue;
       for (const l of layersOf(state, c.compositionId)) {
         if (!l.visible) continue;
-        const v = layerVersion(state, l);
-        if (v) need.add(v.mediaPath);
-        else if (l.assetId !== null) missingVersions++;
+        const vs = layerVersions(state, l);
+        for (const v of vs) need.add(v.mediaPath);
+        if (vs.length === 0 && l.assetId !== null) missingVersions++;
       }
     }
     if (missingVersions > 0)
@@ -220,11 +244,59 @@ export function ExportAnimaticDialog({
         level: "warn",
         text: `${noFile} ${noFile === 1 ? "lydklipp mangler" : "lydklipp mangler"} lydfil og blir stille.`,
       });
+    // Språkversjonen (DEC-0059)
+    const mixed = sounds.filter(
+      (it) =>
+        it.film && it.film.audioLanguage !== "none" && it.film.audioLanguage !== language.dialogue,
+    ).length;
+    if (mixed > 0)
+      out.push({
+        level: "warn",
+        text: `${mixed} ${mixed === 1 ? "filmklipp har" : "filmklipp har"} dialog på et annet språk blandet inn i lyden. Den kan ikke fjernes, og spilles som den er.`,
+      });
+    const voices = dialogueItems(audible);
+    if (output === "dialogue")
+      out.push({
+        level: voices.length > 0 ? "ok" : "warn",
+        text:
+          voices.length > 0
+            ? `Dialogspor (${langName}): ${voices.length} ${voices.length === 1 ? "lydklipp" : "lydklipp"} med dialog og forteller. Musikk, effekter og lyden i importert film er ikke med.`
+            : `Ingen dialog på ${langName} i utvalget – dialogsporet blir stille.`,
+      });
+    if (output === "dialogue" && to - from > STEM_MAX_SECONDS)
+      out.push({
+        level: "warn",
+        text: `Dialogsporet lages for de første ${STEM_MAX_SECONDS / 60} minuttene. Velg et utvalg av scener for resten.`,
+      });
+    if (output === "video" && language.subtitles) {
+      const n = subtitles.filter((c) => c.startMs < to * 1000 && c.endMs > from * 1000).length;
+      out.push({
+        level: n > 0 ? "ok" : "warn",
+        text:
+          n > 0
+            ? `${n} undertekster på ${(LANGUAGE_LABEL[language.subtitles] ?? language.subtitles).toLowerCase()} brennes inn i bildet.`
+            : "Ingen undertekster i utvalget (replikkene mangler oversettelse eller tid).",
+      });
+    }
+    const usedAudio = output === "dialogue" ? voices : audible;
     const audioPaths = [
-      ...new Set(audible.flatMap((it) => (it.version ? [it.version.mediaPath] : []))),
+      ...new Set(usedAudio.flatMap((it) => (it.version ? [it.version.mediaPath] : []))),
     ];
-    return { checks: out, paths: [...need], audioPaths };
-  }, [sel, scope, state, productionId, fps, audioItems, mutedKinds, filmUrls]);
+    return { checks: out, paths: output === "dialogue" ? [] : [...need], audioPaths };
+  }, [
+    sel,
+    scope,
+    state,
+    productionId,
+    fps,
+    audioItems,
+    mutedKinds,
+    filmUrls,
+    output,
+    language,
+    langName,
+    subtitles,
+  ]);
 
   const warnings = checks.some((c) => c.level === "warn");
   const busy = progress !== null && ready === null && error === null;
@@ -255,25 +327,6 @@ export function ExportAnimaticDialog({
       ]);
       const lostAudio = audioPaths.filter((p) => !audioBank.get(p)).length;
       if (ctrl.signal.aborted) throw new DOMException("Avbrutt", "AbortError");
-      const file = await exportAnimatic({
-        state,
-        clips,
-        startFrame: sel.startFrame,
-        endFrame: sel.endFrame,
-        width: outW,
-        height: outH,
-        fps,
-        images,
-        signal: ctrl.signal,
-        audio: { items: audioItems, bank: audioBank, mutedKinds },
-        // Nye lenker rett før eksporten (en lang eksport skal ikke treffe lenker som går ut)
-        filmUrls: await freshFilmUrls(sel.clips, filmUrls),
-        onProgress: (done, total) => {
-          if (abort.current === ctrl) setProgress({ done, total });
-        },
-      });
-      // Dialogen ble lukket (eller en ny eksport startet) mens denne pågikk
-      if (abort.current !== ctrl || ctrl.signal.aborted) return;
       const date = new Date().toISOString().slice(0, 10);
       const what =
         scope === "film"
@@ -281,8 +334,58 @@ export function ExportAnimaticDialog({
           : sel.clips.length === 1
             ? `scene ${sel.clips[0]!.productionNumber ?? ""}`.trim()
             : `scener ${sel.clips[0]!.productionNumber ?? ""}–${sel.clips[sel.clips.length - 1]!.productionNumber ?? ""}`;
+      if (output === "dialogue") {
+        // Bare dialogsporet som WAV (DEC-0059, REQ-0350)
+        const bytes = await exportDialogueStem({
+          items: audioItems.filter((it) => !mutedKinds.has(it.clip.kind)),
+          bank: audioBank,
+          from: framesToSeconds(sel.startFrame, fps),
+          seconds: framesToSeconds(sel.endFrame - sel.startFrame, fps),
+          signal: ctrl.signal,
+          onProgress: (done, total) => {
+            if (abort.current === ctrl)
+              setProgress({
+                done: Math.round((done / Math.max(1e-9, total)) * (sel.endFrame - sel.startFrame)),
+                total: sel.endFrame - sel.startFrame,
+              });
+          },
+        });
+        if (abort.current !== ctrl || ctrl.signal.aborted) return;
+        const name = safeName(`${state.project.name} – ${what} – dialog ${langName} – ${date}.wav`);
+        const f = prepareDownload(bytes, name, "audio/wav");
+        setReady({ ...f, bytes: bytes.byteLength });
+        if (lostAudio > 0)
+          setError(
+            `Ferdig, men ${lostAudio} ${lostAudio === 1 ? "lydfil" : "lydfiler"} kunne ikke leses og mangler.`,
+          );
+        return;
+      }
+      const file = await exportAnimatic({
+        state,
+        // Bare utvalget: et utsnitt begynner og slutter rent (ingen overgang fra scener utenfor)
+        clips: sel.clips,
+        startFrame: sel.startFrame,
+        endFrame: sel.endFrame,
+        width: outW,
+        height: outH,
+        fps,
+        monochrome: mono,
+        images,
+        signal: ctrl.signal,
+        audio: { items: audioItems, bank: audioBank, mutedKinds },
+        // Nye lenker rett før eksporten (en lang eksport skal ikke treffe lenker som går ut)
+        filmUrls: await freshFilmUrls(sel.clips, filmUrls),
+        ...(language.subtitles ? { subtitles } : {}),
+        onProgress: (done, total) => {
+          if (abort.current === ctrl) setProgress({ done, total });
+        },
+      });
+      // Dialogen ble lukket (eller en ny eksport startet) mens denne pågikk
+      if (abort.current !== ctrl || ctrl.signal.aborted) return;
+      // Språket i filnavnet når det ikke er hovedspråket (DEC-0059)
+      const lang = language.dialogue === MAIN_LANGUAGE ? "" : ` – ${langName}`;
       const name = safeName(
-        `${state.project.name} – ${what} – ${date}.${file.extension.replace(/^\./, "")}`,
+        `${state.project.name} – ${what}${lang} – ${date}.${file.extension.replace(/^\./, "")}`,
       );
       const f = prepareDownload(file.bytes, name, file.mimeType);
       setReady({ ...f, bytes: file.bytes.byteLength });
@@ -447,12 +550,59 @@ export function ExportAnimaticDialog({
                 </span>
               </span>
             </label>
+            <label className="flex items-center gap-2 pt-1 text-[13px] text-text-primary">
+              <input
+                type="checkbox"
+                checked={mono}
+                onChange={(e) => setMono(e.target.checked)}
+                className="size-3.5 accent-[var(--accent-brand)]"
+              />
+              Hele filmen i svart-hvitt
+            </label>
             <p className="pt-1 text-xs text-text-tertiary">
-              MP4 (H.264) der nettleseren kan, ellers WebM. Med lyden fra lydsporene (dempede spor
-              er ikke med).
+              Scener som er satt til svart-hvitt, blir det uansett. MP4 (H.264) der nettleseren kan,
+              ellers WebM. Med lyden fra lydsporene (dempede spor er ikke med).
             </p>
           </fieldset>
         </div>
+
+        <fieldset className="flex flex-col gap-2" disabled={busy}>
+          <legend className={legend}>Språk og innhold</legend>
+          <FilmLanguagePicker value={language} onChange={onLanguage} />
+          <div className="flex flex-wrap gap-4">
+            <label className={radio}>
+              <input
+                type="radio"
+                name="output"
+                checked={output === "video"}
+                onChange={() => setOutput("video")}
+                className="mt-1"
+              />
+              <span>
+                Video
+                <span className="block text-xs text-text-tertiary">
+                  Bilde og all lyd på {langName}
+                  {language.subtitles ? ", med undertekster" : ""}
+                </span>
+              </span>
+            </label>
+            <label className={radio}>
+              <input
+                type="radio"
+                name="output"
+                checked={output === "dialogue"}
+                onChange={() => setOutput("dialogue")}
+                className="mt-1"
+              />
+              <span>
+                Bare dialogspor (WAV)
+                <span className="block text-xs text-text-tertiary">
+                  Dialog og forteller på {langName}, uten musikk og effekter
+                </span>
+              </span>
+            </label>
+          </div>
+        </fieldset>
 
         <section aria-label="Kontroll før eksport" className="flex flex-col gap-1.5">
           <h3 className={legend}>Kontroll før eksport</h3>
@@ -552,7 +702,10 @@ export function ExportAnimaticDialog({
           <Button
             onClick={() => void run()}
             disabled={
-              busy || !supported || sel.clips.length === 0 || (urls === null && paths.length > 0)
+              busy ||
+              (!supported && output === "video") ||
+              sel.clips.length === 0 ||
+              (urls === null && paths.length > 0)
             }
           >
             <Download />
