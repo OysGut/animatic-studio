@@ -113,6 +113,13 @@
       "when": 1791736098715,
       "tag": "0015_0016_translations",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1791736111896,
+      "tag": "0016_0017_language_versions",
+      "breakpoints": true
     }
   ]
 }

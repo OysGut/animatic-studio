@@ -216,6 +216,7 @@ export type Database = {
           gain_db: number
           id: string
           kind: string
+          language: string | null
           length_ms: number
           muted: boolean
           name: string
@@ -240,6 +241,7 @@ export type Database = {
           gain_db?: number
           id: string
           kind: string
+          language?: string | null
           length_ms: number
           muted?: boolean
           name?: string
@@ -264,6 +266,7 @@ export type Database = {
           gain_db?: number
           id?: string
           kind?: string
+          language?: string | null
           length_ms?: number
           muted?: boolean
           name?: string
@@ -447,6 +450,7 @@ export type Database = {
           image_swaps: Json
           keyframes: Json
           kind: string
+          language_images: Json
           locked: boolean
           motion_path: Json | null
           name: string
@@ -474,6 +478,7 @@ export type Database = {
           image_swaps?: Json
           keyframes?: Json
           kind: string
+          language_images?: Json
           locked?: boolean
           motion_path?: Json | null
           name?: string
@@ -501,6 +506,7 @@ export type Database = {
           image_swaps?: Json
           keyframes?: Json
           kind?: string
+          language_images?: Json
           locked?: boolean
           motion_path?: Json | null
           name?: string
@@ -1758,6 +1764,7 @@ export type Database = {
       takes: {
         Row: {
           accepted_from: Json
+          audio_language: string | null
           created_at: string
           created_by: string | null
           duration_frames: number | null
@@ -1774,6 +1781,7 @@ export type Database = {
         }
         Insert: {
           accepted_from?: Json
+          audio_language?: string | null
           created_at?: string
           created_by?: string | null
           duration_frames?: number | null
@@ -1790,6 +1798,7 @@ export type Database = {
         }
         Update: {
           accepted_from?: Json
+          audio_language?: string | null
           created_at?: string
           created_by?: string | null
           duration_frames?: number | null
