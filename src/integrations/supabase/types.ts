@@ -14,6 +14,73 @@ export type Database = {
   }
   public: {
     Tables: {
+      asset_relations: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string
+          from_asset_id: string
+          id: string
+          kind: string
+          label: string
+          project_id: string
+          removed: boolean
+          revision: number
+          status: string
+          to_asset_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          from_asset_id: string
+          id: string
+          kind: string
+          label?: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          status?: string
+          to_asset_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          from_asset_id?: string
+          id?: string
+          kind?: string
+          label?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          status?: string
+          to_asset_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_relations_from_asset_id_fkey"
+            columns: ["from_asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "asset_relations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "asset_relations_to_asset_id_fkey"
+            columns: ["to_asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       asset_variants: {
         Row: {
           appearance: string
@@ -950,6 +1017,69 @@ export type Database = {
           },
           {
             foreignKeyName: "imported_documents_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      posters: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          document: Json
+          height_mm: number
+          id: string
+          kind: string
+          language: string
+          name: string
+          production_id: string
+          project_id: string
+          removed: boolean
+          revision: number
+          width_mm: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          document: Json
+          height_mm: number
+          id: string
+          kind: string
+          language?: string
+          name: string
+          production_id: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          width_mm: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          document?: Json
+          height_mm?: number
+          id?: string
+          kind?: string
+          language?: string
+          name?: string
+          production_id?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          width_mm?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posters_production_id_fkey"
+            columns: ["production_id"]
+            isOneToOne: false
+            referencedRelation: "productions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posters_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
@@ -2045,6 +2175,15 @@ export type Database = {
           p_storage_key: string
         }
         Returns: string
+      }
+      revoke_invitation: { Args: { p_invitation: string }; Returns: undefined }
+      set_invitation_role: {
+        Args: { p_invitation: string; p_role: string }
+        Returns: undefined
+      }
+      set_member_role: {
+        Args: { p_project: string; p_role: string; p_user: string }
+        Returns: undefined
       }
       upsert_my_profile: {
         Args: { p_display_name?: string }
