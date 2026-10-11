@@ -365,6 +365,73 @@ export type Database = {
           },
         ]
       }
+      clip_parts: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          in_ms: number
+          occurrence_id: string
+          order_key: string
+          out_ms: number
+          project_id: string
+          removed: boolean
+          revision: number
+          source: string
+          take_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id: string
+          in_ms: number
+          occurrence_id: string
+          order_key: string
+          out_ms: number
+          project_id: string
+          removed?: boolean
+          revision?: number
+          source: string
+          take_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          in_ms?: number
+          occurrence_id?: string
+          order_key?: string
+          out_ms?: number
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          source?: string
+          take_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clip_parts_occurrence_id_fkey"
+            columns: ["occurrence_id"]
+            isOneToOne: false
+            referencedRelation: "scene_occurrences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clip_parts_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clip_parts_take_id_fkey"
+            columns: ["take_id"]
+            isOneToOne: false
+            referencedRelation: "takes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       composition_layers: {
         Row: {
           asset_id: string | null
@@ -1521,6 +1588,67 @@ export type Database = {
             columns: ["segment_id"]
             isOneToOne: false
             referencedRelation: "production_segments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      time_links: {
+        Row: {
+          block_id: string
+          created_at: string
+          created_by: string | null
+          end_ms: number | null
+          id: string
+          occurrence_id: string
+          project_id: string
+          removed: boolean
+          revision: number
+          start_ms: number
+        }
+        Insert: {
+          block_id: string
+          created_at?: string
+          created_by?: string | null
+          end_ms?: number | null
+          id: string
+          occurrence_id: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          start_ms: number
+        }
+        Update: {
+          block_id?: string
+          created_at?: string
+          created_by?: string | null
+          end_ms?: number | null
+          id?: string
+          occurrence_id?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          start_ms?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "time_links_block_id_fkey"
+            columns: ["block_id"]
+            isOneToOne: false
+            referencedRelation: "script_blocks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "time_links_occurrence_id_fkey"
+            columns: ["occurrence_id"]
+            isOneToOne: false
+            referencedRelation: "scene_occurrences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "time_links_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
         ]
