@@ -22,6 +22,8 @@ import { Button } from "@/components/ui/button";
 import { updateCameraCommand, MAX_CAMERA_ZOOM, MIN_CAMERA_ZOOM } from "./camera-overlay";
 
 interface CameraPanelProps {
+  /** Utsnittet på slutten av scenen før, for «Bruk aktivt utsnitt». */
+  previousFrame: CameraFrame | null;
   composition: Composition;
   shot: CameraShot;
   durationFrames: number;
@@ -169,12 +171,15 @@ function FrameSection({
   disabled,
   onChange,
   onFull,
+  previous,
 }: {
   title: string;
   frame: CameraFrame;
   disabled: boolean;
   onChange: (f: CameraFrame) => string | null;
   onFull: () => void;
+  /** Utsnittet på slutten av scenen før (null: ingen scene før med 2D-scene). */
+  previous: CameraFrame | null;
 }) {
   const [error, setError] = useState<string | null>(null);
   const set = (patch: Partial<CameraFrame>) => setError(onChange({ ...frame, ...patch }));
@@ -208,14 +213,30 @@ function FrameSection({
           {error}
         </p>
       ) : null}
-      <Button size="sm" variant="ghost" disabled={disabled} onClick={onFull} className="self-start">
-        Hele formatet
-      </Button>
+      <div className="flex flex-wrap gap-1">
+        <Button size="sm" variant="ghost" disabled={disabled} onClick={onFull}>
+          Hele formatet
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          disabled={disabled || !previous}
+          onClick={() => previous && setError(onChange(previous))}
+          title={
+            previous
+              ? "Kopier utsnittet kameraet har når scenen før slutter"
+              : "Scenen før har ingen 2D-scene (eller dette er første scene)"
+          }
+        >
+          Bruk aktivt utsnitt
+        </Button>
+      </div>
     </Section>
   );
 }
 
 export function CameraPanel({
+  previousFrame,
   composition,
   shot,
   durationFrames,
@@ -326,6 +347,7 @@ export function CameraPanel({
         frame={shot.from}
         disabled={disabled}
         onChange={(from) => commit({ ...shot, from }, "Endre startramme")}
+        previous={previousFrame}
         onFull={() =>
           commit({ ...shot, from: fullFrameCamera(composition) }, "Startramme: hele formatet")
         }
@@ -335,6 +357,7 @@ export function CameraPanel({
         frame={shot.to}
         disabled={disabled}
         onChange={(to) => commit({ ...shot, to }, "Endre sluttramme")}
+        previous={previousFrame}
         onFull={() =>
           commit({ ...shot, to: fullFrameCamera(composition) }, "Sluttramme: hele formatet")
         }

@@ -1,7 +1,19 @@
 /**
- * Lagliste for 2D-scenen: forreste lag øverst. Valg, synlighet, lås og rekkefølge (knapper og dra-og-slipp).
+ * Lagliste for 2D-scenen: forreste lag øverst. Valg, synlighet, lås, rekkefølge (knapper og dra-og-slipp),
+ * grupper (dra et lag inn på en gruppe for å legge det i gruppen, eller ut ved siden av et lag utenfor) og
+ * fjerning av laget fra scenen (ressursen blir i biblioteket). Valgt gruppe: lagene i den lyser opp.
  */
-import { ChevronDown, ChevronUp, Eye, EyeOff, Group, Lock, Unlock } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  Eye,
+  EyeOff,
+  Group,
+  Lock,
+  Trash2,
+  Ungroup,
+  Unlock,
+} from "lucide-react";
 import { memo, useMemo, useState } from "react";
 import {
   LAYER_KIND_LABEL,
@@ -22,6 +34,8 @@ import {
 } from "@/core";
 import { useImageUrls } from "@/app/library/asset-images";
 import { layerFieldsOf as fieldsOf } from "@/core";
+import { removeLayer } from "./layer-actions";
+import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 
 interface Props {
   readonly state: ProjectState;
@@ -34,6 +48,14 @@ interface Props {
   readonly frame?: number;
   /** Dobbeltklikk på et lag: velg bilde for laget (DEC-0044). */
   readonly onOpenImage?: (layerId: string) => void;
+}
+
+/** Slippsonen: midten av en grupperad legger laget i gruppen, ellers foran eller bak raden. */
+function zoneAt(e: React.DragEvent<HTMLElement>, l: CompositionLayer): "before" | "after" | "into" {
+  const r = e.currentTarget.getBoundingClientRect();
+  const y = (e.clientY - r.top) / r.height;
+  if (l.kind === "group" && y > 0.25 && y < 0.75) return "into";
+  return y > 0.5 ? "after" : "before";
 }
 
 const iconButton =
@@ -63,7 +85,12 @@ export const LayersPanel = memo(function LayersPanel({
   const urls = useImageUrls(paths).data;
   const [error, setError] = useState<string | null>(null);
   const [dragId, setDragId] = useState<string | null>(null);
-  const [drop, setDrop] = useState<{ id: string; after: boolean } | null>(null);
+  /** Hvor laget slippes: foran eller bak raden, eller inn i gruppen (midten av en grupperad). */
+  const [drop, setDrop] = useState<{ id: string; zone: "before" | "after" | "into" } | null>(null);
+  // Brukeren bestemmer selv hvor mange lag som vises (skillelinjen under listen kan dras)
+  const [listHeight, setListHeight] = usePaneSize("scene-layers-list", 280, 80, 900);
+  const selected = selectedLayerId ? state.layers[selectedLayerId] : undefined;
+  const selectedGroup = selected?.kind === "group" ? selected.id : null;
 
   function exec(command: Command, label: string) {
     setError(run(command, label));
@@ -173,12 +200,15 @@ export const LayersPanel = memo(function LayersPanel({
     moveBefore(l.id, target.id, "Flytt lag bak");
   }
 
-  /** Slipp `dragged` rett foran (after=false: over målet i listen) eller rett bak målraden. */
-  function dropOn(draggedId: string, targetId: string, inFront: boolean) {
-    if (draggedId === targetId) return;
+  /** Rekkefølgen etter slipp foran (inFront: over målet i listen) eller bak målraden, eller null: uendret. */
+  function orderTarget(
+    draggedId: string,
+    targetId: string,
+    inFront: boolean,
+  ): string | null | undefined {
     const i = back.findIndex((x) => x.id === draggedId);
     const j = back.findIndex((x) => x.id === targetId);
-    if (i < 0 || j < 0) return;
+    if (i < 0 || j < 0) return undefined;
     let before: string | null;
     if (inFront) {
       let k = j + 1;
@@ -188,8 +218,86 @@ export const LayersPanel = memo(function LayersPanel({
       before = targetId;
     }
     const currentNext = back[i + 1]?.id ?? null;
-    if (before === currentNext) return; // ligger allerede der
-    moveBefore(draggedId, before, "Flytt lag");
+    return before === currentNext ? undefined : before;
+  }
+
+  /**
+   * Slipp et lag. På midten av en grupperad: laget legges i gruppen (rett under gruppen i listen). Foran
+   * eller bak en rad: laget flyttes dit og får samme gruppe som raden – slippes det ved et lag utenfor
+   * gruppen, tas det ut av gruppen. Begge stegene angres samlet.
+   */
+  function dropOn(draggedId: string, targetId: string, zone: "before" | "after" | "into") {
+    if (draggedId === targetId) return;
+    const dragged = state.layers[draggedId];
+    const target = state.layers[targetId];
+    if (!dragged || !target) return;
+    const key = newId();
+    if (zone === "into") {
+      if (target.kind !== "group" || dragged.kind === "group") return;
+      if (dragged.groupId !== target.id) {
+        const err = run(
+          {
+            type: "UpdateLayers",
+            layers: [
+              { layerId: dragged.id, fields: regroupFields(state, dragged, target.id, frame) },
+            ],
+          },
+          `Legg «${dragged.name}» i «${target.name}»`,
+          key,
+        );
+        if (err) return setError(err);
+      }
+      const before = orderTarget(draggedId, targetId, false);
+      if (before !== undefined)
+        setError(
+          run(
+            { type: "MoveLayer", layerId: draggedId as never, beforeLayerId: before as never },
+            `Legg «${dragged.name}» i «${target.name}»`,
+            key,
+          ),
+        );
+      return;
+    }
+    // Gruppen laget havner i: målradens gruppe (en gruppe kan ikke ligge i en gruppe)
+    const nextGroup = dragged.kind === "group" || target.kind === "group" ? null : target.groupId;
+    const label =
+      nextGroup !== dragged.groupId
+        ? nextGroup
+          ? `Legg «${dragged.name}» i gruppe`
+          : `Ta «${dragged.name}» ut av gruppen`
+        : "Flytt lag";
+    if (nextGroup !== dragged.groupId && dragged.kind !== "group") {
+      const err = run(
+        {
+          type: "UpdateLayers",
+          layers: [
+            { layerId: dragged.id, fields: regroupFields(state, dragged, nextGroup, frame) },
+          ],
+        },
+        label,
+        key,
+      );
+      if (err) return setError(err);
+    }
+    const before = orderTarget(draggedId, targetId, zone === "before");
+    if (before !== undefined)
+      setError(
+        run(
+          { type: "MoveLayer", layerId: draggedId as never, beforeLayerId: before as never },
+          label,
+          key,
+        ),
+      );
+  }
+
+  function leaveGroup(l: CompositionLayer) {
+    exec(
+      {
+        type: "UpdateLayers",
+        layers: [{ layerId: l.id, fields: regroupFields(state, l, null, frame) }],
+      },
+      `Ta «${l.name}» ut av gruppen`,
+    );
   }
 
   return (
@@ -213,167 +321,221 @@ export const LayersPanel = memo(function LayersPanel({
       {back.length === 0 ? (
         <p className="px-3 pb-2 text-xs text-text-tertiary">Ingen lag ennå. Bruk «Legg til lag».</p>
       ) : (
-        <ul className="flex max-h-[280px] flex-col overflow-y-auto">
-          {front.map((l, idx) => {
-            const on = l.id === selectedLayerId;
-            const version = layerVersion(state, l);
-            const url = version ? urls?.[version.mediaPath] : undefined;
-            const isFront = idx === 0;
-            const isBack = idx === front.length - 1;
-            const dropping = drop?.id === l.id && dragId !== null && dragId !== l.id;
-            const group = l.groupId ? state.layers[l.groupId] : undefined;
-            const inGroup = !!group && group.kind === "group" && !group.removed;
-            const members = l.kind === "group" ? back.filter((x) => x.groupId === l.id).length : 0;
-            return (
-              <li
-                key={l.id}
-                draggable={editable}
-                onDragStart={(e) => {
-                  setDragId(l.id);
-                  e.dataTransfer.effectAllowed = "move";
-                  e.dataTransfer.setData("text/plain", l.id);
-                }}
-                onDragEnd={() => {
-                  setDragId(null);
-                  setDrop(null);
-                }}
-                onDragOver={(e) => {
-                  if (!dragId) return;
-                  e.preventDefault();
-                  e.dataTransfer.dropEffect = "move";
-                  const r = e.currentTarget.getBoundingClientRect();
-                  const after = e.clientY > r.top + r.height / 2;
-                  setDrop((d) =>
-                    d && d.id === l.id && d.after === after ? d : { id: l.id, after },
-                  );
-                }}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  const r = e.currentTarget.getBoundingClientRect();
-                  const lower = e.clientY > r.top + r.height / 2;
-                  if (dragId) dropOn(dragId, l.id, !lower);
-                  setDragId(null);
-                  setDrop(null);
-                }}
-                className={
-                  "group relative flex items-center gap-1 pr-2 " +
-                  (on ? "bg-accent-selection" : "hover:bg-surface-3") +
-                  (dragId === l.id ? " opacity-50" : "")
-                }
-              >
-                {dropping ? (
-                  <span
-                    aria-hidden
-                    className={
-                      "pointer-events-none absolute inset-x-0 h-0.5 bg-accent-brand " +
-                      (drop.after ? "bottom-0" : "top-0")
-                    }
-                  />
-                ) : null}
-                <button
-                  type="button"
-                  onClick={() => onSelect(l.id)}
-                  onDoubleClick={() => onOpenImage?.(l.id)}
-                  title="Dobbeltklikk for å velge et annet bilde"
-                  aria-pressed={on}
+        <div className="relative">
+          <ul
+            className="flex flex-col overflow-y-auto"
+            style={{ maxHeight: listHeight }}
+            aria-label="Lagene, forreste øverst"
+          >
+            {front.map((l, idx) => {
+              const on = l.id === selectedLayerId;
+              const version = layerVersion(state, l);
+              const url = version ? urls?.[version.mediaPath] : undefined;
+              const isFront = idx === 0;
+              const isBack = idx === front.length - 1;
+              const dropping = drop?.id === l.id && dragId !== null && dragId !== l.id;
+              const group = l.groupId ? state.layers[l.groupId] : undefined;
+              const inGroup = !!group && group.kind === "group" && !group.removed;
+              const members =
+                l.kind === "group" ? back.filter((x) => x.groupId === l.id).length : 0;
+              // Lag i valgt gruppe lyser opp
+              const lit = !!selectedGroup && l.groupId === selectedGroup;
+              return (
+                <li
+                  key={l.id}
+                  draggable={editable}
+                  onDragStart={(e) => {
+                    setDragId(l.id);
+                    e.dataTransfer.effectAllowed = "move";
+                    e.dataTransfer.setData("text/plain", l.id);
+                  }}
+                  onDragEnd={() => {
+                    setDragId(null);
+                    setDrop(null);
+                  }}
+                  onDragOver={(e) => {
+                    if (!dragId) return;
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = "move";
+                    const zone = zoneAt(e, l);
+                    setDrop((d) =>
+                      d && d.id === l.id && d.zone === zone ? d : { id: l.id, zone },
+                    );
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    if (dragId) dropOn(dragId, l.id, zoneAt(e, l));
+                    setDragId(null);
+                    setDrop(null);
+                  }}
                   className={
-                    "flex min-w-0 flex-1 items-center gap-2 py-1 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring " +
-                    (inGroup ? "pl-7" : "pl-3")
+                    "group relative flex items-center gap-1 pr-2 " +
+                    (on
+                      ? "bg-accent-selection"
+                      : lit
+                        ? "bg-accent-selection/40 hover:bg-surface-3"
+                        : "hover:bg-surface-3") +
+                    (dragId === l.id ? " opacity-50" : "")
                   }
                 >
-                  <span
-                    aria-hidden
-                    className="h-5 w-8 shrink-0 overflow-hidden rounded-sm border border-border bg-surface-3"
-                    style={l.fill && l.assetId === null ? { backgroundColor: l.fill } : undefined}
+                  {lit ? (
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute inset-y-0 left-0 w-0.5 bg-accent-brand"
+                    />
+                  ) : null}
+                  {dropping && drop.zone === "into" ? (
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute inset-0 rounded-sm ring-2 ring-inset ring-accent-brand"
+                    />
+                  ) : dropping ? (
+                    <span
+                      aria-hidden
+                      className={
+                        "pointer-events-none absolute inset-x-0 h-0.5 bg-accent-brand " +
+                        (drop.zone === "after" ? "bottom-0" : "top-0")
+                      }
+                    />
+                  ) : null}
+                  <button
+                    type="button"
+                    onClick={() => onSelect(l.id)}
+                    onDoubleClick={() => onOpenImage?.(l.id)}
+                    title="Dobbeltklikk for å velge et annet bilde"
+                    aria-pressed={on}
+                    className={
+                      "flex min-w-0 flex-1 items-center gap-2 py-1 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring " +
+                      (inGroup ? "pl-7" : "pl-3")
+                    }
                   >
-                    {url ? (
-                      <img src={url} alt="" className="size-full object-cover" />
-                    ) : l.kind === "group" ? (
-                      <Group className="m-auto mt-0.5 size-3.5 text-text-tertiary" />
-                    ) : null}
-                  </span>
-                  <span className="min-w-0 flex-1">
+                    <span
+                      aria-hidden
+                      className="h-5 w-8 shrink-0 overflow-hidden rounded-sm border border-border bg-surface-3"
+                      style={l.fill && l.assetId === null ? { backgroundColor: l.fill } : undefined}
+                    >
+                      {url ? (
+                        <img src={url} alt="" className="size-full object-cover" />
+                      ) : l.kind === "group" ? (
+                        <Group className="m-auto mt-0.5 size-3.5 text-text-tertiary" />
+                      ) : null}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span
+                        className={
+                          "block truncate text-[13px] " +
+                          (l.visible ? "text-text-primary" : "text-text-tertiary")
+                        }
+                      >
+                        {l.name || "Uten navn"}
+                      </span>
+                      <span className="block truncate text-[11px] text-text-tertiary">
+                        {LAYER_KIND_LABEL[l.kind]}
+                        {l.kind === "group" ? ` · ${members} lag` : ""}
+                        {inGroup ? ` · i «${group.name}»` : ""}
+                      </span>
+                    </span>
+                  </button>
+                  {editable ? (
                     <span
                       className={
-                        "block truncate text-[13px] " +
-                        (l.visible ? "text-text-primary" : "text-text-tertiary")
+                        "items-center " +
+                        (on ? "flex" : "hidden group-focus-within:flex group-hover:flex")
                       }
                     >
-                      {l.name || "Uten navn"}
+                      <button
+                        type="button"
+                        className={iconButton}
+                        onClick={() => forward(l)}
+                        disabled={isFront}
+                        aria-label="Flytt lag fram"
+                        title="Fram"
+                      >
+                        <ChevronUp className="size-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        className={iconButton}
+                        onClick={() => backward(l)}
+                        disabled={isBack}
+                        aria-label="Flytt lag bak"
+                        title="Bak"
+                      >
+                        <ChevronDown className="size-3.5" />
+                      </button>
+                      {inGroup ? (
+                        <button
+                          type="button"
+                          className={iconButton}
+                          onClick={() => leaveGroup(l)}
+                          aria-label={`Ta «${l.name}» ut av gruppen`}
+                          title="Ta ut av gruppen"
+                        >
+                          <Ungroup className="size-3.5" />
+                        </button>
+                      ) : null}
+                      <button
+                        type="button"
+                        className={iconButton}
+                        onClick={() => {
+                          setError(
+                            removeLayer(run, state, l, frame, `Fjern «${l.name}» fra scenen`),
+                          );
+                          if (on) onSelect(null);
+                        }}
+                        aria-label={`Fjern «${l.name}» fra scenen`}
+                        title="Fjern laget fra scenen (bildet blir i biblioteket, kan angres)"
+                      >
+                        <Trash2 className="size-3.5" />
+                      </button>
                     </span>
-                    <span className="block truncate text-[11px] text-text-tertiary">
-                      {LAYER_KIND_LABEL[l.kind]}
-                      {l.kind === "group" ? ` · ${members} lag` : ""}
-                      {inGroup ? ` · i «${group.name}»` : ""}
-                    </span>
-                  </span>
-                </button>
-                {editable ? (
-                  <span
-                    className={
-                      "items-center " +
-                      (on ? "flex" : "hidden group-focus-within:flex group-hover:flex")
-                    }
-                  >
+                  ) : null}
+                  {editable ? (
                     <button
                       type="button"
                       className={iconButton}
-                      onClick={() => forward(l)}
-                      disabled={isFront}
-                      aria-label="Flytt lag fram"
-                      title="Fram"
+                      onClick={() => toggle(l, "visible")}
+                      aria-label={l.visible ? "Skjul lag" : "Vis lag"}
+                      title={l.visible ? "Skjul lag" : "Vis lag"}
                     >
-                      <ChevronUp className="size-3.5" />
+                      {l.visible ? <Eye className="size-3.5" /> : <EyeOff className="size-3.5" />}
                     </button>
+                  ) : l.visible ? null : (
+                    <EyeOff className="size-3.5 text-text-tertiary" aria-label="Skjult" />
+                  )}
+                  {editable ? (
                     <button
                       type="button"
-                      className={iconButton}
-                      onClick={() => backward(l)}
-                      disabled={isBack}
-                      aria-label="Flytt lag bak"
-                      title="Bak"
+                      className={
+                        iconButton +
+                        (l.locked
+                          ? " !text-accent-brand"
+                          : on
+                            ? ""
+                            : " !text-text-tertiary hover:!text-text-primary")
+                      }
+                      onClick={() => toggle(l, "locked")}
+                      aria-label={l.locked ? "Lås opp lag" : "Lås lag"}
+                      title={l.locked ? "Lås opp lag" : "Lås lag"}
                     >
-                      <ChevronDown className="size-3.5" />
+                      {l.locked ? <Lock className="size-3.5" /> : <Unlock className="size-3.5" />}
                     </button>
-                  </span>
-                ) : null}
-                {editable ? (
-                  <button
-                    type="button"
-                    className={iconButton}
-                    onClick={() => toggle(l, "visible")}
-                    aria-label={l.visible ? "Skjul lag" : "Vis lag"}
-                    title={l.visible ? "Skjul lag" : "Vis lag"}
-                  >
-                    {l.visible ? <Eye className="size-3.5" /> : <EyeOff className="size-3.5" />}
-                  </button>
-                ) : l.visible ? null : (
-                  <EyeOff className="size-3.5 text-text-tertiary" aria-label="Skjult" />
-                )}
-                {editable ? (
-                  <button
-                    type="button"
-                    className={
-                      iconButton +
-                      (l.locked
-                        ? " !text-accent-brand"
-                        : on
-                          ? ""
-                          : " !text-text-tertiary hover:!text-text-primary")
-                    }
-                    onClick={() => toggle(l, "locked")}
-                    aria-label={l.locked ? "Lås opp lag" : "Lås lag"}
-                    title={l.locked ? "Lås opp lag" : "Lås lag"}
-                  >
-                    {l.locked ? <Lock className="size-3.5" /> : <Unlock className="size-3.5" />}
-                  </button>
-                ) : l.locked ? (
-                  <Lock className="size-3.5 text-text-tertiary" aria-label="Låst" />
-                ) : null}
-              </li>
-            );
-          })}
-        </ul>
+                  ) : l.locked ? (
+                    <Lock className="size-3.5 text-text-tertiary" aria-label="Låst" />
+                  ) : null}
+                </li>
+              );
+            })}
+          </ul>
+          <PaneResizer
+            edge="bottom"
+            size={listHeight}
+            onSize={setListHeight}
+            min={80}
+            max={900}
+            label="Høyde på laglisten"
+          />
+        </div>
       )}
       {error ? (
         <p role="alert" className="px-3 pt-1 text-xs text-status-danger">

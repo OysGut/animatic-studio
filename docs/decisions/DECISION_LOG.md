@@ -664,3 +664,36 @@ Regler: DEC-ID-er er permanente. En beslutning endres aldri i ettertid; den erst
 - **Tolkninger (Claude):** Linjer og lag kjennes igjen på plassen (rekkefølgenøkkelen) som kopien beholder; linjer uten felles historikk og lag med annet bilde regnes som nye. Hovedfilmens versjoner deles (eier null), så spinoffer kan gjenbruke en tilbakeført versjon.
 - **Teknisk:** `src/core/production/promote.ts` (`promotionCandidates`, `comparePromotion`, `promotionCommands`, `defaultChoice`/`scriptOnlyChoice`/`KEEP_ALL`, `newMainVariantCommands`, `transferSceneCommands`, `includeSceneCommands`); `ForkVariant.sourceVariantId` (kopi fra en annen variant, angring på revisjon), kommandoene `TransferScene`/`UndoTransferScene` og `SetContinuityEventDisabled`; `ContinuityEvent.productionId`/`disabledIn`; `continuityFor`/`continuityForVariant` i `src/core/continuity`; funntypen `spinoff_gap`. Migrasjon 0018. UI: `PromotionDialog`, «Tilbakefør» i `ProductionList` og `ScriptWorkspace`, produksjon i `ContinuityPanel` og `ContinuityAnalysisPanel`.
 
+
+## DEC-0061 – M8 del 1: plakater, karakterkart og relasjoner
+- **Dato:** 2026-10-11 · **Type:** Bekreftet av bruker (Mars: «fortsett med neste store» etter at M8 del 1 – plakater og karakterkart – var meldt som neste; stilharmonisering med AI venter på godkjent kostnad)
+- **Beslutning (mandat kap. 26, REQ-0384–0399, REQ-0403/0404, REQ-0421, REQ-0501/0502):**
+  1. **Ny arbeidsflate «Utgivelse»:** plakater per produksjon (hovedfilm og spinoffer), flere per produksjon, på norsk eller engelsk.
+  2. **To typer:** kinopitch-plakat (få karakterer, stemning, tittel, logline) og karakter- og universkart (karakterkort, relasjonslinjer, steder og objekter). Standardformat 70 × 100 cm stående; også 50 × 70 cm, A1, A3 og eget format.
+  3. **Førsteutkast fra prosjektet:** hovedkarakterer etter replikker og scener, steder og objekter etter bruk, godkjente relasjoner, komposisjon og fargepalett (stil) foreslås. Alt kan endres.
+  4. **13 innholdsvalg som avkrysning** (bare bilder og navn, korte/utfyllende beskrivelser, relasjonslinjer, navngitte relasjoner, tekst om relasjonene, bilder/beskrivelser av objekter og steder, logline, sjanger og stemning, prosjektdata). Endres valgene, lages komposisjonen på nytt; det brukeren har endret selv (flyttet, skrevet, farget, flyttet fram/bak), står.
+  5. **Plakaten er et strukturert dokument** med egne elementer i millimeter (tekst, bilde, flate, relasjonslinje), ikke ett bilde. Elementene kan velges, flyttes, endres i størrelse og redigeres; egne tekster, bilder og flater kan legges til.
+  6. **Lesbarhet kontrolleres:** tekst under 12 pt (på 70 × 100 cm, skalert etter format) eller tekst som ikke får plass, gir varsel med forslag (kortere beskrivelser, færre karakterer, karakterkart i stedet). Manglende bilder og manglende engelsk tekst meldes.
+  7. **Relasjoner:** forslag fra manuset (sammen i scener, ord som «mor», «krangler», «trøster») vises som forslag og lagres bare når de godkjennes; avviste foreslås ikke igjen. Relasjoner kan endres, fjernes og legges til selv. Typer: familie, vennskap, konflikt, omsorg, romantikk, mentor, skjult forbindelse, annen.
+  8. **Eksport:** trykk-PDF med ekte tekst (PDF-standardskriftene), bilder i trykkoppløsning, 3 mm utfallende kant og skjæremerker; PNG for digital bruk (72–300 ppi, begrenset av nettleseren til ca. 16 Mpx).
+- **Tolkninger (Claude):** Skriftene er Helvetica og Times (PDF-standard, ingen innebygging) med samme mål i forhåndsvisning, PNG og PDF, så linjebrytingen blir lik. Engelsk tekst som mangler, vises på norsk og meldes. Stilharmonisering med AI (REQ-0137–0145, REQ-0400–0402) er ikke laget.
+- **Teknisk:** `src/core/presentation/` (`metrics`, `relations`, `poster`, `document`), modell `AssetRelation`, `Poster`, `PosterDocument`, `PosterElement` (med `overrides`); kommandoene `AddRelations`/`UndoAddRelations`/`UpdateRelations`/`SetRelationsRemoved`/`CreatePoster`/`UndoCreatePoster`/`UpdatePoster`/`SetPosterRemoved`; `src/engine/export/poster-pdf.ts` (egen PDF-skriver) og `poster-canvas.ts`; UI i `src/app/release/`, ruten `/prosjekt/$projectId/utgivelse`. Migrasjon 0019.
+
+## DEC-0062 – Kamera og lag: «Bruk aktivt utsnitt», grupper med dra og slipp, justerbar lagliste
+- **Dato:** 2026-10-11 · **Type:** Bekreftet av bruker (Mars' ønsker 2026-10-11)
+- **Beslutning (REQ-0584, REQ-0585):**
+  1. Start- og sluttrammen i et kamerautsnitt har knappen **«Bruk aktivt utsnitt»**: den kopierer utsnittet kameraet har når scenen rett før slutter.
+  2. Hvert lag i lagpanelet kan **fjernes fra scenen** (ressursen blir i biblioteket; kan angres).
+  3. Et lag kan **dras inn på en gruppe** for å bli med i den, og **dras ut** igjen (slippes ved et lag utenfor gruppen, eller «Ta ut av gruppen»). Laget står stille i bildet.
+  4. **Valgt gruppe lyser opp** lagene i den, i listen og i scenen.
+  5. **Skillelinjen under laglisten** kan dras, så brukeren bestemmer hvor mange lag som vises (huskes).
+- **Tolkninger (Claude):** «Aktivt utsnitt» = sluttrammen i det siste kamerautsnittet i forrige aktive scene (hele formatet hvis den ikke har kamerautsnitt), omregnet til scenens format.
+
+## DEC-0063 – Endre rolle etter invitasjon, og «Tilbake» til forrige vindu
+- **Dato:** 2026-10-11 · **Type:** Bekreftet av bruker (Mars: «Det må være mulig å endre rolle etter at en person er invitert inn» og «en global funksjon som gjør at jeg kan trykke tilbake, og at jeg da kan hoppe tilbake til det vinduet jeg kom fra»)
+- **Beslutning (REQ-0586, REQ-0587, REQ-0520/0521):**
+  1. **Eieren endrer roller** på prosjektoversikten (eier, redaktør, kommentator, leser), også for seg selv. Prosjektet har alltid minst én eier; en eier kan gjøres til redaktør når det finnes en annen eier. Eiere kan godkjenne kostnader.
+  2. **Ventende invitasjoner** vises for eieren med rolle som kan endres, og kan trekkes tilbake.
+  3. **«Tilbake til …»** øverst til venstre i toppstripen, på alle sider: går til forrige arbeidsflate (manus, bibliotek, sceneeditor, montering, utgivelse, prosjektoversikt, prosjektlisten) med samme valg som da du forlot den. Valg inne i samme flate (annen scene, annen ressurs) gir ikke nye steg. Nettleserens egen tilbake-knapp virker fortsatt.
+- **Tolkninger (Claude):** Bare eieren kan endre roller (samme som for invitasjoner). Når en eier gjør seg selv til noe annet, spørres det først. Fjerning av medlemmer (ikke bare rolleendring) er ikke laget.
+- **Teknisk:** migrasjon `0020_member_roles.sql` (`set_member_role`, `set_invitation_role`, `revoke_invitation`, alle `security definer` med kontroll av eier; rolleendringer i et prosjekt serialiseres med `for no key update` på prosjektraden). UI: `src/app/projects/MembersSection.tsx`. Tilbake: `src/app/shell/back-stack.ts` (rene funksjoner) og `back-navigation.tsx` (`useTrackNavigation` i rotruten, `BackButton` i `AppHeader`; historikken i sessionStorage).

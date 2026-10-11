@@ -3,6 +3,7 @@ import { LogOut } from "lucide-react";
 import type { ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { BackButton } from "./back-navigation";
 
 interface AppHeaderProps {
   readonly email?: string | undefined;
@@ -13,6 +14,7 @@ interface AppHeaderProps {
 export function AppHeader({ email, trail }: AppHeaderProps) {
   return (
     <header className="flex h-10 shrink-0 items-center gap-3 border-b border-border bg-surface-1 px-4">
+      <BackButton />
       <Link
         to="/"
         className="text-[13px] font-semibold tracking-[0.02em] text-text-primary hover:text-accent-brand"

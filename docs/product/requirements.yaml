@@ -13757,13 +13757,25 @@ requirements:
   tests:
   - 'e2e: generer presentasjon fra prosjekt'
   - 'manuell: profesjonell kvalitet vurderes'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/presentation/poster.ts"
+  - "src/core/presentation/relations.ts"
+  - "src/core/presentation/metrics.ts"
+  - "src/core/presentation/document.ts"
+  - "src/app/release/PosterWorkspace.tsx"
+  verification:
+  - "tests/unit/presentation.test.ts"
+  - "tests/db/run-db-tests.ts (0019 DEC-0061)"
+  - "tests/visual/screens.mjs (60)"
+  - "tests/visual/screens.mjs (61)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0061
+    change: "Plakater og karakterkart lages, redigeres og eksporteres under «Utgivelse»"
   notes: ''
 - id: REQ-0385
   title: Presentasjon som egen eksportfunksjon
@@ -13785,13 +13797,21 @@ requirements:
   - Presentasjonseksport er tilgjengelig som egen funksjon atskilt fra film- og manuseksport.
   tests:
   - 'integrasjon: presentasjonseksport via Export Engine'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/release/PosterWorkspace.tsx"
+  - "src/app/release/PosterDialogs.tsx (ExportPosterDialog)"
+  verification:
+  - "tests/unit/presentation.test.ts"
+  - "tests/db/run-db-tests.ts (0019 DEC-0061)"
+  - "tests/visual/screens.mjs (66)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0061
+    change: "Egen eksport av plakaten (trykk-PDF og PNG), atskilt fra filmeksporten"
   notes: ''
 - id: REQ-0386
   title: Plakatformat 70 × 100 cm stående
@@ -13813,13 +13833,20 @@ requirements:
   - Gitt en plakat, når den eksporteres i 70 × 100 cm stående, så har filen korrekt fysisk størrelse og orientering.
   tests:
   - 'import/eksport: kontroller sidestørrelse 700 × 1000 mm'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/presentation/poster.ts (POSTER_FORMATS)"
+  verification:
+  - "tests/unit/presentation.test.ts"
+  - "tests/db/run-db-tests.ts (0019 DEC-0061)"
+  - "tests/visual/screens.mjs (60)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0061
+    change: "70 × 100 cm stående er standard; også 50 × 70, A1, A3 og eget format"
   notes: Linje 1064 og 1065 er duplikat. «minst» – andre formater kan støttes.
 - id: REQ-0387
   title: Plakateksport for trykk og digital distribusjon
@@ -13844,13 +13871,21 @@ requirements:
   - Gitt trykkinnstillinger med utfallende, så inneholder filen bleed-område.
   tests:
   - 'import/eksport: verifiser oppløsning, bleed og fargeprofil i eksportert fil'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/engine/export/poster-pdf.ts"
+  - "src/engine/export/poster-canvas.ts"
+  verification:
+  - "tests/unit/presentation.test.ts"
+  - "tests/db/run-db-tests.ts (0019 DEC-0061)"
+  - "tests/visual/screens.mjs (66)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0061
+    change: "Trykk-PDF med ekte tekst, bilder i trykkoppløsning, utfallende kant og skjæremerker; PNG for digital bruk"
   notes: ''
 - id: REQ-0388
   title: Kinopitch-plakat
@@ -13875,13 +13910,20 @@ requirements:
   tests:
   - 'visuell: komposisjon og hierarki vurderes'
   - 'manuell: profesjonelt uttrykk'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/presentation/poster.ts (layoutPoster: pitch)"
+  verification:
+  - "tests/unit/presentation.test.ts"
+  - "tests/db/run-db-tests.ts (0019 DEC-0061)"
+  - "tests/visual/screens.mjs (61)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0061
+    change: "Kinopitch-plakat med hovedkarakterer, stemning, tittel og logline"
   notes: ''
 - id: REQ-0389
   title: Karakter- og universkart
@@ -13906,13 +13948,20 @@ requirements:
   tests:
   - 'visuell: karakterkart-layout'
   - 'integrasjon: data hentes fra ressursbiblioteket'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/presentation/poster.ts (layoutPoster: character_map)"
+  verification:
+  - "tests/unit/presentation.test.ts"
+  - "tests/db/run-db-tests.ts (0019 DEC-0061)"
+  - "tests/visual/screens.mjs (60)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0061
+    change: "Karakter- og universkart med karakterkort, relasjonslinjer, steder og objekter"
   notes: ''
 - id: REQ-0390
   title: Valgfritt informasjonsnivå via avkrysning
@@ -13938,13 +13987,21 @@ requirements:
     når valg endres.
   tests:
   - 'e2e: slå hver avkrysning av/på og kontroller plakaten'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/presentation/poster.ts (defaultOptions, POSTER_OPTION_LABEL)"
+  - "src/app/release/PosterInspector.tsx"
+  verification:
+  - "tests/unit/presentation.test.ts"
+  - "tests/db/run-db-tests.ts (0019 DEC-0061)"
+  - "tests/visual/screens.mjs (60)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0061
+    change: "13 innholdsvalg som avkrysning"
   notes: ''
 - id: REQ-0391
   title: Layout tilpasses informasjonsmengde
@@ -13965,13 +14022,20 @@ requirements:
   - Gitt at brukeren legger til flere innholdstyper, så reflowes layouten uten overlapp eller avkuttet innhold.
   tests:
   - 'visuell: layout ved minimum og maksimum informasjonsmengde'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/presentation/poster.ts (layoutPoster)"
+  verification:
+  - "tests/unit/presentation.test.ts"
+  - "tests/db/run-db-tests.ts (0019 DEC-0061)"
+  - "tests/visual/screens.mjs (60)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0061
+    change: "Komposisjonen lages på nytt når innholdet endres; det brukeren har endret, står"
   notes: ''
 - id: REQ-0392
   title: Varsel om redusert lesbarhet
@@ -13996,13 +14060,21 @@ requirements:
   tests:
   - 'enhet: lesbarhetsterskel'
   - 'visuell: varsel vises'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/presentation/poster.ts (posterChecks, minReadablePt)"
+  - "src/app/release/PosterInspector.tsx (PosterChecksList)"
+  verification:
+  - "tests/unit/presentation.test.ts"
+  - "tests/db/run-db-tests.ts (0019 DEC-0061)"
+  - "tests/visual/screens.mjs (63)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0061
+    change: "Varsel om for liten tekst eller tekst som ikke får plass, med forslag"
   notes: ''
 - id: REQ-0393
   title: Visuelt relasjonskart med relasjonstyper
@@ -14027,13 +14099,21 @@ requirements:
   tests:
   - 'enhet: relasjonstyper inkl. brukerdefinert'
   - 'visuell: relasjonslinjer'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/presentation/relations.ts"
+  - "src/core/presentation/poster.ts (relasjonslinjer)"
+  verification:
+  - "tests/unit/presentation.test.ts"
+  - "tests/db/run-db-tests.ts (0019 DEC-0061)"
+  - "tests/visual/screens.mjs (60)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0061
+    change: "Relasjonslinjer med farge og stil per type, med navn og tekst"
   notes: ''
 - id: REQ-0394
   title: Relasjonsforslag uten usikre antakelser som fakta
@@ -14058,13 +14138,21 @@ requirements:
   tests:
   - 'integrasjon: forslag har status «foreslått»'
   - 'manuell: merking er tydelig'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/presentation/relations.ts (relationSuggestions)"
+  - "src/app/release/RelationsDialog.tsx"
+  verification:
+  - "tests/unit/presentation.test.ts"
+  - "tests/db/run-db-tests.ts (0019 DEC-0061)"
+  - "tests/visual/screens.mjs (64)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0061
+    change: "Forslag fra manuset vises som forslag og lagres bare når de godkjennes"
   notes: «kan foreslå» = valgfritt; forbudet mot å presentere antakelser som fakta er absolutt når funksjonen finnes.
 - id: REQ-0395
   title: Godkjenne og redigere relasjoner
@@ -14086,13 +14174,21 @@ requirements:
   - Gitt en foreslått relasjon, så kan brukeren godkjenne, endre type/tekst eller forkaste den.
   tests:
   - 'e2e: godkjenn og rediger relasjon'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/release/RelationsDialog.tsx"
+  - "src/core/commands/apply.ts (AddRelations, UndoAddRelations, UpdateRelations, SetRelationsRemoved, CreatePoster, UndoCreatePoster, UpdatePoster, SetPosterRemoved)"
+  verification:
+  - "tests/unit/presentation.test.ts"
+  - "tests/db/run-db-tests.ts (0019 DEC-0061)"
+  - "tests/visual/screens.mjs (64)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0061
+    change: "Relasjoner godkjennes, avvises, endres, fjernes og legges til selv"
   notes: ''
 - id: REQ-0396
   title: Automatisk førsteutkast til plakat
@@ -14118,13 +14214,21 @@ requirements:
     og visuell stil, alle redigerbare før bruk.
   tests:
   - 'integrasjon: analyse av prosjektdata gir forslag i alle seks kategorier'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/presentation/poster.ts (posterAnalysis, posterDraft)"
+  - "src/app/release/PosterDialogs.tsx (NewPosterDialog)"
+  verification:
+  - "tests/unit/presentation.test.ts"
+  - "tests/db/run-db-tests.ts (0019 DEC-0061)"
+  - "tests/visual/screens.mjs (65)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0061
+    change: "Førsteutkast fra prosjektet: hvem, hvor, hva, relasjoner og stil"
   notes: ''
 - id: REQ-0397
   title: Redigerbar plakat etter generering
@@ -14148,13 +14252,22 @@ requirements:
     relasjonslinjer, synlighet og komposisjon.
   tests:
   - 'e2e: endre hver egenskap og lagre'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/release/PosterWorkspace.tsx"
+  - "src/app/release/PosterCanvas.tsx"
+  - "src/app/release/PosterInspector.tsx"
+  verification:
+  - "tests/unit/presentation.test.ts"
+  - "tests/db/run-db-tests.ts (0019 DEC-0061)"
+  - "tests/visual/screens.mjs (62)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0061
+    change: "Plakaten kan endres fritt etter utkastet (flytt, størrelse, tekst, farger, bilder, egne elementer)"
   notes: ''
 - id: REQ-0398
   title: Separate redigerbare plakatelementer
@@ -14175,13 +14288,20 @@ requirements:
   - Gitt en lagret plakat, så er tekst og grafiske elementer lagret som separate objekter som kan redigeres enkeltvis.
   tests:
   - 'dataintegritet: plakatmodell har separate element-objekter'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/model.ts (PosterDocument, PosterElement)"
+  verification:
+  - "tests/unit/presentation.test.ts"
+  - "tests/db/run-db-tests.ts (0019 DEC-0061)"
+  - "tests/visual/screens.mjs (62)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0061
+    change: "Hvert element (tekst, bilde, flate, relasjon) er eget og redigerbart"
   notes: «så langt mulig».
 - id: REQ-0399
   title: AI-bakgrunn ikke eneste lagringsform
@@ -14203,13 +14323,20 @@ requirements:
     bildet, og plakaten kan gjenoppbygges fra den.
   tests:
   - 'dataintegritet: plakat kan åpnes og redigeres uten å regenerere bakgrunnen'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/model.ts (PosterDocument)"
+  - "db/migrations/0019_presentation.sql"
+  verification:
+  - "tests/unit/presentation.test.ts"
+  - "tests/db/run-db-tests.ts (0019 DEC-0061)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0061
+    change: "Plakaten lagres som strukturert dokument, ikke som ett bilde"
   notes: ''
 - id: REQ-0400
   title: Stilharmonisering av karakterbilder i plakat
@@ -14327,13 +14454,20 @@ requirements:
   tests:
   - 'enhet: plakat knyttet til produksjon-ID'
   - 'e2e: flere varianter lagres og gjenåpnes'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/release/PosterWorkspace.tsx (plakater per produksjon)"
+  verification:
+  - "tests/unit/presentation.test.ts"
+  - "tests/db/run-db-tests.ts (0019 DEC-0061)"
+  - "tests/visual/screens.mjs (60)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0061
+    change: "Flere plakater per produksjon, også for spinoffer"
   notes: ''
 - id: REQ-0404
   title: Plakater på norsk og engelsk
@@ -14356,13 +14490,21 @@ requirements:
   - Gitt en plakat, så kan den eksporteres i norsk og engelsk språkversjon med oversatt tekst.
   tests:
   - 'import/eksport: plakat i to språk'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/presentation/poster.ts (LocalizedText, elementText)"
+  - "src/app/release/PosterInspector.tsx (Bilingual)"
+  verification:
+  - "tests/unit/presentation.test.ts"
+  - "tests/db/run-db-tests.ts (0019 DEC-0061)"
+  - "tests/visual/screens.mjs (66)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0061
+    change: "Norsk og engelsk tekst; engelsk faller tilbake til norsk og meldes"
   notes: ''
 - id: REQ-0405
   title: Hovedoversikt over prosjektets tilstand
@@ -14949,13 +15091,21 @@ requirements:
   - Gitt en plakat og et karakterkart, så kan begge eksporteres i minst ett trykkformat og ett digitalformat.
   tests:
   - 'import/eksport: plakat i trykk- og digitalformat'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/engine/export/poster-pdf.ts"
+  - "src/engine/export/poster-canvas.ts"
+  verification:
+  - "tests/unit/presentation.test.ts"
+  - "tests/db/run-db-tests.ts (0019 DEC-0061)"
+  - "tests/visual/screens.mjs (66)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0061
+    change: "Trykk-PDF og PNG (72–300 ppi)"
   notes: ''
 - id: REQ-0422
   title: Eksportkontroll før eksport
@@ -15765,13 +15915,22 @@ requirements:
     og dette ansvaret ligger ikke i andre moduler.'
   tests:
   - 'manuell: arkitekturgjennomgang av ansvarsgrenser'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Under arbeid
+  implementation:
+  - "src/core/presentation/poster.ts"
+  - "src/core/presentation/relations.ts"
+  - "src/core/presentation/metrics.ts"
+  - "src/core/presentation/document.ts"
+  - "src/engine/export/poster-pdf.ts"
+  verification:
+  - "tests/unit/presentation.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0061
+    change: "Presentasjonsmodulen: plakater, relasjoner og eksport. Stilharmonisering med AI venter på godkjent kostnad"
   notes: ''
 - id: REQ-0448
   title: 'Modul: Export Engine'
@@ -17363,13 +17522,24 @@ requirements:
   - En lagret plakat kan gjenåpnes, redigeres element for element og eksporteres separat.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/presentation/poster.ts"
+  - "src/core/presentation/relations.ts"
+  - "src/core/presentation/metrics.ts"
+  - "src/core/presentation/document.ts"
+  - "src/app/release/PosterWorkspace.tsx"
+  verification:
+  - "tests/unit/presentation.test.ts"
+  - "tests/db/run-db-tests.ts (0019 DEC-0061)"
+  - "tests/visual/screens.mjs (62)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0061
+    change: "Plakater er egne, redigerbare eksportprodukter"
   notes: Oppsummerer kap. 26, 26.6, 29.5. Linje 1532/1533 duplikat.
 - id: REQ-0502
   title: 'Prinsipp 24: Plakater 70 × 100 cm og flere informasjonsnivåer'
@@ -17389,13 +17559,21 @@ requirements:
   - Plakat kan eksporteres i 70 × 100 cm med valgbart informasjonsnivå.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/presentation/poster.ts"
+  verification:
+  - "tests/unit/presentation.test.ts"
+  - "tests/db/run-db-tests.ts (0019 DEC-0061)"
+  - "tests/visual/screens.mjs (60)"
+  - "tests/visual/screens.mjs (61)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0061
+    change: "70 × 100 cm og flere informasjonsnivåer"
   notes: Oppsummerer kap. 26.1, 26.3. Linje 1534/1535 duplikat.
 - id: REQ-0503
   title: 'Prinsipp 25: Publisering av harmoniserte bilder etter godkjenning'
@@ -20077,3 +20255,131 @@ requirements:
   - date: '2026-10-11'
     decision: DEC-0052
     change: "Bygd: opptak fra avspillingshodet mens scenen spilles, lagres i biblioteket og legges i scenen; trimmes uten å endre opptaket. Opptak med mikrofon er ikke automatisk testet"
+- id: REQ-0584
+  title: "«Bruk aktivt utsnitt» i kamerautsnitt"
+  text: "Start- og sluttrammen i et kamerautsnitt skal kunne hente utsnittet kameraet har når scenen rett før slutter (knappen «Bruk aktivt utsnitt»), så overgangen mellom scenene henger sammen."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0062
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - COMPOSE
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0174
+  acceptance:
+  - "Knappen finnes ved både startrammen (blå) og sluttrammen (rød)."
+  - "Den kopierer sluttrammen i det siste kamerautsnittet i forrige aktive scene (hele formatet hvis den ikke har noe), omregnet til scenens format."
+  - "Knappen er deaktivert i første scene og når scenen før ikke har en 2D-scene. Endringen kan angres."
+  tests:
+  - "tests/unit/camera-handoff.test.ts"
+  status: Verifisert
+  implementation:
+  - "src/core/composition/camera-handoff.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  verification:
+  - "tests/unit/camera-handoff.test.ts"
+  - "tests/visual/screens.mjs (34, 68)"
+  history:
+  - date: '2026-10-11'
+    decision: DEC-0062
+    change: "Opprettet og bygd etter Mars' ønske 2026-10-11"
+- id: REQ-0585
+  title: "Lag i grupper med dra og slipp, fjerning av lag og justerbar lagliste"
+  text: "I laglisten skal et lag kunne fjernes fra scenen (ressursen blir i biblioteket), dras inn på en gruppe for å bli med i den og dras ut igjen. Når en gruppe velges, lyser lagene i den opp i listen og i scenen. Skillelinjen under laglisten kan dras, så brukeren bestemmer hvor mange lag som vises."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0062
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - COMPOSE
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0174
+  acceptance:
+  - "Hver rad har «Fjern fra scenen»; en gruppe fjernes uten at lagene i den hopper. Kan angres."
+  - "Slipp på midten av en grupperad legger laget i gruppen uten at det flytter seg i bildet; slipp ved siden av et lag utenfor gruppen tar det ut. Knappen «Ta ut av gruppen» gjør det samme uten mus."
+  - "Valgt gruppe: lagene i den markeres i listen og får omriss i scenen."
+  - "Høyden på laglisten huskes."
+  tests:
+  - "tests/visual/screens.mjs (67)"
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/scene-editor/LayersPanel.tsx"
+  - "src/app/scene-editor/Stage.tsx (drawMemberOutline)"
+  - "src/app/shell/pane-size.tsx (edge bottom)"
+  verification:
+  - "tests/visual/screens.mjs (67)"
+  history:
+  - date: '2026-10-11'
+    decision: DEC-0062
+    change: "Opprettet og bygd etter Mars' ønsker 2026-10-11. Dra og slipp mellom grupper er kontrollert for hånd i koden, ikke med automatisk test"
+- id: REQ-0586
+  title: "Endre rolle etter invitasjon"
+  text: "Prosjektets eier skal kunne endre rollen til et medlem etter at det er invitert inn (eier, redaktør, kommentator, leser), og endre rollen i eller trekke tilbake en invitasjon som ikke er tatt imot. Prosjektet skal alltid ha minst én eier."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0063
+  type: funksjonell
+  priority: P1
+  phase: 1
+  modules:
+  - COLLAB
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0520
+  - REQ-0521
+  acceptance:
+  - "Eieren velger ny rolle for et medlem i listen på prosjektoversikten; endringen gjelder straks i databasen."
+  - "Andre enn eieren kan ikke endre roller; den eneste eieren kan ikke miste eierrollen."
+  - "Ventende invitasjoner vises for eieren med rolle som kan endres, og kan trekkes tilbake."
+  tests:
+  - "tests/db/run-db-tests.ts (0020 DEC-0063)"
+  status: Verifisert
+  implementation:
+  - "db/migrations/0020_member_roles.sql"
+  - "src/app/projects/MembersSection.tsx"
+  verification:
+  - "tests/db/run-db-tests.ts (0020 DEC-0063)"
+  - "tests/visual/screens.mjs (69)"
+  history:
+  - date: '2026-10-11'
+    decision: DEC-0063
+    change: "Opprettet og bygd etter Mars' ønske 2026-10-11"
+- id: REQ-0587
+  title: "Tilbake til forrige vindu"
+  text: "En global «Tilbake»-funksjon skal ta brukeren tilbake til arbeidsflaten (vinduet) hun kom fra, med samme valg som da hun forlot den."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0063
+  type: funksjonell
+  priority: P2
+  phase: 1
+  modules:
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Knappen «Tilbake til …» i toppstripen viser navnet på forrige flate og går dit med samme valg (scene, ressurs, replikk)."
+  - "Valg inne i samme flate gir ikke nye steg; flere trykk går videre bakover."
+  tests:
+  - "tests/unit/back-stack.test.ts"
+  status: Verifisert
+  implementation:
+  - "src/app/shell/back-stack.ts"
+  - "src/app/shell/back-navigation.tsx"
+  - "src/app/shell/AppHeader.tsx"
+  verification:
+  - "tests/unit/back-stack.test.ts"
+  - "tests/visual/screens.mjs (70)"
+  history:
+  - date: '2026-10-11'
+    decision: DEC-0063
+    change: "Opprettet og bygd etter Mars' ønske 2026-10-11"

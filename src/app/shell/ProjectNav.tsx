@@ -13,9 +13,7 @@ import type { ReactNode } from "react";
 import { PaneResizer, usePaneSize, useStoredFlag } from "./pane-size";
 
 /** Arbeidsflatene (INFORMATION_ARCHITECTURE.md). Flatene som ikke er bygget ennå vises deaktivert med milepæl. */
-const LATER: { label: string; icon: ReactNode; milestone: string }[] = [
-  { label: "Utgivelse", icon: <Clapperboard />, milestone: "M8" },
-];
+const LATER: { label: string; icon: ReactNode; milestone: string }[] = [];
 
 const LINKS = [
   {
@@ -46,6 +44,12 @@ const LINKS = [
     to: "/prosjekt/$projectId/montering",
     label: "Montering",
     icon: <Film aria-hidden />,
+    exact: false,
+  },
+  {
+    to: "/prosjekt/$projectId/utgivelse",
+    label: "Utgivelse",
+    icon: <Clapperboard aria-hidden />,
     exact: false,
   },
 ] as const;

@@ -11,8 +11,9 @@ const FORBIDDEN = [
   /from\s+["']@supabase/,
   /from\s+["']@\/(?!core)/,
   /from\s+["']node:/,
-  /\bwindow\./,
-  /\bdocument\./,
+  // Globale objekter, ikke egenskaper (plakatens «poster.document» er lov)
+  /(?<![.\w])window\./,
+  /(?<![.\w])document\./,
   /\blocalStorage\b/,
   /\bprocess\.env\b/,
 ];

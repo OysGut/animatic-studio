@@ -214,6 +214,22 @@ export function needsSchema18(command: { type: string } & Record<string, unknown
   return false;
 }
 
+const PRESENTATION_COMMANDS = new Set([
+  "AddRelations",
+  "UndoAddRelations",
+  "UpdateRelations",
+  "SetRelationsRemoved",
+  "CreatePoster",
+  "UndoCreatePoster",
+  "UpdatePoster",
+  "SetPosterRemoved",
+]);
+
+/** Relasjoner og plakater (M8 del 1, DEC-0061) krever migrasjon 0019. */
+export function needsSchema19(command: { type: string }): boolean {
+  return PRESENTATION_COMMANDS.has(command.type);
+}
+
 /** Importert film og overganger krever migrasjon 0011 (DEC-0047). */
 function needsFilmSchema(command: { type: string } & Record<string, unknown>): boolean {
   if (command.type === "SetTransition") return true;
@@ -486,6 +502,16 @@ export const runCommand = createServerFn({ method: "POST" })
           code: "schema",
           message:
             "Databasen mangler kontinuitet for spinoffer. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0018.",
+        };
+    }
+    if (needsSchema19(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 19)
+        return {
+          ok: false,
+          code: "schema",
+          message:
+            "Databasen mangler plakater og relasjoner. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0019.",
         };
     }
     if (needsFilmSchema(data.command as never)) {

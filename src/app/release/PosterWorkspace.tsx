@@ -1,0 +1,770 @@
+/**
+ * Arbeidsflaten «Utgivelse» (M8 del 1, DEC-0061; mandat kap. 26, REQ-0384–0399, REQ-0403/0404,
+ * REQ-0501/0502): plakater og karakterkart per produksjon, med førsteutkast fra prosjektet, direkte
+ * redigering, kontroll av lesbarhet og eksport til trykk-PDF og PNG. Relasjonene mellom karakterene
+ * redigeres her. Alt er kommandoer som kan angres.
+ */
+import { useEffect, useMemo, useState } from "react";
+import {
+  Download,
+  GitFork,
+  ImagePlus,
+  Plus,
+  Redo2,
+  Square,
+  Trash2,
+  Type,
+  Undo2,
+} from "lucide-react";
+import {
+  POSTER_KIND_LABEL,
+  ROLE_LABEL,
+  defaultOptions,
+  posterDraft,
+  renderPoster,
+  sortedAssets,
+  type Poster,
+  type PosterDocument,
+  type PosterElement,
+  type ProjectState,
+} from "@/core";
+import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
+import { useCommands, type Commands } from "@/app/project/use-commands";
+import { useActiveProduction } from "@/app/project/use-production";
+import { useImageUrls } from "@/app/library/asset-images";
+import { SaveIndicator } from "@/app/script/ScriptWorkspace";
+import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
+import { Button } from "@/components/ui/button";
+import { PosterCanvas } from "./PosterCanvas";
+import { ElementInspector, PosterChecksList, PosterSettings } from "./PosterInspector";
+import { ExportPosterDialog, NewPosterDialog } from "./PosterDialogs";
+import { RelationsDialog } from "./RelationsDialog";
+import {
+  editElement,
+  relayout,
+  resetElement,
+  savePoster,
+  scaleElements,
+  withElement,
+} from "./poster-edit";
+
+/** Navnet på et element i listen (øverst først): rolle, ressurs eller begynnelsen av teksten. */
+function elementLabel(state: ProjectState, e: PosterElement): string {
+  const role = ROLE_LABEL[e.role] ?? e.role;
+  const asset = e.assetId ? state.assets[e.assetId]?.name : undefined;
+  if (asset) return `${role}: ${asset}`;
+  const rel = e.relationId ? state.assetRelations[e.relationId] : undefined;
+  if (rel)
+    return `${role}: ${state.assets[rel.fromAssetId]?.name ?? "?"} – ${state.assets[rel.toAssetId]?.name ?? "?"}`;
+  const t = e.text?.nb.trim();
+  if (t) return `${role}: ${t.length > 30 ? `${t.slice(0, 30)}…` : t}`;
+  // Kortene og bildene har ressursen i ID-en
+  const m = /^(?:char|place|obj):([0-9a-f-]{36})/.exec(e.id);
+  const named = m ? state.assets[m[1]!]?.name : undefined;
+  return named ? `${role}: ${named}` : role;
+}
+
+export function PosterWorkspace({ projectId, userId }: { projectId: string; userId: string }) {
+  const query = useProjectState(projectId);
+  const members = useMembers(projectId);
+  const role = members.data?.find((m) => m.user_id === userId)?.role;
+  const editable = canEdit(role);
+  const cmds = useCommands(projectId, userId, editable);
+  if (query.isLoading)
+    return <p className="p-6 text-[13px] text-text-tertiary">Henter prosjektet …</p>;
+  if (query.isError || !query.data)
+    return (
+      <div role="alert" className="p-6 text-[13px] text-status-danger">
+        Prosjektet kunne ikke hentes.
+        {query.error ? (
+          <p className="mt-2 font-mono text-xs text-text-tertiary">
+            Teknisk detalj: {query.error.message}
+          </p>
+        ) : null}
+      </div>
+    );
+  return (
+    <Release
+      state={query.data}
+      projectId={projectId}
+      editable={editable}
+      roleKnown={members.isSuccess}
+      cmds={cmds}
+    />
+  );
+}
+
+type Tab = "poster" | "element" | "checks";
+
+function Release({
+  state,
+  projectId,
+  editable,
+  roleKnown,
+  cmds,
+}: {
+  state: ProjectState;
+  projectId: string;
+  editable: boolean;
+  roleKnown: boolean;
+  cmds: Commands;
+}) {
+  const productions = useMemo(
+    () =>
+      Object.values(state.productions).sort((a, b) =>
+        a.kind === "main" ? -1 : b.kind === "main" ? 1 : a.name.localeCompare(b.name, "nb"),
+      ),
+    [state.productions],
+  );
+  const [productionId, setProductionId] = useActiveProduction(projectId, state);
+  const posters = useMemo(
+    () =>
+      Object.values(state.posters)
+        .filter((p) => !p.removed && p.productionId === productionId)
+        .sort((a, b) => a.name.localeCompare(b.name, "nb") || a.id.localeCompare(b.id)),
+    [state.posters, productionId],
+  );
+  const [posterId, setPosterId] = useState<string | null>(null);
+  const poster: Poster | undefined = (posterId ? state.posters[posterId] : undefined) ?? posters[0];
+  const shownPoster =
+    poster && !poster.removed && poster.productionId === productionId ? poster : posters[0];
+  const [selected, setSelected] = useState<string | null>(null);
+  const [highlight, setHighlight] = useState<readonly string[]>([]);
+  const [tab, setTab] = useState<Tab>("poster");
+  const [preview, setPreview] = useState<"nb" | "en" | null>(null);
+  const [newOpen, setNewOpen] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
+  const [relOpen, setRelOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [listWidth, setListWidth] = usePaneSize("release-list", 220, 160, 360);
+  const [sideWidth, setSideWidth] = usePaneSize("release-inspector", 320, 260, 520);
+
+  const lang = preview ?? shownPoster?.language ?? "nb";
+  const element =
+    shownPoster && selected
+      ? shownPoster.document.elements.find((e) => e.id === selected)
+      : undefined;
+
+  // Valget kan forsvinne (angre, andres endringer, ny komposisjon)
+  useEffect(() => {
+    if (selected && !element) setSelected(null);
+  }, [selected, element]);
+  useEffect(() => {
+    setSelected(null);
+    setHighlight([]);
+    setPreview(null);
+  }, [shownPoster?.id]);
+
+  const paths = useMemo(() => {
+    if (!shownPoster) return [];
+    return renderPoster(state, shownPoster, lang).flatMap((o) =>
+      o.op === "image" ? [o.mediaPath] : [],
+    );
+  }, [state, shownPoster, lang]);
+  const urls = useImageUrls(paths);
+
+  const save = (
+    p: Poster,
+    patch: Parameters<typeof savePoster>[2],
+    label: string,
+    group?: string,
+  ) => setError(savePoster(cmds, p, patch, label, group));
+
+  const changeElement = (
+    id: string,
+    patch: Partial<PosterElement>,
+    label: string,
+    group?: string,
+  ) => {
+    if (!shownPoster) return;
+    save(shownPoster, { document: withElement(shownPoster.document, id, patch) }, label, group);
+  };
+
+  const addElement = (e: PosterElement, label: string) => {
+    if (!shownPoster) return;
+    save(
+      shownPoster,
+      { document: { ...shownPoster.document, elements: [...shownPoster.document.elements, e] } },
+      label,
+    );
+    setSelected(e.id);
+    setTab("element");
+  };
+
+  const newCustom = (kind: "text" | "image" | "rect") => {
+    if (!shownPoster) return;
+    const W = shownPoster.widthMm;
+    const H = shownPoster.heightMm;
+    const id = `custom:${crypto.randomUUID()}`;
+    const pal = shownPoster.document.palette;
+    const base = { id, role: "custom", rotation: 0, visible: true, auto: false } as const;
+    if (kind === "text")
+      addElement(
+        {
+          ...base,
+          kind: "text",
+          x: W * 0.2,
+          y: H * 0.45,
+          w: W * 0.6,
+          h: H * 0.05,
+          text: { nb: "Ny tekst", en: "New text" },
+          font: "serif",
+          bold: false,
+          italic: false,
+          size: Math.round(36 * (W / 700)),
+          color: pal.text,
+          align: "center",
+          uppercase: false,
+          tracking: 0,
+          lineHeight: 1.2,
+        },
+        "Ny tekst",
+      );
+    else if (kind === "rect")
+      addElement(
+        {
+          ...base,
+          kind: "rect",
+          x: W * 0.3,
+          y: H * 0.4,
+          w: W * 0.4,
+          h: H * 0.2,
+          fill: pal.accent,
+          stroke: null,
+          strokeWidth: 0,
+          opacity: 0.8,
+          radius: 0,
+        },
+        "Ny flate",
+      );
+    else {
+      const a = sortedAssets(state).find((x) => !x.archived && x.kind !== "sound");
+      if (!a) {
+        setError("Biblioteket har ingen ressurser med bilder ennå.");
+        return;
+      }
+      addElement(
+        {
+          ...base,
+          kind: "image",
+          x: W * 0.35,
+          y: H * 0.35,
+          w: W * 0.3,
+          h: W * 0.3,
+          assetId: a.id,
+          assetVariantId: null,
+          versionId: null,
+          fit: "contain",
+          opacity: 1,
+        },
+        "Nytt bilde",
+      );
+    }
+  };
+
+  const onDocument = (doc: PosterDocument, label: string, group?: string) => {
+    if (!shownPoster) return;
+    save(shownPoster, { document: relayout(state, shownPoster, doc) }, label, group);
+  };
+
+  const onPoster = (
+    patch: Partial<Pick<Poster, "name" | "language" | "kind" | "widthMm" | "heightMm">>,
+    label: string,
+  ) => {
+    if (!shownPoster) return;
+    if (patch.kind || patch.widthMm || patch.heightMm) {
+      const w = patch.widthMm ?? shownPoster.widthMm;
+      const h = patch.heightMm ?? shownPoster.heightMm;
+      const kindChange = !!patch.kind && patch.kind !== shownPoster.kind;
+      const base = kindChange
+        ? {
+            // Annen type: programmets elementer lages på nytt i den nye komposisjonen, egne elementer står
+            ...shownPoster.document,
+            options: defaultOptions(patch.kind!),
+            elements: shownPoster.document.elements.filter((e) => e.role === "custom"),
+          }
+        : shownPoster.document;
+      const scaled = scaleElements(base, w / shownPoster.widthMm, h / shownPoster.heightMm);
+      const doc = relayout(state, shownPoster, scaled, {
+        ...(patch.kind ? { kind: patch.kind } : {}),
+        widthMm: w,
+        heightMm: h,
+      });
+      save(shownPoster, { ...patch, document: doc }, label);
+    } else save(shownPoster, patch, label);
+  };
+
+  const onRedraft = () => {
+    if (!shownPoster) return;
+    const d = shownPoster.document;
+    const fresh = posterDraft(
+      state,
+      shownPoster.productionId,
+      shownPoster.kind,
+      shownPoster.widthMm,
+      shownPoster.heightMm,
+    );
+    // Tekstene, stilen, innholdsvalgene og utvalget beholdes; elementene lages på nytt
+    const doc = relayout(state, shownPoster, {
+      ...fresh,
+      title: d.title,
+      logline: d.logline,
+      genre: d.genre,
+      tagline: d.tagline,
+      palette: d.palette,
+      options: d.options,
+      characters: d.characters,
+      places: d.places,
+      objects: d.objects,
+      elements: [],
+    });
+    save(shownPoster, { document: doc }, "Lag utkastet på nytt");
+    setSelected(null);
+  };
+
+  const order = (dir: "front" | "back") => {
+    if (!shownPoster || !element) return;
+    const rest = shownPoster.document.elements.filter((e) => e.id !== element.id);
+    const e = editElement(element, {});
+    const z =
+      e.role === "custom"
+        ? e
+        : { ...e, overrides: [...new Set([...(e.overrides ?? []), "z"])].sort() };
+    // Bakgrunnen ligger alltid nederst
+    const bg = rest.findIndex((x) => x.role === "background");
+    const elements =
+      dir === "front" ? [...rest, z] : [...rest.slice(0, bg + 1), z, ...rest.slice(bg + 1)];
+    save(
+      shownPoster,
+      { document: { ...shownPoster.document, elements } },
+      dir === "front" ? "Flytt fram" : "Flytt bak",
+    );
+  };
+
+  const reset = () => {
+    if (!shownPoster || !element) return;
+    const doc = shownPoster.document;
+    save(
+      shownPoster,
+      {
+        document: relayout(state, shownPoster, {
+          ...doc,
+          elements: doc.elements.map((e) => (e.id === element.id ? resetElement(e) : e)),
+        }),
+      },
+      "Tilbakestill element",
+    );
+  };
+
+  const remove = () => {
+    if (!shownPoster || !element) return;
+    save(
+      shownPoster,
+      {
+        document: {
+          ...shownPoster.document,
+          elements: shownPoster.document.elements.filter((e) => e.id !== element.id),
+        },
+      },
+      "Fjern element",
+    );
+    setSelected(null);
+  };
+
+  return (
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div className="flex h-10 shrink-0 items-center gap-2 border-b border-border bg-surface-2 px-3">
+        <span className="text-[13px] font-medium text-text-primary">Utgivelse</span>
+        <div className="mx-1 h-5 w-px bg-border" aria-hidden />
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={cmds.undo}
+          disabled={!cmds.canUndo}
+          title={cmds.undoLabel ? `Angre: ${cmds.undoLabel} (⌘Z)` : "Angre (⌘Z)"}
+          aria-label={cmds.undoLabel ? `Angre: ${cmds.undoLabel}` : "Angre"}
+        >
+          <Undo2 />
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={cmds.redo}
+          disabled={!cmds.canRedo}
+          title={cmds.redoLabel ? `Gjør om: ${cmds.redoLabel} (⇧⌘Z)` : "Gjør om (⇧⌘Z)"}
+          aria-label={cmds.redoLabel ? `Gjør om: ${cmds.redoLabel}` : "Gjør om"}
+        >
+          <Redo2 />
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={() => setRelOpen(true)}
+          title="Relasjoner mellom karakterene"
+        >
+          <GitFork />
+          <span className="hidden xl:inline">Relasjoner</span>
+        </Button>
+        {shownPoster && editable ? (
+          <>
+            <div className="mx-1 h-5 w-px bg-border" aria-hidden />
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => newCustom("text")}
+              aria-label="Legg til tekst"
+              title="Legg til tekst"
+            >
+              <Type />
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => newCustom("image")}
+              aria-label="Legg til bilde"
+              title="Legg til bilde"
+            >
+              <ImagePlus />
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => newCustom("rect")}
+              aria-label="Legg til flate"
+              title="Legg til flate"
+            >
+              <Square />
+            </Button>
+          </>
+        ) : null}
+        {shownPoster ? (
+          <>
+            <div className="mx-1 h-5 w-px bg-border" aria-hidden />
+            <label className="flex items-center gap-1.5 whitespace-nowrap text-xs text-text-secondary">
+              <span className="hidden xl:inline">Vis på</span>
+              <select
+                aria-label="Språk i forhåndsvisningen"
+                value={lang}
+                onChange={(e) => setPreview(e.target.value as "nb" | "en")}
+                className="h-7 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary"
+              >
+                <option value="nb">Norsk</option>
+                <option value="en">Engelsk</option>
+              </select>
+            </label>
+            <Button size="sm" variant="secondary" onClick={() => setExportOpen(true)}>
+              <Download />
+              Eksporter
+            </Button>
+          </>
+        ) : null}
+        <div className="ml-auto flex items-center gap-3">
+          <SaveIndicator cmds={cmds} />
+          {roleKnown && !editable ? (
+            <span className="text-xs text-text-tertiary">Bare lesetilgang</span>
+          ) : null}
+          {productions.length > 1 ? (
+            <label className="flex items-center gap-1.5 text-xs text-text-secondary">
+              Produksjon
+              <select
+                aria-label="Produksjon"
+                value={productionId}
+                onChange={(e) => setProductionId(e.target.value)}
+                className="h-7 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary"
+              >
+                {productions.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : null}
+        </div>
+      </div>
+      {error ? (
+        <div
+          role="alert"
+          className="flex items-center gap-2 border-b border-border bg-status-danger-bg px-3 py-1.5 text-xs text-status-danger"
+        >
+          {error}
+          <button type="button" className="ml-auto underline" onClick={() => setError(null)}>
+            Lukk
+          </button>
+        </div>
+      ) : null}
+
+      <div
+        className="grid min-h-0 flex-1"
+        style={{
+          gridTemplateColumns: `${listWidth}px minmax(0,1fr) ${shownPoster ? sideWidth : 0}px`,
+        }}
+      >
+        {/* Plakatene */}
+        <div className="relative flex min-h-0 flex-col border-r border-border bg-surface-1">
+          <PaneResizer
+            edge="right"
+            size={listWidth}
+            onSize={setListWidth}
+            min={160}
+            max={360}
+            label="Bredde på plakatlisten"
+          />
+          <div className="flex shrink-0 items-center justify-between border-b border-border px-2 py-2">
+            <span className="text-xs font-medium text-text-secondary">
+              Plakater ({posters.length})
+            </span>
+            {editable ? (
+              <Button size="sm" variant="ghost" onClick={() => setNewOpen(true)}>
+                <Plus />
+                Ny
+              </Button>
+            ) : null}
+          </div>
+          <ul className="min-h-0 flex-1 overflow-y-auto p-1" aria-label="Plakater">
+            {posters.map((p) => (
+              <li key={p.id} className="group flex items-center">
+                <button
+                  type="button"
+                  onClick={() => setPosterId(p.id)}
+                  aria-current={p.id === shownPoster?.id ? "true" : undefined}
+                  className={
+                    "flex min-w-0 flex-1 flex-col rounded-sm px-2 py-1.5 text-left hover:bg-surface-3 " +
+                    (p.id === shownPoster?.id ? "bg-accent-selection" : "")
+                  }
+                >
+                  <span className="truncate text-[13px] text-text-primary">{p.name}</span>
+                  <span className="truncate text-[11px] text-text-tertiary">
+                    {POSTER_KIND_LABEL[p.kind]} · {p.widthMm / 10} × {p.heightMm / 10} cm ·{" "}
+                    {p.language === "en" ? "engelsk" : "norsk"}
+                  </span>
+                </button>
+                {editable ? (
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="size-7 opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
+                    aria-label={`Fjern plakaten «${p.name}»`}
+                    title="Fjern plakaten (kan angres)"
+                    onClick={() =>
+                      setError(
+                        cmds.run(
+                          { type: "SetPosterRemoved", posterId: p.id, removed: true },
+                          `Fjern plakaten «${p.name}»`,
+                        ),
+                      )
+                    }
+                  >
+                    <Trash2 />
+                  </Button>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Plakaten */}
+        <div className="flex min-h-0 min-w-0 items-center justify-center bg-surface-0 p-6">
+          {shownPoster ? (
+            <PosterCanvas
+              state={state}
+              poster={shownPoster}
+              lang={lang}
+              urls={urls.data ?? {}}
+              selectedId={selected}
+              onSelect={(id) => {
+                setSelected(id);
+                setHighlight([]);
+                if (id) setTab("element");
+              }}
+              editable={editable}
+              onCommit={(id, patch, label, group) => changeElement(id, patch, label, group)}
+              highlight={highlight}
+            />
+          ) : (
+            <div className="max-w-md text-center">
+              <p className="text-[15px] font-medium text-text-primary">Ingen plakater ennå</p>
+              <p className="mt-2 text-[13px] text-text-secondary">
+                Lag en kinopitch-plakat eller et karakter- og universkart. Programmet lager et
+                førsteutkast fra manuset og biblioteket, som du kan endre fritt og eksportere til
+                trykk.
+              </p>
+              {editable ? (
+                <Button className="mt-4" onClick={() => setNewOpen(true)}>
+                  <Plus />
+                  Ny plakat
+                </Button>
+              ) : null}
+            </div>
+          )}
+        </div>
+
+        {/* Innstillinger */}
+        {shownPoster ? (
+          <aside
+            className="relative flex min-h-0 flex-col border-l border-border bg-surface-1"
+            aria-label="Innstillinger for plakaten"
+          >
+            <PaneResizer
+              edge="left"
+              size={sideWidth}
+              onSize={setSideWidth}
+              min={260}
+              max={520}
+              label="Bredde på innstillingene"
+            />
+            <div
+              role="tablist"
+              aria-label="Innstillinger"
+              className="flex shrink-0 border-b border-border"
+            >
+              {(
+                [
+                  ["poster", "Plakat"],
+                  ["element", "Element"],
+                  ["checks", "Kontroll"],
+                ] as const
+              ).map(([t, label]) => (
+                <button
+                  key={t}
+                  id={`release-tab-${t}`}
+                  role="tab"
+                  type="button"
+                  aria-selected={tab === t}
+                  aria-controls="release-tabpanel"
+                  tabIndex={tab === t ? 0 : -1}
+                  onClick={() => setTab(t)}
+                  onKeyDown={(e) => {
+                    const all = ["poster", "element", "checks"] as const;
+                    const i = all.indexOf(t);
+                    const next =
+                      e.key === "ArrowRight"
+                        ? all[(i + 1) % 3]
+                        : e.key === "ArrowLeft"
+                          ? all[(i + 2) % 3]
+                          : null;
+                    if (!next) return;
+                    e.preventDefault();
+                    setTab(next);
+                    document.getElementById(`release-tab-${next}`)?.focus();
+                  }}
+                  className={
+                    "h-9 flex-1 text-xs " +
+                    (tab === t
+                      ? "border-b-2 border-accent-brand font-medium text-text-primary"
+                      : "text-text-secondary hover:text-text-primary")
+                  }
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            <div
+              id="release-tabpanel"
+              className="min-h-0 flex-1 overflow-y-auto"
+              role="tabpanel"
+              aria-labelledby={`release-tab-${tab}`}
+            >
+              {tab === "element" ? (
+                <div className="border-b border-border px-3 py-2">
+                  <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
+                    Element
+                    <select
+                      value={element?.id ?? ""}
+                      onChange={(e) => {
+                        setSelected(e.target.value || null);
+                        setHighlight([]);
+                      }}
+                      className="h-7 w-full rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
+                    >
+                      <option value="">Velg et element …</option>
+                      {[...shownPoster.document.elements].reverse().map((el) => (
+                        <option key={el.id} value={el.id}>
+                          {elementLabel(state, el)}
+                          {el.visible ? "" : " (skjult)"}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+              ) : null}
+              {tab === "poster" ? (
+                <PosterSettings
+                  key={`${shownPoster.id}`}
+                  state={state}
+                  poster={shownPoster}
+                  editable={editable}
+                  onPoster={onPoster}
+                  onDocument={onDocument}
+                  onRedraft={onRedraft}
+                />
+              ) : tab === "element" ? (
+                element ? (
+                  <ElementInspector
+                    key={element.id}
+                    state={state}
+                    poster={shownPoster}
+                    element={element}
+                    editable={editable}
+                    onChange={(patch, label, group) =>
+                      changeElement(element.id, patch, label, group)
+                    }
+                    onReset={reset}
+                    onRemove={remove}
+                    onOrder={order}
+                  />
+                ) : (
+                  <p className="px-3 py-4 text-xs text-text-tertiary">
+                    Klikk på noe i plakaten, eller velg i listen over. Piltastene flytter valgt
+                    element.
+                  </p>
+                )
+              ) : (
+                <PosterChecksList
+                  state={state}
+                  poster={shownPoster}
+                  lang={lang}
+                  onShow={(ids) => {
+                    setHighlight(ids);
+                    if (ids.length === 1) setSelected(ids[0]!);
+                  }}
+                />
+              )}
+            </div>
+          </aside>
+        ) : (
+          <div />
+        )}
+      </div>
+
+      {newOpen ? (
+        <NewPosterDialog
+          state={state}
+          cmds={cmds}
+          productionId={productionId}
+          open={newOpen}
+          onOpenChange={setNewOpen}
+          onCreated={(id) => setPosterId(id)}
+        />
+      ) : null}
+      {exportOpen && shownPoster ? (
+        <ExportPosterDialog
+          state={state}
+          poster={shownPoster}
+          open={exportOpen}
+          onOpenChange={setExportOpen}
+        />
+      ) : null}
+      {relOpen ? (
+        <RelationsDialog
+          state={state}
+          cmds={cmds}
+          productionId={productionId}
+          editable={editable}
+          open={relOpen}
+          onOpenChange={setRelOpen}
+        />
+      ) : null}
+    </div>
+  );
+}

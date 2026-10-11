@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **583**
-- Prioritet: P0: 141, P1: 259, P2: 144, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 56, teknisk-anbefaling: 7
-- Status: Ikke startet: 198, Verifisert: 319, Under arbeid: 46, Implementert – ikke verifisert: 20
+- Antall krav: **587**
+- Prioritet: P0: 141, P1: 260, P2: 147, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 60, teknisk-anbefaling: 7
+- Status: Ikke startet: 176, Verifisert: 343, Under arbeid: 47, Implementert – ikke verifisert: 21
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -5093,12 +5093,13 @@ Animatic Studio skal kunne produsere profesjonelle visuelle presentasjoner av et
 - **Kilde:** Kap. 26 (l. 1059-1060) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PRESENT
 - **Avhengigheter:** Resource Library; Project Core
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et prosjekt med karakterer og ressurser, så kan brukeren produsere en visuell presentasjon (plakat) av prosjektet.
 - **Tester:**
   - e2e: generer presentasjon fra prosjekt
   - manuell: profesjonell kvalitet vurderes
+- **Implementering:** src/core/presentation/poster.ts, src/core/presentation/relations.ts, src/core/presentation/metrics.ts, src/core/presentation/document.ts, src/app/release/PosterWorkspace.tsx
 
 #### REQ-0385 – Presentasjon som egen eksportfunksjon
 Produksjon av presentasjonsmateriell skal være en egen eksportfunksjon.
@@ -5106,11 +5107,12 @@ Produksjon av presentasjonsmateriell skal være en egen eksportfunksjon.
 - **Kilde:** Kap. 26 (l. 1061) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PRESENT, EXPORT
 - **Avhengigheter:** REQ-0384
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Presentasjonseksport er tilgjengelig som egen funksjon atskilt fra film- og manuseksport.
 - **Tester:**
   - integrasjon: presentasjonseksport via Export Engine
+- **Implementering:** src/app/release/PosterWorkspace.tsx, src/app/release/PosterDialogs.tsx (ExportPosterDialog)
 
 #### REQ-0386 – Plakatformat 70 × 100 cm stående
 Programmet skal støtte minst plakatformatet 70 × 100 cm, stående format.
@@ -5118,11 +5120,12 @@ Programmet skal støtte minst plakatformatet 70 × 100 cm, stående format.
 - **Kilde:** Kap. 26.1 (l. 1062-1065) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PRESENT, EXPORT
 - **Avhengigheter:** REQ-0384
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en plakat, når den eksporteres i 70 × 100 cm stående, så har filen korrekt fysisk størrelse og orientering.
 - **Tester:**
   - import/eksport: kontroller sidestørrelse 700 × 1000 mm
+- **Implementering:** src/core/presentation/poster.ts (POSTER_FORMATS)
 - **Merknad:** Linje 1064 og 1065 er duplikat. «minst» – andre formater kan støttes.
 
 #### REQ-0387 – Plakateksport for trykk og digital distribusjon
@@ -5131,12 +5134,13 @@ Plakateksporten skal kunne tilpasses profesjonell trykkproduksjon og digital dis
 - **Kilde:** Kap. 26.1 (l. 1066-1072) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PRESENT, EXPORT
 - **Avhengigheter:** REQ-0384
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt eksportdialogen for plakat, så kan brukeren stille oppløsning, filformat, utfallende (bleed), fargehåndtering/fargeprofil og vektor-/trykkegnet tekst og grafikk.
   - Gitt trykkinnstillinger med utfallende, så inneholder filen bleed-område.
 - **Tester:**
   - import/eksport: verifiser oppløsning, bleed og fargeprofil i eksportert fil
+- **Implementering:** src/engine/export/poster-pdf.ts, src/engine/export/poster-canvas.ts
 
 #### REQ-0388 – Kinopitch-plakat
 Programmet skal kunne lage en kinopitch-plakat: en elegant, filmatisk og selgende plakat som fremhever filmens tittel, hovedkarakterer, stemning, visuelt univers, relevante miljøer, symbolske objekter og valgfri logline. Den skal ha et sterkt visuelt hierarki og profesjonell komposisjon.
@@ -5144,12 +5148,13 @@ Programmet skal kunne lage en kinopitch-plakat: en elegant, filmatisk og selgend
 - **Kilde:** Kap. 26.2 A (l. 1073-1083) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PRESENT
 - **Avhengigheter:** REQ-0384
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et prosjekt, når brukeren lager en kinopitch-plakat, så inneholder den tittel, hovedkarakterer, miljøer og symbolske objekter, og logline kan slås av/på.
 - **Tester:**
   - visuell: komposisjon og hierarki vurderes
   - manuell: profesjonelt uttrykk
+- **Implementering:** src/core/presentation/poster.ts (layoutPoster: pitch)
 
 #### REQ-0389 – Karakter- og universkart
 Programmet skal kunne lage et karakter- og universkart: en informativ plakat som viser karakterportretter, karakternavn, beskrivelser, relasjoner, sentrale objekter, viktige steder og eventuelle andre sentrale historieelementer. Det skal være en tydelig, visuelt attraktiv prosjektoversikt.
@@ -5157,12 +5162,13 @@ Programmet skal kunne lage et karakter- og universkart: en informativ plakat som
 - **Kilde:** Kap. 26.2 B (l. 1084-1093) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PRESENT
 - **Avhengigheter:** REQ-0384
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et prosjekt med karakterer, relasjoner, objekter og steder, så viser karakterkartet portretter, navn, beskrivelser, relasjoner, objekter og steder.
 - **Tester:**
   - visuell: karakterkart-layout
   - integrasjon: data hentes fra ressursbiblioteket
+- **Implementering:** src/core/presentation/poster.ts (layoutPoster: character_map)
 
 #### REQ-0390 – Valgfritt informasjonsnivå via avkrysning
 Brukeren skal kunne velge plakatinnhold gjennom avkrysningsvalg som omfatter: bare bilder og navn, korte karakterbeskrivelser, utfyllende karakterbeskrivelser, relasjonslinjer, navngitte relasjoner, forklarende relasjonstekster, objektbilder, objektbeskrivelser, stedsbilder, stedsbeskrivelser, logline, sjanger og stemning, og andre relevante prosjektdata.
@@ -5170,11 +5176,12 @@ Brukeren skal kunne velge plakatinnhold gjennom avkrysningsvalg som omfatter: ba
 - **Kilde:** Kap. 26.3 (l. 1094-1109) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PRESENT, UI
 - **Avhengigheter:** REQ-0384
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt plakatredigering, så finnes et avkrysningsvalg for hver av de 13 innholdstypene, og plakaten oppdateres når valg endres.
 - **Tester:**
   - e2e: slå hver avkrysning av/på og kontroller plakaten
+- **Implementering:** src/core/presentation/poster.ts (defaultOptions, POSTER_OPTION_LABEL), src/app/release/PosterInspector.tsx
 
 #### REQ-0391 – Layout tilpasses informasjonsmengde
 Systemet skal justere plakatens layout til informasjonsmengden.
@@ -5182,11 +5189,12 @@ Systemet skal justere plakatens layout til informasjonsmengden.
 - **Kilde:** Kap. 26.3 (l. 1110) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PRESENT
 - **Avhengigheter:** REQ-0390
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt at brukeren legger til flere innholdstyper, så reflowes layouten uten overlapp eller avkuttet innhold.
 - **Tester:**
   - visuell: layout ved minimum og maksimum informasjonsmengde
+- **Implementering:** src/core/presentation/poster.ts (layoutPoster)
 
 #### REQ-0392 – Varsel om redusert lesbarhet
 Hvis innholdet blir for omfattende, skal programmet varsle om redusert lesbarhet eller foreslå en annen komposisjon.
@@ -5194,12 +5202,13 @@ Hvis innholdet blir for omfattende, skal programmet varsle om redusert lesbarhet
 - **Kilde:** Kap. 26.3 (l. 1111) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PRESENT, UI
 - **Avhengigheter:** REQ-0390
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt så mye innhold at minste tekststørrelse faller under definert terskel for formatet, så vises et varsel om redusert lesbarhet eller et forslag om annen komposisjon.
 - **Tester:**
   - enhet: lesbarhetsterskel
   - visuell: varsel vises
+- **Implementering:** src/core/presentation/poster.ts (posterChecks, minReadablePt), src/app/release/PosterInspector.tsx (PosterChecksList)
 
 #### REQ-0393 – Visuelt relasjonskart med relasjonstyper
 Karakterrelasjoner skal kunne fremstilles visuelt. Programmet skal støtte forbindelser som familie, vennskap, konflikt, omsorg, romantikk, mentorforhold, skjulte forbindelser og andre brukerdefinerte relasjoner.
@@ -5207,12 +5216,13 @@ Karakterrelasjoner skal kunne fremstilles visuelt. Programmet skal støtte forbi
 - **Kilde:** Kap. 26.4 (l. 1112-1122) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PRESENT, LIBRARY
 - **Avhengigheter:** REQ-0384
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt karakterer med relasjoner av hver type, inkludert en brukerdefinert type, så vises de som visuelle forbindelser i relasjonskartet.
 - **Tester:**
   - enhet: relasjonstyper inkl. brukerdefinert
   - visuell: relasjonslinjer
+- **Implementering:** src/core/presentation/relations.ts, src/core/presentation/poster.ts (relasjonslinjer)
 
 #### REQ-0394 – Relasjonsforslag uten usikre antakelser som fakta
 Systemet kan foreslå relasjoner basert på manus, men skal ikke presentere usikre antakelser som fakta.
@@ -5220,12 +5230,13 @@ Systemet kan foreslå relasjoner basert på manus, men skal ikke presentere usik
 - **Kilde:** Kap. 26.4 (l. 1123) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PRESENT, SCRIPT, PROMPT
 - **Avhengigheter:** REQ-0393
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt automatisk foreslåtte relasjoner, så er de tydelig merket som forslag (ikke godkjent) inntil brukeren godkjenner dem.
 - **Tester:**
   - integrasjon: forslag har status «foreslått»
   - manuell: merking er tydelig
+- **Implementering:** src/core/presentation/relations.ts (relationSuggestions), src/app/release/RelationsDialog.tsx
 - **Merknad:** «kan foreslå» = valgfritt; forbudet mot å presentere antakelser som fakta er absolutt når funksjonen finnes.
 
 #### REQ-0395 – Godkjenne og redigere relasjoner
@@ -5234,11 +5245,12 @@ Brukeren skal kunne godkjenne og redigere relasjonene.
 - **Kilde:** Kap. 26.4 (l. 1124) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PRESENT, LIBRARY
 - **Avhengigheter:** REQ-0393
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en foreslått relasjon, så kan brukeren godkjenne, endre type/tekst eller forkaste den.
 - **Tester:**
   - e2e: godkjenn og rediger relasjon
+- **Implementering:** src/app/release/RelationsDialog.tsx, src/core/commands/apply.ts (AddRelations, UndoAddRelations, UpdateRelations, SetRelationsRemoved, CreatePoster, UndoCreatePoster, UpdatePoster, SetPosterRemoved)
 
 #### REQ-0396 – Automatisk førsteutkast til plakat
 Programmet skal kunne analysere prosjektet og foreslå: hvilke karakterer som bør fremheves, hvilke miljøer som er viktigst, hvilke objekter som er sentrale, hvilke relasjoner som bør vises, hvilken komposisjon som passer og hvilken visuell stil som bør brukes.
@@ -5246,11 +5258,12 @@ Programmet skal kunne analysere prosjektet og foreslå: hvilke karakterer som b�
 - **Kilde:** Kap. 26.5 (l. 1125-1132) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PRESENT, PROMPT, SCRIPT
 - **Avhengigheter:** REQ-0384
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt et prosjekt, når brukeren ber om førsteutkast, så foreslås karakterer, miljøer, objekter, relasjoner, komposisjon og visuell stil, alle redigerbare før bruk.
 - **Tester:**
   - integrasjon: analyse av prosjektdata gir forslag i alle seks kategorier
+- **Implementering:** src/core/presentation/poster.ts (posterAnalysis, posterDraft), src/app/release/PosterDialogs.tsx (NewPosterDialog)
 
 #### REQ-0397 – Redigerbar plakat etter generering
 Etter generering skal brukeren kunne justere: bilder, tekst, typografi, farger, plassering, skalering, relasjonslinjer, synlighet og komposisjon.
@@ -5258,11 +5271,12 @@ Etter generering skal brukeren kunne justere: bilder, tekst, typografi, farger, 
 - **Kilde:** Kap. 26.6 (l. 1133-1143) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PRESENT, UI
 - **Avhengigheter:** REQ-0384
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en generert plakat, så kan brukeren endre hver av bilder, tekst, typografi, farger, plassering, skalering, relasjonslinjer, synlighet og komposisjon.
 - **Tester:**
   - e2e: endre hver egenskap og lagre
+- **Implementering:** src/app/release/PosterWorkspace.tsx, src/app/release/PosterCanvas.tsx, src/app/release/PosterInspector.tsx
 
 #### REQ-0398 – Separate redigerbare plakatelementer
 Tekst og grafiske elementer i plakaten skal så langt mulig være separate redigerbare elementer.
@@ -5270,11 +5284,12 @@ Tekst og grafiske elementer i plakaten skal så langt mulig være separate redig
 - **Kilde:** Kap. 26.6 (l. 1144) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PRESENT
 - **Avhengigheter:** REQ-0397
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en lagret plakat, så er tekst og grafiske elementer lagret som separate objekter som kan redigeres enkeltvis.
 - **Tester:**
   - dataintegritet: plakatmodell har separate element-objekter
+- **Implementering:** src/core/model.ts (PosterDocument, PosterElement)
 - **Merknad:** «så langt mulig».
 
 #### REQ-0399 – AI-bakgrunn ikke eneste lagringsform
@@ -5283,11 +5298,12 @@ AI-genererte bakgrunnsbilder skal ikke være den eneste lagringsformen for plaka
 - **Kilde:** Kap. 26.6 (l. 1145) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PRESENT
 - **Avhengigheter:** REQ-0397
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en plakat med AI-generert bakgrunn, så finnes en strukturert plakatmodell (lag/elementer) i tillegg til bildet, og plakaten kan gjenoppbygges fra den.
 - **Tester:**
   - dataintegritet: plakat kan åpnes og redigeres uten å regenerere bakgrunnen
+- **Implementering:** src/core/model.ts (PosterDocument), db/migrations/0019_presentation.sql
 
 #### REQ-0400 – Stilharmonisering av karakterbilder i plakat
 Plakatmodulen skal kunne harmonisere karakterbilder til samme tegnestil, lyssetting og fargepalett.
@@ -5333,12 +5349,13 @@ Brukeren skal kunne lage og lagre flere plakatvarianter, både for hovedfilm og 
 - **Kilde:** Kap. 26.8 (l. 1150-1152) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PRESENT, CORE
 - **Avhengigheter:** REQ-0384
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt hovedfilm og en spinoff, så kan brukeren lagre flere plakatvarianter knyttet til hver produksjon.
 - **Tester:**
   - enhet: plakat knyttet til produksjon-ID
   - e2e: flere varianter lagres og gjenåpnes
+- **Implementering:** src/app/release/PosterWorkspace.tsx (plakater per produksjon)
 
 #### REQ-0404 – Plakater på norsk og engelsk
 Plakater skal kunne eksporteres på norsk og engelsk.
@@ -5346,11 +5363,12 @@ Plakater skal kunne eksporteres på norsk og engelsk.
 - **Kilde:** Kap. 26.8 (l. 1153) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PRESENT, L10N, EXPORT
 - **Avhengigheter:** REQ-0384
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en plakat, så kan den eksporteres i norsk og engelsk språkversjon med oversatt tekst.
 - **Tester:**
   - import/eksport: plakat i to språk
+- **Implementering:** src/core/presentation/poster.ts (LocalizedText, elementText), src/app/release/PosterInspector.tsx (Bilingual)
 
 ### Kapittel 27
 
@@ -5575,11 +5593,12 @@ Systemet skal eksportere kinopitch-plakater og karakterkart i relevante trykk- o
 - **Kilde:** Kap. 29.5 (l. 1243-1244) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** EXPORT, PRESENT
 - **Avhengigheter:** REQ-0384
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gitt en plakat og et karakterkart, så kan begge eksporteres i minst ett trykkformat og ett digitalformat.
 - **Tester:**
   - import/eksport: plakat i trykk- og digitalformat
+- **Implementering:** src/engine/export/poster-pdf.ts, src/engine/export/poster-canvas.ts
 
 #### REQ-0422 – Eksportkontroll før eksport
 Før eksport skal programmet kontrollere: aktiv sceneorden, skjulte scener, aktivt filmmateriale, manglende mediefiler, uavklarte manusavvik, relevante språkspor, total varighet og teknisk kompatibilitet.
@@ -5911,11 +5930,12 @@ Arkitekturen skal ha en logisk komponent «Presentation Engine» med ansvarsomr�
 - **Kilde:** Kap. 31 (l. 1343-1344) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PRESENT
 - **Avhengigheter:** REQ-0432
-- **Status:** Ikke startet
+- **Status:** Under arbeid
 - **Akseptansekriterier:**
   - Arkitekturdokumentasjonen definerer Presentation Engine med ansvar for: plakater, karakterkart og annet presentasjonsmateriell, og dette ansvaret ligger ikke i andre moduler.
 - **Tester:**
   - manuell: arkitekturgjennomgang av ansvarsgrenser
+- **Implementering:** src/core/presentation/poster.ts, src/core/presentation/relations.ts, src/core/presentation/metrics.ts, src/core/presentation/document.ts, src/engine/export/poster-pdf.ts
 
 #### REQ-0448 – Modul: Export Engine
 Arkitekturen skal ha en logisk komponent «Export Engine» med ansvarsområdet: Film, manus, lyd, plakater og prosjektbackup.
@@ -6593,11 +6613,12 @@ Plakater og karakterkart skal være selvstendige, redigerbare eksportprodukter.
 
 - **Kilde:** Kap. 34 (l. 1532-1533) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 8
 - **Moduler:** PRESENT, EXPORT
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - En lagret plakat kan gjenåpnes, redigeres element for element og eksporteres separat.
 - **Tester:**
   - manuell: verifiseres mot underliggende funksjonskrav
+- **Implementering:** src/core/presentation/poster.ts, src/core/presentation/relations.ts, src/core/presentation/metrics.ts, src/core/presentation/document.ts, src/app/release/PosterWorkspace.tsx
 - **Merknad:** Oppsummerer kap. 26, 26.6, 29.5. Linje 1532/1533 duplikat.
 
 #### REQ-0502 – Prinsipp 24: Plakater 70 × 100 cm og flere informasjonsnivåer
@@ -6605,11 +6626,12 @@ Plakater skal støtte 70 × 100 cm og flere informasjonsnivåer.
 
 - **Kilde:** Kap. 34 (l. 1534-1535) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 8
 - **Moduler:** PRESENT
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Plakat kan eksporteres i 70 × 100 cm med valgbart informasjonsnivå.
 - **Tester:**
   - manuell: verifiseres mot underliggende funksjonskrav
+- **Implementering:** src/core/presentation/poster.ts
 - **Merknad:** Oppsummerer kap. 26.1, 26.3. Linje 1534/1535 duplikat.
 
 #### REQ-0503 – Prinsipp 25: Publisering av harmoniserte bilder etter godkjenning
@@ -7766,3 +7788,62 @@ Brukeren skal kunne ta opp lyd direkte (mikrofon) i sceneeditoren. Opptaket blir
 - **Tester:**
   - planlagt
 - **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx
+
+#### REQ-0584 – «Bruk aktivt utsnitt» i kamerautsnitt
+Start- og sluttrammen i et kamerautsnitt skal kunne hente utsnittet kameraet har når scenen rett før slutter (knappen «Bruk aktivt utsnitt»), så overgangen mellom scenene henger sammen.
+
+- **Kilde:** Beslutning DEC-0062 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** COMPOSE, UI
+- **Avhengigheter:** REQ-0174
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Knappen finnes ved både startrammen (blå) og sluttrammen (rød).
+  - Den kopierer sluttrammen i det siste kamerautsnittet i forrige aktive scene (hele formatet hvis den ikke har noe), omregnet til scenens format.
+  - Knappen er deaktivert i første scene og når scenen før ikke har en 2D-scene. Endringen kan angres.
+- **Tester:**
+  - tests/unit/camera-handoff.test.ts
+- **Implementering:** src/core/composition/camera-handoff.ts, src/app/scene-editor/CameraPanel.tsx
+
+#### REQ-0585 – Lag i grupper med dra og slipp, fjerning av lag og justerbar lagliste
+I laglisten skal et lag kunne fjernes fra scenen (ressursen blir i biblioteket), dras inn på en gruppe for å bli med i den og dras ut igjen. Når en gruppe velges, lyser lagene i den opp i listen og i scenen. Skillelinjen under laglisten kan dras, så brukeren bestemmer hvor mange lag som vises.
+
+- **Kilde:** Beslutning DEC-0062 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** COMPOSE, UI
+- **Avhengigheter:** REQ-0174
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Hver rad har «Fjern fra scenen»; en gruppe fjernes uten at lagene i den hopper. Kan angres.
+  - Slipp på midten av en grupperad legger laget i gruppen uten at det flytter seg i bildet; slipp ved siden av et lag utenfor gruppen tar det ut. Knappen «Ta ut av gruppen» gjør det samme uten mus.
+  - Valgt gruppe: lagene i den markeres i listen og får omriss i scenen.
+  - Høyden på laglisten huskes.
+- **Tester:**
+  - tests/visual/screens.mjs (67)
+- **Implementering:** src/app/scene-editor/LayersPanel.tsx, src/app/scene-editor/Stage.tsx (drawMemberOutline), src/app/shell/pane-size.tsx (edge bottom)
+
+#### REQ-0586 – Endre rolle etter invitasjon
+Prosjektets eier skal kunne endre rollen til et medlem etter at det er invitert inn (eier, redaktør, kommentator, leser), og endre rollen i eller trekke tilbake en invitasjon som ikke er tatt imot. Prosjektet skal alltid ha minst én eier.
+
+- **Kilde:** Beslutning DEC-0063 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 1
+- **Moduler:** COLLAB, UI
+- **Avhengigheter:** REQ-0520; REQ-0521
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Eieren velger ny rolle for et medlem i listen på prosjektoversikten; endringen gjelder straks i databasen.
+  - Andre enn eieren kan ikke endre roller; den eneste eieren kan ikke miste eierrollen.
+  - Ventende invitasjoner vises for eieren med rolle som kan endres, og kan trekkes tilbake.
+- **Tester:**
+  - tests/db/run-db-tests.ts (0020 DEC-0063)
+- **Implementering:** db/migrations/0020_member_roles.sql, src/app/projects/MembersSection.tsx
+
+#### REQ-0587 – Tilbake til forrige vindu
+En global «Tilbake»-funksjon skal ta brukeren tilbake til arbeidsflaten (vinduet) hun kom fra, med samme valg som da hun forlot den.
+
+- **Kilde:** Beslutning DEC-0063 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 1
+- **Moduler:** UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Knappen «Tilbake til …» i toppstripen viser navnet på forrige flate og går dit med samme valg (scene, ressurs, replikk).
+  - Valg inne i samme flate gir ikke nye steg; flere trykk går videre bakover.
+- **Tester:**
+  - tests/unit/back-stack.test.ts
+- **Implementering:** src/app/shell/back-stack.ts, src/app/shell/back-navigation.tsx, src/app/shell/AppHeader.tsx

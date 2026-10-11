@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { useTrackNavigation } from "@/app/shell/back-navigation";
 
 function NotFoundComponent() {
   return (
@@ -113,6 +114,8 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  // «Tilbake til …» i toppstripen husker flatene brukeren har vært på (DEC-0063)
+  useTrackNavigation();
 
   return (
     <QueryClientProvider client={queryClient}>

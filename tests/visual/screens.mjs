@@ -130,7 +130,7 @@ async function mock(page, { projects = [project], schema = true }) {
     const table = path.replace("/rest/v1/", "");
     if (table === "schema_version")
       return schema
-        ? json([{ version: 18 }])
+        ? json([{ version: 20 }])
         : json({ message: "relation does not exist", code: "42P01" }, 404);
     if (table === "projects") {
       if (single) return json(projects[0] ?? null);
@@ -160,6 +160,15 @@ async function mock(page, { projects = [project], schema = true }) {
         { user_id: "b0b00000-0000-7000-8000-000000000002", display_name: "Anita" },
       ]);
     }
+    if (table === "project_invitations")
+      return json([
+        {
+          id: "00000000-0000-7000-8000-00000000f001",
+          email: "anita@example.no",
+          role: "viewer",
+          expires_at: "2026-10-25T10:00:00Z",
+        },
+      ]);
     if (path.startsWith("/rest/v1/rpc/")) return json(null);
     if (path.startsWith("/realtime/")) return route.abort();
     if (fx.rows[table] && single) return json(fx.rows[table][0] ?? null);
@@ -1392,6 +1401,134 @@ await shot("39-paneler-justert", manus, {
         .getAttribute("aria-valuenow"),
     );
     console.error(`panelbredde: start ${w0}, etter drag ${w1}, etter navigasjon ${w2}`);
+  },
+});
+// Lag og grupper (ønske 11.10): valgt gruppe lyser opp lagene, fjern-knapp og høyere lagliste
+await shot("67-gruppe-lyser", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    await page
+      .getByRole("region", { name: "Lag" })
+      .getByRole("button", { name: /Familien/ })
+      .first()
+      .click();
+    const bar = page.getByRole("separator", { name: "Høyde på laglisten" });
+    const b = await bar.boundingBox();
+    await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(b.x + b.width / 2, b.y + 120, { steps: 6 });
+    await page.mouse.up();
+    await page.waitForTimeout(400);
+    console.error(`laglistehøyde: ${await bar.getAttribute("aria-valuenow")}`);
+  },
+});
+await shot("68-kamera-aktivt-utsnitt", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(800);
+    await page.getByRole("button", { name: "Neste scene" }).click();
+    await page.waitForTimeout(800);
+    const cam = tidslinje(page).getByRole("button", { name: /^Kamerautsnitt/ });
+    if (await cam.count()) await cam.first().click();
+    await page.waitForTimeout(500);
+    const btn = page.getByRole("button", { name: "Bruk aktivt utsnitt" }).first();
+    console.error(
+      `aktivt utsnitt: ${(await btn.count()) ? ((await btn.isEnabled()) ? "aktiv" : "deaktivert") : "mangler"}`,
+    );
+    if (await btn.count()) await btn.scrollIntoViewIfNeeded();
+  },
+});
+// Roller og tilbake (DEC-0063): eieren endrer roller; «Tilbake til …» i toppstripen
+await shot("69-roller", `/prosjekt/${project.id}`, {
+  act: async (page) => {
+    await page.waitForTimeout(800);
+    await page.getByRole("heading", { name: "Medlemmer" }).scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
+  },
+});
+await shot("70-tilbake", `/prosjekt/${project.id}/manus`, {
+  act: async (page) => {
+    await page.waitForTimeout(800);
+    await page
+      .getByRole("link", { name: /Ressursbibliotek/ })
+      .first()
+      .click();
+    await page.waitForTimeout(800);
+    const back = page.getByRole("button", { name: "Tilbake til Manus" });
+    console.error(`tilbake-knapp: ${await back.count()}`);
+    await page.screenshot({ path: `${out}/70-tilbake-for.png` });
+    await back.click();
+    await page.waitForTimeout(800);
+    console.error(`etter tilbake: ${new URL(page.url()).pathname}`);
+  },
+});
+// Utgivelse (DEC-0061): karakterkart, kinopitch, redigering, relasjoner og eksport
+const utgivelse = `/prosjekt/${project.id}/utgivelse`;
+await shot("60-utgivelse-karakterkart", utgivelse, {
+  act: async (page) => {
+    await page.waitForTimeout(800);
+  },
+});
+await shot("61-utgivelse-pitch", utgivelse, {
+  act: async (page) => {
+    await page
+      .getByRole("button", { name: /Kinopitch/ })
+      .first()
+      .click();
+    await page.waitForTimeout(800);
+  },
+});
+await shot("62-utgivelse-element", utgivelse, {
+  act: async (page) => {
+    const svg = page.getByRole("application", { name: /Plakaten/ });
+    const b = await svg.boundingBox();
+    // Klikk på tittelen øverst og dra den litt ned
+    await page.mouse.move(b.x + b.width / 2, b.y + b.height * 0.07);
+    await page.mouse.down();
+    await page.mouse.move(b.x + b.width / 2, b.y + b.height * 0.1, { steps: 6 });
+    await page.mouse.up();
+    await page.waitForTimeout(500);
+  },
+});
+await shot("63-utgivelse-kontroll", utgivelse, {
+  act: async (page) => {
+    await page.getByRole("tab", { name: "Kontroll" }).click();
+    await page.waitForTimeout(300);
+  },
+});
+await shot("64-utgivelse-relasjoner", utgivelse, {
+  act: async (page) => {
+    await page.getByRole("button", { name: /Relasjoner/ }).click();
+    await page.waitForTimeout(400);
+  },
+});
+await shot("65-utgivelse-ny", utgivelse, {
+  act: async (page) => {
+    await page.getByRole("button", { name: "Ny", exact: true }).click();
+    await page.waitForTimeout(400);
+  },
+});
+await shot("66-utgivelse-eksport", utgivelse, {
+  plainDownload: true,
+  act: async (page, file) => {
+    await page.getByRole("button", { name: "Eksporter" }).click();
+    await page.waitForTimeout(300);
+    const [dl] = await Promise.all([
+      page.waitForEvent("download", { timeout: 30000 }),
+      page.getByRole("button", { name: "Lag filen" }).click(),
+    ]);
+    const path = `${out}/66-plakat.pdf`;
+    await dl.saveAs(path);
+    console.error(`plakat-pdf: ${dl.suggestedFilename()}`);
+    await page.waitForTimeout(300);
+    await page.screenshot({ path: file });
+    await page.getByRole("radio", { name: "PNG-bilde" }).click();
+    const [dl2] = await Promise.all([
+      page.waitForEvent("download", { timeout: 30000 }),
+      page.getByRole("button", { name: "Lag filen" }).click(),
+    ]);
+    await dl2.saveAs(`${out}/66-plakat.png`);
+    console.error(`plakat-png: ${dl2.suggestedFilename()}`);
+    return "tatt";
   },
 });
 await browser.close();

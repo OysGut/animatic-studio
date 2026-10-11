@@ -16,7 +16,8 @@
  * Ren TypeScript: brukes både i nettleseren (lage og lese filen) og på serveren (gjenopprette).
  */
 import { checkInvariants } from "../invariants";
-import { emptyProjectState, type ProjectState } from "../model";
+import { emptyProjectState, type PosterDocument, type ProjectState } from "../model";
+import { posterAssetRefs, posterDocumentError } from "../presentation/document";
 import { stateFromRows, type ProjectRows, type Row } from "../patch";
 
 export const BACKUP_FORMAT = "animatic-studio-backup";
@@ -51,6 +52,8 @@ export const BACKUP_STATE_TABLES = [
   "generation_prompts",
   "continuity_events",
   "translations",
+  "asset_relations",
+  "posters",
 ] as const;
 export type BackupStateTable = (typeof BACKUP_STATE_TABLES)[number];
 
@@ -340,6 +343,28 @@ export function assertSelfContained(b: BackupData, map: ReadonlyMap<string, stri
             );
         }
     }
+  // Plakater (DEC-0061) viser til ressurser, bilder og relasjoner inne i dokumentet
+  for (const r of b.tables["posters"] ?? []) {
+    const d = (r as Record<string, unknown>)["document"];
+    const doc = (typeof d === "string" ? safeJson(d) : d) as PosterDocument | null;
+    if (!doc || typeof doc !== "object" || posterDocumentError(doc))
+      throw new Error("Sikkerhetskopien har en ugyldig plakat og kan ikke brukes.");
+    const refs = posterAssetRefs(doc);
+    for (const set of [refs.assets, refs.variants, refs.versions, refs.relations])
+      for (const v of set)
+        if (!map.has(v))
+          throw new Error(
+            "Sikkerhetskopien viser til noe som ikke er med i den (posters.document) og kan ikke brukes.",
+          );
+  }
+}
+
+function safeJson(t: string): unknown {
+  try {
+    return JSON.parse(t);
+  } catch {
+    return null;
+  }
 }
 
 // ---------- Gjenoppretting ----------
@@ -423,6 +448,8 @@ export function restoredState(
     generation_prompts: t("generation_prompts"),
     continuity_events: t("continuity_events"),
     translations: t("translations"),
+    asset_relations: t("asset_relations"),
+    posters: t("posters"),
   };
   let state: ProjectState;
   try {

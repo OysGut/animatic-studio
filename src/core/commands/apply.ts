@@ -49,9 +49,15 @@ import {
   type TransitionKind,
   type ProductionSegment,
   type SegmentReason,
+  type AssetRelation,
+  type Poster,
+  RELATION_KINDS,
 } from "../model";
+import { posterAssetRefs, posterDocumentError } from "../presentation/document";
 import { MAX_PROMPT_CHARS } from "../generation/prompt";
 import type {
+  RelationFields,
+  PosterFields,
   NewAnnotation,
   AssetFields,
   AudioClipFields,
@@ -127,6 +133,8 @@ function assertNewId(s: ProjectState, id: string) {
     s.generationPrompts,
     s.continuityEvents,
     s.translations,
+    s.assetRelations,
+    s.posters,
   ];
   if (all.some((c) => c[id] !== undefined)) fail("duplicate_id", `ID ${id} er allerede i bruk`);
 }
@@ -341,6 +349,8 @@ export function revisionOf(s: ProjectState, id: string): number | undefined {
     s.generationPrompts,
     s.continuityEvents,
     s.translations,
+    s.assetRelations,
+    s.posters,
   ]) {
     const e = c[id];
     if (e) return e.revision;
@@ -394,6 +404,20 @@ function usedByLayer(
       l.swaps.some((w) => w[key] === id) ||
       (key !== "assetId" && (l.languageImages ?? []).some((li) => li[key] === id)),
   );
+}
+
+/** Brukes ressursen i en relasjon eller på en plakat (DEC-0061)? Da kan den ikke slettes ved angring. */
+function usedByPresentation(
+  s: ProjectState,
+  key: "assets" | "variants" | "versions",
+  id: string,
+): boolean {
+  if (
+    key === "assets" &&
+    Object.values(s.assetRelations).some((r) => r.fromAssetId === id || r.toAssetId === id)
+  )
+    return true;
+  return Object.values(s.posters).some((p) => posterAssetRefs(p.document)[key].has(id));
 }
 
 function layerFields(s: ProjectState, f: LayerFields, prev?: CompositionLayer): LayerFields {
@@ -650,6 +674,92 @@ function translationFieldsOf(
 
 const translationKey = (t: Pick<Translation, "blockId" | "variantId" | "language">) =>
   `${t.blockId ?? t.variantId}:${t.language}`;
+
+// ---------- Presentasjon (M8 del 1, DEC-0061) ----------
+
+function relationFieldsOf(
+  s: ProjectState,
+  f: RelationFields,
+): Omit<AssetRelation, "id" | "revision" | "removed"> {
+  if (!f || typeof f !== "object") fail("invalid", "Ugyldig relasjon");
+  const a = need(s.assets[f.fromAssetId], "Ressursen");
+  const b = need(s.assets[f.toAssetId], "Ressursen");
+  if (a.id === b.id) fail("invalid", "En relasjon må gå mellom to forskjellige ressurser");
+  if (a.kind === "sound" || b.kind === "sound") fail("invalid", "Lydfiler kan ikke ha relasjoner");
+  if (!(RELATION_KINDS as readonly string[]).includes(f.kind))
+    fail("invalid", "Ukjent relasjonstype");
+  if (typeof f.label !== "string" || f.label.length > 120) fail("invalid", "Navnet er for langt");
+  if (typeof f.description !== "string" || f.description.length > 2000)
+    fail("invalid", "Beskrivelsen er for lang");
+  if (f.status !== "approved" && f.status !== "dismissed") fail("invalid", "Ugyldig status");
+  return {
+    fromAssetId: a.id,
+    toAssetId: b.id,
+    kind: f.kind,
+    label: f.label.trim(),
+    description: f.description.trim(),
+    status: f.status,
+  };
+}
+
+/** Samme par og type kan bare finnes én gang (avvist eller godkjent) – ingen doble linjer i kartet. */
+function assertUniqueRelation(all: Record<string, AssetRelation>, id: string): void {
+  const r = all[id];
+  if (!r || r.removed) return;
+  const key = (x: AssetRelation) => `${[x.fromAssetId, x.toAssetId].sort().join("|")}|${x.kind}`;
+  const k = key(r);
+  if (Object.values(all).some((x) => x.id !== id && !x.removed && key(x) === k))
+    fail("invalid", "Relasjonen finnes allerede");
+}
+
+/** Plakatens felter. Ressurser kontrolleres bare når de er nye i plakaten (som bildeskifter). */
+function posterFieldsOf(
+  s: ProjectState,
+  f: PosterFields,
+  prev?: Poster,
+): Omit<Poster, "id" | "revision" | "removed"> {
+  if (!f || typeof f !== "object") fail("invalid", "Ugyldig plakat");
+  const p = need(s.productions[f.productionId], "Produksjonen");
+  if (prev && prev.productionId !== p.id) fail("invalid", "Plakaten tilhører en annen produksjon");
+  if (typeof f.name !== "string" || !f.name.trim() || f.name.length > 200)
+    fail("invalid", "Plakaten må ha et navn (maks 200 tegn)");
+  if (f.kind !== "pitch" && f.kind !== "character_map") fail("invalid", "Ukjent plakattype");
+  if (f.language !== "nb" && f.language !== "en") fail("invalid", "Ukjent språk");
+  if (
+    !Number.isFinite(f.widthMm) ||
+    !Number.isFinite(f.heightMm) ||
+    f.widthMm < 50 ||
+    f.heightMm < 50 ||
+    f.widthMm > 3000 ||
+    f.heightMm > 3000
+  )
+    fail("invalid", "Ugyldig format (5–300 cm)");
+  const err = posterDocumentError(f.document);
+  if (err) fail("invalid", err);
+  if (JSON.stringify(f.document).length > 1_500_000) fail("invalid", "Plakaten er for stor");
+  const refs = posterAssetRefs(f.document);
+  const old = prev ? posterAssetRefs(prev.document) : null;
+  for (const id of refs.assets)
+    if (!old?.assets.has(id)) {
+      const a = need(s.assets[id], "Ressursen på plakaten");
+      if (a.kind === "sound") fail("invalid", "En lydfil kan ikke vises på plakaten");
+    }
+  for (const id of refs.variants)
+    if (!old?.variants.has(id)) need(s.assetVariants[id], "Varianten på plakaten");
+  for (const id of refs.versions)
+    if (!old?.versions.has(id)) need(s.assetVersions[id], "Bildet på plakaten");
+  for (const id of refs.relations)
+    if (!old?.relations.has(id)) need(s.assetRelations[id], "Relasjonen på plakaten");
+  return {
+    productionId: p.id,
+    name: f.name.trim(),
+    kind: f.kind,
+    language: f.language,
+    widthMm: Math.round(f.widthMm * 10) / 10,
+    heightMm: Math.round(f.heightMm * 10) / 10,
+    document: f.document,
+  };
+}
 
 function continuityFieldsFrom(e: ContinuityEvent): ContinuityEventFields {
   return {
@@ -981,6 +1091,8 @@ function run(
         )
       )
         fail("referenced", "Produksjonen har egen kontinuitet og kan ikke angres");
+      if (Object.values(s.posters).some((p) => p.productionId === c.productionId))
+        fail("referenced", "Produksjonen har plakater og kan ikke angres");
       const { [c.productionId]: _removed, ...productions } = s.productions;
       return {
         state: { ...s, productions },
@@ -2361,6 +2473,168 @@ function run(
       };
     }
 
+    // ---------- Presentasjon (M8 del 1, DEC-0061) ----------
+    case "AddRelations": {
+      if (!Array.isArray(c.items) || c.items.length === 0 || c.items.length > 500)
+        fail("invalid", "Ugyldig antall relasjoner");
+      const next = { ...s.assetRelations };
+      for (const it of c.items) {
+        assertNewId(s, it.relationId);
+        if (next[it.relationId]) fail("invalid", "Samme relasjon to ganger");
+        next[it.relationId] = {
+          id: it.relationId,
+          revision: 1,
+          ...relationFieldsOf(s, it.fields),
+          removed: false,
+        };
+        assertUniqueRelation(next, it.relationId);
+      }
+      const ids = c.items.map((x) => x.relationId);
+      return {
+        state: { ...s, assetRelations: next },
+        inverse: { type: "UndoAddRelations", relationIds: ids },
+        affected: ids,
+      };
+    }
+
+    case "UpdateRelations": {
+      if (!Array.isArray(c.items) || c.items.length === 0 || c.items.length > 500)
+        fail("invalid", "Ugyldig antall relasjoner");
+      const next = { ...s.assetRelations };
+      const old: { relationId: AssetRelation["id"]; fields: RelationFields }[] = [];
+      for (const it of c.items) {
+        const r = need(s.assetRelations[it.relationId], "Relasjonen");
+        old.push({
+          relationId: r.id,
+          fields: {
+            fromAssetId: r.fromAssetId,
+            toAssetId: r.toAssetId,
+            kind: r.kind,
+            label: r.label,
+            description: r.description,
+            status: r.status,
+          },
+        });
+        next[r.id] = { ...r, ...relationFieldsOf(s, it.fields), revision: rev(r) };
+      }
+      for (const it of c.items) assertUniqueRelation(next, it.relationId);
+      return {
+        state: { ...s, assetRelations: next },
+        inverse: { type: "UpdateRelations", items: old },
+        affected: c.items.map((x) => x.relationId),
+      };
+    }
+
+    case "UndoAddRelations": {
+      const ids = [...new Set(c.relationIds)];
+      const gone = ids.map((id) => need(s.assetRelations[id], "Relasjonen"));
+      if (
+        Object.values(s.posters).some((p) =>
+          ids.some((id) => posterAssetRefs(p.document).relations.has(id)),
+        )
+      )
+        fail("referenced", "Relasjonen vises på en plakat og kan ikke angres. Fjern den i stedet.");
+      const next = { ...s.assetRelations };
+      for (const id of ids) delete next[id];
+      return {
+        state: { ...s, assetRelations: next },
+        inverse: {
+          type: "AddRelations",
+          items: gone.map((r) => ({
+            relationId: r.id,
+            fields: {
+              fromAssetId: r.fromAssetId,
+              toAssetId: r.toAssetId,
+              kind: r.kind,
+              label: r.label,
+              description: r.description,
+              status: r.status,
+            },
+          })),
+        },
+        affected: ids,
+      };
+    }
+
+    case "SetRelationsRemoved": {
+      const next = { ...s.assetRelations };
+      const changed = [...new Set(c.relationIds)]
+        .map((id) => need(s.assetRelations[id], "Relasjonen"))
+        .filter((r) => r.removed !== c.removed);
+      if (changed.length === 0) fail("invalid", "Ingen endring");
+      for (const r of changed) next[r.id] = { ...r, removed: c.removed, revision: rev(r) };
+      if (!c.removed) for (const r of changed) assertUniqueRelation(next, r.id);
+      return {
+        state: { ...s, assetRelations: next },
+        inverse: {
+          type: "SetRelationsRemoved",
+          relationIds: changed.map((r) => r.id),
+          removed: !c.removed,
+        },
+        affected: changed.map((r) => r.id),
+      };
+    }
+
+    case "CreatePoster": {
+      assertNewId(s, c.posterId);
+      return {
+        state: {
+          ...s,
+          posters: {
+            ...s.posters,
+            [c.posterId]: {
+              id: c.posterId,
+              revision: 1,
+              ...posterFieldsOf(s, c.fields),
+              removed: false,
+            },
+          },
+        },
+        inverse: { type: "UndoCreatePoster", posterId: c.posterId },
+        affected: [c.posterId],
+      };
+    }
+
+    case "UndoCreatePoster": {
+      const p = need(s.posters[c.posterId], "Plakaten");
+      const { [p.id]: _p, ...posters } = s.posters;
+      const { id: _id, revision: _r, removed: _rm, ...fields } = p;
+      return {
+        state: { ...s, posters },
+        inverse: { type: "CreatePoster", posterId: p.id, fields },
+        affected: [p.id],
+      };
+    }
+
+    case "UpdatePoster": {
+      const p = need(s.posters[c.posterId], "Plakaten");
+      const { id: _id, revision: _r, removed: _rm, ...old } = p;
+      return {
+        state: {
+          ...s,
+          posters: {
+            ...s.posters,
+            [p.id]: { ...p, ...posterFieldsOf(s, c.fields, p), revision: rev(p) },
+          },
+        },
+        inverse: { type: "UpdatePoster", posterId: p.id, fields: old },
+        affected: [p.id],
+      };
+    }
+
+    case "SetPosterRemoved": {
+      const p = need(s.posters[c.posterId], "Plakaten");
+      if (p.removed === c.removed) fail("invalid", "Ingen endring");
+      return {
+        state: {
+          ...s,
+          posters: { ...s.posters, [p.id]: { ...p, removed: c.removed, revision: rev(p) } },
+        },
+        inverse: { type: "SetPosterRemoved", posterId: p.id, removed: !c.removed },
+        affected: [p.id],
+      };
+    }
+
     case "SetContinuityEventDisabled": {
       const ev = need(s.continuityEvents[c.eventId], "Kontinuitetshendelsen");
       const p = need(s.productions[c.productionId], "Produksjonen");
@@ -3071,6 +3345,11 @@ function run(
       const assets = { ...s.assets };
       for (const id of c.assetIds) {
         need(s.assets[id], "Ressursen");
+        if (usedByPresentation(s, "assets", id))
+          fail(
+            "referenced",
+            "Ressursen brukes i en relasjon eller på en plakat og kan ikke fjernes. Arkiver den i stedet.",
+          );
         if (usedByLayer(s, "assetId", id))
           fail(
             "referenced",
@@ -3172,6 +3451,8 @@ function run(
       const va = need(s.assetVariants[c.variantId], "Varianten");
       if (Object.values(s.assetVersions).some((x) => x.variantId === va.id))
         fail("referenced", "Varianten har bilder og kan ikke fjernes. Arkiver den i stedet.");
+      if (usedByPresentation(s, "variants", va.id))
+        fail("referenced", "Varianten brukes på en plakat og kan ikke fjernes.");
       if (usedByLayer(s, "assetVariantId", va.id))
         fail("referenced", "Varianten brukes i en 2D-scene og kan ikke fjernes.");
       const assetVariants = { ...s.assetVariants };
@@ -3295,6 +3576,8 @@ function run(
       const va = s.assetVariants[ver.variantId];
       if (va?.approvedVersionId === ver.id)
         fail("referenced", "Versjonen er godkjent og kan ikke fjernes");
+      if (usedByPresentation(s, "versions", ver.id))
+        fail("referenced", "Bildet brukes på en plakat og kan ikke fjernes.");
       if (usedByLayer(s, "versionId", ver.id))
         fail("referenced", "Bildet brukes i en 2D-scene og kan ikke fjernes.");
       // Bare det nyeste bildet kan angres bort (en versjon andre kan ha brukt, beholdes)

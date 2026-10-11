@@ -31,39 +31,39 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 
 | Modul | Navn | Krav | P0 | Implementert | Verifisert |
 |---|---|---|---|---|---|
-| CORE | Project Core | 118 | 57 | 93 | 75 |
-| SCRIPT | Screenplay Engine | 127 | 32 | 114 | 96 |
+| CORE | Project Core | 118 | 57 | 94 | 76 |
+| SCRIPT | Screenplay Engine | 127 | 32 | 116 | 98 |
 | TIMELINE | Timeline & Assembly Engine | 102 | 28 | 83 | 68 |
-| LIBRARY | Resource Library | 64 | 9 | 43 | 36 |
+| LIBRARY | Resource Library | 64 | 9 | 45 | 38 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 33 | 33 |
-| COMPOSE | 2D Composition Engine | 56 | 14 | 41 | 32 |
+| COMPOSE | 2D Composition Engine | 58 | 14 | 43 | 33 |
 | CAMERA | Camera & Motion Engine | 32 | 2 | 28 | 24 |
 | AUDIO | Audio Engine | 38 | 1 | 36 | 25 |
-| PROMPT | Prompt Orchestration Engine | 46 | 14 | 26 | 21 |
+| PROMPT | Prompt Orchestration Engine | 46 | 14 | 28 | 23 |
 | PROVIDER | Provider Adapters | 25 | 6 | 6 | 3 |
 | QUALITYCOST | Quality & Cost Engine | 26 | 6 | 11 | 5 |
 | QUEUE | Render Queue | 34 | 12 | 16 | 12 |
 | VERSION | Version & Dependency Engine | 90 | 36 | 70 | 53 |
-| L10N | Localization Engine | 38 | 4 | 33 | 32 |
-| PRESENT | Presentation Engine | 30 | 3 | 1 | 1 |
-| EXPORT | Export Engine | 58 | 12 | 43 | 38 |
+| L10N | Localization Engine | 38 | 4 | 34 | 33 |
+| PRESENT | Presentation Engine | 30 | 3 | 23 | 22 |
+| EXPORT | Export Engine | 58 | 12 | 49 | 44 |
 | SECURITY | Security & Storage | 32 | 5 | 24 | 17 |
-| COLLAB | Collaboration & Access | 12 | 0 | 11 | 8 |
-| UI | Brukergrensesnitt og designsystem | 147 | 19 | 106 | 95 |
+| COLLAB | Collaboration & Access | 13 | 0 | 12 | 9 |
+| UI | Brukergrensesnitt og designsystem | 151 | 19 | 113 | 101 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 5 | 1 |
 
 ## Dekning per fase
 
 | Fase | Krav | Verifisert |
 |---|---|---|
-| 1 | 70 | 27 |
+| 1 | 72 | 29 |
 | 2 | 97 | 62 |
-| 3 | 67 | 44 |
+| 3 | 69 | 45 |
 | 4 | 85 | 64 |
 | 5 | 74 | 25 |
 | 6 | 48 | 37 |
 | 7 | 63 | 60 |
-| 8 | 39 | 0 |
+| 8 | 39 | 21 |
 | Tverrgående/prosess | 40 | 0 |
 
 ## Matrise
@@ -453,27 +453,27 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0381 | Kap. 25.2 (l. 1055) | CORE, VERSION, UI | src/core/production/promote.ts, src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled), src/app/projects/PromotionDialog.tsx | 2 | tests/unit/promote.test.ts, tests/db/run-db-tests.ts (0018 DEC-0060), tests/visual/screens.mjs (100) | Verifisert | 2026-10-11 DEC-0060: Ny spinoff-scene overføres til hovedfilmen |
 | REQ-0382 | Kap. 25.2 (l. 1056) | VERSION, CORE | src/core/production/promote.ts, src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled), src/app/projects/PromotionDialog.tsx | 1 | tests/unit/promote.test.ts, tests/db/run-db-tests.ts (0018 DEC-0060), tests/visual/screens.mjs (100) | Verifisert | 2026-10-11 DEC-0060: Godkjent film i hovedfilmen byttes bare med egen bekreftelse |
 | REQ-0383 | Kap. 25.2 (l. 1057) | VERSION, CORE | src/core/production/promote.ts, src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled) | 1 | tests/unit/promote.test.ts, tests/db/run-db-tests.ts (0018 DEC-0060), tests/visual/screens.mjs (100) | Verifisert | 2026-10-11 DEC-0060: Gamle versjoner bevares; ny versjon peker til spinoffens |
-| REQ-0384 | Kap. 26 (l. 1059-1060) | PRESENT | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0385 | Kap. 26 (l. 1061) | PRESENT, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0386 | Kap. 26.1 (l. 1062-1065) | PRESENT, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0387 | Kap. 26.1 (l. 1066-1072) | PRESENT, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0388 | Kap. 26.2 A (l. 1073-1083) | PRESENT | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0389 | Kap. 26.2 B (l. 1084-1093) | PRESENT | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0390 | Kap. 26.3 (l. 1094-1109) | PRESENT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0391 | Kap. 26.3 (l. 1110) | PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0392 | Kap. 26.3 (l. 1111) | PRESENT, UI | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0393 | Kap. 26.4 (l. 1112-1122) | PRESENT, LIBRARY | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0394 | Kap. 26.4 (l. 1123) | PRESENT, SCRIPT, PROMPT | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0395 | Kap. 26.4 (l. 1124) | PRESENT, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0396 | Kap. 26.5 (l. 1125-1132) | PRESENT, PROMPT, SCRIPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0397 | Kap. 26.6 (l. 1133-1143) | PRESENT, UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0398 | Kap. 26.6 (l. 1144) | PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0399 | Kap. 26.6 (l. 1145) | PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0384 | Kap. 26 (l. 1059-1060) | PRESENT | src/core/presentation/poster.ts, src/core/presentation/relations.ts, src/core/presentation/metrics.ts, src/core/presentation/document.ts, src/app/release/PosterWorkspace.tsx | 2 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (60), tests/visual/screens.mjs (61) | Verifisert | 2026-10-11 DEC-0061: Plakater og karakterkart lages, redigeres og eksporteres under «Utgivelse» |
+| REQ-0385 | Kap. 26 (l. 1061) | PRESENT, EXPORT | src/app/release/PosterWorkspace.tsx, src/app/release/PosterDialogs.tsx (ExportPosterDialog) | 1 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (66) | Verifisert | 2026-10-11 DEC-0061: Egen eksport av plakaten (trykk-PDF og PNG), atskilt fra filmeksporten |
+| REQ-0386 | Kap. 26.1 (l. 1062-1065) | PRESENT, EXPORT | src/core/presentation/poster.ts (POSTER_FORMATS) | 1 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (60) | Verifisert | 2026-10-11 DEC-0061: 70 × 100 cm stående er standard; også 50 × 70, A1, A3 og eget format |
+| REQ-0387 | Kap. 26.1 (l. 1066-1072) | PRESENT, EXPORT | src/engine/export/poster-pdf.ts, src/engine/export/poster-canvas.ts | 1 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (66) | Verifisert | 2026-10-11 DEC-0061: Trykk-PDF med ekte tekst, bilder i trykkoppløsning, utfallende kant og skjæremerker; PNG for digital bruk |
+| REQ-0388 | Kap. 26.2 A (l. 1073-1083) | PRESENT | src/core/presentation/poster.ts (layoutPoster: pitch) | 2 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (61) | Verifisert | 2026-10-11 DEC-0061: Kinopitch-plakat med hovedkarakterer, stemning, tittel og logline |
+| REQ-0389 | Kap. 26.2 B (l. 1084-1093) | PRESENT | src/core/presentation/poster.ts (layoutPoster: character_map) | 2 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (60) | Verifisert | 2026-10-11 DEC-0061: Karakter- og universkart med karakterkort, relasjonslinjer, steder og objekter |
+| REQ-0390 | Kap. 26.3 (l. 1094-1109) | PRESENT, UI | src/core/presentation/poster.ts (defaultOptions, POSTER_OPTION_LABEL), src/app/release/PosterInspector.tsx | 1 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (60) | Verifisert | 2026-10-11 DEC-0061: 13 innholdsvalg som avkrysning |
+| REQ-0391 | Kap. 26.3 (l. 1110) | PRESENT | src/core/presentation/poster.ts (layoutPoster) | 1 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (60) | Verifisert | 2026-10-11 DEC-0061: Komposisjonen lages på nytt når innholdet endres; det brukeren har endret, står |
+| REQ-0392 | Kap. 26.3 (l. 1111) | PRESENT, UI | src/core/presentation/poster.ts (posterChecks, minReadablePt), src/app/release/PosterInspector.tsx (PosterChecksList) | 2 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (63) | Verifisert | 2026-10-11 DEC-0061: Varsel om for liten tekst eller tekst som ikke får plass, med forslag |
+| REQ-0393 | Kap. 26.4 (l. 1112-1122) | PRESENT, LIBRARY | src/core/presentation/relations.ts, src/core/presentation/poster.ts (relasjonslinjer) | 2 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (60) | Verifisert | 2026-10-11 DEC-0061: Relasjonslinjer med farge og stil per type, med navn og tekst |
+| REQ-0394 | Kap. 26.4 (l. 1123) | PRESENT, SCRIPT, PROMPT | src/core/presentation/relations.ts (relationSuggestions), src/app/release/RelationsDialog.tsx | 2 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (64) | Verifisert | 2026-10-11 DEC-0061: Forslag fra manuset vises som forslag og lagres bare når de godkjennes |
+| REQ-0395 | Kap. 26.4 (l. 1124) | PRESENT, LIBRARY | src/app/release/RelationsDialog.tsx, src/core/commands/apply.ts (AddRelations, UndoAddRelations, UpdateRelations, SetRelationsRemoved, CreatePoster, UndoCreatePoster, UpdatePoster, SetPosterRemoved) | 1 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (64) | Verifisert | 2026-10-11 DEC-0061: Relasjoner godkjennes, avvises, endres, fjernes og legges til selv |
+| REQ-0396 | Kap. 26.5 (l. 1125-1132) | PRESENT, PROMPT, SCRIPT | src/core/presentation/poster.ts (posterAnalysis, posterDraft), src/app/release/PosterDialogs.tsx (NewPosterDialog) | 1 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (65) | Verifisert | 2026-10-11 DEC-0061: Førsteutkast fra prosjektet: hvem, hvor, hva, relasjoner og stil |
+| REQ-0397 | Kap. 26.6 (l. 1133-1143) | PRESENT, UI | src/app/release/PosterWorkspace.tsx, src/app/release/PosterCanvas.tsx, src/app/release/PosterInspector.tsx | 1 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (62) | Verifisert | 2026-10-11 DEC-0061: Plakaten kan endres fritt etter utkastet (flytt, størrelse, tekst, farger, bilder, egne elementer) |
+| REQ-0398 | Kap. 26.6 (l. 1144) | PRESENT | src/core/model.ts (PosterDocument, PosterElement) | 1 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (62) | Verifisert | 2026-10-11 DEC-0061: Hvert element (tekst, bilde, flate, relasjon) er eget og redigerbart |
+| REQ-0399 | Kap. 26.6 (l. 1145) | PRESENT | src/core/model.ts (PosterDocument), db/migrations/0019_presentation.sql | 1 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061) | Verifisert | 2026-10-11 DEC-0061: Plakaten lagres som strukturert dokument, ikke som ett bilde |
 | REQ-0400 | Kap. 26.7 (l. 1146-1147) | PRESENT, PROMPT, PROVIDER | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0401 | Kap. 26.7 (l. 1148) | QUALITYCOST, PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0402 | Kap. 26.7 (l. 1149) | LIBRARY, PRESENT, VERSION | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0403 | Kap. 26.8 (l. 1150-1152) | PRESENT, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0404 | Kap. 26.8 (l. 1153) | PRESENT, L10N, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0403 | Kap. 26.8 (l. 1150-1152) | PRESENT, CORE | src/app/release/PosterWorkspace.tsx (plakater per produksjon) | 2 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (60) | Verifisert | 2026-10-11 DEC-0061: Flere plakater per produksjon, også for spinoffer |
+| REQ-0404 | Kap. 26.8 (l. 1153) | PRESENT, L10N, EXPORT | src/core/presentation/poster.ts (LocalizedText, elementText), src/app/release/PosterInspector.tsx (Bilingual) | 1 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (66) | Verifisert | 2026-10-11 DEC-0061: Norsk og engelsk tekst; engelsk faller tilbake til norsk og meldes |
 | REQ-0405 | Kap. 27.1 (l. 1155-1168) | UI, CORE, QUEUE, QUALITYCOST, VERSION | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0406 | Kap. 27.2 (l. 1169-1178) | UI, CORE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0407 | Kap. 27.3 (l. 1179-1189) | CORE, SECURITY, QUEUE | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -490,7 +490,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0418 | Kap. 29.2 (l. 1230-1238) | EXPORT, COMPOSE, AUDIO | src/engine/export/animatic.ts | 2 | – | Under arbeid | 2026-10-09 DEC-0044: Eksport av 2D-animasjon med dialog, musikk og effekter; importert og AI-generert film kommer senere |
 | REQ-0419 | Kap. 29.3 (l. 1239-1240) | EXPORT, SCRIPT | src/app/script/ExportDialog.tsx, src/core/screenplay/numbering.ts | 2 | tests/unit/numbering.test.ts | Verifisert | 2026-10-09 DEC-0024: M2; status Verifisert |
 | REQ-0420 | Kap. 29.4 (l. 1241-1242) | EXPORT, L10N | src/core/translation/index.ts, src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved), db/migrations/0016_translations.sql, src/core/language/index.ts, src/core/audio/index.ts (clipLanguage, playsIn, filmAudio med språk), src/core/commands/apply.ts (language, languageImages, SetTakeAudioLanguage), db/migrations/0017_language_versions.sql, src/app/assembly/ExportAnimaticDialog.tsx, src/app/script/ExportDialog.tsx | 1 | tests/unit/translation.test.ts, tests/golden/translation.test.ts (referansemanuset), tests/db/run-db-tests.ts (0016 DEC-0058), tests/visual/screens.mjs (93–95), tests/unit/language.test.ts, tests/db/run-db-tests.ts (0017 DEC-0059), tests/visual/screens.mjs (96–99) | Verifisert | 2026-10-11 DEC-0059: Film og manus eksporteres på valgt språk |
-| REQ-0421 | Kap. 29.5 (l. 1243-1244) | EXPORT, PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0421 | Kap. 29.5 (l. 1243-1244) | EXPORT, PRESENT | src/engine/export/poster-pdf.ts, src/engine/export/poster-canvas.ts | 1 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (66) | Verifisert | 2026-10-11 DEC-0061: Trykk-PDF og PNG (72–300 ppi) |
 | REQ-0422 | Kap. 29.6 (l. 1245-1254) | EXPORT, VERSION | src/app/assembly/ExportAnimaticDialog.tsx | 2 | tests/visual/screens.mjs::47-montering-eksport | Verifisert | 2026-10-09 DEC-0043: Kontroll før eksport: sceneorden, deaktiverte scener, scener uten 2D-scene, beregnede lengder og manglende bilder |
 | REQ-0423 | Kap. 29.6 (l. 1255) | EXPORT, UI | src/app/assembly/ExportAnimaticDialog.tsx | 1 | tests/visual/screens.mjs::47-montering-eksport | Verifisert | 2026-10-09 DEC-0043: «Eksporter likevel» når kontrollen har merknader |
 | REQ-0424 | Kap. 30 (l. 1257-1258) | UI | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -516,7 +516,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0444 | Kap. 31 (l. 1336-1337) | QUEUE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0445 | Kap. 31 (l. 1338-1339) | VERSION | src/core/commands/apply.ts, db/migrations/0001_core.sql | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0446 | Kap. 31 (l. 1340-1342) | L10N | src/core/translation/index.ts, src/core/commands/apply.ts (AddTranslations, UpdateTranslations, SetTranslationsRemoved), db/migrations/0016_translations.sql | 1 | tests/unit/translation.test.ts, tests/golden/translation.test.ts (referansemanuset), tests/db/run-db-tests.ts (0016 DEC-0058), tests/visual/screens.mjs (93–95) | Verifisert | 2026-10-11 DEC-0058: Localization Engine: src/core/translation |
-| REQ-0447 | Kap. 31 (l. 1343-1344) | PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0447 | Kap. 31 (l. 1343-1344) | PRESENT | src/core/presentation/poster.ts, src/core/presentation/relations.ts, src/core/presentation/metrics.ts, src/core/presentation/document.ts, src/engine/export/poster-pdf.ts | 1 | tests/unit/presentation.test.ts | Under arbeid | 2026-10-11 DEC-0061: Presentasjonsmodulen: plakater, relasjoner og eksport. Stilharmonisering med AI venter på godkjent kostnad |
 | REQ-0448 | Kap. 31 (l. 1345-1347) | EXPORT | docs/architecture/ARCHITECTURE.md | 1 | docs/architecture/ARCHITECTURE.md (kontrollert 2026-10-10) | Verifisert | 2026-10-10 DEC-0049: Export Engine har ansvar for film, manus, lyd, plakater og prosjektbackup (ARCHITECTURE.md) |
 | REQ-0449 | Kap. 31 (l. 1348-1350) | SECURITY | db/migrations/0001_core.sql | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
 | REQ-0450 | Kap. 32 (l. 1353-1355) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
@@ -570,8 +570,8 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0498 | Kap. 34 (l. 1525-1526) | CORE, LIBRARY, TIMELINE | src/core/production/index.ts | 1 | tests/unit/production.test.ts, tests/db/run-db-tests.ts (DEC-0057), tests/visual/screens.mjs (89–92) | Verifisert | 2026-10-11 DEC-0057: Delte ressurser, uavhengig manus og montering |
 | REQ-0499 | Kap. 34 (l. 1527-1529) | CORE, SCRIPT | src/core/production/index.ts | 1 | tests/unit/production.test.ts, tests/db/run-db-tests.ts (DEC-0057), tests/visual/screens.mjs (89–92) | Verifisert | 2026-10-11 DEC-0057: Spinoffer med egne nye scener, ikke automatisk i hovedfilmen |
 | REQ-0500 | Kap. 34 (l. 1530-1531) | VERSION, CORE | src/core/production/promote.ts, src/core/commands/apply.ts (ForkVariant.sourceVariantId, TransferScene, SetContinuityEventDisabled), src/app/projects/PromotionDialog.tsx | 1 | tests/unit/promote.test.ts, tests/db/run-db-tests.ts (0018 DEC-0060), tests/visual/screens.mjs (100) | Verifisert | 2026-10-11 DEC-0060: Tilbakeføring krever brukerens godkjenning |
-| REQ-0501 | Kap. 34 (l. 1532-1533) | PRESENT, EXPORT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0502 | Kap. 34 (l. 1534-1535) | PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0501 | Kap. 34 (l. 1532-1533) | PRESENT, EXPORT | src/core/presentation/poster.ts, src/core/presentation/relations.ts, src/core/presentation/metrics.ts, src/core/presentation/document.ts, src/app/release/PosterWorkspace.tsx | 1 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (62) | Verifisert | 2026-10-11 DEC-0061: Plakater er egne, redigerbare eksportprodukter |
+| REQ-0502 | Kap. 34 (l. 1534-1535) | PRESENT | src/core/presentation/poster.ts | 1 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (60), tests/visual/screens.mjs (61) | Verifisert | 2026-10-11 DEC-0061: 70 × 100 cm og flere informasjonsnivåer |
 | REQ-0503 | Kap. 34 (l. 1536-1537) | LIBRARY, PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0504 | Kap. 34 (l. 1538-1539) | QUEUE, CORE | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0505 | Kap. 34 (l. 1540-1541) | VERSION, CORE, SECURITY | src/core/commands/apply.ts, db/migrations/0001_core.sql | 1 | – | Under arbeid | 2026-10-08 DEC-0022: M1: delvis implementert (se implementation) |
@@ -653,3 +653,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0581 | Beslutning DEC-0050 | COMPOSE, CAMERA, UI | src/core/composition/path.ts, src/core/composition/render.ts#pathSegments, pathPointAt, src/app/scene-editor/LayerMotion.tsx, src/app/scene-editor/Stage.tsx (tegning, punkter) | 1 | tests/unit/scene-editor-3.test.ts (bane, tegning, glatt ut), tests/db/run-db-tests.ts (0013 DEC-0052), tests/visual/screens.mjs (73) | Verifisert | 2026-10-11 DEC-0052: Bygd: frihånd med «Glatt ut», rett linje, punkter som dras, kurve/hjørne med dobbeltklikk |
 | REQ-0582 | Beslutning DEC-0050 | COMPOSE, CAMERA, UI | src/core/composition/render.ts#easeStrength, tempoAt, pathProgress, src/core/composition/animate.ts#setKeyframeEase, src/app/scene-editor/LayerMotion.tsx (ease og tempokurve), src/app/scene-editor/Timeline.tsx (ease inn/ut på nøkkelbilder) | 1 | tests/unit/scene-editor-3.test.ts (ease og tempo), tests/visual/screens.mjs (74) | Verifisert | 2026-10-11 DEC-0052: Bygd: ease ut/inn med styrke (bane og nøkkelbilder) og tempokurve med punkter som dras |
 | REQ-0583 | Beslutning DEC-0050 | AUDIO, COMPOSE, UI | src/app/scene-editor/RecordAudioDialog.tsx | 1 | tests/visual/screens.mjs (76) | Implementert – ikke verifisert | 2026-10-11 DEC-0052: Bygd: opptak fra avspillingshodet mens scenen spilles, lagres i biblioteket og legges i scenen; trimmes uten å endre opptaket. Opptak med mikrofon er ikke automatisk testet |
+| REQ-0584 | Beslutning DEC-0062 | COMPOSE, UI | src/core/composition/camera-handoff.ts, src/app/scene-editor/CameraPanel.tsx | 1 | tests/unit/camera-handoff.test.ts, tests/visual/screens.mjs (34, 68) | Verifisert | 2026-10-11 DEC-0062: Opprettet og bygd etter Mars' ønske 2026-10-11 |
+| REQ-0585 | Beslutning DEC-0062 | COMPOSE, UI | src/app/scene-editor/LayersPanel.tsx, src/app/scene-editor/Stage.tsx (drawMemberOutline), src/app/shell/pane-size.tsx (edge bottom) | 1 | tests/visual/screens.mjs (67) | Implementert – ikke verifisert | 2026-10-11 DEC-0062: Opprettet og bygd etter Mars' ønsker 2026-10-11. Dra og slipp mellom grupper er kontrollert for hånd i koden, ikke med automatisk test |
+| REQ-0586 | Beslutning DEC-0063 | COLLAB, UI | db/migrations/0020_member_roles.sql, src/app/projects/MembersSection.tsx | 1 | tests/db/run-db-tests.ts (0020 DEC-0063), tests/visual/screens.mjs (69) | Verifisert | 2026-10-11 DEC-0063: Opprettet og bygd etter Mars' ønske 2026-10-11 |
+| REQ-0587 | Beslutning DEC-0063 | UI | src/app/shell/back-stack.ts, src/app/shell/back-navigation.tsx, src/app/shell/AppHeader.tsx | 1 | tests/unit/back-stack.test.ts, tests/visual/screens.mjs (70) | Verifisert | 2026-10-11 DEC-0063: Opprettet og bygd etter Mars' ønske 2026-10-11 |

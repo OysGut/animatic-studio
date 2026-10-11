@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { AlertTriangle, FileText, Send } from "lucide-react";
 import { useState, type FormEvent } from "react";
@@ -9,16 +9,10 @@ import { canEdit, useMembers, useProfiles, useProjectState } from "@/app/project
 import { ProjectFormat } from "./ProjectFormat";
 import { AiPanel } from "@/app/ai/AiPanel";
 import { ProductionList } from "./ProductionList";
+import { MembersSection } from "./MembersSection";
 import { ContinuityAnalysisPanel } from "@/app/continuity/ContinuityAnalysisPanel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-const ROLE_LABEL: Record<string, string> = {
-  owner: "Eier",
-  editor: "Redaktør",
-  commenter: "Kommentator",
-  viewer: "Leser",
-};
 
 export function ProjectOverview({ projectId, userId }: { projectId: string; userId: string }) {
   const state = useProjectState(projectId);
@@ -137,24 +131,13 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
             <h2 id="members-title" className="mb-2 text-base font-semibold text-text-primary">
               Medlemmer
             </h2>
-            <ul className="border border-border bg-surface-1">
-              {(members.data ?? []).map((m) => (
-                <li
-                  key={m.user_id}
-                  className="flex items-center justify-between border-b border-border px-4 py-2 text-[13px] last:border-b-0"
-                >
-                  <span className="text-text-secondary">
-                    {profiles.data?.[m.user_id]?.display_name || (
-                      <span className="font-mono text-xs">{m.user_id.slice(0, 8)}</span>
-                    )}
-                    {m.user_id === userId ? (
-                      <span className="ml-2 text-text-tertiary">(deg)</span>
-                    ) : null}
-                  </span>
-                  <span className="text-text-secondary">{ROLE_LABEL[m.role] ?? m.role}</span>
-                </li>
-              ))}
-            </ul>
+            <MembersSection
+              projectId={projectId}
+              userId={userId}
+              members={members.data ?? []}
+              profiles={profiles.data}
+              isOwner={myRole === "owner"}
+            />
             {myRole === "owner" ? <InviteForm projectId={projectId} /> : null}
           </section>
         </div>
@@ -167,6 +150,7 @@ function InviteForm({ projectId }: { projectId: string }) {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("editor");
   const [link, setLink] = useState<string | null>(null);
+  const qc = useQueryClient();
   const invite = useMutation({
     mutationFn: async () => {
       const { data, error } = await db.rpc("create_invitation", {
@@ -180,6 +164,8 @@ function InviteForm({ projectId }: { projectId: string }) {
     onSuccess: (token) => {
       setLink(`${window.location.origin}/invitasjon?token=${encodeURIComponent(token)}`);
       setEmail("");
+      // Den nye invitasjonen vises i listen over ventende invitasjoner
+      void qc.invalidateQueries({ queryKey: ["project-invitations", projectId] });
     },
   });
   function submit(e: FormEvent) {

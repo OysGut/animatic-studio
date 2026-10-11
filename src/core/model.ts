@@ -19,6 +19,8 @@ import type {
   BlockId,
   OccurrenceId,
   ProductionId,
+  AssetRelationId,
+  PosterId,
   ProjectId,
   SceneId,
   SegmentId,
@@ -574,6 +576,10 @@ export interface ProjectState {
   readonly continuityEvents: Readonly<Record<string, ContinuityEvent>>;
   /** Oversettelser av manuset (språkversjoner, DEC-0058). */
   readonly translations: Readonly<Record<string, Translation>>;
+  /** Relasjoner mellom karakterene (DEC-0061). */
+  readonly assetRelations: Readonly<Record<string, AssetRelation>>;
+  /** Plakater og karakterkart (DEC-0061). */
+  readonly posters: Readonly<Record<string, Poster>>;
 }
 
 /**
@@ -701,6 +707,155 @@ export interface ContinuityEvent extends Entity<ContinuityEventId> {
   readonly removed: boolean;
 }
 
+// ---------- Presentasjon (M8 del 1, DEC-0061, mandat kap. 26) ----------
+
+/** Relasjonstyper i relasjonskartet (mandat 26.4, REQ-0393). «other» = brukerdefinert (navnet i `label`). */
+export const RELATION_KINDS = [
+  "family",
+  "friendship",
+  "conflict",
+  "care",
+  "romance",
+  "mentor",
+  "hidden",
+  "other",
+] as const;
+export type RelationKind = (typeof RELATION_KINDS)[number];
+
+/**
+ * En relasjon mellom to karakterer (eller andre ressurser), godkjent av brukeren (REQ-0394/0395). Forslag fra
+ * manuset lagres ikke før de godkjennes; et avvist forslag lagres som «dismissed» så det ikke foreslås igjen.
+ */
+export interface AssetRelation extends Entity<AssetRelationId> {
+  readonly fromAssetId: AssetId;
+  readonly toAssetId: AssetId;
+  readonly kind: RelationKind;
+  /** Navnet på relasjonen («mor og datter»); tomt = typens navn. */
+  readonly label: string;
+  /** Forklarende tekst (mandat 26.3: forklarende relasjonstekster). */
+  readonly description: string;
+  readonly status: "approved" | "dismissed";
+  readonly removed: boolean;
+}
+
+export type PosterKind = "pitch" | "character_map";
+
+/** Tekst på norsk og engelsk (REQ-0404). */
+export interface LocalizedText {
+  readonly nb: string;
+  readonly en: string;
+}
+
+/** Innholdsvalgene (mandat 26.3, REQ-0390). */
+export interface PosterOptions {
+  readonly imagesAndNamesOnly: boolean;
+  readonly shortDescriptions: boolean;
+  readonly longDescriptions: boolean;
+  readonly relationLines: boolean;
+  readonly namedRelations: boolean;
+  readonly relationTexts: boolean;
+  readonly objectImages: boolean;
+  readonly objectDescriptions: boolean;
+  readonly placeImages: boolean;
+  readonly placeDescriptions: boolean;
+  readonly logline: boolean;
+  readonly genreMood: boolean;
+  readonly projectData: boolean;
+}
+
+export type PosterFont = "serif" | "sans";
+
+/**
+ * Et element på plakaten (REQ-0398): tekst, bilde, flate, strek eller relasjonslinje. Mål i millimeter fra
+ * plakatens øvre venstre hjørne (uten utfallende kant). `auto`: plassert av programmet – flyttes når
+ * innholdet endres; settes til false når brukeren endrer elementet.
+ */
+export interface PosterElement {
+  readonly id: string;
+  readonly kind: "text" | "image" | "rect" | "line" | "relation";
+  /** Hva elementet viser (for nytt utkast): tittel, karakter, sted … */
+  readonly role: string;
+  readonly x: number;
+  readonly y: number;
+  readonly w: number;
+  readonly h: number;
+  readonly rotation: number;
+  readonly visible: boolean;
+  readonly auto: boolean;
+  /** Tekst (kind text). */
+  readonly text?: LocalizedText;
+  readonly font?: PosterFont;
+  readonly bold?: boolean;
+  readonly italic?: boolean;
+  /** Skriftstørrelse i punkter. */
+  readonly size?: number;
+  readonly color?: string;
+  readonly align?: "left" | "center" | "right";
+  readonly uppercase?: boolean;
+  /** Sperring (em/1000). */
+  readonly tracking?: number;
+  readonly lineHeight?: number;
+  /** Bilde (kind image): ressurs, variant og låst versjon (null = godkjent/nyeste). */
+  readonly assetId?: AssetId;
+  readonly assetVariantId?: AssetVariantId | null;
+  readonly versionId?: AssetVersionId | null;
+  readonly fit?: "cover" | "contain";
+  readonly opacity?: number;
+  /** Flate/strek. */
+  readonly fill?: string | null;
+  readonly stroke?: string | null;
+  readonly strokeWidth?: number;
+  /** Stiplet strek (skjulte forbindelser). */
+  readonly dashed?: boolean;
+  readonly radius?: number;
+  /** Relasjonslinje: relasjonen og elementene den går mellom. */
+  readonly relationId?: AssetRelationId;
+  readonly fromElementId?: string;
+  readonly toElementId?: string;
+  /**
+   * Feltene brukeren har endret på et element programmet laget (f.eks. «x», «y», «text», «z» for
+   * rekkefølgen). Ved ny komposisjon beholdes disse, resten følger innholdet. Mangler (eldre data): alt står.
+   */
+  readonly overrides?: readonly string[];
+}
+
+export interface PosterDocument {
+  readonly version: 1;
+  readonly options: PosterOptions;
+  /** Prosjekttekster: tittel, logline, sjanger og stemning, undertittel. */
+  readonly title: LocalizedText;
+  readonly logline: LocalizedText;
+  readonly genre: LocalizedText;
+  readonly tagline: LocalizedText;
+  /** Visuell stil: bakgrunn og farger. */
+  readonly palette: {
+    readonly name: string;
+    readonly background: string;
+    readonly text: string;
+    readonly accent: string;
+    readonly muted: string;
+  };
+  /** Ressursene plakaten viser (utvalget fra førsteutkastet, kan endres). */
+  readonly characters: readonly AssetId[];
+  readonly places: readonly AssetId[];
+  readonly objects: readonly AssetId[];
+  readonly elements: readonly PosterElement[];
+}
+
+/** En plakat eller et karakterkart (REQ-0501): selvstendig, redigerbart og lagret element for element. */
+export interface Poster extends Entity<PosterId> {
+  readonly productionId: ProductionId;
+  readonly name: string;
+  readonly kind: PosterKind;
+  /** Språket plakaten vises og eksporteres på (REQ-0404). */
+  readonly language: "nb" | "en";
+  /** Format i millimeter (minst 700 × 1000 stående, REQ-0386). */
+  readonly widthMm: number;
+  readonly heightMm: number;
+  readonly document: PosterDocument;
+  readonly removed: boolean;
+}
+
 /** Tabellnavn i databasen for hver samling (brukes av patch/adapter). */
 export const COLLECTION_TABLES = {
   productions: "productions",
@@ -722,6 +877,8 @@ export const COLLECTION_TABLES = {
   generationPrompts: "generation_prompts",
   continuityEvents: "continuity_events",
   translations: "translations",
+  assetRelations: "asset_relations",
+  posters: "posters",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_TABLES;
@@ -749,6 +906,8 @@ export function emptyProjectState(project: Project): ProjectState {
     generationPrompts: {},
     continuityEvents: {},
     translations: {},
+    assetRelations: {},
+    posters: {},
   };
 }
 

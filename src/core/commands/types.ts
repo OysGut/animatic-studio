@@ -22,6 +22,8 @@ import type {
   TimeLinkId,
   ContinuityEventId,
   TranslationId,
+  AssetRelationId,
+  PosterId,
   GenerationPromptId,
   UserId,
   VariantId,
@@ -38,6 +40,9 @@ import type {
   ContinuityKind,
   Keyframe,
   LanguageImage,
+  PosterDocument,
+  PosterKind,
+  RelationKind,
   LayerKind,
   LayerTransform,
   ProductionKind,
@@ -681,6 +686,35 @@ export type Command =
         readonly fields: ContinuityEventFields;
       }[];
     }
+  // ---------- Presentasjon (M8 del 1, DEC-0061) ----------
+  | {
+      readonly type: "AddRelations";
+      readonly items: readonly {
+        readonly relationId: AssetRelationId;
+        readonly fields: RelationFields;
+      }[];
+    }
+  | {
+      readonly type: "UpdateRelations";
+      readonly items: readonly {
+        readonly relationId: AssetRelationId;
+        readonly fields: RelationFields;
+      }[];
+    }
+  | {
+      /** Angre godkjenning/opprettelse av relasjoner: radene slettes (ressursene kan da angres). */
+      readonly type: "UndoAddRelations";
+      readonly relationIds: readonly AssetRelationId[];
+    }
+  | {
+      readonly type: "SetRelationsRemoved";
+      readonly relationIds: readonly AssetRelationId[];
+      readonly removed: boolean;
+    }
+  | { readonly type: "CreatePoster"; readonly posterId: PosterId; readonly fields: PosterFields }
+  | { readonly type: "UndoCreatePoster"; readonly posterId: PosterId }
+  | { readonly type: "UpdatePoster"; readonly posterId: PosterId; readonly fields: PosterFields }
+  | { readonly type: "SetPosterRemoved"; readonly posterId: PosterId; readonly removed: boolean }
   | {
       /** Slå en arvet kontinuitetshendelse av eller på i en avledet produksjon (DEC-0060, REQ-0166/0167). */
       readonly type: "SetContinuityEventDisabled";
@@ -725,6 +759,27 @@ export interface TranslationFields {
 }
 
 /** En kontinuitetshendelse (DEC-0055). */
+/** En relasjon mellom to ressurser (DEC-0061). */
+export interface RelationFields {
+  readonly fromAssetId: AssetId;
+  readonly toAssetId: AssetId;
+  readonly kind: RelationKind;
+  readonly label: string;
+  readonly description: string;
+  readonly status: "approved" | "dismissed";
+}
+
+/** En plakat eller et karakterkart; alle feltene erstattes samlet (DEC-0061). */
+export interface PosterFields {
+  readonly productionId: ProductionId;
+  readonly name: string;
+  readonly kind: PosterKind;
+  readonly language: "nb" | "en";
+  readonly widthMm: number;
+  readonly heightMm: number;
+  readonly document: PosterDocument;
+}
+
 export interface ContinuityEventFields {
   readonly assetId: AssetId;
   readonly kind: ContinuityKind;

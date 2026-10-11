@@ -12,6 +12,7 @@ export * from "./animate";
 export * from "./format";
 export * from "./path";
 export * from "./group";
+export * from "./camera-handoff";
 
 /** Lagtypen et bilde fra biblioteket får som standard. */
 export const LAYER_KIND_FOR_ASSET: Record<AssetKind, LayerKind> = {

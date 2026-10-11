@@ -38,6 +38,7 @@ import {
   promotionCommands,
   scriptOnlyChoice,
   transferSceneCommands,
+  posterDraft,
 } from "../../src/core";
 
 const ADMIN_URL = process.env["DATABASE_URL"] ?? "postgres://postgres@localhost:54329/postgres";
@@ -119,6 +120,8 @@ async function loadState(projectId: string): Promise<ProjectState> {
     generation_prompts: await q("generation_prompts"),
     continuity_events: await q("continuity_events"),
     translations: await q("translations"),
+    asset_relations: await q("asset_relations"),
+    posters: await q("posters"),
   };
   return stateFromRows(rows);
 }
@@ -2111,6 +2114,102 @@ try {
     assert(Number(v!["v"]) >= 18, "schema_version er ikke 18");
   });
 
+  await test("0019 (DEC-0061): relasjoner og plakater lagres, endres og leses tilbake; ugyldige verdier avvises", async () => {
+    let st = await loadState(projectId);
+    const main = Object.values(st.productions).find((p) => p.kind === "main")!;
+    const mk = (id: string, name: string) => ({
+      assetId: id as never,
+      fields: {
+        kind: "character" as const,
+        name,
+        names: [],
+        description: "",
+        category: "",
+        tags: [],
+      },
+    });
+    st = await runCommand(st, ALICE, {
+      type: "CreateAssets",
+      assets: [
+        mk("abcdef00-0000-7000-8000-0000000d7011", "Mor"),
+        mk("abcdef00-0000-7000-8000-0000000d7012", "Datter"),
+      ],
+    } as never);
+    const chars = [
+      "abcdef00-0000-7000-8000-0000000d7011",
+      "abcdef00-0000-7000-8000-0000000d7012",
+    ].map((id) => st.assets[id]!);
+    const rel = "abcdef00-0000-7000-8000-0000000d7001";
+    st = await runCommand(st, ALICE, {
+      type: "AddRelations",
+      items: [
+        {
+          relationId: rel as never,
+          fields: {
+            fromAssetId: chars[0]!.id,
+            toAssetId: chars[1]!.id,
+            kind: "family",
+            label: "Mor og datter",
+            description: "",
+            status: "approved",
+          },
+        },
+      ],
+    });
+    const poster = "abcdef00-0000-7000-8000-0000000d7002";
+    const doc = posterDraft(st, main.id, "character_map");
+    st = await runCommand(st, ALICE, {
+      type: "CreatePoster",
+      posterId: poster as never,
+      fields: {
+        productionId: main.id,
+        name: "Karakterkart",
+        kind: "character_map",
+        language: "nb",
+        widthMm: 700,
+        heightMm: 1000,
+        document: doc,
+      },
+    });
+    let back = await loadState(projectId);
+    assert(back.assetRelations[rel]?.label === "Mor og datter", "relasjonen ble ikke lagret");
+    assert(isDeepStrictEqual(back.posters[poster]?.document, doc), "plakaten ble ikke lik");
+    assert(back.posters[poster]!.widthMm === 700, "formatet ble ikke lagret");
+    // Endring med revisjonskontroll
+    back = await runCommand(back, ALICE, {
+      type: "UpdatePoster",
+      posterId: poster as never,
+      fields: {
+        productionId: main.id,
+        name: "Karakterkart 2",
+        kind: "character_map",
+        language: "en",
+        widthMm: 700,
+        heightMm: 1000,
+        document: { ...doc, title: { nb: "Tittel", en: "Title" } },
+      },
+    });
+    back = await loadState(projectId);
+    assert(back.posters[poster]!.language === "en", "endringen ble ikke lagret");
+    assert(back.posters[poster]!.document.title.en === "Title", "dokumentet ble ikke endret");
+    await expectError(
+      sql`update public.asset_relations set kind = 'enemy' where id = ${rel}`,
+      /check/,
+    );
+    await expectError(sql`update public.posters set width_mm = 10 where id = ${poster}`, /check/);
+    // Ressursen kan ikke slettes så lenge relasjonen peker på den
+    await expectError(sql`delete from public.assets where id = ${chars[0]!.id}`, /foreign key/);
+    // Bare lesing for medlemmer
+    const seen = await as(
+      "authenticated",
+      ALICE,
+      (tx) => tx`select id from public.posters where id = ${poster}`,
+    );
+    assert(seen.length === 1, "medlemmet ser ikke plakaten");
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 19, "schema_version er ikke 19");
+  });
+
   // ---------- Sikkerhetskopi (DEC-0049): gjenopprett testprosjektet som nytt prosjekt ----------
   await test("DEC-0049: sikkerhetskopi gjenopprettes som nytt prosjekt via apply_changes; alt leses tilbake likt", async () => {
     const q = (t: string) =>
@@ -2137,6 +2236,8 @@ try {
       time_links: await q("time_links"),
       continuity_events: await q("continuity_events"),
       translations: await q("translations"),
+      asset_relations: await q("asset_relations"),
+      posters: await q("posters"),
     } as unknown as ProjectRows;
     const versions = await q("script_versions");
     const docs = await q("imported_documents");
@@ -2244,6 +2345,103 @@ try {
       edited.blocks[someBlock.id]?.text === "Endret etter gjenoppretting.",
       "redigering feilet",
     );
+  });
+
+  await test("0020 (DEC-0063): eieren endrer roller og invitasjoner; prosjektet har alltid en eier", async () => {
+    const p3 = await as(
+      "authenticated",
+      ALICE,
+      async (tx) => (await tx`select public.create_project('Rolle-test') as id`)[0]!["id"],
+    );
+    await sql`insert into public.project_members (project_id, user_id, role) values (${p3}, ${BOB}, 'viewer')`;
+    const role = async (u: string) =>
+      (
+        await sql`select role, can_approve_costs from public.project_members where project_id = ${p3} and user_id = ${u}`
+      )[0]!;
+    // Eieren gjør leseren til redaktør
+    await as(
+      "authenticated",
+      ALICE,
+      (tx) => tx`select public.set_member_role(${p3}, ${BOB}, 'editor')`,
+    );
+    assert((await role(BOB))["role"] === "editor", "rollen ble ikke endret");
+    // Andre enn eieren kan ikke endre roller (heller ikke sin egen)
+    await expectError(
+      as("authenticated", BOB, (tx) => tx`select public.set_member_role(${p3}, ${BOB}, 'owner')`),
+      /Bare prosjektets eier/,
+    );
+    // Ugyldig rolle og ikke-medlem avvises
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`select public.set_member_role(${p3}, ${BOB}, 'admin')`),
+      /Ukjent rolle/,
+    );
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) => tx`select public.set_member_role(${p3}, ${CAROL}, 'editor')`,
+      ),
+      /ikke medlem/,
+    );
+    // Eneste eier kan ikke gjøre seg selv til redaktør
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) => tx`select public.set_member_role(${p3}, ${ALICE}, 'editor')`,
+      ),
+      /minst én eier/,
+    );
+    // Ny eier kan godkjenne kostnader; deretter kan den første eieren bli redaktør
+    await as(
+      "authenticated",
+      ALICE,
+      (tx) => tx`select public.set_member_role(${p3}, ${BOB}, 'owner')`,
+    );
+    assert((await role(BOB))["can_approve_costs"] === true, "ny eier kan ikke godkjenne kostnader");
+    await as(
+      "authenticated",
+      ALICE,
+      (tx) => tx`select public.set_member_role(${p3}, ${ALICE}, 'editor')`,
+    );
+    const a = await role(ALICE);
+    assert(a["role"] === "editor" && a["can_approve_costs"] === false, "eieren ble ikke redaktør");
+    // Invitasjon: endre rolle og trekke tilbake (bare eieren)
+    await as(
+      "authenticated",
+      BOB,
+      (tx) => tx`select public.create_invitation(${p3}, 'carol@example.no', 'viewer')`,
+    );
+    const [inv] = await sql`select id from public.project_invitations where project_id = ${p3}`;
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) => tx`select public.set_invitation_role(${inv!["id"]}, 'editor')`,
+      ),
+      /Bare prosjektets eier/,
+    );
+    await as(
+      "authenticated",
+      BOB,
+      (tx) => tx`select public.set_invitation_role(${inv!["id"]}, 'editor')`,
+    );
+    await expectError(
+      as(
+        "authenticated",
+        BOB,
+        (tx) => tx`select public.set_invitation_role(${inv!["id"]}, 'owner')`,
+      ),
+      /Ukjent rolle/,
+    );
+    const [r1] = await sql`select role from public.project_invitations where id = ${inv!["id"]}`;
+    assert(r1!["role"] === "editor", "invitasjonens rolle ble ikke endret");
+    await as("authenticated", BOB, (tx) => tx`select public.revoke_invitation(${inv!["id"]})`);
+    const [r2] =
+      await sql`select revoked_at from public.project_invitations where id = ${inv!["id"]}`;
+    assert(r2!["revoked_at"] !== null, "invitasjonen ble ikke trukket tilbake");
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 20, "schema_version er ikke 20");
   });
 
   // ---------- 0011: forlate og slette prosjekt (DEC-0046). Kjøres sist: sletter testprosjektet ----------

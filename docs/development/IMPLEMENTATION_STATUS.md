@@ -1,6 +1,6 @@
 # Implementeringsstatus – Animatic Studio
 
-Oppdatert: 2026-10-09 (økt 4). Detaljert status per krav: `docs/product/TRACEABILITY_MATRIX.md` (generert).
+Oppdatert: 2026-10-11 (økt 6). Detaljert status per krav: `docs/product/TRACEABILITY_MATRIX.md` (generert).
 
 ## Sammendrag
 - **M0 Fundament:** ferdig.
@@ -24,7 +24,10 @@ Oppdatert: 2026-10-09 (økt 4). Detaljert status per krav: `docs/product/TRACEAB
 - **M7 del 2 – engelsk manus (DEC-0058):** oversettelse per linje og scenehode som aldri endrer norsk, «må gjennomgås» når norsk endres, import av ferdig oversatt manus med automatisk kobling (referansemanuset: 97/97 scener, 2192/2193 linjer) og manuell godkjenning, engelsk visning og eksport av manus, undertekster (.srt/.vtt) på norsk eller engelsk. Migrasjon 0016.
 - **M7 del 3 – engelsk film (DEC-0059):** lyd per språk (dialog norsk som standard, musikk og effekter felles), bilde per språk i lag, dialogspråk i importert film, samme timing i alle språk, «Språkversjon …» med timingkonflikter og råd om leppesynk, dialogspråk og undertekster valgt uavhengig, eksport per språk med innbrente undertekster og dialogspor (WAV). Migrasjon 0017.
 - **M7 del 4 – tilbakeføring og kontinuitet i spinoffer (DEC-0060):** sammenligning av spinoffens og hovedfilmens versjon (manus, lag, kamera, lyd, timing, klipping) med valg av hva som føres over, ny hovedfilmversjon, overføring av nye scener, godkjent film bare med bekreftelse; arvede, avslåtte og lokale kontinuitetshendelser per produksjon; varsler om hull i spinoffen med «Ta med scenen»; utdrag av ferdig film. Migrasjon 0018.
-- **Krav:** 319 verifisert, 20 implementert – ikke verifisert, 46 under arbeid, 198 ikke startet (av 583).
+- **M8 del 1 – plakater og karakterkart (DEC-0061):** arbeidsflaten «Utgivelse» med kinopitch-plakat og karakter- og universkart per produksjon, førsteutkast fra prosjektet, 13 innholdsvalg, direkte redigering med egne elementer, relasjoner med forslag fra manuset, lesbarhetskontroll, norsk og engelsk, trykk-PDF med utfallende kant og skjæremerker, og PNG. Migrasjon 0019.
+- **Kamera og lag (DEC-0062):** «Bruk aktivt utsnitt», fjern lag fra scenen, dra lag inn i og ut av grupper, valgt gruppe lyser opp, justerbar lagliste.
+- **Roller og tilbake (DEC-0063):** eieren endrer roller og ventende invitasjoner; «Tilbake til …» går til forrige vindu. Migrasjon 0020.
+- **Krav:** 343 verifisert, 21 implementert – ikke verifisert, 47 under arbeid, 176 ikke startet (av 587).
 
 ## Tester (alle grønne 2026-10-09)
 | Testsett | Antall | Kjøres med |

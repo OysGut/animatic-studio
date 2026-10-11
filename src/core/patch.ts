@@ -22,6 +22,11 @@ import type {
   Composition,
   CompositionLayer,
   LanguageImage,
+  AssetRelation,
+  Poster,
+  PosterDocument,
+  PosterKind,
+  RelationKind,
   Production,
   ProductionSegment,
   ProjectState,
@@ -32,7 +37,7 @@ import type {
   Take,
   TransitionKind,
 } from "./model";
-import { COLLECTION_TABLES, CONTINUITY_KINDS, TRANSITION_KINDS } from "./model";
+import { COLLECTION_TABLES, CONTINUITY_KINDS, RELATION_KINDS, TRANSITION_KINDS } from "./model";
 import type { ContinuityDuration, ContinuityKind } from "./model";
 
 export type Row = Record<string, unknown>;
@@ -67,7 +72,9 @@ type AnyEntity =
   | Annotation
   | Composition
   | CompositionLayer
-  | AudioClip;
+  | AudioClip
+  | AssetRelation
+  | Poster;
 
 export function toRow(collection: CollectionName, e: AnyEntity, projectId: string): Row {
   const base = { id: e.id, project_id: projectId, revision: e.revision };
@@ -378,6 +385,33 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         removed: t.removed,
       };
     }
+    case "assetRelations": {
+      const x = e as AssetRelation;
+      return {
+        ...base,
+        from_asset_id: x.fromAssetId,
+        to_asset_id: x.toAssetId,
+        kind: x.kind,
+        label: x.label,
+        description: x.description,
+        status: x.status,
+        removed: x.removed,
+      };
+    }
+    case "posters": {
+      const x = e as Poster;
+      return {
+        ...base,
+        production_id: x.productionId,
+        name: x.name,
+        kind: x.kind,
+        language: x.language,
+        width_mm: x.widthMm,
+        height_mm: x.heightMm,
+        document: x.document,
+        removed: x.removed,
+      };
+    }
   }
 }
 
@@ -419,6 +453,8 @@ export const TABLE_ORDER: readonly string[] = [
   "generation_prompts",
   "continuity_events",
   "translations",
+  "asset_relations",
+  "posters",
 ];
 
 export function diffStates(before: ProjectState, after: ProjectState): ChangeSet {
@@ -518,6 +554,9 @@ export interface ProjectRows {
   readonly continuity_events?: readonly Row[];
   /** M7 del 2 (migrasjon 0016). Tomt hvis migrasjonen ikke er kjørt ennå. */
   readonly translations?: readonly Row[];
+  /** M8 del 1 (migrasjon 0019). Tomt hvis migrasjonen ikke er kjørt ennå. */
+  readonly asset_relations?: readonly Row[];
+  readonly posters?: readonly Row[];
 }
 
 const str = (v: unknown) => String(v);
@@ -969,6 +1008,35 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         text: str(x["text"] ?? ""),
         basedOnRev: num(x["based_on_rev"] ?? 0),
         status: (x["status"] === "uncertain" ? "uncertain" : "approved") as Translation["status"],
+        removed: x["removed"] === true,
+      })),
+    ),
+    assetRelations: byId(
+      (r.asset_relations ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        fromAssetId: str(x["from_asset_id"]) as never,
+        toAssetId: str(x["to_asset_id"]) as never,
+        kind: ((RELATION_KINDS as readonly string[]).includes(String(x["kind"]))
+          ? String(x["kind"])
+          : "other") as RelationKind,
+        label: str(x["label"] ?? ""),
+        description: str(x["description"] ?? ""),
+        status: (x["status"] === "dismissed" ? "dismissed" : "approved") as AssetRelation["status"],
+        removed: x["removed"] === true,
+      })),
+    ),
+    posters: byId(
+      (r.posters ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        productionId: str(x["production_id"]) as never,
+        name: str(x["name"] ?? ""),
+        kind: (x["kind"] === "character_map" ? "character_map" : "pitch") as PosterKind,
+        language: (x["language"] === "en" ? "en" : "nb") as Poster["language"],
+        widthMm: num(x["width_mm"] ?? 700),
+        heightMm: num(x["height_mm"] ?? 1000),
+        document: json(x["document"]) as PosterDocument,
         removed: x["removed"] === true,
       })),
     ),

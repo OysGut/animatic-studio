@@ -40,6 +40,7 @@ import {
   type Composition,
   type ProjectState,
   sceneContinuityVariant,
+  previousSceneCamera,
 } from "@/core";
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
@@ -705,6 +706,12 @@ function Editor({
               {selectedShot ? (
                 <CameraPanel
                   key={selectedShot.id}
+                  previousFrame={
+                    occurrenceId
+                      ? (previousSceneCamera(state, productionId, occurrenceId, composition)
+                          ?.frame ?? null)
+                      : null
+                  }
                   composition={composition}
                   shot={selectedShot}
                   durationFrames={duration}

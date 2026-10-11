@@ -124,7 +124,8 @@ export const storedNumber = {
 
 /**
  * Håndtaket i rammen. `edge` sier hvilken kant av panelet det sitter på: «right» = panelet er til venstre
- * og blir bredere når man drar mot høyre; «left» = panelet er til høyre; «top» = panelet er under (høyde).
+ * og blir bredere når man drar mot høyre; «left» = panelet er til høyre; «top» = panelet er under (høyde);
+ * «bottom» = panelet er over og blir høyere når man drar nedover.
  * Plasseres inne i et element med `position: relative`.
  */
 export function PaneResizer({
@@ -135,7 +136,7 @@ export function PaneResizer({
   max,
   label,
 }: {
-  edge: "left" | "right" | "top";
+  edge: "left" | "right" | "top" | "bottom";
   size: number;
   onSize: (n: number | null) => void;
   min: number;
@@ -144,15 +145,17 @@ export function PaneResizer({
 }) {
   const start = useRef<{ pos: number; size: number } | null>(null);
   const [active, setActive] = useState(false);
-  const horizontal = edge !== "top";
-  const sign = edge === "right" ? 1 : -1;
+  const horizontal = edge === "left" || edge === "right";
+  const sign = edge === "right" || edge === "bottom" ? 1 : -1;
   const pos = (e: { clientX: number; clientY: number }) => (horizontal ? e.clientX : e.clientY);
   const place =
     edge === "right"
       ? "right-[-3px] top-0 h-full w-[6px] cursor-col-resize"
       : edge === "left"
         ? "left-[-3px] top-0 h-full w-[6px] cursor-col-resize"
-        : "left-0 top-[-3px] h-[6px] w-full cursor-row-resize";
+        : edge === "bottom"
+          ? "bottom-[-3px] left-0 h-[6px] w-full cursor-row-resize"
+          : "left-0 top-[-3px] h-[6px] w-full cursor-row-resize";
   return (
     <div
       role="separator"
@@ -191,8 +194,20 @@ export function PaneResizer({
       onDoubleClick={() => onSize(null)}
       onKeyDown={(e) => {
         const step = e.shiftKey ? 40 : 10;
-        const grow = horizontal ? (edge === "right" ? "ArrowRight" : "ArrowLeft") : "ArrowUp";
-        const shrink = horizontal ? (edge === "right" ? "ArrowLeft" : "ArrowRight") : "ArrowDown";
+        const grow = horizontal
+          ? edge === "right"
+            ? "ArrowRight"
+            : "ArrowLeft"
+          : edge === "bottom"
+            ? "ArrowDown"
+            : "ArrowUp";
+        const shrink = horizontal
+          ? edge === "right"
+            ? "ArrowLeft"
+            : "ArrowRight"
+          : edge === "bottom"
+            ? "ArrowUp"
+            : "ArrowDown";
         if (e.key === grow) onSize(size + step);
         else if (e.key === shrink) onSize(size - step);
         else return;

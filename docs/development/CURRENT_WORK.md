@@ -1,8 +1,25 @@
 # Pågående arbeid
 
-Oppdatert: 2026-10-11 (økt 6, DEC-0060)
+Oppdatert: 2026-10-11 (økt 6, DEC-0061–0063)
 
-## Nå: DEC-0060 – M7 del 4: tilbakeføring fra spinoff, kontinuitet i spinoffer, utdrag – ferdig, venter på Mars (leveres sammen med DEC-0049–0059)
+## Nå: DEC-0061 – M8 del 1: plakater, karakterkart og relasjoner – ferdig, venter på Mars
+- [x] «Utgivelse»: kinopitch-plakat og karakter- og universkart per produksjon, 70 × 100 cm m.fl., norsk og engelsk (REQ-0384–0389, REQ-0403/0404)
+- [x] Førsteutkast fra prosjektet, 13 innholdsvalg, ny komposisjon som beholder brukerens endringer, lesbarhetskontroll (REQ-0390–0392, REQ-0396)
+- [x] Relasjoner med forslag fra manuset, godkjenning og redigering (REQ-0393–0395); egne elementer og direkte redigering (REQ-0397–0399)
+- [x] Trykk-PDF (utfallende kant, skjæremerker, ekte tekst) og PNG (REQ-0387, REQ-0421)
+- [x] Migrasjon 0019; Vitest og DB-tester grønne, skjermbilder 60–66, kodegjennomgang (23 funn: rettet, resten KI-128–133)
+- [ ] **Mars:** godkjenn kostnad for stilharmonisering med AI (REQ-0137–0145, REQ-0400–0402) – eller vent
+- [ ] **Mars:** Prøv: Utgivelse → «Ny» → «Karakter- og universkart» → «Relasjoner» → godkjenn → «Eksporter» → Trykk-PDF
+
+## Også nå: DEC-0063 – endre rolle etter invitasjon og «Tilbake til …» – ferdig
+- [x] REQ-0586 (migrasjon 0020, DB-test), REQ-0587 (enhetstest); skjermbilder 69–70
+- [ ] **Mars:** Prøv: Prosjektoversikt → Medlemmer → endre rollen til Anita; gå Manus → Bibliotek → «Tilbake til Manus»
+
+## Også nå: DEC-0062 – «Bruk aktivt utsnitt», grupper med dra og slipp, fjern lag, justerbar lagliste – ferdig
+- [x] REQ-0584 (kamera), REQ-0585 (lag); skjermbilder 34, 67, 68
+- [ ] **Mars:** Prøv i sceneeditoren: dra et lag inn på «Familien» og ut igjen; velg et kamerautsnitt i scene 2 → «Bruk aktivt utsnitt»
+
+## Forrige: DEC-0060 – M7 del 4: tilbakeføring fra spinoff, kontinuitet i spinoffer, utdrag – ferdig, venter på Mars (leveres sammen med DEC-0049–0059)
 - [x] Sammenligning og valg ved tilbakeføring, ny hovedfilmversjon, overføring av ny scene (REQ-0373–0383, REQ-0500)
 - [x] Kontinuitet per produksjon: arvet, avslått og lokal (REQ-0166/0167); varsler om hull med «Ta med scenen» (REQ-0325/0369)
 - [x] Utdrag av ferdig film og sammenbindende scener i spinoff (REQ-0367/0368/0370)

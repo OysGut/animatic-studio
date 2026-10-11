@@ -258,6 +258,24 @@ function draftFor(d: Drag, scene: Pt, shift: boolean): LayerTransform {
 
 // ---------- Tegning ----------
 
+/** Omrisset til et lag i valgt gruppe (lyser opp, uten håndtak). */
+function drawMemberOutline(ctx: CanvasRenderingContext2D, item: DrawItem, v: View, colors: Colors) {
+  const h = handlesOf(item, v);
+  ctx.save();
+  ctx.strokeStyle = colors.accent;
+  ctx.fillStyle = colors.accent;
+  ctx.globalAlpha = 0.18;
+  ctx.beginPath();
+  h.corners.forEach((p, i) => (i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)));
+  ctx.closePath();
+  ctx.fill();
+  ctx.globalAlpha = 0.9;
+  ctx.lineWidth = 1;
+  ctx.setLineDash([3, 3]);
+  ctx.stroke();
+  ctx.restore();
+}
+
 function drawOverlay(
   ctx: CanvasRenderingContext2D,
   item: DrawItem,
@@ -583,6 +601,11 @@ export function Stage({
           Math.round(frame.height * view.zoom) + 1,
         );
       }
+      // Valgt gruppe: lagene i gruppen lyser opp
+      if (selectedItem && state.layers[selectedItem.layerId]?.kind === "group")
+        for (const it of frame.items)
+          if (state.layers[it.layerId]?.groupId === selectedItem.layerId)
+            drawMemberOutline(ctx, it, view, colors);
       if (selectedItem) drawOverlay(ctx, selectedItem, view, colors, canEditSelected && !drawPath);
       if (shownPath && !drawPath)
         drawPathOverlay(ctx, shownPath, pathToScene, view, colors, pathNow);
@@ -611,6 +634,7 @@ export function Stage({
     pathNow,
     stroke,
     drawPath,
+    state.layers,
   ]);
 
   // Rullehjul: ⌘/Ctrl zoomer rundt pekeren, ellers panorerer
