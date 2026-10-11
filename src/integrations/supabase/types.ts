@@ -631,10 +631,12 @@ export type Database = {
           created_at: string
           created_by: string | null
           description: string
+          disabled_in: Json
           duration: string
           from_variant_id: string | null
           id: string
           kind: string
+          production_id: string | null
           project_id: string
           removed: boolean
           revision: number
@@ -649,10 +651,12 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           description?: string
+          disabled_in?: Json
           duration: string
           from_variant_id?: string | null
           id: string
           kind: string
+          production_id?: string | null
           project_id: string
           removed?: boolean
           revision?: number
@@ -667,10 +671,12 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           description?: string
+          disabled_in?: Json
           duration?: string
           from_variant_id?: string | null
           id?: string
           kind?: string
+          production_id?: string | null
           project_id?: string
           removed?: boolean
           revision?: number
@@ -699,6 +705,13 @@ export type Database = {
             columns: ["from_variant_id"]
             isOneToOne: false
             referencedRelation: "asset_variants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "continuity_events_production_id_fkey"
+            columns: ["production_id"]
+            isOneToOne: false
+            referencedRelation: "productions"
             referencedColumns: ["id"]
           },
           {
