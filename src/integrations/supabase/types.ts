@@ -305,6 +305,7 @@ export type Database = {
         Row: {
           archived: boolean
           category: string
+          context_names: Json
           created_at: string
           created_by: string | null
           description: string
@@ -316,10 +317,12 @@ export type Database = {
           revision: number
           sound_links: Json
           tags: Json
+          voice: Json | null
         }
         Insert: {
           archived?: boolean
           category?: string
+          context_names?: Json
           created_at?: string
           created_by?: string | null
           description?: string
@@ -331,10 +334,12 @@ export type Database = {
           revision?: number
           sound_links?: Json
           tags?: Json
+          voice?: Json | null
         }
         Update: {
           archived?: boolean
           category?: string
+          context_names?: Json
           created_at?: string
           created_by?: string | null
           description?: string
@@ -346,6 +351,7 @@ export type Database = {
           revision?: number
           sound_links?: Json
           tags?: Json
+          voice?: Json | null
         }
         Relationships: [
           {
@@ -536,6 +542,7 @@ export type Database = {
           revision: number
           source: string
           take_id: string | null
+          transition_ms: number
         }
         Insert: {
           created_at?: string
@@ -550,6 +557,7 @@ export type Database = {
           revision?: number
           source: string
           take_id?: string | null
+          transition_ms?: number
         }
         Update: {
           created_at?: string
@@ -564,6 +572,7 @@ export type Database = {
           revision?: number
           source?: string
           take_id?: string | null
+          transition_ms?: number
         }
         Relationships: [
           {
@@ -594,6 +603,7 @@ export type Database = {
           anchor: Json | null
           asset_id: string | null
           asset_variant_id: string | null
+          blend: string
           composition_id: string
           created_at: string
           created_by: string | null
@@ -606,6 +616,7 @@ export type Database = {
           kind: string
           language_images: Json
           locked: boolean
+          mask: Json | null
           motion_path: Json | null
           name: string
           order_key: string
@@ -622,6 +633,7 @@ export type Database = {
           anchor?: Json | null
           asset_id?: string | null
           asset_variant_id?: string | null
+          blend?: string
           composition_id: string
           created_at?: string
           created_by?: string | null
@@ -634,6 +646,7 @@ export type Database = {
           kind: string
           language_images?: Json
           locked?: boolean
+          mask?: Json | null
           motion_path?: Json | null
           name?: string
           order_key: string
@@ -650,6 +663,7 @@ export type Database = {
           anchor?: Json | null
           asset_id?: string | null
           asset_variant_id?: string | null
+          blend?: string
           composition_id?: string
           created_at?: string
           created_by?: string | null
@@ -662,6 +676,7 @@ export type Database = {
           kind?: string
           language_images?: Json
           locked?: boolean
+          mask?: Json | null
           motion_path?: Json | null
           name?: string
           order_key?: string
@@ -2036,6 +2051,7 @@ export type Database = {
       }
       style_profiles: {
         Row: {
+          applies_to: Json
           created_at: string
           created_by: string | null
           guide: Json
@@ -2047,6 +2063,7 @@ export type Database = {
           revision: number
         }
         Insert: {
+          applies_to?: Json
           created_at?: string
           created_by?: string | null
           guide: Json
@@ -2058,6 +2075,7 @@ export type Database = {
           revision?: number
         }
         Update: {
+          applies_to?: Json
           created_at?: string
           created_by?: string | null
           guide?: Json
@@ -2082,6 +2100,7 @@ export type Database = {
         Row: {
           accepted_from: Json
           audio_language: string | null
+          coverage: Json | null
           created_at: string
           created_by: string | null
           duration_frames: number | null
@@ -2099,6 +2118,7 @@ export type Database = {
         Insert: {
           accepted_from?: Json
           audio_language?: string | null
+          coverage?: Json | null
           created_at?: string
           created_by?: string | null
           duration_frames?: number | null
@@ -2116,6 +2136,7 @@ export type Database = {
         Update: {
           accepted_from?: Json
           audio_language?: string | null
+          coverage?: Json | null
           created_at?: string
           created_by?: string | null
           duration_frames?: number | null
