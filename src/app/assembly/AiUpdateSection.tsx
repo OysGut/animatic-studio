@@ -5,12 +5,14 @@
  * siden av de gamle, som kan sammenlignes og velges etterpå. Samme leverandør og modell som sist når den
  * fortsatt er koblet til.
  */
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   adaptPromptForModel,
   aiUpdatePlan,
+  costBreakdown,
   effortChoice,
   estimateCostUsd,
   filmClips,
@@ -27,6 +29,7 @@ import { startVideoGeneration } from "@/adapters/ai/video.functions";
 import { aiJobsKey, useAiJobs } from "@/app/ai/use-ai-jobs";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
 import { SentPrompts } from "@/app/ai/SentPrompts";
+import { CostLines } from "@/app/ai/CostLines";
 import { Button } from "@/components/ui/button";
 
 export function AiUpdateSection({
@@ -54,6 +57,8 @@ export function AiUpdateSection({
   const [confirm, setConfirm] = useState(false);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ kind: "ok" | "error"; text: string } | null>(null);
+  // Beskrivelsen kan endres før sending (prinsipp 11, REQ-0489, DEC-0075); per segment
+  const [edited, setEdited] = useState<Record<string, string>>({});
   if (!clip) return null;
   const plan = aiUpdatePlan(state, productionId, clip, changes, takeIds);
   const work = sceneVideoWork(state, productionId, clip);
@@ -85,6 +90,9 @@ export function AiUpdateSection({
       )
     : 0;
   const start = videoStartImages(state, productionId, occurrenceId)[0] ?? null;
+  // Endringene huskes per lagret segment (ID), så en ny inndeling ikke flytter teksten til feil segment
+  const editKey = (i: number) => work.stored[i]?.id ?? `i${i}`;
+  const promptFor = (i: number) => edited[editKey(i)] ?? work.prompts[i] ?? "";
 
   async function run() {
     if (!chosen) return;
@@ -94,7 +102,7 @@ export function AiUpdateSection({
     const errors: string[] = [];
     let started = 0;
     for (const i of plan.segments) {
-      if (adaptPromptForModel(work.prompts[i] ?? "", chosen.model).blocked) {
+      if (adaptPromptForModel(promptFor(i), chosen.model).blocked) {
         errors.push(`Segment ${i + 1}: replikkene er for lange for modellen – del segmentet`);
         continue;
       }
@@ -104,7 +112,7 @@ export function AiUpdateSection({
             projectId,
             occurrenceId,
             segmentId: work.stored[i]?.id ?? null,
-            prompt: adaptPromptForModel(work.prompts[i] ?? "", chosen.model).text,
+            prompt: adaptPromptForModel(promptFor(i), chosen.model).text,
             provider: chosen.provider.id,
             model: chosen.model.id,
             seconds: seconds(i),
@@ -122,6 +130,8 @@ export function AiUpdateSection({
       }
     }
     setBusy(false);
+    // Neste oppdatering starter fra forslaget igjen (manuset kan være endret)
+    setEdited({});
     void qc.invalidateQueries({ queryKey: aiJobsKey(projectId) });
     setMsg(
       errors.length
@@ -149,17 +159,66 @@ export function AiUpdateSection({
             {same ? " (samme som sist)" : ""}. Belastes prosjektets eier, anslått {formatUsd(cost)}{" "}
             (et anslag). De gamle videoene beholdes.
           </p>
+          <CostLines
+            lines={costBreakdown(chosen.provider, chosen.model, {
+              targets: plan.segments.length,
+              targetsLabel: "segmenter",
+              seconds: plan.segments.map(seconds),
+              total: `ca. ${formatUsd(cost)}`,
+            })}
+          />
+          {plan.segments.map((i) => (
+            <div key={i} className="flex flex-col gap-0.5 text-[11px] text-text-tertiary">
+              <span className="flex items-center gap-2">
+                <label htmlFor={`ai-update-${occurrenceId}-${i}`}>
+                  Beskrivelse for segment {i + 1}
+                </label>
+                {edited[editKey(i)] !== undefined ? (
+                  <button
+                    type="button"
+                    className="text-text-secondary underline"
+                    onClick={() =>
+                      setEdited((e) => {
+                        const { [editKey(i)]: _drop, ...rest } = e;
+                        return rest;
+                      })
+                    }
+                  >
+                    Tilbake til forslaget
+                  </button>
+                ) : null}
+              </span>
+              <textarea
+                id={`ai-update-${occurrenceId}-${i}`}
+                value={promptFor(i)}
+                onChange={(e) => setEdited((x) => ({ ...x, [editKey(i)]: e.target.value }))}
+                rows={4}
+                className="w-full resize-y rounded-sm border border-border-control bg-surface-3 p-1.5 font-mono text-[11px] text-text-primary"
+              />
+            </div>
+          ))}
           <SentPrompts
             items={plan.segments.map((i) => ({
               label: `Segment ${i + 1}`,
-              ...adaptPromptForModel(work.prompts[i] ?? "", chosen.model),
+              ...adaptPromptForModel(promptFor(i), chosen.model),
             }))}
           />
           <div className="flex gap-2">
-            <Button size="sm" onClick={() => void run()} disabled={busy}>
-              <Sparkles /> Ja, lag nye videoer
+            <Button
+              size="sm"
+              onClick={() => void run()}
+              disabled={busy || plan.segments.some((i) => !promptFor(i).trim())}
+            >
+              <AiGlyph /> Ja, lag nye videoer
             </Button>
-            <Button size="sm" variant="ghost" onClick={() => setConfirm(false)}>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => {
+                setConfirm(false);
+                setEdited({});
+              }}
+            >
               Avbryt
             </Button>
           </div>
@@ -172,7 +231,7 @@ export function AiUpdateSection({
           disabled={busy}
           onClick={() => setConfirm(true)}
         >
-          {busy ? <Loader2 className="animate-spin" /> : <Sparkles />}
+          {busy ? <Loader2 className="animate-spin" /> : <AiGlyph />}
           Oppdater med AI ({plan.segments.length}{" "}
           {plan.segments.length === 1 ? "segment" : "segmenter"}, ~{formatUsd(cost)}) …
         </Button>

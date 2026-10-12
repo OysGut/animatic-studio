@@ -4,8 +4,8 @@
  * nettleseren serveren hvert 10. sekund om jobbene er ferdige. Ferdige videoer legges inn som ny versjon
  * (AddTake, «ai_video») – også hvis siden som startet jobben ble lukket.
  */
-import { useEffect, useRef } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useMemo, useRef } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   newId,
   secondsToFrames,
@@ -15,10 +15,13 @@ import {
 } from "@/core";
 import { pollVideoJob } from "@/adapters/ai/video.functions";
 import { pumpProjectQueue } from "@/adapters/ai/queue.functions";
-import type { Commands } from "@/app/project/use-commands";
+import { useCommands, type Commands } from "@/app/project/use-commands";
+import { projectStateKey } from "@/app/project/use-project";
+import { loadProjectState } from "@/adapters/storage/project-rows";
+import { db } from "@/app/db";
 import { signedUrls } from "@/app/library/asset-images";
 import { readFilmMetadata } from "@/app/assembly/film-import";
-import { aiJobsKey } from "./use-ai-jobs";
+import { aiJobsKey, useAiJobs } from "./use-ai-jobs";
 import { storeLastFrame } from "./last-frame";
 
 const POLL_MS = 10_000;
@@ -34,7 +37,15 @@ export function useVideoPolling(
   const running = jobs.filter((j) => j.kind === "video" && j.status === "running");
   const ids = running.map((j) => j.id).join(",");
   // Ventende jobber i køen (DEC-0070): uten bakgrunnskø sender nettleseren dem mens prosjektet er åpent
-  const queued = jobs.some((j) => j.kind === "video" && j.status === "queued");
+  const queued = jobs.some(
+    (j) =>
+      (j.kind === "video" && j.status === "queued") ||
+      // Bilde-, lyd- og tekstjobber som har stått som «pågår» i over 15 minutter, ble stoppet av plattformen
+      // (KI-145): serveren merker dem når køen pumpes
+      (j.kind !== "video" &&
+        j.status === "running" &&
+        Date.now() - Date.parse(j.createdAt) > 15 * 60_000),
+  );
   const pumping = useRef(false);
   useEffect(() => {
     if (!enabled || !queued) return;
@@ -81,7 +92,24 @@ export function useVideoPolling(
 }
 
 /** Legg en ferdig AI-video inn som ny versjon av scenen. Returnerer feilmelding eller null. */
+/** Jobber som legges inn akkurat nå (flere visninger kan prøve samtidig). */
+const claiming = new Set<string>();
+
 export async function claimVideo(
+  state: ProjectState,
+  cmds: Commands,
+  job: GenerationJob,
+): Promise<string | null> {
+  if (claiming.has(job.id)) return null;
+  claiming.add(job.id);
+  try {
+    return await claimVideoOnce(state, cmds, job);
+  } finally {
+    claiming.delete(job.id);
+  }
+}
+
+async function claimVideoOnce(
   state: ProjectState,
   cmds: Commands,
   job: GenerationJob,
@@ -127,4 +155,48 @@ export async function claimVideo(
   );
   if (r.error && (cmds.current() ?? now).takes[takeId as never]) return null;
   return r.error ?? null;
+}
+
+/**
+ * Følger opp AI-jobbene i hele prosjektet mens det er åpent (DEC-0072/0073): ingen bakgrunnsjobb, så
+ * nettleseren til en redaktør sender ventende jobber brukeren har lagt i kø, henter ferdige videoer, legger
+ * dem inn som versjon av scenen (kan angres; lagrer også siste bilde til neste segment) og merker jobber
+ * plattformen stoppet. Starter aldri en ny generering. Kjører bare for redaktører.
+ */
+export function AiJobsWatcher({
+  projectId,
+  userId,
+  editable,
+}: {
+  projectId: string;
+  userId: string;
+  editable: boolean;
+}) {
+  const jobs = useAiJobs(projectId, editable);
+  const list = useMemo(() => jobs.data?.jobs ?? [], [jobs.data]);
+  useVideoPolling(projectId, list, editable);
+  // Prosjekttilstanden fra hurtigbufferen (samme spørring som sidene; ingen egen sanntidskanal)
+  const project = useQuery({
+    queryKey: projectStateKey(projectId),
+    queryFn: () => loadProjectState(db, projectId),
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+    enabled: editable,
+  });
+  const cmds = useCommands(projectId, userId, editable);
+  const state = project.data;
+  useEffect(() => {
+    if (!editable || !state) return;
+    const stored = new Set(Object.values(state.takes).map((t) => t.mediaRef));
+    for (const j of list)
+      if (
+        j.kind === "video" &&
+        j.status === "done" &&
+        j.resultPath &&
+        j.occurrenceId &&
+        !stored.has(j.resultPath)
+      )
+        void claimVideo(state, cmds, j);
+  }, [list, state, cmds, editable]);
+  return null;
 }

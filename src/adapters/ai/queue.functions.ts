@@ -34,9 +34,14 @@ export const pumpProjectQueue = createServerFn({ method: "POST" })
   .handler(async ({ data, context }): Promise<{ sent: number }> => {
     const db = await editorDb(context.supabase, data.projectId, context.userId);
     if (!db) return { sent: 0 };
-    const { pumpVideoQueue } = await import("./video-followup.server");
+    const { pumpVideoQueue, markStoppedSyncJobs } = await import("./video-followup.server");
+    // Uten bakgrunnsjobb (DEC-0072/0073) gjør nettleseren det cron ville gjort, for dette prosjektet:
+    // jobber plattformen stoppet merkes, og ventende jobber brukeren har lagt i kø sendes
+    const stopped = await markStoppedSyncJobs(db, Date.now(), data.projectId);
     return {
-      sent: await pumpVideoQueue(db, { projectId: data.projectId, max: 50, budgetMs: 20_000 }),
+      sent:
+        (await pumpVideoQueue(db, { projectId: data.projectId, max: 50, budgetMs: 20_000 })) +
+        stopped,
     };
   });
 

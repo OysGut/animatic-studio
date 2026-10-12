@@ -27,6 +27,7 @@ import {
   Undo2,
   Film,
   Blend,
+  Binary,
   Contrast,
   ExternalLink,
   Languages,
@@ -36,6 +37,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   discrepancies,
   AUDIO_MAX_MS,
+  STILL_MAX_MS,
+  stillMediaPaths,
   DEFAULT_COMPOSITION,
   blocksOfVariant,
   editableParts,
@@ -59,6 +62,7 @@ import {
   type AudioClipFields,
   type AudioKind,
   type ClipPartFields,
+  type ExportSettings,
   type FilmClip,
   type Composition,
   type ProjectState,
@@ -69,6 +73,7 @@ import {
 } from "@/core";
 import { useImageUrls } from "@/app/library/asset-images";
 import { useFilmVideo } from "./film-video";
+import { useSchemaAtLeast } from "@/app/shell/use-schema";
 import { uploadFilm } from "./film-import";
 import { LongFilmImportDialog } from "./LongFilmImportDialog";
 import { useAudioLoaded, useAudioPlayback } from "@/app/audio/use-audio-playback";
@@ -100,6 +105,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ExportAnimaticDialog } from "./ExportAnimaticDialog";
+import { rememberScene } from "@/app/shell/current-scene";
 
 /** Scene og blokk som skal vises når monteringen åpnes (fra manuset). */
 export interface AssemblyFocus {
@@ -204,9 +210,14 @@ function Assembly({
   const playback = usePlayback(duration, fps, false);
   const images = useFilmImages(view, clips);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  useEffect(() => rememberScene(projectId, selectedId), [projectId, selectedId]);
   const [follow, setFollow] = useStoredFlag("assembly-follow", true);
   // Hele filmen i svart-hvitt (visning; foreslås i eksporten, REQ-0573)
   const [monochrome, setMonochrome] = useStoredFlag("assembly-monochrome", false);
+  // Teknisk visning (DEC-0072, REQ-0103): tidskoder og filinformasjon i scenepanelet
+  const [technical, setTechnical] = useStoredFlag("assembly-technical", false);
+  // Lagrede eksportinnstillinger krever migrasjon 0027
+  const schema27 = useSchemaAtLeast(27);
   const [popout, setPopout] = useState(false);
   const [standardOpen, setStandardOpen] = useState(false);
   const [subtitlesOpen, setSubtitlesOpen] = useState(false);
@@ -236,7 +247,8 @@ function Assembly({
   const [selectedAudioId, setSelectedAudioId] = useState<string | null>(null);
   const selectedAudio = selectedAudioId ? state.audioClips[selectedAudioId] : undefined;
   const audioLoaded = useAudioLoaded();
-  const filmVideo = useFilmVideo(filmUrls.data ?? null, playback.playing);
+  const stillPaths = useMemo(() => stillMediaPaths(clips), [clips]);
+  const filmVideo = useFilmVideo(filmUrls.data ?? null, playback.playing, stillPaths);
   useAudioPlayback({
     items: playItems,
     urls: audioUrls.data ?? null,
@@ -392,7 +404,10 @@ function Assembly({
   /** Lengste mulige utpunkt (ms) for en del: filmens lengde eller 2D-scenens lengde. */
   const maxMsOf = useCallback(
     (clip: FilmClip, takeId: string | null) => {
-      if (takeId) return state.takes[takeId]?.media?.durationMs ?? AUDIO_MAX_MS;
+      if (takeId)
+        return state.takes[takeId]?.kind === "still"
+          ? STILL_MAX_MS
+          : (state.takes[takeId]?.media?.durationMs ?? AUDIO_MAX_MS);
       const comp = clip.compositionId ? state.compositions[clip.compositionId] : undefined;
       return comp && comp.durationFrames > 0
         ? Math.round(framesToSeconds(comp.durationFrames, fps) * 1000)
@@ -875,6 +890,18 @@ function Assembly({
             <span className="hidden 2xl:inline">Svart-hvitt</span>
           </Button>
           <Button
+            aria-label="Teknisk visning"
+            size="sm"
+            variant="ghost"
+            aria-pressed={technical}
+            onClick={() => setTechnical(!technical)}
+            title="Vis tidskoder, bildenummer og filinformasjon for scenen og delene"
+            className={technical ? "bg-surface-3 text-text-primary" : ""}
+          >
+            <Binary />
+            <span className="hidden 2xl:inline">Teknisk</span>
+          </Button>
+          <Button
             aria-label="Standardovergang"
             size="sm"
             variant="ghost"
@@ -1040,6 +1067,7 @@ function Assembly({
             />
           ) : (
             <ClipPanel
+              technical={technical}
               state={state}
               projectId={projectId}
               clip={selected}
@@ -1056,15 +1084,39 @@ function Assembly({
               run={cmds.run}
               frame={playback.frame}
               onSeek={playback.setFrame}
-              onUseTake={(takeId) =>
-                selected &&
+              onUseTake={(takeId) => {
+                if (!selected) return;
+                // Spinoff med arvet film (DEC-0072): «animatic» må lagres som egen del, ellers arves
+                // hovedfilmens valg igjen
+                if (takeId === null && selected.inheritedFrom) {
+                  const ms = maxMsOf(selected, null);
+                  if (!selected.compositionId || ms >= AUDIO_MAX_MS) {
+                    setError("Scenen har ingen 2D-scene å bruke i stedet.");
+                    return;
+                  }
+                  editScene(
+                    selected.occurrenceId,
+                    [
+                      {
+                        partId: newId() as never,
+                        source: "composition",
+                        takeId: null,
+                        inMs: 0,
+                        outMs: ms,
+                      },
+                    ],
+                    "Bruk animatic i spinoffen",
+                    null,
+                  );
+                  return;
+                }
                 editScene(
                   selected.occurrenceId,
                   [],
                   takeId ? "Bruk importert film" : "Bruk animatic",
                   takeId,
-                )
-              }
+                );
+              }}
               onTakeStatus={(takeId, status) =>
                 run(
                   { type: "SetTakeStatus", takeId: takeId as never, status },
@@ -1206,6 +1258,19 @@ function Assembly({
         language={filmLang}
         onLanguage={setFilmLang}
         subtitles={subtitleList}
+        {...(editable && schema27
+          ? {
+              onSaveSettings: (settings: ExportSettings) =>
+                cmds.runSilent(
+                  {
+                    type: "SetExportSettings",
+                    productionId: productionId as never,
+                    settings,
+                  },
+                  "Lagre eksportinnstillingene",
+                ),
+            }
+          : {})}
       />
       <LanguageVersionDialog
         open={languageOpen}

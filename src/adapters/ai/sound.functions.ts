@@ -5,7 +5,7 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { estimateCostUsd, isUuid, newId, providerModel, type AssetMedia } from "@/core";
+import { type AssetMedia, effortOf, estimateCostUsd, isUuid, newId, providerModel } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 
 const BUCKET = "assets";
@@ -40,8 +40,18 @@ export const generateSound = createServerFn({ method: "POST" })
     if (typeof x["model"] !== "string" || x["model"].length > 120)
       throw new Error("Ugyldig modell");
     const seconds = x["seconds"];
-    if (seconds !== null && (typeof seconds !== "number" || seconds < 0.5 || seconds > 30))
-      throw new Error("Lengden må være 0,5–30 sekunder");
+    // Tidsbegrensningen står i leverandørkatalogen (REQ-0273)
+    const lim = providerModel("elevenlabs", x["model"])?.soundSeconds ?? { min: 0.5, max: 30 };
+    if (
+      seconds !== null &&
+      (typeof seconds !== "number" ||
+        !Number.isFinite(seconds) ||
+        seconds < lim.min ||
+        seconds > lim.max)
+    )
+      throw new Error(
+        `Lengden må være ${lim.min.toLocaleString("nb-NO")}–${lim.max.toLocaleString("nb-NO")} sekunder`,
+      );
     if (x["approved"] !== true) throw new Error("Genereringen må bekreftes");
     return {
       projectId: x["projectId"],
@@ -95,8 +105,9 @@ export const generateSound = createServerFn({ method: "POST" })
         message:
           "Ingen av prosjektets eiere har koblet til ElevenLabs (AI-leverandører på prosjektlisten).",
       };
-    // Ukjent lengde: anslaget regner med det lengste tjenesten kan lage (30 sekunder)
-    const cost = estimateCostUsd(data.provider, data.model, { seconds: data.seconds ?? 30 });
+    // Ukjent lengde: anslaget regner med det lengste modellen kan lage (katalogen, REQ-0273)
+    const longest = providerModel(data.provider, data.model)?.soundSeconds?.max ?? 30;
+    const cost = estimateCostUsd(data.provider, data.model, { seconds: data.seconds ?? longest });
     const hourAgo = new Date(Date.now() - 3600_000).toISOString();
     const limits = async (extra: number): Promise<string | null> => {
       const { count } = await db
@@ -131,7 +142,18 @@ export const generateSound = createServerFn({ method: "POST" })
       provider_key_id: key.id,
       key_owner: key.user_id,
       cost_usd: cost,
-      params: { seconds: data.seconds, loop: data.loop },
+      params: {
+        seconds: data.seconds,
+        loop: data.loop,
+        // Innsatsnivået jobben ble kjørt med (mandat 19.3, REQ-0275)
+        effort: effortOf(providerModel(data.provider, data.model)),
+        // Sporbarhet (DEC-0072, REQ-0257)
+        trace: await (
+          await import("./trace.server")
+        ).buildTrace(db, data.projectId, {
+          modelParams: { seconds: data.seconds, loop: data.loop },
+        }),
+      },
     } as never);
     if (logErr) return { ok: false, message: `Jobben kunne ikke logges: ${logErr.message}` };
     const after = await limits(1);

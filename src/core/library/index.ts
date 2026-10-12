@@ -4,6 +4,7 @@
  * Forslag gjennomføres aldri automatisk – brukeren velger (REQ-0128).
  */
 import type { Asset, AssetKind, AssetVariant, AssetVersion, ProjectState } from "../model";
+import { STILL_MIME_TYPES } from "../model";
 import { blocksOfVariant, orderedOccurrences } from "../views";
 import {
   characterName,
@@ -77,7 +78,7 @@ export function coverVersion(s: ProjectState, assetId: string): AssetVersion | n
 
 // ---------- Bruk i manuset (REQ-0131) ----------
 
-export type UsageHow = "speaks" | "mentioned" | "location" | "text";
+export type UsageHow = "speaks" | "mentioned" | "location" | "text" | "audio" | "layer";
 
 export interface AssetUsage {
   readonly occurrenceId: string;
@@ -93,6 +94,8 @@ export const USAGE_LABEL: Record<UsageHow, string> = {
   mentioned: "nevnes",
   location: "sted i overskriften",
   text: "nevnes i teksten",
+  audio: "lydklipp i scenen",
+  layer: "lag i 2D-scenen",
 };
 
 function escapeRe(s: string): string {
@@ -131,6 +134,17 @@ function usageIn(
     .map((n) => n.trim())
     .filter(Boolean);
   const keys = names.map(nameKey);
+  // Faktisk bruk i materialet (UX-gjennomgang DEC-0076): lydklipp og lag teller selv om navnet ikke står i
+  // manuset, så en ressurs i bruk aldri ser ubrukt ut (og arkiveres ved en feil)
+  const audioOccs = new Set<string>();
+  for (const c of Object.values(s.audioClips))
+    if (!c.removed && c.assetId === asset.id) audioOccs.add(c.occurrenceId);
+  const layerVariants = new Set<string>();
+  for (const l of Object.values(s.layers)) {
+    if (l.removed || l.assetId !== asset.id) continue;
+    const comp = s.compositions[l.compositionId];
+    if (comp && !comp.removed) layerVariants.add(comp.variantId);
+  }
   const out: AssetUsage[] = [];
   for (const o of occs) {
     const base = { occurrenceId: o.id, number: o.productionNumber, active: o.active };
@@ -156,6 +170,8 @@ function usageIn(
       const here = contextHit(s, o.variantId, asset);
       if (here) hit = here;
     }
+    if (!hit && layerVariants.has(o.variantId)) hit = { how: "layer", matchedName: asset.name };
+    if (!hit && audioOccs.has(o.id)) hit = { how: "audio", matchedName: asset.name };
     if (hit) out.push({ ...base, ...hit });
   }
   return out;
@@ -268,4 +284,27 @@ export function displayName(name: string): string {
       /(^|[\s-])(\p{L})/gu,
       (_m, sep: string, ch: string) => sep + ch.toLocaleUpperCase("nb"),
     );
+}
+
+/**
+ * Bilder som kan brukes som stillbilde i monteringen (DEC-0072): godkjent eller nyeste bildeversjon i hver
+ * variant av ressurser som ikke er arkivert.
+ */
+export function stillCandidates(
+  s: ProjectState,
+): { asset: Asset; variant: AssetVariant; version: AssetVersion }[] {
+  const out: { asset: Asset; variant: AssetVariant; version: AssetVersion }[] = [];
+  for (const asset of sortedAssets(s)) {
+    if (asset.archived) continue;
+    for (const variant of variantsOf(s, asset.id)) {
+      if (variant.archived) continue;
+      const approved = variant.approvedVersionId
+        ? s.assetVersions[variant.approvedVersionId]
+        : undefined;
+      const version = approved ?? versionsOf(s, variant.id)[0];
+      if (version && STILL_MIME_TYPES.includes(version.mimeType))
+        out.push({ asset, variant, version });
+    }
+  }
+  return out;
 }

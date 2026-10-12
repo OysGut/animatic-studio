@@ -395,7 +395,7 @@ const AudioBlock = memo(function AudioBlock({
           {c.blockId ? <Link2 className="size-3 shrink-0" aria-hidden /> : null}
           <span className="truncate">{label}</span>
           {c.continues ? (
-            <span className="shrink-0 text-[10px] text-accent-warm" aria-hidden>
+            <span className="shrink-0 text-[11px] text-accent-warm" aria-hidden>
               →
             </span>
           ) : null}

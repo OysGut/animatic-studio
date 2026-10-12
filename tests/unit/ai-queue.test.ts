@@ -140,6 +140,33 @@ describe("bakgrunnskøen følger opp videojobber uten åpen fane", () => {
     };
     expect(data.map((r) => r.status)).toEqual(["lost", "running", "running", "done"]);
   });
+
+  it("uten bakgrunnsjobb merker nettleseren bare sitt eget prosjekt (DEC-0073)", async () => {
+    const t = Date.parse("2026-10-12T10:00:00Z");
+    const db = fakeDb({
+      generation_jobs: [
+        {
+          id: "a",
+          project_id: "p1",
+          kind: "image",
+          status: "running",
+          created_at: "2026-10-12T09:30:00.000Z",
+        },
+        {
+          id: "b",
+          project_id: "p2",
+          kind: "image",
+          status: "running",
+          created_at: "2026-10-12T09:30:00.000Z",
+        },
+      ],
+    });
+    expect(await markStoppedSyncJobs(db as unknown as AnyClient, t, "p1")).toBe(1);
+    const { data } = (await db.from("generation_jobs").select("*")) as unknown as {
+      data: { id: string; status: string }[];
+    };
+    expect(data.map((r) => r.status)).toEqual(["lost", "running"]);
+  });
 });
 
 describe("køen: rekkefølge, plass og fremdrift", () => {
@@ -330,5 +357,55 @@ describe("sammenheng i køen (DEC-0071)", () => {
       ],
     });
     expect((await resolveChain(fresh as unknown as AnyClient, P1, prevSeg)).state).toBe("wait");
+  });
+});
+
+describe("køen telles på nytt etter at jobben er tatt (KI-175, DEC-0075)", () => {
+  it("har en annen fane fylt den siste plassen samtidig, legges jobben tilbake i kø uten å sendes", async () => {
+    const running = (id: string) => ({
+      id,
+      started_at: "2026-10-12T10:00:00.000Z",
+      project_id: "p1",
+      kind: "video",
+      status: "running",
+      provider_key_id: "k1",
+      provider: "runway",
+      model: "gen4_turbo",
+      prompt: "p",
+      params: {},
+    });
+    const rows: Record<string, unknown>[] = [
+      running("r-1"),
+      running("r-2"),
+      { ...running("q-1"), status: "queued", priority: 2, queue_position: 1 },
+    ];
+    const base = fakeDb({
+      generation_jobs: rows,
+      ai_provider_keys: [],
+      projects: [{ id: "p1", deleted_at: null }],
+    }) as unknown as { from: (t: string) => Record<string, unknown> };
+    let injected = false;
+    const db = {
+      ...base,
+      from(t: string) {
+        const b = base.from(t);
+        if (t !== "generation_jobs") return b;
+        const upd = (b["update"] as (p: Record<string, unknown>) => unknown).bind(b);
+        b["update"] = (patch: Record<string, unknown>) => {
+          // Den andre fanen tar sin jobb i samme øyeblikk
+          if (patch["status"] === "running" && !injected) {
+            injected = true;
+            rows.push(running("annen-fane"));
+          }
+          return upd(patch);
+        };
+        return b;
+      },
+    };
+    const sent = await pumpVideoQueue(db as unknown as AnyClient, { projectId: "p1" });
+    expect(sent).toBe(0);
+    const q = rows.find((r) => r["id"] === "q-1")!;
+    expect(q["status"]).toBe("queued");
+    expect(q["error"]).toBeUndefined();
   });
 });

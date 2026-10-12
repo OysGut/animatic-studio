@@ -4,7 +4,7 @@
  */
 import { Check, ChevronDown, ChevronLeft, ChevronRight, Layers, Search } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { formatHeading, type ProjectState, type SceneOccurrence } from "@/core";
+import { formatHeading, sceneNumberOf, type ProjectState, type SceneOccurrence } from "@/core";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 export function ScenePicker({
@@ -35,7 +35,7 @@ export function ScenePicker({
         return {
           o,
           heading,
-          number: o.productionNumber ?? "–",
+          number: sceneNumberOf(state, o) ?? "–",
           has: v ? hasComposition.has(v.id) : false,
         };
       }),
@@ -107,7 +107,7 @@ export function ScenePicker({
               {current?.heading ?? (rows.length === 0 ? "Ingen scener" : "Velg en scene")}
             </span>
             {current && !current.o.active ? (
-              <span className="shrink-0 rounded-sm bg-surface-1 px-1 text-[10px] uppercase text-text-tertiary">
+              <span className="shrink-0 rounded-sm bg-surface-1 px-1 text-[11px] uppercase text-text-tertiary">
                 Deaktivert
               </span>
             ) : null}

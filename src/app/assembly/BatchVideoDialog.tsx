@@ -5,25 +5,27 @@
  * hvis bakgrunnskøen er satt opp. Inndelinger som ikke er lagret, lagres først (kan angres som ett steg).
  * Ferdige videoer legges inn som nye versjoner; 2D-scenene endres aldri.
  */
-import { ListOrdered, Loader2, Sparkles } from "lucide-react";
+import { ListOrdered, Loader2 } from "lucide-react";
+import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  PRIORITY_LABEL,
   adaptPromptForModel,
   chainStartPath,
+  costBreakdown,
   estimateCostUsd,
   filmClips,
   formatHeading,
   formatUsd,
   keysEvenly,
   newId,
+  PRIORITY_LABEL,
+  type ProjectState,
   providersFor,
   sceneVideoWork,
+  type SceneVideoWork,
   videoDurationFor,
   videoStartImages,
-  type ProjectState,
-  type SceneVideoWork,
 } from "@/core";
 import { startVideoGeneration } from "@/adapters/ai/video.functions";
 import type { Commands } from "@/app/project/use-commands";
@@ -31,6 +33,7 @@ import { aiJobsKey, useAiJobs } from "@/app/ai/use-ai-jobs";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
 import { EffortPicker } from "@/app/ai/EffortPicker";
 import { SentPrompts } from "@/app/ai/SentPrompts";
+import { CostLines } from "@/app/ai/CostLines";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -76,7 +79,7 @@ export function BatchVideoDialog({
   const [busy, setBusy] = useState<string | null>(null);
   const [msg, setMsg] = useState<{ kind: "ok" | "error"; text: string } | null>(null);
   const jobs = useAiJobs(projectId, open);
-  const needsStart = chosen?.provider.id === "runway" || chosen?.provider.id === "fal";
+  const needsStart = !!chosen?.model.requiresImage;
 
   const works: SceneVideoWork[] = useMemo(
     () =>
@@ -236,7 +239,7 @@ export function BatchVideoDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
-      <DialogContent className="max-w-3xl">
+      <DialogContent className="max-h-[90vh] max-w-3xl grid-rows-[auto_minmax(0,1fr)_auto]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-1.5">
             <ListOrdered className="size-4" aria-hidden /> Video for flere scener
@@ -247,203 +250,220 @@ export function BatchVideoDialog({
             versjoner.
           </DialogDescription>
         </DialogHeader>
-        {available.isLoading ? (
-          <p className="text-xs text-text-tertiary">Henter leverandører …</p>
-        ) : !chosen ? (
-          <p className="text-[13px] text-text-secondary">
-            Ingen videoleverandør er koblet til. Prosjektets eier kan koble til en under
-            «AI-leverandører» på prosjektlisten.
-          </p>
-        ) : (
-          <>
-            <EffortPicker
-              capability="video"
-              connected={new Set(available.data?.providers ?? [])}
-              chosen={chosen}
-              disabled={!!busy}
-              onChoose={(c) => {
-                setPick(`${c.provider.id}|${c.model.id}`);
-              }}
-            />
-            <div className="flex flex-wrap items-center gap-2 text-xs text-text-secondary">
-              <select
-                aria-label="Videomodell"
-                value={`${chosen.provider.id}|${chosen.model.id}`}
-                onChange={(e) => {
-                  setPick(e.target.value);
-                  setConfirm(false);
+        {/* Bare innholdet ruller; tittel og knapper står fast (UX-gjennomgang DEC-0076) */}
+        <div className="-mx-1 flex min-h-0 flex-col gap-3 overflow-y-auto px-1">
+          {available.isLoading ? (
+            <p className="text-xs text-text-tertiary">Henter leverandører …</p>
+          ) : !chosen ? (
+            <p className="text-[13px] text-text-secondary">
+              Ingen videoleverandør er koblet til. Prosjektets eier kan koble til en under
+              «AI-leverandører» på prosjektlisten.
+            </p>
+          ) : (
+            <>
+              <EffortPicker
+                capability="video"
+                connected={new Set(available.data?.providers ?? [])}
+                chosen={chosen}
+                disabled={!!busy}
+                onChoose={(c) => {
+                  setPick(`${c.provider.id}|${c.model.id}`);
                 }}
-                className={ctl}
-                disabled={!!busy}
-              >
-                {flat.map((x) => (
-                  <option
-                    key={`${x.provider.id}|${x.model.id}`}
-                    value={`${x.provider.id}|${x.model.id}`}
-                  >
-                    {x.provider.name} – {x.model.label} (~{formatUsd(x.model.priceUsd)}/s)
-                  </option>
-                ))}
-              </select>
-              <select
-                aria-label="Format"
-                value={aspect}
-                onChange={(e) => setAspect(e.target.value as "16:9" | "9:16")}
-                className={ctl}
-                disabled={!!busy}
-              >
-                <option value="16:9">16:9 liggende</option>
-                <option value="9:16">9:16 stående</option>
-              </select>
-              <label className="flex items-center gap-1">
-                Prioritet
+              />
+              <div className="flex flex-wrap items-center gap-2 text-xs text-text-secondary">
                 <select
-                  aria-label="Prioritet i køen"
-                  value={priority}
-                  onChange={(e) => setPriority(Number(e.target.value) as 1 | 2 | 3)}
+                  aria-label="Videomodell"
+                  value={`${chosen.provider.id}|${chosen.model.id}`}
+                  onChange={(e) => {
+                    setPick(e.target.value);
+                    setConfirm(false);
+                  }}
                   className={ctl}
                   disabled={!!busy}
                 >
-                  {([1, 2, 3] as const).map((p) => (
-                    <option key={p} value={p}>
-                      {PRIORITY_LABEL[p]}
+                  {flat.map((x) => (
+                    <option
+                      key={`${x.provider.id}|${x.model.id}`}
+                      value={`${x.provider.id}|${x.model.id}`}
+                    >
+                      {x.provider.name} – {x.model.label} (~{formatUsd(x.model.priceUsd)}/s)
                     </option>
                   ))}
                 </select>
-              </label>
-              <label className="flex items-center gap-1.5">
-                <input
-                  type="checkbox"
-                  checked={chain}
-                  onChange={(e) => setChain(e.target.checked)}
+                <select
+                  aria-label="Format"
+                  value={aspect}
+                  onChange={(e) => setAspect(e.target.value as "16:9" | "9:16")}
+                  className={ctl}
                   disabled={!!busy}
-                />
-                Sammenheng mellom segmentene
-              </label>
-              <label className="flex items-center gap-1.5">
-                <input
-                  type="checkbox"
-                  checked={skipDone}
-                  onChange={(e) => {
-                    setSkipDone(e.target.checked);
-                    setConfirm(false);
-                  }}
-                  disabled={!!busy}
-                />
-                Hopp over segmenter som har video
-              </label>
-            </div>
-            <div className="flex gap-2 text-xs">
-              <Button
-                size="sm"
-                variant="ghost"
-                disabled={!!busy}
-                onClick={() =>
-                  setSelected(
-                    new Set(
-                      works
-                        .filter((w) => w.withVideo.length === 0 && !blocked(w))
-                        .map((w) => w.clip.occurrenceId),
-                    ),
-                  )
-                }
-              >
-                Velg alle uten video
-              </Button>
-              <Button
-                size="sm"
-                variant="ghost"
-                disabled={!!busy}
-                onClick={() => setSelected(new Set())}
-              >
-                Fjern valg
-              </Button>
-            </div>
-            <ul
-              aria-label="Scener"
-              className="max-h-[45vh] overflow-y-auto border border-border bg-surface-1"
-            >
-              {works.map((w) => {
-                const t = todo(w);
-                const b = blocked(w);
-                return (
-                  <li
-                    key={w.clip.occurrenceId}
-                    className="flex items-center gap-2 border-b border-border px-3 py-1.5 text-xs last:border-b-0"
+                >
+                  <option value="16:9">16:9 liggende</option>
+                  <option value="9:16">9:16 stående</option>
+                </select>
+                <label className="flex items-center gap-1">
+                  Prioritet
+                  <select
+                    aria-label="Prioritet i køen"
+                    value={priority}
+                    onChange={(e) => setPriority(Number(e.target.value) as 1 | 2 | 3)}
+                    className={ctl}
+                    disabled={!!busy}
                   >
-                    <input
-                      type="checkbox"
-                      aria-label={`Scene ${w.clip.productionNumber ?? ""}`}
-                      checked={selected.has(w.clip.occurrenceId)}
-                      disabled={!!busy || b}
-                      onChange={() => toggle(w.clip.occurrenceId)}
-                    />
-                    <span className="tabular w-10 font-mono text-text-tertiary">
-                      {w.clip.productionNumber ?? "–"}
-                    </span>
-                    <span className="min-w-0 flex-1 truncate text-text-primary">
-                      {formatHeading(w.clip.heading)}
-                    </span>
-                    <span className="w-40 text-text-secondary">
-                      {w.plan.length} {w.plan.length === 1 ? "segment" : "segmenter"}
-                      {w.stored.length ? "" : " (forslag)"} · {w.withVideo.length} med video
-                    </span>
-                    <span className="tabular w-20 text-right text-text-secondary">
-                      {b ? "mangler startbilde" : t.length ? `~${formatUsd(costFor(w))}` : "ferdig"}
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-            {confirm ? (
-              <div
-                role="alertdialog"
-                aria-label="Bekreft videogenerering"
-                className="flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-2 p-2"
-              >
-                <p className="text-xs text-text-primary">
-                  {totalSegments} {totalSegments === 1 ? "segment" : "segmenter"} i{" "}
-                  {runnable.length} {runnable.length === 1 ? "scene" : "scener"} med{" "}
-                  {chosen.provider.name} – {chosen.model.label}. Belastes leverandørkontoen til
-                  prosjektets eier, anslått {formatUsd(totalCost)} (et anslag; prisen regnes inn i
-                  taket med en gang). Jobber som venter i køen kan avbrytes uten kostnad. Vil du
-                  legge dem i kø nå?
-                </p>
-                <SentPrompts
-                  items={runnable.flatMap((w) =>
-                    todo(w).map((i) => ({
-                      label: `Scene ${w.clip.productionNumber ?? ""}, segment ${i + 1}`,
-                      ...adaptPromptForModel(w.prompts[i] ?? "", chosen.model),
-                    })),
-                  )}
-                />
-                <div className="flex gap-2">
-                  <Button size="sm" onClick={() => void run()} disabled={!!busy}>
-                    <Sparkles /> Ja, legg i kø
-                  </Button>
-                  <Button size="sm" variant="ghost" onClick={() => setConfirm(false)}>
-                    Avbryt
-                  </Button>
-                </div>
+                    {([1, 2, 3] as const).map((p) => (
+                      <option key={p} value={p}>
+                        {PRIORITY_LABEL[p]}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="flex items-center gap-1.5">
+                  <input
+                    type="checkbox"
+                    checked={chain}
+                    onChange={(e) => setChain(e.target.checked)}
+                    disabled={!!busy}
+                  />
+                  Sammenheng mellom segmentene
+                </label>
+                <label className="flex items-center gap-1.5">
+                  <input
+                    type="checkbox"
+                    checked={skipDone}
+                    onChange={(e) => {
+                      setSkipDone(e.target.checked);
+                      setConfirm(false);
+                    }}
+                    disabled={!!busy}
+                  />
+                  Hopp over segmenter som har video
+                </label>
               </div>
-            ) : null}
-            {busy ? (
-              <p role="status" className="flex items-center gap-1 text-xs text-text-secondary">
-                <Loader2 className="size-3.5 animate-spin" aria-hidden /> {busy}
-              </p>
-            ) : null}
-            {msg ? (
-              <p
-                role={msg.kind === "error" ? "alert" : "status"}
-                className={
-                  "text-xs " + (msg.kind === "error" ? "text-status-danger" : "text-status-success")
-                }
+              <div className="flex gap-2 text-xs">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  disabled={!!busy}
+                  onClick={() =>
+                    setSelected(
+                      new Set(
+                        works
+                          .filter((w) => w.withVideo.length === 0 && !blocked(w))
+                          .map((w) => w.clip.occurrenceId),
+                      ),
+                    )
+                  }
+                >
+                  Velg alle uten video
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  disabled={!!busy}
+                  onClick={() => setSelected(new Set())}
+                >
+                  Fjern valg
+                </Button>
+              </div>
+              <ul
+                aria-label="Scener"
+                className="max-h-[45vh] overflow-y-auto border border-border bg-surface-1"
               >
-                {msg.text}
-              </p>
-            ) : null}
-          </>
-        )}
+                {works.map((w) => {
+                  const t = todo(w);
+                  const b = blocked(w);
+                  return (
+                    <li
+                      key={w.clip.occurrenceId}
+                      className="flex items-center gap-2 border-b border-border px-3 py-1.5 text-xs last:border-b-0"
+                    >
+                      <input
+                        type="checkbox"
+                        aria-label={`Scene ${w.clip.productionNumber ?? ""}`}
+                        checked={selected.has(w.clip.occurrenceId)}
+                        disabled={!!busy || b}
+                        onChange={() => toggle(w.clip.occurrenceId)}
+                      />
+                      <span className="tabular w-10 font-mono text-text-tertiary">
+                        {w.clip.productionNumber ?? "–"}
+                      </span>
+                      <span className="min-w-0 flex-1 truncate text-text-primary">
+                        {formatHeading(w.clip.heading)}
+                      </span>
+                      <span className="w-40 text-text-secondary">
+                        {w.plan.length} {w.plan.length === 1 ? "segment" : "segmenter"}
+                        {w.stored.length ? "" : " (forslag)"} · {w.withVideo.length} med video
+                      </span>
+                      <span className="tabular w-20 text-right text-text-secondary">
+                        {b
+                          ? "mangler startbilde"
+                          : t.length
+                            ? `~${formatUsd(costFor(w))}`
+                            : "ferdig"}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+              {confirm ? (
+                <div
+                  ref={(el) => el?.scrollIntoView?.({ block: "nearest" })}
+                  role="alertdialog"
+                  aria-label="Bekreft videogenerering"
+                  className="flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-2 p-2"
+                >
+                  <p className="text-xs text-text-primary">
+                    {totalSegments} {totalSegments === 1 ? "segment" : "segmenter"} i{" "}
+                    {runnable.length} {runnable.length === 1 ? "scene" : "scener"} med{" "}
+                    {chosen.provider.name} – {chosen.model.label}. Belastes leverandørkontoen til
+                    prosjektets eier, anslått {formatUsd(totalCost)} (et anslag; prisen regnes inn i
+                    taket med en gang). Jobber som venter i køen kan avbrytes uten kostnad. Vil du
+                    legge dem i kø nå?
+                  </p>
+                  <CostLines
+                    lines={costBreakdown(chosen.provider, chosen.model, {
+                      targets: totalSegments,
+                      targetsLabel: "segmenter",
+                      seconds: runnable.flatMap((w) => todo(w).map((i) => seconds(w, i))),
+                      total: `ca. ${formatUsd(totalCost)}`,
+                    })}
+                  />
+                  <SentPrompts
+                    items={runnable.flatMap((w) =>
+                      todo(w).map((i) => ({
+                        label: `Scene ${w.clip.productionNumber ?? ""}, segment ${i + 1}`,
+                        ...adaptPromptForModel(w.prompts[i] ?? "", chosen.model),
+                      })),
+                    )}
+                  />
+                  <div className="flex gap-2">
+                    <Button size="sm" onClick={() => void run()} disabled={!!busy}>
+                      <AiGlyph /> Ja, legg i kø
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => setConfirm(false)}>
+                      Avbryt
+                    </Button>
+                  </div>
+                </div>
+              ) : null}
+              {busy ? (
+                <p role="status" className="flex items-center gap-1 text-xs text-text-secondary">
+                  <Loader2 className="size-3.5 animate-spin" aria-hidden /> {busy}
+                </p>
+              ) : null}
+              {msg ? (
+                <p
+                  role={msg.kind === "error" ? "alert" : "status"}
+                  className={
+                    "text-xs " +
+                    (msg.kind === "error" ? "text-status-danger" : "text-status-success")
+                  }
+                >
+                  {msg.text}
+                </p>
+              ) : null}
+            </>
+          )}
+        </div>
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={!!busy}>
             Lukk
@@ -454,7 +474,7 @@ export function BatchVideoDialog({
               disabled={!!busy || totalSegments === 0 || confirm}
               onClick={() => setConfirm(true)}
             >
-              <Sparkles />
+              <AiGlyph />
               Lag video ({totalSegments} {totalSegments === 1 ? "segment" : "segmenter"}, ~
               {formatUsd(totalCost)}) …
             </Button>

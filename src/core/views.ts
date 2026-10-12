@@ -67,7 +67,7 @@ export function scriptView(
     occurrenceId: o.id,
     sceneId: o.sceneId,
     heading: s.variants[o.variantId]?.heading ?? { intExt: "", location: "", time: "" },
-    productionNumber: o.productionNumber,
+    productionNumber: sceneNumberOf(s, o),
     blocks: blocksOfVariant(s, o.variantId),
   }));
 }
@@ -185,4 +185,41 @@ export function outdatedTakes(s: ProjectState): OutdatedTake[] {
       out.push({ takeId: t.id, occurrenceId: occ.id, changedBlockIds: [...changed] });
   }
   return out;
+}
+
+const mainNumberIndex = new WeakMap<object, Map<string, string>>();
+
+/**
+ * Hovedfilmens scenenummer per scene (sceneId → nummer), mellomlagret per tilstand. Ved flere forekomster
+ * av samme scene i hovedfilmen vinner den aktive, deretter den første i rekkefølgen.
+ */
+export function mainSceneNumbers(s: ProjectState): ReadonlyMap<string, string> {
+  let m = mainNumberIndex.get(s.occurrences);
+  if (m) return m;
+  m = new Map();
+  const main = Object.values(s.productions).find((p) => p.kind === "main");
+  if (main) {
+    const occs = orderedOccurrences(s, main.id).filter((o) => o.productionNumber);
+    for (const o of [...occs.filter((x) => x.active), ...occs.filter((x) => !x.active)])
+      if (!m.has(o.sceneId)) m.set(o.sceneId, o.productionNumber!);
+  }
+  mainNumberIndex.set(s.occurrences, m);
+  return m;
+}
+
+/**
+ * Scenenummeret som vises (DEC-0074, KI-108): forekomstens eget, ellers – i en avledet produksjon –
+ * hovedfilmens nummer for samme scene. Lagret nummerering endres ikke.
+ */
+export function sceneNumberOf(
+  s: ProjectState,
+  o: {
+    readonly productionNumber: string | null;
+    readonly sceneId: string;
+    readonly productionId: string;
+  },
+): string | null {
+  if (o.productionNumber) return o.productionNumber;
+  if (s.productions[o.productionId]?.kind === "main") return null;
+  return mainSceneNumbers(s).get(o.sceneId) ?? null;
 }

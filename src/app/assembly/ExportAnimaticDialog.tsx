@@ -9,6 +9,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   filmMediaPaths,
   filmRange,
+  filmSelection,
+  shiftAudioItems,
+  shiftCues,
   formatHeading,
   formatTimecode,
   framesToSeconds,
@@ -21,12 +24,17 @@ import {
   type SubtitleCue,
   type AudioKind,
   type FilmAudioItem,
+  type ExportSettings,
   type FilmClip,
   type FilmRange,
   type ProjectState,
 } from "@/core";
 import { ExportError, canExportVideo, exportAnimatic, loadImages } from "@/engine/export/animatic";
-import { STEM_MAX_SECONDS, dialogueItems, exportDialogueStem } from "@/engine/export/audio-stem";
+import {
+  STEM_MAX_SECONDS,
+  dialogueItems,
+  exportDialogueStemParts,
+} from "@/engine/export/audio-stem";
 import { FilmLanguagePicker, type FilmLanguage } from "./use-film-language";
 import { isEmbedded, prepareDownload, type ReadyFile } from "@/app/download";
 import { Button } from "@/components/ui/button";
@@ -42,7 +50,7 @@ import { audioBank } from "@/app/audio/use-audio-playback";
 import { signedUrls } from "@/app/library/asset-images";
 import { formatSeconds } from "./FilmTimeline";
 
-type Scope = "film" | "selected" | "range";
+type Scope = "film" | "selected" | "range" | "pick";
 type Size = "full" | "half";
 
 interface Check {
@@ -75,15 +83,18 @@ export function ExportAnimaticDialog({
   clips,
   selectedId,
   urls,
-  audioItems,
+  audioItems: allAudioItems,
   audioUrls,
   mutedKinds,
   filmUrls,
   monochrome = false,
   language,
   onLanguage,
-  subtitles,
+  subtitles: allSubtitles,
+  onSaveSettings,
 }: {
+  /** Lagre innstillingene for produksjonen når eksporten startes (DEC-0072). */
+  onSaveSettings?: (settings: ExportSettings) => void;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   state: ProjectState;
@@ -111,6 +122,8 @@ export function ExportAnimaticDialog({
   const [scope, setScope] = useState<Scope>("film");
   const [fromId, setFromId] = useState<string>("");
   const [toId, setToId] = useState<string>("");
+  /** «Valgte scener» (DEC-0072): vilkårlige scener, også med hull mellom. */
+  const [picked, setPicked] = useState<ReadonlySet<string>>(new Set());
   const [size, setSize] = useState<Size>("full");
   const [mono, setMono] = useState(monochrome);
   /** «video»: film med lyd. «dialogue»: bare dialogsporet som WAV (REQ-0350). */
@@ -131,7 +144,13 @@ export function ExportAnimaticDialog({
     const last = clips[clips.length - 1]?.occurrenceId ?? "";
     setFromId(selectedId ?? first);
     setToId(last);
-    setMono(monochrome);
+    // Innstillingene sist brukt for produksjonen (DEC-0072, REQ-0407); ellers standard
+    const saved = state.productions[productionId]?.exportSettings;
+    setMono(saved ? saved.monochrome || monochrome : monochrome);
+    if (saved) {
+      setSize(saved.size);
+      setOutput(saved.output);
+    }
     if (scope === "selected" && !selectedId) setScope("film");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -152,9 +171,29 @@ export function ExportAnimaticDialog({
       : scope === "selected"
         ? { kind: "scenes", fromOccurrenceId: selectedId ?? "", toOccurrenceId: selectedId ?? "" }
         : { kind: "scenes", fromOccurrenceId: fromId, toOccurrenceId: toId };
-  const sel = useMemo(() => filmRange(clips, range), [clips, scope, fromId, toId, selectedId]); // eslint-disable-line react-hooks/exhaustive-deps
-
+  const rangeSel = useMemo(() => filmRange(clips, range), [clips, scope, fromId, toId, selectedId]); // eslint-disable-line react-hooks/exhaustive-deps
   const fps = state.project.fps;
+  const pickSel = useMemo(
+    () => (scope === "pick" ? filmSelection(clips, picked) : null),
+    [scope, clips, picked],
+  );
+  const sel = pickSel ?? rangeSel;
+  // Ved vilkårlige scener flyttes lyd og undertekster sammen med scenene sine
+  const audioItems = useMemo(
+    () =>
+      pickSel
+        ? shiftAudioItems(allAudioItems, pickSel.shiftOf, fps, pickSel.runEndOf)
+        : allAudioItems,
+    [pickSel, allAudioItems, fps],
+  );
+  const subtitles = useMemo(
+    () =>
+      pickSel
+        ? shiftCues(allSubtitles, clips, pickSel.shiftOf, fps, pickSel.runEndOf)
+        : allSubtitles,
+    [pickSel, allSubtitles, clips, fps],
+  );
+
   const fullW = state.project.frameWidth;
   const fullH = state.project.frameHeight;
   const outW = size === "full" ? fullW : Math.round(fullW / 2);
@@ -196,7 +235,7 @@ export function ExportAnimaticDialog({
     if (films.length > 0)
       out.push({
         level: filmMediaPaths(films).some((p) => !filmUrls?.[p]) ? "warn" : "ok",
-        text: `${films.length} ${films.length === 1 ? "scene bruker" : "scener bruker"} importert film.`,
+        text: `${films.length} ${films.length === 1 ? "scene bruker" : "scener bruker"} film, AI-video eller stillbilde.`,
       });
     const estimated = sel.clips.filter((c) => c.durationKind === "estimate").length;
     if (estimated > 0)
@@ -266,7 +305,7 @@ export function ExportAnimaticDialog({
     if (output === "dialogue" && to - from > STEM_MAX_SECONDS)
       out.push({
         level: "warn",
-        text: `Dialogsporet lages for de første ${STEM_MAX_SECONDS / 60} minuttene. Velg et utvalg av scener for resten.`,
+        text: `Dialogsporet lages for de første ${STEM_MAX_SECONDS / 3600} timene (grensen for WAV-filer). Velg et utvalg av scener for resten.`,
       });
     if (output === "video" && language.subtitles) {
       const n = subtitles.filter((c) => c.startMs < to * 1000 && c.endMs > from * 1000).length;
@@ -304,6 +343,12 @@ export function ExportAnimaticDialog({
 
   async function run() {
     setError(null);
+    const saved = state.productions[productionId]?.exportSettings;
+    if (
+      onSaveSettings &&
+      (!saved || saved.size !== size || saved.monochrome !== mono || saved.output !== output)
+    )
+      onSaveSettings({ size, monochrome: mono, output });
     setReady(null);
     const ctrl = new AbortController();
     abort.current = ctrl;
@@ -331,12 +376,14 @@ export function ExportAnimaticDialog({
       const what =
         scope === "film"
           ? "animatic"
-          : sel.clips.length === 1
-            ? `scene ${sel.clips[0]!.productionNumber ?? ""}`.trim()
-            : `scener ${sel.clips[0]!.productionNumber ?? ""}–${sel.clips[sel.clips.length - 1]!.productionNumber ?? ""}`;
+          : scope === "pick" && sel.clips.length > 1
+            ? `${sel.clips.length} scener`
+            : sel.clips.length === 1
+              ? `scene ${sel.clips[0]!.productionNumber ?? ""}`.trim()
+              : `scener ${sel.clips[0]!.productionNumber ?? ""}–${sel.clips[sel.clips.length - 1]!.productionNumber ?? ""}`;
       if (output === "dialogue") {
         // Bare dialogsporet som WAV (DEC-0059, REQ-0350)
-        const bytes = await exportDialogueStem({
+        const stem = await exportDialogueStemParts({
           items: audioItems.filter((it) => !mutedKinds.has(it.clip.kind)),
           bank: audioBank,
           from: framesToSeconds(sel.startFrame, fps),
@@ -352,8 +399,8 @@ export function ExportAnimaticDialog({
         });
         if (abort.current !== ctrl || ctrl.signal.aborted) return;
         const name = safeName(`${state.project.name} – ${what} – dialog ${langName} – ${date}.wav`);
-        const f = prepareDownload(bytes, name, "audio/wav");
-        setReady({ ...f, bytes: bytes.byteLength });
+        const f = prepareDownload(stem.parts, name, "audio/wav");
+        setReady({ ...f, bytes: stem.bytes });
         if (lostAudio > 0)
           setError(
             `Ferdig, men ${lostAudio} ${lostAudio === 1 ? "lydfil" : "lydfiler"} kunne ikke leses og mangler.`,
@@ -518,6 +565,65 @@ export function ExportAnimaticDialog({
                 </span>
               </span>
             </label>
+            <label className={radio}>
+              <input
+                type="radio"
+                name="scope"
+                checked={scope === "pick"}
+                onChange={() => setScope("pick")}
+                className="mt-1"
+              />
+              <span className="flex min-w-0 flex-1 flex-col gap-1">
+                Valgte scener
+                <span className="block text-xs text-text-tertiary">
+                  Kryss av scenene; de settes etter hverandre i filmens rekkefølge
+                </span>
+              </span>
+            </label>
+            {scope === "pick" ? (
+              <div className="flex flex-col gap-1">
+                <ul
+                  aria-label="Scener i eksporten"
+                  className="max-h-40 overflow-y-auto border border-border bg-surface-1"
+                >
+                  {clips.map((c) => (
+                    <li key={c.occurrenceId}>
+                      <label className="flex items-center gap-2 px-2 py-0.5 text-xs text-text-primary">
+                        <input
+                          type="checkbox"
+                          checked={picked.has(c.occurrenceId)}
+                          onChange={(e) => {
+                            const next = new Set(picked);
+                            if (e.target.checked) next.add(c.occurrenceId);
+                            else next.delete(c.occurrenceId);
+                            setPicked(next);
+                          }}
+                        />
+                        <span className="truncate">
+                          {c.productionNumber ?? "–"} {formatHeading(c.heading)}
+                        </span>
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+                <span className="flex gap-2 text-[11px]">
+                  <button
+                    type="button"
+                    className="text-text-secondary hover:underline"
+                    onClick={() => setPicked(new Set(clips.map((c) => c.occurrenceId)))}
+                  >
+                    Alle
+                  </button>
+                  <button
+                    type="button"
+                    className="text-text-secondary hover:underline"
+                    onClick={() => setPicked(new Set())}
+                  >
+                    Ingen
+                  </button>
+                </span>
+              </div>
+            ) : null}
           </fieldset>
 
           <fieldset className="flex flex-col gap-2" disabled={busy}>

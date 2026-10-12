@@ -11,7 +11,9 @@ import type {
   CompositionLayer,
   Easing,
   Keyframe,
+  LayerMask,
   LayerTransform,
+  MaskProperty,
   ProjectState,
 } from "../model";
 import type { LayerFields } from "../commands/types";
@@ -19,8 +21,16 @@ import { estimateProduction } from "../screenplay/duration";
 import { mainProduction } from "../model";
 import { msToFramesCeil, secondsToFrames } from "../time";
 import { sceneAudioEndMs } from "../audio";
-import { ANIMATED_PROPERTIES } from "./fields";
-import { applyMatrix, fullFrameCamera, multiply, rotate, transformAt, translate } from "./render";
+import { ANIMATED_PROPERTIES, KEYFRAME_PROPERTIES, MASK_FIELD, MASK_PROPERTIES } from "./fields";
+import {
+  applyMatrix,
+  fullFrameCamera,
+  maskAt,
+  multiply,
+  rotate,
+  transformAt,
+  translate,
+} from "./render";
 
 // ---------- Varighet ----------
 
@@ -89,7 +99,7 @@ export function setKeyframe(
 export function removeKeyframesAt(
   list: readonly Keyframe[],
   frame: number,
-  properties: readonly AnimatedProperty[] = ANIMATED_PROPERTIES,
+  properties: readonly AnimatedProperty[] = KEYFRAME_PROPERTIES,
 ): Keyframe[] {
   return list.filter((k) => !(k.frame === frame && properties.includes(k.property)));
 }
@@ -102,7 +112,7 @@ export function moveKeyframes(
   list: readonly Keyframe[],
   from: number,
   to: number,
-  properties: readonly AnimatedProperty[] = ANIMATED_PROPERTIES,
+  properties: readonly AnimatedProperty[] = KEYFRAME_PROPERTIES,
 ): Keyframe[] {
   if (from === to) return [...list];
   const target = Math.max(0, Math.round(to));
@@ -121,7 +131,7 @@ export function setKeyframeEasing(
   list: readonly Keyframe[],
   frame: number,
   easing: Easing,
-  properties: readonly AnimatedProperty[] = ANIMATED_PROPERTIES,
+  properties: readonly AnimatedProperty[] = KEYFRAME_PROPERTIES,
 ): Keyframe[] {
   return list.map((k) =>
     k.frame === frame && properties.includes(k.property) ? { ...k, easing } : k,
@@ -152,11 +162,17 @@ export function setKeyframeEase(
   });
 }
 
-/** Nøkkelbilder for alle egenskaper på bildet, med verdiene laget har der nå. */
+/**
+ * Nøkkelbilder for alle egenskaper på bildet, med verdiene laget har der nå. Med rektangel- eller
+ * ellipsemaske får også maskens plassering og størrelse nøkkelbilde (DEC-0072).
+ */
 export function keyAllAt(l: CompositionLayer, frame: number): Keyframe[] {
   const t = transformAt(l, frame);
   let list: Keyframe[] = [...l.keyframes];
   for (const p of ANIMATED_PROPERTIES) list = setKeyframe(list, p, frame, t[p]);
+  const m = maskAt(l, frame);
+  if (m && m.kind !== "layer")
+    for (const p of MASK_PROPERTIES) list = setKeyframe(list, p, frame, m[MASK_FIELD[p]]);
   return list;
 }
 
@@ -174,7 +190,7 @@ export function fieldsWithTransformAt(
 ): LayerFields {
   const now = transformAt(l, frame);
   let keyframes: Keyframe[] = [...fields.keyframes];
-  const base: { -readonly [K in AnimatedProperty]: number } = { ...fields.transform };
+  const base: { -readonly [K in keyof LayerTransform]: number } = { ...fields.transform };
   for (const p of ANIMATED_PROPERTIES) {
     if (next[p] === now[p]) continue;
     // Bevegelsesbanen styrer posisjonen (DEC-0052): x/y endres ved å flytte banen, ikke her
@@ -186,6 +202,87 @@ export function fieldsWithTransformAt(
     } else base[p] = next[p];
   }
   return { ...fields, transform: base, keyframes };
+}
+
+/** Plassering og størrelse for en rektangel- eller ellipsemaske (lagets egne piksler). */
+export interface MaskRect {
+  readonly x: number;
+  readonly y: number;
+  readonly width: number;
+  readonly height: number;
+}
+
+/**
+ * Feltene etter at brukeren har flyttet eller endret størrelsen på masken på et bilde (DEC-0072): samme
+ * regel som for lagets plassering. Egenskaper som allerede er animert, får nøkkelbilde på bildet; med
+ * `autoKey` får alle endrede egenskaper nøkkelbilde. Ellers endres selve masken (lik i hele scenen).
+ * Laget må ha rektangel- eller ellipsemaske; ellers er feltene uendret.
+ */
+export function fieldsWithMaskAt(
+  l: CompositionLayer,
+  fields: LayerFields,
+  frame: number,
+  next: MaskRect,
+  opts: { readonly autoKey?: boolean } = {},
+): LayerFields {
+  const now = maskAt(l, frame);
+  const base = fields.mask === undefined ? (l.mask ?? null) : fields.mask;
+  if (!now || now.kind === "layer" || !base || base.kind === "layer") return fields;
+  let keyframes: Keyframe[] = [...fields.keyframes];
+  const shape: { -readonly [K in keyof MaskRect]: number } = {
+    x: base.x,
+    y: base.y,
+    width: base.width,
+    height: base.height,
+  };
+  for (const p of MASK_PROPERTIES) {
+    const key = MASK_FIELD[p];
+    if (next[key] === now[key]) continue;
+    if (isAnimated(l, p) || opts.autoKey) {
+      // Første nøkkelbilde: start fra masken som den er på bilde 0, så endringen blir en bevegelse
+      if (!isAnimated(l, p) && frame > 0) keyframes = setKeyframe(keyframes, p, 0, now[key]);
+      keyframes = setKeyframe(keyframes, p, frame, next[key]);
+    } else shape[key] = next[key];
+  }
+  const mask: LayerMask = { ...base, ...shape };
+  return { ...fields, mask, keyframes };
+}
+
+/**
+ * Masken etter at et håndtak er dratt (dx, dy) i lagets egne piksler (DEC-0072). `handle` -1 flytter hele
+ * masken; 0–3 er hjørnene (øverst venstre, øverst høyre, nederst høyre, nederst venstre), og hjørnet rett
+ * overfor ligger fast. `keepAspect` beholder forholdet mellom sidene. Minst 1 px, avrundet til 0,1 px.
+ */
+export function dragMaskRect(
+  start: MaskRect,
+  handle: number,
+  dx: number,
+  dy: number,
+  keepAspect = false,
+): MaskRect {
+  const r = (v: number) => Math.round(v * 10) / 10;
+  if (handle < 0 || handle > 3) return { ...start, x: r(start.x + dx), y: r(start.y + dy) };
+  const sx = handle === 1 || handle === 2 ? 1 : -1;
+  const sy = handle >= 2 ? 1 : -1;
+  const ox = sx > 0 ? start.x : start.x + start.width;
+  const oy = sy > 0 ? start.y : start.y + start.height;
+  const cx = (sx > 0 ? start.x + start.width : start.x) + dx;
+  const cy = (sy > 0 ? start.y + start.height : start.y) + dy;
+  let w = Math.max(1, sx * (cx - ox));
+  let h = Math.max(1, sy * (cy - oy));
+  if (keepAspect && start.width > 0 && start.height > 0) {
+    const f = Math.max(w / start.width, h / start.height);
+    w = start.width * f;
+    h = start.height * f;
+  }
+  w = Math.max(1, r(w));
+  h = Math.max(1, r(h));
+  return { x: r(sx > 0 ? ox : ox - w), y: r(sy > 0 ? oy : oy - h), width: w, height: h };
+}
+
+/** Er noe ved masken animert (har minst ett nøkkelbilde)? */
+export function isMaskAnimated(l: Pick<CompositionLayer, "keyframes">): boolean {
+  return MASK_PROPERTIES.some((p: MaskProperty) => isAnimated(l, p));
 }
 
 // ---------- Kamera ----------

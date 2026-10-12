@@ -3,6 +3,7 @@
 import { describe, expect, it } from "vitest";
 import {
   overAccountCap,
+  usedUsd,
   overProjectBudget,
   projectKey,
   projectProviderIds,
@@ -64,6 +65,11 @@ describe("kostnadsporten", () => {
     expect(await overAccountCap(db, "eier", 3, false)).toBe(null);
     expect(await overAccountCap(db, "eier", 5, false)).toMatch(/Kostnadstaket/);
     expect(await overAccountCap(db, "ingen-tak", 1000, false)).toBe(null);
+  });
+
+  it("ugyldige tall gir aldri NaN: forbruket blir et tall, og et ugyldig anslag stoppes (DEC-0076)", async () => {
+    expect(Number.isFinite(await usedUsd(db, "eier"))).toBe(true);
+    expect(await overAccountCap(db, "eier", Number.NaN, false)).toMatch(/kunne ikke anslås/);
   });
 
   it("prosjektbudsjettet teller ikke AI-skrevne beskrivelser", async () => {

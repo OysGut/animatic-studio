@@ -5,7 +5,7 @@
  */
 import type { BlockKind, ProjectState } from "../model";
 import type { ScriptSnapshot } from "./versions";
-import { blocksOfVariant, orderedOccurrences } from "../views";
+import { blocksOfVariant, orderedOccurrences, sceneNumberOf } from "../views";
 import { US_LETTER_LAYOUT, wrapText, type Pagination } from "./paginate";
 
 export interface DurationAssumptions {
@@ -152,7 +152,7 @@ export function estimateProduction(
     return {
       occurrenceId: o.id,
       active: o.active,
-      productionNumber: o.productionNumber,
+      productionNumber: sceneNumberOf(s, o),
       dialogueWords,
       actionLines,
       seconds: Math.round(seconds),

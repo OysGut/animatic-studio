@@ -92,6 +92,9 @@ export function useMembers(projectId: string) {
       if (error) throw new Error(error.message);
       return (data ?? []) as MemberRow[];
     },
+    // En ny rolle (KI-136) vises når fanen får fokus igjen, og ellers innen et minutt
+    refetchOnWindowFocus: true,
+    refetchInterval: 60_000,
   });
 }
 

@@ -6,19 +6,22 @@ import { ProductionPicker, useActiveProduction } from "@/app/project/use-product
 import { ProductionDialog } from "@/app/projects/ProductionDialog";
 import { PromotionDialog } from "@/app/projects/PromotionDialog";
 import { TranslationImportDialog } from "./TranslationImportDialog";
+import { RemoveTranslationsDialog } from "./RemoveTranslationsDialog";
 import {
+  ChevronDown,
+  CornerUpLeft,
   Download,
   FileUp,
+  History,
   Languages,
   ListPlus,
-  Plus,
-  History,
   Loader2,
   Lock,
   MessageSquarePlus,
+  Plus,
   Redo2,
+  SlidersHorizontal,
   Undo2,
-  CornerUpLeft,
 } from "lucide-react";
 import {
   useCallback,
@@ -75,6 +78,8 @@ import { Inspector } from "./Inspector";
 import { SceneNavigator, type CharacterOption } from "./SceneNavigator";
 import { ScriptPageView, type Selection } from "./ScriptPageView";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
+import { rememberScene } from "@/app/shell/current-scene";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const ZOOMS = ["fit", "0.75", "1", "1.25", "1.5"] as const;
 type Zoom = (typeof ZOOMS)[number];
@@ -168,6 +173,10 @@ function Workspace({
     occurrenceId: initialOcc?.id ?? null,
     blockId: initialBlock,
   });
+  useEffect(
+    () => rememberScene(projectId, selection.occurrenceId),
+    [projectId, selection.occurrenceId],
+  );
   // Scenen har fått egen versjon (ForkVariant, DEC-0057): valgt linje flyttes til den nye versjonen
   useEffect(() => {
     const o = selection.occurrenceId ? state.occurrences[selection.occurrenceId] : undefined;
@@ -203,6 +212,7 @@ function Workspace({
     }
   };
   const [importLangOpen, setImportLangOpen] = useState(false);
+  const [removeLangOpen, setRemoveLangOpen] = useState(false);
   const viewState = useMemo(() => translatedState(state, lang), [state, lang]);
   const langStatus = useMemo(
     () => (lang === "nb" ? null : translationStatus(state, productionId, lang)),
@@ -664,6 +674,16 @@ function Workspace({
             Importer engelsk manus …
           </Button>
         ) : null}
+        {langStatus && editable && langStatus.translated > 0 ? (
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setRemoveLangOpen(true)}
+            title="Fjern alle oversettelser til dette språket i én endring (kan angres)"
+          >
+            Fjern oversettelsene …
+          </Button>
+        ) : null}
         <div className="mx-1 h-5 w-px bg-border" aria-hidden />
         <Button
           size="sm"
@@ -740,7 +760,7 @@ function Workspace({
                   onClick={() =>
                     o.occurrenceId && select({ occurrenceId: o.occurrenceId, blockId: null }, true)
                   }
-                  className="flex size-6 items-center justify-center rounded-full border-2 border-surface-2 bg-accent-brand text-[10px] font-semibold text-accent-fg"
+                  className="flex size-6 items-center justify-center rounded-full border-2 border-surface-2 bg-accent-brand text-[11px] font-semibold text-accent-fg"
                 >
                   {initials(o.name)}
                 </button>
@@ -748,49 +768,72 @@ function Workspace({
             </div>
           ) : null}
           <SaveIndicator cmds={cmds} />
-          <label
-            className="flex items-center gap-1.5 text-xs text-text-secondary"
-            title="Vis eller skjul notater i manuset (REQ-0538)"
-          >
-            <input
-              type="checkbox"
-              checked={showNotes}
-              onChange={(e) => setShowNotes(e.target.checked)}
-              className="size-3.5 accent-[var(--accent-brand)]"
-            />
-            Vis notater
-          </label>
-          <label
-            className="flex items-center gap-1.5 text-xs text-text-secondary"
-            title="Vis bare scenen som er valgt i scenelisten. Endrer ikke filmen."
-          >
-            <input
-              type="checkbox"
-              checked={onlySelected}
-              onChange={(e) => {
-                setOnlySelected(e.target.checked);
-                requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
-              }}
-              className="size-3.5 accent-[var(--accent-brand)]"
-            />
-            Vis kun valgt scene
-          </label>
           {roleKnown && !editable ? (
             <span className="text-xs text-text-tertiary">Bare lesetilgang</span>
           ) : null}
-          <label
-            className="flex items-center gap-1.5 text-xs text-text-secondary"
-            title="Følg originalens sideskift for importert tekst (låste sider)"
-          >
-            <Lock className="size-3.5" aria-hidden />
-            Låste sider
-            <Switch
-              checked={lockedPages}
-              onCheckedChange={setLockedPages}
-              className="scale-75"
-              aria-label="Låste sider"
-            />
-          </label>
+          {/* Visningsvalg samlet i én meny, så verktøylinjen ikke bryter tekst (UX-gjennomgang DEC-0076) */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-7 shrink-0 gap-1 whitespace-nowrap px-2 text-xs"
+                title="Notater, bare valgt scene og låste sider"
+              >
+                <SlidersHorizontal className="size-3.5" aria-hidden />
+                Visning
+                {onlySelected || !showNotes ? (
+                  <>
+                    <span className="size-1.5 rounded-full bg-accent-brand" aria-hidden />
+                    <span className="sr-only">(endret)</span>
+                  </>
+                ) : null}
+                <ChevronDown className="size-3" aria-hidden />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="flex w-60 flex-col gap-2 p-3">
+              <label
+                className="flex items-center gap-1.5 text-xs text-text-secondary"
+                title="Vis eller skjul notater i manuset (REQ-0538)"
+              >
+                <input
+                  type="checkbox"
+                  checked={showNotes}
+                  onChange={(e) => setShowNotes(e.target.checked)}
+                  className="size-3.5 accent-[var(--accent-brand)]"
+                />
+                Vis notater
+              </label>
+              <label
+                className="flex items-center gap-1.5 text-xs text-text-secondary"
+                title="Vis bare scenen som er valgt i scenelisten. Endrer ikke filmen."
+              >
+                <input
+                  type="checkbox"
+                  checked={onlySelected}
+                  onChange={(e) => {
+                    setOnlySelected(e.target.checked);
+                    requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
+                  }}
+                  className="size-3.5 accent-[var(--accent-brand)]"
+                />
+                Vis kun valgt scene
+              </label>
+              <label
+                className="flex items-center gap-1.5 text-xs text-text-secondary"
+                title="Følg originalens sideskift for importert tekst (låste sider)"
+              >
+                <Lock className="size-3.5" aria-hidden />
+                Låste sider
+                <Switch
+                  checked={lockedPages}
+                  onCheckedChange={setLockedPages}
+                  className="scale-75"
+                  aria-label="Låste sider"
+                />
+              </label>
+            </PopoverContent>
+          </Popover>
           <select
             aria-label="Zoom"
             value={zoomChoice}
@@ -803,7 +846,7 @@ function Workspace({
               </option>
             ))}
           </select>
-          <span className="tabular text-xs text-text-tertiary">
+          <span className="tabular shrink-0 whitespace-nowrap text-xs text-text-tertiary">
             {visibleOcc
               ? `${shownPages.length} av ${pagination.pages.length}`
               : pagination.pages.length}{" "}
@@ -1037,6 +1080,15 @@ function Workspace({
           productionId={productionId}
           lockedPages={lockedPages}
           language={lang}
+        />
+      ) : null}
+      {removeLangOpen && lang !== "nb" ? (
+        <RemoveTranslationsDialog
+          open={removeLangOpen}
+          onOpenChange={setRemoveLangOpen}
+          state={state}
+          language={lang}
+          cmds={cmds}
         />
       ) : null}
       <TranslationImportDialog

@@ -12,11 +12,13 @@ import type {
   CompositionLayer,
   Easing,
   Keyframe,
+  LayerMask,
   LayerTransform,
   MotionPath,
   ProjectState,
 } from "../model";
 import { compareKeys } from "../order-key";
+import { MASK_FIELD, isMaskProperty } from "./fields";
 import { coverVersion, versionsOf } from "../library";
 
 /** 2D-transformasjon [a, b, c, d, e, f] som i Canvas: x' = a·x + c·y + e, y' = b·x + d·y + f. */
@@ -220,7 +222,7 @@ function segmentEase(a: Keyframe, b: Keyframe, t: number): number {
 /** Verdien av én egenskap på et gitt bilde (mellom nøkkelbilder etter hastighetskurven). */
 export function valueAt(l: CompositionLayer, property: AnimatedProperty, frame: number): number {
   const keys = l.keyframes.filter((k) => k.property === property);
-  if (keys.length === 0) return l.transform[property];
+  if (keys.length === 0) return baseValue(l, property);
   if (frame <= keys[0]!.frame) return keys[0]!.value;
   const last = keys[keys.length - 1]!;
   if (frame >= last.frame) return last.value;
@@ -233,6 +235,29 @@ export function valueAt(l: CompositionLayer, property: AnimatedProperty, frame: 
     }
   }
   return last.value;
+}
+
+/** Grunnverdien (uten nøkkelbilder): fra plasseringen, eller fra masken for maskens egenskaper. */
+function baseValue(l: Pick<CompositionLayer, "transform" | "mask">, p: AnimatedProperty): number {
+  if (!isMaskProperty(p)) return l.transform[p];
+  const m = l.mask;
+  return m && m.kind !== "layer" ? m[MASK_FIELD[p]] : 0;
+}
+
+/**
+ * Masken på et bilde (DEC-0072): rektangel og ellipse følger nøkkelbildene for maskens plassering og
+ * størrelse; uten nøkkelbilder (også eldre data) er masken som lagret. Maske av et annet lag er alltid lik.
+ */
+export function maskAt(l: CompositionLayer, frame: number): LayerMask | null {
+  const m = l.mask ?? null;
+  if (!m || m.kind === "layer" || !l.keyframes.some((k) => isMaskProperty(k.property))) return m;
+  return {
+    ...m,
+    x: valueAt(l, "maskX", frame),
+    y: valueAt(l, "maskY", frame),
+    width: Math.max(0, valueAt(l, "maskWidth", frame)),
+    height: Math.max(0, valueAt(l, "maskHeight", frame)),
+  };
 }
 
 // ---------- Bevegelsesbane (DEC-0052) ----------
@@ -548,7 +573,7 @@ export function renderFrame(
     const visible = l.visible && (g?.visible ?? true);
     if (!visible && !opts.includeHidden) continue;
     const base = baseItem(l);
-    const mask = itemMask(l, base, byId, baseItem);
+    const mask = itemMask(l, frame, base, byId, baseItem);
     items.push({
       ...base,
       opacity: visible ? base.opacity : base.opacity * 0.25,
@@ -596,11 +621,13 @@ export function renderFrame(
  */
 function itemMask(
   l: CompositionLayer,
+  frame: number,
   base: DrawItem,
   layers: ReadonlyMap<string, CompositionLayer>,
   itemOf: (l: CompositionLayer) => DrawItem,
 ): ItemMask | null {
-  const m = l.mask;
+  // Animert maske (DEC-0072): plassering og størrelse på dette bildet
+  const m = maskAt(l, frame);
   if (!m) return null;
   if (m.kind === "layer") {
     const src = layers.get(m.layerId);

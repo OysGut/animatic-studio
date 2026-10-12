@@ -254,6 +254,11 @@ export function needsSchema26(command: { type: string } & Record<string, unknown
   );
 }
 
+/** Arbeidslisten og lagrede eksportinnstillinger (DEC-0072) krever migrasjon 0027. */
+export function needsSchema27(command: { type: string }): boolean {
+  return command.type === "SetReviewedVersions" || command.type === "SetExportSettings";
+}
+
 /** Kommandoer som bare skriver kolonner fra migrasjon 0026 (DEC-0071). */
 const SCHEMA26_COMMANDS = new Set<string>([
   "SetAssetVoice",
@@ -554,6 +559,16 @@ export const runCommand = createServerFn({ method: "POST" })
           code: "schema",
           message:
             "Databasen mangler kontinuitet for spinoffer. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0018.",
+        };
+    }
+    if (needsSchema27(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 27)
+        return {
+          ok: false,
+          code: "schema",
+          message:
+            "Databasen mangler tillegget for arbeidslisten og eksportinnstillinger. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0027.",
         };
     }
     if (needsSchema26(data.command as never)) {

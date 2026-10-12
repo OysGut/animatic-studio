@@ -215,14 +215,16 @@ export function timingConflicts(
       .sort((a, b) => a.startFrame - b.startFrame);
     if (spans.length === 0) continue;
     const langAudio = new Map<string, AudioClip>();
+    const langVoices: AudioClip[] = [];
     for (const a of Object.values(s.audioClips))
       if (
         !a.removed &&
         a.occurrenceId === clip.occurrenceId &&
-        a.blockId &&
         isVoiceKind(a.kind) &&
         clipLanguage(a) === lang
       ) {
+        langVoices.push(a);
+        if (!a.blockId) continue;
         const prev = langAudio.get(a.blockId);
         if (!prev || a.offsetMs < prev.offsetMs) langAudio.set(a.blockId, a);
       }
@@ -264,8 +266,17 @@ export function timingConflicts(
       };
       if (overflow > TOLERANCE_MS) {
         const suggestions: TimingSuggestion[] = [];
-        // Rom før replikken (etter forrige replikk): språkets lyd kan starte tidligere
-        const room = Math.max(0, lStart - prevEnd);
+        // Rom før replikken: etter forrige lydklipp i språket hvis det finnes (KI-119), ellers etter
+        // forrige replikk i hovedfilmen
+        const before = audio
+          ? langVoices.filter((x) => x.id !== audio.id && x.offsetMs < audio.offsetMs)
+          : [];
+        const prevLangEnd = before.length
+          ? Math.max(...before.map((x) => x.offsetMs + x.lengthMs))
+          : null;
+        // Forrige replikk uten lyd i språket trenger fortsatt tiden sin i hovedfilmen
+        const prevNoAudio = i > 0 && !langAudio.has(spans[i - 1]!.blockId) ? prevEnd : 0;
+        const room = Math.max(0, lStart - Math.max(prevLangEnd ?? prevEnd, prevNoAudio));
         if (audio && room >= 100) {
           const move = Math.min(room, overflow);
           suggestions.push({

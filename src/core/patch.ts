@@ -44,6 +44,7 @@ import type {
 import { COLLECTION_TABLES, CONTINUITY_KINDS, RELATION_KINDS, TRANSITION_KINDS } from "./model";
 import type {
   AssetVoice,
+  ExportSettings,
   ContinuityDuration,
   ContinuityKind,
   SoundLinkKind,
@@ -100,6 +101,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         parent_production_id: p.parentProductionId,
         fps_num: p.fps.num,
         fps_den: p.fps.den,
+        // Migrasjon 0027 (DEC-0072); ignoreres av apply_changes før den er kjørt
+        export_settings: p.exportSettings ?? null,
       };
     }
     case "scenes": {
@@ -195,6 +198,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         audio_language: t.audioLanguage ?? null,
         // Manusdekning (migrasjon 0026, DEC-0071)
         coverage: t.coverage ?? null,
+        // Arbeidslisten (migrasjon 0027, DEC-0072)
+        reviewed_versions: t.reviewedVersions ?? [],
       };
     }
     case "assets": {
@@ -309,6 +314,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         // Migrasjon 0026 (REQ-0175)
         mask: l.mask ?? null,
         blend: l.blend ?? "normal",
+        // Migrasjon 0027 (DEC-0072)
+        reviewed_versions: l.reviewedVersions ?? [],
         removed: l.removed,
       };
     }
@@ -665,6 +672,11 @@ function languageImagesFromRow(v: unknown): { languageImages?: LanguageImage[] }
 }
 
 /** Maske og blandingsmodus i et lag (migrasjon 0026, REQ-0175): null/«normal» eller mangler = ingen. */
+function reviewedFromRow(v: unknown): { reviewedVersions?: string[] } {
+  const a = json(v);
+  return Array.isArray(a) && a.length ? { reviewedVersions: a.map(String) } : {};
+}
+
 function maskBlendFromRow(m: unknown, b: unknown): { mask?: LayerMask; blend?: BlendMode } {
   const mask = json(m) as LayerMask | null | undefined;
   const out: { mask?: LayerMask; blend?: BlendMode } = {};
@@ -743,6 +755,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         name: str(x["name"]),
         parentProductionId: optStr(x["parent_production_id"]) as never,
         fps: { num: num(x["fps_num"]), den: num(x["fps_den"]) },
+        ...(x["export_settings"] && typeof x["export_settings"] === "object"
+          ? { exportSettings: x["export_settings"] as ExportSettings }
+          : {}),
       })),
     ),
     scenes: byId(
@@ -855,6 +870,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...(x["coverage"] && typeof x["coverage"] === "object"
           ? { coverage: x["coverage"] as TakeCoverage }
           : {}),
+        ...reviewedFromRow(x["reviewed_versions"]),
       })),
     ),
     assets: byId(
@@ -980,6 +996,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         anchor: (json(x["anchor"]) ?? null) as never,
         ...languageImagesFromRow(x["language_images"]),
         ...maskBlendFromRow(x["mask"], x["blend"]),
+        ...reviewedFromRow(x["reviewed_versions"]),
         removed: x["removed"] === true,
       })),
     ),

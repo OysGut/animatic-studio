@@ -322,7 +322,7 @@ export function LongFilmImportDialog({
                       key={c.occurrenceId}
                       className="flex items-center gap-1.5 rounded-sm border border-border bg-surface-1 px-2 py-1 text-xs"
                     >
-                      <span className="w-8 shrink-0 font-mono text-[10px] text-text-tertiary">
+                      <span className="w-8 shrink-0 font-mono text-[11px] text-text-tertiary">
                         {c.productionNumber ?? i + 1}
                       </span>
                       <button
@@ -366,7 +366,7 @@ export function LongFilmImportDialog({
                       >
                         <MapPin className="size-3.5" />
                       </button>
-                      <span className="w-12 shrink-0 text-right font-mono text-[10px] text-text-tertiary">
+                      <span className="w-12 shrink-0 text-right font-mono text-[11px] text-text-tertiary">
                         {r ? `${((r.outMs - r.inMs) / 1000).toFixed(1)} s` : "–"}
                       </span>
                     </li>

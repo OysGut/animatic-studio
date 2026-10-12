@@ -64,6 +64,7 @@ const ORDER: ChangeType[] = [
   "dialogue",
   "action",
   "characters",
+  "objects",
   "renumbered",
   "variant",
   "take",
@@ -291,8 +292,12 @@ function Compare({
   const older = useSnapshot(a, state, productionId);
   const newer = useSnapshot(b, state, productionId);
   const changes = useMemo(
-    () => (older.data && newer.data ? diffSnapshots(older.data, newer.data) : null),
-    [older.data, newer.data],
+    // Med ressursbiblioteket: karakterer som nevnes i handlingen og objekter kjennes igjen (REQ-0078)
+    () =>
+      older.data && newer.data
+        ? diffSnapshots(older.data, newer.data, Object.values(state.assets))
+        : null,
+    [older.data, newer.data, state.assets],
   );
   const select = (value: string, set: (v: string) => void, label: string) => (
     <select
@@ -421,6 +426,31 @@ function ChangeDetail({ change }: { change: SceneChange }) {
   // Hele innholdet i nye/fjernede scener kan være langt: vis de første linjene
   const shown = all ? lines : lines.slice(0, MAX_LINES);
   if (!change.detail && lines.length === 0) return null;
+  // Karakterer og objekter (REQ-0078): som merkelapper for det som er kommet til og det som er borte
+  if (change.names)
+    return (
+      <div className="flex flex-wrap items-center gap-1 text-xs text-text-secondary">
+        <span className="text-text-tertiary">{CHANGE_LABEL[change.type]}:</span>
+        {change.names.added.map((n) => (
+          <span
+            key={`+${n}`}
+            className="rounded-sm bg-surface-3 px-1.5 py-0.5 text-status-success"
+            aria-label={`${n} er kommet til`}
+          >
+            + {n}
+          </span>
+        ))}
+        {change.names.removed.map((n) => (
+          <span
+            key={`-${n}`}
+            className="rounded-sm bg-surface-3 px-1.5 py-0.5 text-status-danger line-through"
+            aria-label={`${n} er borte`}
+          >
+            − {n}
+          </span>
+        ))}
+      </div>
+    );
   return (
     <div className="text-xs text-text-secondary">
       {change.detail ? (

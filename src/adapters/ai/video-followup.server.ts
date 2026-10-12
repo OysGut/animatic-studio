@@ -1,6 +1,6 @@
 /**
  * Oppfølging av én AI-videojobb (DEC-0069, DEC-0070). BARE PÅ SERVEREN. Brukes både når nettleseren spør
- * (pollVideoJob) og av bakgrunnskøen (/api/cron/ai-jobs), så videoer hentes inn også når ingen har
+ * (pollVideoJob) og av bakgrunnskøen (/api/public/cron/ai-jobs), så videoer hentes inn også når ingen har
  * prosjektet åpent. Ferdige videoer lagres i `<prosjekt>/films/<take>/ai-video.mp4`; bare én henter vinner.
  */
 import { lastFramePath, newId } from "@/core";
@@ -145,7 +145,11 @@ export async function followUpVideoJob(
     if (e instanceof ProviderError && e.status >= 400 && e.status < 500 && e.status !== 429)
       return fail(scrubSecret(e.message, secret));
     // Nettfeil: prøv igjen ved neste oppfølging (jobben står fortsatt hos leverandøren)
-    console.warn("[videojobb] prøver igjen senere:", (e as Error).message.slice(0, 200));
+    // Aldri nøkkelen i loggen (REQ-0414): leverandøren kan gjenta den i feilteksten
+    console.warn(
+      "[videojobb] prøver igjen senere:",
+      scrubSecret((e as Error).message, secret).slice(0, 200),
+    );
     return { state: "running" };
   }
 }
@@ -202,8 +206,13 @@ export async function followUpRunningVideoJobs(
  * 15 minutter, ble kallet stoppet av plattformen; den merkes «lost» (kan ha kostet, teller i taket) så
  * listen ikke viser den som pågående for alltid (KI-145).
  */
-export async function markStoppedSyncJobs(db: AnyClient, now = Date.now()): Promise<number> {
-  const { data } = await db
+export async function markStoppedSyncJobs(
+  db: AnyClient,
+  now = Date.now(),
+  /** Bare dette prosjektet (når nettleseren gjør jobben, DEC-0073); ellers alle. */
+  projectId?: string,
+): Promise<number> {
+  const base = db
     .from("generation_jobs")
     .update({
       status: "lost",
@@ -212,8 +221,8 @@ export async function markStoppedSyncJobs(db: AnyClient, now = Date.now()): Prom
     } as never)
     .in("kind", ["image", "sound", "prompt"])
     .eq("status", "running")
-    .lt("created_at", new Date(now - 15 * 60_000).toISOString())
-    .select("id");
+    .lt("created_at", new Date(now - 15 * 60_000).toISOString());
+  const { data } = await (projectId ? base.eq("project_id", projectId) : base).select("id");
   return ((data ?? []) as unknown[]).length;
 }
 
@@ -308,6 +317,19 @@ export async function submitVideoJob(
     return { ok: true };
   } catch (e) {
     const message = scrubSecret((e as Error).message || "Ukjent feil", secret).slice(0, 2000);
+    // For mange forespørsler (429): jobben er ikke startet hos leverandøren og legges tilbake i køen
+    // (DEC-0073) i stedet for å feile – den sendes igjen når det er plass
+    if (e instanceof ProviderError && e.status === 429) {
+      await db
+        .from("generation_jobs")
+        .update({ status: "queued", started_at: null } as never)
+        .eq("id", jobId)
+        .eq("status", "running");
+      return {
+        ok: false,
+        message: "Leverandøren er opptatt. Videoen ligger i kø og sendes når det er plass.",
+      };
+    }
     const rejected = e instanceof ProviderError && e.status >= 400 && e.status < 600;
     await end(submitted && !rejected ? "lost" : "failed", message);
     return { ok: false, message: `Videoen kunne ikke startes: ${message}` };
@@ -325,7 +347,7 @@ export async function pumpVideoQueue(
   const started = Date.now();
   let q = db
     .from("generation_jobs")
-    .select("id, project_id, provider_key_id, params")
+    .select("id, project_id, provider_key_id, key_owner, cost_usd, params")
     .eq("kind", "video")
     .eq("status", "queued");
   if (opts.projectId) q = q.eq("project_id", opts.projectId);
@@ -338,6 +360,8 @@ export async function pumpVideoQueue(
     id: string;
     project_id: string;
     provider_key_id: string | null;
+    key_owner?: string | null;
+    cost_usd?: number | string | null;
     params?: { chainAfter?: string } | null;
   }[];
   // Slettede prosjekter: jobbene avbrytes (de er ikke sendt, så de koster ingenting)
@@ -399,6 +423,23 @@ export async function pumpVideoQueue(
       busy.set(k, count ?? 0);
     }
     if (k && (busy.get(k) ?? 0) >= MAX_PARALLEL_PER_KEY) continue;
+    // Kostnadstaket kan være senket etter at jobben ble lagt i kø (INV-12): sjekk igjen før sending
+    if (j.key_owner) {
+      const { overAccountCap } = await import("./ai-gate.server");
+      const capMsg = await overAccountCap(db, j.key_owner, Number(j.cost_usd ?? 0), true);
+      if (capMsg) {
+        await db
+          .from("generation_jobs")
+          .update({
+            status: "failed",
+            error: `${capMsg} Jobben ble ikke sendt (kostet ingenting).`,
+            finished_at: new Date().toISOString(),
+          } as never)
+          .eq("id", j.id)
+          .eq("status", "queued");
+        continue;
+      }
+    }
     const { data: won } = await db
       .from("generation_jobs")
       .update({ status: "running", started_at: new Date().toISOString() } as never)
@@ -406,7 +447,35 @@ export async function pumpVideoQueue(
       .eq("status", "queued")
       .select("id");
     if (!won || (won as unknown[]).length === 0) continue;
-    if (k) busy.set(k, (busy.get(k) ?? 0) + 1);
+    // Telles på nytt etter at jobben er tatt (KI-175): har en annen fane tatt en jobb samtidig og grensen er
+    // passert, får de som startet først plassene (startet, så ID – likt for alle faner). Taperen legges tilbake
+    // i kø før den sendes (ingen betaling); neste runde prøver igjen.
+    if (k) {
+      const { data: first } = await db
+        .from("generation_jobs")
+        .select("id, started_at")
+        .eq("kind", "video")
+        .eq("status", "running")
+        .eq("provider_key_id", k);
+      // Sorteres her (få rader per nøkkel), så rekkefølgen er lik uansett database
+      const winners = ((first ?? []) as { id: string; started_at: string | null }[])
+        .sort(
+          (a, b) =>
+            (a.started_at ?? "").localeCompare(b.started_at ?? "") || a.id.localeCompare(b.id),
+        )
+        .slice(0, MAX_PARALLEL_PER_KEY)
+        .map((r) => r.id);
+      if (winners.length >= MAX_PARALLEL_PER_KEY && !winners.includes(j.id)) {
+        await db
+          .from("generation_jobs")
+          .update({ status: "queued", started_at: null } as never)
+          .eq("id", j.id)
+          .eq("status", "running");
+        busy.set(k, MAX_PARALLEL_PER_KEY);
+        continue;
+      }
+      busy.set(k, (busy.get(k) ?? 0) + 1);
+    }
     // Uten nøkkel feiler jobben straks i submitVideoJob («Nøkkelen er fjernet»)
     const r = await submitVideoJob(db, j.id);
     if (r.ok) sent++;

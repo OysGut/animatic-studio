@@ -308,7 +308,7 @@ function Editor({
           {ticks.map((t) => (
             <span
               key={t}
-              className="absolute top-0 border-l border-border-control pl-1 text-[10px] leading-4 text-text-tertiary"
+              className="absolute top-0 border-l border-border-control pl-1 text-[11px] leading-4 text-text-tertiary"
               style={{ left: xOf(t) }}
             >
               {fmt(t)}

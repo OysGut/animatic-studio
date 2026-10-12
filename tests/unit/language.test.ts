@@ -340,6 +340,25 @@ describe("timing og leppesynk", () => {
     expect(timingConflicts(s0, main.id, "nb")).toEqual([]);
   });
 
+  it("«start tidligere» regner plassen fra forrige engelske lydklipp (KI-119)", () => {
+    const en = enDialogue();
+    // Et engelsk lydklipp som slutter 50 ms før replikken: da er det ikke plass til å starte tidligere
+    const before = {
+      ...en,
+      id: "00000000-0000-7000-8000-00000000ab01" as never,
+      blockId: null,
+      offsetMs: 0,
+      lengthMs: Math.max(1, en.offsetMs - 50),
+    };
+    const s = { ...s0, audioClips: { ...s0.audioClips, [before.id]: before } };
+    const c = timingConflicts(s, main.id, "en").find(
+      (x) => x.blockId === en.blockId && x.kind === "long",
+    );
+    expect(c).toBeTruthy();
+    // Bare 50 ms plass: ikke nok til et forslag om å starte tidligere
+    expect(c!.suggestions.some((x) => x.kind === "earlier")).toBe(false);
+  });
+
   it("uten engelsk lyd beregnes lengden fra oversettelsen", () => {
     const without = {
       ...s0,

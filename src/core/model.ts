@@ -83,6 +83,18 @@ export interface Production extends Entity<ProductionId> {
   readonly name: string;
   readonly parentProductionId: ProductionId | null;
   readonly fps: Rational;
+  /** Eksportinnstillingene sist brukt for produksjonen (DEC-0072, REQ-0407, migrasjon 0027). */
+  readonly exportSettings?: ExportSettings | null;
+}
+
+/** Bildetyper som kan vises og eksporteres som stillbilde (dekodes likt i visning og eksport, DEC-0072). */
+export const STILL_MIME_TYPES: readonly string[] = ["image/png", "image/jpeg", "image/webp"];
+
+/** Lagrede eksportinnstillinger (DEC-0072). */
+export interface ExportSettings {
+  readonly size: "full" | "half";
+  readonly monochrome: boolean;
+  readonly output: "video" | "dialogue";
 }
 
 /** Fortellingstid (DEC-0015, DEC-0020 pkt. 6). */
@@ -233,6 +245,8 @@ export interface Take extends Entity<TakeId> {
    * scenen. Avvik fra manuset gjelder da bare linjene i dette området.
    */
   readonly coverage?: TakeCoverage | null;
+  /** Ressursversjoner gjennomgått med «Behold» i arbeidslisten (DEC-0072, migrasjon 0027). */
+  readonly reviewedVersions?: readonly string[];
 }
 
 export interface TakeCoverage {
@@ -429,7 +443,14 @@ export type LayerMask =
     }
   | { readonly kind: "layer"; readonly layerId: string; readonly invert: boolean };
 
-export type AnimatedProperty = keyof LayerTransform;
+/** Egenskapene i lagets plassering som kan animeres. */
+export type TransformProperty = keyof LayerTransform;
+/**
+ * Plassering og størrelse for en rektangel- eller ellipsemaske (DEC-0072, REQ-0175) som kan animeres med
+ * samme nøkkelbilder som laget. Grunnverdien ligger i `mask` (x, y, width, height).
+ */
+export type MaskProperty = "maskX" | "maskY" | "maskWidth" | "maskHeight";
+export type AnimatedProperty = TransformProperty | MaskProperty;
 export type Easing = "linear" | "ease-in" | "ease-out" | "ease-in-out" | "hold";
 
 /** Nøkkelbilde for én egenskap (mandat 11.3, 12.5). Brukes av tidslinjen i neste leveranse. */
@@ -566,6 +587,11 @@ export interface CompositionLayer extends Entity<LayerId> {
   readonly languageImages?: readonly LanguageImage[];
   /** Maske (REQ-0175, migrasjon 0026). Mangler/null = ingen maske. */
   readonly mask?: LayerMask | null;
+  /**
+   * Ressursversjoner brukeren har gått gjennom og valgt å beholde det gamle bildet mot (arbeidslisten for
+   * oppdaterte ressurser, DEC-0072, migrasjon 0027). Mangler = ingen.
+   */
+  readonly reviewedVersions?: readonly string[];
   /** Blandingsmodus (REQ-0175, migrasjon 0026). Mangler = «normal». */
   readonly blend?: BlendMode;
   readonly removed: boolean;

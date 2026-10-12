@@ -519,7 +519,7 @@ const ClipBlock = memo(function ClipBlock({
       {showText ? (
         <div className="flex min-w-0 flex-1 flex-col justify-between px-1.5 py-1">
           <div className="flex min-w-0 items-center gap-1">
-            <span className="shrink-0 font-mono text-[10px] text-text-tertiary">
+            <span className="shrink-0 font-mono text-[11px] text-text-tertiary">
               {clip.productionNumber ?? "–"}
             </span>
             {flags ? (
@@ -536,7 +536,7 @@ const ClipBlock = memo(function ClipBlock({
           <span className="truncate text-[11px] leading-tight text-text-primary">{heading}</span>
           <span
             className={
-              "truncate font-mono text-[10px] " +
+              "truncate font-mono text-[11px] " +
               (clip.durationKind === "estimate"
                 ? "italic text-text-tertiary"
                 : "text-text-secondary")

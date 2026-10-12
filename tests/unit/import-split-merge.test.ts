@@ -397,4 +397,51 @@ describe("planlagt lengde ved deling og sammenslåing (KI-146)", () => {
     expect(back.occurrences[target.occurrenceId]!.plannedMs).toBe(20_000);
     expect(back.occurrences[source.occurrenceId]!.active).toBe(true);
   });
+
+  it("en plan satt etter delingen eller sammenslåingen står ikke igjen når den angres (KI-150)", () => {
+    const { s: s0, mainId, cmd } = setup();
+    const scene = cmd.scenes[1]!;
+    const newOcc = tid<"scene_occurrence">();
+    const split = applyCommand(
+      s0,
+      envelope({
+        type: "SplitScene",
+        productionId: mainId,
+        occurrenceId: scene.occurrenceId,
+        atBlockId: scene.blocks[1]!.blockId,
+        newSceneId: tid(),
+        newVariantId: tid(),
+        newOccurrenceIds: { [scene.occurrenceId]: newOcc },
+        heading: { intExt: "INT.", location: "LÅVE, LOFTET", time: "DAG" },
+      }),
+    );
+    if (!split.ok) throw new Error(split.error.message);
+    const planned = mustApply(split.state, {
+      type: "SetPlannedDuration",
+      occurrenceId: scene.occurrenceId,
+      plannedMs: 15_000,
+    });
+    const undone = mustApply(planned, split.inverse as never);
+    expect(undone.occurrences[scene.occurrenceId]!.plannedMs).toBeUndefined();
+
+    const target = cmd.scenes[1]!;
+    const source = cmd.scenes[2]!;
+    const merge = applyCommand(
+      s0,
+      envelope({
+        type: "MergeScenes",
+        productionId: mainId,
+        targetOccurrenceId: target.occurrenceId,
+        sourceOccurrenceId: source.occurrenceId,
+      }),
+    );
+    if (!merge.ok) throw new Error(merge.error.message);
+    const p2 = mustApply(merge.state, {
+      type: "SetPlannedDuration",
+      occurrenceId: target.occurrenceId,
+      plannedMs: 30_000,
+    });
+    const un = mustApply(p2, merge.inverse as never);
+    expect(un.occurrences[target.occurrenceId]!.plannedMs).toBeUndefined();
+  });
 });

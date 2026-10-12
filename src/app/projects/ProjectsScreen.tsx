@@ -7,9 +7,9 @@ import {
   LogOut,
   MoreHorizontal,
   Plus,
-  Sparkles,
   Trash2,
 } from "lucide-react";
+import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useState, type FormEvent } from "react";
 import { db } from "@/app/db";
 import { Button } from "@/components/ui/button";
@@ -125,7 +125,7 @@ export function ProjectsScreen({ userId }: { userId: string }) {
         {!creating ? (
           <div className="flex items-center gap-2">
             <Button variant="secondary" onClick={() => setProviders(true)}>
-              <Sparkles />
+              <AiGlyph />
               AI-leverandører …
             </Button>
             <Button variant="secondary" onClick={() => setRestoring(true)}>

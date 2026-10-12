@@ -110,7 +110,7 @@ describe("keyAllAt", () => {
     expect(at10).toHaveLength(6);
     expect(at10.map((k) => k.property).sort()).toEqual([...ANIMATED_PROPERTIES].sort());
     const t = transformAt(l, 10);
-    for (const k of at10) expect(k.value).toBe(t[k.property]);
+    for (const k of at10) expect(k.value).toBe(t[k.property as keyof typeof t]);
     expect(keyframeFrames({ keyframes: keys })).toEqual([0, 10, 20]);
   });
 });

@@ -44,14 +44,14 @@ Relaterte dokumenter: `DOMAIN_MODEL.md`, `DATA_RELATIONSHIPS.md`, `INVARIANTS.md
 | Project Core | `core/model`, `core/commands`, `core/invariants`, RPC-er |
 | Screenplay Engine | `core/screenplay` (parser, struktur, paginering, nummerering, versjoner, filter, varighetsestimat), `engine/import` (PDF/DOCX), `engine/export/screenplay-pdf.ts` og `screenplay-docx.ts`, `app/script` |
 | Timeline & Assembly Engine | `core/time.ts` (tidsmodell), `core/views.ts` (rekkefølge), `core/assembly` (filmklipp, deler, avvik, produksjonsstatus), `app/assembly` |
-| Resource Library | `core/library` (ressurser, varianter, versjoner, bruk, konsekvenser, filnavn, zip), `core/cutout`, tabeller `assets`, `asset_variants`, `asset_versions`, `app/library` |
+| Resource Library (REQ-0436) | Karakterer, objekter, miljøer, mediefiler og stilprofiler: `core/library` (ressurser, varianter, versjoner, bruk, konsekvenser, arbeidsliste, filnavn, zip), `core/cutout`, stilprofilene i `core/generation/style.ts` (tabell `style_profiles`, vises under «Visuell stil» i prosjektet), mediefilene i Storage-bøtten `assets` via `adapters/storage` og `app/library/asset-images.ts`/`asset-audio.ts`; tabeller `assets`, `asset_variants`, `asset_versions`; `app/library` |
 | Continuity Engine | `core/continuity` (tilstand fra fortellingstid, forslag, analyse), `core/library/impact.ts`, `app/continuity` |
 | 2D Composition Engine | `core/composition` (renderFrame, keyframes, easing), `engine/compositor` |
 | Camera & Motion Engine | `core/composition` (kamera, `path.ts` Bézier-baner, `camera-handoff.ts`, `animate.ts`), `app/scene-editor/CameraPanel.tsx` og `camera-overlay.ts` |
 | Audio Engine | `core/audio`, `engine/audio` |
-| Prompt Orchestration Engine | `core/generation` (`prompt.ts`, `image-prompt.ts`, `scene-prompt.ts`, `style.ts`, `prompt-writer.ts`), serverfunksjoner i `adapters/ai` |
-| Provider Adapters | `adapters/ai` (Lovable AI Gateway: `gateway.ts`, `generate-image.functions.ts`, `write-prompt.functions.ts`) |
-| Quality & Cost Engine | `core/generation/cost.ts` (jobber, budsjett, forbruk), sperrene i `adapters/ai`, `app/ai` |
+| Prompt Orchestration Engine | `core/generation` (`prompt.ts`, `image-prompt.ts`, `scene-prompt.ts`, `prompt-writer.ts`; bruker stilprofilene fra Resource Library), serverfunksjoner i `adapters/ai` |
+| Provider Adapters | `core/generation/providers.ts` (leverandørkatalog: modeller, priser, lengder, oppløsning, innsatsnivå, begrensninger, modellvalg og kostnadsanslag – DEC-0069/0070/0075), `adapters/ai` (Lovable AI Gateway `gateway.ts`, egne nøkler i nøkkelhvelvet, `generate-image`/`video`/`sound`/`speech`/`write-prompt.functions.ts`, køen i `queue.functions.ts`) |
+| Quality & Cost Engine | `core/generation/cost.ts` (jobber, budsjett, forbruk i kreditter og USD), `core/generation/providers.ts` (`estimateCostUsd`, `costBreakdown`, kvalitetsmekanismer), sperrene i `adapters/ai`, `app/ai` |
 | Render Queue | tabell `generation_jobs`/`render_jobs`, worker |
 | Version & Dependency Engine | `core/commands` (kommandoer og inverser), `core/screenplay/versions.ts`, `core/assembly/discrepancy.ts`, `core/production` (spinoffer, tilbakeføring), `change_log` |
 | Localization Engine | `core/translation` (oversettelser, kobling, undertekster), `core/language` (filmspråk, timing, leppesynk) |
@@ -60,21 +60,23 @@ Relaterte dokumenter: `DOMAIN_MODEL.md`, `DATA_RELATIONSHIPS.md`, `INVARIANTS.md
 | Security & Storage | RLS, Storage-policyer, hemmeligheter, `adapters/storage` |
 | Collaboration & Access (DEC-0003) | `project_members`, `project_invitations`, Realtime presence |
 
-## 3. Hva kjører hvor (mandat 35.4)
+## 3. Hva kjører hvor (mandat 35.4, REQ-0010) – status DEC-0076
 
-| Funksjon | Nettleser | Backend (Cloud) | Medietjeneste | AI-leverandør |
-|---|---|---|---|---|
-| Manusvisning, redigering, paginering | ✓ | lagring/RPC | | |
-| PDF/DOCX-import (uttrekk + tolkning) | ✓ (MVP) | lagring av original | ev. senere | |
-| Kommandoer og invarianter | ✓ (validering) | ✓ (atomisk utførelse) | | |
-| 2D-sceneeditor og avspilling | ✓ | | | |
-| Animatic-eksport (kort) | ✓ WebCodecs | lagring | | |
-| Full filmeksport, omkoding, sammensetting | | jobbkø | ✓ FFmpeg | |
-| Mediemetadata ved import | ✓ (enkel) | | ✓ (ffprobe) | |
-| Promptbygging | ✓/server | ✓ | | |
-| Generering (bilde/video/lyd) | | ✓ adapter + kostnadsport | etterbehandling | ✓ |
-| Renderingskø, gjenopptakelse | visning | ✓ vedvarende | ✓ | |
-| Plakat-layout og forhåndsvisning | ✓ | | trykk-PDF ved behov | harmonisering (valgfritt) |
+| Funksjon | Kjører nå | Hvorfor | Egen tjeneste foreslås når |
+|---|---|---|---|
+| Manusvisning, redigering, paginering | Nettleser; lagring via `runCommand` | Umiddelbar respons; Lovable trenger ingen egen server | – |
+| PDF/DOCX/Fountain-import | Nettleser (uttrekk og tolkning); original og kontrollsum i backend | Filen forlater ikke maskinen før den er tolket; ingen serverkostnad | Skannede PDF-er som trenger OCR |
+| Kommandoer og invarianter | Nettleser validerer; `apply_changes` i Postgres utfører atomisk | Ingen andres endringer går tapt (DEC-0010/0022) | – |
+| 2D-sceneeditor, avspilling, montering | Nettleser (Canvas, Web Audio, video-elementer) | Bildepresis respons krever lokal tegning | – |
+| Filmeksport (animatic, blandet materiale) | Nettleser med WebCodecs, lyd og undertekster | Fungerer uten egen medietjeneste; prøvd ende-til-ende (`tests/visual/export-e2e.mjs`) | Lange filmer i 4K, ProRes/omkoding eller eksport mens maskinen er av: FFmpeg-tjeneste med jobbtabell (ikke laget; krever kostnadsavklaring med Mars) |
+| Mediemetadata ved import | Nettleser (video-/lydelementer) | Nok for vanlige formater | Uvanlige kodeker: ffprobe i medietjeneste |
+| Plakat (PDF og PNG i trykkoppløsning) | Nettleser (striper, egen PNG-skriver) | Ingen server nødvendig; se KI-177 for minne | Svært store plakater med mange foto |
+| Promptbygging og kostnadsanslag | Kjernen (nettleser og server bruker samme kode) | Samme tekst vises og sendes | – |
+| Generering (bilde, video, lyd, tale, beskrivelse) | Serverfunksjoner i `adapters/ai` med rolle-, budsjett- og kostnadssperre; nøkler bare på serveren | Hemmeligheter og sperrer kan ikke ligge i nettleseren | – |
+| AI-kø og oppfølging | Jobbene lagres i `generation_jobs`; en åpen redaktørfane sender og følger dem opp (DEC-0072/0073). Ruten `api/public/cron/ai-jobs` finnes, men planlegges ikke | Mars: ingen generering uten brukerens initiativ (DEC-0072, REQ-0592) | Hvis Mars vil at sendte jobber skal hentes uten åpen fane: planlagt kall til ruten (KI-178) |
+| Sikkerhetskopi | Zip lages i nettleseren; gjenoppretting via serverfunksjon | Store mediefiler går rett fra lagringen | – |
+
+Lovable alene utfører altså ikke tunge medieoperasjoner eller langvarige bakgrunnsjobber; de to stedene der en egen tjeneste blir teknisk riktig, er markert over (REQ-0010).
 
 ## 4. Dataflyt for kjerneoperasjoner
 1. UI sender kommando → `core` validerer mot lokal tilstand og invarianter (rask tilbakemelding).
@@ -90,7 +92,18 @@ Relaterte dokumenter: `DOMAIN_MODEL.md`, `DATA_RELATIONSHIPS.md`, `INVARIANTS.md
 - Tilgjengelighet: WCAG 2.2 AA der det er relevant for et profesjonelt redigeringsverktøy (tastaturbruk i alle arbeidsflater).
 
 ## 6. Portabilitet (prinsipp 28)
-Desktop-versjon (macOS/Windows) kan bruke samme `core` og `engine` i Tauri eller Electron, med lokal SQLite/Postgres-adapter bak samme repositorigrensesnitt. Alt Lovable-/Supabase-spesifikt holdes i `adapters/` og UI-rammeverkets ruter.
+Desktop-versjon (macOS/Windows) kan bruke samme `core` og `engine` i Tauri eller Electron, med lokal SQLite/Postgres-adapter bak samme repositorigrensesnitt. Alt Lovable-/Supabase-spesifikt skal holdes i `adapters/` og UI-rammeverkets ruter.
+
+### Plattformbindinger og begrunnelse (REQ-0008, DEC-0076)
+| Binding | Hvor | Hvorfor den er nødvendig | Slik byttes den |
+|---|---|---|---|
+| Lovable (bygg, publisering, hemmeligheter) | `src/integrations/` (generert), `routeTree.gen.ts` | Første versjon utvikles i Lovable (REQ-0006) | Vanlig Vite/TanStack-bygg; hemmeligheter i miljøvariabler |
+| Supabase/Postgres (data, RLS, Auth, Storage, Realtime) | `db/migrations/`, `adapters/storage`, `adapters/ai`, nettleserklienten `src/app/db.ts` | Lovable Cloud er backend; tilgang håndheves i databasen | Standard SQL og Postgres; Storage og Auth bak adapter |
+| TanStack Start serverfunksjoner | `adapters/**/*.functions.ts` | Server for nøkler og sperrer uten egen tjeneste | Samme funksjoner som HTTP-endepunkter |
+| Nettleser-API (WebCodecs, Canvas, Web Audio, CompressionStream) | `engine/`, `app/` | Bildepresis avspilling og eksport lokalt | Finnes i Electron/Tauri (Chromium/WebKit) |
+| AI-leverandører | `adapters/ai`, katalogen `core/generation/providers.ts` | Valgfritt; modellagnostisk (REQ-0269) | Ny adapter + katalogpost |
+
+**Kjent avvik:** 24 filer i `src/app` bruker Supabase-klienten direkte (innlogging, lagring av medier, AI-jobber, tilstedeværelse, versjoner) i stedet for et repositorigrensesnitt: `ai/{last-frame,use-ai-jobs,use-providers,video-jobs}.ts`, `assembly/film-import.ts`, `auth/*`, `library/{AssetZip.tsx,asset-audio.ts,asset-images.ts}`, `project/{use-presence,use-project,use-versions}.ts`, `projects/{DurationHistory,MembersSection,ProjectDangerDialogs,ProjectOverview,ProjectsScreen}.tsx`, `projects/backup.ts`, `script/ImportDialog.tsx`, `shell/{AppHeader,SchemaBanner}.tsx`, `shell/use-schema.ts`. Kjernen (`src/core/`) har ingen slik binding (testet i `tests/architecture/`). Flytting bak adapter er KI-181.
 
 ## 7. Tekniske hovedrisikoer (mandat 35.7) – se også KNOWN_ISSUES
 | Risiko | Tiltak |

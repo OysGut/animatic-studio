@@ -14,7 +14,9 @@ import type {
   LayerKind,
   LayerMask,
   LayerTransform,
+  MaskProperty,
   MotionPath,
+  TransformProperty,
 } from "../model";
 import type { CompositionFields, LayerFields } from "../commands/types";
 
@@ -52,7 +54,8 @@ export const DEFAULT_PARALLAX: Record<LayerKind, number> = {
   group: 1,
 };
 
-export const ANIMATED_PROPERTIES: readonly AnimatedProperty[] = [
+/** Egenskapene i lagets plassering som kan animeres. */
+export const ANIMATED_PROPERTIES: readonly TransformProperty[] = [
   "x",
   "y",
   "scaleX",
@@ -60,6 +63,32 @@ export const ANIMATED_PROPERTIES: readonly AnimatedProperty[] = [
   "rotation",
   "opacity",
 ];
+
+/** Maskens plassering og størrelse som kan animeres (DEC-0072). Myk kant og snudd maske er faste. */
+export const MASK_PROPERTIES: readonly MaskProperty[] = [
+  "maskX",
+  "maskY",
+  "maskWidth",
+  "maskHeight",
+];
+
+/** Feltet i en rektangel- eller ellipsemaske som hver maskeegenskap animerer. */
+export const MASK_FIELD: Record<MaskProperty, "x" | "y" | "width" | "height"> = {
+  maskX: "x",
+  maskY: "y",
+  maskWidth: "width",
+  maskHeight: "height",
+};
+
+/** Alle egenskaper som kan ha nøkkelbilder: lagets plassering og maskens plassering og størrelse. */
+export const KEYFRAME_PROPERTIES: readonly AnimatedProperty[] = [
+  ...ANIMATED_PROPERTIES,
+  ...MASK_PROPERTIES,
+];
+
+export function isMaskProperty(p: AnimatedProperty): p is MaskProperty {
+  return (MASK_PROPERTIES as readonly string[]).includes(p);
+}
 export const EASINGS: readonly Easing[] = ["linear", "ease-in", "ease-out", "ease-in-out", "hold"];
 
 /** Vanlige bildeformater (mandat 12.1). */
@@ -154,7 +183,7 @@ export function normalizeKeyframes(list: readonly Keyframe[]): Result<readonly K
   for (const k of list) {
     if (!Number.isInteger(k.frame) || k.frame < 0)
       return { ok: false, error: "Ugyldig nøkkelbilde" };
-    if (!ANIMATED_PROPERTIES.includes(k.property))
+    if (!KEYFRAME_PROPERTIES.includes(k.property))
       return { ok: false, error: "Ugyldig egenskap i nøkkelbilde" };
     if (!finite(k.value)) return { ok: false, error: "Ugyldig verdi i nøkkelbilde" };
     if (!EASINGS.includes(k.easing)) return { ok: false, error: "Ugyldig hastighetskurve" };
@@ -299,6 +328,8 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
   if (!blend.ok) return blend;
   if (group && (mask.value !== null || blend.value !== "normal"))
     return { ok: false, error: "En gruppe kan ikke ha maske eller blandingsmodus" };
+  const keyframes = maskKeyframes(k.value, mask.value);
+  if (!keyframes.ok) return keyframes;
   return {
     ok: true,
     value: {
@@ -312,7 +343,7 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
       height: f.height,
       parallax: f.parallax,
       transform: t.value,
-      keyframes: k.value,
+      keyframes: keyframes.value,
       visible: f.visible === true,
       locked: f.locked === true,
       groupId: f.groupId,
@@ -395,6 +426,30 @@ export function normalizeMask(m: LayerMask | null): Result<LayerMask | null> {
       invert,
     },
   };
+}
+
+/**
+ * Nøkkelbilder for masken (DEC-0072): bare et lag med rektangel- eller ellipsemaske kan ha dem. Uten en slik
+ * maske fjernes de (de ville ikke vist noe, og angre gir dem tilbake sammen med masken). Størrelsen må være
+ * over 0 og plasseringen innenfor samme grenser som masken selv.
+ */
+function maskKeyframes(
+  list: readonly Keyframe[],
+  mask: LayerMask | null,
+): Result<readonly Keyframe[]> {
+  if (!mask || mask.kind === "layer") {
+    return list.some((k) => isMaskProperty(k.property))
+      ? { ok: true, value: list.filter((k) => !isMaskProperty(k.property)) }
+      : { ok: true, value: list };
+  }
+  for (const k of list) {
+    if (!isMaskProperty(k.property)) continue;
+    if (Math.abs(k.value) > MAX_COORD)
+      return { ok: false, error: "Ugyldig plassering eller størrelse på masken i nøkkelbilde" };
+    if ((k.property === "maskWidth" || k.property === "maskHeight") && k.value <= 0)
+      return { ok: false, error: "Masken må ha bredde og høyde over 0" };
+  }
+  return { ok: true, value: list };
 }
 
 /** Språkavhengige bilder (DEC-0059): ett per språk, ikke hovedspråket, sortert etter språk. */

@@ -6,6 +6,7 @@
  * det området flagges (REQ-0312/0313). Ingenting endres automatisk: brukeren godkjenner, oppdaterer eller
  * angrer manusendringen (REQ-0026/0306).
  */
+import type { Command } from "../commands/types";
 import type { BlockKind, ProjectState, ScriptBlock } from "../model";
 import { blocksOfVariant } from "../views";
 import { compareKeys } from "../order-key";
@@ -142,8 +143,12 @@ export function materialsOf(s: ProjectState, occurrenceId: string, clip?: FilmCl
       baseline: comp.producedFrom?.blockRevisions ?? {},
       inUse: usesComposition,
     });
+  // En spinoff som viser hovedfilmens film (DEC-0072), varsles også om den
+  const owners = new Set<string>([occurrenceId]);
+  if (clip && clip.occurrenceId === occurrenceId && clip.inheritedFrom)
+    owners.add(clip.inheritedFrom);
   for (const t of Object.values(s.takes)) {
-    if (t.occurrenceId !== occurrenceId || t.kind === "composition2d") continue;
+    if (!owners.has(t.occurrenceId) || t.kind === "composition2d") continue;
     out.push({
       kind: "take",
       id: t.id,
@@ -153,7 +158,9 @@ export function materialsOf(s: ProjectState, occurrenceId: string, clip?: FilmCl
           ? `Film: ${t.media?.fileName ?? "importert film"}`
           : t.kind === "ai_video"
             ? "AI-video"
-            : "Versjon",
+            : t.kind === "still"
+              ? "Stillbilde"
+              : "Versjon",
       baseline: (t.acceptedFrom ?? t.producedFrom).blockRevisions,
       inUse: usedTakes.has(t.id),
     });
@@ -243,11 +250,21 @@ export function materialChanges(
 ): ReturnType<typeof scriptChanges> {
   const all = scriptChanges(s, variantId, baseline);
   const inside = coverage ? coveredBlockIds(s, variantId, coverage) : null;
-  return inside
-    ? all.filter(
-        (c) => inside.has(c.blockId) || !s.blocks[c.blockId] || s.blocks[c.blockId]!.removed,
-      )
-    : all;
+  if (!inside || !coverage) return all;
+  // En fjernet linje beholder plassen sin (ordensnøkkelen): bare de som sto innenfor dekningen, telles
+  // (KI-170). Er linjen helt borte, eller ligger den i en annen scenevariant, kan det ikke avgjøres – den telles.
+  const a = s.blocks[coverage.startBlockId];
+  const b = s.blocks[coverage.endBlockId];
+  const lo = a && b ? (compareKeys(a.orderKey, b.orderKey) <= 0 ? a : b) : null;
+  const hi = lo === a ? b : a;
+  return all.filter((c) => {
+    if (inside.has(c.blockId)) return true;
+    const x = s.blocks[c.blockId];
+    if (!x) return true;
+    if (!x.removed) return false;
+    if (!lo || !hi || x.variantId !== variantId) return true;
+    return compareKeys(x.orderKey, lo.orderKey) >= 0 && compareKeys(x.orderKey, hi.orderKey) <= 0;
+  });
 }
 
 /** Linjene en film dekker (fra første til siste, i manusets rekkefølge), REQ-0237. */
@@ -269,5 +286,44 @@ export function coveredBlockIds(
 export function changedBlockIds(found: readonly Discrepancy[]): Set<string> {
   const out = new Set<string>();
   for (const d of found) for (const c of d.changes) out.add(c.blockId);
+  return out;
+}
+
+/**
+ * Selektiv angring av manusendringer (valg C, REQ-0311, DEC-0075): kommandoene som setter akkurat disse
+ * blokkene tilbake slik de var da materialet ble laget. Andre, uavhengige redigeringer i scenen røres ikke.
+ * Endret tekst settes tilbake, ny blokk fjernes (deaktiveres), fjernet blokk gjenopprettes (med gammel tekst).
+ */
+export function scriptRevertCommands(
+  state: Pick<ProjectState, "blocks">,
+  productionId: string,
+  items: readonly ScriptChange[],
+): Command[] {
+  const out: Command[] = [];
+  const pid = productionId as never;
+  for (const c of items) {
+    const b = state.blocks[c.blockId];
+    if (!b) continue;
+    if (c.kind === "changed" && c.oldText !== null && !b.removed)
+      out.push({
+        type: "EditBlockText",
+        productionId: pid,
+        blockId: c.blockId as never,
+        text: c.oldText,
+      });
+    else if (c.kind === "added" && !b.removed)
+      out.push({ type: "RemoveBlock", productionId: pid, blockId: c.blockId as never });
+    else if (c.kind === "removed" && b.removed) {
+      out.push({ type: "RestoreBlock", productionId: pid, blockId: c.blockId as never });
+      // Var blokken også endret før den ble fjernet, settes teksten tilbake også
+      if (c.oldText !== null && c.oldText !== b.text)
+        out.push({
+          type: "EditBlockText",
+          productionId: pid,
+          blockId: c.blockId as never,
+          text: c.oldText,
+        });
+    }
+  }
   return out;
 }

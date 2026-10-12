@@ -23,6 +23,7 @@ import {
   type AudioClipFields,
   type AudioKind,
   type ProjectState,
+  sceneNumberOf,
 } from "@/core";
 import { Button } from "@/components/ui/button";
 
@@ -155,7 +156,8 @@ export function AudioClipPanel({
           : ""}
         {version ? "" : " · mangler"}
         <br />
-        Scene: {occ?.productionNumber ?? "–"} {variant ? formatHeading(variant.heading) : ""}
+        Scene: {(occ ? sceneNumberOf(state, occ) : null) ?? "–"}{" "}
+        {variant ? formatHeading(variant.heading) : ""}
       </p>
 
       <div className="grid grid-cols-3 gap-2">

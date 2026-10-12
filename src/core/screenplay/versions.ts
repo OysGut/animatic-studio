@@ -3,9 +3,9 @@
  * Et øyeblikksbilde er uforanderlig. Databasen lager det (private.script_snapshot i migrasjon 0003) i samme
  * format som snapshotFromState, slik at det kan testes og sammenlignes i kjernen.
  */
-import type { BlockKind, ProjectState, SceneHeading } from "../model";
+import type { Asset, BlockKind, ProjectState, SceneHeading } from "../model";
 import { blocksOfVariant, orderedOccurrences } from "../views";
-import { characterName } from "./filter";
+import { characterName, mentions } from "./filter";
 import { formatHeading, type PaginationScene } from "./paginate";
 
 export interface SnapshotBlock {
@@ -107,6 +107,7 @@ export type ChangeType =
   | "dialogue"
   | "action"
   | "characters"
+  | "objects" // objekter fra ressursbiblioteket som nevnes i scenen (REQ-0078)
   | "take" // annen aktiv versjon av produsert materiale
   | "variant"; // scenen bruker en annen variant (f.eks. egen versjon i en spinoff)
 
@@ -120,7 +121,17 @@ export interface SceneChange {
   readonly detail?: string;
   /** Linjene som er endret (dialog/handling, og innholdet i nye/fjernede scener) – REQ-0534. */
   readonly lines?: readonly LineChange[];
+  /** Karakterer eller objekter som er kommet til eller borte i scenen (REQ-0078). */
+  readonly names?: { readonly added: readonly string[]; readonly removed: readonly string[] };
 }
+
+/**
+ * Ressursene i biblioteket som brukes til å kjenne igjen karakterer og objekter i manusteksten (REQ-0078).
+ * Øyeblikksbildet har bare teksten, så navnene matches mot den (samme regler som ressursbruk i biblioteket).
+ */
+export type ScriptLibraryAsset = Pick<Asset, "kind" | "name" | "names"> & {
+  readonly archived?: boolean;
+};
 
 /** Én endret linje (manusblokk) i en scene (REQ-0534). */
 export interface LineChange {
@@ -149,6 +160,7 @@ export const CHANGE_LABEL: Record<ChangeType, string> = {
   dialogue: "Endret dialog",
   action: "Endret handling",
   characters: "Endrede karakterer",
+  objects: "Endrede objekter",
   take: "Ny aktiv filmversjon",
   variant: "Ny scenevariant",
 };
@@ -162,20 +174,106 @@ function byOccurrence(snap: ScriptSnapshot): Map<string, SnapshotScene> {
   return m;
 }
 
-function charactersOf(sc: SnapshotScene): Set<string> {
-  return new Set(
+/** Tekst der karakterer og objekter kan nevnes: handling og bildeutsnitt (ikke replikker). */
+function actionText(sc: SnapshotScene): string {
+  return sc.blocks
+    .filter((b) => b.kind === "action" || b.kind === "shot")
+    .map((b) => b.text)
+    .join("\n");
+}
+
+const keyOf = (name: string) => characterName(name);
+const namesOf = (a: ScriptLibraryAsset) =>
+  [a.name, ...a.names.map((n) => n.name)].map((n) => n.trim()).filter(Boolean);
+
+/**
+ * Karakterene i scenen: alle med replikk (karakterbetegnelsen), og karakterer fra biblioteket som nevnes i
+ * handlingen uten å snakke (stor forbokstav eller store bokstaver, som i biblioteket). Navn med store bokstaver.
+ */
+export function charactersOf(
+  sc: SnapshotScene,
+  library: readonly ScriptLibraryAsset[] = [],
+): Set<string> {
+  const out = new Set(
     sc.blocks
       .filter((b) => b.kind === "character")
       .map((b) => characterName(b.text))
       .filter(Boolean),
   );
+  const text = actionText(sc);
+  for (const a of library) {
+    if (a.kind !== "character" || a.archived) continue;
+    const names = namesOf(a);
+    // Har replikk under et av navnene: allerede med
+    if (names.some((n) => out.has(keyOf(n)))) continue;
+    if (names.some((n) => mentions(text, keyOf(n)))) out.add(keyOf(a.name));
+  }
+  return out;
+}
+
+function escapeRe(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/** Ord som begynner med navnet, uansett store/små bokstaver («vase» treffer «vasen»); flere ord i sammenheng. */
+function hasWordPrefix(text: string, name: string): boolean {
+  const key = name.toLocaleLowerCase("nb").trim();
+  if (key.length < 2) return false;
+  const re = new RegExp(`(^|[^\\p{L}\\p{N}])${escapeRe(key)}`, "iu");
+  return re.test(text);
+}
+
+/** Objektene fra biblioteket som nevnes i scenen (handling, replikker og overskrift). Foretrukket navn. */
+export function objectsOf(sc: SnapshotScene, library: readonly ScriptLibraryAsset[]): Set<string> {
+  const out = new Set<string>();
+  const text = [formatHeading(sc.heading), ...sc.blocks.map((b) => b.text)].join("\n");
+  for (const a of library) {
+    if (a.kind !== "object" || a.archived) continue;
+    if (namesOf(a).some((n) => hasWordPrefix(text, n))) out.add(a.name);
+  }
+  return out;
+}
+
+/** Hva som er kommet til og borte mellom to mengder navn, sortert. */
+function setChange(
+  before: ReadonlySet<string>,
+  after: ReadonlySet<string>,
+): { added: string[]; removed: string[] } {
+  const sort = (xs: string[]) => xs.sort((x, y) => x.localeCompare(y, "nb"));
+  return {
+    added: sort([...after].filter((x) => !before.has(x))),
+    removed: sort([...before].filter((x) => !after.has(x))),
+  };
+}
+
+function setChangeText(c: { added: readonly string[]; removed: readonly string[] }): string {
+  return [
+    c.added.length ? `+ ${c.added.join(", ")}` : "",
+    c.removed.length ? `− ${c.removed.join(", ")}` : "",
+  ]
+    .filter(Boolean)
+    .join("  ");
 }
 
 function textOf(sc: SnapshotScene, pick: (k: BlockKind) => boolean): string {
+  // Hvem som sier replikken, hører til replikken (byttet taler eller «(V.O.)» er en endring)
+  const who = rawSpeakers(sc);
   return sc.blocks
     .filter((b) => pick(b.kind) && b.kind !== "character")
-    .map((b) => `${b.kind}:${b.text}`)
+    .map((b) => `${b.kind}:${who.get(b.id) ?? ""}:${b.text}`)
     .join("\n");
+}
+
+/** Talerlinjen slik den står (med utvidelse som «(V.O.)»), per replikk- og parentesblokk. */
+function rawSpeakers(sc: SnapshotScene): Map<string, string | null> {
+  const out = new Map<string, string | null>();
+  let who: string | null = null;
+  for (const b of sc.blocks) {
+    if (b.kind === "character") who = b.text.trim() || null;
+    else if (b.kind !== "dialogue" && b.kind !== "parenthetical") who = null;
+    out.set(b.id, b.kind === "dialogue" || b.kind === "parenthetical" ? who : null);
+  }
+  return out;
 }
 
 function countText(lines: readonly LineChange[]): string {
@@ -256,6 +354,8 @@ export function sceneLineChanges(
   const newIds = new Set(newBlocks.map((b) => b.id));
   const sOld = older ? speakers(older) : new Map<string, string | null>();
   const sNew = newer ? speakers(newer) : new Map<string, string | null>();
+  const rOld = older ? rawSpeakers(older) : new Map<string, string | null>();
+  const rNew = newer ? rawSpeakers(newer) : new Map<string, string | null>();
   // Fjernede linjer plasseres etter siste felles linje før dem
   const removedAfter = new Map<string | null, LineChange[]>();
   let lastCommon: string | null = null;
@@ -286,13 +386,18 @@ export function sceneLineChanges(
           after: b.text,
         });
     } else {
-      if ((o.text !== b.text || o.kind !== b.kind) && (pick(b.kind) || pick(o.kind)))
+      const speakerChanged = (rOld.get(b.id) ?? null) !== (rNew.get(b.id) ?? null);
+      if (
+        (o.text !== b.text || o.kind !== b.kind || speakerChanged) &&
+        (pick(b.kind) || pick(o.kind))
+      )
         out.push({
           op: "changed",
           kind: b.kind,
           speaker: sNew.get(b.id) ?? null,
-          before: o.text,
-          after: b.text,
+          // Byttet taler vises som en del av teksten (før → etter)
+          before: speakerChanged ? `${rOld.get(b.id) ?? "–"}: ${o.text}` : o.text,
+          after: speakerChanged ? `${rNew.get(b.id) ?? "–"}: ${b.text}` : b.text,
         });
       out.push(...(removedAfter.get(b.id) ?? []));
     }
@@ -345,8 +450,16 @@ function placeText(snap: ScriptSnapshot, index: number): string {
   return `plass ${index + 1}, ${where}`;
 }
 
-/** Endringer fra `older` til `newer`, i rekkefølgen scenene står i `newer` (fjernede til slutt). */
-export function diffSnapshots(older: ScriptSnapshot, newer: ScriptSnapshot): SceneChange[] {
+/**
+ * Endringer fra `older` til `newer`, i rekkefølgen scenene står i `newer` (fjernede til slutt). Med
+ * `library` (ressursbiblioteket) kjennes også karakterer som bare nevnes i handlingen og objekter igjen
+ * (REQ-0078).
+ */
+export function diffSnapshots(
+  older: ScriptSnapshot,
+  newer: ScriptSnapshot,
+  library: readonly ScriptLibraryAsset[] = [],
+): SceneChange[] {
   // Sammenlignes per sceneforekomst (permanent i produksjonen; samme scene kan brukes flere ganger)
   const a = byOccurrence(older);
   const b = byOccurrence(newer);
@@ -422,22 +535,26 @@ export function diffSnapshots(older: ScriptSnapshot, newer: ScriptSnapshot): Sce
         lines,
       });
     }
-    const ca = charactersOf(old);
-    const cb = charactersOf(sc);
-    const added = [...cb].filter((x) => !ca.has(x));
-    const gone = [...ca].filter((x) => !cb.has(x));
-    if (added.length || gone.length)
+    const chars = setChange(charactersOf(old, library), charactersOf(sc, library));
+    if (chars.added.length || chars.removed.length)
       out.push({
         type: "characters",
         sceneId: sc.sceneId,
         ...label(sc),
-        detail: [
-          added.length ? `+ ${added.join(", ")}` : "",
-          gone.length ? `− ${gone.join(", ")}` : "",
-        ]
-          .filter(Boolean)
-          .join("  "),
+        detail: setChangeText(chars),
+        names: chars,
       });
+    if (library.length) {
+      const objs = setChange(objectsOf(old, library), objectsOf(sc, library));
+      if (objs.added.length || objs.removed.length)
+        out.push({
+          type: "objects",
+          sceneId: sc.sceneId,
+          ...label(sc),
+          detail: setChangeText(objs),
+          names: objs,
+        });
+    }
   }
   for (const sc of older.scenes)
     if (!b.has(sc.occurrenceId))

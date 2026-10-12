@@ -139,6 +139,12 @@ export interface AiUsage {
   readonly partlyUnknown: boolean;
   /** Anslag for neste generering, eller null. */
   readonly nextCost: number | null;
+  /**
+   * Anslått API-kostnad i USD denne måneden for jobber med egne nøkler (DEC-0069, REQ-0405), også AI-skrevne
+   * beskrivelser; null når ingen jobb brukte egen nøkkel. Belastes nøkkeleierens konto hos leverandøren.
+   * Jobber som fortsatt venter i køen, telles ikke (de er ikke sendt og kan avbrytes uten kostnad).
+   */
+  readonly costUsd: number | null;
 }
 
 export function aiUsage(
@@ -156,6 +162,15 @@ export function aiUsage(
   const known = month.filter((j) => j.estimatedCost !== null);
   const limit = project.aiMonthLimit ?? null;
   const used = Math.max(month.length, monthCount ?? 0);
+  // Bare jobber som er sendt (venter de i køen, er de ikke betalt og kan avbrytes gratis)
+  const usd = jobs.filter(
+    (j) =>
+      j.status !== "failed" &&
+      j.status !== "queued" &&
+      Date.parse(j.createdAt) >= from &&
+      typeof j.costUsd === "number" &&
+      Number.isFinite(j.costUsd),
+  );
   return {
     used,
     limit,
@@ -163,6 +178,7 @@ export function aiUsage(
     estimatedCost: known.length ? known.reduce((a, j) => a + (j.estimatedCost ?? 0), 0) : null,
     partlyUnknown: known.length < month.length,
     nextCost: project.aiPricePerImage ?? null,
+    costUsd: usd.length ? usd.reduce((a, j) => a + (j.costUsd ?? 0), 0) : null,
   };
 }
 
@@ -240,4 +256,12 @@ export function unclaimedVideoJobs(
 export function takeIdFromResultPath(path: string): string | null {
   const [, folder, id] = path.split("/");
   return folder === "films" && id && /^[0-9a-f-]{36}$/i.test(id) ? id : null;
+}
+
+/** Innsatsnivået jobben ble kjørt med (REQ-0275), eller null for eldre jobber uten det. */
+export function jobEffort(
+  job: Pick<GenerationJob, "params">,
+): "fast" | "balanced" | "premium" | null {
+  const e = job.params?.["effort"];
+  return e === "fast" || e === "balanced" || e === "premium" ? e : null;
 }

@@ -415,7 +415,7 @@ describe("Fountain – import etter spesifikasjonen", () => {
     ]);
   });
 
-  it("dobbel dialog ^ importeres etter hverandre og merkes", () => {
+  it("dobbel dialog ^ importeres etter hverandre med markering (DEC-0073)", () => {
     const e = els(["INT. HUS - DAG", "", "MAJA", "Ja!", "", "PER ^", "Nei!"].join("\n"));
     expect(e.map((x) => `${x.kind}:${x.text}`)).toEqual([
       "character:MAJA",
@@ -423,7 +423,10 @@ describe("Fountain – import etter spesifikasjonen", () => {
       "character:PER",
       "dialogue:Nei!",
     ]);
-    expect(e[2]!.uncertain).toMatch(/Dobbel dialog/);
+    // Tolkningen er sikker (replikk rett foran): ikke usikker, men markert for eksport
+    expect(e[2]!.uncertain).toBeUndefined();
+    expect(e[2]!.source.fountain).toEqual({ dual: true });
+    expect(e[0]!.source.fountain).toBeUndefined();
   });
 
   it("ignorerer boneyard, avsnitt, synopsis og sideskift; notater blir notater", () => {

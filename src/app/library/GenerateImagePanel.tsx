@@ -4,40 +4,45 @@
  * steg fordi den bruker kreditter i Lovable-arbeidsområdet. Selve kallet går via serverfunksjonen
  * generateImage (nøkkelen er aldri i nettleseren); resultatet lagres som ny versjon av ressursen.
  */
-import { Loader2, RotateCcw, Sparkles, WandSparkles } from "lucide-react";
+import { Loader2, RotateCcw } from "lucide-react";
+import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   aiUsage,
-  formatCredits,
-  buildImagePrompt,
-  buildContextImagePrompt,
-  attachedImages,
-  describeAttached,
-  stripAttachedSection,
-  withAttachedLegend,
-  hasStyleGuide,
-  estimateCostUsd,
-  formatUsd,
-  providerInfo,
-  providerModel,
-  providersFor,
-  type AttachedImage,
-  type ProjectState,
-  IMAGE_PURPOSE_FOR_KIND,
-  MAX_PROMPT_CHARS,
   type Asset,
   type AssetMedia,
   type AssetVariant,
   type AssetVersion,
+  type AttachedImage,
+  attachedImages,
+  buildContextImagePrompt,
+  buildImagePrompt,
+  costBreakdown,
+  describeAttached,
+  estimateCostUsd,
+  formatCredits,
+  formatUsd,
+  hasStyleGuide,
+  IMAGE_PURPOSE_FOR_KIND,
+  LOVABLE_CUTOUT_MODEL,
+  LOVABLE_IMAGE_MODEL,
+  MAX_PROMPT_CHARS,
   type Project,
+  type ProjectState,
+  providerInfo,
+  providerModel,
+  providersFor,
+  stripAttachedSection,
+  withAttachedLegend,
 } from "@/core";
 import { aiJobsKey, useAiJobs } from "@/app/ai/use-ai-jobs";
-import { generateImage } from "@/adapters/ai/generate-image.functions";
+import { CUTOUT_MODEL, IMAGE_MODEL, generateImage } from "@/adapters/ai/generate-image.functions";
 import { writeImagePrompt } from "@/adapters/ai/write-prompt.functions";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
 import { EffortPicker } from "@/app/ai/EffortPicker";
 import { Button } from "@/components/ui/button";
+import { CostLines } from "@/app/ai/CostLines";
 
 export interface GeneratedImage {
   readonly versionId: string;
@@ -169,8 +174,16 @@ export function GenerateImagePanel({
     if (!ok) return { provider: "lovable", model: "" };
     return { provider, model: model || ok.models[0]?.id || "" };
   })();
+  // Innebygd: serveren velger modellen ut fra formålet (vises i bekreftelsen, REQ-0280)
   const chosenModel =
-    choice.provider === "lovable" ? null : providerModel(choice.provider, choice.model);
+    choice.provider === "lovable"
+      ? (providerModel(
+          "lovable",
+          IMAGE_PURPOSE_FOR_KIND[asset.kind] === "cutout"
+            ? LOVABLE_CUTOUT_MODEL
+            : LOVABLE_IMAGE_MODEL,
+        ) ?? null)
+      : providerModel(choice.provider, choice.model);
   const costUsd =
     choice.provider === "lovable" ? null : estimateCostUsd(choice.provider, choice.model);
   // Endres beskrivelsen etter at brukeren har bedt om å generere, må hun bekrefte på nytt
@@ -235,6 +248,7 @@ export function GenerateImagePanel({
             referencePaths: attached.map((a) => a.path),
             identityFirst: attached[0]?.role === "identity",
             purpose: IMAGE_PURPOSE_FOR_KIND[asset.kind],
+            variantId: variant?.id ?? null,
             provider: choice.provider,
             model: choice.provider === "lovable" ? null : choice.model,
             approved: true,
@@ -292,7 +306,7 @@ export function GenerateImagePanel({
   return (
     <div className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-3">
       <h3 className="flex items-center gap-1.5 text-[13px] font-medium text-text-primary">
-        <Sparkles className="size-4" aria-hidden /> Generer et nytt bilde med AI
+        <AiGlyph className="size-4" aria-hidden /> Generer et nytt bilde med AI
       </h3>
       <p className="text-xs text-text-tertiary">
         {context
@@ -353,7 +367,7 @@ export function GenerateImagePanel({
           disabled={!canWrite}
           title="En språkmodell leser alt over (og ser bildene som sendes med) og skriver en presis beskrivelse. Du kan endre den før du genererer."
         >
-          {writing ? <Loader2 className="animate-spin" /> : <WandSparkles />}
+          {writing ? <Loader2 className="animate-spin" /> : <AiGlyph />}
           {writing
             ? "Skriver … (kan ta et halvt minutt)"
             : written
@@ -520,9 +534,41 @@ export function GenerateImagePanel({
             )}{" "}
             Vil du generere nå?
           </p>
+          <CostLines
+            lines={
+              chosenModel && providerInfo(choice.provider)
+                ? costBreakdown(providerInfo(choice.provider)!, chosenModel, {
+                    candidates,
+                    targetsLabel: "bilder",
+                    total:
+                      choice.provider === "lovable"
+                        ? usage?.nextCost !== null && usage?.nextCost !== undefined
+                          ? formatCredits(usage.nextCost * candidates)
+                          : null
+                        : costUsd !== null
+                          ? `ca. ${formatUsd(costUsd * candidates)}`
+                          : null,
+                  })
+                : [
+                    { label: "Modell", value: "Innebygd bildemodell (Lovable AI)" },
+                    { label: "Antall", value: candidates > 1 ? `${candidates} bilder` : "1 bilde" },
+                    {
+                      label: "Ekstrarunder",
+                      value: "ingen automatiske – nye forsøk startes bare av deg",
+                    },
+                    {
+                      label: "Samlet anslag",
+                      value:
+                        usage?.nextCost !== null && usage?.nextCost !== undefined
+                          ? formatCredits(usage.nextCost * candidates)
+                          : "ukjent pris",
+                    },
+                  ]
+            }
+          />
           <div className="flex gap-2">
             <Button size="sm" onClick={() => void run()} disabled={!canRun}>
-              <Sparkles /> Ja, generer
+              <AiGlyph /> Ja, generer
             </Button>
             <Button size="sm" variant="ghost" onClick={() => setConfirm(false)}>
               Avbryt
@@ -537,7 +583,7 @@ export function GenerateImagePanel({
           onClick={() => setConfirm(true)}
           className="self-start"
         >
-          {running ? <Loader2 className="animate-spin" /> : <Sparkles />}
+          {running ? <Loader2 className="animate-spin" /> : <AiGlyph />}
           {running ? "Genererer … (kan ta opptil ett minutt)" : "Generer …"}
         </Button>
       )}

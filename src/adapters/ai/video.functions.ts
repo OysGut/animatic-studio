@@ -14,13 +14,14 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
   adaptPromptForModel,
+  effortOf,
   estimateCostUsd,
   isProviderId,
   isUuid,
+  MAX_PROMPT_CHARS,
   newId,
   providerModel,
   takeIdFromLastFrame,
-  MAX_PROMPT_CHARS,
 } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 import { validReferencePath } from "./gateway";
@@ -315,7 +316,18 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
       params: {
         seconds: data.seconds,
         aspect: data.aspect,
+        // Innsatsnivået jobben ble kjørt med (mandat 19.3, REQ-0275)
+        effort: effortOf(providerModel(data.provider, data.model)),
         ...(data.chainAfter ? { chainAfter: data.chainAfter } : {}),
+        // Sporbarhet (DEC-0072, REQ-0257)
+        trace: await (
+          await import("./trace.server")
+        ).buildTrace(db, data.projectId, {
+          modelParams: { seconds: data.seconds, aspect: data.aspect },
+          referencePaths: [data.startImagePath],
+          occurrenceId: data.occurrenceId,
+          segmentId: data.segmentId,
+        }),
       },
     } as never);
     if (logErr) return { ok: false, message: `Jobben kunne ikke logges: ${logErr.message}` };

@@ -12,8 +12,14 @@ import type { ImageSource } from "@/engine/compositor/canvas";
 const slotKey = (path: string, slot: number) => (slot === 0 ? path : `${path}#s${slot}`);
 const basePath = (key: string) => key.replace(/#s\d$/, "");
 
-export function useFilmVideo(urls: Readonly<Record<string, string>> | null, playing: boolean) {
+export function useFilmVideo(
+  urls: Readonly<Record<string, string>> | null,
+  playing: boolean,
+  /** Stillbilder (DEC-0072): vises som bilde og får ikke videoelement. */
+  stills?: ReadonlySet<string>,
+) {
   const els = useRef(new Map<string, HTMLVideoElement>());
+  const imgs = useRef(new Map<string, HTMLImageElement>());
   const urlsRef = useRef(urls);
   urlsRef.current = urls;
   const used = useRef(new Set<string>());
@@ -35,7 +41,7 @@ export function useFilmVideo(urls: Readonly<Record<string, string>> | null, play
           v.currentTime = t;
         }
       }
-      if (have) continue;
+      if (have || stills?.has(path)) continue;
       map.set(path, makeVideo(url, bump));
     }
     for (const [path, v] of map)
@@ -45,7 +51,15 @@ export function useFilmVideo(urls: Readonly<Record<string, string>> | null, play
         v.load();
         map.delete(path);
       }
-  }, [urls, bump]);
+    for (const [path, img] of imgs.current)
+      if (!(path in urls)) {
+        img.removeAttribute("src");
+        imgs.current.delete(path);
+      } else if (img.dataset["url"] !== urls[path]) {
+        img.dataset["url"] = urls[path]!;
+        img.src = urls[path]!;
+      }
+  }, [urls, bump, stills]);
 
   useEffect(
     () => () => {
@@ -54,6 +68,7 @@ export function useFilmVideo(urls: Readonly<Record<string, string>> | null, play
         v.removeAttribute("src");
       }
       els.current.clear();
+      imgs.current.clear();
     },
     [],
   );
@@ -62,6 +77,21 @@ export function useFilmVideo(urls: Readonly<Record<string, string>> | null, play
   const provider = useCallback(
     (take: Take, seconds: number, held: boolean, slot = 0): ImageSource | null => {
       if (!take.mediaRef) return null;
+      // Stillbilde: samme bilde uansett tid og plass
+      if (take.kind === "still") {
+        let img = imgs.current.get(take.mediaRef);
+        if (!img) {
+          const url = urlsRef.current?.[take.mediaRef];
+          if (!url) return null;
+          img = new Image();
+          img.crossOrigin = "anonymous";
+          img.onload = bump;
+          img.dataset["url"] = url;
+          img.src = url;
+          imgs.current.set(take.mediaRef, img);
+        }
+        return img.complete && img.naturalWidth > 0 ? (img as unknown as ImageSource) : null;
+      }
       const key = slotKey(take.mediaRef, slot);
       let v = els.current.get(key);
       if (!v && slot !== 0) {

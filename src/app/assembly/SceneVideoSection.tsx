@@ -5,26 +5,28 @@
  * mens dialogen er åpen (ellers fra AI-jobbene på prosjektoversikten). «Sett sammen scenen» lager scenen av
  * de ferdige segmentene etter hverandre – 2D-scenen endres aldri, og alt kan angres.
  */
-import { CheckCircle2, Clapperboard, Loader2, Sparkles, TriangleAlert } from "lucide-react";
+import { CheckCircle2, Clapperboard, Loader2, TriangleAlert } from "lucide-react";
+import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   adaptPromptForModel,
+  assembleSegments,
+  assemblyUsesChosen,
   chainStartPath,
-  videoAttempts,
+  costBreakdown,
   estimateCostUsd,
+  type FilmClip,
   formatUsd,
   latestVideoFor,
   newId,
-  providerModel,
-  providersFor,
-  assembleSegments,
-  assemblyUsesChosen,
-  videoDurationFor,
-  videoStartImages,
-  type FilmClip,
   type ProductionSegment,
   type ProjectState,
+  providerModel,
+  providersFor,
   type SegmentPlan,
+  videoAttempts,
+  videoDurationFor,
+  videoStartImages,
 } from "@/core";
 import { startVideoGeneration } from "@/adapters/ai/video.functions";
 import type { Commands } from "@/app/project/use-commands";
@@ -35,9 +37,10 @@ import { useImageUrls } from "@/app/library/asset-images";
 import { useSchemaAtLeast } from "@/app/shell/use-schema";
 import { CompareTakesDialog } from "./CompareTakesDialog";
 import { SentPrompts } from "@/app/ai/SentPrompts";
-import { claimVideo, useVideoPolling } from "@/app/ai/video-jobs";
+import { claimVideo } from "@/app/ai/video-jobs";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { CostLines } from "@/app/ai/CostLines";
 
 const ctl =
   "h-7 min-w-0 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary disabled:opacity-50";
@@ -107,10 +110,10 @@ export function SceneVideoSection({
   const [compare, setCompare] = useState<{ segmentId: string; title: string } | null>(null);
   const start =
     starts.find((v) => v.id === startId) ?? (startId === "none" ? null : (starts[0] ?? null));
-  const needsStart = chosen?.provider.id === "runway" || chosen?.provider.id === "fal";
+  const needsStart = !!chosen?.model.requiresImage;
   const jobs = useAiJobs(projectId, editable);
   const list = useMemo(() => jobs.data?.jobs ?? [], [jobs.data]);
-  useVideoPolling(projectId, list, editable);
+  // Oppfølging av jobbene skjer for hele prosjektet (AiJobsWatcher i prosjektets ramme)
   const sceneJobs = list.filter((j) => j.kind === "video" && j.occurrenceId === clip.occurrenceId);
   const [confirm, setConfirm] = useState<number[] | null>(null);
   const [busy, setBusy] = useState(false);
@@ -486,7 +489,7 @@ export function SceneVideoSection({
                   }
                   onClick={() => setConfirm([i])}
                 >
-                  <Sparkles /> {has ? "Lag ny" : "Generer"}
+                  <AiGlyph /> {has ? "Lag ny" : "Generer"}
                 </Button>
               </li>
             );
@@ -504,10 +507,21 @@ export function SceneVideoSection({
             med {chosen?.provider.name} – {chosen?.model.label}. Belastes leverandørkontoen til
             prosjektets eier, anslått {formatUsd(cost(confirm))} (et anslag). Vil du generere nå?
           </p>
+          {chosen ? (
+            <CostLines
+              lines={costBreakdown(chosen.provider, chosen.model, {
+                candidates,
+                targets: confirm.length,
+                targetsLabel: "segmenter",
+                seconds: confirm.map(seconds),
+                total: `ca. ${formatUsd(cost(confirm))}`,
+              })}
+            />
+          ) : null}
           <SentPrompts items={confirm.map((i) => ({ label: `Segment ${i + 1}`, ...sent(i) }))} />
           <div className="flex gap-2">
             <Button size="sm" onClick={() => void generate(confirm)} disabled={busy}>
-              <Sparkles /> Ja, generer
+              <AiGlyph /> Ja, generer
             </Button>
             <Button size="sm" variant="ghost" onClick={() => setConfirm(null)}>
               Avbryt
@@ -522,7 +536,7 @@ export function SceneVideoSection({
             disabled={busy || !chainPick().length}
             onClick={() => setConfirm(chainPick())}
           >
-            {busy ? <Loader2 className="animate-spin" /> : <Sparkles />}
+            {busy ? <Loader2 className="animate-spin" /> : <AiGlyph />}
             {runningSeg.size ? "Generer resten" : "Generer alle segmentene"} (~
             {formatUsd(cost(chainPick()))})
           </Button>

@@ -43,6 +43,14 @@ export interface ProviderModel {
   readonly maxPromptChars?: number;
   /** Oppløsning modellen leverer (vises bare som informasjon). */
   readonly resolution?: string;
+  /** Video: krever et startbilde (bilde-til-video uten tekst-til-video) – REQ-0273. */
+  readonly requiresImage?: boolean;
+  /** Tidsbegrensning for lyd: korteste og lengste lengde i sekunder (REQ-0273). */
+  readonly soundSeconds?: { readonly min: number; readonly max: number };
+  /** Lydfunksjoner modellen har (REQ-0273), på norsk. */
+  readonly audio?: readonly string[];
+  /** Andre begrensninger brukeren bør kjenne (REQ-0273), på norsk. */
+  readonly limits?: readonly string[];
 }
 
 /** Innsatsnivå per oppgave (mandat 19.3): rask/økonomisk, balansert, høy/premium. */
@@ -81,6 +89,14 @@ export interface ProviderInfo {
   readonly keyPattern: RegExp | null;
   readonly models: readonly ProviderModel[];
 }
+
+/** Innebygd bildegenerering (Lovable AI Gateway): bakgrunner og andre hele bilder. */
+export const LOVABLE_IMAGE_MODEL = "openai/gpt-image-2";
+/**
+ * Frilagte figurer (lag): GPT Image 2 kan ikke lage gjennomsiktig bakgrunn (Lovable 2026-10-10:
+ * «Transparent background is not supported for this model»); GPT Image 2.5 Sunburst kan (KI-71).
+ */
+export const LOVABLE_CUTOUT_MODEL = "openai/gpt-image-2.5-sunburst";
 
 export const PROVIDERS: readonly ProviderInfo[] = [
   {
@@ -178,6 +194,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         extras: ["Lyd i videoen"],
         maxPromptChars: 4000,
         resolution: "1280×720",
+        audio: ["Lyd i videoen"],
       },
     ],
   },
@@ -237,6 +254,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         extras: ["Lyd i videoen", "Negativ beskrivelse"],
         maxPromptChars: 3500,
         resolution: "720p/1080p",
+        audio: ["Lyd i videoen"],
       },
     ],
   },
@@ -283,6 +301,8 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         tier: "premium",
         maxPromptChars: 2500,
         resolution: "4K",
+        requiresImage: true,
+        limits: ["Må ha startbilde"],
       },
     ],
   },
@@ -317,6 +337,8 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         tier: "fast",
         maxPromptChars: 1000,
         resolution: "1280×720",
+        requiresImage: true,
+        limits: ["Må ha startbilde"],
       },
     ],
   },
@@ -349,6 +371,8 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         tier: "balanced",
         extras: ["Sømløs løkke"],
         maxPromptChars: 1000,
+        soundSeconds: { min: 0.5, max: 30 },
+        audio: ["Lydeffekter fra beskrivelse", "Sømløs løkke"],
       },
       {
         id: "eleven_multilingual_v2",
@@ -359,6 +383,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         tier: "balanced",
         maxPromptChars: 5000,
         extras: ["Egen stemme per karakter", "Norsk og engelsk"],
+        audio: ["Tale fra tekst", "Egen stemme per karakter", "Norsk og engelsk"],
       },
     ],
   },
@@ -398,6 +423,9 @@ export function estimateCostUsd(
 ): number | null {
   const m = providerModel(provider, model);
   if (!m) return null;
+  // Ugyldige tall gir ukjent pris, aldri NaN (som ville sluppet gjennom kostnadstaket)
+  for (const v of [opts.seconds, opts.images, opts.characters])
+    if (v !== undefined && !Number.isFinite(v)) return null;
   const n =
     m.priceUnit === "second"
       ? Math.max(0, opts.seconds ?? 0)
@@ -447,6 +475,7 @@ export function capRemaining(capUsd: number | null, usedUsd: number): number | n
 
 /** «$12.40» – leverandørene tar betalt i USD. */
 export function formatUsd(n: number): string {
+  if (!Number.isFinite(n)) return "ukjent beløp";
   return `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
@@ -516,3 +545,115 @@ export function qualityMechanisms(model: ProviderModel): string[] {
 /** Programmet lover ikke at dyrere gir bedre (mandat 19.3, REQ-0277). */
 export const EFFORT_DISCLAIMER =
   "Høyere innsats koster mer, men er ingen garanti for et bedre resultat. Se på resultatet og velg selv.";
+
+/** En linje i kostnadsanslaget før bekreftelse (mandat 19.5, REQ-0280). */
+export interface CostLine {
+  readonly label: string;
+  readonly value: string;
+}
+
+/**
+ * Alt kostnadsanslaget bygger på, vist i bekreftelsen (REQ-0280, DEC-0075): modell, innsatsnivå, oppløsning,
+ * antall genereringer (kandidater × segmenter), lengde, ekstrarunder og samlet anslag. Felt modellen ikke har,
+ * utelates (kravet sier «så langt mulig»).
+ */
+export function costBreakdown(
+  provider: Pick<ProviderInfo, "name">,
+  model: ProviderModel,
+  opts: {
+    /** Antall genereringer per mål (kandidater). */
+    readonly candidates?: number;
+    /** Antall mål (segmenter, bilder …); standard 1. */
+    readonly targets?: number;
+    /** Hva målene heter i flertall («segmenter»). */
+    readonly targetsLabel?: string;
+    /** Lengde per generering i sekunder (video/lyd); flere verdier vises som spenn. */
+    readonly seconds?: readonly number[];
+    /** Lengden er ikke valgt (lyd): anslaget er regnet med denne lengste lengden. */
+    readonly assumedMaxSeconds?: number;
+    /** Samlet anslag ferdig formatert («ca. 1,20 USD» / «12 kreditter»), eller null = ukjent. */
+    readonly total: string | null;
+  },
+): CostLine[] {
+  const fmt = (n: number) => n.toLocaleString("nb-NO", { maximumFractionDigits: 1 });
+  const cand = Math.max(1, opts.candidates ?? 1);
+  const targets = Math.max(1, opts.targets ?? 1);
+  const out: CostLine[] = [
+    { label: "Modell", value: `${provider.name} – ${model.label}` },
+    { label: "Innsatsnivå", value: EFFORT_LABEL[effortOf(model)] },
+  ];
+  if (model.resolution) out.push({ label: "Oppløsning", value: model.resolution });
+  out.push({
+    label: "Antall",
+    value:
+      targets > 1 || cand > 1
+        ? `${cand * targets} genereringer` +
+          (targets > 1 ? ` (${targets} ${opts.targetsLabel ?? "mål"}` : " (") +
+          (cand > 1 ? `${targets > 1 ? " × " : ""}${cand} kandidater)` : ")")
+        : "1 generering",
+  });
+  const secs = (opts.seconds ?? []).filter((s) => s > 0);
+  if (secs.length) {
+    const lo = Math.min(...secs);
+    const hi = Math.max(...secs);
+    out.push({
+      label: "Lengde",
+      value: lo === hi ? `${fmt(lo)} s hver` : `${fmt(lo)}–${fmt(hi)} s`,
+    });
+  } else if (opts.assumedMaxSeconds)
+    out.push({
+      label: "Lengde",
+      value: `ikke valgt – regnet med lengste, ${fmt(opts.assumedMaxSeconds)} s`,
+    });
+  out.push({
+    label: "Ekstrarunder",
+    value: "ingen automatiske – nye forsøk startes bare av deg",
+  });
+  out.push({ label: "Samlet anslag", value: opts.total ?? "ukjent pris" });
+  return out;
+}
+
+/** Det mandatet krever at en leverandørintegrasjon beskriver (mandat 19.2, REQ-0273, DEC-0075). */
+export interface ModelCapabilities {
+  readonly task: Capability;
+  readonly maxVideoSeconds: number | null;
+  readonly durations: readonly number[];
+  readonly resolution: string | null;
+  readonly referenceImages: boolean;
+  readonly imageToVideo: boolean;
+  readonly textToVideo: boolean;
+  /** Tidsbegrensninger på norsk (lengder, lengste beskrivelse). */
+  readonly timeLimits: readonly string[];
+  readonly quality: { readonly effort: EffortLevel; readonly mechanisms: readonly string[] };
+  readonly audio: readonly string[];
+  readonly costModel: { readonly priceUsd: number; readonly unit: ProviderModel["priceUnit"] };
+  readonly limits: readonly string[];
+}
+
+export function modelCapabilities(model: ProviderModel): ModelCapabilities {
+  const d = model.durations ?? [];
+  const video = model.capability === "video";
+  const time: string[] = [];
+  if (d.length) time.push(`Videolengde ${d[0]}–${d[d.length - 1]} s`);
+  if (model.soundSeconds)
+    time.push(
+      `Lydlengde ${model.soundSeconds.min.toLocaleString("nb-NO")}–${model.soundSeconds.max} s`,
+    );
+  const limits = [...(model.limits ?? [])];
+  if (model.maxPromptChars)
+    limits.push(`Beskrivelsen kortes ned til ${model.maxPromptChars.toLocaleString("nb-NO")} tegn`);
+  return {
+    task: model.capability,
+    maxVideoSeconds: d.length ? d[d.length - 1]! : null,
+    durations: d,
+    resolution: model.resolution ?? null,
+    referenceImages: !video && !!model.acceptsImage,
+    imageToVideo: video && !!model.acceptsImage,
+    textToVideo: video && !model.requiresImage,
+    timeLimits: time,
+    quality: { effort: effortOf(model), mechanisms: qualityMechanisms(model) },
+    audio: model.audio ?? [],
+    costModel: { priceUsd: model.priceUsd, unit: model.priceUnit },
+    limits,
+  };
+}

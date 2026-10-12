@@ -8,12 +8,15 @@ import { Loader2, Mic } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  costBreakdown,
+  type FilmClip,
   formatUsd,
   newId,
+  type ProjectState,
+  providerInfo,
+  providerModel,
   sceneDialogueLines,
   speechCostUsd,
-  type FilmClip,
-  type ProjectState,
 } from "@/core";
 import { generateSpeech, listVoices } from "@/adapters/ai/speech.functions";
 import type { Commands } from "@/app/project/use-commands";
@@ -30,6 +33,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { CostLines } from "@/app/ai/CostLines";
 
 const ctl =
   "h-7 min-w-0 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary disabled:opacity-50";
@@ -73,6 +77,7 @@ export function AiDialogueDialog({
   const chosen = picked ?? defaultPick;
   const runnable = lines.filter((l) => chosen.has(l.blockId) && l.character?.voice);
   const cost = speechCostUsd(runnable);
+  const speechModel = providerModel("elevenlabs", "eleven_multilingual_v2");
   const [confirm, setConfirm] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
   const running = useRef(false);
@@ -351,6 +356,27 @@ export function AiDialogueDialog({
                   {cost !== null ? formatUsd(cost) : "ukjent pris"} (et anslag). Vil du lese dem inn
                   nå?
                 </p>
+                {speechModel && providerInfo("elevenlabs") ? (
+                  <CostLines
+                    lines={[
+                      ...costBreakdown(providerInfo("elevenlabs")!, speechModel, {
+                        targets: runnable.length,
+                        targetsLabel: "replikker",
+                        total: cost !== null ? `ca. ${formatUsd(cost)}` : null,
+                      }).slice(0, -1),
+                      {
+                        label: "Tegn",
+                        value: runnable
+                          .reduce((t, l) => t + l.text.length, 0)
+                          .toLocaleString("nb-NO"),
+                      },
+                      {
+                        label: "Samlet anslag",
+                        value: cost !== null ? `ca. ${formatUsd(cost)}` : "ukjent pris",
+                      },
+                    ]}
+                  />
+                ) : null}
                 <div className="flex gap-2">
                   <Button size="sm" onClick={() => void run()} disabled={!!busy}>
                     <Mic /> Ja, les inn

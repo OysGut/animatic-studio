@@ -168,7 +168,7 @@ function NoteCard({
         (focused ? "outline outline-1 outline-note" : "")
       }
     >
-      <span className="absolute right-1.5 top-1 text-right text-[10px] leading-tight text-text-tertiary">
+      <span className="absolute right-1.5 top-1 text-right text-[11px] leading-tight text-text-tertiary">
         {formatStamp(note)}
         {formatEdited(note) ? <span className="block">{formatEdited(note)}</span> : null}
       </span>

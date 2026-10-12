@@ -6,19 +6,38 @@
  * Eksport tar samme inndata som DOCX (`PaginationScene[]` fra exportPaginationInput) og bruker tvungne elementer
  * (`!`, `@`, `.`, `>`) der det trengs for at en ny import gir samme elementtyper.
  *
- * Bevisste forenklinger (Fountain har ikke alle elementene i datamodellen, og omvendt):
- * - «shot» og «note»-blokker eksporteres som handling; dobbel dialog importeres som vanlig dialog etter hverandre;
- *   sentrert tekst og sangtekst importeres som handling (sentrering går tapt).
+ * Markering manusmodellen ikke har egne felt for (DEC-0073, KI-164):
+ * - Dobbel dialog (`NAVN ^`), sentrert tekst (`> tekst <`) og sangtekst (`~tekst`) blir vanlige blokker
+ *   (karakter/replikk og handling) med ren tekst, og markeringen lagres i blokkens kildereferanse
+ *   (`sourceRef.fountain`, se FountainMarks i types.ts). Valget er gjort fordi nye blokktyper eller kolonner
+ *   krever migrasjon og berører visning, PDF/DOCX, oversettelse og karakterlister, mens tegn som `^` og `> <`
+ *   i teksten ville blitt med i navn, PDF og DOCX. `sourceRef` er jsonb og kopieres uendret ved import,
+ *   splitting og sammenslåing, så en rundtur Fountain → Animatic Studio → Fountain gir samme markering.
+ *   Manusvisningen og PDF/DOCX viser foreløpig ikke dobbel dialog side om side eller sentrering.
+ * - Dobbel dialog merkes usikker bare når det ikke står en replikk rett foran (da er det uklart hvem som
+ *   snakker samtidig); ellers er tolkningen sikker.
+ *
+ * Andre forenklinger:
+ * - «shot» og «note»-blokker eksporteres som handling.
  * - Fountain har ingen faste sider: sidetallet ved import er beregnet med manusvisningens sidebryting, og
  *   kildereferansens side teller bare eksplisitte sideskift (`===`).
- * - Notater er punktmerker i Fountain: ved import dekker notatet teksten foran merket på samme linje.
+ * - Notater er punktmerker i Fountain og eksporteres der notatområdet slutter. Ved import festes notatet til
+ *   blokken og linjen merket står på, og dekker teksten foran merket på samme linje, slik at det havner på
+ *   riktig tegnposisjon også når samme tekst står flere steder i blokken. Notat først på en linje dekker
+ *   teksten etter; notat på egen linje blir nål på scenen.
  *
  * Ren TypeScript uten DOM (ADR-0003).
  */
-import type { ImportedNote } from "../notes/transfer";
+import { findQuote, type ImportedNote } from "../notes/transfer";
 import { formatHeading, paginate, type PaginationScene } from "./paginate";
 import { parseHeading } from "./parse";
-import type { ParsedElement, ParsedScene, ParsedScreenplay, SourceRef } from "./types";
+import type {
+  FountainMarks,
+  ParsedElement,
+  ParsedScene,
+  ParsedScreenplay,
+  SourceRef,
+} from "./types";
 import type { BlockKind, SceneHeading } from "../model";
 
 /** Linjehøyde i den virtuelle kildereferansen (samme målestokk som RawLine.y: 12 pt per linje). */
@@ -33,6 +52,8 @@ const FORCED_HEADING_RE = /^\.(?=[\p{L}\p{N}])/u;
 /** Scenenummer på slutten av overskriften: #42A#, #I-1-A#, #1.2# */
 const SCENE_NUMBER_RE = /\s*#([\p{L}\p{N}.-]+)#\s*$/u;
 const PAGE_BREAK_RE = /^={3,}\s*$/;
+/** Sentrert linje: «> tekst <». */
+const CENTERED_RE = /^\s*>(.*)<\s*$/;
 const TITLE_KEYS = new Set([
   "title",
   "credit",
@@ -216,6 +237,54 @@ function quoteBefore(raw: string, col: number): string {
   return inline(raw.slice(col).replace(/^\s*[!@~.>]/, "")).trim();
 }
 
+/** Teksten foran notatet slik den står i blokken: uten tvangstegn, sentrering, sangtegn, «^» og formatering. */
+function cleanBefore(raw: string, col: number): string {
+  let t = raw.slice(0, col).replace(/^\s*[!@~.>]/, "");
+  if (CENTERED_RE.test(raw)) t = t.replace(/\s*<\s*$/, "");
+  return inline(t.replace(/\s*\^\s*$/, "")).trim();
+}
+
+/** Hvor en rad havnet: teksten i blokken og linjenummeret i den. */
+interface RowPlace {
+  readonly text: string;
+  readonly line: number;
+}
+
+/**
+ * Teksten notatet skal dekke, valgt slik at planImportNotes (som tar første treff i blokken) finner nøyaktig
+ * riktig sted: teksten fra linjestart frem til merket, eller fra blokkstart hvis samme tekst står tidligere i
+ * blokken. Notat først på linjen dekker resten av linjen. Faller tilbake til teksten rundt merket.
+ */
+function noteQuote(raw: string, col: number, place: RowPlace | undefined): string {
+  const fallback = quoteBefore(raw, col);
+  if (!place) return fallback;
+  const lines = place.text.split("\n");
+  const line = lines[place.line];
+  if (line === undefined) return fallback;
+  const lineStart = lines.slice(0, place.line).reduce((n, l) => n + l.length + 1, 0);
+  const before = cleanBefore(raw, col);
+  const exact = (q: string, at: "start" | "end", pos: number) => {
+    const hit = findQuote(place.text, q);
+    return hit !== null && (at === "end" ? hit.end === pos : hit.start === pos);
+  };
+  if (before) {
+    const p = line.indexOf(before);
+    if (p < 0) return fallback;
+    const end = lineStart + p + before.length;
+    for (const from of [lineStart + p, 0]) {
+      const q = place.text.slice(from, end).trim();
+      if (q && exact(q, "end", end)) return q;
+    }
+    return fallback;
+  }
+  const start = lineStart + (line.length - line.trimStart().length);
+  for (const to of [lineStart + line.length, place.text.length]) {
+    const q = place.text.slice(start, to).trim();
+    if (q && exact(q, "start", start)) return q;
+  }
+  return fallback;
+}
+
 /**
  * Tolker en Fountain-fil. Gir samme struktur som PDF/DOCX-tolkningen, med kildereferanse
  * `{ page: eksplisitt side (===), y: linjenummer × 12 }`.
@@ -254,7 +323,26 @@ export function parseFountain(source: string): FountainImport {
   let current: MutScene | null = null;
   const notes: ImportedNote[] = [];
 
-  const push = (kind: BlockKind, text: string, at: number, uncertain?: string) => {
+  // Hvilken blokk og linje hver rad havnet i (for å feste notater på riktig tegn)
+  const placeOf = new Map<number, RowPlace>();
+  const lastKind = (): BlockKind | undefined => {
+    const els = scenes[scenes.length - 1]?.elements;
+    return els?.[els.length - 1]?.kind;
+  };
+
+  const push = (
+    kind: BlockKind,
+    text: string,
+    at: number,
+    opts: {
+      readonly uncertain?: string;
+      readonly marks?: FountainMarks;
+      /** Raden hver linje i teksten kom fra. */
+      readonly rows?: readonly number[];
+    } = {},
+  ) => {
+    const { uncertain, marks } = opts;
+    (opts.rows ?? [at]).forEach((r, line) => placeOf.set(r, { text, line }));
     if (!current) {
       current = {
         number: null,
@@ -267,7 +355,14 @@ export function parseFountain(source: string): FountainImport {
       };
       scenes.push(current);
     }
-    current.elements.push({ kind, text, source: src(at), ...(uncertain ? { uncertain } : {}) });
+    const source = marks
+      ? {
+          ...src(at),
+          fountain:
+            marks.centered || marks.lyrics ? { ...marks, textHash: fountainTextHash(text) } : marks,
+        }
+      : src(at);
+    current.elements.push({ kind, text, source, ...(uncertain ? { uncertain } : {}) });
   };
 
   const isSkip = (r: Row) => {
@@ -316,21 +411,32 @@ export function parseFountain(source: string): FountainImport {
       let name = t.startsWith("@") ? t.slice(1).trim() : t;
       const dual = /\^\s*$/.test(name);
       if (dual) name = name.replace(/\s*\^\s*$/, "");
-      push(
-        "character",
-        inline(name),
-        i,
-        dual
-          ? "Dobbel dialog (side om side) i Fountain-filen – importert etter hverandre"
-          : undefined,
-      );
+      // Andre taler i dobbel dialog: sikker når det står en replikk rett foran (første taler)
+      const prev = lastKind();
+      const afterDialogue = prev === "dialogue" || prev === "parenthetical";
+      push("character", inline(name), i, {
+        ...(dual ? { marks: { dual: true } } : {}),
+        ...(dual && !afterDialogue
+          ? {
+              uncertain:
+                "Dobbel dialog (^) uten replikk rett foran – usikkert hvem som snakker samtidig",
+            }
+          : {}),
+      });
       i++;
       // Dialoggruppen: parentes og replikk frem til neste tomme linje
       let dlg: string[] = [];
-      let dlgAt = i;
+      let dlgRows: number[] = [];
+      let dlgLyrics: number[] = [];
       const flushDialogue = () => {
-        if (dlg.length) push("dialogue", dlg.join("\n"), dlgAt);
+        if (dlg.length)
+          push("dialogue", dlg.join("\n"), dlgRows[0]!, {
+            rows: dlgRows,
+            ...(dlgLyrics.length ? { marks: { lyrics: dlgLyrics } } : {}),
+          });
         dlg = [];
+        dlgRows = [];
+        dlgLyrics = [];
       };
       while (i < rows.length && !blank(i)) {
         const r = rows[i]!;
@@ -339,15 +445,18 @@ export function parseFountain(source: string): FountainImport {
           flushDialogue();
           const at = i;
           const paren = [lt];
+          const parenRows = [i];
           while (!paren[paren.length - 1]!.endsWith(")") && i + 1 < rows.length && !blank(i + 1)) {
             i++;
             paren.push(rows[i]!.raw.trim());
+            parenRows.push(i);
           }
-          push("parenthetical", inline(paren.join("\n")), at);
+          push("parenthetical", inline(paren.join("\n")), at, { rows: parenRows });
           i++;
           continue;
         }
-        if (!dlg.length) dlgAt = i;
+        if (lt.startsWith("~")) dlgLyrics.push(dlg.length);
+        dlgRows.push(i);
         dlg.push(inline(lt.replace(/^~\s*/, "")));
         i++;
       }
@@ -355,20 +464,37 @@ export function parseFountain(source: string): FountainImport {
       continue;
     }
 
-    // Handling (også sentrert tekst, sangtekst og alt annet): hele avsnittet frem til tom linje
+    // Handling (også sentrert tekst, sangtekst og alt annet): hele avsnittet frem til tom linje.
+    // «!» først på en linje tvinger handling og opphever sentrering og sangtekst for den linjen.
     const at = i;
     const lines: string[] = [];
+    const lineRows: number[] = [];
+    const centered: number[] = [];
+    const lyrics: number[] = [];
     while (i < rows.length && !blank(i)) {
       const r = rows[i]!;
       let l = r.raw === SPACER ? "" : r.raw.replace(/\s+$/, "");
-      if (lines.length === 0 && cls === "centered") l = l.trim().slice(1, -1).trim();
-      else if (l.startsWith("!")) l = l.slice(1);
-      else if (lines.length === 0 && l.trimStart().startsWith("~"))
+      const c = CENTERED_RE.exec(l);
+      if (l.startsWith("!")) l = l.slice(1);
+      else if (c && c[1]!.trim()) {
+        centered.push(lines.length);
+        l = c[1]!.trim();
+      } else if (l.trimStart().startsWith("~")) {
+        lyrics.push(lines.length);
         l = l.trimStart().slice(1).trim();
+      }
       lines.push(inline(l));
+      lineRows.push(i);
       i++;
     }
-    push("action", lines.join("\n"), at);
+    const marks: FountainMarks = {
+      ...(centered.length ? { centered } : {}),
+      ...(lyrics.length ? { lyrics } : {}),
+    };
+    push("action", lines.join("\n"), at, {
+      rows: lineRows,
+      ...(centered.length || lyrics.length ? { marks } : {}),
+    });
   }
 
   // Notater: festes til linjen de står på (samme regler som Word-kommentarer og PDF-merknader)
@@ -376,7 +502,7 @@ export function parseFountain(source: string): FountainImport {
     for (const n of r.notes) {
       const f = noteFields(n.text);
       if (!f.text) continue;
-      notes.push({ ...src(idx), quote: quoteBefore(r.raw, n.col), ...f });
+      notes.push({ ...src(idx), quote: noteQuote(r.raw, n.col, placeOf.get(idx)), ...f });
     }
   });
   for (const d of dropped) {
@@ -445,6 +571,43 @@ export function parseFountain(source: string): FountainImport {
 }
 
 // ---------- Eksport ----------
+
+/**
+ * Fountain-markeringen i en blokks kildereferanse (fra databasen, så formen kontrolleres), som felt til
+ * PaginationBlock. Tomt objekt når blokken ikke har markering.
+ */
+/** Kort kontrollsum (FNV-1a) av en tekst – bare for å se om blokken er endret siden importen. */
+export function fountainTextHash(t: string): string {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < t.length; i++) {
+    h ^= t.charCodeAt(i);
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return h.toString(16).padStart(8, "0");
+}
+
+export function fountainMarksOf(
+  ref: { readonly page: number; readonly y: number } | null | undefined,
+  /** Blokkens tekst nå: linjemerkene brukes bare når den er uendret siden importen. */
+  text?: string,
+): { readonly fountain?: FountainMarks } {
+  const raw = (ref as { fountain?: unknown } | null | undefined)?.fountain;
+  if (!raw || typeof raw !== "object") return {};
+  const m = raw as Record<string, unknown>;
+  const lines = (v: unknown): number[] =>
+    Array.isArray(v) ? v.filter((n): n is number => Number.isInteger(n) && n >= 0) : [];
+  // Teksten er endret (eller oversatt) siden importen: linjenumrene stemmer ikke lenger
+  const hash = typeof m["textHash"] === "string" ? m["textHash"] : null;
+  const linesValid = !hash || text === undefined || fountainTextHash(text) === hash;
+  const centered = linesValid ? lines(m["centered"]) : [];
+  const lyrics = linesValid ? lines(m["lyrics"]) : [];
+  const marks: FountainMarks = {
+    ...(m["dual"] === true ? { dual: true as const } : {}),
+    ...(centered.length ? { centered } : {}),
+    ...(lyrics.length ? { lyrics } : {}),
+  };
+  return Object.keys(marks).length ? { fountain: marks } : {};
+}
 
 /** Et notat slik det eksporteres (samme form som til PDF/DOCX). */
 interface FountainNote {
@@ -578,8 +741,14 @@ export function screenplayFountain(
       const inDialogue =
         prev !== undefined &&
         (prev.kind === "character" || prev.kind === "parenthetical" || prev.kind === "dialogue");
+      const lyric = new Set(b.fountain?.lyrics ?? []);
       if ((b.kind === "dialogue" || b.kind === "parenthetical") && inDialogue) {
-        out.push(...lines);
+        // Sangtekst i replikken: «~» først på linjen
+        out.push(
+          ...lines.map((l, k) =>
+            b.kind === "dialogue" && lyric.has(k) ? `~${l === SPACER ? "" : l}` : l,
+          ),
+        );
         return;
       }
       blankLine();
@@ -590,7 +759,9 @@ export function screenplayFountain(
           plain.length === 1 &&
           classifyFountainLine(plain[0]!, false) === "character" &&
           !plain[0]!.trim().startsWith("@");
-        out.push(natural ? lines[0]!.trim() : `@${lines.join(" ").trim()}`);
+        // Andre taler i dobbel dialog: «^» etter navnet
+        const dual = b.fountain?.dual ? " ^" : "";
+        out.push(natural ? lines[0]!.trim() + dual : `@${lines.join(" ").trim()}${dual}`);
         return;
       }
       if (b.kind === "transition") {
@@ -601,16 +772,28 @@ export function screenplayFountain(
         out.push(natural ? lines[0]!.trim() : `>${lines.join(" ").trim()}`);
         return;
       }
-      // Handling (og typer Fountain ikke har: shot, note, replikk uten karakter)
+      // Handling (og typer Fountain ikke har: shot, note, replikk uten karakter).
+      // Sentrerte linjer og sangtekst fra importen skrives med markering igjen (FountainMarks).
+      const centered = new Set(b.kind === "action" ? (b.fountain?.centered ?? []) : []);
+      const marked = (k: number) =>
+        (centered.has(k) && plain[k]!.trim() !== "") ||
+        (lyric.has(k) && b.kind !== "parenthetical");
+      const markup = (l: string, k: number) => {
+        const t = l === SPACER ? "" : l;
+        return centered.has(k) && plain[k]!.trim() !== "" ? `> ${t.trim()} <` : `~${t}`;
+      };
+      // Linjer som ellers ville blitt lest som sentrering eller sangtekst
+      const looksMarked = (p: string) => CENTERED_RE.test(p) || p.trimStart().startsWith("~");
       const first = plain[0] ?? "";
       const needsForce =
         first.trim() === "" ||
         first.startsWith("!") ||
         classifyFountainLine(first, plain.length === 1) !== "action";
       const body = lines.map((l, k) => {
+        if (marked(k)) return markup(l, k);
         if (k === 0) return needsForce ? `!${l === SPACER ? "" : l}` : l;
         // Et «!» først på en linje er et tvangstegn ved import; doble det så teksten blir stående
-        return plain[k]!.startsWith("!") ? `!${l}` : l;
+        return plain[k]!.startsWith("!") || looksMarked(plain[k]!) ? `!${l}` : l;
       });
       out.push(...body);
     });

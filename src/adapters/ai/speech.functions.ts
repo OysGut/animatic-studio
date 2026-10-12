@@ -6,7 +6,7 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { estimateCostUsd, isUuid, newId, providerModel, type AssetMedia } from "@/core";
+import { type AssetMedia, effortOf, estimateCostUsd, isUuid, newId, providerModel } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 
 const BUCKET = "assets";
@@ -161,7 +161,17 @@ export const generateSpeech = createServerFn({ method: "POST" })
       provider_key_id: key.id,
       key_owner: key.user_id,
       cost_usd: cost,
-      params: { speech: true, voiceId: data.voiceId, blockId: data.blockId },
+      params: {
+        speech: true,
+        // Innsatsnivået jobben ble kjørt med (mandat 19.3, REQ-0275)
+        effort: effortOf(providerModel("elevenlabs", SPEECH_MODEL)),
+        voiceId: data.voiceId,
+        blockId: data.blockId,
+        // Sporbarhet (DEC-0072, REQ-0257)
+        trace: await (
+          await import("./trace.server")
+        ).buildTrace(db, data.projectId, { modelParams: { voiceId: data.voiceId } }),
+      },
     } as never);
     if (logErr) return { ok: false, message: `Jobben kunne ikke logges: ${logErr.message}` };
     const after = await limits(1);

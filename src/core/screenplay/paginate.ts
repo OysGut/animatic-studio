@@ -6,6 +6,7 @@
  * Ren funksjon: samme inndata gir alltid samme sider. Brukes av manusvisning og eksport.
  */
 import type { BlockKind } from "../model";
+import type { FountainMarks } from "./types";
 
 export interface PageLayout {
   readonly linesPerPage: number;
@@ -58,6 +59,8 @@ export interface PaginationBlock {
   readonly text: string;
   /** Låste sider: blokken begynner på denne siden i originalen. Gir sideskift hvis vi ennå er på en tidligere side. */
   readonly lockedPage?: number;
+  /** Fountain-markering fra importen (dobbel dialog, sentrering, sangtekst). Brukes bare av Fountain-eksporten. */
+  readonly fountain?: FountainMarks;
 }
 
 export interface PaginationScene {

@@ -6,6 +6,7 @@
 import { describe, expect, it } from "vitest";
 import {
   aiUsage,
+  jobEffort,
   applyCommand,
   blocksOfVariant,
   buildScenePrompt,
@@ -80,6 +81,30 @@ describe("AI-budsjett og forbruk", () => {
       remaining: null,
       estimatedCost: null,
     });
+  });
+
+  it("innsatsnivået lagres med jobben (REQ-0275)", () => {
+    expect(jobEffort(job({ params: { effort: "premium" } }))).toBe("premium");
+    expect(jobEffort(job({}))).toBeNull();
+    expect(jobEffort(job({ params: { effort: "x" } }))).toBeNull();
+  });
+
+  it("summerer API-kostnaden med egne nøkler denne måneden (REQ-0405, DEC-0075)", () => {
+    const now = new Date("2026-10-11T12:00:00Z");
+    const u = aiUsage(
+      {},
+      [
+        job({ costUsd: 0.4 }),
+        job({ kind: "prompt", costUsd: 0.01 }),
+        job({ status: "failed", costUsd: 5 }),
+        job({ createdAt: "2026-09-30T23:00:00.000Z", costUsd: 7 }),
+        job({ costUsd: null }),
+        job({ status: "queued", costUsd: 3 }),
+      ],
+      now,
+    );
+    expect(u.costUsd).toBeCloseTo(0.41);
+    expect(aiUsage({}, [job({})], now).costUsd).toBeNull();
   });
 
   it("en jobb som har stått som «pågår» lenge, er stoppet underveis", () => {

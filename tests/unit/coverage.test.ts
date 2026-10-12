@@ -83,6 +83,11 @@ describe("manusdekning", () => {
     // Uten dekning: endringen i siste linje gir avvik; med dekning av de to første: ikke
     expect(filmD(editLast(s)).length).toBe(1);
     expect(filmD(editLast(covered)).length).toBe(0);
+    // En fjernet linje utenfor dekningen gir ikke avvik; innenfor gjør den det (KI-170, DEC-0072)
+    const remove = (st: ProjectState, id: string) =>
+      mustApply(st, { type: "RemoveBlock", productionId: main.id, blockId: id } as never);
+    expect(filmD(remove(covered, last.id)).length).toBe(0);
+    expect(filmD(remove(covered, blocks[1]!.id)).length).toBe(1);
   });
 
   it("linjene må være i scenen og i riktig rekkefølge; kan angres", () => {

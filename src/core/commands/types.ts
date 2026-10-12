@@ -33,6 +33,7 @@ import type {
   AssetKind,
   AssetName,
   AudioKind,
+  ExportSettings,
   BlockKind,
   Composition,
   CompositionCamera,
@@ -501,6 +502,22 @@ export type Command =
       readonly assetId: AssetId;
       readonly contextNames: readonly ContextName[];
       readonly restore?: boolean;
+    }
+  /**
+   * Arbeidslisten for oppdaterte ressurser (DEC-0072): versjoner brukeren har gått gjennom og valgt å beholde
+   * det gamle bildet mot, for et lag eller en versjon av scenen (stillbilde, AI-video).
+   */
+  | {
+      readonly type: "SetReviewedVersions";
+      readonly target: "layer" | "take";
+      readonly id: string;
+      readonly versionIds: readonly string[];
+    }
+  /** Eksportinnstillingene sist brukt for produksjonen (DEC-0072, REQ-0407). */
+  | {
+      readonly type: "SetExportSettings";
+      readonly productionId: ProductionId;
+      readonly settings: ExportSettings | null;
     }
   /** Hvilken del av manuset en film dekker (REQ-0237, DEC-0071), eller null for hele scenen. */
   | {

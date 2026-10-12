@@ -78,7 +78,24 @@ export function ImageViewer({
   useEffect(() => {
     const prev = document.activeElement as HTMLElement | null;
     closeRef.current?.focus();
-    return () => prev?.focus?.();
+    // Siden bak gjøres utilgjengelig (inert) mens bildet vises (KI-142): også skjermlesere og Tab når
+    // bare visningen. Det som allerede var inert, røres ikke.
+    const root = rootRef.current;
+    const made: Element[] = [];
+    // Ingenting vises (ingen bildeversjon): siden bak gjøres ikke utilgjengelig
+    if (!root)
+      return () => {
+        prev?.focus?.();
+      };
+    for (const el of Array.from(document.body.children))
+      if (el !== root && !el.contains(root) && !el.hasAttribute("inert")) {
+        el.setAttribute("inert", "");
+        made.push(el);
+      }
+    return () => {
+      for (const el of made) el.removeAttribute("inert");
+      prev?.focus?.();
+    };
   }, []);
 
   /** Zoom rundt et punkt i vinduet (pekeren eller midten). */

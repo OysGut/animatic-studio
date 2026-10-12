@@ -5,7 +5,8 @@
  * forhåndsvisningen viser hvordan en beskrivelse blir.
  */
 import { useMemo, useState } from "react";
-import { Palette, Plus, Sparkles, Trash2, Wand2 } from "lucide-react";
+import { ClipboardList, Palette, Plus, Trash2 } from "lucide-react";
+import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import {
   STYLE_USES,
   STYLE_USE_LABEL,
@@ -405,7 +406,7 @@ function StyleGuideDialog({
                 onClick={suggest}
                 disabled={!main}
               >
-                <Wand2 />
+                <ClipboardList />
                 Foreslå utkast fra prosjektet (fyller bare tomme felt)
               </Button>
             ) : null}
@@ -595,7 +596,7 @@ function StyleGuideDialog({
           <div className="flex flex-col gap-2">
             <label className="flex flex-col gap-1 text-xs text-text-secondary">
               <span className="flex items-center gap-1">
-                <Sparkles className="size-3.5" aria-hidden /> Slik blir en beskrivelse
+                <AiGlyph className="size-3.5" aria-hidden /> Slik blir en beskrivelse
               </span>
               <select
                 value={previewAsset}

@@ -202,7 +202,7 @@ export const RulerTicks = memo(function RulerTicks({
     ticks.push(
       <div
         key={s}
-        className="absolute top-0 h-full whitespace-nowrap border-l border-border-control pl-1 text-[10px] leading-4 text-text-tertiary"
+        className="absolute top-0 h-full whitespace-nowrap border-l border-border-control pl-1 text-[11px] leading-4 text-text-tertiary"
         style={{ left: s * secPx }}
       >
         {label}
@@ -284,7 +284,7 @@ const CameraRow = memo(function CameraRow({
             onPointerUp={onShotPointerUp}
             onPointerCancel={onShotPointerUp}
             className={
-              "absolute top-[3px] h-[18px] overflow-hidden rounded-sm border text-[10px] leading-[16px] text-white/90 " +
+              "absolute top-[3px] h-[18px] overflow-hidden rounded-sm border text-[11px] leading-[16px] text-white/90 " +
               (sh.id === activeShotId
                 ? "border-accent-warm outline outline-1 outline-accent-warm"
                 : selected

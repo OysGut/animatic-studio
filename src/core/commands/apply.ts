@@ -14,6 +14,7 @@ import {
   type VariantId,
 } from "../ids";
 import { checkInvariants } from "../invariants";
+import { STILL_MIME_TYPES } from "../model";
 import {
   formatMapping,
   isAllowedFps,
@@ -622,6 +623,9 @@ function sortedLayerKeys(s: ProjectState, compositionId: string, except?: string
 }
 
 const MAX_CAMERA_JSON = 64 * 1024;
+
+/** Lengste stillbilde som versjon (bilder ved 1000 fps tilsvarer AUDIO_MAX_MS; i praksis langt nok). */
+const STILL_MAX_FRAMES = 1_000_000;
 
 /** Flest deler i ett klipp (DEC-0048). */
 export const MAX_CLIP_PARTS = 200;
@@ -2034,6 +2038,17 @@ function run(
         fail("invalid", "Ugyldig mediesti");
       if (c.media !== undefined && c.kind !== "imported_film" && c.kind !== "ai_video")
         fail("invalid", "Filinformasjon gjelder bare film");
+      // Stillbilde (DEC-0072): et bilde fra biblioteket i dette prosjektet, med varighet
+      if (c.kind === "still" && c.mediaRef !== null) {
+        const v = Object.values(s.assetVersions).find((x) => x.mediaPath === c.mediaRef);
+        if (!v || !STILL_MIME_TYPES.includes(v.mimeType))
+          fail(
+            "invalid",
+            "Stillbildet må være et PNG-, JPEG- eller WebP-bilde i ressursbiblioteket",
+          );
+        if (!c.durationFrames || c.durationFrames > STILL_MAX_FRAMES)
+          fail("invalid", "Stillbildet må ha en varighet");
+      }
       const media = c.media === undefined ? undefined : takeMediaOf(c.media);
       const take: Take = {
         id: c.takeId,
@@ -2430,9 +2445,16 @@ function run(
           const t = need(s.takes[f.takeId!], "Versjonen");
           if (s.occurrences[t.occurrenceId]?.sceneId !== o.sceneId)
             fail("invalid", "Versjonen tilhører en annen scene");
-          if ((t.kind !== "imported_film" && t.kind !== "ai_video") || !t.mediaRef)
-            fail("invalid", "Bare film (importert eller AI-video) kan brukes som del");
-          const max = t.media?.durationMs ?? AUDIO_MAX_MS;
+          if (
+            (t.kind !== "imported_film" && t.kind !== "ai_video" && t.kind !== "still") ||
+            !t.mediaRef
+          )
+            fail(
+              "invalid",
+              "Bare film (importert eller AI-video) eller stillbilde kan brukes som del",
+            );
+          // Et stillbilde kan vises så lenge man vil; filmen har sin lengde
+          const max = t.kind === "still" ? AUDIO_MAX_MS : (t.media?.durationMs ?? AUDIO_MAX_MS);
           if (f.outMs > max) fail("invalid", "Utpunktet er etter slutten av filmen");
         } else {
           if (!comp) fail("invalid", "Scenen har ingen 2D-scene");
@@ -3016,9 +3038,10 @@ function run(
 
     case "SetTranslationsRemoved": {
       const next = { ...s.translations };
+      const targetIds = new Set<string>(c.translationIds);
       const live = new Set(
         Object.values(s.translations)
-          .filter((t) => !t.removed && !c.translationIds.includes(t.id))
+          .filter((t) => !t.removed && !targetIds.has(t.id))
           .map(translationKey),
       );
       for (const id of c.translationIds) {
@@ -3427,6 +3450,14 @@ function run(
         occNext[id] = { ...o!, plannedMs: ms, revision: rev(o!) };
         restored.push(id);
       }
+      // En plan satt på en del etter delingen gjaldt bare den delen; den gjelder ikke hele scenen (KI-150)
+      for (const id of Object.keys(sp.newOccurrenceIds)) {
+        const o = occNext[id];
+        if (!o || Object.hasOwn(c.plans ?? {}, id) || o.plannedMs === undefined) continue;
+        const { plannedMs: _p, ...rest } = o;
+        occNext[id] = { ...rest, revision: rev(o) };
+        restored.push(id);
+      }
       const { [sp.newSceneId]: _sc, ...scenes } = s.scenes;
       const { [sp.newVariantId]: _v, ...variants } = s.variants;
       return {
@@ -3611,7 +3642,13 @@ function run(
                     revision: rev(target),
                   },
                 }
-              : {}),
+              : target.plannedMs !== undefined
+                ? // En plan satt etter sammenslåingen gjaldt begge scenene; ikke målscenen alene (KI-150)
+                  (() => {
+                    const { plannedMs: _p, ...rest } = target;
+                    return { [target.id]: { ...rest, revision: rev(target) } };
+                  })()
+                : {}),
           },
         },
         inverse: {
@@ -3623,7 +3660,7 @@ function run(
         affected: [
           sourceScene.id,
           source.id,
-          ...(c.targetPlannedMs !== undefined ? [target.id] : []),
+          ...(c.targetPlannedMs !== undefined || target.plannedMs !== undefined ? [target.id] : []),
           ...c.placements.map((p) => p.blockId),
         ],
       };
@@ -3776,6 +3813,80 @@ function run(
         },
         inverse: { type: "SetContextNames", assetId: a.id, contextNames: before, restore: true },
         affected: [a.id],
+      };
+    }
+
+    case "SetReviewedVersions": {
+      if (
+        !Array.isArray(c.versionIds) ||
+        c.versionIds.length > 200 ||
+        c.versionIds.some((v) => typeof v !== "string" || !s.assetVersions[v])
+      )
+        fail("invalid", "Ukjent ressursversjon");
+      const ids = [...new Set(c.versionIds)];
+      if (c.target === "layer") {
+        const l = need(s.layers[c.id], "Laget");
+        return {
+          state: {
+            ...s,
+            layers: {
+              ...s.layers,
+              [l.id]: { ...l, reviewedVersions: ids, revision: rev(l) },
+            },
+          },
+          inverse: {
+            type: "SetReviewedVersions",
+            target: "layer",
+            id: l.id,
+            versionIds: l.reviewedVersions ?? [],
+          },
+          affected: [l.id],
+        };
+      }
+      if (c.target !== "take") fail("invalid", "Ukjent mål");
+      const t = need(s.takes[c.id], "Versjonen");
+      return {
+        state: {
+          ...s,
+          takes: { ...s.takes, [t.id]: { ...t, reviewedVersions: ids, revision: rev(t) } },
+        },
+        inverse: {
+          type: "SetReviewedVersions",
+          target: "take",
+          id: t.id,
+          versionIds: t.reviewedVersions ?? [],
+        },
+        affected: [t.id],
+      };
+    }
+
+    case "SetExportSettings": {
+      const p = need(s.productions[c.productionId], "Produksjonen");
+      const x = c.settings;
+      if (
+        x !== null &&
+        (typeof x !== "object" ||
+          (x.size !== "full" && x.size !== "half") ||
+          typeof x.monochrome !== "boolean" ||
+          (x.output !== "video" && x.output !== "dialogue"))
+      )
+        fail("invalid", "Ugyldige eksportinnstillinger");
+      const settings =
+        x === null ? null : { size: x.size, monochrome: x.monochrome, output: x.output };
+      return {
+        state: {
+          ...s,
+          productions: {
+            ...s.productions,
+            [p.id]: { ...p, exportSettings: settings, revision: rev(p) },
+          },
+        },
+        inverse: {
+          type: "SetExportSettings",
+          productionId: p.id,
+          settings: p.exportSettings ?? null,
+        },
+        affected: [p.id],
       };
     }
 
@@ -4064,6 +4175,13 @@ function run(
         );
       if (usedByLayer(s, "versionId", ver.id))
         fail("referenced", "Bildet brukes i en 2D-scene og kan ikke fjernes.");
+      if (Object.values(s.takes).some((t) => t.kind === "still" && t.mediaRef === ver.mediaPath))
+        fail("referenced", "Bildet brukes som stillbilde i filmen og kan ikke fjernes.");
+      if (
+        Object.values(s.layers).some((l) => l.reviewedVersions?.includes(ver.id)) ||
+        Object.values(s.takes).some((t) => t.reviewedVersions?.includes(ver.id))
+      )
+        fail("referenced", "Bildet er gått gjennom i arbeidslisten og kan ikke fjernes.");
       // Bare det nyeste bildet kan angres bort (en versjon andre kan ha brukt, beholdes)
       if (
         Object.values(s.assetVersions).some(

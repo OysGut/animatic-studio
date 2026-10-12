@@ -11,6 +11,8 @@ import { AiPanel } from "@/app/ai/AiPanel";
 import { ProductionList } from "./ProductionList";
 import { MembersSection } from "./MembersSection";
 import { StyleGuideSection } from "./StyleGuideSection";
+import { WorklistNotice } from "./WorklistNotice";
+import { StorageSection } from "./StorageSection";
 import { ContinuityAnalysisPanel } from "@/app/continuity/ContinuityAnalysisPanel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -95,6 +97,15 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
                   ) : null;
                 })()
               : null}
+            {main ? (
+              <WorklistNotice
+                state={s}
+                projectId={projectId}
+                productionId={main.id}
+                userId={userId}
+                editable={canEdit(myRole)}
+              />
+            ) : null}
             {main && orderedOccurrences(s, main.id).length === 0 ? (
               <div className="mt-3 flex items-center gap-3 text-xs text-text-tertiary">
                 <span>Hovedfilmen har ingen scener ennå.</span>
@@ -131,6 +142,8 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
             userId={userId}
             editable={canEdit(myRole)}
           />
+
+          <StorageSection state={s} projectId={projectId} />
 
           <AiPanel
             state={s}
@@ -187,7 +200,7 @@ function InviteForm({ projectId }: { projectId: string }) {
   }
   return (
     <div className="mt-4">
-      <form onSubmit={submit} className="flex flex-wrap items-center gap-2">
+      <form onSubmit={submit} className="relative flex flex-wrap items-center gap-2">
         <label htmlFor="invite-email" className="sr-only">
           E-post
         </label>

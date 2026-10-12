@@ -862,9 +862,16 @@ export function layoutPoster(
     return o as unknown as PosterElement;
   };
   const kept: PosterElement[] = out.map(merge);
-  // Endrede elementer hvis innhold er slått av: står skjult (kommer tilbake når innholdet slås på igjen)
+  // Endrede elementer hvis innhold er slått av (eller som den andre plakattypen ikke har): står skjult og
+  // kommer tilbake med brukerens endringer når innholdet slås på igjen. Har brukeren selv valgt «vis»,
+  // glemmes bare det valget (programmets elementer vises uansett), så skjulingen her ikke blir brukerens.
   for (const e of doc.elements)
-    if (!made.has(e.id) && e.role !== "custom" && !e.auto) kept.push({ ...e, visible: false });
+    if (!made.has(e.id) && e.role !== "custom" && !e.auto)
+      kept.push(
+        e.visible && e.overrides?.includes("visible")
+          ? { ...e, visible: false, overrides: e.overrides.filter((k) => k !== "visible") }
+          : { ...e, visible: false },
+      );
   // Egne elementer og elementer brukeren har flyttet fram eller bak: samme plass i rekkefølgen som før,
   // rett etter det nærmeste elementet som lå foran og fortsatt finnes (ellers rett over bakgrunnen)
   const pinned = (e: PosterElement) =>
@@ -880,6 +887,21 @@ export function layoutPoster(
     kept.splice(at + 1, 0, item);
   });
   return { ...doc, elements: kept };
+}
+
+/**
+ * Dokumentet som grunnlag for ny komposisjon når plakattypen endres (pitch ↔ karakter- og universkart,
+ * KI-133): innholdsvalgene blir typens standard, programmets urørte elementer lages på nytt, mens elementene
+ * brukeren har endret (flyttet, endret størrelse, rotert, ny tekst, skjult …) står med samme nøkkel. Finnes
+ * elementet i den nye typen, får det brukerens endringer der; finnes det ikke, står det skjult og kommer
+ * tilbake med endringene om brukeren bytter tilbake. Egne elementer står som før.
+ */
+export function posterKindBase(doc: PosterDocument, kind: PosterKind): PosterDocument {
+  return {
+    ...doc,
+    options: defaultOptions(kind),
+    elements: doc.elements.filter((e) => e.role === "custom" || !e.auto),
+  };
 }
 
 function projectData(s: ProjectState, productionId: string): LocalizedText {

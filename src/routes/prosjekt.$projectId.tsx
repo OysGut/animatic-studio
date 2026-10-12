@@ -7,6 +7,8 @@ import { AppHeader } from "@/app/shell/AppHeader";
 import { SchemaBanner } from "@/app/shell/SchemaBanner";
 import { ProjectNav } from "@/app/shell/ProjectNav";
 import { db } from "@/app/db";
+import { AiJobsWatcher } from "@/app/ai/video-jobs";
+import { canEdit, useMembers } from "@/app/project/use-project";
 
 export const Route = createFileRoute("/prosjekt/$projectId")({
   head: () => ({ meta: [{ title: "Prosjekt – Animatic Studio" }] }),
@@ -26,6 +28,7 @@ function ProjectLayout() {
       return { name: p?.name ?? "", deleted: Boolean(p?.deleted_at) };
     },
   });
+  const members = useMembers(projectId);
   // Visningsnavn for medlemslisten (migrasjon 0002). Feiler stille hvis migrasjonen ikke er kjørt.
   useEffect(() => {
     if (signedIn) void db.rpc("upsert_my_profile", {}).then(() => undefined);
@@ -55,7 +58,16 @@ function ProjectLayout() {
               </Link>
             </div>
           ) : (
-            <Outlet />
+            <>
+              <AiJobsWatcher
+                projectId={projectId}
+                userId={session.session.user.id}
+                editable={canEdit(
+                  members.data?.find((m) => m.user_id === session.session.user.id)?.role,
+                )}
+              />
+              <Outlet />
+            </>
           )}
         </div>
       </div>

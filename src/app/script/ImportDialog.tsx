@@ -36,7 +36,17 @@ type Step =
   | { kind: "reading"; fileName: string }
   | { kind: "preview"; file: File; read: ReadScreenplay; previous: string | null }
   | { kind: "importing"; progress: string }
-  | { kind: "done"; scenes: number; notes: number; notesError: string | null }
+  | {
+      kind: "done";
+      scenes: number;
+      notes: number;
+      notesError: string | null;
+      /** Originalen ble lagret, men kontrollsummen kunne ikke registreres (REQ-0053). */
+      registerError?: string | null;
+      /** Prøver registreringen på nytt (samme fil og kontrollsum); gir feilmelding eller null. */
+      retryRegister?: () => Promise<string | null>;
+      retried?: boolean;
+    }
   | { kind: "error"; message: string };
 
 interface Props {
@@ -63,13 +73,17 @@ export function ImportDialog({
   authorName,
 }: Props) {
   const [step, setStep] = useState<Step>({ kind: "choose" });
+  const [retrying, setRetrying] = useState(false);
   const [includeContinuation, setIncludeContinuation] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
   const existing = orderedOccurrences(state, productionId).length;
   const production = state.productions[productionId];
 
+  // Øker når dialogen lukkes: svar som kommer etterpå, ignoreres
+  const session = useRef(0);
   function reset(o: boolean) {
     if (!o && step.kind === "importing") return; // ikke avbryt midt i lagringen
+    if (!o) session.current++;
     onOpenChange(o);
     if (!o) setTimeout(() => setStep({ kind: "choose" }), 200);
   }
@@ -124,19 +138,35 @@ export function ImportDialog({
       const res = await runAndWait(command, "Import av manus");
       if (res.error) throw new Error(res.error);
       setStep({ kind: "importing", progress: "Registrerer originalen …" });
-      const reg = await db.rpc("register_imported_document", {
-        p_project: projectId,
-        p_production: productionId,
-        p_storage_key: key,
-        p_file_name: file.name,
-        p_sha256: read.sha256,
-        p_format: read.format,
-        p_page_count: read.parsed.pageCount,
-        p_byte_size: read.bytes.byteLength,
-        p_language: "nb",
-        p_change_id: res.commandId,
-      });
-      if (reg.error) console.warn("[import] registrering av original feilet", reg.error.message);
+      const register = () =>
+        db.rpc("register_imported_document", {
+          p_project: projectId,
+          p_production: productionId,
+          p_storage_key: key,
+          p_file_name: file.name,
+          p_sha256: read.sha256,
+          p_format: read.format,
+          p_page_count: read.parsed.pageCount,
+          p_byte_size: read.bytes.byteLength,
+          p_language: "nb",
+          p_change_id: res.commandId,
+        });
+      const reg = await register();
+      const retryRegister = async () => {
+        // Kan første forsøk ha lykkes uten at svaret kom fram? Registreringer kan ikke slettes, så sjekk først
+        const { data: found } = await db
+          .from("imported_documents")
+          .select("id")
+          .eq("project_id", projectId)
+          .eq("sha256", read.sha256)
+          .eq("change_id", res.commandId)
+          .limit(1);
+        if (found && (found as unknown[]).length) return null;
+        const r = await register();
+        return r.error ? r.error.message : null;
+      };
+      // Brukeren skal vite det hvis originalen ikke ble registrert (REQ-0053, DEC-0074)
+      const registerError = reg.error ? reg.error.message : null;
       // Notater i filen (Word-kommentarer / PDF-merknader) gjenopprettes på samme sted (REQ-0540)
       let notes = 0;
       let notesError: string | null = null;
@@ -157,7 +187,14 @@ export function ImportDialog({
           else notes += part.length;
         }
       }
-      setStep({ kind: "done", scenes: command.scenes.length, notes, notesError });
+      setStep({
+        kind: "done",
+        scenes: command.scenes.length,
+        notes,
+        notesError,
+        registerError,
+        retryRegister,
+      });
     } catch (e) {
       setStep({ kind: "error", message: (e as Error).message });
     }
@@ -227,6 +264,34 @@ export function ImportDialog({
             {step.scenes} scener
             {step.notes ? ` og ${step.notes} notater` : ""} er importert. Hele importen kan angres
             med ⌘/Ctrl + Z.
+          </p>
+        ) : null}
+        {step.kind === "done" && step.registerError ? (
+          <p role="alert" className="text-xs text-status-uncertain">
+            {`Manuset er importert, men originalfilen ble ikke registrert med kontrollsum (${step.registerError}). Manuset er i orden og kan brukes. Originalen ligger lagret, men kan ikke kontrolleres eller lastes ned fra versjonene. Ikke importer på nytt (da blir scenene dobbelt) – prøv registreringen igjen, eller gi beskjed, så kan den gjøres for hånd.`}
+            {step.retryRegister ? (
+              <Button
+                size="sm"
+                variant="secondary"
+                className="ml-2 mt-1"
+                disabled={retrying}
+                onClick={async () => {
+                  const mine = session.current;
+                  setRetrying(true);
+                  const err = await step.retryRegister!().catch((e: Error) => e.message);
+                  setRetrying(false);
+                  if (session.current !== mine) return;
+                  setStep({ ...step, registerError: err, retried: true });
+                }}
+              >
+                {retrying ? <Loader2 className="animate-spin" /> : null} Prøv registreringen igjen
+              </Button>
+            ) : null}
+          </p>
+        ) : null}
+        {step.kind === "done" && step.retried && step.registerError === null ? (
+          <p role="status" className="text-xs text-text-secondary">
+            Originalen er registrert med kontrollsum.
           </p>
         ) : null}
         {step.kind === "done" && step.notesError ? (

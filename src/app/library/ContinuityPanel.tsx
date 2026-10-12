@@ -344,22 +344,22 @@ export function ContinuityPanel({
                   </span>
                   <span className="text-text-tertiary">{sceneLabel(eventSceneId(state, e))}</span>
                   {derived ? (
-                    <span className="rounded-sm bg-surface-3 px-1 text-[10px] text-text-secondary">
+                    <span className="rounded-sm bg-surface-3 px-1 text-[11px] text-text-secondary">
                       {e.productionId ? `bare i ${prod!.name}` : "fra hovedfilmen"}
                     </span>
                   ) : null}
                   {eventApplies(state, e) ? null : derived &&
                     !e.productionId &&
                     e.disabledIn?.includes(productionId as never) ? (
-                    <span className="rounded-sm bg-status-uncertain-bg px-1 text-[10px] text-status-uncertain">
+                    <span className="rounded-sm bg-status-uncertain-bg px-1 text-[11px] text-status-uncertain">
                       slått av i {prod!.name}
                     </span>
                   ) : (
-                    <span className="rounded-sm bg-status-uncertain-bg px-1 text-[10px] text-status-uncertain">
+                    <span className="rounded-sm bg-status-uncertain-bg px-1 text-[11px] text-status-uncertain">
                       scenen er ikke med – gjelder ikke
                     </span>
                   )}
-                  <span className="rounded-sm bg-surface-3 px-1 text-[10px] text-text-secondary">
+                  <span className="rounded-sm bg-surface-3 px-1 text-[11px] text-text-secondary">
                     {e.duration === "temporary"
                       ? `over fra ${sceneLabel(e.untilSceneId).split(" – ")[0]!.toLowerCase()}`
                       : CONTINUITY_DURATION_LABEL[e.duration].toLowerCase()}
@@ -525,7 +525,7 @@ export function ContinuityPanel({
                     <span className="block truncate text-text-primary">
                       {r.heading || "—"}
                       {r.nonLinear ? (
-                        <span className="ml-1.5 rounded-sm bg-surface-3 px-1 text-[10px] text-text-secondary">
+                        <span className="ml-1.5 rounded-sm bg-surface-3 px-1 text-[11px] text-text-secondary">
                           tilbakeblikk / tidshopp
                         </span>
                       ) : null}

@@ -130,7 +130,7 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                   >
                     {asset.name}
                   </button>
-                  <span className="truncate px-1.5 pb-1 text-[10px] text-text-tertiary">
+                  <span className="truncate px-1.5 pb-1 text-[11px] text-text-tertiary">
                     {lookName ? lookName : ASSET_KIND_LABEL[asset.kind]}
                     {v ? "" : " · uten bilde"}
                   </span>

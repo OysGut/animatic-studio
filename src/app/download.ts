@@ -6,8 +6,14 @@ export interface ReadyFile {
 }
 
 /** Lager fillenke og prøver å starte nedlastingen. Lenken beholdes så brukeren kan klikke selv. */
-export function prepareDownload(bytes: Uint8Array, name: string, type: string): ReadyFile {
-  const url = URL.createObjectURL(new Blob([bytes as unknown as ArrayBuffer], { type }));
+export function prepareDownload(
+  bytes: Uint8Array | readonly Uint8Array[],
+  name: string,
+  type: string,
+): ReadyFile {
+  // Flere deler (f.eks. et langt dialogspor, KI-120) settes sammen av nettleseren uten en ekstra kopi
+  const parts = (Array.isArray(bytes) ? bytes : [bytes]) as unknown as ArrayBuffer[];
+  const url = URL.createObjectURL(new Blob(parts, { type }));
   try {
     const a = document.createElement("a");
     a.href = url;

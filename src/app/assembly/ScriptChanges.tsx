@@ -12,6 +12,7 @@ import {
   isSharedIn,
   filmClips,
   newId,
+  scriptRevertCommands,
   type Command,
   type Discrepancy,
   type ProjectState,
@@ -110,41 +111,8 @@ export function ScriptChanges({
   }
 
   /** Commands som setter blokkene tilbake slik materialet ble laget (selektiv angring, REQ-0311). */
-  function revertCommands(items: readonly ScriptChange[]): Command[] {
-    const out: Command[] = [];
-    for (const c of items) {
-      const b = state.blocks[c.blockId];
-      if (c.kind === "changed" && c.oldText !== null && b && !b.removed)
-        out.push({
-          type: "EditBlockText",
-          productionId: o!.productionId,
-          blockId: c.blockId as never,
-          text: c.oldText,
-        });
-      else if (c.kind === "added" && b && !b.removed)
-        out.push({
-          type: "RemoveBlock",
-          productionId: o!.productionId,
-          blockId: c.blockId as never,
-        });
-      else if (c.kind === "removed" && b && b.removed) {
-        out.push({
-          type: "RestoreBlock",
-          productionId: o!.productionId,
-          blockId: c.blockId as never,
-        });
-        // Var blokken også endret før den ble fjernet, settes teksten tilbake også
-        if (c.oldText !== null && c.oldText !== b.text)
-          out.push({
-            type: "EditBlockText",
-            productionId: o!.productionId,
-            blockId: c.blockId as never,
-            text: c.oldText,
-          });
-      }
-    }
-    return out;
-  }
+  const revertCommands = (items: readonly ScriptChange[]): Command[] =>
+    o ? scriptRevertCommands(state, o.productionId, items) : [];
 
   function revert(items: readonly ScriptChange[]) {
     setConfirmUndo(false);
@@ -200,7 +168,7 @@ export function ScriptChanges({
             <div className="flex items-center gap-1.5">
               <span
                 className={
-                  "rounded-sm px-1 text-[10px] font-medium " +
+                  "rounded-sm px-1 text-[11px] font-medium " +
                   (c.kind === "removed"
                     ? "bg-status-danger-bg text-status-danger"
                     : c.kind === "added"

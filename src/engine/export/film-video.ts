@@ -84,6 +84,28 @@ export class FilmVideoFrames {
     return r;
   }
 
+  private readonly stills = new Map<string, Promise<ImageBitmap | null>>();
+  private readonly failedStills = new Set<string>();
+
+  private still(take: Take): Promise<ImageBitmap | null> {
+    const path = take.mediaRef ?? "";
+    let p = this.stills.get(path);
+    if (!p) {
+      const url = this.urls[path];
+      p = url
+        ? fetch(url)
+            .then((r) => (r.ok ? r.blob() : null))
+            .then((b) => (b ? createImageBitmap(b) : null))
+            .catch(() => null)
+        : Promise.resolve(null);
+      void p.then((bmp) => {
+        if (!bmp) this.failedStills.add(path);
+      });
+      this.stills.set(path, p);
+    }
+    return p;
+  }
+
   /** Henter bildene som trengs for bildet `frame` i filmen (før det tegnes). */
   async prepare(state: ProjectState, clips: readonly FilmClip[], frame: number): Promise<void> {
     this.frame.clear();
@@ -99,6 +121,12 @@ export class FilmVideoFrames {
       if (blend) wanted.push([blend.source, base + 2]);
       for (const [src, slotNo] of wanted) {
         if (src.kind !== "take") continue;
+        if (src.take.kind === "still") {
+          // Stillbilde (DEC-0072): lest én gang og brukt på alle bildene
+          const bmp = await this.still(src.take);
+          if (bmp) this.frame.set(`${src.take.id}#${slotNo}`, bmp as unknown as ImageSource);
+          continue;
+        }
         const r = await this.reader(src.take, slotNo);
         const w = await r?.at(src.seconds);
         if (w) {
@@ -129,13 +157,15 @@ export class FilmVideoFrames {
   /** Takes som ikke kunne leses (vises som svart i eksporten). */
   failed(): string[] {
     return [
-      ...new Set(
-        [...this.readers.entries()].filter(([, r]) => r === null).map(([k]) => k.split("#")[0]!),
-      ),
+      ...new Set([
+        ...[...this.readers.entries()].filter(([, r]) => r === null).map(([k]) => k.split("#")[0]!),
+        ...this.failedStills,
+      ]),
     ];
   }
 
   async close(): Promise<void> {
+    for (const p of this.stills.values()) (await p)?.close();
     for (const r of this.readers.values()) await r?.close();
     for (const i of this.inputs) i.dispose?.();
   }

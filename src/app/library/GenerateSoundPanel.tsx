@@ -5,15 +5,17 @@
  */
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import {
+  type Asset,
+  type AssetVariant,
+  costBreakdown,
   defaultSoundPrompt,
   estimateCostUsd,
   formatUsd,
   providerInfo,
   providersFor,
-  type Asset,
-  type AssetVariant,
 } from "@/core";
 import { generateSound } from "@/adapters/ai/sound.functions";
 import type { Commands } from "@/app/project/use-commands";
@@ -23,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { signedUrls } from "./asset-images";
 import { audioDuration } from "./asset-audio";
+import { CostLines } from "@/app/ai/CostLines";
 
 const LENGTHS: readonly (number | null)[] = [null, 1, 2, 3, 5, 8, 10, 15, 20, 30];
 
@@ -53,8 +56,12 @@ export function GenerateSoundPanel({
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<string | null>(null);
 
+  // Lengdene modellen tar imot (tidsbegrensningen i katalogen, REQ-0273)
+  const maxS = chosen?.model.soundSeconds?.max ?? 30;
+  const minS = chosen?.model.soundSeconds?.min ?? 0.5;
+  const lengths = LENGTHS.filter((x) => x === null || (x >= minS && x <= maxS));
   const cost = chosen
-    ? estimateCostUsd(chosen.provider.id, chosen.model.id, { seconds: seconds ?? 30 })
+    ? estimateCostUsd(chosen.provider.id, chosen.model.id, { seconds: seconds ?? maxS })
     : null;
   const canRun = !!chosen && !!prompt.trim() && !running;
 
@@ -186,7 +193,7 @@ export function GenerateSoundPanel({
                 }}
                 className="h-7 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
               >
-                {LENGTHS.map((s) => (
+                {lengths.map((s) => (
                   <option key={s ?? "auto"} value={s === null ? "" : String(s)}>
                     {s === null ? "Automatisk" : `${s} s`}
                   </option>
@@ -215,12 +222,19 @@ export function GenerateSoundPanel({
               <p className="text-xs text-text-primary">
                 Dette belastes {providerInfo(chosen.provider.id)?.name}-kontoen til prosjektets eier
                 (én lyd, anslått høyst {cost !== null ? formatUsd(cost) : "ukjent pris"}
-                {seconds === null ? " regnet med lengste lengde, 30 sekunder" : ""} – et anslag).
-                Vil du lage lyden nå?
+                {seconds === null ? ` regnet med lengste lengde, ${maxS} sekunder` : ""} – et
+                anslag). Vil du lage lyden nå?
               </p>
+              <CostLines
+                lines={costBreakdown(chosen.provider, chosen.model, {
+                  seconds: seconds !== null ? [seconds] : [],
+                  ...(seconds === null ? { assumedMaxSeconds: maxS } : {}),
+                  total: cost !== null ? `høyst ${formatUsd(cost)}` : null,
+                })}
+              />
               <div className="flex gap-2">
                 <Button size="sm" onClick={() => void run()} disabled={!canRun}>
-                  <Sparkles /> Ja, lag lyden
+                  <AiGlyph /> Ja, lag lyden
                 </Button>
                 <Button size="sm" variant="ghost" onClick={() => setConfirm(false)}>
                   Avbryt
@@ -235,7 +249,7 @@ export function GenerateSoundPanel({
               disabled={!canRun}
               onClick={() => setConfirm(true)}
             >
-              {running ? <Loader2 className="animate-spin" /> : <Sparkles />}
+              {running ? <Loader2 className="animate-spin" /> : <AiGlyph />}
               {running ? "Lager lyden …" : "Lag lyd …"}
             </Button>
           )}

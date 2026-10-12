@@ -1,9 +1,18 @@
 /**
  * Forhåndsvisning og direkte redigering av plakaten (DEC-0061, REQ-0398/0399): SVG fra samme tegneliste som
- * PNG og trykk-PDF. Klikk velger et element, dra flytter det, håndtaket nede til høyre endrer størrelsen.
- * Piltaster flytter valgt element 1 mm (med Shift 10 mm). Tekst som ikke får plass, markeres.
+ * PNG og trykk-PDF. Klikk velger et element, dra flytter det. Hjørnene endrer størrelsen og håndtaket over
+ * elementet roterer det, også når elementet er rotert (KI-132): Shift beholder forholdet ved størrelse og gir
+ * trinn på 15° ved rotasjon. Hvert dra er ett steg som kan angres; Esc avbryter draget. Piltaster flytter
+ * valgt element 1 mm (med Shift 10 mm). Tekst som ikke får plass, markeres.
  */
-import { useId, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import {
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import {
   CSS_FONT,
   PT_TO_MM,
@@ -14,17 +23,29 @@ import {
   type RenderOp,
 } from "@/core";
 import { elementIdOfOp, isLocked } from "./poster-edit";
+import {
+  changedFields,
+  cornerCursor,
+  dragGeometry,
+  type Corner,
+  type DragMode,
+} from "./poster-handles";
 
 interface Drag {
   readonly id: string;
-  readonly mode: "move" | "resize";
+  /** Flytt, størrelse fra et hjørne eller rotasjon. */
+  readonly mode: DragMode;
   readonly startX: number;
   readonly startY: number;
   readonly orig: PosterElement;
-  readonly dx: number;
-  readonly dy: number;
+  readonly x: number;
+  readonly y: number;
+  readonly shift: boolean;
   readonly moved: boolean;
+  readonly pointerId: number;
 }
+
+const CORNERS: readonly Corner[] = ["nw", "ne", "sw", "se"];
 
 function textStyle(o: Extract<RenderOp, { op: "text" }>) {
   const bold = o.font === "sansBold" || o.font === "serifBold";
@@ -70,11 +91,13 @@ export function PosterCanvas({
   // Under dragging tegnes plakaten med elementet flyttet
   const shown = useMemo<Poster>(() => {
     if (!drag || !drag.moved) return poster;
-    const o = drag.orig;
-    const patch =
-      drag.mode === "move"
-        ? { x: o.x + drag.dx, y: o.y + drag.dy }
-        : { w: Math.max(2, o.w + drag.dx), h: Math.max(2, o.h + drag.dy) };
+    const patch = dragGeometry(
+      drag.mode,
+      drag.orig,
+      { x: drag.startX, y: drag.startY },
+      { x: drag.x, y: drag.y },
+      drag.shift,
+    );
     return {
       ...poster,
       document: {
@@ -103,38 +126,80 @@ export function PosterCanvas({
     if (!el) return;
     e.stopPropagation();
     onSelect(id);
-    if (!editable || (mode === "move" && isLocked(el))) return;
+    if (!editable || isLocked(el)) return;
     // Fanges på hele tegningen: elementet under musen kan byttes ut mens det dras
     svgRef.current?.setPointerCapture?.(e.pointerId);
     const p = toMm(e);
-    setDrag({ id, mode, startX: p.x, startY: p.y, orig: el, dx: 0, dy: 0, moved: false });
+    setDrag({
+      id,
+      mode,
+      startX: p.x,
+      startY: p.y,
+      // Eldre plakater kan mangle rotasjon
+      orig: { ...el, rotation: el.rotation ?? 0 },
+      x: p.x,
+      y: p.y,
+      shift: e.shiftKey,
+      moved: false,
+      pointerId: e.pointerId,
+    });
   };
 
   const onMove = (e: ReactPointerEvent) => {
     if (!drag) return;
     const p = toMm(e);
-    const dx = p.x - drag.startX;
-    const dy = p.y - drag.startY;
-    const moved = drag.moved || Math.hypot(dx, dy) > W / 400;
-    setDrag({ ...drag, dx, dy, moved });
+    const moved = drag.moved || Math.hypot(p.x - drag.startX, p.y - drag.startY) > W / 400;
+    setDrag({ ...drag, x: p.x, y: p.y, shift: e.shiftKey, moved });
   };
 
   const endDrag = () => {
     if (!drag) return;
     if (drag.moved) {
-      const o = drag.orig;
-      const r = (v: number) => Math.round(v * 10) / 10;
-      if (drag.mode === "move")
-        onCommit(drag.id, { x: r(o.x + drag.dx), y: r(o.y + drag.dy) }, "Flytt element");
-      else
+      const geo = dragGeometry(
+        drag.mode,
+        drag.orig,
+        { x: drag.startX, y: drag.startY },
+        { x: drag.x, y: drag.y },
+        drag.shift,
+      );
+      const patch = changedFields(drag.orig, geo);
+      // Ett dra er ett steg som kan angres (samme som flytting)
+      if (Object.keys(patch).length > 0)
         onCommit(
           drag.id,
-          { w: r(Math.max(2, o.w + drag.dx)), h: r(Math.max(2, o.h + drag.dy)) },
-          "Endre størrelse",
+          patch,
+          drag.mode === "move"
+            ? "Flytt element"
+            : drag.mode === "rotate"
+              ? "Roter element"
+              : "Endre størrelse",
         );
     }
     setDrag(null);
   };
+
+  // Esc avbryter draget (elementet går tilbake), Shift kan trykkes og slippes underveis
+  const dragging = drag !== null;
+  useEffect(() => {
+    if (!dragging) return;
+    const key = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        e.stopPropagation();
+        setDrag((d) => {
+          if (d) svgRef.current?.releasePointerCapture?.(d.pointerId);
+          return null;
+        });
+      } else if (e.key === "Shift")
+        setDrag((d) => (d && d.shift !== (e.type === "keydown") ? { ...d, shift: !d.shift } : d));
+    };
+    window.addEventListener("keydown", key, true);
+    window.addEventListener("keyup", key, true);
+    return () => {
+      window.removeEventListener("keydown", key, true);
+      window.removeEventListener("keyup", key, true);
+    };
+  }, [dragging]);
 
   const onKey = (e: React.KeyboardEvent) => {
     if (e.key === "Escape") onSelect(null);
@@ -346,7 +411,7 @@ export function PosterCanvas({
         );
       })}
       {selected && selected.kind !== "relation" ? (
-        <g pointerEvents="none" transform={rot({ ...selected, rotation: selected.rotation })}>
+        <g pointerEvents="none" transform={rot(selected)}>
           <rect
             x={selected.x}
             y={selected.y}
@@ -360,18 +425,53 @@ export function PosterCanvas({
         </g>
       ) : null}
       {selected && editable && selected.kind !== "relation" && !isLocked(selected) ? (
-        <rect
-          aria-label="Endre størrelse"
-          x={selected.x + selected.w - handle / 2}
-          y={selected.y + selected.h - handle / 2}
-          width={handle}
-          height={handle}
-          fill="#4c8dff"
-          stroke="#ffffff"
-          strokeWidth={outline}
-          style={{ cursor: "nwse-resize" }}
-          onPointerDown={(e) => startDrag(e, selected.id, "resize")}
-        />
+        // Håndtakene tegnes i elementets lokale koordinater, så de følger rotasjonen
+        <g transform={rot(selected)}>
+          {selected.kind !== "line" ? (
+            <>
+              <line
+                x1={selected.x + selected.w / 2}
+                y1={selected.y}
+                x2={selected.x + selected.w / 2}
+                y2={selected.y - handle * 2.2}
+                stroke="#4c8dff"
+                strokeWidth={outline * 1.5}
+                pointerEvents="none"
+              />
+              <circle
+                aria-label="Roter (Shift: trinn på 15°)"
+                cx={selected.x + selected.w / 2}
+                cy={selected.y - handle * 2.6}
+                r={handle * 0.6}
+                fill="#ffffff"
+                stroke="#4c8dff"
+                strokeWidth={outline * 1.5}
+                style={{ cursor: "grab" }}
+                onPointerDown={(e) => startDrag(e, selected.id, "rotate")}
+              >
+                <title>Roter (Shift: trinn på 15°)</title>
+              </circle>
+            </>
+          ) : null}
+          {/* Streker har ingen størrelseshåndtak (de flyttes og endres i feltene) */}
+          {(selected.kind === "line" ? [] : CORNERS).map((c) => (
+            <rect
+              key={c}
+              aria-label="Endre størrelse (Shift: behold forholdet)"
+              x={selected.x + (c === "ne" || c === "se" ? selected.w : 0) - handle / 2}
+              y={selected.y + (c === "sw" || c === "se" ? selected.h : 0) - handle / 2}
+              width={handle}
+              height={handle}
+              fill="#4c8dff"
+              stroke="#ffffff"
+              strokeWidth={outline}
+              style={{ cursor: cornerCursor(c, selected.rotation) }}
+              onPointerDown={(e) => startDrag(e, selected.id, c)}
+            >
+              <title>Endre størrelse (Shift: behold forholdet)</title>
+            </rect>
+          ))}
+        </g>
       ) : null}
     </svg>
   );

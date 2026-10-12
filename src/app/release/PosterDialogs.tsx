@@ -2,7 +2,7 @@
  * Ny plakat (førsteutkast fra prosjektet, REQ-0396) og eksport til trykk-PDF eller PNG (REQ-0397,
  * REQ-0403/0404, DEC-0061).
  */
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Download, Loader2 } from "lucide-react";
 import {
   POSTER_FORMATS,
@@ -23,8 +23,8 @@ import { deflateZlib, posterPdf } from "@/engine/export/poster-pdf";
 import {
   bitmapToPdfImage,
   fetchBitmap,
-  maxPxPerMm,
   posterPng,
+  posterPngSize,
 } from "@/engine/export/poster-canvas";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -218,6 +218,12 @@ export function NewPosterDialog({
   );
 }
 
+/** Megabyte, avrundet for visning. */
+function formatMb(bytes: number): string {
+  const mb = bytes / 1e6;
+  return `${mb < 10 ? mb.toLocaleString("nb", { maximumFractionDigits: 1 }) : Math.round(mb)} MB`;
+}
+
 export function ExportPosterDialog({
   state,
   poster,
@@ -238,9 +244,17 @@ export function ExportPosterDialog({
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState<ReadyFile | null>(null);
   const [missing, setMissing] = useState(0);
-  const realPpi = Math.round(maxPxPerMm(poster.widthMm, poster.heightMm, ppi) * 25.4);
+  const [progress, setProgress] = useState<number | null>(null);
+  const pngSize = posterPngSize(poster.widthMm, poster.heightMm, ppi);
+
+  // Lukkes dialogen midt i eksporten, stoppes arbeidet og ingenting lastes ned (KI-177)
+  const abortRef = useRef<AbortController | null>(null);
+  useEffect(() => () => abortRef.current?.abort(), []);
 
   async function run() {
+    abortRef.current?.abort();
+    const ac = new AbortController();
+    abortRef.current = ac;
     setBusy(true);
     setError(null);
     setReady(null);
@@ -261,6 +275,7 @@ export function ExportPosterDialog({
             title: poster.name,
           },
           async (path, w, h) => {
+            if (ac.signal.aborted) throw new DOMException("Eksporten ble avbrutt", "AbortError");
             const url = urls[path];
             if (!url) {
               missing++;
@@ -278,18 +293,31 @@ export function ExportPosterDialog({
           },
           deflateZlib,
         );
+        if (ac.signal.aborted) return;
         setReady(prepareDownload(bytes, posterFileName(p, "pdf"), "application/pdf"));
         setMissing(missing);
       } else {
-        const png = await posterPng(ops, poster.widthMm, poster.heightMm, ppi, urls);
-        const bytes = new Uint8Array(await png.blob.arrayBuffer());
-        setReady(prepareDownload(bytes, posterFileName(p, "png"), "image/png"));
+        setProgress(0);
+        const png = await posterPng(
+          ops,
+          poster.widthMm,
+          poster.heightMm,
+          ppi,
+          urls,
+          setProgress,
+          ac.signal,
+        );
+        if (ac.signal.aborted) return;
+        setReady(prepareDownload(png.parts, posterFileName(p, "png"), "image/png"));
         setMissing(png.missing);
       }
     } catch (e) {
+      if (ac.signal.aborted) return;
       setError(e instanceof Error ? e.message : String(e));
     } finally {
+      if (abortRef.current === ac) abortRef.current = null;
       setBusy(false);
+      setProgress(null);
     }
   }
 
@@ -298,7 +326,10 @@ export function ExportPosterDialog({
       open={open}
       onOpenChange={(o) => {
         onOpenChange(o);
-        if (!o) setReady(null);
+        if (!o) {
+          abortRef.current?.abort();
+          setReady(null);
+        }
       }}
     >
       <DialogContent className="max-w-md">
@@ -370,12 +401,13 @@ export function ExportPosterDialog({
                 <option value={150}>150 ppi</option>
                 <option value={300}>300 ppi</option>
               </select>
-              {realPpi < ppi ? (
-                <span className="text-[11px] text-text-tertiary">
-                  Nettleseren kan lage bilder på høyst ca. 16 megapiksler; dette formatet blir{" "}
-                  {realPpi} ppi. Bruk trykk-PDF-en til trykk.
-                </span>
-              ) : null}
+              <span className="text-[11px] text-text-tertiary">
+                {pngSize.width.toLocaleString("nb")} × {pngSize.height.toLocaleString("nb")} piksler
+                ({pngSize.megapixels.toLocaleString("nb", { maximumFractionDigits: 1 })} Mpx).
+                Anslått filstørrelse {formatMb(pngSize.minBytes)}–{formatMb(pngSize.maxBytes)},
+                avhengig av bildene.
+                {ppi >= 300 ? " Store filer tar litt tid å lage." : ""}
+              </span>
             </label>
           )}
           {error ? (
@@ -401,7 +433,11 @@ export function ExportPosterDialog({
           </Button>
           <Button onClick={run} disabled={busy}>
             {busy ? <Loader2 className="animate-spin" /> : <Download />}
-            {busy ? "Lager filen …" : "Lag filen"}
+            {busy
+              ? progress !== null
+                ? `Lager filen … ${Math.round(progress * 100)} %`
+                : "Lager filen …"
+              : "Lag filen"}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -18,6 +18,7 @@ import {
   type SceneStatus,
   type SceneFilter,
   type SceneOccurrence,
+  sceneNumberOf,
 } from "@/core";
 import { Switch } from "@/components/ui/switch";
 import { uncertainVariants } from "./script-helpers";
@@ -132,7 +133,7 @@ export function SceneNavigator({
     const before = index > 0 ? (occs[index - 1]?.orderKey ?? null) : null;
     const after = occs[index]?.orderKey ?? null;
     const o = occs[from]!;
-    onMove(id, keyBetween(before, after), `Flytt scene ${o.productionNumber ?? ""}`.trim());
+    onMove(id, keyBetween(before, after), `Flytt scene ${sceneNumberOf(state, o) ?? ""}`.trim());
   }
 
   function onDrop(e: DragEvent) {
@@ -392,7 +393,7 @@ export function SceneNavigator({
                   className="grid min-w-0 cursor-pointer grid-cols-[34px_1fr] items-center gap-1.5 text-left outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
                 >
                   <span className="tabular truncate text-right font-mono text-xs text-text-secondary">
-                    {o.productionNumber ?? "–"}
+                    {sceneNumberOf(state, o) ?? "–"}
                   </span>
                   <span className="min-w-0">
                     <span className="block truncate text-text-primary">
@@ -450,7 +451,7 @@ export function SceneNavigator({
                     checked={o.active}
                     disabled={merged}
                     onCheckedChange={(on) => onToggleActive(o.id, on)}
-                    aria-label={`${o.active ? "Deaktiver" : "Aktiver"} scene ${o.productionNumber ?? "uten nummer"}`}
+                    aria-label={`${o.active ? "Deaktiver" : "Aktiver"} scene ${sceneNumberOf(state, o) ?? "uten nummer"}`}
                     className="scale-75"
                   />
                 ) : (

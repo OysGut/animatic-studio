@@ -9,17 +9,19 @@ import { Link } from "@tanstack/react-router";
 import {
   Check,
   Clapperboard,
+  Columns2,
   EyeOff,
   FileText,
   Film,
+  ImageIcon,
   Layers,
   Loader2,
+  Mic,
   Plus,
   Timer,
-  Sparkles,
   Upload,
-  Mic,
 } from "lucide-react";
+import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   FILM_AUDIO_MAX_BYTES,
@@ -34,6 +36,7 @@ import {
   formatTimecode,
   framesToSeconds,
   secondsToFrames,
+  takeLabel,
   type BlockSpan,
   type Command,
   type FilmClip,
@@ -49,6 +52,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { formatSeconds } from "./FilmTimeline";
 import { ClipParts } from "./ClipParts";
+import { StillPickerDialog } from "./StillPickerDialog";
+import { TechnicalSection } from "./TechnicalSection";
+import { CompareVersionsDialog } from "./CompareVersionsDialog";
 
 const label = "text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary";
 
@@ -82,7 +88,10 @@ export function ClipPanel({
   onGenerateScene,
   onAiDialogue,
   run,
+  technical = false,
 }: {
+  /** Teknisk visning (DEC-0072, REQ-0103). */
+  technical?: boolean;
   /** Kjør en kommando (avvik ved manusendring: godkjenn eller angre, DEC-0054). */
   run?: (command: Command, label: string, group?: string) => string | null;
   /** «Generer scene …» (DEC-0053): beskrivelser og inndeling for AI-video. */
@@ -296,7 +305,7 @@ export function ClipPanel({
               onClick={onGenerateScene}
               title="Les og forbered beskrivelsene for AI-video av scenen"
             >
-              <Sparkles />
+              <AiGlyph />
               Generer scene …
             </Button>
           ) : null}
@@ -338,8 +347,10 @@ export function ClipPanel({
         </div>
       ) : null}
 
+      {technical ? <TechnicalSection state={state} clip={clip} frame={frame} /> : null}
       <Versions
         state={state}
+        projectId={projectId}
         clip={clip}
         editable={editable}
         onUseTake={onUseTake}
@@ -611,7 +622,7 @@ function Block({
         {text}
       </p>
       {links.length > 0 || linkable ? (
-        <div className="-mt-0.5 flex flex-wrap items-center justify-end gap-1 font-sans text-[10px]">
+        <div className="-mt-0.5 flex flex-wrap items-center justify-end gap-1 font-sans text-[11px]">
           {syncing ? (
             <span className="rounded-sm bg-accent-warm/20 px-1 text-text-primary">neste: T</span>
           ) : null}
@@ -685,12 +696,12 @@ function Block({
   );
 }
 
-/** Importerte filmer for scenen. */
+/** Importerte filmer, AI-videoer og stillbilder (DEC-0072) for scenen. */
 function scenesFilms(state: ProjectState, clip: FilmClip): Take[] {
   return Object.values(state.takes)
     .filter(
       (t) =>
-        (t.kind === "imported_film" || t.kind === "ai_video") &&
+        (t.kind === "imported_film" || t.kind === "ai_video" || t.kind === "still") &&
         t.mediaRef !== null &&
         state.occurrences[t.occurrenceId]?.sceneId === clip.sceneId,
     )
@@ -700,6 +711,7 @@ function scenesFilms(state: ProjectState, clip: FilmClip): Take[] {
 /** Versjonene av scenen: animatic (2D-scene/tittelkort) og importert film. «Bruk denne» velger (REQ-0233). */
 function Versions({
   state,
+  projectId,
   clip,
   editable,
   onUseTake,
@@ -708,6 +720,7 @@ function Versions({
   run,
 }: {
   state: ProjectState;
+  projectId: string;
   clip: FilmClip;
   editable: boolean;
   onUseTake: (takeId: string | null) => void;
@@ -730,8 +743,23 @@ function Versions({
   );
   const activeId = clip.edited
     ? "__deler__"
-    : (state.occurrences[clip.occurrenceId]?.activeTakeId ?? null);
+    : (state.occurrences[clip.inheritedFrom ?? clip.occurrenceId]?.activeTakeId ?? null);
   const fileRef = useRef<HTMLInputElement | null>(null);
+  const [stillOpen, setStillOpen] = useState(false);
+  /** Sammenlign to versjoner side ved side (REQ-0318). */
+  const [compareOpen, setCompareOpen] = useState(false);
+  const stills = useMemo(
+    () =>
+      Object.values(state.takes)
+        .filter(
+          (t) =>
+            t.kind === "still" &&
+            t.mediaRef !== null &&
+            state.occurrences[t.occurrenceId]?.sceneId === clip.sceneId,
+        )
+        .sort((a, b) => a.id.localeCompare(b.id)),
+    [state.takes, state.occurrences, clip.sceneId],
+  );
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => setError(null), [clip.occurrenceId]);
@@ -772,6 +800,12 @@ function Versions({
       className="flex flex-col gap-1.5 border-b border-border p-3"
     >
       <h2 className={label}>Versjoner av scenen</h2>
+      {clip.inheritedFrom ? (
+        <p className="text-[11px] text-text-tertiary">
+          Film og klipping kommer fra hovedfilmen (scenen er delt). Velger eller klipper du noe her,
+          får spinoffen sitt eget; hovedfilmen endres ikke.
+        </p>
+      ) : null}
       {clip.edited ? (
         <p className="text-[11px] text-text-tertiary">
           Scenen er klippet sammen av deler (se «Klipp»). «Bruk denne» starter på nytt med hele
@@ -789,6 +823,16 @@ function Versions({
         </span>
         {use(activeId === null, null, "animatic")}
       </div>
+      {stills.map((t) => (
+        <div key={t.id} className={row(activeId === t.id)}>
+          <ImageIcon className="size-3.5 shrink-0 text-accent-warm" aria-hidden />
+          <span className="min-w-0 flex-1 truncate text-text-primary">{takeLabel(state, t)}</span>
+          <span className="shrink-0 font-mono text-[11px] text-text-tertiary">
+            {t.durationFrames ? formatSeconds(t.durationFrames / (fps.num / fps.den)) : ""}
+          </span>
+          {use(activeId === t.id, t.id, takeLabel(state, t))}
+        </div>
+      ))}
       {films.map((t) => (
         <FilmRow key={t.id} take={t} fps={fps.num / fps.den} className={row(activeId === t.id)}>
           <select
@@ -796,7 +840,7 @@ function Versions({
             value={t.status}
             disabled={!editable}
             onChange={(e) => onTakeStatus(t.id, e.target.value as TakeStatus)}
-            className="h-5 shrink-0 rounded-sm border border-border-control bg-surface-3 px-0.5 text-[10px] text-text-secondary disabled:opacity-50"
+            className="h-5 shrink-0 rounded-sm border border-border-control bg-surface-3 px-0.5 text-[11px] text-text-secondary disabled:opacity-50"
             title="Status for filmen"
           >
             <option value="reference">Referanse</option>
@@ -839,7 +883,7 @@ function Versions({
                   "Endre dialog i filmlyden",
                 )
               }
-              className="ml-auto h-5 shrink-0 rounded-sm border border-border-control bg-surface-3 px-0.5 text-[10px] text-text-secondary disabled:opacity-50"
+              className="ml-auto h-5 shrink-0 rounded-sm border border-border-control bg-surface-3 px-0.5 text-[11px] text-text-secondary disabled:opacity-50"
               title="Er dialogen blandet inn i filmens lyd? Da kan den ikke byttes helt ut i en annen språkversjon."
             >
               <option value="">Med norsk dialog</option>
@@ -848,6 +892,30 @@ function Versions({
             </select>
           </label>
         ))}
+      {films.length + stills.length + (clip.edited ? 1 : 0) > 0 ? (
+        <>
+          <Button
+            size="sm"
+            variant="secondary"
+            className="self-start"
+            onClick={() => setCompareOpen(true)}
+            title="Se to versjoner av scenen side ved side, spilt av samtidig"
+          >
+            <Columns2 /> Sammenlign versjoner …
+          </Button>
+          {compareOpen ? (
+            <CompareVersionsDialog
+              open={compareOpen}
+              onOpenChange={setCompareOpen}
+              state={state}
+              projectId={projectId}
+              productionId={state.occurrences[clip.occurrenceId]?.productionId ?? ""}
+              occurrenceId={clip.occurrenceId}
+              title={`${clip.productionNumber ?? "–"} ${formatHeading(clip.heading)}`}
+            />
+          ) : null}
+        </>
+      ) : null}
       {editable ? (
         <>
           <input
@@ -861,6 +929,28 @@ function Versions({
               if (f) void pick(f);
             }}
           />
+          {run ? (
+            <>
+              <Button
+                size="sm"
+                variant="secondary"
+                className="self-start"
+                onClick={() => setStillOpen(true)}
+                title="Vis et bilde fra ressursbiblioteket i en valgt tid (hele scenen eller som en ny del)"
+              >
+                <ImageIcon /> Stillbilde fra biblioteket …
+              </Button>
+              {stillOpen ? (
+                <StillPickerDialog
+                  open={stillOpen}
+                  onOpenChange={setStillOpen}
+                  state={state}
+                  clip={clip}
+                  run={run}
+                />
+              ) : null}
+            </>
+          ) : null}
           <Button
             size="sm"
             variant="secondary"
@@ -912,7 +1002,7 @@ function FilmRow({
         <span className="block truncate text-text-primary" title={m?.fileName}>
           {m?.fileName ?? "Importert film"}
         </span>
-        <span className="block truncate text-[10px] text-text-tertiary">
+        <span className="block truncate text-[11px] text-text-tertiary">
           {facts.join(" · ")}
           {off ? ` · prosjektet har ${Math.round(fps * 100) / 100} b/s` : ""}
         </span>
@@ -1029,7 +1119,7 @@ function CoverageRow({
             onChange={(e) =>
               which === "start" ? set(e.target.value, end) : set(start, e.target.value)
             }
-            className="h-5 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-0.5 text-[10px] text-text-secondary disabled:opacity-50"
+            className="h-5 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-0.5 text-[11px] text-text-secondary disabled:opacity-50"
           >
             {blocks.map((b, i) => (
               <option key={b.id} value={b.id}>

@@ -103,7 +103,8 @@ export async function usedUsd(admin: AnyClient, ownerId: string): Promise<number
     .gte("created_at", monthStartUtc(new Date()).toISOString())
     .limit(20000);
   const jobs = ((data ?? []) as { cost_usd: number | string | null }[]).reduce(
-    (t, r) => t + (r.cost_usd === null ? 0 : Number(r.cost_usd)),
+    // Ugyldige tall telles som 0 her, så summen aldri blir NaN (NaN ville sluppet forbi taket)
+    (t, r) => t + finite(r.cost_usd),
     0,
   );
   // Forbruk fra prosjekter som er slettet for godt (ai_spend)
@@ -114,7 +115,12 @@ export async function usedUsd(admin: AnyClient, ownerId: string): Promise<number
     .eq("month", monthStartUtc(new Date()).toISOString().slice(0, 10))
     .maybeSingle();
   const k = (kept as { usd?: number | string | null } | null)?.usd;
-  return jobs + (k === null || k === undefined ? 0 : Number(k));
+  return jobs + finite(k);
+}
+
+function finite(v: number | string | null | undefined): number {
+  const n = v === null || v === undefined ? 0 : Number(v);
+  return Number.isFinite(n) ? n : 0;
 }
 
 /** Eierens tak (USD per måned), eller null. */
@@ -140,7 +146,12 @@ export async function overAccountCap(
 ): Promise<string | null> {
   const cap = await capUsd(admin, ownerId);
   if (cap === null) return null;
+  // Uten et gyldig anslag kan taket ikke kontrolleres: stopp heller enn å slippe gjennom (INV-12)
+  if (!Number.isFinite(estimate))
+    return "Prisen for jobben kunne ikke anslås, så kostnadstaket kan ikke kontrolleres. Jobben ble ikke sendt.";
   const used = await usedUsd(admin, ownerId);
+  if (!Number.isFinite(used))
+    return "Forbruket for nøkkelen kunne ikke regnes ut, så kostnadstaket kan ikke kontrolleres. Jobben ble ikke sendt.";
   const total = includesThisJob ? used : used + estimate;
   if (total > cap + 1e-9)
     return `Kostnadstaket for nøkkelen (${cap.toFixed(2)} USD per måned) er nådd – brukt ca. ${(includesThisJob ? used - estimate : used).toFixed(2)} USD, denne jobben ca. ${estimate.toFixed(2)} USD. Eieren kan endre taket under «AI-leverandører».`;

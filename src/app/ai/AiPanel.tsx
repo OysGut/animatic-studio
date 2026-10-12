@@ -6,6 +6,7 @@
  * - Jobber (REQ-0292/0294/0296/0297/0299/0303): alle genereringer med status, feilmelding, resultat og
  *   «Prøv igjen». Fullførte resultater ligger i biblioteket og blir aldri slettet av en ny generering.
  */
+import { TraceDetails } from "./TraceDetails";
 import { Link } from "@tanstack/react-router";
 import {
   AlertTriangle,
@@ -15,26 +16,28 @@ import {
   ListOrdered,
   Loader2,
   RotateCcw,
-  Sparkles,
 } from "lucide-react";
+import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useState } from "react";
 import {
-  JOB_STATE_LABEL,
-  PRIORITY_LABEL,
   aiUsage,
-  jobProgress,
+  EFFORT_LABEL,
   formatCredits,
   formatUsd,
-  PROVIDERS,
+  type GenerationJob,
+  JOB_STATE_LABEL,
+  jobEffort,
+  jobProgress,
+  type JobState,
   jobState,
   newId,
+  PRIORITY_LABEL,
+  type ProjectState,
+  PROVIDERS,
   unclaimedImageJobs,
   unclaimedVideoJobs,
-  versionIdFromResultPath,
   variantsOf,
-  type GenerationJob,
-  type JobState,
-  type ProjectState,
+  versionIdFromResultPath,
 } from "@/core";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { useActiveProduction } from "@/app/project/use-production";
@@ -54,7 +57,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { updateQueuedJob } from "@/adapters/ai/queue.functions";
 import { aiJobsKey, useAiJobs } from "./use-ai-jobs";
 import { ProvidersDialog } from "./ProvidersDialog";
-import { claimVideo, useVideoPolling } from "./video-jobs";
+import { claimVideo } from "./video-jobs";
 import { useProjectProviders } from "./use-project-providers";
 
 /** Leverandørene prosjektet kan bruke, og veien til å koble til flere (DEC-0069). */
@@ -132,7 +135,7 @@ export function AiPanel({
     [state, list, tick],
   );
   // Videojobber som pågår hos leverandøren følges opp mens oversikten er åpen
-  useVideoPolling(projectId, list, editable);
+  // Oppfølging av jobbene skjer for hele prosjektet (AiJobsWatcher i prosjektets ramme)
   const unclaimedIds = useMemo(() => new Set(unclaimed.map((j) => j.id)), [unclaimed]);
   const [claiming, setClaiming] = useState<string | null>(null);
   const [claimError, setClaimError] = useState<string | null>(null);
@@ -167,7 +170,14 @@ export function AiPanel({
         )
           continue;
         const group = newId();
-        let variantId = variantsOf(now, asset.id).find((v) => !v.archived)?.id ?? null;
+        // Varianten jobben ble laget for (KI-147), ellers ressursens første
+        const remembered =
+          typeof j.params?.["variantId"] === "string" ? j.params["variantId"] : null;
+        const rv = remembered ? now.assetVariants[remembered] : undefined;
+        let variantId =
+          rv && rv.assetId === asset.id && !rv.archived
+            ? rv.id
+            : (variantsOf(now, asset.id).find((v) => !v.archived)?.id ?? null);
         if (!variantId) {
           variantId = newId<"asset_variant">();
           const r = await cmds.runAndWait(
@@ -226,7 +236,7 @@ export function AiPanel({
         {usage.estimatedCost !== null
           ? ` · anslått ${formatCredits(usage.estimatedCost)}${usage.partlyUnknown ? " (noen uten anslag)" : ""}`
           : ""}
-        .
+        {` · API-kostnad med egne nøkler ca. ${formatUsd(usage.costUsd ?? 0)}`}.
       </p>
 
       <ProviderLine projectId={projectId} userId={userId} />
@@ -343,6 +353,7 @@ export function AiPanel({
                     <span className="text-text-tertiary">
                       {" "}
                       · {j.model}
+                      {jobEffort(j) ? ` · ${EFFORT_LABEL[jobEffort(j)!]}` : ""}
                       {j.estimatedCost !== null ? ` · ~${formatCredits(j.estimatedCost)}` : ""}
                       {j.costUsd ? ` · ~${formatUsd(j.costUsd)} (${j.provider})` : ""}
                     </span>
@@ -360,6 +371,7 @@ export function AiPanel({
                         </pre>
                       </>
                     ) : null}
+                    <TraceDetails job={j} state={state} />
                   </details>
                   {st === "queued" || (st === "running" && j.kind === "video") ? (
                     <JobProgressLine job={j} now={now.getTime()} jobs={list} />
@@ -546,7 +558,7 @@ function RetryDialog({
       <DialogContent className="max-w-[640px] border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
-            <Sparkles className="mr-1 inline size-4" aria-hidden />
+            <AiGlyph className="mr-1 inline size-4" aria-hidden />
             Prøv igjen{asset ? `: «${asset.name}»` : ""}
           </DialogTitle>
           <DialogDescription>

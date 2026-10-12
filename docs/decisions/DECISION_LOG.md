@@ -805,3 +805,160 @@ Regler: DEC-ID-er er permanente. En beslutning endres aldri i ettertid; den erst
 - **Tolkninger (Claude):** Myk overgang er på som standard når scenen settes sammen av AI-video (bare der to videoer møtes, 0,5 s), og skjules på databaser uten migrasjon 0026. En sammenhengende jobb venter høyst 30 minutter på siste bilde etter at videoen før er ferdig (bildet lagres av nettleseren); deretter feiler den uten kostnad. Angring av opprettelsen av en ressurs eller stilprofil avvises når andre senere har gitt den stemme, betegnelser, lydkoblinger eller bruk.
 - **Kodegjennomgang:** 10 funn + 1 mindre, alle rettet unntatt nr. 8 (fjernede linjer utenfor dekningen flagges fortsatt, KI-170): egne videoelementer per plass i overganger, tidsgrense for siste bilde, kjede bare til segmentet før, grenser for overganger, myk overgang skjult før 0026, reserveprofil, angring, sjekkliste mot videoens eget utgangspunkt, eksport uten bilde over seg selv, vern mot dobbeltklikk ved innlesing.
 - **Teknisk:** migrasjon `0026_masks_voices_styles.sql` (`composition_layers.mask/blend`, `clip_parts.transition_ms`, `assets.voice/context_names`, `style_profiles.applies_to`, `takes.coverage`); kommandoene `SetContextNames`, `SetAssetVoice`, `SetTakeCoverage`, `SetStyleAppliesTo`; `src/core/generation/quality.ts`, `speech.ts`, `style.ts`; `partBlendAt` i `src/core/assembly/film.ts`; `src/adapters/ai/speech.functions.ts`; UI `AiDialogueDialog`, `ContextNamesSection`, `LayerMaskSection`, overgang i `ClipParts`, dekning i `ClipPanel`.
+
+## DEC-0072 – AI-generering bare når brukeren ber om det; arbeidsliste for oppdaterte ressurser; ti store bolker
+- **Dato:** 2026-10-12
+- **Bekreftet av bruker (Mars):**
+  - «vi kjører ingen genereringer av video automatisk, dette skal alltid gjøres fra bruker og be om scene for scene eller hele eller deler..» → REQ-0592. Den planlagte bakgrunnsjobben (DEC-0070) settes ikke opp; jobber sendes og hentes mens prosjektet er åpent. Adressen finnes fortsatt (flyttet til `/api/public/cron/ai-jobs`, beskyttet med hemmeligheten), men ingen kaller den.
+  - «om en assets er oppdatert kan en få opp en arbeidsliste for å gå igjennom hvike scener som er berørt og om scene for scene at den nye assetsen skal brukes i stedet for» → REQ-0591.
+- **Teknisk anbefaling (Mars: «Tar du de neste 10?») – innhold:**
+  1. **Stillbilder i monteringen** (REQ-0214/0418): et bilde fra biblioteket i valgt tid, som hele scenen eller ny del; i visning og eksport. Versjonen peker på bildefilen (ingen kopi). Bare PNG, JPEG og WebP.
+  2. **Eksport av valgte scener** (REQ-0417, KI-169): vilkårlige scener settes etter hverandre; naboer beholder overgangen, ellers rent kutt; lyd og undertekster følger scenen.
+  3. **Sporbarhet per generering** (REQ-0257): systeminstruks (nøkkel og kontrollsum), parametere, referanser med ressursversjon, manusversjon og linjerevisjoner lagres i jobben (innenfor 3000 tegn) og vises i AI-jobbene.
+  4. **Replikkens koblinger** (REQ-0095/0099): dialogopptak, tidspunkt, 2D-hendelser og filmklipp vises samlet i manusets inspektør med lenker.
+  5. **Teknisk visning** (REQ-0103): «Teknisk» i monteringen viser tidskoder, bildenummer, materiale og filinformasjon.
+  6. **Lagring og eksportinnstillinger** (REQ-0415/0407): oversikt per lagringskategori; eksportinnstillingene huskes per produksjon (utenfor angrelisten).
+  7. **Arbeidsliste for oppdaterte ressurser** (REQ-0591): se over.
+  8. **Film i spinoffen** (KI-109): en delt scene uten eget valg viser hovedfilmens film og klipping; klipping eller valg i spinoffen gir eget materiale, og hovedfilmen endres aldri.
+  9. **Masker** (KI-166, REQ-0175): animerbare med nøkkelbilder og med håndtak på lerretet (underagent).
+  10. **Ende-til-ende-test uten AI** (REQ-0001/0004) og rettinger: KI-147 (AI-bilde legges i riktig variant), KI-170 (fjernede linjer utenfor manusdekning).
+- **Tolkninger (Claude):**
+  - «Behold» lagres som gjennomgått versjon på laget eller versjonen av scenen (migrasjon 0027). Scenen kommer tilbake på listen når en enda nyere versjon godkjennes.
+  - AI-video kan ikke byttes ut; arbeidslisten viser den, og «Lag ny video …» åpner bare scenen.
+  - Et arvet materiale i en spinoff står på hovedfilmens arbeidsliste, ikke spinoffens.
+  - «Bruk animatic» i en spinoff som arver film, lagres som én egen del med 2D-scenen.
+- **Kodegjennomgang:** 10 funn + 7 mindre. Rettet:
+  - sporets størrelse;
+  - arbeidslisten i spinoff;
+  - animatic-valg i spinoff;
+  - stillbilder som lyd;
+  - bildetyper og feilmelding i eksport;
+  - avvik for arvet materiale;
+  - angring av bildeversjon;
+  - eksportinnstillinger utenfor angrelisten;
+  - ytelse i koblingspanelet;
+  - prosjektfilter i sporoppslag.
+
+  Resten står som KI-172 til KI-174.
+- **Teknisk:**
+  - migrasjon `0027_review_export.sql` (`composition_layers.reviewed_versions`, `takes.reviewed_versions`, `productions.export_settings`);
+  - kommandoene `SetReviewedVersions` og `SetExportSettings`;
+  - `EXPECTED_SCHEMA_VERSION` = 27;
+  - kjernemoduler: `src/core/library/{worklist,storage}.ts`, `src/core/assembly/{block-links,technical}.ts`, `src/core/generation/trace.ts`;
+  - serverfil: `src/adapters/ai/trace.server.ts`;
+  - grensesnitt: `StillPickerDialog`, `TechnicalSection`, `BlockLinksSection`, `AssetWorklistDialog`, `WorklistNotice`, `StorageSection`, `TraceDetails`.
+
+## DEC-0073 – AI-køen uten bakgrunnsjobb, kravverifisering og ti forbedringer
+- **Dato:** 2026-10-12 · **Type:** Teknisk anbefaling (Mars: «Fortsett med neste store gruppe ting, er i møte» – ingen nye produktkrav; følger opp DEC-0072)
+- **Innhold:**
+  1. **AI-køen uten bakgrunnsjobb** (REQ-0592, KI-145). Fordi det ikke skal være noen planlagt jobb (DEC-0072), gjør nettleseren til en redaktør jobben mens prosjektet er åpent, uansett hvilken side som er åpen:
+     - sender jobber brukeren har lagt i kø;
+     - henter ferdige videoer og legger dem inn som versjon (det lagrer også siste bilde, så sammenhengen fortsetter);
+     - merker jobber plattformen stoppet.
+     
+     Ingen ny generering startes. Svarer leverandøren «for mange forespørsler» (429), legges jobben tilbake i køen. Kostnadstaket sjekkes igjen før en jobb i køen sendes.
+  2. **Valgte scener** (KI-172): lyd og undertekster kuttes der rekken av naboscener slutter.
+  3. **Arbeidslisten** (KI-106, KI-173): tar med bildeskifter og språkbilder. Laget i sceneeditoren viser dem og kan bruke den nye versjonen.
+  4. **«Fjern oversettelsene …»** (KI-114): alle oversettelser til et språk i én angrebar endring.
+  5. **Dialogspor** (KI-120): lages i biter og settes sammen uten ekstra kopi, opptil 3 timer i én WAV-fil.
+  6. **Plakat** (KI-132, KI-133): håndtak for rotasjon og størrelse også for roterte elementer. Ved typeskifte beholdes endringene på programmets elementer.
+  7. **Roller** (KI-136): medlemslisten hentes på nytt ved fokus, hvert minutt og når serveren avviser på grunn av tilgang.
+  8. **Planlagt lengde** (KI-150): en plan som ble satt på en del etter deling eller sammenslåing, blir ikke stående når delingen eller sammenslåingen angres.
+  9. **Fountain** (KI-164):
+     - dobbel dialog, sentrert tekst, sangtekst og notater bevares i rundtur (lagres i `sourceRef.fountain`, uten migrasjon);
+     - linjemerkene brukes bare så lenge blokkens tekst er uendret.
+  10. **Kravverifisering:** 32 krav ble gjennomgått, og 19 ble satt til Verifisert med nye eller eksisterende tester. To krav som underagenten foreslo, ble holdt tilbake fordi testene var for svake.
+- **Funn som venter på Mars:**
+  - **REQ-0146:** en variant uten godkjent versjon viser nyeste bilde, så et nytt bilde slår gjennom i alle scener.
+  - **REQ-0482:** eksportdialogen har produksjonens nummerering forhåndsvalgt.
+  - **REQ-0102:** røde margmerker for «endret etter materialet» vises i vanlig manusvisning.
+  - **REQ-0275:** innsatsnivået lagres ikke med jobben.
+  - **REQ-0269:** en ny leverandør krever kodeendring.
+- **Tolkninger (Claude):**
+  - En plan som ble fjernet ved angring (KI-150), kommer ikke tilbake ved «gjør om». Delen den gjaldt, finnes ikke lenger etter angringen.
+  - Innlegging av ferdige videoer fra vaktkomponenten havner ikke i sidens angreliste. Den kan angres fra versjonslisten ved å velge en annen versjon.
+- **Kodegjennomgang:** 13 funn og noen svake tester. Rettet: innlegging uten åpen dialog, 429, roller, Fountain på oversatt eller redigert tekst, ytelse og feilmelding i lagpanelet, ordlyden i fjerningsdialogen, grensen for dialogspor regnet i byte, plakat med eldre data og streker, kostnadstaket ved sending, unødvendig henting av medlemmer. Resten står som KI-175 og KI-176.
+
+## DEC-0074 – Plakat i trykkoppløsning, scenenummer i spinoffer, språkfikser, tilgjengelighet og kravverifisering
+- **Dato:** 2026-10-12 · **Type:** Teknisk anbefaling (Mars: «Fortsett med neste store gruppe ting, er i møte» – ingen nye produktkrav)
+- **Innhold:**
+  1. **Plakat som PNG i full trykkoppløsning** (KI-131): tegnes i striper og skrives som PNG uten 16 Mpx-grensen. 70 × 100 cm i 300 ppi gir 8268 × 11811 px. Valg av oppløsning med mål, anslått størrelse og fremdrift (underagent).
+  2. **Scenenummer i spinoffer** (KI-108): gjenbrukte scener viser hovedfilmens nummer i manus, montering, oversikter og kontinuitet, og manuseksporten av spinoffen bruker det som utgangspunkt. Lagret nummerering endres ikke.
+  3. **Lyd i delte scener** (KI-111): opptak og lyd kan legges inn i sceneeditoren også i en delt scene i spinoffen. Lyden hører til forekomsten; 2D-scenen er fortsatt låst.
+  4. **«Start tidligere»** (KI-119): plassen regnes fra forrige lydklipp i språket, men aldri inn i tiden til en replikk uten lyd.
+  5. **Godkjenning av ny versjon** (KI-118): konsekvenslisten tar med bilder for en språkversjon og kan oppdatere dem.
+  6. **Fullskjermbilder** (KI-142): resten av siden er utilgjengelig (inert) mens bildet vises, også for skjermlesere.
+  7. **Import av manus** (REQ-0053): brukeren får beskjed hvis originalfilen ikke kunne registreres med kontrollsum.
+  8. **Ingen tekst under 11 px** (REQ-0425, designsystemet §3): 31 steder er rettet, og en test vokter grensen.
+  9. **Nettlesertester** (`tests/visual/interactions-e2e.mjs`, underagent; 44 kontroller):
+     - dra lag inn i og ut av grupper;
+     - maskehåndtak;
+     - plakathåndtak;
+     - valgte scener i eksporten.
+  10. **Kravverifisering runde 2:** 40 krav vurdert. 9 satt til Verifisert, blant annet REQ-0425. REQ-0050 ble holdt tilbake fordi testen trenger referansemanuset utenfor repoet.
+- **Tolkning (Claude):** En spinoff som eksporteres med «bevar nummer», beholder hovedfilmens nummer for gjenbrukte scener. Mandatet sier ikke noe eget om dette.
+- **Funn som venter på Mars:**
+  - REQ-0291/0293/0504: krav om bakgrunnskø mot DEC-0072, der bakgrunnsjobben ikke settes opp.
+  - REQ-0415: kategoriene lagres ikke atskilt.
+  - REQ-0078: endringer i objekter mangler i manusversjonene.
+  - REQ-0110: estimater merkes likt.
+  - REQ-0489: beskrivelsen kan ikke endres i «Oppdater med AI».
+- **Kodegjennomgang:** 9 funn, rettet:
+  - like scenenumre på skjerm og i eksport;
+  - ordlyden i importvarselet (ikke importer på nytt);
+  - «start tidligere» med replikker uten lyd;
+  - `inert` bare når bildet vises;
+  - tekst på kameralerretet;
+  - felles, mellomlagret oppslag av hovedfilmens nummer.
+
+  Resten står som KI-177.
+
+## DEC-0075 – Kravverifisering runde 3, kostnadsanslag, AI-ikon, versjonssammenligning og tidsmodell
+- **Dato:** 2026-10-12 · **Type:** Teknisk anbefaling (Mars: «Da fortsetter du videre» – ingen nye produktkrav)
+- **Innhold:**
+  1. **Kravverifisering runde 3** (underagent): 33 krav vurdert, 23 satt til Verifisert. Nye tester `tests/unit/verifisering3-*` og nettlesersjekken `tests/visual/verifisering3-ui.mjs` (73 kontroller, alle bestått etter rettingene). Rapport: `docs/development/VISUAL_QA_DEC-0075.md`.
+  2. **Rettet fra verifiseringen:**
+     - Prosjektoversikten kunne rulles ut i tom skjerm (REQ-0424).
+     - AI-generering har egen nøytral glyf i stedet for «gnister» og tryllestav (REQ-0426, DESIGN_SYSTEM §6).
+     - Manusinspektøren har lenke til sceneeditoren, og hovedmenyen åpner sist valgte scene (REQ-0168).
+     - Oversikten summerer API-kostnaden med egne nøkler i USD (REQ-0405).
+     - Alle bekreftelser viser hva anslaget bygger på: modell, innsatsnivå, oppløsning, antall, lengde, ekstrarunder og sum (REQ-0280).
+     - Leverandørkatalogen beskriver begrensninger strukturert (REQ-0273), og ARCHITECTURE.md nevner den (REQ-0443).
+  3. **Sammenlign versjoner** (REQ-0318, underagent): alle versjoner av en scene side om side med felles avspillingshode.
+  4. **Manusversjoner** (REQ-0078): endringer i karakterer og objekter, og byttet taler i en replikk.
+  5. **Tidsmodell** (REQ-0105): omregning begge veier mellom film, scene, del og kilde; vises i den tekniske visningen.
+  6. **Innsatsnivå lagres med jobben** (REQ-0275), **selektiv angring i kjernen** (REQ-0311), **«Prøv registreringen igjen»** ved import (REQ-0053), **beskrivelsene kan endres i «Oppdater med AI»** (REQ-0489).
+  7. **Køen** (KI-175): telles på nytt etter at en jobb er tatt; flere faner kan ikke sende mer enn 3 samtidige videoer per nøkkel.
+  8. **Plakateksport** (KI-177): lukkes dialogen, stopper eksporten og ingenting lastes ned.
+- **Tolkning (Claude):** REQ-0489 og REQ-0078 sto som spørsmål til Mars (KI-178), men løsningen følger mandatets ordlyd uten å endre noe vedtatt, så de er gjort.
+- **Funn som venter på Mars:**
+  - **REQ-0528 (sikkerhet):** en redaktør uten kostnadsrett (`can_approve_costs`) kan starte betalte jobber, fordi serverfunksjonene bare sjekker redaktørrollen. Dette stemmer med DEC-0045 («redaktører og eiere kan generere»), men ikke med REQ-0528. Mars må velge regel (KI-179).
+  - **REQ-0120:** tidligere estimater lagres ikke; det krever en databaseendring (KI-180).
+- **Kodegjennomgang:** 10 funn, rettet:
+  - byttet taler ble ikke oppdaget i manusversjoner;
+  - lydlengde «NaN» kunne slippe forbi kostnadstaket (sikkerhet: avvises nå, og ugyldig anslag stopper jobben);
+  - kostnadsanslag manglet i video for flere scener;
+  - rettferdig fordeling når to faner tar jobb samtidig;
+  - jobber i kø telles ikke som brukt;
+  - endrede beskrivelser følger segmentet og nullstilles;
+  - ny registrering sjekker først om den finnes, og svar etter lukking ignoreres;
+  - PDF-eksporten stopper også;
+  - inspektørens topplinje kortes ned i smal rute;
+  - lydlengder leses fra katalogen.
+
+## DEC-0076 – Kravverifisering runde 4, UX-gjennomgang mot de ni kvalitetene og rettinger
+- **Dato:** 2026-10-12 · **Type:** Teknisk anbefaling (Mars: «Fortsett» – ingen nye produktkrav)
+- **Innhold:**
+  1. **Kravverifisering runde 4** (underagent): 34 krav vurdert. Nye tester `tests/unit/verifisering4-*` (48 tester) og nettlesersjekken `tests/visual/verifisering4-ui.mjs` (58 kontroller, alle bestått etter rettingene). Rapport: `docs/development/VISUAL_QA_DEC-0076.md`. De gyldne manustestene mot referansemanuset (utenfor repoet) og databasetestene er kjørt på nytt.
+  2. **UX-gjennomgang mot de ni kvalitetene** (mandat 1.3, REQ-0011): kvalitetene er gjort til gjennomgangskriterier med kontroller (`UX_PRINCIPLES.md`, `DESIGN_SYSTEM.md` §1). Første gjennomgang: `docs/development/UX_REVIEW_DEC-0076.md` (15 funn).
+  3. **Rettet fra verifiseringen og gjennomgangen:**
+     - «Brukt denne måneden: ~$NaN» hos AI-leverandører. Ugyldige tall i forbruket blir aldri NaN, og et forbruk som ikke kan regnes ut, stopper jobben (sikkerhet: NaN ville sluppet forbi kostnadstaket).
+     - Bekreftelsen for innebygd bildegenerering viser modellen serveren velger, med innsatsnivå og oppløsning; AI-stemmer har fått samme kostnadsanslag (REQ-0280/0491).
+     - «Video for flere scener»: tittel og knapper står fast, bare innholdet ruller, og bekreftelsen rulles fram.
+     - En lyd eller et bilde som ligger på et lydspor eller som lag i en 2D-scene, teller som brukt i biblioteket, selv om navnet ikke står i manuset (før: «0 scener»).
+     - Manusets verktøylinje: notater, «Vis kun valgt scene» og låste sider er samlet under «Visning», så teksten ikke brytes.
+     - «Beskrivelse for segment N» i «Oppdater med AI» har riktig etikett for skjermlesere.
+     - Lydressurser har overskriften «Varianter av lyden».
+  4. **Arkitektur:** ARCHITECTURE §3 viser hva som kjører hvor, hvorfor, og når en egen medietjeneste blir riktig (REQ-0010). Resource Library omfatter stilprofiler og mediefiler (REQ-0436). Plattformbindingene er begrunnet (REQ-0008), med kjent avvik KI-181.
+- **Funn som venter (ikke retting nå):** monteringens verktøylinje med mange ikonknapper, «Lovable» som navn i grensesnittet, bildedialogens oppsett (UX_REVIEW funn 5–6); avvist tekst ved samtidig redigering kastes (KI-182).
+- **Fortsatt hos Mars:** KI-179 (REQ-0528), KI-176, KI-178, globale ressurser, stilharmonisering (kostnad).

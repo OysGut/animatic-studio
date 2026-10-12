@@ -13,6 +13,7 @@
 - **Tre lag med lyshet:** app-bakgrunn (mørkest) → paneler → hevede flater/inndatafelt. Dybde vises med lyshet og 1 px linjer, ikke med skygger og gradienter.
 - **Én aksentfarge** for interaksjon (valg, fokus, primærhandling). Statusfarger brukes bare for status – aldri som pynt.
 - **Manus ser ut som manus** (mandat 4.2, 6.3): manusvisningen bruker manusfont og manusformatering; teknisk metadata ligger i egne paneler/moduser.
+- **De ni kvalitetene** (mandat 1.3, REQ-0011): profesjonelt, elegant, filmisk, oversiktlig, effektivt, ikke-destruktivt, modulært, pålitelig og brukerstyrt. Kontrollene og de automatiske vaktene står i `UX_PRINCIPLES.md` («De ni kvalitetene som gjennomgangskriterier») og brukes i hver UX-gjennomgang.
 - **Ikke** et leketøy eller en AI-demo (REQ-0426): ingen glødende gradienter, ingen «gnist»-ikoner som dekor, ingen store illustrasjoner, ingen kortgrid-dashbord som standardvisning. Se `.claude/skills/design-system-director/references/ANTI_PATTERNS.md`.
 
 ## 2. Fargetokens (mørkt tema)

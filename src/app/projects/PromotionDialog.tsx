@@ -425,7 +425,7 @@ function Compare({
                     <span className="min-w-0 flex-1">
                       <span
                         className={
-                          "mr-1.5 rounded-sm px-1 text-[10px] uppercase " +
+                          "mr-1.5 rounded-sm px-1 text-[11px] uppercase " +
                           (l.status === "conflict"
                             ? "bg-status-uncertain-bg text-status-uncertain"
                             : l.status === "main_newer"

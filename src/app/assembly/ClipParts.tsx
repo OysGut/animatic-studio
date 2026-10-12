@@ -3,7 +3,7 @@
  * utpunkt bildepresist, kilde (importert film eller animatic), splitting ved avspillingshodet og fjerning.
  * Kildemediet endres aldri; alt lagres som deler (SetSceneEdit) og kan angres.
  */
-import { Film, Layers, Minus, Plus, RotateCcw, Scissors, Trash2 } from "lucide-react";
+import { Film, ImageIcon, Layers, Minus, Plus, RotateCcw, Scissors, Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
 import {
   editableParts,
@@ -11,6 +11,7 @@ import {
   removePart,
   setPartSource,
   setPartTransition,
+  takeLabel,
   trimPart,
   type ClipPartFields,
   type FilmClip,
@@ -33,7 +34,7 @@ export function ClipParts({
 }: {
   state: ProjectState;
   clip: FilmClip;
-  /** Importerte filmer for scenen (kan brukes som kilde for en del). */
+  /** Importerte filmer, AI-videoer og stillbilder for scenen (kan brukes som kilde for en del). */
   films: readonly Take[];
   editable: boolean;
   maxMsOf: (takeId: string | null) => number;
@@ -74,7 +75,7 @@ export function ClipParts({
         <span className="text-[11px] text-text-tertiary">
           {parts.length === 1 ? "én del" : `${parts.length} deler`}
         </span>
-        {clip.edited && editable ? (
+        {clip.edited && editable && !clip.inheritedFrom ? (
           <button
             type="button"
             onClick={onReset}
@@ -96,8 +97,10 @@ export function ClipParts({
               className="rounded-sm border border-border bg-surface-2 px-2 py-1.5"
             >
               <div className="flex items-center gap-1.5 text-xs">
-                <span className="font-mono text-[10px] text-text-tertiary">{i + 1}</span>
-                {p.source === "take" ? (
+                <span className="font-mono text-[11px] text-text-tertiary">{i + 1}</span>
+                {take?.kind === "still" ? (
+                  <ImageIcon className="size-3.5 shrink-0 text-accent-warm" aria-hidden />
+                ) : p.source === "take" ? (
                   <Film className="size-3.5 shrink-0 text-accent-warm" aria-hidden />
                 ) : (
                   <Layers className="size-3.5 shrink-0 text-accent-brand" aria-hidden />
@@ -122,11 +125,11 @@ export function ClipParts({
                   {canAnimatic ? <option value="">Animatic (2D-scene)</option> : null}
                   {films.map((t) => (
                     <option key={t.id} value={t.id}>
-                      {t.media?.fileName ?? "Importert film"}
+                      {takeLabel(state, t)}
                     </option>
                   ))}
                   {take && !films.some((t) => t.id === take.id) ? (
-                    <option value={take.id}>{take.media?.fileName ?? "Importert film"}</option>
+                    <option value={take.id}>{takeLabel(state, take)}</option>
                   ) : null}
                 </select>
                 <span className="shrink-0 font-mono text-[11px] text-text-secondary">

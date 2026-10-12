@@ -5,7 +5,8 @@
  * grunnlaget har endret seg. Videoen lages med en leverandør prosjektets eiere har koblet til (DEC-0069,
  * `SceneVideoSection`).
  */
-import { AlertTriangle, Copy, Info, Loader2, RotateCcw, Save, Sparkles } from "lucide-react";
+import { AlertTriangle, Copy, Info, Loader2, RotateCcw, Save } from "lucide-react";
+import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useState } from "react";
 import {
   DEFAULT_SEGMENT_SECONDS,
@@ -232,7 +233,7 @@ function Body({
     <>
       <DialogHeader>
         <DialogTitle>
-          <Sparkles className="mr-1 inline size-4" aria-hidden />
+          <AiGlyph className="mr-1 inline size-4" aria-hidden />
           Generer scene {clip.productionNumber ?? ""} – {formatHeading(clip.heading)}
         </DialogTitle>
         <DialogDescription>

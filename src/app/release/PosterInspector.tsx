@@ -4,7 +4,7 @@
  * elementets egenskaper (REQ-0398/0399) og kontrollen av lesbarhet (REQ-0392).
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { AlertTriangle, CheckCircle2, Info, RotateCcw, Trash2, Wand2 } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Info, LayoutTemplate, RotateCcw, Trash2 } from "lucide-react";
 import {
   ASSET_KIND_LABEL,
   PALETTES,
@@ -375,7 +375,7 @@ export function PosterSettings({
           {(["background", "text", "accent", "muted"] as const).map((k) => (
             <label
               key={k}
-              className="flex flex-col items-center gap-0.5 text-[10px] text-text-tertiary"
+              className="flex flex-col items-center gap-0.5 text-[11px] text-text-tertiary"
             >
               <ColorInput
                 aria-label={
@@ -475,7 +475,7 @@ export function PosterSettings({
                           className="size-3.5 accent-[var(--accent-brand)]"
                         />
                         <span className="truncate">{a.name}</span>
-                        <span className="ml-auto shrink-0 text-[10px] text-text-tertiary">
+                        <span className="ml-auto shrink-0 text-[11px] text-text-tertiary">
                           {rank
                             ? `${rank.lines} replikker · ${rank.scenes} scener`
                             : ASSET_KIND_LABEL[a.kind]}
@@ -497,7 +497,7 @@ export function PosterSettings({
             forsvinner (kan angres).
           </p>
           <Button size="sm" variant="secondary" onClick={onRedraft}>
-            <Wand2 />
+            <LayoutTemplate />
             Lag utkastet på nytt
           </Button>
         </Section>

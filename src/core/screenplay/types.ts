@@ -16,6 +16,29 @@ export interface RawLine {
 export interface SourceRef {
   readonly page: number;
   readonly y: number;
+  /** Fountain-markering manusmodellen ikke har egne felt for (DEC-0073, KI-164). Se FountainMarks. */
+  readonly fountain?: FountainMarks;
+}
+
+/**
+ * Fountain-markering som bevares fra import til eksport uten nye blokktyper eller databasekolonner
+ * (DEC-0073, KI-164). Lagres i blokkens `sourceRef` (jsonb-kolonnen `script_blocks.source_ref`), som kopieres
+ * uendret ved import, splitting og sammenslåing. Teksten i blokken er alltid ren (uten `^`, `> <` eller `~`),
+ * så manusvisning, PDF/DOCX, karakterlister og oversettelse ser vanlig tekst. Linjenumrene gjelder
+ * blokktekstens linjer (delt på «\n»); linjer som ikke lenger finnes etter redigering, ignoreres ved eksport.
+ */
+export interface FountainMarks {
+  /** Karakterblokken er andre taler i dobbel dialog (`NAVN ^`): replikken sies samtidig med den foran. */
+  readonly dual?: true;
+  /** Linjer i handlingen som var sentrert (`> tekst <`). */
+  readonly centered?: readonly number[];
+  /** Linjer i handling eller replikk som var sangtekst (`~tekst`). */
+  readonly lyrics?: readonly number[];
+  /**
+   * Kontrollsum av blokkens tekst ved import (DEC-0073): linjemerkene (sentrert, sangtekst) brukes bare så
+   * lenge teksten er den samme – etter redigering, eller for en oversatt tekst, kunne de truffet feil linje.
+   */
+  readonly textHash?: string;
 }
 
 export interface ParsedElement {

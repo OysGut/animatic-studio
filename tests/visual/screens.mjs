@@ -130,7 +130,7 @@ async function mock(page, { projects = [project], schema = true, rows = {} }) {
     const table = path.replace("/rest/v1/", "");
     if (table === "schema_version")
       return schema
-        ? json([{ version: 26 }])
+        ? json([{ version: 27 }])
         : json({ message: "relation does not exist", code: "42P01" }, 404);
     if (table === "projects") {
       if (single) return json(projects[0] ?? null);
@@ -307,7 +307,9 @@ await shot("15-filter-karakter", manus, {
 await shot("16-vis-kun-valgt-scene", manus, {
   act: async (page) => {
     await page.locator("[id^=nav-]").nth(4).click();
+    await page.getByRole("button", { name: /^Visning/ }).click();
     await page.getByLabel("Vis kun valgt scene").check();
+    await page.keyboard.press("Escape");
     await page.waitForTimeout(800);
   },
 });
@@ -1315,6 +1317,72 @@ await shot("80d-klipp-overganger", montering, {
     await page.waitForTimeout(300);
   },
 });
+// DEC-0072: stillbilde, teknisk visning, valgte scener, koblinger for en linje, lagring og arbeidsliste
+const scene1 = async (page) => {
+  await page.waitForTimeout(1500);
+  await page
+    .getByRole("button", { name: /^Scene 1: / })
+    .first()
+    .click();
+  await page.waitForTimeout(600);
+};
+await shot("80e-stillbilde", montering, {
+  act: async (page) => {
+    await scene1(page);
+    await page
+      .getByRole("button", { name: /Stillbilde fra biblioteket/ })
+      .click()
+      .catch(() => {});
+    await page.waitForTimeout(1000);
+    await page
+      .getByRole("list", { name: "Bilder i biblioteket" })
+      .getByRole("button")
+      .first()
+      .click()
+      .catch(() => {});
+    await page.waitForTimeout(400);
+  },
+});
+await shot("80f-teknisk", montering, {
+  act: async (page) => {
+    await scene1(page);
+    await page.getByRole("button", { name: "Teknisk visning" }).click();
+    await page.waitForTimeout(500);
+    await page.getByRole("region", { name: "Teknisk" }).scrollIntoViewIfNeeded();
+    await page.waitForTimeout(200);
+  },
+});
+await shot("48b-eksport-valgte-scener", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(900);
+    await page.getByRole("button", { name: "Eksporter animatic" }).click();
+    await page.getByRole("dialog").getByText("Valgte scener").click();
+    const boxes = page.getByRole("list", { name: "Scener i eksporten" }).getByRole("checkbox");
+    await boxes.nth(0).check();
+    await boxes.nth(2).check();
+    await page.waitForTimeout(400);
+  },
+});
+await shot("08b-manus-koblinger", manus, {
+  act: async (page) => {
+    await page.getByText("Hører du det? Noen banker på døra!").first().click();
+    await page.waitForTimeout(600);
+    await page
+      .getByText("Koblinger", { exact: true })
+      .first()
+      .scrollIntoViewIfNeeded()
+      .catch(() => {});
+    await page.waitForTimeout(300);
+  },
+});
+await shot("04c-lagring", `/prosjekt/${project.id}`, {
+  act: async (page) => {
+    await page.waitForTimeout(1200);
+    await page.getByRole("heading", { name: "Lagring" }).click();
+    await page.waitForTimeout(300);
+    await page.getByRole("heading", { name: "Lagring" }).scrollIntoViewIfNeeded();
+  },
+});
 // DEC-0054: avvik ved manusendring – monteringen, manuset og sceneeditoren
 await shot("80-avvik-montering", montering, {
   act: async (page) => {
@@ -1822,6 +1890,15 @@ await shot("75-ai-skriver-beskrivelse", scene, {
   },
 });
 // Utgivelse (DEC-0061): karakterkart, kinopitch, redigering, relasjoner og eksport
+// DEC-0073: fjern alle oversettelser til et språk
+await shot("17c-fjern-oversettelser", manus, {
+  act: async (page) => {
+    await page.getByLabel("Manusspråk").selectOption("en");
+    await page.waitForTimeout(700);
+    await page.getByRole("button", { name: /Fjern oversettelsene/ }).click();
+    await page.waitForTimeout(400);
+  },
+});
 const utgivelse = `/prosjekt/${project.id}/utgivelse`;
 await shot("60-utgivelse-karakterkart", utgivelse, {
   act: async (page) => {

@@ -13,7 +13,7 @@ import { compareKeys } from "../order-key";
 import { estimateProduction } from "../screenplay/duration";
 import { framesToSeconds, msToFramesCeil, secondsToFrames, type Rational } from "../time";
 import { MAIN_LANGUAGE, playsIn, sceneAudioEndMs } from "../audio";
-import { activeStructure, blocksOfVariant } from "../views";
+import { activeStructure, blocksOfVariant, sceneNumberOf } from "../views";
 
 /**
  * Hva klippet viser: importert ferdig film som er tatt i bruk («Bruk denne», DEC-0047), scenens 2D-scene,
@@ -51,6 +51,35 @@ export interface FilmClip {
   readonly parts: readonly ResolvedPart[];
   /** Klippet er satt sammen av lagrede deler (kuttet eller splittet, DEC-0048). */
   readonly edited: boolean;
+  /**
+   * Spinoff (DEC-0072, KI-109): scenen er delt med hovedfilmen og har ikke eget materiale, så hovedfilmens
+   * film og klipping vises. Forekomsten i hovedfilmen materialet kommer fra; mangler = eget materiale.
+   */
+  readonly inheritedFrom?: OccurrenceId;
+}
+
+/**
+ * Forekomsten materialet (film og klipping) hentes fra (DEC-0072, KI-109): i en avledet produksjon en delt scene
+ * uten eget valg arver hovedfilmens forekomst av samme scenevariant; ellers forekomsten selv.
+ */
+function materialOccurrence(
+  s: ProjectState,
+  productionId: string,
+  o: {
+    readonly id: OccurrenceId;
+    readonly variantId: VariantId;
+    readonly activeTakeId: string | null;
+  },
+  mainOfVariant: ReadonlyMap<
+    string,
+    { readonly id: OccurrenceId; readonly activeTakeId: string | null }
+  >,
+): { readonly id: OccurrenceId; readonly activeTakeId: string | null } {
+  if (s.productions[productionId]?.kind === "main") return o;
+  if (o.activeTakeId !== null || partsOf(s, o.id).length > 0) return o;
+  const m = mainOfVariant.get(o.variantId);
+  if (!m || m.id === o.id) return o;
+  return m.activeTakeId !== null || partsOf(s, m.id).length > 0 ? m : o;
 }
 
 /**
@@ -152,9 +181,21 @@ export function partsOf(s: ProjectState, occurrenceId: string): ClipPart[] {
 const CUT: Transition = { kind: "cut", frames: 0 };
 
 /** Importert film som er tatt i bruk i forekomsten, om den finnes og har fil og lengde. */
-/** En versjon med en filmfil: importert film eller AI-video (DEC-0069, REQ-0180). */
+/**
+ * En versjon med en mediefil som kan vises i filmen: importert film, AI-video (DEC-0069, REQ-0180) eller
+ * stillbilde med valgt varighet (DEC-0072, REQ-0214).
+ */
 export function isFilmTake(t: Take | null | undefined): t is Take {
-  return !!t && (t.kind === "imported_film" || t.kind === "ai_video") && !!t.mediaRef;
+  return (
+    !!t &&
+    (t.kind === "imported_film" || t.kind === "ai_video" || t.kind === "still") &&
+    !!t.mediaRef
+  );
+}
+
+/** Stillbilde i monteringen (DEC-0072): bildet vises uendret hele delen. */
+export function isStillTake(t: Take | null | undefined): t is Take {
+  return !!t && t.kind === "still" && !!t.mediaRef;
 }
 
 export function activeFilmTake(s: ProjectState, activeTakeId: string | null): Take | null {
@@ -202,6 +243,17 @@ export function filmClips(s: ProjectState, productionId: string): FilmClip[] {
   let prevFree = 0;
   let prevIn = 0;
   const standard = s.project.defaultTransition ?? CUT;
+  // Hovedfilmens forekomst per scenevariant (arv av materiale i spinoffer)
+  const mainOfVariant = new Map<string, { id: OccurrenceId; activeTakeId: string | null }>();
+  if (s.productions[productionId]?.kind !== "main") {
+    const mainId = Object.values(s.productions).find((p) => p.kind === "main")?.id;
+    // Aktive forekomster går foran deaktiverte; ved flere av samme variant vinner den første (stabil rekkefølge)
+    for (const x of Object.values(s.occurrences).sort((a, b) => a.id.localeCompare(b.id))) {
+      if (x.productionId !== mainId) continue;
+      const have = s.occurrences[mainOfVariant.get(x.variantId)?.id ?? ""];
+      if (!have || (!have.active && x.active)) mainOfVariant.set(x.variantId, x);
+    }
+  }
   const clips = activeStructure(s, productionId).map((o, index): FilmClip => {
     const c = comps.get(o.variantId) ?? null;
     // Uten satt lengde: brukerens plan eller beregnet fra manuset, men aldri kortere enn lyden i scenen
@@ -214,7 +266,8 @@ export function filmClips(s: ProjectState, productionId: string): FilmClip[] {
     );
     const set = c !== null && c.durationFrames > 0;
     const fps = s.project.fps;
-    const stored = partsOf(s, o.id);
+    const from = materialOccurrence(s, productionId, o, mainOfVariant);
+    const stored = partsOf(s, from.id);
     let parts: ResolvedPart[];
     let take: Take | null;
     if (stored.length > 0) {
@@ -248,7 +301,7 @@ export function filmClips(s: ProjectState, productionId: string): FilmClip[] {
       });
       take = parts.find((p) => p.take)?.take ?? null;
     } else {
-      take = activeFilmTake(s, o.activeTakeId);
+      take = activeFilmTake(s, from.activeTakeId);
       const frames = take ? take.durationFrames! : set ? c.durationFrames : estimate;
       parts = [
         {
@@ -301,7 +354,7 @@ export function filmClips(s: ProjectState, productionId: string): FilmClip[] {
       parts,
       edited,
       heading: s.variants[o.variantId]?.heading ?? { intExt: "", location: "", time: "" },
-      productionNumber: o.productionNumber,
+      productionNumber: sceneNumberOf(s, o),
       startFrame: cursor,
       durationFrames,
       durationKind: take
@@ -316,6 +369,7 @@ export function filmClips(s: ProjectState, productionId: string): FilmClip[] {
       transitionInherited: o.transition === undefined,
       overlapFrames,
       monochrome: o.monochrome === true,
+      ...(from.id !== o.id ? { inheritedFrom: from.id } : {}),
     };
     cursor += durationFrames;
     return clip;
@@ -378,6 +432,117 @@ export function filmRange(
     endFrame: last.startFrame + last.durationFrames,
     clips: sel,
   };
+}
+
+/**
+ * Vilkårlige scener (DEC-0072, REQ-0417, KI-169): de valgte klippene settes etter hverandre i filmens
+ * rekkefølge. Scener som også står etter hverandre i filmen, beholder overgangen mellom seg; ellers blir det
+ * et rent kutt. `shiftOf` er hvor mange bilder hver scene er flyttet (for lyd og undertekster).
+ */
+export function filmSelection(
+  clips: readonly FilmClip[],
+  occurrenceIds: ReadonlySet<string>,
+): {
+  readonly startFrame: number;
+  readonly endFrame: number;
+  readonly clips: readonly FilmClip[];
+  readonly shiftOf: ReadonlyMap<string, number>;
+  /**
+   * Siste bilde (eksklusivt) i den sammenhengende rekken av valgte naboscener scenen hører til: lyd og
+   * undertekster kuttes der, så de ikke henger over i en scene som ikke var nabo i filmen (KI-172).
+   */
+  readonly runEndOf: ReadonlyMap<string, number>;
+} {
+  const out: FilmClip[] = [];
+  const shiftOf = new Map<string, number>();
+  const runEndOf = new Map<string, number>();
+  let run: string[] = [];
+  const closeRun = () => {
+    const last = out[out.length - 1];
+    if (last) for (const id of run) runEndOf.set(id, last.startFrame + last.durationFrames);
+    run = [];
+  };
+  let prevIndex = -2;
+  for (let i = 0; i < clips.length; i++) {
+    const c = clips[i]!;
+    if (!occurrenceIds.has(c.occurrenceId)) continue;
+    const prev = out[out.length - 1];
+    let start: number;
+    let next: FilmClip;
+    if (!prev) {
+      start = 0;
+      next = { ...c, transition: CUT, overlapFrames: 0 };
+    } else if (i === prevIndex + 1) {
+      start = prev.startFrame + (c.startFrame - clips[prevIndex]!.startFrame);
+      next = c;
+    } else {
+      start = prev.startFrame + prev.durationFrames;
+      next = { ...c, transition: CUT, overlapFrames: 0 };
+    }
+    if (prev && i !== prevIndex + 1) closeRun();
+    shiftOf.set(c.occurrenceId, start - c.startFrame);
+    out.push({ ...next, startFrame: start });
+    run.push(c.occurrenceId);
+    prevIndex = i;
+  }
+  closeRun();
+  const last = out[out.length - 1];
+  return {
+    startFrame: 0,
+    endFrame: last ? last.startFrame + last.durationFrames : 0,
+    clips: out,
+    shiftOf,
+    runEndOf,
+  };
+}
+
+/** Lydklipp for et utvalg av scener (`filmSelection`): bare de valgte scenenes lyd, flyttet med scenen. */
+export function shiftAudioItems<
+  T extends { readonly clip: { readonly occurrenceId: string }; readonly start: number },
+>(
+  items: readonly T[],
+  shiftOf: ReadonlyMap<string, number>,
+  fps: Rational,
+  runEndOf?: ReadonlyMap<string, number>,
+): T[] {
+  const out: T[] = [];
+  for (const it of items) {
+    const d = shiftOf.get(it.clip.occurrenceId);
+    if (d === undefined) continue;
+    const start = it.start + framesToSeconds(d, fps);
+    const endF = runEndOf?.get(it.clip.occurrenceId);
+    // Lyd som løper videre, stopper der rekken av nabo-scener slutter (KI-172)
+    if (endF !== undefined && "length" in it && typeof it.length === "number") {
+      const max = framesToSeconds(endF, fps) - start;
+      if (max <= 0) continue;
+      out.push({ ...it, start, length: Math.min(it.length, max) });
+      continue;
+    }
+    out.push({ ...it, start });
+  }
+  return out;
+}
+
+/** Undertekster for et utvalg av scener: teksten følger scenen den begynner i (i den opprinnelige filmen). */
+export function shiftCues<T extends { readonly startMs: number; readonly endMs: number }>(
+  cues: readonly T[],
+  clips: readonly FilmClip[],
+  shiftOf: ReadonlyMap<string, number>,
+  fps: Rational,
+  runEndOf?: ReadonlyMap<string, number>,
+): T[] {
+  const out: T[] = [];
+  for (const cue of cues) {
+    const f = (cue.startMs / 1000) * (fps.num / fps.den);
+    const c = clips.find((x) => f >= x.startFrame && f < x.startFrame + x.durationFrames);
+    const d = c ? shiftOf.get(c.occurrenceId) : undefined;
+    if (d === undefined || !c) continue;
+    const ms = framesToSeconds(d, fps) * 1000;
+    const endF = runEndOf?.get(c.occurrenceId);
+    const cap = endF !== undefined ? framesToSeconds(endF, fps) * 1000 : Infinity;
+    out.push({ ...cue, startMs: cue.startMs + ms, endMs: Math.min(cue.endMs + ms, cap) });
+  }
+  return out;
 }
 
 /** Ett klipp i et bilde: klippet og bildet inne i scenen (holdes på første/siste bilde utenfor klippet). */
@@ -662,6 +827,16 @@ export function blockAtFrame(spans: readonly BlockSpan[], frame: number): BlockS
 }
 
 /** Filmfilene (mediestier) klippene bruker. */
+/** Stillbildene blant filene i filmen (DEC-0072): vises som bilde, ikke som video. */
+export function stillMediaPaths(clips: readonly FilmClip[]): Set<string> {
+  const out = new Set<string>();
+  for (const c of clips)
+    for (const p of c.parts)
+      if (p.source === "take" && p.take?.kind === "still" && p.take.mediaRef)
+        out.add(p.take.mediaRef);
+  return out;
+}
+
 export function filmMediaPaths(clips: readonly FilmClip[]): string[] {
   const out = new Set<string>();
   for (const c of clips)

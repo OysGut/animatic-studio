@@ -5,6 +5,7 @@
 import type { ClipPartFields } from "../commands/types";
 import type { ClipPartId, TakeId } from "../ids";
 import type { Rational } from "../time";
+import type { ProjectState, Take } from "../model";
 import type { FilmClip } from "./film";
 
 /** Korteste del (ms). */
@@ -16,7 +17,8 @@ const msOf = (frames: number, fps: Rational) => Math.round((frames * 1000 * fps.
 export function editableParts(clip: FilmClip, newId: () => string): ClipPartFields[] | null {
   if (clip.parts.some((p) => p.source === "placeholder")) return null;
   return clip.parts.map((p, i) => ({
-    partId: (p.id ?? newId()) as ClipPartId,
+    // Arvet fra hovedfilmen (DEC-0072): spinoffen får egne deler, hovedfilmens røres ikke
+    partId: (clip.inheritedFrom ? newId() : (p.id ?? newId())) as ClipPartId,
     source: p.source === "take" ? "take" : "composition",
     takeId: p.source === "take" ? (p.take!.id as TakeId) : null,
     inMs: p.inMs,
@@ -149,4 +151,85 @@ export function cutsToRanges(
     out.push({ inMs, outMs });
   }
   return out;
+}
+
+/** Korteste og lengste stillbilde i monteringen (DEC-0072). */
+export const STILL_MIN_MS = 200;
+export const STILL_MAX_MS = 10 * 60 * 1000;
+
+/**
+ * Stillbilde i scenen (DEC-0072, REQ-0214): et bilde fra biblioteket vises i `ms` millisekunder, enten som hele
+ * scenen («replace») eller som en ny del etter de andre («append»). Gir kommandoene (ny versjon av typen
+ * «still» og ny klipping), som angres som ett steg. Null når lengden er ugyldig.
+ */
+export function stillCommands(
+  clip: FilmClip,
+  opts: {
+    readonly takeId: string;
+    readonly mediaRef: string;
+    readonly ms: number;
+    readonly mode: "replace" | "append";
+    readonly fps: Rational;
+  },
+  newId: () => string,
+):
+  | [
+      {
+        type: "AddTake";
+        takeId: TakeId;
+        occurrenceId: never;
+        segmentId: null;
+        kind: "still";
+        status: "approved";
+        durationFrames: number;
+        mediaRef: string;
+      },
+      {
+        type: "SetSceneEdit";
+        occurrenceId: never;
+        activeTakeId: null;
+        parts: ClipPartFields[];
+      },
+    ]
+  | null {
+  const ms = Math.round(opts.ms);
+  if (!Number.isFinite(ms) || ms < STILL_MIN_MS || ms > STILL_MAX_MS) return null;
+  const frames = Math.max(1, Math.round((ms / 1000) * (opts.fps.num / opts.fps.den)));
+  const part: ClipPartFields = {
+    partId: newId() as ClipPartId,
+    source: "take",
+    takeId: opts.takeId as TakeId,
+    inMs: 0,
+    outMs: ms,
+  };
+  const before = opts.mode === "append" ? (editableParts(clip, newId) ?? []) : [];
+  return [
+    {
+      type: "AddTake",
+      takeId: opts.takeId as TakeId,
+      occurrenceId: clip.occurrenceId as never,
+      segmentId: null,
+      kind: "still",
+      status: "approved",
+      durationFrames: frames,
+      mediaRef: opts.mediaRef,
+    },
+    {
+      type: "SetSceneEdit",
+      occurrenceId: clip.occurrenceId as never,
+      activeTakeId: null,
+      parts: [...before, part],
+    },
+  ];
+}
+
+/** Navn på en versjon med mediefil i lister: filnavnet, «AI-video» eller «Stillbilde: <ressurs>». */
+export function takeLabel(s: ProjectState, t: Take): string {
+  if (t.kind === "still") {
+    const v = Object.values(s.assetVersions).find((x) => x.mediaPath === t.mediaRef);
+    const variant = v ? s.assetVariants[v.variantId] : undefined;
+    const a = variant ? s.assets[variant.assetId] : undefined;
+    return `Stillbilde: ${a?.name ?? "bilde"}${v ? ` v${v.number}` : ""}`;
+  }
+  return t.media?.fileName ?? (t.kind === "ai_video" ? "AI-video" : "Importert film");
 }

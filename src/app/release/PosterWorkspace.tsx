@@ -19,8 +19,8 @@ import {
 import {
   POSTER_KIND_LABEL,
   ROLE_LABEL,
-  defaultOptions,
   posterDraft,
+  posterKindBase,
   renderPoster,
   sortedAssets,
   type Poster,
@@ -276,13 +276,10 @@ function Release({
       const w = patch.widthMm ?? shownPoster.widthMm;
       const h = patch.heightMm ?? shownPoster.heightMm;
       const kindChange = !!patch.kind && patch.kind !== shownPoster.kind;
+      // Annen type: programmets elementer lages på nytt i den nye komposisjonen; brukerens endringer på
+      // dem står (også om typen byttes tilbake), og egne elementer står (KI-133). Ett steg å angre.
       const base = kindChange
-        ? {
-            // Annen type: programmets elementer lages på nytt i den nye komposisjonen, egne elementer står
-            ...shownPoster.document,
-            options: defaultOptions(patch.kind!),
-            elements: shownPoster.document.elements.filter((e) => e.role === "custom"),
-          }
+        ? posterKindBase(shownPoster.document, patch.kind!)
         : shownPoster.document;
       const scaled = scaleElements(base, w / shownPoster.widthMm, h / shownPoster.heightMm);
       const doc = relayout(state, shownPoster, scaled, {
@@ -583,7 +580,7 @@ function Release({
             />
           ) : (
             <div className="max-w-md text-center">
-              <p className="text-[15px] font-medium text-text-primary">Ingen plakater ennå</p>
+              <p className="text-base font-medium text-text-primary">Ingen plakater ennå</p>
               <p className="mt-2 text-[13px] text-text-secondary">
                 Lag en kinopitch-plakat eller et karakter- og universkart. Programmet lager et
                 førsteutkast fra manuset og biblioteket, som du kan endre fritt og eksportere til

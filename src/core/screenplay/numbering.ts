@@ -3,8 +3,9 @@
  * scene-ID-er eller produksjonsnumre (REQ-0085, INV-02).
  */
 import type { ProjectState, SceneHeading } from "../model";
-import { orderedOccurrences, blocksOfVariant } from "../views";
+import { orderedOccurrences, blocksOfVariant, sceneNumberOf } from "../views";
 import { formatHeading, type PaginationScene } from "./paginate";
+import { fountainMarksOf } from "./fountain";
 
 export type NumberingMethod = "continuous" | "production" | "historical";
 
@@ -89,8 +90,13 @@ export function exportNumbering(
   }
   // Alle numre i produksjonen er opptatt – også deaktiverte scener sine, så et «UTGÅR»-nummer aldri gjenbrukes
   const hist = opts.method === "historical" ? (opts.historical ?? new Map<string, string>()) : null;
-  const baseNumber = (o: { id: string; productionNumber: string | null }) =>
-    hist ? (hist.get(o.id) ?? null) : o.productionNumber;
+  // Gjenbrukte scener i en avledet produksjon beholder hovedfilmens nummer (DEC-0074, KI-108)
+  const baseNumber = (o: {
+    id: string;
+    productionNumber: string | null;
+    sceneId: string;
+    productionId: string;
+  }) => (hist ? (hist.get(o.id) ?? null) : sceneNumberOf(s, o));
   const used = new Set(
     orderedOccurrences(s, productionId)
       .map((o) => baseNumber(o))
@@ -181,6 +187,7 @@ export function exportPaginationInput(
           kind: b.kind,
           text: b.text,
           ...locked(b.sourceRef?.page),
+          ...fountainMarksOf(b.sourceRef, b.text),
         })),
       ],
     };

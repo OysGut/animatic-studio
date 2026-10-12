@@ -7,7 +7,7 @@ import { LayerSwaps } from "./LayerSwaps";
 import { LayerMotion } from "./LayerMotion";
 import { LayerMaskSection } from "./LayerMaskSection";
 import { AlertTriangle, Copy, Image as ImageIcon, Trash2 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   ErrorText,
   Field,
@@ -37,13 +37,16 @@ import {
   type Command,
   type Composition,
   type CompositionFields,
-  type AnimatedProperty,
+  type TransformProperty,
   type CompositionLayer,
   type LayerFields,
   type LayerKind,
   type LayerTransform,
   type ProjectState,
+  assetWorklist,
   layerContinuity,
+  mainProduction,
+  newVersionWorkItemCommands,
   outdatedLayers,
 } from "@/core";
 import { layerFieldsOf, regroupFields, translatePath } from "@/core";
@@ -208,14 +211,14 @@ export function LayerInspector({
   };
 
   /** Setter eller fjerner nøkkelbildet for én egenskap på gjeldende bilde. */
-  function toggleKey(property: AnimatedProperty) {
+  function toggleKey(property: TransformProperty) {
     const has = layer.keyframes.some((k) => k.property === property && k.frame === frame);
     const keyframes = has
       ? removeKeyframesAt(layer.keyframes, frame, [property])
       : setKeyframe(layer.keyframes, property, frame, t[property]);
     apply(has ? "Fjern nøkkelbilde" : "Sett nøkkelbilde", { keyframes });
   }
-  const marker = (property: AnimatedProperty, label: string) => (
+  const marker = (property: TransformProperty, label: string) => (
     <KeyMarker
       label={label}
       animated={isAnimated(layer, property)}
@@ -292,6 +295,16 @@ export function LayerInspector({
   const continuity = sceneId ? layerContinuity(state, layer, sceneId) : null;
   // Låst til en eldre versjon enn den godkjente (DEC-0056, REQ-0132)
   const outdated = outdatedLayers(state, composition.id).find((x) => x.layerId === layer.id);
+  // Bildeskifter og språkbilder med eldre versjon (KI-106, KI-173): samme valg som i arbeidslisten
+  const otherOutdated = useMemo(() => {
+    const main = mainProduction(state);
+    return main
+      ? assetWorklist(state, main.id).filter(
+          (x) =>
+            x.kind === "layer" && x.targetId === layer.id && x.oldVersionId !== outdated?.versionId,
+        )
+      : [];
+  }, [state, layer.id, outdated?.versionId]);
   const selectClass = inputClass;
   const isGroup = layer.kind === "group";
   const groups = isGroup ? [] : layersOf(state, composition.id).filter((l) => l.kind === "group");
@@ -440,6 +453,8 @@ export function LayerInspector({
           layer={layer}
           editable={editable}
           apply={apply}
+          frame={frame}
+          autoKey={autoKey}
         />
       )}
 
@@ -522,6 +537,41 @@ export function LayerInspector({
                   ) : null}
                 </div>
               ) : null}
+              {otherOutdated.map((x) => {
+                const a = state.assets[x.assetId];
+                return (
+                  <div
+                    key={x.key}
+                    className="flex flex-col gap-1.5 rounded-sm border border-border bg-surface-2 p-2 text-xs text-text-primary"
+                  >
+                    <span>
+                      Et bildeskifte eller språkbilde viser {a?.name ?? "ressursen"} v
+                      {state.assetVersions[x.oldVersionId]?.number}, men v
+                      {state.assetVersions[x.newVersionId]?.number} er godkjent nå.
+                    </span>
+                    {editable ? (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="self-start"
+                        onClick={() => {
+                          const cmds = newVersionWorkItemCommands(state, x, null, () => newId());
+                          const group = newId();
+                          for (const c of cmds ?? []) {
+                            const e = run(c, "Bruk den godkjente versjonen", group);
+                            if (e) {
+                              setError(e);
+                              break;
+                            }
+                          }
+                        }}
+                      >
+                        Bruk v{state.assetVersions[x.newVersionId]?.number}
+                      </Button>
+                    ) : null}
+                  </div>
+                );
+              })}
               {continuity?.mismatch && continuity.expected ? (
                 <div
                   role="alert"

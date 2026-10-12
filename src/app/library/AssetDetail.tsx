@@ -12,9 +12,9 @@ import {
   Music,
   Plus,
   Scissors,
-  Sparkles,
   X,
 } from "lucide-react";
+import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { CutoutDialog } from "./CutoutDialog";
 import { ContinuityPanel } from "./ContinuityPanel";
 import { ApproveImpactDialog } from "./ApproveImpactDialog";
@@ -54,6 +54,7 @@ import { GenerateSoundPanel } from "./GenerateSoundPanel";
 import { ImageCompareDialog } from "./ImageCompareDialog";
 import { SoundLinksSection } from "./SoundLinksSection";
 import { ContextNamesSection } from "./ContextNamesSection";
+import { AssetWorklistDialog, useWorklistCount } from "./AssetWorklistDialog";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 
 const NAME_KIND_LABEL: Record<AssetNameKind, string> = {
@@ -462,16 +463,51 @@ function Variants({ state, projectId, productionId, asset, editable, cmds }: Pro
   const urls = useImageUrls(paths);
   const shown = variants.filter((v) => showArchived || !v.archived);
   const archivedCount = variants.length - variants.filter((v) => !v.archived).length;
+  // Arbeidslisten (DEC-0072): scener som fortsatt viser en eldre versjon av ressursen
+  const behind = useWorklistCount(state, projectId, productionId, asset.id);
+  const [worklistOpen, setWorklistOpen] = useState(false);
 
   return (
     <section className="flex flex-col gap-3">
+      {behind > 0 ? (
+        <div
+          role="status"
+          className="flex items-center gap-2 rounded-sm border border-status-uncertain/40 bg-status-uncertain/10 px-3 py-2 text-xs text-text-primary"
+        >
+          <span>
+            {behind} {behind === 1 ? "sted i filmen viser" : "steder i filmen viser"} fortsatt en
+            eldre versjon av {asset.name}.
+          </span>
+          <Button
+            size="sm"
+            variant="secondary"
+            className="ml-auto"
+            onClick={() => setWorklistOpen(true)}
+          >
+            Gå gjennom scenene …
+          </Button>
+          {worklistOpen ? (
+            <AssetWorklistDialog
+              open={worklistOpen}
+              onOpenChange={setWorklistOpen}
+              state={state}
+              projectId={projectId}
+              productionId={productionId}
+              assetId={asset.id}
+              editable={editable}
+              cmds={cmds}
+            />
+          ) : null}
+        </div>
+      ) : null}
       <div className="flex items-center gap-2">
         <h2 className="shrink-0 whitespace-nowrap text-sm font-medium text-text-primary">
-          Visuelle varianter
+          {asset.kind === "sound" ? "Varianter av lyden" : "Visuelle varianter"}
         </h2>
         <span className="text-xs text-text-tertiary">
-          Én identitet – flere utseender og stiler. Hver variant har egne versjoner og egen
-          godkjenning.
+          {asset.kind === "sound"
+            ? "Én lyd – flere utgaver. Hver variant har egne versjoner og egen godkjenning."
+            : "Én identitet – flere utseender og stiler. Hver variant har egne versjoner og egen godkjenning."}
         </span>
         {archivedCount ? (
           <label className="ml-auto flex items-center gap-1 text-xs text-text-secondary">
@@ -794,7 +830,7 @@ function VariantCard({
                 aria-expanded={soundAi}
                 onClick={() => setSoundAi((x) => !x)}
               >
-                <Sparkles /> Lag med AI
+                <AiGlyph /> Lag med AI
               </Button>
             ) : null}
             <Button

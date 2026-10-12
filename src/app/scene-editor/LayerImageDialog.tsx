@@ -267,7 +267,7 @@ function Body({
               >
                 <Thumb url={cover ? urls[cover.mediaPath] : undefined} />
                 <span className="px-1.5 pt-1 text-[12px] text-text-primary">Forsidebildet</span>
-                <span className="px-1.5 pb-1 text-[10px] text-text-tertiary">
+                <span className="px-1.5 pb-1 text-[11px] text-text-tertiary">
                   Endres når et nytt bilde godkjennes
                 </span>
                 {layer.assetVariantId === null ? <Selected /> : null}
@@ -352,7 +352,7 @@ function Body({
                             <span className="flex items-center gap-1 px-1.5 py-1 text-[12px] text-text-primary">
                               v{ver.number}
                               {v.approvedVersionId === ver.id ? (
-                                <span className="rounded-sm bg-status-success-bg px-1 text-[10px] text-status-success">
+                                <span className="rounded-sm bg-status-success-bg px-1 text-[11px] text-status-success">
                                   godkjent
                                 </span>
                               ) : null}
@@ -555,7 +555,7 @@ export function AssetPicker({
               >
                 <Thumb url={c ? urls[c.mediaPath] : undefined} />
                 <span className="truncate px-1.5 pt-1 text-[12px] text-text-primary">{a.name}</span>
-                <span className="truncate px-1.5 pb-1 text-[10px] text-text-tertiary">
+                <span className="truncate px-1.5 pb-1 text-[11px] text-text-tertiary">
                   {ASSET_KIND_LABEL[a.kind]}
                 </span>
               </button>

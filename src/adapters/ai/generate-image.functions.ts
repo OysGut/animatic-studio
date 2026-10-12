@@ -11,28 +11,25 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
-  stripAttachedSection,
+  adaptPromptForModel,
+  type AssetMedia,
+  effortOf,
   estimateCostUsd,
   isProviderId,
-  adaptPromptForModel,
-  providerModel,
   isUuid,
-  monthStartUtc,
-  newId,
   MAX_ATTACHED_IMAGES,
   MAX_PROMPT_CHARS,
-  type AssetMedia,
+  monthStartUtc,
+  newId,
+  providerModel,
+  stripAttachedSection,
 } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 import { GATEWAY, ROLE_RANK, gatewayError, referenceImages, validReferencePath } from "./gateway";
 
-/** Bakgrunner og andre hele bilder. */
-export const IMAGE_MODEL = "openai/gpt-image-2";
-/**
- * Frilagte figurer (lag): GPT Image 2 kan ikke lage gjennomsiktig bakgrunn (Lovable 2026-10-10:
- * «Transparent background is not supported for this model»); GPT Image 2.5 Sunburst kan (KI-71).
- */
-export const CUTOUT_MODEL = "openai/gpt-image-2.5-sunburst";
+// Modellene for innebygd bildegenerering står i kjernen (vises også i bekreftelsen, REQ-0280)
+export { LOVABLE_CUTOUT_MODEL as CUTOUT_MODEL, LOVABLE_IMAGE_MODEL as IMAGE_MODEL } from "@/core";
+import { LOVABLE_CUTOUT_MODEL as CUTOUT_MODEL, LOVABLE_IMAGE_MODEL as IMAGE_MODEL } from "@/core";
 const BUCKET = "assets";
 /** Grenser som sikring mot løpske kostnader. */
 export const MAX_PER_USER_PER_HOUR = 30;
@@ -50,6 +47,8 @@ export interface GenerateImageInput {
   /** Det første bildet er dagens bilde av ressursen (beholdes); ellers er alle stilforbilder. */
   readonly identityFirst: boolean;
   readonly purpose: "cutout" | "background";
+  /** Varianten bildet skal inn i (huskes i jobben, så «Legg inn» treffer riktig variant – KI-147). */
+  readonly variantId?: string | null;
   /** Leverandør og modell (DEC-0069); «lovable» (innebygd) når ikke valgt. */
   readonly provider: string;
   readonly model: string | null;
@@ -94,6 +93,7 @@ function validate(d: unknown): GenerateImageInput {
     referencePaths: refs as string[],
     identityFirst: x["identityFirst"] === true && (refs as string[]).length > 0,
     purpose: x["purpose"],
+    variantId: typeof x["variantId"] === "string" && isUuid(x["variantId"]) ? x["variantId"] : null,
     provider: (() => {
       const p = x["provider"] ?? "lovable";
       if (!isProviderId(p)) throw new Error("Ukjent leverandør");
@@ -247,10 +247,30 @@ export const generateImage = createServerFn({ method: "POST" })
       if (capMsg) return { ok: false, message: capMsg };
     }
     const jobId = newId<"generation_job">();
+    // Sporbarhet (DEC-0072, REQ-0257): params finnes fra migrasjon 0024
+    const trace =
+      schema.version >= 24
+        ? await (
+            await import("./trace.server")
+          ).buildTrace(admin as AnyClient, data.projectId, {
+            modelParams: { purpose: data.purpose, identityFirst: data.identityFirst ?? null },
+            referencePaths: data.referencePaths,
+          })
+        : null;
     const { error: logErr } = await admin.from("generation_jobs").insert({
       id: jobId,
       project_id: data.projectId,
       kind: "image",
+      ...(trace
+        ? {
+            params: {
+              trace,
+              // Innsatsnivået jobben ble kjørt med (mandat 19.3, REQ-0275)
+              effort: effortOf(providerModel(data.provider, model)),
+              ...(data.variantId ? { variantId: data.variantId } : {}),
+            },
+          }
+        : {}),
       provider: data.provider,
       model,
       ...(ownKey

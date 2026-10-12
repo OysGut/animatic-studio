@@ -1,6 +1,6 @@
 # Implementeringsstatus – Animatic Studio
 
-Oppdatert: 2026-10-11 (økt 6). Detaljert status per krav: `docs/product/TRACEABILITY_MATRIX.md` (generert).
+Oppdatert: 2026-10-12 (økt 6, DEC-0076). Detaljert status per krav: `docs/product/TRACEABILITY_MATRIX.md` (generert).
 
 ## Sammendrag
 - **M0 Fundament:** ferdig.
@@ -35,6 +35,9 @@ Oppdatert: 2026-10-11 (økt 6). Detaljert status per krav: `docs/product/TRACEAB
 - **Egne AI-leverandører (DEC-0069, M5 del 3):** OpenAI, Google Gemini, fal.ai, Runway og ElevenLabs med veiledning og kryptert nøkkel, overordnet kostnadstak i USD, bilder med valgt leverandør, video per segment i «Generer scene» (ny versjon av scenen), lyd for lydressurser. Migrasjon 0024. Ikke prøvd mot de ekte tjenestene (KI-153).
 - **Ti store bolker (DEC-0070, M5 del 4):** bakgrunnskø og kø med prioritet/fremdrift, video for flere scener, innsatsnivå, modelltilpassede beskrivelser, sammenheng mellom segmenter, kandidater og sammenligning (bilde og video), hybrid sammensetting, oppdatering med AI ved avvik, Fountain-import/-eksport, lydkoblinger og -filter. Migrasjon 0025.
 - **Ti store bolker til (DEC-0071, M5 del 5):** sammenheng i køen, myke overganger mellom deler (visning og eksport), rådgivende kvalitetssjekkliste, betegnelser i bestemte linjer, stilprofiler per bruk, maske og blandingsmodus per lag, manusdekning for film, dialog med AI-stemmer (ElevenLabs). Migrasjon 0026.
+- **Arbeidsliste og ti bolker (DEC-0072, M5/M6):** arbeidsliste for oppdaterte ressurser, AI bare på brukerens initiativ, stillbilder i monteringen, eksport av valgte scener, sporbarhet per generering, koblinger for en manuslinje, teknisk visning, lagringsoversikt og lagrede eksportinnstillinger, film i spinoff, animerte masker, ende-til-ende-test uten AI. Migrasjon 0027.
+- **AI-køen uten bakgrunnsjobb og forbedringer (DEC-0073):** køen, oppfølging og innlegging i nettleseren til en redaktør; valgte scener kutter lyd ved grensen; arbeidslisten med bildeskifter og språkbilder; fjern alle oversettelser; dialogspor til 3 timer; plakathåndtak; Fountain-markering; 20 krav verifisert.
+- **Forbedringer (DEC-0074):** plakat-PNG i trykkoppløsning, spinoffer med hovedfilmens scenenummer, lyd i delte scener, språkfikser (KI-118/119), tilgjengelighet (inert, 11 px), nettlesertester for interaksjoner, 9 krav verifisert.
 - **Krav:** 344 verifisert, 21 implementert – ikke verifisert, 50 under arbeid, 174 ikke startet (av 589).
 
 ## Tester (alle grønne 2026-10-09)
@@ -67,3 +70,5 @@ Oppdatert: 2026-10-11 (økt 6). Detaljert status per krav: `docs/product/TRACEAB
 | UI | Under arbeid | Prosjekt, manus (navigator, sider, inspektør, import, eksport, versjoner, notater, søketreff), ressursbibliotek |
 | AUDIO | Under arbeid | Lydfiler i biblioteket, lydspor i monteringen (dialog, forteller, effekter, atmosfære, musikk), Web Audio-avspilling og miksing i eksporten (DEC-0044); lyd som løper over flere scener, lydprofil med volumpunkter, lyd i scenene rundt og bølgeformer i sceneeditoren (DEC-0045) |
 | Øvrige moduler | Ikke startet | – |
+- **DEC-0075:** kravverifisering runde 3, kostnadsanslag med alle elementer, nøytralt AI-ikon, sammenlign versjoner av en scene, karakterer og objekter i manusversjoner, tidsmodell begge veier, innsatsnivå per jobb, køen telles på nytt. Krav: 488 Verifisert, 33 Implementert – ikke verifisert, 7 Under arbeid, 64 Ikke startet.
+- **DEC-0076:** kravverifisering runde 4 og UX-gjennomgang mot de ni kvalitetene. Krav: 514 Verifisert, 15 Implementert – ikke verifisert, 5 Under arbeid, 58 Ikke startet.

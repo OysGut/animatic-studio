@@ -11,6 +11,7 @@ import {
   CopyPlus,
   Eye,
   GitMerge,
+  Layers,
   Plus,
   Scissors,
   Trash2,
@@ -28,6 +29,7 @@ import {
   newId,
   ownCopyCommands,
   orderedOccurrences,
+  sceneNumberOf,
   type BlockKind,
   type Command,
   type ProjectState,
@@ -38,6 +40,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { KIND_LABEL } from "./script-helpers";
 import { NotesPanel } from "./NotesPanel";
+import { BlockLinksSection } from "./BlockLinksSection";
 import { StoryTimeSection } from "./StoryTimeSection";
 import type { Selection } from "./ScriptPageView";
 
@@ -80,21 +83,37 @@ export function Inspector(props: Props) {
   const occ = selection.occurrenceId ? state.occurrences[selection.occurrenceId] : undefined;
   return (
     <aside aria-label="Inspektør" className="flex min-h-0 flex-col">
-      <div className="flex h-8 shrink-0 items-center border-b border-border px-3 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
-        {block ? "Manusblokk" : occ ? "Scene" : "Manus"}
+      <div className="flex h-8 min-w-0 shrink-0 items-center gap-1 overflow-hidden border-b border-border px-3 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+        <span className="shrink-0">{block ? "Manusblokk" : occ ? "Scene" : "Manus"}</span>
         {occ && occ.active && state.productions[occ.productionId]?.kind === "main" ? (
           <Link
             to="/prosjekt/$projectId/montering"
             params={{ projectId: props.projectId }}
             search={{ scene: occ.id, ...(block ? { blokk: block.id } : {}) }}
-            className="ml-auto flex items-center gap-1 rounded-sm px-1 normal-case tracking-normal text-text-secondary hover:bg-surface-3 hover:text-text-primary"
+            className="ml-auto flex min-w-0 items-center gap-1 rounded-sm px-1 normal-case tracking-normal text-text-secondary hover:bg-surface-3 hover:text-text-primary"
             title={
               block
                 ? "Åpne monteringen med avspillingshodet der denne replikken eller handlingen er i filmen"
                 : "Åpne monteringen med avspillingshodet ved starten av scenen"
             }
           >
-            <Clapperboard className="size-3.5" aria-hidden /> Vis i filmen
+            <Clapperboard className="size-3.5 shrink-0" aria-hidden />
+            <span className="truncate">Vis i filmen</span>
+          </Link>
+        ) : null}
+        {occ && occ.active ? (
+          <Link
+            to="/prosjekt/$projectId/scene"
+            params={{ projectId: props.projectId }}
+            search={{ scene: occ.id }}
+            className={
+              (state.productions[occ.productionId]?.kind === "main" ? "" : "ml-auto ") +
+              "flex min-w-0 items-center gap-1 rounded-sm px-1 normal-case tracking-normal text-text-secondary hover:bg-surface-3 hover:text-text-primary"
+            }
+            title="Åpne denne scenen i sceneeditoren (2D-animatic)"
+          >
+            <Layers className="size-3.5 shrink-0" aria-hidden />
+            <span className="truncate">Sceneeditor</span>
           </Link>
         ) : null}
       </div>
@@ -247,6 +266,7 @@ function canEditVariant(state: ProjectState, productionId: string, variantId: st
 }
 
 function BlockPanel({
+  projectId,
   state,
   productionId,
   selection,
@@ -337,7 +357,7 @@ function BlockPanel({
   return (
     <>
       <p className="mb-3 text-xs text-text-tertiary">
-        Scene {occ.productionNumber ?? "uten nummer"} · side {startPages[occ.id] ?? "–"}
+        Scene {sceneNumberOf(state, occ) ?? "uten nummer"} · side {startPages[occ.id] ?? "–"}
         {block.sourceRef ? <> · side {block.sourceRef.page} i originalen</> : null}
       </p>
       <ForkNotice state={state} productionId={productionId} occurrenceId={occ.id} run={run} />
@@ -415,6 +435,17 @@ function BlockPanel({
           Lagres når du går ut av feltet (eller ⌘/Ctrl + Enter). Esc angrer.
         </p>
       </Section>
+      {block.kind === "dialogue" || block.kind === "action" ? (
+        <Section title="Koblinger">
+          <BlockLinksSection
+            state={state}
+            projectId={projectId}
+            productionId={productionId}
+            blockId={block.id}
+            occurrenceId={occ.id}
+          />
+        </Section>
+      ) : null}
       <Section title="Notater">
         <NotesPanel
           state={state}
@@ -529,7 +560,8 @@ function ScenePanel({
     <>
       <div className="mb-3 flex items-center justify-between">
         <p className="text-sm font-medium text-text-primary">
-          Scene {occ.productionNumber ?? <span className="text-text-tertiary">uten nummer</span>}
+          Scene{" "}
+          {sceneNumberOf(state, occ) ?? <span className="text-text-tertiary">uten nummer</span>}
           {occ.active ? (
             <span className="ml-2 text-xs font-normal text-text-tertiary">
               side {startPages[occ.id] ?? "–"}

@@ -11,7 +11,13 @@
  * `outdatedLayers` finner lag som er låst til en eldre versjon enn den som er godkjent nå, så sceneeditoren og
  * kontinuitetsanalysen kan flagge dem for gjennomgang (REQ-0132).
  */
-import type { AssetVersion, CompositionLayer, ImageSwap, ProjectState } from "../model";
+import type {
+  AssetVersion,
+  CompositionLayer,
+  ImageSwap,
+  LanguageImage,
+  ProjectState,
+} from "../model";
 import type { Command } from "../commands/types";
 import { layerFieldsOf } from "../composition";
 import { compositionOfVariant, layersOf } from "../composition/render";
@@ -33,8 +39,11 @@ export type LayerImpactMode =
 export interface LayerImpact {
   readonly layerId: string;
   readonly layerName: string;
-  /** «own» = lagets eget bilde, ellers indeksen til bildeskiftet (DEC-0052). */
-  readonly source: "own" | number;
+  /**
+   * «own» = lagets eget bilde, et tall = indeksen til bildeskiftet (DEC-0052), «lang:xx» = bildet for en
+   * språkversjon (DEC-0059, KI-118).
+   */
+  readonly source: ImageSource;
   readonly mode: LayerImpactMode;
   /** Versjonen bildet viser før endringen. */
   readonly versionId: string | null;
@@ -55,6 +64,7 @@ export interface SceneImpact {
 }
 
 type ImageRef = Pick<CompositionLayer, "assetId" | "assetVariantId" | "versionId">;
+type ImageSource = "own" | number | `lang:${string}`;
 
 /** Versjonen et bilde viser (låst, godkjent i varianten, ellers nyeste, ellers ressursens forsidebilde). */
 function shownVersion(s: ProjectState, l: ImageRef): AssetVersion | null {
@@ -106,9 +116,18 @@ export function assetVersionImpact(
   const layerImpacts = (compId: string): LayerImpact[] => {
     const out: LayerImpact[] = [];
     for (const l of layersOf(s, compId)) {
-      const sources: { source: "own" | number; img: ImageRef }[] = [
+      const sources: { source: ImageSource; img: ImageRef }[] = [
         { source: "own", img: l },
         ...l.swaps.map((w, i) => ({ source: i, img: w })),
+        // Bilde for en språkversjon (KI-118): samme ressurs, egen variant
+        ...(l.languageImages ?? []).map((x) => ({
+          source: `lang:${x.language}` as const,
+          img: {
+            assetId: l.assetId,
+            assetVariantId: x.assetVariantId,
+            versionId: x.versionId,
+          } as ImageRef,
+        })),
       ];
       for (const { source, img } of sources) {
         const mode = classify(img);
@@ -193,8 +212,8 @@ export function approveWithImpactCommands(
   impact: readonly SceneImpact[],
   keep: ReadonlySet<string>,
 ): Command[] {
-  const lock = new Map<string, Map<"own" | number, string>>();
-  const update = new Map<string, Set<"own" | number>>();
+  const lock = new Map<string, Map<ImageSource, string>>();
+  const update = new Map<string, Set<ImageSource>>();
   for (const x of impact)
     for (const l of x.layers) {
       if (keep.has(x.key) && l.mode === "follows" && l.versionId) {
@@ -210,7 +229,7 @@ export function approveWithImpactCommands(
     assetVariantId: (s.assetVersions[versionId]?.variantId ?? img.assetVariantId) as never,
     versionId: versionId as never,
   });
-  const layersFor = (m: Map<string, (src: "own" | number) => string | null>) =>
+  const layersFor = (m: Map<string, (src: ImageSource) => string | null>) =>
     [...m.entries()].flatMap(([layerId, pick]) => {
       const l = s.layers[layerId];
       if (!l) return [];
@@ -225,6 +244,14 @@ export function approveWithImpactCommands(
               const v = pick(i);
               return v ? withImage(w, v) : w;
             }),
+            ...(f.languageImages
+              ? {
+                  languageImages: f.languageImages.map((x: LanguageImage) => {
+                    const v = pick(`lang:${x.language}`);
+                    return v ? { ...x, versionId: v as never } : x;
+                  }),
+                }
+              : {}),
           },
         },
       ];

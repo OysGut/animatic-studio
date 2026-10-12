@@ -240,6 +240,8 @@ export function filmTakeAudio(clips: readonly FilmClip[], fps: Rational): FilmAu
     for (const part of c.parts) {
       const t = part.take;
       if (part.source !== "take" || !t || !t.mediaRef || t.media?.hasAudio === false) continue;
+      // Stillbilder (DEC-0072) har ingen lyd
+      if (t.kind !== "imported_film" && t.kind !== "ai_video") continue;
       // Lyden dekodes ved å hente hele filen; store filer hoppes over (KI)
       if ((t.media?.byteSize ?? 0) > FILM_AUDIO_MAX_BYTES) continue;
       const length = framesToSeconds(part.durationFrames, fps);

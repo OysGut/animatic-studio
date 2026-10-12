@@ -74,6 +74,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { usePlayback } from "./use-playback";
+import { lastScene, rememberScene } from "@/app/shell/current-scene";
 
 export function SceneEditorWorkspace({
   projectId,
@@ -137,12 +138,14 @@ function Editor({
     initialOccurrenceId,
   );
   const occurrences = useMemo(() => orderedOccurrences(state, productionId), [state, productionId]);
-  const [occurrenceId, setOccurrenceId] = useState<string | null>(
-    () =>
-      (initialOccurrenceId && state.occurrences[initialOccurrenceId]
-        ? initialOccurrenceId
-        : occurrences[0]?.id) ?? null,
-  );
+  // Uten ?scene= åpnes scenen som sist var valgt i manus, montering eller sceneeditor (REQ-0168)
+  const [occurrenceId, setOccurrenceId] = useState<string | null>(() => {
+    const wanted = initialOccurrenceId ?? lastScene(projectId);
+    return (
+      (wanted && occurrences.some((o) => o.id === wanted) ? wanted : occurrences[0]?.id) ?? null
+    );
+  });
+  useEffect(() => rememberScene(projectId, occurrenceId), [projectId, occurrenceId]);
   // Scenen er borte (annen bruker, angre) eller ingen var valgt (tomt prosjekt før import): velg første
   useEffect(() => {
     if (!occurrences.length) return;
@@ -156,6 +159,8 @@ function Editor({
   // produksjonen har fått sin egen kopi – ellers ville hovedfilmen endres (REQ-0365)
   const shared = !!occurrence && isSharedIn(state, productionId, occurrence.variantId);
   const editable = roleEditable && !shared;
+  // Lyd hører til forekomsten, ikke 2D-scenen (KI-111): kan legges inn også i en delt scene i spinoffen
+  const audioEditable = roleEditable;
   function makeOwnCopy() {
     if (!occurrence) return;
     const commands = ownCopyCommands(state, occurrence.id);
@@ -434,7 +439,7 @@ function Editor({
             Legg til lag
           </Button>
         ) : null}
-        {editable && occurrence ? (
+        {audioEditable && occurrence ? (
           <Button
             size="sm"
             variant="ghost"
@@ -472,7 +477,7 @@ function Editor({
                 Forhåndsvisning
               </Button>
               <label
-                className="flex items-center gap-1.5 text-xs text-text-secondary"
+                className="flex shrink-0 items-center gap-1.5 whitespace-nowrap text-xs text-text-secondary"
                 title="Vis automatisk ved avspilling"
               >
                 <input
@@ -526,7 +531,7 @@ function Editor({
                 state={state}
                 clips={film}
                 occurrenceId={occurrence.id}
-                editable={editable}
+                editable={audioEditable}
                 run={cmds.run}
               />
             </div>
@@ -762,7 +767,7 @@ function Editor({
         sceneSeconds={
           profileScene ? framesToSeconds(profileScene.durationFrames, state.project.fps) : null
         }
-        editable={editable}
+        editable={audioEditable}
         url={profileVersion ? (soundUrls.data?.[profileVersion.mediaPath] ?? null) : null}
         onChange={(label, patch) => {
           if (!profileClip) return;
@@ -815,7 +820,7 @@ function Editor({
         editable={editable}
         cmds={cmds}
       />
-      {occurrence && editable ? (
+      {occurrence && audioEditable ? (
         <RecordAudioDialog
           open={recordOpen}
           onOpenChange={setRecordOpen}

@@ -201,7 +201,7 @@ export const NearbyAudioPanel = memo(function NearbyAudioPanel({
                   </span>
                 </span>
                 <span className="flex min-w-0 items-center gap-1 pl-3.5">
-                  <span className="min-w-0 flex-1 truncate text-[10px] text-text-tertiary">
+                  <span className="min-w-0 flex-1 truncate text-[11px] text-text-tertiary">
                     {AUDIO_KIND_LABEL[a.kind]} · {fmt(a.lengthMs)}
                     {a.continues ? " · løper videre" : ""}
                   </span>

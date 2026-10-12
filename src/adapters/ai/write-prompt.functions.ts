@@ -220,6 +220,20 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
       asset_id: data.assetId,
       reference_path: data.images[0]?.path ?? null,
       reference_paths: data.images.map((i) => i.path),
+      // Sporbarhet (DEC-0072, REQ-0257): systeminstruksen og bildene som ble sendt
+      ...(schema.version >= 24
+        ? {
+            params: {
+              trace: await (
+                await import("./trace.server")
+              ).buildTrace(admin as AnyClient, data.projectId, {
+                systemInstruction: "prompt-writer",
+                modelParams: { purpose: data.purpose, images: data.images.length },
+                referencePaths: data.images.map((i) => i.path),
+              }),
+            },
+          }
+        : {}),
       status: "running",
       created_by: context.userId,
     } as never);

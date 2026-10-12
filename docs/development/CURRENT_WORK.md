@@ -1,6 +1,6 @@
 # Pågående arbeid
 
-Oppdatert: 2026-10-12 (økt 6, DEC-0061–0070)
+Oppdatert: 2026-10-12 (økt 6, DEC-0061–0076)
 
 ## Nå: DEC-0061 – M8 del 1: plakater, karakterkart og relasjoner – ferdig, venter på Mars
 - [x] «Utgivelse»: kinopitch-plakat og karakter- og universkart per produksjon, 70 × 100 cm m.fl., norsk og engelsk (REQ-0384–0389, REQ-0403/0404)
@@ -11,7 +11,35 @@ Oppdatert: 2026-10-12 (økt 6, DEC-0061–0070)
 - [ ] **Mars:** godkjenn kostnad for stilharmonisering med AI (REQ-0137–0145, REQ-0400–0402) – eller vent
 - [ ] **Mars:** Prøv: Utgivelse → «Ny» → «Karakter- og universkart» → «Relasjoner» → godkjenn → «Eksporter» → Trykk-PDF
 
-## Nå: DEC-0071 – ti store bolker til – ferdig, venter på Mars
+## Nå: DEC-0076 – kravverifisering runde 4 og UX-gjennomgang – ferdig, venter på Mars
+- Mars: «Fortsett» (Teknisk anbefaling). Ingen ny migrasjon (0027 venter fortsatt).
+- [x] 34 krav vurdert, funn rettet, UX-gjennomgang mot de ni kvalitetene
+- [ ] **Mars:** avgjør REQ-0528 (KI-179), KI-176, KI-178, globale ressurser og stilharmonisering
+
+## Før: DEC-0075 – kravverifisering runde 3, kostnadsanslag, versjonssammenligning, tidsmodell – ferdig, venter på Mars
+- Mars: «Da fortsetter du videre» (Teknisk anbefaling). Ingen ny migrasjon (0027 fra DEC-0072 venter fortsatt).
+- [x] Verifisering runde 3 og rettede funn (REQ-0424, 0426, 0168, 0405, 0280, 0273, 0443)
+- [x] REQ-0318, 0078, 0105, 0275, 0311, 0053, 0489; KI-175, KI-177 (delvis)
+- [x] Vitest 866 grønne, tsc, eslint, nettlesersjekk 73/73, kodegjennomgang (10 funn rettet)
+- [ ] **Mars:** avgjør REQ-0528 (KI-179): skal redaktører uten kostnadsrett kunne starte betalte jobber?
+- [ ] **Mars:** avklar KI-176, KI-178 og globale ressurser (REQ-0571).
+
+## Før: DEC-0074 – plakat i trykkoppløsning, spinoff-nummer, språkfikser, tilgjengelighet, verifisering – ferdig, venter på Mars
+- Mars: «Fortsett med neste store gruppe ting, er i møte» (Teknisk anbefaling). Ingen migrasjon (0027 fra DEC-0072 venter fortsatt).
+- [ ] **Mars:** avklar KI-176, KI-178 og globale ressurser (REQ-0571).
+
+## Før: DEC-0073 – AI-køen uten bakgrunnsjobb, kravverifisering og ti forbedringer – ferdig
+- Mars: «Fortsett med neste store gruppe ting, er i møte» (Teknisk anbefaling).
+- Ferdig: se DEC-0073. Ingen migrasjon (0027 fra DEC-0072 er ikke kjørt ennå).
+- [ ] **Mars:** avklar KI-176 (REQ-0146, 0482, 0102, 0275, 0269) og globale ressurser (REQ-0571).
+
+## Før: DEC-0072 – arbeidsliste, ingen automatisk generering og ti bolker – ferdig, venter på Mars
+- Mars: «Tar du de neste 10?», «vi kjører ingen genereringer av video automatisk …» og ønsket om arbeidsliste for oppdaterte ressurser (Bekreftet av bruker).
+- Ferdig: arbeidsliste, stillbilder, valgte scener i eksport, sporbarhet, koblinger for en linje, teknisk visning, lagring og eksportinnstillinger, film i spinoff, animerte masker, ende-til-ende-test. Migrasjon 0027.
+- [ ] **Mars:** commit og push (slett `src/routes/api/cron/ai-jobs.ts`), kjør LOVABLE_SYNC (0027).
+- [ ] **Mars:** prøv arbeidslisten: last opp nytt bilde av en ressurs, godkjenn med «behold» i noen scener, åpne «Gå gjennom scenene …».
+
+## Før: DEC-0071 – ti store bolker til – levert og kjørt i Lovable
 - Mars: «I møte, kan du ta de neste 10 store bolkene?» (Teknisk anbefaling; ingen nye produktkrav).
 - Ferdig: sammenheng i køen, myke overganger mellom deler, kvalitetssjekkliste, betegnelser i bestemte linjer, stilprofiler per bruk, masker og blanding, eksporttekst, manusdekning, dialog med AI-stemmer, kravgjennomgang (35 krav). Migrasjon 0026. Kodegjennomgang: 9 av 10 funn rettet.
 - Akseptanse: overgangen gjør ikke scenen kortere og når aldri forbi nabodelen (enhetstest); en kjede venter aldri for alltid (enhetstest); sjekklisten er alltid merket rådgivende (enhetstest); skjermbilder 30b, 02f, 04b, 80c, 80d.

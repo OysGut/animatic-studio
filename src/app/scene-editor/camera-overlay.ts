@@ -239,7 +239,7 @@ function outline(ctx: CanvasRenderingContext2D, q: readonly Pt[]) {
 function label(ctx: CanvasRenderingContext2D, q: readonly Pt[], text: string, color: string) {
   const top = q.reduce((a, b) => (b.y < a.y ? b : a));
   ctx.fillStyle = color;
-  ctx.font = "10px sans-serif";
+  ctx.font = "11px sans-serif";
   ctx.textBaseline = "bottom";
   ctx.fillText(text, top.x + 3, top.y - 3);
 }

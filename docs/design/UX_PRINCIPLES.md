@@ -65,3 +65,18 @@ Grensesnittet bruker de norske betegnelsene fra mandat 30.3 (Manus, Sceneeditor,
 ### P15 – Store skjermer først
 Arbeidsflatene er laget for store skjermer (≥ 1440 px) og skal fungere fra 1280 px bredde. Under det vises en tydelig melding i stedet for et ødelagt oppsett. Paneler kan endres i størrelse, kollapses og (senere) dokkes; oppsettet huskes per bruker.
 *Kilde:* mandat 1.3, 30.1 (velorganiserte paneler). *Kontroll:* skjermbilder ved 1280, 1440 og 1920 px.
+
+## De ni kvalitetene som gjennomgangskriterier (mandat 1.3, REQ-0011, DEC-0076)
+Mandatet sier at Animatic Studio skal være profesjonelt, elegant, filmisk, oversiktlig, effektivt, ikke-destruktivt, modulært, pålitelig og brukerstyrt. Hver kvalitet har en kontroll som brukes i kodegjennomgang og visuell QA (`.claude/skills/design-system-director/references/VISUAL_QA.md`). En ny funksjon er ikke ferdig før den er gått gjennom mot alle ni.
+
+| Kvalitet | Kontroll | Automatisk vakt |
+|---|---|---|
+| Profesjonelt | Fagbegreper fra film (scene, opptak, montering), manus i standardformat, ingen leketøysdetaljer | Gyldne manustester (REQ-0050) |
+| Elegant | Én ikonfamilie, tokens for farge/typografi, ingen «gnister», ingen tekst under 11 px, rolig bevegelse (DESIGN_SYSTEM §1–§7) | `tests/unit/design-text-size.test.ts`, `design-ai-icon.test.ts`, kontrast i `tests/visual/verifisering3-ui.mjs` |
+| Filmisk | Mørk flate rundt bildet, bildet i riktig format, tidskoder og bildenummer der de trengs | Skjermbilder ved 1440 px |
+| Oversiktlig | Én primærhandling per panel, status med ikon og tekst (P6), ingen overlapp eller avkuttet tekst ved 1280–1920 px | Visuelle skript (ingen horisontal rulling, ingen tom skjerm) |
+| Effektivt | Tastatur i alle arbeidsflater, snarveier, ett klikk fra replikk til bilde (P3) | Tab/Enter-kontroller i de visuelle skriptene |
+| Ikke-destruktivt | Alt kan angres; ingen automatisk endring av ferdig film, godkjente ressurser eller historikk (P1) | `tests/invariants/`, `verifisering-redaksjonell-kontroll.test.ts` |
+| Modulært | Kjernen uten React/Supabase; moduler etter ARCHITECTURE §2 | `tests/architecture/` |
+| Pålitelig | Ingen tapte endringer ved samtidig redigering, tydelig feilmelding, ingen halve operasjoner | DB-tester, konflikttester (REQ-0522) |
+| Brukerstyrt | Forslag må godkjennes; AI og betaling starter bare etter brukerens bekreftelse (P2, REQ-0592) | `tests/unit/verifisering4-kjerne.test.ts` (ingen automatisk betalt generering) |

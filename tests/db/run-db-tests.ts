@@ -2538,6 +2538,32 @@ try {
       );
   });
 
+  await test("0027 (DEC-0072): gjennomgåtte versjoner og lagrede eksportinnstillinger", async () => {
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 27, "schema_version er ikke 27");
+    const cols = await sql`select table_name, column_name from information_schema.columns
+      where table_schema = 'public' and ((table_name in ('composition_layers','takes') and column_name = 'reviewed_versions')
+        or (table_name = 'productions' and column_name = 'export_settings'))`;
+    assert(cols.length === 3, `fant ${cols.length} av 3 nye kolonner`);
+    const [prod] =
+      await sql`select id from public.productions where project_id = ${projectId} limit 1`;
+    if (prod) {
+      await expectError(
+        sql`update public.productions set export_settings = ${sql.json([1])} where id = ${prod["id"]}`,
+        /check/,
+      );
+      await sql`update public.productions set export_settings = ${sql.json({ size: "half", monochrome: false, output: "video" })} where id = ${prod["id"]}`;
+      await sql`update public.productions set export_settings = null where id = ${prod["id"]}`;
+    }
+    const [layer] =
+      await sql`select id from public.composition_layers where project_id = ${projectId} limit 1`;
+    if (layer)
+      await expectError(
+        sql`update public.composition_layers set reviewed_versions = ${sql.json({})} where id = ${layer["id"]}`,
+        /check/,
+      );
+  });
+
   // ---------- Sikkerhetskopi (DEC-0049): gjenopprett testprosjektet som nytt prosjekt ----------
   await test("DEC-0049: sikkerhetskopi gjenopprettes som nytt prosjekt via apply_changes; alt leses tilbake likt", async () => {
     const q = (t: string) =>

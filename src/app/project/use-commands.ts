@@ -226,6 +226,9 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
             data: { projectId, command, baseRevisions: { ...baseRevisions }, commandId },
           });
           if (!res.ok) {
+            // Avvist på grunn av tilgang: rollen kan være endret (KI-136) – hent medlemmene på nytt
+            if (res.code === "forbidden")
+              void qc.invalidateQueries({ queryKey: ["project-members", projectId] });
             return fail(
               res.code === "revision_conflict"
                 ? opts.mode === "do"
@@ -309,6 +312,18 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
       return null;
     },
     [exec, withOwnVariant],
+  );
+
+  /**
+   * Som run, men utenfor angrelisten: for innstillinger som ikke er arbeid i filmen (f.eks. eksport-
+   * innstillingene, DEC-0072), så Ctrl+Z ikke angrer dem i stedet for det siste arbeidet.
+   */
+  const runSilent = useCallback(
+    (command: Command, label: string): string | null => {
+      const r = exec(command, { label, mode: "do" });
+      return r.ok ? null : r.message;
+    },
+    [exec],
   );
 
   /** Som run, men venter til serveren har lagret endringen. */
@@ -418,6 +433,7 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
 
   return {
     run,
+    runSilent,
     runAndWait,
     undo,
     redo,

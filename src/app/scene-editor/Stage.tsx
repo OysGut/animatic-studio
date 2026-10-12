@@ -1,7 +1,8 @@
 /**
  * Scenen i sceneeditoren (M3 del 2, mandat kap. 11): et Canvas 2D som viser 2D-scenen med zoom og panorering,
  * markerer valgt lag og lar deg flytte, skalere og rotere det direkte. Under en dra-operasjon vises et
- * lokalt utkast; bare ved slipp kjøres én kommando (ett angresteg). Bare på klienten (nettleser-API-er i effekter).
+ * lokalt utkast; bare ved slipp kjøres én kommando (ett angresteg). Rektangel- og ellipsemasken til valgt lag
+ * kan også flyttes og endres i størrelse her (DEC-0072). Bare på klienten (nettleser-API-er i effekter).
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -15,8 +16,13 @@ import {
   translatePath,
   type Matrix,
   type MotionPath,
+  dragMaskRect,
+  fieldsWithMaskAt,
   fieldsWithTransformAt,
+  isMaskProperty,
   layerFieldsOf,
+  maskAt,
+  type MaskRect,
   shotAt,
   toggleCurve,
   transformAt,
@@ -140,6 +146,21 @@ interface PathDrag {
   startScreen: Pt;
   moved: boolean;
   latest: MotionPath;
+}
+/** Dra masken til valgt lag (DEC-0072): midtpunktet eller omrisset flytter, et hjørne endrer størrelsen. */
+interface MaskDrag {
+  pointerId: number;
+  layerId: string;
+  /** -1 = flytt; 0–3 = hjørne (øverst venstre, øverst høyre, nederst høyre, nederst venstre). */
+  handle: number;
+  /** Masken på bildet da dra-operasjonen startet (lagets egne piksler). */
+  start: MaskRect;
+  /** Scene → lagets egne piksler (0,0 = lagets øverste venstre hjørne). */
+  toLayer: Matrix;
+  startLayer: Pt;
+  startScreen: Pt;
+  moved: boolean;
+  latest: MaskRect;
 }
 interface Colors {
   border: string;
@@ -293,6 +314,72 @@ function drawMaskOutline(ctx: CanvasRenderingContext2D, item: DrawItem, v: View,
   ctx.restore();
 }
 
+/**
+ * Håndtakene til rektangel- eller ellipsemasken i et tegneelement (skjermkoordinater): hjørnene i rammen
+ * rundt masken og midtpunktet. null for ingen maske eller maske av et annet lag.
+ */
+function maskHandlesOf(item: DrawItem, v: View): { corners: Pt[]; center: Pt } | null {
+  const m = item.mask;
+  if (!m || m.kind === "layer") return null;
+  const at = (x: number, y: number) => toScreen(v, applyMatrix(item.matrix, x, y));
+  return {
+    corners: [
+      at(m.x, m.y),
+      at(m.x + m.width, m.y),
+      at(m.x + m.width, m.y + m.height),
+      at(m.x, m.y + m.height),
+    ],
+    center: at(m.x + m.width / 2, m.y + m.height / 2),
+  };
+}
+
+/** Avstanden fra et punkt til et lukket omriss (skjermkoordinater). */
+function distToOutline(p: Pt, pts: readonly Pt[]): number {
+  let best = Infinity;
+  for (let i = 0; i < pts.length; i++) {
+    const a = pts[i]!;
+    const b = pts[(i + 1) % pts.length]!;
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const len2 = dx * dx + dy * dy;
+    const t = len2 > 0 ? clamp(((p.x - a.x) * dx + (p.y - a.y) * dy) / len2, 0, 1) : 0;
+    best = Math.min(best, dist(p, { x: a.x + dx * t, y: a.y + dy * t }));
+  }
+  return best;
+}
+
+/** Ny maske ut fra pekeren (lagets egne piksler). Shift ved hjørne: behold forholdet mellom sidene. */
+function maskDraftFor(d: MaskDrag, at: Pt, shift: boolean): MaskRect {
+  return dragMaskRect(d.start, d.handle, at.x - d.startLayer.x, at.y - d.startLayer.y, shift);
+}
+
+/** Håndtakene til masken (fylt med aksentfarge, så de skiller seg fra lagets hvite håndtak). */
+function drawMaskHandles(ctx: CanvasRenderingContext2D, item: DrawItem, v: View, colors: Colors) {
+  const h = maskHandlesOf(item, v);
+  if (!h) return;
+  ctx.save();
+  ctx.fillStyle = colors.accent;
+  ctx.strokeStyle = "#ffffff";
+  ctx.lineWidth = 1;
+  const k = HANDLE - 2;
+  for (const c of h.corners) {
+    ctx.fillRect(c.x - k / 2, c.y - k / 2, k, k);
+    ctx.strokeRect(c.x - k / 2 + 0.5, c.y - k / 2 + 0.5, k - 1, k - 1);
+  }
+  ctx.beginPath();
+  ctx.arc(h.center.x, h.center.y, HANDLE / 2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(h.center.x - HANDLE, h.center.y);
+  ctx.lineTo(h.center.x + HANDLE, h.center.y);
+  ctx.moveTo(h.center.x, h.center.y - HANDLE);
+  ctx.lineTo(h.center.x, h.center.y + HANDLE);
+  ctx.strokeStyle = colors.accent;
+  ctx.stroke();
+  ctx.restore();
+}
+
 function drawOverlay(
   ctx: CanvasRenderingContext2D,
   item: DrawItem,
@@ -429,6 +516,7 @@ export function Stage({
   const dragRef = useRef<Drag | null>(null);
   const camDragRef = useRef<CamDrag | null>(null);
   const pathDragRef = useRef<PathDrag | null>(null);
+  const maskDragRef = useRef<MaskDrag | null>(null);
   const drawRef = useRef<{ pointerId: number; scene: Pt[] } | null>(null);
   const spaceRef = useRef(false);
   /** Ble mellomrom brukt til å panorere? Ellers er et kort trykk spill/pause. */
@@ -445,6 +533,7 @@ export function Stage({
     path: MotionPath | null;
   } | null>(null);
   const [pathDraft, setPathDraft] = useState<{ layerId: string; path: MotionPath } | null>(null);
+  const [maskDraft, setMaskDraft] = useState<{ layerId: string; rect: MaskRect } | null>(null);
   const [stroke, setStroke] = useState<Pt[] | null>(null);
   const [camDraft, setCamDraft] = useState<CameraShot | null>(null);
   const [imageTick, setImageTick] = useState(0);
@@ -504,6 +593,23 @@ export function Stage({
 
   // Utkastet gjelder bare mens laget finnes og ikke er låst
   const stateWithDraft = useMemo(() => {
+    if (maskDraft) {
+      // Masken under dra: utkastet gjelder på alle bilder (nøkkelbildene for masken brukes ikke så lenge)
+      const layer = state.layers[maskDraft.layerId];
+      const m = layer?.mask;
+      if (layer && m && m.kind !== "layer")
+        return {
+          ...state,
+          layers: {
+            ...state.layers,
+            [layer.id]: {
+              ...layer,
+              mask: { ...m, ...maskDraft.rect },
+              keyframes: layer.keyframes.filter((k) => !isMaskProperty(k.property)),
+            },
+          },
+        };
+    }
     if (pathDraft) {
       const layer = state.layers[pathDraft.layerId];
       if (layer)
@@ -521,13 +627,14 @@ export function Stage({
         [draft.layerId]: {
           ...layer,
           transform: draft.transform,
-          keyframes: [],
+          // Lagets egne nøkkelbilder brukes ikke under dra; maskens animasjon (DEC-0072) gjelder fortsatt
+          keyframes: layer.keyframes.filter((k) => isMaskProperty(k.property)),
           anchor: draft.anchor,
           path: draft.path,
         },
       },
     };
-  }, [state, draft, pathDraft]);
+  }, [state, draft, pathDraft, maskDraft]);
   const frame = useMemo(
     () =>
       cameraMode
@@ -625,6 +732,8 @@ export function Stage({
             drawMemberOutline(ctx, it, view, colors);
       if (selectedItem) drawOverlay(ctx, selectedItem, view, colors, canEditSelected && !drawPath);
       if (selectedItem) drawMaskOutline(ctx, selectedItem, view, colors);
+      if (selectedItem && canEditSelected && !drawPath)
+        drawMaskHandles(ctx, selectedItem, view, colors);
       if (shownPath && !drawPath)
         drawPathOverlay(ctx, shownPath, pathToScene, view, colors, pathNow);
       if (stroke) drawStroke(ctx, stroke, colors);
@@ -715,6 +824,20 @@ export function Stage({
       const i = h.corners.findIndex((c) => dist(p, c) <= HANDLE);
       if (i >= 0)
         return { kind: "scale" as const, cursor: resizeCursor(h.center, h.corners[i] as Pt) };
+      // Masken (DEC-0072): hjørnene endrer størrelsen, midtpunktet og omrisset flytter den
+      const mh = maskHandlesOf(selectedItem, view);
+      if (mh) {
+        const j = mh.corners.findIndex((c) => dist(p, c) <= HANDLE);
+        if (j >= 0)
+          return {
+            kind: "mask" as const,
+            handle: j,
+            cursor: resizeCursor(mh.center, mh.corners[j] as Pt),
+          };
+        const outline = maskOutline(selectedItem)?.map((q) => toScreen(view, q)) ?? [];
+        if (dist(p, mh.center) <= HANDLE + 2 || distToOutline(p, outline) <= 4)
+          return { kind: "mask" as const, handle: -1, cursor: "move" };
+      }
     }
     const s = toScene(view, p);
     const hit = hitTest(frame, s.x, s.y);
@@ -768,6 +891,30 @@ export function Stage({
     e.currentTarget.setPointerCapture(e.pointerId);
   }
 
+  function startMaskDrag(e: React.PointerEvent, handle: number, p: Pt) {
+    const layer = selectedLayerId ? state.layers[selectedLayerId] : undefined;
+    const m = layer ? maskAt(layer, time) : null;
+    if (!layer || !selectedItem || !m || m.kind === "layer") return;
+    const inv = invert(selectedItem.matrix);
+    if (!inv) return;
+    // Tegneelementets 0,0 er midten av laget; maskens 0,0 er lagets øverste venstre hjørne
+    const toLayer = multiply(translate(selectedItem.width / 2, selectedItem.height / 2), inv);
+    const sc = toScene(view, p);
+    const start = { x: m.x, y: m.y, width: m.width, height: m.height };
+    maskDragRef.current = {
+      pointerId: e.pointerId,
+      layerId: layer.id,
+      handle,
+      start,
+      toLayer,
+      startLayer: applyMatrix(toLayer, sc.x, sc.y),
+      startScreen: p,
+      moved: false,
+      latest: start,
+    };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  }
+
   function startCamDrag(e: React.PointerEvent, target: CameraTarget, p: Pt) {
     if (!overlayShot || target.kind === "path") return;
     camDragRef.current = {
@@ -786,7 +933,13 @@ export function Stage({
 
   function onPointerDown(e: React.PointerEvent<HTMLCanvasElement>) {
     wrapRef.current?.focus();
-    if (dragRef.current || camDragRef.current || pathDragRef.current || drawRef.current) {
+    if (
+      dragRef.current ||
+      camDragRef.current ||
+      pathDragRef.current ||
+      maskDragRef.current ||
+      drawRef.current
+    ) {
       // En dragning som aldri ble avsluttet (pekeren forsvant): start på nytt i stedet for å henge
       if (!e.currentTarget.hasPointerCapture(e.pointerId)) endDrag(false);
       else return;
@@ -857,6 +1010,10 @@ export function Stage({
       e.currentTarget.setPointerCapture(e.pointerId);
       return;
     }
+    if (target?.kind === "mask") {
+      startMaskDrag(e, target.handle, p);
+      return;
+    }
     if (target?.kind === "rotate" || target?.kind === "scale") {
       if (selectedLayerId) startDrag(e, target.kind, selectedLayerId, p);
       return;
@@ -879,6 +1036,15 @@ export function Stage({
       if (dist(toScreen(view, last), p) < 3) return;
       dr.scene.push(sp);
       setStroke(dr.scene.map((q) => toScreen(view, q)));
+      return;
+    }
+    const md = maskDragRef.current;
+    if (md && md.pointerId === e.pointerId) {
+      if (!md.moved && dist(p, md.startScreen) < 2) return;
+      md.moved = true;
+      const sp = toScene(view, p);
+      md.latest = maskDraftFor(md, applyMatrix(md.toLayer, sp.x, sp.y), e.shiftKey);
+      setMaskDraft({ layerId: md.layerId, rect: md.latest });
       return;
     }
     const pd = pathDragRef.current;
@@ -974,6 +1140,31 @@ export function Stage({
         onPathDrawn?.(dr.scene.map((q) => (toLocal ? applyMatrix(toLocal, q.x, q.y) : q)));
       return;
     }
+    const md = maskDragRef.current;
+    if (md) {
+      maskDragRef.current = null;
+      setMaskDraft(null);
+      const layer = state.layers[md.layerId];
+      if (!commit || !md.moved || !layer) return;
+      // Én kommando per dra; nøkkelbilde når masken er animert eller automatiske nøkkelbilder er på
+      setError(
+        run(
+          {
+            type: "UpdateLayers",
+            layers: [
+              {
+                layerId: layer.id,
+                fields: fieldsWithMaskAt(layer, layerFieldsOf(layer), time, md.latest, {
+                  autoKey,
+                }),
+              },
+            ],
+          },
+          md.handle < 0 ? "Flytt maske" : "Endre størrelse på maske",
+        ),
+      );
+      return;
+    }
     const pd = pathDragRef.current;
     if (pd) {
       pathDragRef.current = null;
@@ -1037,6 +1228,7 @@ export function Stage({
       dragRef.current?.pointerId === e.pointerId ||
       camDragRef.current?.pointerId === e.pointerId ||
       pathDragRef.current?.pointerId === e.pointerId ||
+      maskDragRef.current?.pointerId === e.pointerId ||
       drawRef.current?.pointerId === e.pointerId
     )
       endDrag(true);
@@ -1105,7 +1297,11 @@ export function Stage({
     }
     if (
       e.key === "Escape" &&
-      (dragRef.current || camDragRef.current || pathDragRef.current || drawRef.current)
+      (dragRef.current ||
+        camDragRef.current ||
+        pathDragRef.current ||
+        maskDragRef.current ||
+        drawRef.current)
     ) {
       e.preventDefault();
       endDrag(false);
@@ -1117,6 +1313,7 @@ export function Stage({
       dragRef.current ||
       camDragRef.current ||
       pathDragRef.current ||
+      maskDragRef.current ||
       !canEdit ||
       !selectedLayerId
     )

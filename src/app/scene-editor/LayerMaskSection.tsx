@@ -1,20 +1,30 @@
 /**
  * Maske og blandingsmodus for valgt lag (REQ-0175, mandat 11.2). Hver endring er én UpdateLayers-kommando
  * som kan angres. Rektangel og ellipse måles i lagets egne piksler (0,0 = lagets øverste venstre hjørne),
- * så masken følger laget når det flyttes, skaleres og roteres.
+ * så masken følger laget når det flyttes, skaleres og roteres. Plassering og størrelse kan animeres med
+ * nøkkelbilder som lagets egne egenskaper (DEC-0072): tallene viser masken på gjeldende bilde.
  */
-import { Field, Hint, NumberField, Section, inputClass } from "./inspector-fields";
+import { Field, Hint, KeyMarker, NumberField, Section, inputClass } from "./inspector-fields";
 import {
   BLEND_LABEL,
   BLEND_MODES,
+  MASK_FIELD,
   MAX_MASK_FEATHER,
+  fieldsWithMaskAt,
+  isAnimated,
+  layerFieldsOf,
   layerSize,
   layersOf,
+  maskAt,
+  removeKeyframesAt,
+  setKeyframe,
   type BlendMode,
   type Composition,
   type CompositionLayer,
   type LayerFields,
   type LayerMask,
+  type MaskProperty,
+  type MaskRect,
   type ProjectState,
 } from "@/core";
 
@@ -34,12 +44,18 @@ export function LayerMaskSection({
   layer,
   editable,
   apply,
+  frame,
+  autoKey,
 }: {
   state: ProjectState;
   composition: Composition;
   layer: CompositionLayer;
   editable: boolean;
   apply: (label: string, patch: Partial<LayerFields>) => void;
+  /** Gjeldende bilde (avspillingshodet). */
+  frame: number;
+  /** Automatiske nøkkelbilder: endringer i plassering og størrelse gir nøkkelbilde. */
+  autoKey: boolean;
 }) {
   const off = !editable;
   const mask = layer.mask ?? null;
@@ -81,6 +97,39 @@ export function LayerMaskSection({
   const setShape = (label: string, patch: Partial<ShapeMask>) => {
     if (shape) setMask(label, { ...shape, ...patch });
   };
+  // Masken på gjeldende bilde (følger nøkkelbildene, DEC-0072)
+  const nowMask = maskAt(layer, frame);
+  const now: ShapeMask | null = nowMask && nowMask.kind !== "layer" ? nowMask : null;
+  /** Ny plassering eller størrelse på gjeldende bilde (nøkkelbilde når den er animert eller ved autoKey). */
+  const setRect = (label: string, patch: Partial<MaskRect>) => {
+    if (!now) return;
+    const f = fieldsWithMaskAt(
+      layer,
+      layerFieldsOf(layer),
+      frame,
+      { ...now, ...patch },
+      { autoKey },
+    );
+    apply(label, { mask: f.mask ?? null, keyframes: f.keyframes });
+  };
+  /** Setter eller fjerner nøkkelbildet for én av maskens egenskaper på gjeldende bilde. */
+  function toggleKey(property: MaskProperty) {
+    if (!now) return;
+    const has = layer.keyframes.some((k) => k.property === property && k.frame === frame);
+    const keyframes = has
+      ? removeKeyframesAt(layer.keyframes, frame, [property])
+      : setKeyframe(layer.keyframes, property, frame, now[MASK_FIELD[property]]);
+    apply(has ? "Fjern nøkkelbilde for maske" : "Sett nøkkelbilde for maske", { keyframes });
+  }
+  const marker = (property: MaskProperty, label: string) => (
+    <KeyMarker
+      label={label}
+      animated={isAnimated(layer, property)}
+      keyed={layer.keyframes.some((k) => k.property === property && k.frame === frame)}
+      disabled={off}
+      onToggle={() => toggleKey(property)}
+    />
+  );
 
   return (
     <Section title="Maske og blanding">
@@ -129,33 +178,37 @@ export function LayerMaskSection({
           </Hint>
         </>
       ) : null}
-      {shape ? (
+      {shape && now ? (
         <div className="grid grid-cols-2 gap-2">
           <NumberField
             label="X (px)"
-            value={shape.x}
+            value={now.x}
             disabled={off}
-            onCommit={(x) => setShape("Flytt maske", { x })}
+            marker={marker("maskX", "Maske X (px)")}
+            onCommit={(x) => setRect("Flytt maske", { x })}
           />
           <NumberField
             label="Y (px)"
-            value={shape.y}
+            value={now.y}
             disabled={off}
-            onCommit={(y) => setShape("Flytt maske", { y })}
+            marker={marker("maskY", "Maske Y (px)")}
+            onCommit={(y) => setRect("Flytt maske", { y })}
           />
           <NumberField
             label="Bredde (px)"
-            value={shape.width}
+            value={now.width}
             disabled={off}
             valid={(n) => n > 0}
-            onCommit={(width) => setShape("Endre størrelse på maske", { width })}
+            marker={marker("maskWidth", "Maskebredde (px)")}
+            onCommit={(width) => setRect("Endre størrelse på maske", { width })}
           />
           <NumberField
             label="Høyde (px)"
-            value={shape.height}
+            value={now.height}
             disabled={off}
             valid={(n) => n > 0}
-            onCommit={(height) => setShape("Endre størrelse på maske", { height })}
+            marker={marker("maskHeight", "Maskehøyde (px)")}
+            onCommit={(height) => setRect("Endre størrelse på maske", { height })}
           />
           <NumberField
             label="Myk kant (px)"
@@ -186,7 +239,8 @@ export function LayerMaskSection({
       {shape ? (
         <Hint>
           Målt i lagets egne piksler ({Math.round(size.width)} × {Math.round(size.height)}) fra
-          øverste venstre hjørne. Masken følger laget.
+          øverste venstre hjørne. Masken følger laget. Dra midtpunktet eller hjørnene på masken i
+          scenen, og sett nøkkelbilder for å animere den.
         </Hint>
       ) : null}
       <Field label="Blanding">

@@ -12,7 +12,7 @@ import { framesToSeconds } from "../time";
 import { assetsInScene } from "../library";
 import { outdatedLayers } from "../library/impact";
 import { translationStatus } from "../translation";
-import { blocksOfVariant, orderedOccurrences } from "../views";
+import { blocksOfVariant, orderedOccurrences, sceneNumberOf } from "../views";
 import { estimateProduction, type ProductionEstimate } from "../screenplay/duration";
 import { matchingOccurrences, type SceneFilter } from "../screenplay/filter";
 import { filmClips } from "./film";
@@ -140,7 +140,7 @@ export function productionStatus(
     return {
       occurrenceId: o.id,
       active: o.active,
-      productionNumber: o.productionNumber,
+      productionNumber: sceneNumberOf(s, o),
       status,
       estimateSeconds: est,
       animaticSeconds,

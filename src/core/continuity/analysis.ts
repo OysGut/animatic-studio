@@ -12,7 +12,7 @@
  * - 2D-scener som viser en eldre versjon enn den som er godkjent nå (REQ-0132).
  */
 import type { Asset, ProjectState, ScriptBlock } from "../model";
-import { blocksOfVariant, orderedOccurrences } from "../views";
+import { blocksOfVariant, orderedOccurrences, sceneNumberOf } from "../views";
 import { characterName, mentions } from "../screenplay/filter";
 import { assetNames, editDistance, nameKey } from "../library";
 import { outdatedLayers } from "../library/impact";
@@ -99,17 +99,10 @@ export function continuityAnalysis(s0: ProjectState, productionId: string): Find
   // Kontinuiteten slik den er i produksjonen (lokale og avslåtte hendelser i en spinoff, DEC-0060)
   const s = continuityFor(s0, productionId);
   // Scener uten eget nummer i en avledet produksjon vises med hovedfilmens nummer
-  const mainForNumbers = Object.values(s.productions).find((p) => p.kind === "main");
-  const mainNumbers = new Map(
-    mainForNumbers
-      ? orderedOccurrences(s, mainForNumbers.id).map((o) => [o.sceneId, o.productionNumber])
-      : [],
-  );
-  const occs = orderedOccurrences(s, productionId).map((o) =>
-    o.productionNumber || !mainNumbers.get(o.sceneId)
-      ? o
-      : { ...o, productionNumber: mainNumbers.get(o.sceneId)! },
-  );
+  const occs = orderedOccurrences(s, productionId).map((o) => {
+    const n = sceneNumberOf(s, o);
+    return n === o.productionNumber ? o : { ...o, productionNumber: n };
+  });
   const active = occs.filter((o) => o.active);
   const blocksOf = new Map<string, ScriptBlock[]>();
   const blocks = (o: Occ) => {
