@@ -1398,6 +1398,7 @@ export type Database = {
           id: string
           monochrome: boolean
           order_key: string
+          planned_ms: number | null
           production_id: string
           production_number: string | null
           project_id: string
@@ -1419,6 +1420,7 @@ export type Database = {
           id: string
           monochrome?: boolean
           order_key: string
+          planned_ms?: number | null
           production_id: string
           production_number?: string | null
           project_id: string
@@ -1440,6 +1442,7 @@ export type Database = {
           id?: string
           monochrome?: boolean
           order_key?: string
+          planned_ms?: number | null
           production_id?: string
           production_number?: string | null
           project_id?: string
@@ -2225,6 +2228,10 @@ export type Database = {
           p_storage_key: string
         }
         Returns: string
+      }
+      remove_member: {
+        Args: { p_project: string; p_user: string }
+        Returns: undefined
       }
       revoke_invitation: { Args: { p_invitation: string }; Returns: undefined }
       set_invitation_role: {
