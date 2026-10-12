@@ -14,6 +14,90 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_account_limits: {
+        Row: {
+          monthly_cap_usd: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          monthly_cap_usd?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          monthly_cap_usd?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ai_provider_keys: {
+        Row: {
+          ciphertext: string
+          created_at: string
+          id: string
+          iv: string
+          key_hint: string
+          key_version: number
+          label: string
+          last_tested_at: string | null
+          provider: string
+          status: string
+          status_message: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ciphertext: string
+          created_at?: string
+          id: string
+          iv: string
+          key_hint: string
+          key_version?: number
+          label?: string
+          last_tested_at?: string | null
+          provider: string
+          status?: string
+          status_message?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ciphertext?: string
+          created_at?: string
+          id?: string
+          iv?: string
+          key_hint?: string
+          key_version?: number
+          label?: string
+          last_tested_at?: string | null
+          provider?: string
+          status?: string
+          status_message?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ai_spend: {
+        Row: {
+          key_owner: string
+          month: string
+          usd: number
+        }
+        Insert: {
+          key_owner: string
+          month: string
+          usd?: number
+        }
+        Update: {
+          key_owner?: string
+          month?: string
+          usd?: number
+        }
+        Relationships: []
+      }
       asset_relations: {
         Row: {
           created_at: string
@@ -814,18 +898,23 @@ export type Database = {
       generation_jobs: {
         Row: {
           asset_id: string | null
+          cost_usd: number | null
           created_at: string
           created_by: string
           error: string | null
           estimated_cost: number | null
+          external_id: string | null
           finished_at: string | null
           id: string
+          key_owner: string | null
           kind: string
           model: string
           occurrence_id: string | null
+          params: Json
           project_id: string
           prompt: string
           provider: string
+          provider_key_id: string | null
           reference_path: string | null
           reference_paths: Json
           result_path: string | null
@@ -835,18 +924,23 @@ export type Database = {
         }
         Insert: {
           asset_id?: string | null
+          cost_usd?: number | null
           created_at?: string
           created_by: string
           error?: string | null
           estimated_cost?: number | null
+          external_id?: string | null
           finished_at?: string | null
           id: string
+          key_owner?: string | null
           kind: string
           model: string
           occurrence_id?: string | null
+          params?: Json
           project_id: string
           prompt: string
           provider: string
+          provider_key_id?: string | null
           reference_path?: string | null
           reference_paths?: Json
           result_path?: string | null
@@ -856,18 +950,23 @@ export type Database = {
         }
         Update: {
           asset_id?: string | null
+          cost_usd?: number | null
           created_at?: string
           created_by?: string
           error?: string | null
           estimated_cost?: number | null
+          external_id?: string | null
           finished_at?: string | null
           id?: string
+          key_owner?: string | null
           kind?: string
           model?: string
           occurrence_id?: string | null
+          params?: Json
           project_id?: string
           prompt?: string
           provider?: string
+          provider_key_id?: string | null
           reference_path?: string | null
           reference_paths?: Json
           result_path?: string | null
@@ -895,6 +994,13 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generation_jobs_provider_key_id_fkey"
+            columns: ["provider_key_id"]
+            isOneToOne: false
+            referencedRelation: "ai_provider_keys"
             referencedColumns: ["id"]
           },
           {
