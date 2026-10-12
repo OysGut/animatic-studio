@@ -169,6 +169,13 @@
       "when": 1791803411930,
       "tag": "0023_0024_ai_providers",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1791803425364,
+      "tag": "0024_0025_ai_queue",
+      "breakpoints": true
     }
   ]
 }

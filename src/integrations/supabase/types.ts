@@ -314,6 +314,7 @@ export type Database = {
           names: Json
           project_id: string
           revision: number
+          sound_links: Json
           tags: Json
         }
         Insert: {
@@ -328,6 +329,7 @@ export type Database = {
           names?: Json
           project_id: string
           revision?: number
+          sound_links?: Json
           tags?: Json
         }
         Update: {
@@ -342,6 +344,7 @@ export type Database = {
           names?: Json
           project_id?: string
           revision?: number
+          sound_links?: Json
           tags?: Json
         }
         Relationships: [
@@ -911,15 +914,19 @@ export type Database = {
           model: string
           occurrence_id: string | null
           params: Json
+          priority: number
+          progress: number | null
           project_id: string
           prompt: string
           provider: string
           provider_key_id: string | null
+          queue_position: number | null
           reference_path: string | null
           reference_paths: Json
           result_path: string | null
           result_text: string | null
           segment_id: string | null
+          started_at: string | null
           status: string
         }
         Insert: {
@@ -937,15 +944,19 @@ export type Database = {
           model: string
           occurrence_id?: string | null
           params?: Json
+          priority?: number
+          progress?: number | null
           project_id: string
           prompt: string
           provider: string
           provider_key_id?: string | null
+          queue_position?: number | null
           reference_path?: string | null
           reference_paths?: Json
           result_path?: string | null
           result_text?: string | null
           segment_id?: string | null
+          started_at?: string | null
           status?: string
         }
         Update: {
@@ -963,15 +974,19 @@ export type Database = {
           model?: string
           occurrence_id?: string | null
           params?: Json
+          priority?: number
+          progress?: number | null
           project_id?: string
           prompt?: string
           provider?: string
           provider_key_id?: string | null
+          queue_position?: number | null
           reference_path?: string | null
           reference_paths?: Json
           result_path?: string | null
           result_text?: string | null
           segment_id?: string | null
+          started_at?: string | null
           status?: string
         }
         Relationships: [
