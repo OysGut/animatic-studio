@@ -8,7 +8,7 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 - Antall krav: **592**
 - Prioritet: P0: 143, P1: 263, P2: 147, P3: 39
 - Opprinnelse: mandat: 520, brukerbeslutning: 65, teknisk-anbefaling: 7
-- Status: Verifisert: 514, Implementert – ikke verifisert: 15, Under arbeid: 5, Ikke startet: 58
+- Status: Verifisert: 515, Implementert – ikke verifisert: 14, Under arbeid: 5, Ikke startet: 58
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -7098,14 +7098,15 @@ Angre og gjør om skal gjelde brukerens egne endringer og ikke reversere andre m
 - **Merknad:** Angrelisten er lokal per bruker og bruker inverser med revisjonskontroll, men ingen test viser at A sin angring lar B sin endring stå.
 
 #### REQ-0528 – Kostnadsgodkjenning er rollestyrt
-Bare medlemmer med rett til å godkjenne kostnader skal kunne starte betalte AI-genereringer eller endre budsjettgrenser i et delt prosjekt.
+Eiere og redaktører kan starte betalte AI-genereringer innenfor prosjektets budsjett og kostnadstaket for nøkkelen; kommentatorer og lesere kan ikke. Bare eieren kan endre AI-budsjettet, og bare nøkkeleieren kan endre kostnadstaket (DEC-0077, Mars' beslutning).
 
 - **Kilde:** Beslutning DEC-0010, DEC-0018 · **Opprinnelse:** teknisk-anbefaling · **Type:** sikkerhet · **Prioritet:** P2 · **Fase:** 5
 - **Moduler:** COLLAB, QUALITYCOST, SECURITY · **Invarianter:** INV-12, INV-C3
 - **Avhengigheter:** REQ-0523
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
-  - En redaktør uten kostnadsrett får ikke startet en betalt jobb; forsøket gir tydelig melding.
+  - En kommentator eller leser får ikke startet en betalt jobb; forsøket gir tydelig melding.
+  - En redaktør kan starte en betalt jobb innenfor budsjett og kostnadstak, men kan ikke endre budsjettet.
 - **Tester:**
   - integrasjon: backend avviser betalt jobb fra medlem uten kostnadsrett
 - **Implementering:** src/adapters/ai/generate-image.functions.ts, src/adapters/ai/generate-image.functions.ts (budsjettport), src/core/commands/apply.ts (SetAiBudget), src/adapters/storage/commands.functions.ts (bare eier)

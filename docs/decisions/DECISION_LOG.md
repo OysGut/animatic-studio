@@ -962,3 +962,10 @@ Regler: DEC-ID-er er permanente. En beslutning endres aldri i ettertid; den erst
   4. **Arkitektur:** ARCHITECTURE §3 viser hva som kjører hvor, hvorfor, og når en egen medietjeneste blir riktig (REQ-0010). Resource Library omfatter stilprofiler og mediefiler (REQ-0436). Plattformbindingene er begrunnet (REQ-0008), med kjent avvik KI-181.
 - **Funn som venter (ikke retting nå):** monteringens verktøylinje med mange ikonknapper, «Lovable» som navn i grensesnittet, bildedialogens oppsett (UX_REVIEW funn 5–6); avvist tekst ved samtidig redigering kastes (KI-182).
 - **Fortsatt hos Mars:** KI-179 (REQ-0528), KI-176, KI-178, globale ressurser, stilharmonisering (kostnad).
+
+## DEC-0077 – Redaktører kan starte betalte AI-jobber (REQ-0528)
+- **Dato:** 2026-10-12 · **Type:** Bekreftet av bruker
+- **Spørsmål (KI-179):** i dag kan en redaktør uten kostnadsrett starte betalte AI-jobber, i tråd med DEC-0045, mens REQ-0528 krevde kostnadsrett. Skal redaktører fortsatt kunne det?
+- **Mars' svar:** «Ja, til nr. 1» – redaktører skal fortsatt kunne starte betalte jobber uten egen kostnadsrett.
+- **Beslutning:** eiere og redaktører kan starte betalte AI-genereringer innenfor prosjektets budsjett og kostnadstaket for nøkkelen. Kommentatorer og lesere kan ikke. Bare eieren endrer AI-budsjettet, og bare nøkkeleieren endrer kostnadstaket. REQ-0528 er endret tilsvarende og verifisert (`tests/unit/req0528-roller.test.ts`, `verifisering3-ai-server.test.ts`). Ingen kodeendring.
+- **Samtidig:** den gamle adressen `src/routes/api/cron/ai-jobs.ts` er slettet av Lovable etter Mars' beskjed; bare `/api/public/cron/ai-jobs` finnes. Ingen planlagt jobb settes opp (DEC-0072), så `LOVABLE_CRON_SECRET` trengs ikke.

@@ -20098,8 +20098,9 @@ requirements:
   notes: "Angrelisten er lokal per bruker og bruker inverser med revisjonskontroll, men ingen test viser at A sin angring lar B sin endring stå."
 - id: REQ-0528
   title: Kostnadsgodkjenning er rollestyrt
-  text: Bare medlemmer med rett til å godkjenne kostnader skal kunne starte betalte AI-genereringer eller endre
-    budsjettgrenser i et delt prosjekt.
+  text: Eiere og redaktører kan starte betalte AI-genereringer innenfor prosjektets budsjett og kostnadstaket for
+    nøkkelen; kommentatorer og lesere kan ikke. Bare eieren kan endre AI-budsjettet, og bare nøkkeleieren kan endre
+    kostnadstaket (DEC-0077, Mars' beslutning).
   origin: teknisk-anbefaling
   source:
     decision: DEC-0010, DEC-0018
@@ -20116,16 +20117,19 @@ requirements:
   dependencies:
   - REQ-0523
   acceptance:
-  - En redaktør uten kostnadsrett får ikke startet en betalt jobb; forsøket gir tydelig melding.
+  - En kommentator eller leser får ikke startet en betalt jobb; forsøket gir tydelig melding.
+  - En redaktør kan starte en betalt jobb innenfor budsjett og kostnadstak, men kan ikke endre budsjettet.
   tests:
   - 'integrasjon: backend avviser betalt jobb fra medlem uten kostnadsrett'
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - "src/adapters/ai/generate-image.functions.ts"
   - "src/adapters/ai/generate-image.functions.ts (budsjettport)"
   - "src/core/commands/apply.ts (SetAiBudget)"
   - "src/adapters/storage/commands.functions.ts (bare eier)"
   verification:
+  - "tests/unit/req0528-roller.test.ts"
+  - "tests/unit/verifisering3-ai-server.test.ts"
   - "tests/unit/ai-control.test.ts"
   history:
   - date: '2026-10-08'
@@ -20143,6 +20147,9 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0075
     change: "Vurdert: serverfunksjonene krever bare rollen redaktør (ROLE_RANK editor), ikke kostnadsrett (can_approve_costs, som migrasjon 0020 bare gir eiere). En redaktør uten kostnadsrett kan derfor starte betalte jobber (demonstrert i verifisering3-ai-server.test.ts). Bare budsjettet er begrenset til eieren."
+  - date: '2026-10-12'
+    decision: DEC-0077
+    change: "Bekreftet av bruker: redaktører og eiere kan starte betalte jobber innenfor budsjett og kostnadstak (DEC-0045 gjelder); bare eieren endrer budsjettet. Tekst og akseptanse endret; verifisert med rolletester."
   notes: 'Teknisk utledning av DEC-0003 (bekreftet). Selve løsningen er teknisk anbefaling (DEC-0010). Hvem som
     eier API-nøklene i et delt prosjekt er et åpent spørsmål (OPEN_QUESTIONS Q-01, DEC-0018 – midlertidig antakelse).
     DEC-0021: Mars betaler alle API-kostnader i testfasen; kostnadsdeling avtales utenfor appen.'

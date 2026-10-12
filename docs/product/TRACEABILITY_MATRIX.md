@@ -20,12 +20,12 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | INV-09 | Karakterkontinuitet følger fortellingstid, også ved flashbacks. | 16 | 16 |
 | INV-10 | Produksjonsteknisk segmentering endrer ikke manusscenenes identiteter. | 11 | 11 |
 | INV-11 | Generativ AI er valgfritt for ordinær 2D-animatic-avspilling og eksport. | 13 | 13 |
-| INV-12 | Betalte API-kall følger eksplisitte kostnadsgodkjenninger. | 20 | 16 |
+| INV-12 | Betalte API-kall følger eksplisitte kostnadsgodkjenninger. | 20 | 17 |
 | INV-13 | Delte ressurser er versjonerte og ikke-destruktive. | 25 | 19 |
 | INV-14 | Deaktivering/skjuling er aldri sletting; materiale kan gjenaktiveres. | 17 | 17 |
 | INV-C1 | Ingen stille overskriving ved samarbeid (revisjonskontroll) – DEC-0003/DEC-0010. | 2 | 2 |
 | INV-C2 | Tilgang håndheves i backend (RLS) – teknisk, DEC-0010. | 3 | 3 |
-| INV-C3 | Bare medlemmer med kostnadsrett kan godkjenne betalte kall – midlertidig, DEC-0018/Q-01. | 1 | 0 |
+| INV-C3 | Bare medlemmer med kostnadsrett kan godkjenne betalte kall – midlertidig, DEC-0018/Q-01. | 1 | 1 |
 
 ## Dekning per modul
 
@@ -41,14 +41,14 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | AUDIO | Audio Engine | 38 | 1 | 38 | 38 |
 | PROMPT | Prompt Orchestration Engine | 47 | 15 | 43 | 40 |
 | PROVIDER | Provider Adapters | 26 | 6 | 24 | 21 |
-| QUALITYCOST | Quality & Cost Engine | 28 | 7 | 27 | 24 |
+| QUALITYCOST | Quality & Cost Engine | 28 | 7 | 27 | 25 |
 | QUEUE | Render Queue | 35 | 13 | 35 | 32 |
 | VERSION | Version & Dependency Engine | 90 | 36 | 88 | 85 |
 | L10N | Localization Engine | 38 | 4 | 37 | 37 |
 | PRESENT | Presentation Engine | 30 | 3 | 25 | 25 |
 | EXPORT | Export Engine | 58 | 12 | 58 | 57 |
-| SECURITY | Security & Storage | 33 | 5 | 32 | 28 |
-| COLLAB | Collaboration & Access | 13 | 0 | 13 | 12 |
+| SECURITY | Security & Storage | 33 | 5 | 32 | 29 |
+| COLLAB | Collaboration & Access | 13 | 0 | 13 | 13 |
 | UI | Brukergrensesnitt og designsystem | 155 | 20 | 151 | 146 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 7 | 5 |
 
@@ -60,7 +60,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | 2 | 97 | 91 |
 | 3 | 70 | 67 |
 | 4 | 85 | 83 |
-| 5 | 77 | 69 |
+| 5 | 77 | 70 |
 | 6 | 49 | 47 |
 | 7 | 63 | 62 |
 | 8 | 39 | 25 |
@@ -597,7 +597,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0525 | Beslutning DEC-0010 | COLLAB, VERSION | db/migrations/0001_core.sql#change_log | 1 | tests/db/run-db-tests.ts::redigering av replikk gir ny historikkrad med forfatter | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
 | REQ-0526 | Beslutning DEC-0010 | COLLAB, CORE, VERSION | src/core/commands/apply.ts, db/migrations/0001_core.sql#apply_changes | 2 | tests/unit/commands.test.ts::en skriving basert på gammel revisjon avvises og endrer ingenting, tests/db/run-db-tests.ts::INV-C1: en endring basert på gammel revisjon avvises av databasen (P0409) | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
 | REQ-0527 | Beslutning DEC-0010 | COLLAB, VERSION, UI | src/core/commands/apply.ts, src/app/project/use-commands.ts | 1 | tests/unit/verifisering-kommandoer.test.ts::REQ-0527: når A angrer, reverseres bare A sin endring – B sin endring i en annen blokk står, tests/unit/verifisering-kommandoer.test.ts::REQ-0527: A sin angring etter at B har endret samme blokk avvises med revisjonskontroll | Verifisert | 2026-10-12 DEC-0073: A og B endrer ulike blokker; A sin angring (med revisjonskontroll som angrelisten) reverserer bare A sin blokk. Angring etter at B har endret samme blokk avvises. |
-| REQ-0528 | Beslutning DEC-0010, DEC-0018 | COLLAB, QUALITYCOST, SECURITY | src/adapters/ai/generate-image.functions.ts, src/adapters/ai/generate-image.functions.ts (budsjettport), src/core/commands/apply.ts (SetAiBudget), src/adapters/storage/commands.functions.ts (bare eier) | 1 | tests/unit/ai-control.test.ts | Implementert – ikke verifisert | 2026-10-12 DEC-0075: Vurdert: serverfunksjonene krever bare rollen redaktør (ROLE_RANK editor), ikke kostnadsrett (can_approve_costs, som migrasjon 0020 bare gir eiere). En redaktør uten kostnadsrett kan derfor starte betalte jobber (demonstrert i verifisering3-ai-server.test.ts). Bare budsjettet er begrenset til eieren. |
+| REQ-0528 | Beslutning DEC-0010, DEC-0018 | COLLAB, QUALITYCOST, SECURITY | src/adapters/ai/generate-image.functions.ts, src/adapters/ai/generate-image.functions.ts (budsjettport), src/core/commands/apply.ts (SetAiBudget), src/adapters/storage/commands.functions.ts (bare eier) | 1 | tests/unit/req0528-roller.test.ts, tests/unit/verifisering3-ai-server.test.ts, tests/unit/ai-control.test.ts | Verifisert | 2026-10-12 DEC-0077: Bekreftet av bruker: redaktører og eiere kan starte betalte jobber innenfor budsjett og kostnadstak (DEC-0045 gjelder); bare eieren endrer budsjettet. Tekst og akseptanse endret; verifisert med rolletester. |
 | REQ-0529 | Beslutning DEC-0010 | COLLAB, VERSION | db/migrations/0023_member_removal_planned.sql#remove_member, src/app/projects/MembersSection.tsx | 1 | tests/db/run-db-tests.ts::0023: eieren fjerner et medlem uten å miste noe; planlagt lengde lagres, tests/visual/screens.mjs::78b-fjern-medlem | Verifisert | 2026-10-12 DEC-0067: Eieren kan fjerne et medlem; medlemskapet avsluttes, bidragene og historikken står, ventende invitasjoner trekkes tilbake |
 | REQ-0530 | Kap. 1 (l. 6) | PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet (lagt til ved dekningskontroll – linje 6 manglet) |
 | REQ-0531 | Beslutning DEC-0027 | SCRIPT, UI | src/core/screenplay/filter.ts#filterPages, src/app/script/ScriptWorkspace.tsx | 2 | tests/unit/filter.test.ts::viser bare den valgte scenens linjer med samme sidetall som i hele manuset, tests/visual/screens.mjs::16-vis-kun-valgt-scene | Verifisert | 2026-10-09 DEC-0027: Bygget i M2 del 2; status Verifisert |

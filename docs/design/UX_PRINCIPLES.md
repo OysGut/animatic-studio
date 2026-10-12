@@ -47,7 +47,7 @@ De hyppigste oppgavene (finne en scene, flytte den, velge aktiv versjon, løse e
 *Kilde:* mandat 1.3 (oversiktlig, effektivt), 30.2; REQ-0427–REQ-0429. *Kontroll:* oppgavetellinger i `INFORMATION_ARCHITECTURE.md` holdes oppdatert.
 
 ### P11 – Ingen overraskende kostnader
-Betalte handlinger viser estimat (med usikkerhet) før start og krever eksplisitt godkjenning av en med kostnadsrett. Grensesnittet lover ikke bedre resultat for høyere pris.
+Betalte handlinger viser estimat (med usikkerhet) før start og krever eksplisitt bekreftelse fra en eier eller redaktør (DEC-0077). Grensesnittet lover ikke bedre resultat for høyere pris.
 *Kilde:* mandat 19.3, 19.5, 19.6, 21.2 B; INV-12; REQ-0277, REQ-0279–REQ-0284, REQ-0528. *Kontroll:* ingen knapp starter betalt jobb direkte uten kostnadsdialog.
 
 ### P12 – Langvarige jobber er synlige og overlever

@@ -14,7 +14,8 @@ Oppdatert: 2026-10-12 (økt 6, DEC-0061–0076)
 ## Nå: DEC-0076 – kravverifisering runde 4 og UX-gjennomgang – ferdig, venter på Mars
 - Mars: «Fortsett» (Teknisk anbefaling). Ingen ny migrasjon (0027 venter fortsatt).
 - [x] 34 krav vurdert, funn rettet, UX-gjennomgang mot de ni kvalitetene
-- [ ] **Mars:** avgjør REQ-0528 (KI-179), KI-176, KI-178, globale ressurser og stilharmonisering
+- [x] **Mars:** REQ-0528 avgjort (DEC-0077: redaktører kan starte betalte jobber)
+- [ ] **Mars:** avklar KI-176, KI-178, globale ressurser og stilharmonisering
 
 ## Før: DEC-0075 – kravverifisering runde 3, kostnadsanslag, versjonssammenligning, tidsmodell – ferdig, venter på Mars
 - Mars: «Da fortsetter du videre» (Teknisk anbefaling). Ingen ny migrasjon (0027 fra DEC-0072 venter fortsatt).
@@ -36,7 +37,7 @@ Oppdatert: 2026-10-12 (økt 6, DEC-0061–0076)
 ## Før: DEC-0072 – arbeidsliste, ingen automatisk generering og ti bolker – ferdig, venter på Mars
 - Mars: «Tar du de neste 10?», «vi kjører ingen genereringer av video automatisk …» og ønsket om arbeidsliste for oppdaterte ressurser (Bekreftet av bruker).
 - Ferdig: arbeidsliste, stillbilder, valgte scener i eksport, sporbarhet, koblinger for en linje, teknisk visning, lagring og eksportinnstillinger, film i spinoff, animerte masker, ende-til-ende-test. Migrasjon 0027.
-- [ ] **Mars:** commit og push (slett `src/routes/api/cron/ai-jobs.ts`), kjør LOVABLE_SYNC (0027).
+- [x] **Mars:** commit og push, gammel cron-adresse slettet av Lovable, 0027 kjørt (databasen på versjon 27).
 - [ ] **Mars:** prøv arbeidslisten: last opp nytt bilde av en ressurs, godkjenn med «behold» i noen scener, åpne «Gå gjennom scenene …».
 
 ## Før: DEC-0071 – ti store bolker til – levert og kjørt i Lovable

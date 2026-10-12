@@ -22,7 +22,7 @@ Status per invariant oppdateres i `TRACEABILITY_MATRIX.md` (generert).
 | INV-14 | Deaktivering er ikke sletting | Etter `SetOccurrenceActive(false)` finnes all data uendret og kan gjenaktiveres til identisk tilstand. Ingen kommando sletter takes, manusversjoner eller ressursversjoner. | `inv14-deactivate-not-delete.test.ts` | Ikke implementert |
 | INV-C1 | Ingen stille overskriving ved samarbeid (DEC-0003; løsning DEC-0010) | En skriving med utdatert `revision` avvises; en annen brukers endring går aldri tapt. | `invC1-revision-conflict.test.ts` | Ikke implementert |
 | INV-C2 | Tilgang håndheves i backend (teknisk, DEC-0010) | Ikke-medlem får ingen rader/filer; rolle uten skriverett kan ikke skrive. | `tests/rls/role-matrix` | Ikke implementert |
-| INV-C3 | Kostnadsrett (midlertidig, DEC-0018, Q-01) | Bare medlemmer med `can_approve_costs` kan gi kostnadsgodkjenning. | `invC3-cost-role.test.ts` | Ikke implementert |
+| INV-C3 | Kostnadsrett (DEC-0077, Bekreftet av bruker) | Eiere og redaktører kan starte betalte jobber innenfor budsjett og kostnadstak; kommentatorer og lesere kan ikke. Bare eieren endrer AI-budsjettet. `can_approve_costs` brukes ikke til å stoppe genereringer. | `tests/unit/req0528-roller.test.ts` | Verifisert (DEC-0077) |
 
 ## Hvor invariantene kan brytes (risikoområder)
 - Kode i UI som skriver direkte til tabeller i stedet for via kommandoer/RPC.
@@ -33,4 +33,4 @@ Status per invariant oppdateres i `TRACEABILITY_MATRIX.md` (generert).
 - Oversettelsesflyt som skriver tilbake til norsk blokk (INV-06).
 
 ## Regel for endring av invarianter
-INV-01–INV-13 er Mars' liste (DEC-0019, del B3); INV-14 er fra mandat kap. 2. De kan bare endres av en beslutning **Bekreftet av bruker**. Tekniske tolkninger i tabellen er merket. INV-C1/C2 er tekniske utledninger av DEC-0003 (DEC-0010); INV-C3 er en midlertidig antakelse (DEC-0018).
+INV-01–INV-13 er Mars' liste (DEC-0019, del B3); INV-14 er fra mandat kap. 2. De kan bare endres av en beslutning **Bekreftet av bruker**. Tekniske tolkninger i tabellen er merket. INV-C1/C2 er tekniske utledninger av DEC-0003 (DEC-0010); INV-C3 er bekreftet av Mars (DEC-0077, erstatter den midlertidige antakelsen i DEC-0018).

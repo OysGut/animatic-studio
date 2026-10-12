@@ -22,7 +22,7 @@ interface ProviderAdapter {
 
 ## 2. Kostnadsport (INV-12)
 1. Klient ber om estimat → server beregner med adapteren (antall kandidater, varighet, oppløsning, profil, ekstrarunder).
-2. Bruker med `can_approve_costs` godkjenner beløp → `cost_approval` lagres på jobben.
+2. En eier eller redaktør bekrefter beløpet i dialogen (DEC-0077) → jobben lagres med anslag; budsjett og kostnadstak sjekkes på serveren.
 3. Server-RPC `start_job` kontrollerer: godkjenning finnes, beløp ≤ alle budsjetter (jobb, scene, gruppe, produksjon, prosjekt – strengeste gjelder), medregnet allerede brukt og retries. Ellers avvises.
 4. Faktisk kostnad registreres når leverandøren oppgir den; avvik mot estimat vises.
 Ingen automatisk handling (manusendring, ressursendring, avviksløsning) kan opprette en betalt jobb uten trinn 2.

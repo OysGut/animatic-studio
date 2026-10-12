@@ -1,80 +1,14 @@
-Arbeidsliste, AI bare på brukerens initiativ, stillbilder, valgte scener, sporbarhet, plakat i trykkoppløsning, Fountain, kostnadsanslag, versjonssammenligning og kravverifisering (DEC-0072–0076)
+Redaktører kan starte betalte AI-jobber (DEC-0077, REQ-0528) og opprydding etter flyttet cron-adresse
 
-Databaseendring: migrasjon 0027. Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter
-push. Den gamle filen src/routes/api/cron/ai-jobs.ts skal være slettet (adressen er flyttet til
-src/routes/api/public/cron/ai-jobs.ts).
+Ingen databaseendring. Lim inn docs/development/LOVABLE_SYNC.md i Lovable etter push.
 
-Mars' beslutninger (DEC-0072, Bekreftet av bruker):
-- AI-video og annen generering startes alltid av brukeren – scene for scene, flere, hele eller deler.
-  Ingen planlagt bakgrunnsjobb (REQ-0592).
-- Arbeidsliste for oppdaterte ressurser: scenene som fortsatt viser en eldre versjon (2D-lag, stillbilder,
-  AI-video laget med eldre versjon), gått gjennom én og én: «Bruk ny versjon her», «Behold» eller
-  «Åpne scenen». AI-video lages aldri på nytt av seg selv (REQ-0591). Åpnes fra ressursen og
-  prosjektoversikten.
+Mars' beslutning (DEC-0077, Bekreftet av bruker):
+- Eiere og redaktører kan starte betalte AI-genereringer innenfor prosjektets budsjett og kostnadstaket for
+  nøkkelen; kommentatorer og lesere kan ikke. Bare eieren endrer AI-budsjettet. REQ-0528 og INV-C3 er endret
+  og verifisert med rolletester (tests/unit/req0528-roller.test.ts). Ingen kodeendring.
 
-Ti store bolker (Teknisk anbefaling, ingen ny kostnad):
-- Stillbilde fra biblioteket i monteringen med valgt varighet, i visning og eksport.
-- Eksport av valgte scener (også med hull mellom), lyd og undertekster følger scenen.
-- Sporbarhet per AI-jobb: systeminstruks, parametere, referanser med versjon, manusversjon og linjer.
-- Manusets inspektør viser alle koblinger for en linje: opptak, tidspunkt, 2D-hendelser og filmklipp.
-- «Teknisk» i monteringen: tidskoder, bildenummer og filinformasjon per scene og del.
-- Lagring per kategori i prosjektoversikten; eksportinnstillingene huskes per produksjon.
-- Spinoffer viser hovedfilmens film og klipping for delte scener (til spinoffen velger selv).
-- Masker kan animeres og flyttes/endres med håndtak på lerretet.
-- Ende-til-ende-test fra manus til eksport uten AI; rettinger (riktig variant ved «Legg inn», avvik ved
-  manusdekning).
-- Migrasjon 0027: reviewed_versions (lag og versjoner av scener), export_settings (produksjoner).
+Opprydding:
+- Den gamle adressen src/routes/api/cron/ai-jobs.ts er slettet (av Lovable); dokumentene viser nå bare
+  /api/public/cron/ai-jobs. Ingen planlagt jobb settes opp (DEC-0072), så LOVABLE_CRON_SECRET trengs ikke.
 
-Neste gruppe (DEC-0073, Teknisk anbefaling, ingen ny migrasjon):
-- AI-køen uten bakgrunnsjobb: nettleseren til en redaktør sender jobber brukeren har lagt i kø, henter og
-  legger inn ferdige videoer (også siste bilde til neste segment) og merker stoppede jobber – på alle
-  prosjektsider. Ingen ny generering startes. «For mange forespørsler» legger jobben tilbake i kø;
-  kostnadstaket sjekkes igjen før sending. Nøkkelen fjernes også fra logglinjer.
-- Valgte scener: lyd og undertekster kuttes ved slutten av hver rekke av naboscener.
-- Arbeidslisten tar med bildeskifter og språkbilder; laget i sceneeditoren viser dem.
-- Manus: «Fjern oversettelsene …» fjerner alle oversettelser til et språk i én angrebar endring.
-- Dialogspor opptil 3 timer i én WAV-fil (lages i biter).
-- Plakat: håndtak for rotasjon og størrelse (også roterte elementer); typeskifte beholder endringer.
-- Ny rolle vises uten å laste siden på nytt.
-- Planlagt lengde blir ikke stående feil når deling/sammenslåing angres.
-- Fountain: dobbel dialog, sentrert tekst, sangtekst og notater bevares i rundtur.
-- Kravverifisering: 20 krav verifisert med nye tester (tests/unit/verifisering-*.test.ts).
-
-Neste gruppe (DEC-0074, Teknisk anbefaling, ingen ny migrasjon):
-- Plakat som PNG i full trykkoppløsning (tegnes i striper; 70 × 100 cm i 300 ppi).
-- Spinoffer viser hovedfilmens scenenummer for gjenbrukte scener (også i manuseksporten).
-- Opptak og lyd i sceneeditoren også for delte scener i en spinoff.
-- Språkversjoner: «Start tidligere» regner fra forrige engelske lydklipp; godkjenning viser språkbilder.
-- Fullskjermbilder gjør resten av siden utilgjengelig for skjermlesere mens de vises.
-- Import: beskjed hvis originalen ikke kunne registreres.
-- Ingen tekst under 11 px (designsystemet), med test.
-- Nettlesertester for dra og slipp i laglisten, maske- og plakathåndtak og valgte scener.
-- Kravverifisering runde 2: 9 krav verifisert.
-
-Neste gruppe (DEC-0075, Teknisk anbefaling, ingen ny migrasjon):
-- Kravverifisering runde 3: 33 krav vurdert, 23 Verifisert; nettlesersjekk med 73 kontroller.
-- Rettet: oversikten kunne rulles ut i tom skjerm; nøytralt AI-ikon i stedet for «gnister»; lenke fra
-  manuset til sceneeditoren og hovedmenyen åpner sist valgte scene; USD-sum for egne nøkler på oversikten.
-- Bekreftelser før generering viser modell, innsatsnivå, oppløsning, antall, lengde, ekstrarunder og sum.
-- Leverandørkatalogen beskriver begrensninger strukturert (startbilde, lydlengder, lydfunksjoner).
-- Sammenlign alle versjoner av en scene side om side; manusversjoner viser endrede karakterer, objekter
-  og byttet taler; tid regnes begge veier mellom film, scene, del og kilde.
-- Innsatsnivå lagres med jobben; selektiv angring i kjernen; «Prøv registreringen igjen» ved import;
-  beskrivelsene kan endres i «Oppdater med AI».
-- Sikkerhet: ugyldig lengde (NaN) avvises og kan ikke slippe forbi kostnadstaket.
-- Køen telles på nytt etter at en jobb er tatt (KI-175); plakateksport stopper når dialogen lukkes.
-- Venter på Mars: REQ-0528 (redaktør uten kostnadsrett kan starte betalte jobber, KI-179).
-
-Krav: REQ-0053 REQ-0078 REQ-0105 REQ-0168 REQ-0273 REQ-0275 REQ-0280 REQ-0311 REQ-0318 REQ-0405
-REQ-0424 REQ-0426 REQ-0443 REQ-0489
-
-Neste gruppe (DEC-0076, Teknisk anbefaling, ingen ny migrasjon):
-- Kravverifisering runde 4: 34 krav vurdert; nye tester og nettlesersjekk med 58 kontroller.
-- UX-gjennomgang mot mandatets ni kvaliteter, med kontroller som brukes i hver gjennomgang.
-- Sikkerhet: forbruket med egne nøkler kan aldri bli NaN og slippe forbi kostnadstaket.
-- Kostnadsanslag også for innebygd bildegenerering og AI-stemmer.
-- «Video for flere scener»: knappene står fast. Lyd og bilder i bruk teller som brukt i biblioteket.
-- Manusets visningsvalg samlet under «Visning».
-- ARCHITECTURE: hva som kjører hvor og hvorfor, plattformbindinger, Resource Library.
-
-Krav: REQ-0008 REQ-0010 REQ-0011 REQ-0280 REQ-0436 REQ-0491 (og 28 verifiserte i runde 4)
+Krav: REQ-0528
