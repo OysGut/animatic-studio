@@ -1904,6 +1904,50 @@ export type Database = {
           },
         ]
       }
+      style_profiles: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          guide: Json
+          id: string
+          is_default: boolean
+          name: string
+          project_id: string
+          removed: boolean
+          revision: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          guide: Json
+          id: string
+          is_default?: boolean
+          name: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          guide?: Json
+          id?: string
+          is_default?: boolean
+          name?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "style_profiles_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       takes: {
         Row: {
           accepted_from: Json

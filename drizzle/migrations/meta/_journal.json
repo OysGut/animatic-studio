@@ -141,6 +141,13 @@
       "when": 1791739220159,
       "tag": "0019_0020_member_roles",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1791803360862,
+      "tag": "0020_0021_style_profiles",
+      "breakpoints": true
     }
   ]
 }
