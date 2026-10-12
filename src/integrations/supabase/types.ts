@@ -14,6 +14,90 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_account_limits: {
+        Row: {
+          monthly_cap_usd: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          monthly_cap_usd?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          monthly_cap_usd?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ai_provider_keys: {
+        Row: {
+          ciphertext: string
+          created_at: string
+          id: string
+          iv: string
+          key_hint: string
+          key_version: number
+          label: string
+          last_tested_at: string | null
+          provider: string
+          status: string
+          status_message: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ciphertext: string
+          created_at?: string
+          id: string
+          iv: string
+          key_hint: string
+          key_version?: number
+          label?: string
+          last_tested_at?: string | null
+          provider: string
+          status?: string
+          status_message?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ciphertext?: string
+          created_at?: string
+          id?: string
+          iv?: string
+          key_hint?: string
+          key_version?: number
+          label?: string
+          last_tested_at?: string | null
+          provider?: string
+          status?: string
+          status_message?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ai_spend: {
+        Row: {
+          key_owner: string
+          month: string
+          usd: number
+        }
+        Insert: {
+          key_owner: string
+          month: string
+          usd?: number
+        }
+        Update: {
+          key_owner?: string
+          month?: string
+          usd?: number
+        }
+        Relationships: []
+      }
       asset_relations: {
         Row: {
           created_at: string
@@ -221,6 +305,7 @@ export type Database = {
         Row: {
           archived: boolean
           category: string
+          context_names: Json
           created_at: string
           created_by: string | null
           description: string
@@ -230,11 +315,14 @@ export type Database = {
           names: Json
           project_id: string
           revision: number
+          sound_links: Json
           tags: Json
+          voice: Json | null
         }
         Insert: {
           archived?: boolean
           category?: string
+          context_names?: Json
           created_at?: string
           created_by?: string | null
           description?: string
@@ -244,11 +332,14 @@ export type Database = {
           names?: Json
           project_id: string
           revision?: number
+          sound_links?: Json
           tags?: Json
+          voice?: Json | null
         }
         Update: {
           archived?: boolean
           category?: string
+          context_names?: Json
           created_at?: string
           created_by?: string | null
           description?: string
@@ -258,7 +349,9 @@ export type Database = {
           names?: Json
           project_id?: string
           revision?: number
+          sound_links?: Json
           tags?: Json
+          voice?: Json | null
         }
         Relationships: [
           {
@@ -449,6 +542,7 @@ export type Database = {
           revision: number
           source: string
           take_id: string | null
+          transition_ms: number
         }
         Insert: {
           created_at?: string
@@ -463,6 +557,7 @@ export type Database = {
           revision?: number
           source: string
           take_id?: string | null
+          transition_ms?: number
         }
         Update: {
           created_at?: string
@@ -477,6 +572,7 @@ export type Database = {
           revision?: number
           source?: string
           take_id?: string | null
+          transition_ms?: number
         }
         Relationships: [
           {
@@ -507,6 +603,7 @@ export type Database = {
           anchor: Json | null
           asset_id: string | null
           asset_variant_id: string | null
+          blend: string
           composition_id: string
           created_at: string
           created_by: string | null
@@ -519,6 +616,7 @@ export type Database = {
           kind: string
           language_images: Json
           locked: boolean
+          mask: Json | null
           motion_path: Json | null
           name: string
           order_key: string
@@ -535,6 +633,7 @@ export type Database = {
           anchor?: Json | null
           asset_id?: string | null
           asset_variant_id?: string | null
+          blend?: string
           composition_id: string
           created_at?: string
           created_by?: string | null
@@ -547,6 +646,7 @@ export type Database = {
           kind: string
           language_images?: Json
           locked?: boolean
+          mask?: Json | null
           motion_path?: Json | null
           name?: string
           order_key: string
@@ -563,6 +663,7 @@ export type Database = {
           anchor?: Json | null
           asset_id?: string | null
           asset_variant_id?: string | null
+          blend?: string
           composition_id?: string
           created_at?: string
           created_by?: string | null
@@ -575,6 +676,7 @@ export type Database = {
           kind?: string
           language_images?: Json
           locked?: boolean
+          mask?: Json | null
           motion_path?: Json | null
           name?: string
           order_key?: string
@@ -814,59 +916,92 @@ export type Database = {
       generation_jobs: {
         Row: {
           asset_id: string | null
+          cost_usd: number | null
           created_at: string
           created_by: string
           error: string | null
           estimated_cost: number | null
+          external_id: string | null
           finished_at: string | null
           id: string
+          key_owner: string | null
           kind: string
           model: string
           occurrence_id: string | null
+          params: Json
+          priority: number
+          progress: number | null
           project_id: string
           prompt: string
           provider: string
+          provider_key_id: string | null
+          queue_position: number | null
           reference_path: string | null
+          reference_paths: Json
           result_path: string | null
+          result_text: string | null
           segment_id: string | null
+          started_at: string | null
           status: string
         }
         Insert: {
           asset_id?: string | null
+          cost_usd?: number | null
           created_at?: string
           created_by: string
           error?: string | null
           estimated_cost?: number | null
+          external_id?: string | null
           finished_at?: string | null
           id: string
+          key_owner?: string | null
           kind: string
           model: string
           occurrence_id?: string | null
+          params?: Json
+          priority?: number
+          progress?: number | null
           project_id: string
           prompt: string
           provider: string
+          provider_key_id?: string | null
+          queue_position?: number | null
           reference_path?: string | null
+          reference_paths?: Json
           result_path?: string | null
+          result_text?: string | null
           segment_id?: string | null
+          started_at?: string | null
           status?: string
         }
         Update: {
           asset_id?: string | null
+          cost_usd?: number | null
           created_at?: string
           created_by?: string
           error?: string | null
           estimated_cost?: number | null
+          external_id?: string | null
           finished_at?: string | null
           id?: string
+          key_owner?: string | null
           kind?: string
           model?: string
           occurrence_id?: string | null
+          params?: Json
+          priority?: number
+          progress?: number | null
           project_id?: string
           prompt?: string
           provider?: string
+          provider_key_id?: string | null
+          queue_position?: number | null
           reference_path?: string | null
+          reference_paths?: Json
           result_path?: string | null
+          result_text?: string | null
           segment_id?: string | null
+          started_at?: string | null
           status?: string
         }
         Relationships: [
@@ -889,6 +1024,13 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generation_jobs_provider_key_id_fkey"
+            columns: ["provider_key_id"]
+            isOneToOne: false
+            referencedRelation: "ai_provider_keys"
             referencedColumns: ["id"]
           },
           {
@@ -1392,6 +1534,7 @@ export type Database = {
           id: string
           monochrome: boolean
           order_key: string
+          planned_ms: number | null
           production_id: string
           production_number: string | null
           project_id: string
@@ -1413,6 +1556,7 @@ export type Database = {
           id: string
           monochrome?: boolean
           order_key: string
+          planned_ms?: number | null
           production_id: string
           production_number?: string | null
           project_id: string
@@ -1434,6 +1578,7 @@ export type Database = {
           id?: string
           monochrome?: boolean
           order_key?: string
+          planned_ms?: number | null
           production_id?: string
           production_number?: string | null
           project_id?: string
@@ -1904,10 +2049,58 @@ export type Database = {
           },
         ]
       }
+      style_profiles: {
+        Row: {
+          applies_to: Json
+          created_at: string
+          created_by: string | null
+          guide: Json
+          id: string
+          is_default: boolean
+          name: string
+          project_id: string
+          removed: boolean
+          revision: number
+        }
+        Insert: {
+          applies_to?: Json
+          created_at?: string
+          created_by?: string | null
+          guide: Json
+          id: string
+          is_default?: boolean
+          name: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+        }
+        Update: {
+          applies_to?: Json
+          created_at?: string
+          created_by?: string | null
+          guide?: Json
+          id?: string
+          is_default?: boolean
+          name?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "style_profiles_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       takes: {
         Row: {
           accepted_from: Json
           audio_language: string | null
+          coverage: Json | null
           created_at: string
           created_by: string | null
           duration_frames: number | null
@@ -1925,6 +2118,7 @@ export type Database = {
         Insert: {
           accepted_from?: Json
           audio_language?: string | null
+          coverage?: Json | null
           created_at?: string
           created_by?: string | null
           duration_frames?: number | null
@@ -1942,6 +2136,7 @@ export type Database = {
         Update: {
           accepted_from?: Json
           audio_language?: string | null
+          coverage?: Json | null
           created_at?: string
           created_by?: string | null
           duration_frames?: number | null
@@ -2175,6 +2370,10 @@ export type Database = {
           p_storage_key: string
         }
         Returns: string
+      }
+      remove_member: {
+        Args: { p_project: string; p_user: string }
+        Returns: undefined
       }
       revoke_invitation: { Args: { p_invitation: string }; Returns: undefined }
       set_invitation_role: {

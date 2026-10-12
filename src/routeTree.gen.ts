@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as InvitasjonRouteImport } from './routes/invitasjon'
 import { Route as ProsjektProjectIdRouteImport } from './routes/prosjekt.$projectId'
+import { Route as ApiCronAiJobsRouteImport } from './routes/api/cron/ai-jobs'
 import { Route as ProsjektProjectIdIndexRouteImport } from './routes/prosjekt.$projectId.index'
 import { Route as ProsjektProjectIdBibliotekRouteImport } from './routes/prosjekt.$projectId.bibliotek'
 import { Route as ProsjektProjectIdManusRouteImport } from './routes/prosjekt.$projectId.manus'
@@ -32,6 +33,11 @@ const InvitasjonRoute = InvitasjonRouteImport.update({
 const ProsjektProjectIdRoute = ProsjektProjectIdRouteImport.update({
   id: '/prosjekt/$projectId',
   path: '/prosjekt/$projectId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronAiJobsRoute = ApiCronAiJobsRouteImport.update({
+  id: '/api/cron/ai-jobs',
+  path: '/api/cron/ai-jobs',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProsjektProjectIdIndexRoute = ProsjektProjectIdIndexRouteImport.update({
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/invitasjon': typeof InvitasjonRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
+  '/api/cron/ai-jobs': typeof ApiCronAiJobsRoute
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
@@ -82,6 +89,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/invitasjon': typeof InvitasjonRoute
+  '/api/cron/ai-jobs': typeof ApiCronAiJobsRoute
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/invitasjon': typeof InvitasjonRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
+  '/api/cron/ai-jobs': typeof ApiCronAiJobsRoute
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/invitasjon'
     | '/prosjekt/$projectId'
+    | '/api/cron/ai-jobs'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/montering'
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/invitasjon'
+    | '/api/cron/ai-jobs'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/montering'
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/'
     | '/invitasjon'
     | '/prosjekt/$projectId'
+    | '/api/cron/ai-jobs'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/montering'
@@ -140,6 +152,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   InvitasjonRoute: typeof InvitasjonRoute
   ProsjektProjectIdRoute: typeof ProsjektProjectIdRouteWithChildren
+  ApiCronAiJobsRoute: typeof ApiCronAiJobsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -163,6 +176,13 @@ declare module '@tanstack/react-router' {
       path: '/prosjekt/$projectId'
       fullPath: '/prosjekt/$projectId'
       preLoaderRoute: typeof ProsjektProjectIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/ai-jobs': {
+      id: '/api/cron/ai-jobs'
+      path: '/api/cron/ai-jobs'
+      fullPath: '/api/cron/ai-jobs'
+      preLoaderRoute: typeof ApiCronAiJobsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/prosjekt/$projectId/': {
@@ -235,6 +255,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   InvitasjonRoute: InvitasjonRoute,
   ProsjektProjectIdRoute: ProsjektProjectIdRouteWithChildren,
+  ApiCronAiJobsRoute: ApiCronAiJobsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
