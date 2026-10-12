@@ -214,6 +214,8 @@ const LAYER_FIELD_LABEL: Partial<Record<keyof LayerFields, string>> = {
   path: "bevegelsesbane",
   anchor: "ankerpunkt",
   languageImages: "bilde per språk",
+  mask: "maske",
+  blend: "blanding",
 };
 
 function layerChanges(
@@ -227,6 +229,15 @@ function layerChanges(
   for (const k of new Set([...Object.keys(a), ...Object.keys(b)])) {
     if (k === "groupId") {
       if (groupKey(main.groupId, "main") !== groupKey(spin.groupId, "spin")) out.add("gruppe");
+      continue;
+    }
+    if (k === "mask") {
+      // Maske av et annet lag (REQ-0175): sammenlign lagene, ikke ID-ene
+      const key = (m: CompositionLayer["mask"], of: "main" | "spin") =>
+        JSON.stringify(
+          m?.kind === "layer" ? { ...m, layerId: groupKey(m.layerId, of) } : (m ?? null),
+        );
+      if (key(main.mask, "main") !== key(spin.mask, "spin")) out.add("maske");
       continue;
     }
     if (JSON.stringify(a[k] ?? null) !== JSON.stringify(b[k] ?? null))
@@ -584,7 +595,21 @@ export function promotionCommands(
       const f = layerFieldsOf(l);
       const g = f.groupId ? (layerMap.get(f.groupId) ?? null) : null;
       // Bilder per språk alltid med (tom liste = ingen), ellers beholdes hovedfilmens
-      return { ...f, groupId: g as never, languageImages: l.languageImages ?? [] };
+      // Maske av et annet lag (REQ-0175): hovedfilmens lag; maske og blanding alltid med (null = ingen)
+      const m = l.mask ?? null;
+      const mask =
+        m?.kind === "layer"
+          ? layerMap.has(m.layerId)
+            ? { ...m, layerId: layerMap.get(m.layerId)! }
+            : null
+          : m;
+      return {
+        ...f,
+        groupId: g as never,
+        languageImages: l.languageImages ?? [],
+        mask,
+        blend: l.blend ?? "normal",
+      };
     };
     const added = c.visual.layers.filter(
       (d) => layerKeys.has(d.key) && d.status === "added" && d.spin,
@@ -730,6 +755,7 @@ export function promotionCommands(
         takeId: p.takeId,
         inMs: p.inMs,
         outMs: p.outMs,
+        ...(p.transitionMs ? { transitionMs: p.transitionMs } : {}),
       })),
     });
   }

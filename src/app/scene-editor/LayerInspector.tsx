@@ -5,6 +5,7 @@
 import { LayerEvents } from "./LayerEvents";
 import { LayerSwaps } from "./LayerSwaps";
 import { LayerMotion } from "./LayerMotion";
+import { LayerMaskSection } from "./LayerMaskSection";
 import { AlertTriangle, Copy, Image as ImageIcon, Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
 import {
@@ -430,6 +431,16 @@ export function LayerInspector({
             scenen
           </Hint>
         </Section>
+      )}
+
+      {isGroup ? null : (
+        <LayerMaskSection
+          state={state}
+          composition={composition}
+          layer={layer}
+          editable={editable}
+          apply={apply}
+        />
       )}
 
       {isGroup ? null : (

@@ -10,6 +10,7 @@ import {
   newId,
   removePart,
   setPartSource,
+  setPartTransition,
   trimPart,
   type ClipPartFields,
   type FilmClip,
@@ -131,6 +132,27 @@ export function ClipParts({
                 <span className="shrink-0 font-mono text-[11px] text-text-secondary">
                   {(r.durationFrames / fps).toLocaleString("nb-NO", { maximumFractionDigits: 2 })} s
                 </span>
+                {i > 0 ? (
+                  <select
+                    aria-label={`Overgang inn i del ${i + 1}`}
+                    title="Myk overgang fra delen før (krysstoning, scenen blir ikke kortere)"
+                    value={String(p.transitionMs ?? 0)}
+                    disabled={!editable}
+                    onChange={(e) =>
+                      edit(
+                        setPartTransition(parts, i, Number(e.target.value)),
+                        "Overgang mellom deler",
+                      )
+                    }
+                    className="h-6 shrink-0 rounded-sm border border-border-control bg-surface-3 px-1 text-[11px] text-text-primary disabled:opacity-50"
+                  >
+                    <option value="0">Kutt</option>
+                    <option value="250">Tone 0,25 s</option>
+                    <option value="500">Tone 0,5 s</option>
+                    <option value="1000">Tone 1 s</option>
+                    <option value="2000">Tone 2 s</option>
+                  </select>
+                ) : null}
                 {editable && parts.length > 1 ? (
                   <button
                     type="button"

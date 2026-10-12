@@ -330,7 +330,7 @@ describe("tegneliste og kontroll (REQ-0392, REQ-0397)", () => {
     expect(warn!.text).toContain("korte beskrivelser");
     expect(warn!.elementIds).toContain(`char:${maja.id}:desc`);
     expect(minReadablePt(700)).toBe(12);
-    expect(minReadablePt(297)).toBeCloseTo(5.09 < 6 ? 6 : 5.09, 1);
+    expect(minReadablePt(297)).toBeCloseTo(6, 1);
   });
 
   it("bilder plasseres med «dekk» og «tilpass», og et bilde uten fil blir en tom ramme", () => {

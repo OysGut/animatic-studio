@@ -27,6 +27,7 @@ import {
 import type { Commands } from "@/app/project/use-commands";
 import { uploadAssetImage, useImageUrls } from "@/app/library/asset-images";
 import { GenerateImagePanel } from "@/app/library/GenerateImagePanel";
+import { useActiveProduction } from "@/app/project/use-production";
 import { CutoutDialog } from "@/app/library/CutoutDialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -107,6 +108,23 @@ function Body({
   );
   const shown = layerVersion(state, layer);
   const cover = asset ? coverVersion(state, asset.id) : null;
+  // Scenen laget hører til: gir sted, tid på døgnet og lys i AI-beskrivelsen (DEC-0065)
+  const [activeProduction] = useActiveProduction(projectId, state);
+  const promptContext = useMemo(() => {
+    const comp = state.compositions[layer.compositionId];
+    const occs = Object.values(state.occurrences).filter((o) => o.variantId === comp?.variantId);
+    // Produksjonen som er valgt i sceneeditoren først (en spinoff), ellers hovedfilmen
+    const occ =
+      occs.find((o) => o.active && o.productionId === activeProduction) ??
+      occs.find((o) => o.active && state.productions[o.productionId]?.kind === "main") ??
+      occs.find((o) => o.active) ??
+      occs[0];
+    const productionId =
+      occ?.productionId ??
+      Object.values(state.productions).find((p) => p.kind === "main")?.id ??
+      "";
+    return { state, productionId, occurrenceId: occ?.id ?? null };
+  }, [state, layer.compositionId, activeProduction]);
 
   // Miniatyrer: alle versjoner av ressursen (eller forsidebildene når laget ikke har ressurs)
   const candidates = useMemo(
@@ -410,6 +428,7 @@ function Body({
               editable={editable}
               disabled={busy}
               budget={state.project}
+              context={promptContext}
               onGenerated={(img) =>
                 saveVersion(
                   img.versionId,

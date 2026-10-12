@@ -27,7 +27,15 @@ Oppdatert: 2026-10-11 (økt 6). Detaljert status per krav: `docs/product/TRACEAB
 - **M8 del 1 – plakater og karakterkart (DEC-0061):** arbeidsflaten «Utgivelse» med kinopitch-plakat og karakter- og universkart per produksjon, førsteutkast fra prosjektet, 13 innholdsvalg, direkte redigering med egne elementer, relasjoner med forslag fra manuset, lesbarhetskontroll, norsk og engelsk, trykk-PDF med utfallende kant og skjæremerker, og PNG. Migrasjon 0019.
 - **Kamera og lag (DEC-0062):** «Bruk aktivt utsnitt», fjern lag fra scenen, dra lag inn i og ut av grupper, valgt gruppe lyser opp, justerbar lagliste.
 - **Roller og tilbake (DEC-0063):** eieren endrer roller og ventende invitasjoner; «Tilbake til …» går til forrige vindu. Migrasjon 0020.
-- **Krav:** 343 verifisert, 21 implementert – ikke verifisert, 47 under arbeid, 176 ikke startet (av 587).
+- **Bilder i fullskjerm og opplasting igjen (DEC-0064):** zoom/panorering/nedlasting, prosjektnavn på filer, erstatt eller legg til ved opplasting med samme navn.
+- **Filmens visuelle stil (DEC-0065):** stilprofil og bildebeskrivelser med film, stil, scener, lys, godkjente bilder og det som skal unngås. Migrasjon 0021. Språkmodell og forbildebilder sendt med venter på kostnadsgodkjenning.
+- **AI skriver bildebeskrivelsen (DEC-0066):** språkmodell i Lovable AI Gateway skriver beskrivelsen ut fra grunnlaget og bildene; dagens bilde og filmens godkjente bilder sendes med til bildemodellen (≤ 6). Migrasjon 0022. Implementert – ikke prøvd mot ekte gateway.
+- **Produksjonsstatus og planlagt lengde (DEC-0067):** varighet og status per scene på prosjektoversikten med filter og lenker; planlagt lengde brukt i oversikt, montering og sceneeditor; AI-bilder som ikke ble lagt inn kan hentes inn; eieren kan fjerne medlem (migrasjon 0023). Kravrevisjon: nå 377 Verifisert og 59 Implementert – ikke verifisert (før: 344 og 22).
+- **Fortellingstid, utvikling over tid og filter (DEC-0068):** tilbakeblikk/drøm/tidshopp i manus, lengde per manusversjon, manusfilter på objekt/sted, status og manusendringer, oversiktsfilter på ressursendring og språk.
+- **Egne AI-leverandører (DEC-0069, M5 del 3):** OpenAI, Google Gemini, fal.ai, Runway og ElevenLabs med veiledning og kryptert nøkkel, overordnet kostnadstak i USD, bilder med valgt leverandør, video per segment i «Generer scene» (ny versjon av scenen), lyd for lydressurser. Migrasjon 0024. Ikke prøvd mot de ekte tjenestene (KI-153).
+- **Ti store bolker (DEC-0070, M5 del 4):** bakgrunnskø og kø med prioritet/fremdrift, video for flere scener, innsatsnivå, modelltilpassede beskrivelser, sammenheng mellom segmenter, kandidater og sammenligning (bilde og video), hybrid sammensetting, oppdatering med AI ved avvik, Fountain-import/-eksport, lydkoblinger og -filter. Migrasjon 0025.
+- **Ti store bolker til (DEC-0071, M5 del 5):** sammenheng i køen, myke overganger mellom deler (visning og eksport), rådgivende kvalitetssjekkliste, betegnelser i bestemte linjer, stilprofiler per bruk, maske og blandingsmodus per lag, manusdekning for film, dialog med AI-stemmer (ElevenLabs). Migrasjon 0026.
+- **Krav:** 344 verifisert, 21 implementert – ikke verifisert, 50 under arbeid, 174 ikke startet (av 589).
 
 ## Tester (alle grønne 2026-10-09)
 | Testsett | Antall | Kjøres med |

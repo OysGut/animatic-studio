@@ -32,8 +32,11 @@ export interface FilmClip {
   /** Første bilde i den samlede filmen. */
   readonly startFrame: number;
   readonly durationFrames: number;
-  /** «set»: lengden er satt i 2D-scenen. «estimate»: beregnet fra manuset (usikker, mandat 7.2). «film»: filmens lengde. */
-  readonly durationKind: "set" | "estimate" | "film";
+  /**
+   * «set»: lengden er satt i 2D-scenen. «planned»: brukerens planlagte lengde (REQ-0111/0113).
+   * «estimate»: beregnet fra manuset (usikker, mandat 7.2). «film»: filmens lengde.
+   */
+  readonly durationKind: "set" | "planned" | "estimate" | "film";
   /** Den importerte filmen som vises (kilde «film»), ellers null. */
   readonly take: Take | null;
   /** Overgangen inn i klippet: scenens egen, ellers prosjektets standard (DEC-0051). */
@@ -64,6 +67,10 @@ export interface ResolvedPart {
   readonly inMs: number;
   readonly outMs: number;
   readonly inFrame: number;
+  /** Myk overgang inn i delen (bilder), DEC-0071. 0 = hardt kutt. */
+  readonly transitionFrames?: number;
+  /** Den samme overgangen i ms (som lagret). */
+  readonly transitionMs?: number;
 }
 
 /** Delen på et bilde i scenen og bildet inne i delen. */
@@ -98,6 +105,43 @@ export function sourceAt(clip: FilmClip, localFrame: number, fps: Rational): Sou
   return { kind: "placeholder" };
 }
 
+/** Kilden for en del på et bilde inne i delen (begrenset til delens bilder: før/etter holdes). */
+function partSource(part: ResolvedPart, offset: number, fps: Rational): SourceFrame {
+  const o = Math.max(0, Math.min(part.durationFrames - 1, offset));
+  if (part.source === "take" && part.take)
+    return { kind: "take", take: part.take, seconds: part.inMs / 1000 + framesToSeconds(o, fps) };
+  if (part.source === "composition") return { kind: "composition", frame: part.inFrame + o };
+  return { kind: "placeholder" };
+}
+
+/**
+ * Myk overgang mellom to deler i en scene (DEC-0071, REQ-0265): rundt skjøten tones neste del inn over den
+ * forrige uten at scenen blir kortere. Før skjøten vises forrige del med neste dels første bilde (holdt)
+ * oppå, etter skjøten neste del med forrige dels siste bilde (holdt) oppå; blandingen går jevnt fra 0 til 1.
+ * Null når bildet ikke er i en overgang.
+ */
+export function partBlendAt(
+  clip: FilmClip,
+  localFrame: number,
+  fps: Rational,
+): { readonly source: SourceFrame; readonly alpha: number; readonly held: true } | null {
+  for (let i = 1; i < clip.parts.length; i++) {
+    const b = clip.parts[i]!;
+    const a = clip.parts[i - 1]!;
+    // Aldri lenger enn noen av de to delene: da når vinduet aldri forbi naboen, og to vinduer overlapper ikke
+    const t = Math.min(b.transitionFrames ?? 0, a.durationFrames, b.durationFrames);
+    if (t <= 0) continue;
+    const half = t / 2;
+    const d = localFrame - b.startFrame;
+    if (d < -half || d >= half) continue;
+    // mix: hvor langt overgangen har kommet (0 → 1)
+    const mix = (d + half) / t;
+    if (d < 0) return { source: partSource(b, 0, fps), alpha: mix, held: true };
+    return { source: partSource(a, a.durationFrames - 1, fps), alpha: 1 - mix, held: true };
+  }
+  return null;
+}
+
 /** Lagrede deler i en forekomst, i rekkefølge. */
 export function partsOf(s: ProjectState, occurrenceId: string): ClipPart[] {
   return Object.values(s.clipParts)
@@ -108,9 +152,14 @@ export function partsOf(s: ProjectState, occurrenceId: string): ClipPart[] {
 const CUT: Transition = { kind: "cut", frames: 0 };
 
 /** Importert film som er tatt i bruk i forekomsten, om den finnes og har fil og lengde. */
+/** En versjon med en filmfil: importert film eller AI-video (DEC-0069, REQ-0180). */
+export function isFilmTake(t: Take | null | undefined): t is Take {
+  return !!t && (t.kind === "imported_film" || t.kind === "ai_video") && !!t.mediaRef;
+}
+
 export function activeFilmTake(s: ProjectState, activeTakeId: string | null): Take | null {
   const t = activeTakeId ? s.takes[activeTakeId] : undefined;
-  return t && t.kind === "imported_film" && t.mediaRef && (t.durationFrames ?? 0) > 0 ? t : null;
+  return isFilmTake(t) && (t.durationFrames ?? 0) > 0 ? t : null;
 }
 
 /** Korteste beregnede scenelengde (samme regel som i sceneeditoren). */
@@ -155,9 +204,12 @@ export function filmClips(s: ProjectState, productionId: string): FilmClip[] {
   const standard = s.project.defaultTransition ?? CUT;
   const clips = activeStructure(s, productionId).map((o, index): FilmClip => {
     const c = comps.get(o.variantId) ?? null;
-    // Uten satt lengde: beregnet fra manuset, men aldri kortere enn lyden i scenen (DEC-0044)
+    // Uten satt lengde: brukerens plan eller beregnet fra manuset, men aldri kortere enn lyden i scenen
+    // (DEC-0044)
+    const planned =
+      o.plannedMs !== undefined ? Math.max(1, msToFramesCeil(o.plannedMs, s.project.fps)) : null;
     const estimate = Math.max(
-      estimates.get(o.id) ?? secondsToFrames(MIN_ESTIMATED_SCENE_SECONDS, s.project.fps),
+      planned ?? estimates.get(o.id) ?? secondsToFrames(MIN_ESTIMATED_SCENE_SECONDS, s.project.fps),
       msToFramesCeil(audioEnd.get(o.id) ?? 0, s.project.fps),
     );
     const set = c !== null && c.durationFrames > 0;
@@ -181,6 +233,15 @@ export function filmClips(s: ProjectState, productionId: string): FilmClip[] {
           inMs: p.inMs,
           outMs: p.outMs,
           inFrame: Math.round((p.inMs / 1000) * (fps.num / fps.den)),
+          ...(p.transitionMs
+            ? {
+                transitionMs: p.transitionMs,
+                transitionFrames: Math.max(
+                  1,
+                  Math.round((p.transitionMs / 1000) * (fps.num / fps.den)),
+                ),
+              }
+            : {}),
         };
         at += frames;
         return r;
@@ -243,7 +304,13 @@ export function filmClips(s: ProjectState, productionId: string): FilmClip[] {
       productionNumber: o.productionNumber,
       startFrame: cursor,
       durationFrames,
-      durationKind: take ? "film" : edited || set ? "set" : "estimate",
+      durationKind: take
+        ? "film"
+        : edited || set
+          ? "set"
+          : planned !== null
+            ? "planned"
+            : "estimate",
       take,
       transition,
       transitionInherited: o.transition === undefined,

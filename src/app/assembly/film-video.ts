@@ -7,8 +7,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Take } from "@/core";
 import type { ImageSource } from "@/engine/compositor/canvas";
 
-/** Element for plass 1 i en overgang (samme fil spilles to steder samtidig, DEC-0051). */
-const SECOND = "#2";
+/** Egne elementer for plass 1–3 (overgang og myk overgang mellom deler, DEC-0051/0071): samme fil kan vises
+ * flere steder samtidig, og hver plass må søke uavhengig. */
+const slotKey = (path: string, slot: number) => (slot === 0 ? path : `${path}#s${slot}`);
+const basePath = (key: string) => key.replace(/#s\d$/, "");
 
 export function useFilmVideo(urls: Readonly<Record<string, string>> | null, playing: boolean) {
   const els = useRef(new Map<string, HTMLVideoElement>());
@@ -24,7 +26,7 @@ export function useFilmVideo(urls: Readonly<Record<string, string>> | null, play
     const map = els.current;
     for (const [path, url] of Object.entries(urls)) {
       const have = map.get(path);
-      for (const v of [have, map.get(path + SECOND)]) {
+      for (const v of [1, 2, 3].map((n) => map.get(slotKey(path, n))).concat(have)) {
         // Nye midlertidige lenker (de gamle går ut etter en time): bytt kilde, behold plassen
         if (v && v.dataset["url"] !== url) {
           const t = v.currentTime;
@@ -37,7 +39,7 @@ export function useFilmVideo(urls: Readonly<Record<string, string>> | null, play
       map.set(path, makeVideo(url, bump));
     }
     for (const [path, v] of map)
-      if (!(path.replace(SECOND, "") in urls)) {
+      if (!(basePath(path) in urls)) {
         v.pause();
         v.removeAttribute("src");
         v.load();
@@ -60,9 +62,9 @@ export function useFilmVideo(urls: Readonly<Record<string, string>> | null, play
   const provider = useCallback(
     (take: Take, seconds: number, held: boolean, slot = 0): ImageSource | null => {
       if (!take.mediaRef) return null;
-      const key = slot === 1 ? take.mediaRef + SECOND : take.mediaRef;
+      const key = slotKey(take.mediaRef, slot);
       let v = els.current.get(key);
-      if (!v && slot === 1) {
+      if (!v && slot !== 0) {
         const url = urlsRef.current?.[take.mediaRef];
         if (url) {
           v = makeVideo(url, bump);

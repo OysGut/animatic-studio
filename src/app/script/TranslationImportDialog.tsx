@@ -20,6 +20,7 @@ import {
   type SceneLink,
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
+import { SCREENPLAY_ACCEPT } from "@/engine/import/browser";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -177,8 +178,8 @@ export function TranslationImportDialog({
         <DialogHeader>
           <DialogTitle>Importer {langName.toLowerCase()} manus</DialogTitle>
           <DialogDescription>
-            Et ferdig oversatt manus (PDF eller Word) kobles til de norske scenene og replikkene.
-            Det norske manuset endres ikke. Kontroller koblingene før du lagrer.
+            Et ferdig oversatt manus (PDF, Word eller Fountain) kobles til de norske scenene og
+            replikkene. Det norske manuset endres ikke. Kontroller koblingene før du lagrer.
           </DialogDescription>
         </DialogHeader>
         {!parsed ? (
@@ -186,7 +187,7 @@ export function TranslationImportDialog({
             <input
               ref={input}
               type="file"
-              accept=".pdf,.docx"
+              accept={SCREENPLAY_ACCEPT}
               className="hidden"
               onChange={(e) => {
                 const f = e.target.files?.[0];

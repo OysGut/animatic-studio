@@ -16,7 +16,13 @@
  * Ren TypeScript: brukes både i nettleseren (lage og lese filen) og på serveren (gjenopprette).
  */
 import { checkInvariants } from "../invariants";
-import { emptyProjectState, type PosterDocument, type ProjectState } from "../model";
+import {
+  emptyProjectState,
+  type PosterDocument,
+  type ProjectState,
+  type StyleGuide,
+} from "../model";
+import { styleGuideError } from "../generation/style";
 import { posterAssetRefs, posterDocumentError } from "../presentation/document";
 import { stateFromRows, type ProjectRows, type Row } from "../patch";
 
@@ -54,6 +60,7 @@ export const BACKUP_STATE_TABLES = [
   "translations",
   "asset_relations",
   "posters",
+  "style_profiles",
 ] as const;
 export type BackupStateTable = (typeof BACKUP_STATE_TABLES)[number];
 
@@ -357,6 +364,18 @@ export function assertSelfContained(b: BackupData, map: ReadonlyMap<string, stri
             "Sikkerhetskopien viser til noe som ikke er med i den (posters.document) og kan ikke brukes.",
           );
   }
+  // Forbildebildene i stilprofilene (DEC-0065)
+  for (const r of b.tables["style_profiles"] ?? []) {
+    const g = (r as Record<string, unknown>)["guide"];
+    const guide = (typeof g === "string" ? safeJson(g) : g) as StyleGuide | null;
+    if (!guide || typeof guide !== "object" || styleGuideError(guide))
+      throw new Error("Sikkerhetskopien har en ugyldig stilprofil og kan ikke brukes.");
+    for (const v of guide.referenceVersionIds)
+      if (!map.has(v))
+        throw new Error(
+          "Sikkerhetskopien viser til noe som ikke er med i den (style_profiles.guide) og kan ikke brukes.",
+        );
+  }
 }
 
 function safeJson(t: string): unknown {
@@ -450,6 +469,7 @@ export function restoredState(
     translations: t("translations"),
     asset_relations: t("asset_relations"),
     posters: t("posters"),
+    style_profiles: t("style_profiles"),
   };
   let state: ProjectState;
   try {

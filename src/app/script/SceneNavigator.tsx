@@ -8,16 +8,27 @@ import { AlertTriangle, GripVertical, MessageSquare, Search, X } from "lucide-re
 import { useEffect, useRef, useState, type DragEvent, type KeyboardEvent } from "react";
 import {
   HIT_LABEL,
+  STORY_KIND_LABEL,
+  SCENE_STATUS_LABEL,
   formatHeading,
   keyBetween,
   type HitKind,
   orderedOccurrences,
   type ProjectState,
+  type SceneStatus,
   type SceneFilter,
   type SceneOccurrence,
 } from "@/core";
 import { Switch } from "@/components/ui/switch";
 import { uncertainVariants } from "./script-helpers";
+
+const ASSET_KIND_SHORT: Record<string, string> = {
+  animal: "dyr",
+  object: "objekt",
+  location: "sted",
+  environment: "miljø",
+  other: "annet",
+};
 
 /** Valg i karakterfilteret: fra biblioteket (alle navn) eller et navn i manuset. */
 export interface CharacterOption {
@@ -92,6 +103,10 @@ export function SceneNavigator({
   const [dragId, setDragId] = useState<string | null>(null);
   const [dropIndex, setDropIndex] = useState<number | null>(null);
   const uncertain = uncertainVariants(state);
+  // Objekter, rekvisitter, dyr og steder i biblioteket (karakterene har eget filter over)
+  const filterAssets = Object.values(state.assets)
+    .filter((a) => !a.archived && a.kind !== "sound" && a.kind !== "character")
+    .sort((a, b) => a.name.localeCompare(b.name, "nb"));
   const uncertainSet = new Set(occs.filter((o) => uncertain.has(o.variantId)).map((o) => o.id));
 
   // Listen følger manuset når du blar (uten å flytte fokus eller endre valget)
@@ -249,6 +264,51 @@ export function SceneNavigator({
             </button>
           ) : null}
         </div>
+        <div className="flex items-center gap-1.5">
+          <select
+            aria-label="Vis bare scener med ressurs"
+            value={filter.assetId ?? ""}
+            onChange={(e) => {
+              const { assetId: _a, ...rest } = filter;
+              onFilterChange(e.target.value ? { ...rest, assetId: e.target.value } : rest);
+            }}
+            className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
+          >
+            <option value="">Alle objekter og steder</option>
+            {filterAssets.map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.name} ({ASSET_KIND_SHORT[a.kind] ?? a.kind})
+              </option>
+            ))}
+          </select>
+          <select
+            aria-label="Vis bare scener med status"
+            value={filter.status ?? ""}
+            onChange={(e) => {
+              const { status: _s, ...rest } = filter;
+              onFilterChange(e.target.value ? { ...rest, status: e.target.value } : rest);
+            }}
+            className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
+          >
+            <option value="">Alle statuser</option>
+            {(Object.keys(SCENE_STATUS_LABEL) as SceneStatus[]).map((st) => (
+              <option key={st} value={st}>
+                {SCENE_STATUS_LABEL[st]}
+              </option>
+            ))}
+          </select>
+        </div>
+        <label className="flex items-center gap-1.5 text-xs text-text-secondary">
+          <input
+            type="checkbox"
+            checked={filter.discrepancy === true}
+            onChange={(e) => {
+              const { discrepancy: _d, ...rest } = filter;
+              onFilterChange(e.target.checked ? { ...rest, discrepancy: true } : rest);
+            }}
+          />
+          Bare scener med manusendringer etter 2D-scene eller film
+        </label>
         {visible ? (
           <p className="text-[11px] text-text-tertiary">
             Filteret gjelder bare visningen. Filmen er uendret. Flytting er av mens filteret er på.
@@ -351,6 +411,12 @@ export function SceneNavigator({
                         </span>
                       ) : null}
                       {isMoved ? <span className="text-status-moved">Flyttet</span> : null}
+                      {state.scenes[o.sceneId] &&
+                      state.scenes[o.sceneId]!.storyTime.kind !== "linear" ? (
+                        <span className="text-accent-brand">
+                          {STORY_KIND_LABEL[state.scenes[o.sceneId]!.storyTime.kind]}
+                        </span>
+                      ) : null}
                       {notes ? (
                         <span
                           className="flex items-center gap-0.5 text-note"

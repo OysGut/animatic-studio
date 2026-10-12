@@ -10,6 +10,7 @@ import { ProjectFormat } from "./ProjectFormat";
 import { AiPanel } from "@/app/ai/AiPanel";
 import { ProductionList } from "./ProductionList";
 import { MembersSection } from "./MembersSection";
+import { StyleGuideSection } from "./StyleGuideSection";
 import { ContinuityAnalysisPanel } from "@/app/continuity/ContinuityAnalysisPanel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -117,7 +118,19 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
             />
           ) : null}
 
-          <DurationOverview state={s} />
+          <DurationOverview
+            state={s}
+            projectId={projectId}
+            userId={userId}
+            editable={canEdit(myRole)}
+          />
+
+          <StyleGuideSection
+            state={s}
+            projectId={projectId}
+            userId={userId}
+            editable={canEdit(myRole)}
+          />
 
           <AiPanel
             state={s}

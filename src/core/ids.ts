@@ -37,6 +37,7 @@ export type TranslationId = Id<"translation">;
 /** M8 (DEC-0061): relasjon mellom to karakterer (eller ressurser) og plakat/karakterkart. */
 export type AssetRelationId = Id<"asset_relation">;
 export type PosterId = Id<"poster">;
+export type StyleProfileId = Id<"style_profile">;
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 

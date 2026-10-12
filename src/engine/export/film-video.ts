@@ -2,7 +2,15 @@
  * Bilder fra importert film til eksporten (DEC-0047): filene leses med mediabunny (WebCodecs) og dekodes i
  * rekkefølge, så hvert bilde bare dekodes én gang. Bare på klienten.
  */
-import { frameMix, sourceAt, type FilmClip, type ProjectState, type Take } from "@/core";
+import {
+  frameMix,
+  partBlendAt,
+  sourceAt,
+  type FilmClip,
+  type ProjectState,
+  type SourceFrame,
+  type Take,
+} from "@/core";
 import type { ImageSource } from "../compositor/canvas";
 
 type Mb = typeof import("mediabunny");
@@ -81,27 +89,42 @@ export class FilmVideoFrames {
     this.frame.clear();
     const m = frameMix(clips, frame);
     if (!m) return;
+    const fps = state.project.fps;
     for (const cf of [m.a, m.b]) {
       if (!cf) continue;
-      const src = sourceAt(cf.clip, cf.localFrame, state.project.fps);
-      if (src.kind !== "take") continue;
-      const r = await this.reader(src.take, cf === m.a ? 0 : 1);
-      const w = await r?.at(src.seconds);
-      if (w) {
-        // Kopier bildet: to klipp fra samme fil (overgang) deler leser og bildebuffer
-        const slot = (this.slots[cf === m.a ? 0 : 1] ??= new OffscreenCanvas(1, 1));
-        if (slot.width !== w.canvas.width) slot.width = w.canvas.width;
-        if (slot.height !== w.canvas.height) slot.height = w.canvas.height;
-        const g = slot.getContext("2d");
-        g?.clearRect(0, 0, slot.width, slot.height);
-        g?.drawImage(w.canvas as CanvasImageSource, 0, 0);
-        this.frame.set(src.take.id, slot as unknown as ImageSource);
+      const base = cf === m.a ? 0 : 1;
+      // Delen som vises, og en myk overgang mellom deler i scenen (DEC-0071) på plass 2/3
+      const blend = partBlendAt(cf.clip, cf.localFrame, fps);
+      const wanted: [SourceFrame, number][] = [[sourceAt(cf.clip, cf.localFrame, fps), base]];
+      if (blend) wanted.push([blend.source, base + 2]);
+      for (const [src, slotNo] of wanted) {
+        if (src.kind !== "take") continue;
+        const r = await this.reader(src.take, slotNo);
+        const w = await r?.at(src.seconds);
+        if (w) {
+          // Kopier bildet: to klipp fra samme fil (overgang) deler leser og bildebuffer
+          const slot = (this.slots[slotNo] ??= new OffscreenCanvas(1, 1));
+          if (slot.width !== w.canvas.width) slot.width = w.canvas.width;
+          if (slot.height !== w.canvas.height) slot.height = w.canvas.height;
+          const g = slot.getContext("2d");
+          g?.clearRect(0, 0, slot.width, slot.height);
+          g?.drawImage(w.canvas as CanvasImageSource, 0, 0);
+          this.frame.set(`${src.take.id}#${slotNo}`, slot as unknown as ImageSource);
+        }
       }
     }
   }
 
-  /** Til drawFilmFrame: bildet som ble hentet for denne versjonen. */
-  readonly provider = (take: Take): ImageSource | null => this.frame.get(take.id) ?? null;
+  /** Til drawFilmFrame: bildet som ble hentet for denne versjonen på denne plassen. */
+  readonly provider = (
+    take: Take,
+    _seconds?: number,
+    _held?: boolean,
+    slot = 0,
+  ): ImageSource | null =>
+    this.frame.get(`${take.id}#${slot}`) ??
+    // Plass 2–3 er et holdt bilde i en myk overgang: mangler det, tones ingenting inn (aldri bildet over seg selv)
+    (slot >= 2 ? null : (this.frame.get(`${take.id}#0`) ?? null));
 
   /** Takes som ikke kunne leses (vises som svart i eksporten). */
   failed(): string[] {

@@ -12,6 +12,7 @@ import {
   Music,
   Plus,
   Scissors,
+  Sparkles,
   X,
 } from "lucide-react";
 import { CutoutDialog } from "./CutoutDialog";
@@ -31,6 +32,7 @@ import {
   newId,
   variantsOf,
   versionsOf,
+  versionFromFileName,
   type Asset,
   type AssetFields,
   type AssetNameKind,
@@ -45,7 +47,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { uploadAssetImage, useImageUrls } from "./asset-images";
+import { ImageViewer } from "./ImageViewer";
+import { ReuploadDialog, type ReuploadItem } from "./ReuploadDialog";
 import { uploadAssetAudio } from "./asset-audio";
+import { GenerateSoundPanel } from "./GenerateSoundPanel";
+import { ImageCompareDialog } from "./ImageCompareDialog";
+import { SoundLinksSection } from "./SoundLinksSection";
+import { ContextNamesSection } from "./ContextNamesSection";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 
 const NAME_KIND_LABEL: Record<AssetNameKind, string> = {
@@ -253,6 +261,15 @@ export function AssetDetail(props: Props) {
               </Button>
             ) : null}
           </div>
+          {asset.kind !== "sound" ? (
+            <ContextNamesSection
+              state={state}
+              asset={asset}
+              productionId={productionId}
+              editable={editable}
+              cmds={cmds}
+            />
+          ) : null}
 
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col gap-1">
@@ -345,6 +362,15 @@ export function AssetDetail(props: Props) {
           ) : null}
         </section>
 
+        {asset.kind === "sound" ? (
+          <SoundLinksSection
+            state={state}
+            asset={asset}
+            productionId={productionId}
+            editable={editable}
+            cmds={cmds}
+          />
+        ) : null}
         <Variants {...props} />
         {hasContinuity(asset) ? (
           <ContinuityPanel
@@ -586,9 +612,43 @@ function VariantCard({
   const [cutoutId, setCutoutId] = useState<string | null>(null);
   // Godkjenning med konsekvenser (DEC-0056): berørte scener vises først
   const [approving, setApproving] = useState<AssetVersion | null>(null);
+  // Fullskjerm (DEC-0064): indeksen i `versions`
+  const [viewingId, setViewingId] = useState<string | null>(null);
+  // Versjons-ID, ikke plass i listen: nye bilder forskyver listen mens visningen er åpen
+  const viewing = viewingId ? versions.findIndex((v) => v.id === viewingId) : -1;
+  const setViewing = (i: number | null) =>
+    setViewingId(i === null ? null : (versions[i]?.id ?? null));
+  // Et nedlastet bilde lastes opp igjen (DEC-0064): spør om det skal erstatte eller legges til
+  const [reupload, setReupload] = useState<ReuploadItem | null>(null);
+  // Lyd med AI (DEC-0069)
+  const [soundAi, setSoundAi] = useState(false);
+  // Sammenligning av to versjoner (DEC-0070)
+  const [compareIds, setCompareIds] = useState<readonly string[]>([]);
+  const [comparing, setComparing] = useState(false);
+  const compareVersions = versions.filter((v) => compareIds.includes(v.id));
+
+  function approve(ver: AssetVersion) {
+    if (assetVersionImpact(state, productionId, variant.id, ver.id).length) {
+      setApproving(ver);
+      return;
+    }
+    setErr(
+      cmds.run(
+        { type: "ApproveAssetVersion", variantId: variant.id, versionId: ver.id },
+        `Godkjenn v${ver.number} av «${variant.name}»`,
+      ),
+    );
+  }
 
   async function upload(file: File) {
     setErr(null);
+    // Samme navn som et bilde i prosjektet («Ressurs - Variant - vN»): spør først
+    const match = asset.kind === "sound" ? null : versionFromFileName(state, file.name);
+    if (match) {
+      setReupload({ file, match });
+      if (input.current) input.current.value = "";
+      return;
+    }
     setUploading(true);
     try {
       // Lydfiler (DEC-0044) og bilder lastes opp hver for seg
@@ -727,6 +787,16 @@ function VariantCard({
                   ? "Last opp lyd"
                   : "Last opp bilde"}
             </Button>
+            {asset.kind === "sound" ? (
+              <Button
+                size="sm"
+                variant="secondary"
+                aria-expanded={soundAi}
+                onClick={() => setSoundAi((x) => !x)}
+              >
+                <Sparkles /> Lag med AI
+              </Button>
+            ) : null}
             <Button
               size="sm"
               variant="ghost"
@@ -763,8 +833,29 @@ function VariantCard({
         ) : null}
       </div>
 
+      {soundAi && editable && asset.kind === "sound" ? (
+        <GenerateSoundPanel
+          projectId={projectId}
+          asset={asset}
+          variant={variant}
+          cmds={cmds}
+          onClose={() => setSoundAi(false)}
+        />
+      ) : null}
+      {compareVersions.length === 2 ? (
+        <Button
+          size="sm"
+          variant="secondary"
+          className="self-start"
+          onClick={() => setComparing(true)}
+        >
+          Sammenlign v{compareVersions[0]!.number} og v{compareVersions[1]!.number}
+        </Button>
+      ) : null}
       {versions.length === 0 ? (
-        <p className="text-xs text-text-tertiary">Ingen bilder ennå.</p>
+        <p className="text-xs text-text-tertiary">
+          {asset.kind === "sound" ? "Ingen lyder ennå." : "Ingen bilder ennå."}
+        </p>
       ) : (
         <ul className="flex gap-2 overflow-x-auto pb-1" aria-label={`Versjoner av ${variant.name}`}>
           {versions.map((ver) => {
@@ -794,12 +885,18 @@ function VariantCard({
                     )}
                   </div>
                 ) : (
-                  <a
-                    href={url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex h-[120px] items-center justify-center overflow-hidden bg-surface-3"
-                    title="Åpne bildet i full størrelse"
+                  <button
+                    type="button"
+                    onDoubleClick={() => setViewing(versions.indexOf(ver))}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setViewing(versions.indexOf(ver));
+                      }
+                    }}
+                    className="flex h-[120px] cursor-zoom-in items-center justify-center overflow-hidden bg-surface-3 focus-visible:outline-2 focus-visible:outline-focus-ring"
+                    title="Dobbeltklikk for fullskjerm, zoom og nedlasting"
+                    aria-label={`Vis ${asset.name} – ${variant.name}, versjon ${ver.number} i fullskjerm`}
                   >
                     {url ? (
                       <img
@@ -810,7 +907,7 @@ function VariantCard({
                     ) : (
                       <Loader2 className="size-4 animate-spin text-text-tertiary" aria-hidden />
                     )}
-                  </a>
+                  </button>
                 )}
                 <div className="flex items-center justify-between text-[11px]">
                   <span className="tabular font-mono text-text-secondary">v{ver.number}</span>
@@ -845,6 +942,22 @@ function VariantCard({
                     Frilegg …
                   </button>
                 ) : null}
+                {asset.kind !== "sound" && versions.length > 1 ? (
+                  <label className="flex items-center gap-1 text-[11px] text-text-tertiary">
+                    <input
+                      type="checkbox"
+                      checked={compareIds.includes(ver.id)}
+                      onChange={(e) =>
+                        setCompareIds((cur) =>
+                          e.target.checked
+                            ? [...cur.filter((x) => x !== ver.id), ver.id].slice(-2)
+                            : cur.filter((x) => x !== ver.id),
+                        )
+                      }
+                    />
+                    Sammenlign
+                  </label>
+                ) : null}
                 {editable ? (
                   approved ? (
                     <button
@@ -866,22 +979,7 @@ function VariantCard({
                       size="sm"
                       variant="ghost"
                       className="h-6 justify-start px-1 text-xs"
-                      onClick={() => {
-                        if (assetVersionImpact(state, productionId, variant.id, ver.id).length) {
-                          setApproving(ver);
-                          return;
-                        }
-                        setErr(
-                          cmds.run(
-                            {
-                              type: "ApproveAssetVersion",
-                              variantId: variant.id,
-                              versionId: ver.id,
-                            },
-                            `Godkjenn v${ver.number} av «${variant.name}»`,
-                          ),
-                        );
-                      }}
+                      onClick={() => approve(ver)}
                     >
                       Godkjenn
                     </Button>
@@ -903,6 +1001,25 @@ function VariantCard({
           {err}
         </p>
       ) : null}
+      {viewing >= 0 ? (
+        <ImageViewer
+          state={state}
+          versions={versions}
+          index={viewing}
+          urls={urls}
+          onIndex={setViewing}
+          onClose={() => setViewing(null)}
+        />
+      ) : null}
+      {reupload ? (
+        <ReuploadDialog
+          state={state}
+          projectId={projectId}
+          cmds={cmds}
+          items={[reupload]}
+          onClose={() => setReupload(null)}
+        />
+      ) : null}
       <ApproveImpactDialog
         state={state}
         productionId={productionId}
@@ -910,6 +1027,19 @@ function VariantCard({
         version={approving}
         cmds={cmds}
         onClose={() => setApproving(null)}
+      />
+      <ImageCompareDialog
+        open={comparing && compareVersions.length === 2}
+        onOpenChange={setComparing}
+        title={`${asset.name} – ${variant.name}`}
+        versions={compareVersions}
+        urls={urls}
+        approvedId={variant.approvedVersionId}
+        editable={editable}
+        onApprove={(v) => {
+          approve(v);
+          setComparing(false);
+        }}
       />
       <CutoutDialog
         open={cutoutId !== null}

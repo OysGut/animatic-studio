@@ -272,7 +272,18 @@ export function compositionCopyCommands(
           layerId: ids.get(l.id)!,
           compositionId,
           orderKey: l.orderKey,
-          fields: { ...f, groupId: f.groupId ? ((ids.get(f.groupId) ?? null) as never) : null },
+          fields: {
+            ...f,
+            groupId: f.groupId ? ((ids.get(f.groupId) ?? null) as never) : null,
+            // Maske av et annet lag (REQ-0175): laget i kopien
+            ...(f.mask?.kind === "layer"
+              ? {
+                  mask: ids.has(f.mask.layerId)
+                    ? { ...f.mask, layerId: ids.get(f.mask.layerId)! }
+                    : null,
+                }
+              : {}),
+          },
         };
       }),
     });

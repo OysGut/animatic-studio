@@ -5,6 +5,7 @@
  */
 import type { AssetKind, ProjectState } from "../model";
 import { ASSET_KIND_PLURAL } from "./index";
+import { versionFileName } from "./file-names";
 
 /** Kategori i zip-filen: en ressurstype, eller «film» for importert film. */
 export type ZipCategory = AssetKind | "film";
@@ -85,8 +86,9 @@ export function zipEntries(s: ProjectState): ZipEntry[] {
         const approved = v.approvedVersionId === ver.id ? " (godkjent)" : "";
         out.push({
           category: a.kind,
+          // Samme navn som ved nedlasting av ett bilde (DEC-0064), så filene kjennes igjen ved opplasting
           path: unique(
-            `${folder}/v${ver.number}${approved} – ${zipSafeName(baseName(ver.mediaPath), "fil")}`,
+            `${folder}/${versionFileName(s, ver).replace(/(\.[a-z0-9]+)$/i, `${approved}$1`)}`,
           ),
           mediaPath: ver.mediaPath,
           byteSize: ver.byteSize,
@@ -95,7 +97,7 @@ export function zipEntries(s: ProjectState): ZipEntry[] {
     }
   }
   const takes = Object.values(s.takes)
-    .filter((t) => t.kind === "imported_film" && t.mediaRef)
+    .filter((t) => (t.kind === "imported_film" || t.kind === "ai_video") && t.mediaRef)
     .sort((a, b) => a.id.localeCompare(b.id));
   for (const t of takes) {
     const occ = s.occurrences[t.occurrenceId];

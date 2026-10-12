@@ -1,5 +1,5 @@
 /**
- * Importer manus (mandat 4.1–4.3): velg PDF/DOCX → forhåndsvisning med usikkerheter → lagre original + scener.
+ * Importer manus (mandat 4.1–4.3): velg PDF/DOCX/Fountain → forhåndsvisning med usikkerheter → lagre original + scener.
  * Ingen scener opprettes før brukeren har sett forhåndsvisningen. Originalen lagres uendret (mandat 4.2).
  */
 import { AlertTriangle, CheckCircle2, FileUp, Loader2 } from "lucide-react";
@@ -12,7 +12,13 @@ import {
   type ProductionId,
   type ProjectState,
 } from "@/core";
-import { readScreenplayFile, sourceStorageKey, type ReadScreenplay } from "@/engine/import/browser";
+import {
+  SCREENPLAY_ACCEPT,
+  contentTypeOf,
+  readScreenplayFile,
+  sourceStorageKey,
+  type ReadScreenplay,
+} from "@/engine/import/browser";
 import { db } from "@/app/db";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -98,13 +104,14 @@ export function ImportDialog({
       const up = await supabase.storage
         .from("sources")
         .upload(key, new Blob([read.bytes as unknown as ArrayBuffer]), {
-          contentType:
-            read.format === "pdf"
-              ? "application/pdf"
-              : "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          contentType: contentTypeOf(read.format),
           upsert: false,
         });
       if (up.error && !/exists|duplicate/i.test(up.error.message)) {
+        if (read.format === "fountain" && /mime|type|415/i.test(up.error.message))
+          throw new Error(
+            `Originalfilen kunne ikke lagres: lagringen godtar ennå ikke Fountain-filer (ren tekst). Importen er stoppet – ingenting er endret. Databasen må oppdateres så «sources» tillater text/plain (${up.error.message}).`,
+          );
         throw new Error(
           `Originalfilen kunne ikke lagres (${up.error.message}). Importen er stoppet – ingenting er endret. Er databasemigrasjon 0002 kjørt?`,
         );
@@ -162,8 +169,8 @@ export function ImportDialog({
         <DialogHeader>
           <DialogTitle>Importer manus</DialogTitle>
           <DialogDescription>
-            PDF (f.eks. fra Final Draft) eller Word (.docx). Scenene legges i «
-            {production?.name ?? "produksjonen"}»
+            PDF (f.eks. fra Final Draft), Word (.docx) eller Fountain (.fountain). Scenene legges i
+            «{production?.name ?? "produksjonen"}»
             {existing > 0 ? ` etter de ${existing} scenene som finnes` : ""}. Originalfilen lagres
             uendret.
           </DialogDescription>
@@ -184,7 +191,7 @@ export function ImportDialog({
             <input
               ref={inputRef}
               type="file"
-              accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              accept={SCREENPLAY_ACCEPT}
               className="sr-only"
               aria-label="Velg manusfil"
               onChange={(e) => void onFile(e.target.files?.[0])}
@@ -281,7 +288,11 @@ function Preview({
         <dt className="text-text-secondary">Fil</dt>
         <dd className="truncate text-right text-text-primary">{step.file.name}</dd>
         <dt className="text-text-secondary">Sider</dt>
-        <dd className="tabular text-right text-text-primary">{p.pageCount}</dd>
+        <dd className="tabular text-right text-text-primary">
+          {p.format === "fountain"
+            ? `ca. ${p.pageCount} (beregnet – Fountain har ikke faste sider)`
+            : p.pageCount}
+        </dd>
         <dt className="text-text-secondary">Scener</dt>
         <dd className="tabular text-right text-text-primary">
           {p.scenes.length} ({p.stats.numbered} med nummer, {p.stats.unnumbered} uten)

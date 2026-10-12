@@ -18,6 +18,7 @@ import {
   Timer,
   Sparkles,
   Upload,
+  Mic,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -79,12 +80,15 @@ export function ClipPanel({
   onLink,
   onRemoveLink,
   onGenerateScene,
+  onAiDialogue,
   run,
 }: {
   /** Kjør en kommando (avvik ved manusendring: godkjenn eller angre, DEC-0054). */
   run?: (command: Command, label: string, group?: string) => string | null;
   /** «Generer scene …» (DEC-0053): beskrivelser og inndeling for AI-video. */
   onGenerateScene?: () => void;
+  /** Dialog med AI-stemmer (DEC-0071). */
+  onAiDialogue?: (() => void) | undefined;
   state: ProjectState;
   projectId: string;
   clip: FilmClip | null;
@@ -157,6 +161,7 @@ export function ClipPanel({
       Math.min(MAX_DURATION_SECONDS, Math.max(MIN_DURATION_SECONDS, v)),
       fps,
     );
+    // Uendret plan: ingenting skjer (bare å gå gjennom feltet skal ikke gjøre planen om til fast lengde)
     if (frames !== clip?.durationFrames || clip.durationKind === "estimate") onDuration(frames);
   }
 
@@ -207,7 +212,9 @@ export function ClipPanel({
             ) : placeholder ? (
               <span className="italic text-text-secondary">
                 ≈ {formatSeconds(seconds)}{" "}
-                <span className="not-italic text-text-tertiary">(beregnet fra manus)</span>
+                <span className="not-italic text-text-tertiary">
+                  ({clip.durationKind === "planned" ? "planlagt" : "beregnet fra manus"})
+                </span>
               </span>
             ) : (
               <>
@@ -235,6 +242,8 @@ export function ClipPanel({
                 <span className="text-text-tertiary">s</span>
                 {clip.durationKind === "estimate" ? (
                   <span className="text-text-tertiary">(beregnet fra manus)</span>
+                ) : clip.durationKind === "planned" ? (
+                  <span className="text-text-tertiary">(planlagt på prosjektoversikten)</span>
                 ) : editable ? (
                   <button
                     type="button"
@@ -289,6 +298,17 @@ export function ClipPanel({
             >
               <Sparkles />
               Generer scene …
+            </Button>
+          ) : null}
+          {onAiDialogue ? (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={onAiDialogue}
+              title="Les inn replikkene med AI-stemmer og legg dem på dialogsporet"
+            >
+              <Mic />
+              Dialog med AI-stemmer …
             </Button>
           ) : null}
           {editable ? (
@@ -670,7 +690,7 @@ function scenesFilms(state: ProjectState, clip: FilmClip): Take[] {
   return Object.values(state.takes)
     .filter(
       (t) =>
-        t.kind === "imported_film" &&
+        (t.kind === "imported_film" || t.kind === "ai_video") &&
         t.mediaRef !== null &&
         state.occurrences[t.occurrenceId]?.sceneId === clip.sceneId,
     )
@@ -701,7 +721,7 @@ function Versions({
       Object.values(state.takes)
         .filter(
           (t) =>
-            t.kind === "imported_film" &&
+            (t.kind === "imported_film" || t.kind === "ai_video") &&
             t.mediaRef !== null &&
             state.occurrences[t.occurrenceId]?.sceneId === clip.sceneId,
         )
@@ -785,6 +805,16 @@ function Versions({
           </select>
           {use(activeId === t.id, t.id, t.media?.fileName ?? "filmen")}
         </FilmRow>
+      ))}
+      {films.map((t) => (
+        <CoverageRow
+          key={`dekning:${t.id}`}
+          state={state}
+          take={t}
+          variantId={clip.variantId}
+          editable={editable && !!run}
+          run={run}
+        />
       ))}
       {films
         .filter((t) => t.media?.hasAudio !== false)
@@ -938,5 +968,82 @@ function TransitionRow({
         Svart-hvitt (også i eksporten)
       </label>
     </section>
+  );
+}
+
+/**
+ * Manusdekning (REQ-0237, DEC-0071): hvilken del av manuset filmen dekker – første og siste linje. Avvik fra
+ * manuset gjelder da bare linjene i dette området.
+ */
+function CoverageRow({
+  state,
+  take,
+  variantId,
+  editable,
+  run,
+}: {
+  state: ProjectState;
+  take: Take;
+  variantId: string;
+  editable: boolean;
+  run: ((command: Command, label: string, group?: string) => string | null) | undefined;
+}) {
+  const blocks = useMemo(
+    () => blocksOfVariant(state, variantId).filter((b) => b.kind !== "heading"),
+    [state, variantId],
+  );
+  const [err, setErr] = useState<string | null>(null);
+  if (blocks.length < 2) return null;
+  const cov = take.coverage ?? null;
+  const short = (t: string) => (t.length > 40 ? `${t.slice(0, 38)}…` : t);
+  const set = (startBlockId: string, endBlockId: string) =>
+    setErr(
+      run?.(
+        {
+          type: "SetTakeCoverage",
+          takeId: take.id,
+          coverage:
+            startBlockId === blocks[0]!.id && endBlockId === blocks[blocks.length - 1]!.id
+              ? null
+              : { startBlockId, endBlockId },
+        } as never,
+        "Manusdekning for filmen",
+      ) ?? null,
+    );
+  const start = cov?.startBlockId ?? blocks[0]!.id;
+  const end = cov?.endBlockId ?? blocks[blocks.length - 1]!.id;
+  return (
+    <div className="flex flex-col gap-0.5 pl-6 text-[11px] text-text-tertiary">
+      <span>
+        {take.media?.fileName ?? "Filmen"} dekker {cov ? "fra–til" : "hele scenen"}
+      </span>
+      <div className="flex gap-1">
+        {(["start", "end"] as const).map((which) => (
+          <select
+            key={which}
+            aria-label={
+              which === "start" ? "Første linje filmen dekker" : "Siste linje filmen dekker"
+            }
+            value={which === "start" ? start : end}
+            disabled={!editable}
+            onChange={(e) =>
+              which === "start" ? set(e.target.value, end) : set(start, e.target.value)
+            }
+            className="h-5 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-0.5 text-[10px] text-text-secondary disabled:opacity-50"
+          >
+            {blocks.map((b, i) => (
+              <option key={b.id} value={b.id}>
+                {i + 1}. {short(b.text)}
+              </option>
+            ))}
+          </select>
+        ))}
+      </div>
+      {err ? (
+        <span role="alert" className="text-status-danger">
+          {err}
+        </span>
+      ) : null}
+    </div>
   );
 }

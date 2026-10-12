@@ -132,7 +132,7 @@ describe("importert film og «Bruk denne»", () => {
       }),
     ).toMatch(/filinformasjon/);
     expect(fails(seed.state, { ...base, kind: "composition2d", media: MEDIA })).toMatch(
-      /bare importert film/,
+      /gjelder bare film/,
     );
     const { s, takeId } = withFilm(1);
     const row = toRow("takes", s.takes[takeId]!, s.project.id);
@@ -307,10 +307,11 @@ describe("zip med ressurser", () => {
     mk("sound", "Vind/storm", "vind.wav", "audio/wav");
     const e = zipEntries(s);
     expect(e.map((x) => x.path)).toEqual([
-      "Karakterer/Maja/Animatic/v1 – maja.png",
-      "Karakterer/Maja/Animatic/v2 – maja.png",
-      "Lyd/Vind_storm/Animatic/v1 – vind.wav",
-      "Lyd/Vind_storm/Animatic/v2 – vind.wav",
+      // Samme navn som ved nedlasting av ett bilde (DEC-0064)
+      "Karakterer/Maja/Animatic/Maja - Animatic - v1.png",
+      "Karakterer/Maja/Animatic/Maja - Animatic - v2.png",
+      "Lyd/Vind_storm/Animatic/Vind_storm - Animatic - v1.wav",
+      "Lyd/Vind_storm/Animatic/Vind_storm - Animatic - v2.wav",
       expect.stringMatching(/^Importert film\/Scene .* – scene1_ferdig\.mp4$/),
     ]);
     expect(zipSummary(e).map((x) => [x.category, x.files])).toEqual([

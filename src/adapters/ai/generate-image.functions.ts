@@ -10,8 +10,21 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { isUuid, monthStartUtc, newId, MAX_PROMPT_CHARS, type AssetMedia } from "@/core";
+import {
+  stripAttachedSection,
+  estimateCostUsd,
+  isProviderId,
+  adaptPromptForModel,
+  providerModel,
+  isUuid,
+  monthStartUtc,
+  newId,
+  MAX_ATTACHED_IMAGES,
+  MAX_PROMPT_CHARS,
+  type AssetMedia,
+} from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
+import { GATEWAY, ROLE_RANK, gatewayError, referenceImages, validReferencePath } from "./gateway";
 
 /** Bakgrunner og andre hele bilder. */
 export const IMAGE_MODEL = "openai/gpt-image-2";
@@ -20,7 +33,6 @@ export const IMAGE_MODEL = "openai/gpt-image-2";
  * «Transparent background is not supported for this model»); GPT Image 2.5 Sunburst kan (KI-71).
  */
 export const CUTOUT_MODEL = "openai/gpt-image-2.5-sunburst";
-const GATEWAY = "https://ai.gateway.lovable.dev/v1";
 const BUCKET = "assets";
 /** Grenser som sikring mot løpske kostnader. */
 export const MAX_PER_USER_PER_HOUR = 30;
@@ -30,9 +42,17 @@ export interface GenerateImageInput {
   readonly projectId: string;
   readonly assetId: string;
   readonly prompt: string;
-  /** Bilde som sendes med som forbilde (sti i bøtta), eller null. */
-  readonly referencePath: string | null;
+  /**
+   * Bildene som sendes med (sti i bøtta), i rekkefølge: først ev. dagens bilde som skal beholdes, så
+   * filmens forbildebilder (DEC-0066). Tom liste: bildet lages bare fra beskrivelsen.
+   */
+  readonly referencePaths: readonly string[];
+  /** Det første bildet er dagens bilde av ressursen (beholdes); ellers er alle stilforbilder. */
+  readonly identityFirst: boolean;
   readonly purpose: "cutout" | "background";
+  /** Leverandør og modell (DEC-0069); «lovable» (innebygd) når ikke valgt. */
+  readonly provider: string;
+  readonly model: string | null;
   /** Brukeren har bekreftet at genereringen bruker kreditter. */
   readonly approved: true;
 }
@@ -47,35 +67,44 @@ export type GenerateImageResult =
     }
   | { readonly ok: false; readonly message: string };
 
-const ROLE_RANK: Record<string, number> = { viewer: 1, commenter: 2, editor: 3, owner: 4 };
-
 function validate(d: unknown): GenerateImageInput {
   if (!d || typeof d !== "object") throw new Error("Ugyldig forespørsel");
   const x = d as Record<string, unknown>;
   const projectId = x["projectId"];
   const assetId = x["assetId"];
   const prompt = x["prompt"];
-  const ref = x["referencePath"];
+  const refs = x["referencePaths"];
   if (typeof projectId !== "string" || !isUuid(projectId)) throw new Error("Ugyldig prosjekt");
   if (typeof assetId !== "string" || !isUuid(assetId)) throw new Error("Ugyldig ressurs");
   if (typeof prompt !== "string" || !prompt.trim() || prompt.length > MAX_PROMPT_CHARS)
     throw new Error("Beskrivelsen mangler eller er for lang");
   if (
-    ref !== null &&
-    (typeof ref !== "string" ||
-      !ref.startsWith(`${projectId}/`) ||
-      ref.includes("..") ||
-      ref.length > 600)
+    !Array.isArray(refs) ||
+    refs.length > MAX_ATTACHED_IMAGES ||
+    new Set(refs).size !== refs.length ||
+    !refs.every((r) => validReferencePath(projectId, r))
   )
-    throw new Error("Ugyldig forbilde");
+    throw new Error("Ugyldige forbildebilder");
   if (x["purpose"] !== "cutout" && x["purpose"] !== "background") throw new Error("Ugyldig bruk");
   if (x["approved"] !== true) throw new Error("Genereringen må bekreftes");
   return {
     projectId,
     assetId,
     prompt: prompt.trim(),
-    referencePath: ref as string | null,
+    referencePaths: refs as string[],
+    identityFirst: x["identityFirst"] === true && (refs as string[]).length > 0,
     purpose: x["purpose"],
+    provider: (() => {
+      const p = x["provider"] ?? "lovable";
+      if (!isProviderId(p)) throw new Error("Ukjent leverandør");
+      return p;
+    })(),
+    model: (() => {
+      const m = x["model"] ?? null;
+      if (m !== null && (typeof m !== "string" || m.length > 120))
+        throw new Error("Ugyldig modell");
+      return m as string | null;
+    })(),
     approved: true,
   };
 }
@@ -92,32 +121,6 @@ function pngSize(b: Uint8Array): { width: number | null; height: number | null }
 async function sha256(b: Uint8Array): Promise<string> {
   const h = await crypto.subtle.digest("SHA-256", b as unknown as ArrayBuffer);
   return [...new Uint8Array(h)].map((x) => x.toString(16).padStart(2, "0")).join("");
-}
-
-function gatewayError(status: number, body: string): string {
-  if (status === 402)
-    return "Lovable-kredittene i arbeidsområdet er brukt opp. Fyll på i Lovable og prøv igjen.";
-  if (status === 429) return "For mange forespørsler akkurat nå. Vent et minutt og prøv igjen.";
-  if (status === 401 || status === 403)
-    return "AI-tjenesten i Lovable godtok ikke nøkkelen. Sjekk at Lovable AI er slått på for prosjektet.";
-  if (status === 400 && /safety|policy|moderation/i.test(body))
-    return "AI-tjenesten avviste beskrivelsen (innholdsregler). Endre beskrivelsen og prøv igjen.";
-  // Tjenestens egen forklaring (ingen hemmeligheter), kortet ned, så feilen kan forstås og rettes
-  const detail = (() => {
-    try {
-      const j = JSON.parse(body.slice(body.indexOf("{"))) as {
-        error?: { message?: string } | string;
-        message?: string;
-      };
-      return typeof j.error === "string" ? j.error : (j.error?.message ?? j.message ?? "");
-    } catch {
-      return body;
-    }
-  })()
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, 220);
-  return `AI-tjenesten svarte med feil ${status}${detail ? `: ${detail}` : "."}`;
 }
 
 export const generateImage = createServerFn({ method: "POST" })
@@ -144,8 +147,9 @@ export const generateImage = createServerFn({ method: "POST" })
         message:
           "Databasen mangler loggen for AI-generering. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0010).",
       };
+    const own = data.provider !== "lovable";
     const key = process.env["LOVABLE_API_KEY"];
-    if (!key)
+    if (!own && !key)
       return {
         ok: false,
         message:
@@ -170,6 +174,8 @@ export const generateImage = createServerFn({ method: "POST" })
     if (!asset) return { ok: false, message: "Ressursen finnes ikke i prosjektet." };
     if ((asset as { kind: string }).kind === "sound")
       return { ok: false, message: "Lyd kan ikke genereres som bilde." };
+    const refCheck = await referenceImages(admin, data.projectId, data.referencePaths);
+    if (!refCheck.ok) return { ok: false, message: refCheck.message };
 
     // Grenser (sikring mot løpske kostnader)
     const hourAgo = new Date(Date.now() - 3600_000).toISOString();
@@ -178,6 +184,7 @@ export const generateImage = createServerFn({ method: "POST" })
       .from("generation_jobs")
       .select("id", { count: "exact", head: true })
       .eq("created_by", context.userId)
+      .neq("kind", "prompt")
       .gte("created_at", hourAgo);
     if ((mine ?? 0) >= MAX_PER_USER_PER_HOUR)
       return {
@@ -188,6 +195,7 @@ export const generateImage = createServerFn({ method: "POST" })
       .from("generation_jobs")
       .select("id", { count: "exact", head: true })
       .eq("project_id", data.projectId)
+      .neq("kind", "prompt")
       .gte("created_at", dayAgo);
     if ((project ?? 0) >= MAX_PER_PROJECT_PER_DAY)
       return {
@@ -207,31 +215,87 @@ export const generateImage = createServerFn({ method: "POST" })
         ? Number(pr.ai_price_per_image)
         : null;
 
-    const model =
-      data.purpose === "cutout"
+    const model = own
+      ? (data.model ?? "")
+      : data.purpose === "cutout"
         ? process.env["ANIMATIC_CUTOUT_MODEL"] || CUTOUT_MODEL
         : process.env["ANIMATIC_IMAGE_MODEL"] || IMAGE_MODEL;
+    // Egen nøkkel (DEC-0069): modellen må finnes i katalogen, nøkkelen hos en av prosjektets eiere, og
+    // eierens kostnadstak må ha plass
+    const gate = own ? await import("./ai-gate.server") : null;
+    let ownKey: Awaited<ReturnType<NonNullable<typeof gate>["projectKey"]>> = null;
+    let costUsd: number | null = null;
+    if (own && gate) {
+      if (schema.version < 24)
+        return {
+          ok: false,
+          message:
+            "Databasen er ikke oppdatert for egne AI-leverandører. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0024).",
+        };
+      const m = providerModel(data.provider, model);
+      if (!m || m.capability !== "image")
+        return { ok: false, message: "Modellen finnes ikke hos leverandøren." };
+      ownKey = await gate.projectKey(admin, data.projectId, data.provider, context.userId);
+      if (!ownKey)
+        return {
+          ok: false,
+          message:
+            "Ingen av prosjektets eiere har koblet til denne leverandøren (AI-leverandører på prosjektlisten).",
+        };
+      costUsd = estimateCostUsd(data.provider, model, { images: 1 });
+      const capMsg = await gate.overAccountCap(admin, ownKey.user_id, costUsd ?? 0, false);
+      if (capMsg) return { ok: false, message: capMsg };
+    }
     const jobId = newId<"generation_job">();
     const { error: logErr } = await admin.from("generation_jobs").insert({
       id: jobId,
       project_id: data.projectId,
       kind: "image",
-      provider: "lovable",
+      provider: data.provider,
       model,
+      ...(ownKey
+        ? { provider_key_id: ownKey.id, key_owner: ownKey.user_id, cost_usd: costUsd }
+        : {}),
       prompt: data.prompt,
       asset_id: data.assetId,
-      reference_path: data.referencePath,
+      reference_path: data.referencePaths[0] ?? null,
+      ...(schema.version >= 22 ? { reference_paths: data.referencePaths } : {}),
       status: "running",
       created_by: context.userId,
       ...(budgeted ? { estimated_cost: price } : {}),
     } as never);
     if (logErr) return { ok: false, message: `Genereringen kunne ikke logges: ${logErr.message}` };
+    // Samtidige forespørsler: tell på nytt med denne jobben registrert
+    {
+      const [{ count: mineNow }, { count: projectNow }] = await Promise.all([
+        admin
+          .from("generation_jobs")
+          .select("id", { count: "exact", head: true })
+          .eq("created_by", context.userId)
+          .neq("kind", "prompt")
+          .gte("created_at", hourAgo),
+        admin
+          .from("generation_jobs")
+          .select("id", { count: "exact", head: true })
+          .eq("project_id", data.projectId)
+          .neq("kind", "prompt")
+          .gte("created_at", dayAgo),
+      ]);
+      if ((mineNow ?? 0) > MAX_PER_USER_PER_HOUR || (projectNow ?? 0) > MAX_PER_PROJECT_PER_DAY) {
+        await admin.from("generation_jobs").delete().eq("id", jobId);
+        return {
+          ok: false,
+          message: "Grensen for antall genereringer er nådd akkurat nå. Prøv igjen senere.",
+        };
+      }
+    }
     if (budgeted && pr.ai_month_limit !== null && pr.ai_month_limit !== undefined) {
       const { count: used } = await admin
         .from("generation_jobs")
         .select("id", { count: "exact", head: true })
         .eq("project_id", data.projectId)
         .neq("status", "failed")
+        .neq("kind", "prompt")
         .gte("created_at", monthStartUtc(new Date()).toISOString());
       if ((used ?? 0) > Number(pr.ai_month_limit)) {
         // Denne jobben (og eventuelle samtidige) går over rammen: den fjernes igjen, ingenting sendes
@@ -243,6 +307,14 @@ export const generateImage = createServerFn({ method: "POST" })
       }
     }
 
+    if (ownKey && gate) {
+      const capMsg = await gate.overAccountCap(admin, ownKey.user_id, costUsd ?? 0, true);
+      if (capMsg) {
+        await admin.from("generation_jobs").delete().eq("id", jobId);
+        return { ok: false, message: capMsg };
+      }
+    }
+
     const finish = async (patch: Record<string, unknown>) => {
       await admin
         .from("generation_jobs")
@@ -250,52 +322,165 @@ export const generateImage = createServerFn({ method: "POST" })
         .eq("id", jobId);
     };
 
+    if (ownKey) {
+      // Egen leverandør: én forespørsel gjennom adapteren
+      let charged = false;
+      let secret: string | null = null;
+      const { ADAPTERS, scrubSecret } = await import("./providers.server");
+      try {
+        const { decryptKey } = await import("./key-vault.server");
+        secret = await decryptKey(ownKey, {
+          userId: ownKey.user_id,
+          provider: ownKey.provider,
+          rowId: ownKey.id,
+        });
+        const references = await Promise.all(
+          data.referencePaths.map(async (p) => {
+            const { data: blob, error } = await admin.storage.from(BUCKET).download(p);
+            if (error || !blob)
+              throw new Error("Et forbildebilde kunne ikke hentes fra lagringen.");
+            return blob;
+          }),
+        );
+        // Modellens lengdegrense (DEC-0070): ellers avviser tjenesten beskrivelsen
+        const m = providerModel(data.provider, model);
+        const req = {
+          key: secret,
+          model,
+          prompt: m ? adaptPromptForModel(data.prompt, m).text : data.prompt,
+          references,
+          purpose: data.purpose,
+        };
+        let out: { bytes: Uint8Array; mimeType: string };
+        if (data.provider === "openai") out = await ADAPTERS.openai.image(req);
+        else if (data.provider === "google") out = await ADAPTERS.google.image(req);
+        else if (data.provider === "fal") {
+          // fal henter forbildet selv: midlertidige lenker (10 minutter)
+          const referenceUrls: string[] = [];
+          for (const p of data.referencePaths) {
+            const { data: signed } = await admin.storage.from(BUCKET).createSignedUrl(p, 600);
+            if (signed?.signedUrl) referenceUrls.push(signed.signedUrl);
+          }
+          out = await ADAPTERS.fal.image({ ...req, referenceUrls });
+        } else return { ok: false, message: "Leverandøren lager ikke bilder." };
+        charged = true;
+        const mimeType = ["image/png", "image/jpeg", "image/webp"].includes(out.mimeType)
+          ? out.mimeType
+          : "image/png";
+        const ext = mimeType === "image/jpeg" ? "jpg" : mimeType === "image/webp" ? "webp" : "png";
+        const versionId = newId<"asset_version">();
+        const path = `${data.projectId}/${data.assetId}/${versionId}/ai-${new Date().toISOString().slice(0, 10)}.${ext}`;
+        const { error: upErr } = await admin.storage
+          .from(BUCKET)
+          .upload(path, new Blob([out.bytes as unknown as ArrayBuffer], { type: mimeType }), {
+            contentType: mimeType,
+            upsert: false,
+          });
+        if (upErr) throw new Error(`Bildet kunne ikke lagres: ${upErr.message}`);
+        const dims = mimeType === "image/png" ? pngSize(out.bytes) : { width: null, height: null };
+        await finish({ status: "done", result_path: path });
+        return {
+          ok: true,
+          versionId,
+          model: `${data.provider}/${model}`,
+          jobId,
+          media: {
+            path,
+            mimeType,
+            width: dims.width,
+            height: dims.height,
+            byteSize: out.bytes.byteLength,
+            sha256: await sha256(out.bytes),
+          },
+        };
+      } catch (e) {
+        const message = scrubSecret((e as Error).message || "Ukjent feil", secret).slice(0, 2000);
+        await finish({ status: charged ? "lost" : "failed", error: message });
+        return { ok: false, message: `Genereringen stoppet: ${message}` };
+      }
+    }
+
     /** Tjenesten har laget bildet (og tatt betalt): feiler lagringen etterpå, teller jobben likevel. */
     let charged = false;
     try {
       const size = data.purpose === "cutout" ? "1024x1536" : "1536x1024";
       const background = data.purpose === "cutout" ? "transparent" : "opaque";
-      const headers = { Authorization: `Bearer ${key}`, "Lovable-API-Key": key };
-      let reference: Blob | null = null;
-      if (data.referencePath) {
-        const { data: blob, error } = await admin.storage.from(BUCKET).download(data.referencePath);
-        if (error || !blob) throw new Error("Forbildet kunne ikke hentes fra lagringen.");
-        reference = blob;
-      }
-      // Ikke alle modeller tar imot alle valg (f.eks. gjennomsiktig bakgrunn). Avviser tjenesten
-      // forespørselen (400), prøves den igjen med færre valg – hvert forsøk logges.
-      const attempts: Record<string, string>[] = [
-        { size, ...(model.startsWith("openai/") ? { background, output_format: "png" } : {}) },
-        { size },
-        {},
+      const headers = { Authorization: `Bearer ${key!}`, "Lovable-API-Key": key! };
+      const references = await Promise.all(
+        data.referencePaths.map(async (p) => {
+          const { data: blob, error } = await admin.storage.from(BUCKET).download(p);
+          if (error || !blob) throw new Error("Et forbildebilde kunne ikke hentes fra lagringen.");
+          return blob;
+        }),
+      );
+      // Ikke alle modeller tar imot alle valg (f.eks. gjennomsiktig bakgrunn) eller flere bilder. Avviser
+      // tjenesten forespørselen (400), prøves den igjen med færre valg og til slutt bare det første bildet –
+      // hvert forsøk logges.
+      const full = {
+        size,
+        ...(model.startsWith("openai/") ? { background, output_format: "png" } : {}),
+      };
+      // Faller tjenesten tilbake til ett bilde, må det være dagens bilde (et stilforbilde alene ville bli
+      // redigert i stedet for brukt som stil); ellers lages bildet bare fra beskrivelsen
+      const fallback = data.identityFirst ? 1 : 0;
+      const attempts: { extra: Record<string, string>; images: number }[] = [
+        { extra: full, images: references.length },
+        { extra: { size }, images: references.length },
+        ...(references.length > 1
+          ? [
+              { extra: full, images: fallback },
+              { extra: { size }, images: fallback },
+            ]
+          : []),
+        { extra: {}, images: Math.min(fallback, references.length) },
       ];
-      const send = (extra: Record<string, string>) => {
-        if (reference) {
+      /** Beskrivelsen når færre bilder sendes enn den omtaler. */
+      const promptFor = (images: number) =>
+        images === references.length
+          ? data.prompt
+          : `${stripAttachedSection(data.prompt)}${
+              images === 1
+                ? "\n\nATTACHED IMAGES\nImage 1: the current design of the subject. Keep who it is."
+                : ""
+            }`;
+      const send = (extra: Record<string, string>, images: number) => {
+        if (images > 0) {
           const form = new FormData();
           form.append("model", model);
-          form.append("prompt", data.prompt);
+          form.append("prompt", promptFor(images));
           form.append("n", "1");
           for (const [k, v] of Object.entries(extra)) form.append(k, v);
-          const type =
-            reference.type && reference.type.startsWith("image/") ? reference.type : "image/png";
-          const ext = type === "image/jpeg" ? "jpg" : type === "image/webp" ? "webp" : "png";
-          form.append("image", new File([reference], `reference.${ext}`, { type }));
-          return fetch(`${GATEWAY}/images/edits`, { method: "POST", headers, body: form });
+          references.slice(0, images).forEach((ref, i) => {
+            const type = ref.type && ref.type.startsWith("image/") ? ref.type : "image/png";
+            const ext = type === "image/jpeg" ? "jpg" : type === "image/webp" ? "webp" : "png";
+            // Ett bilde: «image» (som før); flere: «image[]» (OpenAI-formatet for flere forbilder)
+            form.append(
+              images === 1 ? "image" : "image[]",
+              new File([ref], `reference-${i + 1}.${ext}`, { type }),
+            );
+          });
+          return fetch(`${GATEWAY}/images/edits`, {
+            method: "POST",
+            headers,
+            body: form,
+            signal: AbortSignal.timeout(150_000),
+          });
         }
         return fetch(`${GATEWAY}/images/generations`, {
           method: "POST",
           headers: { ...headers, "Content-Type": "application/json" },
-          body: JSON.stringify({ model, prompt: data.prompt, n: 1, ...extra }),
+          body: JSON.stringify({ model, prompt: promptFor(0), n: 1, ...extra }),
+          signal: AbortSignal.timeout(150_000),
         });
       };
       let res: Response | null = null;
       const log: string[] = [];
-      for (const extra of attempts) {
-        res = await send(extra);
+      for (const { extra, images } of attempts) {
+        res = await send(extra, images);
         if (res.ok) break;
         const body = await res.text().catch(() => "");
         log.push(
-          `${res.status} [${Object.keys(extra).join(",") || "ingen valg"}]: ${body.slice(0, 400)}`,
+          `${res.status} [${Object.keys(extra).join(",") || "ingen valg"}; ${images} bilde(r)]: ${body.slice(0, 400)}`,
         );
         const retry = res.status === 400 && !/safety|policy|moderation/i.test(body);
         if (!retry) break;

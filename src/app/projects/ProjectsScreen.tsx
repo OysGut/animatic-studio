@@ -7,6 +7,7 @@ import {
   LogOut,
   MoreHorizontal,
   Plus,
+  Sparkles,
   Trash2,
 } from "lucide-react";
 import { useState, type FormEvent } from "react";
@@ -28,6 +29,7 @@ import {
   type ProjectTarget,
 } from "./ProjectDangerDialogs";
 import { BackupDialog, RestoreBackupDialog } from "./BackupDialogs";
+import { ProvidersDialog } from "@/app/ai/ProvidersDialog";
 
 interface ProjectRow {
   id: string;
@@ -103,6 +105,8 @@ export function ProjectsScreen({ userId }: { userId: string }) {
     },
   });
 
+  const [providers, setProviders] = useState(false);
+
   function submit(e: FormEvent) {
     e.preventDefault();
     if (name.trim()) create.mutate(name.trim());
@@ -110,6 +114,7 @@ export function ProjectsScreen({ userId }: { userId: string }) {
 
   return (
     <div className="mx-auto w-full max-w-[960px] px-6 py-8">
+      <ProvidersDialog open={providers} onOpenChange={setProviders} userId={userId} />
       <div className="mb-6 flex items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-text-primary">Prosjekter</h1>
@@ -119,6 +124,10 @@ export function ProjectsScreen({ userId }: { userId: string }) {
         </div>
         {!creating ? (
           <div className="flex items-center gap-2">
+            <Button variant="secondary" onClick={() => setProviders(true)}>
+              <Sparkles />
+              AI-leverandører …
+            </Button>
             <Button variant="secondary" onClick={() => setRestoring(true)}>
               <ArchiveRestore />
               Gjenopprett fra sikkerhetskopi …

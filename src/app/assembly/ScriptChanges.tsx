@@ -18,6 +18,7 @@ import {
   type ScriptChange,
 } from "@/core";
 import { Button } from "@/components/ui/button";
+import { AiUpdateSection } from "./AiUpdateSection";
 
 type Run = (command: Command, label: string, group?: string) => string | null;
 
@@ -76,6 +77,10 @@ export function ScriptChanges({
   const list = [...changes.values()];
   const mats = found.map((d) => d.material);
   const hasComposition = mats.some((m) => m.kind === "composition");
+  // AI-videoer som avviker: kan oppdateres med AI (valg B, DEC-0070)
+  const aiTakeIds = mats
+    .filter((m) => m.kind === "take" && state.takes[m.id]?.kind === "ai_video")
+    .map((m) => m.id);
 
   // 2D-scenen deles med hovedfilmen i en avledet produksjon (DEC-0057): godkjennes bare i hovedfilmen
   const sharedComp = isSharedIn(state, o.productionId, o.variantId);
@@ -284,7 +289,15 @@ export function ScriptChanges({
           </div>
         )
       ) : null}
-      {mats.some((m) => m.kind === "take") ? (
+      {editable && aiTakeIds.length ? (
+        <AiUpdateSection
+          state={state}
+          occurrenceId={occurrenceId}
+          changes={list}
+          takeIds={aiTakeIds}
+        />
+      ) : null}
+      {mats.some((m) => m.kind === "take" && state.takes[m.id]?.kind !== "ai_video") ? (
         <p className="text-[11px] text-text-tertiary">
           Film oppdateres ved å importere en ny versjon («Importer ferdig film …»); den gamle
           beholdes.

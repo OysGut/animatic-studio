@@ -177,10 +177,19 @@ export interface SceneFilter {
    * Når satt, opptrer karakteren i scenen hvis ett av navnene gjør det (KI-29).
    */
   readonly characterNames?: readonly string[];
+  /**
+   * Bare scener med denne ressursen (karakter, objekt, rekvisitt, sted) fra biblioteket (REQ-0073).
+   * Brukes av `matchingScenes` i assembly/status.ts.
+   */
+  readonly assetId?: string;
+  /** Bare scener med denne produksjonsstatusen (`SceneStatus`, REQ-0073). */
+  readonly status?: string;
+  /** Bare scener med manusendringer etter at 2D-scene eller film ble laget (REQ-0073). */
+  readonly discrepancy?: boolean;
 }
 
 export function isFilterActive(f: SceneFilter): boolean {
-  return Boolean(f.text?.trim() || f.character);
+  return Boolean(f.text?.trim() || f.character || f.assetId || f.status || f.discrepancy);
 }
 
 /** Forekomstene i produksjonen som matcher filteret (alle hvis filteret er tomt). */

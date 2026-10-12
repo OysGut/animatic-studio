@@ -115,3 +115,25 @@ export async function signedUrls(
   }
   return out;
 }
+
+/**
+ * Bildedata til AddAssetVersion for en fil som allerede ligger i lagringen (et AI-bilde som ikke ble lagt
+ * inn i biblioteket fordi siden ble lukket). Kaster med norsk feilmelding.
+ */
+export async function mediaFromStoredFile(path: string): Promise<AssetMedia> {
+  const { data, error } = await supabase.storage.from(ASSET_BUCKET).download(path);
+  if (error || !data)
+    throw new Error(`Bildet kunne ikke hentes: ${error?.message ?? "ukjent feil"}`);
+  const mimeType = ASSET_MIME_TYPES.includes(data.type) ? data.type : "image/png";
+  const file = new File([data], path.split("/").pop() ?? "bilde.png", { type: mimeType });
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const [sha256, size] = await Promise.all([sha256Hex(bytes), imageSize(file)]);
+  return {
+    path,
+    mimeType,
+    width: size.width,
+    height: size.height,
+    byteSize: file.size,
+    sha256,
+  };
+}

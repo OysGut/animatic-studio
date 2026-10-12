@@ -36,6 +36,8 @@ import {
   type Translation,
   PRIMARY_LANGUAGE,
   type Annotation,
+  type SoundLink,
+  type ContextName,
   type AudioClip,
   type BlockRevision,
   type CompositionLayer,
@@ -51,13 +53,17 @@ import {
   type SegmentReason,
   type AssetRelation,
   type Poster,
+  type StyleProfile,
   RELATION_KINDS,
 } from "../model";
 import { posterAssetRefs, posterDocumentError } from "../presentation/document";
+import { STYLE_USES, STYLE_USE_LABEL, styleGuideError } from "../generation/style";
+import { blocksOfVariant } from "../views";
 import { MAX_PROMPT_CHARS } from "../generation/prompt";
 import type {
   RelationFields,
   PosterFields,
+  StyleProfileFields,
   NewAnnotation,
   AssetFields,
   AudioClipFields,
@@ -94,6 +100,9 @@ class CommandFailure extends Error {
     super(message);
   }
 }
+
+/** Høyst så mange koblinger per lydressurs (REQ-0204). */
+const MAX_SOUND_LINKS = 100;
 
 function fail(code: CommandErrorCode, message: string, details?: readonly string[]): never {
   throw new CommandFailure(code, message, details);
@@ -135,6 +144,7 @@ function assertNewId(s: ProjectState, id: string) {
     s.translations,
     s.assetRelations,
     s.posters,
+    s.styleProfiles,
   ];
   if (all.some((c) => c[id] !== undefined)) fail("duplicate_id", `ID ${id} er allerede i bruk`);
 }
@@ -181,6 +191,49 @@ export const AUDIO_MIME_TYPES: readonly string[] = [
 ];
 /** Lengste lydfil og lengste lydklipp: 10 timer. */
 export const AUDIO_MAX_MS = 36_000_000;
+/** Planlagt lengde for en scene (REQ-0111/0113): 1 sekund til 10 timer. */
+export const MIN_PLANNED_MS = 1000;
+export const MAX_PLANNED_MS = 36_000_000;
+
+/**
+ * Fortellingstiden for en scene (mandat 10.7, INV-09): kjent type, lineær uten anker, anker som finnes,
+ * ikke seg selv og ingen sirkel, og en endelig forskyvning.
+ */
+function validStoryTime(
+  s: ProjectState,
+  sceneId: string,
+  st: ProjectState["scenes"][string]["storyTime"] | undefined,
+): void {
+  if (!st || !["linear", "flashback", "flashforward", "dream", "jump"].includes(st.kind))
+    fail("invalid", "Ukjent type fortellingstid");
+  if (
+    typeof st!.offset !== "number" ||
+    !Number.isFinite(st!.offset) ||
+    Math.abs(st!.offset) > 100_000
+  )
+    fail("invalid", "Ugyldig forskyvning");
+  if (st!.kind === "linear" && st!.anchorSceneId !== null)
+    fail("invalid", "Lineære scener har ikke anker");
+  if (st!.anchorSceneId !== null) {
+    if (!s.scenes[st!.anchorSceneId]) fail("not_found", "Ankerscenen finnes ikke");
+    if (st!.anchorSceneId === sceneId) fail("invalid", "En scene kan ikke ankres til seg selv");
+    // Ingen sykliske ankre (fortellingstiden må kunne beregnes, INV-09)
+    let cur: string | null = st!.anchorSceneId;
+    const seen = new Set<string>();
+    while (cur !== null && !seen.has(cur)) {
+      if (cur === sceneId) fail("invalid", "Ankeret ville gitt en sirkel i fortellingstiden");
+      seen.add(cur);
+      const anc: ProjectState["scenes"][string] | undefined = s.scenes[cur];
+      cur = anc && anc.storyTime.kind !== "linear" ? anc.storyTime.anchorSceneId : null;
+    }
+  }
+}
+
+function plannedOrFail(ms: unknown): number {
+  if (typeof ms !== "number" || !Number.isInteger(ms) || ms < MIN_PLANNED_MS || ms > MAX_PLANNED_MS)
+    fail("invalid", "Ugyldig planlagt lengde");
+  return ms as number;
+}
 /** Maks filstørrelse for et bilde: 2 GB (Lovable Clouds standard per fil, DEC-0032). */
 export const ASSET_MAX_BYTES = 2 * 1024 * 1024 * 1024;
 
@@ -351,6 +404,7 @@ export function revisionOf(s: ProjectState, id: string): number | undefined {
     s.translations,
     s.assetRelations,
     s.posters,
+    s.styleProfiles,
   ]) {
     const e = c[id];
     if (e) return e.revision;
@@ -417,6 +471,11 @@ function usedByPresentation(
     Object.values(s.assetRelations).some((r) => r.fromAssetId === id || r.toAssetId === id)
   )
     return true;
+  if (
+    key === "versions" &&
+    Object.values(s.styleProfiles).some((p) => p.guide.referenceVersionIds.includes(id))
+  )
+    return true;
   return Object.values(s.posters).some((p) => posterAssetRefs(p.document)[key].has(id));
 }
 
@@ -430,6 +489,9 @@ function layerFields(s: ProjectState, f: LayerFields, prev?: CompositionLayer): 
       anchor: f.anchor === undefined ? prev.anchor : f.anchor,
       // Språkavhengige bilder (DEC-0059): utelatt = uendret
       languageImages: f.languageImages ?? prev.languageImages ?? [],
+      // Maske og blandingsmodus (REQ-0175): utelatt = uendret
+      mask: f.mask === undefined ? (prev.mask ?? null) : f.mask,
+      blend: f.blend ?? prev.blend ?? "normal",
     };
   // Nytt bilde i laget (annen ressurs): bilder per språk av den gamle ressursen passer ikke lenger
   if (prev && f.assetId !== prev.assetId)
@@ -505,7 +567,36 @@ function fieldsOfLayer(l: CompositionLayer): LayerFields {
     path: l.path,
     anchor: l.anchor,
     ...(l.languageImages?.length ? { languageImages: l.languageImages } : {}),
+    ...(l.mask ? { mask: l.mask } : {}),
+    ...(l.blend && l.blend !== "normal" ? { blend: l.blend } : {}),
   };
+}
+
+/**
+ * Masker (REQ-0175): et lag som får en maske av et annet lag, må vise til et lag (ikke en gruppe) i samme
+ * 2D-scene, ikke seg selv, og masker må ikke gå i ring (A maskeres av B som maskeres av A). Bare lag som får
+ * ny maske kontrolleres; et slettet maskelag gjør bare at laget vises uten maske.
+ */
+function checkMasks(before: ProjectState, after: ProjectState, ids: readonly string[]): void {
+  for (const id of ids) {
+    const l = after.layers[id];
+    const m = l?.mask;
+    if (!l || !m || m.kind !== "layer") continue;
+    if (JSON.stringify(before.layers[id]?.mask ?? null) === JSON.stringify(m)) continue;
+    if (m.layerId === l.id) fail("invalid", "Et lag kan ikke være maske for seg selv");
+    const target = after.layers[m.layerId];
+    if (!target || target.compositionId !== l.compositionId)
+      fail("invalid", "Laget som skal brukes som maske, finnes ikke i denne 2D-scenen");
+    if (target.kind === "group") fail("invalid", "En gruppe kan ikke brukes som maske");
+    const seen = new Set<string>([l.id]);
+    let cur: CompositionLayer | undefined = target;
+    while (cur && cur.mask?.kind === "layer") {
+      if (seen.has(cur.mask.layerId))
+        fail("invalid", "Maskene går i ring (lagene maskerer hverandre)");
+      seen.add(cur.id);
+      cur = after.layers[cur.mask.layerId];
+    }
+  }
 }
 
 /**
@@ -554,7 +645,18 @@ function partFieldsOf(p: ClipPartFields): ClipPartFields {
     takeId: p.source === "take" ? p.takeId : null,
     inMs: p.inMs,
     outMs: p.outMs,
+    ...(p.transitionMs ? { transitionMs: transitionMsOf(p.transitionMs, p.outMs - p.inMs) } : {}),
   };
+}
+
+/** Lengste myke overgang mellom to deler (ms). */
+export const MAX_PART_TRANSITION_MS = 5000;
+
+function transitionMsOf(ms: number, partMs: number): number {
+  if (!Number.isInteger(ms) || ms < 0 || ms > MAX_PART_TRANSITION_MS)
+    fail("invalid", `Overgangen må være 0–${MAX_PART_TRANSITION_MS} ms`);
+  if (ms > partMs) fail("invalid", "Overgangen kan ikke være lengre enn delen");
+  return ms;
 }
 
 /** Lengste beskrivelse av en kontinuitetshendelse. */
@@ -700,6 +802,32 @@ function relationFieldsOf(
     description: f.description.trim(),
     status: f.status,
   };
+}
+
+function otherDefault(s: ProjectState, id: string): boolean {
+  return Object.values(s.styleProfiles).some((x) => x.id !== id && !x.removed && x.isDefault);
+}
+
+/** Stilprofilens felter. Forbildebilder kontrolleres bare når de er nye i profilen. */
+function styleProfileFieldsOf(
+  s: ProjectState,
+  f: StyleProfileFields,
+  id: string,
+  prev?: StyleProfile,
+): Omit<StyleProfile, "id" | "revision" | "removed"> {
+  if (!f || typeof f !== "object") fail("invalid", "Ugyldig stilprofil");
+  if (typeof f.name !== "string" || !f.name.trim() || f.name.length > 120)
+    fail("invalid", "Stilprofilen må ha et navn (maks 120 tegn)");
+  if (typeof f.isDefault !== "boolean") fail("invalid", "Ugyldig stilprofil");
+  if (f.isDefault && otherDefault(s, id))
+    fail("invalid", "Prosjektet har allerede en standard stilprofil");
+  const err = styleGuideError(f.guide);
+  if (err) fail("invalid", err);
+  const old = new Set(prev?.guide.referenceVersionIds ?? []);
+  for (const v of f.guide.referenceVersionIds)
+    if (!old.has(v) && !need(s.assetVersions[v], "Forbildebildet").mimeType.startsWith("image/"))
+      fail("invalid", "Forbildebildet må være et bilde");
+  return { name: f.name.trim(), isDefault: f.isDefault, guide: f.guide };
 }
 
 /** Samme par og type kan bare finnes én gang (avvist eller godkjent) – ingen doble linjer i kartet. */
@@ -1143,7 +1271,15 @@ function run(
               id: c.sceneId,
               revision: 1,
               originProductionId: production.id,
-              storyTime: c.storyTime ?? { kind: "linear", anchorSceneId: null, offset: 0 },
+              storyTime: (() => {
+                const st = c.storyTime ?? {
+                  kind: "linear" as const,
+                  anchorSceneId: null,
+                  offset: 0,
+                };
+                validStoryTime(s, c.sceneId, st);
+                return st;
+              })(),
               derivedFromSceneId: null,
               mergedIntoSceneId: null,
             },
@@ -1202,7 +1338,9 @@ function run(
       const referencedByScenes = Object.values(s.scenes).some(
         (x) =>
           x.id !== c.sceneId &&
-          (x.mergedIntoSceneId === c.sceneId || x.derivedFromSceneId === c.sceneId),
+          (x.mergedIntoSceneId === c.sceneId ||
+            x.derivedFromSceneId === c.sceneId ||
+            x.storyTime.anchorSceneId === c.sceneId),
       );
       if (otherUse || otherVariants || hasTakes || hasSegments || referencedByScenes) {
         fail("referenced", "Scenen er tatt i bruk og kan ikke angres. Deaktiver den i stedet.");
@@ -1894,8 +2032,8 @@ function run(
           c.mediaRef.includes(".."))
       )
         fail("invalid", "Ugyldig mediesti");
-      if (c.media !== undefined && c.kind !== "imported_film")
-        fail("invalid", "Filinformasjon gjelder bare importert film");
+      if (c.media !== undefined && c.kind !== "imported_film" && c.kind !== "ai_video")
+        fail("invalid", "Filinformasjon gjelder bare film");
       const media = c.media === undefined ? undefined : takeMediaOf(c.media);
       const take: Take = {
         id: c.takeId,
@@ -2214,6 +2352,29 @@ function run(
       };
     }
 
+    case "SetPlannedDuration": {
+      const o = need(s.occurrences[c.occurrenceId], "Forekomsten");
+      const ms = c.plannedMs;
+      if (
+        ms !== null &&
+        (typeof ms !== "number" ||
+          !Number.isInteger(ms) ||
+          ms < MIN_PLANNED_MS ||
+          ms > MAX_PLANNED_MS)
+      )
+        fail("invalid", "Planlagt lengde må være mellom 1 sekund og 10 timer");
+      const { plannedMs: _old, ...rest } = o;
+      const next = ms === null ? rest : { ...rest, plannedMs: ms };
+      return {
+        state: {
+          ...s,
+          occurrences: { ...s.occurrences, [o.id]: { ...next, revision: rev(o) } },
+        },
+        inverse: { type: "SetPlannedDuration", occurrenceId: o.id, plannedMs: o.plannedMs ?? null },
+        affected: [o.id],
+      };
+    }
+
     case "SetOccurrenceMonochrome": {
       const o = need(s.occurrences[c.occurrenceId], "Forekomsten");
       if (typeof c.monochrome !== "boolean") fail("invalid", "Ugyldig valg");
@@ -2269,8 +2430,8 @@ function run(
           const t = need(s.takes[f.takeId!], "Versjonen");
           if (s.occurrences[t.occurrenceId]?.sceneId !== o.sceneId)
             fail("invalid", "Versjonen tilhører en annen scene");
-          if (t.kind !== "imported_film" || !t.mediaRef)
-            fail("invalid", "Bare importert film kan brukes som del");
+          if ((t.kind !== "imported_film" && t.kind !== "ai_video") || !t.mediaRef)
+            fail("invalid", "Bare film (importert eller AI-video) kan brukes som del");
           const max = t.media?.durationMs ?? AUDIO_MAX_MS;
           if (f.outMs > max) fail("invalid", "Utpunktet er etter slutten av filmen");
         } else {
@@ -2289,6 +2450,15 @@ function run(
           takeId: f.takeId as never,
           inMs: f.inMs,
           outMs: f.outMs,
+          // Første del har ingen del før seg å tone fra; overgangen er aldri lengre enn delen før (den kan ha
+          // blitt kortet inn etter at overgangen ble valgt), så vinduet når aldri forbi nabodelen
+          ...(i > 0 && f.transitionMs
+            ? (() => {
+                const before = c.parts[i - 1]!;
+                const ms = Math.min(f.transitionMs, before.outMs - before.inMs);
+                return ms > 0 ? { transitionMs: ms } : {};
+              })()
+            : {}),
           removed: false,
         };
         if (
@@ -2298,7 +2468,8 @@ function run(
           old.source !== part.source ||
           old.takeId !== part.takeId ||
           old.inMs !== part.inMs ||
-          old.outMs !== part.outMs
+          old.outMs !== part.outMs ||
+          (old.transitionMs ?? 0) !== (part.transitionMs ?? 0)
         ) {
           next[part.id] = part;
           affected.push(part.id);
@@ -2327,6 +2498,7 @@ function run(
             takeId: p.takeId,
             inMs: p.inMs,
             outMs: p.outMs,
+            ...(p.transitionMs ? { transitionMs: p.transitionMs } : {}),
           })),
         },
         affected,
@@ -2631,6 +2803,113 @@ function run(
           posters: { ...s.posters, [p.id]: { ...p, removed: c.removed, revision: rev(p) } },
         },
         inverse: { type: "SetPosterRemoved", posterId: p.id, removed: !c.removed },
+        affected: [p.id],
+      };
+    }
+
+    case "CreateStyleProfile": {
+      assertNewId(s, c.profileId);
+      const fields = styleProfileFieldsOf(s, c.fields, c.profileId);
+      return {
+        state: {
+          ...s,
+          styleProfiles: {
+            ...s.styleProfiles,
+            [c.profileId]: { id: c.profileId, revision: 1, ...fields, removed: false },
+          },
+        },
+        inverse: { type: "UndoCreateStyleProfile", profileId: c.profileId },
+        affected: [c.profileId],
+      };
+    }
+
+    case "UndoCreateStyleProfile": {
+      const p = need(s.styleProfiles[c.profileId], "Stilprofilen");
+      if (p.appliesTo?.length)
+        fail(
+          "referenced",
+          "Stilprofilen er valgt for bestemte bruk og kan ikke fjernes ved angring. Fjern den i stilguiden i stedet.",
+        );
+      const { [p.id]: _p, ...styleProfiles } = s.styleProfiles;
+      return {
+        state: { ...s, styleProfiles },
+        inverse: {
+          type: "CreateStyleProfile",
+          profileId: p.id,
+          fields: { name: p.name, isDefault: p.isDefault, guide: p.guide },
+        },
+        affected: [p.id],
+      };
+    }
+
+    case "UpdateStyleProfile": {
+      const p = need(s.styleProfiles[c.profileId], "Stilprofilen");
+      const fields = styleProfileFieldsOf(s, c.fields, p.id, p);
+      return {
+        state: {
+          ...s,
+          styleProfiles: { ...s.styleProfiles, [p.id]: { ...p, ...fields, revision: rev(p) } },
+        },
+        inverse: {
+          type: "UpdateStyleProfile",
+          profileId: p.id,
+          fields: { name: p.name, isDefault: p.isDefault, guide: p.guide },
+        },
+        affected: [p.id],
+      };
+    }
+
+    case "SetStyleAppliesTo": {
+      const p = need(s.styleProfiles[c.profileId], "Stilprofilen");
+      if (!Array.isArray(c.appliesTo) || c.appliesTo.some((u) => !STYLE_USES.includes(u)))
+        fail("invalid", "Ugyldig bruk for stilprofilen");
+      const uses = STYLE_USES.filter((u) => c.appliesTo.includes(u));
+      // Hver bruk har høyst én profil, så det alltid er klart hvilken som gjelder
+      for (const u of uses) {
+        const other = Object.values(s.styleProfiles).find(
+          (x) => x.id !== p.id && !x.removed && (x.appliesTo ?? []).includes(u),
+        );
+        if (other)
+          fail("invalid", `«${STYLE_USE_LABEL[u]}» bruker allerede stilprofilen «${other.name}»`);
+      }
+      const before = p.appliesTo ?? [];
+      if (before.length === uses.length && before.every((u, i) => u === uses[i]))
+        fail("invalid", "Ingen endring");
+      return {
+        state: {
+          ...s,
+          styleProfiles: {
+            ...s.styleProfiles,
+            [p.id]: { ...p, appliesTo: uses, revision: rev(p) },
+          },
+        },
+        inverse: { type: "SetStyleAppliesTo", profileId: p.id, appliesTo: before },
+        affected: [p.id],
+      };
+    }
+
+    case "SetStyleProfileRemoved": {
+      const p = need(s.styleProfiles[c.profileId], "Stilprofilen");
+      if (p.removed === c.removed) fail("invalid", "Ingen endring");
+      if (!c.removed && p.isDefault && otherDefault(s, p.id))
+        fail("invalid", "Prosjektet har allerede en standard stilprofil");
+      if (!c.removed)
+        for (const u of p.appliesTo ?? []) {
+          const other = Object.values(s.styleProfiles).find(
+            (x) => x.id !== p.id && !x.removed && (x.appliesTo ?? []).includes(u),
+          );
+          if (other)
+            fail("invalid", `«${STYLE_USE_LABEL[u]}» bruker allerede stilprofilen «${other.name}»`);
+        }
+      return {
+        state: {
+          ...s,
+          styleProfiles: {
+            ...s.styleProfiles,
+            [p.id]: { ...p, removed: c.removed, revision: rev(p) },
+          },
+        },
+        inverse: { type: "SetStyleProfileRemoved", profileId: p.id, removed: !c.removed },
         affected: [p.id],
       };
     }
@@ -2984,6 +3263,15 @@ function run(
       for (const b of moved)
         blocksNext[b.id] = { ...b, variantId: c.newVariantId, revision: rev(b) };
       const occNext = { ...s.occurrences };
+      // En planlagt lengde gjaldt hele scenen; etter delingen følger begge delene estimatet til brukeren
+      // planlegger dem på nytt (ellers ville den første delen fått hele planen)
+      const plans: Record<string, number> = {};
+      for (const u of users)
+        if (u.plannedMs !== undefined) {
+          plans[u.id] = u.plannedMs;
+          const { plannedMs: _p, ...rest } = u;
+          occNext[u.id] = { ...rest, revision: rev(u) };
+        }
       for (const u of users) {
         const after = Object.values(s.occurrences)
           .filter(
@@ -3045,8 +3333,15 @@ function run(
             heading: c.heading,
           },
           originalVariantId: variant.id,
+          ...(Object.keys(plans).length ? { plans } : {}),
         },
-        affected: [c.newSceneId, c.newVariantId, ...Object.values(c.newOccurrenceIds), ...movedIds],
+        affected: [
+          c.newSceneId,
+          c.newVariantId,
+          ...Object.values(c.newOccurrenceIds),
+          ...movedIds,
+          ...Object.keys(plans),
+        ],
       };
     }
 
@@ -3085,6 +3380,12 @@ function run(
       ) {
         fail("referenced", "Den nye scenen er brukt i en senere deling eller sammenslåing");
       }
+      if (Object.values(s.scenes).some((x) => x.storyTime.anchorSceneId === newScene.id)) {
+        fail(
+          "referenced",
+          "En annen scene er plassert i fortellingstiden i forhold til den nye scenen. Endre den først.",
+        );
+      }
       {
         const keys = new Set(
           Object.values(s.blocks)
@@ -3115,6 +3416,17 @@ function run(
           blocksNext[b.id] = { ...b, variantId: c.originalVariantId, revision: rev(b) };
       const occNext = { ...s.occurrences };
       for (const id of newOccIds) delete occNext[id];
+      // Planlagte lengder delingen fjernet, settes tilbake (bare på forekomstene som ble delt)
+      const restored: string[] = [];
+      for (const [id, ms] of Object.entries(c.plans ?? {})) {
+        const o = occNext[id];
+        if (!o || !Object.hasOwn(occNext, id) || !Object.hasOwn(sp.newOccurrenceIds, id))
+          fail("invalid", "Planen stemmer ikke med delingen");
+        if (!Number.isInteger(ms) || ms < MIN_PLANNED_MS || ms > MAX_PLANNED_MS)
+          fail("invalid", "Ugyldig planlagt lengde");
+        occNext[id] = { ...o!, plannedMs: ms, revision: rev(o!) };
+        restored.push(id);
+      }
       const { [sp.newSceneId]: _sc, ...scenes } = s.scenes;
       const { [sp.newVariantId]: _v, ...variants } = s.variants;
       return {
@@ -3124,6 +3436,7 @@ function run(
           sp.newSceneId,
           sp.newVariantId,
           ...newOccIds,
+          ...restored,
           ...Object.values(s.blocks)
             .filter((b) => b.variantId === nv.id)
             .map((b) => b.id),
@@ -3203,6 +3516,14 @@ function run(
           occurrences: {
             ...s.occurrences,
             [source.id]: { ...source, active: false, revision: rev(source) },
+            // Målscenen får kildens innhold: en planlagt lengde for den gamle målscenen stemmer ikke
+            // lenger, så den følger estimatet til brukeren planlegger på nytt
+            ...(target.plannedMs !== undefined
+              ? (() => {
+                  const { plannedMs: _p, ...rest } = target;
+                  return { [target.id]: { ...rest, revision: rev(target) } };
+                })()
+              : {}),
           },
         },
         inverse: {
@@ -3212,8 +3533,14 @@ function run(
           sourceOccurrenceId: source.id,
           placements,
           sourceWasActive: source.active,
+          ...(target.plannedMs !== undefined ? { targetPlannedMs: target.plannedMs } : {}),
         },
-        affected: [sourceScene.id, source.id, ...placements.map((p) => p.blockId)],
+        affected: [
+          sourceScene.id,
+          source.id,
+          ...(target.plannedMs !== undefined ? [target.id] : []),
+          ...placements.map((p) => p.blockId),
+        ],
       };
     }
 
@@ -3276,6 +3603,15 @@ function run(
           occurrences: {
             ...s.occurrences,
             [source.id]: { ...source, active: c.sourceWasActive, revision: rev(source) },
+            ...(c.targetPlannedMs !== undefined
+              ? {
+                  [target.id]: {
+                    ...target,
+                    plannedMs: plannedOrFail(c.targetPlannedMs),
+                    revision: rev(target),
+                  },
+                }
+              : {}),
           },
         },
         inverse: {
@@ -3284,29 +3620,18 @@ function run(
           targetOccurrenceId: c.targetOccurrenceId,
           sourceOccurrenceId: c.sourceOccurrenceId,
         },
-        affected: [sourceScene.id, source.id, ...c.placements.map((p) => p.blockId)],
+        affected: [
+          sourceScene.id,
+          source.id,
+          ...(c.targetPlannedMs !== undefined ? [target.id] : []),
+          ...c.placements.map((p) => p.blockId),
+        ],
       };
     }
 
     case "SetStoryTime": {
       const sc = need(s.scenes[c.sceneId], "Scenen");
-      if (c.storyTime.kind === "linear" && c.storyTime.anchorSceneId !== null)
-        fail("invalid", "Lineære scener har ikke anker");
-      if (c.storyTime.anchorSceneId !== null) {
-        need(s.scenes[c.storyTime.anchorSceneId], "Ankerscenen");
-        if (c.storyTime.anchorSceneId === sc.id)
-          fail("invalid", "En scene kan ikke ankres til seg selv");
-        // Ingen sykliske ankre (fortellingstiden må kunne beregnes, INV-09)
-        let cur: string | null = c.storyTime.anchorSceneId;
-        const seen = new Set<string>();
-        while (cur !== null && !seen.has(cur)) {
-          if (cur === sc.id) fail("invalid", "Ankeret ville gitt en sirkel i fortellingstiden");
-          seen.add(cur);
-          const anc: typeof sc | undefined = s.scenes[cur];
-          cur = anc && anc.storyTime.kind !== "linear" ? anc.storyTime.anchorSceneId : null;
-        }
-      }
-      if (!Number.isFinite(c.storyTime.offset)) fail("invalid", "Ugyldig forskyvning");
+      validStoryTime(s, sc.id, c.storyTime);
       return {
         state: {
           ...s,
@@ -3360,6 +3685,14 @@ function run(
             "referenced",
             "Ressursen har fått visuelle varianter og kan ikke fjernes. Arkiver den i stedet.",
           );
+        // Stemme, betegnelser og lydkoblinger følger ikke med når opprettelsen gjøres om igjen; da angres
+        // ikke opprettelsen (ingen andres arbeid skal gå tapt i stillhet)
+        const extra = s.assets[id]!;
+        if (extra.voice || extra.contextNames?.length || extra.soundLinks?.length)
+          fail(
+            "referenced",
+            "Ressursen har fått stemme, betegnelser eller lydkoblinger og kan ikke fjernes. Arkiver den i stedet.",
+          );
         delete assets[id];
       }
       return {
@@ -3408,6 +3741,154 @@ function run(
             tags: a.tags,
           },
         },
+        affected: [a.id],
+      };
+    }
+
+    case "SetContextNames": {
+      const a = need(s.assets[c.assetId], "Ressursen");
+      if (!Array.isArray(c.contextNames) || c.contextNames.length > 200)
+        fail("invalid", "Høyst 200 betegnelser");
+      const before = a.contextNames ?? [];
+      const known = new Set(before.flatMap((x) => x.blockIds));
+      const names = new Set<string>();
+      const list: ContextName[] = [];
+      for (const n of c.contextNames) {
+        const name = typeof n?.name === "string" ? n.name.trim().replace(/\s+/g, " ") : "";
+        if (!name || name.length > 80) fail("invalid", "Betegnelsen må ha 1–80 tegn");
+        const key = name.toLocaleLowerCase("nb");
+        if (names.has(key)) fail("invalid", "Samme betegnelse to ganger");
+        names.add(key);
+        if (!Array.isArray(n.blockIds) || n.blockIds.length === 0 || n.blockIds.length > 2000)
+          fail("invalid", "Velg minst én linje i manuset");
+        const ids: string[] = [
+          ...new Set<string>((n.blockIds as readonly unknown[]).map((x: unknown) => String(x))),
+        ];
+        for (const id of ids)
+          if (!s.blocks[id] && !known.has(id) && !(c.restore === true && isUuid(id)))
+            fail("not_found", "En av linjene finnes ikke i manuset");
+        list.push({ name, blockIds: ids });
+      }
+      return {
+        state: {
+          ...s,
+          assets: { ...s.assets, [a.id]: { ...a, contextNames: list, revision: rev(a) } },
+        },
+        inverse: { type: "SetContextNames", assetId: a.id, contextNames: before, restore: true },
+        affected: [a.id],
+      };
+    }
+
+    case "SetTakeCoverage": {
+      const t = need(s.takes[c.takeId], "Versjonen");
+      if (t.kind !== "imported_film" && t.kind !== "ai_video")
+        fail("invalid", "Bare film kan ha manusdekning");
+      const cov = c.coverage;
+      if (cov !== null) {
+        const o = need(s.occurrences[t.occurrenceId], "Scenen");
+        const order = blocksOfVariant(s, o.variantId)
+          .filter((b) => b.kind !== "heading")
+          .map((b) => b.id as string);
+        const a = order.indexOf(cov?.startBlockId);
+        const b = order.indexOf(cov?.endBlockId);
+        if (a < 0 || b < 0) fail("not_found", "Linjene må være i scenen");
+        if (b < a) fail("invalid", "Siste linje må komme etter første");
+      }
+      return {
+        state: {
+          ...s,
+          takes: {
+            ...s.takes,
+            [t.id]: {
+              ...t,
+              coverage: cov ? { startBlockId: cov.startBlockId, endBlockId: cov.endBlockId } : null,
+              revision: rev(t),
+            },
+          },
+        },
+        inverse: { type: "SetTakeCoverage", takeId: t.id, coverage: t.coverage ?? null },
+        affected: [t.id],
+      };
+    }
+
+    case "SetAssetVoice": {
+      const a = need(s.assets[c.assetId], "Ressursen");
+      if (a.kind !== "character" && a.kind !== "animal" && a.kind !== "other")
+        fail("invalid", "Bare karakterer kan få stemme");
+      const v = c.voice;
+      if (
+        v !== null &&
+        (v?.provider !== "elevenlabs" ||
+          typeof v.voiceId !== "string" ||
+          !/^[A-Za-z0-9_-]{1,64}$/.test(v.voiceId) ||
+          typeof v.label !== "string" ||
+          v.label.length > 120)
+      )
+        fail("invalid", "Ugyldig stemme");
+      return {
+        state: {
+          ...s,
+          assets: {
+            ...s.assets,
+            [a.id]: {
+              ...a,
+              voice: v ? { provider: v.provider, voiceId: v.voiceId, label: v.label.trim() } : null,
+              revision: rev(a),
+            },
+          },
+        },
+        inverse: { type: "SetAssetVoice", assetId: a.id, voice: a.voice ?? null },
+        affected: [a.id],
+      };
+    }
+
+    case "SetSoundLinks": {
+      const a = need(s.assets[c.assetId], "Ressursen");
+      if (a.kind !== "sound") fail("invalid", "Bare lydressurser kan kobles på denne måten");
+      if (!Array.isArray(c.links) || c.links.length > MAX_SOUND_LINKS)
+        fail("invalid", `Høyst ${MAX_SOUND_LINKS} koblinger`);
+      const seen = new Set<string>();
+      const links: SoundLink[] = [];
+      const KINDS = ["asset", "block", "scene", "segment", "event", "production"];
+      for (const l of c.links) {
+        if (!l || !KINDS.includes(l.kind)) fail("invalid", "Ugyldig kobling");
+        if (!l || typeof l.id !== "string") fail("invalid", "Ugyldig kobling");
+        const key = `${l.kind}:${l.id}`;
+        if (seen.has(key)) fail("invalid", "Samme kobling to ganger");
+        seen.add(key);
+        const exists =
+          l.kind === "asset"
+            ? !!s.assets[l.id] && l.id !== a.id
+            : l.kind === "block"
+              ? !!s.blocks[l.id]
+              : l.kind === "scene"
+                ? !!s.scenes[l.id]
+                : l.kind === "segment"
+                  ? !!s.segments[l.id]
+                  : l.kind === "event"
+                    ? !!s.continuityEvents[l.id]
+                    : l.kind === "production"
+                      ? !!s.productions[l.id]
+                      : false;
+        // Nye koblinger må peke på noe som finnes. En kobling til noe som siden er fjernet, kan stå, fjernes
+        // og settes tilbake ved angring (permanent ID; vises som «finnes ikke lenger»).
+        const kept = (a.soundLinks ?? []).some((x) => x.kind === l.kind && x.id === l.id);
+        if (!exists && !kept && !(c.restore === true && isUuid(l.id)))
+          fail("not_found", "Det lyden skal kobles til, finnes ikke");
+        links.push({ kind: l.kind, id: l.id });
+      }
+      const before = a.soundLinks ?? [];
+      if (
+        before.length === links.length &&
+        before.every((x, i) => x.kind === links[i]!.kind && x.id === links[i]!.id)
+      )
+        fail("invalid", "Ingen endring");
+      return {
+        state: {
+          ...s,
+          assets: { ...s.assets, [a.id]: { ...a, soundLinks: links, revision: rev(a) } },
+        },
+        inverse: { type: "SetSoundLinks", assetId: a.id, links: before, restore: true },
         affected: [a.id],
       };
     }
@@ -3577,7 +4058,10 @@ function run(
       if (va?.approvedVersionId === ver.id)
         fail("referenced", "Versjonen er godkjent og kan ikke fjernes");
       if (usedByPresentation(s, "versions", ver.id))
-        fail("referenced", "Bildet brukes på en plakat og kan ikke fjernes.");
+        fail(
+          "referenced",
+          "Bildet brukes på en plakat eller som forbilde for filmens stil og kan ikke fjernes.",
+        );
       if (usedByLayer(s, "versionId", ver.id))
         fail("referenced", "Bildet brukes i en 2D-scene og kan ikke fjernes.");
       // Bare det nyeste bildet kan angres bort (en versjon andre kan ha brukt, beholdes)
@@ -4022,6 +4506,11 @@ function run(
         { ...s, layers },
         c.layers.map((n) => n.layerId),
       );
+      checkMasks(
+        s,
+        { ...s, layers },
+        c.layers.map((n) => n.layerId),
+      );
       return {
         state: { ...s, layers },
         inverse: { type: "UndoAddLayers", layerIds: c.layers.map((n) => n.layerId) },
@@ -4061,12 +4550,22 @@ function run(
         const l = need(s.layers[u.layerId], "Laget");
         before.push({
           layerId: l.id,
-          fields: { ...fieldsOfLayer(l), languageImages: l.languageImages ?? [] },
+          fields: {
+            ...fieldsOfLayer(l),
+            languageImages: l.languageImages ?? [],
+            mask: l.mask ?? null,
+            blend: l.blend ?? "normal",
+          },
         });
-        const { languageImages: _li, ...rest } = l;
+        const { languageImages: _li, mask: _m, blend: _b, ...rest } = l;
         layers[l.id] = { ...rest, ...layerFields(s, u.fields, l), revision: rev(l) };
       }
       checkGroups(
+        s,
+        { ...s, layers },
+        c.layers.map((x) => x.layerId),
+      );
+      checkMasks(
         s,
         { ...s, layers },
         c.layers.map((x) => x.layerId),

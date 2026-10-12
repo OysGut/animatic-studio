@@ -15,13 +15,31 @@ const msOf = (frames: number, fps: Rational) => Math.round((frames * 1000 * fps.
 /** Delene i et klipp som kommando-felter. Et klipp uten lagrede deler får én ny del (ny id). */
 export function editableParts(clip: FilmClip, newId: () => string): ClipPartFields[] | null {
   if (clip.parts.some((p) => p.source === "placeholder")) return null;
-  return clip.parts.map((p) => ({
+  return clip.parts.map((p, i) => ({
     partId: (p.id ?? newId()) as ClipPartId,
     source: p.source === "take" ? "take" : "composition",
     takeId: p.source === "take" ? (p.take!.id as TakeId) : null,
     inMs: p.inMs,
     outMs: p.outMs,
+    // Myk overgang inn i delen (DEC-0071); aldri på første del
+    ...(i > 0 && p.transitionMs ? { transitionMs: p.transitionMs } : {}),
   }));
+}
+
+/** Sett myk overgang inn i del `i` (0 = hardt kutt). DEC-0071. */
+export function setPartTransition(
+  parts: readonly ClipPartFields[],
+  i: number,
+  ms: number,
+): ClipPartFields[] | null {
+  if (i <= 0 || i >= parts.length) return null;
+  const p = parts[i]!;
+  const prev = parts[i - 1]!;
+  // Aldri lengre enn noen av de to delene
+  const max = Math.min(p.outMs - p.inMs, prev.outMs - prev.inMs);
+  const v = Math.max(0, Math.min(Math.round(ms), max));
+  const { transitionMs: _old, ...rest } = p;
+  return parts.map((x, k) => (k === i ? (v > 0 ? { ...rest, transitionMs: v } : rest) : x));
 }
 
 /** Splitter delen under bildet `localFrame` i to (null hvis bildet er på en grense eller ikke kan splittes). */
@@ -44,7 +62,8 @@ export function splitParts(
   return [
     ...parts.slice(0, i),
     { ...p, outMs: cut },
-    { ...p, partId: newId() as ClipPartId, inMs: cut },
+    // Den nye andre halvdelen fortsetter rett på (ingen overgang inn)
+    (({ transitionMs: _t, ...rest }) => ({ ...rest, partId: newId() as ClipPartId, inMs: cut }))(p),
     ...parts.slice(i + 1),
   ];
 }

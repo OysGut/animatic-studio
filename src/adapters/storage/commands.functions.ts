@@ -77,6 +77,9 @@ const LIBRARY_COMMANDS = new Set<string>([
   "UndoCreateAssets",
   "UpdateAsset",
   "SetAssetArchived",
+  "SetSoundLinks",
+  "SetContextNames",
+  "SetAssetVoice",
   "CreateAssetVariant",
   "UndoCreateAssetVariant",
   "UpdateAssetVariant",
@@ -224,6 +227,55 @@ const PRESENTATION_COMMANDS = new Set([
   "UpdatePoster",
   "SetPosterRemoved",
 ]);
+
+const STYLE_COMMANDS = new Set([
+  "CreateStyleProfile",
+  "UndoCreateStyleProfile",
+  "UpdateStyleProfile",
+  "SetStyleProfileRemoved",
+]);
+
+/**
+ * Maske og blandingsmodus for lag (REQ-0175) krever migrasjon 0026. Uten kolonnene ville valgene forsvinne
+ * uten varsel. Ingen maske og «normal» er det samme som før 0026.
+ */
+export function needsSchema26(command: { type: string } & Record<string, unknown>): boolean {
+  // Myke overganger mellom deler, stemmer, betegnelser i kontekst og stilprofiler per bruk (DEC-0071)
+  if (command.type === "SetSceneEdit")
+    return ((command["parts"] as { transitionMs?: number }[]) ?? []).some(
+      (p) => (p.transitionMs ?? 0) > 0,
+    );
+  if (SCHEMA26_COMMANDS.has(command.type)) return true;
+  if (command.type !== "AddLayers" && command.type !== "UpdateLayers") return false;
+  return ((command["layers"] as { fields?: { mask?: unknown; blend?: unknown } }[]) ?? []).some(
+    (l) =>
+      (l.fields?.mask !== undefined && l.fields?.mask !== null) ||
+      (l.fields?.blend !== undefined && l.fields?.blend !== "normal"),
+  );
+}
+
+/** Kommandoer som bare skriver kolonner fra migrasjon 0026 (DEC-0071). */
+const SCHEMA26_COMMANDS = new Set<string>([
+  "SetAssetVoice",
+  "SetContextNames",
+  "SetStyleAppliesTo",
+  "SetTakeCoverage",
+]);
+
+/** Lydkoblinger (REQ-0204, DEC-0070) krever migrasjon 0025. */
+export function needsSchema25(command: { type: string }): boolean {
+  return command.type === "SetSoundLinks";
+}
+
+/** Planlagt lengde per scene (REQ-0111/0113) krever migrasjon 0023. */
+export function needsSchema23(command: { type: string }): boolean {
+  return command.type === "SetPlannedDuration";
+}
+
+/** Filmens visuelle stil for AI (DEC-0065) krever migrasjon 0021. */
+export function needsSchema21(command: { type: string }): boolean {
+  return STYLE_COMMANDS.has(command.type);
+}
 
 /** Relasjoner og plakater (M8 del 1, DEC-0061) krever migrasjon 0019. */
 export function needsSchema19(command: { type: string }): boolean {
@@ -502,6 +554,46 @@ export const runCommand = createServerFn({ method: "POST" })
           code: "schema",
           message:
             "Databasen mangler kontinuitet for spinoffer. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0018.",
+        };
+    }
+    if (needsSchema26(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 26)
+        return {
+          ok: false,
+          code: "schema",
+          message:
+            "Databasen mangler det nyeste tillegget (masker, overganger, stemmer, stilprofiler). Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0026.",
+        };
+    }
+    if (needsSchema25(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 25)
+        return {
+          ok: false,
+          code: "schema",
+          message:
+            "Databasen mangler koblinger for lyd. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0025.",
+        };
+    }
+    if (needsSchema23(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 23)
+        return {
+          ok: false,
+          code: "schema",
+          message:
+            "Databasen mangler planlagt lengde per scene. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0023.",
+        };
+    }
+    if (needsSchema21(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 21)
+        return {
+          ok: false,
+          code: "schema",
+          message:
+            "Databasen mangler filmens visuelle stil. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0021.",
         };
     }
     if (needsSchema19(data.command as never)) {

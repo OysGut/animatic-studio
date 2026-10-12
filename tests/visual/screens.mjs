@@ -62,7 +62,7 @@ function wav(seconds) {
   return buf;
 }
 
-async function mock(page, { projects = [project], schema = true }) {
+async function mock(page, { projects = [project], schema = true, rows = {} }) {
   // På konteksten (ikke siden), så også egne vinduer (forhåndsvisning) får svar
   await page.context().route(`${supaUrl}/**`, async (route) => {
     const req = route.request();
@@ -130,7 +130,7 @@ async function mock(page, { projects = [project], schema = true }) {
     const table = path.replace("/rest/v1/", "");
     if (table === "schema_version")
       return schema
-        ? json([{ version: 20 }])
+        ? json([{ version: 26 }])
         : json({ message: "relation does not exist", code: "42P01" }, 404);
     if (table === "projects") {
       if (single) return json(projects[0] ?? null);
@@ -169,6 +169,8 @@ async function mock(page, { projects = [project], schema = true }) {
           expires_at: "2026-10-25T10:00:00Z",
         },
       ]);
+    // Egne tabellsvar per skjermbilde (f.eks. AI-leverandører, DEC-0069)
+    if (rows[table]) return json(single ? (rows[table][0] ?? null) : rows[table]);
     if (path.startsWith("/rest/v1/rpc/")) return json(null);
     if (path.startsWith("/realtime/")) return route.abort();
     if (fx.rows[table] && single) return json(fx.rows[table][0] ?? null);
@@ -240,6 +242,23 @@ await shot("07-manus-scene-valgt", manus, {
   act: async (page) => {
     await page.locator("[id^=nav-]").nth(3).click();
     await page.waitForTimeout(800);
+  },
+});
+// Fortellingstid (REQ-0164) i inspektøren
+await shot("07b-manus-fortellingstid", manus, {
+  act: async (page) => {
+    await page.locator("[id^=nav-]").nth(10).click();
+    await page.waitForTimeout(800);
+    await page.getByLabel("Fortellingstid").scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
+  },
+});
+// Manusfilter på objekt/sted, status og manusendringer (REQ-0073)
+await shot("16b-manus-filter-status", manus, {
+  act: async (page) => {
+    await page.getByLabel("Vis bare scener med ressurs").selectOption({ label: "vase (objekt)" });
+    await page.getByLabel("Vis bare scener med status").selectOption("missing");
+    await page.waitForTimeout(600);
   },
 });
 await shot("08-manus-blokk-valgt", manus, {
@@ -1052,6 +1071,17 @@ await shot("77-frilegging", bibliotek, {
     await page.waitForTimeout(2500);
   },
 });
+await shot("78b-fjern-medlem", `/prosjekt/${project.id}`, {
+  act: async (page) => {
+    await page.waitForTimeout(800);
+    await page
+      .getByRole("button", { name: /^Fjern .* fra prosjektet$/ })
+      .first()
+      .click();
+    await page.getByRole("alertdialog").scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
+  },
+});
 await shot("78-ai-budsjett-og-jobber", `/prosjekt/${project.id}`, {
   act: async (page) => {
     await page.waitForTimeout(1200);
@@ -1070,6 +1100,219 @@ await shot("79-generer-scene", montering, {
     await page.waitForTimeout(400);
     await page.getByRole("button", { name: /Generer scene/ }).click();
     await page.waitForTimeout(800);
+  },
+});
+// DEC-0069: egne AI-leverandører med nøkler og kostnadstak
+const aiRows = {
+  ai_provider_keys: [
+    {
+      id: "00000000-0000-7000-8000-00000000a001",
+      provider: "runway",
+      label: "",
+      key_hint: "…7f3c",
+      status: "ok",
+      status_message: null,
+      last_tested_at: "2026-10-12T07:40:00Z",
+      updated_at: "2026-10-12T07:40:00Z",
+    },
+    {
+      id: "00000000-0000-7000-8000-00000000a002",
+      provider: "elevenlabs",
+      label: "",
+      key_hint: "…91ab",
+      status: "ok",
+      status_message: null,
+      last_tested_at: "2026-10-12T07:45:00Z",
+      updated_at: "2026-10-12T07:45:00Z",
+    },
+  ],
+  ai_account_limits: [{ monthly_cap_usd: 50 }],
+  generation_jobs: [{ cost_usd: 3.5 }, { cost_usd: 0.75 }],
+};
+await shot("02b-ai-leverandorer", "/", {
+  rows: aiRows,
+  act: async (page) => {
+    await page.getByRole("button", { name: /AI-leverandører/ }).click();
+    await page.waitForTimeout(600);
+  },
+});
+await shot("02c-ai-leverandor-openai", "/", {
+  rows: aiRows,
+  act: async (page) => {
+    await page.getByRole("button", { name: /AI-leverandører/ }).click();
+    await page.waitForTimeout(400);
+    await page
+      .getByRole("button", { name: /OpenAI/ })
+      .first()
+      .click();
+    await page.waitForTimeout(500);
+  },
+});
+await shot("02d-ai-lyd", bibliotek, {
+  act: async (page) => {
+    await page
+      .getByRole("button", { name: /Vind i trærne/ })
+      .first()
+      .click();
+    await page.waitForTimeout(1200);
+    await page.getByRole("button", { name: "Lag med AI" }).first().click();
+    await page.waitForTimeout(1200);
+    await page.getByRole("region", { name: "Lag lyd med AI" }).scrollIntoViewIfNeeded();
+  },
+});
+// DEC-0070: kø med prioritet og fremdrift, video for flere scener, lydkoblinger, sammenligning
+const now = Date.now();
+const iso = (ms) => new Date(now - ms).toISOString();
+const queueJob = (id, status, extra = {}) => ({
+  id,
+  project_id: project.id,
+  kind: "video",
+  provider: "runway",
+  model: "gen4_turbo",
+  prompt: 'Animated film shot for "Jula på Dovre". Scene 1: INT. STUA - DAG.',
+  status,
+  created_by: USER.id,
+  created_at: iso(5 * 60_000),
+  cost_usd: 0.5,
+  priority: 2,
+  queue_position: now,
+  ...extra,
+});
+await shot("78c-ai-ko", `/prosjekt/${project.id}`, {
+  rows: {
+    generation_jobs: [
+      queueJob("00000000-0000-7000-8000-00000000e001", "running", {
+        started_at: iso(40_000),
+        progress: 0.45,
+      }),
+      queueJob("00000000-0000-7000-8000-00000000e002", "running", {
+        provider: "google",
+        model: "veo-3.1-generate-preview",
+        started_at: iso(70_000),
+      }),
+      queueJob("00000000-0000-7000-8000-00000000e003", "queued", { priority: 1 }),
+      queueJob("00000000-0000-7000-8000-00000000e004", "queued", { queue_position: now + 5 }),
+    ],
+  },
+  act: async (page) => {
+    await page.waitForTimeout(1200);
+    await page.getByRole("list", { name: "AI-jobber" }).scrollIntoViewIfNeeded();
+    await page.mouse.wheel(0, 250);
+    await page.waitForTimeout(500);
+  },
+});
+await shot("79b-video-flere-scener", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    await page.getByRole("button", { name: "Video for flere scener" }).click();
+    await page.waitForTimeout(800);
+  },
+});
+await shot("02e-lyd-koblinger", bibliotek, {
+  act: async (page) => {
+    await page
+      .getByRole("button", { name: /Vind i trærne/ })
+      .first()
+      .click();
+    await page.waitForTimeout(1200);
+    await page
+      .getByRole("region", { name: "Hører til" })
+      .scrollIntoViewIfNeeded()
+      .catch(() => {});
+    await page.waitForTimeout(300);
+  },
+});
+await shot("21b-sammenlign-bilder", bibliotek, {
+  act: async (page) => {
+    await page
+      .getByRole("button", { name: /^MA Maja/ })
+      .or(page.getByRole("button", { name: /Maja Karakter/ }))
+      .first()
+      .click();
+    await page.waitForTimeout(1200);
+    const boxes = page.getByRole("checkbox", { name: "Sammenlign" });
+    if ((await boxes.count()) >= 2) {
+      await boxes.nth(0).check();
+      await boxes.nth(1).check();
+      await page.getByRole("button", { name: /^Sammenlign v/ }).click();
+      await page.waitForTimeout(800);
+    }
+  },
+});
+// DEC-0071: maske, overganger, betegnelser, stilprofiler, dekning og AI-stemmer
+await shot("30b-sceneeditor-maske", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(800);
+    await page
+      .getByRole("button", { name: /Maja/ })
+      .filter({ hasText: "Karakter" })
+      .first()
+      .click();
+    await page.waitForTimeout(500);
+    await page
+      .getByLabel("Maske")
+      .first()
+      .scrollIntoViewIfNeeded()
+      .catch(() => {});
+    await page.waitForTimeout(300);
+  },
+});
+await shot("02f-betegnelser", bibliotek, {
+  act: async (page) => {
+    await page
+      .getByRole("button", { name: /^MA Maja/ })
+      .or(page.getByRole("button", { name: /Maja Karakter/ }))
+      .first()
+      .click();
+    await page.waitForTimeout(1200);
+    const input = page.getByLabel("Betegnelse");
+    await input.scrollIntoViewIfNeeded().catch(() => {});
+    await input.fill("døra").catch(() => {});
+    await page.waitForTimeout(500);
+  },
+});
+await shot("04b-stilprofiler", `/prosjekt/${project.id}`, {
+  act: async (page) => {
+    await page.waitForTimeout(1200);
+    await page
+      .getByRole("heading", { name: "Filmens visuelle stil" })
+      .scrollIntoViewIfNeeded()
+      .catch(() => {});
+    await page
+      .getByRole("button", { name: /Egen stil for plakater/ })
+      .click()
+      .catch(() => {});
+    await page.waitForTimeout(700);
+  },
+});
+await shot("80c-dialog-ai-stemmer", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    await page
+      .getByRole("button", { name: /^Scene 1: / })
+      .first()
+      .click();
+    await page.waitForTimeout(600);
+    await page
+      .getByRole("button", { name: /Dialog med AI-stemmer/ })
+      .click()
+      .catch(() => {});
+    await page.waitForTimeout(1200);
+  },
+});
+await shot("80d-klipp-overganger", montering, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    await page
+      .getByRole("button", { name: /^Scene 1: / })
+      .first()
+      .click();
+    await page.waitForTimeout(600);
+    await page
+      .getByRole("region", { name: "Klipp" })
+      .scrollIntoViewIfNeeded()
+      .catch(() => {});
+    await page.waitForTimeout(300);
   },
 });
 // DEC-0054: avvik ved manusendring – monteringen, manuset og sceneeditoren
@@ -1313,6 +1556,29 @@ await shot("18-oversikt-varighet", `/prosjekt/${project.id}`, {
     await page.waitForTimeout(400);
   },
 });
+// Varighet og produksjonsstatus (natt til 12.10.2026): filter på karakter
+await shot("80b-oversikt-status-filter", `/prosjekt/${project.id}`, {
+  act: async (page) => {
+    await page
+      .getByRole("heading", { name: "Varighet og produksjonsstatus" })
+      .scrollIntoViewIfNeeded();
+    await page.getByRole("button", { name: "Per scene" }).click();
+    await page.getByLabel("Karakter, objekt eller sted").selectOption({ label: "Maja" });
+    // Planlagt lengde for scene 2 (lagres ikke uten server; feltet viser verdien)
+    await page.getByLabel("Planlagt lengde for scene 2").fill("1:20");
+    await page.mouse.wheel(0, 250);
+    await page.waitForTimeout(400);
+  },
+});
+// Utvikling over tid (mandat 7.4, REQ-0120)
+await shot("80c-oversikt-utvikling", `/prosjekt/${project.id}`, {
+  act: async (page) => {
+    await page.getByRole("button", { name: "Utvikling over tid" }).click();
+    await page.waitForTimeout(800);
+    await page.getByRole("table", { name: /per manusversjon/ }).scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
+  },
+});
 // Lagring uten server (mock): optimistisk endring, så feilmelding og ny henting
 await shot("13-lagringsfeil", manus, {
   act: async (page) => {
@@ -1459,6 +1725,100 @@ await shot("70-tilbake", `/prosjekt/${project.id}/manus`, {
     await back.click();
     await page.waitForTimeout(800);
     console.error(`etter tilbake: ${new URL(page.url()).pathname}`);
+  },
+});
+// Bilde i fullskjerm med zoom og nedlasting (DEC-0064)
+await shot("71-fullskjerm-bilde", `/prosjekt/${project.id}/bibliotek`, {
+  act: async (page, file) => {
+    await page.waitForTimeout(800);
+    await page.getByRole("button", { name: /^Maja/ }).first().click();
+    await page.waitForTimeout(800);
+    await page
+      .getByRole("button", { name: /i fullskjerm$/ })
+      .first()
+      .dblclick();
+    await page.waitForTimeout(800);
+    const dlg = page.getByRole("dialog", { name: /^Bilde:/ });
+    console.error(`fullskjerm: ${await dlg.count()} ${await dlg.getAttribute("aria-label")}`);
+    await page.getByRole("button", { name: "Zoom inn" }).click();
+    await page.getByRole("button", { name: "Zoom inn" }).click();
+    await page.waitForTimeout(300);
+    await page.screenshot({ path: file });
+    const [dl] = await Promise.all([
+      page.waitForEvent("download", { timeout: 15000 }).catch(() => null),
+      dlg.getByRole("button", { name: "Last ned", exact: true }).click(),
+    ]);
+    console.error(`nedlasting: ${dl ? dl.suggestedFilename() : "ingen"}`);
+    return "tatt";
+  },
+  plainDownload: true,
+});
+await shot("72-last-opp-igjen", `/prosjekt/${project.id}/bibliotek`, {
+  act: async (page) => {
+    await page.waitForTimeout(800);
+    const png = Buffer.from(
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+      "base64",
+    );
+    const [chooser] = await Promise.all([
+      page.waitForEvent("filechooser"),
+      page.getByRole("button", { name: /Last opp endrede bilder/ }).click(),
+    ]);
+    await chooser.setFiles([
+      { name: "Maja - Animatic - v3 (1).png", mimeType: "image/png", buffer: png },
+      { name: "skisse.png", mimeType: "image/png", buffer: png },
+    ]);
+    await page.waitForTimeout(600);
+  },
+});
+// Filmens visuelle stil og AI-beskrivelse med sammenheng (DEC-0065)
+await shot("73-visuell-stil", `/prosjekt/${project.id}`, {
+  act: async (page) => {
+    await page.waitForTimeout(800);
+    await page.getByRole("heading", { name: "Filmens visuelle stil" }).scrollIntoViewIfNeeded();
+    await page.getByRole("button", { name: /^Lag …|^Rediger …/ }).click();
+    await page.waitForTimeout(400);
+    await page.getByRole("button", { name: /Foreslå utkast/ }).click();
+    await page
+      .getByLabel("Hva filmen handler om")
+      .fill(
+        "A ten-year-old girl spends Christmas with her grandmother on a farm in Dovre and discovers that the farm's nisse is real.",
+      );
+    await page
+      .getByLabel("Teknikk og materialer")
+      .fill("Watercolour and gouache on textured paper, soft edges, visible brush strokes.");
+    await page.waitForTimeout(400);
+  },
+});
+await shot("74-ai-beskrivelse-scene", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    await page
+      .getByRole("region", { name: "Lag" })
+      .getByRole("button", { name: /^Maja/ })
+      .first()
+      .dblclick();
+    await page.waitForTimeout(800);
+    const ta = page.getByLabel("Beskrivelse for AI-generering");
+    await ta.scrollIntoViewIfNeeded();
+    console.error(`beskrivelse: ${(await ta.inputValue()).split("\n").slice(0, 3).join(" | ")}`);
+  },
+});
+// AI skriver beskrivelsen, bildene som sendes med (DEC-0066). Kallet får aldri svar: «Skriver …» vises.
+await shot("75-ai-skriver-beskrivelse", scene, {
+  act: async (page) => {
+    await page.waitForTimeout(1500);
+    await page.route("**/_serverFn/**", () => {});
+    await page
+      .getByRole("region", { name: "Lag" })
+      .getByRole("button", { name: /^Maja/ })
+      .first()
+      .dblclick();
+    await page.waitForTimeout(800);
+    const b = page.getByRole("button", { name: /Skriv beskrivelsen med AI/ });
+    await b.scrollIntoViewIfNeeded();
+    await b.click();
+    await page.waitForTimeout(500);
   },
 });
 // Utgivelse (DEC-0061): karakterkart, kinopitch, redigering, relasjoner og eksport

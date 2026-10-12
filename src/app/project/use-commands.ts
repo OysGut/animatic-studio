@@ -427,6 +427,8 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
     redoLabel: redoStack[redoStack.length - 1]?.label ?? null,
     status,
     clearError,
+    /** Tilstanden slik den er nå (med egne endringer som ikke er lagret ennå), for kjeder av kommandoer. */
+    current: () => qc.getQueryData<ProjectState>(projectStateKey(projectId)) ?? null,
   };
 }
 

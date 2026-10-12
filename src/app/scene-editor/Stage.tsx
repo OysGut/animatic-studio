@@ -26,6 +26,7 @@ import {
   hitTest,
   invert,
   itemCorners,
+  maskOutline,
   multiply,
   renderFrame,
   rotate,
@@ -272,6 +273,22 @@ function drawMemberOutline(ctx: CanvasRenderingContext2D, item: DrawItem, v: Vie
   ctx.globalAlpha = 0.9;
   ctx.lineWidth = 1;
   ctx.setLineDash([3, 3]);
+  ctx.stroke();
+  ctx.restore();
+}
+
+/** Omrisset av rektangel- eller ellipsemasken til valgt lag (REQ-0175), stiplet. */
+function drawMaskOutline(ctx: CanvasRenderingContext2D, item: DrawItem, v: View, colors: Colors) {
+  const pts = maskOutline(item)?.map((p) => toScreen(v, p));
+  if (!pts?.length) return;
+  ctx.save();
+  ctx.strokeStyle = colors.accent;
+  ctx.globalAlpha = 0.9;
+  ctx.lineWidth = 1;
+  ctx.setLineDash([5, 4]);
+  ctx.beginPath();
+  pts.forEach((p, i) => (i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)));
+  ctx.closePath();
   ctx.stroke();
   ctx.restore();
 }
@@ -607,6 +624,7 @@ export function Stage({
           if (state.layers[it.layerId]?.groupId === selectedItem.layerId)
             drawMemberOutline(ctx, it, view, colors);
       if (selectedItem) drawOverlay(ctx, selectedItem, view, colors, canEditSelected && !drawPath);
+      if (selectedItem) drawMaskOutline(ctx, selectedItem, view, colors);
       if (shownPath && !drawPath)
         drawPathOverlay(ctx, shownPath, pathToScene, view, colors, pathNow);
       if (stroke) drawStroke(ctx, stroke, colors);

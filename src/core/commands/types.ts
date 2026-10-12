@@ -24,6 +24,7 @@ import type {
   TranslationId,
   AssetRelationId,
   PosterId,
+  StyleProfileId,
   GenerationPromptId,
   UserId,
   VariantId,
@@ -41,6 +42,7 @@ import type {
   Keyframe,
   LanguageImage,
   PosterDocument,
+  StyleGuide,
   PosterKind,
   RelationKind,
   LayerKind,
@@ -50,6 +52,11 @@ import type {
   SegmentReason,
   StoryTime,
   TakeKind,
+  ContextName,
+  AssetVoice,
+  StyleUse,
+  TakeCoverage,
+  SoundLink,
   TakeStatus,
   TakeMedia,
   Transition,
@@ -57,6 +64,8 @@ import type {
   VolumeKey,
   ImageSwap,
   MotionPath,
+  LayerMask,
+  BlendMode,
 } from "../model";
 import type { Rational } from "../time";
 
@@ -113,6 +122,9 @@ export interface LayerFields {
   readonly anchor: { readonly x: number; readonly y: number } | null;
   /** Språkavhengige bilder (DEC-0059). Utelatt = uendret ved endring, ingen ved nytt lag. */
   readonly languageImages?: readonly LanguageImage[];
+  /** Maske og blandingsmodus (REQ-0175). Utelatt = uendret ved endring, ingen/«normal» ved nytt lag. */
+  readonly mask?: LayerMask | null;
+  readonly blend?: BlendMode;
 }
 
 export interface NewLayer {
@@ -269,6 +281,8 @@ export type Command =
         readonly heading: SceneHeading;
       };
       readonly originalVariantId: VariantId;
+      /** Planlagte lengder delingen fjernet (forekomst → ms), settes tilbake (REQ-0111). */
+      readonly plans?: Readonly<Record<string, number>>;
     }
   | {
       /** Slå kildescenen inn i målscenen (mandat 4.4). Kildescenen beholdes som «sammenslått» (DEC-0020 pkt. 9). */
@@ -284,6 +298,8 @@ export type Command =
       readonly sourceOccurrenceId: OccurrenceId;
       readonly placements: readonly BlockPlacement[];
       readonly sourceWasActive: boolean;
+      /** Målscenens planlagte lengde før sammenslåingen (REQ-0111), settes tilbake. */
+      readonly targetPlannedMs?: number;
     }
   | {
       /** Fjern en manusblokk. Teksten og historikken beholdes og kan gjenopprettes (ingen sletting av historikk). */
@@ -441,6 +457,12 @@ export type Command =
       }[];
     }
   | {
+      /** Planlagt lengde for scenen (REQ-0111/0113); null fjerner planen. */
+      readonly type: "SetPlannedDuration";
+      readonly occurrenceId: OccurrenceId;
+      readonly plannedMs: number | null;
+    }
+  | {
       /** Svart-hvitt for scenen, i visning og eksport (DEC-0051, REQ-0574). */
       readonly type: "SetOccurrenceMonochrome";
       readonly occurrenceId: OccurrenceId;
@@ -465,6 +487,33 @@ export type Command =
     }
   | { readonly type: "UpdateAsset"; readonly assetId: AssetId; readonly fields: AssetFields }
   | { readonly type: "SetAssetArchived"; readonly assetId: AssetId; readonly archived: boolean }
+  /** Koblingene til en lydressurs (REQ-0204, DEC-0070); erstatter hele listen. */
+  | {
+      readonly type: "SetSoundLinks";
+      readonly assetId: AssetId;
+      readonly links: readonly SoundLink[];
+      /** Angring: koblinger til noe som er fjernet siden, kan settes tilbake. */
+      readonly restore?: boolean;
+    }
+  /** Betegnelser i bestemte manuslinjer (REQ-0127, DEC-0071); erstatter hele listen. */
+  | {
+      readonly type: "SetContextNames";
+      readonly assetId: AssetId;
+      readonly contextNames: readonly ContextName[];
+      readonly restore?: boolean;
+    }
+  /** Hvilken del av manuset en film dekker (REQ-0237, DEC-0071), eller null for hele scenen. */
+  | {
+      readonly type: "SetTakeCoverage";
+      readonly takeId: TakeId;
+      readonly coverage: TakeCoverage | null;
+    }
+  /** Stemmen for AI-dialog (DEC-0071), eller null. */
+  | {
+      readonly type: "SetAssetVoice";
+      readonly assetId: AssetId;
+      readonly voice: AssetVoice | null;
+    }
   | {
       readonly type: "CreateAssetVariant";
       readonly variantId: AssetVariantId;
@@ -715,6 +764,29 @@ export type Command =
   | { readonly type: "UndoCreatePoster"; readonly posterId: PosterId }
   | { readonly type: "UpdatePoster"; readonly posterId: PosterId; readonly fields: PosterFields }
   | { readonly type: "SetPosterRemoved"; readonly posterId: PosterId; readonly removed: boolean }
+  /** Filmens visuelle stil for AI (DEC-0065). */
+  | {
+      readonly type: "CreateStyleProfile";
+      readonly profileId: StyleProfileId;
+      readonly fields: StyleProfileFields;
+    }
+  | { readonly type: "UndoCreateStyleProfile"; readonly profileId: StyleProfileId }
+  | {
+      readonly type: "UpdateStyleProfile";
+      readonly profileId: StyleProfileId;
+      readonly fields: StyleProfileFields;
+    }
+  | {
+      readonly type: "SetStyleProfileRemoved";
+      readonly profileId: StyleProfileId;
+      readonly removed: boolean;
+    }
+  /** Hva stilprofilen gjelder for (REQ-0148, DEC-0071). */
+  | {
+      readonly type: "SetStyleAppliesTo";
+      readonly profileId: StyleProfileId;
+      readonly appliesTo: readonly StyleUse[];
+    }
   | {
       /** Slå en arvet kontinuitetshendelse av eller på i en avledet produksjon (DEC-0060, REQ-0166/0167). */
       readonly type: "SetContinuityEventDisabled";
@@ -770,6 +842,12 @@ export interface RelationFields {
 }
 
 /** En plakat eller et karakterkart; alle feltene erstattes samlet (DEC-0061). */
+export interface StyleProfileFields {
+  readonly name: string;
+  readonly isDefault: boolean;
+  readonly guide: StyleGuide;
+}
+
 export interface PosterFields {
   readonly productionId: ProductionId;
   readonly name: string;
@@ -802,6 +880,8 @@ export interface ClipPartFields {
   readonly takeId: TakeId | null;
   readonly inMs: number;
   readonly outMs: number;
+  /** Myk overgang inn i delen fra delen før (ms, 0–5000), DEC-0071. */
+  readonly transitionMs?: number;
 }
 
 /** Tidskobling for en manusblokk (DEC-0048). */

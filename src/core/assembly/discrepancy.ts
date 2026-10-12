@@ -213,7 +213,12 @@ export function discrepancies(
     // Bare materiale som vises i filmen (gamle versjoner som ikke er i bruk, flagges ikke)
     for (const m of materialsOf(s, clip.occurrenceId, clip)) {
       if (!m.inUse) continue;
-      const changes = scriptChanges(s, o.variantId, m.baseline);
+      const changes = materialChanges(
+        s,
+        o.variantId,
+        m.baseline,
+        m.kind === "take" ? (s.takes[m.id]?.coverage ?? null) : null,
+      );
       if (changes.length === 0) continue;
       out.push({
         occurrenceId: o.id,
@@ -224,6 +229,40 @@ export function discrepancies(
     }
   }
   return out;
+}
+
+/**
+ * Manusendringer siden materialet ble laget. Film som bare dekker en del av manuset (REQ-0237): bare endringer
+ * i den delen (fjernede linjer tas med, siden det ikke lenger kan avgjøres hvor de sto).
+ */
+export function materialChanges(
+  s: ProjectState,
+  variantId: string,
+  baseline: Readonly<Record<string, number>>,
+  coverage: { readonly startBlockId: string; readonly endBlockId: string } | null,
+): ReturnType<typeof scriptChanges> {
+  const all = scriptChanges(s, variantId, baseline);
+  const inside = coverage ? coveredBlockIds(s, variantId, coverage) : null;
+  return inside
+    ? all.filter(
+        (c) => inside.has(c.blockId) || !s.blocks[c.blockId] || s.blocks[c.blockId]!.removed,
+      )
+    : all;
+}
+
+/** Linjene en film dekker (fra første til siste, i manusets rekkefølge), REQ-0237. */
+export function coveredBlockIds(
+  s: ProjectState,
+  variantId: string,
+  cov: { readonly startBlockId: string; readonly endBlockId: string },
+): Set<string> {
+  const order = blocksOfVariant(s, variantId)
+    .filter((b) => b.kind !== "heading")
+    .map((b) => b.id as string);
+  const a = order.indexOf(cov.startBlockId);
+  const b = order.indexOf(cov.endBlockId);
+  if (a < 0 || b < 0) return new Set(order);
+  return new Set(order.slice(Math.min(a, b), Math.max(a, b) + 1));
 }
 
 /** Blokker i manuset som er endret etter materiale som er laget (for merker i manusvisningen). */

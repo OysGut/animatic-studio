@@ -36,6 +36,8 @@ export function useAiJobs(projectId: string, enabled = true) {
           .select("id", { count: "exact", head: true })
           .eq("project_id", projectId)
           .neq("status", "failed")
+          // AI-skrevne beskrivelser (DEC-0066) teller ikke i bildebudsjettet
+          .neq("kind", "prompt")
           .gte("created_at", monthStartUtc(new Date()).toISOString()),
       ]);
       if (list.error) {
@@ -49,6 +51,11 @@ export function useAiJobs(projectId: string, enabled = true) {
       };
     },
     refetchInterval: (q) =>
-      (q.state.data?.jobs ?? []).some((j) => jobState(j, new Date()) === "running") ? 5000 : 60000,
+      (q.state.data?.jobs ?? []).some((j) => {
+        const st = jobState(j, new Date());
+        return st === "running" || st === "queued";
+      })
+        ? 5000
+        : 60000,
   });
 }

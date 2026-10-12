@@ -19,7 +19,7 @@ export const IMAGE_PURPOSE_FOR_KIND: Record<AssetKind, ImagePurpose> = {
   sound: "cutout",
 };
 
-const STYLE_TEXT: Record<VisualStyle, string> = {
+export const STYLE_TEXT: Record<VisualStyle, string> = {
   reference: "clean reference image",
   illustrated: "hand-drawn illustrated look, painterly textures",
   realistic: "cinematic, photorealistic look",

@@ -6,13 +6,27 @@
  */
 import { useActiveProduction } from "@/app/project/use-production";
 import { useNavigate } from "@tanstack/react-router";
-import { Archive, Download, Lightbulb, Music, Plus, Redo2, Search, Undo2 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
 import {
+  Archive,
+  Download,
+  Lightbulb,
+  Music,
+  Plus,
+  Redo2,
+  Search,
+  Undo2,
+  Upload,
+} from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  ASSET_MIME_TYPES,
+  versionFromFileName,
   ASSET_KIND_LABEL,
   ASSET_KIND_PLURAL,
   ASSET_KINDS,
   assetNames,
+  assetSearchText,
+  soundCategories,
   allAssetUsage,
   coverVersion,
   librarySuggestions,
@@ -30,6 +44,7 @@ import { AssetDetail } from "./AssetDetail";
 import { useImageUrls } from "./asset-images";
 import { SuggestionsDialog } from "./SuggestionsDialog";
 import { AssetZipDialog } from "./AssetZip";
+import { ReuploadDialog, type ReuploadItem } from "./ReuploadDialog";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 
 export function LibraryWorkspace({
@@ -99,6 +114,8 @@ function Library({
   const [productionId, setProductionId] = useActiveProduction(projectId, state);
   const [kind, setKind] = useState<KindFilter>("all");
   const [search, setSearch] = useState("");
+  /** Kategori for lyd (dialog, musikk, effekter …), REQ-0205. */
+  const [category, setCategory] = useState("");
   const [showArchived, setShowArchived] = useState(false);
   const [listWidth, setListWidth] = usePaneSize("library-list", 300, 220, 560);
   const [selected, setSelected] = useState<string | null>(() =>
@@ -113,6 +130,12 @@ function Library({
   const [newName, setNewName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [suggestOpen, setSuggestOpen] = useState(false);
+  // Nedlastede bilder lastes opp igjen (DEC-0064): kjennes igjen på navnet
+  const reuploadInput = useRef<HTMLInputElement | null>(null);
+  const [reupload, setReupload] = useState<{
+    items: ReuploadItem[];
+    unknown: File[];
+  } | null>(null);
   const [zipOpen, setZipOpen] = useState(false);
 
   const all = useMemo(() => sortedAssets(state), [state]);
@@ -126,11 +149,11 @@ function Library({
     (a) =>
       (kind === "all" || a.kind === kind) &&
       (showArchived || !a.archived) &&
-      (!q ||
-        [...assetNames(a), a.category, ...a.tags, a.description].some((x) =>
-          x.toLocaleLowerCase("nb").includes(q),
-        )),
+      (kind !== "sound" || !category || a.category.trim() === category) &&
+      // Søket treffer også det en lyd er koblet til (REQ-0205, DEC-0070)
+      (!q || assetSearchText(state, a).some((x) => x.toLocaleLowerCase("nb").includes(q))),
   );
+  const categories = useMemo(() => soundCategories(state), [state]);
   const covers = useMemo(() => {
     const m = new Map<string, string>();
     for (const a of all) {
@@ -218,6 +241,46 @@ function Library({
             Forslag fra manuset{suggestions.length ? ` (${suggestions.length})` : ""}
           </Button>
         ) : null}
+        {editable ? (
+          <>
+            <input
+              ref={reuploadInput}
+              type="file"
+              multiple
+              accept={ASSET_MIME_TYPES.join(",")}
+              className="hidden"
+              aria-hidden
+              tabIndex={-1}
+              onChange={(e) => {
+                const files = [...(e.target.files ?? [])];
+                e.target.value = "";
+                if (!files.length) return;
+                const items: ReuploadItem[] = [];
+                const unknown: File[] = [];
+                for (const file of files) {
+                  const match = versionFromFileName(state, file.name);
+                  // Bare bilder kan lastes opp her (lyd lastes opp i lydressursen)
+                  if (match && match.mimeType.startsWith("image/")) items.push({ file, match });
+                  else unknown.push(file);
+                }
+                if (!items.length)
+                  setError(
+                    "Kjenner ikke igjen navnene. Bilder lastet ned fra biblioteket heter «Ressurs - Variant - vN»; andre bilder lastes opp fra varianten de hører til.",
+                  );
+                else setReupload({ items, unknown });
+              }}
+            />
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => reuploadInput.current?.click()}
+              title="Last opp bilder du har lastet ned og endret. De kjennes igjen på navnet («Ressurs - Variant - vN»)."
+            >
+              <Upload />
+              Last opp endrede bilder …
+            </Button>
+          </>
+        ) : null}
         <Button
           size="sm"
           variant="ghost"
@@ -276,7 +339,7 @@ function Library({
               <input
                 type="search"
                 aria-label="Søk i biblioteket"
-                placeholder="Søk (navn, alternative navn, stikkord)"
+                placeholder="Søk (navn, stikkord, hva lyd er koblet til)"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="h-7 w-full rounded-sm border border-border-control bg-surface-3 pl-7 pr-2 text-[13px] text-text-primary placeholder:text-text-tertiary"
@@ -296,6 +359,21 @@ function Library({
                   </option>
                 ))}
               </select>
+              {kind === "sound" && categories.length ? (
+                <select
+                  aria-label="Kategori"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
+                >
+                  <option value="">Alle kategorier</option>
+                  {categories.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              ) : null}
               <label className="flex items-center gap-1 text-xs text-text-secondary">
                 <input
                   type="checkbox"
@@ -439,6 +517,16 @@ function Library({
         </div>
       </div>
 
+      {reupload ? (
+        <ReuploadDialog
+          state={state}
+          projectId={projectId}
+          cmds={cmds}
+          items={reupload.items}
+          unknown={reupload.unknown}
+          onClose={() => setReupload(null)}
+        />
+      ) : null}
       <AssetZipDialog
         open={zipOpen}
         onOpenChange={setZipOpen}

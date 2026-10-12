@@ -2,8 +2,8 @@
  * «Generer scene» (M5 del 2, DEC-0053, REQ-0243–0256, REQ-0259–0267). Scenen deles i segmenter som følger
  * manusblokkene; hvert segment får en automatisk beskrivelse (engelsk, replikkene ordrett på norsk) som kan
  * leses, endres og lagres. Egne beskrivelser forsvinner aldri når den automatiske endres; det vises når
- * grunnlaget har endret seg. Selve genereringen krever en videoleverandør, som ikke er valgt ennå (koster
- * penger – Mars godkjenner leverandør og pris).
+ * grunnlaget har endret seg. Videoen lages med en leverandør prosjektets eiere har koblet til (DEC-0069,
+ * `SceneVideoSection`).
  */
 import { AlertTriangle, Copy, Info, Loader2, RotateCcw, Save, Sparkles } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -31,6 +31,7 @@ import {
   type SegmentPlan,
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
+import { SceneVideoSection } from "./SceneVideoSection";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -241,18 +242,6 @@ function Body({
         </DialogDescription>
       </DialogHeader>
 
-      <div
-        role="note"
-        className="flex gap-2 rounded-sm border border-accent-warm/60 bg-surface-1 p-2 text-xs text-text-secondary"
-      >
-        <Info className="mt-0.5 size-4 shrink-0 text-accent-warm" aria-hidden />
-        <span>
-          Ingen videoleverandør er valgt ennå. Generering av video koster penger, og leverandør og
-          pris må godkjennes av prosjektets eier først. Du kan forberede og lagre beskrivelsene nå,
-          og kopiere dem.
-        </span>
-      </div>
-
       <div className="flex flex-wrap items-center gap-3 text-xs text-text-secondary">
         {storedPlan ? (
           <span>
@@ -403,16 +392,23 @@ function Body({
         </p>
       ) : null}
 
+      <SceneVideoSection
+        state={state}
+        productionId={productionId}
+        clip={clip}
+        plan={plan}
+        stored={stored}
+        prompts={effective}
+        editable={editable}
+        cmds={cmds}
+      />
+
       <DialogFooter className="sm:justify-between">
         <span className="flex items-center gap-1.5 text-xs text-text-tertiary">
           {busy ? <Loader2 className="size-3.5 animate-spin" aria-hidden /> : null}
           Generert video legges til som en ny versjon av scenen og erstatter aldri 2D-scenen.
         </span>
         <div className="flex gap-2">
-          <Button variant="secondary" disabled title="Krever en godkjent videoleverandør">
-            <Sparkles />
-            Generer (venter på leverandør)
-          </Button>
           <Button variant="secondary" onClick={onClose}>
             Lukk
           </Button>

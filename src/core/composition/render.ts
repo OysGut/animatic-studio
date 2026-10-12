@@ -6,6 +6,7 @@
 import type {
   AnimatedProperty,
   AssetVersion,
+  BlendMode,
   CameraFrame,
   Composition,
   CompositionLayer,
@@ -446,7 +447,28 @@ export interface DrawItem {
   readonly opacity: number;
   readonly locked: boolean;
   readonly name: string;
+  /** Blandingsmodus (REQ-0175). Mangler = «normal». */
+  readonly blend?: BlendMode;
+  /** Maske (REQ-0175). Mangler = ingen. */
+  readonly mask?: ItemMask;
 }
+
+/**
+ * Masken slik den tegnes. Rektangel/ellipse i tegneelementets egne koordinater (midten av laget er 0,0,
+ * samme rom som (-w/2, -h/2)–(w/2, h/2)), så den følger lagets `matrix`. «layer»: tegneelementet for
+ * maskelaget (dets egen maske og blanding brukes ikke); dekningen (alfa) bestemmer hva som vises.
+ */
+export type ItemMask =
+  | {
+      readonly kind: "rect" | "ellipse";
+      readonly x: number;
+      readonly y: number;
+      readonly width: number;
+      readonly height: number;
+      readonly feather: number;
+      readonly invert: boolean;
+    }
+  | { readonly kind: "layer"; readonly item: DrawItem; readonly invert: boolean };
 
 export interface Frame {
   readonly width: number;
@@ -499,28 +521,39 @@ export function renderFrame(
         opacity: transformAt(l, frame).opacity,
         visible: l.visible,
       });
+  /** Tegneelementet for et lag (uten maske og blanding), med full dekning. */
+  const baseItem = (l: CompositionLayer): DrawItem => {
+    const g = l.groupId ? groups.get(l.groupId) : undefined;
+    const t = transformAt(l, frame);
+    const view = cam ? viewMatrix(c, cam, l.parallax) : IDENTITY;
+    const size = layerSize(s, l, frame);
+    const model = g ? multiply(g.matrix, modelMatrix(t)) : modelMatrix(t);
+    return {
+      layerId: l.id,
+      kind: layerImageAt(l, frame).assetId === null ? "fill" : "image",
+      version: layerVersion(s, l, frame),
+      fill: l.fill,
+      width: size.width,
+      height: size.height,
+      matrix: multiply(view, model),
+      opacity: t.opacity * (g?.opacity ?? 1),
+      locked: l.locked,
+      name: l.name,
+    };
+  };
+  const byId = new Map(layers.map((l) => [l.id, l]));
   for (const l of layers) {
     if (l.kind === "group") continue;
     const g = l.groupId ? groups.get(l.groupId) : undefined;
     const visible = l.visible && (g?.visible ?? true);
     if (!visible && !opts.includeHidden) continue;
-    const t = transformAt(l, frame);
-    const view = cam ? viewMatrix(c, cam, l.parallax) : IDENTITY;
-    const version = layerVersion(s, l, frame);
-    const size = layerSize(s, l, frame);
-    const model = g ? multiply(g.matrix, modelMatrix(t)) : modelMatrix(t);
-    const opacity = t.opacity * (g?.opacity ?? 1);
+    const base = baseItem(l);
+    const mask = itemMask(l, base, byId, baseItem);
     items.push({
-      layerId: l.id,
-      kind: layerImageAt(l, frame).assetId === null ? "fill" : "image",
-      version,
-      fill: l.fill,
-      width: size.width,
-      height: size.height,
-      matrix: multiply(view, model),
-      opacity: visible ? opacity : opacity * 0.25,
-      locked: l.locked,
-      name: l.name,
+      ...base,
+      opacity: visible ? base.opacity : base.opacity * 0.25,
+      ...(l.blend && l.blend !== "normal" ? { blend: l.blend } : {}),
+      ...(mask ? { mask } : {}),
     });
   }
   // Grupper i editoren: en ramme rundt lagene i gruppen (tegnes ikke)
@@ -555,6 +588,65 @@ export function renderFrame(
       });
     }
   return { width: c.width, height: c.height, background: c.background, items };
+}
+
+/**
+ * Masken for et lag i tegnelisten (REQ-0175), eller null (ingen maske, eller maskelaget er slettet, er en
+ * gruppe eller er laget selv – da vises laget uten maske). Masken av et maskelag brukes ikke (ingen ringer).
+ */
+function itemMask(
+  l: CompositionLayer,
+  base: DrawItem,
+  layers: ReadonlyMap<string, CompositionLayer>,
+  itemOf: (l: CompositionLayer) => DrawItem,
+): ItemMask | null {
+  const m = l.mask;
+  if (!m) return null;
+  if (m.kind === "layer") {
+    const src = layers.get(m.layerId);
+    if (!src || src.removed || src.kind === "group" || src.id === l.id) return null;
+    return { kind: "layer", item: itemOf(src), invert: m.invert };
+  }
+  return {
+    kind: m.kind,
+    x: m.x - base.width / 2,
+    y: m.y - base.height / 2,
+    width: m.width,
+    height: m.height,
+    feather: m.feather,
+    invert: m.invert,
+  };
+}
+
+/**
+ * Omrisset av en rektangel- eller ellipsemaske i tegnelistens koordinater (for markering i editoren), eller
+ * null for ingen maske eller maske av et annet lag.
+ */
+export function maskOutline(it: DrawItem, segments = 48): { x: number; y: number }[] | null {
+  const m = it.mask;
+  if (!m || m.kind === "layer") return null;
+  if (m.kind === "rect")
+    return [
+      applyMatrix(it.matrix, m.x, m.y),
+      applyMatrix(it.matrix, m.x + m.width, m.y),
+      applyMatrix(it.matrix, m.x + m.width, m.y + m.height),
+      applyMatrix(it.matrix, m.x, m.y + m.height),
+    ];
+  const cx = m.x + m.width / 2;
+  const cy = m.y + m.height / 2;
+  const out: { x: number; y: number }[] = [];
+  for (let i = 0; i < segments; i++) {
+    const a = (i / segments) * Math.PI * 2;
+    out.push(
+      applyMatrix(it.matrix, cx + (Math.cos(a) * m.width) / 2, cy + (Math.sin(a) * m.height) / 2),
+    );
+  }
+  return out;
+}
+
+/** Skaleringen en matrise gir (geometrisk snitt av aksene), for myk kant i lerretets piksler. */
+export function matrixScale(m: Matrix): number {
+  return Math.sqrt(Math.abs(m[0] * m[3] - m[1] * m[2]));
 }
 
 /** Øverste lag under et punkt (i samme koordinater som tegnelisten), eller null. */

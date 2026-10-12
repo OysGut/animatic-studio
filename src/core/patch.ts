@@ -22,8 +22,12 @@ import type {
   Composition,
   CompositionLayer,
   LanguageImage,
+  LayerMask,
+  BlendMode,
   AssetRelation,
   Poster,
+  StyleGuide,
+  StyleProfile,
   PosterDocument,
   PosterKind,
   RelationKind,
@@ -38,7 +42,14 @@ import type {
   TransitionKind,
 } from "./model";
 import { COLLECTION_TABLES, CONTINUITY_KINDS, RELATION_KINDS, TRANSITION_KINDS } from "./model";
-import type { ContinuityDuration, ContinuityKind } from "./model";
+import type {
+  AssetVoice,
+  ContinuityDuration,
+  ContinuityKind,
+  SoundLinkKind,
+  StyleUse,
+  TakeCoverage,
+} from "./model";
 
 export type Row = Record<string, unknown>;
 
@@ -74,7 +85,8 @@ type AnyEntity =
   | CompositionLayer
   | AudioClip
   | AssetRelation
-  | Poster;
+  | Poster
+  | StyleProfile;
 
 export function toRow(collection: CollectionName, e: AnyEntity, projectId: string): Row {
   const base = { id: e.id, project_id: projectId, revision: e.revision };
@@ -149,6 +161,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         transition_custom: o.transition !== undefined,
         transition_overlap: o.transition?.overlap ?? false,
         monochrome: o.monochrome ?? false,
+        // Migrasjon 0023; ukjente kolonner hoppes over av apply_changes før den er kjørt
+        planned_ms: o.plannedMs ?? null,
       };
     }
     case "segments": {
@@ -179,6 +193,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         accepted_from: t.acceptedFrom ?? {},
         // Dialogen i filmlyden (migrasjon 0017, DEC-0059)
         audio_language: t.audioLanguage ?? null,
+        // Manusdekning (migrasjon 0026, DEC-0071)
+        coverage: t.coverage ?? null,
       };
     }
     case "assets": {
@@ -192,6 +208,11 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         category: a.category,
         tags: a.tags,
         archived: a.archived,
+        // Lydkoblinger (migrasjon 0025, DEC-0070); ukjente kolonner ignoreres før migrasjonen
+        sound_links: a.soundLinks ?? [],
+        // Migrasjon 0026 (DEC-0071)
+        context_names: a.contextNames ?? [],
+        voice: a.voice ?? null,
       };
     }
     case "assetVariants": {
@@ -285,6 +306,9 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         anchor: l.anchor,
         // Migrasjon 0017 (DEC-0059)
         language_images: l.languageImages ?? [],
+        // Migrasjon 0026 (REQ-0175)
+        mask: l.mask ?? null,
+        blend: l.blend ?? "normal",
         removed: l.removed,
       };
     }
@@ -324,6 +348,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         take_id: c.takeId,
         in_ms: c.inMs,
         out_ms: c.outMs,
+        // Migrasjon 0026 (DEC-0071); ignoreres av eldre databaser
+        transition_ms: c.transitionMs ?? 0,
         removed: c.removed,
       };
     }
@@ -412,6 +438,18 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         removed: x.removed,
       };
     }
+    case "styleProfiles": {
+      const x = e as StyleProfile;
+      return {
+        ...base,
+        name: x.name,
+        is_default: x.isDefault,
+        guide: x.guide,
+        // Migrasjon 0026 (DEC-0071)
+        applies_to: x.appliesTo ?? [],
+        removed: x.removed,
+      };
+    }
   }
 }
 
@@ -455,6 +493,7 @@ export const TABLE_ORDER: readonly string[] = [
   "translations",
   "asset_relations",
   "posters",
+  "style_profiles",
 ];
 
 export function diffStates(before: ProjectState, after: ProjectState): ChangeSet {
@@ -557,6 +596,7 @@ export interface ProjectRows {
   /** M8 del 1 (migrasjon 0019). Tomt hvis migrasjonen ikke er kjørt ennå. */
   readonly asset_relations?: readonly Row[];
   readonly posters?: readonly Row[];
+  readonly style_profiles?: readonly Row[];
 }
 
 const str = (v: unknown) => String(v);
@@ -622,6 +662,15 @@ function languageImagesFromRow(v: unknown): { languageImages?: LanguageImage[] }
       versionId: (li.versionId ?? null) as never,
     })),
   };
+}
+
+/** Maske og blandingsmodus i et lag (migrasjon 0026, REQ-0175): null/«normal» eller mangler = ingen. */
+function maskBlendFromRow(m: unknown, b: unknown): { mask?: LayerMask; blend?: BlendMode } {
+  const mask = json(m) as LayerMask | null | undefined;
+  const out: { mask?: LayerMask; blend?: BlendMode } = {};
+  if (mask && typeof mask === "object" && typeof mask.kind === "string") out.mask = mask;
+  if (typeof b === "string" && b !== "normal" && b !== "") out.blend = b as BlendMode;
+  return out;
 }
 
 function takeAcceptedFrom(v: unknown): {
@@ -766,6 +815,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         productionNumber: optStr(x["production_number"]),
         ...transitionFromRow(x),
         ...(x["monochrome"] === true ? { monochrome: true } : {}),
+        ...(x["planned_ms"] !== null && x["planned_ms"] !== undefined
+          ? { plannedMs: num(x["planned_ms"]) }
+          : {}),
       })),
     ),
     segments: byId(
@@ -800,6 +852,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...(typeof x["audio_language"] === "string" && x["audio_language"]
           ? { audioLanguage: x["audio_language"] }
           : {}),
+        ...(x["coverage"] && typeof x["coverage"] === "object"
+          ? { coverage: x["coverage"] as TakeCoverage }
+          : {}),
       })),
     ),
     assets: byId(
@@ -817,6 +872,24 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         category: str(x["category"] ?? ""),
         tags: ((x["tags"] as string[] | null | undefined) ?? []).map(String),
         archived: x["archived"] === true,
+        ...(Array.isArray(x["sound_links"]) && (x["sound_links"] as unknown[]).length
+          ? {
+              soundLinks: (x["sound_links"] as { kind: string; id: string }[]).map((l) => ({
+                kind: l.kind as SoundLinkKind,
+                id: String(l.id),
+              })),
+            }
+          : {}),
+        ...(Array.isArray(x["context_names"]) && (x["context_names"] as unknown[]).length
+          ? {
+              contextNames: (x["context_names"] as { name: string; blockIds: string[] }[]).map(
+                (n) => ({ name: String(n.name), blockIds: (n.blockIds ?? []).map(String) }),
+              ),
+            }
+          : {}),
+        ...(x["voice"] && typeof x["voice"] === "object"
+          ? { voice: x["voice"] as AssetVoice }
+          : {}),
       })),
     ),
     assetVariants: byId(
@@ -906,6 +979,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         path: (json(x["motion_path"]) ?? null) as never,
         anchor: (json(x["anchor"]) ?? null) as never,
         ...languageImagesFromRow(x["language_images"]),
+        ...maskBlendFromRow(x["mask"], x["blend"]),
         removed: x["removed"] === true,
       })),
     ),
@@ -945,6 +1019,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         takeId: optStr(x["take_id"]) as never,
         inMs: num(x["in_ms"]),
         outMs: num(x["out_ms"]),
+        ...(num(x["transition_ms"] ?? 0) > 0 ? { transitionMs: num(x["transition_ms"]) } : {}),
         removed: x["removed"] === true,
       })),
     ),
@@ -1037,6 +1112,19 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         widthMm: num(x["width_mm"] ?? 700),
         heightMm: num(x["height_mm"] ?? 1000),
         document: json(x["document"]) as PosterDocument,
+        removed: x["removed"] === true,
+      })),
+    ),
+    styleProfiles: byId(
+      (r.style_profiles ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        name: str(x["name"] ?? ""),
+        isDefault: x["is_default"] === true,
+        guide: json(x["guide"]) as StyleGuide,
+        ...(Array.isArray(x["applies_to"]) && (x["applies_to"] as unknown[]).length
+          ? { appliesTo: (x["applies_to"] as string[]).map(String) as StyleUse[] }
+          : {}),
         removed: x["removed"] === true,
       })),
     ),

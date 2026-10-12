@@ -361,7 +361,7 @@ export function languageReport(
     };
     let mixed: string | null = null;
     for (const p of clip.parts) {
-      if (p.source !== "take" || !p.take || p.take.kind !== "imported_film") continue;
+      if (p.source !== "take" || !p.take || p.take.kind === "composition2d") continue;
       const al = takeAudioLanguage(p.take);
       if (al && al !== "none" && al !== lang) mixed = al;
     }

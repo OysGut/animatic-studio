@@ -1,24 +1,90 @@
-Plakater og karakterkart, relasjoner, kamera og lag, roller og «Tilbake» (DEC-0061–0063)
+Fullskjerm, visuell stil, AI-beskrivelser, produksjonsstatus, fortellingstid, egne AI-leverandører og tjue store bolker: kø, sammenligning, Fountain, lydkoblinger, overganger, masker, AI-stemmer (DEC-0064–0071)
 
-Databaseendring: migrasjon 0019 og 0020. Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push.
+Databaseendring: migrasjon 0022–0026 (og 0019–0021 hvis de ikke er kjørt). Lim inn hele innholdet i
+docs/development/LOVABLE_SYNC.md i Lovable etter push – den kjører bare migrasjonene som mangler.
+Er DEC-0061–0063 ikke committet ennå, kommer de med i samme commit.
 
-Utgivelse: plakater og karakterkart (DEC-0061, M8 del 1, REQ-0384–0399, REQ-0403/0404, REQ-0421, REQ-0501/0502):
-- Ny arbeidsflate «Utgivelse» i menyen: plakater per produksjon (også spinoffer), på norsk eller engelsk.
-- «Ny plakat»: kinopitch-plakat eller karakter- og universkart, 70 × 100 cm (også 50 × 70, A1, A3, eget).
-  Førsteutkast fra prosjektet: hovedkarakterer, steder, objekter, relasjoner og stil.
-- Innholdsvalg som avkrysning (bare bilder og navn, beskrivelser, relasjonslinjer, logline, prosjektdata …);
-  komposisjonen lages på nytt, men det du har endret selv, står.
-- Klikk og dra i plakaten, endre størrelse, tekst (norsk og engelsk), skrift, farger og bilder; legg til egne
-  tekster, bilder og flater; flytt fram og bak. «Kontroll» varsler om for liten tekst og manglende bilder.
-- «Relasjoner»: forslag fra manuset godkjennes eller avvises; egne relasjoner legges til. Vises som linjer.
-- «Eksporter»: trykk-PDF med 3 mm utfallende kant og skjæremerker, eller PNG.
+Bilder i fullskjerm og opplasting igjen (DEC-0064, REQ-0588, Mars' ønske):
+- Biblioteket: dobbeltklikk på et bilde gir fullskjerm med zoom, panorering, bla mellom versjoner og «Last ned».
+- Nedlastede bilder (også i zip) heter «Ressurs - Variant - vN.png».
+- Lastes et bilde med samme navn opp igjen (i varianten eller med «Last opp endrede bilder …»), spør
+  programmet: Erstatt (ny versjon tar over i alle scener – også spinoffer –, godkjenning og plakater; den
+  gamle tas vare på), Legg til (ny versjon med eget nummer) eller Hopp over.
 
-Kamera og lag (DEC-0062, REQ-0584/0585, Mars' ønsker):
-- Kamerautsnitt: «Bruk aktivt utsnitt» ved start- og sluttrammen kopierer utsnittet på slutten av scenen før.
-- Lagpanelet: fjern et lag fra scenen; dra et lag inn på en gruppe eller ut igjen («Ta ut av gruppen» finnes
-  også som knapp); valgt gruppe lyser opp lagene sine; skillelinjen under laglisten kan dras.
+Filmens visuelle stil og AI-beskrivelser med sammenheng (DEC-0065, REQ-0589, REQ-0147, REQ-0245):
+- Prosjektoversikt → «Filmens visuelle stil»: handling, verden, stil, teknikk, farger, lys, stemning, figurer,
+  omgivelser, bildeutsnitt, hva som skal unngås, egne AI-instrukser og forbildebilder. «Foreslå utkast fra
+  prosjektet» og forhåndsvisning av en beskrivelse.
+- Bildebeskrivelsen settes sammen av filmen, stilen, bildet og bruken, scenene (sted, tid på døgnet, årstid,
+  lys, hvem som er der, handlingen, utseendet i scenen), godkjente bilder og det som skal unngås. I
+  sceneeditoren brukes scenen laget hører til. Stilen er også med i beskrivelsene for video.
 
-Roller og tilbake (DEC-0063, REQ-0586/0587, Mars' ønsker):
-- Prosjektoversikt → Medlemmer: eieren endrer rollen til hvert medlem (eier, redaktør, kommentator, leser).
-  Prosjektet har alltid minst én eier. Ventende invitasjoner kan få annen rolle eller trekkes tilbake.
-- «Tilbake til …» øverst til venstre går til vinduet du kom fra, med samme valg som da du forlot det.
+AI skriver beskrivelsen og ser filmens bilder (DEC-0066, REQ-0589, REQ-0246 – kostnad godkjent av Mars):
+- «Skriv beskrivelsen med AI»: en språkmodell i Lovable AI Gateway skriver én presis beskrivelse ut fra alt
+  over og bildene; teksten vises og kan endres før genereringen. Logges i AI-jobbene, teller ikke i
+  bildebudsjettet.
+- Dagens bilde (beholdes) og filmens godkjente bilder (forbildene i stilen og godkjente figurer/steder i de
+  samme scenene, bare som stil) sendes med til bildemodellen, høyst 6. Beskrivelsen sier hva hvert bilde er.
+- Migrasjon 0022: generation_jobs får jobbtypen «prompt», result_text og reference_paths.
+
+Nattarbeid 12.10.2026 (DEC-0067, Teknisk anbefaling, ingen ny kostnad):
+- AI-bilder som ble laget mens siden ble lukket, kan legges inn fra AI-jobbene («Legg inn»).
+- Prosjektoversikt → «Varighet og produksjonsstatus»: forventet lengde nå, bekreftet, gjenstående, andel
+  ferdig, status per scene, manusendringer, filter (status, karakter/objekt/sted, avvik, tekst) og lenker
+  til manus, sceneeditor og montering (REQ-0112–0119, REQ-0405/0406).
+- Planlagt lengde per scene (REQ-0111/0113), brukt i oversikten, monteringen og sceneeditoren.
+- Eieren kan fjerne et medlem; bidragene står (REQ-0529). Migrasjon 0023.
+- Kravrevisjon: 65 krav med utdatert status oppdatert mot kode og tester.
+
+Nattarbeid runde 6–10 (DEC-0068, Teknisk anbefaling, ingen ny kostnad, ingen ny migrasjon):
+- Manus: scenen kan merkes som tilbakeblikk, fremblikk, drøm eller tidshopp og plasseres i
+  fortellingstiden i forhold til en annen scene; kontinuiteten følger dette (REQ-0164).
+- Prosjektoversikt: «Utvikling over tid» – estimat og forventet lengde per manusversjon (REQ-0120).
+- Filter: manuset på objekt/sted, status og manusendringer (REQ-0073); oversikten også på ressursendring
+  og språk (REQ-0406).
+- Planlagt lengde fjernes ved deling/sammenslåing og settes tilbake ved angring.
+- Rettinger etter kodegjennomgang og oppdatert modultabell i ARCHITECTURE.md.
+
+Egne AI-leverandører (DEC-0069, REQ-0590, Bekreftet av bruker):
+- Prosjektlisten → «AI-leverandører …»: OpenAI, Google Gemini, fal.ai, Runway og ElevenLabs (og innebygd
+  Lovable AI). Steg og lenker til konto, betaling, API-nøkkel og priser; nøkkelen prøves før den lagres.
+- Nøkkelen krypteres (AES-256-GCM) på serveren og kan aldri leses tilbake fra nettleseren; bare de fire
+  siste tegnene vises. Fjerning sletter den.
+- Overordnet kostnadstak i USD per måned for alt som lages med nøklene, kontrollert før og etter hver jobb.
+- Bilder: valg av leverandør og modell. Video: «Generer scene» lager video per segment, legger dem inn som
+  nye versjoner og kan sette scenen sammen av dem (2D-scenen erstattes aldri). Lyd: «Lag med AI» på
+  lydressurser i biblioteket.
+- Sikkerhetsrettinger etter kodegjennomgang: trygg nedlasting (https, ingen interne adresser, nøkkel bare
+  til samme vert), nøkler renses fra feiltekster, ingen dobbel video per segment, usikre starter regnes
+  med i taket, forbruk overlever sletting av prosjektet.
+- Migrasjon 0024: ai_provider_keys, ai_account_limits, ai_spend og nye kolonner i generation_jobs.
+- Ikke prøvd mot de ekte tjenestene ennå (KI-153).
+
+Ti store bolker (DEC-0070, Teknisk anbefaling, ingen ny kostnad uten bekreftelse):
+- Bakgrunnskø: /api/cron/ai-jobs henter inn ferdige videoer og sender ventende jobber uten åpen fane
+  (krever planlagt kall i Lovable Cloud, se LOVABLE_SYNC).
+- Montering → «Video for flere scener»: velg scener, se samlet kostnad, legg i kø (høyst tre om gangen
+  per nøkkel). AI-jobbene viser plass i køen og fremdrift; prioritet, «Først» og «Avbryt» (gratis).
+- Innsatsnivå Rask/Økonomisk – Balansert – Høy/Premium med modellens faktiske kvalitetsmekanismer.
+- Beskrivelsene tilpasses modellen (lengde, lyd); replikker kuttes aldri; det som sendes, vises først.
+- Sammenheng: neste segment kan starte fra siste bilde i forrige video.
+- Kandidater (1–4) for bilder og video; sammenlign side ved side og velg uten å slette.
+- Sett sammen scenen av AI-video og 2D-animatic der video mangler; varsel ved nytt valg.
+- Avvik: «Oppdater med AI» bare for segmentene endringen berører, med pris først.
+- Fountain-import og -eksport.
+- Lyd kan kobles til karakterer, replikker, scener, delsekvenser, hendelser og produksjoner; søk og
+  kategorifilter i biblioteket.
+- Migrasjon 0025: kø-kolonner i generation_jobs og assets.sound_links.
+
+Ti store bolker til (DEC-0071, Teknisk anbefaling, ingen ny kostnad uten bekreftelse):
+- Sammenheng i køen: segmenter i kø kan vente på segmentet før og starte fra dets siste bilde.
+- Myke overganger (krysstoning) mellom deler i en scene, i visning og eksport; scenen blir ikke kortere.
+- Rådgivende kvalitetssjekkliste per AI-video i «Kontroller/Sammenlign».
+- Betegnelser i bestemte linjer («onkel» = Laurits bare i valgte replikker).
+- Stilprofiler per bruk (plakater, steder, 2D-animatic, AI-video …).
+- Maske (rektangel, ellipse, annet lag) og blandingsmodus per lag i 2D-scenen.
+- Eksportdialogen sier hvilken produksjon og hvilket materiale som eksporteres.
+- Manusdekning for importert film og AI-video; avvik bare innenfor dekningen.
+- Dialog med AI-stemmer (ElevenLabs) med stemme per karakter og kostnadsgodkjenning.
+- Kravgjennomgang: 35 krav oppdatert mot kode og tester.
+- Migrasjon 0026: mask/blend, transition_ms, voice/context_names, applies_to, coverage.

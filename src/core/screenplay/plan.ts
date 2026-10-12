@@ -27,6 +27,9 @@ export function planImport(
   const last = existing.length ? existing[existing.length - 1]!.orderKey : "";
   const parsedScenes = parsed.scenes.filter((s) => !(opts.skipContinuation && s.isContinuation));
   const keys = keysEvenly(parsedScenes.length).map((k) => last + k);
+  // Et manus helt uten scenenumre (f.eks. Fountain eller et tidlig utkast) er ikke usikkert; bare når noen
+  // scener har nummer og andre ikke, merkes de uten
+  const anyNumbered = parsedScenes.some((s) => s.number !== null);
   const scenes: ImportedScene[] = parsedScenes.map((ps, i) => {
     const blockKeys = keysEvenly(ps.elements.length);
     const blocks: NewBlock[] = ps.elements.map((e, j) => ({
@@ -38,7 +41,7 @@ export function planImport(
       uncertainty: e.uncertain ?? null,
     }));
     const headingNotes = [...ps.warnings];
-    if (ps.number === null && !ps.isContinuation)
+    if (anyNumbered && ps.number === null && !ps.isContinuation)
       headingNotes.push("Scenen har ikke scenenummer i originalen");
     return {
       sceneId: mk<"scene">(),

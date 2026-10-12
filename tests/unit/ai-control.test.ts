@@ -37,6 +37,7 @@ const job = (over: Partial<GenerationJob>): GenerationJob => ({
   status: "done",
   error: null,
   resultPath: null,
+  resultText: null,
   createdAt: "2026-10-05T10:00:00.000Z",
   finishedAt: null,
   createdBy: "u",

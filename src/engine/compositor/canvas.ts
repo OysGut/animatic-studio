@@ -3,7 +3,7 @@
  * Brukes av sceneeditoren og avspillingen; eksporten bruker samme funksjon på et OffscreenCanvas.
  * Bare på klienten (nettleser-API-er).
  */
-import type { DrawItem, Frame, Matrix } from "@/core";
+import { matrixScale, multiply, type DrawItem, type Frame, type Matrix } from "@/core";
 
 export type ImageSource = CanvasImageSource & { readonly width: number; readonly height: number };
 
@@ -29,9 +29,35 @@ export function drawFrame(ctx: CanvasRenderingContext2D, frame: Frame, opts: Dra
 
 function drawItem(ctx: CanvasRenderingContext2D, it: DrawItem, v: Matrix, opts: DrawOptions) {
   if (it.opacity <= 0 || it.kind === "group") return;
-  const m = it.matrix;
+  // Maske (REQ-0175): laget tegnes på et hjelpelerret, maskeres der og legges så på bildet
+  if (it.mask) {
+    const off = maskedItem(ctx, it, v, opts);
+    if (off) {
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = compositeOf(it.blend);
+      ctx.drawImage(off as CanvasImageSource, 0, 0);
+      ctx.restore();
+      return;
+    }
+  }
   ctx.save();
-  // lerret ← scene (v) ← lag (m)
+  ctx.globalCompositeOperation = compositeOf(it.blend);
+  paintItem(ctx, it, v, opts, opts.placeholders !== false);
+  ctx.restore();
+}
+
+/** Blandingsmodus (REQ-0175) → Canvas-operasjon. */
+export function compositeOf(blend: DrawItem["blend"]): GlobalCompositeOperation {
+  return !blend || blend === "normal" ? "source-over" : blend;
+}
+
+type Ctx2D = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+
+/** Tegner selve laget (bilde eller fargeflate) gjennom lerret ← scene (v) ← lag (it.matrix). */
+function paintItem(ctx: Ctx2D, it: DrawItem, v: Matrix, opts: DrawOptions, placeholders: boolean) {
+  const m = it.matrix;
   ctx.setTransform(v[0], v[1], v[2], v[3], v[4], v[5]);
   ctx.transform(m[0], m[1], m[2], m[3], m[4], m[5]);
   ctx.globalAlpha = it.opacity;
@@ -43,9 +69,117 @@ function drawItem(ctx: CanvasRenderingContext2D, it: DrawItem, v: Matrix, opts: 
   } else {
     const img = it.version ? opts.images.get(it.version.mediaPath) : undefined;
     if (img) ctx.drawImage(img, x, y, it.width, it.height);
-    else if (opts.placeholders !== false) drawPlaceholder(ctx, it, x, y);
+    else if (placeholders) drawPlaceholder(ctx as CanvasRenderingContext2D, it, x, y);
   }
-  ctx.restore();
+}
+
+/**
+ * Hjelpelerreter per lerret det tegnes på (gjenbrukes for alle maskerte lag): 0 = laget, 1 = myk maske.
+ */
+const maskScratch = new WeakMap<object, (HTMLCanvasElement | OffscreenCanvas)[]>();
+
+function scratchFor(ctx: CanvasRenderingContext2D, slot: 0 | 1): Ctx2D | null {
+  const w = ctx.canvas.width;
+  const h = ctx.canvas.height;
+  if (w <= 0 || h <= 0) return null;
+  let list = maskScratch.get(ctx.canvas);
+  if (!list) maskScratch.set(ctx.canvas, (list = []));
+  let c = list[slot];
+  if (!c) {
+    c =
+      typeof OffscreenCanvas !== "undefined"
+        ? new OffscreenCanvas(w, h)
+        : typeof document !== "undefined"
+          ? document.createElement("canvas")
+          : undefined;
+    if (!c) return null;
+    list[slot] = c;
+  }
+  if (c.width !== w) c.width = w;
+  if (c.height !== h) c.height = h;
+  const cx = c.getContext("2d") as Ctx2D | null;
+  if (!cx) return null;
+  cx.setTransform(1, 0, 0, 1, 0, 0);
+  cx.globalAlpha = 1;
+  cx.globalCompositeOperation = "source-over";
+  cx.shadowColor = "transparent";
+  cx.shadowBlur = 0;
+  cx.shadowOffsetX = 0;
+  cx.shadowOffsetY = 0;
+  cx.clearRect(0, 0, w, h);
+  return cx;
+}
+
+/**
+ * Laget med masken brukt, på et hjelpelerret i lerretets piksler, eller null (ingen maske kan brukes – da
+ * tegnes laget uten). Rektangel/ellipse: «destination-in» (eller «destination-out» når masken er snudd)
+ * med formen i lagets koordinater. Myk kant: formen tegnes uskarp på et eget hjelpelerret med skyggeuskarphet
+ * (formen legges utenfor lerretet, og skyggen havner på plass – virker også der `filter` mangler), som så
+ * brukes som maske. Maskelag: maskelagets dekning med «destination-in»/«destination-out».
+ */
+function maskedItem(
+  ctx: CanvasRenderingContext2D,
+  it: DrawItem,
+  v: Matrix,
+  opts: DrawOptions,
+): HTMLCanvasElement | OffscreenCanvas | null {
+  const m = it.mask;
+  if (!m) return null;
+  if (m.kind === "layer") {
+    // Maskelag med bilde som ikke er lastet ennå: vis laget uten maske heller enn ingenting
+    const src = m.item;
+    if (src.kind === "image" && !(src.version && opts.images.get(src.version.mediaPath)))
+      return null;
+  }
+  const cx = scratchFor(ctx, 0);
+  if (!cx) return null;
+  paintItem(cx, it, v, opts, opts.placeholders !== false);
+  cx.globalCompositeOperation = m.invert ? "destination-out" : "destination-in";
+  if (m.kind === "layer") {
+    paintItem(cx, m.item, v, opts, false);
+  } else {
+    const full = multiply(v, it.matrix);
+    const blur = m.feather > 0 ? m.feather * matrixScale(full) : 0;
+    const shape = (c: Ctx2D) => {
+      c.beginPath();
+      if (m.kind === "rect") c.rect(m.x, m.y, m.width, m.height);
+      else
+        c.ellipse(
+          m.x + m.width / 2,
+          m.y + m.height / 2,
+          m.width / 2,
+          m.height / 2,
+          0,
+          0,
+          Math.PI * 2,
+        );
+      c.fill();
+    };
+    const soft = blur > 0 ? scratchFor(ctx, 1) : null;
+    if (soft) {
+      // Formen legges så langt utenfor lerretet at bare skyggen (den myke formen) havner på bildet
+      const shift = soft.canvas.width + blur * 4 + 100;
+      soft.setTransform(1, 0, 0, 1, -shift, 0);
+      soft.transform(full[0], full[1], full[2], full[3], full[4], full[5]);
+      soft.fillStyle = "#000";
+      soft.shadowColor = "#000";
+      soft.shadowBlur = blur;
+      soft.shadowOffsetX = shift;
+      shape(soft);
+      soft.shadowColor = "transparent";
+      soft.shadowBlur = 0;
+      soft.shadowOffsetX = 0;
+      cx.setTransform(1, 0, 0, 1, 0, 0);
+      cx.globalAlpha = 1;
+      cx.drawImage(soft.canvas as CanvasImageSource, 0, 0);
+    } else {
+      cx.setTransform(full[0], full[1], full[2], full[3], full[4], full[5]);
+      cx.globalAlpha = 1;
+      cx.fillStyle = "#000";
+      shape(cx);
+    }
+  }
+  return cx.canvas;
 }
 
 function drawPlaceholder(ctx: CanvasRenderingContext2D, it: DrawItem, x: number, y: number) {

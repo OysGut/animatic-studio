@@ -7,11 +7,13 @@
 import {
   formatHeading,
   frameMix,
+  partBlendAt,
   renderFrame,
   sourceAt,
   type ClipFrame,
   type FilmClip,
   type ProjectState,
+  type SourceFrame,
   type Take,
 } from "@/core";
 import { drawFrame, type ImageSource } from "./canvas";
@@ -186,8 +188,39 @@ function drawClipFrame(
   slot = 0,
 ): void {
   const src = sourceAt(at.clip, at.localFrame, state.project.fps);
+  drawSource(ctx, state, at.clip, src, o, slot, at.held ?? false);
+  // Myk overgang mellom to deler i scenen (DEC-0071): den andre delen tegnes gjennomsiktig oppå
+  const blend = partBlendAt(at.clip, at.localFrame, state.project.fps);
+  if (blend && blend.alpha > 0.001) {
+    // På et eget lerret først: 2D-scenen setter selv gjennomsiktighet per lag
+    const sc = scratchCanvas(2 + slot, o.width, o.height);
+    const g = sc.getContext("2d") as CanvasRenderingContext2D | null;
+    if (!g) return;
+    g.setTransform(1, 0, 0, 1, 0, 0);
+    g.globalAlpha = 1;
+    g.clearRect(0, 0, o.width, o.height);
+    drawSource(g, state, at.clip, blend.source, { ...o, placeholders: false }, slot + 2, true);
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.globalAlpha = Math.min(1, blend.alpha);
+    ctx.drawImage(sc as CanvasImageSource, 0, 0);
+    ctx.restore();
+  }
+}
+
+/** Én kilde (filmbilde, 2D-scene eller tittelkort) i hele bildet. */
+function drawSource(
+  ctx: CanvasRenderingContext2D,
+  state: ProjectState,
+  clip: FilmClip,
+  src: SourceFrame,
+  o: FilmDrawOptions,
+  slot: number,
+  held: boolean,
+): void {
+  const at = { clip };
   if (src.kind === "take") {
-    const img = o.video?.(src.take, src.seconds, at.held ?? false, slot) ?? null;
+    const img = o.video?.(src.take, src.seconds, held, slot) ?? null;
     if (img && img.width > 0 && img.height > 0) {
       const k = Math.min(o.width / img.width, o.height / img.height);
       const w = img.width * k;

@@ -331,3 +331,70 @@ describe("RemoveBlock / RestoreBlock", () => {
     expect(outdatedTakes(s2).some((t) => t.occurrenceId === occ.id)).toBe(true);
   });
 });
+
+describe("planlagt lengde ved deling og sammenslåing (KI-146)", () => {
+  function setup() {
+    const { state, mainId } = seedProject();
+    const cmd = planImport(state, sample(), { productionId: mainId as ProductionId, newId: tid });
+    const s = mustApply(state, cmd);
+    return { s, mainId: mainId as ProductionId, cmd };
+  }
+
+  it("deling fjerner planen (den gjaldt hele scenen), angring setter den tilbake", () => {
+    const { s: s0, mainId, cmd } = setup();
+    const scene = cmd.scenes[1]!;
+    const s = mustApply(s0, {
+      type: "SetPlannedDuration",
+      occurrenceId: scene.occurrenceId,
+      plannedMs: 40_000,
+    });
+    const newOcc = tid<"scene_occurrence">();
+    const r = applyCommand(
+      s,
+      envelope({
+        type: "SplitScene",
+        productionId: mainId,
+        occurrenceId: scene.occurrenceId,
+        atBlockId: scene.blocks[1]!.blockId,
+        newSceneId: tid(),
+        newVariantId: tid(),
+        newOccurrenceIds: { [scene.occurrenceId]: newOcc },
+        heading: { intExt: "INT.", location: "LÅVE, LOFTET", time: "DAG" },
+      }),
+    );
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.state.occurrences[scene.occurrenceId]!.plannedMs).toBeUndefined();
+    expect(r.state.occurrences[newOcc]!.plannedMs).toBeUndefined();
+    expect(checkInvariants(r.state)).toEqual([]);
+    const back = mustApply(r.state, r.inverse as never);
+    expect(back.occurrences[scene.occurrenceId]!.plannedMs).toBe(40_000);
+    expect(back.occurrences[newOcc]).toBeUndefined();
+  });
+
+  it("sammenslåing fjerner målscenens plan, angring setter den tilbake", () => {
+    const { s: s0, mainId, cmd } = setup();
+    const target = cmd.scenes[1]!;
+    const source = cmd.scenes[2]!;
+    const s = mustApply(s0, {
+      type: "SetPlannedDuration",
+      occurrenceId: target.occurrenceId,
+      plannedMs: 20_000,
+    });
+    const r = applyCommand(
+      s,
+      envelope({
+        type: "MergeScenes",
+        productionId: mainId,
+        targetOccurrenceId: target.occurrenceId,
+        sourceOccurrenceId: source.occurrenceId,
+      }),
+    );
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.state.occurrences[target.occurrenceId]!.plannedMs).toBeUndefined();
+    const back = mustApply(r.state, r.inverse as never);
+    expect(back.occurrences[target.occurrenceId]!.plannedMs).toBe(20_000);
+    expect(back.occurrences[source.occurrenceId]!.active).toBe(true);
+  });
+});

@@ -41,10 +41,13 @@ export function compositionDuration(s: ProjectState, c: Composition): number {
     const occ = Object.values(s.occurrences).find(
       (o) => o.variantId === c.variantId && o.productionId === prod.id,
     );
-    const est = occ
-      ? estimateProduction(s, prod.id).scenes.find((x) => x.occurrenceId === occ.id)
-      : undefined;
-    if (est) seconds = Math.max(5, est.seconds);
+    const est =
+      occ && occ.plannedMs === undefined
+        ? estimateProduction(s, prod.id).scenes.find((x) => x.occurrenceId === occ.id)
+        : undefined;
+    // Brukerens planlagte lengde går foran estimatet – samme regel som i monteringen (REQ-0111/0113)
+    if (occ?.plannedMs !== undefined) seconds = occ.plannedMs / 1000;
+    else if (est) seconds = Math.max(5, est.seconds);
     // Aldri kortere enn lyden i scenen (DEC-0044) – samme regel som i filmtidslinjen
     if (occ) audioFrames = msToFramesCeil(sceneAudioEndMs(s).get(occ.id) ?? 0, fps);
   }

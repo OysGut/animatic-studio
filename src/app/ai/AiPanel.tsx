@@ -7,22 +7,40 @@
  *   «Prøv igjen». Fullførte resultater ligger i biblioteket og blir aldri slettet av en ny generering.
  */
 import { Link } from "@tanstack/react-router";
-import { AlertTriangle, CheckCircle2, Clock, Loader2, RotateCcw, Sparkles } from "lucide-react";
+import {
+  AlertTriangle,
+  CheckCircle2,
+  Clock,
+  Download,
+  ListOrdered,
+  Loader2,
+  RotateCcw,
+  Sparkles,
+} from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
   JOB_STATE_LABEL,
+  PRIORITY_LABEL,
   aiUsage,
+  jobProgress,
   formatCredits,
+  formatUsd,
+  PROVIDERS,
   jobState,
   newId,
+  unclaimedImageJobs,
+  unclaimedVideoJobs,
+  versionIdFromResultPath,
   variantsOf,
   type GenerationJob,
   type JobState,
   type ProjectState,
 } from "@/core";
 import { useCommands, type Commands } from "@/app/project/use-commands";
+import { useActiveProduction } from "@/app/project/use-production";
 import { useProfiles } from "@/app/project/use-project";
 import { GenerateImagePanel } from "@/app/library/GenerateImagePanel";
+import { mediaFromStoredFile } from "@/app/library/asset-images";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -32,12 +50,36 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useAiJobs } from "./use-ai-jobs";
+import { useQueryClient } from "@tanstack/react-query";
+import { updateQueuedJob } from "@/adapters/ai/queue.functions";
+import { aiJobsKey, useAiJobs } from "./use-ai-jobs";
+import { ProvidersDialog } from "./ProvidersDialog";
+import { claimVideo, useVideoPolling } from "./video-jobs";
+import { useProjectProviders } from "./use-project-providers";
+
+/** Leverandørene prosjektet kan bruke, og veien til å koble til flere (DEC-0069). */
+function ProviderLine({ projectId, userId }: { projectId: string; userId: string }) {
+  const [open, setOpen] = useState(false);
+  const p = useProjectProviders(projectId);
+  const names = (p.data?.providers ?? ["lovable"])
+    .map((id) => PROVIDERS.find((x) => x.id === id)?.name ?? id)
+    .join(", ");
+  return (
+    <p className="mt-2 flex flex-wrap items-center gap-2 text-[13px] text-text-secondary">
+      Tilgjengelige leverandører: <span className="text-text-primary">{names}</span>
+      <Button size="sm" variant="ghost" onClick={() => setOpen(true)}>
+        AI-leverandører …
+      </Button>
+      <ProvidersDialog open={open} onOpenChange={setOpen} userId={userId} />
+    </p>
+  );
+}
 
 const ctl =
   "h-8 w-32 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary disabled:opacity-50";
 
 const STATE_ICON: Record<JobState, typeof Clock> = {
+  queued: ListOrdered,
   running: Loader2,
   done: CheckCircle2,
   failed: AlertTriangle,
@@ -45,6 +87,7 @@ const STATE_ICON: Record<JobState, typeof Clock> = {
   stale: Clock,
 };
 const STATE_CLASS: Record<JobState, string> = {
+  queued: "text-text-secondary",
   running: "text-text-secondary",
   done: "text-status-success",
   failed: "text-status-danger",
@@ -74,7 +117,95 @@ export function AiPanel({
   const [filter, setFilter] = useState<"all" | "problems">("all");
   const [retry, setRetry] = useState<GenerationJob | null>(null);
   const [showAll, setShowAll] = useState(false);
-  const shown = list.filter((j) => filter === "all" || jobState(j, now) !== "done");
+  /** Bilder som ble laget, men ikke lagt inn i biblioteket (siden ble lukket underveis). */
+  // Klokken går: et bilde blir «ikke lagt inn» når fristen er ute, selv om listen ikke endres
+  const [tick, setTick] = useState(() => Date.now());
+  useEffect(() => {
+    const t = window.setInterval(() => setTick(Date.now()), 30_000);
+    return () => window.clearInterval(t);
+  }, []);
+  const unclaimed = useMemo(
+    () => [
+      ...unclaimedImageJobs(state, list, new Date(tick)),
+      ...unclaimedVideoJobs(state, list, new Date(tick)),
+    ],
+    [state, list, tick],
+  );
+  // Videojobber som pågår hos leverandøren følges opp mens oversikten er åpen
+  useVideoPolling(projectId, list, editable);
+  const unclaimedIds = useMemo(() => new Set(unclaimed.map((j) => j.id)), [unclaimed]);
+  const [claiming, setClaiming] = useState<string | null>(null);
+  const [claimError, setClaimError] = useState<string | null>(null);
+
+  /** Legg bildet fra en AI-jobb inn som ny versjon (i ressursens første variant, eller en ny). */
+  async function claim(jobs: readonly GenerationJob[]) {
+    setClaimError(null);
+    const errors: string[] = [];
+    for (const j of jobs) {
+      if (j.kind === "video") {
+        // AI-video blir ny versjon av scenen (REQ-0180)
+        setClaiming(j.id);
+        try {
+          const e = await claimVideo(state, cmds, j);
+          if (e) errors.push(`Video: ${e}`);
+        } catch (e) {
+          errors.push(`Video: ${(e as Error).message}`);
+        }
+        continue;
+      }
+      const asset = j.assetId ? state.assets[j.assetId] : undefined;
+      if (!asset || !j.resultPath) continue;
+      setClaiming(j.id);
+      try {
+        const media = await mediaFromStoredFile(j.resultPath);
+        // Fersk tilstand: forrige bilde kan ha laget varianten, og noen andre kan ha lagt inn dette
+        const now = cmds.current() ?? state;
+        const wanted = versionIdFromResultPath(j.resultPath);
+        if (
+          (wanted && now.assetVersions[wanted]) ||
+          Object.values(now.assetVersions).some((v) => v.mediaPath === j.resultPath)
+        )
+          continue;
+        const group = newId();
+        let variantId = variantsOf(now, asset.id).find((v) => !v.archived)?.id ?? null;
+        if (!variantId) {
+          variantId = newId<"asset_variant">();
+          const r = await cmds.runAndWait(
+            {
+              type: "CreateAssetVariant",
+              variantId: variantId as never,
+              assetId: asset.id,
+              fields: { name: "Animatic", style: "animatic", appearance: "" },
+            },
+            `Ny variant for «${asset.name}»`,
+            group,
+          );
+          if (r.error) throw new Error(r.error);
+        }
+        const versionId = wanted ?? newId<"asset_version">();
+        const r = await cmds.runAndWait(
+          {
+            type: "AddAssetVersion",
+            versionId: versionId as never,
+            variantId: variantId as never,
+            media,
+            note: `Generert med AI (${j.model}), hentet inn fra AI-jobbene`,
+          },
+          `Hent inn AI-bilde av «${asset.name}»`,
+          group,
+        );
+        if (r.error) throw new Error(r.error);
+      } catch (e) {
+        errors.push(`${asset.name}: ${(e as Error).message}`);
+      }
+    }
+    setClaiming(null);
+    if (errors.length) setClaimError(errors.join(" · "));
+  }
+
+  const shown = list.filter(
+    (j) => filter === "all" || jobState(j, now) !== "done" || unclaimedIds.has(j.id),
+  );
   const visible = showAll ? shown : shown.slice(0, 20);
 
   return (
@@ -97,6 +228,39 @@ export function AiPanel({
           : ""}
         .
       </p>
+
+      <ProviderLine projectId={projectId} userId={userId} />
+      {unclaimed.length ? (
+        <div
+          role="status"
+          className="mt-3 flex flex-wrap items-center gap-2 rounded-sm border border-accent-warm/50 bg-surface-2 px-3 py-2 text-[13px] text-text-primary"
+        >
+          <AlertTriangle className="size-4 text-status-uncertain" aria-hidden />
+          <span className="min-w-0 flex-1">
+            {unclaimed.length === 1
+              ? "Ett AI-resultat ble laget, men ikke lagt inn"
+              : `${unclaimed.length} AI-resultater ble laget, men ikke lagt inn`}{" "}
+            (bilder i biblioteket, videoer som ny versjon av scenen – siden ble kanskje lukket mens
+            de ble laget). De er betalt og ligger trygt lagret.
+          </span>
+          {editable ? (
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={claiming !== null}
+              onClick={() => void claim(unclaimed)}
+            >
+              {claiming ? <Loader2 className="animate-spin" /> : <Download />}
+              {unclaimed.length === 1 ? "Legg inn" : "Legg inn alle"}
+            </Button>
+          ) : null}
+        </div>
+      ) : null}
+      {claimError ? (
+        <p role="alert" className="mt-2 text-xs text-status-danger">
+          {claimError}
+        </p>
+      ) : null}
 
       <div className="mt-4 flex items-center gap-2">
         <h3 className="text-[13px] font-medium text-text-primary">Jobber</h3>
@@ -168,12 +332,19 @@ export function AiPanel({
                 </div>
                 <div className="min-w-0">
                   <p className="truncate text-text-primary">
-                    {j.kind === "video" ? "Video" : "Bilde"}
-                    {asset ? ` av «${asset.name}»` : ""}
+                    {j.kind === "video"
+                      ? "Video"
+                      : j.kind === "prompt"
+                        ? "Beskrivelse skrevet av AI"
+                        : j.kind === "sound"
+                          ? "Lyd"
+                          : "Bilde"}
+                    {asset ? ` ${j.kind === "prompt" ? "for" : "av"} «${asset.name}»` : ""}
                     <span className="text-text-tertiary">
                       {" "}
                       · {j.model}
                       {j.estimatedCost !== null ? ` · ~${formatCredits(j.estimatedCost)}` : ""}
+                      {j.costUsd ? ` · ~${formatUsd(j.costUsd)} (${j.provider})` : ""}
                     </span>
                   </p>
                   <details className="text-xs text-text-tertiary">
@@ -181,9 +352,27 @@ export function AiPanel({
                     <pre className="mt-1 whitespace-pre-wrap font-mono text-[11px] text-text-secondary">
                       {j.prompt}
                     </pre>
+                    {j.resultText ? (
+                      <>
+                        <p className="mt-1 text-[11px] text-text-tertiary">AI skrev:</p>
+                        <pre className="whitespace-pre-wrap font-mono text-[11px] text-text-secondary">
+                          {j.resultText}
+                        </pre>
+                      </>
+                    ) : null}
                   </details>
+                  {st === "queued" || (st === "running" && j.kind === "video") ? (
+                    <JobProgressLine job={j} now={now.getTime()} jobs={list} />
+                  ) : null}
                   {(st === "failed" || st === "lost") && j.error ? (
                     <p className="mt-0.5 line-clamp-3 text-xs text-status-danger">{j.error}</p>
+                  ) : null}
+                  {unclaimedIds.has(j.id) ? (
+                    <p className="mt-0.5 text-xs text-status-uncertain">
+                      {j.kind === "video"
+                        ? "Videoen er laget, men ikke lagt inn som versjon av scenen."
+                        : "Bildet er laget, men ikke lagt inn i biblioteket."}
+                    </p>
                   ) : null}
                   {st === "stale" ? (
                     <p className="mt-0.5 text-xs text-status-uncertain">
@@ -193,6 +382,9 @@ export function AiPanel({
                   ) : null}
                 </div>
                 <div className="flex items-center gap-1">
+                  {editable && st === "queued" ? (
+                    <QueueControls projectId={projectId} job={j} />
+                  ) : null}
                   {asset ? (
                     <Button size="sm" variant="ghost" asChild>
                       <Link
@@ -202,6 +394,17 @@ export function AiPanel({
                       >
                         Vis
                       </Link>
+                    </Button>
+                  ) : null}
+                  {editable && unclaimedIds.has(j.id) ? (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      disabled={claiming !== null}
+                      onClick={() => void claim([j])}
+                    >
+                      {claiming === j.id ? <Loader2 className="animate-spin" /> : <Download />}
+                      Legg inn
                     </Button>
                   ) : null}
                   {editable && asset && j.kind === "image" ? (
@@ -331,6 +534,11 @@ function RetryDialog({
   projectId: string;
   cmds: Commands;
 }) {
+  const [productionId] = useActiveProduction(projectId, state, job?.occurrenceId ?? null);
+  const context = useMemo(
+    () => ({ state, productionId, occurrenceId: job?.occurrenceId ?? null }),
+    [state, productionId, job],
+  );
   const asset = job?.assetId ? state.assets[job.assetId] : undefined;
   const variant = asset ? (variantsOf(state, asset.id).find((v) => !v.archived) ?? null) : null;
   return (
@@ -357,6 +565,7 @@ function RetryDialog({
             disabled={false}
             budget={state.project}
             initialPrompt={job.prompt}
+            context={context}
             onGenerated={async (img) => {
               let variantId = variant?.id ?? null;
               if (!variantId) {
@@ -393,5 +602,88 @@ function RetryDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+/** Fremdrift for en jobb i kø eller hos leverandøren (DEC-0070, REQ-0295). */
+function JobProgressLine({
+  job,
+  now,
+  jobs,
+}: {
+  job: GenerationJob;
+  now: number;
+  jobs: readonly GenerationJob[];
+}) {
+  const p = jobProgress(job, now, jobs);
+  return (
+    <div className="mt-1 flex items-center gap-2 text-[11px] text-text-tertiary">
+      {p.fraction !== null ? (
+        <div
+          role="progressbar"
+          aria-label={p.label}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(p.fraction * 100)}
+          className="h-1.5 w-32 overflow-hidden rounded-sm bg-surface-3"
+        >
+          <div
+            className={"h-full " + (p.reported ? "bg-accent-primary" : "bg-text-tertiary")}
+            style={{ width: `${Math.round(p.fraction * 100)}%` }}
+          />
+        </div>
+      ) : null}
+      <span>{p.label}</span>
+    </div>
+  );
+}
+
+/** Prioritet, «Først» og «Avbryt» for en jobb som venter i køen. */
+function QueueControls({ projectId, job }: { projectId: string; job: GenerationJob }) {
+  const qc = useQueryClient();
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  async function act(action: "cancel" | "priority" | "first", priority?: 1 | 2 | 3) {
+    setBusy(true);
+    setErr(null);
+    try {
+      const r = await updateQueuedJob({
+        data: { projectId, jobId: job.id, action, priority },
+      });
+      if (!r.ok) setErr(r.message ?? "Kunne ikke endres.");
+    } catch (e) {
+      setErr((e as Error).message);
+    } finally {
+      setBusy(false);
+      void qc.invalidateQueries({ queryKey: aiJobsKey(projectId) });
+    }
+  }
+  return (
+    <div className="flex flex-wrap items-center gap-1">
+      <select
+        aria-label="Prioritet i køen"
+        value={job.priority ?? 2}
+        disabled={busy}
+        onChange={(e) => void act("priority", Number(e.target.value) as 1 | 2 | 3)}
+        className="h-7 rounded-sm border border-border-control bg-surface-3 px-1 text-xs text-text-primary"
+      >
+        {([1, 2, 3] as const).map((p) => (
+          <option key={p} value={p}>
+            {PRIORITY_LABEL[p]}
+          </option>
+        ))}
+      </select>
+      <Button size="sm" variant="ghost" disabled={busy} onClick={() => void act("first")}>
+        Først
+      </Button>
+      <Button size="sm" variant="ghost" disabled={busy} onClick={() => void act("cancel")}>
+        Avbryt
+      </Button>
+      {err ? (
+        <span role="alert" className="text-[11px] text-status-danger">
+          {err}
+        </span>
+      ) : null}
+    </div>
   );
 }

@@ -117,5 +117,8 @@ export function layerFieldsOf(l: CompositionLayer): LayerFields {
     path: l.path,
     anchor: l.anchor,
     ...(l.languageImages?.length ? { languageImages: l.languageImages } : {}),
+    // Maske og blandingsmodus (REQ-0175): bare når de er satt (utelatt = uendret ved endring)
+    ...(l.mask ? { mask: l.mask } : {}),
+    ...(l.blend && l.blend !== "normal" ? { blend: l.blend } : {}),
   };
 }

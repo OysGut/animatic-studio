@@ -6,6 +6,7 @@
  */
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { UserMinus } from "lucide-react";
 import { db } from "@/app/db";
 import type { MemberRow, ProfileRow } from "@/app/project/use-project";
 import { Button } from "@/components/ui/button";
@@ -57,6 +58,8 @@ function useInvitations(projectId: string, enabled: boolean) {
 /** Feilmeldingen fra databasen uten teknisk innpakning; manglende migrasjon forklares. */
 function message(e: unknown): string {
   const m = e instanceof Error ? e.message : String(e);
+  if (/function .*remove_member|could not find the function .*remove_member/i.test(m))
+    return "Databasen mangler fjerning av medlemmer. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0023.";
   if (
     /function .*(set_member_role|set_invitation_role|revoke_invitation)|could not find the function/i.test(
       m,
@@ -122,7 +125,22 @@ export function MembersSection({
     onSettled: () => qc.invalidateQueries({ queryKey: ["project-invitations", projectId] }),
   });
 
-  const busy = setRole.isPending;
+  /** Fjerne et medlem (REQ-0529): bare medlemskapet avsluttes; det personen har laget, blir. */
+  const [confirmRemove, setConfirmRemove] = useState<string | null>(null);
+  const remove = useMutation({
+    mutationFn: async (user: string) => {
+      const { error: e } = await db.rpc("remove_member", { p_project: projectId, p_user: user });
+      if (e) throw new Error(e.message);
+    },
+    onMutate: () => setError(null),
+    onError: (e) => setError(message(e)),
+    onSettled: () => {
+      setConfirmRemove(null);
+      return qc.invalidateQueries({ queryKey: ["project-members", projectId] });
+    },
+  });
+
+  const busy = setRole.isPending || remove.isPending;
   return (
     <>
       <ul className="border border-border bg-surface-1" aria-label="Medlemmer">
@@ -141,36 +159,69 @@ export function MembersSection({
                 )}
                 {self ? <span className="ml-2 text-text-tertiary">(deg)</span> : null}
               </span>
-              {isOwner ? (
-                <select
-                  aria-label={`Rolle for ${name(m.user_id)}`}
-                  value={m.role}
-                  disabled={busy}
-                  title={
-                    lastOwner
-                      ? "Prosjektet må ha minst én eier. Gjør en annen til eier først."
-                      : ROLE_HELP[m.role]
-                  }
-                  onChange={(e) => {
-                    const role = e.target.value;
-                    if (
-                      self &&
-                      m.role === "owner" &&
-                      !window.confirm(
-                        `Vil du gjøre deg selv til ${ROLE_LABEL[role]?.toLowerCase()}? Da kan du ikke lenger endre roller.`,
-                      )
-                    )
-                      return;
-                    setRole.mutate({ user: m.user_id, role });
-                  }}
-                  className={select}
+              {isOwner && confirmRemove === m.user_id ? (
+                <span
+                  role="alertdialog"
+                  aria-label={`Fjerne ${name(m.user_id)}?`}
+                  className="flex items-center gap-2 text-xs text-text-secondary"
                 >
-                  {Object.entries(ROLE_LABEL).map(([r, label]) => (
-                    <option key={r} value={r} disabled={lastOwner && r !== "owner"}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
+                  Fjerne {name(m.user_id)} fra prosjektet? Det hen har laget, blir værende.
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    disabled={busy}
+                    onClick={() => remove.mutate(m.user_id)}
+                  >
+                    Fjern
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={() => setConfirmRemove(null)}>
+                    Avbryt
+                  </Button>
+                </span>
+              ) : isOwner ? (
+                <span className="flex items-center gap-2">
+                  <select
+                    aria-label={`Rolle for ${name(m.user_id)}`}
+                    value={m.role}
+                    disabled={busy}
+                    title={
+                      lastOwner
+                        ? "Prosjektet må ha minst én eier. Gjør en annen til eier først."
+                        : ROLE_HELP[m.role]
+                    }
+                    onChange={(e) => {
+                      const role = e.target.value;
+                      if (
+                        self &&
+                        m.role === "owner" &&
+                        !window.confirm(
+                          `Vil du gjøre deg selv til ${ROLE_LABEL[role]?.toLowerCase()}? Da kan du ikke lenger endre roller.`,
+                        )
+                      )
+                        return;
+                      setRole.mutate({ user: m.user_id, role });
+                    }}
+                    className={select}
+                  >
+                    {Object.entries(ROLE_LABEL).map(([r, label]) => (
+                      <option key={r} value={r} disabled={lastOwner && r !== "owner"}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                  {self ? null : (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      disabled={busy}
+                      onClick={() => setConfirmRemove(m.user_id)}
+                      aria-label={`Fjern ${name(m.user_id)} fra prosjektet`}
+                      title="Fjern fra prosjektet (det personen har laget, blir værende)"
+                    >
+                      <UserMinus />
+                    </Button>
+                  )}
+                </span>
               ) : (
                 <span className="text-text-secondary" title={ROLE_HELP[m.role]}>
                   {ROLE_LABEL[m.role] ?? m.role}

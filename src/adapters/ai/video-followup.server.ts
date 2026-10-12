@@ -1,0 +1,470 @@
+/**
+ * Oppfølging av én AI-videojobb (DEC-0069, DEC-0070). BARE PÅ SERVEREN. Brukes både når nettleseren spør
+ * (pollVideoJob) og av bakgrunnskøen (/api/cron/ai-jobs), så videoer hentes inn også når ingen har
+ * prosjektet åpent. Ferdige videoer lagres i `<prosjekt>/films/<take>/ai-video.mp4`; bare én henter vinner.
+ */
+import { lastFramePath, newId } from "@/core";
+import type { KeyRow } from "./ai-gate.server";
+import type { AnyClient } from "@/adapters/storage/project-rows";
+
+const BUCKET = "assets";
+/** En jobb som ikke er ferdig etter dette, regnes som stoppet hos leverandøren. */
+export const VIDEO_JOB_MAX_MS = 3 * 60 * 60 * 1000;
+
+export type PollVideoResult =
+  | { readonly state: "running"; readonly progress?: number }
+  | { readonly state: "done"; readonly resultPath: string }
+  | { readonly state: "failed"; readonly message: string };
+
+export async function followUpVideoJob(
+  db: AnyClient,
+  projectId: string,
+  jobId: string,
+): Promise<PollVideoResult> {
+  const { data: row } = await db
+    .from("generation_jobs")
+    .select(
+      // «*»: started_at finnes bare fra migrasjon 0025
+      "*",
+    )
+    .eq("id", jobId)
+    .eq("project_id", projectId)
+    .maybeSingle();
+  const job = row as {
+    id: string;
+    kind: string;
+    provider: string;
+    model: string;
+    status: string;
+    external_id: string | null;
+    provider_key_id: string | null;
+    created_at: string;
+    started_at?: string | null;
+    result_path: string | null;
+  } | null;
+  if (!job || job.kind !== "video") return { state: "failed", message: "Jobben finnes ikke." };
+  if (job.status === "done" && job.result_path)
+    return { state: "done", resultPath: job.result_path };
+  if (job.status === "queued") return { state: "running" };
+  if (job.status !== "running") return { state: "failed", message: "Jobben feilet." };
+  const fail = async (
+    message: string,
+    status: "failed" | "lost" = "failed",
+  ): Promise<PollVideoResult> => {
+    await db
+      .from("generation_jobs")
+      .update({
+        status,
+        error: message.slice(0, 2000),
+        finished_at: new Date().toISOString(),
+      } as never)
+      .eq("id", job.id)
+      .eq("status", "running");
+    return { state: "failed", message };
+  };
+  if (!job.external_id) {
+    // Startet, men leverandøren svarte aldri (fanen ble lukket under oppstart): regnes som stoppet
+    return Date.now() - Date.parse(job.started_at ?? job.created_at) > 10 * 60_000
+      ? fail("Jobben kom aldri i gang hos leverandøren.")
+      : { state: "running" };
+  }
+  // Tiden regnes fra jobben ble sendt (den kan ha ventet lenge i køen)
+  if (Date.now() - Date.parse(job.started_at ?? job.created_at) > VIDEO_JOB_MAX_MS)
+    // Kan være belastet hos leverandøren: regnes med i taket
+    return fail("Videoen ble ikke hentet inn i tide.", "lost");
+  if (!job.provider_key_id) return fail("Nøkkelen er fjernet, så videoen kan ikke hentes.");
+  const { data: keyRow } = await db
+    .from("ai_provider_keys")
+    .select("id, user_id, provider, ciphertext, iv, key_version")
+    .eq("id", job.provider_key_id)
+    .maybeSingle();
+  if (!keyRow) return fail("Nøkkelen er fjernet, så videoen kan ikke hentes.");
+  const k = keyRow as {
+    id: string;
+    user_id: string;
+    provider: string;
+    ciphertext: string;
+    iv: string;
+    key_version: number;
+  };
+  const { ADAPTERS, ProviderError, scrubSecret } = await import("./providers.server");
+  let secret: string;
+  try {
+    const { decryptKey } = await import("./key-vault.server");
+    secret = await decryptKey(k, { userId: k.user_id, provider: k.provider, rowId: k.id });
+  } catch (e) {
+    return fail((e as Error).message);
+  }
+  try {
+    const adapter = ADAPTERS[job.provider as "openai" | "google" | "fal" | "runway"];
+    if (!adapter || !("pollVideo" in adapter)) return fail("Leverandøren lager ikke video.");
+    const r = await adapter.pollVideo(secret, job.model, job.external_id);
+    if (r.state === "running") {
+      if (typeof r.progress === "number")
+        await db
+          .from("generation_jobs")
+          .update({ progress: Math.max(0, Math.min(1, r.progress)) } as never)
+          .eq("id", job.id)
+          .eq("status", "running");
+      return r;
+    }
+    if (r.state === "failed") return fail(scrubSecret(r.message, secret));
+    const takeId = newId<"take">();
+    const path = `${projectId}/films/${takeId}/ai-video.mp4`;
+    const { error: upErr } = await db.storage
+      .from(BUCKET)
+      .upload(path, new Blob([r.bytes as unknown as ArrayBuffer], { type: r.mimeType }), {
+        contentType: r.mimeType.startsWith("video/") ? r.mimeType : "video/mp4",
+        upsert: false,
+      });
+    if (upErr) throw new Error(`Videoen kunne ikke lagres: ${upErr.message}`);
+    // Bare én henter vinner (samtidig oppfølging fra to faner): den andre ser jobben som ferdig
+    const { data: won } = await db
+      .from("generation_jobs")
+      .update({
+        status: "done",
+        result_path: path,
+        finished_at: new Date().toISOString(),
+      } as never)
+      .eq("id", job.id)
+      .eq("status", "running")
+      .select("id");
+    if (!won || (won as unknown[]).length === 0) {
+      await db.storage.from(BUCKET).remove([path]);
+      const { data: now } = await db
+        .from("generation_jobs")
+        .select("result_path")
+        .eq("id", job.id)
+        .maybeSingle();
+      const rp = (now as { result_path?: string | null } | null)?.result_path;
+      return rp ? { state: "done", resultPath: rp } : { state: "running" };
+    }
+    return { state: "done", resultPath: path };
+  } catch (e) {
+    // Varig avslag fra leverandøren (ikke for mange forespørsler): stopp oppfølgingen
+    if (e instanceof ProviderError && e.status >= 400 && e.status < 500 && e.status !== 429)
+      return fail(scrubSecret(e.message, secret));
+    // Nettfeil: prøv igjen ved neste oppfølging (jobben står fortsatt hos leverandøren)
+    console.warn("[videojobb] prøver igjen senere:", (e as Error).message.slice(0, 200));
+    return { state: "running" };
+  }
+}
+
+export interface FollowUpSummary {
+  /** Bilde-, lyd- og tekstjobber som ble stoppet av plattformen og nå er merket «lost». */
+  readonly stopped?: number;
+  readonly checked: number;
+  readonly done: number;
+  readonly failed: number;
+  readonly running: number;
+}
+
+/**
+ * Følg opp de eldste videojobbene som pågår (bakgrunnskøen). Hver jobb følges opp høyst én gang per runde,
+ * innenfor et tidsbudsjett, så kallet blir ferdig før plattformens tidsgrense.
+ */
+export async function followUpRunningVideoJobs(
+  db: AnyClient,
+  opts: { readonly maxJobs?: number; readonly budgetMs?: number; readonly now?: () => number } = {},
+): Promise<FollowUpSummary> {
+  const now = opts.now ?? Date.now;
+  const started = now();
+  const budget = opts.budgetMs ?? 45_000;
+  const { data } = await db
+    .from("generation_jobs")
+    .select("id, project_id")
+    .eq("kind", "video")
+    .eq("status", "running")
+    .order("created_at", { ascending: true })
+    .limit(opts.maxJobs ?? 25);
+  const jobs = (data ?? []) as { id: string; project_id: string }[];
+  let done = 0;
+  let failed = 0;
+  let running = 0;
+  let checked = 0;
+  for (const j of jobs) {
+    if (now() - started > budget) break;
+    checked++;
+    try {
+      const r = await followUpVideoJob(db, j.project_id, j.id);
+      if (r.state === "done") done++;
+      else if (r.state === "failed") failed++;
+      else running++;
+    } catch {
+      running++;
+    }
+  }
+  return { checked, done, failed, running };
+}
+
+/**
+ * Bilder, lyd og AI-skrevne beskrivelser lages i ett kall. Står en slik jobb fortsatt som «pågår» etter
+ * 15 minutter, ble kallet stoppet av plattformen; den merkes «lost» (kan ha kostet, teller i taket) så
+ * listen ikke viser den som pågående for alltid (KI-145).
+ */
+export async function markStoppedSyncJobs(db: AnyClient, now = Date.now()): Promise<number> {
+  const { data } = await db
+    .from("generation_jobs")
+    .update({
+      status: "lost",
+      error: "Stoppet underveis (ingen svar innen 15 minutter).",
+      finished_at: new Date(now).toISOString(),
+    } as never)
+    .in("kind", ["image", "sound", "prompt"])
+    .eq("status", "running")
+    .lt("created_at", new Date(now - 15 * 60_000).toISOString())
+    .select("id");
+  return ((data ?? []) as unknown[]).length;
+}
+
+/** Høyst så mange videoer kjører samtidig hos leverandøren per nøkkel (REQ-0301). */
+export const MAX_PARALLEL_PER_KEY = 3;
+
+interface JobForSubmit {
+  readonly id: string;
+  readonly provider: string;
+  readonly model: string;
+  readonly prompt: string;
+  readonly reference_path: string | null;
+  readonly provider_key_id: string | null;
+  readonly params: { seconds?: number; aspect?: "16:9" | "9:16" } | null;
+}
+
+/**
+ * Send en registrert videojobb til leverandøren og lagre leverandørens jobb-ID. Jobben må stå som «running»
+ * (sendes) – køen setter den dit først. Et klart avslag fra leverandøren gir «failed» (koster ikke);
+ * tidsavbrudd og nettfeil etter innsending gir «lost» (kan ha kostet, teller i taket).
+ */
+export async function submitVideoJob(
+  db: AnyClient,
+  jobId: string,
+): Promise<{ ok: true } | { ok: false; message: string }> {
+  const { data: row } = await db
+    .from("generation_jobs")
+    .select("id, provider, model, prompt, reference_path, provider_key_id, params")
+    .eq("id", jobId)
+    .maybeSingle();
+  const job = row as JobForSubmit | null;
+  if (!job) return { ok: false, message: "Jobben finnes ikke." };
+  const end = async (status: "failed" | "lost", message: string) =>
+    db
+      .from("generation_jobs")
+      .update({ status, error: message, finished_at: new Date().toISOString() } as never)
+      .eq("id", jobId)
+      .eq("status", "running");
+  if (!job.provider_key_id) {
+    await end("failed", "Nøkkelen er fjernet.");
+    return { ok: false, message: "Nøkkelen er fjernet." };
+  }
+  const { data: keyData } = await db
+    .from("ai_provider_keys")
+    .select("id, user_id, provider, ciphertext, iv, key_version")
+    .eq("id", job.provider_key_id)
+    .maybeSingle();
+  const key = keyData as KeyRow | null;
+  if (!key) {
+    await end("failed", "Nøkkelen er fjernet.");
+    return { ok: false, message: "Nøkkelen er fjernet." };
+  }
+  let secret: string | null = null;
+  let submitted = false;
+  const { ADAPTERS, ProviderError, scrubSecret } = await import("./providers.server");
+  try {
+    const { decryptKey } = await import("./key-vault.server");
+    secret = await decryptKey(key, { userId: key.user_id, provider: key.provider, rowId: key.id });
+    let image: { blob: Blob; url: string } | null = null;
+    if (job.reference_path) {
+      const { data: blob } = await db.storage.from(BUCKET).download(job.reference_path);
+      const { data: signed } = await db.storage
+        .from(BUCKET)
+        .createSignedUrl(job.reference_path, 3600);
+      if (!blob || !signed?.signedUrl) throw new Error("Startbildet kunne ikke hentes.");
+      image = { blob, url: signed.signedUrl };
+    }
+    const adapter = ADAPTERS[job.provider as "openai" | "google" | "fal" | "runway"];
+    if (!adapter || !("startVideo" in adapter)) throw new Error("Leverandøren lager ikke video.");
+    submitted = true;
+    const externalId = await adapter.startVideo({
+      key: secret,
+      model: job.model,
+      prompt: job.prompt,
+      image,
+      seconds: job.params?.seconds ?? 5,
+      aspect: job.params?.aspect ?? "16:9",
+    });
+    const { error: idErr } = await db
+      .from("generation_jobs")
+      .update({ external_id: externalId } as never)
+      .eq("id", jobId)
+      .eq("status", "running");
+    if (idErr) {
+      await end("lost", `Jobben startet, men kunne ikke registreres: ${idErr.message}`);
+      return {
+        ok: false,
+        message:
+          "Videoen ble startet hos leverandøren, men kunne ikke registreres her. Den regnes med i kostnadstaket.",
+      };
+    }
+    return { ok: true };
+  } catch (e) {
+    const message = scrubSecret((e as Error).message || "Ukjent feil", secret).slice(0, 2000);
+    const rejected = e instanceof ProviderError && e.status >= 400 && e.status < 600;
+    await end(submitted && !rejected ? "lost" : "failed", message);
+    return { ok: false, message: `Videoen kunne ikke startes: ${message}` };
+  }
+}
+
+/**
+ * Send ventende videojobber i køen (prioritet, så rekkefølge) når nøkkelen har ledig plass. Hver jobb tas
+ * med en betinget oppdatering (queued → running), så to samtidige kall aldri sender samme jobb.
+ */
+export async function pumpVideoQueue(
+  db: AnyClient,
+  opts: { readonly projectId?: string; readonly max?: number; readonly budgetMs?: number } = {},
+): Promise<number> {
+  const started = Date.now();
+  let q = db
+    .from("generation_jobs")
+    .select("id, project_id, provider_key_id, params")
+    .eq("kind", "video")
+    .eq("status", "queued");
+  if (opts.projectId) q = q.eq("project_id", opts.projectId);
+  // Et stort vindu, så jobber for andre nøkler ikke venter bak en full nøkkel
+  const { data } = await q
+    .order("priority", { ascending: true })
+    .order("queue_position", { ascending: true })
+    .limit(opts.max ?? 200);
+  const waiting = (data ?? []) as {
+    id: string;
+    project_id: string;
+    provider_key_id: string | null;
+    params?: { chainAfter?: string } | null;
+  }[];
+  // Slettede prosjekter: jobbene avbrytes (de er ikke sendt, så de koster ingenting)
+  const projectIds = [...new Set(waiting.map((j) => j.project_id))];
+  const deleted = new Set<string>();
+  if (projectIds.length) {
+    const { data: projs } = await db.from("projects").select("id, deleted_at").in("id", projectIds);
+    for (const p of (projs ?? []) as { id: string; deleted_at: string | null }[])
+      if (p.deleted_at) deleted.add(p.id);
+    for (const id of projectIds)
+      if (!((projs ?? []) as { id: string }[]).some((p) => p.id === id)) deleted.add(id);
+  }
+  const busy = new Map<string, number>();
+  let sent = 0;
+  for (const j of waiting) {
+    if (Date.now() - started > (opts.budgetMs ?? 40_000)) break;
+    if (deleted.has(j.project_id)) {
+      await db
+        .from("generation_jobs")
+        .update({
+          status: "failed",
+          error: "Prosjektet er slettet; jobben ble ikke sendt (kostet ingenting).",
+          finished_at: new Date().toISOString(),
+        } as never)
+        .eq("id", j.id)
+        .eq("status", "queued");
+      continue;
+    }
+    // Sammenheng (DEC-0071): vent på siste bilde fra segmentet før
+    if (j.params?.chainAfter) {
+      const c = await resolveChain(db, j.project_id, j.params.chainAfter);
+      if (c.state === "wait") continue;
+      if (c.state === "failed") {
+        await db
+          .from("generation_jobs")
+          .update({
+            status: "failed",
+            error: c.message,
+            finished_at: new Date().toISOString(),
+          } as never)
+          .eq("id", j.id)
+          .eq("status", "queued");
+        continue;
+      }
+      await db
+        .from("generation_jobs")
+        .update({ reference_path: c.path } as never)
+        .eq("id", j.id)
+        .eq("status", "queued");
+    }
+    const k = j.provider_key_id;
+    if (k && !busy.has(k)) {
+      const { count } = await db
+        .from("generation_jobs")
+        .select("id", { count: "exact", head: true })
+        .eq("kind", "video")
+        .eq("status", "running")
+        .eq("provider_key_id", k);
+      busy.set(k, count ?? 0);
+    }
+    if (k && (busy.get(k) ?? 0) >= MAX_PARALLEL_PER_KEY) continue;
+    const { data: won } = await db
+      .from("generation_jobs")
+      .update({ status: "running", started_at: new Date().toISOString() } as never)
+      .eq("id", j.id)
+      .eq("status", "queued")
+      .select("id");
+    if (!won || (won as unknown[]).length === 0) continue;
+    if (k) busy.set(k, (busy.get(k) ?? 0) + 1);
+    // Uten nøkkel feiler jobben straks i submitVideoJob («Nøkkelen er fjernet»)
+    const r = await submitVideoJob(db, j.id);
+    if (r.ok) sent++;
+    else if (k) busy.set(k, Math.max(0, (busy.get(k) ?? 1) - 1));
+  }
+  return sent;
+}
+
+/**
+ * Startbildet for et segment som venter på segmentet før (DEC-0071, REQ-0263): siste bilde i den nyeste
+ * ferdige videoen for det segmentet, når nettleseren har lagret det (det skjer når videoen legges inn).
+ * «wait»: forrige video lages fortsatt eller er ikke lagt inn ennå. «failed»: forrige segment fikk ingen video.
+ */
+/** Så lenge venter en sammenhengende jobb på siste bilde etter at videoen før er ferdig. */
+export const CHAIN_FRAME_WAIT_MS = 30 * 60 * 1000;
+
+export async function resolveChain(
+  db: AnyClient,
+  projectId: string,
+  segmentId: string,
+): Promise<
+  { state: "wait" } | { state: "ready"; path: string } | { state: "failed"; message: string }
+> {
+  const { data } = await db
+    .from("generation_jobs")
+    .select("status, result_path, created_at, finished_at")
+    .eq("project_id", projectId)
+    .eq("kind", "video")
+    .eq("segment_id", segmentId)
+    .order("created_at", { ascending: false })
+    .limit(20);
+  const jobs = (data ?? []) as {
+    status: string;
+    result_path: string | null;
+    finished_at?: string | null;
+  }[];
+  // Den nyeste jobben som ikke feilet, avgjør (et nytt forsøk som pågår, går foran en eldre ferdig video)
+  const latest = jobs.find((x) => x.status !== "failed" && x.status !== "lost");
+  if (latest && (latest.status === "queued" || latest.status === "running"))
+    return { state: "wait" };
+  if (latest && latest.status === "done" && latest.result_path) {
+    const path = lastFramePath(latest.result_path);
+    if (!path) return { state: "failed", message: "Forrige segments video har en ukjent sti." };
+    const { error } = await db.storage.from(BUCKET).createSignedUrl(path, 60);
+    if (!error) return { state: "ready", path };
+    // Siste bilde lagres av nettleseren når videoen legges inn. Kommer det ikke, venter jobben ikke for alltid
+    const done = latest.finished_at ? Date.parse(latest.finished_at) : NaN;
+    if (Number.isFinite(done) && Date.now() - done > CHAIN_FRAME_WAIT_MS)
+      return {
+        state: "failed",
+        message:
+          "Siste bilde fra segmentet før ble ikke lagret (det skjer når prosjektet er åpent i en nettleser). Start segmentet på nytt (kostet ingenting).",
+      };
+    return { state: "wait" };
+  }
+  return {
+    state: "failed",
+    message:
+      "Segmentet før fikk ingen video, så dette kunne ikke starte fra siste bilde (kostet ingenting).",
+  };
+}

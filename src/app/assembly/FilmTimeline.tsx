@@ -439,7 +439,11 @@ const ClipBlock = memo(function ClipBlock({
         placeholder ? ", uten 2D-scene" : clip.source === "film" ? ", ferdig film" : ""
       }${clip.transition.kind !== "cut" ? `, ${TRANSITION_LABEL[clip.transition.kind].toLocaleLowerCase("nb")} inn${clip.overlapFrames > 0 ? " med overlapp" : ""}` : ""}${clip.monochrome ? ", svart-hvitt" : ""}${flags ? ", manuset er endret etter materialet" : ""}`}
       title={`${clip.productionNumber ?? ""} ${heading}\n${formatSeconds(seconds)}${
-        clip.durationKind === "estimate" ? " (beregnet fra manus)" : ""
+        clip.durationKind === "estimate"
+          ? " (beregnet fra manus)"
+          : clip.durationKind === "planned"
+            ? " (planlagt)"
+            : ""
       }${placeholder ? "\nIngen 2D-scene ennå – vises som tittelkort" : ""}${
         clip.edited
           ? `\nKlippet: ${clip.parts.length} ${clip.parts.length === 1 ? "del" : "deler"}`

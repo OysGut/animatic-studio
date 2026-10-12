@@ -4,6 +4,7 @@
  */
 import type {
   AnimatedProperty,
+  BlendMode,
   CameraFrame,
   CompositionCamera,
   Easing,
@@ -11,6 +12,7 @@ import type {
   Keyframe,
   LanguageImage,
   LayerKind,
+  LayerMask,
   LayerTransform,
   MotionPath,
 } from "../model";
@@ -290,6 +292,13 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
   if (!langs.ok) return langs;
   if (langs.value.length > 0 && (group || f.assetId === null))
     return { ok: false, error: "Bare et lag med bilde kan ha et eget bilde per språk" };
+  // Maske og blandingsmodus (REQ-0175): kontroll mot andre lag skjer i kommandoen
+  const mask = normalizeMask(f.mask ?? null);
+  if (!mask.ok) return mask;
+  const blend = normalizeBlend(f.blend ?? "normal");
+  if (!blend.ok) return blend;
+  if (group && (mask.value !== null || blend.value !== "normal"))
+    return { ok: false, error: "En gruppe kan ikke ha maske eller blandingsmodus" };
   return {
     ok: true,
     value: {
@@ -311,6 +320,79 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
       path: path.value,
       anchor: group ? anchor : null,
       ...(langs.value.length ? { languageImages: langs.value } : {}),
+      ...(mask.value ? { mask: mask.value } : {}),
+      ...(blend.value !== "normal" ? { blend: blend.value } : {}),
+    },
+  };
+}
+
+// ---------- Maske og blandingsmodus (REQ-0175, mandat 11.2) ----------
+
+export const BLEND_MODES: readonly BlendMode[] = [
+  "normal",
+  "multiply",
+  "screen",
+  "overlay",
+  "darken",
+  "lighten",
+  "soft-light",
+  "color",
+];
+
+export const BLEND_LABEL: Record<BlendMode, string> = {
+  normal: "Normal",
+  multiply: "Multipliser",
+  screen: "Skjerm",
+  overlay: "Overlegg",
+  darken: "Mørkere",
+  lighten: "Lysere",
+  "soft-light": "Mykt lys",
+  color: "Farge",
+};
+
+/** Største myke kant på en maske (piksler). */
+export const MAX_MASK_FEATHER = 200;
+
+export function normalizeBlend(b: BlendMode): Result<BlendMode> {
+  return BLEND_MODES.includes(b)
+    ? { ok: true, value: b }
+    : { ok: false, error: "Ugyldig blandingsmodus" };
+}
+
+/**
+ * Maske (REQ-0175): rektangel/ellipse med positiv størrelse og myk kant 0–200 px, eller et annet lag.
+ * Om laget finnes, ligger i samme 2D-scene og ikke gir en ring, kontrolleres i kommandoen.
+ */
+export function normalizeMask(m: LayerMask | null): Result<LayerMask | null> {
+  if (m === null) return { ok: true, value: null };
+  if (typeof m !== "object") return { ok: false, error: "Ugyldig maske" };
+  if (m.invert !== undefined && typeof m.invert !== "boolean")
+    return { ok: false, error: "Ugyldig maske" };
+  const invert = m.invert === true;
+  if (m.kind === "layer") {
+    if (typeof m.layerId !== "string" || m.layerId.length === 0 || m.layerId.length > 64)
+      return { ok: false, error: "Ugyldig lag for masken" };
+    return { ok: true, value: { kind: "layer", layerId: m.layerId, invert } };
+  }
+  if (m.kind !== "rect" && m.kind !== "ellipse") return { ok: false, error: "Ugyldig type maske" };
+  if (!finite(m.x) || !finite(m.y) || Math.abs(m.x) > MAX_COORD || Math.abs(m.y) > MAX_COORD)
+    return { ok: false, error: "Ugyldig plassering av masken" };
+  if (!finite(m.width) || !finite(m.height) || m.width <= 0 || m.height <= 0)
+    return { ok: false, error: "Masken må ha bredde og høyde over 0" };
+  if (m.width > MAX_COORD || m.height > MAX_COORD)
+    return { ok: false, error: "Masken er for stor" };
+  if (!finite(m.feather) || m.feather < 0 || m.feather > MAX_MASK_FEATHER)
+    return { ok: false, error: `Myk kant må være mellom 0 og ${MAX_MASK_FEATHER} px` };
+  return {
+    ok: true,
+    value: {
+      kind: m.kind,
+      x: m.x,
+      y: m.y,
+      width: m.width,
+      height: m.height,
+      feather: m.feather,
+      invert,
     },
   };
 }

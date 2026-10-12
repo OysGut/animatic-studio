@@ -42,20 +42,20 @@ Relaterte dokumenter: `DOMAIN_MODEL.md`, `DATA_RELATIONSHIPS.md`, `INVARIANTS.md
 | Mandatmodul | Kode |
 |---|---|
 | Project Core | `core/model`, `core/commands`, `core/invariants`, RPC-er |
-| Screenplay Engine | `core/screenplay` (parser, struktur, paginering, nummerering, diff), `engine/import` (PDF/DOCX), `core/export/screenplay` |
-| Timeline & Assembly Engine | `core/timeline` (tidsmodell, rekkefølge → tidskoder), `app/timeline` |
-| Resource Library | `core/resources`, tabeller `resources`, `resource_versions` |
-| Continuity Engine | `core/continuity` (tilstand fra fortellingstid, forslag), `core/impact` |
+| Screenplay Engine | `core/screenplay` (parser, struktur, paginering, nummerering, versjoner, filter, varighetsestimat), `engine/import` (PDF/DOCX), `engine/export/screenplay-pdf.ts` og `screenplay-docx.ts`, `app/script` |
+| Timeline & Assembly Engine | `core/time.ts` (tidsmodell), `core/views.ts` (rekkefølge), `core/assembly` (filmklipp, deler, avvik, produksjonsstatus), `app/assembly` |
+| Resource Library | `core/library` (ressurser, varianter, versjoner, bruk, konsekvenser, filnavn, zip), `core/cutout`, tabeller `assets`, `asset_variants`, `asset_versions`, `app/library` |
+| Continuity Engine | `core/continuity` (tilstand fra fortellingstid, forslag, analyse), `core/library/impact.ts`, `app/continuity` |
 | 2D Composition Engine | `core/composition` (renderFrame, keyframes, easing), `engine/compositor` |
-| Camera & Motion Engine | `core/camera` (Bézier-baner, shots), `app/scene-editor/camera` |
+| Camera & Motion Engine | `core/composition` (kamera, `path.ts` Bézier-baner, `camera-handoff.ts`, `animate.ts`), `app/scene-editor/CameraPanel.tsx` og `camera-overlay.ts` |
 | Audio Engine | `core/audio`, `engine/audio` |
-| Prompt Orchestration Engine | `core/prompt` (strukturert prompt, ordrett dialog), server for sending |
-| Provider Adapters | `adapters/providers/*` (server) |
-| Quality & Cost Engine | `core/cost` (estimat, budsjett), backend-port for godkjenning |
+| Prompt Orchestration Engine | `core/generation` (`prompt.ts`, `image-prompt.ts`, `scene-prompt.ts`, `style.ts`, `prompt-writer.ts`), serverfunksjoner i `adapters/ai` |
+| Provider Adapters | `adapters/ai` (Lovable AI Gateway: `gateway.ts`, `generate-image.functions.ts`, `write-prompt.functions.ts`) |
+| Quality & Cost Engine | `core/generation/cost.ts` (jobber, budsjett, forbruk), sperrene i `adapters/ai`, `app/ai` |
 | Render Queue | tabell `generation_jobs`/`render_jobs`, worker |
-| Version & Dependency Engine | `core/versioning`, `change_log`, `discrepancies` |
-| Localization Engine | `core/l10n` (språkversjoner, koblingsforslag, timing), UI-i18n |
-| Presentation Engine | `core/poster` (layoutmodell), `engine/poster` (rendering/PDF) |
+| Version & Dependency Engine | `core/commands` (kommandoer og inverser), `core/screenplay/versions.ts`, `core/assembly/discrepancy.ts`, `core/production` (spinoffer, tilbakeføring), `change_log` |
+| Localization Engine | `core/translation` (oversettelser, kobling, undertekster), `core/language` (filmspråk, timing, leppesynk) |
+| Presentation Engine | `core/presentation` (plakatmodell, relasjoner, layout, kontroller), `engine/export/poster-pdf.ts` og `poster-canvas.ts`, `app/release` |
 | Export Engine | Film, manus, lyd, plakater og prosjektbackup. `engine/export` (animatic-video, manus PDF/DOCX, zip), `core/backup` + `app/projects/backup.ts` (sikkerhetskopi: ZIP med `animatic-backup.json`, mediefiler og LES-MEG; format i `BACKUP_FORMAT.md`), gjenoppretting via `adapters/storage/backup.functions.ts`. Ingen andre moduler lager eksportfiler |
 | Security & Storage | RLS, Storage-policyer, hemmeligheter, `adapters/storage` |
 | Collaboration & Access (DEC-0003) | `project_members`, `project_invitations`, Realtime presence |

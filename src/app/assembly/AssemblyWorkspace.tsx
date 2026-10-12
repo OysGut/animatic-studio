@@ -30,6 +30,7 @@ import {
   Contrast,
   ExternalLink,
   Languages,
+  ListOrdered,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -85,6 +86,8 @@ import { IconButton, iconButton, isTypingTarget } from "@/app/scene-editor/Timel
 import { useFilmImages } from "./film-images";
 import { FilmViewer } from "./FilmViewer";
 import { GenerateSceneDialog } from "./GenerateSceneDialog";
+import { BatchVideoDialog } from "./BatchVideoDialog";
+import { AiDialogueDialog } from "./AiDialogueDialog";
 import { FilmTimeline, formatSeconds } from "./FilmTimeline";
 import { ClipPanel } from "./ClipPanel";
 import { FilmPopout } from "./FilmPopout";
@@ -245,6 +248,10 @@ function Assembly({
   const [longFilm, setLongFilm] = useState(false);
   /** «Generer scene» (DEC-0053). */
   const [generateOpen, setGenerateOpen] = useState(false);
+  /** Video for flere scener (DEC-0070). */
+  const [batchOpen, setBatchOpen] = useState(false);
+  /** Dialog med AI-stemmer (DEC-0071). */
+  const [dialogueOpen, setDialogueOpen] = useState(false);
   useEffect(() => {
     if (selectedAudioId && (!selectedAudio || selectedAudio.removed)) setSelectedAudioId(null);
   }, [selectedAudioId, selectedAudio]);
@@ -915,6 +922,19 @@ function Assembly({
               <span className="hidden 2xl:inline">Legg til lyd</span>
             </Button>
           ) : null}
+          {editable ? (
+            <Button
+              aria-label="Video for flere scener"
+              size="sm"
+              variant="ghost"
+              onClick={() => setBatchOpen(true)}
+              disabled={clips.length === 0}
+              title="Lag AI-video for flere scener på én gang (legges i kø, kostnaden vises først)"
+            >
+              <ListOrdered />
+              <span className="hidden 2xl:inline">Video for flere scener</span>
+            </Button>
+          ) : null}
           <Button
             size="sm"
             variant="secondary"
@@ -1032,6 +1052,7 @@ function Assembly({
               onCreateComposition={() => selected && createComposition(selected.occurrenceId)}
               onDeactivate={() => selected && deactivate(selected.occurrenceId)}
               onGenerateScene={() => setGenerateOpen(true)}
+              onAiDialogue={editable ? () => setDialogueOpen(true) : undefined}
               run={cmds.run}
               frame={playback.frame}
               onSeek={playback.setFrame}
@@ -1243,6 +1264,24 @@ function Assembly({
         url={profileVersion ? (audioUrls.data?.[profileVersion.mediaPath] ?? null) : null}
         onChange={(label, patch) => profileClip && patchAudioClip(profileClip.id, label, patch)}
       />
+      {editable ? (
+        <AiDialogueDialog
+          open={dialogueOpen}
+          onOpenChange={setDialogueOpen}
+          state={state}
+          clip={selected}
+          cmds={cmds}
+        />
+      ) : null}
+      {editable ? (
+        <BatchVideoDialog
+          open={batchOpen}
+          onOpenChange={setBatchOpen}
+          state={state}
+          productionId={productionId}
+          cmds={cmds}
+        />
+      ) : null}
       <GenerateSceneDialog
         open={generateOpen}
         onOpenChange={setGenerateOpen}

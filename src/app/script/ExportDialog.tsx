@@ -12,6 +12,7 @@ import {
   formatHeading,
   placeNotes,
   paginate,
+  screenplayFountain,
   type NumberingMethod,
   type ProjectState,
 } from "@/core";
@@ -39,7 +40,7 @@ interface Props {
   readonly language?: string;
 }
 
-type Format = "pdf" | "docx";
+type Format = "pdf" | "docx" | "fountain";
 
 function safeName(s: string) {
   return s.replace(/[\\/:*?"<>|]+/g, "-").trim();
@@ -137,6 +138,15 @@ export function ExportDialog({
           ...(notes ? { notes: placeNotes(pages, texts, notes) } : {}),
         });
         setReady(prepareDownload(bytes, `${base}.pdf`, "application/pdf"));
+      } else if (format === "fountain") {
+        const text = screenplayFountain(input, { titlePage, ...(notes ? { notes } : {}) });
+        setReady(
+          prepareDownload(
+            new TextEncoder().encode(text),
+            `${base}.fountain`,
+            "text/plain;charset=utf-8",
+          ),
+        );
       } else {
         const bytes = screenplayDocx(input, {
           title: state.project.name,
@@ -201,6 +211,21 @@ export function ExportDialog({
                 Word (.docx)
                 <span className="block text-xs text-text-tertiary">
                   Redigerbar; Word bryter sidene selv
+                </span>
+              </span>
+            </label>
+            <label className={radio}>
+              <input
+                type="radio"
+                name="fmt"
+                checked={format === "fountain"}
+                onChange={() => setFormat("fountain")}
+                className="mt-1"
+              />
+              <span>
+                Fountain (.fountain)
+                <span className="block text-xs text-text-tertiary">
+                  Ren tekst for andre manusprogrammer; de bryter sidene selv
                 </span>
               </span>
             </label>
@@ -303,8 +328,12 @@ export function ExportDialog({
               disabled={noteCount === 0 || language !== "nb"}
             />
             Ta med notater ({noteCount}) –{" "}
-            {format === "pdf" ? "som PDF-merknader" : "som Word-kommentarer"}, med navn og
-            tidspunkt. De gjenopprettes hvis filen importeres igjen.
+            {format === "pdf"
+              ? "som PDF-merknader, med navn og tidspunkt"
+              : format === "docx"
+                ? "som Word-kommentarer, med navn og tidspunkt"
+                : "som Fountain-notater [[…]], med navn og dato"}
+            . De gjenopprettes hvis filen importeres igjen.
           </label>
           {format === "pdf" && lockedPages ? (
             <p className="text-text-tertiary">
@@ -413,7 +442,7 @@ export function ExportDialog({
             disabled={busy || preview.length === 0 || (method === "historical" && !historical)}
           >
             <Download />
-            Eksporter {format === "pdf" ? "PDF" : "Word"}
+            Eksporter {format === "pdf" ? "PDF" : format === "docx" ? "Word" : "Fountain"}
           </Button>
         </DialogFooter>
       </DialogContent>

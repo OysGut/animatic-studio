@@ -1,6 +1,6 @@
 # Pågående arbeid
 
-Oppdatert: 2026-10-11 (økt 6, DEC-0061–0063)
+Oppdatert: 2026-10-12 (økt 6, DEC-0061–0070)
 
 ## Nå: DEC-0061 – M8 del 1: plakater, karakterkart og relasjoner – ferdig, venter på Mars
 - [x] «Utgivelse»: kinopitch-plakat og karakter- og universkart per produksjon, 70 × 100 cm m.fl., norsk og engelsk (REQ-0384–0389, REQ-0403/0404)
@@ -10,6 +10,53 @@ Oppdatert: 2026-10-11 (økt 6, DEC-0061–0063)
 - [x] Migrasjon 0019; Vitest og DB-tester grønne, skjermbilder 60–66, kodegjennomgang (23 funn: rettet, resten KI-128–133)
 - [ ] **Mars:** godkjenn kostnad for stilharmonisering med AI (REQ-0137–0145, REQ-0400–0402) – eller vent
 - [ ] **Mars:** Prøv: Utgivelse → «Ny» → «Karakter- og universkart» → «Relasjoner» → godkjenn → «Eksporter» → Trykk-PDF
+
+## Nå: DEC-0071 – ti store bolker til – ferdig, venter på Mars
+- Mars: «I møte, kan du ta de neste 10 store bolkene?» (Teknisk anbefaling; ingen nye produktkrav).
+- Ferdig: sammenheng i køen, myke overganger mellom deler, kvalitetssjekkliste, betegnelser i bestemte linjer, stilprofiler per bruk, masker og blanding, eksporttekst, manusdekning, dialog med AI-stemmer, kravgjennomgang (35 krav). Migrasjon 0026. Kodegjennomgang: 9 av 10 funn rettet.
+- Akseptanse: overgangen gjør ikke scenen kortere og når aldri forbi nabodelen (enhetstest); en kjede venter aldri for alltid (enhetstest); sjekklisten er alltid merket rådgivende (enhetstest); skjermbilder 30b, 02f, 04b, 80c, 80d.
+- [ ] **Mars:** kjør LOVABLE_SYNC (0024–0026, `text/plain` for bøtta `sources`, planlagt kall hvert 5. minutt).
+- [ ] **Mars:** velg navn for REQ-0430 (KI-171); prøv AI-stemmer med én kort replikk (KI-168).
+
+## Før: DEC-0070 – ti store bolker – ferdig, venter på Mars
+- Mars: «fortsett med de neste 10 store tingene!» (Teknisk anbefaling; ingen nye produktkrav).
+- Ferdig: bakgrunnskø, video for flere scener med kø/prioritet/fremdrift, innsatsnivå, modelltilpassede beskrivelser, sammenheng mellom segmenter, kandidater og sammenligning, hybrid sammensetting, oppdatering med AI ved avvik, Fountain, lydkoblinger og -filter. Migrasjon 0025.
+- [ ] **Mars:** kjør LOVABLE_SYNC (0024–0025, `text/plain` for bøtta `sources`, planlagt kall hvert 5. minutt).
+- [ ] **Mars:** prøv «Video for flere scener» med to korte scener og en billig modell; KI-159–165.
+
+## Før: DEC-0069 – egne AI-leverandører (bilde, video, lyd) – ferdig, venter på Mars
+- Mars: «løsningen kan presentere en liste over de mest brukte ai leverandørene … denne nøkkelen må sikres etter alle kunstens regler og det må være mulig å sette et tak på ai kost på overordnet nivå» (Bekreftet av bruker).
+- Ferdig: leverandørliste med veiledning og lenker, kryptert nøkkel, overordnet tak, bilder med valgt leverandør, video per segment i «Generer scene», lyd for lydressurser, migrasjon 0024, kodegjennomgang (10 av 11 funn rettet).
+- Akseptanse: nøkkelen kan ikke leses fra nettleseren (DB-test), taket kontrolleres før og etter (enhetstest), video legges inn som ny versjon og erstatter aldri 2D-scenen (enhetstest), kostnad bekreftes alltid (skjermbilder 02b–02d, 79).
+- [ ] **Mars:** kjør LOVABLE_SYNC (0024); legg helst inn `ANIMATIC_KEY_ENCRYPTION_KEY` før første nøkkel (KI-156).
+- [ ] **Mars:** prøv én leverandør med en liten jobb (KI-153); avgjør om deling av eierens nøkkel skal slås på per prosjekt (KI-157).
+
+## Før: DEC-0068 – nattarbeid runde 6–10 – ferdig
+- Mars: «grønt lys til at du kjører fem runder til før jeg står opp».
+- Ferdig: fortellingstid i manus, utvikling over tid, flere filter, plan ved deling/sammenslåing, rettinger.
+- Gjenstår: Mars kjører 0022–0023 i Lovable og prøver; KI-150–152.
+
+## Før: DEC-0067 – nattarbeid 12.10.2026 – ferdig
+- Mars: «kan du ta fem runder frem til i morgen?» (ingen nye produktkrav; Teknisk anbefaling).
+- Ferdig: AI-bilder som ikke ble lagt inn kan hentes inn; varighet og produksjonsstatus med filter og lenker; planlagt lengde per scene; eieren kan fjerne medlem; kravrevisjon (65 krav).
+- Gjenstår: Mars kjører 0022–0023 i Lovable og prøver; KI-146/147.
+
+## Før: DEC-0066 – AI skriver bildebeskrivelsen og ser filmens bilder – ferdig (ikke prøvd mot ekte gateway)
+- Mars: «Ja også for spinn off. Og ja trenger maksimal god beskrivelse, ja bilder kan sendes og brukes».
+- Ferdig: «Skriv beskrivelsen med AI» (språkmodell, logget, utenfor bildebudsjettet), forbildebilder sendt med (≤ 6), KI-141 avklart, migrasjon 0022.
+- Akseptanse: teksten vises og kan endres før generering; bildene og rollen deres står i beskrivelsen; tester grønne (enhet, database, skjermbilde 75).
+- Gjenstår: Mars prøver i Lovable (KI-143).
+
+## Også nå: DEC-0065 – filmens visuelle stil og AI-beskrivelser med sammenheng – ferdig (uten språkmodell)
+- [x] Stilprofil (migrasjon 0021), «Filmens visuelle stil» med utkast og forhåndsvisning, beskrivelser med FILM/VISUAL STYLE/THIS IMAGE/WHERE IT APPEARS/CONSISTENCY/AVOID, scenen fra sceneeditoren, stilen i video-beskrivelser
+- [x] Enhetstester, DB-test, skjermbilder 73–74
+- [ ] **Mars:** fyll ut filmens visuelle stil (Prosjektoversikt) og se på en beskrivelse i sceneeditoren
+- [ ] **Mars:** ja/nei til språkmodell som skriver beskrivelsen om (kostnad) og til å sende forbildebilder med
+
+## Også nå: DEC-0064 – bilder i fullskjerm, nedlasting med prosjektnavn og opplasting igjen – ferdig
+- [x] REQ-0588; skjermbilder 71–72; enhetstester for navn og erstatning
+- [ ] **Mars:** Prøv: Bibliotek → Maja → dobbeltklikk et bilde → «Last ned» → endre bildet → «Last opp endrede bilder …» → «Erstatt»
+- [ ] **Mars:** svar på spørsmålene om smartere bildebeskrivelser (språkmodell/kostnad, forbildebilder, filmens visuelle bibel)
 
 ## Også nå: DEC-0063 – endre rolle etter invitasjon og «Tilbake til …» – ferdig
 - [x] REQ-0586 (migrasjon 0020, DB-test), REQ-0587 (enhetstest); skjermbilder 69–70

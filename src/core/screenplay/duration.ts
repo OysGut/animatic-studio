@@ -3,7 +3,8 @@
  * Estimatet bygger på dialogmengde og handlingsbeskrivelser med synlige, justerbare antakelser.
  * Det vises på prosjektoversikten, aldri i manusvisningen (REQ-0117).
  */
-import type { ProjectState } from "../model";
+import type { BlockKind, ProjectState } from "../model";
+import type { ScriptSnapshot } from "./versions";
 import { blocksOfVariant, orderedOccurrences } from "../views";
 import { US_LETTER_LAYOUT, wrapText, type Pagination } from "./paginate";
 
@@ -51,6 +52,65 @@ function words(text: string): number {
   return text.split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w)).length;
 }
 
+/** Estimatet for én scene ut fra blokkene (dialogord, handlingslinjer). */
+export function estimateBlocks(
+  blocks: readonly { readonly kind: BlockKind; readonly text: string }[],
+  assumptions: DurationAssumptions = DEFAULT_DURATION_ASSUMPTIONS,
+): { dialogueWords: number; actionLines: number; seconds: number } {
+  const width = US_LETTER_LAYOUT.columns.action.width;
+  let dialogueWords = 0;
+  let actionLines = 0;
+  for (const b of blocks) {
+    if (b.kind === "dialogue") dialogueWords += words(b.text);
+    else if (b.kind === "action" || b.kind === "shot")
+      actionLines += wrapText(b.text.trim(), width).filter((l) => l.trim()).length;
+  }
+  const seconds = Math.max(
+    assumptions.minSceneSeconds,
+    assumptions.headingSeconds +
+      (dialogueWords / Math.max(1, assumptions.dialogueWordsPerMinute)) * 60 +
+      actionLines * assumptions.actionSecondsPerLine,
+  );
+  return { dialogueWords, actionLines, seconds };
+}
+
+/** Et punkt i utviklingen av filmens lengde (mandat 7.4, REQ-0120). */
+export interface DurationHistoryPoint {
+  readonly label: string;
+  readonly at: string;
+  /** Manusestimatet for de aktive scenene i versjonen. */
+  readonly estimatedSeconds: number;
+  /** Forventet lengde: filmen der versjonen hadde en aktiv filmversjon, ellers estimatet. */
+  readonly expectedSeconds: number;
+  readonly scenes: number;
+}
+
+/**
+ * Lengden slik den så ut i en lagret manusversjon (mandat 7.4): estimat fra versjonens tekst, og
+ * forventet lengde der scener som hadde ferdig film i versjonen, teller med filmens lengde.
+ * `filmSeconds` gir lengden på en filmversjon (take) – de er uforanderlige, så dagens tall gjelder.
+ */
+export function snapshotDuration(
+  snap: ScriptSnapshot,
+  label: string,
+  at: string,
+  filmSeconds: (takeId: string) => number | null,
+  assumptions: DurationAssumptions = DEFAULT_DURATION_ASSUMPTIONS,
+): DurationHistoryPoint {
+  let estimated = 0;
+  let expected = 0;
+  let scenes = 0;
+  for (const sc of snap.scenes) {
+    if (!sc.active) continue;
+    scenes++;
+    const est = Math.round(estimateBlocks(sc.blocks, assumptions).seconds);
+    estimated += est;
+    const film = sc.activeTakeId ? filmSeconds(sc.activeTakeId) : null;
+    expected += film ?? est;
+  }
+  return { label, at, estimatedSeconds: estimated, expectedSeconds: expected, scenes };
+}
+
 export function estimateProduction(
   s: ProjectState,
   productionId: string,
@@ -79,20 +139,10 @@ export function estimateProduction(
       });
     }
   }
-  const width = US_LETTER_LAYOUT.columns.action.width;
   const scenes: SceneEstimate[] = orderedOccurrences(s, productionId).map((o) => {
-    let dialogueWords = 0;
-    let actionLines = 0;
-    for (const b of blocksOfVariant(s, o.variantId)) {
-      if (b.kind === "dialogue") dialogueWords += words(b.text);
-      else if (b.kind === "action" || b.kind === "shot")
-        actionLines += wrapText(b.text.trim(), width).filter((l) => l.trim()).length;
-    }
-    const seconds = Math.max(
-      assumptions.minSceneSeconds,
-      assumptions.headingSeconds +
-        (dialogueWords / Math.max(1, assumptions.dialogueWordsPerMinute)) * 60 +
-        actionLines * assumptions.actionSecondsPerLine,
+    const { dialogueWords, actionLines, seconds } = estimateBlocks(
+      blocksOfVariant(s, o.variantId),
+      assumptions,
     );
     // 54 linjer = 1 side = 8/8
     const lines = linesPerOcc.get(o.id) ?? 0;

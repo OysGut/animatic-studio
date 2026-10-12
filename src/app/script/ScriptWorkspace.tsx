@@ -38,7 +38,9 @@ import {
   charactersInProduction,
   filterPages,
   isFilterActive,
-  matchingOccurrences,
+  matchingScenes,
+  productionStatus,
+  estimateProduction,
   alignBlockLines,
   annotationsByVariant,
   movedOccurrences,
@@ -308,9 +310,19 @@ function Workspace({
         })),
     ];
   }, [state, productionId]);
+  // Status per scene bare når filteret trenger den, og ikke på nytt for hvert tastetrykk i søket
+  const needsStatus = !!(filter.assetId || filter.status || filter.discrepancy);
+  const statusRows = useMemo(
+    () =>
+      needsStatus
+        ? productionStatus(state, productionId, estimateProduction(state, productionId)).rows
+        : undefined,
+    [needsStatus, state, productionId],
+  );
   const matching = useMemo(
-    () => (isFilterActive(filter) ? matchingOccurrences(viewState, productionId, filter) : null),
-    [viewState, productionId, filter],
+    () =>
+      isFilterActive(filter) ? matchingScenes(viewState, productionId, filter, statusRows) : null,
+    [viewState, productionId, filter, statusRows],
   );
   const showOnlySelected = onlySelected && selection.occurrenceId !== null;
   const visibleOcc = useMemo<ReadonlySet<string> | null>(

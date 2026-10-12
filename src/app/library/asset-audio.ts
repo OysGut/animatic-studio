@@ -37,7 +37,7 @@ export function checkAudioFile(file: File): string | null {
 }
 
 /** Lengden på lydfilen i millisekunder (dekodes i nettleseren). */
-async function audioDuration(bytes: ArrayBuffer): Promise<number | null> {
+export async function audioDuration(bytes: ArrayBuffer): Promise<number | null> {
   try {
     const ctx = new OfflineAudioContext(1, 1, 48000);
     const buf = await ctx.decodeAudioData(bytes.slice(0));

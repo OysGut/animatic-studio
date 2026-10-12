@@ -38,6 +38,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { KIND_LABEL } from "./script-helpers";
 import { NotesPanel } from "./NotesPanel";
+import { StoryTimeSection } from "./StoryTimeSection";
 import type { Selection } from "./ScriptPageView";
 
 const EDITABLE_KINDS: BlockKind[] = [
@@ -657,6 +658,15 @@ function ScenePanel({
           Scenenummeret ({occ.productionNumber ?? "ingen"}) er produksjonens nummer og endres ikke
           når scener flyttes. Ny nummerering velges ved eksport.
         </p>
+      </Section>
+      <Section title="Fortellingstid">
+        <StoryTimeSection
+          state={state}
+          sceneId={occ.sceneId}
+          productionId={productionId}
+          editable={editable && !merged}
+          run={run}
+        />
       </Section>
       <Section title="Notater i scenen">
         <NotesPanel

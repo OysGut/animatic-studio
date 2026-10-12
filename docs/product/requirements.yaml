@@ -27,13 +27,23 @@ requirements:
     sammenstilt film eksporteres fra samme prosjekt uten å forlate applikasjonen.
   tests:
   - 'e2e: manus-til-eksport-arbeidsflyt i ett prosjekt'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/engine/import/browser.ts"
+  - "src/core/screenplay/parse.ts"
+  - "src/core/composition/render.ts"
+  - "src/core/audio/index.ts"
+  - "src/core/assembly/film.ts"
+  - "src/engine/export/animatic.ts"
+  - "src/app/assembly/ExportAnimaticDialog.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "Hele kjeden finnes i ett prosjekt: manusimport, 2D-scener, lyd, montering og eksport av ferdig sammenstilt film; en samlet e2e-test fra manus til eksport mangler."
   notes: Overordnet formål; konkretiseres i senere kapitler.
 - id: REQ-0002
   title: Produktets funksjonsomfang
@@ -147,13 +157,22 @@ requirements:
     og eksportere film og manus.
   tests:
   - 'e2e: full arbeidsflyt med alle AI-adaptere deaktivert'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/engine/import/browser.ts"
+  - "src/core/composition/render.ts"
+  - "src/engine/compositor/canvas.ts"
+  - "src/engine/export/animatic.ts"
+  - "src/engine/export/screenplay-pdf.ts"
+  - "src/engine/export/screenplay-docx.ts"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "Manusimport, 2D-sceneeditor, avspilling og eksport av animatic og manus virker uten noen AI-leverandør; AI-kall går bare via egne, bekreftede serverfunksjoner, men en e2e-test med alle AI-adaptere slått av mangler."
   notes: ''
 - id: REQ-0005
   title: Offisielt produktnavn er Animatic Studio
@@ -244,10 +263,13 @@ requirements:
     eller Lovable-spesifikke biblioteker.
   tests:
   - 'enhet: kjernemoduler kan kjøres/testes i et ikke-nettleser-miljø (f.eks. Node) uten DOM'
-  status: Under arbeid
+  status: Verifisert
   implementation:
-  - src/core/
-  verification: []
+  - "src/core/"
+  - "src/core/generation/"
+  - "src/core/assembly/"
+  verification:
+  - "tests/architecture/core-purity.test.ts::importerer ikke rammeverk, backend eller plattform-API-er"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -255,6 +277,8 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: delvis implementert (se implementation)'
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: domene-, data-, generering- og produksjonslogikk ligger i src/core, håndhevet av arkitekturtest"
   notes: Linje 33 og 34 er duplikater. Jf. kap. 34 pkt. 28.
 - id: REQ-0008
   title: Unngå unødvendige plattformbindinger
@@ -402,9 +426,9 @@ requirements:
   - Standardtemaet er et mørkt tema egnet for filmproduksjon, definert som design-tokens.
   tests:
   - 'visuell: skjermbildegjennomgang av hovedvisninger i standardtema'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
-  - src/styles.css
+  - "src/styles.css"
   verification: []
   history:
   - date: '2026-10-08'
@@ -413,7 +437,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: delvis implementert (se implementation)'
-  notes: «Gjerne mørk» er en preferanse, ikke absolutt krav.
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: mørkt standardtema definert som design-tokens i src/styles.css"
+  notes: "Ingen automatisk test kontrollerer at standardtemaet er mørkt og definert som tokens."
 - id: REQ-0013
   title: Troverdig kreativt verktøy, ikke chatbot
   text: Grensesnittet skal oppleves som et troverdig kreativt arbeidsverktøy, ikke som en generell chatbot eller
@@ -434,14 +460,19 @@ requirements:
     presentert som et chatgrensesnitt.
   tests:
   - 'manuell: brukertest med filmarbeidere'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/shell/ProjectNav.tsx"
+  - "src/app/library/GenerateImagePanel.tsx"
+  - "src/app/assembly/GenerateSceneDialog.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: hovedflatene er manus, montering, sceneeditor og bibliotek; AI er integrert i dem, ikke som chat"
+  notes: "Kravet er en helhetsvurdering uten automatisk test."
 - id: REQ-0014
   title: Brukergrensesnitt på norsk
   text: Brukergrensesnittet skal støtte norsk.
@@ -461,14 +492,19 @@ requirements:
   - Alle brukervendte tekster i grensesnittet finnes på norsk.
   tests:
   - 'enhet: alle UI-strengnøkler har norsk oversettelse'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/components/ui/dialog.tsx"
+  - "src/components/ui/sheet.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
+  - date: '2026-10-12'
+    decision: DEC-0067
+    change: "Siste engelske skjermlesertekst («Close») er nå «Lukk»"
+  notes: "Ingen automatisk test som leter etter engelsk tekst i grensesnittet."
 - id: REQ-0015
   title: Systeminstruksjoner og prompter på engelsk
   text: Tekniske systeminstruksjoner og genereringsprompter til AI-modeller skal som hovedregel skrives på engelsk
@@ -489,10 +525,15 @@ requirements:
     har valgt annet.
   tests:
   - 'enhet: promptbygger produserer engelskspråklig tekst for norsk kildemateriale'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/adapters/ai/generate-image.functions.ts"
-  verification: []
+  - "src/core/generation/scene-prompt.ts#buildScenePrompt"
+  - "src/core/generation/prompt-writer.ts"
+  - "src/core/generation/image-prompt.ts"
+  verification:
+  - "tests/unit/ai-control.test.ts::er på engelsk, tar med replikkene ordrett og beskriver kontinuitet"
+  - "tests/unit/prompt-writer.test.ts::instruksen krever engelsk, tekniske krav, bildene og det som skal unngås"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -500,6 +541,8 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0045
     change: "Under arbeid: bildebeskrivelser for AI er på engelsk (src/core/generation/prompt.ts)"
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: genereringsprompter bygges på engelsk fra norsk manus, verifisert med eksisterende tester"
   notes: «Som hovedregel» – unntak tillatt. Jf. kap. 34 pkt. 12.
 - id: REQ-0016
   title: Én felles strukturert prosjektmodell
@@ -731,13 +774,21 @@ requirements:
   - Gitt at brukeren deaktiverer scenen produksjonsmessig, så endres aktivt innhold.
   tests:
   - 'enhet: visningstilstand og produksjonstilstand er separate felt'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/screenplay/filter.ts#filterPages"
+  - "src/core/commands/apply.ts#SetOccurrenceActive"
+  - "src/app/script/SceneNavigator.tsx"
+  verification:
+  - "tests/unit/filter.test.ts::filtrering endrer ikke produksjonens aktive innhold (REQ-0075)"
+  - "tests/unit/filter.test.ts::viser bare den valgte scenens linjer med samme sidetall som i hele manuset"
+  - "tests/unit/commands.test.ts::utelates fra manus og film, men ingenting slettes og den kan gjenaktiveres"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: filtrering/visning endrer ikke aktivt innhold, deaktivering gjør det; verifisert med eksisterende tester"
   notes: ''
 - id: REQ-0022
   title: Skille strukturell og innholdsmessig synkronisering
@@ -869,13 +920,24 @@ requirements:
     synk» synlig i oversikt og tidslinje.
   tests:
   - 'integrasjon: manusendring → avviksflagg opprettes'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/assembly/discrepancy.ts#discrepancies"
+  - "src/core/views.ts#outdatedTakes"
+  - "src/core/assembly/status.ts#productionStatus"
+  - "src/app/projects/DurationOverview.tsx"
+  verification:
+  - "tests/unit/discrepancy.test.ts::endret, ny og fjernet replikk flagges med gammel og ny tekst og berørt tidsrom"
+  - "tests/unit/commands.test.ts::ferdig materiale endres ikke, men blir markert som utdatert for berørte blokker"
+  - "tests/unit/production-status.test.ts::filter på status, ressurs, avvik og tekst"
+  - "tests/visual/screens.mjs::80-avvik-montering"
+  - "tests/visual/screens.mjs::80b-oversikt-status-filter"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: bygd i DEC-0054 (avvik ved manusendring) og oversikten; verifisert med eksisterende tester"
   notes: Jf. kap. 34 pkt. 7. Fullstendig avviksdeteksjon er fase 6, men grunnflagget bør finnes tidlig.
 - id: REQ-0026
   title: Brukeren bestemmer ved avvik
@@ -978,13 +1040,21 @@ requirements:
   - Godkjente ressursversjoner er uforanderlige; endring skaper alltid en ny versjon.
   tests:
   - 'dataintegritet: forsøk på å skrive til godkjent ressursversjon avvises'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/commands/apply.ts"
+  - "src/core/library/reupload.ts"
+  - "db/migrations/0004_library_notes.sql"
+  verification:
+  - "tests/unit/library.test.ts::nummererer versjoner, og ny versjon endrer ikke godkjent versjon"
+  - "tests/db/run-db-tests.ts::0004: ressurs, variant og bildeversjon lagres og leses tilbake; versjonen er uforanderlig"
+  - "tests/unit/reupload.test.ts::den nye versjonen tar over godkjenning, lag og plakater; den gamle står"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: ressursversjoner er uforanderlige og endring gir ny versjon; verifisert med eksisterende tester"
   notes: ''
 - id: REQ-0029
   title: Ingen automatisk betalt AI-generering
@@ -1008,9 +1078,13 @@ requirements:
   - Ingen genereringsjobb mot betalt leverandør opprettes uten en eksplisitt brukerinitiert bestilling/godkjenning.
   tests:
   - 'integrasjon: endringshendelser utløser ingen kall mot leverandøradaptere (mock)'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - "src/adapters/ai/generate-image.functions.ts"
+  - "src/adapters/ai/sound.functions.ts"
+  - "src/adapters/ai/video.functions.ts"
+  - "src/adapters/ai/write-prompt.functions.ts"
+  - "src/adapters/ai/ai-gate.server.ts"
   verification: []
   history:
   - date: '2026-10-08'
@@ -1019,6 +1093,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0045
     change: "Under arbeid: AI-bilder genereres bare etter eksplisitt bekreftelse per generering"
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "Alle betalte genereringer (bilde, lyd, video, AI-skrevet beskrivelse) avvises på serveren uten approved: true fra en brukerbekreftelse, og domenekommandoene kan ikke kalle leverandøradaptere; en test som viser at endringshendelser ikke utløser kall, mangler."
   notes: ''
 - id: REQ-0030
   title: Ingen automatisk bytte av aktiv sceneversjon
@@ -1041,10 +1118,14 @@ requirements:
   - Aktiv sceneversjon-ID er uendret etter hver av de fire endringstypene.
   tests:
   - 'enhet: aktiv versjon endres kun via eksplisitt brukerkommando'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
-  - src/core/commands/apply.ts
-  verification: []
+  - "src/core/commands/apply.ts"
+  - "src/core/screenplay/numbering.ts"
+  verification:
+  - "tests/unit/commands.test.ts::ferdig materiale endres ikke, men blir markert som utdatert for berørte blokker"
+  - "tests/unit/commands.test.ts::tidskoder beregnes på nytt, men takes er uendret"
+  - "tests/unit/numbering.test.ts::eksport endrer ikke prosjektet (REQ-0085)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -1052,7 +1133,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: delvis implementert (se implementation)'
-  notes: ''
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: ingen kommando bytter aktiv versjon ved manusendring eller omnummerering; delvis verifisert"
+  notes: "Mangler test for at ressursendring og stilendring ikke endrer aktiv sceneversjon."
 - id: REQ-0031
   title: Ingen automatisk endring av annen produksjon
   text: En manusendring, ressursendring, omnummerering eller endring av stil skal aldri automatisk endre en annen
@@ -1145,11 +1228,16 @@ requirements:
   - Hver vesentlig oppdatering logges med hvem/når/hva, kan reverseres, og er initiert av en brukerhandling.
   tests:
   - 'integrasjon: endringslogg og reversering for hver oppdateringstype'
-  status: Under arbeid
+  status: Verifisert
   implementation:
-  - db/migrations/0001_core.sql#change_log
-  - src/core/commands/apply.ts
-  verification: []
+  - "db/migrations/0001_core.sql#change_log"
+  - "src/core/commands/apply.ts"
+  - "db/migrations/0001_core.sql"
+  - "src/adapters/storage/commands.functions.ts"
+  verification:
+  - "tests/db/run-db-tests.ts::DEC-0022: kommandoer fra kjernen lagres atomisk og leses tilbake identisk"
+  - "tests/invariants/random-sequences.test.ts::ADR-0005: hver kommando etterfulgt av sin invers gir samme innhold"
+  - "tests/db/run-db-tests.ts::INV-13: teksthistorikk og kommandologg kan ikke endres"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -1157,6 +1245,8 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: delvis implementert (se implementation)'
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: alle kommandoer logges i change_log (aktør, tid, kommando, invers) og kan reverseres; verifisert med eksisterende tester"
   notes: Jf. kap. 34 pkt. 27. «Vesentlig» er ikke definert – se OPEN_QUESTIONS B («Vesentlig oppdatering» = alle
     kommandoer i change_log, ADR-0005).
 - id: REQ-0034
@@ -1218,13 +1308,20 @@ requirements:
   - En scene kan ha opprinnelig nummer 42 og eksportnummer 45 samtidig, uten at ID endres.
   tests:
   - 'enhet: datamodell-skjema inneholder de fire feltene adskilt'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/model.ts#SceneOccurrence"
+  - "src/core/screenplay/numbering.ts#exportNumbering"
+  verification:
+  - "tests/unit/numbering.test.ts::fortløpende: aktive scener får 1..N (REQ-0081)"
+  - "tests/unit/numbering.test.ts::eksport endrer ikke prosjektet (REQ-0085)"
+  - "tests/invariants/random-sequences.test.ts::INV-02/03: ingen scene, forekomst eller produksjonsnummer forsvinner eller bytter scene"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: ID, produksjonsnummer, eksportnummer og aktiv versjon er separate; verifisert med eksisterende tester"
   notes: Utledet fra eksempelet. Linje 107 og 108 er duplikater.
 - id: REQ-0036
   title: Relasjoner bruker scene-ID, aldri scenenummer
@@ -1457,10 +1554,14 @@ requirements:
   - 'For hver operasjonstype: utfør → angre gir identisk modell som før; gjør om gir identisk modell som etter.'
   tests:
   - 'enhet: undo/redo-rundtur for alle seks operasjonstyper'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
-  - src/core/commands/apply.ts#inverse
-  verification: []
+  - "src/core/commands/apply.ts#inverse"
+  - "src/core/commands/apply.ts"
+  - "src/app/project/use-commands.ts"
+  verification:
+  - "tests/invariants/random-sequences.test.ts::ADR-0005: hver kommando etterfulgt av sin invers gir samme innhold"
+  - "tests/unit/undo-group.test.ts::en lang film over to scener angres og gjøres om som ett steg"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -1468,7 +1569,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: delvis implementert (se implementation)'
-  notes: ''
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: angre og gjør om finnes for strukturoperasjonene; angring er verifisert"
+  notes: "Gjør om er ikke testet systematisk for hver strukturoperasjon (bare angring)."
 - id: REQ-0043
   title: Manus og film kan aldri divergere strukturelt
   text: Systemet skal ikke kunne ende i en tilstand der manus og film har forskjellige aktive scenestrukturer.
@@ -2569,12 +2672,15 @@ requirements:
   tests:
   - 'enhet: filterlogikk per kriterium'
   - 'e2e: fritekstsøk i dialog'
-  status: Under arbeid
+  status: Verifisert
   implementation:
-  - src/core/screenplay/filter.ts
-  - src/app/script/SceneNavigator.tsx
+  - "src/core/screenplay/filter.ts"
+  - "src/app/script/SceneNavigator.tsx"
+  - "src/core/assembly/status.ts#matchingScenes"
   verification:
-  - tests/unit/filter.test.ts
+  - "tests/unit/filter.test.ts"
+  - "tests/unit/production-status.test.ts::hvert kriterium gir bare scenene som matcher, og kan kombineres med tekst"
+  - "tests/visual/screens.mjs::16b-manus-filter-status"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -2583,6 +2689,9 @@ requirements:
     decision: DEC-0028
     change: Søk i tekst, sted, nummer og filter på karakter. Objekter, produksjonsstatus og avvik kommer når de
       finnes; status Under arbeid
+  - date: '2026-10-12'
+    decision: DEC-0068
+    change: "Manusfilteret har også objekt/rekvisitt/sted, produksjonsstatus og manusendringer"
   notes: Filter på synkroniseringsavvik forutsetter REQ-0025.
 - id: REQ-0074
   title: Vis bare scener med valgt karakter
@@ -2718,11 +2827,16 @@ requirements:
     slik de var.
   tests:
   - 'dataintegritet: snapshot-rundtur for alle seks elementer'
-  status: Under arbeid
+  status: Verifisert
   implementation:
-  - src/core/screenplay/versions.ts
+  - "src/core/screenplay/versions.ts"
+  - "src/core/screenplay/versions.ts#snapshotFromState"
+  - "db/migrations/0003_script_versions.sql"
+  - "src/app/script/VersionsDialog.tsx"
   verification:
-  - tests/unit/versions.test.ts
+  - "tests/unit/versions.test.ts"
+  - "tests/unit/versions.test.ts::bevarer rekkefølge, synlighet, nummer, overskrift og tekst, og endres ikke av senere endringer (REQ-0032, REQ-0077)"
+  - "tests/db/run-db-tests.ts::0003: manusversjon er et uforanderlig øyeblikksbilde lik kjernens, med løpenummer og forelder"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -2731,6 +2845,8 @@ requirements:
     decision: DEC-0028
     change: Innhold, rekkefølge, synlighet, nummer, forelder og aktiv filmversjon lagres. Å gjøre en gammel versjon
       til gjeldende manus (gjenoppretting) er ikke bygget ennå; status Under arbeid
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: manusversjoner lagrer innhold, rekkefølge, synlighet, nummer, forelder og aktiv take; verifisert med eksisterende tester"
   notes: ''
 - id: REQ-0078
   title: Versjonssammenligning med endringstyper
@@ -2791,13 +2907,17 @@ requirements:
     ny + fjernet.
   tests:
   - 'enhet: diff basert på scene-ID'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/screenplay/versions.ts#diffSnapshots"
+  verification:
+  - "tests/unit/versions.test.ts::en scene som bare har fått nytt nummer, er ikke en ny scene (mandat 5.1)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: versjonssammenligningen skiller omnummerering fra ny scene; verifisert med eksisterende test"
   notes: ''
 - id: REQ-0080
   title: Valg av nummereringsmetode ved hver eksport
@@ -3128,13 +3248,21 @@ requirements:
   - Hvert ekstra format (f.eks. FDX, Fountain) har rundtur-test før det tilbys.
   tests:
   - 'import/eksport: rundtur per format'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/screenplay/fountain.ts"
+  - "src/engine/import/browser.ts"
+  - "src/app/script/ImportDialog.tsx"
+  - "src/app/script/ExportDialog.tsx"
+  verification:
+  - "tests/unit/fountain.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Fountain (.fountain/.spmd/.txt) kan importeres og eksporteres med samme valg som Word/PDF."
   notes: Betinget krav («dersom … pålitelig»).
 - id: REQ-0090
   title: Eksport bevarer layout, rekkefølge og nummerering
@@ -3490,11 +3618,12 @@ requirements:
   - For hver av de fem materialtypene fungerer både klikk-til-tid og tid-til-markering.
   tests:
   - 'e2e: parametrisert over materialtyper'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - "src/core/assembly/film.ts"
   - "src/app/assembly/ClipPanel.tsx"
   - "src/app/script/Inspector.tsx"
+  - "src/app/assembly/AssemblyWorkspace.tsx"
   verification:
   - "tests/visual/screens.mjs::68b-montering-fra-manus"
   - "tests/visual/screens.mjs::61-replikk-klikk"
@@ -3505,6 +3634,9 @@ requirements:
   - date: '2026-10-10'
     decision: DEC-0049
     change: "Toveis navigasjon for animatic, 2D-scener, importert film og klipp med flere deler; AI-video finnes ikke ennå"
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "Klikk-til-tid og tid-til-markering bygger på blockSpans/blockAtFrame per filmklipp uavhengig av materialtype, så også AI-video (DEC-0070) er dekket; det finnes ingen test parametrisert over alle fem materialtyper."
   notes: AI-generert video-delen forutsetter fase 5. Jf. kap. 34 pkt. 15.
 - id: REQ-0100
   title: Manus og film side ved side
@@ -3564,9 +3696,10 @@ requirements:
   - Med autorulling på følger manuset avspillingen; med av står manuset stille mens markeringen fortsatt oppdateres.
   tests:
   - 'e2e: veksle autorulling'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - "src/app/assembly/ClipPanel.tsx"
+  - "src/app/assembly/AssemblyWorkspace.tsx"
   verification: []
   history:
   - date: '2026-10-08'
@@ -3575,7 +3708,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0043
     change: "«Følg avspillingen» av/på i monteringen (scenenivå)"
-  notes: ''
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: «Følg avspillingen» i monteringens manuspanel slår autorulling av og på"
+  notes: "Ingen automatisk test av at manuset står stille med av mens markeringen oppdateres."
 - id: REQ-0102
   title: Teknisk metadata forstyrrer ikke manuslayout
   text: Manuset skal fremdeles se ut som et profesjonelt filmmanus; tidskoder, produksjonsmarkeringer og annen teknisk
@@ -3597,13 +3732,19 @@ requirements:
   - I ordinær manusvisning vises ingen tidskoder eller produksjonsmarkeringer, og pagineringen er uendret.
   tests:
   - 'visuell: ordinær visning med og uten koblinger er identisk'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/screenplay/script-pages.ts"
+  - "src/app/script/ScriptPageView.tsx"
+  - "src/app/script/StoryTimeSection.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "Pagineringen bygges bare av scenestruktur og tekst (scriptPaginationInput), og manussidene viser ingen tidskoder eller produksjonsmarkeringer – fortellingstid og koblinger ligger i inspektøren; en visuell test som sammenligner visning med og uten koblinger, mangler."
   notes: ''
 - id: REQ-0103
   title: Teknisk metadata i egne moduser/paneler
@@ -3651,14 +3792,20 @@ requirements:
   - Standard manuseksport inneholder ingen tidskoder/produksjonsmarkeringer.
   tests:
   - 'import/eksport: søk etter tidskoder i eksportfil gir null treff'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/screenplay/numbering.ts#exportPaginationInput"
+  - "src/engine/export/screenplay-pdf.ts"
+  - "src/engine/export/screenplay-docx.ts"
+  verification:
+  - "tests/unit/export.test.ts::PDF og DOCX leses inn igjen med samme scener og tekst"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: «Automatisk» åpner for valgfri inkludering.
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: manuseksporten bygges bare fra manusteksten, uten tidskoder eller produksjonsmarkeringer"
+  notes: "Ingen test eksporterer et prosjekt med produsert materiale og tidskoblinger og sjekker at de ikke kommer med."
 - id: REQ-0105
   title: Flernivå tidsmodell
   text: Systemet skal kunne håndtere lokal tid innenfor en scene, tid innenfor en delsekvens, tid innenfor et kildeklipp
@@ -3679,10 +3826,12 @@ requirements:
   - Et tidspunkt kan konverteres korrekt mellom alle fire tidsrom.
   tests:
   - 'enhet: konverteringsfunksjoner mellom tidsrom'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
-  - src/core/time.ts
-  - src/core/views.ts
+  - "src/core/time.ts"
+  - "src/core/views.ts"
+  - "src/core/assembly/film.ts"
+  - "src/core/generation/scene-prompt.ts"
   verification: []
   history:
   - date: '2026-10-08'
@@ -3691,7 +3840,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: delvis implementert (se implementation)'
-  notes: ''
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: film-, scene-, klipp- og segmenttid finnes i kjernen (filmClips, sourceAt, compositionFrameInClip, segmentTimes)"
+  notes: "Ingen samlet test av konvertering mellom alle fire tidsrom, særlig delsekvenstid."
 - id: REQ-0106
   title: Bildepresis tidsmodell
   text: Tidsmodellen skal være presis i forhold til prosjektets bildefrekvens.
@@ -3712,10 +3863,12 @@ requirements:
     23.976/29.97).
   tests:
   - 'enhet: rundtur-konvertering uten drift'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
-  - src/core/time.ts
-  verification: []
+  - "src/core/time.ts"
+  verification:
+  - "tests/unit/core-basics.test.ts::regner frem og tilbake mellom sekunder og bilder"
+  - "tests/unit/format.test.ts::bildefrekvens 25 → 50 dobler bildenummer, og 24000/1001 regnes riktig"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -3723,7 +3876,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: delvis implementert (se implementation)'
-  notes: ''
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: tid lagres i heltallige bilder med rasjonell bildefrekvens"
+  notes: "Mangler test for at gjentatte konverteringer ikke gir avrundingsdrift (inkl. 29.97)."
 - id: REQ-0107
   title: Tidskoblinger bevares ved flytting
   text: Når en scene flyttes, skal dens interne tidskoblinger bevares mens den samlede filmens tidskoder beregnes
@@ -3780,13 +3935,20 @@ requirements:
   - Etter import har hver scene og filmen totalt et estimat.
   tests:
   - 'enhet: estimator på referansemanus'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/screenplay/duration.ts#estimateProduction"
+  - "src/app/projects/DurationOverview.tsx"
+  verification:
+  - "tests/unit/duration.test.ts::bygger på dialog og handling med justerbare antakelser"
+  - "tests/unit/duration.test.ts::deaktiverte scener utelates fra totalen og legges til igjen ved aktivering (REQ-0115)"
+  - "tests/visual/screens.mjs::18-oversikt-varighet"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: spilletid estimeres per scene og for filmen; verifisert med eksisterende tester"
   notes: ''
 - id: REQ-0109
   title: Grunnlag for varighetsestimater
@@ -3840,14 +4002,19 @@ requirements:
   - Scener med lite grunnlag (f.eks. montasje uten dialog) vises med usikkerhetsmarkering eller intervall.
   tests:
   - 'enhet: usikkerhetsgrad beregnes'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/projects/DurationOverview.tsx"
+  verification:
+  - "tests/visual/screens.mjs::80b-oversikt-status-filter"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
+  - date: '2026-10-12'
+    decision: DEC-0067
+    change: "Estimater vises med ≈ og forklaring om usikkerhet; bekreftet lengde vises uten"
+  notes: "Usikkerheten er lik for alle scener; ingen egen vurdering av grunnlaget per scene."
 - id: REQ-0111
   title: Brukeren kan korrigere estimater
   text: Brukeren skal kunne korrigere varighetsestimatene.
@@ -3868,13 +4035,22 @@ requirements:
   - Brukeren kan overstyre et estimat; totalen oppdateres.
   tests:
   - 'e2e: overstyr estimat'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/commands/apply.ts#SetPlannedDuration"
+  - "src/app/projects/DurationOverview.tsx"
+  - "src/core/assembly/film.ts#filmClips"
+  verification:
+  - "tests/unit/production-status.test.ts::erstatter estimatet i oversikten og monteringen, kan angres, og er ikke «bekreftet»"
+  - "tests/unit/production-status.test.ts::ugyldige verdier avvises; tekst tolkes som m:ss eller sekunder"
+  - "tests/db/run-db-tests.ts::0023: eieren fjerner et medlem uten å miste noe; planlagt lengde lagres"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0067
+    change: "Antakelsene for estimatet kan justeres, og hver scene kan få planlagt lengde (brukes også i monteringen og sceneeditoren)"
   notes: ''
 - id: REQ-0112
   title: Gradvis mer presis varighet
@@ -3895,13 +4071,19 @@ requirements:
   - Gitt en scene med 2D-animatic, så brukes animatic-varigheten i totalen i stedet for estimatet.
   tests:
   - 'enhet: prioritetsrekkefølge for varighetskilder'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/assembly/status.ts#productionStatus"
+  - "src/core/assembly/film.ts#filmClips"
+  verification:
+  - "tests/unit/production-status.test.ts::hver scene én gang, med beste tall: film → 2D-animatic → estimat"
+  - "tests/unit/assembly.test.ts::bruker 2D-scenens lengde, ellers beregnet lengde fra manus, og summerer starttider"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: bygd i produksjonsstatus (natt til 12.10.2026): 2D-animatic og film erstatter estimatet; verifisert"
   notes: P0 fordi kap. 34 pkt. 16 krever kontinuerlig beregning av estimert og faktisk spilletid.
 - id: REQ-0113
   title: Skille mellom varighetstyper
@@ -3923,14 +4105,19 @@ requirements:
   - Hver scene kan lagre alle fem varighetstypene separat.
   tests:
   - 'enhet: skjema for varighetstyper'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/assembly/status.ts#productionStatus"
+  verification:
+  - "tests/unit/production-status.test.ts::hver scene én gang, med beste tall: film → 2D-animatic → estimat"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
+  - date: '2026-10-12'
+    decision: DEC-0067
+    change: "Oversikten skiller estimat, plan, 2D-animatic, AI-video og film per scene"
+  notes: "AI-video som kilde er ikke testet (ingen AI-video kan lages ennå)."
 - id: REQ-0114
   title: Ingen dobbelttelling av scener
   text: En scene skal ikke dobbeltelles i varighetsberegning selv om flere versjoner finnes.
@@ -3950,14 +4137,19 @@ requirements:
   - Gitt en scene med tre produksjonsversjoner, så teller kun aktiv versjon i totalen.
   tests:
   - 'enhet: totalberegning med flere versjoner'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/assembly/status.ts#productionStatus"
+  - "src/core/assembly/film.ts#activeFilmTake"
+  verification:
+  - "tests/unit/production-status.test.ts::hver scene én gang, med beste tall: film → 2D-animatic → estimat"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: hver scene telles én gang med aktiv versjon"
+  notes: "Testfixturen har bare én take per scene; mangler test med flere produksjonsversjoner av samme scene."
 - id: REQ-0115
   title: Skjulte scener utelates fra totalvarighet
   text: Skjulte scener skal utelates fra aktiv totalvarighet.
@@ -4079,13 +4271,21 @@ requirements:
   tests:
   - 'enhet: aggregeringsfunksjoner'
   - 'visuell: oversiktsside'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/assembly/status.ts#productionStatus"
+  - "src/app/projects/DurationOverview.tsx"
+  verification:
+  - "tests/unit/production-status.test.ts::summene: bekreftet + gjenstående = forventet; deaktiverte er ikke med; andelene stemmer"
+  - "tests/unit/production-status.test.ts::hver scene én gang, med beste tall: film → 2D-animatic → estimat"
+  - "tests/unit/production-status.test.ts::filter på status, ressurs, avvik og tekst"
+  - "tests/visual/screens.mjs::18-oversikt-varighet"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: prosjektoversikten viser varighet og produksjonsstatus med konsistente summer; verifisert"
   notes: «Scener med uavklarte avvik» forutsetter REQ-0025.
 - id: REQ-0119
   title: Navigasjon fra oversikt til scene
@@ -4106,14 +4306,17 @@ requirements:
   - Klikk på en scene i oversikten åpner scenen i manus/scenevisning.
   tests:
   - 'e2e: klikk-navigasjon'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/projects/DurationOverview.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: scenene i oversikten lenker til manus, sceneeditor og montering"
+  notes: "Ingen automatisk test klikker fra oversikten til scenen."
 - id: REQ-0120
   title: Historiske varighetsprognoser
   text: Systemet skal kunne bevare tidligere estimater og vise hvordan forventet filmlengde endres gjennom produksjonen.
@@ -4135,14 +4338,21 @@ requirements:
   - Det finnes en graf/liste over forventet filmlengde over tid basert på lagrede estimater.
   tests:
   - 'enhet: lagring av estimat-snapshots'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/screenplay/duration.ts#snapshotDuration"
+  - "src/app/projects/DurationHistory.tsx"
+  verification:
+  - "tests/unit/production-status.test.ts::en manusversjon gir samme estimat som tilstanden den ble laget fra, og film teller med filmens lengde"
+  - "tests/visual/screens.mjs::80c-oversikt-utvikling"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: Ikke eksplisitt plassert i noen fase; lagring av historikk bør likevel starte i fase 2.
+  - date: '2026-10-12'
+    decision: DEC-0068
+    change: "«Utvikling over tid»: estimat og forventet lengde per lagret manusversjon og nå"
+  notes: "Bygger på manusversjonene; 2D-scenenes og planens lengde på tidspunktet lagres ikke."
 - id: REQ-0121
   title: Sentralt ressursbibliotek
   text: Animatic Studio skal ha et sentralt bibliotek for alle ressurser som brukes i produksjonen, som omfatter
@@ -4203,14 +4413,19 @@ requirements:
   - Samme ressurs-ID refereres fra scener i to produksjoner.
   tests:
   - 'integrasjon: ressursreferanse på tvers av produksjoner'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/model.ts#Asset"
+  - "src/core/production/index.ts"
+  verification:
+  - "tests/unit/production.test.ts::«Lag egen kopi» kopierer 2D-scenen med lag og grupper; hovedfilmens 2D-scene er urørt"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: ressurser er prosjektglobale og refereres fra lag i alle produksjoner"
+  notes: "Ingen test sjekker eksplisitt at samme ressurs-ID refereres fra scener i to produksjoner."
 - id: REQ-0123
   title: Ingen kopier per scene
   text: Det skal ikke være nødvendig å opprette nye kopier av samme karakter eller objekt for hver scene.
@@ -4230,13 +4445,19 @@ requirements:
   - Å legge en karakter til en scene skaper en referanse, ikke en kopi.
   tests:
   - 'enhet: scene–ressurs-relasjon er referanse'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/commands/apply.ts#AddLayers"
+  - "src/core/model.ts#CompositionLayer"
+  verification:
+  - "tests/unit/composition.test.ts::legger til bilde- og fargelag, nytt lag foran, og angre/gjenopprett gir identiske lag"
+  - "tests/unit/composition.test.ts::angre av ressurs som brukes i et lag avvises"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: lag refererer til ressursen (assetId), ingen kopi; verifisert med eksisterende tester"
   notes: ''
 - id: REQ-0124
   title: Metadata, kategorier, søk og organisering
@@ -4367,13 +4588,20 @@ requirements:
     alle «onkel»-forekomster nødvendigvis gjør det.
   tests:
   - 'integrasjon: kontekstuell aliaskobling'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/library/index.ts"
+  - "src/app/library/ContextNamesSection.tsx"
+  - "db/migrations/0026_masks_voices_styles.sql"
+  verification:
+  - "tests/unit/context-names.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "Betegnelser i bestemte linjer: brukeren velger linjene der «onkel» betyr ressursen (SetContextNames, assets.context_names); brukes i treff, figurer i AI-beskrivelser og ressursens bruk."
   notes: Kontekstavhengig kobling er mer enn enkel alias; se OPEN_QUESTIONS B (kontekstavhengig alias).
 - id: REQ-0128
   title: Usikre koblinger foreslås
@@ -4579,13 +4807,17 @@ requirements:
   - Ressursendring oppretter ingen renderjobber.
   tests:
   - 'integrasjon: ressursendring → renderkø uendret'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/assembly/AiUpdateSection.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Ingenting lages på nytt automatisk; oppdatering med AI krever valg og bekreftelse."
   notes: ''
 - id: REQ-0134
   title: Brukeren velger scener som skal oppdateres
@@ -5003,13 +5235,26 @@ requirements:
   - En stilprofil kan opprettes med referansebilder og tekstbeskrivelse og gjenbrukes.
   tests:
   - 'integrasjon: CRUD stilprofil'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/style.ts"
+  - "db/migrations/0021_style_profiles.sql"
+  - "src/app/projects/StyleGuideSection.tsx"
+  verification:
+  - "tests/unit/style-prompt.test.ts"
+  - "tests/unit/style-prompt.test.ts::lagres, endres og angres; høyst én standard; ugyldige verdier avvises"
+  - "tests/unit/style-prompt.test.ts::et forbildebilde kan ikke angres bort så lenge stilen bruker det"
+  - "tests/unit/style-prompt.test.ts::tar med filmen, stilen, scenen med lys, andre i scenen, godkjente bilder og det som skal unngås"
+  - "tests/db/run-db-tests.ts::0021 (DEC-0065): filmens visuelle stil lagres og leses tilbake; høyst én standard"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0065
+    change: "Stilprofil med beskrivelse og forbildebilder (én standard per prosjekt i grensesnittet)"
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: bygd i DEC-0065: stilprofiler med forbildebilder og beskrivelse; verifisert med eksisterende tester"
   notes: Stilprofiler inngår i biblioteket (REQ-0121); fullt utnyttet ved generering i fase 5.
 - id: REQ-0148
   title: Stilprofil brukt på tvers av ressurstyper
@@ -5034,13 +5279,19 @@ requirements:
   - Samme stilprofil kan knyttes til hver av de seks typene.
   tests:
   - 'integrasjon: stilprofil-tilknytning per type'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/style.ts"
+  - "src/app/projects/StyleGuideSection.tsx"
+  verification:
+  - "tests/unit/style-uses.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "Flere stilprofiler med bruk (ressurstyper, plakater, 2D-animatic, AI-video); én profil per bruk; standardprofilen for resten. En profil for bestemte bruk blir aldri reserve for alt."
   notes: ''
 - id: REQ-0149
   title: Skille identitet, tilstand og stil
@@ -5655,13 +5906,22 @@ requirements:
   - En scene kan merkes som flashback/flashforward/drøm/tidshopp og gis en fortellingstid som avviker fra visningsrekkefølgen.
   tests:
   - 'enhet: fortellingstid-attributt'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/screenplay/story.ts"
+  - "src/app/script/StoryTimeSection.tsx"
+  - "src/core/commands/apply.ts#validStoryTime"
+  verification:
+  - "tests/unit/story-time.test.ts::et tilbakeblikk sist i filmen skjer før ankerscenen i historien, og kan angres"
+  - "tests/unit/story-time.test.ts::plassering og lineær uten anker; ukjent type og selvanker avvises"
+  - "tests/visual/screens.mjs::07b-manus-fortellingstid"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0068
+    change: "Scenen kan merkes som tilbakeblikk, fremblikk, drøm eller tidshopp og plasseres før/samtidig med/etter en annen scene (inspektøren i manus; merke i scenelisten)"
   notes: Feltet for fortellingstid bør finnes i datamodellen fra fase 1.
 - id: REQ-0165
   title: Kontinuitet følger fortellingstid
@@ -5801,14 +6061,19 @@ requirements:
     og fra manus/tidslinje.
   tests:
   - 'manuell: UX-gjennomgang av navigasjon til sceneeditor fra manus, tidslinje og oversikt'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/shell/ProjectNav.tsx"
+  - "src/app/assembly/ClipPanel.tsx"
+  - "src/app/projects/DurationOverview.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: sceneeditoren åpnes fra hovedmenyen, monteringen og oversikten"
+  notes: "Ingen automatisk test av navigasjonen, og manusvisningen har ingen direkte lenke til sceneeditoren."
 - id: REQ-0169
   title: 2D-editor, ikke 3D
   text: Sceneeditoren skal være en 2D-editor, ikke en full 3D-sceneeditor.
@@ -5829,14 +6094,18 @@ requirements:
   tests:
   - 'enhet: datamodell for komposisjon inneholder kun 2D-transformasjoner pluss lagdybde'
   - 'manuell: arkitekturgjennomgang'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/model.ts#CompositionLayer"
+  - "src/core/composition/render.ts#viewMatrix"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: Ufravikelig prinsipp nr. 10 i kap. 34.
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: scenemodellen er 2D-lag med parallakse og dybdeordning, uten 3D-geometri"
+  notes: "Ingen arkitekturtest håndhever at det ikke innføres 3D-geometri eller 3D-kamera."
 - id: REQ-0170
   title: Multiplan- og lagbasert visuell modell
   text: Den visuelle modellen i sceneeditoren skal være inspirert av tradisjonelle multiplan-animasjonsrigger og
@@ -5859,13 +6128,23 @@ requirements:
   tests:
   - 'manuell: designgjennomgang mot multiplan-prinsippet'
   - 'visuell: skjermbilde av lagstabel og dybdevisning'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/scene-editor/SceneEditorWorkspace.tsx"
+  - "src/app/scene-editor/LayersPanel.tsx"
+  - "src/core/composition/render.ts"
+  verification:
+  - "tests/unit/composition.test.ts::endrer transformasjon, og angre gjenoppretter"
+  - "tests/unit/composition.test.ts::flytter bak et annet lag, og angre gjenoppretter rekkefølgen"
+  - "tests/unit/composition.test.ts::viewMatrix: parallakse 0 står stille ved panorering og zoom, men ruller med kameraet"
+  - "tests/visual/screens.mjs::29-sceneeditor"
+  - "tests/visual/screens.mjs::30-sceneeditor-valgt"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: sceneeditoren er en lagstabel med dybde (parallakse); verifisert med eksisterende tester"
   notes: Ufravikelig prinsipp nr. 10 i kap. 34.
 - id: REQ-0171
   title: Plassere bildeelementer i scenen
@@ -6079,9 +6358,13 @@ requirements:
   tests:
   - 'visuell: maske på lag gir forventet utsnitt'
   - 'dataintegritet: kildebilde uendret etter maskering'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/composition/fields.ts"
+  - "src/engine/compositor/canvas.ts"
+  - "src/app/scene-editor/LayerMaskSection.tsx"
+  verification:
+  - "tests/unit/layer-mask.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -6089,6 +6372,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0001
     change: 'Revisjon 2026-10-08: tekst/prioritet justert mot mandatet'
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "Maske (rektangel, ellipse eller et annet lag) og blandingsmodus per lag i 2D-scenen; også i eksport. Masken animeres ikke ennå (KI-166)."
   notes: Modalitet «eventuelle … som er hensiktsmessige» – omfang ikke definert; skilt ut fra REQ-0174 for å bevare
     modaliteten.
 - id: REQ-0176
@@ -6304,13 +6590,19 @@ requirements:
   tests:
   - 'dataintegritet: hash av 2D-scenedata før og etter AI-generering er lik'
   - 'integrasjon: aktivering av AI-video lager ny versjon ved siden av 2D-kilden'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/ai/video-jobs.ts"
+  - "src/app/assembly/SceneVideoSection.tsx"
+  verification:
+  - "tests/unit/ai-video.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0069
+    change: "AI-video legges inn som ny versjon (Take «ai_video») og erstatter aldri 2D-scenen."
   notes: Kobles til ufravikelig prinsipp nr. 27 i kap. 34.
 - id: REQ-0181
   title: Kamera som redigerbart sceneelement
@@ -6331,13 +6623,22 @@ requirements:
   - I sceneeditoren vises kameraet som et eget objekt som kan velges og flyttes/endres direkte i arbeidsflaten.
   tests:
   - 'e2e: velg og flytt kamera i arbeidsflaten'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/scene-editor/camera-overlay.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  - "src/app/scene-editor/Stage.tsx"
+  verification:
+  - "tests/unit/camera-overlay.test.ts::treffer kanten på en ramme"
+  - "tests/unit/camera-overlay.test.ts::flytter en ramme, og Shift låser til én akse"
+  - "tests/unit/camera-overlay.test.ts::endrer zoom fra avstanden til midten og begrenser den"
+  - "tests/visual/screens.mjs::34-sceneeditor-kamera"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: kameraet vises og redigeres direkte på arbeidsflaten; verifisert med eksisterende tester"
   notes: ''
 - id: REQ-0182
   title: Kamerautsnitt fra filmformat og sideforhold
@@ -7242,13 +7543,27 @@ requirements:
     som lydressurs med sporbarhet.
   tests:
   - 'integrasjon: lydgenerering via adapter med mock-leverandør'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/adapters/ai/sound.functions.ts"
+  - "src/app/library/GenerateSoundPanel.tsx"
+  - "src/adapters/ai/speech.functions.ts"
+  - "src/app/assembly/AiDialogueDialog.tsx"
+  - "src/core/generation/speech.ts"
+  verification:
+  - "tests/unit/ai-sound.test.ts"
+  - "tests/visual/screens.mjs (02d)"
+  - "tests/unit/ai-speech.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Lyd lages med ElevenLabs fra en lydressurs og lagres som ny versjon med sporbarhet (DEC-0069)."
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "Dialog med AI-stemmer (ElevenLabs): stemme per karakter, innlesing av replikkene i scenen med kostnadsgodkjenning; ikke testet mot den ekte tjenesten."
   notes: Ikke presisert om «generere» betyr AI-generering (TTS, musikk, effekter) – antatt AI, derfor fase 5.
 - id: REQ-0204
   title: Koble lydfiler til produksjonsobjekter
@@ -7272,12 +7587,17 @@ requirements:
   tests:
   - 'enhet: relasjonsmodell lyd–objekt'
   - 'dataintegritet: koblinger overlever omnummerering av scener'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/core/commands/apply.ts"
   - "db/migrations/0009_audio.sql"
+  - "src/core/library/sound-links.ts"
+  - "src/app/library/SoundLinksSection.tsx"
+  - "db/migrations/0025_ai_queue.sql"
   verification:
   - "tests/unit/audio.test.ts::avviser ugyldige verdier og lydfiler som ikke er lyd"
+  - "tests/unit/sound-links.test.ts"
+  - "tests/visual/screens.mjs (02e)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -7285,6 +7605,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0044
     change: "Lydklipp knyttes til scene og replikk; kobling til karakter, delsekvens og hendelse kommer senere"
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Lyd kobles til karakterer/ressurser, replikker, scener, delsekvenser, hendelser og produksjoner med permanente ID-er."
   notes: ''
 - id: REQ-0205
   title: Organisere, søke, filtrere og versjonere lyd
@@ -7310,11 +7633,13 @@ requirements:
   tests:
   - 'enhet: søk/filter på lydmetadata'
   - 'dataintegritet: versjonering bevarer tidligere lydfil'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/app/library/AssetDetail.tsx"
   - "src/app/library/LibraryWorkspace.tsx"
-  verification: []
+  - "src/core/library/sound-links.ts"
+  verification:
+  - "tests/unit/sound-links.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -7322,6 +7647,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0044
     change: "Lyd er ressurser i biblioteket (søk, filter, versjoner); egne lydfiltre kommer senere"
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Søk treffer det lyden er koblet til; filter på kategori; versjoner beholdes."
   notes: ''
 - id: REQ-0206
   title: Dialoglyd synkronisert med manus
@@ -7345,10 +7673,15 @@ requirements:
     koblet slik at klikk på replikken finner opptaket.
   tests:
   - 'integrasjon: replikk–lyd–tidskobling'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - "src/app/assembly/AudioClipPanel.tsx"
-  verification: []
+  - "src/core/assembly/film.ts#blockSpans"
+  - "src/app/assembly/ClipPanel.tsx"
+  - "src/app/assembly/AiDialogueDialog.tsx"
+  verification:
+  - "tests/unit/film-and-delete.test.ts::blokkene fordeles over scenen; koblet lyd bestemmer tiden for replikken"
+  - "tests/unit/ai-speech.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -7356,7 +7689,12 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0044
     change: "Dialoglyd kan kobles til replikken; tidskobling per replikk og avspillingshode kommer med tidskoblingene"
-  notes: ''
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: lydklipp kobles til replikk, og koblet lyd bestemmer replikkens tid"
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "AI-innleste replikker legges på dialogsporet der replikken skjer i scenen."
+  notes: "Ingen automatisk test av at klikk på replikken finner opptaket."
 - id: REQ-0207
   title: Justere lydklipp
   text: Brukeren skal kunne justere plassering, varighet, klipp og relevante lydinnstillinger.
@@ -7452,13 +7790,20 @@ requirements:
   - Gitt at ingen AI-leverandør er konfigurert, så kan en komplett animatic bygges, spilles av og eksporteres.
   tests:
   - 'e2e: full animatic-flyt med nettverk mot AI-leverandører blokkert'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/composition/render.ts"
+  - "src/engine/compositor/film.ts"
+  - "src/engine/export/animatic.ts"
+  - "src/app/scene-editor/SceneEditorWorkspace.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "En komplett animatic bygges i 2D-sceneeditoren, spilles av og eksporteres lokalt med WebCodecs uten AI-kall (jf. REQ-0213); en e2e-test med nettverk mot AI-leverandører blokkert mangler."
   notes: Ufravikelig prinsipp nr. 9 i kap. 34.
 - id: REQ-0210
   title: Direkte forhåndsvisning av animatic
@@ -7574,9 +7919,15 @@ requirements:
   tests:
   - 'manuell: arkitekturgjennomgang av renderer-grensesnitt'
   - 'integrasjon: samme testscene rendres likt i klient- og backend-modus (når begge finnes)'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/composition/render.ts"
+  - "src/engine/compositor/canvas.ts"
+  - "src/engine/compositor/film.ts"
+  - "docs/decisions/adr/ADR-0008-rendering.md"
+  verification:
+  - "tests/unit/composition.test.ts"
+  - "tests/architecture/core-purity.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -7584,6 +7935,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0001
     change: 'Revisjon 2026-10-08: tekst/prioritet justert mot mandatet'
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "renderFrame i domenekjernen lager en tegneliste uten nettleser-API-er og kjøres i Node i enhetstestene, mens selve tegningen ligger i engine/compositor (ADR-0008), så samme renderingslogikk kan brukes i nettleser og backend."
   notes: Mandatet bruker «kan» – en åpning, ikke krav om alle tre. At arkitekturen ikke skal låse seg følger av
     kap. 1.2 (REQ-0506).
 - id: REQ-0213
@@ -7650,7 +8004,9 @@ requirements:
   implementation:
   - "src/engine/compositor/film.ts"
   - "src/engine/export/animatic.ts"
-  verification: []
+  - "src/core/generation/video.ts"
+  verification:
+  - "tests/unit/ai-video.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -7658,6 +8014,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0044
     change: "Monteringen kombinerer 2D-scener, tittelkort og lyd; importert film og AI-video kommer senere"
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Scene satt sammen av AI-video og 2D-animatic (hybrid) fra «Generer scene»."
   notes: ''
 - id: REQ-0215
   title: AI som valgfritt produksjonslag
@@ -7682,14 +8041,20 @@ requirements:
   tests:
   - 'enhet: scene uten AI-versjoner er gyldig og avspillbar'
   - 'manuell: arkitekturgjennomgang'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/model.ts#Take"
+  - "src/core/assembly/film.ts#filmClips"
+  verification:
+  - "tests/unit/assembly.test.ts::bruker 2D-scenens lengde, ellers beregnet lengde fra manus, og summerer starttider"
+  - "tests/unit/film-and-delete.test.ts::filmen tas i bruk med sin lengde, og animatic kan tas i bruk igjen uten at filmen forsvinner"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: scenen spilles med bare animatic-data; resultater lagres som takes (inkl. ai_video) ved siden av"
+  notes: "Mangler test med en AI-take som tilleggsversjon."
 - id: REQ-0216
   title: Overordnet filmtidslinje
   text: Animatic Studio skal ha en egen overordnet filmtidslinje, adskilt fra detaljredigeringen av én enkelt 2D-scene,
@@ -8092,13 +8457,20 @@ requirements:
     om full funksjonsparitet.
   tests:
   - 'manuell: heuristisk UX-gjennomgang'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/FilmTimeline.tsx"
+  - "src/app/assembly/AssemblyWorkspace.tsx"
+  verification:
+  - "tests/visual/screens.mjs::45-montering"
+  - "tests/visual/screens.mjs::46-montering-flytt"
+  - "tests/unit/assembly.test.ts::å endre lengden på en scene endrer verken manus eller rekkefølge (REQ-0230)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: filmtidslinjen har spor, avspillingshode og trimhåndtak; verifisert med eksisterende tester"
   notes: Formulert som «kan hente inspirasjon» – derfor P3 som selvstendig krav.
 - id: REQ-0228
   title: Scenflytting i tidslinje speiles i manus
@@ -8166,10 +8538,15 @@ requirements:
   tests:
   - 'enhet: operasjonstyper og deres effekt på manusmodellen'
   - 'integrasjon: trimming endrer ikke manusrekkefølge eller synlighet'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - "src/app/assembly/AssemblyWorkspace.tsx"
-  verification: []
+  - "src/core/commands/apply.ts"
+  - "src/core/assembly/edit.ts"
+  verification:
+  - "tests/unit/commands.test.ts::én kommando endrer rekkefølgen i både manus og film, uten nye ID-er"
+  - "tests/unit/commands.test.ts::utelates fra manus og film, men ingenting slettes og den kan gjenaktiveres"
+  - "tests/unit/assembly.test.ts::å endre lengden på en scene endrer verken manus eller rekkefølge (REQ-0230)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -8177,8 +8554,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0043
     change: "Flytte scene, endre lengde og deaktivere er egne handlinger i monteringen; utsnitt av klipp kommer med importert film"
-  notes: «Å endre et utsnitt fra en scene» er tvetydig (tidsutdrag vs. kamerautsnitt) – se OPEN_QUESTIONS B («Endre
-    et utsnitt»).
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: flytting, deaktivering, trimming og klippdeler er egne kommandoer med ulik semantikk"
+  notes: "Mangler test for at utsnittsendring (klippdeler) ikke endrer manusstrukturen; «utsnitt» er fortsatt uavklart."
 - id: REQ-0230
   title: Trimming sletter ikke manus
   text: Å trimme et klipp skal ikke automatisk slette manus.
@@ -8453,11 +8831,14 @@ requirements:
   - Brukeren kan markere start- og sluttpunkt i manuset (manusblokk) som klippet dekker, og markeringen lagres.
   tests:
   - 'e2e: marker manusdekning for importert klipp'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/app/assembly/LongFilmImportDialog.tsx"
+  - "src/core/assembly/discrepancy.ts"
+  - "src/app/assembly/ClipPanel.tsx"
   verification:
   - "tests/visual/screens.mjs::65-lang-film"
+  - "tests/unit/coverage.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -8465,6 +8846,9 @@ requirements:
   - date: '2026-10-10'
     decision: DEC-0048
     change: "Lang film fordeles på scener med presise starttider, og replikker kan tidsfestes; markering av start- og sluttblokk i manuset kommer senere"
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "Manusdekning for importert film og AI-video: første og siste manuslinje (SetTakeCoverage, takes.coverage). Avvik flagges bare for endringer innenfor dekningen."
   notes: ''
 - id: REQ-0238
   title: Hente mediemetadata
@@ -8672,12 +9056,15 @@ requirements:
   - Handlingen «Generer scene» er tilgjengelig fra scenevisningen.
   tests:
   - 'e2e: handlingen finnes og starter genereringsflyt'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - "src/core/generation/scene-prompt.ts#buildScenePrompt"
   - "src/app/assembly/GenerateSceneDialog.tsx"
+  - "src/app/assembly/SceneVideoSection.tsx"
+  - "src/adapters/ai/video.functions.ts"
   verification:
   - "tests/unit/ai-control.test.ts"
+  - "tests/unit/ai-video.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -8685,6 +9072,9 @@ requirements:
   - date: '2026-10-11'
     decision: DEC-0053
     change: "«Generer scene …» i monteringen: inndeling og beskrivelser; selve genereringen venter på godkjent leverandør (kostnad)"
+  - date: '2026-10-12'
+    decision: DEC-0069
+    change: "«Generer scene» lager video per segment med valgt leverandør og kan sette scenen sammen av videoene."
   notes: ''
 - id: REQ-0244
   title: Samle info og bygge genereringsinstruksjon
@@ -8755,8 +9145,10 @@ requirements:
   implementation:
   - "src/core/generation/scene-prompt.ts#buildScenePrompt"
   - "src/app/assembly/GenerateSceneDialog.tsx"
+  - "src/core/generation/image-prompt.ts#buildContextImagePrompt"
   verification:
   - "tests/unit/ai-control.test.ts"
+  - "tests/unit/style-prompt.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -8764,6 +9156,9 @@ requirements:
   - date: '2026-10-11'
     decision: DEC-0053
     change: "Kilder: scenehode, handling, replikker, ressurser i scenen, kamerabevegelse"
+  - date: '2026-10-11'
+    decision: DEC-0065
+    change: "Også bildebeskrivelser henter handling, scener, tid på døgnet, karakterer, utseende, godkjente bilder og visuell stil"
   notes: ''
 - id: REQ-0246
   title: Modellspesifikk prompt
@@ -8788,13 +9183,24 @@ requirements:
   tests:
   - 'enhet: promptmal per adapter'
   - 'integrasjon: validering mot adapterens kapabilitetsbeskrivelse'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/prompt-writer.ts"
+  - "src/adapters/ai/write-prompt.functions.ts"
+  - "src/core/generation/model-prompt.ts"
+  verification:
+  - "tests/unit/prompt-writer.test.ts"
+  - "tests/unit/model-prompt.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0066
+    change: "Språkmodellen skriver beskrivelsen for bildemodellen (GPT Image) ut fra det innsamlede grunnlaget. Egne maler per modell gjenstår til flere modeller tas i bruk"
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Beskrivelsen tilpasses modellen (lengdegrense, modeller uten lyd); replikkene beholdes ordrett."
   notes: ''
 - id: REQ-0247
   title: Engelske prompter som hovedregel
@@ -9079,13 +9485,17 @@ requirements:
     redigerte prompten.
   tests:
   - 'integrasjon: regenerering bruker redigert prompt'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/assembly/SceneVideoSection.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Segmenter kan lages på nytt; nye videoer blir nye forsøk."
   notes: ''
 - id: REQ-0255
   title: Skille automatisk og manuell prompt
@@ -9218,13 +9628,19 @@ requirements:
   - Brukeren kan velge to genereringsforsøk og se resultatene og forskjeller i prompt/parametere side ved side.
   tests:
   - 'e2e: sammenligningsvisning av to forsøk'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/CompareTakesDialog.tsx"
+  - "src/core/generation/video.ts"
+  verification:
+  - "tests/unit/ai-video.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Sammenligning av forsøk side ved side med beskrivelse, modell og pris."
   notes: ''
 - id: REQ-0259
   title: Automatisk håndtering av lange scener
@@ -9324,13 +9740,19 @@ requirements:
   - Brukeren kan generere en lang scene med én handling, og segmenteringen skjer uten at brukeren må angi segmentgrenser.
   tests:
   - 'manuell: brukertest av generering av lang scene'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/model-prompt.ts"
+  - "src/adapters/ai/video.functions.ts"
+  verification:
+  - "tests/unit/model-prompt.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "API-grenser (lengde) håndteres automatisk og forklares; sendingen stoppes hvis replikkene ikke får plass."
   notes: ''
 - id: REQ-0262
   title: Segmentering tar hensyn til kontinuitet
@@ -9393,13 +9815,26 @@ requirements:
     som referanse til neste.
   tests:
   - 'integrasjon: adapter med referansestøtte mottar referanse fra forrige segment'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/generation/video.ts"
+  - "src/app/ai/last-frame.ts"
+  - "src/app/assembly/SceneVideoSection.tsx"
+  - "src/adapters/ai/video-followup.server.ts"
+  - "src/adapters/ai/video.functions.ts"
+  verification:
+  - "tests/unit/ai-video.test.ts"
+  - "tests/unit/ai-queue.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Sammenheng: neste segment kan starte fra siste bilde i forrige segments video."
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "Sammenheng i køen: et segment kan vente på segmentet før og starte fra dets siste bilde; aldri seg selv eller i ring, og jobben feiler uten kostnad hvis siste bilde ikke lagres innen 30 minutter."
   notes: ''
 - id: REQ-0264
   title: Sette segmenter sammen til én scene
@@ -9420,13 +9855,19 @@ requirements:
   - Ferdige segmenter vises og spilles som én sammenhengende scene i filmtidslinjen.
   tests:
   - 'e2e: sammensatt scene spilles av som én enhet'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/video.ts"
+  - "src/app/assembly/SceneVideoSection.tsx"
+  verification:
+  - "tests/unit/ai-video.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Segmentene settes sammen til scenen, også med 2D-animatic der video mangler."
   notes: ''
 - id: REQ-0265
   title: Riktig rekkefølge, timing og overganger
@@ -9448,13 +9889,25 @@ requirements:
     satt.
   tests:
   - 'enhet: sammensetting etter segmentplan'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/generation/video.ts"
+  - "src/core/assembly/film.ts"
+  - "src/app/assembly/ClipParts.tsx"
+  - "src/engine/export/film-video.ts"
+  verification:
+  - "tests/unit/ai-video.test.ts"
+  - "tests/unit/part-transition.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Riktig rekkefølge og timing (korte videoer fylles ut med 2D); overganger mellom segmenter er ikke laget."
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "Myk overgang (krysstoning) mellom deler i en scene uten at scenen blir kortere; aldri lengre enn nabodelene; i visning og eksport."
   notes: ''
 - id: REQ-0266
   title: Individuell revisjon av segmenter
@@ -9476,13 +9929,18 @@ requirements:
   - Brukeren kan regenerere eller bytte ett segment uten å påvirke de andre segmentene i scenen.
   tests:
   - 'integrasjon: regenerering av ett segment'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/video.ts"
+  verification:
+  - "tests/unit/ai-video.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Hvert segment kan få nytt forsøk og eget valg; utdatert sammensetning vises."
   notes: ''
 - id: REQ-0267
   title: Segmentering endrer ikke manusstruktur
@@ -9545,13 +10003,19 @@ requirements:
   tests:
   - 'manuell: datamodellgjennomgang'
   - 'enhet: segment-entitet har scene-ID-referanse'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/model.ts#ProductionSegment"
+  - "src/core/commands/apply.ts#CreateSegments"
+  verification:
+  - "tests/invariants/random-sequences.test.ts::INV-10: segmentering endrer aldri scener, manusblokker eller rekkefølge"
+  - "tests/unit/ai-control.test.ts::segmentene følger blokkene, dekker hele scenen og endrer ikke manuset"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: genereringssegmenter er egne entiteter som refererer til sceneforekomsten; verifisert med invarianttest"
   notes: ''
 - id: REQ-0269
   title: Leverandøruavhengig AI-arkitektur
@@ -9573,13 +10037,18 @@ requirements:
   tests:
   - 'manuell: arkitekturgjennomgang'
   - 'integrasjon: to mock-adaptere bak samme grensesnitt'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/adapters/ai/providers.server.ts"
+  verification:
+  - "tests/unit/ai-providers.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0069
+    change: "Felles adaptergrensesnitt per leverandør (test, bilde, video, lyd)."
   notes: Ufravikelig prinsipp nr. 11 (modellagnostisk) i kap. 34.
 - id: REQ-0270
   title: Koble egne API-kontoer
@@ -9601,13 +10070,21 @@ requirements:
   - Brukeren kan registrere egen API-nøkkel for en støttet leverandør, og nøkkelen valideres.
   tests:
   - 'integrasjon: registrering og validering av nøkkel mot mock'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/ai/ProvidersDialog.tsx"
+  - "src/adapters/ai/provider-keys.functions.ts"
+  - "db/migrations/0024_ai_providers.sql"
+  verification:
+  - "tests/unit/ai-providers.test.ts"
+  - "tests/db/run-db-tests.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0069
+    change: "Brukeren kobler egne API-kontoer per leverandør; nøkkelen prøves hos tjenesten før den lagres."
   notes: ''
 - id: REQ-0271
   title: Sikker nøkkelhåndtering
@@ -9629,15 +10106,24 @@ requirements:
   tests:
   - 'manuell: sikkerhetsgjennomgang'
   - 'integrasjon: nøkkel kan ikke hentes ut i klartekst via klient-API'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/adapters/ai/gateway.ts"
+  - "src/adapters/ai/generate-image.functions.ts"
+  - "src/adapters/ai/write-prompt.functions.ts"
+  - "src/adapters/ai/key-vault.server.ts"
+  verification:
+  - "tests/unit/ai-providers.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: Lagringsarkitektur for hemmeligheter må på plass i fase 1 (Security & Storage), selv om bruken kommer i
-    fase 5.
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: implementert, men ikke fullt dekket av tester"
+  - date: '2026-10-12'
+    decision: DEC-0069
+    change: "Nøkler krypteres med AES-256-GCM bundet til bruker, leverandør og rad; hovednøkkelen er en serverhemmelighet."
+  notes: "Bare én plattformnøkkel (LOVABLE_API_KEY) finnes, som hemmelighet i Lovable Cloud brukt fra serverfunksjoner; ingen automatisk test søker etter nøkler i klientbunt, backup eller logger."
 - id: REQ-0272
   title: Hemmeligheter aldri eksponert
   text: Hemmeligheter skal ikke lagres ukryptert i klientkode eller eksponeres i prosjektfiler og logger.
@@ -9658,14 +10144,26 @@ requirements:
   - Søk etter nøkkelverdi i klientbunt, eksporterte prosjektfiler/backup og logger gir ingen treff.
   tests:
   - 'integrasjon: hemmelighetsskanning av klientbunt, prosjekteksport og logger'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/adapters/ai/gateway.ts#gatewayError"
+  - "src/adapters/ai/generate-image.functions.ts"
+  - "src/core/backup/index.ts"
+  - "db/migrations/0024_ai_providers.sql"
+  - "src/adapters/ai/providers.server.ts"
+  verification:
+  - "tests/db/run-db-tests.ts"
+  - "tests/unit/ai-providers.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: implementert, men ikke fullt dekket av tester"
+  - date: '2026-10-12'
+    decision: DEC-0069
+    change: "Den krypterte nøkkelen kan ikke leses fra nettleseren (kolonnetilgang); feiltekster renses for nøkler."
+  notes: "Bare én plattformnøkkel (LOVABLE_API_KEY) finnes, som hemmelighet i Lovable Cloud brukt fra serverfunksjoner; ingen automatisk test søker etter nøkler i klientbunt, backup eller logger."
 - id: REQ-0273
   title: Adaptere beskriver faktiske muligheter
   text: Hver leverandørintegrasjon skal beskrive sine faktiske muligheter, blant annet støttet oppgavetype, maksimal
@@ -9688,13 +10186,18 @@ requirements:
   - Hvert adapter eksponerer en strukturert kapabilitetsbeskrivelse med alle ti feltene.
   tests:
   - 'enhet: skjema-validering av kapabilitetsbeskrivelse'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/generation/providers.ts"
+  verification:
+  - "tests/unit/ai-providers.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0069
+    change: "Katalogen beskriver hva hver leverandør og modell kan (bilde, video, lyd, frilagt, lengder) og bare det tilbys."
   notes: ''
 - id: REQ-0274
   title: Ingen antakelse om felles parametere
@@ -9716,13 +10219,18 @@ requirements:
   - Parametere som en modell ikke støtter, sendes ikke og vises ikke som tilgjengelige for den modellen.
   tests:
   - 'enhet: parameterfiltrering basert på kapabilitet'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/providers.ts"
+  verification:
+  - "tests/unit/ai-effort.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Hver modell har egne grenser og muligheter i katalogen; ingen felles parametere antas."
   notes: ''
 - id: REQ-0275
   title: Innsatsnivå per oppgave
@@ -9747,13 +10255,19 @@ requirements:
   - For hver genereringsoppgave kan brukeren velge ett av tre nivåer, og valget lagres med jobben.
   tests:
   - 'e2e: velg nivå og verifiser at det lagres i jobbposten'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/ai/EffortPicker.tsx"
+  - "src/core/generation/providers.ts"
+  verification:
+  - "tests/unit/ai-effort.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Innsatsnivå Rask/Økonomisk, Balansert, Høy/Premium for bilde og video."
   notes: Linjene «Rask / Økonomisk» (l. 776–777) og «Høy / Premium» (l. 781–782) er duplisert. Ufravikelig prinsipp
     nr. 13 i kap. 34.
 - id: REQ-0276
@@ -9777,13 +10291,18 @@ requirements:
   - For en gitt modell gir hvert nivå et dokumentert sett med konkrete parametere (f.eks. oppløsning, antall kandidater).
   tests:
   - 'enhet: mapping nivå→parametere per adapter'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/providers.ts"
+  verification:
+  - "tests/unit/ai-effort.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Nivået velger konkret modell hos de tilkoblede leverandørene."
   notes: ''
 - id: REQ-0277
   title: Ikke love bedre resultat for pris
@@ -9805,13 +10324,19 @@ requirements:
   - Tekster i nivåvelger og kostnadsdialog formulerer høyere nivå som prioritering, ikke garanti.
   tests:
   - 'manuell: språkgjennomgang av UI-tekster'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/providers.ts"
+  - "src/app/ai/EffortPicker.tsx"
+  verification:
+  - "tests/unit/ai-effort.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Teksten sier at høyere innsats ikke garanterer bedre resultat."
   notes: ''
 - id: REQ-0278
   title: Vise tilgjengelige kvalitetsmekanismer
@@ -9836,13 +10361,18 @@ requirements:
   - Ved valg av modell vises kun de kvalitetsmekanismene adapteret oppgir som støttet.
   tests:
   - 'integrasjon: UI viser mekanismer i samsvar med kapabilitetsbeskrivelse'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/providers.ts"
+  verification:
+  - "tests/unit/ai-effort.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Kvalitetsmekanismene modellen faktisk har vises (oppløsning, lengder, startbilde, forbilder, kandidater, lyd)."
   notes: ''
 - id: REQ-0279
   title: Kostnadsestimat før betalt oppgave
@@ -9904,13 +10434,19 @@ requirements:
   tests:
   - 'enhet: estimatberegning'
   - 'e2e: estimatdialog viser alle felt'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/generation/providers.ts"
+  - "src/app/library/GenerateSoundPanel.tsx"
+  verification:
+  - "tests/unit/ai-providers.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0069
+    change: "Kostnadsanslaget viser leverandør, modell, antall og anslått pris i USD før bekreftelse."
   notes: ''
 - id: REQ-0281
   title: Merke usikre estimater
@@ -9976,9 +10512,11 @@ requirements:
   - "src/adapters/ai/generate-image.functions.ts (budsjettport)"
   - "src/core/commands/apply.ts (SetAiBudget)"
   - "src/adapters/storage/commands.functions.ts (bare eier)"
+  - "src/adapters/ai/ai-gate.server.ts"
   verification:
   - "tests/unit/ai-control.test.ts"
   - "tests/db/run-db-tests.ts (0014 DEC-0053)"
+  - "tests/unit/ai-gate.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -9986,6 +10524,9 @@ requirements:
   - date: '2026-10-11'
     decision: DEC-0053
     change: "Månedsramme for prosjektet i tillegg til faste grenser per time og døgn"
+  - date: '2026-10-12'
+    decision: DEC-0069
+    change: "Overordnet kostnadstak per bruker (USD per måned) i tillegg til prosjektets budsjett."
   notes: ''
 - id: REQ-0283
   title: Vise estimert og faktisk forbruk
@@ -10046,13 +10587,17 @@ requirements:
   tests:
   - 'integrasjon: kø stopper jobb som overskrider ramme'
   - 'enhet: automatiske retries teller mot rammen'
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - "src/adapters/ai/generate-image.functions.ts (budsjettport)"
   - "src/core/commands/apply.ts (SetAiBudget)"
   - "src/adapters/storage/commands.functions.ts (bare eier)"
+  - "src/adapters/ai/ai-gate.server.ts"
+  - "db/migrations/0024_ai_providers.sql"
   verification:
   - "tests/unit/ai-control.test.ts"
+  - "tests/unit/ai-gate.test.ts"
+  - "tests/db/run-db-tests.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -10060,6 +10605,9 @@ requirements:
   - date: '2026-10-11'
     decision: DEC-0053
     change: "Serveren stopper genereringer når månedens ramme er nådd (også ved samtidige forespørsler)"
+  - date: '2026-10-12'
+    decision: DEC-0069
+    change: "Taket og budsjettet kontrolleres før og etter at jobben registreres; forbruk overlever sletting av prosjektet (ai_spend)."
   notes: ''
 - id: REQ-0285
   title: Generere og sammenligne kandidater
@@ -10083,13 +10631,21 @@ requirements:
   - Brukeren kan bestille N kandidater (etter kostnadsgodkjenning) og se dem side ved side.
   tests:
   - 'e2e: generer 3 kandidater med mock og vis side ved side'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/library/GenerateImagePanel.tsx"
+  - "src/app/assembly/SceneVideoSection.tsx"
+  - "src/app/library/ImageCompareDialog.tsx"
+  verification:
+  - "tests/unit/ai-video.test.ts"
+  - "tests/visual/screens.mjs (21b)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "1–4 kandidater for bilder og video; den valgte aktiveres uten å slette de andre."
   notes: ''
 - id: REQ-0286
   title: Aktivere kandidat uten å slette andre
@@ -10111,9 +10667,16 @@ requirements:
   - Etter aktivering av én kandidat finnes alle andre kandidater fortsatt.
   tests:
   - 'dataintegritet: kandidater bevares etter aktivering'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/commands/apply.ts"
+  - "src/core/library/reupload.ts"
+  - "src/core/model.ts"
+  verification:
+  - "tests/unit/reupload.test.ts::den nye versjonen tar over godkjenning, lag og plakater; den gamle står"
+  - "tests/unit/library.test.ts::nummererer versjoner, og ny versjon endrer ikke godkjent versjon"
+  - "tests/unit/film-and-delete.test.ts::filmen tas i bruk med sin lengde, og animatic kan tas i bruk igjen uten at filmen forsvinner"
+  - "tests/invariants/random-sequences.test.ts::INV-07/13: produsert materiale og historikk endres eller slettes aldri"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -10121,6 +10684,8 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0001
     change: 'Revisjon 2026-10-08: tekst/prioritet justert mot mandatet'
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: bygd og dekket av eksisterende tester"
   notes: Ufravikelig prinsipp nr. 6 i kap. 34. Mandatet sier «varianten»; i 19.7 betyr det genereringskandidat,
     ikke scenevariant (DEC-0015).
 - id: REQ-0287
@@ -10146,13 +10711,19 @@ requirements:
   tests:
   - 'integrasjon: vurderingsrapport med fem kriterier'
   - 'manuell: kvalitativ vurdering av nytte'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/quality.ts"
+  - "src/app/assembly/CompareTakesDialog.tsx"
+  verification:
+  - "tests/unit/quality.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "Rådgivende sjekkliste per AI-video (manus, karakterreferanser, stil, kontinuitet, kamera, teknisk) i sammenligningen."
   notes: Fasetilordning usikker (fase 5/6/8) – se ROADMAP (kvalitetskontroll fase 6/8).
 - id: REQ-0288
   title: Automatiske vurderinger er støtte
@@ -10175,13 +10746,18 @@ requirements:
     beslutning.
   tests:
   - 'manuell: UI-tekst og flyt-gjennomgang'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/quality.ts"
+  verification:
+  - "tests/unit/quality.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "Sjekklisten vises alltid med fast tekst om at den er støtte, og godkjenner eller forkaster ingenting."
   notes: ''
 - id: REQ-0289
   title: Robust produksjonskø
@@ -10201,13 +10777,19 @@ requirements:
   - Køen tåler omstart av klient og backend uten tap av jobber eller status.
   tests:
   - 'integrasjon: restart av backend under kjørende jobb'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/adapters/ai/video-followup.server.ts"
+  - "src/adapters/ai/queue.functions.ts"
+  verification:
+  - "tests/unit/ai-queue.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Kø for AI-video med høyst tre samtidige jobber per nøkkel, avbryting uten kostnad og stoppede jobber merket."
   notes: ''
 - id: REQ-0290
   title: Massegenerering av scener
@@ -10233,13 +10815,20 @@ requirements:
     i kø.
   tests:
   - 'e2e: massevalg og køing av 15 scener'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/assembly/BatchVideoDialog.tsx"
+  - "src/core/generation/video.ts"
+  verification:
+  - "tests/unit/ai-queue.test.ts"
+  - "tests/visual/screens.mjs (79b)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "«Video for flere scener» i monteringen: valg av scener, samlet kostnad, legges i kø."
   notes: ''
 - id: REQ-0291
   title: Jobber uavhengige av nettleserfane
@@ -10260,14 +10849,32 @@ requirements:
   - Gitt kjørende jobber, når nettleserfanen lukkes, så fortsetter jobbene og fullføres.
   tests:
   - 'e2e: lukk fane under kjøring og verifiser fullføring'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/generation/cost.ts#unclaimedImageJobs"
+  - "src/app/ai/AiPanel.tsx"
+  - "src/adapters/ai/video.functions.ts"
+  - "src/app/ai/video-jobs.ts"
+  - "src/routes/api/cron/ai-jobs.ts"
+  - "src/adapters/ai/video-followup.server.ts"
+  verification:
+  - "tests/unit/ai-claim.test.ts::finner ferdige bildejobber uten versjon – og bare dem"
+  - "tests/unit/ai-video.test.ts"
+  - "tests/unit/ai-queue.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: Ufravikelig prinsipp nr. 26 i kap. 34.
+  - date: '2026-10-12'
+    decision: DEC-0067
+    change: "Bilder som serveren laget mens fanen ble lukket, kan legges inn fra AI-jobbene. En ekte jobbkø gjenstår"
+  - date: '2026-10-12'
+    decision: DEC-0069
+    change: "Videojobber kjører hos leverandøren og hentes inn av hvem som helst med redigeringstilgang som har prosjektet åpent."
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Bakgrunnskø: /api/cron/ai-jobs følger opp videojobber uten åpen fane (krever planlagt kall i Lovable Cloud)."
+  notes: "Genereringen er fortsatt et kall som nettleseren venter på; ekte kø gjenstår (M5)."
 - id: REQ-0292
   title: Lagre og hente jobbstatus
   text: Jobbstatus skal kunne lagres og hentes igjen senere.
@@ -10323,13 +10930,21 @@ requirements:
   - Langvarige oppgaver kjøres i en backend-jobbtjeneste med persistent kø, ikke i klienten.
   tests:
   - 'manuell: arkitekturgjennomgang'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "db/migrations/0025_ai_queue.sql"
+  - "src/adapters/ai/video-followup.server.ts"
+  - "src/adapters/ai/queue.functions.ts"
+  verification:
+  - "tests/unit/ai-queue.test.ts"
+  - "tests/db/run-db-tests.ts (0025 DEC-0070)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Vedvarende jobber i generation_jobs med status «queued», prioritet og fremdrift; sendes av køen (migrasjon 0025)."
   notes: Ufravikelig prinsipp nr. 26 i kap. 34; kap. 1.2 sier at Lovable alene ikke kan antas å håndtere dette.
 - id: REQ-0294
   title: Jobbstatuser i køen
@@ -10388,13 +11003,20 @@ requirements:
   - Fremdriftsindikator vises bare når adapter/jobb gir pålitelig fremdrift; ellers vises ubestemt indikator.
   tests:
   - 'enhet: fremdriftsvisning avhengig av kapabilitet'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/queue.ts"
+  - "src/app/ai/AiPanel.tsx"
+  verification:
+  - "tests/unit/ai-queue.test.ts"
+  - "tests/visual/screens.mjs (78c)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Fremdrift fra leverandøren når den finnes, ellers et anslag merket som anslag; plass i køen."
   notes: ''
 - id: REQ-0296
   title: Oversikt ved gjenåpning
@@ -10490,13 +11112,18 @@ requirements:
   - Ved ratebegrensningssvar fra leverandør venter køen og prøver igjen uten at jobben markeres som mislykket.
   tests:
   - 'integrasjon: håndtering av api-begrensninger med mock-leverandør'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/adapters/ai/video.functions.ts"
+  - "src/adapters/ai/sound.functions.ts"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0069
+    change: "Grenser per bruker og prosjekt (video 20/t og 100/døgn, lyd 60/t); 429 fra leverandøren gir nytt forsøk."
   notes: ''
 - id: REQ-0299
   title: Feilmeldinger
@@ -10551,13 +11178,20 @@ requirements:
   - Brukeren kan endre prioritet/rekkefølge på ventende jobber, og høyere prioritet startes først.
   tests:
   - 'integrasjon: køprioritering med mock-leverandør'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/queue.ts"
+  - "src/adapters/ai/queue.functions.ts"
+  - "src/app/ai/AiPanel.tsx"
+  verification:
+  - "tests/unit/ai-queue.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Prioritet høy/normal/lav og «Først» for ventende jobber."
   notes: ''
 - id: REQ-0301
   title: Kontroll av parallellitet
@@ -10578,13 +11212,23 @@ requirements:
   - Maks antall samtidige jobber kan settes (per leverandør/prosjekt) og overholdes.
   tests:
   - 'integrasjon: kontroll av parallellitet med mock-leverandør'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/adapters/ai/video.functions.ts"
+  - "src/app/assembly/SceneVideoSection.tsx"
+  - "src/adapters/ai/video-followup.server.ts"
+  verification:
+  - "tests/unit/ai-queue.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0069
+    change: "Samme segment kan ikke ha to videojobber samtidig."
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Høyst tre samtidige videoer per nøkkel; samme segment dobbeltsendes ikke."
   notes: ''
 - id: REQ-0302
   title: Kostnadsgrenser i køen
@@ -10607,14 +11251,23 @@ requirements:
   - Jobber som vil overskride gjeldende ramme startes ikke.
   tests:
   - 'integrasjon: kostnadsgrenser i køen med mock-leverandør'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/adapters/ai/generate-image.functions.ts"
+  - "src/adapters/ai/write-prompt.functions.ts"
+  - "src/core/generation/cost.ts#aiUsage"
+  - "src/adapters/ai/video.functions.ts"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: Kostnadsgrenser også dekket av REQ-0284.
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: implementert, men ikke fullt dekket av tester"
+  - date: '2026-10-12'
+    decision: DEC-0069
+    change: "Kostnadstaket gjelder også videojobber som kjører hos leverandøren; usikre starter regnes med."
+  notes: "Budsjettporten på serveren stopper genereringer over månedsrammen (det finnes ingen egen kø), men porten er ikke testet automatisk."
 - id: REQ-0303
   title: Bevare fullførte resultater
   text: Ved feil skal allerede fullførte resultater bevares.
@@ -10672,10 +11325,12 @@ requirements:
   - Alle produksjonsobjekter (manus, ressurser, lyd, scener, genereringer) har versjonsreferanser fra første datamodell.
   tests:
   - 'manuell: datamodellgjennomgang for versjonsfelt'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
-  - src/core/commands/apply.ts
-  - db/migrations/0001_core.sql
+  - "src/core/commands/apply.ts"
+  - "db/migrations/0001_core.sql"
+  - "src/core/model.ts"
+  - "db/migrations/0004_library_notes.sql"
   verification: []
   history:
   - date: '2026-10-08'
@@ -10684,7 +11339,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: delvis implementert (se implementation)'
-  notes: ''
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: implementert, men ikke fullt dekket av tester"
+  notes: "Manus, ressurser, scener og takes har versjonsobjekter, men ingen samlet test viser versjonsreferanser for alle produksjonsobjekttyper."
 - id: REQ-0305
   title: Endringsdeteksjon for berørt materiale
   text: Når manus eller ressurser endres, skal systemet identifisere hvilke produksjonselementer som kan være påvirket
@@ -10827,13 +11484,19 @@ requirements:
     AI-kostnad.
   tests:
   - 'integrasjon: klassifisering lokal vs. AI for testendringer'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/video.ts"
+  - "src/app/assembly/AiUpdateSection.tsx"
+  verification:
+  - "tests/unit/ai-video.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Valg B vurderer om endringen synes i bildet, og hvilke segmenter som berøres."
   notes: ''
 - id: REQ-0309
   title: Kostnad vises før regenerering
@@ -10856,13 +11519,17 @@ requirements:
   - Ingen regenerering fra avviksdialogen starter før kostnad er vist og godkjent.
   tests:
   - 'integrasjon: regenerering fra avvik krever godkjent estimat'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/assembly/AiUpdateSection.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Kostnaden vises og bekreftes før nye videoer lages ved avvik."
   notes: ''
 - id: REQ-0310
   title: Ny versjon ved siden av gammel
@@ -10884,13 +11551,17 @@ requirements:
   - Etter oppdatering finnes både gammel og ny versjon, og den gamle kan gjenaktiveres.
   tests:
   - 'dataintegritet: gammel versjon bevart etter oppdatering'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/assembly/AiUpdateSection.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Nye videoer blir nye forsøk ved siden av de gamle."
   notes: ''
 - id: REQ-0311
   title: Selektiv angring av manusendring
@@ -11178,13 +11849,19 @@ requirements:
   - Brukeren kan vise to versjoner av en scene side ved side.
   tests:
   - 'e2e: sammenligning av to versjoner'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/library/ImageCompareDialog.tsx"
+  - "src/app/assembly/CompareTakesDialog.tsx"
+  verification:
+  - "tests/visual/screens.mjs (21b)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Tidligere og nye resultater kan sammenlignes (bilder og video)."
   notes: ''
 - id: REQ-0319
   title: Rådgivende kontinuitetsanalyse
@@ -11463,13 +12140,20 @@ requirements:
   - Ingen analyse- eller AI-funksjon endrer manustekst uten eksplisitt brukerhandling.
   tests:
   - 'dataintegritet: manus uendret etter kontinuitetsanalyse'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/continuity/analysis.ts"
+  - "src/app/continuity/ContinuityAnalysisPanel.tsx"
+  - "src/app/script/Inspector.tsx"
+  - "src/app/assembly/ScriptChanges.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "Kontinuitetsanalysen er en ren lesefunksjon som bare returnerer funn, og manustekst endres bare via EditBlockText fra brukerens egne handlinger (redigering i inspektøren eller bekreftet angring av manusendringer); en test som viser at manuset er uendret etter analysen, mangler."
   notes: Følger av kap. 2.2 og prinsipp nr. 27.
 - id: REQ-0327
   title: Brukeren har redaksjonell kontroll
@@ -11492,13 +12176,20 @@ requirements:
   - Alle forslag fra systemet (kontinuitet, koblinger, rettelser) krever brukerens godkjenning før de påvirker manuset.
   tests:
   - 'manuell: gjennomgang av forslagsflyter'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/script/Inspector.tsx"
+  - "src/app/library/SuggestionsDialog.tsx"
+  - "src/app/library/ContinuityPanel.tsx"
+  - "src/app/assembly/ScriptChanges.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "Forslag fra systemet (usikre tolkninger ved import, ressursforslag, kontinuitetsforslag og manusendringer mot materialet) må godkjennes, avvises eller angres eksplisitt av brukeren før de får virkning; den manuelle gjennomgangen av alle forslagsflyter er ikke dokumentert."
   notes: ''
 - id: REQ-0328
   title: Norsk er hovedmanus
@@ -11522,11 +12213,16 @@ requirements:
   tests:
   - 'enhet: språkversjon har referanse til hovedmanus'
   - 'manuell: datamodellgjennomgang'
-  status: Under arbeid
+  status: Verifisert
   implementation:
-  - src/core/model.ts
-  - db/migrations/0001_core.sql
-  verification: []
+  - "src/core/model.ts"
+  - "db/migrations/0001_core.sql"
+  - "src/core/model.ts#PRIMARY_LANGUAGE"
+  - "src/core/translation/index.ts"
+  - "db/migrations/0016_translations.sql"
+  verification:
+  - "tests/unit/translation.test.ts::lagres som egen tekst for samme replikk; norsk endres ikke (REQ-0331/0339)"
+  - "tests/db/run-db-tests.ts::0016 (DEC-0058): oversettelser lagres, endres og fjernes; norsk språkkode og to mål avvises"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -11534,6 +12230,8 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: delvis implementert (se implementation)'
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: bygd og dekket av eksisterende tester"
   notes: Ufravikelig prinsipp nr. 5 i kap. 34.
 - id: REQ-0329
   title: Engelsk som tilknyttet språkversjon
@@ -12631,10 +13329,11 @@ requirements:
   tests:
   - 'enhet: varighetsberegning per produksjon'
   - 'dataintegritet: endring i spinoffens egenskaper berører ikke hovedfilmen'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - "src/core/production/index.ts"
   - "src/app/project/use-production.tsx"
+  - "src/app/projects/ProductionDialog.tsx"
   verification:
   - "tests/unit/production.test.ts"
   - "tests/db/run-db-tests.ts (DEC-0057)"
@@ -12646,7 +13345,9 @@ requirements:
   - date: '2026-10-11'
     decision: DEC-0057
     change: "Eget navn, rekkefølge, manus, filmtidslinje og materiale per produksjon; varighet per produksjon gjenstår"
-  notes: ''
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: implementert, men ikke fullt dekket av tester"
+  notes: "Sceneorden, manus og egne versjoner er testet, men eget navn (kan bare settes ved opprettelse), egen varighetsberegning og egne eksportfiler per produksjon har ingen egne tester."
 - id: REQ-0356
   title: Flytte/skjule scene i spinoff uavhengig av hovedfilm
   text: En scene skal kunne flyttes eller skjules i en spinoff uten at den flyttes eller skjules i hovedfilmen.
@@ -12745,13 +13446,22 @@ requirements:
   - Gitt to produksjoner i samme prosjekt, så har hver sin egen liste over aktive sceneforekomster og sin egen filmmontering.
   tests:
   - 'enhet: datamodell knytter filmmontering og sceneforekomster til produksjon-ID'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/model.ts"
+  - "src/core/views.ts#orderedOccurrences"
+  - "src/core/assembly/film.ts#filmClips"
+  verification:
+  - "tests/invariants/random-sequences.test.ts::INV-04: kommandoer i én produksjon endrer aldri en annen produksjons forekomster"
+  - "tests/invariants/random-sequences.test.ts::INV-01: manus og film har alltid samme aktive rekkefølge i alle produksjoner"
+  - "tests/unit/production.test.ts::rekkefølge og synlighet i spinoffen endrer ikke hovedfilmen (REQ-0356)"
+  - "tests/unit/commands.test.ts::flytting i spinoffen endrer ikke hovedfilmens rekkefølge"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: bygd og dekket av eksisterende tester"
   notes: Formulert som konstatering («har dermed»); registrert som arkitekturkrav. Må støttes av datamodellen i
     fase 1.
 - id: REQ-0359
@@ -12780,7 +13490,7 @@ requirements:
   tests:
   - 'integrasjon: gjenbruk av hver ressurstype i spinoff'
   - 'e2e: bygg spinoff kun av gjenbrukt materiale'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - "src/core/production/index.ts"
   verification:
@@ -12794,7 +13504,9 @@ requirements:
   - date: '2026-10-11'
     decision: DEC-0057
     change: "Gjenbruk av manusscener, 2D-animatics, ressurser og lyd; ferdig film og AI-video gjenstår (KI-109)"
-  notes: ''
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: implementert, men ikke fullt dekket av tester"
+  notes: "Gjenbruk av scener, ferdige filmklipp og 2D-scener er testet, men ikke hver av de ni ressurstypene (bl.a. lyd og stilprofiler) i en spinoff."
 - id: REQ-0360
   title: Referansebasert gjenbruk av versjonert kildemateriale
   text: Gjenbruk skal i utgangspunktet være basert på referanser til versjonert kildemateriale, slik at unødvendig
@@ -14533,15 +15245,20 @@ requirements:
   tests:
   - 'integrasjon: aggregering av nøkkeltall'
   - 'e2e: endre scenestatus og se oversikt oppdateres'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/assembly/status.ts#productionStatus"
+  - "src/app/projects/DurationOverview.tsx"
+  - "src/app/projects/ProjectOverview.tsx"
+  - "src/app/ai/AiPanel.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: Fase 2 nevner «en enkel produksjonsoversikt»; renderingsjobber/API-kostnader (fase 5) og avvik (fase 6)
-    kommer senere.
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: implementert, men ikke fullt dekket av tester"
+  notes: "Tallene for scener, varighet og avvik er testet i production-status.test.ts, men ingen test viser at oversikten viser alle ti nøkkeltall (jobber og API-kostnad ligger i AI-panelet)."
 - id: REQ-0406
   title: Filtrering av oversikten
   text: 'Brukeren skal kunne filtrere oversikten etter: produksjon, scene, karakter, objekt, status, ressursendring,
@@ -14563,14 +15280,25 @@ requirements:
   tests:
   - 'enhet: filterlogikk'
   - 'e2e: filtrer på karakter og status'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/assembly/status.ts#filterStatusRows"
+  - "src/app/projects/DurationOverview.tsx"
+  verification:
+  - "tests/unit/production-status.test.ts::filter på status, ressurs, avvik og tekst"
+  - "tests/unit/production-status.test.ts::ressursendring: scener der 2D-scenen viser et eldre bilde enn det godkjente"
+  - "tests/unit/production-status.test.ts::språk: bare aktive scener med linjer som ikke er ferdig oversatt"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: Filtre for ressursendring, språk og uavklarte avvik avhenger av fase 6–7.
+  - date: '2026-10-12'
+    decision: DEC-0067
+    change: "Filter på produksjon, scene (tekst), karakter/objekt/sted, status og uavklarte avvik"
+  - date: '2026-10-12'
+    decision: DEC-0068
+    change: "Filter også på ressursendring og språk (ikke ferdig oversatt)"
+  notes: "Mangler filter på ressursendring og språk."
 - id: REQ-0407
   title: Langvarige prosjekter uten tap av arbeid
   text: 'Prosjektet skal bevare arbeidet over tid. Brukeren skal kunne forlate programmet og fortsette senere uten
@@ -14623,13 +15351,23 @@ requirements:
   - Brukeren kan se, eksportere, endre og slette sine prosjektdata.
   tests:
   - 'manuell: gjennomgang av dataeierskap'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/backup/index.ts"
+  - "src/adapters/storage/backup.functions.ts"
+  - "src/adapters/storage/project-admin.functions.ts"
+  - "src/app/projects/ProjectDangerDialogs.tsx"
+  verification:
+  - "tests/unit/backup.test.ts::tar med alle prosjektdata, manusversjoner, historikk og en liste over alle filer"
+  - "tests/db/run-db-tests.ts::DEC-0022: kommandoer fra kjernen lagres atomisk og leses tilbake identisk"
+  - "tests/db/run-db-tests.ts::0011: sletting fjerner alt innhold unntatt ressursene; ingen kan skrive etterpå"
+  - "tests/db/run-db-tests.ts::0011: ressursene i et slettet prosjekt slettes for godt i en egen operasjon"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: bygd og dekket av eksisterende tester"
   notes: ''
 - id: REQ-0409
   title: Vedvarende lagring av prosjektinformasjon
@@ -14807,10 +15545,16 @@ requirements:
   tests:
   - 'integrasjon: nøkkel ikke lesbar fra klient'
   - 'manuell: sikkerhetsgjennomgang'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/adapters/ai/generate-image.functions.ts"
-  verification: []
+  - "src/adapters/ai/gateway.ts"
+  - "src/integrations/supabase/client.server.ts"
+  - "src/adapters/ai/key-vault.server.ts"
+  - "src/adapters/ai/provider-keys.functions.ts"
+  verification:
+  - "tests/unit/ai-providers.test.ts"
+  - "tests/db/run-db-tests.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -14818,7 +15562,12 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0045
     change: "Under arbeid: Lovable-nøkkelen ligger bare på serveren"
-  notes: Nøkler brukes fra fase 5, men arkitekturen for hemmeligheter bør være på plass i fundamentet.
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: implementert, men ikke fullt dekket av tester"
+  - date: '2026-10-12'
+    decision: DEC-0069
+    change: "API-nøkler: kryptert lagring, bare de fire siste tegnene vises, fjerning sletter raden."
+  notes: "Bare én plattformnøkkel (LOVABLE_API_KEY) finnes, som hemmelighet i Lovable Cloud brukt fra serverfunksjoner; ingen automatisk test søker etter nøkler i klientbunt, backup eller logger."
 - id: REQ-0414
   title: Logging avslører ikke tilgangsopplysninger
   text: Loggføring må ikke avsløre sensitive tilgangsopplysninger.
@@ -14838,9 +15587,10 @@ requirements:
   tests:
   - 'enhet: logg-redigering av hemmeligheter'
   - 'integrasjon: søk etter nøkkel i logger'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
-  - src/adapters/storage/commands.functions.ts
+  - "src/adapters/storage/commands.functions.ts"
+  - "src/adapters/ai/gateway.ts#gatewayError"
   verification: []
   history:
   - date: '2026-10-08'
@@ -14849,7 +15599,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: delvis implementert (se implementation)'
-  notes: ''
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: implementert, men ikke fullt dekket av tester"
+  notes: "Feilmeldinger og logglinjer tar ikke med nøkkelen, men ingen test sjekker logglinjer ved feilet API-kall."
 - id: REQ-0415
   title: Skille mellom lagringskategorier
   text: 'Systemet må skille mellom: redigerbare prosjektdata, kildemedier, genererte mediefiler, midlertidige renderingsfiler,
@@ -14935,10 +15687,12 @@ requirements:
   tests:
   - 'import/eksport: eksport per omfang'
   - 'e2e: eksporter valgte scener'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
   - "src/core/assembly/film.ts"
   - "src/app/assembly/ExportAnimaticDialog.tsx"
+  - "src/app/project/use-production.tsx"
+  - "src/app/projects/ProductionDialog.tsx"
   verification:
   - "tests/unit/assembly.test.ts::hele filmen, én scene og et utvalg"
   history:
@@ -14948,6 +15702,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0043
     change: "Hele filmen, valgt scene og fra–til scene; spinoff og trailer kommer med M7"
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "Eksportdialogen gir hele filmen, én scene og et fra–til-utvalg for valgt produksjon, og med produksjonsvelgeren kan spinoff, trailer og pitchfilm eksporteres som egne produksjoner; bare hovedfilm, én scene og utvalg er dekket av test."
   notes: Spinoff/trailer-eksport avhenger av fase 7.
 - id: REQ-0418
   title: Hybrid eksport av blandet materiale
@@ -14976,6 +15733,7 @@ requirements:
   status: Under arbeid
   implementation:
   - "src/engine/export/animatic.ts"
+  - "src/app/assembly/ExportAnimaticDialog.tsx"
   verification: []
   history:
   - date: '2026-10-08'
@@ -14984,6 +15742,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0044
     change: "Eksport av 2D-animasjon med dialog, musikk og effekter; importert og AI-generert film kommer senere"
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "Eksportdialogen sier hvilken produksjon som eksporteres og at film, AI-video og 2D-animatic blandes slik monteringen viser."
   notes: ''
 - id: REQ-0419
   title: Manuseksport med valgt nummerering
@@ -15195,14 +15956,18 @@ requirements:
   - Alle skjermbilder bruker samme designsystem (farger, typografi, komponenter).
   tests:
   - 'visuell: designgjennomgang på tvers av moduler'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/styles.css"
+  - "docs/design/DESIGN_SYSTEM.md"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: implementert, men ikke fullt dekket av tester"
+  notes: "Alle skjermer bruker de samme tokenene i styles.css, men ingen automatisk test kontrollerer at designsystemet brukes overalt."
 - id: REQ-0425
   title: Foretrukket visuelt uttrykk
   text: 'Det visuelle uttrykket skal fortrinnsvis ha: mørk eller dempet filmatisk arbeidsflate, god kontrast, tydelig
@@ -15225,14 +15990,18 @@ requirements:
   tests:
   - 'visuell: kontrastmåling'
   - 'manuell: designgjennomgang mot de åtte punktene'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/styles.css"
+  - "docs/design/DESIGN_SYSTEM.md"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: Original modalitet er «Foretrekk».
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: implementert, men ikke fullt dekket av tester"
+  notes: "Mørk flate og kontrast (AA, beregnet i DESIGN_SYSTEM.md) er på plass, men ingen automatisk kontrasttest finnes."
 - id: REQ-0426
   title: Unngå leketøy- eller AI-demo-uttrykk
   text: Unngå et visuelt uttrykk som minner om et leketøy eller en tilfeldig AI-demo.
@@ -15251,13 +16020,18 @@ requirements:
   - Manuell designgjennomgang bekrefter at grensesnittet fremstår som et profesjonelt produksjonsverktøy.
   tests:
   - 'manuell: designgjennomgang'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "docs/design/DESIGN_SYSTEM.md"
+  - "src/styles.css"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "Designsystemet forbyr leketøys- og AI-demo-uttrykk, og en gjennomgang 12.10.2026 fant ingen emoji, «magi»-ord eller utropspreget markedsføringstekst i src/app og src/routes; den manuelle designgjennomgangen kravet krever, er ikke gjort."
   notes: ''
 - id: REQ-0427
   title: Logisk tilgang til hovedområder
@@ -15279,14 +16053,19 @@ requirements:
   - Hvert av de 14 områdene kan nås fra hovednavigasjonen eller en logisk overordnet visning.
   tests:
   - 'e2e: naviger til hvert område'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/shell/ProjectNav.tsx"
+  - "src/app/projects/ProjectOverview.tsx"
+  - "src/app/project/use-production.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: «bør». Områdene innføres gradvis i takt med fasene.
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: implementert, men ikke fullt dekket av tester"
+  notes: "Alle 14 områdene kan nås (flere samlet på oversikten, i biblioteket og i monteringen), men ingen test går gjennom navigasjonen til hvert område."
 - id: REQ-0428
   title: Hovedområder som funksjonelle moduler, ikke faner
   text: Hovedområdene er funksjonelle moduler, ikke nødvendigvis én separat navigasjonsfane for hver funksjon.
@@ -15306,14 +16085,18 @@ requirements:
   - Informasjonsarkitekturen kan samle flere områder i én visning uten å bryte tilgangen til hvert område.
   tests:
   - 'manuell: IA-gjennomgang'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/shell/ProjectNav.tsx"
+  - "src/app/projects/ProjectOverview.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: implementert, men ikke fullt dekket av tester"
+  notes: "Oversikten samler format, AI-jobber, budsjett og produksjoner i én visning; kravet er en designregel uten egen test."
 - id: REQ-0429
   title: Foreslå informasjonsarkitektur som reduserer kompleksitet
   text: Utviklingspartneren skal foreslå en gjennomarbeidet informasjonsarkitektur som reduserer kompleksiteten
@@ -15474,10 +16257,19 @@ requirements:
     og dette ansvaret ligger ikke i andre moduler.'
   tests:
   - 'manuell: arkitekturgjennomgang av ansvarsgrenser'
-  status: Under arbeid
+  status: Verifisert
   implementation:
-  - src/core/
-  verification: []
+  - "src/core/"
+  - "docs/architecture/ARCHITECTURE.md"
+  - "src/core/model.ts"
+  - "src/core/ids.ts"
+  - "src/core/commands/apply.ts"
+  - "src/core/invariants.ts"
+  verification:
+  - "tests/unit/commands.test.ts"
+  - "tests/unit/core-basics.test.ts"
+  - "tests/unit/production.test.ts"
+  - "tests/invariants/random-sequences.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -15485,6 +16277,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: delvis implementert (se implementation)'
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "ARCHITECTURE.md knytter Project Core til core/model, core/commands og core/invariants, som har ansvaret for prosjekter, produksjoner, permanente ID-er og relasjoner, dekket av enhets- og invarianttester."
   notes: Linje 1307/1308 duplikat.
 - id: REQ-0434
   title: 'Modul: Screenplay Engine'
@@ -15507,13 +16302,29 @@ requirements:
     paginering, versjonering og eksport, og dette ansvaret ligger ikke i andre moduler.'
   tests:
   - 'manuell: arkitekturgjennomgang av ansvarsgrenser'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "docs/architecture/ARCHITECTURE.md"
+  - "src/core/screenplay/parse.ts"
+  - "src/core/screenplay/paginate.ts"
+  - "src/core/screenplay/versions.ts"
+  - "src/engine/import/pdf-lines.ts"
+  - "src/engine/import/docx-lines.ts"
+  - "src/engine/export/screenplay-pdf.ts"
+  - "src/engine/export/screenplay-docx.ts"
+  verification:
+  - "tests/unit/screenplay-parse.test.ts"
+  - "tests/unit/paginate.test.ts"
+  - "tests/unit/versions.test.ts"
+  - "tests/unit/export.test.ts"
+  - "tests/golden/reference-screenplay.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "ARCHITECTURE.md knytter Screenplay Engine til core/screenplay, engine/import og manuseksporten, som dekker import, parsing, struktur, formatering, paginering, versjoner og eksport med tester."
   notes: Linje 1310/1311 duplikat.
 - id: REQ-0435
   title: 'Modul: Timeline & Assembly Engine'
@@ -15536,10 +16347,18 @@ requirements:
     tidskoder, klipp og sammenstilling, og dette ansvaret ligger ikke i andre moduler.'
   tests:
   - 'manuell: arkitekturgjennomgang av ansvarsgrenser'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/core/assembly/film.ts"
-  verification: []
+  - "docs/architecture/ARCHITECTURE.md"
+  - "src/core/time.ts"
+  - "src/core/views.ts"
+  - "src/core/assembly/edit.ts"
+  verification:
+  - "tests/unit/assembly.test.ts"
+  - "tests/unit/clip-edit.test.ts"
+  - "tests/unit/core-basics.test.ts"
+  - "tests/unit/film-and-delete.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -15547,6 +16366,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0043
     change: "Timeline & Assembly Engine del 1"
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "ARCHITECTURE.md knytter Timeline & Assembly Engine til core/time.ts, core/views.ts og core/assembly, som håndterer sceneforekomster, filmrekkefølge, tidskoder, klipp og sammenstilling med tester."
   notes: ''
 - id: REQ-0436
   title: 'Modul: Resource Library'
@@ -15635,13 +16457,24 @@ requirements:
     multiplan-effekter og lokal avspilling, og dette ansvaret ligger ikke i andre moduler.'
   tests:
   - 'manuell: arkitekturgjennomgang av ansvarsgrenser'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "docs/architecture/ARCHITECTURE.md"
+  - "src/core/composition/render.ts"
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/fields.ts"
+  - "src/engine/compositor/canvas.ts"
+  verification:
+  - "tests/unit/composition.test.ts"
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/scene-editor-3.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "ARCHITECTURE.md knytter 2D Composition Engine til core/composition og engine/compositor, som står for lag, transformasjoner, nøkkelbilder, multiplan-dybde og lokal avspilling, dekket av tester."
   notes: ''
 - id: REQ-0439
   title: 'Modul: Camera & Motion Engine'
@@ -15664,13 +16497,26 @@ requirements:
     og easing, og dette ansvaret ligger ikke i andre moduler.'
   tests:
   - 'manuell: arkitekturgjennomgang av ansvarsgrenser'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "docs/architecture/ARCHITECTURE.md"
+  - "src/core/composition/path.ts"
+  - "src/core/composition/camera-handoff.ts"
+  - "src/core/composition/animate.ts"
+  - "src/core/composition/render.ts"
+  - "src/app/scene-editor/CameraPanel.tsx"
+  verification:
+  - "tests/unit/animate.test.ts"
+  - "tests/unit/camera-handoff.test.ts"
+  - "tests/unit/camera-overlay.test.ts"
+  - "tests/unit/composition.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "ARCHITECTURE.md knytter Camera & Motion Engine til kamera, Bézier-baner (path.ts), kameraoverlevering og easing i core/composition, dekket av tester."
   notes: ''
 - id: REQ-0440
   title: 'Modul: Audio Engine'
@@ -15693,10 +16539,14 @@ requirements:
     synkronisering, og dette ansvaret ligger ikke i andre moduler.'
   tests:
   - 'manuell: arkitekturgjennomgang av ansvarsgrenser'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/engine/audio/mixer.ts"
-  verification: []
+  - "docs/architecture/ARCHITECTURE.md"
+  - "src/core/audio/index.ts"
+  verification:
+  - "tests/unit/audio.test.ts"
+  - "tests/unit/audio-flow.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -15704,6 +16554,9 @@ requirements:
   - date: '2026-10-09'
     decision: DEC-0044
     change: "Audio Engine del 1: dekoding, plassering, miksing og eksport"
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "ARCHITECTURE.md knytter Audio Engine til core/audio og engine/audio, som håndterer dialog, språk per lydklipp, musikk, effekter, volumkurver og synk mot scenene, dekket av tester."
   notes: Linje 1325/1326 duplikat.
 - id: REQ-0441
   title: 'Modul: Prompt Orchestration Engine'
@@ -15726,13 +16579,30 @@ requirements:
     engelskspråklige, modellspesifikke genereringsinstruksjoner, og dette ansvaret ligger ikke i andre moduler.'
   tests:
   - 'manuell: arkitekturgjennomgang av ansvarsgrenser'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/image-prompt.ts"
+  - "src/core/generation/scene-prompt.ts"
+  - "docs/architecture/ARCHITECTURE.md"
+  - "src/core/generation/prompt.ts"
+  - "src/core/generation/model-prompt.ts"
+  - "src/core/generation/prompt-writer.ts"
+  - "src/core/generation/style.ts"
+  verification:
+  - "tests/unit/style-prompt.test.ts"
+  - "tests/unit/model-prompt.test.ts"
+  - "tests/unit/prompt-writer.test.ts"
+  - "tests/unit/ai-control.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-11'
+    decision: DEC-0065
+    change: "Sammensetting av engelske beskrivelser for bilder og video fra prosjektets data og stil"
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "ARCHITECTURE.md knytter Prompt Orchestration Engine til core/generation, som setter sammen engelske, modellspesifikke beskrivelser for bilde, lyd og video, dekket av tester."
   notes: Linje 1328/1329 duplikat.
 - id: REQ-0442
   title: 'Modul: Provider Adapters'
@@ -15755,13 +16625,21 @@ requirements:
     og dette ansvaret ligger ikke i andre moduler.'
   tests:
   - 'manuell: arkitekturgjennomgang av ansvarsgrenser'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "docs/architecture/ARCHITECTURE.md"
+  - "src/adapters/ai/providers.server.ts"
+  - "src/adapters/ai/gateway.ts"
+  - "src/core/generation/providers.ts"
+  verification:
+  - "tests/unit/ai-providers.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "ARCHITECTURE.md knytter Provider Adapters til adapters/ai, der hver leverandør har sin adapter med nøkkelkontroll, jobbstart og statusoppfølging, testet med falskt nettverk."
   notes: Linje 1331/1332 duplikat.
 - id: REQ-0443
   title: 'Modul: Quality & Cost Engine'
@@ -15784,13 +16662,20 @@ requirements:
     og kostnadsestimering, og dette ansvaret ligger ikke i andre moduler.'
   tests:
   - 'manuell: arkitekturgjennomgang av ansvarsgrenser'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/generation/cost.ts"
+  - "src/core/generation/providers.ts"
+  - "src/adapters/ai/ai-gate.server.ts"
+  - "src/app/ai/AiPanel.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "Modellvalg og innsatsnivå (providers.ts), budsjett, forbruk og kostnadsanslag (cost.ts) og kostnadsporten finnes med tester, men ARCHITECTURE.md nevner ikke providers.ts under Quality & Cost Engine, så ansvarsgrensen for modellvalg og kvalitetsprofiler er ikke dokumentert."
   notes: ''
 - id: REQ-0444
   title: 'Modul: Render Queue'
@@ -15813,13 +16698,24 @@ requirements:
     og dette ansvaret ligger ikke i andre moduler.'
   tests:
   - 'manuell: arkitekturgjennomgang av ansvarsgrenser'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "docs/architecture/ARCHITECTURE.md"
+  - "src/core/generation/queue.ts"
+  - "src/adapters/ai/queue.functions.ts"
+  - "src/adapters/ai/video-followup.server.ts"
+  - "src/routes/api/cron/ai-jobs.ts"
+  - "db/migrations/0025_ai_queue.sql"
+  verification:
+  - "tests/unit/ai-queue.test.ts"
+  - "tests/unit/ai-claim.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "Render Queue er realisert som vedvarende jobber i generation_jobs med prioritet, kø, fremdrift, status og feilhåndtering, sendt av køfunksjonen og fulgt opp i bakgrunnen, dekket av tester."
   notes: ''
 - id: REQ-0445
   title: 'Modul: Version & Dependency Engine'
@@ -15842,11 +16738,21 @@ requirements:
     endringsanalyse og ikke-destruktive oppdateringer, og dette ansvaret ligger ikke i andre moduler.'
   tests:
   - 'manuell: arkitekturgjennomgang av ansvarsgrenser'
-  status: Under arbeid
+  status: Verifisert
   implementation:
-  - src/core/commands/apply.ts
-  - db/migrations/0001_core.sql
-  verification: []
+  - "src/core/commands/apply.ts"
+  - "db/migrations/0001_core.sql"
+  - "docs/architecture/ARCHITECTURE.md"
+  - "src/core/screenplay/versions.ts"
+  - "src/core/assembly/discrepancy.ts"
+  - "src/core/library/impact.ts"
+  - "src/core/production/promote.ts"
+  verification:
+  - "tests/unit/versions.test.ts"
+  - "tests/unit/discrepancy.test.ts"
+  - "tests/unit/analysis.test.ts"
+  - "tests/unit/promote.test.ts"
+  - "tests/unit/undo-group.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -15854,6 +16760,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: delvis implementert (se implementation)'
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "ARCHITECTURE.md knytter Version & Dependency Engine til kommandoer med inverser, manusversjoner, avviksdeteksjon, konsekvensanalyse og tilbakeføring, dekket av tester."
   notes: Versjoner defineres i fase 1; avviksdeteksjon/endringsanalyse i fase 6.
 - id: REQ-0446
   title: 'Modul: Localization Engine'
@@ -15915,13 +16824,14 @@ requirements:
     og dette ansvaret ligger ikke i andre moduler.'
   tests:
   - 'manuell: arkitekturgjennomgang av ansvarsgrenser'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/core/presentation/poster.ts"
   - "src/core/presentation/relations.ts"
   - "src/core/presentation/metrics.ts"
   - "src/core/presentation/document.ts"
   - "src/engine/export/poster-pdf.ts"
+  - "docs/architecture/ARCHITECTURE.md"
   verification:
   - "tests/unit/presentation.test.ts"
   history:
@@ -15931,6 +16841,9 @@ requirements:
   - date: '2026-10-11'
     decision: DEC-0061
     change: "Presentasjonsmodulen: plakater, relasjoner og eksport. Stilharmonisering med AI venter på godkjent kostnad"
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "ARCHITECTURE.md knytter Presentation Engine til core/presentation og plakateksporten, som håndterer plakater, relasjoner (karakterkart) og eksport, dekket av tester."
   notes: ''
 - id: REQ-0448
   title: 'Modul: Export Engine'
@@ -15987,10 +16900,16 @@ requirements:
     og dataintegritet, og dette ansvaret ligger ikke i andre moduler.'
   tests:
   - 'manuell: arkitekturgjennomgang av ansvarsgrenser'
-  status: Under arbeid
+  status: Verifisert
   implementation:
-  - db/migrations/0001_core.sql
-  verification: []
+  - "db/migrations/0001_core.sql"
+  - "docs/architecture/ARCHITECTURE.md"
+  - "src/adapters/storage/commands.functions.ts"
+  - "src/adapters/ai/key-vault.server.ts"
+  verification:
+  - "tests/db/run-db-tests.ts"
+  - "tests/unit/storage-contract.test.ts"
+  - "tests/unit/ai-providers.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -15998,6 +16917,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: delvis implementert (se implementation)'
+  - date: '2026-10-12'
+    decision: DEC-0071
+    change: "Security & Storage er realisert med RLS og rollematrise, skriving bare via runCommand/apply_changes, krypterte API-nøkler og private Storage-bøtter, dekket av databasetester, kontrakttest og krypteringstester."
   notes: Linje 1348/1349 duplikat. «Tilgangskontroll» – flerbruker registreres separat.
 - id: REQ-0450
   title: Faseinndelt utvikling
@@ -16826,14 +17748,19 @@ requirements:
   - Søk i UI-tekster, metadata og eksportfiler finner ikke «AI Animatic Studio».
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/routes/__root.tsx"
+  - "src/engine/export/screenplay-pdf.ts"
+  - "src/engine/export/poster-pdf.ts"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: Oppsummerer kap. 1.1.
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: implementert, men ikke fullt dekket av tester"
+  notes: "Ingen treff på «AI Animatic Studio» i kode og eksport i dag, men ingen automatisk test søker etter det."
 - id: REQ-0480
   title: 'Prinsipp 2: Manus og film alltid strukturelt synkronisert'
   text: Manus og film skal alltid være strukturelt synkronisert. De skal bygge på samme prosjektmodell.
@@ -16890,13 +17817,22 @@ requirements:
   - Alle relasjoner refererer interne ID-er; omnummerering endrer ingen relasjon.
   tests:
   - 'enhet: ID-stabilitet ved flytting/omnummerering'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/ids.ts"
+  - "src/core/model.ts"
+  - "src/core/screenplay/numbering.ts"
+  verification:
+  - "tests/invariants/random-sequences.test.ts::INV-02/03: ingen scene, forekomst eller produksjonsnummer forsvinner eller bytter scene"
+  - "tests/unit/versions.test.ts::en scene som bare har fått nytt nummer, er ikke en ny scene (mandat 5.1)"
+  - "tests/unit/numbering.test.ts::eksport endrer ikke prosjektet (REQ-0085)"
+  - "tests/unit/commands.test.ts::én kommando endrer rekkefølgen i både manus og film, uten nye ID-er"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: bygd og dekket av eksisterende tester"
   notes: Oppsummerer kap. 3.1, 3.2, 8.2.
 - id: REQ-0482
   title: 'Prinsipp 4: Eksportnummerering velges av brukeren hver gang'
@@ -16918,14 +17854,21 @@ requirements:
   - Hver manuseksport krever nummereringsvalg; interne ID-er er uendret etter eksport.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/script/ExportDialog.tsx"
+  - "src/core/screenplay/numbering.ts#exportNumbering"
+  verification:
+  - "tests/unit/numbering.test.ts::eksport endrer ikke prosjektet (REQ-0085)"
+  - "tests/unit/numbering.test.ts::fortløpende: aktive scener får 1..N (REQ-0081)"
+  - "tests/visual/screens.mjs::12-eksport-dialog"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: Oppsummerer kap. 5.2, 29.3. Linje 1493/1494 duplikat.
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: bygd og dekket av eksisterende tester"
+  notes: "Bare skjermbilde som bevis; mangler test som kontrollerer valget/eksporten."
 - id: REQ-0483
   title: 'Prinsipp 5: Norsk er hovedmanus'
   text: Norsk er hovedmanus. Engelsk er en tilknyttet språkversjon.
@@ -16947,13 +17890,19 @@ requirements:
   - Endringer i engelsk versjon endrer ikke norsk hovedmanus automatisk.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/translation/index.ts"
+  - "src/core/model.ts#PRIMARY_LANGUAGE"
+  verification:
+  - "tests/unit/translation.test.ts::lagres som egen tekst for samme replikk; norsk endres ikke (REQ-0331/0339)"
+  - "tests/unit/translation.test.ts::endres norsk etterpå, må oversettelsen gjennomgås; endret tilbake er den i orden (REQ-0330)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: bygd og dekket av eksisterende tester"
   notes: Oppsummerer kap. 23.1, 23.2, 23.3. Linje 1496/1497 duplikat.
 - id: REQ-0484
   title: 'Prinsipp 6: Mange produksjonsversjoner per scene'
@@ -16975,10 +17924,14 @@ requirements:
   - En scene med flere versjoner beholder alle tidligere versjoner etter at ny aktiv versjon velges.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Under arbeid
+  status: Verifisert
   implementation:
-  - src/core/model.ts
-  verification: []
+  - "src/core/model.ts"
+  - "src/core/commands/apply.ts"
+  verification:
+  - "tests/unit/film-and-delete.test.ts::filmen tas i bruk med sin lengde, og animatic kan tas i bruk igjen uten at filmen forsvinner"
+  - "tests/unit/reupload.test.ts::den nye versjonen tar over godkjenning, lag og plakater; den gamle står"
+  - "tests/invariants/random-sequences.test.ts::INV-07/13: produsert materiale og historikk endres eller slettes aldri"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -16986,6 +17939,8 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: delvis implementert (se implementation)'
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: bygd og dekket av eksisterende tester"
   notes: Oppsummerer kap. 3.3, 15.3, 16.4, 17.4, 21.5. Linje 1499/1500 duplikat.
 - id: REQ-0485
   title: 'Prinsipp 7: Manusendringer flagger berørt materiale'
@@ -17087,14 +18042,22 @@ requirements:
   - Med alle AI-adaptere deaktivert kan en animatic spilles av og eksporteres.
   tests:
   - 'integrasjon: avspilling/eksport uten nettverk til AI'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/engine/export/animatic.ts"
+  - "src/engine/compositor/film.ts"
+  - "src/core/composition/render.ts"
+  verification:
+  - "tests/visual/screens.mjs::48-montering-eksport-ferdig"
+  - "tests/visual/screens.mjs::36-sceneeditor-avspilling"
+  - "tests/architecture/core-purity.test.ts::importerer ikke rammeverk, backend eller plattform-API-er"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: Oppsummerer kap. 1 (linje 25), 14, 29. Linje 1507/1508 duplikat.
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: bygd og dekket av eksisterende tester"
+  notes: "Bare skjermbilde som bevis; mangler test som kontrollerer valget/eksporten."
 - id: REQ-0488
   title: 'Prinsipp 10: Lagbasert multiplan-inspirert 2D-editor'
   text: 2D-editoren skal være lagbasert og inspirert av tradisjonell multiplan-animasjon.
@@ -17114,13 +18077,21 @@ requirements:
   - En scene kan bygges av flere lag med dybde, og kamerabevegelse gir parallakse mellom lag.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/composition/render.ts"
+  - "src/core/composition/index.ts"
+  - "src/engine/compositor/canvas.ts"
+  verification:
+  - "tests/unit/composition.test.ts::legger til bilde- og fargelag, nytt lag foran, og angre/gjenopprett gir identiske lag"
+  - "tests/unit/composition.test.ts::viewMatrix: parallakse 0 er identitet (uten rotasjon), parallakse 1 flytter kameraets sentrum til midten"
+  - "tests/unit/composition.test.ts::viewMatrix: parallakse 0 står stille ved panorering og zoom, men ruller med kameraet"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: bygd og dekket av eksisterende tester"
   notes: Oppsummerer kap. 11, 11.1. Linje 1509/1510 duplikat.
 - id: REQ-0489
   title: 'Prinsipp 11: Modellagnostisk AI med synlige prompter'
@@ -17142,13 +18113,17 @@ requirements:
     før sending.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/ai/SentPrompts.tsx"
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Teksten slik den sendes til modellen vises i bekreftelsen («Se det som sendes»)."
   notes: Oppsummerer kap. 17.1, 17.3, 19.2.
 - id: REQ-0490
   title: 'Prinsipp 12: Engelske AI-instruksjoner og prompter'
@@ -17168,13 +18143,22 @@ requirements:
   - Genererte prompter er på engelsk med mindre brukeren eksplisitt overstyrer.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/scene-prompt.ts#buildScenePrompt"
+  - "src/core/generation/image-prompt.ts#buildContextImagePrompt"
+  - "src/core/generation/prompt-writer.ts#PROMPT_WRITER_SYSTEM"
+  verification:
+  - "tests/unit/ai-control.test.ts::er på engelsk, tar med replikkene ordrett og beskriver kontinuitet"
+  - "tests/unit/style-prompt.test.ts::tar med filmen, stilen, scenen med lys, andre i scenen, godkjente bilder og det som skal unngås"
+  - "tests/unit/prompt-writer.test.ts::instruksen krever engelsk, tekniske krav, bildene og det som skal unngås"
+  - "tests/unit/ai-control.test.ts::lagres, endres, tilbakestilles og angres; forsvinner ikke ved ny inndeling"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: bygd og dekket av eksisterende tester"
   notes: Oppsummerer kap. 1.3, 17.2.
 - id: REQ-0491
   title: 'Prinsipp 13: Brukeren kontrollerer kvalitet, modell og kostnad'
@@ -17196,13 +18180,18 @@ requirements:
   - Ingen betalt generering starter uten at brukeren har valgt/godkjent modell, kvalitetsnivå og kostnadsestimat.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/ai/EffortPicker.tsx"
+  verification:
+  - "tests/unit/ai-effort.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Brukeren velger kvalitet (innsats), modell og ser kostnad før sending."
   notes: Oppsummerer kap. 19.3, 19.5, 19.6.
 - id: REQ-0492
   title: 'Prinsipp 14: Produksjonsteknisk deling av lange scener'
@@ -17225,13 +18214,20 @@ requirements:
   - Etter segmentering er scene-ID, scenenummer og manusstruktur uendret.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/generation/scene-prompt.ts#planSegments"
+  - "src/core/commands/apply.ts"
+  verification:
+  - "tests/invariants/random-sequences.test.ts::INV-10: segmentering endrer aldri scener, manusblokker eller rekkefølge"
+  - "tests/unit/ai-control.test.ts::segmentene følger blokkene, dekker hele scenen og endrer ikke manuset"
+  - "tests/unit/commands.test.ts::segmentering ved utseendeendring midt i scene endrer ikke manus eller nummer (INV-10)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: bygd og dekket av eksisterende tester"
   notes: Oppsummerer kap. 18, 18.1, 18.4.
 - id: REQ-0493
   title: 'Prinsipp 15: Import av ferdig film koblet til manus'
@@ -17252,13 +18248,23 @@ requirements:
   - En importert filmfil kan knyttes til en bestemt manuspassasje og spilles av i tidslinjen.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/LongFilmImportDialog.tsx"
+  - "src/app/assembly/film-import.ts"
+  - "src/core/assembly/film.ts#filmClips"
+  - "src/core/commands/apply.ts"
+  verification:
+  - "tests/unit/film-and-delete.test.ts::filmen tas i bruk med sin lengde, og animatic kan tas i bruk igjen uten at filmen forsvinner"
+  - "tests/unit/clip-edit.test.ts::styrer når replikken skjer, følger scenen når den flyttes, og flagges når klippet er kuttet bort"
+  - "tests/db/run-db-tests.ts::0011: importert film (metadata) og overgang lagres via apply_changes og leses tilbake; metadata er uforanderlig"
+  - "tests/visual/screens.mjs::60-montering-film"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: bygd og dekket av eksisterende tester"
   notes: Oppsummerer kap. 16, 16.1. Linje 1515/1516 duplikat.
 - id: REQ-0494
   title: 'Prinsipp 16: Kontinuerlig beregning av spilletid'
@@ -17279,13 +18285,22 @@ requirements:
   - Estimert og faktisk spilletid oppdateres umiddelbart etter endring i manus eller tidslinje.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/screenplay/duration.ts#estimateProduction"
+  - "src/core/assembly/status.ts#productionStatus"
+  - "src/app/projects/DurationOverview.tsx"
+  verification:
+  - "tests/unit/duration.test.ts::deaktiverte scener utelates fra totalen og legges til igjen ved aktivering (REQ-0115)"
+  - "tests/unit/production-status.test.ts::hver scene én gang, med beste tall: film → 2D-animatic → estimat"
+  - "tests/unit/production-status.test.ts::en deaktivert scene er med i listen, men ikke i summene"
+  - "tests/unit/assembly.test.ts::tidskodene beregnes på nytt når en scene flyttes; scenens egen lengde er uendret (mandat 6.4)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: bygd og dekket av eksisterende tester"
   notes: Oppsummerer kap. 7.1, 7.2, 27.1. Linje 1517/1518 duplikat.
 - id: REQ-0495
   title: 'Prinsipp 17: Varighet på egen oversiktsside'
@@ -17622,13 +18637,18 @@ requirements:
   - Etter lukking og gjenåpning vises alle jobber med korrekt status, og pågående jobber kan gjenopptas.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/adapters/ai/video-followup.server.ts"
+  verification:
+  - "tests/unit/ai-queue.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-12'
+    decision: DEC-0070
+    change: "Jobber og status bevares mellom økter; køen og oppfølgingen fortsetter uten åpen fane."
   notes: Oppsummerer kap. 20.2, 20.4, 27.3. Linje 1538/1539 duplikat.
 - id: REQ-0505
   title: 'Prinsipp 27: Aldri destruktive endringer uten beslutning'
@@ -17653,11 +18673,16 @@ requirements:
   - Ingen operasjon sletter eller overskriver produksjonsmateriale uten eksplisitt brukerbekreftelse; alt er reverserbart.
   tests:
   - 'dataintegritet: regresjonstester for ikke-destruktivitet'
-  status: Under arbeid
+  status: Verifisert
   implementation:
-  - src/core/commands/apply.ts
-  - db/migrations/0001_core.sql
-  verification: []
+  - "src/core/commands/apply.ts"
+  - "db/migrations/0001_core.sql"
+  - "src/core/invariants.ts"
+  verification:
+  - "tests/invariants/random-sequences.test.ts::INV-07/13: produsert materiale og historikk endres eller slettes aldri"
+  - "tests/invariants/random-sequences.test.ts::INV-14: deaktivering sletter ingenting"
+  - "tests/invariants/random-sequences.test.ts::ADR-0005: hver kommando etterfulgt av sin invers gir samme innhold"
+  - "tests/db/run-db-tests.ts::INV-07: produsert materiale kan ikke slettes eller overskrives"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -17665,6 +18690,8 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: delvis implementert (se implementation)'
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: bygd og dekket av eksisterende tester"
   notes: Oppsummerer kap. 2.2, 21.5, 24.5, 25.2, 28.1. Linje 1540/1541 duplikat.
 - id: REQ-0506
   title: 'Prinsipp 28: Portabel arkitektur fra Lovable til desktop'
@@ -18144,9 +19171,10 @@ requirements:
   tests:
   - 'integrasjon: samtidig redigering av ulike blokker – begge bevart'
   - 'integrasjon: samtidig redigering av samme blokk – konflikt oppdages, ingen stille overskriving'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
-  - src/core/commands/apply.ts
+  - "src/core/commands/apply.ts"
+  - "src/app/project/use-commands.ts"
   verification: []
   history:
   - date: '2026-10-08'
@@ -18155,7 +19183,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: delvis implementert (se implementation)'
-  notes: Mekanismen (låsing, sammenslåing eller sanntidssamarbeid) er en teknisk beslutning – se ADR-0004.
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: implementert, men ikke fullt dekket av tester"
+  notes: "Begge kriteriene håndheves i kjernen og databasen (testet), men ingen test viser at konflikten vises i grensesnittet, og den avviste endringen må skrives inn på nytt."
 - id: REQ-0523
   title: Prosjektroller
   text: Prosjektmedlemskap skal ha en rolle som styrer hva medlemmet kan gjøre. Foreslåtte roller er eier, redaktør,
@@ -18339,9 +19369,10 @@ requirements:
   - Gitt at A og B har endret ulike blokker, når A angrer, så reverseres bare A sin endring.
   tests:
   - 'integrasjon: angre for bruker A berører ikke B sine endringer'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
-  - src/core/commands/apply.ts
+  - "src/core/commands/apply.ts"
+  - "src/app/project/use-commands.ts"
   verification: []
   history:
   - date: '2026-10-08'
@@ -18353,8 +19384,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: delvis implementert (se implementation)'
-  notes: Teknisk utledning av DEC-0003 (bekreftet). Selve løsningen er teknisk anbefaling (DEC-0010). Samsvarer
-    med kap. 21.2 C («uten å overskrive andre uavhengige redigeringer»).
+  - date: '2026-10-12'
+    change: "Revisjon natt til 12.10.2026: implementert, men ikke fullt dekket av tester"
+  notes: "Angrelisten er lokal per bruker og bruker inverser med revisjonskontroll, men ingen test viser at A sin angring lar B sin endring stå."
 - id: REQ-0528
   title: Kostnadsgodkjenning er rollestyrt
   text: Bare medlemmer med rett til å godkjenne kostnader skal kunne starte betalte AI-genereringer eller endre
@@ -18423,9 +19455,13 @@ requirements:
   - Etter at B er fjernet, finnes alle scener og versjoner B laget fortsatt, med B som forfatter i historikken.
   tests:
   - 'dataintegritet: fjerning av medlem sletter ingen prosjektdata'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "db/migrations/0023_member_removal_planned.sql#remove_member"
+  - "src/app/projects/MembersSection.tsx"
+  verification:
+  - "tests/db/run-db-tests.ts::0023: eieren fjerner et medlem uten å miste noe; planlagt lengde lagres"
+  - "tests/visual/screens.mjs::78b-fjern-medlem"
   history:
   - date: '2026-10-08'
     decision: DEC-0003
@@ -18433,6 +19469,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0010
     change: 'Revisjon: kilde satt til DEC-0010 (teknisk anbefaling)'
+  - date: '2026-10-12'
+    decision: DEC-0067
+    change: "Eieren kan fjerne et medlem; medlemskapet avsluttes, bidragene og historikken står, ventende invitasjoner trekkes tilbake"
   notes: Teknisk utledning av DEC-0003 (bekreftet). Selve løsningen er teknisk anbefaling (DEC-0010).
 - id: REQ-0530
   title: Claudes rolle i prosjektet
@@ -19668,13 +20707,21 @@ requirements:
   - "Brukeren kan velge leverandør og legge inn egen nøkkel på en sikker måte (REQ-0413)."
   tests:
   - "planlagt"
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/generation/providers.ts"
+  - "src/app/ai/ProvidersDialog.tsx"
+  - "src/adapters/ai/provider-keys.functions.ts"
+  verification:
+  - "tests/unit/ai-providers.test.ts"
   history:
   - date: '2026-10-09'
     decision: DEC-0045
     change: "Opprettet etter beslutning fra Mars"
+  - date: '2026-10-12'
+    decision: DEC-0069
+    change: "Egne AI-leverandører: liste over OpenAI, Google Gemini, fal.ai, Runway og ElevenLabs med veiledning, lenker og innlegging av nøkkel (Mars 12.10.2026)."
+  notes: "Adapterne er ikke prøvd mot de ekte tjenestene (KI-153)."
 - id: REQ-0567
   title: "Slett prosjekt (bare eier)"
   text: "Eieren skal kunne slette et prosjekt fra prosjektlisten. Et alvorlig vindu sier at handlingen ikke kan angres, viser hva som slettes og hvor mange som mister tilgangen, og krever at prosjektnavnet skrives inn. Ressursene (bilder og lyd) slettes ikke sammen med prosjektet."
@@ -20383,3 +21430,151 @@ requirements:
   - date: '2026-10-11'
     decision: DEC-0063
     change: "Opprettet og bygd etter Mars' ønske 2026-10-11"
+- id: REQ-0588
+  title: "Bilder i fullskjerm, nedlasting med prosjektnavn og opplasting igjen"
+  text: "Dobbeltklikk på et bilde i biblioteket skal vise det i fullskjerm med zoom og panorering og mulighet til å laste det ned. Nedlastede bilder skal hete som i prosjektet (ressurs, variant og løpenummer). Lastes en fil med samme navn opp igjen, skal programmet spørre om den skal erstatte bildet (og brukes i alle scener der det er brukt) eller legges til som et nytt bilde med eget navn."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0064
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - LIBRARY
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0135
+  acceptance:
+  - "Dobbeltklikk åpner fullskjerm med zoom (rullehjul og knapper), panorering, bla mellom versjoner og nedlasting."
+  - "Nedlastet fil heter «Ressurs - Variant - vN.<filtype>»; zip-nedlastingen bruker samme navn."
+  - "Opplasting med samme navn gir valget Erstatt / Legg til / Hopp over; Erstatt flytter godkjenning, lag og plakater til den nye versjonen, og den gamle tas vare på."
+  - "Legg til gir ny versjon med eget løpenummer og merknad om opphavet."
+  tests:
+  - "tests/unit/reupload.test.ts"
+  status: Verifisert
+  implementation:
+  - "src/core/library/file-names.ts"
+  - "src/core/library/reupload.ts"
+  - "src/app/library/ImageViewer.tsx"
+  - "src/app/library/ReuploadDialog.tsx"
+  verification:
+  - "tests/unit/reupload.test.ts"
+  - "tests/unit/film-and-delete.test.ts (zip-navn)"
+  - "tests/visual/screens.mjs (71, 72)"
+  history:
+  - date: '2026-10-11'
+    decision: DEC-0064
+    change: "Opprettet og bygd etter Mars' ønske 2026-10-11"
+  - date: '2026-10-11'
+    decision: DEC-0066
+    change: "Mars bekreftet: «Erstatt» gjelder også spinoffer som bruker bildet (KI-141 lukket)"
+- id: REQ-0589
+  title: "Filmens visuelle stil og bildebeskrivelser med sammenheng"
+  text: "Prosjektet skal ha en beskrivelse av filmens visuelle stil (handling, verden, stil, teknikk, farger, lys, stemning, regler for figurer og omgivelser, hva som skal unngås, egne AI-instrukser og forbildebilder). Beskrivelsen som sendes til en bildemodell, skal settes sammen av denne stilen, ressursen og bruken, scenene den er med i (sted, tid på døgnet, årstid, lys, hvem som er der, handlingen, utseendet i scenen) og godkjente bilder i filmen."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0065
+  type: funksjonell
+  priority: P0
+  phase: 5
+  modules:
+  - PROMPT
+  - LIBRARY
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0245
+  - REQ-0147
+  acceptance:
+  - "Filmens visuelle stil kan fylles ut, foreslås fra prosjektet og forhåndsvises som beskrivelse."
+  - "Bildebeskrivelsen har seksjonene FILM, VISUAL STYLE, THIS IMAGE, WHERE IT APPEARS, CONSISTENCY og AVOID (og PROJECT INSTRUCTIONS når det finnes)."
+  - "Fra sceneeditoren brukes scenen laget hører til (sted, inne/ute, tid på døgnet med lys)."
+  - "Beskrivelsen vises og kan endres før noe sendes."
+  - "«Skriv beskrivelsen med AI» lar en språkmodell skrive beskrivelsen ut fra alt over og bildene som sendes med; resultatet vises og kan endres før et bilde genereres, kallet logges og teller ikke i bildebudsjettet (DEC-0066)."
+  - "Dagens bilde (beholdes) og filmens godkjente bilder (bare stil: forbildene i stilen og godkjente figurer/steder i de samme scenene) sendes med til bildemodellen, og beskrivelsen sier hva hvert bilde er (DEC-0066)."
+  tests:
+  - "tests/unit/style-prompt.test.ts"
+  - "tests/unit/prompt-writer.test.ts"
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/generation/style.ts"
+  - "src/core/generation/image-prompt.ts"
+  - "src/app/projects/StyleGuideSection.tsx"
+  - "src/app/library/GenerateImagePanel.tsx"
+  - "db/migrations/0021_style_profiles.sql"
+  - "src/core/generation/prompt-writer.ts"
+  - "src/adapters/ai/write-prompt.functions.ts"
+  - "src/adapters/ai/generate-image.functions.ts"
+  - "src/adapters/ai/gateway.ts"
+  - "db/migrations/0022_ai_prompt_writer.sql"
+  verification:
+  - "tests/unit/style-prompt.test.ts"
+  - "tests/db/run-db-tests.ts (0021 DEC-0065)"
+  - "tests/visual/screens.mjs (73, 74)"
+  - "tests/unit/prompt-writer.test.ts"
+  - "tests/db/run-db-tests.ts (0022 DEC-0066)"
+  - "tests/visual/screens.mjs (75)"
+  history:
+  - date: '2026-10-11'
+    decision: DEC-0065
+    change: "Opprettet og bygd uten språkmodell (gratis). Gjenstår: omskriving med språkmodell og forbildebilder sendt med (venter på kostnadsgodkjenning)"
+  - date: '2026-10-11'
+    decision: DEC-0066
+    change: "Mars godkjente kostnaden: en språkmodell skriver beskrivelsen (knappen «Skriv beskrivelsen med AI»), og filmens godkjente bilder sendes med til bilde- og språkmodellen. Implementert; Verifisert når et ekte kall i Lovable er prøvd"
+- id: REQ-0590
+  title: "Egne AI-leverandører med veiledning, sikre nøkler og overordnet kostnadstak"
+  text: "Løsningen skal vise en liste over de mest brukte AI-leverandørene. Brukeren kan koble til én, flere eller alle; de som er koblet til, blir tilgjengelige for å generere enkeltbilder, videoer og lyder. Ved klikk på en leverandør skal en dialog gi lenker til å opprette konto og abonnement, til stedet der API-nøkkelen hentes, og et felt for å legge inn nøkkelen. Nøkkelen skal sikres etter beste praksis, og det skal være mulig å sette et tak på AI-kostnaden på overordnet nivå."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0069
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - PROVIDER
+  - SECURITY
+  - QUALITYCOST
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0270
+  - REQ-0271
+  - REQ-0282
+  acceptance:
+  - "Dialogen «AI-leverandører» viser OpenAI, Google Gemini, fal.ai, Runway og ElevenLabs (og innebygd Lovable AI) med hva de kan lage og status."
+  - "Hver leverandør har steg på norsk og lenker til konto, betaling, API-nøkkel og priser; nøkkelen prøves hos tjenesten før den lagres."
+  - "Nøkkelen lagres kryptert (AES-256-GCM, bundet til bruker, leverandør og rad), kan aldri leses tilbake fra nettleseren, og bare de fire siste tegnene vises; fjerning sletter den."
+  - "Brukeren kan sette et tak i USD per måned for alt som genereres med nøklene; taket kontrolleres før og etter hver jobb og kan ikke nullstilles ved å slette et prosjekt."
+  - "Bilder (biblioteket og sceneeditoren), video («Generer scene») og lyd (lydressurser) kan lages med tilkoblede leverandører; kostnaden vises og bekreftes først."
+  tests:
+  - "tests/unit/ai-providers.test.ts"
+  - "tests/unit/ai-gate.test.ts"
+  - "tests/unit/ai-video.test.ts"
+  - "tests/unit/ai-sound.test.ts"
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/generation/providers.ts"
+  - "src/core/generation/video.ts"
+  - "src/core/generation/sound.ts"
+  - "src/app/ai/ProvidersDialog.tsx"
+  - "src/app/assembly/SceneVideoSection.tsx"
+  - "src/app/library/GenerateSoundPanel.tsx"
+  - "src/adapters/ai/key-vault.server.ts"
+  - "src/adapters/ai/providers.server.ts"
+  - "src/adapters/ai/provider-keys.functions.ts"
+  - "src/adapters/ai/ai-gate.server.ts"
+  - "src/adapters/ai/video.functions.ts"
+  - "src/adapters/ai/sound.functions.ts"
+  - "db/migrations/0024_ai_providers.sql"
+  verification:
+  - "tests/unit/ai-providers.test.ts"
+  - "tests/unit/ai-gate.test.ts"
+  - "tests/unit/ai-video.test.ts"
+  - "tests/unit/ai-sound.test.ts"
+  - "tests/db/run-db-tests.ts (0024 DEC-0069)"
+  - "tests/visual/screens.mjs (02b, 02c, 02d, 79)"
+  history:
+  - date: '2026-10-12'
+    decision: DEC-0069
+    change: "Opprettet etter Mars' beskrivelse og bygd. Verifisert når hver leverandør er prøvd med en ekte nøkkel (KI-153)"

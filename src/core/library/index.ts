@@ -4,7 +4,7 @@
  * Forslag gjennomføres aldri automatisk – brukeren velger (REQ-0128).
  */
 import type { Asset, AssetKind, AssetVariant, AssetVersion, ProjectState } from "../model";
-import { orderedOccurrences } from "../views";
+import { blocksOfVariant, orderedOccurrences } from "../views";
 import {
   characterName,
   sceneHasWordPrefix,
@@ -151,8 +151,55 @@ function usageIn(
       const i = names.findIndex((n) => sceneHasWordPrefix(s, o.variantId, n));
       if (i >= 0) hit = { how: "text", matchedName: names[i]! };
     }
+    // Betegnelser i bestemte linjer (REQ-0127): «onkel» er Laurits akkurat her
+    if (!hit && asset.contextNames?.length) {
+      const here = contextHit(s, o.variantId, asset);
+      if (here) hit = here;
+    }
     if (hit) out.push({ ...base, ...hit });
   }
+  return out;
+}
+
+/** Treff for en kontekstbetegnelse i scenevarianten (linjene er valgt av brukeren). */
+function contextHit(
+  s: ProjectState,
+  variantId: string,
+  asset: Asset,
+): { how: UsageHow; matchedName: string } | null {
+  for (const n of asset.contextNames ?? [])
+    for (const id of n.blockIds) {
+      const b = s.blocks[id];
+      if (!b || b.removed || b.variantId !== variantId) continue;
+      return { how: b.kind === "character" ? "speaks" : "mentioned", matchedName: n.name };
+    }
+  return null;
+}
+
+/** Betegnelsene som gjelder ressursen i disse linjene (REQ-0127). */
+export function contextNamesIn(asset: Asset, blockIds: ReadonlySet<string>): string[] {
+  return (asset.contextNames ?? [])
+    .filter((n) => n.blockIds.some((id) => blockIds.has(id)))
+    .map((n) => n.name);
+}
+
+/**
+ * Linjer i manuset der en betegnelse forekommer (for å velge hvilke som gjelder ressursen): replikkhoder
+ * med det navnet, og linjer der ordet står. Sortert i manusets rekkefølge per produksjon.
+ */
+export function linesWithWord(
+  s: ProjectState,
+  productionId: string,
+  word: string,
+): { readonly occurrenceId: string; readonly blockId: string; readonly text: string }[] {
+  const w = word.trim();
+  if (w.length < 2) return [];
+  const re = new RegExp(`(^|[^\\p{L}\\p{N}])${escapeRe(w)}($|[^\\p{L}\\p{N}])`, "iu");
+  const out: { occurrenceId: string; blockId: string; text: string }[] = [];
+  for (const o of orderedOccurrences(s, productionId))
+    for (const b of blocksOfVariant(s, o.variantId))
+      if (b.kind !== "heading" && re.test(b.text))
+        out.push({ occurrenceId: o.id, blockId: b.id, text: b.text });
   return out;
 }
 

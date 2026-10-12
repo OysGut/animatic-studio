@@ -428,8 +428,10 @@ export function ExportAnimaticDialog({
         <DialogHeader>
           <DialogTitle>Eksporter animatic</DialogTitle>
           <DialogDescription>
-            Videoen lages her i nettleseren fra 2D-scenene og lydsporene – uten AI og uten
-            kostnader. Eksporten endrer ingenting i prosjektet.
+            Videoen lages her i nettleseren av alt som er i filmen – 2D-scener, importert film,
+            AI-video og lydsporene – uten nye kostnader. Eksporten endrer ingenting i prosjektet.
+            Produksjon: <strong>{state.productions[productionId]?.name ?? "–"}</strong> (en spinoff,
+            trailer eller pitchfilm velges øverst i monteringen).
           </DialogDescription>
         </DialogHeader>
 

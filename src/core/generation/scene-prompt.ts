@@ -9,10 +9,11 @@
  * - Kontinuitet mellom segmenter beskrives eksplisitt (REQ-0262/0263).
  * - Brukerens egne beskrivelser lagres separat (GenerationPrompt) og overstyrer den automatiske.
  */
+import { styleProfileFor } from "./style";
 import type { ProjectState, ScriptBlock } from "../model";
 import { blocksOfVariant } from "../views";
 import { formatHeading } from "../screenplay/paginate";
-import { assetNames, assetsInScene, nameKey } from "../library";
+import { assetNames, assetsInScene, contextNamesIn, nameKey } from "../library";
 import { blockSpans, clipFrameToComposition, type FilmClip } from "../assembly/film";
 import { compositionOfVariant } from "../composition/render";
 import { framesToSeconds } from "../time";
@@ -286,6 +287,23 @@ export function buildScenePrompt(s: ProjectState, i: ScenePromptInput): string {
   lines.push(
     "Style: 2D animation consistent with the approved character and location designs; keep every character's face, proportions, clothing and colours identical throughout.",
   );
+  // Filmens visuelle stil (DEC-0065)
+  // Stilprofilen for AI-video (REQ-0148), ellers standardprofilen
+  const g = styleProfileFor(s, "ai_video")?.guide;
+  if (g) {
+    const add = (label: string, v: string) => {
+      if (v.trim()) lines.push(`${label}: ${v.trim().replace(/\s+/g, " ")}`);
+    };
+    add("Film look", g.visualStyle);
+    add("Technique", g.technique);
+    add(
+      "Colour palette",
+      [g.palette.description, g.palette.colors.join(", ")].filter((x) => x.trim()).join("; "),
+    );
+    add("Lighting", g.lighting);
+    add("Mood", g.mood);
+    add("Avoid", g.avoid);
+  }
 
   // Ressurser i scenen: steder alltid, figurer og ting når de nevnes i segmentet
   const used = assetsInScene(s, i.productionId, clip.occurrenceId).map((u) => u.asset);
@@ -300,8 +318,12 @@ export function buildScenePrompt(s: ProjectState, i: ScenePromptInput): string {
       return speakers.has(k) || upper.includes(` ${words} `);
     });
   const places = used.filter((a) => a.kind === "location" || a.kind === "environment");
+  // Betegnelser i bestemte linjer teller også («onkel» = Laurits her, REQ-0127)
   const figures = used.filter(
-    (a) => a.kind !== "location" && a.kind !== "environment" && mentioned(assetNames(a)),
+    (a) =>
+      a.kind !== "location" &&
+      a.kind !== "environment" &&
+      (mentioned(assetNames(a)) || contextNamesIn(a, inSeg).length > 0),
   );
   // Utseendet ved segmentets første linje (fortellingstid, REQ-0159/0162)
   const sceneId = s.variants[clip.variantId]?.sceneId;

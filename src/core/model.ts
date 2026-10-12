@@ -21,6 +21,7 @@ import type {
   ProductionId,
   AssetRelationId,
   PosterId,
+  StyleProfileId,
   ProjectId,
   SceneId,
   SegmentId,
@@ -153,6 +154,11 @@ export interface SceneOccurrence extends Entity<OccurrenceId> {
   readonly transition?: Transition;
   /** Scenen vises og eksporteres i svart-hvitt (DEC-0051, REQ-0574). */
   readonly monochrome?: boolean;
+  /**
+   * Brukerens planlagte lengde for scenen i millisekunder (mandat 7.1–7.2, REQ-0111/0113): erstatter
+   * manusestimatet til 2D-scenen har satt lengde eller filmen er lagt inn. Mangler = ingen plan.
+   */
+  readonly plannedMs?: number;
 }
 
 /**
@@ -222,6 +228,16 @@ export interface Take extends Entity<TakeId> {
    * norsk dialog, hovedspråket).
    */
   readonly audioLanguage?: string;
+  /**
+   * Hvilken del av manuset filmen dekker (REQ-0237, DEC-0071): første og siste manuslinje. Mangler = hele
+   * scenen. Avvik fra manuset gjelder da bare linjene i dette området.
+   */
+  readonly coverage?: TakeCoverage | null;
+}
+
+export interface TakeCoverage {
+  readonly startBlockId: string;
+  readonly endBlockId: string;
 }
 
 /** Metadata for en importert filmfil (REQ-0238), lest i nettleseren ved import. */
@@ -264,6 +280,38 @@ export interface Asset extends Entity<AssetId> {
   readonly category: string;
   readonly tags: readonly string[];
   readonly archived: boolean;
+  /**
+   * Hva en lydressurs hører til (mandat 13.2, REQ-0204, DEC-0070): karakterer og andre ressurser, replikker,
+   * scener, delsekvenser (segmenter), hendelser og produksjoner – med permanente ID-er. Bare lyd.
+   */
+  readonly soundLinks?: readonly SoundLink[];
+  /**
+   * Betegnelser som gjelder ressursen bare i bestemte manuslinjer (mandat 8.2, REQ-0127, DEC-0071): «onkel»
+   * er Laurits i disse replikkene, uten at alle «onkel» blir Laurits. Linjene har permanente ID-er.
+   */
+  readonly contextNames?: readonly ContextName[];
+  /** Stemmen karakteren får når dialog lages med AI (tekst til tale, DEC-0071). */
+  readonly voice?: AssetVoice | null;
+}
+
+export interface ContextName {
+  readonly name: string;
+  readonly blockIds: readonly string[];
+}
+
+export interface AssetVoice {
+  readonly provider: "elevenlabs";
+  /** Stemmens ID hos leverandøren. */
+  readonly voiceId: string;
+  /** Navnet som vises (fra leverandørens liste). */
+  readonly label: string;
+}
+
+export type SoundLinkKind = "asset" | "block" | "scene" | "segment" | "event" | "production";
+
+export interface SoundLink {
+  readonly kind: SoundLinkKind;
+  readonly id: string;
 }
 
 /** Fremstillingsstil for en visuell variant (REQ-0135, REQ-0149: stil er ikke identitet eller tilstand). */
@@ -354,6 +402,32 @@ export interface LayerTransform {
   /** 0–1 (mandat 11.2 transparens). */
   readonly opacity: number;
 }
+
+/**
+ * Blandingsmodus for et lag (mandat 11.2, REQ-0175): hvordan laget blandes med det som ligger under.
+ * Mangler = «normal».
+ */
+export type BlendMode =
+  "normal" | "multiply" | "screen" | "overlay" | "darken" | "lighten" | "soft-light" | "color";
+
+/**
+ * Maske for et lag (mandat 11.2, REQ-0175). Rektangel og ellipse er i lagets egne piksler før
+ * transformasjonen (0,0 = lagets øverste venstre hjørne), så masken flytter, skalerer og roterer med laget.
+ * «layer»: et annet lag i samme 2D-scene der dekningen (alfa) bestemmer hva som vises (klippemaske).
+ * `invert` snur masken (det utenfor vises).
+ */
+export type LayerMask =
+  | {
+      readonly kind: "rect" | "ellipse";
+      readonly x: number;
+      readonly y: number;
+      readonly width: number;
+      readonly height: number;
+      /** Myk kant i piksler (0–200). */
+      readonly feather: number;
+      readonly invert: boolean;
+    }
+  | { readonly kind: "layer"; readonly layerId: string; readonly invert: boolean };
 
 export type AnimatedProperty = keyof LayerTransform;
 export type Easing = "linear" | "ease-in" | "ease-out" | "ease-in-out" | "hold";
@@ -490,6 +564,10 @@ export interface CompositionLayer extends Entity<LayerId> {
    * et skilt med engelsk tekst). Mangler = samme bilde i alle språk. Bildeskifter i laget gjelder fortsatt.
    */
   readonly languageImages?: readonly LanguageImage[];
+  /** Maske (REQ-0175, migrasjon 0026). Mangler/null = ingen maske. */
+  readonly mask?: LayerMask | null;
+  /** Blandingsmodus (REQ-0175, migrasjon 0026). Mangler = «normal». */
+  readonly blend?: BlendMode;
   readonly removed: boolean;
 }
 
@@ -580,6 +658,8 @@ export interface ProjectState {
   readonly assetRelations: Readonly<Record<string, AssetRelation>>;
   /** Plakater og karakterkart (DEC-0061). */
   readonly posters: Readonly<Record<string, Poster>>;
+  /** Filmens visuelle stil for AI (DEC-0065): stilprofiler, én er standard. */
+  readonly styleProfiles: Readonly<Record<string, StyleProfile>>;
 }
 
 /**
@@ -595,6 +675,8 @@ export interface ClipPart extends Entity<ClipPartId> {
   readonly takeId: TakeId | null;
   readonly inMs: number;
   readonly outMs: number;
+  /** Myk overgang (krysstoning) inn i delen fra delen før, i ms (DEC-0071, REQ-0265). Mangler = hardt kutt. */
+  readonly transitionMs?: number;
   readonly removed: boolean;
 }
 
@@ -879,6 +961,7 @@ export const COLLECTION_TABLES = {
   translations: "translations",
   assetRelations: "asset_relations",
   posters: "posters",
+  styleProfiles: "style_profiles",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_TABLES;
@@ -908,9 +991,75 @@ export function emptyProjectState(project: Project): ProjectState {
     translations: {},
     assetRelations: {},
     posters: {},
+    styleProfiles: {},
   };
 }
 
 export function mainProduction(state: ProjectState): Production | undefined {
   return Object.values(state.productions).find((p) => p.kind === "main");
 }
+
+// ---------- Filmens visuelle stil for AI (DEC-0065, REQ-0147, REQ-0245) ----------
+
+/**
+ * «Filmens visuelle bibel»: det en AI må vite om filmen for å lage bilder som hører hjemme i den – hva
+ * filmen handler om, verden og tiden, stil, teknikk, farger, lys, stemning, regler for figurer og
+ * omgivelser, og hva som skal unngås. Brukes i alle bildebeskrivelser (og beskrivelsene for video).
+ * Tekstene skrives helst på engelsk (beskrivelsene som sendes er på engelsk, REQ-0015).
+ */
+export interface StyleGuide {
+  readonly version: 1;
+  /** Hva filmen handler om (kort). */
+  readonly premise: string;
+  /** Verden: sted, tid, epoke, årstid. */
+  readonly world: string;
+  /** Publikum og tone (f.eks. familiefilm, varm og litt skummel). */
+  readonly audience: string;
+  /** Den visuelle stilen samlet. */
+  readonly visualStyle: string;
+  /** Teknikk og materialer (f.eks. akvarell på papir, cut-out, myke kanter). */
+  readonly technique: string;
+  /** Fargepaletten: farger (#rrggbb) og beskrivelse. */
+  readonly palette: { readonly colors: readonly string[]; readonly description: string };
+  /** Lyssetting som gjelder filmen (scenenes tid på døgnet legges til automatisk). */
+  readonly lighting: string;
+  /** Stemning og følelse. */
+  readonly mood: string;
+  /** Regler for figurer (proporsjoner, ansikter, linjer …). */
+  readonly characterDesign: string;
+  /** Regler for omgivelser og bakgrunner. */
+  readonly environmentDesign: string;
+  /** Bildeutsnitt og kameraspråk. */
+  readonly composition: string;
+  /** Det som aldri skal være med. */
+  readonly avoid: string;
+  /** Egne, generelle instrukser til AI-en for prosjektet. */
+  readonly instructions: string;
+  /** Godkjente bilder som viser stilen (versjons-ID-er), helst 1–6. */
+  readonly referenceVersionIds: readonly string[];
+}
+
+export interface StyleProfile extends Entity<StyleProfileId> {
+  readonly name: string;
+  /** Standard for prosjektet (brukes i alle beskrivelser). Høyst én er standard. */
+  readonly isDefault: boolean;
+  readonly guide: StyleGuide;
+  /**
+   * Hva profilen gjelder for (REQ-0148, DEC-0071): ressurstyper, plakater, 2D-animatic og AI-video. Tomt =
+   * bare der ingen annen profil gjelder (standardprofilen dekker resten).
+   */
+  readonly appliesTo?: readonly StyleUse[];
+  readonly removed: boolean;
+}
+
+/** Bruk en stilprofil kan gjelde for (REQ-0148). */
+export type StyleUse =
+  | "character"
+  | "animal"
+  | "object"
+  | "location"
+  | "environment"
+  | "other"
+  | "poster"
+  | "animatic"
+  | "ai_video";

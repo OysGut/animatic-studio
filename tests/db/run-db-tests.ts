@@ -122,6 +122,7 @@ async function loadState(projectId: string): Promise<ProjectState> {
     translations: await q("translations"),
     asset_relations: await q("asset_relations"),
     posters: await q("posters"),
+    style_profiles: await q("style_profiles"),
   };
   return stateFromRows(rows);
 }
@@ -2210,6 +2211,333 @@ try {
     assert(Number(v!["v"]) >= 19, "schema_version er ikke 19");
   });
 
+  await test("0021 (DEC-0065): filmens visuelle stil lagres og leses tilbake; høyst én standard", async () => {
+    let st = await loadState(projectId);
+    const g = {
+      version: 1 as const,
+      premise: "A girl spends Christmas on a farm.",
+      world: "",
+      audience: "",
+      visualStyle: "Watercolour",
+      technique: "",
+      palette: { colors: ["#0d1b2a"], description: "" },
+      lighting: "",
+      mood: "",
+      characterDesign: "",
+      environmentDesign: "",
+      composition: "",
+      avoid: "",
+      instructions: "",
+      referenceVersionIds: [] as string[],
+    };
+    const id = "abcdef00-0000-7000-8000-0000000d8001";
+    st = await runCommand(st, ALICE, {
+      type: "CreateStyleProfile",
+      profileId: id as never,
+      fields: { name: "Filmens visuelle stil", isDefault: true, guide: g },
+    });
+    const back = await loadState(projectId);
+    assert(isDeepStrictEqual(back.styleProfiles[id]?.guide, g), "stilen ble ikke lagret likt");
+    // To standardprofiler i samme prosjekt stoppes av databasen også
+    await expectError(
+      sql`insert into public.style_profiles (id, project_id, name, is_default, guide) values (gen_random_uuid(), ${projectId}, 'To', true, '{}'::jsonb)`,
+      /duplicate key|unique/,
+    );
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 21, "schema_version er ikke 21");
+  });
+
+  await test("0022 (DEC-0066): AI-skrevne beskrivelser logges med tekst og alle forbildebildene", async () => {
+    const job = "abcdef00-0000-7000-8000-0000000d9001";
+    const paths = [`${projectId}/a/v1/x.png`, `${projectId}/b/v2/y.png`];
+    await sql`insert into public.generation_jobs (id, project_id, kind, provider, model, prompt, created_by, reference_paths, result_text, status)
+      values (${job}, ${projectId}, 'prompt', 'lovable', 'google/gemini-3.1-pro-preview', 'BRIEF', ${ALICE}, ${sql.json(paths)}, 'A fox in snow.', 'done')`;
+    const [row] =
+      await sql`select kind, reference_paths, result_text from public.generation_jobs where id = ${job}`;
+    assert(row!["kind"] === "prompt", "kind ble ikke «prompt»");
+    assert(
+      isDeepStrictEqual(row!["reference_paths"], paths),
+      "forbildebildene ble ikke lagret likt",
+    );
+    assert(row!["result_text"] === "A fox in snow.", "teksten ble ikke lagret");
+    // Gamle bildejobber får tom liste
+    const [old] =
+      await sql`select reference_paths from public.generation_jobs where kind = 'image' limit 1`;
+    if (old)
+      assert(isDeepStrictEqual(old["reference_paths"], []), "eldre jobber fikk ikke tom liste");
+    await expectError(
+      sql`insert into public.generation_jobs (id, project_id, kind, provider, model, prompt, created_by) values (gen_random_uuid(), ${projectId}, 'lyd', 'x', 'm', 'p', ${ALICE})`,
+      /check/,
+    );
+    await expectError(
+      sql`insert into public.generation_jobs (id, project_id, kind, provider, model, prompt, created_by, reference_paths) values (gen_random_uuid(), ${projectId}, 'image', 'x', 'm', 'p', ${ALICE}, ${sql.json(Array.from({ length: 13 }, (_, i) => `p${i}`))})`,
+      /check/,
+    );
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 22, "schema_version er ikke 22");
+  });
+
+  await test("0023: eieren fjerner et medlem uten å miste noe; planlagt lengde lagres", async () => {
+    // Planlagt lengde per scene (REQ-0111/0113)
+    let st = await loadState(projectId);
+    const occ = Object.values(st.occurrences).find((o) => o.active)!;
+    st = await runCommand(st, ALICE, {
+      type: "SetPlannedDuration",
+      occurrenceId: occ.id,
+      plannedMs: 42_000,
+    });
+    assert(
+      (await loadState(projectId)).occurrences[occ.id]?.plannedMs === 42_000,
+      "planen ble ikke lagret",
+    );
+    await expectError(
+      sql`update public.scene_occurrences set planned_ms = 10 where id = ${occ.id}`,
+      /check/,
+    );
+    st = await runCommand(st, ALICE, {
+      type: "SetPlannedDuration",
+      occurrenceId: occ.id,
+      plannedMs: null,
+    });
+    assert(
+      (await loadState(projectId)).occurrences[occ.id]?.plannedMs === undefined,
+      "planen ble ikke fjernet",
+    );
+
+    // Fjerne medlem (REQ-0529): bare eieren, ikke seg selv; bidragene står
+    const bobChanges = async () =>
+      Number(
+        (
+          await sql`select count(*) as n from public.change_log where project_id = ${projectId} and actor = ${BOB}`
+        )[0]!["n"],
+      );
+    // BOB blir redaktør og gjør en endring som skal stå etter at han er fjernet
+    await sql`update public.project_members set role = 'editor' where project_id = ${projectId} and user_id = ${BOB}`;
+    st = await runCommand(st, BOB, {
+      type: "SetPlannedDuration",
+      occurrenceId: occ.id,
+      plannedMs: 30_000,
+    });
+    const before = await bobChanges();
+    assert(before > 0, "BOB sin endring ble ikke logget");
+    await expectError(
+      as("authenticated", BOB, (tx) => tx`select public.remove_member(${projectId}, ${ALICE})`),
+      /Bare prosjektets eier/,
+    );
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`select public.remove_member(${projectId}, ${ALICE})`),
+      /fjerne deg selv/,
+    );
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`select public.remove_member(${projectId}, ${CAROL})`),
+      /ikke medlem/,
+    );
+    // En ventende invitasjon til BOB sin e-post (en nøkkel) må ikke slippe ham inn igjen
+    const token = await as(
+      "authenticated",
+      ALICE,
+      async (tx) =>
+        (
+          await tx`select public.create_invitation(${projectId}, 'bob@example.no', 'editor') as t`
+        )[0]!["t"] as string,
+    );
+    await as("authenticated", ALICE, (tx) => tx`select public.remove_member(${projectId}, ${BOB})`);
+    await expectError(
+      as("authenticated", BOB, (tx) => tx`select public.accept_invitation(${token})`),
+      "22023",
+    );
+    const bobSees = await as(
+      "authenticated",
+      BOB,
+      (tx) => tx`select id from public.scene_occurrences where project_id = ${projectId}`,
+    );
+    assert(bobSees.length === 0, "fjernet medlem kan fortsatt lese prosjektet");
+    assert((await bobChanges()) === before, "endringene til det fjernede medlemmet forsvant");
+    assert(
+      (await loadState(projectId)).occurrences[occ.id]?.plannedMs === 30_000,
+      "det fjernede medlemmets endring forsvant",
+    );
+    const [m] =
+      await sql`select removed_at from public.project_members where project_id = ${projectId} and user_id = ${BOB}`;
+    assert(m && m["removed_at"] !== null, "medlemskapet ble ikke avsluttet");
+    // Tilbake som før for testene etterpå (som en ny invitasjon ville gjort)
+    await sql`update public.project_members set removed_at = null, role = 'viewer' where project_id = ${projectId} and user_id = ${BOB}`;
+    await runCommand(st, ALICE, {
+      type: "SetPlannedDuration",
+      occurrenceId: occ.id,
+      plannedMs: null,
+    });
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 23, "schema_version er ikke 23");
+  });
+
+  await test("0024 (DEC-0069): API-nøkler kan ikke leses fra nettleseren; bare egne rader; tak per bruker", async () => {
+    const id = "abcdef00-0000-7000-8000-0000000e0001";
+    await sql`insert into public.ai_provider_keys (id, user_id, provider, ciphertext, iv, key_hint, status)
+      values (${id}, ${ALICE}, 'openai', ${"x".repeat(40)}, 'aXZpdml2aXZpdml2', '…1234', 'ok')`;
+    // Den krypterte nøkkelen kan ikke leses, heller ikke av eieren selv
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`select ciphertext from public.ai_provider_keys`),
+      /permission denied/,
+    );
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`select * from public.ai_provider_keys`),
+      /permission denied/,
+    );
+    const mine = await as(
+      "authenticated",
+      ALICE,
+      (tx) => tx`select id, provider, key_hint, status from public.ai_provider_keys`,
+    );
+    assert(mine.length === 1 && mine[0]!["key_hint"] === "…1234", "eieren ser ikke sin egen rad");
+    const others = await as(
+      "authenticated",
+      BOB,
+      (tx) => tx`select id from public.ai_provider_keys`,
+    );
+    assert(others.length === 0, "andre ser nøkkelraden");
+    // Nettleseren kan ikke skrive
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) => tx`update public.ai_provider_keys set status = 'ok' where id = ${id}`,
+      ),
+      /permission denied/,
+    );
+    // Én nøkkel per leverandør og bruker; ukjent leverandør avvises
+    await expectError(
+      sql`insert into public.ai_provider_keys (id, user_id, provider, ciphertext, iv, key_hint)
+        values (gen_random_uuid(), ${ALICE}, 'openai', ${"y".repeat(40)}, 'aXZpdml2aXZpdml2', '…')`,
+      /duplicate key|unique/,
+    );
+    await expectError(
+      sql`insert into public.ai_provider_keys (id, user_id, provider, ciphertext, iv, key_hint)
+        values (gen_random_uuid(), ${ALICE}, 'ukjent', ${"y".repeat(40)}, 'aXZpdml2aXZpdml2', '…')`,
+      /check/,
+    );
+    // Jobben husker nøkkelen; sletting av nøkkelen beholder jobben uten nøkkel
+    const job = "abcdef00-0000-7000-8000-0000000e0002";
+    await sql`insert into public.generation_jobs (id, project_id, kind, provider, model, prompt, created_by, provider_key_id, key_owner, cost_usd, external_id, params)
+      values (${job}, ${projectId}, 'video', 'openai', 'sora-2', 'x', ${ALICE}, ${id}, ${ALICE}, 0.8, 'video_123', ${sql.json({ seconds: 8 })})`;
+    await sql`delete from public.ai_provider_keys where id = ${id}`;
+    const [j] =
+      await sql`select provider_key_id, cost_usd from public.generation_jobs where id = ${job}`;
+    assert(
+      j && j["provider_key_id"] === null && Number(j["cost_usd"]) === 0.8,
+      "jobben ble ikke beholdt",
+    );
+    await sql`insert into public.ai_account_limits (user_id, monthly_cap_usd) values (${ALICE}, 25)`;
+    const caps = await as("authenticated", BOB, (tx) => tx`select * from public.ai_account_limits`);
+    assert(caps.length === 0, "andre ser kostnadstaket");
+    // Forbruket overlever at prosjektet slettes for godt (bare under purge), ikke vanlig sletting av en jobb
+    const job2 = "abcdef00-0000-7000-8000-0000000e0003";
+    const job3 = "abcdef00-0000-7000-8000-0000000e0004";
+    await sql`insert into public.generation_jobs (id, project_id, kind, provider, model, prompt, created_by, key_owner, cost_usd)
+      values (${job2}, ${projectId}, 'sound', 'elevenlabs', 'm', 'x', ${ALICE}, ${ALICE}, 0.3),
+             (${job3}, ${projectId}, 'sound', 'elevenlabs', 'm', 'x', ${ALICE}, ${ALICE}, 0.2)`;
+    await sql`delete from public.generation_jobs where id = ${job2}`;
+    const none = await sql`select usd from public.ai_spend where key_owner = ${ALICE}`;
+    assert(none.length === 0, "vanlig sletting av en jobb ble regnet som forbruk");
+    await sql.begin(async (tx) => {
+      await tx`select set_config('animatic.purge_project', ${projectId}, true)`;
+      await tx`delete from public.generation_jobs where id = ${job3}`;
+    });
+    const kept = await sql`select usd from public.ai_spend where key_owner = ${ALICE}`;
+    assert(kept.length === 1 && Number(kept[0]!["usd"]) === 0.2, "forbruket ble ikke tatt vare på");
+    const spendOthers = await as("authenticated", BOB, (tx) => tx`select * from public.ai_spend`);
+    assert(spendOthers.length === 0, "andre ser forbruket");
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`delete from public.ai_spend`),
+      /permission denied/,
+    );
+    await sql`delete from public.ai_spend where key_owner = ${ALICE}`;
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 24, "schema_version er ikke 24");
+  });
+
+  await test("0025 (DEC-0070): kø for AI-jobber – «queued», prioritet og fremdrift; nettleseren kan ikke endre køen", async () => {
+    const job = "abcdef00-0000-7000-8000-0000000e0101";
+    await sql`insert into public.generation_jobs (id, project_id, kind, provider, model, prompt, created_by, status, priority, queue_position, cost_usd, key_owner)
+      values (${job}, ${projectId}, 'video', 'runway', 'gen4_turbo', 'x', ${ALICE}, 'queued', 1, 0, 0.5, ${ALICE})`;
+    await expectError(
+      sql`update public.generation_jobs set priority = 4 where id = ${job}`,
+      /check/,
+    );
+    await expectError(
+      sql`update public.generation_jobs set progress = 1.5 where id = ${job}`,
+      /check/,
+    );
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) => tx`update public.generation_jobs set priority = 3 where id = ${job}`,
+      ),
+      /permission denied/,
+    );
+    const seen = await as(
+      "authenticated",
+      ALICE,
+      (tx) => tx`select status, priority from public.generation_jobs where id = ${job}`,
+    );
+    assert(seen.length === 1 && seen[0]!["status"] === "queued", "medlemmet ser ikke køen");
+    await sql`update public.generation_jobs set status = 'running', started_at = now(), progress = 0.25 where id = ${job}`;
+    await sql`delete from public.generation_jobs where id = ${job}`;
+    // Lydkoblinger (REQ-0204): en liste; annet avvises
+    const [a] = await sql`select id from public.assets where project_id = ${projectId} limit 1`;
+    if (a) {
+      await sql`update public.assets set sound_links = ${sql.json([{ kind: "scene", id: "x" }])} where id = ${a["id"]}`;
+      await expectError(
+        sql`update public.assets set sound_links = ${sql.json({ kind: "scene" })} where id = ${a["id"]}`,
+        /check/,
+      );
+      await sql`update public.assets set sound_links = '[]'::jsonb where id = ${a["id"]}`;
+    }
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 25, "schema_version er ikke 25");
+  });
+
+  await test("0026 (DEC-0071): masker, overganger, stemmer, betegnelser, stilprofiler per bruk og manusdekning", async () => {
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 26, "schema_version er ikke 26");
+    const cols = await sql`select table_name, column_name from information_schema.columns
+      where table_schema = 'public' and ((table_name = 'composition_layers' and column_name in ('mask','blend'))
+        or (table_name = 'clip_parts' and column_name = 'transition_ms')
+        or (table_name = 'assets' and column_name in ('voice','context_names'))
+        or (table_name = 'style_profiles' and column_name = 'applies_to')
+        or (table_name = 'takes' and column_name = 'coverage'))`;
+    assert(cols.length === 7, `fant ${cols.length} av 7 nye kolonner`);
+    const [layer] =
+      await sql`select id from public.composition_layers where project_id = ${projectId} limit 1`;
+    if (layer) {
+      await expectError(
+        sql`update public.composition_layers set blend = 'rar' where id = ${layer["id"]}`,
+        /check/,
+      );
+      await sql`update public.composition_layers set blend = 'multiply', mask = ${sql.json({ kind: "rect", x: 0, y: 0, width: 10, height: 10, feather: 0, invert: false })} where id = ${layer["id"]}`;
+      await sql`update public.composition_layers set blend = 'normal', mask = null where id = ${layer["id"]}`;
+    }
+    const [asset] = await sql`select id from public.assets where project_id = ${projectId} limit 1`;
+    if (asset) {
+      await expectError(
+        sql`update public.assets set context_names = ${sql.json({})} where id = ${asset["id"]}`,
+        /check/,
+      );
+    }
+    // Nettleseren kan fortsatt ikke skrive
+    if (asset)
+      await expectError(
+        as(
+          "authenticated",
+          ALICE,
+          (tx) =>
+            tx`update public.assets set voice = ${sql.json({ provider: "elevenlabs" })} where id = ${asset["id"]}`,
+        ),
+        /permission denied/,
+      );
+  });
+
   // ---------- Sikkerhetskopi (DEC-0049): gjenopprett testprosjektet som nytt prosjekt ----------
   await test("DEC-0049: sikkerhetskopi gjenopprettes som nytt prosjekt via apply_changes; alt leses tilbake likt", async () => {
     const q = (t: string) =>
@@ -2238,6 +2566,7 @@ try {
       translations: await q("translations"),
       asset_relations: await q("asset_relations"),
       posters: await q("posters"),
+      style_profiles: await q("style_profiles"),
     } as unknown as ProjectRows;
     const versions = await q("script_versions");
     const docs = await q("imported_documents");
