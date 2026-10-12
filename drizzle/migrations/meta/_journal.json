@@ -148,6 +148,13 @@
       "when": 1791803360862,
       "tag": "0020_0021_style_profiles",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1791803373226,
+      "tag": "0021_0022_ai_prompt_writer",
+      "breakpoints": true
     }
   ]
 }

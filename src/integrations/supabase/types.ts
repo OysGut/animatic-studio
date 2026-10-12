@@ -827,7 +827,9 @@ export type Database = {
           prompt: string
           provider: string
           reference_path: string | null
+          reference_paths: Json
           result_path: string | null
+          result_text: string | null
           segment_id: string | null
           status: string
         }
@@ -846,7 +848,9 @@ export type Database = {
           prompt: string
           provider: string
           reference_path?: string | null
+          reference_paths?: Json
           result_path?: string | null
+          result_text?: string | null
           segment_id?: string | null
           status?: string
         }
@@ -865,7 +869,9 @@ export type Database = {
           prompt?: string
           provider?: string
           reference_path?: string | null
+          reference_paths?: Json
           result_path?: string | null
+          result_text?: string | null
           segment_id?: string | null
           status?: string
         }
