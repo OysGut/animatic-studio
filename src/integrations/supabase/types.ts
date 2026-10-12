@@ -623,6 +623,7 @@ export type Database = {
           parallax: number
           project_id: string
           removed: boolean
+          reviewed_versions: Json
           revision: number
           transform: Json
           version_id: string | null
@@ -653,6 +654,7 @@ export type Database = {
           parallax?: number
           project_id: string
           removed?: boolean
+          reviewed_versions?: Json
           revision?: number
           transform: Json
           version_id?: string | null
@@ -683,6 +685,7 @@ export type Database = {
           parallax?: number
           project_id?: string
           removed?: boolean
+          reviewed_versions?: Json
           revision?: number
           transform?: Json
           version_id?: string | null
@@ -1307,6 +1310,7 @@ export type Database = {
         Row: {
           created_at: string
           created_by: string | null
+          export_settings: Json | null
           fps_den: number
           fps_num: number
           id: string
@@ -1319,6 +1323,7 @@ export type Database = {
         Insert: {
           created_at?: string
           created_by?: string | null
+          export_settings?: Json | null
           fps_den: number
           fps_num: number
           id: string
@@ -1331,6 +1336,7 @@ export type Database = {
         Update: {
           created_at?: string
           created_by?: string | null
+          export_settings?: Json | null
           fps_den?: number
           fps_num?: number
           id?: string
@@ -2111,6 +2117,7 @@ export type Database = {
           occurrence_id: string
           produced_from: Json
           project_id: string
+          reviewed_versions: Json
           revision: number
           segment_id: string | null
           status: string
@@ -2129,6 +2136,7 @@ export type Database = {
           occurrence_id: string
           produced_from?: Json
           project_id: string
+          reviewed_versions?: Json
           revision?: number
           segment_id?: string | null
           status: string
@@ -2147,6 +2155,7 @@ export type Database = {
           occurrence_id?: string
           produced_from?: Json
           project_id?: string
+          reviewed_versions?: Json
           revision?: number
           segment_id?: string | null
           status?: string

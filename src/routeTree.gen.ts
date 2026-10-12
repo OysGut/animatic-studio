@@ -19,6 +19,7 @@ import { Route as ProsjektProjectIdManusRouteImport } from './routes/prosjekt.$p
 import { Route as ProsjektProjectIdMonteringRouteImport } from './routes/prosjekt.$projectId.montering'
 import { Route as ProsjektProjectIdSceneRouteImport } from './routes/prosjekt.$projectId.scene'
 import { Route as ProsjektProjectIdUtgivelseRouteImport } from './routes/prosjekt.$projectId.utgivelse'
+import { Route as ApiPublicCronAiJobsRouteImport } from './routes/api/public/cron/ai-jobs'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -73,6 +74,11 @@ const ProsjektProjectIdUtgivelseRoute =
     path: '/utgivelse',
     getParentRoute: () => ProsjektProjectIdRoute,
   } as any)
+const ApiPublicCronAiJobsRoute = ApiPublicCronAiJobsRouteImport.update({
+  id: '/api/public/cron/ai-jobs',
+  path: '/api/public/cron/ai-jobs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -85,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/prosjekt/$projectId/scene': typeof ProsjektProjectIdSceneRoute
   '/prosjekt/$projectId/utgivelse': typeof ProsjektProjectIdUtgivelseRoute
   '/prosjekt/$projectId/': typeof ProsjektProjectIdIndexRoute
+  '/api/public/cron/ai-jobs': typeof ApiPublicCronAiJobsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/prosjekt/$projectId/scene': typeof ProsjektProjectIdSceneRoute
   '/prosjekt/$projectId/utgivelse': typeof ProsjektProjectIdUtgivelseRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdIndexRoute
+  '/api/public/cron/ai-jobs': typeof ApiPublicCronAiJobsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -109,6 +117,7 @@ export interface FileRoutesById {
   '/prosjekt/$projectId/scene': typeof ProsjektProjectIdSceneRoute
   '/prosjekt/$projectId/utgivelse': typeof ProsjektProjectIdUtgivelseRoute
   '/prosjekt/$projectId/': typeof ProsjektProjectIdIndexRoute
+  '/api/public/cron/ai-jobs': typeof ApiPublicCronAiJobsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -123,6 +132,7 @@ export interface FileRouteTypes {
     | '/prosjekt/$projectId/scene'
     | '/prosjekt/$projectId/utgivelse'
     | '/prosjekt/$projectId/'
+    | '/api/public/cron/ai-jobs'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -134,6 +144,7 @@ export interface FileRouteTypes {
     | '/prosjekt/$projectId/scene'
     | '/prosjekt/$projectId/utgivelse'
     | '/prosjekt/$projectId'
+    | '/api/public/cron/ai-jobs'
   id:
     | '__root__'
     | '/'
@@ -146,6 +157,7 @@ export interface FileRouteTypes {
     | '/prosjekt/$projectId/scene'
     | '/prosjekt/$projectId/utgivelse'
     | '/prosjekt/$projectId/'
+    | '/api/public/cron/ai-jobs'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -153,6 +165,7 @@ export interface RootRouteChildren {
   InvitasjonRoute: typeof InvitasjonRoute
   ProsjektProjectIdRoute: typeof ProsjektProjectIdRouteWithChildren
   ApiCronAiJobsRoute: typeof ApiCronAiJobsRoute
+  ApiPublicCronAiJobsRoute: typeof ApiPublicCronAiJobsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -227,6 +240,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProsjektProjectIdUtgivelseRouteImport
       parentRoute: typeof ProsjektProjectIdRoute
     }
+    '/api/public/cron/ai-jobs': {
+      id: '/api/public/cron/ai-jobs'
+      path: '/api/public/cron/ai-jobs'
+      fullPath: '/api/public/cron/ai-jobs'
+      preLoaderRoute: typeof ApiPublicCronAiJobsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -256,17 +276,8 @@ const rootRouteChildren: RootRouteChildren = {
   InvitasjonRoute: InvitasjonRoute,
   ProsjektProjectIdRoute: ProsjektProjectIdRouteWithChildren,
   ApiCronAiJobsRoute: ApiCronAiJobsRoute,
+  ApiPublicCronAiJobsRoute: ApiPublicCronAiJobsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
