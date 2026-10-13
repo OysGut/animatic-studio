@@ -134,15 +134,21 @@ export function AudioTracks({
       start = Math.abs(s1 - start) <= Math.abs(s2 - start) ? s1 : s2;
       return { ...f, start: Math.max(0, start) };
     }
+    // Hastighet (DEC-0079): ett sekund i filmen er `speed` sekunder av lydfilen
+    const sp = it?.speed ?? 1;
     if (drag.mode === "in") {
       // Venstre kant: start og start i filmen flyttes sammen; slutten står
       let delta = snap(f.start + d) - f.start;
-      delta = Math.max(-f.sourceIn, Math.min(f.length - MIN_LEN, delta));
+      delta = Math.max(-f.sourceIn / sp, Math.min(f.length - MIN_LEN, delta));
       delta = Math.max(delta, -f.start);
-      return { start: f.start + delta, sourceIn: f.sourceIn + delta, length: f.length - delta };
+      return {
+        start: f.start + delta,
+        sourceIn: f.sourceIn + delta * sp,
+        length: f.length - delta,
+      };
     }
     let length = snap(f.start + f.length + d) - f.start;
-    length = Math.max(MIN_LEN, Math.min(maxLen - f.sourceIn, length));
+    length = Math.max(MIN_LEN, Math.min((maxLen - f.sourceIn) / sp, length));
     return { ...f, length };
   }, [drag, items, pps, frame, fps, clips]);
 
@@ -383,7 +389,7 @@ const AudioBlock = memo(function AudioBlock({
         <Wave
           path={item.version.mediaPath}
           sourceIn={sourceIn}
-          length={length}
+          length={length * (item.speed ?? 1)}
           width={Math.round(width)}
           height={LANE_H - 6}
           color={color}

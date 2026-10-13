@@ -69,7 +69,11 @@ function paintItem(ctx: Ctx2D, it: DrawItem, v: Matrix, opts: DrawOptions, place
   } else {
     const img = it.version ? opts.images.get(it.version.mediaPath) : undefined;
     if (img) ctx.drawImage(img, x, y, it.width, it.height);
-    else if (placeholders) drawPlaceholder(ctx as CanvasRenderingContext2D, it, x, y);
+    else {
+      // Uten bilde ennå: ressursens symbol (fylt form i egen farge, DEC-0079) – også i animaticen
+      if (it.symbol) drawSymbol(ctx, it, x, y);
+      if (placeholders) drawPlaceholder(ctx as CanvasRenderingContext2D, it, x, y);
+    }
   }
 }
 
@@ -182,8 +186,30 @@ function maskedItem(
   return cx.canvas;
 }
 
+/** Symbolstiene som Path2D (laget én gang per form). */
+const symbolPaths = new Map<string, Path2D>();
+
+/** Ressursens symbol midt i laget, så stort som laget tillater (samme forhold). */
+function drawSymbol(ctx: Ctx2D, it: DrawItem, x: number, y: number) {
+  const sym = it.symbol;
+  if (!sym || typeof Path2D === "undefined") return;
+  let p = symbolPaths.get(sym.path);
+  if (!p) {
+    p = new Path2D(sym.path);
+    symbolPaths.set(sym.path, p);
+  }
+  const k = (Math.min(it.width, it.height) * 0.9) / 100;
+  ctx.save();
+  ctx.translate(x + it.width / 2 - 50 * k, y + it.height / 2 - 50 * k);
+  ctx.scale(k, k);
+  ctx.fillStyle = sym.color;
+  ctx.fill(p);
+  ctx.restore();
+}
+
 function drawPlaceholder(ctx: CanvasRenderingContext2D, it: DrawItem, x: number, y: number) {
-  ctx.fillStyle = "rgba(128,128,128,0.18)";
+  // Med symbol: bare navnet og en svak ramme (symbolet viser hvem det er)
+  ctx.fillStyle = it.symbol ? "rgba(128,128,128,0.06)" : "rgba(128,128,128,0.18)";
   ctx.fillRect(x, y, it.width, it.height);
   ctx.globalAlpha = Math.min(1, ctx.globalAlpha * 0.9);
   ctx.strokeStyle = "rgba(200,200,200,0.6)";

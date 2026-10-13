@@ -398,6 +398,11 @@ export interface Asset extends Entity<AssetId> {
   readonly contextNames?: readonly ContextName[];
   /** Stemmen karakteren får når dialog lages med AI (tekst til tale, DEC-0071). */
   readonly voice?: AssetVoice | null;
+  /**
+   * Slettet (DEC-0079, migrasjon 0029): ligger i «Slettede objekter» og kan hentes inn igjen eller slettes
+   * for godt. Mangler = ikke slettet.
+   */
+  readonly removed?: boolean;
 }
 
 export interface ContextName {
@@ -456,6 +461,8 @@ export interface AssetVersion extends Entity<AssetVersionId> {
   readonly createdBy: string;
   /** Lengde i millisekunder for lydfiler (null for bilder). */
   readonly durationMs: number | null;
+  /** Slettet bilde (DEC-0079): vises bare i «Slettede objekter». Selve bildet endres aldri. */
+  readonly removed?: boolean;
 }
 
 // ---------- Notater i manus (DEC-0031, REQ-0535–0540) ----------
@@ -641,6 +648,11 @@ export interface Composition extends Entity<CompositionId> {
    * tomt = ukjent (laget før kontrollen fantes); da flagges ingen avvik.
    */
   readonly producedFrom?: ProducedFrom;
+  /**
+   * «Animer på toere» (DEC-0079): bevegelsen oppdateres bare hvert n-te bilde (1 = hvert bilde), som i stop
+   * motion. Filmen beholder bildefrekvensen sin. Mangler = 1.
+   */
+  readonly step?: number;
 }
 
 export interface CompositionLayer extends Entity<LayerId> {
@@ -738,6 +750,8 @@ export interface AudioClip extends Entity<AudioClipId> {
    * Mangler = dialog og forteller hører til hovedspråket (norsk); musikk, atmosfære og effekter er felles.
    */
   readonly language?: string;
+  /** Hastighet (DEC-0079): 0,25–4 (25–400 %). Tonehøyden følger hastigheten. Mangler = 1. */
+  readonly speed?: number;
   readonly removed: boolean;
 }
 

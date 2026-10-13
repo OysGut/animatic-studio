@@ -200,7 +200,7 @@ export function VersionsDialog(props: Props) {
                 <div className="flex gap-2">
                   <Input
                     aria-label="Navn på versjonen"
-                    placeholder={`Versjon ${nextNumber} (f.eks. «Draft 9.4» eller «Etter møte med Trollfilm»)`}
+                    placeholder={`Versjon ${nextNumber} (f.eks. «Draft 9.4» eller «Etter møte med produsenten»)`}
                     value={name}
                     maxLength={200}
                     onChange={(e) => setName(e.target.value)}

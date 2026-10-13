@@ -110,7 +110,9 @@ export function continuityAnalysis(s0: ProjectState, productionId: string): Find
     if (!b) blocksOf.set(o.variantId, (b = blocksOfVariant(s, o.variantId)));
     return b;
   };
-  const assets = Object.values(s.assets).filter((a) => !a.archived && a.kind !== "sound");
+  const assets = Object.values(s.assets).filter(
+    (a) => !a.archived && !a.removed && a.kind !== "sound",
+  );
   const keysOf = (a: Asset) =>
     assetNames(a)
       .map((n) => nameKey(n))

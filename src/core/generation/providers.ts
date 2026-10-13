@@ -22,6 +22,17 @@ export const CAPABILITY_LABEL: Record<Capability, string> = {
   text: "Tekst",
 };
 
+/**
+ * Bildestørrelse (Mars 2026-10-13: «størrelsen på bildet bør være et eget valg»). Sendes som tjenestens egen
+ * parameter der den finnes (Google: image_size), ellers som tjenestens nærmeste faste størrelse.
+ */
+export type ImageSize = "1K" | "2K" | "4K";
+export const IMAGE_SIZE_LABEL: Record<ImageSize, string> = {
+  "1K": "Liten (ca. 1000 px)",
+  "2K": "Middels (ca. 2000 px)",
+  "4K": "Stor (ca. 4000 px)",
+};
+
 export interface ProviderModel {
   readonly id: string;
   readonly label: string;
@@ -51,6 +62,13 @@ export interface ProviderModel {
   readonly audio?: readonly string[];
   /** Andre begrensninger brukeren bør kjenne (REQ-0273), på norsk. */
   readonly limits?: readonly string[];
+  /** Størrelsene modellen kan lage (bilder); første er standard med mindre `defaultSize` er satt. */
+  readonly sizes?: readonly ImageSize[];
+  readonly defaultSize?: ImageSize;
+  /** Pris per størrelse når den avviker fra `priceUsd`. */
+  readonly priceBySize?: Partial<Record<ImageSize, number>>;
+  /** Tilbys ikke lenger (står for å vise opphavet til eldre jobber). */
+  readonly retired?: boolean;
 }
 
 /** Innsatsnivå per oppgave (mandat 19.3): rask/økonomisk, balansert, høy/premium. */
@@ -229,6 +247,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         extras: ["Opptil 14 forbildebilder"],
         maxPromptChars: 8000,
         resolution: "1024 px",
+        sizes: ["1K"],
       },
       {
         id: "gemini-3-pro-image",
@@ -241,6 +260,9 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         extras: ["Opptil 14 forbildebilder", "Tenker gjennom bildet før det lages"],
         maxPromptChars: 8000,
         resolution: "opptil 4K",
+        sizes: ["1K", "2K", "4K"],
+        defaultSize: "2K",
+        priceBySize: { "4K": 0.24 },
       },
       {
         id: "veo-3.1-generate-preview",
@@ -375,8 +397,21 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         audio: ["Lydeffekter fra beskrivelse", "Sømløs løkke"],
       },
       {
+        id: "eleven_v3",
+        label: "Eleven v3 (norsk)",
+        capability: "speech",
+        priceUsd: 0.0003,
+        priceUnit: "character",
+        tier: "premium",
+        maxPromptChars: 5000,
+        extras: ["Egen stemme per karakter", "Norsk satt eksplisitt"],
+        audio: ["Tale fra tekst", "Egen stemme per karakter", "Norsk og 70+ språk"],
+      },
+      {
+        // Brukes ikke lenger (kan ikke norsk); står for å vise opphavet til eldre opptak
         id: "eleven_multilingual_v2",
-        label: "Flerspråklig tale v2 (norsk)",
+        label: "Flerspråklig tale v2 (uten norsk)",
+        retired: true,
         capability: "speech",
         priceUsd: 0.0003,
         priceUnit: "character",
@@ -408,7 +443,10 @@ export function providersFor(
   connected: ReadonlySet<string>,
 ): { provider: ProviderInfo; models: ProviderModel[] }[] {
   return PROVIDERS.filter((p) => p.builtIn || connected.has(p.id))
-    .map((p) => ({ provider: p, models: p.models.filter((m) => m.capability === capability) }))
+    .map((p) => ({
+      provider: p,
+      models: p.models.filter((m) => m.capability === capability && !m.retired),
+    }))
     .filter((x) => x.models.length > 0);
 }
 
@@ -419,7 +457,12 @@ export function providersFor(
 export function estimateCostUsd(
   provider: string,
   model: string,
-  opts: { readonly seconds?: number; readonly images?: number; readonly characters?: number } = {},
+  opts: {
+    readonly seconds?: number;
+    readonly images?: number;
+    readonly characters?: number;
+    readonly size?: ImageSize;
+  } = {},
 ): number | null {
   const m = providerModel(provider, model);
   if (!m) return null;
@@ -432,7 +475,17 @@ export function estimateCostUsd(
       : m.priceUnit === "character"
         ? Math.max(0, opts.characters ?? 0)
         : Math.max(1, opts.images ?? 1);
-  return Math.round(m.priceUsd * n * 1000) / 1000;
+  const unit = (opts.size && m.priceBySize?.[opts.size]) ?? m.priceUsd;
+  return Math.round(unit * n * 1000) / 1000;
+}
+
+/** Størrelsene en bildemodell kan lage, og standardvalget. */
+export function imageSizesOf(m: ProviderModel | undefined): {
+  readonly sizes: readonly ImageSize[];
+  readonly standard: ImageSize | null;
+} {
+  const sizes = m?.sizes ?? [];
+  return { sizes, standard: m?.defaultSize ?? sizes[0] ?? null };
 }
 
 /** «…abcd»: bare de fire siste tegnene lagres og vises (nøkkelen vises aldri igjen). */

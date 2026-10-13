@@ -1,6 +1,6 @@
 # Handover – Animatic Studio
 
-**Sist oppdatert:** 2026-10-12 (økt 6, Claude i Cowork, DEC-0069–0078 – egne AI-leverandører, førti store bolker, arbeidslisten, kravverifisering runde 3–4 og alt som kunne gjøres uten Mars). Arbeidsstatus – mandatet og beslutningsloggen er fortsatt autoritative.
+**Sist oppdatert:** 2026-10-13 (økt 6, Claude i Cowork, DEC-0069–0079 – egne AI-leverandører, førti store bolker, arbeidslisten, kravverifisering runde 3–4, alt som kunne gjøres uten Mars, og Mars' testrunde med 19 funn). Arbeidsstatus – mandatet og beslutningsloggen er fortsatt autoritative.
 
 ## Slik starter du en ny økt
 1. Les `CLAUDE.md`, denne fila og `CURRENT_WORK.md`.
@@ -10,6 +10,7 @@
 5. Kontroller: `bun run test`, `bun tests/db/run-db-tests.ts`, `npx tsc --noEmit`, `python3 scripts/kb/check_kb.py`. Dev-server: `bunx vite dev --host 127.0.0.1`.
 
 ## Hva er gjort
+- **DEC-0079 (siste):** Mars testet 15 punkter (14 bestått; 0028 kjørt i Lovable). 19 funn rettet og bygget, migrasjon 0029 (`0029_trash_speed_step.sql`, ikke kjørt ennå; `EXPECTED_SCHEMA_VERSION` = 29): slettede objekter, lydhastighet og masker, «animer på toere», 12 bps, symboler, nedskalering av store bilder, stor visning med beskrivelse, siste beskrivelse og bildestørrelse, manusets omtale i AI-teksten, speilvending og tegning, AI-stemmer med status og avspilling, fal.ai-405, Nano Banana Pro-minne, norsk tale (Eleven v3). Ny pakke `utif`. Status: 537 Verifisert, 11 Implementert – ikke verifisert, 3 Under arbeid, 58 Ikke startet (av 609). 128 testfiler / 1052 tester, DB 57/57, nettlesersjekk 73/73, 58/58 og 44/44, skjermbilder i `docs/development/VISUAL_QA_DEC-0079.md`. Mars skal prøve fal.ai, Nano Banana Pro (fire bilder) og norsk tale igjen.
 - **DEC-0078 (siste):** migrasjon 0028 (ikke kjørt ennå; `EXPECTED_SCHEMA_VERSION` = 28), adapterlag `src/adapters/browser/`, versjonsgjenoppretting, stilprofiler og opphav i biblioteket, innholdsmessig synk (`produced_from.assetVersions`), UX-runde (Visning/Mer, hurtigtaster, avvist tekst), 30 kjente problemer løst etter full gjennomgang, 10 funn fra kodegjennomgang rettet. Status: 517 Verifisert, 14 Implementert – ikke verifisert, 3 Under arbeid, 58 Ikke startet. 127 testfiler / 1028 tester, DB 56/56, nettlesersjekk 73/73 og 58/58, `screens.mjs` kjørt helt (142 bilder). Mac-grunnlaget for leveranser er nå sjekksum 0072–0076 + 0077 (Mars har pushet). DB-testene kjøres mot Postgres i `/var/lib/postgresql/pg78` (port 54329). Skjermbildeskriptet trenger `node_modules/mediabunny` lenket inn i `/tmp/claude-0/pw`.
 - **DEC-0077:** REQ-0528 avgjort av Mars – redaktører kan starte betalte jobber innenfor budsjett og tak.
 - **DEC-0076 (siste):** kravverifisering runde 4 (34 krav; `tests/visual/verifisering4-ui.mjs` 58/58, `verifisering3-ui.mjs` 73/73), UX-gjennomgang mot de ni kvalitetene (`docs/development/UX_REVIEW_DEC-0076.md`), rettet NaN i forbruket (sikkerhet), kostnadsanslag for innebygd bilde og AI-stemmer, fast knapperad i «Video for flere scener», bruk av lyd/lag teller i biblioteket, «Visning»-meny i manus, arkitekturdokumentet (REQ-0008/0010/0436). Status: 514 Verifisert, 15 Implementert – ikke verifisert, 5 Under arbeid, 58 Ikke startet (av 592). 111 testfiler / 916 tester grønne. Merk: start dev-serveren på nytt etter endringer før nettleserskriptene (ellers måles lyd mot feil modul).
@@ -39,5 +40,6 @@ KI-12, KI-14, KI-15, KI-16, KI-17 (første CI-kjøring), KI-19 (Storage), KI-20 
 KI-30 (foreldreløse bilder), KI-31 (notater fra fremmede PDF-er), KI-32 (melding ved angring), KI-33 (notater ved egen spinoff-variant), KI-34 (bruk bare fra navn), KI-35 (bøtten `assets` i Lovable).
 
 ## Neste konkrete steg
-1. Mars: Commit + Push → synkmelding for `0004_library_notes.sql` (inkl. bøtten `assets`) → prøv bibliotek, notater, søk, eksport/import med notater.
-2. Claude: rette det som dukker opp; deretter M3 del 2 (2D-sceneeditor) etter OK fra Mars.
+1. Mars: Commit + Push med `NEXT_COMMIT_MESSAGE.txt` → lim inn `LOVABLE_SYNC.md` (migrasjon 0029, pakken `utif`).
+2. Mars: prøv fal.ai, Nano Banana Pro med fire bilder (KI-189) og norsk tale (Eleven v3) igjen; prøv de nye funksjonene fra DEC-0079.
+3. Claude: rette det som dukker opp; fortsatt hos Mars: KI-176, KI-178, globale ressurser, stilharmonisering (kostnad), «Lovable» som navn.

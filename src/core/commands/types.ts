@@ -92,6 +92,8 @@ export interface AudioClipFields {
   readonly volumeKeys: readonly VolumeKey[];
   /** Språket (DEC-0059): språkkode eller «*» (felles). Utelatt/null = standard for lydtypen. */
   readonly language?: string | null;
+  /** Hastighet 0,25–4 (DEC-0079). Utelatt = 1 (uendret). */
+  readonly speed?: number;
 }
 
 /** Redigerbare felter på en 2D-scene (format, varighet, bakgrunn). */
@@ -133,7 +135,7 @@ export interface LayerFields {
 export interface NewLayer {
   readonly layerId: LayerId;
   readonly compositionId: CompositionId;
-  /** Plassering i lagrekkefølgen. Utelatt = øverst. */
+  /** Plassering i lagrekkefølgen. Utelatt = øverst, men lokasjon og miljø (bakgrunnsbilder) nederst. */
   readonly orderKey?: string;
   readonly fields: LayerFields;
 }
@@ -500,6 +502,24 @@ export type Command =
     }
   | { readonly type: "UpdateAsset"; readonly assetId: AssetId; readonly fields: AssetFields }
   | { readonly type: "SetAssetArchived"; readonly assetId: AssetId; readonly archived: boolean }
+  /** «Slettede objekter» (DEC-0079): slett eller hent inn igjen ressurser. */
+  | {
+      readonly type: "SetAssetsRemoved";
+      readonly assetIds: readonly AssetId[];
+      readonly removed: boolean;
+    }
+  /** «Slettede objekter» (DEC-0079): slett eller hent inn igjen enkeltbilder (versjoner). */
+  | {
+      readonly type: "SetAssetVersionsRemoved";
+      readonly versionIds: readonly AssetVersionId[];
+      readonly removed: boolean;
+    }
+  /** «Animer på toere» (DEC-0079): bevegelsen oppdateres hvert n-te bilde (1–4) i 2D-scenen. */
+  | {
+      readonly type: "SetCompositionStep";
+      readonly compositionId: CompositionId;
+      readonly step: number;
+    }
   /** Koblingene til en lydressurs (REQ-0204, DEC-0070); erstatter hele listen. */
   | {
       readonly type: "SetSoundLinks";

@@ -103,6 +103,8 @@ const LIBRARY_COMMANDS = new Set<string>([
   "UndoCreateAssets",
   "UpdateAsset",
   "SetAssetArchived",
+  "SetAssetsRemoved",
+  "SetAssetVersionsRemoved",
   "SetSoundLinks",
   "SetContextNames",
   "SetAssetVoice",
@@ -123,6 +125,7 @@ const COMPOSITION_COMMANDS = new Set<string>([
   "CreateComposition",
   "UndoCreateComposition",
   "UpdateComposition",
+  "SetCompositionStep",
   "SetCompositionRemoved",
   "AddLayers",
   "UndoAddLayers",
@@ -288,6 +291,24 @@ export function needsSchema27(command: { type: string }): boolean {
 /** Antakelsene for varighetsestimatet per prosjekt (KI-28, DEC-0078) krever migrasjon 0028. */
 export function needsSchema28(command: { type: string }): boolean {
   return command.type === "SetDurationAssumptions";
+}
+
+/**
+ * Slettede objekter, lydhastighet og «animer på toere» (DEC-0079) krever migrasjon 0029 – ellers ville
+ * endringen gått tapt i stillhet (apply_changes ser bort fra kolonner tabellen ikke har).
+ */
+export function needsSchema29(command: { type: string } & Record<string, unknown>): boolean {
+  if (
+    command.type === "SetAssetsRemoved" ||
+    command.type === "SetAssetVersionsRemoved" ||
+    command.type === "SetCompositionStep"
+  )
+    return true;
+  if (command.type === "AddAudioClips" || command.type === "UpdateAudioClips") {
+    const clips = (command["clips"] as { fields?: { speed?: number } }[]) ?? [];
+    return clips.some((c) => c.fields?.speed !== undefined && c.fields.speed !== 1);
+  }
+  return false;
 }
 
 /** Kommandoer som bare skriver kolonner fra migrasjon 0026 (DEC-0071). */
@@ -590,6 +611,16 @@ export const runCommand = createServerFn({ method: "POST" })
           code: "schema",
           message:
             "Databasen mangler kontinuitet for spinoffer. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0018.",
+        };
+    }
+    if (needsSchema29(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 29)
+        return {
+          ok: false,
+          code: "schema",
+          message:
+            "Databasen mangler tillegget for slettede objekter, lydhastighet og «animer på toere». Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0029.",
         };
     }
     if (needsSchema28(data.command as never)) {

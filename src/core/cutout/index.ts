@@ -267,3 +267,61 @@ export function keptShare(mask: Uint8Array): number {
 
 /** Største bilde som friegges i nettleseren (piksler); større bilder skaleres ned først. */
 export const CUTOUT_MAX_PIXELS = 16_000_000;
+
+/**
+ * Tegn med farge i bildet (DEC-0079: «andre enkle tegnefunksjoner» i frileggingen): samme penselstrøk som
+ * masken, men fargen males inn i pikslene (RGBA) med myk kant, og maleriet blir synlig (alfa 255).
+ */
+export function paintPixels(
+  rgba: Uint8ClampedArray,
+  w: number,
+  h: number,
+  s: Omit<BrushStroke, "mode"> & { readonly color: readonly [number, number, number] },
+): void {
+  const cover = new Uint8Array(w * h);
+  paintMask(cover, w, h, { ...s, mode: "add" });
+  const [r, g, b] = s.color;
+  for (let i = 0; i < cover.length; i++) {
+    const a = cover[i]!;
+    if (a === 0) continue;
+    const p = i * 4;
+    const k = a / 255;
+    rgba[p] = Math.round(rgba[p]! * (1 - k) + r * k);
+    rgba[p + 1] = Math.round(rgba[p + 1]! * (1 - k) + g * k);
+    rgba[p + 2] = Math.round(rgba[p + 2]! * (1 - k) + b * k);
+    rgba[p + 3] = Math.max(rgba[p + 3]!, a);
+  }
+}
+
+/** Speilvend et bilde på stedet: «x» vannrett, «y» loddrett. `channels` = 4 for RGBA, 1 for en maske. */
+export function flipInPlace(
+  data: Uint8Array | Uint8ClampedArray,
+  w: number,
+  h: number,
+  channels: number,
+  axis: "x" | "y",
+): void {
+  const c = channels;
+  if (axis === "x") {
+    for (let y = 0; y < h; y++)
+      for (let x = 0; x < Math.floor(w / 2); x++) {
+        const a = (y * w + x) * c;
+        const b = (y * w + (w - 1 - x)) * c;
+        for (let k = 0; k < c; k++) {
+          const t = data[a + k]!;
+          data[a + k] = data[b + k]!;
+          data[b + k] = t;
+        }
+      }
+  } else {
+    const row = w * c;
+    const tmp = new (data.constructor as Uint8ArrayConstructor)(row);
+    for (let y = 0; y < Math.floor(h / 2); y++) {
+      const a = y * row;
+      const b = (h - 1 - y) * row;
+      tmp.set(data.subarray(a, a + row));
+      data.copyWithin(a, b, b + row);
+      data.set(tmp, b);
+    }
+  }
+}

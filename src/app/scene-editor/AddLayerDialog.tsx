@@ -1,6 +1,7 @@
 /**
  * Legg til lag i 2D-scenen: bilder fra ressursbiblioteket (ett eller flere samtidig) eller en fargeflate.
  */
+import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
 import { Check, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
@@ -277,7 +278,12 @@ export function AddLayerDialog({
                             {url ? (
                               <img src={url} alt="" className="size-full object-contain" />
                             ) : (
-                              <span className="text-xs text-text-tertiary">uten bilde</span>
+                              <AssetSymbolIcon
+                                state={state}
+                                assetId={a.id}
+                                className="size-12"
+                                title={`${a.name} – uten bilde`}
+                              />
                             )}
                             {on ? (
                               <span

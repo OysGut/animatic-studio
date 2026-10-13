@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **592**
-- Prioritet: P0: 143, P1: 263, P2: 147, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 65, teknisk-anbefaling: 7
-- Status: Verifisert: 517, Implementert – ikke verifisert: 14, Under arbeid: 3, Ikke startet: 58
+- Antall krav: **609**
+- Prioritet: P0: 143, P1: 280, P2: 147, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 82, teknisk-anbefaling: 7
+- Status: Verifisert: 537, Implementert – ikke verifisert: 11, Under arbeid: 3, Ikke startet: 58
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -7667,7 +7667,7 @@ Brukeren skal kunne generere et nytt bilde av en ressurs med AI fra bildevalget 
 - **Kilde:** Beslutning DEC-0045 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
 - **Moduler:** PROVIDER, PROMPT, QUALITYCOST, LIBRARY, SECURITY
 - **Avhengigheter:** REQ-0559
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Beskrivelsen vises i et redigerbart felt og er på engelsk.
   - Ingenting sendes før brukeren har bekreftet at genereringen bruker kreditter.
@@ -7680,7 +7680,7 @@ Brukeren skal kunne generere et nytt bilde av en ressurs med AI fra bildevalget 
   - db: generation_jobs (0010)
   - visuell: 54-ai-generering
 - **Implementering:** src/adapters/ai/generate-image.functions.ts, src/core/generation/prompt.ts, src/app/library/GenerateImagePanel.tsx, src/app/scene-editor/LayerImageDialog.tsx, db/migrations/0010_audio_flow_generation.sql
-- **Merknad:** Ikke verifisert mot ekte gateway ennå (krever LOVABLE_API_KEY i Lovable Cloud). Pris vises ikke før generering (REQ-0279 gjenstår).
+- **Merknad:** Prøvd av Mars mot den ekte Lovable AI Gateway 13.10.2026.
 
 #### REQ-0566 – Brukerne kobler egne AI-tjenester senere
 Etter testfasen skal brukerne kunne koble Animatic Studio til ulike AI-tjenesters API-er (egne nøkler) som applikasjonen legger til rette for.
@@ -8012,7 +8012,7 @@ Prosjektet skal ha en beskrivelse av filmens visuelle stil (handling, verden, st
 - **Kilde:** Beslutning DEC-0065 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 5
 - **Moduler:** PROMPT, LIBRARY, UI
 - **Avhengigheter:** REQ-0245; REQ-0147
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Filmens visuelle stil kan fylles ut, foreslås fra prosjektet og forhåndsvises som beskrivelse.
   - Bildebeskrivelsen har seksjonene FILM, VISUAL STYLE, THIS IMAGE, WHERE IT APPEARS, CONSISTENCY og AVOID (og PROJECT INSTRUCTIONS når det finnes).
@@ -8031,7 +8031,7 @@ Løsningen skal vise en liste over de mest brukte AI-leverandørene. Brukeren ka
 - **Kilde:** Beslutning DEC-0069 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
 - **Moduler:** PROVIDER, SECURITY, QUALITYCOST, UI
 - **Avhengigheter:** REQ-0270; REQ-0271; REQ-0282
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Dialogen «AI-leverandører» viser OpenAI, Google Gemini, fal.ai, Runway og ElevenLabs (og innebygd Lovable AI) med hva de kan lage og status.
   - Hver leverandør har steg på norsk og lenker til konto, betaling, API-nøkkel og priser; nøkkelen prøves hos tjenesten før den lagres.
@@ -8075,3 +8075,231 @@ Video (og annen AI-generering) skal aldri genereres automatisk. Den startes allt
   - tests/unit/ai-queue.test.ts
   - tests/architecture/eksport-uten-ai.test.ts
 - **Implementering:** src/adapters/ai/video.functions.ts, src/adapters/ai/video-followup.server.ts, src/core/library/worklist.ts, src/app/ai/video-jobs.ts, src/adapters/ai/queue.functions.ts
+
+#### REQ-0593 – 12 bilder i sekundet og animer på toere
+Prosjektet kan ha 12 bilder i sekundet (vanlig i ferdig stop motion). Hver 2D-scene kan animeres på enere, toere, treere eller firere: bevegelse, kamera og bildeskifter oppdateres bare hvert n-te bilde, mens filmen beholder bildefrekvensen.
+
+- **Kilde:** Beslutning DEC-0079 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** COMPOSE, EXPORT
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Bildefrekvensen 12 kan velges på prosjektoversikten.
+  - «Animer» på toere gir samme bilde på bilde 2 og 3 i avspilling og eksport; kan angres.
+  - Valget lagres i compositions.step (migrasjon 0029).
+- **Tester:**
+  - tests/unit/funn-2026-10-13.test.ts
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/composition/format.ts, src/core/composition/render.ts, src/app/scene-editor/LayerInspector.tsx, db/migrations/0029_trash_speed_step.sql
+
+#### REQ-0594 – Lydklipp: dra, hastighet og masker for start og slutt
+Lydklipp kan dras for å flyttes og kuttes i kantene også i sceneeditorens tidslinje. I lydprofilen kan hastigheten settes fra 25 til 400 % (trinnløst og med faste steg), og masker for start og slutt i lydfilen kan dras eller flyttes med piltaster; ny varighet vises. Tonehøyden følger hastigheten.
+
+- **Kilde:** Beslutning DEC-0079 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** AUDIO, TIMELINE
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Dobbel hastighet halverer lengden og spiller lydfilen dobbelt så fort i avspilling og eksport.
+  - Masker gir ny start i lydfilen og ny varighet; volumpunktene følger lyden.
+  - Drag i sceneeditoren lagres som én endring som kan angres.
+- **Tester:**
+  - tests/unit/funn-2026-10-13.test.ts
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/app/audio/AudioClipEditor.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/engine/audio/mixer.ts, src/core/audio/index.ts, db/migrations/0029_trash_speed_step.sql
+
+#### REQ-0595 – Tydelig hva som er lagt inn i scenen
+«I denne scenen» merker ressursene som allerede er lagt inn som lag (merket «I scenen», antall lag). Dobbeltklikk på en ressurs i lista åpner det samme bildevalget som dobbeltklikk på laget i scenen (er den ikke lagt inn, legges den inn først).
+
+- **Kilde:** Beslutning DEC-0079 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** COMPOSE, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Ressurser med lag i 2D-scenen har synlig merke og ramme.
+  - Dobbeltklikk i lista åpner bildevalget for laget.
+- **Tester:**
+  - docs/development/VISUAL_QA_DEC-0079.md
+- **Implementering:** src/app/scene-editor/SceneAssetsPanel.tsx, src/app/scene-editor/SceneEditorWorkspace.tsx
+
+#### REQ-0596 – Enkle symboler for alle ressurser
+Hver ressurs får et enkelt symbol: fylt form uten omriss, ansikt eller øyne, formen etter type og egen farge per ressurs. Symbolet vises i lister og tegnes i scenen og animaticen for lag som ennå ikke har bilde.
+
+- **Kilde:** Beslutning DEC-0079 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** LIBRARY, COMPOSE, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - To karakterer har ulike farger; formen viser typen.
+  - Et lag uten bilde tegnes med ressursens symbol.
+- **Tester:**
+  - tests/unit/funn-2026-10-13.test.ts
+  - docs/development/VISUAL_QA_DEC-0079.md
+- **Implementering:** src/core/library/symbol.ts, src/app/library/AssetSymbolIcon.tsx, src/engine/compositor/canvas.ts
+
+#### REQ-0597 – Filmformater og TIFF ved opplasting
+Film kan importeres som MP4 (også .m4v), MOV og WebM, også når nettleseren ikke oppgir filtypen; om nettleseren ikke kan spille av kodeken (f.eks. ProRes eller HEVC), forklares det før opplasting. TIFF kan lastes opp som bilde og gjøres om til PNG. Velges en film der det skal være et bilde, forklares hvor film legges inn.
+
+- **Kilde:** Beslutning DEC-0079 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** LIBRARY, TIMELINE
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - MP4/M4V/MOV/WebM gjenkjennes fra endelsen.
+  - Uavspillbar kodek gir en forståelig melding.
+  - TIFF blir PNG i full størrelse.
+- **Tester:**
+  - tests/unit/funn-2026-10-13.test.ts
+- **Implementering:** src/app/assembly/film-import.ts, src/app/library/image-prep.ts, src/app/library/asset-images.ts
+
+#### REQ-0598 – Store bilder skaleres ned – originalen beholdes
+Bilder større enn to ganger filmformatets lengste side (minst 2048 px) får en nedskalert arbeidskopi som brukes i scenen; originalen lagres som versjonen før og kan tas i bruk ved å godkjenne den (kan angres). Til AI sendes som standard arbeidsstørrelsen; «Send forbildene i full størrelse» sender originalene (f.eks. karakterkort).
+
+- **Kilde:** Beslutning DEC-0079 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** LIBRARY, PROVIDER
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Et bilde på 6000 × 4000 gir en arbeidskopi på 3840 × 2560 i et HD-prosjekt, og originalen som egen versjon.
+  - Valget for full størrelse sender originalens sti.
+- **Tester:**
+  - tests/unit/funn-2026-10-13.test.ts
+- **Implementering:** src/app/library/image-prep.ts, src/app/library/asset-images.ts, src/core/library/index.ts, src/app/library/GenerateImagePanel.tsx
+
+#### REQ-0599 – Zoomknapper i scenen
+Scenen har knapper for zoom inn og ut og et valg med faste zoomnivåer (10–1600 %), i tillegg til «Tilpass» og «100 %».
+
+- **Kilde:** Beslutning DEC-0079 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** COMPOSE, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Zoom inn/ut går til neste faste nivå rundt midten av visningen.
+- **Tester:**
+  - docs/development/VISUAL_QA_DEC-0079.md
+- **Implementering:** src/app/scene-editor/Stage.tsx
+
+#### REQ-0600 – Bildedialogen husker siste beskrivelse og har bildestørrelse
+Når et nytt bilde skal genereres, er feltet fylt med siste beskrivelse brukt for ressursen («Tilbakestill» gir den automatiske). Bildestørrelse er et eget valg der modellen tar imot det (f.eks. 1K/2K/4K for Nano Banana Pro, med pris), og sendes som tjenestens egen parameter.
+
+- **Kilde:** Beslutning DEC-0079 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** PROMPT, PROVIDER, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Siste beskrivelse settes inn og merkes.
+  - Størrelsen påvirker prisanslaget og sendes som image_size til Google.
+- **Tester:**
+  - tests/unit/funn-2026-10-13.test.ts
+  - docs/development/VISUAL_QA_DEC-0079.md
+- **Implementering:** src/core/generation/prompt-history.ts, src/core/generation/providers.ts, src/app/library/GenerateImagePanel.tsx, src/adapters/ai/providers.server.ts
+
+#### REQ-0601 – Stor visning og beskrivelsen per bilde
+Klikk på et bilde i bildevalget åpner en stor visning med zoom og panorering. Beskrivelsen (prompten) som laget bildet vises ved siden av – den følger bildet og slettes aldri – med «Sett inn denne beskrivelsen» og «Kopier».
+
+- **Kilde:** Beslutning DEC-0079 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** PROMPT, LIBRARY, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Beskrivelsen hentes fra AI-jobbloggen (også eldre enn de siste 300).
+  - «Sett inn» fyller genereringsfeltet.
+- **Tester:**
+  - tests/unit/funn-2026-10-13.test.ts
+  - docs/development/VISUAL_QA_DEC-0079.md
+- **Implementering:** src/app/library/ImageLightbox.tsx, src/adapters/browser/ai.ts, src/app/scene-editor/LayerImageDialog.tsx
+
+#### REQ-0602 – Varsel om utdatert AI-tekst hindrer ikke generering
+Er bildene som sendes med endret etter at AI skrev beskrivelsen, varsles det – men brukeren kan likevel generere.
+
+- **Kilde:** Beslutning DEC-0079 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** PROMPT, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - «Generer» er tilgjengelig med varselet synlig.
+- **Tester:**
+  - docs/development/VISUAL_QA_DEC-0079.md
+- **Implementering:** src/app/library/GenerateImagePanel.tsx
+
+#### REQ-0603 – Bildebeskrivelser bygger på manuset
+Den automatiske bildebeskrivelsen tar med setningene der manuset omtaler ressursen (handling og andres replikker), i fortellingsrekkefølge, avgrenset i lengde.
+
+- **Kilde:** Beslutning DEC-0079 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** PROMPT
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Avsnittet «IN THE SCREENPLAY» har bare setninger som nevner ressursen, høyst 1200 tegn.
+- **Tester:**
+  - tests/unit/funn-2026-10-13.test.ts
+- **Implementering:** src/core/generation/image-prompt.ts
+
+#### REQ-0604 – Lokasjon legges nederst
+En lokasjon eller et miljø som legges inn i scenen, legges nederst av alle lagene og dekker bildet.
+
+- **Kilde:** Beslutning DEC-0079 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** COMPOSE
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Nytt lag av typen bakgrunn fra en ressurs får laveste plass i lagrekkefølgen.
+- **Tester:**
+  - tests/unit/composition.test.ts
+- **Implementering:** src/core/commands/apply.ts
+
+#### REQ-0605 – Bekreftelsen er alltid synlig
+Bekreftelsen («Ja, generer») i bildedialogen står alltid synlig nederst i dialogen og rulles fram når den åpnes.
+
+- **Kilde:** Beslutning DEC-0079 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - «Ja, generer» er synlig uten å rulle.
+- **Tester:**
+  - docs/development/VISUAL_QA_DEC-0079.md
+- **Implementering:** src/app/library/GenerateImagePanel.tsx
+
+#### REQ-0606 – Speilvending og enkel tegning
+Et lag kan speilvendes vannrett eller loddrett i scenen (bildet i biblioteket endres ikke). I frileggingen kan bildet speilvendes og det kan tegnes med farge; alt kan angres, og resultatet lagres som ny versjon.
+
+- **Kilde:** Beslutning DEC-0079 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** COMPOSE, LIBRARY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Speilvending snur skaleringen også i nøkkelbildene.
+  - Tegning og speilvending kan angres i frileggingen.
+- **Tester:**
+  - tests/unit/funn-2026-10-13.test.ts
+  - docs/development/VISUAL_QA_DEC-0079.md
+- **Implementering:** src/core/composition/index.ts, src/core/cutout/index.ts, src/app/library/CutoutDialog.tsx, src/app/scene-editor/LayerInspector.tsx
+
+#### REQ-0607 – Slettede objekter
+Ressurser og enkeltbilder kan slettes fra biblioteket og bildevalget, med en advarsel om hva som skjer. De flyttes til «Slettede objekter», der de kan hentes inn igjen; prosjektets eier kan slette for godt (også filene) når ingenting i filmen bruker dem. Det godkjente bildet kan ikke slettes.
+
+- **Kilde:** Beslutning DEC-0079 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** LIBRARY, SECURITY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Slettet ressurs vises ikke i lister og lagvalg, men i «Slettede objekter».
+  - Sletting for godt avvises så lenge noe bruker ressursen.
+  - Bare eieren kan slette for godt; bare via serveren.
+- **Tester:**
+  - tests/unit/funn-2026-10-13.test.ts
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/commands/apply.ts, src/core/library/index.ts, src/app/library/TrashDialog.tsx, src/adapters/storage/trash.functions.ts, db/migrations/0029_trash_speed_step.sql
+
+#### REQ-0608 – Dialog med AI-stemmer: status, stemmer og avspilling
+Dialogen viser tydelig hvilke replikker som har lyd (AI eller opptak) og hvilke som mangler, hvilken stemme hver karakter har og hvem andre som bruker samme stemme (den kan likevel velges). Lyden replikken har kan spilles av i dialogen, og stemmene kan prøvelyttes.
+
+- **Kilde:** Beslutning DEC-0079 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** AUDIO, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Hver replikk har merke «Har lyd» eller «Mangler lyd».
+  - Stemmevalget viser «brukes av …».
+  - Avspilling og prøve fungerer i dialogen.
+- **Tester:**
+  - tests/unit/funn-2026-10-13.test.ts
+  - docs/development/VISUAL_QA_DEC-0079.md
+- **Implementering:** src/app/assembly/AiDialogueDialog.tsx, src/core/generation/speech.ts, src/adapters/ai/providers.server.ts
+
+#### REQ-0609 – Norsk tale blir norsk
+Replikker leses inn med en modell som kan norsk (Eleven v3), og språket settes eksplisitt, så norsk ikke leses som dansk.
+
+- **Kilde:** Beslutning DEC-0079 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** AUDIO, PROVIDER
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Kallet til ElevenLabs har model_id eleven_v3 og language_code no.
+- **Tester:**
+  - tests/unit/ai-speech.test.ts
+- **Implementering:** src/core/generation/speech.ts, src/adapters/ai/speech.functions.ts, src/adapters/ai/providers.server.ts

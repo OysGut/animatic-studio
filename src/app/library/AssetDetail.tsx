@@ -12,6 +12,7 @@ import {
   Music,
   Plus,
   Scissors,
+  Trash2,
   X,
 } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
@@ -48,13 +49,15 @@ import {
   type VersionOrigin,
   type VersionProvenance,
   type VisualStyle,
+  workingImageMaxSide,
+  assetUsageCounts,
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { useProfiles } from "@/app/project/use-project";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { uploadAssetImage, useImageUrls } from "./asset-images";
+import { IMAGE_ACCEPT, addUploadedImage, uploadAssetImage, useImageUrls } from "./asset-images";
 import { ImageViewer } from "./ImageViewer";
 import { ReuploadDialog, type ReuploadItem } from "./ReuploadDialog";
 import { uploadAssetAudio } from "./asset-audio";
@@ -122,6 +125,7 @@ export function AssetDetail(props: Props) {
   const [draft, setDraft] = useState<AssetFields>(() => fieldsOf(asset));
   const [tagsText, setTagsText] = useState(asset.tags.join(", "));
   const [err, setErr] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [usedWidth, setUsedWidth] = usePaneSize("asset-used-in", 280, 200, 520);
   const last = useRef(fieldsOf(asset));
   // Ta inn endringer utenfra (andre brukere, angre) bare hvis brukeren ikke har ulagrede endringer.
@@ -387,7 +391,32 @@ export function AssetDetail(props: Props) {
                 {asset.archived ? <ArchiveRestore /> : <Archive />}
                 {asset.archived ? "Hent fram" : "Arkiver"}
               </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => setConfirmDelete(true)}
+                title="Flytt ressursen til «Slettede objekter» (kan hentes inn igjen)"
+                className="text-status-danger"
+              >
+                <Trash2 />
+                Slett …
+              </Button>
             </div>
+          ) : null}
+          {confirmDelete ? (
+            <DeleteAssetConfirm
+              state={state}
+              assetId={asset.id}
+              onCancel={() => setConfirmDelete(false)}
+              onConfirm={() => {
+                const e = cmds.run(
+                  { type: "SetAssetsRemoved", assetIds: [asset.id], removed: true },
+                  `Slett «${asset.name}»`,
+                );
+                setErr(e);
+                setConfirmDelete(false);
+              }}
+            />
           ) : null}
           {err ? (
             <p role="alert" className="text-xs text-status-danger">
@@ -799,21 +828,35 @@ function VariantCard({
     setUploading(true);
     try {
       // Lydfiler (DEC-0044) og bilder lastes opp hver for seg
-      const sound = asset.kind === "sound";
-      const { versionId, media } = sound
-        ? await uploadAssetAudio(projectId, asset.id, file)
-        : await uploadAssetImage(projectId, asset.id, file);
-      const r = await cmds.runAndWait(
-        {
-          type: "AddAssetVersion",
-          versionId: versionId as never,
-          variantId: variant.id,
-          media,
-          note: "",
-        },
-        `Nytt bilde i «${variant.name}»`,
-      );
-      if (r.error) setErr(r.error);
+      if (asset.kind === "sound") {
+        const { versionId, media } = await uploadAssetAudio(projectId, asset.id, file);
+        const r = await cmds.runAndWait(
+          {
+            type: "AddAssetVersion",
+            versionId: versionId as never,
+            variantId: variant.id,
+            media,
+            note: "",
+          },
+          `Ny lyd i «${variant.name}»`,
+        );
+        if (r.error) setErr(r.error);
+      } else {
+        // Store bilder får en nedskalert arbeidskopi; originalen lagres som versjonen før (Mars 2026-10-13)
+        const up = await uploadAssetImage(
+          projectId,
+          asset.id,
+          file,
+          workingImageMaxSide(state.project.frameWidth, state.project.frameHeight),
+        );
+        const e = await addUploadedImage(
+          cmds.runAndWait,
+          variant.id,
+          up,
+          `Nytt bilde i «${variant.name}»`,
+        );
+        if (e) setErr(e);
+      }
     } catch (e) {
       setErr((e as Error).message);
     } finally {
@@ -905,7 +948,7 @@ function VariantCard({
               accept={
                 asset.kind === "sound"
                   ? "audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac,.webm"
-                  : ASSET_MIME_TYPES.join(",")
+                  : IMAGE_ACCEPT
               }
               className="hidden"
               aria-hidden
@@ -1224,6 +1267,55 @@ function VariantCard({
         version={cutoutId ? (versions.find((v) => v.id === cutoutId) ?? null) : null}
         cmds={cmds}
       />
+    </div>
+  );
+}
+
+/** Advarselen før en ressurs slettes (DEC-0079): hva som skjer med scenene og lyden som bruker den. */
+function DeleteAssetConfirm({
+  state,
+  assetId,
+  onCancel,
+  onConfirm,
+}: {
+  state: ProjectState;
+  assetId: string;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  const a = state.assets[assetId];
+  if (!a) return null;
+  const use = assetUsageCounts(state, assetId);
+  return (
+    <div
+      role="alertdialog"
+      aria-label={`Slett ${a.name}`}
+      className="flex flex-col gap-2 rounded-sm border border-status-danger/60 bg-surface-1 p-2 text-xs"
+    >
+      <p className="text-text-primary">
+        «{a.name}» flyttes til «Slettede objekter» og forsvinner fra biblioteket og lagvalgene.
+        {use.layers || use.audio
+          ? ` Den brukes i ${[
+              use.layers
+                ? `${use.layers} lag i ${use.scenes} ${use.scenes === 1 ? "scene" : "scener"}`
+                : "",
+              use.audio ? `${use.audio} lydklipp` : "",
+            ]
+              .filter(Boolean)
+              .join(
+                " og ",
+              )}; de beholder bildet og lyden til ressursen slettes for godt, og den kan ikke slettes for godt før de er fjernet.`
+          : " Den brukes ikke i noen scene."}{" "}
+        Du kan hente den inn igjen, og endringen kan angres.
+      </p>
+      <div className="flex gap-2">
+        <Button size="sm" variant="destructive" onClick={onConfirm}>
+          <Trash2 /> Slett
+        </Button>
+        <Button size="sm" variant="ghost" onClick={onCancel}>
+          Avbryt
+        </Button>
+      </div>
     </div>
   );
 }

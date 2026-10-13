@@ -540,7 +540,7 @@ function characterSuggestions(
     });
   const knownKeys = new Set(all.filter((a) => a.kind === "character").flatMap(assetKeys));
   mergeTypos(t, knownKeys);
-  const charAssets = all.filter((a) => a.kind === "character" && !a.archived);
+  const charAssets = all.filter((a) => a.kind === "character" && !a.archived && !a.removed);
   const out: LibrarySuggestion[] = [];
   for (const [name, idx] of t.scenes) {
     if (knownKeys.has(name)) continue;
@@ -590,7 +590,7 @@ function namedSuggestions(
     }
   });
   const knownKeys = new Set(all.flatMap(assetKeys));
-  const assets = all.filter((a) => !a.archived);
+  const assets = all.filter((a) => !a.archived && !a.removed);
   const out: LibrarySuggestion[] = [];
   for (const [key, idx] of anywhere) {
     // Minst to ganger midt i en setning og i minst to scener
@@ -644,7 +644,7 @@ function locationSuggestions(scenes: readonly Scene[], all: readonly Asset[]): L
   const knownLoc = new Set(all.filter((a) => a.kind === "location").flatMap(assetKeys));
   mergeTypos(t, knownLoc, 6);
   const knownKeys = knownLoc;
-  const locAssets = all.filter((a) => a.kind === "location" && !a.archived);
+  const locAssets = all.filter((a) => a.kind === "location" && !a.archived && !a.removed);
   const out: LibrarySuggestion[] = [];
   for (const [name, idx] of t.scenes) {
     if (knownKeys.has(name)) continue;
@@ -698,7 +698,7 @@ function objectSuggestions(
   });
   // 2) Tell scener der en bøyningsform av ordet står
   const knownKeys = new Set(all.flatMap(assetKeys));
-  const assets = all.filter((a) => !a.archived);
+  const assets = all.filter((a) => !a.archived && !a.removed);
   const out: LibrarySuggestion[] = [];
   for (const c of candidates) {
     if (knownKeys.has(upper(c))) continue;

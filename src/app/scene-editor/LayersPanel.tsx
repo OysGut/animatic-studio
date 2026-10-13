@@ -3,6 +3,7 @@
  * grupper (dra et lag inn på en gruppe for å legge det i gruppen, eller ut ved siden av et lag utenfor) og
  * fjerning av laget fra scenen (ressursen blir i biblioteket). Valgt gruppe: lagene i den lyser opp.
  */
+import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
 import {
   ChevronDown,
   ChevronUp,
@@ -418,6 +419,12 @@ export const LayersPanel = memo(function LayersPanel({
                         <img src={url} alt="" className="size-full object-cover" />
                       ) : l.kind === "group" ? (
                         <Group className="m-auto mt-0.5 size-3.5 text-text-tertiary" />
+                      ) : l.assetId ? (
+                        <AssetSymbolIcon
+                          state={state}
+                          assetId={l.assetId}
+                          className="m-auto size-4"
+                        />
                       ) : null}
                     </span>
                     <span className="min-w-0 flex-1">

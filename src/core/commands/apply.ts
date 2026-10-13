@@ -1153,7 +1153,7 @@ export const AUDIO_KINDS = ["dialogue", "narration", "sfx", "ambience", "music"]
 function audioFields(
   s: ProjectState,
   f: AudioClipFields,
-): Omit<AudioClipFields, "language"> & { language?: string } {
+): Omit<AudioClipFields, "language" | "speed"> & { language?: string; speed?: number } {
   if (!f || typeof f !== "object") fail("invalid", "Ugyldig lydklipp");
   if (!(AUDIO_KINDS as readonly string[]).includes(f.kind)) fail("invalid", "Ukjent lydtype");
   if (typeof f.name !== "string" || f.name.length > 200) fail("invalid", "Navnet er for langt");
@@ -1209,6 +1209,11 @@ function audioFields(
   const language = f.language ?? null;
   if (language !== null && language !== "*" && !LANGUAGE_CODE.test(String(language)))
     fail("invalid", "Ugyldig språk for lyden");
+  // Hastighet (DEC-0079): 25–400 %
+  const speed = f.speed ?? 1;
+  if (typeof speed !== "number" || !Number.isFinite(speed) || speed < 0.25 || speed > 4)
+    fail("invalid", "Hastigheten må være mellom 25 og 400 %");
+  const sp = Math.round(speed * 100) / 100;
   return {
     occurrenceId: f.occurrenceId,
     kind: f.kind,
@@ -1227,6 +1232,7 @@ function audioFields(
     continues: f.continues,
     volumeKeys: keys,
     ...(language !== null ? { language } : {}),
+    ...(sp !== 1 ? { speed: sp } : {}),
   };
 }
 
@@ -1252,6 +1258,7 @@ export function audioClipFieldsOf(a: AudioClip): AudioClipFields {
     continues: a.continues,
     volumeKeys: a.volumeKeys,
     ...(a.language !== undefined ? { language: a.language } : {}),
+    ...(a.speed !== undefined && a.speed !== 1 ? { speed: a.speed } : {}),
   };
 }
 
@@ -4269,6 +4276,68 @@ function run(
       };
     }
 
+    case "SetAssetsRemoved": {
+      if (!Array.isArray(c.assetIds) || c.assetIds.length === 0 || c.assetIds.length > 500)
+        fail("invalid", "Velg 1–500 ressurser");
+      const assets = { ...s.assets };
+      const before: (typeof c.assetIds)[number][] = [];
+      for (const id of new Set(c.assetIds)) {
+        const a = need(s.assets[id], "Ressursen");
+        if ((a.removed === true) === c.removed) continue;
+        const { removed: _r, ...rest } = a;
+        assets[a.id] = { ...rest, ...(c.removed ? { removed: true } : {}), revision: rev(a) };
+        before.push(a.id);
+      }
+      if (before.length === 0) fail("invalid", c.removed ? "Allerede slettet" : "Ikke slettet");
+      return {
+        state: { ...s, assets },
+        inverse: { type: "SetAssetsRemoved", assetIds: before, removed: !c.removed },
+        affected: before,
+      };
+    }
+
+    case "SetAssetVersionsRemoved": {
+      if (!Array.isArray(c.versionIds) || c.versionIds.length === 0 || c.versionIds.length > 500)
+        fail("invalid", "Velg 1–500 bilder");
+      const versions = { ...s.assetVersions };
+      const before: (typeof c.versionIds)[number][] = [];
+      for (const id of new Set(c.versionIds)) {
+        const v = need(s.assetVersions[id], "Bildet");
+        if ((v.removed === true) === c.removed) continue;
+        // Det godkjente bildet kan ikke slettes: godkjenn et annet først (ellers ville scenene mistet det)
+        if (c.removed && s.assetVariants[v.variantId]?.approvedVersionId === v.id)
+          fail("invalid", `v${v.number} er godkjent. Godkjenn et annet bilde først.`);
+        const { removed: _r, ...rest } = v;
+        versions[v.id] = { ...rest, ...(c.removed ? { removed: true } : {}), revision: rev(v) };
+        before.push(v.id);
+      }
+      if (before.length === 0) fail("invalid", c.removed ? "Allerede slettet" : "Ikke slettet");
+      return {
+        state: { ...s, assetVersions: versions },
+        inverse: { type: "SetAssetVersionsRemoved", versionIds: before, removed: !c.removed },
+        affected: before,
+      };
+    }
+
+    case "SetCompositionStep": {
+      const comp = need(s.compositions[c.compositionId], "2D-scenen");
+      if (!Number.isInteger(c.step) || c.step < 1 || c.step > 4)
+        fail("invalid", "Velg 1–4 (hvert bilde, toere, treere eller firere)");
+      if ((comp.step ?? 1) === c.step) fail("invalid", "Uendret");
+      const { step: _s, ...rest } = comp;
+      return {
+        state: {
+          ...s,
+          compositions: {
+            ...s.compositions,
+            [comp.id]: { ...rest, ...(c.step > 1 ? { step: c.step } : {}), revision: rev(comp) },
+          },
+        },
+        inverse: { type: "SetCompositionStep", compositionId: comp.id, step: comp.step ?? 1 },
+        affected: [comp.id],
+      };
+    }
+
     case "CreateAssetVariant": {
       assertNewId(s, c.variantId);
       need(s.assets[c.assetId], "Ressursen");
@@ -4968,7 +5037,13 @@ function run(
           .filter((l) => l.compositionId === comp.id)
           .map((l) => l.orderKey)
           .sort(compareKeys);
-        if (orderKey === undefined) orderKey = keyBetween(keys[keys.length - 1] ?? null, null);
+        // Utelatt plassering: øverst – men en lokasjon eller et miljø (bakgrunnsbilde) legges nederst
+        // (Mars 2026-10-13: «Når en legger til en lokasjon så skal den default legge seg i bakgrunnen»)
+        if (orderKey === undefined)
+          orderKey =
+            fields.kind === "background" && fields.assetId !== null
+              ? keyBetween(null, keys[0] ?? null)
+              : keyBetween(keys[keys.length - 1] ?? null, null);
         else if (!isValidOrderKey(orderKey) || keys.includes(orderKey))
           fail("invalid", "Ugyldig plassering i lagrekkefølgen");
         layers[n.layerId] = {

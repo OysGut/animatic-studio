@@ -353,16 +353,17 @@ function Editor({
     playback.setFrame(0);
   }
 
-  /** Ressurs fra «I denne scenen» med «+»: nytt lag øverst, midt i bildet (litt forskjøvet per lag). */
+  /** Ressurs fra «I denne scenen» med «+»: nytt lag øverst (bakgrunn nederst), midt i bildet. */
   const addAsset = useCallback(
-    (assetId: string) => {
-      if (!composition) return;
+    (assetId: string): string | null => {
+      if (!composition) return null;
       // Utseendet kontinuiteten gir i denne scenen (DEC-0055)
       const f = defaultLayerFields(state, composition, {
         assetId,
         assetVariantId: sceneContinuityVariant(state, assetId, composition.variantId),
       });
-      const n = layersOf(state, composition.id).length % 8;
+      // Bakgrunner (lokasjon, miljø) dekker bildet og legges nederst; andre lag forskyves litt per lag
+      const n = f.kind === "background" ? 0 : layersOf(state, composition.id).length % 8;
       const layerId = newId<"composition_layer">();
       const err = cmds.run(
         {
@@ -382,9 +383,20 @@ function Editor({
       );
       setError(err);
       if (!err) setSelectedLayerId(layerId);
+      return err ? null : layerId;
     },
     [state, composition, cmds, setSelectedLayerId],
   );
+  /** Lagene hver ressurs har i 2D-scenen («I denne scenen» viser hvilke som alt er lagt inn, DEC-0079). */
+  const layersByAsset = useMemo(() => {
+    const m = new Map<string, string[]>();
+    if (!composition) return m;
+    for (const l of layersOf(state, composition.id)) {
+      if (!l.assetId || l.removed) continue;
+      m.set(l.assetId, [...(m.get(l.assetId) ?? []), l.id]);
+    }
+    return m;
+  }, [state, composition]);
 
   function create() {
     if (!variant || !occurrence) return;
@@ -590,6 +602,13 @@ function Editor({
                 editable={editable}
                 onAdd={composition ? addAsset : null}
                 cmds={cmds}
+                layersByAsset={layersByAsset}
+                onOpenImage={(assetId) => {
+                  // Samme bildevalg som dobbeltklikk på laget i scenen; ikke i scenen ennå: legg inn først
+                  const id =
+                    layersByAsset.get(assetId)?.[0] ?? (editable ? addAsset(assetId) : null);
+                  if (id) openLayerImage(id);
+                }}
               />
               <NearbyAudioPanel
                 state={state}
@@ -749,6 +768,28 @@ function Editor({
                     loaded={audioLoaded}
                     onFrame={playback.setFrame}
                     onOpen={setProfileId}
+                    onChange={
+                      audioEditable
+                        ? (clipId, label, patch) => {
+                            const clip = state.audioClips[clipId];
+                            if (!clip) return;
+                            setError(
+                              cmds.run(
+                                {
+                                  type: "UpdateAudioClips",
+                                  clips: [
+                                    {
+                                      clipId: clip.id,
+                                      fields: { ...audioClipFieldsOf(clip), ...patch },
+                                    },
+                                  ],
+                                },
+                                label,
+                              ),
+                            );
+                          }
+                        : null
+                    }
                   />
                 )}
               />

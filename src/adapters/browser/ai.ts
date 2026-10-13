@@ -34,6 +34,25 @@ export async function fetchProjectJobs(projectId: string, since: string): Promis
   };
 }
 
+/**
+ * Jobben som laget en fil (stien i bøtta): beskrivelsen følger bildet (DEC-0079), også når jobben er eldre
+ * enn de siste 300.
+ */
+export async function fetchJobForResult(
+  projectId: string,
+  path: string,
+): Promise<BackendResult<Record<string, unknown> | null>> {
+  const r = await db
+    .from("generation_jobs")
+    .select("*")
+    .eq("project_id", projectId)
+    .eq("result_path", path)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  return { data: r.data as Record<string, unknown> | null, error: plainError(r.error) };
+}
+
 /** Brukerens leverandørnøkler – bare kolonnene uten selve nøkkelen (kolonnetilgang i migrasjon 0024). */
 export async function fetchProviderKeys(userId: string): Promise<BackendResult<unknown[] | null>> {
   const keys = await db

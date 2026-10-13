@@ -159,7 +159,7 @@ export function posterAnalysis(s: ProjectState, productionId: string): PosterAna
     }
   }
   const scenes = (a: Asset) => (usage.get(a.id) ?? []).filter((u) => u.active).length;
-  const live = Object.values(s.assets).filter((a) => !a.archived);
+  const live = Object.values(s.assets).filter((a) => !a.archived && !a.removed);
   const characters = live
     .filter((a) => a.kind === "character" || a.kind === "animal")
     .map((asset) => ({

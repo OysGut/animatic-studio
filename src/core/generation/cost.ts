@@ -208,6 +208,7 @@ export function unclaimedImageJobs(
       j.assetId !== null &&
       !!s.assets[j.assetId] &&
       !s.assets[j.assetId]!.archived &&
+      !s.assets[j.assetId]!.removed &&
       !stored.has(j.resultPath) &&
       Date.parse(j.finishedAt ?? j.createdAt) <= settled,
   );

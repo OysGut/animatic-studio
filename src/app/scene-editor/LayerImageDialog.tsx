@@ -7,7 +7,17 @@
  * Lag uten ressurs (fargeflater) kan kobles til en ressurs fra biblioteket her.
  */
 import { Link } from "@tanstack/react-router";
-import { Check, ImageOff, Library, Loader2, Scissors, Upload } from "lucide-react";
+import {
+  Check,
+  ImageOff,
+  Library,
+  Loader2,
+  Maximize2,
+  Scissors,
+  Trash2,
+  Upload,
+} from "lucide-react";
+import { ImageLightbox } from "@/app/library/ImageLightbox";
 import { useMemo, useRef, useState } from "react";
 import {
   ASSET_KIND_LABEL,
@@ -20,12 +30,19 @@ import {
   versionsOf,
   type AssetMedia,
   type AssetVariant,
+  type AssetVersion,
   type CompositionLayer,
   type LayerFields,
   type ProjectState,
+  workingImageMaxSide,
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
-import { uploadAssetImage, useImageUrls } from "@/app/library/asset-images";
+import {
+  IMAGE_ACCEPT,
+  type UploadedImage,
+  uploadAssetImage,
+  useImageUrls,
+} from "@/app/library/asset-images";
 import { GenerateImagePanel } from "@/app/library/GenerateImagePanel";
 import { useActiveProduction } from "@/app/project/use-production";
 import { CutoutDialog } from "@/app/library/CutoutDialog";
@@ -150,6 +167,12 @@ function Body({
   const [target, setTarget] = useState<string>(layer.assetVariantId ?? variants[0]?.id ?? "");
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [cutout, setCutout] = useState(false);
+  /** Stor visning av et bilde (DEC-0079). */
+  const [big, setBig] = useState<{ version: AssetVersion; variantName: string } | null>(null);
+  /** Bildet som er i ferd med å slettes (bekreftelse). */
+  const [deleting, setDeleting] = useState<string | null>(null);
+  /** «Sett inn denne beskrivelsen» fra den store visningen. */
+  const [insert, setInsert] = useState<{ text: string; n: number } | null>(null);
 
   function setLayer(label: string, patch: Partial<LayerFields>) {
     const err = cmds.run(
@@ -169,6 +192,7 @@ function Body({
     media: AssetMedia,
     note: string,
     label: string,
+    original: UploadedImage["original"] = null,
   ): Promise<string | null> {
     if (!asset) return "Laget har ingen ressurs.";
     let variantId = target;
@@ -188,6 +212,21 @@ function Body({
       // Et nytt forsøk bruker den samme varianten
       setTarget(variantId);
     }
+    const group = `opplasting-${versionId}`;
+    if (original) {
+      const o = await cmds.runAndWait(
+        {
+          type: "AddAssetVersion",
+          versionId: original.versionId as never,
+          variantId: variantId as never,
+          media: original.media,
+          note: original.note,
+        },
+        label,
+        group,
+      );
+      if (o.error) return o.error;
+    }
     const r = await cmds.runAndWait(
       {
         type: "AddAssetVersion",
@@ -197,6 +236,7 @@ function Body({
         note,
       },
       label,
+      group,
     );
     if (r.error) return r.error;
     const ok = setLayer("Bruk nytt bilde", {
@@ -212,12 +252,19 @@ function Body({
     setBusy(true);
     try {
       // Last opp først: feiler opplastingen, lages ingenting
-      const { versionId, media } = await uploadAssetImage(projectId, asset.id, file);
+      const up = await uploadAssetImage(
+        projectId,
+        asset.id,
+        file,
+        workingImageMaxSide(state.project.frameWidth, state.project.frameHeight),
+      );
+      // Originalen (når bildet er skalert ned) lagres som versjonen før arbeidskopien
       const err = await saveVersion(
-        versionId,
-        media,
-        "Lastet opp fra sceneeditoren",
+        up.versionId,
+        up.media,
+        ["Lastet opp fra sceneeditoren.", up.note].filter(Boolean).join(" "),
         `Nytt bilde av «${asset.name}»`,
+        up.original,
       );
       if (err) setError(err);
     } catch (e) {
@@ -321,6 +368,26 @@ function Body({
                       </button>
                     ) : null}
                   </div>
+                  {deleting && versions.some((x) => x.id === deleting) ? (
+                    <DeleteVersionConfirm
+                      state={state}
+                      versionId={deleting}
+                      onCancel={() => setDeleting(null)}
+                      onConfirm={() => {
+                        const ver = state.assetVersions[deleting];
+                        const err = cmds.run(
+                          {
+                            type: "SetAssetVersionsRemoved",
+                            versionIds: [deleting as never],
+                            removed: true,
+                          },
+                          `Slett bilde v${ver?.number ?? ""}`,
+                        );
+                        setError(err);
+                        if (!err) setDeleting(null);
+                      }}
+                    />
+                  ) : null}
                   {versions.length === 0 ? (
                     <p className="text-xs text-text-tertiary">Ingen bilder i denne varianten.</p>
                   ) : (
@@ -329,36 +396,60 @@ function Body({
                         const locked = layer.versionId === ver.id;
                         const on = locked || (followOn && shown?.id === ver.id);
                         return (
-                          <button
-                            key={ver.id}
-                            type="button"
-                            disabled={!editable}
-                            aria-pressed={locked}
-                            onClick={() =>
-                              setLayer(`Bruk bilde v${ver.number}`, {
-                                assetVariantId: v.id as LayerFields["assetVariantId"],
-                                versionId: ver.id as LayerFields["versionId"],
-                              })
-                            }
-                            className={
-                              tile +
-                              (on
-                                ? " border-accent-brand ring-1 ring-accent-brand"
-                                : " border-border hover:border-border-strong")
-                            }
-                            title={`Bruk versjon ${ver.number}${ver.note ? ` – ${ver.note}` : ""}`}
-                          >
-                            <Thumb url={urls[ver.mediaPath]} />
-                            <span className="flex items-center gap-1 px-1.5 py-1 text-[12px] text-text-primary">
-                              v{ver.number}
-                              {v.approvedVersionId === ver.id ? (
-                                <span className="rounded-sm bg-status-success-bg px-1 text-[11px] text-status-success">
-                                  godkjent
-                                </span>
+                          <div key={ver.id} className="group/tile relative">
+                            <button
+                              type="button"
+                              disabled={!editable}
+                              aria-pressed={locked}
+                              onClick={() =>
+                                setLayer(`Bruk bilde v${ver.number}`, {
+                                  assetVariantId: v.id as LayerFields["assetVariantId"],
+                                  versionId: ver.id as LayerFields["versionId"],
+                                })
+                              }
+                              className={
+                                tile +
+                                (on
+                                  ? " border-accent-brand ring-1 ring-accent-brand"
+                                  : " border-border hover:border-border-strong")
+                              }
+                              title={`Bruk versjon ${ver.number}${ver.note ? ` – ${ver.note}` : ""}`}
+                            >
+                              <Thumb url={urls[ver.mediaPath]} />
+                              <span className="flex items-center gap-1 px-1.5 py-1 text-[12px] text-text-primary">
+                                v{ver.number}
+                                {v.approvedVersionId === ver.id ? (
+                                  <span className="rounded-sm bg-status-success-bg px-1 text-[11px] text-status-success">
+                                    godkjent
+                                  </span>
+                                ) : null}
+                              </span>
+                              {on ? <Selected /> : null}
+                            </button>
+                            {/* Stor visning med beskrivelsen, og sletting (DEC-0079) */}
+                            <span className="absolute left-1 top-1 flex gap-0.5 opacity-0 transition-opacity focus-within:opacity-100 group-hover/tile:opacity-100 [@media(hover:none)]:opacity-100">
+                              <button
+                                type="button"
+                                onClick={() => setBig({ version: ver, variantName: v.name })}
+                                aria-label={`Vis v${ver.number} stort, med beskrivelsen`}
+                                title="Stor visning, zoom og beskrivelsen (prompten) som laget bildet"
+                                className="rounded-sm bg-surface-1/90 p-0.5 text-text-secondary hover:text-text-primary"
+                              >
+                                <Maximize2 className="size-3.5" aria-hidden />
+                              </button>
+                              {editable ? (
+                                <button
+                                  type="button"
+                                  onClick={() => setDeleting(ver.id)}
+                                  aria-label={`Slett v${ver.number}`}
+                                  title="Slett bildet (flyttes til «Slettede objekter»)"
+                                  className="rounded-sm bg-surface-1/90 p-0.5 text-text-secondary hover:text-status-danger"
+                                >
+                                  <Trash2 className="size-3.5" aria-hidden />
+                                </button>
                               ) : null}
                             </span>
-                            {on ? <Selected /> : null}
-                          </button>
+                          </div>
                         );
                       })}
                     </div>
@@ -401,7 +492,7 @@ function Body({
               <input
                 ref={fileRef}
                 type="file"
-                accept="image/png,image/jpeg,image/webp,image/gif"
+                accept={IMAGE_ACCEPT}
                 className="sr-only"
                 aria-label="Velg bildefil"
                 onChange={(e) => {
@@ -421,6 +512,7 @@ function Body({
               </Button>
             </div>
             <GenerateImagePanel
+              insertPrompt={insert}
               projectId={projectId}
               filmTitle={state.project.name}
               asset={asset}
@@ -479,6 +571,22 @@ function Body({
           }
         />
       ) : null}
+
+      <ImageLightbox
+        open={big !== null}
+        onOpenChange={(o) => !o && setBig(null)}
+        projectId={projectId}
+        version={big?.version ?? null}
+        url={big ? urls[big.version.mediaPath] : undefined}
+        title={
+          big && asset
+            ? `${asset.name} – ${big.variantName || "Uten navn"} v${big.version.number}`
+            : ""
+        }
+        {...(editable
+          ? { onInsertPrompt: (text: string) => setInsert((p) => ({ text, n: (p?.n ?? 0) + 1 })) }
+          : {})}
+      />
 
       <DialogFooter className="sm:justify-between">
         {asset ? (
@@ -585,5 +693,60 @@ function Selected() {
     <span className="absolute right-1 top-1 rounded-full bg-accent-brand p-0.5 text-accent-fg">
       <Check className="size-3" aria-label="Valgt" />
     </span>
+  );
+}
+
+/**
+ * Bekreft sletting av et bilde (DEC-0079): hva som skjer, og at det kan hentes inn igjen fra «Slettede
+ * objekter» i biblioteket.
+ */
+function DeleteVersionConfirm({
+  state,
+  versionId,
+  onCancel,
+  onConfirm,
+}: {
+  state: ProjectState;
+  versionId: string;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  const v = state.assetVersions[versionId];
+  if (!v) return null;
+  const approved = state.assetVariants[v.variantId]?.approvedVersionId === v.id;
+  const lockedLayers = Object.values(state.layers).filter(
+    (l) => !l.removed && l.versionId === v.id,
+  ).length;
+  return (
+    <div
+      role="alertdialog"
+      aria-label={`Slett v${v.number}`}
+      className="flex flex-col gap-2 rounded-sm border border-status-danger/50 bg-surface-1 p-2 text-xs"
+    >
+      {approved ? (
+        <p className="text-text-primary">
+          v{v.number} er godkjent og brukes i scenene. Godkjenn et annet bilde først, så kan dette
+          slettes.
+        </p>
+      ) : (
+        <p className="text-text-primary">
+          v{v.number} flyttes til «Slettede objekter» i biblioteket. Der kan det hentes inn igjen
+          eller slettes for godt.
+          {lockedLayers
+            ? ` ${lockedLayers === 1 ? "Ett lag" : `${lockedLayers} lag`} bruker akkurat dette bildet og beholder det til det slettes for godt.`
+            : " Ingen lag bruker akkurat dette bildet."}
+        </p>
+      )}
+      <div className="flex gap-2">
+        {!approved ? (
+          <Button size="sm" variant="destructive" onClick={onConfirm}>
+            <Trash2 /> Slett bildet
+          </Button>
+        ) : null}
+        <Button size="sm" variant="ghost" onClick={onCancel}>
+          Avbryt
+        </Button>
+      </div>
+    </div>
   );
 }

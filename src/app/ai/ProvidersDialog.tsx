@@ -180,7 +180,10 @@ function ProviderDetail({
           <p className="mt-0.5 text-[13px] text-text-secondary">{p.description}</p>
           <p className="mt-1 text-xs text-text-tertiary">
             Kan lage: {p.capabilities.map((c) => CAPABILITY_LABEL[c]).join(", ")} · modeller:{" "}
-            {p.models.map((m) => m.label).join(", ")}
+            {p.models
+              .filter((m) => !m.retired)
+              .map((m) => m.label)
+              .join(", ")}
           </p>
         </div>
         <StatusBadge row={row} builtIn={p.builtIn} />

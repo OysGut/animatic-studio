@@ -1,8 +1,9 @@
 # Implementeringsstatus – Animatic Studio
 
-Oppdatert: 2026-10-13 (økt 6, DEC-0078). Detaljert status per krav: `docs/product/TRACEABILITY_MATRIX.md` (generert).
+Oppdatert: 2026-10-13 (økt 6, DEC-0079). Detaljert status per krav: `docs/product/TRACEABILITY_MATRIX.md` (generert).
 
 ## Sammendrag
+- **Mars' testrunde (DEC-0079):** 14 av 15 tester bestått i Lovable; 19 funn rettet og bygget (slettede objekter, lydhastighet og masker, animer på toere og 12 bps, symboler, nedskalering av store bilder, stor visning med beskrivelse, siste beskrivelse og bildestørrelse, manusets omtale i AI-teksten, speilvending og tegning, AI-stemmer med status og avspilling, fal.ai og Google-feil, norsk tale). Migrasjon 0029 ikke kjørt ennå.
 - **M0 Fundament:** ferdig.
 - **M1 Skjelett og kjerne:** ferdig og kjørt i Lovable (migrasjon 0001, innlogging, prosjekt).
 - **M2 Manus del 1:** levert og testet av Mars i Lovable (import, visning, redigering, eksport – også i Safari).
@@ -10,7 +11,7 @@ Oppdatert: 2026-10-13 (økt 6, DEC-0078). Detaljert status per krav: `docs/produ
 - **Mars' ønsker etter M2 (DEC-0029, DEC-0031):** rekkefølge/synlighet bare i redigeringsmodus, flyttede scener markert til ny versjon, fyldigere sammenligning (linje for linje), notater i manus (på ord og som nål, stempel, sletting med advarsel, vis/skjul, søk, eksport/import som Word-kommentarer og PDF-merknader), søketreff markert, scenelisten følger manuset, valgt scene øverst. Kode og tester ferdig.
 - **M3 del 1 Ressursbibliotek (DEC-0030):** karakterer, objekter, lokasjoner, dyr, miljøer; alternative navn; visuelle varianter med bildeversjoner og godkjenning; «brukt i scener»; forslag fra manuset; karakterfilter med alle navn. Kode og tester ferdig. Venter på push og migrasjon 0004.
 - **M3 del 2 Sceneeditor og M4 Montering og lyd (DEC-0035–0045):** 2D-scener med lag, nøkkelbilder og kamera; filmtidslinje og eksport av animatic; lydspor, lyd over flere scener, lydprofil med volumpunkter. Se `SESSION_HANDOVER.md`.
-- **M5 del 1 AI-bilder (DEC-0045):** generering av ressursbilder via Lovable AI Gateway med synlig prompt, bekreftelse, grenser og logg. Ikke prøvd mot ekte gateway ennå (KI-61).
+- **M5 del 1 AI-bilder (DEC-0045):** generering av ressursbilder via Lovable AI Gateway med synlig prompt, bekreftelse, grenser og logg. Prøvd av Mars mot ekte gateway 13.10.2026 (DEC-0079).
 - **Prosjektliste (DEC-0046):** slett prosjekt (eier), forlat prosjekt, ressurser fra slettede prosjekter, zip-nedlasting per kategori. **M4 del 3 (DEC-0047):** importert ferdig film, «Bruk denne», overganger, replikk → avspillingshode.
 - **M4 del 4 (DEC-0048):** klipping i deler (trim, splitt med S, bildepresise inn- og utpunkt), animatic-rest, tidskoblinger per replikk («Synk replikker», T), lang film fordelt på flere scener, status for importert film. Migrasjon 0012.
 - **Sikkerhetskopi og navigasjon (DEC-0049):** sikkerhetskopi av hele prosjektet som zip (dokumentert format), gjenoppretting som nytt prosjekt, «Vis i filmen» fra manuset og «Vis i manus» med replikken under avspillingshodet, samlet angring for filmimport. Ingen migrasjon.

@@ -93,7 +93,8 @@ export interface RelationSuggestion {
   readonly evidence: { readonly occurrenceId: string; readonly text: string } | null;
 }
 
-const isPerson = (a: Asset) => (a.kind === "character" || a.kind === "animal") && !a.archived;
+const isPerson = (a: Asset) =>
+  (a.kind === "character" || a.kind === "animal") && !a.archived && !a.removed;
 
 const pairKey = (a: string, b: string) => (a < b ? `${a}|${b}` : `${b}|${a}`);
 

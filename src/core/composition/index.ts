@@ -122,3 +122,40 @@ export function layerFieldsOf(l: CompositionLayer): LayerFields {
     ...(l.blend && l.blend !== "normal" ? { blend: l.blend } : {}),
   };
 }
+
+/**
+ * Største side en arbeidskopi av et opplastet bilde får (Mars 2026-10-13: «systemet bør kunne skalere seg
+ * selv i px til sånn ca det som er maks versjonen for scenen»). To ganger filmformatets lengste side gir rom
+ * for innzooming med kameraet; aldri under 2048 px. Større bilder lagres i tillegg som original.
+ */
+export function workingImageMaxSide(projectWidth: number, projectHeight: number): number {
+  const long = Math.max(projectWidth || 0, projectHeight || 0);
+  return Math.max(2048, Math.round(long * 2));
+}
+
+/** Ny størrelse innenfor `maxSide` (samme forhold), eller null når bildet allerede er lite nok. */
+export function scaledToFit(
+  width: number,
+  height: number,
+  maxSide: number,
+): { readonly width: number; readonly height: number } | null {
+  const long = Math.max(width, height);
+  if (!(long > maxSide) || width <= 0 || height <= 0) return null;
+  const k = maxSide / long;
+  return { width: Math.max(1, Math.round(width * k)), height: Math.max(1, Math.round(height * k)) };
+}
+
+/**
+ * Speilvend et lag i scenen (DEC-0079: «speilvende det for denne scenen»): skaleringen snus, også i
+ * nøkkelbildene, så bevegelsen beholdes. Bildet i biblioteket endres ikke.
+ */
+export function flippedTransformPatch(
+  l: Pick<CompositionLayer, "transform" | "keyframes">,
+  axis: "x" | "y",
+): Pick<CompositionLayer, "transform" | "keyframes"> {
+  const prop = axis === "x" ? "scaleX" : "scaleY";
+  return {
+    transform: { ...l.transform, [prop]: -l.transform[prop] },
+    keyframes: l.keyframes.map((k) => (k.property === prop ? { ...k, value: -k.value } : k)),
+  };
+}

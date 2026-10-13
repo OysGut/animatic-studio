@@ -182,7 +182,7 @@ export function ProductionDialog({
                 value={name}
                 maxLength={200}
                 autoFocus
-                placeholder="F.eks. «Majas jul – kortversjon»"
+                placeholder="F.eks. «Filmtittel – kortversjon»"
                 onChange={(e) => setName(e.target.value)}
                 className="h-8 bg-surface-3 text-[13px]"
               />

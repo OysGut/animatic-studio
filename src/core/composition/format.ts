@@ -9,6 +9,8 @@ import type { Rational } from "../time";
 
 /** Vanlige bildefrekvenser (mandat 6.4, ADR-0006). */
 export const FRAME_RATES: readonly { readonly label: string; readonly fps: Rational }[] = [
+  // Stop motion ender ofte på 12 bilder i sekundet i det ferdige produktet (Mars 2026-10-13, DEC-0079)
+  { label: "12 (stop motion)", fps: { num: 12, den: 1 } },
   { label: "23,976", fps: { num: 24000, den: 1001 } },
   { label: "24", fps: { num: 24, den: 1 } },
   { label: "25", fps: { num: 25, den: 1 } },

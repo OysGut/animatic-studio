@@ -103,6 +103,8 @@ function Editor({
 
   const length = clip.lengthMs / 1000;
   const sourceIn = clip.sourceInMs / 1000;
+  /** Hastighet (DEC-0079): 1 = uendret. */
+  const speed = clip.speed ?? 1;
   // Hvor scenen slutter, målt fra klippets start (bare når lyden ikke løper videre)
   const cut = !clip.continues && sceneSeconds !== null ? sceneSeconds - clip.offsetMs / 1000 : null;
 
@@ -142,7 +144,7 @@ function Editor({
     ctx.clearRect(0, 0, w, H);
     if (!buf) return;
     const col = getComputedStyle(c).color || "#9aa";
-    const p = peaks(buf, sourceIn, sourceIn + length, Math.ceil(w / 2));
+    const p = peaks(buf, sourceIn, sourceIn + length * speed, Math.ceil(w / 2));
     const mid = TOP + (H - TOP - BOTTOM) / 2;
     const half = (H - TOP - BOTTOM) / 2;
     ctx.fillStyle = col;
@@ -151,7 +153,7 @@ function Editor({
       const v = Math.max(0.5, p[i]! * half);
       ctx.fillRect(i * bw, mid - v, Math.max(1, bw - 0.5), v * 2);
     }
-  }, [buf, w, sourceIn, length, loaded]);
+  }, [buf, w, sourceIn, length, speed, loaded]);
 
   function commit(next: VolumeKey[]) {
     const sorted = [...next].sort((a, b) => a.t - b.t);
@@ -178,12 +180,13 @@ function Editor({
       length: cut !== null ? Math.max(0, Math.min(length, cut)) : length,
       fullLength: length,
       sourceIn,
+      ...(speed !== 1 ? { speed } : {}),
       gain: Math.pow(10, clip.gainDb / 20),
       fadeIn: clip.fadeInMs / 1000,
       fadeOut: clip.fadeOutMs / 1000,
       keys: keys.map((k) => ({ t: k.t / 1000, db: k.db })),
     }),
-    [clip, version, cut, length, sourceIn, keys],
+    [clip, version, cut, length, sourceIn, speed, keys],
   );
   function stop() {
     try {
@@ -293,6 +296,18 @@ function Editor({
           </Button>
         ) : null}
       </div>
+
+      <TrimAndSpeed
+        clip={clip}
+        buf={buf ?? null}
+        editable={editable}
+        loaded={loaded}
+        onChange={(label, patch) => {
+          stop();
+          setHead(0);
+          onChange(label, patch);
+        }}
+      />
 
       <div ref={boxRef} className="relative select-none" style={{ height: H + 18 }}>
         {/* Linjal: klikk for å flytte hodet */}
@@ -473,5 +488,271 @@ function Editor({
         klippets volum og inn-/uttoning, og gjelder både avspilling og eksport.
       </p>
     </>
+  );
+}
+
+/** Faste hastigheter (DEC-0079); mellomverdier velges med glidebryteren eller tallfeltet. */
+export const SPEED_PRESETS = [25, 50, 75, 100, 125, 150, 200, 300, 400] as const;
+const MIN_LENGTH_MS = 50;
+
+/** Glidebryterens posisjon (0–1000) ↔ prosent, logaritmisk så 100 % står midt på. */
+const sliderOf = (pct: number) => Math.round((Math.log(pct / 25) / Math.log(16)) * 1000);
+const pctOf = (pos: number) => Math.round(25 * Math.pow(16, pos / 1000));
+
+/**
+ * Ny hastighet: den samme delen av lydfilen spilles, så lengden i filmen endres (raskere = kortere).
+ * Volumpunktene følger lyden.
+ */
+export function withSpeed(
+  clip: Pick<AudioClip, "lengthMs" | "speed" | "volumeKeys">,
+  pct: number,
+): Partial<AudioClipFields> {
+  const speed = Math.min(4, Math.max(0.25, Math.round(pct) / 100));
+  const old = clip.speed ?? 1;
+  const k = old / speed;
+  const lengthMs = Math.max(MIN_LENGTH_MS, Math.round(clip.lengthMs * k));
+  return {
+    speed,
+    lengthMs,
+    volumeKeys: clip.volumeKeys
+      .map((v) => ({ t: Math.round(v.t * k), db: v.db }))
+      .filter((v, i, a) => v.t <= lengthMs && (i === 0 || v.t !== a[i - 1]!.t)),
+  };
+}
+
+/**
+ * Nye masker for start og slutt i lydfilen (s): klippet spiller fra `inSec` til `outSec` i lydfilen, og
+ * lengden i filmen blir (out − in) / hastighet. Starten i scenen står fast.
+ */
+export function withTrim(
+  clip: Pick<AudioClip, "speed" | "volumeKeys" | "sourceInMs">,
+  inSec: number,
+  outSec: number,
+): Partial<AudioClipFields> {
+  const speed = clip.speed ?? 1;
+  const sourceInMs = Math.max(0, Math.round(inSec * 1000));
+  const lengthMs = Math.max(MIN_LENGTH_MS, Math.round(((outSec - inSec) * 1000) / speed));
+  // Volumpunktene følger lyden: flyttes like mye som starten
+  const shift = Math.round((sourceInMs - clip.sourceInMs) / speed);
+  return {
+    sourceInMs,
+    lengthMs,
+    volumeKeys: clip.volumeKeys
+      .map((v) => ({ t: v.t - shift, db: v.db }))
+      .filter((v) => v.t >= 0 && v.t <= lengthMs),
+  };
+}
+
+function TrimAndSpeed({
+  clip,
+  buf,
+  editable,
+  loaded,
+  onChange,
+}: {
+  clip: AudioClip;
+  buf: AudioBuffer | null;
+  editable: boolean;
+  loaded: number;
+  onChange: (label: string, patch: Partial<AudioClipFields>) => void;
+}) {
+  const speed = clip.speed ?? 1;
+  const pct = Math.round(speed * 100);
+  const [draftPct, setDraftPct] = useState(pct);
+  useEffect(() => setDraftPct(pct), [pct]);
+  const total = buf?.duration ?? null;
+  const inSec = clip.sourceInMs / 1000;
+  const outSec = inSec + (clip.lengthMs / 1000) * speed;
+
+  // Oversikt over hele lydfilen med maskene
+  const W = 1000;
+  const BAR_H = 44;
+  const ref = useRef<HTMLCanvasElement | null>(null);
+  useEffect(() => {
+    const c = ref.current;
+    const ctx = c?.getContext("2d");
+    if (!c || !ctx) return;
+    c.width = W;
+    c.height = BAR_H;
+    ctx.clearRect(0, 0, W, BAR_H);
+    if (!buf) return;
+    ctx.fillStyle = getComputedStyle(c).color || "#9aa";
+    const p = peaks(buf, 0, buf.duration, W / 2);
+    for (let i = 0; i < p.length; i++) {
+      const v = Math.max(0.5, p[i]! * (BAR_H / 2) * 0.95);
+      ctx.fillRect(i * 2, BAR_H / 2 - v, 1.5, v * 2);
+    }
+  }, [buf, loaded]);
+
+  const [drag, setDrag] = useState<{ edge: "in" | "out"; sec: number } | null>(null);
+  const shownIn = drag?.edge === "in" ? drag.sec : inSec;
+  const shownOut = drag?.edge === "out" ? drag.sec : outSec;
+  const barRef = useRef<HTMLDivElement | null>(null);
+  const secAt = (clientX: number) => {
+    const r = barRef.current?.getBoundingClientRect();
+    if (!r || !total) return 0;
+    return Math.max(0, Math.min(total, ((clientX - r.left) / r.width) * total));
+  };
+  const pctPos = (sec: number) => (total ? `${(sec / total) * 100}%` : "0%");
+  const minSpan = (MIN_LENGTH_MS / 1000) * speed;
+
+  function applySpeed(next: number) {
+    const v = Math.min(400, Math.max(25, Math.round(next)));
+    if (v === pct) return;
+    onChange(`Hastighet ${v} %`, withSpeed(clip, v));
+  }
+
+  return (
+    <div className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-2">
+      <div className="flex flex-wrap items-center gap-2 text-xs text-text-secondary">
+        <span className="font-medium text-text-primary">Hastighet</span>
+        <input
+          type="range"
+          min={0}
+          max={1000}
+          step={1}
+          value={sliderOf(draftPct)}
+          disabled={!editable}
+          aria-label="Hastighet (25–400 %)"
+          onChange={(e) => setDraftPct(pctOf(Number(e.target.value)))}
+          onPointerUp={() => applySpeed(draftPct)}
+          onKeyUp={() => applySpeed(draftPct)}
+          className="w-48 accent-[var(--accent-brand)]"
+        />
+        <label className="flex items-center gap-1">
+          <input
+            type="number"
+            min={25}
+            max={400}
+            step={1}
+            value={draftPct}
+            disabled={!editable}
+            aria-label="Hastighet i prosent"
+            onChange={(e) => setDraftPct(Number(e.target.value))}
+            onBlur={() => applySpeed(draftPct)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") applySpeed(draftPct);
+            }}
+            className="h-7 w-16 rounded-sm border border-border-control bg-surface-3 px-1.5 text-right font-mono tabular-nums text-text-primary"
+          />
+          %
+        </label>
+        <span className="flex flex-wrap gap-1">
+          {SPEED_PRESETS.map((v) => (
+            <button
+              key={v}
+              type="button"
+              disabled={!editable}
+              aria-pressed={pct === v}
+              onClick={() => applySpeed(v)}
+              className={
+                "h-6 rounded-sm px-1.5 font-mono text-[11px] tabular-nums " +
+                (pct === v
+                  ? "bg-accent-selection text-text-primary"
+                  : "text-text-secondary hover:bg-surface-3 hover:text-text-primary")
+              }
+            >
+              {v} %
+            </button>
+          ))}
+        </span>
+        <span className="text-text-tertiary">Tonehøyden følger hastigheten.</span>
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center gap-2 text-xs">
+          <span className="font-medium text-text-primary">Start og slutt i lydfilen</span>
+          <span className="font-mono tabular-nums text-text-secondary">
+            {fmt(shownIn)} – {fmt(shownOut)}
+            {total !== null ? ` av ${fmt(total)}` : ""}
+          </span>
+          <span className="text-text-tertiary">
+            Ny varighet i filmen: {fmt((shownOut - shownIn) / speed)}
+          </span>
+        </div>
+        <div
+          ref={barRef}
+          className="relative h-11 touch-none select-none overflow-hidden rounded-sm bg-surface-2"
+          aria-label="Masker for start og slutt"
+          onPointerMove={(e) => {
+            if (!drag || !total) return;
+            const t = secAt(e.clientX);
+            setDrag({
+              ...drag,
+              sec:
+                drag.edge === "in" ? Math.min(t, outSec - minSpan) : Math.max(t, inSec + minSpan),
+            });
+          }}
+          onPointerUp={() => {
+            const d = drag;
+            setDrag(null);
+            if (!d) return;
+            const nextIn = d.edge === "in" ? d.sec : inSec;
+            const nextOut = d.edge === "out" ? d.sec : outSec;
+            if (Math.abs(nextIn - inSec) < 0.001 && Math.abs(nextOut - outSec) < 0.001) return;
+            onChange(
+              d.edge === "in" ? "Flytt startmasken" : "Flytt sluttmasken",
+              withTrim(clip, nextIn, nextOut),
+            );
+          }}
+        >
+          <canvas
+            ref={ref}
+            aria-hidden
+            className="absolute inset-0 h-full w-full"
+            style={{ color: "var(--chart-1)" }}
+          />
+          {total ? (
+            <>
+              {/* Maskert bort: utenfor start og slutt */}
+              <div
+                className="absolute inset-y-0 left-0 bg-surface-0/70"
+                style={{ width: pctPos(shownIn) }}
+              />
+              <div
+                className="absolute inset-y-0 right-0 bg-surface-0/70"
+                style={{ left: pctPos(shownOut) }}
+              />
+              {(["in", "out"] as const).map((edge) => (
+                <button
+                  key={edge}
+                  type="button"
+                  disabled={!editable}
+                  aria-label={edge === "in" ? "Startmaske" : "Sluttmaske"}
+                  title="Dra for å flytte. Piltaster: 0,1 s"
+                  onPointerDown={(e) => {
+                    if (!editable) return;
+                    e.preventDefault();
+                    barRef.current?.setPointerCapture(e.pointerId);
+                    setDrag({ edge, sec: edge === "in" ? inSec : outSec });
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+                    e.preventDefault();
+                    const d = e.key === "ArrowLeft" ? -0.1 : 0.1;
+                    const nIn =
+                      edge === "in" ? Math.max(0, Math.min(outSec - minSpan, inSec + d)) : inSec;
+                    const nOut =
+                      edge === "out"
+                        ? Math.min(total, Math.max(inSec + minSpan, outSec + d))
+                        : outSec;
+                    onChange(
+                      edge === "in" ? "Flytt startmasken" : "Flytt sluttmasken",
+                      withTrim(clip, nIn, nOut),
+                    );
+                  }}
+                  className="absolute inset-y-0 z-10 w-2.5 -translate-x-1/2 cursor-ew-resize rounded-sm bg-accent-warm focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring disabled:cursor-default"
+                  style={{ left: pctPos(edge === "in" ? shownIn : shownOut) }}
+                />
+              ))}
+            </>
+          ) : (
+            <p className="absolute inset-0 flex items-center justify-center text-xs text-text-tertiary">
+              Henter lydfilen …
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

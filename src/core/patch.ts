@@ -220,6 +220,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         // Migrasjon 0026 (DEC-0071)
         context_names: a.contextNames ?? [],
         voice: a.voice ?? null,
+        // Migrasjon 0029 (DEC-0079)
+        removed: a.removed === true,
       };
     }
     case "assetVariants": {
@@ -252,6 +254,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         // Lengde (bare lydfiler). Kolonnen finnes fra migrasjon 0009; apply_changes ser bort fra
         // felter tabellen ikke har, så eldre databaser tåler den
         duration_ms: v.durationMs,
+        // Migrasjon 0029 (DEC-0079)
+        removed: v.removed === true,
       };
     }
     case "annotations": {
@@ -285,6 +289,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         removed: c.removed,
         // Alltid med (også tomt), så et tilbakestilt grunnlag lagres (migrasjon 0014; ignoreres før)
         produced_from: c.producedFrom ?? {},
+        // Migrasjon 0029 (DEC-0079)
+        step: c.step ?? 1,
       };
     }
     case "layers": {
@@ -344,6 +350,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         volume_keys: a.volumeKeys,
         // Migrasjon 0017 (DEC-0059): null = standard for lydtypen
         language: a.language ?? null,
+        // Migrasjon 0029 (DEC-0079)
+        speed: a.speed ?? 1,
         removed: a.removed,
       };
     }
@@ -960,6 +968,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...(x["voice"] && typeof x["voice"] === "object"
           ? { voice: x["voice"] as AssetVoice }
           : {}),
+        ...(x["removed"] === true ? { removed: true } : {}),
       })),
     ),
     assetVariants: byId(
@@ -990,6 +999,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         createdAt: iso(x["created_at"]),
         createdBy: str(x["created_by"] ?? ""),
         durationMs: optNum(x["duration_ms"]),
+        ...(x["removed"] === true ? { removed: true } : {}),
       })),
     ),
     annotations: byId(
@@ -1023,6 +1033,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         camera: { shots: [], ...(json(x["camera"]) as object | null) } as never,
         removed: x["removed"] === true,
         ...compositionProducedFrom(x["produced_from"]),
+        ...(num(x["step"] ?? 1) > 1 ? { step: num(x["step"]) } : {}),
       })),
     ),
     layers: byId(
@@ -1077,6 +1088,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
           (k) => ({ t: Number(k.t), db: Number(k.db) }),
         ),
         ...(typeof x["language"] === "string" && x["language"] ? { language: x["language"] } : {}),
+        ...(x["speed"] !== undefined && x["speed"] !== null && Number(x["speed"]) !== 1
+          ? { speed: Number(x["speed"]) }
+          : {}),
         removed: x["removed"] === true,
       })),
     ),

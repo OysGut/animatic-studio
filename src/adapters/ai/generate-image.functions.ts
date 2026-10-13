@@ -15,6 +15,8 @@ import {
   type AssetMedia,
   effortOf,
   estimateCostUsd,
+  type ImageSize,
+  imageSizesOf,
   isProviderId,
   isUuid,
   MAX_ATTACHED_IMAGES,
@@ -52,6 +54,8 @@ export interface GenerateImageInput {
   /** Leverandør og modell (DEC-0069); «lovable» (innebygd) når ikke valgt. */
   readonly provider: string;
   readonly model: string | null;
+  /** Valgt bildestørrelse (Mars 2026-10-13); bare for modeller som tar imot den. */
+  readonly size?: ImageSize | null;
   /** Brukeren har bekreftet at genereringen bruker kreditter. */
   readonly approved: true;
 }
@@ -104,6 +108,12 @@ function validate(d: unknown): GenerateImageInput {
       if (m !== null && (typeof m !== "string" || m.length > 120))
         throw new Error("Ugyldig modell");
       return m as string | null;
+    })(),
+    size: (() => {
+      const z = x["size"] ?? null;
+      if (z !== null && z !== "1K" && z !== "2K" && z !== "4K")
+        throw new Error("Ugyldig størrelse");
+      return z as ImageSize | null;
     })(),
     approved: true,
   };
@@ -225,6 +235,7 @@ export const generateImage = createServerFn({ method: "POST" })
     const gate = own ? await import("./ai-gate.server") : null;
     let ownKey: Awaited<ReturnType<NonNullable<typeof gate>["projectKey"]>> = null;
     let costUsd: number | null = null;
+    let size: ImageSize | null = null;
     if (own && gate) {
       if (schema.version < 24)
         return {
@@ -242,7 +253,10 @@ export const generateImage = createServerFn({ method: "POST" })
           message:
             "Ingen av prosjektets eiere har koblet til denne leverandøren (AI-leverandører på prosjektlisten).",
         };
-      costUsd = estimateCostUsd(data.provider, model, { images: 1 });
+      // Størrelsen modellen kan lage (ellers modellens standard)
+      const sz = imageSizesOf(providerModel(data.provider, model));
+      size = data.size && sz.sizes.includes(data.size) ? data.size : sz.standard;
+      costUsd = estimateCostUsd(data.provider, model, { images: 1, ...(size ? { size } : {}) });
       const capMsg = await gate.overAccountCap(admin, ownKey.user_id, costUsd ?? 0, false);
       if (capMsg) return { ok: false, message: capMsg };
     }
@@ -253,7 +267,11 @@ export const generateImage = createServerFn({ method: "POST" })
         ? await (
             await import("./trace.server")
           ).buildTrace(admin as AnyClient, data.projectId, {
-            modelParams: { purpose: data.purpose, identityFirst: data.identityFirst ?? null },
+            modelParams: {
+              purpose: data.purpose,
+              identityFirst: data.identityFirst ?? null,
+              ...(size ? { size } : {}),
+            },
             referencePaths: data.referencePaths,
           })
         : null;
@@ -370,6 +388,7 @@ export const generateImage = createServerFn({ method: "POST" })
           prompt: m ? adaptPromptForModel(data.prompt, m).text : data.prompt,
           references,
           purpose: data.purpose,
+          ...(size ? { size } : {}),
         };
         let out: { bytes: Uint8Array; mimeType: string };
         if (data.provider === "openai") out = await ADAPTERS.openai.image(req);
@@ -518,7 +537,7 @@ export const generateImage = createServerFn({ method: "POST" })
       const json = (await res.json()) as { data?: { b64_json?: string; url?: string }[] };
       const first = json.data?.[0];
       let bytes: Uint8Array;
-      if (first?.b64_json) bytes = Uint8Array.from(atob(first.b64_json), (c) => c.charCodeAt(0));
+      if (first?.b64_json) bytes = (await import("./providers.server")).unb64(first.b64_json);
       else if (first?.url) bytes = new Uint8Array(await (await fetch(first.url)).arrayBuffer());
       else throw new Error("AI-tjenesten svarte uten bilde.");
 

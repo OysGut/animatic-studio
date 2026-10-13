@@ -23,7 +23,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { checkFilmFile, readFilmMetadata, uploadFilm } from "./film-import";
+import { FILM_ACCEPT, checkFilmFile, readFilmMetadata, uploadFilm } from "./film-import";
 
 const fmt = (ms: number) => {
   const s = ms / 1000;
@@ -240,7 +240,7 @@ export function LongFilmImportDialog({
         <input
           ref={fileRef}
           type="file"
-          accept="video/mp4,video/quicktime,video/webm,.mp4,.mov,.m4v,.webm"
+          accept={FILM_ACCEPT}
           className="sr-only"
           aria-label="Velg lang filmfil"
           onChange={(e) => {

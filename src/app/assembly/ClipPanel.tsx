@@ -50,6 +50,7 @@ import {
   type TransitionKind,
 } from "@/core";
 import { Button } from "@/components/ui/button";
+import { FILM_ACCEPT } from "./film-import";
 import { formatSeconds } from "./FilmTimeline";
 import { ClipParts } from "./ClipParts";
 import { StillPickerDialog } from "./StillPickerDialog";
@@ -940,7 +941,7 @@ function Versions({
           <input
             ref={fileRef}
             type="file"
-            accept="video/mp4,video/quicktime,video/webm,.mp4,.mov,.m4v,.webm"
+            accept={FILM_ACCEPT}
             className="sr-only"
             aria-label="Velg filmfil"
             onChange={(e) => {

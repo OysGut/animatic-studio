@@ -84,7 +84,7 @@ export function soundCategories(s: ProjectState): string[] {
   return [
     ...new Set(
       Object.values(s.assets)
-        .filter((a) => a.kind === "sound" && !a.archived && a.category.trim())
+        .filter((a) => a.kind === "sound" && !a.archived && !a.removed && a.category.trim())
         .map((a) => a.category.trim()),
     ),
   ].sort((a, b) => a.localeCompare(b, "nb"));

@@ -41,13 +41,13 @@ const FIELDS: readonly { key: StyleTextField; label: string; hint: string; rows?
   {
     key: "premise",
     label: "Hva filmen handler om",
-    hint: "A ten-year-old girl spends Christmas with her grandmother on a farm in Dovre and discovers that the farm's nisse is real.",
+    hint: "A ten-year-old girl spends the summer with her grandfather on a small island and discovers that the old lighthouse keeps a secret.",
     rows: 3,
   },
   {
     key: "world",
     label: "Verden: sted, tid og årstid",
-    hint: "A small mountain farm in Dovre, Norway, around 1950. Deep snow, short winter days, wooden houses with turf roofs.",
+    hint: "A small island on the Norwegian coast around 1950. Wind, grey sea, white wooden houses and a red lighthouse.",
     rows: 3,
   },
   {
@@ -93,7 +93,7 @@ const FIELDS: readonly { key: StyleTextField; label: string; hint: string; rows?
   {
     key: "composition",
     label: "Bildeutsnitt og kameraspråk",
-    hint: "Mostly eye-level at a child's height; wide shots to show how small Maja is in the landscape.",
+    hint: "Mostly eye-level at a child's height; wide shots to show how small the child is in the landscape.",
     rows: 2,
   },
   {

@@ -22,6 +22,8 @@ export interface ImageRequest {
   readonly prompt: string;
   readonly references: readonly Blob[];
   readonly purpose: "cutout" | "background";
+  /** Valgt bildestørrelse (bare modeller som tar imot den). */
+  readonly size?: "1K" | "2K" | "4K";
 }
 
 export interface VideoRequest {
@@ -48,13 +50,30 @@ export class ProviderError extends Error {
   }
 }
 
+/**
+ * Base64 med Buffer der den finnes (Node/Workers med Node-støtte): langt mindre minne og CPU enn en
+ * tegn-for-tegn-løkke. Store bilder (Nano Banana Pro, 2K–4K) ga «Internal server error» etter at bildet var
+ * laget og fakturert (Mars 2026-10-13).
+ */
+const NodeBuffer = (globalThis as { Buffer?: typeof import("node:buffer").Buffer }).Buffer;
 function b64(bytes: Uint8Array): string {
+  if (NodeBuffer)
+    return NodeBuffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength).toString("base64");
   let s = "";
   for (let i = 0; i < bytes.length; i += 0x8000)
     s += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
   return btoa(s);
 }
-const unb64 = (s: string) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+export function unb64(s: string): Uint8Array {
+  if (NodeBuffer) {
+    const b = NodeBuffer.from(s, "base64");
+    return new Uint8Array(b.buffer, b.byteOffset, b.byteLength);
+  }
+  const bin = atob(s);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
 const bytesOf = async (b: Blob) => new Uint8Array(await b.arrayBuffer());
 const mimeOf = (b: Blob) => (b.type && b.type.startsWith("image/") ? b.type : "image/png");
 
@@ -330,7 +349,13 @@ const google = {
               { type: "text", text: r.prompt },
               ...refs.map((x) => ({ type: "image", mime_type: x.mime, data: x.data })),
             ],
-            response_format: { type: "image", aspect_ratio: aspect },
+            response_format: {
+              type: "image",
+              aspect_ratio: aspect,
+              // Store bilder sendes som JPEG (frilegging trenger PNG): mindre svar og mindre minne
+              mime_type: r.purpose === "cutout" ? "image/png" : "image/jpeg",
+              ...(r.size ? { image_size: r.size } : {}),
+            },
           }),
         },
         T_IMAGE,
@@ -353,14 +378,16 @@ const google = {
             ],
             generationConfig: {
               responseModalities: ["IMAGE"],
-              imageConfig: { aspectRatio: aspect },
+              imageConfig: { aspectRatio: aspect, ...(r.size ? { imageSize: r.size } : {}) },
             },
           }),
         },
         T_IMAGE,
       );
     }
-    const img = findBase64Image(await res.json());
+    let json: unknown = await res.json();
+    const img = findBase64Image(json);
+    json = null; // svaret kan være titalls MB: slipp det før bildet pakkes ut
     if (!img) throw new ProviderError("Tjenesten svarte uten bilde.", 502);
     return { bytes: unb64(img.data), mimeType: img.mimeType };
   },
@@ -431,8 +458,17 @@ async function falRun(key: string, model: string, input: Record<string, unknown>
   return j.request_id;
 }
 
+/**
+ * Status og resultat ligger under app-ID-en (eier/app), ikke hele endepunktet:
+ * «fal-ai/flux-pro/kontext/text-to-image» spørres på «fal-ai/flux-pro/requests/…».
+ * Hele stien gir 405 – jobben er da allerede betalt (funnet av Mars 2026-10-13).
+ */
+export function falAppId(model: string): string {
+  return model.split("/").slice(0, 2).join("/");
+}
+
 async function falPoll(key: string, model: string, id: string) {
-  const base = `${FAL_QUEUE}/${model}/requests/${encodeURIComponent(id)}`;
+  const base = `${FAL_QUEUE}/${falAppId(model)}/requests/${encodeURIComponent(id)}`;
   const st = (await (await call(`${base}/status`, { headers: falAuth(key) }, T_TEST)).json()) as {
     status?: string;
     error?: string;
@@ -586,10 +622,17 @@ const elevenlabs = {
     return { bytes: new Uint8Array(await res.arrayBuffer()), mimeType: "audio/mpeg" };
   },
   /** Stemmene kontoen har tilgang til (navn og ID), DEC-0071. */
-  async voices(key: string): Promise<{ voiceId: string; name: string; description: string }[]> {
+  async voices(
+    key: string,
+  ): Promise<{ voiceId: string; name: string; description: string; previewUrl: string | null }[]> {
     const res = await call(`${ELEVEN}/voices`, { headers: elevenAuth(key) }, T_TEST);
     const j = (await res.json()) as {
-      voices?: { voice_id?: string; name?: string; labels?: Record<string, string> }[];
+      voices?: {
+        voice_id?: string;
+        name?: string;
+        labels?: Record<string, string>;
+        preview_url?: string;
+      }[];
     };
     return (j.voices ?? [])
       .filter((v) => typeof v.voice_id === "string" && /^[A-Za-z0-9_-]{1,64}$/.test(v.voice_id))
@@ -600,17 +643,33 @@ const elevenlabs = {
           .filter((x) => typeof x === "string")
           .join(", ")
           .slice(0, 200),
+        // Lydprøve (offentlig lenke hos ElevenLabs) så stemmen kan høres før den velges
+        previewUrl:
+          typeof v.preview_url === "string" && safeDownloadUrl(v.preview_url)
+            ? v.preview_url
+            : null,
       }));
   },
   /** Tale fra tekst med en bestemt stemme (MP3), DEC-0071. */
-  async speech(r: { key: string; model: string; voiceId: string; text: string }) {
+  async speech(r: {
+    key: string;
+    model: string;
+    voiceId: string;
+    text: string;
+    language?: string;
+  }) {
     if (!/^[A-Za-z0-9_-]{1,64}$/.test(r.voiceId)) throw new ProviderError("Ugyldig stemme.", 400);
     const res = await call(
       `${ELEVEN}/text-to-speech/${encodeURIComponent(r.voiceId)}?output_format=mp3_44100_128`,
       {
         method: "POST",
         headers: { ...elevenAuth(r.key), "Content-Type": "application/json" },
-        body: JSON.stringify({ text: r.text, model_id: r.model }),
+        body: JSON.stringify({
+          text: r.text,
+          model_id: r.model,
+          // Uten språk gjetter modellen – og norsk ble lest som dansk
+          ...(r.language ? { language_code: r.language } : {}),
+        }),
       },
       T_IMAGE,
     );

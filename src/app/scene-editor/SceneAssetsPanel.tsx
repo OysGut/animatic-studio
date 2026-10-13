@@ -7,7 +7,8 @@
  * til før brukeren velger det.
  */
 import { useNavigate } from "@tanstack/react-router";
-import { BookPlus, ImageOff, Plus } from "lucide-react";
+import { BookPlus, Check, Plus } from "lucide-react";
+import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
 import { memo, useMemo, useState } from "react";
 import {
   ASSET_KIND_LABEL,
@@ -38,6 +39,8 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
   editable,
   onAdd,
   cmds,
+  layersByAsset,
+  onOpenImage,
 }: {
   state: ProjectState;
   projectId: string;
@@ -45,7 +48,11 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
   occurrenceId: string;
   editable: boolean;
   /** Legg ressursen inn i scenen (øverst, midt i bildet). null = ingen 2D-scene ennå. */
-  onAdd: ((assetId: string) => void) | null;
+  onAdd: ((assetId: string) => unknown) | null;
+  /** Lagene hver ressurs har i 2D-scenen (DEC-0079): ressurser som alt er lagt inn, merkes. */
+  layersByAsset?: ReadonlyMap<string, readonly string[]>;
+  /** Dobbeltklikk: samme bildevalg som dobbeltklikk på laget i scenen (DEC-0079). */
+  onOpenImage?: (assetId: string) => void;
   /** For «Legg til i biblioteket» (KI-49). Uten den vises navnene uten knapp. */
   cmds?: Commands;
 }) {
@@ -119,20 +126,35 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                 ? state.assetVariants[look.variantId]?.name
                 : undefined;
               const draggable = !!onAdd && editable;
+              const inScene = layersByAsset?.get(asset.id)?.length ?? 0;
               return (
                 <li
                   key={asset.id}
                   draggable={draggable}
+                  onDoubleClick={() => onOpenImage?.(asset.id)}
+                  data-in-scene={inScene > 0 || undefined}
                   onDragStart={(e) => {
                     e.dataTransfer.setData(ASSET_DRAG_TYPE, asset.id);
                     e.dataTransfer.effectAllowed = "copy";
                   }}
-                  title={`${asset.name} – ${ASSET_KIND_LABEL[asset.kind]}, ${USAGE_LABEL[how]}${lookName ? `. Utseende i denne scenen (kontinuitet): ${lookName}` : ""}`}
+                  title={`${asset.name} – ${ASSET_KIND_LABEL[asset.kind]}, ${USAGE_LABEL[how]}${lookName ? `. Utseende i denne scenen (kontinuitet): ${lookName}` : ""}${inScene ? `. Lagt inn i scenen${inScene > 1 ? ` (${inScene} lag)` : ""}` : ". Ikke lagt inn i scenen ennå"}.\nDobbeltklikk: velg eller generer bilde`}
                   className={
-                    "group relative flex flex-col overflow-hidden rounded-sm border border-border bg-surface-2 " +
+                    "group relative flex flex-col overflow-hidden rounded-sm border bg-surface-2 " +
+                    (inScene
+                      ? "border-accent-brand ring-1 ring-accent-brand/60 "
+                      : "border-border opacity-80 ") +
                     (draggable ? "cursor-grab active:cursor-grabbing" : "")
                   }
                 >
+                  {inScene ? (
+                    <span
+                      className="absolute left-1 top-1 z-[1] inline-flex items-center gap-0.5 rounded-sm bg-accent-brand px-1 text-[11px] font-medium text-accent-fg"
+                      aria-label={`I scenen${inScene > 1 ? `, ${inScene} lag` : ""}`}
+                    >
+                      <Check className="size-3" aria-hidden />I scenen
+                      {inScene > 1 ? ` ×${inScene}` : ""}
+                    </span>
+                  ) : null}
                   <div className="flex h-16 items-center justify-center bg-surface-3">
                     {url ? (
                       <img
@@ -142,7 +164,7 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                         className="h-full w-full object-contain"
                       />
                     ) : (
-                      <ImageOff className="size-5 text-text-tertiary" aria-hidden />
+                      <AssetSymbolIcon state={state} assetId={asset.id} className="size-10" />
                     )}
                   </div>
                   <button
@@ -157,6 +179,11 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                     className="truncate px-1.5 pt-1 text-left text-[12px] text-text-primary hover:text-accent-brand hover:underline"
                     title={`Åpne «${asset.name}» i biblioteket (bilder og varianter)`}
                   >
+                    <AssetSymbolIcon
+                      state={state}
+                      assetId={asset.id}
+                      className="mr-1 inline size-3 align-[-1px]"
+                    />
                     {asset.name}
                   </button>
                   <span className="truncate px-1.5 pb-1 text-[11px] text-text-tertiary">

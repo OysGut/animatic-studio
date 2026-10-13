@@ -4,6 +4,8 @@
  * bildeversjoner. Alt er kommandoer som kan angres (ADR-0005); forslag fra manuset gjennomføres bare
  * når brukeren velger det (REQ-0128).
  */
+import { TrashDialog } from "./TrashDialog";
+import { AssetSymbolIcon } from "./AssetSymbolIcon";
 import { useActiveProduction } from "@/app/project/use-production";
 import { useNavigate } from "@tanstack/react-router";
 import {
@@ -14,6 +16,7 @@ import {
   Plus,
   Redo2,
   Search,
+  Trash2,
   Undo2,
   Upload,
 } from "lucide-react";
@@ -32,6 +35,7 @@ import {
   librarySuggestions,
   newId,
   sortedAssets,
+  trashContents,
   VERSION_ORIGINS,
   VERSION_ORIGIN_LABEL,
   assetOrigins,
@@ -89,6 +93,7 @@ export function LibraryWorkspace({
       projectId={projectId}
       editable={editable}
       roleKnown={members.isSuccess}
+      isOwner={role === "owner"}
       cmds={cmds}
       initialAssetId={initialAssetId}
     />
@@ -103,6 +108,7 @@ function Library({
   projectId,
   editable,
   roleKnown,
+  isOwner,
   cmds,
   initialAssetId,
 }: {
@@ -110,6 +116,7 @@ function Library({
   projectId: string;
   editable: boolean;
   roleKnown: boolean;
+  isOwner: boolean;
   cmds: Commands;
   initialAssetId: string | null;
 }) {
@@ -147,6 +154,12 @@ function Library({
     unknown: File[];
   } | null>(null);
   const [zipOpen, setZipOpen] = useState(false);
+  // «Slettede objekter» (DEC-0079)
+  const [trashOpen, setTrashOpen] = useState(false);
+  const trashCount = useMemo(() => {
+    const t = trashContents(state);
+    return t.assets.length + t.versions.length;
+  }, [state]);
   // Opphav per versjon (REQ-0121, DEC-0078): lastet opp, AI, frilagt, harmonisert – fra AI-jobbene og merknaden
   const [origin, setOrigin] = useState<VersionOrigin | "all">("all");
   const jobs = useAiJobs(projectId);
@@ -252,6 +265,15 @@ function Library({
           aria-label={cmds.redoLabel ? `Gjør om: ${cmds.redoLabel}` : "Gjør om"}
         >
           <Redo2 />
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={() => setTrashOpen(true)}
+          title="Slettede ressurser og bilder: hent inn igjen eller slett for godt"
+        >
+          <Trash2 />
+          Slettede objekter{trashCount ? ` (${trashCount})` : ""}
         </Button>
         {editable ? (
           <Button
@@ -523,12 +545,19 @@ function Library({
                         ) : url ? (
                           <img src={url} alt="" className="size-full object-cover" />
                         ) : (
-                          a.name.slice(0, 2).toUpperCase()
+                          <AssetSymbolIcon state={state} assetId={a.id} className="size-7" />
                         )}
                       </span>
                       <span className="min-w-0">
-                        <span className="block truncate text-[13px] text-text-primary">
-                          {a.name}
+                        <span className="flex items-center gap-1 truncate text-[13px] text-text-primary">
+                          {a.kind !== "sound" ? (
+                            <AssetSymbolIcon
+                              state={state}
+                              assetId={a.id}
+                              className="size-3 shrink-0"
+                            />
+                          ) : null}
+                          <span className="truncate">{a.name}</span>
                         </span>
                         <span className="flex items-center gap-1.5 text-[11px] text-text-tertiary">
                           {ASSET_KIND_LABEL[a.kind]}
@@ -596,8 +625,8 @@ function Library({
               <p className="text-base font-medium text-text-primary">Velg en ressurs</p>
               <p className="max-w-[460px] text-[13px] text-text-secondary">
                 Hver karakter, gjenstand og lokasjon finnes én gang i biblioteket og brukes i alle
-                scener og produksjoner. Alternative navn (som «BESTEMOR» for «Bestemor Anne») gjør
-                at den kjennes igjen i manuset.
+                scener og produksjoner. Alternative navn (som «BESTEFAR» for «Halvard») gjør at den
+                kjennes igjen i manuset.
               </p>
             </div>
           )}
@@ -623,6 +652,14 @@ function Library({
           onClose={() => setReupload(null)}
         />
       ) : null}
+      <TrashDialog
+        open={trashOpen}
+        onOpenChange={setTrashOpen}
+        state={state}
+        cmds={cmds}
+        editable={editable}
+        isOwner={isOwner}
+      />
       <AssetZipDialog
         open={zipOpen}
         onOpenChange={setZipOpen}

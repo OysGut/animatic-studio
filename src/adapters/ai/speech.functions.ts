@@ -6,12 +6,20 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { type AssetMedia, effortOf, estimateCostUsd, isUuid, newId, providerModel } from "@/core";
+import {
+  type AssetMedia,
+  SPEECH_LANGUAGE,
+  SPEECH_MODEL,
+  effortOf,
+  estimateCostUsd,
+  isUuid,
+  newId,
+  providerModel,
+} from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 
 const BUCKET = "assets";
 const MAX_SPEECH_JOBS_PER_USER_PER_HOUR = 300;
-const SPEECH_MODEL = "eleven_multilingual_v2";
 
 const isId = (x: unknown): x is string => typeof x === "string" && isUuid(x);
 
@@ -29,7 +37,16 @@ async function editorAccess(supabase: unknown, projectId: string, userId: string
 }
 
 export type VoicesResult =
-  | { readonly ok: true; readonly voices: { voiceId: string; name: string; description: string }[] }
+  | {
+      readonly ok: true;
+      readonly voices: {
+        voiceId: string;
+        name: string;
+        description: string;
+        /** Lydprøve hos ElevenLabs (offentlig lenke), eller null. */
+        previewUrl: string | null;
+      }[];
+    }
   | { readonly ok: false; readonly message: string };
 
 /** Stemmene prosjektets ElevenLabs-konto har (navn og ID, aldri nøkkelen). */
@@ -200,6 +217,7 @@ export const generateSpeech = createServerFn({ method: "POST" })
         model: SPEECH_MODEL,
         voiceId: data.voiceId,
         text,
+        language: SPEECH_LANGUAGE,
       });
       if (!out.bytes.byteLength) throw new Error("Tjenesten svarte uten lyd.");
       const assetId = newId<"asset">();

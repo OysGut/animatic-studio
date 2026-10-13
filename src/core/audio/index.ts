@@ -101,6 +101,11 @@ export interface FilmAudioItem {
   readonly length: number;
   /** Start i lydfilen (s). */
   readonly sourceIn: number;
+  /**
+   * Hastighet (DEC-0079): 1 = uendret. Klippet varer `length` s i filmen og spiller `length × speed` s av
+   * lydfilen fra `sourceIn`. Mangler = 1.
+   */
+  readonly speed?: number;
   readonly gain: number;
   readonly fadeIn: number;
   readonly fadeOut: number;
@@ -129,6 +134,7 @@ function item(
     fullLength: clip.lengthMs / 1000,
     keys: clip.volumeKeys.map((k) => ({ t: k.t / 1000, db: k.db })),
     sourceIn: clip.sourceInMs / 1000,
+    ...(clip.speed !== undefined && clip.speed !== 1 ? { speed: clip.speed } : {}),
     gain: Math.pow(10, clip.gainDb / 20),
     fadeIn: clip.fadeInMs / 1000,
     fadeOut: clip.fadeOutMs / 1000,
@@ -282,4 +288,9 @@ export function filmTakeAudio(clips: readonly FilmClip[], fps: Rational): FilmAu
       });
     }
   return out;
+}
+
+/** Hvor mye av lydfilen klippet spiller (s): lengden i filmen × hastigheten (DEC-0079). */
+export function sourceSpan(it: Pick<FilmAudioItem, "length" | "speed">): number {
+  return it.length * (it.speed ?? 1);
 }

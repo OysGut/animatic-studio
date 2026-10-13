@@ -12,6 +12,7 @@ import {
 import { decryptKey, encryptKey } from "@/adapters/ai/key-vault.server";
 import {
   ADAPTERS,
+  falAppId,
   findBase64Image,
   safeDownloadUrl,
   scrubSecret,
@@ -287,5 +288,35 @@ describe("adaptere (med falsk nettverk)", () => {
     expect(id).toBe("task-1");
     expect((await ADAPTERS.runway.pollVideo("key_x", "gen4_turbo", id)).state).toBe("running");
     expect((await ADAPTERS.runway.pollVideo("key_x", "gen4_turbo", id)).state).toBe("done");
+  });
+  it("fal.ai: status og resultat spørres under app-ID-en, ikke hele endepunktet (405-feilen)", async () => {
+    expect(falAppId("fal-ai/flux-pro/kontext/text-to-image")).toBe("fal-ai/flux-pro");
+    expect(falAppId("fal-ai/kling-video/v3/4k/image-to-video")).toBe("fal-ai/kling-video");
+    const urls: string[] = [];
+    vi.useFakeTimers({ shouldAdvanceTime: true, advanceTimeDelta: 100 });
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string, init?: RequestInit) => {
+        urls.push(`${init?.method ?? "GET"} ${url}`);
+        if (init?.method === "POST") return new Response(JSON.stringify({ request_id: "r1" }));
+        // fal svarer 405 når hele modellstien brukes for status/resultat
+        if (url.includes("/kontext/")) return new Response("Method Not Allowed", { status: 405 });
+        if (url.endsWith("/status")) return new Response(JSON.stringify({ status: "COMPLETED" }));
+        if (url.endsWith("/requests/r1"))
+          return new Response(JSON.stringify({ images: [{ url: "https://v3.fal.media/x.png" }] }));
+        return new Response(new Uint8Array([4, 2]), { headers: { "content-type": "image/png" } });
+      }),
+    );
+    const img = await ADAPTERS.fal.image({
+      key: "k",
+      model: "fal-ai/flux-pro/kontext",
+      prompt: "En fyrvokter",
+      purpose: "scene",
+      referenceUrls: [],
+    } as never);
+    vi.useRealTimers();
+    expect([...img.bytes]).toEqual([4, 2]);
+    expect(urls[0]).toBe("POST https://queue.fal.run/fal-ai/flux-pro/kontext/text-to-image");
+    expect(urls).toContain("GET https://queue.fal.run/fal-ai/flux-pro/requests/r1/status");
   });
 });

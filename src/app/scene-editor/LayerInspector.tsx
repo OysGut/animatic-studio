@@ -6,7 +6,14 @@ import { LayerEvents } from "./LayerEvents";
 import { LayerSwaps } from "./LayerSwaps";
 import { LayerMotion } from "./LayerMotion";
 import { LayerMaskSection } from "./LayerMaskSection";
-import { AlertTriangle, Copy, Image as ImageIcon, Trash2 } from "lucide-react";
+import {
+  AlertTriangle,
+  Copy,
+  FlipHorizontal2,
+  FlipVertical2,
+  Image as ImageIcon,
+  Trash2,
+} from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import {
   ErrorText,
@@ -49,7 +56,7 @@ import {
   newVersionWorkItemCommands,
   outdatedLayers,
 } from "@/core";
-import { layerFieldsOf, regroupFields, translatePath } from "@/core";
+import { flippedTransformPatch, layerFieldsOf, regroupFields, translatePath } from "@/core";
 import { removeLayer } from "./layer-actions";
 import { Button } from "@/components/ui/button";
 
@@ -426,6 +433,28 @@ export function LayerInspector({
             onCommit={(n) => setT("Endre gjennomsiktighet", { opacity: n / 100 })}
           />
         </div>
+        {/* Speilvend i denne scenen (DEC-0079): bildet i biblioteket endres ikke */}
+        <div className="mt-2 flex items-center gap-1.5">
+          <span className="text-xs text-text-secondary">Speilvend</span>
+          <Button
+            size="sm"
+            variant="ghost"
+            disabled={off}
+            onClick={() => apply("Speilvend vannrett", flippedTransformPatch(layer, "x"))}
+            title="Speilvend laget vannrett i denne scenen (bildet i biblioteket endres ikke)"
+          >
+            <FlipHorizontal2 /> Vannrett
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            disabled={off}
+            onClick={() => apply("Speilvend loddrett", flippedTransformPatch(layer, "y"))}
+            title="Speilvend laget loddrett i denne scenen"
+          >
+            <FlipVertical2 /> Loddrett
+          </Button>
+        </div>
       </Section>
 
       {isGroup ? null : (
@@ -754,6 +783,8 @@ export function LayerInspector({
 
 // ---------- Selve 2D-scenen ----------
 
+const STEP_LABEL: Record<number, string> = { 2: "toere", 3: "treere", 4: "firere" };
+
 export function CompositionInspector({
   composition,
   editable,
@@ -809,6 +840,36 @@ export function CompositionInspector({
           disabled={off}
           onCommit={(background) => apply("Endre bakgrunn", { background })}
         />
+      </Section>
+
+      <Section title="Bevegelse">
+        <label className="flex items-center justify-between gap-2 text-xs text-text-secondary">
+          Animer
+          <select
+            aria-label="Animer på enere, toere, treere eller firere"
+            value={composition.step ?? 1}
+            disabled={off}
+            onChange={(e) => {
+              const step = Number(e.target.value);
+              setError(
+                run(
+                  { type: "SetCompositionStep", compositionId: composition.id, step },
+                  step === 1 ? "Animer hvert bilde" : `Animer på ${STEP_LABEL[step]}`,
+                ),
+              );
+            }}
+            className="h-7 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
+          >
+            <option value={1}>hvert bilde</option>
+            <option value={2}>på toere</option>
+            <option value={3}>på treere</option>
+            <option value={4}>på firere</option>
+          </select>
+        </label>
+        <p className="text-xs text-text-tertiary">
+          På toere oppdateres bevegelsen hvert annet bilde, som i stop motion. Filmen beholder
+          bildefrekvensen sin.
+        </p>
       </Section>
 
       <ErrorText message={error} />

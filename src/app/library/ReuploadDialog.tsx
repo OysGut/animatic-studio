@@ -14,7 +14,7 @@ import {
   reuploadNote,
   versionFileBase,
   versionUse,
-  versionsOf,
+  allVersionsOf,
   type AssetVersion,
   type ProjectState,
 } from "@/core";
@@ -139,7 +139,8 @@ export function ReuploadDialog({
           {items.map((it, i) => {
             const old = it.match;
             const use = versionUse(state, old.id);
-            const next = Math.max(0, ...versionsOf(state, old.variantId).map((v) => v.number)) + 1;
+            const next =
+              Math.max(0, ...allVersionsOf(state, old.variantId).map((v) => v.number)) + 1;
             const where = [
               use.approved ? "godkjent" : "",
               use.layers ? `vises i ${use.layers} lag i 2D-scener` : "",

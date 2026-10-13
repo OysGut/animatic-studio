@@ -188,6 +188,34 @@ describe("CreateComposition", () => {
 });
 
 describe("AddLayers", () => {
+  it("en lokasjon legges nederst av alle lag, andre lag øverst (Mars 2026-10-13)", () => {
+    const { s, compId } = base();
+    const locId = tid<"asset">();
+    const withLoc = mustApply(s, {
+      type: "CreateAssets",
+      assets: [{ assetId: locId, fields: { ...assetFields, kind: "location", name: "Fyrholmen" } }],
+    });
+    const top = tid<"composition_layer">();
+    const loc = tid<"composition_layer">();
+    const comp = withLoc.compositions[compId]!;
+    const a = mustApply(withLoc, {
+      type: "AddLayers",
+      layers: [{ layerId: top, compositionId: compId, fields: fillFields(withLoc, compId) }],
+    });
+    const b = mustApply(a, {
+      type: "AddLayers",
+      layers: [
+        {
+          layerId: loc,
+          compositionId: compId,
+          fields: defaultLayerFields(a, comp, { assetId: locId }),
+        },
+      ],
+    });
+    expect(b.layers[loc]!.kind).toBe("background");
+    expect(layersOf(b, compId).map((l) => l.id)).toEqual([loc, top]);
+  });
+
   it("legger til bilde- og fargelag, nytt lag foran, og angre/gjenopprett gir identiske lag", () => {
     const { s, compId, assetId } = base();
     const L1 = tid<"composition_layer">();

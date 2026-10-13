@@ -19,6 +19,11 @@ export interface DialogueLine {
   readonly character: Asset | null;
   /** Har allerede dialoglyd (et lydklipp koblet til replikken). */
   readonly hasAudio: boolean;
+  /**
+   * Lydklippet replikken har (det første), og om det er lest inn med AI (DEC-0079: «visuelt veldig tydelig
+   * hva som har lyd»). null når replikken mangler lyd.
+   */
+  readonly audio: { readonly clipId: string; readonly ai: boolean } | null;
   /** Når replikken begynner, i ms fra scenens start. */
   readonly startMs: number;
 }
@@ -26,13 +31,19 @@ export interface DialogueLine {
 export function sceneDialogueLines(s: ProjectState, clip: FilmClip): DialogueLine[] {
   const blocks = blocksOfVariant(s, clip.variantId);
   const spans = new Map(blockSpans(s, clip).map((b) => [b.blockId, b]));
-  const withAudio = new Set(
-    Object.values(s.audioClips)
-      .filter((a) => !a.removed && a.occurrenceId === clip.occurrenceId && a.blockId)
-      .map((a) => a.blockId as string),
-  );
+  const audioOf = new Map<string, { clipId: string; ai: boolean }>();
+  for (const a of Object.values(s.audioClips)) {
+    if (a.removed || a.occurrenceId !== clip.occurrenceId || !a.blockId || audioOf.has(a.blockId))
+      continue;
+    const asset = s.assets[a.assetId];
+    const ai = !!asset && (asset.tags.includes("AI-stemme") || asset.category === "Dialog (AI)");
+    audioOf.set(a.blockId, { clipId: a.id, ai });
+  }
   const chars = Object.values(s.assets).filter(
-    (a) => !a.archived && (a.kind === "character" || a.kind === "animal" || a.kind === "other"),
+    (a) =>
+      !a.archived &&
+      !a.removed &&
+      (a.kind === "character" || a.kind === "animal" || a.kind === "other"),
   );
   const find = (characterBlockId: string, name: string): Asset | null => {
     // Betegnelse i akkurat denne linjen (REQ-0127) går foran vanlige navn
@@ -57,7 +68,8 @@ export function sceneDialogueLines(s: ProjectState, clip: FilmClip): DialogueLin
         text: b.text.replace(/\s+/g, " ").trim(),
         speaker,
         character,
-        hasAudio: withAudio.has(b.id),
+        hasAudio: audioOf.has(b.id),
+        audio: audioOf.get(b.id) ?? null,
         startMs: sp
           ? Math.max(
               0,
@@ -70,8 +82,32 @@ export function sceneDialogueLines(s: ProjectState, clip: FilmClip): DialogueLin
   return out;
 }
 
+/**
+ * Talemodellen. «Flerspråklig v2» kan ikke norsk og leste norsk som dansk (funnet av Mars 2026-10-13);
+ * Eleven v3 har norsk, og språket settes eksplisitt med `SPEECH_LANGUAGE`.
+ */
+export const SPEECH_MODEL = "eleven_v3";
+/** Hovedmanuset er alltid norsk bokmål (ISO 639-1). */
+export const SPEECH_LANGUAGE = "no";
+
 /** Anslått pris for å lese inn replikkene (USD), eller null når prisen er ukjent. */
 export function speechCostUsd(lines: readonly { readonly text: string }[]): number | null {
   const chars = lines.reduce((t, l) => t + l.text.length, 0);
-  return estimateCostUsd("elevenlabs", "eleven_multilingual_v2", { characters: chars });
+  return estimateCostUsd("elevenlabs", SPEECH_MODEL, { characters: chars });
+}
+
+/**
+ * Hvilke karakterer som bruker hver stemme (DEC-0079): vises i stemmevalget, så man ser om en stemme alt er
+ * i bruk – men den kan likevel velges.
+ */
+export function voiceUsers(s: ProjectState): ReadonlyMap<string, readonly string[]> {
+  const out = new Map<string, string[]>();
+  for (const a of Object.values(s.assets)) {
+    if (a.removed || !a.voice) continue;
+    const list = out.get(a.voice.voiceId) ?? [];
+    list.push(a.name);
+    out.set(a.voice.voiceId, list);
+  }
+  for (const l of out.values()) l.sort((x, y) => x.localeCompare(y, "nb"));
+  return out;
 }

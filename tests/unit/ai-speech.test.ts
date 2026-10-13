@@ -6,6 +6,9 @@ import {
   filmClips,
   mainProduction,
   sceneDialogueLines,
+  SPEECH_LANGUAGE,
+  SPEECH_MODEL,
+  providerModel,
   speechCostUsd,
 } from "@/core";
 import { ADAPTERS } from "@/adapters/ai/providers.server";
@@ -54,7 +57,13 @@ describe("ElevenLabs tale (falskt nettverk)", () => {
           return new Response(
             JSON.stringify({
               voices: [
-                { voice_id: "abc123", name: "Ingrid", labels: { accent: "norsk" } },
+                {
+                  voice_id: "abc123",
+                  name: "Ingrid",
+                  labels: { accent: "norsk" },
+                  preview_url: "https://storage.googleapis.com/eleven/ingrid.mp3",
+                },
+                { voice_id: "def456", name: "Halvard", preview_url: "http://10.0.0.1/x.mp3" },
                 { voice_id: "../ond", name: "x" },
               ],
             }),
@@ -65,17 +74,33 @@ describe("ElevenLabs tale (falskt nettverk)", () => {
       }),
     );
     const v = await ADAPTERS.elevenlabs.voices("k");
-    expect(v).toEqual([{ voiceId: "abc123", name: "Ingrid", description: "norsk" }]);
+    // Lydprøven følger med (bare trygge https-lenker)
+    expect(v).toEqual([
+      {
+        voiceId: "abc123",
+        name: "Ingrid",
+        description: "norsk",
+        previewUrl: "https://storage.googleapis.com/eleven/ingrid.mp3",
+      },
+      { voiceId: "def456", name: "Halvard", description: "", previewUrl: null },
+    ]);
     const out = await ADAPTERS.elevenlabs.speech({
       key: "k",
-      model: "eleven_multilingual_v2",
+      model: SPEECH_MODEL,
       voiceId: "abc123",
       text: "Hører du det?",
+      language: SPEECH_LANGUAGE,
     });
     expect([...out.bytes]).toEqual([1, 2, 3]);
     const last = calls[calls.length - 1]!;
     expect(last.url).toContain("/text-to-speech/abc123");
-    expect(last.body).toEqual({ text: "Hører du det?", model_id: "eleven_multilingual_v2" });
+    // Norsk settes eksplisitt, ellers ble norsk lest som dansk (Mars 2026-10-13)
+    expect(last.body).toEqual({
+      text: "Hører du det?",
+      model_id: "eleven_v3",
+      language_code: "no",
+    });
+    expect(providerModel("elevenlabs", SPEECH_MODEL)?.label).toMatch(/norsk/);
     await expect(
       ADAPTERS.elevenlabs.speech({ key: "k", model: "m", voiceId: "../x", text: "a" }),
     ).rejects.toThrow();

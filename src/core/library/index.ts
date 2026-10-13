@@ -44,9 +44,10 @@ export function nameKey(name: string): string {
 }
 
 /** Ressursene sortert etter navn (norsk alfabet). Arkiverte til slutt. */
+/** Ressursene (uten slettede, DEC-0079), arkiverte sist. */
 export function sortedAssets(s: ProjectState, kind?: AssetKind): Asset[] {
   return Object.values(s.assets)
-    .filter((a) => !kind || a.kind === kind)
+    .filter((a) => !a.removed && (!kind || a.kind === kind))
     .sort((a, b) => Number(a.archived) - Number(b.archived) || a.name.localeCompare(b.name, "nb"));
 }
 
@@ -56,11 +57,58 @@ export function variantsOf(s: ProjectState, assetId: string): AssetVariant[] {
     .sort((a, b) => Number(a.archived) - Number(b.archived) || a.name.localeCompare(b.name, "nb"));
 }
 
-/** Versjonene av en variant, nyeste først. */
+/** Versjonene av en variant, nyeste først (uten slettede bilder, DEC-0079). */
 export function versionsOf(s: ProjectState, variantId: string): AssetVersion[] {
+  return allVersionsOf(s, variantId).filter((v) => !v.removed);
+}
+
+/** Alle versjonene av en variant, også slettede, nyeste først. */
+export function allVersionsOf(s: ProjectState, variantId: string): AssetVersion[] {
   return Object.values(s.assetVersions)
     .filter((v) => v.variantId === variantId)
     .sort((a, b) => b.number - a.number);
+}
+
+/** «Slettede objekter» (DEC-0079): slettede ressurser og slettede enkeltbilder i ressurser som finnes. */
+export function trashContents(s: ProjectState): {
+  readonly assets: readonly Asset[];
+  readonly versions: readonly { readonly asset: Asset; readonly version: AssetVersion }[];
+} {
+  const assets = Object.values(s.assets)
+    .filter((a) => a.removed)
+    .sort((a, b) => a.name.localeCompare(b.name, "nb"));
+  const versions: { asset: Asset; version: AssetVersion }[] = [];
+  for (const v of Object.values(s.assetVersions)) {
+    if (!v.removed) continue;
+    const va = s.assetVariants[v.variantId];
+    const asset = va ? s.assets[va.assetId] : undefined;
+    if (asset && !asset.removed) versions.push({ asset, version: v });
+  }
+  versions.sort(
+    (a, b) => a.asset.name.localeCompare(b.asset.name, "nb") || b.version.number - a.version.number,
+  );
+  return { assets, versions };
+}
+
+/**
+ * Hva skjer når ressursen slettes (advarselen, DEC-0079): lag og lyd i filmen som bruker den. De beholder
+ * bildet/lyden til ressursen slettes for godt – og det kan ikke gjøres før bruken er fjernet.
+ */
+export function assetUsageCounts(
+  s: ProjectState,
+  assetId: string,
+): { readonly layers: number; readonly audio: number; readonly scenes: number } {
+  const comps = new Set<string>();
+  let layers = 0;
+  for (const l of Object.values(s.layers))
+    if (!l.removed && (l.assetId === assetId || l.swaps.some((w) => w.assetId === assetId))) {
+      layers++;
+      comps.add(l.compositionId);
+    }
+  const audio = Object.values(s.audioClips).filter(
+    (c) => !c.removed && c.assetId === assetId,
+  ).length;
+  return { layers, audio, scenes: comps.size };
 }
 
 /** Bildet som representerer ressursen: godkjent versjon i første variant, ellers nyeste versjon. */
@@ -263,7 +311,7 @@ export function assetsInScene(
   for (const [assetId, uses] of allAssetUsage(s, productionId)) {
     const asset = s.assets[assetId];
     // Lyd er ikke noe som kan legges inn som lag (DEC-0044)
-    if (!asset || asset.archived || asset.kind === "sound") continue;
+    if (!asset || asset.archived || asset.removed || asset.kind === "sound") continue;
     const u = uses.find((x) => x.occurrenceId === occurrenceId);
     if (u) out.push({ asset, how: u.how });
   }
@@ -300,7 +348,7 @@ export function stillCandidates(
 ): { asset: Asset; variant: AssetVariant; version: AssetVersion }[] {
   const out: { asset: Asset; variant: AssetVariant; version: AssetVersion }[] = [];
   for (const asset of sortedAssets(s)) {
-    if (asset.archived) continue;
+    if (asset.archived || asset.removed) continue;
     for (const variant of variantsOf(s, asset.id)) {
       if (variant.archived) continue;
       const approved = variant.approvedVersionId
@@ -312,4 +360,18 @@ export function stillCandidates(
     }
   }
   return out;
+}
+
+/** Merknaden originalen får når et stort bilde får en nedskalert arbeidskopi (DEC-0079). */
+export const ORIGINAL_NOTE_MARK = "Original i full størrelse";
+
+/**
+ * Originalen i full størrelse til en nedskalert arbeidskopi (versjonen rett før, med merknaden), eller null.
+ * Brukes når forbildebilder skal sendes til AI i full størrelse (f.eks. karakterkort).
+ */
+export function fullSizeOriginal(s: ProjectState, versionId: string): AssetVersion | null {
+  const v = s.assetVersions[versionId];
+  if (!v) return null;
+  const prev = allVersionsOf(s, v.variantId).find((x) => x.number === v.number - 1);
+  return prev && prev.note.includes(ORIGINAL_NOTE_MARK) && !prev.removed ? prev : null;
 }

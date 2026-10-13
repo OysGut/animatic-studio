@@ -1,22 +1,28 @@
-Migrasjon 0028, adapterlag, versjonsgjenoppretting, bibliotek og 30 kjente problemer (DEC-0078)
+Mars' testrunde: 19 funn rettet og bygget, migrasjon 0029 (DEC-0079)
 
-Databaseendring: migrasjon 0028. Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push.
+Databaseendring: migrasjon 0029. Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push.
+Ny pakke: utif 3.1.0 (TIFF-dekoder, MIT).
 
-Mars: «fortsett med ALT du kan gjøre av det som gjenstår» (Teknisk anbefaling, ingen kostnad):
-- Migrasjon 0028: antakelsene for varighetsestimat lagres per prosjekt; estimater lagres med hver
-  manusversjon og med «Lagre estimat»; eksportlogg («Tidligere eksporter») for manus, film, lyd,
-  undertekster og plakater.
-- All databasebruk i nettleseren går via src/adapters/browser/ (portabilitet, arkitekturtest).
-- «Gjør denne versjonen gjeldende» i Manusversjoner, med forhåndsvisning og én angring.
-- Biblioteket: stilprofiler og opphav per bildeversjon (lastet opp, AI, frilagt) med filter.
-- «Ressurs oppdatert»-flagg i bibliotek, montering og sceneeditor (ressursgrunnlag per scene).
-- Monteringen: «Visning»- og «Mer»-meny; hurtigtastoversikt («?») og taster i verktøytips.
-- Avvist tekst ved samtidig redigering går ikke tapt («Kopier teksten», «Prøv igjen med min tekst»).
-- Tittelsiden fra importen lagres og fylles ut i eksporten; notater følger egen versjon av en scene;
-  ny bildefrekvens regner om overganger og lengder; lyd i eksport av valgt scene følger scenen;
-  hendelser vises på lagets linje; varsel om nøkkelbilder etter scenens slutt; navn fra manuset kan
-  legges i biblioteket fra «I denne scenen»; ny lyd angres i ett steg.
-- Gjennomgang av alle åpne kjente problemer (117), med oppdatert status.
-- Kodegjennomgang: 10 funn rettet.
+Mars testet 15 punkter 13.10.2026; 14 bestått. Rettet:
+- fal.ai «405» etter betalt jobb: status hentes under app-ID-en (KI-188).
+- Nano Banana Pro «Internal server error»: mindre minnebruk, JPEG og valgt bildestørrelse,
+  forståelig melding ved brutt forbindelse (KI-189, prøves igjen).
+- Norsk tale ble dansk: Eleven v3 med norsk satt eksplisitt.
+- Utdatert AI-tekst varsles, men hindrer ikke generering; «Ja, generer» alltid synlig.
+- Lokasjon legges nederst; MP4/M4V/MOV/WebM gjenkjennes og avspillbarhet sjekkes; TIFF blir PNG.
+Nytt:
+- 12 bilder i sekundet og «animer på toere/treere/firere» per 2D-scene.
+- Lydklipp: dra og kutt i sceneeditoren; hastighet 25–400 % og masker for start og slutt i lydprofilen.
+- «I scenen»-merke og dobbeltklikk i «I denne scenen»; zoomknapper og zoomnivåer.
+- Enkle symboler for alle ressurser (fylt form, egen farge), også for lag uten bilde.
+- Store bilder får nedskalert arbeidskopi; originalen beholdes; forbilder kan sendes i full størrelse.
+- Bildedialogen: husker siste beskrivelse, bildestørrelse, stor visning med zoom og beskrivelsen
+  per bilde («Sett inn denne beskrivelsen»), sletting av bilder.
+- Bildebeskrivelser bygger på manusets omtale av ressursen.
+- Speilvending av lag og i frileggingen; tegning med farge i frileggingen.
+- «Slettede objekter»: hent inn igjen eller slett for godt (eieren).
+- Dialog med AI-stemmer: lydstatus per replikk, stemme og stemmebruk per karakter, avspilling og prøve.
+- Eksempeltekster fra «Jula på Dovre» i brukerflaten byttet ut; «Fra scene til scene» i eksporten
+  holder seg i kolonnen.
 
-Krav: REQ-0008 REQ-0022 REQ-0037 REQ-0077 REQ-0120 REQ-0121 REQ-0522
+Krav: REQ-0565 REQ-0589 REQ-0590 REQ-0593–REQ-0609

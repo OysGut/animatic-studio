@@ -18,7 +18,7 @@
  * `prompt-writer.ts`), og filmens godkjente bilder kan sendes med til bildemodellen (`attachedImages`).
  */
 import type { Asset, AssetVariant, ProjectState, StyleGuide } from "../model";
-import { allAssetUsage, assetsInScene, coverVersion } from "../library";
+import { allAssetUsage, assetNames, assetsInScene, coverVersion } from "../library";
 import { blocksOfVariant, orderedOccurrences } from "../views";
 import { sceneContinuityVariant } from "../continuity";
 import { IMAGE_PURPOSE_FOR_KIND, MAX_PROMPT_CHARS, STYLE_TEXT, type ImagePurpose } from "./prompt";
@@ -446,6 +446,14 @@ export function buildContextImagePrompt(s: ProjectState, input: ContextPromptInp
     purposeText,
   ]);
 
+  // 3b. Slik manuset beskriver ressursen (Mars 2026-10-13, DEC-0079)
+  const said = scriptMentions(s, input.productionId, asset);
+  if (said.length)
+    section("IN THE SCREENPLAY", [
+      `How the script describes ${asset.name} (Norwegian excerpts, in story order – follow them):`,
+      ...said.map((x) => `- ${x.dialogue ? `${x.speaker} says: ` : ""}"${x.text}"`),
+    ]);
+
   // 4. Hvor bildet brukes
   const sceneIds = scenesFor(s, input, asset);
   const contexts = sceneIds
@@ -588,7 +596,7 @@ export function suggestStyleGuide(s: ProjectState, productionId: string): StyleG
       .filter((v) => {
         const a = s.assets[v.assetId];
         const ver = v.approvedVersionId ? s.assetVersions[v.approvedVersionId] : undefined;
-        return !v.archived && a && !a.archived && ver?.mimeType.startsWith("image/");
+        return !v.archived && a && !a.archived && !a.removed && ver?.mimeType.startsWith("image/");
       })
       .sort((a, b) => a.id.localeCompare(b.id))
       .slice(0, 4)
@@ -604,4 +612,55 @@ export function detectTimeOfDay(text: string): string | null {
 /** Årstid og vær i en tekst. Eksportert for test. */
 export function detectSeasons(text: string): string[] {
   return SEASONS.filter((x) => x.re.test(text)).map((x) => x.text);
+}
+
+const escapeRe = (x: string) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/**
+ * Setningene i manuset der ressursen nevnes (handling, og replikker der andre omtaler den), i
+ * fortellingsrekkefølge (DEC-0079): «AI bildegenereringsteksten bør basere seg på manuset og forståelsen av
+ * objektet slik det står beskrevet i manus». Første forekomst først; høyst `max` utdrag og `maxChars` tegn.
+ */
+export function scriptMentions(
+  s: ProjectState,
+  productionId: string,
+  asset: Pick<Asset, "name" | "names">,
+  max = 6,
+  maxChars = 1200,
+): { readonly text: string; readonly dialogue: boolean; readonly speaker: string }[] {
+  const names = assetNames(asset)
+    .map((n) => n.trim())
+    .filter((n) => n.length >= 2);
+  if (!names.length) return [];
+  // Hele ord, uavhengig av store og små bokstaver (også æ, ø, å)
+  const re = new RegExp(
+    `(^|[^\\p{L}\\p{N}])(${names.map(escapeRe).join("|")})(?=$|[^\\p{L}\\p{N}])`,
+    "iu",
+  );
+  const out: { text: string; dialogue: boolean; speaker: string }[] = [];
+  const seen = new Set<string>();
+  let total = 0;
+  for (const o of orderedOccurrences(s, productionId)) {
+    if (!o.active) continue;
+    let speaker = "";
+    for (const b of blocksOfVariant(s, o.variantId)) {
+      if (b.kind === "character") speaker = b.text.trim();
+      if (b.kind !== "action" && b.kind !== "dialogue") continue;
+      // Egne replikker beskriver sjelden utseendet; andres omtale tas med
+      if (b.kind === "dialogue" && re.test(speaker)) continue;
+      for (const sentence of b.text.replace(/\s+/g, " ").split(/(?<=[.!?…])\s+/)) {
+        const t = sentence.trim();
+        if (!t || !re.test(t)) continue;
+        const key = t.toLocaleLowerCase("nb");
+        if (seen.has(key)) continue;
+        const cut = t.length > 300 ? `${t.slice(0, 297)}…` : t;
+        if (total + cut.length > maxChars) return out;
+        seen.add(key);
+        total += cut.length;
+        out.push({ text: cut, dialogue: b.kind === "dialogue", speaker });
+        if (out.length >= max) return out;
+      }
+    }
+  }
+  return out;
 }

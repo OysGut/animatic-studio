@@ -3,14 +3,27 @@
  * ut fra fargen langs kanten; penselen legger til eller fjerner (med angre). Resultatet lagres som en ny
  * versjon i samme variant – originalen beholdes. Bildet sendes ingen steder for å friegges.
  */
-import { Brush, Eraser, Loader2, Redo2, Scissors, Undo2, Wand2 } from "lucide-react";
+import {
+  Brush,
+  Eraser,
+  FlipHorizontal2,
+  FlipVertical2,
+  Loader2,
+  Paintbrush,
+  Redo2,
+  Scissors,
+  Undo2,
+  Wand2,
+} from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   CUTOUT_MAX_PIXELS,
   DEFAULT_CUTOUT,
   autoMask,
+  flipInPlace,
   keptShare,
   paintMask,
+  paintPixels,
   type Asset,
   type AssetVersion,
 } from "@/core";
@@ -99,6 +112,24 @@ interface Source {
   readonly scaled: boolean;
 }
 
+/** Et steg i angrehistorikken: masken før, et tegnestrøk (området før) eller en speilvending. */
+type Entry =
+  | { readonly kind: "mask"; readonly mask: Uint8Array }
+  | {
+      readonly kind: "paint";
+      readonly mask: Uint8Array;
+      readonly box: { x: number; y: number; w: number; h: number };
+      readonly pixels: Uint8ClampedArray;
+    }
+  | { readonly kind: "flip"; readonly axis: "x" | "y" };
+
+/** Hex-farge (#rrggbb) til RGB. */
+function rgbOf(hex: string): [number, number, number] {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+  const n = m ? parseInt(m[1]!, 16) : 0;
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
 function Editor({
   projectId,
   asset,
@@ -119,7 +150,12 @@ function Editor({
   const [loadError, setLoadError] = useState<string | null>(null);
   const [tolerance, setTolerance] = useState(DEFAULT_CUTOUT.tolerance);
   const [feather, setFeather] = useState(DEFAULT_CUTOUT.feather);
-  const [tool, setTool] = useState<"remove" | "add">("remove");
+  const [tool, setTool] = useState<"remove" | "add" | "paint">("remove");
+  /** Fargen tegnepenselen maler med (DEC-0079). */
+  const [color, setColor] = useState("#1a2233");
+  /** Speilvendt og tegnet på (står i merknaden til den nye versjonen). */
+  const [flipped, setFlipped] = useState<{ x: boolean; y: boolean }>({ x: false, y: false });
+  const [painted, setPainted] = useState(false);
   const [size, setSize] = useState(24);
   const [backdrop, setBackdrop] = useState<Backdrop>("checker");
   const [busy, setBusy] = useState<string | null>("Henter bildet …");
@@ -127,8 +163,11 @@ function Editor({
   const [tick, setTick] = useState(0);
   const [kept, setKept] = useState(1);
   const mask = useRef<Uint8Array | null>(null);
-  const undo = useRef<Uint8Array[]>([]);
-  const redo = useRef<Uint8Array[]>([]);
+  const undo = useRef<Entry[]>([]);
+  const redo = useRef<Entry[]>([]);
+  /** Pikslene før et tegnestrøk (området lagres i historikken når strøket er ferdig). */
+  const strokeBefore = useRef<{ pixels: Uint8ClampedArray; mask: Uint8Array } | null>(null);
+  const strokeBox = useRef<{ x0: number; y0: number; x1: number; y1: number } | null>(null);
   /** Bildet med gjennomsiktighet, i full oppløsning (oppdateres bare der penselen har vært). */
   const work = useRef<{ canvas: HTMLCanvasElement; img: ImageData } | null>(null);
   const view = useRef<HTMLCanvasElement>(null);
@@ -206,11 +245,50 @@ function Editor({
     [src],
   );
 
+  const record = (e: Entry) => {
+    undo.current.push(e);
+    if (undo.current.length > historyLimit(mask.current?.length ?? 1)) undo.current.shift();
+    redo.current = [];
+  };
   const pushHistory = () => {
     if (!mask.current) return;
-    undo.current.push(new Uint8Array(mask.current));
-    if (undo.current.length > historyLimit(mask.current.length)) undo.current.shift();
-    redo.current = [];
+    record({ kind: "mask", mask: new Uint8Array(mask.current) });
+  };
+
+  /** Et område av pikslene (RGBA). */
+  const region = (b: { x: number; y: number; w: number; h: number }) => {
+    const s = src!;
+    const out = new Uint8ClampedArray(b.w * b.h * 4);
+    for (let y = 0; y < b.h; y++)
+      out.set(
+        s.pixels.subarray(((b.y + y) * s.w + b.x) * 4, ((b.y + y) * s.w + b.x + b.w) * 4),
+        y * b.w * 4,
+      );
+    return out;
+  };
+  /** Skriv et område tilbake i pikslene og arbeidsbildet (farge; alfa settes av compose). */
+  const writeRegion = (
+    b: { x: number; y: number; w: number; h: number },
+    px: Uint8ClampedArray,
+  ) => {
+    const s = src!;
+    const wk = work.current!;
+    for (let y = 0; y < b.h; y++) {
+      const row = px.subarray(y * b.w * 4, (y + 1) * b.w * 4);
+      s.pixels.set(row, ((b.y + y) * s.w + b.x) * 4);
+      wk.img.data.set(row, ((b.y + y) * s.w + b.x) * 4);
+    }
+  };
+  /** Speilvend bilde, maske og arbeidsbilde (sin egen invers). */
+  const flipAll = (axis: "x" | "y") => {
+    const s = src;
+    const wk = work.current;
+    if (!s || !wk || !mask.current) return;
+    flipInPlace(s.pixels, s.w, s.h, 4, axis);
+    flipInPlace(wk.img.data, s.w, s.h, 4, axis);
+    flipInPlace(mask.current, s.w, s.h, 1, axis);
+    setFlipped((f) => ({ ...f, [axis]: !f[axis] }));
+    compose();
   };
 
   const timer = useRef<number | undefined>(undefined);
@@ -222,11 +300,7 @@ function Editor({
       // La vinduet tegne «Lager forslag …» før regnestykket
       window.clearTimeout(timer.current);
       timer.current = window.setTimeout(() => {
-        if (record && mask.current) {
-          undo.current.push(new Uint8Array(mask.current));
-          if (undo.current.length > historyLimit(mask.current.length)) undo.current.shift();
-          redo.current = [];
-        }
+        if (record && mask.current) pushHistory();
         mask.current = autoMask(src.pixels, src.w, src.h, { tolerance, feather });
         setKept(keptShare(mask.current));
         compose();
@@ -241,15 +315,25 @@ function Editor({
     if (src && !mask.current) runAuto(false);
   }, [src, runAuto]);
 
-  function step(
-    from: React.MutableRefObject<Uint8Array[]>,
-    to: React.MutableRefObject<Uint8Array[]>,
-  ) {
+  function step(from: React.MutableRefObject<Entry[]>, to: React.MutableRefObject<Entry[]>) {
     const prev = from.current.pop();
     if (!prev || !mask.current) return;
-    to.current.push(mask.current);
-    mask.current = prev;
-    setKept(keptShare(prev));
+    if (prev.kind === "flip") {
+      to.current.push(prev);
+      flipAll(prev.axis);
+      return;
+    }
+    if (prev.kind === "paint") {
+      to.current.push({
+        kind: "paint",
+        mask: mask.current,
+        box: prev.box,
+        pixels: region(prev.box),
+      });
+      writeRegion(prev.box, prev.pixels);
+    } else to.current.push({ kind: "mask", mask: mask.current });
+    mask.current = prev.mask;
+    setKept(keptShare(prev.mask));
     compose();
   }
 
@@ -299,13 +383,13 @@ function Editor({
     ctx.imageSmoothingQuality = "high";
     ctx.drawImage(wk.canvas, 0, 0, box.w, box.h);
     if (cursor) {
-      ctx.strokeStyle = tool === "add" ? "#22c55e" : "#ef4444";
+      ctx.strokeStyle = tool === "add" ? "#22c55e" : tool === "paint" ? color : "#ef4444";
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       ctx.arc(cursor.x, cursor.y, Math.max(1, size * box.k), 0, Math.PI * 2);
       ctx.stroke();
     }
-  }, [tick, box, backdrop, cursor, size, tool]);
+  }, [tick, box, backdrop, cursor, size, tool, color]);
 
   const toImage = (e: React.PointerEvent) => {
     const r = e.currentTarget.getBoundingClientRect();
@@ -319,15 +403,76 @@ function Editor({
 
   function paint(pts: { x: number; y: number }[]) {
     if (!src || !mask.current || pts.length === 0) return;
-    paintMask(mask.current, src.w, src.h, { points: pts, radius: size, mode: tool, hardness: 0.7 });
     const xs = pts.map((p) => p.x);
     const ys = pts.map((p) => p.y);
-    compose({
+    const b = {
       x0: Math.floor(Math.min(...xs) - size - 1),
       y0: Math.floor(Math.min(...ys) - size - 1),
       x1: Math.ceil(Math.max(...xs) + size + 1),
       y1: Math.ceil(Math.max(...ys) + size + 1),
-    });
+    };
+    if (tool === "paint") {
+      // Tegn med farge: inn i pikslene (og arbeidsbildet), og gjør området synlig i masken
+      paintPixels(src.pixels, src.w, src.h, {
+        points: pts,
+        radius: size,
+        hardness: 0.7,
+        color: rgbOf(color),
+      });
+      const wk = work.current!;
+      for (let y = Math.max(0, b.y0); y <= Math.min(src.h - 1, b.y1); y++) {
+        const a = (y * src.w + Math.max(0, b.x0)) * 4;
+        const z = (y * src.w + Math.min(src.w - 1, b.x1) + 1) * 4;
+        wk.img.data.set(src.pixels.subarray(a, z), a);
+      }
+      paintMask(mask.current, src.w, src.h, {
+        points: pts,
+        radius: size,
+        mode: "add",
+        hardness: 0.7,
+      });
+      const sb = strokeBox.current;
+      strokeBox.current = sb
+        ? {
+            x0: Math.min(sb.x0, b.x0),
+            y0: Math.min(sb.y0, b.y0),
+            x1: Math.max(sb.x1, b.x1),
+            y1: Math.max(sb.y1, b.y1),
+          }
+        : b;
+    } else
+      paintMask(mask.current, src.w, src.h, {
+        points: pts,
+        radius: size,
+        mode: tool,
+        hardness: 0.7,
+      });
+    compose(b);
+  }
+
+  /** Avslutt et tegnestrøk: området før strøket legges i historikken. */
+  function endStroke() {
+    const before = strokeBefore.current;
+    const sb = strokeBox.current;
+    strokeBefore.current = null;
+    strokeBox.current = null;
+    if (!before || !sb || !src) return;
+    const x = Math.max(0, sb.x0);
+    const y = Math.max(0, sb.y0);
+    const box = {
+      x,
+      y,
+      w: Math.min(src.w - 1, sb.x1) - x + 1,
+      h: Math.min(src.h - 1, sb.y1) - y + 1,
+    };
+    const px = new Uint8ClampedArray(box.w * box.h * 4);
+    for (let r = 0; r < box.h; r++)
+      px.set(
+        before.pixels.subarray(((y + r) * src.w + x) * 4, ((y + r) * src.w + x + box.w) * 4),
+        r * box.w * 4,
+      );
+    record({ kind: "paint", mask: before.mask, box, pixels: px });
+    setPainted(true);
   }
 
   async function save() {
@@ -351,7 +496,11 @@ function Editor({
           versionId: versionId as never,
           variantId: version.variantId,
           media,
-          note: `Frilagt fra v${version.number}${src.scaled ? " (skalert ned)" : ""}`,
+          note: `Frilagt fra v${version.number}${src.scaled ? " (skalert ned)" : ""}${
+            flipped.x || flipped.y
+              ? `, speilvendt ${[flipped.x ? "vannrett" : "", flipped.y ? "loddrett" : ""].filter(Boolean).join(" og ")}`
+              : ""
+          }${painted ? ", tegnet på" : ""}`,
         },
         `Frilagt bilde av «${asset.name}»`,
       );
@@ -377,8 +526,9 @@ function Editor({
           Frilegg «{asset.name}» (v{version.number})
         </DialogTitle>
         <DialogDescription>
-          Bakgrunnen fjernes ut fra fargen langs kanten av bildet. Rett med penselen. Resultatet
-          lagres som en ny versjon; originalen beholdes. Gratis – bildet sendes ingen steder.
+          Bakgrunnen fjernes ut fra fargen langs kanten av bildet. Rett med penselen, tegn med farge
+          eller speilvend. Resultatet lagres som en ny versjon; originalen beholdes. Gratis – bildet
+          sendes ingen steder. (For å speilvende bare i én scene: bruk «Speilvend» på laget.)
         </DialogDescription>
       </DialogHeader>
 
@@ -435,6 +585,52 @@ function Editor({
             <Brush className="mr-1 inline size-3.5" aria-hidden />
             Legg til
           </button>
+          <button
+            type="button"
+            aria-pressed={tool === "paint"}
+            className={seg(tool === "paint")}
+            onClick={() => setTool("paint")}
+            title="Tegn med farge i bildet"
+          >
+            <Paintbrush className="mr-1 inline size-3.5" aria-hidden />
+            Tegn
+          </button>
+          {tool === "paint" ? (
+            <input
+              type="color"
+              value={color}
+              onChange={(e) => setColor(e.target.value)}
+              aria-label="Farge å tegne med"
+              className="ml-1 h-7 w-8 cursor-pointer rounded-sm border border-border-control bg-surface-3"
+            />
+          ) : null}
+        </div>
+        <div role="group" aria-label="Speilvend" className="flex items-center gap-0.5">
+          <Button
+            size="sm"
+            variant="ghost"
+            disabled={!src || !!busy}
+            onClick={() => {
+              record({ kind: "flip", axis: "x" });
+              flipAll("x");
+            }}
+            title="Speilvend bildet vannrett (lagres i den nye versjonen)"
+          >
+            <FlipHorizontal2 /> Speilvend
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            aria-label="Speilvend loddrett"
+            disabled={!src || !!busy}
+            onClick={() => {
+              record({ kind: "flip", axis: "y" });
+              flipAll("y");
+            }}
+            title="Speilvend bildet loddrett"
+          >
+            <FlipVertical2 />
+          </Button>
         </div>
         <label className={label}>
           Størrelse
@@ -507,7 +703,13 @@ function Editor({
             onPointerDown={(e) => {
               if (e.button !== 0 || busy) return;
               e.currentTarget.setPointerCapture(e.pointerId);
-              pushHistory();
+              if (tool === "paint" && src && mask.current)
+                // Tegning: området før strøket lagres når strøket er ferdig
+                strokeBefore.current = {
+                  pixels: new Uint8ClampedArray(src.pixels),
+                  mask: new Uint8Array(mask.current),
+                };
+              else pushHistory();
               const p = toImage(e);
               stroke.current = { pointerId: e.pointerId, pts: [{ x: p.x, y: p.y }] };
               paint([{ x: p.x, y: p.y }]);
@@ -523,10 +725,12 @@ function Editor({
             }}
             onPointerUp={() => {
               stroke.current = null;
+              endStroke();
               if (mask.current) setKept(keptShare(mask.current));
             }}
             onPointerCancel={() => {
               stroke.current = null;
+              endStroke();
             }}
             onPointerLeave={() => setCursor(null)}
           />

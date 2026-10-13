@@ -553,7 +553,8 @@ export function ExportAnimaticDialog({
               />
               <span className="flex min-w-0 flex-1 flex-col gap-1">
                 Fra scene til scene
-                <span className="flex flex-col gap-1 text-xs text-text-tertiary">
+                {/* Lange scenehoder skal ikke presse valgene ut av kolonnen */}
+                <span className="flex min-w-0 flex-col gap-1 overflow-hidden text-xs text-text-tertiary">
                   <select
                     aria-label="Første scene"
                     value={fromId}
@@ -561,7 +562,7 @@ export function ExportAnimaticDialog({
                       setFromId(e.target.value);
                       setScope("range");
                     }}
-                    className={select}
+                    className={select + " w-full max-w-full truncate"}
                   >
                     {clips.map((c) => (
                       <option key={c.occurrenceId} value={c.occurrenceId}>
@@ -576,7 +577,7 @@ export function ExportAnimaticDialog({
                       setToId(e.target.value);
                       setScope("range");
                     }}
-                    className={select}
+                    className={select + " w-full max-w-full truncate"}
                   >
                     {clips.map((c) => (
                       <option key={c.occurrenceId} value={c.occurrenceId}>

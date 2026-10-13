@@ -117,8 +117,10 @@ export function scheduleOne(
   const late = Math.max(0, ctx.currentTime - (o.startAt + Math.max(0, it.start - o.from)));
   const t0 = Math.max(o.from, it.start) + late;
   if (end <= t0) return null;
-  const srcOffset = it.sourceIn + (t0 - it.start);
-  const dur = Math.min(end - t0, buf.duration - srcOffset);
+  // Hastighet (DEC-0079): lydfilen spilles `speed` ganger så fort (tonehøyden følger med)
+  const speed = it.speed ?? 1;
+  const srcOffset = it.sourceIn + (t0 - it.start) * speed;
+  const dur = Math.min(end - t0, (buf.duration - srcOffset) / speed);
   if (dur <= 0) return null;
   const when = o.startAt + (t0 - o.from);
   // (when kan ikke være i fortiden etter justeringen over)
@@ -149,7 +151,8 @@ export function scheduleOne(
   for (const t of points.slice(1))
     gain.gain.linearRampToValueAtTime(envelopeAt(it, t), when + (t - t0));
   src.connect(gain).connect(destination);
-  src.start(Math.max(0, when), srcOffset, dur);
+  if (speed !== 1) src.playbackRate.setValueAtTime(speed, 0);
+  src.start(Math.max(0, when), srcOffset, dur * speed);
   return src;
 }
 

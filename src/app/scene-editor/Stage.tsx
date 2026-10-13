@@ -4,6 +4,7 @@
  * lokalt utkast; bare ved slipp kjøres én kommando (ett angresteg). Rektangel- og ellipsemasken til valgt lag
  * kan også flyttes og endres i størrelse her (DEC-0072). Bare på klienten (nettleser-API-er i effekter).
  */
+import { ZoomIn, ZoomOut } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   applyMatrix,
@@ -170,6 +171,8 @@ interface Colors {
 const PADDING = 32;
 const MIN_ZOOM = 0.02;
 const MAX_ZOOM = 32;
+/** Faste zoomnivåer for knappene og nivåvelgeren (DEC-0079). */
+export const ZOOM_LEVELS = [0.1, 0.25, 0.33, 0.5, 0.67, 0.75, 1, 1.5, 2, 3, 4, 6, 8, 12, 16];
 const HANDLE = 8;
 const ROTATE_OFFSET = 24;
 const FALLBACK: Colors = { border: "#3a3d45", accent: "#4f8cff" };
@@ -1351,6 +1354,20 @@ export function Stage({
     const v = currentView();
     commitView(zoomAround(v, { x: size.w / 2, y: size.h / 2 }, 1));
   }
+  /** Zoom til et nivå rundt midten av visningen (knappene, DEC-0079). */
+  function zoomToLevel(z: number) {
+    const v = currentView();
+    commitView(zoomAround(v, { x: size.w / 2, y: size.h / 2 }, z));
+  }
+  /** Neste faste nivå inn eller ut fra dagens zoom. */
+  function zoomStep(dir: 1 | -1) {
+    const z = view.zoom;
+    const next =
+      dir > 0
+        ? (ZOOM_LEVELS.find((l) => l > z * 1.001) ?? MAX_ZOOM)
+        : ([...ZOOM_LEVELS].reverse().find((l) => l < z * 0.999) ?? MIN_ZOOM);
+    zoomToLevel(next);
+  }
 
   const label = `${cameraMode ? "Kameravisning" : "2D-scene"}: ${composition.name.trim() || "Uten navn"}, ${frame.items.length} lag`;
   const shownCursor = panning ? "grabbing" : cursor;
@@ -1374,7 +1391,7 @@ export function Stage({
         const assetId = e.dataTransfer.getData(ASSET_DRAG_TYPE);
         if (!assetId || !canEdit || cameraMode) return;
         e.preventDefault();
-        // Ressurs fra «I denne scenen»: nytt lag øverst, med midten der den slippes
+        // Ressurs fra «I denne scenen»: nytt lag øverst (bakgrunn nederst), med midten der den slippes
         const r = e.currentTarget.getBoundingClientRect();
         const at = toScene(view, { x: e.clientX - r.left, y: e.clientY - r.top });
         const f = defaultLayerFields(state, composition, {
@@ -1391,7 +1408,11 @@ export function Stage({
                 compositionId: composition.id,
                 fields: {
                   ...f,
-                  transform: { ...f.transform, x: Math.round(at.x), y: Math.round(at.y) },
+                  // En bakgrunn dekker hele bildet (midtstilt); andre lag havner der de slippes
+                  transform:
+                    f.kind === "background"
+                      ? f.transform
+                      : { ...f.transform, x: Math.round(at.x), y: Math.round(at.y) },
                 },
               },
             ],
@@ -1447,9 +1468,40 @@ export function Stage({
         <div
           className={`flex items-center gap-1 rounded-md border border-border bg-surface-2 px-1 py-0.5 ${cameraMode ? "hidden" : ""}`}
         >
-          <span className="min-w-10 px-1 text-right text-xs tabular-nums text-text-secondary">
-            {Math.round(view.zoom * 100)} %
-          </span>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => zoomStep(-1)}
+            aria-label="Zoom ut"
+            title="Zoom ut (⌘/Ctrl + rullehjul)"
+          >
+            <ZoomOut />
+          </Button>
+          <select
+            aria-label="Zoomnivå"
+            value=""
+            onChange={(e) => {
+              if (e.target.value) zoomToLevel(Number(e.target.value));
+            }}
+            className="h-7 min-w-[64px] rounded-sm border border-border-control bg-surface-3 px-1 text-right text-xs tabular-nums text-text-secondary"
+            title="Velg zoomnivå"
+          >
+            <option value="">{Math.round(view.zoom * 100)} %</option>
+            {ZOOM_LEVELS.map((z) => (
+              <option key={z} value={z}>
+                {Math.round(z * 100)} %
+              </option>
+            ))}
+          </select>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => zoomStep(1)}
+            aria-label="Zoom inn"
+            title="Zoom inn (⌘/Ctrl + rullehjul)"
+          >
+            <ZoomIn />
+          </Button>
           <Button size="sm" variant="ghost" onClick={() => commitView(null)}>
             Tilpass
           </Button>

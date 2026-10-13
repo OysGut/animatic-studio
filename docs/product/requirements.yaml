@@ -21447,7 +21447,7 @@ requirements:
   - "enhet: AI-beskrivelse"
   - "db: generation_jobs (0010)"
   - "visuell: 54-ai-generering"
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - "src/adapters/ai/generate-image.functions.ts"
   - "src/core/generation/prompt.ts"
@@ -21462,6 +21462,7 @@ requirements:
   - "tests/unit/verifisering4-ai-server.test.ts::REQ-0565 – AI-bilder gjennom Lovable AI Gateway (simulert)"
   - "tests/unit/verifisering4-ai-ui.test.ts::REQ-0559 – bildevalget for et lag: velg, last opp eller generer"
   - "docs/development/VISUAL_QA_DEC-0076.md"
+  - "Kontroll av Mars i Lovable Cloud 13.10.2026 (DEC-0079, test 12): bildegenerering med Lovable-kreditter virker, prisen vises før bekreftelse"
   history:
   - date: '2026-10-09'
     decision: DEC-0045
@@ -21472,7 +21473,10 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0076
     change: "Alle kriteriene er prøvd mot en simulert Lovable AI Gateway: beskrivelsen er redigerbar (UI) og ingenting sendes før bekreftelse; bare redaktører/eiere; grenser per bruker per time og prosjekt per døgn; logg i generation_jobs (modell, beskrivelse, forbilde, status, feil); resultatet blir fil for ny versjon som tas i bruk og kan angres; nøkkelen finnes aldri i svar eller logg. Et ekte kall med Lovable-kreditter gjenstår."
-  notes: "Ikke verifisert mot ekte gateway ennå (krever LOVABLE_API_KEY i Lovable Cloud). Pris vises ikke før generering (REQ-0279 gjenstår)."
+  - date: '2026-10-13'
+    decision: DEC-0079
+    change: "Verifisert av Mars mot den ekte tjenesten (test 12)"
+  notes: "Prøvd av Mars mot den ekte Lovable AI Gateway 13.10.2026."
 - id: REQ-0566
   title: "Brukerne kobler egne AI-tjenester senere"
   text: "Etter testfasen skal brukerne kunne koble Animatic Studio til ulike AI-tjenesters API-er (egne nøkler) som applikasjonen legger til rette for."
@@ -22311,7 +22315,7 @@ requirements:
   tests:
   - "tests/unit/style-prompt.test.ts"
   - "tests/unit/prompt-writer.test.ts"
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - "src/core/generation/style.ts"
   - "src/core/generation/image-prompt.ts"
@@ -22332,6 +22336,8 @@ requirements:
   - "tests/visual/screens.mjs (75)"
   - "tests/unit/verifisering4-ai-server.test.ts::REQ-0589 – «Skriv beskrivelsen med AI» og bildene som sendes med (simulert)"
   - "docs/development/VISUAL_QA_DEC-0076.md"
+  - "Kontroll av Mars i Lovable Cloud 13.10.2026 (DEC-0079, test 13): bildebeskrivelse med språkmodell og bilde med forbilder virker"
+  - "tests/unit/funn-2026-10-13.test.ts"
   history:
   - date: '2026-10-11'
     decision: DEC-0065
@@ -22345,6 +22351,9 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0076
     change: "Simulert gateway: «Skriv beskrivelsen med AI» sender teksten og bildene, logges som egen jobb og teller ikke i bildebudsjettet; bildemodellen får bildene i samme rekkefølge som beskrivelsen omtaler dem. Seksjonene og konteksten er testet før. Et ekte kall i Lovable gjenstår (DEC-0066)."
+  - date: '2026-10-13'
+    decision: DEC-0079
+    change: "Verifisert av Mars (test 13). Beskrivelsen bygger nå også på manusets omtale av ressursen (REQ-0603)."
 - id: REQ-0590
   title: "Egne AI-leverandører med veiledning, sikre nøkler og overordnet kostnadstak"
   text: "Løsningen skal vise en liste over de mest brukte AI-leverandørene. Brukeren kan koble til én, flere eller alle; de som er koblet til, blir tilgjengelige for å generere enkeltbilder, videoer og lyder. Ved klikk på en leverandør skal en dialog gi lenker til å opprette konto og abonnement, til stedet der API-nøkkelen hentes, og et felt for å legge inn nøkkelen. Nøkkelen skal sikres etter beste praksis, og det skal være mulig å sette et tak på AI-kostnaden på overordnet nivå."
@@ -22375,7 +22384,7 @@ requirements:
   - "tests/unit/ai-gate.test.ts"
   - "tests/unit/ai-video.test.ts"
   - "tests/unit/ai-sound.test.ts"
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - "src/core/generation/providers.ts"
   - "src/core/generation/video.ts"
@@ -22402,6 +22411,7 @@ requirements:
   - "tests/unit/verifisering4-ai-ui.test.ts::REQ-0280 REQ-0491 – kostnadsanslaget i bekreftelsene"
   - "tests/visual/verifisering4-ui.mjs::kostnad"
   - "docs/development/VISUAL_QA_DEC-0076.md"
+  - "Kontroll av Mars 13.10.2026 (DEC-0079, test 14): egen nøkkel godtatt av Mars («vi sier OK») – kostnadstaket er dekket av automatiske tester, ikke prøvd til grensen mot ekte tjeneste"
   history:
   - date: '2026-10-12'
     decision: DEC-0069
@@ -22412,6 +22422,9 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0076
     change: "Katalog, kryptering, nøkkeltest, tak og generering med tilkoblede leverandører er testet med falske svar (DEC-0075), og kostnaden vises og bekreftes før bilde, video og lyd (denne runden, jsdom og nettleser). Prøving med en ekte nøkkel hos hver leverandør gjenstår (DEC-0069, KI-153)."
+  - date: '2026-10-13'
+    decision: DEC-0079
+    change: "Godtatt av Mars (test 14). fal.ai-feilen «405» etter betalt jobb rettet (status hentes under app-ID-en, KI-188)."
 - id: REQ-0591
   title: "Arbeidsliste for oppdaterte ressurser"
   text: "Når en ressurs er oppdatert, skal brukeren kunne få opp en arbeidsliste over scenene som er berørt, og scene for scene velge om den nye versjonen skal brukes i stedet for den gamle."
@@ -22501,3 +22514,525 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0076
     change: "Ingen kode starter en generering uten brukerhandling (syntakstre over hele grensesnittet; oppfølgingen i nettleseren sender bare det brukeren la i kø), og ingen migrasjon eller oppsett lager en planlagt bakgrunnsjobb."
+- id: REQ-0593
+  title: "12 bilder i sekundet og animer på toere"
+  text: "Prosjektet kan ha 12 bilder i sekundet (vanlig i ferdig stop motion). Hver 2D-scene kan animeres på enere, toere, treere eller firere: bevegelse, kamera og bildeskifter oppdateres bare hvert n-te bilde, mens filmen beholder bildefrekvensen."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0079
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - COMPOSE
+  - EXPORT
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Bildefrekvensen 12 kan velges på prosjektoversikten."
+  - "«Animer» på toere gir samme bilde på bilde 2 og 3 i avspilling og eksport; kan angres."
+  - "Valget lagres i compositions.step (migrasjon 0029)."
+  tests:
+  - "tests/unit/funn-2026-10-13.test.ts"
+  - "tests/db/run-db-tests.ts"
+  status: Verifisert
+  implementation:
+  - "src/core/composition/format.ts"
+  - "src/core/composition/render.ts"
+  - "src/app/scene-editor/LayerInspector.tsx"
+  - "db/migrations/0029_trash_speed_step.sql"
+  verification:
+  - "tests/unit/funn-2026-10-13.test.ts"
+  - "tests/db/run-db-tests.ts"
+  history:
+  - date: '2026-10-13'
+    decision: DEC-0079
+    change: "Opprettet etter Mars' testrunde 13.10.2026"
+- id: REQ-0594
+  title: "Lydklipp: dra, hastighet og masker for start og slutt"
+  text: "Lydklipp kan dras for å flyttes og kuttes i kantene også i sceneeditorens tidslinje. I lydprofilen kan hastigheten settes fra 25 til 400 % (trinnløst og med faste steg), og masker for start og slutt i lydfilen kan dras eller flyttes med piltaster; ny varighet vises. Tonehøyden følger hastigheten."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0079
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - AUDIO
+  - TIMELINE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Dobbel hastighet halverer lengden og spiller lydfilen dobbelt så fort i avspilling og eksport."
+  - "Masker gir ny start i lydfilen og ny varighet; volumpunktene følger lyden."
+  - "Drag i sceneeditoren lagres som én endring som kan angres."
+  tests:
+  - "tests/unit/funn-2026-10-13.test.ts"
+  - "tests/db/run-db-tests.ts"
+  status: Verifisert
+  implementation:
+  - "src/app/audio/AudioClipEditor.tsx"
+  - "src/app/scene-editor/SceneAudioRows.tsx"
+  - "src/engine/audio/mixer.ts"
+  - "src/core/audio/index.ts"
+  - "db/migrations/0029_trash_speed_step.sql"
+  verification:
+  - "tests/unit/funn-2026-10-13.test.ts"
+  - "tests/db/run-db-tests.ts"
+  history:
+  - date: '2026-10-13'
+    decision: DEC-0079
+    change: "Opprettet etter Mars' testrunde 13.10.2026"
+- id: REQ-0595
+  title: "Tydelig hva som er lagt inn i scenen"
+  text: "«I denne scenen» merker ressursene som allerede er lagt inn som lag (merket «I scenen», antall lag). Dobbeltklikk på en ressurs i lista åpner det samme bildevalget som dobbeltklikk på laget i scenen (er den ikke lagt inn, legges den inn først)."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0079
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - COMPOSE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Ressurser med lag i 2D-scenen har synlig merke og ramme."
+  - "Dobbeltklikk i lista åpner bildevalget for laget."
+  tests:
+  - "docs/development/VISUAL_QA_DEC-0079.md"
+  status: Verifisert
+  implementation:
+  - "src/app/scene-editor/SceneAssetsPanel.tsx"
+  - "src/app/scene-editor/SceneEditorWorkspace.tsx"
+  verification:
+  - "docs/development/VISUAL_QA_DEC-0079.md"
+  history:
+  - date: '2026-10-13'
+    decision: DEC-0079
+    change: "Opprettet etter Mars' testrunde 13.10.2026"
+- id: REQ-0596
+  title: "Enkle symboler for alle ressurser"
+  text: "Hver ressurs får et enkelt symbol: fylt form uten omriss, ansikt eller øyne, formen etter type og egen farge per ressurs. Symbolet vises i lister og tegnes i scenen og animaticen for lag som ennå ikke har bilde."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0079
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - LIBRARY
+  - COMPOSE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "To karakterer har ulike farger; formen viser typen."
+  - "Et lag uten bilde tegnes med ressursens symbol."
+  tests:
+  - "tests/unit/funn-2026-10-13.test.ts"
+  - "docs/development/VISUAL_QA_DEC-0079.md"
+  status: Verifisert
+  implementation:
+  - "src/core/library/symbol.ts"
+  - "src/app/library/AssetSymbolIcon.tsx"
+  - "src/engine/compositor/canvas.ts"
+  verification:
+  - "tests/unit/funn-2026-10-13.test.ts"
+  - "docs/development/VISUAL_QA_DEC-0079.md"
+  history:
+  - date: '2026-10-13'
+    decision: DEC-0079
+    change: "Opprettet etter Mars' testrunde 13.10.2026"
+- id: REQ-0597
+  title: "Filmformater og TIFF ved opplasting"
+  text: "Film kan importeres som MP4 (også .m4v), MOV og WebM, også når nettleseren ikke oppgir filtypen; om nettleseren ikke kan spille av kodeken (f.eks. ProRes eller HEVC), forklares det før opplasting. TIFF kan lastes opp som bilde og gjøres om til PNG. Velges en film der det skal være et bilde, forklares hvor film legges inn."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0079
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - LIBRARY
+  - TIMELINE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "MP4/M4V/MOV/WebM gjenkjennes fra endelsen."
+  - "Uavspillbar kodek gir en forståelig melding."
+  - "TIFF blir PNG i full størrelse."
+  tests:
+  - "tests/unit/funn-2026-10-13.test.ts"
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/film-import.ts"
+  - "src/app/library/image-prep.ts"
+  - "src/app/library/asset-images.ts"
+  verification:
+  - "tests/unit/funn-2026-10-13.test.ts"
+  history:
+  - date: '2026-10-13'
+    decision: DEC-0079
+    change: "Opprettet etter Mars' testrunde 13.10.2026"
+- id: REQ-0598
+  title: "Store bilder skaleres ned – originalen beholdes"
+  text: "Bilder større enn to ganger filmformatets lengste side (minst 2048 px) får en nedskalert arbeidskopi som brukes i scenen; originalen lagres som versjonen før og kan tas i bruk ved å godkjenne den (kan angres). Til AI sendes som standard arbeidsstørrelsen; «Send forbildene i full størrelse» sender originalene (f.eks. karakterkort)."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0079
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - LIBRARY
+  - PROVIDER
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Et bilde på 6000 × 4000 gir en arbeidskopi på 3840 × 2560 i et HD-prosjekt, og originalen som egen versjon."
+  - "Valget for full størrelse sender originalens sti."
+  tests:
+  - "tests/unit/funn-2026-10-13.test.ts"
+  status: Verifisert
+  implementation:
+  - "src/app/library/image-prep.ts"
+  - "src/app/library/asset-images.ts"
+  - "src/core/library/index.ts"
+  - "src/app/library/GenerateImagePanel.tsx"
+  verification:
+  - "tests/unit/funn-2026-10-13.test.ts"
+  history:
+  - date: '2026-10-13'
+    decision: DEC-0079
+    change: "Opprettet etter Mars' testrunde 13.10.2026"
+- id: REQ-0599
+  title: "Zoomknapper i scenen"
+  text: "Scenen har knapper for zoom inn og ut og et valg med faste zoomnivåer (10–1600 %), i tillegg til «Tilpass» og «100 %»."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0079
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - COMPOSE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Zoom inn/ut går til neste faste nivå rundt midten av visningen."
+  tests:
+  - "docs/development/VISUAL_QA_DEC-0079.md"
+  status: Verifisert
+  implementation:
+  - "src/app/scene-editor/Stage.tsx"
+  verification:
+  - "docs/development/VISUAL_QA_DEC-0079.md"
+  history:
+  - date: '2026-10-13'
+    decision: DEC-0079
+    change: "Opprettet etter Mars' testrunde 13.10.2026"
+- id: REQ-0600
+  title: "Bildedialogen husker siste beskrivelse og har bildestørrelse"
+  text: "Når et nytt bilde skal genereres, er feltet fylt med siste beskrivelse brukt for ressursen («Tilbakestill» gir den automatiske). Bildestørrelse er et eget valg der modellen tar imot det (f.eks. 1K/2K/4K for Nano Banana Pro, med pris), og sendes som tjenestens egen parameter."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0079
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - PROMPT
+  - PROVIDER
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Siste beskrivelse settes inn og merkes."
+  - "Størrelsen påvirker prisanslaget og sendes som image_size til Google."
+  tests:
+  - "tests/unit/funn-2026-10-13.test.ts"
+  - "docs/development/VISUAL_QA_DEC-0079.md"
+  status: Verifisert
+  implementation:
+  - "src/core/generation/prompt-history.ts"
+  - "src/core/generation/providers.ts"
+  - "src/app/library/GenerateImagePanel.tsx"
+  - "src/adapters/ai/providers.server.ts"
+  verification:
+  - "tests/unit/funn-2026-10-13.test.ts"
+  - "docs/development/VISUAL_QA_DEC-0079.md"
+  history:
+  - date: '2026-10-13'
+    decision: DEC-0079
+    change: "Opprettet etter Mars' testrunde 13.10.2026"
+- id: REQ-0601
+  title: "Stor visning og beskrivelsen per bilde"
+  text: "Klikk på et bilde i bildevalget åpner en stor visning med zoom og panorering. Beskrivelsen (prompten) som laget bildet vises ved siden av – den følger bildet og slettes aldri – med «Sett inn denne beskrivelsen» og «Kopier»."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0079
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - PROMPT
+  - LIBRARY
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Beskrivelsen hentes fra AI-jobbloggen (også eldre enn de siste 300)."
+  - "«Sett inn» fyller genereringsfeltet."
+  tests:
+  - "tests/unit/funn-2026-10-13.test.ts"
+  - "docs/development/VISUAL_QA_DEC-0079.md"
+  status: Verifisert
+  implementation:
+  - "src/app/library/ImageLightbox.tsx"
+  - "src/adapters/browser/ai.ts"
+  - "src/app/scene-editor/LayerImageDialog.tsx"
+  verification:
+  - "tests/unit/funn-2026-10-13.test.ts"
+  - "docs/development/VISUAL_QA_DEC-0079.md"
+  history:
+  - date: '2026-10-13'
+    decision: DEC-0079
+    change: "Opprettet etter Mars' testrunde 13.10.2026"
+- id: REQ-0602
+  title: "Varsel om utdatert AI-tekst hindrer ikke generering"
+  text: "Er bildene som sendes med endret etter at AI skrev beskrivelsen, varsles det – men brukeren kan likevel generere."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0079
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - PROMPT
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "«Generer» er tilgjengelig med varselet synlig."
+  tests:
+  - "docs/development/VISUAL_QA_DEC-0079.md"
+  status: Verifisert
+  implementation:
+  - "src/app/library/GenerateImagePanel.tsx"
+  verification:
+  - "docs/development/VISUAL_QA_DEC-0079.md"
+  history:
+  - date: '2026-10-13'
+    decision: DEC-0079
+    change: "Opprettet etter Mars' testrunde 13.10.2026"
+- id: REQ-0603
+  title: "Bildebeskrivelser bygger på manuset"
+  text: "Den automatiske bildebeskrivelsen tar med setningene der manuset omtaler ressursen (handling og andres replikker), i fortellingsrekkefølge, avgrenset i lengde."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0079
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - PROMPT
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Avsnittet «IN THE SCREENPLAY» har bare setninger som nevner ressursen, høyst 1200 tegn."
+  tests:
+  - "tests/unit/funn-2026-10-13.test.ts"
+  status: Verifisert
+  implementation:
+  - "src/core/generation/image-prompt.ts"
+  verification:
+  - "tests/unit/funn-2026-10-13.test.ts"
+  history:
+  - date: '2026-10-13'
+    decision: DEC-0079
+    change: "Opprettet etter Mars' testrunde 13.10.2026"
+- id: REQ-0604
+  title: "Lokasjon legges nederst"
+  text: "En lokasjon eller et miljø som legges inn i scenen, legges nederst av alle lagene og dekker bildet."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0079
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Nytt lag av typen bakgrunn fra en ressurs får laveste plass i lagrekkefølgen."
+  tests:
+  - "tests/unit/composition.test.ts"
+  status: Verifisert
+  implementation:
+  - "src/core/commands/apply.ts"
+  verification:
+  - "tests/unit/composition.test.ts"
+  history:
+  - date: '2026-10-13'
+    decision: DEC-0079
+    change: "Opprettet etter Mars' testrunde 13.10.2026"
+- id: REQ-0605
+  title: "Bekreftelsen er alltid synlig"
+  text: "Bekreftelsen («Ja, generer») i bildedialogen står alltid synlig nederst i dialogen og rulles fram når den åpnes."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0079
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "«Ja, generer» er synlig uten å rulle."
+  tests:
+  - "docs/development/VISUAL_QA_DEC-0079.md"
+  status: Verifisert
+  implementation:
+  - "src/app/library/GenerateImagePanel.tsx"
+  verification:
+  - "docs/development/VISUAL_QA_DEC-0079.md"
+  history:
+  - date: '2026-10-13'
+    decision: DEC-0079
+    change: "Opprettet etter Mars' testrunde 13.10.2026"
+- id: REQ-0606
+  title: "Speilvending og enkel tegning"
+  text: "Et lag kan speilvendes vannrett eller loddrett i scenen (bildet i biblioteket endres ikke). I frileggingen kan bildet speilvendes og det kan tegnes med farge; alt kan angres, og resultatet lagres som ny versjon."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0079
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - COMPOSE
+  - LIBRARY
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Speilvending snur skaleringen også i nøkkelbildene."
+  - "Tegning og speilvending kan angres i frileggingen."
+  tests:
+  - "tests/unit/funn-2026-10-13.test.ts"
+  - "docs/development/VISUAL_QA_DEC-0079.md"
+  status: Verifisert
+  implementation:
+  - "src/core/composition/index.ts"
+  - "src/core/cutout/index.ts"
+  - "src/app/library/CutoutDialog.tsx"
+  - "src/app/scene-editor/LayerInspector.tsx"
+  verification:
+  - "tests/unit/funn-2026-10-13.test.ts"
+  - "docs/development/VISUAL_QA_DEC-0079.md"
+  history:
+  - date: '2026-10-13'
+    decision: DEC-0079
+    change: "Opprettet etter Mars' testrunde 13.10.2026"
+- id: REQ-0607
+  title: "Slettede objekter"
+  text: "Ressurser og enkeltbilder kan slettes fra biblioteket og bildevalget, med en advarsel om hva som skjer. De flyttes til «Slettede objekter», der de kan hentes inn igjen; prosjektets eier kan slette for godt (også filene) når ingenting i filmen bruker dem. Det godkjente bildet kan ikke slettes."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0079
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - LIBRARY
+  - SECURITY
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Slettet ressurs vises ikke i lister og lagvalg, men i «Slettede objekter»."
+  - "Sletting for godt avvises så lenge noe bruker ressursen."
+  - "Bare eieren kan slette for godt; bare via serveren."
+  tests:
+  - "tests/unit/funn-2026-10-13.test.ts"
+  - "tests/db/run-db-tests.ts"
+  status: Verifisert
+  implementation:
+  - "src/core/commands/apply.ts"
+  - "src/core/library/index.ts"
+  - "src/app/library/TrashDialog.tsx"
+  - "src/adapters/storage/trash.functions.ts"
+  - "db/migrations/0029_trash_speed_step.sql"
+  verification:
+  - "tests/unit/funn-2026-10-13.test.ts"
+  - "tests/db/run-db-tests.ts"
+  history:
+  - date: '2026-10-13'
+    decision: DEC-0079
+    change: "Opprettet etter Mars' testrunde 13.10.2026"
+- id: REQ-0608
+  title: "Dialog med AI-stemmer: status, stemmer og avspilling"
+  text: "Dialogen viser tydelig hvilke replikker som har lyd (AI eller opptak) og hvilke som mangler, hvilken stemme hver karakter har og hvem andre som bruker samme stemme (den kan likevel velges). Lyden replikken har kan spilles av i dialogen, og stemmene kan prøvelyttes."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0079
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - AUDIO
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Hver replikk har merke «Har lyd» eller «Mangler lyd»."
+  - "Stemmevalget viser «brukes av …»."
+  - "Avspilling og prøve fungerer i dialogen."
+  tests:
+  - "tests/unit/funn-2026-10-13.test.ts"
+  - "docs/development/VISUAL_QA_DEC-0079.md"
+  status: Verifisert
+  implementation:
+  - "src/app/assembly/AiDialogueDialog.tsx"
+  - "src/core/generation/speech.ts"
+  - "src/adapters/ai/providers.server.ts"
+  verification:
+  - "tests/unit/funn-2026-10-13.test.ts"
+  - "docs/development/VISUAL_QA_DEC-0079.md"
+  history:
+  - date: '2026-10-13'
+    decision: DEC-0079
+    change: "Opprettet etter Mars' testrunde 13.10.2026"
+- id: REQ-0609
+  title: "Norsk tale blir norsk"
+  text: "Replikker leses inn med en modell som kan norsk (Eleven v3), og språket settes eksplisitt, så norsk ikke leses som dansk."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0079
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - AUDIO
+  - PROVIDER
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Kallet til ElevenLabs har model_id eleven_v3 og language_code no."
+  tests:
+  - "tests/unit/ai-speech.test.ts"
+  status: Verifisert
+  implementation:
+  - "src/core/generation/speech.ts"
+  - "src/adapters/ai/speech.functions.ts"
+  - "src/adapters/ai/providers.server.ts"
+  verification:
+  - "tests/unit/ai-speech.test.ts"
+  history:
+  - date: '2026-10-13'
+    decision: DEC-0079
+    change: "Opprettet etter Mars' testrunde 13.10.2026"

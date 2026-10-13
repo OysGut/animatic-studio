@@ -106,7 +106,7 @@ async function listFolder(
  * Sletter filene i bøtta i porsjoner, bare innenfor prosjektets egen mappe. Returnerer antall som ikke
  * kunne slettes.
  */
-async function removeFiles(
+export async function removeFiles(
   admin: AnyClient,
   bucket: string,
   projectId: string,

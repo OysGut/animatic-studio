@@ -519,7 +519,7 @@ export function continuitySuggestions(s: ProjectState, assetId?: string): Contin
   const main = Object.values(s.productions).find((p) => p.kind === "main");
   if (!main) return [];
   const assets = Object.values(s.assets).filter(
-    (a) => !a.archived && hasContinuity(a) && (!assetId || a.id === assetId),
+    (a) => !a.archived && !a.removed && hasContinuity(a) && (!assetId || a.id === assetId),
   );
   if (assets.length === 0) return [];
   // Hendelser som gjelder i produksjonen (lokale i andre spinoffer teller ikke, DEC-0060)

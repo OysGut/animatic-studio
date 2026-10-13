@@ -131,6 +131,8 @@ export interface SceneChange {
  */
 export type ScriptLibraryAsset = Pick<Asset, "kind" | "name" | "names"> & {
   readonly archived?: boolean;
+  /** Slettet (DEC-0079): regnes som ikke i biblioteket. */
+  readonly removed?: boolean;
 };
 
 /** Én endret linje (manusblokk) i en scene (REQ-0534). */
@@ -202,7 +204,7 @@ export function charactersOf(
   );
   const text = actionText(sc);
   for (const a of library) {
-    if (a.kind !== "character" || a.archived) continue;
+    if (a.kind !== "character" || a.archived || a.removed) continue;
     const names = namesOf(a);
     // Har replikk under et av navnene: allerede med
     if (names.some((n) => out.has(keyOf(n)))) continue;
@@ -228,7 +230,7 @@ export function objectsOf(sc: SnapshotScene, library: readonly ScriptLibraryAsse
   const out = new Set<string>();
   const text = [formatHeading(sc.heading), ...sc.blocks.map((b) => b.text)].join("\n");
   for (const a of library) {
-    if (a.kind !== "object" || a.archived) continue;
+    if (a.kind !== "object" || a.archived || a.removed) continue;
     if (namesOf(a).some((n) => hasWordPrefix(text, n))) out.add(a.name);
   }
   return out;

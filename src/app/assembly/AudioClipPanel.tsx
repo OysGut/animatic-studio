@@ -173,7 +173,11 @@ export function AudioClipPanel({
           label="Lengde"
           ms={clip.lengthMs}
           min={1}
-          max={fileMs !== null ? Math.max(1, fileMs - clip.sourceInMs) : AUDIO_MAX_MS}
+          max={
+            fileMs !== null
+              ? Math.max(1, Math.floor((fileMs - clip.sourceInMs) / (clip.speed ?? 1)))
+              : AUDIO_MAX_MS
+          }
           disabled={off}
           onCommit={(ms) => onChange("Endre lengde på lyd", { lengthMs: ms })}
         />
@@ -187,7 +191,12 @@ export function AudioClipPanel({
             onChange("Kutt starten av lyden", {
               sourceInMs: ms,
               lengthMs:
-                fileMs !== null ? Math.max(1, Math.min(clip.lengthMs, fileMs - ms)) : clip.lengthMs,
+                fileMs !== null
+                  ? Math.max(
+                      1,
+                      Math.min(clip.lengthMs, Math.floor((fileMs - ms) / (clip.speed ?? 1))),
+                    )
+                  : clip.lengthMs,
             })
           }
         />
@@ -274,8 +283,14 @@ export function AudioClipPanel({
 
       <Button size="sm" variant="secondary" className="self-start" onClick={onOpenProfile}>
         <AudioWaveform />
-        Lydprofil og volumpunkter …{clip.volumeKeys.length ? ` (${clip.volumeKeys.length})` : ""}
+        Lydprofil, hastighet og masker …
+        {clip.volumeKeys.length ? ` (${clip.volumeKeys.length} punkter)` : ""}
       </Button>
+      {(clip.speed ?? 1) !== 1 ? (
+        <p className="text-xs text-text-secondary">
+          Hastighet: {Math.round((clip.speed ?? 1) * 100)} % (endres i lydprofilen)
+        </p>
+      ) : null}
 
       <div className="flex flex-wrap gap-1.5 pt-1">
         {asset ? (

@@ -4,8 +4,8 @@
  * karakteren), velger replikker, ser anslått pris og bekrefter. Hver replikk blir en lydressurs koblet til
  * replikken og karakteren; alt kan angres. Opptak og importert dialog røres ikke.
  */
-import { Loader2, Mic } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { CircleCheck, CircleDashed, Loader2, Mic, Pause, Play } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   costBreakdown,
@@ -17,6 +17,9 @@ import {
   providerModel,
   sceneDialogueLines,
   speechCostUsd,
+  SPEECH_MODEL,
+  audioVersion,
+  voiceUsers,
 } from "@/core";
 import { generateSpeech, listVoices } from "@/adapters/ai/speech.functions";
 import type { Commands } from "@/app/project/use-commands";
@@ -77,11 +80,54 @@ export function AiDialogueDialog({
   const chosen = picked ?? defaultPick;
   const runnable = lines.filter((l) => chosen.has(l.blockId) && l.character?.voice);
   const cost = speechCostUsd(runnable);
-  const speechModel = providerModel("elevenlabs", "eleven_multilingual_v2");
+  const speechModel = providerModel("elevenlabs", SPEECH_MODEL);
   const [confirm, setConfirm] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
   const running = useRef(false);
   const [msg, setMsg] = useState<{ kind: "ok" | "error"; text: string } | null>(null);
+  const users = useMemo(() => voiceUsers(state), [state]);
+  const withAudio = lines.filter((l) => l.audio).length;
+
+  // Avspilling: en stemmeprøve eller replikkens innleste lyd (DEC-0079)
+  const player = useRef<HTMLAudioElement | null>(null);
+  const [playing, setPlaying] = useState<string | null>(null);
+  function stopPlaying() {
+    player.current?.pause();
+    player.current = null;
+    setPlaying(null);
+  }
+  useEffect(() => {
+    if (!open) stopPlaying();
+  }, [open]);
+  async function playUrl(key: string, url: string | null | undefined) {
+    if (playing === key) {
+      stopPlaying();
+      return;
+    }
+    stopPlaying();
+    if (!url) return;
+    const a = new Audio(url);
+    player.current = a;
+    setPlaying(key);
+    a.onended = () => setPlaying((p) => (p === key ? null : p));
+    try {
+      await a.play();
+    } catch {
+      setPlaying(null);
+      setMsg({ kind: "error", text: "Lyden kunne ikke spilles av." });
+    }
+  }
+  async function playLine(blockId: string, clipId: string) {
+    const c = state.audioClips[clipId];
+    const v = c ? audioVersion(state, c) : null;
+    if (!v) {
+      setMsg({ kind: "error", text: "Lydfilen mangler." });
+      return;
+    }
+    const url = (await signedUrls([v.mediaPath], 600))[v.mediaPath];
+    await playUrl(`line:${blockId}`, url);
+  }
+  const voiceList = voices.data?.ok ? voices.data.voices : [];
 
   function setVoice(assetId: string, voiceId: string) {
     const v = voices.data?.ok ? voices.data.voices.find((x) => x.voiceId === voiceId) : undefined;
@@ -175,7 +221,7 @@ export function AiDialogueDialog({
             versionId: r.versionId,
             variantId,
             media: { ...r.media, durationMs },
-            note: "Lest inn med AI (elevenlabs/eleven_multilingual_v2)",
+            note: `Lest inn med AI (elevenlabs/${SPEECH_MODEL})`,
           },
           {
             type: "AddAudioClips",
@@ -280,31 +326,69 @@ export function AiDialogueDialog({
                   {voices.data.message}
                 </p>
               ) : null}
-              {characters.map((c) => (
-                <label key={c.id} className="flex items-center gap-2 text-xs text-text-secondary">
-                  <span className="w-40 truncate text-text-primary">{c.name}</span>
-                  <select
-                    aria-label={`Stemme for ${c.name}`}
-                    value={c.voice?.voiceId ?? ""}
-                    disabled={!!busy || !voices.data?.ok}
-                    onChange={(e) => setVoice(c.id, e.target.value)}
-                    className={ctl + " flex-1"}
-                  >
-                    <option value="">Ingen stemme</option>
-                    {c.voice &&
-                    voices.data?.ok &&
-                    !voices.data.voices.some((v) => v.voiceId === c.voice!.voiceId) ? (
-                      <option value={c.voice.voiceId}>{c.voice.label}</option>
-                    ) : null}
-                    {(voices.data?.ok ? voices.data.voices : []).map((v) => (
-                      <option key={v.voiceId} value={v.voiceId}>
-                        {v.name}
-                        {v.description ? ` – ${v.description}` : ""}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              ))}
+              {characters.map((c) => {
+                const others = (c.voice ? (users.get(c.voice.voiceId) ?? []) : []).filter(
+                  (n) => n !== c.name,
+                );
+                const preview = voiceList.find((v) => v.voiceId === c.voice?.voiceId)?.previewUrl;
+                return (
+                  <div key={c.id} className="flex flex-col gap-0.5">
+                    <label className="flex items-center gap-2 text-xs text-text-secondary">
+                      <span className="w-40 truncate text-text-primary">{c.name}</span>
+                      <select
+                        aria-label={`Stemme for ${c.name}`}
+                        value={c.voice?.voiceId ?? ""}
+                        disabled={!!busy || !voices.data?.ok}
+                        onChange={(e) => setVoice(c.id, e.target.value)}
+                        className={ctl + " flex-1"}
+                      >
+                        <option value="">Ingen stemme</option>
+                        {c.voice && !voiceList.some((v) => v.voiceId === c.voice!.voiceId) ? (
+                          <option value={c.voice.voiceId}>{c.voice.label}</option>
+                        ) : null}
+                        {voiceList.map((v) => {
+                          // Hvem bruker stemmen alt? (kan likevel velges)
+                          const used = (users.get(v.voiceId) ?? []).filter((n) => n !== c.name);
+                          return (
+                            <option key={v.voiceId} value={v.voiceId}>
+                              {used.length ? "● " : ""}
+                              {v.name}
+                              {v.description ? ` – ${v.description}` : ""}
+                              {used.length ? ` (brukes av ${used.join(", ")})` : ""}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        disabled={!preview}
+                        onClick={() => void playUrl(`voice:${c.id}`, preview)}
+                        aria-label={`Hør stemmen til ${c.name}`}
+                        title={preview ? "Hør en prøve av stemmen" : "Ingen prøve for stemmen"}
+                      >
+                        {playing === `voice:${c.id}` ? <Pause /> : <Play />}
+                        Prøve
+                      </Button>
+                    </label>
+                    <p className="pl-[168px] text-[11px]">
+                      {c.voice ? (
+                        <span className="text-text-secondary">
+                          Stemme: <span className="text-text-primary">{c.voice.label}</span>
+                          {others.length ? (
+                            <span className="text-status-uncertain">
+                              {" "}
+                              · brukes også av {others.join(", ")}
+                            </span>
+                          ) : null}
+                        </span>
+                      ) : (
+                        <span className="text-status-uncertain">Ingen stemme valgt</span>
+                      )}
+                    </p>
+                  </div>
+                );
+              })}
               {lines.some((l) => !l.character) ? (
                 <p className="text-[11px] text-text-tertiary">
                   Noen replikker har en karakter som ikke finnes i biblioteket; legg den til der for
@@ -312,13 +396,26 @@ export function AiDialogueDialog({
                 </p>
               ) : null}
             </section>
+            <p className="text-xs text-text-secondary" role="status">
+              <span className="text-status-success">{withAudio} har lyd</span> ·{" "}
+              <span className={lines.length - withAudio ? "text-status-uncertain" : ""}>
+                {lines.length - withAudio} mangler
+              </span>{" "}
+              av {lines.length} replikker. Replikker uten lyd er valgt.
+            </p>
             <ul
               aria-label="Replikker"
               className="max-h-[40vh] overflow-y-auto border border-border bg-surface-1"
             >
               {lines.map((l) => (
-                <li key={l.blockId} className="border-b border-border last:border-b-0">
-                  <label className="flex items-start gap-2 px-2 py-1.5 text-xs">
+                <li
+                  key={l.blockId}
+                  className={
+                    "flex items-start border-b border-l-4 border-border last:border-b-0 " +
+                    (l.audio ? "border-l-status-success" : "border-l-status-uncertain")
+                  }
+                >
+                  <label className="flex flex-1 items-start gap-2 px-2 py-1.5 text-xs">
                     <input
                       type="checkbox"
                       checked={chosen.has(l.blockId)}
@@ -332,14 +429,42 @@ export function AiDialogueDialog({
                       }}
                     />
                     <span className="min-w-0 flex-1">
-                      <span className="block text-[11px] text-text-tertiary">
-                        {l.speaker || "Uten navn"} · {(l.startMs / 1000).toFixed(1)} s
-                        {l.hasAudio ? " · har dialoglyd" : ""}
-                        {!l.character?.voice ? " · mangler stemme" : ""}
+                      <span className="flex flex-wrap items-center gap-1.5 text-[11px] text-text-tertiary">
+                        {l.audio ? (
+                          <span className="inline-flex items-center gap-0.5 rounded-sm bg-status-success/15 px-1 font-medium text-status-success">
+                            <CircleCheck className="size-3" aria-hidden />
+                            Har lyd{l.audio.ai ? " (AI)" : " (opptak/import)"}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-0.5 rounded-sm bg-status-uncertain/15 px-1 font-medium text-status-uncertain">
+                            <CircleDashed className="size-3" aria-hidden />
+                            Mangler lyd
+                          </span>
+                        )}
+                        <span>
+                          {l.speaker || "Uten navn"} · {(l.startMs / 1000).toFixed(1)} s
+                        </span>
+                        {l.character?.voice ? (
+                          <span>· stemme: {l.character.voice.label}</span>
+                        ) : (
+                          <span className="text-status-uncertain">· mangler stemme</span>
+                        )}
                       </span>
                       <span className="text-text-primary">{l.text}</span>
                     </span>
                   </label>
+                  {l.audio ? (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="m-1"
+                      onClick={() => void playLine(l.blockId, l.audio!.clipId)}
+                      aria-label={`Spill av replikken til ${l.speaker || "karakteren"}`}
+                      title="Spill av lyden replikken har"
+                    >
+                      {playing === `line:${l.blockId}` ? <Pause /> : <Play />}
+                    </Button>
+                  ) : null}
                 </li>
               ))}
             </ul>

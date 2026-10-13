@@ -130,7 +130,7 @@ async function mock(page, { projects = [project], schema = true, rows = {} }) {
     const table = path.replace("/rest/v1/", "");
     if (table === "schema_version")
       return schema
-        ? json([{ version: 28 }])
+        ? json([{ version: 29 }])
         : json({ message: "relation does not exist", code: "42P01" }, 404);
     if (table === "projects") {
       if (single) return json(projects[0] ?? null);

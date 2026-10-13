@@ -6,7 +6,7 @@
  */
 import { Loader2, RotateCcw } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   aiUsage,
@@ -25,6 +25,11 @@ import {
   formatUsd,
   hasStyleGuide,
   IMAGE_PURPOSE_FOR_KIND,
+  IMAGE_SIZE_LABEL,
+  fullSizeOriginal,
+  type ImageSize,
+  imageSizesOf,
+  lastImagePrompt,
   LOVABLE_CUTOUT_MODEL,
   LOVABLE_IMAGE_MODEL,
   MAX_PROMPT_CHARS,
@@ -61,6 +66,7 @@ export function GenerateImagePanel({
   onGenerated,
   budget,
   initialPrompt,
+  insertPrompt,
   context,
 }: {
   /**
@@ -76,6 +82,11 @@ export function GenerateImagePanel({
   budget?: Pick<Project, "aiMonthLimit" | "aiPricePerImage">;
   /** Start med en bestemt beskrivelse (f.eks. «Prøv igjen» fra jobblisten). */
   initialPrompt?: string;
+  /**
+   * «Sett inn denne beskrivelsen» fra et bilde (Mars 2026-10-13): beskrivelsen som laget et tidligere bilde
+   * settes inn i feltet. `n` øker for hvert klikk, så samme tekst kan settes inn flere ganger.
+   */
+  insertPrompt?: { readonly text: string; readonly n: number } | null;
   projectId: string;
   filmTitle: string;
   asset: Asset;
@@ -116,6 +127,24 @@ export function GenerateImagePanel({
         ]
       : [];
   }, [context, asset, identity, withStyle]);
+  // Forbildebilder sendes som standard i arbeidsstørrelse (tilpasset scenen); originalen i full størrelse
+  // kan velges, f.eks. for karakterkort (Mars 2026-10-13, DEC-0079)
+  const [fullSize, setFullSize] = useState(false);
+  const originals = useMemo(
+    () =>
+      context
+        ? new Map(
+            attached.flatMap((a) => {
+              const o = fullSizeOriginal(context.state, a.versionId);
+              return o ? [[a.versionId, o] as const] : [];
+            }),
+          )
+        : new Map<string, never>(),
+    [context, attached],
+  );
+  const sentPaths = attached.map((a) =>
+    fullSize ? (originals.get(a.versionId)?.mediaPath ?? a.path) : a.path,
+  );
   /** Hvor mange stilforbilder som finnes (for valget), uansett om de sendes nå. */
   const styleAvailable = useMemo(
     () =>
@@ -151,15 +180,44 @@ export function GenerateImagePanel({
   );
   const [prompt, setPrompt] = useState(initialPrompt ?? auto);
   const [edited, setEdited] = useState(initialPrompt !== undefined && initialPrompt !== auto);
+  /** Hvor teksten i feltet kom fra, når den ikke er den automatiske. */
+  const [origin, setOrigin] = useState<string | null>(null);
   const queryClient = useQueryClient();
   const jobs = useAiJobs(projectId, editable);
+  // Husk siste beskrivelse for ressursen (Mars 2026-10-13): den forrige genereringen er utgangspunktet
+  const last = useMemo(
+    () => lastImagePrompt(jobs.data?.jobs ?? [], asset.id),
+    [jobs.data, asset.id],
+  );
+  const lastUsed = useRef(false);
+  /** Feltet følger den automatiske beskrivelsen (til siste beskrivelse er satt inn, eller etter «Tilbakestill»). */
+  const followAuto = useRef(true);
+  useEffect(() => {
+    if (lastUsed.current || initialPrompt !== undefined || edited || !last) return;
+    lastUsed.current = true;
+    // Den automatiske beskrivelsen skal ikke overskrive den (heller ikke når effektene kjøres på nytt)
+    followAuto.current = false;
+    setPrompt(stripAttachedSection(last.prompt));
+    setEdited(true);
+    setOrigin(
+      `Siste beskrivelse for ${asset.name} (${last.when}). «Tilbakestill» gir den automatiske.`,
+    );
+  }, [last, initialPrompt, edited, asset.name]);
+  useEffect(() => {
+    if (!insertPrompt) return;
+    followAuto.current = false;
+    setPrompt(stripAttachedSection(insertPrompt.text));
+    setEdited(true);
+    setConfirm(false);
+    setOrigin("Beskrivelsen fra bildet du valgte er satt inn.");
+  }, [insertPrompt]);
   const usage = budget
     ? aiUsage(budget, jobs.data?.jobs ?? [], new Date(), jobs.data?.monthCount ?? undefined)
     : null;
   const overBudget = usage !== null && usage.remaining === 0;
   // Følg den automatiske beskrivelsen til brukeren har endret den selv
   useEffect(() => {
-    if (!edited) setPrompt(auto);
+    if (!edited && followAuto.current) setPrompt(auto);
   }, [auto, edited]);
   const [confirm, setConfirm] = useState(false);
   // Kandidater (mandat 19.7): flere bilder å velge mellom, hvert som egen versjon
@@ -174,6 +232,8 @@ export function GenerateImagePanel({
     if (!ok) return { provider: "lovable", model: "" };
     return { provider, model: model || ok.models[0]?.id || "" };
   })();
+  // Bildestørrelse (Mars 2026-10-13): eget valg der modellen tar imot det
+  const [sizePick, setSizePick] = useState<ImageSize | null>(null);
   // Innebygd: serveren velger modellen ut fra formålet (vises i bekreftelsen, REQ-0280)
   const chosenModel =
     choice.provider === "lovable"
@@ -184,14 +244,23 @@ export function GenerateImagePanel({
             : LOVABLE_IMAGE_MODEL,
         ) ?? null)
       : providerModel(choice.provider, choice.model);
+  const sizes = imageSizesOf(chosenModel ?? undefined);
+  const size: ImageSize | null =
+    sizePick && sizes.sizes.includes(sizePick) ? sizePick : sizes.standard;
   const costUsd =
-    choice.provider === "lovable" ? null : estimateCostUsd(choice.provider, choice.model);
+    choice.provider === "lovable"
+      ? null
+      : estimateCostUsd(choice.provider, choice.model, size ? { size } : {});
   // Endres beskrivelsen etter at brukeren har bedt om å generere, må hun bekrefte på nytt
   useEffect(() => {
     if (!edited) setConfirm(false);
   }, [auto, edited]);
 
   const [running, setRunning] = useState(false);
+  const confirmRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (confirm) confirmRef.current?.scrollIntoView?.({ block: "nearest", behavior: "smooth" });
+  }, [confirm]);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<string | null>(null);
   /** Beskrivelsen er skrevet av AI (modell, og hvilke bilder den ble skrevet for). */
@@ -245,12 +314,13 @@ export function GenerateImagePanel({
             // Listen over bildene som sendes, er alltid fersk (en gammel liste i teksten byttes ut), så
             // teksten og bildene ikke kan komme i utakt
             prompt: withAttachedLegend(prompt, asset.name, attached),
-            referencePaths: attached.map((a) => a.path),
+            referencePaths: sentPaths,
             identityFirst: attached[0]?.role === "identity",
             purpose: IMAGE_PURPOSE_FOR_KIND[asset.kind],
             variantId: variant?.id ?? null,
             provider: choice.provider,
             model: choice.provider === "lovable" ? null : choice.model,
+            size,
             approved: true,
           },
         });
@@ -271,7 +341,7 @@ export function GenerateImagePanel({
           : "Nytt bilde laget og lagret som ny versjon.",
       );
     } catch (e) {
-      setError((e as Error).message || "Genereringen feilet.");
+      setError(lostConnection((e as Error).message));
     } finally {
       setRunning(false);
       void queryClient.invalidateQueries({ queryKey: aiJobsKey(projectId) });
@@ -285,8 +355,8 @@ export function GenerateImagePanel({
     stripAttachedSection(prompt).length + legendLength > MAX_PROMPT_CHARS;
   /** AI skrev teksten for et annet sett bilder: den kan omtale feil bilde, så den må skrives på nytt. */
   const stale = written !== null && written.images !== attachedKey;
+  // En utdatert AI-tekst varsles, men hindrer ikke generering (Mars 2026-10-13: «flagg, ikke hindre»)
   const canRun =
-    !stale &&
     editable &&
     !disabled &&
     !running &&
@@ -335,6 +405,8 @@ export function GenerateImagePanel({
                   onClick={() => {
                     setEdited(false);
                     setWritten(null);
+                    setOrigin(null);
+                    followAuto.current = true;
                     setPrompt(auto);
                   }}
                   className="flex items-center gap-0.5 rounded-sm px-1 text-[11px] text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
@@ -350,12 +422,14 @@ export function GenerateImagePanel({
                 setPrompt(e.target.value);
                 setEdited(true);
                 setConfirm(false);
+                setOrigin(null);
               }}
               disabled={!editable || running || writing}
               rows={context ? 14 : 6}
               aria-label="Beskrivelse for AI-generering"
               className="min-h-24 flex-1 resize-y rounded-sm border border-border-control bg-surface-3 p-1.5 font-mono text-[11px] leading-snug text-text-primary"
             />
+            {origin ? <span className="text-[11px] text-text-tertiary">{origin}</span> : null}
             {tooLong ? (
               <span className="text-status-danger">
                 Beskrivelsen er for lang ({stripAttachedSection(prompt).length + legendLength} av{" "}
@@ -389,7 +463,7 @@ export function GenerateImagePanel({
               className={"text-[11px] " + (stale ? "text-status-uncertain" : "text-text-secondary")}
             >
               {stale
-                ? "Bildene som sendes med er endret etter at AI skrev beskrivelsen, så den kan omtale feil bilde. Skriv den på nytt eller tilbakestill før du genererer."
+                ? "Bildene som sendes med er endret etter at AI skrev beskrivelsen, så den kan omtale feil bilde. Du kan likevel generere – eller skrive den på nytt først."
                 : `Skrevet av AI (${written.model}). Les gjennom og endre det som ikke stemmer før du genererer.`}
             </p>
           ) : null}
@@ -482,6 +556,21 @@ export function GenerateImagePanel({
               Send filmens godkjente bilder med som stilforbilder
             </label>
           ) : null}
+          {originals.size > 0 ? (
+            <label className="flex items-center gap-1.5 text-xs text-text-secondary">
+              <input
+                type="checkbox"
+                checked={fullSize}
+                onChange={(e) => {
+                  setFullSize(e.target.checked);
+                  setConfirm(false);
+                }}
+                disabled={!editable || running || writing}
+              />
+              Send forbildene i full størrelse ({originals.size}{" "}
+              {originals.size === 1 ? "original" : "originaler"}) – for karakterkort og detaljer
+            </label>
+          ) : null}
           {attached.length ? (
             <div className="text-[11px] text-text-tertiary">
               Sendes med til bildemodellen:
@@ -494,6 +583,38 @@ export function GenerateImagePanel({
                 ))}
               </ol>
             </div>
+          ) : null}
+          {sizes.sizes.length > 1 ? (
+            <label className="flex items-center gap-1.5 text-xs text-text-secondary">
+              Bildestørrelse
+              <select
+                aria-label="Bildestørrelse"
+                value={size ?? ""}
+                disabled={!editable || running || writing}
+                onChange={(e) => {
+                  setSizePick(e.target.value as ImageSize);
+                  setConfirm(false);
+                }}
+                className="h-7 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
+              >
+                {sizes.sizes.map((z) => (
+                  <option key={z} value={z}>
+                    {IMAGE_SIZE_LABEL[z]}
+                    {estimateCostUsd(choice.provider, choice.model, { size: z }) !== null
+                      ? ` (~${formatUsd(estimateCostUsd(choice.provider, choice.model, { size: z })!)})`
+                      : ""}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : sizes.standard ? (
+            <p className="text-[11px] text-text-tertiary">
+              Bildestørrelse: {IMAGE_SIZE_LABEL[sizes.standard]} (modellens faste størrelse)
+            </p>
+          ) : chosenModel?.resolution ? (
+            <p className="text-[11px] text-text-tertiary">
+              Bildestørrelse: {chosenModel.resolution} (modellens faste størrelse)
+            </p>
           ) : null}
           <label className="flex items-center gap-1.5 text-xs text-text-secondary">
             Kandidater
@@ -521,9 +642,11 @@ export function GenerateImagePanel({
           </label>
           {confirm ? (
             <div
+              ref={confirmRef}
               role="alertdialog"
               aria-label="Bekreft generering"
-              className="flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-2 p-2"
+              // Bekreftelsen står alltid synlig nederst i dialogen («Ja, generer» havnet under bretten)
+              className="sticky bottom-0 z-10 flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-2 p-2 shadow-[0_-8px_16px_rgba(0,0,0,0.25)]"
             >
               <p className="text-xs text-text-primary">
                 {choice.provider === "lovable" ? (
@@ -595,7 +718,7 @@ export function GenerateImagePanel({
               variant="secondary"
               disabled={!canRun}
               onClick={() => setConfirm(true)}
-              className="self-start"
+              className="sticky bottom-0 z-10 self-start shadow-[0_-4px_12px_rgba(0,0,0,0.2)]"
             >
               {running ? <Loader2 className="animate-spin" /> : <AiGlyph />}
               {running ? "Genererer … (kan ta opptil ett minutt)" : "Generer …"}
@@ -629,4 +752,15 @@ export function GenerateImagePanel({
       </div>
     </div>
   );
+}
+
+/**
+ * Serveren mistet forbindelsen (f.eks. «Internal server error» fra plattformen): tjenesten kan ha laget og
+ * tatt betalt for bildet uten at det kom fram (Mars 2026-10-13, Nano Banana Pro med fire bilder).
+ */
+export function lostConnection(message: string | undefined): string {
+  const m = (message ?? "").trim();
+  if (!m || /internal server error|failed to fetch|network|timeout|50[234]|load failed/i.test(m))
+    return "Forbindelsen til serveren brøt mens bildet ble laget. Tjenesten kan likevel ha laget – og tatt betalt for – bildet. Se AI-jobbene før du prøver igjen, og velg gjerne mindre bildestørrelse eller færre forbildebilder.";
+  return m;
 }

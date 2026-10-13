@@ -20,6 +20,7 @@ import type {
 import { compareKeys } from "../order-key";
 import { MASK_FIELD, isMaskProperty } from "./fields";
 import { coverVersion, versionsOf } from "../library";
+import { assetSymbol } from "../library/symbol";
 
 /** 2D-transformasjon [a, b, c, d, e, f] som i Canvas: x' = a·x + c·y + e, y' = b·x + d·y + f. */
 export type Matrix = readonly [number, number, number, number, number, number];
@@ -476,6 +477,11 @@ export interface DrawItem {
   readonly blend?: BlendMode;
   /** Maske (REQ-0175). Mangler = ingen. */
   readonly mask?: ItemMask;
+  /**
+   * Symbolet for ressursen (DEC-0079) når laget ikke har bilde ennå: tegnes i stedet for bildet (fylt form i
+   * ressursens farge), i editoren og i animaticen.
+   */
+  readonly symbol?: { readonly path: string; readonly color: string };
 }
 
 /**
@@ -527,14 +533,25 @@ export function groupOf(s: ProjectState, l: CompositionLayer): CompositionLayer 
 }
 
 /** Tegnelisten for ett bilde av 2D-scenen (bakerst først). */
+/**
+ * «Animer på toere» (DEC-0079): bildet som vises på `frame` når bevegelsen bare oppdateres hvert `step`-te
+ * bilde – som i stop motion. step 1 (standard) gir samme bilde.
+ */
+export function steppedFrame(frame: number, step: number | undefined): number {
+  const n = step && step > 1 ? Math.round(step) : 1;
+  return n === 1 ? frame : Math.floor(frame / n) * n;
+}
+
 export function renderFrame(
   s: ProjectState,
   compositionId: string,
-  frame: number,
+  frameIn: number,
   opts: RenderOptions = {},
 ): Frame {
   const c = s.compositions[compositionId];
   if (!c) return { width: 0, height: 0, background: "#000000", items: [] };
+  // Toere/treere: lag, kamera og bildeskifter følger samme trinnvise tid
+  const frame = steppedFrame(frameIn, c.step);
   const cam = opts.view === "camera" ? cameraAt(c, frame) : null;
   const items: DrawItem[] = [];
   const layers = layersOf(s, compositionId);
@@ -553,10 +570,14 @@ export function renderFrame(
     const view = cam ? viewMatrix(c, cam, l.parallax) : IDENTITY;
     const size = layerSize(s, l, frame);
     const model = g ? multiply(g.matrix, modelMatrix(t)) : modelMatrix(t);
+    const img = layerImageAt(l, frame);
+    const version = layerVersion(s, l, frame);
+    const sym = !version && img.assetId ? assetSymbol(s, img.assetId) : null;
     return {
       layerId: l.id,
-      kind: layerImageAt(l, frame).assetId === null ? "fill" : "image",
-      version: layerVersion(s, l, frame),
+      kind: img.assetId === null ? "fill" : "image",
+      version,
+      ...(sym ? { symbol: { path: sym.path, color: sym.color } } : {}),
       fill: l.fill,
       width: size.width,
       height: size.height,

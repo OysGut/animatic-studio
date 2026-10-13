@@ -2837,6 +2837,166 @@ try {
   });
 
   // ---------- Sikkerhetskopi (DEC-0049): gjenopprett testprosjektet som nytt prosjekt ----------
+  await test("0029 (DEC-0079): slettede objekter, lydhastighet, animer på toere og sletting for godt", async () => {
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 29, "schema_version er ikke 29");
+    let st = await loadState(projectId);
+    const aId = "29290000-0000-7000-8000-000000000001";
+    const vaId = "29290000-0000-7000-8000-000000000002";
+    const ver1 = "29290000-0000-7000-8000-000000000003";
+    const ver2 = "29290000-0000-7000-8000-000000000004";
+    st = await runCommand(st, ALICE, {
+      type: "CreateAssets",
+      assets: [
+        {
+          assetId: aId as never,
+          fields: {
+            kind: "object",
+            name: "Lykta",
+            names: [],
+            description: "",
+            category: "",
+            tags: [],
+          },
+        },
+      ],
+    });
+    st = await runCommand(st, ALICE, {
+      type: "CreateAssetVariant",
+      variantId: vaId as never,
+      assetId: aId as never,
+      fields: { name: "Animatic", style: "animatic", appearance: "" },
+    });
+    for (const [id, n] of [
+      [ver1, "original.png"],
+      [ver2, "arbeidskopi.png"],
+    ] as const)
+      st = await runCommand(st, ALICE, {
+        type: "AddAssetVersion",
+        versionId: id as never,
+        variantId: vaId as never,
+        media: {
+          path: `${projectId}/${aId}/${id}/${n}`,
+          mimeType: "image/png",
+          width: 100,
+          height: 100,
+          byteSize: 10,
+          sha256: "a".repeat(64),
+        },
+        note: "",
+      });
+    // Et bilde slettes og hentes inn igjen; selve bildet kan fortsatt ikke endres
+    st = await runCommand(st, ALICE, {
+      type: "SetAssetVersionsRemoved",
+      versionIds: [ver1 as never],
+      removed: true,
+    });
+    let loaded = await loadState(projectId);
+    assert(loaded.assetVersions[ver1]?.removed === true, "bildet ble ikke merket som slettet");
+    assert(
+      isDeepStrictEqual(loaded.assetVersions[ver1], st.assetVersions[ver1]),
+      "slettet bilde leses ikke likt tilbake",
+    );
+    await expectError(
+      sql`update public.asset_versions set note = 'endret' where id = ${ver1}`,
+      /INV-13/,
+    );
+    st = await runCommand(st, ALICE, {
+      type: "SetAssetVersionsRemoved",
+      versionIds: [ver1 as never],
+      removed: false,
+    });
+    loaded = await loadState(projectId);
+    assert(loaded.assetVersions[ver1]?.removed === undefined, "bildet ble ikke hentet inn igjen");
+    // Hastighet på lyd og toere i en 2D-scene (når de finnes i testprosjektet)
+    const clip = Object.values(st.audioClips).find((c) => !c.removed);
+    if (clip) {
+      st = await runCommand(st, ALICE, {
+        type: "UpdateAudioClips",
+        clips: [{ clipId: clip.id, fields: { ...audioClipFieldsOf(clip), speed: 2.5 } }],
+      } as Command);
+      loaded = await loadState(projectId);
+      assert(loaded.audioClips[clip.id]?.speed === 2.5, "hastigheten ble ikke lagret");
+      await expectError(
+        sql`update public.audio_clips set speed = 5 where id = ${clip.id}`,
+        /check/,
+      );
+      st = await runCommand(st, ALICE, {
+        type: "UpdateAudioClips",
+        clips: [{ clipId: clip.id, fields: { ...audioClipFieldsOf(clip), speed: 1 } }],
+      } as Command);
+    }
+    const comp = Object.values(st.compositions).find((c) => !c.removed);
+    if (comp) {
+      st = await runCommand(st, ALICE, {
+        type: "SetCompositionStep",
+        compositionId: comp.id,
+        step: 2,
+      });
+      loaded = await loadState(projectId);
+      assert(loaded.compositions[comp.id]?.step === 2, "toere ble ikke lagret");
+      st = await runCommand(st, ALICE, {
+        type: "SetCompositionStep",
+        compositionId: comp.id,
+        step: 1,
+      });
+      loaded = await loadState(projectId);
+      assert(loaded.compositions[comp.id]?.step === undefined, "toere ble ikke tilbakestilt");
+    }
+    // Sletting for godt: bare slettede ressurser, bare via serveren
+    await expectError(
+      as(
+        "service_role",
+        null,
+        (tx) =>
+          tx`select public.purge_removed_assets(${projectId}, ${ALICE}, ${[aId]}::uuid[], '{}'::uuid[])`,
+      ),
+      /Bare slettede ressurser/,
+    );
+    st = await runCommand(st, ALICE, {
+      type: "SetAssetsRemoved",
+      assetIds: [aId as never],
+      removed: true,
+    });
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) =>
+          tx`select public.purge_removed_assets(${projectId}, ${ALICE}, ${[aId]}::uuid[], '{}'::uuid[])`,
+      ),
+      /permission denied/,
+    );
+    const res = (await as(
+      "service_role",
+      null,
+      async (tx) =>
+        (
+          await tx`select public.purge_removed_assets(${projectId}, ${ALICE}, ${[aId]}::uuid[], '{}'::uuid[]) as r`
+        )[0]!["r"],
+    )) as { paths: string[]; assets: number; versions: number };
+    assert(res.paths.length === 2 && res.versions === 2, `feil filstier: ${JSON.stringify(res)}`);
+    assert(
+      (await sql`select 1 from public.assets where id = ${aId}`).length === 0,
+      "ressursen finnes fortsatt",
+    );
+    // En ressurs som brukes i et lag, kan ikke slettes for godt
+    const used = Object.values(st.layers).find((l) => l.assetId && !l.removed);
+    if (used?.assetId) {
+      await sql`update public.assets set removed = true where id = ${used.assetId}`;
+      await expectError(
+        as(
+          "service_role",
+          null,
+          (tx) =>
+            tx`select public.purge_removed_assets(${projectId}, ${ALICE}, ${[used.assetId]}::uuid[], '{}'::uuid[])`,
+        ),
+        /2D-scene/,
+      );
+      await sql`update public.assets set removed = false where id = ${used.assetId}`;
+    }
+  });
+
   await test("DEC-0049: sikkerhetskopi gjenopprettes som nytt prosjekt via apply_changes; alt leses tilbake likt", async () => {
     const q = (t: string) =>
       sql.unsafe(`select * from public.${t} where project_id = $1`, [projectId]);
