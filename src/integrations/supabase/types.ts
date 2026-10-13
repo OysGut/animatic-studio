@@ -916,6 +916,112 @@ export type Database = {
           },
         ]
       }
+      duration_estimates: {
+        Row: {
+          assumptions: Json
+          created_at: string
+          created_by: string
+          estimate: Json
+          id: string
+          production_id: string
+          project_id: string
+          script_version_id: string | null
+        }
+        Insert: {
+          assumptions: Json
+          created_at?: string
+          created_by: string
+          estimate: Json
+          id?: string
+          production_id: string
+          project_id: string
+          script_version_id?: string | null
+        }
+        Update: {
+          assumptions?: Json
+          created_at?: string
+          created_by?: string
+          estimate?: Json
+          id?: string
+          production_id?: string
+          project_id?: string
+          script_version_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "duration_estimates_production_id_fkey"
+            columns: ["production_id"]
+            isOneToOne: false
+            referencedRelation: "productions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "duration_estimates_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "duration_estimates_script_version_id_fkey"
+            columns: ["script_version_id"]
+            isOneToOne: false
+            referencedRelation: "script_versions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      export_records: {
+        Row: {
+          created_at: string
+          created_by: string
+          file_name: string
+          id: string
+          kind: string
+          occurrence_ids: string[]
+          production_id: string
+          project_id: string
+          settings: Json
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          file_name: string
+          id?: string
+          kind: string
+          occurrence_ids?: string[]
+          production_id: string
+          project_id: string
+          settings?: Json
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          file_name?: string
+          id?: string
+          kind?: string
+          occurrence_ids?: string[]
+          production_id?: string
+          project_id?: string
+          settings?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "export_records_production_id_fkey"
+            columns: ["production_id"]
+            isOneToOne: false
+            referencedRelation: "productions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "export_records_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       generation_jobs: {
         Row: {
           asset_id: string | null
@@ -1480,6 +1586,7 @@ export type Database = {
           default_transition_overlap: boolean
           deleted_at: string | null
           deleted_by: string | null
+          duration_assumptions: Json | null
           fps_den: number
           fps_num: number
           frame_height: number
@@ -1499,6 +1606,7 @@ export type Database = {
           default_transition_overlap?: boolean
           deleted_at?: string | null
           deleted_by?: string | null
+          duration_assumptions?: Json | null
           fps_den?: number
           fps_num?: number
           frame_height?: number
@@ -1518,6 +1626,7 @@ export type Database = {
           default_transition_overlap?: boolean
           deleted_at?: string | null
           deleted_by?: string | null
+          duration_assumptions?: Json | null
           fps_den?: number
           fps_num?: number
           frame_height?: number
@@ -2365,6 +2474,17 @@ export type Database = {
         Args: { p_actor: string; p_project: string }
         Returns: Json
       }
+      record_export: {
+        Args: {
+          p_file_name: string
+          p_kind: string
+          p_occurrence_ids: string[]
+          p_production: string
+          p_project: string
+          p_settings: Json
+        }
+        Returns: string
+      }
       register_imported_document: {
         Args: {
           p_byte_size: number
@@ -2385,6 +2505,16 @@ export type Database = {
         Returns: undefined
       }
       revoke_invitation: { Args: { p_invitation: string }; Returns: undefined }
+      save_duration_estimate: {
+        Args: {
+          p_assumptions: Json
+          p_estimate: Json
+          p_production: string
+          p_project: string
+          p_script_version?: string
+        }
+        Returns: Json
+      }
       set_invitation_role: {
         Args: { p_invitation: string; p_role: string }
         Returns: undefined
