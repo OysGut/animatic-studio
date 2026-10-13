@@ -243,6 +243,7 @@ export type Database = {
           note: string
           number: number
           project_id: string
+          removed: boolean
           revision: number
           sha256: string
           variant_id: string
@@ -261,6 +262,7 @@ export type Database = {
           note?: string
           number: number
           project_id: string
+          removed?: boolean
           revision?: number
           sha256: string
           variant_id: string
@@ -279,6 +281,7 @@ export type Database = {
           note?: string
           number?: number
           project_id?: string
+          removed?: boolean
           revision?: number
           sha256?: string
           variant_id?: string
@@ -314,6 +317,7 @@ export type Database = {
           name: string
           names: Json
           project_id: string
+          removed: boolean
           revision: number
           sound_links: Json
           tags: Json
@@ -331,6 +335,7 @@ export type Database = {
           name: string
           names?: Json
           project_id: string
+          removed?: boolean
           revision?: number
           sound_links?: Json
           tags?: Json
@@ -348,6 +353,7 @@ export type Database = {
           name?: string
           names?: Json
           project_id?: string
+          removed?: boolean
           revision?: number
           sound_links?: Json
           tags?: Json
@@ -386,6 +392,7 @@ export type Database = {
           removed: boolean
           revision: number
           source_in_ms: number
+          speed: number
           version_id: string | null
           volume_keys: Json
         }
@@ -411,6 +418,7 @@ export type Database = {
           removed?: boolean
           revision?: number
           source_in_ms?: number
+          speed?: number
           version_id?: string | null
           volume_keys?: Json
         }
@@ -436,6 +444,7 @@ export type Database = {
           removed?: boolean
           revision?: number
           source_in_ms?: number
+          speed?: number
           version_id?: string | null
           volume_keys?: Json
         }
@@ -744,6 +753,7 @@ export type Database = {
           project_id: string
           removed: boolean
           revision: number
+          step: number
           variant_id: string
           width: number
         }
@@ -760,6 +770,7 @@ export type Database = {
           project_id: string
           removed?: boolean
           revision?: number
+          step?: number
           variant_id: string
           width?: number
         }
@@ -776,6 +787,7 @@ export type Database = {
           project_id?: string
           removed?: boolean
           revision?: number
+          step?: number
           variant_id?: string
           width?: number
         }
@@ -2472,6 +2484,15 @@ export type Database = {
       leave_project: { Args: { p_project: string }; Returns: undefined }
       purge_project_assets: {
         Args: { p_actor: string; p_project: string }
+        Returns: Json
+      }
+      purge_removed_assets: {
+        Args: {
+          p_actor: string
+          p_assets: string[]
+          p_project: string
+          p_versions: string[]
+        }
         Returns: Json
       }
       record_export: {
