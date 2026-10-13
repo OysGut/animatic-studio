@@ -27,6 +27,10 @@ import {
   VISUAL_STYLES,
   allAssetUsage,
   assetVersionImpact,
+  contentSyncByScene,
+  contentSyncText,
+  provenanceDetail,
+  provenanceLabel,
   formatHeading,
   hasContinuity,
   newId,
@@ -38,7 +42,11 @@ import {
   type AssetNameKind,
   type AssetVariant,
   type AssetVersion,
+  type GenerationJob,
   type ProjectState,
+  type SceneContentSync,
+  type VersionOrigin,
+  type VersionProvenance,
   type VisualStyle,
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
@@ -81,7 +89,20 @@ interface Props {
   readonly editable: boolean;
   readonly cmds: Commands;
   readonly onGoToScene: (occurrenceId: string) => void;
+  /** Opphav per versjon (REQ-0121, DEC-0078); mangler = vises ikke. */
+  readonly provenance?: ReadonlyMap<string, VersionProvenance>;
+  /** Filteret i biblioteket: vis bare versjoner med dette opphavet. */
+  readonly origin?: VersionOrigin | "all";
+  /** AI-jobbene (for innholdsmessig synk av AI-video, REQ-0022). */
+  readonly jobs?: readonly GenerationJob[] | undefined;
 }
+
+const ORIGIN_CLASS: Record<VersionOrigin, string> = {
+  upload: "border-border text-text-tertiary",
+  ai: "border-accent-brand/50 text-text-primary",
+  cutout: "border-border-control text-text-secondary",
+  harmonized: "border-status-uncertain/50 text-text-primary",
+};
 
 function fieldsOf(a: Asset): AssetFields {
   return {
@@ -129,6 +150,18 @@ export function AssetDetail(props: Props) {
   const usage = useMemo(
     () => allAssetUsage(state, productionId).get(asset.id) ?? [],
     [state, productionId, asset],
+  );
+  // Innholdsmessig synk (REQ-0022, DEC-0078): scener laget med en eldre versjon enn den som er godkjent nå
+  const syncFlags = useMemo(
+    () =>
+      contentSyncByScene(state, productionId, {
+        assetId: asset.id,
+        ...(props.jobs ? { jobs: props.jobs } : {}),
+      }),
+    [state, productionId, asset.id, props.jobs],
+  );
+  const flaggedOnly = [...syncFlags.values()].filter(
+    (f) => !usage.some((u) => u.occurrenceId === f.occurrenceId),
   );
 
   function save() {
@@ -432,6 +465,7 @@ export function AssetDetail(props: Props) {
                           {u.matchedName !== asset.name ? ` som «${u.matchedName}»` : ""}
                           {u.active ? "" : " · deaktivert"}
                         </span>
+                        <SyncFlag state={state} flag={syncFlags.get(u.occurrenceId)} />
                       </span>
                     </button>
                   </li>
@@ -439,6 +473,37 @@ export function AssetDetail(props: Props) {
               })}
             </ul>
           )}
+          {flaggedOnly.length ? (
+            <ul aria-label="Scener med eldre versjon" className="border-t border-border py-1">
+              {flaggedOnly.map((f) => {
+                const occ = state.occurrences[f.occurrenceId];
+                const v = occ ? state.variants[occ.variantId] : undefined;
+                return (
+                  <li key={f.occurrenceId}>
+                    <button
+                      type="button"
+                      onClick={() => props.onGoToScene(f.occurrenceId)}
+                      title="Vis scenen i manus"
+                      className="grid w-full grid-cols-[34px_1fr] gap-1.5 px-3 py-1 text-left hover:bg-surface-3"
+                    >
+                      <span className="tabular truncate text-right font-mono text-xs text-text-secondary">
+                        {f.sceneNumber ?? "–"}
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block truncate text-xs text-text-primary">
+                          {v ? formatHeading(v.heading) : "—"}
+                        </span>
+                        <span className="block truncate text-[11px] text-text-tertiary">
+                          brukt i scenens materiale
+                        </span>
+                        <SyncFlag state={state} flag={f} />
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : null}
           {asset.kind !== "character" && asset.kind !== "location" && usage.length ? (
             <p className="border-t border-border px-3 py-2 text-[11px] text-text-tertiary">
               Mulige treff: ord i teksten som begynner med navnet. Sjekk at de stemmer.
@@ -450,9 +515,43 @@ export function AssetDetail(props: Props) {
   );
 }
 
+/** «Ressursen er oppdatert etter at scenen ble laget» (REQ-0022, DEC-0078). */
+function SyncFlag({ state, flag }: { state: ProjectState; flag: SceneContentSync | undefined }) {
+  if (!flag) return null;
+  const text = contentSyncText(state, flag);
+  const steps = [
+    ...new Set(
+      flag.items.map((it) => {
+        const a = state.assetVersions[it.oldVersionId]?.number;
+        const b = state.assetVersions[it.newVersionId]?.number;
+        return a && b ? `v${a} → v${b}` : "";
+      }),
+    ),
+  ]
+    .filter(Boolean)
+    .join(", ");
+  return (
+    <span
+      className="mt-0.5 block text-[11px] leading-snug text-status-uncertain"
+      title={`${text}. Scenen er ikke endret; gå gjennom scenene for å bruke den nye versjonen.`}
+    >
+      Ressursen er oppdatert etter at scenen ble laget{steps ? ` (${steps})` : ""}
+    </span>
+  );
+}
+
 // ---------- Visuelle varianter og bildeversjoner ----------
 
-function Variants({ state, projectId, productionId, asset, editable, cmds }: Props) {
+function Variants({
+  state,
+  projectId,
+  productionId,
+  asset,
+  editable,
+  cmds,
+  provenance,
+  origin = "all",
+}: Props) {
   const variants = variantsOf(state, asset.id);
   const [name, setName] = useState("");
   const [style, setStyle] = useState<VisualStyle>("animatic");
@@ -532,6 +631,8 @@ function Variants({ state, projectId, productionId, asset, editable, cmds }: Pro
           editable={editable}
           cmds={cmds}
           urls={urls.data ?? {}}
+          provenance={provenance}
+          origin={origin}
         />
       ))}
       {variants.length === 0 ? (
@@ -626,6 +727,8 @@ function VariantCard({
   editable,
   cmds,
   urls,
+  provenance,
+  origin,
 }: {
   state: ProjectState;
   projectId: string;
@@ -635,8 +738,16 @@ function VariantCard({
   editable: boolean;
   cmds: Commands;
   urls: Readonly<Record<string, string>>;
+  provenance: ReadonlyMap<string, VersionProvenance> | undefined;
+  origin: VersionOrigin | "all";
 }) {
   const versions = versionsOf(state, variant.id);
+  // Filteret på opphav (REQ-0121, DEC-0078): de andre versjonene skjules bare i visningen
+  const shownVersions =
+    origin === "all" || !provenance
+      ? versions
+      : versions.filter((v) => provenance.get(v.id)?.origin === origin);
+  const hiddenByFilter = versions.length - shownVersions.length;
   const profiles = useProfiles([...new Set(versions.map((v) => v.createdBy).filter(Boolean))]);
   const [uploading, setUploading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -894,9 +1005,10 @@ function VariantCard({
         </p>
       ) : (
         <ul className="flex gap-2 overflow-x-auto pb-1" aria-label={`Versjoner av ${variant.name}`}>
-          {versions.map((ver) => {
+          {shownVersions.map((ver) => {
             const approved = variant.approvedVersionId === ver.id;
             const url = urls[ver.mediaPath];
+            const prov = provenance?.get(ver.id);
             return (
               <li
                 key={ver.id}
@@ -954,6 +1066,24 @@ function VariantCard({
                     </span>
                   ) : null}
                 </div>
+                {prov ? (
+                  <span
+                    className={
+                      "self-start truncate rounded-sm border px-1 text-[11px] leading-4 " +
+                      ORIGIN_CLASS[prov.origin]
+                    }
+                    style={{ maxWidth: "100%" }}
+                    title={provenanceDetail(prov) + (ver.note ? `\n${ver.note}` : "")}
+                    data-origin={prov.origin}
+                  >
+                    {prov.origin === "ai" ? (
+                      <AiGlyph className="mr-0.5 inline size-2.5 align-[-1px]" aria-hidden />
+                    ) : prov.origin === "cutout" ? (
+                      <Scissors className="mr-0.5 inline size-2.5 align-[-1px]" aria-hidden />
+                    ) : null}
+                    {provenanceLabel(prov)}
+                  </span>
+                ) : null}
                 <span
                   className="truncate text-[11px] text-text-tertiary"
                   title={ver.note || undefined}
@@ -1026,6 +1156,13 @@ function VariantCard({
           })}
         </ul>
       )}
+      {hiddenByFilter > 0 ? (
+        <p className="text-[11px] text-text-tertiary">
+          {hiddenByFilter === 1
+            ? "1 versjon er skjult av filteret på opphav."
+            : `${hiddenByFilter} versjoner er skjult av filteret på opphav.`}
+        </p>
+      ) : null}
       {versions.length > 1 ? (
         <p className="text-[11px] text-text-tertiary">
           Når du godkjenner et bilde, ser du hvilke scener som berøres, og velger selv hvilke som

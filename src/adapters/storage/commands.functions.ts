@@ -24,6 +24,32 @@ export interface RunCommandInput {
   readonly commandId?: string;
 }
 
+/**
+ * Angring av en ny produksjon som har eksporter eller lagrede estimater (migrasjon 0028): radene er historikk
+ * (INV-13) og slettes ikke sammen med produksjonen. Produksjoner kan verken deaktiveres eller slettes i appen,
+ * så produksjonen beholdes.
+ */
+export const UNDO_PRODUCTION_HISTORY =
+  "Produksjonen har eksporter eller lagrede estimater og kan ikke angres. Den beholdes som den er.";
+/** Som over, for manusversjoner og importerte manusfiler (fremmednøkkel uten sletting). */
+export const UNDO_PRODUCTION_REFERENCED =
+  "Produksjonen har manusversjoner eller importerte manusfiler og kan ikke angres. Den beholdes som den er.";
+
+/**
+ * Forståelig melding for en feil fra apply_changes som skyldes data domenekjernen ikke ser (historikk i egne
+ * tabeller), eller null når feilen ikke er en slik kjent feil.
+ */
+export function applyChangesErrorMessage(
+  command: Command,
+  error: { readonly code?: string | null; readonly message?: string | null },
+): { readonly code: string; readonly message: string } | null {
+  if (command.type !== "UndoCreateProduction") return null;
+  if (error.code === "P0001" && /INV-13/.test(error.message ?? ""))
+    return { code: "referenced", message: UNDO_PRODUCTION_HISTORY };
+  if (error.code === "23503") return { code: "referenced", message: UNDO_PRODUCTION_REFERENCED };
+  return null;
+}
+
 export type RunCommandResult =
   | {
       readonly ok: true;
@@ -257,6 +283,11 @@ export function needsSchema26(command: { type: string } & Record<string, unknown
 /** Arbeidslisten og lagrede eksportinnstillinger (DEC-0072) krever migrasjon 0027. */
 export function needsSchema27(command: { type: string }): boolean {
   return command.type === "SetReviewedVersions" || command.type === "SetExportSettings";
+}
+
+/** Antakelsene for varighetsestimatet per prosjekt (KI-28, DEC-0078) krever migrasjon 0028. */
+export function needsSchema28(command: { type: string }): boolean {
+  return command.type === "SetDurationAssumptions";
 }
 
 /** Kommandoer som bare skriver kolonner fra migrasjon 0026 (DEC-0071). */
@@ -561,6 +592,16 @@ export const runCommand = createServerFn({ method: "POST" })
             "Databasen mangler kontinuitet for spinoffer. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0018.",
         };
     }
+    if (needsSchema28(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 28)
+        return {
+          ok: false,
+          code: "schema",
+          message:
+            "Databasen mangler tillegget for lagrede varighetsestimater og eksportlogg. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0028.",
+        };
+    }
     if (needsSchema27(data.command as never)) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 27)
@@ -682,6 +723,8 @@ export const runCommand = createServerFn({ method: "POST" })
       p_changes: changes,
     });
     if (error) {
+      const known = applyChangesErrorMessage(data.command, error);
+      if (known) return { ok: false, ...known };
       if (error.code === "23505") {
         // Enten et nytt forsøk av en kommando som allerede er lagret (idempotent), eller to samtidige
         // endringer som ville gitt samme plass i rekkefølgen.

@@ -1,6 +1,6 @@
 # Implementeringsstatus – Animatic Studio
 
-Oppdatert: 2026-10-12 (økt 6, DEC-0076). Detaljert status per krav: `docs/product/TRACEABILITY_MATRIX.md` (generert).
+Oppdatert: 2026-10-13 (økt 6, DEC-0078). Detaljert status per krav: `docs/product/TRACEABILITY_MATRIX.md` (generert).
 
 ## Sammendrag
 - **M0 Fundament:** ferdig.
@@ -72,3 +72,4 @@ Oppdatert: 2026-10-12 (økt 6, DEC-0076). Detaljert status per krav: `docs/produ
 | Øvrige moduler | Ikke startet | – |
 - **DEC-0075:** kravverifisering runde 3, kostnadsanslag med alle elementer, nøytralt AI-ikon, sammenlign versjoner av en scene, karakterer og objekter i manusversjoner, tidsmodell begge veier, innsatsnivå per jobb, køen telles på nytt. Krav: 488 Verifisert, 33 Implementert – ikke verifisert, 7 Under arbeid, 64 Ikke startet.
 - **DEC-0076:** kravverifisering runde 4 og UX-gjennomgang mot de ni kvalitetene. Krav: 514 Verifisert, 15 Implementert – ikke verifisert, 5 Under arbeid, 58 Ikke startet.
+- **DEC-0078:** migrasjon 0028 (estimater, eksportlogg, antakelser), adapterlag i nettleseren, versjonsgjenoppretting, bibliotek med stilprofiler og opphav, innholdsmessig synk, UX-runde og 30 kjente problemer. Krav: 517 Verifisert, 14 Implementert – ikke verifisert, 3 Under arbeid, 58 Ikke startet.

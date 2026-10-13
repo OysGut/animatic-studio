@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { AlertTriangle, FileText, Send } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { discrepancies, filmClips, mainProduction, orderedOccurrences } from "@/core";
-import { db } from "@/app/db";
+import { createInvitation } from "@/adapters/browser/members";
 import { DurationOverview } from "./DurationOverview";
 import { canEdit, useMembers, useProfiles, useProjectState } from "@/app/project/use-project";
 import { ProjectFormat } from "./ProjectFormat";
@@ -178,15 +178,7 @@ function InviteForm({ projectId }: { projectId: string }) {
   const [link, setLink] = useState<string | null>(null);
   const qc = useQueryClient();
   const invite = useMutation({
-    mutationFn: async () => {
-      const { data, error } = await db.rpc("create_invitation", {
-        p_project: projectId,
-        p_email: email,
-        p_role: role,
-      });
-      if (error) throw new Error(error.message);
-      return data as string;
-    },
+    mutationFn: () => createInvitation(projectId, email, role),
     onSuccess: (token) => {
       setLink(`${window.location.origin}/invitasjon?token=${encodeURIComponent(token)}`);
       setEmail("");

@@ -3,14 +3,13 @@
  * nyere migrasjon, så eldre databaser fortsatt kan brukes til alt annet.
  */
 import { useQuery } from "@tanstack/react-query";
-import { checkSchema } from "@/adapters/storage/project-rows";
-import { db } from "@/app/db";
+import { fetchSchemaStatus } from "@/adapters/browser/project-data";
 
 /** Sann når databasen har minst denne versjonen. Ukjent (ikke hentet ennå) regnes som nei. */
 export function useSchemaAtLeast(version: number): boolean {
   const { data } = useQuery({
     queryKey: ["schema-status"],
-    queryFn: () => checkSchema(db),
+    queryFn: () => fetchSchemaStatus(),
     staleTime: 60_000,
   });
   return !!data && data.kind !== "missing" && data.version >= version;

@@ -45,12 +45,14 @@ import { COLLECTION_TABLES, CONTINUITY_KINDS, RELATION_KINDS, TRANSITION_KINDS }
 import type {
   AssetVoice,
   ExportSettings,
+  ProducedFrom,
   ContinuityDuration,
   ContinuityKind,
   SoundLinkKind,
   StyleUse,
   TakeCoverage,
 } from "./model";
+import type { DurationAssumptions } from "./screenplay/duration";
 
 export type Row = Record<string, unknown>;
 
@@ -554,6 +556,10 @@ export function diffStates(before: ProjectState, after: ProjectState): ChangeSet
               ai_price_per_image: after.project.aiPricePerImage ?? null,
             }
           : {}),
+        // Antakelsene for varighetsestimatet (KI-28, migrasjon 0028): bare når de er endret (null = standard)
+        ...(after.project.durationAssumptions !== before.project.durationAssumptions
+          ? { duration_assumptions: after.project.durationAssumptions ?? null }
+          : {}),
       },
     ];
   const known = new Set(before.blockRevisions.map((r) => `${r.blockId}:${r.rev}`));
@@ -685,23 +691,54 @@ function maskBlendFromRow(m: unknown, b: unknown): { mask?: LayerMask; blend?: B
   return out;
 }
 
-function takeAcceptedFrom(v: unknown): {
-  acceptedFrom?: { blockRevisions: Record<string, number> };
-} {
+/** Lagrede eksportinnstillinger (migrasjon 0027); tittelsiden (KI-20) bare som liste med tekst. */
+function exportSettingsFromRow(v: unknown): { exportSettings?: ExportSettings } {
+  const x = json(v) as Record<string, unknown> | null | undefined;
+  if (!x || typeof x !== "object" || Array.isArray(x)) return {};
+  const tp = x["titlePage"];
+  const { titlePage: _tp, ...rest } = x;
+  return {
+    exportSettings: {
+      ...(rest as unknown as ExportSettings),
+      ...(Array.isArray(tp) ? { titlePage: tp.filter((l) => typeof l === "string") } : {}),
+    },
+  };
+}
+
+function takeAcceptedFrom(v: unknown): { acceptedFrom?: ProducedFrom } {
   const r = compositionProducedFrom(v);
   return r.producedFrom ? { acceptedFrom: r.producedFrom } : {};
 }
 
-/** Grunnlaget for 2D-scenen (migrasjon 0014): tomt eller manglende = ukjent. */
-function compositionProducedFrom(v: unknown): {
-  producedFrom?: { blockRevisions: Record<string, number> };
-} {
-  const p = json(v) as { blockRevisions?: Record<string, unknown> } | null;
+/** Versjonens grunnlag fra raden, nøyaktig som lagret (med `assetVersions` når de finnes). */
+function takeProducedFrom(v: unknown): ProducedFrom {
+  const p = json(v);
+  if (!p || typeof p !== "object" || Array.isArray(p)) return { blockRevisions: {} };
+  return p as ProducedFrom;
+}
+
+/** Ressursversjonene i grunnlaget (REQ-0022): ressurs-ID → versjons-ID, bare tekst. */
+function assetVersionsFromJson(v: unknown): { assetVersions?: Record<string, string> } {
+  if (!v || typeof v !== "object" || Array.isArray(v)) return {};
+  const out: Record<string, string> = {};
+  for (const [k, id] of Object.entries(v as Record<string, unknown>))
+    if (typeof id === "string" && id) out[k] = id;
+  return Object.keys(out).length ? { assetVersions: out } : {};
+}
+
+/**
+ * Grunnlaget for 2D-scenen (migrasjon 0014): manuslinjenes revisjoner og ressursversjonene (REQ-0022).
+ * Tomt eller manglende = ukjent.
+ */
+function compositionProducedFrom(v: unknown): { producedFrom?: ProducedFrom } {
+  const p = json(v) as { blockRevisions?: Record<string, unknown>; assetVersions?: unknown } | null;
   const revs = p?.blockRevisions;
-  if (!revs || typeof revs !== "object" || Object.keys(revs).length === 0) return {};
   const out: Record<string, number> = {};
-  for (const [k, n] of Object.entries(revs)) if (Number.isFinite(Number(n))) out[k] = Number(n);
-  return { producedFrom: { blockRevisions: out } };
+  if (revs && typeof revs === "object")
+    for (const [k, n] of Object.entries(revs)) if (Number.isFinite(Number(n))) out[k] = Number(n);
+  const av = assetVersionsFromJson(p?.assetVersions);
+  if (Object.keys(out).length === 0 && !av.assetVersions) return {};
+  return { producedFrom: { blockRevisions: out, ...av } };
 }
 
 /** Filinformasjon for importert film fra raden (migrasjon 0011); tomt objekt gir ingen. */
@@ -720,6 +757,24 @@ function takeMediaFromRow(v: unknown): { media?: TakeMedia } {
       videoCodec: optStr(m["videoCodec"]),
       hasAudio: Boolean(m["hasAudio"]),
     },
+  };
+}
+
+/** Antakelsene for varighetsestimatet fra prosjektraden (migrasjon 0028); mangler eller ugyldig = standard. */
+function durationAssumptionsFromRow(v: unknown): { durationAssumptions?: DurationAssumptions } {
+  const o = v === undefined || v === null ? null : (json(v) as Record<string, unknown> | null);
+  if (!o || typeof o !== "object") return {};
+  const keys = [
+    "dialogueWordsPerMinute",
+    "actionSecondsPerLine",
+    "headingSeconds",
+    "minSceneSeconds",
+  ] as const;
+  if (!keys.every((k) => typeof o[k] === "number" && Number.isFinite(o[k]))) return {};
+  return {
+    durationAssumptions: Object.fromEntries(
+      keys.map((k) => [k, o[k] as number]),
+    ) as unknown as DurationAssumptions,
   };
 }
 
@@ -746,6 +801,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
       ...(p["ai_price_per_image"] === null || p["ai_price_per_image"] === undefined
         ? {}
         : { aiPricePerImage: Number(p["ai_price_per_image"]) }),
+      ...durationAssumptionsFromRow(p["duration_assumptions"]),
     },
     productions: byId(
       r.productions.map((x) => ({
@@ -755,9 +811,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         name: str(x["name"]),
         parentProductionId: optStr(x["parent_production_id"]) as never,
         fps: { num: num(x["fps_num"]), den: num(x["fps_den"]) },
-        ...(x["export_settings"] && typeof x["export_settings"] === "object"
-          ? { exportSettings: x["export_settings"] as ExportSettings }
-          : {}),
+        ...exportSettingsFromRow(x["export_settings"]),
       })),
     ),
     scenes: byId(
@@ -858,9 +912,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         kind: str(x["kind"]) as never,
         status: str(x["status"]) as never,
         durationFrames: optNum(x["duration_frames"]),
-        producedFrom: (x["produced_from"] as { blockRevisions: Record<string, number> }) ?? {
-          blockRevisions: {},
-        },
+        // Uendret fra raden (også ressursversjonene, REQ-0022): databasen avviser enhver endring av
+        // produced_from (INV-07), så den må skrives tilbake nøyaktig slik den ble lest
+        producedFrom: takeProducedFrom(x["produced_from"]),
         mediaRef: optStr(x["media_ref"]),
         ...takeMediaFromRow(x["metadata"]),
         ...takeAcceptedFrom(x["accepted_from"]),

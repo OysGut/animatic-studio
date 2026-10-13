@@ -75,7 +75,8 @@ function content(s: ProjectState) {
   };
 }
 
-describe("Invarianter under tilfeldige kommandosekvenser", () => {
+// Tunge egenskapstester: egen tidsgrense, så de ikke feiler når maskinen er travel (DEC-0078)
+describe("Invarianter under tilfeldige kommandosekvenser", { timeout: 60_000 }, () => {
   it("strukturelle invarianter holder etter hvert steg", () => {
     fc.assert(
       fc.property(seeds, (seed) => {

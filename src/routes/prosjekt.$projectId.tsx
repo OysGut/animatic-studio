@@ -6,7 +6,7 @@ import { AuthScreen } from "@/app/auth/AuthScreen";
 import { AppHeader } from "@/app/shell/AppHeader";
 import { SchemaBanner } from "@/app/shell/SchemaBanner";
 import { ProjectNav } from "@/app/shell/ProjectNav";
-import { db } from "@/app/db";
+import { fetchProjectName, upsertMyProfile } from "@/adapters/browser/projects";
 import { AiJobsWatcher } from "@/app/ai/video-jobs";
 import { canEdit, useMembers } from "@/app/project/use-project";
 
@@ -22,16 +22,12 @@ function ProjectLayout() {
   const name = useQuery({
     queryKey: ["project-name", projectId],
     enabled: signedIn,
-    queryFn: async () => {
-      const { data } = await db.from("projects").select("*").eq("id", projectId).maybeSingle();
-      const p = data as { name: string; deleted_at?: string | null } | null;
-      return { name: p?.name ?? "", deleted: Boolean(p?.deleted_at) };
-    },
+    queryFn: () => fetchProjectName(projectId),
   });
   const members = useMembers(projectId);
   // Visningsnavn for medlemslisten (migrasjon 0002). Feiler stille hvis migrasjonen ikke er kjørt.
   useEffect(() => {
-    if (signedIn) void db.rpc("upsert_my_profile", {}).then(() => undefined);
+    if (signedIn) void upsertMyProfile().catch(() => undefined);
   }, [signedIn]);
   if (session.status === "loading") return <div className="min-h-screen bg-bg-app" aria-busy />;
   if (session.status === "signed-out") return <AuthScreen />;

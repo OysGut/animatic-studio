@@ -59,6 +59,7 @@ import {
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 import { Button } from "@/components/ui/button";
 import type { Playback } from "./use-playback";
+import { compositionFieldsOf, layerEventMarks, type LayerEventMark } from "./timeline-helpers";
 
 const LABEL_W = 160;
 /** Luft mellom sporoverskriftene og bilde 0, slik at et nøkkelbilde på bilde 0 ikke skjules av overskriften. */
@@ -125,16 +126,6 @@ interface KeySel {
 }
 
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
-
-function compositionFieldsOf(c: Composition): CompositionFields {
-  return {
-    name: c.name,
-    width: c.width,
-    height: c.height,
-    durationFrames: c.durationFrames,
-    background: c.background,
-  };
-}
 
 /** Skal tastetrykk i dette elementet være i fred for tidslinjens snarveier? */
 export function isTypingTarget(t: EventTarget | null): boolean {
@@ -329,8 +320,13 @@ const LayerRow = memo(function LayerRow({
   onSwapPointerDown,
   onSwapPointerMove,
   onSwapPointerUp,
+  events,
+  onEventPointerDown,
 }: {
   layer: CompositionLayer;
+  /** Hendelser fra manuset på laget (KI-86). */
+  events: readonly LayerEventMark[] | undefined;
+  onEventPointerDown: (e: ReactPointerEvent<HTMLElement>, layerId: string, frame: number) => void;
   swapDraft: SwapDraft | null;
   inGroup: boolean;
   onSwapPointerDown: (e: ReactPointerEvent<HTMLElement>, layerId: string, frame: number) => void;
@@ -401,6 +397,22 @@ const LayerRow = memo(function LayerRow({
           >
             <span className="block h-full w-0.5 bg-status-moved" />
             <span className="absolute top-0.5 size-2 rounded-[1px] bg-status-moved" />
+          </div>
+        ))}
+        {events?.map((ev) => (
+          <div
+            key={`event-${ev.id}`}
+            role="button"
+            tabIndex={-1}
+            aria-label={`${ev.title} (bilde ${ev.frame})`}
+            title={`${ev.title} (bilde ${ev.frame})`}
+            data-testid="layer-event-mark"
+            onPointerDown={(e) => onEventPointerDown(e, layer.id, ev.frame)}
+            className="absolute bottom-0 z-10 flex h-2.5 w-3 cursor-pointer items-end justify-center"
+            style={{ left: ev.frame * ppf - 6 }}
+          >
+            <span className="block h-2 w-0.5 rounded-t-full bg-status-uncertain" />
+            <span className="absolute bottom-0 size-1.5 rounded-full bg-status-uncertain" />
           </div>
         ))}
         {frames.map((f) => {
@@ -629,6 +641,24 @@ export function Timeline({
       latest.current.playback.setFrame(frameFromX(e.clientX));
     },
     [frameFromX, onSelectLayer],
+  );
+
+  // Hendelser fra manuset (KI-86): klikk velger laget og flytter avspillingshodet til hendelsen
+  const onEventPointerDown = useCallback(
+    (e: ReactPointerEvent<HTMLElement>, layerId: string, f: number) => {
+      if (e.button !== 0) return;
+      e.stopPropagation();
+      onSelectLayer(layerId);
+      setKeySel(null);
+      latest.current.playback.setFrame(Math.min(f, latest.current.last));
+    },
+    [onSelectLayer],
+  );
+  const eventMarks = useMemo(
+    () => layerEventMarks(state, fpsN),
+    // Bare koblinger og manustekst påvirker merkene
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [state.timeLinks, state.blocks, fpsN],
   );
 
   // Nøkkelbilder: klikk velger, dra flytter (utkast), slipp lagrer
@@ -912,10 +942,13 @@ export function Timeline({
       />
       {/* Transport og verktøy */}
       <div className="flex min-h-9 shrink-0 flex-wrap items-center gap-x-1.5 gap-y-1 border-b border-border px-2 py-1">
-        <IconButton label="Til start" onClick={() => playback.setFrame(0)}>
+        <IconButton label="Til start (Home)" onClick={() => playback.setFrame(0)}>
           <SkipBack className="size-3.5" />
         </IconButton>
-        <IconButton label="Forrige bilde" onClick={() => playback.setFrame(frame - 1)}>
+        <IconButton
+          label="Forrige bilde (pil venstre)"
+          onClick={() => playback.setFrame(frame - 1)}
+        >
           <ChevronLeft className="size-3.5" />
         </IconButton>
         <button
@@ -927,10 +960,10 @@ export function Timeline({
         >
           {playback.playing ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}
         </button>
-        <IconButton label="Neste bilde" onClick={() => playback.setFrame(frame + 1)}>
+        <IconButton label="Neste bilde (pil høyre)" onClick={() => playback.setFrame(frame + 1)}>
           <ChevronRight className="size-3.5" />
         </IconButton>
-        <IconButton label="Til slutt" onClick={() => playback.setFrame(last)}>
+        <IconButton label="Til slutt (End)" onClick={() => playback.setFrame(last)}>
           <SkipForward className="size-3.5" />
         </IconButton>
         <IconButton
@@ -1211,6 +1244,8 @@ export function Timeline({
                 onSwapPointerDown={onSwapPointerDown}
                 onSwapPointerMove={onSwapPointerMove}
                 onSwapPointerUp={onSwapPointerUp}
+                events={eventMarks.get(l.id)}
+                onEventPointerDown={onEventPointerDown}
               />
             ))
           )}

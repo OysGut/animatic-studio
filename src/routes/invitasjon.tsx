@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useSession } from "@/app/auth/use-session";
 import { AuthScreen } from "@/app/auth/AuthScreen";
-import { db } from "@/app/db";
+import { acceptInvitation } from "@/adapters/browser/members";
 
 export const Route = createFileRoute("/invitasjon")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -20,9 +20,9 @@ function AcceptInvitation() {
 
   useEffect(() => {
     if (session.status !== "signed-in" || !token) return;
-    void db.rpc("accept_invitation", { p_token: token }).then(({ data, error: e }) => {
-      if (e) setError("Invitasjonen er ugyldig, utløpt eller allerede brukt.");
-      else void navigate({ to: "/prosjekt/$projectId", params: { projectId: data as string } });
+    void acceptInvitation(token).then(({ projectId, error: e }) => {
+      if (e || !projectId) setError("Invitasjonen er ugyldig, utløpt eller allerede brukt.");
+      else void navigate({ to: "/prosjekt/$projectId", params: { projectId } });
     });
   }, [session.status, token, navigate]);
 

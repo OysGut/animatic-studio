@@ -9,17 +9,22 @@ import {
   exportNumbering,
   exportNotes,
   exportPaginationInput,
+  fitTitlePage,
   formatHeading,
   placeNotes,
   paginate,
   screenplayFountain,
+  TITLE_PAGE_MAX_LINES,
   type NumberingMethod,
   type ProjectState,
 } from "@/core";
+import { savedTitlePage } from "@/core/commands/export-settings";
 import { screenplayDocx } from "@/engine/export/screenplay-docx";
 import { screenplayPdf } from "@/engine/export/screenplay-pdf";
 import { isEmbedded, prepareDownload, type ReadyFile } from "@/app/download";
 import { useVersionList, useVersionSnapshot } from "@/app/project/use-versions";
+import { ExportHistory } from "@/app/projects/ExportHistory";
+import { useRecordExport } from "@/app/projects/use-history-records";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -38,6 +43,11 @@ interface Props {
   readonly lockedPages: boolean;
   /** Språket som eksporteres (DEC-0058). Annet enn «nb»: notater tas ikke med, og språket står i filnavnet. */
   readonly language?: string;
+  /**
+   * Lagrer tittelsiden for produksjonen (KI-20) når brukeren har endret den og eksporterer. Utelatt =
+   * endringen gjelder bare denne eksporten.
+   */
+  readonly onSaveTitlePage?: (lines: readonly string[]) => void;
 }
 
 type Format = "pdf" | "docx" | "fountain";
@@ -53,6 +63,7 @@ export function ExportDialog({
   productionId,
   lockedPages,
   language = "nb",
+  onSaveTitlePage,
 }: Props) {
   const [format, setFormat] = useState<Format>("pdf");
   const [method, setMethod] = useState<NumberingMethod>("production");
@@ -65,13 +76,29 @@ export function ExportDialog({
     [state.annotations],
   );
   const fillMissing = fillOriginal ? ("all" as const) : ("new" as const);
-  const [titleText, setTitleText] = useState(state.project.name);
+  // Tittelsiden (KI-20): den lagrede (fra importen eller forrige eksport), ellers prosjektnavnet
+  const saved = savedTitlePage(state, productionId);
+  const [titleText, setTitleText] = useState(() => (saved ? saved.join("\n") : state.project.name));
+  const titleLines = useMemo(
+    () =>
+      titleText
+        .split("\n")
+        .map((l) => l.trim())
+        .filter(Boolean),
+    [titleText],
+  );
+  const titleFit = useMemo(() => fitTitlePage(titleLines), [titleLines]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState<ReadyFile | null>(null);
   useEffect(() => {
     if (!open) setReady(null);
   }, [open]);
+  // Hver gang dialogen åpnes: den lagrede tittelsiden (kan ha kommet fra en import i mellomtiden)
+  const savedKey = saved ? saved.join("\n") : null;
+  useEffect(() => {
+    if (open && savedKey !== null) setTitleText(savedKey);
+  }, [open, savedKey]);
   useEffect(
     () => () => {
       if (ready) URL.revokeObjectURL(ready.url);
@@ -79,6 +106,8 @@ export function ExportDialog({
     [ready],
   );
   const production = state.productions[productionId];
+  // Eksportloggen (REQ-0037, migrasjon 0028): registreres når filen er laget
+  const recordExport = useRecordExport(state.project.id);
   // Historisk nummerering (REQ-0083): nummer fra en valgt manusversjon
   const versions = useVersionList(productionId, open);
   const [historicalId, setHistoricalId] = useState<string | null>(null);
@@ -113,10 +142,15 @@ export function ExportDialog({
         ...opts,
         lockedPages: format === "pdf" && lockedPages,
       });
-      const titlePage = titleText
-        .split("\n")
-        .map((l) => l.trim())
-        .filter(Boolean);
+      // Hele teksten brukes i filen; bare den lagrede kopien kortes til lagringsgrensen
+      const titlePage = titleLines;
+      if (
+        onSaveTitlePage &&
+        (saved === null
+          ? titleText !== state.project.name
+          : saved.length !== titleFit.lines.length || saved.some((l, i) => l !== titleFit.lines[i]))
+      )
+        onSaveTitlePage(titleFit.lines);
       const date = new Date().toISOString().slice(0, 10);
       const base = safeName(
         `${state.project.name} – ${production?.name ?? "manus"}${language === "nb" ? "" : ` – ${language}`} – ${date}`,
@@ -161,6 +195,21 @@ export function ExportDialog({
           ),
         );
       }
+      recordExport({
+        productionId,
+        kind: "script",
+        fileName: `${base}.${format}`,
+        settings: {
+          format,
+          numbering: method,
+          includeInactive,
+          fillOriginal,
+          language,
+          withNotes: !!notes,
+          lockedPages: format === "pdf" && lockedPages,
+        },
+        occurrenceIds: input.map((x) => x.occurrenceId),
+      });
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -347,9 +396,21 @@ export function ExportDialog({
           <textarea
             value={titleText}
             onChange={(e) => setTitleText(e.target.value)}
-            rows={2}
+            rows={Math.min(8, Math.max(2, titleLines.length))}
             className="rounded-sm border border-border-control bg-surface-3 p-2 text-[13px] text-text-primary"
           />
+          <span className="text-text-tertiary">
+            {saved !== null
+              ? "Fylt ut fra den lagrede tittelsiden (fra importen eller forrige eksport). Endre fritt."
+              : "Fylt ut med prosjektnavnet. Endre fritt."}
+          </span>
+          {titleFit.truncated ? (
+            <span role="alert" className="text-status-uncertain">
+              Tittelsiden er lengre enn det som kan lagres for neste gang (om lag 3 kB, høyst{" "}
+              {TITLE_PAGE_MAX_LINES} linjer). Hele teksten kommer med i denne filen, men den lagrede
+              kopien blir kortet.
+            </span>
+          ) : null}
         </label>
 
         {method === "historical" && !historical ? (
@@ -432,6 +493,8 @@ export function ExportDialog({
             ) : null}
           </div>
         ) : null}
+
+        <ExportHistory productionId={productionId} kinds={["script"]} />
 
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>

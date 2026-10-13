@@ -4,7 +4,7 @@
  */
 import { useQuery } from "@tanstack/react-query";
 import { monthStartUtc } from "@/core";
-import { db } from "@/app/db";
+import { fetchAccountSpend, fetchProviderKeys } from "@/adapters/browser/ai";
 
 export interface ProviderKeyRow {
   readonly id: string;
@@ -36,40 +36,20 @@ export function useAccountAi(userId: string, enabled = true) {
     queryKey: accountAiKey(userId),
     enabled,
     queryFn: async (): Promise<AccountAi> => {
-      const keys = await db
-        .from("ai_provider_keys")
-        .select("id, provider, label, key_hint, status, status_message, last_tested_at, updated_at")
-        .eq("user_id", userId)
-        .order("provider", { ascending: true });
+      const keys = await fetchProviderKeys(userId);
       if (keys.error) {
         if (missingTable(keys.error.message))
           return { keys: [], capUsd: null, usedUsd: 0, missing: true };
         throw new Error(keys.error.message);
       }
       const month = monthStartUtc(new Date());
-      const [limit, jobs, kept] = await Promise.all([
-        db.from("ai_account_limits").select("monthly_cap_usd").eq("user_id", userId).maybeSingle(),
-        db
-          .from("generation_jobs")
-          .select("cost_usd")
-          .eq("key_owner", userId)
-          .neq("status", "failed")
-          .gte("created_at", month.toISOString())
-          .limit(5000),
-        db
-          .from("ai_spend")
-          .select("usd")
-          .eq("key_owner", userId)
-          .eq("month", month.toISOString().slice(0, 10))
-          .maybeSingle(),
-      ]);
-      const cap = (limit.data as { monthly_cap_usd?: number | string | null } | null)
-        ?.monthly_cap_usd;
+      const { limit, jobs, kept } = await fetchAccountSpend(userId, month);
+      const cap = (limit as { monthly_cap_usd?: number | string | null } | null)?.monthly_cap_usd;
       const used =
-        ((jobs.data ?? []) as { cost_usd: number | string | null }[]).reduce(
+        ((jobs ?? []) as { cost_usd: number | string | null }[]).reduce(
           (t, j) => t + (j.cost_usd === null ? 0 : Number(j.cost_usd)),
           0,
-        ) + Number((kept.data as { usd?: number | string | null } | null)?.usd ?? 0);
+        ) + Number((kept as { usd?: number | string | null } | null)?.usd ?? 0);
       return {
         keys: (keys.data ?? []) as ProviderKeyRow[],
         capUsd: cap === null || cap === undefined ? null : Number(cap),

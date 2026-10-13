@@ -67,7 +67,7 @@ export function LayerImageDialog({
 }) {
   return (
     <Dialog open={open && layer !== null} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[86vh] max-w-[760px] overflow-y-auto border-border bg-surface-2">
+      <DialogContent className="max-h-[86vh] max-w-[min(1120px,calc(100vw-64px))] overflow-y-auto border-border bg-surface-2">
         {layer ? (
           <Body
             state={state}
@@ -371,17 +371,18 @@ function Body({
           {/* Nytt bilde */}
           <section
             aria-label="Nytt bilde"
-            className="grid grid-cols-1 gap-3 border-t border-border pt-3 sm:grid-cols-2"
+            className="flex flex-col gap-3 border-t border-border pt-3"
           >
-            <div className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-3">
+            {/* Opplasting på én linje over AI-panelet, så ingen kolonne står tom (DEC-0076 funn 8) */}
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-sm border border-border bg-surface-1 p-3">
               <h3 className="flex items-center gap-1.5 text-[13px] font-medium text-text-primary">
                 <Upload className="size-4" aria-hidden /> Last opp et nytt bilde
               </h3>
-              <p className="text-xs text-text-tertiary">
+              <p className="min-w-0 flex-1 text-xs text-text-tertiary">
                 Lagres som ny versjon i biblioteket og brukes på laget med én gang.
               </p>
               {variants.length > 0 ? (
-                <label className="flex items-center gap-1.5 text-xs text-text-secondary">
+                <label className="flex min-w-48 items-center gap-1.5 text-xs text-text-secondary">
                   Variant
                   <select
                     value={target}
@@ -413,7 +414,7 @@ function Body({
                 variant="secondary"
                 disabled={!editable || busy}
                 onClick={() => fileRef.current?.click()}
-                className="self-start"
+                className="shrink-0"
               >
                 {busy ? <Loader2 className="animate-spin" /> : <Upload />}
                 {busy ? "Laster opp …" : "Velg fil …"}

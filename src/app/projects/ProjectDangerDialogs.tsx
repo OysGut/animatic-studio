@@ -5,7 +5,7 @@
  */
 import { AlertTriangle, Loader2, LogOut, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { db } from "@/app/db";
+import { leaveProject } from "@/adapters/browser/projects";
 import {
   deleteProject,
   nameMatches,
@@ -193,7 +193,7 @@ export function LeaveProjectDialog({
     if (!target) return;
     setBusy(true);
     setError(null);
-    const { error: e } = await db.rpc("leave_project", { p_project: target.id });
+    const e = await leaveProject(target.id);
     setBusy(false);
     if (e) {
       setError(

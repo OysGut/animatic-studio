@@ -32,8 +32,15 @@ import {
   librarySuggestions,
   newId,
   sortedAssets,
+  VERSION_ORIGINS,
+  VERSION_ORIGIN_LABEL,
+  assetOrigins,
+  libraryStyleProfiles,
+  styleProfileMatches,
+  versionProvenances,
   type AssetKind,
   type ProjectState,
+  type VersionOrigin,
 } from "@/core";
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
@@ -46,6 +53,8 @@ import { SuggestionsDialog } from "./SuggestionsDialog";
 import { AssetZipDialog } from "./AssetZip";
 import { ReuploadDialog, type ReuploadItem } from "./ReuploadDialog";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
+import { useAiJobs } from "@/app/ai/use-ai-jobs";
+import { LibraryStyleDialog, StyleProfileDetail, StyleProfileList } from "./StyleProfilesPanel";
 
 export function LibraryWorkspace({
   projectId,
@@ -86,7 +95,8 @@ export function LibraryWorkspace({
   );
 }
 
-type KindFilter = AssetKind | "all";
+/** «style» = visuelle stilprofiler (REQ-0121, DEC-0078). */
+type KindFilter = AssetKind | "all" | "style";
 
 function Library({
   state,
@@ -137,6 +147,18 @@ function Library({
     unknown: File[];
   } | null>(null);
   const [zipOpen, setZipOpen] = useState(false);
+  // Opphav per versjon (REQ-0121, DEC-0078): lastet opp, AI, frilagt, harmonisert – fra AI-jobbene og merknaden
+  const [origin, setOrigin] = useState<VersionOrigin | "all">("all");
+  const jobs = useAiJobs(projectId);
+  const provenance = useMemo(
+    () => versionProvenances(state, jobs.data?.jobs ?? []),
+    [state, jobs.data],
+  );
+  // Stilprofiler i biblioteket (samme profiler som «Filmens visuelle stil»)
+  const styleProfiles = useMemo(() => libraryStyleProfiles(state), [state]);
+  const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
+  const [styleDialog, setStyleDialog] = useState<string | null>(null);
+  const styleItem = styleProfiles.find((p) => p.profile.id === selectedStyle) ?? null;
 
   const all = useMemo(() => sortedAssets(state), [state]);
   const usageCount = useMemo(() => {
@@ -149,6 +171,7 @@ function Library({
     (a) =>
       (kind === "all" || a.kind === kind) &&
       (showArchived || !a.archived) &&
+      (origin === "all" || assetOrigins(state, a.id, provenance).has(origin)) &&
       (kind !== "sound" || !category || a.category.trim() === category) &&
       // Søket treffer også det en lyd er koblet til (REQ-0205, DEC-0070)
       (!q || assetSearchText(state, a).some((x) => x.toLocaleLowerCase("nb").includes(q))),
@@ -168,7 +191,8 @@ function Library({
   useEffect(() => {
     if (selected && !state.assets[selected]) setSelected(null);
   }, [state, selected]);
-  const asset = selected ? state.assets[selected] : undefined;
+  const asset = kind !== "style" && selected ? state.assets[selected] : undefined;
+  const shownStyles = styleProfiles.filter((p) => styleProfileMatches(p, search));
 
   function create() {
     const name = newName.trim();
@@ -358,6 +382,7 @@ function Library({
                     {ASSET_KIND_PLURAL[k]} ({counts.get(k) ?? 0})
                   </option>
                 ))}
+                <option value="style">Stilprofiler ({styleProfiles.length})</option>
               </select>
               {kind === "sound" && categories.length ? (
                 <select
@@ -374,18 +399,36 @@ function Library({
                   ))}
                 </select>
               ) : null}
-              <label className="flex items-center gap-1 text-xs text-text-secondary">
-                <input
-                  type="checkbox"
-                  checked={showArchived}
-                  onChange={(e) => setShowArchived(e.target.checked)}
-                  className="size-3.5 accent-[var(--accent-brand)]"
-                />
-                Arkiverte
-              </label>
             </div>
+            {kind !== "style" ? (
+              <div className="flex items-center gap-1.5">
+                <select
+                  aria-label="Opphav"
+                  title="Vis bare ressurser med versjoner som er lastet opp, laget med AI, frilagt eller harmonisert"
+                  value={origin}
+                  onChange={(e) => setOrigin(e.target.value as VersionOrigin | "all")}
+                  className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
+                >
+                  <option value="all">Alle opphav</option>
+                  {VERSION_ORIGINS.map((o) => (
+                    <option key={o} value={o}>
+                      {VERSION_ORIGIN_LABEL[o]}
+                    </option>
+                  ))}
+                </select>
+                <label className="flex shrink-0 items-center gap-1 text-xs text-text-secondary">
+                  <input
+                    type="checkbox"
+                    checked={showArchived}
+                    onChange={(e) => setShowArchived(e.target.checked)}
+                    className="size-3.5 accent-[var(--accent-brand)]"
+                  />
+                  Arkiverte
+                </label>
+              </div>
+            ) : null}
           </div>
-          {editable ? (
+          {editable && kind !== "style" ? (
             <form
               className="flex shrink-0 flex-col gap-1.5 border-b border-border px-2 py-2"
               onSubmit={(e) => {
@@ -432,62 +475,103 @@ function Library({
               ) : null}
             </form>
           ) : null}
-          <ul aria-label="Ressurser" className="min-h-0 flex-1 overflow-y-auto py-1">
-            {shown.length === 0 ? (
-              <li className="px-3 py-4 text-[13px] text-text-tertiary">
-                {all.length === 0
-                  ? "Biblioteket er tomt. Legg til ressurser over, eller bruk «Forslag fra manuset»."
-                  : "Ingen ressurser passer med søket."}
-              </li>
-            ) : null}
-            {shown.map((a) => {
-              const cover = covers.get(a.id);
-              const url = cover ? urls.data?.[cover] : undefined;
-              const n = usageCount.get(a.id) ?? 0;
-              return (
-                <li key={a.id}>
-                  <button
-                    type="button"
-                    onClick={() => setSelected(a.id)}
-                    aria-current={a.id === selected ? "true" : undefined}
-                    className={
-                      "grid w-full grid-cols-[36px_1fr] items-center gap-2 px-2 py-1.5 text-left " +
-                      (a.id === selected ? "bg-accent-selection" : "hover:bg-surface-3") +
-                      (a.archived ? " opacity-60" : "")
-                    }
-                  >
-                    <span className="flex size-9 items-center justify-center overflow-hidden rounded-sm bg-surface-3 text-[11px] font-medium text-text-tertiary">
-                      {a.kind === "sound" ? (
-                        <Music className="size-4" aria-hidden />
-                      ) : url ? (
-                        <img src={url} alt="" className="size-full object-cover" />
-                      ) : (
-                        a.name.slice(0, 2).toUpperCase()
-                      )}
-                    </span>
-                    <span className="min-w-0">
-                      <span className="block truncate text-[13px] text-text-primary">{a.name}</span>
-                      <span className="flex items-center gap-1.5 text-[11px] text-text-tertiary">
-                        {ASSET_KIND_LABEL[a.kind]}
-                        <span className="tabular">· {n === 1 ? "1 scene" : `${n} scener`}</span>
-                        {a.archived ? (
-                          <span className="flex items-center gap-0.5">
-                            <Archive className="size-3" aria-hidden />
-                            Arkivert
-                          </span>
-                        ) : null}
-                      </span>
-                    </span>
-                  </button>
+          {kind === "style" ? (
+            <StyleProfileList
+              items={shownStyles}
+              selected={selectedStyle}
+              onSelect={setSelectedStyle}
+              editable={editable}
+              onNew={() =>
+                setStyleDialog(styleProfiles.some((p) => p.isDefault) ? "new" : "default")
+              }
+              emptyText={
+                styleProfiles.length
+                  ? "Ingen stilprofiler passer med søket."
+                  : "Ingen stilprofiler ennå. Filmens visuelle stil beskriver stil, teknikk, farger og lys for alle bilder AI lager."
+              }
+            />
+          ) : (
+            <ul aria-label="Ressurser" className="min-h-0 flex-1 overflow-y-auto py-1">
+              {shown.length === 0 ? (
+                <li className="px-3 py-4 text-[13px] text-text-tertiary">
+                  {all.length === 0
+                    ? "Biblioteket er tomt. Legg til ressurser over, eller bruk «Forslag fra manuset»."
+                    : origin !== "all"
+                      ? `Ingen ressurser har versjoner som er «${VERSION_ORIGIN_LABEL[origin].toLocaleLowerCase("nb")}».`
+                      : "Ingen ressurser passer med søket."}
                 </li>
-              );
-            })}
-          </ul>
+              ) : null}
+              {shown.map((a) => {
+                const cover = covers.get(a.id);
+                const url = cover ? urls.data?.[cover] : undefined;
+                const n = usageCount.get(a.id) ?? 0;
+                return (
+                  <li key={a.id}>
+                    <button
+                      type="button"
+                      onClick={() => setSelected(a.id)}
+                      aria-current={a.id === selected ? "true" : undefined}
+                      className={
+                        "grid w-full grid-cols-[36px_1fr] items-center gap-2 px-2 py-1.5 text-left " +
+                        (a.id === selected ? "bg-accent-selection" : "hover:bg-surface-3") +
+                        (a.archived ? " opacity-60" : "")
+                      }
+                    >
+                      <span className="flex size-9 items-center justify-center overflow-hidden rounded-sm bg-surface-3 text-[11px] font-medium text-text-tertiary">
+                        {a.kind === "sound" ? (
+                          <Music className="size-4" aria-hidden />
+                        ) : url ? (
+                          <img src={url} alt="" className="size-full object-cover" />
+                        ) : (
+                          a.name.slice(0, 2).toUpperCase()
+                        )}
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block truncate text-[13px] text-text-primary">
+                          {a.name}
+                        </span>
+                        <span className="flex items-center gap-1.5 text-[11px] text-text-tertiary">
+                          {ASSET_KIND_LABEL[a.kind]}
+                          <span className="tabular">· {n === 1 ? "1 scene" : `${n} scener`}</span>
+                          {a.archived ? (
+                            <span className="flex items-center gap-0.5">
+                              <Archive className="size-3" aria-hidden />
+                              Arkivert
+                            </span>
+                          ) : null}
+                        </span>
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
 
         {/* Detaljer */}
         <div className="min-h-0 overflow-y-auto bg-bg-app">
-          {asset ? (
+          {kind === "style" ? (
+            styleItem ? (
+              <StyleProfileDetail
+                state={state}
+                item={styleItem}
+                editable={editable}
+                onEdit={() =>
+                  setStyleDialog(styleItem.isDefault ? "default" : styleItem.profile.id)
+                }
+              />
+            ) : (
+              <div className="flex h-full flex-col items-center justify-center gap-2 p-8 text-center">
+                <p className="text-base font-medium text-text-primary">Velg en stilprofil</p>
+                <p className="max-w-[460px] text-[13px] text-text-secondary">
+                  Stilprofilene beskriver hvordan filmen skal se ut – stil, teknikk, farger, lys og
+                  stemning – og sendes med i alle AI-beskrivelser. Standardprofilen gjelder alt;
+                  egne profiler kan gjelde plakater, steder, AI-video og andre bruk.
+                </p>
+              </div>
+            )
+          ) : asset ? (
             <AssetDetail
               key={asset.id}
               state={state}
@@ -496,6 +580,9 @@ function Library({
               asset={asset}
               editable={editable}
               cmds={cmds}
+              provenance={provenance}
+              origin={origin}
+              jobs={jobs.data?.jobs}
               onGoToScene={(occurrenceId) =>
                 void navigate({
                   to: "/prosjekt/$projectId/manus",
@@ -517,6 +604,15 @@ function Library({
         </div>
       </div>
 
+      {styleDialog ? (
+        <LibraryStyleDialog
+          state={state}
+          cmds={cmds}
+          editable={editable}
+          target={styleDialog}
+          onClose={() => setStyleDialog(null)}
+        />
+      ) : null}
       {reupload ? (
         <ReuploadDialog
           state={state}

@@ -1,7 +1,8 @@
 /**
  * Rådgivende kontinuitetsanalyse på prosjektoversikten (M6 del 3, DEC-0056, REQ-0319–0324, REQ-0129,
- * REQ-0132, REQ-0314). Funnene er råd: ingenting endres. Usikre funn er merket. «Skjul» gjelder bare denne
- * visningen (til siden lastes på nytt).
+ * REQ-0132, REQ-0314). Funnene er råd: ingenting endres. Usikre funn er merket. «Skjul» er en
+ * visningshandling som huskes per prosjekt i denne nettleseren (KI-105, samme mønster som forslagene i
+ * biblioteket); funnet står fortsatt og kan vises igjen.
  */
 import { Link } from "@tanstack/react-router";
 import {
@@ -15,7 +16,7 @@ import {
   SearchCheck,
   TriangleAlert,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   FINDING_LABEL,
   continuityAnalysis,
@@ -27,6 +28,7 @@ import {
 } from "@/core";
 import { Button } from "@/components/ui/button";
 import { useCommands } from "@/app/project/use-commands";
+import { readHiddenFindings, writeHiddenFindings } from "./hidden-findings";
 
 const ORDER: readonly FindingKind[] = [
   "spinoff_gap",
@@ -64,7 +66,18 @@ export function ContinuityAnalysisPanel({
   const cmds = useCommands(projectId, userId ?? "", editable && !!userId);
   const [err, setErr] = useState<string | null>(null);
   const findings = useMemo(() => continuityAnalysis(state, productionId), [state, productionId]);
-  const [hidden, setHidden] = useState<ReadonlySet<string>>(new Set());
+  const [hidden, setHidden] = useState<ReadonlySet<string>>(
+    () => new Set(readHiddenFindings(projectId)),
+  );
+  // Et annet prosjekt i samme komponent: les dets skjulte funn
+  const [hiddenFor, setHiddenFor] = useState(projectId);
+  if (hiddenFor !== projectId) {
+    setHiddenFor(projectId);
+    setHidden(new Set(readHiddenFindings(projectId)));
+  }
+  useEffect(() => {
+    if (hiddenFor === projectId) writeHiddenFindings(projectId, hidden);
+  }, [hidden, hiddenFor, projectId]);
   const [showHidden, setShowHidden] = useState(false);
   const shown = findings.filter((f) => showHidden || !hidden.has(f.key));
   const hiddenCount = findings.filter((f) => hidden.has(f.key)).length;
@@ -269,18 +282,22 @@ function FindingRow({
               search={{ asset: f.assetId }}
               title="Åpne ressursen i biblioteket"
             >
-              <Library />
+              <Library aria-hidden />
+              Bibliotek
             </Link>
           </Button>
         ) : null}
+        {/* Skjul er en visningshandling, ikke et råd: dempet, med tekst (UX-gjennomgang DEC-0076, funn 10) */}
         <Button
           size="sm"
           variant="ghost"
           onClick={onToggle}
-          title={hidden ? "Vis funnet igjen" : "Skjul funnet (til siden lastes på nytt)"}
+          title={hidden ? "Vis funnet igjen" : "Skjul funnet (huskes i denne nettleseren)"}
           aria-label={hidden ? "Vis funnet" : "Skjul funnet"}
+          className="text-text-tertiary"
         >
-          {hidden ? <Eye /> : <EyeOff />}
+          {hidden ? <Eye aria-hidden /> : <EyeOff aria-hidden />}
+          {hidden ? "Vis" : "Skjul"}
         </Button>
       </span>
     </li>

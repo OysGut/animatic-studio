@@ -969,3 +969,16 @@ Regler: DEC-ID-er er permanente. En beslutning endres aldri i ettertid; den erst
 - **Mars' svar:** «Ja, til nr. 1» – redaktører skal fortsatt kunne starte betalte jobber uten egen kostnadsrett.
 - **Beslutning:** eiere og redaktører kan starte betalte AI-genereringer innenfor prosjektets budsjett og kostnadstaket for nøkkelen. Kommentatorer og lesere kan ikke. Bare eieren endrer AI-budsjettet, og bare nøkkeleieren endrer kostnadstaket. REQ-0528 er endret tilsvarende og verifisert (`tests/unit/req0528-roller.test.ts`, `verifisering3-ai-server.test.ts`). Ingen kodeendring.
 - **Samtidig:** den gamle adressen `src/routes/api/cron/ai-jobs.ts` er slettet av Lovable etter Mars' beskjed; bare `/api/public/cron/ai-jobs` finnes. Ingen planlagt jobb settes opp (DEC-0072), så `LOVABLE_CRON_SECRET` trengs ikke.
+
+## DEC-0078 – Alt som kan gjøres uten Mars: migrasjon 0028, adapterlag, versjonsgjenoppretting og 30 kjente problemer
+- **Dato:** 2026-10-13 · **Type:** Teknisk anbefaling (Mars: «fortsett med ALT du kan gjøre av det som gjenstår»)
+- **Innhold:**
+  1. **Migrasjon 0028** (`0028_duration_exports.sql`): antakelsene for varighetsestimat lagres per prosjekt (KI-28); lagrede estimater per manusversjon (REQ-0120) og eksportlogg (REQ-0037) i egne tabeller. Estimater og eksporter er uforanderlig historikk som skrives med egne databasefunksjoner (`save_duration_estimate`, `record_export`), som manusversjoner, ikke via `apply_changes`; de slettes med produksjonen.
+  2. **Adapterlag i nettleseren** (KI-181, REQ-0008): all Supabase-bruk går via `src/adapters/browser/`; `src/app` og rutene importerer aldri klienten (arkitekturtest).
+  3. **Gjør en tidligere manusversjon gjeldende** (KI-27, REQ-0077): forhåndsvisning, bekreftelse, én angring; det som ikke kan settes tilbake, vises før bekreftelse. Estimat lagres automatisk med hver ny versjon.
+  4. **Bibliotek** (REQ-0121): stilprofiler i biblioteket, opphav per versjon med filter. **Innholdsmessig synk** (REQ-0022): ressursversjonene lagres i `produced_from.assetVersions` (jsonb, ingen migrasjon); scener flagges «Ressurs oppdatert» i bibliotek, montering og sceneeditor.
+  5. **UX:** «Visning» og «Mer» i monteringen, hurtigtastoversikt («?», også i toppfeltet), verktøytips med taster, bildedialog med bedre plass, avvist tekst ved samtidig redigering går ikke tapt (KI-182).
+  6. **Kjente problemer:** gjennomgang av alle 117 åpne punkter; 16 var allerede løst. Løst nå blant annet KI-20 (tittelsiden lagres), KI-33 (notater følger egen versjon), KI-42 (flere egenskapstester, bildebuffer med grense), KI-44, KI-48 (ny bildefrekvens regner om alt), KI-49, KI-56, KI-77, KI-85 (lyd i eksport av valgt scene), KI-86, KI-105.
+- **Tekniske valg:** importert film får som ressursgrunnlag versjonene scenens 2D-scene viste da filmen ble lagt inn; notater kopieres til egen versjon som oversettelser (Mars kan overstyre); en produksjon med eksporter eller lagrede estimater kan ikke angres (KI-186).
+- **Kodegjennomgang:** 10 funn rettet, blant annet at sikkerhetskopien mistet antakelsene, at gjenoppretting av versjon kunne melde suksess etter delvis utførelse, og at delt bildebuffer kunne kaste bilder som ble vist.
+- **Fortsatt hos Mars:** KI-176, KI-178, globale ressurser, stilharmonisering (kostnad), «Lovable» som navn i grensesnittet, ekte AI-test (REQ-0565/0589/0590).

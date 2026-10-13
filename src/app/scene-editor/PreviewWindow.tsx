@@ -54,13 +54,19 @@ function PreviewCanvas({
 }: Omit<CommonProps, "onClose"> & { cssWidth: number; cssHeight: number; win: Window | null }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [tick, setTick] = useState(0);
+  // Bildene dette lerretet bruker, holdes i bruk til det lukkes (bufferen deles med andre lerreter)
+  const consumer = useRef<object>({});
 
   useEffect(() => {
     // Felles bildebuffer: vinduet åpnes og lukkes ofte (automatisk ved avspilling) uten å laste bildene på nytt
     const off = onImageLoad(() => setTick((t) => t + 1));
-    sharedCache.ensure(imageUrls);
+    sharedCache.ensure(imageUrls, consumer.current);
     return off;
   }, [imageUrls]);
+  useEffect(() => {
+    const c = consumer.current;
+    return () => sharedCache.release(c);
+  }, []);
 
   const out = useMemo(
     () => renderFrame(state, composition.id, frame, { view: "camera" }),

@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useState, type FormEvent } from "react";
-import { db } from "@/app/db";
+import { createProject, listProjects } from "@/adapters/browser/projects";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -50,14 +50,7 @@ const ROLE_LABEL: Record<string, string> = {
 export function useProjects(userId: string) {
   return useQuery({
     queryKey: ["projects", userId],
-    queryFn: async (): Promise<ProjectRow[]> => {
-      const { data, error } = await db
-        .from("projects")
-        .select("*, project_members(role, user_id, removed_at)")
-        .order("created_at", { ascending: false });
-      if (error) throw new Error(error.message);
-      return (data ?? []) as ProjectRow[];
-    },
+    queryFn: async (): Promise<ProjectRow[]> => (await listProjects()) as ProjectRow[],
   });
 }
 
@@ -92,11 +85,7 @@ export function ProjectsScreen({ userId }: { userId: string }) {
   };
 
   const create = useMutation({
-    mutationFn: async (projectName: string) => {
-      const { data, error } = await db.rpc("create_project", { p_name: projectName });
-      if (error) throw new Error(error.message);
-      return data as string;
-    },
+    mutationFn: (projectName: string) => createProject(projectName),
     onSuccess: async (id) => {
       setName("");
       setCreating(false);

@@ -17,8 +17,7 @@ import { pollVideoJob } from "@/adapters/ai/video.functions";
 import { pumpProjectQueue } from "@/adapters/ai/queue.functions";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { projectStateKey } from "@/app/project/use-project";
-import { loadProjectState } from "@/adapters/storage/project-rows";
-import { db } from "@/app/db";
+import { fetchProjectState } from "@/adapters/browser/project-data";
 import { signedUrls } from "@/app/library/asset-images";
 import { readFilmMetadata } from "@/app/assembly/film-import";
 import { aiJobsKey, useAiJobs } from "./use-ai-jobs";
@@ -178,7 +177,7 @@ export function AiJobsWatcher({
   // Prosjekttilstanden fra hurtigbufferen (samme spørring som sidene; ingen egen sanntidskanal)
   const project = useQuery({
     queryKey: projectStateKey(projectId),
-    queryFn: () => loadProjectState(db, projectId),
+    queryFn: () => fetchProjectState(projectId),
     staleTime: Infinity,
     refetchOnWindowFocus: false,
     enabled: editable,

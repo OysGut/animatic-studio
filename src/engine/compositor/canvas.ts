@@ -198,31 +198,152 @@ function drawPlaceholder(ctx: CanvasRenderingContext2D, it: DrawItem, x: number,
   ctx.fillText(it.version ? it.name : `${it.name} (uten bilde)`, 0, 0, it.width * 0.9);
 }
 
-/** Laster bilder fra signerte lenker og holder dem i en hurtigbuffer per mediesti. */
-export class ImageCache {
-  private readonly loaded = new Map<string, HTMLImageElement>();
-  private readonly pending = new Map<string, string>();
-  constructor(private readonly onLoad: () => void) {}
+/** Et bilde som lastes (HTMLImageElement i nettleseren; kan byttes ut i tester). */
+export interface LoadingImage {
+  crossOrigin: string | null;
+  decoding: "async" | "sync" | "auto";
+  onload: ((this: GlobalEventHandlers, ev: Event) => unknown) | null;
+  onerror: OnErrorEventHandler;
+  src: string;
+  readonly naturalWidth?: number;
+  readonly naturalHeight?: number;
+  readonly width: number;
+  readonly height: number;
+}
 
-  /** Sørger for at bildene lastes. `urls`: mediesti → signert lenke. */
-  ensure(urls: Readonly<Record<string, string>>): void {
+export interface ImageCacheLimits {
+  /** Høyst så mange bilder i bufferen (standard 200). */
+  readonly maxImages?: number;
+  /** Høyst så mange byte dekodede bilder, anslått som bredde × høyde × 4 (standard 512 MB). */
+  readonly maxBytes?: number;
+  /** Lager bildeobjektet (standard `new Image()`). */
+  readonly createImage?: () => LoadingImage;
+}
+
+export const IMAGE_CACHE_MAX_IMAGES = 200;
+export const IMAGE_CACHE_MAX_BYTES = 512 * 1024 * 1024;
+
+/** Anslått minne for et dekodet bilde (RGBA). */
+export function decodedBytes(img: {
+  naturalWidth?: number;
+  naturalHeight?: number;
+  width: number;
+  height: number;
+}): number {
+  const w = img.naturalWidth || img.width || 0;
+  const h = img.naturalHeight || img.height || 0;
+  return w * h * 4;
+}
+
+/**
+ * Laster bilder fra signerte lenker og holder dem i en hurtigbuffer per mediesti. Bufferen har en grense
+ * (KI-42): de minst nylig brukte bildene kastes når det er for mange eller de tar for mye minne, men aldri
+ * bilder som er i bruk på et lerret. En buffer kan deles av flere visninger (`consumer`): hver visning sitt
+ * siste kall til `ensure` gjelder for den, og bilder som noen av visningene bruker, kastes ikke. En visning
+ * som lukkes, kaller `release`. Kastede bilder frigjøres (`close()` for ImageBitmap, ellers fjernes kilden) og
+ * lastes på nytt hvis de trengs igjen.
+ */
+const DEFAULT_CONSUMER = Symbol("felles visning");
+
+export class ImageCache {
+  /** Mediesti → bilde, minst nylig brukt først. */
+  private readonly loaded = new Map<string, LoadingImage>();
+  private readonly bytes = new Map<string, number>();
+  private readonly pending = new Map<string, string>();
+  /** Visning → mediestiene den bruker nå (siste `ensure`). */
+  private readonly inUse = new Map<unknown, ReadonlySet<string>>();
+  private total = 0;
+  private readonly maxImages: number;
+  private readonly maxBytes: number;
+  private readonly createImage: () => LoadingImage;
+
+  constructor(
+    private readonly onLoad: () => void,
+    limits: ImageCacheLimits = {},
+  ) {
+    this.maxImages = limits.maxImages ?? IMAGE_CACHE_MAX_IMAGES;
+    this.maxBytes = limits.maxBytes ?? IMAGE_CACHE_MAX_BYTES;
+    this.createImage = limits.createImage ?? (() => new Image() as LoadingImage);
+  }
+
+  /**
+   * Sørger for at bildene lastes. `urls`: mediesti → signert lenke. Bildene regnes som i bruk av `consumer`
+   * (en nøkkel per visning, f.eks. et objekt fra useRef) til neste `ensure` fra den eller `release`. Uten
+   * `consumer` gjelder én felles visning (som før).
+   */
+  ensure(urls: Readonly<Record<string, string>>, consumer: unknown = DEFAULT_CONSUMER): void {
+    this.inUse.set(consumer, new Set(Object.keys(urls)));
     for (const [path, url] of Object.entries(urls)) {
-      if (this.loaded.has(path) || this.pending.get(path) === url) continue;
-      this.pending.set(path, url);
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.decoding = "async";
-      img.onload = () => {
-        this.pending.delete(path);
+      const img = this.loaded.get(path);
+      if (img) {
+        // Nylig brukt: flytt bakerst
+        this.loaded.delete(path);
         this.loaded.set(path, img);
+        continue;
+      }
+      if (this.pending.get(path) === url) continue;
+      this.pending.set(path, url);
+      const next = this.createImage();
+      next.crossOrigin = "anonymous";
+      next.decoding = "async";
+      next.onload = () => {
+        if (this.pending.get(path) !== url) return; // en nyere lenke er på vei
+        this.pending.delete(path);
+        this.loaded.set(path, next);
+        const b = decodedBytes(next);
+        this.bytes.set(path, b);
+        this.total += b;
+        this.evict();
         this.onLoad();
       };
-      img.onerror = () => this.pending.delete(path);
-      img.src = url;
+      next.onerror = () => {
+        if (this.pending.get(path) === url) this.pending.delete(path);
+      };
+      next.src = url;
     }
+    this.evict();
   }
 
   get images(): ReadonlyMap<string, ImageSource> {
-    return this.loaded;
+    return this.loaded as unknown as ReadonlyMap<string, ImageSource>;
   }
+
+  /** Antall bilder og anslått minne (for tester og feilsøking). */
+  get size(): { readonly images: number; readonly bytes: number } {
+    return { images: this.loaded.size, bytes: this.total };
+  }
+
+  /** Visningen bruker ikke lenger bildene sine (lukket); de kan kastes når grensen nås. */
+  release(consumer: unknown = DEFAULT_CONSUMER): void {
+    if (this.inUse.delete(consumer)) this.evict();
+  }
+
+  private isInUse(path: string): boolean {
+    for (const paths of this.inUse.values()) if (paths.has(path)) return true;
+    return false;
+  }
+
+  private evict(): void {
+    if (this.loaded.size <= this.maxImages && this.total <= this.maxBytes) return;
+    for (const [path, img] of [...this.loaded]) {
+      if (this.loaded.size <= this.maxImages && this.total <= this.maxBytes) break;
+      if (this.isInUse(path)) continue;
+      this.loaded.delete(path);
+      this.total -= this.bytes.get(path) ?? 0;
+      this.bytes.delete(path);
+      release(img);
+    }
+  }
+}
+
+/** Frigjør et kastet bilde: ImageBitmap lukkes; for et <img> fjernes kilden så det dekodede bildet kan frigjøres. */
+function release(img: LoadingImage): void {
+  const closable = img as unknown as { close?: () => void };
+  if (typeof closable.close === "function") {
+    closable.close();
+    return;
+  }
+  img.onload = null;
+  img.onerror = null;
+  img.src = "";
 }

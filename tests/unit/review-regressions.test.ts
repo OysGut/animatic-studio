@@ -14,7 +14,12 @@ import {
   type ProductionId,
   type ProjectState,
 } from "@/core";
-import { canonicalJson } from "@/adapters/storage/commands.functions";
+import {
+  UNDO_PRODUCTION_HISTORY,
+  UNDO_PRODUCTION_REFERENCED,
+  applyChangesErrorMessage,
+  canonicalJson,
+} from "@/adapters/storage/commands.functions";
 import { envelope, mustApply, seedProject, tid } from "../helpers/fixtures";
 
 const L = (row: number, x: number, text: string) => ({ page: 1, x, y: 72 + row * 12, text });
@@ -219,5 +224,35 @@ describe("canonicalJson", () => {
     expect(canonicalJson({ b: 1, a: { d: [1, { y: 2, x: 1 }], c: undefined } })).toBe(
       canonicalJson({ a: { d: [1, { x: 1, y: 2 }] }, b: 1 }),
     );
+  });
+});
+
+describe("Angre en ny produksjon som har eksporter eller lagrede estimater (migrasjon 0028)", () => {
+  const undo: Command = { type: "UndoCreateProduction", productionId: tid<"production">() };
+  const inv13 = {
+    code: "P0001",
+    message: "Historikk kan ikke endres eller slettes (INV-13)",
+  };
+
+  it("INV-13 fra databasen gir en forståelig norsk melding i stedet for en lagringsfeil", () => {
+    expect(applyChangesErrorMessage(undo, inv13)).toEqual({
+      code: "referenced",
+      message: UNDO_PRODUCTION_HISTORY,
+    });
+    expect(UNDO_PRODUCTION_HISTORY).toMatch(/eksporter eller lagrede estimater og kan ikke angres/);
+  });
+
+  it("manusversjoner (fremmednøkkel) gir egen melding; andre feil og kommandoer mappes ikke", () => {
+    expect(applyChangesErrorMessage(undo, { code: "23503", message: "fk" })).toEqual({
+      code: "referenced",
+      message: UNDO_PRODUCTION_REFERENCED,
+    });
+    expect(applyChangesErrorMessage(undo, { code: "P0409", message: "x" })).toBe(null);
+    expect(
+      applyChangesErrorMessage(
+        { type: "SetDurationAssumptions", assumptions: null } as Command,
+        inv13,
+      ),
+    ).toBe(null);
   });
 });

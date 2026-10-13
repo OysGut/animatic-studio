@@ -130,7 +130,7 @@ async function mock(page, { projects = [project], schema = true, rows = {} }) {
     const table = path.replace("/rest/v1/", "");
     if (table === "schema_version")
       return schema
-        ? json([{ version: 27 }])
+        ? json([{ version: 28 }])
         : json({ message: "relation does not exist", code: "42P01" }, 404);
     if (table === "projects") {
       if (single) return json(projects[0] ?? null);
@@ -509,7 +509,7 @@ await shot("42-forhandsvisning", scene, {
   act: async (page) => {
     await page.waitForTimeout(800);
     await gaTilBilde(page, 40);
-    await page.getByRole("button", { name: "Forhåndsvisning" }).click();
+    await page.getByRole("button", { name: "Forhåndsvisning", exact: true }).click();
     await page.waitForTimeout(700);
   },
 });
@@ -517,7 +517,7 @@ await shot("43-forhandsvisning-flyttet-zoom", scene, {
   act: async (page) => {
     await page.waitForTimeout(800);
     await gaTilBilde(page, 40);
-    await page.getByRole("button", { name: "Forhåndsvisning" }).click();
+    await page.getByRole("button", { name: "Forhåndsvisning", exact: true }).click();
     await page.waitForTimeout(400);
     // Flytt opp til venstre, gjør større fra hjørnet, så 50 %
     const bar = page.getByLabel("Flytt forhåndsvisningen (piltaster)");
@@ -549,13 +549,13 @@ await shot("43-forhandsvisning-flyttet-zoom", scene, {
     const auto = await region.boundingBox();
     await page.getByRole("button", { name: "Pause" }).click();
     console.log("husket plass:", JSON.stringify(before) === JSON.stringify(auto), before, auto);
-    await page.getByRole("button", { name: "Forhåndsvisning" }).click();
+    await page.getByRole("button", { name: "Forhåndsvisning", exact: true }).click();
   },
 });
 await shot("44-forhandsvisning-eget-vindu", scene, {
   act: async (page) => {
     await page.waitForTimeout(800);
-    await page.getByRole("button", { name: "Forhåndsvisning" }).click();
+    await page.getByRole("button", { name: "Forhåndsvisning", exact: true }).click();
     await page.waitForTimeout(300);
     // Playwright-feil: med avskjæring av nettverket henger forespørsler fra tomme sprettoppvinduer
     // (skrifter lastes aldri). Dataene er allerede hentet, så slå avskjæringen av her.
@@ -584,7 +584,7 @@ await shot("44-forhandsvisning-eget-vindu", scene, {
       window.resizeTo(800, 520);
     });
     await pop.waitForTimeout(1500);
-    await page.getByRole("button", { name: "Forhåndsvisning" }).click(); // lukk
+    await page.getByRole("button", { name: "Forhåndsvisning", exact: true }).click(); // lukk
     await page.waitForTimeout(400);
     // Hodeløs Chromium flytter ikke vinduer: simuler at brukeren gjorde det, og se at det huskes ved neste åpning
     await page.evaluate(() => {
@@ -599,7 +599,7 @@ await shot("44-forhandsvisning-eget-vindu", scene, {
     });
     const [pop2] = await Promise.all([
       page.waitForEvent("popup"),
-      page.getByRole("button", { name: "Forhåndsvisning" }).click(),
+      page.getByRole("button", { name: "Forhåndsvisning", exact: true }).click(),
     ]);
     await pop2.waitForTimeout(800);
     console.log(
@@ -903,7 +903,8 @@ if (process.env.TEST_FILM) {
   await shot("65-lang-film", montering, {
     act: async (page) => {
       await page.waitForTimeout(1200);
-      await page.getByRole("button", { name: "Importer lang film" }).click();
+      await page.getByRole("button", { name: /^Mer/ }).click();
+      await page.getByRole("menuitem", { name: "Importer lang film" }).click();
       await page.waitForTimeout(400);
       await page.getByLabel("Velg lang filmfil").setInputFiles(process.env.TEST_FILM);
       await page.getByRole("button", { name: /Importer og fordel/ }).waitFor({ timeout: 20000 });
@@ -990,7 +991,8 @@ await shot("69-overgang-iris", montering, {
 await shot("70-standardovergang", montering, {
   act: async (page) => {
     await page.waitForTimeout(1200);
-    await page.getByRole("button", { name: "Standardovergang" }).click();
+    await page.getByRole("button", { name: /^Mer/ }).click();
+    await page.getByRole("menuitem", { name: /Standardovergang/ }).click();
     await page.waitForTimeout(400);
   },
 });
@@ -999,14 +1001,20 @@ await shot("71-svart-hvitt", montering, {
     await page.waitForTimeout(1500);
     await page.getByRole("button", { name: /^Scene 7: .*ferdig film/ }).click();
     await page.waitForTimeout(400);
-    await page.getByRole("button", { name: "Svart-hvitt" }).click();
+    await page.getByRole("button", { name: /^Visning/ }).click();
+    await page.getByRole("checkbox", { name: /^Svart-hvitt Hele filmen/ }).click();
+    await page.keyboard.press("Escape");
     await page.waitForTimeout(1200);
   },
 });
 await shot("72-hendelser-i-manus", scene, {
   act: async (page) => {
     await page.waitForTimeout(1500);
-    const layer = page.getByRole("region", { name: "Lag" }).getByRole("button").first();
+    // Første lag i listen (ikke «Ny gruppe»-knappen øverst i panelet)
+    const layer = page
+      .getByRole("region", { name: "Lag" })
+      .getByRole("button", { name: /Maja|Bestemor|Himmel/ })
+      .first();
     await layer.click().catch(() => {});
     await page.waitForTimeout(500);
     await page.getByRole("region", { name: "Hendelser i manuset" }).scrollIntoViewIfNeeded();
@@ -1206,7 +1214,8 @@ await shot("78c-ai-ko", `/prosjekt/${project.id}`, {
 await shot("79b-video-flere-scener", montering, {
   act: async (page) => {
     await page.waitForTimeout(1500);
-    await page.getByRole("button", { name: "Video for flere scener" }).click();
+    await page.getByRole("button", { name: /^Mer/ }).click();
+    await page.getByRole("menuitem", { name: /Video for flere scener/ }).click();
     await page.waitForTimeout(800);
   },
 });
@@ -1346,7 +1355,9 @@ await shot("80e-stillbilde", montering, {
 await shot("80f-teknisk", montering, {
   act: async (page) => {
     await scene1(page);
-    await page.getByRole("button", { name: "Teknisk visning" }).click();
+    await page.getByRole("button", { name: /^Visning/ }).click();
+    await page.getByRole("checkbox", { name: /^Teknisk visning/ }).click();
+    await page.keyboard.press("Escape");
     await page.waitForTimeout(500);
     await page.getByRole("region", { name: "Teknisk" }).scrollIntoViewIfNeeded();
     await page.waitForTimeout(200);
@@ -1536,7 +1547,8 @@ await shot("94-oversettelse-inspektor", manus, {
 await shot("95-undertekster", montering, {
   act: async (page) => {
     await page.waitForTimeout(1200);
-    await page.getByRole("button", { name: /Undertekster/ }).click();
+    await page.getByRole("button", { name: /^Mer/ }).click();
+    await page.getByRole("menuitem", { name: /Undertekster/ }).click();
     await page.getByRole("dialog").locator("select").first().selectOption("en");
     await page.waitForTimeout(500);
   },
@@ -1557,7 +1569,8 @@ await shot("96-engelsk-film", montering, {
 await shot("97-sprakversjon", montering, {
   act: async (page) => {
     await page.waitForTimeout(1200);
-    await page.getByRole("button", { name: /Språkversjon/ }).click();
+    await page.getByRole("button", { name: /^Mer/ }).click();
+    await page.getByRole("menuitem", { name: /Språkversjon/ }).click();
     await page.waitForTimeout(600);
   },
 });

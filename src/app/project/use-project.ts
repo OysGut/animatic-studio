@@ -6,9 +6,8 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import type { ProjectState } from "@/core";
-import { loadProjectState } from "@/adapters/storage/project-rows";
-import { db } from "@/app/db";
-import { supabase } from "@/integrations/supabase/client";
+import { fetchProjectState, subscribeProjectChanges } from "@/adapters/browser/project-data";
+import { listMembers, listProfiles } from "@/adapters/browser/members";
 
 export const projectStateKey = (projectId: string) => ["project-state", projectId] as const;
 
@@ -25,44 +24,32 @@ export function useProjectState(projectId: string) {
   const qc = useQueryClient();
   const query = useQuery({
     queryKey: projectStateKey(projectId),
-    queryFn: () => loadProjectState(db, projectId),
+    queryFn: () => fetchProjectState(projectId),
     staleTime: Infinity,
     refetchOnWindowFocus: false,
   });
 
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
-    const channel = supabase
-      .channel(`prosjekt-${projectId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "change_log",
-          filter: `project_id=eq.${projectId}`,
-        },
-        (payload: { new: { id?: string; affected_ids?: string[] | null } }) => {
-          const id = payload.new.id;
-          if (id && ownCommandIds.has(id)) return;
-          const ids = payload.new.affected_ids ?? [];
-          for (const f of foreignChangeListeners) f(ids);
-          // Samle opp raske endringer fra andre og last på nytt én gang – men aldri midt i egen lagring
-          if (timer.current) clearTimeout(timer.current);
-          const refresh = () => {
-            if (commandQueue.pending > 0) {
-              commandQueue.onIdle.add(refresh);
-              return;
-            }
-            void qc.invalidateQueries({ queryKey: projectStateKey(projectId) });
-          };
-          timer.current = setTimeout(refresh, 400);
-        },
-      )
-      .subscribe();
+    const unsubscribe = subscribeProjectChanges(projectId, (row) => {
+      const id = row.id;
+      if (id && ownCommandIds.has(id)) return;
+      const ids = row.affected_ids ?? [];
+      for (const f of foreignChangeListeners) f(ids);
+      // Samle opp raske endringer fra andre og last på nytt én gang – men aldri midt i egen lagring
+      if (timer.current) clearTimeout(timer.current);
+      const refresh = () => {
+        if (commandQueue.pending > 0) {
+          commandQueue.onIdle.add(refresh);
+          return;
+        }
+        void qc.invalidateQueries({ queryKey: projectStateKey(projectId) });
+      };
+      timer.current = setTimeout(refresh, 400);
+    });
     return () => {
       if (timer.current) clearTimeout(timer.current);
-      void supabase.removeChannel(channel);
+      unsubscribe();
     };
   }, [projectId, qc]);
 
@@ -83,15 +70,7 @@ export interface ProfileRow {
 export function useMembers(projectId: string) {
   return useQuery({
     queryKey: ["project-members", projectId],
-    queryFn: async (): Promise<MemberRow[]> => {
-      const { data, error } = await db
-        .from("project_members")
-        .select("user_id, role, joined_at")
-        .eq("project_id", projectId)
-        .is("removed_at", null);
-      if (error) throw new Error(error.message);
-      return (data ?? []) as MemberRow[];
-    },
+    queryFn: async (): Promise<MemberRow[]> => (await listMembers(projectId)) as MemberRow[],
     // En ny rolle (KI-136) vises når fanen får fokus igjen, og ellers innen et minutt
     refetchOnWindowFocus: true,
     refetchInterval: 60_000,
@@ -104,10 +83,7 @@ export function useProfiles(userIds: readonly string[]) {
     queryKey: ["profiles", [...userIds].sort().join(",")],
     enabled: userIds.length > 0,
     queryFn: async (): Promise<Record<string, ProfileRow>> => {
-      const { data, error } = await db
-        .from("profiles")
-        .select("user_id, display_name")
-        .in("user_id", [...userIds]);
+      const { data, error } = await listProfiles(userIds);
       if (error) return {};
       return Object.fromEntries(((data ?? []) as ProfileRow[]).map((p) => [p.user_id, p]));
     },

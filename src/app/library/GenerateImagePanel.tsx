@@ -303,8 +303,11 @@ export function GenerateImagePanel({
     !tooLong &&
     !overBudget;
 
+  // Bred flate (bildedialogen på store skjermer): beskrivelsen til venstre, valg og bekreftelse til høyre.
+  // Smal flate (f.eks. «Prøv igjen»): én kolonne. Styres av panelets egen bredde (container query), så
+  // det virker likt uansett hvilken dialog panelet står i (UX-gjennomgang DEC-0076 funn 8, DEC-0078).
   return (
-    <div className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-3">
+    <div className="@container flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-3">
       <h3 className="flex items-center gap-1.5 text-[13px] font-medium text-text-primary">
         <AiGlyph className="size-4" aria-hidden /> Generer et nytt bilde med AI
       </h3>
@@ -321,292 +324,309 @@ export function GenerateImagePanel({
           Prosjektoversikt → «Filmens visuelle stil».
         </p>
       ) : null}
-      <label className="flex flex-col gap-1 text-xs text-text-secondary">
-        <span className="flex items-center justify-between">
-          Beskrivelse (engelsk gir best resultat)
-          {edited ? (
-            <button
-              type="button"
-              onClick={() => {
-                setEdited(false);
-                setWritten(null);
-                setPrompt(auto);
+      <div className="grid grid-cols-1 gap-x-4 gap-y-2 @2xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
+        <div className="flex min-w-0 flex-col gap-2">
+          <label className="flex flex-1 flex-col gap-1 text-xs text-text-secondary">
+            <span className="flex items-center justify-between">
+              Beskrivelse (engelsk gir best resultat)
+              {edited ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEdited(false);
+                    setWritten(null);
+                    setPrompt(auto);
+                  }}
+                  className="flex items-center gap-0.5 rounded-sm px-1 text-[11px] text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
+                  title="Bruk den automatiske beskrivelsen igjen"
+                >
+                  <RotateCcw className="size-3" aria-hidden /> Tilbakestill
+                </button>
+              ) : null}
+            </span>
+            <textarea
+              value={prompt}
+              onChange={(e) => {
+                setPrompt(e.target.value);
+                setEdited(true);
+                setConfirm(false);
               }}
-              className="flex items-center gap-0.5 rounded-sm px-1 text-[11px] text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
-              title="Bruk den automatiske beskrivelsen igjen"
+              disabled={!editable || running || writing}
+              rows={context ? 14 : 6}
+              aria-label="Beskrivelse for AI-generering"
+              className="min-h-24 flex-1 resize-y rounded-sm border border-border-control bg-surface-3 p-1.5 font-mono text-[11px] leading-snug text-text-primary"
+            />
+            {tooLong ? (
+              <span className="text-status-danger">
+                Beskrivelsen er for lang ({stripAttachedSection(prompt).length + legendLength} av{" "}
+                {MAX_PROMPT_CHARS} tegn
+                {legendLength ? ", med listen over bildene som sendes med" : ""}).
+              </span>
+            ) : null}
+          </label>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => void write()}
+              disabled={!canWrite}
+              title="En språkmodell leser alt over (og ser bildene som sendes med) og skriver en presis beskrivelse. Du kan endre den før du genererer."
             >
-              <RotateCcw className="size-3" aria-hidden /> Tilbakestill
-            </button>
-          ) : null}
-        </span>
-        <textarea
-          value={prompt}
-          onChange={(e) => {
-            setPrompt(e.target.value);
-            setEdited(true);
-            setConfirm(false);
-          }}
-          disabled={!editable || running || writing}
-          rows={context ? 14 : 6}
-          aria-label="Beskrivelse for AI-generering"
-          className="min-h-24 resize-y rounded-sm border border-border-control bg-surface-3 p-1.5 font-mono text-[11px] leading-snug text-text-primary"
-        />
-        {tooLong ? (
-          <span className="text-status-danger">
-            Beskrivelsen er for lang ({stripAttachedSection(prompt).length + legendLength} av{" "}
-            {MAX_PROMPT_CHARS} tegn
-            {legendLength ? ", med listen over bildene som sendes med" : ""}).
-          </span>
-        ) : null}
-      </label>
-      <div className="flex flex-wrap items-center gap-2">
-        <Button
-          size="sm"
-          variant="secondary"
-          onClick={() => void write()}
-          disabled={!canWrite}
-          title="En språkmodell leser alt over (og ser bildene som sendes med) og skriver en presis beskrivelse. Du kan endre den før du genererer."
-        >
-          {writing ? <Loader2 className="animate-spin" /> : <AiGlyph />}
-          {writing
-            ? "Skriver … (kan ta et halvt minutt)"
-            : written
-              ? "Skriv på nytt med AI"
-              : "Skriv beskrivelsen med AI"}
-        </Button>
-        <span className="text-[11px] text-text-tertiary">
-          Bruker litt kreditter (langt mindre enn et bilde), teller ikke i bildebudsjettet.
-        </span>
-      </div>
-      {written ? (
-        <p
-          role="status"
-          className={"text-[11px] " + (stale ? "text-status-uncertain" : "text-text-secondary")}
-        >
-          {stale
-            ? "Bildene som sendes med er endret etter at AI skrev beskrivelsen, så den kan omtale feil bilde. Skriv den på nytt eller tilbakestill før du genererer."
-            : `Skrevet av AI (${written.model}). Les gjennom og endre det som ikke stemmer før du genererer.`}
-        </p>
-      ) : null}
-      {options.length > 1 ? (
-        <EffortPicker
-          capability="image"
-          connected={new Set(available.data?.providers ?? [])}
-          chosen={(() => {
-            const o = options.find((x) => x.provider.id === choice.provider);
-            const m =
-              choice.provider === "lovable"
-                ? o?.models[0]
-                : o?.models.find((x) => x.id === choice.model);
-            return o && m ? { provider: o.provider, model: m } : null;
-          })()}
-          disabled={!editable || running || writing}
-          onChoose={(c) => {
-            setPick(c.provider.id === "lovable" ? "lovable|" : `${c.provider.id}|${c.model.id}`);
-            setConfirm(false);
-          }}
-        />
-      ) : null}
-      {options.length > 1 || choice.provider !== "lovable" ? (
-        <label className="flex items-center gap-2 text-xs text-text-secondary">
-          Leverandør og modell
-          <select
-            aria-label="Leverandør og modell"
-            value={`${choice.provider}|${choice.provider === "lovable" ? "" : choice.model}`}
-            disabled={!editable || running || writing}
-            onChange={(e) => {
-              setPick(e.target.value);
-              setConfirm(false);
-            }}
-            className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
-          >
-            {options.map((o) =>
-              o.provider.id === "lovable" ? (
-                <option key="lovable" value="lovable|">
-                  {o.provider.name}
-                </option>
-              ) : (
-                o.models.map((m) => (
-                  <option key={`${o.provider.id}|${m.id}`} value={`${o.provider.id}|${m.id}`}>
-                    {o.provider.name} – {m.label} (~{formatUsd(m.priceUsd)})
-                  </option>
-                ))
-              ),
-            )}
-          </select>
-        </label>
-      ) : null}
-      {chosenModel &&
-      IMAGE_PURPOSE_FOR_KIND[asset.kind] === "cutout" &&
-      !chosenModel.transparent ? (
-        <p className="text-[11px] text-status-uncertain">
-          Denne modellen kan ikke lage gjennomsiktig bakgrunn. Bruk «Frilegg bildet» etterpå, eller
-          velg en modell merket «frilagt».
-        </p>
-      ) : null}
-      {reference ? (
-        <label className="flex items-center gap-1.5 text-xs text-text-secondary">
-          <input
-            type="checkbox"
-            checked={withRef}
-            onChange={(e) => {
-              setWithRef(e.target.checked);
-              setConfirm(false);
-            }}
-            disabled={!editable || running || writing}
-          />
-          Bruk dagens bilde (v{reference.number}) som forbilde
-        </label>
-      ) : null}
-      {styleAvailable > 0 ? (
-        <label className="flex items-center gap-1.5 text-xs text-text-secondary">
-          <input
-            type="checkbox"
-            checked={withStyle}
-            onChange={(e) => {
-              setWithStyle(e.target.checked);
-              setConfirm(false);
-            }}
-            disabled={!editable || running || writing}
-          />
-          Send filmens godkjente bilder med som stilforbilder
-        </label>
-      ) : null}
-      {attached.length ? (
-        <div className="text-[11px] text-text-tertiary">
-          Sendes med til bildemodellen:
-          <ol className="ml-4 list-decimal">
-            {attached.map((a) => (
-              <li key={a.versionId}>
-                {a.label}
-                {a.role === "identity" ? " – utseendet beholdes" : " – bare stilen"}
-              </li>
-            ))}
-          </ol>
-        </div>
-      ) : null}
-      <label className="flex items-center gap-1.5 text-xs text-text-secondary">
-        Kandidater
-        <select
-          aria-label="Antall kandidater"
-          value={candidates}
-          disabled={!editable || running || writing}
-          onChange={(e) => {
-            setCandidates(Number(e.target.value));
-            setConfirm(false);
-          }}
-          className="h-7 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
-        >
-          {[1, 2, 3, 4].map((n) => (
-            <option key={n} value={n}>
-              {n}
-            </option>
-          ))}
-        </select>
-        {candidates > 1 ? (
-          <span className="text-text-tertiary">
-            {candidates} bilder, hvert som egen versjon – koster {candidates} ganger så mye
-          </span>
-        ) : null}
-      </label>
-      {confirm ? (
-        <div
-          role="alertdialog"
-          aria-label="Bekreft generering"
-          className="flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-2 p-2"
-        >
-          <p className="text-xs text-text-primary">
-            {choice.provider === "lovable" ? (
-              <>
-                Dette bruker kreditter i Lovable-arbeidsområdet (
-                {candidates > 1 ? `${candidates} bilder` : "ett bilde"}
-                {usage?.nextCost !== null && usage?.nextCost !== undefined
-                  ? `, anslått ${formatCredits(usage.nextCost * candidates)} – et anslag`
-                  : ", prisen er ukjent"}
-                ).
-              </>
-            ) : (
-              <>
-                Dette belastes {providerInfo(choice.provider)?.name}-kontoen til prosjektets eier (
-                {candidates > 1 ? `${candidates} bilder` : "ett bilde"}, anslått{" "}
-                {costUsd !== null ? formatUsd(costUsd * candidates) : "ukjent pris"} – et anslag).
-              </>
-            )}{" "}
-            Vil du generere nå?
-          </p>
-          <CostLines
-            lines={
-              chosenModel && providerInfo(choice.provider)
-                ? costBreakdown(providerInfo(choice.provider)!, chosenModel, {
-                    candidates,
-                    targetsLabel: "bilder",
-                    total:
-                      choice.provider === "lovable"
-                        ? usage?.nextCost !== null && usage?.nextCost !== undefined
-                          ? formatCredits(usage.nextCost * candidates)
-                          : null
-                        : costUsd !== null
-                          ? `ca. ${formatUsd(costUsd * candidates)}`
-                          : null,
-                  })
-                : [
-                    { label: "Modell", value: "Innebygd bildemodell (Lovable AI)" },
-                    { label: "Antall", value: candidates > 1 ? `${candidates} bilder` : "1 bilde" },
-                    {
-                      label: "Ekstrarunder",
-                      value: "ingen automatiske – nye forsøk startes bare av deg",
-                    },
-                    {
-                      label: "Samlet anslag",
-                      value:
-                        usage?.nextCost !== null && usage?.nextCost !== undefined
-                          ? formatCredits(usage.nextCost * candidates)
-                          : "ukjent pris",
-                    },
-                  ]
-            }
-          />
-          <div className="flex gap-2">
-            <Button size="sm" onClick={() => void run()} disabled={!canRun}>
-              <AiGlyph /> Ja, generer
+              {writing ? <Loader2 className="animate-spin" /> : <AiGlyph />}
+              {writing
+                ? "Skriver … (kan ta et halvt minutt)"
+                : written
+                  ? "Skriv på nytt med AI"
+                  : "Skriv beskrivelsen med AI"}
             </Button>
-            <Button size="sm" variant="ghost" onClick={() => setConfirm(false)}>
-              Avbryt
-            </Button>
+            <span className="text-[11px] text-text-tertiary">
+              Bruker litt kreditter (langt mindre enn et bilde), teller ikke i bildebudsjettet.
+            </span>
           </div>
+          {written ? (
+            <p
+              role="status"
+              className={"text-[11px] " + (stale ? "text-status-uncertain" : "text-text-secondary")}
+            >
+              {stale
+                ? "Bildene som sendes med er endret etter at AI skrev beskrivelsen, så den kan omtale feil bilde. Skriv den på nytt eller tilbakestill før du genererer."
+                : `Skrevet av AI (${written.model}). Les gjennom og endre det som ikke stemmer før du genererer.`}
+            </p>
+          ) : null}
         </div>
-      ) : (
-        <Button
-          size="sm"
-          variant="secondary"
-          disabled={!canRun}
-          onClick={() => setConfirm(true)}
-          className="self-start"
-        >
-          {running ? <Loader2 className="animate-spin" /> : <AiGlyph />}
-          {running ? "Genererer … (kan ta opptil ett minutt)" : "Generer …"}
-        </Button>
-      )}
-      {usage ? (
-        <p className={"text-[11px] " + (overBudget ? "text-status-danger" : "text-text-tertiary")}>
-          {usage.limit !== null
-            ? `Denne måneden: ${usage.used} av ${usage.limit} genereringer i prosjektets budsjett.`
-            : `Denne måneden: ${usage.used} genereringer (ingen egen ramme – faste grenser gjelder).`}
-          {overBudget
-            ? " Budsjettet er brukt opp; eieren kan endre det på prosjektoversikten."
-            : ""}
-        </p>
-      ) : null}
-      {error ? (
-        <p role="alert" className="text-xs text-status-danger">
-          {error}
-        </p>
-      ) : null}
-      {done ? (
-        <p role="status" className="text-xs text-status-success">
-          {done}
-        </p>
-      ) : null}
+        <div className="flex min-w-0 flex-col gap-2">
+          {options.length > 1 ? (
+            <EffortPicker
+              capability="image"
+              connected={new Set(available.data?.providers ?? [])}
+              chosen={(() => {
+                const o = options.find((x) => x.provider.id === choice.provider);
+                const m =
+                  choice.provider === "lovable"
+                    ? // Innebygd: modellen serveren faktisk bruker (frilagt figur eller bakgrunn), så nivået stemmer med bekreftelsen
+                      (o?.models.find((x) => x.id === chosenModel?.id) ?? o?.models[0])
+                    : o?.models.find((x) => x.id === choice.model);
+                return o && m ? { provider: o.provider, model: m } : null;
+              })()}
+              disabled={!editable || running || writing}
+              onChoose={(c) => {
+                setPick(
+                  c.provider.id === "lovable" ? "lovable|" : `${c.provider.id}|${c.model.id}`,
+                );
+                setConfirm(false);
+              }}
+            />
+          ) : null}
+          {options.length > 1 || choice.provider !== "lovable" ? (
+            <label className="flex items-center gap-2 text-xs text-text-secondary">
+              Leverandør og modell
+              <select
+                aria-label="Leverandør og modell"
+                value={`${choice.provider}|${choice.provider === "lovable" ? "" : choice.model}`}
+                disabled={!editable || running || writing}
+                onChange={(e) => {
+                  setPick(e.target.value);
+                  setConfirm(false);
+                }}
+                className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
+              >
+                {options.map((o) =>
+                  o.provider.id === "lovable" ? (
+                    <option key="lovable" value="lovable|">
+                      {o.provider.name}
+                    </option>
+                  ) : (
+                    o.models.map((m) => (
+                      <option key={`${o.provider.id}|${m.id}`} value={`${o.provider.id}|${m.id}`}>
+                        {o.provider.name} – {m.label} (~{formatUsd(m.priceUsd)})
+                      </option>
+                    ))
+                  ),
+                )}
+              </select>
+            </label>
+          ) : null}
+          {chosenModel &&
+          IMAGE_PURPOSE_FOR_KIND[asset.kind] === "cutout" &&
+          !chosenModel.transparent ? (
+            <p className="text-[11px] text-status-uncertain">
+              Denne modellen kan ikke lage gjennomsiktig bakgrunn. Bruk «Frilegg bildet» etterpå,
+              eller velg en modell merket «frilagt».
+            </p>
+          ) : null}
+          {reference ? (
+            <label className="flex items-center gap-1.5 text-xs text-text-secondary">
+              <input
+                type="checkbox"
+                checked={withRef}
+                onChange={(e) => {
+                  setWithRef(e.target.checked);
+                  setConfirm(false);
+                }}
+                disabled={!editable || running || writing}
+              />
+              Bruk dagens bilde (v{reference.number}) som forbilde
+            </label>
+          ) : null}
+          {styleAvailable > 0 ? (
+            <label className="flex items-center gap-1.5 text-xs text-text-secondary">
+              <input
+                type="checkbox"
+                checked={withStyle}
+                onChange={(e) => {
+                  setWithStyle(e.target.checked);
+                  setConfirm(false);
+                }}
+                disabled={!editable || running || writing}
+              />
+              Send filmens godkjente bilder med som stilforbilder
+            </label>
+          ) : null}
+          {attached.length ? (
+            <div className="text-[11px] text-text-tertiary">
+              Sendes med til bildemodellen:
+              <ol className="ml-4 list-decimal">
+                {attached.map((a) => (
+                  <li key={a.versionId}>
+                    {a.label}
+                    {a.role === "identity" ? " – utseendet beholdes" : " – bare stilen"}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ) : null}
+          <label className="flex items-center gap-1.5 text-xs text-text-secondary">
+            Kandidater
+            <select
+              aria-label="Antall kandidater"
+              value={candidates}
+              disabled={!editable || running || writing}
+              onChange={(e) => {
+                setCandidates(Number(e.target.value));
+                setConfirm(false);
+              }}
+              className="h-7 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
+            >
+              {[1, 2, 3, 4].map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
+            {candidates > 1 ? (
+              <span className="text-text-tertiary">
+                {candidates} bilder, hvert som egen versjon – koster {candidates} ganger så mye
+              </span>
+            ) : null}
+          </label>
+          {confirm ? (
+            <div
+              role="alertdialog"
+              aria-label="Bekreft generering"
+              className="flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-2 p-2"
+            >
+              <p className="text-xs text-text-primary">
+                {choice.provider === "lovable" ? (
+                  <>
+                    Dette bruker kreditter i Lovable-arbeidsområdet (
+                    {candidates > 1 ? `${candidates} bilder` : "ett bilde"}
+                    {usage?.nextCost !== null && usage?.nextCost !== undefined
+                      ? `, anslått ${formatCredits(usage.nextCost * candidates)} – et anslag`
+                      : ", prisen er ukjent"}
+                    ).
+                  </>
+                ) : (
+                  <>
+                    Dette belastes {providerInfo(choice.provider)?.name}-kontoen til prosjektets
+                    eier ({candidates > 1 ? `${candidates} bilder` : "ett bilde"}, anslått{" "}
+                    {costUsd !== null ? formatUsd(costUsd * candidates) : "ukjent pris"} – et
+                    anslag).
+                  </>
+                )}{" "}
+                Vil du generere nå?
+              </p>
+              <CostLines
+                lines={
+                  chosenModel && providerInfo(choice.provider)
+                    ? costBreakdown(providerInfo(choice.provider)!, chosenModel, {
+                        candidates,
+                        targetsLabel: "bilder",
+                        total:
+                          choice.provider === "lovable"
+                            ? usage?.nextCost !== null && usage?.nextCost !== undefined
+                              ? formatCredits(usage.nextCost * candidates)
+                              : null
+                            : costUsd !== null
+                              ? `ca. ${formatUsd(costUsd * candidates)}`
+                              : null,
+                      })
+                    : [
+                        { label: "Modell", value: "Innebygd bildemodell (Lovable AI)" },
+                        {
+                          label: "Antall",
+                          value: candidates > 1 ? `${candidates} bilder` : "1 bilde",
+                        },
+                        {
+                          label: "Ekstrarunder",
+                          value: "ingen automatiske – nye forsøk startes bare av deg",
+                        },
+                        {
+                          label: "Samlet anslag",
+                          value:
+                            usage?.nextCost !== null && usage?.nextCost !== undefined
+                              ? formatCredits(usage.nextCost * candidates)
+                              : "ukjent pris",
+                        },
+                      ]
+                }
+              />
+              <div className="flex gap-2">
+                <Button size="sm" onClick={() => void run()} disabled={!canRun}>
+                  <AiGlyph /> Ja, generer
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => setConfirm(false)}>
+                  Avbryt
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={!canRun}
+              onClick={() => setConfirm(true)}
+              className="self-start"
+            >
+              {running ? <Loader2 className="animate-spin" /> : <AiGlyph />}
+              {running ? "Genererer … (kan ta opptil ett minutt)" : "Generer …"}
+            </Button>
+          )}
+          {usage ? (
+            <p
+              className={
+                "text-[11px] " + (overBudget ? "text-status-danger" : "text-text-tertiary")
+              }
+            >
+              {usage.limit !== null
+                ? `Denne måneden: ${usage.used} av ${usage.limit} genereringer i prosjektets budsjett.`
+                : `Denne måneden: ${usage.used} genereringer (ingen egen ramme – faste grenser gjelder).`}
+              {overBudget
+                ? " Budsjettet er brukt opp; eieren kan endre det på prosjektoversikten."
+                : ""}
+            </p>
+          ) : null}
+          {error ? (
+            <p role="alert" className="text-xs text-status-danger">
+              {error}
+            </p>
+          ) : null}
+          {done ? (
+            <p role="status" className="text-xs text-status-success">
+              {done}
+            </p>
+          ) : null}
+        </div>
+      </div>
     </div>
   );
 }

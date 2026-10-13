@@ -652,7 +652,9 @@ async function testCostLines() {
   {
     const { ctx, page } = await openPage(`${P}/montering`);
     try {
-      await page.getByRole("button", { name: "Video for flere scener" }).click();
+      // Ligger i «Mer»-menyen i monteringens verktøylinje (DEC-0078, KI-183)
+      await page.getByRole("button", { name: /^Mer\b/ }).click();
+      await page.getByRole("menuitem", { name: /^Video for flere scener/ }).click();
       await page.waitForTimeout(800);
       const dialog = page.getByRole("dialog");
       await dialog

@@ -2,21 +2,30 @@
  * «I denne scenen» (DEC-0037): karakterene, stedene og objektene fra biblioteket som er brukt i scenen.
  * Dra en ressurs inn på lerretet for å legge den øverst i lagene, eller bruk «+». Klikk på navnet åpner
  * ressursen i biblioteket, der bilder lastes opp (og senere genereres).
+ * Navn fra manuset i scenen som ikke finnes i biblioteket ennå, vises under (KI-49), med «Legg til i
+ * biblioteket» – samme forslag og samme dialog som «Forslag fra manuset» i biblioteket. Ingenting legges
+ * til før brukeren velger det.
  */
 import { useNavigate } from "@tanstack/react-router";
-import { ImageOff, Plus } from "lucide-react";
-import { memo, useMemo } from "react";
+import { BookPlus, ImageOff, Plus } from "lucide-react";
+import { memo, useMemo, useState } from "react";
 import {
   ASSET_KIND_LABEL,
+  REASON_LABEL,
   USAGE_LABEL,
   assetsInScene,
   coverVersion,
+  librarySuggestions,
   sceneContinuityVariant,
   versionsOf,
   type AssetVersion,
+  type LibrarySuggestion,
   type ProjectState,
 } from "@/core";
 import { useImageUrls } from "@/app/library/asset-images";
+import { SuggestionsDialog } from "@/app/library/SuggestionsDialog";
+import type { Commands } from "@/app/project/use-commands";
+import { sceneSuggestions } from "./scene-suggestions";
 
 /** Datatype for dra-og-slipp fra panelet til lerretet (verdien er ressursens ID). */
 export const ASSET_DRAG_TYPE = "application/x-animatic-asset";
@@ -28,6 +37,7 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
   occurrenceId,
   editable,
   onAdd,
+  cmds,
 }: {
   state: ProjectState;
   projectId: string;
@@ -36,6 +46,8 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
   editable: boolean;
   /** Legg ressursen inn i scenen (øverst, midt i bildet). null = ingen 2D-scene ennå. */
   onAdd: ((assetId: string) => void) | null;
+  /** For «Legg til i biblioteket» (KI-49). Uten den vises navnene uten knapp. */
+  cmds?: Commands;
 }) {
   const navigate = useNavigate();
   const items = useMemo(
@@ -65,6 +77,21 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
     [looks],
   );
   const urls = useImageUrls(paths);
+  // Navn fra manuset i scenen som ikke er i biblioteket (KI-49). Avhenger bare av manus og bibliotek, så
+  // redigering av lag og kamera regner ikke forslagene på nytt.
+  const allSuggestions = useMemo(
+    () => librarySuggestions(state, productionId),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [state.assets, state.occurrences, state.blocks, state.variants, productionId],
+  );
+  const missing = useMemo(
+    () => sceneSuggestions(state, productionId, occurrenceId, allSuggestions),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [allSuggestions, occurrenceId],
+  );
+  /** Forslagene som vises i dialogen (ett navn, eller alle i scenen). */
+  const [adding, setAdding] = useState<readonly LibrarySuggestion[] | null>(null);
+  const canAdd = editable && !!cmds;
 
   return (
     <section aria-label="I denne scenen" className="flex min-h-0 flex-col border-t border-border">
@@ -73,8 +100,10 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
       </h2>
       {items.length === 0 ? (
         <p className="px-3 pb-2 text-xs text-text-tertiary">
-          Ingen ressurser fra biblioteket er funnet i scenen. Legg dem til i Ressursbiblioteket (for
-          eksempel med «Forslag fra manuset»).
+          Ingen ressurser fra biblioteket er funnet i scenen.
+          {missing.length
+            ? " Navnene fra manuset under kan legges til i biblioteket."
+            : " Legg dem til i Ressursbiblioteket (for eksempel med «Forslag fra manuset»)."}
         </p>
       ) : (
         <>
@@ -151,6 +180,89 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
           </ul>
         </>
       )}
+      {missing.length ? (
+        <div className="px-2 pb-2" data-testid="scene-missing-assets">
+          <div className="flex items-center gap-1 px-1 pb-1">
+            <h3 className="min-w-0 flex-1 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+              Fra manuset, ikke i biblioteket ({missing.length})
+            </h3>
+            {canAdd && missing.length > 1 ? (
+              <button
+                type="button"
+                onClick={() => setAdding(missing)}
+                className="shrink-0 rounded-sm px-1 text-[11px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
+                title="Gå gjennom alle navnene fra denne scenen"
+              >
+                Alle …
+              </button>
+            ) : null}
+          </div>
+          <ul className="flex flex-col gap-0.5">
+            {missing.map((x) => (
+              <li
+                key={`${x.reason}|${x.name}`}
+                className="flex flex-col rounded-sm border border-dashed border-border px-1.5 py-0.5"
+                title={`${x.name} – ${ASSET_KIND_LABEL[x.kind]}${x.kindUncertain ? " (usikker type)" : ""}, ${REASON_LABEL[x.reason]}${x.possibleMatch ? `. Kanskje samme som «${x.possibleMatch.assetName}»` : ""}${x.uncertain ? ". Usikkert forslag" : ""}`}
+              >
+                <span
+                  className={
+                    "truncate text-[12px] " +
+                    (x.uncertain ? "text-text-tertiary" : "text-text-secondary")
+                  }
+                >
+                  {x.name}
+                  <span className="text-[11px] text-text-tertiary">
+                    {" "}
+                    · {ASSET_KIND_LABEL[x.kind]}
+                    {x.possibleMatch ? " · mulig treff" : ""}
+                  </span>
+                </span>
+                {canAdd ? (
+                  <button
+                    type="button"
+                    onClick={() => setAdding([x])}
+                    aria-label={`Legg «${x.name}» til i biblioteket`}
+                    title="Legg til i biblioteket"
+                    className="inline-flex items-center gap-1 self-start rounded-sm px-0.5 text-[11px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
+                  >
+                    <BookPlus className="size-3.5" aria-hidden />
+                    Legg til i biblioteket
+                  </button>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+      {cmds && adding ? (
+        <SuggestionsDialog
+          open
+          onOpenChange={(o) => {
+            if (!o) setAdding(null);
+          }}
+          state={state}
+          suggestions={adding}
+          cmds={cmds}
+          projectId={projectId}
+        />
+      ) : null}
     </section>
   );
-});
+}, sameExceptCommands);
+
+/**
+ * `cmds` er et nytt objekt for hver tegning av sceneeditoren (også under avspilling). Panelet tegnes derfor
+ * ikke om bare fordi det endres; dialogen bruker `runAndWait`, som er stabil.
+ */
+function sameExceptCommands(
+  a: Readonly<Record<string, unknown>>,
+  b: Readonly<Record<string, unknown>>,
+): boolean {
+  const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
+  for (const k of keys) {
+    if (k === "cmds") {
+      if (!a[k] !== !b[k]) return false;
+    } else if (!Object.is(a[k], b[k])) return false;
+  }
+  return true;
+}

@@ -98,12 +98,12 @@ Desktop-versjon (macOS/Windows) kan bruke samme `core` og `engine` i Tauri eller
 | Binding | Hvor | Hvorfor den er nødvendig | Slik byttes den |
 |---|---|---|---|
 | Lovable (bygg, publisering, hemmeligheter) | `src/integrations/` (generert), `routeTree.gen.ts` | Første versjon utvikles i Lovable (REQ-0006) | Vanlig Vite/TanStack-bygg; hemmeligheter i miljøvariabler |
-| Supabase/Postgres (data, RLS, Auth, Storage, Realtime) | `db/migrations/`, `adapters/storage`, `adapters/ai`, nettleserklienten `src/app/db.ts` | Lovable Cloud er backend; tilgang håndheves i databasen | Standard SQL og Postgres; Storage og Auth bak adapter |
+| Supabase/Postgres (data, RLS, Auth, Storage, Realtime) | `db/migrations/`, `adapters/storage`, `adapters/ai`, nettleseradapterne `src/adapters/browser/` | Lovable Cloud er backend; tilgang håndheves i databasen | Standard SQL og Postgres; Storage og Auth bak adapter |
 | TanStack Start serverfunksjoner | `adapters/**/*.functions.ts` | Server for nøkler og sperrer uten egen tjeneste | Samme funksjoner som HTTP-endepunkter |
 | Nettleser-API (WebCodecs, Canvas, Web Audio, CompressionStream) | `engine/`, `app/` | Bildepresis avspilling og eksport lokalt | Finnes i Electron/Tauri (Chromium/WebKit) |
 | AI-leverandører | `adapters/ai`, katalogen `core/generation/providers.ts` | Valgfritt; modellagnostisk (REQ-0269) | Ny adapter + katalogpost |
 
-**Kjent avvik:** 24 filer i `src/app` bruker Supabase-klienten direkte (innlogging, lagring av medier, AI-jobber, tilstedeværelse, versjoner) i stedet for et repositorigrensesnitt: `ai/{last-frame,use-ai-jobs,use-providers,video-jobs}.ts`, `assembly/film-import.ts`, `auth/*`, `library/{AssetZip.tsx,asset-audio.ts,asset-images.ts}`, `project/{use-presence,use-project,use-versions}.ts`, `projects/{DurationHistory,MembersSection,ProjectDangerDialogs,ProjectOverview,ProjectsScreen}.tsx`, `projects/backup.ts`, `script/ImportDialog.tsx`, `shell/{AppHeader,SchemaBanner}.tsx`, `shell/use-schema.ts`. Kjernen (`src/core/`) har ingen slik binding (testet i `tests/architecture/`). Flytting bak adapter er KI-181.
+**Status (DEC-0078):** all Supabase-bruk i nettleseren går via små funksjoner i `src/adapters/browser/` (auth, storage-files, project-data, presence, ai, versions, members, projects, imported-documents, history-records); bare `src/adapters/browser/client.ts` importerer klienten. `src/app` og rutene er uten Supabase-binding (testet i `tests/architecture/app-uten-supabase.test.ts`, tom unntaksliste). `src/app/db.ts` er en bakoverkompatibel videreeksport.
 
 ## 7. Tekniske hovedrisikoer (mandat 35.7) – se også KNOWN_ISSUES
 | Risiko | Tiltak |

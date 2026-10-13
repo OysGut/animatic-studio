@@ -16,6 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useRecordExport } from "@/app/projects/use-history-records";
 
 const control =
   "h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary";
@@ -34,6 +35,8 @@ export function SubtitleDialog({
   const [lang, setLang] = useState("nb");
   const [format, setFormat] = useState<"srt" | "vtt">("srt");
   const [ready, setReady] = useState<ReadyFile | null>(null);
+  // Eksportloggen (REQ-0037, DEC-0078)
+  const recordExport = useRecordExport(state.project.id);
   const result = useMemo(
     () => (open ? subtitleCues(state, productionId, lang) : { cues: [], missing: 0 }),
     [open, state, productionId, lang],
@@ -49,6 +52,13 @@ export function SubtitleDialog({
         format === "srt" ? "application/x-subrip" : "text/vtt",
       ),
     );
+    recordExport({
+      productionId,
+      kind: "subtitles",
+      fileName: name.replace(/[\\/:*?"<>|]+/g, "-"),
+      settings: { format, language: lang },
+      occurrenceIds: [],
+    });
   }
 
   return (

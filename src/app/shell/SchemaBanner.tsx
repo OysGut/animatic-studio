@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle } from "lucide-react";
-import { checkSchema, EXPECTED_SCHEMA_VERSION } from "@/adapters/storage/project-rows";
-import { db } from "@/app/db";
+import { EXPECTED_SCHEMA_VERSION } from "@/adapters/storage/project-rows";
+import { fetchSchemaStatus } from "@/adapters/browser/project-data";
 
 /**
  * Viser et tydelig varsel hvis databasemigrasjonene ikke er kjørt i Lovable Cloud (KI-04, LOVABLE_SYNC.md B).
@@ -9,7 +9,7 @@ import { db } from "@/app/db";
 export function SchemaBanner() {
   const { data } = useQuery({
     queryKey: ["schema-status"],
-    queryFn: () => checkSchema(db),
+    queryFn: () => fetchSchemaStatus(),
     staleTime: 60_000,
   });
   if (!data || data.kind === "ok") return null;

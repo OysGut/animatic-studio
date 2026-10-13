@@ -25,6 +25,7 @@ import {
 import { styleGuideError } from "../generation/style";
 import { posterAssetRefs, posterDocumentError } from "../presentation/document";
 import { stateFromRows, type ProjectRows, type Row } from "../patch";
+import { sameOptionalDurationAssumptions } from "../screenplay/duration";
 
 export const BACKUP_FORMAT = "animatic-studio-backup";
 export const BACKUP_FORMAT_VERSION = 1;
@@ -446,6 +447,8 @@ export function restoredState(
       default_transition_overlap: p["default_transition_overlap"] ?? false,
       ai_month_limit: p["ai_month_limit"] ?? null,
       ai_price_per_image: p["ai_price_per_image"] ?? null,
+      // Antakelsene for varighetsestimat (migrasjon 0028, KI-28) følger med sikkerhetskopien
+      duration_assumptions: p["duration_assumptions"] ?? null,
     },
     productions: t("productions"),
     scenes: t("scenes"),
@@ -488,7 +491,11 @@ export function restoredState(
     JSON.stringify(state.project.defaultTransition ?? null) ===
       JSON.stringify(base.project.defaultTransition ?? null) &&
     state.project.aiMonthLimit === base.project.aiMonthLimit &&
-    state.project.aiPricePerImage === base.project.aiPricePerImage
+    state.project.aiPricePerImage === base.project.aiPricePerImage &&
+    sameOptionalDurationAssumptions(
+      state.project.durationAssumptions,
+      base.project.durationAssumptions,
+    )
       ? base.project
       : { ...state.project, revision: base.project.revision + 1 };
   state = {

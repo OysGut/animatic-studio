@@ -209,7 +209,8 @@ export function StyleGuideSection({
   );
 }
 
-function StyleGuideDialog({
+/** Redigering av en stilprofil – brukes også fra ressursbiblioteket (REQ-0121, DEC-0078). */
+export function StyleGuideDialog({
   state,
   cmds,
   editable,

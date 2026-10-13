@@ -14,8 +14,7 @@ import {
   type ProjectState,
   type ZipCategory,
 } from "@/core";
-import { loadProjectState } from "@/adapters/storage/project-rows";
-import { db } from "@/app/db";
+import { fetchProjectState } from "@/adapters/browser/project-data";
 import { openZipSink, writeZip, type ZipProgress } from "@/engine/export/zip";
 import { signedUrls } from "./asset-images";
 import { Button } from "@/components/ui/button";
@@ -54,7 +53,7 @@ export function useZipState(projectId: string, enabled: boolean) {
     queryKey: ["zip-state", projectId],
     enabled,
     staleTime: 30_000,
-    queryFn: () => loadProjectState(db, projectId),
+    queryFn: () => fetchProjectState(projectId),
   });
 }
 

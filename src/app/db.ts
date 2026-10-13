@@ -1,5 +1,5 @@
-import { supabase } from "@/integrations/supabase/client";
-import type { AnyClient } from "@/adapters/storage/project-rows";
-
-/** Nettleserklient uten genererte tabelltyper (typer genereres av Lovable etter migrasjon 0001). */
-export const db = supabase as unknown as AnyClient;
+/**
+ * Bakoverkompatibel inngang til nettleserklienten. Klienten bor i `src/adapters/browser/client.ts` (KI-181);
+ * ny kode i `src/app` skal bruke funksjonene i `src/adapters/browser/` i stedet.
+ */
+export { db } from "@/adapters/browser/client";

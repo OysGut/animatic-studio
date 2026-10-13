@@ -4,7 +4,7 @@
  */
 import { ASSET_MAX_BYTES, AUDIO_MIME_TYPES, newId, type AssetMedia } from "@/core";
 import { sha256Hex } from "@/engine/import/browser";
-import { supabase } from "@/integrations/supabase/client";
+import { uploadFile } from "@/adapters/browser/storage-files";
 import type { Commands } from "@/app/project/use-commands";
 import { ASSET_BUCKET, safeFileName } from "./asset-images";
 
@@ -65,9 +65,10 @@ export async function uploadAssetAudio(
   if (durationMs === null)
     throw new Error("Lydfilen kunne ikke leses av nettleseren. Prøv MP3 eller WAV.");
   const path = `${projectId}/${assetId}/${versionId}/${safeFileName(file.name)}`;
-  const { error } = await supabase.storage
-    .from(ASSET_BUCKET)
-    .upload(path, file, { contentType: mimeType, upsert: false });
+  const error = await uploadFile(ASSET_BUCKET, path, file, {
+    contentType: mimeType,
+    upsert: false,
+  });
   if (error) {
     if (/mime|type.*not.*(allowed|supported)/i.test(error.message))
       throw new Error(
@@ -156,8 +157,10 @@ export async function createSoundAsset(
       label: "Ny lydfil",
     },
   ];
+  // Ett angresteg for hele den nye lyden (KI-56, DEC-0049): de tre endringene samles i samme gruppe
+  const group = newId<"command">();
   for (const s of steps) {
-    const r = await cmds.runAndWait(s.command, s.label);
+    const r = await cmds.runAndWait(s.command, s.label, group);
     if (r.error) throw new Error(r.error);
   }
   return { assetId, variantId, versionId, durationMs: media.durationMs ?? 1000 };

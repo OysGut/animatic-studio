@@ -5,7 +5,7 @@
  */
 import { useQuery } from "@tanstack/react-query";
 import { jobFromRow, jobState, monthStartUtc, type GenerationJob } from "@/core";
-import { db } from "@/app/db";
+import { fetchProjectJobs } from "@/adapters/browser/ai";
 
 export function aiJobsKey(projectId: string) {
   return ["ai-jobs", projectId] as const;
@@ -24,22 +24,10 @@ export function useAiJobs(projectId: string, enabled = true) {
     queryKey: aiJobsKey(projectId),
     enabled,
     queryFn: async (): Promise<AiJobs> => {
-      const [list, count] = await Promise.all([
-        db
-          .from("generation_jobs")
-          .select("*")
-          .eq("project_id", projectId)
-          .order("created_at", { ascending: false })
-          .limit(300),
-        db
-          .from("generation_jobs")
-          .select("id", { count: "exact", head: true })
-          .eq("project_id", projectId)
-          .neq("status", "failed")
-          // AI-skrevne beskrivelser (DEC-0066) teller ikke i bildebudsjettet
-          .neq("kind", "prompt")
-          .gte("created_at", monthStartUtc(new Date()).toISOString()),
-      ]);
+      const { list, count } = await fetchProjectJobs(
+        projectId,
+        monthStartUtc(new Date()).toISOString(),
+      );
       if (list.error) {
         // Før migrasjon 0010 finnes ikke loggen
         if (missing(list.error.message)) return { jobs: [], monthCount: 0 };

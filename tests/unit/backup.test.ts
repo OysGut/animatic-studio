@@ -233,6 +233,40 @@ describe("sikkerhetskopi", () => {
     expect(diffStates(base, s).updates["projects"]).toHaveLength(1);
   });
 
+  it("egne varighetsantakelser tas med også når format og bildefrekvens er standard (KI-28)", async () => {
+    const b = backup();
+    const assumptions = {
+      dialogueWordsPerMinute: 120,
+      actionSecondsPerLine: 3,
+      headingSeconds: 1,
+      minSceneSeconds: 4,
+    };
+    const tweaked = {
+      ...b,
+      project: {
+        ...b.project,
+        default_transition_kind: "cut",
+        default_transition_frames: 0,
+        default_transition_overlap: false,
+        ai_month_limit: null,
+        ai_price_per_image: null,
+        duration_assumptions: assumptions,
+      },
+    };
+    const base = freshProject();
+    const s = restoredState(
+      tweaked,
+      await backupIdMap(tweaked, NEW_PROJECT, NEW_MAIN),
+      base,
+      ACTOR,
+    );
+    expect(s.project.fps).toEqual(base.project.fps);
+    expect(s.project.frameWidth).toBe(base.project.frameWidth);
+    expect(s.project.durationAssumptions).toEqual(assumptions);
+    expect(s.project.revision).toBe(2);
+    expect(diffStates(base, s).updates["projects"]).toHaveLength(1);
+  });
+
   it("avviser filstier utenfor prosjektet", async () => {
     const b = backup();
     const takes = b.tables["takes"]!.map((t) => ({

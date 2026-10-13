@@ -198,9 +198,21 @@ export function isStillTake(t: Take | null | undefined): t is Take {
   return !!t && t.kind === "still" && !!t.mediaRef;
 }
 
+/**
+ * Lengden på en versjon av scenen i bilder med prosjektets bildefrekvens (KI-48): for film med kjent
+ * lengde i filen (`media.durationMs`) regnes den ut fra filen, så den stemmer også etter at prosjektets
+ * bildefrekvens er endret; ellers den lagrede lengden i bilder.
+ */
+export function takeFrames(t: Take, fps: Rational): number {
+  const ms = t.media?.durationMs;
+  if (typeof ms === "number" && Number.isFinite(ms) && ms > 0)
+    return Math.max(1, secondsToFrames(ms / 1000, fps));
+  return t.durationFrames ?? 0;
+}
+
 export function activeFilmTake(s: ProjectState, activeTakeId: string | null): Take | null {
   const t = activeTakeId ? s.takes[activeTakeId] : undefined;
-  return isFilmTake(t) && (t.durationFrames ?? 0) > 0 ? t : null;
+  return isFilmTake(t) && takeFrames(t, s.project.fps) > 0 ? t : null;
 }
 
 /** Korteste beregnede scenelengde (samme regel som i sceneeditoren). */
@@ -302,7 +314,7 @@ export function filmClips(s: ProjectState, productionId: string): FilmClip[] {
       take = parts.find((p) => p.take)?.take ?? null;
     } else {
       take = activeFilmTake(s, from.activeTakeId);
-      const frames = take ? take.durationFrames! : set ? c.durationFrames : estimate;
+      const frames = take ? takeFrames(take, fps) : set ? c.durationFrames : estimate;
       parts = [
         {
           id: null,

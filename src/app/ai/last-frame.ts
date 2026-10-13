@@ -4,8 +4,7 @@
  * figurer, lys og kamera fortsetter der forrige segment sluttet. Feiler det, går alt annet som før.
  */
 import { lastFramePath } from "@/core";
-import { supabase } from "@/integrations/supabase/client";
-import { ASSET_BUCKET } from "@/app/library/asset-images";
+import { ASSET_BUCKET, uploadFile } from "@/adapters/browser/storage-files";
 
 /** PNG av siste bilde i videoen, eller null (nettleseren kunne ikke lese den innen 15 sekunder). */
 export async function extractLastFrame(video: Blob): Promise<Blob | null> {
@@ -59,9 +58,10 @@ export async function storeLastFrame(resultPath: string, video: Blob): Promise<s
   if (!path) return null;
   const png = await extractLastFrame(video);
   if (!png) return null;
-  const { error } = await supabase.storage
-    .from(ASSET_BUCKET)
-    .upload(path, png, { contentType: "image/png", upsert: false });
+  const error = await uploadFile(ASSET_BUCKET, path, png, {
+    contentType: "image/png",
+    upsert: false,
+  });
   // Finnes allerede (lagt inn fra en annen fane): like bra
   if (error && !/exists|duplicate/i.test(error.message)) return null;
   return path;

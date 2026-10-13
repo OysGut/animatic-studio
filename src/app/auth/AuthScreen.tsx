@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { sendSignInLink, signInWithPassword, signUp } from "@/adapters/browser/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,15 +35,11 @@ export function AuthScreen() {
     const redirect = typeof window !== "undefined" ? window.location.href : undefined;
     const res =
       mode === "signin"
-        ? await supabase.auth.signInWithPassword({ email, password })
-        : await supabase.auth.signUp({
-            email,
-            password,
-            options: redirect ? { emailRedirectTo: redirect } : {},
-          });
+        ? await signInWithPassword(email, password)
+        : await signUp(email, password, redirect);
     setBusy(false);
     if (res.error) setError(norwegianAuthError(res.error.message));
-    else if (mode === "signup" && !res.data.session)
+    else if (mode === "signup" && !res.session)
       setNotice("Kontoen er opprettet. Bekreft e-postadressen via lenken vi sendte deg.");
   }
 
@@ -55,10 +51,7 @@ export function AuthScreen() {
     setBusy(true);
     setError(null);
     const redirect = typeof window !== "undefined" ? window.location.href : undefined;
-    const res = await supabase.auth.signInWithOtp({
-      email,
-      options: redirect ? { emailRedirectTo: redirect } : {},
-    });
+    const res = await sendSignInLink(email, redirect);
     setBusy(false);
     if (res.error) setError(norwegianAuthError(res.error.message));
     else setNotice("Vi har sendt en innloggingslenke til " + email + ".");

@@ -36,6 +36,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useRecordExport } from "@/app/projects/use-history-records";
 
 const control =
   "h-8 w-full rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary";
@@ -243,6 +244,8 @@ export function ExportPosterDialog({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState<ReadyFile | null>(null);
+  // Eksportloggen (REQ-0037, DEC-0078)
+  const recordExport = useRecordExport(state.project.id);
   const [missing, setMissing] = useState(0);
   const [progress, setProgress] = useState<number | null>(null);
   const pngSize = posterPngSize(poster.widthMm, poster.heightMm, ppi);
@@ -295,6 +298,13 @@ export function ExportPosterDialog({
         );
         if (ac.signal.aborted) return;
         setReady(prepareDownload(bytes, posterFileName(p, "pdf"), "application/pdf"));
+        recordExport({
+          productionId: poster.productionId,
+          kind: "poster",
+          fileName: posterFileName(p, "pdf"),
+          settings: { format: "pdf", language: lang, bleed, cropMarks: marks },
+          occurrenceIds: [],
+        });
         setMissing(missing);
       } else {
         setProgress(0);
@@ -309,6 +319,13 @@ export function ExportPosterDialog({
         );
         if (ac.signal.aborted) return;
         setReady(prepareDownload(png.parts, posterFileName(p, "png"), "image/png"));
+        recordExport({
+          productionId: poster.productionId,
+          kind: "poster",
+          fileName: posterFileName(p, "png"),
+          settings: { format: "png", language: lang, ppi },
+          occurrenceIds: [],
+        });
         setMissing(png.missing);
       }
     } catch (e) {

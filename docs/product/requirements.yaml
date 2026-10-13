@@ -325,12 +325,14 @@ requirements:
   - Hver plattformspesifikk avhengighet er isolert bak et grensesnitt og dokumentert med begrunnelse.
   tests:
   - 'manuell: arkitekturgjennomgang av avhengighetsliste'
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - "docs/architecture/ARCHITECTURE.md"
   - "src/adapters/"
+  - "src/adapters/browser/"
   verification:
   - "docs/architecture/ARCHITECTURE.md"
+  - "tests/architecture/app-uten-supabase.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -341,6 +343,9 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0076
     change: "Implementeringsreferanse lagt til."
+  - date: '2026-10-12'
+    decision: DEC-0078
+    change: "All Supabase-bruk i nettleseren går via src/adapters/browser/; src/app og rutene importerer ikke klienten. Arkitekturtest med tom unntaksliste."
   notes: ''
 - id: REQ-0009
   title: Tydelig lagdeling av arkitekturen
@@ -887,14 +892,18 @@ requirements:
     fra strukturell plassering.
   tests:
   - 'enhet: datamodell har separate felt for struktur og kildeversjon'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
-  - src/core/views.ts#outdatedTakes
+  - "src/core/views.ts#outdatedTakes"
+  - "src/core/library/content-sync.ts"
+  - "src/core/commands/apply.ts (AddTake, AcceptScriptChanges, SetProducedFrom)"
   verification:
   - "tests/unit/commands.test.ts::ferdig materiale endres ikke, men blir markert som utdatert for berørte blokker"
   - "tests/unit/verifisering4-kjerne.test.ts::REQ-0022: 2D-scenen husker manuslinjene den ble laget fra; å flytte eller deaktivere scenen endrer ikke det"
   - "tests/unit/commands.test.ts"
   - "docs/development/VISUAL_QA_DEC-0076.md"
+  - "tests/unit/bibliotek-opphav-synk.test.ts"
+  - "tests/unit/dec0078-bolge2-kjerne.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -905,6 +914,9 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0076
     change: "Skillet finnes og er testet: 2D-scenen husker manuslinjenes revisjoner adskilt fra plasseringen, og flytting/deaktivering endrer det ikke; AI-jobber lagrer manusversjon og ressursversjoner i sporet. Men 2D-scener og importert film lagrer ikke ressursversjonene de er laget fra (src/core/model.ts:228 og :551 – bare blockRevisions)."
+  - date: '2026-10-12'
+    decision: DEC-0078
+    change: "Strukturell plassering og innholdsmessig grunnlag holdes adskilt (takeMaterialBasis/compositionMaterialBasis); ressursversjonene lagres i produced_from.assetVersions for 2D-scener og versjoner av scenen (også importert film), og scener flagges «Ressurs oppdatert» i bibliotek, montering og sceneeditor. Gjenstår: lag lagt til etter siste godkjenning (KI-185)."
   notes: ''
 - id: REQ-0023
   title: Strukturell synkronisering er automatisk
@@ -1475,10 +1487,14 @@ requirements:
   - 'enhet: skjemavalidering av ID-felt for alle 21 typer'
   status: Under arbeid
   implementation:
-  - src/core/ids.ts
+  - "src/core/ids.ts"
+  - "db/migrations/0028_duration_exports.sql"
+  - "src/core/export-records.ts"
+  - "docs/architecture/DOMAIN_MODEL.md"
   verification:
   - "tests/unit/verifisering4-kjerne.test.ts::REQ-0037 – stabile identifikatorer for domeneobjektene"
   - "docs/development/VISUAL_QA_DEC-0076.md"
+  - "tests/unit/duration-history-exports.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -1489,6 +1505,9 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0076
     change: "Alle objekter i domenetilstanden og radene (prosjekt, produksjon, scene, blokk/replikk, segment, sceneforekomst, ressurser og varianter/utseender, versjoner, genereringsprompt, takes, plakater, stilprofiler, manusversjoner, genereringsjobber) har en UUID som er nøkkelen og ikke endres (testet). «Filmmontering» (Assembly, DOMAIN_MODEL.md:48) og «eksportversjon» (export_versions, DATA_RELATIONSHIPS.md:10 og 49) finnes ikke som egne objekter med ID."
+  - date: '2026-10-12'
+    decision: DEC-0078
+    change: "Eksportversjoner har egen ID (export_records, migrasjon 0028) og vises som «Tidligere eksporter» for manus, film, lyd, undertekster og plakater; filmmontering identifiseres med produksjons-ID (+ språk), se DOMAIN_MODEL.md. Gjenstår en samlet test av ID for alle domenetyper."
   notes: ''
 - id: REQ-0038
   title: ID-er uavhengige av navn, språk og plassering
@@ -2965,10 +2984,13 @@ requirements:
   - "src/core/screenplay/versions.ts#snapshotFromState"
   - "db/migrations/0003_script_versions.sql"
   - "src/app/script/VersionsDialog.tsx"
+  - "src/core/screenplay/restore-version.ts"
   verification:
   - "tests/unit/versions.test.ts"
   - "tests/unit/versions.test.ts::bevarer rekkefølge, synlighet, nummer, overskrift og tekst, og endres ikke av senere endringer (REQ-0032, REQ-0077)"
   - "tests/db/run-db-tests.ts::0003: manusversjon er et uforanderlig øyeblikksbilde lik kjernens, med løpenummer og forelder"
+  - "tests/unit/restore-version.test.ts"
+  - "tests/unit/versions-dialog-restore.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -2979,6 +3001,9 @@ requirements:
       til gjeldende manus (gjenoppretting) er ikke bygget ennå; status Under arbeid
   - date: '2026-10-12'
     change: "Revisjon natt til 12.10.2026: manusversjoner lagrer innhold, rekkefølge, synlighet, nummer, forelder og aktiv take; verifisert med eksisterende tester"
+  - date: '2026-10-12'
+    decision: DEC-0078
+    change: "En tidligere manusversjon kan gjøres gjeldende fra Manusversjoner (forhåndsvisning, bekreftelse, én angring; delvis utførelse meldes). Ingenting slettes."
   notes: ''
 - id: REQ-0078
   title: Versjonssammenligning med endringstyper
@@ -4549,15 +4574,20 @@ requirements:
   - Det finnes en graf/liste over forventet filmlengde over tid basert på lagrede estimater.
   tests:
   - 'enhet: lagring av estimat-snapshots'
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - "src/core/screenplay/duration.ts#snapshotDuration"
   - "src/app/projects/DurationHistory.tsx"
+  - "db/migrations/0028_duration_exports.sql"
+  - "src/core/screenplay/duration-snapshot.ts"
   verification:
   - "tests/unit/production-status.test.ts::en manusversjon gir samme estimat som tilstanden den ble laget fra, og film teller med filmens lengde"
   - "tests/visual/screens.mjs::80c-oversikt-utvikling"
   - "tests/unit/production-status.test.ts"
   - "docs/development/VISUAL_QA_DEC-0076.md"
+  - "tests/unit/duration-history-exports.test.ts"
+  - "tests/unit/version-estimate.test.ts"
+  - "tests/db/run-db-tests.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -4571,6 +4601,9 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0076
     change: "Vurdert på nytt: uendret siden DEC-0075. «Utvikling over tid» regner estimatet på nytt fra hver manusversjons tekst med dagens antakelser (src/core/screenplay/duration.ts:93, snapshotDuration); tidligere estimater, 2D-scenenes og planens lengde på tidspunktet lagres ikke. Kravet om å bevare tidligere estimater er ikke oppfylt."
+  - date: '2026-10-12'
+    decision: DEC-0078
+    change: "Estimater lagres med hver manusversjon og med «Lagre estimat» (migrasjon 0028) og vises med antakelsene som ble brukt; versjoner uten lagret estimat merkes «regnet på nytt med dagens antakelser». Antakelsene lagres per prosjekt."
   notes: "Bygger på manusversjonene; 2D-scenenes og planens lengde på tidspunktet lagres ikke."
 - id: REQ-0121
   title: Sentralt ressursbibliotek
@@ -4592,19 +4625,23 @@ requirements:
   - Hver av de 11 ressurstypene kan opprettes og vises i biblioteket.
   tests:
   - 'integrasjon: CRUD per ressurstype'
-  status: Under arbeid
+  status: Implementert – ikke verifisert
   implementation:
-  - src/core/model.ts#Asset
-  - src/core/commands/apply.ts#CreateAssets
-  - src/core/library/index.ts
-  - src/app/library/LibraryWorkspace.tsx
-  - src/app/library/AssetDetail.tsx
-  - db/migrations/0004_library_notes.sql
+  - "src/core/model.ts#Asset"
+  - "src/core/commands/apply.ts#CreateAssets"
+  - "src/core/library/index.ts"
+  - "src/app/library/LibraryWorkspace.tsx"
+  - "src/app/library/AssetDetail.tsx"
+  - "db/migrations/0004_library_notes.sql"
+  - "src/core/library/provenance.ts"
+  - "src/core/library/style-profiles.ts"
+  - "src/app/library/StyleProfilesPanel.tsx"
   verification:
   - "tests/unit/library.test.ts"
   - "tests/visual/screens.mjs::20-bibliotek"
   - "tests/unit/verifisering4-kjerne.test.ts::REQ-0121: karakterer, objekter/rekvisitter, dyr, lokasjoner, miljøer/bakgrunner og lyd kan opprettes og listes"
   - "docs/development/VISUAL_QA_DEC-0076.md"
+  - "tests/unit/bibliotek-opphav-synk.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -4615,6 +4652,9 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0076
     change: "Karakterer, objekter/rekvisitter, dyr, lokasjoner, miljøer/bakgrunner og lyd kan opprettes og listes i biblioteket og leses tilbake (testet). Visuelle stilprofiler ligger på prosjektoversikten, ikke i biblioteket, og bilder og genererte ressurser er versjoner av ressurser, ikke egne typer (AssetKind, src/core/model.ts:274)."
+  - date: '2026-10-12'
+    decision: DEC-0078
+    change: "Stilprofiler vises og redigeres i biblioteket; hver ressursversjon viser opphav (lastet opp, AI med leverandør/modell, frilagt, harmonisert) med filter. Opphavet utledes (KI-184); harmonisering finnes ikke ennå."
   notes: ''
 - id: REQ-0122
   title: Ressurser gjenbrukes på tvers av scener og produksjoner
@@ -19874,6 +19914,7 @@ requirements:
   - "tests/unit/verifisering-kommandoer.test.ts"
   - "tests/db/run-db-tests.ts::INV-C1: en endring basert på gammel revisjon avvises av databasen (P0409)"
   - "docs/development/VISUAL_QA_DEC-0076.md"
+  - "tests/unit/ux-dec0078.test.ts"
   history:
   - date: '2026-10-08'
     decision: DEC-0003
@@ -19889,6 +19930,9 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0076
     change: "Grensesnittet (useCommands): når serveren avviser en endring av samme blokk (revisjonskonflikt), vises «Noen andre endret dette samtidig. Siste versjon er hentet – prøv igjen.», prosjektet lastes på nytt med den andres versjon, og en ny endring lagres; revisjonene brukeren så, sendes med. Kjernen og databasen er testet før. Merknad: den avviste teksten beholdes ikke (use-commands.ts:209–215, :229–237) og må skrives på nytt."
+  - date: '2026-10-12'
+    decision: DEC-0078
+    change: "Avvist tekst ved samtidig redigering går ikke tapt: den vises med «Kopier teksten» og «Prøv igjen med min tekst» (KI-182)."
   notes: "Begge kriteriene håndheves i kjernen og databasen (testet), men ingen test viser at konflikten vises i grensesnittet, og den avviste endringen må skrives inn på nytt."
 - id: REQ-0523
   title: Prosjektroller

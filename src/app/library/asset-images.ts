@@ -6,9 +6,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { ASSET_MAX_BYTES, ASSET_MIME_TYPES, newId, type AssetMedia } from "@/core";
 import { sha256Hex } from "@/engine/import/browser";
-import { supabase } from "@/integrations/supabase/client";
+import {
+  ASSET_BUCKET,
+  createSignedUrls,
+  downloadFile,
+  uploadFile,
+} from "@/adapters/browser/storage-files";
 
-export const ASSET_BUCKET = "assets";
+export { ASSET_BUCKET };
 
 /** Filnavn som lagringstjenesten godtar (bare ASCII; æ/ø/å gjøres om), uten «..». */
 export function safeFileName(name: string): string {
@@ -55,9 +60,10 @@ export async function uploadAssetImage(
   const bytes = new Uint8Array(await file.arrayBuffer());
   const [sha256, size] = await Promise.all([sha256Hex(bytes), imageSize(file)]);
   const path = `${projectId}/${assetId}/${versionId}/${safeFileName(file.name)}`;
-  const { error } = await supabase.storage
-    .from(ASSET_BUCKET)
-    .upload(path, file, { contentType: file.type, upsert: false });
+  const error = await uploadFile(ASSET_BUCKET, path, file, {
+    contentType: file.type,
+    upsert: false,
+  });
   if (error) {
     if (/bucket not found/i.test(error.message))
       throw new Error(
@@ -88,12 +94,9 @@ export function useImageUrls(paths: readonly string[]) {
     // Lenkene varer en time: hent nye før de går ut
     refetchInterval: 50 * 60 * 1000,
     queryFn: async (): Promise<Record<string, string>> => {
-      const { data, error } = await supabase.storage
-        .from(ASSET_BUCKET)
-        .createSignedUrls(sorted, 60 * 60);
-      if (error) throw new Error(error.message);
       const out: Record<string, string> = {};
-      for (const d of data ?? []) if (d.path && d.signedUrl) out[d.path] = d.signedUrl;
+      for (const d of await createSignedUrls(ASSET_BUCKET, sorted, 60 * 60))
+        out[d.path] = d.signedUrl;
       return out;
     },
   });
@@ -107,11 +110,8 @@ export async function signedUrls(
   const list = [...new Set(paths)];
   const out: Record<string, string> = {};
   for (let i = 0; i < list.length; i += 200) {
-    const { data, error } = await supabase.storage
-      .from(ASSET_BUCKET)
-      .createSignedUrls(list.slice(i, i + 200), seconds);
-    if (error) throw new Error(error.message);
-    for (const d of data ?? []) if (d.path && d.signedUrl) out[d.path] = d.signedUrl;
+    for (const d of await createSignedUrls(ASSET_BUCKET, list.slice(i, i + 200), seconds))
+      out[d.path] = d.signedUrl;
   }
   return out;
 }
@@ -121,7 +121,7 @@ export async function signedUrls(
  * inn i biblioteket fordi siden ble lukket). Kaster med norsk feilmelding.
  */
 export async function mediaFromStoredFile(path: string): Promise<AssetMedia> {
-  const { data, error } = await supabase.storage.from(ASSET_BUCKET).download(path);
+  const { data, error } = await downloadFile(ASSET_BUCKET, path);
   if (error || !data)
     throw new Error(`Bildet kunne ikke hentes: ${error?.message ?? "ukjent feil"}`);
   const mimeType = ASSET_MIME_TYPES.includes(data.type) ? data.type : "image/png";

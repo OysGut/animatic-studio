@@ -7,7 +7,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { UserMinus } from "lucide-react";
-import { db } from "@/app/db";
+import {
+  listPendingInvitations,
+  removeMember,
+  revokeInvitation,
+  setInvitationRole as saveInvitationRole,
+  setMemberRole,
+} from "@/adapters/browser/members";
 import type { MemberRow, ProfileRow } from "@/app/project/use-project";
 import { Button } from "@/components/ui/button";
 
@@ -40,18 +46,8 @@ function useInvitations(projectId: string, enabled: boolean) {
   return useQuery({
     queryKey: ["project-invitations", projectId],
     enabled,
-    queryFn: async (): Promise<InvitationRow[]> => {
-      const { data, error } = await db
-        .from("project_invitations")
-        .select("id, email, role, expires_at")
-        .eq("project_id", projectId)
-        .is("accepted_at", null)
-        .is("revoked_at", null)
-        .gt("expires_at", new Date().toISOString())
-        .order("created_at", { ascending: true });
-      if (error) throw new Error(error.message);
-      return (data ?? []) as InvitationRow[];
-    },
+    queryFn: async (): Promise<InvitationRow[]> =>
+      (await listPendingInvitations(projectId)) as InvitationRow[],
   });
 }
 
@@ -89,37 +85,21 @@ export function MembersSection({
   const name = (id: string) => profiles?.[id]?.display_name || id.slice(0, 8);
 
   const setRole = useMutation({
-    mutationFn: async (v: { user: string; role: string }) => {
-      const { error: e } = await db.rpc("set_member_role", {
-        p_project: projectId,
-        p_user: v.user,
-        p_role: v.role,
-      });
-      if (e) throw new Error(e.message);
-    },
+    mutationFn: (v: { user: string; role: string }) => setMemberRole(projectId, v.user, v.role),
     onMutate: () => setError(null),
     onError: (e) => setError(message(e)),
     onSettled: () => qc.invalidateQueries({ queryKey: ["project-members", projectId] }),
   });
 
   const setInvitationRole = useMutation({
-    mutationFn: async (v: { id: string; role: string }) => {
-      const { error: e } = await db.rpc("set_invitation_role", {
-        p_invitation: v.id,
-        p_role: v.role,
-      });
-      if (e) throw new Error(e.message);
-    },
+    mutationFn: (v: { id: string; role: string }) => saveInvitationRole(v.id, v.role),
     onMutate: () => setError(null),
     onError: (e) => setError(message(e)),
     onSettled: () => qc.invalidateQueries({ queryKey: ["project-invitations", projectId] }),
   });
 
   const revoke = useMutation({
-    mutationFn: async (id: string) => {
-      const { error: e } = await db.rpc("revoke_invitation", { p_invitation: id });
-      if (e) throw new Error(e.message);
-    },
+    mutationFn: (id: string) => revokeInvitation(id),
     onMutate: () => setError(null),
     onError: (e) => setError(message(e)),
     onSettled: () => qc.invalidateQueries({ queryKey: ["project-invitations", projectId] }),
@@ -128,10 +108,7 @@ export function MembersSection({
   /** Fjerne et medlem (REQ-0529): bare medlemskapet avsluttes; det personen har laget, blir. */
   const [confirmRemove, setConfirmRemove] = useState<string | null>(null);
   const remove = useMutation({
-    mutationFn: async (user: string) => {
-      const { error: e } = await db.rpc("remove_member", { p_project: projectId, p_user: user });
-      if (e) throw new Error(e.message);
-    },
+    mutationFn: (user: string) => removeMember(projectId, user),
     onMutate: () => setError(null),
     onError: (e) => setError(message(e)),
     onSettled: () => {

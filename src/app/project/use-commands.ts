@@ -7,6 +7,11 @@
  *    avviser hvis noen har endret noe brukeren ikke har sett), og angring av noe en annen bruker har endret
  *    etterpå, stoppes med forklaring (sanntidsvarsel fra change_log).
  * 4. Feiler en lagring, sendes ikke kommandoer som var bygget oppå den; siste versjon hentes når køen er tom.
+ * 5. Avvises en tekstendring (revisjonskonflikt eller feil underveis), eller sendes den ikke fordi en
+ *    tidligere endring feilet, beholdes teksten brukeren skrev (`rejected`, alle avviste tekster), så den kan
+ *    kopieres eller – for en manuslinje – legges oppå siste versjon (KI-182).
+ * 6. `whenIdle` venter til alt i køen er lagret (og siste versjon er hentet etter en feil), så noe som skal
+ *    gjenspeile det lagrede manuset (versjon, lagret estimat), ikke bygger på endringer som ennå ikke er lagret.
  */
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -39,6 +44,11 @@ export interface HistoryEntry {
   readonly steps?: readonly HistoryEntry[];
   /** Nøkkelen endringene ble samlet under (se `group` i run/runAndWait). */
   readonly group?: string;
+  /**
+   * Telleren for andres endringer da endringen ble gjort (se `touchedByOthers`): andres endringer som var
+   * varslet før dette, var allerede med i det endringen bygde på, og stopper ikke angring.
+   */
+  readonly seenForeign?: number;
 }
 
 const stepsOf = (e: HistoryEntry): readonly HistoryEntry[] => e.steps ?? [e];
@@ -68,6 +78,54 @@ export type SaveStatus =
   | { readonly kind: "idle" }
   | { readonly kind: "saving"; readonly pending: number }
   | { readonly kind: "error"; readonly message: string };
+
+/**
+ * En tekstendring serveren avviste (KI-182). Teksten forkastes ikke: den vises i varselet med «Kopier
+ * teksten», og en manuslinje (EditBlockText) kan prøves igjen oppå siste versjon.
+ */
+export interface RejectedEdit {
+  /** Id-en kommandoen fikk da den ble sendt. */
+  readonly id: string;
+  readonly label: string;
+  /** Teksten brukeren skrev. */
+  readonly text: string;
+  readonly command: Command;
+  /** «Prøv igjen med min tekst» er mulig (bare for manuslinjer, EditBlockText). */
+  readonly retryable: boolean;
+  /** Avvist fordi noen andre endret det samme (ellers feilet lagringen av en annen grunn). */
+  readonly conflict: boolean;
+  /** Ikke sendt fordi en tidligere endring feilet. */
+  readonly skipped?: boolean;
+}
+
+/** Teksten brukeren skrev i en kommando, eller null hvis kommandoen ikke bærer egen tekst. */
+export function rejectedText(command: Command): string | null {
+  switch (command.type) {
+    case "EditBlockText":
+    case "EditAnnotation":
+      return command.text;
+    case "InsertBlock":
+      return command.block.text;
+    case "AddAnnotations": {
+      const texts = command.annotations.map((a) => a.text).filter((t) => t.trim().length > 0);
+      return texts.length ? texts.join("\n\n") : null;
+    }
+    default:
+      return null;
+  }
+}
+
+/** Beskrivelsen av en avvist endring for varselet, eller null når det ikke er tekst å ta vare på. */
+export function rejectedEdit(
+  id: string,
+  command: Command,
+  label: string,
+  conflict: boolean,
+): RejectedEdit | null {
+  const text = rejectedText(command);
+  if (text === null || text.trim().length === 0) return null;
+  return { id, label, text, command, retryable: command.type === "EditBlockText", conflict };
+}
 
 const CONFLICT_UNDO =
   "Kan ikke angre: noen andre har endret det samme etterpå. Endringen deres er beholdt.";
@@ -127,20 +185,47 @@ export function withoutStep(list: readonly HistoryEntry[], id: string): HistoryE
   return out;
 }
 
+/**
+ * Stoppes angringen av et steg av andres endringer? Ja når noen andre har endret noe steget endret, etter at
+ * steget ble gjort (`touched`: entitet → telleren da endringen ble varslet).
+ */
+export function blockedByOthers(
+  entry: HistoryEntry,
+  touched: ReadonlyMap<string, number>,
+): boolean {
+  return stepsOf(entry).some((step) =>
+    step.affected.some((id) => (touched.get(id) ?? 0) > (step.seenForeign ?? 0)),
+  );
+}
+
+/** Legger til en avvist tekst i listen (samme kommando bare én gang). */
+function addRejected(list: readonly RejectedEdit[], r: RejectedEdit): RejectedEdit[] {
+  return [...list.filter((x) => x.id !== r.id), r];
+}
+
 export function useCommands(projectId: string, actorId: string, enabled: boolean) {
   const qc = useQueryClient();
   const [undoStack, setUndo] = useState<HistoryEntry[]>([]);
   const [redoStack, setRedo] = useState<HistoryEntry[]>([]);
   const [status, setStatus] = useState<SaveStatus>({ kind: "idle" });
+  /** Tekstendringer som ble avvist (KI-182); hver vises til brukeren lukker den eller prøver igjen. */
+  const [rejected, setRejected] = useState<readonly RejectedEdit[]>([]);
   const queue = useRef<Promise<unknown>>(Promise.resolve());
   const generation = useRef(0);
   const reloadWhenIdle = useRef(false);
-  /** Entiteter andre har endret i denne økten. */
-  const touchedByOthers = useRef(new Set<string>());
+  /** Hentingen av siste versjon etter en feil (whenIdle venter på den). */
+  const reloading = useRef<Promise<unknown>>(Promise.resolve());
+  /**
+   * Entiteter andre har endret i denne økten, med telleren da endringen ble varslet. Et steg stoppes bare av
+   * andres endringer som kom etter at steget ble gjort (se `blockedByOthers`).
+   */
+  const touchedByOthers = useRef(new Map<string, number>());
+  const foreignSeq = useRef(0);
 
   useEffect(() => {
     const onForeign = (ids: readonly string[]) => {
-      for (const id of ids) touchedByOthers.current.add(id);
+      foreignSeq.current++;
+      for (const id of ids) touchedByOthers.current.set(id, foreignSeq.current);
     };
     foreignChangeListeners.add(onForeign);
     return () => {
@@ -170,7 +255,7 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
   const exec = useCallback(
     (
       command: Command,
-      opts: { label: string; mode: "do" | "undo" | "redo" },
+      opts: { label: string; mode: "do" | "undo" | "redo"; keepText?: boolean },
     ):
       | { ok: true; entry: HistoryEntry; done: Promise<string | null> }
       | { ok: false; message: string } => {
@@ -200,13 +285,23 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
         label: opts.label,
         inverse: local.inverse,
         affected: local.affected,
+        seenForeign: foreignSeq.current,
       };
       ownCommandIds.add(commandId);
       commandQueue.pending++;
       setStatus({ kind: "saving", pending: commandQueue.pending });
       const gen = generation.current;
 
-      const fail = (message: string) => {
+      // Teksten brukeren skrev, går ikke tapt (KI-182). Angring/gjør om gjelder tidligere tekst og tas ikke
+      // vare på; heller ikke tekst som ikke er skrevet nå (f.eks. fra en manusversjon, keepText: false).
+      const keep = (conflict: boolean, skipped: boolean) => {
+        if (opts.mode !== "do" || opts.keepText === false) return;
+        const r = rejectedEdit(commandId, command, opts.label, conflict);
+        if (r) setRejected((list) => addRejected(list, skipped ? { ...r, skipped } : r));
+      };
+
+      const fail = (message: string, conflict: boolean) => {
+        keep(conflict, false);
         setStatus({ kind: "error", message });
         dropEntry(commandId);
         generation.current++;
@@ -218,6 +313,7 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
         try {
           // Bygget oppå en endring som feilet: send ikke
           if (gen !== generation.current) {
+            keep(false, true);
             dropEntry(commandId);
             reloadWhenIdle.current = true;
             return SKIPPED;
@@ -235,6 +331,7 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
                   ? "Noen andre endret dette samtidig. Siste versjon er hentet – prøv igjen."
                   : CONFLICT_UNDO
                 : res.message,
+              res.code === "revision_conflict",
             );
           }
           // Serverens invers er den som er lagret i change_log (og som serveren godtar ved angring)
@@ -243,13 +340,14 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
         } catch (e) {
           return fail(
             `Endringen ble ikke lagret (${(e as Error).message}). Siste versjon er hentet.`,
+            false,
           );
         } finally {
           commandQueue.pending--;
           if (commandQueue.pending === 0) {
             if (reloadWhenIdle.current) {
               reloadWhenIdle.current = false;
-              void reload();
+              reloading.current = reload();
             }
             for (const f of [...commandQueue.onIdle]) {
               commandQueue.onIdle.delete(f);
@@ -297,21 +395,43 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
     [exec, qc, projectId],
   );
 
-  const run = useCallback(
-    (command: Command, label: string, group?: string): string | null => {
+  /**
+   * Utfør en ny endring og få både svaret fra den lokale kjøringen (feilmelding eller null, med en gang) og
+   * `done`, som avgjøres når serveren har lagret den (feilmelding eller null; avvist eller ikke sendt fordi en
+   * tidligere endring feilet). Brukes for kjeder av endringer som må vite om alt ble lagret.
+   * `keepText: false`: teksten tas ikke vare på i «Teksten din ble ikke lagret» (den er ikke skrevet nå).
+   */
+  const runQueued = useCallback(
+    (
+      command: Command,
+      label: string,
+      group?: string,
+      options?: { keepText?: boolean },
+    ): { error: string | null; done: Promise<string | null>; commandId: string | null } => {
       const own = withOwnVariant(command, group);
-      if (own?.error) return own.error;
+      if (own?.error)
+        return { error: own.error, done: Promise.resolve(own.error), commandId: null };
       if (own && "command" in own && own.command) {
         command = own.command;
         group = own.group;
       }
-      const r = exec(command, { label, mode: "do" });
-      if (!r.ok) return r.message;
+      const r = exec(command, {
+        label,
+        mode: "do",
+        ...(options?.keepText === false ? { keepText: false } : {}),
+      });
+      if (!r.ok) return { error: r.message, done: Promise.resolve(r.message), commandId: null };
       setUndo((u) => pushEntry(u, r.entry, group));
       setRedo([]);
-      return null;
+      return { error: null, done: r.done, commandId: r.entry.id };
     },
     [exec, withOwnVariant],
+  );
+
+  const run = useCallback(
+    (command: Command, label: string, group?: string): string | null =>
+      runQueued(command, label, group).error,
+    [runQueued],
   );
 
   /**
@@ -333,23 +453,25 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
       label: string,
       group?: string,
     ): Promise<{ error: string | null; commandId: string | null }> => {
-      const own = withOwnVariant(command, group);
-      if (own?.error) return { error: own.error, commandId: null };
-      if (own && "command" in own && own.command) {
-        command = own.command;
-        group = own.group;
-      }
-      const r = exec(command, { label, mode: "do" });
-      if (!r.ok) return { error: r.message, commandId: null };
-      setUndo((u) => pushEntry(u, r.entry, group));
-      setRedo([]);
+      const r = runQueued(command, label, group);
+      if (r.error) return { error: r.error, commandId: null };
       const error = await r.done;
-      return { error, commandId: error ? null : r.entry.id };
+      return { error, commandId: error ? null : r.commandId };
     },
-    [exec, withOwnVariant],
+    [runQueued],
   );
 
-  const blocked = (e: HistoryEntry) => e.affected.some((id) => touchedByOthers.current.has(id));
+  /**
+   * Venter til alt i køen er lagret, og – hvis noe feilet – til siste versjon er hentet. Etterpå er den lokale
+   * tilstanden (`current()`) den samme som serverens, med mindre brukeren har gjort nye endringer imens.
+   */
+  const whenIdle = useCallback(async (): Promise<void> => {
+    if (commandQueue.pending > 0)
+      await new Promise<void>((resolve) => commandQueue.onIdle.add(resolve));
+    await reloading.current;
+  }, []);
+
+  const blocked = (e: HistoryEntry) => blockedByOthers(e, touchedByOthers.current);
 
   const replay = useCallback(
     (entry: HistoryEntry, mode: "undo" | "redo") => {
@@ -431,10 +553,68 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
     [],
   );
 
+  /** Lukker varselet for én avvist tekst (uten id: alle). */
+  const dismissRejected = useCallback(
+    (id?: string) =>
+      setRejected((list) => (id === undefined ? [] : list.filter((x) => x.id !== id))),
+    [],
+  );
+
+  /**
+   * Teksten som står i linjen nå (den andres versjon etter at siste versjon er hentet), eller null når den
+   * avviste endringen ikke er en manuslinje eller linjen ikke finnes lenger.
+   */
+  const currentTextOf = useCallback(
+    (r: RejectedEdit): string | null => {
+      if (r.command.type !== "EditBlockText") return null;
+      const now = qc.getQueryData<ProjectState>(projectStateKey(projectId));
+      return now?.blocks[r.command.blockId]?.text ?? null;
+    },
+    [qc, projectId],
+  );
+
+  /**
+   * «Prøv igjen med min tekst» (KI-182): henter siste versjon og legger den avviste teksten oppå den som en
+   * ny endring (med revisjonene i den nye versjonen, så den andres endring ikke overskrives i stillhet – den
+   * kan fortsatt angres med Angre, siden endringen bygger på den andres versjon). Gir feilmelding eller null.
+   */
+  const retryRejected = useCallback(
+    async (id?: string): Promise<string | null> => {
+      const r =
+        id === undefined ? rejected[rejected.length - 1] : rejected.find((x) => x.id === id);
+      if (!r || r.command.type !== "EditBlockText") return null;
+      const blockId = r.command.blockId;
+      // Vent til køen er tom og på siste versjon fra serveren før endringen bygges
+      await whenIdle();
+      await reload();
+      const now = qc.getQueryData<ProjectState>(projectStateKey(projectId));
+      const block = now?.blocks[blockId];
+      if (!block) {
+        const message =
+          "Linjen finnes ikke lenger i siste versjon. Kopier teksten og lim den inn der den hører hjemme.";
+        setStatus({ kind: "error", message });
+        return message;
+      }
+      setRejected((list) => list.filter((x) => x.id !== r.id));
+      setStatus((s) => (s.kind === "error" ? { kind: "idle" } : s));
+      // Den nye endringen bygger på den andres versjon (som brukeren nå har sett): den får telleren for andres
+      // endringer nå (seenForeign), så den andres tidligere endring av linjen ikke stopper angringen av den.
+      // Eldre egne endringer av linjen er fortsatt stoppet (angring av dem ville overskrevet den andres tekst).
+      // Den andre skrev det samme: ingenting å gjøre
+      if (block.text === r.text) return null;
+      const error = run({ ...r.command, text: r.text }, r.label);
+      if (error) setRejected((list) => addRejected(list, r));
+      return error;
+    },
+    [rejected, reload, whenIdle, qc, projectId, run],
+  );
+
   return {
     run,
     runSilent,
     runAndWait,
+    runQueued,
+    whenIdle,
     undo,
     redo,
     canUndo: undoStack.length > 0,
@@ -443,6 +623,11 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
     redoLabel: redoStack[redoStack.length - 1]?.label ?? null,
     status,
     clearError,
+    /** Avviste tekstendringer (KI-182), eldste først. */
+    rejected,
+    dismissRejected,
+    currentTextOf,
+    retryRejected,
     /** Tilstanden slik den er nå (med egne endringer som ikke er lagret ennå), for kjeder av kommandoer. */
     current: () => qc.getQueryData<ProjectState>(projectStateKey(projectId)) ?? null,
   };

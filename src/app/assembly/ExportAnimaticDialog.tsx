@@ -9,7 +9,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   filmMediaPaths,
   filmRange,
-  filmSelection,
   shiftAudioItems,
   shiftCues,
   formatHeading,
@@ -26,7 +25,6 @@ import {
   type FilmAudioItem,
   type ExportSettings,
   type FilmClip,
-  type FilmRange,
   type ProjectState,
 } from "@/core";
 import { ExportError, canExportVideo, exportAnimatic, loadImages } from "@/engine/export/animatic";
@@ -37,6 +35,8 @@ import {
 } from "@/engine/export/audio-stem";
 import { FilmLanguagePicker, type FilmLanguage } from "./use-film-language";
 import { isEmbedded, prepareDownload, type ReadyFile } from "@/app/download";
+import { ExportHistory } from "@/app/projects/ExportHistory";
+import { useRecordExport } from "@/app/projects/use-history-records";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -49,8 +49,9 @@ import {
 import { audioBank } from "@/app/audio/use-audio-playback";
 import { signedUrls } from "@/app/library/asset-images";
 import { formatSeconds } from "./FilmTimeline";
+import { exportSelection, type ExportScope } from "./export-selection";
 
-type Scope = "film" | "selected" | "range" | "pick";
+type Scope = ExportScope;
 type Size = "full" | "half";
 
 interface Check {
@@ -133,6 +134,8 @@ export function ExportAnimaticDialog({
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState<(ReadyFile & { bytes: number }) | null>(null);
   const abort = useRef<AbortController | null>(null);
+  // Eksportloggen (REQ-0037, migrasjon 0028): registreres når filen er laget
+  const recordExport = useRecordExport(state.project.id);
 
   // Standardvalg hver gang dialogen åpnes
   useEffect(() => {
@@ -165,33 +168,28 @@ export function ExportAnimaticDialog({
     if (!open) abort.current?.abort();
   }, [open]);
 
-  const range: FilmRange =
-    scope === "film"
-      ? { kind: "film" }
-      : scope === "selected"
-        ? { kind: "scenes", fromOccurrenceId: selectedId ?? "", toOccurrenceId: selectedId ?? "" }
-        : { kind: "scenes", fromOccurrenceId: fromId, toOccurrenceId: toId };
-  const rangeSel = useMemo(() => filmRange(clips, range), [clips, scope, fromId, toId, selectedId]); // eslint-disable-line react-hooks/exhaustive-deps
   const fps = state.project.fps;
-  const pickSel = useMemo(
-    () => (scope === "pick" ? filmSelection(clips, picked) : null),
-    [scope, clips, picked],
+  // Alle utvalg unntatt hele filmen går gjennom filmSelection: lyd og undertekster følger scenen sin, så lyd
+  // fra scenen før ikke lekker inn i overlappen (KI-85, som «Valgte scener» etter KI-172)
+  const partSel = useMemo(
+    () => exportSelection(clips, scope, { selectedId, fromId, toId, picked }),
+    [clips, scope, selectedId, fromId, toId, picked],
   );
-  const sel = pickSel ?? rangeSel;
-  // Ved vilkårlige scener flyttes lyd og undertekster sammen med scenene sine
+  const filmSel = useMemo(() => filmRange(clips, { kind: "film" }), [clips]);
+  const sel = partSel ?? filmSel;
   const audioItems = useMemo(
     () =>
-      pickSel
-        ? shiftAudioItems(allAudioItems, pickSel.shiftOf, fps, pickSel.runEndOf)
+      partSel
+        ? shiftAudioItems(allAudioItems, partSel.shiftOf, fps, partSel.runEndOf)
         : allAudioItems,
-    [pickSel, allAudioItems, fps],
+    [partSel, allAudioItems, fps],
   );
   const subtitles = useMemo(
     () =>
-      pickSel
-        ? shiftCues(allSubtitles, clips, pickSel.shiftOf, fps, pickSel.runEndOf)
+      partSel
+        ? shiftCues(allSubtitles, clips, partSel.shiftOf, fps, partSel.runEndOf)
         : allSubtitles,
-    [pickSel, allSubtitles, clips, fps],
+    [partSel, allSubtitles, clips, fps],
   );
 
   const fullW = state.project.frameWidth;
@@ -401,6 +399,13 @@ export function ExportAnimaticDialog({
         const name = safeName(`${state.project.name} – ${what} – dialog ${langName} – ${date}.wav`);
         const f = prepareDownload(stem.parts, name, "audio/wav");
         setReady({ ...f, bytes: stem.bytes });
+        recordExport({
+          productionId,
+          kind: "audio",
+          fileName: name,
+          settings: { output, scope, language: language.dialogue },
+          occurrenceIds: sel.clips.map((c) => c.occurrenceId),
+        });
         if (lostAudio > 0)
           setError(
             `Ferdig, men ${lostAudio} ${lostAudio === 1 ? "lydfil" : "lydfiler"} kunne ikke leses og mangler.`,
@@ -436,6 +441,23 @@ export function ExportAnimaticDialog({
       );
       const f = prepareDownload(file.bytes, name, file.mimeType);
       setReady({ ...f, bytes: file.bytes.byteLength });
+      recordExport({
+        productionId,
+        kind: "film",
+        fileName: name,
+        settings: {
+          output,
+          scope,
+          size,
+          width: outW,
+          height: outH,
+          monochrome: mono,
+          language: language.dialogue,
+          subtitles: !!language.subtitles,
+          subtitleLanguage: language.subtitles,
+        },
+        occurrenceIds: sel.clips.map((c) => c.occurrenceId),
+      });
       const lost = failed.length + missingUrl.length;
       const notes: string[] = [];
       if (lost > 0)
@@ -796,6 +818,8 @@ export function ExportAnimaticDialog({
             ) : null}
           </p>
         ) : null}
+
+        <ExportHistory productionId={productionId} kinds={["film", "audio"]} />
 
         <DialogFooter>
           {busy ? (

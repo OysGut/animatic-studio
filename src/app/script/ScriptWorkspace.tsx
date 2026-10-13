@@ -80,6 +80,9 @@ import { ScriptPageView, type Selection } from "./ScriptPageView";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 import { rememberScene } from "@/app/shell/current-scene";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { RejectedTextNotice } from "@/app/project/RejectedTextNotice";
+import { titlePageCommand } from "@/core/commands/export-settings";
+import { useSchemaAtLeast } from "@/app/shell/use-schema";
 
 const ZOOMS = ["fit", "0.75", "1", "1.25", "1.5"] as const;
 type Zoom = (typeof ZOOMS)[number];
@@ -267,6 +270,8 @@ function Workspace({
     return m;
   }, [others]);
 
+  // Tittelsiden lagres i eksportinnstillingene (migrasjon 0027, KI-20)
+  const schema27 = useSchemaAtLeast(27);
   const hasScenes = Object.values(state.occurrences).some((o) => o.productionId === productionId);
   // Flyttet siden siste lagrede versjon (REQ-0533)
   const versionList = useVersionList(productionId, hasScenes);
@@ -855,6 +860,8 @@ function Workspace({
         </div>
       </div>
 
+      {/* Avvist tekst ved samtidig redigering går ikke tapt (KI-182, DEC-0078) */}
+      <RejectedTextNotice cmds={cmds} />
       {hasScenes ? (
         <div
           className="grid min-h-0 flex-1"
@@ -1067,6 +1074,9 @@ function Workspace({
           state={state}
           editable={editable}
           saving={cmds.status.kind === "saving"}
+          onRun={cmds.runQueued}
+          whenIdle={cmds.whenIdle}
+          current={cmds.current}
           onGoToScene={(occurrenceId) => {
             if (state.occurrences[occurrenceId]) select({ occurrenceId, blockId: null }, true);
           }}
@@ -1080,6 +1090,14 @@ function Workspace({
           productionId={productionId}
           lockedPages={lockedPages}
           language={lang}
+          {...(editable && schema27
+            ? {
+                onSaveTitlePage: (lines: readonly string[]) => {
+                  const tp = titlePageCommand(state, productionId, lines);
+                  if (tp) cmds.runSilent(tp.command, "Lagre tittelsiden");
+                },
+              }
+            : {})}
         />
       ) : null}
       {removeLangOpen && lang !== "nb" ? (

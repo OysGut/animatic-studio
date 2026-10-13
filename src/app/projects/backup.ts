@@ -17,15 +17,11 @@ import {
   type ProjectRows,
   type Row,
 } from "@/core";
-import {
-  checkSchema,
-  EXPECTED_SCHEMA_VERSION,
-  fetchProjectTable,
-  loadProjectRows,
-} from "@/adapters/storage/project-rows";
+import { EXPECTED_SCHEMA_VERSION } from "@/adapters/storage/project-rows";
 import { restoreBackup } from "@/adapters/storage/backup.functions";
-import { db } from "@/app/db";
-import { supabase } from "@/integrations/supabase/client";
+import { fetchProjectRows, fetchSchemaStatus, fetchTable } from "@/adapters/browser/project-data";
+import { createProjectWithFps, findMainProductions } from "@/adapters/browser/projects";
+import { createSignedUrls, uploadFile } from "@/adapters/browser/storage-files";
 import { writeZip, type ZipProgress, type ZipSink } from "@/engine/export/zip";
 import {
   readZipIndex,
@@ -47,12 +43,12 @@ export interface BackupSource {
 export async function loadBackupSource(projectId: string): Promise<BackupSource> {
   const [rows, scriptVersions, importedDocuments, changeLog, generationJobs, schema] =
     await Promise.all([
-      loadProjectRows(db, projectId),
-      fetchProjectTable(db, "script_versions", projectId),
-      fetchProjectTable(db, "imported_documents", projectId),
-      fetchProjectTable(db, "change_log", projectId),
-      fetchProjectTable(db, "generation_jobs", projectId),
-      checkSchema(db),
+      fetchProjectRows(projectId),
+      fetchTable("script_versions", projectId),
+      fetchTable("imported_documents", projectId),
+      fetchTable("change_log", projectId),
+      fetchTable("generation_jobs", projectId),
+      fetchSchemaStatus(),
     ]);
   return {
     rows,
@@ -85,11 +81,8 @@ async function signed(bucket: string, paths: readonly string[]): Promise<Record<
   const out: Record<string, string> = {};
   const list = [...new Set(paths)];
   for (let i = 0; i < list.length; i += 200) {
-    const { data, error } = await supabase.storage
-      .from(bucket)
-      .createSignedUrls(list.slice(i, i + 200), 6 * 60 * 60);
-    if (error) throw new Error(error.message);
-    for (const d of data ?? []) if (d.path && d.signedUrl) out[`${bucket}:${d.path}`] = d.signedUrl;
+    for (const d of await createSignedUrls(bucket, list.slice(i, i + 200), 6 * 60 * 60))
+      out[`${bucket}:${d.path}`] = d.signedUrl;
   }
   return out;
 }
@@ -198,22 +191,14 @@ export async function restoreFromBackup(
   if (!state.projectId) {
     const fps_num = Number(backup.project["fps_num"] ?? 25);
     const fps_den = Number(backup.project["fps_den"] ?? 1);
-    const { data, error } = await db.rpc("create_project", {
-      p_name: name,
-      p_fps_num: fps_num,
-      p_fps_den: fps_den,
-    });
+    const { data, error } = await createProjectWithFps(name, fps_num, fps_den);
     if (error) throw new Error(`Prosjektet kunne ikke opprettes (${error.message}).`);
     state.projectId = String(data);
   }
   const projectId = state.projectId;
-  const { data: mains, error: mainError } = await db
-    .from("productions")
-    .select("id")
-    .eq("project_id", projectId)
-    .eq("kind", "main");
+  const { data: mains, error: mainError } = await findMainProductions(projectId);
   if (mainError || !mains?.[0]) throw new Error("Det nye prosjektet mangler hovedfilm.");
-  const map = await backupIdMap(backup, projectId, String((mains[0] as { id: string }).id));
+  const map = await backupIdMap(backup, projectId, String(mains[0].id));
   const files = restoreFiles(backup, map).filter((f) => index.has(prefix + f.zipPath));
   const totalBytes = files.reduce((n, f) => n + f.byteSize, 0);
   let bytes = files
@@ -225,9 +210,10 @@ export async function restoreFromBackup(
     if (signal?.aborted) throw new DOMException("Avbrutt", "AbortError");
     onProgress({ phase: "files", files: done, totalFiles: files.length, bytes, totalBytes });
     const blob = await zipEntryBlob(file, index.get(prefix + f.zipPath)!, f.mimeType);
-    const { error } = await supabase.storage
-      .from(f.bucket)
-      .upload(f.path, blob, { ...(f.mimeType ? { contentType: f.mimeType } : {}), upsert: false });
+    const error = await uploadFile(f.bucket, f.path, blob, {
+      ...(f.mimeType ? { contentType: f.mimeType } : {}),
+      upsert: false,
+    });
     if (error && !/exists|duplicate/i.test(error.message))
       throw new Error(
         `Filen ${f.zipPath.split("/").pop()} kunne ikke lastes opp (${error.message}).`,

@@ -20,8 +20,15 @@ import {
 import { useMemo, useRef, useState } from "react";
 import { useCommands } from "@/app/project/use-commands";
 import { DurationHistory } from "./DurationHistory";
+import { HISTORY_SCHEMA, useSaveDurationEstimate } from "./use-history-records";
+import { versionDurationEstimate } from "@/app/project/use-versions";
+import { useSchemaAtLeast } from "@/app/shell/use-schema";
 import {
   DEFAULT_DURATION_ASSUMPTIONS,
+  DURATION_ASSUMPTION_LIMITS,
+  normalizeDurationAssumptions,
+  projectDurationAssumptions,
+  sameDurationAssumptions,
   FILM_LANGUAGES,
   LANGUAGE_LABEL,
   MAIN_LANGUAGE,
@@ -127,7 +134,43 @@ export function DurationOverview({
       a.kind === "main" ? -1 : b.kind === "main" ? 1 : a.name.localeCompare(b.name, "nb"),
     );
   const [productionId, setProductionId] = useState<string | null>(null);
-  const [assumptions, setAssumptions] = useState<DurationAssumptions>(DEFAULT_DURATION_ASSUMPTIONS);
+  // Antakelsene er felles for prosjektet (KI-28, migrasjon 0028). Mens et felt redigeres, brukes et utkast;
+  // det lagres når feltet forlates. Uten 0028 eller uten skriverett: bare lokalt, lagres ikke.
+  const schema28 = useSchemaAtLeast(HISTORY_SCHEMA);
+  const canSaveAssumptions = editable && schema28;
+  const savedAssumptions = projectDurationAssumptions(state.project);
+  const [draft, setDraft] = useState<DurationAssumptions | null>(null);
+  const [assumptionError, setAssumptionError] = useState<string | null>(null);
+  const assumptions = draft ?? savedAssumptions;
+  const saveAssumptions = (next: DurationAssumptions | null) => {
+    if (!canSaveAssumptions) return;
+    const n = next === null ? null : normalizeDurationAssumptions(next);
+    if (next !== null && n === null) {
+      setAssumptionError("Ugyldig verdi – antakelsene er ikke lagret.");
+      return;
+    }
+    setAssumptionError(null);
+    // Standardverdiene lagres som «ingen egne antakelser»
+    const value = n && !sameDurationAssumptions(n, DEFAULT_DURATION_ASSUMPTIONS) ? n : null;
+    if ((state.project.durationAssumptions ?? null) === null && value === null) {
+      setDraft(null);
+      return;
+    }
+    if (
+      value &&
+      state.project.durationAssumptions &&
+      sameDurationAssumptions(value, state.project.durationAssumptions)
+    ) {
+      setDraft(null);
+      return;
+    }
+    const err = cmds.runSilent(
+      { type: "SetDurationAssumptions", assumptions: value },
+      "Antakelser for varighetsestimatet",
+    );
+    if (err) setAssumptionError(err);
+    else setDraft(null);
+  };
   const [showScenes, setShowScenes] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [status, setStatus] = useState<SceneStatus | "">("");
@@ -138,6 +181,10 @@ export function DurationOverview({
   const [text, setText] = useState("");
   const pid =
     productionId && state.productions[productionId] ? productionId : (productions[0]?.id ?? null);
+  // Lagrede estimater (REQ-0120, migrasjon 0028)
+  const saveEstimate = useSaveDurationEstimate(projectId, pid ?? "");
+  const [estimateNote, setEstimateNote] = useState<string | null>(null);
+  const [estimateWaiting, setEstimateWaiting] = useState(false);
 
   const estimate = useMemo(() => {
     if (!pid) return null;
@@ -169,6 +216,7 @@ export function DurationOverview({
         ? {
             estimatedSeconds: overview.estimatedSeconds,
             expectedSeconds: overview.expectedSeconds,
+            confirmedSeconds: overview.confirmedSeconds,
             scenes: overview.rows.length - overview.counts.inactive,
           }
         : null,
@@ -203,12 +251,20 @@ export function DurationOverview({
       <span className="flex items-center gap-1.5">
         <input
           type="number"
-          min={0}
+          min={DURATION_ASSUMPTION_LIMITS[k].min}
+          max={DURATION_ASSUMPTION_LIMITS[k].max}
           step={step}
           value={assumptions[k]}
+          aria-label={label}
           onChange={(e) => {
             const v = Number(e.target.value);
-            if (Number.isFinite(v) && v >= 0) setAssumptions({ ...assumptions, [k]: v });
+            if (Number.isFinite(v) && v >= 0) setDraft({ ...assumptions, [k]: v });
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") e.currentTarget.blur();
+          }}
+          onBlur={() => {
+            if (draft) saveAssumptions(draft);
           }}
           className="tabular h-7 w-20 rounded-sm border border-border-control bg-surface-3 px-2 text-right text-[13px] text-text-primary"
         />
@@ -339,11 +395,26 @@ export function DurationOverview({
           {num("minSceneSeconds", "Korteste scene", 1, "sek")}
           <button
             type="button"
-            onClick={() => setAssumptions(DEFAULT_DURATION_ASSUMPTIONS)}
+            onClick={() => {
+              if (canSaveAssumptions) saveAssumptions(null);
+              else setDraft(DEFAULT_DURATION_ASSUMPTIONS);
+            }}
             className="mt-1 self-start text-xs text-accent-brand hover:underline"
           >
             Tilbakestill
           </button>
+          {assumptionError ? (
+            <p role="alert" className="text-[11px] text-status-danger">
+              {assumptionError}
+            </p>
+          ) : null}
+          <p className="text-[11px] text-text-tertiary">
+            {canSaveAssumptions
+              ? "Lagres for hele prosjektet og gjelder for alle."
+              : !schema28
+                ? "Lagres ikke før databasen er oppdatert (migrasjon 0028)."
+                : "Du har bare lesetilgang: endringene gjelder bare her og lagres ikke."}
+          </p>
         </div>
       </div>
 
@@ -386,6 +457,55 @@ export function DurationOverview({
         )}
         Utvikling over tid
       </button>
+      {editable && schema28 ? (
+        <div className="mt-1.5 flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            disabled={saveEstimate.isPending || estimateWaiting}
+            onClick={async () => {
+              if (!pid) return;
+              setEstimateNote(null);
+              // Vent til alle endringer er lagret, og regn estimatet fra tilstanden etterpå (den lagrede), ikke
+              // fra lokale endringer som ennå står i køen
+              setEstimateWaiting(true);
+              try {
+                await cmds.whenIdle();
+              } finally {
+                setEstimateWaiting(false);
+              }
+              const saved = cmds.current() ?? state;
+              const e = versionDurationEstimate(
+                saved,
+                pid,
+                draft ?? projectDurationAssumptions(saved.project),
+              );
+              saveEstimate.mutate(
+                { assumptions: e.assumptions, snapshot: e.snapshot },
+                {
+                  onSuccess: (r) => {
+                    setShowHistory(true);
+                    setEstimateNote(
+                      r.scriptVersionId
+                        ? "Estimatet er lagret og knyttet til den nyeste manusversjonen."
+                        : "Estimatet er lagret.",
+                    );
+                  },
+                  onError: (e) => setEstimateNote(`Estimatet ble ikke lagret: ${e.message}`),
+                },
+              );
+            }}
+            title="Lagre dagens tall og antakelser, så de kan sammenlignes senere (de regnes aldri på nytt)"
+            className="flex h-7 items-center rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary hover:bg-surface-2 disabled:opacity-50"
+          >
+            Lagre estimat
+          </button>
+          {estimateNote ? (
+            <span role="status" className="text-xs text-text-secondary">
+              {estimateNote}
+            </span>
+          ) : null}
+        </div>
+      ) : null}
       {showHistory ? (
         <div className="mt-2">
           <DurationHistory state={state} productionId={pid} assumptions={assumptions} now={now} />

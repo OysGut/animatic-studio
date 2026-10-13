@@ -30,6 +30,62 @@ export const DEFAULT_DURATION_ASSUMPTIONS: DurationAssumptions = {
   minSceneSeconds: 5,
 };
 
+/** Tillatte verdier for antakelsene (samme grenser i klient og server). */
+export const DURATION_ASSUMPTION_LIMITS: Readonly<
+  Record<keyof DurationAssumptions, { readonly min: number; readonly max: number }>
+> = {
+  dialogueWordsPerMinute: { min: 30, max: 400 },
+  actionSecondsPerLine: { min: 0, max: 30 },
+  headingSeconds: { min: 0, max: 60 },
+  minSceneSeconds: { min: 0, max: 600 },
+};
+
+const ASSUMPTION_KEYS = Object.keys(DURATION_ASSUMPTION_LIMITS) as (keyof DurationAssumptions)[];
+
+/**
+ * Kontrollerer antakelser fra brukeren eller lagringen (KI-28): et objekt med de fire tallene innenfor
+ * grensene. Gir null ved ugyldige verdier. Verdiene rundes til to desimaler, så de lagres likt overalt.
+ */
+export function normalizeDurationAssumptions(x: unknown): DurationAssumptions | null {
+  if (!x || typeof x !== "object" || Array.isArray(x)) return null;
+  const o = x as Record<string, unknown>;
+  const out: Record<string, number> = {};
+  for (const k of ASSUMPTION_KEYS) {
+    const v = o[k];
+    const { min, max } = DURATION_ASSUMPTION_LIMITS[k];
+    if (typeof v !== "number" || !Number.isFinite(v) || v < min || v > max) return null;
+    out[k] = Math.round(v * 100) / 100;
+  }
+  return out as unknown as DurationAssumptions;
+}
+
+/** Er antakelsene like (alle fire tallene)? */
+export function sameDurationAssumptions(a: DurationAssumptions, b: DurationAssumptions): boolean {
+  return ASSUMPTION_KEYS.every((k) => a[k] === b[k]);
+}
+
+/** Er to valgfrie antakelser like? Mangler begge, er de like; mangler bare den ene, er de ulike. */
+export function sameOptionalDurationAssumptions(
+  a: DurationAssumptions | null | undefined,
+  b: DurationAssumptions | null | undefined,
+): boolean {
+  if (a == null || b == null) return a == null && b == null;
+  return sameDurationAssumptions(a, b);
+}
+
+/** Prosjektets lagrede antakelser (KI-28), ellers standardverdiene. */
+export function projectDurationAssumptions(project: {
+  readonly durationAssumptions?: DurationAssumptions;
+}): DurationAssumptions {
+  return project.durationAssumptions ?? DEFAULT_DURATION_ASSUMPTIONS;
+}
+
+/** «150 ord/min · 2 s per handlingslinje · 2 s per scene · minst 5 s» */
+export function formatDurationAssumptions(a: DurationAssumptions): string {
+  const n = (x: number) => String(x).replace(".", ",");
+  return `${n(a.dialogueWordsPerMinute)} ord/min · ${n(a.actionSecondsPerLine)} s per handlingslinje · ${n(a.headingSeconds)} s per scene · minst ${n(a.minSceneSeconds)} s`;
+}
+
 export interface SceneEstimate {
   readonly occurrenceId: string;
   readonly active: boolean;
@@ -86,9 +142,10 @@ export interface DurationHistoryPoint {
 }
 
 /**
- * Lengden slik den så ut i en lagret manusversjon (mandat 7.4): estimat fra versjonens tekst, og
- * forventet lengde der scener som hadde ferdig film i versjonen, teller med filmens lengde.
- * `filmSeconds` gir lengden på en filmversjon (take) – de er uforanderlige, så dagens tall gjelder.
+ * Lengden slik den så ut i en lagret manusversjon (mandat 7.4), regnet på nytt: estimat fra versjonens
+ * tekst med de antakelsene som gis (i dag), og forventet lengde der scener som hadde ferdig film i versjonen,
+ * teller med filmens lengde. `filmSeconds` gir lengden på en filmversjon (take) – de er uforanderlige, så
+ * dagens tall gjelder. Brukes bare for versjoner uten lagret estimat (REQ-0120, duration-snapshot.ts).
  */
 export function snapshotDuration(
   snap: ScriptSnapshot,

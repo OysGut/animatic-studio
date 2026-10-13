@@ -1,6 +1,6 @@
 # Pågående arbeid
 
-Oppdatert: 2026-10-12 (økt 6, DEC-0061–0076)
+Oppdatert: 2026-10-13 (økt 6, DEC-0061–0078)
 
 ## Nå: DEC-0061 – M8 del 1: plakater, karakterkart og relasjoner – ferdig, venter på Mars
 - [x] «Utgivelse»: kinopitch-plakat og karakter- og universkart per produksjon, 70 × 100 cm m.fl., norsk og engelsk (REQ-0384–0389, REQ-0403/0404)
@@ -11,7 +11,13 @@ Oppdatert: 2026-10-12 (økt 6, DEC-0061–0076)
 - [ ] **Mars:** godkjenn kostnad for stilharmonisering med AI (REQ-0137–0145, REQ-0400–0402) – eller vent
 - [ ] **Mars:** Prøv: Utgivelse → «Ny» → «Karakter- og universkart» → «Relasjoner» → godkjenn → «Eksporter» → Trykk-PDF
 
-## Nå: DEC-0076 – kravverifisering runde 4 og UX-gjennomgang – ferdig, venter på Mars
+## Nå: DEC-0078 – alt som kan gjøres uten Mars – ferdig, venter på Mars
+- [x] Migrasjon 0028, adapterlag, versjonsgjenoppretting, bibliotek, innholdsmessig synk, UX, 30 KI
+- [ ] **Mars:** commit og push, lim inn LOVABLE_SYNC (0028)
+- [ ] **Mars:** prøv ekte AI-generering én gang (REQ-0565/0589/0590)
+- [ ] **Mars:** avklar KI-176, KI-178, globale ressurser, stilharmonisering, «Lovable» som navn
+
+## Før: DEC-0076 – kravverifisering runde 4 og UX-gjennomgang – ferdig, venter på Mars
 - Mars: «Fortsett» (Teknisk anbefaling). Ingen ny migrasjon (0027 venter fortsatt).
 - [x] 34 krav vurdert, funn rettet, UX-gjennomgang mot de ni kvalitetene
 - [x] **Mars:** REQ-0528 avgjort (DEC-0077: redaktører kan starte betalte jobber)

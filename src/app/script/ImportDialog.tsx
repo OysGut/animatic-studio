@@ -5,6 +5,7 @@
 import { AlertTriangle, CheckCircle2, FileUp, Loader2 } from "lucide-react";
 import { useRef, useState } from "react";
 import {
+  newId,
   orderedOccurrences,
   planImport,
   planImportNotes,
@@ -12,6 +13,7 @@ import {
   type ProductionId,
   type ProjectState,
 } from "@/core";
+import { savedTitlePage, titlePageCommand } from "@/core/commands/export-settings";
 import {
   SCREENPLAY_ACCEPT,
   contentTypeOf,
@@ -19,8 +21,12 @@ import {
   sourceStorageKey,
   type ReadScreenplay,
 } from "@/engine/import/browser";
-import { db } from "@/app/db";
-import { supabase } from "@/integrations/supabase/client";
+import {
+  findPreviousImport,
+  isImportRegistered,
+  registerImportedDocument,
+} from "@/adapters/browser/imported-documents";
+import { SOURCE_BUCKET, uploadFile } from "@/adapters/browser/storage-files";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -41,6 +47,10 @@ type Step =
       scenes: number;
       notes: number;
       notesError: string | null;
+      /** Tittelsiden ble lagret for eksporten (KI-20); «truncated» = kortet til lagringsgrensen. */
+      titlePage?: "saved" | "truncated" | null;
+      /** Tittelsiden kunne ikke lagres (importen er likevel i orden). */
+      titlePageError?: string | null;
       /** Originalen ble lagret, men kontrollsummen kunne ikke registreres (REQ-0053). */
       registerError?: string | null;
       /** Prøver registreringen på nytt (samme fil og kontrollsum); gir feilmelding eller null. */
@@ -58,6 +68,7 @@ interface Props {
   readonly runAndWait: (
     command: Command,
     label: string,
+    group?: string,
   ) => Promise<{ error: string | null; commandId: string | null }>;
   /** Navn som brukes på notater i filen som mangler forfatter. */
   readonly authorName: string;
@@ -94,17 +105,8 @@ export function ImportDialog({
     try {
       const read = await readScreenplayFile(file);
       let previous: string | null = null;
-      const { data } = await db
-        .from("imported_documents")
-        .select("created_at")
-        .eq("project_id", projectId)
-        .eq("sha256", read.sha256)
-        .limit(1)
-        .maybeSingle();
-      if (data)
-        previous = new Date((data as { created_at: string }).created_at).toLocaleDateString(
-          "nb-NO",
-        );
+      const createdAt = await findPreviousImport(projectId, read.sha256);
+      if (createdAt) previous = new Date(createdAt).toLocaleDateString("nb-NO");
       setStep({ kind: "preview", file, read, previous });
     } catch (e) {
       setStep({ kind: "error", message: (e as Error).message });
@@ -115,12 +117,14 @@ export function ImportDialog({
     try {
       setStep({ kind: "importing", progress: "Lagrer originalfilen …" });
       const key = sourceStorageKey(projectId, read.sha256, file.name);
-      const up = await supabase.storage
-        .from("sources")
-        .upload(key, new Blob([read.bytes as unknown as ArrayBuffer]), {
-          contentType: contentTypeOf(read.format),
-          upsert: false,
-        });
+      const up = {
+        error: await uploadFile(
+          SOURCE_BUCKET,
+          key,
+          new Blob([read.bytes as unknown as ArrayBuffer]),
+          { contentType: contentTypeOf(read.format), upsert: false },
+        ),
+      };
       if (up.error && !/exists|duplicate/i.test(up.error.message)) {
         if (read.format === "fountain" && /mime|type|415/i.test(up.error.message))
           throw new Error(
@@ -135,33 +139,45 @@ export function ImportDialog({
         productionId: productionId as ProductionId,
         skipContinuation: !includeContinuation,
       });
-      const res = await runAndWait(command, "Import av manus");
+      // Importen og tittelsiden angres som ett steg (KI-20)
+      const group = newId<"command">();
+      const hadScenes = existing > 0;
+      const res = await runAndWait(command, "Import av manus", group);
       if (res.error) throw new Error(res.error);
+      // Tittelsiden fra filen lagres i eksportinnstillingene (KI-20), så manuseksporten kan bruke den.
+      // En tittelside som allerede er satt for produksjonen, overskrives bare når produksjonen var tom.
+      let titlePage: "saved" | "truncated" | null = null;
+      let titlePageError: string | null = null;
+      if (
+        read.parsed.titlePage.length > 0 &&
+        (!hadScenes || savedTitlePage(state, productionId) === null)
+      ) {
+        const tp = titlePageCommand(state, productionId, read.parsed.titlePage);
+        if (tp) {
+          const r = await runAndWait(tp.command, "Tittelside fra importen", group);
+          if (r.error) titlePageError = r.error;
+          else titlePage = tp.truncated ? "truncated" : "saved";
+        }
+      }
       setStep({ kind: "importing", progress: "Registrerer originalen …" });
-      const register = () =>
-        db.rpc("register_imported_document", {
-          p_project: projectId,
-          p_production: productionId,
-          p_storage_key: key,
-          p_file_name: file.name,
-          p_sha256: read.sha256,
-          p_format: read.format,
-          p_page_count: read.parsed.pageCount,
-          p_byte_size: read.bytes.byteLength,
-          p_language: "nb",
-          p_change_id: res.commandId,
-        });
+      const register = async () => ({
+        error: await registerImportedDocument({
+          projectId,
+          productionId,
+          storageKey: key,
+          fileName: file.name,
+          sha256: read.sha256,
+          format: read.format,
+          pageCount: read.parsed.pageCount,
+          byteSize: read.bytes.byteLength,
+          language: "nb",
+          changeId: res.commandId,
+        }),
+      });
       const reg = await register();
       const retryRegister = async () => {
         // Kan første forsøk ha lykkes uten at svaret kom fram? Registreringer kan ikke slettes, så sjekk først
-        const { data: found } = await db
-          .from("imported_documents")
-          .select("id")
-          .eq("project_id", projectId)
-          .eq("sha256", read.sha256)
-          .eq("change_id", res.commandId)
-          .limit(1);
-        if (found && (found as unknown[]).length) return null;
+        if (await isImportRegistered(projectId, read.sha256, res.commandId)) return null;
         const r = await register();
         return r.error ? r.error.message : null;
       };
@@ -194,6 +210,8 @@ export function ImportDialog({
         notesError,
         registerError,
         retryRegister,
+        titlePage,
+        titlePageError,
       });
     } catch (e) {
       setStep({ kind: "error", message: (e as Error).message });
@@ -292,6 +310,23 @@ export function ImportDialog({
         {step.kind === "done" && step.retried && step.registerError === null ? (
           <p role="status" className="text-xs text-text-secondary">
             Originalen er registrert med kontrollsum.
+          </p>
+        ) : null}
+        {step.kind === "done" && step.titlePage === "saved" ? (
+          <p role="status" className="text-xs text-text-secondary">
+            Tittelsiden fra filen er lagret og foreslås når manuset eksporteres.
+          </p>
+        ) : null}
+        {step.kind === "done" && step.titlePage === "truncated" ? (
+          <p role="alert" className="text-xs text-status-uncertain">
+            Tittelsiden fra filen er lagret, men den var for lang og er kortet ned. Se over den når
+            du eksporterer manuset.
+          </p>
+        ) : null}
+        {step.kind === "done" && step.titlePageError ? (
+          <p role="alert" className="text-xs text-status-uncertain">
+            Tittelsiden fra filen ble ikke lagret ({step.titlePageError}). Manuset er importert;
+            skriv tittelsiden i eksportdialogen.
           </p>
         ) : null}
         {step.kind === "done" && step.notesError ? (

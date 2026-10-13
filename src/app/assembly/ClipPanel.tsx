@@ -55,6 +55,9 @@ import { ClipParts } from "./ClipParts";
 import { StillPickerDialog } from "./StillPickerDialog";
 import { TechnicalSection } from "./TechnicalSection";
 import { CompareVersionsDialog } from "./CompareVersionsDialog";
+import { ContentSyncFlag } from "./ContentSyncFlag";
+import { useContentSync } from "./use-content-sync";
+import type { Commands } from "@/app/project/use-commands";
 
 const label = "text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary";
 
@@ -89,7 +92,10 @@ export function ClipPanel({
   onAiDialogue,
   run,
   technical = false,
+  cmds,
 }: {
+  /** Arbeidsflatens kommandoer: arbeidslisten fra flagget «Ressurs oppdatert» bruker dem (kan angres). */
+  cmds?: Commands;
   /** Teknisk visning (DEC-0072, REQ-0103). */
   technical?: boolean;
   /** Kjør en kommando (avvik ved manusendring: godkjenn eller angre, DEC-0054). */
@@ -145,6 +151,9 @@ export function ClipPanel({
   const cancelled = useRef(false);
   useEffect(() => setDraft(null), [clip?.occurrenceId]);
   const found = useSceneDiscrepancies(state, clip?.occurrenceId ?? null);
+  // «Ressurs oppdatert» (REQ-0022): scenen viser en eldre versjon av en ressurs enn den som er godkjent
+  const syncProductionId = clip ? (state.occurrences[clip.occurrenceId]?.productionId ?? "") : "";
+  const syncByScene = useContentSync(state, projectId, syncProductionId);
   if (!clip)
     return (
       <p className="p-3 text-[13px] text-text-tertiary">
@@ -184,6 +193,16 @@ export function ClipPanel({
           <h2 className="min-w-0 truncate text-[13px] font-medium text-text-primary">
             {formatHeading(clip.heading) || "Uten overskrift"}
           </h2>
+          <span className="ml-auto self-center">
+            <ContentSyncFlag
+              state={state}
+              projectId={projectId}
+              productionId={syncProductionId}
+              sync={syncByScene.get(clip.occurrenceId)}
+              editable={editable}
+              cmds={cmds}
+            />
+          </span>
         </div>
         <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 text-xs">
           <dt className="text-text-tertiary">Materiale</dt>

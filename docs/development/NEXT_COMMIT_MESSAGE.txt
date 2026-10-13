@@ -1,14 +1,22 @@
-Redaktører kan starte betalte AI-jobber (DEC-0077, REQ-0528) og opprydding etter flyttet cron-adresse
+Migrasjon 0028, adapterlag, versjonsgjenoppretting, bibliotek og 30 kjente problemer (DEC-0078)
 
-Ingen databaseendring. Lim inn docs/development/LOVABLE_SYNC.md i Lovable etter push.
+Databaseendring: migrasjon 0028. Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push.
 
-Mars' beslutning (DEC-0077, Bekreftet av bruker):
-- Eiere og redaktører kan starte betalte AI-genereringer innenfor prosjektets budsjett og kostnadstaket for
-  nøkkelen; kommentatorer og lesere kan ikke. Bare eieren endrer AI-budsjettet. REQ-0528 og INV-C3 er endret
-  og verifisert med rolletester (tests/unit/req0528-roller.test.ts). Ingen kodeendring.
+Mars: «fortsett med ALT du kan gjøre av det som gjenstår» (Teknisk anbefaling, ingen kostnad):
+- Migrasjon 0028: antakelsene for varighetsestimat lagres per prosjekt; estimater lagres med hver
+  manusversjon og med «Lagre estimat»; eksportlogg («Tidligere eksporter») for manus, film, lyd,
+  undertekster og plakater.
+- All databasebruk i nettleseren går via src/adapters/browser/ (portabilitet, arkitekturtest).
+- «Gjør denne versjonen gjeldende» i Manusversjoner, med forhåndsvisning og én angring.
+- Biblioteket: stilprofiler og opphav per bildeversjon (lastet opp, AI, frilagt) med filter.
+- «Ressurs oppdatert»-flagg i bibliotek, montering og sceneeditor (ressursgrunnlag per scene).
+- Monteringen: «Visning»- og «Mer»-meny; hurtigtastoversikt («?») og taster i verktøytips.
+- Avvist tekst ved samtidig redigering går ikke tapt («Kopier teksten», «Prøv igjen med min tekst»).
+- Tittelsiden fra importen lagres og fylles ut i eksporten; notater følger egen versjon av en scene;
+  ny bildefrekvens regner om overganger og lengder; lyd i eksport av valgt scene følger scenen;
+  hendelser vises på lagets linje; varsel om nøkkelbilder etter scenens slutt; navn fra manuset kan
+  legges i biblioteket fra «I denne scenen»; ny lyd angres i ett steg.
+- Gjennomgang av alle åpne kjente problemer (117), med oppdatert status.
+- Kodegjennomgang: 10 funn rettet.
 
-Opprydding:
-- Den gamle adressen src/routes/api/cron/ai-jobs.ts er slettet (av Lovable); dokumentene viser nå bare
-  /api/public/cron/ai-jobs. Ingen planlagt jobb settes opp (DEC-0072), så LOVABLE_CRON_SECRET trengs ikke.
-
-Krav: REQ-0528
+Krav: REQ-0008 REQ-0022 REQ-0037 REQ-0077 REQ-0120 REQ-0121 REQ-0522

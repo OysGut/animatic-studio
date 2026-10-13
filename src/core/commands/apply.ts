@@ -6,6 +6,8 @@ import {
   isUuid,
   type AssetVariantId,
   type BlockId,
+  type OccurrenceId,
+  type AnnotationId,
   type ContinuityEventId,
   type TranslationId,
   type LayerId,
@@ -14,7 +16,16 @@ import {
   type VariantId,
 } from "../ids";
 import { checkInvariants } from "../invariants";
-import { STILL_MIME_TYPES } from "../model";
+import { secondsToFrames, type Rational } from "../time";
+import {
+  EXPORT_SETTINGS_MAX_BYTES,
+  STILL_MIME_TYPES,
+  TITLE_PAGE_MAX_BYTES,
+  TITLE_PAGE_MAX_LINE,
+  TITLE_PAGE_MAX_LINES,
+  exportSettingsBytes,
+  type ExportSettings,
+} from "../model";
 import {
   formatMapping,
   isAllowedFps,
@@ -29,6 +40,7 @@ import {
 } from "../composition/fields";
 import { compareKeys, isValidOrderKey, keyBetween, keysEvenly } from "../order-key";
 import { compositionOfVariant } from "../composition/render";
+import { compositionAssetVersions, takeAssetVersions } from "../library/content-sync";
 import {
   MAX_TRANSITION_FRAMES,
   TRANSITION_KINDS,
@@ -49,6 +61,7 @@ import {
   type TakeMedia,
   type TimeLink,
   type Transition,
+  type ProducedFrom,
   type TransitionKind,
   type ProductionSegment,
   type SegmentReason,
@@ -60,6 +73,7 @@ import {
 import { posterAssetRefs, posterDocumentError } from "../presentation/document";
 import { STYLE_USES, STYLE_USE_LABEL, styleGuideError } from "../generation/style";
 import { blocksOfVariant } from "../views";
+import { normalizeDurationAssumptions, sameDurationAssumptions } from "../screenplay/duration";
 import { MAX_PROMPT_CHARS } from "../generation/prompt";
 import type {
   RelationFields,
@@ -1041,6 +1055,78 @@ function takeMediaOf(m: unknown): TakeMedia {
   };
 }
 
+/**
+ * Fast UUID avledet av to ID-er (KI-33): samme inndata gir alltid samme ID, så en kopi får samme ID ved
+ * «gjør om» uten at ID-ene må sendes med. 128 biter fra fire uavhengige 32-biters blandinger (cyrb128).
+ */
+export function derivedUuid(a: string, b: string): string {
+  const str = `${a}:${b}`;
+  let h1 = 1779033703,
+    h2 = 3144134277,
+    h3 = 1013904242,
+    h4 = 2773480762;
+  for (let i = 0; i < str.length; i++) {
+    const k = str.charCodeAt(i);
+    h1 = h2 ^ Math.imul(h1 ^ k, 597399067);
+    h2 = h3 ^ Math.imul(h2 ^ k, 2869860233);
+    h3 = h4 ^ Math.imul(h3 ^ k, 951274213);
+    h4 = h1 ^ Math.imul(h4 ^ k, 2716044179);
+  }
+  h1 = Math.imul(h3 ^ (h1 >>> 18), 597399067);
+  h2 = Math.imul(h4 ^ (h2 >>> 22), 2869860233);
+  h3 = Math.imul(h1 ^ (h3 >>> 17), 951274213);
+  h4 = Math.imul(h2 ^ (h4 >>> 19), 2716044179);
+  h1 ^= h2 ^ h3 ^ h4;
+  h2 ^= h1;
+  h3 ^= h1;
+  h4 ^= h1;
+  const hex = [h1, h2, h3, h4].map((h) => (h >>> 0).toString(16).padStart(8, "0")).join("");
+  // Versjon 8 (egendefinert) og RFC 4122-variant, så ID-en er en gyldig UUID
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-8${hex.slice(13, 16)}-${((parseInt(hex[16]!, 16) & 0x3) | 0x8).toString(16)}${hex.slice(17, 20)}-${hex.slice(20, 32)}`;
+}
+
+/** Grunnlaget fra en kommando (gjør om / kopi), med bare gyldige ressursversjoner (REQ-0022). */
+function producedFromOf(p: ProducedFrom): ProducedFrom {
+  if (!p || typeof p !== "object" || !p.blockRevisions || typeof p.blockRevisions !== "object")
+    fail("invalid", "Ugyldig grunnlag");
+  const av = p.assetVersions;
+  if (av === undefined) return { blockRevisions: p.blockRevisions };
+  if (
+    !av ||
+    typeof av !== "object" ||
+    Object.entries(av).some(([k, v]) => !isUuid(k) || typeof v !== "string" || !isUuid(v))
+  )
+    fail("invalid", "Ugyldig grunnlag");
+  return { blockRevisions: p.blockRevisions, assetVersions: av };
+}
+
+/** Overgangen regnet om til ny bildefrekvens (KI-48): kutt forblir kutt, ellers 1–MAX bilder. */
+function rescaleTransition(t: Transition, frame: (f: number) => number): Transition {
+  if (t.kind === "cut") return t;
+  return { ...t, frames: Math.min(MAX_TRANSITION_FRAMES, Math.max(1, frame(t.frames))) };
+}
+
+/**
+ * Lengden til en versjon av scenen med ny bildefrekvens (KI-48): fra filens lengde når den er kjent (som
+ * ved import), ellers omregnet. Uten lengde (null) forblir den uten.
+ */
+function rescaleTakeFrames(t: Take, frame: (f: number) => number, fps: Rational): number | null {
+  const ms = t.media?.durationMs;
+  if (typeof ms === "number" && Number.isFinite(ms) && ms > 0)
+    return Math.max(1, secondsToFrames(ms / 1000, fps));
+  if (t.durationFrames === null) return null;
+  return t.durationFrames > 0 ? Math.max(1, frame(t.durationFrames)) : t.durationFrames;
+}
+
+/** Utdraget regnet om til ny bildefrekvens (KI-48); alltid minst ett bilde langt. */
+function rescaleExcerpt(
+  e: { readonly inFrame: number; readonly outFrame: number },
+  frame: (f: number) => number,
+): { inFrame: number; outFrame: number } {
+  const inFrame = frame(e.inFrame);
+  return { inFrame, outFrame: Math.max(inFrame + 1, frame(e.outFrame)) };
+}
+
 function transitionOf(t: unknown): Transition {
   if (!t || typeof t !== "object") fail("invalid", "Ugyldig overgang");
   const x = t as Record<string, unknown>;
@@ -1619,11 +1705,37 @@ function run(
         };
         copied.push(nid);
       }
+      // Notatene følger med til den nye versjonen, som oversettelsene (KI-33): notater på teksten til de
+      // nye blokkene og nåler på scenen til den nye varianten. Originalene blir stående
+      const annotations = { ...s.annotations };
+      const annotationCopies: Record<string, AnnotationId> = {};
+      for (const a of Object.values(s.annotations)) {
+        if (a.removed) continue;
+        const onBlock = a.blockId ? c.blockIdMap[a.blockId] : undefined;
+        const onScene = a.variantId === source.id;
+        if (!onBlock && !onScene) continue;
+        const nid = c.annotationIdMap
+          ? c.annotationIdMap[a.id]
+          : (derivedUuid(c.newVariantId, a.id) as AnnotationId);
+        if (!nid) continue;
+        assertNewId(s, nid);
+        if (annotations[nid]) fail("duplicate_id", "Samme notat-ID to ganger");
+        annotations[nid] = {
+          ...a,
+          id: nid,
+          revision: 1,
+          blockId: onBlock ?? null,
+          variantId: onBlock ? null : c.newVariantId,
+        };
+        annotationCopies[a.id] = nid;
+        copied.push(nid);
+      }
       return {
         state: {
           ...s,
           ...remapped.state,
           translations,
+          annotations,
           variants: {
             ...s.variants,
             [c.newVariantId]: {
@@ -1651,6 +1763,8 @@ function run(
           previousVariantId: o.variantId,
           newVariantId: c.newVariantId,
           ...(c.sourceVariantId ? { sourceVariantId: c.sourceVariantId } : {}),
+          // Hvilke notater som er kopier av hvilke (KI-33), så angre finner dem uten å sammenligne innhold
+          ...(Object.keys(annotationCopies).length ? { annotationIdMap: annotationCopies } : {}),
         },
         affected: [
           c.newVariantId,
@@ -1724,6 +1838,26 @@ function run(
         if (!orig) fail("referenced", "Den egne versjonen har egne oversettelser; angre dem først");
         translationIdMap[orig.id] = t.id;
       }
+      // Notater i den egne versjonen (KI-33): kan angres når de er uendrede kopier (revisjon 1) av originalens.
+      // Kopien finnes ut fra ID-en (kartet fra ForkVariant, ellers den avledede ID-en), ikke fra innholdet:
+      // originalen kan være endret etterpå, og like notater må ikke slås sammen
+      const copyOf = new Map<string, string>();
+      if (c.annotationIdMap)
+        for (const [origId, copyId] of Object.entries(c.annotationIdMap))
+          copyOf.set(copyId, origId);
+      else for (const x of Object.values(s.annotations)) copyOf.set(derivedUuid(nv.id, x.id), x.id);
+      const annotationIdMap: Record<string, AnnotationId> = {};
+      const dropAnnotations: string[] = [];
+      for (const a of Object.values(s.annotations)) {
+        const target = a.blockId ?? a.variantId;
+        if (!target || !toSource.has(target)) continue;
+        dropAnnotations.push(a.id);
+        if (a.removed) continue;
+        const origId = a.revision === 1 ? copyOf.get(a.id) : undefined;
+        const orig = origId !== undefined ? s.annotations[origId] : undefined;
+        if (!orig) fail("referenced", "Den egne versjonen har egne notater; angre dem først");
+        annotationIdMap[orig.id] = a.id as AnnotationId;
+      }
       const ids = new Set(forked.map((b) => b.id as string));
       const blocks = { ...s.blocks };
       for (const id of ids) delete blocks[id];
@@ -1759,11 +1893,14 @@ function run(
       const remapped = remapOccurrenceBlocks(s, o.id, back);
       const translations = { ...s.translations };
       for (const id of dropTranslations) delete translations[id];
+      const annotations = { ...s.annotations };
+      for (const id of dropAnnotations) delete annotations[id];
       return {
         state: {
           ...s,
           ...remapped.state,
           translations,
+          annotations,
           variants,
           blocks,
           blockRevisions: s.blockRevisions.filter((r) => !ids.has(r.blockId)),
@@ -1778,9 +1915,18 @@ function run(
           newVariantId: nv.id,
           blockIdMap: map,
           ...(Object.keys(translationIdMap).length ? { translationIdMap } : {}),
+          // Alltid med (også tomt), så gjør om kopierer nøyaktig de samme notatene
+          annotationIdMap,
           ...(c.sourceVariantId ? { sourceVariantId: c.sourceVariantId } : {}),
         },
-        affected: [nv.id, o.id, ...ids, ...remapped.affected, ...dropTranslations],
+        affected: [
+          nv.id,
+          o.id,
+          ...ids,
+          ...remapped.affected,
+          ...dropTranslations,
+          ...dropAnnotations,
+        ],
       };
     }
 
@@ -2050,7 +2196,7 @@ function run(
           fail("invalid", "Stillbildet må ha en varighet");
       }
       const media = c.media === undefined ? undefined : takeMediaOf(c.media);
-      const take: Take = {
+      const draft: Take = {
         id: c.takeId,
         revision: 1,
         occurrenceId: o.id,
@@ -2062,6 +2208,11 @@ function run(
         mediaRef: c.mediaRef,
         ...(media ? { media } : {}),
       };
+      // Ressursversjonene materialet lages fra (REQ-0022); producedFrom er uforanderlig etterpå (INV-07)
+      const assetVersions = takeAssetVersions(s, draft);
+      const take: Take = assetVersions
+        ? { ...draft, producedFrom: { ...draft.producedFrom, assetVersions } }
+        : draft;
       return {
         state: { ...s, takes: { ...s.takes, [take.id]: take } },
         // Produsert materiale kastes aldri (INV-07, 21.5). Angre av «legg til» betyr bare at den ikke er aktiv.
@@ -2292,22 +2443,42 @@ function run(
           inverse.compositions as {
             compositionId: typeof id;
             blockRevisions: Record<string, number>;
+            assetVersions: Readonly<Record<string, string>> | null;
           }[]
         ).push({
           compositionId: id,
           blockRevisions: comp.producedFrom?.blockRevisions ?? {},
+          assetVersions: comp.producedFrom?.assetVersions ?? null,
         });
-        compositions[id] = { ...comp, producedFrom: { blockRevisions: now }, revision: rev(comp) };
+        // Grunnlaget fornyes: manuset og ressursversjonene scenen viser nå (REQ-0022)
+        const assetVersions = compositionAssetVersions(s, id);
+        compositions[id] = {
+          ...comp,
+          producedFrom: { blockRevisions: now, ...(assetVersions ? { assetVersions } : {}) },
+          revision: rev(comp),
+        };
       }
       for (const id of c.takeIds) {
         const t = need(s.takes[id], "Versjonen");
         if (t.occurrenceId !== o.id) fail("invalid", "Versjonen hører til en annen scene");
-        (inverse.takes as { takeId: typeof id; blockRevisions: Record<string, number> }[]).push({
+        (
+          inverse.takes as {
+            takeId: typeof id;
+            blockRevisions: Record<string, number>;
+            assetVersions: Readonly<Record<string, string>> | null;
+          }[]
+        ).push({
           takeId: id,
           blockRevisions: t.acceptedFrom?.blockRevisions ?? {},
+          assetVersions: t.acceptedFrom?.assetVersions ?? null,
         });
         // producedFrom er uforanderlig (INV-07); godkjenningen lagres ved siden av
-        takes[id] = { ...t, acceptedFrom: { blockRevisions: now }, revision: rev(t) };
+        const assetVersions = takeAssetVersions(s, t);
+        takes[id] = {
+          ...t,
+          acceptedFrom: { blockRevisions: now, ...(assetVersions ? { assetVersions } : {}) },
+          revision: rev(t),
+        };
       }
       return {
         state: { ...s, compositions, takes },
@@ -2330,33 +2501,63 @@ function run(
       const takes = { ...s.takes };
       const inverse: Extract<Command, { type: "SetProducedFrom" }> = {
         type: "SetProducedFrom",
-        compositions: c.compositions.map((x) => ({
-          compositionId: x.compositionId,
-          blockRevisions:
-            need(s.compositions[x.compositionId], "2D-scenen").producedFrom?.blockRevisions ?? {},
-        })),
-        takes: c.takes.map((x) => ({
-          takeId: x.takeId,
-          blockRevisions: need(s.takes[x.takeId], "Versjonen").acceptedFrom?.blockRevisions ?? {},
-        })),
+        compositions: c.compositions.map((x) => {
+          const pf = need(s.compositions[x.compositionId], "2D-scenen").producedFrom;
+          return {
+            compositionId: x.compositionId,
+            blockRevisions: pf?.blockRevisions ?? {},
+            assetVersions: pf?.assetVersions ?? null,
+          };
+        }),
+        takes: c.takes.map((x) => {
+          const af = need(s.takes[x.takeId], "Versjonen").acceptedFrom;
+          return {
+            takeId: x.takeId,
+            blockRevisions: af?.blockRevisions ?? {},
+            assetVersions: af?.assetVersions ?? null,
+          };
+        }),
       };
+      // Ressursversjonene (REQ-0022): utelatt eller null = ukjent (eldre angresteg hadde dem ikke)
+      const cleanVersions = (
+        m: Readonly<Record<string, string>> | null | undefined,
+      ): Readonly<Record<string, string>> | undefined => {
+        if (m === undefined || m === null) return undefined;
+        if (typeof m !== "object") fail("invalid", "Ugyldig grunnlag");
+        const out: Record<string, string> = {};
+        for (const [k, v] of Object.entries(m)) {
+          if (!isUuid(k) || typeof v !== "string" || !isUuid(v))
+            fail("invalid", "Ugyldig grunnlag");
+          out[k] = v;
+        }
+        return Object.keys(out).length ? out : undefined;
+      };
+      const basis = (
+        revs: Record<string, number>,
+        av: Readonly<Record<string, string>> | undefined,
+      ) =>
+        Object.keys(revs).length || av
+          ? { blockRevisions: revs, ...(av ? { assetVersions: av } : {}) }
+          : null;
       for (const x of c.compositions) {
         const comp = s.compositions[x.compositionId]!;
-        const revs = clean(x.blockRevisions);
+        const pf = basis(clean(x.blockRevisions), cleanVersions(x.assetVersions));
         const { producedFrom: _old, ...rest } = comp;
         compositions[comp.id] = {
           ...rest,
-          ...(Object.keys(revs).length ? { producedFrom: { blockRevisions: revs } } : {}),
+          ...(pf ? { producedFrom: pf } : {}),
           revision: rev(comp),
         };
       }
       for (const x of c.takes) {
         const t = s.takes[x.takeId]!;
-        const revs = clean(x.blockRevisions);
+        // Som for 2D-scener: uten manuslinjer og uten ressursversjoner fjernes godkjenningen helt, så
+        // producedFrom gjelder igjen; med bare ressursversjoner beholdes den (REQ-0022)
+        const af = basis(clean(x.blockRevisions), cleanVersions(x.assetVersions));
         const { acceptedFrom: _old, ...restTake } = t;
         takes[t.id] = {
           ...restTake,
-          ...(Object.keys(revs).length ? { acceptedFrom: { blockRevisions: revs } } : {}),
+          ...(af ? { acceptedFrom: af } : {}),
           revision: rev(t),
         };
       }
@@ -3871,8 +4072,38 @@ function run(
           (x.output !== "video" && x.output !== "dialogue"))
       )
         fail("invalid", "Ugyldige eksportinnstillinger");
-      const settings =
-        x === null ? null : { size: x.size, monochrome: x.monochrome, output: x.output };
+      // Tittelsiden (KI-20): utelatt = beholdes, null = fjernes
+      let titlePage: readonly string[] | undefined = p.exportSettings?.titlePage;
+      if (x !== null && x.titlePage !== undefined) {
+        if (x.titlePage === null) titlePage = undefined;
+        else {
+          if (
+            !Array.isArray(x.titlePage) ||
+            x.titlePage.some((l) => typeof l !== "string" || l.length > TITLE_PAGE_MAX_LINE) ||
+            x.titlePage.length > TITLE_PAGE_MAX_LINES
+          )
+            fail("invalid", "Ugyldig tittelside");
+          titlePage = [...x.titlePage];
+        }
+      }
+      const settings: ExportSettings | null =
+        x === null
+          ? null
+          : {
+              size: x.size,
+              monochrome: x.monochrome,
+              output: x.output,
+              ...(titlePage !== undefined ? { titlePage } : {}),
+            };
+      if (
+        settings &&
+        (exportSettingsBytes(settings) > EXPORT_SETTINGS_MAX_BYTES - 512 ||
+          (settings.titlePage &&
+            new TextEncoder().encode(JSON.stringify(settings.titlePage)).byteLength >
+              TITLE_PAGE_MAX_BYTES))
+      )
+        fail("invalid", "Tittelsiden er for lang til å lagres (maks om lag 3 kB)");
+      const prev = p.exportSettings ?? null;
       return {
         state: {
           ...s,
@@ -3884,9 +4115,31 @@ function run(
         inverse: {
           type: "SetExportSettings",
           productionId: p.id,
-          settings: p.exportSettings ?? null,
+          // Tittelsiden settes alltid tilbake nøyaktig (null = fantes ikke)
+          settings: prev === null ? null : { ...prev, titlePage: prev.titlePage ?? null },
         },
         affected: [p.id],
+      };
+    }
+
+    case "SetDurationAssumptions": {
+      // Felles for prosjektet (KI-28); null fjerner dem (standardverdiene gjelder)
+      const next =
+        c.assumptions === null ? null : normalizeDurationAssumptions(c.assumptions as unknown);
+      if (c.assumptions !== null && next === null)
+        fail("invalid", "Ugyldige antakelser for varighetsestimatet");
+      const prev = s.project.durationAssumptions ?? null;
+      if (prev === next || (prev !== null && next !== null && sameDurationAssumptions(prev, next)))
+        fail("invalid", "Ingen endring");
+      const { durationAssumptions: _old, ...rest } = s.project;
+      const project =
+        next === null
+          ? { ...rest, revision: s.project.revision + 1 }
+          : { ...rest, durationAssumptions: next, revision: s.project.revision + 1 };
+      return {
+        state: { ...s, project },
+        inverse: { type: "SetDurationAssumptions", assumptions: prev },
+        affected: [s.project.id],
       };
     }
 
@@ -4386,6 +4639,42 @@ function run(
           productions[x.id] = { ...x, fps: c.fps, revision: rev(x) };
           affected.push(x.id);
         }
+      // Overganger og utdrag er i bilder og regnes om til ny bildefrekvens (KI-48); klippdeler er i ms
+      const occurrences = { ...s.occurrences };
+      const oldOcc: {
+        occurrenceId: OccurrenceId;
+        transition: Transition | null;
+        excerpt: { inFrame: number; outFrame: number } | null;
+      }[] = [];
+      const fpsChanged = !sameFps(from.fps, to.fps);
+      if (fpsChanged)
+        for (const o of Object.values(s.occurrences)) {
+          if (!o.transition && !o.excerpt) continue;
+          oldOcc.push({
+            occurrenceId: o.id,
+            transition: o.transition ?? null,
+            excerpt: o.excerpt,
+          });
+          occurrences[o.id] = {
+            ...o,
+            ...(o.transition ? { transition: rescaleTransition(o.transition, m.frame) } : {}),
+            excerpt: o.excerpt ? rescaleExcerpt(o.excerpt, m.frame) : null,
+            revision: rev(o),
+          };
+          affected.push(o.id);
+        }
+      // Versjonenes lengde i bilder (KI-48): film med kjent lengde regnes fra filen, resten omregnes
+      const takes = { ...s.takes };
+      const oldTakeFrames: { takeId: TakeId; durationFrames: number | null }[] = [];
+      if (fpsChanged)
+        for (const t of Object.values(s.takes)) {
+          const next = rescaleTakeFrames(t, m.frame, to.fps);
+          if (next === t.durationFrames) continue;
+          oldTakeFrames.push({ takeId: t.id, durationFrames: t.durationFrames });
+          takes[t.id] = { ...t, durationFrames: next, revision: rev(t) };
+          affected.push(t.id);
+        }
+      const oldDefault = p.defaultTransition ?? null;
       return {
         state: {
           ...s,
@@ -4394,11 +4683,16 @@ function run(
             frameWidth: c.width,
             frameHeight: c.height,
             fps: c.fps,
+            ...(oldDefault && fpsChanged
+              ? { defaultTransition: rescaleTransition(oldDefault, m.frame) }
+              : {}),
             revision: rev(p),
           },
           productions,
           compositions,
           layers,
+          occurrences,
+          takes,
         },
         inverse: {
           type: "UndoSetProjectFormat",
@@ -4406,6 +4700,9 @@ function run(
           productionFps: prodFps,
           compositions: oldComps,
           layers: oldLayers,
+          occurrences: oldOcc,
+          defaultTransition: oldDefault,
+          takeFrames: oldTakeFrames,
         },
         affected,
       };
@@ -4423,6 +4720,30 @@ function run(
         { width: p.frameWidth, height: p.frameHeight, fps: p.fps },
         { width: c.project.width, height: c.project.height, fps: c.project.fps },
       );
+      // Omregningen endringen gjorde (fra det gamle formatet til det nåværende): en verdi i bilder settes bare
+      // tilbake nøyaktig hvis den fortsatt er slik endringen satte den; er den endret siden, regnes den
+      // nåværende verdien om tilbake (senere endringer overskrives ikke i stillhet)
+      const fwd = formatMapping(
+        { width: c.project.width, height: c.project.height, fps: c.project.fps },
+        { width: p.frameWidth, height: p.frameHeight, fps: p.fps },
+      );
+      const sameJson = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
+      const backTransition = (
+        was: Transition | null | undefined,
+        cur: Transition | null,
+      ): Transition | null =>
+        was !== undefined && sameJson(was ? rescaleTransition(was, fwd.frame) : null, cur)
+          ? was
+          : cur
+            ? rescaleTransition(cur, back.frame)
+            : null;
+      type Excerpt = { readonly inFrame: number; readonly outFrame: number } | null;
+      const backExcerpt = (was: Excerpt | undefined, cur: Excerpt): Excerpt =>
+        was !== undefined && sameJson(was ? rescaleExcerpt(was, fwd.frame) : null, cur)
+          ? was
+          : cur
+            ? rescaleExcerpt(cur, back.frame)
+            : null;
       const oldComp = new Map(c.compositions.map((x) => [x.id, x]));
       const oldLayer = new Map(c.layers.map((x) => [x.id, x]));
       for (const cur of Object.values(s.compositions)) {
@@ -4446,11 +4767,49 @@ function run(
           affected.push(cur.id);
         }
       }
+      // Overganger og utdrag (KI-48): det som fantes og ikke er endret siden, settes tilbake nøyaktig; det som
+      // er nytt eller endret etterpå, regnes om tilbake
+      const occurrences = { ...s.occurrences };
+      let project: typeof p = p;
+      if (c.occurrences !== undefined && !sameFps(p.fps, c.project.fps)) {
+        const old = new Map(c.occurrences.map((x) => [x.occurrenceId as string, x]));
+        for (const o of Object.values(s.occurrences)) {
+          const was = old.get(o.id);
+          if (!was && !o.transition && !o.excerpt) continue;
+          const { transition: _t, ...rest } = o;
+          const transition = backTransition(was?.transition, o.transition ?? null);
+          occurrences[o.id] = {
+            ...rest,
+            ...(transition ? { transition } : {}),
+            excerpt: backExcerpt(was?.excerpt, o.excerpt),
+            revision: rev(o),
+          };
+          affected.push(o.id);
+        }
+        const { defaultTransition: _d, ...restProject } = p;
+        const d = backTransition(c.defaultTransition, p.defaultTransition ?? null);
+        project = d ? { ...restProject, defaultTransition: d } : restProject;
+      }
+      const takes = { ...s.takes };
+      if (c.takeFrames !== undefined && !sameFps(p.fps, c.project.fps)) {
+        const old = new Map(c.takeFrames.map((x) => [x.takeId as string, x.durationFrames]));
+        for (const t of Object.values(s.takes)) {
+          const was = old.has(t.id) ? old.get(t.id)! : undefined;
+          const next =
+            was !== undefined &&
+            rescaleTakeFrames({ ...t, durationFrames: was }, fwd.frame, p.fps) === t.durationFrames
+              ? was
+              : rescaleTakeFrames(t, back.frame, c.project.fps);
+          if (next === t.durationFrames) continue;
+          takes[t.id] = { ...t, durationFrames: next, revision: rev(t) };
+          affected.push(t.id);
+        }
+      }
       return {
         state: {
           ...s,
           project: {
-            ...p,
+            ...project,
             frameWidth: c.project.width,
             frameHeight: c.project.height,
             fps: c.project.fps,
@@ -4459,6 +4818,8 @@ function run(
           productions,
           compositions,
           layers,
+          occurrences,
+          takes,
         },
         inverse: {
           type: "SetProjectFormat",
@@ -4496,9 +4857,9 @@ function run(
               camera: { shots: [] },
               removed: false,
               // Laget fra manuset slik det er nå (avvik ved senere endringer, DEC-0054)
-              producedFrom: c.producedFrom ?? {
-                blockRevisions: currentBlockRevisions(s, c.variantId),
-              },
+              producedFrom: c.producedFrom
+                ? producedFromOf(c.producedFrom)
+                : { blockRevisions: currentBlockRevisions(s, c.variantId) },
             },
           },
         },

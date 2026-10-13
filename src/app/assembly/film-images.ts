@@ -2,7 +2,7 @@
  * Bildene i filmen (M4 del 1): signerte lenker for alle lagbilder i scenenes 2D-scener, og en felles
  * bildebuffer for visningen og miniatyrene i monteringen.
  */
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { layerVersions, layersOf, type FilmClip, type ProjectState } from "@/core";
 import { ImageCache } from "@/engine/compositor/canvas";
 import { useImageUrls } from "@/app/library/asset-images";
@@ -39,8 +39,15 @@ export function useFilmImages(state: ProjectState, clips: readonly FilmClip[]) {
       listeners.delete(l);
     };
   }, []);
+  // Bufferen deles av monteringen, sammenligningen og nabosceneene: hver visning holder sine egne bilder i
+  // bruk, så en visning kan ikke kaste bilder en annen fortsatt tegner. Lukkes visningen, frigjøres de.
+  const consumer = useRef<object>({});
   useEffect(() => {
-    if (urls.data) filmImageCache.ensure(urls.data);
+    if (urls.data) filmImageCache.ensure(urls.data, consumer.current);
   }, [urls.data]);
+  useEffect(() => {
+    const c = consumer.current;
+    return () => filmImageCache.release(c);
+  }, []);
   return { urls: urls.data ?? null, loading: urls.isLoading, tick, paths };
 }

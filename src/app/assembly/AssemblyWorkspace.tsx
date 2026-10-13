@@ -15,7 +15,6 @@ import {
   ChevronLast,
   ChevronLeft,
   ChevronRight,
-  Captions,
   Download,
   Music,
   Pause,
@@ -25,13 +24,6 @@ import {
   SkipBack,
   SkipForward,
   Undo2,
-  Film,
-  Blend,
-  Binary,
-  Contrast,
-  ExternalLink,
-  Languages,
-  ListOrdered,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -106,6 +98,9 @@ import {
 } from "@/components/ui/dialog";
 import { ExportAnimaticDialog } from "./ExportAnimaticDialog";
 import { rememberScene } from "@/app/shell/current-scene";
+import { AssemblyMoreMenu, AssemblyViewMenu } from "./AssemblyToolbarMenus";
+import { ShortcutsButton, ShortcutsDialog } from "@/app/shortcuts/ShortcutsDialog";
+import { isShortcutHelpKey } from "@/app/shortcuts/shortcut-list";
 
 /** Scene og blokk som skal vises når monteringen åpnes (fra manuset). */
 export interface AssemblyFocus {
@@ -219,6 +214,8 @@ function Assembly({
   // Lagrede eksportinnstillinger krever migrasjon 0027
   const schema27 = useSchemaAtLeast(27);
   const [popout, setPopout] = useState(false);
+  /** «Hurtigtaster»-oversikten (DEC-0078). */
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [standardOpen, setStandardOpen] = useState(false);
   const [subtitlesOpen, setSubtitlesOpen] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
@@ -699,6 +696,11 @@ function Assembly({
     const f = playback.frame;
     const sec = Math.round(fps.num / fps.den);
     const idx = at?.index ?? 0;
+    if (isShortcutHelpKey(e)) {
+      e.preventDefault();
+      setShortcutsOpen(true);
+      return;
+    }
     switch (e.key) {
       case " ":
       case "k":
@@ -775,7 +777,7 @@ function Assembly({
 
   const toolbar = (
     <>
-      <IconButton label="Til start (Home)" onClick={() => playback.setFrame(0)}>
+      <IconButton label="Til start av filmen (Home)" onClick={() => playback.setFrame(0)}>
         <SkipBack className="size-3.5" />
       </IconButton>
       <IconButton
@@ -795,7 +797,11 @@ function Assembly({
       <button
         type="button"
         aria-label={playback.playing ? "Pause" : "Spill av"}
-        title={playback.playing ? "Pause (mellomrom)" : "Spill av hele filmen (mellomrom)"}
+        title={
+          playback.playing
+            ? "Pause (mellomrom eller K)"
+            : "Spill av hele filmen (mellomrom eller K)"
+        }
         onClick={playback.toggle}
         className={iconButton + " bg-surface-3 text-text-primary"}
       >
@@ -810,11 +816,14 @@ function Assembly({
       <IconButton label="Neste scene (pil ned)" onClick={() => goToScene((at?.index ?? -1) + 1)}>
         <ChevronLast className="size-3.5" />
       </IconButton>
-      <IconButton label="Til slutt (End)" onClick={() => playback.setFrame(duration - 1)}>
+      <IconButton
+        label="Til slutten av filmen (End)"
+        onClick={() => playback.setFrame(duration - 1)}
+      >
         <SkipForward className="size-3.5" />
       </IconButton>
       <IconButton
-        label="Løkke"
+        label="Spill i løkke"
         active={playback.loop}
         onClick={() => playback.setLoop(!playback.loop)}
       >
@@ -871,129 +880,65 @@ function Assembly({
         >
           <Redo2 />
         </Button>
-        <span className="ml-2 truncate text-xs text-text-tertiary">
+        {/* Antall og lengde uten avkutting; resten står i verktøytipset. Smalere enn 1600 px vises det samme i
+            transportlinjen («Scene 1 av 13», samlet tid), så etiketten skjules der (DEC-0076 funn 5) */}
+        <span
+          className="ml-1 hidden shrink-0 whitespace-nowrap text-xs tabular-nums text-text-tertiary min-[1600px]:inline"
+          title={`${clips.length} ${clips.length === 1 ? "scene" : "scener"} · ${formatSeconds(
+            framesToSeconds(filmDurationFrames(clips), fps),
+          )} · ${withComposition} med 2D-scene`}
+        >
           {clips.length} {clips.length === 1 ? "scene" : "scener"} ·{" "}
-          {formatSeconds(framesToSeconds(filmDurationFrames(clips), fps))} · {withComposition} med
-          2D-scene
+          {formatSeconds(framesToSeconds(filmDurationFrames(clips), fps))}
         </span>
-        <div className="ml-auto flex items-center gap-1.5 2xl:gap-3">
-          <Button
-            aria-label="Svart-hvitt"
-            size="sm"
-            variant="ghost"
-            aria-pressed={monochrome}
-            onClick={() => setMonochrome(!monochrome)}
-            title="Vis hele filmen i svart-hvitt (foreslås også i eksporten). Enkeltscener settes i panelet."
-            className={monochrome ? "bg-surface-3 text-text-primary" : ""}
-          >
-            <Contrast />
-            <span className="hidden 2xl:inline">Svart-hvitt</span>
-          </Button>
-          <Button
-            aria-label="Teknisk visning"
-            size="sm"
-            variant="ghost"
-            aria-pressed={technical}
-            onClick={() => setTechnical(!technical)}
-            title="Vis tidskoder, bildenummer og filinformasjon for scenen og delene"
-            className={technical ? "bg-surface-3 text-text-primary" : ""}
-          >
-            <Binary />
-            <span className="hidden 2xl:inline">Teknisk</span>
-          </Button>
-          <Button
-            aria-label="Standardovergang"
-            size="sm"
-            variant="ghost"
-            onClick={() => setStandardOpen(true)}
-            title="Overgangen alle scener får når de ikke har sin egen"
-          >
-            <Blend />
-            <span className="hidden 2xl:inline">Standardovergang</span>
-          </Button>
-          <Button
-            aria-label="Eget vindu"
-            size="sm"
-            variant="ghost"
-            aria-pressed={popout}
-            onClick={() => setPopout((x) => !x)}
-            disabled={clips.length === 0}
-            title="Vis filmen i et eget vindu, f.eks. på en annen skjerm"
-          >
-            <ExternalLink />
-            <span className="hidden 2xl:inline">Eget vindu</span>
-          </Button>
+        <div className="ml-auto flex min-w-0 items-center gap-1.5">
           {editable ? (
             <Button
-              aria-label="Importer lang film"
               size="sm"
               variant="ghost"
-              onClick={() => setLongFilm(true)}
-              disabled={clips.length === 0}
-              title="Én filmfil som dekker flere scener: last opp én gang og del den på scenene"
-            >
-              <Film />
-              <span className="hidden 2xl:inline">Importer lang film</span>
-            </Button>
-          ) : null}
-          {editable ? (
-            <Button
-              aria-label="Legg til lyd"
-              size="sm"
-              variant="ghost"
+              className="shrink-0"
               onClick={() => setAddAudio("dialogue")}
               disabled={clips.length === 0}
               title="Legg til lyd ved avspillingshodet"
             >
-              <Music />
-              <span className="hidden 2xl:inline">Legg til lyd</span>
-            </Button>
-          ) : null}
-          {editable ? (
-            <Button
-              aria-label="Video for flere scener"
-              size="sm"
-              variant="ghost"
-              onClick={() => setBatchOpen(true)}
-              disabled={clips.length === 0}
-              title="Lag AI-video for flere scener på én gang (legges i kø, kostnaden vises først)"
-            >
-              <ListOrdered />
-              <span className="hidden 2xl:inline">Video for flere scener</span>
+              <Music aria-hidden />
+              <span className="sr-only min-[1400px]:not-sr-only">Legg til lyd</span>
             </Button>
           ) : null}
           <Button
             size="sm"
             variant="secondary"
+            className="shrink-0"
             onClick={() => setExportOpen(true)}
             disabled={clips.length === 0}
             title="Lag en video av filmen eller et utvalg av scener"
+            aria-label="Eksporter animatic"
           >
-            <Download />
-            Eksporter animatic
+            <Download aria-hidden />
+            <span>
+              Eksporter<span className="hidden min-[1400px]:inline"> animatic</span>
+            </span>
           </Button>
-          <Button
-            aria-label="Språkversjon"
-            size="sm"
-            variant="ghost"
-            onClick={() => setLanguageOpen(true)}
-            disabled={clips.length === 0}
-            title="Engelsk versjon: oversettelse, dialoglyd, timing og leppesynk scene for scene"
-          >
-            <Languages />
-            <span className="hidden 2xl:inline">Språkversjon …</span>
-          </Button>
-          <Button
-            aria-label="Undertekster"
-            size="sm"
-            variant="ghost"
-            onClick={() => setSubtitlesOpen(true)}
-            disabled={clips.length === 0}
-            title="Undertekster (.srt eller .vtt) på norsk eller engelsk"
-          >
-            <Captions />
-            <span className="hidden 2xl:inline">Undertekster …</span>
-          </Button>
+          <AssemblyMoreMenu
+            editable={editable}
+            hasClips={clips.length > 0}
+            onStandardTransition={() => setStandardOpen(true)}
+            onLongFilm={() => setLongFilm(true)}
+            onBatchVideo={() => setBatchOpen(true)}
+            onLanguage={() => setLanguageOpen(true)}
+            onSubtitles={() => setSubtitlesOpen(true)}
+          />
+          <AssemblyViewMenu
+            monochrome={monochrome}
+            onMonochrome={setMonochrome}
+            technical={technical}
+            onTechnical={setTechnical}
+            popout={popout}
+            onPopout={setPopout}
+            hasClips={clips.length > 0}
+          />
+          <ShortcutsButton onClick={() => setShortcutsOpen(true)} />
+          <div className="mx-0.5 h-5 w-px shrink-0 bg-border" aria-hidden />
           <SaveIndicator cmds={cmds} />
           {roleKnown && !editable ? (
             <span className="text-xs text-text-tertiary">Bare lesetilgang</span>
@@ -1067,6 +1012,7 @@ function Assembly({
             />
           ) : (
             <ClipPanel
+              cmds={cmds}
               technical={technical}
               state={state}
               projectId={projectId}
@@ -1236,6 +1182,7 @@ function Assembly({
         )}
       />
 
+      <ShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} current="montering" />
       <SubtitleDialog
         state={state}
         productionId={productionId}

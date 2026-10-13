@@ -46,6 +46,7 @@ Alle entiteter har: `id` (UUID v7, permanent, uavhengig av navn/språk/nummer), 
 - **Production** – `kind ∈ {main, spinoff, short, trailer, teaser, pitch, pilot, alternative, other}`, navn, `parentProductionId?`, bildefrekvens, sideforhold. Nøyaktig én `main` per prosjekt.
 - **SceneOccurrence (sceneforekomst)** – hvordan en scene brukes i én produksjon: `productionId`, `sceneId`, `variantId` (hvilken scenevariant som gjelder her), `orderKey` (fraksjonell sorteringsnøkkel), `active`, `excerpt? {inFrame, outFrame}` (tidsutdrag, 24.6), `activeTakeId?`, `productionNumbering` (etablert scenenummer i denne produksjonen, f.eks. «42A» – visningsdata, ikke identitet). **Aktiv rekkefølge i manus og film er rekkefølgen av aktive sceneforekomster – én liste, to visninger (INV-01).**
 - **Assembly (filmmontering)** – overordnet tidslinje per produksjon og språk. `AssemblyItem` refererer alltid til en sceneforekomst eller segment, med trim (inn/ut), overgang og sporplassering. Assembly lagrer ikke egen scenerekkefølge; den avledes fra sceneforekomstene.
+  - **Identitet (REQ-0037, DEC-0078):** Monteringen er ikke en egen tabell, fordi hver produksjon har nøyaktig én montering (alternative klipp lages som egne produksjoner av typen `alternative`). Monteringens stabile ID er derfor **produksjonens ID**; en språkversjon av filmen identifiseres som **(produksjons-ID, språkkode)** (språkkoder er stabile, f.eks. `nb`, `en`). Alt monteringen består av, har egne permanente ID-er: sceneforekomster (rekkefølge via `order_key`, overgang, svart-hvitt, planlagt lengde), aktiv versjon (`takes.id`), deler av klipp (`clip_parts.id`), lydklipp (`audio_clips.id`), tidskoblinger (`time_links.id`) og segmenter (`production_segments.id`). En bestemt tilstand av monteringen kan spores via endringsloggen (`change_log.id`/`seq`), og en ferdig eksport av den via `export_records.id`. Ingen reell mangel er funnet; en egen monterings-ID trengs først hvis én produksjon skal kunne ha flere parallelle monteringer.
 
 ### Scene og manus
 - **Scene** – permanent narrativ enhet. `storyTime {order: number, label?, kind: linear|flashback|flashforward|dream|jump}`, `derivedFrom?`, `originProductionId` (der den ble skrevet; spinoff-scener tilhører bare spinoffen til de eksplisitt overføres – 24.4).
@@ -54,6 +55,8 @@ Alle entiteter har: `id` (UUID v7, permanent, uavhengig av navn/språk/nummer), 
 - **ScreenplayVersion (manusversjon)** – uforanderlig øyeblikksbilde for en produksjon og et språk: ordnet liste av `{occurrenceId, variantId, blockRevisions, active, numbering}`. Nye versjoner refererer forrige (`previousVersionId`). Historiske versjoner endres aldri (2.2).
 - **ImportedDocument** – originalfil (Storage-nøkkel, SHA-256, format, metadata), uendret (4.2).
 - **ExportVersion** – resultat av manus-/film-/plakateksport med valgt nummereringsmetode, valgte språk, inkluderte/ekskluderte scener og nummereringstabell `{occurrenceId → visningsnummer}` (5.2, 3.1 «gjeldende eksportnummer» = siste eksports tabell).
+  - **Implementert som `export_records` (migrasjon 0028, REQ-0037, DEC-0078):** én uforanderlig rad per fullført eksport med permanent `id`, `production_id`, `kind ∈ {film, script, audio, subtitles, poster}`, innstillinger (`settings`, f.eks. format, nummereringsmetode, størrelse, svart-hvitt, språk), filnavn, sceneforekomstene som var med (`occurrence_ids`) og `created_by/at`. Skrives med `record_export` når filen er laget (manus- og filmeksport i dag; undertekster og plakat bør kobles på), vises som «Tidligere eksporter» i eksportdialogene. Selve filen lagres ikke, og nummereringstabellen lagres ikke ennå (kan legges i `settings` senere).
+- **DurationEstimate (lagret varighetsestimat)** – `duration_estimates` (migrasjon 0028, REQ-0120): uforanderlig øyeblikksbilde av varighetsoversikten for en produksjon (bare manusestimat, 2D-lengder, planlagte lengder, bekreftet lengde per scene og i sum) med antakelsene som ble brukt og valgfri `script_version_id`. Historikken viser lagrede estimater med sine egne tall; bare versjoner uten lagret estimat regnes på nytt (merket «regnet på nytt med dagens antakelser»). Antakelsene selv lagres per prosjekt i `projects.duration_assumptions` (KI-28).
 
 ### Språk
 - **LanguageVersion** – `productionId`, `language` (`nb` er hovedmanus; andre er tilknyttede).
@@ -64,7 +67,7 @@ Alle entiteter har: `id` (UUID v7, permanent, uavhengig av navn/språk/nummer), 
 
 ### Produksjonsmateriale
 - **ProductionSegment** – del av en sceneforekomst: `occurrenceId`, `reason`, `startBlockId/endBlockId` eller tidsintervall, `orderKey`. Påvirker aldri scenenummer eller manus (INV-10).
-- **Take (produsert versjon)** – `kind ∈ {composition2d, ai_video, imported_film, still, audio_only}`, `status ∈ {reference, in_progress, approved}`, kildepekere (`compositionId`, `mediaAssetId`, `generationJobId`), `producedFrom {screenplayVersionId, blockRevisions, resourceVersionIds}` (grunnlag for avviksdeteksjon), varighet. Overskrives aldri; nye takes legges ved siden av.
+- **Take (produsert versjon)** – `kind ∈ {composition2d, ai_video, imported_film, still, audio_only}`, `status ∈ {reference, in_progress, approved}`, kildepekere (`compositionId`, `mediaAssetId`, `generationJobId`), `producedFrom {blockRevisions, assetVersions?}` (grunnlag for avviksdeteksjon; `assetVersions` = ressurs-ID → versjons-ID, REQ-0022), varighet. `screenplayVersionId` er ikke lagret (manusgrunnlaget er blokkrevisjonene). Overskrives aldri; nye takes legges ved siden av.
 - **Composition (2D-scene)** – lag (`Layer {depth, kind, resourceVersionId?, transform, keyframes[], visible, groupId}`), kameraer (`Camera {shots[], path (Bézier), keyframes, easing}`), lydplasseringer. Redigerbar kilde; AI-video erstatter den aldri (11.4).
 
 ### Ressurser
@@ -100,4 +103,32 @@ Alle entiteter har: `id` (UUID v7, permanent, uavhengig av navn/språk/nummer), 
 | Lokal kontinuitet i spinoff | `SetContinuityOverride(productionId, eventId, action)` | Slår av/erstatter delt hendelse bare i én produksjon (DEC-0020 pkt. 8). |
 | Velg aktiv versjon | `SetActiveTake` | Peker endres; andre takes beholdes (15.3). |
 | Ny ressursversjon | `PublishResourceVersion` | Konsekvensanalyse; berørte scener flagges; ingen regenerering (8.3). |
-| Eksporter manus | `ExportScreenplay(numberingMethod, includeInactive, language)` | Ny `ExportVersion`; interne ID-er uendret (5.2). |
+| Eksporter manus | `ExportScreenplay(numberingMethod, includeInactive, language)` | Ny `ExportVersion` (rad i `export_records` via `record_export`, ikke en kommando); interne ID-er uendret (5.2). |
+
+## 4. Strukturell og innholdsmessig synkronisering (REQ-0022, DEC-0078)
+
+Hvert produsert materiale (2D-scene, versjon av scenen/take) har to adskilte sett opplysninger:
+
+| | Strukturell plassering | Innholdsmessig grunnlag |
+|---|---|---|
+| Hva | Hvor materialet står: scenevariant, sceneforekomst, delsekvens (`variantId`, `occurrenceId`, `segmentId`) | Hva materialet ble laget fra: manuslinjenes revisjoner og ressursversjonene |
+| Endres av | Flytt, deaktiver, rekkefølge, splitt – automatisk og transaksjonelt (INV-01) | Aldri automatisk. Avvik flagges; brukeren godkjenner, oppdaterer eller angrer (INV-07, INV-08, INV-13) |
+| Kode | `views.ts`, `assembly/film.ts` | `assembly/discrepancy.ts` (manus), `library/content-sync.ts` og `library/worklist.ts` (ressurser) |
+
+**Manusgrunnlaget** lagres i `producedFrom.blockRevisions` (takes: uforanderlig; godkjenning i `acceptedFrom`) og `compositions.produced_from`.
+
+**Ressursgrunnlaget** lagres i `producedFrom.assetVersions` (ressurs-ID → versjons-ID; jsonb i `takes.produced_from`, `takes.accepted_from` og `compositions.produced_from`, ingen ny kolonne). Det fylles fra ressursgrunnlaget nedenfor (`takeAssetVersions`, `compositionAssetVersions` i `library/content-sync.ts`):
+- `AddTake`: når versjonen lages (uforanderlig etterpå, INV-07). Importert film får versjonene scenens 2D-scene viser da filmen legges inn (det filmen erstatter).
+- `AcceptScriptChanges`: fornyes for 2D-scenen (`producedFrom`) og versjonene (`acceptedFrom`); `SetProducedFrom` (angre) setter tilbake nøyaktig (utelatt/null = ukjent).
+- `CreateComposition` tar med grunnlaget fra kopien/gjør om; en ny 2D-scene har ingen lag og dermed ingen versjoner før den godkjennes.
+- Mangler feltet (eldre materiale), er versjonene ukjente og flagges ikke herfra.
+
+I tillegg leses grunnlaget fra det som allerede er lagret (`takeResourceBasis`, `compositionResourceBasis`, `takeMaterialBasis`):
+- 2D-scene: versjonen hvert lag er låst til (eget bilde, bildeskifter, språkbilder). Et lag uten låst versjon *følger* variantens godkjente versjon; byttet skjer bare når brukeren godkjenner en ny versjon og velger scenene (`library/impact.ts`).
+- Stillbilde: `mediaRef` er ressursversjonens fil.
+- AI-materiale: referansene i sporet til jobben (`generation_jobs.params.trace`, DEC-0072).
+- Importert film og ren lyd: ukjent (laget utenfor programmet).
+
+Flagget «Ressursen er oppdatert etter at scenen ble laget» (`contentSyncByScene`) vises per scene når noe i scenen viser en eldre versjon enn den som er godkjent nå: arbeidslisten (låste lag, stillbilder, AI-spor; DEC-0072) og det lagrede grunnlaget (`basisSyncItems`: 2D-scenens `producedFrom.assetVersions`, som dekker lag som følger varianten, og den aktive versjonens `acceptedFrom`/`producedFrom.assetVersions`, som dekker importert film). Samme versjonsbytte i samme scene telles én gang. «Behold» (gjennomgåtte versjoner) gjelder også her. Ingenting byttes automatisk; flagget for grunnlaget forsvinner når scenen godkjennes på nytt.
+
+**Gjenstående hull:** lag som legges til *etter* at 2D-scenen er laget eller sist godkjent, kommer først med i `assetVersions` ved neste godkjenning (lagkommandoene skriver ikke 2D-scenens rad, for å unngå konflikter ved samtidig redigering). Kopier av 2D-scener i `production/index.ts` (`compositionCopyCommands`) tar foreløpig bare med `blockRevisions`.

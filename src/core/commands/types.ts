@@ -61,6 +61,7 @@ import type {
   TakeStatus,
   TakeMedia,
   Transition,
+  ProducedFrom,
   VisualStyle,
   VolumeKey,
   ImageSwap,
@@ -69,6 +70,7 @@ import type {
   BlendMode,
 } from "../model";
 import type { Rational } from "../time";
+import type { DurationAssumptions } from "../screenplay/duration";
 
 /** Redigerbare felter på et lydklipp (mandat 13.3, DEC-0044). Alt erstattes samlet. */
 export interface AudioClipFields {
@@ -345,6 +347,11 @@ export type Command =
       /** Ny ID for hver gjeldende oversettelse av scenen som følger med (DEC-0058). Utelatt = ingen kopi. */
       readonly translationIdMap?: Readonly<Record<string, TranslationId>>;
       /**
+       * Ny ID for hvert notat på teksten eller scenen som følger med (KI-33). Utelatt = alle synlige notater
+       * kopieres med ID-er avledet av den nye varianten og notatet (samme ID-er ved gjør om).
+       */
+      readonly annotationIdMap?: Readonly<Record<string, AnnotationId>>;
+      /**
        * Tilbakeføring (DEC-0060): kopier innholdet fra denne varianten av scenen (f.eks. spinoffens versjon)
        * i stedet for forekomstens nåværende. Utelatt = forekomstens variant.
        */
@@ -448,13 +455,18 @@ export type Command =
   | {
       /** Sett grunnlaget for materiale direkte (angre av AcceptScriptChanges). */
       readonly type: "SetProducedFrom";
+      /**
+       * `assetVersions` (REQ-0022): ressurs-ID → versjons-ID. Utelatt eller null = ukjent (fjernes).
+       */
       readonly compositions: readonly {
         readonly compositionId: CompositionId;
         readonly blockRevisions: Readonly<Record<string, number>>;
+        readonly assetVersions?: Readonly<Record<string, string>> | null;
       }[];
       readonly takes: readonly {
         readonly takeId: TakeId;
         readonly blockRevisions: Readonly<Record<string, number>>;
+        readonly assetVersions?: Readonly<Record<string, string>> | null;
       }[];
     }
   | {
@@ -517,7 +529,18 @@ export type Command =
   | {
       readonly type: "SetExportSettings";
       readonly productionId: ProductionId;
-      readonly settings: ExportSettings | null;
+      /**
+       * null fjerner alt. `titlePage` (KI-20): utelatt = tittelsiden beholdes som den er (så eksport av
+       * animatic ikke sletter den); null = fjernes; liste = settes (må holde seg under grensen).
+       */
+      readonly settings:
+        | (Omit<ExportSettings, "titlePage"> & { readonly titlePage?: readonly string[] | null })
+        | null;
+    }
+  /** Antakelsene for varighetsestimatet for hele prosjektet (KI-28, migrasjon 0028); null = standard. */
+  | {
+      readonly type: "SetDurationAssumptions";
+      readonly assumptions: DurationAssumptions | null;
     }
   /** Hvilken del av manuset en film dekker (REQ-0237, DEC-0071), eller null for hele scenen. */
   | {
@@ -581,6 +604,11 @@ export type Command =
       readonly newVariantId: VariantId;
       /** Varianten innholdet ble kopiert fra, når det ikke var den forrige (tilbakeføring, DEC-0060). */
       readonly sourceVariantId?: VariantId;
+      /**
+       * Originalnotat → kopi i den nye versjonen (KI-33), slik ForkVariant laget dem. Utelatt (eldre
+       * angresteg) = kopiene har ID-er avledet av den nye varianten og originalen.
+       */
+      readonly annotationIdMap?: Readonly<Record<string, AnnotationId>>;
     }
   | { readonly type: "UndoAddOccurrence"; readonly occurrenceId: OccurrenceId }
   | {
@@ -649,6 +677,22 @@ export type Command =
       }[];
       readonly compositions: readonly Composition[];
       readonly layers: readonly CompositionLayer[];
+      /**
+       * Overganger og utdrag i bilder slik de var (KI-48), for forekomster som hadde dem. Utelatt (eldre
+       * angresteg) = overganger og utdrag ble ikke regnet om og røres ikke.
+       */
+      readonly occurrences?: readonly {
+        readonly occurrenceId: OccurrenceId;
+        readonly transition: Transition | null;
+        readonly excerpt: { readonly inFrame: number; readonly outFrame: number } | null;
+      }[];
+      /** Prosjektets standardovergang slik den var (KI-48); null = ingen. */
+      readonly defaultTransition?: Transition | null;
+      /** Lengden i bilder for versjonene av scenene slik den var (KI-48). */
+      readonly takeFrames?: readonly {
+        readonly takeId: TakeId;
+        readonly durationFrames: number | null;
+      }[];
     }
   // ---------- 2D-sceneeditor (M3 del 2, DEC-0035) ----------
   | {
@@ -657,7 +701,7 @@ export type Command =
       readonly variantId: VariantId;
       readonly fields: CompositionFields;
       /** Grunnlaget (gjør om etter angre beholder det opprinnelige, DEC-0054). Mangler = manuset nå. */
-      readonly producedFrom?: { readonly blockRevisions: Readonly<Record<string, number>> };
+      readonly producedFrom?: ProducedFrom;
     }
   | { readonly type: "UndoCreateComposition"; readonly compositionId: CompositionId }
   | {

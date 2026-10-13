@@ -2,9 +2,24 @@
  * Scenevelger i verktøylinjen (DEC-0040): viser valgt scene og åpner en liste med søk (nummer, sted,
  * tid) når man vil bla. Pilene går til forrige/neste scene. Gir mer plass til selve scenen.
  */
-import { Check, ChevronDown, ChevronLeft, ChevronRight, Layers, Search } from "lucide-react";
+import {
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Layers,
+  ListChecks,
+  Search,
+} from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { formatHeading, sceneNumberOf, type ProjectState, type SceneOccurrence } from "@/core";
+import {
+  contentSyncText,
+  formatHeading,
+  sceneNumberOf,
+  type ProjectState,
+  type SceneContentSync,
+  type SceneOccurrence,
+} from "@/core";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 export function ScenePicker({
@@ -13,7 +28,10 @@ export function ScenePicker({
   occurrenceId,
   hasComposition,
   onPick,
+  synced,
 }: {
+  /** Scener laget med en eldre ressursversjon (flagget «Ressurs oppdatert», REQ-0022). */
+  synced?: ReadonlyMap<string, SceneContentSync>;
   state: ProjectState;
   occurrences: readonly SceneOccurrence[];
   occurrenceId: string | null;
@@ -70,7 +88,7 @@ export function ScenePicker({
   }
 
   return (
-    <div className="flex min-w-0 items-center gap-0.5">
+    <div className="flex min-w-[220px] shrink items-center gap-0.5">
       <button
         type="button"
         className="rounded-sm p-1 text-text-secondary hover:bg-surface-3 hover:text-text-primary disabled:opacity-40"
@@ -93,7 +111,7 @@ export function ScenePicker({
         <PopoverTrigger asChild>
           <button
             type="button"
-            className="flex h-7 min-w-0 max-w-[420px] items-center gap-2 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary hover:bg-surface-2"
+            className="flex h-7 min-w-[160px] max-w-[420px] flex-1 items-center gap-2 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary hover:bg-surface-2"
             aria-label={
               current ? `Velg scene. Valgt: ${current.number} ${current.heading}` : "Velg scene"
             }
@@ -186,6 +204,15 @@ export function ScenePicker({
                     {r.heading}
                     {r.o.active ? null : <span className="sr-only"> (deaktivert)</span>}
                   </span>
+                  {synced?.has(r.o.id) ? (
+                    <span
+                      className="inline-flex shrink-0 items-center gap-0.5 text-[11px] text-status-uncertain"
+                      title={contentSyncText(state, synced.get(r.o.id)!)}
+                    >
+                      <ListChecks className="size-3" aria-hidden />
+                      Ressurs oppdatert
+                    </span>
+                  ) : null}
                   {r.has ? (
                     <Layers
                       className="size-3 shrink-0 text-accent-brand"

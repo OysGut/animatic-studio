@@ -11,8 +11,8 @@ import {
   type Rational,
   type TakeMedia,
 } from "@/core";
-import { supabase } from "@/integrations/supabase/client";
-import { ASSET_BUCKET, safeFileName } from "@/app/library/asset-images";
+import { ASSET_BUCKET, uploadFile } from "@/adapters/browser/storage-files";
+import { safeFileName } from "@/app/library/asset-images";
 
 /** Filtype fra filnavnet når nettleseren ikke oppgir den (f.eks. .mov i enkelte nettlesere). */
 function mimeOf(file: File): string {
@@ -86,9 +86,10 @@ export async function uploadFilm(
   const media = await readFilmMetadata(file);
   const takeId = newId<"take">();
   const mediaRef = `${projectId}/films/${takeId}/${safeFileName(file.name)}`;
-  const { error } = await supabase.storage
-    .from(ASSET_BUCKET)
-    .upload(mediaRef, file, { contentType: media.mimeType, upsert: false });
+  const error = await uploadFile(ASSET_BUCKET, mediaRef, file, {
+    contentType: media.mimeType,
+    upsert: false,
+  });
   if (error) throw new Error(`Filmen kunne ikke lastes opp: ${error.message}`);
   return {
     takeId,

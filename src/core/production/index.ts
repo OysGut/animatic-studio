@@ -245,6 +245,10 @@ export function compositionCopyCommands(
                   v,
                 ]),
               ),
+              // Ressursgrunnlaget følger med egen kopi (REQ-0022, DEC-0078)
+              ...(src.producedFrom.assetVersions
+                ? { assetVersions: src.producedFrom.assetVersions }
+                : {}),
             },
           }
         : {}),

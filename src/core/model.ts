@@ -30,6 +30,7 @@ import type {
   VariantId,
 } from "./ids";
 import type { Rational } from "./time";
+import type { DurationAssumptions } from "./screenplay/duration";
 
 export const PRIMARY_LANGUAGE = "nb" as const; // INV-05
 
@@ -76,6 +77,8 @@ export interface Project extends Entity<ProjectId> {
   readonly aiMonthLimit?: number;
   /** Anslått pris per AI-bilde (kreditter), satt av eieren; mangler = ukjent (REQ-0279–0281). */
   readonly aiPricePerImage?: number;
+  /** Antakelsene for varighetsestimatet, felles for prosjektet (KI-28, migrasjon 0028). Mangler = standard. */
+  readonly durationAssumptions?: DurationAssumptions;
 }
 
 export interface Production extends Entity<ProductionId> {
@@ -95,6 +98,81 @@ export interface ExportSettings {
   readonly size: "full" | "half";
   readonly monochrome: boolean;
   readonly output: "video" | "dialogue";
+  /**
+   * Tittelsiden i manuseksporten, én linje per element (KI-20): lest ved import og endret i
+   * eksportdialogen. Mangler = ikke satt (prosjektnavnet foreslås); tom liste = ingen tittelside.
+   */
+  readonly titlePage?: readonly string[];
+}
+
+/** Største lagrede eksportinnstillinger i byte (sjekken i migrasjon 0027 er 4096 byte for jsonb). */
+export const EXPORT_SETTINGS_MAX_BYTES = 4096;
+/** Grensen tittelsiden kortes til, med margin for jsonb-lagringen og de andre feltene. */
+export const TITLE_PAGE_MAX_BYTES = 3200;
+/** Flest linjer og lengste linje på en lagret tittelside. */
+export const TITLE_PAGE_MAX_LINES = 40;
+export const TITLE_PAGE_MAX_LINE = 300;
+
+/** Standard eksportinnstillinger (som i eksportdialogen for animatic) når bare tittelsiden er satt. */
+export const DEFAULT_EXPORT_SETTINGS: ExportSettings = {
+  size: "full",
+  monochrome: false,
+  output: "video",
+};
+
+/** Fjerner et halvt tegnpar (emoji o.l.) som ble kuttet på slutten. */
+function noLoneSurrogate(text: string): string {
+  return text.replace(/[\uD800-\uDBFF]$/, "");
+}
+
+function utf8Bytes(text: string): number {
+  return new TextEncoder().encode(text).byteLength;
+}
+
+/**
+ * Tittelsiden tilpasset lagringsgrensen (KI-20): tomme linjer fjernes, lange linjer og for mange linjer
+ * kortes, og summen holdes under TITLE_PAGE_MAX_BYTES. `truncated` sier om noe ble kortet bort.
+ */
+export function fitTitlePage(lines: readonly string[]): {
+  readonly lines: readonly string[];
+  readonly truncated: boolean;
+} {
+  let truncated = false;
+  const out: string[] = [];
+  let used = 2; // [ ]
+  for (const raw of lines) {
+    const line = String(raw).trim();
+    if (!line) continue;
+    if (out.length >= TITLE_PAGE_MAX_LINES) {
+      truncated = true;
+      break;
+    }
+    let l = line;
+    if (l.length > TITLE_PAGE_MAX_LINE) {
+      l = noLoneSurrogate(l.slice(0, TITLE_PAGE_MAX_LINE)).trimEnd();
+      truncated = true;
+    }
+    // JSON-tekst med anførselstegn og komma; tegn som må skrives med \ teller dobbelt
+    let cost = utf8Bytes(JSON.stringify(l)) + 1;
+    while (used + cost > TITLE_PAGE_MAX_BYTES && l.length > 0) {
+      const over = Math.max(1, used + cost - TITLE_PAGE_MAX_BYTES);
+      l = noLoneSurrogate(l.slice(0, Math.max(0, l.length - over))).trimEnd();
+      cost = utf8Bytes(JSON.stringify(l)) + 1;
+      truncated = true;
+    }
+    if (!l) {
+      truncated = true;
+      break;
+    }
+    out.push(l);
+    used += cost;
+  }
+  return { lines: out, truncated };
+}
+
+/** Byte de lagrede eksportinnstillingene tar som JSON (UTF-8). */
+export function exportSettingsBytes(x: ExportSettings): number {
+  return utf8Bytes(JSON.stringify(x));
 }
 
 /** Fortellingstid (DEC-0015, DEC-0020 pkt. 6). */
@@ -141,6 +219,20 @@ export interface ScriptBlock extends Entity<BlockId> {
   readonly uncertainty: string | null;
   /** Fjernet fra manuset (historikken beholdes; kan gjenopprettes). Fjernede blokker vises ikke. */
   readonly removed: boolean;
+}
+
+/**
+ * Innholdsmessig grunnlag for materiale (REQ-0022, DEC-0054, DEC-0078): manuslinjenes revisjoner og
+ * ressursversjonene materialet er laget fra.
+ */
+export interface ProducedFrom {
+  readonly blockRevisions: Readonly<Record<string, number>>;
+  /**
+   * Ressursversjonene scenen viste da materialet ble laget eller sist godkjent (ressurs-ID → versjons-ID,
+   * REQ-0022). Dekker også lag som følger varianten (ikke låst) og importert film (scenens 2D-scene da
+   * filmen ble lagt inn). Mangler = ikke kjent (laget før feltet fantes); da flagges ingenting herfra.
+   */
+  readonly assetVersions?: Readonly<Record<string, string>>;
 }
 
 /** Uforanderlig historikk for blokktekst (DEC-0020 pkt. 5). */
@@ -224,13 +316,13 @@ export interface Take extends Entity<TakeId> {
   readonly kind: TakeKind;
   readonly status: TakeStatus;
   readonly durationFrames: number | null;
-  /** Grunnlag for avviksdeteksjon: hvilke blokkrevisjoner materialet ble laget fra. */
-  readonly producedFrom: { readonly blockRevisions: Readonly<Record<string, number>> };
+  /** Grunnlag for avviksdeteksjon: hvilke blokkrevisjoner og ressursversjoner materialet ble laget fra. */
+  readonly producedFrom: ProducedFrom;
   /**
    * Manuset versjonen sist er godkjent mot (DEC-0054). `producedFrom` er uforanderlig (INV-07); en
    * godkjenning av manusendringer lagres her. Mangler = som `producedFrom`.
    */
-  readonly acceptedFrom?: { readonly blockRevisions: Readonly<Record<string, number>> };
+  readonly acceptedFrom?: ProducedFrom;
   readonly mediaRef: string | null;
   /** Filinformasjon for importert film (DEC-0047). Uforanderlig, som mediaRef. */
   readonly media?: TakeMedia;
@@ -548,7 +640,7 @@ export interface Composition extends Entity<CompositionId> {
    * Manusblokkenes revisjoner 2D-scenen er laget fra eller sist kontrollert mot (DEC-0054). Mangler eller
    * tomt = ukjent (laget før kontrollen fantes); da flagges ingen avvik.
    */
-  readonly producedFrom?: { readonly blockRevisions: Readonly<Record<string, number>> };
+  readonly producedFrom?: ProducedFrom;
 }
 
 export interface CompositionLayer extends Entity<LayerId> {

@@ -2564,6 +2564,278 @@ try {
       );
   });
 
+  // ---------- 0028 (DEC-0078): antakelser per prosjekt, lagrede estimater og eksportlogg ----------
+  await test("0028 (KI-28): antakelsene for varighetsestimatet lagres per prosjekt via apply_changes", async () => {
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 28, "schema_version er ikke 28");
+    let st = await loadState(projectId);
+    const fast = {
+      dialogueWordsPerMinute: 180,
+      actionSecondsPerLine: 1.5,
+      headingSeconds: 1,
+      minSceneSeconds: 4,
+    };
+    st = await runCommand(st, ALICE, { type: "SetDurationAssumptions", assumptions: fast });
+    const loaded = await loadState(projectId);
+    assert(
+      isDeepStrictEqual(loaded.project.durationAssumptions, fast),
+      `antakelsene ble ikke lest tilbake: ${JSON.stringify(loaded.project.durationAssumptions)}`,
+    );
+    assert(loaded.project.revision === st.project.revision, "revisjonen stemmer ikke");
+    // En annen endring på prosjektraden rører ikke antakelsene
+    st = await runCommand(st, ALICE, { type: "SetAiBudget", monthLimit: 7, pricePerImage: null });
+    const [row] =
+      await sql`select duration_assumptions from public.projects where id = ${projectId}`;
+    assert(isDeepStrictEqual(row!["duration_assumptions"], fast), "antakelsene forsvant");
+    // Databasen avviser ugyldige verdier
+    await expectError(
+      sql`update public.projects set duration_assumptions = ${sql.json({ dialogueWordsPerMinute: "fort" })} where id = ${projectId}`,
+      /check/,
+    );
+    // Tilbake til standard (null) – og AI-budsjettet som før testen
+    st = await runCommand(st, ALICE, { type: "SetDurationAssumptions", assumptions: null });
+    st = await runCommand(st, ALICE, {
+      type: "SetAiBudget",
+      monthLimit: null,
+      pricePerImage: null,
+    });
+    const [row2] =
+      await sql`select duration_assumptions, ai_month_limit from public.projects where id = ${projectId}`;
+    assert(row2!["duration_assumptions"] === null, "antakelsene ble ikke fjernet");
+    assert(row2!["ai_month_limit"] === null, "AI-budsjettet ble ikke tilbakestilt");
+  });
+
+  await test("0028 (REQ-0120): lagrede estimater – redaktør lagrer, knyttes til uendret versjon, endres aldri", async () => {
+    await sql`update public.project_members set removed_at = now() where project_id = ${projectId} and user_id = ${CAROL} and removed_at is null`;
+    const st = await loadState(projectId);
+    const prod = Object.values(st.productions).find((p) => p.kind === "main")!;
+    const assumptions = {
+      dialogueWordsPerMinute: 150,
+      actionSecondsPerLine: 2,
+      headingSeconds: 2,
+      minSceneSeconds: 5,
+    };
+    const estimate = { format: 1, activeScenes: 2, expectedSeconds: 61, scenes: [] };
+    // Ny versjon, ingen endringer etterpå: estimatet uten versjon knyttes til den
+    const version = await as(
+      "authenticated",
+      ALICE,
+      async (tx) =>
+        (
+          await tx`select public.create_script_version(${projectId}, ${prod.id}, 'Før estimat') as id`
+        )[0]!["id"] as string,
+    );
+    const saved = (await as(
+      "authenticated",
+      ALICE,
+      async (tx) =>
+        (
+          await tx`select public.save_duration_estimate(${projectId}, ${prod.id}, ${tx.json(assumptions)}, ${tx.json(estimate)}) as r`
+        )[0]!["r"],
+    )) as { id: string; script_version_id: string | null };
+    assert(
+      saved.script_version_id === version,
+      "estimatet ble ikke knyttet til den uendrede versjonen",
+    );
+    // Eksplisitt versjon: bare den nyeste
+    const explicit = (await as(
+      "authenticated",
+      ALICE,
+      async (tx) =>
+        (
+          await tx`select public.save_duration_estimate(${projectId}, ${prod.id}, ${tx.json(assumptions)}, ${tx.json(estimate)}, ${version}) as r`
+        )[0]!["r"],
+    )) as { script_version_id: string };
+    assert(explicit.script_version_id === version, "eksplisitt versjon ble ikke lagret");
+    const [older] =
+      await sql`select id from public.script_versions where production_id = ${prod.id} and id <> ${version} order by number desc limit 1`;
+    if (older)
+      await expectError(
+        as(
+          "authenticated",
+          ALICE,
+          (tx) =>
+            tx`select public.save_duration_estimate(${projectId}, ${prod.id}, ${tx.json(assumptions)}, ${tx.json(estimate)}, ${older["id"]})`,
+        ),
+        /nyeste/,
+      );
+    // Etter en endring knyttes et nytt estimat ikke til versjonen
+    let s2 = await loadState(projectId);
+    s2 = await runCommand(s2, ALICE, { type: "SetAiBudget", monthLimit: 3, pricePerImage: null });
+    await runCommand(s2, ALICE, { type: "SetAiBudget", monthLimit: null, pricePerImage: null });
+    const loose = (await as(
+      "authenticated",
+      ALICE,
+      async (tx) =>
+        (
+          await tx`select public.save_duration_estimate(${projectId}, ${prod.id}, ${tx.json(assumptions)}, ${tx.json(estimate)}) as r`
+        )[0]!["r"],
+    )) as { script_version_id: string | null };
+    assert(loose.script_version_id === null, "estimatet ble knyttet til en endret versjon");
+    // Ugyldige data og manglende rettigheter avvises
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) =>
+          tx`select public.save_duration_estimate(${projectId}, ${prod.id}, ${tx.json({ x: 1 })}, ${tx.json(estimate)})`,
+      ),
+      "22023",
+    );
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) =>
+          tx`select public.save_duration_estimate(${projectId}, ${prod.id}, ${tx.json(assumptions)}, ${tx.json({ format: 2 })})`,
+      ),
+      /check/,
+    );
+    await expectError(
+      as(
+        "authenticated",
+        BOB,
+        (tx) =>
+          tx`select public.save_duration_estimate(${projectId}, ${prod.id}, ${tx.json(assumptions)}, ${tx.json(estimate)})`,
+      ),
+      "42501",
+    );
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) =>
+          tx`insert into public.duration_estimates (project_id, production_id, assumptions, estimate, created_by) values (${projectId}, ${prod.id}, ${tx.json(assumptions)}, ${tx.json(estimate)}, ${ALICE})`,
+      ),
+      "42501",
+    );
+    // Lesing: medlemmer (også lesere) ser estimatene, andre ikke
+    const bobSees = await as(
+      "authenticated",
+      BOB,
+      (tx) => tx`select id from public.duration_estimates where project_id = ${projectId}`,
+    );
+    assert(bobSees.length === 3, `leseren ser ${bobSees.length} av 3 estimater`);
+    const carolSees = await as(
+      "authenticated",
+      CAROL,
+      (tx) => tx`select id from public.duration_estimates where project_id = ${projectId}`,
+    );
+    assert(carolSees.length === 0, "et ikke-medlem ser estimatene");
+    // Uforanderlige (INV-13)
+    await expectError(
+      sql`update public.duration_estimates set estimate = ${sql.json({ format: 1, scenes: [] })} where id = ${saved.id}`,
+      /INV-13/,
+    );
+    await expectError(sql`delete from public.duration_estimates where id = ${saved.id}`, /INV-13/);
+  });
+
+  await test("0028 (REQ-0037): eksportloggen – alle medlemmer registrerer, scenene må høre til produksjonen", async () => {
+    const st = await loadState(projectId);
+    const prod = Object.values(st.productions).find((p) => p.kind === "main")!;
+    const occs = orderedOccurrences(st, prod.id).map((o) => o.id);
+    const id = await as(
+      "authenticated",
+      BOB,
+      async (tx) =>
+        (
+          await tx`select public.record_export(${projectId}, ${prod.id}, 'script', ${"Manus – 2026-10-12.pdf"}, ${tx.json({ format: "pdf", numbering: "production" })}, ${occs.slice(0, 2)}::uuid[]) as id`
+        )[0]!["id"] as string,
+    );
+    const [rec] = await sql`select * from public.export_records where id = ${id}`;
+    assert(
+      rec!["created_by"] === BOB && rec!["kind"] === "script",
+      "eksporten ble ikke lagret riktig",
+    );
+    assert((rec!["occurrence_ids"] as string[]).length === 2, "scenene ble ikke lagret");
+    await as(
+      "authenticated",
+      ALICE,
+      (tx) =>
+        tx`select public.record_export(${projectId}, ${prod.id}, 'film', 'film.webm', ${tx.json({ size: "full" })}, ${occs}::uuid[])`,
+    );
+    // Scener fra en annen produksjon, ukjent type, ikke-medlem og direkte skriving avvises
+    const other = Object.values(st.occurrences).find((o) => o.productionId !== prod.id);
+    if (other)
+      await expectError(
+        as(
+          "authenticated",
+          ALICE,
+          (tx) =>
+            tx`select public.record_export(${projectId}, ${prod.id}, 'film', 'x.webm', '{}'::jsonb, ${[other.id]}::uuid[])`,
+        ),
+        "22023",
+      );
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) =>
+          tx`select public.record_export(${projectId}, ${prod.id}, 'zip', 'x.zip', '{}'::jsonb, '{}'::uuid[])`,
+      ),
+      /check/,
+    );
+    await expectError(
+      as(
+        "authenticated",
+        CAROL,
+        (tx) =>
+          tx`select public.record_export(${projectId}, ${prod.id}, 'film', 'x.webm', '{}'::jsonb, '{}'::uuid[])`,
+      ),
+      "42501",
+    );
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) =>
+          tx`insert into public.export_records (project_id, production_id, kind, file_name, created_by) values (${projectId}, ${prod.id}, 'film', 'x', ${ALICE})`,
+      ),
+      "42501",
+    );
+    const bobSees = await as(
+      "authenticated",
+      BOB,
+      (tx) => tx`select id from public.export_records where project_id = ${projectId}`,
+    );
+    assert(bobSees.length === 2, `leseren ser ${bobSees.length} av 2 eksporter`);
+    const carolSees = await as(
+      "authenticated",
+      CAROL,
+      (tx) => tx`select id from public.export_records where project_id = ${projectId}`,
+    );
+    assert(carolSees.length === 0, "et ikke-medlem ser eksportene");
+    await expectError(
+      sql`update public.export_records set file_name = 'y' where id = ${id}`,
+      /INV-13/,
+    );
+  });
+
+  await test("0028 (INV-13): angre en ny produksjon med eksporter avvises med INV-13 (appen viser en forståelig melding)", async () => {
+    let st = await loadState(projectId);
+    const main = Object.values(st.productions).find((p) => p.kind === "main")!;
+    const prodId = "55555555-5555-7555-8555-000000000028";
+    st = await runCommand(st, ALICE, {
+      type: "CreateProduction",
+      productionId: prodId as never,
+      kind: "spinoff",
+      name: "Kortversjon",
+      parentProductionId: main.id,
+    } as Command);
+    await as(
+      "authenticated",
+      ALICE,
+      (tx) =>
+        tx`select public.record_export(${projectId}, ${prodId}, 'script', 'kort.pdf', '{}'::jsonb, '{}'::uuid[])`,
+    );
+    await expectError(
+      runCommand(st, ALICE, { type: "UndoCreateProduction", productionId: prodId as never }),
+      /INV-13/,
+    );
+    const [still] = await sql`select id from public.productions where id = ${prodId}`;
+    assert(still, "produksjonen ble slettet");
+  });
+
   // ---------- Sikkerhetskopi (DEC-0049): gjenopprett testprosjektet som nytt prosjekt ----------
   await test("DEC-0049: sikkerhetskopi gjenopprettes som nytt prosjekt via apply_changes; alt leses tilbake likt", async () => {
     const q = (t: string) =>

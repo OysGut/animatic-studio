@@ -1,25 +1,40 @@
 /**
  * Manusversjoner (mandat 2.2, 5.1; REQ-0032, REQ-0069, REQ-0076–REQ-0078):
- * lagre en uforanderlig versjon, se tidligere versjoner, sammenligne og eksportere en versjon slik den var.
+ * lagre en uforanderlig versjon, se tidligere versjoner, sammenligne og eksportere en versjon slik den var,
+ * og gjøre en tidligere versjon gjeldende (KI-27) etter en forhåndsvisning av hva som endres.
  */
-import { ArrowLeft, Download, Eye, GitCompare, History, Loader2, Save } from "lucide-react";
+import {
+  ArrowLeft,
+  Download,
+  Eye,
+  GitCompare,
+  History,
+  Loader2,
+  RotateCcw,
+  Save,
+} from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
   CHANGE_LABEL,
   diffSnapshots,
+  newId,
   paginate,
   snapshotFromState,
   snapshotPaginationInput,
   wordDiff,
   type ChangeType,
+  type Command,
   type LineChange,
   type SceneChange,
   type ProjectState,
   type ScriptSnapshot,
 } from "@/core";
+import { previewRestore } from "@/core/screenplay/restore-version";
 import { screenplayPdf } from "@/engine/export/screenplay-pdf";
 import { prepareDownload, type ReadyFile } from "@/app/download";
 import { useProfiles } from "@/app/project/use-project";
+import { HISTORY_SCHEMA } from "@/app/projects/use-history-records";
+import { useSchemaAtLeast } from "@/app/shell/use-schema";
 import {
   useCreateVersion,
   useVersionList,
@@ -48,11 +63,38 @@ interface Props {
   /** Lagres det fortsatt endringer? Da venter vi med å lage versjon (den skal vise det som er lagret). */
   readonly saving: boolean;
   readonly onGoToScene: (occurrenceId: string) => void;
+  /**
+   * Utfør en endring i manuset (useCommands().runQueued): endringer med samme `group` angres som ett steg.
+   * Gir feilen fra den lokale kjøringen med en gang og `done`, som avgjøres når serveren har lagret endringen.
+   * Uten den kan en versjon ikke gjøres gjeldende herfra.
+   */
+  readonly onRun?: RunQueued;
+  /**
+   * Venter til alle endringer er lagret (useCommands().whenIdle), så versjonen og estimatet viser det som er
+   * lagret, ikke endringer som ennå står i køen.
+   */
+  readonly whenIdle?: () => Promise<void>;
+  /** Tilstanden etter at køen er tom (useCommands().current). */
+  readonly current?: () => ProjectState | null;
 }
+
+/** Som useCommands().runQueued. */
+export type RunQueued = (
+  command: Command,
+  label: string,
+  group?: string,
+  options?: { keepText?: boolean },
+) => { error: string | null; done: Promise<string | null> };
+
+/** Melding når serveren avviste en del av gjenopprettingen (resten ble ikke sendt). */
+export const PARTIAL_RESTORE = "Gjenopprettingen ble bare delvis utført – angre med ⌘/Ctrl + Z";
 
 const NOW = "now";
 type View =
-  { kind: "list" } | { kind: "compare"; a: string; b: string } | { kind: "show"; id: string };
+  | { kind: "list" }
+  | { kind: "compare"; a: string; b: string }
+  | { kind: "show"; id: string }
+  | { kind: "restore"; id: string };
 
 const ORDER: ChangeType[] = [
   "added",
@@ -90,13 +132,20 @@ export function VersionsDialog(props: Props) {
     },
     [ready],
   );
-  const create = useCreateVersion(projectId, productionId);
+  // Varighetsestimatet lagres med hver versjon når databasen har migrasjon 0028 (REQ-0120)
+  const schema28 = useSchemaAtLeast(HISTORY_SCHEMA);
+  const create = useCreateVersion(projectId, productionId, schema28, {
+    ...(props.whenIdle ? { whenIdle: props.whenIdle } : {}),
+    ...(props.current ? { current: props.current } : {}),
+  });
+  const [notice, setNotice] = useState<string | null>(null);
   const production = state.productions[productionId];
 
   useEffect(() => {
     if (!open) {
       setView({ kind: "list" });
       setReady(null);
+      setNotice(null);
       create.reset();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -131,12 +180,18 @@ export function VersionsDialog(props: Props) {
                 className="flex flex-col gap-2 border border-border bg-surface-1 p-3"
                 onSubmit={(e) => {
                   e.preventDefault();
+                  setNotice(null);
                   create.mutate(
-                    { name: name.trim() || `Versjon ${nextNumber}`, note: note.trim() },
+                    { name: name.trim() || `Versjon ${nextNumber}`, note: note.trim(), state },
                     {
-                      onSuccess: () => {
+                      onSuccess: (r) => {
                         setName("");
                         setNote("");
+                        // Versjonen er lagret; bare estimatet mangler (vises stille, blokkerer ingenting)
+                        if (r.estimateError)
+                          setNotice(
+                            "Versjonen er lagret, men varighetsestimatet for den ble ikke lagret.",
+                          );
                       },
                     },
                   );
@@ -169,6 +224,7 @@ export function VersionsDialog(props: Props) {
                     Venter til endringene dine er lagret …
                   </p>
                 ) : null}
+                {notice ? <p className="text-xs text-text-tertiary">{notice}</p> : null}
                 {create.isError ? (
                   <p role="alert" className="text-xs text-status-danger">
                     Versjonen ble ikke lagret: {create.error.message}
@@ -245,9 +301,29 @@ export function VersionsDialog(props: Props) {
             onChange={(a, b) => setView({ kind: "compare", a, b })}
             onBack={() => setView({ kind: "list" })}
           />
+        ) : view.kind === "restore" ? (
+          <Restore
+            version={versions.find((v) => v.id === view.id)!}
+            state={state}
+            productionId={productionId}
+            saving={saving}
+            onRun={props.onRun!}
+            onBack={() => setView({ kind: "show", id: view.id })}
+            onDone={(v) => {
+              setName(`Gjenopprettet fra v${v.number} – ${v.name}`.slice(0, 200));
+              setNote("");
+              setNotice(
+                `Manuset er nå som v${v.number}. Lagre det som en ny versjon hvis du vil ta vare på det.`,
+              );
+              setView({ kind: "list" });
+            }}
+          />
         ) : (
           <Show
             version={versions.find((v) => v.id === view.id)!}
+            onRestore={
+              editable && props.onRun ? () => setView({ kind: "restore", id: view.id }) : null
+            }
             projectName={state.project.name}
             productionName={production?.name ?? ""}
             ready={ready}
@@ -537,8 +613,10 @@ function Show({
   ready,
   setReady,
   onBack,
+  onRestore,
 }: {
   version: VersionRow;
+  onRestore: (() => void) | null;
   projectName: string;
   productionName: string;
   ready: ReadyFile | null;
@@ -581,6 +659,12 @@ function Show({
           <Download />
           Eksporter PDF
         </Button>
+        {onRestore ? (
+          <Button size="sm" variant="secondary" disabled={!snap.data} onClick={onRestore}>
+            <RotateCcw />
+            Gjør denne versjonen gjeldende
+          </Button>
+        ) : null}
       </div>
       {ready ? (
         <p role="status" className="text-xs text-text-secondary">
@@ -607,6 +691,182 @@ function Show({
           />
         </div>
       )}
+    </div>
+  );
+}
+
+/**
+ * Gjør en tidligere versjon gjeldende (REQ-0077, KI-27): viser først hva som endres i manuset nå (scener og
+ * linjer) og det som ikke kan settes tilbake. Etter bekreftelse utføres alt som én endring som angres samlet.
+ * Ingenting slettes: linjer og scener som er kommet til, fjernes fra manuset/deaktiveres og kan hentes tilbake.
+ */
+function Restore({
+  version,
+  state,
+  productionId,
+  saving,
+  onRun,
+  onBack,
+  onDone,
+}: {
+  version: VersionRow;
+  state: ProjectState;
+  productionId: string;
+  saving: boolean;
+  onRun: RunQueued;
+  onBack: () => void;
+  onDone: (version: VersionRow) => void;
+}) {
+  const snap = useVersionSnapshot(version.id);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const preview = useMemo(
+    () => (snap.data ? previewRestore(state, productionId, snap.data) : null),
+    [snap.data, state, productionId],
+  );
+  const label = `Gjør v${version.number} gjeldende`;
+
+  async function confirm() {
+    if (!preview || preview.error || preview.commands.length === 0 || busy) return;
+    // Alt i én angregruppe: Ctrl+Z setter manuset tilbake slik det var før gjenopprettingen
+    const group = newId();
+    const pending: Promise<string | null>[] = [];
+    setBusy(true);
+    try {
+      for (const c of preview.commands) {
+        // Teksten kommer fra versjonen (ikke skrevet nå): den tas ikke vare på som «din tekst» ved en feil
+        const r = onRun(c, label, group, { keepText: false });
+        if (r.error) {
+          await Promise.all(pending);
+          setError(
+            `Stoppet underveis: ${r.error} Det som ble gjort, kan angres samlet med «Angre» (Ctrl+Z).`,
+          );
+          return;
+        }
+        pending.push(r.done);
+      }
+      // Vent til serveren har lagret alt: avvises én endring, sendes ikke resten (manuset er da delvis gjenopprettet)
+      const errors = await Promise.all(pending);
+      if (errors.some((e) => e !== null)) {
+        setError(PARTIAL_RESTORE);
+        return;
+      }
+      onDone(version);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center gap-2">
+        <Button size="sm" variant="ghost" onClick={onBack}>
+          <ArrowLeft />
+          Tilbake
+        </Button>
+        <span className="text-[13px] text-text-primary">
+          Gjør v{version.number} – {version.name} gjeldende
+        </span>
+      </div>
+      <p className="text-xs text-text-secondary">
+        Manuset settes tilbake til teksten, rekkefølgen, synligheten og overskriftene i versjonen.
+        Ingenting slettes: linjer og scener som er kommet til senere, tas ut av manuset og kan
+        hentes tilbake, og alle versjoner beholdes. Materiale laget fra nyere tekst vil vises som
+        avvik. Endringen kan angres samlet.
+      </p>
+      {snap.isLoading || !preview ? (
+        <p className="text-[13px] text-text-tertiary">Henter versjonen …</p>
+      ) : preview.error ? (
+        <p role="alert" className="text-[13px] text-status-danger">
+          Versjonen kan ikke gjøres gjeldende herfra: {preview.error}
+        </p>
+      ) : preview.commands.length === 0 ? (
+        <p className="text-[13px] text-text-secondary">
+          Manuset er allerede likt versjonen. Ingenting å endre.
+        </p>
+      ) : (
+        <>
+          <p className="text-xs text-text-tertiary">
+            {ORDER.filter((t) => preview.changes.some((c) => c.type === t))
+              .map(
+                (t) => `${CHANGE_LABEL[t]}: ${preview.changes.filter((c) => c.type === t).length}`,
+              )
+              .join(" · ")}
+          </p>
+          <ul
+            aria-label="Dette endres i manuset"
+            className="max-h-[45vh] overflow-y-auto border border-border bg-surface-1"
+          >
+            {groupByScene(preview.changes).map((g) => (
+              <li
+                key={g.occurrenceId}
+                className="border-b border-border px-3 py-2 text-[13px] last:border-b-0"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="tabular w-10 shrink-0 font-mono text-xs text-text-tertiary">
+                    {g.number ?? "–"}
+                  </span>
+                  <span className="min-w-0 flex-1 truncate font-medium text-text-primary">
+                    {g.heading}
+                  </span>
+                  <span className="flex shrink-0 flex-wrap justify-end gap-1">
+                    {g.changes.map((c) => (
+                      <span
+                        key={c.type}
+                        className="rounded-sm bg-surface-3 px-1.5 py-0.5 text-[11px] text-text-secondary"
+                      >
+                        {CHANGE_LABEL[c.type]}
+                      </span>
+                    ))}
+                  </span>
+                </div>
+                <div className="ml-[52px] mt-1 flex flex-col gap-1">
+                  {g.changes.map((c) => (
+                    <ChangeDetail key={c.type} change={c} />
+                  ))}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      {preview && preview.issues.length > 0 ? (
+        <div className="border border-status-uncertain/40 bg-surface-1 p-2 text-xs">
+          <p className="font-medium text-text-primary">Dette settes ikke tilbake:</p>
+          <ul className="mt-1 flex flex-col gap-0.5 text-text-secondary">
+            {preview.issues.map((i, n) => (
+              <li key={n}>
+                <span className="font-mono text-text-tertiary">{i.number ?? "–"}</span> {i.heading}:{" "}
+                {i.reason}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+      {error ? (
+        <p role="alert" className="text-xs text-status-danger">
+          {error}
+        </p>
+      ) : null}
+      <div className="flex justify-end gap-2">
+        <Button variant="ghost" onClick={onBack}>
+          Avbryt
+        </Button>
+        <Button
+          onClick={() => void confirm()}
+          disabled={
+            !preview ||
+            !!preview.error ||
+            preview.commands.length === 0 ||
+            saving ||
+            busy ||
+            !!error
+          }
+        >
+          {busy ? <Loader2 className="animate-spin" /> : <RotateCcw />}
+          {label}
+        </Button>
+      </div>
     </div>
   );
 }

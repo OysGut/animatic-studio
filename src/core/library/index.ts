@@ -276,6 +276,11 @@ export function assetsInScene(
 // ---------- Forslag fra manuset (REQ-0128, DEC-0034) – se suggest.ts ----------
 export * from "./suggest";
 
+// ---------- Opphav, stilprofiler og innholdsmessig synk (REQ-0121, REQ-0022, DEC-0078) ----------
+export * from "./provenance";
+export * from "./style-profiles";
+export * from "./content-sync";
+
 /** Visningsnavn for et navn fra manuset: «BESTEMOR ANNE» → «Bestemor Anne». */
 export function displayName(name: string): string {
   return name

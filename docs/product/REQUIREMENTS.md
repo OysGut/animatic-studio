@@ -8,7 +8,7 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 - Antall krav: **592**
 - Prioritet: P0: 143, P1: 263, P2: 147, P3: 39
 - Opprinnelse: mandat: 520, brukerbeslutning: 65, teknisk-anbefaling: 7
-- Status: Verifisert: 515, Implementert – ikke verifisert: 14, Under arbeid: 5, Ikke startet: 58
+- Status: Verifisert: 517, Implementert – ikke verifisert: 14, Under arbeid: 3, Ikke startet: 58
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -122,12 +122,12 @@ Løsningen skal unngå unødvendige plattformbindinger.
 - **Kilde:** Kap. 1.2 (l. 35) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** 1
 - **Moduler:** CORE
 - **Avhengigheter:** REQ-0007
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Hver plattformspesifikk avhengighet er isolert bak et grensesnitt og dokumentert med begrunnelse.
 - **Tester:**
   - manuell: arkitekturgjennomgang av avhengighetsliste
-- **Implementering:** docs/architecture/ARCHITECTURE.md, src/adapters/
+- **Implementering:** docs/architecture/ARCHITECTURE.md, src/adapters/, src/adapters/browser/
 
 #### REQ-0009 – Tydelig lagdeling av arkitekturen
 Arkitekturen skal skille tydelig mellom: 1) domene- og datamodell, 2) brukergrensesnitt, 3) medie- og animasjonsmotor, 4) AI-integrasjoner, 5) renderingskø og jobborkestrering, 6) lagring og versjonering, 7) eksport og filbehandling.
@@ -308,12 +308,12 @@ Systemet skal skille mellom strukturell synkronisering (scener, delsekvenser, re
 
 - **Kilde:** Kap. 2.1 (l. 76-78) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE, VERSION · **Invarianter:** INV-01, INV-07
-- **Status:** Under arbeid
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Hvert produsert materiale lagrer referanse til manusversjon og ressursversjoner det er produsert fra, adskilt fra strukturell plassering.
 - **Tester:**
   - enhet: datamodell har separate felt for struktur og kildeversjon
-- **Implementering:** src/core/views.ts#outdatedTakes
+- **Implementering:** src/core/views.ts#outdatedTakes, src/core/library/content-sync.ts, src/core/commands/apply.ts (AddTake, AcceptScriptChanges, SetProducedFrom)
 
 #### REQ-0023 – Strukturell synkronisering er automatisk
 Strukturell synkronisering skal opprettholdes automatisk.
@@ -508,7 +508,7 @@ Separate, stabile identifikatorer skal finnes for: prosjekt, produksjon, manusve
   - Hver av de 21 entitetstypene har et uforanderlig ID-felt.
 - **Tester:**
   - enhet: skjemavalidering av ID-felt for alle 21 typer
-- **Implementering:** src/core/ids.ts
+- **Implementering:** src/core/ids.ts, db/migrations/0028_duration_exports.sql, src/core/export-records.ts, docs/architecture/DOMAIN_MODEL.md
 
 #### REQ-0038 – ID-er uavhengige av navn, språk og plassering
 Identifikatorene skal være uavhengige av navn, språk, plassering og synlige løpenumre.
@@ -1045,7 +1045,7 @@ Hver manusversjon skal bevare manusinnhold, scenerekkefølge, synlighet, scenenu
   - Gjenåpning av en eldre versjon gjenskaper innhold, rekkefølge, synlighet, nummerering, foreldreversjon og materialkoblinger slik de var.
 - **Tester:**
   - dataintegritet: snapshot-rundtur for alle seks elementer
-- **Implementering:** src/core/screenplay/versions.ts, src/core/screenplay/versions.ts#snapshotFromState, db/migrations/0003_script_versions.sql, src/app/script/VersionsDialog.tsx
+- **Implementering:** src/core/screenplay/versions.ts, src/core/screenplay/versions.ts#snapshotFromState, db/migrations/0003_script_versions.sql, src/app/script/VersionsDialog.tsx, src/core/screenplay/restore-version.ts
 
 #### REQ-0078 – Versjonssammenligning med endringstyper
 Systemet skal kunne sammenligne manusversjoner og identifisere nye scener, fjernede eller skjulte scener, flyttede scener, endret dialog, endret handling, endrede sceneoverskrifter og endringer i karakterer og objekter.
@@ -1620,12 +1620,12 @@ Systemet skal kunne bevare tidligere estimater og vise hvordan forventet filmlen
 - **Kilde:** Kap. 7.4 (l. 351) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 6
 - **Moduler:** TIMELINE, VERSION, UI
 - **Avhengigheter:** REQ-0108
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Det finnes en graf/liste over forventet filmlengde over tid basert på lagrede estimater.
 - **Tester:**
   - enhet: lagring av estimat-snapshots
-- **Implementering:** src/core/screenplay/duration.ts#snapshotDuration, src/app/projects/DurationHistory.tsx
+- **Implementering:** src/core/screenplay/duration.ts#snapshotDuration, src/app/projects/DurationHistory.tsx, db/migrations/0028_duration_exports.sql, src/core/screenplay/duration-snapshot.ts
 - **Merknad:** Bygger på manusversjonene; 2D-scenenes og planens lengde på tidspunktet lagres ikke.
 
 ### Kapittel 8
@@ -1635,12 +1635,12 @@ Animatic Studio skal ha et sentralt bibliotek for alle ressurser som brukes i pr
 
 - **Kilde:** Kap. 8 (l. 354-366) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** LIBRARY
-- **Status:** Under arbeid
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Hver av de 11 ressurstypene kan opprettes og vises i biblioteket.
 - **Tester:**
   - integrasjon: CRUD per ressurstype
-- **Implementering:** src/core/model.ts#Asset, src/core/commands/apply.ts#CreateAssets, src/core/library/index.ts, src/app/library/LibraryWorkspace.tsx, src/app/library/AssetDetail.tsx, db/migrations/0004_library_notes.sql
+- **Implementering:** src/core/model.ts#Asset, src/core/commands/apply.ts#CreateAssets, src/core/library/index.ts, src/app/library/LibraryWorkspace.tsx, src/app/library/AssetDetail.tsx, db/migrations/0004_library_notes.sql, src/core/library/provenance.ts, src/core/library/style-profiles.ts, src/app/library/StyleProfilesPanel.tsx
 
 #### REQ-0122 – Ressurser gjenbrukes på tvers av scener og produksjoner
 Ressurser skal kunne brukes i mange scener og flere produksjoner.

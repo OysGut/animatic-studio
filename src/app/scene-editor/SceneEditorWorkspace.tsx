@@ -6,6 +6,7 @@
 import { ProductionPicker, useActiveProduction } from "@/app/project/use-production";
 import {
   AlertTriangle,
+  ChevronDown,
   Clapperboard,
   Copy,
   Layers,
@@ -16,6 +17,9 @@ import {
   Undo2,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { BeyondEndNotice } from "./BeyondEndNotice";
+import { ContentSyncFlag } from "@/app/assembly/ContentSyncFlag";
+import { useContentSync } from "@/app/assembly/use-content-sync";
 import {
   DEFAULT_COMPOSITION,
   compositionDuration,
@@ -75,6 +79,10 @@ import {
 } from "@/components/ui/dialog";
 import { usePlayback } from "./use-playback";
 import { lastScene, rememberScene } from "@/app/shell/current-scene";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ShortcutsButton, ShortcutsDialog } from "@/app/shortcuts/ShortcutsDialog";
+import { isShortcutHelpKey } from "@/app/shortcuts/shortcut-list";
+import { isTypingTarget } from "./Timeline";
 
 export function SceneEditorWorkspace({
   projectId,
@@ -197,6 +205,20 @@ function Editor({
   /** Forhåndsvisningen i et eget nettleservindu (kan ligge på en annen skjerm, DEC-0041). */
   const [popout, setPopout] = useStoredFlag("scene-editor-preview-popout", false);
   const [previewNote, setPreviewNote] = useState<string | null>(null);
+  /** «Hurtigtaster»-oversikten (DEC-0078); «?» åpner den når man ikke skriver. */
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (!isShortcutHelpKey(e) || e.defaultPrevented || isTypingTarget(e.target)) return;
+      if (e.target instanceof HTMLElement && e.target.closest("[role=dialog], [role=menu]")) return;
+      e.preventDefault();
+      setShortcutsOpen(true);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+  // «Ressurs oppdatert» (REQ-0022): scener laget med en eldre ressursversjon
+  const contentSync = useContentSync(state, projectId, productionId);
   const duration = useMemo(
     () => (composition ? compositionDuration(state, composition) : 1),
     [state, composition],
@@ -411,6 +433,16 @@ function Editor({
           occurrenceId={occurrenceId}
           hasComposition={hasComposition}
           onPick={pickScene}
+          synced={contentSync}
+        />
+        <ContentSyncFlag
+          state={state}
+          projectId={projectId}
+          productionId={productionId}
+          sync={occurrenceId ? contentSync.get(occurrenceId) : undefined}
+          editable={editable}
+          cmds={cmds}
+          compact
         />
         <div className="mx-1 h-5 w-px bg-border" aria-hidden />
         <Button
@@ -449,11 +481,12 @@ function Editor({
             }}
             title="Ta opp en replikk eller lyd fra avspillingshodet"
           >
-            <Mic />
-            Opptak
+            <Mic aria-hidden />
+            {/* Under 1400 px bare ikon (med verktøytips), så scenevelgeren får plass */}
+            <span className="sr-only min-[1400px]:not-sr-only">Opptak</span>
           </Button>
         ) : null}
-        <div className="ml-auto flex items-center gap-3">
+        <div className="ml-auto flex items-center gap-2">
           {composition ? (
             <>
               <Button
@@ -463,34 +496,64 @@ function Editor({
                 aria-pressed={neighbours}
                 title="Spill scenen før og etter som ferdig film, i sammenheng med denne"
               >
-                <Clapperboard />
-                Naboscener
+                <Clapperboard aria-hidden />
+                <span className="sr-only min-[1400px]:not-sr-only">Naboscener</span>
               </Button>
-              <Button
-                size="sm"
-                variant={previewOpen ? "secondary" : "ghost"}
-                onClick={() => setPreviewOpen(!previewOpen)}
-                aria-pressed={previewOpen}
-                title="Vis det ferdige utsnittet (kamera og bevegelser) i et eget vindu"
-              >
-                <MonitorPlay />
-                Forhåndsvisning
-              </Button>
-              <label
-                className="flex shrink-0 items-center gap-1.5 whitespace-nowrap text-xs text-text-secondary"
-                title="Vis automatisk ved avspilling"
-              >
-                <input
-                  type="checkbox"
-                  checked={autoPreview}
-                  onChange={(e) => setAutoPreview(e.target.checked)}
-                  className="size-3.5 accent-[var(--accent-brand)]"
-                />
-                Automatisk visning
-              </label>
+              {/* Forhåndsvisning med valg i en liten meny, så verktøylinjen ikke bryter tekst (DEC-0076 funn 6) */}
+              <div className="flex shrink-0 items-center">
+                <Button
+                  size="sm"
+                  variant={previewOpen ? "secondary" : "ghost"}
+                  onClick={() => setPreviewOpen(!previewOpen)}
+                  aria-pressed={previewOpen}
+                  title="Vis det ferdige utsnittet (kamera og bevegelser) i et eget vindu"
+                  className="rounded-r-none"
+                >
+                  <MonitorPlay aria-hidden />
+                  <span className="sr-only min-[1400px]:not-sr-only">Forhåndsvisning</span>
+                </Button>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      size="sm"
+                      variant={previewOpen ? "secondary" : "ghost"}
+                      className="w-6 rounded-l-none px-0"
+                      aria-label="Valg for forhåndsvisning"
+                      title={
+                        autoPreview
+                          ? "Valg for forhåndsvisning: vises automatisk ved avspilling"
+                          : "Valg for forhåndsvisning"
+                      }
+                    >
+                      <ChevronDown className="size-3" aria-hidden />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent align="end" className="flex w-64 flex-col gap-1 p-3">
+                    <label
+                      className="flex items-start gap-2 text-xs text-text-secondary"
+                      title="Det ferdige utsnittet vises mens scenen spilles, og lukkes når avspillingen stopper"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={autoPreview}
+                        onChange={(e) => setAutoPreview(e.target.checked)}
+                        className="mt-0.5 size-3.5 accent-[var(--accent-brand)]"
+                      />
+                      <span className="flex flex-col gap-0.5">
+                        <span className="text-text-primary">Automatisk visning</span>
+                        <span className="text-[11px] text-text-tertiary">
+                          Vis det ferdige utsnittet mens scenen spilles av.
+                        </span>
+                      </span>
+                    </label>
+                  </PopoverContent>
+                </Popover>
+              </div>
               <div className="h-5 w-px bg-border" aria-hidden />
             </>
           ) : null}
+          <ShortcutsButton onClick={() => setShortcutsOpen(true)} />
+          <div className="h-5 w-px shrink-0 bg-border" aria-hidden />
           <SaveIndicator cmds={cmds} />
           {roleKnown && !roleEditable ? (
             <span className="text-xs text-text-tertiary">Bare lesetilgang</span>
@@ -526,6 +589,7 @@ function Editor({
                 occurrenceId={occurrence.id}
                 editable={editable}
                 onAdd={composition ? addAsset : null}
+                cmds={cmds}
               />
               <NearbyAudioPanel
                 state={state}
@@ -590,6 +654,16 @@ function Editor({
                   </Button>
                 </div>
               ) : null}
+              <BeyondEndNotice
+                state={state}
+                composition={composition}
+                durationFrames={duration}
+                editable={editable}
+                run={cmds.run}
+                onSelectLayer={setSelectedLayerId}
+                onSelectShot={setSelectedShotId}
+                onSeek={playback.setFrame}
+              />
               <div className="relative flex min-h-0 flex-1 flex-col">
                 <Stage
                   state={state}
@@ -820,6 +894,7 @@ function Editor({
         editable={editable}
         cmds={cmds}
       />
+      <ShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} current="sceneeditor" />
       {occurrence && audioEditable ? (
         <RecordAudioDialog
           open={recordOpen}
