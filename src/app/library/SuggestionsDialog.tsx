@@ -6,6 +6,8 @@
 import { Loader2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
+  L,
+  collation,
   ASSET_KIND_LABEL,
   SOURCE_NOTE_LABEL,
   displayName,
@@ -36,10 +38,30 @@ const KIND_CHOICES: readonly PickableKind[] = ["character", "animal", "object", 
 const key = (x: LibrarySuggestion) => `${x.reason}|${x.name}`;
 
 const GROUPS: readonly { reason: LibrarySuggestion["reason"]; title: string }[] = [
-  { reason: "speaker", title: "Karakterer" },
-  { reason: "named", title: "Navngitte ting uten replikk" },
-  { reason: "heading", title: "Lokasjoner" },
-  { reason: "object", title: "Objekter og rekvisitter" },
+  {
+    reason: "speaker",
+    get title() {
+      return L("Karakterer", "Characters");
+    },
+  },
+  {
+    reason: "named",
+    get title() {
+      return L("Navngitte ting uten replikk", "Named things without lines");
+    },
+  },
+  {
+    reason: "heading",
+    get title() {
+      return L("Lokasjoner", "Locations");
+    },
+  },
+  {
+    reason: "object",
+    get title() {
+      return L("Objekter og rekvisitter", "Objects and props");
+    },
+  },
 ];
 
 const hiddenStorageKey = (projectId: string) => `animatic:hidden-suggestions:${projectId}`;
@@ -64,12 +86,12 @@ function writeHidden(projectId: string, keys: readonly string[]): void {
   }
 }
 
-const scenesLabel = (n: number) => (n === 1 ? "1 scene" : `${n} scener`);
+const scenesLabel = (n: number) => (n === 1 ? "1 scene" : L(`${n} scener`, `${n} scenes`));
 
 /** Navnet en ny ressurs får: karakterer med stor forbokstav (MAJA → Maja), objekter med stor forbokstav, ellers som de står. */
 function suggestedName(x: LibrarySuggestion): string {
   if (x.kind === "character") return displayName(x.name);
-  if (x.kind === "object") return x.name.charAt(0).toLocaleUpperCase("nb") + x.name.slice(1);
+  if (x.kind === "object") return x.name.charAt(0).toLocaleUpperCase(collation()) + x.name.slice(1);
   return x.name;
 }
 
@@ -83,7 +105,7 @@ function evidence(x: LibrarySuggestion): string {
     const also = x.sources
       .map((r) => `${r.name} (${SOURCE_NOTE_LABEL[r.note]}, ${scenesLabel(r.scenes)})`)
       .join(", ");
-    text += `${text ? " · " : ""}også: ${also}`;
+    text += `${text ? " · " : ""}${L("også", "also")}: ${also}`;
   }
   return text;
 }
@@ -179,8 +201,14 @@ export function SuggestionsDialog({
             })),
           },
           chosenNew.length === 1
-            ? `Ny ressurs «${suggestedName(chosenNew[0]!)}»`
-            : `${chosenNew.length} nye ressurser fra manuset`,
+            ? L(
+                `Ny ressurs «${suggestedName(chosenNew[0]!)}»`,
+                `New asset “${suggestedName(chosenNew[0]!)}”`,
+              )
+            : L(
+                `${chosenNew.length} nye ressurser fra manuset`,
+                `${chosenNew.length} new assets from the script`,
+              ),
         );
         if (r.error) {
           setErr(r.error);
@@ -220,7 +248,7 @@ export function SuggestionsDialog({
               ],
             },
           },
-          `Alternativt navn for «${a.name}»`,
+          L(`Alternativt navn for «${a.name}»`, `Alternative name for “${a.name}”`),
         );
         if (r.error) {
           setErr(r.error);
@@ -243,15 +271,21 @@ export function SuggestionsDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] max-w-[720px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
-          <DialogTitle>Forslag fra manuset</DialogTitle>
+          <DialogTitle>{L("Forslag fra manuset", "Suggestions from the script")}</DialogTitle>
           <DialogDescription>
-            Karakterer, navngitte ting, steder og ting som går igjen i manuset, men som ikke finnes
-            i biblioteket ennå. Ingenting legges til før du velger det. Usikre forslag er ikke valgt
-            på forhånd. Andre skrivemåter blir alternative navn, så ressursen finnes i alle scenene.
+            {L(
+              "Karakterer, navngitte ting, steder og ting som går igjen i manuset, men som ikke finnes i biblioteket ennå. Ingenting legges til før du velger det. Usikre forslag er ikke valgt på forhånd. Andre skrivemåter blir alternative navn, så ressursen finnes i alle scenene.",
+              "Characters, named things, places and things that recur in the script but are not in the library yet. Nothing is added until you choose it. Uncertain suggestions are not pre-selected. Other spellings become alternative names, so the asset exists in every scene.",
+            )}
           </DialogDescription>
         </DialogHeader>
         {visible.length === 0 && hiddenCount === 0 ? (
-          <p className="text-[13px] text-text-secondary">Ingen forslag – alt er i biblioteket.</p>
+          <p className="text-[13px] text-text-secondary">
+            {L(
+              "Ingen forslag – alt er i biblioteket.",
+              "No suggestions – everything is in the library.",
+            )}
+          </p>
         ) : null}
         {groups.map((g) =>
           g.items.length ? (
@@ -271,7 +305,7 @@ export function SuggestionsDialog({
                     })
                   }
                 >
-                  Velg alle uten mulig treff
+                  {L("Velg alle uten mulig treff", "Select all without a possible match")}
                 </button>
                 <button
                   type="button"
@@ -284,7 +318,7 @@ export function SuggestionsDialog({
                     })
                   }
                 >
-                  Velg ingen
+                  {L("Velg ingen", "Select none")}
                 </button>
               </div>
               <ul className="border border-border bg-surface-1">
@@ -299,7 +333,7 @@ export function SuggestionsDialog({
                     >
                       <input
                         type="checkbox"
-                        aria-label={`Legg til ${s.name}`}
+                        aria-label={L(`Legg til ${s.name}`, `Add ${s.name}`)}
                         checked={c !== "skip"}
                         onChange={(e) =>
                           setChoice((x) => ({
@@ -318,9 +352,12 @@ export function SuggestionsDialog({
                           {s.uncertain ? (
                             <span
                               className="ml-2 text-xs text-status-uncertain"
-                              title="Gjetning fra teksten – sjekk før du legger til"
+                              title={L(
+                                "Gjetning fra teksten – sjekk før du legger til",
+                                "A guess from the text – check before you add",
+                              )}
                             >
-                              usikker
+                              {L("usikker", "uncertain")}
                             </span>
                           ) : null}
                         </div>
@@ -330,7 +367,10 @@ export function SuggestionsDialog({
                       </div>
                       {s.kindUncertain && c === "new" ? (
                         <select
-                          aria-label={`Hva slags type er ${s.name}?`}
+                          aria-label={L(
+                            `Hva slags type er ${s.name}?`,
+                            `What kind of ${s.name} is it?`,
+                          )}
                           value={kindChoice[k] ?? "character"}
                           onChange={(e) =>
                             setKindChoice((x) => ({ ...x, [k]: e.target.value as PickableKind }))
@@ -346,18 +386,23 @@ export function SuggestionsDialog({
                       ) : null}
                       {s.possibleMatch ? (
                         <select
-                          aria-label={`Hva skal ${s.name} bli?`}
+                          aria-label={L(`Hva skal ${s.name} bli?`, `What should ${s.name} become?`)}
                           value={c === "skip" ? "alias" : c}
                           onChange={(e) =>
                             setChoice((x) => ({ ...x, [k]: e.target.value as Choice }))
                           }
                           className="h-7 max-w-[300px] rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-status-uncertain"
-                          title="Usikker kobling – du avgjør"
+                          title={L("Usikker kobling – du avgjør", "Uncertain link – you decide")}
                         >
                           <option value="alias">
-                            Alternativt navn for «{s.possibleMatch.assetName}»?
+                            {L(
+                              `Alternativt navn for «${s.possibleMatch.assetName}»?`,
+                              `Alternative name for “${s.possibleMatch.assetName}”?`,
+                            )}
                           </option>
-                          <option value="new">Ny {ASSET_KIND_LABEL[kind].toLowerCase()}</option>
+                          <option value="new">
+                            {L("Ny", "New")} {ASSET_KIND_LABEL[kind].toLowerCase()}
+                          </option>
                         </select>
                       ) : (
                         <span className="text-xs text-text-tertiary">→ {suggestedName(s)}</span>
@@ -365,10 +410,10 @@ export function SuggestionsDialog({
                       <button
                         type="button"
                         className="text-xs text-text-tertiary hover:text-text-primary"
-                        title="Ikke foreslå igjen"
+                        title={L("Ikke foreslå igjen", "Do not suggest again")}
                         onClick={() => hide(k)}
                       >
-                        Skjul
+                        {L("Skjul", "Hide")}
                       </button>
                     </li>
                   );
@@ -389,15 +434,15 @@ export function SuggestionsDialog({
               className="mr-auto text-xs text-text-tertiary hover:text-text-primary hover:underline"
               onClick={showHidden}
             >
-              Vis skjulte ({hiddenCount})
+              {L(`Vis skjulte (${hiddenCount})`, `Show hidden (${hiddenCount})`)}
             </button>
           ) : null}
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Avbryt
+            {L("Avbryt", "Cancel")}
           </Button>
           <Button onClick={() => void apply()} disabled={busy || total === 0}>
             {busy ? <Loader2 className="animate-spin" /> : null}
-            {total === 0 ? "Legg til" : `Legg til ${total}`}
+            {total === 0 ? L("Legg til", "Add") : L(`Legg til ${total}`, `Add ${total}`)}
           </Button>
         </div>
       </DialogContent>

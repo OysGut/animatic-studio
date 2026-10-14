@@ -8,6 +8,7 @@ import { AlertTriangle, CheckCircle2, Info, LayoutTemplate, RotateCcw, Trash2 } 
 import {
   ASSET_KIND_LABEL,
   PALETTES,
+  paletteLabel,
   POSTER_FORMATS,
   POSTER_KIND_LABEL,
   POSTER_OPTION_LABEL,
@@ -25,6 +26,7 @@ import {
   type PosterKind,
   type PosterOptions,
   type ProjectState,
+  L,
 } from "@/core";
 import { Button } from "@/components/ui/button";
 
@@ -129,18 +131,18 @@ function Bilingual({
   return (
     <div className="grid grid-cols-1 gap-1.5">
       <Field
-        label={`${label} (norsk)`}
+        label={`${label} (${L("norsk", "Norwegian")})`}
         value={value.nb}
         disabled={disabled}
         multiline={multiline ?? false}
         onCommit={(nb) => onCommit({ ...value, nb })}
       />
       <Field
-        label={`${label} (engelsk)`}
+        label={`${label} (${L("engelsk", "English")})`}
         value={value.en}
         disabled={disabled}
         multiline={multiline ?? false}
-        placeholder="Tom: norsk tekst brukes"
+        placeholder={L("Tom: norsk tekst brukes", "Empty: the Norwegian text is used")}
         onCommit={(en) => onCommit({ ...value, en })}
       />
     </div>
@@ -233,12 +235,15 @@ export function PosterSettings({
       o = { ...o, shortDescriptions: false, longDescriptions: false, relationTexts: false };
     if ((k === "shortDescriptions" || k === "longDescriptions") && on)
       o = { ...o, imagesAndNamesOnly: false };
-    onDocument({ ...doc, options: o }, "Endre innhold på plakaten");
+    onDocument({ ...doc, options: o }, L("Endre innhold på plakaten", "Change poster content"));
   };
   const pick = (list: "characters" | "places" | "objects", id: string, on: boolean) => {
     const cur = doc[list];
     const next = on ? [...cur, id] : cur.filter((x) => x !== id);
-    onDocument({ ...doc, [list]: next }, "Endre utvalget på plakaten");
+    onDocument(
+      { ...doc, [list]: next },
+      L("Endre utvalget på plakaten", "Change the selection on the poster"),
+    );
   };
   const candidates = (list: "characters" | "places" | "objects") => {
     const ranked =
@@ -264,12 +269,14 @@ export function PosterSettings({
 
   return (
     <div className="flex flex-col">
-      <Section title="Plakat">
+      <Section title={L("Plakat", "Poster")}>
         <Field
-          label="Navn"
+          label={L("Navn", "Name")}
           value={poster.name}
           disabled={ro}
-          onCommit={(name) => name.trim() && onPoster({ name }, "Endre navn på plakaten")}
+          onCommit={(name) =>
+            name.trim() && onPoster({ name }, L("Endre navn på plakaten", "Rename the poster"))
+          }
         />
         <div className="grid grid-cols-2 gap-2">
           <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
@@ -277,7 +284,12 @@ export function PosterSettings({
             <select
               value={poster.kind}
               disabled={ro}
-              onChange={(e) => onPoster({ kind: e.target.value as PosterKind }, "Endre plakattype")}
+              onChange={(e) =>
+                onPoster(
+                  { kind: e.target.value as PosterKind },
+                  L("Endre plakattype", "Change poster type"),
+                )
+              }
               className={control}
             >
               {(Object.keys(POSTER_KIND_LABEL) as PosterKind[]).map((k) => (
@@ -288,17 +300,20 @@ export function PosterSettings({
             </select>
           </label>
           <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
-            Språk
+            {L("Språk", "Language")}
             <select
               value={poster.language}
               disabled={ro}
               onChange={(e) =>
-                onPoster({ language: e.target.value as "nb" | "en" }, "Endre språk på plakaten")
+                onPoster(
+                  { language: e.target.value as "nb" | "en" },
+                  L("Endre språk på plakaten", "Change the poster language"),
+                )
               }
               className={control}
             >
-              <option value="nb">Norsk</option>
-              <option value="en">Engelsk</option>
+              <option value="nb">{L("Norsk", "Norwegian")}</option>
+              <option value="en">{L("Engelsk", "English")}</option>
             </select>
           </label>
         </div>
@@ -309,7 +324,7 @@ export function PosterSettings({
             disabled={ro}
             onChange={(e) => {
               const f = POSTER_FORMATS.find((x) => x.id === e.target.value);
-              if (f) onPoster({ widthMm: f.w, heightMm: f.h }, "Endre format");
+              if (f) onPoster({ widthMm: f.w, heightMm: f.h }, L("Endre format", "Change format"));
             }}
             className={control}
           >
@@ -318,55 +333,58 @@ export function PosterSettings({
                 {f.name}
               </option>
             ))}
-            {!format ? <option value="custom">Eget format</option> : null}
+            {!format ? <option value="custom">{L("Eget format", "Custom format")}</option> : null}
           </select>
         </label>
         <div className="grid grid-cols-2 gap-2">
           <Field
-            label="Bredde (cm)"
+            label={L("Bredde (cm)", "Width (cm)")}
             type="number"
             value={String(poster.widthMm / 10)}
             disabled={ro}
             onCommit={(v) => {
               const n = Number(v.replace(",", "."));
-              if (n >= 5 && n <= 300) onPoster({ widthMm: n * 10 }, "Endre format");
+              if (n >= 5 && n <= 300)
+                onPoster({ widthMm: n * 10 }, L("Endre format", "Change format"));
             }}
           />
           <Field
-            label="Høyde (cm)"
+            label={L("Høyde (cm)", "Height (cm)")}
             type="number"
             value={String(poster.heightMm / 10)}
             disabled={ro}
             onCommit={(v) => {
               const n = Number(v.replace(",", "."));
-              if (n >= 5 && n <= 300) onPoster({ heightMm: n * 10 }, "Endre format");
+              if (n >= 5 && n <= 300)
+                onPoster({ heightMm: n * 10 }, L("Endre format", "Change format"));
             }}
           />
         </div>
         <p className="text-[11px] text-text-tertiary">
-          Minste lesbare tekst i dette formatet: {Math.round(minReadablePt(poster.widthMm))} pt.
+          {L("Minste lesbare tekst i dette formatet:", "Smallest readable text in this format:")}{" "}
+          {Math.round(minReadablePt(poster.widthMm))} pt.
         </p>
       </Section>
 
-      <Section title="Stil">
+      <Section title={L("Stil", "Style")}>
         <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
-          Fargepalett
+          {L("Fargepalett", "Colour palette")}
           <select
             value={PALETTES.find((p) => p.name === doc.palette.name)?.name ?? ""}
             disabled={ro}
             onChange={(e) => {
               const p = PALETTES.find((x) => x.name === e.target.value);
-              if (p) onDocument({ ...doc, palette: p }, "Endre stil");
+              if (p) onDocument({ ...doc, palette: p }, L("Endre stil", "Change style"));
             }}
             className={control}
           >
             {!PALETTES.some((p) => p.name === doc.palette.name) ? (
-              <option value="">Egen</option>
+              <option value="">{L("Egen", "Custom")}</option>
             ) : null}
             {PALETTES.map((p) => (
               <option key={p.name} value={p.name}>
-                {p.name}
-                {p.name === analysis.palette.name ? " (foreslått)" : ""}
+                {paletteLabel(p.name)}
+                {p.name === analysis.palette.name ? L(" (foreslått)", " (suggested)") : ""}
               </option>
             ))}
           </select>
@@ -380,10 +398,10 @@ export function PosterSettings({
               <ColorInput
                 aria-label={
                   {
-                    background: "Bakgrunnsfarge",
-                    text: "Tekstfarge",
-                    accent: "Aksentfarge",
-                    muted: "Dempet farge",
+                    background: L("Bakgrunnsfarge", "Background colour"),
+                    text: L("Tekstfarge", "Text colour"),
+                    accent: L("Aksentfarge", "Accent colour"),
+                    muted: L("Dempet farge", "Muted colour"),
                   }[k]
                 }
                 value={doc.palette[k]}
@@ -391,47 +409,58 @@ export function PosterSettings({
                 onCommit={(value) =>
                   onDocument(
                     { ...doc, palette: { ...doc.palette, name: "Egen", [k]: value } },
-                    "Endre farge",
+                    L("Endre farge", "Change colour"),
                     `palette:${poster.id}:${k}`,
                   )
                 }
                 className="h-6"
               />
-              {{ background: "Bakgrunn", text: "Tekst", accent: "Aksent", muted: "Dempet" }[k]}
+              {
+                {
+                  background: L("Bakgrunn", "Background"),
+                  text: L("Tekst", "Text"),
+                  accent: L("Aksent", "Accent"),
+                  muted: L("Dempet", "Muted"),
+                }[k]
+              }
             </label>
           ))}
         </div>
       </Section>
 
-      <Section title="Tekster">
+      <Section title={L("Tekster", "Texts")}>
         <Bilingual
-          label="Tittel"
+          label={L("Tittel", "Title")}
           value={doc.title}
           disabled={ro}
-          onCommit={(title) => onDocument({ ...doc, title }, "Endre tittel")}
+          onCommit={(title) => onDocument({ ...doc, title }, L("Endre tittel", "Change title"))}
         />
         <Bilingual
-          label="Sjanger og stemning"
+          label={L("Sjanger og stemning", "Genre and mood")}
           value={doc.genre}
           disabled={ro}
-          onCommit={(genre) => onDocument({ ...doc, genre }, "Endre sjanger")}
+          onCommit={(genre) => onDocument({ ...doc, genre }, L("Endre sjanger", "Change genre"))}
         />
         <Bilingual
-          label="Slagord"
+          label={L("Slagord", "Tagline")}
           value={doc.tagline}
           disabled={ro}
-          onCommit={(tagline) => onDocument({ ...doc, tagline }, "Endre slagord")}
+          onCommit={(tagline) =>
+            onDocument({ ...doc, tagline }, L("Endre slagord", "Change tagline"))
+          }
         />
         <Bilingual
           label="Logline"
           value={doc.logline}
           disabled={ro}
           multiline
-          onCommit={(logline) => onDocument({ ...doc, logline }, "Endre logline")}
+          onCommit={(logline) =>
+            onDocument({ ...doc, logline }, L("Endre logline", "Change logline"))
+          }
         />
       </Section>
 
-      <Section title="Innhold">
+      <Section title={L("Innhold", "Content")}>
         <div className="grid grid-cols-1 gap-1">
           {POSTER_OPTION_LABEL.map(([k, label]) => (
             <label key={k} className="flex items-center gap-2 text-xs text-text-primary">
@@ -453,10 +482,18 @@ export function PosterSettings({
         return (
           <Section
             key={list}
-            title={`${{ characters: "Karakterer", places: "Steder", objects: "Objekter" }[list]} (${doc[list].length} valgt)`}
+            title={`${
+              {
+                characters: L("Karakterer", "Characters"),
+                places: L("Steder", "Places"),
+                objects: L("Objekter", "Objects"),
+              }[list]
+            } (${doc[list].length} ${L("valgt", "selected")})`}
           >
             {all.length === 0 ? (
-              <p className="text-[11px] text-text-tertiary">Ingen i biblioteket.</p>
+              <p className="text-[11px] text-text-tertiary">
+                {L("Ingen i biblioteket.", "None in the library.")}
+              </p>
             ) : (
               <ul className="flex max-h-48 flex-col gap-0.5 overflow-y-auto">
                 {all.map((a) => {
@@ -477,7 +514,10 @@ export function PosterSettings({
                         <span className="truncate">{a.name}</span>
                         <span className="ml-auto shrink-0 text-[11px] text-text-tertiary">
                           {rank
-                            ? `${rank.lines} replikker · ${rank.scenes} scener`
+                            ? L(
+                                `${rank.lines} replikker · ${rank.scenes} scener`,
+                                `${rank.lines} lines · ${rank.scenes} scenes`,
+                              )
                             : ASSET_KIND_LABEL[a.kind]}
                         </span>
                       </label>
@@ -491,14 +531,16 @@ export function PosterSettings({
       })}
 
       {editable ? (
-        <Section title="Utkast">
+        <Section title={L("Utkast", "Draft")}>
           <p className="text-[11px] text-text-tertiary">
-            Lager plakaten på nytt fra innholdet over. Det du har flyttet eller endret selv,
-            forsvinner (kan angres).
+            {L(
+              "Lager plakaten på nytt fra innholdet over. Det du har flyttet eller endret selv, forsvinner (kan angres).",
+              "Makes the poster again from the content above. What you have moved or changed yourself disappears (can be undone).",
+            )}
           </p>
           <Button size="sm" variant="secondary" onClick={onRedraft}>
             <LayoutTemplate />
-            Lag utkastet på nytt
+            {L("Lag utkastet på nytt", "Redraft the poster")}
           </Button>
         </Section>
       ) : null}
@@ -544,7 +586,11 @@ export function ElementInspector({
       disabled={ro}
       onCommit={(v) => {
         const n = Number(v.replace(",", "."));
-        if (Number.isFinite(n)) onChange({ [key]: n * scale }, `Endre ${label.toLowerCase()}`);
+        if (Number.isFinite(n))
+          onChange(
+            { [key]: n * scale },
+            L(`Endre ${label.toLowerCase()}`, `Change ${label.toLowerCase()}`),
+          );
       }}
     />
   );
@@ -559,10 +605,16 @@ export function ElementInspector({
       <Section title={`Element: ${ROLE_LABEL[e.role] ?? e.role}${asset ? ` – ${asset.name}` : ""}`}>
         <p className="text-[11px] text-text-tertiary">
           {e.auto
-            ? "Laget av programmet. Endrer du det, blir det ditt og står når innholdet endres."
+            ? L(
+                "Laget av programmet. Endrer du det, blir det ditt og står når innholdet endres.",
+                "Made by the app. If you change it, it becomes yours and stays when the content changes.",
+              )
             : e.role === "custom"
-              ? "Eget element."
-              : "Endret av deg. Står når innholdet endres."}
+              ? L("Eget element.", "Custom element.")
+              : L(
+                  "Endret av deg. Står når innholdet endres.",
+                  "Changed by you. Stays when the content changes.",
+                )}
         </p>
         <label className="flex items-center gap-2 text-xs text-text-primary">
           <input
@@ -572,76 +624,83 @@ export function ElementInspector({
             onChange={(ev) =>
               onChange(
                 { visible: ev.target.checked },
-                ev.target.checked ? "Vis element" : "Skjul element",
+                ev.target.checked
+                  ? L("Vis element", "Show element")
+                  : L("Skjul element", "Hide element"),
               )
             }
             className="size-3.5 accent-[var(--accent-brand)]"
           />
-          Synlig
+          {L("Synlig", "Visible")}
         </label>
         {e.kind !== "relation" ? (
           <div className="grid grid-cols-2 gap-1.5">
             {num("X", "x", 10, "cm")}
             {num("Y", "y", 10, "cm")}
-            {num("Bredde", "w", 10, "cm")}
-            {num("Høyde", "h", 10, "cm")}
-            {num("Rotasjon", "rotation", 1, "grader")}
+            {num(L("Bredde", "Width"), "w", 10, "cm")}
+            {num(L("Høyde", "Height"), "h", 10, "cm")}
+            {num(L("Rotasjon", "Rotation"), "rotation", 1, L("grader", "degrees"))}
           </div>
         ) : null}
       </Section>
 
       {e.kind === "text" || e.kind === "relation" ? (
-        <Section title="Tekst">
+        <Section title={L("Tekst", "Text")}>
           <Bilingual
-            label="Tekst"
+            label={L("Tekst", "Text")}
             value={e.text ?? { nb: "", en: "" }}
             disabled={ro}
             multiline
-            onCommit={(text) => onChange({ text }, "Endre tekst")}
+            onCommit={(text) => onChange({ text }, L("Endre tekst", "Change text"))}
           />
           <div className="grid grid-cols-2 gap-1.5">
             <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
-              Skrift
+              {L("Skrift", "Font")}
               <select
                 value={e.font ?? "serif"}
                 disabled={ro}
                 onChange={(ev) =>
-                  onChange({ font: ev.target.value as "serif" | "sans" }, "Endre skrift")
+                  onChange(
+                    { font: ev.target.value as "serif" | "sans" },
+                    L("Endre skrift", "Change font"),
+                  )
                 }
                 className={control}
               >
-                <option value="serif">Antikva (Times)</option>
-                <option value="sans">Grotesk (Helvetica)</option>
+                <option value="serif">{L("Antikva (Times)", "Serif (Times)")}</option>
+                <option value="sans">{L("Grotesk (Helvetica)", "Sans (Helvetica)")}</option>
               </select>
             </label>
-            {num("Størrelse", "size", 1, "pt")}
+            {num(L("Størrelse", "Size"), "size", 1, "pt")}
             {e.kind === "text" ? (
               <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
-                Justering
+                {L("Justering", "Alignment")}
                 <select
                   value={e.align ?? "center"}
                   disabled={ro}
                   onChange={(ev) =>
                     onChange(
                       { align: ev.target.value as "left" | "center" | "right" },
-                      "Endre justering",
+                      L("Endre justering", "Change alignment"),
                     )
                   }
                   className={control}
                 >
-                  <option value="left">Venstre</option>
-                  <option value="center">Midtstilt</option>
-                  <option value="right">Høyre</option>
+                  <option value="left">{L("Venstre", "Left")}</option>
+                  <option value="center">{L("Midtstilt", "Centred")}</option>
+                  <option value="right">{L("Høyre", "Right")}</option>
                 </select>
               </label>
             ) : null}
-            {e.kind === "text" ? num("Sperring", "tracking", 1, "1/1000 em") : null}
+            {e.kind === "text" ? num(L("Sperring", "Tracking"), "tracking", 1, "1/1000 em") : null}
             <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
-              Farge
+              {L("Farge", "Colour")}
               <ColorInput
                 value={e.color ?? poster.document.palette.text}
                 disabled={ro}
-                onCommit={(value) => onChange({ color: value }, "Endre farge", `color:${e.id}`)}
+                onCommit={(value) =>
+                  onChange({ color: value }, L("Endre farge", "Change colour"), `color:${e.id}`)
+                }
                 className="h-7"
               />
             </label>
@@ -655,12 +714,12 @@ export function ElementInspector({
                 onChange={(ev) =>
                   onChange(
                     { bold: ev.target.checked, ...(ev.target.checked ? { italic: false } : {}) },
-                    "Endre skrift",
+                    L("Endre skrift", "Change font"),
                   )
                 }
                 className="size-3.5 accent-[var(--accent-brand)]"
               />
-              Halvfet
+              {L("Halvfet", "Bold")}
             </label>
             {(e.font ?? "serif") === "serif" ? (
               <label className="flex items-center gap-1.5 text-xs text-text-primary">
@@ -671,12 +730,12 @@ export function ElementInspector({
                   onChange={(ev) =>
                     onChange(
                       { italic: ev.target.checked, ...(ev.target.checked ? { bold: false } : {}) },
-                      "Endre skrift",
+                      L("Endre skrift", "Change font"),
                     )
                   }
                   className="size-3.5 accent-[var(--accent-brand)]"
                 />
-                Kursiv
+                {L("Kursiv", "Italic")}
               </label>
             ) : null}
             {e.kind === "text" ? (
@@ -685,10 +744,12 @@ export function ElementInspector({
                   type="checkbox"
                   checked={e.uppercase ?? false}
                   disabled={ro}
-                  onChange={(ev) => onChange({ uppercase: ev.target.checked }, "Endre skrift")}
+                  onChange={(ev) =>
+                    onChange({ uppercase: ev.target.checked }, L("Endre skrift", "Change font"))
+                  }
                   className="size-3.5 accent-[var(--accent-brand)]"
                 />
-                Store bokstaver
+                {L("Store bokstaver", "Capitals")}
               </label>
             ) : null}
           </div>
@@ -696,45 +757,51 @@ export function ElementInspector({
       ) : null}
 
       {e.kind === "relation" ? (
-        <Section title="Linje">
+        <Section title={L("Linje", "Line")}>
           <div className="grid grid-cols-2 gap-1.5">
             <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
-              Linjefarge
+              {L("Linjefarge", "Line colour")}
               <ColorInput
                 value={e.stroke ?? "#ffffff"}
                 disabled={ro}
                 onCommit={(value) =>
-                  onChange({ stroke: value }, "Endre linjefarge", `stroke:${e.id}`)
+                  onChange(
+                    { stroke: value },
+                    L("Endre linjefarge", "Change line colour"),
+                    `stroke:${e.id}`,
+                  )
                 }
                 className="h-7"
               />
             </label>
-            {num("Tykkelse", "strokeWidth", 1, "mm")}
+            {num(L("Tykkelse", "Thickness"), "strokeWidth", 1, "mm")}
           </div>
           <label className="flex items-center gap-1.5 text-xs text-text-primary">
             <input
               type="checkbox"
               checked={e.dashed ?? false}
               disabled={ro}
-              onChange={(ev) => onChange({ dashed: ev.target.checked }, "Endre linje")}
+              onChange={(ev) =>
+                onChange({ dashed: ev.target.checked }, L("Endre linje", "Change line"))
+              }
               className="size-3.5 accent-[var(--accent-brand)]"
             />
-            Stiplet
+            {L("Stiplet", "Dashed")}
           </label>
         </Section>
       ) : null}
 
       {e.kind === "image" ? (
-        <Section title="Bilde">
+        <Section title={L("Bilde", "Image")}>
           <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
-            Ressurs
+            {L("Ressurs", "Asset")}
             <select
               value={e.assetId ?? ""}
               disabled={ro}
               onChange={(ev) =>
                 onChange(
                   { assetId: ev.target.value as never, assetVariantId: null, versionId: null },
-                  "Bytt bilde",
+                  L("Bytt bilde", "Change image"),
                 )
               }
               className={control}
@@ -755,12 +822,12 @@ export function ElementInspector({
                 onChange={(ev) =>
                   onChange(
                     { assetVariantId: (ev.target.value || null) as never, versionId: null },
-                    "Bytt variant",
+                    L("Bytt variant", "Change variant"),
                   )
                 }
                 className={control}
               >
-                <option value="">Forsidebildet</option>
+                <option value="">{L("Forsidebildet", "The cover image")}</option>
                 {variants.map((v) => (
                   <option key={v.id} value={v.id}>
                     {v.name}
@@ -771,19 +838,22 @@ export function ElementInspector({
           ) : null}
           {versions.length > 1 ? (
             <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
-              Versjon
+              {L("Versjon", "Version")}
               <select
                 value={e.versionId ?? ""}
                 disabled={ro}
                 onChange={(ev) =>
-                  onChange({ versionId: (ev.target.value || null) as never }, "Bytt versjon")
+                  onChange(
+                    { versionId: (ev.target.value || null) as never },
+                    L("Bytt versjon", "Change version"),
+                  )
                 }
                 className={control}
               >
-                <option value="">Godkjent eller nyeste</option>
+                <option value="">{L("Godkjent eller nyeste", "Approved or latest")}</option>
                 {versions.map((v) => (
                   <option key={v.id} value={v.id}>
-                    Versjon {v.number}
+                    {L("Versjon", "Version")} {v.number}
                   </option>
                 ))}
               </select>
@@ -791,27 +861,31 @@ export function ElementInspector({
           ) : null}
           <div className="grid grid-cols-2 gap-1.5">
             <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
-              Tilpasning
+              {L("Tilpasning", "Fit")}
               <select
                 value={e.fit ?? "cover"}
                 disabled={ro}
                 onChange={(ev) =>
-                  onChange({ fit: ev.target.value as "cover" | "contain" }, "Endre tilpasning")
+                  onChange(
+                    { fit: ev.target.value as "cover" | "contain" },
+                    L("Endre tilpasning", "Change fit"),
+                  )
                 }
                 className={control}
               >
-                <option value="contain">Hele bildet</option>
-                <option value="cover">Fyll rammen</option>
+                <option value="contain">{L("Hele bildet", "Whole image")}</option>
+                <option value="cover">{L("Fyll rammen", "Fill the frame")}</option>
               </select>
             </label>
             <Field
-              label="Dekkevne (%)"
+              label={L("Dekkevne (%)", "Opacity (%)")}
               type="number"
               value={String(Math.round((e.opacity ?? 1) * 100))}
               disabled={ro}
               onCommit={(v) => {
                 const n = Number(v);
-                if (n >= 0 && n <= 100) onChange({ opacity: n / 100 }, "Endre dekkevne");
+                if (n >= 0 && n <= 100)
+                  onChange({ opacity: n / 100 }, L("Endre dekkevne", "Change opacity"));
               }}
             />
           </div>
@@ -819,56 +893,59 @@ export function ElementInspector({
       ) : null}
 
       {e.kind === "rect" ? (
-        <Section title="Flate">
+        <Section title={L("Flate", "Fill")}>
           <div className="grid grid-cols-2 gap-1.5">
             <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
-              Farge
+              {L("Farge", "Colour")}
               <ColorInput
                 value={e.fill ?? "#000000"}
                 disabled={ro}
-                onCommit={(value) => onChange({ fill: value }, "Endre farge", `fill:${e.id}`)}
+                onCommit={(value) =>
+                  onChange({ fill: value }, L("Endre farge", "Change colour"), `fill:${e.id}`)
+                }
                 className="h-7"
               />
             </label>
             <Field
-              label="Dekkevne (%)"
+              label={L("Dekkevne (%)", "Opacity (%)")}
               type="number"
               value={String(Math.round((e.opacity ?? 1) * 100))}
               disabled={ro}
               onCommit={(v) => {
                 const n = Number(v);
-                if (n >= 0 && n <= 100) onChange({ opacity: n / 100 }, "Endre dekkevne");
+                if (n >= 0 && n <= 100)
+                  onChange({ opacity: n / 100 }, L("Endre dekkevne", "Change opacity"));
               }}
             />
-            {num("Hjørner", "radius", 1, "mm")}
+            {num(L("Hjørner", "Corners"), "radius", 1, "mm")}
           </div>
         </Section>
       ) : null}
 
       {editable ? (
-        <Section title="Handlinger">
+        <Section title={L("Handlinger", "Actions")}>
           <div className="flex flex-wrap gap-1.5">
             <Button size="sm" variant="ghost" onClick={() => onOrder("front")}>
-              Flytt fram
+              {L("Flytt fram", "Bring forward")}
             </Button>
             <Button size="sm" variant="ghost" onClick={() => onOrder("back")}>
-              Flytt bak
+              {L("Flytt bak", "Send back")}
             </Button>
             {!e.auto && e.role !== "custom" ? (
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={onReset}
-                title="Programmet lager elementet på nytt"
+                title={L("Programmet lager elementet på nytt", "The app makes the element again")}
               >
                 <RotateCcw />
-                Tilbakestill
+                {L("Tilbakestill", "Reset")}
               </Button>
             ) : null}
             {e.role === "custom" ? (
               <Button size="sm" variant="ghost" onClick={onRemove}>
                 <Trash2 />
-                Fjern
+                {L("Fjern", "Remove")}
               </Button>
             ) : null}
           </div>
@@ -896,7 +973,10 @@ export function PosterChecksList({
     [state, poster, lang],
   );
   return (
-    <ul className="flex flex-col gap-1.5 px-3 py-3" aria-label="Kontroll av plakaten">
+    <ul
+      className="flex flex-col gap-1.5 px-3 py-3"
+      aria-label={L("Kontroll av plakaten", "Check of the poster")}
+    >
       {checks.map((c, i) => (
         <li
           key={i}
@@ -925,10 +1005,10 @@ export function PosterChecksList({
               <button
                 type="button"
                 className="ml-1 text-accent-brand underline-offset-2 hover:underline"
-                aria-label={`Vis i plakaten: ${c.text}`}
+                aria-label={L(`Vis i plakaten: ${c.text}`, `Show in the poster: ${c.text}`)}
                 onClick={() => onShow(c.elementIds!)}
               >
-                Vis
+                {L("Vis", "Show")}
               </button>
             ) : null}
           </span>

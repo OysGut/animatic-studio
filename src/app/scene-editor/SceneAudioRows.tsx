@@ -9,6 +9,7 @@
 import { useState } from "react";
 import {
   AUDIO_KIND_LABEL,
+  L,
   type AudioClipFields,
   type FilmAudioItem,
   type ProjectState,
@@ -67,7 +68,7 @@ export function SceneAudioRows({
     return { lengthMs: Math.round(Math.max(50, Math.min(max, c.lengthMs + dMs))) };
   };
   return (
-    <div role="group" aria-label="Lyd i scenen">
+    <div role="group" aria-label={L("Lyd i scenen", "Audio in the scene")}>
       {items.map((it) => {
         const c = it.clip;
         const incoming = c.occurrenceId !== occurrenceId;
@@ -87,8 +88,13 @@ export function SceneAudioRows({
             <div
               className="sticky left-0 z-20 flex shrink-0 items-center gap-1.5 border-r border-border bg-surface-1 px-2 text-[12px] text-text-secondary"
               style={{ width: g.labelW }}
-              title={`${c.name || "Lyd"} – ${AUDIO_KIND_LABEL[c.kind]}${
-                incoming ? `, løper inn fra scene ${fromScene ?? ""}` : ""
+              title={`${c.name || L("Lyd", "Audio")} – ${AUDIO_KIND_LABEL[c.kind]}${
+                incoming
+                  ? L(
+                      `, løper inn fra scene ${fromScene ?? ""}`,
+                      `, runs in from scene ${fromScene ?? ""}`,
+                    )
+                  : ""
               }`}
             >
               <span
@@ -129,10 +135,10 @@ export function SceneAudioRows({
                   onChange(
                     c.id,
                     dr.mode === "move"
-                      ? "Flytt lyd"
+                      ? L("Flytt lyd", "Move audio")
                       : dr.mode === "in"
-                        ? "Kutt starten av lyden"
-                        : "Kutt slutten av lyden",
+                        ? L("Kutt starten av lyden", "Cut the start of the audio")
+                        : L("Kutt slutten av lyden", "Cut the end of the audio"),
                     draftOf(it, dr.mode, dr.dx),
                   );
                 }}
@@ -141,12 +147,15 @@ export function SceneAudioRows({
                     return;
                   e.preventDefault();
                   const step = Math.round(1000 / g.fps) * (e.shiftKey ? 10 : 1);
-                  onChange(c.id, "Flytt lyd", {
+                  onChange(c.id, L("Flytt lyd", "Move audio"), {
                     offsetMs: Math.max(0, c.offsetMs + (e.key === "ArrowLeft" ? -step : step)),
                   });
                 }}
-                title={`${c.name || "Lyd"}\nKlikk: gå til starten. Dra: flytt. Dra i kantene: kutt. Dobbeltklikk: lydprofil, hastighet og masker`}
-                aria-label={`${c.name || "Lyd"}, ${AUDIO_KIND_LABEL[c.kind]}`}
+                title={`${c.name || L("Lyd", "Audio")}\n${L(
+                  "Klikk: gå til starten. Dra: flytt. Dra i kantene: kutt. Dobbeltklikk: lydprofil, hastighet og masker",
+                  "Click: go to the start. Drag: move. Drag the edges: cut. Double-click: audio profile, speed and masks",
+                )}`}
+                aria-label={`${c.name || L("Lyd", "Audio")}, ${AUDIO_KIND_LABEL[c.kind]}`}
                 className={
                   "absolute top-[3px] flex touch-none overflow-hidden rounded-sm border text-left " +
                   (movable ? "cursor-grab active:cursor-grabbing " : "") +

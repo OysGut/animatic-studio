@@ -6,6 +6,7 @@
  */
 import { Zip, ZipPassThrough } from "fflate";
 import type { ZipEntry } from "@/core";
+import { L } from "@/core";
 
 export interface ZipSink {
   write(chunk: Uint8Array): Promise<void>;
@@ -111,7 +112,12 @@ export async function writeZip(
     // Zip uten ZIP64 tåler ikke over 4 GB: stopp heller enn å lage en fil som ikke kan leses
     written += data.byteLength;
     if (written > 4_200_000_000) {
-      failure = new Error("Zip-filen ble større enn 4 GB. Ta med færre filer og prøv igjen.");
+      failure = new Error(
+        L(
+          "Zip-filen ble større enn 4 GB. Ta med færre filer og prøv igjen.",
+          "The zip file grew larger than 4 GB. Include fewer files and try again.",
+        ),
+      );
       return;
     }
     chain = chain.then(() => sink.write(data));
@@ -129,7 +135,7 @@ export async function writeZip(
       if (failure) throw failure;
     }
     for (let i = 0; i < entries.length; i++) {
-      if (o.signal?.aborted) throw new DOMException("Avbrutt", "AbortError");
+      if (o.signal?.aborted) throw new DOMException(L("Avbrutt", "Cancelled"), "AbortError");
       const e = entries[i]!;
       const url = urls[e.mediaPath];
       const res = url ? await fetch(url, { signal: o.signal ?? null }).catch(() => null) : null;
@@ -156,11 +162,14 @@ export async function writeZip(
       o.onProgress?.({ files: i + 1, totalFiles: entries.length, bytes, totalBytes });
     }
     if (missing.length > 0) {
-      const note = new ZipPassThrough("MANGLER.txt");
+      const note = new ZipPassThrough("MANGLER.txt"); // i18n-ignore
       zip.add(note);
       note.push(
         new TextEncoder().encode(
-          `Disse filene kunne ikke hentes da zip-filen ble laget:\n\n${missing.join("\n")}\n`,
+          L(
+            `Disse filene kunne ikke hentes da zip-filen ble laget:\n\n${missing.join("\n")}\n`,
+            `These files could not be fetched when the zip file was made:\n\n${missing.join("\n")}\n`,
+          ),
         ),
         true,
       );

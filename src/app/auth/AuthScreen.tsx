@@ -3,19 +3,32 @@ import { sendSignInLink, signInWithPassword, signUp } from "@/adapters/browser/a
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { L } from "@/core";
 
 type Mode = "signin" | "signup";
 
 function norwegianAuthError(message: string): string {
   const m = message.toLowerCase();
-  if (m.includes("invalid login")) return "Feil e-post eller passord.";
+  if (m.includes("invalid login"))
+    return L("Feil e-post eller passord.", "Wrong email or password.");
   if (m.includes("email not confirmed"))
-    return "E-postadressen er ikke bekreftet ennå. Sjekk innboksen din.";
+    return L(
+      "E-postadressen er ikke bekreftet ennå. Sjekk innboksen din.",
+      "The email address is not confirmed yet. Check your inbox.",
+    );
   if (m.includes("already registered"))
-    return "Det finnes allerede en konto med denne e-postadressen.";
-  if (m.includes("password")) return "Passordet må ha minst 8 tegn.";
-  if (m.includes("rate limit")) return "For mange forsøk. Vent litt og prøv igjen.";
-  return "Noe gikk galt. Prøv igjen.";
+    return L(
+      "Det finnes allerede en konto med denne e-postadressen.",
+      "An account with this email address already exists.",
+    );
+  if (m.includes("password"))
+    return L("Passordet må ha minst 8 tegn.", "The password must be at least 8 characters.");
+  if (m.includes("rate limit"))
+    return L(
+      "For mange forsøk. Vent litt og prøv igjen.",
+      "Too many attempts. Wait a little and try again.",
+    );
+  return L("Noe gikk galt. Prøv igjen.", "Something went wrong. Try again.");
 }
 
 /** Innlogging (e-post + passord eller innloggingslenke). Ingen markedsføringsflate – rett til arbeid. */
@@ -40,12 +53,17 @@ export function AuthScreen() {
     setBusy(false);
     if (res.error) setError(norwegianAuthError(res.error.message));
     else if (mode === "signup" && !res.session)
-      setNotice("Kontoen er opprettet. Bekreft e-postadressen via lenken vi sendte deg.");
+      setNotice(
+        L(
+          "Kontoen er opprettet. Bekreft e-postadressen via lenken vi sendte deg.",
+          "The account has been created. Confirm your email address via the link we sent you.",
+        ),
+      );
   }
 
   async function sendLink() {
     if (!email) {
-      setError("Skriv inn e-postadressen først.");
+      setError(L("Skriv inn e-postadressen først.", "Enter your email address first."));
       return;
     }
     setBusy(true);
@@ -54,7 +72,13 @@ export function AuthScreen() {
     const res = await sendSignInLink(email, redirect);
     setBusy(false);
     if (res.error) setError(norwegianAuthError(res.error.message));
-    else setNotice("Vi har sendt en innloggingslenke til " + email + ".");
+    else
+      setNotice(
+        L(
+          `Vi har sendt en innloggingslenke til ${email}.`,
+          `We have sent a sign-in link to ${email}.`,
+        ),
+      );
   }
 
   return (
@@ -65,7 +89,10 @@ export function AuthScreen() {
             Animatic Studio
           </h1>
           <p className="mt-1 text-[13px] text-text-secondary">
-            Fra manus til ferdig film – i én sammenhengende produksjon.
+            {L(
+              "Fra manus til ferdig film – i én sammenhengende produksjon.",
+              "From script to finished film – in one continuous production.",
+            )}
           </p>
         </div>
         <form
@@ -74,11 +101,11 @@ export function AuthScreen() {
           aria-labelledby="auth-title"
         >
           <h2 id="auth-title" className="text-base font-semibold text-text-primary">
-            {mode === "signin" ? "Logg inn" : "Opprett konto"}
+            {mode === "signin" ? L("Logg inn", "Sign in") : L("Opprett konto", "Create account")}
           </h2>
           <div className="space-y-1.5">
             <Label htmlFor="email" className="text-xs text-text-secondary">
-              E-post
+              {L("E-post", "Email")}
             </Label>
             <Input
               id="email"
@@ -92,7 +119,7 @@ export function AuthScreen() {
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="password" className="text-xs text-text-secondary">
-              Passord
+              {L("Passord", "Password")}
             </Label>
             <Input
               id="password"
@@ -116,7 +143,7 @@ export function AuthScreen() {
             </p>
           ) : null}
           <Button type="submit" className="w-full" disabled={busy}>
-            {mode === "signin" ? "Logg inn" : "Opprett konto"}
+            {mode === "signin" ? L("Logg inn", "Sign in") : L("Opprett konto", "Create account")}
           </Button>
           <div className="flex items-center justify-between pt-1 text-xs">
             <button
@@ -124,7 +151,9 @@ export function AuthScreen() {
               className="text-accent-brand hover:underline"
               onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
             >
-              {mode === "signin" ? "Ny bruker? Opprett konto" : "Har du konto? Logg inn"}
+              {mode === "signin"
+                ? L("Ny bruker? Opprett konto", "New user? Create an account")
+                : L("Har du konto? Logg inn", "Have an account? Sign in")}
             </button>
             <button
               type="button"
@@ -132,7 +161,7 @@ export function AuthScreen() {
               onClick={() => void sendLink()}
               disabled={busy}
             >
-              Send innloggingslenke
+              {L("Send innloggingslenke", "Send sign-in link")}
             </button>
           </div>
         </form>

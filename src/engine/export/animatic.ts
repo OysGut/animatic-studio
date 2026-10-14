@@ -8,6 +8,7 @@
  * Bare på klienten.
  */
 import {
+  L,
   cueAt,
   type AudioKind,
   type FilmAudioItem,
@@ -74,13 +75,17 @@ const even = (n: number) => Math.max(2, Math.round(n / 2) * 2);
 export async function exportAnimatic(o: AnimaticExportOptions): Promise<AnimaticFile> {
   if (!canExportVideo())
     throw new ExportError(
-      "Nettleseren kan ikke lage video. Bruk en nyere utgave av Chrome, Edge, Safari eller Firefox.",
+      L(
+        "Nettleseren kan ikke lage video. Bruk en nyere utgave av Chrome, Edge, Safari eller Firefox.",
+        "The browser cannot make video. Use a newer version of Chrome, Edge, Safari or Firefox.",
+      ),
     );
   const total = o.endFrame - o.startFrame;
-  if (total <= 0) throw new ExportError("Utvalget er tomt.");
+  if (total <= 0) throw new ExportError(L("Utvalget er tomt.", "The selection is empty."));
   const width = even(o.width);
   const height = even(o.height);
   const mb = await import("mediabunny");
+  // i18n-ignore: kodeknavn
   const codec = await mb.getFirstEncodableVideoCodec(["avc", "vp9", "av1"], {
     width,
     height,
@@ -88,7 +93,10 @@ export async function exportAnimatic(o: AnimaticExportOptions): Promise<Animatic
   });
   if (!codec)
     throw new ExportError(
-      `Nettleseren kan ikke kode video i ${width} × ${height}. Prøv halv størrelse, eller en annen nettleser.`,
+      L(
+        `Nettleseren kan ikke kode video i ${width} × ${height}. Prøv halv størrelse, eller en annen nettleser.`,
+        `The browser cannot encode video at ${width} × ${height}. Try half the size, or another browser.`,
+      ),
     );
   const format = codec === "avc" ? new mb.Mp4OutputFormat() : new mb.WebMOutputFormat();
   const target = new mb.BufferTarget();
@@ -98,7 +106,13 @@ export async function exportAnimatic(o: AnimaticExportOptions): Promise<Animatic
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext("2d", { alpha: false });
-  if (!ctx) throw new ExportError("Kunne ikke tegne bildene (lerretet er ikke tilgjengelig).");
+  if (!ctx)
+    throw new ExportError(
+      L(
+        "Kunne ikke tegne bildene (lerretet er ikke tilgjengelig).",
+        "Could not draw the images (the canvas is not available).",
+      ),
+    );
 
   const source = new mb.CanvasSource(canvas, { codec, quality: mb.QUALITY_HIGH });
   const fps = o.fps.num / o.fps.den;
@@ -144,7 +158,7 @@ export async function exportAnimatic(o: AnimaticExportOptions): Promise<Animatic
   try {
     await output.start();
     for (let i = 0; i < total; i++) {
-      if (o.signal?.aborted) throw new DOMException("Avbrutt", "AbortError");
+      if (o.signal?.aborted) throw new DOMException(L("Avbrutt", "Cancelled"), "AbortError");
       // Lyden ligger litt foran bildet, så filen flettes jevnt
       if (i * step >= audioDone - 1) await addAudioUntil(i * step + AUDIO_CHUNK);
       if (video) await video.prepare(o.state, o.clips, o.startFrame + i);
@@ -175,7 +189,7 @@ export async function exportAnimatic(o: AnimaticExportOptions): Promise<Animatic
     await video?.close().catch(() => undefined);
   }
   const buffer = target.buffer;
-  if (!buffer) throw new ExportError("Videoen ble tom.");
+  if (!buffer) throw new ExportError(L("Videoen ble tom.", "The video came out empty."));
   return {
     bytes: new Uint8Array(buffer),
     mimeType: format.mimeType,

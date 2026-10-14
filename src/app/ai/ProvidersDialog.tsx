@@ -24,6 +24,8 @@ import {
   formatUsd,
   CAPABILITY_LABEL,
   type ProviderInfo,
+  L,
+  tm,
 } from "@/core";
 import {
   removeProviderKey,
@@ -48,25 +50,30 @@ function StatusBadge({ row, builtIn }: { row: ProviderKeyRow | undefined; builtI
   if (builtIn)
     return (
       <span className="flex shrink-0 items-center gap-1 whitespace-nowrap text-xs text-text-secondary">
-        <CheckCircle2 className="size-3.5 text-status-success" aria-hidden /> Innebygd
+        <CheckCircle2 className="size-3.5 text-status-success" aria-hidden />{" "}
+        {L("Innebygd", "Built-in")}
       </span>
     );
   if (!row)
     return (
       <span className="flex shrink-0 items-center gap-1 whitespace-nowrap text-xs text-text-tertiary">
-        <CircleDashed className="size-3.5" aria-hidden /> Ikke koblet til
+        <CircleDashed className="size-3.5" aria-hidden /> {L("Ikke koblet til", "Not connected")}
       </span>
     );
   if (row.status === "failed")
     return (
       <span className="flex shrink-0 items-center gap-1 whitespace-nowrap text-xs text-status-danger">
-        <CircleAlert className="size-3.5" aria-hidden /> Nøkkelen virker ikke ({row.key_hint})
+        <CircleAlert className="size-3.5" aria-hidden />{" "}
+        {L(`Nøkkelen virker ikke (${row.key_hint})`, `The key does not work (${row.key_hint})`)}
       </span>
     );
   return (
     <span className="flex shrink-0 items-center gap-1 whitespace-nowrap text-xs text-status-success">
-      <CheckCircle2 className="size-3.5" aria-hidden /> Tilkoblet ({row.key_hint})
-      {row.status === "untested" ? <span className="text-text-tertiary"> · ikke prøvd</span> : null}
+      <CheckCircle2 className="size-3.5" aria-hidden />{" "}
+      {L(`Tilkoblet (${row.key_hint})`, `Connected (${row.key_hint})`)}
+      {row.status === "untested" ? (
+        <span className="text-text-tertiary">{L(" · ikke prøvd", " · not tested")}</span>
+      ) : null}
     </span>
   );
 }
@@ -120,10 +127,16 @@ function ProviderDetail({
           kind: "ok",
           text:
             r.status === "ok"
-              ? `Nøkkelen virker og er lagret kryptert.${r.message ? ` ${r.message}` : ""}`
-              : `Nøkkelen er lagret kryptert. ${r.message ?? "Den kunne ikke prøves nå."}`,
+              ? L(
+                  `Nøkkelen virker og er lagret kryptert.${r.message ? ` ${tm(r.message)}` : ""}`,
+                  `The key works and is saved encrypted.${r.message ? ` ${tm(r.message)}` : ""}`,
+                )
+              : L(
+                  `Nøkkelen er lagret kryptert. ${tm(r.message ?? "Den kunne ikke prøves nå.")}`,
+                  `The key is saved encrypted. ${tm(r.message ?? "It could not be tested now.")}`,
+                ),
         });
-      } else setMsg({ kind: "error", text: r.message });
+      } else setMsg({ kind: "error", text: tm(r.message) });
     } catch (e) {
       setMsg({ kind: "error", text: (e as Error).message });
     } finally {
@@ -138,8 +151,8 @@ function ProviderDetail({
       const r = await testSavedProviderKey({ data: { provider: p.id } });
       setMsg(
         r.ok
-          ? { kind: "ok", text: r.message ?? "Nøkkelen virker." }
-          : { kind: "error", text: r.message },
+          ? { kind: "ok", text: tm(r.message ?? L("Nøkkelen virker.", "The key works.")) }
+          : { kind: "error", text: tm(r.message) },
       );
     } catch (e) {
       setMsg({ kind: "error", text: (e as Error).message });
@@ -155,8 +168,17 @@ function ProviderDetail({
       const r = await removeProviderKey({ data: { provider: p.id } });
       setMsg(
         r.ok
-          ? { kind: "ok", text: "Nøkkelen er slettet fra Animatic Studio." }
-          : { kind: "error", text: r.message ?? "Kunne ikke fjerne nøkkelen." },
+          ? {
+              kind: "ok",
+              text: L(
+                "Nøkkelen er slettet fra Animatic Studio.",
+                "The key has been deleted from Animatic Studio.",
+              ),
+            }
+          : {
+              kind: "error",
+              text: tm(r.message ?? L("Kunne ikke fjerne nøkkelen.", "Could not remove the key.")),
+            },
       );
     } finally {
       setBusy(null);
@@ -172,14 +194,16 @@ function ProviderDetail({
         onClick={onBack}
         className="flex items-center gap-1 self-start text-xs text-text-secondary hover:text-text-primary"
       >
-        <ArrowLeft className="size-3.5" aria-hidden /> Alle leverandører
+        <ArrowLeft className="size-3.5" aria-hidden /> {L("Alle leverandører", "All providers")}
       </button>
       <div className="flex items-start justify-between gap-3">
         <div>
           <h3 className="text-base font-semibold text-text-primary">{p.name}</h3>
           <p className="mt-0.5 text-[13px] text-text-secondary">{p.description}</p>
           <p className="mt-1 text-xs text-text-tertiary">
-            Kan lage: {p.capabilities.map((c) => CAPABILITY_LABEL[c]).join(", ")} · modeller:{" "}
+            {L("Kan lage:", "Can make:")}{" "}
+            {p.capabilities.map((c) => CAPABILITY_LABEL[c]).join(", ")} ·{" "}
+            {L("modeller:", "models:")}{" "}
             {p.models
               .filter((m) => !m.retired)
               .map((m) => m.label)
@@ -190,8 +214,10 @@ function ProviderDetail({
       </div>
       {p.builtIn ? (
         <p className="text-[13px] text-text-secondary">
-          Denne er alltid tilgjengelig og bruker kredittene i Lovable-arbeidsområdet. Prosjektets
-          AI-budsjett gjelder.
+          {L(
+            "Denne er alltid tilgjengelig og bruker kredittene i Lovable-arbeidsområdet. Prosjektets AI-budsjett gjelder.",
+            "This is always available and uses the credits in the Lovable workspace. The project's AI budget applies.",
+          )}
         </p>
       ) : (
         <>
@@ -200,7 +226,7 @@ function ProviderDetail({
               id="steps-title"
               className="mb-1.5 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary"
             >
-              Slik kobler du til
+              {L("Slik kobler du til", "How to connect")}
             </h4>
             <ol className="ml-4 flex list-decimal flex-col gap-1 text-[13px] text-text-primary">
               {p.keySteps.map((s) => (
@@ -208,10 +234,10 @@ function ProviderDetail({
               ))}
             </ol>
             <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
-              <Link2 href={p.links.signup}>Opprett konto</Link2>
-              <Link2 href={p.links.billing}>Betaling og kreditt</Link2>
-              <Link2 href={p.links.apiKeys}>Hent API-nøkkel</Link2>
-              <Link2 href={p.links.pricing}>Priser</Link2>
+              <Link2 href={p.links.signup}>{L("Opprett konto", "Create account")}</Link2>
+              <Link2 href={p.links.billing}>{L("Betaling og kreditt", "Billing and credit")}</Link2>
+              <Link2 href={p.links.apiKeys}>{L("Hent API-nøkkel", "Get API key")}</Link2>
+              <Link2 href={p.links.pricing}>{L("Priser", "Pricing")}</Link2>
             </div>
           </section>
           <section
@@ -220,7 +246,9 @@ function ProviderDetail({
           >
             <h4 id="key-title" className="flex items-center gap-1.5 text-[13px] font-medium">
               <KeyRound className="size-4" aria-hidden />
-              {row ? "Bytt nøkkel" : "Lim inn API-nøkkelen"}
+              {row
+                ? L("Bytt nøkkel", "Change key")
+                : L("Lim inn API-nøkkelen", "Paste the API key")}
             </h4>
             <input
               type="password"
@@ -228,8 +256,12 @@ function ProviderDetail({
               spellCheck={false}
               value={key}
               onChange={(e) => setKey(e.target.value)}
-              placeholder={row ? `Nåværende: ${row.key_hint}` : "Lim inn nøkkelen her"}
-              aria-label={`API-nøkkel for ${p.name}`}
+              placeholder={
+                row
+                  ? L(`Nåværende: ${row.key_hint}`, `Current: ${row.key_hint}`)
+                  : L("Lim inn nøkkelen her", "Paste the key here")
+              }
+              aria-label={L(`API-nøkkel for ${p.name}`, `API key for ${p.name}`)}
               className={ctl + " w-full font-mono"}
               disabled={busy !== null}
             />
@@ -242,7 +274,7 @@ function ProviderDetail({
                 disabled={!key.trim() || !!fmt.error || busy !== null}
               >
                 {busy === "save" ? <Loader2 className="animate-spin" /> : <ShieldCheck />}
-                Prøv og lagre
+                {L("Prøv og lagre", "Test and save")}
               </Button>
               {row ? (
                 <Button
@@ -252,7 +284,7 @@ function ProviderDetail({
                   disabled={busy !== null}
                 >
                   {busy === "test" ? <Loader2 className="animate-spin" /> : <CheckCircle2 />}
-                  Prøv nøkkelen igjen
+                  {L("Prøv nøkkelen igjen", "Test the key again")}
                 </Button>
               ) : null}
               {row && !confirmRemove ? (
@@ -262,17 +294,20 @@ function ProviderDetail({
                   onClick={() => setConfirmRemove(true)}
                   disabled={busy !== null}
                 >
-                  <Trash2 /> Fjern
+                  <Trash2 /> {L("Fjern", "Remove")}
                 </Button>
               ) : null}
               {confirmRemove ? (
                 <span className="flex items-center gap-2 text-xs text-text-secondary">
-                  Slette nøkkelen fra Animatic Studio?
+                  {L(
+                    "Slette nøkkelen fra Animatic Studio?",
+                    "Delete the key from Animatic Studio?",
+                  )}
                   <Button size="sm" variant="destructive" onClick={() => void remove()}>
-                    Slett
+                    {L("Slett", "Delete")}
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => setConfirmRemove(false)}>
-                    Avbryt
+                    {L("Avbryt", "Cancel")}
                   </Button>
                 </span>
               ) : null}
@@ -291,11 +326,10 @@ function ProviderDetail({
               </p>
             ) : null}
             <p className="text-[11px] text-text-tertiary">
-              Nøkkelen sendes kryptert til serveren, prøves hos {p.name} og lagres kryptert. Den
-              vises aldri igjen – bare de fire siste tegnene. Den brukes bare når du eller andre i
-              prosjektene dine ber om en generering (alltid med bekreftelse), innenfor
-              kostnadstaket. Fjerner du den her, slettes den. Slett den også hos {p.name} hvis du
-              tror den er kommet på avveie.
+              {L(
+                `Nøkkelen sendes kryptert til serveren, prøves hos ${p.name} og lagres kryptert. Den vises aldri igjen – bare de fire siste tegnene. Den brukes bare når du eller andre i prosjektene dine ber om en generering (alltid med bekreftelse), innenfor kostnadstaket. Fjerner du den her, slettes den. Slett den også hos ${p.name} hvis du tror den er kommet på avveie.`,
+                `The key is sent encrypted to the server, tested with ${p.name} and saved encrypted. It is never shown again – only the last four characters. It is only used when you or others in your projects ask for a generation (always with confirmation), within the cost limit. If you remove it here, it is deleted. Also delete it at ${p.name} if you think it has been compromised.`,
+              )}
             </p>
           </section>
         </>
@@ -327,17 +361,17 @@ function CapSection({
       className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-3"
     >
       <h3 id="cap-title" className="text-[13px] font-medium text-text-primary">
-        Kostnadstak for egne nøkler
+        {L("Kostnadstak for egne nøkler", "Cost limit for own keys")}
       </h3>
       <div className="flex flex-wrap items-center gap-2 text-[13px] text-text-secondary">
         <label className="flex items-center gap-2">
-          Høyst per måned (USD)
+          {L("Høyst per måned (USD)", "Maximum per month (USD)")}
           <input
             inputMode="decimal"
             value={value}
             onChange={(e) => setText(e.target.value)}
-            placeholder="Ingen tak"
-            aria-label="Kostnadstak per måned i USD"
+            placeholder={L("Ingen tak", "No limit")}
+            aria-label={L("Kostnadstak per måned i USD", "Cost limit per month in USD")}
             aria-invalid={invalid || undefined}
             className={ctl + " w-28 text-right tabular"}
           />
@@ -351,7 +385,7 @@ function CapSection({
             setErr(null);
             try {
               const r = await setAccountCap({ data: { capUsd: parsed } });
-              if (!r.ok) setErr(r.message);
+              if (!r.ok) setErr(tm(r.message ?? ""));
               else setText(null);
             } finally {
               setBusy(false);
@@ -359,17 +393,20 @@ function CapSection({
             }
           }}
         >
-          Lagre
+          {L("Lagre", "Save")}
         </Button>
         <span className="tabular text-xs text-text-tertiary">
-          Brukt denne måneden: ~{formatUsd(usedUsd)}
-          {remaining !== null ? ` · igjen ~${formatUsd(remaining)}` : ""}
+          {L("Brukt denne måneden:", "Used this month:")} ~{formatUsd(usedUsd)}
+          {remaining !== null
+            ? L(` · igjen ~${formatUsd(remaining)}`, ` · remaining ~${formatUsd(remaining)}`)
+            : ""}
         </span>
       </div>
       <p className="text-[11px] text-text-tertiary">
-        Gjelder alle prosjekter som bruker nøklene dine, i tillegg til hvert prosjekts eget
-        budsjett. Beløpene er anslag ut fra leverandørenes prislister; den faktiske regningen kommer
-        fra leverandøren. Sett også gjerne en grense hos leverandøren.
+        {L(
+          "Gjelder alle prosjekter som bruker nøklene dine, i tillegg til hvert prosjekts eget budsjett. Beløpene er anslag ut fra leverandørenes prislister; den faktiske regningen kommer fra leverandøren. Sett også gjerne en grense hos leverandøren.",
+          "Applies to all projects that use your keys, in addition to each project's own budget. The amounts are estimates based on the providers' price lists; the actual bill comes from the provider. You may also want to set a limit with the provider.",
+        )}
       </p>
       {err ? (
         <p role="alert" className="text-xs text-status-danger">
@@ -403,18 +440,22 @@ export function ProvidersDialog({
     >
       <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
-          <DialogTitle>AI-leverandører</DialogTitle>
+          <DialogTitle>{L("AI-leverandører", "AI providers")}</DialogTitle>
           <DialogDescription>
-            Koble til tjenestene du vil bruke for bilder, video og lyd. De du kobler til, blir
-            tilgjengelige i alle prosjektene du eier.
+            {L(
+              "Koble til tjenestene du vil bruke for bilder, video og lyd. De du kobler til, blir tilgjengelige i alle prosjektene du eier.",
+              "Connect the services you want to use for images, video and audio. Those you connect become available in all the projects you own.",
+            )}
           </DialogDescription>
         </DialogHeader>
         {ai.isLoading ? (
           <Loader2 className="size-5 animate-spin text-text-tertiary" aria-hidden />
         ) : ai.data?.missing ? (
           <p role="alert" className="text-[13px] text-status-uncertain">
-            Databasen er ikke oppdatert for egne AI-leverandører ennå. Lim inn meldingen i
-            LOVABLE_SYNC.md i Lovable (migrasjon 0024).
+            {L(
+              "Databasen er ikke oppdatert for egne AI-leverandører ennå. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0024).",
+              "The database is not yet updated for your own AI providers. Paste the message into LOVABLE_SYNC.md in Lovable (migration 0024).",
+            )}
           </p>
         ) : sel ? (
           <ProviderDetail
@@ -430,7 +471,7 @@ export function ProvidersDialog({
               capUsd={ai.data?.capUsd ?? null}
               usedUsd={ai.data?.usedUsd ?? 0}
             />
-            <ul className="flex flex-col gap-1.5" aria-label="Leverandører">
+            <ul className="flex flex-col gap-1.5" aria-label={L("Leverandører", "Providers")}>
               {PROVIDERS.map((p) => (
                 <li key={p.id}>
                   <button
@@ -453,7 +494,7 @@ export function ProvidersDialog({
             </ul>
             {ai.isError ? (
               <p role="alert" className="text-xs text-status-danger">
-                {(ai.error as Error).message}
+                {tm((ai.error as Error).message)}
               </p>
             ) : null}
           </div>

@@ -5,6 +5,7 @@
 import { MessageSquarePlus, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import {
+  L,
   formatEdited,
   formatStamp,
   newId,
@@ -65,7 +66,7 @@ export function NotesPanel({
           { ...newTarget, annotationId: newId<"annotation">(), text: draft, authorName },
         ],
       },
-      "Nytt notat",
+      L("Nytt notat", "New note"),
     );
     setErr(e);
     if (!e) {
@@ -77,7 +78,7 @@ export function NotesPanel({
   return (
     <div className="flex flex-col gap-2">
       {notes.length === 0 && !adding ? (
-        <p className="text-xs text-text-tertiary">Ingen notater.</p>
+        <p className="text-xs text-text-tertiary">{L("Ingen notater.", "No notes.")}</p>
       ) : null}
       {notes.map((n) => (
         <NoteCard
@@ -99,7 +100,7 @@ export function NotesPanel({
               value={draft}
               maxLength={10000}
               rows={3}
-              placeholder="Skriv notatet …"
+              placeholder={L("Skriv notatet …", "Write the note …")}
               onChange={(e) => setDraft(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) add();
@@ -109,10 +110,10 @@ export function NotesPanel({
             />
             <div className="flex gap-1.5">
               <Button size="sm" onClick={add} disabled={!draft.trim()}>
-                Lagre notat
+                {L("Lagre notat", "Save note")}
               </Button>
               <Button size="sm" variant="ghost" onClick={() => setAdding(false)}>
-                Avbryt
+                {L("Avbryt", "Cancel")}
               </Button>
             </div>
           </div>
@@ -181,12 +182,18 @@ function NoteCard({
         >
           {range?.found
             ? note.quote === ""
-              ? "Hele elementet"
-              : `«${block.text.slice(range.start, range.end)}»`
+              ? L("Hele elementet", "The whole element")
+              : L(
+                  `«${block.text.slice(range.start, range.end)}»`,
+                  `“${block.text.slice(range.start, range.end)}”`,
+                )
             : null}
           {range && !range.found ? (
             <span className="not-italic text-status-uncertain">
-              Teksten er endret – «{note.quote}» finnes ikke lenger
+              {L(
+                `Teksten er endret – «${note.quote}» finnes ikke lenger`,
+                `The text has changed – “${note.quote}” no longer exists`,
+              )}
             </span>
           ) : null}
         </p>
@@ -210,16 +217,16 @@ function NoteCard({
               onClick={() => {
                 const e = run(
                   { type: "EditAnnotation", annotationId: note.id, text, editedByName: authorName },
-                  "Endre notat",
+                  L("Endre notat", "Edit note"),
                 );
                 setErr(e);
                 if (!e) setEditing(false);
               }}
             >
-              Lagre
+              {L("Lagre", "Save")}
             </Button>
             <Button size="sm" variant="ghost" onClick={() => setEditing(false)}>
-              Avbryt
+              {L("Avbryt", "Cancel")}
             </Button>
           </div>
         </>
@@ -237,7 +244,7 @@ function NoteCard({
             }}
           >
             <Pencil className="size-3" aria-hidden />
-            Endre
+            {L("Endre", "Edit")}
           </button>
           <button
             type="button"
@@ -245,7 +252,7 @@ function NoteCard({
             onClick={() => setConfirm(true)}
           >
             <Trash2 className="size-3" aria-hidden />
-            Slett
+            {L("Slett", "Delete")}
           </button>
         </div>
       ) : null}
@@ -257,26 +264,31 @@ function NoteCard({
       <AlertDialog open={confirm} onOpenChange={setConfirm}>
         <AlertDialogContent className="border-border bg-surface-2">
           <AlertDialogHeader>
-            <AlertDialogTitle>Slette notatet?</AlertDialogTitle>
+            <AlertDialogTitle>{L("Slette notatet?", "Delete the note?")}</AlertDialogTitle>
             <AlertDialogDescription>
-              «{note.text.length > 120 ? `${note.text.slice(0, 120)} …` : note.text}» –{" "}
-              {formatStamp(note)}. Du kan angre slettingen med ⌘/Ctrl + Z.
+              {L("«", "“")}
+              {note.text.length > 120 ? `${note.text.slice(0, 120)} …` : note.text}
+              {L("»", "”")} – {formatStamp(note)}.{" "}
+              {L(
+                "Du kan angre slettingen med ⌘/Ctrl + Z.",
+                "You can undo the deletion with ⌘/Ctrl + Z.",
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Avbryt</AlertDialogCancel>
+            <AlertDialogCancel>{L("Avbryt", "Cancel")}</AlertDialogCancel>
             <AlertDialogAction
               className="bg-status-danger text-accent-fg hover:bg-status-danger/90"
               onClick={() =>
                 setErr(
                   run(
                     { type: "SetAnnotationRemoved", annotationId: note.id, removed: true },
-                    "Slett notat",
+                    L("Slett notat", "Delete note"),
                   ),
                 )
               }
             >
-              Slett
+              {L("Slett", "Delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

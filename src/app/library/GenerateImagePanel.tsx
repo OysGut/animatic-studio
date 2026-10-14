@@ -6,7 +6,7 @@
  */
 import { Loader2, RotateCcw } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   aiUsage,
@@ -16,8 +16,13 @@ import {
   type AssetVersion,
   type AttachedImage,
   attachedImages,
+  buildContextImageBrief,
   buildContextImagePrompt,
   buildImagePrompt,
+  briefSummaryNb,
+  promptFamilyOf,
+  renderBrief,
+  VERSION_VIEW_LABEL,
   costBreakdown,
   describeAttached,
   estimateCostUsd,
@@ -40,6 +45,8 @@ import {
   providersFor,
   stripAttachedSection,
   withAttachedLegend,
+  L,
+  tm,
 } from "@/core";
 import { aiJobsKey, useAiJobs } from "@/app/ai/use-ai-jobs";
 import { CUTOUT_MODEL, IMAGE_MODEL, generateImage } from "@/adapters/ai/generate-image.functions";
@@ -68,7 +75,16 @@ export function GenerateImagePanel({
   initialPrompt,
   insertPrompt,
   context,
+  onOpenStyleGuide,
+  visualBrief,
 }: {
+  /** Det visuelle faktaarket for ressursen (vises i oppsummeringen, DEC-0080). */
+  visualBrief?: ReactNode;
+  /**
+   * Åpner «Filmens visuelle stil» oppå dialogen (Mars 2026-10-13): når den lukkes, er brukeren tilbake her.
+   * Utelatt: hintet viser bare veien dit.
+   */
+  onOpenStyleGuide?: () => void;
   /**
    * Prosjektet, produksjonen og ev. scenen bildet lages til (DEC-0065): beskrivelsen bygges da med
    * filmens visuelle stil, scenene, lyset og godkjente bilder.
@@ -159,69 +175,6 @@ export function GenerateImagePanel({
         : 0,
     [context, asset],
   );
-  const auto = useMemo(
-    () =>
-      context
-        ? buildContextImagePrompt(context.state, {
-            assetId: asset.id,
-            variantId: variant?.id ?? null,
-            productionId: context.productionId,
-            occurrenceId: context.occurrenceId,
-            withReference: identity !== null,
-            attached,
-          })
-        : buildImagePrompt({
-            asset,
-            variant,
-            filmTitle,
-            withReference: identity !== null,
-          }),
-    [asset, variant, filmTitle, identity, attached, context],
-  );
-  const [prompt, setPrompt] = useState(initialPrompt ?? auto);
-  const [edited, setEdited] = useState(initialPrompt !== undefined && initialPrompt !== auto);
-  /** Hvor teksten i feltet kom fra, når den ikke er den automatiske. */
-  const [origin, setOrigin] = useState<string | null>(null);
-  const queryClient = useQueryClient();
-  const jobs = useAiJobs(projectId, editable);
-  // Husk siste beskrivelse for ressursen (Mars 2026-10-13): den forrige genereringen er utgangspunktet
-  const last = useMemo(
-    () => lastImagePrompt(jobs.data?.jobs ?? [], asset.id),
-    [jobs.data, asset.id],
-  );
-  const lastUsed = useRef(false);
-  /** Feltet følger den automatiske beskrivelsen (til siste beskrivelse er satt inn, eller etter «Tilbakestill»). */
-  const followAuto = useRef(true);
-  useEffect(() => {
-    if (lastUsed.current || initialPrompt !== undefined || edited || !last) return;
-    lastUsed.current = true;
-    // Den automatiske beskrivelsen skal ikke overskrive den (heller ikke når effektene kjøres på nytt)
-    followAuto.current = false;
-    setPrompt(stripAttachedSection(last.prompt));
-    setEdited(true);
-    setOrigin(
-      `Siste beskrivelse for ${asset.name} (${last.when}). «Tilbakestill» gir den automatiske.`,
-    );
-  }, [last, initialPrompt, edited, asset.name]);
-  useEffect(() => {
-    if (!insertPrompt) return;
-    followAuto.current = false;
-    setPrompt(stripAttachedSection(insertPrompt.text));
-    setEdited(true);
-    setConfirm(false);
-    setOrigin("Beskrivelsen fra bildet du valgte er satt inn.");
-  }, [insertPrompt]);
-  const usage = budget
-    ? aiUsage(budget, jobs.data?.jobs ?? [], new Date(), jobs.data?.monthCount ?? undefined)
-    : null;
-  const overBudget = usage !== null && usage.remaining === 0;
-  // Følg den automatiske beskrivelsen til brukeren har endret den selv
-  useEffect(() => {
-    if (!edited && followAuto.current) setPrompt(auto);
-  }, [auto, edited]);
-  const [confirm, setConfirm] = useState(false);
-  // Kandidater (mandat 19.7): flere bilder å velge mellom, hvert som egen versjon
-  const [candidates, setCandidates] = useState(1);
   // Leverandør og modell (DEC-0069): innebygd, eller en prosjektets eiere har koblet til
   const available = useProjectProviders(projectId, editable);
   const options = providersFor("image", new Set(available.data?.providers ?? []));
@@ -247,6 +200,98 @@ export function GenerateImagePanel({
   const sizes = imageSizesOf(chosenModel ?? undefined);
   const size: ImageSize | null =
     sizePick && sizes.sizes.includes(sizePick) ? sizePick : sizes.standard;
+  // Formen på beskrivelsen følger modellen (DEC-0080): fortellende for Nano Banana og GPT Image, kort og
+  // presis med identiteten først for Seedream, Qwen og FLUX
+  const family = promptFamilyOf(choice.provider, chosenModel?.id);
+  const transparent = !!chosenModel?.transparent;
+  const promptInput = useMemo(
+    () =>
+      context
+        ? {
+            assetId: asset.id,
+            variantId: variant?.id ?? null,
+            productionId: context.productionId,
+            occurrenceId: context.occurrenceId,
+            withReference: identity !== null,
+            attached,
+            family,
+            transparent,
+          }
+        : null,
+    [asset.id, variant?.id, context, identity, attached, family, transparent],
+  );
+  const brief = useMemo(
+    () => (context && promptInput ? buildContextImageBrief(context.state, promptInput) : null),
+    [context, promptInput],
+  );
+  const negative = useMemo(
+    () => (brief && family === "compact" ? renderBrief(brief, family).negative : null),
+    [brief, family],
+  );
+  const auto = useMemo(
+    () =>
+      context && promptInput
+        ? buildContextImagePrompt(context.state, promptInput)
+        : buildImagePrompt({
+            asset,
+            variant,
+            filmTitle,
+            withReference: identity !== null,
+          }),
+    [asset, variant, filmTitle, identity, context, promptInput],
+  );
+  const [prompt, setPrompt] = useState(initialPrompt ?? auto);
+  const [edited, setEdited] = useState(initialPrompt !== undefined && initialPrompt !== auto);
+  /** Hvor teksten i feltet kom fra, når den ikke er den automatiske. */
+  const [origin, setOrigin] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const jobs = useAiJobs(projectId, editable);
+  // Husk siste beskrivelse for ressursen (Mars 2026-10-13): den forrige genereringen er utgangspunktet
+  const last = useMemo(
+    () => lastImagePrompt(jobs.data?.jobs ?? [], asset.id),
+    [jobs.data, asset.id],
+  );
+  const lastUsed = useRef(false);
+  /** Feltet følger den automatiske beskrivelsen (til siste beskrivelse er satt inn, eller etter «Tilbakestill»). */
+  const followAuto = useRef(true);
+  useEffect(() => {
+    if (lastUsed.current || initialPrompt !== undefined || edited || !last) return;
+    lastUsed.current = true;
+    // Den automatiske beskrivelsen skal ikke overskrive den (heller ikke når effektene kjøres på nytt)
+    followAuto.current = false;
+    setPrompt(stripAttachedSection(last.prompt));
+    setEdited(true);
+    setOrigin(
+      L(
+        `Siste beskrivelse for ${asset.name} (${last.when}). «Tilbakestill» gir den automatiske.`,
+        `Last description for ${asset.name} (${last.when}). “Reset” gives back the automatic one.`,
+      ),
+    );
+  }, [last, initialPrompt, edited, asset.name]);
+  useEffect(() => {
+    if (!insertPrompt) return;
+    followAuto.current = false;
+    setPrompt(stripAttachedSection(insertPrompt.text));
+    setEdited(true);
+    setConfirm(false);
+    setOrigin(
+      L(
+        "Beskrivelsen fra bildet du valgte er satt inn.",
+        "The description from the image you chose has been inserted.",
+      ),
+    );
+  }, [insertPrompt]);
+  const usage = budget
+    ? aiUsage(budget, jobs.data?.jobs ?? [], new Date(), jobs.data?.monthCount ?? undefined)
+    : null;
+  const overBudget = usage !== null && usage.remaining === 0;
+  // Følg den automatiske beskrivelsen til brukeren har endret den selv
+  useEffect(() => {
+    if (!edited && followAuto.current) setPrompt(auto);
+  }, [auto, edited]);
+  const [confirm, setConfirm] = useState(false);
+  // Kandidater (mandat 19.7): flere bilder å velge mellom, hvert som egen versjon
+  const [candidates, setCandidates] = useState(1);
   const costUsd =
     choice.provider === "lovable"
       ? null
@@ -278,6 +323,7 @@ export function GenerateImagePanel({
         data: {
           projectId,
           assetId: asset.id,
+          task: "prompt",
           brief: prompt,
           purpose: IMAGE_PURPOSE_FOR_KIND[asset.kind],
           images: attached.map((a) => ({ path: a.path, label: a.label })),
@@ -292,7 +338,10 @@ export function GenerateImagePanel({
       setEdited(true);
       setWritten({ model: r.model, images: attachedKey });
     } catch (e) {
-      setError((e as Error).message || "Beskrivelsen ble ikke skrevet.");
+      setError(
+        (e as Error).message ||
+          L("Beskrivelsen ble ikke skrevet.", "The description could not be written."),
+      );
     } finally {
       setWriting(false);
       void queryClient.invalidateQueries({ queryKey: aiJobsKey(projectId) });
@@ -321,11 +370,19 @@ export function GenerateImagePanel({
             provider: choice.provider,
             model: choice.provider === "lovable" ? null : choice.model,
             size,
+            ...(negative ? { negativePrompt: negative } : {}),
             approved: true,
           },
         });
         if (!r.ok) {
-          setError(made ? `${made} av ${candidates} laget. ${r.message}` : r.message);
+          setError(
+            made
+              ? L(
+                  `${made} av ${candidates} laget. ${tm(r.message)}`,
+                  `${made} of ${candidates} made. ${tm(r.message)}`,
+                )
+              : tm(r.message),
+          );
           return;
         }
         const err = await onGenerated({ versionId: r.versionId, media: r.media, model: r.model });
@@ -337,8 +394,14 @@ export function GenerateImagePanel({
       }
       setDone(
         candidates > 1
-          ? `${made} kandidater laget og lagret som nye versjoner. Sammenlign dem i biblioteket og godkjenn den du vil bruke.`
-          : "Nytt bilde laget og lagret som ny versjon.",
+          ? L(
+              `${made} kandidater laget og lagret som nye versjoner. Sammenlign dem i biblioteket og godkjenn den du vil bruke.`,
+              `${made} candidates made and saved as new versions. Compare them in the library and approve the one you want to use.`,
+            )
+          : L(
+              "Nytt bilde laget og lagret som ny versjon.",
+              "New image made and saved as a new version.",
+            ),
       );
     } catch (e) {
       setError(lostConnection((e as Error).message));
@@ -379,26 +442,87 @@ export function GenerateImagePanel({
   return (
     <div className="@container flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-3">
       <h3 className="flex items-center gap-1.5 text-[13px] font-medium text-text-primary">
-        <AiGlyph className="size-4" aria-hidden /> Generer et nytt bilde med AI
+        <AiGlyph className="size-4" aria-hidden />{" "}
+        {L("Generer et nytt bilde med AI", "Generate a new image with AI")}
       </h3>
       <p className="text-xs text-text-tertiary">
         {context
-          ? "Beskrivelsen er satt sammen av filmens visuelle stil, ressursen, scenene den er med i (sted, tid på døgnet, lys, hvem som er der) og godkjente bilder i filmen."
-          : "Beskrivelsen er laget fra ressursen og stilen."}{" "}
-        Du kan endre den før du sender. Bildet lagres som ny versjon
-        {variant ? ` i «${variant.name || "Uten navn"}»` : ""} og brukes på laget.
+          ? L(
+              "Beskrivelsen er satt sammen av filmens visuelle stil, ressursen, scenene den er med i (sted, tid på døgnet, lys, hvem som er der) og godkjente bilder i filmen.",
+              "The description is put together from the film's visual style, the asset, the scenes it appears in (place, time of day, light, who is there) and the approved images in the film.",
+            )
+          : L(
+              "Beskrivelsen er laget fra ressursen og stilen.",
+              "The description is made from the asset and the style.",
+            )}{" "}
+        {L(
+          "Du kan endre den før du sender. Bildet lagres som ny versjon",
+          "You can change it before you send. The image is saved as a new version",
+        )}
+        {variant
+          ? L(` i «${variant.name || "Uten navn"}»`, ` in “${variant.name || "Without name"}”`)
+          : ""}{" "}
+        {L("og brukes på laget.", "and used on the layer.")}
       </p>
       {context && !hasStyleGuide(context.state) ? (
         <p className="rounded-sm border border-accent-warm/40 bg-surface-2 px-2 py-1.5 text-xs text-text-secondary">
-          Filmens visuelle stil er ikke fylt ut ennå. Beskrivelsen blir mye bedre når den er det:
-          Prosjektoversikt → «Filmens visuelle stil».
+          {L(
+            "Filmens visuelle stil er ikke fylt ut ennå. Beskrivelsen blir mye bedre når den er det:",
+            "The film's visual style is not filled in yet. The description will be much better once it is:",
+          )}{" "}
+          {onOpenStyleGuide ? (
+            <button
+              type="button"
+              onClick={onOpenStyleGuide}
+              className="font-medium text-text-primary underline underline-offset-2 hover:text-accent-brand"
+            >
+              {L("Fyll ut «Filmens visuelle stil» …", "Fill in “The film's visual style” …")}
+            </button>
+          ) : (
+            L(
+              "Prosjektoversikt → «Filmens visuelle stil».",
+              "Project overview → “The film's visual style”.",
+            )
+          )}
+        </p>
+      ) : context && onOpenStyleGuide ? (
+        <p className="text-xs text-text-tertiary">
+          <button
+            type="button"
+            onClick={onOpenStyleGuide}
+            className="underline underline-offset-2 hover:text-text-primary"
+          >
+            {L(
+              "Se eller endre «Filmens visuelle stil» …",
+              "View or change “The film's visual style” …",
+            )}
+          </button>
         </p>
       ) : null}
       <div className="grid grid-cols-1 gap-x-4 gap-y-2 @2xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
         <div className="flex min-w-0 flex-col gap-2">
+          {brief ? (
+            <div
+              aria-label={L("Bestillingen kort", "Brief summary")}
+              className="rounded-sm border border-border bg-surface-2 px-2 py-1.5 text-[11px] leading-snug text-text-secondary"
+            >
+              <p className="font-medium text-text-primary">
+                {L("Bestillingen kort", "Brief summary")}
+              </p>
+              <ul className="list-disc pl-4">
+                {briefSummaryNb(brief, family, (v) => VERSION_VIEW_LABEL[v]).map((l) => (
+                  <li key={l}>{l}</li>
+                ))}
+              </ul>
+              {visualBrief ? <div className="mt-1.5">{visualBrief}</div> : null}
+            </div>
+          ) : null}
           <label className="flex flex-1 flex-col gap-1 text-xs text-text-secondary">
             <span className="flex items-center justify-between">
-              Beskrivelse (engelsk gir best resultat)
+              {L(
+                "Beskrivelse (engelsk gir best resultat)",
+                "Description (English gives the best result)",
+              )}
               {edited ? (
                 <button
                   type="button"
@@ -410,9 +534,12 @@ export function GenerateImagePanel({
                     setPrompt(auto);
                   }}
                   className="flex items-center gap-0.5 rounded-sm px-1 text-[11px] text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
-                  title="Bruk den automatiske beskrivelsen igjen"
+                  title={L(
+                    "Bruk den automatiske beskrivelsen igjen",
+                    "Use the automatic description again",
+                  )}
                 >
-                  <RotateCcw className="size-3" aria-hidden /> Tilbakestill
+                  <RotateCcw className="size-3" aria-hidden /> {L("Tilbakestill", "Reset")}
                 </button>
               ) : null}
             </span>
@@ -426,15 +553,22 @@ export function GenerateImagePanel({
               }}
               disabled={!editable || running || writing}
               rows={context ? 14 : 6}
-              aria-label="Beskrivelse for AI-generering"
+              aria-label={L("Beskrivelse for AI-generering", "Description for AI generation")}
               className="min-h-24 flex-1 resize-y rounded-sm border border-border-control bg-surface-3 p-1.5 font-mono text-[11px] leading-snug text-text-primary"
             />
             {origin ? <span className="text-[11px] text-text-tertiary">{origin}</span> : null}
             {tooLong ? (
               <span className="text-status-danger">
-                Beskrivelsen er for lang ({stripAttachedSection(prompt).length + legendLength} av{" "}
-                {MAX_PROMPT_CHARS} tegn
-                {legendLength ? ", med listen over bildene som sendes med" : ""}).
+                {L("Beskrivelsen er for lang", "The description is too long")} (
+                {stripAttachedSection(prompt).length + legendLength} {L("av", "of")}{" "}
+                {MAX_PROMPT_CHARS} {L("tegn", "characters")}
+                {legendLength
+                  ? L(
+                      ", med listen over bildene som sendes med",
+                      ", including the list of images sent with it",
+                    )
+                  : ""}
+                ).
               </span>
             ) : null}
           </label>
@@ -444,17 +578,23 @@ export function GenerateImagePanel({
               variant="secondary"
               onClick={() => void write()}
               disabled={!canWrite}
-              title="En språkmodell leser alt over (og ser bildene som sendes med) og skriver en presis beskrivelse. Du kan endre den før du genererer."
+              title={L(
+                "En språkmodell leser alt over (og ser bildene som sendes med) og skriver en presis beskrivelse. Du kan endre den før du genererer.",
+                "A language model reads everything above (and sees the images sent with it) and writes a precise description. You can change it before you generate.",
+              )}
             >
               {writing ? <Loader2 className="animate-spin" /> : <AiGlyph />}
               {writing
-                ? "Skriver … (kan ta et halvt minutt)"
+                ? L("Skriver … (kan ta et halvt minutt)", "Writing … (may take half a minute)")
                 : written
-                  ? "Skriv på nytt med AI"
-                  : "Skriv beskrivelsen med AI"}
+                  ? L("Skriv på nytt med AI", "Write again with AI")
+                  : L("Skriv beskrivelsen med AI", "Write the description with AI")}
             </Button>
             <span className="text-[11px] text-text-tertiary">
-              Bruker litt kreditter (langt mindre enn et bilde), teller ikke i bildebudsjettet.
+              {L(
+                "Bruker litt kreditter (langt mindre enn et bilde), teller ikke i bildebudsjettet.",
+                "Uses a few credits (far less than an image), does not count towards the image budget.",
+              )}
             </span>
           </div>
           {written ? (
@@ -463,8 +603,14 @@ export function GenerateImagePanel({
               className={"text-[11px] " + (stale ? "text-status-uncertain" : "text-text-secondary")}
             >
               {stale
-                ? "Bildene som sendes med er endret etter at AI skrev beskrivelsen, så den kan omtale feil bilde. Du kan likevel generere – eller skrive den på nytt først."
-                : `Skrevet av AI (${written.model}). Les gjennom og endre det som ikke stemmer før du genererer.`}
+                ? L(
+                    "Bildene som sendes med er endret etter at AI skrev beskrivelsen, så den kan omtale feil bilde. Du kan likevel generere – eller skrive den på nytt først.",
+                    "The images sent with it have changed since the AI wrote the description, so it may refer to the wrong image. You can still generate – or write it again first.",
+                  )
+                : L(
+                    `Skrevet av AI (${written.model}). Les gjennom og endre det som ikke stemmer før du genererer.`,
+                    `Written by AI (${written.model}). Read through it and change anything that is wrong before you generate.`,
+                  )}
             </p>
           ) : null}
         </div>
@@ -493,9 +639,9 @@ export function GenerateImagePanel({
           ) : null}
           {options.length > 1 || choice.provider !== "lovable" ? (
             <label className="flex items-center gap-2 text-xs text-text-secondary">
-              Leverandør og modell
+              {L("Leverandør og modell", "Provider and model")}
               <select
-                aria-label="Leverandør og modell"
+                aria-label={L("Leverandør og modell", "Provider and model")}
                 value={`${choice.provider}|${choice.provider === "lovable" ? "" : choice.model}`}
                 disabled={!editable || running || writing}
                 onChange={(e) => {
@@ -524,8 +670,10 @@ export function GenerateImagePanel({
           IMAGE_PURPOSE_FOR_KIND[asset.kind] === "cutout" &&
           !chosenModel.transparent ? (
             <p className="text-[11px] text-status-uncertain">
-              Denne modellen kan ikke lage gjennomsiktig bakgrunn. Bruk «Frilegg bildet» etterpå,
-              eller velg en modell merket «frilagt».
+              {L(
+                "Denne modellen kan ikke lage gjennomsiktig bakgrunn. Bruk «Frilegg bildet» etterpå, eller velg en modell merket «frilagt».",
+                "This model cannot make a transparent background. Use “Cut out image” afterwards, or choose a model marked “cut out”.",
+              )}
             </p>
           ) : null}
           {reference ? (
@@ -539,7 +687,10 @@ export function GenerateImagePanel({
                 }}
                 disabled={!editable || running || writing}
               />
-              Bruk dagens bilde (v{reference.number}) som forbilde
+              {L(
+                `Bruk dagens bilde (v${reference.number}) som forbilde`,
+                `Use the current image (v${reference.number}) as reference`,
+              )}
             </label>
           ) : null}
           {styleAvailable > 0 ? (
@@ -553,7 +704,10 @@ export function GenerateImagePanel({
                 }}
                 disabled={!editable || running || writing}
               />
-              Send filmens godkjente bilder med som stilforbilder
+              {L(
+                "Send filmens godkjente bilder med som stilforbilder",
+                "Send the film's approved images along as style references",
+              )}
             </label>
           ) : null}
           {originals.size > 0 ? (
@@ -567,18 +721,22 @@ export function GenerateImagePanel({
                 }}
                 disabled={!editable || running || writing}
               />
-              Send forbildene i full størrelse ({originals.size}{" "}
-              {originals.size === 1 ? "original" : "originaler"}) – for karakterkort og detaljer
+              {L(
+                `Send forbildene i full størrelse (${originals.size} ${originals.size === 1 ? "original" : "originaler"}) – for karakterkort og detaljer`,
+                `Send the reference images at full size (${originals.size} ${originals.size === 1 ? "original" : "originals"}) – for character sheets and details`,
+              )}
             </label>
           ) : null}
           {attached.length ? (
             <div className="text-[11px] text-text-tertiary">
-              Sendes med til bildemodellen:
+              {L("Sendes med til bildemodellen:", "Sent to the image model:")}
               <ol className="ml-4 list-decimal">
                 {attached.map((a) => (
                   <li key={a.versionId}>
                     {a.label}
-                    {a.role === "identity" ? " – utseendet beholdes" : " – bare stilen"}
+                    {a.role === "identity"
+                      ? L(" – utseendet beholdes", " – the appearance is kept")
+                      : L(" – bare stilen", " – style only")}
                   </li>
                 ))}
               </ol>
@@ -586,9 +744,9 @@ export function GenerateImagePanel({
           ) : null}
           {sizes.sizes.length > 1 ? (
             <label className="flex items-center gap-1.5 text-xs text-text-secondary">
-              Bildestørrelse
+              {L("Bildestørrelse", "Image size")}
               <select
-                aria-label="Bildestørrelse"
+                aria-label={L("Bildestørrelse", "Image size")}
                 value={size ?? ""}
                 disabled={!editable || running || writing}
                 onChange={(e) => {
@@ -609,17 +767,19 @@ export function GenerateImagePanel({
             </label>
           ) : sizes.standard ? (
             <p className="text-[11px] text-text-tertiary">
-              Bildestørrelse: {IMAGE_SIZE_LABEL[sizes.standard]} (modellens faste størrelse)
+              {L("Bildestørrelse:", "Image size:")} {IMAGE_SIZE_LABEL[sizes.standard]}{" "}
+              {L("(modellens faste størrelse)", "(the model's fixed size)")}
             </p>
           ) : chosenModel?.resolution ? (
             <p className="text-[11px] text-text-tertiary">
-              Bildestørrelse: {chosenModel.resolution} (modellens faste størrelse)
+              {L("Bildestørrelse:", "Image size:")} {chosenModel.resolution}{" "}
+              {L("(modellens faste størrelse)", "(the model's fixed size)")}
             </p>
           ) : null}
           <label className="flex items-center gap-1.5 text-xs text-text-secondary">
-            Kandidater
+            {L("Kandidater", "Candidates")}
             <select
-              aria-label="Antall kandidater"
+              aria-label={L("Antall kandidater", "Number of candidates")}
               value={candidates}
               disabled={!editable || running || writing}
               onChange={(e) => {
@@ -636,7 +796,10 @@ export function GenerateImagePanel({
             </select>
             {candidates > 1 ? (
               <span className="text-text-tertiary">
-                {candidates} bilder, hvert som egen versjon – koster {candidates} ganger så mye
+                {L(
+                  `${candidates} bilder, hvert som egen versjon – koster ${candidates} ganger så mye`,
+                  `${candidates} images, each as its own version – costs ${candidates} times as much`,
+                )}
               </span>
             ) : null}
           </label>
@@ -644,36 +807,51 @@ export function GenerateImagePanel({
             <div
               ref={confirmRef}
               role="alertdialog"
-              aria-label="Bekreft generering"
+              aria-label={L("Bekreft generering", "Confirm generation")}
               // Bekreftelsen står alltid synlig nederst i dialogen («Ja, generer» havnet under bretten)
               className="sticky bottom-0 z-10 flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-2 p-2 shadow-[0_-8px_16px_rgba(0,0,0,0.25)]"
             >
               <p className="text-xs text-text-primary">
                 {choice.provider === "lovable" ? (
                   <>
-                    Dette bruker kreditter i Lovable-arbeidsområdet (
-                    {candidates > 1 ? `${candidates} bilder` : "ett bilde"}
+                    {L(
+                      "Dette bruker kreditter i Lovable-arbeidsområdet (",
+                      "This uses credits in the Lovable workspace (",
+                    )}
+                    {candidates > 1
+                      ? L(`${candidates} bilder`, `${candidates} images`)
+                      : L("ett bilde", "one image")}
                     {usage?.nextCost !== null && usage?.nextCost !== undefined
-                      ? `, anslått ${formatCredits(usage.nextCost * candidates)} – et anslag`
-                      : ", prisen er ukjent"}
+                      ? L(
+                          `, anslått ${formatCredits(usage.nextCost * candidates)} – et anslag`,
+                          `, estimated at ${formatCredits(usage.nextCost * candidates)} – an estimate`,
+                        )
+                      : L(", prisen er ukjent", ", the price is unknown")}
                     ).
                   </>
                 ) : (
                   <>
-                    Dette belastes {providerInfo(choice.provider)?.name}-kontoen til prosjektets
-                    eier ({candidates > 1 ? `${candidates} bilder` : "ett bilde"}, anslått{" "}
-                    {costUsd !== null ? formatUsd(costUsd * candidates) : "ukjent pris"} – et
-                    anslag).
+                    {L("Dette belastes", "This is charged to the")}{" "}
+                    {providerInfo(choice.provider)?.name}
+                    {L("-kontoen til prosjektets eier (", " account of the project's owner (")}
+                    {candidates > 1
+                      ? L(`${candidates} bilder`, `${candidates} images`)
+                      : L("ett bilde", "one image")}
+                    {L(", anslått", ", estimated at")}{" "}
+                    {costUsd !== null
+                      ? formatUsd(costUsd * candidates)
+                      : L("ukjent pris", "unknown price")}{" "}
+                    {L("– et anslag).", "– an estimate).")}
                   </>
                 )}{" "}
-                Vil du generere nå?
+                {L("Vil du generere nå?", "Do you want to generate now?")}
               </p>
               <CostLines
                 lines={
                   chosenModel && providerInfo(choice.provider)
                     ? costBreakdown(providerInfo(choice.provider)!, chosenModel, {
                         candidates,
-                        targetsLabel: "bilder",
+                        targetsLabel: L("bilder", "images"),
                         total:
                           choice.provider === "lovable"
                             ? usage?.nextCost !== null && usage?.nextCost !== undefined
@@ -684,31 +862,43 @@ export function GenerateImagePanel({
                               : null,
                       })
                     : [
-                        { label: "Modell", value: "Innebygd bildemodell (Lovable AI)" },
                         {
-                          label: "Antall",
-                          value: candidates > 1 ? `${candidates} bilder` : "1 bilde",
+                          label: L("Modell", "Model"),
+                          value: L(
+                            "Innebygd bildemodell (Lovable AI)",
+                            "Built-in image model (Lovable AI)",
+                          ),
                         },
                         {
-                          label: "Ekstrarunder",
-                          value: "ingen automatiske – nye forsøk startes bare av deg",
+                          label: L("Antall", "Number"),
+                          value:
+                            candidates > 1
+                              ? L(`${candidates} bilder`, `${candidates} images`)
+                              : L("1 bilde", "1 image"),
                         },
                         {
-                          label: "Samlet anslag",
+                          label: L("Ekstrarunder", "Extra rounds"),
+                          value: L(
+                            "ingen automatiske – nye forsøk startes bare av deg",
+                            "none automatic – new attempts are only started by you",
+                          ),
+                        },
+                        {
+                          label: L("Samlet anslag", "Estimated total"),
                           value:
                             usage?.nextCost !== null && usage?.nextCost !== undefined
                               ? formatCredits(usage.nextCost * candidates)
-                              : "ukjent pris",
+                              : L("ukjent pris", "unknown price"),
                         },
                       ]
                 }
               />
               <div className="flex gap-2">
                 <Button size="sm" onClick={() => void run()} disabled={!canRun}>
-                  <AiGlyph /> Ja, generer
+                  <AiGlyph /> {L("Ja, generer", "Yes, generate")}
                 </Button>
                 <Button size="sm" variant="ghost" onClick={() => setConfirm(false)}>
-                  Avbryt
+                  {L("Avbryt", "Cancel")}
                 </Button>
               </div>
             </div>
@@ -721,7 +911,12 @@ export function GenerateImagePanel({
               className="sticky bottom-0 z-10 self-start shadow-[0_-4px_12px_rgba(0,0,0,0.2)]"
             >
               {running ? <Loader2 className="animate-spin" /> : <AiGlyph />}
-              {running ? "Genererer … (kan ta opptil ett minutt)" : "Generer …"}
+              {running
+                ? L(
+                    "Genererer … (kan ta opptil ett minutt)",
+                    "Generating … (may take up to a minute)",
+                  )
+                : L("Generer …", "Generate …")}
             </Button>
           )}
           {usage ? (
@@ -731,10 +926,19 @@ export function GenerateImagePanel({
               }
             >
               {usage.limit !== null
-                ? `Denne måneden: ${usage.used} av ${usage.limit} genereringer i prosjektets budsjett.`
-                : `Denne måneden: ${usage.used} genereringer (ingen egen ramme – faste grenser gjelder).`}
+                ? L(
+                    `Denne måneden: ${usage.used} av ${usage.limit} genereringer i prosjektets budsjett.`,
+                    `This month: ${usage.used} of ${usage.limit} generations in the project's budget.`,
+                  )
+                : L(
+                    `Denne måneden: ${usage.used} genereringer (ingen egen ramme – faste grenser gjelder).`,
+                    `This month: ${usage.used} generations (no separate limit – fixed limits apply).`,
+                  )}
               {overBudget
-                ? " Budsjettet er brukt opp; eieren kan endre det på prosjektoversikten."
+                ? L(
+                    " Budsjettet er brukt opp; eieren kan endre det på prosjektoversikten.",
+                    " The budget is used up; the owner can change it on the project overview.",
+                  )
                 : ""}
             </p>
           ) : null}
@@ -761,6 +965,9 @@ export function GenerateImagePanel({
 export function lostConnection(message: string | undefined): string {
   const m = (message ?? "").trim();
   if (!m || /internal server error|failed to fetch|network|timeout|50[234]|load failed/i.test(m))
-    return "Forbindelsen til serveren brøt mens bildet ble laget. Tjenesten kan likevel ha laget – og tatt betalt for – bildet. Se AI-jobbene før du prøver igjen, og velg gjerne mindre bildestørrelse eller færre forbildebilder.";
-  return m;
+    return L(
+      "Forbindelsen til serveren brøt mens bildet ble laget. Tjenesten kan likevel ha laget – og tatt betalt for – bildet. Se AI-jobbene før du prøver igjen, og velg gjerne mindre bildestørrelse eller færre forbildebilder.",
+      "The connection to the server broke while the image was being made. The service may still have made – and charged for – the image. Check the AI jobs before you try again, and consider a smaller image size or fewer reference images.",
+    );
+  return tm(m);
 }

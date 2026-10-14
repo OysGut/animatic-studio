@@ -6,7 +6,7 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { isUuid } from "@/core";
+import { L, isUuid } from "@/core";
 import { checkSchema, type AnyClient } from "./project-rows";
 import { removeFiles } from "./project-admin.functions";
 
@@ -27,7 +27,7 @@ export type PurgeResult =
   | { readonly ok: false; readonly message: string };
 
 function validate(d: unknown): PurgeInput {
-  if (!d || typeof d !== "object") throw new Error("Ugyldig forespørsel");
+  if (!d || typeof d !== "object") throw new Error(L("Ugyldig forespørsel", "Invalid request"));
   const x = d as Record<string, unknown>;
   const ids = (v: unknown) =>
     Array.isArray(v) && v.length <= 500 && v.every((i) => typeof i === "string" && isUuid(i))
@@ -36,9 +36,9 @@ function validate(d: unknown): PurgeInput {
   const assetIds = ids(x["assetIds"] ?? []);
   const versionIds = ids(x["versionIds"] ?? []);
   if (typeof x["projectId"] !== "string" || !isUuid(x["projectId"]))
-    throw new Error("Ugyldig prosjekt");
+    throw new Error(L("Ugyldig prosjekt", "Invalid project"));
   if (!assetIds || !versionIds || assetIds.length + versionIds.length === 0)
-    throw new Error("Velg hva som skal slettes");
+    throw new Error(L("Velg hva som skal slettes", "Choose what to delete"));
   return { projectId: x["projectId"], assetIds, versionIds };
 }
 
@@ -55,15 +55,23 @@ export const purgeRemoved = createServerFn({ method: "POST" })
       .is("removed_at", null)
       .maybeSingle();
     if ((member as { role?: string } | null)?.role !== "owner")
-      return { ok: false, message: "Bare prosjektets eier kan slette for godt." };
+      return {
+        ok: false,
+        message: L(
+          "Bare prosjektets eier kan slette for godt.",
+          "Only the project owner can delete permanently.",
+        ),
+      };
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const admin = supabaseAdmin as unknown as AnyClient;
     const schema = await checkSchema(admin);
     if (schema.kind === "missing" || schema.version < 29)
       return {
         ok: false,
-        message:
+        message: L(
           "Databasen er ikke oppdatert for slettede objekter. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0029).",
+          "The database is not up to date for deleted items. Paste the message into LOVABLE_SYNC.md in Lovable (migration 0029).",
+        ),
       };
     const { data: res, error } = await admin.rpc("purge_removed_assets", {
       p_project: data.projectId,
@@ -72,7 +80,7 @@ export const purgeRemoved = createServerFn({ method: "POST" })
       p_versions: data.versionIds,
     });
     if (error) {
-      const m = error.message ?? "Ukjent feil";
+      const m = error.message ?? L("Ukjent feil", "Unknown error");
       return { ok: false, message: m.length > 300 ? `${m.slice(0, 300)} …` : m };
     }
     const r = res as { paths?: string[]; assets?: number; versions?: number };

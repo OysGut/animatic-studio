@@ -60,6 +60,7 @@ Designsystemet er en **teknisk anbefaling**. Endringer i mandatets designkrav (1
 - [ ] Skjermbilder tatt og *sett på* i alle tre bredder og relevante tilstander.
 
 ## 7. Typiske feil som må unngås
+- Brukervendt tekst bare på ett språk. Tjenesten er på norsk og engelsk (DEC-0081, REQ-0629/0630): hver ny eller endret tekst – også verktøytips (title), aria-label og feilmeldinger – skrives på begge språk i samme endring.
 - Generisk AI-dashboard: kortgrid, gradienter, glød, «sparkles», store tomme heltebilder (se ANTI_PATTERNS).
 - Å følge Anthropics `frontend-design`-råd om å «ta estetisk risiko» per side. Vi trenger **konsistens** på tvers av hele verktøyet; den skillen er bare referanse (SKILLS_ASSESSMENT §2.1), og denne skillen har forrang.
 - Å installere/kjøre `shadcn`-skillen eller `npx shadcn@latest` automatisk (upinnet) – bruk prinsippene, ikke auto-kjøringen (SKILLS_ASSESSMENT §2.17).

@@ -1,4 +1,5 @@
 /** Historikken for «Tilbake til …» (DEC-0063): rene funksjoner, testet i tests/unit/back-stack.test.ts. */
+import { L } from "@/core";
 
 export interface Entry {
   readonly path: string;
@@ -25,17 +26,17 @@ export function recordVisit(
 
 /** Navnet på flaten adressen viser. */
 export function pageLabel(path: string): string {
-  if (path === "/" || path === "") return "Prosjekter";
-  if (path.startsWith("/invitasjon")) return "Invitasjon";
+  if (path === "/" || path === "") return L("Prosjekter", "Projects");
+  if (path.startsWith("/invitasjon")) return L("Invitasjon", "Invitation");
   const m = /^\/prosjekt\/[^/]+(?:\/([^/]+))?/.exec(path);
-  if (!m) return "Forrige side";
+  if (!m) return L("Forrige side", "Previous page");
   return (
     {
-      manus: "Manus",
-      bibliotek: "Ressursbibliotek",
-      scene: "Sceneeditor",
-      montering: "Montering",
-      utgivelse: "Utgivelse",
-    }[m[1] ?? ""] ?? "Prosjektoversikt"
+      manus: L("Manus", "Script"),
+      bibliotek: L("Ressursbibliotek", "Asset library"),
+      scene: L("Sceneeditor", "Scene editor"),
+      montering: L("Montering", "Assembly"),
+      utgivelse: L("Utgivelse", "Release"),
+    }[m[1] ?? ""] ?? L("Prosjektoversikt", "Project overview")
   );
 }

@@ -4,7 +4,7 @@
  */
 import { Redo2, Undo2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { COMPOSITION_FORMATS, FRAME_RATES, sameFps, type ProjectState } from "@/core";
+import { L, COMPOSITION_FORMATS, FRAME_RATES, sameFps, type ProjectState } from "@/core";
 import { useCommands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
 
@@ -53,17 +53,27 @@ export function ProjectFormat({
 
   function apply() {
     if (!validSize(width) || !validSize(height)) {
-      setErr("Bredde og høyde må være hele tall mellom 16 og 16384.");
+      setErr(
+        L(
+          "Bredde og høyde må være hele tall mellom 16 og 16384.",
+          "Width and height must be whole numbers between 16 and 16384.",
+        ),
+      );
       return;
     }
-    setErr(cmds.run({ type: "SetProjectFormat", width, height, fps }, "Endre prosjektets format"));
+    setErr(
+      cmds.run(
+        { type: "SetProjectFormat", width, height, fps },
+        L("Endre prosjektets format", "Change the project format"),
+      ),
+    );
   }
 
   return (
     <section aria-labelledby="format-title" className="mt-8">
       <div className="mb-2 flex items-center gap-2">
         <h2 id="format-title" className="text-base font-semibold text-text-primary">
-          Bildeformat og bildefrekvens
+          {L("Bildeformat og bildefrekvens", "Frame size and frame rate")}
         </h2>
         {editable ? (
           <span className="ml-auto flex">
@@ -72,8 +82,16 @@ export function ProjectFormat({
               variant="ghost"
               onClick={cmds.undo}
               disabled={!cmds.canUndo}
-              aria-label={cmds.undoLabel ? `Angre: ${cmds.undoLabel}` : "Angre"}
-              title={cmds.undoLabel ? `Angre: ${cmds.undoLabel}` : "Angre"}
+              aria-label={
+                cmds.undoLabel
+                  ? L(`Angre: ${cmds.undoLabel}`, `Undo: ${cmds.undoLabel}`)
+                  : L("Angre", "Undo")
+              }
+              title={
+                cmds.undoLabel
+                  ? L(`Angre: ${cmds.undoLabel}`, `Undo: ${cmds.undoLabel}`)
+                  : L("Angre", "Undo")
+              }
             >
               <Undo2 />
             </Button>
@@ -82,8 +100,16 @@ export function ProjectFormat({
               variant="ghost"
               onClick={cmds.redo}
               disabled={!cmds.canRedo}
-              aria-label={cmds.redoLabel ? `Gjør om: ${cmds.redoLabel}` : "Gjør om"}
-              title={cmds.redoLabel ? `Gjør om: ${cmds.redoLabel}` : "Gjør om"}
+              aria-label={
+                cmds.redoLabel
+                  ? L(`Gjør om: ${cmds.redoLabel}`, `Redo: ${cmds.redoLabel}`)
+                  : L("Gjør om", "Redo")
+              }
+              title={
+                cmds.redoLabel
+                  ? L(`Gjør om: ${cmds.redoLabel}`, `Redo: ${cmds.redoLabel}`)
+                  : L("Gjør om", "Redo")
+              }
             >
               <Redo2 />
             </Button>
@@ -92,11 +118,14 @@ export function ProjectFormat({
       </div>
       <div className="flex flex-col gap-3 border border-border bg-surface-1 p-4">
         <p className="text-[13px] text-text-secondary">
-          Gjelder hele prosjektet: alle scener i sceneeditoren, avspilling og eksport.
+          {L(
+            "Gjelder hele prosjektet: alle scener i sceneeditoren, avspilling og eksport.",
+            "Applies to the whole project: all scenes in the scene editor, playback and export.",
+          )}
         </p>
         <div className="flex flex-wrap items-end gap-3">
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            Bildeformat
+            {L("Bildeformat", "Frame size")}
             <select
               className={ctl}
               disabled={!editable}
@@ -113,11 +142,11 @@ export function ProjectFormat({
                   {f.label}
                 </option>
               ))}
-              <option value="custom">Egendefinert</option>
+              <option value="custom">{L("Egendefinert", "Custom")}</option>
             </select>
           </label>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            Bredde (px)
+            {L("Bredde (px)", "Width (px)")}
             <input
               type="number"
               className={ctl + " w-24"}
@@ -129,7 +158,7 @@ export function ProjectFormat({
             />
           </label>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            Høyde (px)
+            {L("Høyde (px)", "Height (px)")}
             <input
               type="number"
               className={ctl + " w-24"}
@@ -141,7 +170,7 @@ export function ProjectFormat({
             />
           </label>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            Bilder per sekund
+            {L("Bilder per sekund", "Frames per second")}
             <select
               className={ctl}
               disabled={!editable}
@@ -157,15 +186,19 @@ export function ProjectFormat({
           </label>
           {editable ? (
             <Button onClick={apply} disabled={!changed}>
-              Bruk
+              {L("Bruk", "Apply")}
             </Button>
           ) : null}
         </div>
         {changed && scenes > 0 ? (
           <p className="text-xs text-status-uncertain">
-            {scenes === 1 ? "Én 2D-scene" : `${scenes} 2D-scener`} blir tilpasset: plassering og
-            kamera skaleres slik at høyden i bildet beholdes og midten står fast, og nøkkelbilder og
-            kamerautsnitt regnes om til ny bildefrekvens. Kan angres.
+            {scenes === 1
+              ? L("Én 2D-scene", "One 2D scene")
+              : L(`${scenes} 2D-scener`, `${scenes} 2D scenes`)}{" "}
+            {L(
+              "blir tilpasset: plassering og kamera skaleres slik at høyden i bildet beholdes og midten står fast, og nøkkelbilder og kamerautsnitt regnes om til ny bildefrekvens. Kan angres.",
+              "are adjusted: position and camera are scaled so the frame height is kept and the centre stays fixed, and keyframes and camera shots are recalculated for the new frame rate. Can be undone.",
+            )}
           </p>
         ) : null}
         {err ? (

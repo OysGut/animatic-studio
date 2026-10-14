@@ -7,6 +7,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
+  L,
   type AssetMedia,
   SPEECH_LANGUAGE,
   SPEECH_MODEL,
@@ -54,17 +55,20 @@ export const listVoices = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((d: unknown) => {
     const x = (d ?? {}) as Record<string, unknown>;
-    if (!isId(x["projectId"])) throw new Error("Ugyldig prosjekt");
+    if (!isId(x["projectId"])) throw new Error(L("Ugyldig prosjekt", "Invalid project"));
     return { projectId: x["projectId"] };
   })
   .handler(async ({ data, context }): Promise<VoicesResult> => {
     const a = await editorAccess(context.supabase, data.projectId, context.userId);
-    if (!a) return { ok: false, message: "Du har ikke tilgang." };
+    if (!a) return { ok: false, message: L("Du har ikke tilgang.", "You do not have access.") };
     const key = await a.gate.projectKey(a.db, data.projectId, "elevenlabs", context.userId);
     if (!key)
       return {
         ok: false,
-        message: "Ingen av prosjektets eiere har koblet til ElevenLabs (AI-leverandører).",
+        message: L(
+          "Ingen av prosjektets eiere har koblet til ElevenLabs (AI-leverandører).",
+          "None of the project's owners has connected ElevenLabs (AI providers).",
+        ),
       };
     const { decryptKey } = await import("./key-vault.server");
     const { ADAPTERS, scrubSecret } = await import("./providers.server");
@@ -79,7 +83,10 @@ export const listVoices = createServerFn({ method: "POST" })
     } catch (e) {
       return {
         ok: false,
-        message: `Stemmene kunne ikke hentes: ${scrubSecret((e as Error).message, secret).slice(0, 300)}`,
+        message: L(
+          `Stemmene kunne ikke hentes: ${scrubSecret((e as Error).message, secret).slice(0, 300)}`,
+          `The voices could not be loaded: ${scrubSecret((e as Error).message, secret).slice(0, 300)}`,
+        ),
       };
     }
   });
@@ -99,22 +106,33 @@ export const generateSpeech = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((d: unknown) => {
     const x = (d ?? {}) as Record<string, unknown>;
-    if (!isId(x["projectId"]) || !isId(x["blockId"])) throw new Error("Ugyldig replikk");
+    if (!isId(x["projectId"]) || !isId(x["blockId"]))
+      throw new Error(L("Ugyldig replikk", "Invalid line"));
     if (typeof x["voiceId"] !== "string" || !/^[A-Za-z0-9_-]{1,64}$/.test(x["voiceId"]))
-      throw new Error("Ugyldig stemme");
-    if (x["approved"] !== true) throw new Error("Genereringen må bekreftes");
+      throw new Error(L("Ugyldig stemme", "Invalid voice"));
+    if (x["approved"] !== true)
+      throw new Error(L("Genereringen må bekreftes", "The generation must be confirmed"));
     return { projectId: x["projectId"], blockId: x["blockId"], voiceId: x["voiceId"] };
   })
   .handler(async ({ data, context }): Promise<SpeechResult> => {
     const a = await editorAccess(context.supabase, data.projectId, context.userId);
-    if (!a) return { ok: false, message: "Du har ikke tilgang til å generere i dette prosjektet." };
+    if (!a)
+      return {
+        ok: false,
+        message: L(
+          "Du har ikke tilgang til å generere i dette prosjektet.",
+          "You do not have access to generate in this project.",
+        ),
+      };
     const { gate, db } = a;
     const schema = await checkSchema(db);
     if (schema.kind === "missing" || schema.version < 24)
       return {
         ok: false,
-        message:
+        message: L(
           "Databasen er ikke oppdatert for AI-tale. Lim inn meldingen i LOVABLE_SYNC.md i Lovable.",
+          "The database is not updated for AI speech. Paste the message in LOVABLE_SYNC.md into Lovable.",
+        ),
       };
     const { data: proj } = await db
       .from("projects")
@@ -122,7 +140,7 @@ export const generateSpeech = createServerFn({ method: "POST" })
       .eq("id", data.projectId)
       .maybeSingle();
     if (!proj || (proj as { deleted_at?: string | null }).deleted_at)
-      return { ok: false, message: "Prosjektet er slettet." };
+      return { ok: false, message: L("Prosjektet er slettet.", "The project has been deleted.") };
     // Teksten fra manuset (ikke fra nettleseren)
     const { data: block } = await db
       .from("script_blocks")
@@ -132,17 +150,29 @@ export const generateSpeech = createServerFn({ method: "POST" })
       .maybeSingle();
     const b = block as { kind: string; text: string; removed: boolean } | null;
     if (!b || b.removed || b.kind !== "dialogue")
-      return { ok: false, message: "Bare replikker kan leses inn." };
+      return {
+        ok: false,
+        message: L("Bare replikker kan leses inn.", "Only lines can be read aloud."),
+      };
     const text = b.text.replace(/\s+/g, " ").trim();
     const m = providerModel("elevenlabs", SPEECH_MODEL);
-    if (!text || !m) return { ok: false, message: "Replikken er tom." };
+    if (!text || !m) return { ok: false, message: L("Replikken er tom.", "The line is empty.") };
     if (text.length > (m.maxPromptChars ?? 5000))
-      return { ok: false, message: "Replikken er for lang til å leses inn i én del." };
+      return {
+        ok: false,
+        message: L(
+          "Replikken er for lang til å leses inn i én del.",
+          "The line is too long to be read aloud in one part.",
+        ),
+      };
     const key = await gate.projectKey(db, data.projectId, "elevenlabs", context.userId);
     if (!key)
       return {
         ok: false,
-        message: "Ingen av prosjektets eiere har koblet til ElevenLabs (AI-leverandører).",
+        message: L(
+          "Ingen av prosjektets eiere har koblet til ElevenLabs (AI-leverandører).",
+          "None of the project's owners has connected ElevenLabs (AI providers).",
+        ),
       };
     const cost = estimateCostUsd("elevenlabs", SPEECH_MODEL, { characters: text.length });
     const hourAgo = new Date(Date.now() - 3600_000).toISOString();
@@ -154,7 +184,10 @@ export const generateSpeech = createServerFn({ method: "POST" })
         .eq("kind", "sound")
         .gte("created_at", hourAgo);
       if ((count ?? 0) - extra >= MAX_SPEECH_JOBS_PER_USER_PER_HOUR)
-        return `Grensen på ${MAX_SPEECH_JOBS_PER_USER_PER_HOUR} lyder i timen er nådd.`;
+        return L(
+          `Grensen på ${MAX_SPEECH_JOBS_PER_USER_PER_HOUR} lyder i timen er nådd.`,
+          `The limit of ${MAX_SPEECH_JOBS_PER_USER_PER_HOUR} sounds per hour has been reached.`,
+        );
       const budget = await gate.overProjectBudget(
         db,
         data.projectId,
@@ -190,7 +223,14 @@ export const generateSpeech = createServerFn({ method: "POST" })
         ).buildTrace(db, data.projectId, { modelParams: { voiceId: data.voiceId } }),
       },
     } as never);
-    if (logErr) return { ok: false, message: `Jobben kunne ikke logges: ${logErr.message}` };
+    if (logErr)
+      return {
+        ok: false,
+        message: L(
+          `Jobben kunne ikke logges: ${logErr.message}`,
+          `The job could not be logged: ${logErr.message}`,
+        ),
+      };
     const after = await limits(1);
     if (after) {
       await db.from("generation_jobs").delete().eq("id", jobId).eq("status", "running");
@@ -219,7 +259,8 @@ export const generateSpeech = createServerFn({ method: "POST" })
         text,
         language: SPEECH_LANGUAGE,
       });
-      if (!out.bytes.byteLength) throw new Error("Tjenesten svarte uten lyd.");
+      if (!out.bytes.byteLength)
+        throw new Error(L("Tjenesten svarte uten lyd.", "The service replied without sound."));
       const assetId = newId<"asset">();
       const versionId = newId<"asset_version">();
       const path = `${data.projectId}/${assetId}/${versionId}/ai-tale.mp3`;
@@ -229,7 +270,13 @@ export const generateSpeech = createServerFn({ method: "POST" })
           contentType: "audio/mpeg",
           upsert: false,
         });
-      if (upErr) throw new Error(`Lyden kunne ikke lagres: ${upErr.message}`);
+      if (upErr)
+        throw new Error(
+          L(
+            `Lyden kunne ikke lagres: ${upErr.message}`,
+            `The sound could not be saved: ${upErr.message}`,
+          ),
+        );
       await finish({ status: "done", result_path: path });
       return {
         ok: true,
@@ -247,9 +294,18 @@ export const generateSpeech = createServerFn({ method: "POST" })
         },
       };
     } catch (e) {
-      const message = scrubSecret((e as Error).message || "Ukjent feil", secret).slice(0, 2000);
+      const message = scrubSecret(
+        (e as Error).message || L("Ukjent feil", "Unknown error"),
+        secret,
+      ).slice(0, 2000);
       const rejected = e instanceof ProviderError && e.status >= 400 && e.status < 500;
       await finish({ status: charged && !rejected ? "lost" : "failed", error: message });
-      return { ok: false, message: `Replikken ble ikke lest inn: ${message}` };
+      return {
+        ok: false,
+        message: L(
+          `Replikken ble ikke lest inn: ${message}`,
+          `The line could not be read aloud: ${message}`,
+        ),
+      };
     }
   });

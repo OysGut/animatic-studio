@@ -7,6 +7,8 @@
 import { Pause, Play } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
 import {
+  L,
+  locale,
   clipFrameToComposition,
   compositionFrameInClip,
   filmAudio,
@@ -123,13 +125,13 @@ export function NeighbourScenes({
   const showFilm = play.playing || (touched.current && compFrame === null);
   const where = !inCurrent
     ? filmFrame < current.startFrame
-      ? "Forrige scene"
-      : "Neste scene"
+      ? L("Forrige scene", "Previous scene")
+      : L("Neste scene", "Next scene")
     : compFrame === null
-      ? "Denne scenen (importert film)"
+      ? L("Denne scenen (importert film)", "This scene (imported film)")
       : null;
   const secs = (f: number) =>
-    `${framesToSeconds(f, fps).toLocaleString("nb-NO", { maximumFractionDigits: 1, minimumFractionDigits: 1 })} s`;
+    `${framesToSeconds(f, fps).toLocaleString(locale(), { maximumFractionDigits: 1, minimumFractionDigits: 1 })} s`;
 
   return (
     <>
@@ -137,7 +139,7 @@ export function NeighbourScenes({
         <div
           className="absolute inset-x-0 top-0 z-30 flex flex-col bg-background p-3"
           style={{ bottom: 48 }}
-          aria-label="Naboscener som film"
+          aria-label={L("Naboscener som film", "Neighbouring scenes as film")}
         >
           <FilmViewer
             state={state}
@@ -149,20 +151,23 @@ export function NeighbourScenes({
           />
           {where ? (
             <p className="absolute left-4 top-4 rounded-sm bg-surface-2/90 px-2 py-1 text-xs text-text-secondary">
-              {where} · bare visning
+              {where} · {L("bare visning", "view only")}
             </p>
           ) : null}
         </div>
       ) : null}
       <div
         className="flex h-12 shrink-0 items-center gap-2 border-t border-border bg-surface-1 px-2"
-        aria-label="Naboscener"
+        aria-label={L("Naboscener", "Neighbouring scenes")}
       >
         <Button
           size="sm"
           variant="secondary"
-          aria-label={play.playing ? "Pause" : "Spill i sammenheng"}
-          title="Spill forrige scene, denne og neste i sammenheng"
+          aria-label={play.playing ? "Pause" : L("Spill i sammenheng", "Play in sequence")}
+          title={L(
+            "Spill forrige scene, denne og neste i sammenheng",
+            "Play the previous scene, this one and the next in sequence",
+          )}
           onClick={() => {
             touched.current = true;
             if (!play.playing) onPauseScene();
@@ -190,6 +195,7 @@ export function NeighbourScenes({
               <div
                 key={c.occurrenceId}
                 className={
+                  // i18n-ignore: CSS-klasser
                   "flex h-full min-w-0 items-center border-r border-border px-1.5 text-[11px] last:border-r-0 " +
                   (mine
                     ? "bg-accent-selection text-text-primary"
@@ -199,7 +205,11 @@ export function NeighbourScenes({
                 title={`${c.productionNumber ?? ""} ${formatHeading(c.heading)}`}
               >
                 <span className="truncate">
-                  {mine ? "Denne: " : c.startFrame < current.startFrame ? "Forrige: " : "Neste: "}
+                  {mine
+                    ? L("Denne: ", "This: ")
+                    : c.startFrame < current.startFrame
+                      ? L("Forrige: ", "Previous: ")
+                      : L("Neste: ", "Next: ")}
                   {c.productionNumber ? `${c.productionNumber} ` : ""}
                   {formatHeading(c.heading)}
                 </span>

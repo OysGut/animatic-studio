@@ -9,7 +9,7 @@
  *
  * Alt skjer i nettleseren; ingenting sendes før brukeren laster opp.
  */
-import { ORIGINAL_NOTE_MARK, scaledToFit } from "@/core";
+import { L, ORIGINAL_NOTE_MARK, ORIGINAL_NOTE_MARK_EN, scaledToFit } from "@/core";
 
 export const TIFF_TYPES = ["image/tiff", "image/tif", "image/x-tiff"];
 
@@ -34,7 +34,10 @@ async function canvasToFile(
       ? await canvas.convertToBlob({ type, ...(quality ? { quality } : {}) })
       : await new Promise<Blob>((ok, fail) =>
           (canvas as HTMLCanvasElement).toBlob(
-            (b) => (b ? ok(b) : fail(new Error("Bildet kunne ikke lagres."))),
+            (b) =>
+              b
+                ? ok(b)
+                : fail(new Error(L("Bildet kunne ikke lagres.", "The image could not be saved."))),
             type,
             quality,
           ),
@@ -58,21 +61,28 @@ export async function tiffToPng(file: File): Promise<File> {
   try {
     ifds = UTIF.decode(buf);
   } catch {
-    throw new Error("TIFF-filen kunne ikke leses.");
+    throw new Error(L("TIFF-filen kunne ikke leses.", "The TIFF file could not be read."));
   }
   const first = ifds[0];
-  if (!first) throw new Error("TIFF-filen inneholder ikke noe bilde.");
+  if (!first)
+    throw new Error(L("TIFF-filen inneholder ikke noe bilde.", "The TIFF file contains no image."));
   UTIF.decodeImage(buf, first);
   const w = first.width;
   const h = first.height;
-  if (!w || !h) throw new Error("TIFF-filen har ingen størrelse.");
+  if (!w || !h) throw new Error(L("TIFF-filen har ingen størrelse.", "The TIFF file has no size."));
   if (w * h > 400_000_000)
-    throw new Error("TIFF-bildet er for stort til å gjøres om i nettleseren.");
+    throw new Error(
+      L(
+        "TIFF-bildet er for stort til å gjøres om i nettleseren.",
+        "The TIFF image is too large to convert in the browser.",
+      ),
+    );
   const rgba = UTIF.toRGBA8(first);
   const canvas = makeCanvas(w, h);
   const ctx = canvas.getContext("2d") as
     OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D | null;
-  if (!ctx) throw new Error("Nettleseren kan ikke tegne bildet.");
+  if (!ctx)
+    throw new Error(L("Nettleseren kan ikke tegne bildet.", "The browser cannot draw the image."));
   ctx.putImageData(
     new ImageData(
       new Uint8ClampedArray(rgba.buffer as ArrayBuffer, rgba.byteOffset, w * h * 4),
@@ -111,7 +121,10 @@ export async function downscale(
     const canvas = makeCanvas(size.width, size.height);
     const ctx = canvas.getContext("2d") as
       OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D | null;
-    if (!ctx) throw new Error("Nettleseren kan ikke tegne bildet.");
+    if (!ctx)
+      throw new Error(
+        L("Nettleseren kan ikke tegne bildet.", "The browser cannot draw the image."),
+      );
     ctx.drawImage(bmp, 0, 0);
     const type = file.type === "image/jpeg" || file.type === "image/webp" ? file.type : "image/png";
     const ext = type === "image/jpeg" ? "jpg" : type === "image/webp" ? "webp" : "png";
@@ -135,7 +148,9 @@ export interface PreparedImage {
 export async function prepareImage(file: File, maxSide: number | null): Promise<PreparedImage> {
   const tiff = isTiff(file);
   const source = tiff ? await tiffToPng(file) : file;
-  const fromTiff = tiff ? `Gjort om fra TIFF («${file.name}»). ` : "";
+  const fromTiff = tiff
+    ? L(`Gjort om fra TIFF («${file.name}»). `, `Converted from TIFF (“${file.name}”). `)
+    : "";
   const dims = await imageDims(source);
   const target = dims && maxSide ? scaledToFit(dims.width, dims.height, maxSide) : null;
   // Animerte GIF-er skaleres ikke (animasjonen ville gått tapt)
@@ -144,10 +159,13 @@ export async function prepareImage(file: File, maxSide: number | null): Promise<
   const working = await downscale(source, target);
   return {
     working,
-    workingNote: `${fromTiff}Arbeidskopi skalert ned fra ${dims.width} × ${dims.height} til ${target.width} × ${target.height} px for jevn avspilling. Originalen er versjonen før – godkjenn den for å bruke full størrelse.`,
+    workingNote: L(
+      `${fromTiff}Arbeidskopi skalert ned fra ${dims.width} × ${dims.height} til ${target.width} × ${target.height} px for jevn avspilling. Originalen er versjonen før – godkjenn den for å bruke full størrelse.`,
+      `${fromTiff}Working copy scaled down from ${dims.width} × ${dims.height} to ${target.width} × ${target.height} px for smooth playback. The original is the version before – approve it to use full size.`,
+    ),
     original: {
       file: source,
-      note: `${fromTiff}${ORIGINAL_NOTE_MARK} (${dims.width} × ${dims.height} px). Brukes ikke før den godkjennes.`,
+      note: `${fromTiff}${L(ORIGINAL_NOTE_MARK, ORIGINAL_NOTE_MARK_EN)} (${dims.width} × ${dims.height} px). ${L("Brukes ikke før den godkjennes.", "Not used until it is approved.")}`,
     },
   };
 }

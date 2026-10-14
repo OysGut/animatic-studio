@@ -6,10 +6,10 @@
 import { Link } from "@tanstack/react-router";
 import { Clapperboard, Film, Image as ImageIcon, Layers, Library, Mic, Timer } from "lucide-react";
 import { useMemo } from "react";
-import { blockLinks, takeLabel, type ProjectState } from "@/core";
+import { blockLinks, takeLabel, type ProjectState, L, locale } from "@/core";
 
 const fmt = (ms: number) =>
-  `${(ms / 1000).toLocaleString("nb-NO", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} s`;
+  `${(ms / 1000).toLocaleString(locale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 })} s`;
 
 export function BlockLinksSection({
   state,
@@ -41,8 +41,14 @@ export function BlockLinksSection({
   const row = "flex items-center gap-1.5 text-xs text-text-primary";
   const none = "text-[11px] text-text-tertiary";
   return (
-    <div className="flex flex-col gap-2" aria-label="Koblinger for linjen">
-      <Group icon={<Mic className="size-3.5" aria-hidden />} title="Dialogopptak">
+    <div
+      className="flex flex-col gap-2"
+      aria-label={L("Koblinger for linjen", "Links for the line")}
+    >
+      <Group
+        icon={<Mic className="size-3.5" aria-hidden />}
+        title={L("Dialogopptak", "Dialogue recordings")}
+      >
         {links.recordings.length ? (
           links.recordings.map((a) => (
             <li key={a.id} className={row}>
@@ -55,18 +61,26 @@ export function BlockLinksSection({
                 params={{ projectId }}
                 search={{ asset: a.assetId }}
                 className="ml-auto shrink-0 text-text-secondary hover:text-text-primary"
-                title="Åpne lydfilen i biblioteket"
-                aria-label={`Åpne ${a.name} i biblioteket`}
+                title={L("Åpne lydfilen i biblioteket", "Open the audio file in the library")}
+                aria-label={L(`Åpne ${a.name} i biblioteket`, `Open ${a.name} in the library`)}
               >
                 <Library className="size-3.5" aria-hidden />
               </Link>
             </li>
           ))
         ) : (
-          <li className={none}>Ingen – legg lyd på dialogsporet i monteringen</li>
+          <li className={none}>
+            {L(
+              "Ingen – legg lyd på dialogsporet i monteringen",
+              "None – add audio to the dialogue track in the assembly",
+            )}
+          </li>
         )}
       </Group>
-      <Group icon={<Timer className="size-3.5" aria-hidden />} title="Tidspunkt i scenen">
+      <Group
+        icon={<Timer className="size-3.5" aria-hidden />}
+        title={L("Tidspunkt i scenen", "Time in the scene")}
+      >
         {links.times.length ? (
           links.times.map((l) => (
             <li key={l.id} className={row}>
@@ -74,14 +88,22 @@ export function BlockLinksSection({
                 {fmt(l.startMs)}
                 {l.endMs !== null ? ` – ${fmt(l.endMs)}` : ""}
               </span>
-              {montering("Vis")}
+              {montering(L("Vis", "Show"))}
             </li>
           ))
         ) : (
-          <li className={none}>Ingen – bruk «Synk replikker» i monteringen</li>
+          <li className={none}>
+            {L(
+              "Ingen – bruk «Synk replikker» i monteringen",
+              "None – use “Sync lines” in the assembly",
+            )}
+          </li>
         )}
       </Group>
-      <Group icon={<Layers className="size-3.5" aria-hidden />} title="Hendelser i 2D-scenen">
+      <Group
+        icon={<Layers className="size-3.5" aria-hidden />}
+        title={L("Hendelser i 2D-scenen", "Events in the 2D scene")}
+      >
         {links.events.length ? (
           links.events.map((e) => (
             <li key={e.link.id} className={row}>
@@ -95,15 +117,23 @@ export function BlockLinksSection({
                 search={{ scene: occurrenceId }}
                 className="ml-auto shrink-0 text-[11px] text-text-secondary hover:text-text-primary hover:underline"
               >
-                Sceneeditor
+                {L("Sceneeditor", "Scene editor")}
               </Link>
             </li>
           ))
         ) : (
-          <li className={none}>Ingen – koble linjen til et lag i sceneeditoren</li>
+          <li className={none}>
+            {L(
+              "Ingen – koble linjen til et lag i sceneeditoren",
+              "None – link the line to a layer in the scene editor",
+            )}
+          </li>
         )}
       </Group>
-      <Group icon={<Clapperboard className="size-3.5" aria-hidden />} title="Filmklipp">
+      <Group
+        icon={<Clapperboard className="size-3.5" aria-hidden />}
+        title={L("Filmklipp", "Film clips")}
+      >
         {links.films.length ? (
           links.films.map((f) => (
             <li key={f.take.id} className={row}>
@@ -115,17 +145,22 @@ export function BlockLinksSection({
               <span className="min-w-0 truncate">{takeLabel(state, f.take)}</span>
               <span className="shrink-0 text-[11px] text-text-tertiary">
                 {f.how === "coverage"
-                  ? "dekker linjen"
+                  ? L("dekker linjen", "covers the line")
                   : f.how === "segment"
-                    ? "segmentet"
-                    : "hele scenen"}
-                {f.take.status === "approved" ? " · godkjent" : ""}
+                    ? L("segmentet", "the segment")
+                    : L("hele scenen", "the whole scene")}
+                {f.take.status === "approved" ? L(" · godkjent", " · approved") : ""}
               </span>
-              {montering("Vis")}
+              {montering(L("Vis", "Show"))}
             </li>
           ))
         ) : (
-          <li className={none}>Ingen – importer film eller lag AI-video i monteringen</li>
+          <li className={none}>
+            {L(
+              "Ingen – importer film eller lag AI-video i monteringen",
+              "None – import film or make AI video in the assembly",
+            )}
+          </li>
         )}
       </Group>
     </div>

@@ -6,6 +6,7 @@
  * Forslagene lagres ikke før de godkjennes; et avvist forslag lagres som «dismissed» og foreslås ikke igjen.
  */
 import type { Asset, AssetRelation, ProjectState, RelationKind } from "../model";
+import { localized } from "../i18n";
 import { blocksOfVariant, orderedOccurrences } from "../views";
 import { allAssetUsage, assetNames, nameKey } from "../library";
 import { characterName, mentions } from "../screenplay/filter";
@@ -20,6 +21,18 @@ export const RELATION_LABEL: Record<RelationKind, string> = {
   hidden: "Skjult forbindelse",
   other: "Annen",
 };
+
+/** Navn på relasjonstypen i det språket brukeren har valgt (visning i appen). */
+export const RELATION_NAME: Record<RelationKind, string> = localized({
+  family: ["Familie", "Family"],
+  friendship: ["Vennskap", "Friendship"],
+  conflict: ["Konflikt", "Conflict"],
+  care: ["Omsorg", "Care"],
+  romance: ["Romantikk", "Romance"],
+  mentor: ["Mentor", "Mentor"],
+  hidden: ["Skjult forbindelse", "Hidden connection"],
+  other: ["Annen", "Other"],
+});
 
 export const RELATION_LABEL_EN: Record<RelationKind, string> = {
   family: "Family",

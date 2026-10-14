@@ -3,7 +3,7 @@
  * (DEC-0057). Valget huskes per prosjekt i nettleseren og følger med mellom arbeidsflatene.
  */
 import { useCallback, useEffect, useState } from "react";
-import { PRODUCTION_KIND_LABEL, sortedProductions, type ProjectState } from "@/core";
+import { L, PRODUCTION_KIND_LABEL, sortedProductions, type ProjectState } from "@/core";
 
 const EVENT = "animatic-production-change";
 const storeKey = (projectId: string) => `animatic:production:${projectId}`;
@@ -13,6 +13,15 @@ function read(projectId: string): string | null {
     return window.localStorage.getItem(storeKey(projectId));
   } catch {
     return null;
+  }
+}
+
+/** Velg produksjonen før prosjektet åpnes (prosjektlisten, DEC-0082). */
+export function rememberProduction(projectId: string, productionId: string): void {
+  try {
+    window.localStorage.setItem(storeKey(projectId), productionId);
+  } catch {
+    // Lagring i nettleseren er ikke tilgjengelig: prosjektet åpnes med hovedfilmen
   }
 }
 
@@ -84,10 +93,13 @@ export function ProductionPicker({
   if (list.length < 2) return null;
   return (
     <select
-      aria-label="Produksjon"
+      aria-label={L("Produksjon", "Production")}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      title="Hvilken produksjon du arbeider med (hovedfilm, spinoff, trailer …)"
+      title={L(
+        "Hvilken produksjon du arbeider med (hovedfilm, spinoff, trailer …)",
+        "Which production you are working on (main film, spin-off, trailer …)",
+      )}
       className="h-7 max-w-[220px] rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary"
     >
       {list.map((p) => (

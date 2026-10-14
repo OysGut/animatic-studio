@@ -60,6 +60,7 @@ metadata:
 - [ ] Norske betegnelser fra mandat 30.3; tekst via oversettelsesstruktur.
 
 ## 7. Typiske feil som må unngås
+- Brukervendt tekst bare på ett språk. Tjenesten er på norsk og engelsk (DEC-0081, REQ-0629/0630): hver ny eller endret tekst – også verktøytips (title), aria-label og feilmeldinger – skrives på begge språk i samme endring.
 - Egen lagret rekkefølge i tidslinjekomponenten (bryter INV-01).
 - «Lagre»-knapp som overskriver fil/take i stedet for ny versjon (INV-07, INV-13).
 - Ripple-sletting eller automatisk lukking av hull som endrer andre scener uten at brukeren har valgt det.

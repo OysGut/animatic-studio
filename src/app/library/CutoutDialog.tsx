@@ -9,7 +9,10 @@ import {
   FlipHorizontal2,
   FlipVertical2,
   Loader2,
+  Maximize2,
+  Minus,
   Paintbrush,
+  Plus,
   Redo2,
   Scissors,
   Undo2,
@@ -19,13 +22,18 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   CUTOUT_MAX_PIXELS,
   DEFAULT_CUTOUT,
+  alphaBounds,
   autoMask,
+  paddedBox,
+  trimPadding,
+  worthTrimming,
   flipInPlace,
   keptShare,
   paintMask,
   paintPixels,
   type Asset,
   type AssetVersion,
+  L,
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { uploadAssetImage, useImageUrls } from "./asset-images";
@@ -158,7 +166,7 @@ function Editor({
   const [painted, setPainted] = useState(false);
   const [size, setSize] = useState(24);
   const [backdrop, setBackdrop] = useState<Backdrop>("checker");
-  const [busy, setBusy] = useState<string | null>("Henter bildet …");
+  const [busy, setBusy] = useState<"load" | "auto" | "save" | null>("load");
   const [error, setError] = useState<string | null>(null);
   const [tick, setTick] = useState(0);
   const [kept, setKept] = useState(1);
@@ -173,6 +181,16 @@ function Editor({
   const view = useRef<HTMLCanvasElement>(null);
   const stroke = useRef<{ pointerId: number; pts: { x: number; y: number }[] } | null>(null);
   const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
+  /** Fjern luften rundt figuren når den lagres (DEC-0080). */
+  const [trim, setTrim] = useState(true);
+  /** Zoom og flytting i visningen (DEC-0080): null = tilpasset vinduet. Bildepiksel → skjerm: p·z + (x, y). */
+  const [zoomView, setZoomView] = useState<{ z: number; x: number; y: number } | null>(null);
+  const holder = useRef<HTMLDivElement>(null);
+  const [vpW, setVpW] = useState(900);
+  const pan = useRef<{ pointerId: number; sx: number; sy: number; vx: number; vy: number } | null>(
+    null,
+  );
+  const spaceDown = useRef(false);
 
   // Hent bildet (som blob, så lerretet ikke blir «skittent» av en annen opprinnelse)
   useEffect(() => {
@@ -184,8 +202,11 @@ function Editor({
         if (!res.ok)
           throw new Error(
             res.status === 400 || res.status === 403
-              ? "lenken har gått ut – lukk og åpne vinduet igjen"
-              : `feil ${res.status}`,
+              ? L(
+                  "lenken har gått ut – lukk og åpne vinduet igjen",
+                  "the link has expired – close and reopen the window",
+                )
+              : L(`feil ${res.status}`, `error ${res.status}`),
           );
         const blob = await res.blob();
         const bmp = await decodeImage(blob);
@@ -203,7 +224,13 @@ function Editor({
         work.current = { canvas: c, img: new ImageData(new Uint8ClampedArray(img.data), w, h) };
         setSrc({ w, h, pixels: img.data, scaled: k < 1 });
       } catch (e) {
-        if (!cancelled) setLoadError(`Bildet kunne ikke hentes: ${(e as Error).message}`);
+        if (!cancelled)
+          setLoadError(
+            L(
+              `Bildet kunne ikke hentes: ${(e as Error).message}`,
+              `The image could not be fetched: ${(e as Error).message}`,
+            ),
+          );
       } finally {
         if (!cancelled) setBusy(null);
       }
@@ -296,7 +323,7 @@ function Editor({
   const runAuto = useCallback(
     (record: boolean) => {
       if (!src) return;
-      setBusy("Lager forslag …");
+      setBusy("auto");
       // La vinduet tegne «Lager forslag …» før regnestykket
       window.clearTimeout(timer.current);
       timer.current = window.setTimeout(() => {
@@ -352,23 +379,79 @@ function Editor({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [compose]);
 
-  // Visningen: bakgrunn og bildet tilpasset vinduet
+  // Visningen (DEC-0080): et fast vindu der bildet kan zoomes og flyttes; standard er hele bildet synlig
+  useEffect(() => {
+    const el = holder.current;
+    if (!el) return;
+    const measure = () => setVpW(Math.max(240, Math.min(940, el.clientWidth - 16)));
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [src]);
   const box = useMemo(() => {
     if (!src) return { w: 0, h: 0, k: 1 };
-    const maxW = 900;
     const maxH = Math.max(240, Math.round(window.innerHeight * 0.58));
-    const k = Math.min(maxW / src.w, maxH / src.h, 4);
-    return { w: Math.round(src.w * k), h: Math.round(src.h * k), k };
+    const k = Math.min(vpW / src.w, maxH / src.h, 4);
+    // Vinduet er like bredt som plassen tillater og høyt nok for bildet tilpasset
+    return { w: vpW, h: Math.round(src.h * k), k };
+  }, [src, vpW]);
+  const fitView = useMemo(
+    () =>
+      src ? { z: box.k, x: (box.w - src.w * box.k) / 2, y: (box.h - src.h * box.k) / 2 } : null,
+    [src, box],
+  );
+  const v = zoomView ?? fitView ?? { z: 1, x: 0, y: 0 };
+  const zoomAt = (z: number, at?: { x: number; y: number }) => {
+    const p = at ?? { x: box.w / 2, y: box.h / 2 };
+    const nz = Math.min(16, Math.max(0.05, z));
+    const k = nz / v.z;
+    setZoomView({ z: nz, x: p.x - (p.x - v.x) * k, y: p.y - (p.y - v.y) * k });
+  };
+  // Rullehjulet zoomer i bildet, ikke dialogen
+  useEffect(() => {
+    const c = view.current;
+    if (!c) return;
+    const stop = (e: WheelEvent) => e.preventDefault();
+    c.addEventListener("wheel", stop, { passive: false });
+    return () => c.removeEventListener("wheel", stop);
   }, [src]);
+  // Mellomrom + dra flytter bildet (som i scenen)
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.code === "Space" && !(e.target instanceof HTMLInputElement)) {
+        spaceDown.current = true;
+        e.preventDefault();
+      }
+    };
+    const up = (e: KeyboardEvent) => {
+      if (e.code === "Space") spaceDown.current = false;
+    };
+    window.addEventListener("keydown", down);
+    window.addEventListener("keyup", up);
+    return () => {
+      window.removeEventListener("keydown", down);
+      window.removeEventListener("keyup", up);
+    };
+  }, []);
   useEffect(() => {
     const c = view.current;
     const wk = work.current;
-    if (!c || !wk || box.w === 0) return;
+    if (!c || !wk || box.w === 0 || !src) return;
     const dpr = window.devicePixelRatio || 1;
     c.width = Math.round(box.w * dpr);
     c.height = Math.round(box.h * dpr);
     const ctx = c.getContext("2d")!;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = "#101114";
+    ctx.fillRect(0, 0, box.w, box.h);
+    const iw = src.w * v.z;
+    const ih = src.h * v.z;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(v.x, v.y, iw, ih);
+    ctx.clip();
     if (backdrop === "checker") {
       const s = 12;
       for (let y = 0; y < box.h; y += s)
@@ -380,24 +463,27 @@ function Editor({
       ctx.fillStyle = backdrop === "dark" ? "#16181d" : "#f4f4f4";
       ctx.fillRect(0, 0, box.w, box.h);
     }
+    // Skarpe piksler når det er zoomet langt inn, ellers jevnt
+    ctx.imageSmoothingEnabled = v.z < 2;
     ctx.imageSmoothingQuality = "high";
-    ctx.drawImage(wk.canvas, 0, 0, box.w, box.h);
+    ctx.drawImage(wk.canvas, v.x, v.y, iw, ih);
+    ctx.restore();
     if (cursor) {
       ctx.strokeStyle = tool === "add" ? "#22c55e" : tool === "paint" ? color : "#ef4444";
       ctx.lineWidth = 1.5;
       ctx.beginPath();
-      ctx.arc(cursor.x, cursor.y, Math.max(1, size * box.k), 0, Math.PI * 2);
+      ctx.arc(cursor.x, cursor.y, Math.max(1, size * v.z), 0, Math.PI * 2);
       ctx.stroke();
     }
-  }, [tick, box, backdrop, cursor, size, tool, color]);
+  }, [tick, box, backdrop, cursor, size, tool, color, src, v.x, v.y, v.z]);
 
   const toImage = (e: React.PointerEvent) => {
     const r = e.currentTarget.getBoundingClientRect();
     return {
       sx: e.clientX - r.left,
       sy: e.clientY - r.top,
-      x: (e.clientX - r.left) / box.k,
-      y: (e.clientY - r.top) / box.k,
+      x: (e.clientX - r.left - v.x) / v.z,
+      y: (e.clientY - r.top - v.y) / v.z,
     };
   };
 
@@ -477,13 +563,31 @@ function Editor({
 
   async function save() {
     if (!src || !mask.current || !work.current) return;
-    setBusy("Lagrer …");
+    setBusy("save");
     setError(null);
     try {
       compose();
+      // Fjern luften rundt figuren (DEC-0080): beskjær tett rundt det synlige, med litt luft
+      let out = work.current!.canvas;
+      let trimmed: { w: number; h: number } | null = null;
+      if (trim) {
+        const b = alphaBounds(work.current!.img.data, src.w, src.h);
+        if (b && worthTrimming(b, src.w, src.h)) {
+          const pb = paddedBox(b, trimPadding(b), src.w, src.h);
+          const c = document.createElement("canvas");
+          c.width = pb.w;
+          c.height = pb.h;
+          c.getContext("2d")!.drawImage(out, pb.x, pb.y, pb.w, pb.h, 0, 0, pb.w, pb.h);
+          out = c;
+          trimmed = { w: pb.w, h: pb.h };
+        }
+      }
       const blob = await new Promise<Blob>((ok, fail) =>
-        work.current!.canvas.toBlob(
-          (b) => (b ? ok(b) : fail(new Error("Bildet kunne ikke lages"))),
+        out.toBlob(
+          (b) =>
+            b
+              ? ok(b)
+              : fail(new Error(L("Bildet kunne ikke lages", "The image could not be made"))),
           "image/png",
         ),
       );
@@ -496,13 +600,16 @@ function Editor({
           versionId: versionId as never,
           variantId: version.variantId,
           media,
+          // i18n-ignore (merknaden leses av provenance.ts)
           note: `Frilagt fra v${version.number}${src.scaled ? " (skalert ned)" : ""}${
             flipped.x || flipped.y
               ? `, speilvendt ${[flipped.x ? "vannrett" : "", flipped.y ? "loddrett" : ""].filter(Boolean).join(" og ")}`
               : ""
-          }${painted ? ", tegnet på" : ""}`,
+          }${painted ? ", tegnet på" : ""}${
+            trimmed ? `, luften rundt fjernet (${trimmed.w} × ${trimmed.h} px)` : ""
+          }`,
         },
-        `Frilagt bilde av «${asset.name}»`,
+        L(`Frilagt bilde av «${asset.name}»`, `Cut out image of “${asset.name}”`),
       );
       if (r.error) throw new Error(r.error);
       onSaved?.(versionId, version.variantId);
@@ -523,18 +630,22 @@ function Editor({
     <>
       <DialogHeader>
         <DialogTitle>
-          Frilegg «{asset.name}» (v{version.number})
+          {L(
+            `Frilegg «${asset.name}» (v${version.number})`,
+            `Cut out “${asset.name}” (v${version.number})`,
+          )}
         </DialogTitle>
         <DialogDescription>
-          Bakgrunnen fjernes ut fra fargen langs kanten av bildet. Rett med penselen, tegn med farge
-          eller speilvend. Resultatet lagres som en ny versjon; originalen beholdes. Gratis – bildet
-          sendes ingen steder. (For å speilvende bare i én scene: bruk «Speilvend» på laget.)
+          {L(
+            "Bakgrunnen fjernes ut fra fargen langs kanten av bildet. Rett med penselen, tegn med farge eller speilvend. Resultatet lagres som en ny versjon; originalen beholdes. Gratis – bildet sendes ingen steder. (For å speilvende bare i én scene: bruk «Speilvend» på laget.)",
+            "The background is removed based on the colour along the edge of the image. Correct with the brush, draw in colour or flip. The result is saved as a new version; the original is kept. Free – the image is not sent anywhere. (To flip only in one scene: use “Flip” on the layer.)",
+          )}
         </DialogDescription>
       </DialogHeader>
 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <label className={label}>
-          Toleranse
+          {L("Toleranse", "Tolerance")}
           <input
             type="range"
             min={0}
@@ -546,7 +657,7 @@ function Editor({
           <span className="w-7 tabular-nums">{tolerance}</span>
         </label>
         <label className={label}>
-          Myk kant
+          {L("Myk kant", "Soft edge")}
           <input
             type="range"
             min={0}
@@ -563,10 +674,10 @@ function Editor({
           onClick={() => runAuto(true)}
         >
           <Wand2 />
-          Nytt forslag
+          {L("Nytt forslag", "New suggestion")}
         </Button>
         <div className="h-5 w-px bg-border" aria-hidden />
-        <div role="group" aria-label="Pensel" className="flex items-center gap-0.5">
+        <div role="group" aria-label={L("Pensel", "Brush")} className="flex items-center gap-0.5">
           <button
             type="button"
             aria-pressed={tool === "remove"}
@@ -574,7 +685,7 @@ function Editor({
             onClick={() => setTool("remove")}
           >
             <Eraser className="mr-1 inline size-3.5" aria-hidden />
-            Fjern
+            {L("Fjern", "Remove")}
           </button>
           <button
             type="button"
@@ -583,29 +694,29 @@ function Editor({
             onClick={() => setTool("add")}
           >
             <Brush className="mr-1 inline size-3.5" aria-hidden />
-            Legg til
+            {L("Legg til", "Add")}
           </button>
           <button
             type="button"
             aria-pressed={tool === "paint"}
             className={seg(tool === "paint")}
             onClick={() => setTool("paint")}
-            title="Tegn med farge i bildet"
+            title={L("Tegn med farge i bildet", "Draw in colour on the image")}
           >
             <Paintbrush className="mr-1 inline size-3.5" aria-hidden />
-            Tegn
+            {L("Tegn", "Draw")}
           </button>
           {tool === "paint" ? (
             <input
               type="color"
               value={color}
               onChange={(e) => setColor(e.target.value)}
-              aria-label="Farge å tegne med"
+              aria-label={L("Farge å tegne med", "Colour to draw with")}
               className="ml-1 h-7 w-8 cursor-pointer rounded-sm border border-border-control bg-surface-3"
             />
           ) : null}
         </div>
-        <div role="group" aria-label="Speilvend" className="flex items-center gap-0.5">
+        <div role="group" aria-label={L("Speilvend", "Flip")} className="flex items-center gap-0.5">
           <Button
             size="sm"
             variant="ghost"
@@ -614,26 +725,29 @@ function Editor({
               record({ kind: "flip", axis: "x" });
               flipAll("x");
             }}
-            title="Speilvend bildet vannrett (lagres i den nye versjonen)"
+            title={L(
+              "Speilvend bildet vannrett (lagres i den nye versjonen)",
+              "Flip the image horizontally (saved in the new version)",
+            )}
           >
-            <FlipHorizontal2 /> Speilvend
+            <FlipHorizontal2 /> {L("Speilvend", "Flip")}
           </Button>
           <Button
             size="sm"
             variant="ghost"
-            aria-label="Speilvend loddrett"
+            aria-label={L("Speilvend loddrett", "Flip vertically")}
             disabled={!src || !!busy}
             onClick={() => {
               record({ kind: "flip", axis: "y" });
               flipAll("y");
             }}
-            title="Speilvend bildet loddrett"
+            title={L("Speilvend bildet loddrett", "Flip the image vertically")}
           >
             <FlipVertical2 />
           </Button>
         </div>
         <label className={label}>
-          Størrelse
+          {L("Størrelse", "Size")}
           <input
             type="range"
             min={2}
@@ -646,8 +760,8 @@ function Editor({
         <Button
           size="sm"
           variant="ghost"
-          aria-label="Angre"
-          title="Angre (⌘Z)"
+          aria-label={L("Angre", "Undo")}
+          title={L("Angre (⌘Z)", "Undo (⌘Z)")}
           disabled={!!busy}
           onClick={() => step(undo, redo)}
         >
@@ -656,8 +770,8 @@ function Editor({
         <Button
           size="sm"
           variant="ghost"
-          aria-label="Gjør om"
-          title="Gjør om (⇧⌘Z)"
+          aria-label={L("Gjør om", "Redo")}
+          title={L("Gjør om (⇧⌘Z)", "Redo (⇧⌘Z)")}
           disabled={!!busy}
           onClick={() => step(redo, undo)}
         >
@@ -665,14 +779,14 @@ function Editor({
         </Button>
         <div
           role="group"
-          aria-label="Bakgrunn i visningen"
+          aria-label={L("Bakgrunn i visningen", "Background in the view")}
           className="ml-auto flex items-center gap-0.5"
         >
           {(
             [
-              ["checker", "Rutet"],
-              ["dark", "Mørk"],
-              ["light", "Lys"],
+              ["checker", L("Rutet", "Checkered")],
+              ["dark", L("Mørk", "Dark")],
+              ["light", L("Lys", "Light")],
             ] as const
           ).map(([id, text]) => (
             <button
@@ -688,7 +802,41 @@ function Editor({
         </div>
       </div>
 
-      <div className="relative flex min-h-[240px] items-center justify-center rounded-sm border border-border bg-surface-1 p-2">
+      <div className="flex flex-wrap items-center gap-1 text-xs text-text-secondary">
+        <Button
+          size="sm"
+          variant="ghost"
+          aria-label={L("Zoom ut", "Zoom out")}
+          onClick={() => zoomAt(v.z / 1.5)}
+        >
+          <Minus />
+        </Button>
+        <span className="w-12 text-center font-mono tabular-nums">{Math.round(v.z * 100)} %</span>
+        <Button
+          size="sm"
+          variant="ghost"
+          aria-label={L("Zoom inn", "Zoom in")}
+          onClick={() => zoomAt(v.z * 1.5)}
+        >
+          <Plus />
+        </Button>
+        <Button size="sm" variant="ghost" onClick={() => setZoomView(null)}>
+          <Maximize2 /> {L("Tilpass", "Fit")}
+        </Button>
+        <Button size="sm" variant="ghost" onClick={() => zoomAt(1)}>
+          100 %
+        </Button>
+        <span className="text-text-tertiary">
+          {L(
+            "Rullehjul zoomer; hold mellomrom (eller midtre museknapp) og dra for å flytte.",
+            "The scroll wheel zooms; hold space (or the middle mouse button) and drag to move.",
+          )}
+        </span>
+      </div>
+      <div
+        ref={holder}
+        className="relative flex min-h-[240px] items-center justify-center rounded-sm border border-border bg-surface-1 p-2"
+      >
         {loadError ? (
           <p role="alert" className="text-xs text-status-danger">
             {loadError}
@@ -697,11 +845,32 @@ function Editor({
           <canvas
             ref={view}
             role="img"
-            aria-label="Frilagt bilde"
-            style={{ width: box.w, height: box.h, cursor: "none" }}
+            aria-label={L("Frilagt bilde", "Cut-out image")}
+            style={{ width: box.w, height: box.h, cursor: pan.current ? "grabbing" : "none" }}
             className="touch-none"
+            onWheel={(e) => {
+              const r = e.currentTarget.getBoundingClientRect();
+              zoomAt(v.z * Math.exp(-e.deltaY * 0.0015), {
+                x: e.clientX - r.left,
+                y: e.clientY - r.top,
+              });
+            }}
             onPointerDown={(e) => {
-              if (e.button !== 0 || busy) return;
+              if (busy) return;
+              // Flytt visningen: midtre museknapp, eller mellomrom + dra
+              if (e.button === 1 || (e.button === 0 && spaceDown.current)) {
+                e.preventDefault();
+                e.currentTarget.setPointerCapture(e.pointerId);
+                pan.current = {
+                  pointerId: e.pointerId,
+                  sx: e.clientX,
+                  sy: e.clientY,
+                  vx: v.x,
+                  vy: v.y,
+                };
+                return;
+              }
+              if (e.button !== 0) return;
               e.currentTarget.setPointerCapture(e.pointerId);
               if (tool === "paint" && src && mask.current)
                 // Tegning: området før strøket lagres når strøket er ferdig
@@ -715,6 +884,11 @@ function Editor({
               paint([{ x: p.x, y: p.y }]);
             }}
             onPointerMove={(e) => {
+              const pn = pan.current;
+              if (pn && pn.pointerId === e.pointerId) {
+                setZoomView({ z: v.z, x: pn.vx + e.clientX - pn.sx, y: pn.vy + e.clientY - pn.sy });
+                return;
+              }
               const p = toImage(e);
               setCursor({ x: p.sx, y: p.sy });
               const s = stroke.current;
@@ -723,12 +897,17 @@ function Editor({
               s.pts.push({ x: p.x, y: p.y });
               paint([last, { x: p.x, y: p.y }]);
             }}
-            onPointerUp={() => {
+            onPointerUp={(e) => {
+              if (pan.current?.pointerId === e.pointerId) {
+                pan.current = null;
+                return;
+              }
               stroke.current = null;
               endStroke();
               if (mask.current) setKept(keptShare(mask.current));
             }}
             onPointerCancel={() => {
+              pan.current = null;
               stroke.current = null;
               endStroke();
             }}
@@ -738,18 +917,34 @@ function Editor({
         {busy ? (
           <span className="absolute inset-0 flex items-center justify-center gap-2 bg-surface-2/60 text-[13px] text-text-secondary">
             <Loader2 className="size-4 animate-spin" aria-hidden />
-            {busy}
+            {busy === "load"
+              ? L("Henter bildet …", "Fetching the image …")
+              : busy === "auto"
+                ? L("Lager forslag …", "Making a suggestion …")
+                : L("Lagrer …", "Saving …")}
           </span>
         ) : null}
       </div>
       <p className="text-xs text-text-tertiary">
         {src
-          ? `${src.w} × ${src.h} px${src.scaled ? " (skalert ned for frilegging)" : ""} · ${Math.round(kept * 100)} % av bildet beholdes. ` +
+          ? L(
+              `${src.w} × ${src.h} px${src.scaled ? " (skalert ned for frilegging)" : ""} · ${Math.round(kept * 100)} % av bildet beholdes. `,
+              `${src.w} × ${src.h} px${src.scaled ? " (scaled down for cut-out)" : ""} · ${Math.round(kept * 100)} % of the image is kept. `,
+            ) +
             (kept > 0.97
-              ? "Nesten ingenting ble fjernet – øk toleransen, eller fjern bakgrunnen med penselen."
+              ? L(
+                  "Nesten ingenting ble fjernet – øk toleransen, eller fjern bakgrunnen med penselen.",
+                  "Almost nothing was removed – increase the tolerance, or remove the background with the brush.",
+                )
               : kept < 0.03
-                ? "Nesten alt ble fjernet – senk toleransen."
-                : "Fungerer best når bakgrunnen er rolig og ulik figuren.")
+                ? L(
+                    "Nesten alt ble fjernet – senk toleransen.",
+                    "Almost everything was removed – lower the tolerance.",
+                  )
+                : L(
+                    "Fungerer best når bakgrunnen er rolig og ulik figuren.",
+                    "Works best when the background is plain and different from the figure.",
+                  ))
           : ""}
       </p>
       {error ? (
@@ -757,13 +952,28 @@ function Editor({
           {error}
         </p>
       ) : null}
-      <DialogFooter>
-        <Button variant="secondary" disabled={busy === "Lagrer …"} onClick={onClose}>
-          Avbryt
+      <DialogFooter className="sm:items-center">
+        <label
+          className="mr-auto flex items-center gap-1.5 text-xs text-text-secondary"
+          title={L(
+            "Beskjær bildet tett rundt figuren, med litt luft, så den ikke får en stor tom ramme",
+            "Crop the image tightly around the figure, with a little space, so it does not get a large empty frame",
+          )}
+        >
+          <input
+            type="checkbox"
+            checked={trim}
+            onChange={(e) => setTrim(e.target.checked)}
+            className="size-3.5 accent-[var(--accent-brand)]"
+          />
+          {L("Fjern luften rundt figuren", "Remove the space around the figure")}
+        </label>
+        <Button variant="secondary" disabled={busy === "save"} onClick={onClose}>
+          {L("Avbryt", "Cancel")}
         </Button>
         <Button disabled={!src || !!busy} onClick={() => void save()}>
           <Scissors />
-          Lagre som ny versjon
+          {L("Lagre som ny versjon", "Save as new version")}
         </Button>
       </DialogFooter>
     </>

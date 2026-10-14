@@ -7,6 +7,7 @@
 import {
   formatHeading,
   frameMix,
+  L,
   partBlendAt,
   renderFrame,
   sourceAt,
@@ -230,7 +231,13 @@ function drawSource(
       ctx.drawImage(img, (o.width - w) / 2, (o.height - h) / 2, w, h);
       ctx.restore();
     } else if (o.placeholders ?? false) {
-      drawTitleCard(ctx, at.clip, o.width, o.height, src.take.media?.fileName ?? "Ferdig film");
+      drawTitleCard(
+        ctx,
+        at.clip,
+        o.width,
+        o.height,
+        src.take.media?.fileName ?? L("Ferdig film", "Finished film"),
+      );
     }
     return;
   }
@@ -262,7 +269,7 @@ export function drawTitleCard(
   clip: FilmClip,
   width: number,
   height: number,
-  note = "Ingen 2D-scene ennå",
+  note = L("Ingen 2D-scene ennå", "No 2D scene yet"),
 ): void {
   ctx.save();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -281,7 +288,7 @@ export function drawTitleCard(
   ctx.fillStyle = "rgba(255,255,255,0.92)";
   ctx.font = `600 ${Math.round(6.4 * u)}px "Courier Prime", "Courier New", monospace`;
   ctx.fillText(
-    formatHeading(clip.heading) || "Uten overskrift",
+    formatHeading(clip.heading) || L("Uten overskrift", "Without heading"),
     width / 2,
     height / 2,
     width * 0.9,

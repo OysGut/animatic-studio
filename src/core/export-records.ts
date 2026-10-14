@@ -4,16 +4,18 @@
  * etter at filen er laget og endres aldri. Eksporten selv endrer ingenting i prosjektet (REQ-0085).
  */
 
+import { L, localized } from "./i18n";
+
 export const EXPORT_KINDS = ["film", "script", "audio", "subtitles", "poster"] as const;
 export type ExportKind = (typeof EXPORT_KINDS)[number];
 
-export const EXPORT_KIND_LABEL: Record<ExportKind, string> = {
-  film: "Film",
-  script: "Manus",
-  audio: "Lyd",
-  subtitles: "Undertekster",
-  poster: "Plakat",
-};
+export const EXPORT_KIND_LABEL: Record<ExportKind, string> = localized({
+  film: ["Film", "Film"],
+  script: ["Manus", "Script"],
+  audio: ["Lyd", "Audio"],
+  subtitles: ["Undertekster", "Subtitles"],
+  poster: ["Plakat", "Poster"],
+});
 
 /** Høyst så mange scener lagres per eksport (samme grense i databasen). */
 export const MAX_EXPORT_SCENES = 5000;
@@ -45,11 +47,13 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
  * verdier (andre utelates), unike scene-ID-er. Kaster ved ugyldige verdier.
  */
 export function normalizeExportRecord(x: NewExportRecord): NewExportRecord {
-  if (!EXPORT_KINDS.includes(x.kind)) throw new Error("Ukjent eksporttype");
+  if (!EXPORT_KINDS.includes(x.kind))
+    throw new Error(L("Ukjent eksporttype", "Unknown export type"));
   const fileName = typeof x.fileName === "string" ? x.fileName.trim() : "";
-  if (!fileName || fileName.length > 300) throw new Error("Ugyldig filnavn");
+  if (!fileName || fileName.length > 300)
+    throw new Error(L("Ugyldig filnavn", "Invalid file name"));
   if (typeof x.productionId !== "string" || !UUID.test(x.productionId))
-    throw new Error("Ugyldig produksjon");
+    throw new Error(L("Ugyldig produksjon", "Invalid production"));
   const settings: Record<string, ExportSettingValue> = {};
   for (const [k, v] of Object.entries(x.settings ?? {})) {
     if (k.length > 60) continue;
@@ -64,11 +68,11 @@ export function normalizeExportRecord(x: NewExportRecord): NewExportRecord {
       settings[k] = [...(v as readonly string[])];
   }
   if (JSON.stringify(settings).length > MAX_EXPORT_SETTINGS_CHARS)
-    throw new Error("For mange eksportinnstillinger");
+    throw new Error(L("For mange eksportinnstillinger", "Too many export settings"));
   const ids = [...new Set(x.occurrenceIds ?? [])];
   if (ids.some((id) => typeof id !== "string" || !UUID.test(id)))
-    throw new Error("Ugyldig scene-ID");
-  if (ids.length > MAX_EXPORT_SCENES) throw new Error("For mange scener");
+    throw new Error(L("Ugyldig scene-ID", "Invalid scene ID"));
+  if (ids.length > MAX_EXPORT_SCENES) throw new Error(L("For mange scener", "Too many scenes"));
   return { productionId: x.productionId, kind: x.kind, fileName, settings, occurrenceIds: ids };
 }
 
@@ -97,17 +101,23 @@ export function describeExportSettings(
   const s = r.settings;
   const parts: string[] = [];
   if (typeof s["format"] === "string") parts.push(String(s["format"]).toUpperCase());
-  if (s["size"] === "half") parts.push("halv størrelse");
-  else if (s["size"] === "full") parts.push("full størrelse");
+  if (s["size"] === "half") parts.push(L("halv størrelse", "half size"));
+  else if (s["size"] === "full") parts.push(L("full størrelse", "full size"));
   if (typeof s["width"] === "number" && typeof s["height"] === "number")
     parts.push(`${s["width"]}×${s["height"]}`);
-  if (s["monochrome"] === true) parts.push("svart-hvitt");
-  if (typeof s["numbering"] === "string") parts.push(`nummerering: ${s["numbering"]}`);
+  if (s["monochrome"] === true) parts.push(L("svart-hvitt", "black and white"));
+  if (typeof s["numbering"] === "string")
+    parts.push(L(`nummerering: ${s["numbering"]}`, `numbering: ${s["numbering"]}`));
   if (typeof s["language"] === "string" && s["language"] !== "nb")
-    parts.push(`språk: ${s["language"]}`);
-  if (s["subtitles"] === true) parts.push("med undertekster");
-  if (s["withNotes"] === true) parts.push("med notater");
+    parts.push(L(`språk: ${s["language"]}`, `language: ${s["language"]}`));
+  if (s["subtitles"] === true) parts.push(L("med undertekster", "with subtitles"));
+  if (s["withNotes"] === true) parts.push(L("med notater", "with notes"));
   if (r.occurrenceIds.length)
-    parts.push(`${r.occurrenceIds.length} ${r.occurrenceIds.length === 1 ? "scene" : "scener"}`);
+    parts.push(
+      L(
+        `${r.occurrenceIds.length} ${r.occurrenceIds.length === 1 ? "scene" : "scener"}`,
+        `${r.occurrenceIds.length} ${r.occurrenceIds.length === 1 ? "scene" : "scenes"}`,
+      ),
+    );
   return parts.join(" · ");
 }

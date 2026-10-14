@@ -3,7 +3,7 @@
  * Samme tegneliste som forhåndsvisningen og PDF-en; teksten plasseres tegn for tegn med standardskriftenes
  * mål når den er sperret, så linjene blir like lange overalt.
  */
-import { CSS_FONT, PT_TO_MM, textWidthPt, type RenderOp } from "@/core";
+import { CSS_FONT, L, PT_TO_MM, textWidthPt, type RenderOp } from "@/core";
 import { imagePixelNeeds, type PdfImage } from "./poster-pdf";
 import { PNG_MAX_WIDTH, encodePngStrips } from "./png-writer";
 
@@ -113,7 +113,13 @@ export async function fetchBitmap(url: string, maxW?: number, maxH?: number): Pr
     maxH = Math.max(1, Math.floor(maxH * k));
   }
   const res = await fetch(url);
-  if (!res.ok) throw new Error(`Bildet kunne ikke hentes (${res.status})`);
+  if (!res.ok)
+    throw new Error(
+      L(
+        `Bildet kunne ikke hentes (${res.status})`,
+        `The image could not be fetched (${res.status})`,
+      ),
+    );
   const blob = await res.blob();
   const full = await createImageBitmap(blob);
   if (!maxW || !maxH || (full.width <= maxW && full.height <= maxH)) return full;
@@ -130,7 +136,10 @@ export function bitmapToPdfImage(bmp: ImageBitmap): PdfImage {
   canvas.width = bmp.width;
   canvas.height = bmp.height;
   const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("Bildet er for stort for nettleseren.");
+  if (!ctx)
+    throw new Error(
+      L("Bildet er for stort for nettleseren.", "The image is too large for the browser."),
+    );
   ctx.drawImage(bmp, 0, 0);
   const data = ctx.getImageData(0, 0, bmp.width, bmp.height).data;
   const px = bmp.width * bmp.height;
@@ -187,12 +196,18 @@ export async function posterPng(
   signal?: AbortSignal,
 ): Promise<{ parts: Uint8Array[]; ppi: number; width: number; height: number; missing: number }> {
   const stop = () => {
-    if (signal?.aborted) throw new DOMException("Eksporten ble avbrutt", "AbortError");
+    if (signal?.aborted)
+      throw new DOMException(L("Eksporten ble avbrutt", "The export was cancelled"), "AbortError");
   };
   const s = ppi / 25.4;
   const { width, height } = posterPngSize(widthMm, heightMm, ppi);
   if (width > PNG_MAX_WIDTH || height > 65_535) {
-    throw new Error("Plakaten blir for stor i denne oppløsningen. Velg en lavere oppløsning.");
+    throw new Error(
+      L(
+        "Plakaten blir for stor i denne oppløsningen. Velg en lavere oppløsning.",
+        "The poster is too large at this resolution. Choose a lower resolution.",
+      ),
+    );
   }
   stop();
   const images = new Map<string, ImageBitmap>();
@@ -221,7 +236,9 @@ export async function posterPng(
   const ctx = canvas.getContext("2d", { willReadFrequently: true });
   if (!ctx) {
     for (const b of images.values()) b.close();
-    throw new Error("Nettleseren kunne ikke lage bildet.");
+    throw new Error(
+      L("Nettleseren kunne ikke lage bildet.", "The browser could not create the image."),
+    );
   }
   try {
     const parts = await encodePngStrips(

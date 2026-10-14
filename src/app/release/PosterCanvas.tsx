@@ -15,6 +15,7 @@ import {
 } from "react";
 import {
   CSS_FONT,
+  L,
   PT_TO_MM,
   renderPoster,
   type Poster,
@@ -169,10 +170,10 @@ export function PosterCanvas({
           drag.id,
           patch,
           drag.mode === "move"
-            ? "Flytt element"
+            ? L("Flytt element", "Move element")
             : drag.mode === "rotate"
-              ? "Roter element"
-              : "Endre størrelse",
+              ? L("Roter element", "Rotate element")
+              : L("Endre størrelse", "Resize"),
         );
     }
     setDrag(null);
@@ -221,7 +222,7 @@ export function PosterCanvas({
     onCommit(
       selected.id,
       { x: selected.x + d[0]!, y: selected.y + d[1]! },
-      "Flytt element",
+      L("Flytt element", "Move element"),
       `nudge:${poster.id}:${selected.id}`,
     );
   };
@@ -238,7 +239,10 @@ export function PosterCanvas({
     <svg
       ref={svgRef}
       role="application"
-      aria-label={`Plakaten «${poster.name}». Klikk for å velge et element, dra for å flytte, piltaster flytter valgt element.`}
+      aria-label={L(
+        `Plakaten «${poster.name}». Klikk for å velge et element, dra for å flytte, piltaster flytter valgt element.`,
+        `The poster “${poster.name}”. Click to select an element, drag to move it, arrow keys move the selected element.`,
+      )}
       tabIndex={0}
       viewBox={`0 0 ${W} ${H}`}
       preserveAspectRatio="xMidYMid meet"
@@ -368,7 +372,7 @@ export function PosterCanvas({
                 strokeWidth={outline}
                 strokeDasharray={`${outline * 4} ${outline * 3}`}
               >
-                <title>Teksten får ikke plass</title>
+                <title>{L("Teksten får ikke plass", "The text does not fit")}</title>
               </rect>
             ) : null}
           </g>
@@ -389,7 +393,7 @@ export function PosterCanvas({
               onPointerDown={(ev) => startDrag(ev, e.id, "move")}
               style={{ cursor: "move" }}
             >
-              <title>Tomt tekstfelt</title>
+              <title>{L("Tomt tekstfelt", "Empty text box")}</title>
             </rect>
           ))
         : null}
@@ -439,7 +443,7 @@ export function PosterCanvas({
                 pointerEvents="none"
               />
               <circle
-                aria-label="Roter (Shift: trinn på 15°)"
+                aria-label={L("Roter (Shift: trinn på 15°)", "Rotate (Shift: 15° steps)")}
                 cx={selected.x + selected.w / 2}
                 cy={selected.y - handle * 2.6}
                 r={handle * 0.6}
@@ -449,7 +453,7 @@ export function PosterCanvas({
                 style={{ cursor: "grab" }}
                 onPointerDown={(e) => startDrag(e, selected.id, "rotate")}
               >
-                <title>Roter (Shift: trinn på 15°)</title>
+                <title>{L("Roter (Shift: trinn på 15°)", "Rotate (Shift: 15° steps)")}</title>
               </circle>
             </>
           ) : null}
@@ -457,7 +461,10 @@ export function PosterCanvas({
           {(selected.kind === "line" ? [] : CORNERS).map((c) => (
             <rect
               key={c}
-              aria-label="Endre størrelse (Shift: behold forholdet)"
+              aria-label={L(
+                "Endre størrelse (Shift: behold forholdet)",
+                "Resize (Shift: keep the proportions)",
+              )}
               x={selected.x + (c === "ne" || c === "se" ? selected.w : 0) - handle / 2}
               y={selected.y + (c === "sw" || c === "se" ? selected.h : 0) - handle / 2}
               width={handle}
@@ -468,7 +475,12 @@ export function PosterCanvas({
               style={{ cursor: cornerCursor(c, selected.rotation) }}
               onPointerDown={(e) => startDrag(e, selected.id, c)}
             >
-              <title>Endre størrelse (Shift: behold forholdet)</title>
+              <title>
+                {L(
+                  "Endre størrelse (Shift: behold forholdet)",
+                  "Resize (Shift: keep the proportions)",
+                )}
+              </title>
             </rect>
           ))}
         </g>

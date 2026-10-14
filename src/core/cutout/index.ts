@@ -325,3 +325,90 @@ export function flipInPlace(
     }
   }
 }
+
+// ---------- Fjern luften rundt, utsnitt og ruter (DEC-0080) ----------
+
+export interface PixelBox {
+  readonly x: number;
+  readonly y: number;
+  readonly w: number;
+  readonly h: number;
+}
+
+/**
+ * Det minste rektangelet som rommer alt som er synlig (alfa over `threshold`), eller null når bildet er
+ * helt gjennomsiktig. Brukes til «Fjern luften rundt» etter frilegging.
+ */
+export function alphaBounds(
+  rgba: ArrayLike<number>,
+  w: number,
+  h: number,
+  threshold = 8,
+): PixelBox | null {
+  let x0 = w;
+  let y0 = h;
+  let x1 = -1;
+  let y1 = -1;
+  for (let y = 0; y < h; y++) {
+    const row = y * w;
+    for (let x = 0; x < w; x++)
+      if ((rgba[(row + x) * 4 + 3] ?? 0) > threshold) {
+        if (x < x0) x0 = x;
+        if (x > x1) x1 = x;
+        if (y < y0) y0 = y;
+        y1 = y;
+      }
+  }
+  return x1 < 0 ? null : { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 };
+}
+
+/** Rektangelet med `pad` piksler luft rundt, innenfor bildet. */
+export function paddedBox(b: PixelBox, pad: number, w: number, h: number): PixelBox {
+  const p = Math.max(0, Math.round(pad));
+  const x = Math.max(0, b.x - p);
+  const y = Math.max(0, b.y - p);
+  return { x, y, w: Math.min(w, b.x + b.w + p) - x, h: Math.min(h, b.y + b.h + p) - y };
+}
+
+/** Luften som beholdes rundt figuren: 1 % av den lengste siden, minst 2 piksler. */
+export function trimPadding(b: PixelBox): number {
+  return Math.max(2, Math.round(Math.max(b.w, b.h) * 0.01));
+}
+
+/** Er det verdt å fjerne luften (minst 3 % av bredden eller høyden forsvinner)? */
+export function worthTrimming(b: PixelBox, w: number, h: number): boolean {
+  return b.w < w * 0.97 || b.h < h * 0.97;
+}
+
+/** Del et bilde i et rutenett (karakterark): `cols` × `rows` like store ruter, fra venstre og ned. */
+export function gridCells(w: number, h: number, cols: number, rows: number): PixelBox[] {
+  const c = Math.max(1, Math.min(12, Math.round(cols)));
+  const r = Math.max(1, Math.min(12, Math.round(rows)));
+  const out: PixelBox[] = [];
+  for (let j = 0; j < r; j++)
+    for (let i = 0; i < c; i++) {
+      const x = Math.round((i * w) / c);
+      const y = Math.round((j * h) / r);
+      out.push({
+        x,
+        y,
+        w: Math.round(((i + 1) * w) / c) - x,
+        h: Math.round(((j + 1) * h) / r) - y,
+      });
+    }
+  return out;
+}
+
+/** Firkanten rundt en polygon (fri markering), innenfor bildet; null når den er tom. */
+export function polygonBounds(
+  pts: readonly { readonly x: number; readonly y: number }[],
+  w: number,
+  h: number,
+): PixelBox | null {
+  if (pts.length < 3) return null;
+  const x0 = Math.max(0, Math.floor(Math.min(...pts.map((p) => p.x))));
+  const y0 = Math.max(0, Math.floor(Math.min(...pts.map((p) => p.y))));
+  const x1 = Math.min(w, Math.ceil(Math.max(...pts.map((p) => p.x))));
+  const y1 = Math.min(h, Math.ceil(Math.max(...pts.map((p) => p.y))));
+  return x1 - x0 < 2 || y1 - y0 < 2 ? null : { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+}

@@ -1,6 +1,7 @@
 /** Små skjemaelementer i egenskapspanelene i sceneeditoren. */
 import { useRef, useState, type ReactNode } from "react";
 import { Diamond } from "lucide-react";
+import { L } from "@/core";
 
 export const inputClass =
   "h-7 w-full min-w-0 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary placeholder:text-text-tertiary disabled:cursor-not-allowed disabled:opacity-50";
@@ -59,8 +60,16 @@ export function KeyMarker({
       type="button"
       disabled={disabled}
       aria-pressed={keyed}
-      aria-label={keyed ? `Fjern nøkkelbilde for ${label}` : `Sett nøkkelbilde for ${label}`}
-      title={keyed ? "Fjern nøkkelbilde på dette bildet" : "Sett nøkkelbilde på dette bildet"}
+      aria-label={
+        keyed
+          ? L(`Fjern nøkkelbilde for ${label}`, `Remove keyframe for ${label}`)
+          : L(`Sett nøkkelbilde for ${label}`, `Set keyframe for ${label}`)
+      }
+      title={
+        keyed
+          ? L("Fjern nøkkelbilde på dette bildet", "Remove keyframe on this frame")
+          : L("Sett nøkkelbilde på dette bildet", "Set keyframe on this frame")
+      }
       onClick={(e) => {
         e.preventDefault();
         onToggle();

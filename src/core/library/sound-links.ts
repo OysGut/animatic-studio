@@ -8,15 +8,16 @@ import type { Asset, ProjectState, SoundLink, SoundLinkKind } from "../model";
 import { formatHeading } from "../screenplay/paginate";
 import { orderedOccurrences } from "../views";
 import { compareKeys } from "../order-key";
+import { collation, L, localized } from "../i18n";
 
-export const SOUND_LINK_LABEL: Record<SoundLinkKind, string> = {
-  asset: "Karakter/ressurs",
-  block: "Replikk/linje",
-  scene: "Scene",
-  segment: "Delsekvens",
-  event: "Hendelse",
-  production: "Produksjon",
-};
+export const SOUND_LINK_LABEL: Record<SoundLinkKind, string> = localized({
+  asset: ["Karakter/ressurs", "Character/asset"],
+  block: ["Replikk/linje", "Line/dialogue"],
+  scene: ["Scene", "Scene"],
+  segment: ["Delsekvens", "Segment"],
+  event: ["Hendelse", "Event"],
+  production: ["Produksjon", "Production"],
+});
 
 /** Sceneoverskrift med nummer i hovedfilmen (eller første produksjon den er med i). */
 function sceneText(s: ProjectState, sceneId: string): string {
@@ -36,32 +37,42 @@ function sceneText(s: ProjectState, sceneId: string): string {
 export function soundLinkLabel(s: ProjectState, l: SoundLink): string {
   switch (l.kind) {
     case "asset":
-      return s.assets[l.id]?.name ?? "(ressursen finnes ikke lenger)";
+      return (
+        s.assets[l.id]?.name ?? L("(ressursen finnes ikke lenger)", "(asset no longer exists)")
+      );
     case "block": {
       const b = s.blocks[l.id];
-      if (!b) return "(linjen finnes ikke lenger)";
+      if (!b) return L("(linjen finnes ikke lenger)", "(line no longer exists)");
       const v = s.variants[b.variantId];
       const t = b.text.replace(/\s+/g, " ").trim();
-      return `${v ? `${sceneText(s, v.sceneId)}: ` : ""}«${t.length > 60 ? `${t.slice(0, 57)}…` : t}»`;
+      const text = t.length > 60 ? `${t.slice(0, 57)}…` : t;
+      const prefix = v ? `${sceneText(s, v.sceneId)}: ` : "";
+      return L(`${prefix}«${text}»`, `${prefix}“${text}”`);
     }
     case "scene":
-      return s.scenes[l.id] ? sceneText(s, l.id) : "(scenen finnes ikke lenger)";
+      return s.scenes[l.id]
+        ? sceneText(s, l.id)
+        : L("(scenen finnes ikke lenger)", "(scene no longer exists)");
     case "segment": {
       const g = s.segments[l.id];
-      if (!g) return "(delsekvensen finnes ikke lenger)";
+      if (!g) return L("(delsekvensen finnes ikke lenger)", "(segment no longer exists)");
       const o = s.occurrences[g.occurrenceId];
       const all = Object.values(s.segments)
         .filter((x) => x.occurrenceId === g.occurrenceId && x.reason === g.reason)
         .sort((a, b) => compareKeys(a.orderKey, b.orderKey));
-      return `${o ? sceneText(s, o.sceneId) : "Scene"}, delsekvens ${all.indexOf(g) + 1}`;
+      return `${o ? sceneText(s, o.sceneId) : "Scene"}${L(", delsekvens ", ", segment ")}${all.indexOf(g) + 1}`;
     }
     case "event": {
       const e = s.continuityEvents[l.id];
-      if (!e) return "(hendelsen finnes ikke lenger)";
-      return `${s.assets[e.assetId]?.name ?? ""}: ${e.description || "hendelse"} (${sceneText(s, e.sceneId)})`;
+      if (!e) return L("(hendelsen finnes ikke lenger)", "(event no longer exists)");
+      const what = e.description || L("hendelse", "event");
+      return `${s.assets[e.assetId]?.name ?? ""}: ${what} (${sceneText(s, e.sceneId)})`;
     }
     case "production":
-      return s.productions[l.id]?.name ?? "(produksjonen finnes ikke lenger)";
+      return (
+        s.productions[l.id]?.name ??
+        L("(produksjonen finnes ikke lenger)", "(production no longer exists)")
+      );
   }
 }
 
@@ -87,5 +98,5 @@ export function soundCategories(s: ProjectState): string[] {
         .filter((a) => a.kind === "sound" && !a.archived && !a.removed && a.category.trim())
         .map((a) => a.category.trim()),
     ),
-  ].sort((a, b) => a.localeCompare(b, "nb"));
+  ].sort((a, b) => a.localeCompare(b, collation()));
 }

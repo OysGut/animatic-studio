@@ -16,9 +16,12 @@ import {
   formatHeading,
   newId,
   sortedAssets,
+  L,
+  collation,
   type AudioKind,
   type FilmClip,
   type ProjectState,
+  languageWord,
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { useImageUrls } from "@/app/library/asset-images";
@@ -88,7 +91,7 @@ export function AddAudioDialog({
 
   const sounds = useMemo(() => sortedAssets(state, "sound").filter((a) => !a.archived), [state]);
   const shown = sounds.filter((a) =>
-    a.name.toLocaleLowerCase("nb").includes(query.trim().toLocaleLowerCase("nb")),
+    a.name.toLocaleLowerCase(collation()).includes(query.trim().toLocaleLowerCase(collation())),
   );
   const paths = useMemo(
     () =>
@@ -162,7 +165,10 @@ export function AddAudioDialog({
             },
           ],
         },
-        `Legg til ${AUDIO_KIND_LABEL[kind].toLocaleLowerCase("nb")}`,
+        L(
+          `Legg til ${AUDIO_KIND_LABEL[kind].toLocaleLowerCase(collation())}`,
+          `Add ${AUDIO_KIND_LABEL[kind].toLocaleLowerCase(collation())}`,
+        ),
       );
       if (r.error) throw new Error(r.error);
       onAdded(clipId);
@@ -183,19 +189,24 @@ export function AddAudioDialog({
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
       <DialogContent className="max-h-[86vh] max-w-[640px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
-          <DialogTitle>Legg til lyd</DialogTitle>
+          <DialogTitle>{L("Legg til lyd", "Add audio")}</DialogTitle>
           <DialogDescription>
             {clip
-              ? `I scene ${clip.productionNumber ?? ""} ${formatHeading(clip.heading)}, ${formatSeconds(
-                  offsetMs / 1000,
-                )} ut i scenen. Lyden følger scenen hvis den flyttes.`
-              : "Velg en scene i tidslinjen først."}
+              ? L(
+                  `I scene ${clip.productionNumber ?? ""} ${formatHeading(clip.heading)}, ${formatSeconds(
+                    offsetMs / 1000,
+                  )} ut i scenen. Lyden følger scenen hvis den flyttes.`,
+                  `In scene ${clip.productionNumber ?? ""} ${formatHeading(clip.heading)}, ${formatSeconds(
+                    offsetMs / 1000,
+                  )} into the scene. The audio follows the scene if it is moved.`,
+                )
+              : L("Velg en scene i tidslinjen først.", "Choose a scene in the timeline first.")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid grid-cols-3 gap-3">
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            <span className={legend}>Spor</span>
+            <span className={legend}>{L("Spor", "Track")}</span>
             <select
               value={kind}
               onChange={(e) => {
@@ -213,14 +224,18 @@ export function AddAudioDialog({
             </select>
           </label>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            <span className={legend}>Replikk (valgfritt)</span>
+            <span className={legend}>{L("Replikk (valgfritt)", "Line (optional)")}</span>
             <select
               value={blockId}
               onChange={(e) => setBlockId(e.target.value)}
               disabled={lines.length === 0}
               className={select}
             >
-              <option value="">{lines.length ? "Ingen" : "Ingen replikker i scenen"}</option>
+              <option value="">
+                {lines.length
+                  ? L("Ingen", "None")
+                  : L("Ingen replikker i scenen", "No lines in the scene")}
+              </option>
               {lines.map((l) => (
                 <option key={l.id} value={l.id}>
                   {l.label}
@@ -229,9 +244,9 @@ export function AddAudioDialog({
             </select>
           </label>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            <span className={legend}>Språk</span>
+            <span className={legend}>{L("Språk", "Language")}</span>
             <select
-              aria-label="Språk"
+              aria-label={L("Språk", "Language")}
               value={lang}
               onChange={(e) => {
                 setLang(e.target.value);
@@ -240,34 +255,40 @@ export function AddAudioDialog({
               className={select}
             >
               <option value="">
-                Standard ({isVoiceKind(kind) ? LANGUAGE_LABEL[MAIN_LANGUAGE] : "felles"})
+                {L("Standard", "Default")} (
+                {isVoiceKind(kind) ? LANGUAGE_LABEL[MAIN_LANGUAGE] : L("felles", "shared")})
               </option>
-              <option value="*">Felles for alle språk</option>
+              <option value="*">{L("Felles for alle språk", "Shared for all languages")}</option>
               {FILM_LANGUAGES.map((l) => (
                 <option key={l} value={l}>
-                  Bare {(LANGUAGE_LABEL[l] ?? l).toLowerCase()}
+                  {L("Bare", "Only")} {languageWord(l)}
                 </option>
               ))}
             </select>
           </label>
         </div>
 
-        <section aria-label="Fra biblioteket" className="flex flex-col gap-2">
-          <h3 className={legend}>Fra biblioteket</h3>
+        <section
+          aria-label={L("Fra biblioteket", "From the library")}
+          className="flex flex-col gap-2"
+        >
+          <h3 className={legend}>{L("Fra biblioteket", "From the library")}</h3>
           {sounds.length === 0 ? (
-            <p className="text-xs text-text-tertiary">Ingen lydfiler i biblioteket ennå.</p>
+            <p className="text-xs text-text-tertiary">
+              {L("Ingen lydfiler i biblioteket ennå.", "No audio files in the library yet.")}
+            </p>
           ) : (
             <>
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Søk etter lyd …"
-                aria-label="Søk etter lyd"
+                placeholder={L("Søk etter lyd …", "Search for audio …")}
+                aria-label={L("Søk etter lyd", "Search for audio")}
                 className="h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary"
               />
               <ul
                 role="listbox"
-                aria-label="Lydfiler"
+                aria-label={L("Lydfiler", "Audio files")}
                 className="flex max-h-[240px] flex-col overflow-y-auto"
               >
                 {shown.map((a) => {
@@ -309,20 +330,22 @@ export function AddAudioDialog({
         </section>
 
         <section
-          aria-label="Ny lydfil"
+          aria-label={L("Ny lydfil", "New audio file")}
           className="flex flex-col gap-1.5 border-t border-border pt-3"
         >
-          <h3 className={legend}>Ny lydfil</h3>
+          <h3 className={legend}>{L("Ny lydfil", "New audio file")}</h3>
           <p className="text-xs text-text-tertiary">
-            MP3, WAV, OGG, M4A eller FLAC. Lagres i ressursbiblioteket (type «Lyd») og legges inn
-            her.
+            {L(
+              "MP3, WAV, OGG, M4A eller FLAC. Lagres i ressursbiblioteket (type «Lyd») og legges inn her.",
+              "MP3, WAV, OGG, M4A or FLAC. Saved in the asset library (type “Audio”) and added here.",
+            )}
           </p>
           <input
             ref={fileRef}
             type="file"
             accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac,.webm"
             className="sr-only"
-            aria-label="Velg lydfil"
+            aria-label={L("Velg lydfil", "Choose audio file")}
             onChange={(e) => {
               const f = e.target.files?.[0];
               if (f) void add(null, f);
@@ -336,7 +359,9 @@ export function AddAudioDialog({
             onClick={() => fileRef.current?.click()}
           >
             {busy ? <Loader2 className="animate-spin" /> : <Upload />}
-            {busy ? "Laster opp …" : "Last opp lydfil …"}
+            {busy
+              ? L("Laster opp …", "Uploading …")
+              : L("Last opp lydfil …", "Upload audio file …")}
           </Button>
         </section>
 
@@ -348,10 +373,10 @@ export function AddAudioDialog({
 
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={busy}>
-            Avbryt
+            {L("Avbryt", "Cancel")}
           </Button>
           <Button onClick={() => void add(assetId, null)} disabled={busy || !assetId || !clip}>
-            Legg til
+            {L("Legg til", "Add")}
           </Button>
         </DialogFooter>
       </DialogContent>

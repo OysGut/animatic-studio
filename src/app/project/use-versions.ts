@@ -4,6 +4,7 @@
  */
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  L,
   estimateProduction,
   productionStatus,
   projectDurationAssumptions,
@@ -49,7 +50,7 @@ export function useVersionSnapshot(versionId: string | null) {
     staleTime: Infinity, // uforanderlig
     queryFn: async (): Promise<ScriptSnapshot> => {
       const snapshot = await fetchScriptSnapshot(versionId!);
-      if (!snapshot) throw new Error("Versjonen finnes ikke");
+      if (!snapshot) throw new Error(L("Versjonen finnes ikke", "The version does not exist"));
       return snapshot;
     },
   });

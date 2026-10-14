@@ -7,13 +7,15 @@
 import { CheckCircle2, CircleHelp, Pause, Play, TriangleAlert } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import {
-  QUALITY_DISCLAIMER,
+  qualityDisclaimer,
   QUALITY_LABEL,
   chooseAttemptCommands,
   filmClips,
   videoQualityChecks,
   type QualityCheck,
   formatUsd,
+  L,
+  locale,
   newId,
   videoAttempts,
   type GenerationJob,
@@ -89,7 +91,11 @@ export function CompareTakesDialog({
     setErr(null);
     const group = newId();
     for (const c of chooseAttemptCommands(state, t.id)) {
-      const e = cmds.run(c as never, "Velg videoen for segmentet", group);
+      const e = cmds.run(
+        c as never,
+        L("Velg videoen for segmentet", "Choose the video for the segment"),
+        group,
+      );
       if (e) {
         setErr(e);
         return;
@@ -98,28 +104,42 @@ export function CompareTakesDialog({
   }
 
   const jobFor = (t: Take) => jobs.find((j) => j.resultPath === t.mediaRef);
-  const label = (t: Take) => `Forsøk ${attempts.length - attempts.indexOf(t)}`;
+  const label = (t: Take) =>
+    L(
+      `Forsøk ${attempts.length - attempts.indexOf(t)}`,
+      `Attempt ${attempts.length - attempts.indexOf(t)}`,
+    );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-5xl">
         <DialogHeader>
           <DialogTitle>
-            {attempts.length > 1 ? "Sammenlign videoer" : "Kontroller videoen"} – {title}
+            {attempts.length > 1
+              ? L("Sammenlign videoer", "Compare videos")
+              : L("Kontroller videoen", "Check the video")}{" "}
+            – {title}
           </DialogTitle>
           <DialogDescription>
-            {attempts.length} {attempts.length === 1 ? "video" : "videoer"} for segmentet. Den
-            valgte brukes når scenen settes sammen; de andre beholdes.
+            {attempts.length} {attempts.length === 1 ? L("video", "video") : L("videoer", "videos")}{" "}
+            {L(
+              "for segmentet. Den valgte brukes når scenen settes sammen; de andre beholdes.",
+              "for the segment. The chosen one is used when the scene is assembled; the others are kept.",
+            )}
           </DialogDescription>
         </DialogHeader>
         {attempts.length === 0 ? (
-          <p className="text-[13px] text-text-secondary">Segmentet har ingen video ennå.</p>
+          <p className="text-[13px] text-text-secondary">
+            {L("Segmentet har ingen video ennå.", "The segment has no video yet.")}
+          </p>
         ) : (
           <>
             <div className="flex items-center gap-2">
               <Button size="sm" variant="secondary" onClick={playBoth}>
                 {playing ? <Pause /> : <Play />}
-                {playing ? "Stopp" : "Spill begge fra start"}
+                {playing
+                  ? L("Stopp", "Stop")
+                  : L("Spill begge fra start", "Play both from the start")}
               </Button>
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -127,7 +147,11 @@ export function CompareTakesDialog({
                 t ? (
                   <div key={side} className="flex flex-col gap-1.5">
                     <select
-                      aria-label={side === 0 ? "Video til venstre" : "Video til høyre"}
+                      aria-label={
+                        side === 0
+                          ? L("Video til venstre", "Video on the left")
+                          : L("Video til høyre", "Video on the right")
+                      }
                       value={t.id}
                       onChange={(e) => (side === 0 ? setLeft : setRight)(e.target.value)}
                       className="h-7 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
@@ -135,7 +159,7 @@ export function CompareTakesDialog({
                       {attempts.map((x) => (
                         <option key={x.id} value={x.id}>
                           {label(x)}
-                          {x.status === "approved" ? " (valgt)" : ""}
+                          {x.status === "approved" ? L(" (valgt)", " (chosen)") : ""}
                         </option>
                       ))}
                     </select>
@@ -160,7 +184,8 @@ export function CompareTakesDialog({
                     {editable ? (
                       t.status === "approved" ? (
                         <span className="flex items-center gap-1 text-xs text-status-success">
-                          <CheckCircle2 className="size-3.5" aria-hidden /> Brukes for segmentet
+                          <CheckCircle2 className="size-3.5" aria-hidden />{" "}
+                          {L("Brukes for segmentet", "Used for the segment")}
                         </span>
                       ) : (
                         <Button
@@ -169,7 +194,7 @@ export function CompareTakesDialog({
                           className="self-start"
                           onClick={() => choose(t)}
                         >
-                          Velg denne
+                          {L("Velg denne", "Choose this one")}
                         </Button>
                       )
                     ) : null}
@@ -178,7 +203,10 @@ export function CompareTakesDialog({
               )}
             </div>
             <p className="text-[11px] text-text-tertiary">
-              Lyden spilles bare fra videoen til venstre når begge går samtidig.
+              {L(
+                "Lyden spilles bare fra videoen til venstre når begge går samtidig.",
+                "Sound is only played from the video on the left when both play at the same time.",
+              )}
             </p>
           </>
         )}
@@ -197,15 +225,17 @@ function AttemptInfo({ take, job }: { take: Take; job: GenerationJob | undefined
   return (
     <div className="text-[11px] text-text-tertiary">
       <p>
-        {job ? `${job.provider} – ${job.model}` : "AI-video"}
+        {job ? `${job.provider} – ${job.model}` : L("AI-video", "AI video")}
         {secs ? ` · ${secs} s` : ""}
         {take.media?.width ? ` · ${take.media.width}×${take.media.height}` : ""}
         {job?.costUsd ? ` · ~${formatUsd(job.costUsd)}` : ""}
-        {job ? ` · ${new Date(job.createdAt).toLocaleString("nb-NO")}` : ""}
+        {job ? ` · ${new Date(job.createdAt).toLocaleString(locale())}` : ""}
       </p>
       {job ? (
         <details>
-          <summary className="cursor-pointer">Beskrivelsen som ble sendt</summary>
+          <summary className="cursor-pointer">
+            {L("Beskrivelsen som ble sendt", "The description that was sent")}
+          </summary>
           <pre className="mt-1 max-h-40 overflow-y-auto whitespace-pre-wrap font-mono text-[11px] text-text-secondary">
             {job.prompt}
           </pre>
@@ -219,8 +249,8 @@ function AttemptInfo({ take, job }: { take: Take; job: GenerationJob | undefined
 function QualityList({ checks }: { checks: readonly QualityCheck[] }) {
   return (
     <div className="rounded-sm border border-border bg-surface-1 p-2 text-[11px]">
-      <p className="mb-1 font-medium text-text-secondary">Sjekkliste</p>
-      <ul className="flex flex-col gap-0.5" aria-label="Sjekkliste">
+      <p className="mb-1 font-medium text-text-secondary">{L("Sjekkliste", "Checklist")}</p>
+      <ul className="flex flex-col gap-0.5" aria-label={L("Sjekkliste", "Checklist")}>
         {checks.map((c) => (
           <li key={c.criterion} className="flex items-start gap-1.5">
             {c.status === "ok" ? (
@@ -237,7 +267,7 @@ function QualityList({ checks }: { checks: readonly QualityCheck[] }) {
           </li>
         ))}
       </ul>
-      <p className="mt-1 text-text-tertiary">{QUALITY_DISCLAIMER}</p>
+      <p className="mt-1 text-text-tertiary">{qualityDisclaimer()}</p>
     </div>
   );
 }

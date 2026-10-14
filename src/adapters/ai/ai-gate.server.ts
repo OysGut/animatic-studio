@@ -9,7 +9,7 @@
  *   igjen etter (samtidige jobber).
  * - Prosjektets eget budsjett (antall genereringer per måned, DEC-0053) gjelder i tillegg.
  */
-import { monthStartUtc } from "@/core";
+import { L, monthStartUtc } from "@/core";
 import type { AnyClient } from "@/adapters/storage/project-rows";
 
 export const ROLE_RANK: Record<string, number> = { viewer: 1, commenter: 2, editor: 3, owner: 4 };
@@ -148,13 +148,22 @@ export async function overAccountCap(
   if (cap === null) return null;
   // Uten et gyldig anslag kan taket ikke kontrolleres: stopp heller enn å slippe gjennom (INV-12)
   if (!Number.isFinite(estimate))
-    return "Prisen for jobben kunne ikke anslås, så kostnadstaket kan ikke kontrolleres. Jobben ble ikke sendt.";
+    return L(
+      "Prisen for jobben kunne ikke anslås, så kostnadstaket kan ikke kontrolleres. Jobben ble ikke sendt.",
+      "The price of the job could not be estimated, so the cost cap cannot be checked. The job was not sent.",
+    );
   const used = await usedUsd(admin, ownerId);
   if (!Number.isFinite(used))
-    return "Forbruket for nøkkelen kunne ikke regnes ut, så kostnadstaket kan ikke kontrolleres. Jobben ble ikke sendt.";
+    return L(
+      "Forbruket for nøkkelen kunne ikke regnes ut, så kostnadstaket kan ikke kontrolleres. Jobben ble ikke sendt.",
+      "The usage for the key could not be calculated, so the cost cap cannot be checked. The job was not sent.",
+    );
   const total = includesThisJob ? used : used + estimate;
   if (total > cap + 1e-9)
-    return `Kostnadstaket for nøkkelen (${cap.toFixed(2)} USD per måned) er nådd – brukt ca. ${(includesThisJob ? used - estimate : used).toFixed(2)} USD, denne jobben ca. ${estimate.toFixed(2)} USD. Eieren kan endre taket under «AI-leverandører».`;
+    return L(
+      `Kostnadstaket for nøkkelen (${cap.toFixed(2)} USD per måned) er nådd – brukt ca. ${(includesThisJob ? used - estimate : used).toFixed(2)} USD, denne jobben ca. ${estimate.toFixed(2)} USD. Eieren kan endre taket under «AI-leverandører».`,
+      `The cost cap for the key (${cap.toFixed(2)} USD per month) has been reached – about ${(includesThisJob ? used - estimate : used).toFixed(2)} USD used, this job about ${estimate.toFixed(2)} USD. The owner can change the cap under “AI providers”.`,
+    );
   return null;
 }
 
@@ -175,6 +184,9 @@ export async function overProjectBudget(
     .gte("created_at", monthStartUtc(new Date()).toISOString());
   const used = count ?? 0;
   if (includesThisJob ? used > limit : used >= limit)
-    return `Prosjektets AI-budsjett for denne måneden (${limit} genereringer) er brukt opp. Eieren kan endre budsjettet på prosjektoversikten.`;
+    return L(
+      `Prosjektets AI-budsjett for denne måneden (${limit} genereringer) er brukt opp. Eieren kan endre budsjettet på prosjektoversikten.`,
+      `The project's AI budget for this month (${limit} generations) has been used up. The owner can change the budget on the project overview.`,
+    );
   return null;
 }

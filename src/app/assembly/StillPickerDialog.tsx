@@ -6,6 +6,8 @@
 import { ImageIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
+  L,
+  locale,
   STILL_MAX_MS,
   STILL_MIN_MS,
   newId,
@@ -63,11 +65,14 @@ export function StillPickerDialog({
       () => newId(),
     );
     if (!cmds) {
-      setErr("Ugyldig lengde.");
+      setErr(L("Ugyldig lengde.", "Invalid length."));
       return;
     }
     const group = newId();
-    const label = `Stillbilde «${choice.asset.name}» i scenen`;
+    const label = L(
+      `Stillbilde «${choice.asset.name}» i scenen`,
+      `Still “${choice.asset.name}” in the scene`,
+    );
     for (const c of cmds) {
       const e = run(c as never, label, group);
       if (e) {
@@ -82,19 +87,24 @@ export function StillPickerDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
-          <DialogTitle>Stillbilde i scenen</DialogTitle>
+          <DialogTitle>{L("Stillbilde i scenen", "Still in the scene")}</DialogTitle>
           <DialogDescription>
-            Velg et bilde fra ressursbiblioteket og hvor lenge det skal vises. Bildet vises uendret
-            i visningen og i eksporten; lengden kan endres etterpå under «Klipp».
+            {L(
+              "Velg et bilde fra ressursbiblioteket og hvor lenge det skal vises. Bildet vises uendret i visningen og i eksporten; lengden kan endres etterpå under «Klipp».",
+              "Choose an image from the asset library and how long it should be shown. The image is shown unchanged in the view and in the export; the length can be changed afterwards under “Cut”.",
+            )}
           </DialogDescription>
         </DialogHeader>
         {list.length === 0 ? (
           <p className="text-[13px] text-text-secondary">
-            Biblioteket har ingen bilder ennå. Last opp et bilde i ressursbiblioteket først.
+            {L(
+              "Biblioteket har ingen bilder ennå. Last opp et bilde i ressursbiblioteket først.",
+              "The library has no images yet. Upload an image to the asset library first.",
+            )}
           </p>
         ) : (
           <ul
-            aria-label="Bilder i biblioteket"
+            aria-label={L("Bilder i biblioteket", "Images in the library")}
             className="grid max-h-[50vh] grid-cols-4 gap-2 overflow-y-auto"
           >
             {list.map((x) => (
@@ -132,11 +142,11 @@ export function StillPickerDialog({
         )}
         <div className="flex flex-wrap items-center gap-3 text-xs text-text-secondary">
           <label className="flex items-center gap-1.5">
-            Varighet
+            {L("Varighet", "Duration")}
             <input
               type="text"
               inputMode="decimal"
-              aria-label="Varighet i sekunder"
+              aria-label={L("Varighet i sekunder", "Duration in seconds")}
               value={seconds}
               onChange={(e) => setSeconds(e.target.value)}
               className="h-7 w-16 rounded-sm border border-border-control bg-surface-3 px-1.5 text-right text-xs text-text-primary"
@@ -150,7 +160,7 @@ export function StillPickerDialog({
               checked={mode === "replace"}
               onChange={() => setMode("replace")}
             />
-            Hele scenen
+            {L("Hele scenen", "Whole scene")}
           </label>
           <label className="flex items-center gap-1.5">
             <input
@@ -159,11 +169,12 @@ export function StillPickerDialog({
               checked={mode === "append"}
               onChange={() => setMode("append")}
             />
-            Ny del etter de andre
+            {L("Ny del etter de andre", "New part after the others")}
           </label>
           {!msOk ? (
             <span className="text-status-danger">
-              Mellom {(STILL_MIN_MS / 1000).toLocaleString("nb-NO")} s og {STILL_MAX_MS / 60000} min
+              {L("Mellom", "Between")} {(STILL_MIN_MS / 1000).toLocaleString(locale())} s{" "}
+              {L("og", "and")} {STILL_MAX_MS / 60000} min
             </span>
           ) : null}
         </div>
@@ -174,10 +185,10 @@ export function StillPickerDialog({
         ) : null}
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Avbryt
+            {L("Avbryt", "Cancel")}
           </Button>
           <Button onClick={use} disabled={!choice || !msOk}>
-            Bruk stillbildet
+            {L("Bruk stillbildet", "Use the still")}
           </Button>
         </DialogFooter>
       </DialogContent>

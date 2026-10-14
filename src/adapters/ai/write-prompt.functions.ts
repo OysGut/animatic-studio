@@ -13,7 +13,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
+  cleanVisualBrief,
   cleanWrittenPrompt,
+  STYLE_ANALYSIS_SYSTEM,
+  VISUAL_BRIEF_SYSTEM,
   isUuid,
   newId,
   promptWriterUserText,
@@ -21,6 +24,7 @@ import {
   MAX_PROMPT_CHARS,
   PROMPT_WRITER_SYSTEM,
 } from "@/core";
+import { L } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 import {
   GATEWAY,
@@ -49,9 +53,18 @@ const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
 const MAX_TOTAL_IMAGE_BYTES = 12 * 1024 * 1024;
 const BUCKET = "assets";
 
+/**
+ * Oppgaven (DEC-0080): «prompt» skriver bildebeskrivelsen (som før); «style» analyserer stilen i
+ * forbildebildene (svar som JSON); «visual» lager det visuelle faktaarket for en ressurs. For «style» og
+ * «visual» er `brief` selve brukermeldingen (laget i kjernen).
+ */
+export type WriteTask = "prompt" | "style" | "visual";
+
 export interface WritePromptInput {
   readonly projectId: string;
-  readonly assetId: string;
+  /** Ressursen (ikke for stilanalysen, som gjelder hele filmen). */
+  readonly assetId: string | null;
+  readonly task: WriteTask;
   readonly brief: string;
   readonly purpose: "cutout" | "background";
   /** Bildene som skal sendes med til bildemodellen, i samme rekkefølge, med hva de viser. */
@@ -65,17 +78,29 @@ export type WritePromptResult =
   | { readonly ok: false; readonly message: string };
 
 function validate(d: unknown): WritePromptInput {
-  if (!d || typeof d !== "object") throw new Error("Ugyldig forespørsel");
+  if (!d || typeof d !== "object") throw new Error(L("Ugyldig forespørsel", "Invalid request"));
   const x = d as Record<string, unknown>;
   const projectId = x["projectId"];
   const assetId = x["assetId"];
   const brief = x["brief"];
   const images = x["images"];
-  if (typeof projectId !== "string" || !isUuid(projectId)) throw new Error("Ugyldig prosjekt");
-  if (typeof assetId !== "string" || !isUuid(assetId)) throw new Error("Ugyldig ressurs");
+  if (typeof projectId !== "string" || !isUuid(projectId))
+    throw new Error(L("Ugyldig prosjekt", "Invalid project"));
+  const task: WriteTask =
+    x["task"] === "style" || x["task"] === "visual" ? (x["task"] as WriteTask) : "prompt";
+  if (task !== "style" && (typeof assetId !== "string" || !isUuid(assetId)))
+    throw new Error(L("Ugyldig ressurs", "Invalid asset"));
+  if (
+    task === "style" &&
+    assetId !== null &&
+    assetId !== undefined &&
+    (typeof assetId !== "string" || !isUuid(assetId))
+  )
+    throw new Error(L("Ugyldig ressurs", "Invalid asset"));
   if (typeof brief !== "string" || !brief.trim() || brief.length > MAX_PROMPT_CHARS)
-    throw new Error("Grunnlaget mangler eller er for langt");
-  if (x["purpose"] !== "cutout" && x["purpose"] !== "background") throw new Error("Ugyldig bruk");
+    throw new Error(L("Grunnlaget mangler eller er for langt", "The basis is missing or too long"));
+  if (x["purpose"] !== "cutout" && x["purpose"] !== "background")
+    throw new Error(L("Ugyldig bruk", "Invalid use"));
   if (
     !Array.isArray(images) ||
     images.length > MAX_ATTACHED_IMAGES ||
@@ -88,11 +113,12 @@ function validate(d: unknown): WritePromptInput {
         ((i as Record<string, unknown>)["label"] as string).length <= 300,
     )
   )
-    throw new Error("Ugyldige bilder");
-  if (x["approved"] !== true) throw new Error("Må bekreftes");
+    throw new Error(L("Ugyldige bilder", "Invalid images"));
+  if (x["approved"] !== true) throw new Error(L("Må bekreftes", "Must be confirmed"));
   return {
     projectId,
-    assetId,
+    assetId: typeof assetId === "string" ? assetId : null,
+    task,
     brief: brief.trim(),
     purpose: x["purpose"],
     images: images as { path: string; label: string }[],
@@ -131,7 +157,13 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
       .is("removed_at", null)
       .maybeSingle();
     if ((ROLE_RANK[(member as { role?: string } | null)?.role ?? ""] ?? 0) < ROLE_RANK["editor"]!)
-      return { ok: false, message: "Du har ikke tilgang til å bruke AI i dette prosjektet." };
+      return {
+        ok: false,
+        message: L(
+          "Du har ikke tilgang til å bruke AI i dette prosjektet.",
+          "You do not have access to use AI in this project.",
+        ),
+      };
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const admin = supabaseAdmin as unknown as AnyClient;
@@ -139,15 +171,19 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
     if (schema.kind === "missing" || schema.version < 22)
       return {
         ok: false,
-        message:
+        message: L(
           "Databasen er ikke oppdatert for AI-skrevne beskrivelser. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0022).",
+          "The database is not updated for AI-written descriptions. Paste the message in LOVABLE_SYNC.md into Lovable (migration 0022).",
+        ),
       };
     const key = process.env["LOVABLE_API_KEY"];
     if (!key)
       return {
         ok: false,
-        message:
+        message: L(
           "AI er ikke slått på for prosjektet i Lovable (LOVABLE_API_KEY mangler). Se LOVABLE_SYNC.md.",
+          "AI is not turned on for the project in Lovable (LOVABLE_API_KEY is missing). See LOVABLE_SYNC.md.",
+        ),
       };
 
     const { data: proj } = await admin
@@ -156,23 +192,41 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
       .eq("id", data.projectId)
       .maybeSingle();
     if (!proj || (proj as { deleted_at?: string | null }).deleted_at)
-      return { ok: false, message: "Prosjektet er slettet." };
+      return { ok: false, message: L("Prosjektet er slettet.", "The project has been deleted.") };
     // Eieren har slått av AI (budsjett 0): heller ingen AI-skrevne beskrivelser
     if ((proj as { ai_month_limit?: number | null }).ai_month_limit === 0)
       return {
         ok: false,
-        message:
+        message: L(
           "AI er slått av for prosjektet (budsjettet er 0). Eieren kan endre det på prosjektoversikten.",
+          "AI is turned off for the project (the budget is 0). The owner can change this on the project overview.",
+        ),
       };
-    const { data: asset } = await admin
-      .from("assets")
-      .select("id, kind")
-      .eq("id", data.assetId)
-      .eq("project_id", data.projectId)
-      .maybeSingle();
-    if (!asset) return { ok: false, message: "Ressursen finnes ikke i prosjektet." };
-    if ((asset as { kind: string }).kind === "sound")
-      return { ok: false, message: "Lyd kan ikke få en bildebeskrivelse." };
+    if (data.assetId) {
+      const { data: asset } = await admin
+        .from("assets")
+        .select("id, kind")
+        .eq("id", data.assetId)
+        .eq("project_id", data.projectId)
+        .maybeSingle();
+      if (!asset)
+        return {
+          ok: false,
+          message: L(
+            "Ressursen finnes ikke i prosjektet.",
+            "The asset does not exist in the project.",
+          ),
+        };
+      if ((asset as { kind: string }).kind === "sound" && data.task !== "visual")
+        return {
+          ok: false,
+          message: L(
+            "Lyd kan ikke få en bildebeskrivelse.",
+            "Sound cannot get an image description.",
+          ),
+        };
+    } else if (data.task !== "style")
+      return { ok: false, message: L("Ressursen mangler.", "The asset is missing.") };
     const refCheck = await referenceImages(
       admin,
       data.projectId,
@@ -199,9 +253,15 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
           .gte("created_at", dayAgo),
       ]);
       if ((mine ?? 0) - extra >= MAX_PROMPT_JOBS_PER_USER_PER_HOUR)
-        return `Grensen på ${MAX_PROMPT_JOBS_PER_USER_PER_HOUR} AI-beskrivelser i timen er nådd. Prøv igjen senere.`;
+        return L(
+          `Grensen på ${MAX_PROMPT_JOBS_PER_USER_PER_HOUR} AI-beskrivelser i timen er nådd. Prøv igjen senere.`,
+          `The limit of ${MAX_PROMPT_JOBS_PER_USER_PER_HOUR} AI descriptions per hour has been reached. Try again later.`,
+        );
       if ((project ?? 0) - extra >= MAX_PROMPT_JOBS_PER_PROJECT_PER_DAY)
-        return `Prosjektets grense på ${MAX_PROMPT_JOBS_PER_PROJECT_PER_DAY} AI-beskrivelser i døgnet er nådd.`;
+        return L(
+          `Prosjektets grense på ${MAX_PROMPT_JOBS_PER_PROJECT_PER_DAY} AI-beskrivelser i døgnet er nådd.`,
+          `The project's limit of ${MAX_PROMPT_JOBS_PER_PROJECT_PER_DAY} AI descriptions per day has been reached.`,
+        );
       return null;
     };
     const before = await overLimit(0);
@@ -227,7 +287,12 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
               trace: await (
                 await import("./trace.server")
               ).buildTrace(admin as AnyClient, data.projectId, {
-                systemInstruction: "prompt-writer",
+                systemInstruction:
+                  data.task === "style"
+                    ? "style-analysis"
+                    : data.task === "visual"
+                      ? "visual-brief"
+                      : "prompt-writer",
                 modelParams: { purpose: data.purpose, images: data.images.length },
                 referencePaths: data.images.map((i) => i.path),
               }),
@@ -237,7 +302,14 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
       status: "running",
       created_by: context.userId,
     } as never);
-    if (logErr) return { ok: false, message: `Kallet kunne ikke logges: ${logErr.message}` };
+    if (logErr)
+      return {
+        ok: false,
+        message: L(
+          `Kallet kunne ikke logges: ${logErr.message}`,
+          `The call could not be logged: ${logErr.message}`,
+        ),
+      };
     // Samtidige forespørsler: tell på nytt med denne jobben registrert
     const after = await overLimit(1);
     if (after) {
@@ -279,11 +351,18 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
           image_url: { url: `data:${type};base64,${base64(bytes)}` },
         });
       }
-      const text = promptWriterUserText({
-        brief: data.brief,
-        purpose: data.purpose,
-        imageLabels: labels,
-      });
+      // Stilanalysen og faktaarket: briefen er brukermeldingen; bilder som ikke kunne vises, nevnes
+      const skipped = labels.filter((l) => l.endsWith("(not shown to you)"));
+      const text =
+        data.task === "prompt"
+          ? promptWriterUserText({ brief: data.brief, purpose: data.purpose, imageLabels: labels })
+          : `${data.brief}${skipped.length ? `\n\nNot shown to you: ${skipped.join("; ")}` : ""}`;
+      const system =
+        data.task === "style"
+          ? STYLE_ANALYSIS_SYSTEM
+          : data.task === "visual"
+            ? VISUAL_BRIEF_SYSTEM
+            : PROMPT_WRITER_SYSTEM;
       const headers = {
         Authorization: `Bearer ${key}`,
         "Lovable-API-Key": key,
@@ -298,7 +377,7 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
           body: JSON.stringify({
             model,
             messages: [
-              { role: "system", content: PROMPT_WRITER_SYSTEM },
+              { role: "system", content: system },
               { role: "user", content: [{ type: "text", text }, ...parts] },
             ],
           }),
@@ -311,11 +390,28 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
           await finish({ status: "failed", model, error: log.join("\n").slice(0, 2000) });
           return { ok: false, message: gatewayError(res.status, body) };
         }
-        const written = cleanWrittenPrompt(messageText(await res.json()));
+        const raw = messageText(await res.json());
+        const written =
+          data.task === "visual"
+            ? cleanVisualBrief(raw)
+            : data.task === "style"
+              ? raw.trim().slice(0, 12000) || null
+              : cleanWrittenPrompt(raw);
         if (!written) {
-          await finish({ status: "failed", model, error: "Tomt svar fra språkmodellen" });
-          return { ok: false, message: "AI-tjenesten svarte uten tekst. Prøv igjen." };
+          await finish({
+            status: "failed",
+            model,
+            error: L("Tomt svar fra språkmodellen", "Empty reply from the language model"),
+          });
+          return {
+            ok: false,
+            message: L(
+              "AI-tjenesten svarte uten tekst. Prøv igjen.",
+              "The AI service replied without text. Try again.",
+            ),
+          };
         }
+        // i18n-ignore: serverlogg for utvikleren
         if (log.length) console.warn("[writeImagePrompt] modeller hoppet over:", log.join(" | "));
         await finish({ status: "done", model, result_text: written });
         return { ok: true, prompt: written, model, jobId };
@@ -323,18 +419,26 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
       await finish({ status: "failed", error: log.join("\n").slice(0, 2000) });
       return {
         ok: false,
-        message:
+        message: L(
           "Lovable kjente ikke igjen noen av språkmodellene. Sett ANIMATIC_TEXT_MODEL i Lovable Cloud (se LOVABLE_SYNC.md).",
+          "Lovable did not recognise any of the language models. Set ANIMATIC_TEXT_MODEL in Lovable Cloud (see LOVABLE_SYNC.md).",
+        ),
       };
     } catch (e) {
-      const message = (e as Error).message || "Ukjent feil";
+      const message = (e as Error).message || L("Ukjent feil", "Unknown error");
       await finish({ status: "failed", error: message.slice(0, 2000) });
       return {
         ok: false,
         message:
           (e as Error).name === "TimeoutError"
-            ? "AI-tjenesten brukte for lang tid. Prøv igjen."
-            : `Beskrivelsen ble ikke skrevet: ${message}`,
+            ? L(
+                "AI-tjenesten brukte for lang tid. Prøv igjen.",
+                "The AI service took too long. Try again.",
+              )
+            : L(
+                `Beskrivelsen ble ikke skrevet: ${message}`,
+                `The description was not written: ${message}`,
+              ),
       };
     }
   });

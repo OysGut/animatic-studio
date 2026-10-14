@@ -1,8 +1,23 @@
 # Pågående arbeid
 
-Oppdatert: 2026-10-13 (økt 6, DEC-0061–0078)
+Oppdatert: 2026-10-14 (økt 6, DEC-0061–0082)
 
-## Nå: DEC-0061 – M8 del 1: plakater, karakterkart og relasjoner – ferdig, venter på Mars
+## Nå: DEC-0081/0082 – norsk og engelsk, ny prosjektliste – ferdig, venter på Mars
+- [x] Språkvalg og hele grensesnittet oversatt; kontroll i testene (REQ-0629/0630)
+- [x] Prosjektlisten: boks per prosjekt, eier, rolle, varianter med dato og notat; notat per produksjon (REQ-0631/0632, migrasjon 0031)
+- [x] tsc, Vitest, DB 59/59, nettlesersuitene og engelsk gjennomgang grønne
+- [ ] **Mars:** commit og push, lim inn LOVABLE_SYNC (0030 og 0031)
+- [ ] **Mars:** la en engelskspråklig teste teksten (KI-198)
+- [ ] **Mars:** skal faste tekster i eksporterte filer følge språket i tjenesten? (antatt ja)
+
+## Før: DEC-0080 – bildeverktøy, vinkler, promptmotor, oppskalering, lesevisning – ferdig, venter på Mars
+- [x] Del A (13 punkter), D (promptmotor, stilanalyse, faktaark), B (vinkler, Seedream/Qwen), C (oppskalering) – REQ-0610–0628
+- [x] Migrasjon 0030; Vitest 1074, DB 58/58, nettlesersuitene grønne, skjermbilder g01–g17
+- [ ] **Mars:** commit og push, lim inn LOVABLE_SYNC (0030)
+- [ ] **Mars:** prøv vinkler, Seedream/Qwen, oppskalering, stilanalyse og faktaark med ekte nøkler (KI-193)
+- [ ] **Mars:** skal «Sort tekst på hvit bakgrunn» også gjelde arkene?
+
+## Før: DEC-0061 – M8 del 1: plakater, karakterkart og relasjoner – ferdig, venter på Mars
 - [x] «Utgivelse»: kinopitch-plakat og karakter- og universkart per produksjon, 70 × 100 cm m.fl., norsk og engelsk (REQ-0384–0389, REQ-0403/0404)
 - [x] Førsteutkast fra prosjektet, 13 innholdsvalg, ny komposisjon som beholder brukerens endringer, lesbarhetskontroll (REQ-0390–0392, REQ-0396)
 - [x] Relasjoner med forslag fra manuset, godkjenning og redigering (REQ-0393–0395); egne elementer og direkte redigering (REQ-0397–0399)

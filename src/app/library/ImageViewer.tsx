@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState, type PointerEvent } from "react";
 import { createPortal } from "react-dom";
-import { versionFileName, type AssetVersion, type ProjectState } from "@/core";
+import { L, versionFileName, type AssetVersion, type ProjectState } from "@/core";
 import { prepareDownload } from "@/app/download";
 import { Button } from "@/components/ui/button";
 
@@ -165,7 +165,13 @@ export function ImageViewer({
     setError(null);
     try {
       const res = await fetch(url);
-      if (!res.ok) throw new Error(`Bildet kunne ikke hentes (${res.status})`);
+      if (!res.ok)
+        throw new Error(
+          L(
+            `Bildet kunne ikke hentes (${res.status})`,
+            `The image could not be fetched (${res.status})`,
+          ),
+        );
       const bytes = new Uint8Array(await res.arrayBuffer());
       prepareDownload(bytes, versionFileName(state, v), v.mimeType || "image/png");
     } catch (e) {
@@ -197,7 +203,7 @@ export function ImageViewer({
       ref={rootRef}
       role="dialog"
       aria-modal="true"
-      aria-label={`Bilde: ${name}`}
+      aria-label={L(`Bilde: ${name}`, `Image: ${name}`)}
       className="fixed inset-0 z-[100] flex flex-col text-white"
       style={{ background: "rgb(8, 8, 10)" }}
     >
@@ -219,8 +225,8 @@ export function ImageViewer({
               className="size-8 text-white hover:bg-white/10"
               disabled={index === 0}
               onClick={() => onIndex(index - 1)}
-              aria-label="Forrige versjon"
-              title="Forrige versjon (←)"
+              aria-label={L("Forrige versjon", "Previous version")}
+              title={L("Forrige versjon (←)", "Previous version (←)")}
             >
               <ChevronLeft />
             </Button>
@@ -231,8 +237,8 @@ export function ImageViewer({
               className="size-8 text-white hover:bg-white/10"
               disabled={index === versions.length - 1}
               onClick={() => onIndex(index + 1)}
-              aria-label="Neste versjon"
-              title="Neste versjon (→)"
+              aria-label={L("Neste versjon", "Next version")}
+              title={L("Neste versjon (→)", "Next version (→)")}
             >
               <ChevronRight />
             </Button>
@@ -244,8 +250,8 @@ export function ImageViewer({
           variant="ghost"
           className="size-8 text-white hover:bg-white/10"
           onClick={() => zoomAt(0.8)}
-          aria-label="Zoom ut"
-          title="Zoom ut (−)"
+          aria-label={L("Zoom ut", "Zoom out")}
+          title={L("Zoom ut (−)", "Zoom out (−)")}
         >
           <Minus />
         </Button>
@@ -260,8 +266,8 @@ export function ImageViewer({
           variant="ghost"
           className="size-8 text-white hover:bg-white/10"
           onClick={() => zoomAt(1.25)}
-          aria-label="Zoom inn"
-          title="Zoom inn (+)"
+          aria-label={L("Zoom inn", "Zoom in")}
+          title={L("Zoom inn (+)", "Zoom in (+)")}
         >
           <Plus />
         </Button>
@@ -270,10 +276,10 @@ export function ImageViewer({
           variant="ghost"
           className="text-white hover:bg-white/10"
           onClick={fit}
-          title="Hele bildet (0)"
+          title={L("Hele bildet (0)", "Whole image (0)")}
         >
           <Maximize />
-          Tilpass
+          {L("Tilpass", "Fit")}
         </Button>
         <Button
           size="sm"
@@ -293,10 +299,10 @@ export function ImageViewer({
           variant="secondary"
           onClick={download}
           disabled={busy || !url}
-          title={`Last ned som «${name}»`}
+          title={L(`Last ned som «${name}»`, `Download as “${name}”`)}
         >
           {busy ? <Loader2 className="animate-spin" /> : <Download />}
-          Last ned
+          {L("Last ned", "Download")}
         </Button>
         <Button
           ref={closeRef}
@@ -304,8 +310,8 @@ export function ImageViewer({
           variant="ghost"
           className="size-8 text-white hover:bg-white/10"
           onClick={onClose}
-          aria-label="Lukk"
-          title="Lukk (Esc)"
+          aria-label={L("Lukk", "Close")}
+          title={L("Lukk (Esc)", "Close (Esc)")}
         >
           <X />
         </Button>
@@ -355,8 +361,10 @@ export function ImageViewer({
         )}
       </div>
       <p className="shrink-0 px-3 py-1.5 text-center text-[11px] text-white/50">
-        Rullehjul zoomer · dra for å flytte · dobbeltklikk veksler mellom hele bildet og zoom · ← →
-        bytter versjon · Esc lukker
+        {L(
+          "Rullehjul zoomer · dra for å flytte · dobbeltklikk veksler mellom hele bildet og zoom · ← → bytter versjon · Esc lukker",
+          "Scroll wheel zooms · drag to move · double-click switches between the whole image and zoom · ← → changes version · Esc closes",
+        )}
       </p>
     </div>,
     document.body,

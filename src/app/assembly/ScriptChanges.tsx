@@ -13,6 +13,8 @@ import {
   filmClips,
   newId,
   scriptRevertCommands,
+  L,
+  localized,
   type Command,
   type Discrepancy,
   type ProjectState,
@@ -23,20 +25,20 @@ import { AiUpdateSection } from "./AiUpdateSection";
 
 type Run = (command: Command, label: string, group?: string) => string | null;
 
-const KIND_LABEL: Record<ScriptChange["kind"], string> = {
-  changed: "Endret",
-  added: "Ny",
-  removed: "Fjernet",
-};
-const BLOCK_LABEL: Record<string, string> = {
-  action: "Handling",
-  character: "Karakter",
-  parenthetical: "Parentes",
-  dialogue: "Replikk",
-  transition: "Overgang",
-  shot: "Bilde",
-  note: "Notat",
-};
+const KIND_LABEL: Record<ScriptChange["kind"], string> = localized({
+  changed: ["Endret", "Changed"],
+  added: ["Ny", "New"],
+  removed: ["Fjernet", "Removed"],
+});
+const BLOCK_LABEL: Record<string, string> = localized({
+  action: ["Handling", "Action"],
+  character: ["Karakter", "Character"],
+  parenthetical: ["Parentes", "Parenthetical"],
+  dialogue: ["Replikk", "Dialogue"],
+  transition: ["Overgang", "Transition"],
+  shot: ["Bilde", "Shot"],
+  note: ["Notat", "Note"],
+});
 
 /** Avvikene for én scene (samme beregning som i tidslinjen). */
 export function useSceneDiscrepancies(state: ProjectState, occurrenceId: string | null) {
@@ -93,7 +95,10 @@ export function ScriptChanges({
     const takeIds = mats.filter((m) => m.kind === "take").map((m) => m.id);
     if (compositionIds.length + takeIds.length === 0) {
       setError(
-        "2D-scenen deles med hovedfilmen. Godkjenn den i hovedfilmen, eller lag egen versjon.",
+        L(
+          "2D-scenen deles med hovedfilmen. Godkjenn den i hovedfilmen, eller lag egen versjon.",
+          "The 2D scene is shared with the main film. Approve it in the main film, or make your own version.",
+        ),
       );
       return;
     }
@@ -105,7 +110,7 @@ export function ScriptChanges({
           compositionIds: compositionIds as never,
           takeIds: takeIds as never,
         },
-        "Godkjenn manusendringer",
+        L("Godkjenn manusendringer", "Approve script changes"),
       ),
     );
   }
@@ -118,7 +123,12 @@ export function ScriptChanges({
     setConfirmUndo(false);
     const cmds = revertCommands(items);
     if (cmds.length === 0) {
-      setError("Endringen kan ikke angres herfra (den gamle teksten finnes ikke lenger).");
+      setError(
+        L(
+          "Endringen kan ikke angres herfra (den gamle teksten finnes ikke lenger).",
+          "The change cannot be undone from here (the old text no longer exists).",
+        ),
+      );
       return;
     }
     // Prøv alt på en kopi først, så en angring ikke blir halvveis (f.eks. delt scene i en spinoff)
@@ -131,14 +141,25 @@ export function ScriptChanges({
         command: c,
       });
       if (!r.ok) {
-        setError(`Manusendringen kan ikke angres herfra: ${r.error.message}`);
+        setError(
+          L(
+            `Manusendringen kan ikke angres herfra: ${r.error.message}`,
+            `The script change cannot be undone from here: ${r.error.message}`,
+          ),
+        );
         return;
       }
       probe = r.state;
     }
     const group = newId();
     for (const c of cmds) {
-      const err = run(c, items.length === 1 ? "Angre manusendring" : "Angre manusendringer", group);
+      const err = run(
+        c,
+        items.length === 1
+          ? L("Angre manusendring", "Undo script change")
+          : L("Angre manusendringer", "Undo script changes"),
+        group,
+      );
       if (err) {
         setError(err);
         return;
@@ -151,16 +172,26 @@ export function ScriptChanges({
 
   return (
     <section
-      aria-label="Manuset er endret etter materialet"
+      aria-label={L(
+        "Manuset er endret etter materialet",
+        "The script has changed since the material was made",
+      )}
       className="flex flex-col gap-2 border border-status-danger/40 bg-status-danger-bg p-3"
     >
       <h3 className="flex items-center gap-1.5 text-[13px] font-medium text-text-primary">
         <AlertTriangle className="size-4 text-status-danger" aria-hidden />
-        Manuset er endret etter materialet
+        {L(
+          "Manuset er endret etter materialet",
+          "The script has changed since the material was made",
+        )}
       </h3>
       <p className="text-xs text-text-secondary">
-        Gjelder: {mats.map((m) => `${m.label}${m.inUse ? " (i bruk)" : ""}`).join(", ")}. Velg selv
-        hva som skal skje – ingenting endres automatisk.
+        {L("Gjelder:", "Applies to:")}{" "}
+        {mats.map((m) => `${m.label}${m.inUse ? L(" (i bruk)", " (in use)") : ""}`).join(", ")}.{" "}
+        {L(
+          "Velg selv hva som skal skje – ingenting endres automatisk.",
+          "Choose what should happen – nothing changes automatically.",
+        )}
       </p>
       <ul className="flex max-h-60 flex-col gap-1.5 overflow-y-auto">
         {list.map((c) => (
@@ -184,9 +215,12 @@ export function ScriptChanges({
                   type="button"
                   onClick={() => revert([c])}
                   className="ml-auto flex items-center gap-0.5 rounded-sm px-1 text-[11px] text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
-                  title="Sett bare denne linjen tilbake slik den var da materialet ble laget"
+                  title={L(
+                    "Sett bare denne linjen tilbake slik den var da materialet ble laget",
+                    "Set only this line back to how it was when the material was made",
+                  )}
                 >
-                  <Undo2 className="size-3" aria-hidden /> Angre denne
+                  <Undo2 className="size-3" aria-hidden /> {L("Angre denne", "Undo this")}
                 </button>
               ) : null}
             </div>
@@ -203,20 +237,22 @@ export function ScriptChanges({
         confirmUndo ? (
           <div
             role="alertdialog"
-            aria-label="Bekreft angring"
+            aria-label={L("Bekreft angring", "Confirm undo")}
             className="flex flex-col gap-2 rounded-sm border border-border bg-surface-2 p-2"
           >
             <p className="text-xs text-text-primary">
-              Sette {reversible === 1 ? "linjen" : `${reversible} linjer`} i manuset tilbake slik de
-              var da materialet ble laget? Det kan angres.
+              {L(
+                `Sette ${reversible === 1 ? "linjen" : `${reversible} linjer`} i manuset tilbake slik ${reversible === 1 ? "den" : "de"} var da materialet ble laget? Det kan angres.`,
+                `Set ${reversible === 1 ? "the line" : `${reversible} lines`} in the script back to how ${reversible === 1 ? "it was" : "they were"} when the material was made? This can be undone.`,
+              )}
             </p>
             <div className="flex gap-2">
               <Button size="sm" variant="destructive" onClick={() => revert(list)}>
                 <Undo2 />
-                Ja, angre manusendringene
+                {L("Ja, angre manusendringene", "Yes, undo the script changes")}
               </Button>
               <Button size="sm" variant="ghost" onClick={() => setConfirmUndo(false)}>
-                Avbryt
+                {L("Avbryt", "Cancel")}
               </Button>
             </div>
           </div>
@@ -226,10 +262,13 @@ export function ScriptChanges({
               size="sm"
               variant="secondary"
               onClick={accept}
-              title="Materialet passer fortsatt: godkjenn manuset slik det er nå"
+              title={L(
+                "Materialet passer fortsatt: godkjenn manuset slik det er nå",
+                "The material still fits: approve the script as it is now",
+              )}
             >
               <Check />
-              Godkjenn
+              {L("Godkjenn", "Approve")}
             </Button>
             {hasComposition && showEditorLink ? (
               <Button size="sm" variant="secondary" asChild>
@@ -237,10 +276,13 @@ export function ScriptChanges({
                   to="/prosjekt/$projectId/scene"
                   params={{ projectId }}
                   search={{ scene: occurrenceId }}
-                  title="Oppdater 2D-scenen i sceneeditoren; godkjenn etterpå"
+                  title={L(
+                    "Oppdater 2D-scenen i sceneeditoren; godkjenn etterpå",
+                    "Update the 2D scene in the scene editor; approve afterwards",
+                  )}
                 >
                   <Layers />
-                  Oppdater i sceneeditoren
+                  {L("Oppdater i sceneeditoren", "Update in the scene editor")}
                 </Link>
               </Button>
             ) : null}
@@ -249,10 +291,13 @@ export function ScriptChanges({
               variant="ghost"
               disabled={reversible === 0}
               onClick={() => setConfirmUndo(true)}
-              title="Sett manuset tilbake slik det var da materialet ble laget"
+              title={L(
+                "Sett manuset tilbake slik det var da materialet ble laget",
+                "Set the script back to how it was when the material was made",
+              )}
             >
               <Undo2 />
-              Angre manusendringene
+              {L("Angre manusendringene", "Undo script changes")}
             </Button>
           </div>
         )
@@ -267,8 +312,10 @@ export function ScriptChanges({
       ) : null}
       {mats.some((m) => m.kind === "take" && state.takes[m.id]?.kind !== "ai_video") ? (
         <p className="text-[11px] text-text-tertiary">
-          Film oppdateres ved å importere en ny versjon («Importer ferdig film …»); den gamle
-          beholdes.
+          {L(
+            "Film oppdateres ved å importere en ny versjon («Importer ferdig film …»); den gamle beholdes.",
+            "The film is updated by importing a new version («Import finished film …»); the old one is kept.",
+          )}
         </p>
       ) : null}
       {error ? (

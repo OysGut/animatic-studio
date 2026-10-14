@@ -6,6 +6,7 @@
  */
 import { useState } from "react";
 import {
+  L,
   STORY_KIND_LABEL,
   STORY_PLACEMENT_LABEL,
   formatHeading,
@@ -69,8 +70,11 @@ export function StoryTimeSection({
       run(
         { type: "SetStoryTime", sceneId: sceneId as never, storyTime: next },
         kind === "linear"
-          ? "Scenen følger rekkefølgen"
-          : `Merk som ${STORY_KIND_LABEL[kind].toLowerCase()}`,
+          ? L("Scenen følger rekkefølgen", "The scene follows the running order")
+          : L(
+              `Merk som ${STORY_KIND_LABEL[kind].toLowerCase()}`,
+              `Mark as ${STORY_KIND_LABEL[kind].toLowerCase()}`,
+            ),
       ),
     );
   };
@@ -80,7 +84,7 @@ export function StoryTimeSection({
       <label className="flex flex-col gap-1 text-xs text-text-secondary">
         Type
         <select
-          aria-label="Fortellingstid"
+          aria-label={L("Fortellingstid", "Story time")}
           value={st.kind}
           disabled={!canEdit}
           onChange={(e) => save(e.target.value as StoryKind, st.anchorSceneId, placement)}
@@ -96,7 +100,7 @@ export function StoryTimeSection({
       {st.kind !== "linear" ? (
         <div className="grid grid-cols-[112px_1fr] gap-1.5">
           <select
-            aria-label="Når i historien"
+            aria-label={L("Når i historien", "When in the story")}
             value={placement}
             disabled={!canEdit || !st.anchorSceneId}
             onChange={(e) => save(st.kind, st.anchorSceneId, e.target.value as StoryPlacement)}
@@ -104,12 +108,12 @@ export function StoryTimeSection({
           >
             {(Object.keys(STORY_PLACEMENT_LABEL) as StoryPlacement[]).map((p) => (
               <option key={p} value={p}>
-                Skjer {STORY_PLACEMENT_LABEL[p]}
+                {L("Skjer", "Happens")} {STORY_PLACEMENT_LABEL[p]}
               </option>
             ))}
           </select>
           <select
-            aria-label="Scenen det skjer i forhold til"
+            aria-label={L("Scenen det skjer i forhold til", "The scene it happens in relation to")}
             value={st.anchorSceneId ?? ""}
             disabled={!canEdit}
             onChange={(e) =>
@@ -121,12 +125,13 @@ export function StoryTimeSection({
             }
             className={ctl}
           >
-            <option value="">Velg scene …</option>
+            <option value="">{L("Velg scene …", "Choose a scene …")}</option>
             {otherAnchor ? (
               <option value={otherAnchor}>
                 {(() => {
                   const v = Object.values(state.variants).find((x) => x.sceneId === otherAnchor);
-                  return `${v ? formatHeading(v.heading) : "Scene"} (ikke i hovedfilmen)`;
+                  const heading = v ? formatHeading(v.heading) : "Scene";
+                  return L(`${heading} (ikke i hovedfilmen)`, `${heading} (not in the main film)`);
                 })()}
               </option>
             ) : null}
@@ -144,15 +149,27 @@ export function StoryTimeSection({
       ) : null}
       {editable && !inMain ? (
         <p className="text-[11px] text-text-tertiary">
-          Fortellingstiden gjelder scenen i alle produksjoner og endres i hovedfilmen.
+          {L(
+            "Fortellingstiden gjelder scenen i alle produksjoner og endres i hovedfilmen.",
+            "Story time applies to the scene in all productions and is changed in the main film.",
+          )}
         </p>
       ) : null}
       <p className="text-[11px] text-text-tertiary">
         {st.kind === "linear"
-          ? "Scenen skjer i historien der den står i filmen."
+          ? L(
+              "Scenen skjer i historien der den står i filmen.",
+              "The scene happens in the story where it sits in the film.",
+            )
           : st.anchorSceneId
-            ? "Karakterenes utseende (kontinuitet) regnes ut fra når scenen skjer i historien, ikke hvor den står i filmen."
-            : "Velg scenen dette skjer i forhold til, så regnes kontinuiteten riktig. Uten valg brukes plassen i filmen."}
+            ? L(
+                "Karakterenes utseende (kontinuitet) regnes ut fra når scenen skjer i historien, ikke hvor den står i filmen.",
+                "The characters' appearance (continuity) is worked out from when the scene happens in the story, not where it sits in the film.",
+              )
+            : L(
+                "Velg scenen dette skjer i forhold til, så regnes kontinuiteten riktig. Uten valg brukes plassen i filmen.",
+                "Choose the scene this happens in relation to, so continuity is worked out correctly. Without a choice, the place in the film is used.",
+              )}
       </p>
       {err ? (
         <p role="alert" className="text-xs text-status-danger">

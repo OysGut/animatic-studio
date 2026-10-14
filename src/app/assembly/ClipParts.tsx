@@ -6,7 +6,9 @@
 import { Film, ImageIcon, Layers, Minus, Plus, RotateCcw, Scissors, Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
 import {
+  L,
   editableParts,
+  locale,
   newId,
   removePart,
   setPartSource,
@@ -49,14 +51,20 @@ export function ClipParts({
     // En del mangler kilde (f.eks. 2D-scenen er slettet): bare tilbakestilling er mulig
     if (!clip.edited) return null;
     return (
-      <section aria-label="Klipp" className="flex flex-col gap-1.5 border-b border-border p-3">
-        <h2 className={label}>Klipp</h2>
+      <section
+        aria-label={L("Klipp", "Clip")}
+        className="flex flex-col gap-1.5 border-b border-border p-3"
+      >
+        <h2 className={label}>{L("Klipp", "Clip")}</h2>
         <p className="text-xs text-text-tertiary">
-          En av delene mangler kilde (2D-scenen eller filmen er borte) og vises som tittelkort.
+          {L(
+            "En av delene mangler kilde (2D-scenen eller filmen er borte) og vises som tittelkort.",
+            "One of the parts has no source (the 2D scene or film is gone) and is shown as a title card.",
+          )}
         </p>
         {editable ? (
           <Button size="sm" variant="secondary" className="self-start" onClick={onReset}>
-            <RotateCcw /> Hele klippet igjen
+            <RotateCcw /> {L("Hele klippet igjen", "Whole clip again")}
           </Button>
         ) : null}
       </section>
@@ -69,20 +77,28 @@ export function ClipParts({
   };
 
   return (
-    <section aria-label="Klipp" className="flex flex-col gap-1.5 border-b border-border p-3">
+    <section
+      aria-label={L("Klipp", "Clip")}
+      className="flex flex-col gap-1.5 border-b border-border p-3"
+    >
       <div className="flex items-center gap-2">
-        <h2 className={label}>Klipp</h2>
+        <h2 className={label}>{L("Klipp", "Clip")}</h2>
         <span className="text-[11px] text-text-tertiary">
-          {parts.length === 1 ? "én del" : `${parts.length} deler`}
+          {parts.length === 1
+            ? L("én del", "one part")
+            : L(`${parts.length} deler`, `${parts.length} parts`)}
         </span>
         {clip.edited && editable && !clip.inheritedFrom ? (
           <button
             type="button"
             onClick={onReset}
             className="ml-auto flex items-center gap-1 rounded-sm px-1 text-[11px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-            title="Fjern kutt og splitting: hele versjonen brukes igjen"
+            title={L(
+              "Fjern kutt og splitting: hele versjonen brukes igjen",
+              "Remove cuts and splits: the whole version is used again",
+            )}
           >
-            <RotateCcw className="size-3" aria-hidden /> Hele klippet
+            <RotateCcw className="size-3" aria-hidden /> {L("Hele klippet", "Whole clip")}
           </button>
         ) : null}
       </div>
@@ -106,7 +122,7 @@ export function ClipParts({
                   <Layers className="size-3.5 shrink-0 text-accent-brand" aria-hidden />
                 )}
                 <select
-                  aria-label={`Kilde for del ${i + 1}`}
+                  aria-label={L(`Kilde for del ${i + 1}`, `Source for part ${i + 1}`)}
                   value={p.takeId ?? ""}
                   disabled={!editable}
                   onChange={(e) =>
@@ -117,12 +133,14 @@ export function ClipParts({
                         { takeId: e.target.value || null },
                         maxMsOf(e.target.value || null),
                       ),
-                      "Bytt kilde for del",
+                      L("Bytt kilde for del", "Change source for part"),
                     )
                   }
                   className="h-6 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1 text-xs text-text-primary disabled:opacity-50"
                 >
-                  {canAnimatic ? <option value="">Animatic (2D-scene)</option> : null}
+                  {canAnimatic ? (
+                    <option value="">{L("Animatic (2D-scene)", "Animatic (2D scene)")}</option>
+                  ) : null}
                   {films.map((t) => (
                     <option key={t.id} value={t.id}>
                       {takeLabel(state, t)}
@@ -133,35 +151,42 @@ export function ClipParts({
                   ) : null}
                 </select>
                 <span className="shrink-0 font-mono text-[11px] text-text-secondary">
-                  {(r.durationFrames / fps).toLocaleString("nb-NO", { maximumFractionDigits: 2 })} s
+                  {(r.durationFrames / fps).toLocaleString(locale(), { maximumFractionDigits: 2 })}{" "}
+                  s
                 </span>
                 {i > 0 ? (
                   <select
-                    aria-label={`Overgang inn i del ${i + 1}`}
-                    title="Myk overgang fra delen før (krysstoning, scenen blir ikke kortere)"
+                    aria-label={L(`Overgang inn i del ${i + 1}`, `Transition into part ${i + 1}`)}
+                    title={L(
+                      "Myk overgang fra delen før (krysstoning, scenen blir ikke kortere)",
+                      "Soft transition from the previous part (cross-dissolve, the scene does not get shorter)",
+                    )}
                     value={String(p.transitionMs ?? 0)}
                     disabled={!editable}
                     onChange={(e) =>
                       edit(
                         setPartTransition(parts, i, Number(e.target.value)),
-                        "Overgang mellom deler",
+                        L("Overgang mellom deler", "Transition between parts"),
                       )
                     }
                     className="h-6 shrink-0 rounded-sm border border-border-control bg-surface-3 px-1 text-[11px] text-text-primary disabled:opacity-50"
                   >
-                    <option value="0">Kutt</option>
-                    <option value="250">Tone 0,25 s</option>
-                    <option value="500">Tone 0,5 s</option>
-                    <option value="1000">Tone 1 s</option>
-                    <option value="2000">Tone 2 s</option>
+                    <option value="0">{L("Kutt", "Cut")}</option>
+                    <option value="250">{L("Tone 0,25 s", "Dissolve 0.25 s")}</option>
+                    <option value="500">{L("Tone 0,5 s", "Dissolve 0.5 s")}</option>
+                    <option value="1000">{L("Tone 1 s", "Dissolve 1 s")}</option>
+                    <option value="2000">{L("Tone 2 s", "Dissolve 2 s")}</option>
                   </select>
                 ) : null}
                 {editable && parts.length > 1 ? (
                   <button
                     type="button"
-                    onClick={() => edit(removePart(parts, i), "Fjern del")}
-                    aria-label={`Fjern del ${i + 1}`}
-                    title="Fjern delen (kildemediet beholdes)"
+                    onClick={() => edit(removePart(parts, i), L("Fjern del", "Remove part"))}
+                    aria-label={L(`Fjern del ${i + 1}`, `Remove part ${i + 1}`)}
+                    title={L(
+                      "Fjern delen (kildemediet beholdes)",
+                      "Remove the part (the source media is kept)",
+                    )}
                     className="rounded-sm p-0.5 text-text-tertiary hover:bg-surface-3 hover:text-status-danger"
                   >
                     <Trash2 className="size-3.5" />
@@ -170,19 +195,29 @@ export function ClipParts({
               </div>
               <div className="mt-1 grid grid-cols-2 gap-2">
                 <PointInput
-                  label="Inn"
+                  label={L("Inn", "In")}
                   ms={p.inMs}
                   fps={fps}
                   disabled={!editable}
-                  onChange={(ms) => edit(trimPart(parts, i, { inMs: ms }, maxMs), "Endre innpunkt")}
+                  onChange={(ms) =>
+                    edit(
+                      trimPart(parts, i, { inMs: ms }, maxMs),
+                      L("Endre innpunkt", "Change in point"),
+                    )
+                  }
                   step={frameMs}
                 />
                 <PointInput
-                  label="Ut"
+                  label={L("Ut", "Out")}
                   ms={p.outMs}
                   fps={fps}
                   disabled={!editable}
-                  onChange={(ms) => edit(trimPart(parts, i, { outMs: ms }, maxMs), "Endre utpunkt")}
+                  onChange={(ms) =>
+                    edit(
+                      trimPart(parts, i, { outMs: ms }, maxMs),
+                      L("Endre utpunkt", "Change out point"),
+                    )
+                  }
                   step={frameMs}
                 />
               </div>
@@ -196,9 +231,12 @@ export function ClipParts({
           variant="secondary"
           className="self-start"
           onClick={onSplit}
-          title="Del klippet i to der avspillingshodet står (tasten S). Begge delene bruker samme kilde."
+          title={L(
+            "Del klippet i to der avspillingshodet står (tasten S). Begge delene bruker samme kilde.",
+            "Split the clip in two at the playhead (key S). Both parts use the same source.",
+          )}
         >
-          <Scissors /> Splitt ved avspillingshodet
+          <Scissors /> {L("Splitt ved avspillingshodet", "Split at the playhead")}
         </Button>
       ) : null}
     </section>
@@ -247,15 +285,15 @@ function PointInput({
         className={btn}
         disabled={disabled}
         onClick={() => onChange(Math.max(0, Math.round((frame - 1) * step)))}
-        aria-label={`${l}: ett bilde tilbake`}
-        title="Ett bilde tilbake"
+        aria-label={L(`${l}: ett bilde tilbake`, `${l}: one frame back`)}
+        title={L("Ett bilde tilbake", "One frame back")}
       >
         <Minus className="size-3" />
       </button>
       <input
         type="text"
         inputMode="decimal"
-        aria-label={`${l}punkt i sekunder`}
+        aria-label={L(`${l}punkt i sekunder`, `${l} point in seconds`)}
         disabled={disabled}
         value={draft ?? String(seconds)}
         onFocus={() => setDraft(String(seconds))}
@@ -269,15 +307,15 @@ function PointInput({
           }
         }}
         className="h-6 w-14 min-w-0 rounded-sm border border-border-control bg-surface-3 px-1 font-mono text-xs text-text-primary disabled:opacity-50"
-        title={`Bilde ${frame}`}
+        title={L(`Bilde ${frame}`, `Frame ${frame}`)}
       />
       <button
         type="button"
         className={btn}
         disabled={disabled}
         onClick={() => onChange(Math.round((frame + 1) * step))}
-        aria-label={`${l}: ett bilde fram`}
-        title="Ett bilde fram"
+        aria-label={L(`${l}: ett bilde fram`, `${l}: one frame forward`)}
+        title={L("Ett bilde fram", "One frame forward")}
       >
         <Plus className="size-3" />
       </button>

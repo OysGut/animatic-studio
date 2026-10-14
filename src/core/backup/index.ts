@@ -15,6 +15,7 @@
  *
  * Ren TypeScript: brukes både i nettleseren (lage og lese filen) og på serveren (gjenopprette).
  */
+import { L, localized } from "../i18n";
 import { checkInvariants } from "../invariants";
 import {
   emptyProjectState,
@@ -73,12 +74,12 @@ export const BACKUP_HISTORY_TABLES = ["change_log", "generation_jobs"] as const;
 export type BackupBucket = "assets" | "sources";
 export type BackupFileCategory = "bilde" | "lyd" | "film" | "manusfil";
 
-export const BACKUP_CATEGORY_LABEL: Record<BackupFileCategory, string> = {
-  bilde: "Bilder",
-  lyd: "Lyd",
-  film: "Importert film",
-  manusfil: "Importerte manusfiler",
-};
+export const BACKUP_CATEGORY_LABEL: Record<BackupFileCategory, string> = localized({
+  bilde: ["Bilder", "Images"],
+  lyd: ["Lyd", "Sound"],
+  film: ["Importert film", "Imported film"],
+  manusfil: ["Importerte manusfiler", "Imported script files"],
+});
 
 export interface BackupFile {
   readonly bucket: BackupBucket;
@@ -141,6 +142,7 @@ export function backupFiles(
     out.push({
       bucket,
       path,
+      // i18n-ignore: stier i zip-filen (formatet), ikke tekst for brukeren
       zipPath: included ? `filer/${bucket}/${path}` : "",
       byteSize: Number.isFinite(byteSize) && byteSize > 0 ? byteSize : 0,
       mimeType,
@@ -155,6 +157,7 @@ export function backupFiles(
       s(v["media_path"]),
       Number(v["byte_size_big"] ?? v["byte_size"]),
       mime,
+      // i18n-ignore: kategorinøkkel
       mime.startsWith("audio/") ? "lyd" : "bilde",
     );
   }
@@ -207,26 +210,49 @@ export function makeBackup(input: BackupInput): BackupData {
 export function parseBackup(raw: unknown, maxSchemaVersion: number): BackupData {
   const b = raw as Partial<BackupData> | null;
   if (!b || typeof b !== "object" || b.format !== BACKUP_FORMAT)
-    throw new Error("Filen er ikke en sikkerhetskopi fra Animatic Studio.");
+    throw new Error(
+      L(
+        "Filen er ikke en sikkerhetskopi fra Animatic Studio.",
+        "The file is not a backup from Animatic Studio.",
+      ),
+    );
   if (typeof b.formatVersion !== "number" || b.formatVersion > BACKUP_FORMAT_VERSION)
     throw new Error(
-      "Sikkerhetskopien er laget med en nyere versjon av Animatic Studio og kan ikke leses her.",
+      L(
+        "Sikkerhetskopien er laget med en nyere versjon av Animatic Studio og kan ikke leses her.",
+        "The backup was made with a newer version of Animatic Studio and cannot be read here.",
+      ),
     );
   if (typeof b.schemaVersion !== "number" || b.schemaVersion > maxSchemaVersion)
     throw new Error(
-      `Sikkerhetskopien er laget med en nyere database (versjon ${String(b.schemaVersion)}). Oppdater databasen først.`,
+      L(
+        `Sikkerhetskopien er laget med en nyere database (versjon ${String(b.schemaVersion)}). Oppdater databasen først.`,
+        `The backup was made with a newer database (version ${String(b.schemaVersion)}). Update the database first.`,
+      ),
     );
   if (!b.project || typeof b.project !== "object" || typeof b.project["id"] !== "string")
-    throw new Error("Sikkerhetskopien mangler prosjektet.");
-  if (!b.tables || typeof b.tables !== "object") throw new Error("Sikkerhetskopien mangler data.");
+    throw new Error(
+      L("Sikkerhetskopien mangler prosjektet.", "The backup is missing the project."),
+    );
+  if (!b.tables || typeof b.tables !== "object")
+    throw new Error(L("Sikkerhetskopien mangler data.", "The backup is missing data."));
   for (const t of [...BACKUP_STATE_TABLES, ...BACKUP_EXTRA_TABLES]) {
     const list = (b.tables as Record<string, unknown>)[t];
     if (list !== undefined && !Array.isArray(list))
-      throw new Error(`Sikkerhetskopien er skadet (${t}).`);
+      throw new Error(L(`Sikkerhetskopien er skadet (${t}).`, `The backup is damaged (${t}).`));
   }
-  if (!Array.isArray(b.files)) throw new Error("Sikkerhetskopien mangler fillisten.");
+  if (!Array.isArray(b.files))
+    throw new Error(
+      L("Sikkerhetskopien mangler fillisten.", "The backup is missing the file list."),
+    );
   const mains = (b.tables["productions"] ?? []).filter((p) => p["kind"] === "main");
-  if (mains.length !== 1) throw new Error("Sikkerhetskopien må ha nøyaktig én hovedfilm.");
+  if (mains.length !== 1)
+    throw new Error(
+      L(
+        "Sikkerhetskopien må ha nøyaktig én hovedfilm.",
+        "The backup must have exactly one main film.",
+      ),
+    );
   return b as BackupData;
 }
 
@@ -333,7 +359,10 @@ export function assertSelfContained(b: BackupData, map: ReadonlyMap<string, stri
         if (!k.endsWith("_id") || NON_REFERENCE.has(k) || v === null || v === undefined) continue;
         if (typeof v !== "string" || !map.has(v))
           throw new Error(
-            `Sikkerhetskopien viser til noe som ikke er med i den (${t}.${k}) og kan ikke brukes.`,
+            L(
+              `Sikkerhetskopien viser til noe som ikke er med i den (${t}.${k}) og kan ikke brukes.`,
+              `The backup refers to something that is not in it (${t}.${k}) and cannot be used.`,
+            ),
           );
       }
   // Bildeskifter (DEC-0052) og bilder per språk (DEC-0059) i lag viser til ressurser inne i JSON
@@ -347,7 +376,10 @@ export function assertSelfContained(b: BackupData, map: ReadonlyMap<string, stri
           if (v === null || v === undefined) continue;
           if (typeof v !== "string" || !map.has(v))
             throw new Error(
-              `Sikkerhetskopien viser til noe som ikke er med i den (composition_layers.${col}) og kan ikke brukes.`,
+              L(
+                `Sikkerhetskopien viser til noe som ikke er med i den (composition_layers.${col}) og kan ikke brukes.`,
+                `The backup refers to something that is not in it (composition_layers.${col}) and cannot be used.`,
+              ),
             );
         }
     }
@@ -356,13 +388,21 @@ export function assertSelfContained(b: BackupData, map: ReadonlyMap<string, stri
     const d = (r as Record<string, unknown>)["document"];
     const doc = (typeof d === "string" ? safeJson(d) : d) as PosterDocument | null;
     if (!doc || typeof doc !== "object" || posterDocumentError(doc))
-      throw new Error("Sikkerhetskopien har en ugyldig plakat og kan ikke brukes.");
+      throw new Error(
+        L(
+          "Sikkerhetskopien har en ugyldig plakat og kan ikke brukes.",
+          "The backup has an invalid poster and cannot be used.",
+        ),
+      );
     const refs = posterAssetRefs(doc);
     for (const set of [refs.assets, refs.variants, refs.versions, refs.relations])
       for (const v of set)
         if (!map.has(v))
           throw new Error(
-            "Sikkerhetskopien viser til noe som ikke er med i den (posters.document) og kan ikke brukes.",
+            L(
+              "Sikkerhetskopien viser til noe som ikke er med i den (posters.document) og kan ikke brukes.",
+              "The backup refers to something that is not in it (posters.document) and cannot be used.",
+            ),
           );
   }
   // Forbildebildene i stilprofilene (DEC-0065)
@@ -370,11 +410,19 @@ export function assertSelfContained(b: BackupData, map: ReadonlyMap<string, stri
     const g = (r as Record<string, unknown>)["guide"];
     const guide = (typeof g === "string" ? safeJson(g) : g) as StyleGuide | null;
     if (!guide || typeof guide !== "object" || styleGuideError(guide))
-      throw new Error("Sikkerhetskopien har en ugyldig stilprofil og kan ikke brukes.");
+      throw new Error(
+        L(
+          "Sikkerhetskopien har en ugyldig stilprofil og kan ikke brukes.",
+          "The backup has an invalid style profile and cannot be used.",
+        ),
+      );
     for (const v of guide.referenceVersionIds)
       if (!map.has(v))
         throw new Error(
-          "Sikkerhetskopien viser til noe som ikke er med i den (style_profiles.guide) og kan ikke brukes.",
+          L(
+            "Sikkerhetskopien viser til noe som ikke er med i den (style_profiles.guide) og kan ikke brukes.",
+            "The backup refers to something that is not in it (style_profiles.guide) and cannot be used.",
+          ),
         );
   }
 }
@@ -425,10 +473,13 @@ export function restoredState(
 ): ProjectState {
   const pid = base.project.id;
   if (map.get(String(b.project["id"])) !== pid)
-    throw new Error("Feil prosjekt for gjenoppretting.");
+    throw new Error(L("Feil prosjekt for gjenoppretting.", "Wrong project for restoring."));
   assertSelfContained(b, map);
   const mains = Object.values(base.productions).filter((p) => p.kind === "main");
-  if (mains.length !== 1) throw new Error("Det nye prosjektet mangler hovedfilm.");
+  if (mains.length !== 1)
+    throw new Error(
+      L("Det nye prosjektet mangler hovedfilm.", "The new project is missing a main film."),
+    );
   const main = mains[0]!;
   const t = (name: string): Row[] =>
     (b.tables[name] ?? []).map((r) => ({ ...remapValue(r, map), project_id: pid }));
@@ -478,11 +529,19 @@ export function restoredState(
   try {
     state = stateFromRows(rows);
   } catch (e) {
-    throw new Error(`Sikkerhetskopien er skadet: ${(e as Error).message}`);
+    throw new Error(
+      L(
+        `Sikkerhetskopien er skadet: ${(e as Error).message}`,
+        `The backup is damaged: ${(e as Error).message}`,
+      ),
+    );
   }
   // Hovedfilmen finnes allerede i det nye prosjektet: den oppdateres (revisjonen økes med én)
   const restoredMain = state.productions[main.id];
-  if (!restoredMain) throw new Error("Sikkerhetskopien mangler hovedfilmen.");
+  if (!restoredMain)
+    throw new Error(
+      L("Sikkerhetskopien mangler hovedfilmen.", "The backup is missing the main film."),
+    );
   const project =
     state.project.fps.num === base.project.fps.num &&
     state.project.fps.den === base.project.fps.den &&
@@ -514,15 +573,25 @@ export function restoredState(
     ...Object.values(state.assetVersions).map((x) => x.mediaPath),
   ].filter((x): x is string => typeof x === "string" && x !== "" && !x.startsWith(`${pid}/`));
   if (foreign.length > 0)
-    throw new Error("Sikkerhetskopien viser til filer utenfor prosjektet og kan ikke brukes.");
-  const violations = checkInvariants(state);
-  if (violations.length > 0)
     throw new Error(
-      `Sikkerhetskopien gir et ugyldig prosjekt (${violations
-        .slice(0, 3)
-        .map((v) => v.message)
-        .join("; ")}).`,
+      L(
+        "Sikkerhetskopien viser til filer utenfor prosjektet og kan ikke brukes.",
+        "The backup refers to files outside the project and cannot be used.",
+      ),
     );
+  const violations = checkInvariants(state);
+  if (violations.length > 0) {
+    const detail = violations
+      .slice(0, 3)
+      .map((v) => v.message)
+      .join("; ");
+    throw new Error(
+      L(
+        `Sikkerhetskopien gir et ugyldig prosjekt (${detail}).`,
+        `The backup gives an invalid project (${detail}).`,
+      ),
+    );
+  }
   return state;
 }
 
@@ -579,28 +648,67 @@ export function backupReadme(b: BackupData): string {
   const sum = backupSummary(b);
   const out = b.files.filter((f) => !f.included);
   return [
-    `Sikkerhetskopi av «${sum.name}» fra Animatic Studio`,
-    `Laget ${b.createdAt} (formatversjon ${b.formatVersion}, databaseversjon ${b.schemaVersion}).`,
+    L(
+      `Sikkerhetskopi av «${sum.name}» fra Animatic Studio`,
+      `Backup of “${sum.name}” from Animatic Studio`,
+    ),
+    L(
+      `Laget ${b.createdAt} (formatversjon ${b.formatVersion}, databaseversjon ${b.schemaVersion}).`,
+      `Made ${b.createdAt} (format version ${b.formatVersion}, database version ${b.schemaVersion}).`,
+    ),
     "",
-    "Innhold:",
-    `- ${BACKUP_JSON}: alle prosjektdata som tabeller (samme kolonner som databasen):`,
-    "  manus (scener, varianter, blokker med teksthistorikk), produksjoner og spinoffer,",
-    "  sceneforekomster, ressursbibliotek, notater, 2D-scener med lag og kamera, lydklipp,",
-    "  importert film med deler og tidskoblinger, manusversjoner og importerte manusfiler.",
-    "  «history» inneholder kommandologgen og loggen over AI-generering (bare til orientering).",
-    "  «files» er en liste over alle mediefilene, også de som ikke er tatt med.",
-    "- filer/<bøtte>/<sti>: mediefilene, uendret.",
+    L("Innhold:", "Contents:"),
+    L(
+      `- ${BACKUP_JSON}: alle prosjektdata som tabeller (samme kolonner som databasen):`,
+      `- ${BACKUP_JSON}: all project data as tables (the same columns as the database):`,
+    ),
+    L(
+      "  manus (scener, varianter, blokker med teksthistorikk), produksjoner og spinoffer,",
+      "  script (scenes, variants, blocks with text history), productions and spin-offs,",
+    ),
+    L(
+      "  sceneforekomster, ressursbibliotek, notater, 2D-scener med lag og kamera, lydklipp,",
+      "  scene occurrences, asset library, notes, 2D scenes with layers and camera, audio clips,",
+    ),
+    L(
+      "  importert film med deler og tidskoblinger, manusversjoner og importerte manusfiler.",
+      "  imported film with parts and time links, script versions and imported script files.",
+    ),
+    L(
+      "  «history» inneholder kommandologgen og loggen over AI-generering (bare til orientering).",
+      "  “history” contains the command log and the AI generation log (for information only).",
+    ),
+    L(
+      "  «files» er en liste over alle mediefilene, også de som ikke er tatt med.",
+      "  “files” is a list of all the media files, including those not included.",
+    ),
+    L(
+      "- filer/<bøtte>/<sti>: mediefilene, uendret.",
+      "- filer/<bøtte>/<sti>: the media files, unchanged.",
+    ),
     "",
-    "Gjenopprett: Prosjekter → «Gjenopprett fra sikkerhetskopi …». Det lages alltid et nytt prosjekt;",
-    "ingenting eksisterende overskrives.",
+    L(
+      "Gjenopprett: Prosjekter → «Gjenopprett fra sikkerhetskopi …». Det lages alltid et nytt prosjekt;",
+      "Restore: Projects → “Restore from backup …”. A new project is always made;",
+    ),
+    L("ingenting eksisterende overskrives.", "nothing existing is overwritten."),
     "",
-    `Scener: ${sum.scenes}. Manusblokker: ${sum.blocks}. Manusversjoner: ${sum.versions}.`,
-    `Ressurser: ${sum.assets}. 2D-scener: ${sum.compositions}. Lydklipp: ${sum.audioClips}.`,
-    `Mediefiler med: ${sum.files}.`,
+    L(
+      `Scener: ${sum.scenes}. Manusblokker: ${sum.blocks}. Manusversjoner: ${sum.versions}.`,
+      `Scenes: ${sum.scenes}. Script blocks: ${sum.blocks}. Script versions: ${sum.versions}.`,
+    ),
+    L(
+      `Ressurser: ${sum.assets}. 2D-scener: ${sum.compositions}. Lydklipp: ${sum.audioClips}.`,
+      `Assets: ${sum.assets}. 2D scenes: ${sum.compositions}. Audio clips: ${sum.audioClips}.`,
+    ),
+    L(`Mediefiler med: ${sum.files}.`, `Media files included: ${sum.files}.`),
     ...(out.length
       ? [
           "",
-          `Disse ${out.length} filene er IKKE med (de ligger fortsatt i prosjektet):`,
+          L(
+            `Disse ${out.length} filene er IKKE med (de ligger fortsatt i prosjektet):`,
+            `These ${out.length} files are NOT included (they are still in the project):`,
+          ),
           ...out.map((f) => `- ${BACKUP_CATEGORY_LABEL[f.category]}: ${f.path}`),
         ]
       : []),
@@ -625,7 +733,7 @@ export async function validateBackup(b: BackupData): Promise<void> {
     ...emptyProjectState({
       id: pid as never,
       revision: 1,
-      name: "Kontroll",
+      name: "Kontroll", // i18n-ignore – standardnavn ved gjenoppbygging, ikke vist
       fps,
       frameWidth: 1920,
       frameHeight: 1080,
@@ -636,7 +744,7 @@ export async function validateBackup(b: BackupData): Promise<void> {
         id: main as never,
         revision: 1,
         kind: "main",
-        name: "Hovedfilm",
+        name: "Hovedfilm", // i18n-ignore – lagret standardnavn for hovedfilmen
         parentProductionId: null,
         fps,
       },

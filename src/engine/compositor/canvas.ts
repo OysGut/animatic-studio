@@ -3,7 +3,7 @@
  * Brukes av sceneeditoren og avspillingen; eksporten bruker samme funksjon på et OffscreenCanvas.
  * Bare på klienten (nettleser-API-er).
  */
-import { matrixScale, multiply, type DrawItem, type Frame, type Matrix } from "@/core";
+import { L, matrixScale, multiply, type DrawItem, type Frame, type Matrix } from "@/core";
 
 export type ImageSource = CanvasImageSource & { readonly width: number; readonly height: number };
 
@@ -221,7 +221,12 @@ function drawPlaceholder(ctx: CanvasRenderingContext2D, it: DrawItem, x: number,
   ctx.font = `${Math.max(12, Math.round(it.height / 12))}px system-ui, sans-serif`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(it.version ? it.name : `${it.name} (uten bilde)`, 0, 0, it.width * 0.9);
+  ctx.fillText(
+    it.version ? it.name : `${it.name}${L(" (uten bilde)", " (no image)")}`,
+    0,
+    0,
+    it.width * 0.9,
+  );
 }
 
 /** Et bilde som lastes (HTMLImageElement i nettleseren; kan byttes ut i tester). */

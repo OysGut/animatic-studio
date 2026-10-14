@@ -5,6 +5,8 @@ import { signOut } from "@/adapters/browser/auth";
 import { Button } from "@/components/ui/button";
 import { BackButton } from "./back-navigation";
 import { ShortcutsButton, ShortcutsDialog } from "@/app/shortcuts/ShortcutsDialog";
+import { LanguageSwitch } from "@/app/i18n/language";
+import { L } from "@/core";
 
 interface AppHeaderProps {
   readonly email?: string | undefined;
@@ -33,7 +35,9 @@ export function AppHeader({ email, trail }: AppHeaderProps) {
         </>
       ) : null}
       <div className="ml-auto flex items-center gap-2">
+        <LanguageSwitch compact />
         <ShortcutsButton onClick={() => setShortcutsOpen(true)} />
+        {/* i18n-ignore: gruppe-ID for hurtigtaster, ikke synlig tekst */}
         <ShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} current="alle" />
         {email ? (
           <span className="hidden text-xs text-text-tertiary sm:inline">{email}</span>
@@ -43,11 +47,11 @@ export function AppHeader({ email, trail }: AppHeaderProps) {
             variant="ghost"
             size="sm"
             onClick={() => void signOut()}
-            aria-label="Logg ut"
-            title="Logg ut"
+            aria-label={L("Logg ut", "Sign out")}
+            title={L("Logg ut", "Sign out")}
           >
             <LogOut />
-            <span>Logg ut</span>
+            <span>{L("Logg ut", "Sign out")}</span>
           </Button>
         ) : null}
       </div>

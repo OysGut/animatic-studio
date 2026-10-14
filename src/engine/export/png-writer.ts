@@ -4,6 +4,7 @@
  * slik PNG krever), og bare de komprimerte bytene samles opp som IDAT-biter. Fargetype 6 (RGBA, 8 bit),
  * uten interlacing. Filteret velges per rad (None/Sub/Up) med den vanlige «minste sum av avvik»-regelen.
  */
+import { L } from "@/core";
 
 export interface PngOptions {
   readonly width: number;
@@ -136,9 +137,17 @@ export async function encodePngStrips(
 ): Promise<Uint8Array[]> {
   const { width, height } = opts;
   if (!Number.isInteger(width) || !Number.isInteger(height) || width < 1 || height < 1) {
-    throw new Error("Bildet må ha minst én piksel i hver retning.");
+    throw new Error(
+      L(
+        "Bildet må ha minst én piksel i hver retning.",
+        "The image must be at least one pixel in each direction.",
+      ),
+    );
   }
-  if (width > PNG_MAX_WIDTH) throw new Error("Bildet er for bredt for nettleseren.");
+  if (width > PNG_MAX_WIDTH)
+    throw new Error(
+      L("Bildet er for bredt for nettleseren.", "The image is too wide for the browser."),
+    );
   const rowBytes = width * 4;
   const stripRows = Math.max(1, Math.min(height, opts.stripRows ?? Math.floor(4_000_000 / width)));
 
@@ -179,7 +188,8 @@ export async function encodePngStrips(
     for (let y0 = 0; y0 < height; y0 += stripRows) {
       const rows = Math.min(stripRows, height - y0);
       const px = await readStrip(y0, rows);
-      if (px.length < rows * rowBytes) throw new Error("Stripen har for få piksler.");
+      if (px.length < rows * rowBytes)
+        throw new Error(L("Stripen har for få piksler.", "The strip has too few pixels."));
       const filtered = new Uint8Array(rows * (rowBytes + 1));
       for (let r = 0; r < rows; r++)
         filterRow(px, r * rowBytes, prev, filtered, r * (rowBytes + 1));

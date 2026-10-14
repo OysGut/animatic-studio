@@ -8,6 +8,7 @@
  * Brukeren ser alltid den tilpassede teksten før den sendes (synlige beskrivelser), og hva som ble endret.
  */
 import type { ProviderModel } from "./providers";
+import { L, localized } from "../i18n";
 
 interface Section {
   readonly key: string;
@@ -35,22 +36,22 @@ const RULES: readonly { readonly match: RegExp; readonly key: string; readonly r
   { match: /^Avoid:/, key: "avoid", rank: 5 },
 ];
 
-const KEY_LABEL: Record<string, string> = {
-  setting: "sted",
-  figures: "figurene",
-  style: "stilregelen",
-  continuity: "kontinuitet",
-  notext: "«ingen tekst i bildet»",
-  look: "filmens uttrykk",
-  camera: "kamera",
-  technique: "teknikk",
-  lighting: "lys",
-  mood: "stemning",
-  endframe: "«stabilt sluttbilde»",
-  palette: "fargepalett",
-  avoid: "«unngå»",
-  other: "egen tekst",
-};
+const KEY_LABEL: Record<string, string> = localized({
+  setting: ["sted", "setting"],
+  figures: ["figurene", "the figures"],
+  style: ["stilregelen", "the style rule"],
+  continuity: ["kontinuitet", "continuity"],
+  notext: ["«ingen tekst i bildet»", "“no text in the image”"],
+  look: ["filmens uttrykk", "the film's look"],
+  camera: ["kamera", "camera"],
+  technique: ["teknikk", "technique"],
+  lighting: ["lys", "lighting"],
+  mood: ["stemning", "mood"],
+  endframe: ["«stabilt sluttbilde»", "“stable final frame”"],
+  palette: ["fargepalett", "colour palette"],
+  avoid: ["«unngå»", "“avoid”"],
+  other: ["egen tekst", "own text"],
+});
 
 function sections(text: string): Section[] {
   const out: Section[] = [];
@@ -85,7 +86,10 @@ export interface AdaptedPrompt {
 
 /** Har videomodellen lyd? (Modeller uten lyd får replikkene som munnbevegelser.) */
 export function modelHasSound(model: ProviderModel): boolean {
-  return model.capability !== "video" || (model.extras ?? []).includes("Lyd i videoen");
+  return (
+    model.capability !== "video" ||
+    (model.extras ?? []).some((e) => e === "Lyd i videoen" || e === "Sound in the video") // i18n-ignore
+  );
 }
 
 export function adaptPromptForModel(text: string, model: ProviderModel): AdaptedPrompt {
@@ -97,7 +101,12 @@ export function adaptPromptForModel(text: string, model: ProviderModel): Adapted
     if (d) {
       d.lines[0] =
         "Dialogue (for lip movement and acting only — this video has no sound; never show the words as text):";
-      notes.push("Modellen lager ikke lyd: replikkene brukes til munnbevegelser og spill.");
+      notes.push(
+        L(
+          "Modellen lager ikke lyd: replikkene brukes til munnbevegelser og spill.",
+          "The model does not make sound: the lines are used for lip movement and acting.",
+        ),
+      );
     }
   }
   const max = model.maxPromptChars ?? Number.POSITIVE_INFINITY;
@@ -117,7 +126,10 @@ export function adaptPromptForModel(text: string, model: ProviderModel): Adapted
     out = join(ss);
     if (removed.length)
       notes.push(
-        `Modellen tar imot høyst ${max} tegn: tok bort ${[...new Set(removed)].join(", ")}.`,
+        L(
+          `Modellen tar imot høyst ${max} tegn: tok bort ${[...new Set(removed)].join(", ")}.`,
+          `The model accepts at most ${max} characters: removed ${[...new Set(removed)].join(", ")}.`,
+        ),
       );
     if (out.length > max) {
       // Replikkene skal sendes ordrett: kort ned alt annet (lengste linje først), så ta bort linjer bakfra
@@ -150,11 +162,19 @@ export function adaptPromptForModel(text: string, model: ProviderModel): Adapted
           !/:$/.test(x.lines[0] ?? ""),
       );
       out = join(ss);
-      notes.push(`Teksten ble kortet ned til ${out.length} tegn; replikkene er beholdt ordrett.`);
+      notes.push(
+        L(
+          `Teksten ble kortet ned til ${out.length} tegn; replikkene er beholdt ordrett.`,
+          `The text was shortened to ${out.length} characters; the lines are kept verbatim.`,
+        ),
+      );
       if (out.length > max) {
         blocked = true;
         notes.push(
-          "Replikkene alene er for lange for denne modellen. Del segmentet i kortere deler eller velg en annen modell.",
+          L(
+            "Replikkene alene er for lange for denne modellen. Del segmentet i kortere deler eller velg en annen modell.",
+            "The lines alone are too long for this model. Split the segment into shorter parts or choose another model.",
+          ),
         );
       }
     }

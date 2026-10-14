@@ -5,7 +5,16 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { type AssetMedia, effortOf, estimateCostUsd, isUuid, newId, providerModel } from "@/core";
+import {
+  type AssetMedia,
+  effortOf,
+  estimateCostUsd,
+  isUuid,
+  L,
+  locale,
+  newId,
+  providerModel,
+} from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 
 const BUCKET = "assets";
@@ -30,15 +39,20 @@ export const generateSound = createServerFn({ method: "POST" })
   .validator((d: unknown) => {
     const x = (d ?? {}) as Record<string, unknown>;
     if (typeof x["projectId"] !== "string" || !isUuid(x["projectId"]))
-      throw new Error("Ugyldig prosjekt");
+      throw new Error(L("Ugyldig prosjekt", "Invalid project"));
     if (typeof x["assetId"] !== "string" || !isUuid(x["assetId"]))
-      throw new Error("Ugyldig ressurs");
+      throw new Error(L("Ugyldig ressurs", "Invalid asset"));
     const prompt = x["prompt"];
     if (typeof prompt !== "string" || !prompt.trim() || prompt.length > 1000)
-      throw new Error("Beskrivelsen mangler eller er for lang (høyst 1000 tegn)");
-    if (x["provider"] !== "elevenlabs") throw new Error("Ukjent leverandør");
+      throw new Error(
+        L(
+          "Beskrivelsen mangler eller er for lang (høyst 1000 tegn)",
+          "The description is missing or too long (1000 characters at most)",
+        ),
+      );
+    if (x["provider"] !== "elevenlabs") throw new Error(L("Ukjent leverandør", "Unknown provider"));
     if (typeof x["model"] !== "string" || x["model"].length > 120)
-      throw new Error("Ugyldig modell");
+      throw new Error(L("Ugyldig modell", "Invalid model"));
     const seconds = x["seconds"];
     // Tidsbegrensningen står i leverandørkatalogen (REQ-0273)
     const lim = providerModel("elevenlabs", x["model"])?.soundSeconds ?? { min: 0.5, max: 30 };
@@ -50,9 +64,13 @@ export const generateSound = createServerFn({ method: "POST" })
         seconds > lim.max)
     )
       throw new Error(
-        `Lengden må være ${lim.min.toLocaleString("nb-NO")}–${lim.max.toLocaleString("nb-NO")} sekunder`,
+        L(
+          `Lengden må være ${lim.min.toLocaleString(locale())}–${lim.max.toLocaleString(locale())} sekunder`,
+          `The length must be ${lim.min.toLocaleString(locale())}–${lim.max.toLocaleString(locale())} seconds`,
+        ),
       );
-    if (x["approved"] !== true) throw new Error("Genereringen må bekreftes");
+    if (x["approved"] !== true)
+      throw new Error(L("Genereringen må bekreftes", "The generation must be confirmed"));
     return {
       projectId: x["projectId"],
       assetId: x["assetId"],
@@ -71,15 +89,23 @@ export const generateSound = createServerFn({ method: "POST" })
       context.userId,
     );
     if ((gate.ROLE_RANK[role ?? ""] ?? 0) < gate.ROLE_RANK["editor"]!)
-      return { ok: false, message: "Du har ikke tilgang til å generere i dette prosjektet." };
+      return {
+        ok: false,
+        message: L(
+          "Du har ikke tilgang til å generere i dette prosjektet.",
+          "You do not have access to generate in this project.",
+        ),
+      };
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const db = supabaseAdmin as unknown as AnyClient;
     const schema = await checkSchema(db);
     if (schema.kind === "missing" || schema.version < 24)
       return {
         ok: false,
-        message:
+        message: L(
           "Databasen er ikke oppdatert for AI-lyd. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0024).",
+          "The database is not updated for AI sound. Paste the message in LOVABLE_SYNC.md into Lovable (migration 0024).",
+        ),
       };
     const { data: proj } = await db
       .from("projects")
@@ -87,7 +113,7 @@ export const generateSound = createServerFn({ method: "POST" })
       .eq("id", data.projectId)
       .maybeSingle();
     if (!proj || (proj as { deleted_at?: string | null }).deleted_at)
-      return { ok: false, message: "Prosjektet er slettet." };
+      return { ok: false, message: L("Prosjektet er slettet.", "The project has been deleted.") };
     const { data: asset } = await db
       .from("assets")
       .select("id, kind")
@@ -95,15 +121,24 @@ export const generateSound = createServerFn({ method: "POST" })
       .eq("project_id", data.projectId)
       .maybeSingle();
     if (!asset || (asset as { kind: string }).kind !== "sound")
-      return { ok: false, message: "Lyd kan bare lages for en lydressurs." };
+      return {
+        ok: false,
+        message: L(
+          "Lyd kan bare lages for en lydressurs.",
+          "Sound can only be made for a sound asset.",
+        ),
+      };
     const m = providerModel(data.provider, data.model);
-    if (!m || m.capability !== "sound") return { ok: false, message: "Ukjent lydmodell." };
+    if (!m || m.capability !== "sound")
+      return { ok: false, message: L("Ukjent lydmodell.", "Unknown sound model.") };
     const key = await gate.projectKey(db, data.projectId, data.provider, context.userId);
     if (!key)
       return {
         ok: false,
-        message:
+        message: L(
           "Ingen av prosjektets eiere har koblet til ElevenLabs (AI-leverandører på prosjektlisten).",
+          "None of the project's owners has connected ElevenLabs (AI providers on the project list).",
+        ),
       };
     // Ukjent lengde: anslaget regner med det lengste modellen kan lage (katalogen, REQ-0273)
     const longest = providerModel(data.provider, data.model)?.soundSeconds?.max ?? 30;
@@ -117,7 +152,10 @@ export const generateSound = createServerFn({ method: "POST" })
         .eq("kind", "sound")
         .gte("created_at", hourAgo);
       if ((count ?? 0) - extra >= MAX_SOUND_JOBS_PER_USER_PER_HOUR)
-        return `Grensen på ${MAX_SOUND_JOBS_PER_USER_PER_HOUR} lyder i timen er nådd.`;
+        return L(
+          `Grensen på ${MAX_SOUND_JOBS_PER_USER_PER_HOUR} lyder i timen er nådd.`,
+          `The limit of ${MAX_SOUND_JOBS_PER_USER_PER_HOUR} sounds per hour has been reached.`,
+        );
       const budget = await gate.overProjectBudget(
         db,
         data.projectId,
@@ -155,7 +193,14 @@ export const generateSound = createServerFn({ method: "POST" })
         }),
       },
     } as never);
-    if (logErr) return { ok: false, message: `Jobben kunne ikke logges: ${logErr.message}` };
+    if (logErr)
+      return {
+        ok: false,
+        message: L(
+          `Jobben kunne ikke logges: ${logErr.message}`,
+          `The job could not be logged: ${logErr.message}`,
+        ),
+      };
     const after = await limits(1);
     if (after) {
       await db.from("generation_jobs").delete().eq("id", jobId);
@@ -184,8 +229,10 @@ export const generateSound = createServerFn({ method: "POST" })
         loop: data.loop,
       });
       charged = true;
-      if (!out.bytes.byteLength) throw new Error("Tjenesten svarte uten lyd.");
+      if (!out.bytes.byteLength)
+        throw new Error(L("Tjenesten svarte uten lyd.", "The service replied without sound."));
       const versionId = newId<"asset_version">();
+      // i18n-ignore: lagringssti i bøtta, ikke vist
       const path = `${data.projectId}/${data.assetId}/${versionId}/ai-lyd-${new Date().toISOString().slice(0, 10)}.mp3`;
       const { error: upErr } = await db.storage
         .from(BUCKET)
@@ -193,7 +240,13 @@ export const generateSound = createServerFn({ method: "POST" })
           contentType: "audio/mpeg",
           upsert: false,
         });
-      if (upErr) throw new Error(`Lyden kunne ikke lagres: ${upErr.message}`);
+      if (upErr)
+        throw new Error(
+          L(
+            `Lyden kunne ikke lagres: ${upErr.message}`,
+            `The sound could not be saved: ${upErr.message}`,
+          ),
+        );
       await finish({ status: "done", result_path: path });
       return {
         ok: true,
@@ -209,8 +262,14 @@ export const generateSound = createServerFn({ method: "POST" })
         },
       };
     } catch (e) {
-      const message = scrubSecret((e as Error).message || "Ukjent feil", secret).slice(0, 2000);
+      const message = scrubSecret(
+        (e as Error).message || L("Ukjent feil", "Unknown error"),
+        secret,
+      ).slice(0, 2000);
       await finish({ status: charged ? "lost" : "failed", error: message });
-      return { ok: false, message: `Lyden ble ikke laget: ${message}` };
+      return {
+        ok: false,
+        message: L(`Lyden ble ikke laget: ${message}`, `The sound was not made: ${message}`),
+      };
     }
   });

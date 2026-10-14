@@ -11,6 +11,7 @@ import { BookPlus, Check, Plus } from "lucide-react";
 import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
 import { memo, useMemo, useState } from "react";
 import {
+  L,
   ASSET_KIND_LABEL,
   REASON_LABEL,
   USAGE_LABEL,
@@ -101,21 +102,35 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
   const canAdd = editable && !!cmds;
 
   return (
-    <section aria-label="I denne scenen" className="flex min-h-0 flex-col border-t border-border">
+    <section
+      aria-label={L("I denne scenen", "In this scene")}
+      className="flex min-h-0 flex-col border-t border-border"
+    >
       <h2 className="px-3 pb-1 pt-2 text-xs font-medium uppercase tracking-[0.04em] text-text-tertiary">
-        I denne scenen ({items.length})
+        {L("I denne scenen", "In this scene")} ({items.length})
       </h2>
       {items.length === 0 ? (
         <p className="px-3 pb-2 text-xs text-text-tertiary">
-          Ingen ressurser fra biblioteket er funnet i scenen.
+          {L(
+            "Ingen ressurser fra biblioteket er funnet i scenen.",
+            "No assets from the library were found in the scene.",
+          )}
           {missing.length
-            ? " Navnene fra manuset under kan legges til i biblioteket."
-            : " Legg dem til i Ressursbiblioteket (for eksempel med «Forslag fra manuset»)."}
+            ? L(
+                " Navnene fra manuset under kan legges til i biblioteket.",
+                " The names from the script below can be added to the library.",
+              )
+            : L(
+                " Legg dem til i Ressursbiblioteket (for eksempel med «Forslag fra manuset»).",
+                " Add them in the Asset library (for example with “Suggestions from the script”).",
+              )}
         </p>
       ) : (
         <>
           {onAdd && editable ? (
-            <p className="px-3 pb-1 text-[11px] text-text-tertiary">Dra inn på lerretet.</p>
+            <p className="px-3 pb-1 text-[11px] text-text-tertiary">
+              {L("Dra inn på lerretet.", "Drag onto the canvas.")}
+            </p>
           ) : null}
           <ul className="grid grid-cols-2 gap-1.5 overflow-y-auto px-2 pb-2">
             {items.map(({ asset, how }) => {
@@ -137,7 +152,10 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                     e.dataTransfer.setData(ASSET_DRAG_TYPE, asset.id);
                     e.dataTransfer.effectAllowed = "copy";
                   }}
-                  title={`${asset.name} – ${ASSET_KIND_LABEL[asset.kind]}, ${USAGE_LABEL[how]}${lookName ? `. Utseende i denne scenen (kontinuitet): ${lookName}` : ""}${inScene ? `. Lagt inn i scenen${inScene > 1 ? ` (${inScene} lag)` : ""}` : ". Ikke lagt inn i scenen ennå"}.\nDobbeltklikk: velg eller generer bilde`}
+                  title={L(
+                    `${asset.name} – ${ASSET_KIND_LABEL[asset.kind]}, ${USAGE_LABEL[how]}${lookName ? `. Utseende i denne scenen (kontinuitet): ${lookName}` : ""}${inScene ? `. Lagt inn i scenen${inScene > 1 ? ` (${inScene} lag)` : ""}` : ". Ikke lagt inn i scenen ennå"}.\nDobbeltklikk: velg eller generer bilde`,
+                    `${asset.name} – ${ASSET_KIND_LABEL[asset.kind]}, ${USAGE_LABEL[how]}${lookName ? `. Look in this scene (continuity): ${lookName}` : ""}${inScene ? `. In the scene${inScene > 1 ? ` (${inScene} layers)` : ""}` : ". Not yet added to the scene"}.\nDouble-click: choose or generate an image`,
+                  )}
                   className={
                     "group relative flex flex-col overflow-hidden rounded-sm border bg-surface-2 " +
                     (inScene
@@ -149,9 +167,13 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                   {inScene ? (
                     <span
                       className="absolute left-1 top-1 z-[1] inline-flex items-center gap-0.5 rounded-sm bg-accent-brand px-1 text-[11px] font-medium text-accent-fg"
-                      aria-label={`I scenen${inScene > 1 ? `, ${inScene} lag` : ""}`}
+                      aria-label={L(
+                        `I scenen${inScene > 1 ? `, ${inScene} lag` : ""}`,
+                        `In the scene${inScene > 1 ? `, ${inScene} layers` : ""}`,
+                      )}
                     >
-                      <Check className="size-3" aria-hidden />I scenen
+                      <Check className="size-3" aria-hidden />
+                      {L("I scenen", "In the scene")}
                       {inScene > 1 ? ` ×${inScene}` : ""}
                     </span>
                   ) : null}
@@ -161,7 +183,7 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                         src={url}
                         alt=""
                         draggable={false}
-                        className="h-full w-full object-contain"
+                        className="h-full w-full object-contain p-1"
                       />
                     ) : (
                       <AssetSymbolIcon state={state} assetId={asset.id} className="size-10" />
@@ -177,7 +199,10 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                       })
                     }
                     className="truncate px-1.5 pt-1 text-left text-[12px] text-text-primary hover:text-accent-brand hover:underline"
-                    title={`Åpne «${asset.name}» i biblioteket (bilder og varianter)`}
+                    title={L(
+                      `Åpne «${asset.name}» i biblioteket (bilder og varianter)`,
+                      `Open “${asset.name}” in the library (images and variants)`,
+                    )}
                   >
                     <AssetSymbolIcon
                       state={state}
@@ -188,14 +213,17 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                   </button>
                   <span className="truncate px-1.5 pb-1 text-[11px] text-text-tertiary">
                     {lookName ? lookName : ASSET_KIND_LABEL[asset.kind]}
-                    {v ? "" : " · uten bilde"}
+                    {v ? "" : L(" · uten bilde", " · no image")}
                   </span>
                   {onAdd && editable ? (
                     <button
                       type="button"
                       onClick={() => onAdd(asset.id)}
-                      aria-label={`Legg «${asset.name}» inn i scenen`}
-                      title="Legg inn i scenen"
+                      aria-label={L(
+                        `Legg «${asset.name}» inn i scenen`,
+                        `Add “${asset.name}” to the scene`,
+                      )}
+                      title={L("Legg inn i scenen", "Add to the scene")}
                       className="absolute right-1 top-1 hidden rounded-sm bg-surface-1/90 p-0.5 text-text-secondary hover:text-text-primary focus-visible:flex group-hover:flex [@media(hover:none)]:flex"
                     >
                       <Plus className="size-3.5" aria-hidden />
@@ -211,16 +239,20 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
         <div className="px-2 pb-2" data-testid="scene-missing-assets">
           <div className="flex items-center gap-1 px-1 pb-1">
             <h3 className="min-w-0 flex-1 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
-              Fra manuset, ikke i biblioteket ({missing.length})
+              {L("Fra manuset, ikke i biblioteket", "From the script, not in the library")} (
+              {missing.length})
             </h3>
             {canAdd && missing.length > 1 ? (
               <button
                 type="button"
                 onClick={() => setAdding(missing)}
                 className="shrink-0 rounded-sm px-1 text-[11px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-                title="Gå gjennom alle navnene fra denne scenen"
+                title={L(
+                  "Gå gjennom alle navnene fra denne scenen",
+                  "Go through all the names from this scene",
+                )}
               >
-                Alle …
+                {L("Alle …", "All …")}
               </button>
             ) : null}
           </div>
@@ -229,7 +261,10 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
               <li
                 key={`${x.reason}|${x.name}`}
                 className="flex flex-col rounded-sm border border-dashed border-border px-1.5 py-0.5"
-                title={`${x.name} – ${ASSET_KIND_LABEL[x.kind]}${x.kindUncertain ? " (usikker type)" : ""}, ${REASON_LABEL[x.reason]}${x.possibleMatch ? `. Kanskje samme som «${x.possibleMatch.assetName}»` : ""}${x.uncertain ? ". Usikkert forslag" : ""}`}
+                title={L(
+                  `${x.name} – ${ASSET_KIND_LABEL[x.kind]}${x.kindUncertain ? " (usikker type)" : ""}, ${REASON_LABEL[x.reason]}${x.possibleMatch ? `. Kanskje samme som «${x.possibleMatch.assetName}»` : ""}${x.uncertain ? ". Usikkert forslag" : ""}`,
+                  `${x.name} – ${ASSET_KIND_LABEL[x.kind]}${x.kindUncertain ? " (uncertain type)" : ""}, ${REASON_LABEL[x.reason]}${x.possibleMatch ? `. Possibly the same as “${x.possibleMatch.assetName}”` : ""}${x.uncertain ? ". Uncertain suggestion" : ""}`,
+                )}
               >
                 <span
                   className={
@@ -241,19 +276,22 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                   <span className="text-[11px] text-text-tertiary">
                     {" "}
                     · {ASSET_KIND_LABEL[x.kind]}
-                    {x.possibleMatch ? " · mulig treff" : ""}
+                    {x.possibleMatch ? L(" · mulig treff", " · possible match") : ""}
                   </span>
                 </span>
                 {canAdd ? (
                   <button
                     type="button"
                     onClick={() => setAdding([x])}
-                    aria-label={`Legg «${x.name}» til i biblioteket`}
-                    title="Legg til i biblioteket"
+                    aria-label={L(
+                      `Legg «${x.name}» til i biblioteket`,
+                      `Add “${x.name}” to the library`,
+                    )}
+                    title={L("Legg til i biblioteket", "Add to the library")}
                     className="inline-flex items-center gap-1 self-start rounded-sm px-0.5 text-[11px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
                   >
                     <BookPlus className="size-3.5" aria-hidden />
-                    Legg til i biblioteket
+                    {L("Legg til i biblioteket", "Add to the library")}
                   </button>
                 ) : null}
               </li>

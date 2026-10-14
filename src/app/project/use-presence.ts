@@ -1,3 +1,4 @@
+import { collation, L } from "@/core";
 /**
  * Tilstedeværelse (DEC-0010, REQ-0526): hvem som har prosjektet åpent nå, og hvilken scene de står i.
  * Bruker Supabase Realtime Presence – ingenting lagres i databasen.
@@ -46,11 +47,11 @@ export function usePresence(
             if (!m) continue;
             list.push({
               userId: key,
-              name: m.name || "Medlem",
+              name: m.name || L("Medlem", "Member"),
               occurrenceId: m.occurrenceId ?? null,
             });
           }
-          list.sort((a, b) => a.name.localeCompare(b.name, "nb"));
+          list.sort((a, b) => a.name.localeCompare(b.name, collation()));
           setOthers(list);
         },
         (joined) => {

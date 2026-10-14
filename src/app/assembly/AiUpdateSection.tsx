@@ -17,6 +17,7 @@ import {
   estimateCostUsd,
   filmClips,
   formatUsd,
+  L,
   providerInfo,
   providerModel,
   sceneVideoWork,
@@ -103,7 +104,12 @@ export function AiUpdateSection({
     let started = 0;
     for (const i of plan.segments) {
       if (adaptPromptForModel(promptFor(i), chosen.model).blocked) {
-        errors.push(`Segment ${i + 1}: replikkene er for lange for modellen – del segmentet`);
+        errors.push(
+          L(
+            `Segment ${i + 1}: replikkene er for lange for modellen – del segmentet`,
+            `Segment ${i + 1}: the lines are too long for the model – split the segment`,
+          ),
+        );
         continue;
       }
       try {
@@ -138,31 +144,49 @@ export function AiUpdateSection({
         ? { kind: "error", text: errors.join(" · ") }
         : {
             kind: "ok",
-            text: `${started} nye ${started === 1 ? "video er" : "videoer er"} lagt i kø med høy prioritet. De gamle beholdes; sammenlign og velg i «Generer scene», og sett sammen scenen på nytt.`,
+            text: L(
+              `${started} nye ${started === 1 ? "video er" : "videoer er"} lagt i kø med høy prioritet. De gamle beholdes; sammenlign og velg i «Generer scene», og sett sammen scenen på nytt.`,
+              `${started} new ${started === 1 ? "video is" : "videos are"} queued with high priority. The old ones are kept; compare and choose in “Generate scene”, and assemble the scene again.`,
+            ),
           },
     );
   }
 
   return (
     <div className="flex flex-col gap-1.5 rounded-sm border border-border bg-surface-1 p-2 text-xs">
-      <p className="font-medium text-text-primary">Oppdater AI-videoen</p>
+      <p className="font-medium text-text-primary">
+        {L("Oppdater AI-videoen", "Update the AI video")}
+      </p>
       <p className="text-text-secondary">{plan.reason}</p>
       {plan.localOnly || plan.segments.length === 0 ? null : !chosen ? (
         <p className="text-text-tertiary">
-          Ingen videoleverandør er koblet til (AI-leverandører på prosjektlisten).
+          {L(
+            "Ingen videoleverandør er koblet til (AI-leverandører på prosjektlisten).",
+            "No video provider is connected (AI providers on the project list).",
+          )}
         </p>
       ) : confirm ? (
-        <div role="alertdialog" aria-label="Bekreft ny video" className="flex flex-col gap-1.5">
+        <div
+          role="alertdialog"
+          aria-label={L("Bekreft ny video", "Confirm new video")}
+          className="flex flex-col gap-1.5"
+        >
           <p className="text-text-primary">
-            {plan.segments.length} {plan.segments.length === 1 ? "ny video" : "nye videoer"} med{" "}
-            {chosen.provider.name} – {chosen.model.label}
-            {same ? " (samme som sist)" : ""}. Belastes prosjektets eier, anslått {formatUsd(cost)}{" "}
-            (et anslag). De gamle videoene beholdes.
+            {plan.segments.length}{" "}
+            {plan.segments.length === 1
+              ? L("ny video", "new video")
+              : L("nye videoer", "new videos")}{" "}
+            {L("med", "with")} {chosen.provider.name} – {chosen.model.label}
+            {same ? L(" (samme som sist)", " (same as last time)") : ""}.{" "}
+            {L(
+              `Belastes prosjektets eier, anslått ${formatUsd(cost)} (et anslag). De gamle videoene beholdes.`,
+              `Charged to the project owner, estimated at ${formatUsd(cost)} (an estimate). The old videos are kept.`,
+            )}
           </p>
           <CostLines
             lines={costBreakdown(chosen.provider, chosen.model, {
               targets: plan.segments.length,
-              targetsLabel: "segmenter",
+              targetsLabel: L("segmenter", "segments"),
               seconds: plan.segments.map(seconds),
               total: `ca. ${formatUsd(cost)}`,
             })}
@@ -171,7 +195,7 @@ export function AiUpdateSection({
             <div key={i} className="flex flex-col gap-0.5 text-[11px] text-text-tertiary">
               <span className="flex items-center gap-2">
                 <label htmlFor={`ai-update-${occurrenceId}-${i}`}>
-                  Beskrivelse for segment {i + 1}
+                  {L(`Beskrivelse for segment ${i + 1}`, `Description for segment ${i + 1}`)}
                 </label>
                 {edited[editKey(i)] !== undefined ? (
                   <button
@@ -184,7 +208,7 @@ export function AiUpdateSection({
                       })
                     }
                   >
-                    Tilbake til forslaget
+                    {L("Tilbake til forslaget", "Back to the suggestion")}
                   </button>
                 ) : null}
               </span>
@@ -209,7 +233,7 @@ export function AiUpdateSection({
               onClick={() => void run()}
               disabled={busy || plan.segments.some((i) => !promptFor(i).trim())}
             >
-              <AiGlyph /> Ja, lag nye videoer
+              <AiGlyph /> {L("Ja, lag nye videoer", "Yes, make new videos")}
             </Button>
             <Button
               size="sm"
@@ -219,7 +243,7 @@ export function AiUpdateSection({
                 setEdited({});
               }}
             >
-              Avbryt
+              {L("Avbryt", "Cancel")}
             </Button>
           </div>
         </div>
@@ -232,8 +256,9 @@ export function AiUpdateSection({
           onClick={() => setConfirm(true)}
         >
           {busy ? <Loader2 className="animate-spin" /> : <AiGlyph />}
-          Oppdater med AI ({plan.segments.length}{" "}
-          {plan.segments.length === 1 ? "segment" : "segmenter"}, ~{formatUsd(cost)}) …
+          {L("Oppdater med AI", "Update with AI")} ({plan.segments.length}{" "}
+          {plan.segments.length === 1 ? "segment" : L("segmenter", "segments")}, ~{formatUsd(cost)})
+          …
         </Button>
       )}
       {msg ? (

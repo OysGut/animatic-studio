@@ -4,7 +4,12 @@
  * prosjekt i nettleseren.
  */
 import { useCallback, useEffect, useState } from "react";
-import { FILM_LANGUAGES, LANGUAGE_LABEL, MAIN_LANGUAGE } from "@/core";
+import { FILM_LANGUAGES, L, LANGUAGE_LABEL, MAIN_LANGUAGE } from "@/core";
+
+const LANGUAGE_NAME_EN: Record<string, string> = { nb: "Norwegian", en: "English" };
+
+/** Språknavn på gjeldende språk (LANGUAGE_LABEL er norsk). */
+const languageName = (l: string) => L(LANGUAGE_LABEL[l] ?? l, LANGUAGE_NAME_EN[l] ?? l);
 
 export interface FilmLanguage {
   /** Dialogspråket (lyd og språkavhengige bilder). */
@@ -67,33 +72,43 @@ export function FilmLanguagePicker({
 }) {
   return (
     <span className="flex items-center gap-1.5 text-xs text-text-secondary">
-      <label className="flex items-center gap-1" title="Språket dialogen spilles på">
-        {compact ? null : <span>Dialog</span>}
+      <label
+        className="flex items-center gap-1"
+        title={L("Språket dialogen spilles på", "The language the dialogue is played in")}
+      >
+        {compact ? null : <span>{L("Dialog", "Dialogue")}</span>}
         <select
-          aria-label="Dialogspråk"
+          aria-label={L("Dialogspråk", "Dialogue language")}
           value={value.dialogue}
           onChange={(e) => onChange({ dialogue: e.target.value })}
           className={select}
         >
           {FILM_LANGUAGES.map((l) => (
             <option key={l} value={l}>
-              {compact ? `Dialog: ${LANGUAGE_LABEL[l] ?? l}` : (LANGUAGE_LABEL[l] ?? l)}
+              {compact
+                ? L(`Dialog: ${languageName(l)}`, `Dialogue: ${languageName(l)}`)
+                : languageName(l)}
             </option>
           ))}
         </select>
       </label>
-      <label className="flex items-center gap-1" title="Undertekster i bildet">
-        {compact ? null : <span>Undertekster</span>}
+      <label
+        className="flex items-center gap-1"
+        title={L("Undertekster i bildet", "Subtitles on screen")}
+      >
+        {compact ? null : <span>{L("Undertekster", "Subtitles")}</span>}
         <select
-          aria-label="Undertekster i bildet"
+          aria-label={L("Undertekster i bildet", "Subtitles on screen")}
           value={value.subtitles ?? ""}
           onChange={(e) => onChange({ subtitles: e.target.value || null })}
           className={select}
         >
-          <option value="">{compact ? "Tekst: av" : "Ingen"}</option>
+          <option value="">{compact ? L("Tekst: av", "Text: off") : L("Ingen", "None")}</option>
           {FILM_LANGUAGES.map((l) => (
             <option key={l} value={l}>
-              {compact ? `Tekst: ${LANGUAGE_LABEL[l] ?? l}` : (LANGUAGE_LABEL[l] ?? l)}
+              {compact
+                ? L(`Tekst: ${languageName(l)}`, `Text: ${languageName(l)}`)
+                : languageName(l)}
             </option>
           ))}
         </select>

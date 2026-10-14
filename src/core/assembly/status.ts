@@ -17,6 +17,7 @@ import { estimateProduction, type ProductionEstimate } from "../screenplay/durat
 import { matchingOccurrences, type SceneFilter } from "../screenplay/filter";
 import { filmClips } from "./film";
 import { discrepancies } from "./discrepancy";
+import { collation, localized } from "../i18n";
 
 /** Hvor tallet for scenen kommer fra (mandat 7.2). */
 export type DurationSource = "film" | "ai" | "animatic" | "planned" | "estimate";
@@ -24,21 +25,21 @@ export type DurationSource = "film" | "ai" | "animatic" | "planned" | "estimate"
 /** Produksjonsstatus for en scene. */
 export type SceneStatus = "done" | "film" | "animatic" | "missing" | "inactive";
 
-export const SCENE_STATUS_LABEL: Record<SceneStatus, string> = {
-  done: "Ferdig",
-  film: "Film, ikke godkjent",
-  animatic: "2D-animatic",
-  missing: "Mangler produksjon",
-  inactive: "Deaktivert",
-};
+export const SCENE_STATUS_LABEL: Record<SceneStatus, string> = localized({
+  done: ["Ferdig", "Done"],
+  film: ["Film, ikke godkjent", "Film, not approved"],
+  animatic: ["2D-animatic", "2D animatic"],
+  missing: ["Mangler produksjon", "Missing production"],
+  inactive: ["Deaktivert", "Inactive"],
+});
 
-export const DURATION_SOURCE_LABEL: Record<DurationSource, string> = {
-  film: "film",
-  ai: "AI-video",
-  animatic: "2D-animatic",
-  planned: "planlagt",
-  estimate: "estimat",
-};
+export const DURATION_SOURCE_LABEL: Record<DurationSource, string> = localized({
+  film: ["film", "film"],
+  ai: ["AI-video", "AI video"],
+  animatic: ["2D-animatic", "2D animatic"],
+  planned: ["planlagt", "planned"],
+  estimate: ["estimat", "estimate"],
+});
 
 export interface SceneStatusRow {
   readonly occurrenceId: string;
@@ -207,7 +208,7 @@ export function filterStatusRows(
   rows: readonly SceneStatusRow[],
   f: StatusFilter,
 ): SceneStatusRow[] {
-  const q = (f.text ?? "").trim().toLocaleLowerCase("nb");
+  const q = (f.text ?? "").trim().toLocaleLowerCase(collation());
   // Oversettelsesstatus per produksjon (beregnes én gang)
   const open = new Map<string, Set<string>>();
   const openBlocks = (productionId: string): Set<string> => {
@@ -235,7 +236,7 @@ export function filterStatusRows(
       const h = o ? s.variants[o.variantId]?.heading : undefined;
       const hay =
         `${r.productionNumber ?? ""} ${h?.intExt ?? ""} ${h?.location ?? ""} ${h?.time ?? ""}`.toLocaleLowerCase(
-          "nb",
+          collation(),
         );
       if (!hay.includes(q)) return false;
     }

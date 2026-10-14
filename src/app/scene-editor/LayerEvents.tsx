@@ -6,7 +6,10 @@
 import { Link2, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
+  L,
   blocksOfVariant,
+  localized,
+  locale,
   mainProduction,
   newId,
   type Command,
@@ -18,7 +21,11 @@ import { Button } from "@/components/ui/button";
 
 type Run = (command: Command, label: string) => string | null;
 
-const KIND: Record<string, string> = { action: "Handling", dialogue: "Replikk", shot: "Bilde" };
+const KIND: Record<string, string> = localized({
+  action: ["Handling", "Action"],
+  dialogue: ["Replikk", "Line"],
+  shot: ["Bilde", "Shot"],
+});
 
 export function LayerEvents({
   state,
@@ -60,7 +67,7 @@ export function LayerEvents({
   const [error, setError] = useState<string | null>(null);
   if (!occurrence) return null;
   const snippet = (text: string) => (text.length > 48 ? `${text.slice(0, 46)} …` : text);
-  const seconds = (ms: number) => `${(Math.round(ms / 100) / 10).toLocaleString("nb-NO")} s`;
+  const seconds = (ms: number) => `${(Math.round(ms / 100) / 10).toLocaleString(locale())} s`;
 
   function add() {
     if (!blockId || !occurrence) return;
@@ -81,19 +88,22 @@ export function LayerEvents({
             },
           ],
         },
-        "Koble manus til hendelse",
+        L("Koble manus til hendelse", "Link script to event"),
       ),
     );
   }
 
   return (
-    <section aria-label="Hendelser i manuset" className="mb-4">
+    <section aria-label={L("Hendelser i manuset", "Script events")} className="mb-4">
       <h3 className="mb-1.5 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
-        Hendelser i manuset
+        {L("Hendelser i manuset", "Script events")}
       </h3>
       {links.length === 0 ? (
         <p className="text-xs text-text-tertiary">
-          Ingen ennå. Koble en handling eller replikk til det laget gjør på avspillingshodet.
+          {L(
+            "Ingen ennå. Koble en handling eller replikk til det laget gjør på avspillingshodet.",
+            "None yet. Link an action or line to what the layer does at the playhead.",
+          )}
         </p>
       ) : (
         <ul className="flex flex-col gap-1">
@@ -108,22 +118,24 @@ export function LayerEvents({
                   type="button"
                   onClick={() => onSeek?.(Math.round((l.startMs / 1000) * fps))}
                   className="shrink-0 font-mono text-[11px] text-text-secondary hover:text-text-primary"
-                  title="Gå til hendelsen"
+                  title={L("Gå til hendelsen", "Go to the event")}
                 >
                   {seconds(l.startMs)}
                 </button>
                 <span className="min-w-0 flex-1 truncate text-text-primary" title={b?.text}>
-                  {b ? `${KIND[b.kind] ?? ""}: ${snippet(b.text)}` : "Blokken er borte"}
+                  {b
+                    ? `${KIND[b.kind] ?? ""}: ${snippet(b.text)}`
+                    : L("Blokken er borte", "The block has been removed")}
                 </span>
                 {editable ? (
                   <button
                     type="button"
-                    aria-label="Fjern hendelsen"
+                    aria-label={L("Fjern hendelsen", "Remove the event")}
                     onClick={() =>
                       setError(
                         run(
                           { type: "SetTimeLinksRemoved", linkIds: [l.id], removed: true },
-                          "Fjern hendelse",
+                          L("Fjern hendelse", "Remove event"),
                         ),
                       )
                     }
@@ -140,12 +152,14 @@ export function LayerEvents({
       {editable && blocks.length > 0 ? (
         <div className="mt-1.5 flex items-center gap-1.5">
           <select
-            aria-label="Manusblokk for hendelsen"
+            aria-label={L("Manusblokk for hendelsen", "Script block for the event")}
             value={blockId}
             onChange={(e) => setBlockId(e.target.value)}
             className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1 text-xs text-text-primary"
           >
-            <option value="">Velg handling eller replikk …</option>
+            <option value="">
+              {L("Velg handling eller replikk …", "Choose an action or line …")}
+            </option>
             {blocks.map((b) => (
               <option key={b.id} value={b.id}>
                 {KIND[b.kind] ?? ""}: {snippet(b.text)}
@@ -157,10 +171,13 @@ export function LayerEvents({
             variant="secondary"
             disabled={!blockId}
             onClick={add}
-            title="Koble blokken til laget på avspillingshodet"
+            title={L(
+              "Koble blokken til laget på avspillingshodet",
+              "Link the block to the layer at the playhead",
+            )}
           >
             <Link2 className="size-3.5" />
-            Koble her
+            {L("Koble her", "Link here")}
           </Button>
         </div>
       ) : null}

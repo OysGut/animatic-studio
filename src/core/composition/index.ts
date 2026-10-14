@@ -13,6 +13,7 @@ export * from "./format";
 export * from "./path";
 export * from "./group";
 export * from "./camera-handoff";
+export * from "./shape";
 
 /** Lagtypen et bilde fra biblioteket får som standard. */
 export const LAYER_KIND_FOR_ASSET: Record<AssetKind, LayerKind> = {
@@ -41,7 +42,7 @@ export function defaultLayerFields(
   if ("fill" in src) {
     return {
       kind: "background",
-      name: src.name ?? "Fargeflate",
+      name: src.name ?? "Fargeflate", // i18n-ignore – lagret standardnavn på laget
       assetId: null,
       assetVariantId: null,
       versionId: null,
@@ -77,7 +78,7 @@ export function defaultLayerFields(
   const k = Number.isFinite(fit) && fit > 0 ? Math.round(fit * 1000) / 1000 : 1;
   return {
     kind,
-    name: asset?.name ?? "Bilde",
+    name: asset?.name ?? "Bilde", // i18n-ignore – lagret standardnavn på laget
     assetId: src.assetId as never,
     assetVariantId: variantId as never,
     versionId: null,

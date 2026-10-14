@@ -65,6 +65,7 @@ Hvordan TypeScript- og React-koden skrives slik at domenekjernen forblir ren, re
 - [ ] Ingen kritiske data bare i `localStorage`/minne (REQ-0410).
 
 ## 7. Typiske feil som må unngås
+- Brukervendt tekst bare på ett språk. Tjenesten er på norsk og engelsk (DEC-0081, REQ-0629/0630): hver ny eller endret tekst – også verktøytips (title), aria-label og feilmeldinger – skrives på begge språk i samme endring.
 - Domenelogikk i komponenter eller hooks (kan ikke testes, kan ikke gjenbrukes i desktop).
 - Kopiere server-tilstand inn i lokal state og la den drive fra hverandre.
 - Lagre avledet tilstand (varighet, tidskoder, nummerering) i state i stedet for å beregne den.

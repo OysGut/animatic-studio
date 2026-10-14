@@ -57,6 +57,7 @@ export async function fetchJobForResult(
 export async function fetchProviderKeys(userId: string): Promise<BackendResult<unknown[] | null>> {
   const keys = await db
     .from("ai_provider_keys")
+    // i18n-ignore
     .select("id, provider, label, key_hint, status, status_message, last_tested_at, updated_at")
     .eq("user_id", userId)
     .order("provider", { ascending: true });

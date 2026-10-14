@@ -39,6 +39,7 @@ import type {
   SourceRef,
 } from "./types";
 import type { BlockKind, SceneHeading } from "../model";
+import { L } from "../i18n";
 
 /** Linjehøyde i den virtuelle kildereferansen (samme målestokk som RawLine.y: 12 pt per linje). */
 const LINE = 12;
@@ -351,7 +352,12 @@ export function parseFountain(source: string): FountainImport {
         source: src(at),
         isContinuation: true,
         elements: [],
-        warnings: ["Tekst før første sceneoverskrift (fortsettelse fra tidligere scene)"],
+        warnings: [
+          L(
+            "Tekst før første sceneoverskrift (fortsettelse fra tidligere scene)",
+            "Text before the first scene heading (continuation from an earlier scene)",
+          ),
+        ],
       };
       scenes.push(current);
     }
@@ -418,8 +424,10 @@ export function parseFountain(source: string): FountainImport {
         ...(dual ? { marks: { dual: true } } : {}),
         ...(dual && !afterDialogue
           ? {
-              uncertain:
+              uncertain: L(
                 "Dobbel dialog (^) uten replikk rett foran – usikkert hvem som snakker samtidig",
+                "Double dialogue (^) without a line directly before – unclear who speaks at the same time",
+              ),
             }
           : {}),
       });
@@ -527,7 +535,10 @@ export function parseFountain(source: string): FountainImport {
   const warnings: string[] = [];
   if (!out.some((s) => !s.isContinuation) && out.length)
     warnings.push(
-      "Fant ingen sceneoverskrifter (INT./EXT.). All tekst ligger i én scene uten overskrift.",
+      L(
+        "Fant ingen sceneoverskrifter (INT./EXT.). All tekst ligger i én scene uten overskrift.",
+        "No scene headings (INT./EXT.) found. All text is in one scene without a heading.",
+      ),
     );
   const numbers = out.filter((s) => s.number !== null).map((s) => s.number as string);
   const seen = new Set<string>();
@@ -535,9 +546,17 @@ export function parseFountain(source: string): FountainImport {
     ...new Set(numbers.filter((n) => (seen.has(n) ? true : (seen.add(n), false)))),
   ];
   if (duplicateNumbers.length)
-    warnings.push(`Scenenumre som forekommer flere ganger: ${duplicateNumbers.join(", ")}`);
+    warnings.push(
+      L(
+        `Scenenumre som forekommer flere ganger: ${duplicateNumbers.join(", ")}`,
+        `Scene numbers that occur more than once: ${duplicateNumbers.join(", ")}`,
+      ),
+    );
   const unnumbered = out.filter((s) => s.number === null && !s.isContinuation).length;
-  if (unnumbered) warnings.push(`${unnumbered} scene(r) uten scenenummer`);
+  if (unnumbered)
+    warnings.push(
+      L(`${unnumbered} scene(r) uten scenenummer`, `${unnumbered} scene(s) without a scene number`),
+    );
 
   // Fountain har ingen faste sider: beregn sidetallet med manusvisningens sidebryting
   const estimate = paginate(
@@ -721,6 +740,7 @@ export function screenplayFountain(
     const headingText = sc.headingText.trim();
     if (headingText || sc.number !== null || idx > 0) {
       // Scene uten overskrift midt i manuset (fortsettelse fra en import) må likevel skilles fra forrige scene
+      // i18n-ignore: manusets formatord (Fountain-tekst i eksportfilen), oversettes ikke
       const base = escapeInline(headingText || "UTEN OVERSKRIFT");
       const natural =
         classifyFountainLine(base, true) === "heading" && !base.trimStart().startsWith(".");

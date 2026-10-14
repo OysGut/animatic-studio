@@ -17,6 +17,8 @@ import {
   Undo2,
 } from "lucide-react";
 import {
+  L,
+  collation,
   POSTER_KIND_LABEL,
   ROLE_LABEL,
   posterDraft,
@@ -71,14 +73,18 @@ export function PosterWorkspace({ projectId, userId }: { projectId: string; user
   const editable = canEdit(role);
   const cmds = useCommands(projectId, userId, editable);
   if (query.isLoading)
-    return <p className="p-6 text-[13px] text-text-tertiary">Henter prosjektet …</p>;
+    return (
+      <p className="p-6 text-[13px] text-text-tertiary">
+        {L("Henter prosjektet …", "Loading the project …")}
+      </p>
+    );
   if (query.isError || !query.data)
     return (
       <div role="alert" className="p-6 text-[13px] text-status-danger">
-        Prosjektet kunne ikke hentes.
+        {L("Prosjektet kunne ikke hentes.", "The project could not be loaded.")}
         {query.error ? (
           <p className="mt-2 font-mono text-xs text-text-tertiary">
-            Teknisk detalj: {query.error.message}
+            {L("Teknisk detalj", "Technical detail")}: {query.error.message}
           </p>
         ) : null}
       </div>
@@ -112,7 +118,7 @@ function Release({
   const productions = useMemo(
     () =>
       Object.values(state.productions).sort((a, b) =>
-        a.kind === "main" ? -1 : b.kind === "main" ? 1 : a.name.localeCompare(b.name, "nb"),
+        a.kind === "main" ? -1 : b.kind === "main" ? 1 : a.name.localeCompare(b.name, collation()),
       ),
     [state.productions],
   );
@@ -121,7 +127,7 @@ function Release({
     () =>
       Object.values(state.posters)
         .filter((p) => !p.removed && p.productionId === productionId)
-        .sort((a, b) => a.name.localeCompare(b.name, "nb") || a.id.localeCompare(b.id)),
+        .sort((a, b) => a.name.localeCompare(b.name, collation()) || a.id.localeCompare(b.id)),
     [state.posters, productionId],
   );
   const [posterId, setPosterId] = useState<string | null>(null);
@@ -207,7 +213,7 @@ function Release({
           y: H * 0.45,
           w: W * 0.6,
           h: H * 0.05,
-          text: { nb: "Ny tekst", en: "New text" },
+          text: { nb: "Ny tekst", en: "New text" }, // i18n-ignore – tospråklig tekst (nb og en)
           font: "serif",
           bold: false,
           italic: false,
@@ -218,7 +224,7 @@ function Release({
           tracking: 0,
           lineHeight: 1.2,
         },
-        "Ny tekst",
+        L("Ny tekst", "New text"),
       );
     else if (kind === "rect")
       addElement(
@@ -235,12 +241,17 @@ function Release({
           opacity: 0.8,
           radius: 0,
         },
-        "Ny flate",
+        L("Ny flate", "New shape"),
       );
     else {
       const a = sortedAssets(state).find((x) => !x.archived && x.kind !== "sound");
       if (!a) {
-        setError("Biblioteket har ingen ressurser med bilder ennå.");
+        setError(
+          L(
+            "Biblioteket har ingen ressurser med bilder ennå.",
+            "The library has no assets with images yet.",
+          ),
+        );
         return;
       }
       addElement(
@@ -257,7 +268,7 @@ function Release({
           fit: "contain",
           opacity: 1,
         },
-        "Nytt bilde",
+        L("Nytt bilde", "New image"),
       );
     }
   };
@@ -315,7 +326,7 @@ function Release({
       objects: d.objects,
       elements: [],
     });
-    save(shownPoster, { document: doc }, "Lag utkastet på nytt");
+    save(shownPoster, { document: doc }, L("Lag utkastet på nytt", "Redraft the poster"));
     setSelected(null);
   };
 
@@ -334,7 +345,7 @@ function Release({
     save(
       shownPoster,
       { document: { ...shownPoster.document, elements } },
-      dir === "front" ? "Flytt fram" : "Flytt bak",
+      dir === "front" ? L("Flytt fram", "Bring forward") : L("Flytt bak", "Send back"),
     );
   };
 
@@ -349,7 +360,7 @@ function Release({
           elements: doc.elements.map((e) => (e.id === element.id ? resetElement(e) : e)),
         }),
       },
-      "Tilbakestill element",
+      L("Tilbakestill element", "Reset element"),
     );
   };
 
@@ -363,7 +374,7 @@ function Release({
           elements: shownPoster.document.elements.filter((e) => e.id !== element.id),
         },
       },
-      "Fjern element",
+      L("Fjern element", "Remove element"),
     );
     setSelected(null);
   };
@@ -371,15 +382,25 @@ function Release({
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex h-10 shrink-0 items-center gap-2 border-b border-border bg-surface-2 px-3">
-        <span className="text-[13px] font-medium text-text-primary">Utgivelse</span>
+        <span className="text-[13px] font-medium text-text-primary">
+          {L("Utgivelse", "Release")}
+        </span>
         <div className="mx-1 h-5 w-px bg-border" aria-hidden />
         <Button
           size="sm"
           variant="ghost"
           onClick={cmds.undo}
           disabled={!cmds.canUndo}
-          title={cmds.undoLabel ? `Angre: ${cmds.undoLabel} (⌘Z)` : "Angre (⌘Z)"}
-          aria-label={cmds.undoLabel ? `Angre: ${cmds.undoLabel}` : "Angre"}
+          title={
+            cmds.undoLabel
+              ? L(`Angre: ${cmds.undoLabel} (⌘Z)`, `Undo: ${cmds.undoLabel} (⌘Z)`)
+              : L("Angre (⌘Z)", "Undo (⌘Z)")
+          }
+          aria-label={
+            cmds.undoLabel
+              ? L(`Angre: ${cmds.undoLabel}`, `Undo: ${cmds.undoLabel}`)
+              : L("Angre", "Undo")
+          }
         >
           <Undo2 />
         </Button>
@@ -388,8 +409,16 @@ function Release({
           variant="ghost"
           onClick={cmds.redo}
           disabled={!cmds.canRedo}
-          title={cmds.redoLabel ? `Gjør om: ${cmds.redoLabel} (⇧⌘Z)` : "Gjør om (⇧⌘Z)"}
-          aria-label={cmds.redoLabel ? `Gjør om: ${cmds.redoLabel}` : "Gjør om"}
+          title={
+            cmds.redoLabel
+              ? L(`Gjør om: ${cmds.redoLabel} (⇧⌘Z)`, `Redo: ${cmds.redoLabel} (⇧⌘Z)`)
+              : L("Gjør om (⇧⌘Z)", "Redo (⇧⌘Z)")
+          }
+          aria-label={
+            cmds.redoLabel
+              ? L(`Gjør om: ${cmds.redoLabel}`, `Redo: ${cmds.redoLabel}`)
+              : L("Gjør om", "Redo")
+          }
         >
           <Redo2 />
         </Button>
@@ -397,10 +426,10 @@ function Release({
           size="sm"
           variant="ghost"
           onClick={() => setRelOpen(true)}
-          title="Relasjoner mellom karakterene"
+          title={L("Relasjoner mellom karakterene", "Relations between the characters")}
         >
           <GitFork />
-          <span className="hidden xl:inline">Relasjoner</span>
+          <span className="hidden xl:inline">{L("Relasjoner", "Relations")}</span>
         </Button>
         {shownPoster && editable ? (
           <>
@@ -409,8 +438,8 @@ function Release({
               size="sm"
               variant="ghost"
               onClick={() => newCustom("text")}
-              aria-label="Legg til tekst"
-              title="Legg til tekst"
+              aria-label={L("Legg til tekst", "Add text")}
+              title={L("Legg til tekst", "Add text")}
             >
               <Type />
             </Button>
@@ -418,8 +447,8 @@ function Release({
               size="sm"
               variant="ghost"
               onClick={() => newCustom("image")}
-              aria-label="Legg til bilde"
-              title="Legg til bilde"
+              aria-label={L("Legg til bilde", "Add image")}
+              title={L("Legg til bilde", "Add image")}
             >
               <ImagePlus />
             </Button>
@@ -427,8 +456,8 @@ function Release({
               size="sm"
               variant="ghost"
               onClick={() => newCustom("rect")}
-              aria-label="Legg til flate"
-              title="Legg til flate"
+              aria-label={L("Legg til flate", "Add shape")}
+              title={L("Legg til flate", "Add shape")}
             >
               <Square />
             </Button>
@@ -438,33 +467,35 @@ function Release({
           <>
             <div className="mx-1 h-5 w-px bg-border" aria-hidden />
             <label className="flex items-center gap-1.5 whitespace-nowrap text-xs text-text-secondary">
-              <span className="hidden xl:inline">Vis på</span>
+              <span className="hidden xl:inline">{L("Vis på", "Show in")}</span>
               <select
-                aria-label="Språk i forhåndsvisningen"
+                aria-label={L("Språk i forhåndsvisningen", "Language of the preview")}
                 value={lang}
                 onChange={(e) => setPreview(e.target.value as "nb" | "en")}
                 className="h-7 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary"
               >
-                <option value="nb">Norsk</option>
-                <option value="en">Engelsk</option>
+                <option value="nb">{L("Norsk", "Norwegian")}</option>
+                <option value="en">{L("Engelsk", "English")}</option>
               </select>
             </label>
             <Button size="sm" variant="secondary" onClick={() => setExportOpen(true)}>
               <Download />
-              Eksporter
+              {L("Eksporter", "Export")}
             </Button>
           </>
         ) : null}
         <div className="ml-auto flex items-center gap-3">
           <SaveIndicator cmds={cmds} />
           {roleKnown && !editable ? (
-            <span className="text-xs text-text-tertiary">Bare lesetilgang</span>
+            <span className="text-xs text-text-tertiary">
+              {L("Bare lesetilgang", "Read-only access")}
+            </span>
           ) : null}
           {productions.length > 1 ? (
             <label className="flex items-center gap-1.5 text-xs text-text-secondary">
-              Produksjon
+              {L("Produksjon", "Production")}
               <select
-                aria-label="Produksjon"
+                aria-label={L("Produksjon", "Production")}
                 value={productionId}
                 onChange={(e) => setProductionId(e.target.value)}
                 className="h-7 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary"
@@ -486,7 +517,7 @@ function Release({
         >
           {error}
           <button type="button" className="ml-auto underline" onClick={() => setError(null)}>
-            Lukk
+            {L("Lukk", "Close")}
           </button>
         </div>
       ) : null}
@@ -505,20 +536,20 @@ function Release({
             onSize={setListWidth}
             min={160}
             max={360}
-            label="Bredde på plakatlisten"
+            label={L("Bredde på plakatlisten", "Width of the poster list")}
           />
           <div className="flex shrink-0 items-center justify-between border-b border-border px-2 py-2">
             <span className="text-xs font-medium text-text-secondary">
-              Plakater ({posters.length})
+              {L(`Plakater (${posters.length})`, `Posters (${posters.length})`)}
             </span>
             {editable ? (
               <Button size="sm" variant="ghost" onClick={() => setNewOpen(true)}>
                 <Plus />
-                Ny
+                {L("Ny", "New")}
               </Button>
             ) : null}
           </div>
-          <ul className="min-h-0 flex-1 overflow-y-auto p-1" aria-label="Plakater">
+          <ul className="min-h-0 flex-1 overflow-y-auto p-1" aria-label={L("Plakater", "Posters")}>
             {posters.map((p) => (
               <li key={p.id} className="group flex items-center">
                 <button
@@ -533,7 +564,7 @@ function Release({
                   <span className="truncate text-[13px] text-text-primary">{p.name}</span>
                   <span className="truncate text-[11px] text-text-tertiary">
                     {POSTER_KIND_LABEL[p.kind]} · {p.widthMm / 10} × {p.heightMm / 10} cm ·{" "}
-                    {p.language === "en" ? "engelsk" : "norsk"}
+                    {p.language === "en" ? L("engelsk", "English") : L("norsk", "Norwegian")}
                   </span>
                 </button>
                 {editable ? (
@@ -541,13 +572,13 @@ function Release({
                     size="icon"
                     variant="ghost"
                     className="size-7 opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
-                    aria-label={`Fjern plakaten «${p.name}»`}
-                    title="Fjern plakaten (kan angres)"
+                    aria-label={L(`Fjern plakaten «${p.name}»`, `Remove the poster “${p.name}”`)}
+                    title={L("Fjern plakaten (kan angres)", "Remove the poster (can be undone)")}
                     onClick={() =>
                       setError(
                         cmds.run(
                           { type: "SetPosterRemoved", posterId: p.id, removed: true },
-                          `Fjern plakaten «${p.name}»`,
+                          L(`Fjern plakaten «${p.name}»`, `Remove the poster “${p.name}”`),
                         ),
                       )
                     }
@@ -580,16 +611,19 @@ function Release({
             />
           ) : (
             <div className="max-w-md text-center">
-              <p className="text-base font-medium text-text-primary">Ingen plakater ennå</p>
+              <p className="text-base font-medium text-text-primary">
+                {L("Ingen plakater ennå", "No posters yet")}
+              </p>
               <p className="mt-2 text-[13px] text-text-secondary">
-                Lag en kinopitch-plakat eller et karakter- og universkart. Programmet lager et
-                førsteutkast fra manuset og biblioteket, som du kan endre fritt og eksportere til
-                trykk.
+                {L(
+                  "Lag en kinopitch-plakat eller et karakter- og universkart. Programmet lager et førsteutkast fra manuset og biblioteket, som du kan endre fritt og eksportere til trykk.",
+                  "Make a cinema pitch poster or a character and universe map. The app makes a first draft from the script and the library, which you can change freely and export for print.",
+                )}
               </p>
               {editable ? (
                 <Button className="mt-4" onClick={() => setNewOpen(true)}>
                   <Plus />
-                  Ny plakat
+                  {L("Ny plakat", "New poster")}
                 </Button>
               ) : null}
             </div>
@@ -600,7 +634,7 @@ function Release({
         {shownPoster ? (
           <aside
             className="relative flex min-h-0 flex-col border-l border-border bg-surface-1"
-            aria-label="Innstillinger for plakaten"
+            aria-label={L("Innstillinger for plakaten", "Settings for the poster")}
           >
             <PaneResizer
               edge="left"
@@ -608,18 +642,18 @@ function Release({
               onSize={setSideWidth}
               min={260}
               max={520}
-              label="Bredde på innstillingene"
+              label={L("Bredde på innstillingene", "Width of the settings")}
             />
             <div
               role="tablist"
-              aria-label="Innstillinger"
+              aria-label={L("Innstillinger", "Settings")}
               className="flex shrink-0 border-b border-border"
             >
               {(
                 [
-                  ["poster", "Plakat"],
-                  ["element", "Element"],
-                  ["checks", "Kontroll"],
+                  ["poster", L("Plakat", "Poster")],
+                  ["element", L("Element", "Element")],
+                  ["checks", L("Kontroll", "Checks")],
                 ] as const
               ).map(([t, label]) => (
                 <button
@@ -665,7 +699,7 @@ function Release({
               {tab === "element" ? (
                 <div className="border-b border-border px-3 py-2">
                   <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
-                    Element
+                    {L("Element", "Element")}
                     <select
                       value={element?.id ?? ""}
                       onChange={(e) => {
@@ -674,11 +708,11 @@ function Release({
                       }}
                       className="h-7 w-full rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
                     >
-                      <option value="">Velg et element …</option>
+                      <option value="">{L("Velg et element …", "Choose an element …")}</option>
                       {[...shownPoster.document.elements].reverse().map((el) => (
                         <option key={el.id} value={el.id}>
                           {elementLabel(state, el)}
-                          {el.visible ? "" : " (skjult)"}
+                          {el.visible ? "" : L(" (skjult)", " (hidden)")}
                         </option>
                       ))}
                     </select>
@@ -712,8 +746,10 @@ function Release({
                   />
                 ) : (
                   <p className="px-3 py-4 text-xs text-text-tertiary">
-                    Klikk på noe i plakaten, eller velg i listen over. Piltastene flytter valgt
-                    element.
+                    {L(
+                      "Klikk på noe i plakaten, eller velg i listen over. Piltastene flytter valgt element.",
+                      "Click something in the poster, or choose from the list above. The arrow keys move the selected element.",
+                    )}
                   </p>
                 )
               ) : (

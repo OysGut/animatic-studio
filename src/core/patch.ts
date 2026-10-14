@@ -52,6 +52,7 @@ import type {
   StyleUse,
   TakeCoverage,
 } from "./model";
+import { isVersionView } from "./library/view";
 import type { DurationAssumptions } from "./screenplay/duration";
 
 export type Row = Record<string, unknown>;
@@ -105,6 +106,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         fps_den: p.fps.den,
         // Migrasjon 0027 (DEC-0072); ignoreres av apply_changes før den er kjørt
         export_settings: p.exportSettings ?? null,
+        // Migrasjon 0031 (DEC-0082)
+        description: p.note ?? "",
       };
     }
     case "scenes": {
@@ -222,6 +225,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         voice: a.voice ?? null,
         // Migrasjon 0029 (DEC-0079)
         removed: a.removed === true,
+        // Migrasjon 0030 (DEC-0080)
+        visual_brief: a.visualBrief ?? "",
       };
     }
     case "assetVariants": {
@@ -256,6 +261,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         duration_ms: v.durationMs,
         // Migrasjon 0029 (DEC-0079)
         removed: v.removed === true,
+        // Migrasjon 0030 (DEC-0080)
+        view: v.view ?? null,
       };
     }
     case "annotations": {
@@ -820,6 +827,10 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         parentProductionId: optStr(x["parent_production_id"]) as never,
         fps: { num: num(x["fps_num"]), den: num(x["fps_den"]) },
         ...exportSettingsFromRow(x["export_settings"]),
+        ...(typeof x["description"] === "string" && x["description"]
+          ? { note: x["description"] }
+          : {}),
+        ...(x["created_at"] != null ? { createdAt: iso(x["created_at"]) } : {}),
       })),
     ),
     scenes: byId(
@@ -969,6 +980,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
           ? { voice: x["voice"] as AssetVoice }
           : {}),
         ...(x["removed"] === true ? { removed: true } : {}),
+        ...(typeof x["visual_brief"] === "string" && x["visual_brief"]
+          ? { visualBrief: x["visual_brief"] }
+          : {}),
       })),
     ),
     assetVariants: byId(
@@ -1000,6 +1014,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         createdBy: str(x["created_by"] ?? ""),
         durationMs: optNum(x["duration_ms"]),
         ...(x["removed"] === true ? { removed: true } : {}),
+        ...(isVersionView(x["view"]) ? { view: x["view"] } : {}),
       })),
     ),
     annotations: byId(

@@ -46,6 +46,9 @@ import {
   type DurationAssumptions,
   type ProjectState,
   type SceneStatus,
+  L,
+  collation,
+  tm,
 } from "@/core";
 
 const STATUS_CLASS: Record<SceneStatus, string> = {
@@ -87,7 +90,10 @@ function PlannedInput({
       placeholder="–"
       aria-label={label}
       aria-invalid={invalid || undefined}
-      title="Planlagt lengde (m:ss eller sekunder). Tomt felt fjerner planen."
+      title={L(
+        "Planlagt lengde (m:ss eller sekunder). Tomt felt fjerner planen.",
+        "Planned length (m:ss or seconds). An empty field removes the plan.",
+      )}
       onChange={(e) => setText(e.target.value)}
       onKeyDown={(e) => {
         if (e.key === "Enter") e.currentTarget.blur();
@@ -131,7 +137,7 @@ export function DurationOverview({
   const productions = Object.values(state.productions)
     .filter((p) => orderedOccurrences(state, p.id).length > 0)
     .sort((a, b) =>
-      a.kind === "main" ? -1 : b.kind === "main" ? 1 : a.name.localeCompare(b.name, "nb"),
+      a.kind === "main" ? -1 : b.kind === "main" ? 1 : a.name.localeCompare(b.name, collation()),
     );
   const [productionId, setProductionId] = useState<string | null>(null);
   // Antakelsene er felles for prosjektet (KI-28, migrasjon 0028). Mens et felt redigeres, brukes et utkast;
@@ -146,7 +152,12 @@ export function DurationOverview({
     if (!canSaveAssumptions) return;
     const n = next === null ? null : normalizeDurationAssumptions(next);
     if (next !== null && n === null) {
-      setAssumptionError("Ugyldig verdi – antakelsene er ikke lagret.");
+      setAssumptionError(
+        L(
+          "Ugyldig verdi – antakelsene er ikke lagret.",
+          "Invalid value – the assumptions have not been saved.",
+        ),
+      );
       return;
     }
     setAssumptionError(null);
@@ -166,7 +177,7 @@ export function DurationOverview({
     }
     const err = cmds.runSilent(
       { type: "SetDurationAssumptions", assumptions: value },
-      "Antakelser for varighetsestimatet",
+      L("Antakelser for varighetsestimatet", "Assumptions for the duration estimate"),
     );
     if (err) setAssumptionError(err);
     else setDraft(null);
@@ -228,7 +239,7 @@ export function DurationOverview({
   const assetsInRows = [...new Set(overview.rows.flatMap((r) => r.assetIds))]
     .map((id) => state.assets[id])
     .filter((a): a is NonNullable<typeof a> => !!a && a.kind !== "sound")
-    .sort((a, b) => a.name.localeCompare(b.name, "nb"));
+    .sort((a, b) => a.name.localeCompare(b.name, collation()));
   const filtered = !!(
     status ||
     assetId ||
@@ -307,11 +318,11 @@ export function DurationOverview({
     <section aria-labelledby="dur-title" className="mt-10">
       <div className="mb-2 flex items-center justify-between">
         <h2 id="dur-title" className="text-base font-semibold text-text-primary">
-          Varighet og produksjonsstatus
+          {L("Varighet og produksjonsstatus", "Duration and production status")}
         </h2>
         {productions.length > 1 ? (
           <select
-            aria-label="Produksjon"
+            aria-label={L("Produksjon", "Production")}
             value={pid}
             onChange={(e) => setProductionId(e.target.value)}
             className={ctl}
@@ -327,72 +338,96 @@ export function DurationOverview({
       <div className="grid grid-cols-[1fr_300px] gap-4">
         <div className="border border-border bg-surface-1 p-4">
           <p className="text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
-            Forventet lengde nå
+            {L("Forventet lengde nå", "Expected length now")}
           </p>
           <p className="tabular text-3xl font-semibold tracking-tight text-text-primary">
             {formatDuration(overview.expectedSeconds)}
           </p>
           <p className="mt-1 text-[13px] text-text-secondary">
-            {overview.rows.length - overview.counts.inactive} aktive scener ·{" "}
-            <span className="tabular">{formatEighths(estimate.activeEighths)}</span> sider
+            {overview.rows.length - overview.counts.inactive} {L("aktive scener", "active scenes")}{" "}
+            · <span className="tabular">{formatEighths(estimate.activeEighths)}</span>{" "}
+            {L("sider", "pages")}
             {overview.counts.inactive
-              ? ` · ${overview.counts.inactive} deaktiverte er ikke med`
+              ? L(
+                  ` · ${overview.counts.inactive} deaktiverte er ikke med`,
+                  ` · ${overview.counts.inactive} deactivated are not included`,
+                )
               : ""}
           </p>
           <div className="mt-4 grid grid-cols-3 gap-3">
             {stat(
-              "Bekreftet",
+              L("Bekreftet", "Confirmed"),
               formatDuration(overview.confirmedSeconds),
-              "fra 2D-animatic og film",
+              L("fra 2D-animatic og film", "from 2D animatic and film"),
             )}
             {stat(
-              "Gjenstående",
+              L("Gjenstående", "Remaining"),
               `≈ ${formatDuration(overview.remainingEstimatedSeconds)}`,
-              "estimat og plan for resten",
+              L("estimat og plan for resten", "estimate and plan for the rest"),
             )}
             {stat(
-              "Bare manusestimat",
+              L("Bare manusestimat", "Script estimate only"),
               `≈ ${formatDuration(overview.estimatedSeconds)}`,
-              "alle aktive scener",
+              L("alle aktive scener", "all active scenes"),
             )}
           </div>
           <div
             className="mt-4 flex h-2 overflow-hidden rounded-sm bg-surface-3"
             role="img"
-            aria-label={`Ferdig ${pct(overview.doneShare)}, bekreftet ${pct(confirmedNotDone)}, estimert ${pct(overview.estimatedShare)}`}
+            aria-label={L(
+              `Ferdig ${pct(overview.doneShare)}, bekreftet ${pct(confirmedNotDone)}, estimert ${pct(overview.estimatedShare)}`,
+              `Done ${pct(overview.doneShare)}, confirmed ${pct(confirmedNotDone)}, estimated ${pct(overview.estimatedShare)}`,
+            )}
           >
             <span className="bg-status-success" style={{ width: `${overview.doneShare * 100}%` }} />
             <span className="bg-accent-brand" style={{ width: `${confirmedNotDone * 100}%` }} />
           </div>
           <p className="mt-1.5 flex flex-wrap gap-x-4 text-[11px] text-text-tertiary">
             <span>
-              <span className="text-status-success">■</span> Ferdig film{" "}
+              <span className="text-status-success">■</span> {L("Ferdig film", "Finished film")}{" "}
               <span className="tabular text-text-secondary">{pct(overview.doneShare)}</span>
             </span>
             <span>
-              <span className="text-accent-brand">■</span> Bekreftet ellers{" "}
+              <span className="text-accent-brand">■</span>{" "}
+              {L("Bekreftet ellers", "Otherwise confirmed")}{" "}
               <span className="tabular text-text-secondary">{pct(confirmedNotDone)}</span>
             </span>
             <span>
-              <span className="text-text-tertiary">■</span> Fortsatt estimert{" "}
+              <span className="text-text-tertiary">■</span>{" "}
+              {L("Fortsatt estimert", "Still estimated")}{" "}
               <span className="tabular text-text-secondary">{pct(overview.estimatedShare)}</span>
             </span>
           </p>
           <p className="mt-3 text-xs text-text-tertiary">
-            Estimatene er anslag ut fra mengden dialog og handling og er usikre. Du kan sette en
-            planlagt lengde per scene (Per scene → Plan); den brukes også i monteringen. Begge
-            erstattes av den faktiske lengden når 2D-scenen får satt lengde eller filmen er lagt
-            inn. Hver scene telles én gang.
+            {L(
+              "Estimatene er anslag ut fra mengden dialog og handling og er usikre. Du kan sette en planlagt lengde per scene (Per scene → Plan); den brukes også i monteringen. Begge erstattes av den faktiske lengden når 2D-scenen får satt lengde eller filmen er lagt inn. Hver scene telles én gang.",
+              "The estimates are rough figures based on the amount of dialogue and action, and are uncertain. You can set a planned length per scene (Per scene → Plan); it is also used in the assembly. Both are replaced by the actual length once the 2D scene has a length or the film is added. Each scene is counted once.",
+            )}
           </p>
         </div>
         <div className="flex flex-col gap-1.5 border border-border bg-surface-1 p-3">
           <p className="mb-1 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
-            Antakelser for estimatet
+            {L("Antakelser for estimatet", "Assumptions for the estimate")}
           </p>
-          {num("dialogueWordsPerMinute", "Taletempo", 5, "ord/min")}
-          {num("actionSecondsPerLine", "Handling per linje", 0.5, "sek")}
-          {num("headingSeconds", "Per scene (etablering)", 0.5, "sek")}
-          {num("minSceneSeconds", "Korteste scene", 1, "sek")}
+          {num(
+            "dialogueWordsPerMinute",
+            L("Taletempo", "Speech rate"),
+            5,
+            L("ord/min", "words/min"),
+          )}
+          {num(
+            "actionSecondsPerLine",
+            L("Handling per linje", "Action per line"),
+            0.5,
+            L("sek", "sec"),
+          )}
+          {num(
+            "headingSeconds",
+            L("Per scene (etablering)", "Per scene (establishing)"),
+            0.5,
+            L("sek", "sec"),
+          )}
+          {num("minSceneSeconds", L("Korteste scene", "Shortest scene"), 1, L("sek", "sec"))}
           <button
             type="button"
             onClick={() => {
@@ -401,7 +436,7 @@ export function DurationOverview({
             }}
             className="mt-1 self-start text-xs text-accent-brand hover:underline"
           >
-            Tilbakestill
+            {L("Tilbakestill", "Reset")}
           </button>
           {assumptionError ? (
             <p role="alert" className="text-[11px] text-status-danger">
@@ -410,10 +445,19 @@ export function DurationOverview({
           ) : null}
           <p className="text-[11px] text-text-tertiary">
             {canSaveAssumptions
-              ? "Lagres for hele prosjektet og gjelder for alle."
+              ? L(
+                  "Lagres for hele prosjektet og gjelder for alle.",
+                  "Saved for the whole project and applies to everyone.",
+                )
               : !schema28
-                ? "Lagres ikke før databasen er oppdatert (migrasjon 0028)."
-                : "Du har bare lesetilgang: endringene gjelder bare her og lagres ikke."}
+                ? L(
+                    "Lagres ikke før databasen er oppdatert (migrasjon 0028).",
+                    "Not saved until the database is updated (migration 0028).",
+                  )
+                : L(
+                    "Du har bare lesetilgang: endringene gjelder bare her og lagres ikke.",
+                    "You have read-only access: the changes apply here only and are not saved.",
+                  )}
           </p>
         </div>
       </div>
@@ -438,7 +482,7 @@ export function DurationOverview({
             }
           >
             <AlertTriangle className="size-3.5 text-status-danger" aria-hidden />
-            Manusendringer
+            {L("Manusendringer", "Script changes")}
             <span className="tabular text-text-primary">{overview.discrepancies}</span>
           </button>
         ) : null}
@@ -455,7 +499,7 @@ export function DurationOverview({
         ) : (
           <ChevronRight className="size-4" aria-hidden />
         )}
-        Utvikling over tid
+        {L("Utvikling over tid", "Trend over time")}
       </button>
       {editable && schema28 ? (
         <div className="mt-1.5 flex flex-wrap items-center gap-2">
@@ -486,18 +530,30 @@ export function DurationOverview({
                     setShowHistory(true);
                     setEstimateNote(
                       r.scriptVersionId
-                        ? "Estimatet er lagret og knyttet til den nyeste manusversjonen."
-                        : "Estimatet er lagret.",
+                        ? L(
+                            "Estimatet er lagret og knyttet til den nyeste manusversjonen.",
+                            "The estimate is saved and linked to the newest script version.",
+                          )
+                        : L("Estimatet er lagret.", "The estimate is saved."),
                     );
                   },
-                  onError: (e) => setEstimateNote(`Estimatet ble ikke lagret: ${e.message}`),
+                  onError: (e) =>
+                    setEstimateNote(
+                      L(
+                        `Estimatet ble ikke lagret: ${tm(e.message)}`,
+                        `The estimate was not saved: ${tm(e.message)}`,
+                      ),
+                    ),
                 },
               );
             }}
-            title="Lagre dagens tall og antakelser, så de kan sammenlignes senere (de regnes aldri på nytt)"
+            title={L(
+              "Lagre dagens tall og antakelser, så de kan sammenlignes senere (de regnes aldri på nytt)",
+              "Save today's figures and assumptions so they can be compared later (they are never recalculated)",
+            )}
             className="flex h-7 items-center rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary hover:bg-surface-2 disabled:opacity-50"
           >
-            Lagre estimat
+            {L("Lagre estimat", "Save estimate")}
           </button>
           {estimateNote ? (
             <span role="status" className="text-xs text-text-secondary">
@@ -525,7 +581,7 @@ export function DurationOverview({
         Per scene
         {filtered ? (
           <span className="text-text-tertiary">
-            ({rows.length} av {overview.rows.length})
+            ({rows.length} {L("av", "of")} {overview.rows.length})
           </span>
         ) : null}
       </button>
@@ -536,8 +592,8 @@ export function DurationOverview({
               type="search"
               value={text}
               onChange={(e) => setText(e.target.value)}
-              placeholder="Søk i scenehoder …"
-              aria-label="Søk i scenehoder"
+              placeholder={L("Søk i scenehoder …", "Search scene headings …")}
+              aria-label={L("Søk i scenehoder", "Search scene headings")}
               className={ctl + " w-52"}
             />
             <select
@@ -546,7 +602,7 @@ export function DurationOverview({
               onChange={(e) => setStatus(e.target.value as SceneStatus | "")}
               className={ctl}
             >
-              <option value="">Alle statuser</option>
+              <option value="">{L("Alle statuser", "All statuses")}</option>
               {(Object.keys(SCENE_STATUS_LABEL) as SceneStatus[]).map((s) => (
                 <option key={s} value={s}>
                   {SCENE_STATUS_LABEL[s]}
@@ -554,12 +610,14 @@ export function DurationOverview({
               ))}
             </select>
             <select
-              aria-label="Karakter, objekt eller sted"
+              aria-label={L("Karakter, objekt eller sted", "Character, object or location")}
               value={assetId}
               onChange={(e) => setAssetId(e.target.value)}
               className={ctl + " max-w-56"}
             >
-              <option value="">Alle karakterer, objekter og steder</option>
+              <option value="">
+                {L("Alle karakterer, objekter og steder", "All characters, objects and locations")}
+              </option>
               {assetsInRows.map((a) => (
                 <option key={a.id} value={a.id}>
                   {a.name}
@@ -572,29 +630,33 @@ export function DurationOverview({
                 checked={onlyDiscrepancies}
                 onChange={(e) => setOnlyDiscrepancies(e.target.checked)}
               />
-              Bare med manusendringer
+              {L("Bare med manusendringer", "Only with script changes")}
             </label>
             <label
               className="flex items-center gap-1.5 text-xs text-text-secondary"
-              title="Scener der 2D-scenen viser eldre bilder enn de som nå er godkjent"
+              title={L(
+                "Scener der 2D-scenen viser eldre bilder enn de som nå er godkjent",
+                "Scenes where the 2D scene shows older images than the ones now approved",
+              )}
             >
               <input
                 type="checkbox"
                 checked={onlyResourceChanges}
                 onChange={(e) => setOnlyResourceChanges(e.target.checked)}
               />
-              Bare med ressursendringer{changedScenes ? ` (${changedScenes})` : ""}
+              {L("Bare med ressursendringer", "Only with asset changes")}
+              {changedScenes ? ` (${changedScenes})` : ""}
             </label>
             <select
-              aria-label="Oversettelse"
+              aria-label={L("Oversettelse", "Translation")}
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
               className={ctl}
             >
-              <option value="">Alle språk</option>
+              <option value="">{L("Alle språk", "All languages")}</option>
               {FILM_LANGUAGES.filter((l) => l !== MAIN_LANGUAGE).map((l) => (
                 <option key={l} value={l}>
-                  {LANGUAGE_LABEL[l] ?? l}: ikke ferdig oversatt
+                  {LANGUAGE_LABEL[l] ?? l}: {L("ikke ferdig oversatt", "not yet translated")}
                 </option>
               ))}
             </select>
@@ -611,7 +673,7 @@ export function DurationOverview({
                 }}
                 className="text-xs text-accent-brand hover:underline"
               >
-                Nullstill filter
+                {L("Nullstill filter", "Reset filter")}
               </button>
             ) : null}
           </div>
@@ -619,15 +681,17 @@ export function DurationOverview({
             <table className="w-full text-[13px]">
               <thead className="sticky top-0 bg-surface-2 text-left text-[11px] uppercase tracking-[0.04em] text-text-tertiary">
                 <tr>
-                  <th className="w-14 px-3 py-1.5 font-medium">Nr.</th>
+                  <th className="w-14 px-3 py-1.5 font-medium">{L("Nr.", "No.")}</th>
                   <th className="px-3 py-1.5 font-medium">Scene</th>
                   <th className="w-36 px-3 py-1.5 font-medium">Status</th>
-                  <th className="w-16 px-3 py-1.5 text-right font-medium">Sider</th>
-                  <th className="w-20 px-3 py-1.5 text-right font-medium">Estimat</th>
+                  <th className="w-16 px-3 py-1.5 text-right font-medium">{L("Sider", "Pages")}</th>
+                  <th className="w-20 px-3 py-1.5 text-right font-medium">
+                    {L("Estimat", "Estimate")}
+                  </th>
                   <th className="w-20 px-3 py-1.5 text-right font-medium">Plan</th>
-                  <th className="w-32 px-3 py-1.5 text-right font-medium">Nå</th>
+                  <th className="w-32 px-3 py-1.5 text-right font-medium">{L("Nå", "Now")}</th>
                   <th className="w-24 px-3 py-1.5 font-medium">
-                    <span className="sr-only">Åpne</span>
+                    <span className="sr-only">{L("Åpne", "Open")}</span>
                   </th>
                 </tr>
               </thead>
@@ -635,7 +699,7 @@ export function DurationOverview({
                 {rows.length === 0 ? (
                   <tr>
                     <td colSpan={8} className="px-3 py-3 text-xs text-text-tertiary">
-                      Ingen scener passer filteret.
+                      {L("Ingen scener passer filteret.", "No scenes match the filter.")}
                     </td>
                   </tr>
                 ) : null}
@@ -658,14 +722,17 @@ export function DurationOverview({
                           params={{ projectId }}
                           search={search}
                           className="hover:underline"
-                          title="Åpne scenen i manuset"
+                          title={L("Åpne scenen i manuset", "Open the scene in the script")}
                         >
                           {v ? formatHeading(v.heading) : ""}
                         </Link>
                         {r.discrepancy ? (
                           <AlertTriangle
                             className="ml-1.5 inline size-3.5 text-status-danger"
-                            aria-label="Manusendringer etter at 2D-scene eller film ble laget"
+                            aria-label={L(
+                              "Manusendringer etter at 2D-scene eller film ble laget",
+                              "Script changes made after the 2D scene or film was made",
+                            )}
                           />
                         ) : null}
                       </td>
@@ -682,7 +749,10 @@ export function DurationOverview({
                         <PlannedInput
                           plannedSeconds={r.plannedSeconds}
                           disabled={!editable || !r.active}
-                          label={`Planlagt lengde for scene ${r.productionNumber ?? ""}`.trim()}
+                          label={L(
+                            `Planlagt lengde for scene ${r.productionNumber ?? ""}`,
+                            `Planned length for scene ${r.productionNumber ?? ""}`,
+                          ).trim()}
                           onSave={(ms) =>
                             cmds.run(
                               {
@@ -691,8 +761,11 @@ export function DurationOverview({
                                 plannedMs: ms,
                               },
                               ms === null
-                                ? "Fjern planlagt lengde"
-                                : `Planlagt lengde ${formatDuration(ms / 1000)}`,
+                                ? L("Fjern planlagt lengde", "Remove planned length")
+                                : L(
+                                    `Planlagt lengde ${formatDuration(ms / 1000)}`,
+                                    `Planned length ${formatDuration(ms / 1000)}`,
+                                  ),
                             )
                           }
                         />
@@ -710,8 +783,8 @@ export function DurationOverview({
                             to="/prosjekt/$projectId/manus"
                             params={{ projectId }}
                             search={search}
-                            aria-label="Åpne i manuset"
-                            title="Manus"
+                            aria-label={L("Åpne i manuset", "Open in script")}
+                            title={L("Manus", "Script")}
                             className="rounded-sm p-1 text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
                           >
                             <FileText className="size-3.5" />
@@ -720,8 +793,8 @@ export function DurationOverview({
                             to="/prosjekt/$projectId/scene"
                             params={{ projectId }}
                             search={search}
-                            aria-label="Åpne i sceneeditoren"
-                            title="Sceneeditor"
+                            aria-label={L("Åpne i sceneeditoren", "Open in scene editor")}
+                            title={L("Sceneeditor", "Scene editor")}
                             className="rounded-sm p-1 text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
                           >
                             <Layers className="size-3.5" />
@@ -730,8 +803,8 @@ export function DurationOverview({
                             to="/prosjekt/$projectId/montering"
                             params={{ projectId }}
                             search={search}
-                            aria-label="Åpne i monteringen"
-                            title="Montering"
+                            aria-label={L("Åpne i monteringen", "Open in assembly")}
+                            title={L("Montering", "Assembly")}
                             className="rounded-sm p-1 text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
                           >
                             <Clapperboard className="size-3.5" />

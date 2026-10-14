@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { AlertTriangle, FileText, Send } from "lucide-react";
 import { useState, type FormEvent } from "react";
-import { discrepancies, filmClips, mainProduction, orderedOccurrences } from "@/core";
+import { L, discrepancies, filmClips, mainProduction, orderedOccurrences } from "@/core";
 import { createInvitation } from "@/adapters/browser/members";
 import { DurationOverview } from "./DurationOverview";
 import { canEdit, useMembers, useProfiles, useProjectState } from "@/app/project/use-project";
@@ -24,16 +24,27 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
   const myRole = members.data?.find((m) => m.user_id === userId)?.role;
 
   if (state.isLoading)
-    return <p className="p-6 text-[13px] text-text-tertiary">Henter prosjektet …</p>;
+    return (
+      <p className="p-6 text-[13px] text-text-tertiary">
+        {L("Henter prosjektet …", "Loading the project …")}
+      </p>
+    );
   if (state.isError || !state.data)
     return (
       <div role="alert" className="p-6">
         <p className="text-[13px] text-status-danger">
-          Prosjektet kunne ikke hentes. Det finnes ikke, du har ikke tilgang, eller noe gikk galt.
+          {L(
+            "Prosjektet kunne ikke hentes. Det finnes ikke, du har ikke tilgang, eller noe gikk galt.",
+            "The project could not be loaded. It does not exist, you do not have access, or something went wrong.",
+          )}
         </p>
         {state.error ? (
           <p className="mt-2 font-mono text-xs text-text-tertiary">
-            Teknisk detalj (send gjerne til Claude): {state.error.message}
+            {L(
+              "Teknisk detalj (send gjerne til Claude):",
+              "Technical detail (feel free to send to Claude):",
+            )}{" "}
+            {state.error.message}
           </p>
         ) : null}
       </div>
@@ -49,11 +60,11 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
             {s.project.name}
           </h1>
           <p className="mt-1 text-[13px] text-text-secondary">
-            Hovedspråk norsk ·{" "}
+            {L("Hovedspråk norsk ·", "Main language: Norwegian ·")}{" "}
             <span className="tabular">
               {(s.project.fps.num / s.project.fps.den).toFixed(s.project.fps.den === 1 ? 0 : 3)}
             </span>{" "}
-            bilder/s
+            {L("bilder/s", "frames/s")}
           </p>
 
           <ProjectFormat
@@ -65,7 +76,7 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
 
           <section aria-labelledby="prod-title" className="mt-8">
             <h2 id="prod-title" className="mb-2 text-base font-semibold text-text-primary">
-              Produksjoner
+              {L("Produksjoner", "Productions")}
             </h2>
             <ProductionList
               state={s}
@@ -84,14 +95,19 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
                   return n > 0 ? (
                     <p className="mt-3 flex items-center gap-2 text-xs text-text-secondary">
                       <AlertTriangle className="size-3.5 text-status-danger" aria-hidden />
-                      {n === 1 ? "Én scene har" : `${n} scener har`} manusendringer etter at
-                      2D-scene eller film ble laget.
+                      {n === 1
+                        ? L("Én scene har", "One scene has")
+                        : L(`${n} scener har`, `${n} scenes have`)}{" "}
+                      {L(
+                        "manusendringer etter at 2D-scene eller film ble laget.",
+                        "script changes since its 2D scene or film was made.",
+                      )}
                       <Link
                         to="/prosjekt/$projectId/montering"
                         params={{ projectId }}
                         className="text-accent-brand hover:underline"
                       >
-                        Se i monteringen
+                        {L("Se i monteringen", "See in assembly")}
                       </Link>
                     </p>
                   ) : null;
@@ -108,11 +124,13 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
             ) : null}
             {main && orderedOccurrences(s, main.id).length === 0 ? (
               <div className="mt-3 flex items-center gap-3 text-xs text-text-tertiary">
-                <span>Hovedfilmen har ingen scener ennå.</span>
+                <span>
+                  {L("Hovedfilmen har ingen scener ennå.", "The main film has no scenes yet.")}
+                </span>
                 <Button asChild size="sm" variant="secondary">
                   <Link to="/prosjekt/$projectId/manus" params={{ projectId }}>
                     <FileText />
-                    Importer manus
+                    {L("Importer manus", "Import script")}
                   </Link>
                 </Button>
               </div>
@@ -155,7 +173,7 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
 
           <section aria-labelledby="members-title" className="mt-10">
             <h2 id="members-title" className="mb-2 text-base font-semibold text-text-primary">
-              Medlemmer
+              {L("Medlemmer", "Members")}
             </h2>
             <MembersSection
               projectId={projectId}
@@ -194,18 +212,21 @@ function InviteForm({ projectId }: { projectId: string }) {
     <div className="mt-4">
       <form onSubmit={submit} className="relative flex flex-wrap items-center gap-2">
         <label htmlFor="invite-email" className="sr-only">
-          E-post
+          {L("E-post", "Email")}
         </label>
         <Input
           id="invite-email"
           type="email"
-          placeholder="E-post til den du vil invitere"
+          placeholder={L(
+            "E-post til den du vil invitere",
+            "Email of the person you want to invite",
+          )}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="h-8 w-[280px] bg-surface-3"
         />
         <label htmlFor="invite-role" className="sr-only">
-          Rolle
+          {L("Rolle", "Role")}
         </label>
         <select
           id="invite-role"
@@ -213,24 +234,27 @@ function InviteForm({ projectId }: { projectId: string }) {
           onChange={(e) => setRole(e.target.value)}
           className="h-8 rounded-sm border border-input bg-surface-3 px-2 text-[13px] text-text-primary"
         >
-          <option value="editor">Redaktør</option>
-          <option value="commenter">Kommentator</option>
-          <option value="viewer">Leser</option>
+          <option value="editor">{L("Redaktør", "Editor")}</option>
+          <option value="commenter">{L("Kommentator", "Commenter")}</option>
+          <option value="viewer">{L("Leser", "Viewer")}</option>
         </select>
         <Button type="submit" variant="secondary" disabled={!email.trim() || invite.isPending}>
           <Send />
-          Lag invitasjon
+          {L("Lag invitasjon", "Create invitation")}
         </Button>
       </form>
       {invite.isError ? (
         <p role="alert" className="mt-2 text-xs text-status-danger">
-          Invitasjonen kunne ikke lages.
+          {L("Invitasjonen kunne ikke lages.", "The invitation could not be created.")}
         </p>
       ) : null}
       {link ? (
         <div className="mt-3 border border-border bg-surface-2 p-3 text-xs">
           <p className="text-text-secondary">
-            Send denne lenken til mottakeren. Den vises bare nå og gjelder i 14 dager.
+            {L(
+              "Send denne lenken til mottakeren. Den vises bare nå og gjelder i 14 dager.",
+              "Send this link to the recipient. It is only shown now and is valid for 14 days.",
+            )}
           </p>
           <div className="mt-2 flex items-center gap-2">
             <code className="min-w-0 flex-1 truncate font-mono text-text-primary">{link}</code>
@@ -239,7 +263,7 @@ function InviteForm({ projectId }: { projectId: string }) {
               variant="secondary"
               onClick={() => void navigator.clipboard.writeText(link)}
             >
-              Kopier
+              {L("Kopier", "Copy")}
             </Button>
           </div>
         </div>

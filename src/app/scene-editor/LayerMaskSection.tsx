@@ -14,7 +14,9 @@ import {
   isAnimated,
   layerFieldsOf,
   layerSize,
+  L,
   layersOf,
+  localized,
   maskAt,
   removeKeyframesAt,
   setKeyframe,
@@ -31,12 +33,12 @@ import {
 type MaskChoice = "none" | "rect" | "ellipse" | "layer";
 type ShapeMask = Exclude<LayerMask, { kind: "layer" }>;
 
-const MASK_LABEL: Record<MaskChoice, string> = {
-  none: "Ingen",
-  rect: "Rektangel",
-  ellipse: "Ellipse",
-  layer: "Bruk et annet lag",
-};
+const MASK_LABEL: Record<MaskChoice, string> = localized({
+  none: ["Ingen", "None"],
+  rect: ["Rektangel", "Rectangle"],
+  ellipse: ["Ellipse", "Ellipse"],
+  layer: ["Bruk et annet lag", "Use another layer"],
+});
 
 export function LayerMaskSection({
   state,
@@ -72,12 +74,16 @@ export function LayerMaskSection({
 
   function changeKind(kind: MaskChoice) {
     if (kind === choice) return;
-    if (kind === "none") return setMask("Fjern maske", null);
+    if (kind === "none") return setMask(L("Fjern maske", "Remove mask"), null);
     const invert = mask?.invert ?? false;
     if (kind === "layer") {
       const first = others[0];
       if (!first) return;
-      return setMask("Bruk lag som maske", { kind: "layer", layerId: first.id, invert });
+      return setMask(L("Bruk lag som maske", "Use layer as mask"), {
+        kind: "layer",
+        layerId: first.id,
+        invert,
+      });
     }
     // Ny form: behold størrelsen fra forrige form, ellers 80 % av laget midt i laget
     const shape =
@@ -90,7 +96,10 @@ export function LayerMaskSection({
             height: Math.max(1, Math.round(size.height * 0.8)),
             feather: 0,
           };
-    setMask(kind === "rect" ? "Rektangelmaske" : "Ellipsemaske", { kind, ...shape, invert });
+    setMask(
+      kind === "rect" ? L("Rektangelmaske", "Rectangle mask") : L("Ellipsemaske", "Ellipse mask"),
+      { kind, ...shape, invert },
+    );
   }
 
   const shape: ShapeMask | null = mask && mask.kind !== "layer" ? mask : null;
@@ -119,7 +128,12 @@ export function LayerMaskSection({
     const keyframes = has
       ? removeKeyframesAt(layer.keyframes, frame, [property])
       : setKeyframe(layer.keyframes, property, frame, now[MASK_FIELD[property]]);
-    apply(has ? "Fjern nøkkelbilde for maske" : "Sett nøkkelbilde for maske", { keyframes });
+    apply(
+      has
+        ? L("Fjern nøkkelbilde for maske", "Remove keyframe for mask")
+        : L("Sett nøkkelbilde for maske", "Set keyframe for mask"),
+      { keyframes },
+    );
   }
   const marker = (property: MaskProperty, label: string) => (
     <KeyMarker
@@ -132,10 +146,10 @@ export function LayerMaskSection({
   );
 
   return (
-    <Section title="Maske og blanding">
-      <Field label="Maske">
+    <Section title={L("Maske og blanding", "Mask and blend")}>
+      <Field label={L("Maske", "Mask")}>
         <select
-          aria-label="Maske"
+          aria-label={L("Maske", "Mask")}
           value={choice}
           disabled={off}
           onChange={(e) => changeKind(e.target.value as MaskChoice)}
@@ -150,31 +164,42 @@ export function LayerMaskSection({
       </Field>
       {mask?.kind === "layer" ? (
         <>
-          <Field label="Maskelag">
+          <Field label={L("Maskelag", "Mask layer")}>
             <select
-              aria-label="Maskelag"
+              aria-label={L("Maskelag", "Mask layer")}
               value={mask.layerId}
               disabled={off}
-              onChange={(e) => setMask("Bytt maskelag", { ...mask, layerId: e.target.value })}
+              onChange={(e) =>
+                setMask(L("Bytt maskelag", "Change mask layer"), {
+                  ...mask,
+                  layerId: e.target.value,
+                })
+              }
               className={inputClass}
             >
               {state.layers[mask.layerId] && !others.some((l) => l.id === mask.layerId) ? (
                 <option value={mask.layerId}>
-                  {state.layers[mask.layerId]!.name || "Uten navn"} (slettet)
+                  {state.layers[mask.layerId]!.name || L("Uten navn", "Untitled")} (
+                  {L("slettet", "deleted")})
                 </option>
               ) : null}
               {!state.layers[mask.layerId] ? (
-                <option value={mask.layerId}>Laget finnes ikke</option>
+                <option value={mask.layerId}>
+                  {L("Laget finnes ikke", "The layer does not exist")}
+                </option>
               ) : null}
               {others.map((l) => (
                 <option key={l.id} value={l.id}>
-                  {l.name || "Uten navn"}
+                  {l.name || L("Uten navn", "Untitled")}
                 </option>
               ))}
             </select>
           </Field>
           <Hint>
-            Laget vises bare der maskelaget dekker. Skjul maskelaget hvis det ikke skal synes selv.
+            {L(
+              "Laget vises bare der maskelaget dekker. Skjul maskelaget hvis det ikke skal synes selv.",
+              "The layer is shown only where the mask layer covers. Hide the mask layer if it should not show itself.",
+            )}
           </Hint>
         </>
       ) : null}
@@ -184,39 +209,39 @@ export function LayerMaskSection({
             label="X (px)"
             value={now.x}
             disabled={off}
-            marker={marker("maskX", "Maske X (px)")}
-            onCommit={(x) => setRect("Flytt maske", { x })}
+            marker={marker("maskX", L("Maske X (px)", "Mask X (px)"))}
+            onCommit={(x) => setRect(L("Flytt maske", "Move mask"), { x })}
           />
           <NumberField
             label="Y (px)"
             value={now.y}
             disabled={off}
-            marker={marker("maskY", "Maske Y (px)")}
-            onCommit={(y) => setRect("Flytt maske", { y })}
+            marker={marker("maskY", L("Maske Y (px)", "Mask Y (px)"))}
+            onCommit={(y) => setRect(L("Flytt maske", "Move mask"), { y })}
           />
           <NumberField
-            label="Bredde (px)"
+            label={L("Bredde (px)", "Width (px)")}
             value={now.width}
             disabled={off}
             valid={(n) => n > 0}
-            marker={marker("maskWidth", "Maskebredde (px)")}
-            onCommit={(width) => setRect("Endre størrelse på maske", { width })}
+            marker={marker("maskWidth", L("Maskebredde (px)", "Mask width (px)"))}
+            onCommit={(width) => setRect(L("Endre størrelse på maske", "Resize mask"), { width })}
           />
           <NumberField
-            label="Høyde (px)"
+            label={L("Høyde (px)", "Height (px)")}
             value={now.height}
             disabled={off}
             valid={(n) => n > 0}
-            marker={marker("maskHeight", "Maskehøyde (px)")}
-            onCommit={(height) => setRect("Endre størrelse på maske", { height })}
+            marker={marker("maskHeight", L("Maskehøyde (px)", "Mask height (px)"))}
+            onCommit={(height) => setRect(L("Endre størrelse på maske", "Resize mask"), { height })}
           />
           <NumberField
-            label="Myk kant (px)"
+            label={L("Myk kant (px)", "Feather (px)")}
             value={shape.feather}
             disabled={off}
             min={0}
             max={MAX_MASK_FEATHER}
-            onCommit={(feather) => setShape("Endre myk kant", { feather })}
+            onCommit={(feather) => setShape(L("Endre myk kant", "Change feather"), { feather })}
           />
         </div>
       ) : null}
@@ -227,31 +252,40 @@ export function LayerMaskSection({
             checked={mask.invert}
             disabled={off}
             onChange={(e) =>
-              setMask(e.target.checked ? "Snu masken" : "Snu masken tilbake", {
-                ...mask,
-                invert: e.target.checked,
-              })
+              setMask(
+                e.target.checked
+                  ? L("Snu masken", "Invert the mask")
+                  : L("Snu masken tilbake", "Revert the mask inversion"),
+                {
+                  ...mask,
+                  invert: e.target.checked,
+                },
+              )
             }
           />
-          Snu masken
+          {L("Snu masken", "Invert the mask")}
         </label>
       ) : null}
       {shape ? (
         <Hint>
-          Målt i lagets egne piksler ({Math.round(size.width)} × {Math.round(size.height)}) fra
-          øverste venstre hjørne. Masken følger laget. Dra midtpunktet eller hjørnene på masken i
-          scenen, og sett nøkkelbilder for å animere den.
+          {L("Målt i lagets egne piksler", "Measured in the layer's own pixels")} (
+          {Math.round(size.width)} × {Math.round(size.height)}){" "}
+          {L("fra øverste venstre hjørne.", "from the top left corner.")}{" "}
+          {L(
+            "Masken følger laget. Dra midtpunktet eller hjørnene på masken i scenen, og sett nøkkelbilder for å animere den.",
+            "The mask follows the layer. Drag the midpoint or the corners of the mask in the scene, and set keyframes to animate it.",
+          )}
         </Hint>
       ) : null}
-      <Field label="Blanding">
+      <Field label={L("Blanding", "Blend")}>
         <select
-          aria-label="Blanding"
+          aria-label={L("Blanding", "Blend")}
           value={layer.blend ?? "normal"}
           disabled={off}
           onChange={(e) => {
             const b = BLEND_MODES.find((x) => x === e.target.value) as BlendMode | undefined;
             if (b && b !== (layer.blend ?? "normal"))
-              apply(`Blanding: ${BLEND_LABEL[b]}`, { blend: b });
+              apply(L(`Blanding: ${BLEND_LABEL[b]}`, `Blend: ${BLEND_LABEL[b]}`), { blend: b });
           }}
           className={inputClass}
         >

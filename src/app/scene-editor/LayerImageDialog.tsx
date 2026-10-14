@@ -35,6 +35,9 @@ import {
   type LayerFields,
   type ProjectState,
   workingImageMaxSide,
+  L,
+  collation,
+  localized,
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import {
@@ -46,6 +49,8 @@ import {
 import { GenerateImagePanel } from "@/app/library/GenerateImagePanel";
 import { useActiveProduction } from "@/app/project/use-production";
 import { CutoutDialog } from "@/app/library/CutoutDialog";
+import { StyleGuideDialog } from "@/app/projects/StyleGuideSection";
+import { VisualBriefEditor } from "@/app/library/VisualBriefEditor";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -56,14 +61,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-const STYLE_LABEL: Record<AssetVariant["style"], string> = {
-  reference: "Referansebilde",
-  illustrated: "Illustrert",
-  realistic: "Filmrealistisk",
-  animatic: "Animatic",
-  poster: "Plakat",
-  other: "Annet",
-};
+const STYLE_LABEL: Record<AssetVariant["style"], string> = localized({
+  reference: ["Referansebilde", "Reference image"],
+  illustrated: ["Illustrert", "Illustrated"],
+  realistic: ["Filmrealistisk", "Realistic"],
+  animatic: ["Animatic", "Animatic"],
+  poster: ["Plakat", "Poster"],
+  other: ["Annet", "Other"],
+});
 
 export function LayerImageDialog({
   open,
@@ -73,6 +78,7 @@ export function LayerImageDialog({
   layer,
   editable,
   cmds,
+  openUpscale = false,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -81,6 +87,8 @@ export function LayerImageDialog({
   layer: CompositionLayer | null;
   editable: boolean;
   cmds: Commands;
+  /** Vis bildet laget bruker stort, med «Oppskaler» fremme (DEC-0080). */
+  openUpscale?: boolean;
 }) {
   return (
     <Dialog open={open && layer !== null} onOpenChange={onOpenChange}>
@@ -93,6 +101,7 @@ export function LayerImageDialog({
             editable={editable}
             cmds={cmds}
             onClose={() => onOpenChange(false)}
+            openUpscale={openUpscale}
           />
         ) : null}
       </DialogContent>
@@ -107,6 +116,7 @@ function Body({
   editable,
   cmds,
   onClose,
+  openUpscale,
 }: {
   state: ProjectState;
   projectId: string;
@@ -114,6 +124,7 @@ function Body({
   editable: boolean;
   cmds: Commands;
   onClose: () => void;
+  openUpscale: boolean;
 }) {
   const asset = layer.assetId ? state.assets[layer.assetId] : undefined;
   const variants = useMemo(
@@ -166,13 +177,20 @@ function Body({
   const [busy, setBusy] = useState(false);
   const [target, setTarget] = useState<string>(layer.assetVariantId ?? variants[0]?.id ?? "");
   const fileRef = useRef<HTMLInputElement | null>(null);
-  const [cutout, setCutout] = useState(false);
+  /** Bildet som frilegges (det laget viser, eller et annet fra stor visning). */
+  const [cutout, setCutout] = useState<AssetVersion | null>(null);
   /** Stor visning av et bilde (DEC-0079). */
-  const [big, setBig] = useState<{ version: AssetVersion; variantName: string } | null>(null);
+  const [big, setBig] = useState<{ version: AssetVersion; variantName: string } | null>(() => {
+    if (!openUpscale) return null;
+    const v = layerVersion(state, layer);
+    return v ? { version: v, variantName: state.assetVariants[v.variantId]?.name ?? "" } : null;
+  });
   /** Bildet som er i ferd med å slettes (bekreftelse). */
   const [deleting, setDeleting] = useState<string | null>(null);
   /** «Sett inn denne beskrivelsen» fra den store visningen. */
   const [insert, setInsert] = useState<{ text: string; n: number } | null>(null);
+  /** «Filmens visuelle stil» oppå denne dialogen; lukkes den, er brukeren tilbake her. */
+  const [styleOpen, setStyleOpen] = useState(false);
 
   function setLayer(label: string, patch: Partial<LayerFields>) {
     const err = cmds.run(
@@ -194,7 +212,7 @@ function Body({
     label: string,
     original: UploadedImage["original"] = null,
   ): Promise<string | null> {
-    if (!asset) return "Laget har ingen ressurs.";
+    if (!asset) return L("Laget har ingen ressurs.", "The layer has no asset.");
     let variantId = target;
     if (!variantId || !state.assetVariants[variantId]) {
       // Ressursen har ingen variant ennå: lag en
@@ -206,7 +224,7 @@ function Body({
           assetId: asset.id,
           fields: { name: "Animatic", style: "animatic", appearance: "" },
         },
-        `Ny variant for «${asset.name}»`,
+        L(`Ny variant for «${asset.name}»`, `New variant for “${asset.name}”`),
       );
       if (r.error) return r.error;
       // Et nytt forsøk bruker den samme varianten
@@ -239,11 +257,16 @@ function Body({
       group,
     );
     if (r.error) return r.error;
-    const ok = setLayer("Bruk nytt bilde", {
+    const ok = setLayer(L("Bruk nytt bilde", "Use new image"), {
       assetVariantId: variantId as LayerFields["assetVariantId"],
       versionId: versionId as LayerFields["versionId"],
     });
-    return ok ? null : "Bildet ble lagret, men kunne ikke tas i bruk på laget.";
+    return ok
+      ? null
+      : L(
+          "Bildet ble lagret, men kunne ikke tas i bruk på laget.",
+          "The image was saved, but could not be used on the layer.",
+        );
   }
 
   async function upload(file: File) {
@@ -262,8 +285,10 @@ function Body({
       const err = await saveVersion(
         up.versionId,
         up.media,
-        ["Lastet opp fra sceneeditoren.", up.note].filter(Boolean).join(" "),
-        `Nytt bilde av «${asset.name}»`,
+        [L("Lastet opp fra sceneeditoren.", "Uploaded from the scene editor."), up.note]
+          .filter(Boolean)
+          .join(" "),
+        L(`Nytt bilde av «${asset.name}»`, `New image of “${asset.name}”`),
         up.original,
       );
       if (err) setError(err);
@@ -281,20 +306,29 @@ function Body({
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Bilde for «{layer.name}»</DialogTitle>
+        <DialogTitle>{L(`Bilde for «${layer.name}»`, `Image for “${layer.name}”`)}</DialogTitle>
         <DialogDescription>
           {asset
-            ? `${asset.name} – ${ASSET_KIND_LABEL[asset.kind]}. Velg et annet bilde, last opp et nytt eller generer et nytt.`
-            : "Laget er en fargeflate. Velg en ressurs fra biblioteket for å vise bildet dens."}
+            ? L(
+                `${asset.name} – ${ASSET_KIND_LABEL[asset.kind]}. Velg et annet bilde, last opp et nytt eller generer et nytt.`,
+                `${asset.name} – ${ASSET_KIND_LABEL[asset.kind]}. Choose another image, upload a new one or generate a new one.`,
+              )
+            : L(
+                "Laget er en fargeflate. Velg en ressurs fra biblioteket for å vise bildet dens.",
+                "The layer is a colour fill. Choose an asset from the library to show its image.",
+              )}
         </DialogDescription>
       </DialogHeader>
 
       {asset ? (
         <div className="flex flex-col gap-4">
           {/* Standard: ressursens forsidebilde (følger godkjent bilde) */}
-          <section aria-label="Standardbilde" className="flex flex-col gap-1.5">
+          <section
+            aria-label={L("Standardbilde", "Default image")}
+            className="flex flex-col gap-1.5"
+          >
             <h3 className="text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
-              Følger biblioteket
+              {L("Følger biblioteket", "Follows the library")}
             </h3>
             <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-2">
               <button
@@ -302,7 +336,10 @@ function Body({
                 disabled={!editable}
                 aria-pressed={layer.assetVariantId === null}
                 onClick={() =>
-                  setLayer("Bruk forsidebildet", { assetVariantId: null, versionId: null })
+                  setLayer(L("Bruk forsidebildet", "Use the cover image"), {
+                    assetVariantId: null,
+                    versionId: null,
+                  })
                 }
                 className={
                   tile +
@@ -310,12 +347,17 @@ function Body({
                     ? " border-accent-brand ring-1 ring-accent-brand"
                     : " border-border hover:border-border-strong")
                 }
-                title="Viser alltid ressursens forsidebilde (godkjent bilde)"
+                title={L(
+                  "Viser alltid ressursens forsidebilde (godkjent bilde)",
+                  "Always shows the asset's cover image (approved image)",
+                )}
               >
                 <Thumb url={cover ? urls[cover.mediaPath] : undefined} />
-                <span className="px-1.5 pt-1 text-[12px] text-text-primary">Forsidebildet</span>
+                <span className="px-1.5 pt-1 text-[12px] text-text-primary">
+                  {L("Forsidebildet", "Cover image")}
+                </span>
                 <span className="px-1.5 pb-1 text-[11px] text-text-tertiary">
-                  Endres når et nytt bilde godkjennes
+                  {L("Endres når et nytt bilde godkjennes", "Changes when a new image is approved")}
                 </span>
                 {layer.assetVariantId === null ? <Selected /> : null}
               </button>
@@ -324,7 +366,10 @@ function Body({
 
           {variants.length === 0 ? (
             <p className="text-xs text-text-tertiary">
-              Ressursen har ingen bilder ennå. Last opp det første nedenfor.
+              {L(
+                "Ressursen har ingen bilder ennå. Last opp det første nedenfor.",
+                "The asset has no images yet. Upload the first one below.",
+              )}
             </p>
           ) : (
             variants.map((v) => {
@@ -338,12 +383,12 @@ function Body({
                 >
                   <div className="flex items-baseline gap-2">
                     <h3 className="text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
-                      {v.name || "Uten navn"}
+                      {v.name || L("Uten navn", "Without name")}
                     </h3>
                     <span className="text-[11px] text-text-tertiary">
                       {STYLE_LABEL[v.style]}
                       {v.appearance ? ` · ${v.appearance}` : ""}
-                      {v.archived ? " · arkivert" : ""}
+                      {v.archived ? L(" · arkivert", " · archived") : ""}
                     </span>
                     {versions.length > 0 ? (
                       <button
@@ -351,7 +396,7 @@ function Body({
                         disabled={!editable}
                         aria-pressed={followOn}
                         onClick={() =>
-                          setLayer("Følg godkjent bilde", {
+                          setLayer(L("Følg godkjent bilde", "Follow approved image"), {
                             assetVariantId: v.id as LayerFields["assetVariantId"],
                             versionId: null,
                           })
@@ -362,9 +407,14 @@ function Body({
                             ? "bg-accent-selection text-text-primary"
                             : "text-text-secondary hover:bg-surface-3 hover:text-text-primary")
                         }
-                        title="Laget viser variantens godkjente (ellers nyeste) bilde, også når det kommer nye"
+                        title={L(
+                          "Laget viser variantens godkjente (ellers nyeste) bilde, også når det kommer nye",
+                          "The layer shows the variant's approved (otherwise newest) image, including when new ones arrive",
+                        )}
                       >
-                        {followOn ? "Følger godkjent bilde" : "Følg godkjent bilde"}
+                        {followOn
+                          ? L("Følger godkjent bilde", "Following approved image")
+                          : L("Følg godkjent bilde", "Follow approved image")}
                       </button>
                     ) : null}
                   </div>
@@ -381,7 +431,10 @@ function Body({
                             versionIds: [deleting as never],
                             removed: true,
                           },
-                          `Slett bilde v${ver?.number ?? ""}`,
+                          L(
+                            `Slett bilde v${ver?.number ?? ""}`,
+                            `Delete image v${ver?.number ?? ""}`,
+                          ),
                         );
                         setError(err);
                         if (!err) setDeleting(null);
@@ -389,7 +442,9 @@ function Body({
                     />
                   ) : null}
                   {versions.length === 0 ? (
-                    <p className="text-xs text-text-tertiary">Ingen bilder i denne varianten.</p>
+                    <p className="text-xs text-text-tertiary">
+                      {L("Ingen bilder i denne varianten.", "No images in this variant.")}
+                    </p>
                   ) : (
                     <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-2">
                       {versions.map((ver) => {
@@ -402,25 +457,33 @@ function Body({
                               disabled={!editable}
                               aria-pressed={locked}
                               onClick={() =>
-                                setLayer(`Bruk bilde v${ver.number}`, {
-                                  assetVariantId: v.id as LayerFields["assetVariantId"],
-                                  versionId: ver.id as LayerFields["versionId"],
-                                })
+                                setLayer(
+                                  L(`Bruk bilde v${ver.number}`, `Use image v${ver.number}`),
+                                  {
+                                    assetVariantId: v.id as LayerFields["assetVariantId"],
+                                    versionId: ver.id as LayerFields["versionId"],
+                                  },
+                                )
                               }
+                              // Dobbeltklikk åpner bildet stort (Mars 2026-10-13)
+                              onDoubleClick={() => setBig({ version: ver, variantName: v.name })}
                               className={
                                 tile +
                                 (on
                                   ? " border-accent-brand ring-1 ring-accent-brand"
                                   : " border-border hover:border-border-strong")
                               }
-                              title={`Bruk versjon ${ver.number}${ver.note ? ` – ${ver.note}` : ""}`}
+                              title={L(
+                                `Bruk versjon ${ver.number} (dobbeltklikk: stor visning)${ver.note ? ` – ${ver.note}` : ""}`,
+                                `Use version ${ver.number} (double-click: large view)${ver.note ? ` – ${ver.note}` : ""}`,
+                              )}
                             >
                               <Thumb url={urls[ver.mediaPath]} />
                               <span className="flex items-center gap-1 px-1.5 py-1 text-[12px] text-text-primary">
                                 v{ver.number}
                                 {v.approvedVersionId === ver.id ? (
                                   <span className="rounded-sm bg-status-success-bg px-1 text-[11px] text-status-success">
-                                    godkjent
+                                    {L("godkjent", "approved")}
                                   </span>
                                 ) : null}
                               </span>
@@ -431,8 +494,14 @@ function Body({
                               <button
                                 type="button"
                                 onClick={() => setBig({ version: ver, variantName: v.name })}
-                                aria-label={`Vis v${ver.number} stort, med beskrivelsen`}
-                                title="Stor visning, zoom og beskrivelsen (prompten) som laget bildet"
+                                aria-label={L(
+                                  `Vis v${ver.number} stort, med beskrivelsen`,
+                                  `Show v${ver.number} large, with the description`,
+                                )}
+                                title={L(
+                                  "Stor visning, zoom og beskrivelsen (prompten) som laget bildet",
+                                  "Large view, zoom and the description (prompt) that made the image",
+                                )}
                                 className="rounded-sm bg-surface-1/90 p-0.5 text-text-secondary hover:text-text-primary"
                               >
                                 <Maximize2 className="size-3.5" aria-hidden />
@@ -441,8 +510,11 @@ function Body({
                                 <button
                                   type="button"
                                   onClick={() => setDeleting(ver.id)}
-                                  aria-label={`Slett v${ver.number}`}
-                                  title="Slett bildet (flyttes til «Slettede objekter»)"
+                                  aria-label={L(`Slett v${ver.number}`, `Delete v${ver.number}`)}
+                                  title={L(
+                                    "Slett bildet (flyttes til «Slettede objekter»)",
+                                    "Delete the image (moved to “Deleted items”)",
+                                  )}
                                   className="rounded-sm bg-surface-1/90 p-0.5 text-text-secondary hover:text-status-danger"
                                 >
                                   <Trash2 className="size-3.5" aria-hidden />
@@ -461,16 +533,20 @@ function Body({
 
           {/* Nytt bilde */}
           <section
-            aria-label="Nytt bilde"
+            aria-label={L("Nytt bilde", "New image")}
             className="flex flex-col gap-3 border-t border-border pt-3"
           >
             {/* Opplasting på én linje over AI-panelet, så ingen kolonne står tom (DEC-0076 funn 8) */}
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-sm border border-border bg-surface-1 p-3">
               <h3 className="flex items-center gap-1.5 text-[13px] font-medium text-text-primary">
-                <Upload className="size-4" aria-hidden /> Last opp et nytt bilde
+                <Upload className="size-4" aria-hidden />{" "}
+                {L("Last opp et nytt bilde", "Upload a new image")}
               </h3>
               <p className="min-w-0 flex-1 text-xs text-text-tertiary">
-                Lagres som ny versjon i biblioteket og brukes på laget med én gang.
+                {L(
+                  "Lagres som ny versjon i biblioteket og brukes på laget med én gang.",
+                  "Saved as a new version in the library and used on the layer straight away.",
+                )}
               </p>
               {variants.length > 0 ? (
                 <label className="flex min-w-48 items-center gap-1.5 text-xs text-text-secondary">
@@ -483,7 +559,7 @@ function Body({
                   >
                     {variants.map((v) => (
                       <option key={v.id} value={v.id}>
-                        {v.name || "Uten navn"}
+                        {v.name || L("Uten navn", "Without name")}
                       </option>
                     ))}
                   </select>
@@ -494,7 +570,7 @@ function Body({
                 type="file"
                 accept={IMAGE_ACCEPT}
                 className="sr-only"
-                aria-label="Velg bildefil"
+                aria-label={L("Velg bildefil", "Choose image file")}
                 onChange={(e) => {
                   const f = e.target.files?.[0];
                   if (f) void upload(f);
@@ -508,7 +584,7 @@ function Body({
                 className="shrink-0"
               >
                 {busy ? <Loader2 className="animate-spin" /> : <Upload />}
-                {busy ? "Laster opp …" : "Velg fil …"}
+                {busy ? L("Laster opp …", "Uploading …") : L("Velg fil …", "Choose file …")}
               </Button>
             </div>
             <GenerateImagePanel
@@ -522,12 +598,22 @@ function Body({
               disabled={busy}
               budget={state.project}
               context={promptContext}
+              onOpenStyleGuide={() => setStyleOpen(true)}
+              visualBrief={
+                <VisualBriefEditor
+                  state={state}
+                  asset={asset}
+                  cmds={cmds}
+                  editable={editable}
+                  compact
+                />
+              }
               onGenerated={(img) =>
                 saveVersion(
                   img.versionId,
                   img.media,
-                  `Generert med AI (${img.model})`,
-                  `AI-bilde av «${asset.name}»`,
+                  L(`Generert med AI (${img.model})`, `Generated with AI (${img.model})`),
+                  L(`AI-bilde av «${asset.name}»`, `AI image of “${asset.name}”`),
                 )
               }
             />
@@ -540,7 +626,7 @@ function Body({
           urls={urls}
           editable={editable}
           onPick={(assetId) =>
-            setLayer("Koble lag til ressurs", {
+            setLayer(L("Koble lag til ressurs", "Connect layer to asset"), {
               assetId: assetId as LayerFields["assetId"],
               assetVariantId: null,
               versionId: null,
@@ -555,16 +641,16 @@ function Body({
         </p>
       ) : null}
 
-      {asset && shown ? (
+      {asset ? (
         <CutoutDialog
-          open={cutout}
-          onOpenChange={setCutout}
+          open={cutout !== null}
+          onOpenChange={(o) => !o && setCutout(null)}
           projectId={projectId}
           asset={asset}
-          version={shown}
+          version={cutout}
           cmds={cmds}
           onSaved={(versionId, variantId) =>
-            setLayer("Bruk frilagt bilde", {
+            setLayer(L("Bruk frilagt bilde", "Use cut-out image"), {
               assetVariantId: variantId as LayerFields["assetVariantId"],
               versionId: versionId as LayerFields["versionId"],
             })
@@ -572,7 +658,18 @@ function Body({
         />
       ) : null}
 
+      {styleOpen ? (
+        <StyleGuideDialog
+          state={state}
+          cmds={cmds}
+          editable={editable}
+          profileId={null}
+          onClose={() => setStyleOpen(false)}
+        />
+      ) : null}
+
       <ImageLightbox
+        initialPanel={openUpscale ? "upscale" : null}
         open={big !== null}
         onOpenChange={(o) => !o && setBig(null)}
         projectId={projectId}
@@ -580,11 +677,28 @@ function Body({
         url={big ? urls[big.version.mediaPath] : undefined}
         title={
           big && asset
-            ? `${asset.name} – ${big.variantName || "Uten navn"} v${big.version.number}`
+            ? L(
+                `${asset.name} – ${big.variantName || "Uten navn"} v${big.version.number}`,
+                `${asset.name} – ${big.variantName || "Without name"} v${big.version.number}`,
+              )
             : ""
         }
         {...(editable
           ? { onInsertPrompt: (text: string) => setInsert((p) => ({ text, n: (p?.n ?? 0) + 1 })) }
+          : {})}
+        {...(asset
+          ? {
+              tools: {
+                state,
+                cmds,
+                asset,
+                editable,
+                onCutout: (v: AssetVersion) => {
+                  setBig(null);
+                  setCutout(v);
+                },
+              },
+            }
           : {})}
       />
 
@@ -597,7 +711,7 @@ function Body({
               search={{ asset: asset.id }}
             >
               <Library />
-              Åpne i biblioteket
+              {L("Åpne i biblioteket", "Open in library")}
             </Link>
           </Button>
         ) : (
@@ -607,15 +721,18 @@ function Body({
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setCutout(true)}
-            title="Fjern bakgrunnen i bildet som vises nå (gratis, ny versjon)"
+            onClick={() => setCutout(shown)}
+            title={L(
+              "Fjern bakgrunnen i bildet som vises nå (gratis, ny versjon)",
+              "Remove the background of the image shown now (free, new version)",
+            )}
           >
             <Scissors />
-            Frilegg bildet …
+            {L("Frilegg bildet …", "Cut out image …")}
           </Button>
         ) : null}
         <Button variant="secondary" onClick={onClose}>
-          Ferdig
+          {L("Ferdig", "Done")}
         </Button>
       </DialogFooter>
     </>
@@ -637,19 +754,21 @@ export function AssetPicker({
 }) {
   const [q, setQ] = useState("");
   const list = candidates.filter((a) =>
-    a.name.toLocaleLowerCase("nb").includes(q.trim().toLocaleLowerCase("nb")),
+    a.name.toLocaleLowerCase(collation()).includes(q.trim().toLocaleLowerCase(collation())),
   );
   return (
     <div className="flex flex-col gap-2">
       <input
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder="Søk i biblioteket …"
-        aria-label="Søk i biblioteket"
+        placeholder={L("Søk i biblioteket …", "Search the library …")}
+        aria-label={L("Søk i biblioteket", "Search the library")}
         className="h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary"
       />
       {list.length === 0 ? (
-        <p className="text-xs text-text-tertiary">Ingen ressurser passer.</p>
+        <p className="text-xs text-text-tertiary">
+          {L("Ingen ressurser passer.", "No assets match.")}
+        </p>
       ) : (
         <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-2">
           {list.map((a) => {
@@ -680,7 +799,8 @@ export function Thumb({ url }: { url: string | undefined }) {
   return (
     <span className="flex h-20 items-center justify-center bg-surface-3">
       {url ? (
-        <img src={url} alt="" className="h-full w-full object-contain" draggable={false} />
+        // Litt luft rundt, så en tett beskåret figur ikke slår i kanten (DEC-0080)
+        <img src={url} alt="" className="h-full w-full object-contain p-1.5" draggable={false} />
       ) : (
         <ImageOff className="size-5 text-text-tertiary" aria-hidden />
       )}
@@ -691,7 +811,7 @@ export function Thumb({ url }: { url: string | undefined }) {
 function Selected() {
   return (
     <span className="absolute right-1 top-1 rounded-full bg-accent-brand p-0.5 text-accent-fg">
-      <Check className="size-3" aria-label="Valgt" />
+      <Check className="size-3" aria-label={L("Valgt", "Selected")} />
     </span>
   );
 }
@@ -720,31 +840,38 @@ function DeleteVersionConfirm({
   return (
     <div
       role="alertdialog"
-      aria-label={`Slett v${v.number}`}
+      aria-label={L(`Slett v${v.number}`, `Delete v${v.number}`)}
       className="flex flex-col gap-2 rounded-sm border border-status-danger/50 bg-surface-1 p-2 text-xs"
     >
       {approved ? (
         <p className="text-text-primary">
-          v{v.number} er godkjent og brukes i scenene. Godkjenn et annet bilde først, så kan dette
-          slettes.
+          {L(
+            `v${v.number} er godkjent og brukes i scenene. Godkjenn et annet bilde først, så kan dette slettes.`,
+            `v${v.number} is approved and used in the scenes. Approve another image first, then this can be deleted.`,
+          )}
         </p>
       ) : (
         <p className="text-text-primary">
-          v{v.number} flyttes til «Slettede objekter» i biblioteket. Der kan det hentes inn igjen
-          eller slettes for godt.
+          {L(
+            `v${v.number} flyttes til «Slettede objekter» i biblioteket. Der kan det hentes inn igjen eller slettes for godt.`,
+            `v${v.number} is moved to “Deleted items” in the library. It can be restored from there or deleted for good.`,
+          )}
           {lockedLayers
-            ? ` ${lockedLayers === 1 ? "Ett lag" : `${lockedLayers} lag`} bruker akkurat dette bildet og beholder det til det slettes for godt.`
-            : " Ingen lag bruker akkurat dette bildet."}
+            ? L(
+                ` ${lockedLayers === 1 ? "Ett lag" : `${lockedLayers} lag`} bruker akkurat dette bildet og beholder det til det slettes for godt.`,
+                ` ${lockedLayers === 1 ? "One layer" : `${lockedLayers} layers`} uses this exact image and keeps it until it is deleted for good.`,
+              )
+            : L(" Ingen lag bruker akkurat dette bildet.", " No layer uses this exact image.")}
         </p>
       )}
       <div className="flex gap-2">
         {!approved ? (
           <Button size="sm" variant="destructive" onClick={onConfirm}>
-            <Trash2 /> Slett bildet
+            <Trash2 /> {L("Slett bildet", "Delete image")}
           </Button>
         ) : null}
         <Button size="sm" variant="ghost" onClick={onCancel}>
-          Avbryt
+          {L("Avbryt", "Cancel")}
         </Button>
       </div>
     </div>

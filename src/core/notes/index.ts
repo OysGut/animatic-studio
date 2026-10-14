@@ -6,6 +6,7 @@
 import type { Annotation, BlockKind, ProjectState } from "../model";
 import { blocksOfVariant, orderedOccurrences } from "../views";
 import { formatHeading, type Page, type PageLine } from "../screenplay/paginate";
+import { L, collation, locale, localized } from "../i18n";
 
 /** Scenevarianten et notat hører til (blokkens variant for notater på tekst). */
 export function annotationVariant(s: ProjectState, a: Annotation): string | null {
@@ -81,12 +82,12 @@ export function resolveRange(a: Annotation, blockText: string): ResolvedRange {
  * Resultat: for hver linje, blokkposisjonen til hvert tegn (−1 der det ikke kan avgjøres).
  */
 export function alignBlockLines(text: string, lines: readonly string[]): number[][] {
-  const lower = text.toLocaleLowerCase("nb");
+  const lower = text.toLocaleLowerCase(collation());
   let i = 0;
   const out: number[][] = [];
   for (const line of lines) {
     const cols: number[] = [];
-    const l = line.toLocaleLowerCase("nb");
+    const l = line.toLocaleLowerCase(collation());
     for (let j = 0; j < l.length; j++) {
       const c = l[j]!;
       if (c === " ") {
@@ -172,7 +173,7 @@ export function pageDecorations(
   opts: DecorOptions,
 ): Map<string, LineDecor> {
   const out = new Map<string, LineDecor>();
-  const q = opts.query?.trim().toLocaleLowerCase("nb") ?? "";
+  const q = opts.query?.trim().toLocaleLowerCase(collation()) ?? "";
   if (!q && !opts.notes) return out;
   const marks = new Map<string, LineMark[]>();
   const notesHere = new Map<string, string[]>();
@@ -200,7 +201,7 @@ export function pageDecorations(
       } else if (l.kind === "heading" && l.first) headingLine.set(l.occurrenceId, { key, line: l });
       // Overskrifter: søk direkte i linjeteksten
       if (q && l.kind === "heading") {
-        const lower = l.text.toLocaleLowerCase("nb");
+        const lower = l.text.toLocaleLowerCase(collation());
         for (const at of findAll(lower, q))
           push(key, { from: at, to: at + q.length, kind: "search" });
       }
@@ -213,14 +214,14 @@ export function pageDecorations(
     if (!block) continue;
     const notes = (byVariant.get(block.variantId) ?? []).filter((a) => a.blockId === blockId);
     // Rask vei: ingen notater og ingen treff i blokken
-    if (!notes.length && !(q && block.text.toLocaleLowerCase("nb").includes(q))) continue;
+    if (!notes.length && !(q && block.text.toLocaleLowerCase(collation()).includes(q))) continue;
     const cols = alignBlockLines(
       block.text,
       lines.map((x) => x.line.text),
     );
     const ranges: { start: number; end: number; kind: MarkKind; ids?: string[] }[] = [];
     if (q) {
-      const lower = block.text.toLocaleLowerCase("nb");
+      const lower = block.text.toLocaleLowerCase(collation());
       for (const at of findAll(lower, q))
         ranges.push({ start: at, end: at + q.length, kind: "search" });
     }
@@ -228,7 +229,7 @@ export function pageDecorations(
       const r = resolveRange(a, block.text);
       if (opts.notes) ranges.push({ start: r.start, end: r.end, kind: "note", ids: [a.id] });
       // Søketreff i notatteksten vises på notatets plass
-      if (q && a.text.toLocaleLowerCase("nb").includes(q))
+      if (q && a.text.toLocaleLowerCase(collation()).includes(q))
         ranges.push({ start: r.start, end: r.end, kind: "search" });
       if (opts.notes) {
         // Symbolet i margen står på linjen der notatet begynner
@@ -257,7 +258,7 @@ export function pageDecorations(
     for (const a of byVariant.get(occ.variantId) ?? []) {
       if (a.blockId !== null) continue;
       if (opts.notes) pin(h.key, a.id);
-      if (q && a.text.toLocaleLowerCase("nb").includes(q))
+      if (q && a.text.toLocaleLowerCase(collation()).includes(q))
         push(h.key, { from: 0, to: h.line.text.length, kind: "search" });
     }
   }
@@ -280,17 +281,17 @@ export type HitKind =
   | "other"
   | "note";
 
-export const HIT_LABEL: Record<HitKind, string> = {
-  number: "scenenummer",
-  heading: "overskrift",
-  action: "handling",
-  dialogue: "replikk",
-  character: "karakter",
-  parenthetical: "parentes",
-  transition: "overgang",
-  other: "tekst",
-  note: "notat",
-};
+export const HIT_LABEL: Record<HitKind, string> = localized({
+  number: ["scenenummer", "scene number"],
+  heading: ["overskrift", "heading"],
+  action: ["handling", "action"],
+  dialogue: ["replikk", "dialogue"],
+  character: ["karakter", "character"],
+  parenthetical: ["parentes", "parenthetical"],
+  transition: ["overgang", "transition"],
+  other: ["tekst", "text"],
+  note: ["notat", "note"],
+});
 
 const KIND_HIT: Partial<Record<BlockKind, HitKind>> = {
   action: "action",
@@ -306,19 +307,20 @@ export function searchHits(
   productionId: string,
   query: string,
 ): Map<string, HitKind[]> {
-  const q = query.trim().toLocaleLowerCase("nb");
+  const q = query.trim().toLocaleLowerCase(collation());
   const out = new Map<string, HitKind[]>();
   if (!q) return out;
   const notes = annotationsByVariant(s);
   for (const o of orderedOccurrences(s, productionId)) {
     const hits = new Set<HitKind>();
-    if ((o.productionNumber ?? "").toLocaleLowerCase("nb").includes(q)) hits.add("number");
+    if ((o.productionNumber ?? "").toLocaleLowerCase(collation()).includes(q)) hits.add("number");
     const v = s.variants[o.variantId];
-    if (v && formatHeading(v.heading).toLocaleLowerCase("nb").includes(q)) hits.add("heading");
+    if (v && formatHeading(v.heading).toLocaleLowerCase(collation()).includes(q))
+      hits.add("heading");
     for (const b of blocksOfVariant(s, o.variantId))
-      if (b.text.toLocaleLowerCase("nb").includes(q)) hits.add(KIND_HIT[b.kind] ?? "other");
+      if (b.text.toLocaleLowerCase(collation()).includes(q)) hits.add(KIND_HIT[b.kind] ?? "other");
     for (const a of notes.get(o.variantId) ?? [])
-      if (a.text.toLocaleLowerCase("nb").includes(q)) hits.add("note");
+      if (a.text.toLocaleLowerCase(collation()).includes(q)) hits.add("note");
     if (hits.size) out.set(o.id, [...hits]);
   }
   return out;
@@ -328,12 +330,12 @@ function formatDate(iso: string): string {
   const d = new Date(iso);
   return Number.isNaN(d.getTime())
     ? iso
-    : `${d.toLocaleDateString("nb-NO", { day: "numeric", month: "short", year: "numeric" })} kl. ${d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" })}`;
+    : `${d.toLocaleDateString(locale(), { day: "numeric", month: "short", year: "numeric" })} ${L("kl.", "at")} ${d.toLocaleTimeString(locale(), { hour: "2-digit", minute: "2-digit" })}`;
 }
 
 /** Stempel for visning: «Mars · 9. okt. 2026 kl. 14:32». */
 export function formatStamp(a: Pick<Annotation, "authorName" | "stampAt">): string {
-  return `${a.authorName || "Ukjent"} · ${formatDate(a.stampAt)}`;
+  return `${a.authorName || L("Ukjent", "Unknown")} · ${formatDate(a.stampAt)}`;
 }
 
 /** «endret av Anita · 10. okt. 2026 kl. 09:15» (DEC-0032), eller tom tekst hvis notatet ikke er endret. */
@@ -341,7 +343,10 @@ export function formatEdited(
   a: Pick<Annotation, "authorName" | "editedByName" | "editedAt">,
 ): string {
   if (!a.editedAt) return "";
-  const who = a.editedByName && a.editedByName !== a.authorName ? ` av ${a.editedByName}` : "";
-  return `endret${who} · ${formatDate(a.editedAt)}`;
+  const who =
+    a.editedByName && a.editedByName !== a.authorName
+      ? L(` av ${a.editedByName}`, ` by ${a.editedByName}`)
+      : "";
+  return `${L("endret", "edited")}${who} · ${formatDate(a.editedAt)}`;
 }
 export * from "./transfer";

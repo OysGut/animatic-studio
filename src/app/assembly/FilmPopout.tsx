@@ -6,7 +6,7 @@
 import { X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import type { FilmClip, ProjectState } from "@/core";
+import { L, type FilmClip, type ProjectState } from "@/core";
 import { drawFilmFrame, type FilmDrawOptions } from "@/engine/compositor/film";
 import { previewPopup } from "@/app/scene-editor/PreviewWindow";
 import { filmImageCache } from "./film-images";
@@ -50,7 +50,7 @@ export function FilmPopout({
       latest.current.onBlocked();
       return;
     }
-    w.document.title = "Montering – Animatic Studio";
+    w.document.title = L("Montering – Animatic Studio", "Assembly – Animatic Studio");
     setWin(w);
     const measure = () => setSize({ w: w.innerWidth, h: w.innerHeight });
     measure();
@@ -128,19 +128,22 @@ export function FilmPopout({
         style={{ height: H }}
       >
         <span className="truncate text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
-          Montering
+          {L("Montering", "Assembly")}
         </span>
         <span className="truncate text-[11px] text-text-tertiary">
           {fw} × {fh}
-          {monochrome ? " · svart-hvitt" : ""}
+          {monochrome ? L(" · svart-hvitt", " · black and white") : ""}
         </span>
         <span className="ml-auto" />
         <button
           type="button"
           onClick={onClose}
           className={previewPopup.iconButton}
-          aria-label="Lukk det egne vinduet"
-          title="Lukk det egne vinduet (filmen vises fortsatt i monteringen)"
+          aria-label={L("Lukk det egne vinduet", "Close this window")}
+          title={L(
+            "Lukk det egne vinduet (filmen vises fortsatt i monteringen)",
+            "Close this window (the film is still shown in the assembly)",
+          )}
         >
           <X className="size-3.5" aria-hidden />
         </button>
@@ -149,7 +152,7 @@ export function FilmPopout({
         <canvas
           ref={canvasRef}
           role="img"
-          aria-label="Filmen på avspillingshodet"
+          aria-label={L("Filmen på avspillingshodet", "The film at the playhead")}
           style={{ width: cssW, height: cssH }}
           className="block bg-black"
         />

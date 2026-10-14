@@ -3,6 +3,7 @@
  * kamerautsnitt. Hver redigering er én kommando; dra-operasjoner viser et lokalt utkast og lagrer ved slipp.
  * Under avspilling endres bare avspillingshodet (radene er memoisert).
  */
+import type { CSSProperties } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -55,26 +56,32 @@ import {
   type ProjectState,
   freeShotSlot,
   newId,
+  L,
+  localized,
 } from "@/core";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 import { Button } from "@/components/ui/button";
 import type { Playback } from "./use-playback";
 import { compositionFieldsOf, layerEventMarks, type LayerEventMark } from "./timeline-helpers";
 
+/** Standardbredde for lagnavnene; brukeren kan dra i skillet (Mars 2026-10-13), og bredden huskes. */
 const LABEL_W = 160;
+const LABEL_MIN = 100;
+const LABEL_MAX = 480;
+/** Radene leser bredden fra en CSS-variabel, så de memoiserte radene ikke tegnes om når den endres. */
+const LABEL_CSS = "var(--tl-label-w, 160px)";
 /** Luft mellom sporoverskriftene og bilde 0, slik at et nøkkelbilde på bilde 0 ikke skjules av overskriften. */
 const GUTTER = 8;
-const TRACK_X = LABEL_W + GUTTER;
 const ROW_H = 24;
 const MAX_ZOOM = 24;
 
-const EASING_LABEL: Record<Easing, string> = {
-  linear: "Jevn",
-  "ease-in": "Myk start",
-  "ease-out": "Myk slutt",
-  "ease-in-out": "Myk start og slutt",
-  hold: "Hold",
-};
+const EASING_LABEL: Record<Easing, string> = localized({
+  linear: ["Jevn", "Linear"],
+  "ease-in": ["Myk start", "Ease in"],
+  "ease-out": ["Myk slutt", "Ease out"],
+  "ease-in-out": ["Myk start og slutt", "Ease in and out"],
+  hold: ["Hold", "Hold"],
+});
 
 type Run = (command: Command, label: string) => string | null;
 
@@ -268,7 +275,17 @@ const CameraRow = memo(function CameraRow({
             key={sh.id}
             role="button"
             tabIndex={-1}
-            aria-label={`Kamerautsnitt${sh.name ? ` ${sh.name}` : ""}, bilde ${start} til ${end}`}
+            aria-label={
+              sh.name
+                ? L(
+                    `Kamerautsnitt ${sh.name}, bilde ${start} til ${end}`,
+                    `Camera shot ${sh.name}, frames ${start} to ${end}`,
+                  )
+                : L(
+                    `Kamerautsnitt, bilde ${start} til ${end}`,
+                    `Camera shot, frames ${start} to ${end}`,
+                  )
+            }
             aria-pressed={selected}
             onPointerDown={(e) => onShotPointerDown(e, sh, "move")}
             onPointerMove={onShotPointerMove}
@@ -290,7 +307,9 @@ const CameraRow = memo(function CameraRow({
                 "linear-gradient(90deg, oklch(0.5 0.1 250 / 0.85), oklch(0.5 0.12 25 / 0.85))",
             }}
           >
-            <span className="pointer-events-none truncate px-2">{sh.name || "Utsnitt"}</span>
+            <span className="pointer-events-none truncate px-2">
+              {sh.name || L("Utsnitt", "Shot")}
+            </span>
             {editable ? (
               <>
                 {handle("start")}
@@ -353,7 +372,7 @@ const LayerRow = memo(function LayerRow({
           "sticky left-0 z-20 flex shrink-0 items-center border-r border-border px-2 text-[13px] " +
           (selected ? "bg-surface-2 text-text-primary" : "bg-surface-1 text-text-secondary")
         }
-        style={{ width: LABEL_W, paddingLeft: inGroup ? 20 : undefined }}
+        style={{ width: LABEL_CSS, paddingLeft: inGroup ? 20 : undefined }}
       >
         <span className="truncate" title={layer.name}>
           {layer.name}
@@ -368,7 +387,7 @@ const LayerRow = memo(function LayerRow({
         {layer.path ? (
           <span
             aria-hidden
-            title="Bevegelsesbane"
+            title={L("Bevegelsesbane", "Motion path")}
             className="pointer-events-none absolute bottom-1 h-0.5 rounded-full bg-accent-brand/60"
             style={{
               left: layer.path.startFrame * ppf,
@@ -381,8 +400,8 @@ const LayerRow = memo(function LayerRow({
             key={`swap-${w.frame}`}
             role="button"
             tabIndex={-1}
-            aria-label={`Bildeskifte på bilde ${w.frame}`}
-            title="Bildeskifte (dra for å flytte)"
+            aria-label={L(`Bildeskifte på bilde ${w.frame}`, `Image swap at frame ${w.frame}`)}
+            title={L("Bildeskifte (dra for å flytte)", "Image swap (drag to move)")}
             onPointerDown={(e) => onSwapPointerDown(e, layer.id, w.frame)}
             onPointerMove={onSwapPointerMove}
             onPointerUp={onSwapPointerUp}
@@ -404,8 +423,8 @@ const LayerRow = memo(function LayerRow({
             key={`event-${ev.id}`}
             role="button"
             tabIndex={-1}
-            aria-label={`${ev.title} (bilde ${ev.frame})`}
-            title={`${ev.title} (bilde ${ev.frame})`}
+            aria-label={L(`${ev.title} (bilde ${ev.frame})`, `${ev.title} (frame ${ev.frame})`)}
+            title={L(`${ev.title} (bilde ${ev.frame})`, `${ev.title} (frame ${ev.frame})`)}
             data-testid="layer-event-mark"
             onPointerDown={(e) => onEventPointerDown(e, layer.id, ev.frame)}
             className="absolute bottom-0 z-10 flex h-2.5 w-3 cursor-pointer items-end justify-center"
@@ -422,7 +441,7 @@ const LayerRow = memo(function LayerRow({
               key={f}
               role="button"
               tabIndex={-1}
-              aria-label={`Nøkkelbilde på bilde ${f}`}
+              aria-label={L(`Nøkkelbilde på bilde ${f}`, `Keyframe at frame ${f}`)}
               aria-pressed={isSel}
               onPointerDown={(e) => onKeyPointerDown(e, layer.id, f)}
               onPointerMove={onKeyPointerMove}
@@ -470,6 +489,16 @@ export function Timeline({
     axis: "y",
     viewportShare: 0.6,
   });
+  const [labelW, setLabelW] = usePaneSize(
+    "scene-editor-layer-names",
+    LABEL_W,
+    LABEL_MIN,
+    LABEL_MAX,
+    {
+      viewportShare: 0.45,
+    },
+  );
+  const TRACK_X = labelW + GUTTER;
   const fps = state.project.fps;
   const fpsN = fpsToNumber(fps);
   const { frame } = playback;
@@ -493,8 +522,17 @@ export function Timeline({
   const trackW = durationFrames * ppf;
 
   // Siste verdier til stabile hendelsesfunksjoner (radene er memoisert og skal ikke tegnes om hvert bilde)
-  const latest = useRef({ composition, run, playback, editable, ppf, last, state });
-  latest.current = { composition, run, playback, editable, ppf, last, state };
+  const latest = useRef({
+    composition,
+    run,
+    playback,
+    editable,
+    ppf,
+    last,
+    state,
+    trackX: TRACK_X,
+  });
+  latest.current = { composition, run, playback, editable, ppf, last, state, trackX: TRACK_X };
   const draftRef = useRef<{ shot: ShotDraft | null; key: KeyDraft | null }>({
     shot: null,
     key: null,
@@ -522,8 +560,8 @@ export function Timeline({
       e.preventDefault();
       const rect = el.getBoundingClientRect();
       const cursorX = e.clientX - rect.left;
-      const { ppf: cur } = latest.current;
-      anchor.current = { frame: (el.scrollLeft + cursorX - TRACK_X) / cur, cursorX };
+      const { ppf: cur, trackX } = latest.current;
+      anchor.current = { frame: (el.scrollLeft + cursorX - trackX) / cur, cursorX };
       setZoom((z) => clamp(z * Math.exp(-e.deltaY * 0.004), 1, MAX_ZOOM));
     };
     el.addEventListener("wheel", onWheel, { passive: false });
@@ -534,7 +572,7 @@ export function Timeline({
     const a = anchor.current;
     anchor.current = null;
     if (el && a) el.scrollLeft = Math.max(0, a.frame * ppf + TRACK_X - a.cursorX);
-  }, [ppf]);
+  }, [ppf, TRACK_X]);
 
   // Avspillingshodet holdes synlig når det er zoomet inn
   useEffect(() => {
@@ -544,7 +582,7 @@ export function Timeline({
     const left = el.scrollLeft;
     const right = left + el.clientWidth - TRACK_X;
     if (x < left || x > right) el.scrollLeft = Math.max(0, x - (el.clientWidth - TRACK_X) / 4);
-  }, [frame, ppf, zoom]);
+  }, [frame, ppf, zoom, TRACK_X]);
 
   // Mellomrom spiller av/pauser, også når fokus står på scenen eller siden, men aldri i skjemafelt eller på scenen
   useEffect(() => {
@@ -610,7 +648,11 @@ export function Timeline({
 
   function deleteSelectedKey() {
     if (!editable || !keySel || !keyLayer || !keyValid) return;
-    updateKeys(keyLayer, "Slett nøkkelbilde", removeKeyframesAt(keyLayer.keyframes, keySel.frame));
+    updateKeys(
+      keyLayer,
+      L("Slett nøkkelbilde", "Delete keyframe"),
+      removeKeyframesAt(keyLayer.keyframes, keySel.frame),
+    );
     setKeySel(null);
   }
 
@@ -703,7 +745,11 @@ export function Timeline({
       );
       if (!layer) return;
       if (
-        updateKeys(layer, "Flytt nøkkelbilde", moveKeyframes(layer.keyframes, draft.from, draft.to))
+        updateKeys(
+          layer,
+          L("Flytt nøkkelbilde", "Move keyframe"),
+          moveKeyframes(layer.keyframes, draft.from, draft.to),
+        )
       ) {
         setKeySel({ layerId: d.layerId, frame: draft.to });
         latest.current.playback.setFrame(draft.to);
@@ -753,7 +799,12 @@ export function Timeline({
       const layer = latest.current.state.layers[d.layerId];
       if (!layer) return;
       if (layer.swaps.some((w) => w.frame === d.to)) {
-        setError("Det er allerede et bildeskifte på det bildet.");
+        setError(
+          L(
+            "Det er allerede et bildeskifte på det bildet.",
+            "There is already an image swap on that frame.",
+          ),
+        );
         return;
       }
       const ok = exec(
@@ -771,7 +822,7 @@ export function Timeline({
             },
           ],
         },
-        "Flytt bildeskifte",
+        L("Flytt bildeskifte", "Move image swap"),
       );
       if (ok) latest.current.playback.setFrame(d.to);
     },
@@ -834,7 +885,9 @@ export function Timeline({
       const current = cam.shots.find((x) => x.id === d.shot.id);
       if (!current) return;
       updateComposition(
-        d.mode === "move" ? "Flytt kamerautsnitt" : "Endre lengde på kamerautsnitt",
+        d.mode === "move"
+          ? L("Flytt kamerautsnitt", "Move camera shot")
+          : L("Endre lengde på kamerautsnitt", "Change camera shot length"),
         {},
         withShot(cam, { ...current, startFrame: draft.startFrame, endFrame: draft.endFrame }),
       );
@@ -892,23 +945,28 @@ export function Timeline({
     if (text.trim() === "" || !Number.isFinite(v)) return;
     const frames = secondsToFrames(clamp(v, MIN_DURATION_SECONDS, MAX_DURATION_SECONDS), fps);
     if (frames === composition.durationFrames) return;
-    updateComposition("Endre varighet", { durationFrames: frames });
+    updateComposition(L("Endre varighet", "Change duration"), { durationFrames: frames });
   }
 
   function keyAll() {
     if (!selectedLayer) return;
-    updateKeys(selectedLayer, "Nøkkelbilde", keyAllAt(selectedLayer, frame));
+    updateKeys(selectedLayer, L("Nøkkelbilde", "Keyframe"), keyAllAt(selectedLayer, frame));
   }
 
   function addShot() {
     const id = newId<"camera_shot">();
     const slot = freeShotSlot(composition.camera, frame, Math.round(3 * fpsN), last);
     if (!slot) {
-      setError("Det er ikke plass til et nytt kamerautsnitt her. Flytt avspillingshodet.");
+      setError(
+        L(
+          "Det er ikke plass til et nytt kamerautsnitt her. Flytt avspillingshodet.",
+          "There is no room for a new camera shot here. Move the playhead.",
+        ),
+      );
       return;
     }
     const ok = updateComposition(
-      "Nytt kamerautsnitt",
+      L("Nytt kamerautsnitt", "New camera shot"),
       {},
       withShot(composition.camera, newShot(composition, id, slot.startFrame, slot.endFrame)),
     );
@@ -923,7 +981,7 @@ export function Timeline({
     <div
       ref={rootRef}
       role="region"
-      aria-label="Tidslinje"
+      aria-label={L("Tidslinje", "Timeline")}
       tabIndex={0}
       onKeyDown={onKeyDown}
       onPointerDownCapture={(e) => {
@@ -938,36 +996,49 @@ export function Timeline({
         onSize={setHeight}
         min={150}
         max={560}
-        label="Høyde på tidslinjen"
+        label={L("Høyde på tidslinjen", "Height of the timeline")}
       />
       {/* Transport og verktøy */}
       <div className="flex min-h-9 shrink-0 flex-wrap items-center gap-x-1.5 gap-y-1 border-b border-border px-2 py-1">
-        <IconButton label="Til start (Home)" onClick={() => playback.setFrame(0)}>
+        <IconButton
+          label={L("Til start (Home)", "To start (Home)")}
+          onClick={() => playback.setFrame(0)}
+        >
           <SkipBack className="size-3.5" />
         </IconButton>
         <IconButton
-          label="Forrige bilde (pil venstre)"
+          label={L("Forrige bilde (pil venstre)", "Previous frame (left arrow)")}
           onClick={() => playback.setFrame(frame - 1)}
         >
           <ChevronLeft className="size-3.5" />
         </IconButton>
         <button
           type="button"
-          aria-label={playback.playing ? "Pause" : "Spill av"}
-          title={playback.playing ? "Pause (mellomrom)" : "Spill av (mellomrom)"}
+          aria-label={playback.playing ? L("Pause", "Pause") : L("Spill av", "Play")}
+          title={
+            playback.playing
+              ? L("Pause (mellomrom)", "Pause (space)")
+              : L("Spill av (mellomrom)", "Play (space)")
+          }
           onClick={playback.toggle}
           className={iconButton + " bg-surface-3 text-text-primary"}
         >
           {playback.playing ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}
         </button>
-        <IconButton label="Neste bilde (pil høyre)" onClick={() => playback.setFrame(frame + 1)}>
+        <IconButton
+          label={L("Neste bilde (pil høyre)", "Next frame (right arrow)")}
+          onClick={() => playback.setFrame(frame + 1)}
+        >
           <ChevronRight className="size-3.5" />
         </IconButton>
-        <IconButton label="Til slutt (End)" onClick={() => playback.setFrame(last)}>
+        <IconButton
+          label={L("Til slutt (End)", "To end (End)")}
+          onClick={() => playback.setFrame(last)}
+        >
           <SkipForward className="size-3.5" />
         </IconButton>
         <IconButton
-          label="Løkke"
+          label={L("Løkke", "Loop")}
           active={playback.loop}
           onClick={() => playback.setLoop(!playback.loop)}
         >
@@ -975,7 +1046,7 @@ export function Timeline({
         </IconButton>
         <span
           className="shrink-0 whitespace-nowrap px-1 font-mono text-xs tabular-nums text-text-primary"
-          aria-label="Tid"
+          aria-label={L("Tid", "Time")}
         >
           {formatTimecode(frame, fps)}
           <span className="text-text-tertiary"> / {formatTimecode(durationFrames, fps)}</span>
@@ -984,7 +1055,7 @@ export function Timeline({
         <span className="mx-1 h-4 w-px shrink-0 bg-border" aria-hidden="true" />
 
         <label className="flex shrink-0 items-center gap-1.5 text-xs text-text-secondary">
-          Varighet (s)
+          {L("Varighet (s)", "Duration (s)")}
           <input
             type="number"
             inputMode="decimal"
@@ -1012,10 +1083,17 @@ export function Timeline({
             size="sm"
             variant="ghost"
             className="shrink-0"
-            title="Bruk varigheten som er beregnet fra manuset"
-            onClick={() => updateComposition("Varighet fra manus", { durationFrames: 0 })}
+            title={L(
+              "Bruk varigheten som er beregnet fra manuset",
+              "Use the duration calculated from the script",
+            )}
+            onClick={() =>
+              updateComposition(L("Varighet fra manus", "Duration from script"), {
+                durationFrames: 0,
+              })
+            }
           >
-            Fra manus
+            {L("Fra manus", "From script")}
           </Button>
         ) : null}
 
@@ -1025,7 +1103,10 @@ export function Timeline({
           aria-checked={autoKey}
           disabled={!editable}
           onClick={() => onAutoKeyChange(!autoKey)}
-          title="Endringer på et bilde blir nøkkelbilder"
+          title={L(
+            "Endringer på et bilde blir nøkkelbilder",
+            "Changes on a frame become keyframes",
+          )}
           className="inline-flex h-6 shrink-0 items-center gap-1.5 rounded-sm px-1.5 text-xs text-text-secondary hover:bg-surface-3 hover:text-text-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-40"
         >
           <span
@@ -1037,7 +1118,7 @@ export function Timeline({
                 : "border-text-tertiary bg-transparent")
             }
           />
-          Automatiske nøkkelbilder
+          {L("Automatiske nøkkelbilder", "Automatic keyframes")}
         </button>
 
         <Button
@@ -1045,11 +1126,14 @@ export function Timeline({
           variant="secondary"
           className="shrink-0"
           disabled={!editable || !selectedLayer}
-          title="Nøkkelbilde for alle egenskaper på dette bildet"
+          title={L(
+            "Nøkkelbilde for alle egenskaper på dette bildet",
+            "Keyframe for all properties on this frame",
+          )}
           onClick={keyAll}
         >
           <Diamond className="size-3" />
-          Nøkkelbilde
+          {L("Nøkkelbilde", "Keyframe")}
         </Button>
         <Button
           size="sm"
@@ -1059,12 +1143,12 @@ export function Timeline({
           onClick={addShot}
         >
           <Video className="size-3" />
-          Nytt kamerautsnitt
+          {L("Nytt kamerautsnitt", "New camera shot")}
         </Button>
 
         {keyValid && keyLayer ? (
           <label className="flex shrink-0 items-center gap-1.5 text-xs text-text-secondary">
-            Hastighetskurve
+            {L("Hastighetskurve", "Easing curve")}
             <select
               value={easingNow}
               disabled={!editable}
@@ -1073,7 +1157,7 @@ export function Timeline({
                 if (next && keySel)
                   updateKeys(
                     keyLayer,
-                    "Endre hastighetskurve",
+                    L("Endre hastighetskurve", "Change easing curve"),
                     setKeyframeEasing(keyLayer.keyframes, keySel.frame, next),
                   );
               }}
@@ -1090,7 +1174,10 @@ export function Timeline({
         {keyValid && keyLayer && easingNow !== "hold" ? (
           <span
             className="flex shrink-0 items-center gap-1.5 text-xs text-text-secondary"
-            title="Styrken på myk start og slutt (som «influence» i After Effects)"
+            title={L(
+              "Styrken på myk start og slutt (som «influence» i After Effects)",
+              "The strength of ease in and out (like “influence” in After Effects)",
+            )}
           >
             Ease
             {(["easeIn", "easeOut"] as const).map((key) => {
@@ -1100,11 +1187,17 @@ export function Timeline({
               return (
                 <PercentInput
                   key={key}
-                  label={key === "easeIn" ? "inn" : "ut"}
+                  label={key === "easeIn" ? L("inn", "in") : L("ut", "out")}
                   title={
                     key === "easeIn"
-                      ? "Ease inn: hvor mykt bevegelsen bremser inn mot dette nøkkelbildet"
-                      : "Ease ut: hvor mykt bevegelsen starter fra dette nøkkelbildet"
+                      ? L(
+                          "Ease inn: hvor mykt bevegelsen bremser inn mot dette nøkkelbildet",
+                          "Ease in: how softly the movement slows down into this keyframe",
+                        )
+                      : L(
+                          "Ease ut: hvor mykt bevegelsen starter fra dette nøkkelbildet",
+                          "Ease out: how softly the movement starts from this keyframe",
+                        )
                   }
                   value={v}
                   disabled={!editable}
@@ -1113,7 +1206,9 @@ export function Timeline({
                     keySel &&
                     updateKeys(
                       keyLayer,
-                      key === "easeIn" ? "Endre ease inn" : "Endre ease ut",
+                      key === "easeIn"
+                        ? L("Endre ease inn", "Change ease in")
+                        : L("Endre ease ut", "Change ease out"),
                       setKeyframeEase(keyLayer.keyframes, keySel.frame, { [key]: n }),
                     )
                   }
@@ -1124,10 +1219,10 @@ export function Timeline({
         ) : null}
 
         <span className="ml-auto flex shrink-0 items-center gap-1.5 pl-2 text-xs text-text-tertiary">
-          Zoom
+          {L("Zoom", "Zoom")}
           <input
             type="range"
-            aria-label="Zoom tidslinjen"
+            aria-label={L("Zoom tidslinjen", "Zoom the timeline")}
             min={1}
             max={MAX_ZOOM}
             step={0.1}
@@ -1156,13 +1251,30 @@ export function Timeline({
 
       {/* Linjal og spor */}
       <div ref={scrollRef} className="relative min-h-0 flex-1 overflow-auto">
-        <div className="relative" style={{ width: TRACK_X + trackW + GUTTER, minHeight: "100%" }}>
+        <div
+          className="relative"
+          style={
+            {
+              width: TRACK_X + trackW + GUTTER,
+              minHeight: "100%",
+              "--tl-label-w": `${labelW}px`,
+            } as CSSProperties
+          }
+        >
           <div className="sticky top-0 z-30 flex border-b border-border bg-surface-1">
             <div
               className="sticky left-0 z-10 shrink-0 border-r border-border bg-surface-1 px-2 text-xs leading-5 text-text-tertiary"
-              style={{ width: LABEL_W }}
+              style={{ width: labelW }}
             >
-              Spor
+              {L("Spor", "Tracks")}
+              <PaneResizer
+                edge="right"
+                size={labelW}
+                onSize={setLabelW}
+                min={LABEL_MIN}
+                max={LABEL_MAX}
+                label={L("Bredden på lagnavnene", "Width of the layer names")}
+              />
             </div>
             <div style={{ width: GUTTER }} className="shrink-0" aria-hidden="true" />
             <div
@@ -1185,10 +1297,10 @@ export function Timeline({
           <div className="flex border-b border-border/60" style={{ height: ROW_H }}>
             <div
               className="sticky left-0 z-20 flex shrink-0 items-center gap-1.5 border-r border-border bg-surface-1 px-2 text-[13px] text-text-secondary"
-              style={{ width: LABEL_W }}
+              style={{ width: labelW }}
             >
               <Video className="size-3.5 shrink-0" />
-              Kamera
+              {L("Kamera", "Camera")}
             </div>
             <div style={{ width: GUTTER }} className="shrink-0" aria-hidden="true" />
             <div
@@ -1219,7 +1331,7 @@ export function Timeline({
 
           {front.length === 0 ? (
             <p className="sticky left-0 px-3 py-2 text-xs text-text-tertiary">
-              Ingen lag i scenen ennå.
+              {L("Ingen lag i scenen ennå.", "No layers in the scene yet.")}
             </p>
           ) : (
             front.map((l) => (
@@ -1250,7 +1362,7 @@ export function Timeline({
             ))
           )}
 
-          {audioRows?.({ ppf, labelW: LABEL_W, gutter: GUTTER, rowH: ROW_H, fps: fpsN })}
+          {audioRows?.({ ppf, labelW, gutter: GUTTER, rowH: ROW_H, fps: fpsN })}
 
           {/* Avspillingshodet (den eneste delen som følger bildet) */}
           <div
@@ -1322,7 +1434,7 @@ function PercentInput({
             e.currentTarget.blur();
           }
         }}
-        aria-label={`Ease ${label} i prosent`}
+        aria-label={L(`Ease ${label} i prosent`, `Ease ${label} in percent`)}
         className={className + " w-12"}
       />
       %

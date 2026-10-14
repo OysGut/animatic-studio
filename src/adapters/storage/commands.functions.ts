@@ -6,6 +6,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
+  L,
   applyCommand,
   diffStates,
   isEmptyChangeSet,
@@ -29,11 +30,15 @@ export interface RunCommandInput {
  * (INV-13) og slettes ikke sammen med produksjonen. Produksjoner kan verken deaktiveres eller slettes i appen,
  * så produksjonen beholdes.
  */
-export const UNDO_PRODUCTION_HISTORY =
+export const UNDO_PRODUCTION_HISTORY = // i18n-ignore: norsk tekst som testene sjekker, vises med L()
   "Produksjonen har eksporter eller lagrede estimater og kan ikke angres. Den beholdes som den er.";
+const UNDO_PRODUCTION_HISTORY_EN =
+  "The production has exports or saved estimates and cannot be undone. It is kept as it is.";
 /** Som over, for manusversjoner og importerte manusfiler (fremmednøkkel uten sletting). */
-export const UNDO_PRODUCTION_REFERENCED =
+export const UNDO_PRODUCTION_REFERENCED = // i18n-ignore: norsk tekst som testene sjekker, vises med L()
   "Produksjonen har manusversjoner eller importerte manusfiler og kan ikke angres. Den beholdes som den er.";
+const UNDO_PRODUCTION_REFERENCED_EN =
+  "The production has script versions or imported script files and cannot be undone. It is kept as it is.";
 
 /**
  * Forståelig melding for en feil fra apply_changes som skyldes data domenekjernen ikke ser (historikk i egne
@@ -45,8 +50,15 @@ export function applyChangesErrorMessage(
 ): { readonly code: string; readonly message: string } | null {
   if (command.type !== "UndoCreateProduction") return null;
   if (error.code === "P0001" && /INV-13/.test(error.message ?? ""))
-    return { code: "referenced", message: UNDO_PRODUCTION_HISTORY };
-  if (error.code === "23503") return { code: "referenced", message: UNDO_PRODUCTION_REFERENCED };
+    return {
+      code: "referenced",
+      message: L(UNDO_PRODUCTION_HISTORY, UNDO_PRODUCTION_HISTORY_EN),
+    };
+  if (error.code === "23503")
+    return {
+      code: "referenced",
+      message: L(UNDO_PRODUCTION_REFERENCED, UNDO_PRODUCTION_REFERENCED_EN),
+    };
   return null;
 }
 
@@ -105,6 +117,8 @@ const LIBRARY_COMMANDS = new Set<string>([
   "SetAssetArchived",
   "SetAssetsRemoved",
   "SetAssetVersionsRemoved",
+  "SetVersionView",
+  "SetAssetVisualBrief",
   "SetSoundLinks",
   "SetContextNames",
   "SetAssetVoice",
@@ -311,6 +325,19 @@ export function needsSchema29(command: { type: string } & Record<string, unknown
   return false;
 }
 
+/**
+ * Vinkel på bilder og visuelle faktaark (DEC-0080) krever migrasjon 0030 – ellers ville endringen gått tapt
+ * i stillhet (apply_changes ser bort fra kolonner tabellen ikke har), og en vinkel på et bilde ville blitt
+ * avvist av utløseren som vokter bildeversjonene.
+ */
+export function needsSchema31(command: { type: string }): boolean {
+  return command.type === "SetProductionNote";
+}
+
+export function needsSchema30(command: { type: string }): boolean {
+  return command.type === "SetVersionView" || command.type === "SetAssetVisualBrief";
+}
+
 /** Kommandoer som bare skriver kolonner fra migrasjon 0026 (DEC-0071). */
 const SCHEMA26_COMMANDS = new Set<string>([
   "SetAssetVoice",
@@ -375,19 +402,21 @@ export function canonicalJson(v: unknown): string {
 }
 
 function validateInput(d: unknown): RunCommandInput {
-  if (!d || typeof d !== "object") throw new Error("Ugyldig forespørsel");
+  if (!d || typeof d !== "object") throw new Error(L("Ugyldig forespørsel", "Invalid request"));
   const x = d as Record<string, unknown>;
   if (typeof x["projectId"] !== "string" || !isUuid(x["projectId"]))
-    throw new Error("Ugyldig prosjekt-ID");
+    throw new Error(L("Ugyldig prosjekt-ID", "Invalid project ID"));
   const cmd = x["command"] as { type?: unknown } | undefined;
-  if (!cmd || typeof cmd.type !== "string") throw new Error("Ugyldig kommando");
+  if (!cmd || typeof cmd.type !== "string")
+    throw new Error(L("Ugyldig kommando", "Invalid command"));
   const base = x["baseRevisions"];
   if (base !== undefined && (typeof base !== "object" || base === null))
-    throw new Error("Ugyldige revisjoner");
-  if (JSON.stringify(cmd).length > MAX_COMMAND_CHARS) throw new Error("Endringen er for stor");
+    throw new Error(L("Ugyldige revisjoner", "Invalid revisions"));
+  if (JSON.stringify(cmd).length > MAX_COMMAND_CHARS)
+    throw new Error(L("Endringen er for stor", "The change is too large"));
   const cid = x["commandId"];
   if (cid !== undefined && (typeof cid !== "string" || !isUuid(cid)))
-    throw new Error("Ugyldig kommando-ID");
+    throw new Error(L("Ugyldig kommando-ID", "Invalid command ID"));
   return {
     ...(typeof cid === "string" ? { commandId: cid } : {}),
     projectId: x["projectId"],
@@ -413,7 +442,10 @@ export const runCommand = createServerFn({ method: "POST" })
       return {
         ok: false,
         code: "forbidden",
-        message: "Du har ikke tilgang til å endre dette prosjektet",
+        message: L(
+          "Du har ikke tilgang til å endre dette prosjektet",
+          "You do not have access to change this project",
+        ),
       };
     }
 
@@ -422,7 +454,10 @@ export const runCommand = createServerFn({ method: "POST" })
       return {
         ok: false,
         code: "forbidden",
-        message: "Bare eieren av prosjektet kan endre AI-budsjettet.",
+        message: L(
+          "Bare eieren av prosjektet kan endre AI-budsjettet.",
+          "Only the owner of the project can change the AI budget.",
+        ),
       };
     }
 
@@ -455,7 +490,10 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "forbidden",
-          message: "Bare dine egne siste endringer kan angres på denne måten.",
+          message: L(
+            "Bare dine egne siste endringer kan angres på denne måten.",
+            "Only your own latest changes can be undone in this way.",
+          ),
         };
       }
     }
@@ -472,7 +510,10 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "referenced",
-          message: "Bildet har vært godkjent og kan ikke fjernes.",
+          message: L(
+            "Bildet har vært godkjent og kan ikke fjernes.",
+            "The image has been approved and cannot be removed.",
+          ),
         };
     }
     // Stempelet på nye notater settes av serveren (navnet i profilen og tidspunktet nå), så ingen kan
@@ -516,8 +557,10 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message:
+          message: L(
             "Databasen mangler ressursbiblioteket og notatene. Kjør migrasjon 0004 i Lovable (se LOVABLE_SYNC.md).",
+            "The database is missing the asset library and notes. Run migration 0004 in Lovable (see LOVABLE_SYNC.md).",
+          ),
         };
     }
     // Prosjektets format krever migrasjon 0008
@@ -527,8 +570,10 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message:
+          message: L(
             "Databasen mangler prosjektformatet. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0008.",
+            "The database is missing the project format. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0008.",
+          ),
         };
     }
     // Lyd krever migrasjon 0009
@@ -538,8 +583,10 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message:
+          message: L(
             "Databasen mangler lyd. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0009.",
+            "The database is missing sound. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0009.",
+          ),
         };
     }
     if (EDIT_COMMANDS.has(data.command.type)) {
@@ -548,8 +595,10 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message:
+          message: L(
             "Databasen mangler klipping og tidskoblinger. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0012.",
+            "The database is missing clipping and time links. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0012.",
+          ),
         };
     }
     if (needsSchema13(data.command as never)) {
@@ -558,8 +607,10 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message:
+          message: L(
             "Databasen mangler de nye funksjonene (overganger, svart-hvitt, grupper, bildeskifter og bevegelsesbaner). Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0013.",
+            "The database is missing the new features (transitions, black and white, groups, image swaps and motion paths). Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0013.",
+          ),
         };
     }
     // AI-budsjett, egne beskrivelser og inndeling for generering krever migrasjon 0014 (DEC-0053)
@@ -569,8 +620,10 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message:
+          message: L(
             "Databasen mangler AI-budsjett og genereringsbeskrivelser. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0014.",
+            "The database is missing the AI budget and generation descriptions. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0014.",
+          ),
         };
     }
     if (SCHEMA15_COMMANDS.has(data.command.type)) {
@@ -579,8 +632,10 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message:
+          message: L(
             "Databasen mangler kontinuitet for karakterene. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0015.",
+            "The database is missing continuity for the characters. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0015.",
+          ),
         };
     }
     if (SCHEMA16_COMMANDS.has(data.command.type)) {
@@ -589,8 +644,10 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message:
+          message: L(
             "Databasen mangler språkversjoner av manuset. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0016.",
+            "The database is missing language versions of the script. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0016.",
+          ),
         };
     }
     if (needsSchema17(data.command as never)) {
@@ -599,8 +656,10 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message:
+          message: L(
             "Databasen mangler språkversjoner av filmen (lyd og bilder per språk). Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0017.",
+            "The database is missing language versions of the film (audio and images per language). Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0017.",
+          ),
         };
     }
     if (needsSchema18(data.command as never)) {
@@ -609,8 +668,34 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message:
+          message: L(
             "Databasen mangler kontinuitet for spinoffer. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0018.",
+            "The database is missing continuity for spin-offs. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0018.",
+          ),
+        };
+    }
+    if (needsSchema31(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 31)
+        return {
+          ok: false,
+          code: "schema",
+          message: L(
+            "Databasen mangler notater på produksjonene. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0031.",
+            "The database is missing notes on the productions. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0031.",
+          ),
+        };
+    }
+    if (needsSchema30(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 30)
+        return {
+          ok: false,
+          code: "schema",
+          message: L(
+            "Databasen mangler tillegget for vinkler på bilder og visuelle faktaark. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0030.",
+            "The database is missing the addition for angles on images and visual fact sheets. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0030.",
+          ),
         };
     }
     if (needsSchema29(data.command as never)) {
@@ -619,8 +704,10 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message:
+          message: L(
             "Databasen mangler tillegget for slettede objekter, lydhastighet og «animer på toere». Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0029.",
+            "The database is missing the addition for deleted items, sound speed and “animate on twos”. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0029.",
+          ),
         };
     }
     if (needsSchema28(data.command as never)) {
@@ -629,8 +716,10 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message:
+          message: L(
             "Databasen mangler tillegget for lagrede varighetsestimater og eksportlogg. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0028.",
+            "The database is missing the addition for saved duration estimates and the export log. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0028.",
+          ),
         };
     }
     if (needsSchema27(data.command as never)) {
@@ -639,8 +728,10 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message:
+          message: L(
             "Databasen mangler tillegget for arbeidslisten og eksportinnstillinger. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0027.",
+            "The database is missing the addition for the worklist and export settings. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0027.",
+          ),
         };
     }
     if (needsSchema26(data.command as never)) {
@@ -649,8 +740,10 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message:
+          message: L(
             "Databasen mangler det nyeste tillegget (masker, overganger, stemmer, stilprofiler). Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0026.",
+            "The database is missing the newest addition (masks, transitions, voices, style profiles). Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0026.",
+          ),
         };
     }
     if (needsSchema25(data.command as never)) {
@@ -659,8 +752,10 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message:
+          message: L(
             "Databasen mangler koblinger for lyd. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0025.",
+            "The database is missing sound links. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0025.",
+          ),
         };
     }
     if (needsSchema23(data.command as never)) {
@@ -669,8 +764,10 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message:
+          message: L(
             "Databasen mangler planlagt lengde per scene. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0023.",
+            "The database is missing planned length per scene. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0023.",
+          ),
         };
     }
     if (needsSchema21(data.command as never)) {
@@ -679,8 +776,10 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message:
+          message: L(
             "Databasen mangler filmens visuelle stil. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0021.",
+            "The database is missing the film's visual style. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0021.",
+          ),
         };
     }
     if (needsSchema19(data.command as never)) {
@@ -689,8 +788,10 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message:
+          message: L(
             "Databasen mangler plakater og relasjoner. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0019.",
+            "The database is missing posters and relations. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0019.",
+          ),
         };
     }
     if (needsFilmSchema(data.command as never)) {
@@ -699,8 +800,10 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message:
+          message: L(
             "Databasen mangler importert film og overganger. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0011.",
+            "The database is missing imported film and transitions. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0011.",
+          ),
         };
     }
     if (needsAudioFlowSchema(data.command as never)) {
@@ -709,8 +812,10 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message:
+          message: L(
             "Databasen mangler lyd over flere scener og volumpunkter. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0010.",
+            "The database is missing sound across several scenes and volume points. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0010.",
+          ),
         };
     }
     // 2D-sceneeditoren krever migrasjon 0007
@@ -720,8 +825,10 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message:
+          message: L(
             "Databasen mangler sceneeditoren. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0007.",
+            "The database is missing the scene editor. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0007.",
+          ),
         };
     }
     const state = await loadProjectState(admin, data.projectId);
@@ -770,28 +877,40 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "revision_conflict",
-          message: "Noen andre endret det samme samtidig. Hent siste versjon og prøv igjen.",
+          message: L(
+            "Noen andre endret det samme samtidig. Hent siste versjon og prøv igjen.",
+            "Someone else changed the same thing at the same time. Fetch the latest version and try again.",
+          ),
         };
       }
       if (error.code === "P0409") {
         return {
           ok: false,
           code: "revision_conflict",
-          message: "Noen andre har endret dette i mellomtiden. Hent siste versjon og prøv igjen.",
+          message: L(
+            "Noen andre har endret dette i mellomtiden. Hent siste versjon og prøv igjen.",
+            "Someone else has changed this in the meantime. Fetch the latest version and try again.",
+          ),
         };
       }
       if (error.code === "42501") {
         return {
           ok: false,
           code: "forbidden",
-          message: "Prosjektet er slettet, eller du har ikke lenger skriverett i det.",
+          message: L(
+            "Prosjektet er slettet, eller du har ikke lenger skriverett i det.",
+            "The project has been deleted, or you no longer have write access to it.",
+          ),
         };
       }
       console.error("[apply_changes]", error.code, error.message); // ingen hemmeligheter i feilen
       return {
         ok: false,
         code: "storage_error",
-        message: "Endringen kunne ikke lagres. Prøv igjen.",
+        message: L(
+          "Endringen kunne ikke lagres. Prøv igjen.",
+          "The change could not be saved. Try again.",
+        ),
       };
     }
     return {

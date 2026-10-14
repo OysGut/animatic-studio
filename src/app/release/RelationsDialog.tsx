@@ -8,7 +8,8 @@ import { Check, Plus, Trash2, X } from "lucide-react";
 import {
   RELATION_COLOR,
   RELATION_KINDS,
-  RELATION_LABEL,
+  RELATION_NAME,
+  L,
   approvedRelations,
   newId,
   relationSuggestions,
@@ -107,7 +108,7 @@ export function RelationsDialog({
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [kind, setKind] = useState<RelationKind>("friendship");
-  const name = (id: string) => state.assets[id]?.name ?? "(ukjent)";
+  const name = (id: string) => state.assets[id]?.name ?? L("(ukjent)", "(unknown)");
 
   const add = (
     items: {
@@ -163,7 +164,7 @@ export function RelationsDialog({
             },
           ],
         },
-        "Endre relasjon",
+        L("Endre relasjon", "Change relation"),
         `relation:${r.id}`,
       ),
     );
@@ -172,10 +173,12 @@ export function RelationsDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[85vh] max-w-3xl overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Relasjoner</DialogTitle>
+          <DialogTitle>{L("Relasjoner", "Relations")}</DialogTitle>
           <DialogDescription>
-            Hvordan karakterene henger sammen. Godkjente relasjoner vises som linjer i
-            karakterkartet. Forslagene kommer fra manuset og lagres bare når du godkjenner dem.
+            {L(
+              "Hvordan karakterene henger sammen. Godkjente relasjoner vises som linjer i karakterkartet. Forslagene kommer fra manuset og lagres bare når du godkjenner dem.",
+              "How the characters are connected. Approved relations are shown as lines in the character map. Suggestions come from the script and are only saved when you approve them.",
+            )}
           </DialogDescription>
         </DialogHeader>
         {error ? (
@@ -186,10 +189,10 @@ export function RelationsDialog({
 
         <section aria-labelledby="rel-approved" className="flex flex-col gap-2">
           <h3 id="rel-approved" className="text-[13px] font-medium text-text-primary">
-            Godkjente relasjoner ({approved.length})
+            {L("Godkjente relasjoner", "Approved relations")} ({approved.length})
           </h3>
           {approved.length === 0 ? (
-            <p className="text-xs text-text-tertiary">Ingen ennå.</p>
+            <p className="text-xs text-text-tertiary">{L("Ingen ennå.", "None yet.")}</p>
           ) : (
             <ul className="flex flex-col gap-1.5">
               {approved.map((r) => (
@@ -208,7 +211,10 @@ export function RelationsDialog({
                     </span>
                   </span>
                   <select
-                    aria-label={`Type relasjon mellom ${name(r.fromAssetId)} og ${name(r.toAssetId)}`}
+                    aria-label={L(
+                      `Type relasjon mellom ${name(r.fromAssetId)} og ${name(r.toAssetId)}`,
+                      `Type of relation between ${name(r.fromAssetId)} and ${name(r.toAssetId)}`,
+                    )}
                     value={r.kind}
                     disabled={!editable}
                     onChange={(e) => update(r, { kind: e.target.value as RelationKind })}
@@ -216,13 +222,19 @@ export function RelationsDialog({
                   >
                     {RELATION_KINDS.map((k) => (
                       <option key={k} value={k}>
-                        {RELATION_LABEL[k]}
+                        {RELATION_NAME[k]}
                       </option>
                     ))}
                   </select>
                   <BlurText
-                    label={`Navn på relasjonen mellom ${name(r.fromAssetId)} og ${name(r.toAssetId)}`}
-                    placeholder="Navn (f.eks. «mor og datter»)"
+                    label={L(
+                      `Navn på relasjonen mellom ${name(r.fromAssetId)} og ${name(r.toAssetId)}`,
+                      `Name of the relation between ${name(r.fromAssetId)} and ${name(r.toAssetId)}`,
+                    )}
+                    placeholder={L(
+                      "Navn (f.eks. «mor og datter»)",
+                      "Name (e.g. “mother and daughter”)",
+                    )}
                     value={r.label}
                     disabled={!editable}
                     onCommit={(label) => update(r, { label })}
@@ -233,12 +245,15 @@ export function RelationsDialog({
                       size="icon"
                       variant="ghost"
                       className="size-7"
-                      aria-label={`Fjern relasjonen mellom ${name(r.fromAssetId)} og ${name(r.toAssetId)}`}
+                      aria-label={L(
+                        `Fjern relasjonen mellom ${name(r.fromAssetId)} og ${name(r.toAssetId)}`,
+                        `Remove the relation between ${name(r.fromAssetId)} and ${name(r.toAssetId)}`,
+                      )}
                       onClick={() =>
                         setError(
                           cmds.run(
                             { type: "SetRelationsRemoved", relationIds: [r.id], removed: true },
-                            "Fjern relasjon",
+                            L("Fjern relasjon", "Remove relation"),
                           ),
                         )
                       }
@@ -250,8 +265,14 @@ export function RelationsDialog({
                   )}
                   <BlurText
                     multiline
-                    label={`Beskrivelse av relasjonen mellom ${name(r.fromAssetId)} og ${name(r.toAssetId)}`}
-                    placeholder="Kort beskrivelse (vises når «tekst om relasjonene» er slått på)"
+                    label={L(
+                      `Beskrivelse av relasjonen mellom ${name(r.fromAssetId)} og ${name(r.toAssetId)}`,
+                      `Description of the relation between ${name(r.fromAssetId)} and ${name(r.toAssetId)}`,
+                    )}
+                    placeholder={L(
+                      "Kort beskrivelse (vises når «tekst om relasjonene» er slått på)",
+                      "Short description (shown when “text about the relations” is turned on)",
+                    )}
                     value={r.description}
                     disabled={!editable}
                     onCommit={(description) => update(r, { description })}
@@ -266,11 +287,14 @@ export function RelationsDialog({
         {editable ? (
           <section aria-labelledby="rel-suggest" className="flex flex-col gap-2">
             <h3 id="rel-suggest" className="text-[13px] font-medium text-text-primary">
-              Forslag fra manuset ({suggestions.length})
+              {L("Forslag fra manuset", "Suggestions from the script")} ({suggestions.length})
             </h3>
             {suggestions.length === 0 ? (
               <p className="text-xs text-text-tertiary">
-                Ingen nye forslag. Forslag kommer fra karakterer som er sammen i flere scener.
+                {L(
+                  "Ingen nye forslag. Forslag kommer fra karakterer som er sammen i flere scener.",
+                  "No new suggestions. Suggestions come from characters who are together in several scenes.",
+                )}
               </p>
             ) : (
               <ul className="flex flex-col gap-1.5">
@@ -283,11 +307,12 @@ export function RelationsDialog({
                       {name(sg.fromAssetId)} – {name(sg.toAssetId)}
                     </span>
                     <span className="text-xs text-text-secondary">
-                      {RELATION_LABEL[sg.kind]} · sammen i {sg.together} scener
+                      {RELATION_NAME[sg.kind]} · {L("sammen i", "together in")} {sg.together}{" "}
+                      {L("scener", "scenes")}
                     </span>
                     {sg.evidence ? (
                       <span className="w-full truncate text-xs italic text-text-tertiary">
-                        «{sg.evidence.text}»
+                        {L(`«${sg.evidence.text}»`, `“${sg.evidence.text}”`)}
                       </span>
                     ) : null}
                     <span className="ml-auto flex gap-1">
@@ -297,12 +322,15 @@ export function RelationsDialog({
                         onClick={() =>
                           add(
                             [{ ...sg, status: "approved" }],
-                            `Godkjenn relasjon ${name(sg.fromAssetId)} – ${name(sg.toAssetId)}`,
+                            L(
+                              `Godkjenn relasjon ${name(sg.fromAssetId)} – ${name(sg.toAssetId)}`,
+                              `Approve relation ${name(sg.fromAssetId)} – ${name(sg.toAssetId)}`,
+                            ),
                           )
                         }
                       >
                         <Check />
-                        Godkjenn
+                        {L("Godkjenn", "Approve")}
                       </Button>
                       <Button
                         size="sm"
@@ -310,12 +338,15 @@ export function RelationsDialog({
                         onClick={() =>
                           add(
                             [{ ...sg, status: "dismissed" }],
-                            `Avvis forslag ${name(sg.fromAssetId)} – ${name(sg.toAssetId)}`,
+                            L(
+                              `Avvis forslag ${name(sg.fromAssetId)} – ${name(sg.toAssetId)}`,
+                              `Dismiss suggestion ${name(sg.fromAssetId)} – ${name(sg.toAssetId)}`,
+                            ),
                           )
                         }
                       >
                         <X />
-                        Avvis
+                        {L("Avvis", "Dismiss")}
                       </Button>
                     </span>
                   </li>
@@ -328,7 +359,7 @@ export function RelationsDialog({
         {editable ? (
           <section aria-labelledby="rel-new" className="flex flex-col gap-2">
             <h3 id="rel-new" className="text-[13px] font-medium text-text-primary">
-              Ny relasjon
+              {L("Ny relasjon", "New relation")}
             </h3>
             <form
               className="flex flex-wrap items-center gap-2"
@@ -337,18 +368,18 @@ export function RelationsDialog({
                 if (!from || !to) return;
                 add(
                   [{ fromAssetId: from, toAssetId: to, kind, status: "approved" }],
-                  "Ny relasjon",
+                  L("Ny relasjon", "New relation"),
                 );
                 setTo("");
               }}
             >
               <select
-                aria-label="Fra"
+                aria-label={L("Fra", "From")}
                 value={from}
                 onChange={(e) => setFrom(e.target.value)}
                 className={control}
               >
-                <option value="">Velg karakter …</option>
+                <option value="">{L("Velg karakter …", "Choose a character …")}</option>
                 {people.map((a) => (
                   <option key={a.id} value={a.id}>
                     {a.name}
@@ -356,24 +387,29 @@ export function RelationsDialog({
                 ))}
               </select>
               <select
-                aria-label="Type"
+                aria-label={L("Type", "Type")}
                 value={kind}
                 onChange={(e) => setKind(e.target.value as RelationKind)}
                 className={control}
               >
                 {RELATION_KINDS.map((k) => (
                   <option key={k} value={k}>
-                    {RELATION_LABEL[k]}
+                    {RELATION_NAME[k]}
                   </option>
                 ))}
               </select>
               <select
-                aria-label="Til"
+                aria-label={L("Til", "To")}
                 value={to}
                 onChange={(e) => setTo(e.target.value)}
                 className={control}
               >
-                <option value="">Velg karakter, sted eller objekt …</option>
+                <option value="">
+                  {L(
+                    "Velg karakter, sted eller objekt …",
+                    "Choose a character, location or object …",
+                  )}
+                </option>
                 {others
                   .filter((a) => a.id !== from)
                   .map((a) => (
@@ -384,7 +420,7 @@ export function RelationsDialog({
               </select>
               <Button size="sm" type="submit" disabled={!from || !to}>
                 <Plus />
-                Legg til
+                {L("Legg til", "Add")}
               </Button>
             </form>
           </section>

@@ -1,28 +1,37 @@
-Mars' testrunde: 19 funn rettet og bygget, migrasjon 0029 (DEC-0079)
+Norsk og engelsk i hele tjenesten, ny prosjektliste, bildeverktøy og promptmotor – migrasjon 0030 og 0031 (DEC-0080–0082)
 
-Databaseendring: migrasjon 0029. Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push.
-Ny pakke: utif 3.1.0 (TIFF-dekoder, MIT).
+Databaseendring: migrasjon 0030 og 0031 (i den rekkefølgen). Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push.
+Ingen nye pakker.
 
-Mars testet 15 punkter 13.10.2026; 14 bestått. Rettet:
-- fal.ai «405» etter betalt jobb: status hentes under app-ID-en (KI-188).
-- Nano Banana Pro «Internal server error»: mindre minnebruk, JPEG og valgt bildestørrelse,
-  forståelig melding ved brutt forbindelse (KI-189, prøves igjen).
-- Norsk tale ble dansk: Eleven v3 med norsk satt eksplisitt.
-- Utdatert AI-tekst varsles, men hindrer ikke generering; «Ja, generer» alltid synlig.
-- Lokasjon legges nederst; MP4/M4V/MOV/WebM gjenkjennes og avspillbarhet sjekkes; TIFF blir PNG.
-Nytt:
-- 12 bilder i sekundet og «animer på toere/treere/firere» per 2D-scene.
-- Lydklipp: dra og kutt i sceneeditoren; hastighet 25–400 % og masker for start og slutt i lydprofilen.
-- «I scenen»-merke og dobbeltklikk i «I denne scenen»; zoomknapper og zoomnivåer.
-- Enkle symboler for alle ressurser (fylt form, egen farge), også for lag uten bilde.
-- Store bilder får nedskalert arbeidskopi; originalen beholdes; forbilder kan sendes i full størrelse.
-- Bildedialogen: husker siste beskrivelse, bildestørrelse, stor visning med zoom og beskrivelsen
-  per bilde («Sett inn denne beskrivelsen»), sletting av bilder.
-- Bildebeskrivelser bygger på manusets omtale av ressursen.
-- Speilvending av lag og i frileggingen; tegning med farge i frileggingen.
-- «Slettede objekter»: hent inn igjen eller slett for godt (eieren).
-- Dialog med AI-stemmer: lydstatus per replikk, stemme og stemmebruk per karakter, avspilling og prøve.
-- Eksempeltekster fra «Jula på Dovre» i brukerflaten byttet ut; «Fra scene til scene» i eksporten
-  holder seg i kolonnen.
+Bekreftet av Mars: Nano Banana Pro med fire bilder virker (KI-189 løst).
+Scene og manus:
+- Dra i skillet mellom lagnavn og tidslinje; bredden huskes.
+- «Nullstill format» ved skalering (behold bredde eller høyde); sidehåndtak for skvis og strekk (Alt: begge sider).
+- Speilvending «fra her», glidende eller brått, tweenes mellom nøkkelbilder.
+- Advarsel når et bilde vises større enn sine egne piksler, med «Oppskaler bildet …».
+- «Vis kun valgt scene» viser scenen uten ark, toppjustert; «Sort tekst på hvit bakgrunn».
+Bilder:
+- Stor visning: «Tilpass» som standard (feilen med 100 % rettet), dobbeltklikk på bilder i bildevalget.
+- Bildeverktøy: frilegg, fjern luften rundt, utsnitt med fri markering (til eksisterende eller nytt objekt),
+  del opp i ruter, vinkel på bildet, «Lag andre vinkler» (ark eller én per vinkel), oppskaler.
+- Frileggingen kan zoomes og flyttes, og fjerner luften rundt figuren når den lagres.
+- Lenke fra bildevalget til «Filmens visuelle stil», åpnet oppå, med vei tilbake.
+AI:
+- Promptmotor: én bestilling skrevet om per modell (fortellende for Nano Banana/GPT Image, kort med
+  identiteten først og negativ beskrivelse for Seedream/Qwen/FLUX), uten filmtittel og replikker,
+  nøytralt lys for figurer, farger med navn; norsk oppsummering over beskrivelsen.
+- Stilanalyse av forbildebildene; visuelt faktaark per ressurs fra manuset.
+- Seedream 4.5 og Qwen-Image-Edit via fal.ai; oppskalering med SeedVR2 eller Clarity.
 
-Krav: REQ-0565 REQ-0589 REQ-0590 REQ-0593–REQ-0609
+Norsk og engelsk (DEC-0081):
+- Språkvalg (Norsk/English) på hovedsiden og NO/EN i toppfeltet; valget huskes i nettleseren.
+- Hele grensesnittet oversatt: knapper, menyer, dialoger, meldinger, verktøytips, skjermlesertekster,
+  datoer og tall. Brukerens innhold og manusets formatord oversettes ikke. Venter på språkvask (KI-198).
+- Meldinger fra serveren oversettes i nettleseren (katalog laget av tekstparene).
+- Regel for all videre utvikling: tekst på begge språk; kontrollen scripts/i18n/check.mjs kjører i testene.
+Prosjektlisten (DEC-0082):
+- Én boks per prosjekt med eier, din rolle, medlemmer og dato.
+- Hovedfilm med spinoffer, trailere og andre varianter under, med type, dato og notat; klikk åpner varianten.
+- Notat om hva hver produksjon er: skrives når den lages og endres på prosjektoversikten (migrasjon 0031).
+
+Krav: REQ-0603 REQ-0610–REQ-0632

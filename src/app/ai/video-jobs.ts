@@ -18,6 +18,7 @@ import { pumpProjectQueue } from "@/adapters/ai/queue.functions";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { projectStateKey } from "@/app/project/use-project";
 import { fetchProjectState } from "@/adapters/browser/project-data";
+import { L } from "@/core";
 import { signedUrls } from "@/app/library/asset-images";
 import { readFilmMetadata } from "@/app/assembly/film-import";
 import { aiJobsKey, useAiJobs } from "./use-ai-jobs";
@@ -113,15 +114,25 @@ async function claimVideoOnce(
   cmds: Commands,
   job: GenerationJob,
 ): Promise<string | null> {
-  if (!job.resultPath || !job.occurrenceId) return "Jobben har ingen video.";
+  if (!job.resultPath || !job.occurrenceId)
+    return L("Jobben har ingen video.", "The job has no video.");
   const now = cmds.current() ?? state;
   if (Object.values(now.takes).some((t) => t.mediaRef === job.resultPath)) return null;
-  if (!now.occurrences[job.occurrenceId]) return "Scenen finnes ikke lenger.";
+  if (!now.occurrences[job.occurrenceId])
+    return L("Scenen finnes ikke lenger.", "The scene no longer exists.");
   const urls = await signedUrls([job.resultPath], 600);
   const url = urls[job.resultPath];
-  if (!url) return "Videoen kunne ikke hentes fra lagringen.";
+  if (!url)
+    return L(
+      "Videoen kunne ikke hentes fra lagringen.",
+      "The video could not be fetched from storage.",
+    );
   const res = await fetch(url);
-  if (!res.ok) return `Videoen kunne ikke hentes (${res.status}).`;
+  if (!res.ok)
+    return L(
+      `Videoen kunne ikke hentes (${res.status}).`,
+      `The video could not be fetched (${res.status}).`,
+    );
   const blob = await res.blob();
   const file = new File([blob], `AI-video (${job.provider}).mp4`, {
     type: blob.type || "video/mp4",
@@ -130,7 +141,10 @@ async function claimVideoOnce(
   try {
     media = await readFilmMetadata(file);
   } catch (e) {
-    return `Videoen kunne ikke leses: ${(e as Error).message}`;
+    return L(
+      `Videoen kunne ikke leses: ${(e as Error).message}`,
+      `The video could not be read: ${(e as Error).message}`,
+    );
   }
   // Siste bilde til neste segment (REQ-0263); feil her stopper ikke innleggingen
   void storeLastFrame(job.resultPath, blob).catch(() => null);
@@ -150,7 +164,7 @@ async function claimVideoOnce(
       mediaRef: job.resultPath,
       media,
     },
-    `AI-video (${job.provider}) som ny versjon`,
+    L(`AI-video (${job.provider}) som ny versjon`, `AI video (${job.provider}) as new version`),
   );
   if (r.error && (cmds.current() ?? now).takes[takeId as never]) return null;
   return r.error ?? null;

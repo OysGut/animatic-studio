@@ -10,6 +10,7 @@ import {
   AUDIO_KIND_LABEL,
   AUDIO_TRACK_ORDER,
   fpsToNumber,
+  L,
   type AudioKind,
   type FilmAudioItem,
   type FilmClip,
@@ -214,7 +215,7 @@ export function AudioTracks({
   }
 
   return (
-    <div role="group" aria-label="Lydspor">
+    <div role="group" aria-label={L("Lydspor", "Audio tracks")}>
       {AUDIO_TRACK_ORDER.map((kind) => {
         const list = byKind.get(kind) ?? [];
         const ln = lanes(list);
@@ -235,9 +236,15 @@ export function AudioTracks({
                 onClick={() => onToggleMute(kind)}
                 aria-pressed={muted}
                 aria-label={
-                  muted ? `Slå på ${AUDIO_KIND_LABEL[kind]}` : `Demp ${AUDIO_KIND_LABEL[kind]}`
+                  muted
+                    ? L(`Slå på ${AUDIO_KIND_LABEL[kind]}`, `Turn on ${AUDIO_KIND_LABEL[kind]}`)
+                    : L(`Demp ${AUDIO_KIND_LABEL[kind]}`, `Mute ${AUDIO_KIND_LABEL[kind]}`)
                 }
-                title={muted ? "Slå på lyden i sporet" : "Demp sporet (også i eksporten)"}
+                title={
+                  muted
+                    ? L("Slå på lyden i sporet", "Turn on the sound in the track")
+                    : L("Demp sporet (også i eksporten)", "Mute the track (also in the export)")
+                }
                 className={
                   "rounded-sm p-0.5 hover:bg-surface-3 " +
                   (muted ? "text-status-danger" : "text-text-tertiary hover:text-text-primary")
@@ -249,8 +256,14 @@ export function AudioTracks({
                 <button
                   type="button"
                   onClick={() => onAdd(kind)}
-                  aria-label={`Legg til ${AUDIO_KIND_LABEL[kind].toLocaleLowerCase("nb")}`}
-                  title="Legg til lyd her (ved avspillingshodet)"
+                  aria-label={L(
+                    `Legg til ${AUDIO_KIND_LABEL[kind].toLocaleLowerCase("nb")}`,
+                    `Add ${AUDIO_KIND_LABEL[kind].toLocaleLowerCase("en")}`,
+                  )}
+                  title={L(
+                    "Legg til lyd her (ved avspillingshodet)",
+                    "Add sound here (at the playhead)",
+                  )}
                   className="rounded-sm p-0.5 text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
                 >
                   <Plus className="size-3.5" />
@@ -348,21 +361,29 @@ const AudioBlock = memo(function AudioBlock({
   const color = c.continues ? "var(--accent-warm)" : AUDIO_KIND_COLOR[c.kind];
   const missing = item.version === null;
   const failed = item.version ? audioBank.hasFailed(item.version.mediaPath) : false;
-  const label = c.name || "Lyd";
+  const label = c.name || L("Lyd", "Sound");
   const edge = Math.min(6, Math.floor(width / 4));
   return (
     <div
       role="button"
       tabIndex={selected ? 0 : -1}
       aria-pressed={selected}
-      aria-label={`${label}, ${formatSeconds(length)}${c.continues ? ", løper videre" : ""}${c.muted ? ", dempet" : ""}${
-        blockText ? `, replikk: ${blockText.slice(0, 60)}` : ""
+      aria-label={`${label}, ${formatSeconds(length)}${c.continues ? L(", løper videre", ", continues") : ""}${c.muted ? L(", dempet", ", muted") : ""}${
+        blockText ? `${L(", replikk", ", line")}: ${blockText.slice(0, 60)}` : ""
       }`}
       title={`${label}\n${formatSeconds(length)}${
-        blockText ? `\nReplikk: ${blockText.slice(0, 120)}` : ""
-      }${missing ? "\nLydfilen mangler" : failed ? "\nLydfilen kunne ikke leses" : ""}${
-        c.continues ? "\nLøper videre over flere scener" : ""
-      }${editable ? "\nDra for å flytte, dra i kantene for å kutte" : ""}\nDobbeltklikk for lydprofil og volumpunkter`}
+        blockText ? `\n${L("Replikk", "Line")}: ${blockText.slice(0, 120)}` : ""
+      }${
+        missing
+          ? `\n${L("Lydfilen mangler", "The sound file is missing")}`
+          : failed
+            ? `\n${L("Lydfilen kunne ikke leses", "The sound file could not be read")}`
+            : ""
+      }${c.continues ? `\n${L("Løper videre over flere scener", "Continues over several scenes")}` : ""}${
+        editable
+          ? `\n${L("Dra for å flytte, dra i kantene for å kutte", "Drag to move, drag the edges to trim")}`
+          : ""
+      }\n${L("Dobbeltklikk for lydprofil og volumpunkter", "Double-click for the sound profile and volume points")}`}
       onPointerDown={(e) => onDown(e, item, "move")}
       onPointerMove={onMove}
       onPointerUp={onUp}

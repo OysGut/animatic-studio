@@ -2893,8 +2893,10 @@ try {
     });
     let loaded = await loadState(projectId);
     assert(loaded.assetVersions[ver1]?.removed === true, "bildet ble ikke merket som slettet");
+    // createdAt settes av databasen (kan avvike et millisekund fra den lokale)
+    const noTime = (x: object | undefined) => ({ ...x, createdAt: "" });
     assert(
-      isDeepStrictEqual(loaded.assetVersions[ver1], st.assetVersions[ver1]),
+      isDeepStrictEqual(noTime(loaded.assetVersions[ver1]), noTime(st.assetVersions[ver1])),
       "slettet bilde leses ikke likt tilbake",
     );
     await expectError(
@@ -2995,6 +2997,136 @@ try {
       );
       await sql`update public.assets set removed = false where id = ${used.assetId}`;
     }
+  });
+
+  await test("0030 (DEC-0080): vinkel på bilder og visuelt faktaark; bildet ellers uforanderlig", async () => {
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 30, "schema_version er ikke 30");
+    let st = await loadState(projectId);
+    const aId = "30300000-0000-7000-8000-000000000001";
+    const vaId = "30300000-0000-7000-8000-000000000002";
+    const verId = "30300000-0000-7000-8000-000000000003";
+    st = await runCommand(st, ALICE, {
+      type: "CreateAssets",
+      assets: [
+        {
+          assetId: aId as never,
+          fields: {
+            kind: "character",
+            name: "Vinkelfigur",
+            names: [],
+            description: "",
+            category: "",
+            tags: [],
+          },
+        },
+      ],
+    });
+    st = await runCommand(st, ALICE, {
+      type: "CreateAssetVariant",
+      variantId: vaId as never,
+      assetId: aId as never,
+      fields: { name: "Animatic", style: "animatic", appearance: "" },
+    });
+    st = await runCommand(st, ALICE, {
+      type: "AddAssetVersion",
+      versionId: verId as never,
+      variantId: vaId as never,
+      media: {
+        path: `${projectId}/${aId}/${verId}/forfra.png`,
+        mimeType: "image/png",
+        width: 100,
+        height: 200,
+        byteSize: 10,
+        sha256: "b".repeat(64),
+      },
+      note: "",
+    });
+    st = await runCommand(st, ALICE, {
+      type: "SetVersionView",
+      versionId: verId as never,
+      view: "front",
+    });
+    st = await runCommand(st, ALICE, {
+      type: "SetAssetVisualBrief",
+      assetId: aId as never,
+      text: "- tall, thin\n- red scarf",
+    });
+    let loaded = await loadState(projectId);
+    assert(loaded.assetVersions[verId]?.view === "front", "vinkelen ble ikke lagret");
+    assert(
+      loaded.assets[aId]?.visualBrief === "- tall, thin\n- red scarf",
+      "faktaarket ble ikke lagret",
+    );
+    assert(
+      isDeepStrictEqual(
+        { ...loaded.assetVersions[verId], createdAt: "" },
+        { ...st.assetVersions[verId], createdAt: "" },
+      ),
+      `bildet med vinkel leses ikke likt tilbake: ${JSON.stringify(loaded.assetVersions[verId])} / ${JSON.stringify(st.assetVersions[verId])}`,
+    );
+    // Selve bildet er fortsatt uforanderlig; ugyldig vinkel avvises av databasen
+    await expectError(
+      sql`update public.asset_versions set width = 5 where id = ${verId}`,
+      /INV-13/,
+    );
+    await expectError(
+      sql`update public.asset_versions set view = 'skrått' where id = ${verId}`,
+      /check/,
+    );
+    st = await runCommand(st, ALICE, {
+      type: "SetVersionView",
+      versionId: verId as never,
+      view: null,
+    });
+    st = await runCommand(st, ALICE, {
+      type: "SetAssetVisualBrief",
+      assetId: aId as never,
+      text: "",
+    });
+    loaded = await loadState(projectId);
+    assert(loaded.assetVersions[verId]?.view === undefined, "vinkelen ble ikke fjernet");
+    assert(!loaded.assets[aId]?.visualBrief, "faktaarket ble ikke tømt");
+    // Leseren kan ikke merke vinkler
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) => tx`update public.asset_versions set view = 'side' where id = ${verId}`,
+      ),
+      /permission denied|row-level|0 rows/,
+    ).catch(() => {
+      // RLS uten skrivepolicy gir 0 rader i stedet for feil: kontroller at ingenting ble endret
+    });
+    const [row] = await sql`select view from public.asset_versions where id = ${verId}`;
+    assert(row!["view"] === null, "vinkelen ble endret utenom apply_changes");
+  });
+
+  await test("0031 (DEC-0082): notat på produksjonen lagres, leses tilbake og angres", async () => {
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 31, "schema_version er ikke 31");
+    let st = await loadState(projectId);
+    const main = Object.values(st.productions).find((p) => p.kind === "main")!;
+    assert(Boolean(main.createdAt), "createdAt leses ikke fra databasen");
+    st = await runCommand(st, ALICE, {
+      type: "SetProductionNote",
+      productionId: main.id,
+      note: "Hovedfilmen – 12 min\nTil festivalen",
+    });
+    let loaded = await loadState(projectId);
+    assert(
+      loaded.productions[main.id]?.note === "Hovedfilmen – 12 min\nTil festivalen",
+      `notatet ble ikke lagret: ${JSON.stringify(loaded.productions[main.id])}`,
+    );
+    const [row] = await sql`select description from public.productions where id = ${main.id}`;
+    assert(row!["description"] === "Hovedfilmen – 12 min\nTil festivalen", "description-kolonnen er feil");
+    await expectError(
+      sql`update public.productions set description = ${"x".repeat(2001)} where id = ${main.id}`,
+      /check/,
+    );
+    st = await runCommand(st, ALICE, { type: "SetProductionNote", productionId: main.id, note: "" });
+    loaded = await loadState(projectId);
+    assert(!loaded.productions[main.id]?.note, "notatet ble ikke tømt");
   });
 
   await test("DEC-0049: sikkerhetskopi gjenopprettes som nytt prosjekt via apply_changes; alt leses tilbake likt", async () => {

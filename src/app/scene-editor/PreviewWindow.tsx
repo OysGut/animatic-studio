@@ -12,7 +12,7 @@
 import { ExternalLink, PanelBottomClose, X } from "lucide-react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { renderFrame, type Composition, type ProjectState } from "@/core";
+import { renderFrame, type Composition, type ProjectState, L } from "@/core";
 import { ImageCache, drawFrame } from "@/engine/compositor/canvas";
 import { storedNumber, usePaneSize, useStoredNumber } from "@/app/shell/pane-size";
 
@@ -29,7 +29,8 @@ function onImageLoad(l: () => void) {
 
 /** Zoomnivåer i prosent. 0 = «Tilpass». */
 const PREVIEW_ZOOMS = [0, 25, 50, 100, 200] as const;
-const zoomLabel = (z: number) => (z === 0 ? "Tilpass" : z === 100 ? "1:1 (100 %)" : `${z} %`);
+const zoomLabel = (z: number) =>
+  z === 0 ? L("Tilpass", "Fit") : z === 100 ? "1:1 (100 %)" : `${z} %`;
 const HEADER = 28;
 const MARGIN = 8;
 const MIN_W = 160;
@@ -101,7 +102,7 @@ function PreviewCanvas({
     <canvas
       ref={canvasRef}
       role="img"
-      aria-label="Bildet slik det blir i filmen"
+      aria-label={L("Bildet slik det blir i filmen", "The image as it will be in the film")}
       style={{ width: cssWidth, height: cssHeight, display: "block", flex: "none" }}
       className="bg-black"
     />
@@ -121,13 +122,16 @@ function ZoomSelect({
     <select
       value={zoom}
       onChange={(e) => onZoom(Number(e.target.value))}
-      aria-label="Zoom i forhåndsvisningen"
-      title="Zoom: «Tilpass» følger vinduets størrelse, 1:1 viser ett bildepunkt per skjermpunkt"
+      aria-label={L("Zoom i forhåndsvisningen", "Zoom in the preview")}
+      title={L(
+        "Zoom: «Tilpass» følger vinduets størrelse, 1:1 viser ett bildepunkt per skjermpunkt",
+        "Zoom: “Fit” follows the window size, 1:1 shows one image pixel per screen pixel",
+      )}
       className="h-5 rounded-sm border border-border-control bg-surface-3 px-1 text-[11px] text-text-secondary"
     >
       {PREVIEW_ZOOMS.map((z) => (
         <option key={z} value={z}>
-          {z === 0 ? `Tilpass (${fitPercent} %)` : zoomLabel(z)}
+          {z === 0 ? L(`Tilpass (${fitPercent} %)`, `Fit (${fitPercent} %)`) : zoomLabel(z)}
         </option>
       ))}
     </select>
@@ -141,6 +145,15 @@ const iconButton = "rounded-sm p-0.5 text-text-tertiary hover:text-text-primary"
 /* ------------------------------------------------------------------------------------------------ */
 
 type Corner = "nw" | "ne" | "sw" | "se";
+
+const cornerName = (c: Corner) =>
+  c === "nw"
+    ? L("oppe til venstre", "top left")
+    : c === "ne"
+      ? L("oppe til høyre", "top right")
+      : c === "sw"
+        ? L("nede til venstre", "bottom left")
+        : L("nede til høyre", "bottom right");
 
 export function PreviewWindow({
   onPopOut,
@@ -235,16 +248,16 @@ export function PreviewWindow({
   const win = (
     <div
       role="region"
-      aria-label="Forhåndsvisning av ferdig utsnitt"
+      aria-label={L("Forhåndsvisning av ferdig utsnitt", "Preview of the finished shot")}
       style={{ left: x, top: y, width: w, visibility: area ? "visible" : "hidden" }}
       className="fixed z-40 flex flex-col rounded-md border border-border bg-surface-1 shadow-[var(--shadow-float)]"
     >
       <div
         className="flex shrink-0 cursor-move touch-none select-none items-center gap-1.5 border-b border-border px-2"
         style={{ height: HEADER }}
-        title="Dra for å flytte forhåndsvisningen"
+        title={L("Dra for å flytte forhåndsvisningen", "Drag to move the preview")}
         tabIndex={0}
-        aria-label="Flytt forhåndsvisningen (piltaster)"
+        aria-label={L("Flytt forhåndsvisningen (piltaster)", "Move the preview (arrow keys)")}
         onPointerDown={(e) => {
           if ((e.target as HTMLElement).closest("button,select")) return;
           e.preventDefault();
@@ -283,7 +296,7 @@ export function PreviewWindow({
         }}
       >
         <span className="truncate text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
-          Ferdig utsnitt
+          {L("Ferdig utsnitt", "Finished shot")}
         </span>
         {note ? (
           <span role="status" className="truncate text-[11px] text-text-secondary" title={note}>
@@ -296,8 +309,11 @@ export function PreviewWindow({
           type="button"
           onClick={onPopOut}
           className={iconButton}
-          aria-label="Åpne i eget vindu"
-          title="Åpne i eget vindu (kan flyttes til en annen skjerm)"
+          aria-label={L("Åpne i eget vindu", "Open in own window")}
+          title={L(
+            "Åpne i eget vindu (kan flyttes til en annen skjerm)",
+            "Open in own window (can be moved to another screen)",
+          )}
         >
           <ExternalLink className="size-3.5" aria-hidden />
         </button>
@@ -305,8 +321,8 @@ export function PreviewWindow({
           type="button"
           onClick={p.onClose}
           className={iconButton}
-          aria-label="Lukk forhåndsvisningen"
-          title="Lukk forhåndsvisningen"
+          aria-label={L("Lukk forhåndsvisningen", "Close the preview")}
+          title={L("Lukk forhåndsvisningen", "Close the preview")}
         >
           <X className="size-3.5" aria-hidden />
         </button>
@@ -319,12 +335,15 @@ export function PreviewWindow({
         <div
           key={c}
           role="separator"
-          aria-label={`Endre størrelse på forhåndsvisningen (hjørne ${c === "nw" ? "oppe til venstre" : c === "ne" ? "oppe til høyre" : c === "sw" ? "nede til venstre" : "nede til høyre"})`}
+          aria-label={`${L("Endre størrelse på forhåndsvisningen (hjørne", "Resize the preview (")} ${cornerName(c)})`}
           aria-valuenow={w}
           aria-valuemin={MIN_W}
           aria-valuemax={Math.round(maxW)}
           tabIndex={0}
-          title="Dra for å endre størrelse, dobbeltklikk for standard"
+          title={L(
+            "Dra for å endre størrelse, dobbeltklikk for standard",
+            "Drag to resize, double-click for the default size",
+          )}
           onPointerDown={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -423,7 +442,7 @@ function saveGeometry(w: Window) {
 }
 
 function copyStyles(to: Document) {
-  to.title = "Forhåndsvisning – Animatic Studio";
+  to.title = L("Forhåndsvisning – Animatic Studio", "Preview – Animatic Studio");
   to.documentElement.className = document.documentElement.className;
   for (const a of Array.from(document.documentElement.attributes))
     if (a.name.startsWith("data-") || a.name === "style")
@@ -647,7 +666,7 @@ export function PopoutPreview({
         style={{ height: HEADER }}
       >
         <span className="truncate text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
-          Ferdig utsnitt
+          {L("Ferdig utsnitt", "Finished shot")}
         </span>
         <span className="truncate text-[11px] text-text-tertiary">
           {composition.width} × {composition.height}
@@ -658,8 +677,11 @@ export function PopoutPreview({
           type="button"
           onClick={onDock}
           className={iconButton}
-          aria-label="Tilbake til redigeringsvinduet"
-          title="Legg forhåndsvisningen tilbake i redigeringsvinduet"
+          aria-label={L("Tilbake til redigeringsvinduet", "Back to the scene editor window")}
+          title={L(
+            "Legg forhåndsvisningen tilbake i redigeringsvinduet",
+            "Put the preview back in the scene editor window",
+          )}
         >
           <PanelBottomClose className="size-3.5" aria-hidden />
         </button>
@@ -667,8 +689,8 @@ export function PopoutPreview({
           type="button"
           onClick={p.onClose}
           className={iconButton}
-          aria-label="Lukk forhåndsvisningen"
-          title="Lukk forhåndsvisningen"
+          aria-label={L("Lukk forhåndsvisningen", "Close the preview")}
+          title={L("Lukk forhåndsvisningen", "Close the preview")}
         >
           <X className="size-3.5" aria-hidden />
         </button>

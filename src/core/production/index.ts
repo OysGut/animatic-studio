@@ -18,23 +18,24 @@ import { keyBetween, keysEvenly } from "../order-key";
 import { orderedOccurrences } from "../views";
 import { compositionOfVariant, layersOf } from "../composition/render";
 import { layerFieldsOf } from "../composition";
+import { collation, localized } from "../i18n";
 
-export const PRODUCTION_KIND_LABEL: Record<ProductionKind, string> = {
-  main: "Hovedfilm",
-  spinoff: "Spinoff",
-  trailer: "Trailer",
-  teaser: "Teaser",
-  short: "Kortfilm",
-  pitch: "Pitchfilm",
-  pilot: "Pilotsekvens",
-  alternative: "Alternativ fortelling",
-  other: "Annen versjon",
-};
+export const PRODUCTION_KIND_LABEL: Record<ProductionKind, string> = localized({
+  main: ["Hovedfilm", "Main film"],
+  spinoff: ["Spinoff", "Spin-off"],
+  trailer: ["Trailer", "Trailer"],
+  teaser: ["Teaser", "Teaser"],
+  short: ["Kortfilm", "Short film"],
+  pitch: ["Pitchfilm", "Pitch film"],
+  pilot: ["Pilotsekvens", "Pilot sequence"],
+  alternative: ["Alternativ fortelling", "Alternative story"],
+  other: ["Annen versjon", "Other version"],
+});
 
 /** Produksjonene sortert: hovedfilmen først, så etter navn. */
 export function sortedProductions(s: ProjectState): Production[] {
   return Object.values(s.productions).sort((a, b) =>
-    a.kind === "main" ? -1 : b.kind === "main" ? 1 : a.name.localeCompare(b.name, "nb"),
+    a.kind === "main" ? -1 : b.kind === "main" ? 1 : a.name.localeCompare(b.name, collation()),
   );
 }
 

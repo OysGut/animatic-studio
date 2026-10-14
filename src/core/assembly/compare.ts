@@ -4,6 +4,7 @@
  * Hver versjon får et eget klipp som bare viser den versjonen fra bilde 0, så samme tegning som i monteringen
  * (drawFilmFrame) kan brukes. Bare lesing: aktiv versjon endres ikke.
  */
+import { L, localized } from "../i18n";
 import type { ProjectState, Take } from "../model";
 import { msToFramesCeil, type Rational } from "../time";
 import { takeLabel } from "./edit";
@@ -17,13 +18,13 @@ import {
 
 export type VersionKind = "animatic" | "edit" | "imported_film" | "ai_video" | "still";
 
-export const VERSION_KIND_LABEL: Record<VersionKind, string> = {
-  animatic: "2D-animatic",
-  edit: "Klippet versjon",
-  imported_film: "Importert film",
-  ai_video: "AI-video",
-  still: "Stillbilde",
-};
+export const VERSION_KIND_LABEL: Record<VersionKind, string> = localized({
+  animatic: ["2D-animatic", "2D animatic"],
+  edit: ["Klippet versjon", "Edited version"],
+  imported_film: ["Importert film", "Imported film"],
+  ai_video: ["AI-video", "AI video"],
+  still: ["Stillbilde", "Still image"],
+});
 
 export interface ComparableVersion {
   /** Stabil nøkkel: «animatic», «edit» eller versjonens (take) id. */
@@ -97,7 +98,9 @@ export function comparableVersions(
   out.push({
     key: "animatic",
     kind: "animatic",
-    label: comp ? "Animatic (2D-scene)" : "Animatic (tittelkort)",
+    label: comp
+      ? L("Animatic (2D-scene)", "Animatic (2D scene)")
+      : L("Animatic (tittelkort)", "Animatic (title card)"),
     takeId: null,
     durationFrames: animFrames,
     createdAt: comp ? idCreatedAt(comp.id) : null,
@@ -127,7 +130,10 @@ export function comparableVersions(
     out.push({
       key: "edit",
       kind: "edit",
-      label: `Klippet versjon (${clip.parts.length} ${clip.parts.length === 1 ? "del" : "deler"})`,
+      label: L(
+        `Klippet versjon (${clip.parts.length} ${clip.parts.length === 1 ? "del" : "deler"})`,
+        `Edited version (${clip.parts.length} ${clip.parts.length === 1 ? "part" : "parts"})`,
+      ),
       takeId: null,
       durationFrames: clip.durationFrames,
       createdAt: times.at(-1) ?? null,

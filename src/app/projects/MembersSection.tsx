@@ -16,20 +16,27 @@ import {
 } from "@/adapters/browser/members";
 import type { MemberRow, ProfileRow } from "@/app/project/use-project";
 import { Button } from "@/components/ui/button";
+import { L, localized, locale, tm } from "@/core";
 
-const ROLE_LABEL: Record<string, string> = {
-  owner: "Eier",
-  editor: "Redaktør",
-  commenter: "Kommentator",
-  viewer: "Leser",
-};
+const ROLE_LABEL: Record<string, string> = localized({
+  owner: ["Eier", "Owner"],
+  editor: ["Redaktør", "Editor"],
+  commenter: ["Kommentator", "Commenter"],
+  viewer: ["Leser", "Viewer"],
+});
 
-const ROLE_HELP: Record<string, string> = {
-  owner: "Alt, også invitere, endre roller, godkjenne kostnader og slette prosjektet",
-  editor: "Kan endre manus, scener, bibliotek og film",
-  commenter: "Kan lese og skrive notater",
-  viewer: "Kan bare lese",
-};
+const ROLE_HELP: Record<string, string> = localized({
+  owner: [
+    "Alt, også invitere, endre roller, godkjenne kostnader og slette prosjektet",
+    "Everything, including inviting, changing roles, approving costs and deleting the project",
+  ],
+  editor: [
+    "Kan endre manus, scener, bibliotek og film",
+    "Can change script, scenes, library and film",
+  ],
+  commenter: ["Kan lese og skrive notater", "Can read and write notes"],
+  viewer: ["Kan bare lese", "Can only read"],
+});
 
 const select =
   "h-7 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary disabled:opacity-60";
@@ -55,14 +62,20 @@ function useInvitations(projectId: string, enabled: boolean) {
 function message(e: unknown): string {
   const m = e instanceof Error ? e.message : String(e);
   if (/function .*remove_member|could not find the function .*remove_member/i.test(m))
-    return "Databasen mangler fjerning av medlemmer. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0023.";
+    return L(
+      "Databasen mangler fjerning av medlemmer. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0023.",
+      "The database cannot remove members yet. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0023.",
+    );
   if (
     /function .*(set_member_role|set_invitation_role|revoke_invitation)|could not find the function/i.test(
       m,
     )
   )
-    return "Databasen mangler endring av roller. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0020.";
-  return m;
+    return L(
+      "Databasen mangler endring av roller. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0020.",
+      "The database cannot change roles yet. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0020.",
+    );
+  return tm(m);
 }
 
 export function MembersSection({
@@ -120,7 +133,7 @@ export function MembersSection({
   const busy = setRole.isPending || remove.isPending;
   return (
     <>
-      <ul className="border border-border bg-surface-1" aria-label="Medlemmer">
+      <ul className="border border-border bg-surface-1" aria-label={L("Medlemmer", "Members")}>
         {members.map((m) => {
           const self = m.user_id === userId;
           // Eneste eier kan ikke miste eierrollen (databasen stopper det også)
@@ -134,36 +147,44 @@ export function MembersSection({
                 {profiles?.[m.user_id]?.display_name || (
                   <span className="font-mono text-xs">{m.user_id.slice(0, 8)}</span>
                 )}
-                {self ? <span className="ml-2 text-text-tertiary">(deg)</span> : null}
+                {self ? (
+                  <span className="ml-2 text-text-tertiary">{L("(deg)", "(you)")}</span>
+                ) : null}
               </span>
               {isOwner && confirmRemove === m.user_id ? (
                 <span
                   role="alertdialog"
-                  aria-label={`Fjerne ${name(m.user_id)}?`}
+                  aria-label={L(`Fjerne ${name(m.user_id)}?`, `Remove ${name(m.user_id)}?`)}
                   className="flex items-center gap-2 text-xs text-text-secondary"
                 >
-                  Fjerne {name(m.user_id)} fra prosjektet? Det hen har laget, blir værende.
+                  {L(
+                    `Fjerne ${name(m.user_id)} fra prosjektet? Det hen har laget, blir værende.`,
+                    `Remove ${name(m.user_id)} from the project? Anything they have made will stay.`,
+                  )}
                   <Button
                     size="sm"
                     variant="destructive"
                     disabled={busy}
                     onClick={() => remove.mutate(m.user_id)}
                   >
-                    Fjern
+                    {L("Fjern", "Remove")}
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => setConfirmRemove(null)}>
-                    Avbryt
+                    {L("Avbryt", "Cancel")}
                   </Button>
                 </span>
               ) : isOwner ? (
                 <span className="flex items-center gap-2">
                   <select
-                    aria-label={`Rolle for ${name(m.user_id)}`}
+                    aria-label={L(`Rolle for ${name(m.user_id)}`, `Role for ${name(m.user_id)}`)}
                     value={m.role}
                     disabled={busy}
                     title={
                       lastOwner
-                        ? "Prosjektet må ha minst én eier. Gjør en annen til eier først."
+                        ? L(
+                            "Prosjektet må ha minst én eier. Gjør en annen til eier først.",
+                            "The project must have at least one owner. Make someone else the owner first.",
+                          )
                         : ROLE_HELP[m.role]
                     }
                     onChange={(e) => {
@@ -172,7 +193,10 @@ export function MembersSection({
                         self &&
                         m.role === "owner" &&
                         !window.confirm(
-                          `Vil du gjøre deg selv til ${ROLE_LABEL[role]?.toLowerCase()}? Da kan du ikke lenger endre roller.`,
+                          L(
+                            `Vil du gjøre deg selv til ${ROLE_LABEL[role]?.toLowerCase()}? Da kan du ikke lenger endre roller.`,
+                            `Do you want to make yourself ${ROLE_LABEL[role]?.toLowerCase()}? Then you can no longer change roles.`,
+                          ),
                         )
                       )
                         return;
@@ -192,8 +216,14 @@ export function MembersSection({
                       variant="ghost"
                       disabled={busy}
                       onClick={() => setConfirmRemove(m.user_id)}
-                      aria-label={`Fjern ${name(m.user_id)} fra prosjektet`}
-                      title="Fjern fra prosjektet (det personen har laget, blir værende)"
+                      aria-label={L(
+                        `Fjern ${name(m.user_id)} fra prosjektet`,
+                        `Remove ${name(m.user_id)} from the project`,
+                      )}
+                      title={L(
+                        "Fjern fra prosjektet (det personen har laget, blir værende)",
+                        "Remove from the project (anything they have made will stay)",
+                      )}
                     >
                       <UserMinus />
                     </Button>
@@ -211,9 +241,12 @@ export function MembersSection({
       {isOwner && (invitations.data?.length ?? 0) > 0 ? (
         <div className="mt-4">
           <h3 className="mb-1 text-xs font-medium text-text-secondary">
-            Invitert, ikke tatt imot ennå
+            {L("Invitert, ikke tatt imot ennå", "Invited, not yet accepted")}
           </h3>
-          <ul className="border border-border bg-surface-1" aria-label="Ventende invitasjoner">
+          <ul
+            className="border border-border bg-surface-1"
+            aria-label={L("Ventende invitasjoner", "Pending invitations")}
+          >
             {invitations.data!.map((inv) => (
               <li
                 key={inv.id}
@@ -222,29 +255,36 @@ export function MembersSection({
                 <span className="min-w-0 truncate text-text-secondary">
                   {inv.email}
                   <span className="ml-2 text-xs text-text-tertiary">
-                    gjelder til {new Date(inv.expires_at).toLocaleDateString("nb-NO")}
+                    {L("gjelder til", "valid until")}{" "}
+                    {new Date(inv.expires_at).toLocaleDateString(locale())}
                   </span>
                 </span>
                 <span className="flex items-center gap-2">
                   <select
-                    aria-label={`Rolle i invitasjonen til ${inv.email}`}
+                    aria-label={L(
+                      `Rolle i invitasjonen til ${inv.email}`,
+                      `Role in the invitation to ${inv.email}`,
+                    )}
                     value={inv.role}
                     disabled={setInvitationRole.isPending}
                     onChange={(e) => setInvitationRole.mutate({ id: inv.id, role: e.target.value })}
                     className={select}
                   >
-                    <option value="editor">Redaktør</option>
-                    <option value="commenter">Kommentator</option>
-                    <option value="viewer">Leser</option>
+                    <option value="editor">{L("Redaktør", "Editor")}</option>
+                    <option value="commenter">{L("Kommentator", "Commenter")}</option>
+                    <option value="viewer">{L("Leser", "Viewer")}</option>
                   </select>
                   <Button
                     size="sm"
                     variant="ghost"
                     disabled={revoke.isPending}
                     onClick={() => revoke.mutate(inv.id)}
-                    aria-label={`Trekk tilbake invitasjonen til ${inv.email}`}
+                    aria-label={L(
+                      `Trekk tilbake invitasjonen til ${inv.email}`,
+                      `Withdraw the invitation to ${inv.email}`,
+                    )}
                   >
-                    Trekk tilbake
+                    {L("Trekk tilbake", "Withdraw")}
                   </Button>
                 </span>
               </li>

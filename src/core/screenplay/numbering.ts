@@ -6,6 +6,7 @@ import type { ProjectState, SceneHeading } from "../model";
 import { orderedOccurrences, blocksOfVariant, sceneNumberOf } from "../views";
 import { formatHeading, type PaginationScene } from "./paginate";
 import { fountainMarksOf } from "./fountain";
+import { L } from "../i18n";
 
 export type NumberingMethod = "continuous" | "production" | "historical";
 
@@ -161,7 +162,7 @@ export function exportPaginationInput(
       return {
         occurrenceId: n.occurrenceId,
         number: n.exportNumber,
-        headingText: opts.omittedText ?? "UTGÅR",
+        headingText: opts.omittedText ?? L("UTGÅR", "OMITTED"),
         blocks: [],
       };
     }
@@ -171,7 +172,10 @@ export function exportPaginationInput(
           {
             id: `${n.occurrenceId}:deaktivert`,
             kind: "note" as const,
-            text: "[DEAKTIVERT SCENE – IKKE MED I FILMEN]",
+            text: L(
+              "[DEAKTIVERT SCENE – IKKE MED I FILMEN]",
+              "[DEACTIVATED SCENE – NOT IN THE FILM]",
+            ),
           },
         ]
       : [];

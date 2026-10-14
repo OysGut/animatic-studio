@@ -3,6 +3,7 @@
  * Egen modul uten tunge importer (brukes av kommandoene).
  */
 import type { StyleUse, ProjectState, StyleGuide, StyleProfile } from "../model";
+import { L, localized } from "../i18n";
 
 export const STYLE_TEXT_FIELDS = [
   "premise",
@@ -56,22 +57,32 @@ const HEX = /^#[0-9a-f]{6}$/i;
 
 /** Feilmelding eller null. */
 export function styleGuideError(g: StyleGuide): string | null {
-  if (!g || typeof g !== "object" || g.version !== 1) return "Ugyldig stilprofil";
+  if (!g || typeof g !== "object" || g.version !== 1)
+    return L("Ugyldig stilprofil", "Invalid style profile");
   const allowed = new Set<string>([
     ...STYLE_TEXT_FIELDS,
     "version",
     "palette",
     "referenceVersionIds",
   ]);
-  for (const k of Object.keys(g)) if (!allowed.has(k)) return "Ukjent felt i stilprofilen";
+  for (const k of Object.keys(g))
+    if (!allowed.has(k))
+      return L("Ukjent felt i stilprofilen", "Unknown field in the style profile");
   for (const k of STYLE_TEXT_FIELDS) {
     const v = g[k];
-    if (typeof v !== "string") return "Ugyldig tekst i stilprofilen";
+    if (typeof v !== "string")
+      return L("Ugyldig tekst i stilprofilen", "Invalid text in the style profile");
     if (v.length > STYLE_FIELD_LIMIT)
-      return `Teksten er for lang (maks ${STYLE_FIELD_LIMIT} tegn per felt)`;
+      return L(
+        `Teksten er for lang (maks ${STYLE_FIELD_LIMIT} tegn per felt)`,
+        `The text is too long (maximum ${STYLE_FIELD_LIMIT} characters per field)`,
+      );
   }
   if (styleGuideLength(g) > STYLE_TOTAL_LIMIT)
-    return `Stilen er for lang til å få plass i beskrivelsen (maks ${STYLE_TOTAL_LIMIT} tegn til sammen)`;
+    return L(
+      `Stilen er for lang til å få plass i beskrivelsen (maks ${STYLE_TOTAL_LIMIT} tegn til sammen)`,
+      `The style is too long to fit in the description (maximum ${STYLE_TOTAL_LIMIT} characters in total)`,
+    );
   const p = g.palette;
   if (
     !p ||
@@ -83,14 +94,14 @@ export function styleGuideError(g: StyleGuide): string | null {
     typeof p.description !== "string" ||
     p.description.length > STYLE_FIELD_LIMIT
   )
-    return "Ugyldig fargepalett";
+    return L("Ugyldig fargepalett", "Invalid colour palette");
   if (
     !Array.isArray(g.referenceVersionIds) ||
     g.referenceVersionIds.length > 12 ||
     g.referenceVersionIds.some((x) => typeof x !== "string" || x.length > 64) ||
     new Set(g.referenceVersionIds).size !== g.referenceVersionIds.length
   )
-    return "Ugyldige forbildebilder (høyst 12)";
+    return L("Ugyldige forbildebilder (høyst 12)", "Invalid reference images (at most 12)");
   return null;
 }
 
@@ -106,17 +117,17 @@ export const STYLE_USES: readonly StyleUse[] = [
   "ai_video",
 ];
 
-export const STYLE_USE_LABEL: Record<StyleUse, string> = {
-  character: "Karakterer",
-  animal: "Dyr",
-  object: "Objekter og rekvisitter",
-  location: "Steder",
-  environment: "Miljøer",
-  other: "Annet",
-  poster: "Plakater",
-  animatic: "2D-animatic",
-  ai_video: "AI-video",
-};
+export const STYLE_USE_LABEL: Record<StyleUse, string> = localized({
+  character: ["Karakterer", "Characters"],
+  animal: ["Dyr", "Animals"],
+  object: ["Objekter og rekvisitter", "Objects and props"],
+  location: ["Steder", "Locations"],
+  environment: ["Miljøer", "Environments"],
+  other: ["Annet", "Other"],
+  poster: ["Plakater", "Posters"],
+  animatic: ["2D-animatic", "2D animatic"],
+  ai_video: ["AI-video", "AI video"],
+});
 
 /**
  * Stilprofilen som gjelder for en bruk (REQ-0148, DEC-0071): profilen som er valgt for akkurat dette, ellers

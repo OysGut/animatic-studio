@@ -10,6 +10,7 @@
  *   er en serverhemmelighet (versjon 1). Byttes hovednøkkelen, må nøklene legges inn på nytt.
  * - Klartekstnøkkelen returneres aldri til nettleseren, logges aldri og lagres ikke andre steder.
  */
+import { L } from "@/core";
 
 const enc = new TextEncoder();
 
@@ -28,10 +29,21 @@ function unb64(s: string): Uint8Array {
 async function masterKey(version: number): Promise<CryptoKey> {
   if (version === 2) {
     const raw = process.env["ANIMATIC_KEY_ENCRYPTION_KEY"];
-    if (!raw) throw new Error("Hovednøkkelen (ANIMATIC_KEY_ENCRYPTION_KEY) mangler på serveren.");
+    if (!raw)
+      throw new Error(
+        L(
+          "Hovednøkkelen (ANIMATIC_KEY_ENCRYPTION_KEY) mangler på serveren.",
+          "The master key (ANIMATIC_KEY_ENCRYPTION_KEY) is missing on the server.",
+        ),
+      );
     const bytes = unb64(raw.trim());
     if (bytes.length !== 32)
-      throw new Error("ANIMATIC_KEY_ENCRYPTION_KEY må være 32 byte (base64).");
+      throw new Error(
+        L(
+          "ANIMATIC_KEY_ENCRYPTION_KEY må være 32 byte (base64).",
+          "ANIMATIC_KEY_ENCRYPTION_KEY must be 32 bytes (base64).",
+        ),
+      );
     return crypto.subtle.importKey("raw", bytes as unknown as ArrayBuffer, "AES-GCM", false, [
       "encrypt",
       "decrypt",
@@ -39,7 +51,8 @@ async function masterKey(version: number): Promise<CryptoKey> {
   }
   if (version === 1) {
     const secret = process.env["SUPABASE_SERVICE_ROLE_KEY"];
-    if (!secret) throw new Error("Serverhemmeligheten mangler.");
+    if (!secret)
+      throw new Error(L("Serverhemmeligheten mangler.", "The server secret is missing."));
     const base = await crypto.subtle.importKey("raw", enc.encode(secret), "HKDF", false, [
       "deriveKey",
     ]);
@@ -56,7 +69,7 @@ async function masterKey(version: number): Promise<CryptoKey> {
       ["encrypt", "decrypt"],
     );
   }
-  throw new Error("Ukjent nøkkelversjon.");
+  throw new Error(L("Ukjent nøkkelversjon.", "Unknown key version."));
 }
 
 /** Versjonen nye nøkler krypteres med. */
@@ -101,7 +114,10 @@ export async function decryptKey(
   } catch {
     // Ikke detaljer (ingen hjelp til en angriper); brukeren legger inn nøkkelen på nytt
     throw new Error(
-      "Nøkkelen kunne ikke låses opp (hovednøkkelen på serveren er byttet). Legg inn nøkkelen på nytt.",
+      L(
+        "Nøkkelen kunne ikke låses opp (hovednøkkelen på serveren er byttet). Legg inn nøkkelen på nytt.",
+        "The key could not be unlocked (the master key on the server has been changed). Enter the key again.",
+      ),
     );
   }
 }

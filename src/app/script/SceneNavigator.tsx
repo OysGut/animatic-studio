@@ -10,8 +10,11 @@ import {
   HIT_LABEL,
   STORY_KIND_LABEL,
   SCENE_STATUS_LABEL,
+  collation,
   formatHeading,
   keyBetween,
+  L,
+  localized,
   type HitKind,
   orderedOccurrences,
   type ProjectState,
@@ -23,13 +26,13 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { uncertainVariants } from "./script-helpers";
 
-const ASSET_KIND_SHORT: Record<string, string> = {
-  animal: "dyr",
-  object: "objekt",
-  location: "sted",
-  environment: "miljø",
-  other: "annet",
-};
+const ASSET_KIND_SHORT: Record<string, string> = localized({
+  animal: ["dyr", "animal"],
+  object: ["objekt", "object"],
+  location: ["sted", "location"],
+  environment: ["miljø", "environment"],
+  other: ["annet", "other"],
+});
 
 /** Valg i karakterfilteret: fra biblioteket (alle navn) eller et navn i manuset. */
 export interface CharacterOption {
@@ -107,7 +110,7 @@ export function SceneNavigator({
   // Objekter, rekvisitter, dyr og steder i biblioteket (karakterene har eget filter over)
   const filterAssets = Object.values(state.assets)
     .filter((a) => !a.archived && a.kind !== "sound" && a.kind !== "character")
-    .sort((a, b) => a.name.localeCompare(b.name, "nb"));
+    .sort((a, b) => a.name.localeCompare(b.name, collation()));
   const uncertainSet = new Set(occs.filter((o) => uncertain.has(o.variantId)).map((o) => o.id));
 
   // Listen følger manuset når du blar (uten å flytte fokus eller endre valget)
@@ -133,7 +136,14 @@ export function SceneNavigator({
     const before = index > 0 ? (occs[index - 1]?.orderKey ?? null) : null;
     const after = occs[index]?.orderKey ?? null;
     const o = occs[from]!;
-    onMove(id, keyBetween(before, after), `Flytt scene ${sceneNumberOf(state, o) ?? ""}`.trim());
+    onMove(
+      id,
+      keyBetween(before, after),
+      L(
+        `Flytt scene ${sceneNumberOf(state, o) ?? ""}`,
+        `Move scene ${sceneNumberOf(state, o) ?? ""}`,
+      ).trim(),
+    );
   }
 
   function onDrop(e: DragEvent) {
@@ -162,11 +172,17 @@ export function SceneNavigator({
   return (
     <div className="flex min-h-0 flex-col">
       <div className="flex h-8 shrink-0 items-center justify-between border-b border-border px-3 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
-        <span>Scener</span>
+        <span>{L("Scener", "Scenes")}</span>
         <span className="tabular normal-case tracking-normal">
           {visible
-            ? `${occs.length} av ${allOccs.length} vises`
-            : `${allOccs.filter((o) => o.active).length} aktive av ${allOccs.length}`}
+            ? L(
+                `${occs.length} av ${allOccs.length} vises`,
+                `${occs.length} of ${allOccs.length} shown`,
+              )
+            : L(
+                `${allOccs.filter((o) => o.active).length} aktive av ${allOccs.length}`,
+                `${allOccs.filter((o) => o.active).length} active of ${allOccs.length}`,
+              )}
         </span>
       </div>
       {editable ? (
@@ -177,19 +193,25 @@ export function SceneNavigator({
           }
         >
           <label className="flex items-center justify-between gap-2 text-xs text-text-secondary">
-            <span>Endre rekkefølge og synlighet</span>
+            <span>{L("Endre rekkefølge og synlighet", "Change order and visibility")}</span>
             <Switch
               checked={structureEditing}
               onCheckedChange={onStructureEditingChange}
-              aria-label="Endre rekkefølge og synlighet"
+              aria-label={L("Endre rekkefølge og synlighet", "Change order and visibility")}
               className="scale-75"
             />
           </label>
           {structureEditing ? (
             <p className="text-[11px] text-text-tertiary">
               {visible
-                ? "Fjern filteret for å flytte scener. Synlighet kan endres."
-                : "Dra scener for å flytte dem (eller Alt + pil). Bryteren til høyre slår en scene av og på."}
+                ? L(
+                    "Fjern filteret for å flytte scener. Synlighet kan endres.",
+                    "Remove the filter to move scenes. Visibility can be changed.",
+                  )
+                : L(
+                    "Dra scener for å flytte dem (eller Alt + pil). Bryteren til høyre slår en scene av og på.",
+                    "Drag scenes to move them (or Alt + arrow). The switch on the right turns a scene on and off.",
+                  )}
             </p>
           ) : null}
         </div>
@@ -197,8 +219,11 @@ export function SceneNavigator({
       {moved && movedCount > 0 ? (
         <div className="flex shrink-0 items-center gap-1.5 border-b border-border px-3 py-1.5 text-[11px] text-text-secondary">
           <span className="size-2.5 rounded-sm bg-status-moved" aria-hidden />
-          {movedCount === 1 ? "1 scene" : `${movedCount} scener`} flyttet siden{" "}
-          {movedBaseline ?? "siste versjon"}
+          {movedCount === 1
+            ? L("1 scene", "1 scene")
+            : L(`${movedCount} scener`, `${movedCount} scenes`)}{" "}
+          {L("flyttet siden", "moved since")}{" "}
+          {movedBaseline ?? L("siste versjon", "the last version")}
         </div>
       ) : null}
       <div className="flex shrink-0 flex-col gap-1.5 border-b border-border px-2 py-2">
@@ -209,8 +234,11 @@ export function SceneNavigator({
           />
           <input
             type="search"
-            aria-label="Søk i manus"
-            placeholder="Søk i manus (tekst, sted, nummer)"
+            aria-label={L("Søk i manus", "Search the script")}
+            placeholder={L(
+              "Søk i manus (tekst, sted, nummer)",
+              "Search the script (text, location, number)",
+            )}
             value={filter.text ?? ""}
             onChange={(e) => onFilterChange({ ...filter, text: e.target.value })}
             className="h-7 w-full rounded-sm border border-border-control bg-surface-3 pl-7 pr-2 text-[13px] text-text-primary placeholder:text-text-tertiary"
@@ -218,7 +246,7 @@ export function SceneNavigator({
         </div>
         <div className="flex items-center gap-1.5">
           <select
-            aria-label="Vis bare scener med karakter"
+            aria-label={L("Vis bare scener med karakter", "Show only scenes with a character")}
             value={filter.character ?? ""}
             onChange={(e) => {
               const { character: _c, characterNames: _n, ...rest } = filter;
@@ -229,9 +257,9 @@ export function SceneNavigator({
             }}
             className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
           >
-            <option value="">Alle karakterer</option>
+            <option value="">{L("Alle karakterer", "All characters")}</option>
             {characters.some((c) => c.fromLibrary) ? (
-              <optgroup label="Fra ressursbiblioteket">
+              <optgroup label={L("Fra ressursbiblioteket", "From the asset library")}>
                 {characters
                   .filter((c) => c.fromLibrary)
                   .map((c) => (
@@ -242,7 +270,7 @@ export function SceneNavigator({
               </optgroup>
             ) : null}
             {characters.some((c) => !c.fromLibrary) ? (
-              <optgroup label="Navn i manuset">
+              <optgroup label={L("Navn i manuset", "Names in the script")}>
                 {characters
                   .filter((c) => !c.fromLibrary)
                   .map((c) => (
@@ -258,16 +286,16 @@ export function SceneNavigator({
               type="button"
               onClick={() => onFilterChange({})}
               className="flex h-7 items-center gap-1 rounded-sm px-1.5 text-xs text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-              title="Fjern filter"
+              title={L("Fjern filter", "Remove filter")}
             >
               <X className="size-3.5" aria-hidden />
-              Nullstill
+              {L("Nullstill", "Reset")}
             </button>
           ) : null}
         </div>
         <div className="flex items-center gap-1.5">
           <select
-            aria-label="Vis bare scener med ressurs"
+            aria-label={L("Vis bare scener med ressurs", "Show only scenes with an asset")}
             value={filter.assetId ?? ""}
             onChange={(e) => {
               const { assetId: _a, ...rest } = filter;
@@ -275,7 +303,7 @@ export function SceneNavigator({
             }}
             className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
           >
-            <option value="">Alle objekter og steder</option>
+            <option value="">{L("Alle objekter og steder", "All objects and locations")}</option>
             {filterAssets.map((a) => (
               <option key={a.id} value={a.id}>
                 {a.name} ({ASSET_KIND_SHORT[a.kind] ?? a.kind})
@@ -283,7 +311,7 @@ export function SceneNavigator({
             ))}
           </select>
           <select
-            aria-label="Vis bare scener med status"
+            aria-label={L("Vis bare scener med status", "Show only scenes with a status")}
             value={filter.status ?? ""}
             onChange={(e) => {
               const { status: _s, ...rest } = filter;
@@ -291,7 +319,7 @@ export function SceneNavigator({
             }}
             className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
           >
-            <option value="">Alle statuser</option>
+            <option value="">{L("Alle statuser", "All statuses")}</option>
             {(Object.keys(SCENE_STATUS_LABEL) as SceneStatus[]).map((st) => (
               <option key={st} value={st}>
                 {SCENE_STATUS_LABEL[st]}
@@ -308,11 +336,17 @@ export function SceneNavigator({
               onFilterChange(e.target.checked ? { ...rest, discrepancy: true } : rest);
             }}
           />
-          Bare scener med manusendringer etter 2D-scene eller film
+          {L(
+            "Bare scener med manusendringer etter 2D-scene eller film",
+            "Only scenes with script changes after the 2D scene or film",
+          )}
         </label>
         {visible ? (
           <p className="text-[11px] text-text-tertiary">
-            Filteret gjelder bare visningen. Filmen er uendret. Flytting er av mens filteret er på.
+            {L(
+              "Filteret gjelder bare visningen. Filmen er uendret. Flytting er av mens filteret er på.",
+              "The filter only applies to the view. The film is unchanged. Moving is off while the filter is on.",
+            )}
           </p>
         ) : null}
       </div>
@@ -320,8 +354,11 @@ export function SceneNavigator({
         ref={listRef}
         aria-label={
           canReorder
-            ? "Scener i produksjonen. Alt + pil flytter valgt scene."
-            : "Scener i produksjonen"
+            ? L(
+                "Scener i produksjonen. Alt + pil flytter valgt scene.",
+                "Scenes in the production. Alt + arrow moves the selected scene.",
+              )
+            : L("Scener i produksjonen", "Scenes in the production")
         }
         className="min-h-0 flex-1 overflow-y-auto py-1"
         onDragOver={(e) => e.preventDefault()}
@@ -401,17 +438,23 @@ export function SceneNavigator({
                     </span>
                     <span className="flex items-center gap-1.5 text-[11px] text-text-tertiary">
                       {o.active ? (
-                        <span className="tabular">s. {startPages[o.id] ?? "–"}</span>
+                        <span className="tabular">
+                          {L("s.", "p.")} {startPages[o.id] ?? "–"}
+                        </span>
                       ) : (
-                        <span>{merged ? "Sammenslått" : "Deaktivert"}</span>
+                        <span>
+                          {merged ? L("Sammenslått", "Merged") : L("Deaktivert", "Inactive")}
+                        </span>
                       )}
                       {uncertainSet.has(o.id) ? (
                         <span className="flex items-center gap-0.5 text-status-uncertain">
                           <AlertTriangle className="size-3" aria-hidden />
-                          Usikker
+                          {L("Usikker", "Uncertain")}
                         </span>
                       ) : null}
-                      {isMoved ? <span className="text-status-moved">Flyttet</span> : null}
+                      {isMoved ? (
+                        <span className="text-status-moved">{L("Flyttet", "Moved")}</span>
+                      ) : null}
                       {state.scenes[o.sceneId] &&
                       state.scenes[o.sceneId]!.storyTime.kind !== "linear" ? (
                         <span className="text-accent-brand">
@@ -421,15 +464,23 @@ export function SceneNavigator({
                       {notes ? (
                         <span
                           className="flex items-center gap-0.5 text-note"
-                          title={notes === 1 ? "1 notat" : `${notes} notater`}
+                          title={L(
+                            notes === 1 ? "1 notat" : `${notes} notater`,
+                            notes === 1 ? "1 note" : `${notes} notes`,
+                          )}
                         >
                           <MessageSquare className="size-3" aria-hidden />
                           {notes}
                         </span>
                       ) : null}
-                      {v && v.ownerProductionId !== null ? <span>Egen versjon</span> : null}
+                      {v && v.ownerProductionId !== null ? (
+                        <span>{L("Egen versjon", "Own version")}</span>
+                      ) : null}
                       {presence?.get(o.id)?.length ? (
-                        <span className="text-accent-brand" title="Står i scenen nå">
+                        <span
+                          className="text-accent-brand"
+                          title={L("Står i scenen nå", "In the scene now")}
+                        >
                           ●{" "}
                           {presence
                             .get(o.id)!
@@ -440,7 +491,9 @@ export function SceneNavigator({
                     </span>
                     {hit?.length ? (
                       <span className="block truncate text-[11px] text-text-secondary">
-                        <span className="mark-search-chip mr-1 rounded-[2px] px-1">Treff</span>
+                        <span className="mark-search-chip mr-1 rounded-[2px] px-1">
+                          {L("Treff", "Hit")}
+                        </span>
                         {hit.map((h) => HIT_LABEL[h]).join(", ")}
                       </span>
                     ) : null}
@@ -451,7 +504,17 @@ export function SceneNavigator({
                     checked={o.active}
                     disabled={merged}
                     onCheckedChange={(on) => onToggleActive(o.id, on)}
-                    aria-label={`${o.active ? "Deaktiver" : "Aktiver"} scene ${sceneNumberOf(state, o) ?? "uten nummer"}`}
+                    aria-label={
+                      o.active
+                        ? L(
+                            `Deaktiver scene ${sceneNumberOf(state, o) ?? "uten nummer"}`,
+                            `Deactivate scene ${sceneNumberOf(state, o) ?? "without number"}`,
+                          )
+                        : L(
+                            `Aktiver scene ${sceneNumberOf(state, o) ?? "uten nummer"}`,
+                            `Activate scene ${sceneNumberOf(state, o) ?? "without number"}`,
+                          )
+                    }
                     className="scale-75"
                   />
                 ) : (

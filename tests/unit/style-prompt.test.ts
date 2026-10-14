@@ -125,28 +125,24 @@ describe("bildebeskrivelse med sammenheng", () => {
       occurrenceId: occ.id,
       withReference: false,
     });
+    // DEC-0080: én sammenhengende bestilling uten skjemaoverskrifter og uten filmtittel (som kan havne
+    // som tekst i bildet); farger med navn og kode; scenelyset til bakgrunnen
     for (const part of [
-      "FILM",
-      "Jula på Dovre",
-      guide.premise,
-      "VISUAL STYLE",
-      guide.technique,
-      "#0d1b2a",
-      guide.mood,
-      "THIS IMAGE",
-      "Design a location: Stua.",
-      "background layer",
-      "WHERE IT APPEARS",
-      "Made for the scene",
-      "Scene lighting:",
-      "CONSISTENCY",
-      "AVOID",
+      "Create a wide background painting of Stua",
+      guide.premise!,
+      guide.technique!,
+      "deep navy (#0d1b2a)",
+      guide.mood!,
+      "fills the whole frame",
+      "empty of people and characters",
+      "Lighting: day",
+      "Leave out:",
       "Photorealism",
-      "No characters",
-      "PROJECT INSTRUCTIONS",
-      guide.instructions,
+      guide.instructions!,
     ])
       expect(p, part).toContain(part);
+    expect(p).not.toContain("Jula på Dovre");
+    expect(p).not.toMatch(/^(FILM|VISUAL STYLE|THIS IMAGE)$/m);
     expect(p.length).toBeLessThan(8000);
   });
 
@@ -161,10 +157,21 @@ describe("bildebeskrivelse med sammenheng", () => {
       occurrenceId: null,
       withReference: true,
     });
-    expect(p).toContain("transparent background");
-    expect(p).toContain("Appears in:");
-    expect(p).toContain("Keep the identity");
-    expect(p).not.toContain("PROJECT INSTRUCTIONS\n\n");
+    // Flat hvit bakgrunn (friegges etterpå), nøytralt lys – ikke scenelyset – og ingen replikker
+    expect(p).toContain("plain, flat, pure white background");
+    expect(p).toContain("soft, even, neutral light");
+    expect(p).toContain("Keep Maja identical to the attached reference image");
+    expect(p).not.toContain("says:");
+    // Modellen kan lage gjennomsiktig bakgrunn: da bes det om det
+    const t = buildContextImagePrompt(s, {
+      assetId: maja.id,
+      variantId: va.id,
+      productionId: main.id,
+      occurrenceId: null,
+      withReference: true,
+      transparent: true,
+    });
+    expect(t).toContain("fully transparent background");
   });
 
   it("uten stil virker den fortsatt, og utkastet foreslår verden og stil fra manuset", () => {
@@ -176,7 +183,7 @@ describe("bildebeskrivelse med sammenheng", () => {
       occurrenceId: null,
       withReference: false,
     });
-    expect(p).toContain("Overall look:");
+    expect(p).toContain("Style: simple, readable animatic style");
     const g = suggestStyleGuide(s0, main.id);
     expect(styleGuideError(g)).toBe(null);
     expect(g.world).toContain("STUA");

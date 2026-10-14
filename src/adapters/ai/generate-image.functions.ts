@@ -25,9 +25,11 @@ import {
   newId,
   providerModel,
   stripAttachedSection,
+  L,
 } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 import { GATEWAY, ROLE_RANK, gatewayError, referenceImages, validReferencePath } from "./gateway";
+import type { ImageAspect } from "./providers.server";
 
 // Modellene for innebygd bildegenerering står i kjernen (vises også i bekreftelsen, REQ-0280)
 export { LOVABLE_CUTOUT_MODEL as CUTOUT_MODEL, LOVABLE_IMAGE_MODEL as IMAGE_MODEL } from "@/core";
@@ -56,6 +58,14 @@ export interface GenerateImageInput {
   readonly model: string | null;
   /** Valgt bildestørrelse (Mars 2026-10-13); bare for modeller som tar imot den. */
   readonly size?: ImageSize | null;
+  /** Sideforhold (DEC-0080); standard ut fra bruken. */
+  readonly aspect?: ImageAspect | null;
+  /** Negativ beskrivelse for modeller som har eget felt (DEC-0080). */
+  readonly negativePrompt?: string | null;
+  /** «upscale»: oppskaler det ene forbildet (DEC-0080) i stedet for å lage et nytt bilde. */
+  readonly operation?: "generate" | "upscale";
+  /** Oppskalering: 2× eller 4×. */
+  readonly upscaleFactor?: 2 | 4;
   /** Brukeren har bekreftet at genereringen bruker kreditter. */
   readonly approved: true;
 }
@@ -71,25 +81,31 @@ export type GenerateImageResult =
   | { readonly ok: false; readonly message: string };
 
 function validate(d: unknown): GenerateImageInput {
-  if (!d || typeof d !== "object") throw new Error("Ugyldig forespørsel");
+  if (!d || typeof d !== "object") throw new Error(L("Ugyldig forespørsel", "Invalid request"));
   const x = d as Record<string, unknown>;
   const projectId = x["projectId"];
   const assetId = x["assetId"];
   const prompt = x["prompt"];
   const refs = x["referencePaths"];
-  if (typeof projectId !== "string" || !isUuid(projectId)) throw new Error("Ugyldig prosjekt");
-  if (typeof assetId !== "string" || !isUuid(assetId)) throw new Error("Ugyldig ressurs");
+  if (typeof projectId !== "string" || !isUuid(projectId))
+    throw new Error(L("Ugyldig prosjekt", "Invalid project"));
+  if (typeof assetId !== "string" || !isUuid(assetId))
+    throw new Error(L("Ugyldig ressurs", "Invalid asset"));
   if (typeof prompt !== "string" || !prompt.trim() || prompt.length > MAX_PROMPT_CHARS)
-    throw new Error("Beskrivelsen mangler eller er for lang");
+    throw new Error(
+      L("Beskrivelsen mangler eller er for lang", "The description is missing or too long"),
+    );
   if (
     !Array.isArray(refs) ||
     refs.length > MAX_ATTACHED_IMAGES ||
     new Set(refs).size !== refs.length ||
     !refs.every((r) => validReferencePath(projectId, r))
   )
-    throw new Error("Ugyldige forbildebilder");
-  if (x["purpose"] !== "cutout" && x["purpose"] !== "background") throw new Error("Ugyldig bruk");
-  if (x["approved"] !== true) throw new Error("Genereringen må bekreftes");
+    throw new Error(L("Ugyldige forbildebilder", "Invalid reference images"));
+  if (x["purpose"] !== "cutout" && x["purpose"] !== "background")
+    throw new Error(L("Ugyldig bruk", "Invalid use"));
+  if (x["approved"] !== true)
+    throw new Error(L("Genereringen må bekreftes", "The generation must be confirmed"));
   return {
     projectId,
     assetId,
@@ -100,21 +116,35 @@ function validate(d: unknown): GenerateImageInput {
     variantId: typeof x["variantId"] === "string" && isUuid(x["variantId"]) ? x["variantId"] : null,
     provider: (() => {
       const p = x["provider"] ?? "lovable";
-      if (!isProviderId(p)) throw new Error("Ukjent leverandør");
+      if (!isProviderId(p)) throw new Error(L("Ukjent leverandør", "Unknown provider"));
       return p;
     })(),
     model: (() => {
       const m = x["model"] ?? null;
       if (m !== null && (typeof m !== "string" || m.length > 120))
-        throw new Error("Ugyldig modell");
+        throw new Error(L("Ugyldig modell", "Invalid model"));
       return m as string | null;
     })(),
     size: (() => {
       const z = x["size"] ?? null;
       if (z !== null && z !== "1K" && z !== "2K" && z !== "4K")
-        throw new Error("Ugyldig størrelse");
+        throw new Error(L("Ugyldig størrelse", "Invalid size"));
       return z as ImageSize | null;
     })(),
+    aspect: (() => {
+      const a = x["aspect"] ?? null;
+      if (a !== null && a !== "2:3" && a !== "3:2" && a !== "1:1" && a !== "16:9")
+        throw new Error(L("Ugyldig sideforhold", "Invalid aspect ratio"));
+      return a as ImageAspect | null;
+    })(),
+    negativePrompt: (() => {
+      const n = x["negativePrompt"] ?? null;
+      if (n !== null && (typeof n !== "string" || n.length > 2000))
+        throw new Error(L("Ugyldig negativ beskrivelse", "Invalid negative description"));
+      return (n as string | null)?.trim() || null;
+    })(),
+    operation: x["operation"] === "upscale" ? "upscale" : "generate",
+    upscaleFactor: x["upscaleFactor"] === 4 ? 4 : 2,
     approved: true,
   };
 }
@@ -146,7 +176,13 @@ export const generateImage = createServerFn({ method: "POST" })
       .is("removed_at", null)
       .maybeSingle();
     if ((ROLE_RANK[(member as { role?: string } | null)?.role ?? ""] ?? 0) < ROLE_RANK["editor"]!)
-      return { ok: false, message: "Du har ikke tilgang til å generere i dette prosjektet." };
+      return {
+        ok: false,
+        message: L(
+          "Du har ikke tilgang til å generere i dette prosjektet.",
+          "You do not have access to generate in this project.",
+        ),
+      };
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const admin = supabaseAdmin as unknown as AnyClient;
@@ -154,16 +190,28 @@ export const generateImage = createServerFn({ method: "POST" })
     if (schema.kind === "missing" || schema.version < 10)
       return {
         ok: false,
-        message:
+        message: L(
           "Databasen mangler loggen for AI-generering. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0010).",
+          "The database is missing the AI generation log. Paste the message in LOVABLE_SYNC.md into Lovable (migration 0010).",
+        ),
       };
     const own = data.provider !== "lovable";
+    if (data.operation === "upscale" && !own)
+      return {
+        ok: false,
+        message: L(
+          "Oppskalering krever en tilkoblet leverandør (fal.ai).",
+          "Upscaling requires a connected provider (fal.ai).",
+        ),
+      };
     const key = process.env["LOVABLE_API_KEY"];
     if (!own && !key)
       return {
         ok: false,
-        message:
+        message: L(
           "AI er ikke slått på for prosjektet i Lovable (LOVABLE_API_KEY mangler). Se LOVABLE_SYNC.md.",
+          "AI is not switched on for the project in Lovable (LOVABLE_API_KEY is missing). See LOVABLE_SYNC.md.",
+        ),
       };
 
     // Et slettet prosjekt kan ikke få nye bilder (DEC-0046)
@@ -173,7 +221,7 @@ export const generateImage = createServerFn({ method: "POST" })
       .eq("id", data.projectId)
       .maybeSingle();
     if (!proj || (proj as { deleted_at?: string | null }).deleted_at)
-      return { ok: false, message: "Prosjektet er slettet." };
+      return { ok: false, message: L("Prosjektet er slettet.", "The project has been deleted.") };
 
     const { data: asset } = await admin
       .from("assets")
@@ -181,9 +229,19 @@ export const generateImage = createServerFn({ method: "POST" })
       .eq("id", data.assetId)
       .eq("project_id", data.projectId)
       .maybeSingle();
-    if (!asset) return { ok: false, message: "Ressursen finnes ikke i prosjektet." };
+    if (!asset)
+      return {
+        ok: false,
+        message: L(
+          "Ressursen finnes ikke i prosjektet.",
+          "The asset does not exist in the project.",
+        ),
+      };
     if ((asset as { kind: string }).kind === "sound")
-      return { ok: false, message: "Lyd kan ikke genereres som bilde." };
+      return {
+        ok: false,
+        message: L("Lyd kan ikke genereres som bilde.", "Sound cannot be generated as an image."),
+      };
     const refCheck = await referenceImages(admin, data.projectId, data.referencePaths);
     if (!refCheck.ok) return { ok: false, message: refCheck.message };
 
@@ -199,7 +257,10 @@ export const generateImage = createServerFn({ method: "POST" })
     if ((mine ?? 0) >= MAX_PER_USER_PER_HOUR)
       return {
         ok: false,
-        message: `Grensen på ${MAX_PER_USER_PER_HOUR} genereringer i timen er nådd. Prøv igjen senere.`,
+        message: L(
+          `Grensen på ${MAX_PER_USER_PER_HOUR} genereringer i timen er nådd. Prøv igjen senere.`,
+          `The limit of ${MAX_PER_USER_PER_HOUR} generations per hour has been reached. Try again later.`,
+        ),
       };
     const { count: project } = await admin
       .from("generation_jobs")
@@ -210,7 +271,10 @@ export const generateImage = createServerFn({ method: "POST" })
     if ((project ?? 0) >= MAX_PER_PROJECT_PER_DAY)
       return {
         ok: false,
-        message: `Prosjektets grense på ${MAX_PER_PROJECT_PER_DAY} genereringer i døgnet er nådd.`,
+        message: L(
+          `Prosjektets grense på ${MAX_PER_PROJECT_PER_DAY} genereringer i døgnet er nådd.`,
+          `The project's limit of ${MAX_PER_PROJECT_PER_DAY} generations per day has been reached.`,
+        ),
       };
 
     // Prosjektets AI-budsjett (DEC-0053, REQ-0282/0284): kontrolleres etter at jobben er registrert
@@ -240,23 +304,62 @@ export const generateImage = createServerFn({ method: "POST" })
       if (schema.version < 24)
         return {
           ok: false,
-          message:
+          message: L(
             "Databasen er ikke oppdatert for egne AI-leverandører. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0024).",
+            "The database is not updated for own AI providers. Paste the message in LOVABLE_SYNC.md into Lovable (migration 0024).",
+          ),
         };
       const m = providerModel(data.provider, model);
-      if (!m || m.capability !== "image")
-        return { ok: false, message: "Modellen finnes ikke hos leverandøren." };
+      const want = data.operation === "upscale" ? "upscale" : "image";
+      if (!m || m.capability !== want)
+        return {
+          ok: false,
+          message: L(
+            "Modellen finnes ikke hos leverandøren.",
+            "The model does not exist at the provider.",
+          ),
+        };
+      if (want === "upscale" && data.referencePaths.length !== 1)
+        return {
+          ok: false,
+          message: L("Velg ett bilde å oppskalere.", "Choose one image to upscale."),
+        };
+      if (want === "image" && m.requiresImage && data.referencePaths.length === 0)
+        return {
+          ok: false,
+          message: L(
+            "Denne modellen trenger et forbildebilde.",
+            "This model needs a reference image.",
+          ),
+        };
       ownKey = await gate.projectKey(admin, data.projectId, data.provider, context.userId);
       if (!ownKey)
         return {
           ok: false,
-          message:
+          message: L(
             "Ingen av prosjektets eiere har koblet til denne leverandøren (AI-leverandører på prosjektlisten).",
+            "None of the project's owners has connected this provider (AI providers on the project list).",
+          ),
         };
       // Størrelsen modellen kan lage (ellers modellens standard)
       const sz = imageSizesOf(providerModel(data.provider, model));
       size = data.size && sz.sizes.includes(data.size) ? data.size : sz.standard;
-      costUsd = estimateCostUsd(data.provider, model, { images: 1, ...(size ? { size } : {}) });
+      if (want === "upscale") {
+        // Prisen følger størrelsen på resultatet (megapiksler): målene fra biblioteket
+        const { data: src } = await admin
+          .from("asset_versions")
+          .select("width, height")
+          .eq("project_id", data.projectId)
+          .eq("media_path", data.referencePaths[0]!)
+          .maybeSingle();
+        const w = Number((src as { width?: number | null } | null)?.width ?? 0);
+        const h = Number((src as { height?: number | null } | null)?.height ?? 0);
+        const f = data.upscaleFactor ?? 2;
+        // Ukjent størrelse: regnes som 2048 × 2048 (et øvre anslag for arbeidskopiene)
+        const mp = ((w > 0 && h > 0 ? w * h : 2048 * 2048) * f * f) / 1_000_000;
+        costUsd = estimateCostUsd(data.provider, model, { megapixels: mp });
+      } else
+        costUsd = estimateCostUsd(data.provider, model, { images: 1, ...(size ? { size } : {}) });
       const capMsg = await gate.overAccountCap(admin, ownKey.user_id, costUsd ?? 0, false);
       if (capMsg) return { ok: false, message: capMsg };
     }
@@ -271,6 +374,11 @@ export const generateImage = createServerFn({ method: "POST" })
               purpose: data.purpose,
               identityFirst: data.identityFirst ?? null,
               ...(size ? { size } : {}),
+              ...(data.aspect ? { aspect: data.aspect } : {}),
+              ...(data.negativePrompt ? { negativePrompt: data.negativePrompt } : {}),
+              ...(data.operation === "upscale"
+                ? { operation: "upscale", upscaleFactor: data.upscaleFactor ?? 2 }
+                : {}),
             },
             referencePaths: data.referencePaths,
           })
@@ -302,7 +410,14 @@ export const generateImage = createServerFn({ method: "POST" })
       created_by: context.userId,
       ...(budgeted ? { estimated_cost: price } : {}),
     } as never);
-    if (logErr) return { ok: false, message: `Genereringen kunne ikke logges: ${logErr.message}` };
+    if (logErr)
+      return {
+        ok: false,
+        message: L(
+          `Genereringen kunne ikke logges: ${logErr.message}`,
+          `The generation could not be logged: ${logErr.message}`,
+        ),
+      };
     // Samtidige forespørsler: tell på nytt med denne jobben registrert
     {
       const [{ count: mineNow }, { count: projectNow }] = await Promise.all([
@@ -323,7 +438,10 @@ export const generateImage = createServerFn({ method: "POST" })
         await admin.from("generation_jobs").delete().eq("id", jobId);
         return {
           ok: false,
-          message: "Grensen for antall genereringer er nådd akkurat nå. Prøv igjen senere.",
+          message: L(
+            "Grensen for antall genereringer er nådd akkurat nå. Prøv igjen senere.",
+            "The limit on the number of generations has just been reached. Try again later.",
+          ),
         };
       }
     }
@@ -340,7 +458,10 @@ export const generateImage = createServerFn({ method: "POST" })
         await admin.from("generation_jobs").delete().eq("id", jobId);
         return {
           ok: false,
-          message: `Prosjektets AI-budsjett for denne måneden (${pr.ai_month_limit} genereringer) er brukt opp. Eieren kan endre budsjettet på prosjektoversikten.`,
+          message: L(
+            `Prosjektets AI-budsjett for denne måneden (${pr.ai_month_limit} genereringer) er brukt opp. Eieren kan endre budsjettet på prosjektoversikten.`,
+            `The project's AI budget for this month (${pr.ai_month_limit} generations) has been used up. The owner can change the budget on the project overview.`,
+          ),
         };
       }
     }
@@ -372,14 +493,23 @@ export const generateImage = createServerFn({ method: "POST" })
           provider: ownKey.provider,
           rowId: ownKey.id,
         });
-        const references = await Promise.all(
-          data.referencePaths.map(async (p) => {
-            const { data: blob, error } = await admin.storage.from(BUCKET).download(p);
-            if (error || !blob)
-              throw new Error("Et forbildebilde kunne ikke hentes fra lagringen.");
-            return blob;
-          }),
-        );
+        // Oppskalering: tjenesten henter bildet selv (lenke), så det lastes ikke ned her
+        const references =
+          data.operation === "upscale"
+            ? []
+            : await Promise.all(
+                data.referencePaths.map(async (p) => {
+                  const { data: blob, error } = await admin.storage.from(BUCKET).download(p);
+                  if (error || !blob)
+                    throw new Error(
+                      L(
+                        "Et forbildebilde kunne ikke hentes fra lagringen.",
+                        "A reference image could not be fetched from storage.",
+                      ),
+                    );
+                  return blob;
+                }),
+              );
         // Modellens lengdegrense (DEC-0070): ellers avviser tjenesten beskrivelsen
         const m = providerModel(data.provider, model);
         const req = {
@@ -389,9 +519,33 @@ export const generateImage = createServerFn({ method: "POST" })
           references,
           purpose: data.purpose,
           ...(size ? { size } : {}),
+          ...(data.aspect ? { aspect: data.aspect } : {}),
+          ...(data.negativePrompt ? { negativePrompt: data.negativePrompt } : {}),
         };
         let out: { bytes: Uint8Array; mimeType: string };
-        if (data.provider === "openai") out = await ADAPTERS.openai.image(req);
+        if (data.operation === "upscale") {
+          if (data.provider !== "fal")
+            return {
+              ok: false,
+              message: L("Leverandøren kan ikke oppskalere.", "The provider cannot upscale."),
+            };
+          const { data: signed } = await admin.storage
+            .from(BUCKET)
+            .createSignedUrl(data.referencePaths[0]!, 600);
+          if (!signed?.signedUrl)
+            throw new Error(
+              L(
+                "Bildet kunne ikke hentes fra lagringen.",
+                "The image could not be fetched from storage.",
+              ),
+            );
+          out = await ADAPTERS.fal.upscale({
+            key: secret,
+            model,
+            imageUrl: signed.signedUrl,
+            factor: data.upscaleFactor ?? 2,
+          });
+        } else if (data.provider === "openai") out = await ADAPTERS.openai.image(req);
         else if (data.provider === "google") out = await ADAPTERS.google.image(req);
         else if (data.provider === "fal") {
           // fal henter forbildet selv: midlertidige lenker (10 minutter)
@@ -401,21 +555,31 @@ export const generateImage = createServerFn({ method: "POST" })
             if (signed?.signedUrl) referenceUrls.push(signed.signedUrl);
           }
           out = await ADAPTERS.fal.image({ ...req, referenceUrls });
-        } else return { ok: false, message: "Leverandøren lager ikke bilder." };
+        } else
+          return {
+            ok: false,
+            message: L("Leverandøren lager ikke bilder.", "The provider does not make images."),
+          };
         charged = true;
         const mimeType = ["image/png", "image/jpeg", "image/webp"].includes(out.mimeType)
           ? out.mimeType
           : "image/png";
         const ext = mimeType === "image/jpeg" ? "jpg" : mimeType === "image/webp" ? "webp" : "png";
         const versionId = newId<"asset_version">();
-        const path = `${data.projectId}/${data.assetId}/${versionId}/ai-${new Date().toISOString().slice(0, 10)}.${ext}`;
+        const path = `${data.projectId}/${data.assetId}/${versionId}/${data.operation === "upscale" ? "upscale" : "ai"}-${new Date().toISOString().slice(0, 10)}.${ext}`;
         const { error: upErr } = await admin.storage
           .from(BUCKET)
           .upload(path, new Blob([out.bytes as unknown as ArrayBuffer], { type: mimeType }), {
             contentType: mimeType,
             upsert: false,
           });
-        if (upErr) throw new Error(`Bildet kunne ikke lagres: ${upErr.message}`);
+        if (upErr)
+          throw new Error(
+            L(
+              `Bildet kunne ikke lagres: ${upErr.message}`,
+              `The image could not be saved: ${upErr.message}`,
+            ),
+          );
         const dims = mimeType === "image/png" ? pngSize(out.bytes) : { width: null, height: null };
         await finish({ status: "done", result_path: path });
         return {
@@ -433,9 +597,15 @@ export const generateImage = createServerFn({ method: "POST" })
           },
         };
       } catch (e) {
-        const message = scrubSecret((e as Error).message || "Ukjent feil", secret).slice(0, 2000);
+        const message = scrubSecret(
+          (e as Error).message || L("Ukjent feil", "Unknown error"),
+          secret,
+        ).slice(0, 2000);
         await finish({ status: charged ? "lost" : "failed", error: message });
-        return { ok: false, message: `Genereringen stoppet: ${message}` };
+        return {
+          ok: false,
+          message: L(`Genereringen stoppet: ${message}`, `The generation stopped: ${message}`),
+        };
       }
     }
 
@@ -448,7 +618,13 @@ export const generateImage = createServerFn({ method: "POST" })
       const references = await Promise.all(
         data.referencePaths.map(async (p) => {
           const { data: blob, error } = await admin.storage.from(BUCKET).download(p);
-          if (error || !blob) throw new Error("Et forbildebilde kunne ikke hentes fra lagringen.");
+          if (error || !blob)
+            throw new Error(
+              L(
+                "Et forbildebilde kunne ikke hentes fra lagringen.",
+                "A reference image could not be fetched from storage.",
+              ),
+            );
           return blob;
         }),
       );
@@ -519,6 +695,7 @@ export const generateImage = createServerFn({ method: "POST" })
         if (res.ok) break;
         const body = await res.text().catch(() => "");
         log.push(
+          // i18n-ignore: intern logg i databasen, vises ikke
           `${res.status} [${Object.keys(extra).join(",") || "ingen valg"}; ${images} bilde(r)]: ${body.slice(0, 400)}`,
         );
         const retry = res.status === 400 && !/safety|policy|moderation/i.test(body);
@@ -533,13 +710,16 @@ export const generateImage = createServerFn({ method: "POST" })
       }
       if (log.length > 0)
         // Vellykket etter færre valg: noter hvorfor, så det kan rettes
-        console.warn("[generateImage] lyktes etter nye forsøk:", log.join(" | ").slice(0, 600));
+        console.warn("[generateImage] lyktes etter nye forsøk:", log.join(" | ").slice(0, 600)); // i18n-ignore
       const json = (await res.json()) as { data?: { b64_json?: string; url?: string }[] };
       const first = json.data?.[0];
       let bytes: Uint8Array;
       if (first?.b64_json) bytes = (await import("./providers.server")).unb64(first.b64_json);
       else if (first?.url) bytes = new Uint8Array(await (await fetch(first.url)).arrayBuffer());
-      else throw new Error("AI-tjenesten svarte uten bilde.");
+      else
+        throw new Error(
+          L("AI-tjenesten svarte uten bilde.", "The AI service replied without an image."),
+        );
 
       const versionId = newId<"asset_version">();
       const date = new Date().toISOString().slice(0, 10);
@@ -550,7 +730,13 @@ export const generateImage = createServerFn({ method: "POST" })
           contentType: "image/png",
           upsert: false,
         });
-      if (upErr) throw new Error(`Bildet kunne ikke lagres: ${upErr.message}`);
+      if (upErr)
+        throw new Error(
+          L(
+            `Bildet kunne ikke lagres: ${upErr.message}`,
+            `The image could not be saved: ${upErr.message}`,
+          ),
+        );
       const dims = pngSize(bytes);
       await finish({ status: "done", result_path: path });
       return {
@@ -568,11 +754,14 @@ export const generateImage = createServerFn({ method: "POST" })
         },
       };
     } catch (e) {
-      const message = (e as Error).message || "Ukjent feil";
+      const message = (e as Error).message || L("Ukjent feil", "Unknown error");
       await finish({
         status: charged && budgeted ? "lost" : "failed",
         error: message.slice(0, 2000),
       });
-      return { ok: false, message: `Genereringen stoppet: ${message}` };
+      return {
+        ok: false,
+        message: L(`Genereringen stoppet: ${message}`, `The generation stopped: ${message}`),
+      };
     }
   });

@@ -19,6 +19,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import {
   FINDING_LABEL,
+  L,
   continuityAnalysis,
   includeSceneCommands,
   sortedProductions,
@@ -89,14 +90,17 @@ export function ContinuityAnalysisPanel({
     <section aria-labelledby="continuity-title" className="mt-8">
       <div className="mb-2 flex items-center gap-2">
         <h2 id="continuity-title" className="text-base font-semibold text-text-primary">
-          Kontinuitetsanalyse
+          {L("Kontinuitetsanalyse", "Continuity analysis")}
         </h2>
         <span className="text-xs text-text-tertiary">
-          Råd om manus og produksjon – ingenting endres automatisk.
+          {L(
+            "Råd om manus og produksjon – ingenting endres automatisk.",
+            "Advice on script and production – nothing is changed automatically.",
+          )}
         </span>
         {productions.length > 1 ? (
           <select
-            aria-label="Produksjon for analysen"
+            aria-label={L("Produksjon for analysen", "Production for the analysis")}
             value={productionId}
             onChange={(e) => setChosen(e.target.value)}
             className="h-7 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
@@ -115,7 +119,9 @@ export function ContinuityAnalysisPanel({
             className="ml-auto flex items-center gap-1 text-xs text-text-tertiary hover:text-text-primary"
           >
             {showHidden ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
-            {showHidden ? "Skjul igjen" : `Vis skjulte (${hiddenCount})`}
+            {showHidden
+              ? L("Skjul igjen", "Hide again")
+              : L(`Vis skjulte (${hiddenCount})`, `Show hidden (${hiddenCount})`)}
           </button>
         ) : null}
       </div>
@@ -123,10 +129,15 @@ export function ContinuityAnalysisPanel({
         {findings.length === 0 ? (
           <p className="flex items-center gap-2 px-4 py-3 text-[13px] text-text-secondary">
             <SearchCheck className="size-4 text-status-success" aria-hidden />
-            Ingen funn. Manus, kontinuitet og 2D-scener henger sammen.
+            {L(
+              "Ingen funn. Manus, kontinuitet og 2D-scener henger sammen.",
+              "No findings. The script, continuity and 2D scenes are consistent.",
+            )}
           </p>
         ) : groups.length === 0 ? (
-          <p className="px-4 py-3 text-[13px] text-text-tertiary">Alle funn er skjult.</p>
+          <p className="px-4 py-3 text-[13px] text-text-tertiary">
+            {L("Alle funn er skjult.", "All findings are hidden.")}
+          </p>
         ) : (
           groups.map((g) => (
             <div key={g.kind} className="border-b border-border last:border-b-0">
@@ -144,7 +155,12 @@ export function ContinuityAnalysisPanel({
                     onInclude={(occId) =>
                       setErr(
                         includeSceneCommands(state, productionId, occId)
-                          .map((c) => cmds.run(c, `Ta med scene i ${prod!.name}`))
+                          .map((c) =>
+                            cmds.run(
+                              c,
+                              L(`Ta med scene i ${prod!.name}`, `Include scene in ${prod!.name}`),
+                            ),
+                          )
                           .find((x) => x) ?? null,
                       )
                     }
@@ -157,7 +173,10 @@ export function ContinuityAnalysisPanel({
                             productionId: productionId as never,
                             disabled: true,
                           },
-                          `Slå av hendelsen i ${prod!.name}`,
+                          L(
+                            `Slå av hendelsen i ${prod!.name}`,
+                            `Turn off the event in ${prod!.name}`,
+                          ),
                         ),
                       )
                     }
@@ -185,7 +204,10 @@ export function ContinuityAnalysisPanel({
       {findings.some((f) => f.certainty === "uncertain") ? (
         <p className="mt-1.5 flex items-center gap-1 text-[11px] text-text-tertiary">
           <CircleHelp className="size-3" aria-hidden />
-          Usikre funn bygger på tolkning av teksten og kan være feil.
+          {L(
+            "Usikre funn bygger på tolkning av teksten og kan være feil.",
+            "Uncertain findings are based on interpreting the text and may be wrong.",
+          )}
         </p>
       ) : null}
     </section>
@@ -219,11 +241,14 @@ function FindingRow({
       }
     >
       {uncertain ? (
-        <CircleHelp className="mt-0.5 size-3.5 shrink-0 text-text-tertiary" aria-label="Usikkert" />
+        <CircleHelp
+          className="mt-0.5 size-3.5 shrink-0 text-text-tertiary"
+          aria-label={L("Usikkert", "Uncertain")}
+        />
       ) : (
         <TriangleAlert
           className="mt-0.5 size-3.5 shrink-0 text-status-moved"
-          aria-label="Sannsynlig"
+          aria-label={L("Sannsynlig", "Likely")}
         />
       )}
       <span className="min-w-0 flex-1 text-text-primary">{f.message}</span>
@@ -233,10 +258,13 @@ function FindingRow({
             size="sm"
             variant="secondary"
             onClick={() => onInclude(f.includeOccurrenceId!)}
-            title={`Legg hovedfilmens scene inn i ${production} (på plassen den har i hovedfilmen)`}
+            title={L(
+              `Legg hovedfilmens scene inn i ${production} (på plassen den har i hovedfilmen)`,
+              `Add the main film's scene to ${production} (in the place it has in the main film)`,
+            )}
           >
             <Plus />
-            Ta med scenen
+            {L("Ta med scenen", "Include the scene")}
           </Button>
         ) : null}
         {production && f.eventId ? (
@@ -244,9 +272,12 @@ function FindingRow({
             size="sm"
             variant="ghost"
             onClick={() => onDisableEvent(f.eventId!)}
-            title={`Endringen gjelder ikke i ${production}. Hovedfilmen endres ikke.`}
+            title={L(
+              `Endringen gjelder ikke i ${production}. Hovedfilmen endres ikke.`,
+              `The change does not apply in ${production}. The main film is not changed.`,
+            )}
           >
-            Slå av i {production}
+            {L("Slå av i", "Turn off in")} {production}
           </Button>
         ) : null}
         {f.occurrenceId && IN_SCENE_EDITOR.has(f.kind) ? (
@@ -255,10 +286,10 @@ function FindingRow({
               to="/prosjekt/$projectId/scene"
               params={{ projectId }}
               search={{ scene: f.occurrenceId }}
-              title="Åpne scenen i sceneeditoren"
+              title={L("Åpne scenen i sceneeditoren", "Open the scene in the scene editor")}
             >
               <Layers />
-              Sceneeditor
+              {L("Sceneeditor", "Scene editor")}
             </Link>
           </Button>
         ) : f.occurrenceId ? (
@@ -267,10 +298,10 @@ function FindingRow({
               to="/prosjekt/$projectId/manus"
               params={{ projectId }}
               search={{ scene: f.occurrenceId, ...(f.blockId ? { blokk: f.blockId } : {}) }}
-              title="Vis linjen i manuset"
+              title={L("Vis linjen i manuset", "Show the line in the script")}
             >
               <FileText />
-              Manus
+              {L("Manus", "Script")}
             </Link>
           </Button>
         ) : null}
@@ -280,10 +311,10 @@ function FindingRow({
               to="/prosjekt/$projectId/bibliotek"
               params={{ projectId }}
               search={{ asset: f.assetId }}
-              title="Åpne ressursen i biblioteket"
+              title={L("Åpne ressursen i biblioteket", "Open the asset in the library")}
             >
               <Library aria-hidden />
-              Bibliotek
+              {L("Bibliotek", "Library")}
             </Link>
           </Button>
         ) : null}
@@ -292,12 +323,19 @@ function FindingRow({
           size="sm"
           variant="ghost"
           onClick={onToggle}
-          title={hidden ? "Vis funnet igjen" : "Skjul funnet (huskes i denne nettleseren)"}
-          aria-label={hidden ? "Vis funnet" : "Skjul funnet"}
+          title={
+            hidden
+              ? L("Vis funnet igjen", "Show the finding again")
+              : L(
+                  "Skjul funnet (huskes i denne nettleseren)",
+                  "Hide the finding (remembered in this browser)",
+                )
+          }
+          aria-label={hidden ? L("Vis funnet", "Show finding") : L("Skjul funnet", "Hide finding")}
           className="text-text-tertiary"
         >
           {hidden ? <Eye aria-hidden /> : <EyeOff aria-hidden />}
-          {hidden ? "Vis" : "Skjul"}
+          {hidden ? L("Vis", "Show") : L("Skjul", "Hide")}
         </Button>
       </span>
     </li>

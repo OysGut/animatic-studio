@@ -5,7 +5,7 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { isUuid } from "@/core";
+import { isUuid, L } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 
 const isId = (x: unknown): x is string => typeof x === "string" && isUuid(x);
@@ -28,7 +28,7 @@ export const pumpProjectQueue = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((d: unknown) => {
     const x = (d ?? {}) as Record<string, unknown>;
-    if (!isId(x["projectId"])) throw new Error("Ugyldig prosjekt");
+    if (!isId(x["projectId"])) throw new Error(L("Ugyldig prosjekt", "Invalid project"));
     return { projectId: x["projectId"] };
   })
   .handler(async ({ data, context }): Promise<{ sent: number }> => {
@@ -49,13 +49,14 @@ export const updateQueuedJob = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((d: unknown) => {
     const x = (d ?? {}) as Record<string, unknown>;
-    if (!isId(x["projectId"]) || !isId(x["jobId"])) throw new Error("Ugyldig jobb");
+    if (!isId(x["projectId"]) || !isId(x["jobId"]))
+      throw new Error(L("Ugyldig jobb", "Invalid job"));
     const action = x["action"];
     if (action !== "cancel" && action !== "priority" && action !== "first")
-      throw new Error("Ugyldig handling");
+      throw new Error(L("Ugyldig handling", "Invalid action"));
     const priority = x["priority"];
     if (action === "priority" && priority !== 1 && priority !== 2 && priority !== 3)
-      throw new Error("Ugyldig prioritet");
+      throw new Error(L("Ugyldig prioritet", "Invalid priority"));
     return {
       projectId: x["projectId"],
       jobId: x["jobId"],
@@ -65,12 +66,22 @@ export const updateQueuedJob = createServerFn({ method: "POST" })
   })
   .handler(async ({ data, context }): Promise<{ ok: boolean; message?: string }> => {
     const db = await editorDb(context.supabase, data.projectId, context.userId);
-    if (!db) return { ok: false, message: "Du har ikke tilgang, eller databasen mangler 0025." };
+    if (!db)
+      return {
+        ok: false,
+        message: L(
+          "Du har ikke tilgang, eller databasen mangler 0025.",
+          "You do not have access, or the database is missing 0025.",
+        ),
+      };
     const patch =
       data.action === "cancel"
         ? {
             status: "failed",
-            error: "Avbrutt før den ble sendt (kostet ingenting).",
+            error: L(
+              "Avbrutt før den ble sendt (kostet ingenting).",
+              "Cancelled before it was sent (cost nothing).",
+            ),
             finished_at: new Date().toISOString(),
           }
         : data.action === "priority"
@@ -86,5 +97,11 @@ export const updateQueuedJob = createServerFn({ method: "POST" })
       .select("id");
     return (rows as unknown[] | null)?.length
       ? { ok: true }
-      : { ok: false, message: "Jobben er allerede sendt til leverandøren." };
+      : {
+          ok: false,
+          message: L(
+            "Jobben er allerede sendt til leverandøren.",
+            "The job has already been sent to the provider.",
+          ),
+        };
   });

@@ -12,6 +12,7 @@ import {
   blocksOfVariant,
   formatHeading,
   newId,
+  L,
   orderedOccurrences,
   translationItems,
   type Command,
@@ -114,7 +115,7 @@ export function TranslationImportDialog({
     if (!parsed) return;
     const items = translationItems(state, language, rows, parsed);
     if (!items.length) {
-      setErr("Ingen scener er koblet.");
+      setErr(L("Ingen scener er koblet.", "No scenes are linked."));
       return;
     }
     const fields = (x: (typeof items)[number]) => ({
@@ -146,7 +147,11 @@ export function TranslationImportDialog({
       });
     const group = newId();
     for (const c of commands) {
-      const e = cmds.run(c, `Importer ${langName.toLowerCase()} manus`, group);
+      const e = cmds.run(
+        c,
+        L(`Importer ${langName.toLowerCase()} manus`, `Import ${langName} script`),
+        group,
+      );
       if (e) {
         setErr(e);
         return;
@@ -176,10 +181,14 @@ export function TranslationImportDialog({
     >
       <DialogContent className="max-h-[90vh] max-w-[820px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
-          <DialogTitle>Importer {langName.toLowerCase()} manus</DialogTitle>
+          <DialogTitle>
+            {L(`Importer ${langName.toLowerCase()} manus`, `Import ${langName} script`)}
+          </DialogTitle>
           <DialogDescription>
-            Et ferdig oversatt manus (PDF, Word eller Fountain) kobles til de norske scenene og
-            replikkene. Det norske manuset endres ikke. Kontroller koblingene før du lagrer.
+            {L(
+              "Et ferdig oversatt manus (PDF, Word eller Fountain) kobles til de norske scenene og replikkene. Det norske manuset endres ikke. Kontroller koblingene før du lagrer.",
+              "A finished translated script (PDF, Word or Fountain) is linked to the Norwegian scenes and lines. The Norwegian script is not changed. Check the links before you save.",
+            )}
           </DialogDescription>
         </DialogHeader>
         {!parsed ? (
@@ -197,23 +206,30 @@ export function TranslationImportDialog({
             />
             <Button onClick={() => input.current?.click()} disabled={busy}>
               {busy ? <Loader2 className="animate-spin" /> : <FileUp />}
-              {busy ? "Leser manuset …" : "Velg fil …"}
+              {busy
+                ? L("Leser manuset …", "Reading the script …")
+                : L("Velg fil …", "Choose file …")}
             </Button>
           </div>
         ) : (
           <>
             <p className="text-xs text-text-secondary">
-              {fileName}: {rows.length} scener, {linked.length} koblet, {lines} linjer får
-              oversettelse. Usikre koblinger er ikke krysset av – de lagres som usikre og kan
-              godkjennes senere.
+              {fileName}:{" "}
+              {L(
+                `${rows.length} scener, ${linked.length} koblet, ${lines} linjer får oversettelse. Usikre koblinger er ikke krysset av – de lagres som usikre og kan godkjennes senere.`,
+                `${rows.length} scenes, ${linked.length} linked, ${lines} lines get a translation. Uncertain links are not ticked – they are saved as uncertain and can be approved later.`,
+              )}
             </p>
             {dupes ? (
               <p className="flex items-center gap-1 text-xs text-status-uncertain">
                 <AlertTriangle className="size-3.5" aria-hidden />
-                Samme norske scene er valgt for flere importerte scener. Bare den første brukes.
+                {L(
+                  "Samme norske scene er valgt for flere importerte scener. Bare den første brukes.",
+                  "The same Norwegian scene is chosen for several imported scenes. Only the first is used.",
+                )}
               </p>
             ) : null}
-            <ul aria-label="Koblinger" className="flex flex-col border border-border">
+            <ul aria-label={L("Koblinger", "Links")} className="flex flex-col border border-border">
               {rows.map((r, i) => {
                 const o = r.link.occurrenceId ? state.occurrences[r.link.occurrenceId] : undefined;
                 return (
@@ -223,7 +239,7 @@ export function TranslationImportDialog({
                   >
                     <input
                       type="checkbox"
-                      aria-label="Godkjent kobling"
+                      aria-label={L("Godkjent kobling", "Approved link")}
                       disabled={!o}
                       checked={r.approved && !!o}
                       onChange={() =>
@@ -247,17 +263,20 @@ export function TranslationImportDialog({
                           )
                         ) : null}
                         {o
-                          ? `${r.manual ? "Valgt manuelt" : r.link.certainty === "sure" ? "Sikker" : "Usikker"} · ${r.link.lines.length} linjer${r.link.unmatched ? ` · ${r.link.unmatched} uten par` : ""}`
-                          : "Ikke koblet"}
+                          ? L(
+                              `${r.manual ? "Valgt manuelt" : r.link.certainty === "sure" ? "Sikker" : "Usikker"} · ${r.link.lines.length} linjer${r.link.unmatched ? ` · ${r.link.unmatched} uten par` : ""}`,
+                              `${r.manual ? "Chosen manually" : r.link.certainty === "sure" ? "Certain" : "Uncertain"} · ${r.link.lines.length} lines${r.link.unmatched ? ` · ${r.link.unmatched} without a pair` : ""}`,
+                            )
+                          : L("Ikke koblet", "Not linked")}
                       </span>
                     </span>
                     <select
-                      aria-label="Norsk scene"
+                      aria-label={L("Norsk scene", "Norwegian scene")}
                       value={r.link.occurrenceId ?? ""}
                       onChange={(e) => relink(i, e.target.value || null)}
                       className={control}
                     >
-                      <option value="">— ikke koble —</option>
+                      <option value="">{L("— ikke koble —", "— do not link —")}</option>
                       {occs.map((x) => (
                         <option key={x.id} value={x.id}>
                           {x.productionNumber ? `${x.productionNumber}. ` : ""}
@@ -284,11 +303,11 @@ export function TranslationImportDialog({
               onOpenChange(false);
             }}
           >
-            Avbryt
+            {L("Avbryt", "Cancel")}
           </Button>
           {parsed ? (
             <Button onClick={save} disabled={!linked.length}>
-              Lagre {lines} oversettelser
+              {L(`Lagre ${lines} oversettelser`, `Save ${lines} translations`)}
             </Button>
           ) : null}
         </DialogFooter>

@@ -6,14 +6,19 @@
 import type { AssetKind, ProjectState } from "../model";
 import { ASSET_KIND_PLURAL } from "./index";
 import { versionFileName } from "./file-names";
+import { L } from "../i18n";
 
 /** Kategori i zip-filen: en ressurstype, eller «film» for importert film. */
 export type ZipCategory = AssetKind | "film";
 
-export const ZIP_CATEGORY_LABEL: Record<ZipCategory, string> = {
-  ...ASSET_KIND_PLURAL,
-  film: "Importert film",
-};
+/** Mappenavn i zip-filen. Leses ved bruk, så språket følger innstillingen. */
+export const ZIP_CATEGORY_LABEL: Record<ZipCategory, string> = new Proxy(
+  {} as Record<ZipCategory, string>,
+  {
+    get: (_t, k) =>
+      k === "film" ? L("Importert film", "Imported film") : ASSET_KIND_PLURAL[k as AssetKind],
+  },
+);
 
 export const ZIP_CATEGORY_ORDER: readonly ZipCategory[] = [
   "character",
@@ -36,6 +41,7 @@ export interface ZipEntry {
 }
 
 /** Navn som fungerer som mappe- og filnavn på alle systemer (æøå beholdes). */
+// i18n-ignore (filnavn)
 export function zipSafeName(name: string, fallback = "uten navn"): string {
   const clean = name
     .normalize("NFC")
@@ -83,7 +89,7 @@ export function zipEntries(s: ProjectState): ZipEntry[] {
         .sort((x, y) => x.number - y.number);
       for (const ver of versions) {
         const folder = `${ZIP_CATEGORY_LABEL[a.kind]}/${zipSafeName(a.name)}/${zipSafeName(v.name, "variant")}`;
-        const approved = v.approvedVersionId === ver.id ? " (godkjent)" : "";
+        const approved = v.approvedVersionId === ver.id ? " (godkjent)" : ""; // i18n-ignore: filnavn
         out.push({
           category: a.kind,
           // Samme navn som ved nedlasting av ett bilde (DEC-0064), så filene kjennes igjen ved opplasting

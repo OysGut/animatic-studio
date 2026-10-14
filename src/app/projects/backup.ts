@@ -3,6 +3,7 @@
  * zip-fil til et nytt prosjekt (filene lastes opp her, dataene skrives av serverfunksjonen restoreBackup).
  */
 import {
+  L,
   BACKUP_JSON,
   BACKUP_MAX_JSON_BYTES,
   BACKUP_README,
@@ -141,20 +142,34 @@ export async function openBackupFile(file: File): Promise<OpenedBackup> {
   const key =
     (index.has(BACKUP_JSON) ? BACKUP_JSON : null) ??
     [...index.keys()].find((k) => k.endsWith(`/${BACKUP_JSON}`) && !k.startsWith("__MACOSX/"));
-  if (!key) throw new Error("Zip-filen er ikke en sikkerhetskopi fra Animatic Studio.");
+  if (!key)
+    throw new Error(
+      L(
+        "Zip-filen er ikke en sikkerhetskopi fra Animatic Studio.",
+        "The zip file is not a backup from Animatic Studio.",
+      ),
+    );
   const prefix = key.slice(0, key.length - BACKUP_JSON.length);
   let raw: unknown;
   try {
     raw = JSON.parse(await zipEntryText(file, index.get(key)!));
   } catch {
-    throw new Error("Sikkerhetskopien er skadet (dataene kan ikke leses).");
+    throw new Error(
+      L(
+        "Sikkerhetskopien er skadet (dataene kan ikke leses).",
+        "The backup is damaged (the data cannot be read).",
+      ),
+    );
   }
   const backup = parseBackup(raw, EXPECTED_SCHEMA_VERSION);
   // Kontroller alt før noe opprettes eller lastes opp
   const size = new TextEncoder().encode(JSON.stringify({ ...backup, history: {} })).length;
   if (size > BACKUP_MAX_JSON_BYTES)
     throw new Error(
-      "Sikkerhetskopien har for mye prosjektdata til å gjenopprettes her. Si ifra, så lager vi en løsning.",
+      L(
+        "Sikkerhetskopien har for mye prosjektdata til å gjenopprettes her. Si ifra, så lager vi en løsning.",
+        "The backup has too much project data to be restored here. Let us know and we will make a solution.",
+      ),
     );
   await validateBackup(backup);
   const missing = backup.files.filter((f) => f.included && !index.has(prefix + f.zipPath)).length;
@@ -192,12 +207,21 @@ export async function restoreFromBackup(
     const fps_num = Number(backup.project["fps_num"] ?? 25);
     const fps_den = Number(backup.project["fps_den"] ?? 1);
     const { data, error } = await createProjectWithFps(name, fps_num, fps_den);
-    if (error) throw new Error(`Prosjektet kunne ikke opprettes (${error.message}).`);
+    if (error)
+      throw new Error(
+        L(
+          `Prosjektet kunne ikke opprettes (${error.message}).`,
+          `The project could not be created (${error.message}).`,
+        ),
+      );
     state.projectId = String(data);
   }
   const projectId = state.projectId;
   const { data: mains, error: mainError } = await findMainProductions(projectId);
-  if (mainError || !mains?.[0]) throw new Error("Det nye prosjektet mangler hovedfilm.");
+  if (mainError || !mains?.[0])
+    throw new Error(
+      L("Det nye prosjektet mangler hovedfilm.", "The new project is missing a main film."),
+    );
   const map = await backupIdMap(backup, projectId, String(mains[0].id));
   const files = restoreFiles(backup, map).filter((f) => index.has(prefix + f.zipPath));
   const totalBytes = files.reduce((n, f) => n + f.byteSize, 0);
@@ -207,7 +231,7 @@ export async function restoreFromBackup(
   let done = state.uploaded.size;
   for (const f of files) {
     if (state.uploaded.has(f.zipPath)) continue;
-    if (signal?.aborted) throw new DOMException("Avbrutt", "AbortError");
+    if (signal?.aborted) throw new DOMException(L("Avbrutt", "Cancelled"), "AbortError");
     onProgress({ phase: "files", files: done, totalFiles: files.length, bytes, totalBytes });
     const blob = await zipEntryBlob(file, index.get(prefix + f.zipPath)!, f.mimeType);
     const error = await uploadFile(f.bucket, f.path, blob, {
@@ -216,7 +240,10 @@ export async function restoreFromBackup(
     });
     if (error && !/exists|duplicate/i.test(error.message))
       throw new Error(
-        `Filen ${f.zipPath.split("/").pop()} kunne ikke lastes opp (${error.message}).`,
+        L(
+          `Filen ${f.zipPath.split("/").pop()} kunne ikke lastes opp (${error.message}).`,
+          `The file ${f.zipPath.split("/").pop()} could not be uploaded (${error.message}).`,
+        ),
       );
     state.uploaded.add(f.zipPath);
     done++;

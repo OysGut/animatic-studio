@@ -6,6 +6,7 @@
 import { CircleHelp, Film, Layers } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
+  L,
   applyCommand,
   approveWithImpactCommands,
   assetVersionImpact,
@@ -70,11 +71,11 @@ export function ApproveImpactDialog({
     const v = state.variants[o?.variantId ?? c?.variantId ?? ""];
     const prod =
       x.productionId && x.productionId !== productionId
-        ? ` · ${state.productions[x.productionId]?.name ?? "annen produksjon"}`
+        ? ` · ${state.productions[x.productionId]?.name ?? L("annen produksjon", "another production")}`
         : !x.occurrenceId
-          ? " · ikke i noen produksjon"
+          ? L(" · ikke i noen produksjon", " · not in any production")
           : "";
-    return `${x.number ? `${x.number}. ` : ""}${v ? formatHeading(v.heading) : "Scene"}${x.active || !x.occurrenceId ? "" : " (deaktivert)"}${prod}`;
+    return `${x.number ? `${x.number}. ` : ""}${v ? formatHeading(v.heading) : "Scene"}${x.active || !x.occurrenceId ? "" : L(" (deaktivert)", " (inactive)")}${prod}`;
   };
 
   function close() {
@@ -96,7 +97,12 @@ export function ApproveImpactDialog({
         command: c,
       });
       if (!r.ok) {
-        setErr(`Godkjenningen kan ikke gjøres: ${r.error.message}`);
+        setErr(
+          L(
+            `Godkjenningen kan ikke gjøres: ${r.error.message}`,
+            `The approval cannot be made: ${r.error.message}`,
+          ),
+        );
         return;
       }
       probe = r.state;
@@ -106,8 +112,11 @@ export function ApproveImpactDialog({
       const e = cmds.run(
         c,
         c.type === "ApproveAssetVersion"
-          ? `Godkjenn v${version.number} av «${variant.name}»`
-          : "Bilder i valgte scener",
+          ? L(
+              `Godkjenn v${version.number} av «${variant.name}»`,
+              `Approve v${version.number} of “${variant.name}”`,
+            )
+          : L("Bilder i valgte scener", "Images in the chosen scenes"),
         group,
       );
       if (e) {
@@ -123,15 +132,22 @@ export function ApproveImpactDialog({
       <DialogContent className="max-h-[88vh] max-w-[640px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
-            Godkjenn v{version?.number} av «{variant.name}»
+            {L("Godkjenn", "Approve")} v{version?.number} {L("av «", "of “")}
+            {variant.name}
+            {L("»", "”")}
           </DialogTitle>
           <DialogDescription>
-            Bildet brukes i scenene under. Velg hvilke som skal få det nye bildet – de andre
-            beholder bildet de har nå.
+            {L(
+              "Bildet brukes i scenene under. Velg hvilke som skal få det nye bildet – de andre beholder bildet de har nå.",
+              "The image is used in the scenes below. Choose which ones get the new image – the others keep the image they have now.",
+            )}
           </DialogDescription>
         </DialogHeader>
         {withLayers.length ? (
-          <ul aria-label="Scener med 2D-scene" className="flex flex-col gap-1">
+          <ul
+            aria-label={L("Scener med 2D-scene", "Scenes with a 2D scene")}
+            className="flex flex-col gap-1"
+          >
             {withLayers.map((x) => {
               const on = !keep.has(x.key);
               const follows = x.layers.filter((l) => l.mode === "follows" && l.versionId).length;
@@ -159,11 +175,26 @@ export function ApproveImpactDialog({
                         {label(x)}
                       </span>
                       <span className="block text-[11px] text-text-tertiary">
-                        {on ? "Får det nye bildet" : "Beholder bildet den har nå"}
-                        {locked && on ? ` (${locked} låst bilde oppdateres)` : ""}
-                        {follows && !on ? ` (${follows} bilde låses til dagens versjon)` : ""}
+                        {on
+                          ? L("Får det nye bildet", "Gets the new image")
+                          : L("Beholder bildet den har nå", "Keeps the image it has now")}
+                        {locked && on
+                          ? L(
+                              ` (${locked} låst bilde oppdateres)`,
+                              ` (${locked} locked image updated)`,
+                            )
+                          : ""}
+                        {follows && !on
+                          ? L(
+                              ` (${follows} bilde låses til dagens versjon)`,
+                              ` (${follows} image locked to today's version)`,
+                            )
+                          : ""}
                         {newer
-                          ? ` · ${newer} bilde er låst til en nyere versjon og endres ikke`
+                          ? L(
+                              ` · ${newer} bilde er låst til en nyere versjon og endres ikke`,
+                              ` · ${newer} image is locked to a newer version and is not changed`,
+                            )
                           : ""}
                       </span>
                     </span>
@@ -173,18 +204,26 @@ export function ApproveImpactDialog({
             })}
           </ul>
         ) : (
-          <p className="text-[13px] text-text-secondary">Ingen 2D-scener får et annet bilde.</p>
+          <p className="text-[13px] text-text-secondary">
+            {L("Ingen 2D-scener får et annet bilde.", "No 2D scenes get a different image.")}
+          </p>
         )}
         {otherProductions ? (
           <p className="text-[11px] text-text-tertiary">
-            Godkjenningen gjelder hele prosjektet, også andre produksjoner.
+            {L(
+              "Godkjenningen gjelder hele prosjektet, også andre produksjoner.",
+              "The approval applies to the whole project, including other productions.",
+            )}
           </p>
         ) : null}
         {films.length ? (
           <div className="flex flex-col gap-1 border-t border-border pt-2">
             <p className="flex items-center gap-1.5 text-xs text-text-secondary">
               <CircleHelp className="size-3.5 text-text-tertiary" aria-hidden />
-              Ferdig film kan være påvirket (usikkert – filmen endres ikke, kontroller den selv):
+              {L(
+                "Ferdig film kan være påvirket (usikkert – filmen endres ikke, kontroller den selv):",
+                "A finished film may be affected (uncertain – the film is not changed, check it yourself):",
+              )}
             </p>
             <ul className="flex flex-col gap-0.5 pl-5 text-xs text-text-tertiary">
               {films.map((x) => (
@@ -203,9 +242,9 @@ export function ApproveImpactDialog({
         ) : null}
         <DialogFooter>
           <Button variant="ghost" onClick={close}>
-            Avbryt
+            {L("Avbryt", "Cancel")}
           </Button>
-          <Button onClick={confirm}>Godkjenn</Button>
+          <Button onClick={confirm}>{L("Godkjenn", "Approve")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

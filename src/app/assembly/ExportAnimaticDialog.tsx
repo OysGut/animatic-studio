@@ -26,6 +26,9 @@ import {
   type ExportSettings,
   type FilmClip,
   type ProjectState,
+  L,
+  locale,
+  languageWord,
 } from "@/core";
 import { ExportError, canExportVideo, exportAnimatic, loadImages } from "@/engine/export/animatic";
 import {
@@ -129,7 +132,7 @@ export function ExportAnimaticDialog({
   const [mono, setMono] = useState(monochrome);
   /** «video»: film med lyd. «dialogue»: bare dialogsporet som WAV (REQ-0350). */
   const [output, setOutput] = useState<"video" | "dialogue">("video");
-  const langName = (LANGUAGE_LABEL[language.dialogue] ?? language.dialogue).toLowerCase();
+  const langName = languageWord(language.dialogue);
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState<(ReadyFile & { bytes: number }) | null>(null);
@@ -205,41 +208,63 @@ export function ExportAnimaticDialog({
       level: n > 0 ? "ok" : "warn",
       text:
         n > 0
-          ? `${n} ${n === 1 ? "scene" : "scener"} i manusets rekkefølge, ${formatSeconds(
-              framesToSeconds(sel.endFrame - sel.startFrame, fps),
-            )}.`
-          : "Utvalget har ingen scener.",
+          ? L(
+              `${n} ${n === 1 ? "scene" : "scener"} i manusets rekkefølge, ${formatSeconds(
+                framesToSeconds(sel.endFrame - sel.startFrame, fps),
+              )}.`,
+              `${n} ${n === 1 ? "scene" : "scenes"} in script order, ${formatSeconds(
+                framesToSeconds(sel.endFrame - sel.startFrame, fps),
+              )}.`,
+            )
+          : L("Utvalget har ingen scener.", "The selection has no scenes."),
     });
     if (scope === "film") {
       const inactive = orderedOccurrences(state, productionId).filter((o) => !o.active).length;
       if (inactive > 0)
         out.push({
           level: "info",
-          text: `${inactive} ${inactive === 1 ? "deaktivert scene er" : "deaktiverte scener er"} ikke med.`,
+          text: L(
+            `${inactive} ${inactive === 1 ? "deaktivert scene er" : "deaktiverte scener er"} ikke med.`,
+            `${inactive} ${inactive === 1 ? "deactivated scene is" : "deactivated scenes are"} not included.`,
+          ),
         });
     }
     const placeholders = sel.clips.filter((c) => c.source === "placeholder");
     if (placeholders.length > 0)
       out.push({
         level: "warn",
-        text: `${placeholders.length} ${
-          placeholders.length === 1 ? "scene" : "scener"
-        } uten 2D-scene vises som tittelkort (${placeholders
-          .slice(0, 4)
-          .map((c) => c.productionNumber ?? formatHeading(c.heading))
-          .join(", ")}${placeholders.length > 4 ? " …" : ""}).`,
+        text: L(
+          `${placeholders.length} ${
+            placeholders.length === 1 ? "scene" : "scener"
+          } uten 2D-scene vises som tittelkort (${placeholders
+            .slice(0, 4)
+            .map((c) => c.productionNumber ?? formatHeading(c.heading))
+            .join(", ")}${placeholders.length > 4 ? " …" : ""}).`,
+          `${placeholders.length} ${
+            placeholders.length === 1 ? "scene" : "scenes"
+          } without a 2D scene are shown as title cards (${placeholders
+            .slice(0, 4)
+            .map((c) => c.productionNumber ?? formatHeading(c.heading))
+            .join(", ")}${placeholders.length > 4 ? " …" : ""}).`,
+        ),
       });
     const films = sel.clips.filter((c) => c.source === "film");
     if (films.length > 0)
       out.push({
         level: filmMediaPaths(films).some((p) => !filmUrls?.[p]) ? "warn" : "ok",
-        text: `${films.length} ${films.length === 1 ? "scene bruker" : "scener bruker"} film, AI-video eller stillbilde.`,
+        text: L(
+          `${films.length} ${films.length === 1 ? "scene bruker" : "scener bruker"} film, AI-video eller stillbilde.`,
+          `${films.length} ${films.length === 1 ? "scene uses" : "scenes use"} film, AI video or a still image.`,
+        ),
       });
     const estimated = sel.clips.filter((c) => c.durationKind === "estimate").length;
     if (estimated > 0)
       out.push({
         level: "info",
-        text: `${estimated} ${estimated === 1 ? "scene har" : "scener har"} lengde beregnet fra manuset.`,
+        text: L(
+          `${estimated} ${estimated === 1 ? "scene har" : "scener har"} lengde beregnet fra manuset.`,
+          `${estimated} ${estimated === 1 ? "scene has" : "scenes have"} a length estimated from the script.`,
+        ),
       });
     const need = new Set<string>();
     let missingVersions = 0;
@@ -255,9 +280,10 @@ export function ExportAnimaticDialog({
     if (missingVersions > 0)
       out.push({
         level: "warn",
-        text: `${missingVersions} ${
-          missingVersions === 1 ? "lag mangler" : "lag mangler"
-        } bilde i biblioteket og blir usynlige.`,
+        text: L(
+          `${missingVersions} ${missingVersions === 1 ? "lag mangler" : "lag mangler"} bilde i biblioteket og blir usynlige.`,
+          `${missingVersions} ${missingVersions === 1 ? "layer is" : "layers are"} missing an image in the library and will be invisible.`,
+        ),
       });
     // Lyd i utvalget
     const from = framesToSeconds(sel.startFrame, fps);
@@ -269,17 +295,27 @@ export function ExportAnimaticDialog({
     if (sounds.length > 0)
       out.push({
         level: "ok",
-        text: `${audible.length} ${audible.length === 1 ? "lydklipp" : "lydklipp"} med i videoen${
-          audible.length < sounds.length
-            ? ` (${sounds.length - audible.length} i dempede spor er ikke med)`
-            : ""
-        }.`,
+        text: L(
+          `${audible.length} ${audible.length === 1 ? "lydklipp" : "lydklipp"} med i videoen${
+            audible.length < sounds.length
+              ? ` (${sounds.length - audible.length} i dempede spor er ikke med)`
+              : ""
+          }.`,
+          `${audible.length} ${audible.length === 1 ? "audio clip" : "audio clips"} included in the video${
+            audible.length < sounds.length
+              ? ` (${sounds.length - audible.length} in muted tracks are not included)`
+              : ""
+          }.`,
+        ),
       });
     const noFile = sounds.filter((it) => it.version === null).length;
     if (noFile > 0)
       out.push({
         level: "warn",
-        text: `${noFile} ${noFile === 1 ? "lydklipp mangler" : "lydklipp mangler"} lydfil og blir stille.`,
+        text: L(
+          `${noFile} ${noFile === 1 ? "lydklipp mangler" : "lydklipp mangler"} lydfil og blir stille.`,
+          `${noFile} ${noFile === 1 ? "audio clip is" : "audio clips are"} missing an audio file and will be silent.`,
+        ),
       });
     // Språkversjonen (DEC-0059)
     const mixed = sounds.filter(
@@ -289,7 +325,10 @@ export function ExportAnimaticDialog({
     if (mixed > 0)
       out.push({
         level: "warn",
-        text: `${mixed} ${mixed === 1 ? "filmklipp har" : "filmklipp har"} dialog på et annet språk blandet inn i lyden. Den kan ikke fjernes, og spilles som den er.`,
+        text: L(
+          `${mixed} ${mixed === 1 ? "filmklipp har" : "filmklipp har"} dialog på et annet språk blandet inn i lyden. Den kan ikke fjernes, og spilles som den er.`,
+          `${mixed} ${mixed === 1 ? "film clip has" : "film clips have"} dialogue in another language mixed into the sound. It cannot be removed, and is played as it is.`,
+        ),
       });
     const voices = dialogueItems(audible);
     if (output === "dialogue")
@@ -297,13 +336,22 @@ export function ExportAnimaticDialog({
         level: voices.length > 0 ? "ok" : "warn",
         text:
           voices.length > 0
-            ? `Dialogspor (${langName}): ${voices.length} ${voices.length === 1 ? "lydklipp" : "lydklipp"} med dialog og forteller. Musikk, effekter og lyden i importert film er ikke med.`
-            : `Ingen dialog på ${langName} i utvalget – dialogsporet blir stille.`,
+            ? L(
+                `Dialogspor (${langName}): ${voices.length} ${voices.length === 1 ? "lydklipp" : "lydklipp"} med dialog og forteller. Musikk, effekter og lyden i importert film er ikke med.`,
+                `Dialogue track (${langName}): ${voices.length} ${voices.length === 1 ? "audio clip" : "audio clips"} with dialogue and narration. Music, effects and the sound in imported film are not included.`,
+              )
+            : L(
+                `Ingen dialog på ${langName} i utvalget – dialogsporet blir stille.`,
+                `No dialogue in ${langName} in the selection – the dialogue track will be silent.`,
+              ),
       });
     if (output === "dialogue" && to - from > STEM_MAX_SECONDS)
       out.push({
         level: "warn",
-        text: `Dialogsporet lages for de første ${STEM_MAX_SECONDS / 3600} timene (grensen for WAV-filer). Velg et utvalg av scener for resten.`,
+        text: L(
+          `Dialogsporet lages for de første ${STEM_MAX_SECONDS / 3600} timene (grensen for WAV-filer). Velg et utvalg av scener for resten.`,
+          `The dialogue track is made for the first ${STEM_MAX_SECONDS / 3600} hours (the limit for WAV files). Choose a selection of scenes for the rest.`,
+        ),
       });
     if (output === "video" && language.subtitles) {
       const n = subtitles.filter((c) => c.startMs < to * 1000 && c.endMs > from * 1000).length;
@@ -311,8 +359,14 @@ export function ExportAnimaticDialog({
         level: n > 0 ? "ok" : "warn",
         text:
           n > 0
-            ? `${n} undertekster på ${(LANGUAGE_LABEL[language.subtitles] ?? language.subtitles).toLowerCase()} brennes inn i bildet.`
-            : "Ingen undertekster i utvalget (replikkene mangler oversettelse eller tid).",
+            ? L(
+                `${n} undertekster på ${languageWord(language.subtitles)} brennes inn i bildet.`,
+                `${n} subtitles in ${languageWord(language.subtitles)} are burned into the image.`,
+              )
+            : L(
+                "Ingen undertekster i utvalget (replikkene mangler oversettelse eller tid).",
+                "No subtitles in the selection (the lines lack a translation or timing).",
+              ),
       });
     }
     const usedAudio = output === "dialogue" ? voices : audible;
@@ -369,16 +423,22 @@ export function ExportAnimaticDialog({
         audioBank.loadAll(audioSubset),
       ]);
       const lostAudio = audioPaths.filter((p) => !audioBank.get(p)).length;
-      if (ctrl.signal.aborted) throw new DOMException("Avbrutt", "AbortError");
+      if (ctrl.signal.aborted) throw new DOMException(L("Avbrutt", "Cancelled"), "AbortError");
       const date = new Date().toISOString().slice(0, 10);
       const what =
         scope === "film"
           ? "animatic"
           : scope === "pick" && sel.clips.length > 1
-            ? `${sel.clips.length} scener`
+            ? L(`${sel.clips.length} scener`, `${sel.clips.length} scenes`)
             : sel.clips.length === 1
-              ? `scene ${sel.clips[0]!.productionNumber ?? ""}`.trim()
-              : `scener ${sel.clips[0]!.productionNumber ?? ""}–${sel.clips[sel.clips.length - 1]!.productionNumber ?? ""}`;
+              ? L(
+                  `scene ${sel.clips[0]!.productionNumber ?? ""}`.trim(),
+                  `scene ${sel.clips[0]!.productionNumber ?? ""}`.trim(),
+                )
+              : L(
+                  `scener ${sel.clips[0]!.productionNumber ?? ""}–${sel.clips[sel.clips.length - 1]!.productionNumber ?? ""}`,
+                  `scenes ${sel.clips[0]!.productionNumber ?? ""}–${sel.clips[sel.clips.length - 1]!.productionNumber ?? ""}`,
+                );
       if (output === "dialogue") {
         // Bare dialogsporet som WAV (DEC-0059, REQ-0350)
         const stem = await exportDialogueStemParts({
@@ -396,7 +456,9 @@ export function ExportAnimaticDialog({
           },
         });
         if (abort.current !== ctrl || ctrl.signal.aborted) return;
-        const name = safeName(`${state.project.name} – ${what} – dialog ${langName} – ${date}.wav`);
+        const name = safeName(
+          `${state.project.name} – ${what} – ${L("dialog", "dialogue")} ${langName} – ${date}.wav`,
+        );
         const f = prepareDownload(stem.parts, name, "audio/wav");
         setReady({ ...f, bytes: stem.bytes });
         recordExport({
@@ -408,7 +470,10 @@ export function ExportAnimaticDialog({
         });
         if (lostAudio > 0)
           setError(
-            `Ferdig, men ${lostAudio} ${lostAudio === 1 ? "lydfil" : "lydfiler"} kunne ikke leses og mangler.`,
+            L(
+              `Ferdig, men ${lostAudio} ${lostAudio === 1 ? "lydfil" : "lydfiler"} kunne ikke leses og mangler.`,
+              `Done, but ${lostAudio} ${lostAudio === 1 ? "audio file" : "audio files"} could not be read and are missing.`,
+            ),
           );
         return;
       }
@@ -462,15 +527,27 @@ export function ExportAnimaticDialog({
       const notes: string[] = [];
       if (lost > 0)
         notes.push(
-          `${lost} ${lost === 1 ? "bilde" : "bilder"} kunne ikke lastes og mangler i videoen`,
+          L(
+            `${lost} ${lost === 1 ? "bilde" : "bilder"} kunne ikke lastes og mangler i videoen`,
+            `${lost} ${lost === 1 ? "image" : "images"} could not be loaded and are missing from the video`,
+          ),
         );
       if (lostAudio > 0)
         notes.push(
-          `${lostAudio} ${lostAudio === 1 ? "lydfil" : "lydfiler"} kunne ikke leses og mangler`,
+          L(
+            `${lostAudio} ${lostAudio === 1 ? "lydfil" : "lydfiler"} kunne ikke leses og mangler`,
+            `${lostAudio} ${lostAudio === 1 ? "audio file" : "audio files"} could not be read and are missing`,
+          ),
         );
       if (audioPaths.length > lostAudio && file.audioCodec === null)
-        notes.push("nettleseren kunne ikke kode lyd, så videoen er uten lyd");
-      if (notes.length) setError(`Ferdig, men ${notes.join("; ")}.`);
+        notes.push(
+          L(
+            "nettleseren kunne ikke kode lyd, så videoen er uten lyd",
+            "the browser could not encode audio, so the video has no sound",
+          ),
+        );
+      if (notes.length)
+        setError(L(`Ferdig, men ${notes.join("; ")}.`, `Done, but ${notes.join("; ")}.`));
     } catch (e) {
       if (abort.current !== ctrl) return;
       if ((e as Error).name === "AbortError") setProgress(null);
@@ -478,7 +555,10 @@ export function ExportAnimaticDialog({
         setError(
           e instanceof ExportError
             ? e.message
-            : `Eksporten stoppet: ${(e as Error).message || "ukjent feil"}`,
+            : L(
+                `Eksporten stoppet: ${(e as Error).message || "ukjent feil"}`,
+                `The export stopped: ${(e as Error).message || "unknown error"}`,
+              ),
         );
     } finally {
       if (abort.current === ctrl) abort.current = null;
@@ -495,18 +575,24 @@ export function ExportAnimaticDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[640px] border-border bg-surface-2">
         <DialogHeader>
-          <DialogTitle>Eksporter animatic</DialogTitle>
+          <DialogTitle>{L("Eksporter animatic", "Export animatic")}</DialogTitle>
           <DialogDescription>
-            Videoen lages her i nettleseren av alt som er i filmen – 2D-scener, importert film,
-            AI-video og lydsporene – uten nye kostnader. Eksporten endrer ingenting i prosjektet.
-            Produksjon: <strong>{state.productions[productionId]?.name ?? "–"}</strong> (en spinoff,
-            trailer eller pitchfilm velges øverst i monteringen).
+            {L(
+              "Videoen lages her i nettleseren av alt som er i filmen – 2D-scener, importert film, AI-video og lydsporene – uten nye kostnader. Eksporten endrer ingenting i prosjektet.",
+              "The video is made here in the browser from everything in the film – 2D scenes, imported film, AI video and the audio tracks – at no extra cost. The export changes nothing in the project.",
+            )}{" "}
+            {L("Produksjon:", "Production:")}{" "}
+            <strong>{state.productions[productionId]?.name ?? "–"}</strong>{" "}
+            {L(
+              "(en spinoff, trailer eller pitchfilm velges øverst i monteringen).",
+              "(a spin-off, trailer or pitch film is chosen at the top of the assembly).",
+            )}
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid grid-cols-2 gap-5">
           <fieldset className="flex flex-col gap-2" disabled={busy}>
-            <legend className={legend}>Hva</legend>
+            <legend className={legend}>{L("Hva", "What")}</legend>
             <label className={radio}>
               <input
                 type="radio"
@@ -516,8 +602,10 @@ export function ExportAnimaticDialog({
                 className="mt-1"
               />
               <span>
-                Hele filmen
-                <span className="block text-xs text-text-tertiary">Alle aktive scener</span>
+                {L("Hele filmen", "The whole film")}
+                <span className="block text-xs text-text-tertiary">
+                  {L("Alle aktive scener", "All active scenes")}
+                </span>
               </span>
             </label>
             <label className={radio + (selectedId ? "" : " opacity-50")}>
@@ -530,7 +618,7 @@ export function ExportAnimaticDialog({
                 className="mt-1"
               />
               <span>
-                Valgt scene
+                {L("Valgt scene", "Selected scene")}
                 <span className="block text-xs text-text-tertiary">
                   {selectedId
                     ? (() => {
@@ -539,7 +627,7 @@ export function ExportAnimaticDialog({
                           ? `${c.productionNumber ?? ""} ${formatHeading(c.heading)}`.trim()
                           : "–";
                       })()
-                    : "Velg en scene i tidslinjen først"}
+                    : L("Velg en scene i tidslinjen først", "Select a scene in the timeline first")}
                 </span>
               </span>
             </label>
@@ -552,11 +640,11 @@ export function ExportAnimaticDialog({
                 className="mt-1"
               />
               <span className="flex min-w-0 flex-1 flex-col gap-1">
-                Fra scene til scene
+                {L("Fra scene til scene", "From scene to scene")}
                 {/* Lange scenehoder skal ikke presse valgene ut av kolonnen */}
                 <span className="flex min-w-0 flex-col gap-1 overflow-hidden text-xs text-text-tertiary">
                   <select
-                    aria-label="Første scene"
+                    aria-label={L("Første scene", "First scene")}
                     value={fromId}
                     onChange={(e) => {
                       setFromId(e.target.value);
@@ -571,7 +659,7 @@ export function ExportAnimaticDialog({
                     ))}
                   </select>
                   <select
-                    aria-label="Siste scene"
+                    aria-label={L("Siste scene", "Last scene")}
                     value={toId}
                     onChange={(e) => {
                       setToId(e.target.value);
@@ -597,16 +685,19 @@ export function ExportAnimaticDialog({
                 className="mt-1"
               />
               <span className="flex min-w-0 flex-1 flex-col gap-1">
-                Valgte scener
+                {L("Valgte scener", "Selected scenes")}
                 <span className="block text-xs text-text-tertiary">
-                  Kryss av scenene; de settes etter hverandre i filmens rekkefølge
+                  {L(
+                    "Kryss av scenene; de settes etter hverandre i filmens rekkefølge",
+                    "Tick the scenes; they are put one after another in the film's order",
+                  )}
                 </span>
               </span>
             </label>
             {scope === "pick" ? (
               <div className="flex flex-col gap-1">
                 <ul
-                  aria-label="Scener i eksporten"
+                  aria-label={L("Scener i eksporten", "Scenes in the export")}
                   className="max-h-40 overflow-y-auto border border-border bg-surface-1"
                 >
                   {clips.map((c) => (
@@ -635,14 +726,14 @@ export function ExportAnimaticDialog({
                     className="text-text-secondary hover:underline"
                     onClick={() => setPicked(new Set(clips.map((c) => c.occurrenceId)))}
                   >
-                    Alle
+                    {L("Alle", "All")}
                   </button>
                   <button
                     type="button"
                     className="text-text-secondary hover:underline"
                     onClick={() => setPicked(new Set())}
                   >
-                    Ingen
+                    {L("Ingen", "None")}
                   </button>
                 </span>
               </div>
@@ -650,7 +741,7 @@ export function ExportAnimaticDialog({
           </fieldset>
 
           <fieldset className="flex flex-col gap-2" disabled={busy}>
-            <legend className={legend}>Størrelse</legend>
+            <legend className={legend}>{L("Størrelse", "Size")}</legend>
             <label className={radio}>
               <input
                 type="radio"
@@ -660,7 +751,7 @@ export function ExportAnimaticDialog({
                 className="mt-1"
               />
               <span>
-                Full størrelse
+                {L("Full størrelse", "Full size")}
                 <span className="block text-xs text-text-tertiary">
                   {fullW} × {fullH} px
                 </span>
@@ -675,9 +766,10 @@ export function ExportAnimaticDialog({
                 className="mt-1"
               />
               <span>
-                Halv størrelse
+                {L("Halv størrelse", "Half size")}
                 <span className="block text-xs text-text-tertiary">
-                  {Math.round(fullW / 2)} × {Math.round(fullH / 2)} px – raskere og mindre fil
+                  {Math.round(fullW / 2)} × {Math.round(fullH / 2)} px –{" "}
+                  {L("raskere og mindre fil", "faster and a smaller file")}
                 </span>
               </span>
             </label>
@@ -688,17 +780,19 @@ export function ExportAnimaticDialog({
                 onChange={(e) => setMono(e.target.checked)}
                 className="size-3.5 accent-[var(--accent-brand)]"
               />
-              Hele filmen i svart-hvitt
+              {L("Hele filmen i svart-hvitt", "The whole film in black and white")}
             </label>
             <p className="pt-1 text-xs text-text-tertiary">
-              Scener som er satt til svart-hvitt, blir det uansett. MP4 (H.264) der nettleseren kan,
-              ellers WebM. Med lyden fra lydsporene (dempede spor er ikke med).
+              {L(
+                "Scener som er satt til svart-hvitt, blir det uansett. MP4 (H.264) der nettleseren kan, ellers WebM. Med lyden fra lydsporene (dempede spor er ikke med).",
+                "Scenes set to black and white stay that way. MP4 (H.264) where the browser can, otherwise WebM. With the sound from the audio tracks (muted tracks are not included).",
+              )}
             </p>
           </fieldset>
         </div>
 
         <fieldset className="flex flex-col gap-2" disabled={busy}>
-          <legend className={legend}>Språk og innhold</legend>
+          <legend className={legend}>{L("Språk og innhold", "Language and content")}</legend>
           <FilmLanguagePicker value={language} onChange={onLanguage} />
           <div className="flex flex-wrap gap-4">
             <label className={radio}>
@@ -710,10 +804,10 @@ export function ExportAnimaticDialog({
                 className="mt-1"
               />
               <span>
-                Video
+                {L("Video", "Video")}
                 <span className="block text-xs text-text-tertiary">
-                  Bilde og all lyd på {langName}
-                  {language.subtitles ? ", med undertekster" : ""}
+                  {L("Bilde og all lyd på", "Picture and all sound in")} {langName}
+                  {language.subtitles ? L(", med undertekster", ", with subtitles") : ""}
                 </span>
               </span>
             </label>
@@ -726,32 +820,39 @@ export function ExportAnimaticDialog({
                 className="mt-1"
               />
               <span>
-                Bare dialogspor (WAV)
+                {L("Bare dialogspor (WAV)", "Dialogue track only (WAV)")}
                 <span className="block text-xs text-text-tertiary">
-                  Dialog og forteller på {langName}, uten musikk og effekter
+                  {L("Dialog og forteller på", "Dialogue and narration in")} {langName}
+                  {L(", uten musikk og effekter", ", without music and effects")}
                 </span>
               </span>
             </label>
           </div>
         </fieldset>
 
-        <section aria-label="Kontroll før eksport" className="flex flex-col gap-1.5">
-          <h3 className={legend}>Kontroll før eksport</h3>
+        <section
+          aria-label={L("Kontroll før eksport", "Check before export")}
+          className="flex flex-col gap-1.5"
+        >
+          <h3 className={legend}>{L("Kontroll før eksport", "Check before export")}</h3>
           <ul className="flex flex-col gap-1">
             {checks.map((c, i) => (
               <li key={i} className="flex items-start gap-2 text-xs text-text-secondary">
                 {c.level === "ok" ? (
                   <CheckCircle2
                     className="mt-px size-3.5 shrink-0 text-status-success"
-                    aria-label="OK"
+                    aria-label={L("OK", "OK")}
                   />
                 ) : c.level === "warn" ? (
                   <AlertTriangle
                     className="mt-px size-3.5 shrink-0 text-status-discrepancy"
-                    aria-label="Merk"
+                    aria-label={L("Merk", "Note")}
                   />
                 ) : (
-                  <Info className="mt-px size-3.5 shrink-0 text-text-tertiary" aria-label="Info" />
+                  <Info
+                    className="mt-px size-3.5 shrink-0 text-text-tertiary"
+                    aria-label={L("Info", "Info")}
+                  />
                 )}
                 {c.text}
               </li>
@@ -761,8 +862,10 @@ export function ExportAnimaticDialog({
 
         {!supported ? (
           <p role="alert" className="text-xs text-status-danger">
-            Denne nettleseren kan ikke lage video. Bruk en nyere utgave av Chrome, Edge, Safari
-            eller Firefox.
+            {L(
+              "Denne nettleseren kan ikke lage video. Bruk en nyere utgave av Chrome, Edge, Safari eller Firefox.",
+              "This browser cannot make video. Use a newer version of Chrome, Edge, Safari or Firefox.",
+            )}
           </p>
         ) : null}
 
@@ -773,7 +876,7 @@ export function ExportAnimaticDialog({
               aria-valuenow={pct}
               aria-valuemin={0}
               aria-valuemax={100}
-              aria-label="Fremdrift"
+              aria-label={L("Fremdrift", "Progress")}
               className="h-1.5 overflow-hidden rounded-full bg-surface-3"
             >
               <div
@@ -782,8 +885,8 @@ export function ExportAnimaticDialog({
               />
             </div>
             <p className="text-xs text-text-tertiary">
-              Bilde {progress.done} av {progress.total} ({formatTimecode(progress.done, fps)}) –{" "}
-              {pct} %
+              {L("Bilde", "Image")} {progress.done} {L("av", "of")} {progress.total} (
+              {formatTimecode(progress.done, fps)}) – {pct} %
             </p>
           </div>
         ) : null}
@@ -799,8 +902,8 @@ export function ExportAnimaticDialog({
             className="flex flex-wrap items-center gap-2 text-xs text-text-secondary"
             role="status"
           >
-            Ferdig: {ready.name} (
-            {(ready.bytes / 1024 / 1024).toLocaleString("nb-NO", {
+            {L("Ferdig:", "Done:")} {ready.name} (
+            {(ready.bytes / 1024 / 1024).toLocaleString(locale(), {
               maximumFractionDigits: 1,
             })}{" "}
             MB).
@@ -810,11 +913,14 @@ export function ExportAnimaticDialog({
               className="inline-flex items-center gap-1 text-accent-brand hover:underline"
             >
               <Download className="size-3.5" aria-hidden />
-              Last ned
+              {L("Last ned", "Download")}
             </a>
             {isEmbedded() ? (
               <span className="text-text-tertiary">
-                Hvis nedlastingen ikke starter: åpne programmet i en egen fane.
+                {L(
+                  "Hvis nedlastingen ikke starter: åpne programmet i en egen fane.",
+                  "If the download does not start: open the app in a separate tab.",
+                )}
               </span>
             ) : null}
           </p>
@@ -825,11 +931,11 @@ export function ExportAnimaticDialog({
         <DialogFooter>
           {busy ? (
             <Button variant="ghost" onClick={() => abort.current?.abort()}>
-              Avbryt
+              {L("Avbryt", "Cancel")}
             </Button>
           ) : (
             <Button variant="ghost" onClick={() => onOpenChange(false)}>
-              Lukk
+              {L("Lukk", "Close")}
             </Button>
           )}
           <Button
@@ -842,7 +948,7 @@ export function ExportAnimaticDialog({
             }
           >
             <Download />
-            {warnings ? "Eksporter likevel" : "Eksporter"}
+            {warnings ? L("Eksporter likevel", "Export anyway") : L("Eksporter", "Export")}
           </Button>
         </DialogFooter>
       </DialogContent>

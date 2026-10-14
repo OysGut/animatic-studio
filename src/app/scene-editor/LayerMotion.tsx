@@ -10,6 +10,7 @@ import {
   smoothPathPoints,
   straightPathPoints,
   tempoAt,
+  L,
   type Command,
   type CompositionLayer,
   type MotionPath,
@@ -58,11 +59,13 @@ export function LayerMotion({
   const frames = (s: number) => Math.max(0, Math.round(s * fps));
 
   return (
-    <Section title="Bevegelsesbane">
+    <Section title={L("Bevegelsesbane", "Motion path")}>
       {!path ? (
         <Hint>
-          Tegn veien laget skal gå i scenen med musen. Banen starter der avspillingshodet står og
-          varer i to sekunder; tidene kan endres etterpå.
+          {L(
+            "Tegn veien laget skal gå i scenen med musen. Banen starter der avspillingshodet står og varer i to sekunder; tidene kan endres etterpå.",
+            "Draw the route the layer should take in the scene with the mouse. The path starts where the playhead is and lasts two seconds; the times can be changed afterwards.",
+          )}
         </Hint>
       ) : null}
       {editable ? (
@@ -72,10 +75,17 @@ export function LayerMotion({
             variant={drawing ? "default" : "secondary"}
             aria-pressed={drawing}
             onClick={() => onDrawingChange(!drawing)}
-            title="Tegn banen i scenen (Esc avbryter)"
+            title={L(
+              "Tegn banen i scenen (Esc avbryter)",
+              "Draw the path in the scene (Esc cancels)",
+            )}
           >
             <Pencil className="size-3.5" />
-            {drawing ? "Tegner … (klikk for å avbryte)" : path ? "Tegn på nytt" : "Tegn bane"}
+            {drawing
+              ? L("Tegner … (klikk for å avbryte)", "Drawing … (click to cancel)")
+              : path
+                ? L("Tegn på nytt", "Draw again")
+                : L("Tegn bane", "Draw path")}
           </Button>
           {path ? (
             <>
@@ -83,32 +93,38 @@ export function LayerMotion({
                 size="sm"
                 variant="secondary"
                 onClick={() =>
-                  setPath("Glatt ut banen", { ...path, points: smoothPathPoints(path.points) })
+                  setPath(L("Glatt ut banen", "Smooth the path"), {
+                    ...path,
+                    points: smoothPathPoints(path.points),
+                  })
                 }
-                title="Færre punkter og myke kurver"
+                title={L("Færre punkter og myke kurver", "Fewer points and soft curves")}
               >
                 <Spline className="size-3.5" />
-                Glatt ut
+                {L("Glatt ut", "Smooth")}
               </Button>
               <Button
                 size="sm"
                 variant="secondary"
                 onClick={() =>
-                  setPath("Rett bane", { ...path, points: straightPathPoints(path.points) })
+                  setPath(L("Rett bane", "Straighten the path"), {
+                    ...path,
+                    points: straightPathPoints(path.points),
+                  })
                 }
-                title="Rett linje fra start til slutt"
+                title={L("Rett linje fra start til slutt", "Straight line from start to end")}
               >
                 <Minus className="size-3.5" />
-                Rett linje
+                {L("Rett linje", "Straight line")}
               </Button>
               <Button
                 size="sm"
                 variant="ghost"
-                onClick={() => setPath("Fjern bane", null)}
+                onClick={() => setPath(L("Fjern bane", "Remove path"), null)}
                 className="text-status-danger hover:text-status-danger"
               >
                 <Trash2 className="size-3.5" />
-                Fjern
+                {L("Fjern", "Remove")}
               </Button>
             </>
           ) : null}
@@ -118,38 +134,55 @@ export function LayerMotion({
         <>
           <div className="grid grid-cols-2 gap-2">
             <NumberField
-              label="Start (s)"
+              label={L("Start (s)", "Start (s)")}
               value={sec(path.startFrame)}
               step={0.1}
               min={0}
               disabled={off}
               valid={(s) => frames(s) < path.endFrame}
-              onCommit={(s) => setPath("Endre start på banen", { ...path, startFrame: frames(s) })}
+              onCommit={(s) =>
+                setPath(L("Endre start på banen", "Change path start"), {
+                  ...path,
+                  startFrame: frames(s),
+                })
+              }
             />
             <NumberField
-              label="Slutt (s)"
+              label={L("Slutt (s)", "End (s)")}
               value={sec(path.endFrame)}
               step={0.1}
               min={0}
               disabled={off}
               valid={(s) => frames(s) > path.startFrame}
-              onCommit={(s) => setPath("Endre slutt på banen", { ...path, endFrame: frames(s) })}
+              onCommit={(s) =>
+                setPath(L("Endre slutt på banen", "Change path end"), {
+                  ...path,
+                  endFrame: frames(s),
+                })
+              }
             />
           </div>
           {path.endFrame > durationFrames ? (
-            <Hint>Banen slutter etter at scenen er ferdig.</Hint>
+            <Hint>
+              {L(
+                "Banen slutter etter at scenen er ferdig.",
+                "The path ends after the scene has finished.",
+              )}
+            </Hint>
           ) : null}
           <EaseSlider
-            label="Ease ut (start)"
+            label={L("Ease ut (start)", "Ease out (start)")}
             value={path.easeOut}
             disabled={off}
-            onCommit={(v) => setPath("Endre ease ut", { ...path, easeOut: v })}
+            onCommit={(v) =>
+              setPath(L("Endre ease ut", "Change ease out"), { ...path, easeOut: v })
+            }
           />
           <EaseSlider
-            label="Ease inn (slutt)"
+            label={L("Ease inn (slutt)", "Ease in (end)")}
             value={path.easeIn}
             disabled={off}
-            onCommit={(v) => setPath("Endre ease inn", { ...path, easeIn: v })}
+            onCommit={(v) => setPath(L("Endre ease inn", "Change ease in"), { ...path, easeIn: v })}
           />
           <TempoCurve
             tempo={path.tempo}
@@ -157,8 +190,10 @@ export function LayerMotion({
             onCommit={(tempo, label) => setPath(label, { ...path, tempo })}
           />
           <Hint>
-            Dra punktene på banen i scenen. Dobbeltklikk et punkt: kurve eller hjørne. Alt-klikk:
-            fjern punktet.
+            {L(
+              "Dra punktene på banen i scenen. Dobbeltklikk et punkt: kurve eller hjørne. Alt-klikk: fjern punktet.",
+              "Drag the points on the path in the scene. Double-click a point: curve or corner. Alt-click: remove the point.",
+            )}
           </Hint>
         </>
       ) : null}
@@ -300,7 +335,12 @@ function TempoCurve({
     const list = draft;
     setDraft(null);
     if (list && d.moved)
-      onCommit(list, list.length > tempo.length ? "Nytt punkt i tempokurven" : "Endre tempokurven");
+      onCommit(
+        list,
+        list.length > tempo.length
+          ? L("Nytt punkt i tempokurven", "New point on the tempo curve")
+          : L("Endre tempokurven", "Change the tempo curve"),
+      );
   }
   function onDouble(e: React.MouseEvent<SVGSVGElement>) {
     if (disabled) return;
@@ -309,21 +349,21 @@ function TempoCurve({
     if (i >= 0)
       onCommit(
         tempo.filter((_, k) => k !== i),
-        "Fjern punkt i tempokurven",
+        L("Fjern punkt i tempokurven", "Remove point from the tempo curve"),
       );
   }
 
   return (
     <div className="flex flex-col gap-1 text-xs text-text-secondary">
       <span className="flex items-center justify-between">
-        Tempo
+        {L("Tempo", "Tempo")}
         {tempo.length > 0 && !disabled ? (
           <button
             type="button"
-            onClick={() => onCommit([], "Jevnt tempo")}
+            onClick={() => onCommit([], L("Jevnt tempo", "Even tempo"))}
             className="rounded-sm px-1 text-[11px] text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
           >
-            Jevnt tempo
+            {L("Jevnt tempo", "Even tempo")}
           </button>
         ) : null}
       </span>
@@ -331,7 +371,10 @@ function TempoCurve({
         ref={svgRef}
         viewBox={`0 0 ${W} ${H}`}
         role="img"
-        aria-label={`Tempokurve med ${tempo.length} punkter`}
+        aria-label={L(
+          `Tempokurve med ${tempo.length} punkter`,
+          `Tempo curve with ${tempo.length} points`,
+        )}
         className={
           "w-full max-w-[240px] touch-none rounded-sm border border-border bg-surface-3 " +
           (disabled ? "opacity-60" : "cursor-crosshair")
@@ -368,7 +411,10 @@ function TempoCurve({
         ))}
       </svg>
       <span className="text-[11px] text-text-tertiary">
-        Klikk for å legge til et punkt, dra for å endre farten, dobbeltklikk for å fjerne.
+        {L(
+          "Klikk for å legge til et punkt, dra for å endre farten, dobbeltklikk for å fjerne.",
+          "Click to add a point, drag to change the speed, double-click to remove.",
+        )}
       </span>
     </div>
   );

@@ -10,6 +10,7 @@ import {
   STYLE_USES,
   defaultStyleProfile,
 } from "../generation/style";
+import { L, collation } from "../i18n";
 
 export interface LibraryStyleProfile {
   readonly profile: StyleProfile;
@@ -42,8 +43,8 @@ export function libraryStyleProfiles(s: ProjectState): LibraryStyleProfile[] {
         usesLabel: uses.length
           ? uses.map((u) => STYLE_USE_LABEL[u]).join(", ")
           : isDefault
-            ? "Alt annet"
-            : "Ikke i bruk",
+            ? L("Alt annet", "Everything else")
+            : L("Ikke i bruk", "Not in use"),
         filled: STYLE_TEXT_FIELDS.filter((k) => (g?.[k] ?? "").trim()).length,
         fieldCount: STYLE_TEXT_FIELDS.length,
         summary: (g?.premise || g?.visualStyle || g?.world || "").trim(),
@@ -52,16 +53,16 @@ export function libraryStyleProfiles(s: ProjectState): LibraryStyleProfile[] {
     .sort(
       (a, b) =>
         Number(b.isDefault) - Number(a.isDefault) ||
-        a.profile.name.localeCompare(b.profile.name, "nb"),
+        a.profile.name.localeCompare(b.profile.name, collation()),
     );
 }
 
 /** Søket i biblioteket treffer navnet, beskrivelsen og hva profilen gjelder for. */
 export function styleProfileMatches(p: LibraryStyleProfile, query: string): boolean {
-  const q = query.trim().toLocaleLowerCase("nb");
+  const q = query.trim().toLocaleLowerCase(collation());
   if (!q) return true;
   const g = p.profile.guide;
   return [p.profile.name, p.usesLabel, ...STYLE_TEXT_FIELDS.map((k) => g?.[k] ?? "")].some((x) =>
-    x.toLocaleLowerCase("nb").includes(q),
+    x.toLocaleLowerCase(collation()).includes(q),
   );
 }

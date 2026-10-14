@@ -10,6 +10,7 @@
  * Alt annet regnes som lastet opp. Harmonisering (REQ-0153, fase 8) finnes ikke ennå; en versjon med merknaden
  * «Harmonisert …» eller en jobb med `params.operation = "harmonize"` vises som harmonisert.
  */
+import { L, localized } from "../i18n";
 import type { AssetVersion, ProjectState } from "../model";
 import type { GenerationJob } from "../generation/cost";
 
@@ -17,12 +18,12 @@ export type VersionOrigin = "upload" | "ai" | "cutout" | "harmonized";
 
 export const VERSION_ORIGINS: readonly VersionOrigin[] = ["upload", "ai", "cutout", "harmonized"];
 
-export const VERSION_ORIGIN_LABEL: Record<VersionOrigin, string> = {
-  upload: "Lastet opp",
-  ai: "Laget med AI",
-  cutout: "Frilagt",
-  harmonized: "Harmonisert",
-};
+export const VERSION_ORIGIN_LABEL: Record<VersionOrigin, string> = localized({
+  upload: ["Lastet opp", "Uploaded"],
+  ai: ["Laget med AI", "Made with AI"],
+  cutout: ["Frilagt", "Cut out"],
+  harmonized: ["Harmonisert", "Harmonised"],
+});
 
 export interface VersionProvenance {
   readonly origin: VersionOrigin;
@@ -118,28 +119,35 @@ export function versionProvenances(
 
 /** Kort tekst til merket på versjonen: «Laget med AI · gpt-image-1», «Frilagt fra v2» … */
 export function provenanceLabel(p: VersionProvenance): string {
-  if (p.origin === "ai") return p.model ? `AI · ${p.model}` : "Laget med AI";
-  if (p.origin === "cutout") return p.fromNumber ? `Frilagt fra v${p.fromNumber}` : "Frilagt";
+  if (p.origin === "ai") return p.model ? `AI · ${p.model}` : VERSION_ORIGIN_LABEL.ai;
+  if (p.origin === "cutout")
+    return p.fromNumber
+      ? L(`Frilagt fra v${p.fromNumber}`, `Cut out from v${p.fromNumber}`)
+      : VERSION_ORIGIN_LABEL.cutout;
   if (p.origin === "upload" && p.reupload)
-    return p.fromNumber ? `Lastet opp på nytt (fra v${p.fromNumber})` : "Lastet opp på nytt";
+    return p.fromNumber
+      ? L(`Lastet opp på nytt (fra v${p.fromNumber})`, `Re-uploaded (from v${p.fromNumber})`)
+      : L("Lastet opp på nytt", "Re-uploaded");
   return VERSION_ORIGIN_LABEL[p.origin];
 }
 
 /** Lengre forklaring (verktøytips). */
 export function provenanceDetail(p: VersionProvenance): string {
   const parts: string[] = [VERSION_ORIGIN_LABEL[p.origin]];
-  if (p.provider) parts.push(`leverandør: ${p.provider}`);
-  if (p.model) parts.push(`modell: ${p.model}`);
-  if (p.fromNumber && p.origin === "cutout") parts.push(`frilagt fra versjon ${p.fromNumber}`);
-  if (p.reupload && p.fromNumber) parts.push(`endret fra versjon ${p.fromNumber}`);
+  if (p.provider) parts.push(L(`leverandør: ${p.provider}`, `provider: ${p.provider}`));
+  if (p.model) parts.push(L(`modell: ${p.model}`, `model: ${p.model}`));
+  if (p.fromNumber && p.origin === "cutout")
+    parts.push(L(`frilagt fra versjon ${p.fromNumber}`, `cut out from version ${p.fromNumber}`));
+  if (p.reupload && p.fromNumber)
+    parts.push(L(`endret fra versjon ${p.fromNumber}`, `changed from version ${p.fromNumber}`));
   parts.push(
     p.basis === "job"
-      ? "fra AI-jobben"
+      ? L("fra AI-jobben", "from the AI job")
       : p.basis === "note"
-        ? "fra merknaden på versjonen"
+        ? L("fra merknaden på versjonen", "from the note on the version")
         : p.basis === "file_name"
-          ? "fra filnavnet (jobben er ikke funnet)"
-          : "ingen AI-jobb eller merknad",
+          ? L("fra filnavnet (jobben er ikke funnet)", "from the file name (job not found)")
+          : L("ingen AI-jobb eller merknad", "no AI job or note"),
   );
   return parts.join(" · ");
 }

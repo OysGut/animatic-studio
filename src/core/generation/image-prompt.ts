@@ -23,6 +23,14 @@ import { blocksOfVariant, orderedOccurrences } from "../views";
 import { sceneContinuityVariant } from "../continuity";
 import { IMAGE_PURPOSE_FOR_KIND, MAX_PROMPT_CHARS, STYLE_TEXT, type ImagePurpose } from "./prompt";
 import { defaultStyleProfile, styleProfileFor } from "./style";
+import {
+  briefStyle,
+  renderBrief,
+  type BriefTask,
+  type ImageBrief,
+  type PromptFamily,
+} from "./brief";
+import { labelledViews, VERSION_VIEW_PROMPT, type VersionView } from "../library/view";
 
 export interface ContextPromptInput {
   readonly assetId: string;
@@ -38,6 +46,14 @@ export interface ContextPromptInput {
    * forteller da modellen hva hvert bilde er og hva det skal brukes til.
    */
   readonly attached?: readonly AttachedImage[];
+  /** Formen beskrivelsen skrives i (modellfamilien, DEC-0080). Standard: fortellende. */
+  readonly family?: PromptFamily;
+  /** Modellen kan lage gjennomsiktig bakgrunn (ellers flat hvit, som friegges etterpå). */
+  readonly transparent?: boolean;
+  /** Hva bildet er (standard: figurdesign eller bakgrunn ut fra ressurstypen). */
+  readonly task?: BriefTask;
+  /** Vinkel(er) for figuren (standard: tre kvart forfra). */
+  readonly views?: readonly VersionView[];
 }
 
 /** Et bilde som sendes med til bildemodellen (DEC-0066). */
@@ -45,10 +61,15 @@ export interface AttachedImage {
   readonly versionId: string;
   readonly path: string;
   readonly mimeType: string;
-  /** «identity»: bildet som skal endres/beholdes; «style»: forbilde for stilen bare. */
-  readonly role: "identity" | "style";
+  /**
+   * «identity»: bildet som skal endres/beholdes; «view»: samme motiv fra en annen vinkel (DEC-0080);
+   * «style»: forbilde for stilen bare.
+   */
+  readonly role: "identity" | "view" | "style";
   /** Hva bildet viser (engelsk beskrivelse til modellen). */
   readonly label: string;
+  /** Vinkelen bildet viser, når den er merket (DEC-0080). */
+  readonly view?: VersionView;
 }
 
 /** Høyeste antall bilder som sendes med (bildemodellen og kostnaden). */
@@ -82,7 +103,7 @@ const TIME_OF_DAY: readonly { re: RegExp; time: string; light: string }[] = [
       "evening: fading daylight, long shadows, warm interior lights against a cool blue exterior",
   },
   {
-    re: word("skumring(?:en)?|dusk|tussmørke(?:t)?|solnedgang(?:en)?|sunset"),
+    re: word("skumring(?:en)?|dusk|tussmørke(?:t)?|solnedgang(?:en)?|sunset"), // i18n-ignore
     time: "dusk",
     light: "dusk: soft violet and orange sky, low contrast, first lights coming on",
   },
@@ -113,14 +134,14 @@ const SEASONS: readonly { re: RegExp; text: string }[] = [
   },
   {
     re: word(
-      "snø(?:en|r|stormen|storm|fnugg)?|snødekt\\p{L}*|vinter(?:en)?|frost(?:en)?|snow\\p{L}*|winter",
+      "snø(?:en|r|stormen|storm|fnugg)?|snødekt\\p{L}*|vinter(?:en)?|frost(?:en)?|snow\\p{L}*|winter", // i18n-ignore
     ),
     text: "winter, snow",
   },
-  { re: word("regn(?:et|er)?|rain(?:ing|y)?"), text: "rain" },
+  { re: word("regn(?:et|er)?|rain(?:ing|y)?"), text: "rain" }, // i18n-ignore
   { re: word("sommer(?:en)?|summer"), text: "summer" },
-  { re: word("høst(?:en)?|autumn"), text: "autumn" },
-  { re: word("våren|vårsol(?:en)?"), text: "spring" },
+  { re: word("høst(?:en)?|autumn"), text: "autumn" }, // i18n-ignore
+  { re: word("våren|vårsol(?:en)?"), text: "spring" }, // i18n-ignore
 ];
 
 /** Tekst å lete etter årstid i: scenehodet og handlingen. */
@@ -329,7 +350,9 @@ export function describeAttached(assetName: string, attached: readonly AttachedI
     ...attached.map((a, i) =>
       a.role === "identity"
         ? `Image ${i + 1}: the current design of ${assetName} (${a.label}). This is the subject to draw – keep who it is.`
-        : `Image ${i + 1}: ${a.label}, an approved image from the film. Style reference only – match its drawing style, line quality, texture, colour treatment and level of detail; do not copy its subject, pose or composition, and do not put it in the new image.`,
+        : a.role === "view"
+          ? `Image ${i + 1}: ${assetName} seen from another angle (${a.label}). The same subject – keep every detail consistent with it.`
+          : `Image ${i + 1}: ${a.label}, an approved image from the film. Style reference only – match its drawing style, line quality, texture, colour treatment and level of detail; do not copy its subject, pose or composition, and do not put it in the new image.`,
     ),
     ...(attached.length
       ? [
@@ -379,152 +402,135 @@ function scenesFor(s: ProjectState, input: ContextPromptInput, asset: Asset): st
   return [...new Set([...first, ...ids])].slice(0, 3);
 }
 
+/** Fakta fra faktaarket: én per linje (eller semikolon), uten punkttegn. */
+export function visualBriefFacts(text: string | undefined): string[] {
+  return (text ?? "")
+    .split(/\n|;\s+/)
+    .map((x) => x.replace(/^\s*[-•*]\s*/, "").trim())
+    .filter(Boolean)
+    .slice(0, 16);
+}
+
 /**
- * Bildebeskrivelsen med sammenheng. Brukeren ser og kan endre den før noe sendes.
+ * Bestillingen for et bilde av ressursen (DEC-0080): alt prosjektet vet, ordnet og renset for motsigelser.
+ * Se `brief.ts` for reglene og hvordan den gjøres om til tekst for hver modell.
  */
-export function buildContextImagePrompt(s: ProjectState, input: ContextPromptInput): string {
+export function buildContextImageBrief(
+  s: ProjectState,
+  input: ContextPromptInput,
+): ImageBrief | null {
   const asset = s.assets[input.assetId];
-  if (!asset) return "";
+  if (!asset) return null;
   const variant: AssetVariant | null = input.variantId
     ? (s.assetVariants[input.variantId] ?? null)
     : null;
   const purpose: ImagePurpose = IMAGE_PURPOSE_FOR_KIND[asset.kind];
-  const profile = styleProfileFor(s, asset.kind);
-  const g = profile?.guide ?? null;
-  const prod = s.productions[input.productionId];
-  const title = prod && prod.kind !== "main" ? `${s.project.name} – ${prod.name}` : s.project.name;
-  const out: string[] = [];
-  const section = (head: string, lines: (string | null)[]) => {
-    const l = lines.filter((x): x is string => !!x);
-    if (l.length) out.push(`${head}\n${l.join("\n")}`);
-  };
+  const g = styleProfileFor(s, asset.kind)?.guide ?? null;
+  const task: BriefTask = input.task ?? (purpose === "background" ? "background" : "design");
+  const attached = input.attached ?? [];
 
-  // 1. Filmen
-  section("FILM", [
-    `A 2D animated film called "${title}".`,
-    line("Story", g?.premise),
-    line("World", g?.world),
-    line("Audience and tone", g?.audience),
-  ]);
+  // Motivet: faktaarket først; ellers beskrivelsen og manusets handlingslinjer (ikke replikker)
+  const facts = visualBriefFacts(asset.visualBrief);
+  const notes = facts.length
+    ? []
+    : [
+        ...(asset.description.trim() ? [excerpt(asset.description, 300)] : []),
+        ...scriptMentions(s, input.productionId, asset, 4, 600)
+          .filter((m) => !m.dialogue)
+          .map((m) => m.text),
+      ].slice(0, 3);
 
-  // 2. Visuell stil
-  const variantStyle = variant ? STYLE_TEXT[variant.style] : STYLE_TEXT.animatic;
-  const palette = g
-    ? [
-        g.palette.description.trim(),
-        g.palette.colors.length ? `key colours ${g.palette.colors.join(", ")}` : "",
-      ]
-        .filter(Boolean)
-        .join("; ")
-    : "";
-  section("VISUAL STYLE", [
-    line("Overall look", g?.visualStyle) ?? `Overall look: ${variantStyle}.`,
-    g?.visualStyle && variant && g.visualStyle.trim() !== variantStyle
-      ? `This version of the design: ${variantStyle}.`
-      : null,
-    line("Technique and materials", g?.technique),
-    line("Colour palette", palette),
-    line("Lighting", g?.lighting),
-    line("Mood", g?.mood),
-    line(
-      purpose === "cutout" ? "Character and prop design" : "Environment design",
-      purpose === "cutout" ? g?.characterDesign : g?.environmentDesign,
-    ),
-    line("Composition and camera language", g?.composition),
-  ]);
-
-  // 3. Dette bildet
-  const purposeText =
-    purpose === "cutout"
-      ? "Use: a separate cut-out layer in a multiplane 2D scene. Full figure, centred, three-quarter view facing slightly towards the camera, on a transparent background, no ground shadow, no frame, no text."
-      : "Use: the background layer of a scene. Wide establishing view filling the whole frame, leave readable open space where characters will stand, no characters, no text.";
-  section("THIS IMAGE", [
-    `Design ${KIND_TEXT[asset.kind]}: ${asset.name}.`,
-    line("Description (from the production, may be in Norwegian)", asset.description),
-    variant ? line(`Version "${variant.name}"`, variant.appearance) : null,
-    asset.tags.length ? `Keywords: ${asset.tags.join(", ")}.` : null,
-    purposeText,
-  ]);
-
-  // 3b. Slik manuset beskriver ressursen (Mars 2026-10-13, DEC-0079)
-  const said = scriptMentions(s, input.productionId, asset);
-  if (said.length)
-    section("IN THE SCREENPLAY", [
-      `How the script describes ${asset.name} (Norwegian excerpts, in story order – follow them):`,
-      ...said.map((x) => `- ${x.dialogue ? `${x.speaker} says: ` : ""}"${x.text}"`),
-    ]);
-
-  // 4. Hvor bildet brukes
+  // Scenene (bakgrunner: sted, tid, årstid og lys; figurer: bare utseendet i valgt scene)
   const sceneIds = scenesFor(s, input, asset);
   const contexts = sceneIds
     .map((id) => sceneContext(s, input.productionId, id, asset))
     .filter((x): x is SceneContext => !!x);
-  if (contexts.length) {
-    const main = contexts[0]!;
-    const lines: string[] = [];
-    const chosen = input.occurrenceId && sceneIds[0] === input.occurrenceId;
-    lines.push(
-      `${chosen ? "Made for the scene" : "Appears in"}: ${contexts.map((c) => c.heading).join(" · ")} (scene headings, Norwegian).`,
-    );
-    const times = [...new Set(contexts.map((c) => c.time).filter(Boolean))];
-    const seasons = [...new Set(contexts.flatMap((c) => c.seasons))];
-    if (main.intExt)
-      lines.push(
-        `Setting: ${main.intExt}${main.time ? `, ${main.time}` : ""}${seasons.length ? `, ${seasons.join(", ")}` : ""}.`,
-      );
-    else if (seasons.length) lines.push(`Season: ${seasons.join(", ")}.`);
-    // Lyset fra scenen bare når bildet lages til én scene (eller alle scenene har samme tid på døgnet);
-    // ellers nøytralt lys, så bildet kan brukes i alle
-    if (purpose === "background" && main.light && (chosen || times.length <= 1))
-      lines.push(`Scene lighting: ${main.light}.`);
-    else if (times.length > 1)
-      lines.push(
-        `It must work at different times of day (${times.join(", ")}); use neutral, even light.`,
-      );
-    if (main.action)
-      lines.push(
-        `What happens, for mood only – do not draw ${purpose === "background" ? "the characters" : "other characters or the surroundings"} (script excerpt, Norwegian): "${main.action}"`,
-      );
-    if (purpose === "cutout" && main.appearance && chosen)
-      lines.push(`In this scene ${asset.name} appears as: ${main.appearance}.`);
-    section("WHERE IT APPEARS", lines);
+  const main = contexts[0] ?? null;
+  const chosen = !!input.occurrenceId && sceneIds[0] === input.occurrenceId;
+  const times = [...new Set(contexts.map((c) => c.time).filter(Boolean))];
+  const seasons = [...new Set(contexts.flatMap((c) => c.seasons))];
+  let setting: string | null = null;
+  let lighting =
+    "soft, even, neutral light that shows the design clearly, without dramatic shadows";
+  if (purpose === "background") {
+    setting = main
+      ? `${main.intExt ? cap(main.intExt) : "Setting"}${main.time ? `, ${main.time}` : ""}${seasons.length ? `, ${seasons.join(", ")}` : ""}`
+      : seasons.length
+        ? `Season: ${seasons.join(", ")}`
+        : null;
+    lighting =
+      main?.light && (chosen || times.length <= 1)
+        ? main.light
+        : times.length > 1
+          ? `neutral, even light that works at different times of day (${times.join(", ")})`
+          : g?.lighting.trim() || "natural light that suits the place";
   }
+  const appearance =
+    [variant?.appearance.trim(), purpose === "cutout" && chosen ? main?.appearance : null]
+      .filter((x): x is string => !!x && !!x.trim())
+      .join("; ") || null;
 
-  // 5. Sammenheng med godkjente bilder
-  const designs = approvedDesigns(s, input.productionId, asset, sceneIds, purpose);
-  const refs = g ? referenceList(s, g) : [];
-  const own = coverVersion(s, asset.id);
+  // Referansebildene med roller
+  const references = attached.map((a, i) => ({
+    index: i + 1,
+    role: a.role,
+    label: a.label,
+    ...(a.view ? { view: a.view } : {}),
+  }));
+
+  const variantStyle = variant ? STYLE_TEXT[variant.style] : STYLE_TEXT.animatic;
+  const film = [
+    g?.premise.trim() ? `The film: ${firstSentence(g.premise)}` : "",
+    g?.audience.trim() ? `Audience and tone: ${firstSentence(g.audience)}` : "",
+    g?.mood.trim() ? `Mood: ${firstSentence(g.mood)}` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+  return {
+    task,
+    purpose,
+    subject: { name: asset.name, kind: asset.kind, facts, notes, appearance },
+    views: task === "background" ? [] : (input.views ?? ["three_quarter"]),
+    style: briefStyle(g, purpose, variantStyle),
+    film,
+    setting,
+    moodExcerpt: purpose === "background" && main?.action ? main.action : null,
+    lighting,
+    composition:
+      purpose === "background"
+        ? g?.composition.trim() || "Eye-level wide shot."
+        : "Centred, the whole subject visible with a margin on all sides.",
+    transparent: !!input.transparent && purpose !== "background",
+    references,
+    avoid: (g?.avoid ?? "")
+      .split(/[,;\n]/)
+      .map((x) => x.trim().replace(/\.$/, ""))
+      .filter(Boolean),
+    instructions: g?.instructions.trim() ?? "",
+    keepReference: input.withReference && !attached.length,
+  };
+}
+
+const cap = (t: string) => (t ? t[0]!.toUpperCase() + t.slice(1) : t);
+const firstSentence = (t: string) => {
+  const x = t.replace(/\s+/g, " ").trim();
+  const m = /^(.{20,300}?[.!?])(\s|$)/.exec(x);
+  return m ? m[1]! : x.length > 300 ? `${x.slice(0, 297)}…` : sentenceEnd(x);
+};
+const sentenceEnd = (t: string) => (/[.!?…]$/.test(t) ? t : `${t}.`);
+
+/**
+ * Bildebeskrivelsen med sammenheng, i formen den valgte modellen forstår best (DEC-0080). Brukeren ser og
+ * kan endre den før noe sendes.
+ */
+export function buildContextImagePrompt(s: ProjectState, input: ContextPromptInput): string {
+  const brief = buildContextImageBrief(s, input);
+  if (!brief) return "";
+  const asset = s.assets[input.assetId]!;
+  const { prompt } = renderBrief(brief, input.family ?? "narrative");
   const attached = input.attached ?? [];
-  const identity = attached.find((a) => a.role === "identity");
-  const styleImgs = attached.filter((a) => a.role === "style");
-  section("CONSISTENCY", [
-    designs.length
-      ? `Must match the style of these approved ${purpose === "background" ? "locations" : "designs"} in the film (style only – do not include them): ${designs.join("; ")}.`
-      : null,
-    refs.length && !styleImgs.length
-      ? `The film's look is set by these approved designs (style only): ${refs.join(", ")}.`
-      : null,
-    identity || (input.withReference && !attached.length)
-      ? `Keep the identity, proportions, colours and clothing of ${identity ? `${asset.name} in image 1` : "the attached reference image"}; change only what is described above.`
-      : own && purpose === "cutout"
-        ? `Stay consistent with the existing design of ${asset.name}.`
-        : null,
-    "Same line quality, level of detail and colour treatment as the rest of the film.",
-  ]);
-
-  // 6. Bildene som sendes med (DEC-0066)
-  if (attached.length) out.push(describeAttached(asset.name, attached));
-
-  // 7. Unngå
-  section("AVOID", [
-    g?.avoid.trim() ? g.avoid.trim().replace(/\s+/g, " ") : null,
-    purpose === "cutout"
-      ? "No background scenery, no other characters, no text, logos or watermarks."
-      : "No characters or people, no text, signs with words, logos or watermarks.",
-  ]);
-
-  if (g?.instructions.trim()) section("PROJECT INSTRUCTIONS", [g.instructions.trim()]);
-  return out.join("\n\n");
+  // Listen over bildene som sendes (byttes alltid ut med en fersk liste ved sending)
+  return attached.length ? `${prompt}\n\n${describeAttached(asset.name, attached)}` : prompt;
 }
 
 /** Har prosjektet en utfylt visuell stil (ellers foreslås det å lage en)? */
@@ -661,6 +667,63 @@ export function scriptMentions(
         if (out.length >= max) return out;
       }
     }
+  }
+  return out;
+}
+
+/**
+ * Bildene som sendes med når andre vinkler lages (DEC-0080): bildet brukeren står i (identitet) først, så
+ * bilder av samme motiv med merket vinkel (høyst 3), så noen få stilforbilder fra filmen (høyst 2).
+ * Rekkefølgen er den modellen får dem i.
+ */
+export function turnaroundAttachments(
+  s: ProjectState,
+  input: {
+    readonly assetId: string;
+    readonly productionId: string;
+    readonly identityVersionId: string;
+    /** Vinkler som allerede er laget i denne omgangen (sendes med som «view», nyeste sist). */
+    readonly extraViews?: readonly { readonly versionId: string; readonly view: VersionView }[];
+    readonly style: boolean;
+  },
+): AttachedImage[] {
+  const out: AttachedImage[] = [];
+  const seen = new Set<string>();
+  const add = (id: string, role: AttachedImage["role"], view?: VersionView) => {
+    if (out.length >= MAX_ATTACHED_IMAGES || seen.has(id) || !isImage(s, id)) return;
+    const v = s.assetVersions[id];
+    const label = versionLabel(s, id);
+    if (!v || !label) return;
+    seen.add(id);
+    const shown = view ?? v.view;
+    out.push({
+      versionId: id,
+      path: v.mediaPath,
+      mimeType: v.mimeType,
+      role,
+      label:
+        shown && role !== "style"
+          ? `${label}, ${VERSION_VIEW_PROMPT[shown].split(" – ")[0]}`
+          : label,
+      ...(shown ? { view: shown } : {}),
+    });
+  };
+  add(input.identityVersionId, "identity");
+  // Det som er laget i denne omgangen veier mest (nyeste først), så merkede bilder fra før
+  for (const x of [...(input.extraViews ?? [])].reverse().slice(0, 3))
+    add(x.versionId, "view", x.view);
+  for (const x of labelledViews(s, input.assetId)) {
+    if (out.filter((a) => a.role === "view").length >= 3) break;
+    if (x.view !== "sheet") add(x.version.id, "view");
+  }
+  if (input.style) {
+    const styles = attachedImages(s, {
+      assetId: input.assetId,
+      productionId: input.productionId,
+      identityVersionId: null,
+      style: true,
+    }).slice(0, 2);
+    for (const a of styles) add(a.versionId, "style");
   }
   return out;
 }

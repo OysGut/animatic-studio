@@ -63,3 +63,29 @@ export async function fetchProjectName(
 export async function upsertMyProfile(): Promise<void> {
   await db.rpc("upsert_my_profile", {});
 }
+
+/** En produksjon slik prosjektlisten viser den (DEC-0082). */
+export interface ProductionSummary {
+  readonly id: string;
+  readonly project_id: string;
+  readonly kind: string;
+  readonly name: string;
+  readonly parent_production_id: string | null;
+  readonly created_at: string;
+  /** Notatet (migrasjon 0031); mangler i eldre databaser. */
+  readonly description?: string | null;
+}
+
+/** Produksjonene (hovedfilm, spinoffer, varianter) i prosjektene. Kaster med feilmeldingen. */
+export async function listProductionsFor(
+  projectIds: readonly string[],
+): Promise<ProductionSummary[]> {
+  if (!projectIds.length) return [];
+  const { data, error } = await db
+    .from("productions")
+    .select("*")
+    .in("project_id", [...projectIds])
+    .order("created_at", { ascending: true });
+  if (error) throw new Error(error.message);
+  return (data ?? []) as ProductionSummary[];
+}

@@ -8,6 +8,7 @@
  * Ingen scener oppfinnes: manglende eller uregelmessige numre beholdes som de er (mandat 4.1).
  */
 import type { BlockKind, SceneHeading } from "../model";
+import { L } from "../i18n";
 import type { ParsedElement, ParsedScene, ParsedScreenplay, RawLine, SourceRef } from "./types";
 
 const HEADING_RE =
@@ -167,7 +168,10 @@ export function parseScreenplayLines(
       const right = h[3] ?? null;
       let uncertain: string | undefined;
       if (left && right && left !== right)
-        uncertain = `Ulike scenenumre i margene (${left} / ${right})`;
+        uncertain = L(
+          `Ulike scenenumre i margene (${left} / ${right})`,
+          `Different scene numbers in the margins (${left} / ${right})`,
+        );
       return {
         line: l,
         text,
@@ -178,7 +182,15 @@ export function parseScreenplayLines(
       };
     }
     if (dx < -18)
-      return { line: l, text, kind: "action", uncertain: "Linjen står utenfor kjente kolonner" };
+      return {
+        line: l,
+        text,
+        kind: "action",
+        uncertain: L(
+          "Linjen står utenfor kjente kolonner",
+          "The line is outside the known columns",
+        ),
+      };
     if (dx < 36)
       return {
         line: l,
@@ -193,7 +205,12 @@ export function parseScreenplayLines(
         kind: TRANSITION_RE.test(text) || text.endsWith(":") ? "transition" : "action",
         ...(TRANSITION_RE.test(text) || text.endsWith(":")
           ? {}
-          : { uncertain: "Høyrestilt tekst tolket som handling" }),
+          : {
+              uncertain: L(
+                "Høyrestilt tekst tolket som handling",
+                "Right-aligned text interpreted as action",
+              ),
+            }),
       };
     // Ren parentes på egen linje. Parentes etterfulgt av replikk på samme linje er skrevet inn i replikken – behold.
     if (text.startsWith("(") && (text.endsWith(")") || !text.includes(")")))
@@ -212,7 +229,10 @@ export function parseScreenplayLines(
           text,
           kind: "character",
           headingText: mixed[2]!,
-          uncertain: "Karakter og replikk på samme linje – delt automatisk",
+          uncertain: L(
+            "Karakter og replikk på samme linje – delt automatisk",
+            "Character and dialogue on the same line – split automatically",
+          ),
         };
       }
     }
@@ -222,7 +242,10 @@ export function parseScreenplayLines(
         line: l,
         text,
         kind: "dialogue",
-        uncertain: "Innrykket tekst med små bokstaver tolket som replikk",
+        uncertain: L(
+          "Innrykket tekst med små bokstaver tolket som replikk",
+          "Indented lower-case text interpreted as dialogue",
+        ),
       };
     return { line: l, text, kind: "dialogue" };
   };
@@ -253,7 +276,12 @@ export function parseScreenplayLines(
         source: e.source,
         isContinuation: true,
         elements: [],
-        warnings: ["Tekst før første sceneoverskrift (fortsettelse fra tidligere scene)"],
+        warnings: [
+          L(
+            "Tekst før første sceneoverskrift (fortsettelse fra tidligere scene)",
+            "Text before the first scene heading (continuation from an earlier scene)",
+          ),
+        ],
       };
       scenes.push(current);
     }
@@ -306,7 +334,7 @@ export function parseScreenplayLines(
             kind: part.kind,
             text: part.text,
             source: src,
-            uncertain: "Delt fra karakterlinjen",
+            uncertain: L("Delt fra karakterlinjen", "Split from the character line"),
           };
           pushElement(pe);
           last = { kind: part.kind, line: c.line, text: part.text, element: pe };
@@ -384,7 +412,14 @@ export function parseScreenplayLines(
         const end = /^(SLUTT|THE END|END|FADE OUT\.?|SLUTT\.?)$/i.test(e.text);
         sc.elements[i] = end
           ? { ...e, kind: "transition" }
-          : { ...e, kind: "action", uncertain: "Karakternavn uten replikk – tolket som handling" };
+          : {
+              ...e,
+              kind: "action",
+              uncertain: L(
+                "Karakternavn uten replikk – tolket som handling",
+                "Character name without dialogue – interpreted as action",
+              ),
+            };
       }
     });
   }
@@ -405,9 +440,17 @@ export function parseScreenplayLines(
     ...new Set(numbers.filter((n) => (seen.has(n) ? true : (seen.add(n), false)))),
   ];
   if (duplicateNumbers.length)
-    warnings.push(`Scenenumre som forekommer flere ganger: ${duplicateNumbers.join(", ")}`);
+    warnings.push(
+      L(
+        `Scenenumre som forekommer flere ganger: ${duplicateNumbers.join(", ")}`,
+        `Scene numbers that occur more than once: ${duplicateNumbers.join(", ")}`,
+      ),
+    );
   const unnumbered = out.filter((s) => s.number === null && !s.isContinuation).length;
-  if (unnumbered) warnings.push(`${unnumbered} scene(r) uten scenenummer`);
+  if (unnumbered)
+    warnings.push(
+      L(`${unnumbered} scene(r) uten scenenummer`, `${unnumbered} scene(s) without a scene number`),
+    );
 
   return {
     format: opts.format,

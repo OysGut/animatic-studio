@@ -27,7 +27,7 @@ function safe(part: string): string {
       // eslint-disable-next-line no-control-regex
       .replace(/[\\/:*?"<>|\u0000-\u001f]+/g, "_")
       .replace(/\s+/g, " ")
-      .trim() || "uten navn"
+      .trim() || "uten navn" // i18n-ignore: filnavn
   );
 }
 
@@ -41,6 +41,7 @@ export function versionFileBase(s: ProjectState, v: AssetVersion): string | null
 
 /** Hele filnavnet for nedlasting. */
 export function versionFileName(s: ProjectState, v: AssetVersion): string {
+  // i18n-ignore: filnavn
   const base = versionFileBase(s, v) ?? "bilde";
   const fromPath = /\.([a-z0-9]{2,5})$/i.exec(v.mediaPath)?.[1]?.toLowerCase();
   return `${base}.${EXT_FOR_MIME[v.mimeType] ?? fromPath ?? "png"}`;

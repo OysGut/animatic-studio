@@ -6,8 +6,10 @@
 import { Link2, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
+  L,
   SOUND_LINK_LABEL,
   blocksOfVariant,
+  collation,
   compareKeys,
   formatHeading,
   orderedOccurrences,
@@ -61,7 +63,7 @@ export function SoundLinksSection({
       case "asset":
         return Object.values(state.assets)
           .filter((a) => a.id !== asset.id && !a.archived && a.kind !== "sound")
-          .sort((a, b) => a.name.localeCompare(b.name, "nb"))
+          .sort((a, b) => a.name.localeCompare(b.name, collation()))
           .map((a) => ({ id: a.id, label: a.name }));
       case "scene":
         return occs.map((o) => ({
@@ -83,7 +85,7 @@ export function SoundLinksSection({
           ? Object.values(state.segments)
               .filter((g) => g.occurrenceId === occ.id)
               .sort((a, b) => compareKeys(a.orderKey, b.orderKey))
-              .map((g, i) => ({ id: g.id, label: `Delsekvens ${i + 1}` }))
+              .map((g, i) => ({ id: g.id, label: L(`Delsekvens ${i + 1}`, `Segment ${i + 1}`) }))
           : [];
       case "event":
         return Object.values(state.continuityEvents)
@@ -105,15 +107,17 @@ export function SoundLinksSection({
       className="flex flex-col gap-2 border border-border bg-surface-1 p-3"
     >
       <h3 id="sound-links-title" className="flex items-center gap-1.5 text-[13px] font-medium">
-        <Link2 className="size-4" aria-hidden /> Hører til
+        <Link2 className="size-4" aria-hidden /> {L("Hører til", "Belongs to")}
       </h3>
       {links.length === 0 ? (
         <p className="text-xs text-text-tertiary">
-          Ingen koblinger. Koble lyden til en karakter, scene, replikk, delsekvens, hendelse eller
-          produksjon, så finnes den igjen i søket.
+          {L(
+            "Ingen koblinger. Koble lyden til en karakter, scene, replikk, delsekvens, hendelse eller produksjon, så finnes den igjen i søket.",
+            "No links. Link the sound to a character, scene, line, segment, event or production, so it can be found again in search.",
+          )}
         </p>
       ) : (
-        <ul className="flex flex-col gap-1" aria-label="Koblinger">
+        <ul className="flex flex-col gap-1" aria-label={L("Koblinger", "Links")}>
           {links.map((l) => (
             <li key={`${l.kind}:${l.id}`} className="flex items-center gap-2 text-xs">
               <span className="w-28 shrink-0 text-text-tertiary">{SOUND_LINK_LABEL[l.kind]}</span>
@@ -123,12 +127,15 @@ export function SoundLinksSection({
               {editable ? (
                 <button
                   type="button"
-                  aria-label={`Fjern koblingen til ${soundLinkLabel(state, l)}`}
+                  aria-label={L(
+                    `Fjern koblingen til ${soundLinkLabel(state, l)}`,
+                    `Remove the link to ${soundLinkLabel(state, l)}`,
+                  )}
                   className="rounded-sm p-0.5 text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
                   onClick={() =>
                     save(
                       links.filter((x) => !(x.kind === l.kind && x.id === l.id)),
-                      "Fjern kobling for lyd",
+                      L("Fjern kobling for lyd", "Remove sound link"),
                     )
                   }
                 >
@@ -142,7 +149,7 @@ export function SoundLinksSection({
       {editable ? (
         <div className="flex flex-wrap items-center gap-1.5">
           <select
-            aria-label="Type kobling"
+            aria-label={L("Type kobling", "Link type")}
             value={kind}
             onChange={(e) => {
               setKind(e.target.value as SoundLinkKind);
@@ -166,7 +173,7 @@ export function SoundLinksSection({
               }}
               className={ctl + " max-w-56"}
             >
-              <option value="">Velg scene …</option>
+              <option value="">{L("Velg scene …", "Choose scene …")}</option>
               {occs.map((o) => (
                 <option key={o.id} value={o.id}>
                   {o.productionNumber ?? ""} {formatHeading(state.variants[o.variantId]!.heading)}
@@ -175,13 +182,13 @@ export function SoundLinksSection({
             </select>
           ) : null}
           <select
-            aria-label="Koble til"
+            aria-label={L("Koble til", "Link to")}
             value={target}
             onChange={(e) => setTarget(e.target.value)}
             className={ctl + " max-w-72 flex-1"}
             disabled={needsScene && !occ}
           >
-            <option value="">Velg …</option>
+            <option value="">{L("Velg …", "Choose …")}</option>
             {options.map((o) => (
               <option key={o.id} value={o.id} disabled={links.some((l) => l.id === o.id)}>
                 {o.label}
@@ -193,11 +200,11 @@ export function SoundLinksSection({
             variant="secondary"
             disabled={!target}
             onClick={() => {
-              save([...links, { kind, id: target }], "Koble lyd");
+              save([...links, { kind, id: target }], L("Koble lyd", "Link sound"));
               setTarget("");
             }}
           >
-            Koble til
+            {L("Koble til", "Link to")}
           </Button>
         </div>
       ) : null}

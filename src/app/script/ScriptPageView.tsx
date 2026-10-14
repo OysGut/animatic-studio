@@ -3,8 +3,17 @@
  * Sidene tegnes i em-enheter: 1 em = 12 pt Courier, 1 tegn = 0,6 em, US Letter = 51 × 66 em.
  */
 import { MessageSquare } from "lucide-react";
-import { memo, type ReactNode } from "react";
-import { lineKey, type LineDecor, type Page, type PageLine, type ProjectState } from "@/core";
+import { memo, useMemo, type ReactNode } from "react";
+import {
+  L,
+  flowLines,
+  lineKey,
+  type LineDecor,
+  type Page,
+  type PageLine,
+  type ProjectState,
+  tm,
+} from "@/core";
 
 export interface Selection {
   readonly occurrenceId: string | null;
@@ -27,6 +36,11 @@ interface Props {
   readonly changed?: ReadonlySet<string> | undefined;
   /** Språkvisning (DEC-0058): linjer uten oversettelse, usikre og som må gjennomgås. */
   readonly language?: LanguageMarks | undefined;
+  /**
+   * Lesevisning uten ark (DEC-0080, «Vis kun valgt scene»): teksten står rett på siden, toppjustert, uten
+   * sideskift. `light` = sort tekst på hvit bakgrunn.
+   */
+  readonly flow?: { readonly light: boolean } | undefined;
 }
 
 export interface LanguageMarks {
@@ -49,7 +63,24 @@ export function ScriptPageView({
   onNoteClick,
   changed,
   language,
+  flow,
 }: Props) {
+  if (flow)
+    return (
+      <FlowSheet
+        pages={pages}
+        state={state}
+        selection={selection}
+        zoom={zoom}
+        onSelect={onSelect}
+        onActivate={onActivate}
+        decor={decor}
+        onNoteClick={onNoteClick}
+        changed={changed}
+        language={language}
+        light={flow.light}
+      />
+    );
   return (
     <div
       className="mx-auto flex w-max flex-col gap-6 px-6 py-6"
@@ -102,7 +133,7 @@ const PageSheet = memo(function PageSheet({
 }: SheetProps) {
   return (
     <section
-      aria-label={`Side ${page.number}`}
+      aria-label={L(`Side ${page.number}`, `Page ${page.number}`)}
       data-page={page.number}
       className="relative shrink-0 bg-script-paper font-script text-script-ink shadow-[0_1px_0_rgb(255_255_255/0.04),0_8px_24px_rgb(0_0_0/0.45)]"
       style={{
@@ -196,6 +227,7 @@ function markedText(text: string, decor: LineDecor | undefined): ReactNode {
 
 function Line({
   line,
+  topEm = BODY_TOP_EM,
   lineId,
   decor,
   onNoteClick,
@@ -211,6 +243,8 @@ function Line({
   lang?: "missing" | "review" | "uncertain" | null;
   langFirst?: boolean;
   line: PageLine;
+  /** Avstand fra toppen til første linje (em). Arket: 1 tomme; lesevisningen: litt luft. */
+  topEm?: number;
   lineId: string;
   decor?: LineDecor | undefined;
   onNoteClick?: ((annotationIds: readonly string[], sel: Selection) => void) | undefined;
@@ -219,7 +253,7 @@ function Line({
   onSelect: (sel: Selection) => void;
   onActivate: (sel: Selection) => void;
 }) {
-  const top = `${BODY_TOP_EM + line.row}em`;
+  const top = `${topEm + line.row}em`;
   const sel: Selection = { occurrenceId: line.occurrenceId, blockId: line.blockId };
   const block = line.blockId && state ? state.blocks[line.blockId] : undefined;
   const occ = state?.occurrences[line.occurrenceId];
@@ -243,8 +277,8 @@ function Line({
         <span
           className="absolute flex select-none items-center justify-center"
           style={{ top, left: "2.2em", width: "1em", height: "1em" }}
-          title={`Usikker tolkning: ${uncertain}`}
-          aria-label="Usikker tolkning"
+          title={L(`Usikker tolkning: ${uncertain}`, `Uncertain interpretation: ${tm(uncertain)}`)}
+          aria-label={L("Usikker tolkning", "Uncertain interpretation")}
         >
           <span
             className="flex items-center justify-center rounded-full bg-status-uncertain font-sans font-bold text-accent-fg"
@@ -258,8 +292,11 @@ function Line({
         <span
           className="absolute select-none rounded-sm bg-status-danger"
           style={{ top, left: "3.4em", width: "0.25em", height: "1em" }}
-          title="Endret etter at materialet (2D-scene eller film) ble laget – se inspektøren"
-          aria-label="Endret etter materialet"
+          title={L(
+            "Endret etter at materialet (2D-scene eller film) ble laget – se inspektøren",
+            "Changed after the material (2D scene or film) was made – see the inspector",
+          )}
+          aria-label={L("Endret etter materialet", "Changed since the material was made")}
         />
       ) : null}
       {lang && lang !== "missing" && langFirst ? (
@@ -271,10 +308,20 @@ function Line({
           style={{ top, left: "2.9em", width: "0.25em", height: "1em" }}
           title={
             lang === "review"
-              ? "Den norske teksten er endret etter oversettelsen – gjennomgå den"
-              : "Usikker kobling fra import – godkjenn eller rett oversettelsen"
+              ? L(
+                  "Den norske teksten er endret etter oversettelsen – gjennomgå den",
+                  "The Norwegian text has changed since the translation – review it",
+                )
+              : L(
+                  "Usikker kobling fra import – godkjenn eller rett oversettelsen",
+                  "Uncertain link from import – approve or correct the translation",
+                )
           }
-          aria-label={lang === "review" ? "Oversettelsen må gjennomgås" : "Usikker oversettelse"}
+          aria-label={
+            lang === "review"
+              ? L("Oversettelsen må gjennomgås", "The translation must be reviewed")
+              : L("Usikker oversettelse", "Uncertain translation")
+          }
         />
       ) : null}
       {decor?.notesHere.length ? (
@@ -283,10 +330,17 @@ function Line({
           className="absolute flex select-none items-center gap-[0.1em] font-sans text-note hover:brightness-125"
           style={{ top, left: "46.4em", height: "1em", fontSize: "1em" }}
           title={
-            decor.notesHere.length === 1 ? "Vis notatet" : `Vis ${decor.notesHere.length} notater`
+            decor.notesHere.length === 1
+              ? L("Vis notatet", "Show the note")
+              : L(`Vis ${decor.notesHere.length} notater`, `Show ${decor.notesHere.length} notes`)
           }
           aria-label={
-            decor.notesHere.length === 1 ? "Notat – vis" : `${decor.notesHere.length} notater – vis`
+            decor.notesHere.length === 1
+              ? L("Notat – vis", "Note – show")
+              : L(
+                  `${decor.notesHere.length} notater – vis`,
+                  `${decor.notesHere.length} notes – show`,
+                )
           }
           onClick={() => onNoteClick?.(decor.notesHere, sel)}
         >
@@ -315,7 +369,14 @@ function Line({
           // Ikke oversatt ennå: norsk tekst vises dempet
           (lang === "missing" ? " italic opacity-45" : "")
         }
-        title={lang === "missing" ? "Ikke oversatt ennå (norsk tekst vises)" : undefined}
+        title={
+          lang === "missing"
+            ? L(
+                "Ikke oversatt ennå (norsk tekst vises)",
+                "Not translated yet (Norwegian text shown)",
+              )
+            : undefined
+        }
         style={{
           top,
           left: `${line.left * CHAR_EM}em`,
@@ -338,5 +399,76 @@ function Line({
         {markedText(line.text, decor)}
       </span>
     </>
+  );
+}
+
+function langOf(language: LanguageMarks | undefined, blockId: string | null) {
+  if (!language || !blockId) return null;
+  if (language.missing.has(blockId)) return "missing" as const;
+  if (language.review.has(blockId)) return "review" as const;
+  if (language.uncertain.has(blockId)) return "uncertain" as const;
+  return null;
+}
+
+/** Topp i lesevisningen (em): litt luft over første linje. */
+const FLOW_TOP_EM = 2;
+
+/**
+ * Lesevisningen (DEC-0080): samme linjer og innrykk som på arket, men uten ark og sideskift. Står rett på
+ * siden, toppjustert; er scenen lang, rulles det som vanlig.
+ */
+function FlowSheet({
+  pages,
+  state,
+  selection,
+  zoom,
+  onSelect,
+  onActivate,
+  decor,
+  onNoteClick,
+  changed,
+  language,
+  light,
+}: Omit<Props, "flow"> & { readonly light: boolean }) {
+  const flow = useMemo(() => flowLines(pages), [pages]);
+  const selectedBlock = selection.blockId;
+  const selectedOcc = selection.blockId ? null : selection.occurrenceId;
+  return (
+    <div className="px-6 py-4" style={{ fontSize: `${16 * zoom}px` }}>
+      <section
+        aria-label={L("Valgt scene (lesevisning)", "Selected scene (reading view)")}
+        data-flow
+        className={"relative mx-auto font-script " + (light ? "text-black" : "text-text-primary")}
+        style={{
+          width: "51em",
+          height: `${FLOW_TOP_EM + flow.rows + 2}em`,
+          lineHeight: "1em",
+        }}
+      >
+        {flow.lines.map((l) => {
+          const key = lineKey(l.page, l.index);
+          return (
+            <Line
+              key={key}
+              lineId={key}
+              topEm={FLOW_TOP_EM}
+              decor={decor?.get(key)}
+              onNoteClick={onNoteClick}
+              line={l}
+              changed={!!l.blockId && l.first && !!changed?.has(l.blockId)}
+              lang={langOf(language, l.blockId)}
+              langFirst={l.first}
+              state={state}
+              selected={
+                (l.blockId !== null && l.blockId === selectedBlock) ||
+                (l.kind === "heading" && l.occurrenceId === selectedOcc)
+              }
+              onSelect={onSelect}
+              onActivate={onActivate}
+            />
+          );
+        })}
+      </section>
+    </div>
   );
 }

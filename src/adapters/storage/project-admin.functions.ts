@@ -9,7 +9,7 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { isUuid } from "@/core";
+import { isUuid, L } from "@/core";
 import { checkSchema, type AnyClient } from "./project-rows";
 
 export interface ProjectAdminInput {
@@ -29,12 +29,12 @@ export type ProjectAdminResult =
   | { readonly ok: false; readonly message: string };
 
 function validate(d: unknown): ProjectAdminInput {
-  if (!d || typeof d !== "object") throw new Error("Ugyldig forespørsel");
+  if (!d || typeof d !== "object") throw new Error(L("Ugyldig forespørsel", "Invalid request"));
   const x = d as Record<string, unknown>;
   if (typeof x["projectId"] !== "string" || !isUuid(x["projectId"]))
-    throw new Error("Ugyldig prosjekt");
+    throw new Error(L("Ugyldig prosjekt", "Invalid project"));
   if (typeof x["confirmName"] !== "string" || x["confirmName"].length > 400)
-    throw new Error("Ugyldig bekreftelse");
+    throw new Error(L("Ugyldig bekreftelse", "Invalid confirmation"));
   return { projectId: x["projectId"], confirmName: x["confirmName"] };
 }
 
@@ -62,18 +62,21 @@ async function ownerContext(
     .is("removed_at", null)
     .maybeSingle();
   if ((member as { role?: string } | null)?.role !== "owner")
-    return "Bare prosjekteieren kan gjøre dette.";
+    return L("Bare prosjekteieren kan gjøre dette.", "Only the project owner can do this.");
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as AnyClient;
   const schema = await checkSchema(admin);
   if (schema.kind === "missing" || schema.version < 11)
-    return "Databasen er ikke oppdatert for sletting ennå. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0011).";
+    return L(
+      "Databasen er ikke oppdatert for sletting ennå. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0011).",
+      "The database is not updated for deletion yet. Paste the message into LOVABLE_SYNC.md in Lovable (migration 0011).",
+    );
   const { data: project } = await admin
     .from("projects")
     .select("name, deleted_at")
     .eq("id", projectId)
     .maybeSingle();
-  if (!project) return "Prosjektet finnes ikke.";
+  if (!project) return L("Prosjektet finnes ikke.", "The project does not exist.");
   const p = project as { name: string; deleted_at: string | null };
   return { admin, name: p.name, deleted: p.deleted_at !== null };
 }
@@ -129,7 +132,7 @@ export async function removeFiles(
 }
 
 function dbMessage(e: { message?: string } | null): string {
-  const m = e?.message ?? "Ukjent feil";
+  const m = e?.message ?? L("Ukjent feil", "Unknown error");
   return m.length > 300 ? `${m.slice(0, 300)} …` : m;
 }
 
@@ -143,14 +146,31 @@ export const deleteProject = createServerFn({ method: "POST" })
       data.projectId,
     );
     if (typeof ctx === "string") return { ok: false, message: ctx };
-    if (ctx.deleted) return { ok: false, message: "Prosjektet er allerede slettet." };
+    if (ctx.deleted)
+      return {
+        ok: false,
+        message: L("Prosjektet er allerede slettet.", "The project has already been deleted."),
+      };
     if (!nameMatches(data.confirmName, ctx.name))
-      return { ok: false, message: "Navnet stemmer ikke med prosjektnavnet." };
+      return {
+        ok: false,
+        message: L(
+          "Navnet stemmer ikke med prosjektnavnet.",
+          "The name does not match the project name.",
+        ),
+      };
     const { data: res, error } = await ctx.admin.rpc("delete_project", {
       p_project: data.projectId,
       p_actor: context.userId,
     });
-    if (error) return { ok: false, message: `Prosjektet ble ikke slettet: ${dbMessage(error)}` };
+    if (error)
+      return {
+        ok: false,
+        message: L(
+          `Prosjektet ble ikke slettet: ${dbMessage(error)}`,
+          `The project was not deleted: ${dbMessage(error)}`,
+        ),
+      };
     const r = res as { sources?: string[]; films?: string[]; removed_members?: number };
     const sources = [
       ...(r.sources ?? []),
@@ -179,15 +199,31 @@ export const purgeProjectAssets = createServerFn({ method: "POST" })
     if (!ctx.deleted)
       return {
         ok: false,
-        message: "Ressursene kan bare slettes for godt etter at prosjektet er slettet.",
+        message: L(
+          "Ressursene kan bare slettes for godt etter at prosjektet er slettet.",
+          "The assets can only be deleted for good after the project has been deleted.",
+        ),
       };
     if (!nameMatches(data.confirmName, ctx.name))
-      return { ok: false, message: "Navnet stemmer ikke med prosjektnavnet." };
+      return {
+        ok: false,
+        message: L(
+          "Navnet stemmer ikke med prosjektnavnet.",
+          "The name does not match the project name.",
+        ),
+      };
     const { data: res, error } = await ctx.admin.rpc("purge_project_assets", {
       p_project: data.projectId,
       p_actor: context.userId,
     });
-    if (error) return { ok: false, message: `Ressursene ble ikke slettet: ${dbMessage(error)}` };
+    if (error)
+      return {
+        ok: false,
+        message: L(
+          `Ressursene ble ikke slettet: ${dbMessage(error)}`,
+          `The assets were not deleted: ${dbMessage(error)}`,
+        ),
+      };
     const r = res as { paths?: string[] };
     const paths = [...(r.paths ?? []), ...(await listFolder(ctx.admin, "assets", data.projectId))];
     const leftover = await removeFiles(ctx.admin, "assets", data.projectId, paths);

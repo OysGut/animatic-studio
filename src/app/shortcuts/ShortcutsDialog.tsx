@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { SHORTCUT_GROUPS, SHORTCUT_HELP_KEY, type ShortcutGroup } from "./shortcut-list";
+import { L } from "@/core";
 
 export function ShortcutsDialog({
   open,
@@ -33,11 +34,14 @@ export function ShortcutsDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Keyboard className="size-5" aria-hidden />
-            Hurtigtaster
+            {L("Hurtigtaster", "Keyboard shortcuts")}
           </DialogTitle>
           <DialogDescription>
-            Tastene virker når du ikke skriver i et tekstfelt. På Windows og Linux brukes Ctrl der
-            Mac bruker ⌘. Trykk {SHORTCUT_HELP_KEY} for å åpne denne oversikten.
+            {L(
+              "Tastene virker når du ikke skriver i et tekstfelt. På Windows og Linux brukes Ctrl der Mac bruker ⌘. Trykk",
+              "The keys work when you are not typing in a text field. On Windows and Linux, Ctrl is used where Mac uses ⌘. Press",
+            )}{" "}
+            {SHORTCUT_HELP_KEY} {L("for å åpne denne oversikten.", "to open this overview.")}
           </DialogDescription>
         </DialogHeader>
         <div className="grid min-h-0 grid-cols-1 gap-x-8 gap-y-4 overflow-y-auto pr-1 md:grid-cols-2">
@@ -87,8 +91,8 @@ export function ShortcutsButton({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      aria-label="Hurtigtaster"
-      title={`Hurtigtaster (${SHORTCUT_HELP_KEY})`}
+      aria-label={L("Hurtigtaster", "Keyboard shortcuts")}
+      title={L(`Hurtigtaster (${SHORTCUT_HELP_KEY})`, `Keyboard shortcuts (${SHORTCUT_HELP_KEY})`)}
       className="inline-flex size-7 shrink-0 items-center justify-center rounded-sm text-text-secondary hover:bg-surface-3 hover:text-text-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
     >
       <Keyboard className="size-4" aria-hidden />

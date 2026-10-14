@@ -33,6 +33,8 @@ import {
   type KeyboardEvent,
 } from "react";
 import {
+  L,
+  collation,
   changedBlockIds,
   discrepancies,
   filmClips,
@@ -77,7 +79,7 @@ import { VersionsDialog } from "./VersionsDialog";
 import { Inspector } from "./Inspector";
 import { SceneNavigator, type CharacterOption } from "./SceneNavigator";
 import { ScriptPageView, type Selection } from "./ScriptPageView";
-import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
+import { PaneResizer, usePaneSize, useStoredFlag } from "@/app/shell/pane-size";
 import { rememberScene } from "@/app/shell/current-scene";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RejectedTextNotice } from "@/app/project/RejectedTextNotice";
@@ -107,14 +109,19 @@ export function ScriptWorkspace({
   const editable = canEdit(role);
   const cmds = useCommands(projectId, userId, editable);
 
-  if (query.isLoading) return <p className="p-6 text-[13px] text-text-tertiary">Henter manus …</p>;
+  if (query.isLoading)
+    return (
+      <p className="p-6 text-[13px] text-text-tertiary">
+        {L("Henter manus …", "Loading script …")}
+      </p>
+    );
   if (query.isError || !query.data)
     return (
       <div role="alert" className="p-6 text-[13px] text-status-danger">
-        Manuset kunne ikke hentes.
+        {L("Manuset kunne ikke hentes.", "The script could not be loaded.")}
         {query.error ? (
           <p className="mt-2 font-mono text-xs text-text-tertiary">
-            Teknisk detalj: {query.error.message}
+            {L("Teknisk detalj", "Technical detail")}: {query.error.message}
           </p>
         ) : null}
       </div>
@@ -157,7 +164,7 @@ function Workspace({
   const productions = useMemo(
     () =>
       Object.values(state.productions).sort((a, b) =>
-        a.kind === "main" ? -1 : b.kind === "main" ? 1 : a.name.localeCompare(b.name, "nb"),
+        a.kind === "main" ? -1 : b.kind === "main" ? 1 : a.name.localeCompare(b.name, collation()),
       ),
     [state.productions],
   );
@@ -242,6 +249,8 @@ function Workspace({
   const [versionsOpen, setVersionsOpen] = useState(false);
   // Visningsvalg (REQ-0531, REQ-0073–0075): endrer aldri produksjonen
   const [onlySelected, setOnlySelected] = useState(false);
+  /** Lesevisningen for valgt scene: sort tekst på hvit bakgrunn (DEC-0080). Huskes i nettleseren. */
+  const [lightReading, setLightReading] = useStoredFlag("script-scene-light", false);
   const [filter, setFilter] = useState<SceneFilter>({});
   // Rekkefølge og synlighet endres bare når brukeren har slått det på (REQ-0532)
   const [structureEditing, setStructureEditing] = useState(false);
@@ -256,11 +265,11 @@ function Workspace({
   const scrollRef = useRef<HTMLDivElement | null>(null);
   // Tilstedeværelse: hvem andre er i prosjektet, og hvilken scene de står i
   const me = useProfiles([userId]);
-  const myName = me.data?.[userId]?.display_name || "Medlem";
+  const myName = me.data?.[userId]?.display_name || L("Medlem", "Member");
   const others = usePresence(
     projectId,
     userId,
-    me.data?.[userId]?.display_name || "Medlem",
+    me.data?.[userId]?.display_name || L("Medlem", "Member"),
     selection.occurrenceId,
   );
   const presenceByOcc = useMemo(() => {
@@ -340,6 +349,10 @@ function Workspace({
     [viewState, productionId, filter, statusRows],
   );
   const showOnlySelected = onlySelected && selection.occurrenceId !== null;
+  // Lesevisningen: ny scene vises fra toppen (DEC-0080)
+  useEffect(() => {
+    if (showOnlySelected) scrollRef.current?.scrollTo({ top: 0 });
+  }, [showOnlySelected, selection.occurrenceId]);
   const visibleOcc = useMemo<ReadonlySet<string> | null>(
     () => (showOnlySelected ? new Set([selection.occurrenceId!]) : matching),
     [showOnlySelected, selection.occurrenceId, matching],
@@ -613,7 +626,13 @@ function Workspace({
       block.text,
     );
     if (!at.found) {
-      setPendingNote({ ...p, error: "Teksten er endret mens du skrev – merk ordene på nytt." });
+      setPendingNote({
+        ...p,
+        error: L(
+          "Teksten er endret mens du skrev – merk ordene på nytt.",
+          "The text was changed while you were writing – select the words again.",
+        ),
+      });
       return;
     }
     const err = run(
@@ -632,7 +651,7 @@ function Workspace({
           },
         ],
       },
-      "Nytt notat",
+      L("Nytt notat", "New note"),
     );
     if (!err) {
       setPendingNote(null);
@@ -651,10 +670,13 @@ function Workspace({
           <span className="text-[13px] font-medium text-text-primary">{productions[0]?.name}</span>
         )}
         <select
-          aria-label="Manusspråk"
+          aria-label={L("Manusspråk", "Script language")}
           value={lang}
           onChange={(e) => setLang(e.target.value)}
-          title="Språket manuset vises på. Norsk er hovedmanuset; oversettelser endrer det aldri."
+          title={L(
+            "Språket manuset vises på. Norsk er hovedmanuset; oversettelser endrer det aldri.",
+            "The language the script is shown in. Norwegian is the main script; translations never change it.",
+          )}
           className="h-7 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary"
         >
           {Object.entries(LANGUAGE_LABEL).map(([k, v]) => (
@@ -666,17 +688,27 @@ function Workspace({
         {langStatus ? (
           <span
             className="whitespace-nowrap text-xs text-text-tertiary"
-            title="Linjer som er oversatt, og linjer der norsk er endret etter oversettelsen"
+            title={L(
+              "Linjer som er oversatt, og linjer der norsk er endret etter oversettelsen",
+              "Lines that have been translated, and lines where the Norwegian has changed since translation",
+            )}
           >
-            {langStatus.translated} av {langStatus.lines} oversatt
-            {langStatus.review ? ` · ${langStatus.review} må gjennomgås` : ""}
-            {langStatus.uncertain ? ` · ${langStatus.uncertain} usikre` : ""}
+            {L(
+              `${langStatus.translated} av ${langStatus.lines} oversatt`,
+              `${langStatus.translated} of ${langStatus.lines} translated`,
+            )}
+            {langStatus.review
+              ? L(` · ${langStatus.review} må gjennomgås`, ` · ${langStatus.review} to review`)
+              : ""}
+            {langStatus.uncertain
+              ? L(` · ${langStatus.uncertain} usikre`, ` · ${langStatus.uncertain} uncertain`)
+              : ""}
           </span>
         ) : null}
         {langStatus && editable ? (
           <Button size="sm" variant="ghost" onClick={() => setImportLangOpen(true)}>
             <Languages />
-            Importer engelsk manus …
+            {L("Importer engelsk manus …", "Import English script …")}
           </Button>
         ) : null}
         {langStatus && editable && langStatus.translated > 0 ? (
@@ -684,9 +716,12 @@ function Workspace({
             size="sm"
             variant="ghost"
             onClick={() => setRemoveLangOpen(true)}
-            title="Fjern alle oversettelser til dette språket i én endring (kan angres)"
+            title={L(
+              "Fjern alle oversettelser til dette språket i én endring (kan angres)",
+              "Remove all translations into this language in one change (can be undone)",
+            )}
           >
-            Fjern oversettelsene …
+            {L("Fjern oversettelsene …", "Remove the translations …")}
           </Button>
         ) : null}
         <div className="mx-1 h-5 w-px bg-border" aria-hidden />
@@ -695,8 +730,16 @@ function Workspace({
           variant="ghost"
           onClick={cmds.undo}
           disabled={!cmds.canUndo}
-          title={cmds.undoLabel ? `Angre: ${cmds.undoLabel} (⌘Z)` : "Angre (⌘Z)"}
-          aria-label={cmds.undoLabel ? `Angre: ${cmds.undoLabel}` : "Angre"}
+          title={
+            cmds.undoLabel
+              ? L(`Angre: ${cmds.undoLabel} (⌘Z)`, `Undo: ${cmds.undoLabel} (⌘Z)`)
+              : L("Angre (⌘Z)", "Undo (⌘Z)")
+          }
+          aria-label={
+            cmds.undoLabel
+              ? L(`Angre: ${cmds.undoLabel}`, `Undo: ${cmds.undoLabel}`)
+              : L("Angre", "Undo")
+          }
         >
           <Undo2 />
         </Button>
@@ -705,8 +748,16 @@ function Workspace({
           variant="ghost"
           onClick={cmds.redo}
           disabled={!cmds.canRedo}
-          title={cmds.redoLabel ? `Gjør om: ${cmds.redoLabel} (⇧⌘Z)` : "Gjør om (⇧⌘Z)"}
-          aria-label={cmds.redoLabel ? `Gjør om: ${cmds.redoLabel}` : "Gjør om"}
+          title={
+            cmds.redoLabel
+              ? L(`Gjør om: ${cmds.redoLabel} (⇧⌘Z)`, `Redo: ${cmds.redoLabel} (⇧⌘Z)`)
+              : L("Gjør om (⇧⌘Z)", "Redo (⇧⌘Z)")
+          }
+          aria-label={
+            cmds.redoLabel
+              ? L(`Gjør om: ${cmds.redoLabel}`, `Redo: ${cmds.redoLabel}`)
+              : L("Gjør om", "Redo")
+          }
         >
           <Redo2 />
         </Button>
@@ -715,15 +766,18 @@ function Workspace({
             size="sm"
             variant="secondary"
             onClick={() => setAddScenesOpen(true)}
-            title="Gjenbruk scener fra hovedfilmen eller en annen produksjon"
+            title={L(
+              "Gjenbruk scener fra hovedfilmen eller en annen produksjon",
+              "Reuse scenes from the main film or another production",
+            )}
           >
             <ListPlus />
-            Legg til scener …
+            {L("Legg til scener …", "Add scenes …")}
           </Button>
         ) : editable ? (
           <Button size="sm" variant="secondary" onClick={() => setImportOpen(true)}>
             <FileUp />
-            Importer manus
+            {L("Importer manus", "Import script")}
           </Button>
         ) : null}
         {state.productions[productionId]?.kind !== "main" &&
@@ -732,22 +786,25 @@ function Workspace({
             size="sm"
             variant="ghost"
             onClick={() => setPromoteOpen(true)}
-            title="Før endringer eller nye scener fra denne produksjonen tilbake til hovedfilmen"
-            aria-label="Tilbakefør"
+            title={L(
+              "Før endringer eller nye scener fra denne produksjonen tilbake til hovedfilmen",
+              "Carry changes or new scenes from this production back to the main film",
+            )}
+            aria-label={L("Tilbakefør", "Carry back")}
           >
             <CornerUpLeft />
-            <span className="hidden 2xl:inline">Tilbakefør …</span>
+            <span className="hidden 2xl:inline">{L("Tilbakefør …", "Carry back …")}</span>
           </Button>
         ) : null}
         {hasScenes ? (
           <>
             <Button size="sm" variant="ghost" onClick={() => setVersionsOpen(true)}>
               <History />
-              Versjoner
+              {L("Versjoner", "Versions")}
             </Button>
             <Button size="sm" variant="ghost" onClick={() => setExportOpen(true)}>
               <Download />
-              Eksporter
+              {L("Eksporter", "Export")}
             </Button>
           </>
         ) : null}
@@ -755,13 +812,16 @@ function Workspace({
           {others.length ? (
             <div
               className="flex -space-x-1.5"
-              aria-label={`Også her nå: ${others.map((o) => o.name).join(", ")}`}
+              aria-label={L(
+                `Også her nå: ${others.map((o) => o.name).join(", ")}`,
+                `Also here now: ${others.map((o) => o.name).join(", ")}`,
+              )}
             >
               {others.slice(0, 5).map((o) => (
                 <button
                   key={o.userId}
                   type="button"
-                  title={`${o.name}${o.occurrenceId ? " – se hvor" : ""}`}
+                  title={`${o.name}${o.occurrenceId ? L(" – se hvor", " – see where") : ""}`}
                   onClick={() =>
                     o.occurrenceId && select({ occurrenceId: o.occurrenceId, blockId: null }, true)
                   }
@@ -774,7 +834,9 @@ function Workspace({
           ) : null}
           <SaveIndicator cmds={cmds} />
           {roleKnown && !editable ? (
-            <span className="text-xs text-text-tertiary">Bare lesetilgang</span>
+            <span className="text-xs text-text-tertiary">
+              {L("Bare lesetilgang", "Read-only access")}
+            </span>
           ) : null}
           {/* Visningsvalg samlet i én meny, så verktøylinjen ikke bryter tekst (UX-gjennomgang DEC-0076) */}
           <Popover>
@@ -783,14 +845,17 @@ function Workspace({
                 size="sm"
                 variant="ghost"
                 className="h-7 shrink-0 gap-1 whitespace-nowrap px-2 text-xs"
-                title="Notater, bare valgt scene og låste sider"
+                title={L(
+                  "Notater, bare valgt scene og låste sider",
+                  "Notes, selected scene only and locked pages",
+                )}
               >
                 <SlidersHorizontal className="size-3.5" aria-hidden />
-                Visning
+                {L("Visning", "View")}
                 {onlySelected || !showNotes ? (
                   <>
                     <span className="size-1.5 rounded-full bg-accent-brand" aria-hidden />
-                    <span className="sr-only">(endret)</span>
+                    <span className="sr-only">{L("(endret)", "(changed)")}</span>
                   </>
                 ) : null}
                 <ChevronDown className="size-3" aria-hidden />
@@ -799,7 +864,10 @@ function Workspace({
             <PopoverContent align="end" className="flex w-60 flex-col gap-2 p-3">
               <label
                 className="flex items-center gap-1.5 text-xs text-text-secondary"
-                title="Vis eller skjul notater i manuset (REQ-0538)"
+                title={L(
+                  "Vis eller skjul notater i manuset (REQ-0538)",
+                  "Show or hide notes in the script (REQ-0538)",
+                )}
               >
                 <input
                   type="checkbox"
@@ -807,11 +875,14 @@ function Workspace({
                   onChange={(e) => setShowNotes(e.target.checked)}
                   className="size-3.5 accent-[var(--accent-brand)]"
                 />
-                Vis notater
+                {L("Vis notater", "Show notes")}
               </label>
               <label
                 className="flex items-center gap-1.5 text-xs text-text-secondary"
-                title="Vis bare scenen som er valgt i scenelisten. Endrer ikke filmen."
+                title={L(
+                  "Vis bare scenen som er valgt i scenelisten. Endrer ikke filmen.",
+                  "Show only the scene selected in the scene list. Does not change the film.",
+                )}
               >
                 <input
                   type="checkbox"
@@ -822,40 +893,67 @@ function Workspace({
                   }}
                   className="size-3.5 accent-[var(--accent-brand)]"
                 />
-                Vis kun valgt scene
+                {L("Vis kun valgt scene", "Show only selected scene")}
+              </label>
+              <label
+                className={
+                  "ml-5 flex items-center gap-1.5 text-xs " +
+                  (onlySelected ? "text-text-secondary" : "text-text-tertiary")
+                }
+                title={L(
+                  "Lesevisningen for valgt scene: sort tekst på hvit bakgrunn",
+                  "Reading view for the selected scene: black text on a white background",
+                )}
+              >
+                <input
+                  type="checkbox"
+                  checked={lightReading}
+                  disabled={!onlySelected}
+                  onChange={(e) => setLightReading(e.target.checked)}
+                  className="size-3.5 accent-[var(--accent-brand)]"
+                />
+                {L("Sort tekst på hvit bakgrunn", "Black text on white background")}
               </label>
               <label
                 className="flex items-center gap-1.5 text-xs text-text-secondary"
-                title="Følg originalens sideskift for importert tekst (låste sider)"
+                title={L(
+                  "Følg originalens sideskift for importert tekst (låste sider)",
+                  "Follow the original page breaks for imported text (locked pages)",
+                )}
               >
                 <Lock className="size-3.5" aria-hidden />
-                Låste sider
+                {L("Låste sider", "Locked pages")}
                 <Switch
                   checked={lockedPages}
                   onCheckedChange={setLockedPages}
                   className="scale-75"
-                  aria-label="Låste sider"
+                  aria-label={L("Låste sider", "Locked pages")}
                 />
               </label>
             </PopoverContent>
           </Popover>
           <select
-            aria-label="Zoom"
+            aria-label={L("Zoom", "Zoom")}
             value={zoomChoice}
             onChange={(e) => setZoom(e.target.value as Zoom)}
             className="h-7 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
           >
             {ZOOMS.map((z) => (
               <option key={z} value={z}>
-                {z === "fit" ? "Tilpass bredde" : `${Math.round(Number(z) * 100)} %`}
+                {z === "fit"
+                  ? L("Tilpass bredde", "Fit width")
+                  : `${Math.round(Number(z) * 100)} %`}
               </option>
             ))}
           </select>
           <span className="tabular shrink-0 whitespace-nowrap text-xs text-text-tertiary">
             {visibleOcc
-              ? `${shownPages.length} av ${pagination.pages.length}`
+              ? L(
+                  `${shownPages.length} av ${pagination.pages.length}`,
+                  `${shownPages.length} of ${pagination.pages.length}`,
+                )
               : pagination.pages.length}{" "}
-            sider
+            {L("sider", "pages")}
           </span>
         </div>
       </div>
@@ -874,7 +972,7 @@ function Workspace({
               onSize={setNavWidth}
               min={200}
               max={520}
-              label="Bredde på scenelisten"
+              label={L("Bredde på scenelisten", "Width of the scene list")}
             />
             <SceneNavigator
               state={state}
@@ -893,7 +991,11 @@ function Workspace({
               structureEditing={structureEditing}
               onStructureEditingChange={setStructureEditing}
               moved={moved}
-              movedBaseline={latestVersion ? `versjon ${latestVersion.number}` : null}
+              movedBaseline={
+                latestVersion
+                  ? L(`versjon ${latestVersion.number}`, `version ${latestVersion.number}`)
+                  : null
+              }
               onSelect={(id) => select({ occurrenceId: id, blockId: null }, true)}
               onMove={(id, orderKey, label) =>
                 run({ type: "MoveOccurrence", occurrenceId: id as never, orderKey }, label)
@@ -901,7 +1003,9 @@ function Workspace({
               onToggleActive={(id, active) =>
                 run(
                   { type: "SetOccurrenceActive", occurrenceId: id as never, active },
-                  active ? "Aktiver scene" : "Deaktiver scene",
+                  active
+                    ? L("Aktiver scene", "Activate scene")
+                    : L("Deaktiver scene", "Deactivate scene"),
                 )
               }
             />
@@ -909,7 +1013,10 @@ function Workspace({
           <div
             ref={scrollRef}
             tabIndex={0}
-            aria-label="Manussider. Pil opp og ned velger linje, Enter redigerer."
+            aria-label={L(
+              "Manussider. Pil opp og ned velger linje, Enter redigerer.",
+              "Script pages. Up and down arrows select a line, Enter edits.",
+            )}
             onKeyDown={onPagesKey}
             onMouseUp={onPagesMouseUp}
             onScroll={() => {
@@ -920,19 +1027,30 @@ function Workspace({
                 updateInView();
               });
             }}
-            className="relative min-h-0 overflow-auto bg-bg-app outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus-ring"
+            className={
+              "relative min-h-0 overflow-auto outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus-ring " +
+              (showOnlySelected && lightReading ? "bg-white" : "bg-bg-app")
+            }
           >
             {onlySelected && !selection.occurrenceId ? (
               <p className="px-6 pt-4 text-xs text-text-tertiary">
-                «Vis kun valgt scene» er på – velg en scene i listen til venstre. Hele manuset vises
-                til da.
+                {L(
+                  "«Vis kun valgt scene» er på – velg en scene i listen til venstre. Hele manuset vises til da.",
+                  "“Show only selected scene” is on – choose a scene in the list on the left. The whole script is shown until then.",
+                )}
               </p>
             ) : null}
             {visibleOcc && shownPages.length === 0 ? (
               <p className="px-6 pt-6 text-[13px] text-text-secondary">
                 {showOnlySelected && !state.occurrences[selection.occurrenceId!]?.active
-                  ? "Den valgte scenen er deaktivert og står derfor ikke på manussidene. Slå den på i listen (med «Endre rekkefølge og synlighet») for å se den."
-                  : "Ingen aktive scener passer med filteret. Deaktiverte scener vises ikke på sidene."}
+                  ? L(
+                      "Den valgte scenen er deaktivert og står derfor ikke på manussidene. Slå den på i listen (med «Endre rekkefølge og synlighet») for å se den.",
+                      "The selected scene is deactivated, so it is not on the script pages. Turn it on in the list (under “Change order and visibility”) to see it.",
+                    )
+                  : L(
+                      "Ingen aktive scener passer med filteret. Deaktiverte scener vises ikke på sidene.",
+                      "No active scenes match the filter. Deactivated scenes are not shown on the pages.",
+                    )}
               </p>
             ) : null}
             <ScriptPageView
@@ -946,6 +1064,8 @@ function Workspace({
               onNoteClick={onPageNoteClick}
               changed={changedBlocks}
               language={langMarks}
+              // Valgt scene alene: rett på siden, uten ark og sideskift (DEC-0080)
+              flow={showOnlySelected ? { light: lightReading } : undefined}
             />
           </div>
           {pendingNote ? (
@@ -971,7 +1091,7 @@ function Workspace({
                   onClick={() => setPendingNote({ ...pendingNote, open: true })}
                 >
                   <MessageSquarePlus />
-                  Legg til notat
+                  {L("Legg til notat", "Add note")}
                 </Button>
               )}
             </div>
@@ -983,7 +1103,7 @@ function Workspace({
               onSize={setInspWidth}
               min={240}
               max={640}
-              label="Bredde på inspektøren"
+              label={L("Bredde på inspektøren", "Width of the inspector")}
             />
             <Inspector
               projectId={projectId}
@@ -1007,19 +1127,24 @@ function Workspace({
       ) : (
         <div className="flex flex-1 flex-col items-center justify-center gap-3 p-8 text-center">
           <p className="text-base font-medium text-text-primary">
-            Ingen scener i «{state.productions[productionId]?.name}» ennå
+            {L(
+              `Ingen scener i «${state.productions[productionId]?.name}» ennå`,
+              `No scenes in “${state.productions[productionId]?.name}” yet`,
+            )}
           </p>
           {state.productions[productionId]?.kind !== "main" ? (
             <>
               <p className="max-w-[440px] text-[13px] text-text-secondary">
-                Gjenbruk scener fra hovedfilmen, eller skriv nye scener som bare finnes her. Nye
-                scener legges aldri inn i hovedfilmen automatisk.
+                {L(
+                  "Gjenbruk scener fra hovedfilmen, eller skriv nye scener som bare finnes her. Nye scener legges aldri inn i hovedfilmen automatisk.",
+                  "Reuse scenes from the main film, or write new scenes that exist only here. New scenes are never added to the main film automatically.",
+                )}
               </p>
               {editable ? (
                 <div className="flex gap-2">
                   <Button onClick={() => setAddScenesOpen(true)}>
                     <ListPlus />
-                    Legg til scener …
+                    {L("Legg til scener …", "Add scenes …")}
                   </Button>
                   <Button
                     variant="secondary"
@@ -1037,13 +1162,13 @@ function Workspace({
                           blocks: [{ blockId: newId(), kind: "action", text: "", orderKey: "i" }],
                           productionNumber: null,
                         },
-                        "Ny scene",
+                        L("Ny scene", "New scene"),
                       );
                       if (!e) setSelection({ occurrenceId, blockId: null });
                     }}
                   >
                     <Plus />
-                    Skriv ny scene
+                    {L("Skriv ny scene", "Write new scene")}
                   </Button>
                 </div>
               ) : null}
@@ -1051,13 +1176,15 @@ function Workspace({
           ) : (
             <>
               <p className="max-w-[420px] text-[13px] text-text-secondary">
-                Importer manuset som PDF (for eksempel fra Final Draft) eller Word. Du ser en
-                forhåndsvisning før noe lagres, og importen kan angres.
+                {L(
+                  "Importer manuset som PDF (for eksempel fra Final Draft) eller Word. Du ser en forhåndsvisning før noe lagres, og importen kan angres.",
+                  "Import the script as PDF (for example from Final Draft) or Word. You see a preview before anything is saved, and the import can be undone.",
+                )}
               </p>
               {editable ? (
                 <Button onClick={() => setImportOpen(true)}>
                   <FileUp />
-                  Importer manus
+                  {L("Importer manus", "Import script")}
                 </Button>
               ) : null}
             </>
@@ -1094,7 +1221,7 @@ function Workspace({
             ? {
                 onSaveTitlePage: (lines: readonly string[]) => {
                   const tp = titlePageCommand(state, productionId, lines);
-                  if (tp) cmds.runSilent(tp.command, "Lagre tittelsiden");
+                  if (tp) cmds.runSilent(tp.command, L("Lagre tittelsiden", "Save title page"));
                 },
               }
             : {})}
@@ -1189,7 +1316,7 @@ function PendingNoteForm({
         rows={3}
         maxLength={10000}
         value={text}
-        placeholder="Skriv notatet …"
+        placeholder={L("Skriv notatet …", "Write the note …")}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) onSave(text);
@@ -1199,10 +1326,10 @@ function PendingNoteForm({
       />
       <div className="flex gap-1.5">
         <Button size="sm" onClick={() => onSave(text)} disabled={!text.trim()}>
-          Lagre notat
+          {L("Lagre notat", "Save note")}
         </Button>
         <Button size="sm" variant="ghost" onClick={onCancel}>
-          Avbryt
+          {L("Avbryt", "Cancel")}
         </Button>
       </div>
       {error ? (
@@ -1220,7 +1347,7 @@ export function SaveIndicator({ cmds }: { cmds: Commands }) {
     return (
       <span className="flex items-center gap-1 text-xs text-text-tertiary" role="status">
         <Loader2 className="size-3 animate-spin" aria-hidden />
-        Lagrer …
+        {L("Lagrer …", "Saving …")}
       </span>
     );
   if (s.kind === "error")
@@ -1235,5 +1362,5 @@ export function SaveIndicator({ cmds }: { cmds: Commands }) {
         {s.message}
       </button>
     );
-  return <span className="text-xs text-text-tertiary">Lagret</span>;
+  return <span className="text-xs text-text-tertiary">{L("Lagret", "Saved")}</span>;
 }

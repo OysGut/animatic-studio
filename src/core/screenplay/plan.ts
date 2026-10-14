@@ -8,6 +8,7 @@ import { newId as defaultNewId } from "../ids";
 import { keysEvenly } from "../order-key";
 import type { ProjectState } from "../model";
 import { orderedOccurrences } from "../views";
+import { L } from "../i18n";
 import type { ParsedScreenplay } from "./types";
 
 export interface PlanOptions {
@@ -42,7 +43,12 @@ export function planImport(
     }));
     const headingNotes = [...ps.warnings];
     if (anyNumbered && ps.number === null && !ps.isContinuation)
-      headingNotes.push("Scenen har ikke scenenummer i originalen");
+      headingNotes.push(
+        L(
+          "Scenen har ikke scenenummer i originalen",
+          "The scene has no scene number in the original",
+        ),
+      );
     return {
       sceneId: mk<"scene">(),
       variantId: mk<"scene_variant">(),

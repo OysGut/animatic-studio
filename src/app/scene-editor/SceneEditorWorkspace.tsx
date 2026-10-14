@@ -22,6 +22,7 @@ import { ContentSyncFlag } from "@/app/assembly/ContentSyncFlag";
 import { useContentSync } from "@/app/assembly/use-content-sync";
 import {
   DEFAULT_COMPOSITION,
+  L,
   compositionDuration,
   defaultLayerFields,
   compositionOfVariant,
@@ -99,14 +100,18 @@ export function SceneEditorWorkspace({
   const editable = canEdit(role);
   const cmds = useCommands(projectId, userId, editable);
   if (query.isLoading)
-    return <p className="p-6 text-[13px] text-text-tertiary">Henter scenene …</p>;
+    return (
+      <p className="p-6 text-[13px] text-text-tertiary">
+        {L("Henter scenene …", "Loading the scene …")}
+      </p>
+    );
   if (query.isError || !query.data)
     return (
       <div role="alert" className="p-6 text-[13px] text-status-danger">
-        Scenene kunne ikke hentes.
+        {L("Scenene kunne ikke hentes.", "The scene could not be loaded.")}
         {query.error ? (
           <p className="mt-2 font-mono text-xs text-text-tertiary">
-            Teknisk detalj: {query.error.message}
+            {L("Teknisk detalj:", "Technical detail:")} {query.error.message}
           </p>
         ) : null}
       </div>
@@ -175,7 +180,7 @@ function Editor({
     if (!commands) return;
     const group = newId();
     for (const c of commands) {
-      const err = cmds.run(c, "Egen versjon av scenen", group);
+      const err = cmds.run(c, L("Egen versjon av scenen", "Own copy of the scene"), group);
       if (err) {
         setCopyError(err);
         return;
@@ -273,6 +278,8 @@ function Editor({
   const [neighbours, setNeighbours] = useStoredFlag("scene-editor-neighbours", false);
   /** Laget som får nytt bilde (dobbeltklikk, DEC-0044). */
   const [imageLayerId, setImageLayerId] = useState<string | null>(null);
+  /** Åpne bildet stort med «Oppskaler» fremme (advarselen om forstørrelse, DEC-0080). */
+  const [upscaleOpen, setUpscaleOpen] = useState(false);
   const openLayerImage = useCallback(
     (id: string) => {
       setSelectedLayerId(id);
@@ -323,7 +330,9 @@ function Editor({
             { layerId: selectedLayer.id, fields: { ...layerFieldsOf(selectedLayer), path } },
           ],
         },
-        selectedLayer.path ? "Tegn banen på nytt" : "Ny bevegelsesbane",
+        selectedLayer.path
+          ? L("Tegn banen på nytt", "Redraw the path")
+          : L("Ny bevegelsesbane", "New motion path"),
       ),
     );
   }
@@ -379,7 +388,7 @@ function Editor({
             },
           ],
         },
-        `Nytt lag «${f.name}»`,
+        L(`Nytt lag «${f.name}»`, `New layer “${f.name}”`),
       );
       setError(err);
       if (!err) setSelectedLayerId(layerId);
@@ -406,7 +415,7 @@ function Editor({
     if (shared) {
       group = newId();
       for (const c of ownCopyCommands(state, occurrence.id) ?? []) {
-        const e = cmds.run(c, "Egen versjon av scenen", group);
+        const e = cmds.run(c, L("Egen versjon av scenen", "Own copy of the scene"), group);
         if (e) {
           setError(e);
           return;
@@ -427,7 +436,7 @@ function Editor({
             height: state.project.frameHeight,
           },
         },
-        "Ny 2D-scene",
+        L("Ny 2D-scene", "New 2D scene"),
         group,
       ),
     );
@@ -436,7 +445,9 @@ function Editor({
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex h-10 shrink-0 items-center gap-2 border-b border-border bg-surface-2 px-3">
-        <span className="text-[13px] font-medium text-text-primary">Sceneeditor</span>
+        <span className="text-[13px] font-medium text-text-primary">
+          {L("Sceneeditor", "Scene editor")}
+        </span>
         <ProductionPicker state={state} value={productionId} onChange={setProductionId} />
         <div className="mx-1 h-5 w-px bg-border" aria-hidden />
         <ScenePicker
@@ -462,8 +473,16 @@ function Editor({
           variant="ghost"
           onClick={cmds.undo}
           disabled={!cmds.canUndo}
-          title={cmds.undoLabel ? `Angre: ${cmds.undoLabel} (⌘Z)` : "Angre (⌘Z)"}
-          aria-label={cmds.undoLabel ? `Angre: ${cmds.undoLabel}` : "Angre"}
+          title={
+            cmds.undoLabel
+              ? L(`Angre: ${cmds.undoLabel} (⌘Z)`, `Undo: ${cmds.undoLabel} (⌘Z)`)
+              : L("Angre (⌘Z)", "Undo (⌘Z)")
+          }
+          aria-label={
+            cmds.undoLabel
+              ? L(`Angre: ${cmds.undoLabel}`, `Undo: ${cmds.undoLabel}`)
+              : L("Angre", "Undo")
+          }
         >
           <Undo2 />
         </Button>
@@ -472,15 +491,23 @@ function Editor({
           variant="ghost"
           onClick={cmds.redo}
           disabled={!cmds.canRedo}
-          title={cmds.redoLabel ? `Gjør om: ${cmds.redoLabel} (⇧⌘Z)` : "Gjør om (⇧⌘Z)"}
-          aria-label={cmds.redoLabel ? `Gjør om: ${cmds.redoLabel}` : "Gjør om"}
+          title={
+            cmds.redoLabel
+              ? L(`Gjør om: ${cmds.redoLabel} (⇧⌘Z)`, `Redo: ${cmds.redoLabel} (⇧⌘Z)`)
+              : L("Gjør om (⇧⌘Z)", "Redo (⇧⌘Z)")
+          }
+          aria-label={
+            cmds.redoLabel
+              ? L(`Gjør om: ${cmds.redoLabel}`, `Redo: ${cmds.redoLabel}`)
+              : L("Gjør om", "Redo")
+          }
         >
           <Redo2 />
         </Button>
         {editable && composition ? (
           <Button size="sm" variant="secondary" onClick={() => setAddOpen(true)}>
             <Plus />
-            Legg til lag
+            {L("Legg til lag", "Add layer")}
           </Button>
         ) : null}
         {audioEditable && occurrence ? (
@@ -491,11 +518,14 @@ function Editor({
               playback.pause();
               setRecordOpen(true);
             }}
-            title="Ta opp en replikk eller lyd fra avspillingshodet"
+            title={L(
+              "Ta opp en replikk eller lyd fra avspillingshodet",
+              "Record a line or sound from the playhead",
+            )}
           >
             <Mic aria-hidden />
             {/* Under 1400 px bare ikon (med verktøytips), så scenevelgeren får plass */}
-            <span className="sr-only min-[1400px]:not-sr-only">Opptak</span>
+            <span className="sr-only min-[1400px]:not-sr-only">{L("Opptak", "Recording")}</span>
           </Button>
         ) : null}
         <div className="ml-auto flex items-center gap-2">
@@ -506,10 +536,15 @@ function Editor({
                 variant={neighbours ? "secondary" : "ghost"}
                 onClick={() => setNeighbours(!neighbours)}
                 aria-pressed={neighbours}
-                title="Spill scenen før og etter som ferdig film, i sammenheng med denne"
+                title={L(
+                  "Spill scenen før og etter som ferdig film, i sammenheng med denne",
+                  "Play the scene before and after as a finished film, in context with this one",
+                )}
               >
                 <Clapperboard aria-hidden />
-                <span className="sr-only min-[1400px]:not-sr-only">Naboscener</span>
+                <span className="sr-only min-[1400px]:not-sr-only">
+                  {L("Naboscener", "Neighbouring scenes")}
+                </span>
               </Button>
               {/* Forhåndsvisning med valg i en liten meny, så verktøylinjen ikke bryter tekst (DEC-0076 funn 6) */}
               <div className="flex shrink-0 items-center">
@@ -518,11 +553,16 @@ function Editor({
                   variant={previewOpen ? "secondary" : "ghost"}
                   onClick={() => setPreviewOpen(!previewOpen)}
                   aria-pressed={previewOpen}
-                  title="Vis det ferdige utsnittet (kamera og bevegelser) i et eget vindu"
+                  title={L(
+                    "Vis det ferdige utsnittet (kamera og bevegelser) i et eget vindu",
+                    "Show the finished shot (camera and movement) in a separate window",
+                  )}
                   className="rounded-r-none"
                 >
                   <MonitorPlay aria-hidden />
-                  <span className="sr-only min-[1400px]:not-sr-only">Forhåndsvisning</span>
+                  <span className="sr-only min-[1400px]:not-sr-only">
+                    {L("Forhåndsvisning", "Preview")}
+                  </span>
                 </Button>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -530,11 +570,14 @@ function Editor({
                       size="sm"
                       variant={previewOpen ? "secondary" : "ghost"}
                       className="w-6 rounded-l-none px-0"
-                      aria-label="Valg for forhåndsvisning"
+                      aria-label={L("Valg for forhåndsvisning", "Preview options")}
                       title={
                         autoPreview
-                          ? "Valg for forhåndsvisning: vises automatisk ved avspilling"
-                          : "Valg for forhåndsvisning"
+                          ? L(
+                              "Valg for forhåndsvisning: vises automatisk ved avspilling",
+                              "Preview options: shown automatically during playback",
+                            )
+                          : L("Valg for forhåndsvisning", "Preview options")
                       }
                     >
                       <ChevronDown className="size-3" aria-hidden />
@@ -543,7 +586,10 @@ function Editor({
                   <PopoverContent align="end" className="flex w-64 flex-col gap-1 p-3">
                     <label
                       className="flex items-start gap-2 text-xs text-text-secondary"
-                      title="Det ferdige utsnittet vises mens scenen spilles, og lukkes når avspillingen stopper"
+                      title={L(
+                        "Det ferdige utsnittet vises mens scenen spilles, og lukkes når avspillingen stopper",
+                        "The finished shot is shown while the scene plays, and closes when playback stops",
+                      )}
                     >
                       <input
                         type="checkbox"
@@ -552,9 +598,14 @@ function Editor({
                         className="mt-0.5 size-3.5 accent-[var(--accent-brand)]"
                       />
                       <span className="flex flex-col gap-0.5">
-                        <span className="text-text-primary">Automatisk visning</span>
+                        <span className="text-text-primary">
+                          {L("Automatisk visning", "Automatic preview")}
+                        </span>
                         <span className="text-[11px] text-text-tertiary">
-                          Vis det ferdige utsnittet mens scenen spilles av.
+                          {L(
+                            "Vis det ferdige utsnittet mens scenen spilles av.",
+                            "Show the finished shot while the scene plays.",
+                          )}
                         </span>
                       </span>
                     </label>
@@ -568,7 +619,9 @@ function Editor({
           <div className="h-5 w-px shrink-0 bg-border" aria-hidden />
           <SaveIndicator cmds={cmds} />
           {roleKnown && !roleEditable ? (
-            <span className="text-xs text-text-tertiary">Bare lesetilgang</span>
+            <span className="text-xs text-text-tertiary">
+              {L("Bare lesetilgang", "Read-only access")}
+            </span>
           ) : null}
         </div>
       </div>
@@ -585,11 +638,11 @@ function Editor({
             onSize={setLeftWidth}
             min={180}
             max={480}
-            label="Bredde på «I denne scenen»"
+            label={L("Bredde på «I denne scenen»", "Width of “In this scene”")}
           />
           {occurrences.length === 0 ? (
             <p className="px-3 py-3 text-xs text-text-tertiary">
-              Ingen scener. Importer manuset først.
+              {L("Ingen scener. Importer manuset først.", "No scenes. Import the script first.")}
             </p>
           ) : null}
           {occurrence ? (
@@ -625,14 +678,19 @@ function Editor({
         <main className="flex min-w-0 flex-1 flex-col bg-surface-0">
           {!occurrence || !variant ? (
             <p className="m-auto text-[13px] text-text-tertiary">
-              {occurrences.length === 0 ? "Ingen scener i prosjektet ennå." : "Velg en scene."}
+              {occurrences.length === 0
+                ? L("Ingen scener i prosjektet ennå.", "No scenes in the project yet.")
+                : L("Velg en scene.", "Choose a scene.")}
             </p>
           ) : !composition ? (
             <EmptyScene
               title={formatHeading(variant.heading)}
               editable={roleEditable}
               onCreate={create}
-              format={`${state.project.frameWidth} × ${state.project.frameHeight} px · ${formatFps(state.project.fps)} bilder/s`}
+              format={L(
+                `${state.project.frameWidth} × ${state.project.frameHeight} px · ${formatFps(state.project.fps)} bilder/s`,
+                `${state.project.frameWidth} × ${state.project.frameHeight} px · ${formatFps(state.project.fps)} fps`,
+              )}
               error={error}
             />
           ) : (
@@ -643,10 +701,14 @@ function Editor({
                   className="flex min-h-8 shrink-0 flex-wrap items-center gap-2 border-b border-border bg-surface-2 px-3 py-1 text-xs text-text-primary"
                 >
                   <Copy className="size-3.5 text-text-tertiary" aria-hidden />
-                  2D-scenen deles med hovedfilmen. Lag en egen versjon for å endre den her –
-                  hovedfilmen endres ikke.
+                  {L(
+                    "2D-scenen deles med hovedfilmen. Lag en egen versjon for å endre den her – hovedfilmen endres ikke.",
+                    "The 2D scene is shared with the main film. Make an own copy to change it here – the main film is not changed.",
+                  )}
                   <Button size="sm" variant="secondary" className="h-6" onClick={makeOwnCopy}>
-                    Lag egen versjon for «{state.productions[productionId]?.name}»
+                    {L("Lag egen versjon for «", "Make an own copy for “")}
+                    {state.productions[productionId]?.name}
+                    {L("»", "”")}
                   </Button>
                   {copyError ? <span className="text-status-danger">{copyError}</span> : null}
                 </div>
@@ -657,10 +719,16 @@ function Editor({
                   className="flex h-8 shrink-0 items-center gap-2 border-b border-status-danger/40 bg-status-danger-bg px-3 text-xs text-text-primary"
                 >
                   <AlertTriangle className="size-3.5 text-status-danger" aria-hidden />
-                  Manuset er endret etter at materialet ble laget (
+                  {L(
+                    "Manuset er endret etter at materialet ble laget",
+                    "The script has changed since the material was made",
+                  )}{" "}
+                  (
                   {(() => {
                     const n = new Set(found.flatMap((d) => d.changes.map((c) => c.blockId))).size;
-                    return n === 1 ? "1 endring" : `${n} endringer`;
+                    return n === 1
+                      ? L("1 endring", "1 change")
+                      : L(`${n} endringer`, `${n} changes`);
                   })()}
                   ).
                   <Button
@@ -669,7 +737,7 @@ function Editor({
                     className="h-6"
                     onClick={() => setChangesOpen(true)}
                   >
-                    Vis og velg …
+                    {L("Vis og velg …", "View and choose …")}
                   </Button>
                 </div>
               ) : null}
@@ -715,7 +783,12 @@ function Editor({
                     onDock={() => setPopout(false)}
                     onBlocked={() => {
                       setPopout(false);
-                      setPreviewNote("Nettleseren stoppet det egne vinduet");
+                      setPreviewNote(
+                        L(
+                          "Nettleseren stoppet det egne vinduet",
+                          "The browser blocked its own window",
+                        ),
+                      );
                     }}
                     onTogglePlay={playback.toggle}
                   />
@@ -800,7 +873,7 @@ function Editor({
         {/* Lag og egenskaper */}
         {composition ? (
           <aside
-            aria-label="Lag og egenskaper"
+            aria-label={L("Lag og egenskaper", "Layers and properties")}
             style={{ width: rightWidth }}
             className="relative flex shrink-0 flex-col overflow-y-auto border-l border-border bg-surface-1"
           >
@@ -810,7 +883,7 @@ function Editor({
               onSize={setRightWidth}
               min={240}
               max={560}
-              label="Bredde på lag og egenskaper"
+              label={L("Bredde på lag og egenskaper", "Width of layers and properties")}
             />
             <LayersPanel
               state={state}
@@ -851,6 +924,10 @@ function Editor({
                   frame={playback.frame}
                   autoKey={autoKey}
                   onOpenImage={() => openLayerImage(selectedLayer.id)}
+                  onUpscale={() => {
+                    setUpscaleOpen(true);
+                    openLayerImage(selectedLayer.id);
+                  }}
                   onSeek={playback.setFrame}
                   durationFrames={duration}
                   drawingPath={drawingPath}
@@ -905,10 +982,12 @@ function Editor({
       <Dialog open={changesOpen && found.length > 0} onOpenChange={setChangesOpen}>
         <DialogContent className="max-h-[86vh] max-w-[620px] overflow-y-auto border-border bg-surface-2">
           <DialogHeader>
-            <DialogTitle>Manusendringer i scenen</DialogTitle>
+            <DialogTitle>{L("Manusendringer i scenen", "Script changes in the scene")}</DialogTitle>
             <DialogDescription>
-              Oppdater 2D-scenen her i editoren og godkjenn etterpå, godkjenn slik den er, eller
-              angre manusendringen.
+              {L(
+                "Oppdater 2D-scenen her i editoren og godkjenn etterpå, godkjenn slik den er, eller angre manusendringen.",
+                "Update the 2D scene here in the editor and approve afterwards, approve it as it is, or undo the script change.",
+              )}
             </DialogDescription>
           </DialogHeader>
           {occurrenceId ? (
@@ -927,13 +1006,17 @@ function Editor({
       <LayerImageDialog
         open={imageLayerId !== null}
         onOpenChange={(o) => {
-          if (!o) setImageLayerId(null);
+          if (!o) {
+            setImageLayerId(null);
+            setUpscaleOpen(false);
+          }
         }}
         state={state}
         projectId={projectId}
         layer={imageLayerId ? (state.layers[imageLayerId] ?? null) : null}
         editable={editable}
         cmds={cmds}
+        openUpscale={upscaleOpen}
       />
       <ShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} current="sceneeditor" />
       {occurrence && audioEditable ? (
@@ -982,15 +1065,22 @@ function EmptyScene({
     <div className="m-auto flex max-w-[420px] flex-col items-center gap-3 text-center">
       <Layers className="size-8 text-text-tertiary" aria-hidden />
       <p className="text-[13px] text-text-secondary">
-        <span className="font-medium text-text-primary">{title}</span> har ingen 2D-scene ennå.
+        <span className="font-medium text-text-primary">{title}</span>{" "}
+        {L("har ingen 2D-scene ennå.", "has no 2D scene yet.")}
       </p>
       <p className="text-xs text-text-tertiary">
-        Prosjektets format: {format}. Det endres på prosjektoversikten og gjelder alle scener.
+        {L("Prosjektets format:", "Project format:")} {format}.{" "}
+        {L(
+          "Det endres på prosjektoversikten og gjelder alle scener.",
+          "It is changed on the project overview and applies to all scenes.",
+        )}
       </p>
       {editable ? (
-        <Button onClick={onCreate}>Lag 2D-scene</Button>
+        <Button onClick={onCreate}>{L("Lag 2D-scene", "Create 2D scene")}</Button>
       ) : (
-        <p className="text-xs text-text-tertiary">Du har bare lesetilgang.</p>
+        <p className="text-xs text-text-tertiary">
+          {L("Du har bare lesetilgang.", "You have read-only access.")}
+        </p>
       )}
       {error ? (
         <p role="alert" className="text-xs text-status-danger">
@@ -1004,7 +1094,7 @@ function EmptyScene({
 /** «25», «23,976». */
 function formatFps(fps: { num: number; den: number }): string {
   const v = fps.num / fps.den;
-  return Number.isInteger(v) ? String(v) : v.toFixed(3).replace(".", ",");
+  return Number.isInteger(v) ? String(v) : v.toFixed(3).replace(".", L(",", "."));
 }
 
 export type { Composition };

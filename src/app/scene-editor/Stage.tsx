@@ -48,6 +48,8 @@ import {
   defaultLayerFields,
   newId,
   sceneContinuityVariant,
+  stretchedTransform,
+  L,
 } from "@/core";
 import { ASSET_DRAG_TYPE } from "./SceneAssetsPanel";
 import { removeLayer } from "./layer-actions";
@@ -104,7 +106,7 @@ interface Pt {
   x: number;
   y: number;
 }
-type DragKind = "move" | "scale" | "rotate" | "pan";
+type DragKind = "move" | "scale" | "stretch" | "rotate" | "pan";
 interface Drag {
   kind: DragKind;
   pointerId: number;
@@ -125,6 +127,8 @@ interface Drag {
   moved: boolean;
   latest: LayerTransform;
   cursor: string;
+  /** Sidehåndtak (DEC-0080): aksen som skvises eller strekkes. */
+  axis?: "x" | "y";
 }
 interface CamDrag {
   pointerId: number;
@@ -240,7 +244,16 @@ function handlesOf(item: DrawItem, v: View) {
     x: top.x + ((top.x - center.x) / len) * ROTATE_OFFSET,
     y: top.y + ((top.y - center.y) / len) * ROTATE_OFFSET,
   };
-  return { corners, center, top, rotateAt };
+  // Håndtakene midt på sidene (DEC-0080): skvis eller strekk i én retning
+  const mid = (a: Pt, b: Pt) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
+  const [, , , c3] = corners as [Pt, Pt, Pt, Pt];
+  const sides: { at: Pt; axis: "x" | "y" }[] = [
+    { at: top, axis: "y" },
+    { at: mid(c1, c2), axis: "x" },
+    { at: mid(c2, c3), axis: "y" },
+    { at: mid(c3, c0), axis: "x" },
+  ];
+  return { corners, center, top, rotateAt, sides };
 }
 
 function resizeCursor(center: Pt, corner: Pt): string {
@@ -253,9 +266,18 @@ function resizeCursor(center: Pt, corner: Pt): string {
 }
 
 /** Utkast til ny transformasjon ut fra pekerens posisjon i scenen. */
-function draftFor(d: Drag, scene: Pt, shift: boolean): LayerTransform {
+function draftFor(d: Drag, scene: Pt, shift: boolean, alt = false): LayerTransform {
   const s = d.start;
   const centre = { x: s.x, y: s.y };
+  if (d.kind === "stretch" && d.axis) {
+    // Lagets eget, roterte koordinatsystem med origo i midten
+    const inv = invert(multiply(translate(s.x, s.y), rotate(s.rotation)));
+    if (!inv) return s;
+    const p0 = applyMatrix(inv, d.startScene.x, d.startScene.y);
+    const p1 = applyMatrix(inv, scene.x, scene.y);
+    // Lag med bevegelsesbane: banen styrer posisjonen, så begge sider endres likt
+    return stretchedTransform(s, d.size, d.axis, p0, p1, alt || !!d.path);
+  }
   if (d.kind === "move")
     return { ...s, x: s.x + scene.x - d.startScene.x, y: s.y + scene.y - d.startScene.y };
   if (d.kind === "rotate") {
@@ -411,6 +433,13 @@ function drawOverlay(
       ctx.fillRect(c.x - HANDLE / 2, c.y - HANDLE / 2, HANDLE, HANDLE);
       ctx.strokeRect(c.x - HANDLE / 2 + 0.5, c.y - HANDLE / 2 + 0.5, HANDLE - 1, HANDLE - 1);
     }
+    // Sidehåndtak (DEC-0080): litt mindre enn hjørnene; vises bare når siden er lang nok
+    const S = HANDLE - 2;
+    if (dist(h.corners[0] as Pt, h.corners[2] as Pt) > HANDLE * 5)
+      for (const sd of h.sides) {
+        ctx.fillRect(sd.at.x - S / 2, sd.at.y - S / 2, S, S);
+        ctx.strokeRect(sd.at.x - S / 2 + 0.5, sd.at.y - S / 2 + 0.5, S - 1, S - 1);
+      }
     ctx.beginPath();
     ctx.arc(h.rotateAt.x, h.rotateAt.y, HANDLE / 2 + 1, 0, Math.PI * 2);
     ctx.fill();
@@ -827,6 +856,16 @@ export function Stage({
       const i = h.corners.findIndex((c) => dist(p, c) <= HANDLE);
       if (i >= 0)
         return { kind: "scale" as const, cursor: resizeCursor(h.center, h.corners[i] as Pt) };
+      const sd =
+        dist(h.corners[0] as Pt, h.corners[2] as Pt) > HANDLE * 5
+          ? h.sides.find((x) => dist(p, x.at) <= HANDLE)
+          : undefined;
+      if (sd)
+        return {
+          kind: "stretch" as const,
+          axis: sd.axis,
+          cursor: resizeCursor(h.center, sd.at),
+        };
       // Masken (DEC-0072): hjørnene endrer størrelsen, midtpunktet og omrisset flytter den
       const mh = maskHandlesOf(selectedItem, view);
       if (mh) {
@@ -860,14 +899,32 @@ export function Stage({
     return cam ? { kind: "camera" as const, target: cam } : null;
   }
 
-  function startDrag(e: React.PointerEvent, kind: DragKind, layerId: string, p: Pt) {
+  function startDrag(
+    e: React.PointerEvent,
+    kind: DragKind,
+    layerId: string,
+    p: Pt,
+    axis?: "x" | "y",
+  ) {
     const layer = state.layers[layerId];
     const item = frame.items.find((i) => i.layerId === layerId);
     if (!layer || !item) return;
     const labels =
       layer.kind === "group"
-        ? { move: "Flytt gruppe", scale: "Skaler gruppe", rotate: "Roter gruppe", pan: "" }
-        : { move: "Flytt lag", scale: "Skaler lag", rotate: "Roter lag", pan: "" };
+        ? {
+            move: L("Flytt gruppe", "Move group"),
+            scale: L("Skaler gruppe", "Scale group"),
+            stretch: L("Skvis eller strekk gruppe", "Squash or stretch group"),
+            rotate: L("Roter gruppe", "Rotate group"),
+            pan: "",
+          }
+        : {
+            move: L("Flytt lag", "Move layer"),
+            scale: L("Skaler lag", "Scale layer"),
+            stretch: L("Skvis eller strekk lag", "Squash or stretch layer"),
+            rotate: L("Roter lag", "Rotate layer"),
+            pan: "",
+          };
     const start = transformAt(layer, time);
     const toLocal = toLocalOf(layerId);
     const sc = toScene(view, p);
@@ -889,7 +946,9 @@ export function Stage({
       size: { x: item.width, y: item.height },
       moved: false,
       latest: start,
-      cursor: kind === "scale" ? cursor : kind === "rotate" ? "grabbing" : "move",
+      cursor:
+        kind === "scale" || kind === "stretch" ? cursor : kind === "rotate" ? "grabbing" : "move",
+      ...(axis ? { axis } : {}),
     };
     e.currentTarget.setPointerCapture(e.pointerId);
   }
@@ -995,7 +1054,7 @@ export function Stage({
             commitPath(
               selectedLayerId,
               { ...shownPath, points: shownPath.points.filter((_, i) => i !== target.index) },
-              "Fjern punkt i banen",
+              L("Fjern punkt i banen", "Remove point from the path"),
             ),
           );
         return;
@@ -1019,6 +1078,10 @@ export function Stage({
     }
     if (target?.kind === "rotate" || target?.kind === "scale") {
       if (selectedLayerId) startDrag(e, target.kind, selectedLayerId, p);
+      return;
+    }
+    if (target?.kind === "stretch") {
+      if (selectedLayerId) startDrag(e, "stretch", selectedLayerId, p, target.axis);
       return;
     }
     if (selectedShotId) onSelectShot(null);
@@ -1105,7 +1168,7 @@ export function Stage({
     d.moved = true;
     const sp = toScene(d.startView, p);
     d.latest = roundTransform(
-      draftFor(d, d.toLocal ? applyMatrix(d.toLocal, sp.x, sp.y) : sp, e.shiftKey),
+      draftFor(d, d.toLocal ? applyMatrix(d.toLocal, sp.x, sp.y) : sp, e.shiftKey, e.altKey),
     );
     setDraft({
       layerId: d.layerId,
@@ -1163,7 +1226,9 @@ export function Stage({
               },
             ],
           },
-          md.handle < 0 ? "Flytt maske" : "Endre størrelse på maske",
+          md.handle < 0
+            ? L("Flytt maske", "Move mask")
+            : L("Endre størrelse på maske", "Resize mask"),
         ),
       );
       return;
@@ -1172,7 +1237,10 @@ export function Stage({
     if (pd) {
       pathDragRef.current = null;
       setPathDraft(null);
-      if (commit && pd.moved) setError(commitPath(pd.layerId, pd.latest, "Flytt punkt i banen"));
+      if (commit && pd.moved)
+        setError(
+          commitPath(pd.layerId, pd.latest, L("Flytt punkt i banen", "Move point in the path")),
+        );
       return;
     }
     const cd = camDragRef.current;
@@ -1252,7 +1320,9 @@ export function Stage({
             ...shownPath,
             points: shownPath.points.map((x, i) => (i === pi ? { ...x, smooth: !x.smooth } : x)),
           },
-          q.smooth ? "Hjørne i banen" : "Kurve i banen",
+          q.smooth
+            ? L("Hjørne i banen", "Corner in the path")
+            : L("Kurve i banen", "Curve in the path"),
         ),
       );
       return;
@@ -1274,7 +1344,9 @@ export function Stage({
     setError(
       run(
         updateCameraCommand(composition, withShot(composition.camera, toggleCurve(overlayShot))),
-        overlayShot.curve ? "Rett kamerabane" : "Kurvet kamerabane",
+        overlayShot.curve
+          ? L("Rett kamerabane", "Straight camera path")
+          : L("Kurvet kamerabane", "Curved camera path"),
       ),
     );
   }
@@ -1325,7 +1397,7 @@ export function Stage({
     if (!layer || layer.locked) return;
     if (e.key === "Delete" || e.key === "Backspace") {
       e.preventDefault();
-      setError(removeLayer(run, state, layer, time, "Slett lag"));
+      setError(removeLayer(run, state, layer, time, L("Slett lag", "Delete layer")));
       return;
     }
     const step = e.shiftKey ? 10 : 1;
@@ -1337,7 +1409,7 @@ export function Stage({
     submit(
       layer,
       roundTransform({ ...t, x: t.x + dx, y: t.y + dy }),
-      "Flytt lag",
+      L("Flytt lag", "Move layer"),
       layer.path ? translatePath(layer.path, dx, dy) : undefined,
     );
   }
@@ -1369,7 +1441,10 @@ export function Stage({
     zoomToLevel(next);
   }
 
-  const label = `${cameraMode ? "Kameravisning" : "2D-scene"}: ${composition.name.trim() || "Uten navn"}, ${frame.items.length} lag`;
+  const label = L(
+    `${cameraMode ? "Kameravisning" : "2D-scene"}: ${composition.name.trim() || "Uten navn"}, ${frame.items.length} lag`,
+    `${cameraMode ? "Camera view" : "2D scene"}: ${composition.name.trim() || "Untitled"}, ${frame.items.length} layers`,
+  );
   const shownCursor = panning ? "grabbing" : cursor;
 
   return (
@@ -1417,7 +1492,7 @@ export function Stage({
               },
             ],
           },
-          `Nytt lag «${f.name}»`,
+          L(`Nytt lag «${f.name}»`, `New layer “${f.name}”`),
         );
         setError(err);
         if (!err) onSelect(layerId);
@@ -1438,13 +1513,21 @@ export function Stage({
       />
       <div
         role="group"
-        aria-label="Visning"
+        aria-label={L("Visning", "View")}
         className="absolute left-3 top-3 flex items-center rounded-md border border-border bg-surface-2 p-0.5"
       >
         {(
           [
-            ["scene", "Scene", "Hele scenen med redigeringshjelp"],
-            ["camera", "Kamera", "Kamera: det filmen viser"],
+            [
+              "scene",
+              L("Scene", "Scene"),
+              L("Hele scenen med redigeringshjelp", "Whole scene with editing help"),
+            ],
+            [
+              "camera",
+              L("Kamera", "Camera"),
+              L("Kamera: det filmen viser", "Camera: what the film shows"),
+            ],
           ] as const
         ).map(([id, text, title]) => (
           <Button
@@ -1452,7 +1535,9 @@ export function Stage({
             size="sm"
             variant={mode === id ? "secondary" : "ghost"}
             aria-pressed={mode === id}
-            title={id === "camera" ? "Kamera: det filmen viser" : title}
+            title={
+              id === "camera" ? L("Kamera: det filmen viser", "Camera: what the film shows") : title
+            }
             onClick={() => onViewChange(id)}
           >
             {text}
@@ -1472,19 +1557,19 @@ export function Stage({
             size="sm"
             variant="ghost"
             onClick={() => zoomStep(-1)}
-            aria-label="Zoom ut"
-            title="Zoom ut (⌘/Ctrl + rullehjul)"
+            aria-label={L("Zoom ut", "Zoom out")}
+            title={L("Zoom ut (⌘/Ctrl + rullehjul)", "Zoom out (⌘/Ctrl + scroll wheel)")}
           >
             <ZoomOut />
           </Button>
           <select
-            aria-label="Zoomnivå"
+            aria-label={L("Zoomnivå", "Zoom level")}
             value=""
             onChange={(e) => {
               if (e.target.value) zoomToLevel(Number(e.target.value));
             }}
             className="h-7 min-w-[64px] rounded-sm border border-border-control bg-surface-3 px-1 text-right text-xs tabular-nums text-text-secondary"
-            title="Velg zoomnivå"
+            title={L("Velg zoomnivå", "Choose zoom level")}
           >
             <option value="">{Math.round(view.zoom * 100)} %</option>
             {ZOOM_LEVELS.map((z) => (
@@ -1497,13 +1582,13 @@ export function Stage({
             size="sm"
             variant="ghost"
             onClick={() => zoomStep(1)}
-            aria-label="Zoom inn"
-            title="Zoom inn (⌘/Ctrl + rullehjul)"
+            aria-label={L("Zoom inn", "Zoom in")}
+            title={L("Zoom inn (⌘/Ctrl + rullehjul)", "Zoom in (⌘/Ctrl + scroll wheel)")}
           >
             <ZoomIn />
           </Button>
           <Button size="sm" variant="ghost" onClick={() => commitView(null)}>
-            Tilpass
+            {L("Tilpass", "Fit")}
           </Button>
           <Button size="sm" variant="ghost" onClick={zoomTo100}>
             100 %

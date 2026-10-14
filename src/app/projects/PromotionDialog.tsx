@@ -27,6 +27,9 @@ import {
   type PromotionChoice,
   type PromotionComparison,
   type ProjectState,
+  L,
+  locale,
+  localized,
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
@@ -43,16 +46,16 @@ const legend = "text-[11px] font-medium uppercase tracking-[0.04em] text-text-te
 const control =
   "h-7 max-w-[300px] rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary";
 const sec = (frames: number | null, fps: number) =>
-  frames === null ? "–" : `${(Math.round((frames / fps) * 10) / 10).toLocaleString("nb-NO")} s`;
+  frames === null ? "–" : `${(Math.round((frames / fps) * 10) / 10).toLocaleString(locale())} s`;
 
-const LINE_LABEL: Record<LineDiff["status"], string> = {
-  changed: "Endret",
-  added: "Ny linje",
-  removed: "Fjernet",
-  conflict: "Endret i begge",
-  main_newer: "Nyere i hovedfilmen",
-  same: "",
-};
+const LINE_LABEL: Record<LineDiff["status"], string> = localized({
+  changed: ["Endret", "Changed"],
+  added: ["Ny linje", "New line"],
+  removed: ["Fjernet", "Removed"],
+  conflict: ["Endret i begge", "Changed in both"],
+  main_newer: ["Nyere i hovedfilmen", "Newer in the main film"],
+  same: ["", ""],
+});
 
 /** Prøver kommandoene på en kopi og kjører dem så som én angregruppe. Feilmelding eller null. */
 function runPlan(
@@ -110,7 +113,7 @@ export function PromotionDialog({
   const [withAudio, setWithAudio] = useState(true);
   const [after, setAfter] = useState<string>("");
   const fps = state.project.fps.num / state.project.fps.den;
-  const name = state.productions[productionId]?.name ?? "spinoffen";
+  const name = state.productions[productionId]?.name ?? L("spinoffen", "the spin-off");
   const main = mainProduction(state);
 
   // Valgt scene ved åpning
@@ -163,21 +166,40 @@ export function PromotionDialog({
     if (!cand) return;
     const plan = promotionCommands(state, cand.occurrenceId, choice);
     if (plan.blocked) return setErr(plan.blocked);
-    if (!plan.commands.length) return setErr("Ingenting er valgt.");
-    const e = runPlan(state, cmds, plan.commands, `Tilbakefør fra ${name}`);
+    if (!plan.commands.length) return setErr(L("Ingenting er valgt.", "Nothing is selected."));
+    const e = runPlan(
+      state,
+      cmds,
+      plan.commands,
+      L(`Tilbakefør fra ${name}`, `Transfer back from ${name}`),
+    );
     if (e) setErr(e);
-    else finish(`${n} ${n === 1 ? "endring er" : "endringer er"} ført over til hovedfilmen.`);
+    else
+      finish(
+        L(
+          `${n} ${n === 1 ? "endring er" : "endringer er"} ført over til hovedfilmen.`,
+          `${n} ${n === 1 ? "change has" : "changes have"} been carried over to the main film.`,
+        ),
+      );
   }
 
   function newVersion() {
     if (!cand) return;
     const plan = newMainVariantCommands(state, cand.occurrenceId);
     if (plan.blocked) return setErr(plan.blocked);
-    const e = runPlan(state, cmds, plan.commands, `Ny hovedfilmversjon fra ${name}`);
+    const e = runPlan(
+      state,
+      cmds,
+      plan.commands,
+      L(`Ny hovedfilmversjon fra ${name}`, `New main film version from ${name}`),
+    );
     if (e) setErr(e);
     else
       finish(
-        "Hovedfilmen bruker nå en egen kopi av spinoffens versjon. Den gamle versjonen er tatt vare på.",
+        L(
+          "Hovedfilmen bruker nå en egen kopi av spinoffens versjon. Den gamle versjonen er tatt vare på.",
+          "The main film now uses its own copy of the spin-off's version. The old version has been kept.",
+        ),
       );
   }
 
@@ -188,30 +210,49 @@ export function PromotionDialog({
       afterMainOccurrenceId: after || null,
     });
     if (plan.blocked) return setErr(plan.blocked);
-    const e = runPlan(state, cmds, plan.commands, `Overfør scene fra ${name}`);
+    const e = runPlan(
+      state,
+      cmds,
+      plan.commands,
+      L(`Overfør scene fra ${name}`, `Transfer scene from ${name}`),
+    );
     if (e) setErr(e);
-    else finish("Scenen er lagt inn i hovedfilmen med egen kopi. Spinoffens versjon er uendret.");
+    else
+      finish(
+        L(
+          "Scenen er lagt inn i hovedfilmen med egen kopi. Spinoffens versjon er uendret.",
+          "The scene has been added to the main film as its own copy. The spin-off's version is unchanged.",
+        ),
+      );
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[92vh] max-w-[1040px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
-          <DialogTitle>Tilbakefør fra «{name}» til hovedfilmen</DialogTitle>
+          <DialogTitle>
+            {L(
+              `Tilbakefør fra «${name}» til hovedfilmen`,
+              `Transfer back from “${name}” to the main film`,
+            )}
+          </DialogTitle>
           <DialogDescription>
-            Scenene spinoffen har endret eller skrevet selv. Velg hva som skal føres over –
-            ingenting skjer før du trykker «Overfør», og alt kan angres. Gamle versjoner tas vare
-            på.
+            {L(
+              "Scenene spinoffen har endret eller skrevet selv. Velg hva som skal føres over – ingenting skjer før du trykker «Overfør», og alt kan angres. Gamle versjoner tas vare på.",
+              "The scenes the spin-off has changed or written itself. Choose what to carry over – nothing happens until you press “Transfer”, and everything can be undone. Old versions are kept.",
+            )}
           </DialogDescription>
         </DialogHeader>
         {candidates.length === 0 ? (
           <p className="text-[13px] text-text-tertiary">
-            Spinoffen har ingen egne versjoner eller nye scener ennå. Når du endrer en gjenbrukt
-            scene i spinoffen, får den sin egen versjon som kan føres tilbake her.
+            {L(
+              "Spinoffen har ingen egne versjoner eller nye scener ennå. Når du endrer en gjenbrukt scene i spinoffen, får den sin egen versjon som kan føres tilbake her.",
+              "The spin-off has no versions or new scenes of its own yet. When you change a reused scene in the spin-off, it gets its own version that can be carried back here.",
+            )}
           </p>
         ) : (
           <div className="grid grid-cols-[230px_1fr] gap-4">
-            <ul aria-label="Scener" className="flex flex-col gap-1">
+            <ul aria-label={L("Scener", "Scenes")} className="flex flex-col gap-1">
               {candidates.map((c) => (
                 <li key={c.occurrenceId}>
                   <button
@@ -231,8 +272,8 @@ export function PromotionDialog({
                     </span>
                     <span className="text-[11px] text-text-tertiary">
                       {c.mainOccurrenceId
-                        ? "Egen versjon i spinoffen"
-                        : "Ny scene – bare i spinoffen"}
+                        ? L("Egen versjon i spinoffen", "Own version in the spin-off")
+                        : L("Ny scene – bare i spinoffen", "New scene – only in the spin-off")}
                     </span>
                   </button>
                 </li>
@@ -274,12 +315,12 @@ export function PromotionDialog({
         )}
         <DialogFooter className="flex-wrap gap-2">
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Behold alt uendret
+            {L("Behold alt uendret", "Keep everything unchanged")}
           </Button>
           {editable && cand && !cand.mainOccurrenceId ? (
             <Button onClick={transferScene}>
               <ArrowRight />
-              Overfør scenen til hovedfilmen
+              {L("Overfør scenen til hovedfilmen", "Transfer the scene to the main film")}
             </Button>
           ) : null}
           {editable && cmp ? (
@@ -291,20 +332,23 @@ export function PromotionDialog({
                   onChange={(e) => setConfirmNew(e.target.checked)}
                   className="size-3.5 accent-[var(--accent-brand)]"
                 />
-                Hele spinoff-versjonen som ny versjon i hovedfilmen
+                {L(
+                  "Hele spinoff-versjonen som ny versjon i hovedfilmen",
+                  "The whole spin-off version as a new version in the main film",
+                )}
               </label>
               {confirmNew ? (
                 <Button variant="secondary" onClick={newVersion}>
-                  Lag ny hovedfilmversjon
+                  {L("Lag ny hovedfilmversjon", "Make new main film version")}
                 </Button>
               ) : (
                 <>
                   <Button variant="secondary" onClick={() => setChoice(scriptOnlyChoice(cmp))}>
-                    Bare manus
+                    {L("Bare manus", "Script only")}
                   </Button>
                   <Button onClick={transferChosen} disabled={n === 0}>
                     <ArrowRight />
-                    Overfør valgte ({n})
+                    {L("Overfør valgte", "Transfer selected")} ({n})
                   </Button>
                 </>
               )}
@@ -335,7 +379,7 @@ function Section({
         {onChange ? (
           <input
             type="checkbox"
-            aria-label={`Overfør ${title.toLowerCase()}`}
+            aria-label={L(`Overfør ${title.toLowerCase()}`, `Transfer ${title.toLowerCase()}`)}
             checked={!!checked}
             disabled={disabled}
             onChange={(e) => onChange(e.target.checked)}
@@ -378,22 +422,25 @@ function Compare({
     <div className="flex flex-col gap-2 text-xs">
       <div className="grid grid-cols-2 gap-2">
         <div className="rounded-sm border border-border bg-surface-1 p-2">
-          <span className={legend}>Hovedfilmen (original)</span>
+          <span className={legend}>{L("Hovedfilmen (original)", "Main film (original)")}</span>
           <p className="mt-1 truncate font-script text-text-primary">{cmp.heading.main}</p>
         </div>
         <div className="rounded-sm border border-accent-brand/50 bg-surface-1 p-2">
-          <span className={legend}>Spinoff-versjonen</span>
+          <span className={legend}>{L("Spinoff-versjonen", "Spin-off version")}</span>
           <p className="mt-1 truncate font-script text-text-primary">{cmp.heading.spin}</p>
         </div>
       </div>
       {nothing ? (
         <p className="text-text-tertiary">
-          Ingen forskjeller igjen – spinoffens versjon er lik hovedfilmens.
+          {L(
+            "Ingen forskjeller igjen – spinoffens versjon er lik hovedfilmens.",
+            "No differences left – the spin-off's version is the same as the main film's.",
+          )}
         </p>
       ) : null}
 
       {lines.length || cmp.heading.changed ? (
-        <Section title="Manus">
+        <Section title={L("Manus", "Script")}>
           {cmp.heading.changed ? (
             <label className="flex items-start gap-2">
               <input
@@ -403,8 +450,8 @@ function Compare({
                 className="mt-0.5 size-3.5 accent-[var(--accent-brand)]"
               />
               <span>
-                Scenehode: <s className="text-text-tertiary">{cmp.heading.main}</s> →{" "}
-                {cmp.heading.spin}
+                {L("Scenehode:", "Scene heading:")}{" "}
+                <s className="text-text-tertiary">{cmp.heading.main}</s> → {cmp.heading.spin}
               </span>
             </label>
           ) : null}
@@ -416,7 +463,10 @@ function Compare({
                   <label className="flex items-start gap-2">
                     <input
                       type="checkbox"
-                      aria-label={`Overfør linjen ${l.spin?.text ?? l.main?.text ?? ""}`}
+                      aria-label={L(
+                        `Overfør linjen ${l.spin?.text ?? l.main?.text ?? ""}`,
+                        `Transfer the line ${l.spin?.text ?? l.main?.text ?? ""}`,
+                      )}
                       disabled={!selectable}
                       checked={choice.lines.includes(l.key)}
                       onChange={() => set({ lines: toggle(choice.lines, l.key) })}
@@ -447,8 +497,10 @@ function Compare({
                       )}
                       {l.status === "conflict" ? (
                         <span className="block text-[11px] text-status-uncertain">
-                          Linjen er også endret i hovedfilmen. Hovedfilmens tekst erstattes hvis du
-                          krysser av.
+                          {L(
+                            "Linjen er også endret i hovedfilmen. Hovedfilmens tekst erstattes hvis du krysser av.",
+                            "The line has also been changed in the main film. The main film's text is replaced if you tick it.",
+                          )}
                         </span>
                       ) : null}
                     </span>
@@ -461,10 +513,13 @@ function Compare({
       ) : null}
 
       {layers.length || cmp.visual.background ? (
-        <Section title="Bilde (2D-scenen)">
+        <Section title={L("Bilde (2D-scenen)", "Image (2D scene)")}>
           {!cmp.visual.mainComposition ? (
             <p className="text-text-tertiary">
-              Hovedfilmen har ingen 2D-scene her. Velger du et lag, kopieres hele 2D-scenen.
+              {L(
+                "Hovedfilmen har ingen 2D-scene her. Velger du et lag, kopieres hele 2D-scenen.",
+                "The main film has no 2D scene here. If you choose a layer, the whole 2D scene is copied.",
+              )}
             </p>
           ) : null}
           <ul className="flex flex-col gap-1">
@@ -473,19 +528,22 @@ function Compare({
                 <label className="flex items-start gap-2">
                   <input
                     type="checkbox"
-                    aria-label={`Overfør laget ${d.spin?.name ?? d.main?.name ?? ""}`}
+                    aria-label={L(
+                      `Overfør laget ${d.spin?.name ?? d.main?.name ?? ""}`,
+                      `Transfer the layer ${d.spin?.name ?? d.main?.name ?? ""}`,
+                    )}
                     checked={choice.layers.includes(d.key)}
                     onChange={() => set({ layers: toggle(choice.layers, d.key) })}
                     className="mt-0.5 size-3.5 accent-[var(--accent-brand)]"
                   />
                   <span>
-                    {d.spin?.name || d.main?.name || "Lag"}{" "}
+                    {d.spin?.name || d.main?.name || L("Lag", "Layer")}{" "}
                     <span className="text-text-tertiary">
                       {d.status === "added"
-                        ? "– nytt lag"
+                        ? L("– nytt lag", "– new layer")
                         : d.status === "removed"
-                          ? "– fjernet i spinoffen"
-                          : `– endret: ${d.what.join(", ")}`}
+                          ? L("– fjernet i spinoffen", "– removed in the spin-off")
+                          : L(`– endret: ${d.what.join(", ")}`, `– changed: ${d.what.join(", ")}`)}
                     </span>
                   </span>
                 </label>
@@ -500,28 +558,42 @@ function Compare({
                 onChange={(e) => set({ background: e.target.checked })}
                 className="size-3.5 accent-[var(--accent-brand)]"
               />
-              Bakgrunnsfarge
+              {L("Bakgrunnsfarge", "Background colour")}
             </label>
           ) : null}
         </Section>
       ) : null}
 
       {cmp.camera.changed ? (
-        <Section title="Kamera" checked={choice.camera} onChange={(on) => set({ camera: on })}>
+        <Section
+          title={L("Kamera", "Camera")}
+          checked={choice.camera}
+          onChange={(on) => set({ camera: on })}
+        >
           <p className="text-text-secondary">
-            {cmp.camera.main} kamerautsnitt i hovedfilmen, {cmp.camera.spin} i spinoffen (med
-            endringer).
+            {L(
+              `${cmp.camera.main} kamerautsnitt i hovedfilmen, ${cmp.camera.spin} i spinoffen (med endringer).`,
+              `${cmp.camera.main} camera shots in the main film, ${cmp.camera.spin} in the spin-off (with changes).`,
+            )}
           </p>
         </Section>
       ) : null}
 
       {audio.length ? (
-        <Section title="Lyd" checked={choice.audio} onChange={(on) => set({ audio: on })}>
+        <Section
+          title={L("Lyd", "Audio")}
+          checked={choice.audio}
+          onChange={(on) => set({ audio: on })}
+        >
           <ul className="flex flex-col gap-0.5 text-text-secondary">
             {audio.map((a, i) => (
               <li key={i}>
-                {a.status === "added" ? "Ny: " : a.status === "removed" ? "Fjernet: " : "Endret: "}
-                {(a.spin ?? a.main)!.name || "lyd"}
+                {a.status === "added"
+                  ? L("Ny: ", "New: ")
+                  : a.status === "removed"
+                    ? L("Fjernet: ", "Removed: ")
+                    : L("Endret: ", "Changed: ")}
+                {(a.spin ?? a.main)!.name || L("lyd", "audio")}
               </li>
             ))}
           </ul>
@@ -531,28 +603,37 @@ function Compare({
       {cmp.timing.changed ? (
         <Section title="Timing" checked={choice.timing} onChange={(on) => set({ timing: on })}>
           <p className="text-text-secondary">
-            Lengde på 2D-scenen: {sec(cmp.timing.mainFrames, fps)} →{" "}
-            {sec(cmp.timing.spinFrames, fps)}
-            {cmp.timing.links ? ` · ${cmp.timing.links} tidskoblinger er ulike` : ""}
+            {L("Lengde på 2D-scenen:", "Length of the 2D scene:")} {sec(cmp.timing.mainFrames, fps)}{" "}
+            → {sec(cmp.timing.spinFrames, fps)}
+            {cmp.timing.links
+              ? L(
+                  ` · ${cmp.timing.links} tidskoblinger er ulike`,
+                  ` · ${cmp.timing.links} time links differ`,
+                )
+              : ""}
           </p>
         </Section>
       ) : null}
 
       {cmp.film.changed ? (
         <Section
-          title="Ferdig film og klipping"
+          title={L("Ferdig film og klipping", "Finished film and editing")}
           checked={choice.film}
           onChange={(on) => set({ film: on, confirmApproved: on ? choice.confirmApproved : false })}
         >
           <p className="text-text-secondary">
-            Hovedfilmen: {cmp.film.mainTake?.media?.fileName ?? "animatic"} · Spinoffen:{" "}
-            {cmp.film.spinTake?.media?.fileName ?? "animatic"} (med spinoffens klipping)
+            {L("Hovedfilmen:", "Main film:")} {cmp.film.mainTake?.media?.fileName ?? "animatic"} ·{" "}
+            {L("Spinoffen:", "Spin-off:")} {cmp.film.spinTake?.media?.fileName ?? "animatic"}{" "}
+            {L("(med spinoffens klipping)", "(with the spin-off's editing)")}
           </p>
           {cmp.film.mainApproved ? (
             <div className="flex flex-col gap-1 rounded-sm border border-status-moved/50 bg-status-uncertain-bg p-2">
               <span className="flex items-center gap-1.5 text-text-primary">
                 <AlertTriangle className="size-3.5 text-status-moved" aria-hidden />
-                Hovedfilmen bruker en godkjent versjon av scenen.
+                {L(
+                  "Hovedfilmen bruker en godkjent versjon av scenen.",
+                  "The main film uses an approved version of the scene.",
+                )}
               </span>
               <label className="flex items-center gap-2 text-text-primary">
                 <input
@@ -562,7 +643,10 @@ function Compare({
                   onChange={(e) => set({ confirmApproved: e.target.checked })}
                   className="size-3.5 accent-[var(--accent-brand)]"
                 />
-                Ja, bytt ut den godkjente versjonen (den tas vare på og kan velges igjen)
+                {L(
+                  "Ja, bytt ut den godkjente versjonen (den tas vare på og kan velges igjen)",
+                  "Yes, replace the approved version (it is kept and can be chosen again)",
+                )}
               </label>
             </div>
           ) : null}
@@ -570,8 +654,10 @@ function Compare({
       ) : null}
       <p className="flex items-start gap-1.5 text-[11px] text-text-tertiary">
         <Info className="mt-px size-3 shrink-0" aria-hidden />
-        Endringene lagres med historikk i hovedfilmen. Materiale laget fra det gamle manuset flagges
-        som avvik, så du kan velge å godkjenne eller oppdatere det.
+        {L(
+          "Endringene lagres med historikk i hovedfilmen. Materiale laget fra det gamle manuset flagges som avvik, så du kan velge å godkjenne eller oppdatere det.",
+          "The changes are saved with history in the main film. Material made from the old script is flagged as a discrepancy, so you can choose to approve or update it.",
+        )}
       </p>
     </div>
   );
@@ -599,8 +685,10 @@ function NewScene({
   return (
     <div className="flex flex-col gap-2 text-xs">
       <p className="text-text-secondary">
-        Scenen finnes bare i spinoffen. Den kan legges inn i hovedfilmen som en egen kopi (manus,
-        historikk, oversettelser og 2D-scene). Spinoffens versjon endres ikke.
+        {L(
+          "Scenen finnes bare i spinoffen. Den kan legges inn i hovedfilmen som en egen kopi (manus, historikk, oversettelser og 2D-scene). Spinoffens versjon endres ikke.",
+          "The scene exists only in the spin-off. It can be added to the main film as its own copy (script, history, translations and 2D scene). The spin-off's version is not changed.",
+        )}
       </p>
       <div className="max-h-[240px] overflow-y-auto rounded-sm border border-border bg-surface-1 p-2 font-script">
         {blocks.slice(0, 30).map((b) => (
@@ -610,17 +698,17 @@ function NewScene({
         ))}
       </div>
       <label className="flex items-center gap-2 text-text-secondary">
-        Plassering i hovedfilmen
+        {L("Plassering i hovedfilmen", "Placement in the main film")}
         <select
-          aria-label="Plassering i hovedfilmen"
+          aria-label={L("Plassering i hovedfilmen", "Placement in the main film")}
           value={after}
           onChange={(e) => onAfter(e.target.value)}
           className={control}
         >
-          <option value="">Først i filmen</option>
+          <option value="">{L("Først i filmen", "First in the film")}</option>
           {mainOccs.map((m) => (
             <option key={m.id} value={m.id}>
-              Etter {m.label}
+              {L(`Etter ${m.label}`, `After ${m.label}`)}
             </option>
           ))}
         </select>
@@ -632,7 +720,7 @@ function NewScene({
           onChange={(e) => onWithAudio(e.target.checked)}
           className="size-3.5 accent-[var(--accent-brand)]"
         />
-        Ta med lyd og tidskoblinger
+        {L("Ta med lyd og tidskoblinger", "Include audio and time links")}
       </label>
     </div>
   );

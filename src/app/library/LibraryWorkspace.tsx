@@ -22,6 +22,8 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  L,
+  collation,
   ASSET_MIME_TYPES,
   versionFromFileName,
   ASSET_KIND_LABEL,
@@ -75,14 +77,18 @@ export function LibraryWorkspace({
   const editable = canEdit(role);
   const cmds = useCommands(projectId, userId, editable);
   if (query.isLoading)
-    return <p className="p-6 text-[13px] text-text-tertiary">Henter biblioteket …</p>;
+    return (
+      <p className="p-6 text-[13px] text-text-tertiary">
+        {L("Henter biblioteket …", "Loading the library …")}
+      </p>
+    );
   if (query.isError || !query.data)
     return (
       <div role="alert" className="p-6 text-[13px] text-status-danger">
-        Biblioteket kunne ikke hentes.
+        {L("Biblioteket kunne ikke hentes.", "The library could not be loaded.")}
         {query.error ? (
           <p className="mt-2 font-mono text-xs text-text-tertiary">
-            Teknisk detalj: {query.error.message}
+            {L("Teknisk detalj", "Technical detail")}: {query.error.message}
           </p>
         ) : null}
       </div>
@@ -124,7 +130,7 @@ function Library({
   const productions = useMemo(
     () =>
       Object.values(state.productions).sort((a, b) =>
-        a.kind === "main" ? -1 : b.kind === "main" ? 1 : a.name.localeCompare(b.name, "nb"),
+        a.kind === "main" ? -1 : b.kind === "main" ? 1 : a.name.localeCompare(b.name, collation()),
       ),
     [state.productions],
   );
@@ -179,7 +185,7 @@ function Library({
     return new Map([...all].map(([id, u]) => [id, u.length]));
   }, [state, productionId]);
   const suggestions = useMemo(() => librarySuggestions(state, productionId), [state, productionId]);
-  const q = search.trim().toLocaleLowerCase("nb");
+  const q = search.trim().toLocaleLowerCase(collation());
   const shown = all.filter(
     (a) =>
       (kind === "all" || a.kind === kind) &&
@@ -187,7 +193,7 @@ function Library({
       (origin === "all" || assetOrigins(state, a.id, provenance).has(origin)) &&
       (kind !== "sound" || !category || a.category.trim() === category) &&
       // Søket treffer også det en lyd er koblet til (REQ-0205, DEC-0070)
-      (!q || assetSearchText(state, a).some((x) => x.toLocaleLowerCase("nb").includes(q))),
+      (!q || assetSearchText(state, a).some((x) => x.toLocaleLowerCase(collation()).includes(q))),
   );
   const categories = useMemo(() => soundCategories(state), [state]);
   const covers = useMemo(() => {
@@ -221,7 +227,7 @@ function Library({
           },
         ],
       },
-      `Ny ressurs «${name}»`,
+      L(`Ny ressurs «${name}»`, `New asset “${name}”`),
     );
     setError(err);
     if (!err) {
@@ -244,15 +250,25 @@ function Library({
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex h-10 shrink-0 items-center gap-2 border-b border-border bg-surface-2 px-3">
-        <span className="text-[13px] font-medium text-text-primary">Ressursbibliotek</span>
+        <span className="text-[13px] font-medium text-text-primary">
+          {L("Ressursbibliotek", "Asset library")}
+        </span>
         <div className="mx-1 h-5 w-px bg-border" aria-hidden />
         <Button
           size="sm"
           variant="ghost"
           onClick={cmds.undo}
           disabled={!cmds.canUndo}
-          title={cmds.undoLabel ? `Angre: ${cmds.undoLabel} (⌘Z)` : "Angre (⌘Z)"}
-          aria-label={cmds.undoLabel ? `Angre: ${cmds.undoLabel}` : "Angre"}
+          title={
+            cmds.undoLabel
+              ? L(`Angre: ${cmds.undoLabel} (⌘Z)`, `Undo: ${cmds.undoLabel} (⌘Z)`)
+              : L("Angre (⌘Z)", "Undo (⌘Z)")
+          }
+          aria-label={
+            cmds.undoLabel
+              ? L(`Angre: ${cmds.undoLabel}`, `Undo: ${cmds.undoLabel}`)
+              : L("Angre", "Undo")
+          }
         >
           <Undo2 />
         </Button>
@@ -261,8 +277,16 @@ function Library({
           variant="ghost"
           onClick={cmds.redo}
           disabled={!cmds.canRedo}
-          title={cmds.redoLabel ? `Gjør om: ${cmds.redoLabel} (⇧⌘Z)` : "Gjør om (⇧⌘Z)"}
-          aria-label={cmds.redoLabel ? `Gjør om: ${cmds.redoLabel}` : "Gjør om"}
+          title={
+            cmds.redoLabel
+              ? L(`Gjør om: ${cmds.redoLabel} (⇧⌘Z)`, `Redo: ${cmds.redoLabel} (⇧⌘Z)`)
+              : L("Gjør om (⇧⌘Z)", "Redo (⇧⌘Z)")
+          }
+          aria-label={
+            cmds.redoLabel
+              ? L(`Gjør om: ${cmds.redoLabel}`, `Redo: ${cmds.redoLabel}`)
+              : L("Gjør om", "Redo")
+          }
         >
           <Redo2 />
         </Button>
@@ -270,10 +294,14 @@ function Library({
           size="sm"
           variant="ghost"
           onClick={() => setTrashOpen(true)}
-          title="Slettede ressurser og bilder: hent inn igjen eller slett for godt"
+          title={L(
+            "Slettede ressurser og bilder: hent inn igjen eller slett for godt",
+            "Deleted assets and images: restore them or delete them for good",
+          )}
         >
           <Trash2 />
-          Slettede objekter{trashCount ? ` (${trashCount})` : ""}
+          {L("Slettede objekter", "Deleted items")}
+          {trashCount ? ` (${trashCount})` : ""}
         </Button>
         {editable ? (
           <Button
@@ -281,10 +309,14 @@ function Library({
             variant={suggestions.length ? "secondary" : "ghost"}
             onClick={() => setSuggestOpen(true)}
             disabled={suggestions.length === 0}
-            title="Karakterer og steder i manuset som ikke er i biblioteket ennå"
+            title={L(
+              "Karakterer og steder i manuset som ikke er i biblioteket ennå",
+              "Characters and locations in the script that are not in the library yet",
+            )}
           >
             <Lightbulb />
-            Forslag fra manuset{suggestions.length ? ` (${suggestions.length})` : ""}
+            {L("Forslag fra manuset", "Suggestions from the script")}
+            {suggestions.length ? ` (${suggestions.length})` : ""}
           </Button>
         ) : null}
         {editable ? (
@@ -311,7 +343,10 @@ function Library({
                 }
                 if (!items.length)
                   setError(
-                    "Kjenner ikke igjen navnene. Bilder lastet ned fra biblioteket heter «Ressurs - Variant - vN»; andre bilder lastes opp fra varianten de hører til.",
+                    L(
+                      "Kjenner ikke igjen navnene. Bilder lastet ned fra biblioteket heter «Ressurs - Variant - vN»; andre bilder lastes opp fra varianten de hører til.",
+                      "The names are not recognised. Images downloaded from the library are called “Asset - Variant - vN”; other images are uploaded from the variant they belong to.",
+                    ),
                   );
                 else setReupload({ items, unknown });
               }}
@@ -320,10 +355,13 @@ function Library({
               size="sm"
               variant="ghost"
               onClick={() => reuploadInput.current?.click()}
-              title="Last opp bilder du har lastet ned og endret. De kjennes igjen på navnet («Ressurs - Variant - vN»)."
+              title={L(
+                "Last opp bilder du har lastet ned og endret. De kjennes igjen på navnet («Ressurs - Variant - vN»).",
+                "Upload images you have downloaded and changed. They are recognised by their name (“Asset - Variant - vN”).",
+              )}
             >
               <Upload />
-              Last opp endrede bilder …
+              {L("Last opp endrede bilder …", "Upload changed images …")}
             </Button>
           </>
         ) : null}
@@ -331,22 +369,33 @@ function Library({
           size="sm"
           variant="ghost"
           onClick={() => setZipOpen(true)}
-          title="Last ned ressursene som zip, per kategori eller alt samlet"
+          title={L(
+            "Last ned ressursene som zip, per kategori eller alt samlet",
+            "Download the assets as a zip, per category or all together",
+          )}
         >
           <Download />
-          Last ned som zip
+          {L("Last ned som zip", "Download as zip")}
         </Button>
         <div className="ml-auto flex items-center gap-3">
           <SaveIndicator cmds={cmds} />
           {roleKnown && !editable ? (
-            <span className="text-xs text-text-tertiary">Bare lesetilgang</span>
+            <span className="text-xs text-text-tertiary">
+              {L("Bare lesetilgang", "Read-only access")}
+            </span>
           ) : null}
           {productions.length > 1 ? (
             <label className="flex items-center gap-1.5 text-xs text-text-secondary">
-              Produksjon
+              {L("Produksjon", "Production")}
               <select
-                aria-label="Produksjon for bruk i scener og kontinuitet"
-                title="Bruk i scener og kontinuitet gjelder denne produksjonen"
+                aria-label={L(
+                  "Produksjon for bruk i scener og kontinuitet",
+                  "Production for use in scenes and continuity",
+                )}
+                title={L(
+                  "Bruk i scener og kontinuitet gjelder denne produksjonen",
+                  "Use in scenes and continuity applies to this production",
+                )}
                 value={productionId}
                 onChange={(e) => setProductionId(e.target.value)}
                 className="h-7 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary"
@@ -374,7 +423,7 @@ function Library({
             onSize={setListWidth}
             min={220}
             max={560}
-            label="Bredde på ressurslisten"
+            label={L("Bredde på ressurslisten", "Width of the asset list")}
           />
           <div className="flex shrink-0 flex-col gap-1.5 border-b border-border px-2 py-2">
             <div className="relative">
@@ -384,8 +433,11 @@ function Library({
               />
               <input
                 type="search"
-                aria-label="Søk i biblioteket"
-                placeholder="Søk (navn, stikkord, hva lyd er koblet til)"
+                aria-label={L("Søk i biblioteket", "Search the library")}
+                placeholder={L(
+                  "Søk (navn, stikkord, hva lyd er koblet til)",
+                  "Search (name, keywords, what sound is linked to)",
+                )}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="h-7 w-full rounded-sm border border-border-control bg-surface-3 pl-7 pr-2 text-[13px] text-text-primary placeholder:text-text-tertiary"
@@ -398,22 +450,26 @@ function Library({
                 onChange={(e) => setKind(e.target.value as KindFilter)}
                 className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
               >
-                <option value="all">Alle typer ({counts.get("all") ?? 0})</option>
+                <option value="all">
+                  {L("Alle typer", "All types")} ({counts.get("all") ?? 0})
+                </option>
                 {ASSET_KINDS.map((k) => (
                   <option key={k} value={k}>
                     {ASSET_KIND_PLURAL[k]} ({counts.get(k) ?? 0})
                   </option>
                 ))}
-                <option value="style">Stilprofiler ({styleProfiles.length})</option>
+                <option value="style">
+                  {L("Stilprofiler", "Style profiles")} ({styleProfiles.length})
+                </option>
               </select>
               {kind === "sound" && categories.length ? (
                 <select
-                  aria-label="Kategori"
+                  aria-label={L("Kategori", "Category")}
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
                 >
-                  <option value="">Alle kategorier</option>
+                  <option value="">{L("Alle kategorier", "All categories")}</option>
                   {categories.map((c) => (
                     <option key={c} value={c}>
                       {c}
@@ -425,13 +481,16 @@ function Library({
             {kind !== "style" ? (
               <div className="flex items-center gap-1.5">
                 <select
-                  aria-label="Opphav"
-                  title="Vis bare ressurser med versjoner som er lastet opp, laget med AI, frilagt eller harmonisert"
+                  aria-label={L("Opphav", "Origin")}
+                  title={L(
+                    "Vis bare ressurser med versjoner som er lastet opp, laget med AI, frilagt eller harmonisert",
+                    "Show only assets with versions that are uploaded, made with AI, cut out or harmonised",
+                  )}
                   value={origin}
                   onChange={(e) => setOrigin(e.target.value as VersionOrigin | "all")}
                   className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
                 >
-                  <option value="all">Alle opphav</option>
+                  <option value="all">{L("Alle opphav", "All origins")}</option>
                   {VERSION_ORIGINS.map((o) => (
                     <option key={o} value={o}>
                       {VERSION_ORIGIN_LABEL[o]}
@@ -445,7 +504,7 @@ function Library({
                     onChange={(e) => setShowArchived(e.target.checked)}
                     className="size-3.5 accent-[var(--accent-brand)]"
                   />
-                  Arkiverte
+                  {L("Arkiverte", "Archived")}
                 </label>
               </div>
             ) : null}
@@ -460,7 +519,7 @@ function Library({
             >
               <div className="flex gap-1.5">
                 <select
-                  aria-label="Type ny ressurs"
+                  aria-label={L("Type ny ressurs", "Type of new asset")}
                   value={newKind}
                   onChange={(e) => setNewKind(e.target.value as AssetKind)}
                   className="h-7 w-[112px] rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
@@ -472,8 +531,8 @@ function Library({
                   ))}
                 </select>
                 <Input
-                  aria-label="Navn på ny ressurs"
-                  placeholder="Navn"
+                  aria-label={L("Navn på ny ressurs", "Name of new asset")}
+                  placeholder={L("Navn", "Name")}
                   value={newName}
                   maxLength={200}
                   onChange={(e) => setNewName(e.target.value)}
@@ -484,8 +543,8 @@ function Library({
                   size="sm"
                   variant="secondary"
                   disabled={!newName.trim()}
-                  aria-label="Legg til ressurs"
-                  title="Legg til ressurs"
+                  aria-label={L("Legg til ressurs", "Add asset")}
+                  title={L("Legg til ressurs", "Add asset")}
                 >
                   <Plus />
                 </Button>
@@ -508,19 +567,31 @@ function Library({
               }
               emptyText={
                 styleProfiles.length
-                  ? "Ingen stilprofiler passer med søket."
-                  : "Ingen stilprofiler ennå. Filmens visuelle stil beskriver stil, teknikk, farger og lys for alle bilder AI lager."
+                  ? L("Ingen stilprofiler passer med søket.", "No style profiles match the search.")
+                  : L(
+                      "Ingen stilprofiler ennå. Filmens visuelle stil beskriver stil, teknikk, farger og lys for alle bilder AI lager.",
+                      "No style profiles yet. The film's visual style describes style, technique, colours and light for all images that AI makes.",
+                    )
               }
             />
           ) : (
-            <ul aria-label="Ressurser" className="min-h-0 flex-1 overflow-y-auto py-1">
+            <ul
+              aria-label={L("Ressurser", "Assets")}
+              className="min-h-0 flex-1 overflow-y-auto py-1"
+            >
               {shown.length === 0 ? (
                 <li className="px-3 py-4 text-[13px] text-text-tertiary">
                   {all.length === 0
-                    ? "Biblioteket er tomt. Legg til ressurser over, eller bruk «Forslag fra manuset»."
+                    ? L(
+                        "Biblioteket er tomt. Legg til ressurser over, eller bruk «Forslag fra manuset».",
+                        "The library is empty. Add assets above, or use “Suggestions from the script”.",
+                      )
                     : origin !== "all"
-                      ? `Ingen ressurser har versjoner som er «${VERSION_ORIGIN_LABEL[origin].toLocaleLowerCase("nb")}».`
-                      : "Ingen ressurser passer med søket."}
+                      ? L(
+                          `Ingen ressurser har versjoner som er «${VERSION_ORIGIN_LABEL[origin].toLocaleLowerCase(collation())}».`,
+                          `No assets have versions that are “${VERSION_ORIGIN_LABEL[origin].toLocaleLowerCase(collation())}”.`,
+                        )
+                      : L("Ingen ressurser passer med søket.", "No assets match the search.")}
                 </li>
               ) : null}
               {shown.map((a) => {
@@ -561,11 +632,13 @@ function Library({
                         </span>
                         <span className="flex items-center gap-1.5 text-[11px] text-text-tertiary">
                           {ASSET_KIND_LABEL[a.kind]}
-                          <span className="tabular">· {n === 1 ? "1 scene" : `${n} scener`}</span>
+                          <span className="tabular">
+                            · {n === 1 ? "1 scene" : L(`${n} scener`, `${n} scenes`)}
+                          </span>
                           {a.archived ? (
                             <span className="flex items-center gap-0.5">
                               <Archive className="size-3" aria-hidden />
-                              Arkivert
+                              {L("Arkivert", "Archived")}
                             </span>
                           ) : null}
                         </span>
@@ -592,11 +665,14 @@ function Library({
               />
             ) : (
               <div className="flex h-full flex-col items-center justify-center gap-2 p-8 text-center">
-                <p className="text-base font-medium text-text-primary">Velg en stilprofil</p>
+                <p className="text-base font-medium text-text-primary">
+                  {L("Velg en stilprofil", "Choose a style profile")}
+                </p>
                 <p className="max-w-[460px] text-[13px] text-text-secondary">
-                  Stilprofilene beskriver hvordan filmen skal se ut – stil, teknikk, farger, lys og
-                  stemning – og sendes med i alle AI-beskrivelser. Standardprofilen gjelder alt;
-                  egne profiler kan gjelde plakater, steder, AI-video og andre bruk.
+                  {L(
+                    "Stilprofilene beskriver hvordan filmen skal se ut – stil, teknikk, farger, lys og stemning – og sendes med i alle AI-beskrivelser. Standardprofilen gjelder alt; egne profiler kan gjelde plakater, steder, AI-video og andre bruk.",
+                    "Style profiles describe how the film should look – style, technique, colours, light and mood – and are sent with every AI description. The default profile applies to everything; your own profiles can apply to posters, locations, AI video and other uses.",
+                  )}
                 </p>
               </div>
             )
@@ -622,11 +698,14 @@ function Library({
             />
           ) : (
             <div className="flex h-full flex-col items-center justify-center gap-2 p-8 text-center">
-              <p className="text-base font-medium text-text-primary">Velg en ressurs</p>
+              <p className="text-base font-medium text-text-primary">
+                {L("Velg en ressurs", "Choose an asset")}
+              </p>
               <p className="max-w-[460px] text-[13px] text-text-secondary">
-                Hver karakter, gjenstand og lokasjon finnes én gang i biblioteket og brukes i alle
-                scener og produksjoner. Alternative navn (som «BESTEFAR» for «Halvard») gjør at den
-                kjennes igjen i manuset.
+                {L(
+                  "Hver karakter, gjenstand og lokasjon finnes én gang i biblioteket og brukes i alle scener og produksjoner. Alternative navn (som «BESTEFAR» for «Halvard») gjør at den kjennes igjen i manuset.",
+                  "Each character, object and location exists once in the library and is used in all scenes and productions. Alternative names (such as “GRANDPA” for “Halvard”) let it be recognised in the script.",
+                )}
               </p>
             </div>
           )}

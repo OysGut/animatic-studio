@@ -4,6 +4,7 @@
  */
 import { Palette, Plus } from "lucide-react";
 import {
+  L,
   STYLE_TEXT_FIELDS,
   type LibraryStyleProfile,
   type ProjectState,
@@ -15,14 +16,14 @@ import { Button } from "@/components/ui/button";
 import { useImageUrls } from "./asset-images";
 
 /** Feltene som vises i oversikten (resten ses i dialogen). */
-const SHOWN: readonly { key: StyleTextField; label: string }[] = [
-  { key: "visualStyle", label: "Visuell stil" },
-  { key: "technique", label: "Teknikk og materialer" },
-  { key: "lighting", label: "Lys" },
-  { key: "mood", label: "Stemning" },
-  { key: "characterDesign", label: "Figurer" },
-  { key: "environmentDesign", label: "Omgivelser" },
-  { key: "avoid", label: "Unngå" },
+const shown = (): readonly { key: StyleTextField; label: string }[] => [
+  { key: "visualStyle", label: L("Visuell stil", "Visual style") },
+  { key: "technique", label: L("Teknikk og materialer", "Technique and materials") },
+  { key: "lighting", label: L("Lys", "Lighting") },
+  { key: "mood", label: L("Stemning", "Mood") },
+  { key: "characterDesign", label: L("Figurer", "Characters") },
+  { key: "environmentDesign", label: L("Omgivelser", "Environments") },
+  { key: "avoid", label: L("Unngå", "Avoid") },
 ];
 
 function Swatches({ colors }: { colors: readonly string[] }) {
@@ -59,7 +60,10 @@ export function StyleProfileList({
 }) {
   const hasDefault = items.some((p) => p.isDefault);
   return (
-    <ul aria-label="Stilprofiler" className="min-h-0 flex-1 overflow-y-auto py-1">
+    <ul
+      aria-label={L("Stilprofiler", "Style profiles")}
+      className="min-h-0 flex-1 overflow-y-auto py-1"
+    >
       {items.length === 0 ? (
         <li className="px-3 py-4 text-[13px] text-text-tertiary">{emptyText}</li>
       ) : null}
@@ -80,7 +84,7 @@ export function StyleProfileList({
             <span className="min-w-0">
               <span className="block truncate text-[13px] text-text-primary">{p.profile.name}</span>
               <span className="flex items-center gap-1 truncate text-[11px] text-text-tertiary">
-                {p.isDefault ? "Standard · " : ""}
+                {p.isDefault ? L("Standard · ", "Default · ") : ""}
                 {p.usesLabel}
                 {p.profile.guide.palette.colors.length ? (
                   <span className="ml-1 flex items-center gap-0.5">
@@ -97,8 +101,11 @@ export function StyleProfileList({
           <Button size="sm" variant="ghost" onClick={onNew} className="w-full justify-start">
             <Plus />
             {hasDefault
-              ? "Ny stilprofil (plakater, steder, AI-video …)"
-              : "Lag filmens visuelle stil"}
+              ? L(
+                  "Ny stilprofil (plakater, steder, AI-video …)",
+                  "New style profile (posters, places, AI video …)",
+                )
+              : L("Lag filmens visuelle stil", "Create the film's visual style")}
           </Button>
         </li>
       ) : null}
@@ -128,25 +135,32 @@ export function StyleProfileDetail({
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
           <p className="text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
-            Visuell stilprofil
+            {L("Visuell stilprofil", "Visual style profile")}
           </p>
           <h2 className="text-lg font-semibold text-text-primary">{item.profile.name}</h2>
           <p className="text-xs text-text-secondary">
             {item.isDefault
-              ? "Standard – brukes i alle AI-beskrivelser der ingen annen profil er valgt"
-              : `Gjelder for: ${item.usesLabel}`}
-            {item.isDefault && item.uses.length ? ` · også valgt for ${item.usesLabel}` : ""}
+              ? L(
+                  "Standard – brukes i alle AI-beskrivelser der ingen annen profil er valgt",
+                  "Default – used in all AI descriptions where no other profile is selected",
+                )
+              : L(`Gjelder for: ${item.usesLabel}`, `Applies to: ${item.usesLabel}`)}
+            {item.isDefault && item.uses.length
+              ? L(` · også valgt for ${item.usesLabel}`, ` · also selected for ${item.usesLabel}`)
+              : ""}
           </p>
         </div>
         <Button size="sm" variant="secondary" onClick={onEdit}>
           <Palette />
-          {editable ? "Rediger …" : "Vis …"}
+          {editable ? L("Rediger …", "Edit …") : L("Vis …", "View …")}
         </Button>
       </div>
       <section className="border border-border bg-surface-1 px-4 py-3 text-[13px] text-text-secondary">
         {item.summary ? <p className="text-text-primary">{item.summary}</p> : null}
         <p className="mt-1 text-xs text-text-tertiary">
-          {item.filled} av {STYLE_TEXT_FIELDS.length} felt fylt ut · {refs.length} forbildebilder
+          {item.filled} {L("av", "of")} {STYLE_TEXT_FIELDS.length}{" "}
+          {L("felt fylt ut", "fields filled in")} · {refs.length}{" "}
+          {L("forbildebilder", "reference images")}
           {g.palette.colors.length ? " · " : ""}
           <Swatches colors={g.palette.colors} />
         </p>
@@ -155,21 +169,31 @@ export function StyleProfileDetail({
         ) : null}
       </section>
       <dl className="grid grid-cols-[minmax(0,10rem)_minmax(0,1fr)] gap-x-4 gap-y-2 text-[13px]">
-        {SHOWN.filter((f) => g[f.key].trim()).map((f) => (
-          <div key={f.key} className="contents">
-            <dt className="text-xs text-text-tertiary">{f.label}</dt>
-            <dd className="whitespace-pre-wrap text-text-primary">{g[f.key]}</dd>
-          </div>
-        ))}
+        {shown()
+          .filter((f) => g[f.key].trim())
+          .map((f) => (
+            <div key={f.key} className="contents">
+              <dt className="text-xs text-text-tertiary">{f.label}</dt>
+              <dd className="whitespace-pre-wrap text-text-primary">{g[f.key]}</dd>
+            </div>
+          ))}
       </dl>
       {refs.length ? (
-        <section aria-label="Forbildebilder" className="flex flex-col gap-1">
-          <h3 className="text-xs font-medium text-text-tertiary">Forbildebilder</h3>
+        <section
+          aria-label={L("Forbildebilder", "Reference images")}
+          className="flex flex-col gap-1"
+        >
+          <h3 className="text-xs font-medium text-text-tertiary">
+            {L("Forbildebilder", "Reference images")}
+          </h3>
           <ul className="flex flex-wrap gap-2">
             {refs.map((v) => {
               const va = state.assetVariants[v.variantId];
               const a = va ? state.assets[va.assetId] : undefined;
-              const label = `${a?.name ?? "Ressurs"} – ${va?.name ?? ""} v${v.number}`;
+              const label = L(
+                `${a?.name ?? "Ressurs"} – ${va?.name ?? ""} v${v.number}`,
+                `${a?.name ?? "Asset"} – ${va?.name ?? ""} v${v.number}`,
+              );
               return (
                 <li key={v.id} className="flex w-28 flex-col gap-1 text-[11px] text-text-secondary">
                   <span className="flex h-20 items-center justify-center overflow-hidden bg-surface-3">
@@ -190,8 +214,10 @@ export function StyleProfileDetail({
       ) : null}
       {item.filled === 0 ? (
         <p className="text-[13px] text-text-secondary">
-          Ikke fylt ut. En bildemodell vet ingenting om filmen – her beskriver dere stil, teknikk,
-          farger, lys og stemning, så alle bilder AI lager, passer inn.
+          {L(
+            "Ikke fylt ut. En bildemodell vet ingenting om filmen – her beskriver dere stil, teknikk, farger, lys og stemning, så alle bilder AI lager, passer inn.",
+            "Not filled in yet. An image model knows nothing about the film – here you describe the style, technique, colours, lighting and mood, so that every image the AI makes fits in.",
+          )}
         </p>
       ) : null}
     </div>

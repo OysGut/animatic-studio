@@ -5,6 +5,7 @@
  */
 import { useMemo, useState } from "react";
 import {
+  L,
   PRODUCTION_KIND_LABEL,
   addScenesCommands,
   applyCommand,
@@ -61,6 +62,7 @@ export function ProductionDialog({
   const productions = sortedProductions(state);
   const target = addTo ? state.productions[addTo] : undefined;
   const [name, setName] = useState("");
+  const [note, setNote] = useState("");
   const [kind, setKind] = useState<Exclude<ProductionKind, "main">>("spinoff");
   const [sourceId, setSourceId] = useState(
     () => productions.find((p) => p.id !== addTo)?.id ?? productions[0]?.id ?? "",
@@ -87,6 +89,7 @@ export function ProductionDialog({
 
   function reset() {
     setName("");
+    setNote("");
     setPicked(new Set());
     setErr(null);
   }
@@ -99,12 +102,12 @@ export function ProductionDialog({
     if (target) {
       commands = addScenesCommands(state, target.id, ids);
       if (!commands.length) {
-        setErr("Velg minst én scene.");
+        setErr(L("Velg minst én scene.", "Choose at least one scene."));
         return;
       }
     } else {
       if (!name.trim()) {
-        setErr("Gi produksjonen et navn.");
+        setErr(L("Gi produksjonen et navn.", "Give the production a name."));
         return;
       }
       createdId = newId<"production">();
@@ -115,6 +118,16 @@ export function ProductionDialog({
         parentProductionId: sourceId,
         occurrenceIds: ids,
       });
+      // Notatet om hva produksjonen er (DEC-0082), vises på prosjektlisten
+      if (note.trim())
+        commands = [
+          ...commands,
+          {
+            type: "SetProductionNote" as const,
+            productionId: createdId as never,
+            note: note.trim(),
+          },
+        ];
     }
     // Prøv alt på en kopi først, så det ikke blir en halvferdig produksjon
     let probe = state;
@@ -134,7 +147,9 @@ export function ProductionDialog({
     for (const c of commands) {
       const e = cmds.run(
         c,
-        target ? `Scener lagt til i «${target.name}»` : `Ny produksjon «${name.trim()}»`,
+        target
+          ? L(`Scener lagt til i «${target.name}»`, `Scenes added to “${target.name}”`)
+          : L(`Ny produksjon «${name.trim()}»`, `New production “${name.trim()}”`),
         group,
       );
       if (e) {
@@ -166,29 +181,40 @@ export function ProductionDialog({
       <DialogContent className="max-h-[88vh] max-w-[620px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
-            {target ? `Legg til scener i «${target.name}»` : "Ny produksjon"}
+            {target
+              ? L(`Legg til scener i «${target.name}»`, `Add scenes to “${target.name}”`)
+              : L("Ny produksjon", "New production")}
           </DialogTitle>
           <DialogDescription>
             {target
-              ? "Scenene gjenbrukes – endrer du dem her, får produksjonen sin egen versjon, og den andre produksjonen endres ikke."
-              : "En spinoff, trailer eller kortfilm med egne scener, egen rekkefølge og egen film. Scener du velger, gjenbrukes – hovedfilmen endres ikke."}
+              ? L(
+                  "Scenene gjenbrukes – endrer du dem her, får produksjonen sin egen versjon, og den andre produksjonen endres ikke.",
+                  "The scenes are reused – if you change them here, the production gets its own version, and the other production is not changed.",
+                )
+              : L(
+                  "En spinoff, trailer eller kortfilm med egne scener, egen rekkefølge og egen film. Scener du velger, gjenbrukes – hovedfilmen endres ikke.",
+                  "A spin-off, trailer or short film with its own scenes, its own order and its own film. Scenes you choose are reused – the main film is not changed.",
+                )}
           </DialogDescription>
         </DialogHeader>
         {target ? null : (
           <div className="flex flex-wrap gap-2">
             <label className="flex min-w-[220px] flex-1 flex-col gap-1 text-xs text-text-tertiary">
-              Navn
+              {L("Navn", "Name")}
               <Input
                 value={name}
                 maxLength={200}
                 autoFocus
-                placeholder="F.eks. «Filmtittel – kortversjon»"
+                placeholder={L(
+                  "F.eks. «Filmtittel – kortversjon»",
+                  "E.g. “Film title – short version”",
+                )}
                 onChange={(e) => setName(e.target.value)}
                 className="h-8 bg-surface-3 text-[13px]"
               />
             </label>
             <label className="flex flex-col gap-1 text-xs text-text-tertiary">
-              Type
+              {L("Type", "Type")}
               <select
                 value={kind}
                 onChange={(e) => setKind(e.target.value as typeof kind)}
@@ -201,12 +227,26 @@ export function ProductionDialog({
                 ))}
               </select>
             </label>
+            <label className="flex w-full flex-col gap-1 text-xs text-text-tertiary">
+              {L("Notat (valgfritt)", "Note (optional)")}
+              <textarea
+                value={note}
+                maxLength={2000}
+                rows={2}
+                placeholder={L(
+                  "Hva er denne versjonen? F.eks. «Kortversjon til festivalen, uten prologen»",
+                  "What is this version? E.g. “Short version for the festival, without the prologue”",
+                )}
+                onChange={(e) => setNote(e.target.value)}
+                className="resize-y rounded-sm border border-border-control bg-surface-3 px-2 py-1.5 text-[13px] text-text-primary"
+              />
+            </label>
           </div>
         )}
         <div className="flex items-center gap-2 text-xs text-text-tertiary">
-          <span>Scener fra</span>
+          <span>{L("Scener fra", "Scenes from")}</span>
           <select
-            aria-label="Hent scener fra"
+            aria-label={L("Hent scener fra", "Take scenes from")}
             value={sourceId}
             onChange={(e) => {
               setSourceId(e.target.value);
@@ -231,11 +271,13 @@ export function ProductionDialog({
               )
             }
           >
-            {picked.size === choosable.length && choosable.length ? "Velg ingen" : "Velg alle"}
+            {picked.size === choosable.length && choosable.length
+              ? L("Velg ingen", "Select none")
+              : L("Velg alle", "Select all")}
           </button>
         </div>
         <ul
-          aria-label="Scener"
+          aria-label={L("Scener", "Scenes")}
           className="flex max-h-[44vh] flex-col overflow-y-auto border border-border"
         >
           {occs.map((o) => {
@@ -261,13 +303,16 @@ export function ProductionDialog({
                     {o.productionNumber ?? "–"}
                   </span>
                   <span className="truncate">
-                    {v ? formatHeading(v.heading) : "Scene"}
+                    {v ? formatHeading(v.heading) : L("Scene", "Scene")}
                     {has
-                      ? " · finnes allerede"
+                      ? L(" · finnes allerede", " · already included")
                       : owned
-                        ? " · egen versjon i denne produksjonen"
+                        ? L(
+                            " · egen versjon i denne produksjonen",
+                            " · own version in this production",
+                          )
                         : !o.active
-                          ? " · deaktivert"
+                          ? L(" · deaktivert", " · deactivated")
                           : ""}
                   </span>
                 </label>
@@ -276,8 +321,15 @@ export function ProductionDialog({
           })}
         </ul>
         <p className="text-xs text-text-tertiary">
-          {picked.size} {picked.size === 1 ? "scene" : "scener"} valgt.
-          {target ? "" : " Du kan også lage produksjonen tom og skrive nye scener i manuset."}
+          {picked.size === 1
+            ? L("1 scene valgt.", "1 scene selected.")
+            : L(`${picked.size} scener valgt.`, `${picked.size} scenes selected.`)}
+          {target
+            ? ""
+            : L(
+                " Du kan også lage produksjonen tom og skrive nye scener i manuset.",
+                " You can also create the production empty and write new scenes in the script.",
+              )}
         </p>
         {err ? (
           <p role="alert" className="text-xs text-status-danger">
@@ -292,9 +344,9 @@ export function ProductionDialog({
               onOpenChange(false);
             }}
           >
-            Avbryt
+            {L("Avbryt", "Cancel")}
           </Button>
-          <Button onClick={submit}>{target ? "Legg til" : "Opprett"}</Button>
+          <Button onClick={submit}>{target ? L("Legg til", "Add") : L("Opprett", "Create")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

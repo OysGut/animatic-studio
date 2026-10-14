@@ -5,6 +5,7 @@
  * filmen. Absolutt filmtid lagres aldri; den beregnes fra klippene (filmClips).
  */
 import { type Rational } from "../time";
+import { L } from "../i18n";
 import { clipAtFrame, partAt, type FilmClip } from "./film";
 
 /** Tid i kilden: millisekunder i en filmfil (versjon), bilde i 2D-scenen, eller tittelkort (ingen kildetid). */
@@ -65,7 +66,10 @@ export function sceneToPart(
 /** Del og bilde i delen → lokal tid i scenen. */
 export function partToScene(clip: FilmClip, partIndex: number, partFrame: number): number {
   const p = clip.parts[partIndex];
-  if (!p) throw new Error(`Delen ${partIndex} finnes ikke i scenen`);
+  if (!p)
+    throw new Error(
+      L(`Delen ${partIndex} finnes ikke i scenen`, `Part ${partIndex} does not exist in the scene`),
+    );
   return p.startFrame + partFrame;
 }
 

@@ -29,26 +29,27 @@ import { compareKeys } from "../order-key";
 import { blocksOfVariant, orderedOccurrences, storyTimes } from "../views";
 import { mentions } from "../screenplay/filter";
 import { assetNames, coverVersion, nameKey } from "../library";
+import { localized } from "../i18n";
 
-export const CONTINUITY_KIND_LABEL: Record<ContinuityKind, string> = {
-  haircut: "Hårklipp / frisyre",
-  hair_color: "Hårfarge",
-  costume: "Kostyme / klær",
-  injury: "Skade / bandasje",
-  scar: "Arr",
-  dirt: "Skitt",
-  snow_water: "Snø / vann",
-  beard: "Skjegg",
-  aging: "Alder",
-  carried_object: "Gjenstand den bærer",
-  other: "Annen forandring",
-};
+export const CONTINUITY_KIND_LABEL: Record<ContinuityKind, string> = localized({
+  haircut: ["Hårklipp / frisyre", "Haircut / hairstyle"],
+  hair_color: ["Hårfarge", "Hair colour"],
+  costume: ["Kostyme / klær", "Costume / clothes"],
+  injury: ["Skade / bandasje", "Injury / bandage"],
+  scar: ["Arr", "Scar"],
+  dirt: ["Skitt", "Dirt"],
+  snow_water: ["Snø / vann", "Snow / water"],
+  beard: ["Skjegg", "Beard"],
+  aging: ["Alder", "Age"],
+  carried_object: ["Gjenstand den bærer", "Object it carries"],
+  other: ["Annen forandring", "Other change"],
+});
 
-export const CONTINUITY_DURATION_LABEL: Record<ContinuityDuration, string> = {
-  permanent: "For godt",
-  temporary: "Til en bestemt scene",
-  scene: "Bare denne scenen",
-};
+export const CONTINUITY_DURATION_LABEL: Record<ContinuityDuration, string> = localized({
+  permanent: ["For godt", "For good"],
+  temporary: ["Til en bestemt scene", "Until a certain scene"],
+  scene: ["Bare denne scenen", "Only this scene"],
+});
 
 /** Engelsk ord for typen (brukes i beskrivelsen til AI-generering). */
 const KIND_EN: Record<ContinuityKind, string> = {

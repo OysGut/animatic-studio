@@ -8,6 +8,7 @@ import {
   POSTER_FORMATS,
   POSTER_KIND_LABEL,
   newId,
+  paletteLabel,
   posterAnalysis,
   posterDraft,
   posterFileName,
@@ -15,6 +16,8 @@ import {
   type Poster,
   type PosterKind,
   type ProjectState,
+  L,
+  locale,
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { signedUrls } from "@/app/library/asset-images";
@@ -86,7 +89,7 @@ export function NewPosterDialog({
           document: posterDraft(state, productionId, k, f.w, f.h),
         },
       },
-      `Ny plakat «${name.trim() || defaultName}»`,
+      L(`Ny plakat «${name.trim() || defaultName}»`, `New poster “${name.trim() || defaultName}”`),
     );
     setError(err);
     if (!err) {
@@ -103,16 +106,18 @@ export function NewPosterDialog({
           .slice(0, n)
           .map((x) => x.asset.name)
           .join(", ")
-      : "ingen";
+      : L("ingen", "none");
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>Ny plakat</DialogTitle>
+          <DialogTitle>{L("Ny plakat", "New poster")}</DialogTitle>
           <DialogDescription>
-            Programmet lager et førsteutkast fra prosjektet: de viktigste karakterene, steder og
-            objekter, godkjente relasjoner og en stil. Alt kan endres etterpå.
+            {L(
+              "Programmet lager et førsteutkast fra prosjektet: de viktigste karakterene, steder og objekter, godkjente relasjoner og en stil. Alt kan endres etterpå.",
+              "The app makes a first draft from the project: the main characters, places and objects, approved relations and a style. Everything can be changed afterwards.",
+            )}
           </DialogDescription>
         </DialogHeader>
         <form
@@ -136,12 +141,20 @@ export function NewPosterDialog({
                 <span>
                   {POSTER_KIND_LABEL[x]}
                   {analysis?.suggestedKind === x ? (
-                    <span className="ml-1.5 text-xs text-text-tertiary">(foreslått)</span>
+                    <span className="ml-1.5 text-xs text-text-tertiary">
+                      {L("(foreslått)", "(suggested)")}
+                    </span>
                   ) : null}
                   <span className="block text-xs text-text-tertiary">
                     {x === "pitch"
-                      ? "Kinoplakat med få karakterer, stemning og tittel."
-                      : "Oversikt over karakterene, relasjonene, stedene og objektene."}
+                      ? L(
+                          "Kinoplakat med få karakterer, stemning og tittel.",
+                          "Cinema poster with a few characters, mood and title.",
+                        )
+                      : L(
+                          "Oversikt over karakterene, relasjonene, stedene og objektene.",
+                          "Overview of the characters, relations, places and objects.",
+                        )}
                   </span>
                 </span>
               </label>
@@ -163,19 +176,19 @@ export function NewPosterDialog({
               </select>
             </label>
             <label className="flex flex-col gap-1 text-xs text-text-secondary">
-              Språk
+              {L("Språk", "Language")}
               <select
                 value={language}
                 onChange={(e) => setLanguage(e.target.value as "nb" | "en")}
                 className={control}
               >
-                <option value="nb">Norsk</option>
-                <option value="en">Engelsk</option>
+                <option value="nb">{L("Norsk", "Norwegian")}</option>
+                <option value="en">{L("Engelsk", "English")}</option>
               </select>
             </label>
           </div>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            Navn
+            {L("Navn", "Name")}
             <Input
               value={name}
               placeholder={defaultName}
@@ -185,20 +198,22 @@ export function NewPosterDialog({
           {analysis ? (
             <div className="rounded-sm border border-border bg-surface-2 px-3 py-2 text-xs text-text-secondary">
               <p>
-                <span className="text-text-primary">Karakterer:</span>{" "}
+                <span className="text-text-primary">{L("Karakterer:", "Characters:")}</span>{" "}
                 {list(analysis.characters, k === "pitch" ? 3 : 8)}
               </p>
               <p>
-                <span className="text-text-primary">Steder:</span>{" "}
+                <span className="text-text-primary">{L("Steder:", "Places:")}</span>{" "}
                 {list(analysis.places, k === "pitch" ? 1 : 4)}
               </p>
               <p>
-                <span className="text-text-primary">Objekter:</span>{" "}
+                <span className="text-text-primary">{L("Objekter:", "Objects:")}</span>{" "}
                 {list(analysis.objects, k === "pitch" ? 3 : 6)}
               </p>
               <p>
-                <span className="text-text-primary">Relasjoner:</span> {analysis.relations}{" "}
-                godkjente · <span className="text-text-primary">Stil:</span> {analysis.palette.name}
+                <span className="text-text-primary">{L("Relasjoner:", "Relations:")}</span>{" "}
+                {analysis.relations} {L("godkjente", "approved")} ·{" "}
+                <span className="text-text-primary">{L("Stil:", "Style:")}</span>{" "}
+                {paletteLabel(analysis.palette.name)}
               </p>
             </div>
           ) : null}
@@ -209,9 +224,9 @@ export function NewPosterDialog({
           ) : null}
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
-              Avbryt
+              {L("Avbryt", "Cancel")}
             </Button>
-            <Button type="submit">Lag utkast</Button>
+            <Button type="submit">{L("Lag utkast", "Create draft")}</Button>
           </DialogFooter>
         </form>
       </DialogContent>
@@ -222,7 +237,7 @@ export function NewPosterDialog({
 /** Megabyte, avrundet for visning. */
 function formatMb(bytes: number): string {
   const mb = bytes / 1e6;
-  return `${mb < 10 ? mb.toLocaleString("nb", { maximumFractionDigits: 1 }) : Math.round(mb)} MB`;
+  return `${mb < 10 ? mb.toLocaleString(locale(), { maximumFractionDigits: 1 }) : Math.round(mb)} MB`;
 }
 
 export function ExportPosterDialog({
@@ -278,7 +293,11 @@ export function ExportPosterDialog({
             title: poster.name,
           },
           async (path, w, h) => {
-            if (ac.signal.aborted) throw new DOMException("Eksporten ble avbrutt", "AbortError");
+            if (ac.signal.aborted)
+              throw new DOMException(
+                L("Eksporten ble avbrutt", "The export was cancelled"),
+                "AbortError",
+              );
             const url = urls[path];
             if (!url) {
               missing++;
@@ -351,16 +370,19 @@ export function ExportPosterDialog({
     >
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Eksporter «{poster.name}»</DialogTitle>
+          <DialogTitle>{L(`Eksporter «${poster.name}»`, `Export “${poster.name}”`)}</DialogTitle>
           <DialogDescription>
-            {(poster.widthMm / 10).toLocaleString("nb")} ×{" "}
-            {(poster.heightMm / 10).toLocaleString("nb")} cm. Trykk-PDF-en har ekte tekst og bildene
-            i trykkoppløsning.
+            {(poster.widthMm / 10).toLocaleString(locale())} ×{" "}
+            {(poster.heightMm / 10).toLocaleString(locale())}{" "}
+            {L(
+              "cm. Trykk-PDF-en har ekte tekst og bildene i trykkoppløsning.",
+              "cm. The print PDF has real text and the images at print resolution.",
+            )}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-3">
           <fieldset className="flex gap-4">
-            <legend className="sr-only">Filtype</legend>
+            <legend className="sr-only">{L("Filtype", "File type")}</legend>
             {(["pdf", "png"] as const).map((x) => (
               <label key={x} className="flex items-center gap-1.5 text-[13px] text-text-primary">
                 <input
@@ -370,19 +392,19 @@ export function ExportPosterDialog({
                   onChange={() => setKind(x)}
                   className="accent-[var(--accent-brand)]"
                 />
-                {x === "pdf" ? "Trykk-PDF" : "PNG-bilde"}
+                {x === "pdf" ? L("Trykk-PDF", "Print PDF") : L("PNG-bilde", "PNG image")}
               </label>
             ))}
           </fieldset>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            Språk
+            {L("Språk", "Language")}
             <select
               value={lang}
               onChange={(e) => setLang(e.target.value as "nb" | "en")}
               className={control}
             >
-              <option value="nb">Norsk</option>
-              <option value="en">Engelsk</option>
+              <option value="nb">{L("Norsk", "Norwegian")}</option>
+              <option value="en">{L("Engelsk", "English")}</option>
             </select>
           </label>
           {kind === "pdf" ? (
@@ -394,7 +416,7 @@ export function ExportPosterDialog({
                   onChange={(e) => setBleed(e.target.checked)}
                   className="size-3.5 accent-[var(--accent-brand)]"
                 />
-                Utfallende kant (3 mm)
+                {L("Utfallende kant (3 mm)", "Bleed (3 mm)")}
               </label>
               <label className="flex items-center gap-2 text-[13px] text-text-primary">
                 <input
@@ -403,27 +425,34 @@ export function ExportPosterDialog({
                   onChange={(e) => setMarks(e.target.checked)}
                   className="size-3.5 accent-[var(--accent-brand)]"
                 />
-                Skjæremerker
+                {L("Skjæremerker", "Crop marks")}
               </label>
             </div>
           ) : (
             <label className="flex flex-col gap-1 text-xs text-text-secondary">
-              Oppløsning
+              {L("Oppløsning", "Resolution")}
               <select
                 value={ppi}
                 onChange={(e) => setPpi(Number(e.target.value))}
                 className={control}
               >
-                <option value={72}>72 ppi (skjerm)</option>
+                <option value={72}>{L("72 ppi (skjerm)", "72 ppi (screen)")}</option>
                 <option value={150}>150 ppi</option>
                 <option value={300}>300 ppi</option>
               </select>
               <span className="text-[11px] text-text-tertiary">
-                {pngSize.width.toLocaleString("nb")} × {pngSize.height.toLocaleString("nb")} piksler
-                ({pngSize.megapixels.toLocaleString("nb", { maximumFractionDigits: 1 })} Mpx).
-                Anslått filstørrelse {formatMb(pngSize.minBytes)}–{formatMb(pngSize.maxBytes)},
-                avhengig av bildene.
-                {ppi >= 300 ? " Store filer tar litt tid å lage." : ""}
+                {pngSize.width.toLocaleString(locale())} × {pngSize.height.toLocaleString(locale())}{" "}
+                {L("piksler", "pixels")} (
+                {pngSize.megapixels.toLocaleString(locale(), { maximumFractionDigits: 1 })} Mpx).{" "}
+                {L("Anslått filstørrelse", "Estimated file size")} {formatMb(pngSize.minBytes)}–
+                {formatMb(pngSize.maxBytes)},{" "}
+                {L("avhengig av bildene.", "depending on the images.")}
+                {ppi >= 300
+                  ? L(
+                      " Store filer tar litt tid å lage.",
+                      " Large files take a little while to make.",
+                    )
+                  : ""}
               </span>
             </label>
           )}
@@ -434,27 +463,38 @@ export function ExportPosterDialog({
           ) : null}
           {ready ? (
             <p className="text-xs text-text-secondary" role="status">
-              Filen er laget.{" "}
+              {L("Filen er laget.", "The file is ready.")}{" "}
               {missing > 0
-                ? `${missing === 1 ? "Ett bilde" : `${missing} bilder`} kunne ikke hentes og er vist som tom ramme. `
+                ? missing === 1
+                  ? L(
+                      "Ett bilde kunne ikke hentes og er vist som tom ramme. ",
+                      "One image could not be fetched and is shown as an empty frame. ",
+                    )
+                  : L(
+                      `${missing} bilder kunne ikke hentes og er vist som tom ramme. `,
+                      `${missing} images could not be fetched and are shown as empty frames. `,
+                    )
                 : ""}
               <a href={ready.url} download={ready.name} className="text-accent-brand underline">
-                Last ned {ready.name}
+                {L("Last ned", "Download")} {ready.name}
               </a>
             </p>
           ) : null}
         </div>
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Lukk
+            {L("Lukk", "Close")}
           </Button>
           <Button onClick={run} disabled={busy}>
             {busy ? <Loader2 className="animate-spin" /> : <Download />}
             {busy
               ? progress !== null
-                ? `Lager filen … ${Math.round(progress * 100)} %`
-                : "Lager filen …"
-              : "Lag filen"}
+                ? L(
+                    `Lager filen … ${Math.round(progress * 100)} %`,
+                    `Creating the file … ${Math.round(progress * 100)} %`,
+                  )
+                : L("Lager filen …", "Creating the file …")
+              : L("Lag filen", "Create file")}
           </Button>
         </DialogFooter>
       </DialogContent>

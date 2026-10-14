@@ -12,6 +12,8 @@ import {
   compareLength,
   filmMediaPaths,
   formatTimecode,
+  L,
+  locale,
   stillMediaPaths,
   versionFrameAt,
   versionSeconds,
@@ -73,23 +75,29 @@ export function CompareVersionsDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-5xl">
         <DialogHeader>
-          <DialogTitle>Sammenlign versjoner – {title}</DialogTitle>
+          <DialogTitle>
+            {L(`Sammenlign versjoner – ${title}`, `Compare versions – ${title}`)}
+          </DialogTitle>
           <DialogDescription>
-            Velg to versjoner av scenen. De spilles og spoles sammen; ingen av dem endres eller tas
-            i bruk herfra.
+            {L(
+              "Velg to versjoner av scenen. De spilles og spoles sammen; ingen av dem endres eller tas i bruk herfra.",
+              "Choose two versions of the scene. They play and scrub together; neither of them is changed or taken into use from here.",
+            )}
           </DialogDescription>
         </DialogHeader>
         {versions.length < 2 || !a || !b ? (
           <p className="text-[13px] text-text-secondary">
-            Scenen har bare én versjon. Importer film, lag AI-video eller legg inn et stillbilde for
-            å kunne sammenligne.
+            {L(
+              "Scenen har bare én versjon. Importer film, lag AI-video eller legg inn et stillbilde for å kunne sammenligne.",
+              "The scene has only one version. Import a film, make an AI video or add a still image to be able to compare.",
+            )}
           </p>
         ) : (
           <>
             <div className="flex flex-wrap items-center gap-2">
               <Button size="sm" variant="secondary" onClick={playback.toggle}>
                 {playback.playing ? <Pause /> : <Play />}
-                {playback.playing ? "Pause" : "Spill begge"}
+                {playback.playing ? "Pause" : L("Spill begge", "Play both")}
               </Button>
               <input
                 type="range"
@@ -97,22 +105,29 @@ export function CompareVersionsDialog({
                 max={Math.max(0, total - 1)}
                 value={playback.frame}
                 onChange={(e) => playback.setFrame(Number(e.target.value))}
-                aria-label="Felles avspillingshode"
+                aria-label={L("Felles avspillingshode", "Shared playhead")}
                 className="min-w-[160px] flex-1 accent-[var(--accent-brand)]"
               />
               <span className="font-mono text-[11px] text-text-secondary">
                 {formatTimecode(playback.frame, fps)}
               </span>
               <label className="flex items-center gap-1.5 text-xs text-text-secondary">
-                Følg
+                {L("Følg", "Follow")}
                 <select
-                  aria-label="Hvordan versjonene følger hverandre"
+                  aria-label={L(
+                    "Hvordan versjonene følger hverandre",
+                    "How the versions follow each other",
+                  )}
                   value={sync}
                   onChange={(e) => setSync(e.target.value as CompareSync)}
                   className="h-7 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
                 >
-                  <option value="time">samme tid fra start</option>
-                  <option value="relative">samme andel av lengden</option>
+                  <option value="time">
+                    {L("samme tid fra start", "same time from the start")}
+                  </option>
+                  <option value="relative">
+                    {L("samme andel av lengden", "same share of the length")}
+                  </option>
                 </select>
               </label>
             </div>
@@ -131,8 +146,10 @@ export function CompareVersionsDialog({
               ))}
             </div>
             <p className="text-[11px] text-text-tertiary">
-              Sammenligningen er uten lyd. Når en versjon er kortere, står siste bilde til den andre
-              er ferdig (med «samme tid fra start»).
+              {L(
+                "Sammenligningen er uten lyd. Når en versjon er kortere, står siste bilde til den andre er ferdig (med «samme tid fra start»).",
+                "The comparison has no sound. When one version is shorter, its last frame stays until the other has finished (with “same time from the start”).",
+              )}
             </p>
           </>
         )}
@@ -170,7 +187,11 @@ function Side({
   return (
     <div className="flex flex-col gap-1.5">
       <select
-        aria-label={side === 0 ? "Versjon til venstre" : "Versjon til høyre"}
+        aria-label={
+          side === 0
+            ? L("Versjon til venstre", "Version on the left")
+            : L("Versjon til høyre", "Version on the right")
+        }
         value={version.key}
         onChange={(e) => onPick(e.target.value)}
         className="h-7 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
@@ -178,7 +199,7 @@ function Side({
         {versions.map((x) => (
           <option key={x.key} value={x.key}>
             {x.label}
-            {x.inUse ? " (i bruk)" : ""}
+            {x.inUse ? L(" (i bruk)", " (in use)") : ""}
           </option>
         ))}
       </select>
@@ -196,23 +217,23 @@ function Side({
         <dt className="text-text-tertiary">Type</dt>
         <dd className="text-text-primary">
           {VERSION_KIND_LABEL[version.kind]}
-          {version.inUse ? " · i bruk i filmen" : ""}
+          {version.inUse ? L(" · i bruk i filmen", " · in use in the film") : ""}
         </dd>
-        <dt className="text-text-tertiary">Lengde</dt>
+        <dt className="text-text-tertiary">{L("Lengde", "Length")}</dt>
         <dd className="font-mono text-text-primary">
-          {secs.toLocaleString("nb-NO", { maximumFractionDigits: 2 })} s · {version.durationFrames}{" "}
-          bilder
+          {secs.toLocaleString(locale(), { maximumFractionDigits: 2 })} s · {version.durationFrames}{" "}
+          {L("bilder", "frames")}
         </dd>
-        <dt className="text-text-tertiary">Laget</dt>
+        <dt className="text-text-tertiary">{L("Laget", "Created")}</dt>
         <dd className="text-text-primary">
           {version.createdAt
-            ? new Date(version.createdAt).toLocaleString("nb-NO", {
+            ? new Date(version.createdAt).toLocaleString(locale(), {
                 dateStyle: "medium",
                 timeStyle: "short",
               })
-            : "ukjent"}
+            : L("ukjent", "unknown")}
         </dd>
-        <dt className="text-text-tertiary">Her</dt>
+        <dt className="text-text-tertiary">{L("Her", "Here")}</dt>
         <dd className="font-mono text-text-primary">{formatTimecode(frame, fps)}</dd>
       </dl>
     </div>

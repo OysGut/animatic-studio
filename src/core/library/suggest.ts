@@ -1,3 +1,4 @@
+// i18n-ignore-file – leksikon for norske ord og navn (data), ikke vist som tekst
 /**
  * Forslag til ressursbiblioteket fra manuset (REQ-0128, DEC-0034).
  * Gratis, regelbasert gjenkjenning – ingen AI. Alt er forslag; ingenting legges til før brukeren velger det.
@@ -13,6 +14,7 @@
 import type { Asset, AssetKind, ProjectState } from "../model";
 import { blocksOfVariant, orderedOccurrences } from "../views";
 import { characterName, sceneMentions } from "../screenplay/filter";
+import { L } from "../i18n";
 
 export type SuggestionReason = "speaker" | "named" | "heading" | "object";
 
@@ -479,7 +481,7 @@ function numbersOf(scenes: readonly Scene[], idx: ReadonlySet<number>): string[]
   return [...idx]
     .sort((a, b) => a - b)
     .slice(0, 6)
-    .map((i) => scenes[i]!.number || "uten nr.");
+    .map((i) => scenes[i]!.number || L("uten nr.", "no no."));
 }
 
 function findSimilar(

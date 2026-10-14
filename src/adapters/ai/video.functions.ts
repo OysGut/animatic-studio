@@ -13,6 +13,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
+  L,
   adaptPromptForModel,
   effortOf,
   estimateCostUsd,
@@ -73,22 +74,29 @@ const isId = (x: unknown): x is string => typeof x === "string" && isUuid(x);
 
 function validateStart(d: unknown): StartVideoInput {
   const x = (d ?? {}) as Record<string, unknown>;
-  if (!isId(x["projectId"]) || !isId(x["occurrenceId"])) throw new Error("Ugyldig scene");
-  if (x["segmentId"] !== null && !isId(x["segmentId"])) throw new Error("Ugyldig segment");
+  if (!isId(x["projectId"]) || !isId(x["occurrenceId"]))
+    throw new Error(L("Ugyldig scene", "Invalid scene"));
+  if (x["segmentId"] !== null && !isId(x["segmentId"]))
+    throw new Error(L("Ugyldig segment", "Invalid segment"));
   const prompt = x["prompt"];
   if (typeof prompt !== "string" || !prompt.trim() || prompt.length > MAX_PROMPT_CHARS)
-    throw new Error("Beskrivelsen mangler eller er for lang");
+    throw new Error(
+      L("Beskrivelsen mangler eller er for lang", "The description is missing or too long"),
+    );
   if (!isProviderId(x["provider"]) || x["provider"] === "lovable")
-    throw new Error("Ukjent leverandør");
-  if (typeof x["model"] !== "string" || x["model"].length > 120) throw new Error("Ugyldig modell");
+    throw new Error(L("Ukjent leverandør", "Unknown provider"));
+  if (typeof x["model"] !== "string" || x["model"].length > 120)
+    throw new Error(L("Ugyldig modell", "Invalid model"));
   const seconds = x["seconds"];
   if (typeof seconds !== "number" || !Number.isInteger(seconds) || seconds < 1 || seconds > 60)
-    throw new Error("Ugyldig lengde");
-  if (x["aspect"] !== "16:9" && x["aspect"] !== "9:16") throw new Error("Ugyldig format");
+    throw new Error(L("Ugyldig lengde", "Invalid length"));
+  if (x["aspect"] !== "16:9" && x["aspect"] !== "9:16")
+    throw new Error(L("Ugyldig format", "Invalid format"));
   const img = x["startImagePath"];
   if (img !== null && !validReferencePath(x["projectId"], img))
-    throw new Error("Ugyldig startbilde");
-  if (x["approved"] !== true) throw new Error("Genereringen må bekreftes");
+    throw new Error(L("Ugyldig startbilde", "Invalid start image"));
+  if (x["approved"] !== true)
+    throw new Error(L("Genereringen må bekreftes", "The generation must be confirmed"));
   return {
     projectId: x["projectId"],
     occurrenceId: x["occurrenceId"],
@@ -126,13 +134,22 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
       context.userId,
     );
     if ((gate.ROLE_RANK[role ?? ""] ?? 0) < gate.ROLE_RANK["editor"]!)
-      return { ok: false, message: "Du har ikke tilgang til å generere i dette prosjektet." };
+      return {
+        ok: false,
+        message: L(
+          "Du har ikke tilgang til å generere i dette prosjektet.",
+          "You do not have access to generate in this project.",
+        ),
+      };
     const db = await admin();
     const schema = await checkSchema(db);
     if (schema.kind === "missing" || schema.version < (data.queue ? 25 : 24))
       return {
         ok: false,
-        message: `Databasen er ikke oppdatert for AI-video${data.queue ? " i kø" : ""}. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon ${data.queue ? "0025" : "0024"}).`,
+        message: L(
+          `Databasen er ikke oppdatert for AI-video${data.queue ? " i kø" : ""}. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon ${data.queue ? "0025" : "0024"}).`,
+          `The database is not up to date for AI video${data.queue ? " in the queue" : ""}. Paste the message into LOVABLE_SYNC.md in Lovable (migration ${data.queue ? "0025" : "0024"}).`,
+        ),
       };
     const { data: proj } = await db
       .from("projects")
@@ -140,14 +157,18 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
       .eq("id", data.projectId)
       .maybeSingle();
     if (!proj || (proj as { deleted_at?: string | null }).deleted_at)
-      return { ok: false, message: "Prosjektet er slettet." };
+      return { ok: false, message: L("Prosjektet er slettet.", "The project has been deleted.") };
     const { data: occ } = await db
       .from("scene_occurrences")
       .select("id")
       .eq("id", data.occurrenceId)
       .eq("project_id", data.projectId)
       .maybeSingle();
-    if (!occ) return { ok: false, message: "Scenen finnes ikke i prosjektet." };
+    if (!occ)
+      return {
+        ok: false,
+        message: L("Scenen finnes ikke i prosjektet.", "The scene does not exist in the project."),
+      };
     if (data.segmentId) {
       const { data: seg } = await db
         .from("production_segments")
@@ -155,26 +176,50 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
         .eq("id", data.segmentId)
         .eq("occurrence_id", data.occurrenceId)
         .maybeSingle();
-      if (!seg) return { ok: false, message: "Segmentet finnes ikke i scenen." };
+      if (!seg)
+        return {
+          ok: false,
+          message: L("Segmentet finnes ikke i scenen.", "The segment does not exist in the scene."),
+        };
     }
     const m = providerModel(data.provider, data.model);
     if (!m || m.capability !== "video")
-      return { ok: false, message: "Modellen lager ikke video hos denne leverandøren." };
+      return {
+        ok: false,
+        message: L(
+          "Modellen lager ikke video hos denne leverandøren.",
+          "This model does not make video with this provider.",
+        ),
+      };
     // Modellens grenser gjelder uansett hva nettleseren sendte (DEC-0070)
     const adapted = adaptPromptForModel(data.prompt, m);
     if (adapted.blocked)
       return {
         ok: false,
-        message:
+        message: L(
           "Replikkene i segmentet er for lange for denne modellen (de må sendes ordrett). Del segmentet eller velg en annen modell.",
+          "The lines in the segment are too long for this model (they must be sent verbatim). Split the segment or choose another model.",
+        ),
       };
     const sentPrompt = adapted.text;
     if (m.durations && !m.durations.includes(data.seconds))
-      return { ok: false, message: `Modellen kan lage ${m.durations.join(", ")} sekunder.` };
+      return {
+        ok: false,
+        message: L(
+          `Modellen kan lage ${m.durations.join(", ")} sekunder.`,
+          `The model can make ${m.durations.join(", ")} seconds.`,
+        ),
+      };
     if (data.chainAfter) {
       // Bare rett etter segmentet like før i samme scene: aldri seg selv eller i ring (da ville jobben vente for alltid)
       if (!data.segmentId || data.chainAfter === data.segmentId)
-        return { ok: false, message: "Et segment kan bare vente på segmentet før." };
+        return {
+          ok: false,
+          message: L(
+            "Et segment kan bare vente på segmentet før.",
+            "A segment can only wait for the segment before it.",
+          ),
+        };
       const { data: segs } = await db
         .from("production_segments")
         .select("id, order_key")
@@ -184,14 +229,23 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
         .sort((a, b) => (a.order_key < b.order_key ? -1 : a.order_key > b.order_key ? 1 : 0));
       const at = order.findIndex((g) => g.id === data.segmentId);
       if (at <= 0 || order[at - 1]!.id !== data.chainAfter)
-        return { ok: false, message: "Segmentet før finnes ikke i scenen." };
+        return {
+          ok: false,
+          message: L(
+            "Segmentet før finnes ikke i scenen.",
+            "The segment before does not exist in the scene.",
+          ),
+        };
     }
     if (
       !data.startImagePath &&
       !data.chainAfter &&
       (data.provider === "runway" || data.provider === "fal")
     )
-      return { ok: false, message: "Denne modellen trenger et startbilde." };
+      return {
+        ok: false,
+        message: L("Denne modellen trenger et startbilde.", "This model needs a start image."),
+      };
     if (data.startImagePath) {
       // Siste bilde fra forrige segment (REQ-0263): må høre til en AI-video i prosjektet
       const fromTake = takeIdFromLastFrame(data.projectId, data.startImagePath);
@@ -204,15 +258,23 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
           .eq("kind", "ai_video")
           .maybeSingle();
         if (!take)
-          return { ok: false, message: "Videoen startbildet kom fra, finnes ikke lenger." };
+          return {
+            ok: false,
+            message: L(
+              "Videoen startbildet kom fra, finnes ikke lenger.",
+              "The video the start image came from no longer exists.",
+            ),
+          };
         const { error: missing } = await db.storage
           .from(BUCKET)
           .createSignedUrl(data.startImagePath, 60);
         if (missing)
           return {
             ok: false,
-            message:
+            message: L(
               "Siste bilde fra forrige segment ble ikke lagret. Legg inn videoen på nytt, eller velg et annet startbilde.",
+              "The last frame of the previous segment was not saved. Add the video again, or choose another start image.",
+            ),
           };
       } else {
         const { referenceImages } = await import("./gateway");
@@ -224,8 +286,10 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
     if (!key)
       return {
         ok: false,
-        message:
+        message: L(
           "Ingen av prosjektets eiere har koblet til denne leverandøren (AI-leverandører på prosjektlisten).",
+          "None of the project's owners have connected this provider (AI providers on the project list).",
+        ),
       };
     const cost = estimateCostUsd(data.provider, data.model, { seconds: data.seconds });
 
@@ -255,12 +319,21 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
           .eq("project_id", data.projectId)
           .eq("status", "queued");
         if ((waiting ?? 0) - extra >= MAX_QUEUED_PER_PROJECT)
-          return `Køen er full (${MAX_QUEUED_PER_PROJECT} videoer venter). Vent til noen er ferdige.`;
+          return L(
+            `Køen er full (${MAX_QUEUED_PER_PROJECT} videoer venter). Vent til noen er ferdige.`,
+            `The queue is full (${MAX_QUEUED_PER_PROJECT} videos waiting). Wait until some are finished.`,
+          );
       } else {
         if ((mine ?? 0) - extra >= MAX_VIDEO_JOBS_PER_USER_PER_HOUR)
-          return `Grensen på ${MAX_VIDEO_JOBS_PER_USER_PER_HOUR} videoer i timen er nådd. Legg dem i kø i stedet.`;
+          return L(
+            `Grensen på ${MAX_VIDEO_JOBS_PER_USER_PER_HOUR} videoer i timen er nådd. Legg dem i kø i stedet.`,
+            `The limit of ${MAX_VIDEO_JOBS_PER_USER_PER_HOUR} videos per hour has been reached. Queue them instead.`,
+          );
         if ((day ?? 0) - extra >= MAX_VIDEO_JOBS_PER_PROJECT_PER_DAY)
-          return `Prosjektets grense på ${MAX_VIDEO_JOBS_PER_PROJECT_PER_DAY} videoer i døgnet er nådd.`;
+          return L(
+            `Prosjektets grense på ${MAX_VIDEO_JOBS_PER_PROJECT_PER_DAY} videoer i døgnet er nådd.`,
+            `The project's limit of ${MAX_VIDEO_JOBS_PER_PROJECT_PER_DAY} videos per day has been reached.`,
+          );
       }
       const budget = await gate.overProjectBudget(
         db,
@@ -286,7 +359,10 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
     if ((running ?? 0) >= (data.candidates ?? 1))
       return {
         ok: false,
-        message: "En video for dette segmentet lages allerede. Vent til den er ferdig.",
+        message: L(
+          "En video for dette segmentet lages allerede. Vent til den er ferdig.",
+          "A video for this segment is already being made. Wait until it is finished.",
+        ),
       };
 
     const jobId = newId<"generation_job">();
@@ -330,7 +406,14 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
         }),
       },
     } as never);
-    if (logErr) return { ok: false, message: `Jobben kunne ikke logges: ${logErr.message}` };
+    if (logErr)
+      return {
+        ok: false,
+        message: L(
+          `Jobben kunne ikke logges: ${logErr.message}`,
+          `The job could not be logged: ${logErr.message}`,
+        ),
+      };
     const after = await limits(1);
     if (after) {
       // Bare en jobb som fortsatt venter eller ikke er sendt, tas bort (køen kan ha rukket å sende den)
@@ -358,7 +441,8 @@ export const pollVideoJob = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((d: unknown) => {
     const x = (d ?? {}) as Record<string, unknown>;
-    if (!isId(x["projectId"]) || !isId(x["jobId"])) throw new Error("Ugyldig jobb");
+    if (!isId(x["projectId"]) || !isId(x["jobId"]))
+      throw new Error(L("Ugyldig jobb", "Invalid job"));
     return { projectId: x["projectId"], jobId: x["jobId"] };
   })
   .handler(async ({ data, context }): Promise<PollVideoResult> => {
@@ -369,7 +453,7 @@ export const pollVideoJob = createServerFn({ method: "POST" })
       context.userId,
     );
     if ((gate.ROLE_RANK[role ?? ""] ?? 0) < gate.ROLE_RANK["editor"]!)
-      return { state: "failed", message: "Ingen tilgang." };
+      return { state: "failed", message: L("Ingen tilgang.", "No access.") };
     const { followUpVideoJob } = await import("./video-followup.server");
     return followUpVideoJob(await admin(), data.projectId, data.jobId);
   });

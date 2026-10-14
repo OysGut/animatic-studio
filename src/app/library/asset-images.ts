@@ -11,6 +11,7 @@ import {
   type AssetMedia,
   type AssetVariantId,
   type Command,
+  L,
 } from "@/core";
 import { isTiff, prepareImage } from "./image-prep";
 import { sha256Hex } from "@/engine/import/browser";
@@ -54,11 +55,18 @@ export const IMAGE_ACCEPT = [...ASSET_MIME_TYPES, "image/tiff", ".tif", ".tiff"]
 
 export function checkImageFile(file: File): string | null {
   if (file.type.startsWith("video/") || /\.(mp4|mov|m4v|webm|mkv|avi)$/i.test(file.name))
-    return "Dette er en film. Film legges inn i monteringen: velg scenen og «Importer film» (MP4, MOV eller WebM).";
+    return L(
+      "Dette er en film. Film legges inn i monteringen: velg scenen og «Importer film» (MP4, MOV eller WebM).",
+      "This is a film. Films are added in the assembly: choose the scene and “Import film” (MP4, MOV or WebM).",
+    );
   if (!ASSET_MIME_TYPES.includes(file.type) && !isTiff(file))
-    return "Bildet må være PNG, JPEG, WebP, GIF eller TIFF.";
-  if (file.size > ASSET_MAX_BYTES) return "Bildet er større enn 2 GB.";
-  if (file.size === 0) return "Filen er tom.";
+    return L(
+      "Bildet må være PNG, JPEG, WebP, GIF eller TIFF.",
+      "The image must be PNG, JPEG, WebP, GIF or TIFF.",
+    );
+  if (file.size > ASSET_MAX_BYTES)
+    return L("Bildet er større enn 2 GB.", "The image is larger than 2 GB.");
+  if (file.size === 0) return L("Filen er tom.", "The file is empty.");
   return null;
 }
 
@@ -156,9 +164,17 @@ async function uploadOne(
   if (error) {
     if (/bucket not found/i.test(error.message))
       throw new Error(
-        "Lagringsbøtten for bilder mangler. Kjør migrasjon 0004 i Lovable (se LOVABLE_SYNC.md).",
+        L(
+          "Lagringsbøtten for bilder mangler. Kjør migrasjon 0004 i Lovable (se LOVABLE_SYNC.md).",
+          "The image storage bucket is missing. Run migration 0004 in Lovable (see LOVABLE_SYNC.md).",
+        ),
       );
-    throw new Error(`Bildet ble ikke lastet opp: ${error.message}`);
+    throw new Error(
+      L(
+        `Bildet ble ikke lastet opp: ${error.message}`,
+        `The image was not uploaded: ${error.message}`,
+      ),
+    );
   }
   return {
     versionId,
@@ -212,7 +228,12 @@ export async function signedUrls(
 export async function mediaFromStoredFile(path: string): Promise<AssetMedia> {
   const { data, error } = await downloadFile(ASSET_BUCKET, path);
   if (error || !data)
-    throw new Error(`Bildet kunne ikke hentes: ${error?.message ?? "ukjent feil"}`);
+    throw new Error(
+      L(
+        `Bildet kunne ikke hentes: ${error?.message ?? "ukjent feil"}`,
+        `The image could not be fetched: ${error?.message ?? "unknown error"}`,
+      ),
+    );
   const mimeType = ASSET_MIME_TYPES.includes(data.type) ? data.type : "image/png";
   const file = new File([data], path.split("/").pop() ?? "bilde.png", { type: mimeType });
   const bytes = new Uint8Array(await file.arrayBuffer());

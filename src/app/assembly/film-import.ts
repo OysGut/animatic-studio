@@ -6,6 +6,7 @@
 import {
   ASSET_MAX_BYTES,
   FILM_MIME_TYPES,
+  L,
   newId,
   secondsToFrames,
   type Rational,
@@ -29,34 +30,46 @@ export function mimeOf(file: Pick<File, "type" | "name">): string {
   if (t === "video/webm" || ext === "webm") return "video/webm";
   if (t === "video/mp4" || t === "video/x-m4v" || ext === "mp4" || ext === "m4v")
     return "video/mp4";
-  return t || "ukjent";
+  return t || "ukjent"; // i18n-ignore – MIME-reserve, vises ikke
 }
 
 export function checkFilmFile(file: File): string | null {
   if (!FILM_MIME_TYPES.includes(mimeOf(file)))
-    return "Filmen må være MP4 (også .m4v), MOV (QuickTime) eller WebM. Andre formater (AVI, MKV, MXF …) kan gjøres om til MP4 (H.264) i et klippeprogram eller med HandBrake.";
-  if (file.size > ASSET_MAX_BYTES) return "Filmen er større enn 2 GB.";
-  if (file.size === 0) return "Filen er tom.";
+    return L(
+      "Filmen må være MP4 (også .m4v), MOV (QuickTime) eller WebM. Andre formater (AVI, MKV, MXF …) kan gjøres om til MP4 (H.264) i et klippeprogram eller med HandBrake.",
+      "The film must be MP4 (also .m4v), MOV (QuickTime) or WebM. Other formats (AVI, MKV, MXF …) can be converted to MP4 (H.264) in an editing program or with HandBrake.",
+    );
+  if (file.size > ASSET_MAX_BYTES)
+    return L("Filmen er større enn 2 GB.", "The film is larger than 2 GB.");
+  if (file.size === 0) return L("Filen er tom.", "The file is empty.");
   return null;
 }
 
-/** Leser lengde, oppløsning, bildefrekvens og kodeker fra filen. Kaster med norsk feilmelding. */
+/** Feil som kan vises til brukeren rett (på brukerens språk). */
+class FilmReadError extends Error {}
+
+/** Leser lengde, oppløsning, bildefrekvens og kodeker fra filen. Kaster med en feilmelding for brukeren. */
 export async function readFilmMetadata(file: File): Promise<TakeMedia> {
   const mb = await import("mediabunny");
   const input = new mb.Input({ source: new mb.BlobSource(file), formats: mb.ALL_FORMATS });
   try {
     const video = await input.getPrimaryVideoTrack();
-    if (!video) throw new Error("Filen har ingen video.");
+    if (!video) throw new FilmReadError(L("Filen har ingen video.", "The file has no video."));
     // Kan nettleseren spille av bildene? (ProRes og HEVC kan ikke spilles i Chrome/Firefox)
     const playable = await video.canDecode().catch(() => true);
     if (!playable)
-      throw new Error(
-        `Filmen er kodet med ${codecName(video.codec)}, som denne nettleseren ikke kan spille av. Eksporter den som MP4 med H.264 (eller prøv Safari for HEVC).`,
+      throw new FilmReadError(
+        L(
+          `Filmen er kodet med ${codecName(video.codec)}, som denne nettleseren ikke kan spille av. Eksporter den som MP4 med H.264 (eller prøv Safari for HEVC).`,
+          `The film is encoded with ${codecName(video.codec)}, which this browser cannot play. Export it as MP4 with H.264 (or try Safari for HEVC).`,
+        ),
       );
     const audio = await input.getPrimaryAudioTrack();
     const seconds = await input.computeDuration();
     if (!Number.isFinite(seconds) || seconds <= 0)
-      throw new Error("Filmens lengde kunne ikke leses.");
+      throw new FilmReadError(
+        L("Filmens lengde kunne ikke leses.", "The film's length could not be read."),
+      );
     let fps: number | null = null;
     try {
       const stats = await video.computePacketStats(120);
@@ -76,11 +89,12 @@ export async function readFilmMetadata(file: File): Promise<TakeMedia> {
       hasAudio: audio !== null,
     };
   } catch (e) {
-    const m = (e as Error).message;
+    if (e instanceof FilmReadError) throw e;
     throw new Error(
-      /ingen video|lengde|kodet med/i.test(m)
-        ? m
-        : "Filen kunne ikke leses som film. Prøv MP4 (H.264).",
+      L(
+        "Filen kunne ikke leses som film. Prøv MP4 (H.264).",
+        "The file could not be read as a film. Try MP4 (H.264).",
+      ),
     );
   } finally {
     (input as unknown as { dispose?: () => void }).dispose?.();
@@ -109,7 +123,13 @@ export async function uploadFilm(
     contentType: media.mimeType,
     upsert: false,
   });
-  if (error) throw new Error(`Filmen kunne ikke lastes opp: ${error.message}`);
+  if (error)
+    throw new Error(
+      L(
+        `Filmen kunne ikke lastes opp: ${error.message}`,
+        `The film could not be uploaded: ${error.message}`,
+      ),
+    );
   return {
     takeId,
     mediaRef,
@@ -127,12 +147,11 @@ function codecName(codec: string | null | undefined): string {
       return "HEVC (H.265)";
     case "vp8":
     case "vp9":
-      return codec.toUpperCase();
     case "av1":
-      return "AV1";
+      return codec.toUpperCase();
     case null:
     case undefined:
-      return "en ukjent kodek";
+      return L("en ukjent kodek", "an unknown codec");
     default:
       return /prores|apch|apcn|ap4h/i.test(codec) ? "ProRes" : codec;
   }

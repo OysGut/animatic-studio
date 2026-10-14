@@ -36,7 +36,7 @@ export function sceneDialogueLines(s: ProjectState, clip: FilmClip): DialogueLin
     if (a.removed || a.occurrenceId !== clip.occurrenceId || !a.blockId || audioOf.has(a.blockId))
       continue;
     const asset = s.assets[a.assetId];
-    const ai = !!asset && (asset.tags.includes("AI-stemme") || asset.category === "Dialog (AI)");
+    const ai = !!asset && (asset.tags.includes("AI-stemme") || asset.category === "Dialog (AI)"); // i18n-ignore – sammenlignes med lagret kategori
     audioOf.set(a.blockId, { clipId: a.id, ai });
   }
   const chars = Object.values(s.assets).filter(

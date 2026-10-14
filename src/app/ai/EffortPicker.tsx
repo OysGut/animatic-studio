@@ -5,7 +5,8 @@
  * Programmet lover ikke at dyrere gir bedre resultat.
  */
 import {
-  EFFORT_DISCLAIMER,
+  L,
+  effortDisclaimer,
   EFFORT_HELP,
   EFFORT_LABEL,
   effortChoice,
@@ -38,7 +39,7 @@ export function EffortPicker({
     <div className="flex flex-col gap-1">
       <div
         role="radiogroup"
-        aria-label="Innsatsnivå"
+        aria-label={L("Innsatsnivå", "Effort level")}
         className="flex w-fit overflow-hidden rounded-sm border border-border-control"
       >
         {LEVELS.map((l) => {
@@ -68,7 +69,10 @@ export function EffortPicker({
       {chosen ? (
         <p className="text-[11px] text-text-tertiary">
           {chosen.provider.name} – {chosen.model.label}
-          {mechanisms.length ? ` · Kan: ${mechanisms.join(", ")}` : ""}. {EFFORT_DISCLAIMER}
+          {mechanisms.length
+            ? L(` · Kan: ${mechanisms.join(", ")}`, ` · Features: ${mechanisms.join(", ")}`)
+            : ""}
+          . {effortDisclaimer()}
         </p>
       ) : null}
     </div>

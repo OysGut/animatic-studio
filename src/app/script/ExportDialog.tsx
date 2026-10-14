@@ -5,6 +5,7 @@
 import { Download } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
+  L,
   numbersByOccurrence,
   exportNumbering,
   exportNotes,
@@ -14,6 +15,7 @@ import {
   placeNotes,
   paginate,
   screenplayFountain,
+  tm,
   TITLE_PAGE_MAX_LINES,
   type NumberingMethod,
   type ProjectState,
@@ -222,16 +224,22 @@ export function ExportDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[680px] border-border bg-surface-2">
         <DialogHeader>
-          <DialogTitle>Eksporter manus</DialogTitle>
+          <DialogTitle>{L("Eksporter manus", "Export script")}</DialogTitle>
           <DialogDescription>
-            «{production?.name}» – {preview.length} scener. Eksporten endrer ingenting i prosjektet.
+            {L("«", "“")}
+            {production?.name}
+            {L("»", "”")} – {preview.length}{" "}
+            {L(
+              "scener. Eksporten endrer ingenting i prosjektet.",
+              "scenes. The export does not change anything in the project.",
+            )}
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid grid-cols-2 gap-5">
           <fieldset className="flex flex-col gap-2">
             <legend className="mb-1 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
-              Format
+              {L("Format", "Format")}
             </legend>
             <label className={radio}>
               <input
@@ -244,7 +252,10 @@ export function ExportDialog({
               <span>
                 PDF
                 <span className="block text-xs text-text-tertiary">
-                  Ferdige sider, nøyaktig som i manusvisningen
+                  {L(
+                    "Ferdige sider, nøyaktig som i manusvisningen",
+                    "Finished pages, exactly as in the script view",
+                  )}
                 </span>
               </span>
             </label>
@@ -259,7 +270,10 @@ export function ExportDialog({
               <span>
                 Word (.docx)
                 <span className="block text-xs text-text-tertiary">
-                  Redigerbar; Word bryter sidene selv
+                  {L(
+                    "Redigerbar; Word bryter sidene selv",
+                    "Editable; Word breaks the pages itself",
+                  )}
                 </span>
               </span>
             </label>
@@ -274,14 +288,17 @@ export function ExportDialog({
               <span>
                 Fountain (.fountain)
                 <span className="block text-xs text-text-tertiary">
-                  Ren tekst for andre manusprogrammer; de bryter sidene selv
+                  {L(
+                    "Ren tekst for andre manusprogrammer; de bryter sidene selv",
+                    "Plain text for other script programs; they break the pages themselves",
+                  )}
                 </span>
               </span>
             </label>
           </fieldset>
           <fieldset className="flex flex-col gap-2">
             <legend className="mb-1 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
-              Scenenummer
+              {L("Scenenummer", "Scene numbering")}
             </legend>
             <label className={radio}>
               <input
@@ -292,9 +309,12 @@ export function ExportDialog({
                 className="mt-1"
               />
               <span>
-                Bevar produksjonsnummerering
+                {L("Bevar produksjonsnummerering", "Keep production numbering")}
                 <span className="block text-xs text-text-tertiary">
-                  Etablerte numre beholdes; nye scener får 42A, 42B …
+                  {L(
+                    "Etablerte numre beholdes; nye scener får 42A, 42B …",
+                    "Established numbers are kept; new scenes get 42A, 42B …",
+                  )}
                 </span>
               </span>
             </label>
@@ -307,9 +327,12 @@ export function ExportDialog({
                 className="mt-1"
               />
               <span>
-                Fortløpende
+                {L("Fortløpende", "Continuous")}
                 <span className="block text-xs text-text-tertiary">
-                  Alle aktive scener nummereres 1, 2, 3 …
+                  {L(
+                    "Alle aktive scener nummereres 1, 2, 3 …",
+                    "All active scenes are numbered 1, 2, 3 …",
+                  )}
                 </span>
               </span>
             </label>
@@ -323,15 +346,21 @@ export function ExportDialog({
                 className="mt-1"
               />
               <span>
-                Bevar valgt historisk nummerering
+                {L("Bevar valgt historisk nummerering", "Keep the chosen historical numbering")}
                 <span className="block text-xs text-text-tertiary">
                   {versions.data?.length
-                    ? "Scener som fantes i versjonen får numrene derfra"
-                    : "Lagre en manusversjon først (Versjoner)"}
+                    ? L(
+                        "Scener som fantes i versjonen får numrene derfra",
+                        "Scenes that existed in the version get their numbers from it",
+                      )
+                    : L(
+                        "Lagre en manusversjon først (Versjoner)",
+                        "Save a script version first (Versions)",
+                      )}
                 </span>
                 {method === "historical" && versions.data?.length ? (
                   <select
-                    aria-label="Versjon"
+                    aria-label={L("Versjon", "Version")}
                     value={histId ?? ""}
                     onChange={(e) => setHistoricalId(e.target.value)}
                     className="mt-1 h-7 max-w-[280px] rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
@@ -355,8 +384,11 @@ export function ExportDialog({
               checked={includeInactive}
               onChange={(e) => setIncludeInactive(e.target.checked)}
             />
-            Ta med deaktiverte scener (
-            {method === "continuous" ? "tydelig merket, uten nummer" : "som «UTGÅR»"})
+            {L("Ta med deaktiverte scener", "Include inactive scenes")} (
+            {method === "continuous"
+              ? L("tydelig merket, uten nummer", "clearly marked, without a number")
+              : L("som «UTGÅR»", "as “OMITTED”")}
+            )
           </label>
           {method !== "continuous" ? (
             <label className="flex items-center gap-2">
@@ -365,8 +397,10 @@ export function ExportDialog({
                 checked={fillOriginal}
                 onChange={(e) => setFillOriginal(e.target.checked)}
               />
-              Gi også scener som var unummerert i originalen et mellomnummer (f.eks. 1A). Nye scener
-              får det alltid.
+              {L(
+                "Gi også scener som var unummerert i originalen et mellomnummer (f.eks. 1A). Nye scener får det alltid.",
+                "Also give scenes that were unnumbered in the original an in-between number (e.g. 1A). New scenes always get one.",
+              )}
             </label>
           ) : null}
           <label className="flex items-center gap-2">
@@ -376,23 +410,36 @@ export function ExportDialog({
               onChange={(e) => setWithNotes(e.target.checked)}
               disabled={noteCount === 0 || language !== "nb"}
             />
-            Ta med notater ({noteCount}) –{" "}
+            {L("Ta med notater", "Include notes")} ({noteCount}) –{" "}
             {format === "pdf"
-              ? "som PDF-merknader, med navn og tidspunkt"
+              ? L("som PDF-merknader, med navn og tidspunkt", "as PDF comments, with name and time")
               : format === "docx"
-                ? "som Word-kommentarer, med navn og tidspunkt"
-                : "som Fountain-notater [[…]], med navn og dato"}
-            . De gjenopprettes hvis filen importeres igjen.
+                ? L(
+                    "som Word-kommentarer, med navn og tidspunkt",
+                    "as Word comments, with name and time",
+                  )
+                : L(
+                    "som Fountain-notater [[…]], med navn og dato",
+                    "as Fountain notes [[…]], with name and date",
+                  )}
+            .{" "}
+            {L(
+              "De gjenopprettes hvis filen importeres igjen.",
+              "They are restored if the file is imported again.",
+            )}
           </label>
           {format === "pdf" && lockedPages ? (
             <p className="text-text-tertiary">
-              Låste sider: sideskiftene følger originalen der teksten er uendret.
+              {L(
+                "Låste sider: sideskiftene følger originalen der teksten er uendret.",
+                "Locked pages: the page breaks follow the original where the text is unchanged.",
+              )}
             </p>
           ) : null}
         </div>
 
         <label className="flex flex-col gap-1 text-xs text-text-secondary">
-          Tittelside (tom = ingen tittelside)
+          {L("Tittelside (tom = ingen tittelside)", "Title page (empty = no title page)")}
           <textarea
             value={titleText}
             onChange={(e) => setTitleText(e.target.value)}
@@ -401,34 +448,54 @@ export function ExportDialog({
           />
           <span className="text-text-tertiary">
             {saved !== null
-              ? "Fylt ut fra den lagrede tittelsiden (fra importen eller forrige eksport). Endre fritt."
-              : "Fylt ut med prosjektnavnet. Endre fritt."}
+              ? L(
+                  "Fylt ut fra den lagrede tittelsiden (fra importen eller forrige eksport). Endre fritt.",
+                  "Filled in from the saved title page (from the import or the previous export). Change freely.",
+                )
+              : L(
+                  "Fylt ut med prosjektnavnet. Endre fritt.",
+                  "Filled in with the project name. Change freely.",
+                )}
           </span>
           {titleFit.truncated ? (
             <span role="alert" className="text-status-uncertain">
-              Tittelsiden er lengre enn det som kan lagres for neste gang (om lag 3 kB, høyst{" "}
-              {TITLE_PAGE_MAX_LINES} linjer). Hele teksten kommer med i denne filen, men den lagrede
-              kopien blir kortet.
+              {L(
+                "Tittelsiden er lengre enn det som kan lagres for neste gang (om lag 3 kB, høyst",
+                "The title page is longer than can be saved for next time (about 3 kB, at most",
+              )}{" "}
+              {TITLE_PAGE_MAX_LINES}{" "}
+              {L(
+                "linjer). Hele teksten kommer med i denne filen, men den lagrede kopien blir kortet.",
+                "lines). The whole text is included in this file, but the saved copy will be shortened.",
+              )}
             </span>
           ) : null}
         </label>
 
         {method === "historical" && !historical ? (
           <p role={histSnap.isError ? "alert" : "status"} className="text-xs text-text-secondary">
-            {histSnap.isError ? "Kunne ikke hente versjonen. Prøv igjen." : "Henter versjonen …"}
+            {histSnap.isError
+              ? L(
+                  "Kunne ikke hente versjonen. Prøv igjen.",
+                  "Could not fetch the version. Try again.",
+                )
+              : L("Henter versjonen …", "Fetching the version …")}
           </p>
         ) : null}
         <div className={method === "historical" && !historical ? "hidden" : undefined}>
           <p className="mb-1 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
-            Forhåndsvisning av nummerering {changed ? `· ${changed} endret` : "· ingen endringer"}
+            {L("Forhåndsvisning av nummerering", "Numbering preview")}{" "}
+            {changed
+              ? L(`· ${changed} endret`, `· ${changed} changed`)
+              : L("· ingen endringer", "· no changes")}
           </p>
           <div className="max-h-52 overflow-y-auto border border-border bg-surface-1">
             <table className="w-full text-xs">
               <thead className="sticky top-0 bg-surface-2 text-left text-text-tertiary">
                 <tr>
-                  <th className="w-16 px-2 py-1 font-medium">I dag</th>
-                  <th className="w-16 px-2 py-1 font-medium">Eksport</th>
-                  <th className="px-2 py-1 font-medium">Overskrift</th>
+                  <th className="w-16 px-2 py-1 font-medium">{L("I dag", "Today")}</th>
+                  <th className="w-16 px-2 py-1 font-medium">{L("Eksport", "Export")}</th>
+                  <th className="px-2 py-1 font-medium">{L("Overskrift", "Heading")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -448,9 +515,13 @@ export function ExportDialog({
                       {p.exportNumber ?? "–"}
                     </td>
                     <td className="truncate px-2 py-0.5 text-text-primary">
-                      {p.omitted ? <span className="text-text-tertiary">UTGÅR – </span> : null}
+                      {p.omitted ? (
+                        <span className="text-text-tertiary">{L("UTGÅR – ", "OMITTED – ")}</span>
+                      ) : null}
                       {!p.active && !p.omitted ? (
-                        <span className="text-text-tertiary">Deaktivert – </span>
+                        <span className="text-text-tertiary">
+                          {L("Deaktivert – ", "Inactive – ")}
+                        </span>
                       ) : null}
                       {formatHeading(p.heading)}
                     </td>
@@ -463,7 +534,7 @@ export function ExportDialog({
 
         {error ? (
           <p role="alert" className="text-xs text-status-danger">
-            Eksporten feilet: {error}
+            {L("Eksporten feilet", "The export failed")}: {tm(error)}
           </p>
         ) : null}
 
@@ -473,7 +544,7 @@ export function ExportDialog({
             className="border border-status-success/40 bg-status-success-bg p-3 text-xs text-text-primary"
           >
             <p>
-              Filen er laget:{" "}
+              {L("Filen er laget:", "The file has been created:")}{" "}
               <a
                 href={ready.url}
                 download={ready.name}
@@ -481,14 +552,15 @@ export function ExportDialog({
                 rel="noopener"
                 className="font-medium text-accent-brand underline underline-offset-2"
               >
-                Last ned «{ready.name}»
+                {L(`Last ned «${ready.name}»`, `Download “${ready.name}”`)}
               </a>
             </p>
             {isEmbedded() ? (
               <p className="mt-1.5 text-text-secondary">
-                Startet ikke nedlastingen? Forhåndsvisningen i Lovable kan blokkere nedlastinger.
-                Åpne appen i en egen fane (knappen for ny fane øverst i forhåndsvisningen) og
-                eksporter derfra.
+                {L(
+                  "Startet ikke nedlastingen? Forhåndsvisningen i Lovable kan blokkere nedlastinger. Åpne appen i en egen fane (knappen for ny fane øverst i forhåndsvisningen) og eksporter derfra.",
+                  "Did the download not start? The Lovable preview can block downloads. Open the app in a separate tab (the new-tab button at the top of the preview) and export from there.",
+                )}
               </p>
             ) : null}
           </div>
@@ -498,14 +570,15 @@ export function ExportDialog({
 
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            {ready ? "Lukk" : "Avbryt"}
+            {ready ? L("Lukk", "Close") : L("Avbryt", "Cancel")}
           </Button>
           <Button
             onClick={doExport}
             disabled={busy || preview.length === 0 || (method === "historical" && !historical)}
           >
             <Download />
-            Eksporter {format === "pdf" ? "PDF" : format === "docx" ? "Word" : "Fountain"}
+            {L("Eksporter", "Export")}{" "}
+            {format === "pdf" ? "PDF" : format === "docx" ? "Word" : "Fountain"}
           </Button>
         </DialogFooter>
       </DialogContent>

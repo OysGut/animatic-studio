@@ -4,6 +4,7 @@
  * Alt er redigeringshjelp og tegnes aldri i kameravisningen eller eksporten.
  */
 import {
+  L,
   cameraCorners,
   shotPath,
   type CameraFrame,
@@ -160,10 +161,10 @@ export function cursorFor(t: CameraTarget | null): string | null {
 
 export const dragLabel = (t: CameraTarget): string =>
   t.kind === "corner"
-    ? "Zoom kamera"
+    ? L("Zoom kamera", "Zoom camera")
     : t.kind === "control"
-      ? "Endre kamerabane"
-      : "Flytt kameraramme";
+      ? L("Endre kamerabane", "Change camera path")
+      : L("Flytt kameraramme", "Move camera frame");
 
 /**
  * Utkast til kamerautsnittet mens pekeren dras fra `startScene` til `scene` (scenekoordinater).
@@ -308,7 +309,7 @@ export function drawCameraOverlay(
     ctx.lineWidth = 1;
   }
   label(ctx, qFrom, "Start", CAMERA_BLUE);
-  label(ctx, qTo, "Slutt", CAMERA_RED);
+  label(ctx, qTo, L("Slutt", "End"), CAMERA_RED);
   if (opts.selected) {
     for (const [q, color] of [
       [qFrom, CAMERA_BLUE],

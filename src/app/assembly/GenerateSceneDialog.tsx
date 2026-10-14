@@ -30,6 +30,8 @@ import {
   type ProductionSegment,
   type ProjectState,
   type SegmentPlan,
+  L,
+  locale,
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { SceneVideoSection } from "./SceneVideoSection";
@@ -154,10 +156,10 @@ function Body({
         segments,
       },
       next.length === 0
-        ? "Fjern inndeling for generering"
+        ? L("Fjern inndeling for generering", "Remove breakdown for generation")
         : stored.length
-          ? "Ny inndeling for generering"
-          : "Inndeling for generering",
+          ? L("Ny inndeling for generering", "New breakdown for generation")
+          : L("Inndeling for generering", "Breakdown for generation"),
       group,
     );
     if (r.error) {
@@ -193,7 +195,9 @@ function Body({
           text,
           basedOn: text === null ? "" : (autos[index] ?? ""),
         },
-        text === null ? "Bruk automatisk beskrivelse" : "Lagre egen beskrivelse",
+        text === null
+          ? L("Bruk automatisk beskrivelse", "Use automatic description")
+          : L("Lagre egen beskrivelse", "Save own description"),
         group,
       );
       if (r.error) setError(r.error);
@@ -215,43 +219,55 @@ function Body({
 
   async function copyAll() {
     const text = effective
-      .map((t, i) => (plan.length > 1 ? `### Segment ${i + 1} av ${plan.length}\n${t}` : t))
+      .map((t, i) =>
+        plan.length > 1
+          ? L(
+              `### Segment ${i + 1} av ${plan.length}\n${t}`,
+              `### Segment ${i + 1} of ${plan.length}\n${t}`,
+            )
+          : t,
+      )
       .join("\n\n");
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
-      setError("Kunne ikke kopiere til utklippstavlen.");
+      setError(L("Kunne ikke kopiere til utklippstavlen.", "Could not copy to the clipboard."));
     }
   }
 
   const ms = (v: number) =>
-    `${(Math.round(v / 100) / 10).toLocaleString("nb-NO", { minimumFractionDigits: 1 })} s`;
+    `${(Math.round(v / 100) / 10).toLocaleString(locale(), { minimumFractionDigits: 1 })} s`;
 
   return (
     <>
       <DialogHeader>
         <DialogTitle>
           <AiGlyph className="mr-1 inline size-4" aria-hidden />
-          Generer scene {clip.productionNumber ?? ""} – {formatHeading(clip.heading)}
+          {L(
+            `Generer scene ${clip.productionNumber ?? ""} – ${formatHeading(clip.heading)}`,
+            `Generate scene ${clip.productionNumber ?? ""} – ${formatHeading(clip.heading)}`,
+          )}
         </DialogTitle>
         <DialogDescription>
-          Scenen deles i segmenter som følger manuset. Hvert segment får en beskrivelse på engelsk
-          med replikkene ordrett på norsk. Du kan lese og endre hver beskrivelse; det du skriver
-          selv, lagres og overskrives aldri. Manuset endres ikke.
+          {L(
+            "Scenen deles i segmenter som følger manuset. Hvert segment får en beskrivelse på engelsk med replikkene ordrett på norsk. Du kan lese og endre hver beskrivelse; det du skriver selv, lagres og overskrives aldri. Manuset endres ikke.",
+            "The scene is divided into segments that follow the script. Each segment gets a description in English with the dialogue word for word in Norwegian. You can read and change each description; what you write yourself is saved and never overwritten. The script is not changed.",
+          )}
         </DialogDescription>
       </DialogHeader>
 
       <div className="flex flex-wrap items-center gap-3 text-xs text-text-secondary">
         {storedPlan ? (
           <span>
-            Lagret inndeling: <strong className="text-text-primary">{plan.length}</strong>{" "}
-            {plan.length === 1 ? "segment" : "segmenter"}.
+            {L("Lagret inndeling:", "Saved breakdown:")}{" "}
+            <strong className="text-text-primary">{plan.length}</strong>{" "}
+            {plan.length === 1 ? L("segment", "segment") : L("segmenter", "segments")}.
           </span>
         ) : (
           <label className="flex items-center gap-1.5">
-            Segmentlengde høyst
+            {L("Segmentlengde høyst", "Maximum segment length")}
             <select
               value={seconds}
               onChange={(e) => setSeconds(Number(e.target.value))}
@@ -264,14 +280,17 @@ function Body({
               ))}
             </select>
             <span className="text-text-tertiary">
-              → {plan.length} {plan.length === 1 ? "segment" : "segmenter"} (forslag)
+              {L(
+                `→ ${plan.length} ${plan.length === 1 ? "segment" : "segmenter"} (forslag)`,
+                `→ ${plan.length} ${plan.length === 1 ? "segment" : "segments"} (suggested)`,
+              )}
             </span>
           </label>
         )}
         {storedPlan && editable ? (
           <>
             <label className="flex items-center gap-1.5">
-              Ny lengde
+              {L("Ny lengde", "New length")}
               <select
                 value={seconds}
                 onChange={(e) => setSeconds(Number(e.target.value))}
@@ -290,8 +309,14 @@ function Body({
               disabled={busy || !differs}
               title={
                 differs
-                  ? "Del scenen på nytt (går bare når ingen segmenter har egen beskrivelse)"
-                  : "Den nye lengden gir samme inndeling"
+                  ? L(
+                      "Del scenen på nytt (går bare når ingen segmenter har egen beskrivelse)",
+                      "Split the scene again (only works when no segment has its own description)",
+                    )
+                  : L(
+                      "Den nye lengden gir samme inndeling",
+                      "The new length gives the same breakdown",
+                    )
               }
               onClick={() => {
                 setError(null);
@@ -300,7 +325,7 @@ function Body({
               }}
             >
               <RotateCcw />
-              Del på nytt
+              {L("Del på nytt", "Split again")}
             </Button>
             <Button
               size="sm"
@@ -308,8 +333,14 @@ function Body({
               disabled={busy || prompts.size > 0}
               title={
                 prompts.size > 0
-                  ? "Tilbakestill de egne beskrivelsene først"
-                  : "Fjern inndelingen (scenen kan da slås sammen eller splittes i manuset)"
+                  ? L(
+                      "Tilbakestill de egne beskrivelsene først",
+                      "Reset the own descriptions first",
+                    )
+                  : L(
+                      "Fjern inndelingen (scenen kan da slås sammen eller splittes i manuset)",
+                      "Remove the breakdown (the scene can then be merged or split in the script)",
+                    )
               }
               onClick={() => {
                 setError(null);
@@ -317,7 +348,7 @@ function Body({
                 void savePlan([]).finally(() => setBusy(false));
               }}
             >
-              Fjern inndelingen
+              {L("Fjern inndelingen", "Remove the breakdown")}
             </Button>
           </>
         ) : null}
@@ -333,32 +364,38 @@ function Body({
             }}
           >
             <Save />
-            Lagre inndelingen
+            {L("Lagre inndelingen", "Save the breakdown")}
           </Button>
         ) : null}
         <Button size="sm" variant="ghost" className="ml-auto" onClick={() => void copyAll()}>
           <Copy />
-          {copied ? "Kopiert" : "Kopier alle beskrivelser"}
+          {copied ? L("Kopiert", "Copied") : L("Kopier alle beskrivelser", "Copy all descriptions")}
         </Button>
       </div>
 
       {storedPlan && !planFitsScene(state, clip, storedPlan) ? (
         <p className="flex items-start gap-1 text-xs text-status-uncertain">
           <AlertTriangle className="mt-0.5 size-3.5 shrink-0" aria-hidden />
-          Scenen har fått en annen lengde siden inndelingen ble lagret. Del på nytt når det passer
-          (segmenter med egen beskrivelse må tilbakestilles først).
+          {L(
+            "Scenen har fått en annen lengde siden inndelingen ble lagret. Del på nytt når det passer (segmenter med egen beskrivelse må tilbakestilles først).",
+            "The scene has got a different length since the breakdown was saved. Split again when it suits (segments with their own description must be reset first).",
+          )}
         </p>
       ) : null}
       {continuityCuts(state, clip).length ? (
         <p className="text-xs text-text-tertiary">
-          Utseendet til en karakter endres midt i scenen (kontinuitet). Forslaget deler segmentene
-          der, så hvert segment får riktig utseende i beskrivelsen. Manuset og scenen endres ikke.
+          {L(
+            "Utseendet til en karakter endres midt i scenen (kontinuitet). Forslaget deler segmentene der, så hvert segment får riktig utseende i beskrivelsen. Manuset og scenen endres ikke.",
+            "A character's appearance changes in the middle of the scene (continuity). The suggestion splits the segments there, so each segment gets the right appearance in the description. The script and scene are not changed.",
+          )}
         </p>
       ) : null}
       {!hasBlocks ? (
         <p className="text-xs text-text-tertiary">
-          Scenen har ingen tekst i manuset; beskrivelsen bygges bare fra scenehode, ressurser og
-          kamera.
+          {L(
+            "Scenen har ingen tekst i manuset; beskrivelsen bygges bare fra scenehode, ressurser og kamera.",
+            "The scene has no text in the script; the description is built only from the scene heading, assets and camera.",
+          )}
         </p>
       ) : null}
 
@@ -407,11 +444,14 @@ function Body({
       <DialogFooter className="sm:justify-between">
         <span className="flex items-center gap-1.5 text-xs text-text-tertiary">
           {busy ? <Loader2 className="size-3.5 animate-spin" aria-hidden /> : null}
-          Generert video legges til som en ny versjon av scenen og erstatter aldri 2D-scenen.
+          {L(
+            "Generert video legges til som en ny versjon av scenen og erstatter aldri 2D-scenen.",
+            "Generated video is added as a new version of the scene and never replaces the 2D scene.",
+          )}
         </span>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={onClose}>
-            Lukk
+            {L("Lukk", "Close")}
           </Button>
         </div>
       </DialogFooter>
@@ -461,27 +501,37 @@ function SegmentCard({
     <li className="flex flex-col gap-1.5 rounded-sm border border-border bg-surface-1 p-3">
       <div className="flex flex-wrap items-center gap-2 text-xs">
         <span className="font-medium text-text-primary">
-          {count > 1 ? `Segment ${index + 1} av ${count}` : "Hele scenen"}
+          {count > 1
+            ? L(`Segment ${index + 1} av ${count}`, `Segment ${index + 1} of ${count}`)
+            : L("Hele scenen", "Whole scene")}
         </span>
         <span className="tabular text-text-tertiary">{span}</span>
-        <span className="text-text-tertiary">· {segment.blockIds.length} blokker i manuset</span>
+        <span className="text-text-tertiary">
+          {L(
+            `· ${segment.blockIds.length} blokker i manuset`,
+            `· ${segment.blockIds.length} blocks in the script`,
+          )}
+        </span>
         <span
           className={
             "ml-auto rounded-sm px-1.5 py-0.5 text-[11px] " +
             (own ? "bg-accent-selection text-text-primary" : "bg-surface-3 text-text-secondary")
           }
         >
-          {own ? "Egen beskrivelse" : "Automatisk"}
+          {own ? L("Egen beskrivelse", "Own description") : L("Automatisk", "Automatic")}
         </span>
       </div>
       {changedBase ? (
         <p className="flex items-start gap-1 text-xs text-status-uncertain">
           <AlertTriangle className="mt-0.5 size-3.5 shrink-0" aria-hidden />
           <span>
-            Manus, ressurser eller kamera er endret siden du skrev denne. Din beskrivelse brukes
-            fortsatt.{" "}
+            {L(
+              "Manus, ressurser eller kamera er endret siden du skrev denne. Din beskrivelse brukes fortsatt.",
+              "The script, assets or camera have changed since you wrote this. Your description is still used.",
+            )}{" "}
             <button type="button" className="underline" onClick={() => setShowAuto((v) => !v)}>
-              {showAuto ? "Skjul" : "Vis"} den nye automatiske
+              {showAuto ? L("Skjul", "Hide") : L("Vis", "Show")}{" "}
+              {L("den nye automatiske", "the new automatic one")}
             </button>
           </span>
         </p>
@@ -496,18 +546,30 @@ function SegmentCard({
         onChange={(e) => setDraft(e.target.value)}
         readOnly={!editable}
         rows={Math.min(16, Math.max(6, text.split("\n").length + 1))}
-        aria-label={`Beskrivelse for ${count > 1 ? `segment ${index + 1}` : "scenen"}`}
+        aria-label={
+          count > 1
+            ? L(`Beskrivelse for segment ${index + 1}`, `Description for segment ${index + 1}`)
+            : L("Beskrivelse for scenen", "Description for the scene")
+        }
         className="resize-y rounded-sm border border-border-control bg-surface-3 p-2 font-mono text-[11px] leading-snug text-text-primary"
       />
       {missing.length ? (
         <p className="text-xs text-status-uncertain">
-          {missing.length === 1 ? "En replikk" : `${missing.length} replikker`} står ikke ordrett i
-          beskrivelsen: {missing.map((d) => `«${d}»`).join(", ")}. Replikkene skal være med uendret.
+          {missing.length === 1
+            ? L("En replikk", "One line")
+            : L(`${missing.length} replikker`, `${missing.length} lines`)}{" "}
+          {L(
+            "står ikke ordrett i beskrivelsen:",
+            "are not quoted word for word in the description:",
+          )}{" "}
+          {missing.map((d) => L(`«${d}»`, `“${d}”`)).join(", ")}.{" "}
+          {L("Replikkene skal være med uendret.", "The lines must be kept unchanged.")}
         </p>
       ) : null}
       {tooLong ? (
         <p className="text-xs text-status-danger">
-          For lang ({text.length} av {MAX_PROMPT_CHARS} tegn).
+          {L("For lang", "Too long")} ({text.length} {L("av", "of")} {MAX_PROMPT_CHARS}{" "}
+          {L("tegn", "characters")}).
         </p>
       ) : null}
       {editable ? (
@@ -519,11 +581,11 @@ function SegmentCard({
             onClick={() => onSave(text)}
           >
             <Save />
-            Lagre egen beskrivelse
+            {L("Lagre egen beskrivelse", "Save own description")}
           </Button>
           {draft !== null ? (
             <Button size="sm" variant="ghost" onClick={() => setDraft(null)}>
-              Forkast endringene
+              {L("Forkast endringene", "Discard changes")}
             </Button>
           ) : null}
           {own ? (
@@ -532,10 +594,13 @@ function SegmentCard({
               variant="ghost"
               className="ml-auto"
               onClick={() => onSave(null)}
-              title="Bruk den automatiske beskrivelsen igjen (kan angres)"
+              title={L(
+                "Bruk den automatiske beskrivelsen igjen (kan angres)",
+                "Use the automatic description again (can be undone)",
+              )}
             >
               <RotateCcw />
-              Bruk automatisk
+              {L("Bruk automatisk", "Use automatic")}
             </Button>
           ) : null}
         </div>

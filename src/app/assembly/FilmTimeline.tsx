@@ -7,6 +7,7 @@ import { TRANSITION_LABEL, transitionMarkBackground } from "./transitions";
 import { AlertTriangle, Clapperboard, Film, Layers } from "lucide-react";
 import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
+  L,
   formatHeading,
   formatTimecode,
   fpsToNumber,
@@ -15,6 +16,7 @@ import {
   MIN_DURATION_SECONDS,
   type FilmClip,
   type ProjectState,
+  locale,
 } from "@/core";
 import { drawFilmFrame } from "@/engine/compositor/film";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
@@ -172,7 +174,7 @@ export function FilmTimeline(p: FilmTimelineProps) {
   return (
     <div
       role="region"
-      aria-label="Filmtidslinje"
+      aria-label={L("Filmtidslinje", "Film timeline")}
       style={{ height }}
       className="relative flex shrink-0 flex-col border-t border-border bg-surface-1"
     >
@@ -182,15 +184,15 @@ export function FilmTimeline(p: FilmTimelineProps) {
         onSize={setHeight}
         min={140}
         max={720}
-        label="Høyde på filmtidslinjen"
+        label={L("Høyde på filmtidslinjen", "Height of the film timeline")}
       />
       <div className="flex min-h-9 shrink-0 flex-wrap items-center gap-x-1.5 gap-y-1 border-b border-border px-2 py-1">
         {p.toolbar}
         <span className="ml-auto flex shrink-0 items-center gap-1.5 pl-2 text-xs text-text-tertiary">
-          Zoom
+          {L("Zoom", "Zoom")}
           <input
             type="range"
-            aria-label="Zoom filmtidslinjen"
+            aria-label={L("Zoom filmtidslinjen", "Zoom the film timeline")}
             min={1}
             max={MAX_ZOOM}
             step={0.5}
@@ -202,9 +204,9 @@ export function FilmTimeline(p: FilmTimelineProps) {
             type="button"
             onClick={() => setZoom(1)}
             className="rounded-sm px-1 text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-            title="Vis hele filmen"
+            title={L("Vis hele filmen", "Show the whole film")}
           >
-            Hele filmen
+            {L("Hele filmen", "Whole film")}
           </button>
         </span>
       </div>
@@ -242,10 +244,10 @@ export function FilmTimeline(p: FilmTimelineProps) {
 
           {/* Klippene */}
           <div className="flex pt-2">
-            <TrackLabel>Bilde</TrackLabel>
+            <TrackLabel>{L("Bilde", "Picture")}</TrackLabel>
             <div
               role="group"
-              aria-label="Scener i filmen"
+              aria-label={L("Scener i filmen", "Scenes in the film")}
               className="relative"
               style={{ height: CLIP_H, width: trackW }}
               onPointerDown={(e) => {
@@ -374,7 +376,7 @@ export function TrackLabel({ children, height }: { children: ReactNode; height?:
 
 export function formatSeconds(s: number): string {
   const r = Math.round(s * 10) / 10;
-  if (r < 60) return `${r.toLocaleString("nb-NO")} s`;
+  if (r < 60) return `${r.toLocaleString(locale())} s`;
   const t = Math.round(s);
   return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`;
 }
@@ -435,22 +437,42 @@ const ClipBlock = memo(function ClipBlock({
           onDoubleClick();
         }
       }}
-      aria-label={`Scene ${clip.productionNumber ?? index + 1}: ${heading}, ${formatSeconds(seconds)}${
-        placeholder ? ", uten 2D-scene" : clip.source === "film" ? ", ferdig film" : ""
-      }${clip.transition.kind !== "cut" ? `, ${TRANSITION_LABEL[clip.transition.kind].toLocaleLowerCase("nb")} inn${clip.overlapFrames > 0 ? " med overlapp" : ""}` : ""}${clip.monochrome ? ", svart-hvitt" : ""}${flags ? ", manuset er endret etter materialet" : ""}`}
-      title={`${clip.productionNumber ?? ""} ${heading}\n${formatSeconds(seconds)}${
-        clip.durationKind === "estimate"
-          ? " (beregnet fra manus)"
-          : clip.durationKind === "planned"
-            ? " (planlagt)"
+      aria-label={L(
+        `Scene ${clip.productionNumber ?? index + 1}: ${heading}, ${formatSeconds(seconds)}${
+          placeholder ? ", uten 2D-scene" : clip.source === "film" ? ", ferdig film" : ""
+        }${clip.transition.kind !== "cut" ? `, ${TRANSITION_LABEL[clip.transition.kind].toLocaleLowerCase("nb")} inn${clip.overlapFrames > 0 ? " med overlapp" : ""}` : ""}${clip.monochrome ? ", svart-hvitt" : ""}${flags ? ", manuset er endret etter materialet" : ""}`,
+        `Scene ${clip.productionNumber ?? index + 1}: ${heading}, ${formatSeconds(seconds)}${
+          placeholder ? ", no 2D scene" : clip.source === "film" ? ", finished film" : ""
+        }${clip.transition.kind !== "cut" ? `, ${TRANSITION_LABEL[clip.transition.kind].toLowerCase()} in${clip.overlapFrames > 0 ? " with overlap" : ""}` : ""}${clip.monochrome ? ", black and white" : ""}${flags ? ", the script has changed since the material was made" : ""}`,
+      )}
+      title={L(
+        `${clip.productionNumber ?? ""} ${heading}\n${formatSeconds(seconds)}${
+          clip.durationKind === "estimate"
+            ? " (beregnet fra manus)"
+            : clip.durationKind === "planned"
+              ? " (planlagt)"
+              : ""
+        }${placeholder ? "\nIngen 2D-scene ennå – vises som tittelkort" : ""}${
+          clip.edited
+            ? `\nKlippet: ${clip.parts.length} ${clip.parts.length === 1 ? "del" : "deler"}`
             : ""
-      }${placeholder ? "\nIngen 2D-scene ennå – vises som tittelkort" : ""}${
-        clip.edited
-          ? `\nKlippet: ${clip.parts.length} ${clip.parts.length === 1 ? "del" : "deler"}`
-          : ""
-      }${
-        clip.source === "film" ? `\nFerdig film: ${clip.take?.media?.fileName ?? ""}` : ""
-      }\n${movable ? "Dra for å flytte scenen. " : ""}Dobbeltklikk for å åpne i sceneeditoren.`}
+        }${
+          clip.source === "film" ? `\nFerdig film: ${clip.take?.media?.fileName ?? ""}` : ""
+        }\n${movable ? "Dra for å flytte scenen. " : ""}Dobbeltklikk for å åpne i sceneeditoren.`,
+        `${clip.productionNumber ?? ""} ${heading}\n${formatSeconds(seconds)}${
+          clip.durationKind === "estimate"
+            ? " (estimated from the script)"
+            : clip.durationKind === "planned"
+              ? " (planned)"
+              : ""
+        }${placeholder ? "\nNo 2D scene yet – shown as a title card" : ""}${
+          clip.edited
+            ? `\nEdited: ${clip.parts.length} ${clip.parts.length === 1 ? "part" : "parts"}`
+            : ""
+        }${
+          clip.source === "film" ? `\nFinished film: ${clip.take?.media?.fileName ?? ""}` : ""
+        }\n${movable ? "Drag to move the scene. " : ""}Double-click to open in the scene editor.`,
+      )}
       onPointerDown={onPointerDownBody}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
@@ -476,9 +498,11 @@ const ClipBlock = memo(function ClipBlock({
       {clip.transition.kind !== "cut" ? (
         <span
           aria-hidden
-          title={`${TRANSITION_LABEL[clip.transition.kind]} inn i scenen${
-            clip.overlapFrames > 0 ? " (overlapper forrige scene)" : ""
-          }${clip.transitionInherited ? " – prosjektets standard" : ""}`}
+          title={`${TRANSITION_LABEL[clip.transition.kind]} ${L("inn i scenen", "into the scene")}${
+            clip.overlapFrames > 0
+              ? L(" (overlapper forrige scene)", " (overlaps previous scene)")
+              : ""
+          }${clip.transitionInherited ? L(" – prosjektets standard", " – the project's default") : ""}`}
           className="pointer-events-none absolute left-0 top-0 z-10 h-full"
           style={{
             width: Math.max(
@@ -498,7 +522,10 @@ const ClipBlock = memo(function ClipBlock({
             <span
               key={f.startFrame}
               aria-hidden
-              title="Manuset er endret her etter at materialet ble laget"
+              title={L(
+                "Manuset er endret her etter at materialet ble laget",
+                "The script has changed here since the material was made",
+              )}
               className="pointer-events-none absolute bottom-0 z-10 h-1 bg-status-danger"
               style={{
                 left: Math.max(0, (f.startFrame - clip.startFrame) * ppf),
@@ -511,7 +538,7 @@ const ClipBlock = memo(function ClipBlock({
         <span
           key={part.id ?? part.startFrame}
           aria-hidden
-          title="Splitt"
+          title={L("Splitt", "Split")}
           className="pointer-events-none absolute top-0 z-10 h-full w-px bg-accent-warm/80"
           style={{ left: part.startFrame * ppf }}
         />
@@ -550,7 +577,10 @@ const ClipBlock = memo(function ClipBlock({
       {trimmable && w >= 14 ? (
         <div
           aria-hidden
-          title="Dra for å endre lengden på scenen (eller skriv lengden i panelet til høyre)"
+          title={L(
+            "Dra for å endre lengden på scenen (eller skriv lengden i panelet til høyre)",
+            "Drag to change the length of the scene (or type the length in the panel on the right)",
+          )}
           onPointerDown={onPointerDownEdge}
           onPointerMove={(e) => {
             e.stopPropagation();

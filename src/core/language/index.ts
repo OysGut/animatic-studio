@@ -19,6 +19,7 @@ import { MAIN_LANGUAGE, clipLanguage, isVoiceKind } from "../audio";
 import { layersOf } from "../composition/render";
 import { translationOf } from "../translation";
 import { framesToSeconds } from "../time";
+import { L, localized, locale } from "../i18n";
 
 /**
  * Dialogen i lyden til en importert film: språkkode når dialog og øvrig lyd er blandet, «none» når lyden er
@@ -64,13 +65,13 @@ export function languageState(s: ProjectState, lang: string): ProjectState {
 
 export type MaterialKind = "still" | "animatic2d" | "character2d" | "ai_video" | "imported_film";
 
-export const MATERIAL_LABEL: Record<MaterialKind, string> = {
-  still: "Stillbilde",
-  animatic2d: "Enkel 2D-animatic",
-  character2d: "Redigerbare 2D-karakterer",
-  ai_video: "AI-generert video",
-  imported_film: "Ferdig importert film",
-};
+export const MATERIAL_LABEL: Record<MaterialKind, string> = localized({
+  still: ["Stillbilde", "Still image"],
+  animatic2d: ["Enkel 2D-animatic", "Simple 2D animatic"],
+  character2d: ["Redigerbare 2D-karakterer", "Editable 2D characters"],
+  ai_video: ["AI-generert video", "AI-generated video"],
+  imported_film: ["Ferdig importert film", "Finished imported film"],
+});
 
 const MATERIAL_RANK: Record<MaterialKind, number> = {
   still: 0,
@@ -122,21 +123,33 @@ export function lipSyncAdvice(kind: MaterialKind): LipSyncAdvice {
   switch (kind) {
     case "still":
     case "animatic2d":
-      return { action: "direct", text: "Dialogen kan byttes direkte." };
+      return {
+        action: "direct",
+        text: L("Dialogen kan byttes direkte.", "The dialogue can be switched directly."),
+      };
     case "character2d":
       return {
         action: "check",
-        text: "Karakterene har bildeskifter (munn eller uttrykk). Kontroller at de passer til den nye replikken, og juster dem i sceneeditoren om nødvendig.",
+        text: L(
+          "Karakterene har bildeskifter (munn eller uttrykk). Kontroller at de passer til den nye replikken, og juster dem i sceneeditoren om nødvendig.",
+          "The characters have image changes (mouth or expression). Check that they fit the new line, and adjust them in the scene editor if necessary.",
+        ),
       };
     case "ai_video":
       return {
         action: "lipsync",
-        text: "Synlige munnbevegelser kan kreve ny leppesynk eller en målrettet oppdatering av segmentet. Ingenting lages på nytt automatisk – det krever ditt valg og kostnadsgodkjenning.",
+        text: L(
+          "Synlige munnbevegelser kan kreve ny leppesynk eller en målrettet oppdatering av segmentet. Ingenting lages på nytt automatisk – det krever ditt valg og kostnadsgodkjenning.",
+          "Visible mouth movements may require new lip sync or a targeted update of the segment. Nothing is regenerated automatically – it requires your choice and cost approval.",
+        ),
       };
     case "imported_film":
       return {
         action: "lipsync",
-        text: "Synlige munnbevegelser kan kreve ny leppesynk. Filmen endres ikke automatisk.",
+        text: L(
+          "Synlige munnbevegelser kan kreve ny leppesynk. Filmen endres ikke automatisk.",
+          "Visible mouth movements may require new lip sync. The film is not changed automatically.",
+        ),
       };
   }
 }
@@ -191,7 +204,7 @@ export interface TimingConflict {
   readonly suggestions: readonly TimingSuggestion[];
 }
 
-const fmt = (ms: number) => `${(Math.round(ms / 100) / 10).toLocaleString("nb-NO")} s`;
+const fmt = (ms: number) => `${(Math.round(ms / 100) / 10).toLocaleString(locale())} s`;
 
 /**
  * Timingkonflikter i en språkversjon (REQ-0343): replikker som er lengre enn tiden de har i hovedfilmen (fra
@@ -285,24 +298,39 @@ export function timingConflicts(
             offsetMs: Math.max(0, lStart - move),
             text:
               move >= overflow
-                ? `Start replikken ${fmt(move)} tidligere – da får den plass.`
-                : `Start replikken ${fmt(move)} tidligere (det er plass til, men ikke nok alene).`,
+                ? L(
+                    `Start replikken ${fmt(move)} tidligere – da får den plass.`,
+                    `Start the line ${fmt(move)} earlier – then it fits.`,
+                  )
+                : L(
+                    `Start replikken ${fmt(move)} tidligere (det er plass til, men ikke nok alene).`,
+                    `Start the line ${fmt(move)} earlier (there is room, but not enough on its own).`,
+                  ),
           });
         }
         const words = Math.ceil((overflow / 1000) * WORDS_PER_SECOND);
         suggestions.push({
           kind: "shorten",
           words,
-          text: `Kort ned oversettelsen med omtrent ${words} ${words === 1 ? "ord" : "ord"}.`,
+          text: L(
+            `Kort ned oversettelsen med omtrent ${words} ${words === 1 ? "ord" : "ord"}.`,
+            `Shorten the translation by about ${words} ${words === 1 ? "word" : "words"}.`,
+          ),
         });
         if (next)
           suggestions.push({
             kind: "overlap",
-            text: `La replikken gå ${fmt(overflow)} inn i neste replikk.`,
+            text: L(
+              `La replikken gå ${fmt(overflow)} inn i neste replikk.`,
+              `Let the line run ${fmt(overflow)} into the next line.`,
+            ),
           });
         suggestions.push({
           kind: "pause",
-          text: "Forleng pausen før neste replikk i denne språkversjonen (krever egen klipping; hovedfilmen endres ikke).",
+          text: L(
+            "Forleng pausen før neste replikk i denne språkversjonen (krever egen klipping; hovedfilmen endres ikke).",
+            "Extend the pause before the next line in this language version (requires separate editing; the main film is not changed).",
+          ),
         });
         out.push({ ...base, kind: "long", overflowMs: overflow, suggestions });
       } else if (window > 0 && lLength < window * 0.5 && window - lLength > 1500) {
@@ -313,7 +341,10 @@ export function timingConflicts(
           suggestions: [
             {
               kind: "pause",
-              text: `Replikken er ${fmt(window - lLength)} kortere enn tiden den har. Det kan bli en lang pause – vurder en lengre oversettelse eller la pausen stå.`,
+              text: L(
+                `Replikken er ${fmt(window - lLength)} kortere enn tiden den har. Det kan bli en lang pause – vurder en lengre oversettelse eller la pausen stå.`,
+                `The line is ${fmt(window - lLength)} shorter than the time it has. This may leave a long pause – consider a longer translation or leave the pause.`,
+              ),
             },
           ],
         });

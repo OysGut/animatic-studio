@@ -11,6 +11,7 @@ import type { BlockKind, ProjectState, ScriptBlock } from "../model";
 import { blocksOfVariant } from "../views";
 import { compareKeys } from "../order-key";
 import { blockSpans, type FilmClip } from "./film";
+import { L } from "../i18n";
 
 export type ScriptChangeKind = "changed" | "added" | "removed";
 
@@ -139,7 +140,7 @@ export function materialsOf(s: ProjectState, occurrenceId: string, clip?: FilmCl
       kind: "composition",
       id: comp.id,
       occurrenceId,
-      label: "2D-scenen (animatic)",
+      label: L("2D-scenen (animatic)", "2D scene (animatic)"),
       baseline: comp.producedFrom?.blockRevisions ?? {},
       inUse: usesComposition,
     });
@@ -155,12 +156,15 @@ export function materialsOf(s: ProjectState, occurrenceId: string, clip?: FilmCl
       occurrenceId,
       label:
         t.kind === "imported_film"
-          ? `Film: ${t.media?.fileName ?? "importert film"}`
+          ? L(
+              `Film: ${t.media?.fileName ?? "importert film"}`,
+              `Film: ${t.media?.fileName ?? "imported film"}`,
+            )
           : t.kind === "ai_video"
             ? "AI-video"
             : t.kind === "still"
-              ? "Stillbilde"
-              : "Versjon",
+              ? L("Stillbilde", "Still image")
+              : L("Versjon", "Version"),
       baseline: (t.acceptedFrom ?? t.producedFrom).blockRevisions,
       inUse: usedTakes.has(t.id),
     });

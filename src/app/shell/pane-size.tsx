@@ -4,6 +4,7 @@
  * så den står likt når brukeren går mellom manus, bibliotek og sceneeditor. Dobbeltklikk = standard.
  */
 import { useCallback, useRef, useState, useSyncExternalStore } from "react";
+import { L } from "@/core";
 
 const PREFIX = "animatic:pane:";
 const cache = new Map<string, number>();
@@ -165,7 +166,7 @@ export function PaneResizer({
       aria-valuemin={min}
       aria-valuemax={max}
       tabIndex={0}
-      title={`${label} – dra for å endre, dobbeltklikk for standard`}
+      title={`${label} – ${L("dra for å endre, dobbeltklikk for standard", "drag to change, double-click for the default")}`}
       onPointerDown={(e) => {
         e.preventDefault();
         e.currentTarget.setPointerCapture(e.pointerId);

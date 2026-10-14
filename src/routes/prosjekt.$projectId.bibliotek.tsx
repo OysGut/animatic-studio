@@ -1,9 +1,12 @@
+import { L } from "@/core";
 import { createFileRoute } from "@tanstack/react-router";
 import { useSession } from "@/app/auth/use-session";
 import { LibraryWorkspace } from "@/app/library/LibraryWorkspace";
 
 export const Route = createFileRoute("/prosjekt/$projectId/bibliotek")({
-  head: () => ({ meta: [{ title: "Ressursbibliotek – Animatic Studio" }] }),
+  head: () => ({
+    meta: [{ title: L("Ressursbibliotek – Animatic Studio", "Asset library – Animatic Studio") }],
+  }),
   /** ?asset=<ressurs-ID> åpner biblioteket med ressursen valgt (f.eks. fra sceneeditoren). */
   validateSearch: (s: Record<string, unknown>): { asset?: string } =>
     typeof s["asset"] === "string" && /^[0-9a-f-]{36}$/i.test(s["asset"])

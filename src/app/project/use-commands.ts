@@ -16,6 +16,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  L,
   applyCommand,
   forkPlan,
   newId,
@@ -127,9 +128,16 @@ export function rejectedEdit(
   return { id, label, text, command, retryable: command.type === "EditBlockText", conflict };
 }
 
-const CONFLICT_UNDO =
-  "Kan ikke angre: noen andre har endret det samme etterpå. Endringen deres er beholdt.";
-const SKIPPED = "Ikke lagret fordi en tidligere endring feilet. Siste versjon er hentet.";
+const conflictUndo = () =>
+  L(
+    "Kan ikke angre: noen andre har endret det samme etterpå. Endringen deres er beholdt.",
+    "Cannot undo: someone else has changed the same thing afterwards. Their change has been kept.",
+  );
+const skipped = () =>
+  L(
+    "Ikke lagret fordi en tidligere endring feilet. Siste versjon er hentet.",
+    "Not saved because an earlier change failed. The latest version has been fetched.",
+  );
 
 /**
  * Kjører inversene for et steg (en samlet endring baklengs) med `run`. Gir steget som angrer det igjen
@@ -259,9 +267,20 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
     ):
       | { ok: true; entry: HistoryEntry; done: Promise<string | null> }
       | { ok: false; message: string } => {
-      if (!enabled) return { ok: false, message: "Du har bare lesetilgang i dette prosjektet." };
+      if (!enabled)
+        return {
+          ok: false,
+          message: L(
+            "Du har bare lesetilgang i dette prosjektet.",
+            "You have read-only access to this project.",
+          ),
+        };
       const before = qc.getQueryData<ProjectState>(projectStateKey(projectId));
-      if (!before) return { ok: false, message: "Prosjektet er ikke lastet ennå." };
+      if (!before)
+        return {
+          ok: false,
+          message: L("Prosjektet er ikke lastet ennå.", "The project is not loaded yet."),
+        };
       const commandId = newId<"command">();
       const local = applyCommand(before, {
         id: commandId,
@@ -272,7 +291,7 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
       if (!local.ok) {
         const message =
           local.error.code === "revision_conflict" && opts.mode !== "do"
-            ? CONFLICT_UNDO
+            ? conflictUndo()
             : local.error.message;
         setStatus({ kind: "error", message });
         return { ok: false, message };
@@ -316,7 +335,7 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
             keep(false, true);
             dropEntry(commandId);
             reloadWhenIdle.current = true;
-            return SKIPPED;
+            return skipped();
           }
           const res = await runCommand({
             data: { projectId, command, baseRevisions: { ...baseRevisions }, commandId },
@@ -328,8 +347,11 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
             return fail(
               res.code === "revision_conflict"
                 ? opts.mode === "do"
-                  ? "Noen andre endret dette samtidig. Siste versjon er hentet – prøv igjen."
-                  : CONFLICT_UNDO
+                  ? L(
+                      "Noen andre endret dette samtidig. Siste versjon er hentet – prøv igjen.",
+                      "Someone else changed this at the same time. The latest version has been fetched – try again.",
+                    )
+                  : conflictUndo()
                 : res.message,
               res.code === "revision_conflict",
             );
@@ -339,7 +361,10 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
           return null;
         } catch (e) {
           return fail(
-            `Endringen ble ikke lagret (${(e as Error).message}). Siste versjon er hentet.`,
+            L(
+              `Endringen ble ikke lagret (${(e as Error).message}). Siste versjon er hentet.`,
+              `The change was not saved (${(e as Error).message}). The latest version has been fetched.`,
+            ),
             false,
           );
         } finally {
@@ -385,7 +410,10 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
       if (!plan) return null;
       const g = group ?? newId();
       for (const c of plan.fork) {
-        const f = exec(c, { label: "Egen versjon av scenen", mode: "do" });
+        const f = exec(c, {
+          label: L("Egen versjon av scenen", "Own copy of the scene"),
+          mode: "do",
+        });
         if (!f.ok) return { error: f.message as string | null, done: null, group: g };
         setUndo((u) => pushEntry(u, f.entry, g));
       }
@@ -507,7 +535,7 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
     if (!last) return;
     setUndo((u) => u.slice(0, -1));
     if (blocked(last)) {
-      setStatus({ kind: "error", message: CONFLICT_UNDO });
+      setStatus({ kind: "error", message: conflictUndo() });
       return;
     }
     const { back, rest } = replay(last, "undo");
@@ -520,7 +548,13 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
     if (!last) return;
     setRedo((x) => x.slice(0, -1));
     if (blocked(last)) {
-      setStatus({ kind: "error", message: CONFLICT_UNDO.replace("angre", "gjøre om") });
+      setStatus({
+        kind: "error",
+        message: L(
+          "Kan ikke gjøre om: noen andre har endret det samme etterpå. Endringen deres er beholdt.",
+          "Cannot redo: someone else has changed the same thing afterwards. Their change has been kept.",
+        ),
+      });
       return;
     }
     const { back, rest } = replay(last, "redo");
@@ -590,8 +624,10 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
       const now = qc.getQueryData<ProjectState>(projectStateKey(projectId));
       const block = now?.blocks[blockId];
       if (!block) {
-        const message =
-          "Linjen finnes ikke lenger i siste versjon. Kopier teksten og lim den inn der den hører hjemme.";
+        const message = L(
+          "Linjen finnes ikke lenger i siste versjon. Kopier teksten og lim den inn der den hører hjemme.",
+          "The line no longer exists in the latest version. Copy the text and paste it where it belongs.",
+        );
         setStatus({ kind: "error", message });
         return message;
       }

@@ -31,6 +31,7 @@ import {
   type ContinuityKind,
   type ContinuitySuggestion,
   type ProjectState,
+  L,
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
@@ -119,7 +120,10 @@ export function ContinuityPanel({
     const v = o
       ? state.variants[o.variantId]
       : Object.values(state.variants).find((x) => x.sceneId === sceneId);
-    return `${o?.productionNumber ? `Scene ${o.productionNumber}` : "Scene"}${v ? ` – ${formatHeading(v.heading)}` : ""}`;
+    const scene = o?.productionNumber
+      ? L(`Scene ${o.productionNumber}`, `Scene ${o.productionNumber}`)
+      : L("Scene", "Scene");
+    return `${scene}${v ? ` – ${formatHeading(v.heading)}` : ""}`;
   };
   const variantName = (id: string | null) => (id ? (state.assetVariants[id]?.name ?? "—") : "—");
   const colorOf = (id: string | null) => {
@@ -187,7 +191,7 @@ export function ContinuityPanel({
             },
           ],
         },
-        "Avvis forslag til kontinuitet",
+        L("Avvis forslag til kontinuitet", "Dismiss continuity suggestion"),
       ),
     );
   }
@@ -201,14 +205,17 @@ export function ContinuityPanel({
     const r = editing.id
       ? cmds.run(
           { type: "UpdateContinuityEvents", events: [{ eventId: editing.id as never, fields: f }] },
-          `Endre kontinuitet for «${asset.name}»`,
+          L(`Endre kontinuitet for «${asset.name}»`, `Change continuity for “${asset.name}”`),
         )
       : cmds.run(
           {
             type: "AddContinuityEvents",
             events: [{ eventId: newId<"continuity_event">(), fields: f }],
           },
-          `Ny kontinuitetshendelse for «${asset.name}»`,
+          L(
+            `Ny kontinuitetshendelse for «${asset.name}»`,
+            `New continuity event for “${asset.name}”`,
+          ),
         );
     setErr(r);
     if (!r) setEditing(null);
@@ -228,14 +235,16 @@ export function ContinuityPanel({
   });
 
   return (
-    <section aria-label="Kontinuitet" className="flex flex-col gap-3">
+    <section aria-label={L("Kontinuitet", "Continuity")} className="flex flex-col gap-3">
       <div className="flex items-center gap-2">
         <h2 className="shrink-0 whitespace-nowrap text-sm font-medium text-text-primary">
-          Kontinuitet
+          {L("Kontinuitet", "Continuity")}
         </h2>
         <span className="text-xs text-text-tertiary">
-          Når utseendet endres i historien (f.eks. klipper håret). Riktig utseende i hver scene
-          følger fortellingstiden – også i tilbakeblikk.
+          {L(
+            "Når utseendet endres i historien (f.eks. klipper håret). Riktig utseende i hver scene følger fortellingstiden – også i tilbakeblikk.",
+            "When the look changes in the story (e.g. cuts their hair). The right look in each scene follows story time – including flashbacks.",
+          )}
         </span>
         {editable && !editing ? (
           <Button
@@ -243,10 +252,16 @@ export function ContinuityPanel({
             variant="secondary"
             className="ml-auto"
             onClick={() => setEditing({ id: null, fields: blank() })}
-            title={derived ? `Hendelsen gjelder bare i ${prodName}` : undefined}
+            title={
+              derived
+                ? L(`Hendelsen gjelder bare i ${prodName}`, `The event applies only in ${prodName}`)
+                : undefined
+            }
           >
             <Plus />
-            {derived ? `Ny hendelse i ${prod!.name}` : "Ny hendelse"}
+            {derived
+              ? L(`Ny hendelse i ${prod!.name}`, `New event in ${prod!.name}`)
+              : L("Ny hendelse", "New event")}
           </Button>
         ) : null}
       </div>
@@ -256,11 +271,13 @@ export function ContinuityPanel({
         <div className="flex flex-col gap-1.5 border border-status-uncertain/40 bg-status-uncertain-bg p-3">
           <h3 className="flex items-center gap-1.5 text-[13px] font-medium text-text-primary">
             <Lightbulb className="size-4 text-status-uncertain" aria-hidden />
-            Forslag fra manuset ({suggestions.length})
+            {L("Forslag fra manuset", "Suggestions from the script")} ({suggestions.length})
           </h3>
           <p className="text-[11px] text-text-tertiary">
-            Linjer der {asset.name} nevnes og noe kan endre utseendet. Ingenting brukes før du
-            godkjenner.
+            {L(
+              `Linjer der ${asset.name} nevnes og noe kan endre utseendet. Ingenting brukes før du godkjenner.`,
+              `Lines where ${asset.name} is mentioned and something may change the look. Nothing is used until you approve it.`,
+            )}
           </p>
           <ul className="flex max-h-64 flex-col gap-1 overflow-y-auto">
             {suggestions.map((x) => (
@@ -277,9 +294,11 @@ export function ContinuityPanel({
                     onClick={() => onGoToScene(x.occurrenceId)}
                     className="ml-1.5 text-text-tertiary underline-offset-2 hover:underline"
                   >
-                    {x.number ? `scene ${x.number}` : "scene"}
+                    {x.number ? L(`scene ${x.number}`, `scene ${x.number}`) : L("scene", "scene")}
                   </button>
-                  <span className="block text-text-secondary">«{x.text}»</span>
+                  <span className="block text-text-secondary">
+                    {L(`«${x.text}»`, `“${x.text}”`)}
+                  </span>
                 </span>
                 {editable ? (
                   <span className="flex shrink-0 gap-1">
@@ -287,19 +306,22 @@ export function ContinuityPanel({
                       size="sm"
                       variant="secondary"
                       onClick={() => setEditing({ id: null, fields: fromSuggestion(x) })}
-                      title="Fyll inn utseendet før og etter, og godkjenn"
+                      title={L(
+                        "Fyll inn utseendet før og etter, og godkjenn",
+                        "Fill in the look before and after, and approve",
+                      )}
                     >
                       <Check />
-                      Godkjenn …
+                      {L("Godkjenn …", "Approve …")}
                     </Button>
                     <Button
                       size="sm"
                       variant="ghost"
                       onClick={() => dismiss(x)}
-                      title="Ikke en endring"
+                      title={L("Ikke en endring", "Not a change")}
                     >
                       <X />
-                      Avvis
+                      {L("Avvis", "Dismiss")}
                     </Button>
                   </span>
                 ) : null}
@@ -327,8 +349,10 @@ export function ContinuityPanel({
       {/* Hendelsene */}
       {events.length === 0 && !editing ? (
         <p className="text-[13px] text-text-secondary">
-          Ingen hendelser. Legg inn en hendelse når {asset.name} forandrer seg i historien – med
-          utseendet før og etter (visuelle varianter over).
+          {L(
+            `Ingen hendelser. Legg inn en hendelse når ${asset.name} forandrer seg i historien – med utseendet før og etter (visuelle varianter over).`,
+            `No events. Add an event when ${asset.name} changes in the story – with the look before and after (visual variants above).`,
+          )}
         </p>
       ) : (
         <ul className="flex flex-col gap-1.5">
@@ -345,23 +369,31 @@ export function ContinuityPanel({
                   <span className="text-text-tertiary">{sceneLabel(eventSceneId(state, e))}</span>
                   {derived ? (
                     <span className="rounded-sm bg-surface-3 px-1 text-[11px] text-text-secondary">
-                      {e.productionId ? `bare i ${prod!.name}` : "fra hovedfilmen"}
+                      {e.productionId
+                        ? L(`bare i ${prod!.name}`, `only in ${prod!.name}`)
+                        : L("fra hovedfilmen", "from the main film")}
                     </span>
                   ) : null}
                   {eventApplies(state, e) ? null : derived &&
                     !e.productionId &&
                     e.disabledIn?.includes(productionId as never) ? (
                     <span className="rounded-sm bg-status-uncertain-bg px-1 text-[11px] text-status-uncertain">
-                      slått av i {prod!.name}
+                      {L(`slått av i ${prod!.name}`, `turned off in ${prod!.name}`)}
                     </span>
                   ) : (
                     <span className="rounded-sm bg-status-uncertain-bg px-1 text-[11px] text-status-uncertain">
-                      scenen er ikke med – gjelder ikke
+                      {L(
+                        "scenen er ikke med – gjelder ikke",
+                        "the scene is not included – does not apply",
+                      )}
                     </span>
                   )}
                   <span className="rounded-sm bg-surface-3 px-1 text-[11px] text-text-secondary">
                     {e.duration === "temporary"
-                      ? `over fra ${sceneLabel(e.untilSceneId).split(" – ")[0]!.toLowerCase()}`
+                      ? L(
+                          `over fra ${sceneLabel(e.untilSceneId).split(" – ")[0]!.toLowerCase()}`,
+                          `from ${sceneLabel(e.untilSceneId).split(" – ")[0]!.toLowerCase()} onwards`,
+                        )
                       : CONTINUITY_DURATION_LABEL[e.duration].toLowerCase()}
                   </span>
                 </span>
@@ -370,7 +402,7 @@ export function ContinuityPanel({
                 ) : null}
                 {e.blockId && state.blocks[e.blockId] ? (
                   <span className="mt-0.5 block text-text-tertiary">
-                    Ved linjen «{excerpt(state.blocks[e.blockId]!.text, 90)}»
+                    {L("Ved linjen", "At the line")} «{excerpt(state.blocks[e.blockId]!.text, 90)}»
                   </span>
                 ) : null}
                 <span className="mt-1 flex items-center gap-1.5 text-text-secondary">
@@ -396,16 +428,22 @@ export function ContinuityPanel({
                             disabled: !off,
                           },
                           off
-                            ? `Slå på hendelsen i ${prod!.name}`
-                            : `Slå av hendelsen i ${prod!.name}`,
+                            ? L(
+                                `Slå på hendelsen i ${prod!.name}`,
+                                `Turn on the event in ${prod!.name}`,
+                              )
+                            : L(
+                                `Slå av hendelsen i ${prod!.name}`,
+                                `Turn off the event in ${prod!.name}`,
+                              ),
                         ),
                       );
                     }}
-                    title="Hovedfilmen endres ikke"
+                    title={L("Hovedfilmen endres ikke", "The main film is not changed")}
                   >
                     {e.disabledIn?.includes(productionId as never)
-                      ? `Slå på i ${prod!.name}`
-                      : `Slå av i ${prod!.name}`}
+                      ? L(`Slå på i ${prod!.name}`, `Turn on in ${prod!.name}`)
+                      : L(`Slå av i ${prod!.name}`, `Turn off in ${prod!.name}`)}
                   </Button>
                 </span>
               ) : editable ? (
@@ -414,7 +452,7 @@ export function ContinuityPanel({
                     size="sm"
                     variant="ghost"
                     onClick={() => setEditing({ id: e.id, fields: fieldsOf(e) })}
-                    title="Endre"
+                    title={L("Endre", "Edit")}
                   >
                     <Pencil />
                   </Button>
@@ -425,11 +463,11 @@ export function ContinuityPanel({
                       setErr(
                         cmds.run(
                           { type: "SetContinuityEventsRemoved", eventIds: [e.id], removed: true },
-                          "Fjern kontinuitetshendelse",
+                          L("Fjern kontinuitetshendelse", "Remove continuity event"),
                         ),
                       )
                     }
-                    title="Fjern hendelsen (kan angres)"
+                    title={L("Fjern hendelsen (kan angres)", "Remove the event (can be undone)")}
                   >
                     <Trash2 />
                   </Button>
@@ -447,7 +485,8 @@ export function ContinuityPanel({
             onClick={() => setShowDismissed((v) => !v)}
             className="text-text-tertiary hover:text-text-primary"
           >
-            {showDismissed ? "Skjul" : "Vis"} avviste forslag ({dismissed.length})
+            {showDismissed ? L("Skjul", "Hide") : L("Vis", "Show")}{" "}
+            {L("avviste forslag", "dismissed suggestions")} ({dismissed.length})
           </button>
           {showDismissed ? (
             <ul className="mt-1 flex flex-col gap-1">
@@ -465,14 +504,14 @@ export function ContinuityPanel({
                         setErr(
                           cmds.run(
                             { type: "SetContinuityEventsRemoved", eventIds: [e.id], removed: true },
-                            "Angre avvisning",
+                            L("Angre avvisning", "Undo dismissal"),
                           ),
                         )
                       }
-                      title="Vis forslaget igjen"
+                      title={L("Vis forslaget igjen", "Show the suggestion again")}
                     >
                       <Undo2 />
-                      Angre avvisning
+                      {L("Angre avvisning", "Undo dismissal")}
                     </Button>
                   ) : null}
                 </li>
@@ -490,10 +529,13 @@ export function ContinuityPanel({
 
       {/* Tidslinje (fortellingsrekkefølge) */}
       {events.length > 0 ? (
-        <div aria-label="Kontinuitetstidslinje" className="border border-border bg-surface-1">
+        <div
+          aria-label={L("Kontinuitetstidslinje", "Continuity timeline")}
+          className="border border-border bg-surface-1"
+        >
           <div className="flex h-8 items-center gap-1.5 border-b border-border px-3 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
             <Clock className="size-3.5" aria-hidden />
-            Tidslinje i fortellingstid
+            {L("Tidslinje i fortellingstid", "Timeline in story time")}
           </div>
           <ol className="max-h-[50vh] overflow-y-auto py-1">
             {timeline.map((r) => {
@@ -517,7 +559,7 @@ export function ContinuityPanel({
                     disabled={!r.occurrenceId}
                     onClick={() => r.occurrenceId && onGoToScene(r.occurrenceId)}
                     className="tabular truncate text-right font-mono text-text-secondary hover:text-text-primary"
-                    title="Vis scenen i manus"
+                    title={L("Vis scenen i manus", "Show the scene in the script")}
                   >
                     {r.number ?? "–"}
                   </button>
@@ -526,14 +568,16 @@ export function ContinuityPanel({
                       {r.heading || "—"}
                       {r.nonLinear ? (
                         <span className="ml-1.5 rounded-sm bg-surface-3 px-1 text-[11px] text-text-secondary">
-                          tilbakeblikk / tidshopp
+                          {L("tilbakeblikk / tidshopp", "flashback / time jump")}
                         </span>
                       ) : null}
                     </span>
                     {r.events.length ? (
                       <span className="block truncate text-[11px] text-status-uncertain">
                         {r.events.map((e) => CONTINUITY_KIND_LABEL[e.kind]).join(", ")}
-                        {r.events.some((e) => eventMidScene(state, e)) ? " midt i scenen" : ""}
+                        {r.events.some((e) => eventMidScene(state, e))
+                          ? L(" midt i scenen", " mid-scene")
+                          : ""}
                       </span>
                     ) : r.appearance.active.length ? (
                       <span className="block truncate text-[11px] text-text-tertiary">
@@ -552,14 +596,17 @@ export function ContinuityPanel({
                         className="size-6 rounded-sm bg-surface-3 object-contain"
                       />
                     ) : null}
-                    {look ? variantName(look) : "standard"}
+                    {look ? variantName(look) : L("standard", "standard")}
                   </span>
                 </li>
               );
             })}
           </ol>
           <p className="border-t border-border px-3 py-2 text-[11px] text-text-tertiary">
-            Utseendet ved begynnelsen av hver scene. Nedtonet: {asset.name} nevnes ikke i scenen.
+            {L(
+              `Utseendet ved begynnelsen av hver scene. Nedtonet: ${asset.name} nevnes ikke i scenen.`,
+              `The look at the start of each scene. Faded: ${asset.name} is not mentioned in the scene.`,
+            )}
           </p>
         </div>
       ) : null}
@@ -618,12 +665,16 @@ function EventForm({
     <option key={o.id} value={o.sceneId}>
       {o.productionNumber ? `${o.productionNumber}. ` : ""}
       {formatHeading(state.variants[o.variantId]!.heading)}
-      {o.active ? "" : " (deaktivert)"}
+      {o.active ? "" : L(" (deaktivert)", " (deactivated)")}
     </option>
   ));
   return (
     <form
-      aria-label={isNew ? "Ny kontinuitetshendelse" : "Endre kontinuitetshendelse"}
+      aria-label={
+        isNew
+          ? L("Ny kontinuitetshendelse", "New continuity event")
+          : L("Endre kontinuitetshendelse", "Edit continuity event")
+      }
       className="flex flex-col gap-2 border border-border bg-surface-2 p-3"
       onSubmit={(e) => {
         e.preventDefault();
@@ -631,7 +682,7 @@ function EventForm({
       }}
     >
       <div className="flex flex-wrap gap-2">
-        <Label text="Hva skjer">
+        <Label text={L("Hva skjer", "What happens")}>
           <select
             value={fields.kind}
             onChange={(e) => set({ kind: e.target.value as ContinuityKind })}
@@ -644,34 +695,41 @@ function EventForm({
             ))}
           </select>
         </Label>
-        <Label text="Beskrivelse" grow>
+        <Label text={L("Beskrivelse", "Description")} grow>
           <Input
             value={fields.description}
             maxLength={2000}
-            placeholder={`F.eks. ${asset.name} klipper håret kort`}
+            placeholder={L(
+              `F.eks. ${asset.name} klipper håret kort`,
+              `E.g. ${asset.name} cuts their hair short`,
+            )}
             onChange={(e) => set({ description: e.target.value })}
             className="h-8 bg-surface-3 text-[13px]"
           />
         </Label>
       </div>
       <div className="flex flex-wrap gap-2">
-        <Label text="Scene">
+        <Label text={L("Scene", "Scene")}>
           <select
             value={fields.sceneId}
             onChange={(e) => set({ sceneId: e.target.value as never, blockId: null })}
             className={`${selectCls} max-w-[280px]`}
           >
-            {occ ? null : <option value={fields.sceneId}>(scenen er ikke i hovedfilmen)</option>}
+            {occ ? null : (
+              <option value={fields.sceneId}>
+                {L("(scenen er ikke i hovedfilmen)", "(the scene is not in the main film)")}
+              </option>
+            )}
             {sceneOptions}
           </select>
         </Label>
-        <Label text="Fra linjen" grow>
+        <Label text={L("Fra linjen", "From the line")} grow>
           <select
             value={fields.blockId ?? ""}
             onChange={(e) => set({ blockId: (e.target.value || null) as never })}
             className={`${selectCls} w-full`}
           >
-            <option value="">Fra scenens begynnelse</option>
+            <option value="">{L("Fra scenens begynnelse", "From the start of the scene")}</option>
             {blocks.map((b) => (
               <option key={b.id} value={b.id}>
                 {excerpt(b.text, 80)}
@@ -681,13 +739,13 @@ function EventForm({
         </Label>
       </div>
       <div className="flex flex-wrap items-end gap-2">
-        <Label text="Utseende før">
+        <Label text={L("Utseende før", "Look before")}>
           <select
             value={fields.fromVariantId ?? ""}
             onChange={(e) => set({ fromVariantId: (e.target.value || null) as never })}
             className={selectCls}
           >
-            <option value="">— ikke valgt —</option>
+            <option value="">{L("— ikke valgt —", "— not selected —")}</option>
             {variants.map((v) => (
               <option key={v.id} value={v.id}>
                 {v.name}
@@ -697,13 +755,13 @@ function EventForm({
           </select>
         </Label>
         <ArrowRight className="mb-2 size-4 text-text-tertiary" aria-hidden />
-        <Label text="Utseende etter">
+        <Label text={L("Utseende etter", "Look after")}>
           <select
             value={fields.toVariantId ?? ""}
             onChange={(e) => set({ toVariantId: (e.target.value || null) as never })}
             className={selectCls}
           >
-            <option value="">— ingen egen variant —</option>
+            <option value="">{L("— ingen egen variant —", "— no separate variant —")}</option>
             {variants.map((v) => (
               <option key={v.id} value={v.id}>
                 {v.name}
@@ -712,7 +770,7 @@ function EventForm({
             ))}
           </select>
         </Label>
-        <Label text="Varer">
+        <Label text={L("Varer", "Lasts")}>
           <select
             value={fields.duration}
             onChange={(e) => set({ duration: e.target.value as ContinuityDuration })}
@@ -726,13 +784,13 @@ function EventForm({
           </select>
         </Label>
         {fields.duration === "temporary" ? (
-          <Label text="Over fra scene">
+          <Label text={L("Over fra scene", "From scene onwards")}>
             <select
               value={fields.untilSceneId ?? ""}
               onChange={(e) => set({ untilSceneId: (e.target.value || null) as never })}
               className={`${selectCls} max-w-[240px]`}
             >
-              <option value="">— velg —</option>
+              <option value="">{L("— velg —", "— choose —")}</option>
               {sceneOptions}
             </select>
           </Label>
@@ -740,17 +798,19 @@ function EventForm({
       </div>
       {variants.length === 0 ? (
         <p className="text-[11px] text-text-tertiary">
-          Lag visuelle varianter (f.eks. «Langt hår» og «Kort hår») for å velge utseendet før og
-          etter. Hendelsen kan også lagres bare med beskrivelse.
+          {L(
+            "Lag visuelle varianter (f.eks. «Langt hår» og «Kort hår») for å velge utseendet før og etter. Hendelsen kan også lagres bare med beskrivelse.",
+            "Make visual variants (e.g. “Long hair” and “Short hair”) to choose the look before and after. The event can also be saved with just a description.",
+          )}
         </p>
       ) : null}
       <div className="flex gap-2">
         <Button type="submit" size="sm">
           <Check />
-          {isNew ? "Lagre hendelsen" : "Lagre endringen"}
+          {isNew ? L("Lagre hendelsen", "Save the event") : L("Lagre endringen", "Save the change")}
         </Button>
         <Button type="button" size="sm" variant="ghost" onClick={onCancel}>
-          Avbryt
+          {L("Avbryt", "Cancel")}
         </Button>
       </div>
     </form>

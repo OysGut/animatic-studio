@@ -24,6 +24,9 @@ import {
   type AudioKind,
   type ProjectState,
   sceneNumberOf,
+  L,
+  locale,
+  languageWord,
 } from "@/core";
 import { Button } from "@/components/ui/button";
 
@@ -73,26 +76,28 @@ export function AudioClipPanel({
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-3">
       <div className="flex items-baseline gap-2">
-        <span className={label}>Lyd</span>
+        <span className={label}>{L("Lyd", "Audio")}</span>
         <span className="min-w-0 truncate text-[13px] font-medium text-text-primary">
-          {clip.name || asset?.name || "Lyd"}
+          {clip.name || asset?.name || L("Lyd", "Audio")}
         </span>
       </div>
 
       <Text
-        label="Navn"
+        label={L("Navn", "Name")}
         value={clip.name}
         disabled={off}
-        onCommit={(name) => onChange("Endre navn på lyd", { name })}
+        onCommit={(name) => onChange(L("Endre navn på lyd", "Rename audio"), { name })}
       />
 
       <div className="grid grid-cols-2 gap-2">
-        <Field label="Spor">
+        <Field label={L("Spor", "Track")}>
           <select
             value={clip.kind}
             disabled={off}
             onChange={(e) =>
-              onChange("Flytt lyd til annet spor", { kind: e.target.value as AudioKind })
+              onChange(L("Flytt lyd til annet spor", "Move audio to another track"), {
+                kind: e.target.value as AudioKind,
+              })
             }
             className={ctl}
           >
@@ -103,21 +108,21 @@ export function AudioClipPanel({
             ))}
           </select>
         </Field>
-        <Field label="Versjon">
+        <Field label={L("Versjon", "Version")}>
           <select
             value={clip.versionId ?? ""}
             disabled={off || versions.length < 2}
             onChange={(e) => {
               const id = e.target.value;
               const hit = versions.find((x) => x.ver.id === id);
-              onChange("Bytt lydversjon", {
+              onChange(L("Bytt lydversjon", "Switch audio version"), {
                 assetVariantId: hit ? (hit.v.id as never) : null,
                 versionId: hit ? (hit.ver.id as never) : null,
               });
             }}
             className={ctl}
           >
-            <option value="">Nyeste / godkjent</option>
+            <option value="">{L("Nyeste / godkjent", "Latest / approved")}</option>
             {versions.map(({ v, ver }) => (
               <option key={ver.id} value={ver.id}>
                 {v.name} v{ver.number}
@@ -127,34 +132,44 @@ export function AudioClipPanel({
         </Field>
       </div>
 
-      <Field label="Språk">
+      <Field label={L("Språk", "Language")}>
         <select
-          aria-label="Språk"
+          aria-label={L("Språk", "Language")}
           value={clip.language ?? ""}
           disabled={off}
-          onChange={(e) => onChange("Endre språk for lyd", { language: e.target.value || null })}
+          onChange={(e) =>
+            onChange(L("Endre språk for lyd", "Change language of audio"), {
+              language: e.target.value || null,
+            })
+          }
           className={ctl}
-          title="Hvilken språkversjon lyden spilles i. Musikk og effekter er vanligvis felles."
+          title={L(
+            "Hvilken språkversjon lyden spilles i. Musikk og effekter er vanligvis felles.",
+            "Which language version the audio plays in. Music and effects are usually shared.",
+          )}
         >
           <option value="">
-            Standard (
-            {isVoiceKind(clip.kind) ? LANGUAGE_LABEL[MAIN_LANGUAGE] : "felles for alle språk"})
+            {L("Standard", "Default")} (
+            {isVoiceKind(clip.kind)
+              ? LANGUAGE_LABEL[MAIN_LANGUAGE]
+              : L("felles for alle språk", "shared across all languages")}
+            )
           </option>
-          <option value="*">Felles for alle språk</option>
+          <option value="*">{L("Felles for alle språk", "Shared across all languages")}</option>
           {FILM_LANGUAGES.map((l) => (
             <option key={l} value={l}>
-              Bare {(LANGUAGE_LABEL[l] ?? l).toLowerCase()}
+              {L("Bare", "Only")} {languageWord(l)}
             </option>
           ))}
         </select>
       </Field>
 
       <p className="text-xs text-text-tertiary">
-        Fil: {asset?.name ?? "ukjent"}
+        {L("Fil:", "File:")} {asset?.name ?? L("ukjent", "unknown")}
         {fileMs
-          ? ` · ${(fileMs / 1000).toLocaleString("nb-NO", { maximumFractionDigits: 1 })} s`
+          ? ` · ${(fileMs / 1000).toLocaleString(locale(), { maximumFractionDigits: 1 })} s`
           : ""}
-        {version ? "" : " · mangler"}
+        {version ? "" : L(" · mangler", " · missing")}
         <br />
         Scene: {(occ ? sceneNumberOf(state, occ) : null) ?? "–"}{" "}
         {variant ? formatHeading(variant.heading) : ""}
@@ -162,15 +177,15 @@ export function AudioClipPanel({
 
       <div className="grid grid-cols-3 gap-2">
         <Seconds
-          label="Start i scenen"
+          label={L("Start i scenen", "Start in the scene")}
           ms={clip.offsetMs}
           min={0}
           max={AUDIO_MAX_MS}
           disabled={off}
-          onCommit={(ms) => onChange("Flytt lyd", { offsetMs: ms })}
+          onCommit={(ms) => onChange(L("Flytt lyd", "Move audio"), { offsetMs: ms })}
         />
         <Seconds
-          label="Lengde"
+          label={L("Lengde", "Length")}
           ms={clip.lengthMs}
           min={1}
           max={
@@ -179,16 +194,18 @@ export function AudioClipPanel({
               : AUDIO_MAX_MS
           }
           disabled={off}
-          onCommit={(ms) => onChange("Endre lengde på lyd", { lengthMs: ms })}
+          onCommit={(ms) =>
+            onChange(L("Endre lengde på lyd", "Change length of audio"), { lengthMs: ms })
+          }
         />
         <Seconds
-          label="Start i filen"
+          label={L("Start i filen", "Start in the file")}
           ms={clip.sourceInMs}
           min={0}
           max={fileMs !== null ? Math.max(0, fileMs - 1) : AUDIO_MAX_MS}
           disabled={off}
           onCommit={(ms) =>
-            onChange("Kutt starten av lyden", {
+            onChange(L("Kutt starten av lyden", "Trim the start of the audio"), {
               sourceInMs: ms,
               lengthMs:
                 fileMs !== null
@@ -205,38 +222,44 @@ export function AudioClipPanel({
       <Gain
         value={clip.gainDb}
         disabled={off}
-        onCommit={(gainDb) => onChange("Endre volum", { gainDb })}
+        onCommit={(gainDb) => onChange(L("Endre volum", "Change volume"), { gainDb })}
       />
 
       <div className="grid grid-cols-2 gap-2">
         <Seconds
-          label="Inntoning"
+          label={L("Inntoning", "Fade in")}
           ms={clip.fadeInMs}
           min={0}
           max={600_000}
           disabled={off}
-          onCommit={(ms) => onChange("Endre inntoning", { fadeInMs: ms })}
+          onCommit={(ms) => onChange(L("Endre inntoning", "Change fade in"), { fadeInMs: ms })}
         />
         <Seconds
-          label="Uttoning"
+          label={L("Uttoning", "Fade out")}
           ms={clip.fadeOutMs}
           min={0}
           max={600_000}
           disabled={off}
-          onCommit={(ms) => onChange("Endre uttoning", { fadeOutMs: ms })}
+          onCommit={(ms) => onChange(L("Endre uttoning", "Change fade out"), { fadeOutMs: ms })}
         />
       </div>
 
-      <Field label="Replikk">
+      <Field label={L("Replikk", "Line")}>
         <select
           value={clip.blockId ?? ""}
           disabled={off || lines.length === 0}
           onChange={(e) =>
-            onChange("Koble lyd til replikk", { blockId: (e.target.value || null) as never })
+            onChange(L("Koble lyd til replikk", "Link audio to line"), {
+              blockId: (e.target.value || null) as never,
+            })
           }
           className={ctl}
         >
-          <option value="">{lines.length ? "Ingen" : "Ingen replikker i scenen"}</option>
+          <option value="">
+            {lines.length
+              ? L("Ingen", "None")
+              : L("Ingen replikker i scenen", "No lines in the scene")}
+          </option>
           {lines.map((l) => (
             <option key={l.id} value={l.id}>
               {l.label}
@@ -251,44 +274,62 @@ export function AudioClipPanel({
           checked={clip.muted}
           disabled={off}
           onChange={(e) =>
-            onChange(e.target.checked ? "Demp lyd" : "Slå på lyd", { muted: e.target.checked })
+            onChange(
+              e.target.checked ? L("Demp lyd", "Mute audio") : L("Slå på lyd", "Unmute audio"),
+              { muted: e.target.checked },
+            )
           }
           className="size-3.5 accent-[var(--accent-brand)]"
         />
-        Dempet (spilles ikke og kommer ikke med i eksporten)
+        {L(
+          "Dempet (spilles ikke og kommer ikke med i eksporten)",
+          "Muted (not played and not included in the export)",
+        )}
       </label>
 
       <label
         className="flex items-center gap-2 text-xs text-text-secondary"
-        title="Starten er festet i denne scenen, men lyden fortsetter inn i de neste scenene"
+        title={L(
+          "Starten er festet i denne scenen, men lyden fortsetter inn i de neste scenene",
+          "The start is fixed in this scene, but the audio continues into the next scenes",
+        )}
       >
         <input
           type="checkbox"
           checked={clip.continues}
           disabled={off}
           onChange={(e) =>
-            onChange(e.target.checked ? "La lyden løpe videre" : "Stopp lyden ved scenens slutt", {
-              continues: e.target.checked,
-            })
+            onChange(
+              e.target.checked
+                ? L("La lyden løpe videre", "Let the audio run on")
+                : L("Stopp lyden ved scenens slutt", "Stop the audio at the end of the scene"),
+              { continues: e.target.checked },
+            )
           }
           className="size-3.5 accent-[var(--accent-warm)]"
         />
         <span>
-          Løper videre over flere scener
+          {L("Løper videre over flere scener", "Runs on across several scenes")}
           <span className="block text-[11px] text-text-tertiary">
-            Ellers stopper lyden ved slutten av scenen
+            {L(
+              "Ellers stopper lyden ved slutten av scenen",
+              "Otherwise the audio stops at the end of the scene",
+            )}
           </span>
         </span>
       </label>
 
       <Button size="sm" variant="secondary" className="self-start" onClick={onOpenProfile}>
         <AudioWaveform />
-        Lydprofil, hastighet og masker …
-        {clip.volumeKeys.length ? ` (${clip.volumeKeys.length} punkter)` : ""}
+        {L("Lydprofil, hastighet og masker …", "Audio profile, speed and masks …")}
+        {clip.volumeKeys.length
+          ? L(` (${clip.volumeKeys.length} punkter)`, ` (${clip.volumeKeys.length} points)`)
+          : ""}
       </Button>
       {(clip.speed ?? 1) !== 1 ? (
         <p className="text-xs text-text-secondary">
-          Hastighet: {Math.round((clip.speed ?? 1) * 100)} % (endres i lydprofilen)
+          {L("Hastighet:", "Speed:")} {Math.round((clip.speed ?? 1) * 100)} %{" "}
+          {L("(endres i lydprofilen)", "(changed in the audio profile)")}
         </p>
       ) : null}
 
@@ -301,7 +342,7 @@ export function AudioClipPanel({
               search={{ asset: asset.id }}
             >
               <Library />
-              Åpne i biblioteket
+              {L("Åpne i biblioteket", "Open in library")}
             </Link>
           </Button>
         ) : null}
@@ -310,10 +351,13 @@ export function AudioClipPanel({
             size="sm"
             variant="ghost"
             onClick={onRemove}
-            title="Fjern lyden fra filmen (Delete). Kan angres."
+            title={L(
+              "Fjern lyden fra filmen (Delete). Kan angres.",
+              "Remove the audio from the film (Delete). Can be undone.",
+            )}
           >
             <Trash2 />
-            Fjern fra filmen
+            {L("Fjern fra filmen", "Remove from film")}
           </Button>
         ) : null}
       </div>
@@ -342,7 +386,12 @@ function Gain({
     setDraft(null);
   };
   return (
-    <Field label={`Volum (${v > 0 ? "+" : ""}${v.toLocaleString("nb-NO")} dB)`}>
+    <Field
+      label={L(
+        `Volum (${v > 0 ? "+" : ""}${v.toLocaleString(locale())} dB)`,
+        `Volume (${v > 0 ? "+" : ""}${v.toLocaleString(locale())} dB)`,
+      )}
+    >
       <input
         type="range"
         min={-30}
@@ -350,13 +399,13 @@ function Gain({
         step={0.5}
         value={v}
         disabled={disabled}
-        aria-label="Volum i desibel"
+        aria-label={L("Volum i desibel", "Volume in decibels")}
         onChange={(e) => setDraft(Number(e.target.value))}
         onPointerUp={commit}
         onKeyUp={commit}
         onBlur={commit}
         onDoubleClick={() => onCommit(0)}
-        title="Dobbeltklikk for 0 dB"
+        title={L("Dobbeltklikk for 0 dB", "Double-click for 0 dB")}
         className="h-1 w-full accent-[var(--accent-brand)]"
       />
     </Field>

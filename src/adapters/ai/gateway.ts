@@ -1,3 +1,4 @@
+import { L } from "@/core";
 /**
  * Felles for kallene til Lovable AI Gateway (bilder og tekst, DEC-0045/0066). Bare på serveren:
  * nøkkelen (LOVABLE_API_KEY) er en hemmelighet i Lovable Cloud og sendes aldri til nettleseren.
@@ -17,12 +18,25 @@ export function validReferencePath(projectId: string, p: unknown): p is string {
 /** Feilmelding fra tjenesten på norsk, uten hemmeligheter. */
 export function gatewayError(status: number, body: string): string {
   if (status === 402)
-    return "Lovable-kredittene i arbeidsområdet er brukt opp. Fyll på i Lovable og prøv igjen.";
-  if (status === 429) return "For mange forespørsler akkurat nå. Vent et minutt og prøv igjen.";
+    return L(
+      "Lovable-kredittene i arbeidsområdet er brukt opp. Fyll på i Lovable og prøv igjen.",
+      "The Lovable credits in the workspace are used up. Top up in Lovable and try again.",
+    );
+  if (status === 429)
+    return L(
+      "For mange forespørsler akkurat nå. Vent et minutt og prøv igjen.",
+      "Too many requests right now. Wait a minute and try again.",
+    );
   if (status === 401 || status === 403)
-    return "AI-tjenesten i Lovable godtok ikke nøkkelen. Sjekk at Lovable AI er slått på for prosjektet.";
+    return L(
+      "AI-tjenesten i Lovable godtok ikke nøkkelen. Sjekk at Lovable AI er slått på for prosjektet.",
+      "The AI service in Lovable did not accept the key. Check that Lovable AI is turned on for the project.",
+    );
   if (status === 400 && /safety|policy|moderation/i.test(body))
-    return "AI-tjenesten avviste beskrivelsen (innholdsregler). Endre beskrivelsen og prøv igjen.";
+    return L(
+      "AI-tjenesten avviste beskrivelsen (innholdsregler). Endre beskrivelsen og prøv igjen.",
+      "The AI service rejected the description (content rules). Change the description and try again.",
+    );
   // Tjenestens egen forklaring (ingen hemmeligheter), kortet ned, så feilen kan forstås og rettes
   const detail = (() => {
     try {
@@ -38,7 +52,10 @@ export function gatewayError(status: number, body: string): string {
     .replace(/\s+/g, " ")
     .trim()
     .slice(0, 220);
-  return `AI-tjenesten svarte med feil ${status}${detail ? `: ${detail}` : "."}`;
+  return L(
+    `AI-tjenesten svarte med feil ${status}${detail ? `: ${detail}` : "."}`,
+    `The AI service responded with an error ${status}${detail ? `: ${detail}` : "."}`,
+  );
 }
 
 /** Største bilde som sendes til bildemodellen. */
@@ -76,14 +93,32 @@ export async function referenceImages(
     .eq("project_id", projectId)
     .in("media_path", paths);
   if (error)
-    return { ok: false, message: `Forbildebildene kunne ikke kontrolleres: ${error.message}` };
+    return {
+      ok: false,
+      message: L(
+        `Forbildebildene kunne ikke kontrolleres: ${error.message}`,
+        `The reference images could not be checked: ${error.message}`,
+      ),
+    };
   const sizes = new Map<string, number>();
   for (const r of (data ?? []) as { media_path: string; mime_type: string; byte_size: number }[])
     if (r.mime_type.startsWith("image/")) sizes.set(r.media_path, Number(r.byte_size));
   if (paths.some((p) => !sizes.has(p)))
-    return { ok: false, message: "Et forbildebilde finnes ikke i prosjektets bibliotek." };
+    return {
+      ok: false,
+      message: L(
+        "Et forbildebilde finnes ikke i prosjektets bibliotek.",
+        "A reference image does not exist in the project's library.",
+      ),
+    };
   if ([...sizes.values()].some((b) => b > MAX_REFERENCE_BYTES))
-    return { ok: false, message: "Et forbildebilde er for stort (over 20 MB) til å sendes med." };
+    return {
+      ok: false,
+      message: L(
+        "Et forbildebilde er for stort (over 20 MB) til å sendes med.",
+        "A reference image is too large (over 20 MB) to be sent with the request.",
+      ),
+    };
   return { ok: true, sizes };
 }
 

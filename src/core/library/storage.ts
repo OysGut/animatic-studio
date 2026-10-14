@@ -4,6 +4,7 @@
  * versjoner – med antall og størrelse der den er kjent. Grunnlag for sikkerhetskopi og senere flytting.
  */
 import type { ProjectState } from "../model";
+import { L } from "../i18n";
 import { versionsOf } from "./index";
 
 export type StorageCategory =
@@ -74,45 +75,60 @@ export function storageOverview(
   return [
     {
       category: "project",
-      label: "Redigerbare prosjektdata",
+      label: L("Redigerbare prosjektdata", "Editable project data"),
       count: projectObjects,
       bytes: null,
-      note: "Manus, scener, 2D-scener, lag, lyd- og klippdeler, koblinger, notater og ressursbeskrivelser i databasen.",
+      note: L(
+        "Manus, scener, 2D-scener, lag, lyd- og klippdeler, koblinger, notater og ressursbeskrivelser i databasen.",
+        "Script, scenes, 2D scenes, layers, audio and clip parts, links, notes and asset descriptions in the database.",
+      ),
     },
     {
       category: "source",
-      label: "Kildemedier",
+      label: L("Kildemedier", "Source media"),
       count: src.n,
       bytes: src.b,
-      note: "Bilder og lyd som er lastet opp, og importert film. Importerte manusfiler ligger i egen lagring.",
+      note: L(
+        "Bilder og lyd som er lastet opp, og importert film. Importerte manusfiler ligger i egen lagring.",
+        "Images and audio that have been uploaded, and imported film. Imported script files are kept in separate storage.",
+      ),
     },
     {
       category: "generated",
-      label: "Genererte mediefiler",
+      label: L("Genererte mediefiler", "Generated media files"),
       count: gen.n,
       bytes: gen.b,
-      note: "Bilder, lyd og video laget med AI.",
+      note: L("Bilder, lyd og video laget med AI.", "Images, audio and video made with AI."),
     },
     {
       category: "temporary",
-      label: "Midlertidige renderingsfiler",
+      label: L("Midlertidige renderingsfiler", "Temporary render files"),
       count: 0,
       bytes: 0,
-      note: "Lages bare i nettleseren under avspilling og eksport, og lagres aldri i prosjektet.",
+      note: L(
+        "Lages bare i nettleseren under avspilling og eksport, og lagres aldri i prosjektet.",
+        "Only created in the browser during playback and export, and never saved in the project.",
+      ),
     },
     {
       category: "export",
-      label: "Eksportfiler",
+      label: L("Eksportfiler", "Export files"),
       count: 0,
       bytes: 0,
-      note: "Lastes ned til maskinen din og lagres ikke i prosjektet. Innstillingene huskes per produksjon.",
+      note: L(
+        "Lastes ned til maskinen din og lagres ikke i prosjektet. Innstillingene huskes per produksjon.",
+        "Downloaded to your computer and not saved in the project. The settings are remembered per production.",
+      ),
     },
     {
       category: "history",
-      label: "Historiske versjoner",
+      label: L("Historiske versjoner", "Historical versions"),
       count: hist.n,
       bytes: hist.b,
-      note: "Eldre bildeversjoner som ikke brukes lenger. De slettes aldri automatisk. Manusversjoner og endringshistorikken ligger i databasen.",
+      note: L(
+        "Eldre bildeversjoner som ikke brukes lenger. De slettes aldri automatisk. Manusversjoner og endringshistorikken ligger i databasen.",
+        "Older image versions that are no longer used. They are never deleted automatically. Script versions and the change history are kept in the database.",
+      ),
     },
   ];
 }

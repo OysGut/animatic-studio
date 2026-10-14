@@ -25,6 +25,7 @@ Ved motstrid: pek på motsetningen og hvilken beslutning som løser den. Velg al
 - 2D-animatic kan spilles av og eksporteres uten generativ AI. Betalte API-kall krever eksplisitt kostnadsgodkjenning innen budsjett.
 - Flere brukere per prosjekt (DEC-0003, REQ-0520–0522): ingen av andres endringer skal gå tapt. Teknisk løsning (DEC-0010/0022): tilgang håndheves i backend; all skriving går via serverfunksjonen `runCommand` → `public.apply_changes` med revisjonskontroll. Migrasjoner i `db/migrations/` (aldri i `drizzle/`, som Lovable eier).
 - Domenekjernen (`src/core/`) er plattformnøytral TypeScript uten React/Lovable/Supabase-avhengigheter (portabilitet til macOS/Windows).
+- **Norsk og engelsk (DEC-0081, REQ-0629/0630):** tjenesten finnes på norsk og engelsk. All ny eller endret brukervendt tekst – også verktøytips, skjermlesertekster og feilmeldinger fra kjernen – skrives på begge språk i samme endring. Brukerens eget innhold og manusets formatord oversettes ikke; AI-prompter er fortsatt engelske.
 
 ## Før du endrer kode
 1. Les `SESSION_HANDOVER.md` og `CURRENT_WORK.md`.

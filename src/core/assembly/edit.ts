@@ -2,6 +2,7 @@
  * Klipping i monteringen (DEC-0048, REQ-0220–0222): trimme, splitte og fjerne deler av et klipp. Rene
  * funksjoner som lager delelisten til kommandoen SetSceneEdit; kildemediet endres aldri.
  */
+import { L } from "../i18n";
 import type { ClipPartFields } from "../commands/types";
 import type { ClipPartId, TakeId } from "../ids";
 import type { Rational } from "../time";
@@ -229,7 +230,12 @@ export function takeLabel(s: ProjectState, t: Take): string {
     const v = Object.values(s.assetVersions).find((x) => x.mediaPath === t.mediaRef);
     const variant = v ? s.assetVariants[v.variantId] : undefined;
     const a = variant ? s.assets[variant.assetId] : undefined;
-    return `Stillbilde: ${a?.name ?? "bilde"}${v ? ` v${v.number}` : ""}`;
+    return L(
+      `Stillbilde: ${a?.name ?? "bilde"}${v ? ` v${v.number}` : ""}`,
+      `Still image: ${a?.name ?? "image"}${v ? ` v${v.number}` : ""}`,
+    );
   }
-  return t.media?.fileName ?? (t.kind === "ai_video" ? "AI-video" : "Importert film");
+  return (
+    t.media?.fileName ?? (t.kind === "ai_video" ? "AI-video" : L("Importert film", "Imported film"))
+  );
 }

@@ -153,7 +153,7 @@ describe("bildene som sendes med til bildemodellen", () => {
     expect(p).toContain("Image 1: the current design of Maja");
     expect(p).toContain(`Image ${attached.length}:`);
     expect(p).toContain("Style reference only");
-    expect(p).toContain("Maja in image 1");
+    expect(p).toContain("Keep Maja identical to image 1");
     // Ved sending byttes listen ut med en fersk (ingen dobbel liste)
     const sent = withAttachedLegend(p, "Maja", attached);
     expect(sent.match(/ATTACHED IMAGES/g)).toHaveLength(1);

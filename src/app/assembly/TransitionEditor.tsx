@@ -5,6 +5,8 @@
  */
 import { useState } from "react";
 import {
+  L,
+  collation,
   MAX_TRANSITION_FRAMES,
   TRANSITION_KINDS,
   type Transition,
@@ -43,8 +45,8 @@ export function TransitionEditor({
   const label = (k: TransitionKind) =>
     first && k !== "cut"
       ? k === "dipWhite"
-        ? "Inntoning fra hvitt"
-        : "Inntoning fra svart"
+        ? L("Inntoning fra hvitt", "Fade in from white")
+        : L("Inntoning fra svart", "Fade in from black")
       : TRANSITION_LABEL[k];
   function setSeconds(text: string) {
     const v = Number(text.trim().replace(",", "."));
@@ -57,7 +59,7 @@ export function TransitionEditor({
       <div className="flex flex-wrap items-center gap-1.5 text-xs">
         <select
           id={`${idPrefix}-type`}
-          aria-label="Overgang"
+          aria-label={L("Overgang", "Transition")}
           value={inherited ? INHERIT : t.kind}
           disabled={!editable}
           onChange={(e) => {
@@ -77,7 +79,8 @@ export function TransitionEditor({
         >
           {standard !== undefined ? (
             <option value={INHERIT}>
-              Prosjektets standard ({label(standard.kind).toLocaleLowerCase("nb")})
+              {L("Prosjektets standard", "Project default")} (
+              {label(standard.kind).toLocaleLowerCase(collation())})
             </option>
           ) : null}
           {TRANSITION_KINDS.map((k) => (
@@ -91,7 +94,7 @@ export function TransitionEditor({
             <input
               type="number"
               inputMode="decimal"
-              aria-label="Overgangens lengde i sekunder"
+              aria-label={L("Overgangens lengde i sekunder", "Transition length in seconds")}
               step={0.1}
               min={0.04}
               max={MAX_TRANSITION_FRAMES / fps}
@@ -125,7 +128,7 @@ export function TransitionEditor({
                   }}
                   className="size-3.5 accent-[var(--accent-brand)]"
                 />
-                Overlapp
+                {L("Overlapp", "Overlap")}
               </label>
             ) : null}
           </>
@@ -134,9 +137,20 @@ export function TransitionEditor({
       {t.kind !== "cut" && !first ? (
         <p className="text-[11px] text-text-tertiary">
           {t.overlap
-            ? "Scenen begynner før forrige er ferdig, og filmen blir kortere med overgangens lengde."
-            : "Midt på klippet: halvparten før og halvparten etter. Filmens lengde endres ikke."}
-          {inherited ? " Endres under «Standardovergang» i verktøylinjen." : ""}
+            ? L(
+                "Scenen begynner før forrige er ferdig, og filmen blir kortere med overgangens lengde.",
+                "The scene starts before the previous one has finished, and the film gets shorter by the length of the transition.",
+              )
+            : L(
+                "Midt på klippet: halvparten før og halvparten etter. Filmens lengde endres ikke.",
+                "In the middle of the cut: half before and half after. The film's length does not change.",
+              )}
+          {inherited
+            ? L(
+                " Endres under «Standardovergang» i verktøylinjen.",
+                " Changes under “Default transition” in the toolbar.",
+              )
+            : ""}
         </p>
       ) : null}
     </div>

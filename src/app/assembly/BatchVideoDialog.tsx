@@ -18,12 +18,14 @@ import {
   formatHeading,
   formatUsd,
   keysEvenly,
+  L,
   newId,
   PRIORITY_LABEL,
   type ProjectState,
   providersFor,
   sceneVideoWork,
   type SceneVideoWork,
+  tm,
   videoDurationFor,
   videoStartImages,
 } from "@/core";
@@ -167,7 +169,7 @@ export function BatchVideoDialog({
             removeSegmentIds: [],
             segments,
           },
-          "Inndeling for generering (flere scener)",
+          L("Inndeling for generering (flere scener)", "Division for generation (several scenes)"),
           group,
         );
         if (r.error) {
@@ -186,11 +188,14 @@ export function BatchVideoDialog({
         n++;
         if (adaptPromptForModel(w.prompts[i] ?? "", chosen.model).blocked) {
           errors.push(
-            `Scene ${w.clip.productionNumber ?? ""}, segment ${i + 1}: replikkene er for lange for modellen`,
+            L(
+              `Scene ${w.clip.productionNumber ?? ""}, segment ${i + 1}: replikkene er for lange for modellen`,
+              `Scene ${w.clip.productionNumber ?? ""}, segment ${i + 1}: the dialogue is too long for the model`,
+            ),
           );
           continue;
         }
-        setBusy(`Legger i kø … ${n} av ${totalSegments}`);
+        setBusy(L(`Legger i kø … ${n} av ${totalSegments}`, `Queueing … ${n} of ${totalSegments}`));
         try {
           const r = await startVideoGeneration({
             data: {
@@ -228,11 +233,23 @@ export function BatchVideoDialog({
       errors.length
         ? {
             kind: "error",
-            text: `${queued} lagt i kø. Ikke lagt i kø: ${errors.slice(0, 6).join(" · ")}${errors.length > 6 ? ` (+${errors.length - 6})` : ""}`,
+            text: L(
+              `${queued} lagt i kø. Ikke lagt i kø: ${errors
+                .slice(0, 6)
+                .map((x) => tm(x))
+                .join(" · ")}${errors.length > 6 ? ` (+${errors.length - 6})` : ""}`,
+              `${queued} queued. Not queued: ${errors
+                .slice(0, 6)
+                .map((x) => tm(x))
+                .join(" · ")}${errors.length > 6 ? ` (+${errors.length - 6})` : ""}`,
+            ),
           }
         : {
             kind: "ok",
-            text: `${queued} ${queued === 1 ? "video er" : "videoer er"} lagt i kø hos ${chosen.provider.name}. De sendes høyst tre om gangen og legges inn som nye versjoner når de er ferdige. Følg med under AI-jobber på prosjektoversikten.`,
+            text: L(
+              `${queued} ${queued === 1 ? "video er" : "videoer er"} lagt i kø hos ${chosen.provider.name}. De sendes høyst tre om gangen og legges inn som nye versjoner når de er ferdige. Følg med under AI-jobber på prosjektoversikten.`,
+              `${queued} ${queued === 1 ? "video is" : "videos are"} queued at ${chosen.provider.name}. They are sent three at a time at most and added as new versions when they are finished. Follow them under AI jobs on the project overview.`,
+            ),
           },
     );
   }
@@ -242,22 +259,28 @@ export function BatchVideoDialog({
       <DialogContent className="max-h-[90vh] max-w-3xl grid-rows-[auto_minmax(0,1fr)_auto]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-1.5">
-            <ListOrdered className="size-4" aria-hidden /> Video for flere scener
+            <ListOrdered className="size-4" aria-hidden />{" "}
+            {L("Video for flere scener", "Video for several scenes")}
           </DialogTitle>
           <DialogDescription>
-            Velg scenene. Hvert segment lages med beskrivelsen fra «Generer scene» (din egen eller
-            den automatiske) og legges i køen. 2D-scenene endres aldri; ferdige videoer blir nye
-            versjoner.
+            {L(
+              "Velg scenene. Hvert segment lages med beskrivelsen fra «Generer scene» (din egen eller den automatiske) og legges i køen. 2D-scenene endres aldri; ferdige videoer blir nye versjoner.",
+              "Choose the scenes. Each segment is made with the description from “Generate scene” (your own or the automatic one) and added to the queue. The 2D scenes are never changed; finished videos become new versions.",
+            )}
           </DialogDescription>
         </DialogHeader>
         {/* Bare innholdet ruller; tittel og knapper står fast (UX-gjennomgang DEC-0076) */}
         <div className="-mx-1 flex min-h-0 flex-col gap-3 overflow-y-auto px-1">
           {available.isLoading ? (
-            <p className="text-xs text-text-tertiary">Henter leverandører …</p>
+            <p className="text-xs text-text-tertiary">
+              {L("Henter leverandører …", "Fetching providers …")}
+            </p>
           ) : !chosen ? (
             <p className="text-[13px] text-text-secondary">
-              Ingen videoleverandør er koblet til. Prosjektets eier kan koble til en under
-              «AI-leverandører» på prosjektlisten.
+              {L(
+                "Ingen videoleverandør er koblet til. Prosjektets eier kan koble til en under «AI-leverandører» på prosjektlisten.",
+                "No video provider is connected. The project's owner can connect one under “AI providers” on the project list.",
+              )}
             </p>
           ) : (
             <>
@@ -272,7 +295,7 @@ export function BatchVideoDialog({
               />
               <div className="flex flex-wrap items-center gap-2 text-xs text-text-secondary">
                 <select
-                  aria-label="Videomodell"
+                  aria-label={L("Videomodell", "Video model")}
                   value={`${chosen.provider.id}|${chosen.model.id}`}
                   onChange={(e) => {
                     setPick(e.target.value);
@@ -291,19 +314,19 @@ export function BatchVideoDialog({
                   ))}
                 </select>
                 <select
-                  aria-label="Format"
+                  aria-label={L("Format", "Format")}
                   value={aspect}
                   onChange={(e) => setAspect(e.target.value as "16:9" | "9:16")}
                   className={ctl}
                   disabled={!!busy}
                 >
-                  <option value="16:9">16:9 liggende</option>
-                  <option value="9:16">9:16 stående</option>
+                  <option value="16:9">{L("16:9 liggende", "16:9 landscape")}</option>
+                  <option value="9:16">{L("9:16 stående", "9:16 portrait")}</option>
                 </select>
                 <label className="flex items-center gap-1">
-                  Prioritet
+                  {L("Prioritet", "Priority")}
                   <select
-                    aria-label="Prioritet i køen"
+                    aria-label={L("Prioritet i køen", "Priority in the queue")}
                     value={priority}
                     onChange={(e) => setPriority(Number(e.target.value) as 1 | 2 | 3)}
                     className={ctl}
@@ -323,7 +346,7 @@ export function BatchVideoDialog({
                     onChange={(e) => setChain(e.target.checked)}
                     disabled={!!busy}
                   />
-                  Sammenheng mellom segmentene
+                  {L("Sammenheng mellom segmentene", "Continuity between the segments")}
                 </label>
                 <label className="flex items-center gap-1.5">
                   <input
@@ -335,7 +358,7 @@ export function BatchVideoDialog({
                     }}
                     disabled={!!busy}
                   />
-                  Hopp over segmenter som har video
+                  {L("Hopp over segmenter som har video", "Skip segments that already have video")}
                 </label>
               </div>
               <div className="flex gap-2 text-xs">
@@ -353,7 +376,7 @@ export function BatchVideoDialog({
                     )
                   }
                 >
-                  Velg alle uten video
+                  {L("Velg alle uten video", "Select all without video")}
                 </Button>
                 <Button
                   size="sm"
@@ -361,11 +384,11 @@ export function BatchVideoDialog({
                   disabled={!!busy}
                   onClick={() => setSelected(new Set())}
                 >
-                  Fjern valg
+                  {L("Fjern valg", "Clear selection")}
                 </Button>
               </div>
               <ul
-                aria-label="Scener"
+                aria-label={L("Scener", "Scenes")}
                 className="max-h-[45vh] overflow-y-auto border border-border bg-surface-1"
               >
                 {works.map((w) => {
@@ -390,15 +413,17 @@ export function BatchVideoDialog({
                         {formatHeading(w.clip.heading)}
                       </span>
                       <span className="w-40 text-text-secondary">
-                        {w.plan.length} {w.plan.length === 1 ? "segment" : "segmenter"}
-                        {w.stored.length ? "" : " (forslag)"} · {w.withVideo.length} med video
+                        {w.plan.length}{" "}
+                        {w.plan.length === 1 ? L("segment", "segment") : L("segmenter", "segments")}
+                        {w.stored.length ? "" : L(" (forslag)", " (proposal)")} ·{" "}
+                        {w.withVideo.length} {L("med video", "with video")}
                       </span>
                       <span className="tabular w-20 text-right text-text-secondary">
                         {b
-                          ? "mangler startbilde"
+                          ? L("mangler startbilde", "missing start image")
                           : t.length
                             ? `~${formatUsd(costFor(w))}`
-                            : "ferdig"}
+                            : L("ferdig", "done")}
                       </span>
                     </li>
                   );
@@ -408,16 +433,19 @@ export function BatchVideoDialog({
                 <div
                   ref={(el) => el?.scrollIntoView?.({ block: "nearest" })}
                   role="alertdialog"
-                  aria-label="Bekreft videogenerering"
+                  aria-label={L("Bekreft videogenerering", "Confirm video generation")}
                   className="flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-2 p-2"
                 >
                   <p className="text-xs text-text-primary">
-                    {totalSegments} {totalSegments === 1 ? "segment" : "segmenter"} i{" "}
-                    {runnable.length} {runnable.length === 1 ? "scene" : "scener"} med{" "}
-                    {chosen.provider.name} – {chosen.model.label}. Belastes leverandørkontoen til
-                    prosjektets eier, anslått {formatUsd(totalCost)} (et anslag; prisen regnes inn i
-                    taket med en gang). Jobber som venter i køen kan avbrytes uten kostnad. Vil du
-                    legge dem i kø nå?
+                    {totalSegments}{" "}
+                    {totalSegments === 1 ? L("segment", "segment") : L("segmenter", "segments")} i{" "}
+                    {runnable.length}{" "}
+                    {runnable.length === 1 ? L("scene", "scene") : L("scener", "scenes")}{" "}
+                    {L("med", "with")} {chosen.provider.name} – {chosen.model.label}.{" "}
+                    {L(
+                      `Belastes leverandørkontoen til prosjektets eier, anslått ${formatUsd(totalCost)} (et anslag; prisen regnes inn i taket med en gang). Jobber som venter i køen kan avbrytes uten kostnad. Vil du legge dem i kø nå?`,
+                      `Charged to the provider account of the project's owner, estimated at ${formatUsd(totalCost)} (an estimate; the price counts towards the limit straight away). Jobs waiting in the queue can be cancelled at no cost. Do you want to queue them now?`,
+                    )}
                   </p>
                   <CostLines
                     lines={costBreakdown(chosen.provider, chosen.model, {
@@ -430,17 +458,20 @@ export function BatchVideoDialog({
                   <SentPrompts
                     items={runnable.flatMap((w) =>
                       todo(w).map((i) => ({
-                        label: `Scene ${w.clip.productionNumber ?? ""}, segment ${i + 1}`,
+                        label: L(
+                          `Scene ${w.clip.productionNumber ?? ""}, segment ${i + 1}`,
+                          `Scene ${w.clip.productionNumber ?? ""}, segment ${i + 1}`,
+                        ),
                         ...adaptPromptForModel(w.prompts[i] ?? "", chosen.model),
                       })),
                     )}
                   />
                   <div className="flex gap-2">
                     <Button size="sm" onClick={() => void run()} disabled={!!busy}>
-                      <AiGlyph /> Ja, legg i kø
+                      <AiGlyph /> {L("Ja, legg i kø", "Yes, queue them")}
                     </Button>
                     <Button size="sm" variant="ghost" onClick={() => setConfirm(false)}>
-                      Avbryt
+                      {L("Avbryt", "Cancel")}
                     </Button>
                   </div>
                 </div>
@@ -466,7 +497,7 @@ export function BatchVideoDialog({
         </div>
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={!!busy}>
-            Lukk
+            {L("Lukk", "Close")}
           </Button>
           {chosen ? (
             <Button
@@ -475,7 +506,8 @@ export function BatchVideoDialog({
               onClick={() => setConfirm(true)}
             >
               <AiGlyph />
-              Lag video ({totalSegments} {totalSegments === 1 ? "segment" : "segmenter"}, ~
+              {L("Lag video", "Make video")} ({totalSegments}{" "}
+              {totalSegments === 1 ? L("segment", "segment") : L("segmenter", "segments")}, ~
               {formatUsd(totalCost)}) …
             </Button>
           ) : null}

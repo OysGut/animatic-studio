@@ -1,5 +1,5 @@
 /** Hjelpere for tidslinjen i sceneeditoren (egen fil, så Timeline.tsx bare eksporterer komponenter). */
-import type { Composition, CompositionFields, ProjectState } from "@/core";
+import { L, localized, type Composition, type CompositionFields, type ProjectState } from "@/core";
 
 export function compositionFieldsOf(c: Composition): CompositionFields {
   return {
@@ -19,11 +19,11 @@ export interface LayerEventMark {
   readonly title: string;
 }
 
-const EVENT_KIND: Record<string, string> = {
-  action: "Handling",
-  dialogue: "Replikk",
-  shot: "Bilde",
-};
+const EVENT_KIND: Record<string, string> = localized({
+  action: ["Handling", "Action"],
+  dialogue: ["Replikk", "Dialogue"],
+  shot: ["Bilde", "Shot"],
+});
 
 /** Hendelsene per lag i 2D-scenens egen tid (bilder), sortert. Fjernede koblinger er ikke med. */
 export function layerEventMarks(
@@ -36,12 +36,12 @@ export function layerEventMarks(
     const b = state.blocks[l.blockId];
     const text = b ? b.text.replace(/\s+/g, " ").trim() : "";
     const line = b
-      ? `${EVENT_KIND[b.kind] ?? "Manus"}: ${text.length > 80 ? `${text.slice(0, 78)} …` : text}`
-      : "Manuslinjen er borte";
+      ? `${EVENT_KIND[b.kind] ?? L("Manus", "Script")}: ${text.length > 80 ? `${text.slice(0, 78)} …` : text}`
+      : L("Manuslinjen er borte", "The script line is missing");
     const mark = {
       id: l.id,
       frame: Math.max(0, Math.round((l.startMs / 1000) * fps)),
-      title: `Hendelse – ${line}`,
+      title: L(`Hendelse – ${line}`, `Event – ${line}`),
     };
     const list = out.get(l.layerId);
     if (list) list.push(mark);

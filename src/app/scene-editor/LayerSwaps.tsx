@@ -6,8 +6,10 @@
 import { ArrowRightLeft, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
+  L,
   coverVersion,
   layerFieldsOf,
+  locale,
   sortedAssets,
   variantsOf,
   type Command,
@@ -50,7 +52,8 @@ export function LayerSwaps({
   const [picking, setPicking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fps = state.project.fps.num / state.project.fps.den;
-  const seconds = (f: number) => `${(Math.round((f / fps) * 100) / 100).toLocaleString("nb-NO")} s`;
+  const seconds = (f: number) =>
+    `${(Math.round((f / fps) * 100) / 100).toLocaleString(locale())} s`;
   const here = layer.swaps.find((w) => w.frame === frame);
 
   function setSwaps(label: string, swaps: readonly ImageSwap[]) {
@@ -74,28 +77,33 @@ export function LayerSwaps({
       versionId: null,
     };
     setSwaps(
-      `Bildeskifte til «${state.assets[assetId]?.name ?? "bilde"}»`,
+      L(
+        `Bildeskifte til «${state.assets[assetId]?.name ?? "bilde"}»`,
+        `Image swap to “${state.assets[assetId]?.name ?? "image"}”`,
+      ),
       [...layer.swaps.filter((w) => w.frame !== frame), swap].sort((a, b) => a.frame - b.frame),
     );
   }
 
   function change(w: ImageSwap, patch: Partial<ImageSwap>) {
     setSwaps(
-      "Endre bildeskifte",
+      L("Endre bildeskifte", "Change image swap"),
       layer.swaps.map((x) => (x.frame === w.frame ? { ...x, ...patch } : x)),
     );
   }
 
   return (
-    <section className="mb-4" aria-label="Bildeskifte">
+    <section className="mb-4" aria-label={L("Bildeskifte", "Image swap")}>
       <h3 className="mb-1.5 text-xs font-medium uppercase tracking-[0.04em] text-text-tertiary">
-        Bildeskifte
+        {L("Bildeskifte", "Image swap")}
       </h3>
       <div className="flex flex-col gap-2">
         {layer.swaps.length === 0 ? (
           <p className="text-xs text-text-tertiary">
-            Laget kan bytte til et annet bilde midt i scenen (hardt kutt). Flytt avspillingshodet
-            dit skiftet skal skje.
+            {L(
+              "Laget kan bytte til et annet bilde midt i scenen (hardt kutt). Flytt avspillingshodet dit skiftet skal skje.",
+              "The layer can switch to another image in the middle of the scene (a hard cut). Move the playhead to where the swap should happen.",
+            )}
           </p>
         ) : (
           <ul className="flex flex-col gap-1.5">
@@ -119,21 +127,24 @@ export function LayerSwaps({
                       type="button"
                       onClick={() => onSeek?.(w.frame)}
                       className="shrink-0 rounded-sm px-1 text-xs tabular-nums text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-                      title="Gå til skiftet"
+                      title={L("Gå til skiftet", "Go to the swap")}
                     >
-                      fra {seconds(w.frame)}
+                      {L("fra", "from")} {seconds(w.frame)}
                     </button>
                     <span className="min-w-0 flex-1 truncate text-[13px] text-text-primary">
-                      {asset?.name ?? "Ukjent ressurs"}
+                      {asset?.name ?? L("Ukjent ressurs", "Unknown asset")}
                     </span>
                     {editable ? (
                       <button
                         type="button"
-                        aria-label={`Fjern bildeskiftet ved ${seconds(w.frame)}`}
-                        title="Fjern bildeskiftet"
+                        aria-label={L(
+                          `Fjern bildeskiftet ved ${seconds(w.frame)}`,
+                          `Remove the image swap at ${seconds(w.frame)}`,
+                        )}
+                        title={L("Fjern bildeskiftet", "Remove the image swap")}
                         onClick={() =>
                           setSwaps(
-                            "Fjern bildeskifte",
+                            L("Fjern bildeskifte", "Remove image swap"),
                             layer.swaps.filter((x) => x.frame !== w.frame),
                           )
                         }
@@ -145,7 +156,7 @@ export function LayerSwaps({
                   </div>
                   {variants.length > 0 ? (
                     <label className="flex items-center gap-1.5 text-xs text-text-secondary">
-                      Variant
+                      {L("Variant", "Variant")}
                       <select
                         value={w.assetVariantId ?? ""}
                         disabled={!editable}
@@ -157,10 +168,10 @@ export function LayerSwaps({
                         }
                         className={selectClass}
                       >
-                        <option value="">Forsidebildet</option>
+                        <option value="">{L("Forsidebildet", "Cover image")}</option>
                         {variants.map((v) => (
                           <option key={v.id} value={v.id}>
-                            {v.name || "Uten navn"}
+                            {v.name || L("Uten navn", "Untitled")}
                           </option>
                         ))}
                       </select>
@@ -179,13 +190,21 @@ export function LayerSwaps({
             disabled={frame < 1}
             title={
               frame < 1
-                ? "Flytt avspillingshodet forbi starten av scenen først"
-                : "Laget viser et annet bilde fra dette bildet"
+                ? L(
+                    "Flytt avspillingshodet forbi starten av scenen først",
+                    "Move the playhead past the start of the scene first",
+                  )
+                : L(
+                    "Laget viser et annet bilde fra dette bildet",
+                    "The layer shows a different image from this point",
+                  )
             }
             onClick={() => setPicking(true)}
           >
             <ArrowRightLeft className="size-3.5" />
-            {here ? "Bytt bildet her …" : `Bytt bilde ved ${seconds(frame)} …`}
+            {here
+              ? L("Bytt bildet her …", "Change the image here …")
+              : L(`Bytt bilde ved ${seconds(frame)} …`, `Change image at ${seconds(frame)} …`)}
           </Button>
         ) : null}
         {error ? (
@@ -238,15 +257,20 @@ function SwapPicker({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[86vh] max-w-[760px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
-          <DialogTitle>Bildeskifte i «{layer.name}»</DialogTitle>
+          <DialogTitle>
+            {L(`Bildeskifte i «${layer.name}»`, `Image swap in “${layer.name}”`)}
+          </DialogTitle>
           <DialogDescription>
-            Fra {when} viser laget bildet du velger. Plassering, størrelse og bevegelse beholdes.
+            {L(
+              `Fra ${when} viser laget bildet du velger. Plassering, størrelse og bevegelse beholdes.`,
+              `From ${when} the layer shows the image you choose. Position, size and movement are kept.`,
+            )}
           </DialogDescription>
         </DialogHeader>
         <AssetPicker state={state} candidates={candidates} urls={urls} editable onPick={onPick} />
         <DialogFooter>
           <Button variant="secondary" onClick={() => onOpenChange(false)}>
-            Avbryt
+            {L("Avbryt", "Cancel")}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -31,25 +31,25 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 
 | Modul | Navn | Krav | P0 | Implementert | Verifisert |
 |---|---|---|---|---|---|
-| CORE | Project Core | 118 | 57 | 118 | 114 |
-| SCRIPT | Screenplay Engine | 127 | 32 | 127 | 125 |
-| TIMELINE | Timeline & Assembly Engine | 104 | 28 | 104 | 104 |
-| LIBRARY | Resource Library | 73 | 10 | 62 | 60 |
+| CORE | Project Core | 119 | 57 | 119 | 115 |
+| SCRIPT | Screenplay Engine | 128 | 32 | 128 | 126 |
+| TIMELINE | Timeline & Assembly Engine | 106 | 28 | 106 | 106 |
+| LIBRARY | Resource Library | 81 | 10 | 70 | 65 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 39 | 39 |
-| COMPOSE | 2D Composition Engine | 65 | 14 | 65 | 65 |
+| COMPOSE | 2D Composition Engine | 69 | 14 | 69 | 69 |
 | CAMERA | Camera & Motion Engine | 32 | 2 | 32 | 32 |
 | AUDIO | Audio Engine | 41 | 1 | 41 | 41 |
-| PROMPT | Prompt Orchestration Engine | 51 | 15 | 47 | 46 |
-| PROVIDER | Provider Adapters | 29 | 6 | 27 | 26 |
+| PROMPT | Prompt Orchestration Engine | 56 | 15 | 52 | 48 |
+| PROVIDER | Provider Adapters | 33 | 6 | 31 | 27 |
 | QUALITYCOST | Quality & Cost Engine | 28 | 7 | 27 | 27 |
 | QUEUE | Render Queue | 35 | 13 | 35 | 32 |
-| VERSION | Version & Dependency Engine | 90 | 36 | 88 | 86 |
-| L10N | Localization Engine | 38 | 4 | 37 | 37 |
+| VERSION | Version & Dependency Engine | 91 | 36 | 89 | 87 |
+| L10N | Localization Engine | 40 | 4 | 39 | 39 |
 | PRESENT | Presentation Engine | 30 | 3 | 25 | 25 |
 | EXPORT | Export Engine | 59 | 12 | 59 | 58 |
 | SECURITY | Security & Storage | 34 | 5 | 33 | 32 |
-| COLLAB | Collaboration & Access | 13 | 0 | 13 | 13 |
-| UI | Brukergrensesnitt og designsystem | 163 | 20 | 159 | 157 |
+| COLLAB | Collaboration & Access | 15 | 0 | 15 | 15 |
+| UI | Brukergrensesnitt og designsystem | 178 | 20 | 174 | 171 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 7 | 5 |
 
 ## Dekning per fase
@@ -60,7 +60,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | 2 | 97 | 91 |
 | 3 | 70 | 67 |
 | 4 | 85 | 83 |
-| 5 | 94 | 90 |
+| 5 | 117 | 108 |
 | 6 | 49 | 48 |
 | 7 | 63 | 62 |
 | 8 | 39 | 25 |
@@ -672,10 +672,33 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0600 | Beslutning DEC-0079 | PROMPT, PROVIDER, UI | src/core/generation/prompt-history.ts, src/core/generation/providers.ts, src/app/library/GenerateImagePanel.tsx, src/adapters/ai/providers.server.ts | 2 | tests/unit/funn-2026-10-13.test.ts, docs/development/VISUAL_QA_DEC-0079.md | Verifisert | 2026-10-13 DEC-0079: Opprettet etter Mars' testrunde 13.10.2026 |
 | REQ-0601 | Beslutning DEC-0079 | PROMPT, LIBRARY, UI | src/app/library/ImageLightbox.tsx, src/adapters/browser/ai.ts, src/app/scene-editor/LayerImageDialog.tsx | 2 | tests/unit/funn-2026-10-13.test.ts, docs/development/VISUAL_QA_DEC-0079.md | Verifisert | 2026-10-13 DEC-0079: Opprettet etter Mars' testrunde 13.10.2026 |
 | REQ-0602 | Beslutning DEC-0079 | PROMPT, UI | src/app/library/GenerateImagePanel.tsx | 1 | docs/development/VISUAL_QA_DEC-0079.md | Verifisert | 2026-10-13 DEC-0079: Opprettet etter Mars' testrunde 13.10.2026 |
-| REQ-0603 | Beslutning DEC-0079 | PROMPT | src/core/generation/image-prompt.ts | 1 | tests/unit/funn-2026-10-13.test.ts | Verifisert | 2026-10-13 DEC-0079: Opprettet etter Mars' testrunde 13.10.2026 |
+| REQ-0603 | Beslutning DEC-0079 | PROMPT | src/core/generation/image-prompt.ts, src/core/generation/brief.ts | 2 | tests/unit/funn-2026-10-13.test.ts, tests/unit/funn-2026-10-14.test.ts | Verifisert | 2026-10-14 DEC-0080: Rå manusutdrag med replikker ga motsigelser og fristet modellen til å tegne andre figurer; faktaarket går foran, og bare handlingssetninger brukes som reserve |
 | REQ-0604 | Beslutning DEC-0079 | COMPOSE | src/core/commands/apply.ts | 1 | tests/unit/composition.test.ts | Verifisert | 2026-10-13 DEC-0079: Opprettet etter Mars' testrunde 13.10.2026 |
 | REQ-0605 | Beslutning DEC-0079 | UI | src/app/library/GenerateImagePanel.tsx | 1 | docs/development/VISUAL_QA_DEC-0079.md | Verifisert | 2026-10-13 DEC-0079: Opprettet etter Mars' testrunde 13.10.2026 |
 | REQ-0606 | Beslutning DEC-0079 | COMPOSE, LIBRARY | src/core/composition/index.ts, src/core/cutout/index.ts, src/app/library/CutoutDialog.tsx, src/app/scene-editor/LayerInspector.tsx | 2 | tests/unit/funn-2026-10-13.test.ts, docs/development/VISUAL_QA_DEC-0079.md | Verifisert | 2026-10-13 DEC-0079: Opprettet etter Mars' testrunde 13.10.2026 |
 | REQ-0607 | Beslutning DEC-0079 | LIBRARY, SECURITY | src/core/commands/apply.ts, src/core/library/index.ts, src/app/library/TrashDialog.tsx, src/adapters/storage/trash.functions.ts, db/migrations/0029_trash_speed_step.sql | 2 | tests/unit/funn-2026-10-13.test.ts, tests/db/run-db-tests.ts | Verifisert | 2026-10-13 DEC-0079: Opprettet etter Mars' testrunde 13.10.2026 |
 | REQ-0608 | Beslutning DEC-0079 | AUDIO, UI | src/app/assembly/AiDialogueDialog.tsx, src/core/generation/speech.ts, src/adapters/ai/providers.server.ts | 2 | tests/unit/funn-2026-10-13.test.ts, docs/development/VISUAL_QA_DEC-0079.md | Verifisert | 2026-10-13 DEC-0079: Opprettet etter Mars' testrunde 13.10.2026 |
 | REQ-0609 | Beslutning DEC-0079 | AUDIO, PROVIDER | src/core/generation/speech.ts, src/adapters/ai/speech.functions.ts, src/adapters/ai/providers.server.ts | 1 | tests/unit/ai-speech.test.ts | Verifisert | 2026-10-13 DEC-0079: Opprettet etter Mars' testrunde 13.10.2026 |
+| REQ-0610 | Beslutning DEC-0080 | TIMELINE, UI | src/app/scene-editor/Timeline.tsx | 1 | docs/development/VISUAL_QA_DEC-0080.md | Verifisert | 2026-10-14 DEC-0080: Opprettet etter Mars' ønsker 13.–14.10.2026 |
+| REQ-0611 | Beslutning DEC-0080 | PROMPT, UI | src/app/library/GenerateImagePanel.tsx, src/app/scene-editor/LayerImageDialog.tsx, src/app/projects/StyleGuideSection.tsx | 1 | docs/development/VISUAL_QA_DEC-0080.md | Verifisert | 2026-10-14 DEC-0080: Opprettet etter Mars' ønsker 13.–14.10.2026 |
+| REQ-0612 | Beslutning DEC-0080 | LIBRARY, UI | src/app/library/ImageLightbox.tsx | 1 | docs/development/VISUAL_QA_DEC-0080.md | Verifisert | 2026-10-14 DEC-0080: Opprettet etter Mars' ønsker 13.–14.10.2026 |
+| REQ-0613 | Beslutning DEC-0080 | UI | src/app/scene-editor/LayerImageDialog.tsx | 1 | docs/development/VISUAL_QA_DEC-0080.md | Verifisert | 2026-10-14 DEC-0080: Opprettet etter Mars' ønsker 13.–14.10.2026 |
+| REQ-0614 | Beslutning DEC-0080 | LIBRARY, UI | src/core/cutout/index.ts, src/app/library/CutoutDialog.tsx, src/app/library/image-actions.ts, src/app/library/ImageLightbox.tsx | 2 | tests/unit/funn-2026-10-14.test.ts, docs/development/VISUAL_QA_DEC-0080.md | Verifisert | 2026-10-14 DEC-0080: Opprettet etter Mars' ønsker 13.–14.10.2026 |
+| REQ-0615 | Beslutning DEC-0080 | LIBRARY, UI | src/app/library/ImageLightbox.tsx, src/app/library/image-actions.ts, src/core/cutout/index.ts | 2 | tests/unit/funn-2026-10-14.test.ts, docs/development/VISUAL_QA_DEC-0080.md | Verifisert | 2026-10-14 DEC-0080: Opprettet etter Mars' ønsker 13.–14.10.2026 |
+| REQ-0616 | Beslutning DEC-0080 | COMPOSE, UI | src/core/composition/shape.ts, src/app/scene-editor/LayerInspector.tsx, src/app/scene-editor/SceneEditorWorkspace.tsx | 2 | tests/unit/funn-2026-10-14.test.ts, docs/development/VISUAL_QA_DEC-0080.md | Verifisert | 2026-10-14 DEC-0080: Opprettet etter Mars' ønsker 13.–14.10.2026 |
+| REQ-0617 | Beslutning DEC-0080 | COMPOSE, UI | src/core/composition/shape.ts, src/app/scene-editor/LayerInspector.tsx | 2 | tests/unit/funn-2026-10-14.test.ts, docs/development/VISUAL_QA_DEC-0080.md | Verifisert | 2026-10-14 DEC-0080: Opprettet etter Mars' ønsker 13.–14.10.2026 |
+| REQ-0618 | Beslutning DEC-0080 | COMPOSE, UI | src/core/composition/shape.ts, src/app/scene-editor/Stage.tsx | 2 | tests/unit/funn-2026-10-14.test.ts, docs/development/VISUAL_QA_DEC-0080.md | Verifisert | 2026-10-14 DEC-0080: Opprettet etter Mars' ønsker 13.–14.10.2026 |
+| REQ-0619 | Beslutning DEC-0080 | LIBRARY, UI | src/app/library/CutoutDialog.tsx, src/app/library/ImageLightbox.tsx | 1 | docs/development/VISUAL_QA_DEC-0080.md | Verifisert | 2026-10-14 DEC-0080: Opprettet etter Mars' ønsker 13.–14.10.2026 |
+| REQ-0620 | Beslutning DEC-0080 | COMPOSE, TIMELINE | src/core/composition/shape.ts, src/app/scene-editor/LayerInspector.tsx | 2 | tests/unit/funn-2026-10-14.test.ts, docs/development/VISUAL_QA_DEC-0080.md | Verifisert | 2026-10-14 DEC-0080: Opprettet etter Mars' ønsker 13.–14.10.2026 |
+| REQ-0621 | Beslutning DEC-0080 | SCRIPT, UI | src/core/screenplay/flow.ts, src/app/script/ScriptPageView.tsx, src/app/script/ScriptWorkspace.tsx | 2 | tests/unit/funn-2026-10-14.test.ts, docs/development/VISUAL_QA_DEC-0080.md | Verifisert | 2026-10-14 DEC-0080: Opprettet etter Mars' ønsker 13.–14.10.2026 |
+| REQ-0622 | Beslutning DEC-0080 | LIBRARY, VERSION | src/core/library/view.ts, src/core/commands/apply.ts, src/core/patch.ts, db/migrations/0030_views_visual_brief.sql | 2 | tests/unit/funn-2026-10-14.test.ts, tests/db/run-db-tests.ts | Verifisert | 2026-10-14 DEC-0080: Opprettet etter Mars' ønsker 13.–14.10.2026 |
+| REQ-0623 | Beslutning DEC-0080 | PROMPT, PROVIDER, LIBRARY | src/app/library/ImageAiPanels.tsx, src/core/generation/brief.ts, src/core/generation/image-prompt.ts, src/adapters/ai/generate-image.functions.ts | 2 | tests/unit/funn-2026-10-14.test.ts, docs/development/VISUAL_QA_DEC-0080.md | Implementert – ikke verifisert | 2026-10-14 DEC-0080: Opprettet etter Mars' ønsker 13.–14.10.2026 |
+| REQ-0624 | Beslutning DEC-0080 | PROMPT, PROVIDER | src/core/generation/brief.ts, src/core/generation/image-prompt.ts, src/app/library/GenerateImagePanel.tsx, src/adapters/ai/providers.server.ts | 2 | tests/unit/funn-2026-10-14.test.ts, docs/development/VISUAL_QA_DEC-0080.md | Verifisert | 2026-10-14 DEC-0080: Opprettet etter Mars' ønsker 13.–14.10.2026 |
+| REQ-0625 | Beslutning DEC-0080 | PROMPT, UI | src/core/generation/style-analysis.ts, src/adapters/ai/write-prompt.functions.ts, src/app/projects/StyleGuideSection.tsx | 2 | tests/unit/funn-2026-10-14.test.ts, docs/development/VISUAL_QA_DEC-0080.md | Implementert – ikke verifisert | 2026-10-14 DEC-0080: Opprettet etter Mars' ønsker 13.–14.10.2026 |
+| REQ-0626 | Beslutning DEC-0080 | LIBRARY, PROMPT | src/app/library/VisualBriefEditor.tsx, src/core/generation/style-analysis.ts, src/core/commands/apply.ts, db/migrations/0030_views_visual_brief.sql | 3 | tests/unit/funn-2026-10-14.test.ts, tests/db/run-db-tests.ts, docs/development/VISUAL_QA_DEC-0080.md | Implementert – ikke verifisert | 2026-10-14 DEC-0080: Opprettet etter Mars' ønsker 13.–14.10.2026 |
+| REQ-0627 | Beslutning DEC-0080 | PROVIDER | src/core/generation/providers.ts, src/adapters/ai/providers.server.ts, src/adapters/ai/generate-image.functions.ts | 1 | tests/unit/funn-2026-10-14.test.ts | Implementert – ikke verifisert | 2026-10-14 DEC-0080: Opprettet etter Mars' ønsker 13.–14.10.2026 |
+| REQ-0628 | Beslutning DEC-0080 | PROVIDER, LIBRARY | src/app/library/ImageAiPanels.tsx, src/adapters/ai/providers.server.ts, src/adapters/ai/generate-image.functions.ts, src/core/generation/providers.ts | 2 | tests/unit/funn-2026-10-14.test.ts, docs/development/VISUAL_QA_DEC-0080.md | Implementert – ikke verifisert | 2026-10-14 DEC-0080: Opprettet etter Mars' ønsker 13.–14.10.2026 |
+| REQ-0629 | Beslutning DEC-0081 | UI, L10N | src/core/i18n/index.ts, src/app/i18n/language.tsx, src/app/projects/ProjectsScreen.tsx, src/core/i18n/catalog.gen.ts | 2 | tests/unit/i18n.test.ts, tests/visual/i18n-en-pass.mjs, docs/development/VISUAL_QA_DEC-0082.md | Verifisert | 2026-10-14 DEC-0081: Bygget: språkvalg på hovedsiden og i toppfeltet; hele grensesnittet oversatt; engelsk gjennomgang uten norsk tekst utenom brukerinnhold |
+| REQ-0630 | Beslutning DEC-0081 | UI, L10N | scripts/i18n/check.mjs, docs/development/I18N_GUIDE.md | 1 | tests/unit/i18n.test.ts | Verifisert | 2026-10-14 DEC-0081: Bygget: kontrollen kjøres i enhetstestene og feiler ved tekst uten engelsk |
+| REQ-0631 | Beslutning DEC-0082 | UI, COLLAB | src/app/projects/ProjectsScreen.tsx, src/adapters/browser/projects.ts, src/app/project/use-production.tsx | 1 | tests/visual/i18n-en-pass.mjs, docs/development/VISUAL_QA_DEC-0082.md | Verifisert | 2026-10-14 DEC-0082: Opprettet etter Mars' ønske 14.10.2026 |
+| REQ-0632 | Beslutning DEC-0082 | COLLAB, CORE | src/core/commands/apply.ts, src/core/patch.ts, db/migrations/0031_production_note.sql, src/app/projects/ProductionList.tsx, src/app/projects/ProductionDialog.tsx | 1 | tests/db/run-db-tests.ts | Verifisert | 2026-10-14 DEC-0082: Opprettet etter Mars' ønske 14.10.2026 |

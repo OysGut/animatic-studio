@@ -1,10 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useSession } from "@/app/auth/use-session";
+import { L } from "@/core";
 import { SceneEditorWorkspace } from "@/app/scene-editor/SceneEditorWorkspace";
 
 /** ?scene=<forekomst-ID> åpner sceneeditoren med scenen valgt. */
 export const Route = createFileRoute("/prosjekt/$projectId/scene")({
-  head: () => ({ meta: [{ title: "Sceneeditor – Animatic Studio" }] }),
+  head: () => ({
+    meta: [{ title: L("Sceneeditor – Animatic Studio", "Scene editor – Animatic Studio") }],
+  }),
   validateSearch: (s: Record<string, unknown>): { scene?: string } =>
     typeof s["scene"] === "string" && /^[0-9a-f-]{36}$/i.test(s["scene"])
       ? { scene: s["scene"] }

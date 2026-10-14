@@ -7,14 +7,15 @@ import type { AssetVersion, AudioClip, AudioKind, ProjectState } from "../model"
 import type { FilmClip } from "../assembly/film";
 import { coverVersion, versionsOf } from "../library";
 import { framesToSeconds, type Rational } from "../time";
+import { L, localized } from "../i18n";
 
-export const AUDIO_KIND_LABEL: Record<AudioKind, string> = {
-  dialogue: "Dialog",
-  narration: "Forteller",
-  sfx: "Effekter",
-  ambience: "Atmosfære",
-  music: "Musikk",
-};
+export const AUDIO_KIND_LABEL: Record<AudioKind, string> = localized({
+  dialogue: ["Dialog", "Dialogue"],
+  narration: ["Forteller", "Narration"],
+  sfx: ["Effekter", "Effects"],
+  ambience: ["Atmosfære", "Ambience"],
+  music: ["Musikk", "Music"],
+});
 
 /** Sporenes rekkefølge i tidslinjen. */
 export const AUDIO_TRACK_ORDER: readonly AudioKind[] = [
@@ -256,7 +257,7 @@ export function filmTakeAudio(clips: readonly FilmClip[], fps: Rational): FilmAu
         revision: t.revision,
         occurrenceId: c.occurrenceId,
         kind: "dialogue",
-        name: t.media?.fileName ?? "Filmlyd",
+        name: t.media?.fileName ?? L("Filmlyd", "Film audio"),
         assetId: t.id,
         assetVariantId: null,
         versionId: null,

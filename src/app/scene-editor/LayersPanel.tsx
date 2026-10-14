@@ -28,6 +28,7 @@ import {
   groupOf,
   regroupFields,
   IDENTITY_TRANSFORM,
+  L,
   type Command,
   type Composition,
   type CompositionLayer,
@@ -104,11 +105,11 @@ export const LayersPanel = memo(function LayersPanel({
       { type: "UpdateLayers", layers: [{ layerId: l.id, fields: next }] },
       key === "visible"
         ? l.visible
-          ? "Skjul lag"
-          : "Vis lag"
+          ? L("Skjul lag", "Hide layer")
+          : L("Vis lag", "Show layer")
         : l.locked
-          ? "Lås opp lag"
-          : "Lås lag",
+          ? L("Lås opp lag", "Unlock layer")
+          : L("Lås lag", "Lock layer"),
     );
   }
 
@@ -140,7 +141,7 @@ export const LayersPanel = memo(function LayersPanel({
             compositionId: composition.id,
             fields: {
               kind: "group",
-              name: `Gruppe ${n}`,
+              name: L(`Gruppe ${n}`, `Group ${n}`),
               assetId: null,
               assetVariantId: null,
               versionId: null,
@@ -160,7 +161,7 @@ export const LayersPanel = memo(function LayersPanel({
           },
         ],
       },
-      "Ny gruppe",
+      L("Ny gruppe", "New group"),
       undoGroup,
     );
     if (err) return setError(err);
@@ -171,7 +172,7 @@ export const LayersPanel = memo(function LayersPanel({
           // Den nye gruppen står i ro (nøytral), så laget regnes bare ut av en eventuell gammel gruppe
           layers: [{ layerId: member.id, fields: regroupFields(state, member, layerId, frame) }],
         },
-        "Ny gruppe",
+        L("Ny gruppe", "New group"),
         undoGroup,
       );
     onSelect(layerId);
@@ -191,14 +192,14 @@ export const LayersPanel = memo(function LayersPanel({
   function forward(l: CompositionLayer) {
     const i = back.findIndex((x) => x.id === l.id);
     if (i < 0 || i >= back.length - 1) return;
-    moveBefore(l.id, back[i + 2]?.id ?? null, "Flytt lag fram");
+    moveBefore(l.id, back[i + 2]?.id ?? null, L("Flytt lag fram", "Move layer forward"));
   }
 
   function backward(l: CompositionLayer) {
     const i = back.findIndex((x) => x.id === l.id);
     const target = back[i - 1];
     if (i <= 0 || !target) return;
-    moveBefore(l.id, target.id, "Flytt lag bak");
+    moveBefore(l.id, target.id, L("Flytt lag bak", "Move layer back"));
   }
 
   /** Rekkefølgen etter slipp foran (inFront: over målet i listen) eller bak målraden, eller null: uendret. */
@@ -243,7 +244,10 @@ export const LayersPanel = memo(function LayersPanel({
               { layerId: dragged.id, fields: regroupFields(state, dragged, target.id, frame) },
             ],
           },
-          `Legg «${dragged.name}» i «${target.name}»`,
+          L(
+            `Legg «${dragged.name}» i «${target.name}»`,
+            `Put “${dragged.name}” in “${target.name}”`,
+          ),
           key,
         );
         if (err) return setError(err);
@@ -253,7 +257,10 @@ export const LayersPanel = memo(function LayersPanel({
         setError(
           run(
             { type: "MoveLayer", layerId: draggedId as never, beforeLayerId: before as never },
-            `Legg «${dragged.name}» i «${target.name}»`,
+            L(
+              `Legg «${dragged.name}» i «${target.name}»`,
+              `Put “${dragged.name}” in “${target.name}”`,
+            ),
             key,
           ),
         );
@@ -264,9 +271,9 @@ export const LayersPanel = memo(function LayersPanel({
     const label =
       nextGroup !== dragged.groupId
         ? nextGroup
-          ? `Legg «${dragged.name}» i gruppe`
-          : `Ta «${dragged.name}» ut av gruppen`
-        : "Flytt lag";
+          ? L(`Legg «${dragged.name}» i gruppe`, `Put “${dragged.name}” in a group`)
+          : L(`Ta «${dragged.name}» ut av gruppen`, `Take “${dragged.name}” out of the group`)
+        : L("Flytt lag", "Move layer");
     if (nextGroup !== dragged.groupId && dragged.kind !== "group") {
       const err = run(
         {
@@ -297,36 +304,41 @@ export const LayersPanel = memo(function LayersPanel({
         type: "UpdateLayers",
         layers: [{ layerId: l.id, fields: regroupFields(state, l, null, frame) }],
       },
-      `Ta «${l.name}» ut av gruppen`,
+      L(`Ta «${l.name}» ut av gruppen`, `Take “${l.name}” out of the group`),
     );
   }
 
   return (
-    <section aria-label="Lag" className="flex flex-col py-1">
+    <section aria-label={L("Lag", "Layers")} className="flex flex-col py-1">
       <div className="flex items-center px-3 pb-1 pt-2">
         <h2 className="text-xs font-medium uppercase tracking-[0.04em] text-text-tertiary">
-          Lag ({back.length})
+          {L("Lag", "Layers")} ({back.length})
         </h2>
         {editable && back.length > 0 ? (
           <button
             type="button"
             onClick={newGroup}
             className="ml-auto inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-[11px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-            title="Lag i en gruppe flyttes, roteres og skaleres sammen. Valgt lag legges i gruppen."
+            title={L(
+              "Lag i en gruppe flyttes, roteres og skaleres sammen. Valgt lag legges i gruppen.",
+              "Layers in a group are moved, rotated and scaled together. The selected layer is put in the group.",
+            )}
           >
             <Group className="size-3.5" aria-hidden />
-            Ny gruppe
+            {L("Ny gruppe", "New group")}
           </button>
         ) : null}
       </div>
       {back.length === 0 ? (
-        <p className="px-3 pb-2 text-xs text-text-tertiary">Ingen lag ennå. Bruk «Legg til lag».</p>
+        <p className="px-3 pb-2 text-xs text-text-tertiary">
+          {L("Ingen lag ennå. Bruk «Legg til lag».", "No layers yet. Use “Add layer”.")}
+        </p>
       ) : (
         <div className="relative">
           <ul
             className="flex flex-col overflow-y-auto"
             style={{ maxHeight: listHeight }}
-            aria-label="Lagene, forreste øverst"
+            aria-label={L("Lagene, forreste øverst", "Layers, front first")}
           >
             {front.map((l, idx) => {
               const on = l.id === selectedLayerId;
@@ -403,7 +415,10 @@ export const LayersPanel = memo(function LayersPanel({
                     type="button"
                     onClick={() => onSelect(l.id)}
                     onDoubleClick={() => onOpenImage?.(l.id)}
-                    title="Dobbeltklikk for å velge et annet bilde"
+                    title={L(
+                      "Dobbeltklikk for å velge et annet bilde",
+                      "Double-click to choose another image",
+                    )}
                     aria-pressed={on}
                     className={
                       "flex min-w-0 flex-1 items-center gap-2 py-1 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring " +
@@ -434,12 +449,12 @@ export const LayersPanel = memo(function LayersPanel({
                           (l.visible ? "text-text-primary" : "text-text-tertiary")
                         }
                       >
-                        {l.name || "Uten navn"}
+                        {l.name || L("Uten navn", "Without name")}
                       </span>
                       <span className="block truncate text-[11px] text-text-tertiary">
                         {LAYER_KIND_LABEL[l.kind]}
-                        {l.kind === "group" ? ` · ${members} lag` : ""}
-                        {inGroup ? ` · i «${group.name}»` : ""}
+                        {l.kind === "group" ? L(` · ${members} lag`, ` · ${members} layers`) : ""}
+                        {inGroup ? L(` · i «${group.name}»`, ` · in “${group.name}”`) : ""}
                       </span>
                     </span>
                   </button>
@@ -455,8 +470,8 @@ export const LayersPanel = memo(function LayersPanel({
                         className={iconButton}
                         onClick={() => forward(l)}
                         disabled={isFront}
-                        aria-label="Flytt lag fram"
-                        title="Fram"
+                        aria-label={L("Flytt lag fram", "Move layer forward")}
+                        title={L("Fram", "Forward")}
                       >
                         <ChevronUp className="size-3.5" />
                       </button>
@@ -465,8 +480,8 @@ export const LayersPanel = memo(function LayersPanel({
                         className={iconButton}
                         onClick={() => backward(l)}
                         disabled={isBack}
-                        aria-label="Flytt lag bak"
-                        title="Bak"
+                        aria-label={L("Flytt lag bak", "Move layer back")}
+                        title={L("Bak", "Back")}
                       >
                         <ChevronDown className="size-3.5" />
                       </button>
@@ -475,8 +490,11 @@ export const LayersPanel = memo(function LayersPanel({
                           type="button"
                           className={iconButton}
                           onClick={() => leaveGroup(l)}
-                          aria-label={`Ta «${l.name}» ut av gruppen`}
-                          title="Ta ut av gruppen"
+                          aria-label={L(
+                            `Ta «${l.name}» ut av gruppen`,
+                            `Take “${l.name}” out of the group`,
+                          )}
+                          title={L("Ta ut av gruppen", "Take out of the group")}
                         >
                           <Ungroup className="size-3.5" />
                         </button>
@@ -486,12 +504,27 @@ export const LayersPanel = memo(function LayersPanel({
                         className={iconButton}
                         onClick={() => {
                           setError(
-                            removeLayer(run, state, l, frame, `Fjern «${l.name}» fra scenen`),
+                            removeLayer(
+                              run,
+                              state,
+                              l,
+                              frame,
+                              L(
+                                `Fjern «${l.name}» fra scenen`,
+                                `Remove “${l.name}” from the scene`,
+                              ),
+                            ),
                           );
                           if (on) onSelect(null);
                         }}
-                        aria-label={`Fjern «${l.name}» fra scenen`}
-                        title="Fjern laget fra scenen (bildet blir i biblioteket, kan angres)"
+                        aria-label={L(
+                          `Fjern «${l.name}» fra scenen`,
+                          `Remove “${l.name}” from the scene`,
+                        )}
+                        title={L(
+                          "Fjern laget fra scenen (bildet blir i biblioteket, kan angres)",
+                          "Remove the layer from the scene (the image stays in the library, can be undone)",
+                        )}
                       >
                         <Trash2 className="size-3.5" />
                       </button>
@@ -502,13 +535,18 @@ export const LayersPanel = memo(function LayersPanel({
                       type="button"
                       className={iconButton}
                       onClick={() => toggle(l, "visible")}
-                      aria-label={l.visible ? "Skjul lag" : "Vis lag"}
-                      title={l.visible ? "Skjul lag" : "Vis lag"}
+                      aria-label={
+                        l.visible ? L("Skjul lag", "Hide layer") : L("Vis lag", "Show layer")
+                      }
+                      title={l.visible ? L("Skjul lag", "Hide layer") : L("Vis lag", "Show layer")}
                     >
                       {l.visible ? <Eye className="size-3.5" /> : <EyeOff className="size-3.5" />}
                     </button>
                   ) : l.visible ? null : (
-                    <EyeOff className="size-3.5 text-text-tertiary" aria-label="Skjult" />
+                    <EyeOff
+                      className="size-3.5 text-text-tertiary"
+                      aria-label={L("Skjult", "Hidden")}
+                    />
                   )}
                   {editable ? (
                     <button
@@ -522,13 +560,20 @@ export const LayersPanel = memo(function LayersPanel({
                             : " !text-text-tertiary hover:!text-text-primary")
                       }
                       onClick={() => toggle(l, "locked")}
-                      aria-label={l.locked ? "Lås opp lag" : "Lås lag"}
-                      title={l.locked ? "Lås opp lag" : "Lås lag"}
+                      aria-label={
+                        l.locked ? L("Lås opp lag", "Unlock layer") : L("Lås lag", "Lock layer")
+                      }
+                      title={
+                        l.locked ? L("Lås opp lag", "Unlock layer") : L("Lås lag", "Lock layer")
+                      }
                     >
                       {l.locked ? <Lock className="size-3.5" /> : <Unlock className="size-3.5" />}
                     </button>
                   ) : l.locked ? (
-                    <Lock className="size-3.5 text-text-tertiary" aria-label="Låst" />
+                    <Lock
+                      className="size-3.5 text-text-tertiary"
+                      aria-label={L("Låst", "Locked")}
+                    />
                   ) : null}
                 </li>
               );
@@ -540,7 +585,7 @@ export const LayersPanel = memo(function LayersPanel({
             onSize={setListHeight}
             min={80}
             max={900}
-            label="Høyde på laglisten"
+            label={L("Høyde på laglisten", "Height of the layer list")}
           />
         </div>
       )}

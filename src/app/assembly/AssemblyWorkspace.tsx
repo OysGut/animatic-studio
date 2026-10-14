@@ -62,6 +62,9 @@ import {
   cueAt,
   languageState,
   subtitleCues,
+  L,
+  locale,
+  tm,
 } from "@/core";
 import { useImageUrls } from "@/app/library/asset-images";
 import { useFilmVideo } from "./film-video";
@@ -122,14 +125,19 @@ export function AssemblyWorkspace({
   const role = members.data?.find((m) => m.user_id === userId)?.role;
   const editable = canEdit(role);
   const cmds = useCommands(projectId, userId, editable);
-  if (query.isLoading) return <p className="p-6 text-[13px] text-text-tertiary">Henter filmen …</p>;
+  if (query.isLoading)
+    return (
+      <p className="p-6 text-[13px] text-text-tertiary">
+        {L("Henter filmen …", "Loading the film …")}
+      </p>
+    );
   if (query.isError || !query.data)
     return (
       <div role="alert" className="p-6 text-[13px] text-status-danger">
-        Filmen kunne ikke hentes.
+        {L("Filmen kunne ikke hentes.", "The film could not be loaded.")}
         {query.error ? (
           <p className="mt-2 font-mono text-xs text-text-tertiary">
-            Teknisk detalj: {query.error.message}
+            {L("Teknisk detalj:", "Technical detail:")} {query.error.message}
           </p>
         ) : null}
       </div>
@@ -291,7 +299,12 @@ function Assembly({
     const clip = clips.find((c) => c.occurrenceId === focus.occurrenceId);
     if (!clip) {
       // Prøves igjen hvis klippene endres (f.eks. når siste versjon er hentet)
-      setError("Scenen er ikke med i filmen (den er deaktivert eller hører til en spinoff).");
+      setError(
+        L(
+          "Scenen er ikke med i filmen (den er deaktivert eller hører til en spinoff).",
+          "The scene is not in the film (it is deactivated or belongs to a spin-off).",
+        ),
+      );
       return;
     }
     focused.current = key;
@@ -320,7 +333,7 @@ function Assembly({
         const f = await uploadFilm(projectId, file, fps);
         // Importen og «ta i bruk» angres som ett steg (DEC-0049)
         const group = newId();
-        const label = `Importer film «${f.media.fileName}»`;
+        const label = `${L("Importer film", "Import film")} «${f.media.fileName}»`;
         const r = await cmds.runAndWait(
           {
             type: "AddTake",
@@ -348,9 +361,17 @@ function Assembly({
           label,
           group,
         );
-        return err === null ? null : "Filmen er lagret som versjon, men kunne ikke tas i bruk.";
+        return err === null
+          ? null
+          : L(
+              "Filmen er lagret som versjon, men kunne ikke tas i bruk.",
+              "The film was saved as a version, but could not be put into use.",
+            );
       } catch (e) {
-        return (e as Error).message || "Filmen kunne ikke importeres.";
+        return (
+          (e as Error).message ||
+          L("Filmen kunne ikke importeres.", "The film could not be imported.")
+        );
       }
     },
     [projectId, fps, cmds],
@@ -390,7 +411,7 @@ function Assembly({
           occurrenceId: occurrenceId as never,
           orderKey: keyBetween(k(before?.occurrenceId), k(after?.occurrenceId)),
         },
-        `Flytt scene ${clip.productionNumber ?? ""}`.trim(),
+        `${L("Flytt scene", "Move scene")} ${clip.productionNumber ?? ""}`.trim(),
       );
       if (!ok) pendingMove.current = null;
     },
@@ -440,12 +461,18 @@ function Assembly({
     if (!parts) {
       setError(
         a.clip.source === "placeholder"
-          ? "Et tittelkort kan ikke splittes. Lag en 2D-scene eller importer film først."
-          : "Avspillingshodet står på en grense mellom deler – flytt det litt og prøv igjen.",
+          ? L(
+              "Et tittelkort kan ikke splittes. Lag en 2D-scene eller importer film først.",
+              "A title card cannot be split. Create a 2D scene or import a film first.",
+            )
+          : L(
+              "Avspillingshodet står på en grense mellom deler – flytt det litt og prøv igjen.",
+              "The playhead is on a boundary between parts – move it a little and try again.",
+            ),
       );
       return;
     }
-    editScene(a.clip.occurrenceId, parts, "Splitt klipp");
+    editScene(a.clip.occurrenceId, parts, L("Splitt klipp", "Split clip"));
   }, [clips, playback.frame, fps, editScene]);
 
   // ---------- Tidskoblinger for manus (DEC-0048) ----------
@@ -467,12 +494,12 @@ function Assembly({
         const first = existing.sort((a, b) => a.startMs - b.startMs)[0]!;
         return run(
           { type: "UpdateTimeLinks", links: [{ linkId: first.id, fields }] },
-          "Flytt tidskobling",
+          L("Flytt tidskobling", "Move time link"),
         );
       }
       return run(
         { type: "AddTimeLinks", links: [{ linkId: newId() as never, fields }] },
-        "Koble replikk til tid",
+        L("Koble replikk til tid", "Link line to time"),
       );
     },
     [state.timeLinks, run],
@@ -481,7 +508,7 @@ function Assembly({
     (linkId: string) =>
       run(
         { type: "SetTimeLinksRemoved", linkIds: [linkId as never], removed: true },
-        "Fjern tidskobling",
+        L("Fjern tidskobling", "Remove time link"),
       ),
     [run],
   );
@@ -492,7 +519,10 @@ function Assembly({
     const local = playback.frame - c.startFrame;
     if (local < 0 || local >= c.durationFrames) {
       setError(
-        "Avspillingshodet er utenfor scenen du synker. Gå tilbake til scenen og prøv igjen.",
+        L(
+          "Avspillingshodet er utenfor scenen du synker. Gå tilbake til scenen og prøv igjen.",
+          "The playhead is outside the scene you are syncing. Go back to the scene and try again.",
+        ),
       );
       return;
     }
@@ -517,7 +547,8 @@ function Assembly({
       if (!o || !isSharedIn(state, o.productionId, o.variantId)) return null;
       const commands = ownCopyCommands(state, o.id) ?? [];
       const group = newId();
-      for (const c of commands) if (!run(c, "Egen versjon av scenen", group)) return false;
+      for (const c of commands)
+        if (!run(c, L("Egen versjon av scenen", "Own version of the scene"), group)) return false;
       const fork = commands.find((c) => c.type === "ForkVariant");
       const comp = commands.find((c) => c.type === "CreateComposition");
       return {
@@ -542,7 +573,7 @@ function Assembly({
         editScene(
           occurrenceId,
           trimPart(parts, i, { outMs: last.outMs + delta }, maxMsOf(clip, last.takeId)),
-          "Kutt slutten av klippet",
+          L("Kutt slutten av klippet", "Trim the end of the clip"),
         );
         return;
       }
@@ -557,7 +588,7 @@ function Assembly({
           compositionId: (own?.compositionId ?? c.id) as never,
           fields: { ...fieldsOf(c), durationFrames: frames },
         },
-        "Endre lengde på scene",
+        L("Endre lengde på scene", "Change scene length"),
         own?.group,
       );
     },
@@ -596,7 +627,9 @@ function Assembly({
       };
       run(
         { type: "UpdateAudioClips", clips: [{ clipId: a.id, fields }] },
-        moved ? "Flytt lyd til annen scene" : "Flytt eller kutt lyd",
+        moved
+          ? L("Flytt lyd til annen scene", "Move audio to another scene")
+          : L("Flytt eller kutt lyd", "Move or trim audio"),
       );
     },
     [state.audioClips, state.blocks, clips, fps, run],
@@ -626,7 +659,10 @@ function Assembly({
 
   function removeAudio(clipId: string) {
     if (
-      run({ type: "SetAudioClipsRemoved", clipIds: [clipId as never], removed: true }, "Fjern lyd")
+      run(
+        { type: "SetAudioClipsRemoved", clipIds: [clipId as never], removed: true },
+        L("Fjern lyd", "Remove audio"),
+      )
     )
       setSelectedAudioId(null);
   }
@@ -647,7 +683,7 @@ function Assembly({
           height: state.project.frameHeight,
         },
       },
-      "Ny 2D-scene",
+      L("Ny 2D-scene", "New 2D scene"),
       own?.group,
     );
   }
@@ -657,7 +693,7 @@ function Assembly({
     if (
       run(
         { type: "SetOccurrenceActive", occurrenceId: occurrenceId as never, active: false },
-        "Deaktiver scene",
+        L("Deaktiver scene", "Deactivate scene"),
       )
     )
       setSelectedId(clips[i + 1]?.occurrenceId ?? clips[i - 1]?.occurrenceId ?? null);
@@ -772,16 +808,19 @@ function Assembly({
 
   const withComposition = clips.filter((c) => c.source === "composition").length;
   const sceneLabel = at
-    ? `Scene ${at.clip.productionNumber ?? at.index + 1} av ${clips.length}`
-    : "Ingen scener";
+    ? `${L("Scene", "Scene")} ${at.clip.productionNumber ?? at.index + 1} ${L("av", "of")} ${clips.length}`
+    : L("Ingen scener", "No scenes");
 
   const toolbar = (
     <>
-      <IconButton label="Til start av filmen (Home)" onClick={() => playback.setFrame(0)}>
+      <IconButton
+        label={L("Til start av filmen (Home)", "To the start of the film (Home)")}
+        onClick={() => playback.setFrame(0)}
+      >
         <SkipBack className="size-3.5" />
       </IconButton>
       <IconButton
-        label="Forrige scene (pil opp)"
+        label={L("Forrige scene (pil opp)", "Previous scene (up arrow)")}
         onClick={() =>
           goToScene(at && playback.frame === at.clip.startFrame ? at.index - 1 : (at?.index ?? 0))
         }
@@ -789,18 +828,18 @@ function Assembly({
         <ChevronFirst className="size-3.5" />
       </IconButton>
       <IconButton
-        label="Forrige bilde (pil venstre)"
+        label={L("Forrige bilde (pil venstre)", "Previous frame (left arrow)")}
         onClick={() => playback.setFrame(playback.frame - 1)}
       >
         <ChevronLeft className="size-3.5" />
       </IconButton>
       <button
         type="button"
-        aria-label={playback.playing ? "Pause" : "Spill av"}
+        aria-label={playback.playing ? "Pause" : L("Spill av", "Play")}
         title={
           playback.playing
-            ? "Pause (mellomrom eller K)"
-            : "Spill av hele filmen (mellomrom eller K)"
+            ? L("Pause (mellomrom eller K)", "Pause (space or K)")
+            : L("Spill av hele filmen (mellomrom eller K)", "Play the whole film (space or K)")
         }
         onClick={playback.toggle}
         className={iconButton + " bg-surface-3 text-text-primary"}
@@ -808,22 +847,25 @@ function Assembly({
         {playback.playing ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}
       </button>
       <IconButton
-        label="Neste bilde (pil høyre)"
+        label={L("Neste bilde (pil høyre)", "Next frame (right arrow)")}
         onClick={() => playback.setFrame(playback.frame + 1)}
       >
         <ChevronRight className="size-3.5" />
       </IconButton>
-      <IconButton label="Neste scene (pil ned)" onClick={() => goToScene((at?.index ?? -1) + 1)}>
+      <IconButton
+        label={L("Neste scene (pil ned)", "Next scene (down arrow)")}
+        onClick={() => goToScene((at?.index ?? -1) + 1)}
+      >
         <ChevronLast className="size-3.5" />
       </IconButton>
       <IconButton
-        label="Til slutten av filmen (End)"
+        label={L("Til slutten av filmen (End)", "To the end of the film (End)")}
         onClick={() => playback.setFrame(duration - 1)}
       >
         <SkipForward className="size-3.5" />
       </IconButton>
       <IconButton
-        label="Spill i løkke"
+        label={L("Spill i løkke", "Loop playback")}
         active={playback.loop}
         onClick={() => playback.setLoop(!playback.loop)}
       >
@@ -831,7 +873,7 @@ function Assembly({
       </IconButton>
       <span
         className="shrink-0 whitespace-nowrap px-1 font-mono text-xs tabular-nums text-text-primary"
-        aria-label="Tid i filmen"
+        aria-label={L("Tid i filmen", "Time in the film")}
       >
         {formatTimecode(playback.frame, fps)}
         <span className="text-text-tertiary">
@@ -856,7 +898,9 @@ function Assembly({
       className="flex min-h-0 flex-1 flex-col outline-none"
     >
       <div className="flex h-10 shrink-0 items-center gap-2 border-b border-border bg-surface-2 px-3">
-        <span className="text-[13px] font-medium text-text-primary">Montering</span>
+        <span className="text-[13px] font-medium text-text-primary">
+          {L("Montering", "Assembly")}
+        </span>
         <ProductionPicker state={state} value={productionId} onChange={setProductionId} />
         <FilmLanguagePicker value={filmLang} onChange={setFilmLang} compact />
         <div className="mx-1 h-5 w-px bg-border" aria-hidden />
@@ -865,8 +909,14 @@ function Assembly({
           variant="ghost"
           onClick={cmds.undo}
           disabled={!cmds.canUndo}
-          title={cmds.undoLabel ? `Angre: ${cmds.undoLabel} (⌘Z)` : "Angre (⌘Z)"}
-          aria-label={cmds.undoLabel ? `Angre: ${cmds.undoLabel}` : "Angre"}
+          title={
+            cmds.undoLabel
+              ? `${L("Angre", "Undo")}: ${cmds.undoLabel} (⌘Z)`
+              : L("Angre (⌘Z)", "Undo (⌘Z)")
+          }
+          aria-label={
+            cmds.undoLabel ? `${L("Angre", "Undo")}: ${cmds.undoLabel}` : L("Angre", "Undo")
+          }
         >
           <Undo2 />
         </Button>
@@ -875,8 +925,14 @@ function Assembly({
           variant="ghost"
           onClick={cmds.redo}
           disabled={!cmds.canRedo}
-          title={cmds.redoLabel ? `Gjør om: ${cmds.redoLabel} (⇧⌘Z)` : "Gjør om (⇧⌘Z)"}
-          aria-label={cmds.redoLabel ? `Gjør om: ${cmds.redoLabel}` : "Gjør om"}
+          title={
+            cmds.redoLabel
+              ? `${L("Gjør om", "Redo")}: ${cmds.redoLabel} (⇧⌘Z)`
+              : L("Gjør om (⇧⌘Z)", "Redo (⇧⌘Z)")
+          }
+          aria-label={
+            cmds.redoLabel ? `${L("Gjør om", "Redo")}: ${cmds.redoLabel}` : L("Gjør om", "Redo")
+          }
         >
           <Redo2 />
         </Button>
@@ -884,11 +940,11 @@ function Assembly({
             transportlinjen («Scene 1 av 13», samlet tid), så etiketten skjules der (DEC-0076 funn 5) */}
         <span
           className="ml-1 hidden shrink-0 whitespace-nowrap text-xs tabular-nums text-text-tertiary min-[1600px]:inline"
-          title={`${clips.length} ${clips.length === 1 ? "scene" : "scener"} · ${formatSeconds(
+          title={`${clips.length} ${clips.length === 1 ? L("scene", "scene") : L("scener", "scenes")} · ${formatSeconds(
             framesToSeconds(filmDurationFrames(clips), fps),
-          )} · ${withComposition} med 2D-scene`}
+          )} · ${withComposition} ${L("med 2D-scene", "with 2D scene")}`}
         >
-          {clips.length} {clips.length === 1 ? "scene" : "scener"} ·{" "}
+          {clips.length} {clips.length === 1 ? L("scene", "scene") : L("scener", "scenes")} ·{" "}
           {formatSeconds(framesToSeconds(filmDurationFrames(clips), fps))}
         </span>
         <div className="ml-auto flex min-w-0 items-center gap-1.5">
@@ -899,10 +955,12 @@ function Assembly({
               className="shrink-0"
               onClick={() => setAddAudio("dialogue")}
               disabled={clips.length === 0}
-              title="Legg til lyd ved avspillingshodet"
+              title={L("Legg til lyd ved avspillingshodet", "Add audio at the playhead")}
             >
               <Music aria-hidden />
-              <span className="sr-only min-[1400px]:not-sr-only">Legg til lyd</span>
+              <span className="sr-only min-[1400px]:not-sr-only">
+                {L("Legg til lyd", "Add audio")}
+              </span>
             </Button>
           ) : null}
           <Button
@@ -911,12 +969,16 @@ function Assembly({
             className="shrink-0"
             onClick={() => setExportOpen(true)}
             disabled={clips.length === 0}
-            title="Lag en video av filmen eller et utvalg av scener"
-            aria-label="Eksporter animatic"
+            title={L(
+              "Lag en video av filmen eller et utvalg av scener",
+              "Make a video of the film or a selection of scenes",
+            )}
+            aria-label={L("Eksporter animatic", "Export animatic")}
           >
             <Download aria-hidden />
             <span>
-              Eksporter<span className="hidden min-[1400px]:inline"> animatic</span>
+              {L("Eksporter", "Export")}
+              <span className="hidden min-[1400px]:inline"> animatic</span>
             </span>
           </Button>
           <AssemblyMoreMenu
@@ -941,7 +1003,9 @@ function Assembly({
           <div className="mx-0.5 h-5 w-px shrink-0 bg-border" aria-hidden />
           <SaveIndicator cmds={cmds} />
           {roleKnown && !editable ? (
-            <span className="text-xs text-text-tertiary">Bare lesetilgang</span>
+            <span className="text-xs text-text-tertiary">
+              {L("Bare lesetilgang", "Read-only access")}
+            </span>
           ) : null}
         </div>
       </div>
@@ -950,7 +1014,7 @@ function Assembly({
           role="alert"
           className="shrink-0 border-b border-border px-3 py-1 text-xs text-status-danger"
         >
-          {error}
+          {tm(error)}
         </p>
       ) : null}
 
@@ -979,7 +1043,10 @@ function Assembly({
               onBlocked={() => {
                 setPopout(false);
                 setError(
-                  "Nettleseren stoppet det egne vinduet. Tillat sprettoppvinduer for siden.",
+                  L(
+                    "Nettleseren stoppet det egne vinduet. Tillat sprettoppvinduer for siden.",
+                    "The browser blocked the separate window. Allow pop-ups for this site.",
+                  ),
                 );
               }}
               onTogglePlay={playback.toggle}
@@ -987,7 +1054,7 @@ function Assembly({
           ) : null}
         </main>
         <aside
-          aria-label="Scene og manus"
+          aria-label={L("Scene og manus", "Scene and script")}
           style={{ width: panelW }}
           className="relative flex shrink-0 flex-col border-l border-border bg-surface-1"
         >
@@ -997,7 +1064,7 @@ function Assembly({
             onSize={setPanelW}
             min={260}
             max={620}
-            label="Bredde på scenepanelet"
+            label={L("Bredde på scenepanelet", "Width of the scene panel")}
           />
           {selectedAudio && !selectedAudio.removed ? (
             <AudioClipPanel
@@ -1037,7 +1104,12 @@ function Assembly({
                 if (takeId === null && selected.inheritedFrom) {
                   const ms = maxMsOf(selected, null);
                   if (!selected.compositionId || ms >= AUDIO_MAX_MS) {
-                    setError("Scenen har ingen 2D-scene å bruke i stedet.");
+                    setError(
+                      L(
+                        "Scenen har ingen 2D-scene å bruke i stedet.",
+                        "The scene has no 2D scene to use instead.",
+                      ),
+                    );
                     return;
                   }
                   editScene(
@@ -1051,7 +1123,7 @@ function Assembly({
                         outMs: ms,
                       },
                     ],
-                    "Bruk animatic i spinoffen",
+                    L("Bruk animatic i spinoffen", "Use animatic in the spin-off"),
                     null,
                   );
                   return;
@@ -1059,14 +1131,16 @@ function Assembly({
                 editScene(
                   selected.occurrenceId,
                   [],
-                  takeId ? "Bruk importert film" : "Bruk animatic",
+                  takeId
+                    ? L("Bruk importert film", "Use imported film")
+                    : L("Bruk animatic", "Use animatic"),
                   takeId,
                 );
               }}
               onTakeStatus={(takeId, status) =>
                 run(
                   { type: "SetTakeStatus", takeId: takeId as never, status },
-                  "Endre status for film",
+                  L("Endre status for film", "Change film status"),
                 )
               }
               maxMsOf={(takeId) => (selected ? maxMsOf(selected, takeId) : AUDIO_MAX_MS)}
@@ -1074,7 +1148,8 @@ function Assembly({
                 selected && editScene(selected.occurrenceId, parts, label)
               }
               onResetParts={() =>
-                selected && editScene(selected.occurrenceId, [], "Hele klippet igjen")
+                selected &&
+                editScene(selected.occurrenceId, [], L("Hele klippet igjen", "Whole clip again"))
               }
               onSplit={() => {
                 // Splitt i den valgte scenen; står hodet utenfor, flyttes det til midten av scenen først
@@ -1084,7 +1159,10 @@ function Assembly({
                 ) {
                   playback.setFrame(selected.startFrame + Math.floor(selected.durationFrames / 2));
                   setError(
-                    "Avspillingshodet er flyttet til scenen. Plasser det der klippet skal deles, og trykk igjen.",
+                    L(
+                      "Avspillingshodet er flyttet til scenen. Plasser det der klippet skal deles, og trykk igjen.",
+                      "The playhead was moved to the scene. Place it where the clip should be split, and press again.",
+                    ),
                   );
                   return;
                 }
@@ -1100,7 +1178,12 @@ function Assembly({
                 if (!selected) return;
                 const local = playback.frame - selected.startFrame;
                 if (local < 0 || local >= selected.durationFrames) {
-                  setError("Avspillingshodet er utenfor scenen. Flytt det inn i scenen først.");
+                  setError(
+                    L(
+                      "Avspillingshodet er utenfor scenen. Flytt det inn i scenen først.",
+                      "The playhead is outside the scene. Move it into the scene first.",
+                    ),
+                  );
                   return;
                 }
                 linkBlock(selected.occurrenceId, blockId, framesToSeconds(local, fps) * 1000, mode);
@@ -1113,7 +1196,7 @@ function Assembly({
                 selected &&
                 run(
                   { type: "SetTransition", occurrenceId: selected.occurrenceId, transition: t },
-                  "Endre overgang",
+                  L("Endre overgang", "Change transition"),
                 )
               }
               onMonochrome={(on) =>
@@ -1124,7 +1207,9 @@ function Assembly({
                     occurrenceId: selected.occurrenceId,
                     monochrome: on,
                   },
-                  on ? "Svart-hvitt for scenen" : "Farger for scenen",
+                  on
+                    ? L("Svart-hvitt for scenen", "Black and white for the scene")
+                    : L("Farger for scenen", "Colour for the scene"),
                 )
               }
             />
@@ -1214,7 +1299,7 @@ function Assembly({
                     productionId: productionId as never,
                     settings,
                   },
-                  "Lagre eksportinnstillingene",
+                  L("Lagre eksportinnstillingene", "Save the export settings"),
                 ),
             }
           : {})}
@@ -1240,9 +1325,12 @@ function Assembly({
       <Dialog open={standardOpen} onOpenChange={setStandardOpen}>
         <DialogContent className="max-w-[440px] border-border bg-surface-2">
           <DialogHeader>
-            <DialogTitle>Standardovergang</DialogTitle>
+            <DialogTitle>{L("Standardovergang", "Default transition")}</DialogTitle>
             <DialogDescription>
-              Overgangen alle scener får når de ikke har sin egen. Scener med eget valg endres ikke.
+              {L(
+                "Overgangen alle scener får når de ikke har sin egen. Scener med eget valg endres ikke.",
+                "The transition every scene gets when it has no transition of its own. Scenes with their own choice are not changed.",
+              )}
             </DialogDescription>
           </DialogHeader>
           <TransitionEditor
@@ -1254,12 +1342,15 @@ function Assembly({
               const next = t && t.kind !== "cut" ? t : null;
               const now = state.project.defaultTransition ?? null;
               if (JSON.stringify(next) === JSON.stringify(now)) return;
-              run({ type: "SetDefaultTransition", transition: next }, "Endre standardovergang");
+              run(
+                { type: "SetDefaultTransition", transition: next },
+                L("Endre standardovergang", "Change default transition"),
+              );
             }}
           />
           {error ? (
             <p role="alert" className="text-xs text-status-danger">
-              {error}
+              {tm(error)}
             </p>
           ) : null}
         </DialogContent>

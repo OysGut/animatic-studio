@@ -8,6 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import {
+  L,
   type Asset,
   type AssetVariant,
   costBreakdown,
@@ -16,6 +17,7 @@ import {
   formatUsd,
   providerInfo,
   providersFor,
+  tm,
 } from "@/core";
 import { generateSound } from "@/adapters/ai/sound.functions";
 import type { Commands } from "@/app/project/use-commands";
@@ -85,7 +87,7 @@ export function GenerateSoundPanel({
         },
       });
       if (!r.ok) {
-        setError(r.message);
+        setError(tm(r.message));
         return;
       }
       // Lengden måles i nettleseren (som ved opplasting); feiler det, lagres versjonen uten lengde
@@ -105,12 +107,21 @@ export function GenerateSoundPanel({
           versionId: r.versionId as never,
           variantId: variant.id,
           media: { ...r.media, durationMs },
-          note: `Generert med AI (${r.model}): ${prompt.trim()}`.slice(0, 500),
+          note: L(
+            `Generert med AI (${r.model}): ${prompt.trim()}`,
+            `Generated with AI (${r.model}): ${prompt.trim()}`,
+          ).slice(0, 500),
         },
-        `AI-lyd i «${variant.name}»`,
+        L(`AI-lyd i «${variant.name}»`, `AI sound in “${variant.name}”`),
       );
       if (res.error) setError(res.error);
-      else setDone("Lyden er lagt inn som ny versjon. Lytt og godkjenn den hvis den passer.");
+      else
+        setDone(
+          L(
+            "Lyden er lagt inn som ny versjon. Lytt og godkjenn den hvis den passer.",
+            "The sound has been added as a new version. Listen to it and approve it if it fits.",
+          ),
+        );
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -121,26 +132,32 @@ export function GenerateSoundPanel({
 
   return (
     <section
-      aria-label="Lag lyd med AI"
+      aria-label={L("Lag lyd med AI", "Generate sound with AI")}
       className="flex flex-col gap-2 rounded-sm border border-border bg-surface-2 p-2"
     >
       <div className="flex items-center justify-between">
-        <h4 className="text-xs font-semibold text-text-primary">Lag lyd med AI</h4>
+        <h4 className="text-xs font-semibold text-text-primary">
+          {L("Lag lyd med AI", "Generate sound with AI")}
+        </h4>
         <Button size="sm" variant="ghost" onClick={onClose} disabled={running}>
-          Lukk
+          {L("Lukk", "Close")}
         </Button>
       </div>
       {available.isLoading ? (
-        <p className="text-xs text-text-tertiary">Henter leverandører …</p>
+        <p className="text-xs text-text-tertiary">
+          {L("Henter leverandører …", "Loading providers …")}
+        </p>
       ) : !chosen ? (
         <p className="text-xs text-text-secondary">
-          Ingen av prosjektets eiere har koblet til en lydleverandør ennå. Eieren kan koble til
-          ElevenLabs under «AI-leverandører» på prosjektlisten.
+          {L(
+            "Ingen av prosjektets eiere har koblet til en lydleverandør ennå. Eieren kan koble til ElevenLabs under «AI-leverandører» på prosjektlisten.",
+            "None of the project's owners has connected a sound provider yet. The owner can connect ElevenLabs under “AI providers” on the project list.",
+          )}
         </p>
       ) : (
         <>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            Beskriv lyden (gjerne på engelsk)
+            {L("Beskriv lyden (gjerne på engelsk)", "Describe the sound (English preferred)")}
             <Textarea
               value={prompt}
               maxLength={1000}
@@ -155,9 +172,9 @@ export function GenerateSoundPanel({
           <div className="flex flex-wrap items-center gap-3 text-xs text-text-secondary">
             {models.length > 1 ? (
               <label className="flex items-center gap-1">
-                Modell
+                {L("Modell", "Model")}
                 <select
-                  aria-label="Lydmodell"
+                  aria-label={L("Lydmodell", "Sound model")}
                   value={`${chosen.provider.id}|${chosen.model.id}`}
                   disabled={running}
                   onChange={(e) => {
@@ -182,9 +199,9 @@ export function GenerateSoundPanel({
               </span>
             )}
             <label className="flex items-center gap-1">
-              Lengde
+              {L("Lengde", "Length")}
               <select
-                aria-label="Lengde på lyden"
+                aria-label={L("Lengde på lyden", "Length of the sound")}
                 value={seconds === null ? "" : String(seconds)}
                 disabled={running}
                 onChange={(e) => {
@@ -195,7 +212,7 @@ export function GenerateSoundPanel({
               >
                 {lengths.map((s) => (
                   <option key={s ?? "auto"} value={s === null ? "" : String(s)}>
-                    {s === null ? "Automatisk" : `${s} s`}
+                    {s === null ? L("Automatisk", "Automatic") : `${s} s`}
                   </option>
                 ))}
               </select>
@@ -210,34 +227,37 @@ export function GenerateSoundPanel({
                   setConfirm(false);
                 }}
               />
-              Sømløs løkke (bakgrunnslyd)
+              {L("Sømløs løkke (bakgrunnslyd)", "Seamless loop (background sound)")}
             </label>
           </div>
           {confirm ? (
             <div
               role="alertdialog"
-              aria-label="Bekreft generering"
+              aria-label={L("Bekreft generering", "Confirm generation")}
               className="flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-1 p-2"
             >
               <p className="text-xs text-text-primary">
-                Dette belastes {providerInfo(chosen.provider.id)?.name}-kontoen til prosjektets eier
-                (én lyd, anslått høyst {cost !== null ? formatUsd(cost) : "ukjent pris"}
-                {seconds === null ? ` regnet med lengste lengde, ${maxS} sekunder` : ""} – et
-                anslag). Vil du lage lyden nå?
+                {L(
+                  `Dette belastes ${providerInfo(chosen.provider.id)?.name}-kontoen til prosjektets eier (én lyd, anslått høyst ${cost !== null ? formatUsd(cost) : "ukjent pris"}${seconds === null ? ` regnet med lengste lengde, ${maxS} sekunder` : ""} – et anslag). Vil du lage lyden nå?`,
+                  `This is charged to the ${providerInfo(chosen.provider.id)?.name} account of the project's owner (one sound, estimated at most ${cost !== null ? formatUsd(cost) : "an unknown price"}${seconds === null ? ` based on the longest length, ${maxS} seconds` : ""} – an estimate). Do you want to make the sound now?`,
+                )}
               </p>
               <CostLines
                 lines={costBreakdown(chosen.provider, chosen.model, {
                   seconds: seconds !== null ? [seconds] : [],
                   ...(seconds === null ? { assumedMaxSeconds: maxS } : {}),
-                  total: cost !== null ? `høyst ${formatUsd(cost)}` : null,
+                  total:
+                    cost !== null
+                      ? L(`høyst ${formatUsd(cost)}`, `at most ${formatUsd(cost)}`)
+                      : null,
                 })}
               />
               <div className="flex gap-2">
                 <Button size="sm" onClick={() => void run()} disabled={!canRun}>
-                  <AiGlyph /> Ja, lag lyden
+                  <AiGlyph /> {L("Ja, lag lyden", "Yes, make the sound")}
                 </Button>
                 <Button size="sm" variant="ghost" onClick={() => setConfirm(false)}>
-                  Avbryt
+                  {L("Avbryt", "Cancel")}
                 </Button>
               </div>
             </div>
@@ -250,7 +270,7 @@ export function GenerateSoundPanel({
               onClick={() => setConfirm(true)}
             >
               {running ? <Loader2 className="animate-spin" /> : <AiGlyph />}
-              {running ? "Lager lyden …" : "Lag lyd …"}
+              {running ? L("Lager lyden …", "Making the sound …") : L("Lag lyd …", "Make sound …")}
             </Button>
           )}
         </>

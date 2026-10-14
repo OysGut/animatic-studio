@@ -3,7 +3,7 @@
  * ikke. Nødvendig f.eks. for å kunne angre en manusimport som har fått oversettelser.
  */
 import { useMemo, useState } from "react";
-import { LANGUAGE_LABEL, type ProjectState } from "@/core";
+import { L, LANGUAGE_LABEL, type ProjectState, languageWord } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +14,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+
+/** Språknavn i engelsk (LANGUAGE_LABEL er norsk). */
+const LANGUAGE_NAME_EN: Record<string, string> = { nb: "Norwegian", en: "English" };
 
 /** ID-ene til oversettelsene som er i bruk for språket (manuslinjer og scenehoder). */
 export function liveTranslationIds(s: ProjectState, language: string): string[] {
@@ -37,16 +40,23 @@ export function RemoveTranslationsDialog({
 }) {
   const ids = useMemo(() => liveTranslationIds(state, language), [state, language]);
   const [err, setErr] = useState<string | null>(null);
-  const name = (LANGUAGE_LABEL[language] ?? language).toLowerCase();
+  const name = L(languageWord(language), LANGUAGE_NAME_EN[language] ?? language);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Fjern alle oversettelser til {name}?</DialogTitle>
+          <DialogTitle>
+            {L(`Fjern alle oversettelser til ${name}?`, `Remove all translations into ${name}?`)}
+          </DialogTitle>
           <DialogDescription>
-            {ids.length} {ids.length === 1 ? "oversettelse" : "oversettelser"} i hele prosjektet
-            (alle produksjoner) fjernes i én endring. Det norske manuset endres ikke, og alt kan
-            angres (Cmd/Ctrl + Z).
+            {ids.length}{" "}
+            {ids.length === 1
+              ? L("oversettelse", "translation")
+              : L("oversettelser", "translations")}{" "}
+            {L(
+              "i hele prosjektet (alle produksjoner) fjernes i én endring. Det norske manuset endres ikke, og alt kan angres (Cmd/Ctrl + Z).",
+              "across the whole project (all productions) are removed in one change. The Norwegian script is not changed, and everything can be undone (Cmd/Ctrl + Z).",
+            )}
           </DialogDescription>
         </DialogHeader>
         {err ? (
@@ -56,7 +66,7 @@ export function RemoveTranslationsDialog({
         ) : null}
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Avbryt
+            {L("Avbryt", "Cancel")}
           </Button>
           <Button
             variant="destructive"
@@ -64,13 +74,13 @@ export function RemoveTranslationsDialog({
             onClick={() => {
               const e = cmds.run(
                 { type: "SetTranslationsRemoved", translationIds: ids as never, removed: true },
-                `Fjern alle oversettelser til ${name}`,
+                L(`Fjern alle oversettelser til ${name}`, `Remove all translations into ${name}`),
               );
               setErr(e);
               if (!e) onOpenChange(false);
             }}
           >
-            Fjern {ids.length}
+            {L("Fjern", "Remove")} {ids.length}
           </Button>
         </DialogFooter>
       </DialogContent>

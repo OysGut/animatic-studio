@@ -12,6 +12,7 @@ import {
   proposeCuts,
   type FilmClip,
   type TakeMedia,
+  L,
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
@@ -129,7 +130,7 @@ export function LongFilmImportDialog({
       setError(problem);
       return;
     }
-    setBusy("Leser filmen …");
+    setBusy(L("Leser filmen …", "Reading the film …"));
     try {
       const m = await readFilmMetadata(f);
       progress.current = { up: null, done: new Set(), takes: new Map(), group: newId() };
@@ -155,16 +156,24 @@ export function LongFilmImportDialog({
     try {
       const prog = progress.current;
       if (!prog.up) {
-        setBusy("Laster opp filmen …");
+        setBusy(L("Laster opp filmen …", "Uploading the film …"));
         prog.up = await uploadFilm(projectId, file, fps);
       }
       const up = prog.up;
-      const label = `Importer lang film (${range.length} ${range.length === 1 ? "scene" : "scener"})`;
+      const label = L(
+        `Importer lang film (${range.length} ${range.length === 1 ? "scene" : "scener"})`,
+        `Import long film (${range.length} ${range.length === 1 ? "scene" : "scenes"})`,
+      );
       for (let i = 0; i < range.length; i++) {
         const c = range[i]!;
         const r = ranges[i]!;
         if (prog.done.has(c.occurrenceId)) continue;
-        setBusy(`Fordeler på scenene … (${i + 1} av ${range.length})`);
+        setBusy(
+          L(
+            `Fordeler på scenene … (${i + 1} av ${range.length})`,
+            `Dividing into the scenes … (${i + 1} of ${range.length})`,
+          ),
+        );
         // Første scene får versjonen filen ble lastet opp med; de andre egne versjoner av samme fil.
         // Versjonen lages bare én gang, også om et nytt forsøk kommer etter en feil.
         let takeId = prog.takes.get(c.occurrenceId);
@@ -216,7 +225,10 @@ export function LongFilmImportDialog({
       setMedia(null);
     } catch (e) {
       setBusy(null);
-      setError((e as Error).message || "Filmen kunne ikke importeres.");
+      setError(
+        (e as Error).message ||
+          L("Filmen kunne ikke importeres.", "The film could not be imported."),
+      );
     }
   }
 
@@ -228,12 +240,14 @@ export function LongFilmImportDialog({
       <DialogContent className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Film className="size-5 text-accent-warm" aria-hidden /> Importer lang film
+            <Film className="size-5 text-accent-warm" aria-hidden />{" "}
+            {L("Importer lang film", "Import long film")}
           </DialogTitle>
           <DialogDescription>
-            Én filmfil som dekker flere scener. Filen lastes opp én gang og deles på scenene etter
-            starttidene under. Hver scene får filmen som egen versjon, og animatic-versjonene
-            beholdes.
+            {L(
+              "Én filmfil som dekker flere scener. Filen lastes opp én gang og deles på scenene etter starttidene under. Hver scene får filmen som egen versjon, og animatic-versjonene beholdes.",
+              "One film file covering several scenes. The file is uploaded once and divided between the scenes by the start times below. Each scene gets the film as its own version, and the animatic versions are kept.",
+            )}
           </DialogDescription>
         </DialogHeader>
 
@@ -242,7 +256,7 @@ export function LongFilmImportDialog({
           type="file"
           accept={FILM_ACCEPT}
           className="sr-only"
-          aria-label="Velg lang filmfil"
+          aria-label={L("Velg lang filmfil", "Choose a long film file")}
           onChange={(e) => {
             const f = e.target.files?.[0];
             if (f) void pick(f);
@@ -256,9 +270,11 @@ export function LongFilmImportDialog({
               onClick={() => fileRef.current?.click()}
             >
               {busy ? <Loader2 className="animate-spin" /> : <Upload />}
-              {busy ?? "Velg filmfil …"}
+              {busy ?? L("Velg filmfil …", "Choose film file …")}
             </Button>
-            <p className="text-xs text-text-tertiary">MP4, MOV eller WebM, opptil 2 GB.</p>
+            <p className="text-xs text-text-tertiary">
+              {L("MP4, MOV eller WebM, opptil 2 GB.", "MP4, MOV or WebM, up to 2 GB.")}
+            </p>
           </div>
         ) : (
           <div className="grid gap-3 md:grid-cols-[1fr_1.1fr]">
@@ -270,24 +286,27 @@ export function LongFilmImportDialog({
                   controls
                   muted
                   className="aspect-video w-full rounded-sm bg-black"
-                  aria-label="Forhåndsvisning av filmen"
+                  aria-label={L("Forhåndsvisning av filmen", "Preview of the film")}
                 />
               ) : null}
               <p className="text-[11px] text-text-tertiary">
                 {media.fileName} · {fmt(media.durationMs)}
                 {media.width && media.height ? ` · ${media.width}×${media.height}` : ""}
-                {media.fps ? ` · ${Math.round(media.fps * 100) / 100} b/s` : ""}
+                {media.fps ? ` · ${Math.round(media.fps * 100) / 100} ${L("b/s", "fps")}` : ""}
               </p>
               <p className="text-[11px] text-text-tertiary">
-                Spol til der en scene begynner, og trykk <MapPin className="inline size-3" /> ved
-                scenen.
+                {L(
+                  "Spol til der en scene begynner, og trykk",
+                  "Scrub to where a scene starts, and press",
+                )}{" "}
+                <MapPin className="inline size-3" /> {L("ved scenen.", "next to the scene.")}
               </p>
             </div>
             <div className="flex min-w-0 flex-col gap-2">
               <div className="flex flex-wrap items-center gap-1.5 text-xs text-text-secondary">
-                Fra
+                {L("Fra", "From")}
                 <select
-                  aria-label="Første scene"
+                  aria-label={L("Første scene", "First scene")}
                   value={fromId}
                   onChange={(e) => setFromId(e.target.value)}
                   disabled={busy !== null}
@@ -299,9 +318,9 @@ export function LongFilmImportDialog({
                     </option>
                   ))}
                 </select>
-                til
+                {L("til", "to")}
                 <select
-                  aria-label="Siste scene"
+                  aria-label={L("Siste scene", "Last scene")}
                   value={toId}
                   onChange={(e) => setToId(e.target.value)}
                   disabled={busy !== null}
@@ -332,7 +351,10 @@ export function LongFilmImportDialog({
                           if (videoRef.current)
                             videoRef.current.currentTime = (starts[i] ?? 0) / 1000;
                         }}
-                        title="Vis starten av scenen i filmen"
+                        title={L(
+                          "Vis starten av scenen i filmen",
+                          "Show the start of the scene in the film",
+                        )}
                       >
                         {formatHeading(c.heading)}
                       </button>
@@ -352,7 +374,14 @@ export function LongFilmImportDialog({
                         }}
                         onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
                         className={input + " w-20 font-mono"}
-                        title={i === 0 ? "Første scene begynner der filmen begynner" : "m:ss.ss"}
+                        title={
+                          i === 0
+                            ? L(
+                                "Første scene begynner der filmen begynner",
+                                "The first scene starts where the film starts",
+                              )
+                            : "m:ss.ss"
+                        }
                       />
                       <button
                         type="button"
@@ -360,8 +389,14 @@ export function LongFilmImportDialog({
                         onClick={() =>
                           setStart(i, Math.round((videoRef.current?.currentTime ?? 0) * 1000))
                         }
-                        aria-label={`Scene ${c.productionNumber ?? i + 1} begynner her i filmen`}
-                        title="Scenen begynner der filmen står nå"
+                        aria-label={L(
+                          `Scene ${c.productionNumber ?? i + 1} begynner her i filmen`,
+                          `Scene ${c.productionNumber ?? i + 1} starts here in the film`,
+                        )}
+                        title={L(
+                          "Scenen begynner der filmen står nå",
+                          "The scene starts where the film is now",
+                        )}
                         className="rounded-sm p-1 text-text-tertiary hover:bg-surface-3 hover:text-text-primary disabled:opacity-30"
                       >
                         <MapPin className="size-3.5" />
@@ -375,7 +410,10 @@ export function LongFilmImportDialog({
               </ol>
               {!ranges && range.length > 0 ? (
                 <p className="text-xs text-status-danger">
-                  Starttidene må komme etter hverandre og ligge innenfor filmen.
+                  {L(
+                    "Starttidene må komme etter hverandre og ligge innenfor filmen.",
+                    "The start times must follow each other and lie within the film.",
+                  )}
                 </p>
               ) : null}
             </div>
@@ -394,13 +432,14 @@ export function LongFilmImportDialog({
             </span>
           ) : null}
           <Button variant="ghost" disabled={busy !== null} onClick={() => onOpenChange(false)}>
-            Avbryt
+            {L("Avbryt", "Cancel")}
           </Button>
           <Button
             disabled={!media || !ranges || range.length === 0 || busy !== null}
             onClick={() => void run()}
           >
-            <Film /> Importer og fordel på {range.length} {range.length === 1 ? "scene" : "scener"}
+            <Film /> {L("Importer og fordel på", "Import and divide into")} {range.length}{" "}
+            {range.length === 1 ? L("scene", "scene") : L("scener", "scenes")}
           </Button>
         </DialogFooter>
       </DialogContent>

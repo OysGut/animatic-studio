@@ -4,12 +4,19 @@ import { AuthScreen } from "@/app/auth/AuthScreen";
 import { ProjectsScreen } from "@/app/projects/ProjectsScreen";
 import { AppHeader } from "@/app/shell/AppHeader";
 import { SchemaBanner } from "@/app/shell/SchemaBanner";
+import { L } from "@/core";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Animatic Studio" },
-      { name: "description", content: "Animatic Studio – fra manus til ferdig film." },
+      {
+        name: "description",
+        content: L(
+          "Animatic Studio – fra manus til ferdig film.",
+          "Animatic Studio – from script to finished film.",
+        ),
+      },
     ],
   }),
   component: Index,

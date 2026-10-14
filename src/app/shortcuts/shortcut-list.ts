@@ -1,3 +1,5 @@
+import { L } from "@/core";
+
 /**
  * Hurtigtastene i arbeidsflatene (UX-prinsipp P7, DESIGN_SYSTEM §6, DEC-0078). Listen beskriver tastene som
  * faktisk er koblet opp i koden (AssemblyWorkspace, Timeline, Stage, ScriptWorkspace, SceneNavigator,
@@ -21,78 +23,168 @@ export interface ShortcutGroup {
 /** Tasten som åpner oversikten (Shift + 7 på norsk tastatur, Shift + / på engelsk). */
 export const SHORTCUT_HELP_KEY = "?";
 
+/** Teksten velges når den vises, så listen følger gjeldende språk (norsk eller engelsk). */
+function shortcut(
+  keys: readonly string[] | (() => readonly string[]),
+  action: () => string,
+  when?: () => string,
+): Shortcut {
+  return {
+    get keys() {
+      return typeof keys === "function" ? keys() : keys;
+    },
+    get action() {
+      return action();
+    },
+    ...(when
+      ? {
+          get when() {
+            return when();
+          },
+        }
+      : {}),
+  };
+}
+
+function group(
+  id: ShortcutGroup["id"],
+  title: () => string,
+  shortcuts: readonly Shortcut[],
+): ShortcutGroup {
+  return {
+    id,
+    get title() {
+      return title();
+    },
+    shortcuts,
+  };
+}
+
 export const SHORTCUT_GROUPS: readonly ShortcutGroup[] = [
-  {
-    id: "alle",
-    title: "Alle arbeidsflater",
-    shortcuts: [
-      { keys: ["⌘/Ctrl", "Z"], action: "Angre din siste endring" },
-      { keys: ["⇧", "⌘/Ctrl", "Z"], action: "Gjør om (også Ctrl + Y)" },
-      {
-        keys: [SHORTCUT_HELP_KEY],
-        action: "Vis hurtigtastene",
-        when: "i montering og sceneeditor",
-      },
-      { keys: ["Esc"], action: "Lukk dialog eller meny" },
-    ],
-  },
-  {
-    id: "montering",
-    title: "Montering",
-    shortcuts: [
-      { keys: ["Mellomrom"], action: "Spill av / pause" },
-      { keys: ["K"], action: "Spill av / pause" },
-      { keys: ["←", "→"], action: "Ett bilde tilbake / fram" },
-      { keys: ["⇧", "←/→"], action: "Ett sekund tilbake / fram" },
-      { keys: ["↑"], action: "Til starten av scenen, eller forrige scene" },
-      { keys: ["↓"], action: "Neste scene" },
-      { keys: ["Home"], action: "Til starten av filmen" },
-      { keys: ["End"], action: "Til slutten av filmen" },
-      { keys: ["⌥/Alt", "←/→"], action: "Flytt valgt scene én plass", when: "når du kan redigere" },
-      { keys: ["S"], action: "Del klippet der avspillingshodet står" },
-      {
-        keys: ["T"],
-        action: "Sett tiden for replikken som står for tur",
-        when: "under «Synk replikker»",
-      },
-      { keys: ["Enter"], action: "Åpne valgt scene i sceneeditoren" },
-      { keys: ["Delete"], action: "Fjern valgt lydklipp" },
-    ],
-  },
-  {
-    id: "sceneeditor",
-    title: "Sceneeditor",
-    shortcuts: [
-      { keys: ["Mellomrom"], action: "Spill av / pause" },
-      { keys: ["←", "→"], action: "Ett bilde tilbake / fram", when: "fokus i tidslinjen" },
-      { keys: ["⇧", "←/→"], action: "Ti bilder tilbake / fram", when: "fokus i tidslinjen" },
-      { keys: ["Home", "End"], action: "Til start / slutt av scenen", when: "fokus i tidslinjen" },
-      { keys: ["Delete"], action: "Slett valgt nøkkelbilde", when: "fokus i tidslinjen" },
-      {
-        keys: ["Piltaster"],
-        action: "Flytt valgt lag 1 px (med ⇧: 10 px)",
-        when: "fokus på lerretet",
-      },
-      { keys: ["Delete"], action: "Slett valgt lag", when: "fokus på lerretet" },
-      { keys: ["Mellomrom", "dra"], action: "Panorer lerretet", when: "fokus på lerretet" },
-      { keys: ["Esc"], action: "Avbryt dra eller tegning av bane" },
-    ],
-  },
-  {
-    id: "manus",
-    title: "Manus",
-    shortcuts: [
-      { keys: ["↑", "↓"], action: "Forrige / neste linje", when: "fokus på manussidene" },
-      { keys: ["Enter"], action: "Rediger valgt linje", when: "fokus på manussidene" },
-      { keys: ["⌘/Ctrl", "Enter"], action: "Lagre teksten du skriver" },
-      { keys: ["↑", "↓"], action: "Forrige / neste scene", when: "fokus i scenelisten" },
-      {
-        keys: ["⌥/Alt", "↑/↓"],
-        action: "Flytt scenen",
-        when: "scenelisten, med «Endre rekkefølge og synlighet» på",
-      },
-    ],
-  },
+  // i18n-ignore
+  group("alle", () => L("Alle arbeidsflater", "All workspaces"), [
+    shortcut(["⌘/Ctrl", "Z"], () => L("Angre din siste endring", "Undo your last change")),
+    shortcut(["⇧", "⌘/Ctrl", "Z"], () => L("Gjør om (også Ctrl + Y)", "Redo (also Ctrl + Y)")),
+    shortcut(
+      [SHORTCUT_HELP_KEY],
+      () => L("Vis hurtigtastene", "Show keyboard shortcuts"),
+      () => L("i montering og sceneeditor", "in assembly and scene editor"),
+    ),
+    shortcut(["Esc"], () => L("Lukk dialog eller meny", "Close dialog or menu")),
+  ]),
+  group("montering", () => L("Montering", "Assembly"), [
+    shortcut(
+      () => [L("Mellomrom", "Space")],
+      () => L("Spill av / pause", "Play / pause"),
+    ),
+    shortcut(["K"], () => L("Spill av / pause", "Play / pause")),
+    shortcut(["←", "→"], () => L("Ett bilde tilbake / fram", "One frame back / forward")),
+    shortcut(["⇧", "←/→"], () => L("Ett sekund tilbake / fram", "One second back / forward")),
+    shortcut(["↑"], () =>
+      L(
+        "Til starten av scenen, eller forrige scene",
+        "To the start of the scene, or the previous scene",
+      ),
+    ),
+    shortcut(["↓"], () => L("Neste scene", "Next scene")),
+    shortcut(["Home"], () => L("Til starten av filmen", "To the start of the film")),
+    shortcut(["End"], () => L("Til slutten av filmen", "To the end of the film")),
+    shortcut(
+      ["⌥/Alt", "←/→"],
+      () => L("Flytt valgt scene én plass", "Move the selected scene one place"),
+      () => L("når du kan redigere", "when you can edit"),
+    ),
+    shortcut(["S"], () =>
+      L("Del klippet der avspillingshodet står", "Split the clip at the playhead"),
+    ),
+    shortcut(
+      ["T"],
+      () =>
+        L(
+          "Sett tiden for replikken som står for tur",
+          "Set the time for the line whose turn it is",
+        ),
+      () => L("under «Synk replikker»", "under “Sync lines”"),
+    ),
+    shortcut(["Enter"], () =>
+      L("Åpne valgt scene i sceneeditoren", "Open the selected scene in the scene editor"),
+    ),
+    shortcut(["Delete"], () => L("Fjern valgt lydklipp", "Remove the selected audio clip")),
+  ]),
+  group("sceneeditor", () => L("Sceneeditor", "Scene editor"), [
+    shortcut(
+      () => [L("Mellomrom", "Space")],
+      () => L("Spill av / pause", "Play / pause"),
+    ),
+    shortcut(
+      ["←", "→"],
+      () => L("Ett bilde tilbake / fram", "One frame back / forward"),
+      () => L("fokus i tidslinjen", "focus in the timeline"),
+    ),
+    shortcut(
+      ["⇧", "←/→"],
+      () => L("Ti bilder tilbake / fram", "Ten frames back / forward"),
+      () => L("fokus i tidslinjen", "focus in the timeline"),
+    ),
+    shortcut(
+      ["Home", "End"],
+      () => L("Til start / slutt av scenen", "To start / end of the scene"),
+      () => L("fokus i tidslinjen", "focus in the timeline"),
+    ),
+    shortcut(
+      ["Delete"],
+      () => L("Slett valgt nøkkelbilde", "Delete the selected keyframe"),
+      () => L("fokus i tidslinjen", "focus in the timeline"),
+    ),
+    shortcut(
+      () => [L("Piltaster", "Arrow keys")],
+      () =>
+        L("Flytt valgt lag 1 px (med ⇧: 10 px)", "Move the selected layer 1 px (with ⇧: 10 px)"),
+      () => L("fokus på lerretet", "focus on the canvas"),
+    ),
+    shortcut(
+      ["Delete"],
+      () => L("Slett valgt lag", "Delete the selected layer"),
+      () => L("fokus på lerretet", "focus on the canvas"),
+    ),
+    shortcut(
+      () => [L("Mellomrom", "Space"), L("dra", "drag")],
+      () => L("Panorer lerretet", "Pan the canvas"),
+      () => L("fokus på lerretet", "focus on the canvas"),
+    ),
+    shortcut(["Esc"], () =>
+      L("Avbryt dra eller tegning av bane", "Cancel dragging or drawing a path"),
+    ),
+  ]),
+  group("manus", () => L("Manus", "Script"), [
+    shortcut(
+      ["↑", "↓"],
+      () => L("Forrige / neste linje", "Previous / next line"),
+      () => L("fokus på manussidene", "focus on the script pages"),
+    ),
+    shortcut(
+      ["Enter"],
+      () => L("Rediger valgt linje", "Edit the selected line"),
+      () => L("fokus på manussidene", "focus on the script pages"),
+    ),
+    shortcut(["⌘/Ctrl", "Enter"], () =>
+      L("Lagre teksten du skriver", "Save the text you are writing"),
+    ),
+    shortcut(
+      ["↑", "↓"],
+      () => L("Forrige / neste scene", "Previous / next scene"),
+      () => L("fokus i scenelisten", "focus in the scene list"),
+    ),
+    shortcut(
+      ["⌥/Alt", "↑/↓"],
+      () => L("Flytt scenen", "Move the scene"),
+      () =>
+        L(
+          "scenelisten, med «Endre rekkefølge og synlighet» på",
+          "the scene list, with “Change order and visibility” turned on",
+        ),
+    ),
+  ]),
 ];
 
 /** Legger hurtigtasten til et verktøytips: «Spill av (mellomrom)». */

@@ -17,10 +17,13 @@ import { useEffect, useMemo, useState } from "react";
 import {
   CHANGE_LABEL,
   diffSnapshots,
+  L,
+  locale,
   newId,
   paginate,
   snapshotFromState,
   snapshotPaginationInput,
+  tm,
   wordDiff,
   type ChangeType,
   type Command,
@@ -86,8 +89,8 @@ export type RunQueued = (
   options?: { keepText?: boolean },
 ) => { error: string | null; done: Promise<string | null> };
 
-/** Melding når serveren avviste en del av gjenopprettingen (resten ble ikke sendt). */
-export const PARTIAL_RESTORE = "Gjenopprettingen ble bare delvis utført – angre med ⌘/Ctrl + Z";
+/** Melding når serveren avviste en del av gjenopprettingen (resten ble ikke sendt). Norsk: brukes i testene. */
+export const PARTIAL_RESTORE = "Gjenopprettingen ble bare delvis utført – angre med ⌘/Ctrl + Z"; // i18n-ignore
 
 const NOW = "now";
 type View =
@@ -113,7 +116,7 @@ const ORDER: ChangeType[] = [
 ];
 
 function dateText(iso: string) {
-  return new Date(iso).toLocaleString("nb-NO", { dateStyle: "medium", timeStyle: "short" });
+  return new Date(iso).toLocaleString(locale(), { dateStyle: "medium", timeStyle: "short" });
 }
 
 export function VersionsDialog(props: Props) {
@@ -161,17 +164,22 @@ export function VersionsDialog(props: Props) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <History className="size-4" aria-hidden />
-            Manusversjoner – {production?.name}
+            {L("Manusversjoner", "Script versions")} – {production?.name}
           </DialogTitle>
           <DialogDescription>
-            En versjon er et fast bilde av manuset slik det er lagret nå: rekkefølge, aktive scener,
-            numre og tekst. Den kan aldri endres i ettertid.
+            {L(
+              "En versjon er et fast bilde av manuset slik det er lagret nå: rekkefølge, aktive scener, numre og tekst. Den kan aldri endres i ettertid.",
+              "A version is a fixed picture of the script as it is saved now: order, active scenes, numbers and text. It can never be changed afterwards.",
+            )}
           </DialogDescription>
         </DialogHeader>
 
         {missingTable ? (
           <p role="alert" className="text-[13px] text-status-uncertain">
-            Databasen mangler manusversjoner. Kjør migrasjon 0003 i Lovable (se LOVABLE_SYNC.md).
+            {L(
+              "Databasen mangler manusversjoner. Kjør migrasjon 0003 i Lovable (se LOVABLE_SYNC.md).",
+              "The database is missing script versions. Run migration 0003 in Lovable (see LOVABLE_SYNC.md).",
+            )}
           </p>
         ) : view.kind === "list" ? (
           <>
@@ -182,7 +190,11 @@ export function VersionsDialog(props: Props) {
                   e.preventDefault();
                   setNotice(null);
                   create.mutate(
-                    { name: name.trim() || `Versjon ${nextNumber}`, note: note.trim(), state },
+                    {
+                      name: name.trim() || L(`Versjon ${nextNumber}`, `Version ${nextNumber}`),
+                      note: note.trim(),
+                      state,
+                    },
                     {
                       onSuccess: (r) => {
                         setName("");
@@ -190,7 +202,10 @@ export function VersionsDialog(props: Props) {
                         // Versjonen er lagret; bare estimatet mangler (vises stille, blokkerer ingenting)
                         if (r.estimateError)
                           setNotice(
-                            "Versjonen er lagret, men varighetsestimatet for den ble ikke lagret.",
+                            L(
+                              "Versjonen er lagret, men varighetsestimatet for den ble ikke lagret.",
+                              "The version is saved, but its duration estimate was not saved.",
+                            ),
                           );
                       },
                     },
@@ -199,8 +214,11 @@ export function VersionsDialog(props: Props) {
               >
                 <div className="flex gap-2">
                   <Input
-                    aria-label="Navn på versjonen"
-                    placeholder={`Versjon ${nextNumber} (f.eks. «Draft 9.4» eller «Etter møte med produsenten»)`}
+                    aria-label={L("Navn på versjonen", "Version name")}
+                    placeholder={L(
+                      `Versjon ${nextNumber} (f.eks. «Draft 9.4» eller «Etter møte med produsenten»)`,
+                      `Version ${nextNumber} (e.g. “Draft 9.4” or “After meeting with the producer”)`,
+                    )}
                     value={name}
                     maxLength={200}
                     onChange={(e) => setName(e.target.value)}
@@ -208,12 +226,12 @@ export function VersionsDialog(props: Props) {
                   />
                   <Button type="submit" disabled={create.isPending || saving}>
                     {create.isPending ? <Loader2 className="animate-spin" /> : <Save />}
-                    Lagre versjon
+                    {L("Lagre versjon", "Save version")}
                   </Button>
                 </div>
                 <Input
-                  aria-label="Merknad (valgfri)"
-                  placeholder="Merknad (valgfri)"
+                  aria-label={L("Merknad (valgfri)", "Note (optional)")}
+                  placeholder={L("Merknad (valgfri)", "Note (optional)")}
                   value={note}
                   maxLength={2000}
                   onChange={(e) => setNote(e.target.value)}
@@ -221,24 +239,32 @@ export function VersionsDialog(props: Props) {
                 />
                 {saving ? (
                   <p className="text-xs text-text-tertiary">
-                    Venter til endringene dine er lagret …
+                    {L(
+                      "Venter til endringene dine er lagret …",
+                      "Waiting for your changes to be saved …",
+                    )}
                   </p>
                 ) : null}
                 {notice ? <p className="text-xs text-text-tertiary">{notice}</p> : null}
                 {create.isError ? (
                   <p role="alert" className="text-xs text-status-danger">
-                    Versjonen ble ikke lagret: {create.error.message}
+                    {L("Versjonen ble ikke lagret:", "The version was not saved:")}{" "}
+                    {create.error.message}
                   </p>
                 ) : null}
               </form>
             ) : null}
 
             {list.isLoading ? (
-              <p className="text-[13px] text-text-tertiary">Henter versjoner …</p>
+              <p className="text-[13px] text-text-tertiary">
+                {L("Henter versjoner …", "Loading versions …")}
+              </p>
             ) : versions.length === 0 ? (
               <p className="text-[13px] text-text-secondary">
-                Ingen versjoner ennå. Lagre en versjon før store endringer, så kan du alltid se og
-                eksportere manuset slik det var.
+                {L(
+                  "Ingen versjoner ennå. Lagre en versjon før store endringer, så kan du alltid se og eksportere manuset slik det var.",
+                  "No versions yet. Save a version before big changes, so you can always see and export the script as it was.",
+                )}
               </p>
             ) : (
               <ul className="border border-border bg-surface-1">
@@ -256,7 +282,7 @@ export function VersionsDialog(props: Props) {
                       </span>
                       <span className="block truncate text-xs text-text-tertiary">
                         {dateText(v.created_at)} ·{" "}
-                        {profiles.data?.[v.created_by]?.display_name ?? "ukjent"}
+                        {profiles.data?.[v.created_by]?.display_name ?? L("ukjent", "unknown")}
                         {v.note ? ` · ${v.note}` : ""}
                       </span>
                     </span>
@@ -266,7 +292,7 @@ export function VersionsDialog(props: Props) {
                       onClick={() => setView({ kind: "show", id: v.id })}
                     >
                       <Eye />
-                      Vis
+                      {L("Vis", "View")}
                     </Button>
                     <Button
                       size="sm"
@@ -274,7 +300,7 @@ export function VersionsDialog(props: Props) {
                       onClick={() => setView({ kind: "compare", a: v.id, b: NOW })}
                     >
                       <GitCompare />
-                      Mot nå
+                      {L("Mot nå", "vs now")}
                     </Button>
                     {versions[i + 1] ? (
                       <Button
@@ -284,7 +310,7 @@ export function VersionsDialog(props: Props) {
                           setView({ kind: "compare", a: versions[i + 1]!.id, b: v.id })
                         }
                       >
-                        Mot v{versions[i + 1]!.number}
+                        {L(`Mot v${versions[i + 1]!.number}`, `vs v${versions[i + 1]!.number}`)}
                       </Button>
                     ) : null}
                   </li>
@@ -310,10 +336,18 @@ export function VersionsDialog(props: Props) {
             onRun={props.onRun!}
             onBack={() => setView({ kind: "show", id: view.id })}
             onDone={(v) => {
-              setName(`Gjenopprettet fra v${v.number} – ${v.name}`.slice(0, 200));
+              setName(
+                L(
+                  `Gjenopprettet fra v${v.number} – ${v.name}`,
+                  `Restored from v${v.number} – ${v.name}`,
+                ).slice(0, 200),
+              );
               setNote("");
               setNotice(
-                `Manuset er nå som v${v.number}. Lagre det som en ny versjon hvis du vil ta vare på det.`,
+                L(
+                  `Manuset er nå som v${v.number}. Lagre det som en ny versjon hvis du vil ta vare på det.`,
+                  `The script is now as v${v.number}. Save it as a new version if you want to keep it.`,
+                ),
               );
               setView({ kind: "list" });
             }}
@@ -382,7 +416,7 @@ function Compare({
       onChange={(e) => set(e.target.value)}
       className="h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary"
     >
-      <option value={NOW}>Nå (lagret manus)</option>
+      <option value={NOW}>{L("Nå (lagret manus)", "Now (saved script)")}</option>
       {versions.map((v) => (
         <option key={v.id} value={v.id}>
           v{v.number} – {v.name}
@@ -401,19 +435,23 @@ function Compare({
       <div className="flex flex-wrap items-center gap-2 text-[13px] text-text-secondary">
         <Button size="sm" variant="ghost" onClick={onBack}>
           <ArrowLeft />
-          Tilbake
+          {L("Tilbake", "Back")}
         </Button>
-        Fra {select(a, (v) => onChange(v, b), "Eldre versjon")} til{" "}
-        {select(b, (v) => onChange(a, v), "Nyere versjon")}
+        {L("Fra", "From")} {select(a, (v) => onChange(v, b), L("Eldre versjon", "Older version"))}{" "}
+        {L("til", "to")} {select(b, (v) => onChange(a, v), L("Nyere versjon", "Newer version"))}
       </div>
       {older.isLoading || newer.isLoading ? (
-        <p className="text-[13px] text-text-tertiary">Henter versjoner …</p>
+        <p className="text-[13px] text-text-tertiary">
+          {L("Henter versjoner …", "Loading versions …")}
+        </p>
       ) : !changes ? (
         <p role="alert" className="text-[13px] text-status-danger">
-          Kunne ikke hente versjonene.
+          {L("Kunne ikke hente versjonene.", "Could not load the versions.")}
         </p>
       ) : changes.length === 0 ? (
-        <p className="text-[13px] text-text-secondary">Ingen forskjeller.</p>
+        <p className="text-[13px] text-text-secondary">
+          {L("Ingen forskjeller.", "No differences.")}
+        </p>
       ) : (
         <>
           <p className="text-xs text-text-tertiary">
@@ -453,7 +491,7 @@ function Compare({
                         onOpenChange(false);
                       }}
                     >
-                      Gå til
+                      {L("Gå til", "Go to")}
                     </Button>
                   ) : null}
                 </div>
@@ -511,7 +549,7 @@ function ChangeDetail({ change }: { change: SceneChange }) {
           <span
             key={`+${n}`}
             className="rounded-sm bg-surface-3 px-1.5 py-0.5 text-status-success"
-            aria-label={`${n} er kommet til`}
+            aria-label={L(`${n} er kommet til`, `${n} added`)}
           >
             + {n}
           </span>
@@ -520,7 +558,7 @@ function ChangeDetail({ change }: { change: SceneChange }) {
           <span
             key={`-${n}`}
             className="rounded-sm bg-surface-3 px-1.5 py-0.5 text-status-danger line-through"
-            aria-label={`${n} er borte`}
+            aria-label={L(`${n} er borte`, `${n} removed`)}
           >
             − {n}
           </span>
@@ -548,7 +586,7 @@ function ChangeDetail({ change }: { change: SceneChange }) {
           onClick={() => setAll(true)}
           className="mt-1 text-accent-brand underline-offset-2 hover:underline"
         >
-          Vis alle {lines.length} linjer
+          {L("Vis alle", "Show all")} {lines.length} {L("linjer", "lines")}
         </button>
       ) : null}
     </div>
@@ -577,7 +615,11 @@ function LineRow({ line }: { line: LineChange }) {
         <span className="block text-[11px] text-text-tertiary">
           {label}
           <span className="sr-only">
-            {line.op === "added" ? " (ny)" : line.op === "removed" ? " (fjernet)" : " (endret)"}
+            {line.op === "added"
+              ? L(" (ny)", " (new)")
+              : line.op === "removed"
+                ? L(" (fjernet)", " (removed)")
+                : L(" (endret)", " (changed)")}
           </span>
         </span>
         <span className="block whitespace-pre-wrap font-script text-[12px] text-text-primary">
@@ -633,13 +675,13 @@ function Show({
       <div className="flex items-center gap-2">
         <Button size="sm" variant="ghost" onClick={onBack}>
           <ArrowLeft />
-          Tilbake
+          {L("Tilbake", "Back")}
         </Button>
         <span className="text-[13px] text-text-primary">
           v{version.number} – {version.name}
         </span>
         <span className="text-xs text-text-tertiary">
-          {dateText(version.created_at)} · bare lesing
+          {dateText(version.created_at)} · {L("bare lesing", "read only")}
         </span>
         <Button
           size="sm"
@@ -657,29 +699,31 @@ function Show({
           }}
         >
           <Download />
-          Eksporter PDF
+          {L("Eksporter PDF", "Export PDF")}
         </Button>
         {onRestore ? (
           <Button size="sm" variant="secondary" disabled={!snap.data} onClick={onRestore}>
             <RotateCcw />
-            Gjør denne versjonen gjeldende
+            {L("Gjør denne versjonen gjeldende", "Make this version current")}
           </Button>
         ) : null}
       </div>
       {ready ? (
         <p role="status" className="text-xs text-text-secondary">
-          Filen er laget:{" "}
+          {L("Filen er laget:", "The file is ready:")}{" "}
           <a
             href={ready.url}
             download={ready.name}
             className="text-accent-brand underline underline-offset-2"
           >
-            Last ned «{ready.name}»
+            {L(`Last ned «${ready.name}»`, `Download “${ready.name}”`)}
           </a>
         </p>
       ) : null}
       {snap.isLoading ? (
-        <p className="text-[13px] text-text-tertiary">Henter versjonen …</p>
+        <p className="text-[13px] text-text-tertiary">
+          {L("Henter versjonen …", "Loading the version …")}
+        </p>
       ) : (
         <div className="max-h-[65vh] overflow-auto bg-bg-app">
           <ScriptPageView
@@ -724,7 +768,7 @@ function Restore({
     () => (snap.data ? previewRestore(state, productionId, snap.data) : null),
     [snap.data, state, productionId],
   );
-  const label = `Gjør v${version.number} gjeldende`;
+  const label = L(`Gjør v${version.number} gjeldende`, `Make v${version.number} current`);
 
   async function confirm() {
     if (!preview || preview.error || preview.commands.length === 0 || busy) return;
@@ -739,7 +783,10 @@ function Restore({
         if (r.error) {
           await Promise.all(pending);
           setError(
-            `Stoppet underveis: ${r.error} Det som ble gjort, kan angres samlet med «Angre» (Ctrl+Z).`,
+            L(
+              `Stoppet underveis: ${r.error} Det som ble gjort, kan angres samlet med «Angre» (Ctrl+Z).`,
+              `Stopped partway: ${r.error} What was done can be undone together with “Undo” (Ctrl+Z).`,
+            ),
           );
           return;
         }
@@ -748,7 +795,9 @@ function Restore({
       // Vent til serveren har lagret alt: avvises én endring, sendes ikke resten (manuset er da delvis gjenopprettet)
       const errors = await Promise.all(pending);
       if (errors.some((e) => e !== null)) {
-        setError(PARTIAL_RESTORE);
+        setError(
+          L(PARTIAL_RESTORE, "The restore was only partly completed – undo with ⌘/Ctrl + Z"),
+        );
         return;
       }
       onDone(version);
@@ -762,27 +811,39 @@ function Restore({
       <div className="flex items-center gap-2">
         <Button size="sm" variant="ghost" onClick={onBack}>
           <ArrowLeft />
-          Tilbake
+          {L("Tilbake", "Back")}
         </Button>
         <span className="text-[13px] text-text-primary">
-          Gjør v{version.number} – {version.name} gjeldende
+          {L(
+            `Gjør v${version.number} – ${version.name} gjeldende`,
+            `Make v${version.number} – ${version.name} current`,
+          )}
         </span>
       </div>
       <p className="text-xs text-text-secondary">
-        Manuset settes tilbake til teksten, rekkefølgen, synligheten og overskriftene i versjonen.
-        Ingenting slettes: linjer og scener som er kommet til senere, tas ut av manuset og kan
-        hentes tilbake, og alle versjoner beholdes. Materiale laget fra nyere tekst vil vises som
-        avvik. Endringen kan angres samlet.
+        {L(
+          "Manuset settes tilbake til teksten, rekkefølgen, synligheten og overskriftene i versjonen. Ingenting slettes: linjer og scener som er kommet til senere, tas ut av manuset og kan hentes tilbake, og alle versjoner beholdes. Materiale laget fra nyere tekst vil vises som avvik. Endringen kan angres samlet.",
+          "The script is set back to the text, order, visibility and headings in the version. Nothing is deleted: lines and scenes added later are taken out of the script and can be brought back, and all versions are kept. Material made from newer text will show as discrepancies. The change can be undone together.",
+        )}
       </p>
       {snap.isLoading || !preview ? (
-        <p className="text-[13px] text-text-tertiary">Henter versjonen …</p>
+        <p className="text-[13px] text-text-tertiary">
+          {L("Henter versjonen …", "Loading the version …")}
+        </p>
       ) : preview.error ? (
         <p role="alert" className="text-[13px] text-status-danger">
-          Versjonen kan ikke gjøres gjeldende herfra: {preview.error}
+          {L(
+            "Versjonen kan ikke gjøres gjeldende herfra:",
+            "This version cannot be made current from here:",
+          )}{" "}
+          {tm(preview.error)}
         </p>
       ) : preview.commands.length === 0 ? (
         <p className="text-[13px] text-text-secondary">
-          Manuset er allerede likt versjonen. Ingenting å endre.
+          {L(
+            "Manuset er allerede likt versjonen. Ingenting å endre.",
+            "The script is already the same as the version. Nothing to change.",
+          )}
         </p>
       ) : (
         <>
@@ -794,7 +855,7 @@ function Restore({
               .join(" · ")}
           </p>
           <ul
-            aria-label="Dette endres i manuset"
+            aria-label={L("Dette endres i manuset", "This changes in the script")}
             className="max-h-[45vh] overflow-y-auto border border-border bg-surface-1"
           >
             {groupByScene(preview.changes).map((g) => (
@@ -832,12 +893,14 @@ function Restore({
       )}
       {preview && preview.issues.length > 0 ? (
         <div className="border border-status-uncertain/40 bg-surface-1 p-2 text-xs">
-          <p className="font-medium text-text-primary">Dette settes ikke tilbake:</p>
+          <p className="font-medium text-text-primary">
+            {L("Dette settes ikke tilbake:", "This is not set back:")}
+          </p>
           <ul className="mt-1 flex flex-col gap-0.5 text-text-secondary">
             {preview.issues.map((i, n) => (
               <li key={n}>
                 <span className="font-mono text-text-tertiary">{i.number ?? "–"}</span> {i.heading}:{" "}
-                {i.reason}
+                {tm(i.reason)}
               </li>
             ))}
           </ul>
@@ -850,7 +913,7 @@ function Restore({
       ) : null}
       <div className="flex justify-end gap-2">
         <Button variant="ghost" onClick={onBack}>
-          Avbryt
+          {L("Avbryt", "Cancel")}
         </Button>
         <Button
           onClick={() => void confirm()}

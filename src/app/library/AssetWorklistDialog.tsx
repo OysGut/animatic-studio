@@ -12,6 +12,8 @@ import {
   assetWorklist,
   filmClips,
   keepWorkItemCommand,
+  L,
+  localized,
   newId,
   newVersionWorkItemCommands,
   type ProjectState,
@@ -29,11 +31,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-const KIND_LABEL: Record<WorkItem["kind"], string> = {
-  layer: "2D-scene",
-  still: "Stillbilde",
-  ai: "AI-video",
-};
+const KIND_LABEL: Record<WorkItem["kind"], string> = localized({
+  layer: ["2D-scene", "2D scene"],
+  still: ["Stillbilde", "Still image"],
+  ai: ["AI-video", "AI video"],
+});
 
 /** Antall poster i arbeidslisten (for knapper og varsler). */
 export function useWorklistCount(
@@ -128,7 +130,9 @@ export function AssetWorklistDialog({
 
   const sceneText = (x: WorkItem) => {
     const o = x.occurrenceId ? state.occurrences[x.occurrenceId] : undefined;
-    return o ? `Scene ${x.sceneNumber ?? "–"}` : "2D-scene uten scene i filmen";
+    return o
+      ? L(`Scene ${x.sceneNumber ?? "–"}`, `Scene ${x.sceneNumber ?? "–"}`)
+      : L("2D-scene uten scene i filmen", "2D scene with no scene in the film");
   };
 
   return (
@@ -136,24 +140,28 @@ export function AssetWorklistDialog({
       <DialogContent className="max-w-5xl">
         <DialogHeader>
           <DialogTitle>
-            Arbeidsliste – oppdaterte ressurser
+            {L("Arbeidsliste – oppdaterte ressurser", "Worklist – updated assets")}
             {assetId ? ` (${state.assets[assetId]?.name ?? ""})` : ""}
           </DialogTitle>
           <DialogDescription>
-            Scenene som fortsatt viser en eldre versjon. Gå gjennom én og én og velg om den nye
-            versjonen skal brukes. Ingenting endres uten at du velger det, og AI-video lages aldri
-            på nytt av seg selv.
+            {L(
+              "Scenene som fortsatt viser en eldre versjon. Gå gjennom én og én og velg om den nye versjonen skal brukes. Ingenting endres uten at du velger det, og AI-video lages aldri på nytt av seg selv.",
+              "The scenes that still show an older version. Go through them one by one and choose whether the new version should be used. Nothing changes unless you choose it, and AI video is never made again by itself.",
+            )}
           </DialogDescription>
         </DialogHeader>
         {items.length === 0 ? (
           <p className="flex items-center gap-2 text-[13px] text-text-secondary">
-            <Check className="size-4 text-status-success" aria-hidden /> Ingen scener står igjen –
-            alt viser den godkjente versjonen, eller du har valgt å beholde.
+            <Check className="size-4 text-status-success" aria-hidden />{" "}
+            {L(
+              "Ingen scener står igjen – alt viser den godkjente versjonen, eller du har valgt å beholde.",
+              "No scenes are left – everything shows the approved version, or you have chosen to keep it.",
+            )}
           </p>
         ) : (
           <div className="grid grid-cols-[minmax(220px,280px)_1fr] gap-4">
             <ol
-              aria-label="Berørte scener"
+              aria-label={L("Berørte scener", "Affected scenes")}
               className="max-h-[60vh] overflow-y-auto border border-border bg-surface-1"
             >
               {items.map((x, i) => (
@@ -168,7 +176,7 @@ export function AssetWorklistDialog({
                     }
                   >
                     <span className="text-text-primary">
-                      {sceneText(x)} · {state.assets[x.assetId]?.name ?? "Ressurs"}
+                      {sceneText(x)} · {state.assets[x.assetId]?.name ?? L("Ressurs", "Asset")}
                     </span>
                     <span className="text-[11px] text-text-tertiary">
                       {KIND_LABEL[x.kind]}: {x.label}
@@ -180,33 +188,40 @@ export function AssetWorklistDialog({
             {item ? (
               <div className="flex min-w-0 flex-col gap-3">
                 <p className="text-[13px] text-text-primary">
-                  <strong>{sceneText(item)}</strong> · {KIND_LABEL[item.kind]} «{item.label}» viser{" "}
-                  {asset?.name ?? "ressursen"} v{oldV?.number ?? "?"}. Godkjent nå: v
+                  <strong>{sceneText(item)}</strong> · {KIND_LABEL[item.kind]} «{item.label}»{" "}
+                  {L("viser", "shows")} {asset?.name ?? L("ressursen", "the asset")} v
+                  {oldV?.number ?? "?"}. {L("Godkjent nå: v", "Approved now: v")}
                   {newV?.number ?? "?"}.
                   <span className="ml-2 text-xs text-text-tertiary">
-                    {index + 1} av {items.length}
+                    {index + 1} {L("av", "of")} {items.length}
                   </span>
                 </p>
                 <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
                   <figure className="flex flex-col gap-1">
                     <img
                       src={oldV ? urls.data?.[oldV.mediaPath] : undefined}
-                      alt={`Versjon ${oldV?.number ?? ""} nå i scenen`}
+                      alt={L(
+                        `Versjon ${oldV?.number ?? ""} nå i scenen`,
+                        `Version ${oldV?.number ?? ""} now in the scene`,
+                      )}
                       className="aspect-video w-full bg-black object-contain"
                     />
                     <figcaption className="text-[11px] text-text-tertiary">
-                      Nå i scenen (v{oldV?.number})
+                      {L("Nå i scenen", "Now in the scene")} (v{oldV?.number})
                     </figcaption>
                   </figure>
                   <ArrowRight className="size-4 text-text-tertiary" aria-hidden />
                   <figure className="flex flex-col gap-1">
                     <img
                       src={newV ? urls.data?.[newV.mediaPath] : undefined}
-                      alt={`Godkjent versjon ${newV?.number ?? ""}`}
+                      alt={L(
+                        `Godkjent versjon ${newV?.number ?? ""}`,
+                        `Approved version ${newV?.number ?? ""}`,
+                      )}
                       className="aspect-video w-full bg-black object-contain"
                     />
                     <figcaption className="text-[11px] text-text-tertiary">
-                      Godkjent (v{newV?.number})
+                      {L("Godkjent", "Approved")} (v{newV?.number})
                     </figcaption>
                   </figure>
                 </div>
@@ -217,11 +232,14 @@ export function AssetWorklistDialog({
                       onClick={() =>
                         runAll(
                           newVersionWorkItemCommands(state, item, clip, () => newId()),
-                          `Bruk ${asset?.name ?? "ressursen"} v${newV?.number ?? ""} i ${sceneText(item).toLowerCase()}`,
+                          L(
+                            `Bruk ${asset?.name ?? "ressursen"} v${newV?.number ?? ""} i ${sceneText(item).toLowerCase()}`,
+                            `Use ${asset?.name ?? "the asset"} v${newV?.number ?? ""} in ${sceneText(item).toLowerCase()}`,
+                          ),
                         )
                       }
                     >
-                      <Check /> Bruk ny versjon her
+                      <Check /> {L("Bruk ny versjon her", "Use the new version here")}
                     </Button>
                   ) : null}
                   {editable && item.kind === "ai" && item.occurrenceId ? (
@@ -230,9 +248,12 @@ export function AssetWorklistDialog({
                         to="/prosjekt/$projectId/montering"
                         params={{ projectId }}
                         search={{ scene: item.occurrenceId }}
-                        title="Åpner scenen i monteringen. Der starter du genereringen selv, med pris først."
+                        title={L(
+                          "Åpner scenen i monteringen. Der starter du genereringen selv, med pris først.",
+                          "Opens the scene in the assembly. There you start the generation yourself, with the price first.",
+                        )}
                       >
-                        <AiGlyph /> Lag ny video …
+                        <AiGlyph /> {L("Lag ny video …", "Make new video …")}
                       </Link>
                     </Button>
                   ) : null}
@@ -244,12 +265,18 @@ export function AssetWorklistDialog({
                         const c = keepWorkItemCommand(state, item);
                         runAll(
                           c ? [c] : null,
-                          `Behold eldre versjon i ${sceneText(item).toLowerCase()}`,
+                          L(
+                            `Behold eldre versjon i ${sceneText(item).toLowerCase()}`,
+                            `Keep older version in ${sceneText(item).toLowerCase()}`,
+                          ),
                         );
                       }}
-                      title="Scenen beholder det gamle bildet og forsvinner fra listen til en ny versjon godkjennes"
+                      title={L(
+                        "Scenen beholder det gamle bildet og forsvinner fra listen til en ny versjon godkjennes",
+                        "The scene keeps the old image and disappears from the list until a new version is approved",
+                      )}
                     >
-                      Behold
+                      {L("Behold", "Keep")}
                     </Button>
                   ) : null}
                   {item.occurrenceId && item.kind === "layer" ? (
@@ -259,7 +286,7 @@ export function AssetWorklistDialog({
                         params={{ projectId }}
                         search={{ scene: item.occurrenceId }}
                       >
-                        <Layers /> Åpne i sceneeditoren
+                        <Layers /> {L("Åpne i sceneeditoren", "Open in the scene editor")}
                       </Link>
                     </Button>
                   ) : null}
@@ -270,15 +297,17 @@ export function AssetWorklistDialog({
                         params={{ projectId }}
                         search={{ scene: item.occurrenceId }}
                       >
-                        <Clapperboard /> Åpne i monteringen
+                        <Clapperboard /> {L("Åpne i monteringen", "Open in the assembly")}
                       </Link>
                     </Button>
                   ) : null}
                 </div>
                 {item.kind === "ai" ? (
                   <p className="text-[11px] text-text-tertiary">
-                    Videoen ble laget med den eldre versjonen som referanse. En video kan ikke
-                    byttes ut automatisk; lag en ny i monteringen hvis du vil, eller behold den.
+                    {L(
+                      "Videoen ble laget med den eldre versjonen som referanse. En video kan ikke byttes ut automatisk; lag en ny i monteringen hvis du vil, eller behold den.",
+                      "The video was made with the older version as a reference. A video cannot be replaced automatically; make a new one in the assembly if you want, or keep it.",
+                    )}
                   </p>
                 ) : null}
                 {err ? (

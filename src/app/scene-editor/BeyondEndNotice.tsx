@@ -6,8 +6,10 @@
 import { AlertTriangle } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
+  L,
   MAX_DURATION_SECONDS,
   framesToSeconds,
+  locale,
   secondsToFrames,
   type Command,
   type Composition,
@@ -49,10 +51,17 @@ export function BeyondEndNotice({
   if (found.keyframeCount === 0 && found.shots.length === 0) return null;
   const fps = state.project.fps;
   const sec = (f: number) =>
-    `${(Math.round(framesToSeconds(f, fps) * 10) / 10).toLocaleString("nb-NO")} s`;
+    `${(Math.round(framesToSeconds(f, fps) * 10) / 10).toLocaleString(locale())} s`;
+  const and = L(" og ", " and ");
   const parts: string[] = [];
-  if (found.keyframeCount) parts.push(s(found.keyframeCount, "nøkkelbilde", "nøkkelbilder"));
-  if (found.shots.length) parts.push(s(found.shots.length, "kamerautsnitt", "kamerautsnitt"));
+  if (found.keyframeCount)
+    parts.push(
+      s(found.keyframeCount, L("nøkkelbilde", "keyframe"), L("nøkkelbilder", "keyframes")),
+    );
+  if (found.shots.length)
+    parts.push(
+      s(found.shots.length, L("kamerautsnitt", "camera shot"), L("kamerautsnitt", "camera shots")),
+    );
   const last = Math.max(0, durationFrames - 1);
   const needed = Math.min(found.maxFrame + 1, secondsToFrames(MAX_DURATION_SECONDS, fps));
 
@@ -64,7 +73,7 @@ export function BeyondEndNotice({
           compositionId: composition.id,
           fields: { ...compositionFieldsOf(composition), durationFrames: needed },
         },
-        "Forleng scenen",
+        L("Forleng scenen", "Extend the scene"),
       ),
     );
   }
@@ -78,8 +87,9 @@ export function BeyondEndNotice({
       <div className="flex min-h-6 flex-wrap items-center gap-2">
         <AlertTriangle className="size-3.5 text-status-uncertain" aria-hidden />
         <span>
-          {parts.join(" og ")} ligger etter scenens slutt ({sec(durationFrames)}) og vises ikke.
-          Ingenting er slettet.
+          {parts.join(and)} {L("ligger etter scenens slutt", "are past the end of the scene")} (
+          {sec(durationFrames)}) {L("og vises ikke.", "and are not shown.")}{" "}
+          {L("Ingenting er slettet.", "Nothing has been deleted.")}
         </span>
         <Button
           size="sm"
@@ -88,17 +98,20 @@ export function BeyondEndNotice({
           aria-expanded={open}
           onClick={() => setOpen((o) => !o)}
         >
-          {open ? "Skjul liste" : "Vis og velg …"}
+          {open ? L("Skjul liste", "Hide list") : L("Vis og velg …", "Show and choose …")}
         </Button>
         {editable ? (
           <Button size="sm" variant="ghost" className="h-6" onClick={extend}>
-            Forleng scenen til {sec(needed)}
+            {L("Forleng scenen til", "Extend the scene to")} {sec(needed)}
           </Button>
         ) : null}
         {error ? <span className="text-status-danger">{error}</span> : null}
       </div>
       {open ? (
-        <ul className="mb-1 mt-1 flex flex-col gap-0.5 pl-5" aria-label="Etter scenens slutt">
+        <ul
+          className="mb-1 mt-1 flex flex-col gap-0.5 pl-5"
+          aria-label={L("Etter scenens slutt", "After the end of the scene")}
+        >
           {found.layers.map((l) => (
             <li key={l.layerId} className="flex items-center gap-2">
               <button
@@ -109,10 +122,11 @@ export function BeyondEndNotice({
                   onSeek(last);
                 }}
               >
-                Lag «{l.name}»
+                {L(`Lag «${l.name}»`, `Layer “${l.name}”`)}
               </button>
               <span className="text-text-tertiary">
-                {s(l.frames.length, "nøkkelbilde", "nøkkelbilder")} ved{" "}
+                {s(l.frames.length, L("nøkkelbilde", "keyframe"), L("nøkkelbilder", "keyframes"))}{" "}
+                {L("ved", "at")}{" "}
                 {l.frames
                   .slice(0, 4)
                   .map((f) => sec(f))
@@ -131,11 +145,13 @@ export function BeyondEndNotice({
                   onSeek(Math.min(sh.startFrame, last));
                 }}
               >
-                Kamerautsnitt «{sh.name}»
+                {L(`Kamerautsnitt «${sh.name}»`, `Camera shot “${sh.name}”`)}
               </button>
               <span className="text-text-tertiary">
                 {sec(sh.startFrame)}–{sec(sh.endFrame)}
-                {sh.entirely ? " (helt etter slutten)" : " (går forbi slutten)"}
+                {sh.entirely
+                  ? L(" (helt etter slutten)", " (entirely after the end)")
+                  : L(" (går forbi slutten)", " (runs past the end)")}
               </span>
             </li>
           ))}

@@ -3,12 +3,15 @@ import { useEffect, useState } from "react";
 import { useSession } from "@/app/auth/use-session";
 import { AuthScreen } from "@/app/auth/AuthScreen";
 import { acceptInvitation } from "@/adapters/browser/members";
+import { L } from "@/core";
 
 export const Route = createFileRoute("/invitasjon")({
   validateSearch: (search: Record<string, unknown>) => ({
     token: typeof search["token"] === "string" ? search["token"] : "",
   }),
-  head: () => ({ meta: [{ title: "Invitasjon – Animatic Studio" }] }),
+  head: () => ({
+    meta: [{ title: L("Invitasjon – Animatic Studio", "Invitation – Animatic Studio") }],
+  }),
   component: AcceptInvitation,
 });
 
@@ -21,7 +24,13 @@ function AcceptInvitation() {
   useEffect(() => {
     if (session.status !== "signed-in" || !token) return;
     void acceptInvitation(token).then(({ projectId, error: e }) => {
-      if (e || !projectId) setError("Invitasjonen er ugyldig, utløpt eller allerede brukt.");
+      if (e || !projectId)
+        setError(
+          L(
+            "Invitasjonen er ugyldig, utløpt eller allerede brukt.",
+            "The invitation is invalid, has expired or has already been used.",
+          ),
+        );
       else void navigate({ to: "/prosjekt/$projectId", params: { projectId } });
     });
   }, [session.status, token, navigate]);
@@ -34,7 +43,9 @@ function AcceptInvitation() {
         role={error ? "alert" : "status"}
         className={error ? "text-[13px] text-status-danger" : "text-[13px] text-text-secondary"}
       >
-        {!token ? "Lenken mangler invitasjonskode." : (error ?? "Godtar invitasjonen …")}
+        {!token
+          ? L("Lenken mangler invitasjonskode.", "The link is missing an invitation code.")
+          : (error ?? L("Godtar invitasjonen …", "Accepting the invitation …"))}
       </p>
     </main>
   );

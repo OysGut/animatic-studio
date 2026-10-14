@@ -7,14 +7,17 @@
 import { AlertTriangle, CheckCircle2, Info, Play } from "lucide-react";
 import { useMemo } from "react";
 import {
+  L,
   LANGUAGE_LABEL,
   MATERIAL_LABEL,
   audioClipFieldsOf,
   formatHeading,
   languageReport,
+  locale,
   type Command,
   type ProjectState,
   type TimingConflict,
+  languageWord,
 } from "@/core";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,7 +28,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-const sec = (ms: number) => `${(Math.round(ms / 100) / 10).toLocaleString("nb-NO")} s`;
+const sec = (ms: number) => `${(Math.round(ms / 100) / 10).toLocaleString(locale())} s`;
 
 export function LanguageVersionDialog({
   open,
@@ -72,7 +75,7 @@ export function LanguageVersionDialog({
         type: "UpdateAudioClips",
         clips: [{ clipId: a.id, fields: { ...audioClipFieldsOf(a), offsetMs } }],
       },
-      `Flytt ${name.toLowerCase()} replikk`,
+      L(`Flytt ${name.toLowerCase()} replikk`, `Move ${name} line`),
     );
     onSeek(c.occurrenceId, offsetMs);
   }
@@ -81,44 +84,64 @@ export function LanguageVersionDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
-          <DialogTitle>Språkversjon: {name}</DialogTitle>
+          <DialogTitle>
+            {L("Språkversjon", "Language version")}: {name}
+          </DialogTitle>
           <DialogDescription>
-            Samme film, scener og bilder som den norske. Her ser du hva som mangler eller må sjekkes
-            i den {name.toLowerCase()}e versjonen. Ingenting lages på nytt automatisk, og
-            hovedfilmens timing endres ikke.
+            {L(
+              `Samme film, scener og bilder som den norske. Her ser du hva som mangler eller må sjekkes i den ${name.toLowerCase()}e versjonen. Ingenting lages på nytt automatisk, og hovedfilmens timing endres ikke.`,
+              `The same film, scenes and images as the Norwegian one. Here you can see what is missing or needs checking in the ${name} version. Nothing is regenerated automatically, and the timing of the main film is not changed.`,
+            )}
           </DialogDescription>
         </DialogHeader>
         <ul
-          aria-label="Sammendrag"
+          aria-label={L("Sammendrag", "Summary")}
           className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs sm:grid-cols-3"
         >
           <Summary
             ok={translated === lines}
-            text={`${translated} av ${lines} replikker oversatt`}
+            text={L(
+              `${translated} av ${lines} replikker oversatt`,
+              `${translated} of ${lines} lines translated`,
+            )}
           />
           <Summary
             ok={voiced === lines}
             neutral={voiced === 0}
-            text={`${voiced} av ${lines} replikker med ${name.toLowerCase()} lyd`}
+            text={L(
+              `${voiced} av ${lines} replikker med ${name.toLowerCase()} lyd`,
+              `${voiced} of ${lines} lines with ${name} audio`,
+            )}
           />
           <Summary
             ok={conflicts === 0}
-            text={`${conflicts} ${conflicts === 1 ? "timingkonflikt" : "timingkonflikter"}`}
+            text={L(
+              `${conflicts} ${conflicts === 1 ? "timingkonflikt" : "timingkonflikter"}`,
+              `${conflicts} ${conflicts === 1 ? "timing conflict" : "timing conflicts"}`,
+            )}
           />
           <Summary
             ok={mixed === 0}
-            text={`${mixed} ${mixed === 1 ? "scene" : "scener"} med blandet filmlyd`}
+            text={L(
+              `${mixed} ${mixed === 1 ? "scene" : "scener"} med blandet filmlyd`,
+              `${mixed} ${mixed === 1 ? "scene" : "scenes"} with mixed film audio`,
+            )}
           />
           <Summary
             ok={lipsync === 0}
             neutral
-            text={`${lipsync} ${lipsync === 1 ? "scene" : "scener"} der munnbevegelser bør sjekkes`}
+            text={L(
+              `${lipsync} ${lipsync === 1 ? "scene" : "scener"} der munnbevegelser bør sjekkes`,
+              `${lipsync} ${lipsync === 1 ? "scene" : "scenes"} where mouth movements should be checked`,
+            )}
           />
         </ul>
         {shown.length === 0 ? (
-          <p className="text-[13px] text-text-tertiary">Ingen scener med replikker.</p>
+          <p className="text-[13px] text-text-tertiary">
+            {L("Ingen scener med replikker.", "No scenes with lines.")}
+          </p>
         ) : (
-          <ul aria-label="Scener" className="flex flex-col border border-border">
+          <ul aria-label={L("Scener", "Scenes")} className="flex flex-col border border-border">
             {shown.map((r) => (
               <li
                 key={r.clip.occurrenceId}
@@ -130,13 +153,14 @@ export function LanguageVersionDialog({
                     {formatHeading(r.clip.heading)}
                   </span>
                   <span className="shrink-0 text-text-tertiary">
-                    {r.translated}/{r.lines} oversatt · {r.withAudio}/{r.lines} med lyd
+                    {r.translated}/{r.lines} {L("oversatt", "translated")} · {r.withAudio}/{r.lines}{" "}
+                    {L("med lyd", "with audio")}
                   </span>
                   <Button
                     size="sm"
                     variant="ghost"
-                    aria-label="Gå til scenen"
-                    title="Gå til scenen"
+                    aria-label={L("Gå til scenen", "Go to the scene")}
+                    title={L("Gå til scenen", "Go to the scene")}
                     onClick={() => onSeek(r.clip.occurrenceId, 0)}
                   >
                     <Play />
@@ -166,11 +190,10 @@ export function LanguageVersionDialog({
                   <p className="flex items-start gap-1.5 text-status-uncertain">
                     <AlertTriangle className="mt-px size-3.5 shrink-0" aria-hidden />
                     <span>
-                      Den importerte filmen har{" "}
-                      {(LANGUAGE_LABEL[r.mixedDialogue] ?? r.mixedDialogue).toLowerCase()} dialog
-                      blandet inn i lyden. Den kan ikke byttes helt ut: filmlyden spilles som den
-                      er, og {name.toLowerCase()} dialog legges oppå. Er lyden bare musikk og
-                      effekter, kan du angi det i scenepanelet.
+                      {L(
+                        `Den importerte filmen har ${languageWord(r.mixedDialogue)} dialog blandet inn i lyden. Den kan ikke byttes helt ut: filmlyden spilles som den er, og ${name.toLowerCase()} dialog legges oppå. Er lyden bare musikk og effekter, kan du angi det i scenepanelet.`,
+                        `The imported film has ${languageWord(r.mixedDialogue)} dialogue mixed into the audio. It cannot be swapped out completely: the film audio is played as it is, and ${name} dialogue is laid on top. If the audio is only music and effects, you can say so in the scene panel.`,
+                      )}
                     </span>
                   </p>
                 ) : null}
@@ -232,19 +255,39 @@ function Conflict({
       <div className="flex items-start gap-2">
         <span className="min-w-0 flex-1 text-text-primary">
           <span className="font-script">
-            «{text.length > 80 ? `${text.slice(0, 80)} …` : text}»
+            {L("«", "“")}
+            {text.length > 80 ? `${text.slice(0, 80)} …` : text}
+            {L("»", "”")}
           </span>
           <span className="block text-text-tertiary">
             {long
-              ? `For lang: ${sec(c.lengthMs)} mot ${sec(c.windowEndMs - c.windowStartMs)} til neste replikk (${sec(c.overflowMs)} over).`
-              : `Kort: ${sec(c.lengthMs)} mot ${sec(c.windowEndMs - c.windowStartMs)}.`}{" "}
-            {c.source === "audio" ? "Målt fra lydfilen." : "Beregnet fra oversettelsen."}
-            {c.windowEstimated ? " Tiden i den norske filmen er beregnet fra manuset." : ""}
+              ? L(
+                  `For lang: ${sec(c.lengthMs)} mot ${sec(c.windowEndMs - c.windowStartMs)} til neste replikk (${sec(c.overflowMs)} over).`,
+                  `Too long: ${sec(c.lengthMs)} against ${sec(c.windowEndMs - c.windowStartMs)} until the next line (${sec(c.overflowMs)} over).`,
+                )
+              : L(
+                  `Kort: ${sec(c.lengthMs)} mot ${sec(c.windowEndMs - c.windowStartMs)}.`,
+                  `Short: ${sec(c.lengthMs)} against ${sec(c.windowEndMs - c.windowStartMs)}.`,
+                )}{" "}
+            {c.source === "audio"
+              ? L("Målt fra lydfilen.", "Measured from the audio file.")
+              : L("Beregnet fra oversettelsen.", "Calculated from the translation.")}
+            {c.windowEstimated
+              ? L(
+                  " Tiden i den norske filmen er beregnet fra manuset.",
+                  " The time in the Norwegian film is calculated from the script.",
+                )
+              : ""}
           </span>
         </span>
-        <Button size="sm" variant="ghost" onClick={onSeek} title="Gå til replikken">
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={onSeek}
+          title={L("Gå til replikken", "Go to the line")}
+        >
           <Play />
-          Vis
+          {L("Vis", "Show")}
         </Button>
       </div>
       <ul className="flex flex-col gap-0.5 text-text-secondary">
@@ -257,7 +300,7 @@ function Conflict({
                 variant="secondary"
                 onClick={() => onEarlier(sg.clipId, sg.offsetMs)}
               >
-                Flytt
+                {L("Flytt", "Move")}
               </Button>
             ) : null}
           </li>

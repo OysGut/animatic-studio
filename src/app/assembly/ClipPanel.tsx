@@ -34,6 +34,9 @@ import {
   blocksOfVariant,
   formatHeading,
   formatTimecode,
+  L,
+  locale,
+  tm,
   framesToSeconds,
   secondsToFrames,
   takeLabel,
@@ -158,7 +161,9 @@ export function ClipPanel({
   if (!clip)
     return (
       <p className="p-3 text-[13px] text-text-tertiary">
-        {clipCount === 0 ? "Ingen aktive scener." : "Velg en scene i tidslinjen."}
+        {clipCount === 0
+          ? L("Ingen aktive scener.", "No active scenes.")
+          : L("Velg en scene i tidslinjen.", "Select a scene in the timeline.")}
       </p>
     );
   const seconds = Math.round(framesToSeconds(clip.durationFrames, fps) * 100) / 100;
@@ -186,13 +191,16 @@ export function ClipPanel({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
-      <section aria-label="Valgt scene" className="flex flex-col gap-2 border-b border-border p-3">
+      <section
+        aria-label={L("Valgt scene", "Selected scene")}
+        className="flex flex-col gap-2 border-b border-border p-3"
+      >
         <div className="flex items-baseline gap-2">
           <span className="font-mono text-[11px] text-text-tertiary">
             {clip.productionNumber ?? "–"}
           </span>
           <h2 className="min-w-0 truncate text-[13px] font-medium text-text-primary">
-            {formatHeading(clip.heading) || "Uten overskrift"}
+            {formatHeading(clip.heading) || L("Uten overskrift", "Untitled")}
           </h2>
           <span className="ml-auto self-center">
             <ContentSyncFlag
@@ -206,19 +214,20 @@ export function ClipPanel({
           </span>
         </div>
         <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 text-xs">
-          <dt className="text-text-tertiary">Materiale</dt>
+          <dt className="text-text-tertiary">{L("Materiale", "Material")}</dt>
           <dd className="flex items-center gap-1.5 text-text-primary">
             {clip.source === "film" ? (
               <span className="flex min-w-0 items-center gap-1.5">
                 <Film className="size-3.5 shrink-0 text-accent-warm" aria-hidden />
                 <span className="truncate" title={clip.take?.media?.fileName}>
-                  Ferdig film – {clip.take?.media?.fileName ?? "importert"}
+                  {L("Ferdig film –", "Finished film –")}{" "}
+                  {clip.take?.media?.fileName ?? L("importert", "imported")}
                 </span>
               </span>
             ) : placeholder ? (
               <>
                 <Clapperboard className="size-3.5 text-text-tertiary" aria-hidden />
-                Tittelkort (ingen 2D-scene ennå)
+                {L("Tittelkort (ingen 2D-scene ennå)", "Title card (no 2D scene yet)")}
               </>
             ) : (
               <>
@@ -227,22 +236,30 @@ export function ClipPanel({
               </>
             )}
           </dd>
-          <dt className="text-text-tertiary">Starter</dt>
+          <dt className="text-text-tertiary">{L("Starter", "Starts")}</dt>
           <dd className="font-mono text-text-primary">{formatTimecode(clip.startFrame, fps)}</dd>
-          <dt className="self-center text-text-tertiary">Lengde</dt>
+          <dt className="self-center text-text-tertiary">{L("Lengde", "Length")}</dt>
           <dd className="flex flex-wrap items-center gap-1.5">
             {film ? (
               <span className="text-text-secondary">
                 {formatSeconds(seconds)}{" "}
                 <span className="text-text-tertiary">
-                  ({clip.edited ? "summen av delene" : "filmens lengde"})
+                  (
+                  {clip.edited
+                    ? L("summen av delene", "the sum of the parts")
+                    : L("filmens lengde", "the film's length")}
+                  )
                 </span>
               </span>
             ) : placeholder ? (
               <span className="italic text-text-secondary">
                 ≈ {formatSeconds(seconds)}{" "}
                 <span className="not-italic text-text-tertiary">
-                  ({clip.durationKind === "planned" ? "planlagt" : "beregnet fra manus"})
+                  (
+                  {clip.durationKind === "planned"
+                    ? L("planlagt", "planned")
+                    : L("beregnet fra manus", "estimated from the script")}
+                  )
                 </span>
               </span>
             ) : (
@@ -250,7 +267,7 @@ export function ClipPanel({
                 <input
                   type="number"
                   inputMode="decimal"
-                  aria-label="Lengde i sekunder"
+                  aria-label={L("Lengde i sekunder", "Length in seconds")}
                   step={0.5}
                   min={MIN_DURATION_SECONDS}
                   max={MAX_DURATION_SECONDS}
@@ -270,17 +287,24 @@ export function ClipPanel({
                 />
                 <span className="text-text-tertiary">s</span>
                 {clip.durationKind === "estimate" ? (
-                  <span className="text-text-tertiary">(beregnet fra manus)</span>
+                  <span className="text-text-tertiary">
+                    {L("(beregnet fra manus)", "(estimated from the script)")}
+                  </span>
                 ) : clip.durationKind === "planned" ? (
-                  <span className="text-text-tertiary">(planlagt på prosjektoversikten)</span>
+                  <span className="text-text-tertiary">
+                    {L("(planlagt på prosjektoversikten)", "(planned on the project overview)")}
+                  </span>
                 ) : editable ? (
                   <button
                     type="button"
                     onClick={onEstimate}
                     className="rounded-sm px-1 text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-                    title="Bruk lengden som er beregnet fra manuset"
+                    title={L(
+                      "Bruk lengden som er beregnet fra manuset",
+                      "Use the length estimated from the script",
+                    )}
                   >
-                    Fra manus
+                    {L("Fra manus", "From script")}
                   </button>
                 ) : null}
               </>
@@ -291,7 +315,7 @@ export function ClipPanel({
           {placeholder && editable ? (
             <Button size="sm" variant="secondary" onClick={onCreateComposition}>
               <Plus />
-              Lag 2D-scene
+              {L("Lag 2D-scene", "Create 2D scene")}
             </Button>
           ) : null}
           <Button size="sm" variant="secondary" asChild>
@@ -301,7 +325,7 @@ export function ClipPanel({
               search={{ scene: clip.occurrenceId }}
             >
               <Layers />
-              Åpne i sceneeditoren
+              {L("Åpne i sceneeditoren", "Open in scene editor")}
             </Link>
           </Button>
           <Button size="sm" variant="ghost" asChild>
@@ -312,10 +336,13 @@ export function ClipPanel({
                 scene: clip.occurrenceId,
                 ...(hereBlock ? { blokk: hereBlock } : {}),
               }}
-              title="Åpne manuset med replikken eller handlingen under avspillingshodet valgt"
+              title={L(
+                "Åpne manuset med replikken eller handlingen under avspillingshodet valgt",
+                "Open the script with the line or action under the playhead selected",
+              )}
             >
               <FileText />
-              Vis i manus
+              {L("Vis i manus", "Show in script")}
             </Link>
           </Button>
           {onGenerateScene ? (
@@ -323,10 +350,13 @@ export function ClipPanel({
               size="sm"
               variant="ghost"
               onClick={onGenerateScene}
-              title="Les og forbered beskrivelsene for AI-video av scenen"
+              title={L(
+                "Les og forbered beskrivelsene for AI-video av scenen",
+                "Read and prepare the descriptions for AI video of the scene",
+              )}
             >
               <AiGlyph />
-              Generer scene …
+              {L("Generer scene …", "Generate scene …")}
             </Button>
           ) : null}
           {onAiDialogue ? (
@@ -334,10 +364,13 @@ export function ClipPanel({
               size="sm"
               variant="ghost"
               onClick={onAiDialogue}
-              title="Les inn replikkene med AI-stemmer og legg dem på dialogsporet"
+              title={L(
+                "Les inn replikkene med AI-stemmer og legg dem på dialogsporet",
+                "Read the lines with AI voices and add them to the dialogue track",
+              )}
             >
               <Mic />
-              Dialog med AI-stemmer …
+              {L("Dialog med AI-stemmer …", "Dialogue with AI voices …")}
             </Button>
           ) : null}
           {editable ? (
@@ -345,10 +378,13 @@ export function ClipPanel({
               size="sm"
               variant="ghost"
               onClick={onDeactivate}
-              title="Tar scenen ut av filmen og manuset. Den slettes ikke og kan aktiveres igjen i manuset."
+              title={L(
+                "Tar scenen ut av filmen og manuset. Den slettes ikke og kan aktiveres igjen i manuset.",
+                "Takes the scene out of the film and the script. It is not deleted and can be activated again in the script.",
+              )}
             >
               <EyeOff />
-              Deaktiver
+              {L("Deaktiver", "Deactivate")}
             </Button>
           ) : null}
         </div>
@@ -398,9 +434,12 @@ export function ClipPanel({
         onMonochrome={onMonochrome}
       />
 
-      <section aria-label="Manus for scenen" className="flex min-h-[280px] flex-1 flex-col">
+      <section
+        aria-label={L("Manus for scenen", "Script for the scene")}
+        className="flex min-h-[280px] flex-1 flex-col"
+      >
         <div className="flex items-center gap-2 px-3 pb-1 pt-2">
-          <h2 className={label}>Manus</h2>
+          <h2 className={label}>{L("Manus", "Script")}</h2>
           {editable ? (
             <button
               type="button"
@@ -420,15 +459,23 @@ export function ClipPanel({
                   ? "bg-accent-warm/20 text-text-primary ring-1 ring-accent-warm"
                   : "text-text-secondary hover:bg-surface-3 hover:text-text-primary")
               }
-              title="Synk replikker: spill av, og trykk T hver gang replikken eller handlingen som står for tur, begynner. Klikk på en blokk for å begynne der."
+              title={L(
+                "Synk replikker: spill av, og trykk T hver gang replikken eller handlingen som står for tur, begynner. Klikk på en blokk for å begynne der.",
+                "Sync lines: play, and press T each time the line or action that is up next begins. Click a block to start there.",
+              )}
             >
               <Timer className="size-3" aria-hidden />
-              {sync && sync.occurrenceId === clip.occurrenceId ? "Synker (T)" : "Synk replikker"}
+              {sync && sync.occurrenceId === clip.occurrenceId
+                ? L("Synker (T)", "Syncing (T)")
+                : L("Synk replikker", "Sync lines")}
             </button>
           ) : null}
           <label
             className="ml-auto flex items-center gap-1.5 text-xs text-text-secondary"
-            title="Manuset viser scenen under avspillingshodet"
+            title={L(
+              "Manuset viser scenen under avspillingshodet",
+              "The script shows the scene under the playhead",
+            )}
           >
             <input
               type="checkbox"
@@ -436,7 +483,7 @@ export function ClipPanel({
               onChange={(e) => onFollowChange(e.target.checked)}
               className="size-3.5 accent-[var(--accent-brand)]"
             />
-            Følg avspillingen
+            {L("Følg avspillingen", "Follow playback")}
           </label>
         </div>
         <SceneText
@@ -513,12 +560,14 @@ function SceneText({
         type="button"
         onClick={() => onSeek(clip.startFrame)}
         className="mb-2 block text-left font-bold uppercase hover:text-accent-brand"
-        title="Gå til starten av scenen"
+        title={L("Gå til starten av scenen", "Go to the start of the scene")}
       >
         {formatHeading(clip.heading)}
       </button>
       {blocks.length === 0 ? (
-        <p className="text-text-tertiary">Scenen har ingen tekst.</p>
+        <p className="text-text-tertiary">
+          {L("Scenen har ingen tekst.", "The scene has no text.")}
+        </p>
       ) : (
         blocks.map((b) => {
           const sp = spanOf.get(b.id);
@@ -610,9 +659,13 @@ function Block({
               : "mt-2 whitespace-pre-wrap";
   const text = b.kind === "note" ? `[${b.text}]` : b.text;
   if (!span) return <p className={cls}>{text}</p>;
-  const sec = (f: number) => `${(Math.floor((f / fps) * 10) / 10).toLocaleString("nb-NO")} s`;
+  const sec = (f: number) => `${(Math.floor((f / fps) * 10) / 10).toLocaleString(locale())} s`;
   const how =
-    span.kind === "time" ? "satt tid" : span.kind === "linked" ? "fra lydklippet" : "beregnet";
+    span.kind === "time"
+      ? L("satt tid", "set time")
+      : span.kind === "linked"
+        ? L("fra lydklippet", "from the audio clip")
+        : L("beregnet", "estimated");
   return (
     <div className={"group relative " + (syncing ? "rounded-sm ring-1 ring-accent-warm" : "")}>
       <p
@@ -626,9 +679,13 @@ function Block({
             onSeek(span.startFrame);
           }
         }}
-        title={`Gå hit i filmen (${sec(span.startFrame)}, ${how})${
+        title={`${L("Gå hit i filmen", "Go to this point in the film")} (${sec(span.startFrame)}, ${how})${
           span.uncovered
-            ? "\nTidskoblingen ligger etter slutten av klippet – ikke dekket av filmen"
+            ? "\n" +
+              L(
+                "Tidskoblingen ligger etter slutten av klippet – ikke dekket av filmen",
+                "The time link is after the end of the clip – not covered by the film",
+              )
             : ""
         }`}
         aria-current={active ? "true" : undefined}
@@ -644,7 +701,9 @@ function Block({
       {links.length > 0 || linkable ? (
         <div className="-mt-0.5 flex flex-wrap items-center justify-end gap-1 font-sans text-[11px]">
           {syncing ? (
-            <span className="rounded-sm bg-accent-warm/20 px-1 text-text-primary">neste: T</span>
+            <span className="rounded-sm bg-accent-warm/20 px-1 text-text-primary">
+              {L("neste: T", "next: T")}
+            </span>
           ) : null}
           {links.map((l) => (
             <span
@@ -657,8 +716,11 @@ function Block({
               }
               title={
                 l.layerId
-                  ? `Hendelse i 2D-scenen: ${layerName(l.layerId) ?? "lag"} (tid i 2D-scenen)${linkFrame(l) === null ? " – kuttet bort i klippet" : ""}`
-                  : "Tidskobling (tid fra scenens begynnelse)"
+                  ? `${L("Hendelse i 2D-scenen", "Event in the 2D scene")}: ${layerName(l.layerId) ?? L("lag", "layer")} (${L("tid i 2D-scenen", "time in the 2D scene")})${linkFrame(l) === null ? ` – ${L("kuttet bort i klippet", "cut from the clip")}` : ""}`
+                  : L(
+                      "Tidskobling (tid fra scenens begynnelse)",
+                      "Time link (time from the start of the scene)",
+                    )
               }
             >
               <button
@@ -669,14 +731,14 @@ function Block({
                 }}
                 className="hover:text-text-primary"
               >
-                ⏱ {(Math.round(l.startMs / 100) / 10).toLocaleString("nb-NO")} s
-                {l.layerId ? ` · ${layerName(l.layerId) ?? "lag"}` : ""}
+                ⏱ {(Math.round(l.startMs / 100) / 10).toLocaleString(locale())} s
+                {l.layerId ? ` · ${layerName(l.layerId) ?? L("lag", "layer")}` : ""}
               </button>
               {linkable ? (
                 <button
                   type="button"
                   onClick={() => onRemoveLink(l.id)}
-                  aria-label="Fjern tidskobling"
+                  aria-label={L("Fjern tidskobling", "Remove time link")}
                   className="px-0.5 hover:text-status-danger"
                 >
                   ×
@@ -692,18 +754,24 @@ function Block({
                 className="rounded-sm px-1 text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
                 title={
                   links.length
-                    ? "Flytt tidskoblingen til avspillingshodet"
-                    : "Koble blokken til avspillingshodet"
+                    ? L(
+                        "Flytt tidskoblingen til avspillingshodet",
+                        "Move the time link to the playhead",
+                      )
+                    : L("Koble blokken til avspillingshodet", "Link the block to the playhead")
                 }
               >
-                ⏱ {links.length ? "Flytt hit" : "Sett tid her"}
+                ⏱ {links.length ? L("Flytt hit", "Move here") : L("Sett tid her", "Set time here")}
               </button>
               {links.length ? (
                 <button
                   type="button"
                   onClick={() => onLink("add")}
                   className="rounded-sm px-1 text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
-                  title="Legg til et tidsrom til (en replikk kan høres flere ganger)"
+                  title={L(
+                    "Legg til et tidsrom til (en replikk kan høres flere ganger)",
+                    "Add another time (a line can be heard more than once)",
+                  )}
                 >
                   + tid
                 </button>
@@ -762,7 +830,8 @@ function Versions({
     [state.takes, state.occurrences, clip.sceneId],
   );
   const activeId = clip.edited
-    ? "__deler__"
+    ? // i18n-ignore – intern markør, vises ikke
+      "__deler__"
     : (state.occurrences[clip.inheritedFrom ?? clip.occurrenceId]?.activeTakeId ?? null);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [stillOpen, setStillOpen] = useState(false);
@@ -801,35 +870,40 @@ function Versions({
   const use = (on: boolean, id: string | null, name: string) =>
     on ? (
       <span className="flex shrink-0 items-center gap-0.5 text-[11px] text-status-success">
-        <Check className="size-3" aria-hidden />I bruk
+        <Check className="size-3" aria-hidden />
+        {L("I bruk", "In use")}
       </span>
     ) : editable ? (
       <button
         type="button"
         onClick={() => onUseTake(id)}
         className="shrink-0 rounded-sm px-1.5 py-0.5 text-[11px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-        aria-label={`Bruk ${name}`}
+        aria-label={`${L("Bruk", "Use")} ${name}`}
       >
-        Bruk denne
+        {L("Bruk denne", "Use this")}
       </button>
     ) : null;
 
   return (
     <section
-      aria-label="Versjoner av scenen"
+      aria-label={L("Versjoner av scenen", "Versions of the scene")}
       className="flex flex-col gap-1.5 border-b border-border p-3"
     >
-      <h2 className={label}>Versjoner av scenen</h2>
+      <h2 className={label}>{L("Versjoner av scenen", "Versions of the scene")}</h2>
       {clip.inheritedFrom ? (
         <p className="text-[11px] text-text-tertiary">
-          Film og klipping kommer fra hovedfilmen (scenen er delt). Velger eller klipper du noe her,
-          får spinoffen sitt eget; hovedfilmen endres ikke.
+          {L(
+            "Film og klipping kommer fra hovedfilmen (scenen er delt). Velger eller klipper du noe her, får spinoffen sitt eget; hovedfilmen endres ikke.",
+            "Film and cutting come from the main film (the scene is shared). If you choose or cut something here, the spin-off gets its own; the main film is not changed.",
+          )}
         </p>
       ) : null}
       {clip.edited ? (
         <p className="text-[11px] text-text-tertiary">
-          Scenen er klippet sammen av deler (se «Klipp»). «Bruk denne» starter på nytt med hele
-          versjonen.
+          {L(
+            "Scenen er klippet sammen av deler (se «Klipp»). «Bruk denne» starter på nytt med hele versjonen.",
+            "The scene is cut together from parts (see “Cut”). “Use this” starts again with the whole version.",
+          )}
         </p>
       ) : null}
       <div className={row(activeId === null)}>
@@ -839,7 +913,8 @@ function Versions({
           <Clapperboard className="size-3.5 shrink-0 text-text-tertiary" aria-hidden />
         )}
         <span className="min-w-0 flex-1 truncate text-text-primary">
-          Animatic {clip.compositionId ? "(2D-scene)" : "(tittelkort)"}
+          Animatic{" "}
+          {clip.compositionId ? L("(2D-scene)", "(2D scene)") : L("(tittelkort)", "(title card)")}
         </span>
         {use(activeId === null, null, "animatic")}
       </div>
@@ -856,18 +931,18 @@ function Versions({
       {films.map((t) => (
         <FilmRow key={t.id} take={t} fps={fps.num / fps.den} className={row(activeId === t.id)}>
           <select
-            aria-label={`Status for ${t.media?.fileName ?? "filmen"}`}
+            aria-label={`Status for ${t.media?.fileName ?? L("filmen", "the film")}`}
             value={t.status}
             disabled={!editable}
             onChange={(e) => onTakeStatus(t.id, e.target.value as TakeStatus)}
             className="h-5 shrink-0 rounded-sm border border-border-control bg-surface-3 px-0.5 text-[11px] text-text-secondary disabled:opacity-50"
-            title="Status for filmen"
+            title={L("Status for filmen", "Status for the film")}
           >
-            <option value="reference">Referanse</option>
-            <option value="in_progress">Under arbeid</option>
-            <option value="approved">Godkjent</option>
+            <option value="reference">{L("Referanse", "Reference")}</option>
+            <option value="in_progress">{L("Under arbeid", "In progress")}</option>
+            <option value="approved">{L("Godkjent", "Approved")}</option>
           </select>
-          {use(activeId === t.id, t.id, t.media?.fileName ?? "filmen")}
+          {use(activeId === t.id, t.id, t.media?.fileName ?? L("filmen", "the film"))}
         </FilmRow>
       ))}
       {films.map((t) => (
@@ -888,9 +963,11 @@ function Versions({
             key={`lyd:${t.id}`}
             className="flex items-center gap-2 pl-6 text-[11px] text-text-tertiary"
           >
-            <span className="min-w-0 truncate">Lyden i {t.media?.fileName ?? "filmen"}</span>
+            <span className="min-w-0 truncate">
+              {L("Lyden i", "The audio in")} {t.media?.fileName ?? L("filmen", "the film")}
+            </span>
             <select
-              aria-label={`Lyden i ${t.media?.fileName ?? "filmen"}`}
+              aria-label={`${L("Lyden i", "The audio in")} ${t.media?.fileName ?? L("filmen", "the film")}`}
               value={t.audioLanguage === "nb" ? "" : (t.audioLanguage ?? "")}
               disabled={!editable || !run}
               onChange={(e) =>
@@ -900,15 +977,18 @@ function Versions({
                     takeId: t.id,
                     audioLanguage: e.target.value || null,
                   },
-                  "Endre dialog i filmlyden",
+                  L("Endre dialog i filmlyden", "Change dialogue in the film audio"),
                 )
               }
               className="ml-auto h-5 shrink-0 rounded-sm border border-border-control bg-surface-3 px-0.5 text-[11px] text-text-secondary disabled:opacity-50"
-              title="Er dialogen blandet inn i filmens lyd? Da kan den ikke byttes helt ut i en annen språkversjon."
+              title={L(
+                "Er dialogen blandet inn i filmens lyd? Da kan den ikke byttes helt ut i en annen språkversjon.",
+                "Is the dialogue mixed into the film audio? Then it cannot be fully replaced in another language version.",
+              )}
             >
-              <option value="">Med norsk dialog</option>
-              <option value="en">Med engelsk dialog</option>
-              <option value="none">Bare musikk og effekter</option>
+              <option value="">{L("Med norsk dialog", "With Norwegian dialogue")}</option>
+              <option value="en">{L("Med engelsk dialog", "With English dialogue")}</option>
+              <option value="none">{L("Bare musikk og effekter", "Music and effects only")}</option>
             </select>
           </label>
         ))}
@@ -919,9 +999,12 @@ function Versions({
             variant="secondary"
             className="self-start"
             onClick={() => setCompareOpen(true)}
-            title="Se to versjoner av scenen side ved side, spilt av samtidig"
+            title={L(
+              "Se to versjoner av scenen side ved side, spilt av samtidig",
+              "See two versions of the scene side by side, played at the same time",
+            )}
           >
-            <Columns2 /> Sammenlign versjoner …
+            <Columns2 /> {L("Sammenlign versjoner …", "Compare versions …")}
           </Button>
           {compareOpen ? (
             <CompareVersionsDialog
@@ -943,7 +1026,7 @@ function Versions({
             type="file"
             accept={FILM_ACCEPT}
             className="sr-only"
-            aria-label="Velg filmfil"
+            aria-label={L("Velg filmfil", "Choose film file")}
             onChange={(e) => {
               const f = e.target.files?.[0];
               if (f) void pick(f);
@@ -956,9 +1039,12 @@ function Versions({
                 variant="secondary"
                 className="self-start"
                 onClick={() => setStillOpen(true)}
-                title="Vis et bilde fra ressursbiblioteket i en valgt tid (hele scenen eller som en ny del)"
+                title={L(
+                  "Vis et bilde fra ressursbiblioteket i en valgt tid (hele scenen eller som en ny del)",
+                  "Show an image from the asset library at a chosen time (the whole scene or as a new part)",
+                )}
               >
-                <ImageIcon /> Stillbilde fra biblioteket …
+                <ImageIcon /> {L("Stillbilde fra biblioteket …", "Still from the library …")}
               </Button>
               {stillOpen ? (
                 <StillPickerDialog
@@ -977,16 +1063,21 @@ function Versions({
             className="self-start"
             disabled={busy}
             onClick={() => fileRef.current?.click()}
-            title="Last opp ferdig film for scenen (MP4, MOV eller WebM). Filen lagres uendret, og den tas i bruk med én gang."
+            title={L(
+              "Last opp ferdig film for scenen (MP4, MOV eller WebM). Filen lagres uendret, og den tas i bruk med én gang.",
+              "Upload a finished film for the scene (MP4, MOV or WebM). The file is stored unchanged and is used straight away.",
+            )}
           >
             {busy ? <Loader2 className="animate-spin" /> : <Upload />}
-            {busy ? "Importerer …" : "Importer ferdig film …"}
+            {busy
+              ? L("Importerer …", "Importing …")
+              : L("Importer ferdig film …", "Import finished film …")}
           </Button>
         </>
       ) : null}
       {error ? (
         <p role="alert" className="text-xs text-status-danger">
-          {error}
+          {tm(error)}
         </p>
       ) : null}
     </section>
@@ -1008,10 +1099,13 @@ function FilmRow({
   const facts = [
     take.durationFrames ? formatSeconds(take.durationFrames / fps) : null,
     m?.width && m.height ? `${m.width}×${m.height}` : null,
-    m?.fps ? `${Math.round(m.fps * 100) / 100} b/s` : null,
-    m && !m.hasAudio ? "uten lyd" : null,
+    m?.fps ? `${Math.round(m.fps * 100) / 100} ${L("b/s", "fps")}` : null,
+    m && !m.hasAudio ? L("uten lyd", "no audio") : null,
     m && m.hasAudio && m.byteSize > FILM_AUDIO_MAX_BYTES
-      ? "lyden spilles ikke (filen er over 400 MB)"
+      ? L(
+          "lyden spilles ikke (filen er over 400 MB)",
+          "the audio is not played (the file is over 400 MB)",
+        )
       : null,
   ].filter(Boolean);
   const off = m?.fps && Math.abs(m.fps - fps) > 0.05;
@@ -1020,11 +1114,13 @@ function FilmRow({
       <Film className="size-3.5 shrink-0 text-accent-warm" aria-hidden />
       <span className="min-w-0 flex-1">
         <span className="block truncate text-text-primary" title={m?.fileName}>
-          {m?.fileName ?? "Importert film"}
+          {m?.fileName ?? L("Importert film", "Imported film")}
         </span>
         <span className="block truncate text-[11px] text-text-tertiary">
           {facts.join(" · ")}
-          {off ? ` · prosjektet har ${Math.round(fps * 100) / 100} b/s` : ""}
+          {off
+            ? ` · ${L("prosjektet har", "the project has")} ${Math.round(fps * 100) / 100} ${L("b/s", "fps")}`
+            : ""}
         </span>
       </span>
       {children}
@@ -1051,10 +1147,14 @@ function TransitionRow({
   const first = clip.startFrame === 0;
   return (
     <section
-      aria-label="Overgang inn i scenen"
+      aria-label={L("Overgang inn i scenen", "Transition into the scene")}
       className="flex flex-col gap-1.5 border-b border-border p-3"
     >
-      <h2 className={label}>{first ? "Starten av filmen" : "Overgang inn i scenen"}</h2>
+      <h2 className={label}>
+        {first
+          ? L("Starten av filmen", "Start of the film")
+          : L("Overgang inn i scenen", "Transition into the scene")}
+      </h2>
       <TransitionEditor
         idPrefix={`overgang-${clip.occurrenceId}`}
         value={clip.transitionInherited ? null : clip.transition}
@@ -1066,7 +1166,10 @@ function TransitionRow({
       />
       <label
         className="mt-1 flex items-center gap-1.5 text-xs text-text-secondary"
-        title="Scenen vises og eksporteres i svart-hvitt"
+        title={L(
+          "Scenen vises og eksporteres i svart-hvitt",
+          "The scene is shown and exported in black and white",
+        )}
       >
         <input
           type="checkbox"
@@ -1075,7 +1178,7 @@ function TransitionRow({
           onChange={(e) => onMonochrome(e.target.checked)}
           className="size-3.5 accent-[var(--accent-brand)]"
         />
-        Svart-hvitt (også i eksporten)
+        {L("Svart-hvitt (også i eksporten)", "Black and white (also in the export)")}
       </label>
     </section>
   );
@@ -1117,7 +1220,7 @@ function CoverageRow({
               ? null
               : { startBlockId, endBlockId },
         } as never,
-        "Manusdekning for filmen",
+        L("Manusdekning for filmen", "Script coverage for the film"),
       ) ?? null,
     );
   const start = cov?.startBlockId ?? blocks[0]!.id;
@@ -1125,14 +1228,19 @@ function CoverageRow({
   return (
     <div className="flex flex-col gap-0.5 pl-6 text-[11px] text-text-tertiary">
       <span>
-        {take.media?.fileName ?? "Filmen"} dekker {cov ? "fra–til" : "hele scenen"}
+        {take.media?.fileName ?? L("Filmen", "The film")}{" "}
+        {cov
+          ? L("dekker fra–til", "covers from–to")
+          : L("dekker hele scenen", "covers the whole scene")}
       </span>
       <div className="flex gap-1">
         {(["start", "end"] as const).map((which) => (
           <select
             key={which}
             aria-label={
-              which === "start" ? "Første linje filmen dekker" : "Siste linje filmen dekker"
+              which === "start"
+                ? L("Første linje filmen dekker", "First line the film covers")
+                : L("Siste linje filmen dekker", "Last line the film covers")
             }
             value={which === "start" ? start : end}
             disabled={!editable}
@@ -1151,7 +1259,7 @@ function CoverageRow({
       </div>
       {err ? (
         <span role="alert" className="text-status-danger">
-          {err}
+          {tm(err)}
         </span>
       ) : null}
     </div>

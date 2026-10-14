@@ -7,6 +7,7 @@ import {
   Archive,
   ArchiveRestore,
   Check,
+  Crop,
   ImagePlus,
   Loader2,
   Music,
@@ -17,6 +18,8 @@ import {
 } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { CutoutDialog } from "./CutoutDialog";
+import { ImageLightbox } from "./ImageLightbox";
+import { VisualBriefEditor } from "./VisualBriefEditor";
 import { ContinuityPanel } from "./ContinuityPanel";
 import { ApproveImpactDialog } from "./ApproveImpactDialog";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
@@ -51,6 +54,9 @@ import {
   type VisualStyle,
   workingImageMaxSide,
   assetUsageCounts,
+  L,
+  locale,
+  localized,
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { useProfiles } from "@/app/project/use-project";
@@ -68,21 +74,21 @@ import { ContextNamesSection } from "./ContextNamesSection";
 import { AssetWorklistDialog, useWorklistCount } from "./AssetWorklistDialog";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 
-const NAME_KIND_LABEL: Record<AssetNameKind, string> = {
-  alias: "Alternativt navn",
-  nickname: "Kallenavn",
-  former: "Tidligere navn",
-  language: "Annet språk",
-};
+const NAME_KIND_LABEL: Record<AssetNameKind, string> = localized({
+  alias: ["Alternativt navn", "Alternative name"],
+  nickname: ["Kallenavn", "Nickname"],
+  former: ["Tidligere navn", "Former name"],
+  language: ["Annet språk", "Other language"],
+});
 
-const STYLE_LABEL: Record<VisualStyle, string> = {
-  reference: "Originalt referansebilde",
-  illustrated: "Illustrert",
-  realistic: "Filmrealistisk",
-  animatic: "Animatic",
-  poster: "Plakat",
-  other: "Annet",
-};
+const STYLE_LABEL: Record<VisualStyle, string> = localized({
+  reference: ["Originalt referansebilde", "Original reference image"],
+  illustrated: ["Illustrert", "Illustrated"],
+  realistic: ["Filmrealistisk", "Film-realistic"],
+  animatic: ["Animatic", "Animatic"],
+  poster: ["Plakat", "Poster"],
+  other: ["Annet", "Other"],
+});
 
 interface Props {
   readonly state: ProjectState;
@@ -172,7 +178,7 @@ export function AssetDetail(props: Props) {
     setErr(
       cmds.run(
         { type: "UpdateAsset", assetId: asset.id, fields: withTags },
-        `Endre «${asset.name}»`,
+        L(`Endre «${asset.name}»`, `Edit “${asset.name}”`),
       ),
     );
   }
@@ -191,7 +197,7 @@ export function AssetDetail(props: Props) {
           <div className="flex items-start gap-3">
             <div className="flex min-w-0 flex-1 flex-col gap-1">
               <label htmlFor="a-name" className="text-xs text-text-tertiary">
-                Foretrukket navn
+                {L("Foretrukket navn", "Preferred name")}
               </label>
               <Input
                 id="a-name"
@@ -204,7 +210,7 @@ export function AssetDetail(props: Props) {
             </div>
             <div className="flex w-[180px] flex-col gap-1">
               <label htmlFor="a-kind" className="text-xs text-text-tertiary">
-                Type
+                {L("Type", "Type")}
               </label>
               <select
                 id="a-kind"
@@ -224,15 +230,20 @@ export function AssetDetail(props: Props) {
 
           <div className="flex flex-col gap-1.5">
             <span className="text-xs text-text-tertiary">
-              Alternative navn – brukes for å kjenne igjen ressursen i manuset
+              {L(
+                "Alternative navn – brukes for å kjenne igjen ressursen i manuset",
+                "Alternative names – used to recognise the asset in the script",
+              )}
             </span>
             {draft.names.length === 0 ? (
-              <p className="text-xs text-text-tertiary">Ingen alternative navn.</p>
+              <p className="text-xs text-text-tertiary">
+                {L("Ingen alternative navn.", "No alternative names.")}
+              </p>
             ) : null}
             {draft.names.map((n, i) => (
               <div key={i} className="flex items-center gap-1.5">
                 <Input
-                  aria-label={`Alternativt navn ${i + 1}`}
+                  aria-label={L(`Alternativt navn ${i + 1}`, `Alternative name ${i + 1}`)}
                   value={n.name}
                   maxLength={200}
                   disabled={!editable}
@@ -240,7 +251,7 @@ export function AssetDetail(props: Props) {
                   className="h-8 min-w-0 flex-1 bg-surface-3 text-[13px]"
                 />
                 <select
-                  aria-label={`Type navn ${i + 1}`}
+                  aria-label={L(`Type navn ${i + 1}`, `Name type ${i + 1}`)}
                   value={n.kind}
                   disabled={!editable}
                   onChange={(e) =>
@@ -259,8 +270,11 @@ export function AssetDetail(props: Props) {
                 </select>
                 {n.kind === "language" ? (
                   <Input
-                    aria-label={`Språkkode for navn ${i + 1}`}
-                    title="Språkkode, f.eks. en for engelsk"
+                    aria-label={L(`Språkkode for navn ${i + 1}`, `Language code for name ${i + 1}`)}
+                    title={L(
+                      "Språkkode, f.eks. en for engelsk",
+                      "Language code, e.g. en for English",
+                    )}
                     value={n.language ?? ""}
                     maxLength={12}
                     disabled={!editable}
@@ -272,7 +286,7 @@ export function AssetDetail(props: Props) {
                   <Button
                     size="sm"
                     variant="ghost"
-                    aria-label={`Fjern navnet ${n.name}`}
+                    aria-label={L(`Fjern navnet ${n.name}`, `Remove the name ${n.name}`)}
                     onClick={() =>
                       setDraft((d) => ({ ...d, names: d.names.filter((_, j) => j !== i) }))
                     }
@@ -295,7 +309,7 @@ export function AssetDetail(props: Props) {
                 }
               >
                 <Plus />
-                Legg til navn
+                {L("Legg til navn", "Add name")}
               </Button>
             ) : null}
           </div>
@@ -312,27 +326,27 @@ export function AssetDetail(props: Props) {
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col gap-1">
               <label htmlFor="a-cat" className="text-xs text-text-tertiary">
-                Kategori
+                {L("Kategori", "Category")}
               </label>
               <Input
                 id="a-cat"
                 value={draft.category}
                 maxLength={100}
                 disabled={!editable}
-                placeholder="F.eks. Familie, Rekvisitt, Gården"
+                placeholder={L("F.eks. Familie, Rekvisitt, Gården", "E.g. Family, Props, The farm")}
                 onChange={(e) => setDraft({ ...draft, category: e.target.value })}
                 className="h-8 bg-surface-3 text-[13px]"
               />
             </div>
             <div className="flex flex-col gap-1">
               <label htmlFor="a-tags" className="text-xs text-text-tertiary">
-                Stikkord (skill med komma)
+                {L("Stikkord (skill med komma)", "Keywords (separated by commas)")}
               </label>
               <Input
                 id="a-tags"
                 value={tagsText}
                 disabled={!editable}
-                placeholder="F.eks. hovedrolle, vinter"
+                placeholder={L("F.eks. hovedrolle, vinter", "E.g. lead role, winter")}
                 onChange={(e) => setTagsText(e.target.value)}
                 className="h-8 bg-surface-3 text-[13px]"
               />
@@ -340,7 +354,7 @@ export function AssetDetail(props: Props) {
           </div>
           <div className="flex flex-col gap-1">
             <label htmlFor="a-desc" className="text-xs text-text-tertiary">
-              Beskrivelse
+              {L("Beskrivelse", "Description")}
             </label>
             <Textarea
               id="a-desc"
@@ -356,7 +370,7 @@ export function AssetDetail(props: Props) {
             <div className="flex items-center gap-2">
               <Button size="sm" onClick={save} disabled={!dirty}>
                 <Check />
-                Lagre endringer
+                {L("Lagre endringer", "Save changes")}
               </Button>
               {dirty ? (
                 <Button
@@ -367,7 +381,7 @@ export function AssetDetail(props: Props) {
                     setTagsText(asset.tags.join(", "));
                   }}
                 >
-                  Forkast
+                  {L("Forkast", "Discard")}
                 </Button>
               ) : null}
               <Button
@@ -378,28 +392,36 @@ export function AssetDetail(props: Props) {
                   setErr(
                     cmds.run(
                       { type: "SetAssetArchived", assetId: asset.id, archived: !asset.archived },
-                      asset.archived ? `Hent fram «${asset.name}»` : `Arkiver «${asset.name}»`,
+                      asset.archived
+                        ? L(`Hent fram «${asset.name}»`, `Restore “${asset.name}”`)
+                        : L(`Arkiver «${asset.name}»`, `Archive “${asset.name}”`),
                     ),
                   )
                 }
                 title={
                   asset.archived
-                    ? "Vis ressursen i biblioteket igjen"
-                    : "Skjul ressursen fra listen. Ingenting slettes, og scener som bruker den, påvirkes ikke."
+                    ? L("Vis ressursen i biblioteket igjen", "Show the asset in the library again")
+                    : L(
+                        "Skjul ressursen fra listen. Ingenting slettes, og scener som bruker den, påvirkes ikke.",
+                        "Hide the asset from the list. Nothing is deleted, and scenes that use it are not affected.",
+                      )
                 }
               >
                 {asset.archived ? <ArchiveRestore /> : <Archive />}
-                {asset.archived ? "Hent fram" : "Arkiver"}
+                {asset.archived ? L("Hent fram", "Restore") : L("Arkiver", "Archive")}
               </Button>
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={() => setConfirmDelete(true)}
-                title="Flytt ressursen til «Slettede objekter» (kan hentes inn igjen)"
+                title={L(
+                  "Flytt ressursen til «Slettede objekter» (kan hentes inn igjen)",
+                  "Move the asset to “Deleted items” (it can be restored)",
+                )}
                 className="text-status-danger"
               >
                 <Trash2 />
-                Slett …
+                {L("Slett …", "Delete …")}
               </Button>
             </div>
           ) : null}
@@ -411,7 +433,7 @@ export function AssetDetail(props: Props) {
               onConfirm={() => {
                 const e = cmds.run(
                   { type: "SetAssetsRemoved", assetIds: [asset.id], removed: true },
-                  `Slett «${asset.name}»`,
+                  L(`Slett «${asset.name}»`, `Delete “${asset.name}”`),
                 );
                 setErr(e);
                 setConfirmDelete(false);
@@ -425,6 +447,11 @@ export function AssetDetail(props: Props) {
           ) : null}
         </section>
 
+        {asset.kind !== "sound" ? (
+          <section className="border border-border bg-surface-1 p-4">
+            <VisualBriefEditor state={state} asset={asset} cmds={cmds} editable={editable} />
+          </section>
+        ) : null}
         {asset.kind === "sound" ? (
           <SoundLinksSection
             state={state}
@@ -448,23 +475,30 @@ export function AssetDetail(props: Props) {
       </div>
 
       {/* Bruk i manuset */}
-      <aside aria-label="Brukt i scener" style={{ width: usedWidth }} className="relative shrink-0">
+      <aside
+        aria-label={L("Brukt i scener", "Used in scenes")}
+        style={{ width: usedWidth }}
+        className="relative shrink-0"
+      >
         <PaneResizer
           edge="left"
           size={usedWidth}
           onSize={setUsedWidth}
           min={200}
           max={520}
-          label="Bredde på «Brukt i scener»"
+          label={L("Bredde på «Brukt i scener»", "Width of “Used in scenes”")}
         />
         <div className="border border-border bg-surface-1">
           <div className="flex h-8 items-center justify-between border-b border-border px-3 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
-            <span>Brukt i scener</span>
+            <span>{L("Brukt i scener", "Used in scenes")}</span>
             <span className="tabular normal-case tracking-normal">{usage.length}</span>
           </div>
           {usage.length === 0 ? (
             <p className="px-3 py-3 text-xs text-text-tertiary">
-              Ikke funnet i manuset under noen av navnene.
+              {L(
+                "Ikke funnet i manuset under noen av navnene.",
+                "Not found in the script under any of the names.",
+              )}
             </p>
           ) : (
             <ul className="max-h-[70vh] overflow-y-auto py-1">
@@ -476,7 +510,7 @@ export function AssetDetail(props: Props) {
                     <button
                       type="button"
                       onClick={() => props.onGoToScene(u.occurrenceId)}
-                      title="Vis scenen i manus"
+                      title={L("Vis scenen i manus", "Show the scene in the script")}
                       className={
                         "grid w-full grid-cols-[34px_1fr] gap-1.5 px-3 py-1 text-left hover:bg-surface-3" +
                         (u.active ? "" : " opacity-60")
@@ -491,8 +525,10 @@ export function AssetDetail(props: Props) {
                         </span>
                         <span className="block truncate text-[11px] text-text-tertiary">
                           {USAGE_LABEL[u.how]}
-                          {u.matchedName !== asset.name ? ` som «${u.matchedName}»` : ""}
-                          {u.active ? "" : " · deaktivert"}
+                          {u.matchedName !== asset.name
+                            ? L(` som «${u.matchedName}»`, ` as “${u.matchedName}”`)
+                            : ""}
+                          {u.active ? "" : L(" · deaktivert", " · inactive")}
                         </span>
                         <SyncFlag state={state} flag={syncFlags.get(u.occurrenceId)} />
                       </span>
@@ -503,7 +539,10 @@ export function AssetDetail(props: Props) {
             </ul>
           )}
           {flaggedOnly.length ? (
-            <ul aria-label="Scener med eldre versjon" className="border-t border-border py-1">
+            <ul
+              aria-label={L("Scener med eldre versjon", "Scenes with an older version")}
+              className="border-t border-border py-1"
+            >
               {flaggedOnly.map((f) => {
                 const occ = state.occurrences[f.occurrenceId];
                 const v = occ ? state.variants[occ.variantId] : undefined;
@@ -512,7 +551,7 @@ export function AssetDetail(props: Props) {
                     <button
                       type="button"
                       onClick={() => props.onGoToScene(f.occurrenceId)}
-                      title="Vis scenen i manus"
+                      title={L("Vis scenen i manus", "Show the scene in the script")}
                       className="grid w-full grid-cols-[34px_1fr] gap-1.5 px-3 py-1 text-left hover:bg-surface-3"
                     >
                       <span className="tabular truncate text-right font-mono text-xs text-text-secondary">
@@ -523,7 +562,7 @@ export function AssetDetail(props: Props) {
                           {v ? formatHeading(v.heading) : "—"}
                         </span>
                         <span className="block truncate text-[11px] text-text-tertiary">
-                          brukt i scenens materiale
+                          {L("brukt i scenens materiale", "used in the scene’s material")}
                         </span>
                         <SyncFlag state={state} flag={f} />
                       </span>
@@ -535,7 +574,10 @@ export function AssetDetail(props: Props) {
           ) : null}
           {asset.kind !== "character" && asset.kind !== "location" && usage.length ? (
             <p className="border-t border-border px-3 py-2 text-[11px] text-text-tertiary">
-              Mulige treff: ord i teksten som begynner med navnet. Sjekk at de stemmer.
+              {L(
+                "Mulige treff: ord i teksten som begynner med navnet. Sjekk at de stemmer.",
+                "Possible matches: words in the text that begin with the name. Check that they are right.",
+              )}
             </p>
           ) : null}
         </div>
@@ -562,9 +604,16 @@ function SyncFlag({ state, flag }: { state: ProjectState; flag: SceneContentSync
   return (
     <span
       className="mt-0.5 block text-[11px] leading-snug text-status-uncertain"
-      title={`${text}. Scenen er ikke endret; gå gjennom scenene for å bruke den nye versjonen.`}
+      title={L(
+        `${text}. Scenen er ikke endret; gå gjennom scenene for å bruke den nye versjonen.`,
+        `${text}. The scene has not changed; review the scenes to use the new version.`,
+      )}
     >
-      Ressursen er oppdatert etter at scenen ble laget{steps ? ` (${steps})` : ""}
+      {L(
+        "Ressursen er oppdatert etter at scenen ble laget",
+        "The asset was updated after the scene was made",
+      )}
+      {steps ? ` (${steps})` : ""}
     </span>
   );
 }
@@ -603,8 +652,11 @@ function Variants({
           className="flex items-center gap-2 rounded-sm border border-status-uncertain/40 bg-status-uncertain/10 px-3 py-2 text-xs text-text-primary"
         >
           <span>
-            {behind} {behind === 1 ? "sted i filmen viser" : "steder i filmen viser"} fortsatt en
-            eldre versjon av {asset.name}.
+            {behind}{" "}
+            {behind === 1
+              ? L("sted i filmen viser", "place in the film still shows")
+              : L("steder i filmen viser", "places in the film still show")}{" "}
+            {L("fortsatt en eldre versjon av", "an older version of")} {asset.name}.
           </span>
           <Button
             size="sm"
@@ -612,7 +664,7 @@ function Variants({
             className="ml-auto"
             onClick={() => setWorklistOpen(true)}
           >
-            Gå gjennom scenene …
+            {L("Gå gjennom scenene …", "Review the scenes …")}
           </Button>
           {worklistOpen ? (
             <AssetWorklistDialog
@@ -630,12 +682,20 @@ function Variants({
       ) : null}
       <div className="flex items-center gap-2">
         <h2 className="shrink-0 whitespace-nowrap text-sm font-medium text-text-primary">
-          {asset.kind === "sound" ? "Varianter av lyden" : "Visuelle varianter"}
+          {asset.kind === "sound"
+            ? L("Varianter av lyden", "Sound variants")
+            : L("Visuelle varianter", "Visual variants")}
         </h2>
         <span className="text-xs text-text-tertiary">
           {asset.kind === "sound"
-            ? "Én lyd – flere utgaver. Hver variant har egne versjoner og egen godkjenning."
-            : "Én identitet – flere utseender og stiler. Hver variant har egne versjoner og egen godkjenning."}
+            ? L(
+                "Én lyd – flere utgaver. Hver variant har egne versjoner og egen godkjenning.",
+                "One sound – several versions. Each variant has its own versions and approval.",
+              )
+            : L(
+                "Én identitet – flere utseender og stiler. Hver variant har egne versjoner og egen godkjenning.",
+                "One identity – several looks and styles. Each variant has its own versions and approval.",
+              )}
         </span>
         {archivedCount ? (
           <label className="ml-auto flex items-center gap-1 text-xs text-text-secondary">
@@ -645,7 +705,7 @@ function Variants({
               onChange={(e) => setShowArchived(e.target.checked)}
               className="size-3.5 accent-[var(--accent-brand)]"
             />
-            Arkiverte ({archivedCount})
+            {L("Arkiverte", "Archived")} ({archivedCount})
           </label>
         ) : null}
       </div>
@@ -666,8 +726,10 @@ function Variants({
       ))}
       {variants.length === 0 ? (
         <p className="text-[13px] text-text-secondary">
-          Ingen varianter ennå. En variant er for eksempel «Animatic», «Plakat» eller «Vinterklær».
-          Last opp bilder til den – hvert bilde blir en versjon.
+          {L(
+            "Ingen varianter ennå. En variant er for eksempel «Animatic», «Plakat» eller «Vinterklær». Last opp bilder til den – hvert bilde blir en versjon.",
+            "No variants yet. A variant is, for example, “Animatic”, “Poster” or “Winter clothes”. Upload images to it – each image becomes a version.",
+          )}
         </p>
       ) : null}
       {editable ? (
@@ -683,7 +745,7 @@ function Variants({
                 assetId: asset.id,
                 fields: { name: n, style, appearance },
               },
-              `Ny variant «${n}»`,
+              L(`Ny variant «${n}»`, `New variant “${n}”`),
             );
             setErr(r);
             if (!r) {
@@ -692,7 +754,7 @@ function Variants({
             }
           }}
         >
-          <Field label="Navn på variant">
+          <Field label={L("Navn på variant", "Variant name")}>
             <Input
               value={name}
               maxLength={200}
@@ -701,7 +763,7 @@ function Variants({
               className="h-8 w-[180px] bg-surface-3 text-[13px]"
             />
           </Field>
-          <Field label="Stil">
+          <Field label={L("Stil", "Style")}>
             <select
               value={style}
               onChange={(e) => setStyle(e.target.value as VisualStyle)}
@@ -714,18 +776,18 @@ function Variants({
               ))}
             </select>
           </Field>
-          <Field label="Utseende (valgfritt)">
+          <Field label={L("Utseende (valgfritt)", "Appearance (optional)")}>
             <Input
               value={appearance}
               maxLength={500}
-              placeholder="F.eks. kort hår, vinterklær"
+              placeholder={L("F.eks. kort hår, vinterklær", "E.g. short hair, winter clothes")}
               onChange={(e) => setAppearance(e.target.value)}
               className="h-8 w-[220px] bg-surface-3 text-[13px]"
             />
           </Field>
           <Button type="submit" size="sm" variant="secondary">
             <Plus />
-            Ny variant
+            {L("Ny variant", "New variant")}
           </Button>
           {err ? (
             <p role="alert" className="w-full text-xs text-status-danger">
@@ -786,6 +848,9 @@ function VariantCard({
   const [vAppearance, setVAppearance] = useState(variant.appearance);
   const input = useRef<HTMLInputElement | null>(null);
   const [cutoutId, setCutoutId] = useState<string | null>(null);
+  /** Stor visning med bildeverktøy (DEC-0080): utsnitt, ruter, vinkel, oppskalering. */
+  const [toolsId, setToolsId] = useState<string | null>(null);
+  const toolsVersion = toolsId ? (versions.find((v) => v.id === toolsId) ?? null) : null;
   // Godkjenning med konsekvenser (DEC-0056): berørte scener vises først
   const [approving, setApproving] = useState<AssetVersion | null>(null);
   // Fullskjerm (DEC-0064): indeksen i `versions`
@@ -811,7 +876,10 @@ function VariantCard({
     setErr(
       cmds.run(
         { type: "ApproveAssetVersion", variantId: variant.id, versionId: ver.id },
-        `Godkjenn v${ver.number} av «${variant.name}»`,
+        L(
+          `Godkjenn v${ver.number} av «${variant.name}»`,
+          `Approve v${ver.number} of “${variant.name}”`,
+        ),
       ),
     );
   }
@@ -838,7 +906,7 @@ function VariantCard({
             media,
             note: "",
           },
-          `Ny lyd i «${variant.name}»`,
+          L(`Ny lyd i «${variant.name}»`, `New sound in “${variant.name}”`),
         );
         if (r.error) setErr(r.error);
       } else {
@@ -853,7 +921,7 @@ function VariantCard({
           cmds.runAndWait,
           variant.id,
           up,
-          `Nytt bilde i «${variant.name}»`,
+          L(`Nytt bilde i «${variant.name}»`, `New image in “${variant.name}”`),
         );
         if (e) setErr(e);
       }
@@ -884,13 +952,13 @@ function VariantCard({
                   variantId: variant.id,
                   fields: { name: vName, style: vStyle, appearance: vAppearance },
                 },
-                `Endre variant «${variant.name}»`,
+                L(`Endre variant «${variant.name}»`, `Edit variant “${variant.name}”`),
               );
               setErr(r);
               if (!r) setEditing(false);
             }}
           >
-            <Field label="Navn">
+            <Field label={L("Navn", "Name")}>
               <Input
                 value={vName}
                 maxLength={200}
@@ -898,7 +966,7 @@ function VariantCard({
                 className="h-8 w-[180px] bg-surface-3 text-[13px]"
               />
             </Field>
-            <Field label="Stil">
+            <Field label={L("Stil", "Style")}>
               <select
                 value={vStyle}
                 onChange={(e) => setVStyle(e.target.value as VisualStyle)}
@@ -911,7 +979,7 @@ function VariantCard({
                 ))}
               </select>
             </Field>
-            <Field label="Utseende">
+            <Field label={L("Utseende", "Appearance")}>
               <Input
                 value={vAppearance}
                 maxLength={500}
@@ -920,10 +988,10 @@ function VariantCard({
               />
             </Field>
             <Button type="submit" size="sm">
-              Lagre
+              {L("Lagre", "Save")}
             </Button>
             <Button type="button" size="sm" variant="ghost" onClick={() => setEditing(false)}>
-              Avbryt
+              {L("Avbryt", "Cancel")}
             </Button>
           </form>
         ) : (
@@ -931,7 +999,9 @@ function VariantCard({
             <p className="text-[13px] font-medium text-text-primary">
               {variant.name}
               {variant.archived ? (
-                <span className="ml-2 text-xs font-normal text-text-tertiary">Arkivert</span>
+                <span className="ml-2 text-xs font-normal text-text-tertiary">
+                  {L("Arkivert", "Archived")}
+                </span>
               ) : null}
             </p>
             <p className="text-xs text-text-tertiary">
@@ -972,10 +1042,10 @@ function VariantCard({
                 <ImagePlus />
               )}
               {uploading
-                ? "Laster opp …"
+                ? L("Laster opp …", "Uploading …")
                 : asset.kind === "sound"
-                  ? "Last opp lyd"
-                  : "Last opp bilde"}
+                  ? L("Last opp lyd", "Upload sound")
+                  : L("Last opp bilde", "Upload image")}
             </Button>
             {asset.kind === "sound" ? (
               <Button
@@ -984,7 +1054,7 @@ function VariantCard({
                 aria-expanded={soundAi}
                 onClick={() => setSoundAi((x) => !x)}
               >
-                <AiGlyph /> Lag med AI
+                <AiGlyph /> {L("Lag med AI", "Generate with AI")}
               </Button>
             ) : null}
             <Button
@@ -997,13 +1067,21 @@ function VariantCard({
                 setEditing(true);
               }}
             >
-              Endre
+              {L("Endre", "Edit")}
             </Button>
             <Button
               size="sm"
               variant="ghost"
-              aria-label={variant.archived ? "Hent fram varianten" : "Arkiver varianten"}
-              title={variant.archived ? "Hent fram" : "Arkiver (ingenting slettes)"}
+              aria-label={
+                variant.archived
+                  ? L("Hent fram varianten", "Restore the variant")
+                  : L("Arkiver varianten", "Archive the variant")
+              }
+              title={
+                variant.archived
+                  ? L("Hent fram", "Restore")
+                  : L("Arkiver (ingenting slettes)", "Archive (nothing is deleted)")
+              }
               onClick={() =>
                 setErr(
                   cmds.run(
@@ -1012,7 +1090,9 @@ function VariantCard({
                       variantId: variant.id,
                       archived: !variant.archived,
                     },
-                    variant.archived ? "Hent fram variant" : "Arkiver variant",
+                    variant.archived
+                      ? L("Hent fram variant", "Restore variant")
+                      : L("Arkiver variant", "Archive variant"),
                   ),
                 )
               }
@@ -1039,15 +1119,21 @@ function VariantCard({
           className="self-start"
           onClick={() => setComparing(true)}
         >
-          Sammenlign v{compareVersions[0]!.number} og v{compareVersions[1]!.number}
+          {L("Sammenlign", "Compare")} v{compareVersions[0]!.number} {L("og", "and")} v
+          {compareVersions[1]!.number}
         </Button>
       ) : null}
       {versions.length === 0 ? (
         <p className="text-xs text-text-tertiary">
-          {asset.kind === "sound" ? "Ingen lyder ennå." : "Ingen bilder ennå."}
+          {asset.kind === "sound"
+            ? L("Ingen lyder ennå.", "No sounds yet.")
+            : L("Ingen bilder ennå.", "No images yet.")}
         </p>
       ) : (
-        <ul className="flex gap-2 overflow-x-auto pb-1" aria-label={`Versjoner av ${variant.name}`}>
+        <ul
+          className="flex gap-2 overflow-x-auto pb-1"
+          aria-label={L(`Versjoner av ${variant.name}`, `Versions of ${variant.name}`)}
+        >
           {shownVersions.map((ver) => {
             const approved = variant.approvedVersionId === ver.id;
             const url = urls[ver.mediaPath];
@@ -1069,7 +1155,10 @@ function VariantCard({
                         controls
                         preload="none"
                         className="h-7 w-full"
-                        aria-label={`${asset.name}, versjon ${ver.number}`}
+                        aria-label={L(
+                          `${asset.name}, versjon ${ver.number}`,
+                          `${asset.name}, version ${ver.number}`,
+                        )}
                       />
                     ) : (
                       <Loader2 className="size-4 animate-spin text-text-tertiary" aria-hidden />
@@ -1085,14 +1174,23 @@ function VariantCard({
                         setViewing(versions.indexOf(ver));
                       }
                     }}
-                    className="flex h-[120px] cursor-zoom-in items-center justify-center overflow-hidden bg-surface-3 focus-visible:outline-2 focus-visible:outline-focus-ring"
-                    title="Dobbeltklikk for fullskjerm, zoom og nedlasting"
-                    aria-label={`Vis ${asset.name} – ${variant.name}, versjon ${ver.number} i fullskjerm`}
+                    className="flex h-[120px] cursor-zoom-in items-center justify-center overflow-hidden bg-surface-3 p-1.5 focus-visible:outline-2 focus-visible:outline-focus-ring"
+                    title={L(
+                      "Dobbeltklikk for fullskjerm, zoom og nedlasting",
+                      "Double-click for full screen, zoom and download",
+                    )}
+                    aria-label={L(
+                      `Vis ${asset.name} – ${variant.name}, versjon ${ver.number} i fullskjerm`,
+                      `Show ${asset.name} – ${variant.name}, version ${ver.number} in full screen`,
+                    )}
                   >
                     {url ? (
                       <img
                         src={url}
-                        alt={`${asset.name} – ${variant.name}, versjon ${ver.number}`}
+                        alt={L(
+                          `${asset.name} – ${variant.name}, versjon ${ver.number}`,
+                          `${asset.name} – ${variant.name}, version ${ver.number}`,
+                        )}
                         className="max-h-full max-w-full object-contain"
                       />
                     ) : (
@@ -1105,7 +1203,7 @@ function VariantCard({
                   {approved ? (
                     <span className="flex items-center gap-0.5 font-medium text-status-success">
                       <Check className="size-3" aria-hidden />
-                      Godkjent
+                      {L("Godkjent", "Approved")}
                     </span>
                   ) : null}
                 </div>
@@ -1131,13 +1229,13 @@ function VariantCard({
                   className="truncate text-[11px] text-text-tertiary"
                   title={ver.note || undefined}
                 >
-                  {new Date(ver.createdAt).toLocaleDateString("nb-NO")}
+                  {new Date(ver.createdAt).toLocaleDateString(locale())}
                   {profiles.data?.[ver.createdBy]?.display_name
                     ? ` · ${profiles.data[ver.createdBy]!.display_name}`
                     : ""}
                   {ver.width && ver.height ? ` · ${ver.width}×${ver.height}` : ""}
                   {ver.durationMs
-                    ? ` · ${(ver.durationMs / 1000).toLocaleString("nb-NO", { maximumFractionDigits: 1 })} s`
+                    ? ` · ${(ver.durationMs / 1000).toLocaleString(locale(), { maximumFractionDigits: 1 })} s`
                     : ""}
                 </span>
                 {editable && asset.kind !== "sound" ? (
@@ -1145,10 +1243,27 @@ function VariantCard({
                     type="button"
                     className="flex items-center gap-1 text-left text-[11px] text-text-tertiary hover:text-text-primary"
                     onClick={() => setCutoutId(ver.id)}
-                    title="Fjern bakgrunnen (gratis, lagres som ny versjon)"
+                    title={L(
+                      "Fjern bakgrunnen (gratis, lagres som ny versjon)",
+                      "Remove the background (free, saved as a new version)",
+                    )}
                   >
                     <Scissors className="size-3" aria-hidden />
-                    Frilegg …
+                    {L("Frilegg …", "Cut out …")}
+                  </button>
+                ) : null}
+                {asset.kind !== "sound" && ver.mimeType.startsWith("image/") ? (
+                  <button
+                    type="button"
+                    className="flex items-center gap-1 text-left text-[11px] text-text-tertiary hover:text-text-primary"
+                    onClick={() => setToolsId(ver.id)}
+                    title={L(
+                      "Stor visning med beskrivelsen og bildeverktøy: utsnitt, del opp i ruter, vinkel, andre vinkler, oppskalering",
+                      "Large view with the description and image tools: crop, split into tiles, angle, other angles, upscale",
+                    )}
+                  >
+                    <Crop className="size-3" aria-hidden />
+                    {L("Bildeverktøy …", "Image tools …")}
                   </button>
                 ) : null}
                 {asset.kind !== "sound" && versions.length > 1 ? (
@@ -1164,7 +1279,7 @@ function VariantCard({
                         )
                       }
                     />
-                    Sammenlign
+                    {L("Sammenlign", "Compare")}
                   </label>
                 ) : null}
                 {editable ? (
@@ -1176,12 +1291,12 @@ function VariantCard({
                         setErr(
                           cmds.run(
                             { type: "ApproveAssetVersion", variantId: variant.id, versionId: null },
-                            "Fjern godkjenning",
+                            L("Fjern godkjenning", "Remove approval"),
                           ),
                         )
                       }
                     >
-                      Fjern godkjenning
+                      {L("Fjern godkjenning", "Remove approval")}
                     </button>
                   ) : (
                     <Button
@@ -1190,7 +1305,7 @@ function VariantCard({
                       className="h-6 justify-start px-1 text-xs"
                       onClick={() => approve(ver)}
                     >
-                      Godkjenn
+                      {L("Godkjenn", "Approve")}
                     </Button>
                   )
                 ) : null}
@@ -1202,14 +1317,22 @@ function VariantCard({
       {hiddenByFilter > 0 ? (
         <p className="text-[11px] text-text-tertiary">
           {hiddenByFilter === 1
-            ? "1 versjon er skjult av filteret på opphav."
-            : `${hiddenByFilter} versjoner er skjult av filteret på opphav.`}
+            ? L(
+                "1 versjon er skjult av filteret på opphav.",
+                "1 version is hidden by the origin filter.",
+              )
+            : L(
+                `${hiddenByFilter} versjoner er skjult av filteret på opphav.`,
+                `${hiddenByFilter} versions are hidden by the origin filter.`,
+              )}
         </p>
       ) : null}
       {versions.length > 1 ? (
         <p className="text-[11px] text-text-tertiary">
-          Når du godkjenner et bilde, ser du hvilke scener som berøres, og velger selv hvilke som
-          skal få det. Uten godkjent bilde viser scenene det nyeste.
+          {L(
+            "Når du godkjenner et bilde, ser du hvilke scener som berøres, og velger selv hvilke som skal få det. Uten godkjent bilde viser scenene det nyeste.",
+            "When you approve an image, you see which scenes are affected and choose yourself which of them get it. Without an approved image, the scenes show the newest one.",
+          )}
         </p>
       ) : null}
       {err ? (
@@ -1257,6 +1380,28 @@ function VariantCard({
           setComparing(false);
         }}
       />
+      <ImageLightbox
+        open={toolsVersion !== null}
+        onOpenChange={(o) => !o && setToolsId(null)}
+        projectId={projectId}
+        version={toolsVersion}
+        url={toolsVersion ? urls[toolsVersion.mediaPath] : undefined}
+        title={
+          toolsVersion
+            ? `${asset.name} – ${variant.name || L("Uten navn", "Untitled")} v${toolsVersion.number}`
+            : ""
+        }
+        tools={{
+          state,
+          cmds,
+          asset,
+          editable,
+          onCutout: (v) => {
+            setToolsId(null);
+            setCutoutId(v.id);
+          },
+        }}
+      />
       <CutoutDialog
         open={cutoutId !== null}
         onOpenChange={(o) => {
@@ -1289,31 +1434,50 @@ function DeleteAssetConfirm({
   return (
     <div
       role="alertdialog"
-      aria-label={`Slett ${a.name}`}
+      aria-label={L(`Slett ${a.name}`, `Delete ${a.name}`)}
       className="flex flex-col gap-2 rounded-sm border border-status-danger/60 bg-surface-1 p-2 text-xs"
     >
       <p className="text-text-primary">
-        «{a.name}» flyttes til «Slettede objekter» og forsvinner fra biblioteket og lagvalgene.
+        {L(
+          `«${a.name}» flyttes til «Slettede objekter» og forsvinner fra biblioteket og lagvalgene.`,
+          `“${a.name}” is moved to “Deleted items” and disappears from the library and layer choices.`,
+        )}
         {use.layers || use.audio
-          ? ` Den brukes i ${[
-              use.layers
-                ? `${use.layers} lag i ${use.scenes} ${use.scenes === 1 ? "scene" : "scener"}`
-                : "",
-              use.audio ? `${use.audio} lydklipp` : "",
-            ]
-              .filter(Boolean)
-              .join(
-                " og ",
-              )}; de beholder bildet og lyden til ressursen slettes for godt, og den kan ikke slettes for godt før de er fjernet.`
-          : " Den brukes ikke i noen scene."}{" "}
-        Du kan hente den inn igjen, og endringen kan angres.
+          ? " " +
+            L(
+              `Den brukes i ${[
+                use.layers
+                  ? `${use.layers} lag i ${use.scenes} ${use.scenes === 1 ? "scene" : "scener"}`
+                  : "",
+                use.audio ? `${use.audio} lydklipp` : "",
+              ]
+                .filter(Boolean)
+                .join(
+                  " og ",
+                )}; de beholder bildet og lyden til ressursen slettes for godt, og den kan ikke slettes for godt før de er fjernet.`,
+              `It is used in ${[
+                use.layers
+                  ? `${use.layers} ${use.layers === 1 ? "layer" : "layers"} in ${use.scenes} ${use.scenes === 1 ? "scene" : "scenes"}`
+                  : "",
+                use.audio ? `${use.audio} audio ${use.audio === 1 ? "clip" : "clips"}` : "",
+              ]
+                .filter(Boolean)
+                .join(
+                  " and ",
+                )}; they keep the image and sound of the asset until it is deleted for good, and it cannot be deleted for good until they are removed.`,
+            )
+          : L(" Den brukes ikke i noen scene.", " It is not used in any scene.")}{" "}
+        {L(
+          "Du kan hente den inn igjen, og endringen kan angres.",
+          "You can restore it, and the change can be undone.",
+        )}
       </p>
       <div className="flex gap-2">
         <Button size="sm" variant="destructive" onClick={onConfirm}>
-          <Trash2 /> Slett
+          <Trash2 /> {L("Slett", "Delete")}
         </Button>
         <Button size="sm" variant="ghost" onClick={onCancel}>
-          Avbryt
+          {L("Avbryt", "Cancel")}
         </Button>
       </div>
     </div>

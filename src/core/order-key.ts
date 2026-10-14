@@ -3,6 +3,7 @@
  * Gjør det mulig å flytte en scene ved å endre ÉN nøkkel – ingen omnummerering av andre (INV-02/03).
  * Nøkler slutter aldri på '0', slik at det alltid finnes plass foran.
  */
+import { L } from "./i18n";
 
 const DIGITS = "0123456789abcdefghijklmnopqrstuvwxyz";
 const BASE = DIGITS.length;
@@ -11,7 +12,10 @@ function digitAt(s: string, i: number): number {
   const ch = s[i];
   if (ch === undefined) return 0;
   const d = DIGITS.indexOf(ch);
-  if (d < 0) throw new Error(`Ugyldig tegn i sorteringsnøkkel: ${s}`);
+  if (d < 0)
+    throw new Error(
+      L(`Ugyldig tegn i sorteringsnøkkel: ${s}`, `Invalid character in sort key: ${s}`),
+    );
   return d;
 }
 
@@ -20,7 +24,8 @@ export function isValidOrderKey(key: string): boolean {
 }
 
 function midpoint(a: string, b: string | null): string {
-  if (b !== null && a >= b) throw new Error(`Ugyldig intervall: ${a} >= ${b}`);
+  if (b !== null && a >= b)
+    throw new Error(L(`Ugyldig intervall: ${a} >= ${b}`, `Invalid interval: ${a} >= ${b}`));
   if (b !== null) {
     let n = 0;
     while (n < b.length && (a[n] ?? "0") === b[n]) n++;
@@ -37,10 +42,17 @@ function midpoint(a: string, b: string | null): string {
 
 /** Nøkkel strengt mellom `before` og `after` (null = åpen ende). */
 export function keyBetween(before: string | null, after: string | null): string {
-  if (before !== null && !isValidOrderKey(before)) throw new Error(`Ugyldig nøkkel ${before}`);
-  if (after !== null && !isValidOrderKey(after)) throw new Error(`Ugyldig nøkkel ${after}`);
+  if (before !== null && !isValidOrderKey(before))
+    throw new Error(L(`Ugyldig nøkkel ${before}`, `Invalid key ${before}`));
+  if (after !== null && !isValidOrderKey(after))
+    throw new Error(L(`Ugyldig nøkkel ${after}`, `Invalid key ${after}`));
   if (before !== null && after !== null && before >= after) {
-    throw new Error(`before (${before}) må være mindre enn after (${after})`);
+    throw new Error(
+      L(
+        `before (${before}) må være mindre enn after (${after})`,
+        `before (${before}) must be less than after (${after})`,
+      ),
+    );
   }
   return midpoint(before ?? "", after);
 }

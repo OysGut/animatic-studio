@@ -5,6 +5,7 @@
  * `generation_jobs.params.trace` av serveren når jobben registreres.
  */
 import { PROMPT_WRITER_SYSTEM } from "./prompt-writer";
+import { L, localized } from "../i18n";
 
 export interface TraceReference {
   readonly path: string;
@@ -43,9 +44,13 @@ export interface GenerationTrace {
 }
 
 /** Systeminstruksene programmet bruker, per nøkkel. */
-export const SYSTEM_INSTRUCTIONS: Readonly<Record<string, { label: string; text: string }>> = {
-  "prompt-writer": { label: "Beskrivelsesskriveren (Lovable AI)", text: PROMPT_WRITER_SYSTEM },
-};
+export const SYSTEM_INSTRUCTIONS: Readonly<Record<string, { label: () => string; text: string }>> =
+  {
+    "prompt-writer": {
+      label: () => L("Beskrivelsesskriveren (Lovable AI)", "Description writer (Lovable AI)"),
+      text: PROMPT_WRITER_SYSTEM,
+    },
+  };
 
 /** Kort kontrollsum (FNV-1a, 32 bit) – bare for å se om en tekst er endret. */
 export function textHash(t: string): string {
@@ -90,19 +95,22 @@ export function traceLines(t: GenerationTrace): { label: string; text: string }[
   const out: { label: string; text: string }[] = [];
   const sys = t.systemInstruction ? SYSTEM_INSTRUCTIONS[t.systemInstruction] : undefined;
   out.push({
-    label: "Systeminstruks",
+    label: L("Systeminstruks", "System instruction"),
     text: !t.systemInstruction
-      ? "Ingen – bare beskrivelsen ble sendt"
+      ? L("Ingen – bare beskrivelsen ble sendt", "None – only the description was sent")
       : sys
-        ? `${sys.label}${t.systemInstructionHash && textHash(sys.text) !== t.systemInstructionHash ? " (teksten er endret siden)" : ""}`
+        ? `${sys.label()}${t.systemInstructionHash && textHash(sys.text) !== t.systemInstructionHash ? L(" (teksten er endret siden)", " (the text has changed since)") : ""}`
         : t.systemInstruction,
   });
   const params = Object.entries(t.modelParams)
     .filter(([, v]) => v !== null && v !== undefined && v !== "")
     .map(([k, v]) => `${PARAM_LABEL[k] ?? k}: ${String(v)}`);
-  out.push({ label: "Parametere", text: params.length ? params.join(" · ") : "Standard" });
   out.push({
-    label: "Referanser",
+    label: L("Parametere", "Parameters"),
+    text: params.length ? params.join(" · ") : L("Standard", "Default"),
+  });
+  out.push({
+    label: L("Referanser", "References"),
     text: t.references.length
       ? t.references
           .map((r) =>
@@ -111,28 +119,41 @@ export function traceLines(t: GenerationTrace): { label: string; text: string }[
               : r.path.split("/").pop()!,
           )
           .join(", ")
-      : "Ingen",
+      : L("Ingen", "None"),
   });
   out.push({
-    label: "Manusversjon",
+    label: L("Manusversjon", "Script version"),
     text: t.scriptVersion
       ? `${t.scriptVersion.number}: ${t.scriptVersion.name}`
-      : "Ingen lagret manusversjon",
+      : L("Ingen lagret manusversjon", "No saved script version"),
   });
   const n = Object.keys(t.blockRevisions).length;
-  if (n) out.push({ label: "Manuslinjer", text: `${n} linjer i scenen med revisjon lagret` });
+  if (n)
+    out.push({
+      label: L("Manuslinjer", "Script lines"),
+      text: L(
+        `${n} linjer i scenen med revisjon lagret`,
+        `${n} lines in the scene with revision saved`,
+      ),
+    });
   else if (t.blockRevisionsOmitted)
-    out.push({ label: "Manuslinjer", text: "Scenen var for lang til at revisjonene ble lagret" });
+    out.push({
+      label: L("Manuslinjer", "Script lines"),
+      text: L(
+        "Scenen var for lang til at revisjonene ble lagret",
+        "The scene was too long for the revisions to be saved",
+      ),
+    });
   return out;
 }
 
-const PARAM_LABEL: Record<string, string> = {
-  seconds: "Sekunder",
-  aspect: "Format",
-  loop: "Sløyfe",
-  voiceId: "Stemme",
-  purpose: "Bruk",
-  identityFirst: "Identitet først",
-  candidates: "Kandidater",
-  images: "Bilder",
-};
+const PARAM_LABEL: Record<string, string> = localized({
+  seconds: ["Sekunder", "Seconds"],
+  aspect: ["Format", "Format"],
+  loop: ["Sløyfe", "Loop"],
+  voiceId: ["Stemme", "Voice"],
+  purpose: ["Bruk", "Use"],
+  identityFirst: ["Identitet først", "Identity first"],
+  candidates: ["Kandidater", "Candidates"],
+  images: ["Bilder", "Images"],
+});

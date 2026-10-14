@@ -34,6 +34,8 @@ import {
   type Command,
   type ProjectState,
   type SceneHeading,
+  L,
+  tm,
 } from "@/core";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -82,9 +84,15 @@ export function Inspector(props: Props) {
   const block = selection.blockId ? state.blocks[selection.blockId] : undefined;
   const occ = selection.occurrenceId ? state.occurrences[selection.occurrenceId] : undefined;
   return (
-    <aside aria-label="Inspektør" className="flex min-h-0 flex-col">
+    <aside aria-label={L("Inspektør", "Inspector")} className="flex min-h-0 flex-col">
       <div className="flex h-8 min-w-0 shrink-0 items-center gap-1 overflow-hidden border-b border-border px-3 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
-        <span className="shrink-0">{block ? "Manusblokk" : occ ? "Scene" : "Manus"}</span>
+        <span className="shrink-0">
+          {block
+            ? L("Manusblokk", "Script block")
+            : occ
+              ? L("Scene", "Scene")
+              : L("Manus", "Script")}
+        </span>
         {occ && occ.active && state.productions[occ.productionId]?.kind === "main" ? (
           <Link
             to="/prosjekt/$projectId/montering"
@@ -93,12 +101,18 @@ export function Inspector(props: Props) {
             className="ml-auto flex min-w-0 items-center gap-1 rounded-sm px-1 normal-case tracking-normal text-text-secondary hover:bg-surface-3 hover:text-text-primary"
             title={
               block
-                ? "Åpne monteringen med avspillingshodet der denne replikken eller handlingen er i filmen"
-                : "Åpne monteringen med avspillingshodet ved starten av scenen"
+                ? L(
+                    "Åpne monteringen med avspillingshodet der denne replikken eller handlingen er i filmen",
+                    "Open the assembly with the playhead where this line or action is in the film",
+                  )
+                : L(
+                    "Åpne monteringen med avspillingshodet ved starten av scenen",
+                    "Open the assembly with the playhead at the start of the scene",
+                  )
             }
           >
             <Clapperboard className="size-3.5 shrink-0" aria-hidden />
-            <span className="truncate">Vis i filmen</span>
+            <span className="truncate">{L("Vis i filmen", "Show in film")}</span>
           </Link>
         ) : null}
         {occ && occ.active ? (
@@ -110,10 +124,13 @@ export function Inspector(props: Props) {
               (state.productions[occ.productionId]?.kind === "main" ? "" : "ml-auto ") +
               "flex min-w-0 items-center gap-1 rounded-sm px-1 normal-case tracking-normal text-text-secondary hover:bg-surface-3 hover:text-text-primary"
             }
-            title="Åpne denne scenen i sceneeditoren (2D-animatic)"
+            title={L(
+              "Åpne denne scenen i sceneeditoren (2D-animatic)",
+              "Open this scene in the scene editor (2D animatic)",
+            )}
           >
             <Layers className="size-3.5 shrink-0" aria-hidden />
-            <span className="truncate">Sceneeditor</span>
+            <span className="truncate">{L("Sceneeditor", "Scene editor")}</span>
           </Link>
         ) : null}
       </div>
@@ -194,14 +211,16 @@ function UncertainBox({
       <p className="flex items-start gap-1.5">
         <AlertTriangle className="mt-px size-3.5 shrink-0 text-status-uncertain" aria-hidden />
         <span>
-          <span className="font-medium">Usikker tolkning: </span>
+          <span className="font-medium">
+            {L("Usikker tolkning: ", "Uncertain interpretation: ")}
+          </span>
           {text}
         </span>
       </p>
       {editable ? (
         <Button size="sm" variant="secondary" className="mt-2" onClick={onApprove}>
           <Check />
-          Tolkningen er riktig
+          {L("Tolkningen er riktig", "The interpretation is correct")}
         </Button>
       ) : null}
     </div>
@@ -228,8 +247,15 @@ function ForkNotice({
   return (
     <div className="mb-4 border border-border bg-surface-2 p-2.5 text-xs text-text-secondary">
       <p>
-        Denne scenen deles med hovedfilmen. Endrer du den her, får «{prod.name}» automatisk sin egen
-        versjon av scenen – hovedfilmen endres ikke.
+        {L(
+          "Denne scenen deles med hovedfilmen. Endrer du den her, får «",
+          "This scene is shared with the main film. If you change it here, “",
+        )}
+        {prod.name}
+        {L(
+          "» automatisk sin egen versjon av scenen – hovedfilmen endres ikke.",
+          "” automatically gets its own version of the scene – the main film is not changed.",
+        )}
       </p>
       <Button
         size="sm"
@@ -240,7 +266,11 @@ function ForkNotice({
           const commands = ownCopyCommands(state, occ.id) ?? [];
           const group = newId();
           for (const c of commands) {
-            const e = run(c, "Lag egen versjon av scenen", group);
+            const e = run(
+              c,
+              L("Lag egen versjon av scenen", "Make own version of the scene"),
+              group,
+            );
             if (e) {
               setErr(e);
               return;
@@ -250,7 +280,7 @@ function ForkNotice({
         }}
       >
         <CopyPlus />
-        Lag egen versjon
+        {L("Lag egen versjon", "Make own version")}
       </Button>
       <ErrorText message={err} />
     </div>
@@ -299,7 +329,10 @@ function BlockPanel({
     }
     if (text === block.text || !variantEditable) return;
     setErr(
-      run({ type: "EditBlockText", productionId: pid, blockId: block.id, text }, "Rediger tekst"),
+      run(
+        { type: "EditBlockText", productionId: pid, blockId: block.id, text },
+        L("Rediger tekst", "Edit text"),
+      ),
     );
   }
 
@@ -323,7 +356,7 @@ function BlockPanel({
           orderKey: keyBetween(block.orderKey, next?.orderKey ?? null),
         },
       },
-      "Ny blokk",
+      L("Ny blokk", "New block"),
     );
     setErr(e);
     if (!e) {
@@ -349,7 +382,7 @@ function BlockPanel({
           newOccurrenceIds: map,
           heading: v.heading,
         },
-        "Del scene",
+        L("Del scene", "Split scene"),
       ),
     );
   }
@@ -357,13 +390,19 @@ function BlockPanel({
   return (
     <>
       <p className="mb-3 text-xs text-text-tertiary">
-        Scene {sceneNumberOf(state, occ) ?? "uten nummer"} · side {startPages[occ.id] ?? "–"}
-        {block.sourceRef ? <> · side {block.sourceRef.page} i originalen</> : null}
+        {L("Scene", "Scene")} {sceneNumberOf(state, occ) ?? L("uten nummer", "unnumbered")} ·{" "}
+        {L("side", "page")} {startPages[occ.id] ?? "–"}
+        {block.sourceRef ? (
+          <>
+            {" "}
+            · {L("side", "page")} {block.sourceRef.page} {L("i originalen", "in the original")}
+          </>
+        ) : null}
       </p>
       <ForkNotice state={state} productionId={productionId} occurrenceId={occ.id} run={run} />
       {block.uncertainty ? (
         <UncertainBox
-          text={block.uncertainty}
+          text={tm(block.uncertainty)}
           editable={variantEditable}
           onApprove={() =>
             setErr(
@@ -374,15 +413,15 @@ function BlockPanel({
                   targetId: block.id,
                   uncertainty: null,
                 },
-                "Godkjenn tolkning",
+                L("Godkjenn tolkning", "Approve interpretation"),
               ),
             )
           }
         />
       ) : null}
-      <Section title="Elementtype">
+      <Section title={L("Elementtype", "Element type")}>
         <select
-          aria-label="Elementtype"
+          aria-label={L("Elementtype", "Element type")}
           value={block.kind}
           disabled={!variantEditable}
           onChange={(e) =>
@@ -394,7 +433,7 @@ function BlockPanel({
                   blockId: block.id,
                   kind: e.target.value as BlockKind,
                 },
-                "Endre elementtype",
+                L("Endre elementtype", "Change element type"),
               ),
             )
           }
@@ -407,10 +446,10 @@ function BlockPanel({
           ))}
         </select>
       </Section>
-      <Section title="Tekst">
+      <Section title={L("Tekst", "Text")}>
         <textarea
           ref={textRef}
-          aria-label="Tekst"
+          aria-label={L("Tekst", "Text")}
           value={text}
           readOnly={!variantEditable}
           onChange={(e) => setText(e.target.value)}
@@ -432,11 +471,14 @@ function BlockPanel({
           }
         />
         <p className="mt-1 text-[11px] text-text-tertiary">
-          Lagres når du går ut av feltet (eller ⌘/Ctrl + Enter). Esc angrer.
+          {L(
+            "Lagres når du går ut av feltet (eller ⌘/Ctrl + Enter). Esc angrer.",
+            "Saved when you leave the field (or ⌘/Ctrl + Enter). Esc undoes.",
+          )}
         </p>
       </Section>
       {block.kind === "dialogue" || block.kind === "action" ? (
-        <Section title="Koblinger">
+        <Section title={L("Koblinger", "Links")}>
           <BlockLinksSection
             state={state}
             projectId={projectId}
@@ -446,7 +488,7 @@ function BlockPanel({
           />
         </Section>
       ) : null}
-      <Section title="Notater">
+      <Section title={L("Notater", "Notes")}>
         <NotesPanel
           state={state}
           notes={annotationsOfVariant(state, block.variantId).filter((a) => a.blockId === block.id)}
@@ -455,18 +497,21 @@ function BlockPanel({
           focusId={focusNote}
           authorName={authorName}
           newTarget={{ blockId: block.id, variantId: null, start: 0, end: 0, quote: "" }}
-          newLabel="Notat på hele elementet"
+          newLabel={L("Notat på hele elementet", "Note on the whole element")}
         />
         <p className="mt-1 text-[11px] text-text-tertiary">
-          Notat på enkeltord: merk teksten i manuset og velg «Legg til notat».
+          {L(
+            "Notat på enkeltord: merk teksten i manuset og velg «Legg til notat».",
+            "Note on single words: select the text in the script and choose “Add note”.",
+          )}
         </p>
       </Section>
       {variantEditable ? (
-        <Section title="Handlinger">
+        <Section title={L("Handlinger", "Actions")}>
           <div className="flex flex-col items-stretch gap-1.5">
             <Button size="sm" variant="secondary" onClick={insertAfter} className="justify-start">
               <Plus />
-              Ny blokk etter denne
+              {L("Ny blokk etter denne", "New block after this")}
             </Button>
             <Button
               size="sm"
@@ -474,10 +519,14 @@ function BlockPanel({
               onClick={split}
               disabled={idx <= 0}
               className="justify-start"
-              title={idx <= 0 ? "Kan ikke dele ved første blokk" : undefined}
+              title={
+                idx <= 0
+                  ? L("Kan ikke dele ved første blokk", "Cannot split at the first block")
+                  : undefined
+              }
             >
               <Scissors />
-              Del scenen her
+              {L("Del scenen her", "Split the scene here")}
             </Button>
             <Button
               size="sm"
@@ -486,7 +535,7 @@ function BlockPanel({
               onClick={() => {
                 const e = run(
                   { type: "RemoveBlock", productionId: pid, blockId: block.id },
-                  "Fjern blokk",
+                  L("Fjern blokk", "Remove block"),
                 );
                 setErr(e);
                 if (!e)
@@ -497,11 +546,14 @@ function BlockPanel({
               }}
             >
               <Trash2 />
-              Fjern blokken
+              {L("Fjern blokken", "Remove the block")}
             </Button>
           </div>
           <p className="mt-1.5 text-[11px] text-text-tertiary">
-            Fjernet tekst kan hentes tilbake fra scenen. Historikken beholdes.
+            {L(
+              "Fjernet tekst kan hentes tilbake fra scenen. Historikken beholdes.",
+              "Removed text can be restored to the scene. The history is kept.",
+            )}
           </p>
         </Section>
       ) : null}
@@ -561,7 +613,9 @@ function ScenePanel({
       <div className="mb-3 flex items-center justify-between">
         <p className="text-sm font-medium text-text-primary">
           Scene{" "}
-          {sceneNumberOf(state, occ) ?? <span className="text-text-tertiary">uten nummer</span>}
+          {sceneNumberOf(state, occ) ?? (
+            <span className="text-text-tertiary">{L("uten nummer", "unnumbered")}</span>
+          )}
           {occ.active ? (
             <span className="ml-2 text-xs font-normal text-text-tertiary">
               side {startPages[occ.id] ?? "–"}
@@ -573,10 +627,17 @@ function ScenePanel({
           title={
             structureEditing || !editable
               ? undefined
-              : "Slå på «Endre rekkefølge og synlighet» i scenelisten for å endre"
+              : L(
+                  "Slå på «Endre rekkefølge og synlighet» i scenelisten for å endre",
+                  "Turn on “Change order and visibility” in the scene list to change",
+                )
           }
         >
-          {occ.active ? "Aktiv" : merged ? "Sammenslått" : "Deaktivert"}
+          {occ.active
+            ? L("Aktiv", "Active")
+            : merged
+              ? L("Sammenslått", "Merged")
+              : L("Deaktivert", "Inactive")}
           {structureEditing ? (
             <Switch
               checked={occ.active}
@@ -585,40 +646,48 @@ function ScenePanel({
                 setErr(
                   run(
                     { type: "SetOccurrenceActive", occurrenceId: occ.id, active: on },
-                    on ? "Aktiver scene" : "Deaktiver scene",
+                    on
+                      ? L("Aktiver scene", "Activate scene")
+                      : L("Deaktiver scene", "Deactivate scene"),
                   ),
                 )
               }
-              aria-label={occ.active ? "Deaktiver scenen" : "Aktiver scenen"}
+              aria-label={
+                occ.active
+                  ? L("Deaktiver scenen", "Deactivate the scene")
+                  : L("Aktiver scenen", "Activate the scene")
+              }
             />
           ) : null}
         </label>
       </div>
       {!occ.active && !merged ? (
         <p className="mb-3 text-xs text-text-tertiary">
-          Deaktiverte scener er utelatt fra manus og film i denne produksjonen. Ingenting er
-          slettet.
+          {L(
+            "Deaktiverte scener er utelatt fra manus og film i denne produksjonen. Ingenting er slettet.",
+            "Inactive scenes are left out of the script and film in this production. Nothing is deleted.",
+          )}
         </p>
       ) : null}
       <ForkNotice state={state} productionId={productionId} occurrenceId={occ.id} run={run} />
       {v.uncertainty ? (
         <UncertainBox
-          text={v.uncertainty}
+          text={tm(v.uncertainty)}
           editable={variantEditable}
           onApprove={() =>
             setErr(
               run(
                 { type: "SetUncertainty", productionId: pid, targetId: v.id, uncertainty: null },
-                "Godkjenn overskrift",
+                L("Godkjenn overskrift", "Approve heading"),
               ),
             )
           }
         />
       ) : null}
-      <Section title="Sceneoverskrift">
+      <Section title={L("Sceneoverskrift", "Scene heading")}>
         <div className="grid grid-cols-[96px_1fr] gap-1.5">
           <label className="sr-only" htmlFor="h-ie">
-            INT/EXT
+            {L("INT/EXT", "INT/EXT")}
           </label>
           <Input
             id="h-ie"
@@ -634,22 +703,24 @@ function ScenePanel({
             ))}
           </datalist>
           <label className="sr-only" htmlFor="h-loc">
-            Sted
+            {L("Sted", "Location")}
           </label>
           <Input
             id="h-loc"
             value={heading.location}
             disabled={!variantEditable}
-            placeholder="Sted"
+            placeholder={L("Sted", "Location")}
             onChange={(e) => setHeading({ ...heading, location: e.target.value.toUpperCase() })}
             className="h-8 bg-surface-3 font-script text-[13px]"
           />
-          <span className="self-center text-right text-xs text-text-tertiary">Tid</span>
+          <span className="self-center text-right text-xs text-text-tertiary">
+            {L("Tid", "Time")}
+          </span>
           <Input
-            aria-label="Tid på døgnet"
+            aria-label={L("Tid på døgnet", "Time of day")}
             value={heading.time}
             disabled={!variantEditable}
-            placeholder="DAG, KVELD, NATT …"
+            placeholder={L("DAG, KVELD, NATT …", "DAY, EVENING, NIGHT …")}
             onChange={(e) => setHeading({ ...heading, time: e.target.value.toUpperCase() })}
             className="h-8 bg-surface-3 font-script text-[13px]"
           />
@@ -672,26 +743,29 @@ function ScenePanel({
                         time: heading.time.trim(),
                       },
                     },
-                    "Endre sceneoverskrift",
+                    L("Endre sceneoverskrift", "Change scene heading"),
                   ),
                 )
               }
             >
-              Lagre overskrift
+              {L("Lagre overskrift", "Save heading")}
             </Button>
             {changed ? (
               <Button size="sm" variant="ghost" onClick={() => setHeading(v.heading)}>
-                Avbryt
+                {L("Avbryt", "Cancel")}
               </Button>
             ) : null}
           </div>
         ) : null}
         <p className="mt-1.5 text-[11px] text-text-tertiary">
-          Scenenummeret ({occ.productionNumber ?? "ingen"}) er produksjonens nummer og endres ikke
-          når scener flyttes. Ny nummerering velges ved eksport.
+          {L("Scenenummeret", "The scene number")} ({occ.productionNumber ?? L("ingen", "none")}){" "}
+          {L(
+            "er produksjonens nummer og endres ikke når scener flyttes. Ny nummerering velges ved eksport.",
+            "is the production's number and does not change when scenes are moved. New numbering is chosen on export.",
+          )}
         </p>
       </Section>
-      <Section title="Fortellingstid">
+      <Section title={L("Fortellingstid", "Story time")}>
         <StoryTimeSection
           state={state}
           sceneId={occ.sceneId}
@@ -700,7 +774,7 @@ function ScenePanel({
           run={run}
         />
       </Section>
-      <Section title="Notater i scenen">
+      <Section title={L("Notater i scenen", "Notes in the scene")}>
         <NotesPanel
           state={state}
           notes={annotationsOfVariant(state, v.id)}
@@ -709,16 +783,16 @@ function ScenePanel({
           focusId={focusNote}
           authorName={authorName}
           newTarget={{ blockId: null, variantId: v.id, start: 0, end: 0, quote: "" }}
-          newLabel="Nål på scenen"
+          newLabel={L("Nål på scenen", "Pin on the scene")}
         />
       </Section>
       {usedIn.length ? (
-        <Section title="Brukes også i">
+        <Section title={L("Brukes også i", "Also used in")}>
           <p className="text-xs text-text-secondary">{usedIn.join(", ")}</p>
         </Section>
       ) : null}
       {editable ? (
-        <Section title="Ny scene">
+        <Section title={L("Ny scene", "New scene")}>
           <Button
             size="sm"
             variant="secondary"
@@ -738,14 +812,14 @@ function ScenePanel({
                   blocks: [{ blockId, kind: "action", text: "", orderKey: "i" }],
                   productionNumber: null,
                 },
-                "Ny scene",
+                L("Ny scene", "New scene"),
               );
               setErr(e);
               if (!e) onSelect({ occurrenceId, blockId: null });
             }}
           >
             <Plus />
-            Ny scene etter denne
+            {L("Ny scene etter denne", "New scene after this")}
           </Button>
         </Section>
       ) : null}
@@ -754,7 +828,7 @@ function ScenePanel({
       !merged &&
       !isSharedIn(state, productionId, v.id) &&
       !isSharedIn(state, productionId, state.occurrences[next.id]?.variantId ?? "") ? (
-        <Section title="Slå sammen">
+        <Section title={L("Slå sammen", "Merge")}>
           {!confirmMerge ? (
             <Button
               size="sm"
@@ -763,14 +837,18 @@ function ScenePanel({
               onClick={() => setConfirmMerge(true)}
             >
               <GitMerge />
-              Slå sammen med neste scene
+              {L("Slå sammen med neste scene", "Merge with the next scene")}
             </Button>
           ) : (
             <div className="border border-border bg-surface-2 p-2.5 text-xs text-text-secondary">
               <p>
-                Teksten i scene {next.productionNumber ?? "uten nummer"} (
-                {nextV ? formatHeading(nextV.heading) : ""}) legges sist i denne scenen. Den gamle
-                scenen beholdes som «sammenslått» og kan hentes tilbake med Angre.
+                {L("Teksten i scene", "The text of scene")}{" "}
+                {next.productionNumber ?? L("uten nummer", "unnumbered")} (
+                {nextV ? formatHeading(nextV.heading) : ""}){" "}
+                {L(
+                  "legges sist i denne scenen. Den gamle scenen beholdes som «sammenslått» og kan hentes tilbake med Angre.",
+                  "is added last in this scene. The old scene is kept as “merged” and can be restored with Undo.",
+                )}
               </p>
               <div className="mt-2 flex gap-2">
                 <Button
@@ -785,15 +863,15 @@ function ScenePanel({
                           targetOccurrenceId: occ.id,
                           sourceOccurrenceId: next.id,
                         },
-                        "Slå sammen scener",
+                        L("Slå sammen scener", "Merge scenes"),
                       ),
                     );
                   }}
                 >
-                  Slå sammen
+                  {L("Slå sammen", "Merge")}
                 </Button>
                 <Button size="sm" variant="ghost" onClick={() => setConfirmMerge(false)}>
-                  Avbryt
+                  {L("Avbryt", "Cancel")}
                 </Button>
               </div>
             </div>
@@ -801,7 +879,7 @@ function ScenePanel({
         </Section>
       ) : null}
       {removed.length ? (
-        <Section title={`Fjernet tekst (${removed.length})`}>
+        <Section title={`${L("Fjernet tekst", "Removed text")} (${removed.length})`}>
           <ul className="flex flex-col gap-1">
             {removed.map((b) => (
               <li
@@ -810,7 +888,7 @@ function ScenePanel({
               >
                 <span className="text-text-tertiary">{KIND_LABEL[b.kind]}</span>
                 <span className="min-w-0 flex-1 truncate font-script text-text-secondary">
-                  {b.text || "(tom)"}
+                  {b.text || L("(tom)", "(empty)")}
                 </span>
                 {variantEditable ? (
                   <Button
@@ -820,13 +898,13 @@ function ScenePanel({
                       setErr(
                         run(
                           { type: "RestoreBlock", productionId: pid, blockId: b.id },
-                          "Hent tilbake tekst",
+                          L("Hent tilbake tekst", "Restore text"),
                         ),
                       )
                     }
                   >
                     <Undo2 />
-                    Hent tilbake
+                    {L("Hent tilbake", "Restore")}
                   </Button>
                 ) : null}
               </li>
@@ -843,7 +921,7 @@ function ScenePanel({
           }
         >
           <Eye />
-          Gå til første blokk
+          {L("Gå til første blokk", "Go to first block")}
         </Button>
       ) : null}
       <ErrorText message={err} />
@@ -857,27 +935,28 @@ function SummaryPanel({ state, productionId, startPages, uncertainCount, onNextU
   return (
     <div className="text-[13px] text-text-secondary">
       <dl className="grid grid-cols-[1fr_auto] gap-y-1">
-        <dt>Scener</dt>
+        <dt>{L("Scener", "Scenes")}</dt>
         <dd className="tabular text-right text-text-primary">{occs.length}</dd>
-        <dt>Aktive</dt>
+        <dt>{L("Aktive", "Active")}</dt>
         <dd className="tabular text-right text-text-primary">
           {occs.filter((o) => o.active).length}
         </dd>
-        <dt>Siste scene starter på side</dt>
+        <dt>{L("Siste scene starter på side", "Last scene starts on page")}</dt>
         <dd className="tabular text-right text-text-primary">{pages || "–"}</dd>
-        <dt>Usikre tolkninger</dt>
+        <dt>{L("Usikre tolkninger", "Uncertain interpretations")}</dt>
         <dd className="tabular text-right text-text-primary">{uncertainCount}</dd>
       </dl>
       {uncertainCount > 0 ? (
         <Button size="sm" variant="secondary" className="mt-3" onClick={onNextUncertain}>
           <AlertTriangle />
-          Gå til neste usikre tolkning
+          {L("Gå til neste usikre tolkning", "Go to next uncertain interpretation")}
         </Button>
       ) : null}
       <p className="mt-4 text-xs text-text-tertiary">
-        Klikk på en linje i manuset for å rette elementtype eller tekst. Dobbeltklikk for å skrive.
-        Scener flyttes og slås av og på i listen til venstre etter at du har slått på «Endre
-        rekkefølge og synlighet» – manus og film følger alltid samme rekkefølge.
+        {L(
+          "Klikk på en linje i manuset for å rette elementtype eller tekst. Dobbeltklikk for å skrive. Scener flyttes og slås av og på i listen til venstre etter at du har slått på «Endre rekkefølge og synlighet» – manus og film følger alltid samme rekkefølge.",
+          "Click a line in the script to correct its element type or text. Double-click to type. Scenes are moved and switched on and off in the list on the left after you turn on “Change order and visibility” – the script and film always follow the same order.",
+        )}
       </p>
     </div>
   );

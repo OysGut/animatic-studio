@@ -1,7 +1,7 @@
 /** Innsatsnivå og kvalitetsmekanismer (mandat 19.3–19.4, REQ-0275–0278, DEC-0070). */
 import { describe, expect, it } from "vitest";
 import {
-  EFFORT_DISCLAIMER,
+  effortDisclaimer,
   PROVIDERS,
   effortChoice,
   effortOf,
@@ -49,6 +49,6 @@ describe("innsatsnivå", () => {
     expect(sun).toContain("Gjennomsiktig bakgrunn");
     expect(sun.some((x) => x.startsWith("Flere kandidater"))).toBe(true);
     expect(effortOf(providerModel("runway", "gen4_turbo"))).toBe("fast");
-    expect(EFFORT_DISCLAIMER).toMatch(/ingen garanti/);
+    expect(effortDisclaimer()).toMatch(/ingen garanti/);
   });
 });

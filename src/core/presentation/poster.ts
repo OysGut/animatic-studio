@@ -35,37 +35,77 @@ import {
   type PosterFontKey,
 } from "./metrics";
 import { RELATION_COLOR, RELATION_DASHED, approvedRelations, relationName } from "./relations";
+import { L, collation, localized } from "../i18n";
 
 // ---------- Standarder ----------
 
 /** Plakatformatet mandatet krever (REQ-0386): 70 × 100 cm stående. */
 export const POSTER_FORMATS: readonly { id: string; name: string; w: number; h: number }[] = [
-  { id: "70x100", name: "70 × 100 cm (stående)", w: 700, h: 1000 },
-  { id: "50x70", name: "50 × 70 cm (stående)", w: 500, h: 700 },
+  {
+    id: "70x100",
+    get name() {
+      return L("70 × 100 cm (stående)", "70 × 100 cm (portrait)");
+    },
+    w: 700,
+    h: 1000,
+  },
+  {
+    id: "50x70",
+    get name() {
+      return L("50 × 70 cm (stående)", "50 × 70 cm (portrait)");
+    },
+    w: 500,
+    h: 700,
+  },
   { id: "a1", name: "A1 (59,4 × 84,1 cm)", w: 594, h: 841 },
   { id: "a3", name: "A3 (29,7 × 42 cm)", w: 297, h: 420 },
 ];
 
-export const POSTER_KIND_LABEL: Record<PosterKind, string> = {
-  pitch: "Kinopitch-plakat",
-  character_map: "Karakter- og universkart",
-};
+export const POSTER_KIND_LABEL: Record<PosterKind, string> = localized({
+  pitch: ["Kinopitch-plakat", "Cinema pitch poster"],
+  character_map: ["Karakter- og universkart", "Character and universe map"],
+});
 
-/** Innholdsvalgene med norske navn, i mandatets rekkefølge (REQ-0390). */
+/** Et norsk og et engelsk navn. */
+const pair = (nb: string, en: string): readonly [string, string] => [nb, en];
+
+/** Et innholdsvalg med navnet på gjeldende språk (leses på nytt hver gang, så språkbyttet virker). */
+function optionLabel(
+  key: keyof PosterOptions,
+  [nb, en]: readonly [string, string],
+): [keyof PosterOptions, string] {
+  const out: [keyof PosterOptions, string] = [key, nb];
+  Object.defineProperty(out, 1, { enumerable: true, get: () => L(nb, en) });
+  return out;
+}
+
+/** Innholdsvalgene med navn, i mandatets rekkefølge (REQ-0390). */
 export const POSTER_OPTION_LABEL: readonly [keyof PosterOptions, string][] = [
-  ["imagesAndNamesOnly", "Bare bilder og navn"],
-  ["shortDescriptions", "Korte karakterbeskrivelser"],
-  ["longDescriptions", "Utfyllende karakterbeskrivelser"],
-  ["relationLines", "Relasjonslinjer"],
-  ["namedRelations", "Navngitte relasjoner"],
-  ["relationTexts", "Forklarende relasjonstekster"],
-  ["objectImages", "Objektbilder"],
-  ["objectDescriptions", "Objektbeskrivelser"],
-  ["placeImages", "Stedsbilder"],
-  ["placeDescriptions", "Stedsbeskrivelser"],
-  ["logline", "Logline"],
-  ["genreMood", "Sjanger og stemning"],
-  ["projectData", "Andre prosjektdata (format, lengde, produksjon)"],
+  optionLabel("imagesAndNamesOnly", pair("Bare bilder og navn", "Images and names only")),
+  optionLabel(
+    "shortDescriptions",
+    pair("Korte karakterbeskrivelser", "Short character descriptions"),
+  ),
+  optionLabel(
+    "longDescriptions",
+    pair("Utfyllende karakterbeskrivelser", "Full character descriptions"),
+  ),
+  optionLabel("relationLines", pair("Relasjonslinjer", "Relation lines")),
+  optionLabel("namedRelations", pair("Navngitte relasjoner", "Named relations")),
+  optionLabel("relationTexts", pair("Forklarende relasjonstekster", "Explanatory relation texts")),
+  optionLabel("objectImages", pair("Objektbilder", "Object images")),
+  optionLabel("objectDescriptions", pair("Objektbeskrivelser", "Object descriptions")),
+  optionLabel("placeImages", pair("Stedsbilder", "Place images")),
+  optionLabel("placeDescriptions", pair("Stedsbeskrivelser", "Place descriptions")),
+  optionLabel("logline", pair("Logline", "Logline")),
+  optionLabel("genreMood", pair("Sjanger og stemning", "Genre and mood")),
+  optionLabel(
+    "projectData",
+    pair(
+      "Andre prosjektdata (format, lengde, produksjon)",
+      "Other project data (format, length, production)",
+    ),
+  ),
 ];
 
 export function defaultOptions(kind: PosterKind): PosterOptions {
@@ -113,16 +153,28 @@ export interface Palette {
 /** Visuelle stiler (fargepaletter) for plakaten (REQ-0396: «hvilken visuell stil»). */
 export const PALETTES: readonly Palette[] = [
   {
-    name: "Vinternatt",
+    name: "Vinternatt", // i18n-ignore: lagret nøkkel, vises via paletteLabel
     background: "#0d1b2a",
     text: "#f4efe6",
     accent: "#d9a441",
     muted: "#9fb3c8",
   },
   { name: "Kino", background: "#141414", text: "#f2ede4", accent: "#c8a24a", muted: "#a39e93" },
-  { name: "Skog", background: "#13261d", text: "#eef2e8", accent: "#d4a85a", muted: "#9db3a2" },
-  { name: "Papir", background: "#f4efe6", text: "#1b1b1b", accent: "#8a3b12", muted: "#6b6257" },
+  { name: "Skog", background: "#13261d", text: "#eef2e8", accent: "#d4a85a", muted: "#9db3a2" }, // i18n-ignore: lagret nøkkel
+  { name: "Papir", background: "#f4efe6", text: "#1b1b1b", accent: "#8a3b12", muted: "#6b6257" }, // i18n-ignore: lagret nøkkel
 ];
+
+const PALETTE_LABEL = localized({
+  Vinternatt: ["Vinternatt", "Winter night"],
+  Kino: ["Kino", "Cinema"],
+  Skog: ["Skog", "Forest"],
+  Papir: ["Papir", "Paper"],
+});
+
+/** Visningsnavn for en fargepalett. Navnet lagres som nøkkel og endres ikke. */
+export function paletteLabel(name: string): string {
+  return (PALETTE_LABEL as Record<string, string>)[name] ?? name;
+}
 
 const empty: LocalizedText = { nb: "", en: "" };
 
@@ -171,18 +223,18 @@ export function posterAnalysis(s: ProjectState, productionId: string): PosterAna
     .sort(
       (a, b) =>
         b.lines + 2 * b.scenes - (a.lines + 2 * a.scenes) ||
-        a.asset.name.localeCompare(b.asset.name, "nb"),
+        a.asset.name.localeCompare(b.asset.name, collation()),
     );
   const places = live
     .filter((a) => a.kind === "location" || a.kind === "environment")
     .map((asset) => ({ asset, scenes: scenes(asset) }))
     .filter((x) => x.scenes > 0)
-    .sort((a, b) => b.scenes - a.scenes || a.asset.name.localeCompare(b.asset.name, "nb"));
+    .sort((a, b) => b.scenes - a.scenes || a.asset.name.localeCompare(b.asset.name, collation()));
   const objects = live
     .filter((a) => a.kind === "object")
     .map((asset) => ({ asset, scenes: scenes(asset) }))
     .filter((x) => x.scenes > 0)
-    .sort((a, b) => b.scenes - a.scenes || a.asset.name.localeCompare(b.asset.name, "nb"));
+    .sort((a, b) => b.scenes - a.scenes || a.asset.name.localeCompare(b.asset.name, collation()));
   const top = new Set(characters.slice(0, 12).map((c) => c.asset.id as string));
   const relations = approvedRelations(s).filter(
     (r) => top.has(r.fromAssetId) && top.has(r.toAssetId),
@@ -1215,21 +1267,21 @@ export function renderPoster(s: ProjectState, poster: Poster, lang = poster.lang
 // ---------- Lesbarhet (REQ-0392) ----------
 
 /** Navn på elementenes roller i redigeringen. */
-export const ROLE_LABEL: Record<string, string> = {
-  background: "Bakgrunn",
-  fade: "Overgang",
-  title: "Tittel",
-  genre: "Sjanger og stemning",
-  tagline: "Slagord",
-  logline: "Logline",
-  names: "Navnelinje",
-  character: "Karakter",
-  place: "Sted",
-  object: "Objekt",
-  relation: "Relasjon",
-  project: "Prosjektdata",
-  custom: "Eget element",
-};
+export const ROLE_LABEL: Record<string, string> = localized({
+  background: ["Bakgrunn", "Background"],
+  fade: ["Overgang", "Transition"],
+  title: ["Tittel", "Title"],
+  genre: ["Sjanger og stemning", "Genre and mood"],
+  tagline: ["Slagord", "Tagline"],
+  logline: ["Logline", "Logline"],
+  names: ["Navnelinje", "Names line"],
+  character: ["Karakter", "Character"],
+  place: ["Sted", "Place"],
+  object: ["Objekt", "Object"],
+  relation: ["Relasjon", "Relation"],
+  project: ["Prosjektdata", "Project data"],
+  custom: ["Eget element", "Own element"],
+});
 
 export interface PosterCheck {
   readonly level: "ok" | "warn" | "info";
@@ -1263,39 +1315,96 @@ export function posterChecks(
   if (small.length || over.length) {
     const o = poster.document.options;
     const tips: string[] = [];
-    if (o.longDescriptions) tips.push("bruk korte beskrivelser i stedet for utfyllende");
-    if (poster.document.characters.length > 6) tips.push("vis færre karakterer");
+    if (o.longDescriptions)
+      tips.push(
+        L(
+          "bruk korte beskrivelser i stedet for utfyllende",
+          "use short descriptions instead of full ones",
+        ),
+      );
+    if (poster.document.characters.length > 6)
+      tips.push(L("vis færre karakterer", "show fewer characters"));
     if (
       poster.kind === "pitch" &&
       (o.shortDescriptions || o.longDescriptions || o.objectDescriptions)
     )
-      tips.push("bytt til karakter- og universkart for mye tekst");
+      tips.push(
+        L(
+          "bytt til karakter- og universkart for mye tekst",
+          "switch to the character and universe map for so much text",
+        ),
+      );
     if (o.placeDescriptions || o.objectDescriptions)
-      tips.push("slå av beskrivelser av steder eller objekter");
+      tips.push(
+        L(
+          "slå av beskrivelser av steder eller objekter",
+          "turn off descriptions of places or objects",
+        ),
+      );
+    const smallPart = small.length
+      ? L(
+          `${small.length} tekster er mindre enn ${Math.round(min)} pt`,
+          `${small.length} texts are smaller than ${Math.round(min)} pt`,
+        )
+      : "";
+    const joiner = small.length && over.length ? L(" og ", " and ") : "";
+    const overPart = over.length
+      ? L(`${over.length} tekster får ikke plass`, `${over.length} texts do not fit`)
+      : "";
+    const tipPart = tips.length
+      ? L(` Forslag: ${tips.join("; ")}.`, ` Suggestions: ${tips.join("; ")}.`)
+      : "";
     out.push({
       level: "warn",
-      text: `Redusert lesbarhet: ${small.length ? `${small.length} tekster er mindre enn ${Math.round(min)} pt` : ""}${small.length && over.length ? " og " : ""}${over.length ? `${over.length} tekster får ikke plass` : ""}.${tips.length ? ` Forslag: ${tips.join("; ")}.` : ""}`,
+      text: `${L("Redusert lesbarhet: ", "Reduced legibility: ")}${smallPart}${joiner}${overPart}.${tipPart}`,
       elementIds: [...new Set([...small, ...over].map((x) => x.id))],
     });
-  } else out.push({ level: "ok", text: `All tekst er minst ${Math.round(min)} pt og får plass.` });
+  } else
+    out.push({
+      level: "ok",
+      text: L(
+        `All tekst er minst ${Math.round(min)} pt og får plass.`,
+        `All text is at least ${Math.round(min)} pt and fits.`,
+      ),
+    });
   const missing = poster.document.elements.filter(
     (e) => e.visible && e.kind === "image" && !elementVersion(s, e),
   );
   if (missing.length)
     out.push({
       level: "warn",
-      text: `${missing.length} ${missing.length === 1 ? "bilde mangler" : "bilder mangler"} i biblioteket og vises som tom ramme.`,
+      text:
+        missing.length === 1
+          ? L(
+              "1 bilde mangler i biblioteket og vises som tom ramme.",
+              "1 image is missing from the library and is shown as an empty frame.",
+            )
+          : L(
+              `${missing.length} bilder mangler i biblioteket og vises som tom ramme.`,
+              `${missing.length} images are missing from the library and are shown as empty frames.`,
+            ),
       elementIds: missing.map((e) => e.id),
     });
   const empties = poster.document.elements.filter(
     (e) => e.visible && e.kind === "text" && !elementText(e, lang).text.trim(),
   );
-  if (empties.length)
+  if (empties.length) {
+    const roles = [...new Set(empties.map((e) => ROLE_LABEL[e.role] ?? e.role))].join(", ");
     out.push({
       level: "info",
-      text: `${empties.length === 1 ? "Ett tekstfelt er tomt" : `${empties.length} tekstfelt er tomme`} (${[...new Set(empties.map((e) => ROLE_LABEL[e.role] ?? e.role))].join(", ")}) og vises ikke.`,
+      text:
+        empties.length === 1
+          ? L(
+              `Ett tekstfelt er tomt (${roles}) og vises ikke.`,
+              `One text field is empty (${roles}) and is not shown.`,
+            )
+          : L(
+              `${empties.length} tekstfelt er tomme (${roles}) og vises ikke.`,
+              `${empties.length} text fields are empty (${roles}) and are not shown.`,
+            ),
       elementIds: empties.map((e) => e.id),
     });
+  }
   if (lang === "en") {
     const untranslated = poster.document.elements.filter(
       (e) =>
@@ -1304,7 +1413,16 @@ export function posterChecks(
     if (untranslated.length)
       out.push({
         level: "info",
-        text: `${untranslated.length} ${untranslated.length === 1 ? "tekst mangler" : "tekster mangler"} engelsk versjon og vises på norsk.`,
+        text:
+          untranslated.length === 1
+            ? L(
+                "1 tekst mangler engelsk versjon og vises på norsk.",
+                "1 text has no English version and is shown in Norwegian.",
+              )
+            : L(
+                `${untranslated.length} tekster mangler engelsk versjon og vises på norsk.`,
+                `${untranslated.length} texts have no English version and are shown in Norwegian.`,
+              ),
         elementIds: untranslated.map((e) => e.id),
       });
   }

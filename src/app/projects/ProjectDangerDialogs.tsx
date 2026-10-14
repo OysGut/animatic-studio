@@ -4,6 +4,7 @@
  * kan angres. Sletting krever at prosjektnavnet skrives inn.
  */
 import { AlertTriangle, Loader2, LogOut, Trash2 } from "lucide-react";
+import { L, tm } from "@/core";
 import { useEffect, useState } from "react";
 import { leaveProject } from "@/adapters/browser/projects";
 import {
@@ -52,8 +53,9 @@ function ConfirmName({
   return (
     <label className="flex flex-col gap-1 text-xs text-text-secondary">
       <span>
-        Skriv prosjektnavnet <span className="font-medium text-text-primary">{name}</span> for å
-        bekrefte
+        {L("Skriv prosjektnavnet", "Type the project name")}{" "}
+        <span className="font-medium text-text-primary">{name}</span>{" "}
+        {L("for å bekrefte", "to confirm")}
       </span>
       <input
         value={value}
@@ -61,7 +63,7 @@ function ConfirmName({
         disabled={disabled}
         autoComplete="off"
         spellCheck={false}
-        aria-label="Prosjektnavnet"
+        aria-label={L("Prosjektnavnet", "Project name")}
         className="h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary"
       />
     </label>
@@ -95,17 +97,25 @@ export function DeleteProjectDialog({
     try {
       const r = await deleteProject({ data: { projectId: target.id, confirmName: typed } });
       if (!r.ok) {
-        setError(r.message);
+        setError(tm(r.message));
         return;
       }
       onDone(
-        `«${target.name}» er slettet. Ressursene ligger under «Ressurser fra slettede prosjekter».` +
+        L(
+          `«${target.name}» er slettet. Ressursene ligger under «Ressurser fra slettede prosjekter».`,
+          `“${target.name}” has been deleted. The assets are under “Assets from deleted projects”.`,
+        ) +
           (r.leftoverFiles > 0
-            ? ` ${r.leftoverFiles} filer i lagringen kunne ikke slettes og blir liggende (de kan ikke nås fra appen).`
+            ? L(
+                ` ${r.leftoverFiles} filer i lagringen kunne ikke slettes og blir liggende (de kan ikke nås fra appen).`,
+                ` ${r.leftoverFiles} files in storage could not be deleted and will remain (they cannot be reached from the app).`,
+              )
             : ""),
       );
     } catch (e) {
-      setError((e as Error).message || "Prosjektet ble ikke slettet.");
+      setError(
+        (e as Error).message || L("Prosjektet ble ikke slettet.", "The project was not deleted."),
+      );
     } finally {
       setBusy(false);
     }
@@ -116,42 +126,70 @@ export function DeleteProjectDialog({
       <DialogContent className="max-h-[88vh] max-w-[560px] overflow-y-auto border-status-danger/40 bg-surface-2">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-status-danger">
-            <Trash2 className="size-5" aria-hidden /> Slett prosjektet «{target.name}»
+            <Trash2 className="size-5" aria-hidden />{" "}
+            {L(`Slett prosjektet «${target.name}»`, `Delete the project “${target.name}”`)}
           </DialogTitle>
-          <DialogDescription>Dette kan ikke angres.</DialogDescription>
+          <DialogDescription>
+            {L("Dette kan ikke angres.", "This cannot be undone.")}
+          </DialogDescription>
         </DialogHeader>
         <Warning>
-          <p className="font-medium">Dette slettes for godt:</p>
+          <p className="font-medium">{L("Dette slettes for godt:", "This is deleted for good:")}</p>
           <ul className="list-disc pl-4 text-text-secondary">
-            <li>manuset med alle versjoner, scener, notater og historikk</li>
-            <li>importerte manusfiler</li>
-            <li>2D-scener, kamera og lydklipp i scenene</li>
-            <li>importert ferdig film</li>
+            <li>
+              {L(
+                "manuset med alle versjoner, scener, notater og historikk",
+                "the script with all versions, scenes, notes and history",
+              )}
+            </li>
+            <li>{L("importerte manusfiler", "imported script files")}</li>
+            <li>
+              {L(
+                "2D-scener, kamera og lydklipp i scenene",
+                "2D scenes, camera and audio clips in the scenes",
+              )}
+            </li>
+            <li>{L("importert ferdig film", "imported finished film")}</li>
           </ul>
           {target.others > 0 ? (
             <p>
-              {target.others === 1 ? "Én annen person" : `${target.others} andre personer`} mister
-              tilgangen til prosjektet med én gang.
+              {target.others === 1
+                ? L(
+                    "Én annen person mister tilgangen til prosjektet med én gang.",
+                    "One other person loses access to the project immediately.",
+                  )
+                : L(
+                    `${target.others} andre personer mister tilgangen til prosjektet med én gang.`,
+                    `${target.others} other people lose access to the project immediately.`,
+                  )}
             </p>
           ) : null}
           <p className="text-text-secondary">
-            Ressursene (bilder og lyd) slettes{" "}
-            <span className="font-medium text-text-primary">ikke</span> nå. De blir liggende hos deg
-            under «Ressurser fra slettede prosjekter», der du kan laste dem ned eller slette dem for
-            godt senere.
+            {L("Ressursene (bilder og lyd) slettes", "The assets (images and sound) are")}{" "}
+            <span className="font-medium text-text-primary">{L("ikke", "not")}</span>{" "}
+            {L(
+              "nå. De blir liggende hos deg under «Ressurser fra slettede prosjekter», der du kan laste dem ned eller slette dem for godt senere.",
+              "deleted now. They stay with you under “Assets from deleted projects”, where you can download them or delete them for good later.",
+            )}
           </p>
         </Warning>
         <div className="rounded-sm border border-border bg-surface-1 p-3">
           <p className="mb-2 text-xs text-text-secondary">
-            Vil du ta vare på noe først? Last ned ressursene og den importerte filmen som zip:
+            {L(
+              "Vil du ta vare på noe først? Last ned ressursene og den importerte filmen som zip:",
+              "Want to keep anything first? Download the assets and the imported film as a zip:",
+            )}
           </p>
           {zipState.data ? (
             <AssetZipPanel state={zipState.data} projectName={target.name} compact />
           ) : zipState.isError ? (
-            <p className="text-xs text-status-danger">Ressursene kunne ikke hentes.</p>
+            <p className="text-xs text-status-danger">
+              {L("Ressursene kunne ikke hentes.", "The assets could not be loaded.")}
+            </p>
           ) : (
             <p className="flex items-center gap-2 text-xs text-text-tertiary">
-              <Loader2 className="size-3.5 animate-spin" aria-hidden /> Henter ressursene …
+              <Loader2 className="size-3.5 animate-spin" aria-hidden />{" "}
+              {L("Henter ressursene …", "Loading the assets …")}
             </p>
           )}
         </div>
@@ -163,11 +201,11 @@ export function DeleteProjectDialog({
         ) : null}
         <DialogFooter>
           <Button variant="ghost" onClick={onClose} disabled={busy}>
-            Avbryt
+            {L("Avbryt", "Cancel")}
           </Button>
           <Button variant="destructive" disabled={!ok || busy} onClick={() => void run()}>
             {busy ? <Loader2 className="animate-spin" /> : <Trash2 />}
-            Slett prosjektet for godt
+            {L("Slett prosjektet for godt", "Delete the project for good")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -198,12 +236,15 @@ export function LeaveProjectDialog({
     if (e) {
       setError(
         /function .* does not exist|schema cache/i.test(e.message)
-          ? "Databasen er ikke oppdatert ennå (migrasjon 0011)."
+          ? L(
+              "Databasen er ikke oppdatert ennå (migrasjon 0011).",
+              "The database is not updated yet (migration 0011).",
+            )
           : e.message,
       );
       return;
     }
-    onDone(`Du har forlatt «${target.name}».`);
+    onDone(L(`Du har forlatt «${target.name}».`, `You have left “${target.name}”.`));
   }
 
   return (
@@ -211,16 +252,26 @@ export function LeaveProjectDialog({
       <DialogContent className="max-w-[480px] border-status-danger/40 bg-surface-2">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <LogOut className="size-5 text-status-danger" aria-hidden /> Forlat «{target.name}»
+            <LogOut className="size-5 text-status-danger" aria-hidden />{" "}
+            {L(`Forlat «${target.name}»`, `Leave “${target.name}”`)}
           </DialogTitle>
-          <DialogDescription>Dette kan ikke angres.</DialogDescription>
+          <DialogDescription>
+            {L("Dette kan ikke angres.", "This cannot be undone.")}
+          </DialogDescription>
         </DialogHeader>
         <Warning>
           <p>
-            Du mister tilgangen til prosjektet med én gang. Du kan ikke få den tilbake selv – en
-            eier må invitere deg på nytt.
+            {L(
+              "Du mister tilgangen til prosjektet med én gang. Du kan ikke få den tilbake selv – en eier må invitere deg på nytt.",
+              "You lose access to the project immediately. You cannot get it back yourself – an owner must invite you again.",
+            )}
           </p>
-          <p className="text-text-secondary">Prosjektet og det du har laget i det, blir værende.</p>
+          <p className="text-text-secondary">
+            {L(
+              "Prosjektet og det du har laget i det, blir værende.",
+              "The project and what you have made in it will remain.",
+            )}
+          </p>
         </Warning>
         {error ? (
           <p role="alert" className="text-xs text-status-danger">
@@ -229,11 +280,11 @@ export function LeaveProjectDialog({
         ) : null}
         <DialogFooter>
           <Button variant="ghost" onClick={onClose} disabled={busy}>
-            Avbryt
+            {L("Avbryt", "Cancel")}
           </Button>
           <Button variant="destructive" disabled={busy} onClick={() => void run()}>
             {busy ? <Loader2 className="animate-spin" /> : <LogOut />}
-            Forlat prosjektet
+            {L("Forlat prosjektet", "Leave the project")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -267,12 +318,19 @@ export function PurgeAssetsDialog({
     try {
       const r = await purgeProjectAssets({ data: { projectId: target.id, confirmName: typed } });
       if (!r.ok) {
-        setError(r.message);
+        setError(tm(r.message));
         return;
       }
-      onDone(`Ressursene fra «${target.name}» er slettet for godt.`);
+      onDone(
+        L(
+          `Ressursene fra «${target.name}» er slettet for godt.`,
+          `The assets from “${target.name}” have been deleted for good.`,
+        ),
+      );
     } catch (e) {
-      setError((e as Error).message || "Ressursene ble ikke slettet.");
+      setError(
+        (e as Error).message || L("Ressursene ble ikke slettet.", "The assets were not deleted."),
+      );
     } finally {
       setBusy(false);
     }
@@ -283,17 +341,25 @@ export function PurgeAssetsDialog({
       <DialogContent className="max-w-[500px] border-status-danger/40 bg-surface-2">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-status-danger">
-            <Trash2 className="size-5" aria-hidden /> Slett ressursene fra «{target.name}»
+            <Trash2 className="size-5" aria-hidden />{" "}
+            {L(`Slett ressursene fra «${target.name}»`, `Delete the assets from “${target.name}”`)}
           </DialogTitle>
-          <DialogDescription>Dette kan ikke angres.</DialogDescription>
+          <DialogDescription>
+            {L("Dette kan ikke angres.", "This cannot be undone.")}
+          </DialogDescription>
         </DialogHeader>
         <Warning>
           <p>
-            Alle bilder og lydfiler fra prosjektet slettes for godt, med alle versjoner og loggen
-            over AI-genereringer. Prosjektet forsvinner helt fra lista.
+            {L(
+              "Alle bilder og lydfiler fra prosjektet slettes for godt, med alle versjoner og loggen over AI-genereringer. Prosjektet forsvinner helt fra lista.",
+              "All images and sound files from the project are deleted for good, with all versions and the log of AI generations. The project disappears from the list entirely.",
+            )}
           </p>
           <p className="text-text-secondary">
-            Last dem ned som zip først hvis du vil ta vare på dem.
+            {L(
+              "Last dem ned som zip først hvis du vil ta vare på dem.",
+              "Download them as a zip first if you want to keep them.",
+            )}
           </p>
         </Warning>
         <ConfirmName name={target.name} value={typed} onChange={setTyped} disabled={busy} />
@@ -304,11 +370,11 @@ export function PurgeAssetsDialog({
         ) : null}
         <DialogFooter>
           <Button variant="ghost" onClick={onClose} disabled={busy}>
-            Avbryt
+            {L("Avbryt", "Cancel")}
           </Button>
           <Button variant="destructive" disabled={!ok || busy} onClick={() => void run()}>
             {busy ? <Loader2 className="animate-spin" /> : <Trash2 />}
-            Slett ressursene for godt
+            {L("Slett ressursene for godt", "Delete the assets for good")}
           </Button>
         </DialogFooter>
       </DialogContent>

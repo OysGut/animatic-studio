@@ -1,15 +1,15 @@
 /** Navn og utseende for overgangene i monteringen (DEC-0047, DEC-0051). */
-import type { TransitionKind } from "@/core";
+import { localized, type TransitionKind } from "@/core";
 
-export const TRANSITION_LABEL: Record<TransitionKind, string> = {
-  cut: "Kutt",
-  dissolve: "Overtoning",
-  dip: "Via svart",
-  dipWhite: "Via hvitt",
-  wipe: "Tørk",
-  push: "Skyv",
-  iris: "Iris",
-};
+export const TRANSITION_LABEL: Record<TransitionKind, string> = localized({
+  cut: ["Kutt", "Cut"],
+  dissolve: ["Overtoning", "Dissolve"],
+  dip: ["Via svart", "Through black"],
+  dipWhite: ["Via hvitt", "Through white"],
+  wipe: ["Tørk", "Wipe"],
+  push: ["Skyv", "Push"],
+  iris: ["Iris", "Iris"],
+});
 
 /** Merket i starten av klippet i tidslinjen. */
 export function transitionMarkBackground(kind: TransitionKind): string {

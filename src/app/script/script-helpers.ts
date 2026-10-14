@@ -1,15 +1,15 @@
-import type { BlockKind, ProjectState } from "@/core";
+import { localized, type BlockKind, type ProjectState } from "@/core";
 
-export const KIND_LABEL: Record<BlockKind, string> = {
-  heading: "Sceneoverskrift",
-  action: "Handling",
-  character: "Karakter",
-  parenthetical: "Parentes",
-  dialogue: "Replikk",
-  transition: "Overgang",
-  shot: "Innstilling",
-  note: "Notat",
-};
+export const KIND_LABEL: Record<BlockKind, string> = localized({
+  heading: ["Sceneoverskrift", "Scene heading"],
+  action: ["Handling", "Action"],
+  character: ["Karakter", "Character"],
+  parenthetical: ["Parentes", "Parenthetical"],
+  dialogue: ["Replikk", "Dialogue"],
+  transition: ["Overgang", "Transition"],
+  shot: ["Innstilling", "Shot"],
+  note: ["Notat", "Note"],
+});
 
 /** Varianter med usikre tolkninger (overskrift eller blokk). */
 export function uncertainVariants(state: ProjectState): Set<string> {

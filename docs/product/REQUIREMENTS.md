@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **609**
-- Prioritet: P0: 143, P1: 280, P2: 147, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 82, teknisk-anbefaling: 7
-- Status: Verifisert: 537, Implementert – ikke verifisert: 11, Under arbeid: 3, Ikke startet: 58
+- Antall krav: **632**
+- Prioritet: P0: 143, P1: 303, P2: 147, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 105, teknisk-anbefaling: 7
+- Status: Verifisert: 555, Implementert – ikke verifisert: 16, Under arbeid: 3, Ikke startet: 58
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -8219,10 +8219,11 @@ Den automatiske bildebeskrivelsen tar med setningene der manuset omtaler ressurs
 - **Moduler:** PROMPT
 - **Status:** Verifisert
 - **Akseptansekriterier:**
-  - Avsnittet «IN THE SCREENPLAY» har bare setninger som nevner ressursen, høyst 1200 tegn.
+  - Det visuelle faktaarket (REQ-0626) brukes når det finnes; ellers tas beskrivelsen og høyst tre handlingssetninger som nevner ressursen med, merket som norsk – aldri replikker.
 - **Tester:**
   - tests/unit/funn-2026-10-13.test.ts
-- **Implementering:** src/core/generation/image-prompt.ts
+  - tests/unit/funn-2026-10-14.test.ts
+- **Implementering:** src/core/generation/image-prompt.ts, src/core/generation/brief.ts
 
 #### REQ-0604 – Lokasjon legges nederst
 En lokasjon eller et miljø som legges inn i scenen, legges nederst av alle lagene og dekker bildet.
@@ -8303,3 +8304,316 @@ Replikker leses inn med en modell som kan norsk (Eleven v3), og språket settes 
 - **Tester:**
   - tests/unit/ai-speech.test.ts
 - **Implementering:** src/core/generation/speech.ts, src/adapters/ai/speech.functions.ts, src/adapters/ai/providers.server.ts
+
+#### REQ-0610 – Bredere lagnavn i tidslinjen
+Skillet mellom lagnavnene og tidslinjen i sceneeditoren kan dras, så lange lagnavn kan leses. Bredden huskes i nettleseren; dobbeltklikk gir standard.
+
+- **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** TIMELINE, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Dra i skillet gjør navnekolonnen bredere eller smalere (100–480 px).
+  - Sporene og avspillingshodet følger den nye bredden.
+- **Tester:**
+  - docs/development/VISUAL_QA_DEC-0080.md
+- **Implementering:** src/app/scene-editor/Timeline.tsx
+
+#### REQ-0611 – Filmens visuelle stil rett fra bildevalget
+Hintet om at filmens visuelle stil ikke er fylt ut, er en lenke som åpner stilen oppå bildevalget. Når den lukkes, er brukeren tilbake i bildevalget der hun var, og beskrivelsen følger den nye stilen.
+
+- **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** PROMPT, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Lenken åpner «Filmens visuelle stil» over bildevalget.
+  - Lukk eller lagre gir bildevalget tilbake uendret.
+- **Tester:**
+  - docs/development/VISUAL_QA_DEC-0080.md
+- **Implementering:** src/app/library/GenerateImagePanel.tsx, src/app/scene-editor/LayerImageDialog.tsx, src/app/projects/StyleGuideSection.tsx
+
+#### REQ-0612 – Stor visning: «Tilpass» er standard og stemmer
+Stor visning åpner med hele bildet tilpasset vinduet («Tilpass»), også små bilder forstørres. Målene kommer fra bildet når versjonen mangler dem.
+
+- **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** LIBRARY, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Et 1200 × 1600-bilde åpner i ca. 44 % i et vanlig vindu, ikke 100 %.
+- **Tester:**
+  - docs/development/VISUAL_QA_DEC-0080.md
+- **Implementering:** src/app/library/ImageLightbox.tsx
+
+#### REQ-0613 – Dobbeltklikk på bildene i bildevalget
+Dobbeltklikk på et bilde i bildevalget åpner det i stor visning.
+
+- **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Dobbeltklikk åpner stor visning for akkurat det bildet.
+- **Tester:**
+  - docs/development/VISUAL_QA_DEC-0080.md
+- **Implementering:** src/app/scene-editor/LayerImageDialog.tsx
+
+#### REQ-0614 – Fjern luften rundt
+Etter frilegging kan luften rundt figuren fjernes: bildet beskjæres tett rundt det synlige med litt luft (1 % av lengste side, minst 2 px), som ny versjon. Valget er på som standard i frileggingen og finnes som egen knapp i stor visning. Forhåndsvisningene legger på litt luft, så tett beskårne figurer ikke slår i kanten.
+
+- **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** LIBRARY, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Et frilagt bilde med stor tom kant blir en ny versjon med bare figuren og litt luft.
+  - Uten gjennomsiktig kant sies det at det ikke er noe å fjerne.
+- **Tester:**
+  - tests/unit/funn-2026-10-14.test.ts
+  - docs/development/VISUAL_QA_DEC-0080.md
+- **Implementering:** src/core/cutout/index.ts, src/app/library/CutoutDialog.tsx, src/app/library/image-actions.ts, src/app/library/ImageLightbox.tsx
+
+#### REQ-0615 – Utsnitt med fri markering og del opp i ruter
+I stor visning kan brukeren tegne en fri ramme rundt en del av bildet, gi utsnittet navn og lagre det som nytt bilde i et eksisterende eller nytt objekt (alt utenfor blir gjennomsiktig). «Del opp i ruter» deler et karakterark i like store ruter (kolonner × rader) og lagrer hver rute som nytt bilde, i dette objektet eller som nye objekter; tomme ruter hoppes over.
+
+- **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** LIBRARY, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Utsnittet blir et nytt bilde med gjennomsiktighet utenfor markeringen.
+  - 4 × 1 ruter gir fire nye bilder; alt kan angres som én handling.
+- **Tester:**
+  - tests/unit/funn-2026-10-14.test.ts
+  - docs/development/VISUAL_QA_DEC-0080.md
+- **Implementering:** src/app/library/ImageLightbox.tsx, src/app/library/image-actions.ts, src/core/cutout/index.ts
+
+#### REQ-0616 – Advarsel når et bilde forstørres over 1:1
+Laginspektøren varsler når et bilde tegnes større enn sine egne piksler (over 115 %), regnet fra skalering, gruppe og kamerazoom på bildet som vises og på nøkkelbildene, med knappen «Oppskaler bildet …».
+
+- **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** COMPOSE, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Skalering 300 % gir en advarsel med prosenten.
+  - Knappen åpner stor visning med oppskalering fremme.
+- **Tester:**
+  - tests/unit/funn-2026-10-14.test.ts
+  - docs/development/VISUAL_QA_DEC-0080.md
+- **Implementering:** src/core/composition/shape.ts, src/app/scene-editor/LayerInspector.tsx, src/app/scene-editor/SceneEditorWorkspace.tsx
+
+#### REQ-0617 – Nullstill format
+Ved hver skaleringsverdi i laginspektøren er det en knapp som gir laget bildets egne proporsjoner igjen: ved bredden beholdes bredden, ved høyden beholdes høyden. Speilvendingen beholdes; knappene er bare aktive når laget er skvist.
+
+- **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** COMPOSE, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Skalering 140 % × 90 % blir 140 % × 140 % (behold bredden) eller 90 % × 90 % (behold høyden).
+- **Tester:**
+  - tests/unit/funn-2026-10-14.test.ts
+  - docs/development/VISUAL_QA_DEC-0080.md
+- **Implementering:** src/core/composition/shape.ts, src/app/scene-editor/LayerInspector.tsx
+
+#### REQ-0618 – Skvis og strekk med sidehåndtak
+Valgt lag har håndtak midt på hver side i tillegg til hjørnene. Et sidehåndtak skviser eller strekker i én retning mens motsatt side står stille; med Alt endres begge sider likt rundt midten. Det virker også når laget er rotert eller speilvendt.
+
+- **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** COMPOSE, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Dra høyre side 50 px ut på et 200 px bredt lag gir 125 % bredde og midten flyttet 25 px.
+- **Tester:**
+  - tests/unit/funn-2026-10-14.test.ts
+  - docs/development/VISUAL_QA_DEC-0080.md
+- **Implementering:** src/core/composition/shape.ts, src/app/scene-editor/Stage.tsx
+
+#### REQ-0619 – Frilegging fra stor visning, med zoom
+«Frilegg …» finnes i stor visning. Frileggingen kan zoomes (rullehjul, knapper, «Tilpass», 100 %) og flyttes (mellomrom eller midtre museknapp); penselen følger zoomen.
+
+- **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** LIBRARY, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Zoom inn viser bildet forstørret med skarpe piksler; penselen treffer der markøren er.
+- **Tester:**
+  - docs/development/VISUAL_QA_DEC-0080.md
+- **Implementering:** src/app/library/CutoutDialog.tsx, src/app/library/ImageLightbox.tsx
+
+#### REQ-0620 – Speilvending som tweenes mellom nøkkelbilder
+«Speilvend» kan virke på hele laget (som før) eller «fra her»: laget snur fra forrige nøkkelbilde (ellers et halvt sekund før) til avspillingshodet, glidende (bildet klemmes smalt og vokser ut speilvendt) eller brått (på ett bilde), og er speilvendt resten av scenen.
+
+- **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** COMPOSE, TIMELINE
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Glidende: skaleringen går fra 1 til -1 gjennom 0.
+  - Brått: skaleringen er 1 til bildet før og -1 fra avspillingshodet.
+  - Senere nøkkelbilder for samme skalering snus også.
+- **Tester:**
+  - tests/unit/funn-2026-10-14.test.ts
+  - docs/development/VISUAL_QA_DEC-0080.md
+- **Implementering:** src/core/composition/shape.ts, src/app/scene-editor/LayerInspector.tsx
+
+#### REQ-0621 – Lesevisning av valgt scene
+Med «Vis kun valgt scene» vises scenen rett på siden uten ark: toppjustert, uten sideskift, (MORE), (CONT'D) og sidetall, med manusets innrykk og linjebredde, og den kan rulles. Markering, notater og søk virker som før. «Sort tekst på hvit bakgrunn» gir lys leseflate; valget huskes.
+
+- **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** SCRIPT, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Scenen vises som én sammenhengende tekst fra toppen.
+  - Avkrysningen gir sort tekst på hvit bakgrunn.
+- **Tester:**
+  - tests/unit/funn-2026-10-14.test.ts
+  - docs/development/VISUAL_QA_DEC-0080.md
+- **Implementering:** src/core/screenplay/flow.ts, src/app/script/ScriptPageView.tsx, src/app/script/ScriptWorkspace.tsx
+
+#### REQ-0622 – Vinkelen et bilde viser
+Et bilde kan merkes med vinkelen det viser (forfra, tre kvart forfra, fra siden, tre kvart bakfra, bakfra, portrett, karakterark). Merket kan angres og endrer ikke selve bildet; det lagres i asset_versions.view (migrasjon 0030).
+
+- **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** LIBRARY, VERSION
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Vinkelen lagres og leses tilbake likt; selve bildet kan fortsatt ikke endres (INV-13).
+  - Ugyldig vinkel avvises av kjernen og databasen.
+- **Tester:**
+  - tests/unit/funn-2026-10-14.test.ts
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/library/view.ts, src/core/commands/apply.ts, src/core/patch.ts, db/migrations/0030_views_visual_brief.sql
+
+#### REQ-0623 – Lag andre vinkler med AI
+I stor visning kan brukeren velge modell og hvilke vinkler som skal lages av samme karakter eller objekt, som ett karakterark (mest sammenheng, deles opp etterpå) eller ett bilde per vinkel (hver ny vinkel sendes med til neste). Bildet brukeren står i er identiteten; merkede vinkler og to stilforbilder sendes med. Anslaget vises, og ingenting starter før «Ja, generer». Resultatene lagres som nye versjoner merket med vinkel.
+
+- **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** PROMPT, PROVIDER, LIBRARY
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Arket ber om vinklene i rekkefølge, samme høyde og grunnlinje, nøytral positur.
+  - Hver vinkel får identitetsbildet først og tidligere vinkler som referanse.
+- **Tester:**
+  - tests/unit/funn-2026-10-14.test.ts
+  - docs/development/VISUAL_QA_DEC-0080.md
+- **Implementering:** src/app/library/ImageAiPanels.tsx, src/core/generation/brief.ts, src/core/generation/image-prompt.ts, src/adapters/ai/generate-image.functions.ts
+
+#### REQ-0624 – Promptmotor per modellfamilie
+Bildebeskrivelsen bygges som én strukturert bestilling og skrives i formen modellen forstår best: fortellende avsnitt for Nano Banana og GPT Image (referanser med roller, positive formuleringer), kort og presis med identiteten først og egen negativ beskrivelse for Seedream, Qwen og FLUX. Ingen filmtittel, ingen replikker, nøytralt lys for figurdesign, farger med navn og kode, flat hvit bakgrunn (frilegges etterpå) når modellen ikke kan lage gjennomsiktighet. En norsk oppsummering vises over den engelske beskrivelsen.
+
+- **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** PROMPT, PROVIDER
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Beskrivelsen har ingen skjemaoverskrifter og ingen filmtittel.
+  - Fargen #0d1b2a beskrives som «deep navy (#0d1b2a)».
+  - Kort form starter med identiteten og har negativ beskrivelse.
+- **Tester:**
+  - tests/unit/funn-2026-10-14.test.ts
+  - docs/development/VISUAL_QA_DEC-0080.md
+- **Implementering:** src/core/generation/brief.ts, src/core/generation/image-prompt.ts, src/app/library/GenerateImagePanel.tsx, src/adapters/ai/providers.server.ts
+
+#### REQ-0625 – Stilanalyse av forbildebildene
+«Analyser stilen i forbildebildene …» i «Filmens visuelle stil» sender forbildebildene til en bildeforstående språkmodell (bekreftes; koster litt) som beskriver teknikk, strek, formspråk, farger (med koder), lys, tekstur, detaljnivå, komposisjon og hva som bryter stilen – på norsk og engelsk. Brukeren velger hva som legges inn i stilfeltene; ingenting lagres før «Lagre».
+
+- **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** PROMPT, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Analysen vises med avkrysning per del; valgte deler havner i riktige felt.
+- **Tester:**
+  - tests/unit/funn-2026-10-14.test.ts
+  - docs/development/VISUAL_QA_DEC-0080.md
+- **Implementering:** src/core/generation/style-analysis.ts, src/adapters/ai/write-prompt.functions.ts, src/app/projects/StyleGuideSection.tsx
+
+#### REQ-0626 – Visuelt faktaark per ressurs
+Hver ressurs kan ha et kort engelsk faktaark med det som synes (alder, kropp, hår, klær, farger, kjennetegn), ett per linje. Et utkast kan lages fra manuset og forsidebildet med AI (bekreftes), rettes og lagres (assets.visual_brief, migrasjon 0030). Faktaarket brukes i bildebeskrivelsene i stedet for manusutdrag.
+
+- **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** LIBRARY, PROMPT
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Faktaarket lagres, angres og leses tilbake likt.
+  - Beskrivelsen bruker faktaarket og tar ikke med manusutdrag.
+- **Tester:**
+  - tests/unit/funn-2026-10-14.test.ts
+  - tests/db/run-db-tests.ts
+  - docs/development/VISUAL_QA_DEC-0080.md
+- **Implementering:** src/app/library/VisualBriefEditor.tsx, src/core/generation/style-analysis.ts, src/core/commands/apply.ts, db/migrations/0030_views_visual_brief.sql
+
+#### REQ-0627 – Seedream 4.5 og Qwen-Image-Edit
+Via fal.ai kan bilder lages med Seedream 4.5 (opptil 10 forbilder, ca. 0,04 USD per bilde) og Qwen-Image-Edit (endrer et bilde, negativ beskrivelse, ca. 0,03 USD per megapiksel). Qwen krever et forbilde; det sjekkes før noe betales.
+
+- **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** PROVIDER
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Seedream sendes til /edit med image_urls når forbilder finnes.
+  - Qwen uten forbilde avvises før kallet.
+- **Tester:**
+  - tests/unit/funn-2026-10-14.test.ts
+- **Implementering:** src/core/generation/providers.ts, src/adapters/ai/providers.server.ts, src/adapters/ai/generate-image.functions.ts
+
+#### REQ-0628 – Oppskalering
+Et bilde kan oppskaleres 2× eller 4× via fal.ai: SeedVR2 (skarpere, ca. 0,001 USD per megapiksel) eller Clarity (med AI-detaljer, ca. 0,03 USD per megapiksel). Prisen regnes fra størrelsen på resultatet og vises før «Ja, oppskaler»; resultatet blir en ny versjon (med samme vinkel).
+
+- **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** PROVIDER, LIBRARY
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Anslaget følger megapikslene i resultatet.
+  - Oppskalering uten tilkoblet fal.ai forklares; den innebygde tjenesten kan ikke oppskalere.
+- **Tester:**
+  - tests/unit/funn-2026-10-14.test.ts
+  - docs/development/VISUAL_QA_DEC-0080.md
+- **Implementering:** src/app/library/ImageAiPanels.tsx, src/adapters/ai/providers.server.ts, src/adapters/ai/generate-image.functions.ts, src/core/generation/providers.ts
+
+#### REQ-0629 – Tjenesten på norsk og engelsk
+Brukeren kan veksle mellom norsk og engelsk som språk i tjenesten. Valget gjøres på hovedsiden (prosjektlisten), huskes og gjelder alle tekster brukeren ser: knapper, menyer, dialoger, meldinger, feilmeldinger, hjelpetekster, verktøytips og skjermlesertekster, også datoer og tall. Norsk er standard. Brukerens eget innhold (manus, notater, navn) oversettes ikke.
+
+- **Kilde:** Beslutning DEC-0081 · **Opprinnelse:** brukerbeslutning · **Type:** ux · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** UI, L10N
+- **Avhengigheter:** REQ-0014
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Med engelsk valgt finnes ingen norske ord i synlig tekst, verktøytips eller skjermlesertekster på hovedvisningene.
+  - Valget huskes til neste gang og kan endres tilbake.
+- **Tester:**
+  - enhet: alle brukervendte tekster har norsk og engelsk
+  - visuell: engelsk gjennomgang av hovedvisningene
+- **Implementering:** src/core/i18n/index.ts, src/app/i18n/language.tsx, src/app/projects/ProjectsScreen.tsx, src/core/i18n/catalog.gen.ts
+
+#### REQ-0630 – All ny brukervendt tekst på begge språk
+All videre utvikling skal ha norsk og engelsk for hver ny eller endret brukervendt tekst (også verktøytips og feilmeldinger). En automatisk kontroll stopper tekst som bare finnes på ett språk.
+
+- **Kilde:** Beslutning DEC-0081 · **Opprinnelse:** brukerbeslutning · **Type:** prinsipp · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** UI, L10N
+- **Avhengigheter:** REQ-0014
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Kontrollen feiler når en brukervendt tekst mangler engelsk.
+- **Tester:**
+  - enhet: kontroll av tekster uten engelsk
+- **Implementering:** scripts/i18n/check.mjs, docs/development/I18N_GUIDE.md
+
+#### REQ-0631 – Prosjektlisten viser hvert prosjekt som en boks med eier, rolle og filmene i prosjektet
+Hovedsiden viser ett felt (boks) per prosjekt. Boksen viser tydelig hvem som eier prosjektet, hvilken rolle brukeren selv har (eier, redaktør, kommentator, leser), antall medlemmer og når prosjektet ble opprettet. Under står hovedfilmen og alle spinoffer, trailere og andre varianter, med avledede produksjoner rykket inn under den de er laget fra. Hver produksjon viser type, dato og notatet om hva den er, og åpner prosjektet med den produksjonen valgt.
+
+- **Kilde:** Beslutning DEC-0082 · **Opprinnelse:** brukerbeslutning · **Type:** ux · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** UI, COLLAB
+- **Avhengigheter:** REQ-0353; REQ-0520
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Et prosjekt brukeren er redaktør i viser eierens navn og «Du er redaktør».
+  - Spinoffer og varianter vises under hovedfilmen med type, dato og notat.
+- **Tester:**
+  - visuell: prosjektlisten på norsk og engelsk med to prosjekter og flere varianter
+- **Implementering:** src/app/projects/ProjectsScreen.tsx, src/adapters/browser/projects.ts, src/app/project/use-production.tsx
+
+#### REQ-0632 – Notat om hva hver produksjon er
+Hver produksjon (hovedfilm, spinoff, trailer …) kan ha et notat på høyst 2000 tegn om hva den er. Notatet skrives når produksjonen lages og kan endres på prosjektoversikten av den som kan redigere. Endringen kan angres og lagres i databasen (migrasjon 0031).
+
+- **Kilde:** Beslutning DEC-0082 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** COLLAB, CORE
+- **Avhengigheter:** REQ-0353
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Notatet lagres, leses tilbake likt og kan angres.
+  - Notat over 2000 tegn avvises både i kjernen og i databasen.
+- **Tester:**
+  - db: 0031 notat på produksjonen
+- **Implementering:** src/core/commands/apply.ts, src/core/patch.ts, db/migrations/0031_production_note.sql, src/app/projects/ProductionList.tsx, src/app/projects/ProductionDialog.tsx

@@ -8,7 +8,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AUDIO_KIND_LABEL,
   AUDIO_TRACK_ORDER,
+  L,
   blocksOfVariant,
+  locale,
   newId,
   type AudioKind,
   type ProjectState,
@@ -148,7 +150,12 @@ export function RecordAudioDialog({
     setError(null);
     const type = recordingType();
     if (!type) {
-      setError("Nettleseren kan ikke ta opp lyd. Prøv Chrome, Edge, Firefox eller Safari.");
+      setError(
+        L(
+          "Nettleseren kan ikke ta opp lyd. Prøv Chrome, Edge, Firefox eller Safari.",
+          "The browser cannot record audio. Try Chrome, Edge, Firefox or Safari.",
+        ),
+      );
       return;
     }
     setPhase("starting");
@@ -162,8 +169,14 @@ export function RecordAudioDialog({
       setPhase("idle");
       setError(
         (e as Error).name === "NotAllowedError"
-          ? "Nettleseren fikk ikke bruke mikrofonen. Tillat mikrofon for siden og prøv igjen."
-          : `Fant ingen mikrofon (${(e as Error).message}).`,
+          ? L(
+              "Nettleseren fikk ikke bruke mikrofonen. Tillat mikrofon for siden og prøv igjen.",
+              "The browser was not allowed to use the microphone. Allow microphone access for the page and try again.",
+            )
+          : L(
+              `Fant ingen mikrofon (${(e as Error).message}).`,
+              `No microphone found (${(e as Error).message}).`,
+            ),
       );
       return;
     }
@@ -183,7 +196,7 @@ export function RecordAudioDialog({
       const blob = new Blob(chunks, { type: type.mime.split(";")[0] ?? type.mime });
       if (blob.size === 0) {
         setPhase("idle");
-        setError("Opptaket ble tomt.");
+        setError(L("Opptaket ble tomt.", "The recording is empty."));
         return;
       }
       setTake({ blob, url: URL.createObjectURL(blob), ext: type.ext, atMs });
@@ -216,13 +229,14 @@ export function RecordAudioDialog({
     setPhase("saving");
     setError(null);
     try {
-      const stamp = new Date().toLocaleString("nb-NO", {
+      const stamp = new Date().toLocaleString(locale(), {
         day: "2-digit",
         month: "2-digit",
         hour: "2-digit",
         minute: "2-digit",
       });
-      const title = name.trim() || `Opptak ${stamp}`;
+      const title = name.trim() || L(`Opptak ${stamp}`, `Recording ${stamp}`);
+      // i18n-ignore – filnavn
       const file = new File([take.blob], `opptak.${take.ext}`, { type: take.blob.type });
       const made = await createSoundAsset(cmds, projectId, file, title);
       const clipId = newId<"audio_clip">();
@@ -257,7 +271,7 @@ export function RecordAudioDialog({
             },
           ],
         },
-        `Lydopptak «${title}»`,
+        L(`Lydopptak «${title}»`, `Audio recording “${title}”`),
       );
       if (r.error) throw new Error(r.error);
       URL.revokeObjectURL(take.url);
@@ -275,21 +289,23 @@ export function RecordAudioDialog({
   const select =
     "h-8 min-w-0 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary disabled:opacity-50";
   const legend = "text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary";
-  const at = (ms: number) => `${(Math.round(ms / 100) / 10).toLocaleString("nb-NO")} s`;
+  const at = (ms: number) => `${(Math.round(ms / 100) / 10).toLocaleString(locale())} s`;
 
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
       <DialogContent className="max-w-[520px] border-border bg-surface-2">
         <DialogHeader>
-          <DialogTitle>Lydopptak</DialogTitle>
+          <DialogTitle>{L("Lydopptak", "Audio recording")}</DialogTitle>
           <DialogDescription>
-            Opptaket starter {at(take?.atMs ?? startMs)} ut i scenen. Bruk hodetelefoner hvis scenen
-            spilles av mens du tar opp.
+            {L(
+              `Opptaket starter ${at(take?.atMs ?? startMs)} ut i scenen. Bruk hodetelefoner hvis scenen spilles av mens du tar opp.`,
+              `The recording starts ${at(take?.atMs ?? startMs)} into the scene. Use headphones if the scene plays while you record.`,
+            )}
           </DialogDescription>
         </DialogHeader>
         <div className="grid grid-cols-2 gap-3">
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            <span className={legend}>Spor</span>
+            <span className={legend}>{L("Spor", "Track")}</span>
             <select
               value={kind}
               disabled={busy}
@@ -304,14 +320,18 @@ export function RecordAudioDialog({
             </select>
           </label>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            <span className={legend}>Replikk (valgfritt)</span>
+            <span className={legend}>{L("Replikk (valgfritt)", "Line (optional)")}</span>
             <select
               value={blockId}
               disabled={busy || lines.length === 0}
               onChange={(e) => setBlockId(e.target.value)}
               className={select}
             >
-              <option value="">{lines.length ? "Ingen" : "Ingen replikker i scenen"}</option>
+              <option value="">
+                {lines.length
+                  ? L("Ingen", "None")
+                  : L("Ingen replikker i scenen", "No lines in the scene")}
+              </option>
               {lines.map((l) => (
                 <option key={l.id} value={l.id}>
                   {l.label}
@@ -320,12 +340,12 @@ export function RecordAudioDialog({
             </select>
           </label>
           <label className="col-span-2 flex flex-col gap-1 text-xs text-text-secondary">
-            <span className={legend}>Navn i biblioteket</span>
+            <span className={legend}>{L("Navn i biblioteket", "Name in the library")}</span>
             <input
               value={name}
               disabled={phase === "saving"}
               maxLength={200}
-              placeholder="Opptak (dato og tid)"
+              placeholder={L("Opptak (dato og tid)", "Recording (date and time)")}
               onChange={(e) => setName(e.target.value)}
               className={select}
             />
@@ -338,7 +358,7 @@ export function RecordAudioDialog({
               onChange={(e) => setPlayAlong(e.target.checked)}
               className="size-3.5 accent-[var(--accent-brand)]"
             />
-            Spill av scenen mens du tar opp
+            {L("Spill av scenen mens du tar opp", "Play the scene while you record")}
           </label>
         </div>
 
@@ -347,24 +367,25 @@ export function RecordAudioDialog({
             <>
               <Button variant="destructive" onClick={stop}>
                 <Square className="fill-current" />
-                Stopp
+                {L("Stopp", "Stop")}
               </Button>
               <span className="flex items-center gap-1.5 text-[13px] tabular-nums text-status-danger">
                 <Circle className="size-3 animate-pulse fill-current" aria-hidden />
-                Tar opp … {Math.floor(seconds / 60)}:{String(seconds % 60).padStart(2, "0")}
+                {L("Tar opp …", "Recording …")} {Math.floor(seconds / 60)}:
+                {String(seconds % 60).padStart(2, "0")}
               </span>
             </>
           ) : take ? (
             <>
               <audio src={take.url} controls className="h-8 min-w-0 flex-1" />
               <Button variant="ghost" size="sm" disabled={phase === "saving"} onClick={discard}>
-                Forkast
+                {L("Forkast", "Discard")}
               </Button>
             </>
           ) : (
             <Button onClick={() => void start()} disabled={phase === "starting"}>
               {phase === "starting" ? <Loader2 className="animate-spin" /> : <Mic />}
-              Ta opp
+              {L("Ta opp", "Record")}
             </Button>
           )}
         </div>
@@ -377,11 +398,11 @@ export function RecordAudioDialog({
 
         <DialogFooter>
           <Button variant="secondary" disabled={busy} onClick={() => onOpenChange(false)}>
-            Avbryt
+            {L("Avbryt", "Cancel")}
           </Button>
           <Button disabled={!take || phase === "saving"} onClick={() => void save()}>
             {phase === "saving" ? <Loader2 className="animate-spin" /> : null}
-            Legg i scenen
+            {L("Legg i scenen", "Add to scene")}
           </Button>
         </DialogFooter>
       </DialogContent>

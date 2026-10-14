@@ -6,6 +6,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { EXPORT_KIND_LABEL, describeExportSettings, type ExportKind } from "@/core/export-records";
 import { useSchemaAtLeast } from "@/app/shell/use-schema";
+import { L, locale, tm } from "@/core";
 import { HISTORY_SCHEMA, useExportRecords } from "./use-history-records";
 
 export function ExportHistory({
@@ -32,24 +33,27 @@ export function ExportHistory({
         ) : (
           <ChevronRight className="size-3.5" aria-hidden />
         )}
-        Tidligere eksporter
+        {L("Tidligere eksporter", "Earlier exports")}
       </button>
       {open ? (
         records.isLoading ? (
-          <p className="mt-1 text-text-tertiary">Henter …</p>
+          <p className="mt-1 text-text-tertiary">{L("Henter …", "Loading …")}</p>
         ) : records.isError ? (
           <p role="alert" className="mt-1 text-status-danger">
-            Eksportene kunne ikke hentes: {(records.error as Error).message}
+            {L("Eksportene kunne ikke hentes:", "The exports could not be loaded:")}{" "}
+            {tm((records.error as Error).message)}
           </p>
         ) : !records.data?.length ? (
-          <p className="mt-1 text-text-tertiary">Ingen eksporter er registrert ennå.</p>
+          <p className="mt-1 text-text-tertiary">
+            {L("Ingen eksporter er registrert ennå.", "No exports have been recorded yet.")}
+          </p>
         ) : (
           <ul className="mt-1 max-h-40 overflow-y-auto border border-border bg-surface-1">
             {records.data.map((r) => (
               <li key={r.id} className="border-t border-border px-2 py-1 first:border-t-0">
                 <span className="flex items-baseline gap-2">
                   <span className="tabular shrink-0 text-text-tertiary">
-                    {new Date(r.createdAt).toLocaleString("nb-NO", {
+                    {new Date(r.createdAt).toLocaleString(locale(), {
                       dateStyle: "short",
                       timeStyle: "short",
                     })}

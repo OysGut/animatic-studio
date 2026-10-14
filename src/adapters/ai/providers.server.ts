@@ -7,7 +7,7 @@
  * støtter (se katalogen i src/core/generation/providers.ts). Formatene følger leverandørenes egne
  * dokumentasjon (oktober 2026) og er ikke prøvd mot de ekte tjenestene herfra (KI-153).
  */
-import type { ProviderId } from "@/core";
+import { L, type ProviderId } from "@/core";
 
 const T_TEST = 20_000;
 const T_IMAGE = 150_000;
@@ -24,6 +24,36 @@ export interface ImageRequest {
   readonly purpose: "cutout" | "background";
   /** Valgt bildestørrelse (bare modeller som tar imot den). */
   readonly size?: "1K" | "2K" | "4K";
+  /** Sideforhold (DEC-0080: karakterark er brede); standard ut fra bruken (figur 2:3, bakgrunn 3:2). */
+  readonly aspect?: ImageAspect;
+  /** Negativ beskrivelse (bare modeller med eget felt for det, f.eks. Qwen). */
+  readonly negativePrompt?: string;
+}
+
+export type ImageAspect = "2:3" | "3:2" | "1:1" | "16:9";
+
+/** Sideforholdet for forespørselen. */
+export function aspectOf(r: Pick<ImageRequest, "aspect" | "purpose">): ImageAspect {
+  return r.aspect ?? (r.purpose === "cutout" ? "2:3" : "3:2");
+}
+
+/** fal sine faste størrelser (Seedream, Qwen). */
+function falImageSize(a: ImageAspect): string {
+  return a === "2:3"
+    ? "portrait_4_3"
+    : a === "1:1"
+      ? "square_hd"
+      : a === "16:9"
+        ? "landscape_16_9"
+        : "landscape_4_3";
+}
+
+export interface UpscaleRequest {
+  readonly key: string;
+  readonly model: string;
+  /** Midlertidig lenke til bildet. */
+  readonly imageUrl: string;
+  readonly factor: 2 | 4;
 }
 
 export interface VideoRequest {
@@ -139,7 +169,11 @@ export function safeDownloadUrl(raw: string): URL | null {
 /** Les svaret i biter og stopp ved grensen (også når lengden ikke er oppgitt). */
 async function readLimited(res: Response, max: number): Promise<Uint8Array> {
   const len = Number(res.headers.get("content-length") ?? "0");
-  if (len > max) throw new ProviderError("Filen er for stor til å hentes inn.", 413);
+  if (len > max)
+    throw new ProviderError(
+      L("Filen er for stor til å hentes inn.", "The file is too large to fetch."),
+      413,
+    );
   if (!res.body) return new Uint8Array(0);
   const reader = res.body.getReader();
   const parts: Uint8Array[] = [];
@@ -150,7 +184,10 @@ async function readLimited(res: Response, max: number): Promise<Uint8Array> {
     total += value.byteLength;
     if (total > max) {
       await reader.cancel().catch(() => undefined);
-      throw new ProviderError("Filen er for stor til å hentes inn.", 413);
+      throw new ProviderError(
+        L("Filen er for stor til å hentes inn.", "The file is too large to fetch."),
+        413,
+      );
     }
     parts.push(value);
   }
@@ -169,7 +206,11 @@ async function readLimited(res: Response, max: number): Promise<Uint8Array> {
  */
 async function download(url: string, headers: Record<string, string> = {}) {
   const first = safeDownloadUrl(url);
-  if (!first) throw new ProviderError("Uventet adresse til filen.", 400);
+  if (!first)
+    throw new ProviderError(
+      L("Uventet adresse til filen.", "Unexpected address for the file."),
+      400,
+    );
   let current: URL = first;
   const firstHost = first.host;
   for (let hop = 0; hop < 4; hop++) {
@@ -181,7 +222,11 @@ async function download(url: string, headers: Record<string, string> = {}) {
     if (res.status >= 300 && res.status < 400) {
       const loc: string | null = res.headers.get("location");
       const next: URL | null = loc ? safeDownloadUrl(new URL(loc, current).toString()) : null;
-      if (!next) throw new ProviderError("Uventet videresending av filen.", 400);
+      if (!next)
+        throw new ProviderError(
+          L("Uventet videresending av filen.", "Unexpected redirect of the file."),
+          400,
+        );
       current = next;
       continue;
     }
@@ -234,7 +279,8 @@ const openai = {
     await call(`${OPENAI}/models`, { headers: openaiAuth(key) }, T_TEST);
   },
   async image(r: ImageRequest) {
-    const size = r.purpose === "cutout" ? "1024x1536" : "1536x1024";
+    const a = aspectOf(r);
+    const size = a === "2:3" ? "1024x1536" : a === "1:1" ? "1024x1024" : "1536x1024";
     let res: Response;
     if (r.references.length) {
       const form = new FormData();
@@ -271,7 +317,11 @@ const openai = {
       );
     }
     const img = findBase64Image(await res.json());
-    if (!img) throw new ProviderError("Tjenesten svarte uten bilde.", 502);
+    if (!img)
+      throw new ProviderError(
+        L("Tjenesten svarte uten bilde.", "The service replied without an image."),
+        502,
+      );
     return { bytes: unb64(img.data), mimeType: "image/png" };
   },
   async startVideo(r: VideoRequest) {
@@ -291,7 +341,11 @@ const openai = {
       T_SUBMIT,
     );
     const j = (await res.json()) as { id?: string };
-    if (!j.id) throw new ProviderError("Tjenesten svarte uten jobb-ID.", 502);
+    if (!j.id)
+      throw new ProviderError(
+        L("Tjenesten svarte uten jobb-ID.", "The service replied without a job ID."),
+        502,
+      );
     return j.id;
   },
   async pollVideo(key: string, _model: string, id: string): Promise<VideoPoll> {
@@ -313,7 +367,10 @@ const openai = {
       return { state: "done", ...d };
     }
     if (j.status === "failed")
-      return { state: "failed", message: j.error?.message ?? "Videoen kunne ikke lages." };
+      return {
+        state: "failed",
+        message: j.error?.message ?? L("Videoen kunne ikke lages.", "The video could not be made."),
+      };
     return {
       state: "running",
       ...(typeof j.progress === "number" ? { progress: j.progress } : {}),
@@ -334,7 +391,7 @@ const google = {
     const refs = await Promise.all(
       r.references.map(async (b) => ({ mime: mimeOf(b), data: b64(await bytesOf(b)) })),
     );
-    const aspect = r.purpose === "cutout" ? "2:3" : "3:2";
+    const aspect = aspectOf(r);
     // Interactions API (gjeldende dokumentasjon); faller tilbake til generateContent hvis den ikke finnes
     let res: Response;
     try {
@@ -388,7 +445,11 @@ const google = {
     let json: unknown = await res.json();
     const img = findBase64Image(json);
     json = null; // svaret kan være titalls MB: slipp det før bildet pakkes ut
-    if (!img) throw new ProviderError("Tjenesten svarte uten bilde.", 502);
+    if (!img)
+      throw new ProviderError(
+        L("Tjenesten svarte uten bilde.", "The service replied without an image."),
+        502,
+      );
     return { bytes: unb64(img.data), mimeType: img.mimeType };
   },
   async startVideo(r: VideoRequest) {
@@ -408,13 +469,17 @@ const google = {
       T_SUBMIT,
     );
     const j = (await res.json()) as { name?: string };
-    if (!j.name) throw new ProviderError("Tjenesten svarte uten jobb-ID.", 502);
+    if (!j.name)
+      throw new ProviderError(
+        L("Tjenesten svarte uten jobb-ID.", "The service replied without a job ID."),
+        502,
+      );
     return j.name;
   },
   async pollVideo(key: string, _model: string, name: string): Promise<VideoPoll> {
     // Operasjonsnavnet kommer fra Google; bare den kjente formen godtas (ingen vilkårlige adresser)
     if (!/^models\/[\w.-]+\/operations\/[\w.-]+$/.test(name))
-      return { state: "failed", message: "Ugyldig jobb-ID." };
+      return { state: "failed", message: L("Ugyldig jobb-ID.", "Invalid job ID.") };
     const res = await call(`${GEMINI}/${name}`, { headers: geminiAuth(key) }, T_TEST);
     const j = (await res.json()) as {
       done?: boolean;
@@ -423,15 +488,24 @@ const google = {
     };
     if (!j.done) return { state: "running" };
     if (j.error)
-      return { state: "failed", message: j.error.message ?? "Videoen kunne ikke lages." };
+      return {
+        state: "failed",
+        message: j.error.message ?? L("Videoen kunne ikke lages.", "The video could not be made."),
+      };
     const uri = j.response?.generateVideoResponse?.generatedSamples?.[0]?.video?.uri;
     if (!uri)
       return {
         state: "failed",
-        message: "Videoen ble stoppet (innholdsregler eller ukjent feil).",
+        message: L(
+          "Videoen ble stoppet (innholdsregler eller ukjent feil).",
+          "The video was stopped (content rules or unknown error).",
+        ),
       };
     if (!uri.startsWith("https://generativelanguage.googleapis.com/"))
-      return { state: "failed", message: "Uventet adresse til videoen." };
+      return {
+        state: "failed",
+        message: L("Uventet adresse til videoen.", "Unexpected address for the video."),
+      };
     return { state: "done", ...(await download(uri, geminiAuth(key))) };
   },
 };
@@ -454,7 +528,11 @@ async function falRun(key: string, model: string, input: Record<string, unknown>
     T_SUBMIT,
   );
   const j = (await res.json()) as { request_id?: string };
-  if (!j.request_id) throw new ProviderError("Tjenesten svarte uten jobb-ID.", 502);
+  if (!j.request_id)
+    throw new ProviderError(
+      L("Tjenesten svarte uten jobb-ID.", "The service replied without a job ID."),
+      502,
+    );
   return j.request_id;
 }
 
@@ -485,35 +563,133 @@ const fal = {
     await call("https://api.fal.ai/v1/models?limit=1", { headers: falAuth(key) }, T_TEST);
   },
   async image(r: ImageRequest & { referenceUrls: readonly string[] }) {
-    // Med forbilde: Kontext (redigering); uten: tekst til bilde
-    const model = r.referenceUrls.length ? r.model : `${r.model}/text-to-image`;
-    if (!FAL_MODEL.test(model)) throw new ProviderError("Ukjent modell.", 400);
-    const id = await falRun(r.key, model, {
-      prompt: r.prompt,
-      ...(r.referenceUrls.length ? { image_url: r.referenceUrls[0] } : {}),
-      aspect_ratio: r.purpose === "cutout" ? "2:3" : "3:2",
-      num_images: 1,
-      output_format: "png",
-    });
+    const refs = r.referenceUrls;
+    const aspect = aspectOf(r);
+    let model: string;
+    let input: Record<string, unknown>;
+    if (r.model.startsWith("fal-ai/bytedance/seedream")) {
+      // Seedream (DEC-0080): redigering med opptil 10 forbilder, ellers tekst til bilde
+      model = refs.length ? `${r.model}/edit` : `${r.model}/text-to-image`;
+      input = {
+        prompt: r.prompt,
+        ...(refs.length ? { image_urls: refs.slice(0, 10) } : {}),
+        image_size: falImageSize(aspect),
+        num_images: 1,
+      };
+    } else if (r.model.startsWith("fal-ai/qwen-image-edit")) {
+      // Qwen-Image-Edit: endrer bilder (krever forbilde), har negativ beskrivelse
+      if (!refs.length)
+        throw new ProviderError(
+          L("Denne modellen trenger et forbildebilde.", "This model needs a reference image."),
+          400,
+        );
+      model = r.model;
+      input = {
+        prompt: r.prompt,
+        image_urls: refs.slice(0, 4),
+        image_size: falImageSize(aspect),
+        num_images: 1,
+        output_format: "png",
+        ...(r.negativePrompt ? { negative_prompt: r.negativePrompt } : {}),
+      };
+    } else {
+      // FLUX Kontext: med forbilde redigering (ett bilde); uten: tekst til bilde
+      model = refs.length ? r.model : `${r.model}/text-to-image`;
+      input = {
+        prompt: r.prompt,
+        ...(refs.length ? { image_url: refs[0] } : {}),
+        aspect_ratio: aspect,
+        num_images: 1,
+        output_format: "png",
+      };
+    }
+    if (!FAL_MODEL.test(model)) throw new ProviderError(L("Ukjent modell.", "Unknown model."), 400);
+    const id = await falRun(r.key, model, input);
     const deadline = Date.now() + T_IMAGE;
     while (Date.now() < deadline) {
       await new Promise((ok) => setTimeout(ok, 2500));
       const p = await falPoll(r.key, model, id);
       if (!p.done) continue;
-      if ("error" in p) throw new ProviderError(p.error ?? "Bildet kunne ikke lages.", 502);
+      if ("error" in p)
+        throw new ProviderError(
+          p.error ?? L("Bildet kunne ikke lages.", "The image could not be made."),
+          502,
+        );
       const url = (p.result["images"] as { url?: string }[] | undefined)?.[0]?.url;
-      if (!url) throw new ProviderError("Tjenesten svarte uten bilde.", 502);
+      if (!url)
+        throw new ProviderError(
+          L("Tjenesten svarte uten bilde.", "The service replied without an image."),
+          502,
+        );
       const d = await download(url);
       return {
         bytes: d.bytes,
         mimeType: d.mimeType.startsWith("image/") ? d.mimeType : "image/png",
       };
     }
-    throw new ProviderError("Bildet ble ikke ferdig i tide.", 504);
+    throw new ProviderError(
+      L("Bildet ble ikke ferdig i tide.", "The image was not finished in time."),
+      504,
+    );
+  },
+  /** Oppskalering (DEC-0080): SeedVR2 (skarpere) eller Clarity (med AI-detaljer). */
+  async upscale(r: UpscaleRequest) {
+    if (!FAL_MODEL.test(r.model))
+      throw new ProviderError(L("Ukjent modell.", "Unknown model."), 400);
+    let input: Record<string, unknown>;
+    if (r.model.startsWith("fal-ai/seedvr"))
+      input = {
+        image_url: r.imageUrl,
+        upscale_mode: "factor",
+        upscale_factor: r.factor,
+        output_format: "png",
+      };
+    else if (r.model.startsWith("fal-ai/clarity-upscaler"))
+      input = {
+        image_url: r.imageUrl,
+        upscale_factor: r.factor,
+        // Lite «kreativitet» og høy likhet: bildet skal bli skarpere, ikke tegnes om
+        creativity: 0.2,
+        resemblance: 0.85,
+      };
+    else
+      throw new ProviderError(L("Modellen kan ikke oppskalere.", "The model cannot upscale."), 400);
+    const id = await falRun(r.key, r.model, input);
+    const deadline = Date.now() + T_IMAGE;
+    while (Date.now() < deadline) {
+      await new Promise((ok) => setTimeout(ok, 2500));
+      const p = await falPoll(r.key, r.model, id);
+      if (!p.done) continue;
+      if ("error" in p)
+        throw new ProviderError(
+          p.error ?? L("Bildet kunne ikke oppskaleres.", "The image could not be upscaled."),
+          502,
+        );
+      const url = (p.result["image"] as { url?: string } | undefined)?.url;
+      if (!url)
+        throw new ProviderError(
+          L("Tjenesten svarte uten bilde.", "The service replied without an image."),
+          502,
+        );
+      const d = await download(url);
+      return {
+        bytes: d.bytes,
+        mimeType: d.mimeType.startsWith("image/") ? d.mimeType : "image/png",
+      };
+    }
+    throw new ProviderError(
+      L("Bildet ble ikke ferdig i tide.", "The image was not finished in time."),
+      504,
+    );
   },
   async startVideo(r: VideoRequest) {
-    if (!FAL_MODEL.test(r.model)) throw new ProviderError("Ukjent modell.", 400);
-    if (!r.image) throw new ProviderError("Denne modellen trenger et startbilde.", 400);
+    if (!FAL_MODEL.test(r.model))
+      throw new ProviderError(L("Ukjent modell.", "Unknown model."), 400);
+    if (!r.image)
+      throw new ProviderError(
+        L("Denne modellen trenger et startbilde.", "This model needs a start image."),
+        400,
+      );
     return falRun(r.key, r.model, {
       prompt: r.prompt,
       start_image_url: r.image.url,
@@ -522,12 +698,21 @@ const fal = {
     });
   },
   async pollVideo(key: string, model: string, id: string): Promise<VideoPoll> {
-    if (!FAL_MODEL.test(model)) return { state: "failed", message: "Ukjent modell." };
+    if (!FAL_MODEL.test(model))
+      return { state: "failed", message: L("Ukjent modell.", "Unknown model.") };
     const p = await falPoll(key, model, id);
     if (!p.done) return { state: "running" };
-    if ("error" in p) return { state: "failed", message: p.error ?? "Videoen kunne ikke lages." };
+    if ("error" in p)
+      return {
+        state: "failed",
+        message: p.error ?? L("Videoen kunne ikke lages.", "The video could not be made."),
+      };
     const url = (p.result["video"] as { url?: string } | undefined)?.url;
-    if (!url) return { state: "failed", message: "Tjenesten svarte uten video." };
+    if (!url)
+      return {
+        state: "failed",
+        message: L("Tjenesten svarte uten video.", "The service replied without a video."),
+      };
     return { state: "done", ...(await download(url)) };
   },
 };
@@ -545,7 +730,11 @@ const runway = {
     await call(`${RUNWAY}/organization`, { headers: runwayAuth(key) }, T_TEST);
   },
   async startVideo(r: VideoRequest) {
-    if (!r.image) throw new ProviderError("Runway trenger et startbilde.", 400);
+    if (!r.image)
+      throw new ProviderError(
+        L("Runway trenger et startbilde.", "Runway needs a start image."),
+        400,
+      );
     const res = await call(
       `${RUNWAY}/image_to_video`,
       {
@@ -562,7 +751,11 @@ const runway = {
       T_SUBMIT,
     );
     const j = (await res.json()) as { id?: string };
-    if (!j.id) throw new ProviderError("Tjenesten svarte uten jobb-ID.", 502);
+    if (!j.id)
+      throw new ProviderError(
+        L("Tjenesten svarte uten jobb-ID.", "The service replied without a job ID."),
+        502,
+      );
     return j.id;
   },
   async pollVideo(key: string, _model: string, id: string): Promise<VideoPoll> {
@@ -580,7 +773,10 @@ const runway = {
     if (j.status === "SUCCEEDED" && j.output?.[0])
       return { state: "done", ...(await download(j.output[0])) };
     if (j.status === "FAILED" || j.status === "CANCELLED")
-      return { state: "failed", message: j.failure ?? "Videoen kunne ikke lages." };
+      return {
+        state: "failed",
+        message: j.failure ?? L("Videoen kunne ikke lages.", "The video could not be made."),
+      };
     return {
       state: "running",
       ...(typeof j.progress === "number" ? { progress: j.progress } : {}),
@@ -658,7 +854,8 @@ const elevenlabs = {
     text: string;
     language?: string;
   }) {
-    if (!/^[A-Za-z0-9_-]{1,64}$/.test(r.voiceId)) throw new ProviderError("Ugyldig stemme.", 400);
+    if (!/^[A-Za-z0-9_-]{1,64}$/.test(r.voiceId))
+      throw new ProviderError(L("Ugyldig stemme.", "Invalid voice."), 400);
     const res = await call(
       `${ELEVEN}/text-to-speech/${encodeURIComponent(r.voiceId)}?output_format=mp3_44100_128`,
       {
@@ -702,15 +899,24 @@ export async function testProviderKey(
       status === 403 ||
       (status === 400 && /API_KEY_INVALID|API key not valid|invalid api key/i.test(text))
     )
-      return { result: "rejected", message: "Tjenesten godtok ikke nøkkelen." };
+      return {
+        result: "rejected",
+        message: L("Tjenesten godtok ikke nøkkelen.", "The service did not accept the key."),
+      };
     if (status === 402 || status === 429)
       return {
         result: "limited",
-        message: "Nøkkelen er gyldig, men kontoen mangler kreditt eller er midlertidig begrenset.",
+        message: L(
+          "Nøkkelen er gyldig, men kontoen mangler kreditt eller er midlertidig begrenset.",
+          "The key is valid, but the account lacks credit or is temporarily limited.",
+        ),
       };
     return {
       result: "unknown",
-      message: `Nøkkelen kunne ikke prøves akkurat nå (${(e as Error).message.slice(0, 120)}).`,
+      message: L(
+        `Nøkkelen kunne ikke prøves akkurat nå (${(e as Error).message.slice(0, 120)}).`,
+        `The key could not be tested right now (${(e as Error).message.slice(0, 120)}).`,
+      ),
     };
   }
 }

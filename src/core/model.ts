@@ -88,6 +88,12 @@ export interface Production extends Entity<ProductionId> {
   readonly fps: Rational;
   /** Eksportinnstillingene sist brukt for produksjonen (DEC-0072, REQ-0407, migrasjon 0027). */
   readonly exportSettings?: ExportSettings | null;
+  /**
+   * Notat om hva produksjonen er (DEC-0082, migrasjon 0031): vises på prosjektlisten. Mangler/tom = ingen.
+   */
+  readonly note?: string;
+  /** Når produksjonen ble laget (settes av databasen; bare lest). */
+  readonly createdAt?: string;
 }
 
 /** Bildetyper som kan vises og eksporteres som stillbilde (dekodes likt i visning og eksport, DEC-0072). */
@@ -403,6 +409,12 @@ export interface Asset extends Entity<AssetId> {
    * for godt. Mangler = ikke slettet.
    */
   readonly removed?: boolean;
+  /**
+   * Visuelt faktaark (DEC-0080, migrasjon 0030): kort, engelsk beskrivelse av hvordan ressursen ser ut –
+   * alder, kropp, ansikt, hår, klær, farger, kjennetegn – laget fra manuset og rettet av brukeren. Brukes i
+   * bildebeskrivelsene i stedet for rå manusutdrag. Mangler/tom = ikke laget.
+   */
+  readonly visualBrief?: string;
 }
 
 export interface ContextName {
@@ -463,6 +475,11 @@ export interface AssetVersion extends Entity<AssetVersionId> {
   readonly durationMs: number | null;
   /** Slettet bilde (DEC-0079): vises bare i «Slettede objekter». Selve bildet endres aldri. */
   readonly removed?: boolean;
+  /**
+   * Vinkelen bildet viser (DEC-0080, migrasjon 0030): front, side, bak … Et merke på bildet; selve bildet
+   * endres aldri. Mangler = ikke merket.
+   */
+  readonly view?: import("./library/view").VersionView;
 }
 
 // ---------- Notater i manus (DEC-0031, REQ-0535–0540) ----------

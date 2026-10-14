@@ -6,6 +6,7 @@
 import type { Asset, BlockKind, ProjectState, SceneHeading } from "../model";
 import { blocksOfVariant, orderedOccurrences } from "../views";
 import { characterName, mentions } from "./filter";
+import { L, localized } from "../i18n";
 import { formatHeading, type PaginationScene } from "./paginate";
 
 export interface SnapshotBlock {
@@ -151,21 +152,21 @@ export interface WordPart {
   readonly text: string;
 }
 
-export const CHANGE_LABEL: Record<ChangeType, string> = {
-  added: "Ny scene",
-  removed: "Fjernet scene",
-  deactivated: "Deaktivert scene",
-  activated: "Aktivert scene",
-  moved: "Flyttet scene",
-  renumbered: "Nytt scenenummer",
-  heading: "Endret sceneoverskrift",
-  dialogue: "Endret dialog",
-  action: "Endret handling",
-  characters: "Endrede karakterer",
-  objects: "Endrede objekter",
-  take: "Ny aktiv filmversjon",
-  variant: "Ny scenevariant",
-};
+export const CHANGE_LABEL: Record<ChangeType, string> = localized({
+  added: ["Ny scene", "New scene"],
+  removed: ["Fjernet scene", "Removed scene"],
+  deactivated: ["Deaktivert scene", "Deactivated scene"],
+  activated: ["Aktivert scene", "Activated scene"],
+  moved: ["Flyttet scene", "Moved scene"],
+  renumbered: ["Nytt scenenummer", "New scene number"],
+  heading: ["Endret sceneoverskrift", "Changed scene heading"],
+  dialogue: ["Endret dialog", "Changed dialogue"],
+  action: ["Endret handling", "Changed action"],
+  characters: ["Endrede karakterer", "Changed characters"],
+  objects: ["Endrede objekter", "Changed objects"],
+  take: ["Ny aktiv filmversjon", "New active film version"],
+  variant: ["Ny scenevariant", "New scene variant"],
+});
 
 /** Replikk og parentes. Karakternavn rapporteres som egen type («Endrede karakterer»). */
 const DIALOGUE_KINDS: ReadonlySet<BlockKind> = new Set(["dialogue", "parenthetical"]);
@@ -284,9 +285,14 @@ function countText(lines: readonly LineChange[]): string {
   const c = n("changed");
   const a = n("added");
   const r = n("removed");
-  if (c) parts.push(`${c} ${c === 1 ? "linje endret" : "linjer endret"}`);
-  if (a) parts.push(`${a} ny${a === 1 ? "" : "e"}`);
-  if (r) parts.push(`${r} fjernet`);
+  if (c)
+    parts.push(
+      c === 1
+        ? L(`${c} linje endret`, `${c} line changed`)
+        : L(`${c} linjer endret`, `${c} lines changed`),
+    );
+  if (a) parts.push(a === 1 ? L("1 ny", "1 new") : L(`${a} nye`, `${a} new`));
+  if (r) parts.push(L(`${r} fjernet`, `${r} removed`));
   return parts.join(", ");
 }
 
@@ -447,9 +453,12 @@ export function wordDiff(before: string, after: string): WordPart[] {
 function placeText(snap: ScriptSnapshot, index: number): string {
   const prev = index > 0 ? snap.scenes[index - 1] : undefined;
   const where = prev
-    ? `etter scene ${prev.number ?? `uten nummer (${formatHeading(prev.heading)})`}`
-    : "først";
-  return `plass ${index + 1}, ${where}`;
+    ? L(
+        `etter scene ${prev.number ?? `uten nummer (${formatHeading(prev.heading)})`}`,
+        `after scene ${prev.number ?? `no number (${formatHeading(prev.heading)})`}`,
+      )
+    : L("først", "first");
+  return L(`plass ${index + 1}, ${where}`, `place ${index + 1}, ${where}`);
 }
 
 /**
@@ -483,7 +492,7 @@ export function diffSnapshots(
         type: "added",
         sceneId: sc.sceneId,
         ...label(sc),
-        detail: `${placeText(newer, newer.scenes.indexOf(sc))}${sc.active ? "" : " (deaktivert)"}`,
+        detail: `${placeText(newer, newer.scenes.indexOf(sc))}${sc.active ? "" : L(" (deaktivert)", " (deactivated)")}`,
         lines: sceneLineChanges(null, sc),
       });
       continue;
@@ -497,14 +506,17 @@ export function diffSnapshots(
         type: "moved",
         sceneId: sc.sceneId,
         ...label(sc),
-        detail: `Sto på ${placeText(older, older.scenes.indexOf(old))}. Står nå på ${placeText(newer, newer.scenes.indexOf(sc))}.`,
+        detail: L(
+          `Sto på ${placeText(older, older.scenes.indexOf(old))}. Står nå på ${placeText(newer, newer.scenes.indexOf(sc))}.`,
+          `Was at ${placeText(older, older.scenes.indexOf(old))}. Now at ${placeText(newer, newer.scenes.indexOf(sc))}.`,
+        ),
       });
     if (old.number !== sc.number)
       out.push({
         type: "renumbered",
         sceneId: sc.sceneId,
         ...label(sc),
-        detail: `${old.number ?? "uten nummer"} → ${sc.number ?? "uten nummer"}`,
+        detail: `${old.number ?? L("uten nummer", "no number")} → ${sc.number ?? L("uten nummer", "no number")}`,
       });
     if (old.activeTakeId !== sc.activeTakeId)
       out.push({ type: "take", sceneId: sc.sceneId, ...label(sc) });
@@ -564,7 +576,10 @@ export function diffSnapshots(
         type: "removed",
         sceneId: sc.sceneId,
         ...label(sc),
-        detail: `Sto på ${placeText(older, older.scenes.indexOf(sc))}`,
+        detail: L(
+          `Sto på ${placeText(older, older.scenes.indexOf(sc))}`,
+          `Was at ${placeText(older, older.scenes.indexOf(sc))}`,
+        ),
         lines: sceneLineChanges(sc, null),
       });
   return out;

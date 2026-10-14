@@ -5,14 +5,15 @@
  * scenene vises i.
  */
 import type { StoryKind, StoryTime } from "../model";
+import { localized } from "../i18n";
 
-export const STORY_KIND_LABEL: Record<StoryKind, string> = {
-  linear: "Følger rekkefølgen",
-  flashback: "Tilbakeblikk",
-  flashforward: "Fremblikk",
-  dream: "Drøm",
-  jump: "Tidshopp",
-};
+export const STORY_KIND_LABEL: Record<StoryKind, string> = localized({
+  linear: ["Følger rekkefølgen", "Follows the order"],
+  flashback: ["Tilbakeblikk", "Flashback"],
+  flashforward: ["Fremblikk", "Flash-forward"],
+  dream: ["Drøm", "Dream"],
+  jump: ["Tidshopp", "Time jump"],
+});
 
 /** Plassering i forhold til ankerscenen. Enheten er «scener» i hovedfilmens rekkefølge. */
 export type StoryPlacement = "before" | "same" | "after";
@@ -23,11 +24,11 @@ export const STORY_PLACEMENT_OFFSET: Record<StoryPlacement, number> = {
   after: 0.5,
 };
 
-export const STORY_PLACEMENT_LABEL: Record<StoryPlacement, string> = {
-  before: "før",
-  same: "samtidig med",
-  after: "etter",
-};
+export const STORY_PLACEMENT_LABEL: Record<StoryPlacement, string> = localized({
+  before: ["før", "before"],
+  same: ["samtidig med", "at the same time as"],
+  after: ["etter", "after"],
+});
 
 export function storyPlacementOf(offset: number): StoryPlacement {
   return offset < 0 ? "before" : offset > 0 ? "after" : "same";

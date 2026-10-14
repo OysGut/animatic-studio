@@ -4,7 +4,7 @@
  * øverst til høyre fra side 2. Word bryter selv sidene; (MORE)/(CONT'D) settes ikke inn automatisk i Word.
  */
 import { zipSync, strToU8 } from "fflate";
-import type { BlockKind } from "@/core";
+import { L, type BlockKind } from "@/core";
 import type { PaginationScene } from "@/core/screenplay";
 import type { ExportNote } from "@/core/notes";
 
@@ -158,7 +158,7 @@ function commentXml(id: number, n: ExportNote): string {
     .split("\n")
     .map((line) => `<w:p><w:r><w:t xml:space="preserve">${esc(line)}</w:t></w:r></w:p>`)
     .join("");
-  return `<w:comment w:id="${id}" w:author="${esc(n.author || "Ukjent")}"${date} w:initials="${esc(initials)}">${paras}</w:comment>`;
+  return `<w:comment w:id="${id}" w:author="${esc(n.author || L("Ukjent", "Unknown"))}"${date} w:initials="${esc(initials)}">${paras}</w:comment>`;
 }
 
 const RPR = `<w:rFonts w:ascii="Courier New" w:hAnsi="Courier New" w:cs="Courier New" w:eastAsia="Courier New"/><w:sz w:val="24"/><w:szCs w:val="24"/><w:lang w:val="nb-NO"/>`;

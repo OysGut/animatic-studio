@@ -1,11 +1,14 @@
 /**
- * Produksjonene i prosjektet på oversikten, med «Ny produksjon …» og «Legg til scener …» (DEC-0057).
+ * Produksjonene i prosjektet på oversikten, med «Ny produksjon …» og «Legg til scener …» (DEC-0057), dato og
+ * notat om hva hver produksjon er (DEC-0082).
  */
 import { useNavigate } from "@tanstack/react-router";
-import { CornerUpLeft, FileText, Film, Plus } from "lucide-react";
+import { CornerUpLeft, FileText, Film, Pencil, Plus } from "lucide-react";
 import { useState } from "react";
 import {
+  L,
   PRODUCTION_KIND_LABEL,
+  locale,
   activeStructure,
   orderedOccurrences,
   promotionCandidates,
@@ -35,7 +38,26 @@ export function ProductionList({
   const [dialog, setDialog] = useState<{ addTo: string | null } | null>(null);
   /** Tilbakeføring fra en avledet produksjon (DEC-0060). */
   const [promote, setPromote] = useState<string | null>(null);
+  /** Produksjonen der notatet redigeres, og teksten. */
+  const [editing, setEditing] = useState<{ id: string; text: string } | null>(null);
+  const [noteErr, setNoteErr] = useState<string | null>(null);
   const productions = sortedProductions(state);
+  const saveNote = () => {
+    if (!editing) return;
+    const p = state.productions[editing.id];
+    if (p && (p.note ?? "") !== editing.text.trim()) {
+      const e = cmds.run(
+        { type: "SetProductionNote", productionId: editing.id as never, note: editing.text },
+        L(`Notat for «${p.name}»`, `Note for “${p.name}”`),
+      );
+      if (e) {
+        setNoteErr(e);
+        return;
+      }
+    }
+    setNoteErr(null);
+    setEditing(null);
+  };
   const open = (
     id: string,
     to: "/prosjekt/$projectId/manus" | "/prosjekt/$projectId/montering",
@@ -47,35 +69,94 @@ export function ProductionList({
     <>
       <div className="border border-border bg-surface-1">
         <div className="grid grid-cols-[1fr_140px_70px_70px_auto] border-b border-border px-4 py-2 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
-          <span>Navn</span>
-          <span>Type</span>
-          <span className="text-right">Scener</span>
-          <span className="text-right">Aktive</span>
+          <span>{L("Navn og notat", "Name and note")}</span>
+          <span>{L("Type", "Type")}</span>
+          <span className="text-right">{L("Scener", "Scenes")}</span>
+          <span className="text-right">{L("Aktive", "Active")}</span>
           <span className="w-[340px]" />
         </div>
         {productions.map((p) => (
           <div
             key={p.id}
-            className="grid grid-cols-[1fr_140px_70px_70px_auto] items-center border-b border-border px-4 py-1.5 text-[13px] last:border-b-0"
+            className="grid grid-cols-[1fr_140px_70px_70px_auto] items-start border-b border-border px-4 py-1.5 text-[13px] last:border-b-0"
           >
-            <span className="truncate font-medium text-text-primary">{p.name}</span>
-            <span className="text-text-secondary">{PRODUCTION_KIND_LABEL[p.kind]}</span>
-            <span className="tabular text-right text-text-secondary">
+            <div className="min-w-0 py-1">
+              <div className="flex items-baseline gap-2">
+                <span className="truncate font-medium text-text-primary">{p.name}</span>
+                {p.createdAt ? (
+                  <span className="tabular shrink-0 text-xs text-text-tertiary">
+                    {new Date(p.createdAt).toLocaleDateString(locale())}
+                  </span>
+                ) : null}
+                {editable && editing?.id !== p.id ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setNoteErr(null);
+                      setEditing({ id: p.id, text: p.note ?? "" });
+                    }}
+                    title={L("Skriv hva denne produksjonen er", "Write what this production is")}
+                    aria-label={L(`Rediger notat for «${p.name}»`, `Edit note for “${p.name}”`)}
+                    className="shrink-0 rounded-sm p-0.5 text-text-tertiary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <Pencil className="size-3" />
+                  </button>
+                ) : null}
+              </div>
+              {editing?.id === p.id ? (
+                <div className="mt-1 flex flex-col gap-1">
+                  <textarea
+                    autoFocus
+                    rows={2}
+                    maxLength={2000}
+                    value={editing.text}
+                    aria-label={L(`Notat for «${p.name}»`, `Note for “${p.name}”`)}
+                    placeholder={L("Hva er denne versjonen?", "What is this version?")}
+                    onChange={(e) => setEditing({ id: p.id, text: e.target.value })}
+                    onKeyDown={(e) => {
+                      if (e.key === "Escape") setEditing(null);
+                      if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) saveNote();
+                    }}
+                    className="resize-y rounded-sm border border-border-control bg-surface-3 px-2 py-1 text-[13px] text-text-primary"
+                  />
+                  <div className="flex gap-1">
+                    <Button size="sm" onClick={saveNote}>
+                      {L("Lagre", "Save")}
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => setEditing(null)}>
+                      {L("Avbryt", "Cancel")}
+                    </Button>
+                  </div>
+                  {noteErr ? (
+                    <p role="alert" className="text-xs text-status-danger">
+                      {noteErr}
+                    </p>
+                  ) : null}
+                </div>
+              ) : p.note ? (
+                <p className="mt-0.5 whitespace-pre-line text-xs text-text-secondary">{p.note}</p>
+              ) : null}
+            </div>
+            <span className="py-1 text-text-secondary">{PRODUCTION_KIND_LABEL[p.kind]}</span>
+            <span className="tabular py-1 text-right text-text-secondary">
               {orderedOccurrences(state, p.id).length}
             </span>
-            <span className="tabular text-right text-text-secondary">
+            <span className="tabular py-1 text-right text-text-secondary">
               {activeStructure(state, p.id).length}
             </span>
-            <span className="flex w-[340px] justify-end gap-1">
+            <span className="flex w-[340px] justify-end gap-1 py-0.5">
               {p.kind !== "main" && promotionCandidates(state, p.id).length > 0 ? (
                 <Button
                   size="sm"
                   variant="ghost"
                   onClick={() => setPromote(p.id)}
-                  title="Se hva produksjonen har endret, og før det du vil tilbake til hovedfilmen"
+                  title={L(
+                    "Se hva produksjonen har endret, og før det du vil tilbake til hovedfilmen",
+                    "See what the production has changed, and bring back what you want to the main film",
+                  )}
                 >
                   <CornerUpLeft />
-                  Tilbakefør
+                  {L("Tilbakefør", "Bring back")}
                 </Button>
               ) : null}
               {editable && p.kind !== "main" ? (
@@ -83,10 +164,13 @@ export function ProductionList({
                   size="sm"
                   variant="ghost"
                   onClick={() => setDialog({ addTo: p.id })}
-                  title="Gjenbruk flere scener fra en annen produksjon"
+                  title={L(
+                    "Gjenbruk flere scener fra en annen produksjon",
+                    "Reuse more scenes from another production",
+                  )}
                 >
                   <Plus />
-                  Scener
+                  {L("Scener", "Scenes")}
                 </Button>
               ) : null}
               <Button
@@ -95,7 +179,7 @@ export function ProductionList({
                 onClick={() => open(p.id, "/prosjekt/$projectId/manus")}
               >
                 <FileText />
-                Manus
+                {L("Manus", "Script")}
               </Button>
               <Button
                 size="sm"
@@ -103,7 +187,7 @@ export function ProductionList({
                 onClick={() => open(p.id, "/prosjekt/$projectId/montering")}
               >
                 <Film />
-                Film
+                {L("Film", "Film")}
               </Button>
             </span>
           </div>
@@ -117,7 +201,7 @@ export function ProductionList({
           onClick={() => setDialog({ addTo: null })}
         >
           <Plus />
-          Ny produksjon …
+          {L("Ny produksjon …", "New production …")}
         </Button>
       ) : null}
       <ProductionDialog

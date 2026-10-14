@@ -5,6 +5,7 @@
 import { AlertTriangle, Check, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
+  L,
   LANGUAGE_LABEL,
   formatHeading,
   needsReview,
@@ -66,14 +67,14 @@ export function TranslationPanel({
       t
         ? run(
             { type: "UpdateTranslations", items: [{ translationId: t.id, fields }] },
-            `Oversettelse (${langName})`,
+            L(`Oversettelse (${langName})`, `Translation (${langName})`),
           )
         : run(
             {
               type: "AddTranslations",
               items: [{ translationId: newId<"translation">(), fields }],
             },
-            `Oversettelse (${langName})`,
+            L(`Oversettelse (${langName})`, `Translation (${langName})`),
           ),
     );
   }
@@ -82,9 +83,14 @@ export function TranslationPanel({
   const dirty = draft.trim() !== (t?.text ?? "");
   const canSave = editable && !!draft.trim() && (dirty || review || t?.status === "uncertain");
   return (
-    <section aria-label={`Oversettelse (${langName})`} className="mb-4 flex flex-col gap-2">
+    <section
+      aria-label={L(`Oversettelse (${langName})`, `Translation (${langName})`)}
+      className="mb-4 flex flex-col gap-2"
+    >
       <h3 className="text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
-        {block ? "Norsk (hovedmanus)" : "Scenehode – norsk"}
+        {block
+          ? L("Norsk (hovedmanus)", "Norwegian (main script)")
+          : L("Scenehode – norsk", "Scene heading – Norwegian")}
       </h3>
       <p className="whitespace-pre-wrap rounded-sm bg-surface-2 px-2 py-1.5 font-script text-[13px] text-text-secondary">
         {original || "—"}
@@ -93,7 +99,10 @@ export function TranslationPanel({
         <div className="flex flex-col gap-1 rounded-sm border border-status-moved/50 bg-status-uncertain-bg p-2 text-xs text-text-primary">
           <span className="flex items-center gap-1.5">
             <AlertTriangle className="size-3.5 text-status-moved" aria-hidden />
-            Den norske teksten er endret etter oversettelsen.
+            {L(
+              "Den norske teksten er endret etter oversettelsen.",
+              "The Norwegian text has changed since the translation.",
+            )}
           </span>
           {oldText !== null ? (
             <span className="text-text-tertiary line-through">{oldText}</span>
@@ -102,7 +111,10 @@ export function TranslationPanel({
       ) : null}
       {t?.status === "uncertain" ? (
         <p className="text-xs text-status-uncertain">
-          Koblet automatisk ved import – kontroller og godkjenn.
+          {L(
+            "Koblet automatisk ved import – kontroller og godkjenn.",
+            "Linked automatically on import – check and approve.",
+          )}
         </p>
       ) : null}
       <h3 className="mt-1 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
@@ -118,14 +130,18 @@ export function TranslationPanel({
             if (canSave) save();
           }
         }}
-        placeholder={t ? "" : "Ikke oversatt ennå"}
+        placeholder={t ? "" : L("Ikke oversatt ennå", "Not translated yet")}
         className="min-h-[90px] bg-surface-3 font-script text-[13px]"
       />
       {editable ? (
         <div className="flex flex-wrap gap-1.5">
           <Button size="sm" onClick={() => save()} disabled={!canSave}>
             <Check />
-            {dirty ? "Lagre" : review || t?.status === "uncertain" ? "Godkjenn" : "Lagret"}
+            {dirty
+              ? L("Lagre", "Save")
+              : review || t?.status === "uncertain"
+                ? L("Godkjenn", "Approve")
+                : L("Lagret", "Saved")}
           </Button>
           {t ? (
             <Button
@@ -135,20 +151,22 @@ export function TranslationPanel({
                 setErr(
                   run(
                     { type: "SetTranslationsRemoved", translationIds: [t.id], removed: true },
-                    `Fjern oversettelse (${langName})`,
+                    L(`Fjern oversettelse (${langName})`, `Remove translation (${langName})`),
                   ),
                 )
               }
             >
               <Trash2 />
-              Fjern
+              {L("Fjern", "Remove")}
             </Button>
           ) : null}
         </div>
       ) : null}
       <p className="text-[11px] text-text-tertiary">
-        Oversettelsen endrer aldri det norske manuset. Bytt til «Norsk» øverst for å endre
-        hovedmanuset.
+        {L(
+          "Oversettelsen endrer aldri det norske manuset. Bytt til «Norsk» øverst for å endre hovedmanuset.",
+          "The translation never changes the Norwegian script. Switch to “Norwegian” at the top to change the main script.",
+        )}
       </p>
       {err ? (
         <p role="alert" className="text-xs text-status-danger">

@@ -6,6 +6,7 @@
 import { strFromU8, unzipSync } from "fflate";
 import type { RawLine } from "@/core/screenplay/types";
 import type { ImportedNote } from "@/core/notes";
+import { L } from "@/core";
 
 const CHAR_WIDTH = 7.2;
 const LEFT_MARGIN = 72;
@@ -53,7 +54,10 @@ export function docxToLinesAndNotes(data: Uint8Array): { lines: RawLine[]; notes
   const files = unzipSync(data, {
     filter: (f) => {
       total += f.originalSize;
-      if (total > MAX_UNZIPPED) throw new Error("DOCX-filen er for stor eller skadet");
+      if (total > MAX_UNZIPPED)
+        throw new Error(
+          L("DOCX-filen er for stor eller skadet", "The DOCX file is too large or damaged"),
+        );
       return (
         f.name === "word/document.xml" ||
         f.name === "word/styles.xml" ||
@@ -63,7 +67,12 @@ export function docxToLinesAndNotes(data: Uint8Array): { lines: RawLine[]; notes
   });
   const docBytes = files["word/document.xml"];
   if (!docBytes)
-    throw new Error("Filen er ikke et gyldig Word-dokument (mangler word/document.xml)");
+    throw new Error(
+      L(
+        "Filen er ikke et gyldig Word-dokument (mangler word/document.xml)",
+        "The file is not a valid Word document (word/document.xml is missing)",
+      ),
+    );
   const xml = strFromU8(docBytes);
 
   // Stilnavn (styleId → navn), slik at «SCENE OVERSKRIFT» kan gjenkjennes

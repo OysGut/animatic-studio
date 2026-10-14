@@ -26,6 +26,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { L } from "@/core";
 
 function ViewToggle({
   checked,
@@ -94,14 +95,17 @@ export function AssemblyViewMenu({
           size="sm"
           variant="ghost"
           className="h-7 shrink-0 gap-1 whitespace-nowrap px-2 text-xs"
-          title="Svart-hvitt, teknisk visning og eget vindu"
+          title={L(
+            "Svart-hvitt, teknisk visning og eget vindu",
+            "Black and white, technical view and own window",
+          )}
         >
           <SlidersHorizontal className="size-3.5" aria-hidden />
-          Visning
+          {L("Visning", "View")}
           {changed ? (
             <>
               <span className="size-1.5 rounded-full bg-accent-brand" aria-hidden />
-              <span className="sr-only">(endret)</span>
+              <span className="sr-only">{L("(endret)", "(changed)")}</span>
             </>
           ) : null}
           <ChevronDown className="size-3" aria-hidden />
@@ -112,23 +116,32 @@ export function AssemblyViewMenu({
           checked={monochrome}
           onChange={onMonochrome}
           icon={<Contrast className="size-3.5" aria-hidden />}
-          label="Svart-hvitt"
-          hint="Hele filmen i svart-hvitt (foreslås også i eksporten). Enkeltscener settes i panelet."
+          label={L("Svart-hvitt", "Black and white")}
+          hint={L(
+            "Hele filmen i svart-hvitt (foreslås også i eksporten). Enkeltscener settes i panelet.",
+            "The whole film in black and white (also suggested in the export). Single scenes are set in the panel.",
+          )}
         />
         <ViewToggle
           checked={technical}
           onChange={onTechnical}
           icon={<Binary className="size-3.5" aria-hidden />}
-          label="Teknisk visning"
-          hint="Tidskoder, bildenummer og filinformasjon for scenen og delene."
+          label={L("Teknisk visning", "Technical view")}
+          hint={L(
+            "Tidskoder, bildenummer og filinformasjon for scenen og delene.",
+            "Timecodes, frame numbers and file information for the scene and its parts.",
+          )}
         />
         <ViewToggle
           checked={popout}
           onChange={onPopout}
           disabled={!hasClips}
           icon={<ExternalLink className="size-3.5" aria-hidden />}
-          label="Eget vindu"
-          hint="Filmen i et eget vindu, f.eks. på en annen skjerm."
+          label={L("Eget vindu", "Own window")}
+          hint={L(
+            "Filmen i et eget vindu, f.eks. på en annen skjerm.",
+            "The film in its own window, e.g. on another screen.",
+          )}
         />
       </PopoverContent>
     </Popover>
@@ -162,10 +175,13 @@ export function AssemblyMoreMenu({
           size="sm"
           variant="ghost"
           className="h-7 shrink-0 gap-1 whitespace-nowrap px-2 text-xs"
-          title="Standardovergang, lang film, video for flere scener, språkversjon og undertekster"
+          title={L(
+            "Standardovergang, lang film, video for flere scener, språkversjon og undertekster",
+            "Standard transition, long film, video for several scenes, language version and subtitles",
+          )}
         >
           <Ellipsis className="size-3.5" aria-hidden />
-          Mer
+          {L("Mer", "More")}
           <ChevronDown className="size-3" aria-hidden />
         </Button>
       </DropdownMenuTrigger>
@@ -173,8 +189,13 @@ export function AssemblyMoreMenu({
         <DropdownMenuItem className={item} onSelect={onStandardTransition}>
           <Blend className="mt-0.5" aria-hidden />
           <span>
-            Standardovergang …
-            <span className={hint}>Overgangen alle scener får når de ikke har sin egen</span>
+            {L("Standardovergang …", "Standard transition …")}
+            <span className={hint}>
+              {L(
+                "Overgangen alle scener får når de ikke har sin egen",
+                "The transition every scene gets when it has none of its own",
+              )}
+            </span>
           </span>
         </DropdownMenuItem>
         {editable ? (
@@ -182,18 +203,24 @@ export function AssemblyMoreMenu({
             <DropdownMenuItem className={item} disabled={!hasClips} onSelect={onLongFilm}>
               <Film className="mt-0.5" aria-hidden />
               <span>
-                Importer lang film …
+                {L("Importer lang film …", "Import long film …")}
                 <span className={hint}>
-                  Én filmfil som dekker flere scener: last opp én gang og del den på scenene
+                  {L(
+                    "Én filmfil som dekker flere scener: last opp én gang og del den på scenene",
+                    "One film file covering several scenes: upload it once and split it across the scenes",
+                  )}
                 </span>
               </span>
             </DropdownMenuItem>
             <DropdownMenuItem className={item} disabled={!hasClips} onSelect={onBatchVideo}>
               <ListOrdered className="mt-0.5" aria-hidden />
               <span>
-                Video for flere scener …
+                {L("Video for flere scener …", "Video for several scenes …")}
                 <span className={hint}>
-                  AI-video for flere scener på én gang (legges i kø, kostnaden vises først)
+                  {L(
+                    "AI-video for flere scener på én gang (legges i kø, kostnaden vises først)",
+                    "AI video for several scenes at once (queued, the cost is shown first)",
+                  )}
                 </span>
               </span>
             </DropdownMenuItem>
@@ -203,17 +230,25 @@ export function AssemblyMoreMenu({
         <DropdownMenuItem className={item} disabled={!hasClips} onSelect={onLanguage}>
           <Languages className="mt-0.5" aria-hidden />
           <span>
-            Språkversjon …
+            {L("Språkversjon …", "Language version …")}
             <span className={hint}>
-              Engelsk versjon: oversettelse, dialoglyd, timing og leppesynk scene for scene
+              {L(
+                "Engelsk versjon: oversettelse, dialoglyd, timing og leppesynk scene for scene",
+                "English version: translation, dialogue audio, timing and lip sync scene by scene",
+              )}
             </span>
           </span>
         </DropdownMenuItem>
         <DropdownMenuItem className={item} disabled={!hasClips} onSelect={onSubtitles}>
           <Captions className="mt-0.5" aria-hidden />
           <span>
-            Undertekster …
-            <span className={hint}>Undertekster (.srt eller .vtt) på norsk eller engelsk</span>
+            {L("Undertekster …", "Subtitles …")}
+            <span className={hint}>
+              {L(
+                "Undertekster (.srt eller .vtt) på norsk eller engelsk",
+                "Subtitles (.srt or .vtt) in Norwegian or English",
+              )}
+            </span>
           </span>
         </DropdownMenuItem>
       </DropdownMenuContent>

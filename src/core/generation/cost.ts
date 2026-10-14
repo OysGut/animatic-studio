@@ -4,6 +4,7 @@
  * prisen per kall på forhånd), så beløpene er alltid merket som anslag (REQ-0281).
  */
 import type { Project, ProjectState } from "../model";
+import { L, locale, localized } from "../i18n";
 
 /** En rad i loggen over AI-genereringer (generation_jobs). */
 export interface GenerationJob {
@@ -112,14 +113,14 @@ export function jobState(j: GenerationJob, now: Date): JobState {
   return Number.isFinite(t) && now.getTime() - t > limit ? "stale" : "running";
 }
 
-export const JOB_STATE_LABEL: Record<JobState, string> = {
-  queued: "I kø",
-  running: "Pågår",
-  done: "Ferdig",
-  failed: "Feilet",
-  lost: "Betalt, ikke lagret",
-  stale: "Stoppet underveis",
-};
+export const JOB_STATE_LABEL: Record<JobState, string> = localized({
+  queued: ["I kø", "Queued"],
+  running: ["Pågår", "Running"],
+  done: ["Ferdig", "Done"],
+  failed: ["Feilet", "Failed"],
+  lost: ["Betalt, ikke lagret", "Paid, not saved"],
+  stale: ["Stoppet underveis", "Stopped along the way"],
+});
 
 /** Første øyeblikk i kalendermåneden (UTC). */
 export function monthStartUtc(now: Date): Date {
@@ -184,7 +185,8 @@ export function aiUsage(
 
 /** «12,50 kreditter». */
 export function formatCredits(n: number): string {
-  return `${n.toLocaleString("nb-NO", { maximumFractionDigits: 2 })} kreditter`;
+  const v = n.toLocaleString(locale(), { maximumFractionDigits: 2 });
+  return L(`${v} kreditter`, `${v} credits`);
 }
 
 /**

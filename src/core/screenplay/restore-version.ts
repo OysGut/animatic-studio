@@ -17,6 +17,7 @@ import { compareKeys, keyBetween } from "../order-key";
 import { blocksOfVariant, orderedOccurrences } from "../views";
 import { scriptRevertCommands, type ScriptChange } from "../assembly/discrepancy";
 import { formatHeading } from "./paginate";
+import { L } from "../i18n";
 import {
   diffSnapshots,
   snapshotFromState,
@@ -91,7 +92,10 @@ export function restoreVersionPlan(
       issue(
         sc,
         null,
-        "Scenen finnes ikke lenger i produksjonen og kan ikke hentes tilbake herfra.",
+        L(
+          "Scenen finnes ikke lenger i produksjonen og kan ikke hentes tilbake herfra.",
+          "The scene no longer exists in the production and cannot be restored from here.",
+        ),
       );
       continue;
     }
@@ -102,7 +106,10 @@ export function restoreVersionPlan(
       issue(
         sc,
         o,
-        "Scenen bruker en annen versjon av scenen nå (egen versjon eller tilbakeføring). Teksten er ikke endret.",
+        L(
+          "Scenen bruker en annen versjon av scenen nå (egen versjon eller tilbakeføring). Teksten er ikke endret.",
+          "The scene now uses another version of the scene (its own version or a reversion). The text is not changed.",
+        ),
       );
       continue;
     }
@@ -176,15 +183,28 @@ export function restoreVersionPlan(
       issue(
         sc,
         o,
-        `${moved} ${moved === 1 ? "linje er" : "linjer er"} flyttet til en annen scene (deling eller sammenslåing) og settes ikke tilbake her.`,
+        L(
+          `${moved} ${moved === 1 ? "linje er" : "linjer er"} flyttet til en annen scene (deling eller sammenslåing) og settes ikke tilbake her.`,
+          `${moved} ${moved === 1 ? "line has" : "lines have"} been moved to another scene (split or merge) and is not restored here.`,
+        ),
       );
     if (missing)
-      issue(sc, o, `${missing} ${missing === 1 ? "linje finnes" : "linjer finnes"} ikke lenger.`);
+      issue(
+        sc,
+        o,
+        L(
+          `${missing} ${missing === 1 ? "linje finnes" : "linjer finnes"} ikke lenger.`,
+          `${missing} ${missing === 1 ? "line" : "lines"} no longer exist.`,
+        ),
+      );
     if (kept)
       issue(
         sc,
         o,
-        `${kept} ${kept === 1 ? "linje" : "linjer"} som er kommet til, beholdes (de brukes av en annen scene i versjonen eller som grense for et produksjonssegment).`,
+        L(
+          `${kept} ${kept === 1 ? "linje" : "linjer"} som er kommet til, beholdes (de brukes av en annen scene i versjonen eller som grense for et produksjonssegment).`,
+          `${kept} ${kept === 1 ? "line" : "lines"} that ${kept === 1 ? "has" : "have"} been added are kept (they are used by another scene in the version or as a boundary for a production segment).`,
+        ),
       );
   }
 
@@ -200,7 +220,10 @@ export function restoreVersionPlan(
       issue(
         null,
         o,
-        "Scenen er laget etter versjonen (ved deling) og har tekst fra versjonen. Den beholdes aktiv.",
+        L(
+          "Scenen er laget etter versjonen (ved deling) og har tekst fra versjonen. Den beholdes aktiv.",
+          "The scene was made after the version (by a split) and has text from the version. It is kept active.",
+        ),
       );
       continue;
     }

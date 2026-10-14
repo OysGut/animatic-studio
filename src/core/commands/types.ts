@@ -29,6 +29,7 @@ import type {
   UserId,
   VariantId,
 } from "../ids";
+import type { VersionView } from "../library/view";
 import type {
   AssetKind,
   AssetName,
@@ -514,6 +515,18 @@ export type Command =
       readonly versionIds: readonly AssetVersionId[];
       readonly removed: boolean;
     }
+  /** Vinkelen et bilde viser (DEC-0080): front, side, bak …; null fjerner merket. */
+  | {
+      readonly type: "SetVersionView";
+      readonly versionId: AssetVersionId;
+      readonly view: VersionView | null;
+    }
+  /** Visuelt faktaark for en ressurs (DEC-0080): engelsk tekst; tom fjerner det. */
+  | {
+      readonly type: "SetAssetVisualBrief";
+      readonly assetId: AssetId;
+      readonly text: string;
+    }
   /** «Animer på toere» (DEC-0079): bevegelsen oppdateres hvert n-te bilde (1–4) i 2D-scenen. */
   | {
       readonly type: "SetCompositionStep";
@@ -608,6 +621,12 @@ export type Command =
     }
   // Interne inverser for opprettelse (brukes bare av angre; feiler hvis materialet er tatt i bruk).
   | { readonly type: "UndoCreateProduction"; readonly productionId: ProductionId }
+  /** Notat om hva produksjonen er (DEC-0082); tomt fjerner det. */
+  | {
+      readonly type: "SetProductionNote";
+      readonly productionId: ProductionId;
+      readonly note: string;
+    }
   | {
       readonly type: "UndoCreateScene";
       readonly sceneId: SceneId;

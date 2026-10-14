@@ -6,6 +6,7 @@
 import type { Asset, AssetKind, AssetVariant, AssetVersion, ProjectState } from "../model";
 import { STILL_MIME_TYPES } from "../model";
 import { blocksOfVariant, orderedOccurrences } from "../views";
+import { collation, localized } from "../i18n";
 import {
   characterName,
   sceneHasWordPrefix,
@@ -13,25 +14,25 @@ import {
   sceneSpeakers,
 } from "../screenplay/filter";
 
-export const ASSET_KIND_LABEL: Record<AssetKind, string> = {
-  character: "Karakter",
-  object: "Objekt / rekvisitt",
-  location: "Lokasjon",
-  animal: "Dyr",
-  environment: "Miljø / bakgrunn",
-  other: "Annet",
-  sound: "Lyd",
-};
+export const ASSET_KIND_LABEL: Record<AssetKind, string> = localized({
+  character: ["Karakter", "Character"],
+  object: ["Objekt / rekvisitt", "Object / prop"],
+  location: ["Lokasjon", "Location"],
+  animal: ["Dyr", "Animal"],
+  environment: ["Miljø / bakgrunn", "Environment / background"],
+  other: ["Annet", "Other"],
+  sound: ["Lyd", "Sound"],
+});
 
-export const ASSET_KIND_PLURAL: Record<AssetKind, string> = {
-  character: "Karakterer",
-  object: "Objekter",
-  location: "Lokasjoner",
-  animal: "Dyr",
-  environment: "Miljøer",
-  other: "Annet",
-  sound: "Lyd",
-};
+export const ASSET_KIND_PLURAL: Record<AssetKind, string> = localized({
+  character: ["Karakterer", "Characters"],
+  object: ["Objekter", "Objects"],
+  location: ["Lokasjoner", "Locations"],
+  animal: ["Dyr", "Animals"],
+  environment: ["Miljøer", "Environments"],
+  other: ["Annet", "Other"],
+  sound: ["Lyd", "Sound"],
+});
 
 /** Foretrukket navn og alle alternative navn (REQ-0126). */
 export function assetNames(a: Pick<Asset, "name" | "names">): string[] {
@@ -48,13 +49,19 @@ export function nameKey(name: string): string {
 export function sortedAssets(s: ProjectState, kind?: AssetKind): Asset[] {
   return Object.values(s.assets)
     .filter((a) => !a.removed && (!kind || a.kind === kind))
-    .sort((a, b) => Number(a.archived) - Number(b.archived) || a.name.localeCompare(b.name, "nb"));
+    .sort(
+      (a, b) =>
+        Number(a.archived) - Number(b.archived) || a.name.localeCompare(b.name, collation()),
+    );
 }
 
 export function variantsOf(s: ProjectState, assetId: string): AssetVariant[] {
   return Object.values(s.assetVariants)
     .filter((v) => v.assetId === assetId)
-    .sort((a, b) => Number(a.archived) - Number(b.archived) || a.name.localeCompare(b.name, "nb"));
+    .sort(
+      (a, b) =>
+        Number(a.archived) - Number(b.archived) || a.name.localeCompare(b.name, collation()),
+    );
 }
 
 /** Versjonene av en variant, nyeste først (uten slettede bilder, DEC-0079). */
@@ -76,7 +83,7 @@ export function trashContents(s: ProjectState): {
 } {
   const assets = Object.values(s.assets)
     .filter((a) => a.removed)
-    .sort((a, b) => a.name.localeCompare(b.name, "nb"));
+    .sort((a, b) => a.name.localeCompare(b.name, collation()));
   const versions: { asset: Asset; version: AssetVersion }[] = [];
   for (const v of Object.values(s.assetVersions)) {
     if (!v.removed) continue;
@@ -85,7 +92,8 @@ export function trashContents(s: ProjectState): {
     if (asset && !asset.removed) versions.push({ asset, version: v });
   }
   versions.sort(
-    (a, b) => a.asset.name.localeCompare(b.asset.name, "nb") || b.version.number - a.version.number,
+    (a, b) =>
+      a.asset.name.localeCompare(b.asset.name, collation()) || b.version.number - a.version.number,
   );
   return { assets, versions };
 }
@@ -137,14 +145,14 @@ export interface AssetUsage {
   readonly matchedName: string;
 }
 
-export const USAGE_LABEL: Record<UsageHow, string> = {
-  speaks: "har replikk",
-  mentioned: "nevnes",
-  location: "sted i overskriften",
-  text: "nevnes i teksten",
-  audio: "lydklipp i scenen",
-  layer: "lag i 2D-scenen",
-};
+export const USAGE_LABEL: Record<UsageHow, string> = localized({
+  speaks: ["har replikk", "has a line"],
+  mentioned: ["nevnes", "mentioned"],
+  location: ["sted i overskriften", "location in the heading"],
+  text: ["nevnes i teksten", "mentioned in the text"],
+  audio: ["lydklipp i scenen", "audio clip in the scene"],
+  layer: ["lag i 2D-scenen", "layer in the 2D scene"],
+});
 
 function escapeRe(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -317,7 +325,8 @@ export function assetsInScene(
   }
   return out.sort(
     (a, b) =>
-      order[a.asset.kind] - order[b.asset.kind] || a.asset.name.localeCompare(b.asset.name, "nb"),
+      order[a.asset.kind] - order[b.asset.kind] ||
+      a.asset.name.localeCompare(b.asset.name, collation()),
   );
 }
 
@@ -332,10 +341,10 @@ export * from "./content-sync";
 /** Visningsnavn for et navn fra manuset: «BESTEMOR ANNE» → «Bestemor Anne». */
 export function displayName(name: string): string {
   return name
-    .toLocaleLowerCase("nb")
+    .toLocaleLowerCase(collation())
     .replace(
       /(^|[\s-])(\p{L})/gu,
-      (_m, sep: string, ch: string) => sep + ch.toLocaleUpperCase("nb"),
+      (_m, sep: string, ch: string) => sep + ch.toLocaleUpperCase(collation()),
     );
 }
 
@@ -363,7 +372,9 @@ export function stillCandidates(
 }
 
 /** Merknaden originalen får når et stort bilde får en nedskalert arbeidskopi (DEC-0079). */
-export const ORIGINAL_NOTE_MARK = "Original i full størrelse";
+// Merknaden lagres i prosjektet og gjenkjennes ved lesing, så begge språkene gjelder
+export const ORIGINAL_NOTE_MARK = "Original i full størrelse"; // i18n-ignore
+export const ORIGINAL_NOTE_MARK_EN = "Original at full size";
 
 /**
  * Originalen i full størrelse til en nedskalert arbeidskopi (versjonen rett før, med merknaden), eller null.
@@ -373,5 +384,8 @@ export function fullSizeOriginal(s: ProjectState, versionId: string): AssetVersi
   const v = s.assetVersions[versionId];
   if (!v) return null;
   const prev = allVersionsOf(s, v.variantId).find((x) => x.number === v.number - 1);
-  return prev && prev.note.includes(ORIGINAL_NOTE_MARK) && !prev.removed ? prev : null;
+  const isOriginal =
+    prev !== undefined &&
+    (prev.note.includes(ORIGINAL_NOTE_MARK) || prev.note.includes(ORIGINAL_NOTE_MARK_EN));
+  return isOriginal && prev && !prev.removed ? prev : null;
 }

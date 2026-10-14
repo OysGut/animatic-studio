@@ -9,6 +9,7 @@
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import {
+  L,
   newId,
   replaceVersionCommands,
   reuploadNote,
@@ -77,7 +78,9 @@ export function ReuploadDialog({
       if (!va) continue;
       const group = newId();
       const label =
-        c === "replace" ? `Erstatt v${old.number} av «${va.name}»` : `Nytt bilde i «${va.name}»`;
+        c === "replace"
+          ? L(`Erstatt v${old.number} av «${va.name}»`, `Replace v${old.number} of “${va.name}”`)
+          : L(`Nytt bilde i «${va.name}»`, `New image in “${va.name}”`);
       try {
         // Lastet opp tidligere (erstattingen feilet): bruk samme versjon, ikke en ny
         let versionId = next[i]?.versionId;
@@ -105,12 +108,17 @@ export function ReuploadDialog({
             const e = cmds.run(cmd, label, group);
             if (e)
               throw new Error(
-                `v${old.number} ble lagt til som ny versjon, men tok ikke over: ${e}`,
+                L(
+                  `v${old.number} ble lagt til som ny versjon, men tok ikke over: ${e}`,
+                  `v${old.number} was added as a new version, but did not take over: ${e}`,
+                ),
               );
           }
         }
         next[i] = { done: true, versionId };
-        ok.push(`${it.file.name}: ${c === "replace" ? `erstatter v${old.number}` : "lagt til"}`);
+        ok.push(
+          `${it.file.name}: ${c === "replace" ? L(`erstatter v${old.number}`, `replacing v${old.number}`) : L("lagt til", "added")}`,
+        );
       } catch (e) {
         bad.push(`${it.file.name}: ${e instanceof Error ? e.message : String(e)}`);
       }
@@ -127,12 +135,15 @@ export function ReuploadDialog({
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>
-            {items.length === 1 ? "Bildet finnes i prosjektet" : "Bildene finnes i prosjektet"}
+            {items.length === 1
+              ? L("Bildet finnes i prosjektet", "This image is in the project")
+              : L("Bildene finnes i prosjektet", "These images are in the project")}
           </DialogTitle>
           <DialogDescription>
-            Navnet viser hvilket bilde filen kommer fra. «Erstatt» gjør filen til ny versjon som tar
-            over overalt det gamle bildet er brukt; det gamle tas vare på. «Legg til» gjør den til
-            en ny versjon med eget nummer.
+            {L(
+              "Navnet viser hvilket bilde filen kommer fra. «Erstatt» gjør filen til ny versjon som tar over overalt det gamle bildet er brukt; det gamle tas vare på. «Legg til» gjør den til en ny versjon med eget nummer.",
+              "The name shows which image the file comes from. “Replace” makes the file a new version that takes over everywhere the old image is used; the old one is kept. “Add” makes it a new version with its own number.",
+            )}
           </DialogDescription>
         </DialogHeader>
         <ul className="flex max-h-[50vh] flex-col gap-2 overflow-y-auto">
@@ -142,9 +153,19 @@ export function ReuploadDialog({
             const next =
               Math.max(0, ...allVersionsOf(state, old.variantId).map((v) => v.number)) + 1;
             const where = [
-              use.approved ? "godkjent" : "",
-              use.layers ? `vises i ${use.layers} lag i 2D-scener` : "",
-              use.posters ? `${use.posters} ${use.posters === 1 ? "plakat" : "plakater"}` : "",
+              use.approved ? L("godkjent", "approved") : "",
+              use.layers
+                ? L(
+                    `vises i ${use.layers} lag i 2D-scener`,
+                    `shown in ${use.layers} layers in 2D scenes`,
+                  )
+                : "",
+              use.posters
+                ? L(
+                    `${use.posters} ${use.posters === 1 ? "plakat" : "plakater"}`,
+                    `${use.posters} ${use.posters === 1 ? "poster" : "posters"}`,
+                  )
+                : "",
             ].filter(Boolean);
             return (
               <li
@@ -153,18 +174,34 @@ export function ReuploadDialog({
               >
                 <span className="text-[13px] text-text-primary">{it.file.name}</span>
                 <span className="text-xs text-text-tertiary">
-                  Fra «{versionFileBase(state, old)}» ·{" "}
-                  {where.length ? where.join(", ") : "vises ikke i scener eller på plakater nå"}
+                  {L("Fra «", "From “")}
+                  {versionFileBase(state, old)}
+                  {L("» ·", "” ·")}{" "}
+                  {where.length
+                    ? where.join(", ")
+                    : L(
+                        "vises ikke i scener eller på plakater nå",
+                        "not shown in scenes or on posters now",
+                      )}
                 </span>
                 <fieldset
                   className="flex flex-wrap gap-3"
-                  aria-label={`Hva skal skje med ${it.file.name}?`}
+                  aria-label={L(
+                    `Hva skal skje med ${it.file.name}?`,
+                    `What should happen to ${it.file.name}?`,
+                  )}
                 >
                   {(
                     [
-                      ["replace", `Erstatt v${old.number} (blir v${next}, brukes overalt)`],
-                      ["add", `Legg til som v${next}`],
-                      ["skip", "Hopp over"],
+                      [
+                        "replace",
+                        L(
+                          `Erstatt v${old.number} (blir v${next}, brukes overalt)`,
+                          `Replace v${old.number} (becomes v${next}, used everywhere)`,
+                        ),
+                      ],
+                      ["add", L(`Legg til som v${next}`, `Add as v${next}`)],
+                      ["skip", L("Hopp over", "Skip")],
                     ] as const
                   ).map(([c, text]) => (
                     <label key={c} className="flex items-center gap-1.5 text-xs text-text-primary">
@@ -182,9 +219,10 @@ export function ReuploadDialog({
                 </fieldset>
                 {pick(i) === "add" && !state.assetVariants[old.variantId]?.approvedVersionId ? (
                   <span className="text-[11px] text-text-tertiary">
-                    Varianten har ingen godkjent versjon, så scener som følger den viser det nyeste
-                    bildet – også det du legger til. Godkjenn v{old.number} først hvis scenene skal
-                    beholde den.
+                    {L(
+                      `Varianten har ingen godkjent versjon, så scener som følger den viser det nyeste bildet – også det du legger til. Godkjenn v${old.number} først hvis scenene skal beholde den.`,
+                      `The variant has no approved version, so scenes that follow it show the newest image – including the one you add. Approve v${old.number} first if the scenes should keep it.`,
+                    )}
                   </span>
                 ) : null}
               </li>
@@ -193,9 +231,11 @@ export function ReuploadDialog({
         </ul>
         {unknown.length ? (
           <p className="text-xs text-text-secondary">
-            Kjenner ikke igjen {unknown.length === 1 ? "filen" : "filene"}{" "}
-            {unknown.map((f) => `«${f.name}»`).join(", ")}. Last{" "}
-            {unknown.length === 1 ? "den" : "dem"} opp fra varianten den hører til.
+            {L("Kjenner ikke igjen", "Does not recognise")}{" "}
+            {unknown.length === 1 ? L("filen", "the file") : L("filene", "the files")}{" "}
+            {unknown.map((f) => L(`«${f.name}»`, `“${f.name}”`)).join(", ")}. {L("Last", "Upload")}{" "}
+            {unknown.length === 1 ? L("den", "it") : L("dem", "them")}{" "}
+            {L("opp fra varianten den hører til.", "from the variant it belongs to.")}
           </p>
         ) : null}
         {done.length ? (
@@ -210,11 +250,15 @@ export function ReuploadDialog({
         ) : null}
         <DialogFooter>
           <Button variant="ghost" onClick={onClose} disabled={busy}>
-            {errors.length ? "Lukk" : "Avbryt"}
+            {errors.length ? L("Lukk", "Close") : L("Avbryt", "Cancel")}
           </Button>
           <Button onClick={run} disabled={busy || items.length === 0}>
             {busy ? <Loader2 className="animate-spin" /> : null}
-            {busy ? "Laster opp …" : errors.length ? "Prøv igjen for resten" : "Last opp"}
+            {busy
+              ? L("Laster opp …", "Uploading …")
+              : errors.length
+                ? L("Prøv igjen for resten", "Try again for the rest")
+                : L("Last opp", "Upload")}
           </Button>
         </DialogFooter>
       </DialogContent>

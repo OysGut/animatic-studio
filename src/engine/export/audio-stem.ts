@@ -3,7 +3,7 @@
  * én WAV-fil (16 bit PCM, stereo) med samme plassering som avspillingen. Musikk, atmosfære, effekter og lyden
  * i importert film er ikke med. Bare på klienten (OfflineAudioContext).
  */
-import { isVoiceKind, type FilmAudioItem } from "@/core";
+import { L, isVoiceKind, type FilmAudioItem } from "@/core";
 import { type AudioBank, renderAudio } from "../audio/mixer";
 
 /** Lydklippene som hører til dialogsporet: tale (dialog og forteller), ikke lyden i importert film. */
@@ -113,7 +113,7 @@ export async function exportDialogueStemParts(o: {
   const CHUNK = 30;
   let written = 0;
   for (let t = 0; t < seconds - 1e-9 && written < total; t += CHUNK) {
-    if (o.signal?.aborted) throw new DOMException("Avbrutt", "AbortError");
+    if (o.signal?.aborted) throw new DOMException(L("Avbrutt", "Cancelled"), "AbortError");
     const len = Math.min(CHUNK, seconds - t);
     const buf = await renderAudio(items, o.bank, o.from + t, len, rate);
     const at = Math.round(t * rate);

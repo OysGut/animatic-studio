@@ -9,9 +9,10 @@ import { ProjectNav } from "@/app/shell/ProjectNav";
 import { fetchProjectName, upsertMyProfile } from "@/adapters/browser/projects";
 import { AiJobsWatcher } from "@/app/ai/video-jobs";
 import { canEdit, useMembers } from "@/app/project/use-project";
+import { L } from "@/core";
 
 export const Route = createFileRoute("/prosjekt/$projectId")({
-  head: () => ({ meta: [{ title: "Prosjekt – Animatic Studio" }] }),
+  head: () => ({ meta: [{ title: L("Prosjekt – Animatic Studio", "Project – Animatic Studio") }] }),
   component: ProjectLayout,
 });
 
@@ -41,16 +42,20 @@ function ProjectLayout() {
           {name.data?.deleted ? (
             // Slettet prosjekt (DEC-0046): bare ressursene finnes, og de håndteres fra prosjektlisten
             <div className="mx-auto mt-16 max-w-[460px] px-6 text-center">
-              <h1 className="text-lg font-semibold text-text-primary">Prosjektet er slettet</h1>
+              <h1 className="text-lg font-semibold text-text-primary">
+                {L("Prosjektet er slettet", "The project has been deleted")}
+              </h1>
               <p className="mt-2 text-[13px] text-text-secondary">
-                Ressursene (bilder og lyd) er tatt vare på. Du finner dem under «Ressurser fra
-                slettede prosjekter» i prosjektlisten.
+                {L(
+                  "Ressursene (bilder og lyd) er tatt vare på. Du finner dem under «Ressurser fra slettede prosjekter» i prosjektlisten.",
+                  "The assets (images and audio) have been kept. You will find them under “Assets from deleted projects” in the project list.",
+                )}
               </p>
               <Link
                 to="/"
                 className="mt-4 inline-block text-[13px] text-accent-brand underline-offset-2 hover:underline"
               >
-                Til prosjektlisten
+                {L("Til prosjektlisten", "To the project list")}
               </Link>
             </div>
           ) : (

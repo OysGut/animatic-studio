@@ -8,6 +8,7 @@ import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useSyncExternalStore } from "react";
 import { Button } from "@/components/ui/button";
+import { L } from "@/core";
 import { pageLabel, recordVisit, type Entry } from "./back-stack";
 
 const KEY = "animatic:back-stack";
@@ -81,8 +82,8 @@ export function BackButton() {
         goingBack = true;
         void navigate({ href: prev.href });
       }}
-      title={`Tilbake til ${label}`}
-      aria-label={`Tilbake til ${label}`}
+      title={L(`Tilbake til ${label}`, `Back to ${label}`)}
+      aria-label={L(`Tilbake til ${label}`, `Back to ${label}`)}
       className="-ml-2"
     >
       <ArrowLeft />

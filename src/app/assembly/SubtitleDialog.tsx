@@ -5,7 +5,7 @@
  */
 import { Download } from "lucide-react";
 import { useMemo, useState } from "react";
-import { LANGUAGE_LABEL, subtitleCues, toSrt, toVtt, type ProjectState } from "@/core";
+import { L, LANGUAGE_LABEL, subtitleCues, toSrt, toVtt, type ProjectState } from "@/core";
 import { prepareDownload, type ReadyFile } from "@/app/download";
 import { Button } from "@/components/ui/button";
 import {
@@ -41,6 +41,7 @@ export function SubtitleDialog({
     () => (open ? subtitleCues(state, productionId, lang) : { cues: [], missing: 0 }),
     [open, state, productionId, lang],
   );
+  // i18n-ignore: filnavn
   const name = `${state.productions[productionId]?.name ?? state.project.name} – undertekster ${lang}.${format}`;
 
   function download() {
@@ -71,14 +72,17 @@ export function SubtitleDialog({
     >
       <DialogContent className="max-w-[480px] border-border bg-surface-2">
         <DialogHeader>
-          <DialogTitle>Undertekster</DialogTitle>
+          <DialogTitle>{L("Undertekster", "Subtitles")}</DialogTitle>
           <DialogDescription>
-            Replikkene med tiden de har i filmen (koblet lyd eller anslått etter tekstmengden).
+            {L(
+              "Replikkene med tiden de har i filmen (koblet lyd eller anslått etter tekstmengden).",
+              "The lines with the time they have in the film (linked audio, or estimated from the amount of text).",
+            )}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-wrap gap-3">
           <label className="flex flex-col gap-1 text-xs text-text-tertiary">
-            Språk
+            {L("Språk", "Language")}
             <select
               value={lang}
               onChange={(e) => {
@@ -110,21 +114,26 @@ export function SubtitleDialog({
           </label>
         </div>
         <p className="text-xs text-text-secondary">
-          {result.cues.length} undertekster.
-          {result.missing ? ` ${result.missing} replikker er ikke oversatt og tas ikke med.` : ""}
+          {L(`${result.cues.length} undertekster.`, `${result.cues.length} subtitles.`)}
+          {result.missing
+            ? L(
+                ` ${result.missing} replikker er ikke oversatt og tas ikke med.`,
+                ` ${result.missing} lines are not translated and are left out.`,
+              )
+            : ""}
         </p>
         {ready ? (
           <a href={ready.url} download={ready.name} className="text-xs text-accent-brand underline">
-            Last ned {ready.name}
+            {L("Last ned", "Download")} {ready.name}
           </a>
         ) : null}
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Lukk
+            {L("Lukk", "Close")}
           </Button>
           <Button onClick={download} disabled={result.cues.length === 0}>
             <Download />
-            Last ned
+            {L("Last ned", "Download")}
           </Button>
         </DialogFooter>
       </DialogContent>

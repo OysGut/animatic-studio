@@ -9,6 +9,8 @@ import {
   coverVersion,
   defaultLayerFields,
   assetNames,
+  collation,
+  L,
   newId,
   sortedAssets,
   variantsOf,
@@ -56,7 +58,7 @@ export function AddLayerDialog({
   const [picked, setPicked] = useState<readonly string[]>([]);
   const [variantChoice, setVariantChoice] = useState<Readonly<Record<string, string>>>({});
   const [fill, setFill] = useState("#2b3a55");
-  const [fillName, setFillName] = useState("Fargeflate");
+  const [fillName, setFillName] = useState(() => L("Fargeflate", "Colour fill"));
   const [error, setError] = useState<string | null>(null);
 
   // Lyd kan ikke være et lag (DEC-0044)
@@ -69,11 +71,11 @@ export function AddLayerDialog({
     return (Object.keys(ASSET_KIND_LABEL) as AssetKind[]).filter((k) => present.has(k));
   }, [assets]);
   const shown = useMemo(() => {
-    const q = query.trim().toLocaleLowerCase("nb");
+    const q = query.trim().toLocaleLowerCase(collation());
     return assets.filter(
       (a) =>
         (kind === "all" || a.kind === kind) &&
-        (!q || assetNames(a).some((n) => n.toLocaleLowerCase("nb").includes(q))),
+        (!q || assetNames(a).some((n) => n.toLocaleLowerCase(collation()).includes(q))),
     );
   }, [assets, kind, query]);
 
@@ -150,12 +152,14 @@ export function AddLayerDialog({
     const first = chosen[0] ? state.assets[chosen[0]] : undefined;
     submit(
       layers,
-      layers.length === 1 && first ? `Nytt lag «${first.name}»` : `Nye lag (${layers.length})`,
+      layers.length === 1 && first
+        ? L(`Nytt lag «${first.name}»`, `New layer “${first.name}”`)
+        : L(`Nye lag (${layers.length})`, `New layers (${layers.length})`),
     );
   }
 
   function addFill() {
-    const name = fillName.trim() || "Fargeflate";
+    const name = fillName.trim() || L("Fargeflate", "Colour fill");
     submit(
       [
         {
@@ -164,7 +168,7 @@ export function AddLayerDialog({
           fields: defaultLayerFields(state, composition, { fill, name }),
         },
       ],
-      `Nytt lag «${name}»`,
+      L(`Nytt lag «${name}»`, `New layer “${name}”`),
     );
   }
 
@@ -178,13 +182,16 @@ export function AddLayerDialog({
     <Dialog open={open} onOpenChange={close}>
       <DialogContent className="max-h-[90vh] max-w-[720px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
-          <DialogTitle>Legg til lag</DialogTitle>
+          <DialogTitle>{L("Legg til lag", "Add layer")}</DialogTitle>
           <DialogDescription>
-            Velg bilder fra biblioteket, eller lag en ensfarget flate.
+            {L(
+              "Velg bilder fra biblioteket, eller lag en ensfarget flate.",
+              "Choose images from the library, or make a solid colour fill.",
+            )}
           </DialogDescription>
         </DialogHeader>
 
-        <div role="tablist" aria-label="Type lag" className="flex gap-1">
+        <div role="tablist" aria-label={L("Type lag", "Layer type")} className="flex gap-1">
           <button
             type="button"
             role="tab"
@@ -192,7 +199,7 @@ export function AddLayerDialog({
             onClick={() => setTab("library")}
             className={tabClass(tab === "library")}
           >
-            Fra biblioteket
+            {L("Fra biblioteket", "From the library")}
           </button>
           <button
             type="button"
@@ -201,14 +208,17 @@ export function AddLayerDialog({
             onClick={() => setTab("fill")}
             className={tabClass(tab === "fill")}
           >
-            Fargeflate
+            {L("Fargeflate", "Colour fill")}
           </button>
         </div>
 
         {tab === "library" ? (
           assets.length === 0 ? (
             <p className="py-6 text-center text-[13px] text-text-tertiary">
-              Biblioteket er tomt. Legg til ressurser i Ressursbiblioteket først.
+              {L(
+                "Biblioteket er tomt. Legg til ressurser i Ressursbiblioteket først.",
+                "The library is empty. Add assets to the asset library first.",
+              )}
             </p>
           ) : (
             <div className="flex flex-col gap-3">
@@ -222,12 +232,16 @@ export function AddLayerDialog({
                     type="search"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Søk i biblioteket"
-                    aria-label="Søk i biblioteket"
+                    placeholder={L("Søk i biblioteket", "Search the library")}
+                    aria-label={L("Søk i biblioteket", "Search the library")}
                     className={control + " w-full pl-7"}
                   />
                 </div>
-                <div className="flex flex-wrap gap-1" role="group" aria-label="Filtrer på type">
+                <div
+                  className="flex flex-wrap gap-1"
+                  role="group"
+                  aria-label={L("Filtrer på type", "Filter by type")}
+                >
                   {(["all", ...kinds] as const).map((k) => (
                     <button
                       key={k}
@@ -241,7 +255,7 @@ export function AddLayerDialog({
                           : "border-border-control text-text-secondary hover:bg-surface-3")
                       }
                     >
-                      {k === "all" ? "Alle" : ASSET_KIND_LABEL[k]}
+                      {k === "all" ? L("Alle", "All") : ASSET_KIND_LABEL[k]}
                     </button>
                   ))}
                 </div>
@@ -249,7 +263,7 @@ export function AddLayerDialog({
 
               {shown.length === 0 ? (
                 <p className="py-4 text-center text-xs text-text-tertiary">
-                  Ingen ressurser passer med søket.
+                  {L("Ingen ressurser passer med søket.", "No assets match the search.")}
                 </p>
               ) : (
                 <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -282,7 +296,7 @@ export function AddLayerDialog({
                                 state={state}
                                 assetId={a.id}
                                 className="size-12"
-                                title={`${a.name} – uten bilde`}
+                                title={L(`${a.name} – uten bilde`, `${a.name} – no image`)}
                               />
                             )}
                             {on ? (
@@ -301,17 +315,17 @@ export function AddLayerDialog({
                         </button>
                         {on && variants.length > 1 ? (
                           <select
-                            aria-label={`Variant av ${a.name}`}
+                            aria-label={L(`Variant av ${a.name}`, `Variant of ${a.name}`)}
                             value={chosenVariant(a.id)}
                             onChange={(e) =>
                               setVariantChoice((c) => ({ ...c, [a.id]: e.target.value }))
                             }
                             className={control + " w-full"}
                           >
-                            <option value="">Standard</option>
+                            <option value="">{L("Standard", "Default")}</option>
                             {variants.map((v) => (
                               <option key={v.id} value={v.id}>
-                                {v.name || "Uten navn"}
+                                {v.name || L("Uten navn", "Untitled")}
                               </option>
                             ))}
                           </select>
@@ -326,7 +340,7 @@ export function AddLayerDialog({
         ) : (
           <div className="flex flex-col gap-3">
             <label className="flex flex-col gap-1 text-xs text-text-secondary">
-              Farge
+              {L("Farge", "Colour")}
               <input
                 type="color"
                 value={fill}
@@ -335,7 +349,7 @@ export function AddLayerDialog({
               />
             </label>
             <label className="flex flex-col gap-1 text-xs text-text-secondary">
-              Navn
+              {L("Navn", "Name")}
               <input
                 type="text"
                 value={fillName}
@@ -355,14 +369,16 @@ export function AddLayerDialog({
 
         <DialogFooter>
           <Button variant="ghost" onClick={() => close(false)}>
-            Avbryt
+            {L("Avbryt", "Cancel")}
           </Button>
           {tab === "library" ? (
             <Button onClick={addFromLibrary} disabled={picked.length === 0}>
-              {picked.length > 1 ? `Legg til (${picked.length})` : "Legg til"}
+              {picked.length > 1
+                ? L(`Legg til (${picked.length})`, `Add (${picked.length})`)
+                : L("Legg til", "Add")}
             </Button>
           ) : (
-            <Button onClick={addFill}>Legg til</Button>
+            <Button onClick={addFill}>{L("Legg til", "Add")}</Button>
           )}
         </DialogFooter>
       </DialogContent>

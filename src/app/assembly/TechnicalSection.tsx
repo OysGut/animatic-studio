@@ -2,7 +2,7 @@
  * Teknisk visning (DEC-0072, REQ-0103): tidskoder, bildenummer, materiale, kilde-inn/-ut og filinformasjon for
  * scenen og delene. Slås av og på med «Teknisk» i verktøylinjen, så den vanlige visningen forblir enkel.
  */
-import { playheadRows, technicalInfo, type FilmClip, type ProjectState } from "@/core";
+import { L, playheadRows, technicalInfo, type FilmClip, type ProjectState } from "@/core";
 
 export function TechnicalSection({
   state,
@@ -17,14 +17,19 @@ export function TechnicalSection({
   const info = technicalInfo(state, clip, state.project.fps);
   const here = frame === undefined ? null : playheadRows(state, clip, frame, state.project.fps);
   return (
-    <section aria-label="Teknisk" className="flex flex-col gap-2 border-b border-border p-3">
+    <section
+      aria-label={L("Teknisk", "Technical")}
+      className="flex flex-col gap-2 border-b border-border p-3"
+    >
       <h2 className="text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
-        Teknisk
+        {L("Teknisk", "Technical")}
       </h2>
       <Rows rows={info.scene} />
       {here ? (
         <div className="flex flex-col gap-0.5">
-          <p className="text-xs font-medium text-text-secondary">Avspillingshodet</p>
+          <p className="text-xs font-medium text-text-secondary">
+            {L("Avspillingshodet", "Playhead")}
+          </p>
           <Rows rows={here} />
         </div>
       ) : null}

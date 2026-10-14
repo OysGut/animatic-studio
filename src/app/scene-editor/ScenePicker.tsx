@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import {
+  L,
+  collation,
   contentSyncText,
   formatHeading,
   sceneNumberOf,
@@ -60,13 +62,13 @@ export function ScenePicker({
     [occurrences, state.variants, hasComposition],
   );
   const shown = useMemo(() => {
-    const q = query.trim().toLocaleLowerCase("nb");
+    const q = query.trim().toLocaleLowerCase(collation());
     if (!q) return rows;
     return rows.filter(
       (r) =>
-        r.number.toLocaleLowerCase("nb") === q ||
-        r.number.toLocaleLowerCase("nb").startsWith(q) ||
-        r.heading.toLocaleLowerCase("nb").includes(q),
+        r.number.toLocaleLowerCase(collation()) === q ||
+        r.number.toLocaleLowerCase(collation()).startsWith(q) ||
+        r.heading.toLocaleLowerCase(collation()).includes(q),
     );
   }, [rows, query]);
 
@@ -94,8 +96,8 @@ export function ScenePicker({
         className="rounded-sm p-1 text-text-secondary hover:bg-surface-3 hover:text-text-primary disabled:opacity-40"
         onClick={() => rows[index - 1] && onPick(rows[index - 1]!.o.id)}
         disabled={index <= 0}
-        aria-label="Forrige scene"
-        title="Forrige scene"
+        aria-label={L("Forrige scene", "Previous scene")}
+        title={L("Forrige scene", "Previous scene")}
       >
         <ChevronLeft className="size-4" aria-hidden />
       </button>
@@ -113,20 +115,31 @@ export function ScenePicker({
             type="button"
             className="flex h-7 min-w-[160px] max-w-[420px] flex-1 items-center gap-2 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary hover:bg-surface-2"
             aria-label={
-              current ? `Velg scene. Valgt: ${current.number} ${current.heading}` : "Velg scene"
+              current
+                ? L(
+                    `Velg scene. Valgt: ${current.number} ${current.heading}`,
+                    `Choose scene. Selected: ${current.number} ${current.heading}`,
+                  )
+                : L("Velg scene", "Choose scene")
             }
-            title="Velg scene (søk på nummer, sted eller tid)"
+            title={L(
+              "Velg scene (søk på nummer, sted eller tid)",
+              "Choose scene (search by number, location or time)",
+            )}
             disabled={rows.length === 0}
           >
             <span className="font-mono text-[11px] text-text-tertiary">
               {current?.number ?? "–"}
             </span>
             <span className="min-w-0 truncate">
-              {current?.heading ?? (rows.length === 0 ? "Ingen scener" : "Velg en scene")}
+              {current?.heading ??
+                (rows.length === 0
+                  ? L("Ingen scener", "No scenes")
+                  : L("Velg en scene", "Choose a scene"))}
             </span>
             {current && !current.o.active ? (
               <span className="shrink-0 rounded-sm bg-surface-1 px-1 text-[11px] uppercase text-text-tertiary">
-                Deaktivert
+                {L("Deaktivert", "Inactive")}
               </span>
             ) : null}
             <ChevronDown className="size-3.5 shrink-0 text-text-tertiary" aria-hidden />
@@ -161,8 +174,11 @@ export function ScenePicker({
                   if (r) pick(r.o.id);
                 }
               }}
-              placeholder="Søk på nummer, sted eller tid …"
-              aria-label="Søk etter scene"
+              placeholder={L(
+                "Søk på nummer, sted eller tid …",
+                "Search by number, location or time …",
+              )}
+              aria-label={L("Søk etter scene", "Search for scene")}
               role="combobox"
               aria-expanded
               aria-controls={listId}
@@ -171,14 +187,14 @@ export function ScenePicker({
               className="h-9 min-w-0 flex-1 bg-transparent text-[13px] text-text-primary outline-none placeholder:text-text-tertiary"
             />
             <span className="text-[11px] text-text-tertiary">
-              {shown.length} av {rows.length}
+              {shown.length} {L("av", "of")} {rows.length}
             </span>
           </div>
           <ul
             ref={listRef}
             id={listId}
             role="listbox"
-            aria-label="Scener"
+            aria-label={L("Scener", "Scenes")}
             className="max-h-[60vh] overflow-y-auto py-1"
           >
             {shown.map((r, i) => {
@@ -202,7 +218,9 @@ export function ScenePicker({
                   </span>
                   <span className="min-w-0 flex-1 truncate">
                     {r.heading}
-                    {r.o.active ? null : <span className="sr-only"> (deaktivert)</span>}
+                    {r.o.active ? null : (
+                      <span className="sr-only"> {L("(deaktivert)", "(inactive)")}</span>
+                    )}
                   </span>
                   {synced?.has(r.o.id) ? (
                     <span
@@ -210,13 +228,13 @@ export function ScenePicker({
                       title={contentSyncText(state, synced.get(r.o.id)!)}
                     >
                       <ListChecks className="size-3" aria-hidden />
-                      Ressurs oppdatert
+                      {L("Ressurs oppdatert", "Asset updated")}
                     </span>
                   ) : null}
                   {r.has ? (
                     <Layers
                       className="size-3 shrink-0 text-accent-brand"
-                      aria-label="Har 2D-scene"
+                      aria-label={L("Har 2D-scene", "Has 2D scene")}
                     />
                   ) : null}
                   {on ? (
@@ -228,7 +246,7 @@ export function ScenePicker({
           </ul>
           {shown.length === 0 ? (
             <p role="status" className="px-3 py-2 text-xs text-text-tertiary">
-              Ingen scener passer.
+              {L("Ingen scener passer.", "No scenes match.")}
             </p>
           ) : null}
         </PopoverContent>
@@ -238,8 +256,8 @@ export function ScenePicker({
         className="rounded-sm p-1 text-text-secondary hover:bg-surface-3 hover:text-text-primary disabled:opacity-40"
         onClick={() => rows[index + 1] && onPick(rows[index + 1]!.o.id)}
         disabled={index < 0 || index >= rows.length - 1}
-        aria-label="Neste scene"
-        title="Neste scene"
+        aria-label={L("Neste scene", "Next scene")}
+        title={L("Neste scene", "Next scene")}
       >
         <ChevronRight className="size-4" aria-hidden />
       </button>

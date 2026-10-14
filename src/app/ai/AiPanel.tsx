@@ -30,10 +30,13 @@ import {
   jobProgress,
   type JobState,
   jobState,
+  L,
+  locale,
   newId,
   PRIORITY_LABEL,
   type ProjectState,
   PROVIDERS,
+  tm,
   unclaimedImageJobs,
   unclaimedVideoJobs,
   variantsOf,
@@ -69,9 +72,10 @@ function ProviderLine({ projectId, userId }: { projectId: string; userId: string
     .join(", ");
   return (
     <p className="mt-2 flex flex-wrap items-center gap-2 text-[13px] text-text-secondary">
-      Tilgjengelige leverandører: <span className="text-text-primary">{names}</span>
+      {L("Tilgjengelige leverandører:", "Available providers:")}{" "}
+      <span className="text-text-primary">{names}</span>
       <Button size="sm" variant="ghost" onClick={() => setOpen(true)}>
-        AI-leverandører …
+        {L("AI-leverandører …", "AI providers …")}
       </Button>
       <ProvidersDialog open={open} onOpenChange={setOpen} userId={userId} />
     </p>
@@ -187,7 +191,7 @@ export function AiPanel({
               assetId: asset.id,
               fields: { name: "Animatic", style: "animatic", appearance: "" },
             },
-            `Ny variant for «${asset.name}»`,
+            L(`Ny variant for «${asset.name}»`, `New variant for “${asset.name}”`),
             group,
           );
           if (r.error) throw new Error(r.error);
@@ -199,9 +203,12 @@ export function AiPanel({
             versionId: versionId as never,
             variantId: variantId as never,
             media,
-            note: `Generert med AI (${j.model}), hentet inn fra AI-jobbene`,
+            note: L(
+              `Generert med AI (${j.model}), hentet inn fra AI-jobbene`,
+              `Generated with AI (${j.model}), added from the AI jobs`,
+            ),
           },
-          `Hent inn AI-bilde av «${asset.name}»`,
+          L(`Hent inn AI-bilde av «${asset.name}»`, `Add AI image of “${asset.name}”`),
           group,
         );
         if (r.error) throw new Error(r.error);
@@ -221,22 +228,34 @@ export function AiPanel({
   return (
     <section aria-labelledby="ai-title" className="mt-10">
       <h2 id="ai-title" className="mb-2 text-base font-semibold text-text-primary">
-        AI-budsjett og jobber
+        {L("AI-budsjett og jobber", "AI budget and jobs")}
       </h2>
       <Budget state={state} cmds={cmds} isOwner={isOwner} />
       <p className="mt-2 text-[13px] text-text-secondary">
-        Denne måneden: <span className="tabular font-medium text-text-primary">{usage.used}</span>{" "}
+        {L("Denne måneden:", "This month:")}{" "}
+        <span className="tabular font-medium text-text-primary">{usage.used}</span>{" "}
         {usage.limit !== null ? (
           <>
-            av <span className="tabular">{usage.limit}</span> genereringer ({usage.remaining} igjen)
+            {L("av", "of")} <span className="tabular">{usage.limit}</span>{" "}
+            {L("genereringer", "generations")} ({usage.remaining} {L("igjen", "left")})
           </>
         ) : (
-          "genereringer (ingen egen ramme – de faste grensene gjelder: 30 per person i timen, 200 per prosjekt i døgnet)"
+          L(
+            "genereringer (ingen egen ramme – de faste grensene gjelder: 30 per person i timen, 200 per prosjekt i døgnet)",
+            "generations (no own limit – the standard limits apply: 30 per person per hour, 200 per project per day)",
+          )
         )}
         {usage.estimatedCost !== null
-          ? ` · anslått ${formatCredits(usage.estimatedCost)}${usage.partlyUnknown ? " (noen uten anslag)" : ""}`
+          ? L(
+              ` · anslått ${formatCredits(usage.estimatedCost)}${usage.partlyUnknown ? " (noen uten anslag)" : ""}`,
+              ` · estimated ${formatCredits(usage.estimatedCost)}${usage.partlyUnknown ? " (some without an estimate)" : ""}`,
+            )
           : ""}
-        {` · API-kostnad med egne nøkler ca. ${formatUsd(usage.costUsd ?? 0)}`}.
+        {L(
+          ` · API-kostnad med egne nøkler ca. ${formatUsd(usage.costUsd ?? 0)}`,
+          ` · API cost with your own keys approx. ${formatUsd(usage.costUsd ?? 0)}`,
+        )}
+        .
       </p>
 
       <ProviderLine projectId={projectId} userId={userId} />
@@ -248,10 +267,18 @@ export function AiPanel({
           <AlertTriangle className="size-4 text-status-uncertain" aria-hidden />
           <span className="min-w-0 flex-1">
             {unclaimed.length === 1
-              ? "Ett AI-resultat ble laget, men ikke lagt inn"
-              : `${unclaimed.length} AI-resultater ble laget, men ikke lagt inn`}{" "}
-            (bilder i biblioteket, videoer som ny versjon av scenen – siden ble kanskje lukket mens
-            de ble laget). De er betalt og ligger trygt lagret.
+              ? L(
+                  "Ett AI-resultat ble laget, men ikke lagt inn",
+                  "One AI result was made but not added",
+                )
+              : L(
+                  `${unclaimed.length} AI-resultater ble laget, men ikke lagt inn`,
+                  `${unclaimed.length} AI results were made but not added`,
+                )}{" "}
+            {L(
+              "(bilder i biblioteket, videoer som ny versjon av scenen – siden ble kanskje lukket mens de ble laget). De er betalt og ligger trygt lagret.",
+              "(images in the library, videos as a new version of the scene – the page may have been closed while they were made). They are paid for and safely stored.",
+            )}
           </span>
           {editable ? (
             <Button
@@ -261,7 +288,7 @@ export function AiPanel({
               onClick={() => void claim(unclaimed)}
             >
               {claiming ? <Loader2 className="animate-spin" /> : <Download />}
-              {unclaimed.length === 1 ? "Legg inn" : "Legg inn alle"}
+              {unclaimed.length === 1 ? L("Legg inn", "Add") : L("Legg inn alle", "Add all")}
             </Button>
           ) : null}
         </div>
@@ -273,12 +300,16 @@ export function AiPanel({
       ) : null}
 
       <div className="mt-4 flex items-center gap-2">
-        <h3 className="text-[13px] font-medium text-text-primary">Jobber</h3>
-        <div role="group" aria-label="Vis jobber" className="ml-2 flex items-center gap-0.5">
+        <h3 className="text-[13px] font-medium text-text-primary">{L("Jobber", "Jobs")}</h3>
+        <div
+          role="group"
+          aria-label={L("Vis jobber", "Show jobs")}
+          className="ml-2 flex items-center gap-0.5"
+        >
           {(
             [
-              ["all", "Alle"],
-              ["problems", "Ikke ferdige"],
+              ["all", L("Alle", "All")],
+              ["problems", L("Ikke ferdige", "Not finished")],
             ] as const
           ).map(([id, text]) => (
             <button
@@ -303,14 +334,20 @@ export function AiPanel({
       </div>
       {jobs.isError ? (
         <p role="alert" className="mt-2 text-xs text-status-danger">
-          Jobbene kunne ikke hentes: {(jobs.error as Error).message}
+          {L("Jobbene kunne ikke hentes:", "The jobs could not be loaded:")}{" "}
+          {(jobs.error as Error).message}
         </p>
       ) : shown.length === 0 ? (
         <p className="mt-2 text-xs text-text-tertiary">
-          {list.length === 0 ? "Ingen AI-genereringer ennå." : "Ingen jobber som ikke er ferdige."}
+          {list.length === 0
+            ? L("Ingen AI-genereringer ennå.", "No AI generations yet.")
+            : L("Ingen jobber som ikke er ferdige.", "No jobs that are not finished.")}
         </p>
       ) : (
-        <ul className="mt-2 border border-border bg-surface-1" aria-label="AI-jobber">
+        <ul
+          className="mt-2 border border-border bg-surface-1"
+          aria-label={L("AI-jobber", "AI jobs")}
+        >
           {visible.map((j) => {
             const st = jobState(j, now);
             const Icon = STATE_ICON[st];
@@ -329,7 +366,7 @@ export function AiPanel({
                     {JOB_STATE_LABEL[st]}
                   </span>
                   <span className="tabular text-[11px] text-text-tertiary">
-                    {new Date(j.createdAt).toLocaleString("nb-NO", {
+                    {new Date(j.createdAt).toLocaleString(locale(), {
                       day: "2-digit",
                       month: "2-digit",
                       hour: "2-digit",
@@ -343,13 +380,13 @@ export function AiPanel({
                 <div className="min-w-0">
                   <p className="truncate text-text-primary">
                     {j.kind === "video"
-                      ? "Video"
+                      ? L("Video", "Video")
                       : j.kind === "prompt"
-                        ? "Beskrivelse skrevet av AI"
+                        ? L("Beskrivelse skrevet av AI", "Description written by AI")
                         : j.kind === "sound"
-                          ? "Lyd"
-                          : "Bilde"}
-                    {asset ? ` ${j.kind === "prompt" ? "for" : "av"} «${asset.name}»` : ""}
+                          ? L("Lyd", "Sound")
+                          : L("Bilde", "Image")}
+                    {asset ? ` ${j.kind === "prompt" ? "for" : L("av", "of")} «${asset.name}»` : ""}
                     <span className="text-text-tertiary">
                       {" "}
                       · {j.model}
@@ -365,7 +402,9 @@ export function AiPanel({
                     </pre>
                     {j.resultText ? (
                       <>
-                        <p className="mt-1 text-[11px] text-text-tertiary">AI skrev:</p>
+                        <p className="mt-1 text-[11px] text-text-tertiary">
+                          {L("AI skrev:", "The AI wrote:")}
+                        </p>
                         <pre className="whitespace-pre-wrap font-mono text-[11px] text-text-secondary">
                           {j.resultText}
                         </pre>
@@ -382,14 +421,22 @@ export function AiPanel({
                   {unclaimedIds.has(j.id) ? (
                     <p className="mt-0.5 text-xs text-status-uncertain">
                       {j.kind === "video"
-                        ? "Videoen er laget, men ikke lagt inn som versjon av scenen."
-                        : "Bildet er laget, men ikke lagt inn i biblioteket."}
+                        ? L(
+                            "Videoen er laget, men ikke lagt inn som versjon av scenen.",
+                            "The video is made, but not added as a version of the scene.",
+                          )
+                        : L(
+                            "Bildet er laget, men ikke lagt inn i biblioteket.",
+                            "The image is made, but not added to the library.",
+                          )}
                     </p>
                   ) : null}
                   {st === "stale" ? (
                     <p className="mt-0.5 text-xs text-status-uncertain">
-                      Jobben svarte ikke ferdig (siden ble kanskje lukket). Ingen ny versjon ble
-                      lagret; prøv igjen om du trenger bildet.
+                      {L(
+                        "Jobben svarte ikke ferdig (siden ble kanskje lukket). Ingen ny versjon ble lagret; prøv igjen om du trenger bildet.",
+                        "The job did not finish in time (the page may have been closed). No new version was saved; try again if you need the image.",
+                      )}
                     </p>
                   ) : null}
                 </div>
@@ -404,7 +451,7 @@ export function AiPanel({
                         params={{ projectId }}
                         search={{ asset: asset.id }}
                       >
-                        Vis
+                        {L("Vis", "View")}
                       </Link>
                     </Button>
                   ) : null}
@@ -416,13 +463,13 @@ export function AiPanel({
                       onClick={() => void claim([j])}
                     >
                       {claiming === j.id ? <Loader2 className="animate-spin" /> : <Download />}
-                      Legg inn
+                      {L("Legg inn", "Add")}
                     </Button>
                   ) : null}
                   {editable && asset && j.kind === "image" ? (
                     <Button size="sm" variant="secondary" onClick={() => setRetry(j)}>
                       <RotateCcw />
-                      Prøv igjen
+                      {L("Prøv igjen", "Try again")}
                     </Button>
                   ) : null}
                 </div>
@@ -433,7 +480,7 @@ export function AiPanel({
       )}
       {shown.length > visible.length ? (
         <Button size="sm" variant="ghost" className="mt-1" onClick={() => setShowAll(true)}>
-          Vis alle ({shown.length})
+          {L("Vis alle", "Show all")} ({shown.length})
         </Button>
       ) : null}
       <RetryDialog
@@ -473,15 +520,28 @@ function Budget({
 
   function save() {
     if (lim !== null && (!Number.isInteger(lim) || lim < 0 || lim > 100000)) {
-      setErr("Antallet må være et helt tall mellom 0 og 100 000 (tomt = ingen egen ramme).");
+      setErr(
+        L(
+          "Antallet må være et helt tall mellom 0 og 100 000 (tomt = ingen egen ramme).",
+          "The number must be a whole number between 0 and 100,000 (empty = no own limit).",
+        ),
+      );
       return;
     }
     if (pr !== null && (!Number.isFinite(pr) || pr < 0 || pr > 100000)) {
-      setErr("Prisen må være et tall (tomt = ukjent).");
+      setErr(
+        L(
+          "Prisen må være et tall (tomt = ukjent).",
+          "The price must be a number (empty = unknown).",
+        ),
+      );
       return;
     }
     setErr(
-      cmds.run({ type: "SetAiBudget", monthLimit: lim, pricePerImage: pr }, "Endre AI-budsjett"),
+      cmds.run(
+        { type: "SetAiBudget", monthLimit: lim, pricePerImage: pr },
+        L("Endre AI-budsjett", "Change AI budget"),
+      ),
     );
   }
 
@@ -489,39 +549,51 @@ function Budget({
     <div className="border border-border bg-surface-1 px-4 py-3">
       <div className="flex flex-wrap items-end gap-4">
         <label className="flex flex-col gap-1 text-xs text-text-secondary">
-          Høyst antall AI-genereringer per måned
+          {L(
+            "Høyst antall AI-genereringer per måned",
+            "Highest number of AI generations per month",
+          )}
           <input
             value={limit}
             onChange={(e) => setLimit(e.target.value)}
             disabled={!isOwner}
             inputMode="numeric"
-            placeholder="Ingen egen ramme"
-            aria-label="Høyst antall AI-genereringer per måned"
+            placeholder={L("Ingen egen ramme", "No own limit")}
+            aria-label={L(
+              "Høyst antall AI-genereringer per måned",
+              "Highest number of AI generations per month",
+            )}
             className={ctl}
           />
         </label>
         <label className="flex flex-col gap-1 text-xs text-text-secondary">
-          Anslått pris per bilde (kreditter)
+          {L("Anslått pris per bilde (kreditter)", "Estimated price per image (credits)")}
           <input
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             disabled={!isOwner}
             inputMode="decimal"
-            placeholder="Ukjent"
-            aria-label="Anslått pris per bilde i kreditter"
+            placeholder={L("Ukjent", "Unknown")}
+            aria-label={L(
+              "Anslått pris per bilde i kreditter",
+              "Estimated price per image in credits",
+            )}
             className={ctl}
           />
         </label>
         {isOwner ? (
           <Button size="sm" disabled={!changed} onClick={save}>
-            Lagre
+            {L("Lagre", "Save")}
           </Button>
         ) : null}
       </div>
       <p className="mt-2 text-xs text-text-tertiary">
         {isOwner
-          ? "Når rammen er nådd, stopper serveren nye genereringer til neste måned. Prisen er ditt eget anslag (Lovable viser forbruket i arbeidsområdet) og brukes bare til å vise anslått kostnad."
-          : "Bare eieren kan endre budsjettet."}
+          ? L(
+              "Når rammen er nådd, stopper serveren nye genereringer til neste måned. Prisen er ditt eget anslag (Lovable viser forbruket i arbeidsområdet) og brukes bare til å vise anslått kostnad.",
+              "When the limit is reached, the server stops new generations until next month. The price is your own estimate (Lovable shows the usage in the workspace) and is only used to show the estimated cost.",
+            )
+          : L("Bare eieren kan endre budsjettet.", "Only the owner can change the budget.")}
       </p>
       {err ? (
         <p role="alert" className="mt-1 text-xs text-status-danger">
@@ -559,11 +631,14 @@ function RetryDialog({
         <DialogHeader>
           <DialogTitle>
             <AiGlyph className="mr-1 inline size-4" aria-hidden />
-            Prøv igjen{asset ? `: «${asset.name}»` : ""}
+            {L("Prøv igjen", "Try again")}
+            {asset ? `: «${asset.name}»` : ""}
           </DialogTitle>
           <DialogDescription>
-            Samme beskrivelse som sist. Det nye bildet lagres som en ny versjon; ingenting
-            eksisterende endres.
+            {L(
+              "Samme beskrivelse som sist. Det nye bildet lagres som en ny versjon; ingenting eksisterende endres.",
+              "The same description as last time. The new image is saved as a new version; nothing existing is changed.",
+            )}
           </DialogDescription>
         </DialogHeader>
         {job && asset ? (
@@ -589,7 +664,7 @@ function RetryDialog({
                     assetId: asset.id,
                     fields: { name: "Animatic", style: "animatic", appearance: "" },
                   },
-                  `Ny variant for «${asset.name}»`,
+                  L(`Ny variant for «${asset.name}»`, `New variant for “${asset.name}”`),
                 );
                 if (r.error) return r.error;
               }
@@ -599,9 +674,12 @@ function RetryDialog({
                   versionId: img.versionId as never,
                   variantId: variantId as never,
                   media: img.media,
-                  note: `Generert med AI (${img.model}), nytt forsøk`,
+                  note: L(
+                    `Generert med AI (${img.model}), nytt forsøk`,
+                    `Generated with AI (${img.model}), new attempt`,
+                  ),
                 },
-                `AI-bilde av «${asset.name}»`,
+                L(`AI-bilde av «${asset.name}»`, `AI image of “${asset.name}”`),
               );
               return r.error;
             }}
@@ -609,7 +687,7 @@ function RetryDialog({
         ) : null}
         <DialogFooter>
           <Button variant="secondary" onClick={onClose}>
-            Lukk
+            {L("Lukk", "Close")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -662,7 +740,8 @@ function QueueControls({ projectId, job }: { projectId: string; job: GenerationJ
       const r = await updateQueuedJob({
         data: { projectId, jobId: job.id, action, priority },
       });
-      if (!r.ok) setErr(r.message ?? "Kunne ikke endres.");
+      if (!r.ok)
+        setErr(r.message ? tm(r.message) : L("Kunne ikke endres.", "Could not be changed."));
     } catch (e) {
       setErr((e as Error).message);
     } finally {
@@ -673,7 +752,7 @@ function QueueControls({ projectId, job }: { projectId: string; job: GenerationJ
   return (
     <div className="flex flex-wrap items-center gap-1">
       <select
-        aria-label="Prioritet i køen"
+        aria-label={L("Prioritet i køen", "Priority in the queue")}
         value={job.priority ?? 2}
         disabled={busy}
         onChange={(e) => void act("priority", Number(e.target.value) as 1 | 2 | 3)}
@@ -686,10 +765,10 @@ function QueueControls({ projectId, job }: { projectId: string; job: GenerationJ
         ))}
       </select>
       <Button size="sm" variant="ghost" disabled={busy} onClick={() => void act("first")}>
-        Først
+        {L("Først", "First")}
       </Button>
       <Button size="sm" variant="ghost" disabled={busy} onClick={() => void act("cancel")}>
-        Avbryt
+        {L("Avbryt", "Cancel")}
       </Button>
       {err ? (
         <span role="alert" className="text-[11px] text-status-danger">

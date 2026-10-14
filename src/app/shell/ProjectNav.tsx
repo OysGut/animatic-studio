@@ -10,45 +10,56 @@ import {
   Users,
 } from "lucide-react";
 import type { ReactNode } from "react";
+import { L, localized } from "@/core";
 import { PaneResizer, usePaneSize, useStoredFlag } from "./pane-size";
 
 /** Arbeidsflatene (INFORMATION_ARCHITECTURE.md). Flatene som ikke er bygget ennå vises deaktivert med milepæl. */
 const LATER: { label: string; icon: ReactNode; milestone: string }[] = [];
 
+/** Navn på arbeidsflatene (slås opp i render, så de følger språkvalget). */
+const NAV_LABEL = localized({
+  overview: ["Prosjektoversikt", "Project overview"],
+  script: ["Manus", "Script"],
+  library: ["Ressursbibliotek", "Asset library"],
+  scene: ["Sceneeditor", "Scene editor"],
+  assembly: ["Montering", "Assembly"],
+  release: ["Utgivelse", "Release"],
+});
+
 const LINKS = [
   {
     to: "/prosjekt/$projectId",
-    label: "Prosjektoversikt",
+    labelKey: "overview",
     icon: <Users aria-hidden />,
     exact: true,
   },
   {
     to: "/prosjekt/$projectId/manus",
-    label: "Manus",
+    labelKey: "script",
     icon: <FileText aria-hidden />,
     exact: false,
   },
   {
     to: "/prosjekt/$projectId/bibliotek",
-    label: "Ressursbibliotek",
+    labelKey: "library",
     icon: <Library aria-hidden />,
     exact: false,
   },
   {
     to: "/prosjekt/$projectId/scene",
-    label: "Sceneeditor",
+    labelKey: "scene",
     icon: <Layers aria-hidden />,
     exact: false,
   },
   {
     to: "/prosjekt/$projectId/montering",
-    label: "Montering",
+    labelKey: "assembly",
     icon: <Film aria-hidden />,
     exact: false,
   },
   {
     to: "/prosjekt/$projectId/utgivelse",
-    label: "Utgivelse",
+    labelKey: "release",
     icon: <Clapperboard aria-hidden />,
     exact: false,
   },
@@ -75,40 +86,51 @@ export function ProjectNav({ projectId }: { projectId: string }) {
           onSize={setWidth}
           min={140}
           max={320}
-          label="Bredde på menyen"
+          label={L("Bredde på menyen", "Menu width")}
         />
       )}
       <button
         type="button"
         onClick={() => setCollapsed(!collapsed)}
         className={item + (collapsed ? " justify-center px-0" : " justify-end")}
-        aria-label={collapsed ? "Vis menyen" : "Skjul menyen"}
+        aria-label={collapsed ? L("Vis menyen", "Show menu") : L("Skjul menyen", "Hide menu")}
         aria-expanded={!collapsed}
-        title={collapsed ? "Vis menyen" : "Skjul menyen (bare ikoner)"}
+        title={
+          collapsed
+            ? L("Vis menyen", "Show menu")
+            : L("Skjul menyen (bare ikoner)", "Hide menu (icons only)")
+        }
       >
         {collapsed ? <PanelLeftOpen aria-hidden /> : <PanelLeftClose aria-hidden />}
       </button>
-      {LINKS.map((l) => (
-        <Link
-          key={l.to}
-          to={l.to}
-          params={{ projectId }}
-          activeOptions={{ exact: l.exact }}
-          className={item + (collapsed ? " justify-center px-0" : "")}
-          activeProps={{ className: active, "aria-current": "page" }}
-          title={collapsed ? l.label : undefined}
-          aria-label={collapsed ? l.label : undefined}
-        >
-          {l.icon}
-          {collapsed ? null : <span className="truncate">{l.label}</span>}
-        </Link>
-      ))}
+      {LINKS.map((l) => {
+        const label = NAV_LABEL[l.labelKey];
+        return (
+          <Link
+            key={l.to}
+            to={l.to}
+            params={{ projectId }}
+            activeOptions={{ exact: l.exact }}
+            className={item + (collapsed ? " justify-center px-0" : "")}
+            activeProps={{ className: active, "aria-current": "page" }}
+            title={collapsed ? label : undefined}
+            aria-label={collapsed ? label : undefined}
+          >
+            {l.icon}
+            {collapsed ? null : <span className="truncate">{label}</span>}
+          </Link>
+        );
+      })}
       {LATER.map((w) => (
         <span
           key={w.label}
           aria-disabled
-          aria-label={collapsed ? `${w.label} – kommer i ${w.milestone}` : undefined}
-          title={`${w.label} – kommer i ${w.milestone}`}
+          aria-label={
+            collapsed
+              ? L(`${w.label} – kommer i ${w.milestone}`, `${w.label} – coming in ${w.milestone}`)
+              : undefined
+          }
+          title={L(`${w.label} – kommer i ${w.milestone}`, `${w.label} – coming in ${w.milestone}`)}
           className={
             "flex h-8 cursor-not-allowed items-center gap-2 px-2 text-[13px] text-text-disabled [&_svg]:size-4 [&_svg]:shrink-0" +
             (collapsed ? " justify-center px-0" : "")

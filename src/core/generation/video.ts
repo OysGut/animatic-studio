@@ -17,6 +17,7 @@ import { compareKeys } from "../order-key";
 import { framesToSeconds } from "../time";
 import type { ClipPartFields } from "../commands/types";
 import { compositionOfVariant } from "../composition/render";
+import { L } from "../i18n";
 
 /**
  * Bilder som kan være startbilde for videoen: bildene i scenens 2D-scene (bakgrunn først), så godkjente
@@ -235,7 +236,7 @@ export function sceneVideoWork(
 /** Stien til siste bilde i en AI-video (startbilde for neste segment, REQ-0263, DEC-0070). */
 export function lastFramePath(resultOrMediaRef: string): string | null {
   const m = /^([0-9a-f-]{36})\/films\/([0-9a-f-]{36})\/[^/]+$/i.exec(resultOrMediaRef);
-  return m ? `${m[1]}/films/${m[2]}/last-frame.png` : null;
+  return m ? `${m[1]}/films/${m[2]}/last-frame.png` : null; // i18n-ignore: lagringssti
 }
 
 /** Er stien et «siste bilde» i prosjektet? Gir take-ID-en, eller null. */
@@ -336,15 +337,20 @@ export function aiUpdatePlan(
     return {
       segments: [],
       localOnly: false,
-      reason: "Scenen har ingen lagret inndeling for video.",
+      reason: L(
+        "Scenen har ingen lagret inndeling for video.",
+        "The scene has no saved breakdown for video.",
+      ),
     };
   const visual = changes.filter((c) => !NON_VISUAL.has(c.blockKind));
   if (!visual.length)
     return {
       segments: [],
       localOnly: true,
-      reason:
+      reason: L(
         "Endringene (notater/overganger) synes ikke i bildet. Godkjenn dem i stedet for å lage nye videoer.",
+        "The changes (notes/transitions) do not show in the picture. Approve them instead of making new videos.",
+      ),
     };
   const affected = new Set(affectedTakeIds);
   const located = new Set<number>();
@@ -365,7 +371,13 @@ export function aiUpdatePlan(
     segments,
     localOnly: false,
     reason: segments.length
-      ? `Endringene berører ${segments.length === 1 ? "segment" : "segmentene"} ${segments.map((i) => i + 1).join(", ")}${unknown ? " (en fjernet linje kan ikke plasseres, så alle segmenter med video er tatt med)" : ""}.`
-      : "Ingen av segmentenes valgte videoer er laget fra det gamle manuset.",
+      ? L(
+          `Endringene berører ${segments.length === 1 ? "segment" : "segmentene"} ${segments.map((i) => i + 1).join(", ")}${unknown ? " (en fjernet linje kan ikke plasseres, så alle segmenter med video er tatt med)" : ""}.`,
+          `The changes affect ${segments.length === 1 ? "segment" : "the segments"} ${segments.map((i) => i + 1).join(", ")}${unknown ? " (a removed line cannot be placed, so all segments with video are included)" : ""}.`,
+        )
+      : L(
+          "Ingen av segmentenes valgte videoer er laget fra det gamle manuset.",
+          "None of the segments' chosen videos were made from the old script.",
+        ),
   };
 }

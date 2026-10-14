@@ -16,6 +16,7 @@ import {
   type VariantId,
 } from "../ids";
 import { checkInvariants } from "../invariants";
+import { L } from "../i18n";
 import { secondsToFrames, type Rational } from "../time";
 import {
   EXPORT_SETTINGS_MAX_BYTES,
@@ -40,6 +41,7 @@ import {
 } from "../composition/fields";
 import { compareKeys, isValidOrderKey, keyBetween, keysEvenly } from "../order-key";
 import { compositionOfVariant } from "../composition/render";
+import { isVersionView } from "../library/view";
 import { compositionAssetVersions, takeAssetVersions } from "../library/content-sync";
 import {
   MAX_TRANSITION_FRAMES,
@@ -131,12 +133,12 @@ function need<T>(value: T | undefined, what: string): T {
     typeof value === "function" ||
     (typeof value === "object" && !Object.prototype.hasOwnProperty.call(value, "id"))
   )
-    fail("not_found", `${what} finnes ikke`);
+    fail("not_found", L(`${what} finnes ikke`, `${what} was not found`));
   return value;
 }
 
 function assertNewId(s: ProjectState, id: string) {
-  if (!isUuid(id)) fail("invalid", `Ugyldig ID ${id}`);
+  if (!isUuid(id)) fail("invalid", L(`Ugyldig ID ${id}`, `Invalid ID ${id}`));
   const all = [
     s.productions,
     s.scenes,
@@ -161,7 +163,8 @@ function assertNewId(s: ProjectState, id: string) {
     s.posters,
     s.styleProfiles,
   ];
-  if (all.some((c) => c[id] !== undefined)) fail("duplicate_id", `ID ${id} er allerede i bruk`);
+  if (all.some((c) => c[id] !== undefined))
+    fail("duplicate_id", L(`ID ${id} er allerede i bruk`, `ID ${id} is already in use`));
 }
 
 // ---------- Ressursbiblioteket ----------
@@ -220,23 +223,35 @@ function validStoryTime(
   st: ProjectState["scenes"][string]["storyTime"] | undefined,
 ): void {
   if (!st || !["linear", "flashback", "flashforward", "dream", "jump"].includes(st.kind))
-    fail("invalid", "Ukjent type fortellingstid");
+    fail("invalid", L("Ukjent type fortellingstid", "Unknown story time type"));
   if (
     typeof st!.offset !== "number" ||
     !Number.isFinite(st!.offset) ||
     Math.abs(st!.offset) > 100_000
   )
-    fail("invalid", "Ugyldig forskyvning");
+    fail("invalid", L("Ugyldig forskyvning", "Invalid offset"));
   if (st!.kind === "linear" && st!.anchorSceneId !== null)
-    fail("invalid", "Lineære scener har ikke anker");
+    fail("invalid", L("Lineære scener har ikke anker", "Linear scenes have no anchor"));
   if (st!.anchorSceneId !== null) {
-    if (!s.scenes[st!.anchorSceneId]) fail("not_found", "Ankerscenen finnes ikke");
-    if (st!.anchorSceneId === sceneId) fail("invalid", "En scene kan ikke ankres til seg selv");
+    if (!s.scenes[st!.anchorSceneId])
+      fail("not_found", L("Ankerscenen finnes ikke", "The anchor scene does not exist"));
+    if (st!.anchorSceneId === sceneId)
+      fail(
+        "invalid",
+        L("En scene kan ikke ankres til seg selv", "A scene cannot be anchored to itself"),
+      );
     // Ingen sykliske ankre (fortellingstiden må kunne beregnes, INV-09)
     let cur: string | null = st!.anchorSceneId;
     const seen = new Set<string>();
     while (cur !== null && !seen.has(cur)) {
-      if (cur === sceneId) fail("invalid", "Ankeret ville gitt en sirkel i fortellingstiden");
+      if (cur === sceneId)
+        fail(
+          "invalid",
+          L(
+            "Ankeret ville gitt en sirkel i fortellingstiden",
+            "The anchor would create a loop in story time",
+          ),
+        );
       seen.add(cur);
       const anc: ProjectState["scenes"][string] | undefined = s.scenes[cur];
       cur = anc && anc.storyTime.kind !== "linear" ? anc.storyTime.anchorSceneId : null;
@@ -246,7 +261,7 @@ function validStoryTime(
 
 function plannedOrFail(ms: unknown): number {
   if (typeof ms !== "number" || !Number.isInteger(ms) || ms < MIN_PLANNED_MS || ms > MAX_PLANNED_MS)
-    fail("invalid", "Ugyldig planlagt lengde");
+    fail("invalid", L("Ugyldig planlagt lengde", "Invalid planned length"));
   return ms as number;
 }
 /** Maks filstørrelse for et bilde: 2 GB (Lovable Clouds standard per fil, DEC-0032). */
@@ -269,35 +284,47 @@ function normalizeAssetFields(f: AssetFields): AssetFields {
     ) ||
     f.tags.some((t) => typeof t !== "string")
   )
-    fail("invalid", "Ufullstendige ressursfelter");
-  if (!(ASSET_KINDS as readonly string[]).includes(f.kind)) fail("invalid", "Ukjent ressurstype");
+    fail("invalid", L("Ufullstendige ressursfelter", "Incomplete asset fields"));
+  if (!(ASSET_KINDS as readonly string[]).includes(f.kind))
+    fail("invalid", L("Ukjent ressurstype", "Unknown asset type"));
   const name = f.name.trim();
-  if (!name || name.length > 200) fail("invalid", "Ressursen må ha et navn (maks 200 tegn)");
-  if (f.description.length > 5000) fail("invalid", "Beskrivelsen er for lang");
-  if (f.category.trim().length > 100) fail("invalid", "Kategorien er for lang");
-  if (f.names.length > 50) fail("invalid", "For mange alternative navn");
-  if (f.tags.length > 30) fail("invalid", "For mange stikkord");
+  if (!name || name.length > 200)
+    fail(
+      "invalid",
+      L(
+        "Ressursen må ha et navn (maks 200 tegn)",
+        "The asset must have a name (max 200 characters)",
+      ),
+    );
+  if (f.description.length > 5000)
+    fail("invalid", L("Beskrivelsen er for lang", "The description is too long"));
+  if (f.category.trim().length > 100)
+    fail("invalid", L("Kategorien er for lang", "The category is too long"));
+  if (f.names.length > 50)
+    fail("invalid", L("For mange alternative navn", "Too many alternative names"));
+  if (f.tags.length > 30) fail("invalid", L("For mange stikkord", "Too many keywords"));
   const seenNames = new Set([name.toLocaleLowerCase("nb")]);
   const names = [];
   for (const n of f.names) {
     const t = n.name.trim();
     if (!t) continue;
-    if (t.length > 200) fail("invalid", "Et alternativt navn er for langt");
+    if (t.length > 200)
+      fail("invalid", L("Et alternativt navn er for langt", "An alternative name is too long"));
     if (!(ASSET_NAME_KINDS as readonly string[]).includes(n.kind))
-      fail("invalid", "Ukjent navnetype");
+      fail("invalid", L("Ukjent navnetype", "Unknown name type"));
     const key = t.toLocaleLowerCase("nb");
     if (seenNames.has(key)) continue;
     seenNames.add(key);
     const language = n.language?.trim() || null;
     if (language !== null && !/^[a-z]{2,3}(-[A-Za-z0-9]{2,8})?$/.test(language))
-      fail("invalid", "Ugyldig språkkode");
+      fail("invalid", L("Ugyldig språkkode", "Invalid language code"));
     names.push({ name: t, kind: n.kind, language });
   }
   const tags: string[] = [];
   for (const t of f.tags) {
     const x = t.trim();
     if (!x) continue;
-    if (x.length > 50) fail("invalid", "Et stikkord er for langt");
+    if (x.length > 50) fail("invalid", L("Et stikkord er for langt", "A keyword is too long"));
     if (!tags.some((y) => y.toLocaleLowerCase("nb") === x.toLocaleLowerCase("nb"))) tags.push(x);
   }
   return {
@@ -312,11 +339,23 @@ function normalizeAssetFields(f: AssetFields): AssetFields {
 
 function normalizeVariantFields(f: AssetVariantFields): AssetVariantFields {
   if (!f || typeof f.name !== "string" || typeof f.appearance !== "string")
-    fail("invalid", "Ufullstendige variantfelter");
+    fail("invalid", L("Ufullstendige variantfelter", "Incomplete variant fields"));
   const name = f.name.trim();
-  if (!name || name.length > 200) fail("invalid", "Varianten må ha et navn (maks 200 tegn)");
-  if (!(VISUAL_STYLES as readonly string[]).includes(f.style)) fail("invalid", "Ukjent stil");
-  if (f.appearance.trim().length > 500) fail("invalid", "Utseendebeskrivelsen er for lang");
+  if (!name || name.length > 200)
+    fail(
+      "invalid",
+      L(
+        "Varianten må ha et navn (maks 200 tegn)",
+        "The variant must have a name (max 200 characters)",
+      ),
+    );
+  if (!(VISUAL_STYLES as readonly string[]).includes(f.style))
+    fail("invalid", L("Ukjent stil", "Unknown style"));
+  if (f.appearance.trim().length > 500)
+    fail(
+      "invalid",
+      L("Utseendebeskrivelsen er for lang", "The appearance description is too long"),
+    );
   return { name, style: f.style, appearance: f.appearance.trim() };
 }
 
@@ -324,28 +363,48 @@ function normalizeVariantFields(f: AssetVariantFields): AssetVariantFields {
 
 function normalizeAnnotation(s: ProjectState, n: NewAnnotation, now: string): Annotation {
   const text = n.text.trim();
-  if (!text || text.length > 10_000) fail("invalid", "Notatet må ha tekst (maks 10 000 tegn)");
+  if (!text || text.length > 10_000)
+    fail(
+      "invalid",
+      L(
+        "Notatet må ha tekst (maks 10 000 tegn)",
+        "The note must have text (max 10,000 characters)",
+      ),
+    );
   const authorName = n.authorName.trim().slice(0, 100);
   const stampAt = n.stampAt ?? now;
   if (typeof stampAt !== "string" || Number.isNaN(Date.parse(stampAt)))
-    fail("invalid", "Ugyldig tidspunkt for notatet");
-  if (typeof n.quote !== "string" || n.quote.length > 5000) fail("invalid", "Ugyldig sitat");
+    fail("invalid", L("Ugyldig tidspunkt for notatet", "Invalid time for the note"));
+  if (typeof n.quote !== "string" || n.quote.length > 5000)
+    fail("invalid", L("Ugyldig sitat", "Invalid quote"));
   if (n.blockId !== null) {
-    const b = need(s.blocks[n.blockId], "Blokken");
-    if (b.removed) fail("invalid", "Blokken er fjernet");
-    if (n.variantId !== null) fail("invalid", "Et notat på tekst har ikke scene i tillegg");
+    const b = need(s.blocks[n.blockId], L("Blokken", "The block"));
+    if (b.removed) fail("invalid", L("Blokken er fjernet", "The block has been removed"));
+    if (n.variantId !== null)
+      fail(
+        "invalid",
+        L("Et notat på tekst har ikke scene i tillegg", "A note on text cannot also have a scene"),
+      );
     if (n.quote === "") {
       // Notat på hele elementet: ingen tekstområde, følger hele teksten også etter endringer
-      if (n.start !== 0 || n.end !== 0) fail("invalid", "Ugyldig tekstområde for notatet");
+      if (n.start !== 0 || n.end !== 0)
+        fail("invalid", L("Ugyldig tekstområde for notatet", "Invalid text range for the note"));
     } else {
       if (!Number.isInteger(n.start) || !Number.isInteger(n.end) || n.start < 0 || n.end <= n.start)
-        fail("invalid", "Ugyldig tekstområde for notatet");
+        fail("invalid", L("Ugyldig tekstområde for notatet", "Invalid text range for the note"));
       if (b.text.slice(n.start, n.end) !== n.quote) {
         // Teksten er endret siden (f.eks. gjør om etter angre): finn det markerte nærmest samme sted
         let best = -1;
         for (let i = b.text.indexOf(n.quote); i >= 0; i = b.text.indexOf(n.quote, i + 1))
           if (best < 0 || Math.abs(i - n.start) < Math.abs(best - n.start)) best = i;
-        if (best < 0) fail("invalid", "Den markerte teksten finnes ikke i manuset");
+        if (best < 0)
+          fail(
+            "invalid",
+            L(
+              "Den markerte teksten finnes ikke i manuset",
+              "The selected text does not exist in the script",
+            ),
+          );
         return {
           ...base(),
           start: best,
@@ -354,10 +413,17 @@ function normalizeAnnotation(s: ProjectState, n: NewAnnotation, now: string): An
       }
     }
   } else {
-    if (n.variantId === null) fail("invalid", "Notatet må høre til en scene eller tekst");
-    need(s.variants[n.variantId], "Scenen");
+    if (n.variantId === null)
+      fail(
+        "invalid",
+        L("Notatet må høre til en scene eller tekst", "The note must belong to a scene or text"),
+      );
+    need(s.variants[n.variantId], L("Scenen", "The scene"));
     if (n.start !== 0 || n.end !== 0 || n.quote !== "")
-      fail("invalid", "En nål på scenen har ikke tekstområde");
+      fail(
+        "invalid",
+        L("En nål på scenen har ikke tekstområde", "A pin on the scene has no text range"),
+      );
   }
   return base();
 
@@ -371,7 +437,7 @@ function normalizeAnnotation(s: ProjectState, n: NewAnnotation, now: string): An
       end: n.end,
       quote: n.quote,
       text,
-      authorName: authorName || "Ukjent",
+      authorName: authorName || "Ukjent", // i18n-ignore – lagret forfatternavn (standard)
       stampAt: new Date(stampAt as string).toISOString(),
       editedByName: null,
       editedAt: null,
@@ -381,7 +447,8 @@ function normalizeAnnotation(s: ProjectState, n: NewAnnotation, now: string): An
 }
 
 function assertKey(key: string) {
-  if (!isValidOrderKey(key)) fail("invalid", `Ugyldig sorteringsnøkkel ${key}`);
+  if (!isValidOrderKey(key))
+    fail("invalid", L(`Ugyldig sorteringsnøkkel ${key}`, `Invalid sort key ${key}`));
 }
 
 /** Finn revisjonen til en entitet uansett samling. */
@@ -436,17 +503,26 @@ function currentBlockRevisions(s: ProjectState, variantId: VariantId): Record<st
 
 /** Kan blokker i denne varianten redigeres i produksjonen? (INV-04, mandat 24.5) */
 function assertCanEditVariant(s: ProjectState, productionId: string, variantId: VariantId) {
-  const variant = need(s.variants[variantId], "Varianten");
-  const production = need(s.productions[productionId], "Produksjonen");
+  const variant = need(s.variants[variantId], L("Varianten", "The variant"));
+  const production = need(s.productions[productionId], L("Produksjonen", "The production"));
   if (variant.ownerProductionId === null) {
     if (production.kind !== "main") {
       fail(
         "must_fork_variant",
-        "Scenen deles med hovedfilmen. Endringer i denne produksjonen lagres som egen versjon av scenen.",
+        L(
+          "Scenen deles med hovedfilmen. Endringer i denne produksjonen lagres som egen versjon av scenen.",
+          "The scene is shared with the main film. Changes in this production are saved as a separate version of the scene.",
+        ),
       );
     }
   } else if (variant.ownerProductionId !== productionId) {
-    fail("must_fork_variant", "Denne versjonen av scenen tilhører en annen produksjon");
+    fail(
+      "must_fork_variant",
+      L(
+        "Denne versjonen av scenen tilhører en annen produksjon",
+        "This version of the scene belongs to another production",
+      ),
+    );
   }
 }
 
@@ -519,30 +595,60 @@ function layerFields(s: ProjectState, f: LayerFields, prev?: CompositionLayer): 
   const r = normalizeLayerFields(f);
   if (!r.ok) fail("invalid", r.error);
   const v = r.value;
-  if (v.assetId !== null && need(s.assets[v.assetId], "Ressursen").kind === "sound")
-    fail("invalid", "En lydfil kan ikke vises som lag");
+  if (v.assetId !== null && need(s.assets[v.assetId], L("Ressursen", "The asset")).kind === "sound")
+    fail(
+      "invalid",
+      L("En lydfil kan ikke vises som lag", "An audio file cannot be shown as a layer"),
+    );
   if (v.assetVariantId !== null) {
-    const va = need(s.assetVariants[v.assetVariantId], "Varianten av ressursen");
-    if (va.assetId !== v.assetId) fail("invalid", "Varianten hører til en annen ressurs");
+    const va = need(
+      s.assetVariants[v.assetVariantId],
+      L("Varianten av ressursen", "The asset variant"),
+    );
+    if (va.assetId !== v.assetId)
+      fail(
+        "invalid",
+        L("Varianten hører til en annen ressurs", "The variant belongs to another asset"),
+      );
   }
   if (v.versionId !== null) {
-    const ve = need(s.assetVersions[v.versionId], "Bildeversjonen");
-    if (ve.variantId !== v.assetVariantId) fail("invalid", "Versjonen hører til en annen variant");
+    const ve = need(s.assetVersions[v.versionId], L("Bildeversjonen", "The image version"));
+    if (ve.variantId !== v.assetVariantId)
+      fail(
+        "invalid",
+        L("Versjonen hører til en annen variant", "The version belongs to another variant"),
+      );
   }
   // Bildeskifter: samme kontroll som lagets eget bilde (uendrede skifter kontrolleres ikke på nytt)
   const old = new Set((prev?.swaps ?? []).map((w) => JSON.stringify(w)));
   for (const w of v.swaps) {
     if (old.has(JSON.stringify(w))) continue;
-    if (need(s.assets[w.assetId], "Bildet i bildeskiftet").kind === "sound")
-      fail("invalid", "En lydfil kan ikke vises som lag");
+    if (
+      need(s.assets[w.assetId], L("Bildet i bildeskiftet", "The image in the image swap")).kind ===
+      "sound"
+    )
+      fail(
+        "invalid",
+        L("En lydfil kan ikke vises som lag", "An audio file cannot be shown as a layer"),
+      );
     if (w.assetVariantId !== null) {
-      const va = need(s.assetVariants[w.assetVariantId], "Varianten av ressursen");
-      if (va.assetId !== w.assetId) fail("invalid", "Varianten hører til en annen ressurs");
+      const va = need(
+        s.assetVariants[w.assetVariantId],
+        L("Varianten av ressursen", "The asset variant"),
+      );
+      if (va.assetId !== w.assetId)
+        fail(
+          "invalid",
+          L("Varianten hører til en annen ressurs", "The variant belongs to another asset"),
+        );
     }
     if (w.versionId !== null) {
-      const ve = need(s.assetVersions[w.versionId], "Bildeversjonen");
+      const ve = need(s.assetVersions[w.versionId], L("Bildeversjonen", "The image version"));
       if (ve.variantId !== w.assetVariantId)
-        fail("invalid", "Versjonen hører til en annen variant");
+        fail(
+          "invalid",
+          L("Versjonen hører til en annen variant", "The version belongs to another variant"),
+        );
     }
   }
   // Språkavhengige bilder (DEC-0059, REQ-0337): en variant av lagets egen ressurs (uendrede kontrolleres
@@ -550,13 +656,28 @@ function layerFields(s: ProjectState, f: LayerFields, prev?: CompositionLayer): 
   const oldLang = new Set((prev?.languageImages ?? []).map((x) => JSON.stringify(x)));
   for (const li of v.languageImages ?? []) {
     if (prev && prev.assetId === v.assetId && oldLang.has(JSON.stringify(li))) continue;
-    const va = need(s.assetVariants[li.assetVariantId], "Varianten for språket");
+    const va = need(
+      s.assetVariants[li.assetVariantId],
+      L("Varianten for språket", "The variant for the language"),
+    );
     if (va.assetId !== v.assetId)
-      fail("invalid", "Bildet for et språk må være en variant av samme ressurs som laget");
+      fail(
+        "invalid",
+        L(
+          "Bildet for et språk må være en variant av samme ressurs som laget",
+          "The image for a language must be a variant of the same asset as the layer",
+        ),
+      );
     if (li.versionId !== null) {
-      const ve = need(s.assetVersions[li.versionId], "Bildeversjonen for språket");
+      const ve = need(
+        s.assetVersions[li.versionId],
+        L("Bildeversjonen for språket", "The image version for the language"),
+      );
       if (ve.variantId !== li.assetVariantId)
-        fail("invalid", "Versjonen hører til en annen variant");
+        fail(
+          "invalid",
+          L("Versjonen hører til en annen variant", "The version belongs to another variant"),
+        );
     }
   }
   return v;
@@ -598,16 +719,33 @@ function checkMasks(before: ProjectState, after: ProjectState, ids: readonly str
     const m = l?.mask;
     if (!l || !m || m.kind !== "layer") continue;
     if (JSON.stringify(before.layers[id]?.mask ?? null) === JSON.stringify(m)) continue;
-    if (m.layerId === l.id) fail("invalid", "Et lag kan ikke være maske for seg selv");
+    if (m.layerId === l.id)
+      fail(
+        "invalid",
+        L("Et lag kan ikke være maske for seg selv", "A layer cannot be a mask for itself"),
+      );
     const target = after.layers[m.layerId];
     if (!target || target.compositionId !== l.compositionId)
-      fail("invalid", "Laget som skal brukes som maske, finnes ikke i denne 2D-scenen");
-    if (target.kind === "group") fail("invalid", "En gruppe kan ikke brukes som maske");
+      fail(
+        "invalid",
+        L(
+          "Laget som skal brukes som maske, finnes ikke i denne 2D-scenen",
+          "The layer to be used as a mask does not exist in this 2D scene",
+        ),
+      );
+    if (target.kind === "group")
+      fail("invalid", L("En gruppe kan ikke brukes som maske", "A group cannot be used as a mask"));
     const seen = new Set<string>([l.id]);
     let cur: CompositionLayer | undefined = target;
     while (cur && cur.mask?.kind === "layer") {
       if (seen.has(cur.mask.layerId))
-        fail("invalid", "Maskene går i ring (lagene maskerer hverandre)");
+        fail(
+          "invalid",
+          L(
+            "Maskene går i ring (lagene maskerer hverandre)",
+            "The masks form a loop (the layers mask each other)",
+          ),
+        );
       seen.add(cur.id);
       cur = after.layers[cur.mask.layerId];
     }
@@ -624,8 +762,11 @@ function checkGroups(before: ProjectState, after: ProjectState, ids: readonly st
     if (!l || l.groupId === null || before.layers[id]?.groupId === l.groupId) continue;
     const g = after.layers[l.groupId];
     if (!g || g.kind !== "group" || g.compositionId !== l.compositionId || g.id === l.id)
-      fail("invalid", "Gruppen finnes ikke i denne 2D-scenen");
-    if (g.removed) fail("invalid", "Gruppen er slettet");
+      fail(
+        "invalid",
+        L("Gruppen finnes ikke i denne 2D-scenen", "The group does not exist in this 2D scene"),
+      );
+    if (g.removed) fail("invalid", L("Gruppen er slettet", "The group has been deleted"));
   }
 }
 
@@ -645,10 +786,18 @@ const STILL_MAX_FRAMES = 1_000_000;
 export const MAX_CLIP_PARTS = 200;
 
 function partFieldsOf(p: ClipPartFields): ClipPartFields {
-  if (!p || typeof p !== "object" || !isUuid(String(p.partId))) fail("invalid", "Ugyldig del");
-  if (p.source !== "take" && p.source !== "composition") fail("invalid", "Ugyldig kilde for delen");
+  if (!p || typeof p !== "object" || !isUuid(String(p.partId)))
+    fail("invalid", L("Ugyldig del", "Invalid part"));
+  if (p.source !== "take" && p.source !== "composition")
+    fail("invalid", L("Ugyldig kilde for delen", "Invalid source for the part"));
   if ((p.source === "take") !== (p.takeId !== null && p.takeId !== undefined))
-    fail("invalid", "Delen må ha versjon bare når kilden er film");
+    fail(
+      "invalid",
+      L(
+        "Delen må ha versjon bare når kilden er film",
+        "The part may only have a version when the source is film",
+      ),
+    );
   if (
     !Number.isInteger(p.inMs) ||
     !Number.isInteger(p.outMs) ||
@@ -656,7 +805,13 @@ function partFieldsOf(p: ClipPartFields): ClipPartFields {
     p.outMs <= p.inMs ||
     p.outMs > AUDIO_MAX_MS
   )
-    fail("invalid", "Inn- og utpunkt må være hele millisekunder, og ut må være etter inn");
+    fail(
+      "invalid",
+      L(
+        "Inn- og utpunkt må være hele millisekunder, og ut må være etter inn",
+        "In and out points must be whole milliseconds, and out must be after in",
+      ),
+    );
   return {
     partId: p.partId,
     source: p.source,
@@ -672,8 +827,21 @@ export const MAX_PART_TRANSITION_MS = 5000;
 
 function transitionMsOf(ms: number, partMs: number): number {
   if (!Number.isInteger(ms) || ms < 0 || ms > MAX_PART_TRANSITION_MS)
-    fail("invalid", `Overgangen må være 0–${MAX_PART_TRANSITION_MS} ms`);
-  if (ms > partMs) fail("invalid", "Overgangen kan ikke være lengre enn delen");
+    fail(
+      "invalid",
+      L(
+        `Overgangen må være 0–${MAX_PART_TRANSITION_MS} ms`,
+        `The transition must be 0–${MAX_PART_TRANSITION_MS} ms`,
+      ),
+    );
+  if (ms > partMs)
+    fail(
+      "invalid",
+      L(
+        "Overgangen kan ikke være lengre enn delen",
+        "The transition cannot be longer than the part",
+      ),
+    );
   return ms;
 }
 
@@ -685,59 +853,95 @@ function continuityFieldsOf(
   f: ContinuityEventFields,
   prev?: ContinuityEvent,
 ): Omit<ContinuityEvent, "id" | "revision" | "removed" | "disabledIn"> {
-  if (!f || typeof f !== "object") fail("invalid", "Ugyldig kontinuitetshendelse");
-  const a = need(s.assets[f.assetId], "Ressursen");
+  if (!f || typeof f !== "object")
+    fail("invalid", L("Ugyldig kontinuitetshendelse", "Invalid continuity event"));
+  const a = need(s.assets[f.assetId], L("Ressursen", "The asset"));
   if (a.kind === "sound" || a.kind === "location" || a.kind === "environment")
-    fail("invalid", "Denne typen ressurs har ikke kontinuitet");
+    fail(
+      "invalid",
+      L("Denne typen ressurs har ikke kontinuitet", "This type of asset has no continuity"),
+    );
   if (!(CONTINUITY_KINDS as readonly string[]).includes(f.kind))
-    fail("invalid", "Ukjent type kontinuitetshendelse");
+    fail("invalid", L("Ukjent type kontinuitetshendelse", "Unknown continuity event type"));
   if (f.duration !== "permanent" && f.duration !== "temporary" && f.duration !== "scene")
-    fail("invalid", "Ukjent varighet");
-  if (f.status !== "approved" && f.status !== "dismissed") fail("invalid", "Ugyldig status");
+    fail("invalid", L("Ukjent varighet", "Unknown duration"));
+  if (f.status !== "approved" && f.status !== "dismissed")
+    fail("invalid", L("Ugyldig status", "Invalid status"));
   if (typeof f.description !== "string" || f.description.length > CONTINUITY_DESCRIPTION_MAX)
-    fail("invalid", "Beskrivelsen er for lang");
+    fail("invalid", L("Beskrivelsen er for lang", "The description is too long"));
   const variant = (id: AssetVariantId | null, what: string) => {
     if (id === null || id === undefined) return null;
     const v = need(s.assetVariants[id], what);
-    if (v.assetId !== a.id) fail("invalid", `${what} hører ikke til ressursen`);
+    if (v.assetId !== a.id)
+      fail(
+        "invalid",
+        L(`${what} hører ikke til ressursen`, `${what} does not belong to the asset`),
+      );
     return v.id;
   };
-  let scene = need(s.scenes[f.sceneId], "Scenen");
+  let scene = need(s.scenes[f.sceneId], L("Scenen", "The scene"));
   let blockId: BlockId | null = null;
   if (f.blockId !== null && f.blockId !== undefined) {
-    const b = need(s.blocks[f.blockId], "Manusblokken");
+    const b = need(s.blocks[f.blockId], L("Manusblokken", "The script block"));
     const lineScene = s.variants[b.variantId]?.sceneId;
-    if (!lineScene) fail("invalid", "Manuslinjen hører ikke til en scene");
+    if (!lineScene)
+      fail(
+        "invalid",
+        L("Manuslinjen hører ikke til en scene", "The script line does not belong to a scene"),
+      );
     // Scenen følger linjen (den kan ha flyttet ved deling eller sammenslåing siden hendelsen ble laget)
-    scene = need(s.scenes[lineScene], "Scenen");
+    scene = need(s.scenes[lineScene], L("Scenen", "The scene"));
     blockId = b.id;
   }
   let untilSceneId: SceneId | null = null;
   if (f.duration === "temporary") {
     if (f.untilSceneId === null || f.untilSceneId === undefined)
-      fail("invalid", "Velg scenen der endringen er over");
-    untilSceneId = need(s.scenes[f.untilSceneId], "Scenen der endringen er over").id;
-    if (untilSceneId === scene.id) fail("invalid", "Endringen må vare til en senere scene");
+      fail(
+        "invalid",
+        L("Velg scenen der endringen er over", "Choose the scene where the change ends"),
+      );
+    untilSceneId = need(
+      s.scenes[f.untilSceneId],
+      L("Scenen der endringen er over", "The scene where the change ends"),
+    ).id;
+    if (untilSceneId === scene.id)
+      fail(
+        "invalid",
+        L("Endringen må vare til en senere scene", "The change must last until a later scene"),
+      );
   }
   // Lokal for en avledet produksjon (DEC-0060); utelatt ved endring = uendret
   const productionId = f.productionId === undefined ? (prev?.productionId ?? null) : f.productionId;
   if (productionId !== null) {
-    const p = need(s.productions[productionId], "Produksjonen");
-    if (p.kind === "main") fail("invalid", "Hovedfilmens hendelser er ikke lokale");
+    const p = need(s.productions[productionId], L("Produksjonen", "The production"));
+    if (p.kind === "main")
+      fail(
+        "invalid",
+        L("Hovedfilmens hendelser er ikke lokale", "The main film's events are not local"),
+      );
     if (prev && !prev.productionId)
       fail(
         "invalid",
-        "En hendelse fra hovedfilmen kan ikke gjøres lokal. Slå den av i spinoffen i stedet.",
+        L(
+          "En hendelse fra hovedfilmen kan ikke gjøres lokal. Slå den av i spinoffen i stedet.",
+          "An event from the main film cannot be made local. Turn it off in the spin-off instead.",
+        ),
       );
   } else if (prev?.productionId)
-    fail("invalid", "En lokal hendelse kan ikke flyttes til hovedfilmen");
+    fail(
+      "invalid",
+      L(
+        "En lokal hendelse kan ikke flyttes til hovedfilmen",
+        "A local event cannot be moved to the main film",
+      ),
+    );
   return {
     ...(productionId !== null ? { productionId: productionId as never } : {}),
     assetId: a.id,
     kind: f.kind,
     description: f.description.trim(),
-    fromVariantId: variant(f.fromVariantId, "Utseendet før"),
-    toVariantId: variant(f.toVariantId, "Utseendet etter"),
+    fromVariantId: variant(f.fromVariantId, L("Utseendet før", "The appearance before")),
+    toVariantId: variant(f.toVariantId, L("Utseendet etter", "The appearance after")),
     duration: f.duration,
     sceneId: scene.id,
     blockId,
@@ -753,23 +957,46 @@ function translationFieldsOf(
   s: ProjectState,
   f: TranslationFields,
 ): Omit<Translation, "id" | "revision" | "removed"> {
-  if (!f || typeof f !== "object") fail("invalid", "Ugyldig oversettelse");
+  if (!f || typeof f !== "object")
+    fail("invalid", L("Ugyldig oversettelse", "Invalid translation"));
   if (typeof f.language !== "string" || !/^[a-z]{2}(-[A-Z]{2})?$/.test(f.language))
-    fail("invalid", "Ugyldig språkkode");
+    fail("invalid", L("Ugyldig språkkode", "Invalid language code"));
   if (f.language === "nb" || f.language === "no")
-    fail("invalid", "Norsk er hovedmanuset og oversettes ikke");
+    fail(
+      "invalid",
+      L(
+        "Norsk er hovedmanuset og oversettes ikke",
+        "Norwegian is the main script and is not translated",
+      ),
+    );
   if (typeof f.text !== "string" || f.text.length > TRANSLATION_MAX)
-    fail("invalid", "Oversettelsen er for lang");
-  if (!f.text.trim()) fail("invalid", "Oversettelsen er tom. Fjern den i stedet.");
-  if (f.status !== "approved" && f.status !== "uncertain") fail("invalid", "Ugyldig status");
+    fail("invalid", L("Oversettelsen er for lang", "The translation is too long"));
+  if (!f.text.trim())
+    fail(
+      "invalid",
+      L(
+        "Oversettelsen er tom. Fjern den i stedet.",
+        "The translation is empty. Remove it instead.",
+      ),
+    );
+  if (f.status !== "approved" && f.status !== "uncertain")
+    fail("invalid", L("Ugyldig status", "Invalid status"));
   const hasBlock = f.blockId !== null && f.blockId !== undefined;
   const hasVariant = f.variantId !== null && f.variantId !== undefined;
   if (hasBlock === hasVariant)
-    fail("invalid", "En oversettelse gjelder én linje eller ett scenehode");
-  if (!Number.isInteger(f.basedOnRev) || f.basedOnRev < 0) fail("invalid", "Ugyldig revisjon");
+    fail(
+      "invalid",
+      L(
+        "En oversettelse gjelder én linje eller ett scenehode",
+        "A translation applies to one line or one scene heading",
+      ),
+    );
+  if (!Number.isInteger(f.basedOnRev) || f.basedOnRev < 0)
+    fail("invalid", L("Ugyldig revisjon", "Invalid revision"));
   if (hasBlock) {
-    const b = need(s.blocks[f.blockId!], "Manusblokken");
-    if (f.basedOnRev > b.currentRev) fail("invalid", "Revisjonen finnes ikke");
+    const b = need(s.blocks[f.blockId!], L("Manusblokken", "The script block"));
+    if (f.basedOnRev > b.currentRev)
+      fail("invalid", L("Revisjonen finnes ikke", "The revision does not exist"));
     return {
       blockId: b.id,
       variantId: null,
@@ -779,9 +1006,10 @@ function translationFieldsOf(
       status: f.status,
     };
   }
-  const v = need(s.variants[f.variantId!], "Scenen");
+  const v = need(s.variants[f.variantId!], L("Scenen", "The scene"));
   // Scenehodet: revisjonen av scenevarianten da det ble oversatt (endret hode → gjennomgå)
-  if (f.basedOnRev > v.revision) fail("invalid", "Revisjonen finnes ikke");
+  if (f.basedOnRev > v.revision)
+    fail("invalid", L("Revisjonen finnes ikke", "The revision does not exist"));
   return {
     blockId: null,
     variantId: v.id,
@@ -801,17 +1029,27 @@ function relationFieldsOf(
   s: ProjectState,
   f: RelationFields,
 ): Omit<AssetRelation, "id" | "revision" | "removed"> {
-  if (!f || typeof f !== "object") fail("invalid", "Ugyldig relasjon");
-  const a = need(s.assets[f.fromAssetId], "Ressursen");
-  const b = need(s.assets[f.toAssetId], "Ressursen");
-  if (a.id === b.id) fail("invalid", "En relasjon må gå mellom to forskjellige ressurser");
-  if (a.kind === "sound" || b.kind === "sound") fail("invalid", "Lydfiler kan ikke ha relasjoner");
+  if (!f || typeof f !== "object") fail("invalid", L("Ugyldig relasjon", "Invalid relation"));
+  const a = need(s.assets[f.fromAssetId], L("Ressursen", "The asset"));
+  const b = need(s.assets[f.toAssetId], L("Ressursen", "The asset"));
+  if (a.id === b.id)
+    fail(
+      "invalid",
+      L(
+        "En relasjon må gå mellom to forskjellige ressurser",
+        "A relation must be between two different assets",
+      ),
+    );
+  if (a.kind === "sound" || b.kind === "sound")
+    fail("invalid", L("Lydfiler kan ikke ha relasjoner", "Audio files cannot have relations"));
   if (!(RELATION_KINDS as readonly string[]).includes(f.kind))
-    fail("invalid", "Ukjent relasjonstype");
-  if (typeof f.label !== "string" || f.label.length > 120) fail("invalid", "Navnet er for langt");
+    fail("invalid", L("Ukjent relasjonstype", "Unknown relation type"));
+  if (typeof f.label !== "string" || f.label.length > 120)
+    fail("invalid", L("Navnet er for langt", "The name is too long"));
   if (typeof f.description !== "string" || f.description.length > 2000)
-    fail("invalid", "Beskrivelsen er for lang");
-  if (f.status !== "approved" && f.status !== "dismissed") fail("invalid", "Ugyldig status");
+    fail("invalid", L("Beskrivelsen er for lang", "The description is too long"));
+  if (f.status !== "approved" && f.status !== "dismissed")
+    fail("invalid", L("Ugyldig status", "Invalid status"));
   return {
     fromAssetId: a.id,
     toAssetId: b.id,
@@ -833,18 +1071,37 @@ function styleProfileFieldsOf(
   id: string,
   prev?: StyleProfile,
 ): Omit<StyleProfile, "id" | "revision" | "removed"> {
-  if (!f || typeof f !== "object") fail("invalid", "Ugyldig stilprofil");
+  if (!f || typeof f !== "object")
+    fail("invalid", L("Ugyldig stilprofil", "Invalid style profile"));
   if (typeof f.name !== "string" || !f.name.trim() || f.name.length > 120)
-    fail("invalid", "Stilprofilen må ha et navn (maks 120 tegn)");
-  if (typeof f.isDefault !== "boolean") fail("invalid", "Ugyldig stilprofil");
+    fail(
+      "invalid",
+      L(
+        "Stilprofilen må ha et navn (maks 120 tegn)",
+        "The style profile must have a name (max 120 characters)",
+      ),
+    );
+  if (typeof f.isDefault !== "boolean")
+    fail("invalid", L("Ugyldig stilprofil", "Invalid style profile"));
   if (f.isDefault && otherDefault(s, id))
-    fail("invalid", "Prosjektet har allerede en standard stilprofil");
+    fail(
+      "invalid",
+      L(
+        "Prosjektet har allerede en standard stilprofil",
+        "The project already has a default style profile",
+      ),
+    );
   const err = styleGuideError(f.guide);
   if (err) fail("invalid", err);
   const old = new Set(prev?.guide.referenceVersionIds ?? []);
   for (const v of f.guide.referenceVersionIds)
-    if (!old.has(v) && !need(s.assetVersions[v], "Forbildebildet").mimeType.startsWith("image/"))
-      fail("invalid", "Forbildebildet må være et bilde");
+    if (
+      !old.has(v) &&
+      !need(s.assetVersions[v], L("Forbildebildet", "The reference image")).mimeType.startsWith(
+        "image/",
+      )
+    )
+      fail("invalid", L("Forbildebildet må være et bilde", "The reference image must be an image"));
   return { name: f.name.trim(), isDefault: f.isDefault, guide: f.guide };
 }
 
@@ -855,7 +1112,7 @@ function assertUniqueRelation(all: Record<string, AssetRelation>, id: string): v
   const key = (x: AssetRelation) => `${[x.fromAssetId, x.toAssetId].sort().join("|")}|${x.kind}`;
   const k = key(r);
   if (Object.values(all).some((x) => x.id !== id && !x.removed && key(x) === k))
-    fail("invalid", "Relasjonen finnes allerede");
+    fail("invalid", L("Relasjonen finnes allerede", "The relation already exists"));
 }
 
 /** Plakatens felter. Ressurser kontrolleres bare når de er nye i plakaten (som bildeskifter). */
@@ -864,13 +1121,25 @@ function posterFieldsOf(
   f: PosterFields,
   prev?: Poster,
 ): Omit<Poster, "id" | "revision" | "removed"> {
-  if (!f || typeof f !== "object") fail("invalid", "Ugyldig plakat");
-  const p = need(s.productions[f.productionId], "Produksjonen");
-  if (prev && prev.productionId !== p.id) fail("invalid", "Plakaten tilhører en annen produksjon");
+  if (!f || typeof f !== "object") fail("invalid", L("Ugyldig plakat", "Invalid poster"));
+  const p = need(s.productions[f.productionId], L("Produksjonen", "The production"));
+  if (prev && prev.productionId !== p.id)
+    fail(
+      "invalid",
+      L("Plakaten tilhører en annen produksjon", "The poster belongs to another production"),
+    );
   if (typeof f.name !== "string" || !f.name.trim() || f.name.length > 200)
-    fail("invalid", "Plakaten må ha et navn (maks 200 tegn)");
-  if (f.kind !== "pitch" && f.kind !== "character_map") fail("invalid", "Ukjent plakattype");
-  if (f.language !== "nb" && f.language !== "en") fail("invalid", "Ukjent språk");
+    fail(
+      "invalid",
+      L(
+        "Plakaten må ha et navn (maks 200 tegn)",
+        "The poster must have a name (max 200 characters)",
+      ),
+    );
+  if (f.kind !== "pitch" && f.kind !== "character_map")
+    fail("invalid", L("Ukjent plakattype", "Unknown poster type"));
+  if (f.language !== "nb" && f.language !== "en")
+    fail("invalid", L("Ukjent språk", "Unknown language"));
   if (
     !Number.isFinite(f.widthMm) ||
     !Number.isFinite(f.heightMm) ||
@@ -879,23 +1148,31 @@ function posterFieldsOf(
     f.widthMm > 3000 ||
     f.heightMm > 3000
   )
-    fail("invalid", "Ugyldig format (5–300 cm)");
+    fail("invalid", L("Ugyldig format (5–300 cm)", "Invalid format (5–300 cm)"));
   const err = posterDocumentError(f.document);
   if (err) fail("invalid", err);
-  if (JSON.stringify(f.document).length > 1_500_000) fail("invalid", "Plakaten er for stor");
+  if (JSON.stringify(f.document).length > 1_500_000)
+    fail("invalid", L("Plakaten er for stor", "The poster is too large"));
   const refs = posterAssetRefs(f.document);
   const old = prev ? posterAssetRefs(prev.document) : null;
   for (const id of refs.assets)
     if (!old?.assets.has(id)) {
-      const a = need(s.assets[id], "Ressursen på plakaten");
-      if (a.kind === "sound") fail("invalid", "En lydfil kan ikke vises på plakaten");
+      const a = need(s.assets[id], L("Ressursen på plakaten", "The asset on the poster"));
+      if (a.kind === "sound")
+        fail(
+          "invalid",
+          L("En lydfil kan ikke vises på plakaten", "An audio file cannot be shown on the poster"),
+        );
     }
   for (const id of refs.variants)
-    if (!old?.variants.has(id)) need(s.assetVariants[id], "Varianten på plakaten");
+    if (!old?.variants.has(id))
+      need(s.assetVariants[id], L("Varianten på plakaten", "The variant on the poster"));
   for (const id of refs.versions)
-    if (!old?.versions.has(id)) need(s.assetVersions[id], "Bildet på plakaten");
+    if (!old?.versions.has(id))
+      need(s.assetVersions[id], L("Bildet på plakaten", "The image on the poster"));
   for (const id of refs.relations)
-    if (!old?.relations.has(id)) need(s.assetRelations[id], "Relasjonen på plakaten");
+    if (!old?.relations.has(id))
+      need(s.assetRelations[id], L("Relasjonen på plakaten", "The relation on the poster"));
   return {
     productionId: p.id,
     name: f.name.trim(),
@@ -989,23 +1266,36 @@ function timeLinkFieldsOf(
   s: ProjectState,
   f: TimeLinkFields,
 ): Omit<TimeLink, "id" | "revision" | "removed"> {
-  if (!f || typeof f !== "object") fail("invalid", "Ugyldig tidskobling");
-  const o = need(s.occurrences[f.occurrenceId], "Forekomsten");
-  const b = need(s.blocks[f.blockId], "Manusblokken");
-  if (b.variantId !== o.variantId) fail("invalid", "Blokken hører ikke til scenen");
+  if (!f || typeof f !== "object") fail("invalid", L("Ugyldig tidskobling", "Invalid time link"));
+  const o = need(s.occurrences[f.occurrenceId], L("Forekomsten", "The occurrence"));
+  const b = need(s.blocks[f.blockId], L("Manusblokken", "The script block"));
+  if (b.variantId !== o.variantId)
+    fail("invalid", L("Blokken hører ikke til scenen", "The block does not belong to the scene"));
   if (!Number.isInteger(f.startMs) || f.startMs < 0 || f.startMs > AUDIO_MAX_MS)
-    fail("invalid", "Ugyldig tid for tidskoblingen");
+    fail("invalid", L("Ugyldig tid for tidskoblingen", "Invalid time for the time link"));
   if (
     f.endMs !== null &&
     (!Number.isInteger(f.endMs) || f.endMs <= f.startMs || f.endMs > AUDIO_MAX_MS)
   )
-    fail("invalid", "Slutten på tidskoblingen må være etter starten");
+    fail(
+      "invalid",
+      L(
+        "Slutten på tidskoblingen må være etter starten",
+        "The end of the time link must be after the start",
+      ),
+    );
   let layerId: LayerId | null = null;
   if (f.layerId !== undefined && f.layerId !== null) {
-    const l = need(s.layers[f.layerId], "Laget");
+    const l = need(s.layers[f.layerId], L("Laget", "The layer"));
     const comp = compositionOfVariant(s, o.variantId);
     if (!comp || l.compositionId !== comp.id)
-      fail("invalid", "Laget hører ikke til scenens 2D-scene");
+      fail(
+        "invalid",
+        L(
+          "Laget hører ikke til scenens 2D-scene",
+          "The layer does not belong to the scene's 2D scene",
+        ),
+      );
     layerId = l.id;
   }
   return { occurrenceId: o.id, blockId: b.id, startMs: f.startMs, endMs: f.endMs, layerId };
@@ -1016,7 +1306,11 @@ export const FILM_MIME_TYPES: readonly string[] = ["video/mp4", "video/quicktime
 
 /** Kontroll av filinformasjonen for importert film. */
 function takeMediaOf(m: unknown): TakeMedia {
-  if (!m || typeof m !== "object") fail("invalid", "Ugyldig filinformasjon for filmen");
+  if (!m || typeof m !== "object")
+    fail(
+      "invalid",
+      L("Ugyldig filinformasjon for filmen", "Invalid file information for the film"),
+    );
   const x = m as Record<string, unknown>;
   const optPos = (v: unknown, max: number) =>
     v === null || (typeof v === "number" && Number.isFinite(v) && v > 0 && v <= max);
@@ -1041,7 +1335,10 @@ function takeMediaOf(m: unknown): TakeMedia {
     ) ||
     typeof x["hasAudio"] !== "boolean"
   )
-    fail("invalid", "Ugyldig filinformasjon for filmen");
+    fail(
+      "invalid",
+      L("Ugyldig filinformasjon for filmen", "Invalid file information for the film"),
+    );
   return {
     fileName: x["fileName"] as string,
     mimeType: x["mimeType"] as string,
@@ -1088,7 +1385,7 @@ export function derivedUuid(a: string, b: string): string {
 /** Grunnlaget fra en kommando (gjør om / kopi), med bare gyldige ressursversjoner (REQ-0022). */
 function producedFromOf(p: ProducedFrom): ProducedFrom {
   if (!p || typeof p !== "object" || !p.blockRevisions || typeof p.blockRevisions !== "object")
-    fail("invalid", "Ugyldig grunnlag");
+    fail("invalid", L("Ugyldig grunnlag", "Invalid basis"));
   const av = p.assetVersions;
   if (av === undefined) return { blockRevisions: p.blockRevisions };
   if (
@@ -1096,7 +1393,7 @@ function producedFromOf(p: ProducedFrom): ProducedFrom {
     typeof av !== "object" ||
     Object.entries(av).some(([k, v]) => !isUuid(k) || typeof v !== "string" || !isUuid(v))
   )
-    fail("invalid", "Ugyldig grunnlag");
+    fail("invalid", L("Ugyldig grunnlag", "Invalid basis"));
   return { blockRevisions: p.blockRevisions, assetVersions: av };
 }
 
@@ -1128,10 +1425,11 @@ function rescaleExcerpt(
 }
 
 function transitionOf(t: unknown): Transition {
-  if (!t || typeof t !== "object") fail("invalid", "Ugyldig overgang");
+  if (!t || typeof t !== "object") fail("invalid", L("Ugyldig overgang", "Invalid transition"));
   const x = t as Record<string, unknown>;
   const kind = x["kind"];
-  if (!(TRANSITION_KINDS as readonly unknown[]).includes(kind)) fail("invalid", "Ugyldig overgang");
+  if (!(TRANSITION_KINDS as readonly unknown[]).includes(kind))
+    fail("invalid", L("Ugyldig overgang", "Invalid transition"));
   if (kind === "cut") return { kind: "cut", frames: 0 };
   const frames = x["frames"];
   if (
@@ -1139,9 +1437,15 @@ function transitionOf(t: unknown): Transition {
     (frames as number) < 1 ||
     (frames as number) > MAX_TRANSITION_FRAMES
   )
-    fail("invalid", `Overgangen må vare mellom 1 og ${MAX_TRANSITION_FRAMES} bilder`);
+    fail(
+      "invalid",
+      L(
+        `Overgangen må vare mellom 1 og ${MAX_TRANSITION_FRAMES} bilder`,
+        `The transition must last between 1 and ${MAX_TRANSITION_FRAMES} frames`,
+      ),
+    );
   if (x["overlap"] !== undefined && typeof x["overlap"] !== "boolean")
-    fail("invalid", "Ugyldig overgang");
+    fail("invalid", L("Ugyldig overgang", "Invalid transition"));
   return x["overlap"] === true
     ? { kind: kind as TransitionKind, frames: frames as number, overlap: true }
     : { kind: kind as TransitionKind, frames: frames as number };
@@ -1154,39 +1458,59 @@ function audioFields(
   s: ProjectState,
   f: AudioClipFields,
 ): Omit<AudioClipFields, "language" | "speed"> & { language?: string; speed?: number } {
-  if (!f || typeof f !== "object") fail("invalid", "Ugyldig lydklipp");
-  if (!(AUDIO_KINDS as readonly string[]).includes(f.kind)) fail("invalid", "Ukjent lydtype");
-  if (typeof f.name !== "string" || f.name.length > 200) fail("invalid", "Navnet er for langt");
-  need(s.occurrences[f.occurrenceId], "Scenen");
-  const asset = need(s.assets[f.assetId], "Lydfilen");
-  if (asset.kind !== "sound") fail("invalid", "Ressursen er ikke en lydfil");
+  if (!f || typeof f !== "object") fail("invalid", L("Ugyldig lydklipp", "Invalid audio clip"));
+  if (!(AUDIO_KINDS as readonly string[]).includes(f.kind))
+    fail("invalid", L("Ukjent lydtype", "Unknown audio type"));
+  if (typeof f.name !== "string" || f.name.length > 200)
+    fail("invalid", L("Navnet er for langt", "The name is too long"));
+  need(s.occurrences[f.occurrenceId], L("Scenen", "The scene"));
+  const asset = need(s.assets[f.assetId], L("Lydfilen", "The audio file"));
+  if (asset.kind !== "sound")
+    fail("invalid", L("Ressursen er ikke en lydfil", "The asset is not an audio file"));
   if (f.assetVariantId !== null) {
-    const va = need(s.assetVariants[f.assetVariantId], "Varianten av lydfilen");
-    if (va.assetId !== f.assetId) fail("invalid", "Varianten hører til en annen ressurs");
+    const va = need(
+      s.assetVariants[f.assetVariantId],
+      L("Varianten av lydfilen", "The variant of the audio file"),
+    );
+    if (va.assetId !== f.assetId)
+      fail(
+        "invalid",
+        L("Varianten hører til en annen ressurs", "The variant belongs to another asset"),
+      );
   }
   if (f.versionId !== null) {
-    const ve = need(s.assetVersions[f.versionId], "Lydversjonen");
-    if (ve.variantId !== f.assetVariantId) fail("invalid", "Versjonen hører til en annen variant");
+    const ve = need(s.assetVersions[f.versionId], L("Lydversjonen", "The audio version"));
+    if (ve.variantId !== f.assetVariantId)
+      fail(
+        "invalid",
+        L("Versjonen hører til en annen variant", "The version belongs to another variant"),
+      );
   }
   if (f.blockId !== null) {
-    const b = need(s.blocks[f.blockId], "Replikken");
+    const b = need(s.blocks[f.blockId], L("Replikken", "The line"));
     const occ = s.occurrences[f.occurrenceId]!;
-    if (b.variantId !== occ.variantId) fail("invalid", "Replikken hører til en annen scene");
+    if (b.variantId !== occ.variantId)
+      fail("invalid", L("Replikken hører til en annen scene", "The line belongs to another scene"));
   }
   const int = (v: number, lo: number, hi: number, what: string) => {
-    if (!Number.isInteger(v) || v < lo || v > hi) fail("invalid", `Ugyldig ${what}`);
+    if (!Number.isInteger(v) || v < lo || v > hi)
+      fail("invalid", L(`Ugyldig ${what}`, `Invalid ${what}`));
   };
-  int(f.offsetMs, 0, AUDIO_MAX_MS, "start i scenen");
-  int(f.sourceInMs, 0, AUDIO_MAX_MS, "start i lydfilen");
-  int(f.lengthMs, 1, AUDIO_MAX_MS, "lengde");
-  int(f.fadeInMs, 0, 600_000, "inntoning");
-  int(f.fadeOutMs, 0, 600_000, "uttoning");
+  int(f.offsetMs, 0, AUDIO_MAX_MS, L("start i scenen", "start in the scene"));
+  int(f.sourceInMs, 0, AUDIO_MAX_MS, L("start i lydfilen", "start in the audio file"));
+  int(f.lengthMs, 1, AUDIO_MAX_MS, L("lengde", "length"));
+  int(f.fadeInMs, 0, 600_000, L("inntoning", "fade in"));
+  int(f.fadeOutMs, 0, 600_000, L("uttoning", "fade out"));
   if (typeof f.gainDb !== "number" || !Number.isFinite(f.gainDb) || f.gainDb < -60 || f.gainDb > 12)
-    fail("invalid", "Volumet må være mellom −60 og +12 dB");
-  if (typeof f.muted !== "boolean") fail("invalid", "Ugyldig demping");
-  if (typeof f.continues !== "boolean") fail("invalid", "Ugyldig valg for «løper videre»");
+    fail(
+      "invalid",
+      L("Volumet må være mellom −60 og +12 dB", "The volume must be between −60 and +12 dB"),
+    );
+  if (typeof f.muted !== "boolean") fail("invalid", L("Ugyldig demping", "Invalid mute setting"));
+  if (typeof f.continues !== "boolean")
+    fail("invalid", L("Ugyldig valg for «løper videre»", "Invalid choice for “continues”"));
   if (!Array.isArray(f.volumeKeys) || f.volumeKeys.length > 500)
-    fail("invalid", "For mange volumpunkter (maks 500)");
+    fail("invalid", L("For mange volumpunkter (maks 500)", "Too many volume points (max 500)"));
   const keys = [...f.volumeKeys]
     .map((k) => {
       if (
@@ -1199,20 +1523,30 @@ function audioFields(
         k.db < -60 ||
         k.db > 12
       )
-        fail("invalid", "Ugyldig volumpunkt (tid i ms, nivå mellom −60 og +12 dB)");
+        fail(
+          "invalid",
+          L(
+            "Ugyldig volumpunkt (tid i ms, nivå mellom −60 og +12 dB)",
+            "Invalid volume point (time in ms, level between −60 and +12 dB)",
+          ),
+        );
       return { t: k.t, db: Math.round(k.db * 10) / 10 };
     })
     .sort((a, b) => a.t - b.t);
   for (let i = 1; i < keys.length; i++)
-    if (keys[i]!.t === keys[i - 1]!.t) fail("invalid", "To volumpunkter på samme tid");
+    if (keys[i]!.t === keys[i - 1]!.t)
+      fail("invalid", L("To volumpunkter på samme tid", "Two volume points at the same time"));
   // Språk (DEC-0059): språkkode eller «*» (felles); utelatt = standard for lydtypen
   const language = f.language ?? null;
   if (language !== null && language !== "*" && !LANGUAGE_CODE.test(String(language)))
-    fail("invalid", "Ugyldig språk for lyden");
+    fail("invalid", L("Ugyldig språk for lyden", "Invalid language for the sound"));
   // Hastighet (DEC-0079): 25–400 %
   const speed = f.speed ?? 1;
   if (typeof speed !== "number" || !Number.isFinite(speed) || speed < 0.25 || speed > 4)
-    fail("invalid", "Hastigheten må være mellom 25 og 400 %");
+    fail(
+      "invalid",
+      L("Hastigheten må være mellom 25 og 400 %", "The speed must be between 25 and 400%"),
+    );
   const sp = Math.round(speed * 100) / 100;
   return {
     occurrenceId: f.occurrenceId,
@@ -1279,12 +1613,19 @@ function run(
   switch (c.type) {
     case "CreateProduction": {
       assertNewId(s, c.productionId);
-      if (!c.name.trim()) fail("invalid", "Produksjonen må ha et navn");
+      if (!c.name.trim())
+        fail("invalid", L("Produksjonen må ha et navn", "The production must have a name"));
       if (c.kind === "main" && Object.values(s.productions).some((p) => p.kind === "main")) {
-        fail("invalid", "Prosjektet har allerede en hovedproduksjon");
+        fail(
+          "invalid",
+          L(
+            "Prosjektet har allerede en hovedproduksjon",
+            "The project already has a main production",
+          ),
+        );
       }
       if (c.parentProductionId !== null)
-        need(s.productions[c.parentProductionId], "Overordnet produksjon");
+        need(s.productions[c.parentProductionId], L("Overordnet produksjon", "Parent production"));
       return {
         state: {
           ...s,
@@ -1306,18 +1647,36 @@ function run(
     }
 
     case "UndoCreateProduction": {
-      need(s.productions[c.productionId], "Produksjonen");
+      need(s.productions[c.productionId], L("Produksjonen", "The production"));
       if (Object.values(s.occurrences).some((o) => o.productionId === c.productionId)) {
-        fail("referenced", "Produksjonen inneholder scener og kan ikke angres");
+        fail(
+          "referenced",
+          L(
+            "Produksjonen inneholder scener og kan ikke angres",
+            "The production contains scenes and cannot be undone",
+          ),
+        );
       }
       if (
         Object.values(s.continuityEvents).some(
           (e) => e.productionId === c.productionId || e.disabledIn?.includes(c.productionId),
         )
       )
-        fail("referenced", "Produksjonen har egen kontinuitet og kan ikke angres");
+        fail(
+          "referenced",
+          L(
+            "Produksjonen har egen kontinuitet og kan ikke angres",
+            "The production has its own continuity and cannot be undone",
+          ),
+        );
       if (Object.values(s.posters).some((p) => p.productionId === c.productionId))
-        fail("referenced", "Produksjonen har plakater og kan ikke angres");
+        fail(
+          "referenced",
+          L(
+            "Produksjonen har plakater og kan ikke angres",
+            "The production has posters and cannot be undone",
+          ),
+        );
       const { [c.productionId]: _removed, ...productions } = s.productions;
       return {
         state: { ...s, productions },
@@ -1332,12 +1691,39 @@ function run(
       };
     }
 
+    case "SetProductionNote": {
+      const p = need(s.productions[c.productionId], L("Produksjonen", "The production"));
+      if (typeof c.note !== "string") fail("invalid", L("Ugyldig notat", "Invalid note"));
+      const note = c.note.replace(/\r\n?/g, "\n").trim();
+      if (note.length > 2000)
+        fail(
+          "invalid",
+          L(
+            "Notatet er for langt (høyst 2000 tegn)",
+            "The note is too long (at most 2,000 characters)",
+          ),
+        );
+      if ((p.note ?? "") === note) fail("invalid", L("Uendret", "Unchanged"));
+      const { note: _n, ...rest } = p;
+      return {
+        state: {
+          ...s,
+          productions: {
+            ...s.productions,
+            [p.id]: { ...rest, ...(note ? { note } : {}), revision: rev(p) },
+          },
+        },
+        inverse: { type: "SetProductionNote", productionId: p.id, note: p.note ?? "" },
+        affected: [p.id],
+      };
+    }
+
     case "CreateScene": {
-      const production = need(s.productions[c.productionId], "Produksjonen");
+      const production = need(s.productions[c.productionId], L("Produksjonen", "The production"));
       for (const id of [c.sceneId, c.variantId, c.occurrenceId, ...c.blocks.map((b) => b.blockId)])
         assertNewId(s, id);
       if (new Set(c.blocks.map((b) => b.blockId)).size !== c.blocks.length)
-        fail("duplicate_id", "Blokk-ID-er gjentas");
+        fail("duplicate_id", L("Blokk-ID-er gjentas", "Block IDs are repeated"));
       assertKey(c.orderKey);
       c.blocks.forEach((b) => assertKey(b.orderKey));
       const owner = production.kind === "main" ? null : production.id;
@@ -1423,7 +1809,7 @@ function run(
     }
 
     case "UndoCreateScene": {
-      need(s.scenes[c.sceneId], "Scenen");
+      need(s.scenes[c.sceneId], L("Scenen", "The scene"));
       const otherUse = Object.values(s.occurrences).some(
         (o) => o.sceneId === c.sceneId && o.id !== c.occurrenceId,
       );
@@ -1440,16 +1826,28 @@ function run(
             x.storyTime.anchorSceneId === c.sceneId),
       );
       if (otherUse || otherVariants || hasTakes || hasSegments || referencedByScenes) {
-        fail("referenced", "Scenen er tatt i bruk og kan ikke angres. Deaktiver den i stedet.");
+        fail(
+          "referenced",
+          L(
+            "Scenen er tatt i bruk og kan ikke angres. Deaktiver den i stedet.",
+            "The scene is in use and cannot be undone. Deactivate it instead.",
+          ),
+        );
       }
-      const occ = need(s.occurrences[c.occurrenceId], "Forekomsten");
-      const variant = need(s.variants[c.variantId], "Varianten");
+      const occ = need(s.occurrences[c.occurrenceId], L("Forekomsten", "The occurrence"));
+      const variant = need(s.variants[c.variantId], L("Varianten", "The variant"));
       if (
         occ.sceneId !== c.sceneId ||
         variant.sceneId !== c.sceneId ||
         occ.variantId !== c.variantId
       ) {
-        fail("invalid", "Scene, variant og forekomst hører ikke sammen");
+        fail(
+          "invalid",
+          L(
+            "Scene, variant og forekomst hører ikke sammen",
+            "Scene, variant and occurrence do not belong together",
+          ),
+        );
       }
       {
         const now = Object.values(s.blocks)
@@ -1459,7 +1857,10 @@ function run(
         if (now.length !== created.size || now.some((id) => !created.has(id))) {
           fail(
             "referenced",
-            "Scenen har fått eller mistet tekst etter at den ble laget, og kan ikke angres. Deaktiver den i stedet.",
+            L(
+              "Scenen har fått eller mistet tekst etter at den ble laget, og kan ikke angres. Deaktiver den i stedet.",
+              "The scene has gained or lost text since it was made, and cannot be undone. Deactivate it instead.",
+            ),
           );
         }
       }
@@ -1505,7 +1906,7 @@ function run(
     }
 
     case "MoveOccurrence": {
-      const o = need(s.occurrences[c.occurrenceId], "Forekomsten");
+      const o = need(s.occurrences[c.occurrenceId], L("Forekomsten", "The occurrence"));
       assertKey(c.orderKey);
       return {
         state: {
@@ -1521,7 +1922,7 @@ function run(
     }
 
     case "SetOccurrenceActive": {
-      const o = need(s.occurrences[c.occurrenceId], "Forekomsten");
+      const o = need(s.occurrences[c.occurrenceId], L("Forekomsten", "The occurrence"));
       return {
         state: {
           ...s,
@@ -1533,9 +1934,9 @@ function run(
     }
 
     case "EditBlockText": {
-      const b = need(s.blocks[c.blockId], "Manusblokken");
+      const b = need(s.blocks[c.blockId], L("Manusblokken", "The script block"));
       assertCanEditVariant(s, c.productionId, b.variantId);
-      if (b.text === c.text) fail("invalid", "Teksten er uendret");
+      if (b.text === c.text) fail("invalid", L("Teksten er uendret", "The text is unchanged"));
       const next = b.currentRev + 1;
       return {
         state: {
@@ -1565,7 +1966,10 @@ function run(
           (b) => b.variantId === c.variantId && b.orderKey === c.block.orderKey,
         )
       ) {
-        fail("invalid", "To blokker kan ikke ha samme plass");
+        fail(
+          "invalid",
+          L("To blokker kan ikke ha samme plass", "Two blocks cannot occupy the same position"),
+        );
       }
       return {
         state: {
@@ -1594,9 +1998,12 @@ function run(
     }
 
     case "UndoInsertBlock": {
-      const b = need(s.blocks[c.blockId], "Manusblokken");
+      const b = need(s.blocks[c.blockId], L("Manusblokken", "The script block"));
       if (Object.values(s.segments).some((g) => g.startBlockId === b.id || g.endBlockId === b.id)) {
-        fail("referenced", "Blokken brukes av et produksjonssegment");
+        fail(
+          "referenced",
+          L("Blokken brukes av et produksjonssegment", "The block is used by a production segment"),
+        );
       }
       const { [b.id]: _b, ...blocks } = s.blocks;
       const owner = s.variants[b.variantId]?.ownerProductionId;
@@ -1605,7 +2012,7 @@ function run(
         state: { ...s, blocks, blockRevisions: s.blockRevisions.filter((r) => r.blockId !== b.id) },
         inverse: {
           type: "InsertBlock",
-          productionId: need(ctx, "Produksjon for blokken"),
+          productionId: need(ctx, L("Produksjon for blokken", "Production for the block")),
           variantId: b.variantId,
           block: {
             blockId: b.id,
@@ -1622,14 +2029,33 @@ function run(
     }
 
     case "ForkVariant": {
-      const o = need(s.occurrences[c.occurrenceId], "Forekomsten");
+      const o = need(s.occurrences[c.occurrenceId], L("Forekomsten", "The occurrence"));
       // Tilbakeføring (DEC-0060): innholdet kopieres fra en annen variant av scenen (spinoffens versjon)
-      const source = need(s.variants[c.sourceVariantId ?? o.variantId], "Varianten");
-      if (source.sceneId !== o.sceneId) fail("invalid", "Varianten tilhører en annen scene");
+      const source = need(
+        s.variants[c.sourceVariantId ?? o.variantId],
+        L("Varianten", "The variant"),
+      );
+      if (source.sceneId !== o.sceneId)
+        fail(
+          "invalid",
+          L("Varianten tilhører en annen scene", "The variant belongs to another scene"),
+        );
       if (source.ownerProductionId === o.productionId)
-        fail("invalid", "Varianten eies allerede av produksjonen");
+        fail(
+          "invalid",
+          L(
+            "Varianten eies allerede av produksjonen",
+            "The variant is already owned by the production",
+          ),
+        );
       if (c.sourceVariantId && c.sourceVariantId === o.variantId)
-        fail("invalid", "Forekomsten bruker allerede denne varianten");
+        fail(
+          "invalid",
+          L(
+            "Forekomsten bruker allerede denne varianten",
+            "The occurrence already uses this variant",
+          ),
+        );
       assertNewId(s, c.newVariantId);
       const sourceBlocks = Object.values(s.blocks).filter((b) => b.variantId === source.id);
       const blocks = { ...s.blocks };
@@ -1647,7 +2073,10 @@ function run(
         if (!nid)
           fail(
             "invalid",
-            "Scenen er endret i den andre produksjonen i mellomtiden. Lag egen versjon på nytt.",
+            L(
+              "Scenen er endret i den andre produksjonen i mellomtiden. Lag egen versjon på nytt.",
+              "The scene was changed in the other production in the meantime. Make a separate version again.",
+            ),
           );
         assertNewId(s, nid);
         blocks[nid] = { ...b, id: nid, revision: 1, variantId: c.newVariantId };
@@ -1657,7 +2086,7 @@ function run(
         else revisions.push(newRevision(nid, b.currentRev, b.text));
       }
       if (new Set(Object.values(c.blockIdMap)).size !== sourceBlocks.length)
-        fail("invalid", "Blokk-ID-kartet er ufullstendig");
+        fail("invalid", L("Blokk-ID-kartet er ufullstendig", "The block ID map is incomplete"));
       // Forekomstens koblinger (lyd, tid, segmenter, godkjent grunnlag) følger blokkene. Kommer innholdet fra
       // en annen variant, finnes de tilsvarende blokkene via rekkefølgenøkkelen (samme opphav)
       let occMap: Record<string, BlockId> = { ...c.blockIdMap };
@@ -1686,7 +2115,10 @@ function run(
         )
           fail(
             "referenced",
-            "Lyd, tidskoblinger eller segmenter er koblet til linjer som ikke finnes i den nye versjonen. Fjern koblingene først.",
+            L(
+              "Lyd, tidskoblinger eller segmenter er koblet til linjer som ikke finnes i den nye versjonen. Fjern koblingene først.",
+              "Audio, time links or segments are linked to lines that do not exist in the new version. Remove the links first.",
+            ),
           );
       }
       const remapped = remapOccurrenceBlocks(s, o.id, occMap);
@@ -1726,7 +2158,8 @@ function run(
           : (derivedUuid(c.newVariantId, a.id) as AnnotationId);
         if (!nid) continue;
         assertNewId(s, nid);
-        if (annotations[nid]) fail("duplicate_id", "Samme notat-ID to ganger");
+        if (annotations[nid])
+          fail("duplicate_id", L("Samme notat-ID to ganger", "The same note ID twice"));
         annotations[nid] = {
           ...a,
           id: nid,
@@ -1784,16 +2217,20 @@ function run(
     }
 
     case "UndoForkVariant": {
-      const o = need(s.occurrences[c.occurrenceId], "Forekomsten");
-      const nv = need(s.variants[c.newVariantId], "Varianten");
-      need(s.variants[c.previousVariantId], "Opprinnelig variant");
-      if (o.variantId !== nv.id) fail("invalid", "Forekomsten bruker ikke denne varianten");
+      const o = need(s.occurrences[c.occurrenceId], L("Forekomsten", "The occurrence"));
+      const nv = need(s.variants[c.newVariantId], L("Varianten", "The variant"));
+      need(s.variants[c.previousVariantId], L("Opprinnelig variant", "Original variant"));
+      if (o.variantId !== nv.id)
+        fail(
+          "invalid",
+          L("Forekomsten bruker ikke denne varianten", "The occurrence does not use this variant"),
+        );
       if (Object.values(s.occurrences).some((x) => x.variantId === nv.id && x.id !== o.id))
-        fail("referenced", "Varianten brukes andre steder");
+        fail("referenced", L("Varianten brukes andre steder", "The variant is used elsewhere"));
       const forked = Object.values(s.blocks).filter((b) => b.variantId === nv.id);
       // Innholdet kom fra kilden (ved tilbakeføring spinoffens versjon, ellers den forrige varianten)
       const contentId = c.sourceVariantId ?? c.previousVariantId;
-      need(s.variants[contentId], "Kildevarianten");
+      need(s.variants[contentId], L("Kildevarianten", "The source variant"));
       const original = Object.values(s.blocks).filter((b) => b.variantId === contentId);
       // Kan angres når innholdet er som i originalen (endringer som er angret, teller ikke)
       const byKey = new Map(original.map((b) => [b.orderKey, b]));
@@ -1806,9 +2243,22 @@ function run(
             const src = byKey.get(b.orderKey);
             return !!src && src.text === b.text && src.kind === b.kind && src.removed === b.removed;
           });
-      if (!same) fail("referenced", "Den egne versjonen er endret; angre endringene i den først");
+      if (!same)
+        fail(
+          "referenced",
+          L(
+            "Den egne versjonen er endret; angre endringene i den først",
+            "The own version has been changed; undo those changes first",
+          ),
+        );
       if (Object.values(s.compositions).some((x) => x.variantId === nv.id))
-        fail("referenced", "Den egne versjonen har en 2D-scene; angre den først");
+        fail(
+          "referenced",
+          L(
+            "Den egne versjonen har en 2D-scene; angre den først",
+            "The own version has a 2D scene; undo it first",
+          ),
+        );
       // Oversettelser i den egne versjonen: kan angres når de er kopier av originalens
       const toSource = new Map<string, string>();
       for (const b of forked) {
@@ -1827,7 +2277,13 @@ function run(
         if (c.sourceVariantId) {
           // Kopi som ikke er endret siden (revisjon 1); kilden kan være endret etterpå
           if (t.revision !== 1)
-            fail("referenced", "Den egne versjonen har egne oversettelser; angre dem først");
+            fail(
+              "referenced",
+              L(
+                "Den egne versjonen har egne oversettelser; angre dem først",
+                "The own version has its own translations; undo them first",
+              ),
+            );
           const orig = Object.values(s.translations).find(
             (x) =>
               !x.removed && (x.blockId ?? x.variantId) === srcTarget && x.language === t.language,
@@ -1842,7 +2298,14 @@ function run(
             x.language === t.language &&
             x.text === t.text,
         );
-        if (!orig) fail("referenced", "Den egne versjonen har egne oversettelser; angre dem først");
+        if (!orig)
+          fail(
+            "referenced",
+            L(
+              "Den egne versjonen har egne oversettelser; angre dem først",
+              "The own version has its own translations; undo them first",
+            ),
+          );
         translationIdMap[orig.id] = t.id;
       }
       // Notater i den egne versjonen (KI-33): kan angres når de er uendrede kopier (revisjon 1) av originalens.
@@ -1862,7 +2325,14 @@ function run(
         if (a.removed) continue;
         const origId = a.revision === 1 ? copyOf.get(a.id) : undefined;
         const orig = origId !== undefined ? s.annotations[origId] : undefined;
-        if (!orig) fail("referenced", "Den egne versjonen har egne notater; angre dem først");
+        if (!orig)
+          fail(
+            "referenced",
+            L(
+              "Den egne versjonen har egne notater; angre dem først",
+              "The own version has its own notes; undo them first",
+            ),
+          );
         annotationIdMap[orig.id] = a.id as AnnotationId;
       }
       const ids = new Set(forked.map((b) => b.id as string));
@@ -1895,7 +2365,10 @@ function run(
       )
         fail(
           "referenced",
-          "Lyd eller tidskoblinger er koblet til linjer bare den nye versjonen har",
+          L(
+            "Lyd eller tidskoblinger er koblet til linjer bare den nye versjonen har",
+            "Audio or time links are linked to lines only the new version has",
+          ),
         );
       const remapped = remapOccurrenceBlocks(s, o.id, back);
       const translations = { ...s.translations };
@@ -1938,16 +2411,28 @@ function run(
     }
 
     case "TransferScene": {
-      const production = need(s.productions[c.productionId], "Produksjonen");
-      const source = need(s.variants[c.sourceVariantId], "Varianten");
+      const production = need(s.productions[c.productionId], L("Produksjonen", "The production"));
+      const source = need(s.variants[c.sourceVariantId], L("Varianten", "The variant"));
       if (source.ownerProductionId === null || source.ownerProductionId === c.productionId)
-        fail("invalid", "Bare en scene som tilhører en annen produksjon kan overføres");
+        fail(
+          "invalid",
+          L(
+            "Bare en scene som tilhører en annen produksjon kan overføres",
+            "Only a scene that belongs to another production can be transferred",
+          ),
+        );
       if (
         Object.values(s.occurrences).some(
           (o) => o.productionId === c.productionId && o.sceneId === source.sceneId,
         )
       )
-        fail("invalid", `Scenen er allerede med i ${production.name}`);
+        fail(
+          "invalid",
+          L(
+            `Scenen er allerede med i ${production.name}`,
+            `The scene is already in ${production.name}`,
+          ),
+        );
       assertNewId(s, c.occurrenceId);
       assertKey(c.orderKey);
       // Forekomsten peker først på spinoffens versjon; ForkVariant gir den en egen kopi med en gang
@@ -1996,7 +2481,7 @@ function run(
     }
 
     case "UndoTransferScene": {
-      const o = need(s.occurrences[c.occurrenceId], "Forekomsten");
+      const o = need(s.occurrences[c.occurrenceId], L("Forekomsten", "The occurrence"));
       // Tidskoblinger som er fjernet (angret i samme gruppe), slettes sammen med forekomsten
       const deadLinks = Object.values(s.timeLinks).filter(
         (l) => l.occurrenceId === o.id && l.removed,
@@ -2009,7 +2494,13 @@ function run(
         Object.values(s.clipParts).some((p) => p.occurrenceId === o.id) ||
         Object.values(s.generationPrompts).some((g) => g.occurrenceId === o.id)
       )
-        fail("referenced", "Scenen har fått materiale i produksjonen. Deaktiver den i stedet.");
+        fail(
+          "referenced",
+          L(
+            "Scenen har fått materiale i produksjonen. Deaktiver den i stedet.",
+            "The scene has received material in the production. Deactivate it instead.",
+          ),
+        );
       const undone = run(s, {
         ...env,
         command: {
@@ -2042,12 +2533,22 @@ function run(
     }
 
     case "AddOccurrence": {
-      need(s.productions[c.productionId], "Produksjonen");
-      const scene = need(s.scenes[c.sceneId], "Scenen");
-      const variant = need(s.variants[c.variantId], "Varianten");
-      if (variant.sceneId !== scene.id) fail("invalid", "Varianten tilhører en annen scene");
+      need(s.productions[c.productionId], L("Produksjonen", "The production"));
+      const scene = need(s.scenes[c.sceneId], L("Scenen", "The scene"));
+      const variant = need(s.variants[c.variantId], L("Varianten", "The variant"));
+      if (variant.sceneId !== scene.id)
+        fail(
+          "invalid",
+          L("Varianten tilhører en annen scene", "The variant belongs to another scene"),
+        );
       if (variant.ownerProductionId !== null && variant.ownerProductionId !== c.productionId) {
-        fail("must_fork_variant", "Denne versjonen av scenen tilhører en annen produksjon");
+        fail(
+          "must_fork_variant",
+          L(
+            "Denne versjonen av scenen tilhører en annen produksjon",
+            "This version of the scene belongs to another production",
+          ),
+        );
       }
       assertNewId(s, c.occurrenceId);
       assertKey(c.orderKey);
@@ -2076,17 +2577,26 @@ function run(
     }
 
     case "UndoAddOccurrence": {
-      const o = need(s.occurrences[c.occurrenceId], "Forekomsten");
+      const o = need(s.occurrences[c.occurrenceId], L("Forekomsten", "The occurrence"));
       if (
         Object.values(s.takes).some((t) => t.occurrenceId === o.id) ||
         Object.values(s.segments).some((g) => g.occurrenceId === o.id)
       ) {
-        fail("referenced", "Forekomsten har produksjonsmateriale. Deaktiver den i stedet.");
+        fail(
+          "referenced",
+          L(
+            "Forekomsten har produksjonsmateriale. Deaktiver den i stedet.",
+            "The occurrence has production material. Deactivate it instead.",
+          ),
+        );
       }
       if (Object.values(s.occurrences).filter((x) => x.sceneId === o.sceneId).length <= 1) {
         fail(
           "referenced",
-          "Siste forekomst av scenen kan bare fjernes ved å angre opprettelsen av scenen",
+          L(
+            "Siste forekomst av scenen kan bare fjernes ved å angre opprettelsen av scenen",
+            "The last occurrence of the scene can only be removed by undoing the creation of the scene",
+          ),
         );
       }
       const { [o.id]: _o, ...occurrences } = s.occurrences;
@@ -2105,17 +2615,24 @@ function run(
     }
 
     case "CreateSegments": {
-      const o = need(s.occurrences[c.occurrenceId], "Forekomsten");
-      if (c.segments.length === 0) fail("invalid", "Ingen segmenter oppgitt");
+      const o = need(s.occurrences[c.occurrenceId], L("Forekomsten", "The occurrence"));
+      if (c.segments.length === 0)
+        fail("invalid", L("Ingen segmenter oppgitt", "No segments given"));
       const segments = { ...s.segments };
       for (const g of c.segments) {
         assertNewId(s, g.segmentId);
         assertKey(g.orderKey);
         for (const bid of [g.startBlockId, g.endBlockId]) {
           if (bid !== null) {
-            const b = need(s.blocks[bid], "Blokken");
+            const b = need(s.blocks[bid], L("Blokken", "The block"));
             if (b.variantId !== o.variantId)
-              fail("invalid", "Segmentet viser til en blokk i en annen variant");
+              fail(
+                "invalid",
+                L(
+                  "Segmentet viser til en blokk i en annen variant",
+                  "The segment refers to a block in another variant",
+                ),
+              );
           }
         }
         segments[g.segmentId] = {
@@ -2136,13 +2653,25 @@ function run(
     }
 
     case "UndoCreateSegments": {
-      const list = c.segmentIds.map((id) => need(s.segments[id], "Segmentet"));
+      const list = c.segmentIds.map((id) => need(s.segments[id], L("Segmentet", "The segment")));
       const ids = new Set(c.segmentIds as readonly string[]);
       if (Object.values(s.takes).some((t) => t.segmentId !== null && ids.has(t.segmentId))) {
-        fail("referenced", "Segmentet har produsert materiale og kan ikke fjernes");
+        fail(
+          "referenced",
+          L(
+            "Segmentet har produsert materiale og kan ikke fjernes",
+            "The segment has produced material and cannot be removed",
+          ),
+        );
       }
       if (Object.values(s.generationPrompts).some((p) => ids.has(p.segmentId) && !p.removed))
-        fail("referenced", "Segmentet har en egen genereringsbeskrivelse");
+        fail(
+          "referenced",
+          L(
+            "Segmentet har en egen genereringsbeskrivelse",
+            "The segment has its own generation description",
+          ),
+        );
       const segments = { ...s.segments };
       for (const id of ids) delete segments[id];
       // Tilbakestilte beskrivelser forsvinner med segmentet (DEC-0053)
@@ -2168,17 +2697,27 @@ function run(
     }
 
     case "AddTake": {
-      const o = need(s.occurrences[c.occurrenceId], "Forekomsten");
+      const o = need(s.occurrences[c.occurrenceId], L("Forekomsten", "The occurrence"));
       assertNewId(s, c.takeId);
       if (c.segmentId !== null) {
-        const g = need(s.segments[c.segmentId], "Segmentet");
-        if (g.occurrenceId !== o.id) fail("invalid", "Segmentet tilhører en annen forekomst");
+        const g = need(s.segments[c.segmentId], L("Segmentet", "The segment"));
+        if (g.occurrenceId !== o.id)
+          fail(
+            "invalid",
+            L("Segmentet tilhører en annen forekomst", "The segment belongs to another occurrence"),
+          );
       }
       if (
         c.durationFrames !== null &&
         (!Number.isInteger(c.durationFrames) || c.durationFrames < 0)
       ) {
-        fail("invalid", "Varighet må være et ikke-negativt heltall bilder");
+        fail(
+          "invalid",
+          L(
+            "Varighet må være et ikke-negativt heltall bilder",
+            "Duration must be a non-negative whole number of frames",
+          ),
+        );
       }
       // Filen må ligge i prosjektets egen mappe (ellers kunne sletting av prosjektet nå andres filer)
       if (
@@ -2188,19 +2727,25 @@ function run(
           !c.mediaRef.startsWith(`${s.project.id}/`) ||
           c.mediaRef.includes(".."))
       )
-        fail("invalid", "Ugyldig mediesti");
+        fail("invalid", L("Ugyldig mediesti", "Invalid media path"));
       if (c.media !== undefined && c.kind !== "imported_film" && c.kind !== "ai_video")
-        fail("invalid", "Filinformasjon gjelder bare film");
+        fail(
+          "invalid",
+          L("Filinformasjon gjelder bare film", "File information only applies to film"),
+        );
       // Stillbilde (DEC-0072): et bilde fra biblioteket i dette prosjektet, med varighet
       if (c.kind === "still" && c.mediaRef !== null) {
         const v = Object.values(s.assetVersions).find((x) => x.mediaPath === c.mediaRef);
         if (!v || !STILL_MIME_TYPES.includes(v.mimeType))
           fail(
             "invalid",
-            "Stillbildet må være et PNG-, JPEG- eller WebP-bilde i ressursbiblioteket",
+            L(
+              "Stillbildet må være et PNG-, JPEG- eller WebP-bilde i ressursbiblioteket",
+              "The still must be a PNG, JPEG or WebP image in the asset library",
+            ),
           );
         if (!c.durationFrames || c.durationFrames > STILL_MAX_FRAMES)
-          fail("invalid", "Stillbildet må ha en varighet");
+          fail("invalid", L("Stillbildet må ha en varighet", "The still must have a duration"));
       }
       const media = c.media === undefined ? undefined : takeMediaOf(c.media);
       const draft: Take = {
@@ -2229,7 +2774,7 @@ function run(
     }
 
     case "SetTransition": {
-      const o = need(s.occurrences[c.occurrenceId], "Forekomsten");
+      const o = need(s.occurrences[c.occurrenceId], L("Forekomsten", "The occurrence"));
       const t = c.transition === null ? null : transitionOf(c.transition);
       const prev: Transition | null = o.transition ?? null;
       const { transition: _old, ...rest } = o;
@@ -2260,9 +2805,21 @@ function run(
       const lim = c.monthLimit;
       const price = c.pricePerImage;
       if (lim !== null && (!Number.isInteger(lim) || lim < 0 || lim > 100000))
-        fail("invalid", "Grensen må være et helt tall mellom 0 og 100 000");
+        fail(
+          "invalid",
+          L(
+            "Grensen må være et helt tall mellom 0 og 100 000",
+            "The limit must be a whole number between 0 and 100,000",
+          ),
+        );
       if (price !== null && (!Number.isFinite(price) || price < 0 || price > 100000))
-        fail("invalid", "Prisen må være et tall mellom 0 og 100 000");
+        fail(
+          "invalid",
+          L(
+            "Prisen må være et tall mellom 0 og 100 000",
+            "The price must be a number between 0 and 100,000",
+          ),
+        );
       const { aiMonthLimit: oldLim, aiPricePerImage: oldPrice, ...rest } = s.project;
       const project = {
         ...rest,
@@ -2282,19 +2839,35 @@ function run(
     }
 
     case "SetGenerationPrompt": {
-      const o = need(s.occurrences[c.occurrenceId], "Scenen");
-      const seg = need(s.segments[c.segmentId], "Segmentet");
-      if (seg.occurrenceId !== o.id) fail("invalid", "Segmentet hører til en annen scene");
+      const o = need(s.occurrences[c.occurrenceId], L("Scenen", "The scene"));
+      const seg = need(s.segments[c.segmentId], L("Segmentet", "The segment"));
+      if (seg.occurrenceId !== o.id)
+        fail(
+          "invalid",
+          L("Segmentet hører til en annen scene", "The segment belongs to another scene"),
+        );
       if (typeof c.basedOn !== "string" || c.basedOn.length > MAX_PROMPT_CHARS)
-        fail("invalid", "Ugyldig grunnlag");
+        fail("invalid", L("Ugyldig grunnlag", "Invalid basis"));
       const text = c.text === null ? null : c.text.trim();
       if (text !== null && (text.length === 0 || text.length > MAX_PROMPT_CHARS))
-        fail("invalid", `Beskrivelsen må ha mellom 1 og ${MAX_PROMPT_CHARS} tegn`);
+        fail(
+          "invalid",
+          L(
+            `Beskrivelsen må ha mellom 1 og ${MAX_PROMPT_CHARS} tegn`,
+            `The description must have between 1 and ${MAX_PROMPT_CHARS} characters`,
+          ),
+        );
       const old = s.generationPrompts[c.promptId];
       const prompts = { ...s.generationPrompts };
       if (old) {
         if (old.occurrenceId !== o.id || old.segmentId !== seg.id)
-          fail("invalid", "Beskrivelsen hører til et annet segment");
+          fail(
+            "invalid",
+            L(
+              "Beskrivelsen hører til et annet segment",
+              "The description belongs to another segment",
+            ),
+          );
         if (
           text !== null &&
           old.removed &&
@@ -2302,16 +2875,29 @@ function run(
             (p) => p.segmentId === seg.id && !p.removed && p.id !== old.id,
           )
         )
-          fail("referenced", "Segmentet har fått en annen egen beskrivelse i mellomtiden");
+          fail(
+            "referenced",
+            L(
+              "Segmentet har fått en annen egen beskrivelse i mellomtiden",
+              "The segment has received a different description in the meantime",
+            ),
+          );
         prompts[old.id] =
           text === null
             ? { ...old, basedOn: c.basedOn, removed: true, revision: rev(old) }
             : { ...old, text, basedOn: c.basedOn, removed: false, revision: rev(old) };
       } else {
-        if (text === null) fail("invalid", "Ingen beskrivelse å fjerne");
+        if (text === null)
+          fail("invalid", L("Ingen beskrivelse å fjerne", "No description to remove"));
         assertNewId(s, c.promptId);
         if (Object.values(s.generationPrompts).some((p) => p.segmentId === seg.id && !p.removed))
-          fail("invalid", "Segmentet har allerede en egen beskrivelse");
+          fail(
+            "invalid",
+            L(
+              "Segmentet har allerede en egen beskrivelse",
+              "The segment already has its own description",
+            ),
+          );
         prompts[c.promptId] = {
           id: c.promptId,
           revision: 1,
@@ -2337,10 +2923,10 @@ function run(
     }
 
     case "ReplaceSegments": {
-      const o = need(s.occurrences[c.occurrenceId], "Scenen");
+      const o = need(s.occurrences[c.occurrenceId], L("Scenen", "The scene"));
       if (c.removeSegmentIds.length === 0 && c.segments.length === 0)
-        fail("invalid", "Ingen endring");
-      if (c.segments.length > 200) fail("invalid", "For mange segmenter");
+        fail("invalid", L("Ingen endring", "No change"));
+      if (c.segments.length > 200) fail("invalid", L("For mange segmenter", "Too many segments"));
       // Samtidige endringer: det som fjernes, må være nøyaktig inndelingen som gjelder nå
       const current = Object.values(s.segments)
         .filter((g) => g.occurrenceId === o.id && g.reason === c.reason)
@@ -2350,18 +2936,37 @@ function run(
       if (current.length !== asked.length || current.some((id, i) => id !== asked[i]))
         fail(
           "revision_conflict",
-          "Inndelingen er endret i mellomtiden (av deg eller noen andre). Lukk og åpne vinduet igjen.",
+          L(
+            "Inndelingen er endret i mellomtiden (av deg eller noen andre). Lukk og åpne vinduet igjen.",
+            "The division was changed in the meantime (by you or someone else). Close the window and open it again.",
+          ),
         );
       const segments = { ...s.segments };
       const prompts = { ...s.generationPrompts };
       const removedOld: ProductionSegment[] = [];
       for (const id of c.removeSegmentIds) {
-        const g = need(s.segments[id], "Segmentet");
-        if (g.occurrenceId !== o.id) fail("invalid", "Segmentet hører til en annen scene");
+        const g = need(s.segments[id], L("Segmentet", "The segment"));
+        if (g.occurrenceId !== o.id)
+          fail(
+            "invalid",
+            L("Segmentet hører til en annen scene", "The segment belongs to another scene"),
+          );
         if (Object.values(s.takes).some((t) => t.segmentId === id))
-          fail("referenced", "Segmentet har produsert materiale og kan ikke endres");
+          fail(
+            "referenced",
+            L(
+              "Segmentet har produsert materiale og kan ikke endres",
+              "The segment has produced material and cannot be changed",
+            ),
+          );
         if (Object.values(s.generationPrompts).some((p) => p.segmentId === id && !p.removed))
-          fail("referenced", "Segmentet har en egen beskrivelse. Tilbakestill den først.");
+          fail(
+            "referenced",
+            L(
+              "Segmentet har en egen beskrivelse. Tilbakestill den først.",
+              "The segment has its own description. Reset it first.",
+            ),
+          );
         // Fjernede beskrivelser for segmentet forsvinner med det
         for (const p of Object.values(s.generationPrompts))
           if (p.segmentId === id) delete prompts[p.id];
@@ -2374,22 +2979,34 @@ function run(
         "model_limit",
         "manual",
       ];
-      if (!reasons.includes(c.reason)) fail("invalid", "Ugyldig grunn");
+      if (!reasons.includes(c.reason)) fail("invalid", L("Ugyldig grunn", "Invalid reason"));
       for (const g of c.segments) {
         // Et segment som fjernes, kan ikke legges til igjen i samme endring (lagres i én transaksjon)
         if (segments[g.segmentId] || removedOld.some((x) => x.id === g.segmentId))
-          fail("duplicate_id", `ID ${g.segmentId} er allerede i bruk`);
+          fail(
+            "duplicate_id",
+            L(`ID ${g.segmentId} er allerede i bruk`, `ID ${g.segmentId} is already in use`),
+          );
         assertNewId({ ...s, segments, generationPrompts: prompts }, g.segmentId);
         assertKey(g.orderKey);
         for (const bid of [g.startBlockId, g.endBlockId]) {
           if (bid === null) continue;
-          const b = need(s.blocks[bid], "Blokken");
+          const b = need(s.blocks[bid], L("Blokken", "The block"));
           if (b.variantId !== o.variantId)
-            fail("invalid", "Segmentet viser til en blokk i en annen variant");
+            fail(
+              "invalid",
+              L(
+                "Segmentet viser til en blokk i en annen variant",
+                "The segment refers to a block in another variant",
+              ),
+            );
         }
         const timed = g.startMs !== undefined || g.endMs !== undefined;
         if (c.reason === "model_limit" && !timed)
-          fail("invalid", "Segmenter til generering må ha tid");
+          fail(
+            "invalid",
+            L("Segmenter til generering må ha tid", "Segments for generation must have a time"),
+          );
         if (
           timed &&
           (!Number.isInteger(g.startMs) ||
@@ -2398,7 +3015,7 @@ function run(
             g.endMs! <= g.startMs! ||
             g.endMs! > 36_000_000)
         )
-          fail("invalid", "Ugyldig tid for segmentet");
+          fail("invalid", L("Ugyldig tid for segmentet", "Invalid time for the segment"));
         segments[g.segmentId] = {
           id: g.segmentId,
           revision: 1,
@@ -2432,9 +3049,9 @@ function run(
     }
 
     case "AcceptScriptChanges": {
-      const o = need(s.occurrences[c.occurrenceId], "Scenen");
+      const o = need(s.occurrences[c.occurrenceId], L("Scenen", "The scene"));
       if (c.compositionIds.length === 0 && c.takeIds.length === 0)
-        fail("invalid", "Ingenting å godkjenne");
+        fail("invalid", L("Ingenting å godkjenne", "Nothing to approve"));
       const now = currentBlockRevisions(s, o.variantId);
       const compositions = { ...s.compositions };
       const takes = { ...s.takes };
@@ -2444,8 +3061,12 @@ function run(
         takes: [],
       };
       for (const id of c.compositionIds) {
-        const comp = need(s.compositions[id], "2D-scenen");
-        if (comp.variantId !== o.variantId) fail("invalid", "2D-scenen hører til en annen scene");
+        const comp = need(s.compositions[id], L("2D-scenen", "The 2D scene"));
+        if (comp.variantId !== o.variantId)
+          fail(
+            "invalid",
+            L("2D-scenen hører til en annen scene", "The 2D scene belongs to another scene"),
+          );
         (
           inverse.compositions as {
             compositionId: typeof id;
@@ -2466,8 +3087,12 @@ function run(
         };
       }
       for (const id of c.takeIds) {
-        const t = need(s.takes[id], "Versjonen");
-        if (t.occurrenceId !== o.id) fail("invalid", "Versjonen hører til en annen scene");
+        const t = need(s.takes[id], L("Versjonen", "The version"));
+        if (t.occurrenceId !== o.id)
+          fail(
+            "invalid",
+            L("Versjonen hører til en annen scene", "The version belongs to another scene"),
+          );
         (
           inverse.takes as {
             takeId: typeof id;
@@ -2496,10 +3121,11 @@ function run(
 
     case "SetProducedFrom": {
       const clean = (m: Readonly<Record<string, number>>) => {
-        if (!m || typeof m !== "object") fail("invalid", "Ugyldig grunnlag");
+        if (!m || typeof m !== "object") fail("invalid", L("Ugyldig grunnlag", "Invalid basis"));
         const out: Record<string, number> = {};
         for (const [k, v] of Object.entries(m)) {
-          if (!isUuid(k) || !Number.isInteger(v) || v < 1) fail("invalid", "Ugyldig grunnlag");
+          if (!isUuid(k) || !Number.isInteger(v) || v < 1)
+            fail("invalid", L("Ugyldig grunnlag", "Invalid basis"));
           out[k] = v;
         }
         return out;
@@ -2509,7 +3135,10 @@ function run(
       const inverse: Extract<Command, { type: "SetProducedFrom" }> = {
         type: "SetProducedFrom",
         compositions: c.compositions.map((x) => {
-          const pf = need(s.compositions[x.compositionId], "2D-scenen").producedFrom;
+          const pf = need(
+            s.compositions[x.compositionId],
+            L("2D-scenen", "The 2D scene"),
+          ).producedFrom;
           return {
             compositionId: x.compositionId,
             blockRevisions: pf?.blockRevisions ?? {},
@@ -2517,7 +3146,7 @@ function run(
           };
         }),
         takes: c.takes.map((x) => {
-          const af = need(s.takes[x.takeId], "Versjonen").acceptedFrom;
+          const af = need(s.takes[x.takeId], L("Versjonen", "The version")).acceptedFrom;
           return {
             takeId: x.takeId,
             blockRevisions: af?.blockRevisions ?? {},
@@ -2530,11 +3159,11 @@ function run(
         m: Readonly<Record<string, string>> | null | undefined,
       ): Readonly<Record<string, string>> | undefined => {
         if (m === undefined || m === null) return undefined;
-        if (typeof m !== "object") fail("invalid", "Ugyldig grunnlag");
+        if (typeof m !== "object") fail("invalid", L("Ugyldig grunnlag", "Invalid basis"));
         const out: Record<string, string> = {};
         for (const [k, v] of Object.entries(m)) {
           if (!isUuid(k) || typeof v !== "string" || !isUuid(v))
-            fail("invalid", "Ugyldig grunnlag");
+            fail("invalid", L("Ugyldig grunnlag", "Invalid basis"));
           out[k] = v;
         }
         return Object.keys(out).length ? out : undefined;
@@ -2576,7 +3205,7 @@ function run(
     }
 
     case "SetPlannedDuration": {
-      const o = need(s.occurrences[c.occurrenceId], "Forekomsten");
+      const o = need(s.occurrences[c.occurrenceId], L("Forekomsten", "The occurrence"));
       const ms = c.plannedMs;
       if (
         ms !== null &&
@@ -2585,7 +3214,13 @@ function run(
           ms < MIN_PLANNED_MS ||
           ms > MAX_PLANNED_MS)
       )
-        fail("invalid", "Planlagt lengde må være mellom 1 sekund og 10 timer");
+        fail(
+          "invalid",
+          L(
+            "Planlagt lengde må være mellom 1 sekund og 10 timer",
+            "Planned length must be between 1 second and 10 hours",
+          ),
+        );
       const { plannedMs: _old, ...rest } = o;
       const next = ms === null ? rest : { ...rest, plannedMs: ms };
       return {
@@ -2599,8 +3234,8 @@ function run(
     }
 
     case "SetOccurrenceMonochrome": {
-      const o = need(s.occurrences[c.occurrenceId], "Forekomsten");
-      if (typeof c.monochrome !== "boolean") fail("invalid", "Ugyldig valg");
+      const o = need(s.occurrences[c.occurrenceId], L("Forekomsten", "The occurrence"));
+      if (typeof c.monochrome !== "boolean") fail("invalid", L("Ugyldig valg", "Invalid choice"));
       const { monochrome: _old, ...rest } = o;
       const next = c.monochrome ? { ...rest, monochrome: true } : rest;
       return {
@@ -2618,14 +3253,20 @@ function run(
     }
 
     case "SetSceneEdit": {
-      const o = need(s.occurrences[c.occurrenceId], "Forekomsten");
+      const o = need(s.occurrences[c.occurrenceId], L("Forekomsten", "The occurrence"));
       if (c.activeTakeId !== null) {
-        const t = need(s.takes[c.activeTakeId], "Versjonen");
+        const t = need(s.takes[c.activeTakeId], L("Versjonen", "The version"));
         if (s.occurrences[t.occurrenceId]?.sceneId !== o.sceneId)
-          fail("invalid", "Versjonen tilhører en annen scene");
+          fail(
+            "invalid",
+            L("Versjonen tilhører en annen scene", "The version belongs to another scene"),
+          );
       }
       if (!Array.isArray(c.parts) || c.parts.length > MAX_CLIP_PARTS)
-        fail("invalid", `For mange deler (maks ${MAX_CLIP_PARTS})`);
+        fail(
+          "invalid",
+          L(`For mange deler (maks ${MAX_CLIP_PARTS})`, `Too many parts (max ${MAX_CLIP_PARTS})`),
+        );
       const comp = compositionOfVariant(s, o.variantId);
       const fps = s.project.fps.num / s.project.fps.den;
       const compMs =
@@ -2638,7 +3279,7 @@ function run(
       const affected: string[] = [o.id];
       c.parts.forEach((p, i) => {
         const f = partFieldsOf(p);
-        if (seen.has(f.partId)) fail("invalid", "Samme del to ganger");
+        if (seen.has(f.partId)) fail("invalid", L("Samme del to ganger", "The same part twice"));
         seen.add(f.partId);
         const prev = s.clipParts[f.partId];
         const unchanged =
@@ -2650,26 +3291,47 @@ function run(
         if (unchanged) {
           // Uendrede deler kontrolleres ikke mot kilden på nytt (2D-scenen kan ha blitt kortere)
         } else if (f.source === "take") {
-          const t = need(s.takes[f.takeId!], "Versjonen");
+          const t = need(s.takes[f.takeId!], L("Versjonen", "The version"));
           if (s.occurrences[t.occurrenceId]?.sceneId !== o.sceneId)
-            fail("invalid", "Versjonen tilhører en annen scene");
+            fail(
+              "invalid",
+              L("Versjonen tilhører en annen scene", "The version belongs to another scene"),
+            );
           if (
             (t.kind !== "imported_film" && t.kind !== "ai_video" && t.kind !== "still") ||
             !t.mediaRef
           )
             fail(
               "invalid",
-              "Bare film (importert eller AI-video) eller stillbilde kan brukes som del",
+              L(
+                "Bare film (importert eller AI-video) eller stillbilde kan brukes som del",
+                "Only film (imported or AI video) or a still can be used as a part",
+              ),
             );
           // Et stillbilde kan vises så lenge man vil; filmen har sin lengde
           const max = t.kind === "still" ? AUDIO_MAX_MS : (t.media?.durationMs ?? AUDIO_MAX_MS);
-          if (f.outMs > max) fail("invalid", "Utpunktet er etter slutten av filmen");
+          if (f.outMs > max)
+            fail(
+              "invalid",
+              L(
+                "Utpunktet er etter slutten av filmen",
+                "The out point is after the end of the film",
+              ),
+            );
         } else {
-          if (!comp) fail("invalid", "Scenen har ingen 2D-scene");
-          if (f.outMs > compMs) fail("invalid", "Utpunktet er etter slutten av 2D-scenen");
+          if (!comp) fail("invalid", L("Scenen har ingen 2D-scene", "The scene has no 2D scene"));
+          if (f.outMs > compMs)
+            fail(
+              "invalid",
+              L(
+                "Utpunktet er etter slutten av 2D-scenen",
+                "The out point is after the end of the 2D scene",
+              ),
+            );
         }
         const old = s.clipParts[f.partId];
-        if (old && old.occurrenceId !== o.id) fail("invalid", "Delen tilhører en annen scene");
+        if (old && old.occurrenceId !== o.id)
+          fail("invalid", L("Delen tilhører en annen scene", "The part belongs to another scene"));
         if (!old) assertNewId(s, f.partId);
         const part: ClipPart = {
           id: f.partId as never,
@@ -2736,9 +3398,9 @@ function run(
     }
 
     case "SetTakeStatus": {
-      const t = need(s.takes[c.takeId], "Versjonen");
+      const t = need(s.takes[c.takeId], L("Versjonen", "The version"));
       if (c.status !== "reference" && c.status !== "in_progress" && c.status !== "approved")
-        fail("invalid", "Ugyldig status");
+        fail("invalid", L("Ugyldig status", "Invalid status"));
       return {
         state: {
           ...s,
@@ -2750,11 +3412,11 @@ function run(
     }
 
     case "SetTakeAudioLanguage": {
-      const t = need(s.takes[c.takeId], "Versjonen");
+      const t = need(s.takes[c.takeId], L("Versjonen", "The version"));
       const v = c.audioLanguage;
       if (v !== null && v !== "none" && (typeof v !== "string" || !LANGUAGE_CODE.test(v)))
-        fail("invalid", "Ugyldig språk for filmlyden");
-      if ((t.audioLanguage ?? null) === v) fail("invalid", "Ingen endring");
+        fail("invalid", L("Ugyldig språk for filmlyden", "Invalid language for the film audio"));
+      if ((t.audioLanguage ?? null) === v) fail("invalid", L("Ingen endring", "No change"));
       const { audioLanguage: _old, ...rest } = t;
       return {
         state: {
@@ -2775,11 +3437,12 @@ function run(
 
     case "AddTimeLinks": {
       if (!Array.isArray(c.links) || c.links.length === 0 || c.links.length > 500)
-        fail("invalid", "Ugyldig antall tidskoblinger");
+        fail("invalid", L("Ugyldig antall tidskoblinger", "Invalid number of time links"));
       const next = { ...s.timeLinks };
       for (const l of c.links) {
         assertNewId(s, l.linkId);
-        if (next[l.linkId]) fail("invalid", "Samme tidskobling to ganger");
+        if (next[l.linkId])
+          fail("invalid", L("Samme tidskobling to ganger", "The same time link twice"));
         const f = timeLinkFieldsOf(s, l.fields);
         next[l.linkId] = { id: l.linkId, revision: 1, ...f, removed: false };
       }
@@ -2795,7 +3458,7 @@ function run(
       const next = { ...s.timeLinks };
       const old: { linkId: TimeLink["id"]; fields: TimeLinkFields }[] = [];
       for (const l of c.links) {
-        const t = need(s.timeLinks[l.linkId], "Tidskoblingen");
+        const t = need(s.timeLinks[l.linkId], L("Tidskoblingen", "The time link"));
         // Uten layerId beholdes laget koblingen gjelder
         const f = timeLinkFieldsOf(
           s,
@@ -2825,7 +3488,7 @@ function run(
     case "SetTimeLinksRemoved": {
       const next = { ...s.timeLinks };
       for (const id of c.linkIds) {
-        const t = need(s.timeLinks[id], "Tidskoblingen");
+        const t = need(s.timeLinks[id], L("Tidskoblingen", "The time link"));
         next[id] = { ...t, removed: c.removed, revision: rev(t) };
       }
       return {
@@ -2837,11 +3500,14 @@ function run(
 
     case "AddContinuityEvents": {
       if (!Array.isArray(c.events) || c.events.length === 0 || c.events.length > 500)
-        fail("invalid", "Ugyldig antall kontinuitetshendelser");
+        fail(
+          "invalid",
+          L("Ugyldig antall kontinuitetshendelser", "Invalid number of continuity events"),
+        );
       const next = { ...s.continuityEvents };
       for (const e of c.events) {
         assertNewId(s, e.eventId);
-        if (next[e.eventId]) fail("invalid", "Samme hendelse to ganger");
+        if (next[e.eventId]) fail("invalid", L("Samme hendelse to ganger", "The same event twice"));
         next[e.eventId] = {
           id: e.eventId,
           revision: 1,
@@ -2859,11 +3525,17 @@ function run(
 
     case "UpdateContinuityEvents": {
       if (!Array.isArray(c.events) || c.events.length === 0 || c.events.length > 500)
-        fail("invalid", "Ugyldig antall kontinuitetshendelser");
+        fail(
+          "invalid",
+          L("Ugyldig antall kontinuitetshendelser", "Invalid number of continuity events"),
+        );
       const next = { ...s.continuityEvents };
       const old: { eventId: ContinuityEventId; fields: ContinuityEventFields }[] = [];
       for (const e of c.events) {
-        const ev = need(s.continuityEvents[e.eventId], "Kontinuitetshendelsen");
+        const ev = need(
+          s.continuityEvents[e.eventId],
+          L("Kontinuitetshendelsen", "The continuity event"),
+        );
         old.push({ eventId: ev.id, fields: continuityFieldsFrom(ev) });
         const { productionId: _p, ...rest } = ev;
         next[ev.id] = { ...rest, ...continuityFieldsOf(s, e.fields, ev), revision: rev(ev) };
@@ -2878,11 +3550,12 @@ function run(
     // ---------- Presentasjon (M8 del 1, DEC-0061) ----------
     case "AddRelations": {
       if (!Array.isArray(c.items) || c.items.length === 0 || c.items.length > 500)
-        fail("invalid", "Ugyldig antall relasjoner");
+        fail("invalid", L("Ugyldig antall relasjoner", "Invalid number of relations"));
       const next = { ...s.assetRelations };
       for (const it of c.items) {
         assertNewId(s, it.relationId);
-        if (next[it.relationId]) fail("invalid", "Samme relasjon to ganger");
+        if (next[it.relationId])
+          fail("invalid", L("Samme relasjon to ganger", "The same relation twice"));
         next[it.relationId] = {
           id: it.relationId,
           revision: 1,
@@ -2901,11 +3574,11 @@ function run(
 
     case "UpdateRelations": {
       if (!Array.isArray(c.items) || c.items.length === 0 || c.items.length > 500)
-        fail("invalid", "Ugyldig antall relasjoner");
+        fail("invalid", L("Ugyldig antall relasjoner", "Invalid number of relations"));
       const next = { ...s.assetRelations };
       const old: { relationId: AssetRelation["id"]; fields: RelationFields }[] = [];
       for (const it of c.items) {
-        const r = need(s.assetRelations[it.relationId], "Relasjonen");
+        const r = need(s.assetRelations[it.relationId], L("Relasjonen", "The relation"));
         old.push({
           relationId: r.id,
           fields: {
@@ -2929,13 +3602,19 @@ function run(
 
     case "UndoAddRelations": {
       const ids = [...new Set(c.relationIds)];
-      const gone = ids.map((id) => need(s.assetRelations[id], "Relasjonen"));
+      const gone = ids.map((id) => need(s.assetRelations[id], L("Relasjonen", "The relation")));
       if (
         Object.values(s.posters).some((p) =>
           ids.some((id) => posterAssetRefs(p.document).relations.has(id)),
         )
       )
-        fail("referenced", "Relasjonen vises på en plakat og kan ikke angres. Fjern den i stedet.");
+        fail(
+          "referenced",
+          L(
+            "Relasjonen vises på en plakat og kan ikke angres. Fjern den i stedet.",
+            "The relation appears on a poster and cannot be undone. Remove it instead.",
+          ),
+        );
       const next = { ...s.assetRelations };
       for (const id of ids) delete next[id];
       return {
@@ -2961,9 +3640,9 @@ function run(
     case "SetRelationsRemoved": {
       const next = { ...s.assetRelations };
       const changed = [...new Set(c.relationIds)]
-        .map((id) => need(s.assetRelations[id], "Relasjonen"))
+        .map((id) => need(s.assetRelations[id], L("Relasjonen", "The relation")))
         .filter((r) => r.removed !== c.removed);
-      if (changed.length === 0) fail("invalid", "Ingen endring");
+      if (changed.length === 0) fail("invalid", L("Ingen endring", "No change"));
       for (const r of changed) next[r.id] = { ...r, removed: c.removed, revision: rev(r) };
       if (!c.removed) for (const r of changed) assertUniqueRelation(next, r.id);
       return {
@@ -2998,7 +3677,7 @@ function run(
     }
 
     case "UndoCreatePoster": {
-      const p = need(s.posters[c.posterId], "Plakaten");
+      const p = need(s.posters[c.posterId], L("Plakaten", "The poster"));
       const { [p.id]: _p, ...posters } = s.posters;
       const { id: _id, revision: _r, removed: _rm, ...fields } = p;
       return {
@@ -3009,7 +3688,7 @@ function run(
     }
 
     case "UpdatePoster": {
-      const p = need(s.posters[c.posterId], "Plakaten");
+      const p = need(s.posters[c.posterId], L("Plakaten", "The poster"));
       const { id: _id, revision: _r, removed: _rm, ...old } = p;
       return {
         state: {
@@ -3025,8 +3704,8 @@ function run(
     }
 
     case "SetPosterRemoved": {
-      const p = need(s.posters[c.posterId], "Plakaten");
-      if (p.removed === c.removed) fail("invalid", "Ingen endring");
+      const p = need(s.posters[c.posterId], L("Plakaten", "The poster"));
+      if (p.removed === c.removed) fail("invalid", L("Ingen endring", "No change"));
       return {
         state: {
           ...s,
@@ -3054,11 +3733,14 @@ function run(
     }
 
     case "UndoCreateStyleProfile": {
-      const p = need(s.styleProfiles[c.profileId], "Stilprofilen");
+      const p = need(s.styleProfiles[c.profileId], L("Stilprofilen", "The style profile"));
       if (p.appliesTo?.length)
         fail(
           "referenced",
-          "Stilprofilen er valgt for bestemte bruk og kan ikke fjernes ved angring. Fjern den i stilguiden i stedet.",
+          L(
+            "Stilprofilen er valgt for bestemte bruk og kan ikke fjernes ved angring. Fjern den i stilguiden i stedet.",
+            "The style profile is selected for specific uses and cannot be removed by undoing. Remove it in the style guide instead.",
+          ),
         );
       const { [p.id]: _p, ...styleProfiles } = s.styleProfiles;
       return {
@@ -3073,7 +3755,7 @@ function run(
     }
 
     case "UpdateStyleProfile": {
-      const p = need(s.styleProfiles[c.profileId], "Stilprofilen");
+      const p = need(s.styleProfiles[c.profileId], L("Stilprofilen", "The style profile"));
       const fields = styleProfileFieldsOf(s, c.fields, p.id, p);
       return {
         state: {
@@ -3090,9 +3772,9 @@ function run(
     }
 
     case "SetStyleAppliesTo": {
-      const p = need(s.styleProfiles[c.profileId], "Stilprofilen");
+      const p = need(s.styleProfiles[c.profileId], L("Stilprofilen", "The style profile"));
       if (!Array.isArray(c.appliesTo) || c.appliesTo.some((u) => !STYLE_USES.includes(u)))
-        fail("invalid", "Ugyldig bruk for stilprofilen");
+        fail("invalid", L("Ugyldig bruk for stilprofilen", "Invalid use for the style profile"));
       const uses = STYLE_USES.filter((u) => c.appliesTo.includes(u));
       // Hver bruk har høyst én profil, så det alltid er klart hvilken som gjelder
       for (const u of uses) {
@@ -3100,11 +3782,17 @@ function run(
           (x) => x.id !== p.id && !x.removed && (x.appliesTo ?? []).includes(u),
         );
         if (other)
-          fail("invalid", `«${STYLE_USE_LABEL[u]}» bruker allerede stilprofilen «${other.name}»`);
+          fail(
+            "invalid",
+            L(
+              `«${STYLE_USE_LABEL[u]}» bruker allerede stilprofilen «${other.name}»`,
+              `“${STYLE_USE_LABEL[u]}” already uses the style profile “${other.name}”`,
+            ),
+          );
       }
       const before = p.appliesTo ?? [];
       if (before.length === uses.length && before.every((u, i) => u === uses[i]))
-        fail("invalid", "Ingen endring");
+        fail("invalid", L("Ingen endring", "No change"));
       return {
         state: {
           ...s,
@@ -3119,17 +3807,29 @@ function run(
     }
 
     case "SetStyleProfileRemoved": {
-      const p = need(s.styleProfiles[c.profileId], "Stilprofilen");
-      if (p.removed === c.removed) fail("invalid", "Ingen endring");
+      const p = need(s.styleProfiles[c.profileId], L("Stilprofilen", "The style profile"));
+      if (p.removed === c.removed) fail("invalid", L("Ingen endring", "No change"));
       if (!c.removed && p.isDefault && otherDefault(s, p.id))
-        fail("invalid", "Prosjektet har allerede en standard stilprofil");
+        fail(
+          "invalid",
+          L(
+            "Prosjektet har allerede en standard stilprofil",
+            "The project already has a default style profile",
+          ),
+        );
       if (!c.removed)
         for (const u of p.appliesTo ?? []) {
           const other = Object.values(s.styleProfiles).find(
             (x) => x.id !== p.id && !x.removed && (x.appliesTo ?? []).includes(u),
           );
           if (other)
-            fail("invalid", `«${STYLE_USE_LABEL[u]}» bruker allerede stilprofilen «${other.name}»`);
+            fail(
+              "invalid",
+              L(
+                `«${STYLE_USE_LABEL[u]}» bruker allerede stilprofilen «${other.name}»`,
+                `“${STYLE_USE_LABEL[u]}” already uses the style profile “${other.name}”`,
+              ),
+            );
         }
       return {
         state: {
@@ -3145,13 +3845,29 @@ function run(
     }
 
     case "SetContinuityEventDisabled": {
-      const ev = need(s.continuityEvents[c.eventId], "Kontinuitetshendelsen");
-      const p = need(s.productions[c.productionId], "Produksjonen");
+      const ev = need(
+        s.continuityEvents[c.eventId],
+        L("Kontinuitetshendelsen", "The continuity event"),
+      );
+      const p = need(s.productions[c.productionId], L("Produksjonen", "The production"));
       if (p.kind === "main")
-        fail("invalid", "Hovedfilmens hendelser fjernes i stedet for å slås av");
-      if (ev.productionId) fail("invalid", "En lokal hendelse fjernes i stedet for å slås av");
+        fail(
+          "invalid",
+          L(
+            "Hovedfilmens hendelser fjernes i stedet for å slås av",
+            "The main film's events are removed instead of being turned off",
+          ),
+        );
+      if (ev.productionId)
+        fail(
+          "invalid",
+          L(
+            "En lokal hendelse fjernes i stedet for å slås av",
+            "A local event is removed instead of being turned off",
+          ),
+        );
       const list = ev.disabledIn ?? [];
-      if (list.includes(p.id) === c.disabled) fail("invalid", "Ingen endring");
+      if (list.includes(p.id) === c.disabled) fail("invalid", L("Ingen endring", "No change"));
       const nextList = c.disabled ? [...list, p.id].sort() : list.filter((x) => x !== p.id);
       const { disabledIn: _d, ...rest } = ev;
       return {
@@ -3174,7 +3890,7 @@ function run(
     case "SetContinuityEventsRemoved": {
       const next = { ...s.continuityEvents };
       for (const id of c.eventIds) {
-        const ev = need(s.continuityEvents[id], "Kontinuitetshendelsen");
+        const ev = need(s.continuityEvents[id], L("Kontinuitetshendelsen", "The continuity event"));
         next[id] = { ...ev, removed: c.removed, revision: rev(ev) };
       }
       return {
@@ -3186,7 +3902,7 @@ function run(
 
     case "AddTranslations": {
       if (!Array.isArray(c.items) || c.items.length === 0 || c.items.length > 2000)
-        fail("invalid", "Ugyldig antall oversettelser");
+        fail("invalid", L("Ugyldig antall oversettelser", "Invalid number of translations"));
       const next = { ...s.translations };
       const taken = new Set(
         Object.values(s.translations)
@@ -3195,11 +3911,18 @@ function run(
       );
       for (const it of c.items) {
         assertNewId(s, it.translationId);
-        if (next[it.translationId]) fail("invalid", "Samme oversettelse to ganger");
+        if (next[it.translationId])
+          fail("invalid", L("Samme oversettelse to ganger", "The same translation twice"));
         const f = translationFieldsOf(s, it.fields);
         // Én gjeldende oversettelse per linje og språk
         if (taken.has(translationKey(f)))
-          fail("invalid", "Linjen har allerede en oversettelse til dette språket");
+          fail(
+            "invalid",
+            L(
+              "Linjen har allerede en oversettelse til dette språket",
+              "The line already has a translation into this language",
+            ),
+          );
         taken.add(translationKey(f));
         next[it.translationId] = { id: it.translationId, revision: 1, ...f, removed: false };
       }
@@ -3213,16 +3936,19 @@ function run(
 
     case "UpdateTranslations": {
       if (!Array.isArray(c.items) || c.items.length === 0 || c.items.length > 2000)
-        fail("invalid", "Ugyldig antall oversettelser");
+        fail("invalid", L("Ugyldig antall oversettelser", "Invalid number of translations"));
       const next = { ...s.translations };
       const old: { translationId: TranslationId; fields: TranslationFields }[] = [];
       for (const it of c.items) {
-        const t = need(s.translations[it.translationId], "Oversettelsen");
+        const t = need(s.translations[it.translationId], L("Oversettelsen", "The translation"));
         const f = translationFieldsOf(s, it.fields);
         if (translationKey(f) !== translationKey(t))
           fail(
             "invalid",
-            "En oversettelse kan ikke flyttes til en annen linje eller et annet språk",
+            L(
+              "En oversettelse kan ikke flyttes til en annen linje eller et annet språk",
+              "A translation cannot be moved to another line or another language",
+            ),
           );
         old.push({
           translationId: t.id,
@@ -3253,9 +3979,15 @@ function run(
           .map(translationKey),
       );
       for (const id of c.translationIds) {
-        const t = need(s.translations[id], "Oversettelsen");
+        const t = need(s.translations[id], L("Oversettelsen", "The translation"));
         if (!c.removed && live.has(translationKey(t)))
-          fail("invalid", "Linjen har fått en annen oversettelse i mellomtiden");
+          fail(
+            "invalid",
+            L(
+              "Linjen har fått en annen oversettelse i mellomtiden",
+              "The line has received a different translation in the meantime",
+            ),
+          );
         if (!c.removed) live.add(translationKey(t));
         next[id] = { ...t, removed: c.removed, revision: rev(t) };
       }
@@ -3271,11 +4003,18 @@ function run(
     }
 
     case "SetActiveTake": {
-      const o = need(s.occurrences[c.occurrenceId], "Forekomsten");
+      const o = need(s.occurrences[c.occurrenceId], L("Forekomsten", "The occurrence"));
       if (c.takeId !== null) {
-        const t = need(s.takes[c.takeId], "Versjonen");
-        const tOcc = need(s.occurrences[t.occurrenceId], "Forekomsten til versjonen");
-        if (tOcc.sceneId !== o.sceneId) fail("invalid", "Versjonen tilhører en annen scene");
+        const t = need(s.takes[c.takeId], L("Versjonen", "The version"));
+        const tOcc = need(
+          s.occurrences[t.occurrenceId],
+          L("Forekomsten til versjonen", "The occurrence of the version"),
+        );
+        if (tOcc.sceneId !== o.sceneId)
+          fail(
+            "invalid",
+            L("Versjonen tilhører en annen scene", "The version belongs to another scene"),
+          );
       }
       return {
         state: {
@@ -3291,8 +4030,9 @@ function run(
     }
 
     case "ImportScreenplay": {
-      need(s.productions[c.productionId], "Produksjonen");
-      if (c.scenes.length === 0) fail("invalid", "Manuset inneholder ingen scener");
+      need(s.productions[c.productionId], L("Produksjonen", "The production"));
+      if (c.scenes.length === 0)
+        fail("invalid", L("Manuset inneholder ingen scener", "The script contains no scenes"));
       let st = s;
       const affected: string[] = [];
       for (const sc of c.scenes) {
@@ -3347,16 +4087,27 @@ function run(
 
     case "RemoveBlock":
     case "RestoreBlock": {
-      const b = need(s.blocks[c.blockId], "Manusblokken");
+      const b = need(s.blocks[c.blockId], L("Manusblokken", "The script block"));
       assertCanEditVariant(s, c.productionId, b.variantId);
       const removed = c.type === "RemoveBlock";
       if (b.removed === removed)
-        fail("invalid", removed ? "Blokken er allerede fjernet" : "Blokken er ikke fjernet");
+        fail(
+          "invalid",
+          removed
+            ? L("Blokken er allerede fjernet", "The block has already been removed")
+            : L("Blokken er ikke fjernet", "The block has not been removed"),
+        );
       if (
         removed &&
         Object.values(s.segments).some((g) => g.startBlockId === b.id || g.endBlockId === b.id)
       ) {
-        fail("referenced", "Blokken brukes som grense for et produksjonssegment");
+        fail(
+          "referenced",
+          L(
+            "Blokken brukes som grense for et produksjonssegment",
+            "The block is used as a boundary for a production segment",
+          ),
+        );
       }
       return {
         state: { ...s, blocks: { ...s.blocks, [b.id]: { ...b, removed, revision: rev(b) } } },
@@ -3370,9 +4121,10 @@ function run(
     }
 
     case "SetBlockKind": {
-      const b = need(s.blocks[c.blockId], "Manusblokken");
+      const b = need(s.blocks[c.blockId], L("Manusblokken", "The script block"));
       assertCanEditVariant(s, c.productionId, b.variantId);
-      if (b.kind === c.kind) fail("invalid", "Elementtypen er uendret");
+      if (b.kind === c.kind)
+        fail("invalid", L("Elementtypen er uendret", "The element type is unchanged"));
       return {
         state: { ...s, blocks: { ...s.blocks, [b.id]: { ...b, kind: c.kind, revision: rev(b) } } },
         inverse: {
@@ -3386,7 +4138,7 @@ function run(
     }
 
     case "EditSceneHeading": {
-      const v = need(s.variants[c.variantId], "Varianten");
+      const v = need(s.variants[c.variantId], L("Varianten", "The variant"));
       assertCanEditVariant(s, c.productionId, v.id);
       return {
         state: {
@@ -3421,7 +4173,7 @@ function run(
           affected: [b.id],
         };
       }
-      const v = need(s.variants[c.targetId], "Blokken eller varianten");
+      const v = need(s.variants[c.targetId], L("Blokken eller varianten", "The block or variant"));
       assertCanEditVariant(s, c.productionId, v.id);
       return {
         state: {
@@ -3442,18 +4194,29 @@ function run(
     }
 
     case "SplitScene": {
-      const occ = need(s.occurrences[c.occurrenceId], "Forekomsten");
+      const occ = need(s.occurrences[c.occurrenceId], L("Forekomsten", "The occurrence"));
       if (occ.productionId !== c.productionId)
-        fail("invalid", "Forekomsten tilhører en annen produksjon");
+        fail(
+          "invalid",
+          L(
+            "Forekomsten tilhører en annen produksjon",
+            "The occurrence belongs to another production",
+          ),
+        );
       assertCanEditVariant(s, c.productionId, occ.variantId);
-      const variant = need(s.variants[occ.variantId], "Varianten");
-      const scene = need(s.scenes[occ.sceneId], "Scenen");
+      const variant = need(s.variants[occ.variantId], L("Varianten", "The variant"));
+      const scene = need(s.scenes[occ.sceneId], L("Scenen", "The scene"));
       const blocks = Object.values(s.blocks)
         .filter((b) => b.variantId === variant.id && !b.removed)
         .sort((a, b) => compareKeys(a.orderKey, b.orderKey));
       const idx = blocks.findIndex((b) => b.id === c.atBlockId);
-      if (idx < 0) fail("not_found", "Blokken finnes ikke i scenen");
-      if (idx === 0) fail("invalid", "Kan ikke splitte ved første blokk");
+      if (idx < 0)
+        fail(
+          "not_found",
+          L("Blokken finnes ikke i scenen", "The block does not exist in the scene"),
+        );
+      if (idx === 0)
+        fail("invalid", L("Kan ikke splitte ved første blokk", "Cannot split at the first block"));
       // Fjernede blokker etter delingspunktet følger med, så «Hent tilbake» legger dem i riktig scene
       const atKey = blocks[idx]!.orderKey;
       const moved = Object.values(s.blocks)
@@ -3467,7 +4230,13 @@ function run(
             (g.endBlockId && movedIds.has(g.endBlockId)),
         )
       ) {
-        fail("referenced", "Produksjonssegmenter viser til blokker som ville blitt flyttet");
+        fail(
+          "referenced",
+          L(
+            "Produksjonssegmenter viser til blokker som ville blitt flyttet",
+            "Production segments refer to blocks that would be moved",
+          ),
+        );
       }
       assertNewId(s, c.newSceneId);
       assertNewId(s, c.newVariantId);
@@ -3476,19 +4245,32 @@ function run(
       if (users.some((u) => u.productionId !== c.productionId)) {
         fail(
           "must_fork_variant",
-          "Scenen brukes også i en annen produksjon (for eksempel en spinoff) og kan ikke deles herfra. Gi den andre produksjonen egen versjon av scenen først.",
+          L(
+            "Scenen brukes også i en annen produksjon (for eksempel en spinoff) og kan ikke deles herfra. Gi den andre produksjonen egen versjon av scenen først.",
+            "The scene is also used in another production (for example a spin-off) and cannot be split from here. Give the other production its own version of the scene first.",
+          ),
         );
       }
       for (const u of users) {
         const nid = c.newOccurrenceIds[u.id];
-        if (!nid) fail("invalid", `Mangler ny forekomst for ${u.id}`);
+        if (!nid)
+          fail(
+            "invalid",
+            L(`Mangler ny forekomst for ${u.id}`, `Missing new occurrence for ${u.id}`),
+          );
         assertNewId(s, nid);
       }
       if (
         new Set(Object.values(c.newOccurrenceIds)).size !== users.length ||
         Object.keys(c.newOccurrenceIds).length !== users.length
       ) {
-        fail("invalid", "Forekomstkartet stemmer ikke med bruken av scenen");
+        fail(
+          "invalid",
+          L(
+            "Forekomstkartet stemmer ikke med bruken av scenen",
+            "The occurrence map does not match the use of the scene",
+          ),
+        );
       }
       const blocksNext = { ...s.blocks };
       for (const b of moved)
@@ -3578,9 +4360,12 @@ function run(
 
     case "UndoSplitScene": {
       const sp = c.split;
-      const newScene = need(s.scenes[sp.newSceneId], "Den nye scenen");
-      const nv = need(s.variants[sp.newVariantId], "Den nye varianten");
-      const ov = need(s.variants[c.originalVariantId], "Den opprinnelige varianten");
+      const newScene = need(s.scenes[sp.newSceneId], L("Den nye scenen", "The new scene"));
+      const nv = need(s.variants[sp.newVariantId], L("Den nye varianten", "The new variant"));
+      const ov = need(
+        s.variants[c.originalVariantId],
+        L("Den opprinnelige varianten", "The original variant"),
+      );
       // Bare en ekte deling kan slås tilbake (kan ikke brukes til å slette eller flytte vilkårlige scener)
       if (
         nv.sceneId !== newScene.id ||
@@ -3588,7 +4373,13 @@ function run(
         ov.sceneId !== newScene.derivedFromSceneId ||
         nv.ownerProductionId !== ov.ownerProductionId
       ) {
-        fail("invalid", "Dette er ikke en deling som kan slås tilbake");
+        fail(
+          "invalid",
+          L(
+            "Dette er ikke en deling som kan slås tilbake",
+            "This is not a split that can be undone",
+          ),
+        );
       }
       assertCanEditVariant(s, sp.productionId, ov.id);
       for (const [oldId, newId] of Object.entries(sp.newOccurrenceIds)) {
@@ -3601,7 +4392,10 @@ function run(
           !old ||
           old.variantId !== ov.id
         ) {
-          fail("invalid", "Forekomstene stemmer ikke med delingen");
+          fail(
+            "invalid",
+            L("Forekomstene stemmer ikke med delingen", "The occurrences do not match the split"),
+          );
         }
       }
       if (
@@ -3609,12 +4403,21 @@ function run(
           (x) => x.mergedIntoSceneId === newScene.id || x.derivedFromSceneId === newScene.id,
         )
       ) {
-        fail("referenced", "Den nye scenen er brukt i en senere deling eller sammenslåing");
+        fail(
+          "referenced",
+          L(
+            "Den nye scenen er brukt i en senere deling eller sammenslåing",
+            "The new scene is used in a later split or merge",
+          ),
+        );
       }
       if (Object.values(s.scenes).some((x) => x.storyTime.anchorSceneId === newScene.id)) {
         fail(
           "referenced",
-          "En annen scene er plassert i fortellingstiden i forhold til den nye scenen. Endre den først.",
+          L(
+            "En annen scene er plassert i fortellingstiden i forhold til den nye scenen. Endre den først.",
+            "Another scene is placed in story time relative to the new scene. Change it first.",
+          ),
         );
       }
       {
@@ -3624,7 +4427,13 @@ function run(
             .map((b) => b.orderKey),
         );
         if (Object.values(s.blocks).some((b) => b.variantId === nv.id && keys.has(b.orderKey))) {
-          fail("referenced", "Scenen er endret etter delingen og kan ikke slås tilbake automatisk");
+          fail(
+            "referenced",
+            L(
+              "Scenen er endret etter delingen og kan ikke slås tilbake automatisk",
+              "The scene was changed after the split and cannot be reverted automatically",
+            ),
+          );
         }
       }
       const newOccIds = new Set(Object.values(sp.newOccurrenceIds) as string[]);
@@ -3633,13 +4442,22 @@ function run(
           (o) => o.sceneId === sp.newSceneId && !newOccIds.has(o.id),
         )
       ) {
-        fail("referenced", "Den nye scenen er tatt i bruk andre steder");
+        fail(
+          "referenced",
+          L("Den nye scenen er tatt i bruk andre steder", "The new scene is used elsewhere"),
+        );
       }
       if (
         Object.values(s.takes).some((t) => newOccIds.has(t.occurrenceId)) ||
         Object.values(s.segments).some((g) => newOccIds.has(g.occurrenceId))
       ) {
-        fail("referenced", "Den nye scenen har produksjonsmateriale og kan ikke slås tilbake");
+        fail(
+          "referenced",
+          L(
+            "Den nye scenen har produksjonsmateriale og kan ikke slås tilbake",
+            "The new scene has production material and cannot be reverted",
+          ),
+        );
       }
       const blocksNext = { ...s.blocks };
       for (const b of Object.values(s.blocks))
@@ -3652,9 +4470,12 @@ function run(
       for (const [id, ms] of Object.entries(c.plans ?? {})) {
         const o = occNext[id];
         if (!o || !Object.hasOwn(occNext, id) || !Object.hasOwn(sp.newOccurrenceIds, id))
-          fail("invalid", "Planen stemmer ikke med delingen");
+          fail(
+            "invalid",
+            L("Planen stemmer ikke med delingen", "The plan does not match the split"),
+          );
         if (!Number.isInteger(ms) || ms < MIN_PLANNED_MS || ms > MAX_PLANNED_MS)
-          fail("invalid", "Ugyldig planlagt lengde");
+          fail("invalid", L("Ugyldig planlagt lengde", "Invalid planned length"));
         occNext[id] = { ...o!, plannedMs: ms, revision: rev(o!) };
         restored.push(id);
       }
@@ -3684,29 +4505,62 @@ function run(
     }
 
     case "MergeScenes": {
-      const target = need(s.occurrences[c.targetOccurrenceId], "Målscenen");
-      const source = need(s.occurrences[c.sourceOccurrenceId], "Kildescenen");
+      const target = need(s.occurrences[c.targetOccurrenceId], L("Målscenen", "The target scene"));
+      const source = need(
+        s.occurrences[c.sourceOccurrenceId],
+        L("Kildescenen", "The source scene"),
+      );
       if (target.productionId !== c.productionId || source.productionId !== c.productionId)
-        fail("invalid", "Begge scenene må være i samme produksjon");
+        fail(
+          "invalid",
+          L(
+            "Begge scenene må være i samme produksjon",
+            "Both scenes must be in the same production",
+          ),
+        );
       if (target.sceneId === source.sceneId)
-        fail("invalid", "Kan ikke slå en scene sammen med seg selv");
+        fail(
+          "invalid",
+          L("Kan ikke slå en scene sammen med seg selv", "A scene cannot be merged with itself"),
+        );
       assertCanEditVariant(s, c.productionId, target.variantId);
       assertCanEditVariant(s, c.productionId, source.variantId);
-      const sourceScene = need(s.scenes[source.sceneId], "Kildescenen");
+      const sourceScene = need(s.scenes[source.sceneId], L("Kildescenen", "The source scene"));
       if (sourceScene.mergedIntoSceneId !== null)
-        fail("invalid", "Kildescenen er allerede slått sammen med en annen scene");
-      if (need(s.scenes[target.sceneId], "Målscenen").mergedIntoSceneId !== null)
-        fail("invalid", "Målscenen er slått sammen med en annen scene");
+        fail(
+          "invalid",
+          L(
+            "Kildescenen er allerede slått sammen med en annen scene",
+            "The source scene is already merged with another scene",
+          ),
+        );
+      if (
+        need(s.scenes[target.sceneId], L("Målscenen", "The target scene")).mergedIntoSceneId !==
+        null
+      )
+        fail(
+          "invalid",
+          L(
+            "Målscenen er slått sammen med en annen scene",
+            "The target scene is already merged with another scene",
+          ),
+        );
       if (
         Object.values(s.occurrences).some((o) => o.sceneId === source.sceneId && o.id !== source.id)
       ) {
         fail(
           "referenced",
-          "Kildescenen brukes også i andre produksjoner. Slå sammen der den bare finnes én gang.",
+          L(
+            "Kildescenen brukes også i andre produksjoner. Slå sammen der den bare finnes én gang.",
+            "The source scene is also used in other productions. Merge where it only exists once.",
+          ),
         );
       }
       if (Object.values(s.segments).some((g) => g.occurrenceId === source.id))
-        fail("referenced", "Kildescenen har produksjonssegmenter");
+        fail(
+          "referenced",
+          L("Kildescenen har produksjonssegmenter", "The source scene has production segments"),
+        );
       // INV-04: teksten i en scene som også brukes i andre produksjoner endres ikke herfra
       if (
         Object.values(s.occurrences).some(
@@ -3715,7 +4569,10 @@ function run(
       ) {
         fail(
           "must_fork_variant",
-          "Målscenen brukes også i en annen produksjon (for eksempel en spinoff) og kan ikke slås sammen herfra. Gi den andre produksjonen egen versjon av scenen først.",
+          L(
+            "Målscenen brukes også i en annen produksjon (for eksempel en spinoff) og kan ikke slås sammen herfra. Gi den andre produksjonen egen versjon av scenen først.",
+            "The target scene is also used in another production (for example a spin-off) and cannot be merged from here. Give the other production its own version of the scene first.",
+          ),
         );
       }
       const targetBlocks = Object.values(s.blocks)
@@ -3784,19 +4641,23 @@ function run(
     }
 
     case "UnmergeScenes": {
-      const source = need(s.occurrences[c.sourceOccurrenceId], "Kildescenen");
-      const sourceScene = need(s.scenes[source.sceneId], "Kildescenen");
-      if (sourceScene.mergedIntoSceneId === null) fail("invalid", "Scenen er ikke slått sammen");
-      const target = need(s.occurrences[c.targetOccurrenceId], "Målscenen");
+      const source = need(
+        s.occurrences[c.sourceOccurrenceId],
+        L("Kildescenen", "The source scene"),
+      );
+      const sourceScene = need(s.scenes[source.sceneId], L("Kildescenen", "The source scene"));
+      if (sourceScene.mergedIntoSceneId === null)
+        fail("invalid", L("Scenen er ikke slått sammen", "The scene has not been merged"));
+      const target = need(s.occurrences[c.targetOccurrenceId], L("Målscenen", "The target scene"));
       if (
         sourceScene.mergedIntoSceneId !== target.sceneId ||
         source.productionId !== c.productionId
       ) {
-        fail("invalid", "Sammenslåingen stemmer ikke");
+        fail("invalid", L("Sammenslåingen stemmer ikke", "The merge does not match"));
       }
       assertCanEditVariant(s, c.productionId, source.variantId);
       if (new Set(c.placements.map((p) => p.blockId)).size !== c.placements.length) {
-        fail("invalid", "Blokker gjentas");
+        fail("invalid", L("Blokker gjentas", "Blocks are repeated"));
       }
       {
         // Sammenslåingen la kildens blokker sist i målscenen, og kildescenen ble tom
@@ -3812,19 +4673,25 @@ function run(
           c.placements.length > inTarget.length ||
           c.placements.some((p) => !tail.has(p.blockId))
         ) {
-          fail("invalid", "Blokkene stemmer ikke med sammenslåingen");
+          fail(
+            "invalid",
+            L("Blokkene stemmer ikke med sammenslåingen", "The blocks do not match the merge"),
+          );
         }
       }
       for (const p of c.placements) {
-        const b = need(s.blocks[p.blockId], "Blokken");
+        const b = need(s.blocks[p.blockId], L("Blokken", "The block"));
         if (b.variantId !== target.variantId || p.variantId !== source.variantId) {
-          fail("invalid", "Blokken var ikke en del av sammenslåingen");
+          fail(
+            "invalid",
+            L("Blokken var ikke en del av sammenslåingen", "The block was not part of the merge"),
+          );
         }
         assertKey(p.orderKey);
       }
       const blocksNext = { ...s.blocks };
       for (const p of c.placements) {
-        const b = need(s.blocks[p.blockId], "Blokken");
+        const b = need(s.blocks[p.blockId], L("Blokken", "The block"));
         blocksNext[b.id] = { ...b, variantId: p.variantId, orderKey: p.orderKey, revision: rev(b) };
       }
       return {
@@ -3875,7 +4742,7 @@ function run(
     }
 
     case "SetStoryTime": {
-      const sc = need(s.scenes[c.sceneId], "Scenen");
+      const sc = need(s.scenes[c.sceneId], L("Scenen", "The scene"));
       validStoryTime(s, sc.id, c.storyTime);
       return {
         state: {
@@ -3889,13 +4756,19 @@ function run(
 
     // ---------- Ressursbiblioteket (M3 del 1) ----------
     case "CreateAssets": {
-      if (c.assets.length === 0) fail("invalid", "Ingen ressurser å legge til");
-      if (c.assets.length > 500) fail("invalid", "For mange ressurser i én endring");
+      if (c.assets.length === 0)
+        fail("invalid", L("Ingen ressurser å legge til", "No assets to add"));
+      if (c.assets.length > 500)
+        fail("invalid", L("For mange ressurser i én endring", "Too many assets in one change"));
       const seen = new Set<string>();
       const assets = { ...s.assets };
       for (const x of c.assets) {
         assertNewId(s, x.assetId);
-        if (seen.has(x.assetId)) fail("duplicate_id", `ID ${x.assetId} er brukt to ganger`);
+        if (seen.has(x.assetId))
+          fail(
+            "duplicate_id",
+            L(`ID ${x.assetId} er brukt to ganger`, `ID ${x.assetId} is used twice`),
+          );
         seen.add(x.assetId);
         assets[x.assetId] = {
           id: x.assetId,
@@ -3914,21 +4787,30 @@ function run(
     case "UndoCreateAssets": {
       const assets = { ...s.assets };
       for (const id of c.assetIds) {
-        need(s.assets[id], "Ressursen");
+        need(s.assets[id], L("Ressursen", "The asset"));
         if (usedByPresentation(s, "assets", id))
           fail(
             "referenced",
-            "Ressursen brukes i en relasjon eller på en plakat og kan ikke fjernes. Arkiver den i stedet.",
+            L(
+              "Ressursen brukes i en relasjon eller på en plakat og kan ikke fjernes. Arkiver den i stedet.",
+              "The asset is used in a relation or on a poster and cannot be removed. Archive it instead.",
+            ),
           );
         if (usedByLayer(s, "assetId", id))
           fail(
             "referenced",
-            "Ressursen brukes i en 2D-scene og kan ikke fjernes. Arkiver den i stedet.",
+            L(
+              "Ressursen brukes i en 2D-scene og kan ikke fjernes. Arkiver den i stedet.",
+              "The asset is used in a 2D scene and cannot be removed. Archive it instead.",
+            ),
           );
         if (Object.values(s.assetVariants).some((v) => v.assetId === id))
           fail(
             "referenced",
-            "Ressursen har fått visuelle varianter og kan ikke fjernes. Arkiver den i stedet.",
+            L(
+              "Ressursen har fått visuelle varianter og kan ikke fjernes. Arkiver den i stedet.",
+              "The asset has visual variants and cannot be removed. Archive it instead.",
+            ),
           );
         // Stemme, betegnelser og lydkoblinger følger ikke med når opprettelsen gjøres om igjen; da angres
         // ikke opprettelsen (ingen andres arbeid skal gå tapt i stillhet)
@@ -3936,7 +4818,10 @@ function run(
         if (extra.voice || extra.contextNames?.length || extra.soundLinks?.length)
           fail(
             "referenced",
-            "Ressursen har fått stemme, betegnelser eller lydkoblinger og kan ikke fjernes. Arkiver den i stedet.",
+            L(
+              "Ressursen har fått stemme, betegnelser eller lydkoblinger og kan ikke fjernes. Arkiver den i stedet.",
+              "The asset has a voice, designations or sound links and cannot be removed. Archive it instead.",
+            ),
           );
         delete assets[id];
       }
@@ -3965,7 +4850,7 @@ function run(
     }
 
     case "UpdateAsset": {
-      const a = need(s.assets[c.assetId], "Ressursen");
+      const a = need(s.assets[c.assetId], L("Ressursen", "The asset"));
       return {
         state: {
           ...s,
@@ -3991,27 +4876,41 @@ function run(
     }
 
     case "SetContextNames": {
-      const a = need(s.assets[c.assetId], "Ressursen");
+      const a = need(s.assets[c.assetId], L("Ressursen", "The asset"));
       if (!Array.isArray(c.contextNames) || c.contextNames.length > 200)
-        fail("invalid", "Høyst 200 betegnelser");
+        fail("invalid", L("Høyst 200 betegnelser", "At most 200 designations"));
       const before = a.contextNames ?? [];
       const known = new Set(before.flatMap((x) => x.blockIds));
       const names = new Set<string>();
       const list: ContextName[] = [];
       for (const n of c.contextNames) {
         const name = typeof n?.name === "string" ? n.name.trim().replace(/\s+/g, " ") : "";
-        if (!name || name.length > 80) fail("invalid", "Betegnelsen må ha 1–80 tegn");
+        if (!name || name.length > 80)
+          fail(
+            "invalid",
+            L("Betegnelsen må ha 1–80 tegn", "The designation must have 1–80 characters"),
+          );
         const key = name.toLocaleLowerCase("nb");
-        if (names.has(key)) fail("invalid", "Samme betegnelse to ganger");
+        if (names.has(key))
+          fail("invalid", L("Samme betegnelse to ganger", "The same designation twice"));
         names.add(key);
         if (!Array.isArray(n.blockIds) || n.blockIds.length === 0 || n.blockIds.length > 2000)
-          fail("invalid", "Velg minst én linje i manuset");
+          fail(
+            "invalid",
+            L("Velg minst én linje i manuset", "Choose at least one line in the script"),
+          );
         const ids: string[] = [
           ...new Set<string>((n.blockIds as readonly unknown[]).map((x: unknown) => String(x))),
         ];
         for (const id of ids)
           if (!s.blocks[id] && !known.has(id) && !(c.restore === true && isUuid(id)))
-            fail("not_found", "En av linjene finnes ikke i manuset");
+            fail(
+              "not_found",
+              L(
+                "En av linjene finnes ikke i manuset",
+                "One of the lines does not exist in the script",
+              ),
+            );
         list.push({ name, blockIds: ids });
       }
       return {
@@ -4030,10 +4929,10 @@ function run(
         c.versionIds.length > 200 ||
         c.versionIds.some((v) => typeof v !== "string" || !s.assetVersions[v])
       )
-        fail("invalid", "Ukjent ressursversjon");
+        fail("invalid", L("Ukjent ressursversjon", "Unknown asset version"));
       const ids = [...new Set(c.versionIds)];
       if (c.target === "layer") {
-        const l = need(s.layers[c.id], "Laget");
+        const l = need(s.layers[c.id], L("Laget", "The layer"));
         return {
           state: {
             ...s,
@@ -4051,8 +4950,8 @@ function run(
           affected: [l.id],
         };
       }
-      if (c.target !== "take") fail("invalid", "Ukjent mål");
-      const t = need(s.takes[c.id], "Versjonen");
+      if (c.target !== "take") fail("invalid", L("Ukjent mål", "Unknown target"));
+      const t = need(s.takes[c.id], L("Versjonen", "The version"));
       return {
         state: {
           ...s,
@@ -4069,7 +4968,7 @@ function run(
     }
 
     case "SetExportSettings": {
-      const p = need(s.productions[c.productionId], "Produksjonen");
+      const p = need(s.productions[c.productionId], L("Produksjonen", "The production"));
       const x = c.settings;
       if (
         x !== null &&
@@ -4078,7 +4977,7 @@ function run(
           typeof x.monochrome !== "boolean" ||
           (x.output !== "video" && x.output !== "dialogue"))
       )
-        fail("invalid", "Ugyldige eksportinnstillinger");
+        fail("invalid", L("Ugyldige eksportinnstillinger", "Invalid export settings"));
       // Tittelsiden (KI-20): utelatt = beholdes, null = fjernes
       let titlePage: readonly string[] | undefined = p.exportSettings?.titlePage;
       if (x !== null && x.titlePage !== undefined) {
@@ -4089,7 +4988,7 @@ function run(
             x.titlePage.some((l) => typeof l !== "string" || l.length > TITLE_PAGE_MAX_LINE) ||
             x.titlePage.length > TITLE_PAGE_MAX_LINES
           )
-            fail("invalid", "Ugyldig tittelside");
+            fail("invalid", L("Ugyldig tittelside", "Invalid title page"));
           titlePage = [...x.titlePage];
         }
       }
@@ -4109,7 +5008,13 @@ function run(
             new TextEncoder().encode(JSON.stringify(settings.titlePage)).byteLength >
               TITLE_PAGE_MAX_BYTES))
       )
-        fail("invalid", "Tittelsiden er for lang til å lagres (maks om lag 3 kB)");
+        fail(
+          "invalid",
+          L(
+            "Tittelsiden er for lang til å lagres (maks om lag 3 kB)",
+            "The title page is too long to save (max about 3 kB)",
+          ),
+        );
       const prev = p.exportSettings ?? null;
       return {
         state: {
@@ -4134,10 +5039,16 @@ function run(
       const next =
         c.assumptions === null ? null : normalizeDurationAssumptions(c.assumptions as unknown);
       if (c.assumptions !== null && next === null)
-        fail("invalid", "Ugyldige antakelser for varighetsestimatet");
+        fail(
+          "invalid",
+          L(
+            "Ugyldige antakelser for varighetsestimatet",
+            "Invalid assumptions for the duration estimate",
+          ),
+        );
       const prev = s.project.durationAssumptions ?? null;
       if (prev === next || (prev !== null && next !== null && sameDurationAssumptions(prev, next)))
-        fail("invalid", "Ingen endring");
+        fail("invalid", L("Ingen endring", "No change"));
       const { durationAssumptions: _old, ...rest } = s.project;
       const project =
         next === null
@@ -4151,19 +5062,24 @@ function run(
     }
 
     case "SetTakeCoverage": {
-      const t = need(s.takes[c.takeId], "Versjonen");
+      const t = need(s.takes[c.takeId], L("Versjonen", "The version"));
       if (t.kind !== "imported_film" && t.kind !== "ai_video")
-        fail("invalid", "Bare film kan ha manusdekning");
+        fail("invalid", L("Bare film kan ha manusdekning", "Only film can have script coverage"));
       const cov = c.coverage;
       if (cov !== null) {
-        const o = need(s.occurrences[t.occurrenceId], "Scenen");
+        const o = need(s.occurrences[t.occurrenceId], L("Scenen", "The scene"));
         const order = blocksOfVariant(s, o.variantId)
           .filter((b) => b.kind !== "heading")
           .map((b) => b.id as string);
         const a = order.indexOf(cov?.startBlockId);
         const b = order.indexOf(cov?.endBlockId);
-        if (a < 0 || b < 0) fail("not_found", "Linjene må være i scenen");
-        if (b < a) fail("invalid", "Siste linje må komme etter første");
+        if (a < 0 || b < 0)
+          fail("not_found", L("Linjene må være i scenen", "The lines must be in the scene"));
+        if (b < a)
+          fail(
+            "invalid",
+            L("Siste linje må komme etter første", "The last line must come after the first"),
+          );
       }
       return {
         state: {
@@ -4183,9 +5099,9 @@ function run(
     }
 
     case "SetAssetVoice": {
-      const a = need(s.assets[c.assetId], "Ressursen");
+      const a = need(s.assets[c.assetId], L("Ressursen", "The asset"));
       if (a.kind !== "character" && a.kind !== "animal" && a.kind !== "other")
-        fail("invalid", "Bare karakterer kan få stemme");
+        fail("invalid", L("Bare karakterer kan få stemme", "Only characters can have a voice"));
       const v = c.voice;
       if (
         v !== null &&
@@ -4195,7 +5111,7 @@ function run(
           typeof v.label !== "string" ||
           v.label.length > 120)
       )
-        fail("invalid", "Ugyldig stemme");
+        fail("invalid", L("Ugyldig stemme", "Invalid voice"));
       return {
         state: {
           ...s,
@@ -4214,18 +5130,28 @@ function run(
     }
 
     case "SetSoundLinks": {
-      const a = need(s.assets[c.assetId], "Ressursen");
-      if (a.kind !== "sound") fail("invalid", "Bare lydressurser kan kobles på denne måten");
+      const a = need(s.assets[c.assetId], L("Ressursen", "The asset"));
+      if (a.kind !== "sound")
+        fail(
+          "invalid",
+          L(
+            "Bare lydressurser kan kobles på denne måten",
+            "Only audio assets can be linked in this way",
+          ),
+        );
       if (!Array.isArray(c.links) || c.links.length > MAX_SOUND_LINKS)
-        fail("invalid", `Høyst ${MAX_SOUND_LINKS} koblinger`);
+        fail(
+          "invalid",
+          L(`Høyst ${MAX_SOUND_LINKS} koblinger`, `At most ${MAX_SOUND_LINKS} links`),
+        );
       const seen = new Set<string>();
       const links: SoundLink[] = [];
       const KINDS = ["asset", "block", "scene", "segment", "event", "production"];
       for (const l of c.links) {
-        if (!l || !KINDS.includes(l.kind)) fail("invalid", "Ugyldig kobling");
-        if (!l || typeof l.id !== "string") fail("invalid", "Ugyldig kobling");
+        if (!l || !KINDS.includes(l.kind)) fail("invalid", L("Ugyldig kobling", "Invalid link"));
+        if (!l || typeof l.id !== "string") fail("invalid", L("Ugyldig kobling", "Invalid link"));
         const key = `${l.kind}:${l.id}`;
-        if (seen.has(key)) fail("invalid", "Samme kobling to ganger");
+        if (seen.has(key)) fail("invalid", L("Samme kobling to ganger", "The same link twice"));
         seen.add(key);
         const exists =
           l.kind === "asset"
@@ -4245,7 +5171,13 @@ function run(
         // og settes tilbake ved angring (permanent ID; vises som «finnes ikke lenger»).
         const kept = (a.soundLinks ?? []).some((x) => x.kind === l.kind && x.id === l.id);
         if (!exists && !kept && !(c.restore === true && isUuid(l.id)))
-          fail("not_found", "Det lyden skal kobles til, finnes ikke");
+          fail(
+            "not_found",
+            L(
+              "Det lyden skal kobles til, finnes ikke",
+              "The item the sound should be linked to does not exist",
+            ),
+          );
         links.push({ kind: l.kind, id: l.id });
       }
       const before = a.soundLinks ?? [];
@@ -4253,7 +5185,7 @@ function run(
         before.length === links.length &&
         before.every((x, i) => x.kind === links[i]!.kind && x.id === links[i]!.id)
       )
-        fail("invalid", "Ingen endring");
+        fail("invalid", L("Ingen endring", "No change"));
       return {
         state: {
           ...s,
@@ -4265,7 +5197,7 @@ function run(
     }
 
     case "SetAssetArchived": {
-      const a = need(s.assets[c.assetId], "Ressursen");
+      const a = need(s.assets[c.assetId], L("Ressursen", "The asset"));
       return {
         state: {
           ...s,
@@ -4278,17 +5210,21 @@ function run(
 
     case "SetAssetsRemoved": {
       if (!Array.isArray(c.assetIds) || c.assetIds.length === 0 || c.assetIds.length > 500)
-        fail("invalid", "Velg 1–500 ressurser");
+        fail("invalid", L("Velg 1–500 ressurser", "Choose 1–500 assets"));
       const assets = { ...s.assets };
       const before: (typeof c.assetIds)[number][] = [];
       for (const id of new Set(c.assetIds)) {
-        const a = need(s.assets[id], "Ressursen");
+        const a = need(s.assets[id], L("Ressursen", "The asset"));
         if ((a.removed === true) === c.removed) continue;
         const { removed: _r, ...rest } = a;
         assets[a.id] = { ...rest, ...(c.removed ? { removed: true } : {}), revision: rev(a) };
         before.push(a.id);
       }
-      if (before.length === 0) fail("invalid", c.removed ? "Allerede slettet" : "Ikke slettet");
+      if (before.length === 0)
+        fail(
+          "invalid",
+          c.removed ? L("Allerede slettet", "Already deleted") : L("Ikke slettet", "Not deleted"),
+        );
       return {
         state: { ...s, assets },
         inverse: { type: "SetAssetsRemoved", assetIds: before, removed: !c.removed },
@@ -4298,20 +5234,30 @@ function run(
 
     case "SetAssetVersionsRemoved": {
       if (!Array.isArray(c.versionIds) || c.versionIds.length === 0 || c.versionIds.length > 500)
-        fail("invalid", "Velg 1–500 bilder");
+        fail("invalid", L("Velg 1–500 bilder", "Choose 1–500 images"));
       const versions = { ...s.assetVersions };
       const before: (typeof c.versionIds)[number][] = [];
       for (const id of new Set(c.versionIds)) {
-        const v = need(s.assetVersions[id], "Bildet");
+        const v = need(s.assetVersions[id], L("Bildet", "The image"));
         if ((v.removed === true) === c.removed) continue;
         // Det godkjente bildet kan ikke slettes: godkjenn et annet først (ellers ville scenene mistet det)
         if (c.removed && s.assetVariants[v.variantId]?.approvedVersionId === v.id)
-          fail("invalid", `v${v.number} er godkjent. Godkjenn et annet bilde først.`);
+          fail(
+            "invalid",
+            L(
+              `v${v.number} er godkjent. Godkjenn et annet bilde først.`,
+              `v${v.number} is approved. Approve another image first.`,
+            ),
+          );
         const { removed: _r, ...rest } = v;
         versions[v.id] = { ...rest, ...(c.removed ? { removed: true } : {}), revision: rev(v) };
         before.push(v.id);
       }
-      if (before.length === 0) fail("invalid", c.removed ? "Allerede slettet" : "Ikke slettet");
+      if (before.length === 0)
+        fail(
+          "invalid",
+          c.removed ? L("Allerede slettet", "Already deleted") : L("Ikke slettet", "Not deleted"),
+        );
       return {
         state: { ...s, assetVersions: versions },
         inverse: { type: "SetAssetVersionsRemoved", versionIds: before, removed: !c.removed },
@@ -4319,11 +5265,63 @@ function run(
       };
     }
 
+    case "SetVersionView": {
+      const v = need(s.assetVersions[c.versionId], L("Bildet", "The image"));
+      if (c.view !== null && !isVersionView(c.view))
+        fail("invalid", L("Ukjent vinkel", "Unknown angle"));
+      if ((v.view ?? null) === c.view) fail("invalid", L("Uendret", "Unchanged"));
+      const { view: _v, ...rest } = v;
+      return {
+        state: {
+          ...s,
+          assetVersions: {
+            ...s.assetVersions,
+            [v.id]: { ...rest, ...(c.view ? { view: c.view } : {}), revision: rev(v) },
+          },
+        },
+        inverse: { type: "SetVersionView", versionId: v.id, view: v.view ?? null },
+        affected: [v.id],
+      };
+    }
+
+    case "SetAssetVisualBrief": {
+      const a = need(s.assets[c.assetId], L("Ressursen", "The asset"));
+      if (typeof c.text !== "string") fail("invalid", L("Ugyldig tekst", "Invalid text"));
+      const text = c.text.replace(/\r\n?/g, "\n").trim();
+      if (text.length > 4000)
+        fail(
+          "invalid",
+          L(
+            "Faktaarket er for langt (høyst 4000 tegn)",
+            "The fact sheet is too long (at most 4,000 characters)",
+          ),
+        );
+      if ((a.visualBrief ?? "") === text) fail("invalid", L("Uendret", "Unchanged"));
+      const { visualBrief: _b, ...rest } = a;
+      return {
+        state: {
+          ...s,
+          assets: {
+            ...s.assets,
+            [a.id]: { ...rest, ...(text ? { visualBrief: text } : {}), revision: rev(a) },
+          },
+        },
+        inverse: { type: "SetAssetVisualBrief", assetId: a.id, text: a.visualBrief ?? "" },
+        affected: [a.id],
+      };
+    }
+
     case "SetCompositionStep": {
-      const comp = need(s.compositions[c.compositionId], "2D-scenen");
+      const comp = need(s.compositions[c.compositionId], L("2D-scenen", "The 2D scene"));
       if (!Number.isInteger(c.step) || c.step < 1 || c.step > 4)
-        fail("invalid", "Velg 1–4 (hvert bilde, toere, treere eller firere)");
-      if ((comp.step ?? 1) === c.step) fail("invalid", "Uendret");
+        fail(
+          "invalid",
+          L(
+            "Velg 1–4 (hvert bilde, toere, treere eller firere)",
+            "Choose 1–4 (every frame, twos, threes or fours)",
+          ),
+        );
+      if ((comp.step ?? 1) === c.step) fail("invalid", L("Uendret", "Unchanged"));
       const { step: _s, ...rest } = comp;
       return {
         state: {
@@ -4340,7 +5338,7 @@ function run(
 
     case "CreateAssetVariant": {
       assertNewId(s, c.variantId);
-      need(s.assets[c.assetId], "Ressursen");
+      need(s.assets[c.assetId], L("Ressursen", "The asset"));
       return {
         state: {
           ...s,
@@ -4362,13 +5360,31 @@ function run(
     }
 
     case "UndoCreateAssetVariant": {
-      const va = need(s.assetVariants[c.variantId], "Varianten");
+      const va = need(s.assetVariants[c.variantId], L("Varianten", "The variant"));
       if (Object.values(s.assetVersions).some((x) => x.variantId === va.id))
-        fail("referenced", "Varianten har bilder og kan ikke fjernes. Arkiver den i stedet.");
+        fail(
+          "referenced",
+          L(
+            "Varianten har bilder og kan ikke fjernes. Arkiver den i stedet.",
+            "The variant has images and cannot be removed. Archive it instead.",
+          ),
+        );
       if (usedByPresentation(s, "variants", va.id))
-        fail("referenced", "Varianten brukes på en plakat og kan ikke fjernes.");
+        fail(
+          "referenced",
+          L(
+            "Varianten brukes på en plakat og kan ikke fjernes.",
+            "The variant is used on a poster and cannot be removed.",
+          ),
+        );
       if (usedByLayer(s, "assetVariantId", va.id))
-        fail("referenced", "Varianten brukes i en 2D-scene og kan ikke fjernes.");
+        fail(
+          "referenced",
+          L(
+            "Varianten brukes i en 2D-scene og kan ikke fjernes.",
+            "The variant is used in a 2D scene and cannot be removed.",
+          ),
+        );
       const assetVariants = { ...s.assetVariants };
       delete assetVariants[va.id];
       return {
@@ -4385,7 +5401,7 @@ function run(
     }
 
     case "UpdateAssetVariant": {
-      const va = need(s.assetVariants[c.variantId], "Varianten");
+      const va = need(s.assetVariants[c.variantId], L("Varianten", "The variant"));
       return {
         state: {
           ...s,
@@ -4404,7 +5420,7 @@ function run(
     }
 
     case "SetAssetVariantArchived": {
-      const va = need(s.assetVariants[c.variantId], "Varianten");
+      const va = need(s.assetVariants[c.variantId], L("Varianten", "The variant"));
       return {
         state: {
           ...s,
@@ -4420,7 +5436,7 @@ function run(
 
     case "AddAssetVersion": {
       assertNewId(s, c.versionId);
-      const va = need(s.assetVariants[c.variantId], "Varianten");
+      const va = need(s.assetVariants[c.variantId], L("Varianten", "The variant"));
       const m = c.media;
       if (
         !m ||
@@ -4429,25 +5445,36 @@ function run(
         typeof m.sha256 !== "string" ||
         typeof c.note !== "string"
       )
-        fail("invalid", "Ufullstendige bildedata");
+        fail("invalid", L("Ufullstendige bildedata", "Incomplete image data"));
       if (!m.path.startsWith(`${s.project.id}/`) || m.path.length > 600 || m.path.includes(".."))
-        fail("invalid", "Ugyldig lagringssti for bildet");
+        fail("invalid", L("Ugyldig lagringssti for bildet", "Invalid storage path for the image"));
       const sound = s.assets[va.assetId]?.kind === "sound";
       if (sound) {
         if (!AUDIO_MIME_TYPES.includes(m.mimeType))
-          fail("invalid", "Lyden må være MP3, WAV, OGG, WebM, M4A/AAC eller FLAC");
+          fail(
+            "invalid",
+            L(
+              "Lyden må være MP3, WAV, OGG, WebM, M4A/AAC eller FLAC",
+              "The sound must be MP3, WAV, OGG, WebM, M4A/AAC or FLAC",
+            ),
+          );
         const d = m.durationMs ?? null;
         if (d !== null && (!Number.isInteger(d) || d <= 0 || d > AUDIO_MAX_MS))
-          fail("invalid", "Ugyldig lengde på lydfilen");
+          fail("invalid", L("Ugyldig lengde på lydfilen", "Invalid length of the audio file"));
       } else if (!ASSET_MIME_TYPES.includes(m.mimeType))
-        fail("invalid", "Bildet må være PNG, JPEG, WebP eller GIF");
+        fail(
+          "invalid",
+          L("Bildet må være PNG, JPEG, WebP eller GIF", "The image must be PNG, JPEG, WebP or GIF"),
+        );
       if (!Number.isInteger(m.byteSize) || m.byteSize <= 0 || m.byteSize > ASSET_MAX_BYTES)
-        fail("invalid", "Bildet er for stort (maks 2 GB)");
-      if (!/^[0-9a-f]{64}$/.test(m.sha256)) fail("invalid", "Ugyldig kontrollsum");
+        fail("invalid", L("Bildet er for stort (maks 2 GB)", "The image is too large (max 2 GB)"));
+      if (!/^[0-9a-f]{64}$/.test(m.sha256))
+        fail("invalid", L("Ugyldig kontrollsum", "Invalid checksum"));
       for (const d of [m.width, m.height])
         if (d !== null && (!Number.isInteger(d) || d <= 0 || d > 100_000))
-          fail("invalid", "Ugyldige bildemål");
-      if (c.note.length > 2000) fail("invalid", "Merknaden er for lang");
+          fail("invalid", L("Ugyldige bildemål", "Invalid image dimensions"));
+      if (c.note.length > 2000)
+        fail("invalid", L("Merknaden er for lang", "The annotation is too long"));
       const siblings = Object.values(s.assetVersions).filter((x) => x.variantId === va.id);
       // Gjør om etter angre: behold det opprinnelige nummeret hvis det er ledig
       const number =
@@ -4486,31 +5513,64 @@ function run(
     }
 
     case "UndoAddAssetVersion": {
-      const ver = need(s.assetVersions[c.versionId], "Versjonen");
+      const ver = need(s.assetVersions[c.versionId], L("Versjonen", "The version"));
       const va = s.assetVariants[ver.variantId];
       if (va?.approvedVersionId === ver.id)
-        fail("referenced", "Versjonen er godkjent og kan ikke fjernes");
+        fail(
+          "referenced",
+          L(
+            "Versjonen er godkjent og kan ikke fjernes",
+            "The version is approved and cannot be removed",
+          ),
+        );
       if (usedByPresentation(s, "versions", ver.id))
         fail(
           "referenced",
-          "Bildet brukes på en plakat eller som forbilde for filmens stil og kan ikke fjernes.",
+          L(
+            "Bildet brukes på en plakat eller som forbilde for filmens stil og kan ikke fjernes.",
+            "The image is used on a poster or as a reference for the film's style and cannot be removed.",
+          ),
         );
       if (usedByLayer(s, "versionId", ver.id))
-        fail("referenced", "Bildet brukes i en 2D-scene og kan ikke fjernes.");
+        fail(
+          "referenced",
+          L(
+            "Bildet brukes i en 2D-scene og kan ikke fjernes.",
+            "The image is used in a 2D scene and cannot be removed.",
+          ),
+        );
       if (Object.values(s.takes).some((t) => t.kind === "still" && t.mediaRef === ver.mediaPath))
-        fail("referenced", "Bildet brukes som stillbilde i filmen og kan ikke fjernes.");
+        fail(
+          "referenced",
+          L(
+            "Bildet brukes som stillbilde i filmen og kan ikke fjernes.",
+            "The image is used as a still in the film and cannot be removed.",
+          ),
+        );
       if (
         Object.values(s.layers).some((l) => l.reviewedVersions?.includes(ver.id)) ||
         Object.values(s.takes).some((t) => t.reviewedVersions?.includes(ver.id))
       )
-        fail("referenced", "Bildet er gått gjennom i arbeidslisten og kan ikke fjernes.");
+        fail(
+          "referenced",
+          L(
+            "Bildet er gått gjennom i arbeidslisten og kan ikke fjernes.",
+            "The image has been through the worklist and cannot be removed.",
+          ),
+        );
       // Bare det nyeste bildet kan angres bort (en versjon andre kan ha brukt, beholdes)
       if (
         Object.values(s.assetVersions).some(
           (x) => x.variantId === ver.variantId && x.number > ver.number,
         )
       )
-        fail("referenced", "Det er lastet opp nyere bilder etter dette. Det kan ikke fjernes.");
+        fail(
+          "referenced",
+          L(
+            "Det er lastet opp nyere bilder etter dette. Det kan ikke fjernes.",
+            "Newer images have been uploaded after this. It cannot be removed.",
+          ),
+        );
       const assetVersions = { ...s.assetVersions };
       delete assetVersions[ver.id];
       return {
@@ -4537,15 +5597,17 @@ function run(
     // ---------- Notater i manus (DEC-0031) ----------
     case "AddAnnotations": {
       if (!Array.isArray(c.annotations) || c.annotations.length === 0)
-        fail("invalid", "Ingen notater å legge til");
-      if (c.annotations.length > 2000) fail("invalid", "For mange notater i én endring");
+        fail("invalid", L("Ingen notater å legge til", "No notes to add"));
+      if (c.annotations.length > 2000)
+        fail("invalid", L("For mange notater i én endring", "Too many notes in one change"));
       const annotations = { ...s.annotations };
       const ids: string[] = [];
       for (const n of c.annotations) {
         if (!n || typeof n.text !== "string" || typeof n.authorName !== "string")
-          fail("invalid", "Ufullstendige notatdata");
+          fail("invalid", L("Ufullstendige notatdata", "Incomplete note data"));
         assertNewId(s, n.annotationId);
-        if (annotations[n.annotationId]) fail("duplicate_id", "Samme notat-ID to ganger");
+        if (annotations[n.annotationId])
+          fail("duplicate_id", L("Samme notat-ID to ganger", "The same note ID twice"));
         annotations[n.annotationId] = normalizeAnnotation(s, n, env.at);
         ids.push(n.annotationId);
       }
@@ -4560,7 +5622,7 @@ function run(
       const annotations = { ...s.annotations };
       const back = [];
       for (const id of c.annotationIds) {
-        const a = need(s.annotations[id], "Notatet");
+        const a = need(s.annotations[id], L("Notatet", "The note"));
         back.push({
           annotationId: a.id,
           blockId: a.blockId,
@@ -4582,16 +5644,23 @@ function run(
     }
 
     case "EditAnnotation": {
-      const a = need(s.annotations[c.annotationId], "Notatet");
+      const a = need(s.annotations[c.annotationId], L("Notatet", "The note"));
       const text = typeof c.text === "string" ? c.text.trim() : "";
-      if (!text || text.length > 10_000) fail("invalid", "Notatet må ha tekst (maks 10 000 tegn)");
+      if (!text || text.length > 10_000)
+        fail(
+          "invalid",
+          L(
+            "Notatet må ha tekst (maks 10 000 tegn)",
+            "The note must have text (max 10,000 characters)",
+          ),
+        );
       // «Endret av …» (DEC-0032): navn fra den som endrer, tid = nå (eller oppgitt ved angre)
       const editedByName =
         c.editedByName === undefined
           ? a.editedByName
           : c.editedByName === null
             ? null
-            : String(c.editedByName).trim().slice(0, 100) || "Ukjent";
+            : String(c.editedByName).trim().slice(0, 100) || "Ukjent"; // i18n-ignore – lagret navn
       const editedAt =
         c.editedAt !== undefined
           ? c.editedAt
@@ -4599,7 +5668,7 @@ function run(
             ? a.editedAt
             : env.at;
       if (editedAt !== null && Number.isNaN(Date.parse(editedAt)))
-        fail("invalid", "Ugyldig tidspunkt for endringen");
+        fail("invalid", L("Ugyldig tidspunkt for endringen", "Invalid time for the change"));
       return {
         state: {
           ...s,
@@ -4626,7 +5695,7 @@ function run(
     }
 
     case "SetAnnotationRemoved": {
-      const a = need(s.annotations[c.annotationId], "Notatet");
+      const a = need(s.annotations[c.annotationId], L("Notatet", "The note"));
       return {
         state: {
           ...s,
@@ -4641,10 +5710,14 @@ function run(
     }
 
     case "ApproveAssetVersion": {
-      const va = need(s.assetVariants[c.variantId], "Varianten");
+      const va = need(s.assetVariants[c.variantId], L("Varianten", "The variant"));
       if (c.versionId !== null) {
-        const ver = need(s.assetVersions[c.versionId], "Versjonen");
-        if (ver.variantId !== va.id) fail("invalid", "Versjonen tilhører en annen variant");
+        const ver = need(s.assetVersions[c.versionId], L("Versjonen", "The version"));
+        if (ver.variantId !== va.id)
+          fail(
+            "invalid",
+            L("Versjonen tilhører en annen variant", "The version belongs to another variant"),
+          );
       }
       return {
         state: {
@@ -4667,10 +5740,22 @@ function run(
 
     case "SetProjectFormat": {
       if (!Number.isInteger(c.width) || c.width < 16 || c.width > 16384)
-        fail("invalid", "Bredden må være et helt tall mellom 16 og 16384");
+        fail(
+          "invalid",
+          L(
+            "Bredden må være et helt tall mellom 16 og 16384",
+            "The width must be a whole number between 16 and 16384",
+          ),
+        );
       if (!Number.isInteger(c.height) || c.height < 16 || c.height > 16384)
-        fail("invalid", "Høyden må være et helt tall mellom 16 og 16384");
-      if (!isAllowedFps(c.fps)) fail("invalid", "Ukjent bildefrekvens");
+        fail(
+          "invalid",
+          L(
+            "Høyden må være et helt tall mellom 16 og 16384",
+            "The height must be a whole number between 16 and 16384",
+          ),
+        );
+      if (!isAllowedFps(c.fps)) fail("invalid", L("Ukjent bildefrekvens", "Unknown frame rate"));
       const p = s.project;
       const from = { width: p.frameWidth, height: p.frameHeight, fps: p.fps };
       const to = { width: c.width, height: c.height, fps: c.fps };
@@ -4681,7 +5766,7 @@ function run(
         // Scener med eget format (laget før 0008) gjør at samme format likevel er en endring
         Object.values(s.compositions).every((x) => x.width === to.width && x.height === to.height)
       )
-        fail("invalid", "Ingen endring");
+        fail("invalid", L("Ingen endring", "No change"));
       const m = formatMapping(from, to);
       const compositions = { ...s.compositions };
       const layers = { ...s.layers };
@@ -4904,9 +5989,9 @@ function run(
 
     case "CreateComposition": {
       assertNewId(s, c.compositionId);
-      need(s.variants[c.variantId], "Scenen");
+      need(s.variants[c.variantId], L("Scenen", "The scene"));
       if (Object.values(s.compositions).some((x) => x.variantId === c.variantId && !x.removed))
-        fail("invalid", "Scenen har allerede en 2D-scene");
+        fail("invalid", L("Scenen har allerede en 2D-scene", "The scene already has a 2D scene"));
       // Formatet følger alltid prosjektet (DEC-0039)
       const fields = compositionFields({
         ...c.fields,
@@ -4938,9 +6023,15 @@ function run(
     }
 
     case "UndoCreateComposition": {
-      const comp = need(s.compositions[c.compositionId], "2D-scenen");
+      const comp = need(s.compositions[c.compositionId], L("2D-scenen", "The 2D scene"));
       if (Object.values(s.layers).some((l) => l.compositionId === comp.id))
-        fail("referenced", "2D-scenen har lag og kan ikke fjernes. Slett den i stedet.");
+        fail(
+          "referenced",
+          L(
+            "2D-scenen har lag og kan ikke fjernes. Slett den i stedet.",
+            "The 2D scene has layers and cannot be removed. Delete it instead.",
+          ),
+        );
       const compositions = { ...s.compositions };
       delete compositions[comp.id];
       return {
@@ -4963,7 +6054,7 @@ function run(
     }
 
     case "UpdateComposition": {
-      const comp = need(s.compositions[c.compositionId], "2D-scenen");
+      const comp = need(s.compositions[c.compositionId], L("2D-scenen", "The 2D scene"));
       // Formatet endres bare samlet for prosjektet (SetProjectFormat, DEC-0039)
       const fields = compositionFields({ ...c.fields, width: comp.width, height: comp.height });
       let camera = comp.camera;
@@ -4971,7 +6062,7 @@ function run(
         const r = normalizeCamera(c.camera);
         if (!r.ok) fail("invalid", r.error);
         if (JSON.stringify(r.value).length > MAX_CAMERA_JSON)
-          fail("invalid", "Kameraet er for stort");
+          fail("invalid", L("Kameraet er for stort", "The camera is too large"));
         camera = r.value;
       }
       return {
@@ -4999,14 +6090,17 @@ function run(
     }
 
     case "SetCompositionRemoved": {
-      const comp = need(s.compositions[c.compositionId], "2D-scenen");
+      const comp = need(s.compositions[c.compositionId], L("2D-scenen", "The 2D scene"));
       if (
         !c.removed &&
         Object.values(s.compositions).some(
           (x) => x.id !== comp.id && x.variantId === comp.variantId && !x.removed,
         )
       )
-        fail("invalid", "Scenen har allerede en annen 2D-scene");
+        fail(
+          "invalid",
+          L("Scenen har allerede en annen 2D-scene", "The scene already has another 2D scene"),
+        );
       return {
         state: {
           ...s,
@@ -5021,16 +6115,25 @@ function run(
     }
 
     case "AddLayers": {
-      if (c.layers.length === 0) fail("invalid", "Ingen lag å legge til");
-      if (c.layers.length > 500) fail("invalid", "For mange lag på én gang (maks 500)");
+      if (c.layers.length === 0) fail("invalid", L("Ingen lag å legge til", "No layers to add"));
+      if (c.layers.length > 500)
+        fail(
+          "invalid",
+          L("For mange lag på én gang (maks 500)", "Too many layers at once (max 500)"),
+        );
       const layers = { ...s.layers };
       const ids = new Set<string>();
       for (const n of c.layers) {
         assertNewId(s, n.layerId);
-        if (ids.has(n.layerId)) fail("duplicate_id", `ID ${n.layerId} er brukt to ganger`);
+        if (ids.has(n.layerId))
+          fail(
+            "duplicate_id",
+            L(`ID ${n.layerId} er brukt to ganger`, `ID ${n.layerId} is used twice`),
+          );
         ids.add(n.layerId);
-        const comp = need(s.compositions[n.compositionId], "2D-scenen");
-        if (comp.removed) fail("invalid", "2D-scenen er slettet");
+        const comp = need(s.compositions[n.compositionId], L("2D-scenen", "The 2D scene"));
+        if (comp.removed)
+          fail("invalid", L("2D-scenen er slettet", "The 2D scene has been deleted"));
         const fields = layerFields(s, n.fields);
         let orderKey = n.orderKey;
         const keys = Object.values(layers)
@@ -5045,7 +6148,10 @@ function run(
               ? keyBetween(null, keys[0] ?? null)
               : keyBetween(keys[keys.length - 1] ?? null, null);
         else if (!isValidOrderKey(orderKey) || keys.includes(orderKey))
-          fail("invalid", "Ugyldig plassering i lagrekkefølgen");
+          fail(
+            "invalid",
+            L("Ugyldig plassering i lagrekkefølgen", "Invalid position in the layer order"),
+          );
         layers[n.layerId] = {
           id: n.layerId,
           revision: 1,
@@ -5075,7 +6181,7 @@ function run(
     case "UndoAddLayers": {
       const layers = { ...s.layers };
       const restored = c.layerIds.map((id) => {
-        const l = need(s.layers[id], "Laget");
+        const l = need(s.layers[id], L("Laget", "The layer"));
         delete layers[id];
         return l;
       });
@@ -5095,13 +6201,13 @@ function run(
     }
 
     case "UpdateLayers": {
-      if (c.layers.length === 0) fail("invalid", "Ingen lag å endre");
+      if (c.layers.length === 0) fail("invalid", L("Ingen lag å endre", "No layers to change"));
       if (new Set(c.layers.map((x) => x.layerId)).size !== c.layers.length)
-        fail("invalid", "Samme lag er med to ganger");
+        fail("invalid", L("Samme lag er med to ganger", "The same layer is included twice"));
       const layers = { ...s.layers };
       const before: { layerId: CompositionLayer["id"]; fields: LayerFields }[] = [];
       for (const u of c.layers) {
-        const l = need(s.layers[u.layerId], "Laget");
+        const l = need(s.layers[u.layerId], L("Laget", "The layer"));
         before.push({
           layerId: l.id,
           fields: {
@@ -5132,15 +6238,24 @@ function run(
     }
 
     case "MoveLayer": {
-      const l = need(s.layers[c.layerId], "Laget");
+      const l = need(s.layers[c.layerId], L("Laget", "The layer"));
       const keys = sortedLayerKeys(s, l.compositionId, l.id);
       let orderKey: string;
       if (c.beforeLayerId === null) {
         orderKey = keyBetween(keys[keys.length - 1] ?? null, null);
       } else {
-        const target = need(s.layers[c.beforeLayerId], "Laget det skal flyttes bak");
+        const target = need(
+          s.layers[c.beforeLayerId],
+          L("Laget det skal flyttes bak", "The layer to move behind"),
+        );
         if (target.compositionId !== l.compositionId || target.id === l.id)
-          fail("invalid", "Lagene hører ikke til samme 2D-scene");
+          fail(
+            "invalid",
+            L(
+              "Lagene hører ikke til samme 2D-scene",
+              "The layers do not belong to the same 2D scene",
+            ),
+          );
         const i = keys.indexOf(target.orderKey);
         orderKey = keyBetween(keys[i - 1] ?? null, target.orderKey);
       }
@@ -5157,12 +6272,12 @@ function run(
     }
 
     case "SetLayersRemoved": {
-      if (c.layerIds.length === 0) fail("invalid", "Ingen lag valgt");
+      if (c.layerIds.length === 0) fail("invalid", L("Ingen lag valgt", "No layers selected"));
       const layers = { ...s.layers };
       const changed = [...new Set(c.layerIds)]
-        .map((id) => need(s.layers[id], "Laget"))
+        .map((id) => need(s.layers[id], L("Laget", "The layer")))
         .filter((l) => l.removed !== c.removed);
-      if (changed.length === 0) fail("invalid", "Ingen endring");
+      if (changed.length === 0) fail("invalid", L("Ingen endring", "No change"));
       for (const l of changed) layers[l.id] = { ...l, removed: c.removed, revision: rev(l) };
       return {
         state: { ...s, layers },
@@ -5178,13 +6293,22 @@ function run(
     // ---------- Lyd i filmen (DEC-0044) ----------
 
     case "AddAudioClips": {
-      if (!Array.isArray(c.clips) || c.clips.length === 0) fail("invalid", "Ingen lyd å legge til");
-      if (c.clips.length > 500) fail("invalid", "For mange lydklipp på én gang (maks 500)");
+      if (!Array.isArray(c.clips) || c.clips.length === 0)
+        fail("invalid", L("Ingen lyd å legge til", "No audio to add"));
+      if (c.clips.length > 500)
+        fail(
+          "invalid",
+          L("For mange lydklipp på én gang (maks 500)", "Too many audio clips at once (max 500)"),
+        );
       const audioClips = { ...s.audioClips };
       const ids = new Set<string>();
       for (const n of c.clips) {
         assertNewId(s, n.clipId);
-        if (ids.has(n.clipId)) fail("duplicate_id", `ID ${n.clipId} er brukt to ganger`);
+        if (ids.has(n.clipId))
+          fail(
+            "duplicate_id",
+            L(`ID ${n.clipId} er brukt to ganger`, `ID ${n.clipId} is used twice`),
+          );
         ids.add(n.clipId);
         audioClips[n.clipId] = {
           id: n.clipId,
@@ -5203,7 +6327,7 @@ function run(
     case "UndoAddAudioClips": {
       const audioClips = { ...s.audioClips };
       const restored = c.clipIds.map((id) => {
-        const a = need(s.audioClips[id], "Lydklippet");
+        const a = need(s.audioClips[id], L("Lydklippet", "The audio clip"));
         delete audioClips[id];
         return a;
       });
@@ -5218,13 +6342,17 @@ function run(
     }
 
     case "UpdateAudioClips": {
-      if (!Array.isArray(c.clips) || c.clips.length === 0) fail("invalid", "Ingen lyd å endre");
+      if (!Array.isArray(c.clips) || c.clips.length === 0)
+        fail("invalid", L("Ingen lyd å endre", "No audio to change"));
       if (new Set(c.clips.map((x) => x.clipId)).size !== c.clips.length)
-        fail("invalid", "Samme lydklipp er med to ganger");
+        fail(
+          "invalid",
+          L("Samme lydklipp er med to ganger", "The same audio clip is included twice"),
+        );
       const audioClips = { ...s.audioClips };
       const before: { clipId: AudioClip["id"]; fields: AudioClipFields }[] = [];
       for (const u of c.clips) {
-        const a = need(s.audioClips[u.clipId], "Lydklippet");
+        const a = need(s.audioClips[u.clipId], L("Lydklippet", "The audio clip"));
         before.push({ clipId: a.id, fields: audioClipFieldsOf(a) });
         // Alle feltene erstattes; språket fjernes når det ikke er med (standard for lydtypen)
         const { language: _lang, ...rest } = a;
@@ -5238,12 +6366,13 @@ function run(
     }
 
     case "SetAudioClipsRemoved": {
-      if (!Array.isArray(c.clipIds) || c.clipIds.length === 0) fail("invalid", "Ingen lyd valgt");
+      if (!Array.isArray(c.clipIds) || c.clipIds.length === 0)
+        fail("invalid", L("Ingen lyd valgt", "No audio selected"));
       const audioClips = { ...s.audioClips };
       const changed = [...new Set(c.clipIds)]
-        .map((id) => need(s.audioClips[id], "Lydklippet"))
+        .map((id) => need(s.audioClips[id], L("Lydklippet", "The audio clip")))
         .filter((a) => a.removed !== c.removed);
-      if (changed.length === 0) fail("invalid", "Ingen endring");
+      if (changed.length === 0) fail("invalid", L("Ingen endring", "No change"));
       for (const a of changed) audioClips[a.id] = { ...a, removed: c.removed, revision: rev(a) };
       return {
         state: { ...s, audioClips },
@@ -5271,7 +6400,10 @@ export function applyCommand(state: ProjectState, env: CommandEnvelope): ApplyRe
           ok: false,
           error: {
             code: "revision_conflict",
-            message: "Noen andre har endret dette i mellomtiden",
+            message: L(
+              "Noen andre har endret dette i mellomtiden",
+              "Someone else has changed this in the meantime",
+            ),
             details: stale,
           },
         };
@@ -5293,8 +6425,14 @@ export function applyCommand(state: ProjectState, env: CommandEnvelope): ApplyRe
         fail(
           "referenced",
           visible.length === 1
-            ? "Det finnes et notat på denne teksten. Slett notatet først hvis endringen skal angres."
-            : `Det finnes ${visible.length} notater på denne teksten. Slett notatene først hvis endringen skal angres.`,
+            ? L(
+                "Det finnes et notat på denne teksten. Slett notatet først hvis endringen skal angres.",
+                "There is a note on this text. Delete the note first if the change is to be undone.",
+              )
+            : L(
+                `Det finnes ${visible.length} notater på denne teksten. Slett notatene først hvis endringen skal angres.`,
+                `There are ${visible.length} notes on this text. Delete the notes first if the change is to be undone.`,
+              ),
           visible.map((a) => a.id),
         );
       const annotations = { ...next.annotations };
@@ -5309,7 +6447,10 @@ export function applyCommand(state: ProjectState, env: CommandEnvelope): ApplyRe
       if (lost.length)
         fail(
           "referenced",
-          "Scenen har en 2D-scene i sceneeditoren og kan ikke fjernes. Slett 2D-scenen først.",
+          L(
+            "Scenen har en 2D-scene i sceneeditoren og kan ikke fjernes. Slett 2D-scenen først.",
+            "The scene has a 2D scene in the scene editor and cannot be removed. Delete the 2D scene first.",
+          ),
           lost.map((c) => c.id),
         );
     }
@@ -5329,7 +6470,10 @@ export function applyCommand(state: ProjectState, env: CommandEnvelope): ApplyRe
       if (lost.length)
         fail(
           "referenced",
-          "Ressursen er brukt i en 2D-scene og kan ikke fjernes. Arkiver den i stedet.",
+          L(
+            "Ressursen er brukt i en 2D-scene og kan ikke fjernes. Arkiver den i stedet.",
+            "The asset is used in a 2D scene and cannot be removed. Archive it instead.",
+          ),
           lost.map((l) => l.id),
         );
     }
@@ -5354,7 +6498,10 @@ export function applyCommand(state: ProjectState, env: CommandEnvelope): ApplyRe
       if (lost.length)
         fail(
           "referenced",
-          "Det ligger lyd på dette i filmen. Fjern lyden først hvis endringen skal angres.",
+          L(
+            "Det ligger lyd på dette i filmen. Fjern lyden først hvis endringen skal angres.",
+            "There is sound on this in the film. Remove the sound first if the change is to be undone.",
+          ),
           lost.map((a) => a.id),
         );
     }
@@ -5382,7 +6529,10 @@ export function applyCommand(state: ProjectState, env: CommandEnvelope): ApplyRe
       if (lost.length)
         fail(
           "referenced",
-          "Scenen er klippet eller har tidskoblinger i monteringen, så dette kan ikke angres.",
+          L(
+            "Scenen er klippet eller har tidskoblinger i monteringen, så dette kan ikke angres.",
+            "The scene is cut or has time links in the assembly, so this cannot be undone.",
+          ),
           lost.map((x) => x.id),
         );
     }
@@ -5428,7 +6578,10 @@ export function applyCommand(state: ProjectState, env: CommandEnvelope): ApplyRe
       if (lost.length)
         fail(
           "referenced",
-          "Det er registrert kontinuitet (utseende) på dette. Fjern hendelsen først hvis endringen skal angres.",
+          L(
+            "Det er registrert kontinuitet (utseende) på dette. Fjern hendelsen først hvis endringen skal angres.",
+            "Continuity (appearance) has been recorded for this. Remove the event first if the change is to be undone.",
+          ),
           lost,
         );
       if (events) next = { ...next, continuityEvents: events };
@@ -5450,7 +6603,10 @@ export function applyCommand(state: ProjectState, env: CommandEnvelope): ApplyRe
       if (lost.length)
         fail(
           "referenced",
-          "Teksten har oversettelser (for eksempel engelsk). Angre importen av oversettelsen eller fjern oversettelsene av disse linjene først.",
+          L(
+            "Teksten har oversettelser (for eksempel engelsk). Angre importen av oversettelsen eller fjern oversettelsene av disse linjene først.",
+            "The text has translations (for example English). Undo the import of the translation or remove the translations of these lines first.",
+          ),
           lost,
         );
       if (translations) next = { ...next, translations };
@@ -5461,7 +6617,10 @@ export function applyCommand(state: ProjectState, env: CommandEnvelope): ApplyRe
         ok: false,
         error: {
           code: "invariant_violation",
-          message: "Endringen ville brutt en systemregel",
+          message: L(
+            "Endringen ville brutt en systemregel",
+            "The change would break a system rule",
+          ),
           details: violations.map((v) => `${v.invariant}: ${v.message}`),
         },
       };
