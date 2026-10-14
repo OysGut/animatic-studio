@@ -1434,6 +1434,7 @@ export type Database = {
         Row: {
           created_at: string
           created_by: string | null
+          description: string
           export_settings: Json | null
           fps_den: number
           fps_num: number
@@ -1447,6 +1448,7 @@ export type Database = {
         Insert: {
           created_at?: string
           created_by?: string | null
+          description?: string
           export_settings?: Json | null
           fps_den: number
           fps_num: number
@@ -1460,6 +1462,7 @@ export type Database = {
         Update: {
           created_at?: string
           created_by?: string | null
+          description?: string
           export_settings?: Json | null
           fps_den?: number
           fps_num?: number
