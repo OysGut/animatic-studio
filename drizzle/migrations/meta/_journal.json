@@ -204,6 +204,20 @@
       "when": 1791891086290,
       "tag": "0028_0029_trash_speed_step",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1791989606921,
+      "tag": "0029_0030_views_visual_brief",
+      "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1791989616689,
+      "tag": "0030_0031_production_note",
+      "breakpoints": true
     }
   ]
 }

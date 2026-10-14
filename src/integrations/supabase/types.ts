@@ -247,6 +247,7 @@ export type Database = {
           revision: number
           sha256: string
           variant_id: string
+          view: string | null
           width: number | null
         }
         Insert: {
@@ -266,6 +267,7 @@ export type Database = {
           revision?: number
           sha256: string
           variant_id: string
+          view?: string | null
           width?: number | null
         }
         Update: {
@@ -285,6 +287,7 @@ export type Database = {
           revision?: number
           sha256?: string
           variant_id?: string
+          view?: string | null
           width?: number | null
         }
         Relationships: [
@@ -321,6 +324,7 @@ export type Database = {
           revision: number
           sound_links: Json
           tags: Json
+          visual_brief: string
           voice: Json | null
         }
         Insert: {
@@ -339,6 +343,7 @@ export type Database = {
           revision?: number
           sound_links?: Json
           tags?: Json
+          visual_brief?: string
           voice?: Json | null
         }
         Update: {
@@ -357,6 +362,7 @@ export type Database = {
           revision?: number
           sound_links?: Json
           tags?: Json
+          visual_brief?: string
           voice?: Json | null
         }
         Relationships: [
@@ -1428,6 +1434,7 @@ export type Database = {
         Row: {
           created_at: string
           created_by: string | null
+          description: string
           export_settings: Json | null
           fps_den: number
           fps_num: number
@@ -1441,6 +1448,7 @@ export type Database = {
         Insert: {
           created_at?: string
           created_by?: string | null
+          description?: string
           export_settings?: Json | null
           fps_den: number
           fps_num: number
@@ -1454,6 +1462,7 @@ export type Database = {
         Update: {
           created_at?: string
           created_by?: string | null
+          description?: string
           export_settings?: Json | null
           fps_den?: number
           fps_num?: number
