@@ -31,25 +31,25 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 
 | Modul | Navn | Krav | P0 | Implementert | Verifisert |
 |---|---|---|---|---|---|
-| CORE | Project Core | 119 | 57 | 119 | 115 |
+| CORE | Project Core | 120 | 57 | 120 | 116 |
 | SCRIPT | Screenplay Engine | 128 | 32 | 128 | 126 |
-| TIMELINE | Timeline & Assembly Engine | 106 | 28 | 106 | 106 |
+| TIMELINE | Timeline & Assembly Engine | 107 | 29 | 107 | 107 |
 | LIBRARY | Resource Library | 81 | 10 | 70 | 65 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 39 | 39 |
-| COMPOSE | 2D Composition Engine | 69 | 14 | 69 | 69 |
+| COMPOSE | 2D Composition Engine | 70 | 14 | 70 | 69 |
 | CAMERA | Camera & Motion Engine | 32 | 2 | 32 | 32 |
-| AUDIO | Audio Engine | 41 | 1 | 41 | 41 |
-| PROMPT | Prompt Orchestration Engine | 56 | 15 | 52 | 48 |
-| PROVIDER | Provider Adapters | 33 | 6 | 31 | 27 |
-| QUALITYCOST | Quality & Cost Engine | 28 | 7 | 27 | 27 |
+| AUDIO | Audio Engine | 42 | 2 | 42 | 42 |
+| PROMPT | Prompt Orchestration Engine | 58 | 15 | 54 | 50 |
+| PROVIDER | Provider Adapters | 44 | 6 | 42 | 37 |
+| QUALITYCOST | Quality & Cost Engine | 29 | 7 | 28 | 28 |
 | QUEUE | Render Queue | 35 | 13 | 35 | 32 |
-| VERSION | Version & Dependency Engine | 91 | 36 | 89 | 87 |
+| VERSION | Version & Dependency Engine | 93 | 38 | 91 | 89 |
 | L10N | Localization Engine | 40 | 4 | 39 | 39 |
 | PRESENT | Presentation Engine | 30 | 3 | 25 | 25 |
 | EXPORT | Export Engine | 59 | 12 | 59 | 58 |
 | SECURITY | Security & Storage | 34 | 5 | 33 | 32 |
 | COLLAB | Collaboration & Access | 15 | 0 | 15 | 15 |
-| UI | Brukergrensesnitt og designsystem | 178 | 20 | 174 | 171 |
+| UI | Brukergrensesnitt og designsystem | 181 | 21 | 176 | 172 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 7 | 5 |
 
 ## Dekning per fase
@@ -60,7 +60,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | 2 | 97 | 91 |
 | 3 | 70 | 67 |
 | 4 | 85 | 83 |
-| 5 | 117 | 108 |
+| 5 | 133 | 122 |
 | 6 | 49 | 48 |
 | 7 | 63 | 62 |
 | 8 | 39 | 25 |
@@ -702,3 +702,19 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0630 | Beslutning DEC-0081 | UI, L10N | scripts/i18n/check.mjs, docs/development/I18N_GUIDE.md | 1 | tests/unit/i18n.test.ts | Verifisert | 2026-10-14 DEC-0081: Bygget: kontrollen kjøres i enhetstestene og feiler ved tekst uten engelsk |
 | REQ-0631 | Beslutning DEC-0082 | UI, COLLAB | src/app/projects/ProjectsScreen.tsx, src/adapters/browser/projects.ts, src/app/project/use-production.tsx | 1 | tests/visual/i18n-en-pass.mjs, docs/development/VISUAL_QA_DEC-0082.md | Verifisert | 2026-10-14 DEC-0082: Opprettet etter Mars' ønske 14.10.2026 |
 | REQ-0632 | Beslutning DEC-0082 | COLLAB, CORE | src/core/commands/apply.ts, src/core/patch.ts, db/migrations/0031_production_note.sql, src/app/projects/ProductionList.tsx, src/app/projects/ProductionDialog.tsx | 1 | tests/db/run-db-tests.ts | Verifisert | 2026-10-14 DEC-0082: Opprettet etter Mars' ønske 14.10.2026 |
+| REQ-0633 | Beslutning DEC-0083 | UI, PROVIDER, COMPOSE | src/app/scene-editor/SceneToVideoDialog.tsx, src/core/generation/scene-to-video.ts, src/adapters/ai/providers.server.ts, src/adapters/ai/video.functions.ts, src/adapters/ai/video-followup.server.ts | 2 | tests/unit/scene-to-video.test.ts, tests/visual/scene-video-ui.mjs, docs/development/VISUAL_QA_DEC-0083.md | Implementert – ikke verifisert | 2026-10-15 DEC-0083: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0634 | Beslutning DEC-0083 | PROMPT | src/core/generation/scene-to-video.ts | 1 | tests/unit/scene-to-video.test.ts, tests/visual/scene-video-ui.mjs, docs/development/VISUAL_QA_DEC-0083.md | Verifisert | 2026-10-15 DEC-0083: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0635 | Beslutning DEC-0083 | CORE, PROMPT | src/core/commands/apply.ts, src/core/patch.ts, db/migrations/0032_scene_video_instructions.sql | 2 | tests/unit/scene-to-video.test.ts, tests/db/run-db-tests.ts | Verifisert | 2026-10-15 DEC-0083: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0636 | Beslutning DEC-0083 | AUDIO, VERSION | src/app/ai/video-jobs.ts, src/adapters/ai/providers.server.ts | 1 | tests/unit/scene-to-video.test.ts | Verifisert | 2026-10-15 DEC-0083: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0637 | Beslutning DEC-0083 | UI, VERSION, TIMELINE | src/app/scene-editor/SceneToVideoDialog.tsx, src/core/generation/scene-to-video.ts | 2 | tests/unit/scene-to-video.test.ts, tests/visual/scene-video-ui.mjs, docs/development/VISUAL_QA_DEC-0083.md | Verifisert | 2026-10-15 DEC-0083: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0638 | Beslutning DEC-0083 | QUALITYCOST, PROVIDER | src/core/generation/scene-to-video.ts, src/app/scene-editor/SceneToVideoDialog.tsx | 2 | tests/unit/scene-to-video.test.ts, tests/visual/scene-video-ui.mjs, docs/development/VISUAL_QA_DEC-0083.md | Verifisert | 2026-10-15 DEC-0083: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0639 | Beslutning DEC-0084 | UI | – | 1 | – | Ikke startet | 2026-10-15 DEC-0084: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0640 | Beslutning DEC-0085 | PROVIDER | src/core/generation/style.ts, src/app/projects/GlobalStyleText.tsx | 2 | tests/unit/scene-to-video.test.ts, tests/visual/scene-video-ui.mjs, docs/development/VISUAL_QA_DEC-0085.md | Verifisert | 2026-10-15 DEC-0085: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0641 | Beslutning DEC-0085 | PROVIDER | src/app/scene-editor/SceneToVideoDialog.tsx | 1 | tests/visual/scene-video-ui.mjs, docs/development/VISUAL_QA_DEC-0085.md | Verifisert | 2026-10-15 DEC-0085: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0642 | Beslutning DEC-0085 | PROVIDER | src/core/generation/scene-to-video.ts, src/app/scene-editor/SceneToVideoDialog.tsx, src/app/ai/write-prompt.functions.ts | 1 | tests/unit/scene-to-video.test.ts, docs/development/VISUAL_QA_DEC-0085.md | Verifisert | 2026-10-15 DEC-0085: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0643 | Beslutning DEC-0085 | PROVIDER | src/core/generation/scene-to-video.ts, src/app/scene-editor/SceneToVideoDialog.tsx, src/app/ai/video.functions.ts | 1 | tests/unit/scene-to-video.test.ts, docs/development/VISUAL_QA_DEC-0085.md | Verifisert | 2026-10-15 DEC-0085: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0644 | Beslutning DEC-0085 | PROVIDER | src/core/generation/scene-to-video.ts, src/app/scene-editor/SceneToVideoDialog.tsx | 2 | tests/unit/scene-to-video.test.ts, tests/visual/scene-video-ui.mjs, docs/development/VISUAL_QA_DEC-0085.md | Verifisert | 2026-10-15 DEC-0085: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0645 | Beslutning DEC-0085 | PROVIDER | src/app/ai/video-audio.ts, src/app/ai/video-jobs.ts | 1 | tests/unit/scene-to-video.test.ts, docs/development/VISUAL_QA_DEC-0085.md | Verifisert | 2026-10-15 DEC-0085: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0646 | Beslutning DEC-0085 | PROVIDER | src/engine/export/animatic.ts, src/app/assembly/ExportAnimaticDialog.tsx | 1 | tests/visual/export-e2e.mjs, docs/development/VISUAL_QA_DEC-0085.md | Verifisert | 2026-10-15 DEC-0085: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0647 | Beslutning DEC-0085 | PROVIDER | src/app/ai/GenerationStatus.tsx, src/app/shell/AppHeader.tsx | 1 | tests/visual/scene-video-ui.mjs, docs/development/VISUAL_QA_DEC-0085.md | Verifisert | 2026-10-15 DEC-0085: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0648 | Beslutning DEC-0085 | PROVIDER | src/app/scene-editor/SceneEditorWorkspace.tsx, src/app/scene-editor/PreviewWindow.tsx | 1 | tests/visual/scene-video-ui.mjs, docs/development/VISUAL_QA_DEC-0085.md | Verifisert | 2026-10-15 DEC-0085: Opprettet etter Mars' ønske 15.10.2026 |

@@ -66,6 +66,23 @@ export interface VideoRequest {
   readonly aspect: "16:9" | "9:16";
 }
 
+/**
+ * Video fra 2D-scenen (DEC-0083): leverandøren tegner om en video. Lenkene er midlertidige og hentes av
+ * leverandøren selv. Resultatet er like langt som videoen som sendes, og uten lyd.
+ */
+export interface VideoEditRequest {
+  readonly key: string;
+  readonly model: string;
+  readonly prompt: string;
+  readonly videoUrl: string;
+  /** Referansebilder av figurene, i samme rekkefølge som @Element1, @Element2 … i beskrivelsen. */
+  readonly elementUrls: readonly string[];
+  /** Andre referansebilder (bakgrunn, samlebilde), i samme rekkefølge som @Image1 … (DEC-0085). */
+  readonly imageUrls?: readonly string[];
+  /** Lyden i videoen som sendes, skal være med i resultatet (DEC-0085). */
+  readonly keepAudio?: boolean;
+}
+
 export type VideoPoll =
   | { readonly state: "running"; readonly progress?: number }
   | { readonly state: "done"; readonly bytes: Uint8Array; readonly mimeType: string }
@@ -697,6 +714,26 @@ const fal = {
       generate_audio: false,
     });
   },
+  /** Kling O3 Edit (DEC-0083): videoen er @Video1, figurene @Element1 … med bildet som forside. */
+  async editVideo(r: VideoEditRequest) {
+    if (!FAL_MODEL.test(r.model) || !r.model.includes("video-to-video"))
+      throw new ProviderError(L("Ukjent modell.", "Unknown model."), 400);
+    return falRun(r.key, r.model, {
+      prompt: r.prompt,
+      video_url: r.videoUrl,
+      ...(r.elementUrls.length
+        ? {
+            elements: r.elementUrls.map((url) => ({
+              frontal_image_url: url,
+              reference_image_urls: [url],
+            })),
+          }
+        : {}),
+      ...(r.imageUrls?.length ? { image_urls: [...r.imageUrls] } : {}),
+      // Lyden legges inn som eget, dempet lydspor i programmet (DEC-0085); uten lyd sendt: ingen lyd
+      keep_audio: !!r.keepAudio,
+    });
+  },
   async pollVideo(key: string, model: string, id: string): Promise<VideoPoll> {
     if (!FAL_MODEL.test(model))
       return { state: "failed", message: L("Ukjent modell.", "Unknown model.") };
@@ -746,6 +783,30 @@ const runway = {
           promptText: r.prompt.slice(0, 1000),
           ratio: r.aspect === "16:9" ? "1280:720" : "720:1280",
           duration: r.seconds,
+        }),
+      },
+      T_SUBMIT,
+    );
+    const j = (await res.json()) as { id?: string };
+    if (!j.id)
+      throw new ProviderError(
+        L("Tjenesten svarte uten jobb-ID.", "The service replied without a job ID."),
+        502,
+      );
+    return j.id;
+  },
+  /** Aleph 2 (DEC-0083): tegner om videoen etter teksten (ingen referansebilder av figurene). */
+  async editVideo(r: VideoEditRequest) {
+    if (r.model !== "aleph2") throw new ProviderError(L("Ukjent modell.", "Unknown model."), 400);
+    const res = await call(
+      `${RUNWAY}/video_to_video`,
+      {
+        method: "POST",
+        headers: { ...runwayAuth(r.key), "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "aleph2",
+          videoUri: r.videoUrl,
+          promptText: r.prompt.slice(0, 1000),
         }),
       },
       T_SUBMIT,

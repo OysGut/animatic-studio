@@ -14,12 +14,13 @@ import { L, localized, locale } from "../i18n";
 
 export type ProviderId = "lovable" | "openai" | "google" | "fal" | "runway" | "elevenlabs";
 
-export type Capability = "image" | "video" | "sound" | "speech" | "text" | "upscale";
+export type Capability = "image" | "video" | "video_edit" | "sound" | "speech" | "text" | "upscale";
 
 export const CAPABILITY_LABEL: Record<Capability, string> = localized({
   upscale: ["Oppskalering", "Upscaling"],
   image: ["Bilder", "Images"],
   video: ["Video", "Video"],
+  video_edit: ["Video fra 2D-scenen", "Video from the 2D scene"],
   sound: ["Lyd", "Sound"],
   speech: ["Tale", "Speech"],
   text: ["Tekst", "Text"],
@@ -72,6 +73,13 @@ export interface ProviderModel {
   readonly priceBySize?: Partial<Record<ImageSize, number>>;
   /** Tilbys ikke lenger (står for å vise opphavet til eldre jobber). */
   readonly retired?: boolean;
+  /**
+   * Video fra 2D-scenen (DEC-0083): korteste og lengste innsendte video (sekunder). Resultatet er like langt
+   * som det som sendes.
+   */
+  readonly editSeconds?: { readonly min: number; readonly max: number };
+  /** Hvor mange figurer (med referansebilde) modellen kan følge gjennom klippet; 0 = bare tekst. */
+  readonly maxElements?: number;
 }
 
 /** Innsatsnivå per oppgave (mandat 19.3): rask/økonomisk, balansert, høy/premium. */
@@ -375,7 +383,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         "One account for many models (Kling, Flux and others). Pay as you go; a good choice for video from a start image.",
       );
     },
-    capabilities: ["image", "video", "upscale"],
+    capabilities: ["image", "video", "video_edit", "upscale"],
     builtIn: false,
     links: {
       signup: "https://fal.ai/login",
@@ -530,6 +538,30 @@ export const PROVIDERS: readonly ProviderInfo[] = [
           return [L("Må ha startbilde", "Needs a start image")];
         },
       },
+      {
+        // DEC-0083: tegner 2D-scenen om til ferdig film; bevegelse, timing og kamera følger videoen
+        id: "fal-ai/kling-video/o3/pro/video-to-video/edit",
+        get label() {
+          return L("Kling O3 Edit (fra 2D-scenen)", "Kling O3 Edit (from the 2D scene)");
+        },
+        capability: "video_edit",
+        priceUsd: 0.168,
+        priceUnit: "second",
+        editSeconds: { min: 3, max: 15 },
+        maxElements: 4,
+        acceptsImage: true,
+        tier: "premium",
+        maxPromptChars: 2500,
+        get resolution() {
+          return L("Som 2D-scenen (720–3840 px)", "As the 2D scene (720–3840 px)");
+        },
+        get limits() {
+          return [
+            L("3–15 sekunder per bit", "3–15 seconds per piece"),
+            L("Høyst 4 figurer med referansebilde", "At most 4 figures with a reference image"),
+          ];
+        },
+      },
     ],
   },
   {
@@ -537,11 +569,11 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     name: "Runway",
     get description() {
       return L(
-        "Video fra et startbilde med Gen-4 Turbo. Kreditter kjøpes i utviklerportalen.",
-        "Video from a start image with Gen-4 Turbo. Credits are bought in the developer portal.",
+        "Video fra et startbilde med Gen-4 Turbo, og 2D-scenen tegnet om til film med Aleph 2. Kreditter kjøpes i utviklerportalen.",
+        "Video from a start image with Gen-4 Turbo, and the 2D scene redrawn as film with Aleph 2. Credits are bought in the developer portal.",
       );
     },
-    capabilities: ["video"],
+    capabilities: ["video", "video_edit"],
     builtIn: false,
     links: {
       signup: "https://dev.runwayml.com/",
@@ -582,6 +614,32 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         requiresImage: true,
         get limits() {
           return [L("Må ha startbilde", "Needs a start image")];
+        },
+      },
+      {
+        // DEC-0083: Aleph 2 tegner om en video etter en tekst; tar ikke referansebilder av figurene
+        id: "aleph2",
+        get label() {
+          return L("Aleph 2 (fra 2D-scenen)", "Aleph 2 (from the 2D scene)");
+        },
+        capability: "video_edit",
+        priceUsd: 0.28,
+        priceUnit: "second",
+        editSeconds: { min: 2, max: 30 },
+        maxElements: 0,
+        tier: "premium",
+        maxPromptChars: 1000,
+        get resolution() {
+          return L("Som 2D-scenen (opptil 1080p)", "As the 2D scene (up to 1080p)");
+        },
+        get limits() {
+          return [
+            L("2–30 sekunder per bit", "2–30 seconds per piece"),
+            L(
+              "Figurene beskrives bare med tekst (ingen referansebilder)",
+              "The figures are described in text only (no reference images)",
+            ),
+          ];
         },
       },
     ],

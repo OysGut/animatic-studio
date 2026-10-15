@@ -3129,6 +3129,35 @@ try {
     assert(!loaded.productions[main.id]?.note, "notatet ble ikke tømt");
   });
 
+  await test("0032 (DEC-0083): instrukser til AI-video lagres på scenen, leses tilbake og angres", async () => {
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 32, "schema_version er ikke 32");
+    let st = await loadState(projectId);
+    const occ = Object.values(st.occurrences)[0]!;
+    st = await runCommand(st, ALICE, {
+      type: "SetSceneVideoInstructions",
+      occurrenceId: occ.id,
+      text: "Maja er redd, men nysgjerrig.\nSnøen faller tett.",
+    });
+    let loaded = await loadState(projectId);
+    assert(
+      loaded.occurrences[occ.id]?.videoInstructions ===
+        "Maja er redd, men nysgjerrig.\nSnøen faller tett.",
+      `instruksene ble ikke lagret: ${JSON.stringify(loaded.occurrences[occ.id])}`,
+    );
+    await expectError(
+      sql`update public.scene_occurrences set video_instructions = ${"x".repeat(2001)} where id = ${occ.id}`,
+      /check/,
+    );
+    st = await runCommand(st, ALICE, {
+      type: "SetSceneVideoInstructions",
+      occurrenceId: occ.id,
+      text: "",
+    });
+    loaded = await loadState(projectId);
+    assert(!loaded.occurrences[occ.id]?.videoInstructions, "instruksene ble ikke tømt");
+  });
+
   await test("DEC-0049: sikkerhetskopi gjenopprettes som nytt prosjekt via apply_changes; alt leses tilbake likt", async () => {
     const q = (t: string) =>
       sql.unsafe(`select * from public.${t} where project_id = $1`, [projectId]);

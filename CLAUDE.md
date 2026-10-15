@@ -36,7 +36,7 @@ Ved motstrid: pek på motsetningen og hvilken beslutning som løser den. Velg al
 ## Etter endringer
 1. Gå gjennom diffen selv. Kjør tester (`npm test`, ev. `npx playwright test`) og `python3 scripts/kb/check_kb.py`.
 2. Oppdater `requirements.yaml` (status, `implementation`, `verification`) og kjør `python3 scripts/kb/build_docs.py`.
-3. Oppdater `IMPLEMENTATION_STATUS.md`, `KNOWN_ISSUES.md` og `SESSION_HANDOVER.md`.
+3. Oppdater `IMPLEMENTATION_STATUS.md`, `KNOWN_ISSUES.md`, `SESSION_HANDOVER.md` og `TODO.md` (det som er bestilt eller tenkt gjort, men ikke bygget).
 4. «Verifisert» krever en test eller dokumentert kontroll. Skrevet kode alene er aldri «ferdig».
 
 ## Dokumentasjon, testing og versjonering

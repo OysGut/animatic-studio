@@ -109,6 +109,8 @@ import { isShortcutHelpKey } from "@/app/shortcuts/shortcut-list";
 export interface AssemblyFocus {
   readonly occurrenceId: string;
   readonly blockId: string | null;
+  /** Åpne nedlastingen av scenen med en gang (fra sceneeditoren, DEC-0085). */
+  readonly download?: boolean;
 }
 
 export function AssemblyWorkspace({
@@ -314,6 +316,7 @@ function Assembly({
       : undefined;
     setSelectedId(clip.occurrenceId);
     playback.setFrame(span ? span.startFrame : clip.startFrame);
+    if (focus.download) setExportOpen(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focus?.occurrenceId, focus?.blockId, clips.length]);
 
@@ -1281,6 +1284,7 @@ function Assembly({
         productionId={productionId}
         clips={clips}
         selectedId={selected?.occurrenceId ?? null}
+        initialScope={focus?.download ? "selected" : undefined}
         urls={images.urls}
         audioItems={playItems}
         audioUrls={audioUrls.data ?? null}

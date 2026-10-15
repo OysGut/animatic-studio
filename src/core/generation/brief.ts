@@ -487,6 +487,18 @@ export function briefStyle(
   purpose: ImagePurpose,
   variantStyleText: string,
 ): ImageBrief["style"] {
+  // Den redigerte samlede beskrivelsen er den ene versjonen (DEC-0085): den erstatter feltene
+  const edited = g?.prompt?.trim();
+  if (edited)
+    return {
+      look: edited,
+      technique: "",
+      design: "",
+      colours: namedColours(g!.palette.colors),
+      colourNote: "",
+      mood: "",
+      fromGuide: true,
+    };
   return {
     look: g?.visualStyle.trim() || variantStyleText,
     technique: g?.technique.trim() ?? "",

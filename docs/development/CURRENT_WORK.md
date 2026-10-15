@@ -1,8 +1,20 @@
 # Pågående arbeid
 
-Oppdatert: 2026-10-14 (økt 6, DEC-0061–0082)
+Oppdatert: 2026-10-15 (økt 6, DEC-0061–0084)
 
-## Nå: DEC-0081/0082 – norsk og engelsk, ny prosjektliste – ferdig, venter på Mars
+## Nå: DEC-0085 – AI-video av scenen utvidet – ferdig, venter på Mars
+- Bygget: kilde for AI-videoen, referanser med samleark, samlet global beskrivelse (én redigerbar versjon for all AI), scenebeskrivelse fra manuset og med AI, lydvalg og dempet lydspor, nedlasting med format og undertekstvalg, status i toppfeltet, valgt versjon i avspillingen, opplasting av video for scenen. README.md og TODO.md.
+- På vent: SMS-varsel. Planlagt: ProRes/MOV (TODO.md).
+- Akseptansekriterier: REQ-0640–0648 (alle verifisert med enhets- og nettlesertester, ikke med ekte nøkler – KI-213).
+
+## Før: DEC-0083 – AI-video av scenen fra sceneeditoren – ferdig, venter på Mars
+- [x] Knapp og dialog i sceneeditoren, video-til-video (Kling O3 Edit, Aleph 2), instrukser per scene (0032), valg av hva som viser scenen (REQ-0633–0638)
+- [x] Vitest 1094, DB 60/60, nettlesersuitene og scene-video-ui 18/18
+- [ ] **Mars:** commit og push, lim inn LOVABLE_SYNC (0030, 0031, 0032)
+- [ ] **Mars:** prøv på en kort scene med Kling O3 Edit (KI-204)
+- [ ] **Mars:** svar på KI-176/KI-178 og hvem som kan bruke felles ressurser (DEC-0084)
+
+## Før: DEC-0081/0082 – norsk og engelsk, ny prosjektliste – ferdig, venter på Mars
 - [x] Språkvalg og hele grensesnittet oversatt; kontroll i testene (REQ-0629/0630)
 - [x] Prosjektlisten: boks per prosjekt, eier, rolle, varianter med dato og notat; notat per produksjon (REQ-0631/0632, migrasjon 0031)
 - [x] tsc, Vitest, DB 59/59, nettlesersuitene og engelsk gjennomgang grønne

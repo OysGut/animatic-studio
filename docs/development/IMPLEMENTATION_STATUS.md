@@ -1,8 +1,10 @@
 # Implementeringsstatus – Animatic Studio
 
-Oppdatert: 2026-10-14 (økt 6, DEC-0082). Detaljert status per krav: `docs/product/TRACEABILITY_MATRIX.md` (generert).
+Oppdatert: 2026-10-15 (økt 6, DEC-0084). Detaljert status per krav: `docs/product/TRACEABILITY_MATRIX.md` (generert).
 
 ## Sammendrag
+- **AI-video av scenen, utvidet (DEC-0085):** kilde (2D-scenen, AI-bunt eller opplastet video), figurer/bakgrunn/objekter som referansebilder med samleark, samlet global beskrivelse som én redigerbar tekst for all AI, scenebeskrivelse fra manuset, lydvalg (AI-lyd blir dempet eget spor), nedlasting i MP4/WebM med valg av undertekster, status i toppfeltet og valgt versjon i avspillingen (REQ-0640–0648). Ikke prøvd med ekte nøkler (KI-213).
+- **AI-video av scenen (DEC-0083):** knapp i sceneeditoren sender 2D-scenen til video-til-video (Kling O3 Edit / Aleph 2); stil, figurer og scenens instrukser i beskrivelsen; bare bildet erstattes; brukeren velger hva som viser scenen (REQ-0633–0638, migrasjon 0032). Ikke prøvd med ekte nøkler (KI-204).
 - **Norsk og engelsk (DEC-0081) og ny prosjektliste (DEC-0082):** språkvalg på hovedsiden, hele grensesnittet på begge språk med automatisk kontroll (REQ-0629/0630); prosjektlisten med én boks per prosjekt, eier, rolle og varianter med dato og notat (REQ-0631/0632, migrasjon 0031). Venter på språkvask og migrasjon 0030/0031.
 - **Mars' ønsker 13.–14.10 (DEC-0080):** bildeverktøy i stor visning (utsnitt, ruter, fjern luften, vinkel, andre vinkler, oppskalering), nullstill format og sidehåndtak, speilvending fra et nøkkelbilde, 1:1-advarsel, lesevisning av valgt scene, promptmotor per modellfamilie, stilanalyse og faktaark, Seedream 4.5/Qwen og SeedVR2/Clarity via fal. Migrasjon 0030 ikke kjørt ennå. 628 krav: 551 Verifisert, 16 Implementert – ikke verifisert (bl.a. AI-delene som trenger ekte nøkler), 3 Under arbeid, 58 Ikke startet.
 - **Mars' testrunde (DEC-0079):** 14 av 15 tester bestått i Lovable; 19 funn rettet og bygget (slettede objekter, lydhastighet og masker, animer på toere og 12 bps, symboler, nedskalering av store bilder, stor visning med beskrivelse, siste beskrivelse og bildestørrelse, manusets omtale i AI-teksten, speilvending og tegning, AI-stemmer med status og avspilling, fal.ai og Google-feil, norsk tale). Migrasjon 0029 ikke kjørt ennå.

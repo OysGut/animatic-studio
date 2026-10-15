@@ -330,6 +330,11 @@ export function needsSchema29(command: { type: string } & Record<string, unknown
  * i stillhet (apply_changes ser bort fra kolonner tabellen ikke har), og en vinkel på et bilde ville blitt
  * avvist av utløseren som vokter bildeversjonene.
  */
+/** Instrukser til AI-video av scenen (DEC-0083) krever migrasjon 0032. */
+export function needsSchema32(command: { type: string }): boolean {
+  return command.type === "SetSceneVideoInstructions";
+}
+
 export function needsSchema31(command: { type: string }): boolean {
   return command.type === "SetProductionNote";
 }
@@ -671,6 +676,18 @@ export const runCommand = createServerFn({ method: "POST" })
           message: L(
             "Databasen mangler kontinuitet for spinoffer. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0018.",
             "The database is missing continuity for spin-offs. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0018.",
+          ),
+        };
+    }
+    if (needsSchema32(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 32)
+        return {
+          ok: false,
+          code: "schema",
+          message: L(
+            "Databasen mangler instrukser for AI-video. Den må oppdateres (migrasjon 0032).",
+            "The database is missing instructions for AI video. It must be updated (migration 0032).",
           ),
         };
     }

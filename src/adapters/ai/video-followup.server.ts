@@ -3,7 +3,7 @@
  * (pollVideoJob) og av bakgrunnskøen (/api/public/cron/ai-jobs), så videoer hentes inn også når ingen har
  * prosjektet åpent. Ferdige videoer lagres i `<prosjekt>/films/<take>/ai-video.mp4`; bare én henter vinner.
  */
-import { L, lastFramePath, newId } from "@/core";
+import { L, lastFramePath, newId, SCENE_VIDEO_SOURCE } from "@/core";
 import type { KeyRow } from "./ai-gate.server";
 import type { AnyClient } from "@/adapters/storage/project-rows";
 
@@ -266,7 +266,16 @@ interface JobForSubmit {
   readonly prompt: string;
   readonly reference_path: string | null;
   readonly provider_key_id: string | null;
-  readonly params: { seconds?: number; aspect?: "16:9" | "9:16" } | null;
+  readonly params: {
+    seconds?: number;
+    aspect?: "16:9" | "9:16";
+    /** Video fra 2D-scenen (DEC-0083). */
+    source?: string;
+    sourceVideoPath?: string;
+    elementPaths?: string[];
+    imagePaths?: string[];
+    withAudio?: boolean;
+  } | null;
 }
 
 /**
@@ -327,6 +336,64 @@ export async function submitVideoJob(
     const adapter = ADAPTERS[job.provider as "openai" | "google" | "fal" | "runway"];
     if (!adapter || !("startVideo" in adapter))
       throw new Error(L("Leverandøren lager ikke video.", "The provider does not make video."));
+    // Video fra 2D-scenen (DEC-0083): videoen og figurenes bilder sendes som midlertidige lenker
+    if (job.params?.source === SCENE_VIDEO_SOURCE) {
+      if (!("editVideo" in adapter))
+        throw new Error(
+          L(
+            "Leverandøren kan ikke lage video fra 2D-scenen.",
+            "The provider cannot make video from the 2D scene.",
+          ),
+        );
+      const sign = async (path: string, what: string) => {
+        const { data: signed } = await db.storage.from(BUCKET).createSignedUrl(path, 3600);
+        if (!signed?.signedUrl)
+          throw new Error(L(`${what} kunne ikke hentes.`, `${what} could not be fetched.`));
+        return signed.signedUrl;
+      };
+      const videoUrl = await sign(
+        job.params.sourceVideoPath ?? "",
+        L("Videoen av 2D-scenen", "The video of the 2D scene"),
+      );
+      const elementUrls: string[] = [];
+      for (const p of job.params.elementPaths ?? [])
+        elementUrls.push(await sign(p, L("Et referansebilde", "A reference image")));
+      const imageUrls: string[] = [];
+      for (const p of job.params.imagePaths ?? [])
+        imageUrls.push(await sign(p, L("Et referansebilde", "A reference image")));
+      submitted = true;
+      const editId = await adapter.editVideo({
+        key: secret,
+        model: job.model,
+        prompt: job.prompt,
+        videoUrl,
+        elementUrls,
+        imageUrls,
+        keepAudio: !!job.params.withAudio,
+      });
+      const { error: idErr2 } = await db
+        .from("generation_jobs")
+        .update({ external_id: editId } as never)
+        .eq("id", jobId)
+        .eq("status", "running");
+      if (idErr2) {
+        await end(
+          "lost",
+          L(
+            `Jobben startet, men kunne ikke registreres: ${idErr2.message}`,
+            `The job started, but could not be registered: ${idErr2.message}`,
+          ),
+        );
+        return {
+          ok: false,
+          message: L(
+            "Videoen ble startet hos leverandøren, men kunne ikke registreres her. Den regnes med i kostnadstaket.",
+            "The video was started at the provider, but could not be registered here. It counts towards the cost limit.",
+          ),
+        };
+      }
+      return { ok: true };
+    }
     submitted = true;
     const externalId = await adapter.startVideo({
       key: secret,

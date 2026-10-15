@@ -41,7 +41,49 @@ type CommonProps = {
   frame: number;
   imageUrls: Readonly<Record<string, string>>;
   onClose: () => void;
+  /**
+   * Versjonen som brukes i filmen (DEC-0085): når scenen vises som AI-video eller film og brukeren har valgt
+   * det, spilles den i stedet for 2D-scenen. Lenke til filen og tiden i filen.
+   */
+  film?: { readonly url: string; readonly seconds: number; readonly playing: boolean } | null;
 };
+
+/** Film i forhåndsvisningen, fulgt av avspillingshodet (stum: scenens lyd spilles av sceneeditoren). */
+function PreviewVideo({
+  film,
+  cssWidth,
+  cssHeight,
+}: {
+  film: NonNullable<CommonProps["film"]>;
+  cssWidth: number;
+  cssHeight: number;
+}) {
+  const ref = useRef<HTMLVideoElement | null>(null);
+  useEffect(() => {
+    const v = ref.current;
+    if (!v) return;
+    if (!film.playing) {
+      if (!v.paused) v.pause();
+      if (Math.abs(v.currentTime - film.seconds) > 0.02) v.currentTime = film.seconds;
+      return;
+    }
+    // Under avspilling: følg bare med når den har kommet for langt fra hodet
+    if (Math.abs(v.currentTime - film.seconds) > 0.25) v.currentTime = film.seconds;
+    if (v.paused) void v.play().catch(() => null);
+  }, [film.seconds, film.playing, film.url]);
+  return (
+    <video
+      ref={ref}
+      src={film.url}
+      muted
+      playsInline
+      preload="auto"
+      aria-label={L("Versjonen som brukes i filmen", "The version used in the film")}
+      style={{ width: cssWidth, height: cssHeight, display: "block", flex: "none" }}
+      className="bg-black object-contain"
+    />
+  );
+}
 
 /** Tegner bildet i gitt CSS-størrelse. `win` er vinduet lerretet står i (pikseltetthet). */
 function PreviewCanvas({
@@ -329,7 +371,11 @@ export function PreviewWindow({
       </div>
       <div className="overflow-auto rounded-b-md bg-black" style={{ width: inner, height: bodyH }}>
         {/* Faste zoomnivåer som er større enn vinduet: rull for å se resten */}
-        <PreviewCanvas {...p} cssWidth={canvasW} cssHeight={canvasH} win={null} />
+        {p.film ? (
+          <PreviewVideo film={p.film} cssWidth={canvasW} cssHeight={canvasH} />
+        ) : (
+          <PreviewCanvas {...p} cssWidth={canvasW} cssHeight={canvasH} win={null} />
+        )}
       </div>
       {(["nw", "ne", "sw", "se"] as const).map((c) => (
         <div
@@ -701,7 +747,11 @@ export function PopoutPreview({
         }
       >
         <div style={zoom === 0 ? undefined : { margin: "0 auto", width: canvasW }}>
-          <PreviewCanvas {...p} cssWidth={canvasW} cssHeight={canvasH} win={win} />
+          {p.film ? (
+            <PreviewVideo film={p.film} cssWidth={canvasW} cssHeight={canvasH} />
+          ) : (
+            <PreviewCanvas {...p} cssWidth={canvasW} cssHeight={canvasH} win={win} />
+          )}
         </div>
       </div>
     </div>,

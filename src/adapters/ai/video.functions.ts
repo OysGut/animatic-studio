@@ -20,6 +20,9 @@ import {
   isProviderId,
   isUuid,
   MAX_PROMPT_CHARS,
+  isSceneVideoSourcePath,
+  isSceneVideoRefPath,
+  SCENE_VIDEO_SOURCE,
   newId,
   providerModel,
   takeIdFromLastFrame,
@@ -56,6 +59,30 @@ export interface StartVideoInput {
    * segmentet er ferdig og siste bilde er lagret, og bruker det som startbilde.
    */
   readonly chainAfter?: string | null;
+  /**
+   * Video fra 2D-scenen (DEC-0083): 2D-scenen (bare bilde) lagt i lagringen. Modellen tegner den om; lengden
+   * er bitens lengde. Startbildet brukes da ikke.
+   */
+  readonly sourceVideoPath?: string | null;
+  /** Referansebilder av figurene (høyst modellens grense), stier i bøtta «assets». */
+  readonly elementPaths?: readonly string[];
+  /**
+   * Andre referansebilder (DEC-0085): bakgrunnen og et samlebilde av figurer. Bibliotekets bilder eller
+   * samlebilder lagt i `ai-source/`. Figurer og bilder til sammen høyst modellens grense.
+   */
+  readonly imagePaths?: readonly string[];
+  /** Scenens lyd er med i videoen som sendes (DEC-0085). */
+  readonly withAudio?: boolean;
+  /** Hva som sendes: 2D-scenen eller en film (AI-video/opplastet). */
+  readonly sourceKind?: "animatic" | "film";
+  /** Bunten og biten jobben hører til (alle bitene som ble sendt sammen for scenen). */
+  readonly piece?: {
+    readonly batch: string;
+    readonly index: number;
+    readonly count: number;
+    readonly startMs: number;
+    readonly endMs: number;
+  } | null;
 }
 
 export type StartVideoResult =
@@ -97,6 +124,56 @@ function validateStart(d: unknown): StartVideoInput {
     throw new Error(L("Ugyldig startbilde", "Invalid start image"));
   if (x["approved"] !== true)
     throw new Error(L("Genereringen må bekreftes", "The generation must be confirmed"));
+  // Video fra 2D-scenen (DEC-0083)
+  const src = x["sourceVideoPath"] ?? null;
+  if (src !== null && !isSceneVideoSourcePath(x["projectId"], src))
+    throw new Error(L("Ugyldig video fra 2D-scenen", "Invalid video from the 2D scene"));
+  const els = x["elementPaths"] ?? [];
+  if (
+    !Array.isArray(els) ||
+    els.length > 4 ||
+    els.some((e) => !validReferencePath(x["projectId"] as string, e)) ||
+    new Set(els).size !== els.length
+  )
+    throw new Error(L("Ugyldige referansebilder", "Invalid reference images"));
+  const imgs = x["imagePaths"] ?? [];
+  if (
+    !Array.isArray(imgs) ||
+    imgs.length > 4 ||
+    imgs.some(
+      (e) =>
+        !validReferencePath(x["projectId"] as string, e) &&
+        !isSceneVideoRefPath(x["projectId"] as string, e),
+    ) ||
+    new Set(imgs).size !== imgs.length ||
+    els.length + imgs.length > 4
+  )
+    throw new Error(L("Ugyldige referansebilder", "Invalid reference images"));
+  const pc = (x["piece"] ?? null) as Record<string, unknown> | null;
+  const int = (v: unknown) => typeof v === "number" && Number.isInteger(v);
+  if (
+    src !== null &&
+    (!pc ||
+      !isId(pc["batch"]) ||
+      !int(pc["index"]) ||
+      !int(pc["count"]) ||
+      (pc["count"] as number) < 1 ||
+      (pc["count"] as number) > 200 ||
+      (pc["index"] as number) < 0 ||
+      (pc["index"] as number) >= (pc["count"] as number) ||
+      !int(pc["startMs"]) ||
+      !int(pc["endMs"]) ||
+      (pc["startMs"] as number) < 0 ||
+      (pc["endMs"] as number) <= (pc["startMs"] as number))
+  )
+    throw new Error(L("Ugyldig bit av scenen", "Invalid piece of the scene"));
+  if (src !== null && (x["queue"] === true || img !== null))
+    throw new Error(
+      L(
+        "Video fra 2D-scenen sendes uten kø og uten startbilde",
+        "Video from the 2D scene is sent without queue and without a start image",
+      ),
+    );
   return {
     projectId: x["projectId"],
     occurrenceId: x["occurrenceId"],
@@ -115,6 +192,21 @@ function validateStart(d: unknown): StartVideoInput {
         ? Math.min(4, Math.max(1, x["candidates"]))
         : 1,
     priority: x["priority"] === 1 || x["priority"] === 3 ? x["priority"] : 2,
+    sourceVideoPath: src as string | null,
+    elementPaths: els as string[],
+    imagePaths: imgs as string[],
+    withAudio: src !== null && x["withAudio"] === true,
+    sourceKind: x["sourceKind"] === "film" ? "film" : "animatic",
+    piece:
+      src !== null && pc
+        ? {
+            batch: pc["batch"] as string,
+            index: pc["index"] as number,
+            count: pc["count"] as number,
+            startMs: pc["startMs"] as number,
+            endMs: pc["endMs"] as number,
+          }
+        : null,
   };
 }
 
@@ -183,14 +275,74 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
         };
     }
     const m = providerModel(data.provider, data.model);
-    if (!m || m.capability !== "video")
+    const fromScene = !!data.sourceVideoPath;
+    if (!m || m.capability !== (fromScene ? "video_edit" : "video"))
       return {
         ok: false,
-        message: L(
-          "Modellen lager ikke video hos denne leverandøren.",
-          "This model does not make video with this provider.",
-        ),
+        message: fromScene
+          ? L(
+              "Modellen kan ikke lage video fra 2D-scenen.",
+              "The model cannot make video from the 2D scene.",
+            )
+          : L(
+              "Modellen lager ikke video hos denne leverandøren.",
+              "This model does not make video with this provider.",
+            ),
       };
+    if (fromScene) {
+      const range = m.editSeconds!;
+      if (data.seconds < range.min || data.seconds > range.max)
+        return {
+          ok: false,
+          message: L(
+            `Modellen tar imot ${range.min}–${range.max} sekunder om gangen.`,
+            `The model accepts ${range.min}–${range.max} seconds at a time.`,
+          ),
+        };
+      if ((data.elementPaths?.length ?? 0) + (data.imagePaths?.length ?? 0) > (m.maxElements ?? 0))
+        return {
+          ok: false,
+          message: L(
+            `Modellen tar imot høyst ${m.maxElements ?? 0} referansebilder.`,
+            `The model accepts at most ${m.maxElements ?? 0} reference images.`,
+          ),
+        };
+      // Videoen må ligge i lagringen (lastet opp av nettleseren like før)
+      const { error: noVideo } = await db.storage
+        .from(BUCKET)
+        .createSignedUrl(data.sourceVideoPath!, 60);
+      if (noVideo)
+        return {
+          ok: false,
+          message: L(
+            "Videoen av 2D-scenen finnes ikke i lagringen. Prøv igjen.",
+            "The video of the 2D scene is not in storage. Try again.",
+          ),
+        };
+      const fromLibrary = [
+        ...(data.elementPaths ?? []),
+        ...(data.imagePaths ?? []).filter((p) => !isSceneVideoRefPath(data.projectId, p)),
+      ];
+      if (fromLibrary.length) {
+        const { referenceImages } = await import("./gateway");
+        const ok = await referenceImages(db, data.projectId, fromLibrary);
+        if (!ok.ok) return { ok: false, message: ok.message };
+      }
+      // Samlebildene må ligge i lagringen (laget av nettleseren like før)
+      for (const p of (data.imagePaths ?? []).filter((x) =>
+        isSceneVideoRefPath(data.projectId, x),
+      )) {
+        const { error: noRef } = await db.storage.from(BUCKET).createSignedUrl(p, 60);
+        if (noRef)
+          return {
+            ok: false,
+            message: L(
+              "Et samlebilde av figurene finnes ikke i lagringen. Prøv igjen.",
+              "A reference sheet of the figures is not in storage. Try again.",
+            ),
+          };
+      }
+    }
     // Modellens grenser gjelder uansett hva nettleseren sendte (DEC-0070)
     const adapted = adaptPromptForModel(data.prompt, m);
     if (adapted.blocked)
@@ -202,7 +354,7 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
         ),
       };
     const sentPrompt = adapted.text;
-    if (m.durations && !m.durations.includes(data.seconds))
+    if (!fromScene && m.durations && !m.durations.includes(data.seconds))
       return {
         ok: false,
         message: L(
@@ -238,6 +390,7 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
         };
     }
     if (
+      !fromScene &&
       !data.startImagePath &&
       !data.chainAfter &&
       (data.provider === "runway" || data.provider === "fal")
@@ -354,7 +507,12 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
       .eq("kind", "video")
       .in("status", ["queued", "running"])
       .eq("occurrence_id", data.occurrenceId);
-    dup = data.segmentId ? dup.eq("segment_id", data.segmentId) : dup.is("segment_id", null);
+    dup = data.piece
+      ? // Video fra 2D-scenen: samme bit i samme bunt
+        dup.eq("params->>batch", data.piece.batch).eq("params->>piece", String(data.piece.index))
+      : data.segmentId
+        ? dup.eq("segment_id", data.segmentId)
+        : dup.is("segment_id", null);
     const { count: running } = await dup;
     if ((running ?? 0) >= (data.candidates ?? 1))
       return {
@@ -395,12 +553,34 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
         // Innsatsnivået jobben ble kjørt med (mandat 19.3, REQ-0275)
         effort: effortOf(providerModel(data.provider, data.model)),
         ...(data.chainAfter ? { chainAfter: data.chainAfter } : {}),
+        // Video fra 2D-scenen (DEC-0083): kilden, bunten og biten, og figurenes referansebilder
+        ...(data.piece
+          ? {
+              source: SCENE_VIDEO_SOURCE,
+              sourceVideoPath: data.sourceVideoPath,
+              elementPaths: data.elementPaths ?? [],
+              imagePaths: data.imagePaths ?? [],
+              withAudio: !!data.withAudio,
+              sourceKind: data.sourceKind ?? "animatic",
+              batch: data.piece.batch,
+              piece: data.piece.index,
+              pieces: data.piece.count,
+              startMs: data.piece.startMs,
+              endMs: data.piece.endMs,
+            }
+          : {}),
         // Sporbarhet (DEC-0072, REQ-0257)
         trace: await (
           await import("./trace.server")
         ).buildTrace(db, data.projectId, {
           modelParams: { seconds: data.seconds, aspect: data.aspect },
-          referencePaths: [data.startImagePath],
+          referencePaths: data.piece
+            ? [
+                data.sourceVideoPath ?? null,
+                ...(data.elementPaths ?? []),
+                ...(data.imagePaths ?? []),
+              ]
+            : [data.startImagePath],
           occurrenceId: data.occurrenceId,
           segmentId: data.segmentId,
         }),

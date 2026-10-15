@@ -171,6 +171,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         monochrome: o.monochrome ?? false,
         // Migrasjon 0023; ukjente kolonner hoppes over av apply_changes før den er kjørt
         planned_ms: o.plannedMs ?? null,
+        // Migrasjon 0032 (DEC-0083); ukjente kolonner hoppes over av apply_changes før den er kjørt
+        video_instructions: o.videoInstructions ?? "",
       };
     }
     case "segments": {
@@ -905,6 +907,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...(x["monochrome"] === true ? { monochrome: true } : {}),
         ...(x["planned_ms"] !== null && x["planned_ms"] !== undefined
           ? { plannedMs: num(x["planned_ms"]) }
+          : {}),
+        ...(typeof x["video_instructions"] === "string" && x["video_instructions"]
+          ? { videoInstructions: x["video_instructions"] }
           : {}),
       })),
     ),

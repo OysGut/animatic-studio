@@ -13,7 +13,7 @@
 
 Dette repoet er **Animatic Studio**. Hovedutviklingen skjer med Claude Code; Lovable brukes til kjøring, hosting, backend (Lovable Cloud), hemmeligheter og testing.
 
-Les `CLAUDE.md` før du gjør endringer. Kort fortalt:
+Les `README.md` (startside: hvor alt ligger), `CLAUDE.md` og `TODO.md` før du gjør endringer. Kort fortalt:
 
 1. **Ikke endre** disse uten eksplisitt beskjed fra Mars: `docs/`, `.claude/`, `scripts/kb/`, `CLAUDE.md`, `AGENTS.md`, `src/core/` (plattformnøytral domenekjerne), `db/` og `tests/`.
 2. `docs/product/MASTER_SPECIFICATION.md` er den autoritative produktspesifikasjonen og skal aldri redigeres.

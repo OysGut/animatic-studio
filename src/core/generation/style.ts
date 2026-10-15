@@ -64,6 +64,7 @@ export function styleGuideError(g: StyleGuide): string | null {
     "version",
     "palette",
     "referenceVersionIds",
+    "prompt",
   ]);
   for (const k of Object.keys(g))
     if (!allowed.has(k))
@@ -78,6 +79,14 @@ export function styleGuideError(g: StyleGuide): string | null {
         `The text is too long (maximum ${STYLE_FIELD_LIMIT} characters per field)`,
       );
   }
+  if (
+    g.prompt !== undefined &&
+    (typeof g.prompt !== "string" || g.prompt.length > STYLE_TOTAL_LIMIT)
+  )
+    return L(
+      `Den samlede beskrivelsen er for lang (maks ${STYLE_TOTAL_LIMIT} tegn)`,
+      `The combined description is too long (maximum ${STYLE_TOTAL_LIMIT} characters)`,
+    );
   if (styleGuideLength(g) > STYLE_TOTAL_LIMIT)
     return L(
       `Stilen er for lang til å få plass i beskrivelsen (maks ${STYLE_TOTAL_LIMIT} tegn til sammen)`,
@@ -147,4 +156,44 @@ export function defaultStyleProfile(s: ProjectState): StyleProfile | null {
     .sort((a, b) => a.id.localeCompare(b.id));
   // En profil som bare gjelder bestemte bruk (f.eks. plakater), blir aldri reserve for alt annet
   return live.find((p) => p.isDefault) ?? live.find((p) => !p.appliesTo?.length) ?? null;
+}
+
+/**
+ * Filmens visuelle stil som én tekst (engelsk overskrift per del, innholdet som brukeren skrev det). Dette
+ * er utgangspunktet brukeren ser og kan redigere (DEC-0085).
+ */
+export function composeStyleText(g: StyleGuide): string {
+  const lines: string[] = [];
+  const add = (label: string, v: string) => {
+    const t = v.trim().replace(/\s+/g, " ");
+    if (t) lines.push(`${label}: ${t}`);
+  };
+  add("Film", g.premise);
+  add("World", g.world);
+  add("Audience and tone", g.audience);
+  add("Visual style", g.visualStyle);
+  add("Technique", g.technique);
+  add(
+    "Colour palette",
+    [g.palette.description, g.palette.colors.join(", ")].filter((x) => x.trim()).join("; "),
+  );
+  add("Lighting", g.lighting);
+  add("Mood", g.mood);
+  add("Characters", g.characterDesign);
+  add("Environments", g.environmentDesign);
+  add("Composition", g.composition);
+  add("Avoid", g.avoid);
+  add("Instructions", g.instructions);
+  return lines.join("\n");
+}
+
+/** Den globale beskrivelsen som sendes: den redigerte teksten, ellers den sammensatte (DEC-0085). */
+export function styleText(g: StyleGuide | null | undefined): string {
+  if (!g) return "";
+  return g.prompt?.trim() || composeStyleText(g);
+}
+
+/** Er den samlede teksten redigert for hånd (og brukes i stedet for feltene)? */
+export function styleTextEdited(g: StyleGuide | null | undefined): boolean {
+  return !!g?.prompt?.trim();
 }

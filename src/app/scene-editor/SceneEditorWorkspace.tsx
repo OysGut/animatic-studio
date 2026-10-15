@@ -46,6 +46,7 @@ import {
   type ProjectState,
   sceneContinuityVariant,
   previousSceneCamera,
+  sourceAt,
 } from "@/core";
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
@@ -68,6 +69,8 @@ import { CameraPanel } from "./CameraPanel";
 import { Timeline } from "./Timeline";
 import { LayerImageDialog } from "./LayerImageDialog";
 import { RecordAudioDialog } from "./RecordAudioDialog";
+import { SceneToVideoDialog } from "./SceneToVideoDialog";
+import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { NeighbourScenes } from "./NeighbourScenes";
 import { useFilmLanguage } from "@/app/assembly/use-film-language";
 import { ScriptChanges, useSceneDiscrepancies } from "@/app/assembly/ScriptChanges";
@@ -207,6 +210,8 @@ function Editor({
   /** Forhåndsvisning av ferdig utsnitt: åpnet manuelt, eller automatisk ved avspilling (huskes). */
   const [previewOpen, setPreviewOpen] = useStoredFlag("scene-editor-preview-open", false);
   const [autoPreview, setAutoPreview] = useStoredFlag("scene-editor-preview-auto", true);
+  // Spill versjonen som brukes i filmen (AI-video/film) i forhåndsvisningen (DEC-0085)
+  const [previewVersion, setPreviewVersion] = useStoredFlag("scene-editor-preview-version", true);
   /** Forhåndsvisningen i et eget nettleservindu (kan ligge på en annen skjerm, DEC-0041). */
   const [popout, setPopout] = useStoredFlag("scene-editor-preview-popout", false);
   const [previewNote, setPreviewNote] = useState<string | null>(null);
@@ -261,6 +266,34 @@ function Editor({
   });
   // I kameravisningen viser lerretet allerede det ferdige utsnittet
   const showPreview = view === "scene" && (previewOpen || (autoPreview && playback.playing));
+  // Versjonen scenen vises som i filmen, på avspillingshodet (DEC-0085)
+  const shownClip = useMemo(
+    () =>
+      occurrence
+        ? (filmClips(state, productionId).find((c) => c.occurrenceId === occurrence.id) ?? null)
+        : null,
+    [state, productionId, occurrence],
+  );
+  const shownSource =
+    previewVersion && shownClip && shownClip.source === "film"
+      ? sourceAt(
+          shownClip,
+          Math.min(playback.frame, shownClip.durationFrames - 1),
+          state.project.fps,
+        )
+      : null;
+  const shownTake = shownSource?.kind === "take" ? shownSource.take : null;
+  const shownUrl = useImageUrls(
+    shownTake?.mediaRef && shownTake.kind !== "still" ? [shownTake.mediaRef] : [],
+  );
+  const previewFilm =
+    shownSource?.kind === "take" && shownTake?.mediaRef && shownUrl.data?.[shownTake.mediaRef]
+      ? {
+          url: shownUrl.data[shownTake.mediaRef]!,
+          seconds: shownSource.seconds,
+          playing: playback.playing,
+        }
+      : null;
   const closePreview = useCallback(() => {
     setPreviewOpen(false);
     if (playback.playing) setAutoPreview(false);
@@ -271,6 +304,7 @@ function Editor({
       : null;
   const [addOpen, setAddOpen] = useState(false);
   const [recordOpen, setRecordOpen] = useState(false);
+  const [aiVideoOpen, setAiVideoOpen] = useState(false);
   /** Avvik ved manusendring for scenen (DEC-0054). */
   const found = useSceneDiscrepancies(state, occurrenceId);
   const [changesOpen, setChangesOpen] = useState(false);
@@ -528,6 +562,24 @@ function Editor({
             <span className="sr-only min-[1400px]:not-sr-only">{L("Opptak", "Recording")}</span>
           </Button>
         ) : null}
+        {occurrence ? (
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => {
+              playback.pause();
+              setAiVideoOpen(true);
+            }}
+            title={L(
+              "Send 2D-scenen til AI og få den tegnet om til ferdig film. Bare bildet erstattes; lyden beholdes. Du velger selv hva som viser scenen.",
+              "Send the 2D scene to AI and have it redrawn as finished film. Only the picture is replaced; the sound is kept. You choose what shows the scene.",
+            )}
+            data-testid="scene-ai-video"
+          >
+            <AiGlyph aria-hidden />
+            {L("AI-video …", "AI video …")}
+          </Button>
+        ) : null}
         <div className="ml-auto flex items-center gap-2">
           {composition ? (
             <>
@@ -605,6 +657,29 @@ function Editor({
                           {L(
                             "Vis det ferdige utsnittet mens scenen spilles av.",
                             "Show the finished shot while the scene plays.",
+                          )}
+                        </span>
+                      </span>
+                    </label>
+                    <label className="mt-1 flex items-start gap-2 text-xs text-text-secondary">
+                      <input
+                        type="checkbox"
+                        checked={previewVersion}
+                        onChange={(e) => setPreviewVersion(e.target.checked)}
+                        className="mt-0.5 size-3.5 accent-[var(--accent-brand)]"
+                        data-testid="preview-version"
+                      />
+                      <span className="flex flex-col gap-0.5">
+                        <span className="text-text-primary">
+                          {L(
+                            "Spill versjonen som brukes i filmen",
+                            "Play the version used in the film",
+                          )}
+                        </span>
+                        <span className="text-[11px] text-text-tertiary">
+                          {L(
+                            "Vises scenen som AI-video eller film, spilles den i forhåndsvisningen. Av: alltid 2D-scenen. Velg versjon under «AI-video …».",
+                            "If the scene is shown as AI video or film, it plays in the preview. Off: always the 2D scene. Choose the version under “AI video …”.",
                           )}
                         </span>
                       </span>
@@ -779,6 +854,7 @@ function Editor({
                     composition={composition}
                     frame={playback.frame}
                     imageUrls={urls.data ?? {}}
+                    film={previewFilm}
                     onClose={closePreview}
                     onDock={() => setPopout(false)}
                     onBlocked={() => {
@@ -798,6 +874,7 @@ function Editor({
                     composition={composition}
                     frame={playback.frame}
                     imageUrls={urls.data ?? {}}
+                    film={previewFilm}
                     onClose={closePreview}
                     onPopOut={() => {
                       setPreviewNote(null);
@@ -1019,6 +1096,18 @@ function Editor({
         openUpscale={upscaleOpen}
       />
       <ShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} current="sceneeditor" />
+      {occurrence && aiVideoOpen ? (
+        <SceneToVideoDialog
+          open
+          onOpenChange={setAiVideoOpen}
+          state={state}
+          projectId={projectId}
+          productionId={productionId}
+          occurrenceId={occurrence.id}
+          cmds={cmds}
+          editable={roleEditable}
+        />
+      ) : null}
       {occurrence && audioEditable ? (
         <RecordAudioDialog
           open={recordOpen}

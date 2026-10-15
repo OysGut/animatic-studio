@@ -1,7 +1,17 @@
-Norsk og engelsk i hele tjenesten, ny prosjektliste, bildeverktøy og promptmotor – migrasjon 0030 og 0031 (DEC-0080–0082)
+AI-video av scenen med referanser, global beskrivelse og nedlasting, norsk og engelsk, ny prosjektliste, bildeverktøy og promptmotor – migrasjon 0030–0032 (DEC-0080–0085)
 
-Databaseendring: migrasjon 0030 og 0031 (i den rekkefølgen). Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push.
+Databaseendring: migrasjon 0030, 0031 og 0032 (i den rekkefølgen). Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push.
 Ingen nye pakker.
+
+AI-video av scenen, utvidet (DEC-0085):
+- Velg hva som sendes: 2D-scenen, en tidligere AI-video eller en opplastet video. Undertekster sendes aldri.
+- Figurkort, bakgrunn og objekter sendes som referansebilder; er det for mange, settes de på ett samleark.
+- Den globale beskrivelsen for hele prosjektet er én tekst som kan redigeres (gjelder all AI), og kan krysses vekk.
+- Scenebeskrivelse laget fra manuset, med «Skriv med AI».
+- Velg om scenens lyd sendes med; lyd i AI-videoen blir eget dempet lydspor som kan flyttes.
+- Nedlasting i MP4 eller WebM, undertekster brent inn, som SRT/VTT eller ingen. «Last ned scenen …».
+- Status for genereringene øverst i toppfeltet. Sceneeditoren kan spille av valgt versjon. Last opp video for scenen.
+- README.md (startside) og TODO.md (ProRes/MOV, SMS-varsel på vent m.m.).
 
 Bekreftet av Mars: Nano Banana Pro med fire bilder virker (KI-189 løst).
 Scene og manus:
@@ -34,4 +44,14 @@ Prosjektlisten (DEC-0082):
 - Hovedfilm med spinoffer, trailere og andre varianter under, med type, dato og notat; klikk åpner varianten.
 - Notat om hva hver produksjon er: skrives når den lages og endres på prosjektoversikten (migrasjon 0031).
 
-Krav: REQ-0603 REQ-0610–REQ-0632
+AI-video av scenen (DEC-0083):
+- Knappen «AI-video …» i sceneeditoren sender 2D-scenen (bare bilde) til Kling O3 Edit (fal.ai) eller
+  Aleph 2 (Runway), som tegner den om til ferdig film; bevegelse, timing og kamera følger 2D-scenen.
+- Beskrivelsen: filmens stil, figurene (faktaark og referansebilder) og scenens egne instrukser
+  (lagres på scenen, migrasjon 0032). Pris vises og må bekreftes; lange scener deles i biter.
+- Bare bildet erstattes – scenens lyd beholdes. Ingenting kastes; velg hva som viser scenen
+  (2D-scenen, AI-video, opplastet film eller stillbilde) i samme vindu.
+Svar fra Mars (DEC-0084): globale ressurser og stilharmonisering godkjent, «Lovable» ut av grensesnittet
+(ikke bygget ennå).
+
+Krav: REQ-0603 REQ-0610–REQ-0639

@@ -47,6 +47,13 @@ export interface AnimaticExportOptions {
   readonly filmUrls?: Readonly<Record<string, string>>;
   /** Undertekster som brennes inn i bildet (DEC-0059), tider i ms i den samlede filmen. */
   readonly subtitles?: readonly SubtitleCue[];
+  /**
+   * Alltid MP4 (DEC-0083: videoen som sendes til AI-modeller må være MP4). Uten H.264 i nettleseren legges
+   * VP9 eller AV1 i MP4 i stedet for WebM.
+   */
+  readonly mp4?: boolean;
+  /** Alltid WebM (VP9/AV1) – brukerens valg i nedlastingen (DEC-0085). */
+  readonly webm?: boolean;
 }
 
 export interface AnimaticFile {
@@ -86,11 +93,14 @@ export async function exportAnimatic(o: AnimaticExportOptions): Promise<Animatic
   const height = even(o.height);
   const mb = await import("mediabunny");
   // i18n-ignore: kodeknavn
-  const codec = await mb.getFirstEncodableVideoCodec(["avc", "vp9", "av1"], {
-    width,
-    height,
-    quality: mb.QUALITY_HIGH,
-  });
+  const codec = await mb.getFirstEncodableVideoCodec(
+    o.webm ? ["vp9", "av1", "vp8"] : ["avc", "vp9", "av1"],
+    {
+      width,
+      height,
+      quality: mb.QUALITY_HIGH,
+    },
+  );
   if (!codec)
     throw new ExportError(
       L(
@@ -98,7 +108,8 @@ export async function exportAnimatic(o: AnimaticExportOptions): Promise<Animatic
         `The browser cannot encode video at ${width} × ${height}. Try half the size, or another browser.`,
       ),
     );
-  const format = codec === "avc" ? new mb.Mp4OutputFormat() : new mb.WebMOutputFormat();
+  const format =
+    !o.webm && (codec === "avc" || o.mp4) ? new mb.Mp4OutputFormat() : new mb.WebMOutputFormat();
   const target = new mb.BufferTarget();
   const output = new mb.Output({ format, target });
 

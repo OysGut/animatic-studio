@@ -226,7 +226,12 @@ export function describeAsset(
 }
 
 /** Kamerabevegelsen i 2D-scenen i tidsrommet, i ord (engelsk). */
-function cameraText(s: ProjectState, clip: FilmClip, startMs: number, endMs: number): string[] {
+export function cameraText(
+  s: ProjectState,
+  clip: FilmClip,
+  startMs: number,
+  endMs: number,
+): string[] {
   const comp = compositionOfVariant(s, clip.variantId);
   if (!comp) return [];
   const fps = s.project.fps.num / s.project.fps.den;
@@ -290,7 +295,8 @@ export function buildScenePrompt(s: ProjectState, i: ScenePromptInput): string {
   // Filmens visuelle stil (DEC-0065)
   // Stilprofilen for AI-video (REQ-0148), ellers standardprofilen
   const g = styleProfileFor(s, "ai_video")?.guide;
-  if (g) {
+  if (g?.prompt?.trim()) lines.push(`Film look: ${g.prompt.trim().replace(/\s*\n\s*/g, " ")}`);
+  else if (g) {
     const add = (label: string, v: string) => {
       if (v.trim()) lines.push(`${label}: ${v.trim().replace(/\s+/g, " ")}`);
     };

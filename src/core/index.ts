@@ -19,6 +19,7 @@ export {
   AUDIO_MIME_TYPES,
   FILM_MIME_TYPES,
   MAX_CLIP_PARTS,
+  MAX_SCENE_VIDEO_INSTRUCTIONS,
   audioClipFieldsOf,
   VISUAL_STYLES,
   type ApplyResult,
@@ -47,6 +48,7 @@ export * from "./generation/speech";
 export * from "./generation/prompt-history";
 export * from "./generation/brief";
 export * from "./generation/style-analysis";
+export * from "./generation/scene-to-video";
 export * from "./backup";
 export * from "./cutout";
 export * from "./continuity";

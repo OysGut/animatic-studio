@@ -36,6 +36,7 @@ import {
   collation,
   tm,
 } from "@/core";
+import { GlobalStyleText } from "./GlobalStyleText";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { useImageUrls } from "@/app/library/asset-images";
 import { Button } from "@/components/ui/button";
@@ -194,6 +195,17 @@ export function StyleGuideSection({
           </p>
         )}
       </div>
+      {/* Den samlede teksten som sendes, redigerbar for hele prosjektet (DEC-0085) */}
+      {profile ? (
+        <div className="mt-2">
+          <GlobalStyleText
+            state={state}
+            cmds={cmds}
+            editable={editable}
+            profileOverride={profile}
+          />
+        </div>
+      ) : null}
       {/* Egne stilprofiler for bestemte bruk (REQ-0148, DEC-0071) */}
       <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-text-secondary">
         {others.map((p) => (

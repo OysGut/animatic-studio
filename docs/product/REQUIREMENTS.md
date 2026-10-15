@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **632**
-- Prioritet: P0: 143, P1: 303, P2: 147, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 105, teknisk-anbefaling: 7
-- Status: Verifisert: 555, Implementert – ikke verifisert: 16, Under arbeid: 3, Ikke startet: 58
+- Antall krav: **648**
+- Prioritet: P0: 145, P1: 317, P2: 147, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 121, teknisk-anbefaling: 7
+- Status: Verifisert: 569, Implementert – ikke verifisert: 17, Under arbeid: 3, Ikke startet: 59
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -8617,3 +8617,227 @@ Hver produksjon (hovedfilm, spinoff, trailer …) kan ha et notat på høyst 200
 - **Tester:**
   - db: 0031 notat på produksjonen
 - **Implementering:** src/core/commands/apply.ts, src/core/patch.ts, db/migrations/0031_production_note.sql, src/app/projects/ProductionList.tsx, src/app/projects/ProductionDialog.tsx
+
+#### REQ-0633 – Send 2D-scenen til AI-video fra sceneeditoren
+En knapp i sceneeditorens verktøylinje sender scenen i fokus til AI-generering. 2D-scenen sendes som video (bare bilde) til en modell som tegner den om til ferdig film, slik at bevegelser, plassering, timing, uttrykk og kamera følger 2D-scenen. Modeller: Kling O3 Edit (fal.ai) og Aleph 2 (Runway) med prosjektets egne nøkler.
+
+- **Kilde:** Beslutning DEC-0083 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** UI, PROVIDER, COMPOSE
+- **Avhengigheter:** REQ-0180; REQ-0243
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Knappen finnes i sceneeditoren og åpner dialogen for scenen i fokus.
+  - Det som sendes, er 2D-scenen også når en annen versjon vises i filmen.
+- **Tester:**
+  - visuell: knapp, dialog og sending med mocket leverandør
+  - enhet: forespørselen til fal.ai og Runway
+- **Implementering:** src/app/scene-editor/SceneToVideoDialog.tsx, src/core/generation/scene-to-video.ts, src/adapters/ai/providers.server.ts, src/adapters/ai/video.functions.ts, src/adapters/ai/video-followup.server.ts
+
+#### REQ-0634 – Beskrivelsen for AI-video fra 2D-scenen bygges av stil, figurer og instrukser
+Beskrivelsen bygges automatisk av filmens visuelle stil, figurene i scenen (beskrivelse, visuelt faktaark og referansebilde for så mange som modellen tar imot, karakterer først), manusets handling og replikker i biten (bare for spill) og scenens egne instrukser. Den vises før sending. Er modellens grense for lengde nådd, tas stilnotater og manusdetaljer bort først; instruksene beholdes.
+
+- **Kilde:** Beslutning DEC-0083 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** PROMPT
+- **Avhengigheter:** REQ-0244; REQ-0148
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Instruksene og figurene står i beskrivelsen.
+  - Beskrivelsen til Aleph 2 er høyst 1000 tegn og beholder instruksene.
+- **Tester:**
+  - enhet: beskrivelse for Kling og Aleph
+- **Implementering:** src/core/generation/scene-to-video.ts
+
+#### REQ-0635 – Instrukser til AI-video lagres per scene
+Hver scene kan ha instrukser til AI-video (høyst 2000 tegn): hva som skal skje og hvordan figurene skal spille. De lagres på scenen, brukes neste gang og kan angres (migrasjon 0032).
+
+- **Kilde:** Beslutning DEC-0083 · **Opprinnelse:** brukerbeslutning · **Type:** data · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** CORE, PROMPT
+- **Avhengigheter:** REQ-0633
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Instruksene lagres, leses tilbake likt og kan angres.
+  - Over 2000 tegn avvises i kjernen og i databasen.
+- **Tester:**
+  - enhet: SetSceneVideoInstructions
+  - db: 0032
+- **Implementering:** src/core/commands/apply.ts, src/core/patch.ts, db/migrations/0032_scene_video_instructions.sql
+
+#### REQ-0636 – AI-video fra 2D-scenen erstatter bare bildet
+Modellen bes om å ikke lage lyd, og resultatet legges inn som versjon uten lyd. Scenens egne lydklipp (replikker, effekter og musikk) spilles og eksporteres som før.
+
+- **Kilde:** Beslutning DEC-0083 · **Opprinnelse:** brukerbeslutning · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 5
+- **Moduler:** AUDIO, VERSION
+- **Avhengigheter:** REQ-0633
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Versjonen er merket uten lyd og bidrar ikke til filmens lyd.
+  - Scenens lydklipp er uendret.
+- **Tester:**
+  - enhet: bunt brukt i scenen
+- **Implementering:** src/app/ai/video-jobs.ts, src/adapters/ai/providers.server.ts
+
+#### REQ-0637 – Brukeren velger hva som viser scenen, og ingenting kastes
+Hvert resultat er en ny versjon av scenen. I sceneeditoren velger brukeren hva som viser scenen: 2D-scenen, en AI-video fra 2D-scenen (satt sammen av bitene), en annen AI-video, opplastet film eller et stillbilde. Nye videoer kan lages når som helst; tidligere versjoner beholdes. Valget kan angres.
+
+- **Kilde:** Beslutning DEC-0083 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 5
+- **Moduler:** UI, VERSION, TIMELINE
+- **Avhengigheter:** REQ-0233; REQ-0180
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Valget i sceneeditoren endrer det filmen viser, og kan angres.
+  - Tidligere versjoner står fortsatt i listen.
+- **Tester:**
+  - visuell: valg og status i dialogen
+  - enhet: batchSceneEdit og batchInUse
+- **Implementering:** src/app/scene-editor/SceneToVideoDialog.tsx, src/core/generation/scene-to-video.ts
+
+#### REQ-0638 – Lange scener deles i biter, og prisen må bekreftes
+En scene lengre enn modellen tar imot deles i like lange biter innenfor modellens grenser (Kling 3–15 s, Aleph 2–30 s) og settes sammen igjen i rekkefølge. Anslått pris for alle bitene vises og må bekreftes før noe sendes. En scene kortere enn modellens korteste lengde kan ikke sendes.
+
+- **Kilde:** Beslutning DEC-0083 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** QUALITYCOST, PROVIDER
+- **Avhengigheter:** REQ-0281; REQ-0633
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Bitene dekker hele scenen uten overlapp.
+  - Ingenting sendes før prisen er bekreftet.
+- **Tester:**
+  - enhet: planScenePieces
+  - visuell: bekreftelse før sending
+- **Implementering:** src/core/generation/scene-to-video.ts, src/app/scene-editor/SceneToVideoDialog.tsx
+
+#### REQ-0639 – Leverandørnavnet «Lovable» står ikke i grensesnittet
+Grensesnittet nevner ikke Lovable (heller ikke i meldinger om databaseoppdatering). Den innebygde AI-tjenesten og databasen omtales nøytralt, så teksten stemmer også når tjenesten kjøres lokalt.
+
+- **Kilde:** Beslutning DEC-0084 · **Opprinnelse:** brukerbeslutning · **Type:** ux · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** UI
+- **Avhengigheter:** REQ-0629
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Ingen brukervendt tekst inneholder «Lovable».
+- **Tester:**
+  - enhet: søk i brukervendt tekst
+
+#### REQ-0640 – Den globale beskrivelsen er én redigerbar tekst for hele prosjektet
+Filmens visuelle stil settes sammen til én tekst som vises i sin helhet. Brukeren kan åpne den for redigering med tydelig melding om at endringen gjelder hele prosjektet. Den redigerte teksten er den ene versjonen og brukes av all AI-generering; «Tilbake til feltene» setter den sammen av feltene igjen.
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** PROVIDER
+- **Avhengigheter:** REQ-0633
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Redigert tekst brukes i bilde- og videoprompter.
+  - Melding om global endring vises ved redigering.
+- **Tester:**
+  - tests/unit/scene-to-video.test.ts
+  - tests/visual/scene-video-ui.mjs
+- **Implementering:** src/core/generation/style.ts, src/app/projects/GlobalStyleText.tsx
+
+#### REQ-0641 – Den globale beskrivelsen kan krysses vekk i AI-video av scenen
+I «AI-video av scenen» er den globale beskrivelsen med som standard. Brukeren kan krysse den vekk; teksten grås da ut og sendes ikke.
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** PROVIDER
+- **Avhengigheter:** REQ-0633
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Standard er på.
+  - Avkrysset vekk: teksten grås ut og er ikke i prompten.
+- **Tester:**
+  - tests/visual/scene-video-ui.mjs
+- **Implementering:** src/app/scene-editor/SceneToVideoDialog.tsx
+
+#### REQ-0642 – Scenebeskrivelse fra manuset, med «Skriv med AI»
+Dialogen har feltet «Scenebeskrivelse» laget fra manuset (sted, tid, figurer, handling, replikker i rekkefølge, kamera og lys) i formen leverandørene anbefaler. Brukeren kan redigere den, hente den fra manuset på nytt eller la AI skrive den. Den lagres per scene.
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** PROVIDER
+- **Avhengigheter:** REQ-0633
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Teksten lages uten AI fra manuset.
+  - «Skriv med AI» viser pris som andre tekstkall.
+- **Tester:**
+  - tests/unit/scene-to-video.test.ts
+- **Implementering:** src/core/generation/scene-to-video.ts, src/app/scene-editor/SceneToVideoDialog.tsx, src/app/ai/write-prompt.functions.ts
+
+#### REQ-0643 – Figurer, bakgrunn og objekter sendes som referansebilder, med samleark
+Figurkort, bakgrunn og objekter i scenen sendes som referansebilder. Overskrider de modellens antall, settes de overskytende sammen til ett samleark med navn under hvert bilde. Hver referanse kan velges bort.
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** PROVIDER
+- **Avhengigheter:** REQ-0633
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Aldri flere bilder enn modellen tar.
+  - Samleark når det er for mange.
+- **Tester:**
+  - tests/unit/scene-to-video.test.ts
+- **Implementering:** src/core/generation/scene-to-video.ts, src/app/scene-editor/SceneToVideoDialog.tsx, src/app/ai/video.functions.ts
+
+#### REQ-0644 – Kilden for AI-videoen kan være 2D-scenen, en AI-versjon eller en opplastet video
+Brukeren velger hva som sendes: 2D-scenen, en tidligere AI-video av scenen eller en opplastet/annen versjon. Videoen er lik det avspillingen viser, uten undertekster.
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** PROVIDER
+- **Avhengigheter:** REQ-0633
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Undertekster sendes aldri.
+- **Tester:**
+  - tests/unit/scene-to-video.test.ts
+  - tests/visual/scene-video-ui.mjs
+- **Implementering:** src/core/generation/scene-to-video.ts, src/app/scene-editor/SceneToVideoDialog.tsx
+
+#### REQ-0645 – Brukeren velger om lyden sendes; lyd fra AI-videoen blir eget dempet spor
+Brukeren velger om scenens lyd sendes med. En ferdig AI-video spilles uten lyd; har den lyd, legges lyden inn som eget dempet lydspor på scenen som kan flyttes og justeres.
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** PROVIDER
+- **Avhengigheter:** REQ-0633
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - AI-video spilles uten lyd.
+  - Lydsporet er dempet og flyttbart.
+- **Tester:**
+  - tests/unit/scene-to-video.test.ts
+- **Implementering:** src/app/ai/video-audio.ts, src/app/ai/video-jobs.ts
+
+#### REQ-0646 – Nedlasting med valg av videoformat og undertekster
+Nedlastingsvinduet har valg av format (MP4 eller WebM) og undertekster (brent inn, egen SRT- eller VTT-fil, eller ingen). Scenen kan lastes ned fra «AI-video av scenen». ProRes/MOV er planlagt (TODO.md).
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** PROVIDER
+- **Avhengigheter:** REQ-0633
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Undertekster brennes bare inn når det er valgt.
+- **Tester:**
+  - tests/visual/export-e2e.mjs
+- **Implementering:** src/engine/export/animatic.ts, src/app/assembly/ExportAnimaticDialog.tsx
+
+#### REQ-0647 – Status for AI-genereringer i toppfeltet
+Toppfeltet viser en liten status i prosjektet: hvor mange genereringer som lages og står i kø, og hva som nylig ble ferdig eller feilet. Et klikk viser listen med lenke til scenen.
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** PROVIDER
+- **Avhengigheter:** REQ-0633
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Vises bare når prosjektet har genereringer.
+- **Tester:**
+  - tests/visual/scene-video-ui.mjs
+- **Implementering:** src/app/ai/GenerationStatus.tsx, src/app/shell/AppHeader.tsx
+
+#### REQ-0648 – Sceneeditoren kan spille av versjonen som er valgt for scenen
+Avspillingen i sceneeditoren kan vise versjonen som er valgt for scenen (AI-video eller opplastet film) i stedet for 2D-scenen. Valget slås av og på i visningsvalgene. Hvilken versjon som brukes og opplasting av video velges i «AI-video av scenen».
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** PROVIDER
+- **Avhengigheter:** REQ-0633
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Valgt versjon vises synkront med avspillingen.
+- **Tester:**
+  - tests/visual/scene-video-ui.mjs
+- **Implementering:** src/app/scene-editor/SceneEditorWorkspace.tsx, src/app/scene-editor/PreviewWindow.tsx

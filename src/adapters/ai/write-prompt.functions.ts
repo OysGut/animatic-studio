@@ -23,6 +23,7 @@ import {
   MAX_ATTACHED_IMAGES,
   MAX_PROMPT_CHARS,
   PROMPT_WRITER_SYSTEM,
+  SCENE_DESCRIPTION_SYSTEM,
 } from "@/core";
 import { L } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
@@ -58,7 +59,7 @@ const BUCKET = "assets";
  * forbildebildene (svar som JSON); «visual» lager det visuelle faktaarket for en ressurs. For «style» og
  * «visual» er `brief` selve brukermeldingen (laget i kjernen).
  */
-export type WriteTask = "prompt" | "style" | "visual";
+export type WriteTask = "prompt" | "style" | "visual" | "scene";
 
 export interface WritePromptInput {
   readonly projectId: string;
@@ -87,11 +88,15 @@ function validate(d: unknown): WritePromptInput {
   if (typeof projectId !== "string" || !isUuid(projectId))
     throw new Error(L("Ugyldig prosjekt", "Invalid project"));
   const task: WriteTask =
-    x["task"] === "style" || x["task"] === "visual" ? (x["task"] as WriteTask) : "prompt";
-  if (task !== "style" && (typeof assetId !== "string" || !isUuid(assetId)))
+    x["task"] === "style" || x["task"] === "visual" || x["task"] === "scene"
+      ? (x["task"] as WriteTask)
+      : "prompt";
+  // Stilanalysen og scenebeskrivelsen (DEC-0085) gjelder ikke én ressurs
+  const noAsset = task === "style" || task === "scene";
+  if (!noAsset && (typeof assetId !== "string" || !isUuid(assetId)))
     throw new Error(L("Ugyldig ressurs", "Invalid asset"));
   if (
-    task === "style" &&
+    noAsset &&
     assetId !== null &&
     assetId !== undefined &&
     (typeof assetId !== "string" || !isUuid(assetId))
@@ -225,7 +230,7 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
             "Sound cannot get an image description.",
           ),
         };
-    } else if (data.task !== "style")
+    } else if (data.task !== "style" && data.task !== "scene")
       return { ok: false, message: L("Ressursen mangler.", "The asset is missing.") };
     const refCheck = await referenceImages(
       admin,
@@ -292,7 +297,9 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
                     ? "style-analysis"
                     : data.task === "visual"
                       ? "visual-brief"
-                      : "prompt-writer",
+                      : data.task === "scene"
+                        ? "scene-description"
+                        : "prompt-writer",
                 modelParams: { purpose: data.purpose, images: data.images.length },
                 referencePaths: data.images.map((i) => i.path),
               }),
@@ -362,7 +369,9 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
           ? STYLE_ANALYSIS_SYSTEM
           : data.task === "visual"
             ? VISUAL_BRIEF_SYSTEM
-            : PROMPT_WRITER_SYSTEM;
+            : data.task === "scene"
+              ? SCENE_DESCRIPTION_SYSTEM
+              : PROMPT_WRITER_SYSTEM;
       const headers = {
         Authorization: `Bearer ${key}`,
         "Lovable-API-Key": key,
@@ -394,9 +403,15 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
         const written =
           data.task === "visual"
             ? cleanVisualBrief(raw)
-            : data.task === "style"
-              ? raw.trim().slice(0, 12000) || null
-              : cleanWrittenPrompt(raw);
+            : data.task === "scene"
+              ? raw
+                  .trim()
+                  .replace(/^```\w*\n?|```$/g, "")
+                  .trim()
+                  .slice(0, 2000) || null
+              : data.task === "style"
+                ? raw.trim().slice(0, 12000) || null
+                : cleanWrittenPrompt(raw);
         if (!written) {
           await finish({
             status: "failed",

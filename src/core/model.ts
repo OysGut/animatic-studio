@@ -269,6 +269,11 @@ export interface SceneOccurrence extends Entity<OccurrenceId> {
    * manusestimatet til 2D-scenen har satt lengde eller filmen er lagt inn. Mangler = ingen plan.
    */
   readonly plannedMs?: number;
+  /**
+   * Brukerens instrukser til AI-video av scenen (DEC-0083, migrasjon 0032): hva som skal skje og hvordan
+   * figurene skal spille. Sendes sammen med filmens stil og figurenes beskrivelser. Mangler/tom = ingen.
+   */
+  readonly videoInstructions?: string;
 }
 
 /**
@@ -1186,6 +1191,12 @@ export interface StyleGuide {
   readonly instructions: string;
   /** Godkjente bilder som viser stilen (versjons-ID-er), helst 1–6. */
   readonly referenceVersionIds: readonly string[];
+  /**
+   * Den samlede beskrivelsen for hele prosjektet (DEC-0085): settes når brukeren redigerer den sammensatte
+   * teksten. Da er dette den ene versjonen som sendes til all AI (bilder og video) i stedet for feltene.
+   * Mangler/tom = teksten settes sammen av feltene (composeStyleText).
+   */
+  readonly prompt?: string;
 }
 
 export interface StyleProfile extends Entity<StyleProfileId> {

@@ -473,6 +473,12 @@ export type Command =
       }[];
     }
   | {
+      /** Instrukser til AI-video av scenen (DEC-0083, migrasjon 0032); tom tekst fjerner dem. */
+      readonly type: "SetSceneVideoInstructions";
+      readonly occurrenceId: OccurrenceId;
+      readonly text: string;
+    }
+  | {
       /** Planlagt lengde for scenen (REQ-0111/0113); null fjerner planen. */
       readonly type: "SetPlannedDuration";
       readonly occurrenceId: OccurrenceId;

@@ -62,6 +62,7 @@ export const CATALOG: Record<string, string> = {
   "{0} hører ikke til ressursen": "{0} does not belong to the asset",
   "{0} Jobben ble ikke sendt (kostet ingenting).": "{0} The job was not sent (it cost nothing).",
   "{0} kreditter": "{0} credits",
+  "{0} kunne ikke hentes.": "{0} could not be fetched.",
   "{0} linje endret": "{0} line changed",
   "{0} linjer endret": "{0} lines changed",
   "{0} linjer i scenen med revisjon lagret": "{0} lines in the scene with revision saved",
@@ -88,6 +89,7 @@ export const CATALOG: Record<string, string> = {
   "1 ny": "1 new",
   "1 tekst mangler engelsk versjon og vises på norsk.":
     "1 text has no English version and is shown in Norwegian.",
+  "2–30 sekunder per bit": "2–30 seconds per piece",
   "2× eller 4×": "2× or 4×",
   "2D-scene {0}: scenen har to 2D-scener": "2D scene {0}: the scene has two 2D scenes",
   "2D-scene {0}: ukjent scene": "2D scene {0}: unknown scene",
@@ -101,6 +103,7 @@ export const CATALOG: Record<string, string> = {
   "2D-scenen hører til en annen scene": "The 2D scene belongs to another scene",
   "2D-scenen i {0} viser v{1} av {2} («{3}»), men v{4} er godkjent nå.":
     "The 2D scene in {0} shows v{1} of {2} (“{3}”), but v{4} is approved now.",
+  "3–15 sekunder per bit": "3–15 seconds per piece",
   "50 × 70 cm (stående)": "50 × 70 cm (portrait)",
   "70 × 100 cm (stående)": "70 × 100 cm (portrait)",
   "AI er ikke slått på for prosjektet i Lovable (LOVABLE_API_KEY mangler). Se LOVABLE_SYNC.md.":
@@ -115,6 +118,7 @@ export const CATALOG: Record<string, string> = {
   "AI-tjenesten svarte med feil {0}{1}": "The AI service responded with an error {0}{1}",
   "AI-tjenesten svarte uten bilde.": "The AI service replied without an image.",
   "AI-tjenesten svarte uten tekst. Prøv igjen.": "The AI service replied without text. Try again.",
+  "Aleph 2 (fra 2D-scenen)": "Aleph 2 (from the 2D scene)",
   "All tekst er minst {0} pt og får plass.": "All text is at least {0} pt and fits.",
   "Alle replikkene i segmentet var med, ordrett.":
     "All the lines in the segment were included, word for word.",
@@ -269,6 +273,8 @@ export const CATALOG: Record<string, string> = {
     "The database is missing the film's visual style. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0021.",
   "Databasen mangler importert film og overganger. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0011.":
     "The database is missing imported film and transitions. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0011.",
+  "Databasen mangler instrukser for AI-video. Den må oppdateres (migrasjon 0032).":
+    "The database is missing instructions for AI video. It must be updated (migration 0032).",
   "Databasen mangler klipping og tidskoblinger. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0012.":
     "The database is missing clipping and time links. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0012.",
   "Databasen mangler koblinger for lyd. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0025.":
@@ -329,6 +335,8 @@ export const CATALOG: Record<string, string> = {
     "The new scene has production material and cannot be reverted",
   "Den nye varianten": "The new variant",
   "Den opprinnelige varianten": "The original variant",
+  "Den samlede beskrivelsen er for lang (maks {0} tegn)":
+    "The combined description is too long (maximum {0} characters)",
   "Denne leverandøren trenger ingen nøkkel.": "This provider does not need a key.",
   "Denne modellen trenger et forbildebilde.": "This model needs a reference image.",
   "Denne modellen trenger et startbilde.": "This model needs a start image.",
@@ -424,6 +432,9 @@ export const CATALOG: Record<string, string> = {
     "A reference image could not be fetched from storage.",
   "Et lag kan ikke være maske for seg selv": "A layer cannot be a mask for itself",
   "Et notat på tekst har ikke scene i tillegg": "A note on text cannot also have a scene",
+  "Et referansebilde": "A reference image",
+  "Et samlebilde av figurene finnes ikke i lagringen. Prøv igjen.":
+    "A reference sheet of the figures is not in storage. Try again.",
   "Et segment kan bare vente på segmentet før.":
     "A segment can only wait for the segment before it.",
   "Et stikkord er for langt": "A keyword is too long",
@@ -436,6 +447,8 @@ export const CATALOG: Record<string, string> = {
     "No scene headings (INT./EXT.) found. All text is in one scene without a heading.",
   "Fargen må være på formen #rrggbb": "The colour must be in the form #rrggbb",
   "Feil prosjekt for gjenoppretting.": "Wrong project for restoring.",
+  "Figurene beskrives bare med tekst (ingen referansebilder)":
+    "The figures are described in text only (no reference images)",
   Fil: "File",
   "Filen er for stor til å hentes inn.": "The file is too large to fetch.",
   "Filen er ikke en sikkerhetskopi fra Animatic Studio.":
@@ -577,6 +590,7 @@ export const CATALOG: Record<string, string> = {
   "Høyrestilt tekst tolket som handling": "Right-aligned text interpreted as action",
   "Høyst {0} koblinger": "At most {0} links",
   "Høyst 200 betegnelser": "At most 200 designations",
+  "Høyst 4 figurer med referansebilde": "At most 4 figures with a reference image",
   "Hvit bakgrunn – frilegg etterpå.": "White background – cut out afterwards.",
   "I del {0}": "In part {0}",
   "I kilden": "In the source",
@@ -641,6 +655,8 @@ export const CATALOG: Record<string, string> = {
     "Indented lower-case text interpreted as dialogue",
   Innsatsnivå: "Effort level",
   inntoning: "fade in",
+  "Instruksene er for lange (høyst {0} tegn)":
+    "The instructions are too long (at most {0} characters)",
   "Jobben er allerede sendt til leverandøren.": "The job has already been sent to the provider.",
   "Jobben feilet.": "The job failed.",
   "Jobben finnes ikke.": "The job does not exist.",
@@ -675,6 +691,7 @@ export const CATALOG: Record<string, string> = {
   "Kino 1.85:1 (1998 × 1080)": "Cinema 1.85:1 (1998 × 1080)",
   "kl.": "at",
   "Kling 3 (fra startbilde)": "Kling 3 (from start image)",
+  "Kling O3 Edit (fra 2D-scenen)": "Kling O3 Edit (from the 2D scene)",
   "Klippet versjon ({0} {1})": "Edited version ({0} {1})",
   "Køen er full ({0} videoer venter). Vent til noen er ferdige.":
     "The queue is full ({0} videos waiting). Wait until some are finished.",
@@ -732,6 +749,8 @@ export const CATALOG: Record<string, string> = {
   "leverandør: {0}": "provider: {0}",
   "Leverandøren er opptatt. Videoen ligger i kø og sendes når det er plass.":
     "The provider is busy. The video is queued and will be sent when there is room.",
+  "Leverandøren kan ikke lage video fra 2D-scenen.":
+    "The provider cannot make video from the 2D scene.",
   "Leverandøren kan ikke oppskalere.": "The provider cannot upscale.",
   "Leverandøren lager ikke bilder.": "The provider does not make images.",
   "Leverandøren lager ikke video.": "The provider does not make video.",
@@ -811,12 +830,15 @@ export const CATALOG: Record<string, string> = {
   Modell: "Model",
   "modell: {0}": "model: {0}",
   "Modellen finnes ikke hos leverandøren.": "The model does not exist at the provider.",
+  "Modellen kan ikke lage video fra 2D-scenen.": "The model cannot make video from the 2D scene.",
   "Modellen kan ikke oppskalere.": "The model cannot upscale.",
   "Modellen kan lage {0} sekunder.": "The model can make {0} seconds.",
   "Modellen lager ikke lyd: replikkene brukes til munnbevegelser og spill.":
     "The model does not make sound: the lines are used for lip movement and acting.",
   "Modellen lager ikke video hos denne leverandøren.":
     "This model does not make video with this provider.",
+  "Modellen tar imot {0}–{1} sekunder om gangen.": "The model accepts {0}–{1} seconds at a time.",
+  "Modellen tar imot høyst {0} referansebilder.": "The model accepts at most {0} reference images.",
   "Modellen tar imot høyst {0} tegn: tok bort {1}.":
     "The model accepts at most {0} characters: removed {1}.",
   "Myk kant må være mellom 0 og {0} px": "The soft edge must be between 0 and {0} px",
@@ -1033,6 +1055,8 @@ export const CATALOG: Record<string, string> = {
   "Scenen deles med hovedfilmen. Endringer i denne produksjonen lagres som egen versjon av scenen.":
     "The scene is shared with the main film. Changes in this production are saved as a separate version of the scene.",
   "Scenen der endringen er over": "The scene where the change ends",
+  "Scenen er {0} sekunder. Modellen trenger minst {1} sekunder.":
+    "The scene is {0} seconds. The model needs at least {1} seconds.",
   "Scenen er allerede med i {0}": "The scene is already in {0}",
   "Scenen er endret etter delingen og kan ikke slås tilbake automatisk":
     "The scene was changed after the split and cannot be reverted automatically",
@@ -1139,6 +1163,8 @@ export const CATALOG: Record<string, string> = {
     "Turn on billing (a Google Cloud billing account) – video and the best image models require it.",
   "Slutten på tidskoblingen må være etter starten":
     "The end of the time link must be after the start",
+  "Som 2D-scenen (720–3840 px)": "As the 2D scene (720–3840 px)",
+  "Som 2D-scenen (opptil 1080p)": "As the 2D scene (up to 1080p)",
   "Sømløs løkke": "Seamless loop",
   "Spinoffens klipping bruker 2D-scenen, men hovedfilmen har ingen 2D-scene. Velg også lagene (da kopieres 2D-scenen).":
     "The spin-off's edit uses the 2D scene, but the main film has no 2D scene. Also choose the layers (then the 2D scene is copied).",
@@ -1235,6 +1261,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig bevegelsesbane": "Invalid motion path",
   "Ugyldig bildefrekvens {0}/{1}": "Invalid frame rate {0}/{1}",
   "Ugyldig bildeskifte": "Invalid image swap",
+  "Ugyldig bit av scenen": "Invalid piece of the scene",
   "Ugyldig blandingsmodus": "Invalid blend mode",
   "Ugyldig bredde": "Invalid width",
   "Ugyldig bruk": "Invalid use",
@@ -1346,6 +1373,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig verdi for {0}": "Invalid value for {0}",
   "Ugyldig verdi i elementet": "Invalid value in the element",
   "Ugyldig verdi i nøkkelbilde": "Invalid value in keyframe",
+  "Ugyldig video fra 2D-scenen": "Invalid video from the 2D scene",
   "Ugyldig volumpunkt (tid i ms, nivå mellom −60 og +12 dB)":
     "Invalid volume point (time in ms, level between −60 and +12 dB)",
   "Ugyldige antakelser for varighetsestimatet": "Invalid assumptions for the duration estimate",
@@ -1358,7 +1386,9 @@ export const CATALOG: Record<string, string> = {
   "Ugyldige forbildebilder": "Invalid reference images",
   "Ugyldige forbildebilder (høyst 12)": "Invalid reference images (at most 12)",
   "Ugyldige innholdsvalg": "Invalid content options",
+  "Ugyldige instrukser": "Invalid instructions",
   "Ugyldige mål": "Invalid dimensions",
+  "Ugyldige referansebilder": "Invalid reference images",
   "Ugyldige revisjoner": "Invalid revisions",
   "Ugyldige tegn i kameraet": "Invalid characters in the camera",
   ukjent: "unknown",
@@ -1450,8 +1480,13 @@ export const CATALOG: Record<string, string> = {
   "Versjonen hører til en annen variant": "The version belongs to another variant",
   "Versjonen tilhører en annen scene": "The version belongs to another scene",
   "Versjonen tilhører en annen variant": "The version belongs to another variant",
-  "Video fra et startbilde med Gen-4 Turbo. Kreditter kjøpes i utviklerportalen.":
-    "Video from a start image with Gen-4 Turbo. Credits are bought in the developer portal.",
+  "Video fra 2D-scenen sendes uten kø og uten startbilde":
+    "Video from the 2D scene is sent without queue and without a start image",
+  "Video fra et startbilde med Gen-4 Turbo, og 2D-scenen tegnet om til film med Aleph 2. Kreditter kjøpes i utviklerportalen.":
+    "Video from a start image with Gen-4 Turbo, and the 2D scene redrawn as film with Aleph 2. Credits are bought in the developer portal.",
+  "Videoen av 2D-scenen": "The video of the 2D scene",
+  "Videoen av 2D-scenen finnes ikke i lagringen. Prøv igjen.":
+    "The video of the 2D scene is not in storage. Try again.",
   "Videoen ble ikke hentet inn i tide.": "The video was not fetched in time.",
   "Videoen ble laget uten startbilde – figurene kan se annerledes ut enn i godkjente bilder.":
     "The video was made without a start image – the figures may look different from the approved images.",

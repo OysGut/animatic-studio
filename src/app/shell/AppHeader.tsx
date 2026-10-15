@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useParams } from "@tanstack/react-router";
 import { LogOut } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { signOut } from "@/adapters/browser/auth";
@@ -7,6 +7,7 @@ import { BackButton } from "./back-navigation";
 import { ShortcutsButton, ShortcutsDialog } from "@/app/shortcuts/ShortcutsDialog";
 import { LanguageSwitch } from "@/app/i18n/language";
 import { L } from "@/core";
+import { GenerationStatus } from "@/app/ai/GenerationStatus";
 
 interface AppHeaderProps {
   readonly email?: string | undefined;
@@ -17,6 +18,8 @@ interface AppHeaderProps {
 export function AppHeader({ email, trail }: AppHeaderProps) {
   // Hurtigtastoversikt tilgjengelig overalt (UX-gjennomgang DEC-0076/0078)
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  // Inne i et prosjekt: status for AI-genereringene (DEC-0085)
+  const params = useParams({ strict: false }) as { projectId?: string };
   return (
     <header className="flex h-10 shrink-0 items-center gap-3 border-b border-border bg-surface-1 px-4">
       <BackButton />
@@ -35,6 +38,7 @@ export function AppHeader({ email, trail }: AppHeaderProps) {
         </>
       ) : null}
       <div className="ml-auto flex items-center gap-2">
+        {params.projectId ? <GenerationStatus projectId={params.projectId} /> : null}
         <LanguageSwitch compact />
         <ShortcutsButton onClick={() => setShortcutsOpen(true)} />
         {/* i18n-ignore: gruppe-ID for hurtigtaster, ikke synlig tekst */}

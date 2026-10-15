@@ -1023,3 +1023,33 @@ Regler: DEC-ID-er er permanente. En beslutning endres aldri i ettertid; den erst
 - **Teknisk:** migrasjon 0031 (`productions.description`), kommandoen `SetProductionNote` (kan angres), `listProductionsFor` i nettleseradapteren. Egne prosjekter vises først, så dem du er invitert inn i. Et klikk på en variant åpner prosjektet med den valgt.
 - **Tolkning:** «subprosjekter og varianter» er produksjonene i prosjektet (hovedfilm, spinoff, trailer, teaser …, DEC-0057). Datoen er når produksjonen ble laget.
 
+## DEC-0083 – AI-video av scenen fra sceneeditoren (2D-scenen tegnes om, bare bildet erstattes)
+- **Dato:** 2026-10-15 · **Type:** Bekreftet av bruker (Mars 15.10.2026: «en knapp i toppen av menyen når brukeren er i sceneeditor at brukeren kan sende sin 2d scene til ai generering slik at basert på globale instrukser, karakter beskrivelser og scenen instrukser at en ai kan generere en ai video som erstatter scenen som er i fokus, lyd skal ikke erstattes bare det visuelle … Brukeren kan selv velge å lage nye, ingen ting blir kastet, men brukeren kan velge hva som skal representere scenen». Planen med video-til-video, modellene og prisene ble godkjent med «Ok».)
+- **Krav:** REQ-0633–REQ-0638.
+- **Løsning:** knappen «AI-video …» i sceneeditoren åpner en dialog. 2D-scenen lages som MP4 i nettleseren (bare bilde, 720–1920 px), lastes opp til `<prosjekt>/ai-source/<bunt>/<bit>.mp4` og sendes til en video-til-video-modell: **Kling O3 Edit** via fal.ai (0,168 USD/s, 3–15 s per bit, inntil 4 figurer med referansebilde som `@Element1 …`, videoen er `@Video1`, `keep_audio: false`) eller **Aleph 2** via Runway (0,28 USD/s, 2–30 s per bit, bare tekst; `POST /v1/video_to_video`, `model: aleph2`). Lange scener deles i like lange biter; bitene settes sammen med `SetSceneEdit`. Resultatet legges inn som versjon uten lyd.
+- **Beskrivelsen:** filmens visuelle stil (stilprofilen for AI-video), figurene i scenen (lagene først, så manusets figurer; faktaark og referansebilde), manusets handling og replikker i biten (bare for spill og munnbevegelser) og scenens egne instrukser. Den vises før sending og kortes etter viktighet til modellens grense; instruksene beholdes.
+- **Data:** migrasjon 0032 (`scene_occurrences.video_instructions`, høyst 2000 tegn), kommandoen `SetSceneVideoInstructions` (kan angres). Jobbene bruker `generation_jobs` som før; `params` har `source: "scene2d"`, bunt, bit og stiene.
+- **Valg av hva som viser scenen:** i samme dialog – 2D-scenen, AI-video fra 2D-scenen (bunt), annen AI-video, opplastet film eller stillbilde. Bruker `SetSceneEdit` som monteringen; alt kan angres og ingenting slettes.
+- **Tolkninger (Claude):** «globale instrukser» = filmens visuelle stil (stilprofilen); «karakterbeskrivelser» = beskrivelse og visuelt faktaark per ressurs; «scenens instrukser» = nytt felt per scene. Nettlesere uten H.264 lager VP9 i MP4 (KI-205).
+
+## DEC-0084 – Svar fra Mars 15.10.2026 på åpne spørsmål
+- **Type:** Bekreftet av bruker (Mars 15.10.2026: «Ja til – Om ressurser skal kunne brukes på tvers av prosjekter. Ja, det godkjenner vi! Nei Lovable skal ikke stå i grensesnittet, det blir feil den dagen vi bare kjøre lokalt»).
+- **Globale ressurser (REQ-0571):** skal bygges. Åpent: hvem som kan bruke en felles ressurs (eieren i egne prosjekter, alle i eierens prosjekter, eller et team/firma).
+- **Stilharmonisering med AI (REQ-0137–0145, REQ-0400–0402):** kostnaden er godkjent; hver kjøring viser pris og må bekreftes som andre betalte kall.
+- **«Lovable» i grensesnittet (REQ-0639):** skal bort; den innebygde AI-tjenesten og databaseoppdateringer omtales nøytralt. Ikke bygget ennå.
+- **KI-176 og KI-178:** lagt fram for Mars med anbefalinger; venter på svar.
+
+
+## DEC-0085 – AI-video av scenen, utvidet: referanser, samlet global beskrivelse, scenebeskrivelse, lyd, nedlasting og status
+- **Dato:** 2026-10-15 · **Type:** Bekreftet av bruker (Mars 15.10.2026: «Jeg trenger at det generes en videofilm i scenens lengde identisk med slik den vises når den spilles av i avspillingsvinduet, og denne skal også være mulig å laste ned i ulike videoformater … husk at undertekstene ikke skal med på genereringen til ai api, men når brukeren laster ned. Eget valg i nedlastingsviduet! … karakterkortene, bakgrunnen og objektene som bilde referanser … den generelle beskrivelsen for hele prosjektet … default er på … scenebeskrivelse … en liten status … Lyd skal brukeren selv få velge …». Svar på spørsmål: «1. vi putter varsling på hold 2. … setter det sammen … globalt … så vi bare har en versjon 3. ja 4. ProRes/MOV som todo i en egen fil … prosjekt beskrivelsen og kravene og testene … med en les meg instruks 5. ja, dempet».)
+- **Krav:** REQ-0640–REQ-0648.
+- **Kilde for AI-videoen:** 2D-scenen, en tidligere AI-bunt eller en opplastet/annen versjon av scenen – samme bilde som avspillingen viser. Undertekster sendes aldri.
+- **Referanser:** figurenes referansebilder, bakgrunnen og objektene sendes som bilder. Er det flere enn modellen tar (Kling: 4), settes de overskytende sammen til ett samleark med navn. Hver referanse kan tas med eller ikke.
+- **Global beskrivelse:** filmens visuelle stil settes sammen til én tekst som vises i sin helhet og kan redigeres («Endres globalt for hele prosjektet»). Den redigerte teksten er den ene versjonen og brukes av all AI (bilder og video); «Tilbake til feltene» setter den sammen på nytt. I AI-video kan den krysses vekk (grået ut); standard er på.
+- **Scenebeskrivelse:** fritekst laget fra manuset (sted, figurer, handling, replikker i rekkefølge, kamera, lys) i formen leverandørene anbefaler, med «Skriv med AI». Lagres per scene (feltet fra migrasjon 0032).
+- **Lyd:** brukeren velger om scenens lyd sendes med. Lyd i en ferdig AI-video legges inn som eget, dempet lydspor på scenen som kan flyttes og justeres; selve videoen spilles uten lyd.
+- **Nedlasting:** valg av format (MP4 eller WebM) og undertekster (brent inn, egen SRT/VTT-fil eller ingen) i nedlastingsvinduet. «Last ned scenen …» fra dialogen. ProRes/MOV står i `TODO.md`.
+- **Status:** liten status øverst i toppfeltet med hva som lages, står i kø og nylig ble ferdig/feilet, med lenke til scenen.
+- **Avspilling:** sceneeditoren kan vise versjonen som er valgt for scenen (AI-video eller opplastet film) i stedet for 2D-scenen. Valget av versjon og opplasting av video gjøres i «AI-video av scenen».
+- **Varsling (SMS/e-post):** på vent (Mars). Står i `TODO.md`.
+- **Dokumentasjon i repoet:** `README.md` (startside for mennesker og AI) og `TODO.md` (bestilt eller tenkt, ikke bygget).

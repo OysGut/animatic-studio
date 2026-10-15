@@ -154,6 +154,39 @@ function seasonText(s: ProjectState, variantId: string): string {
     .join(" ")}`;
 }
 
+/**
+ * Stedet og tiden i en scene i ord (engelsk, DEC-0085): inne/ute, tid på døgnet med forslag til lys, og
+ * årstid/vær fra scenehodet og handlingen.
+ */
+export function sceneSetting(
+  s: ProjectState,
+  variantId: string,
+): {
+  readonly intExt: "interior" | "exterior" | "interior/exterior" | null;
+  readonly time: string | null;
+  readonly light: string | null;
+  readonly seasons: readonly string[];
+} {
+  const v = s.variants[variantId];
+  if (!v) return { intExt: null, time: null, light: null, seasons: [] };
+  const ie = v.heading.intExt.toUpperCase();
+  const tod = TIME_OF_DAY.find((t) => t.re.test(v.heading.time));
+  const src = seasonText(s, v.id);
+  return {
+    intExt:
+      ie.includes("INT") && ie.includes("EXT")
+        ? "interior/exterior"
+        : ie.includes("INT")
+          ? "interior"
+          : ie.includes("EXT")
+            ? "exterior"
+            : null,
+    time: tod?.time ?? null,
+    light: tod?.light ?? null,
+    seasons: SEASONS.filter((x) => x.re.test(src)).map((x) => x.text),
+  };
+}
+
 function excerpt(text: string, max = 220): string {
   const t = text.replace(/\s+/g, " ").trim();
   if (t.length <= max) return t;

@@ -29,6 +29,8 @@ import {
   L,
   locale,
   languageWord,
+  toSrt,
+  toVtt,
 } from "@/core";
 import { ExportError, canExportVideo, exportAnimatic, loadImages } from "@/engine/export/animatic";
 import {
@@ -96,7 +98,10 @@ export function ExportAnimaticDialog({
   onLanguage,
   subtitles: allSubtitles,
   onSaveSettings,
+  initialScope,
 }: {
+  /** Utvalget dialogen åpnes med (f.eks. «valgt scene» fra sceneeditoren, DEC-0085). */
+  initialScope?: Scope | undefined;
   /** Lagre innstillingene for produksjonen når eksporten startes (DEC-0072). */
   onSaveSettings?: (settings: ExportSettings) => void;
   open: boolean;
@@ -132,6 +137,10 @@ export function ExportAnimaticDialog({
   const [mono, setMono] = useState(monochrome);
   /** «video»: film med lyd. «dialogue»: bare dialogsporet som WAV (REQ-0350). */
   const [output, setOutput] = useState<"video" | "dialogue">("video");
+  // Filformat og undertekster (DEC-0085): eget valg i nedlastingen
+  const [container, setContainer] = useState<"mp4" | "webm">("mp4");
+  const [subMode, setSubMode] = useState<"burn" | "srt" | "vtt" | "none">("burn");
+  const [subFile, setSubFile] = useState<ReadyFile | null>(null);
   const langName = languageWord(language.dialogue);
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -144,6 +153,7 @@ export function ExportAnimaticDialog({
   useEffect(() => {
     if (!open) return;
     setReady(null);
+    setSubFile(null);
     setError(null);
     setProgress(null);
     const first = clips[0]?.occurrenceId ?? "";
@@ -157,7 +167,8 @@ export function ExportAnimaticDialog({
       setSize(saved.size);
       setOutput(saved.output);
     }
-    if (scope === "selected" && !selectedId) setScope("film");
+    if (initialScope && (initialScope !== "selected" || selectedId)) setScope(initialScope);
+    else if (scope === "selected" && !selectedId) setScope("film");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
   useEffect(
@@ -353,7 +364,7 @@ export function ExportAnimaticDialog({
           `The dialogue track is made for the first ${STEM_MAX_SECONDS / 3600} hours (the limit for WAV files). Choose a selection of scenes for the rest.`,
         ),
       });
-    if (output === "video" && language.subtitles) {
+    if (output === "video" && language.subtitles && subMode === "burn") {
       const n = subtitles.filter((c) => c.startMs < to * 1000 && c.endMs > from * 1000).length;
       out.push({
         level: n > 0 ? "ok" : "warn",
@@ -402,6 +413,7 @@ export function ExportAnimaticDialog({
     )
       onSaveSettings({ size, monochrome: mono, output });
     setReady(null);
+    setSubFile(null);
     const ctrl = new AbortController();
     abort.current = ctrl;
     setProgress({ done: 0, total: sel.endFrame - sel.startFrame });
@@ -492,7 +504,10 @@ export function ExportAnimaticDialog({
         audio: { items: audioItems, bank: audioBank, mutedKinds },
         // Nye lenker rett før eksporten (en lang eksport skal ikke treffe lenker som går ut)
         filmUrls: await freshFilmUrls(sel.clips, filmUrls),
-        ...(language.subtitles ? { subtitles } : {}),
+        // Undertekstene brennes bare inn når det er valgt (DEC-0085)
+        ...(language.subtitles && subMode === "burn" ? { subtitles } : {}),
+        mp4: container === "mp4",
+        webm: container === "webm",
         onProgress: (done, total) => {
           if (abort.current === ctrl) setProgress({ done, total });
         },
@@ -506,6 +521,27 @@ export function ExportAnimaticDialog({
       );
       const f = prepareDownload(file.bytes, name, file.mimeType);
       setReady({ ...f, bytes: file.bytes.byteLength });
+      // Undertekstene som egen fil (SRT/VTT), med samme tider som videoen
+      if (language.subtitles && (subMode === "srt" || subMode === "vtt")) {
+        const from = (sel.startFrame * fps.den * 1000) / fps.num;
+        const to = (sel.endFrame * fps.den * 1000) / fps.num;
+        const cues = subtitles
+          .filter((c) => c.startMs < to && c.endMs > from)
+          .map((c) => ({
+            ...c,
+            startMs: Math.max(0, c.startMs - from),
+            endMs: Math.min(to, c.endMs) - from,
+          }));
+        const text = subMode === "srt" ? toSrt(cues) : toVtt(cues);
+        const subName = name.replace(/\.[^.]+$/, `.${subMode}`);
+        setSubFile(
+          prepareDownload(
+            new TextEncoder().encode(text),
+            subName,
+            subMode === "srt" ? "application/x-subrip" : "text/vtt",
+          ),
+        );
+      }
       recordExport({
         productionId,
         kind: "film",
@@ -518,8 +554,10 @@ export function ExportAnimaticDialog({
           height: outH,
           monochrome: mono,
           language: language.dialogue,
-          subtitles: !!language.subtitles,
+          subtitles: !!language.subtitles && subMode !== "none",
+          subtitleMode: language.subtitles ? subMode : "none",
           subtitleLanguage: language.subtitles,
+          format: container,
         },
         occurrenceIds: sel.clips.map((c) => c.occurrenceId),
       });
@@ -784,8 +822,8 @@ export function ExportAnimaticDialog({
             </label>
             <p className="pt-1 text-xs text-text-tertiary">
               {L(
-                "Scener som er satt til svart-hvitt, blir det uansett. MP4 (H.264) der nettleseren kan, ellers WebM. Med lyden fra lydsporene (dempede spor er ikke med).",
-                "Scenes set to black and white stay that way. MP4 (H.264) where the browser can, otherwise WebM. With the sound from the audio tracks (muted tracks are not included).",
+                "Scener som er satt til svart-hvitt, blir det uansett. Med lyden fra lydsporene (dempede spor er ikke med). Filformat og undertekster velges under.",
+                "Scenes set to black and white stay that way. With the sound from the audio tracks (muted tracks are not included). File format and subtitles are chosen below.",
               )}
             </p>
           </fieldset>
@@ -807,7 +845,9 @@ export function ExportAnimaticDialog({
                 {L("Video", "Video")}
                 <span className="block text-xs text-text-tertiary">
                   {L("Bilde og all lyd på", "Picture and all sound in")} {langName}
-                  {language.subtitles ? L(", med undertekster", ", with subtitles") : ""}
+                  {language.subtitles && subMode === "burn"
+                    ? L(", med undertekster i bildet", ", with subtitles in the picture")
+                    : ""}
                 </span>
               </span>
             </label>
@@ -828,6 +868,49 @@ export function ExportAnimaticDialog({
               </span>
             </label>
           </div>
+          {output === "video" ? (
+            <div className="flex flex-wrap items-center gap-4 text-xs text-text-secondary">
+              <label className="flex items-center gap-1.5">
+                {L("Filformat", "File format")}
+                <select
+                  value={container}
+                  onChange={(e) => setContainer(e.target.value as "mp4" | "webm")}
+                  className="h-7 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
+                  data-testid="export-format"
+                >
+                  <option value="mp4">
+                    {L("MP4 (H.264 – spilles overalt)", "MP4 (H.264 – plays everywhere)")}
+                  </option>
+                  <option value="webm">
+                    {L("WebM (VP9 – mindre fil)", "WebM (VP9 – smaller file)")}
+                  </option>
+                </select>
+              </label>
+              <label className="flex items-center gap-1.5">
+                {L("Undertekster", "Subtitles")}
+                <select
+                  value={language.subtitles ? subMode : "none"}
+                  disabled={!language.subtitles}
+                  onChange={(e) => setSubMode(e.target.value as typeof subMode)}
+                  className="h-7 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary disabled:opacity-50"
+                  data-testid="export-subtitles"
+                  title={
+                    language.subtitles
+                      ? undefined
+                      : L(
+                          "Velg et språk for undertekster over for å få undertekster",
+                          "Choose a subtitle language above to get subtitles",
+                        )
+                  }
+                >
+                  <option value="burn">{L("Brent inn i bildet", "Burned into the picture")}</option>
+                  <option value="srt">{L("Egen fil (SRT)", "Separate file (SRT)")}</option>
+                  <option value="vtt">{L("Egen fil (WebVTT)", "Separate file (WebVTT)")}</option>
+                  <option value="none">{L("Ingen", "None")}</option>
+                </select>
+              </label>
+            </div>
+          ) : null}
         </fieldset>
 
         <section
@@ -915,6 +998,16 @@ export function ExportAnimaticDialog({
               <Download className="size-3.5" aria-hidden />
               {L("Last ned", "Download")}
             </a>
+            {subFile ? (
+              <a
+                href={subFile.url}
+                download={subFile.name}
+                className="inline-flex items-center gap-1 text-accent-brand hover:underline"
+              >
+                <Download className="size-3.5" aria-hidden />
+                {L("Last ned undertekstene", "Download the subtitles")}
+              </a>
+            ) : null}
             {isEmbedded() ? (
               <span className="text-text-tertiary">
                 {L(

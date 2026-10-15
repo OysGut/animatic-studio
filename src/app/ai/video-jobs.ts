@@ -8,6 +8,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   newId,
+  SCENE_VIDEO_SOURCE,
   secondsToFrames,
   takeIdFromResultPath,
   type GenerationJob,
@@ -23,6 +24,7 @@ import { signedUrls } from "@/app/library/asset-images";
 import { readFilmMetadata } from "@/app/assembly/film-import";
 import { aiJobsKey, useAiJobs } from "./use-ai-jobs";
 import { storeLastFrame } from "./last-frame";
+import { addVideoAudioTrack, audioFromVideo } from "./video-audio";
 
 const POLL_MS = 10_000;
 
@@ -138,6 +140,8 @@ async function claimVideoOnce(
     type: blob.type || "video/mp4",
   });
   let media;
+  // Video fra 2D-scenen (DEC-0083): bare bildet erstattes – scenens egen lyd spilles som før
+  const fromScene = job.params?.["source"] === SCENE_VIDEO_SOURCE;
   try {
     media = await readFilmMetadata(file);
   } catch (e) {
@@ -146,6 +150,9 @@ async function claimVideoOnce(
       `The video could not be read: ${(e as Error).message}`,
     );
   }
+  // AI-videoens lyd spilles aldri som filmlyd: den legges inn som eget lydspor under (DEC-0085)
+  const hadAudio = media.hasAudio;
+  media = { ...media, hasAudio: false };
   // Siste bilde til neste segment (REQ-0263); feil her stopper ikke innleggingen
   void storeLastFrame(job.resultPath, blob).catch(() => null);
   const takeId = takeIdFromResultPath(job.resultPath) ?? newId<"take">();
@@ -164,10 +171,25 @@ async function claimVideoOnce(
       mediaRef: job.resultPath,
       media,
     },
-    L(`AI-video (${job.provider}) som ny versjon`, `AI video (${job.provider}) as new version`),
+    fromScene
+      ? L(
+          `AI-video fra 2D-scenen (${job.provider}) som ny versjon`,
+          `AI video from the 2D scene (${job.provider}) as new version`,
+        )
+      : L(`AI-video (${job.provider}) som ny versjon`, `AI video (${job.provider}) as new version`),
   );
   if (r.error && (cmds.current() ?? now).takes[takeId as never]) return null;
-  return r.error ?? null;
+  if (r.error) return r.error;
+  // Lyden i videoen blir et eget, dempet lydspor (DEC-0085); videoen spilles uten lyd
+  if (hadAudio) {
+    const name = L(`Lyd fra AI-video (${job.provider})`, `Audio from AI video (${job.provider})`);
+    const wav = await audioFromVideo(blob, name);
+    if (wav) {
+      const startMs = typeof job.params?.["startMs"] === "number" ? job.params["startMs"] : 0;
+      await addVideoAudioTrack(cmds.current() ?? now, cmds, job.occurrenceId, wav, name, startMs);
+    }
+  }
+  return null;
 }
 
 /**

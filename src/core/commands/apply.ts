@@ -211,6 +211,8 @@ export const AUDIO_MIME_TYPES: readonly string[] = [
 export const AUDIO_MAX_MS = 36_000_000;
 /** Planlagt lengde for en scene (REQ-0111/0113): 1 sekund til 10 timer. */
 export const MIN_PLANNED_MS = 1000;
+/** Lengste instrukser til AI-video av en scene (DEC-0083; samme grense i migrasjon 0032). */
+export const MAX_SCENE_VIDEO_INSTRUCTIONS = 2000;
 export const MAX_PLANNED_MS = 36_000_000;
 
 /**
@@ -3229,6 +3231,38 @@ function run(
           occurrences: { ...s.occurrences, [o.id]: { ...next, revision: rev(o) } },
         },
         inverse: { type: "SetPlannedDuration", occurrenceId: o.id, plannedMs: o.plannedMs ?? null },
+        affected: [o.id],
+      };
+    }
+
+    case "SetSceneVideoInstructions": {
+      const o = need(s.occurrences[c.occurrenceId], L("Forekomsten", "The occurrence"));
+      if (typeof c.text !== "string")
+        fail("invalid", L("Ugyldige instrukser", "Invalid instructions"));
+      const text = c.text.replace(/\r\n?/g, "\n").trim();
+      if (text.length > MAX_SCENE_VIDEO_INSTRUCTIONS)
+        fail(
+          "invalid",
+          L(
+            `Instruksene er for lange (høyst ${MAX_SCENE_VIDEO_INSTRUCTIONS} tegn)`,
+            `The instructions are too long (at most ${MAX_SCENE_VIDEO_INSTRUCTIONS} characters)`,
+          ),
+        );
+      if ((o.videoInstructions ?? "") === text) fail("invalid", L("Uendret", "Unchanged"));
+      const { videoInstructions: _old, ...rest } = o;
+      return {
+        state: {
+          ...s,
+          occurrences: {
+            ...s.occurrences,
+            [o.id]: { ...rest, ...(text ? { videoInstructions: text } : {}), revision: rev(o) },
+          },
+        },
+        inverse: {
+          type: "SetSceneVideoInstructions",
+          occurrenceId: o.id,
+          text: o.videoInstructions ?? "",
+        },
         affected: [o.id],
       };
     }

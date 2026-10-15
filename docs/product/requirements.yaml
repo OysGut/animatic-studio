@@ -23768,3 +23768,515 @@ requirements:
   - date: '2026-10-14'
     decision: DEC-0082
     change: "Opprettet etter Mars' ønske 14.10.2026"
+- id: REQ-0633
+  title: "Send 2D-scenen til AI-video fra sceneeditoren"
+  text: "En knapp i sceneeditorens verktøylinje sender scenen i fokus til AI-generering. 2D-scenen sendes som video (bare bilde) til en modell som tegner den om til ferdig film, slik at bevegelser, plassering, timing, uttrykk og kamera følger 2D-scenen. Modeller: Kling O3 Edit (fal.ai) og Aleph 2 (Runway) med prosjektets egne nøkler."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0083
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - UI
+  - PROVIDER
+  - COMPOSE
+  invariants: []
+  dependencies:
+  - REQ-0180
+  - REQ-0243
+  acceptance:
+  - "Knappen finnes i sceneeditoren og åpner dialogen for scenen i fokus."
+  - "Det som sendes, er 2D-scenen også når en annen versjon vises i filmen."
+  tests:
+  - "visuell: knapp, dialog og sending med mocket leverandør"
+  - "enhet: forespørselen til fal.ai og Runway"
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/scene-editor/SceneToVideoDialog.tsx"
+  - "src/core/generation/scene-to-video.ts"
+  - "src/adapters/ai/providers.server.ts"
+  - "src/adapters/ai/video.functions.ts"
+  - "src/adapters/ai/video-followup.server.ts"
+  verification:
+  - "tests/unit/scene-to-video.test.ts"
+  - "tests/visual/scene-video-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0083.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0083
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+
+- id: REQ-0634
+  title: "Beskrivelsen for AI-video fra 2D-scenen bygges av stil, figurer og instrukser"
+  text: "Beskrivelsen bygges automatisk av filmens visuelle stil, figurene i scenen (beskrivelse, visuelt faktaark og referansebilde for så mange som modellen tar imot, karakterer først), manusets handling og replikker i biten (bare for spill) og scenens egne instrukser. Den vises før sending. Er modellens grense for lengde nådd, tas stilnotater og manusdetaljer bort først; instruksene beholdes."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0083
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - PROMPT
+  invariants: []
+  dependencies:
+  - REQ-0244
+  - REQ-0148
+  acceptance:
+  - "Instruksene og figurene står i beskrivelsen."
+  - "Beskrivelsen til Aleph 2 er høyst 1000 tegn og beholder instruksene."
+  tests:
+  - "enhet: beskrivelse for Kling og Aleph"
+  status: Verifisert
+  implementation:
+  - "src/core/generation/scene-to-video.ts"
+  verification:
+  - "tests/unit/scene-to-video.test.ts"
+  - "tests/visual/scene-video-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0083.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0083
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+
+- id: REQ-0635
+  title: "Instrukser til AI-video lagres per scene"
+  text: "Hver scene kan ha instrukser til AI-video (høyst 2000 tegn): hva som skal skje og hvordan figurene skal spille. De lagres på scenen, brukes neste gang og kan angres (migrasjon 0032)."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0083
+  type: data
+  priority: P1
+  phase: 5
+  modules:
+  - CORE
+  - PROMPT
+  invariants: []
+  dependencies:
+  - REQ-0633
+  acceptance:
+  - "Instruksene lagres, leses tilbake likt og kan angres."
+  - "Over 2000 tegn avvises i kjernen og i databasen."
+  tests:
+  - "enhet: SetSceneVideoInstructions"
+  - "db: 0032"
+  status: Verifisert
+  implementation:
+  - "src/core/commands/apply.ts"
+  - "src/core/patch.ts"
+  - "db/migrations/0032_scene_video_instructions.sql"
+  verification:
+  - "tests/unit/scene-to-video.test.ts"
+  - "tests/db/run-db-tests.ts"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0083
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+
+- id: REQ-0636
+  title: "AI-video fra 2D-scenen erstatter bare bildet"
+  text: "Modellen bes om å ikke lage lyd, og resultatet legges inn som versjon uten lyd. Scenens egne lydklipp (replikker, effekter og musikk) spilles og eksporteres som før."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0083
+  type: prinsipp
+  priority: P0
+  phase: 5
+  modules:
+  - AUDIO
+  - VERSION
+  invariants: []
+  dependencies:
+  - REQ-0633
+  acceptance:
+  - "Versjonen er merket uten lyd og bidrar ikke til filmens lyd."
+  - "Scenens lydklipp er uendret."
+  tests:
+  - "enhet: bunt brukt i scenen"
+  status: Verifisert
+  implementation:
+  - "src/app/ai/video-jobs.ts"
+  - "src/adapters/ai/providers.server.ts"
+  verification:
+  - "tests/unit/scene-to-video.test.ts"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0083
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+
+- id: REQ-0637
+  title: "Brukeren velger hva som viser scenen, og ingenting kastes"
+  text: "Hvert resultat er en ny versjon av scenen. I sceneeditoren velger brukeren hva som viser scenen: 2D-scenen, en AI-video fra 2D-scenen (satt sammen av bitene), en annen AI-video, opplastet film eller et stillbilde. Nye videoer kan lages når som helst; tidligere versjoner beholdes. Valget kan angres."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0083
+  type: funksjonell
+  priority: P0
+  phase: 5
+  modules:
+  - UI
+  - VERSION
+  - TIMELINE
+  invariants: []
+  dependencies:
+  - REQ-0233
+  - REQ-0180
+  acceptance:
+  - "Valget i sceneeditoren endrer det filmen viser, og kan angres."
+  - "Tidligere versjoner står fortsatt i listen."
+  tests:
+  - "visuell: valg og status i dialogen"
+  - "enhet: batchSceneEdit og batchInUse"
+  status: Verifisert
+  implementation:
+  - "src/app/scene-editor/SceneToVideoDialog.tsx"
+  - "src/core/generation/scene-to-video.ts"
+  verification:
+  - "tests/unit/scene-to-video.test.ts"
+  - "tests/visual/scene-video-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0083.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0083
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+
+- id: REQ-0638
+  title: "Lange scener deles i biter, og prisen må bekreftes"
+  text: "En scene lengre enn modellen tar imot deles i like lange biter innenfor modellens grenser (Kling 3–15 s, Aleph 2–30 s) og settes sammen igjen i rekkefølge. Anslått pris for alle bitene vises og må bekreftes før noe sendes. En scene kortere enn modellens korteste lengde kan ikke sendes."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0083
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - QUALITYCOST
+  - PROVIDER
+  invariants: []
+  dependencies:
+  - REQ-0281
+  - REQ-0633
+  acceptance:
+  - "Bitene dekker hele scenen uten overlapp."
+  - "Ingenting sendes før prisen er bekreftet."
+  tests:
+  - "enhet: planScenePieces"
+  - "visuell: bekreftelse før sending"
+  status: Verifisert
+  implementation:
+  - "src/core/generation/scene-to-video.ts"
+  - "src/app/scene-editor/SceneToVideoDialog.tsx"
+  verification:
+  - "tests/unit/scene-to-video.test.ts"
+  - "tests/visual/scene-video-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0083.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0083
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+
+- id: REQ-0639
+  title: "Leverandørnavnet «Lovable» står ikke i grensesnittet"
+  text: "Grensesnittet nevner ikke Lovable (heller ikke i meldinger om databaseoppdatering). Den innebygde AI-tjenesten og databasen omtales nøytralt, så teksten stemmer også når tjenesten kjøres lokalt."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0084
+  type: ux
+  priority: P1
+  phase: 5
+  modules:
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0629
+  acceptance:
+  - "Ingen brukervendt tekst inneholder «Lovable»."
+  tests:
+  - "enhet: søk i brukervendt tekst"
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0084
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+
+- id: REQ-0640
+  title: "Den globale beskrivelsen er én redigerbar tekst for hele prosjektet"
+  text: "Filmens visuelle stil settes sammen til én tekst som vises i sin helhet. Brukeren kan åpne den for redigering med tydelig melding om at endringen gjelder hele prosjektet. Den redigerte teksten er den ene versjonen og brukes av all AI-generering; «Tilbake til feltene» setter den sammen av feltene igjen."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0085
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - PROVIDER
+  invariants: []
+  dependencies:
+  - REQ-0633
+  acceptance:
+  - "Redigert tekst brukes i bilde- og videoprompter."
+  - "Melding om global endring vises ved redigering."
+  tests:
+  - "tests/unit/scene-to-video.test.ts"
+  - "tests/visual/scene-video-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/core/generation/style.ts"
+  - "src/app/projects/GlobalStyleText.tsx"
+  verification:
+  - "tests/unit/scene-to-video.test.ts"
+  - "tests/visual/scene-video-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0085.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0085
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+
+- id: REQ-0641
+  title: "Den globale beskrivelsen kan krysses vekk i AI-video av scenen"
+  text: "I «AI-video av scenen» er den globale beskrivelsen med som standard. Brukeren kan krysse den vekk; teksten grås da ut og sendes ikke."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0085
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - PROVIDER
+  invariants: []
+  dependencies:
+  - REQ-0633
+  acceptance:
+  - "Standard er på."
+  - "Avkrysset vekk: teksten grås ut og er ikke i prompten."
+  tests:
+  - "tests/visual/scene-video-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/app/scene-editor/SceneToVideoDialog.tsx"
+  verification:
+  - "tests/visual/scene-video-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0085.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0085
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+
+- id: REQ-0642
+  title: "Scenebeskrivelse fra manuset, med «Skriv med AI»"
+  text: "Dialogen har feltet «Scenebeskrivelse» laget fra manuset (sted, tid, figurer, handling, replikker i rekkefølge, kamera og lys) i formen leverandørene anbefaler. Brukeren kan redigere den, hente den fra manuset på nytt eller la AI skrive den. Den lagres per scene."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0085
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - PROVIDER
+  invariants: []
+  dependencies:
+  - REQ-0633
+  acceptance:
+  - "Teksten lages uten AI fra manuset."
+  - "«Skriv med AI» viser pris som andre tekstkall."
+  tests:
+  - "tests/unit/scene-to-video.test.ts"
+  status: Verifisert
+  implementation:
+  - "src/core/generation/scene-to-video.ts"
+  - "src/app/scene-editor/SceneToVideoDialog.tsx"
+  - "src/app/ai/write-prompt.functions.ts"
+  verification:
+  - "tests/unit/scene-to-video.test.ts"
+  - "docs/development/VISUAL_QA_DEC-0085.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0085
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+
+- id: REQ-0643
+  title: "Figurer, bakgrunn og objekter sendes som referansebilder, med samleark"
+  text: "Figurkort, bakgrunn og objekter i scenen sendes som referansebilder. Overskrider de modellens antall, settes de overskytende sammen til ett samleark med navn under hvert bilde. Hver referanse kan velges bort."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0085
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - PROVIDER
+  invariants: []
+  dependencies:
+  - REQ-0633
+  acceptance:
+  - "Aldri flere bilder enn modellen tar."
+  - "Samleark når det er for mange."
+  tests:
+  - "tests/unit/scene-to-video.test.ts"
+  status: Verifisert
+  implementation:
+  - "src/core/generation/scene-to-video.ts"
+  - "src/app/scene-editor/SceneToVideoDialog.tsx"
+  - "src/app/ai/video.functions.ts"
+  verification:
+  - "tests/unit/scene-to-video.test.ts"
+  - "docs/development/VISUAL_QA_DEC-0085.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0085
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+
+- id: REQ-0644
+  title: "Kilden for AI-videoen kan være 2D-scenen, en AI-versjon eller en opplastet video"
+  text: "Brukeren velger hva som sendes: 2D-scenen, en tidligere AI-video av scenen eller en opplastet/annen versjon. Videoen er lik det avspillingen viser, uten undertekster."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0085
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - PROVIDER
+  invariants: []
+  dependencies:
+  - REQ-0633
+  acceptance:
+  - "Undertekster sendes aldri."
+  tests:
+  - "tests/unit/scene-to-video.test.ts"
+  - "tests/visual/scene-video-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/core/generation/scene-to-video.ts"
+  - "src/app/scene-editor/SceneToVideoDialog.tsx"
+  verification:
+  - "tests/unit/scene-to-video.test.ts"
+  - "tests/visual/scene-video-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0085.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0085
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+
+- id: REQ-0645
+  title: "Brukeren velger om lyden sendes; lyd fra AI-videoen blir eget dempet spor"
+  text: "Brukeren velger om scenens lyd sendes med. En ferdig AI-video spilles uten lyd; har den lyd, legges lyden inn som eget dempet lydspor på scenen som kan flyttes og justeres."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0085
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - PROVIDER
+  invariants: []
+  dependencies:
+  - REQ-0633
+  acceptance:
+  - "AI-video spilles uten lyd."
+  - "Lydsporet er dempet og flyttbart."
+  tests:
+  - "tests/unit/scene-to-video.test.ts"
+  status: Verifisert
+  implementation:
+  - "src/app/ai/video-audio.ts"
+  - "src/app/ai/video-jobs.ts"
+  verification:
+  - "tests/unit/scene-to-video.test.ts"
+  - "docs/development/VISUAL_QA_DEC-0085.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0085
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+
+- id: REQ-0646
+  title: "Nedlasting med valg av videoformat og undertekster"
+  text: "Nedlastingsvinduet har valg av format (MP4 eller WebM) og undertekster (brent inn, egen SRT- eller VTT-fil, eller ingen). Scenen kan lastes ned fra «AI-video av scenen». ProRes/MOV er planlagt (TODO.md)."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0085
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - PROVIDER
+  invariants: []
+  dependencies:
+  - REQ-0633
+  acceptance:
+  - "Undertekster brennes bare inn når det er valgt."
+  tests:
+  - "tests/visual/export-e2e.mjs"
+  status: Verifisert
+  implementation:
+  - "src/engine/export/animatic.ts"
+  - "src/app/assembly/ExportAnimaticDialog.tsx"
+  verification:
+  - "tests/visual/export-e2e.mjs"
+  - "docs/development/VISUAL_QA_DEC-0085.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0085
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+
+- id: REQ-0647
+  title: "Status for AI-genereringer i toppfeltet"
+  text: "Toppfeltet viser en liten status i prosjektet: hvor mange genereringer som lages og står i kø, og hva som nylig ble ferdig eller feilet. Et klikk viser listen med lenke til scenen."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0085
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - PROVIDER
+  invariants: []
+  dependencies:
+  - REQ-0633
+  acceptance:
+  - "Vises bare når prosjektet har genereringer."
+  tests:
+  - "tests/visual/scene-video-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/app/ai/GenerationStatus.tsx"
+  - "src/app/shell/AppHeader.tsx"
+  verification:
+  - "tests/visual/scene-video-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0085.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0085
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+
+- id: REQ-0648
+  title: "Sceneeditoren kan spille av versjonen som er valgt for scenen"
+  text: "Avspillingen i sceneeditoren kan vise versjonen som er valgt for scenen (AI-video eller opplastet film) i stedet for 2D-scenen. Valget slås av og på i visningsvalgene. Hvilken versjon som brukes og opplasting av video velges i «AI-video av scenen»."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0085
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - PROVIDER
+  invariants: []
+  dependencies:
+  - REQ-0633
+  acceptance:
+  - "Valgt versjon vises synkront med avspillingen."
+  tests:
+  - "tests/visual/scene-video-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/app/scene-editor/SceneEditorWorkspace.tsx"
+  - "src/app/scene-editor/PreviewWindow.tsx"
+  verification:
+  - "tests/visual/scene-video-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0085.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0085
+    change: "Opprettet etter Mars' ønske 15.10.2026"

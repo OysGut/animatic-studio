@@ -13,23 +13,29 @@ export const Route = createFileRoute("/prosjekt/$projectId/montering")({
   head: () => ({
     meta: [{ title: L("Montering – Animatic Studio", "Assembly – Animatic Studio") }],
   }),
-  validateSearch: (s: Record<string, unknown>): { scene?: string; blokk?: string } => ({
+  validateSearch: (
+    s: Record<string, unknown>,
+  ): { scene?: string; blokk?: string; lastned?: "1" } => ({
     ...(typeof s["scene"] === "string" && UUID.test(s["scene"]) ? { scene: s["scene"] } : {}),
     ...(typeof s["blokk"] === "string" && UUID.test(s["blokk"]) ? { blokk: s["blokk"] } : {}),
+    // Åpne nedlastingen av scenen (fra sceneeditoren, DEC-0085)
+    ...(s["lastned"] === "1" || s["lastned"] === 1 ? { lastned: "1" as const } : {}),
   }),
   component: AssemblyRoute,
 });
 
 function AssemblyRoute() {
   const { projectId } = Route.useParams();
-  const { scene, blokk } = Route.useSearch();
+  const { scene, blokk, lastned } = Route.useSearch();
   const session = useSession();
   if (session.status !== "signed-in") return null;
   return (
     <AssemblyWorkspace
       projectId={projectId}
       userId={session.session.user.id}
-      focus={scene ? { occurrenceId: scene, blockId: blokk ?? null } : null}
+      focus={
+        scene ? { occurrenceId: scene, blockId: blokk ?? null, download: lastned === "1" } : null
+      }
     />
   );
 }
