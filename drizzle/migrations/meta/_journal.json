@@ -232,6 +232,13 @@
       "when": 1792083375484,
       "tag": "0032_0033_accounts_admin_privacy",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1792097266884,
+      "tag": "0033_0034_tasks_prefs_ai_models",
+      "breakpoints": true
     }
   ]
 }
