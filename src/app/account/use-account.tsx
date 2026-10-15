@@ -2,7 +2,7 @@
  * Kontoen i appen (DEC-0086): min konto (admin, språk, personvern), sist aktiv, språkvalget lagres på kontoen,
  * personvernerklæringen må leses ved ny versjon, og en konto som ikke lenger er aktiv logges ut.
  */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { L, getLanguage, tm } from "@/core";
@@ -42,6 +42,8 @@ export function usePrivacyPolicy() {
   return useQuery({ queryKey: PRIVACY_KEY, queryFn: fetchPrivacyPolicy, staleTime: 5 * 60_000 });
 }
 
+let localeSynced = false;
+
 // i18n-ignore: nøkkel i nettleserens lager
 const TOUCH_KEY = "animatic:last-touch";
 
@@ -51,7 +53,17 @@ export function AccountWatcher() {
   const account = useMyAccount();
   const policy = usePrivacyPolicy();
   const lang = useLanguage();
-  const synced = useRef(false);
+  // Språkvalget på kontoen tas i bruk én gang per innlasting. Flagget ligger utenfor komponenten fordi
+  // språkbytte tegner hele appen på nytt (LanguageRoot), og da ville et ref ha nullstilt seg og satt
+  // tilbake det gamle språket (feil funnet av Mars 15.10.2026: språkvelgeren «hang seg opp»).
+  const synced = {
+    get current() {
+      return localeSynced;
+    },
+    set current(v: boolean) {
+      localeSynced = v;
+    },
+  };
   const [readIt, setReadIt] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);

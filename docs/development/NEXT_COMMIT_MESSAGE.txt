@@ -1,23 +1,10 @@
-Brukerkontoer: adminside, min konto, personvern og kostnadsrapport; ferdige AI-videoer tapes ikke – migrasjon 0033 (DEC-0086)
+Språkvelgeren henger ikke lenger; «Min konto» lukkes med brukernavnet eller «Lukk» (DEC-0086)
 
-Databaseendring: migrasjon 0033. Nye pakker: docx, exceljs, jspdf, jspdf-autotable.
-Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push.
+Ingen databaseendring og ingen nye pakker. Lim inn docs/development/LOVABLE_SYNC.md i Lovable etter push.
 
-AI-video (feil funnet av Mars 15.10.2026):
-- En video som ble ferdig mens prosjektet var lukket, ble merket «Betalt, ikke lagret» etter tre timer uten
-  at leverandøren ble spurt. Nå spørres leverandøren alltid først, og grensen er sju dager.
-- «Hent videoen igjen» på tapte videoer (i AI-panelet, i «AI-video av scenen» og i statusen øverst) – koster ingenting.
+- Språket som er lagret på kontoen, satte tilbake valget hver gang språket ble byttet (hele appen tegnes på nytt
+  ved språkbytte). Nå brukes kontoens språk én gang når appen lastes, og senere valg lagres på kontoen.
+- Klikk på brukernavnet når «Min konto» er åpen, lukker siden og går tilbake dit du kom fra.
+- Knappen «Lukk» nederst på «Min konto».
 
-Kontoer (DEC-0086, REQ-0649–0655):
-- Min konto (klikk på brukernavnet): visningsnavn, språk (lagres på kontoen), passord, AI-forbruk, personvern,
-  «Slett kontoen min» (skriv e-posten; låst i 30 dager, bare administrator kan låse opp).
-- Adminside: alle brukerne med laget, sist aktiv, status, prosjekter og AI-forbruk; blokkere/oppheve, slette/låse opp,
-  gjøre andre til admin; låste prosjekter får ny eier; feltene i personvernerklæringen.
-  oystein@gutu.no er fast administrator og kan aldri nedgraderes.
-- Blokkert eller slettet eier: prosjektet låses for alle (bare melding om hvem man kan kontakte). Andre roller påvirker ikke.
-- Personvernerklæring etter GDPR: kan leses før og etter innlogging; vi selger ikke data; ny versjon må bekreftes.
-- Kostnadsrapport: mitt forbruk i prosjektet, prosjektet totalt (eier) og alt på kontoen; måned eller hele perioden;
-  dollar eller kroner (Norges Bank); eksport til PDF, Word og Excel med prosjektnavnet øverst.
-
-Tester: Vitest 133 filer / 1118 tester, DB 61/61, account-admin-ui 52/52, scene-video-ui 39/39,
-verifisering3 73/73, verifisering4 58/58, interactions 44/44, export-e2e.
+Tester: Vitest, account-admin-ui 58/58.

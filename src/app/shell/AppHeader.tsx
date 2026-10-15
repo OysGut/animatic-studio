@@ -1,9 +1,9 @@
-import { Link, useParams } from "@tanstack/react-router";
+import { Link, useParams, useRouterState } from "@tanstack/react-router";
 import { LogOut, Shield, UserRound } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { signOut } from "@/adapters/browser/auth";
 import { Button } from "@/components/ui/button";
-import { BackButton } from "./back-navigation";
+import { BackButton, useCloseToPrevious } from "./back-navigation";
 import { ShortcutsButton, ShortcutsDialog } from "@/app/shortcuts/ShortcutsDialog";
 import { LanguageSwitch } from "@/app/i18n/language";
 import { L } from "@/core";
@@ -23,6 +23,9 @@ export function AppHeader({ email, trail }: AppHeaderProps) {
   const params = useParams({ strict: false }) as { projectId?: string };
   // Min konto og adminsiden (DEC-0086)
   const account = useMyAccount(!!email);
+  // Klikk på brukernavnet igjen på «Min konto» lukker siden (tilbake dit man kom fra)
+  const onAccount = useRouterState({ select: (s) => s.location.pathname }) === "/konto";
+  const closeAccount = useCloseToPrevious();
   return (
     <header className="flex h-10 shrink-0 items-center gap-3 border-b border-border bg-surface-1 px-4">
       <Link
@@ -64,12 +67,25 @@ export function AppHeader({ email, trail }: AppHeaderProps) {
         {email ? (
           <Link
             to="/konto"
+            onClick={(e) => {
+              if (!onAccount) return;
+              e.preventDefault();
+              closeAccount();
+            }}
+            aria-current={onAccount ? "page" : undefined}
             data-testid="header-account"
-            className="flex h-7 max-w-[220px] items-center gap-1.5 rounded-sm px-2 text-xs text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-            title={L(
-              "Min konto: språk, passord, AI-forbruk og personvern",
-              "My account: language, password, AI usage and privacy",
-            )}
+            className={
+              "flex h-7 max-w-[220px] items-center gap-1.5 rounded-sm px-2 text-xs hover:bg-surface-3 hover:text-text-primary " +
+              (onAccount ? "bg-accent-selection text-text-primary" : "text-text-secondary")
+            }
+            title={
+              onAccount
+                ? L("Lukk «Min konto»", "Close “My account”")
+                : L(
+                    "Min konto: språk, passord, AI-forbruk og personvern",
+                    "My account: language, password, AI usage and privacy",
+                  )
+            }
           >
             <UserRound className="size-3.5 shrink-0" aria-hidden />
             <span className="hidden truncate sm:inline">{account.data?.displayName || email}</span>

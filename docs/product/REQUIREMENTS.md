@@ -8938,6 +8938,8 @@ Et klikk på brukernavnet i toppfeltet åpner «Min konto»: visningsnavn, e-pos
 - **Akseptansekriterier:**
   - Språket på kontoen gjelder ved innlogging.
   - Passordet må ha minst 8 tegn og gjentas likt.
+  - Språkbytte blir stående (kontoens språk overstyrer ikke et nytt valg).
+  - Klikk på brukernavnet igjen, eller «Lukk» nederst, lukker siden.
 - **Tester:**
   - tests/db/run-db-tests.ts
   - tests/visual/account-admin-ui.mjs

@@ -91,3 +91,18 @@ export function BackButton() {
     </Button>
   );
 }
+
+/**
+ * Lukk en side (DEC-0086, Mars: «klikk på brukeren min i menyen igjen lukker bruker siden og en knapp
+ * nederst … "Lukk"»): tilbake til flaten brukeren kom fra, ellers prosjektlisten.
+ */
+export function useCloseToPrevious(): () => void {
+  const navigate = useNavigate();
+  return () => {
+    const prev = stack.at(-2);
+    if (prev) {
+      goingBack = true;
+      void navigate({ href: prev.href });
+    } else void navigate({ to: "/" });
+  };
+}

@@ -114,6 +114,10 @@ async function mock(ctx, st) {
           accepted_version: st.accepted,
           created_at: "2026-09-01T10:00:00Z",
         });
+      if (fn === "set_my_locale") {
+        st.locale = JSON.parse(req.postData() ?? "{}").p_locale;
+        return json(null);
+      }
       if (fn === "accept_privacy") {
         st.accepted = 2;
         return json(null);
@@ -508,6 +512,36 @@ await run(
   },
   { lang: "en", st: { accepted: 2, locale: "en" } },
 );
+
+await run(
+  "k08-sprakvelger",
+  "/konto",
+  async (page) => {
+    // Feil funnet av Mars 15.10.2026: språket på kontoen satte tilbake valget i språkvelgeren
+    await page.getByRole("button", { name: "EN", exact: true }).click();
+    await page.waitForTimeout(2500);
+    check((await page.getByTestId("account-page").innerText()).includes("My account"), "byttet til engelsk blir stående");
+    check(RPC.includes("set_my_locale"), "språkvalget lagres på kontoen");
+    await page.getByRole("button", { name: "NO", exact: true }).click();
+    await page.waitForTimeout(2500);
+    check((await page.getByTestId("account-page").innerText()).includes("Min konto"), "tilbake til norsk blir stående");
+  },
+  { st: { accepted: 2, locale: "nb" } },
+);
+
+await run("k09-lukk-konto", "/admin", async (page) => {
+  await page.getByTestId("header-account").click();
+  await page.waitForTimeout(1500);
+  check(page.url().endsWith("/konto"), "brukernavnet åpner «Min konto»");
+  await page.getByTestId("header-account").click();
+  await page.waitForTimeout(1500);
+  check(page.url().endsWith("/admin"), "nytt klikk på brukernavnet lukker siden (tilbake dit man kom fra)");
+  await page.getByTestId("header-account").click();
+  await page.waitForTimeout(1500);
+  await page.getByTestId("account-close").click();
+  await page.waitForTimeout(1500);
+  check(page.url().endsWith("/admin"), "«Lukk» nederst på siden går tilbake");
+});
 
 console.log(`RESULTAT: ${pass} bestått, ${fail} feilet`);
 await browser.close();

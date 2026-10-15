@@ -24507,6 +24507,8 @@ requirements:
   acceptance:
   - "Språket på kontoen gjelder ved innlogging."
   - "Passordet må ha minst 8 tegn og gjentas likt."
+  - "Språkbytte blir stående (kontoens språk overstyrer ikke et nytt valg)."
+  - "Klikk på brukernavnet igjen, eller «Lukk» nederst, lukker siden."
   tests:
   - "tests/db/run-db-tests.ts"
   - "tests/visual/account-admin-ui.mjs"
@@ -24524,3 +24526,6 @@ requirements:
   - date: '2026-10-15'
     decision: DEC-0086
     change: "Opprettet etter Mars' ønske 15.10.2026"
+  - date: '2026-10-15'
+    decision: DEC-0086
+    change: "Språkvelgeren hang seg opp (rettet); lukking med brukernavnet og «Lukk»"

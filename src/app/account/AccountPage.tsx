@@ -11,6 +11,7 @@ import { changePassword, saveDisplayName } from "@/adapters/browser/account";
 import { signOut } from "@/adapters/browser/auth";
 import { requestMyDeletion } from "@/adapters/account/account.functions";
 import { LanguageSwitch } from "@/app/i18n/language";
+import { useCloseToPrevious } from "@/app/shell/back-navigation";
 import { useSchemaAtLeast } from "@/app/shell/use-schema";
 import { Button } from "@/components/ui/button";
 import { CostReportView } from "./CostReportView";
@@ -44,6 +45,7 @@ export function AccountPage({ email }: { email: string }) {
   const [confirm, setConfirm] = useState("");
   const [delMsg, setDelMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
+  const close = useCloseToPrevious();
 
   async function saveName() {
     if (name === null) return;
@@ -278,6 +280,11 @@ export function AccountPage({ email }: { email: string }) {
           </p>
         ) : null}
       </Card>
+      <div className="flex justify-end pb-4">
+        <Button variant="secondary" onClick={close} data-testid="account-close">
+          {L("Lukk", "Close")}
+        </Button>
+      </div>
     </main>
   );
 }
