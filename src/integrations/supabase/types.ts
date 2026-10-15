@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_status: {
+        Row: {
+          changed_at: string | null
+          changed_by: string | null
+          delete_after: string | null
+          last_active_at: string | null
+          reason: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          changed_at?: string | null
+          changed_by?: string | null
+          delete_after?: string | null
+          last_active_at?: string | null
+          reason?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          changed_at?: string | null
+          changed_by?: string | null
+          delete_after?: string | null
+          last_active_at?: string | null
+          reason?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       ai_account_limits: {
         Row: {
           monthly_cap_usd: number | null
@@ -95,6 +125,24 @@ export type Database = {
           key_owner?: string
           month?: string
           usd?: number
+        }
+        Relationships: []
+      }
+      app_admins: {
+        Row: {
+          added_at: string
+          added_by: string | null
+          user_id: string
+        }
+        Insert: {
+          added_at?: string
+          added_by?: string | null
+          user_id: string
+        }
+        Update: {
+          added_at?: string
+          added_by?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -1356,6 +1404,68 @@ export type Database = {
           },
         ]
       }
+      privacy_acceptances: {
+        Row: {
+          accepted_at: string
+          user_id: string
+          version: number
+        }
+        Insert: {
+          accepted_at?: string
+          user_id: string
+          version: number
+        }
+        Update: {
+          accepted_at?: string
+          user_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "privacy_acceptances_version_fkey"
+            columns: ["version"]
+            isOneToOne: false
+            referencedRelation: "privacy_policy"
+            referencedColumns: ["version"]
+          },
+        ]
+      }
+      privacy_policy: {
+        Row: {
+          address: string
+          contact_email: string
+          controller_name: string
+          note: string
+          org_number: string
+          published_at: string
+          published_by: string | null
+          storage_region: string
+          version: number
+        }
+        Insert: {
+          address?: string
+          contact_email?: string
+          controller_name?: string
+          note?: string
+          org_number?: string
+          published_at?: string
+          published_by?: string | null
+          storage_region?: string
+          version: number
+        }
+        Update: {
+          address?: string
+          contact_email?: string
+          controller_name?: string
+          note?: string
+          org_number?: string
+          published_at?: string
+          published_by?: string | null
+          storage_region?: string
+          version?: number
+        }
+        Relationships: []
+      }
       production_segments: {
         Row: {
           created_at: string
@@ -1493,16 +1603,19 @@ export type Database = {
       profiles: {
         Row: {
           display_name: string
+          locale: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           display_name?: string
+          locale?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           display_name?: string
+          locale?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -2461,6 +2574,7 @@ export type Database = {
     }
     Functions: {
       accept_invitation: { Args: { p_token: string }; Returns: string }
+      accept_privacy: { Args: { p_version: number }; Returns: undefined }
       apply_changes: {
         Args: {
           p_actor: string
@@ -2494,6 +2608,8 @@ export type Database = {
         Returns: Json
       }
       leave_project: { Args: { p_project: string }; Returns: undefined }
+      my_account: { Args: never; Returns: Json }
+      project_lock_info: { Args: { p_project: string }; Returns: Json }
       purge_project_assets: {
         Args: { p_actor: string; p_project: string }
         Returns: Json
@@ -2556,6 +2672,8 @@ export type Database = {
         Args: { p_project: string; p_role: string; p_user: string }
         Returns: undefined
       }
+      set_my_locale: { Args: { p_locale: string }; Returns: undefined }
+      touch_activity: { Args: never; Returns: undefined }
       upsert_my_profile: {
         Args: { p_display_name?: string }
         Returns: undefined
