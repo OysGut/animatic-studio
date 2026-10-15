@@ -8,7 +8,7 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 - Antall krav: **655**
 - Prioritet: P0: 145, P1: 324, P2: 147, P3: 39
 - Opprinnelse: mandat: 520, brukerbeslutning: 128, teknisk-anbefaling: 7
-- Status: Verifisert: 576, Implementert – ikke verifisert: 17, Under arbeid: 3, Ikke startet: 59
+- Status: Verifisert: 581, Implementert – ikke verifisert: 12, Under arbeid: 3, Ikke startet: 59
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -1373,12 +1373,12 @@ Manuset skal fremdeles se ut som et profesjonelt filmmanus; tidskoder, produksjo
 - **Kilde:** Kap. 6.3 (l. 301-302) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P1 · **Fase:** 4
 - **Moduler:** SCRIPT, UI
 - **Avhengigheter:** REQ-0050
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - I ordinær manusvisning vises ingen tidskoder eller produksjonsmarkeringer, og pagineringen er uendret.
 - **Tester:**
   - visuell: ordinær visning med og uten koblinger er identisk
-- **Implementering:** src/core/screenplay/script-pages.ts, src/app/script/ScriptPageView.tsx, src/app/script/StoryTimeSection.tsx
+- **Implementering:** src/app/script/ScriptWorkspace.tsx, src/core/screenplay/script-pages.ts, src/app/script/ScriptPageView.tsx, src/app/script/StoryTimeSection.tsx
 
 #### REQ-0103 – Teknisk metadata i egne moduser/paneler
 Tidskoder, produksjonsmarkeringer og teknisk metadata skal kunne vises i egne arbeidsmoduser og paneler.
@@ -1482,12 +1482,12 @@ Estimatene må presenteres som usikre når grunnlaget er usikkert.
 - **Kilde:** Kap. 7.1 (l. 324) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** UI
 - **Avhengigheter:** REQ-0108
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Scener med lite grunnlag (f.eks. montasje uten dialog) vises med usikkerhetsmarkering eller intervall.
 - **Tester:**
   - enhet: usikkerhetsgrad beregnes
-- **Implementering:** src/app/projects/DurationOverview.tsx
+- **Implementering:** src/core/screenplay/duration.ts, src/app/projects/DurationOverview.tsx, src/app/projects/DurationOverview.tsx
 - **Merknad:** Usikkerheten er lik for alle scener; ingen egen vurdering av grunnlaget per scene.
 
 #### REQ-0111 – Brukeren kan korrigere estimater
@@ -1958,7 +1958,7 @@ Eksisterende scener skal ikke automatisk bytte til en nylig publisert variant.
 
 - **Kilde:** Kap. 9.3 (l. 421) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 3
 - **Moduler:** LIBRARY, VERSION · **Invarianter:** INV-07, INV-13
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Etter publisering av ny variant refererer eksisterende scener fortsatt til sin tidligere variant/versjon.
 - **Tester:**
@@ -5618,13 +5618,13 @@ Systemet må skille mellom: redigerbare prosjektdata, kildemedier, genererte med
 
 - **Kilde:** Kap. 28.4 (l. 1210-1218) · **Opprinnelse:** mandat · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** 1
 - **Moduler:** SECURITY, CORE
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Hver lagret fil/post er klassifisert i én av de seks kategoriene, og kategoriene lagres atskilt.
 - **Tester:**
   - enhet: lagringsklassifisering
   - dataintegritet: midlertidige filer kan slettes uten tap av andre kategorier
-- **Implementering:** src/core/library/storage.ts, src/app/projects/StorageSection.tsx
+- **Implementering:** src/core/library/storage-paths.ts, src/core/library/storage.ts, src/app/projects/StorageSection.tsx
 
 ### Kapittel 29
 
@@ -6503,12 +6503,12 @@ Eksportnummerering bestemmes av brukeren hver gang. Eksport skal ikke endre inte
 
 - **Kilde:** Kap. 34 (l. 1493-1495) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 2
 - **Moduler:** EXPORT, SCRIPT · **Invarianter:** INV-02
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Hver manuseksport krever nummereringsvalg; interne ID-er er uendret etter eksport.
 - **Tester:**
   - manuell: verifiseres mot underliggende funksjonskrav
-- **Implementering:** src/app/script/ExportDialog.tsx, src/core/screenplay/numbering.ts#exportNumbering
+- **Implementering:** src/app/script/ExportDialog.tsx, src/app/script/ExportDialog.tsx, src/core/screenplay/numbering.ts#exportNumbering
 - **Merknad:** Bare skjermbilde som bevis; mangler test som kontrollerer valget/eksporten.
 
 #### REQ-0483 – Prinsipp 5: Norsk er hovedmanus

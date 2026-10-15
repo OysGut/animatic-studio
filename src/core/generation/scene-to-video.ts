@@ -16,6 +16,7 @@
  * scenebeskrivelse laget fra manuset (kan redigeres og lagres på scenen).
  */
 import type { ClipPartFields } from "../commands/types";
+import { takeIdOfFilmPath } from "../library/storage-paths";
 import type { AssetKind, ProjectState, Take } from "../model";
 import type { FilmClip } from "../assembly/film";
 import type { ProviderModel } from "./providers";
@@ -36,8 +37,15 @@ import { L } from "../i18n";
 /** Kilden jobben ble laget fra (`params.source` i generation_jobs). */
 export const SCENE_VIDEO_SOURCE = "scene2d";
 
-/** Mappen i lagringen der 2D-scenen legges før den sendes (`<prosjekt>/ai-source/<bunt>/<bit>.mp4`). */
-export const SCENE_VIDEO_FOLDER = "ai-source";
+/**
+ * Mappen i lagringen der 2D-scenen legges før den sendes: `<prosjekt>/temp/ai-source/<bunt>/<bit>.mp4`
+ * (midlertidige filer, KI-178). Eldre filer ligger i `<prosjekt>/ai-source/…` og godtas fortsatt.
+ */
+export const SCENE_VIDEO_FOLDER = "temp/ai-source";
+const OLD_SCENE_VIDEO_FOLDER = "ai-source";
+const inSceneVideoFolder = (projectId: string, p: string) =>
+  p.startsWith(`${projectId}/${SCENE_VIDEO_FOLDER}/`) ||
+  p.startsWith(`${projectId}/${OLD_SCENE_VIDEO_FOLDER}/`);
 
 export function sceneVideoSourcePath(projectId: string, batchId: string, index: number): string {
   return `${projectId}/${SCENE_VIDEO_FOLDER}/${batchId}/${index + 1}.mp4`;
@@ -47,7 +55,7 @@ export function sceneVideoSourcePath(projectId: string, batchId: string, index: 
 export function isSceneVideoSourcePath(projectId: string, p: unknown): p is string {
   return (
     typeof p === "string" &&
-    p.startsWith(`${projectId}/${SCENE_VIDEO_FOLDER}/`) &&
+    inSceneVideoFolder(projectId, p) &&
     p.endsWith(".mp4") &&
     !p.includes("..") &&
     p.length <= 300
@@ -62,7 +70,7 @@ export function sceneVideoRefPath(projectId: string, batchId: string, n: number)
 export function isSceneVideoRefPath(projectId: string, p: unknown): p is string {
   return (
     typeof p === "string" &&
-    p.startsWith(`${projectId}/${SCENE_VIDEO_FOLDER}/`) &&
+    inSceneVideoFolder(projectId, p) &&
     p.endsWith(".png") &&
     !p.includes("..") &&
     p.length <= 300
@@ -642,8 +650,8 @@ const num = (v: unknown) => (typeof v === "number" && Number.isFinite(v) ? v : n
 
 /** Versjonens id ut fra resultatstien (`<prosjekt>/films/<take>/…`). */
 function takeOf(s: ProjectState, job: GenerationJob): Take | null {
-  const m = job.resultPath ? /\/films\/([^/]+)\//.exec(job.resultPath) : null;
-  return m ? (s.takes[m[1] as never] ?? null) : null;
+  const id = job.resultPath ? takeIdOfFilmPath(job.resultPath) : null;
+  return id ? (s.takes[id as never] ?? null) : null;
 }
 
 /** Buntene for scenen, nyeste først (fra AI-jobbene; DEC-0083). */

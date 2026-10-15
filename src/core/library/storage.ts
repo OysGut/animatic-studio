@@ -6,6 +6,7 @@
 import type { ProjectState } from "../model";
 import { L } from "../i18n";
 import { versionsOf } from "./index";
+import { storedCategoryOf } from "./storage-paths";
 
 export type StorageCategory =
   "project" | "source" | "generated" | "temporary" | "export" | "history";
@@ -64,7 +65,12 @@ export function storageOverview(
   for (const v of Object.values(s.assetVersions)) {
     const inUse = current.has(v.id) || stillPaths.has(v.mediaPath);
     if (!inUse) hist = { n: hist.n + 1, b: hist.b + v.byteSize };
-    else if (generatedPaths.has(v.mediaPath)) gen = { n: gen.n + 1, b: gen.b + v.byteSize };
+    // Nye filer ligger i egen mappe per kategori (KI-178); eldre filer klassifiseres som før
+    else if (
+      storedCategoryOf(v.mediaPath) === "generated" ||
+      (!storedCategoryOf(v.mediaPath) && generatedPaths.has(v.mediaPath))
+    )
+      gen = { n: gen.n + 1, b: gen.b + v.byteSize };
     else src = { n: src.n + 1, b: src.b + v.byteSize };
   }
   for (const t of Object.values(s.takes)) {
@@ -106,8 +112,8 @@ export function storageOverview(
       count: 0,
       bytes: 0,
       note: L(
-        "Lages bare i nettleseren under avspilling og eksport, og lagres aldri i prosjektet.",
-        "Only created in the browser during playback and export, and never saved in the project.",
+        "Avspilling og eksport lages i nettleseren og lagres ikke. Videoer av 2D-scenen som sendes til AI, ligger i en egen mappe for midlertidige filer.",
+        "Playback and export are made in the browser and not saved. Videos of the 2D scene sent to AI are kept in a separate folder for temporary files.",
       ),
     },
     {

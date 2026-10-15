@@ -3921,8 +3921,9 @@ requirements:
   - I ordinær manusvisning vises ingen tidskoder eller produksjonsmarkeringer, og pagineringen er uendret.
   tests:
   - 'visuell: ordinær visning med og uten koblinger er identisk'
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
+  - "src/app/script/ScriptWorkspace.tsx"
   - "src/core/screenplay/script-pages.ts"
   - "src/app/script/ScriptPageView.tsx"
   - "src/app/script/StoryTimeSection.tsx"
@@ -3938,7 +3939,11 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0073
     change: "Pagineringen er testet uendret med film, tidskoblinger, notater og plan. Men manusvisningen (ScriptPageView.tsx ca. l. 257) viser røde margmerker for «endret etter materialet» – det kan regnes som produksjonsmarkering i ordinær visning (mulig motstrid med REQ-0305/0311)."
+  - date: '2026-10-15'
+    decision: DEC-0087
+    change: "Valget «Vis endringsmerker» skjuler margmerkene; aldri i utskrift/eksport"
   notes: ''
+
 - id: REQ-0103
   title: Teknisk metadata i egne moduser/paneler
   text: Tidskoder, produksjonsmarkeringer og teknisk metadata skal kunne vises i egne arbeidsmoduser og paneler.
@@ -4219,10 +4224,13 @@ requirements:
   - Scener med lite grunnlag (f.eks. montasje uten dialog) vises med usikkerhetsmarkering eller intervall.
   tests:
   - 'enhet: usikkerhetsgrad beregnes'
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
+  - "src/core/screenplay/duration.ts"
+  - "src/app/projects/DurationOverview.tsx"
   - "src/app/projects/DurationOverview.tsx"
   verification:
+  - "tests/unit/storage-paths.test.ts"
   - "tests/visual/screens.mjs::80b-oversikt-status-filter"
   history:
   - date: '2026-10-08'
@@ -4234,7 +4242,11 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0074
     change: "Alle estimater vises med «≈» og en felles forklaring (DurationOverview.tsx), men scener med lite grunnlag (f.eks. montasje uten dialog) skilles ikke ut med egen markering eller intervall – estimatet (duration.ts) har ikke noe mål for usikkerhet. Om felles «≈» oppfyller kravet, er en tolkning for Mars."
+  - date: '2026-10-15'
+    decision: DEC-0087
+    change: "Usikre estimater merkes «usikkert» med spenn"
   notes: "Usikkerheten er lik for alle scener; ingen egen vurdering av grunnlaget per scene."
+
 - id: REQ-0111
   title: Brukeren kan korrigere estimater
   text: Brukeren skal kunne korrigere varighetsestimatene.
@@ -5480,7 +5492,7 @@ requirements:
   - Etter publisering av ny variant refererer eksisterende scener fortsatt til sin tidligere variant/versjon.
   tests:
   - 'dataintegritet: scenereferanser uendret etter publisering'
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/commands/apply.ts#AddAssetVersion
   verification:
@@ -5497,7 +5509,11 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0073
     change: "Testet: ny versjon og ny variant endrer ikke lagene, og godkjenning gjennom konsekvensdialogen låser scenene brukeren ikke velger. Men når varianten ikke har noen godkjent versjon, følger laget nyeste bilde, så et nytt bilde (opplasting/AI) bytter bildet i eksisterende scener automatisk (src/core/composition/render.ts layerVersion, versionsOf(...)[0]). Må avklares om det er akseptabelt."
+  - date: '2026-10-15'
+    decision: DEC-0087
+    change: "Mars godtok at en variant uten godkjent versjon viser nyeste bilde (KI-176)"
   notes: Krever versjonslåste ressursreferanser fra fase 3.
+
 - id: REQ-0147
   title: Gjenbrukbare stilprofiler
   text: Programmet skal støtte gjenbrukbare visuelle stilprofiler med referansebilder og beskrivelser av stil.
@@ -11327,7 +11343,11 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0074
     change: "Krever Lovable Cloud. MOTSTRID: bakgrunnsjobben (/api/public/cron/ai-jobs) settes ikke opp (DEC-0072/0073), så jobber i kø sendes og ferdige videoer hentes bare mens en redaktør har prosjektet åpent. Mars bekreftet at generering aldri skal starte automatisk; at oppfølging av jobber brukeren selv har startet heller ikke skal skje i bakgrunnen, er en teknisk tolkning som strider mot kravet. Må avklares."
+  - date: '2026-10-15'
+    decision: DEC-0087
+    change: "Bakgrunnsjobben tillates (DEC-0087); verifiseres når Lovable har satt opp det planlagte kallet"
   notes: "Genereringen er fortsatt et kall som nettleseren venter på; ekte kø gjenstår (M5)."
+
 - id: REQ-0292
   title: Lagre og hente jobbstatus
   text: Jobbstatus skal kunne lagres og hentes igjen senere.
@@ -11401,7 +11421,11 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0074
     change: "MOTSTRID: akseptansen krever kø i en backend-jobbtjeneste, «ikke i klienten», men etter DEC-0073 er det nettleseren til en redaktør som sender jobbene i køen (AiJobsWatcher, src/app/ai/video-jobs.ts). Køen er vedvarende (tabell, 0025), men drivverket er klienten. Må avklares sammen med REQ-0291."
+  - date: '2026-10-15'
+    decision: DEC-0087
+    change: "Bakgrunnsjobben tillates (DEC-0087); verifiseres når Lovable har satt opp det planlagte kallet"
   notes: Ufravikelig prinsipp nr. 26 i kap. 34; kap. 1.2 sier at Lovable alene ikke kan antas å håndtere dette.
+
 - id: REQ-0294
   title: Jobbstatuser i køen
   text: Køen skal vise statusene venter, klargjøres, genereres, etterbehandles, fullført, mislykket og stoppet eller
@@ -16193,11 +16217,13 @@ requirements:
   tests:
   - 'enhet: lagringsklassifisering'
   - 'dataintegritet: midlertidige filer kan slettes uten tap av andre kategorier'
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
+  - "src/core/library/storage-paths.ts"
   - "src/core/library/storage.ts"
   - "src/app/projects/StorageSection.tsx"
   verification:
+  - "tests/unit/storage-paths.test.ts"
   - "tests/unit/storage-export.test.ts"
   history:
   - date: '2026-10-08'
@@ -16209,7 +16235,11 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0074
     change: "IKKE OPPFYLT bokstavelig: storageOverview (src/core/library/storage.ts) er en oversikt som klassifiserer i ettertid; kategoriene lagres ikke atskilt (opplastede og AI-genererte bilder ligger i samme bøtte «assets», og en fil skifter kategori fra kilde til historikk når en ny versjon godkjennes). Importerte manusoriginaler («sources»), manusversjoner og endringslogg telles ikke i noen kategori; en AI-video som ikke brukes lenger telles som generert, ikke historisk."
+  - date: '2026-10-15'
+    decision: DEC-0087
+    change: "Nye filer i egen mappe per kategori (source/generated/temp)"
   notes: ''
+
 - id: REQ-0416
   title: Eksport som selvstendig modul uten AI
   text: Eksport skal være en selvstendig modul som ikke krever nye AI-genereringer for å bruke eksisterende materiale.
@@ -18536,8 +18566,9 @@ requirements:
   - Hver manuseksport krever nummereringsvalg; interne ID-er er uendret etter eksport.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
+  - "src/app/script/ExportDialog.tsx"
   - "src/app/script/ExportDialog.tsx"
   - "src/core/screenplay/numbering.ts#exportNumbering"
   verification:
@@ -18553,7 +18584,11 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0073
     change: "Interne ID-er er uendret etter eksport (testet). Eksportdialogen har «production» forhåndsvalgt (ExportDialog.tsx l. 58); om det oppfyller «krever nummereringsvalg hver gang» er en tolkning og er ikke testet."
+  - date: '2026-10-15'
+    decision: DEC-0087
+    change: "Nummereringen huskes fra forrige eksport (Mars: «Husk forrige valg»)"
   notes: "Bare skjermbilde som bevis; mangler test som kontrollerer valget/eksporten."
+
 - id: REQ-0483
   title: 'Prinsipp 5: Norsk er hovedmanus'
   text: Norsk er hovedmanus. Engelsk er en tilknyttet språkversjon.
@@ -19375,7 +19410,11 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0074
     change: "Jobbene og statusen lagres i generation_jobs og vises igjen etter gjenåpning; gjenopptak skjer først når noen åpner prosjektet (ingen bakgrunnsjobb, se REQ-0291). Krever Lovable Cloud for å prøves."
+  - date: '2026-10-15'
+    decision: DEC-0087
+    change: "Bakgrunnsjobben tillates (DEC-0087); verifiseres når Lovable har satt opp det planlagte kallet"
   notes: Oppsummerer kap. 20.2, 20.4, 27.3. Linje 1538/1539 duplikat.
+
 - id: REQ-0505
   title: 'Prinsipp 27: Aldri destruktive endringer uten beslutning'
   text: Eksisterende produksjonsmateriale skal aldri endres destruktivt uten brukerens eksplisitte beslutning.

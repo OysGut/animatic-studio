@@ -4,6 +4,7 @@
  * versjonen lagres med AddTake. Feiler opplastingen, lagres ingenting.
  */
 import {
+  filmFilePath,
   ASSET_MAX_BYTES,
   FILM_MIME_TYPES,
   L,
@@ -118,7 +119,7 @@ export async function uploadFilm(
   if (problem) throw new Error(problem);
   const media = await readFilmMetadata(file);
   const takeId = newId<"take">();
-  const mediaRef = `${projectId}/films/${takeId}/${safeFileName(file.name)}`;
+  const mediaRef = filmFilePath(projectId, "source", takeId, safeFileName(file.name));
   const error = await uploadFile(ASSET_BUCKET, mediaRef, file, {
     contentType: media.mimeType,
     upsert: false,

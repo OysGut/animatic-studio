@@ -11,6 +11,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
+  assetFilePath,
   adaptPromptForModel,
   type AssetMedia,
   effortOf,
@@ -566,7 +567,13 @@ export const generateImage = createServerFn({ method: "POST" })
           : "image/png";
         const ext = mimeType === "image/jpeg" ? "jpg" : mimeType === "image/webp" ? "webp" : "png";
         const versionId = newId<"asset_version">();
-        const path = `${data.projectId}/${data.assetId}/${versionId}/${data.operation === "upscale" ? "upscale" : "ai"}-${new Date().toISOString().slice(0, 10)}.${ext}`;
+        const path = assetFilePath(
+          data.projectId,
+          "generated",
+          data.assetId,
+          versionId,
+          `${data.operation === "upscale" ? "upscale" : "ai"}-${new Date().toISOString().slice(0, 10)}.${ext}`,
+        );
         const { error: upErr } = await admin.storage
           .from(BUCKET)
           .upload(path, new Blob([out.bytes as unknown as ArrayBuffer], { type: mimeType }), {
@@ -723,7 +730,13 @@ export const generateImage = createServerFn({ method: "POST" })
 
       const versionId = newId<"asset_version">();
       const date = new Date().toISOString().slice(0, 10);
-      const path = `${data.projectId}/${data.assetId}/${versionId}/ai-${date}.png`;
+      const path = assetFilePath(
+        data.projectId,
+        "generated",
+        data.assetId,
+        versionId,
+        `ai-${date}.png`,
+      );
       const { error: upErr } = await admin.storage
         .from(BUCKET)
         .upload(path, new Blob([bytes as unknown as ArrayBuffer], { type: "image/png" }), {

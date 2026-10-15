@@ -251,6 +251,9 @@ function Workspace({
   const [onlySelected, setOnlySelected] = useState(false);
   /** Lesevisningen for valgt scene: sort tekst på hvit bakgrunn (DEC-0080). Huskes i nettleseren. */
   const [lightReading, setLightReading] = useStoredFlag("script-scene-light", false);
+  // Røde margmerker for linjer endret etter materialet (KI-176, REQ-0102, Mars 15.10.2026: «legg med et valg
+  // for å skjule»). Bare på skjermen; de kommer aldri med i utskrift eller eksport.
+  const [showChanged, setShowChanged] = useStoredFlag("script-changed-marks", true);
   const [filter, setFilter] = useState<SceneFilter>({});
   // Rekkefølge og synlighet endres bare når brukeren har slått det på (REQ-0532)
   const [structureEditing, setStructureEditing] = useState(false);
@@ -852,7 +855,7 @@ function Workspace({
               >
                 <SlidersHorizontal className="size-3.5" aria-hidden />
                 {L("Visning", "View")}
-                {onlySelected || !showNotes ? (
+                {onlySelected || !showNotes || !showChanged ? (
                   <>
                     <span className="size-1.5 rounded-full bg-accent-brand" aria-hidden />
                     <span className="sr-only">{L("(endret)", "(changed)")}</span>
@@ -876,6 +879,22 @@ function Workspace({
                   className="size-3.5 accent-[var(--accent-brand)]"
                 />
                 {L("Vis notater", "Show notes")}
+              </label>
+              <label
+                className="flex items-center gap-1.5 text-xs text-text-secondary"
+                title={L(
+                  "Røde merker i margen der teksten er endret etter at 2D-scenen eller filmen ble laget. Vises bare på skjermen, aldri i utskrift eller eksport.",
+                  "Red marks in the margin where the text was changed after the 2D scene or film was made. Shown on screen only, never in print or export.",
+                )}
+              >
+                <input
+                  type="checkbox"
+                  checked={showChanged}
+                  onChange={(e) => setShowChanged(e.target.checked)}
+                  className="size-3.5 accent-[var(--accent-brand)]"
+                  data-testid="show-changed-marks"
+                />
+                {L("Vis endringsmerker", "Show change marks")}
               </label>
               <label
                 className="flex items-center gap-1.5 text-xs text-text-secondary"
@@ -1062,7 +1081,7 @@ function Workspace({
               onActivate={onPageActivate}
               decor={decor}
               onNoteClick={onPageNoteClick}
-              changed={changedBlocks}
+              changed={showChanged ? changedBlocks : undefined}
               language={langMarks}
               // Valgt scene alene: rett på siden, uten ark og sideskift (DEC-0080)
               flow={showOnlySelected ? { light: lightReading } : undefined}

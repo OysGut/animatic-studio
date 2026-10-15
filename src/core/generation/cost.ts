@@ -5,6 +5,7 @@
  */
 import type { Project, ProjectState } from "../model";
 import { L, locale, localized } from "../i18n";
+import { assetVersionIdOfPath, takeIdOfFilmPath } from "../library/storage-paths";
 
 /** En rad i loggen over AI-genereringer (generation_jobs). */
 export interface GenerationJob {
@@ -231,8 +232,7 @@ export const CLAIM_GRACE_MS = 5 * 60 * 1000;
 
 /** Versjons-ID-en serveren valgte (`<prosjekt>/<ressurs>/<versjon>/fil`), eller null. */
 export function versionIdFromResultPath(path: string): string | null {
-  const id = path.split("/")[2] ?? "";
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id) ? id : null;
+  return assetVersionIdOfPath(path);
 }
 
 /**
@@ -264,8 +264,7 @@ export function unclaimedVideoJobs(
 
 /** Versjons-ID-en (take) serveren valgte for en AI-video (`<prosjekt>/films/<take>/fil`), eller null. */
 export function takeIdFromResultPath(path: string): string | null {
-  const [, folder, id] = path.split("/");
-  return folder === "films" && id && /^[0-9a-f-]{36}$/i.test(id) ? id : null;
+  return takeIdOfFilmPath(path);
 }
 
 /** Innsatsnivået jobben ble kjørt med (REQ-0275), eller null for eldre jobber uten det. */

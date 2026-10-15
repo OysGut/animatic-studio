@@ -1,10 +1,14 @@
-Språkvelgeren henger ikke lenger; «Min konto» lukkes med brukernavnet eller «Lukk» (DEC-0086)
+Svar på KI-176/KI-178: husket nummerering, skjul endringsmerker, lagring per kategori, usikre estimater, bakgrunnsjobb (DEC-0087)
 
-Ingen databaseendring og ingen nye pakker. Lim inn docs/development/LOVABLE_SYNC.md i Lovable etter push.
+Ingen databaseendring og ingen nye pakker. Lim inn docs/development/LOVABLE_SYNC.md i Lovable etter push
+(den setter opp bakgrunnsjobben).
 
-- Språket som er lagret på kontoen, satte tilbake valget hver gang språket ble byttet (hele appen tegnes på nytt
-  ved språkbytte). Nå brukes kontoens språk én gang når appen lastes, og senere valg lagres på kontoen.
-- Klikk på brukernavnet når «Min konto» er åpen, lukker siden og går tilbake dit du kom fra.
-- Knappen «Lukk» nederst på «Min konto».
+- Manuseksport: nummereringen huskes fra forrige eksport (REQ-0482).
+- Manus: «Vis endringsmerker» i visningsvalgene skjuler de røde margmerkene (REQ-0102).
+- Lagring: nye filer i egen mappe per kategori – source/ (opplastet), generated/ (AI), temp/ (2D-scenen til
+  AI-video). Eldre filer ligger der de ligger og virker som før (REQ-0415).
+- Varighet: scener med lite eller ingen dialog vises som «usikkert» med spenn, og summen får et spenn (REQ-0110).
+- Bakgrunnsjobben tillates (DEC-0072 trukket tilbake): sender køen, henter ferdige videoer og sletter kontoer etter
+  30 dager, også når ingen har prosjektet åpent. Den bestiller aldri noe nytt.
 
-Tester: Vitest, account-admin-ui 58/58.
+Tester: Vitest 125 filer / 1082 tester.

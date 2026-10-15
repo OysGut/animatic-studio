@@ -234,7 +234,9 @@ describe("REQ-0203 – lyd lages med tilkoblet leverandør og lagres som lydress
       expect.objectContaining({ key: ELEVEN_KEY, seconds: 5, loop: true }),
     );
     const media = r["media"] as Record<string, unknown>;
-    expect(String(media["path"])).toMatch(new RegExp(`^${P}/${ASSET}/${r["versionId"]}/ai-lyd-`));
+    expect(String(media["path"])).toMatch(
+      new RegExp(`^${P}/generated/${ASSET}/${r["versionId"]}/ai-lyd-`),
+    );
     expect(media["mimeType"]).toBe("audio/mpeg");
     expect(media["byteSize"]).toBe(mp3.byteLength);
     expect(media["sha256"]).toMatch(/^[0-9a-f]{64}$/);
@@ -700,7 +702,7 @@ describe("REQ-0289 – køen tåler omstart uten tap av jobber eller status", ()
     expect(st.filter((s) => s === "running").length).toBe(2);
     for (const j of jobs(db).filter((x) => x["status"] === "done"))
       expect(String(j["result_path"])).toMatch(
-        new RegExp(`^${P}/films/[0-9a-f-]{36}/ai-video\\.mp4$`),
+        new RegExp(`^${P}/generated/films/[0-9a-f-]{36}/ai-video\\.mp4$`),
       );
     // En ny runde etter enda en omstart gjør ingenting dobbelt
     expect(await fresh.pumpVideoQueue(db as never)).toBe(0);

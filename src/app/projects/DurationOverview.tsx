@@ -368,7 +368,12 @@ export function DurationOverview({
             {stat(
               L("Bare manusestimat", "Script estimate only"),
               `≈ ${formatDuration(overview.estimatedSeconds)}`,
-              L("alle aktive scener", "all active scenes"),
+              estimate.uncertainScenes
+                ? L(
+                    `alle aktive scener · ${estimate.uncertainScenes} usikre, spenn ${formatDuration(estimate.activeLowSeconds)}–${formatDuration(estimate.activeHighSeconds)}`,
+                    `all active scenes · ${estimate.uncertainScenes} uncertain, range ${formatDuration(estimate.activeLowSeconds)}–${formatDuration(estimate.activeHighSeconds)}`,
+                  )
+                : L("alle aktive scener", "all active scenes"),
             )}
           </div>
           <div
@@ -743,7 +748,21 @@ export function DurationOverview({
                         {e?.eighths ? formatEighths(e.eighths) : "–"}
                       </td>
                       <td className="tabular px-3 py-1 text-right text-text-secondary">
-                        ≈ {formatDuration(r.estimateSeconds)}
+                        {e?.uncertain ? (
+                          <span
+                            className="text-status-uncertain"
+                            data-testid="estimate-uncertain"
+                            title={L(
+                              `Usikkert estimat: scenen har lite eller ingen dialog, så lengden kan bli fra ${formatDuration(e.lowSeconds)} til ${formatDuration(e.highSeconds)}. Sett en planlagt lengde når du vet mer.`,
+                              `Uncertain estimate: the scene has little or no dialogue, so the length may be from ${formatDuration(e.lowSeconds)} to ${formatDuration(e.highSeconds)}. Set a planned length when you know more.`,
+                            )}
+                          >
+                            {formatDuration(e.lowSeconds)}–{formatDuration(e.highSeconds)}
+                            <span className="ml-1 text-[11px]">{L("usikkert", "uncertain")}</span>
+                          </span>
+                        ) : (
+                          <>≈ {formatDuration(r.estimateSeconds)}</>
+                        )}
                       </td>
                       <td className="px-3 py-0.5 text-right">
                         <PlannedInput

@@ -2,7 +2,14 @@
  * Lydfiler i ressursbiblioteket (DEC-0044): opplasting til bøtta «assets» og ny ressurs av typen «Lyd».
  * Filen lastes opp først; deretter lagres versjonen som en kommando. Feiler opplastingen, lagres ingenting.
  */
-import { ASSET_MAX_BYTES, AUDIO_MIME_TYPES, newId, type AssetMedia, L } from "@/core";
+import {
+  assetFilePath,
+  ASSET_MAX_BYTES,
+  AUDIO_MIME_TYPES,
+  newId,
+  type AssetMedia,
+  L,
+} from "@/core";
 import { sha256Hex } from "@/engine/import/browser";
 import { uploadFile } from "@/adapters/browser/storage-files";
 import type { Commands } from "@/app/project/use-commands";
@@ -73,7 +80,7 @@ export async function uploadAssetAudio(
         "The browser could not read the audio file. Try MP3 or WAV.",
       ),
     );
-  const path = `${projectId}/${assetId}/${versionId}/${safeFileName(file.name)}`;
+  const path = assetFilePath(projectId, "source", assetId, versionId, safeFileName(file.name));
   const error = await uploadFile(ASSET_BUCKET, path, file, {
     contentType: mimeType,
     upsert: false,

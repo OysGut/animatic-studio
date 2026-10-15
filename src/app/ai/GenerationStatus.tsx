@@ -190,8 +190,8 @@ export function GenerationStatus({ projectId }: { projectId: string }) {
         </ul>
         <p className="border-t border-border px-3 py-2 text-[11px] text-text-tertiary">
           {L(
-            "Videoer lages hos leverandøren og legges inn som ny versjon av scenen når de er ferdige, så lenge prosjektet er åpent hos en redaktør.",
-            "Videos are made by the provider and added as a new version of the scene when finished, as long as the project is open for an editor.",
+            "Videoer lages hos leverandøren og hentes inn automatisk når de er ferdige. De legges inn som ny versjon av scenen neste gang en redaktør har prosjektet åpent.",
+            "Videos are made by the provider and fetched automatically when finished. They are added as a new version of the scene the next time an editor has the project open.",
           )}
         </p>
       </PopoverContent>

@@ -2,7 +2,7 @@
 
 Huskeliste over det som er tenkt gjort, men ikke bygget. Holdes oppdatert av den som utvikler (Claude eller en annen KI) ved hver leveranse.
 Kilder: beslutningsloggen (`docs/decisions/DECISION_LOG.md`), kravregisteret (`docs/product/requirements.yaml`), kjente problemer (`docs/development/KNOWN_ISSUES.md`).
-Sist oppdatert: 2026-10-15 (DEC-0086).
+Sist oppdatert: 2026-10-15 (DEC-0087).
 
 ## Bestilt av Mars, ikke bygget ennå
 - **Eksport til ProRes/MOV** for klipping i Premiere/DaVinci (DEC-0085). Nettleseren kan bare lage MP4 (H.264/VP9) og WebM; ProRes må lages hos en tjeneste (f.eks. Runway `outputFormat: "prores"` for AI-video, eller en egen konverteringstjeneste) eller i en framtidig lokal versjon.
@@ -17,14 +17,13 @@ Sist oppdatert: 2026-10-15 (DEC-0086).
 - Prøv blokkering, sletting og «Hent videoen igjen» med en testkonto (KI-215).
 
 ## Venter på svar eller prøving fra Mars
-- KI-176 og KI-178: avklaringer om enkelte krav (anbefalinger gitt i chatten 15.10.2026).
+- REQ-0269: adminknapp for å administrere og legge til AI-leverandører – forslag gitt i chatten 15.10.2026, venter på svar.
 - Språkvask av engelsk tekst (KI-198).
 - Prøving med ekte nøkler: vinkler, oppskalering, stilanalyse og faktaark (KI-193); AI-video av scenen med referanser, lyd og samleark (KI-204, KI-213).
 
 ## Mindre ting
 - Rydde gamle videoer av 2D-scenen i lagringen (`ai-source/`, KI-207).
-- Hente inn ferdige AI-videoer uten at prosjektet er åpent (KI-209), henger sammen med varsling. Videoer tapes ikke lenger: de hentes når prosjektet åpnes (inntil sju dager), og «Hent videoen igjen» finnes (DEC-0086).
-- Endelig sletting av kontoer uten at administrator åpner adminsiden (KI-216) – krever bakgrunnsjobb.
+- Legge inn ferdige AI-videoer i scenen uten at prosjektet er åpent (KI-209; hentingen gjøres nå av bakgrunnsjobben), henger sammen med varsling. Videoer tapes ikke lenger: de hentes når prosjektet åpnes (inntil sju dager), og «Hent videoen igjen» finnes (DEC-0086).
 - Planlagte fagskills (del D/E i `.claude/skills/README.md`) opprettes når behovet kommer.
 
 ## Krav som ikke er ferdige (fra kravregisteret)

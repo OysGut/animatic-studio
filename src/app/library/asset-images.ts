@@ -5,6 +5,7 @@
  */
 import { useQuery } from "@tanstack/react-query";
 import {
+  assetFilePath,
   ASSET_MAX_BYTES,
   ASSET_MIME_TYPES,
   newId,
@@ -156,7 +157,7 @@ async function uploadOne(
   const versionId = newId<"asset_version">();
   const bytes = new Uint8Array(await file.arrayBuffer());
   const [sha256, size] = await Promise.all([sha256Hex(bytes), imageSize(file)]);
-  const path = `${projectId}/${assetId}/${versionId}/${safeFileName(file.name)}`;
+  const path = assetFilePath(projectId, "source", assetId, versionId, safeFileName(file.name));
   const error = await uploadFile(ASSET_BUCKET, path, file, {
     contentType: file.type,
     upsert: false,

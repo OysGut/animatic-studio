@@ -340,7 +340,9 @@ describe("2D-scenen sendes, ikke versjonen som vises", () => {
 
   it("stiene for videoen hører til prosjektet", () => {
     const p = sceneVideoSourcePath(s0.project.id, "b", 0);
-    expect(p).toBe(`${s0.project.id}/ai-source/b/1.mp4`);
+    expect(p).toBe(`${s0.project.id}/temp/ai-source/b/1.mp4`);
+    // Eldre filer i <prosjekt>/ai-source godtas fortsatt (KI-178)
+    expect(isSceneVideoSourcePath(s0.project.id, `${s0.project.id}/ai-source/b/1.mp4`)).toBe(true);
     expect(isSceneVideoSourcePath(s0.project.id, p)).toBe(true);
     expect(isSceneVideoSourcePath(s0.project.id, `${s0.project.id}/films/x.mp4`)).toBe(false);
     expect(isSceneVideoSourcePath(s0.project.id, `${s0.project.id}/ai-source/../x.mp4`)).toBe(

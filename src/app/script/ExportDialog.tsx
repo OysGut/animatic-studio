@@ -68,7 +68,25 @@ export function ExportDialog({
   onSaveTitlePage,
 }: Props) {
   const [format, setFormat] = useState<Format>("pdf");
-  const [method, setMethod] = useState<NumberingMethod>("production");
+  // Nummereringen huskes fra forrige eksport av prosjektet i denne nettleseren (KI-176, REQ-0482,
+  // Mars 15.10.2026: «Husk forrige valg»). Første gang: produksjonsnummerering.
+  const methodKey = `animatic:export-numbering:${state.project.id}`; // i18n-ignore: nøkkel i nettleserens lager
+  const [method, setMethodState] = useState<NumberingMethod>(() => {
+    try {
+      const v = window.localStorage.getItem(methodKey);
+      return v === "production" || v === "continuous" || v === "historical" ? v : "production";
+    } catch {
+      return "production";
+    }
+  });
+  const setMethod = (m: NumberingMethod) => {
+    setMethodState(m);
+    try {
+      window.localStorage.setItem(methodKey, m);
+    } catch {
+      /* privat vindu: gjelder bare denne gangen */
+    }
+  };
   const [includeInactive, setIncludeInactive] = useState(false);
   const [fillOriginal, setFillOriginal] = useState(false);
   // Notater i eksporten (REQ-0540): av som standard

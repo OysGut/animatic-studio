@@ -7,6 +7,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
+  assetFilePath,
   L,
   type AssetMedia,
   SPEECH_LANGUAGE,
@@ -263,7 +264,7 @@ export const generateSpeech = createServerFn({ method: "POST" })
         throw new Error(L("Tjenesten svarte uten lyd.", "The service replied without sound."));
       const assetId = newId<"asset">();
       const versionId = newId<"asset_version">();
-      const path = `${data.projectId}/${assetId}/${versionId}/ai-tale.mp3`;
+      const path = assetFilePath(data.projectId, "generated", assetId, versionId, "ai-tale.mp3");
       const { error: upErr } = await db.storage
         .from(BUCKET)
         .upload(path, new Blob([out.bytes as unknown as ArrayBuffer], { type: "audio/mpeg" }), {

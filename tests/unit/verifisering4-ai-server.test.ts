@@ -203,7 +203,7 @@ describe("REQ-0565 – AI-bilder gjennom Lovable AI Gateway (simulert)", () => {
       estimated_cost: 2,
     });
     expect(String(job!["result_path"])).toMatch(
-      new RegExp(`^${P}/${ASSET}/[0-9a-f-]{36}/ai-.*\\.png$`),
+      new RegExp(`^${P}/generated/${ASSET}/[0-9a-f-]{36}/ai-.*\\.png$`),
     );
     // Filen i lagringen er den nye versjonens fil (klienten lagrer versjonen med AddAssetVersion)
     const media = (r as { media: { path: string; width: number; byteSize: number } }).media;

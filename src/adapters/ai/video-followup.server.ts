@@ -3,7 +3,14 @@
  * (pollVideoJob) og av bakgrunnskøen (/api/public/cron/ai-jobs), så videoer hentes inn også når ingen har
  * prosjektet åpent. Ferdige videoer lagres i `<prosjekt>/films/<take>/ai-video.mp4`; bare én henter vinner.
  */
-import { L, lastFramePath, newId, SCENE_VIDEO_SOURCE, VIDEO_JOB_MAX_MS } from "@/core";
+import {
+  L,
+  filmFilePath,
+  lastFramePath,
+  newId,
+  SCENE_VIDEO_SOURCE,
+  VIDEO_JOB_MAX_MS,
+} from "@/core";
 import type { KeyRow } from "./ai-gate.server";
 import type { AnyClient } from "@/adapters/storage/project-rows";
 
@@ -135,7 +142,7 @@ export async function followUpVideoJob(
     }
     if (r.state === "failed") return fail(scrubSecret(r.message, secret));
     const takeId = newId<"take">();
-    const path = `${projectId}/films/${takeId}/ai-video.mp4`;
+    const path = filmFilePath(projectId, "generated", takeId, "ai-video.mp4");
     const { error: upErr } = await db.storage
       .from(BUCKET)
       .upload(path, new Blob([r.bytes as unknown as ArrayBuffer], { type: r.mimeType }), {

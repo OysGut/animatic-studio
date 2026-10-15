@@ -136,6 +136,8 @@ export const CATALOG: Record<string, string> = {
   "Anslag: ca. {0} igjen": "Estimate: about {0} left",
   Antall: "Count",
   "Avbrutt før den ble sendt (kostet ingenting).": "Cancelled before it was sent (cost nothing).",
+  "Avspilling og eksport lages i nettleseren og lagres ikke. Videoer av 2D-scenen som sendes til AI, ligger i en egen mappe for midlertidige filer.":
+    "Playback and export are made in the browser and not saved. Videos of the 2D scene sent to AI are kept in a separate folder for temporary files.",
   "Bakgrunnsfargen må være på formen #rrggbb": "The background colour must be in the form #rrggbb",
   "Banen må ha mellom 2 og {0} punkter": "The path must have between 2 and {0} points",
   "Banen må slutte etter at den starter": "The path must end after it starts",
@@ -759,8 +761,6 @@ export const CATALOG: Record<string, string> = {
   "Lag {0}: viser ingenting": "Layer {0}: shows nothing",
   "Lagene hører ikke til samme 2D-scene": "The layers do not belong to the same 2D scene",
   "Lages …": "Generating …",
-  "Lages bare i nettleseren under avspilling og eksport, og lagres aldri i prosjektet.":
-    "Only created in the browser during playback and export, and never saved in the project.",
   Laget: "The layer",
   "Laget {0} (formatversjon {1}, databaseversjon {2}).":
     "Made {0} (format version {1}, database version {2}).",

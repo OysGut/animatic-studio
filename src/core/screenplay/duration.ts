@@ -95,6 +95,37 @@ export interface SceneEstimate {
   readonly seconds: number;
   /** Lengde i åttendedels sider (bransjestandard), fra sidebrytingen. */
   readonly eighths: number;
+  /**
+   * Usikkert estimat (REQ-0110, KI-178, Mars 15.10.2026): lite å regne ut fra (handling uten dialog, f.eks.
+   * en montasje), så lengden kan bli svært annerledes. Da vises et spenn i stedet for ett tall.
+   */
+  readonly uncertain: boolean;
+  /** Spennet for et usikkert estimat (sekunder), ellers lik `seconds`. */
+  readonly lowSeconds: number;
+  readonly highSeconds: number;
+}
+
+/**
+ * Hvor sikkert estimatet er. Dialog gir et godt anslag (ord per minutt); handling uten dialog kan ta alt fra
+ * noen sekunder til flere minutter. Scener med nesten bare handling (under 10 ord dialog, eller over 70 % av
+ * tiden fra handling) regnes som usikre, med spenn 0,6–1,8 ganger estimatet (montasje uten dialog: 0,5–2,5).
+ */
+export function estimateUncertainty(
+  e: { readonly dialogueWords: number; readonly actionLines: number; readonly seconds: number },
+  assumptions: DurationAssumptions = DEFAULT_DURATION_ASSUMPTIONS,
+): { uncertain: boolean; lowSeconds: number; highSeconds: number } {
+  const actionShare =
+    e.seconds > 0 ? (e.actionLines * assumptions.actionSecondsPerLine) / e.seconds : 0;
+  const noDialogue = e.dialogueWords < 10 && e.actionLines > 0;
+  const uncertain = noDialogue || actionShare > 0.7;
+  if (!uncertain) return { uncertain, lowSeconds: e.seconds, highSeconds: e.seconds };
+  const [lo, hi] = noDialogue ? [0.5, 2.5] : [0.6, 1.8];
+  const round5 = (n: number) => Math.max(1, Math.round(n / 5) * 5);
+  return {
+    uncertain,
+    lowSeconds: Math.max(Math.min(round5(e.seconds * lo), e.seconds), 1),
+    highSeconds: Math.max(round5(e.seconds * hi), e.seconds),
+  };
 }
 
 export interface ProductionEstimate {
@@ -102,6 +133,10 @@ export interface ProductionEstimate {
   /** Sum for aktive scener (deaktiverte utelates, REQ-0115). */
   readonly activeSeconds: number;
   readonly activeEighths: number;
+  /** Aktive scener med usikkert estimat, og spennet for summen. */
+  readonly uncertainScenes: number;
+  readonly activeLowSeconds: number;
+  readonly activeHighSeconds: number;
 }
 
 function words(text: string): number {
@@ -214,6 +249,10 @@ export function estimateProduction(
       actionLines,
       seconds: Math.round(seconds),
       eighths,
+      ...estimateUncertainty(
+        { dialogueWords, actionLines, seconds: Math.round(seconds) },
+        assumptions,
+      ),
     };
   });
   const active = scenes.filter((x) => x.active);
@@ -221,6 +260,9 @@ export function estimateProduction(
     scenes,
     activeSeconds: active.reduce((t, x) => t + x.seconds, 0),
     activeEighths: active.reduce((t, x) => t + x.eighths, 0),
+    uncertainScenes: active.filter((x) => x.uncertain).length,
+    activeLowSeconds: active.reduce((t, x) => t + x.lowSeconds, 0),
+    activeHighSeconds: active.reduce((t, x) => t + x.highSeconds, 0),
   };
 }
 

@@ -97,7 +97,9 @@ describe("bakgrunnskøen følger opp videojobber uten åpen fane", () => {
     const r = await followUpRunningVideoJobs(db as unknown as AnyClient);
     expect(r).toEqual({ checked: 3, done: 1, failed: 1, running: 1 });
     expect(db.uploads).toHaveLength(1);
-    expect(db.uploads[0]!.path).toMatch(new RegExp(`^${P}/films/[0-9a-f-]+/ai-video\\.mp4$`));
+    expect(db.uploads[0]!.path).toMatch(
+      new RegExp(`^${P}/generated/films/[0-9a-f-]+/ai-video\\.mp4$`),
+    );
     const rows = (await db.from("generation_jobs").select("*")) as unknown as {
       data: { status: string; result_path: string | null }[];
     };

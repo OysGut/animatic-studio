@@ -4,6 +4,7 @@
  * lengden et segment kan få hos en modell, og hvordan ferdige segmenter settes sammen til scenen.
  */
 import type { AssetVersion, ProductionSegment, ProjectState, Take } from "../model";
+import { lastFrameOfFilmPath, takeIdOfLastFrame } from "../library/storage-paths";
 import type { FilmClip } from "../assembly/film";
 import {
   DEFAULT_SEGMENT_SECONDS,
@@ -235,14 +236,13 @@ export function sceneVideoWork(
 
 /** Stien til siste bilde i en AI-video (startbilde for neste segment, REQ-0263, DEC-0070). */
 export function lastFramePath(resultOrMediaRef: string): string | null {
-  const m = /^([0-9a-f-]{36})\/films\/([0-9a-f-]{36})\/[^/]+$/i.exec(resultOrMediaRef);
-  return m ? `${m[1]}/films/${m[2]}/last-frame.png` : null; // i18n-ignore: lagringssti
+  // Eldre stier og stier med kategorimappe (KI-178): siste bilde ligger i samme mappe som videoen
+  return lastFrameOfFilmPath(resultOrMediaRef);
 }
 
 /** Er stien et «siste bilde» i prosjektet? Gir take-ID-en, eller null. */
 export function takeIdFromLastFrame(projectId: string, path: string): string | null {
-  const m = /^([0-9a-f-]{36})\/films\/([0-9a-f-]{36})\/last-frame\.png$/i.exec(path);
-  return m && m[1] === projectId ? m[2]! : null;
+  return takeIdOfLastFrame(projectId, path);
 }
 
 /**
