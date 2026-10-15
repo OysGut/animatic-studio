@@ -225,6 +225,13 @@
       "when": 1792063580690,
       "tag": "0031_0032_scene_video_instructions",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1792083375484,
+      "tag": "0032_0033_accounts_admin_privacy",
+      "breakpoints": true
     }
   ]
 }
