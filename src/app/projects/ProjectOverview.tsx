@@ -13,6 +13,7 @@ import { MembersSection } from "./MembersSection";
 import { StyleGuideSection } from "./StyleGuideSection";
 import { WorklistNotice } from "./WorklistNotice";
 import { StorageSection } from "./StorageSection";
+import { ProjectCostSection } from "@/app/account/ProjectCostSection";
 import { ContinuityAnalysisPanel } from "@/app/continuity/ContinuityAnalysisPanel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -170,6 +171,15 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
             isOwner={myRole === "owner"}
             editable={canEdit(myRole)}
           />
+
+          {canEdit(myRole) ? (
+            <ProjectCostSection
+              state={s}
+              projectId={projectId}
+              isOwner={myRole === "owner"}
+              generatedBy={profiles.data?.[userId]?.display_name ?? ""}
+            />
+          ) : null}
 
           <section aria-labelledby="members-title" className="mt-10">
             <h2 id="members-title" className="mb-2 text-base font-semibold text-text-primary">

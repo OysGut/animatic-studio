@@ -473,6 +473,80 @@ describe("REQ-0298 – ratebegrensning (429) gjør ikke jobben mislykket; køen 
   });
 });
 
+describe("REQ-0649 – en ferdig video hentes inn selv om prosjektet var lukket i timevis (DEC-0086)", () => {
+  async function runningJob(db: FakeDb, ageMs: number, status = "running") {
+    const id = crypto.randomUUID();
+    const t = new Date(Date.now() - ageMs).toISOString();
+    jobs(db).push({
+      id,
+      project_id: P,
+      kind: "video",
+      provider: "google",
+      model: "veo-3.1-generate-preview",
+      prompt: "A troll",
+      reference_path: null,
+      status,
+      provider_key_id: db.tables["ai_provider_keys"]![0]!["id"],
+      key_owner: OWNER,
+      cost_usd: 3.2,
+      external_id: "operations/old",
+      params: {},
+      created_at: t,
+      started_at: t,
+    });
+    return jobs(db).find((j) => j["id"] === id)!;
+  }
+  const doneVideo = {
+    state: "done",
+    bytes: new Uint8Array([0, 0, 0, 24, 0x66, 0x74, 0x79, 0x70]),
+    mimeType: "video/mp4",
+  } as never;
+
+  it("REQ-0649: leverandøren spørres før tidsgrensen; en video ferdig for fire timer siden lagres", async () => {
+    const db = await project();
+    const job = await runningJob(db, 4 * 60 * 60 * 1000);
+    const p = await adapters();
+    const poll = vi.spyOn(p.ADAPTERS.google, "pollVideo").mockResolvedValue(doneVideo);
+    const { followUpVideoJob } = await import("@/adapters/ai/video-followup.server");
+    expect((await followUpVideoJob(db as never, P, String(job["id"])))["state"]).toBe("done");
+    expect(poll).toHaveBeenCalledTimes(1);
+    expect(job["status"]).toBe("done");
+  });
+
+  it("REQ-0649: først etter sju dager uten resultat merkes jobben «Betalt, ikke lagret»", async () => {
+    const db = await project();
+    const job = await runningJob(db, 8 * 24 * 60 * 60 * 1000);
+    const p = await adapters();
+    vi.spyOn(p.ADAPTERS.google, "pollVideo").mockResolvedValue({ state: "running" } as never);
+    const { followUpVideoJob } = await import("@/adapters/ai/video-followup.server");
+    expect((await followUpVideoJob(db as never, P, String(job["id"])))["state"]).toBe("failed");
+    expect(job["status"]).toBe("lost");
+  });
+
+  it("REQ-0649: «Hent videoen igjen» henter en tapt video uten å bestille den på nytt; bare for redaktører", async () => {
+    const db = await project();
+    const job = await runningJob(db, 5 * 60 * 60 * 1000, "lost");
+    const p = await adapters();
+    const start = vi.spyOn(p.ADAPTERS.google, "startVideo");
+    vi.spyOn(p.ADAPTERS.google, "pollVideo").mockResolvedValue(doneVideo);
+    const v = await import("@/adapters/ai/video.functions");
+    const refetch = v.refetchVideoJob as unknown as Fn;
+    const denied = (await refetch({
+      data: { projectId: P, jobId: String(job["id"]) },
+      context: ctx(VIEWER),
+    })) as { state: string };
+    expect(denied.state).toBe("failed");
+    expect(job["status"]).toBe("lost");
+    const r = (await refetch({
+      data: { projectId: P, jobId: String(job["id"]) },
+      context: ctx(EDITOR),
+    })) as { state: string };
+    expect(r.state).toBe("done");
+    expect(job["status"]).toBe("done");
+    expect(start).not.toHaveBeenCalled();
+  });
+});
+
 // ---------------------------------------------------------------- REQ-0263
 
 describe("REQ-0263 – siste bilde fra forrige segment sendes som startbilde til neste", () => {

@@ -24280,3 +24280,247 @@ requirements:
   - date: '2026-10-15'
     decision: DEC-0085
     change: "Opprettet etter Mars' ønske 15.10.2026"
+
+- id: REQ-0649
+  title: "En ferdig AI-video hentes inn selv om prosjektet var lukket i timevis"
+  text: "Leverandøren spørres alltid om videoen før en jobb regnes som tapt. En videojobb merkes «Betalt, ikke lagret» først når leverandøren sier at den feilet, eller etter sju dager uten resultat. «Hent videoen igjen» spør leverandøren på nytt med lagret jobb-ID, uten å bestille noe på nytt."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0086
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - QUEUE
+  - PROVIDER
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "En video ferdig mens prosjektet var lukket i fire timer, lagres."
+  - "«Hent videoen igjen» bestiller ingenting på nytt; bare redaktører."
+  tests:
+  - "tests/unit/verifisering3-ai-server.test.ts"
+  status: Verifisert
+  implementation:
+  - "src/adapters/ai/video-followup.server.ts"
+  - "src/adapters/ai/video.functions.ts"
+  - "src/app/ai/RefetchVideoButton.tsx"
+  - "src/core/generation/cost.ts"
+  verification:
+  - "tests/unit/verifisering3-ai-server.test.ts"
+  - "docs/development/VISUAL_QA_DEC-0086.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0086
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+
+- id: REQ-0650
+  title: "Adminside bare for administrator; oystein@gutu.no er fast administrator"
+  text: "Adminsiden viser alle brukerne med navn, e-post, når kontoen ble laget, sist aktiv, status, prosjektene (bare navn og rolle) og AI-forbruk. Tilgangen kontrolleres på serveren. oystein@gutu.no er fast administrator og kan aldri blokkeres, slettes eller nedgraderes. Administrator kan gjøre andre til administrator. Administrator ser aldri innholdet i prosjektene."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0086
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - SECURITY
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Vanlige brukere får ingen oversikt."
+  - "Den faste administratoren kan ikke endres."
+  tests:
+  - "tests/unit/account-admin.test.ts"
+  - "tests/db/run-db-tests.ts"
+  - "tests/visual/account-admin-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "db/migrations/0033_accounts_admin_privacy.sql"
+  - "src/adapters/account/admin.functions.ts"
+  - "src/app/admin/AdminPage.tsx"
+  - "src/routes/admin.tsx"
+  verification:
+  - "tests/unit/account-admin.test.ts"
+  - "tests/db/run-db-tests.ts"
+  - "tests/visual/account-admin-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0086.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0086
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+
+- id: REQ-0651
+  title: "Blokkering og sletting av brukere (30 dager, bare administrator låser opp)"
+  text: "Administrator kan blokkere (innloggingen sperres) og oppheve blokkering. Brukeren kan slette seg selv ved å skrive e-posten sin; administrator kan også slette. En slettet konto låses i 30 dager og kan i den tiden bare låses opp av administrator; deretter anonymiseres den (e-post, navn, nøkler, innlogging og medlemskap fjernes; historikken står som «Slettet bruker»). Prosjekter slettes ikke."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0086
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - SECURITY
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Feil e-post sletter ingenting."
+  - "Etter 30 dager anonymiseres kontoen; eierskap står til prosjektet får ny eier."
+  tests:
+  - "tests/unit/account-admin.test.ts"
+  - "tests/visual/account-admin-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/adapters/account/account.functions.ts"
+  - "src/adapters/account/admin.functions.ts"
+  - "src/app/account/AccountPage.tsx"
+  verification:
+  - "tests/unit/account-admin.test.ts"
+  - "tests/visual/account-admin-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0086.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0086
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+
+- id: REQ-0652
+  title: "Låste prosjekter og ny eier"
+  text: "Er eieren blokkert, låst for sletting eller slettet, er prosjektet låst for alle: ingen kan skrive (håndhevet i databasen), og medlemmene ser bare en melding om hvem de kan kontakte (eierens visningsnavn og administrator). Blokkeres en annen rolle, kan de andre jobbe videre. Administrator gir et låst prosjekt ny eier; tidligere eiere blir redaktører."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0086
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - SECURITY
+  - COLLAB
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "En blokkert redaktør låser ikke prosjektet."
+  - "Ny eier åpner prosjektet igjen."
+  tests:
+  - "tests/db/run-db-tests.ts"
+  - "tests/unit/account-admin.test.ts"
+  - "tests/visual/account-admin-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "db/migrations/0033_accounts_admin_privacy.sql"
+  - "src/adapters/account/lock.server.ts"
+  - "src/routes/prosjekt.$projectId.tsx"
+  verification:
+  - "tests/db/run-db-tests.ts"
+  - "tests/unit/account-admin.test.ts"
+  - "tests/visual/account-admin-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0086.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0086
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+
+- id: REQ-0653
+  title: "Personvernerklæring etter GDPR, før og etter innlogging, med versjoner"
+  text: "Personvernerklæringen kan leses fra forsiden før innlogging og fra kontosiden. Den sier at vi ikke selger data, hva som lagres og hvorfor, hvor det lagres, at AI-videresending med egne nøkler er brukerens ansvar og en risiko, hvor lenge data lagres og brukerens rettigheter. Administrator fyller ut behandlingsansvarlig, kontakt og lagringssted; hver lagring er en ny versjon som brukerne må bekrefte at de har lest. Ny konto krever avkrysning."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0086
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - SECURITY
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Kan leses uten innlogging."
+  - "Ny versjon må bekreftes før man fortsetter."
+  tests:
+  - "tests/db/run-db-tests.ts"
+  - "tests/unit/account-admin.test.ts"
+  - "tests/visual/account-admin-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/app/account/PrivacyStatement.tsx"
+  - "src/app/account/use-account.tsx"
+  - "src/routes/personvern.tsx"
+  - "src/app/auth/AuthScreen.tsx"
+  verification:
+  - "tests/db/run-db-tests.ts"
+  - "tests/unit/account-admin.test.ts"
+  - "tests/visual/account-admin-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0086.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0086
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+
+- id: REQ-0654
+  title: "Kostnadsrapport for AI-bruk med eksport til PDF, Word og Excel"
+  text: "Alle med endringsrett ser sitt eget AI-forbruk i prosjektet; eieren ser også prosjektet totalt; på kontoen ser brukeren alt hen har bestilt. Kalendermåned eller hele perioden, i dollar eller kroner (Norges Banks kurs for dagen). Rapporten har prosjektnavnet øverst, sammendrag, fordeling per tjeneste og modell, per måned og per person, linjer med leverandørens jobb-ID og merknader (anslått pris, uten mva). Eksport til PDF, Word og Excel."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0086
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - QUALITYCOST
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Feilede jobber og jobber i kø er ikke med."
+  - "Bare eieren ser prosjektet totalt."
+  tests:
+  - "tests/unit/cost-report.test.ts"
+  - "tests/unit/account-admin.test.ts"
+  - "tests/visual/account-admin-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/core/generation/cost-report.ts"
+  - "src/app/account/CostReportView.tsx"
+  - "src/app/account/cost-export.ts"
+  - "src/adapters/account/account.functions.ts"
+  verification:
+  - "tests/unit/cost-report.test.ts"
+  - "tests/unit/account-admin.test.ts"
+  - "tests/visual/account-admin-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0086.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0086
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+
+- id: REQ-0655
+  title: "Min konto: profil, språk, passord og sist aktiv"
+  text: "Et klikk på brukernavnet i toppfeltet åpner «Min konto»: visningsnavn, e-post, når kontoen ble laget, rolle, språk (lagres på kontoen og gjelder ved neste innlogging), nytt passord, AI-forbruk, personvern og «Slett kontoen min». Administrator ser «Admin» i toppfeltet. Sist aktiv oppdateres høyst én gang i timen."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0086
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Språket på kontoen gjelder ved innlogging."
+  - "Passordet må ha minst 8 tegn og gjentas likt."
+  tests:
+  - "tests/db/run-db-tests.ts"
+  - "tests/visual/account-admin-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/app/account/AccountPage.tsx"
+  - "src/app/shell/AppHeader.tsx"
+  - "src/adapters/browser/account.ts"
+  - "src/routes/konto.tsx"
+  verification:
+  - "tests/db/run-db-tests.ts"
+  - "tests/visual/account-admin-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0086.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0086
+    change: "Opprettet etter Mars' ønske 15.10.2026"

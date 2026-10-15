@@ -103,13 +103,20 @@ export function jobFromRow(r: Record<string, unknown>): GenerationJob {
 /** En jobb som har stått som «pågår» i over ti minutter, har sannsynligvis stoppet (fanen ble lukket). */
 export const STALE_JOB_MS = 10 * 60 * 1000;
 
+/**
+ * En videojobb regnes som stoppet hos leverandøren først etter sju dager uten resultat (DEC-0086). Før det
+ * spørres leverandøren alltid; fal.ai og Runway tar vare på resultatet i dager (fal.ai: 30 dager), så en
+ * video som ble ferdig mens ingen hadde prosjektet åpent, hentes inn når prosjektet åpnes igjen.
+ */
+export const VIDEO_JOB_MAX_MS = 7 * 24 * 60 * 60 * 1000;
+
 export type JobState = "queued" | "running" | "done" | "failed" | "lost" | "stale";
 
 export function jobState(j: GenerationJob, now: Date): JobState {
   if (j.status !== "running") return j.status;
-  // Video kjører hos leverandøren og følges opp av serveren (høyst 3 timer)
+  // Video kjører hos leverandøren og følges opp av serveren (høyst sju dager)
   const t = Date.parse(j.startedAt ?? j.createdAt);
-  const limit = j.kind === "video" ? 3 * 60 * 60 * 1000 : STALE_JOB_MS;
+  const limit = j.kind === "video" ? VIDEO_JOB_MAX_MS : STALE_JOB_MS;
   return Number.isFinite(t) && now.getTime() - t > limit ? "stale" : "running";
 }
 

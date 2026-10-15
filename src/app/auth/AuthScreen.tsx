@@ -4,11 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { L } from "@/core";
+import { PrivacyLink } from "@/app/account/use-account";
 
 type Mode = "signin" | "signup";
 
 function norwegianAuthError(message: string): string {
   const m = message.toLowerCase();
+  if (m.includes("banned"))
+    return L(
+      "Kontoen er sperret (blokkert eller låst for sletting). Kontakt administrator: oystein@gutu.no.",
+      "The account is locked (blocked or locked for deletion). Contact the administrator: oystein@gutu.no.",
+    );
   if (m.includes("invalid login"))
     return L("Feil e-post eller passord.", "Wrong email or password.");
   if (m.includes("email not confirmed"))
@@ -39,9 +45,15 @@ export function AuthScreen() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  // Ny konto: brukeren bekrefter at personvernerklæringen er lest (DEC-0086); den godkjennes også i appen
+  const [readPrivacy, setReadPrivacy] = useState(false);
 
   async function submit(e: FormEvent) {
     e.preventDefault();
+    if (mode === "signup" && !readPrivacy) {
+      setError(L("Les personvernerklæringen først.", "Read the privacy statement first."));
+      return;
+    }
     setBusy(true);
     setError(null);
     setNotice(null);
@@ -132,6 +144,28 @@ export function AuthScreen() {
               className="h-8 bg-surface-3"
             />
           </div>
+          {mode === "signup" ? (
+            <label className="flex items-start gap-2 text-xs text-text-secondary">
+              <input
+                type="checkbox"
+                checked={readPrivacy}
+                onChange={(e) => setReadPrivacy(e.target.checked)}
+                className="mt-0.5 size-3.5 accent-[var(--accent-brand)]"
+                data-testid="signup-privacy"
+              />
+              <span>
+                {L("Jeg har lest ", "I have read the ")}
+                <a
+                  href="/personvern"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-accent-brand underline-offset-2 hover:underline"
+                >
+                  {L("personvernerklæringen", "privacy statement")}
+                </a>
+              </span>
+            </label>
+          ) : null}
           {error ? (
             <p role="alert" className="text-xs text-status-danger">
               {error}
@@ -165,6 +199,9 @@ export function AuthScreen() {
             </button>
           </div>
         </form>
+        <div className="mt-3 flex justify-center">
+          <PrivacyLink />
+        </div>
       </div>
     </main>
   );

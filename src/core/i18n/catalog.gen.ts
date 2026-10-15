@@ -60,6 +60,8 @@ export const CATALOG: Record<string, string> = {
   "{0} har «{1}» i {2}, men endringen{3} skjer i {4} i hovedfilmen, som ikke er med i {5}. Ta med scenen, skriv en sammenbindende scene, eller slå av endringen i {6}.":
     "{0} has “{1}” in {2}, but the change{3} happens in {4} in the main film, which is not in {5}. Include that scene, write a linking scene, or switch off the change in {6}.",
   "{0} hører ikke til ressursen": "{0} does not belong to the asset",
+  "{0} jobb(er) mangler prisanslag og er regnet som 0.":
+    "{0} job(s) have no price estimate and are counted as 0.",
   "{0} Jobben ble ikke sendt (kostet ingenting).": "{0} The job was not sent (it cost nothing).",
   "{0} kreditter": "{0} credits",
   "{0} kunne ikke hentes.": "{0} could not be fetched.",
@@ -143,6 +145,8 @@ export const CATALOG: Record<string, string> = {
     "Only the owner of the new project can restore to it.",
   "Bare eieren av prosjektet kan endre AI-budsjettet.":
     "Only the owner of the project can change the AI budget.",
+  "Bare eieren ser hva prosjektet har kostet totalt.":
+    "Only the owner sees what the project has cost in total.",
   "Bare en scene som tilhører en annen produksjon kan overføres":
     "Only a scene that belongs to another production can be transferred",
   "Bare et lag med bilde kan ha et eget bilde per språk":
@@ -150,6 +154,7 @@ export const CATALOG: Record<string, string> = {
   "Bare film (importert eller AI-video) eller stillbilde kan brukes som del":
     "Only film (imported or AI video) or a still can be used as a part",
   "Bare film kan ha manusdekning": "Only film can have script coverage",
+  "Bare for administrator.": "Administrators only.",
   "Bare karakterer kan få stemme": "Only characters can have a voice",
   "Bare lydressurser kan kobles på denne måten": "Only audio assets can be linked in this way",
   "Bare prosjekteieren kan gjøre dette.": "Only the project owner can do this.",
@@ -157,6 +162,10 @@ export const CATALOG: Record<string, string> = {
   "Bare replikker kan leses inn.": "Only lines can be read aloud.",
   "before ({0}) må være mindre enn after ({1})": "before ({0}) must be less than after ({1})",
   "Begge scenene må være i samme produksjon": "Both scenes must be in the same production",
+  "Beløpene er anslått ut fra leverandørens prisliste da jobben ble bestilt. Den endelige fakturaen fra leverandøren kan avvike; bruk leverandørens jobb-ID til avstemming.":
+    "The amounts are estimated from the provider's price list when the job was ordered. The provider's final invoice may differ; use the provider's job ID for reconciliation.",
+  "Beløpene er uten merverdiavgift. Kjøp av slike tjenester fra utlandet har normalt omvendt avgiftsplikt.":
+    "The amounts are without VAT. Purchases of such services from abroad are normally subject to reverse charge.",
   "Beskrivelse {0}: segmentet hører ikke til scenen":
     "Description {0}: the segment does not belong to the scene",
   "Beskrivelse {0}: ukjent scene": "Description {0}: unknown scene",
@@ -174,8 +183,11 @@ export const CATALOG: Record<string, string> = {
     "The description is missing or too long (1000 characters at most)",
   "Beskrivelsen som ble sendt, er ikke kjent.": "The description that was sent is not known.",
   "Beskrivelsesskriveren (Lovable AI)": "Description writer (Lovable AI)",
+  "Betalt, ikke lagret": "Paid, not saved",
   "Betegnelsen må ha 1–80 tegn": "The designation must have 1–80 characters",
   "Bevarer bildet slik det er, bare skarpere": "Keeps the image as it is, just sharper",
+  bilde: "image",
+  Bilde: "Image",
   Bildefrekvens: "Frame rate",
   Bildenummer: "Frame number",
   "Bilder med GPT Image og video med Sora. Betaling forhåndsbetales i OpenAI Platform.":
@@ -242,6 +254,9 @@ export const CATALOG: Record<string, string> = {
   "bruk korte beskrivelser i stedet for utfyllende": "use short descriptions instead of full ones",
   "Bruker kredittene i Lovable-arbeidsområdet. Ingen egen nøkkel – slått på for prosjektet i Lovable.":
     "Uses the credits in your Lovable workspace. No key of your own – switched on for the project in Lovable.",
+  "Brukeren er administrator.": "The user is an administrator.",
+  "Brukeren er blokkert.": "The user is blocked.",
+  "Brukeren er ikke lenger administrator.": "The user is no longer an administrator.",
   "bytt til karakter- og universkart for mye tekst":
     "switch to the character and universe map for so much text",
   "ca. 1 megapiksel": "about 1 megapixel",
@@ -263,6 +278,10 @@ export const CATALOG: Record<string, string> = {
     "The database is not updated for deletion yet. Paste the message into LOVABLE_SYNC.md in Lovable (migration 0011).",
   "Databasen er ikke oppdatert. Lim inn meldingen i LOVABLE_SYNC.md i Lovable før du gjenoppretter.":
     "The database is not up to date. Paste the message in LOVABLE_SYNC.md into Lovable before you restore.",
+  "Databasen må oppdateres (migrasjon 0033) før adminsiden kan brukes.":
+    "The database must be updated (migration 0033) before the admin page can be used.",
+  "Databasen må oppdateres (migrasjon 0033) før kontoen kan slettes.":
+    "The database must be updated (migration 0033) before the account can be deleted.",
   "Databasen mangler AI-budsjett og genereringsbeskrivelser. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0014.":
     "The database is missing the AI budget and generation descriptions. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0014.",
   "Databasen mangler de nye funksjonene (overganger, svart-hvitt, grupper, bildeskifter og bevegelsesbaner). Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0013.":
@@ -326,7 +345,13 @@ export const CATALOG: Record<string, string> = {
     "The own version has its own translations; undo them first",
   "Den egne versjonen har en 2D-scene; angre den først":
     "The own version has a 2D scene; undo it first",
+  "Den faste administratoren kan ikke blokkeres eller slettes.":
+    "The permanent administrator cannot be blocked or deleted.",
+  "Den faste administratoren kan ikke endres.": "The permanent administrator cannot be changed.",
+  "Den faste administratorkontoen kan ikke slettes.":
+    "The permanent administrator account cannot be deleted.",
   "Den markerte teksten finnes ikke i manuset": "The selected text does not exist in the script",
+  "Den nye eieren må ha en aktiv konto.": "The new owner must have an active account.",
   "Den nye scenen": "The new scene",
   "Den nye scenen er brukt i en senere deling eller sammenslåing":
     "The new scene is used in a later split or merge",
@@ -343,6 +368,7 @@ export const CATALOG: Record<string, string> = {
   "Denne typen ressurs har ikke kontinuitet": "This type of asset has no continuity",
   "Denne versjonen av scenen tilhører en annen produksjon":
     "This version of the scene belongs to another production",
+  "Denne videoen kan ikke hentes på nytt.": "This video cannot be fetched again.",
   "Det er lastet opp nyere bilder etter dette. Det kan ikke fjernes.":
     "Newer images have been uploaded after this. It cannot be removed.",
   "Det er registrert kontinuitet (utseende) på dette. Fjern hendelsen først hvis endringen skal angres.":
@@ -372,6 +398,8 @@ export const CATALOG: Record<string, string> = {
   "Du har ikke tilgang, eller databasen mangler 0025.":
     "You do not have access, or the database is missing 0025.",
   "Du har ikke tilgang.": "You do not have access.",
+  "Du kan ikke blokkere eller slette deg selv her.": "You cannot block or delete yourself here.",
+  "E-postadressen stemmer ikke med kontoen din.": "The email address does not match your account.",
   "Egen stemme per karakter": "Own voice per character",
   Eksportfiler: "Export files",
   Ekstrarunder: "Extra rounds",
@@ -447,6 +475,7 @@ export const CATALOG: Record<string, string> = {
     "No scene headings (INT./EXT.) found. All text is in one scene without a heading.",
   "Fargen må være på formen #rrggbb": "The colour must be in the form #rrggbb",
   "Feil prosjekt for gjenoppretting.": "Wrong project for restoring.",
+  Ferdig: "Done",
   "Figurene beskrives bare med tekst (ingen referansebilder)":
     "The figures are described in text only (no reference images)",
   Fil: "File",
@@ -492,6 +521,8 @@ export const CATALOG: Record<string, string> = {
   "Forbildebildet må være et bilde": "The reference image must be an image",
   "Forbruket for nøkkelen kunne ikke regnes ut, så kostnadstaket kan ikke kontrolleres. Jobben ble ikke sendt.":
     "The usage for the key could not be calculated, so the cost cap cannot be checked. The job was not sent.",
+  "Forbruket vises for dem som kan endre prosjektet.":
+    "The usage is shown to those who can change the project.",
   "Forekomst {0}: aktiv versjon finnes ikke": "Occurrence {0}: active version does not exist",
   "Forekomst {0}: aktiv versjon tilhører en annen scene":
     "Occurrence {0}: active version belongs to another scene",
@@ -664,6 +695,8 @@ export const CATALOG: Record<string, string> = {
   "Jobben kunne ikke logges: {0}": "The job could not be logged: {0}",
   "Jobben startet, men kunne ikke registreres: {0}":
     "The job started, but could not be registered: {0}",
+  "Jobber som feilet uten å koste noe, og jobber som venter i køen, er ikke med. «Betalt, ikke lagret» er med fordi leverandøren kan ha tatt betalt.":
+    "Jobs that failed without cost, and jobs waiting in the queue, are not included. “Paid, not saved” is included because the provider may have charged for it.",
   "Kallet kunne ikke logges: {0}": "The call could not be logged: {0}",
   "Kamerabevegelsen fra animaticen var med.": "The camera movement from the animatic was included.",
   "Kameraet er for stort": "The camera is too large",
@@ -696,10 +729,21 @@ export const CATALOG: Record<string, string> = {
   "Køen er full ({0} videoer venter). Vent til noen er ferdige.":
     "The queue is full ({0} videos waiting). Wait until some are finished.",
   Kontinuitetshendelsen: "The continuity event",
+  "Kontoen din er ikke aktiv. Kontakt administrator.":
+    "Your account is not active. Contact the administrator.",
+  "Kontoen er aktiv igjen.": "The account is active again.",
+  "Kontoen er allerede slettet for godt.": "The account is already deleted for good.",
+  "Kontoen er låst og slettes for godt {0}. Bare administrator kan låse den opp før det.":
+    "The account is locked and will be deleted for good on {0}. Only the administrator can unlock it before then.",
+  "Kontoen er låst og slettes for godt om {0} dager.":
+    "The account is locked and will be deleted for good in {0} days.",
   "Kort ned oversettelsen med omtrent {0} {1}.": "Shorten the translation by about {0} {1}.",
   "kortere enn segmentet ({0} av {1} s)": "shorter than the segment ({0} of {1} s)",
+  "Kostnadsoversikt – AI-tjenester": "Cost statement – AI services",
   "Kostnadstaket for nøkkelen ({0} USD per måned) er nådd – brukt ca. {1} USD, denne jobben ca. {2} USD. Eieren kan endre taket under «AI-leverandører».":
     "The cost cap for the key ({0} USD per month) has been reached – about {1} USD used, this job about {2} USD. The owner can change the cap under “AI providers”.",
+  "Kronebeløpene er regnet om med Norges Banks valutakurs (USD/NOK) for dagen jobben ble laget, eller siste noterte kurs før den.":
+    "The NOK amounts are converted with Norges Bank's exchange rate (USD/NOK) for the day the job was made, or the last rate quoted before it.",
   "Kunne ikke lese {0}: {1}": "Could not read {0}: {1}",
   "Kunne ikke lese prosjektet: {0}": "Could not read the project: {0}",
   Kutt: "Cut",
@@ -747,6 +791,8 @@ export const CATALOG: Record<string, string> = {
   "Lengden er": "Length is",
   "Lengden må være {0}–{1} sekunder": "The length must be {0}–{1} seconds",
   "leverandør: {0}": "provider: {0}",
+  "Leverandøren ble ikke ferdig med videoen innen sju dager.":
+    "The provider did not finish the video within seven days.",
   "Leverandøren er opptatt. Videoen ligger i kø og sendes når det er plass.":
     "The provider is busy. The video is queued and will be sent when there is room.",
   "Leverandøren kan ikke lage video fra 2D-scenen.":
@@ -771,6 +817,7 @@ export const CATALOG: Record<string, string> = {
     "Lovable did not recognise any of the language models. Set ANIMATIC_TEXT_MODEL in Lovable Cloud (see LOVABLE_SYNC.md).",
   "Lovable-kredittene i arbeidsområdet er brukt opp. Fyll på i Lovable og prøv igjen.":
     "The Lovable credits in the workspace are used up. Top up in Lovable and try again.",
+  Lyd: "Sound",
   "Lyd eller tidskoblinger er koblet til linjer bare den nye versjonen har":
     "Audio or time links are linked to lines only the new version has",
   "Lyd i filen": "Audio in the file",
@@ -907,8 +954,11 @@ export const CATALOG: Record<string, string> = {
   Oversettelsen: "The translation",
   "Oversettelsen er for lang": "The translation is too long",
   "Oversettelsen er tom. Fjern den i stedet.": "The translation is empty. Remove it instead.",
+  Pågår: "Running",
   "Parallaksen må være mellom 0 og 4": "The parallax must be between 0 and 4",
   Parametere: "Parameters",
+  "Personvernerklæringen er lagret som versjon {0}. Brukerne blir bedt om å lese den ved neste innlogging.":
+    "The privacy statement is saved as version {0}. Users are asked to read it at their next sign-in.",
   Plakaten: "The poster",
   "Plakaten er for stor": "The poster is too large",
   "Plakaten må ha et navn (maks 200 tegn)": "The poster must have a name (max 200 characters)",
@@ -948,6 +998,12 @@ export const CATALOG: Record<string, string> = {
     "The project has been restored, but the script versions could not be saved ({0}). Try again.",
   "Prosjektet er ikke tomt. Gjenoppretting lager alltid et nytt prosjekt, og ingenting overskrives.":
     "The project is not empty. Restoring always creates a new project, and nothing is overwritten.",
+  "Prosjektet er låst fordi det ikke har noen eier. Kontakt administrator ({0}).":
+    "The project is locked because it has no owner. Contact the administrator ({0}).",
+  "Prosjektet er låst fordi eieren er blokkert. Kontakt {0}administrator ({1}).":
+    "The project is locked because the owner is blocked. Contact {0}the administrator ({1}).",
+  "Prosjektet er låst fordi eieren har slettet kontoen sin. Administrator kan gi prosjektet en ny eier: kontakt {0}.":
+    "The project is locked because the owner has deleted their account. The administrator can give the project a new owner: contact {0}.",
   "Prosjektet er slettet, eller du har ikke lenger skriverett i det.":
     "The project has been deleted, or you no longer have write access to it.",
   "Prosjektet er slettet; jobben ble ikke sendt (kostet ingenting).":
@@ -959,6 +1015,7 @@ export const CATALOG: Record<string, string> = {
   "Prosjektet har allerede en hovedproduksjon": "The project already has a main production",
   "Prosjektet har allerede en standard stilprofil":
     "The project already has a default style profile",
+  "Prosjektet har fått ny eier.": "The project has a new owner.",
   "Prosjektets AI-budsjett for denne måneden ({0} genereringer) er brukt opp. Eieren kan endre budsjettet på prosjektoversikten.":
     "The project's AI budget for this month ({0} generations) has been used up. The owner can change the budget on the project overview.",
   "Prosjektets grense på {0} AI-beskrivelser i døgnet er nådd.":
@@ -1026,6 +1083,8 @@ export const CATALOG: Record<string, string> = {
   "Ressursversjon {0}: samme nummer to ganger": "Asset version {0}: same number twice",
   "Ressursversjon {0}: ukjent variant": "Asset version {0}: unknown variant",
   "Revisjonen finnes ikke": "The revision does not exist",
+  "Runway oppgir pris i kreditter: 1 kreditt = 0,01 USD.":
+    "Runway states prices in credits: 1 credit = 0.01 USD.",
   "Runway trenger et startbilde.": "Runway needs a start image.",
   "Samlet anslag": "Estimated total",
   "Samme betegnelse to ganger": "The same designation twice",
@@ -1118,6 +1177,7 @@ export const CATALOG: Record<string, string> = {
   "Segmentet tilhører en annen forekomst": "The segment belongs to another occurrence",
   "Segmentet viser til en blokk i en annen variant":
     "The segment refers to a block in another variant",
+  sek: "sec",
   "Serverhemmeligheten mangler.": "The server secret is missing.",
   "Sikkerhetskopi av «{0}» fra Animatic Studio": "Backup of “{0}” from Animatic Studio",
   "Sikkerhetskopien er for stor til å gjenopprettes her":
@@ -1158,6 +1218,7 @@ export const CATALOG: Record<string, string> = {
   "Sjekk at du kopierte hele nøkkelen, og at den ikke er slettet hos leverandøren.":
     "Check that you copied the whole key and that the provider has not deleted it.",
   "Skaleringen er for stor": "The scale is too large",
+  "Skriv e-postadressen din": "Type your email address",
   "slå av beskrivelser av steder eller objekter": "turn off descriptions of places or objects",
   "Slå på betaling (et Google Cloud-faktureringskonto) – video og de beste bildemodellene krever det.":
     "Turn on billing (a Google Cloud billing account) – video and the best image models require it.",
@@ -1202,6 +1263,7 @@ export const CATALOG: Record<string, string> = {
     "The style profile is selected for specific uses and cannot be removed by undoing. Remove it in the style guide instead.",
   "Stilprofilen må ha et navn (maks 120 tegn)":
     "The style profile must have a name (max 120 characters)",
+  stk: "pcs",
   "Sto på {0}": "Was at {0}",
   "Sto på {0}. Står nå på {1}.": "Was at {0}. Now at {1}.",
   "Stoppet underveis (ingen svar innen 15 minutter).":
@@ -1219,6 +1281,8 @@ export const CATALOG: Record<string, string> = {
   "Take {0}: ukjent forekomst": "Take {0}: unknown occurrence",
   "Tale fra tekst": "Speech from text",
   "Tar lengre tid enn vanlig ({0} så langt)": "Taking longer than usual ({0} so far)",
+  tekst: "text",
+  Tekst: "Text",
   "Tekst før første sceneoverskrift (fortsettelse fra tidligere scene)":
     "Text before the first scene heading (continuation from an earlier scene)",
   "Teksten ble kortet ned til {0} tegn; replikkene er beholdt ordrett.":
@@ -1266,12 +1330,14 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig bredde": "Invalid width",
   "Ugyldig bruk": "Invalid use",
   "Ugyldig bruk for stilprofilen": "Invalid use for the style profile",
+  "Ugyldig bruker": "Invalid user",
   "Ugyldig del": "Invalid part",
   "Ugyldig demping": "Invalid mute setting",
   "Ugyldig egenskap i nøkkelbilde": "Invalid property in keyframe",
   "Ugyldig element": "Invalid element",
   "Ugyldig farge": "Invalid colour",
   "Ugyldig fargepalett": "Invalid colour palette",
+  "Ugyldig felt": "Invalid field",
   "Ugyldig filinformasjon for filmen": "Invalid file information for the film",
   "Ugyldig filnavn": "Invalid file name",
   "Ugyldig forespørsel": "Invalid request",
@@ -1316,6 +1382,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig notat": "Invalid note",
   "Ugyldig overgang": "Invalid transition",
   "Ugyldig oversettelse": "Invalid translation",
+  "Ugyldig periode": "Invalid period",
   "Ugyldig plakat": "Invalid poster",
   "Ugyldig planlagt lengde": "Invalid planned length",
   "Ugyldig plassering av masken": "Invalid position of the mask",
@@ -1325,6 +1392,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig prioritet": "Invalid priority",
   "Ugyldig produksjon": "Invalid production",
   "Ugyldig prosjekt": "Invalid project",
+  "Ugyldig prosjekt eller bruker": "Invalid project or user",
   "Ugyldig prosjekt-ID": "Invalid project ID",
   "Ugyldig punkt i banen": "Invalid point in the path",
   "Ugyldig relasjon": "Invalid relation",
@@ -1395,11 +1463,13 @@ export const CATALOG: Record<string, string> = {
   Ukjent: "Unknown",
   "ukjent beløp": "unknown amount",
   "Ukjent bildefrekvens": "Unknown frame rate",
+  "Ukjent bruker": "Unknown user",
   "Ukjent eksporttype": "Unknown export type",
   "Ukjent elementtype": "Unknown element type",
   "Ukjent feil": "Unknown error",
   "Ukjent felt i elementet ({0})": "Unknown field in the element ({0})",
   "Ukjent felt i stilprofilen": "Unknown field in the style profile",
+  "Ukjent handling": "Unknown action",
   "Ukjent leverandør": "Unknown provider",
   "Ukjent leverandør.": "Unknown provider.",
   "Ukjent lydmodell.": "Unknown sound model.",
@@ -1418,6 +1488,7 @@ export const CATALOG: Record<string, string> = {
   "Ukjent stil": "Unknown style",
   "Ukjent type fortellingstid": "Unknown story time type",
   "Ukjent type kontinuitetshendelse": "Unknown continuity event type",
+  "Ukjent utvalg": "Unknown selection",
   "Ukjent varighet": "Unknown duration",
   "Ukjent vinkel": "Unknown angle",
   "Ulike scenenumre i margene ({0} / {1})": "Different scene numbers in the margins ({0} / {1})",
@@ -1487,7 +1558,6 @@ export const CATALOG: Record<string, string> = {
   "Videoen av 2D-scenen": "The video of the 2D scene",
   "Videoen av 2D-scenen finnes ikke i lagringen. Prøv igjen.":
     "The video of the 2D scene is not in storage. Try again.",
-  "Videoen ble ikke hentet inn i tide.": "The video was not fetched in time.",
   "Videoen ble laget uten startbilde – figurene kan se annerledes ut enn i godkjente bilder.":
     "The video was made without a start image – the figures may look different from the approved images.",
   "Videoen ble startet hos leverandøren, men kunne ikke registreres her. Den regnes med i kostnadstaket.":

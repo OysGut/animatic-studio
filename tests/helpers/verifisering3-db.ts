@@ -63,6 +63,8 @@ export function fakeWriteDb(tables: Record<string, Row[]>, files: readonly strin
       const orders: { key: string; asc: boolean }[] = [];
       let head = false;
       let max: number | null = null;
+      let sliceFrom = 0;
+      let sliceTo: number | null = null;
       let op: "select" | "update" | "delete" | "insert" = "select";
       let patch: Row | null = null;
       let inserted: Row[] = [];
@@ -75,7 +77,8 @@ export function fakeWriteDb(tables: Record<string, Row[]>, files: readonly strin
             const y = b[o.key] as string | number;
             return (x < y ? -1 : x > y ? 1 : 0) * (o.asc ? 1 : -1);
           });
-        return max === null ? out : out.slice(0, max);
+        const ranged = sliceTo === null ? out.slice(sliceFrom) : out.slice(sliceFrom, sliceTo);
+        return max === null ? ranged : ranged.slice(0, max);
       };
       const run = (): Row[] => {
         if (done) return done;
@@ -147,6 +150,11 @@ export function fakeWriteDb(tables: Record<string, Row[]>, files: readonly strin
         },
         order(key: string, o?: { ascending?: boolean }) {
           orders.push({ key, asc: o?.ascending !== false });
+          return q;
+        },
+        range(from: number, to: number) {
+          sliceFrom = from;
+          sliceTo = to + 1;
           return q;
         },
         limit(n: number) {

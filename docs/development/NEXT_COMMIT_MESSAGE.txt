@@ -1,57 +1,23 @@
-AI-video av scenen med referanser, global beskrivelse og nedlasting, norsk og engelsk, ny prosjektliste, bildeverktøy og promptmotor – migrasjon 0030–0032 (DEC-0080–0085)
+Brukerkontoer: adminside, min konto, personvern og kostnadsrapport; ferdige AI-videoer tapes ikke – migrasjon 0033 (DEC-0086)
 
-Databaseendring: migrasjon 0030, 0031 og 0032 (i den rekkefølgen). Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push.
-Ingen nye pakker.
+Databaseendring: migrasjon 0033. Nye pakker: docx, exceljs, jspdf, jspdf-autotable.
+Lim inn hele innholdet i docs/development/LOVABLE_SYNC.md i Lovable etter push.
 
-AI-video av scenen, utvidet (DEC-0085):
-- Velg hva som sendes: 2D-scenen, en tidligere AI-video eller en opplastet video. Undertekster sendes aldri.
-- Figurkort, bakgrunn og objekter sendes som referansebilder; er det for mange, settes de på ett samleark.
-- Den globale beskrivelsen for hele prosjektet er én tekst som kan redigeres (gjelder all AI), og kan krysses vekk.
-- Scenebeskrivelse laget fra manuset, med «Skriv med AI».
-- Velg om scenens lyd sendes med; lyd i AI-videoen blir eget dempet lydspor som kan flyttes.
-- Nedlasting i MP4 eller WebM, undertekster brent inn, som SRT/VTT eller ingen. «Last ned scenen …».
-- Status for genereringene øverst i toppfeltet. Sceneeditoren kan spille av valgt versjon. Last opp video for scenen.
-- README.md (startside) og TODO.md (ProRes/MOV, SMS-varsel på vent m.m.).
+AI-video (feil funnet av Mars 15.10.2026):
+- En video som ble ferdig mens prosjektet var lukket, ble merket «Betalt, ikke lagret» etter tre timer uten
+  at leverandøren ble spurt. Nå spørres leverandøren alltid først, og grensen er sju dager.
+- «Hent videoen igjen» på tapte videoer (i AI-panelet, i «AI-video av scenen» og i statusen øverst) – koster ingenting.
 
-Bekreftet av Mars: Nano Banana Pro med fire bilder virker (KI-189 løst).
-Scene og manus:
-- Dra i skillet mellom lagnavn og tidslinje; bredden huskes.
-- «Nullstill format» ved skalering (behold bredde eller høyde); sidehåndtak for skvis og strekk (Alt: begge sider).
-- Speilvending «fra her», glidende eller brått, tweenes mellom nøkkelbilder.
-- Advarsel når et bilde vises større enn sine egne piksler, med «Oppskaler bildet …».
-- «Vis kun valgt scene» viser scenen uten ark, toppjustert; «Sort tekst på hvit bakgrunn».
-Bilder:
-- Stor visning: «Tilpass» som standard (feilen med 100 % rettet), dobbeltklikk på bilder i bildevalget.
-- Bildeverktøy: frilegg, fjern luften rundt, utsnitt med fri markering (til eksisterende eller nytt objekt),
-  del opp i ruter, vinkel på bildet, «Lag andre vinkler» (ark eller én per vinkel), oppskaler.
-- Frileggingen kan zoomes og flyttes, og fjerner luften rundt figuren når den lagres.
-- Lenke fra bildevalget til «Filmens visuelle stil», åpnet oppå, med vei tilbake.
-AI:
-- Promptmotor: én bestilling skrevet om per modell (fortellende for Nano Banana/GPT Image, kort med
-  identiteten først og negativ beskrivelse for Seedream/Qwen/FLUX), uten filmtittel og replikker,
-  nøytralt lys for figurer, farger med navn; norsk oppsummering over beskrivelsen.
-- Stilanalyse av forbildebildene; visuelt faktaark per ressurs fra manuset.
-- Seedream 4.5 og Qwen-Image-Edit via fal.ai; oppskalering med SeedVR2 eller Clarity.
+Kontoer (DEC-0086, REQ-0649–0655):
+- Min konto (klikk på brukernavnet): visningsnavn, språk (lagres på kontoen), passord, AI-forbruk, personvern,
+  «Slett kontoen min» (skriv e-posten; låst i 30 dager, bare administrator kan låse opp).
+- Adminside: alle brukerne med laget, sist aktiv, status, prosjekter og AI-forbruk; blokkere/oppheve, slette/låse opp,
+  gjøre andre til admin; låste prosjekter får ny eier; feltene i personvernerklæringen.
+  oystein@gutu.no er fast administrator og kan aldri nedgraderes.
+- Blokkert eller slettet eier: prosjektet låses for alle (bare melding om hvem man kan kontakte). Andre roller påvirker ikke.
+- Personvernerklæring etter GDPR: kan leses før og etter innlogging; vi selger ikke data; ny versjon må bekreftes.
+- Kostnadsrapport: mitt forbruk i prosjektet, prosjektet totalt (eier) og alt på kontoen; måned eller hele perioden;
+  dollar eller kroner (Norges Bank); eksport til PDF, Word og Excel med prosjektnavnet øverst.
 
-Norsk og engelsk (DEC-0081):
-- Språkvalg (Norsk/English) på hovedsiden og NO/EN i toppfeltet; valget huskes i nettleseren.
-- Hele grensesnittet oversatt: knapper, menyer, dialoger, meldinger, verktøytips, skjermlesertekster,
-  datoer og tall. Brukerens innhold og manusets formatord oversettes ikke. Venter på språkvask (KI-198).
-- Meldinger fra serveren oversettes i nettleseren (katalog laget av tekstparene).
-- Regel for all videre utvikling: tekst på begge språk; kontrollen scripts/i18n/check.mjs kjører i testene.
-Prosjektlisten (DEC-0082):
-- Én boks per prosjekt med eier, din rolle, medlemmer og dato.
-- Hovedfilm med spinoffer, trailere og andre varianter under, med type, dato og notat; klikk åpner varianten.
-- Notat om hva hver produksjon er: skrives når den lages og endres på prosjektoversikten (migrasjon 0031).
-
-AI-video av scenen (DEC-0083):
-- Knappen «AI-video …» i sceneeditoren sender 2D-scenen (bare bilde) til Kling O3 Edit (fal.ai) eller
-  Aleph 2 (Runway), som tegner den om til ferdig film; bevegelse, timing og kamera følger 2D-scenen.
-- Beskrivelsen: filmens stil, figurene (faktaark og referansebilder) og scenens egne instrukser
-  (lagres på scenen, migrasjon 0032). Pris vises og må bekreftes; lange scener deles i biter.
-- Bare bildet erstattes – scenens lyd beholdes. Ingenting kastes; velg hva som viser scenen
-  (2D-scenen, AI-video, opplastet film eller stillbilde) i samme vindu.
-Svar fra Mars (DEC-0084): globale ressurser og stilharmonisering godkjent, «Lovable» ut av grensesnittet
-(ikke bygget ennå).
-
-Krav: REQ-0603 REQ-0610–REQ-0639
+Tester: Vitest 133 filer / 1118 tester, DB 61/61, account-admin-ui 52/52, scene-video-ui 39/39,
+verifisering3 73/73, verifisering4 58/58, interactions 44/44, export-e2e.

@@ -1,5 +1,5 @@
 import { Link, useParams } from "@tanstack/react-router";
-import { LogOut } from "lucide-react";
+import { LogOut, Shield, UserRound } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { signOut } from "@/adapters/browser/auth";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { ShortcutsButton, ShortcutsDialog } from "@/app/shortcuts/ShortcutsDialo
 import { LanguageSwitch } from "@/app/i18n/language";
 import { L } from "@/core";
 import { GenerationStatus } from "@/app/ai/GenerationStatus";
+import { AccountWatcher, useMyAccount } from "@/app/account/use-account";
 
 interface AppHeaderProps {
   readonly email?: string | undefined;
@@ -20,6 +21,8 @@ export function AppHeader({ email, trail }: AppHeaderProps) {
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   // Inne i et prosjekt: status for AI-genereringene (DEC-0085)
   const params = useParams({ strict: false }) as { projectId?: string };
+  // Min konto og adminsiden (DEC-0086)
+  const account = useMyAccount(!!email);
   return (
     <header className="flex h-10 shrink-0 items-center gap-3 border-b border-border bg-surface-1 px-4">
       <Link
@@ -43,8 +46,34 @@ export function AppHeader({ email, trail }: AppHeaderProps) {
         <ShortcutsButton onClick={() => setShortcutsOpen(true)} />
         {/* i18n-ignore: gruppe-ID for hurtigtaster, ikke synlig tekst */}
         <ShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} current="alle" />
+        {email ? <AccountWatcher /> : null}
+        {email && account.data?.isAdmin ? (
+          <Link
+            to="/admin"
+            data-testid="header-admin"
+            className="flex h-7 items-center gap-1 rounded-sm px-2 text-xs text-text-secondary hover:bg-surface-3 hover:text-text-primary"
+            title={L(
+              "Administrasjon: brukere, prosjekter og personvern",
+              "Administration: users, projects and privacy",
+            )}
+          >
+            <Shield className="size-3.5" aria-hidden />
+            <span className="hidden md:inline">{L("Admin", "Admin")}</span>
+          </Link>
+        ) : null}
         {email ? (
-          <span className="hidden text-xs text-text-tertiary sm:inline">{email}</span>
+          <Link
+            to="/konto"
+            data-testid="header-account"
+            className="flex h-7 max-w-[220px] items-center gap-1.5 rounded-sm px-2 text-xs text-text-secondary hover:bg-surface-3 hover:text-text-primary"
+            title={L(
+              "Min konto: språk, passord, AI-forbruk og personvern",
+              "My account: language, password, AI usage and privacy",
+            )}
+          >
+            <UserRound className="size-3.5 shrink-0" aria-hidden />
+            <span className="hidden truncate sm:inline">{account.data?.displayName || email}</span>
+          </Link>
         ) : null}
         {email ? (
           <Button

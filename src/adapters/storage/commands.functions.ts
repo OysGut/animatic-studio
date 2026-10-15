@@ -468,6 +468,12 @@ export const runCommand = createServerFn({ method: "POST" })
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const admin = supabaseAdmin as unknown as AnyClient;
+    // Låst prosjekt eller konto som ikke er aktiv (DEC-0086): forståelig melding før databasen avviser
+    {
+      const { writeBlocked } = await import("@/adapters/account/lock.server");
+      const blocked = await writeBlocked(admin, data.projectId, context.userId);
+      if (blocked) return { ok: false, code: "forbidden", message: blocked };
+    }
     if (data.commandId) {
       const { data: done } = await admin
         .from("change_log")

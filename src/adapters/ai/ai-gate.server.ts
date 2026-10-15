@@ -36,7 +36,13 @@ export async function memberRole(
     .eq("user_id", userId)
     .is("removed_at", null)
     .maybeSingle();
-  return (data as { role?: string } | null)?.role ?? null;
+  const role = (data as { role?: string } | null)?.role ?? null;
+  if (!role) return null;
+  // Låst prosjekt eller konto som ikke er aktiv (DEC-0086): ingen AI-kall, bare lesing
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { writeBlocked } = await import("@/adapters/account/lock.server");
+  if (await writeBlocked(supabaseAdmin as unknown as AnyClient, projectId, userId)) return "viewer";
+  return role;
 }
 
 /** Eierne av prosjektet (aktive), med den som spør først hvis hen er eier. */

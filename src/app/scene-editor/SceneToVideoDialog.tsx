@@ -72,6 +72,7 @@ import { startVideoGeneration } from "@/adapters/ai/video.functions";
 import { writeImagePrompt } from "@/adapters/ai/write-prompt.functions";
 import { ASSET_BUCKET, uploadFile } from "@/adapters/browser/storage-files";
 import { aiJobsKey, useAiJobs } from "@/app/ai/use-ai-jobs";
+import { RefetchVideoButton, canRefetchVideo } from "@/app/ai/RefetchVideoButton";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
 import { signedUrls, useImageUrls } from "@/app/library/asset-images";
 import { useSchemaAtLeast } from "@/app/shell/use-schema";
@@ -869,9 +870,17 @@ export function SceneToVideoDialog({
                   )}
                 </div>
                 {failed.map((j) => (
-                  <p key={j!.id} className="pl-6 text-[11px] text-status-danger">
-                    {tm(j!.error ?? L("Ukjent feil", "Unknown error"))}
-                  </p>
+                  <div key={j!.id} className="flex flex-wrap items-center gap-2 pl-6">
+                    <p className="text-[11px] text-status-danger">
+                      {b.count > 1
+                        ? L(`Del ${b.jobs.indexOf(j) + 1}: `, `Part ${b.jobs.indexOf(j) + 1}: `)
+                        : ""}
+                      {tm(j!.error ?? L("Ukjent feil", "Unknown error"))}
+                    </p>
+                    {editable && canRefetchVideo(j) ? (
+                      <RefetchVideoButton projectId={projectId} job={j!} size="xs" />
+                    ) : null}
+                  </div>
                 ))}
               </div>
             );

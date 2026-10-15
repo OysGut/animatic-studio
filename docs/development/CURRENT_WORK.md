@@ -2,7 +2,12 @@
 
 Oppdatert: 2026-10-15 (økt 6, DEC-0061–0084)
 
-## Nå: DEC-0085 – AI-video av scenen utvidet – ferdig, venter på Mars
+## Nå: DEC-0086 – kontoer, adminside, personvern, kostnadsrapport; videohenting rettet – ferdig, venter på Mars
+- Bygget: Min konto, adminside, blokkering/sletting (30 dager), låste prosjekter og ny eier, personvernerklæring med versjoner og godkjenning, kostnadsrapport med eksport, «Hent videoen igjen».
+- Venter: migrasjon 0033 og pakkene i Lovable; Mars/admin fyller ut personvernfeltene; region og Lovable-plan sjekkes.
+- Akseptansekriterier: REQ-0649–0655.
+
+## Før: DEC-0085 – AI-video av scenen utvidet – ferdig, venter på Mars
 - Bygget: kilde for AI-videoen, referanser med samleark, samlet global beskrivelse (én redigerbar versjon for all AI), scenebeskrivelse fra manuset og med AI, lydvalg og dempet lydspor, nedlasting med format og undertekstvalg, status i toppfeltet, valgt versjon i avspillingen, opplasting av video for scenen. README.md og TODO.md.
 - På vent: SMS-varsel. Planlagt: ProRes/MOV (TODO.md).
 - Akseptansekriterier: REQ-0640–0648 (alle verifisert med enhets- og nettlesertester, ikke med ekte nøkler – KI-213).

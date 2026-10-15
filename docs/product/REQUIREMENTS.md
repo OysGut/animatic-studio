@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **648**
-- Prioritet: P0: 145, P1: 317, P2: 147, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 121, teknisk-anbefaling: 7
-- Status: Verifisert: 569, Implementert – ikke verifisert: 17, Under arbeid: 3, Ikke startet: 59
+- Antall krav: **655**
+- Prioritet: P0: 145, P1: 324, P2: 147, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 128, teknisk-anbefaling: 7
+- Status: Verifisert: 576, Implementert – ikke verifisert: 17, Under arbeid: 3, Ikke startet: 59
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -8841,3 +8841,104 @@ Avspillingen i sceneeditoren kan vise versjonen som er valgt for scenen (AI-vide
 - **Tester:**
   - tests/visual/scene-video-ui.mjs
 - **Implementering:** src/app/scene-editor/SceneEditorWorkspace.tsx, src/app/scene-editor/PreviewWindow.tsx
+
+#### REQ-0649 – En ferdig AI-video hentes inn selv om prosjektet var lukket i timevis
+Leverandøren spørres alltid om videoen før en jobb regnes som tapt. En videojobb merkes «Betalt, ikke lagret» først når leverandøren sier at den feilet, eller etter sju dager uten resultat. «Hent videoen igjen» spør leverandøren på nytt med lagret jobb-ID, uten å bestille noe på nytt.
+
+- **Kilde:** Beslutning DEC-0086 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** QUEUE, PROVIDER
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - En video ferdig mens prosjektet var lukket i fire timer, lagres.
+  - «Hent videoen igjen» bestiller ingenting på nytt; bare redaktører.
+- **Tester:**
+  - tests/unit/verifisering3-ai-server.test.ts
+- **Implementering:** src/adapters/ai/video-followup.server.ts, src/adapters/ai/video.functions.ts, src/app/ai/RefetchVideoButton.tsx, src/core/generation/cost.ts
+
+#### REQ-0650 – Adminside bare for administrator; oystein@gutu.no er fast administrator
+Adminsiden viser alle brukerne med navn, e-post, når kontoen ble laget, sist aktiv, status, prosjektene (bare navn og rolle) og AI-forbruk. Tilgangen kontrolleres på serveren. oystein@gutu.no er fast administrator og kan aldri blokkeres, slettes eller nedgraderes. Administrator kan gjøre andre til administrator. Administrator ser aldri innholdet i prosjektene.
+
+- **Kilde:** Beslutning DEC-0086 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** SECURITY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Vanlige brukere får ingen oversikt.
+  - Den faste administratoren kan ikke endres.
+- **Tester:**
+  - tests/unit/account-admin.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/account-admin-ui.mjs
+- **Implementering:** db/migrations/0033_accounts_admin_privacy.sql, src/adapters/account/admin.functions.ts, src/app/admin/AdminPage.tsx, src/routes/admin.tsx
+
+#### REQ-0651 – Blokkering og sletting av brukere (30 dager, bare administrator låser opp)
+Administrator kan blokkere (innloggingen sperres) og oppheve blokkering. Brukeren kan slette seg selv ved å skrive e-posten sin; administrator kan også slette. En slettet konto låses i 30 dager og kan i den tiden bare låses opp av administrator; deretter anonymiseres den (e-post, navn, nøkler, innlogging og medlemskap fjernes; historikken står som «Slettet bruker»). Prosjekter slettes ikke.
+
+- **Kilde:** Beslutning DEC-0086 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** SECURITY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Feil e-post sletter ingenting.
+  - Etter 30 dager anonymiseres kontoen; eierskap står til prosjektet får ny eier.
+- **Tester:**
+  - tests/unit/account-admin.test.ts
+  - tests/visual/account-admin-ui.mjs
+- **Implementering:** src/adapters/account/account.functions.ts, src/adapters/account/admin.functions.ts, src/app/account/AccountPage.tsx
+
+#### REQ-0652 – Låste prosjekter og ny eier
+Er eieren blokkert, låst for sletting eller slettet, er prosjektet låst for alle: ingen kan skrive (håndhevet i databasen), og medlemmene ser bare en melding om hvem de kan kontakte (eierens visningsnavn og administrator). Blokkeres en annen rolle, kan de andre jobbe videre. Administrator gir et låst prosjekt ny eier; tidligere eiere blir redaktører.
+
+- **Kilde:** Beslutning DEC-0086 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** SECURITY, COLLAB
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - En blokkert redaktør låser ikke prosjektet.
+  - Ny eier åpner prosjektet igjen.
+- **Tester:**
+  - tests/db/run-db-tests.ts
+  - tests/unit/account-admin.test.ts
+  - tests/visual/account-admin-ui.mjs
+- **Implementering:** db/migrations/0033_accounts_admin_privacy.sql, src/adapters/account/lock.server.ts, src/routes/prosjekt.$projectId.tsx
+
+#### REQ-0653 – Personvernerklæring etter GDPR, før og etter innlogging, med versjoner
+Personvernerklæringen kan leses fra forsiden før innlogging og fra kontosiden. Den sier at vi ikke selger data, hva som lagres og hvorfor, hvor det lagres, at AI-videresending med egne nøkler er brukerens ansvar og en risiko, hvor lenge data lagres og brukerens rettigheter. Administrator fyller ut behandlingsansvarlig, kontakt og lagringssted; hver lagring er en ny versjon som brukerne må bekrefte at de har lest. Ny konto krever avkrysning.
+
+- **Kilde:** Beslutning DEC-0086 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** SECURITY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Kan leses uten innlogging.
+  - Ny versjon må bekreftes før man fortsetter.
+- **Tester:**
+  - tests/db/run-db-tests.ts
+  - tests/unit/account-admin.test.ts
+  - tests/visual/account-admin-ui.mjs
+- **Implementering:** src/app/account/PrivacyStatement.tsx, src/app/account/use-account.tsx, src/routes/personvern.tsx, src/app/auth/AuthScreen.tsx
+
+#### REQ-0654 – Kostnadsrapport for AI-bruk med eksport til PDF, Word og Excel
+Alle med endringsrett ser sitt eget AI-forbruk i prosjektet; eieren ser også prosjektet totalt; på kontoen ser brukeren alt hen har bestilt. Kalendermåned eller hele perioden, i dollar eller kroner (Norges Banks kurs for dagen). Rapporten har prosjektnavnet øverst, sammendrag, fordeling per tjeneste og modell, per måned og per person, linjer med leverandørens jobb-ID og merknader (anslått pris, uten mva). Eksport til PDF, Word og Excel.
+
+- **Kilde:** Beslutning DEC-0086 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** QUALITYCOST
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Feilede jobber og jobber i kø er ikke med.
+  - Bare eieren ser prosjektet totalt.
+- **Tester:**
+  - tests/unit/cost-report.test.ts
+  - tests/unit/account-admin.test.ts
+  - tests/visual/account-admin-ui.mjs
+- **Implementering:** src/core/generation/cost-report.ts, src/app/account/CostReportView.tsx, src/app/account/cost-export.ts, src/adapters/account/account.functions.ts
+
+#### REQ-0655 – Min konto: profil, språk, passord og sist aktiv
+Et klikk på brukernavnet i toppfeltet åpner «Min konto»: visningsnavn, e-post, når kontoen ble laget, rolle, språk (lagres på kontoen og gjelder ved neste innlogging), nytt passord, AI-forbruk, personvern og «Slett kontoen min». Administrator ser «Admin» i toppfeltet. Sist aktiv oppdateres høyst én gang i timen.
+
+- **Kilde:** Beslutning DEC-0086 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Språket på kontoen gjelder ved innlogging.
+  - Passordet må ha minst 8 tegn og gjentas likt.
+- **Tester:**
+  - tests/db/run-db-tests.ts
+  - tests/visual/account-admin-ui.mjs
+- **Implementering:** src/app/account/AccountPage.tsx, src/app/shell/AppHeader.tsx, src/adapters/browser/account.ts, src/routes/konto.tsx

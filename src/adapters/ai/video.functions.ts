@@ -637,3 +637,52 @@ export const pollVideoJob = createServerFn({ method: "POST" })
     const { followUpVideoJob } = await import("./video-followup.server");
     return followUpVideoJob(await admin(), data.projectId, data.jobId);
   });
+
+/**
+ * Hent en video som ble merket «Betalt, ikke lagret» på nytt (DEC-0086). Jobben settes tilbake til «pågår»
+ * og leverandøren spørres med den lagrede jobb-ID-en; ingenting sendes på nytt, så det koster ikke noe.
+ * Gir leverandøren ikke videoen (for gammel, feilet), merkes jobben igjen.
+ */
+export const refetchVideoJob = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((d: unknown) => {
+    const x = (d ?? {}) as Record<string, unknown>;
+    if (!isId(x["projectId"]) || !isId(x["jobId"]))
+      throw new Error(L("Ugyldig jobb", "Invalid job"));
+    return { projectId: x["projectId"], jobId: x["jobId"] };
+  })
+  .handler(async ({ data, context }): Promise<PollVideoResult> => {
+    const gate = await import("./ai-gate.server");
+    const role = await gate.memberRole(
+      context.supabase as unknown as AnyClient,
+      data.projectId,
+      context.userId,
+    );
+    if ((gate.ROLE_RANK[role ?? ""] ?? 0) < gate.ROLE_RANK["editor"]!)
+      return { state: "failed", message: L("Ingen tilgang.", "No access.") };
+    const db = await admin();
+    const { data: row } = await db
+      .from("generation_jobs")
+      .select("id, kind, status, external_id, provider_key_id")
+      .eq("id", data.jobId)
+      .eq("project_id", data.projectId)
+      .maybeSingle();
+    const job = row as {
+      kind: string;
+      status: string;
+      external_id: string | null;
+      provider_key_id: string | null;
+    } | null;
+    if (!job || job.kind !== "video" || job.status !== "lost" || !job.external_id)
+      return {
+        state: "failed",
+        message: L("Denne videoen kan ikke hentes på nytt.", "This video cannot be fetched again."),
+      };
+    await db
+      .from("generation_jobs")
+      .update({ status: "running", error: null, finished_at: null } as never)
+      .eq("id", data.jobId)
+      .eq("status", "lost");
+    const { followUpVideoJob } = await import("./video-followup.server");
+    return followUpVideoJob(db, data.projectId, data.jobId);
+  });

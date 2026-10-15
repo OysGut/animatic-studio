@@ -1,0 +1,172 @@
+/**
+ * Kontoen i appen (DEC-0086): min konto (admin, språk, personvern), sist aktiv, språkvalget lagres på kontoen,
+ * personvernerklæringen må leses ved ny versjon, og en konto som ikke lenger er aktiv logges ut.
+ */
+import { useEffect, useRef, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
+import { L, getLanguage, tm } from "@/core";
+import {
+  acceptPrivacy,
+  fetchMyAccount,
+  fetchPrivacyPolicy,
+  saveMyLocale,
+  touchActivity,
+} from "@/adapters/browser/account";
+import { signOut } from "@/adapters/browser/auth";
+import { chooseLanguage, useLanguage } from "@/app/i18n/language";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { PrivacyStatement } from "./PrivacyStatement";
+
+export const MY_ACCOUNT_KEY = ["my-account"] as const;
+export const PRIVACY_KEY = ["privacy-policy"] as const;
+
+export function useMyAccount(enabled = true) {
+  return useQuery({
+    queryKey: MY_ACCOUNT_KEY,
+    queryFn: fetchMyAccount,
+    enabled,
+    staleTime: 60_000,
+  });
+}
+
+export function usePrivacyPolicy() {
+  return useQuery({ queryKey: PRIVACY_KEY, queryFn: fetchPrivacyPolicy, staleTime: 5 * 60_000 });
+}
+
+// i18n-ignore: nøkkel i nettleserens lager
+const TOUCH_KEY = "animatic:last-touch";
+
+/** I toppfeltet når man er innlogget. Tegner ingenting selv, bortsett fra personvern-dialogen. */
+export function AccountWatcher() {
+  const qc = useQueryClient();
+  const account = useMyAccount();
+  const policy = usePrivacyPolicy();
+  const lang = useLanguage();
+  const synced = useRef(false);
+  const [readIt, setReadIt] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Sist aktiv: høyst én gang i timen fra denne nettleseren (databasen sjekker også)
+  useEffect(() => {
+    try {
+      const last = Number(window.localStorage.getItem(TOUCH_KEY) ?? 0);
+      if (Date.now() - last < 60 * 60 * 1000) return;
+      window.localStorage.setItem(TOUCH_KEY, String(Date.now()));
+    } catch {
+      /* privat vindu */
+    }
+    void touchActivity().catch(() => undefined);
+  }, []);
+
+  // Språket på kontoen gjelder ved innlogging; senere valg lagres på kontoen
+  const a = account.data;
+  useEffect(() => {
+    if (!a) return;
+    if (!synced.current) {
+      synced.current = true;
+      if (a.locale && a.locale !== getLanguage()) chooseLanguage(a.locale);
+      else if (!a.locale) void saveMyLocale(getLanguage()).catch(() => undefined);
+      return;
+    }
+    if (a.locale !== lang)
+      void saveMyLocale(lang).then(() => qc.invalidateQueries({ queryKey: MY_ACCOUNT_KEY }));
+  }, [a, lang, qc]);
+
+  // En konto som er blokkert eller låst for sletting, logges ut (innloggingen er også sperret)
+  useEffect(() => {
+    if (a && a.status !== "active") void signOut();
+  }, [a]);
+
+  const mustRead =
+    !!a &&
+    a.status === "active" &&
+    a.privacyVersion !== null &&
+    (a.acceptedVersion ?? 0) < a.privacyVersion;
+  if (!mustRead) return null;
+  async function accept() {
+    if (!a?.privacyVersion) return;
+    setBusy(true);
+    const e = await acceptPrivacy(a.privacyVersion);
+    setBusy(false);
+    if (e) setError(tm(e.message));
+    else void qc.invalidateQueries({ queryKey: MY_ACCOUNT_KEY });
+  }
+  return (
+    <Dialog open>
+      <DialogContent
+        className="max-h-[90vh] max-w-[720px] overflow-hidden p-0 [&>button]:hidden"
+        data-testid="privacy-accept"
+        onEscapeKeyDown={(e) => e.preventDefault()}
+        onPointerDownOutside={(e) => e.preventDefault()}
+      >
+        <DialogHeader className="px-5 pt-5">
+          <DialogTitle>{L("Les personvernerklæringen", "Read the privacy statement")}</DialogTitle>
+          <DialogDescription>
+            {(a.acceptedVersion ?? 0) > 0
+              ? L(
+                  "Personvernerklæringen er endret. Les den før du fortsetter.",
+                  "The privacy statement has changed. Read it before you continue.",
+                )
+              : L(
+                  "Før du bruker Animatic Studio, må du lese hvordan vi behandler opplysningene dine.",
+                  "Before you use Animatic Studio, read how we process your information.",
+                )}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="max-h-[55vh] overflow-y-auto border-y border-border px-5 py-4">
+          <PrivacyStatement policy={policy.data ?? null} />
+        </div>
+        <DialogFooter className="flex-col items-stretch gap-2 px-5 pb-5 sm:flex-col">
+          <label className="flex items-center gap-2 text-[13px] text-text-primary">
+            <input
+              type="checkbox"
+              checked={readIt}
+              onChange={(e) => setReadIt(e.target.checked)}
+              className="size-4 accent-[var(--accent-brand)]"
+              data-testid="privacy-read"
+            />
+            {L("Jeg har lest personvernerklæringen", "I have read the privacy statement")}
+          </label>
+          {error ? <p className="text-xs text-status-danger">{error}</p> : null}
+          <div className="flex justify-between gap-2">
+            <Button variant="ghost" onClick={() => void signOut()}>
+              {L("Logg ut", "Sign out")}
+            </Button>
+            <Button
+              disabled={!readIt || busy}
+              onClick={() => void accept()}
+              data-testid="privacy-accept-button"
+            >
+              {L("Fortsett", "Continue")}
+            </Button>
+          </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/** Lenke til personvernerklæringen (forsiden, kontosiden). */
+export function PrivacyLink({ className }: { className?: string }) {
+  return (
+    <Link
+      to="/personvern"
+      className={
+        className ??
+        "text-xs text-text-tertiary underline-offset-2 hover:text-text-secondary hover:underline"
+      }
+    >
+      {L("Personvern", "Privacy")}
+    </Link>
+  );
+}

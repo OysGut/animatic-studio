@@ -3119,12 +3119,19 @@ try {
       `notatet ble ikke lagret: ${JSON.stringify(loaded.productions[main.id])}`,
     );
     const [row] = await sql`select description from public.productions where id = ${main.id}`;
-    assert(row!["description"] === "Hovedfilmen – 12 min\nTil festivalen", "description-kolonnen er feil");
+    assert(
+      row!["description"] === "Hovedfilmen – 12 min\nTil festivalen",
+      "description-kolonnen er feil",
+    );
     await expectError(
       sql`update public.productions set description = ${"x".repeat(2001)} where id = ${main.id}`,
       /check/,
     );
-    st = await runCommand(st, ALICE, { type: "SetProductionNote", productionId: main.id, note: "" });
+    st = await runCommand(st, ALICE, {
+      type: "SetProductionNote",
+      productionId: main.id,
+      note: "",
+    });
     loaded = await loadState(projectId);
     assert(!loaded.productions[main.id]?.note, "notatet ble ikke tømt");
   });
@@ -3156,6 +3163,115 @@ try {
     });
     loaded = await loadState(projectId);
     assert(!loaded.occurrences[occ.id]?.videoInstructions, "instruksene ble ikke tømt");
+  });
+
+  await test("0033 (DEC-0086): fast administrator, blokkering, låste prosjekter, språk og personvern", async () => {
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 33, "schema_version er ikke 33");
+    const OYSTEIN = "55555555-5555-7555-8555-555555555555";
+    await sql`insert into auth.users (id, email) values (${OYSTEIN}, 'Oystein@gutu.no') on conflict do nothing`;
+    const acct = async (u: string) =>
+      (await as("authenticated", u, (tx) => tx`select public.my_account() as a`))[0]![
+        "a"
+      ] as Record<string, unknown>;
+    // Den faste administratoren er admin uten å stå i tabellen; vanlige brukere er det ikke
+    assert((await acct(OYSTEIN))["is_admin"] === true, "oystein@gutu.no er ikke admin");
+    assert((await acct(OYSTEIN))["permanent_admin"] === true, "oystein@gutu.no er ikke fast admin");
+    assert((await acct(CAROL))["is_admin"] === false, "Carol er admin");
+    await sql`insert into public.app_admins (user_id) values (${CAROL})`;
+    assert((await acct(CAROL))["is_admin"] === true, "Carol ble ikke admin");
+    await sql`delete from public.app_admins where user_id = ${CAROL}`;
+    // Nettleseren kan ikke gjøre seg selv til admin eller endre kontostatus
+    await expectError(
+      as(
+        "authenticated",
+        CAROL,
+        (tx) => tx`insert into public.app_admins (user_id) values (${CAROL})`,
+      ),
+      "42501",
+    );
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`update public.account_status set status = 'active'`),
+      "42501",
+    );
+    // Sist aktiv og språk
+    await as("authenticated", ALICE, (tx) => tx`select public.touch_activity()`);
+    const [s1] =
+      await sql`select last_active_at from public.account_status where user_id = ${ALICE}`;
+    assert(s1 && s1["last_active_at"], "sist aktiv ble ikke lagret");
+    await as("authenticated", ALICE, (tx) => tx`select public.set_my_locale('en')`);
+    assert((await acct(ALICE))["locale"] === "en", "språket ble ikke lagret");
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`select public.set_my_locale('de')`),
+      /Ukjent språk/,
+    );
+    // Personvern: kan leses uten innlogging; godkjenning lagres per versjon
+    const pol = await as("anon", null, (tx) => tx`select version from public.privacy_policy`);
+    assert(pol.length >= 1, "personvernerklæringen kan ikke leses uten innlogging");
+    await as("authenticated", ALICE, (tx) => tx`select public.accept_privacy(1)`);
+    assert((await acct(ALICE))["accepted_version"] === 1, "godkjenningen ble ikke lagret");
+
+    // Et blokkert medlem (ikke eier) kan ikke skrive; eieren kan fortsatt
+    let st = await loadState(projectId);
+    const occ = Object.values(st.occurrences)[0]!;
+    const rank = async (u: string) =>
+      Number((await sql`select private.member_role_rank(${projectId}, ${u}) as r`)[0]!["r"]);
+    await sql`update public.project_members set role = 'editor' where project_id = ${projectId} and user_id = ${BOB}`;
+    assert((await rank(BOB)) === 3, "Bob er ikke redaktør");
+    await sql`insert into public.account_status (user_id, status) values (${BOB}, 'blocked')
+              on conflict (user_id) do update set status = 'blocked'`;
+    assert((await rank(BOB)) === 0, "en blokkert redaktør kan fortsatt skrive");
+    assert((await rank(ALICE)) === 4, "eieren mistet tilgangen da et medlem ble blokkert");
+    st = await runCommand(st, ALICE, {
+      type: "SetSceneVideoInstructions",
+      occurrenceId: occ.id,
+      text: "fortsatt åpent",
+    });
+    // Eieren blokkeres: prosjektet låses for alle, også redaktørene
+    await sql`update public.account_status set status = 'active' where user_id = ${BOB}`;
+    await sql`insert into public.account_status (user_id, status) values (${ALICE}, 'blocked')
+              on conflict (user_id) do update set status = 'blocked'`;
+    assert((await rank(BOB)) === 0, "en redaktør kan skrive i et prosjekt der eieren er blokkert");
+    const info = (
+      await as("authenticated", BOB, (tx) => tx`select public.project_lock_info(${projectId}) as i`)
+    )[0]!["i"] as Record<string, unknown>;
+    assert(info["lock"] === "owner_blocked", `feil låsegrunn: ${JSON.stringify(info)}`);
+    assert(info["admin_email"] === "oystein@gutu.no", "administratorens e-post mangler");
+    const outsider = (
+      await as(
+        "authenticated",
+        CAROL,
+        (tx) => tx`select public.project_lock_info(${projectId}) as i`,
+      )
+    )[0]!["i"];
+    assert(
+      outsider === null ||
+        (
+          await sql`select 1 from public.project_members where project_id = ${projectId} and user_id = ${CAROL} and removed_at is null`
+        ).length > 0,
+      "en som ikke er medlem fikk låseinformasjon",
+    );
+    await expectError(
+      runCommand(st, BOB, { type: "SetSceneVideoInstructions", occurrenceId: occ.id, text: "x" }),
+      /./,
+    );
+    // Låst for sletting gir samme lås; kontrollen på delete_after holder
+    await expectError(
+      sql`update public.account_status set status = 'deleting' where user_id = ${ALICE}`,
+      /check/,
+    );
+    await sql`update public.account_status set status = 'deleting', delete_after = now() + interval '30 days' where user_id = ${ALICE}`;
+    const [l2] = await sql`select private.project_lock(${projectId}) as l`;
+    assert(l2!["l"] === "owner_deleting", `feil lås: ${l2!["l"]}`);
+    // Låses opp: alt virker som før
+    await sql`update public.account_status set status = 'active', delete_after = null where user_id = ${ALICE}`;
+    assert((await rank(BOB)) === 3, "Bob fikk ikke tilgangen tilbake");
+    st = await runCommand(st, ALICE, {
+      type: "SetSceneVideoInstructions",
+      occurrenceId: occ.id,
+      text: "",
+    });
+    await sql`update public.project_members set role = 'viewer' where project_id = ${projectId} and user_id = ${BOB}`;
   });
 
   await test("DEC-0049: sikkerhetskopi gjenopprettes som nytt prosjekt via apply_changes; alt leses tilbake likt", async () => {

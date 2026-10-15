@@ -10,7 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as InvitasjonRouteImport } from './routes/invitasjon'
+import { Route as KontoRouteImport } from './routes/konto'
+import { Route as PersonvernRouteImport } from './routes/personvern'
 import { Route as ProsjektProjectIdRouteImport } from './routes/prosjekt.$projectId'
 import { Route as ProsjektProjectIdIndexRouteImport } from './routes/prosjekt.$projectId.index'
 import { Route as ProsjektProjectIdBibliotekRouteImport } from './routes/prosjekt.$projectId.bibliotek'
@@ -25,9 +28,24 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InvitasjonRoute = InvitasjonRouteImport.update({
   id: '/invitasjon',
   path: '/invitasjon',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KontoRoute = KontoRouteImport.update({
+  id: '/konto',
+  path: '/konto',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PersonvernRoute = PersonvernRouteImport.update({
+  id: '/personvern',
+  path: '/personvern',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProsjektProjectIdRoute = ProsjektProjectIdRouteImport.update({
@@ -76,7 +94,10 @@ const ApiPublicCronAiJobsRoute = ApiPublicCronAiJobsRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/invitasjon': typeof InvitasjonRoute
+  '/konto': typeof KontoRoute
+  '/personvern': typeof PersonvernRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
@@ -88,7 +109,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/invitasjon': typeof InvitasjonRoute
+  '/konto': typeof KontoRoute
+  '/personvern': typeof PersonvernRoute
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
@@ -100,7 +124,10 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/invitasjon': typeof InvitasjonRoute
+  '/konto': typeof KontoRoute
+  '/personvern': typeof PersonvernRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
@@ -114,7 +141,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/invitasjon'
+    | '/konto'
+    | '/personvern'
     | '/prosjekt/$projectId'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
@@ -126,7 +156,10 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/invitasjon'
+    | '/konto'
+    | '/personvern'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/montering'
@@ -137,7 +170,10 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/invitasjon'
+    | '/konto'
+    | '/personvern'
     | '/prosjekt/$projectId'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
@@ -150,7 +186,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   InvitasjonRoute: typeof InvitasjonRoute
+  KontoRoute: typeof KontoRoute
+  PersonvernRoute: typeof PersonvernRoute
   ProsjektProjectIdRoute: typeof ProsjektProjectIdRouteWithChildren
   ApiPublicCronAiJobsRoute: typeof ApiPublicCronAiJobsRoute
 }
@@ -164,11 +203,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/invitasjon': {
       id: '/invitasjon'
       path: '/invitasjon'
       fullPath: '/invitasjon'
       preLoaderRoute: typeof InvitasjonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/konto': {
+      id: '/konto'
+      path: '/konto'
+      fullPath: '/konto'
+      preLoaderRoute: typeof KontoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/personvern': {
+      id: '/personvern'
+      path: '/personvern'
+      fullPath: '/personvern'
+      preLoaderRoute: typeof PersonvernRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/prosjekt/$projectId': {
@@ -253,7 +313,10 @@ const ProsjektProjectIdRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   InvitasjonRoute: InvitasjonRoute,
+  KontoRoute: KontoRoute,
+  PersonvernRoute: PersonvernRoute,
   ProsjektProjectIdRoute: ProsjektProjectIdRouteWithChildren,
   ApiPublicCronAiJobsRoute: ApiPublicCronAiJobsRoute,
 }

@@ -59,6 +59,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { updateQueuedJob } from "@/adapters/ai/queue.functions";
 import { aiJobsKey, useAiJobs } from "./use-ai-jobs";
+import { RefetchVideoButton, canRefetchVideo } from "./RefetchVideoButton";
 import { ProvidersDialog } from "./ProvidersDialog";
 import { claimVideo } from "./video-jobs";
 import { useProjectProviders } from "./use-project-providers";
@@ -454,6 +455,9 @@ export function AiPanel({
                         {L("Vis", "View")}
                       </Link>
                     </Button>
+                  ) : null}
+                  {editable && canRefetchVideo(j) ? (
+                    <RefetchVideoButton projectId={projectId} job={j} />
                   ) : null}
                   {editable && unclaimedIds.has(j.id) ? (
                     <Button

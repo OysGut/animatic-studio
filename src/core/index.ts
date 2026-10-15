@@ -33,6 +33,7 @@ export * from "./assembly";
 export * from "./audio";
 export * from "./generation/prompt";
 export * from "./generation/cost";
+export * from "./generation/cost-report";
 export * from "./generation/scene-prompt";
 export * from "./generation/style";
 export * from "./generation/image-prompt";

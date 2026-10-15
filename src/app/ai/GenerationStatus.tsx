@@ -19,6 +19,7 @@ import {
   type ProjectState,
 } from "@/core";
 import { useAiJobs } from "./use-ai-jobs";
+import { RefetchVideoButton, canRefetchVideo } from "./RefetchVideoButton";
 import { projectStateKey } from "@/app/project/use-project";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
@@ -177,6 +178,11 @@ export function GenerationStatus({ projectId }: { projectId: string }) {
                 </div>
                 {j.error && st !== "done" ? (
                   <p className="text-[11px] text-status-danger">{tm(j.error).slice(0, 200)}</p>
+                ) : null}
+                {canRefetchVideo(j) ? (
+                  <div className="mt-1">
+                    <RefetchVideoButton projectId={projectId} job={j} size="xs" />
+                  </div>
                 ) : null}
               </li>
             );

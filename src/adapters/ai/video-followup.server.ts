@@ -3,13 +3,12 @@
  * (pollVideoJob) og av bakgrunnskøen (/api/public/cron/ai-jobs), så videoer hentes inn også når ingen har
  * prosjektet åpent. Ferdige videoer lagres i `<prosjekt>/films/<take>/ai-video.mp4`; bare én henter vinner.
  */
-import { L, lastFramePath, newId, SCENE_VIDEO_SOURCE } from "@/core";
+import { L, lastFramePath, newId, SCENE_VIDEO_SOURCE, VIDEO_JOB_MAX_MS } from "@/core";
 import type { KeyRow } from "./ai-gate.server";
 import type { AnyClient } from "@/adapters/storage/project-rows";
 
 const BUCKET = "assets";
-/** En jobb som ikke er ferdig etter dette, regnes som stoppet hos leverandøren. */
-export const VIDEO_JOB_MAX_MS = 3 * 60 * 60 * 1000;
+export { VIDEO_JOB_MAX_MS };
 
 export type PollVideoResult =
   | { readonly state: "running"; readonly progress?: number }
@@ -72,11 +71,16 @@ export async function followUpVideoJob(
         )
       : { state: "running" };
   }
-  // Tiden regnes fra jobben ble sendt (den kan ha ventet lenge i køen)
-  if (Date.now() - Date.parse(job.started_at ?? job.created_at) > VIDEO_JOB_MAX_MS)
-    // Kan være belastet hos leverandøren: regnes med i taket
-    return fail(
-      L("Videoen ble ikke hentet inn i tide.", "The video was not fetched in time."),
+  // Tiden regnes fra jobben ble sendt (den kan ha ventet lenge i køen). Leverandøren spørres ALLTID først
+  // (DEC-0086): en video som ble ferdig mens ingen hadde prosjektet åpent, skal hentes inn, ikke tapes.
+  const tooOld = Date.now() - Date.parse(job.started_at ?? job.created_at) > VIDEO_JOB_MAX_MS;
+  // Kan være belastet hos leverandøren: regnes med i taket
+  const giveUp = () =>
+    fail(
+      L(
+        "Leverandøren ble ikke ferdig med videoen innen sju dager.",
+        "The provider did not finish the video within seven days.",
+      ),
       "lost",
     );
   if (!job.provider_key_id)
@@ -120,6 +124,7 @@ export async function followUpVideoJob(
       return fail(L("Leverandøren lager ikke video.", "The provider does not make video."));
     const r = await adapter.pollVideo(secret, job.model, job.external_id);
     if (r.state === "running") {
+      if (tooOld) return giveUp();
       if (typeof r.progress === "number")
         await db
           .from("generation_jobs")
@@ -170,6 +175,7 @@ export async function followUpVideoJob(
     // Varig avslag fra leverandøren (ikke for mange forespørsler): stopp oppfølgingen
     if (e instanceof ProviderError && e.status >= 400 && e.status < 500 && e.status !== 429)
       return fail(scrubSecret(e.message, secret));
+    if (tooOld) return giveUp();
     // Nettfeil: prøv igjen ved neste oppfølging (jobben står fortsatt hos leverandøren)
     // Aldri nøkkelen i loggen (REQ-0414): leverandøren kan gjenta den i feilteksten
     console.warn(

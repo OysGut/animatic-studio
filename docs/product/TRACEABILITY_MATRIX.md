@@ -40,16 +40,16 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | CAMERA | Camera & Motion Engine | 32 | 2 | 32 | 32 |
 | AUDIO | Audio Engine | 42 | 2 | 42 | 42 |
 | PROMPT | Prompt Orchestration Engine | 58 | 15 | 54 | 50 |
-| PROVIDER | Provider Adapters | 44 | 6 | 42 | 37 |
-| QUALITYCOST | Quality & Cost Engine | 29 | 7 | 28 | 28 |
-| QUEUE | Render Queue | 35 | 13 | 35 | 32 |
+| PROVIDER | Provider Adapters | 45 | 6 | 43 | 38 |
+| QUALITYCOST | Quality & Cost Engine | 30 | 7 | 29 | 29 |
+| QUEUE | Render Queue | 36 | 13 | 36 | 33 |
 | VERSION | Version & Dependency Engine | 93 | 38 | 91 | 89 |
 | L10N | Localization Engine | 40 | 4 | 39 | 39 |
 | PRESENT | Presentation Engine | 30 | 3 | 25 | 25 |
 | EXPORT | Export Engine | 59 | 12 | 59 | 58 |
-| SECURITY | Security & Storage | 34 | 5 | 33 | 32 |
-| COLLAB | Collaboration & Access | 15 | 0 | 15 | 15 |
-| UI | Brukergrensesnitt og designsystem | 181 | 21 | 176 | 172 |
+| SECURITY | Security & Storage | 38 | 5 | 37 | 36 |
+| COLLAB | Collaboration & Access | 16 | 0 | 16 | 16 |
+| UI | Brukergrensesnitt og designsystem | 182 | 21 | 177 | 173 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 7 | 5 |
 
 ## Dekning per fase
@@ -60,7 +60,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | 2 | 97 | 91 |
 | 3 | 70 | 67 |
 | 4 | 85 | 83 |
-| 5 | 133 | 122 |
+| 5 | 140 | 129 |
 | 6 | 49 | 48 |
 | 7 | 63 | 62 |
 | 8 | 39 | 25 |
@@ -718,3 +718,10 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0646 | Beslutning DEC-0085 | PROVIDER | src/engine/export/animatic.ts, src/app/assembly/ExportAnimaticDialog.tsx | 1 | tests/visual/export-e2e.mjs, docs/development/VISUAL_QA_DEC-0085.md | Verifisert | 2026-10-15 DEC-0085: Opprettet etter Mars' ønske 15.10.2026 |
 | REQ-0647 | Beslutning DEC-0085 | PROVIDER | src/app/ai/GenerationStatus.tsx, src/app/shell/AppHeader.tsx | 1 | tests/visual/scene-video-ui.mjs, docs/development/VISUAL_QA_DEC-0085.md | Verifisert | 2026-10-15 DEC-0085: Opprettet etter Mars' ønske 15.10.2026 |
 | REQ-0648 | Beslutning DEC-0085 | PROVIDER | src/app/scene-editor/SceneEditorWorkspace.tsx, src/app/scene-editor/PreviewWindow.tsx | 1 | tests/visual/scene-video-ui.mjs, docs/development/VISUAL_QA_DEC-0085.md | Verifisert | 2026-10-15 DEC-0085: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0649 | Beslutning DEC-0086 | QUEUE, PROVIDER | src/adapters/ai/video-followup.server.ts, src/adapters/ai/video.functions.ts, src/app/ai/RefetchVideoButton.tsx, src/core/generation/cost.ts | 1 | tests/unit/verifisering3-ai-server.test.ts, docs/development/VISUAL_QA_DEC-0086.md | Verifisert | 2026-10-15 DEC-0086: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0650 | Beslutning DEC-0086 | SECURITY | db/migrations/0033_accounts_admin_privacy.sql, src/adapters/account/admin.functions.ts, src/app/admin/AdminPage.tsx, src/routes/admin.tsx | 3 | tests/unit/account-admin.test.ts, tests/db/run-db-tests.ts, tests/visual/account-admin-ui.mjs, docs/development/VISUAL_QA_DEC-0086.md | Verifisert | 2026-10-15 DEC-0086: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0651 | Beslutning DEC-0086 | SECURITY | src/adapters/account/account.functions.ts, src/adapters/account/admin.functions.ts, src/app/account/AccountPage.tsx | 2 | tests/unit/account-admin.test.ts, tests/visual/account-admin-ui.mjs, docs/development/VISUAL_QA_DEC-0086.md | Verifisert | 2026-10-15 DEC-0086: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0652 | Beslutning DEC-0086 | SECURITY, COLLAB | db/migrations/0033_accounts_admin_privacy.sql, src/adapters/account/lock.server.ts, src/routes/prosjekt.$projectId.tsx | 3 | tests/db/run-db-tests.ts, tests/unit/account-admin.test.ts, tests/visual/account-admin-ui.mjs, docs/development/VISUAL_QA_DEC-0086.md | Verifisert | 2026-10-15 DEC-0086: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0653 | Beslutning DEC-0086 | SECURITY | src/app/account/PrivacyStatement.tsx, src/app/account/use-account.tsx, src/routes/personvern.tsx, src/app/auth/AuthScreen.tsx | 3 | tests/db/run-db-tests.ts, tests/unit/account-admin.test.ts, tests/visual/account-admin-ui.mjs, docs/development/VISUAL_QA_DEC-0086.md | Verifisert | 2026-10-15 DEC-0086: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0654 | Beslutning DEC-0086 | QUALITYCOST | src/core/generation/cost-report.ts, src/app/account/CostReportView.tsx, src/app/account/cost-export.ts, src/adapters/account/account.functions.ts | 3 | tests/unit/cost-report.test.ts, tests/unit/account-admin.test.ts, tests/visual/account-admin-ui.mjs, docs/development/VISUAL_QA_DEC-0086.md | Verifisert | 2026-10-15 DEC-0086: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0655 | Beslutning DEC-0086 | UI | src/app/account/AccountPage.tsx, src/app/shell/AppHeader.tsx, src/adapters/browser/account.ts, src/routes/konto.tsx | 2 | tests/db/run-db-tests.ts, tests/visual/account-admin-ui.mjs, docs/development/VISUAL_QA_DEC-0086.md | Verifisert | 2026-10-15 DEC-0086: Opprettet etter Mars' ønske 15.10.2026 |
