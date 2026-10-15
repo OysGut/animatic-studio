@@ -1681,6 +1681,7 @@ export type Database = {
           transition_kind: string
           transition_overlap: boolean
           variant_id: string
+          video_instructions: string
         }
         Insert: {
           active?: boolean
@@ -1703,6 +1704,7 @@ export type Database = {
           transition_kind?: string
           transition_overlap?: boolean
           variant_id: string
+          video_instructions?: string
         }
         Update: {
           active?: boolean
@@ -1725,6 +1727,7 @@ export type Database = {
           transition_kind?: string
           transition_overlap?: boolean
           variant_id?: string
+          video_instructions?: string
         }
         Relationships: [
           {
