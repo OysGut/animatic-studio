@@ -221,4 +221,10 @@
 | KI-217 | 2026-10-15 | I et låst prosjekt stopper databasen all skriving, men medlemmer kan teknisk fortsatt lese dataene via API-et; appen viser bare meldingen | Ingen ny tilgang (de var medlemmer fra før) | – | Akseptert |
 | KI-218 | 2026-10-15 | Kronebeløpene krever at serveren når Norges Bank (data.norges-bank.no). Ellers vises dollar med en melding | Ingen kroner i rapporten akkurat da | Prøv igjen senere | Akseptert |
 | KI-219 | 2026-10-15 | Prosjekter som ikke har noen aktiv eier fra før (feil i gamle data), blir låst etter migrasjon 0033 | Medlemmene ser «Prosjektet er låst» | Administrator gir prosjektet en eier på adminsiden | Akseptert |
+| KI-220 | 2026-10-15 | Deler laget med AI (DEC-0088) har ukjent plass i originalbildet; når de legges i scenen, plasseres de som hele bildet | Må flyttes på plass | Bruk delelinjene for deler som skal ligge der de lå | Akseptert begrensning |
+| KI-221 | 2026-10-15 | En modell administrator legger til hos en kjent leverandør (DEC-0088), arver malens tekniske oppsett (parametere og format) | Modeller med annet oppsett kan feile hos leverandøren | Be om at Claude legger modellen inn i katalogen | Akseptert begrensning |
+| KI-222 | 2026-10-15 | «Side om side» i sceneeditoren (DEC-0088) flytter alle fire panelene til høyre, også «I denne scenen»; på skjermer under ca. 1700 px rulles panelene sidelengs | Siste panel kan være delvis utenfor til man ruller | Bytt tilbake til stablet | Akseptert begrensning |
+| KI-223 | 2026-10-15 | «Notater fra andre» i TODO-boksen (DEC-0088) skilles på visningsnavn; notater har ikke bruker-ID | To med samme visningsnavn regnes som samme person | Bruk ulike visningsnavn | Akseptert begrensning |
+| KI-224 | 2026-10-15 | Notater har ingen «løst»-status; notater fra andre står i TODO-boksen til de slettes | Gamle notater blir stående | Slett notatet når det er tatt hånd om | Akseptert begrensning |
+| KI-225 | 2026-10-15 | ‹ › for oppgaven i toppstripen (DEC-0088) regner fra sist valgte scene i fanen; utenfor manus og sceneeditor åpnes sceneeditoren | – | – | Akseptert begrensning |
 

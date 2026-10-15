@@ -169,6 +169,10 @@ export interface NewAnnotation {
   readonly authorName: string;
   /** Tidsstempel (ISO). Utelatt = nå. Ved import fra fil: originalens tidspunkt. */
   readonly stampAt?: string;
+  /** Merknad fra programmet (DEC-0088). */
+  readonly source?: "system";
+  /** Oppgaven merknaden hører til (DEC-0088). */
+  readonly taskId?: string;
 }
 
 /** Opplastet bilde for en ressursversjon (filen ligger i den private bøtten «assets»). */
@@ -548,6 +552,30 @@ export type Command =
       readonly restore?: boolean;
     }
   /** Betegnelser i bestemte manuslinjer (REQ-0127, DEC-0071); erstatter hele listen. */
+  | {
+      /**
+       * Planlegg et element i flere scener (DEC-0088): legges til i elementets scenePlans. Finnes det fra før
+       * en plan for samme scene, erstattes den.
+       */
+      readonly type: "PlanAssetInScenes";
+      readonly assetId: AssetId;
+      readonly taskId: string;
+      readonly fromOccurrenceId: string;
+      readonly occurrenceIds: readonly string[];
+    }
+  | {
+      /** Fjern planer (alle for oppgaven, eller bare for noen scener). */
+      readonly type: "RemoveScenePlans";
+      readonly assetId: AssetId;
+      readonly taskId?: string;
+      readonly occurrenceIds?: readonly string[];
+    }
+  | {
+      /** Sett planene tilbake (angre). */
+      readonly type: "SetScenePlans";
+      readonly assetId: AssetId;
+      readonly plans: readonly import("../model").ScenePlan[];
+    }
   | {
       readonly type: "SetContextNames";
       readonly assetId: AssetId;

@@ -16,7 +16,7 @@ import {
   Redo2,
   Undo2,
 } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { BeyondEndNotice } from "./BeyondEndNotice";
 import { ContentSyncFlag } from "@/app/assembly/ContentSyncFlag";
 import { useContentSync } from "@/app/assembly/use-content-sync";
@@ -72,6 +72,9 @@ import { RecordAudioDialog } from "./RecordAudioDialog";
 import { SceneToVideoDialog } from "./SceneToVideoDialog";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { NeighbourScenes } from "./NeighbourScenes";
+import { PanelBar, SidePanels } from "./ScenePanels";
+import { useScenePanels } from "./use-scene-panels";
+import { LEFT_PANELS, type PanelId } from "./panel-layout";
 import { useFilmLanguage } from "@/app/assembly/use-film-language";
 import { ScriptChanges, useSceneDiscrepancies } from "@/app/assembly/ScriptChanges";
 import {
@@ -82,7 +85,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { usePlayback } from "./use-playback";
-import { lastScene, rememberScene } from "@/app/shell/current-scene";
+import { lastScene, onGotoScene, rememberScene } from "@/app/shell/current-scene";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ShortcutsButton, ShortcutsDialog } from "@/app/shortcuts/ShortcutsDialog";
 import { isShortcutHelpKey } from "@/app/shortcuts/shortcut-list";
@@ -325,6 +328,8 @@ function Editor({
   const [drawPathFor, setDrawPathFor] = useState<string | null>(null);
   const [leftWidth, setLeftWidth] = usePaneSize("scene-editor-left", 220, 180, 480);
   const [rightWidth, setRightWidth] = usePaneSize("scene-editor-right", 300, 240, 560);
+  /** Panelene stablet eller side om side, i brukerens rekkefølge (Mars 15.10.2026). */
+  const panelsUi = useScenePanels();
   const [error, setError] = useState<string | null>(null);
 
   // Valgt lag som er slettet eller tilhører en annen scene, velges bort
@@ -395,18 +400,30 @@ function Editor({
     playback.pause();
     playback.setFrame(0);
   }
+  // Oppgavene i toppstripen (DEC-0088): gå til neste/forrige scene som skal oppdateres
+  const pickRef = useRef(pickScene);
+  pickRef.current = pickScene;
+  useEffect(
+    () =>
+      onGotoScene(projectId, (id) => {
+        if (occurrences.some((o) => o.id === id)) pickRef.current(id);
+      }),
+    [projectId, occurrences],
+  );
 
   /** Ressurs fra «I denne scenen» med «+»: nytt lag øverst (bakgrunn nederst), midt i bildet. */
   const addAsset = useCallback(
     (assetId: string): string | null => {
       if (!composition) return null;
+      // Nyeste tilstand: et element som nettopp er laget («Legg til element», DEC-0088), er med
+      const now = cmds.current() ?? state;
       // Utseendet kontinuiteten gir i denne scenen (DEC-0055)
-      const f = defaultLayerFields(state, composition, {
+      const f = defaultLayerFields(now, composition, {
         assetId,
-        assetVariantId: sceneContinuityVariant(state, assetId, composition.variantId),
+        assetVariantId: sceneContinuityVariant(now, assetId, composition.variantId),
       });
       // Bakgrunner (lokasjon, miljø) dekker bildet og legges nederst; andre lag forskyves litt per lag
-      const n = f.kind === "background" ? 0 : layersOf(state, composition.id).length % 8;
+      const n = f.kind === "background" ? 0 : layersOf(now, composition.id).length % 8;
       const layerId = newId<"composition_layer">();
       const err = cmds.run(
         {
@@ -475,6 +492,100 @@ function Editor({
       ),
     );
   }
+
+  const side = panelsUi.mode === "side";
+  /** Innholdet i hvert panel (null = vises ikke nå). Plasseringen bestemmes av brukerens valg over. */
+  const panelContent: Record<PanelId, ReactNode | null> = {
+    assets: occurrence ? (
+      <SceneAssetsPanel
+        state={state}
+        projectId={projectId}
+        productionId={productionId}
+        occurrenceId={occurrence.id}
+        editable={editable}
+        onAdd={composition ? addAsset : null}
+        cmds={cmds}
+        layersByAsset={layersByAsset}
+        onOpenImage={(assetId) => {
+          // Samme bildevalg som dobbeltklikk på laget i scenen; ikke i scenen ennå: legg inn først
+          const id = layersByAsset.get(assetId)?.[0] ?? (editable ? addAsset(assetId) : null);
+          if (id) openLayerImage(id);
+        }}
+      />
+    ) : null,
+    nearbyAudio:
+      occurrence && film.length > 1 && film.some((c) => c.occurrenceId === occurrence.id) ? (
+        <NearbyAudioPanel
+          state={state}
+          clips={film}
+          occurrenceId={occurrence.id}
+          editable={audioEditable}
+          run={cmds.run}
+        />
+      ) : null,
+    layers: composition ? (
+      <LayersPanel
+        hideHeading={side}
+        state={state}
+        composition={composition}
+        editable={editable}
+        selectedLayerId={selectedLayer?.id ?? null}
+        onSelect={setSelectedLayerId}
+        run={cmds.run}
+        onOpenImage={openLayerImage}
+        frame={playback.playing ? 0 : playback.frame}
+      />
+    ) : null,
+    properties: composition ? (
+      selectedShot ? (
+        <CameraPanel
+          key={selectedShot.id}
+          previousFrame={
+            occurrenceId
+              ? (previousSceneCamera(state, productionId, occurrenceId, composition)?.frame ?? null)
+              : null
+          }
+          composition={composition}
+          shot={selectedShot}
+          durationFrames={duration}
+          fps={state.project.fps}
+          editable={editable}
+          run={cmds.run}
+          onRemoved={() => setSelectedShotId(null)}
+        />
+      ) : selectedLayer ? (
+        <LayerInspector
+          key={selectedLayer.id}
+          state={state}
+          composition={composition}
+          layer={selectedLayer}
+          editable={editable}
+          run={cmds.run}
+          frame={playback.frame}
+          autoKey={autoKey}
+          onOpenImage={() => openLayerImage(selectedLayer.id)}
+          onUpscale={() => {
+            setUpscaleOpen(true);
+            openLayerImage(selectedLayer.id);
+          }}
+          onSeek={playback.setFrame}
+          durationFrames={duration}
+          drawingPath={drawingPath}
+          onDrawingPathChange={(on) => {
+            if (on) setView("scene");
+            setDrawPathFor(on ? selectedLayer.id : null);
+          }}
+        />
+      ) : (
+        <CompositionInspector
+          key={composition.id}
+          composition={composition}
+          editable={editable}
+          run={cmds.run}
+        />
+      )
+    ) : null,
+  };
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -702,55 +813,45 @@ function Editor({
       </div>
 
       <div className="flex min-h-0 flex-1">
-        {/* Ressursene i scenen */}
-        <div
-          style={{ width: leftWidth }}
-          className="relative flex shrink-0 flex-col border-r border-border bg-surface-1"
-        >
-          <PaneResizer
-            edge="right"
-            size={leftWidth}
-            onSize={setLeftWidth}
-            min={180}
-            max={480}
-            label={L("Bredde på «I denne scenen»", "Width of “In this scene”")}
-          />
-          {occurrences.length === 0 ? (
-            <p className="px-3 py-3 text-xs text-text-tertiary">
-              {L("Ingen scener. Importer manuset først.", "No scenes. Import the script first.")}
-            </p>
-          ) : null}
-          {occurrence ? (
-            <div className="flex min-h-0 flex-1 flex-col">
-              <SceneAssetsPanel
-                state={state}
-                projectId={projectId}
-                productionId={productionId}
-                occurrenceId={occurrence.id}
-                editable={editable}
-                onAdd={composition ? addAsset : null}
-                cmds={cmds}
-                layersByAsset={layersByAsset}
-                onOpenImage={(assetId) => {
-                  // Samme bildevalg som dobbeltklikk på laget i scenen; ikke i scenen ennå: legg inn først
-                  const id =
-                    layersByAsset.get(assetId)?.[0] ?? (editable ? addAsset(assetId) : null);
-                  if (id) openLayerImage(id);
-                }}
-              />
-              <NearbyAudioPanel
-                state={state}
-                clips={film}
-                occurrenceId={occurrence.id}
-                editable={audioEditable}
-                run={cmds.run}
-              />
-            </div>
-          ) : null}
-        </div>
+        {/* Ressursene i scenen (side om side står de sammen med de andre panelene til høyre) */}
+        {side ? null : (
+          <div
+            style={{ width: leftWidth }}
+            className="relative flex shrink-0 flex-col border-r border-border bg-surface-1"
+          >
+            <PaneResizer
+              edge="right"
+              size={leftWidth}
+              onSize={setLeftWidth}
+              min={180}
+              max={480}
+              label={L("Bredde på «I denne scenen»", "Width of “In this scene”")}
+            />
+            {occurrences.length === 0 ? (
+              <p className="px-3 py-3 text-xs text-text-tertiary">
+                {L("Ingen scener. Importer manuset først.", "No scenes. Import the script first.")}
+              </p>
+            ) : null}
+            {occurrence ? (
+              <div className="flex min-h-0 flex-1 flex-col">
+                {panelsUi.order
+                  .filter((id) => LEFT_PANELS.has(id))
+                  .map((id) => (
+                    <Fragment key={id}>{panelContent[id]}</Fragment>
+                  ))}
+              </div>
+            ) : null}
+          </div>
+        )}
 
         {/* Arbeidsflaten */}
-        <main className="flex min-w-0 flex-1 flex-col bg-surface-0">
+        <main
+          className={
+            "flex flex-1 flex-col bg-surface-0 " +
+            // Side om side: lerretet beholder en brukbar bredde; panelområdet ruller sidelengs
+            (side ? "min-w-[480px]" : "min-w-0")
+          }
+        >
           {!occurrence || !variant ? (
             <p className="m-auto text-[13px] text-text-tertiary">
               {occurrences.length === 0
@@ -947,8 +1048,15 @@ function Editor({
           )}
         </main>
 
-        {/* Lag og egenskaper */}
-        {composition ? (
+        {/* Lag og egenskaper (side om side: alle panelene i kolonner, i brukerens rekkefølge) */}
+        {side && occurrence ? (
+          <SidePanels
+            order={panelsUi.order}
+            panels={panelContent}
+            onOrder={panelsUi.setOrder}
+            onMode={panelsUi.setMode}
+          />
+        ) : composition ? (
           <aside
             aria-label={L("Lag og egenskaper", "Layers and properties")}
             style={{ width: rightWidth }}
@@ -962,66 +1070,14 @@ function Editor({
               max={560}
               label={L("Bredde på lag og egenskaper", "Width of layers and properties")}
             />
-            <LayersPanel
-              state={state}
-              composition={composition}
-              editable={editable}
-              selectedLayerId={selectedLayer?.id ?? null}
-              onSelect={setSelectedLayerId}
-              run={cmds.run}
-              onOpenImage={openLayerImage}
-              frame={playback.playing ? 0 : playback.frame}
-            />
-            <div className="border-t border-border">
-              {selectedShot ? (
-                <CameraPanel
-                  key={selectedShot.id}
-                  previousFrame={
-                    occurrenceId
-                      ? (previousSceneCamera(state, productionId, occurrenceId, composition)
-                          ?.frame ?? null)
-                      : null
-                  }
-                  composition={composition}
-                  shot={selectedShot}
-                  durationFrames={duration}
-                  fps={state.project.fps}
-                  editable={editable}
-                  run={cmds.run}
-                  onRemoved={() => setSelectedShotId(null)}
-                />
-              ) : selectedLayer ? (
-                <LayerInspector
-                  key={selectedLayer.id}
-                  state={state}
-                  composition={composition}
-                  layer={selectedLayer}
-                  editable={editable}
-                  run={cmds.run}
-                  frame={playback.frame}
-                  autoKey={autoKey}
-                  onOpenImage={() => openLayerImage(selectedLayer.id)}
-                  onUpscale={() => {
-                    setUpscaleOpen(true);
-                    openLayerImage(selectedLayer.id);
-                  }}
-                  onSeek={playback.setFrame}
-                  durationFrames={duration}
-                  drawingPath={drawingPath}
-                  onDrawingPathChange={(on) => {
-                    if (on) setView("scene");
-                    setDrawPathFor(on ? selectedLayer.id : null);
-                  }}
-                />
-              ) : (
-                <CompositionInspector
-                  key={composition.id}
-                  composition={composition}
-                  editable={editable}
-                  run={cmds.run}
-                />
-              )}
-            </div>
+            <PanelBar mode="stacked" onChange={panelsUi.setMode} />
+            {panelsUi.order
+              .filter((id) => !LEFT_PANELS.has(id) && panelContent[id])
+              .map((id, i) => (
+                <div key={id} className={i > 0 ? "border-t border-border" : undefined}>
+                  {panelContent[id]}
+                </div>
+              ))}
           </aside>
         ) : null}
       </div>

@@ -6,11 +6,17 @@
  * Bildeverktøy (DEC-0080, når visningen får `tools`): frilegg, fjern luften rundt, utsnitt med fri markering
  * (gis navn og legges i et eksisterende eller nytt objekt), del opp i ruter (karakterark), vinkelen bildet
  * viser, lag andre vinkler og oppskaler. Alt lagres som nye versjoner; originalen beholdes.
+ *
+ * Mars 15.10.2026: delelinjene i «Del opp» kan dras hver for seg, og hver rute får et navn i sidepanelet
+ * (rute med fokus: varm gul ramme). «Fjern luften rundt» virker også på hvit/ensfarget bakgrunn. «Lag
+ * variasjoner …» ved siden av «Lag andre vinkler …», og «Deler …»: del et bilde i egne objekter (f.eks.
+ * dørramme og dørblad) med ankerpunkt.
  */
 import {
   Copy,
   Crop,
   Grid3x3,
+  Layers,
   Loader2,
   Maximize2,
   Minus,
@@ -19,26 +25,34 @@ import {
   Shrink,
   TextQuote,
   Rotate3d,
+  Shuffle,
   ZoomIn,
 } from "lucide-react";
-import { TurnaroundPanel, UpscalePanel, ViewLabel } from "./ImageAiPanels";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { TurnaroundPanel, UpscalePanel, VariationPanel, ViewLabel } from "./ImageAiPanels";
+import { PartsPanel, type PartsTab } from "./ImagePartsPanel";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   L,
   ASSET_KIND_LABEL,
   ASSET_KINDS,
+  cellAt,
+  cellsFromLines,
+  evenLines,
   formatJobTime,
-  gridCells,
   jobForResult,
   jobFromRow,
+  moveLine,
   newId,
   polygonBounds,
   sortedAssets,
   stripAttachedSection,
+  tileName,
   type Asset,
   type AssetKind,
   type AssetVersion,
+  type PartAnchor,
+  type PixelBox,
   type ProjectState,
 } from "@/core";
 import { fetchJobForResult } from "@/adapters/browser/ai";
@@ -56,8 +70,9 @@ import {
   canvasToPng,
   cropCanvas,
   loadImage,
+  noTrimMessage,
   saveImageTo,
-  trimCanvas,
+  trimCanvasInfo,
   type ImageTarget,
   type Polygon,
 } from "./image-actions";
@@ -100,17 +115,49 @@ export interface LightboxTools {
   readonly onCutout?: (version: AssetVersion) => void;
   /** Et nytt bilde er lagret (f.eks. for å vise det eller ta det i bruk). */
   readonly onSaved?: (r: { versionId: string; variantId: string; assetId: string }) => void;
+  /**
+   * «Legg delene i scenen» (Mars 15.10.2026, «Deler …»): delene som er laget, med plassen i originalbildet
+   * (`box`, i `source`-bildets piksler) og ankerpunktet. Utelatt: knappen vises ikke.
+   */
+  readonly onPlaceParts?: (
+    parts: readonly LightboxPart[],
+    source: { width: number; height: number },
+  ) => void;
 }
 
-type Mode = "view" | "select" | "grid";
-type AiPanel = "views" | "upscale";
+/** En del av et bilde som eget objekt (Mars 15.10.2026). */
+export interface LightboxPart {
+  readonly assetId: string;
+  readonly versionId: string;
+  /** Hvor delen lå i originalbildet (piksler). AI-deler: hele bildet. */
+  readonly box: PixelBox;
+  /** Ankerpunktet (for et dørblad: hengselsiden). */
+  readonly anchor: PartAnchor;
+}
+
+type Mode = "view" | "select" | "grid" | "parts";
+type AiPanel = "views" | "upscale" | "variations";
+
+/** Rutenettet i «Del opp»: antall og delelinjene (brøkdeler 0–1), Mars 15.10.2026. */
+interface GridState {
+  readonly cols: number;
+  readonly rows: number;
+  readonly xs: readonly number[];
+  readonly ys: readonly number[];
+}
+const newGrid = (cols: number, rows: number): GridState => ({
+  cols,
+  rows,
+  xs: evenLines(cols),
+  ys: evenLines(rows),
+});
 
 export function ImageLightbox({
   open,
   onOpenChange,
   projectId,
   version,
-  url,
+  url: urlProp,
   title,
   onInsertPrompt,
   tools,
@@ -129,6 +176,16 @@ export function ImageLightbox({
   tools?: LightboxTools;
 }) {
   const info = useImagePrompt(projectId, open && version ? version.mediaPath : null);
+  /**
+   * Lenken til bildet holdes mens en ny lenke hentes (når en ny versjon lagres, hentes lenkene på nytt og
+   * er et øyeblikk tomme): ellers blinker bildet og verktøypanelet tegnes på nytt, så det som er laget i
+   * økten (f.eks. delene) ble borte.
+   */
+  const [held, setHeld] = useState<{ id: string; url: string } | null>(null);
+  useEffect(() => {
+    if (urlProp && version) setHeld({ id: version.id, url: urlProp });
+  }, [urlProp, version]);
+  const url = urlProp ?? (held && version && held.id === version.id ? held.url : undefined);
   const box = useRef<HTMLDivElement | null>(null);
   /**
    * Boksen settes når dialogen faktisk er tegnet (den ligger i en portal og finnes ikke ved første effekt –
@@ -153,7 +210,16 @@ export function ImageLightbox({
   );
   const drawing = useRef<number | null>(null);
   const spaceDown = useRef(false);
-  const [grid, setGrid] = useState({ cols: 4, rows: 1 });
+  const [grid, setGrid] = useState<GridState>(() => newGrid(4, 1));
+  /** Navnene på rutene (fra sidepanelet) og ruten som har fokus (varm gul ramme). */
+  const [tileNames, setTileNames] = useState<string[]>([]);
+  const [activeTile, setActiveTile] = useState<number | null>(null);
+  const tileId = useId();
+  /** Delelinjen som dras (pekeren holdes fast på linjen). */
+  const lineDrag = useRef<{ axis: "x" | "y"; index: number; pointer: number } | null>(null);
+  /** «Deler …»: fanen, og områdene som er fjernet fra originalen i økten (vises skravert). */
+  const [partsTab, setPartsTab] = useState<PartsTab>("cut");
+  const [erased, setErased] = useState<Polygon[]>([]);
   const [busy, setBusy] = useState<string | null>(null);
   const [msg, setMsg] = useState<{ kind: "ok" | "error"; text: string } | null>(null);
   const [panel, setPanel] = useState<AiPanel | null>(initialPanel);
@@ -166,6 +232,8 @@ export function ImageLightbox({
     setPoly(null);
     setMsg(null);
     setPanel(initialPanel);
+    setActiveTile(null);
+    setErased([]);
   }, [version?.id, open, initialPanel]);
   useEffect(() => {
     const el = boxEl;
@@ -225,9 +293,39 @@ export function ImageLightbox({
 
   const canEdit = !!tools?.editable && !!version && version.mimeType.startsWith("image/") && !!url;
   const cells = useMemo(
-    () => (mode === "grid" && imgW && imgH ? gridCells(imgW, imgH, grid.cols, grid.rows) : []),
+    () => (mode === "grid" && imgW && imgH ? cellsFromLines(imgW, imgH, grid.xs, grid.ys) : []),
     [mode, imgW, imgH, grid],
   );
+  /** Fri markering: i «Utsnitt» og når en del klippes ut. */
+  const drawMode = mode === "select" || (mode === "parts" && partsTab === "cut");
+
+  /** Nytt antall kolonner/rader: delelinjene nullstilles (jevnt fordelt). */
+  function resizeGrid(g: { cols: number; rows: number }) {
+    setGrid(newGrid(g.cols, g.rows));
+    setActiveTile(null);
+  }
+  /** Fokuser navnefeltet for ruten i sidepanelet. */
+  function focusTile(i: number) {
+    setActiveTile(i);
+    // Feltet finnes når panelet er tegnet
+    requestAnimationFrame(() => document.getElementById(`${tileId}-tile-${i}`)?.focus());
+  }
+  /** Delelinjen flyttes til pekerens plass (brøkdel av bildet). */
+  function dragLineTo(e: React.PointerEvent<HTMLElement>) {
+    const d = lineDrag.current;
+    const el = box.current;
+    if (!d || d.pointer !== e.pointerId || !el || !imgW || !imgH) return;
+    const r = el.getBoundingClientRect();
+    const f =
+      d.axis === "x"
+        ? (e.clientX - r.left - v.x) / v.z / imgW
+        : (e.clientY - r.top - v.y) / v.z / imgH;
+    setGrid((g) =>
+      d.axis === "x"
+        ? { ...g, xs: moveLine(g.xs, d.index, f) }
+        : { ...g, ys: moveLine(g.ys, d.index, f) },
+    );
+  }
 
   /** Kjør en bildejobb (hent bildet, lag nye filer, lagre) med melding og feilhåndtering. */
   async function job(label: string, fn: () => Promise<string>) {
@@ -246,12 +344,9 @@ export function ImageLightbox({
     if (!tools || !version || !url) return;
     await job(L("Fjerner luften rundt …", "Removing the air around …"), async () => {
       const src = await loadImage(url);
-      const t = trimCanvas(src.canvas);
-      if (!t)
-        return L(
-          "Det er ingen luft å fjerne: bildet har ingen gjennomsiktig kant. Frilegg det først.",
-          "There is no air to remove: the image has no transparent edge. Cut it out first.",
-        );
+      const info = trimCanvasInfo(src.canvas);
+      if (!("canvas" in info)) throw new Error(noTrimMessage(info.reason));
+      const t = info.canvas;
       const file = await canvasToPng(t, `${tools.asset.name}-tett`);
       const r = await saveImageTo(
         tools.cmds.runAndWait,
@@ -270,9 +365,17 @@ export function ImageLightbox({
       );
       if ("error" in r) throw new Error(r.error);
       tools.onSaved?.(r);
-      return L(
-        `Lagret som ny versjon (${t.width} × ${t.height} px). Originalen er beholdt.`,
-        `Saved as a new version (${t.width} × ${t.height} px). The original is kept.`,
+      return (
+        L(
+          `Lagret som ny versjon (${t.width} × ${t.height} px). Originalen er beholdt.`,
+          `Saved as a new version (${t.width} × ${t.height} px). The original is kept.`,
+        ) +
+        (info.by === "color"
+          ? L(
+              " (Luften ble funnet ut fra den ensfargede bakgrunnen.)",
+              " (The air was found from the single-colour background.)",
+            )
+          : "")
       );
     });
   }
@@ -284,20 +387,25 @@ export function ImageLightbox({
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
             {imgW && imgH ? `${imgW} × ${imgH} px. ` : ""}
-            {mode === "select"
+            {drawMode
               ? L(
                   "Tegn en fri ramme rundt det du vil ta ut – slipp for å lukke den. Hold mellomrom og dra for å flytte bildet.",
                   "Draw a free frame around what you want to take out – release to close it. Hold space and drag to move the image.",
                 )
               : mode === "grid"
                 ? L(
-                    "Bildet deles i like store ruter – f.eks. et karakterark med flere vinkler.",
-                    "The image is split into equal tiles – for example a character sheet with several angles.",
+                    "Dra delelinjene for å flytte dem, hver for seg. Klikk på en rute for å gi den et navn i sidepanelet.",
+                    "Drag the dividing lines to move them, one at a time. Click a tile to name it in the side panel.",
                   )
-                : L(
-                    "Rullehjul eller knappene zoomer, dra for å flytte rundt.",
-                    "The scroll wheel or buttons zoom, drag to move around.",
-                  )}
+                : mode === "parts"
+                  ? L(
+                      "Skriv navnet på delene som skal lages med AI, og velg ankerpunkt for hver.",
+                      "Write the names of the parts to make with AI, and choose an anchor point for each.",
+                    )
+                  : L(
+                      "Rullehjul eller knappene zoomer, dra for å flytte rundt.",
+                      "The scroll wheel or buttons zoom, drag to move around.",
+                    )}
           </DialogDescription>
         </DialogHeader>
         <div className="flex min-h-0 flex-1 gap-3">
@@ -334,7 +442,7 @@ export function ImageLightbox({
               data-testid="lightbox-stage"
               className={
                 "relative min-h-0 flex-1 touch-none overflow-hidden rounded-sm bg-[repeating-conic-gradient(var(--surface-3)_0%_25%,var(--surface-1)_0%_50%)] bg-[length:24px_24px] " +
-                (mode === "select" ? "cursor-crosshair" : "cursor-grab active:cursor-grabbing")
+                (drawMode ? "cursor-crosshair" : "cursor-grab active:cursor-grabbing")
               }
               onWheel={(e) => {
                 const r = e.currentTarget.getBoundingClientRect();
@@ -345,7 +453,7 @@ export function ImageLightbox({
               }}
               onPointerDown={(e) => {
                 e.currentTarget.setPointerCapture(e.pointerId);
-                if (mode === "select" && e.button === 0 && !spaceDown.current) {
+                if (drawMode && e.button === 0 && !spaceDown.current) {
                   drawing.current = e.pointerId;
                   setPoly({ pts: [toImage(e)], closed: false });
                   return;
@@ -374,7 +482,14 @@ export function ImageLightbox({
                   setPoly((cur) => (cur && cur.pts.length >= 3 ? { ...cur, closed: true } : null));
                   return;
                 }
+                const d = drag.current;
                 drag.current = null;
+                // Et klikk (ingen flytting) på en rute fokuserer navnefeltet for ruten
+                if (mode === "grid" && d && Math.hypot(e.clientX - d.x, e.clientY - d.y) < 4) {
+                  const p = toImage(e);
+                  const i = cellAt(cells, p.x, p.y);
+                  if (i >= 0) focusTile(i);
+                }
               }}
             >
               {url ? (
@@ -404,12 +519,25 @@ export function ImageLightbox({
                 </p>
               )}
               {/* Markering og ruter tegnes oppå bildet (skjermkoordinater) */}
-              {(mode === "select" && poly) || cells.length ? (
+              {(drawMode && poly) || erased.length ? (
                 <svg
                   aria-hidden
                   className="pointer-events-none absolute inset-0 size-full overflow-visible"
                 >
-                  {poly ? (
+                  {mode === "parts"
+                    ? erased.map((pts, i) => (
+                        <polygon
+                          key={i}
+                          data-testid="erased-part"
+                          points={pts.map(toScreen).join(" ")}
+                          fill="rgb(0 0 0 / 0.55)"
+                          stroke="#ffffff"
+                          strokeWidth={1}
+                          strokeDasharray="3 3"
+                        />
+                      ))
+                    : null}
+                  {poly && drawMode ? (
                     <polygon
                       points={poly.pts.map(toScreen).join(" ")}
                       fill={poly.closed ? "rgb(79 140 255 / 0.15)" : "none"}
@@ -418,31 +546,123 @@ export function ImageLightbox({
                       strokeDasharray={poly.closed ? "6 4" : undefined}
                     />
                   ) : null}
-                  {cells.map((c, i) => (
-                    <g key={i}>
-                      <rect
-                        x={c.x * v.z + v.x}
-                        y={c.y * v.z + v.y}
-                        width={c.w * v.z}
-                        height={c.h * v.z}
-                        fill="none"
-                        stroke="#4f8cff"
-                        strokeWidth={1.5}
-                        strokeDasharray="6 4"
-                      />
-                      <text
-                        x={c.x * v.z + v.x + 6}
-                        y={c.y * v.z + v.y + 16}
-                        fill="#4f8cff"
-                        fontSize={12}
-                        fontFamily="ui-sans-serif, system-ui"
-                      >
-                        {i + 1}
-                      </text>
-                    </g>
-                  ))}
                 </svg>
               ) : null}
+              {/* Rutene: nummer i hjørnet; ruten med fokus får varm gul ramme (Mars 15.10.2026) */}
+              {cells.map((c, i) => {
+                const on = activeTile === i;
+                return (
+                  <div
+                    key={`t${i}`}
+                    data-testid={`grid-tile-${i + 1}`}
+                    data-active={on ? "true" : undefined}
+                    aria-hidden
+                    className={
+                      "pointer-events-none absolute " + (on ? "border-2 border-accent-warm" : "")
+                    }
+                    style={{
+                      left: c.x * v.z + v.x,
+                      top: c.y * v.z + v.y,
+                      width: c.w * v.z,
+                      height: c.h * v.z,
+                    }}
+                  >
+                    <span
+                      className={
+                        "absolute left-1.5 top-1.5 leading-none " +
+                        (on
+                          ? "text-base font-bold text-accent-warm"
+                          : "rounded-sm bg-black/45 px-1 py-0.5 text-[11px] text-white/90")
+                      }
+                      style={{
+                        textShadow: on
+                          ? "0 1px 6px rgb(0 0 0 / 0.95), 0 0 3px rgb(0 0 0 / 0.9)"
+                          : "0 0 3px rgb(0 0 0 / 0.9)",
+                      }}
+                    >
+                      {i + 1}
+                    </span>
+                  </div>
+                );
+              })}
+              {/* Delelinjene: dras hver for seg (pekeren holdes på linjen), også med piltastene */}
+              {mode === "grid" && imgW && imgH
+                ? (["x", "y"] as const).flatMap((axis) =>
+                    (axis === "x" ? grid.xs : grid.ys).map((f, i) => {
+                      const vertical = axis === "x";
+                      const pos = vertical ? f * imgW * v.z + v.x : f * imgH * v.z + v.y;
+                      return (
+                        <div
+                          key={`${axis}${i}`}
+                          role="separator"
+                          tabIndex={0}
+                          data-testid={`grid-line-${axis}-${i + 1}`}
+                          aria-orientation={vertical ? "vertical" : "horizontal"}
+                          aria-valuemin={0}
+                          aria-valuemax={100}
+                          aria-valuenow={Math.round(f * 100)}
+                          aria-label={
+                            vertical
+                              ? L(`Loddrett delelinje ${i + 1}`, `Vertical dividing line ${i + 1}`)
+                              : L(
+                                  `Vannrett delelinje ${i + 1}`,
+                                  `Horizontal dividing line ${i + 1}`,
+                                )
+                          }
+                          title={L("Dra for å flytte delelinjen", "Drag to move the dividing line")}
+                          className={
+                            "group absolute z-10 flex touch-none items-center justify-center outline-none " +
+                            (vertical ? "w-3 cursor-col-resize" : "h-3 cursor-row-resize")
+                          }
+                          style={
+                            vertical
+                              ? { left: pos - 6, top: v.y, height: imgH * v.z }
+                              : { top: pos - 6, left: v.x, width: imgW * v.z }
+                          }
+                          onPointerDown={(e) => {
+                            e.stopPropagation();
+                            if (e.button !== 0) return;
+                            e.currentTarget.setPointerCapture(e.pointerId);
+                            lineDrag.current = { axis, index: i, pointer: e.pointerId };
+                          }}
+                          onPointerMove={(e) => {
+                            if (lineDrag.current?.pointer !== e.pointerId) return;
+                            e.stopPropagation();
+                            dragLineTo(e);
+                          }}
+                          onPointerUp={(e) => {
+                            e.stopPropagation();
+                            lineDrag.current = null;
+                          }}
+                          onKeyDown={(e) => {
+                            const step = e.shiftKey ? 0.02 : 0.005;
+                            const dir =
+                              e.key === (vertical ? "ArrowLeft" : "ArrowUp")
+                                ? -1
+                                : e.key === (vertical ? "ArrowRight" : "ArrowDown")
+                                  ? 1
+                                  : 0;
+                            if (!dir) return;
+                            e.preventDefault();
+                            setGrid((g) =>
+                              vertical
+                                ? { ...g, xs: moveLine(g.xs, i, f + dir * step) }
+                                : { ...g, ys: moveLine(g.ys, i, f + dir * step) },
+                            );
+                          }}
+                        >
+                          <span
+                            className={
+                              "pointer-events-none border-dashed border-accent-brand group-hover:border-accent-warm group-focus-visible:border-accent-warm " +
+                              (vertical ? "h-full border-l-2" : "w-full border-t-2")
+                            }
+                            style={{ filter: "drop-shadow(0 0 1px rgb(0 0 0 / 0.8))" }}
+                          />
+                        </div>
+                      );
+                    }),
+                  )
+                : null}
             </div>
           </div>
           <aside
@@ -522,6 +742,24 @@ export function ImageLightbox({
                       </Button>
                       <Button
                         size="sm"
+                        variant="secondary"
+                        disabled={!!busy}
+                        onClick={() => {
+                          setMode("parts");
+                          setPartsTab("cut");
+                          setPoly(null);
+                          setErased([]);
+                          setMsg(null);
+                        }}
+                        title={L(
+                          "Del bildet i egne objekter (f.eks. dørramme og dørblad) med ankerpunkt, så de kan animeres hver for seg",
+                          "Split the image into separate objects (e.g. door frame and door leaf) with an anchor point, so they can be animated separately",
+                        )}
+                      >
+                        <Layers /> {L("Deler …", "Parts …")}
+                      </Button>
+                      <Button
+                        size="sm"
                         variant={panel === "upscale" ? "default" : "secondary"}
                         disabled={!!busy}
                         onClick={() => setPanel((p) => (p === "upscale" ? null : "upscale"))}
@@ -541,20 +779,40 @@ export function ImageLightbox({
                         projectId={projectId}
                         onClose={() => setPanel(null)}
                       />
+                    ) : panel === "variations" ? (
+                      <VariationPanel
+                        tools={tools}
+                        version={version!}
+                        projectId={projectId}
+                        onClose={() => setPanel(null)}
+                      />
                     ) : (
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        className="self-start"
-                        disabled={!!busy}
-                        onClick={() => setPanel("views")}
-                        title={L(
-                          "Lag front, side, bak … av samme karakter eller objekt med AI, så de henger sammen",
-                          "Make front, side, back … of the same character or object with AI, so they match",
-                        )}
-                      >
-                        <Rotate3d /> {L("Lag andre vinkler …", "Make other angles …")}
-                      </Button>
+                      <div className="flex flex-wrap gap-1.5">
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          disabled={!!busy}
+                          onClick={() => setPanel("views")}
+                          title={L(
+                            "Lag front, side, bak … av samme karakter eller objekt med AI, så de henger sammen",
+                            "Make front, side, back … of the same character or object with AI, so they match",
+                          )}
+                        >
+                          <Rotate3d /> {L("Lag andre vinkler …", "Make other angles …")}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          disabled={!!busy}
+                          onClick={() => setPanel("variations")}
+                          title={L(
+                            "Lag samme motiv med én ting forskjellig (f.eks. døren åpen) med AI",
+                            "Make the same subject with one thing different (e.g. the door open) with AI",
+                          )}
+                        >
+                          <Shuffle /> {L("Lag variasjoner …", "Make variations …")}
+                        </Button>
+                      </div>
                     )}
                     {panel === "upscale" ? (
                       <UpscalePanel
@@ -580,6 +838,28 @@ export function ImageLightbox({
                       setPoly(null);
                     }}
                   />
+                ) : mode === "parts" ? (
+                  <PartsPanel
+                    tools={tools}
+                    projectId={projectId}
+                    version={version!}
+                    url={url!}
+                    poly={poly?.closed ? poly.pts : null}
+                    tab={partsTab}
+                    onTab={(t) => {
+                      setPartsTab(t);
+                      setPoly(null);
+                    }}
+                    busy={busy}
+                    onJob={job}
+                    onRedraw={() => setPoly(null)}
+                    onErased={setErased}
+                    onDone={() => {
+                      setMode("view");
+                      setPoly(null);
+                      setErased([]);
+                    }}
+                  />
                 ) : (
                   <GridPanel
                     tools={tools}
@@ -587,10 +867,18 @@ export function ImageLightbox({
                     version={version!}
                     url={url!}
                     grid={grid}
-                    onGrid={setGrid}
+                    onGrid={resizeGrid}
+                    names={tileNames}
+                    onNames={setTileNames}
+                    active={activeTile}
+                    onActive={setActiveTile}
+                    idPrefix={tileId}
                     busy={busy}
                     onJob={job}
-                    onDone={() => setMode("view")}
+                    onDone={() => {
+                      setMode("view");
+                      setActiveTile(null);
+                    }}
                   />
                 )}
                 {busy ? (
@@ -904,6 +1192,11 @@ function GridPanel({
   url,
   grid,
   onGrid,
+  names,
+  onNames,
+  active,
+  onActive,
+  idPrefix,
   busy,
   onJob,
   onDone,
@@ -912,8 +1205,15 @@ function GridPanel({
   projectId: string;
   version: AssetVersion;
   url: string;
-  grid: { cols: number; rows: number };
+  grid: GridState;
   onGrid: (g: { cols: number; rows: number }) => void;
+  /** Navnene på rutene (ett felt per rute, Mars 15.10.2026). */
+  names: string[];
+  onNames: (n: string[]) => void;
+  active: number | null;
+  onActive: (i: number | null) => void;
+  /** Prefiks for ID-ene til navnefeltene (klikk på en rute fokuserer feltet). */
+  idPrefix: string;
   busy: string | null;
   onJob: (label: string, fn: () => Promise<string>) => Promise<void>;
   onDone: () => void;
@@ -926,23 +1226,28 @@ function GridPanel({
   const [prefix, setPrefix] = useState(tools.asset.name);
   const [trim, setTrim] = useState(true);
   const n = grid.cols * grid.rows;
+  const base = prefix.trim() || tools.asset.name;
   async function split() {
     await onJob(L(`Deler opp i ${n} ruter …`, `Splitting into ${n} tiles …`), async () => {
       const src = await loadImage(url);
-      const cells = gridCells(src.w, src.h, grid.cols, grid.rows);
+      // Delelinjene er brøkdeler: de gjelder også når filen har andre mål enn visningen
+      const cells = cellsFromLines(src.w, src.h, grid.xs, grid.ys);
       const group = newId();
       let saved = 0;
       let empty = 0;
       for (const [i, c] of cells.entries()) {
         const canvas = cropCanvas(src, c, null, false);
-        // Med «Fjern luften rundt»: tomme ruter (helt gjennomsiktige) hoppes over
-        const t = trim ? trimCanvas(canvas) : null;
-        const out = t ?? canvas;
-        if (trim && !t && isTransparent(canvas)) {
-          empty++;
-          continue;
+        let out = canvas;
+        if (trim) {
+          // «Fjern luften rundt» per rute: gjennomsiktig eller ensfarget bakgrunn; tomme ruter hoppes over
+          const t = trimCanvasInfo(canvas);
+          if ("canvas" in t) out = t.canvas;
+          else if (t.reason === "empty") {
+            empty++;
+            continue;
+          }
         }
-        const label = `${prefix.trim() || tools.asset.name} ${i + 1}`;
+        const label = tileName(names, i, base);
         const file = await canvasToPng(out, label);
         const r = await saveImageTo(
           tools.cmds.runAndWait,
@@ -951,8 +1256,8 @@ function GridPanel({
           targetFor(target, label, version, tools.asset),
           file,
           L(
-            `Rute ${i + 1} av ${cells.length} fra ${tools.asset.name} v${version.number}.`,
-            `Tile ${i + 1} of ${cells.length} from ${tools.asset.name} v${version.number}.`,
+            `Rute ${i + 1} av ${cells.length} («${label}») fra ${tools.asset.name} v${version.number}.`,
+            `Tile ${i + 1} of ${cells.length} (“${label}”) from ${tools.asset.name} v${version.number}.`,
           ),
           L(`Del opp «${tools.asset.name}» i ruter`, `Split “${tools.asset.name}” into tiles`),
           group,
@@ -1002,6 +1307,50 @@ function GridPanel({
           = {n} {L("bilder", "images")}
         </span>
       </div>
+      <p className="text-[11px] text-text-tertiary">
+        {L(
+          "Dra delelinjene i bildet for å flytte dem. Endrer du antallet, fordeles linjene jevnt igjen.",
+          "Drag the dividing lines in the image to move them. If you change the number, the lines are spread evenly again.",
+        )}
+      </p>
+      <fieldset className="flex flex-col gap-1 text-xs text-text-secondary">
+        <legend className="mb-1">
+          {L("Navn på rutene (tomt: navn + nummer)", "Names of the tiles (empty: name + number)")}
+        </legend>
+        <div className="flex max-h-56 flex-col gap-1 overflow-y-auto pr-1">
+          {Array.from({ length: n }, (_, i) => (
+            <label key={i} className="flex items-center gap-1.5">
+              <span
+                className={
+                  "w-6 shrink-0 text-right tabular-nums " +
+                  (active === i ? "font-bold text-accent-warm" : "")
+                }
+              >
+                {i + 1}.
+              </span>
+              <input
+                id={`${idPrefix}-tile-${i}`}
+                data-testid={`tile-name-${i + 1}`}
+                value={names[i] ?? ""}
+                maxLength={200}
+                placeholder={`${base} ${i + 1}`}
+                aria-label={L(`Navn på rute ${i + 1}`, `Name of tile ${i + 1}`)}
+                onFocus={() => onActive(i)}
+                onBlur={() => onActive(null)}
+                onChange={(e) => {
+                  const next = [...names];
+                  while (next.length <= i) next.push("");
+                  next[i] = e.target.value;
+                  onNames(next);
+                }}
+                className={
+                  field + (active === i ? " border-accent-warm ring-1 ring-accent-warm" : "")
+                }
+              />
+            </label>
+          ))}
+        </div>
+      </fieldset>
       <TargetPicker
         state={tools.state}
         asset={tools.asset}
@@ -1009,22 +1358,17 @@ function GridPanel({
         onChange={setTarget}
         allowEach
       />
-      {target.kind === "new" ? (
-        <label className="flex flex-col gap-1 text-xs text-text-secondary">
-          {L("Navn (får nummer 1, 2, 3 …)", "Name (numbered 1, 2, 3 …)")}
-          <input value={prefix} onChange={(e) => setPrefix(e.target.value)} className={field} />
-        </label>
-      ) : null}
+      <label className="flex flex-col gap-1 text-xs text-text-secondary">
+        {L("Navn (får nummer 1, 2, 3 …)", "Name (numbered 1, 2, 3 …)")}
+        <input value={prefix} onChange={(e) => setPrefix(e.target.value)} className={field} />
+      </label>
       <label className="flex items-center gap-1.5 text-xs text-text-secondary">
         <input type="checkbox" checked={trim} onChange={(e) => setTrim(e.target.checked)} />
-        {L(
-          "Fjern luften rundt hver rute (frilagte bilder)",
-          "Remove the air around each tile (cut-out images)",
-        )}
+        {L("Fjern luften rundt hver rute", "Remove the air around each tile")}
       </label>
       <div className="flex flex-wrap gap-1.5">
         <Button size="sm" disabled={!!busy || n < 2} onClick={() => void split()}>
-          <Grid3x3 /> {L("Del opp", "Split")}
+          <Grid3x3 /> {L("Del opp nå", "Make the split")}
         </Button>
         <Button size="sm" variant="ghost" disabled={!!busy} onClick={onDone}>
           {L("Avbryt", "Cancel")}
@@ -1032,13 +1376,4 @@ function GridPanel({
       </div>
     </div>
   );
-}
-
-/** Er lerretet helt gjennomsiktig (en tom rute)? */
-function isTransparent(c: HTMLCanvasElement): boolean {
-  const d = c
-    .getContext("2d", { willReadFrequently: true })!
-    .getImageData(0, 0, c.width, c.height).data;
-  for (let i = 3; i < d.length; i += 4) if (d[i]! > 8) return false;
-  return true;
 }

@@ -2,10 +2,13 @@
  * Lagliste for 2D-scenen: forreste lag øverst. Valg, synlighet, lås, rekkefølge (knapper og dra-og-slipp),
  * grupper (dra et lag inn på en gruppe for å legge det i gruppen, eller ut ved siden av et lag utenfor) og
  * fjerning av laget fra scenen (ressursen blir i biblioteket). Valgt gruppe: lagene i den lyser opp.
+ * Grupper kan lukkes og åpnes med pilen foran navnet, «slik en kan i Photoshop» (Mars 15.10.2026);
+ * Alt-klikk på pilen lukker eller åpner alle. Hvilke som er lukket, huskes per bruker og scene.
  */
 import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
 import {
   ChevronDown,
+  ChevronRight,
   ChevronUp,
   Eye,
   EyeOff,
@@ -15,7 +18,7 @@ import {
   Ungroup,
   Unlock,
 } from "lucide-react";
-import { memo, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import {
   LAYER_KIND_LABEL,
   layerVersion,
@@ -38,6 +41,16 @@ import { useImageUrls } from "@/app/library/asset-images";
 import { layerFieldsOf as fieldsOf } from "@/core";
 import { removeLayer } from "./layer-actions";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
+import { useUiPref } from "@/app/account/ui-prefs";
+import {
+  groupMemberCount,
+  groupsToOpenFor,
+  isCollapsedGroups,
+  selectionAfterCollapse,
+  visibleLayerRows,
+  withCollapsed,
+  type CollapsedGroups,
+} from "./layer-groups";
 
 interface Props {
   readonly state: ProjectState;
@@ -50,7 +63,11 @@ interface Props {
   readonly frame?: number;
   /** Dobbeltklikk på et lag: velg bilde for laget (DEC-0044). */
   readonly onOpenImage?: (layerId: string) => void;
+  /** Overskriften vises allerede av panelrammen (side om side): skjul den her (bare for skjermlesere). */
+  readonly hideHeading?: boolean;
 }
+
+const NO_COLLAPSED: CollapsedGroups = {};
 
 /** Slippsonen: midten av en grupperad legger laget i gruppen, ellers foran eller bak raden. */
 function zoneAt(e: React.DragEvent<HTMLElement>, l: CompositionLayer): "before" | "after" | "into" {
@@ -73,6 +90,7 @@ export const LayersPanel = memo(function LayersPanel({
   run,
   onOpenImage,
   frame = 0,
+  hideHeading = false,
 }: Props) {
   // Bakerst først (som i modellen); listen vises med forreste lag øverst
   const back = useMemo(() => layersOf(state, composition.id), [state, composition.id]);
@@ -93,6 +111,62 @@ export const LayersPanel = memo(function LayersPanel({
   const [listHeight, setListHeight] = usePaneSize("scene-layers-list", 280, 80, 900);
   const selected = selectedLayerId ? state.layers[selectedLayerId] : undefined;
   const selectedGroup = selected?.kind === "group" ? selected.id : null;
+
+  // Lukkede grupper i denne scenen (visningsvalg for brukeren – endrer ikke scenen)
+  const [allCollapsed, setAllCollapsed] = useUiPref(
+    "sceneEditor.collapsedGroups",
+    NO_COLLAPSED,
+    isCollapsedGroups,
+  );
+  const groupIds = useMemo(
+    () => back.filter((l) => l.kind === "group").map((l): string => l.id),
+    [back],
+  );
+  const collapsed = useMemo(() => {
+    const saved = allCollapsed[composition.id] ?? [];
+    return new Set(saved.filter((id) => groupIds.includes(id)));
+  }, [allCollapsed, composition.id, groupIds]);
+  const rows = useMemo(() => visibleLayerRows(front, collapsed), [front, collapsed]);
+
+  function setCollapsed(next: ReadonlySet<string>) {
+    setAllCollapsed(
+      withCollapsed(
+        allCollapsed,
+        composition.id,
+        groupIds.filter((id) => next.has(id)),
+      ),
+    );
+    // Et valgt lag som nå er skjult: gruppen det ligger i blir valgt, så valget ikke forsvinner usynlig
+    const sel = selectionAfterCollapse(back, next, selectedLayerId);
+    if (sel !== selectedLayerId) onSelect(sel);
+  }
+
+  /** Pilen foran gruppen. Alt-klikk (Option): lukk eller åpne alle gruppene i scenen. */
+  function toggleGroup(id: string, all: boolean) {
+    const open = !collapsed.has(id);
+    if (all) return setCollapsed(new Set(open ? groupIds : []));
+    const next = new Set(collapsed);
+    if (open) next.add(id);
+    else next.delete(id);
+    setCollapsed(next);
+  }
+
+  // Et lag som velges et annet sted (f.eks. på lerretet) og ligger i en lukket gruppe: åpne gruppen
+  const lastSelected = useRef(selectedLayerId);
+  useEffect(() => {
+    if (lastSelected.current === selectedLayerId) return;
+    lastSelected.current = selectedLayerId;
+    if (!selectedLayerId) return;
+    const open = groupsToOpenFor(back, collapsed, selectedLayerId);
+    if (!open.length) return;
+    setAllCollapsed(
+      withCollapsed(
+        allCollapsed,
+        composition.id,
+        [...collapsed].filter((id) => !open.includes(id)),
+      ),
+    );
+  }, [selectedLayerId, back, collapsed, allCollapsed, composition.id, setAllCollapsed]);
 
   function exec(command: Command, label: string) {
     setError(run(command, label));
@@ -228,7 +302,12 @@ export const LayersPanel = memo(function LayersPanel({
    * eller bak en rad: laget flyttes dit og får samme gruppe som raden – slippes det ved et lag utenfor
    * gruppen, tas det ut av gruppen. Begge stegene angres samlet.
    */
-  function dropOn(draggedId: string, targetId: string, zone: "before" | "after" | "into") {
+  function dropOn(
+    draggedId: string,
+    targetId: string,
+    zone: "before" | "after" | "into",
+    forceGroup?: string | null,
+  ) {
     if (draggedId === targetId) return;
     const dragged = state.layers[draggedId];
     const target = state.layers[targetId];
@@ -267,7 +346,14 @@ export const LayersPanel = memo(function LayersPanel({
       return;
     }
     // Gruppen laget havner i: målradens gruppe (en gruppe kan ikke ligge i en gruppe)
-    const nextGroup = dragged.kind === "group" || target.kind === "group" ? null : target.groupId;
+    const nextGroup =
+      dragged.kind === "group"
+        ? null
+        : forceGroup !== undefined
+          ? forceGroup
+          : target.kind === "group"
+            ? null
+            : target.groupId;
     const label =
       nextGroup !== dragged.groupId
         ? nextGroup
@@ -298,6 +384,23 @@ export const LayersPanel = memo(function LayersPanel({
       );
   }
 
+  /**
+   * Slipp ved en rad i listen slik den vises. Bak en lukket gruppe betyr bak hele gruppen (også de skjulte
+   * lagene i den), ikke mellom gruppen og lagene dens.
+   */
+  function dropAtRow(draggedId: string, l: CompositionLayer, zone: "before" | "after" | "into") {
+    if (zone === "after" && l.kind === "group" && collapsed.has(l.id)) {
+      const i = rows.findIndex((r) => r.layer.id === l.id);
+      const next = rows[i + 1]?.layer;
+      if (next) return dropOn(draggedId, next.id, "before");
+      // Gruppen står nederst: legg laget bakerst, i samme gruppe som den lukkede gruppen
+      const last = front[front.length - 1];
+      if (last && last.id !== l.id)
+        return dropOn(draggedId, last.id, "after", l.groupId ? l.groupId : null);
+    }
+    dropOn(draggedId, l.id, zone);
+  }
+
   function leaveGroup(l: CompositionLayer) {
     exec(
       {
@@ -311,7 +414,13 @@ export const LayersPanel = memo(function LayersPanel({
   return (
     <section aria-label={L("Lag", "Layers")} className="flex flex-col py-1">
       <div className="flex items-center px-3 pb-1 pt-2">
-        <h2 className="text-xs font-medium uppercase tracking-[0.04em] text-text-tertiary">
+        <h2
+          className={
+            hideHeading
+              ? "sr-only"
+              : "text-xs font-medium uppercase tracking-[0.04em] text-text-tertiary"
+          }
+        >
           {L("Lag", "Layers")} ({back.length})
         </h2>
         {editable && back.length > 0 ? (
@@ -340,7 +449,8 @@ export const LayersPanel = memo(function LayersPanel({
             style={{ maxHeight: listHeight }}
             aria-label={L("Lagene, forreste øverst", "Layers, front first")}
           >
-            {front.map((l, idx) => {
+            {rows.map(({ layer: l, depth }) => {
+              const idx = front.indexOf(l);
               const on = l.id === selectedLayerId;
               const version = layerVersion(state, l);
               const url = version ? urls?.[version.mediaPath] : undefined;
@@ -349,8 +459,8 @@ export const LayersPanel = memo(function LayersPanel({
               const dropping = drop?.id === l.id && dragId !== null && dragId !== l.id;
               const group = l.groupId ? state.layers[l.groupId] : undefined;
               const inGroup = !!group && group.kind === "group" && !group.removed;
-              const members =
-                l.kind === "group" ? back.filter((x) => x.groupId === l.id).length : 0;
+              const members = l.kind === "group" ? groupMemberCount(back, l.id) : 0;
+              const shut = l.kind === "group" && collapsed.has(l.id);
               // Lag i valgt gruppe lyser opp
               const lit = !!selectedGroup && l.groupId === selectedGroup;
               return (
@@ -377,10 +487,13 @@ export const LayersPanel = memo(function LayersPanel({
                   }}
                   onDrop={(e) => {
                     e.preventDefault();
-                    if (dragId) dropOn(dragId, l.id, zoneAt(e, l));
+                    if (dragId) dropAtRow(dragId, l, zoneAt(e, l));
                     setDragId(null);
                     setDrop(null);
                   }}
+                  // Innrykk etter hvor dypt laget ligger i grupper
+                  style={{ paddingLeft: 4 + depth * 16 }}
+                  data-layer-row={l.id}
                   className={
                     "group relative flex items-center gap-1 pr-2 " +
                     (on
@@ -411,6 +524,39 @@ export const LayersPanel = memo(function LayersPanel({
                       }
                     />
                   ) : null}
+                  {l.kind === "group" ? (
+                    <button
+                      type="button"
+                      className="inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-text-secondary hover:bg-surface-3 hover:text-text-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      aria-expanded={!shut}
+                      aria-label={
+                        shut
+                          ? L(`Åpne gruppen «${l.name}»`, `Expand the group “${l.name}”`)
+                          : L(`Lukk gruppen «${l.name}»`, `Collapse the group “${l.name}”`)
+                      }
+                      title={
+                        shut
+                          ? L(
+                              "Åpne gruppen (Alt-klikk: åpne alle)",
+                              "Expand the group (Alt-click: expand all)",
+                            )
+                          : L(
+                              "Lukk gruppen (Alt-klikk: lukk alle)",
+                              "Collapse the group (Alt-click: collapse all)",
+                            )
+                      }
+                      data-testid="layer-group-toggle"
+                      onClick={(e) => toggleGroup(l.id, e.altKey)}
+                    >
+                      {shut ? (
+                        <ChevronRight className="size-3.5" aria-hidden />
+                      ) : (
+                        <ChevronDown className="size-3.5" aria-hidden />
+                      )}
+                    </button>
+                  ) : (
+                    <span aria-hidden className="w-5 shrink-0" />
+                  )}
                   <button
                     type="button"
                     onClick={() => onSelect(l.id)}
@@ -421,8 +567,7 @@ export const LayersPanel = memo(function LayersPanel({
                     )}
                     aria-pressed={on}
                     className={
-                      "flex min-w-0 flex-1 items-center gap-2 py-1 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring " +
-                      (inGroup ? "pl-7" : "pl-3")
+                      "flex min-w-0 flex-1 items-center gap-2 py-1 pl-0.5 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                     }
                   >
                     <span

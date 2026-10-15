@@ -444,8 +444,16 @@ function normalizeAnnotation(s: ProjectState, n: NewAnnotation, now: string): An
       editedByName: null,
       editedAt: null,
       removed: false,
+      ...(n.source === "system" ? { source: "system" as const } : {}),
+      ...(n.taskId !== undefined ? { taskId: checkTaskId(n.taskId) } : {}),
     };
   }
+}
+
+/** Oppgave-ID (DEC-0088): en UUID. */
+function checkTaskId(id: unknown): string {
+  if (typeof id !== "string" || !isUuid(id)) fail("invalid", L("Ugyldig oppgave", "Invalid task"));
+  return id;
 }
 
 function assertKey(key: string) {
@@ -4909,6 +4917,81 @@ function run(
       };
     }
 
+    case "PlanAssetInScenes": {
+      const a = need(s.assets[c.assetId], L("Ressursen", "The asset"));
+      const taskId = checkTaskId(c.taskId);
+      need(s.occurrences[c.fromOccurrenceId as never], L("Scenen", "The scene"));
+      if (
+        !Array.isArray(c.occurrenceIds) ||
+        c.occurrenceIds.length === 0 ||
+        c.occurrenceIds.length > 500
+      )
+        fail("invalid", L("Velg 1–500 scener", "Choose 1–500 scenes"));
+      const ids = [...new Set(c.occurrenceIds.map(String))];
+      for (const id of ids) need(s.occurrences[id as never], L("Scenen", "The scene"));
+      const before = a.scenePlans ?? [];
+      const plans = [
+        ...before.filter((p) => !ids.includes(p.occurrenceId)),
+        ...ids.map((occurrenceId) => ({
+          occurrenceId,
+          taskId,
+          fromOccurrenceId: c.fromOccurrenceId,
+          at: env.at,
+        })),
+      ];
+      if (plans.length > 1000)
+        fail("invalid", L("For mange planlagte scener", "Too many planned scenes"));
+      return {
+        state: {
+          ...s,
+          assets: { ...s.assets, [a.id]: { ...a, scenePlans: plans, revision: rev(a) } },
+        },
+        inverse: { type: "SetScenePlans", assetId: a.id, plans: before },
+        affected: [a.id],
+      };
+    }
+
+    case "RemoveScenePlans": {
+      const a = need(s.assets[c.assetId], L("Ressursen", "The asset"));
+      const before = a.scenePlans ?? [];
+      const only = c.occurrenceIds ? new Set(c.occurrenceIds.map(String)) : null;
+      const plans = before.filter(
+        (p) =>
+          !(
+            (c.taskId === undefined || p.taskId === c.taskId) &&
+            (!only || only.has(p.occurrenceId))
+          ),
+      );
+      return {
+        state: {
+          ...s,
+          assets: { ...s.assets, [a.id]: { ...a, scenePlans: plans, revision: rev(a) } },
+        },
+        inverse: { type: "SetScenePlans", assetId: a.id, plans: before },
+        affected: [a.id],
+      };
+    }
+
+    case "SetScenePlans": {
+      const a = need(s.assets[c.assetId], L("Ressursen", "The asset"));
+      if (!Array.isArray(c.plans) || c.plans.length > 1000)
+        fail("invalid", L("For mange planlagte scener", "Too many planned scenes"));
+      const plans = c.plans.map((p) => ({
+        occurrenceId: String(p.occurrenceId),
+        taskId: checkTaskId(p.taskId),
+        fromOccurrenceId: String(p.fromOccurrenceId),
+        at: String(p.at),
+      }));
+      return {
+        state: {
+          ...s,
+          assets: { ...s.assets, [a.id]: { ...a, scenePlans: plans, revision: rev(a) } },
+        },
+        inverse: { type: "SetScenePlans", assetId: a.id, plans: a.scenePlans ?? [] },
+        affected: [a.id],
+      };
+    }
+
     case "SetContextNames": {
       const a = need(s.assets[c.assetId], L("Ressursen", "The asset"));
       if (!Array.isArray(c.contextNames) || c.contextNames.length > 200)
@@ -5667,6 +5750,8 @@ function run(
           text: a.text,
           authorName: a.authorName,
           stampAt: a.stampAt,
+          ...(a.source ? { source: a.source } : {}),
+          ...(a.taskId ? { taskId: a.taskId } : {}),
         });
         delete annotations[id];
       }

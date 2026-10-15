@@ -6,17 +6,21 @@
  *   etterpå) eller ett bilde per vinkel (hver nye vinkel sendes med som referanse til neste). Bildet du står
  *   i, er alltid identiteten; bilder med merket vinkel og noen stilforbilder sendes med.
  * - «Oppskaler»: SeedVR2 (skarpere, rimelig) eller Clarity (med AI-detaljer), 2× eller 4×.
+ * - «Lag variasjoner» (Mars 15.10.2026): samme felt som vinkler, pluss «Hva ønsker du forskjellig?» (f.eks.
+ *   «døren står åpen») og antall (1–4). Bildet er forbildet; bare det brukeren ber om endres.
  *
  * Alt som koster penger, viser anslaget og venter på «Ja» (DEC-0077: redaktører kan starte betalte jobber
  * innenfor budsjettet). Resultatene lagres som nye versjoner; originalen beholdes.
  */
-import { Loader2, Rotate3d, ZoomIn } from "lucide-react";
+import { Loader2, Rotate3d, Shuffle, ZoomIn } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   L,
   buildContextImageBrief,
+  buildVariationPrompt,
   collation,
+  IMAGE_PURPOSE_FOR_KIND,
   formatUsd,
   imageSizesOf,
   IMAGE_SIZE_LABEL,
@@ -34,6 +38,7 @@ import {
   withAttachedLegend,
   estimateCostUsd,
   type AssetVersion,
+  type ImageBrief,
   type ImageSize,
   type VersionView,
 } from "@/core";
@@ -42,6 +47,13 @@ import { aiJobsKey } from "@/app/ai/use-ai-jobs";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
 import { Button } from "@/components/ui/button";
 import { lostConnection } from "./GenerateImagePanel";
+import {
+  nearestAspect,
+  preferredFor,
+  useImageChoices,
+  useImageModel,
+  type ImageModelPick,
+} from "./image-model";
 import type { LightboxTools } from "./ImageLightbox";
 
 const field =
@@ -85,23 +97,6 @@ export function ViewLabel({ tools, version }: { tools: LightboxTools; version: A
       ) : null}
     </label>
   );
-}
-
-/** Modellene som kan lage et bilde fra et forbilde (alle bildemodeller tar imot forbilder). */
-function useImageChoices(projectId: string, enabled: boolean) {
-  const available = useProjectProviders(projectId, enabled);
-  return providersFor("image", new Set(available.data?.providers ?? [])).flatMap((o) =>
-    o.models
-      .filter((m) => m.acceptsImage)
-      .map((m) => ({ provider: o.provider, model: m, key: `${o.provider.id}|${m.id}` })),
-  );
-}
-
-/** Foretrukket modell for vinkler: Nano Banana Pro, så Seedream, så det som finnes. */
-function preferredFor(keys: readonly string[]): string {
-  for (const k of ["google|gemini-3-pro-image", "fal|fal-ai/bytedance/seedream/v4.5"])
-    if (keys.includes(k)) return k;
-  return keys[0] ?? "";
 }
 
 export function TurnaroundPanel({
@@ -692,6 +687,441 @@ export function UpscalePanel({
         <p role="status" className="flex items-center gap-1.5">
           <Loader2 className="size-3.5 animate-spin" aria-hidden />{" "}
           {L("Oppskalerer … (kan ta et minutt)", "Upscaling … (can take a minute)")}
+        </p>
+      ) : msg ? (
+        <p
+          role={msg.kind === "error" ? "alert" : "status"}
+          className={msg.kind === "error" ? "text-status-danger" : "text-status-success"}
+        >
+          {msg.text}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+/** Modell og størrelse (samme felt som i «Lag andre vinkler»). */
+export function ImageModelFields({
+  m,
+  disabled,
+  onChange,
+}: {
+  m: ImageModelPick;
+  disabled: boolean;
+  onChange: () => void;
+}) {
+  return (
+    <>
+      <label className="flex flex-col gap-1">
+        {L("Modell", "Model")}
+        <select
+          value={m.key}
+          onChange={(e) => {
+            m.setPick(e.target.value);
+            onChange();
+          }}
+          className={field}
+          disabled={disabled}
+        >
+          {m.choices.map((c) => (
+            <option key={c.key} value={c.key}>
+              {c.provider.name} – {c.model.label}
+              {c.provider.id !== "lovable" ? ` (~${formatUsd(c.model.priceUsd)})` : ""}
+            </option>
+          ))}
+        </select>
+      </label>
+      {m.sizes.sizes.length > 1 ? (
+        <label className="flex flex-col gap-1">
+          {L("Størrelse", "Size")}
+          <select
+            value={m.size ?? ""}
+            onChange={(e) => {
+              m.setSizePick(e.target.value as ImageSize);
+              onChange();
+            }}
+            className={field}
+            disabled={disabled}
+          >
+            {m.sizes.sizes.map((z) => (
+              <option key={z} value={z}>
+                {IMAGE_SIZE_LABEL[z]}
+              </option>
+            ))}
+          </select>
+        </label>
+      ) : null}
+    </>
+  );
+}
+
+/** «Vis beskrivelsen som sendes» (samme som i «Lag andre vinkler»). */
+export function PromptPreview({
+  preview,
+}: {
+  preview: { prompt: string; negative: string | null; attached: readonly unknown[] } | null;
+}) {
+  const [show, setShow] = useState(false);
+  if (!preview) return null;
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={() => setShow((x) => !x)}
+        className="text-[11px] underline underline-offset-2 hover:text-text-primary"
+      >
+        {show
+          ? L("Skjul beskrivelsen", "Hide the description")
+          : L("Vis beskrivelsen som sendes", "Show the description being sent")}{" "}
+        ({preview.attached.length}{" "}
+        {preview.attached.length === 1 ? L("bilde", "image") : L("bilder", "images")}{" "}
+        {L("med", "attached")})
+      </button>
+      {show ? (
+        <pre
+          data-testid="prompt-preview"
+          className="mt-1 max-h-60 overflow-auto whitespace-pre-wrap break-words rounded-sm bg-surface-3 p-1.5 font-mono text-[11px] leading-snug text-text-primary"
+        >
+          {preview.prompt}
+          {preview.negative ? `\n\nNEGATIVE: ${preview.negative}` : ""}
+        </pre>
+      ) : null}
+    </div>
+  );
+}
+
+/** Prislinjen og bekreftelsen før noe betales (samme mønster som «Lag andre vinkler»). */
+export function CostConfirm({
+  m,
+  count,
+  confirm,
+  onConfirm,
+  onRun,
+  onClose,
+  disabled,
+  busy,
+  emptyText,
+  confirmLabel,
+  icon,
+  startLabel,
+}: {
+  m: ImageModelPick;
+  count: number;
+  confirm: boolean;
+  onConfirm: (v: boolean) => void;
+  onRun: () => void;
+  onClose: () => void;
+  disabled: boolean;
+  busy: boolean;
+  /** Teksten når ingenting kan lages ennå (f.eks. «Skriv hva som skal være forskjellig.»). */
+  emptyText: string;
+  /** Skjermlesernavnet på bekreftelsen. */
+  confirmLabel: string;
+  icon: React.ReactNode;
+  startLabel: string;
+}) {
+  const unit = m.unit;
+  return (
+    <>
+      <p>
+        {count === 0
+          ? emptyText
+          : L(
+              `${count} ${count === 1 ? "bilde" : "bilder"}${
+                unit !== null
+                  ? ` · anslått ${formatUsd(unit * count)}`
+                  : " · bruker Lovable-kreditter"
+              }. Teller i prosjektets AI-budsjett.`,
+              `${count} ${count === 1 ? "image" : "images"}${
+                unit !== null
+                  ? ` · estimated ${formatUsd(unit * count)}`
+                  : " · uses Lovable credits"
+              }. Counts towards the project's AI budget.`,
+            )}
+      </p>
+      {confirm ? (
+        <div
+          role="alertdialog"
+          aria-label={confirmLabel}
+          className="flex flex-col gap-1.5 rounded-sm border border-accent-warm/50 bg-surface-1 p-2"
+        >
+          <p className="text-text-primary">
+            {count} {count === 1 ? L("generering", "generation") : L("genereringer", "generations")}{" "}
+            {L("med", "with")} {m.choice?.model.label}
+            {unit !== null
+              ? L(`, anslått ${formatUsd(unit * count)}`, `, estimated ${formatUsd(unit * count)}`)
+              : ""}
+            {L(". Vil du fortsette?", ". Do you want to continue?")}
+          </p>
+          <div className="flex gap-2">
+            <Button size="sm" onClick={onRun}>
+              {L("Ja, generer", "Yes, generate")}
+            </Button>
+            <Button size="sm" variant="ghost" onClick={() => onConfirm(false)}>
+              {L("Avbryt", "Cancel")}
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-wrap gap-1.5">
+          <Button
+            size="sm"
+            disabled={disabled || count === 0 || busy || !m.choice}
+            onClick={() => onConfirm(true)}
+          >
+            {icon} {startLabel}
+          </Button>
+          <Button size="sm" variant="ghost" disabled={busy} onClick={onClose}>
+            {L("Lukk", "Close")}
+          </Button>
+        </div>
+      )}
+    </>
+  );
+}
+
+/** Største antall variasjoner per gang. */
+const MAX_VARIATIONS = 4;
+
+/**
+ * «Lag variasjoner» (Mars 15.10.2026): «for en dør f.eks så ønsker jeg den åpen … et felt som sier "hva
+ * ønsker du forskjellig?"». Bildet du står i, er forbildet; hver variasjon lagres som ny versjon i samme
+ * variant, med teksten i versjonsnotatet.
+ */
+export function VariationPanel({
+  tools,
+  version,
+  projectId,
+  onClose,
+}: {
+  tools: LightboxTools;
+  version: AssetVersion;
+  projectId: string;
+  onClose: () => void;
+}) {
+  const { state, asset } = tools;
+  const m = useImageModel(projectId, tools.editable);
+  const [change, setChange] = useState("");
+  const [count, setCount] = useState(1);
+  const [withStyle, setWithStyle] = useState(true);
+  const [confirm, setConfirm] = useState(false);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [msg, setMsg] = useState<{ kind: "ok" | "error"; text: string } | null>(null);
+  const qc = useQueryClient();
+  const main = mainProduction(state);
+  const purpose = IMAGE_PURPOSE_FOR_KIND[asset.kind];
+  const wanted = change.trim();
+
+  /** Beskrivelse og bilder for variasjon nr. `index`. */
+  function request(index: number) {
+    if (!main) return null;
+    // Bildet du står i (identitet) og stilforbilder – ikke andre vinkler (de kan dra motivet bort)
+    const attached = turnaroundAttachments(state, {
+      assetId: asset.id,
+      productionId: main.id,
+      identityVersionId: version.id,
+      style: withStyle,
+    }).filter((a) => a.role !== "view");
+    const brief: ImageBrief | null = buildContextImageBrief(state, {
+      assetId: asset.id,
+      variantId: version.variantId,
+      productionId: main.id,
+      occurrenceId: null,
+      withReference: true,
+      attached,
+      family: m.family,
+      transparent: !!m.model?.transparent,
+    });
+    if (!brief) return null;
+    const r = buildVariationPrompt(brief, wanted || "…", { index, count, family: m.family });
+    return {
+      attached,
+      prompt: withAttachedLegend(r.prompt, asset.name, attached),
+      negative: r.negative,
+    };
+  }
+  const preview = useMemo(
+    () => request(0),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [state, wanted, count, withStyle, m.key],
+  );
+
+  async function run() {
+    if (!m.choice || !wanted) return;
+    const choice = m.choice;
+    setConfirm(false);
+    setMsg(null);
+    let made = 0;
+    try {
+      for (let i = 0; i < count; i++) {
+        setBusy(
+          L(
+            `Lager variasjon ${i + 1} av ${count} … (kan ta et minutt)`,
+            `Making variation ${i + 1} of ${count} … (can take a minute)`,
+          ),
+        );
+        const req = request(i);
+        if (!req)
+          throw new Error(
+            L("Beskrivelsen kunne ikke lages.", "The description could not be created."),
+          );
+        const r = await generateImage({
+          data: {
+            projectId,
+            assetId: asset.id,
+            prompt: req.prompt,
+            referencePaths: req.attached.map((a) => a.path),
+            identityFirst: true,
+            purpose,
+            variantId: version.variantId,
+            provider: choice.provider.id,
+            model: choice.provider.id === "lovable" ? null : choice.model.id,
+            size: m.size,
+            aspect: nearestAspect(version.width, version.height),
+            ...(req.negative ? { negativePrompt: req.negative } : {}),
+            approved: true,
+          },
+        });
+        if (!r.ok)
+          throw new Error(
+            made
+              ? L(`${made} laget. ${tm(r.message)}`, `${made} made. ${tm(r.message)}`)
+              : tm(r.message),
+          );
+        const group = `variasjon-${r.versionId}`;
+        const a = await tools.cmds.runAndWait(
+          {
+            type: "AddAssetVersion",
+            versionId: r.versionId as never,
+            variantId: version.variantId,
+            media: r.media,
+            note: L(
+              `Variasjon ${i + 1} av ${count} fra v${version.number}: «${wanted}» (${r.model}).`,
+              `Variation ${i + 1} of ${count} from v${version.number}: “${wanted}” (${r.model}).`,
+            ).slice(0, 2000),
+          },
+          L(`AI-variasjon av «${asset.name}»`, `AI variation of “${asset.name}”`),
+          group,
+        );
+        if (a.error) throw new Error(a.error);
+        // Samme vinkel som originalen (variasjonen endrer ikke vinkelen)
+        const view = state.assetVersions[version.id]?.view;
+        if (view)
+          await tools.cmds.runAndWait(
+            { type: "SetVersionView", versionId: r.versionId as never, view },
+            L(`Vinkel: ${VERSION_VIEW_LABEL[view]}`, `View: ${VERSION_VIEW_LABEL[view]}`),
+            group,
+          );
+        made++;
+        tools.onSaved?.({
+          versionId: r.versionId,
+          variantId: version.variantId,
+          assetId: asset.id,
+        });
+      }
+      setMsg({
+        kind: "ok",
+        text: L(
+          `${made} ${made === 1 ? "variasjon er lagret som ny versjon" : "variasjoner er lagret som nye versjoner"}. Originalen er beholdt.`,
+          `${made} ${made === 1 ? "variation has been saved as a new version" : "variations have been saved as new versions"}. The original is kept.`,
+        ),
+      });
+    } catch (e) {
+      setMsg({ kind: "error", text: lostConnection((e as Error).message) });
+    } finally {
+      setBusy(null);
+      void qc.invalidateQueries({ queryKey: aiJobsKey(projectId) });
+    }
+  }
+
+  if (!m.choices.length)
+    return (
+      <p className="text-xs text-text-tertiary">
+        {L("Ingen bildemodeller er tilgjengelige.", "No image models are available.")}
+      </p>
+    );
+  return (
+    <div
+      data-testid="variation-panel"
+      className="flex flex-col gap-2 rounded-sm border border-border bg-surface-2 p-2 text-xs text-text-secondary"
+    >
+      <h4 className="flex items-center gap-1 font-medium text-text-primary">
+        <Shuffle className="size-3.5" aria-hidden /> {L("Lag variasjoner", "Make variations")}
+      </h4>
+      <label className="flex flex-col gap-1">
+        <span>
+          {L("Hva ønsker du forskjellig?", "What do you want to be different?")}{" "}
+          <span className="text-status-danger" aria-hidden>
+            *
+          </span>
+        </span>
+        <textarea
+          value={change}
+          required
+          aria-required
+          rows={2}
+          maxLength={500}
+          disabled={!!busy}
+          placeholder={L(
+            "F.eks. «døren står åpen» eller «med snø på taket»",
+            "E.g. “the door is open” or “with snow on the roof”",
+          )}
+          onChange={(e) => {
+            setChange(e.target.value);
+            setConfirm(false);
+          }}
+          className="min-h-[52px] w-full resize-y rounded-sm border border-border-control bg-surface-3 px-1.5 py-1 text-xs text-text-primary"
+        />
+      </label>
+      <ImageModelFields m={m} disabled={!!busy} onChange={() => setConfirm(false)} />
+      <label className="flex flex-col gap-1">
+        {L("Antall variasjoner", "Number of variations")}
+        <select
+          value={count}
+          disabled={!!busy}
+          onChange={(e) => {
+            setCount(Math.max(1, Math.min(MAX_VARIATIONS, Number(e.target.value) || 1)));
+            setConfirm(false);
+          }}
+          className="h-7 w-20 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
+        >
+          {Array.from({ length: MAX_VARIATIONS }, (_, i) => i + 1).map((n) => (
+            <option key={n} value={n}>
+              {n}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label className="flex items-center gap-1.5">
+        <input
+          type="checkbox"
+          checked={withStyle}
+          onChange={(e) => setWithStyle(e.target.checked)}
+        />
+        {L("Send med to stilforbilder fra filmen", "Send along two style references from the film")}
+      </label>
+      <PromptPreview preview={preview} />
+      <CostConfirm
+        m={m}
+        count={wanted ? count : 0}
+        confirm={confirm}
+        onConfirm={setConfirm}
+        onRun={() => void run()}
+        onClose={onClose}
+        disabled={!tools.editable}
+        busy={!!busy}
+        emptyText={L("Skriv hva som skal være forskjellig.", "Write what should be different.")}
+        confirmLabel={L("Bekreft generering av variasjoner", "Confirm generation of variations")}
+        icon={<Shuffle />}
+        startLabel={
+          count === 1
+            ? L("Lag variasjonen …", "Make the variation …")
+            : L(`Lag ${count} variasjoner …`, `Make ${count} variations …`)
+        }
+      />
+      {busy ? (
+        <p role="status" className="flex items-center gap-1.5">
+          <Loader2 className="size-3.5 animate-spin" aria-hidden /> {busy}
         </p>
       ) : msg ? (
         <p

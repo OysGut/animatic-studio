@@ -12,3 +12,22 @@ export function rememberScene(projectId: string, occurrenceId: string | null | u
 export function lastScene(projectId: string): string | null {
   return last.get(projectId) ?? null;
 }
+
+const GOTO = "animatic-goto-scene";
+
+/**
+ * Gå til en scene i arbeidsflaten som er åpen (manus eller sceneeditor), f.eks. fra oppgavene i toppstripen
+ * (DEC-0088). Arbeidsflatene lytter med `useGotoScene`.
+ */
+export function gotoScene(projectId: string, occurrenceId: string): void {
+  window.dispatchEvent(new CustomEvent(GOTO, { detail: { projectId, occurrenceId } }));
+}
+
+export function onGotoScene(projectId: string, fn: (occurrenceId: string) => void): () => void {
+  const on = (e: Event) => {
+    const d = (e as CustomEvent<{ projectId: string; occurrenceId: string }>).detail;
+    if (d?.projectId === projectId) fn(d.occurrenceId);
+  };
+  window.addEventListener(GOTO, on);
+  return () => window.removeEventListener(GOTO, on);
+}

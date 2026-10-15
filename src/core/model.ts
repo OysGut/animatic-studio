@@ -407,6 +407,12 @@ export interface Asset extends Entity<AssetId> {
    * er Laurits i disse replikkene, uten at alle «onkel» blir Laurits. Linjene har permanente ID-er.
    */
   readonly contextNames?: readonly ContextName[];
+  /**
+   * Scenene elementet skal inn i (DEC-0088, migrasjon 0034): lagt til fra en scene med «Legg til element i
+   * scenen» og valgt for flere scener. Vises med gul ramme i «I denne scenen» til det er dratt inn på
+   * lerretet der, eller planen er fjernet.
+   */
+  readonly scenePlans?: readonly ScenePlan[];
   /** Stemmen karakteren får når dialog lages med AI (tekst til tale, DEC-0071). */
   readonly voice?: AssetVoice | null;
   /**
@@ -487,6 +493,17 @@ export interface AssetVersion extends Entity<AssetVersionId> {
   readonly view?: import("./library/view").VersionView;
 }
 
+/** Et element som skal inn i en scene (DEC-0088). */
+export interface ScenePlan {
+  readonly occurrenceId: string;
+  /** Oppgaven (felles for alle scenene elementet ble planlagt i på én gang). */
+  readonly taskId: string;
+  /** Scenen elementet ble lagt til fra. */
+  readonly fromOccurrenceId: string;
+  /** Når planen ble laget (ISO). */
+  readonly at: string;
+}
+
 // ---------- Notater i manus (DEC-0031, REQ-0535–0540) ----------
 
 /**
@@ -510,6 +527,13 @@ export interface Annotation extends Entity<AnnotationId> {
   readonly editedAt: string | null;
   /** Slettet (kan angres). Slettede notater vises og eksporteres ikke. */
   readonly removed: boolean;
+  /**
+   * Merknad fra programmet (DEC-0088, migrasjon 0034), f.eks. «Teddybjørnen skal inn i scenen»: vises og
+   * eksporteres som notat, merket som systemmerknad. Mangler = skrevet av en person.
+   */
+  readonly source?: "system";
+  /** Oppgaven merknaden hører til (planen for et element i flere scener). */
+  readonly taskId?: string;
 }
 
 // ---------- 2D-sceneeditor (M3 del 2, mandat kap. 11–12, DEC-0035) ----------

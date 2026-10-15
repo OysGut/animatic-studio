@@ -156,6 +156,11 @@ export const generateSpeech = createServerFn({ method: "POST" })
         message: L("Bare replikker kan leses inn.", "Only lines can be read aloud."),
       };
     const text = b.text.replace(/\s+/g, " ").trim();
+    // Administrator kan ha slått av ElevenLabs eller talemodellen for alle (DEC-0088, migrasjon 0034)
+    const aiGate = await (
+      await import("@/adapters/account/ai-models.server")
+    ).modelGate(db, "elevenlabs", SPEECH_MODEL);
+    if (aiGate.message) return { ok: false, message: aiGate.message };
     const m = providerModel("elevenlabs", SPEECH_MODEL);
     if (!text || !m) return { ok: false, message: L("Replikken er tom.", "The line is empty.") };
     if (text.length > (m.maxPromptChars ?? 5000))

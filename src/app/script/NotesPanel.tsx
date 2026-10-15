@@ -2,7 +2,7 @@
  * Notater i inspektøren (DEC-0031, REQ-0535–0537): lese, skrive, endre og slette notater på tekst
  * og nåler på scenen. Stempelet (hvem og når) står i hjørnet. Sletting krever bekreftelse og kan angres.
  */
-import { MessageSquarePlus, Pencil, Trash2 } from "lucide-react";
+import { Check, MessageSquarePlus, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import {
   L,
@@ -160,15 +160,30 @@ function NoteCard({
   }, [focused]);
   const block = note.blockId ? state.blocks[note.blockId] : undefined;
   const range = block ? resolveRange(note, block.text) : null;
+  // Merknad fra programmet (DEC-0088): varm farge, merket «Systemmerknad», «Ferdig» lukker den
+  const system = note.source === "system";
 
   return (
     <div
       ref={ref}
       className={
-        "relative flex flex-col gap-1 border-l-2 border-note bg-surface-2 py-1.5 pl-2 pr-2 " +
-        (focused ? "outline outline-1 outline-note" : "")
+        "relative flex flex-col gap-1 border-l-2 bg-surface-2 py-1.5 pl-2 pr-2 " +
+        (system ? "border-accent-warm " : "border-note ") +
+        (focused
+          ? system
+            ? "outline outline-1 outline-accent-warm"
+            : "outline outline-1 outline-note"
+          : "")
       }
     >
+      {system ? (
+        <span
+          className="absolute left-2 top-1 text-[11px] font-medium text-accent-warm"
+          data-testid="system-note"
+        >
+          {L("Systemmerknad", "System note")}
+        </span>
+      ) : null}
       <span className="absolute right-1.5 top-1 text-right text-[11px] leading-tight text-text-tertiary">
         {formatStamp(note)}
         {formatEdited(note) ? <span className="block">{formatEdited(note)}</span> : null}
@@ -235,6 +250,28 @@ function NoteCard({
       )}
       {editable && !editing ? (
         <div className="flex gap-1">
+          {system ? (
+            <button
+              type="button"
+              data-testid="system-note-done"
+              className="mr-2 flex items-center gap-1 rounded-sm bg-accent-warm/15 px-1.5 text-[11px] text-text-primary hover:bg-accent-warm/25"
+              title={L(
+                "Lagre merknaden som ferdig (den forsvinner, og kan angres)",
+                "Save the note as done (it disappears, and can be undone)",
+              )}
+              onClick={() =>
+                setErr(
+                  run(
+                    { type: "SetAnnotationRemoved", annotationId: note.id, removed: true },
+                    L("Merknad ferdig", "Note done"),
+                  ),
+                )
+              }
+            >
+              <Check className="size-3" aria-hidden />
+              {L("Ferdig", "Done")}
+            </button>
+          ) : null}
           <button
             type="button"
             className="flex items-center gap-1 text-[11px] text-text-tertiary hover:text-text-primary"

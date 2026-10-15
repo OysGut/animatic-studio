@@ -129,7 +129,12 @@ export const generateSound = createServerFn({ method: "POST" })
           "Sound can only be made for a sound asset.",
         ),
       };
-    const m = providerModel(data.provider, data.model);
+    // Administrator kan ha slått av leverandøren eller modellen for alle (DEC-0088, migrasjon 0034)
+    const aiGate = await (
+      await import("@/adapters/account/ai-models.server")
+    ).modelGate(db, data.provider, data.model);
+    if (aiGate.message) return { ok: false, message: aiGate.message };
+    const m = providerModel(data.provider, data.model, aiGate.settings);
     if (!m || m.capability !== "sound")
       return { ok: false, message: L("Ukjent lydmodell.", "Unknown sound model.") };
     const key = await gate.projectKey(db, data.projectId, data.provider, context.userId);
@@ -142,8 +147,13 @@ export const generateSound = createServerFn({ method: "POST" })
         ),
       };
     // Ukjent lengde: anslaget regner med det lengste modellen kan lage (katalogen, REQ-0273)
-    const longest = providerModel(data.provider, data.model)?.soundSeconds?.max ?? 30;
-    const cost = estimateCostUsd(data.provider, data.model, { seconds: data.seconds ?? longest });
+    const longest = m.soundSeconds?.max ?? 30;
+    const cost = estimateCostUsd(
+      data.provider,
+      data.model,
+      { seconds: data.seconds ?? longest },
+      aiGate.settings,
+    );
     const hourAgo = new Date(Date.now() - 3600_000).toISOString();
     const limits = async (extra: number): Promise<string | null> => {
       const { count } = await db
@@ -185,7 +195,7 @@ export const generateSound = createServerFn({ method: "POST" })
         seconds: data.seconds,
         loop: data.loop,
         // Innsatsnivået jobben ble kjørt med (mandat 19.3, REQ-0275)
-        effort: effortOf(providerModel(data.provider, data.model)),
+        effort: effortOf(m),
         // Sporbarhet (DEC-0072, REQ-0257)
         trace: await (
           await import("./trace.server")

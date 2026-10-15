@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **655**
-- Prioritet: P0: 145, P1: 324, P2: 147, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 128, teknisk-anbefaling: 7
-- Status: Verifisert: 581, Implementert – ikke verifisert: 12, Under arbeid: 3, Ikke startet: 59
+- Antall krav: **664**
+- Prioritet: P0: 145, P1: 333, P2: 147, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 137, teknisk-anbefaling: 7
+- Status: Verifisert: 590, Implementert – ikke verifisert: 12, Under arbeid: 3, Ikke startet: 59
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -8944,3 +8944,136 @@ Et klikk på brukernavnet i toppfeltet åpner «Min konto»: visningsnavn, e-pos
   - tests/db/run-db-tests.ts
   - tests/visual/account-admin-ui.mjs
 - **Implementering:** src/app/account/AccountPage.tsx, src/app/shell/AppHeader.tsx, src/adapters/browser/account.ts, src/routes/konto.tsx
+
+#### REQ-0656 – Bildeverktøy: delelinjer, navngitte deler, «Lag delingen», «Fjern luften rundt» og «Lag variasjoner»
+I bildevisningen kan delelinjene dras hver for seg. Delene heter «1.», «2.» … i sidepanelet; delen i fokus får varmgul ramme (2 px) og fet varmgul nummer med mørk skygge. «Lag delingen» lager delene som nye bilder. «Fjern luften rundt» beskjærer bildet til innholdet. «Lag variasjoner» spør «Hva ønsker du forskjellig?» og bruker vanlig kostnadsgodkjenning.
+
+- **Kilde:** Beslutning DEC-0088 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** LIBRARY, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Delelinjer kan flyttes uavhengig av hverandre.
+  - Fokusert del har varmgul ramme og nummer.
+  - «Fjern luften rundt» fjerner tom kant rundt innholdet.
+- **Tester:**
+  - tests/unit/image-tools.test.ts
+  - tests/visual/image-tools-ui.mjs
+- **Implementering:** src/app/library/ImageLightbox.tsx, src/app/library/ImagePartsPanel.tsx, src/app/library/ImageAiPanels.tsx, src/core/cutout/split.ts, src/core/cutout/trim.ts
+
+#### REQ-0657 – Dørdeler: deler legges i scenen med ankerpunkt på hengselsiden
+Deler av et bilde (f.eks. dørramme og dørblad) kan legges rett inn i 2D-scenen der de lå i originalen, i samme størrelse som originallaget. En del med ankerpunkt til venstre eller høyre legges i en egen gruppe med ankerpunktet midt på hengselkanten, så skalering i bredden skjer rundt hengselen. Er resten av originalen med som egen del, skjules originallaget. Ett angresteg.
+
+- **Kilde:** Beslutning DEC-0088 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** COMPOSE
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Dørbladet får gruppe med ankerpunkt på valgt kant.
+  - Originallaget skjules når resten er med.
+- **Tester:**
+  - tests/unit/dec0088-scene-plans.test.ts
+  - tests/visual/image-tools-ui.mjs
+- **Implementering:** src/core/composition/parts.ts, src/app/scene-editor/LayerImageDialog.tsx
+
+#### REQ-0658 – «Legg til element i scenen …» med spørsmål om andre scener
+Over «Dra inn på lerretet» i «I denne scenen» åpner «Legg til element i scenen …» et valg fra biblioteket eller et nytt element som ikke står i manuset. Deretter spør systemet om elementet også skal inn i andre scener, med hurtigvalg (alle scener med hver karakter/dyr i scenen, alle scener på samme sted, alle scener etter denne) og avkrysning per scene. Planen lagres på elementet (assets.scene_plans).
+
+- **Kilde:** Beslutning DEC-0088 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** LIBRARY, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Hurtigvalget «Alle scener med Maja» krysser av scenene med Maja.
+  - PlanAssetInScenes kan angres.
+- **Tester:**
+  - tests/unit/dec0088-scene-plans.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dec0088-tasks-ui.mjs
+- **Implementering:** src/app/scene-editor/AddElementDialog.tsx, src/core/library/scene-plans.ts, src/core/commands/apply.ts
+
+#### REQ-0659 – Elementer som skal inn: varmgul ramme og melding i de andre scenene
+I scenene elementet er planlagt for, legges det ikke inn automatisk. Det vises i «I denne scenen» med varmgul ramme, merket «Skal inn» og meldingen «Skal inn fordi det ble lagt til i scene N», til brukeren drar det inn på lerretet eller fjerner det med X (bare for den scenen).
+
+- **Kilde:** Beslutning DEC-0088 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** COMPOSE, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Rammen forsvinner når elementet er dratt inn.
+  - X fjerner planen bare for scenen.
+- **Tester:**
+  - tests/unit/dec0088-scene-plans.test.ts
+  - tests/visual/dec0088-tasks-ui.mjs
+- **Implementering:** src/app/scene-editor/SceneAssetsPanel.tsx, src/core/library/scene-plans.ts
+
+#### REQ-0660 – Systemmerknader i manuset og i eksport
+Ved planlegging kan en merknad legges i manuset i hver valgt scene (tekst kan endres). Den er merket «Systemmerknad» og lukkes med «Ferdig» eller slettes; manuset endres aldri automatisk. I PDF, Word og Fountain er den med som andre notater, med forfatter «Animatic Studio (systemmerknad)» (PDF: emne «Systemmerknad»). Lagres som script_annotations.source = 'system' med task_id.
+
+- **Kilde:** Beslutning DEC-0088 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** SCRIPT
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - «Ferdig» lagrer merknaden som ferdig (kan angres).
+  - Eksporten viser systemmerknaden med eget forfatternavn.
+- **Tester:**
+  - tests/unit/dec0088-scene-plans.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dec0088-tasks-ui.mjs
+- **Implementering:** src/app/script/NotesPanel.tsx, src/core/notes/transfer.ts, src/engine/export/screenplay-pdf.ts
+
+#### REQ-0661 – Oppgaven i toppstripen med forrige og neste
+Åpne oppgaver (et element som skal inn i flere scener) vises i toppstripen med navn og antall som gjenstår («Bestemor Anne: 2 av 3») og ‹ ›. Forrige/neste går til neste scene som ikke er ferdig, i manuset eller sceneeditoren der man står, ellers i sceneeditoren. En scene er ferdig når elementet er dratt inn og merknaden er lukket. Listen viser alle oppgaver og scenene deres. Systemet glemmer ikke scenene før de er ferdige.
+
+- **Kilde:** Beslutning DEC-0088 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - ‹ › går rundt blant scenene som ikke er ferdige.
+  - Oppgaven forsvinner når alle scenene er ferdige.
+- **Tester:**
+  - tests/unit/dec0088-scene-plans.test.ts
+  - tests/visual/dec0088-tasks-ui.mjs
+- **Implementering:** src/app/shell/TaskNav.tsx, src/app/shell/current-scene.ts, src/core/library/scene-plans.ts
+
+#### REQ-0662 – TODO-boks på prosjektsiden
+Prosjektsiden har boksen «TODO» med oversikt over hva som skal gjøres i valgt produksjon: oppgavene (med lenke til første scene), notater fra andre i manuset (nyeste først; ikke egne notater og ikke systemmerknader), scener med manusendringer etter 2D-scene eller film, arbeidslisten (eldre ressursversjoner) og AI-genereringer som feilet eller ble borte siste uke.
+
+- **Kilde:** Beslutning DEC-0088 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Egne notater er ikke med.
+  - Tom boks sier at ingenting venter.
+- **Tester:**
+  - tests/unit/dec0088-scene-plans.test.ts
+  - tests/visual/dec0088-tasks-ui.mjs
+- **Implementering:** src/app/projects/ProjectTodoBox.tsx, src/core/library/todo.ts
+
+#### REQ-0663 – Sceneeditor: paneler side om side og grupper som lukkes
+Panelene i sceneeditoren kan stå side om side (alle til høyre) i rekkefølgen brukeren velger med ‹ ›. Grupper i laglisten lukkes og åpnes med pil (Alt-klikk: alle). Valgene lagres på kontoen (profiles.ui_prefs via set_my_ui_prefs) og følger brukeren mellom maskiner, som språket.
+
+- **Kilde:** Beslutning DEC-0088 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** COMPOSE, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Rekkefølgen huskes i en ny nettleser (kontoen).
+  - Lukket gruppe skjuler lagene sine.
+- **Tester:**
+  - tests/unit/scene-panels.test.ts
+  - tests/unit/layer-groups.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/scene-panels-ui.mjs
+- **Implementering:** src/app/scene-editor/ScenePanels.tsx, src/app/scene-editor/LayersPanel.tsx, src/app/account/ui-prefs.ts
+
+#### REQ-0664 – Adminside: AI-tilkoblinger og status for bakgrunnsjobben
+Administrator kan slå leverandører og modeller av og på, legge til modeller hos kjente leverandører og registrere ønsker om nye leverandører. Valglistene viser bare det som er på, og serveren avviser modeller som er slått av. Adminsiden viser når bakgrunnsjobben (/api/public/cron/ai-jobs) sist kjørte og hva den gjorde.
+
+- **Kilde:** Beslutning DEC-0088 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** PROVIDER
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - En modell som er slått av, vises ikke og avvises av serveren.
+  - Cron-status vises med tidspunkt.
+- **Tester:**
+  - tests/unit/ai-model-settings.test.ts
+  - tests/unit/ai-admin.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/ai-admin-ui.mjs
+- **Implementering:** src/app/admin/AiConnectionsAdmin.tsx, src/core/generation/model-settings.ts, src/adapters/account/ai-models.server.ts, src/app/admin/cron-status.ts

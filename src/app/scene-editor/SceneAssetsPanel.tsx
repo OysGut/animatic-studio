@@ -7,7 +7,7 @@
  * til før brukeren velger det.
  */
 import { useNavigate } from "@tanstack/react-router";
-import { BookPlus, Check, Plus } from "lucide-react";
+import { BookPlus, Check, ListPlus, Plus, X } from "lucide-react";
 import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
 import { memo, useMemo, useState } from "react";
 import {
@@ -18,6 +18,7 @@ import {
   assetsInScene,
   coverVersion,
   librarySuggestions,
+  pendingPlansFor,
   sceneContinuityVariant,
   versionsOf,
   type AssetVersion,
@@ -28,6 +29,7 @@ import { useImageUrls } from "@/app/library/asset-images";
 import { SuggestionsDialog } from "@/app/library/SuggestionsDialog";
 import type { Commands } from "@/app/project/use-commands";
 import { sceneSuggestions } from "./scene-suggestions";
+import { AddElementDialog } from "./AddElementDialog";
 
 /** Datatype for dra-og-slipp fra panelet til lerretet (verdien er ressursens ID). */
 export const ASSET_DRAG_TYPE = "application/x-animatic-asset";
@@ -58,10 +60,21 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
   cmds?: Commands;
 }) {
   const navigate = useNavigate();
-  const items = useMemo(
-    () => assetsInScene(state, productionId, occurrenceId),
-    [state, productionId, occurrenceId],
-  );
+  // Elementer som skal inn i scenen fra en annen scene (DEC-0088): gul ramme til de er dratt inn
+  const pending = useMemo(() => pendingPlansFor(state, occurrenceId), [state, occurrenceId]);
+  const pendingById = useMemo(() => new Map(pending.map((p) => [p.asset.id, p])), [pending]);
+  const items = useMemo(() => {
+    const list = assetsInScene(state, productionId, occurrenceId);
+    const seen = new Set(list.map((x) => x.asset.id));
+    // Planlagte elementer som ikke nevnes i scenen, kommer først
+    return [
+      ...pending
+        .filter((p) => !seen.has(p.asset.id))
+        .map((p) => ({ asset: p.asset, how: "planned" as const })),
+      ...list,
+    ];
+  }, [state, productionId, occurrenceId, pending]);
+  const [addOpen, setAddOpen] = useState(false);
   // Bildet som vises: utseendet kontinuiteten gir i scenen (DEC-0055), ellers forsidebildet
   const sceneVariantId = state.occurrences[occurrenceId]?.variantId ?? null;
   const looks = useMemo(() => {
@@ -100,6 +113,17 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
   /** Forslagene som vises i dialogen (ett navn, eller alle i scenen). */
   const [adding, setAdding] = useState<readonly LibrarySuggestion[] | null>(null);
   const canAdd = editable && !!cmds;
+  function dismissPlan(assetId: string, taskId: string) {
+    cmds?.run(
+      {
+        type: "RemoveScenePlans",
+        assetId: assetId as never,
+        taskId,
+        occurrenceIds: [occurrenceId],
+      },
+      L("Fjern fra listen over det som skal inn", "Remove from the list of what should be added"),
+    );
+  }
 
   return (
     <section
@@ -109,6 +133,44 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
       <h2 className="px-3 pb-1 pt-2 text-xs font-medium uppercase tracking-[0.04em] text-text-tertiary">
         {L("I denne scenen", "In this scene")} ({items.length})
       </h2>
+      {canAdd ? (
+        <div className="px-2 pb-1">
+          <button
+            type="button"
+            onClick={() => setAddOpen(true)}
+            data-testid="add-element-open"
+            className="flex w-full items-center justify-center gap-1.5 rounded-sm border border-dashed border-border-control px-2 py-1 text-xs text-text-secondary hover:border-accent-brand hover:text-text-primary"
+            title={L(
+              "Velg fra biblioteket, eller lag noe nytt som ikke står i manuset",
+              "Choose from the library, or make something new that is not in the script",
+            )}
+          >
+            <ListPlus className="size-3.5" aria-hidden />
+            {L("Legg til element i scenen …", "Add element to the scene …")}
+          </button>
+          {addOpen && cmds ? (
+            <AddElementDialog
+              open
+              onOpenChange={setAddOpen}
+              state={state}
+              productionId={productionId}
+              occurrenceId={occurrenceId}
+              cmds={cmds}
+              onPlace={(assetId) =>
+                onAdd
+                  ? onAdd(assetId)
+                    ? null
+                    : L(
+                        "Elementet kunne ikke legges inn i scenen.",
+                        "The element could not be added to the scene.",
+                      )
+                  : null
+              }
+              onNeedsImage={(assetId) => onOpenImage?.(assetId)}
+            />
+          ) : null}
+        </div>
+      ) : null}
       {items.length === 0 ? (
         <p className="px-3 pb-2 text-xs text-text-tertiary">
           {L(
@@ -142,6 +204,7 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                 : undefined;
               const draggable = !!onAdd && editable;
               const inScene = layersByAsset?.get(asset.id)?.length ?? 0;
+              const plan = inScene ? undefined : pendingById.get(asset.id);
               return (
                 <li
                   key={asset.id}
@@ -153,14 +216,17 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                     e.dataTransfer.effectAllowed = "copy";
                   }}
                   title={L(
-                    `${asset.name} – ${ASSET_KIND_LABEL[asset.kind]}, ${USAGE_LABEL[how]}${lookName ? `. Utseende i denne scenen (kontinuitet): ${lookName}` : ""}${inScene ? `. Lagt inn i scenen${inScene > 1 ? ` (${inScene} lag)` : ""}` : ". Ikke lagt inn i scenen ennå"}.\nDobbeltklikk: velg eller generer bilde`,
-                    `${asset.name} – ${ASSET_KIND_LABEL[asset.kind]}, ${USAGE_LABEL[how]}${lookName ? `. Look in this scene (continuity): ${lookName}` : ""}${inScene ? `. In the scene${inScene > 1 ? ` (${inScene} layers)` : ""}` : ". Not yet added to the scene"}.\nDouble-click: choose or generate an image`,
+                    `${asset.name} – ${ASSET_KIND_LABEL[asset.kind]}, ${how === "planned" ? "planlagt fra en annen scene" : USAGE_LABEL[how]}${lookName ? `. Utseende i denne scenen (kontinuitet): ${lookName}` : ""}${inScene ? `. Lagt inn i scenen${inScene > 1 ? ` (${inScene} lag)` : ""}` : ". Ikke lagt inn i scenen ennå"}.\nDobbeltklikk: velg eller generer bilde`,
+                    `${asset.name} – ${ASSET_KIND_LABEL[asset.kind]}, ${how === "planned" ? "planned from another scene" : USAGE_LABEL[how]}${lookName ? `. Look in this scene (continuity): ${lookName}` : ""}${inScene ? `. In the scene${inScene > 1 ? ` (${inScene} layers)` : ""}` : ". Not yet added to the scene"}.\nDouble-click: choose or generate an image`,
                   )}
+                  data-planned={plan ? true : undefined}
                   className={
                     "group relative flex flex-col overflow-hidden rounded-sm border bg-surface-2 " +
                     (inScene
                       ? "border-accent-brand ring-1 ring-accent-brand/60 "
-                      : "border-border opacity-80 ") +
+                      : plan
+                        ? "border-accent-warm ring-2 ring-accent-warm "
+                        : "border-border opacity-80 ") +
                     (draggable ? "cursor-grab active:cursor-grabbing" : "")
                   }
                 >
@@ -175,6 +241,17 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                       <Check className="size-3" aria-hidden />
                       {L("I scenen", "In the scene")}
                       {inScene > 1 ? ` ×${inScene}` : ""}
+                    </span>
+                  ) : null}
+                  {plan ? (
+                    <span
+                      className="absolute left-1 top-1 z-[1] rounded-sm bg-accent-warm px-1 text-[11px] font-medium text-black"
+                      title={L(
+                        `Skal inn i scenen: lagt til fra scene ${plan.fromNumber ?? "?"} (${new Date(plan.plan.at).toLocaleDateString()}). Dra det inn på lerretet.`,
+                        `Should be in the scene: added from scene ${plan.fromNumber ?? "?"} (${new Date(plan.plan.at).toLocaleDateString()}). Drag it onto the canvas.`,
+                      )}
+                    >
+                      {L("Skal inn", "To add")}
                     </span>
                   ) : null}
                   <div className="flex h-16 items-center justify-center bg-surface-3">
@@ -215,6 +292,30 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                     {lookName ? lookName : ASSET_KIND_LABEL[asset.kind]}
                     {v ? "" : L(" · uten bilde", " · no image")}
                   </span>
+                  {plan ? (
+                    <span className="flex items-start gap-1 px-1.5 pb-1 text-[11px] leading-tight text-accent-warm">
+                      <span className="min-w-0 flex-1">
+                        {L(
+                          `Skal inn fordi det ble lagt til i scene ${plan.fromNumber ?? "?"}`,
+                          `To be added because it was added in scene ${plan.fromNumber ?? "?"}`,
+                        )}
+                      </span>
+                      {canAdd ? (
+                        <button
+                          type="button"
+                          onClick={() => dismissPlan(asset.id, plan.plan.taskId)}
+                          aria-label={L(
+                            `Skal ikke inn i denne scenen: fjern «${asset.name}» fra listen`,
+                            `Should not be in this scene: remove “${asset.name}” from the list`,
+                          )}
+                          title={L("Skal ikke inn her", "Should not be here")}
+                          className="shrink-0 rounded-sm text-text-tertiary hover:text-text-primary"
+                        >
+                          <X className="size-3" aria-hidden />
+                        </button>
+                      ) : null}
+                    </span>
+                  ) : null}
                   {onAdd && editable ? (
                     <button
                       type="button"

@@ -181,6 +181,11 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
           "The database is not updated for AI-written descriptions. Paste the message in LOVABLE_SYNC.md into Lovable (migration 0022).",
         ),
       };
+    // Teksten skrives med Lovable AI: administrator kan ha slått av hele leverandøren (DEC-0088)
+    const aiGate = await (
+      await import("@/adapters/account/ai-models.server")
+    ).modelGate(admin, "lovable", "*");
+    if (aiGate.message) return { ok: false, message: aiGate.message };
     const key = process.env["LOVABLE_API_KEY"];
     if (!key)
       return {

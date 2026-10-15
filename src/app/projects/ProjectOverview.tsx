@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { AlertTriangle, FileText, Send } from "lucide-react";
+import { FileText, Send } from "lucide-react";
 import { useState, type FormEvent } from "react";
-import { L, discrepancies, filmClips, mainProduction, orderedOccurrences } from "@/core";
+import { L, mainProduction, orderedOccurrences } from "@/core";
 import { createInvitation } from "@/adapters/browser/members";
 import { DurationOverview } from "./DurationOverview";
 import { canEdit, useMembers, useProfiles, useProjectState } from "@/app/project/use-project";
@@ -11,7 +11,7 @@ import { AiPanel } from "@/app/ai/AiPanel";
 import { ProductionList } from "./ProductionList";
 import { MembersSection } from "./MembersSection";
 import { StyleGuideSection } from "./StyleGuideSection";
-import { WorklistNotice } from "./WorklistNotice";
+import { ProjectTodoBox } from "./ProjectTodoBox";
 import { StorageSection } from "./StorageSection";
 import { ProjectCostSection } from "@/app/account/ProjectCostSection";
 import { ContinuityAnalysisPanel } from "@/app/continuity/ContinuityAnalysisPanel";
@@ -75,6 +75,14 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
             editable={canEdit(myRole)}
           />
 
+          <ProjectTodoBox
+            state={s}
+            projectId={projectId}
+            userId={userId}
+            myName={profiles.data?.[userId]?.display_name ?? ""}
+            editable={canEdit(myRole)}
+          />
+
           <section aria-labelledby="prod-title" className="mt-8">
             <h2 id="prod-title" className="mb-2 text-base font-semibold text-text-primary">
               {L("Produksjoner", "Productions")}
@@ -85,44 +93,6 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
               userId={userId}
               editable={canEdit(myRole)}
             />
-            {main
-              ? (() => {
-                  // Avvik ved manusendring (DEC-0054, REQ-0315)
-                  const n = new Set(
-                    discrepancies(s, filmClips(s, main.id), { spans: false }).map(
-                      (d) => d.occurrenceId,
-                    ),
-                  ).size;
-                  return n > 0 ? (
-                    <p className="mt-3 flex items-center gap-2 text-xs text-text-secondary">
-                      <AlertTriangle className="size-3.5 text-status-danger" aria-hidden />
-                      {n === 1
-                        ? L("Én scene har", "One scene has")
-                        : L(`${n} scener har`, `${n} scenes have`)}{" "}
-                      {L(
-                        "manusendringer etter at 2D-scene eller film ble laget.",
-                        "script changes since its 2D scene or film was made.",
-                      )}
-                      <Link
-                        to="/prosjekt/$projectId/montering"
-                        params={{ projectId }}
-                        className="text-accent-brand hover:underline"
-                      >
-                        {L("Se i monteringen", "See in assembly")}
-                      </Link>
-                    </p>
-                  ) : null;
-                })()
-              : null}
-            {main ? (
-              <WorklistNotice
-                state={s}
-                projectId={projectId}
-                productionId={main.id}
-                userId={userId}
-                editable={canEdit(myRole)}
-              />
-            ) : null}
             {main && orderedOccurrences(s, main.id).length === 0 ? (
               <div className="mt-3 flex items-center gap-3 text-xs text-text-tertiary">
                 <span>

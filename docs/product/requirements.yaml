@@ -24568,3 +24568,308 @@ requirements:
   - date: '2026-10-15'
     decision: DEC-0086
     change: "Språkvelgeren hang seg opp (rettet); lukking med brukernavnet og «Lukk»"
+- id: REQ-0656
+  title: "Bildeverktøy: delelinjer, navngitte deler, «Lag delingen», «Fjern luften rundt» og «Lag variasjoner»"
+  text: "I bildevisningen kan delelinjene dras hver for seg. Delene heter «1.», «2.» … i sidepanelet; delen i fokus får varmgul ramme (2 px) og fet varmgul nummer med mørk skygge. «Lag delingen» lager delene som nye bilder. «Fjern luften rundt» beskjærer bildet til innholdet. «Lag variasjoner» spør «Hva ønsker du forskjellig?» og bruker vanlig kostnadsgodkjenning."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0088
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - LIBRARY
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Delelinjer kan flyttes uavhengig av hverandre."
+  - "Fokusert del har varmgul ramme og nummer."
+  - "«Fjern luften rundt» fjerner tom kant rundt innholdet."
+  tests:
+  - "tests/unit/image-tools.test.ts"
+  - "tests/visual/image-tools-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/app/library/ImageLightbox.tsx"
+  - "src/app/library/ImagePartsPanel.tsx"
+  - "src/app/library/ImageAiPanels.tsx"
+  - "src/core/cutout/split.ts"
+  - "src/core/cutout/trim.ts"
+  verification:
+  - "tests/unit/image-tools.test.ts"
+  - "tests/visual/image-tools-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0088.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0088
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+- id: REQ-0657
+  title: "Dørdeler: deler legges i scenen med ankerpunkt på hengselsiden"
+  text: "Deler av et bilde (f.eks. dørramme og dørblad) kan legges rett inn i 2D-scenen der de lå i originalen, i samme størrelse som originallaget. En del med ankerpunkt til venstre eller høyre legges i en egen gruppe med ankerpunktet midt på hengselkanten, så skalering i bredden skjer rundt hengselen. Er resten av originalen med som egen del, skjules originallaget. Ett angresteg."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0088
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Dørbladet får gruppe med ankerpunkt på valgt kant."
+  - "Originallaget skjules når resten er med."
+  tests:
+  - "tests/unit/dec0088-scene-plans.test.ts"
+  - "tests/visual/image-tools-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/core/composition/parts.ts"
+  - "src/app/scene-editor/LayerImageDialog.tsx"
+  verification:
+  - "tests/unit/dec0088-scene-plans.test.ts"
+  - "tests/visual/image-tools-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0088.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0088
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+- id: REQ-0658
+  title: "«Legg til element i scenen …» med spørsmål om andre scener"
+  text: "Over «Dra inn på lerretet» i «I denne scenen» åpner «Legg til element i scenen …» et valg fra biblioteket eller et nytt element som ikke står i manuset. Deretter spør systemet om elementet også skal inn i andre scener, med hurtigvalg (alle scener med hver karakter/dyr i scenen, alle scener på samme sted, alle scener etter denne) og avkrysning per scene. Planen lagres på elementet (assets.scene_plans)."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0088
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - LIBRARY
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Hurtigvalget «Alle scener med Maja» krysser av scenene med Maja."
+  - "PlanAssetInScenes kan angres."
+  tests:
+  - "tests/unit/dec0088-scene-plans.test.ts"
+  - "tests/db/run-db-tests.ts"
+  - "tests/visual/dec0088-tasks-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/app/scene-editor/AddElementDialog.tsx"
+  - "src/core/library/scene-plans.ts"
+  - "src/core/commands/apply.ts"
+  verification:
+  - "tests/unit/dec0088-scene-plans.test.ts"
+  - "tests/db/run-db-tests.ts"
+  - "tests/visual/dec0088-tasks-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0088.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0088
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+- id: REQ-0659
+  title: "Elementer som skal inn: varmgul ramme og melding i de andre scenene"
+  text: "I scenene elementet er planlagt for, legges det ikke inn automatisk. Det vises i «I denne scenen» med varmgul ramme, merket «Skal inn» og meldingen «Skal inn fordi det ble lagt til i scene N», til brukeren drar det inn på lerretet eller fjerner det med X (bare for den scenen)."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0088
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - COMPOSE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Rammen forsvinner når elementet er dratt inn."
+  - "X fjerner planen bare for scenen."
+  tests:
+  - "tests/unit/dec0088-scene-plans.test.ts"
+  - "tests/visual/dec0088-tasks-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/app/scene-editor/SceneAssetsPanel.tsx"
+  - "src/core/library/scene-plans.ts"
+  verification:
+  - "tests/unit/dec0088-scene-plans.test.ts"
+  - "tests/visual/dec0088-tasks-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0088.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0088
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+- id: REQ-0660
+  title: "Systemmerknader i manuset og i eksport"
+  text: "Ved planlegging kan en merknad legges i manuset i hver valgt scene (tekst kan endres). Den er merket «Systemmerknad» og lukkes med «Ferdig» eller slettes; manuset endres aldri automatisk. I PDF, Word og Fountain er den med som andre notater, med forfatter «Animatic Studio (systemmerknad)» (PDF: emne «Systemmerknad»). Lagres som script_annotations.source = 'system' med task_id."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0088
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - SCRIPT
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "«Ferdig» lagrer merknaden som ferdig (kan angres)."
+  - "Eksporten viser systemmerknaden med eget forfatternavn."
+  tests:
+  - "tests/unit/dec0088-scene-plans.test.ts"
+  - "tests/db/run-db-tests.ts"
+  - "tests/visual/dec0088-tasks-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/app/script/NotesPanel.tsx"
+  - "src/core/notes/transfer.ts"
+  - "src/engine/export/screenplay-pdf.ts"
+  verification:
+  - "tests/unit/dec0088-scene-plans.test.ts"
+  - "tests/db/run-db-tests.ts"
+  - "tests/visual/dec0088-tasks-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0088.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0088
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+- id: REQ-0661
+  title: "Oppgaven i toppstripen med forrige og neste"
+  text: "Åpne oppgaver (et element som skal inn i flere scener) vises i toppstripen med navn og antall som gjenstår («Bestemor Anne: 2 av 3») og ‹ ›. Forrige/neste går til neste scene som ikke er ferdig, i manuset eller sceneeditoren der man står, ellers i sceneeditoren. En scene er ferdig når elementet er dratt inn og merknaden er lukket. Listen viser alle oppgaver og scenene deres. Systemet glemmer ikke scenene før de er ferdige."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0088
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "‹ › går rundt blant scenene som ikke er ferdige."
+  - "Oppgaven forsvinner når alle scenene er ferdige."
+  tests:
+  - "tests/unit/dec0088-scene-plans.test.ts"
+  - "tests/visual/dec0088-tasks-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/app/shell/TaskNav.tsx"
+  - "src/app/shell/current-scene.ts"
+  - "src/core/library/scene-plans.ts"
+  verification:
+  - "tests/unit/dec0088-scene-plans.test.ts"
+  - "tests/visual/dec0088-tasks-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0088.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0088
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+- id: REQ-0662
+  title: "TODO-boks på prosjektsiden"
+  text: "Prosjektsiden har boksen «TODO» med oversikt over hva som skal gjøres i valgt produksjon: oppgavene (med lenke til første scene), notater fra andre i manuset (nyeste først; ikke egne notater og ikke systemmerknader), scener med manusendringer etter 2D-scene eller film, arbeidslisten (eldre ressursversjoner) og AI-genereringer som feilet eller ble borte siste uke."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0088
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Egne notater er ikke med."
+  - "Tom boks sier at ingenting venter."
+  tests:
+  - "tests/unit/dec0088-scene-plans.test.ts"
+  - "tests/visual/dec0088-tasks-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/app/projects/ProjectTodoBox.tsx"
+  - "src/core/library/todo.ts"
+  verification:
+  - "tests/unit/dec0088-scene-plans.test.ts"
+  - "tests/visual/dec0088-tasks-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0088.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0088
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+- id: REQ-0663
+  title: "Sceneeditor: paneler side om side og grupper som lukkes"
+  text: "Panelene i sceneeditoren kan stå side om side (alle til høyre) i rekkefølgen brukeren velger med ‹ ›. Grupper i laglisten lukkes og åpnes med pil (Alt-klikk: alle). Valgene lagres på kontoen (profiles.ui_prefs via set_my_ui_prefs) og følger brukeren mellom maskiner, som språket."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0088
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - COMPOSE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Rekkefølgen huskes i en ny nettleser (kontoen)."
+  - "Lukket gruppe skjuler lagene sine."
+  tests:
+  - "tests/unit/scene-panels.test.ts"
+  - "tests/unit/layer-groups.test.ts"
+  - "tests/db/run-db-tests.ts"
+  - "tests/visual/scene-panels-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/app/scene-editor/ScenePanels.tsx"
+  - "src/app/scene-editor/LayersPanel.tsx"
+  - "src/app/account/ui-prefs.ts"
+  verification:
+  - "tests/unit/scene-panels.test.ts"
+  - "tests/unit/layer-groups.test.ts"
+  - "tests/db/run-db-tests.ts"
+  - "tests/visual/scene-panels-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0088.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0088
+    change: "Opprettet etter Mars' ønske 15.10.2026"
+- id: REQ-0664
+  title: "Adminside: AI-tilkoblinger og status for bakgrunnsjobben"
+  text: "Administrator kan slå leverandører og modeller av og på, legge til modeller hos kjente leverandører og registrere ønsker om nye leverandører. Valglistene viser bare det som er på, og serveren avviser modeller som er slått av. Adminsiden viser når bakgrunnsjobben (/api/public/cron/ai-jobs) sist kjørte og hva den gjorde."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0088
+  type: funksjonell
+  priority: P1
+  phase: 5
+  modules:
+  - PROVIDER
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "En modell som er slått av, vises ikke og avvises av serveren."
+  - "Cron-status vises med tidspunkt."
+  tests:
+  - "tests/unit/ai-model-settings.test.ts"
+  - "tests/unit/ai-admin.test.ts"
+  - "tests/db/run-db-tests.ts"
+  - "tests/visual/ai-admin-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/app/admin/AiConnectionsAdmin.tsx"
+  - "src/core/generation/model-settings.ts"
+  - "src/adapters/account/ai-models.server.ts"
+  - "src/app/admin/cron-status.ts"
+  verification:
+  - "tests/unit/ai-model-settings.test.ts"
+  - "tests/unit/ai-admin.test.ts"
+  - "tests/db/run-db-tests.ts"
+  - "tests/visual/ai-admin-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0088.md"
+  history:
+  - date: '2026-10-15'
+    decision: DEC-0088
+    change: "Opprettet etter Mars' ønske 15.10.2026"

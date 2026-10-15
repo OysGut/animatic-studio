@@ -80,7 +80,7 @@ import { Inspector } from "./Inspector";
 import { SceneNavigator, type CharacterOption } from "./SceneNavigator";
 import { ScriptPageView, type Selection } from "./ScriptPageView";
 import { PaneResizer, usePaneSize, useStoredFlag } from "@/app/shell/pane-size";
-import { rememberScene } from "@/app/shell/current-scene";
+import { onGotoScene, rememberScene } from "@/app/shell/current-scene";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RejectedTextNotice } from "@/app/project/RejectedTextNotice";
 import { titlePageCommand } from "@/core/commands/export-settings";
@@ -442,6 +442,15 @@ function Workspace({
       if (scroll) scrollTo(sel);
     },
     [scrollTo],
+  );
+  // Oppgavene i toppstripen (DEC-0088): gå til neste/forrige scene som skal oppdateres
+  useEffect(
+    () =>
+      onGotoScene(projectId, (occurrenceId) => {
+        if (!state.occurrences[occurrenceId]) return;
+        select({ occurrenceId, blockId: null }, true);
+      }),
+    [projectId, state.occurrences, select],
   );
   // Åpnet med en valgt scene: vis den når sidene er tegnet
   useEffect(() => {

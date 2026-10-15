@@ -36,6 +36,8 @@ import {
   PRIORITY_LABEL,
   type ProjectState,
   PROVIDERS,
+  catalogSettings,
+  isProviderEnabled,
   tm,
   unclaimedImageJobs,
   unclaimedVideoJobs,
@@ -68,7 +70,9 @@ import { useProjectProviders } from "./use-project-providers";
 function ProviderLine({ projectId, userId }: { projectId: string; userId: string }) {
   const [open, setOpen] = useState(false);
   const p = useProjectProviders(projectId);
+  // Leverandører administrator har slått av for alle, vises ikke (DEC-0088)
   const names = (p.data?.providers ?? ["lovable"])
+    .filter((id) => isProviderEnabled(catalogSettings(), id))
     .map((id) => PROVIDERS.find((x) => x.id === id)?.name ?? id)
     .join(", ");
   return (

@@ -399,6 +399,13 @@ export function gridCells(w: number, h: number, cols: number, rows: number): Pix
   return out;
 }
 
+// Delelinjer som kan flyttes, og «Fjern luften rundt» også for ensfarget bakgrunn (Mars 15.10.2026)
+export * from "./split";
+export * from "./trim";
+
+/** Ankerpunktet til en del av et bilde (f.eks. hengselsiden til et dørblad), Mars 15.10.2026. */
+export type PartAnchor = "left" | "center" | "right";
+
 /** Firkanten rundt en polygon (fri markering), innenfor bildet; null når den er tom. */
 export function polygonBounds(
   pts: readonly { readonly x: number; readonly y: number }[],

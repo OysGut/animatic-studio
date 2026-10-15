@@ -25,6 +25,7 @@ import {
   layerFieldsOf,
   layerVersion,
   newId,
+  partLayers,
   sortedAssets,
   variantsOf,
   versionsOf,
@@ -697,6 +698,51 @@ function Body({
                   setBig(null);
                   setCutout(v);
                 },
+                // «Legg delene i scenen» (DEC-0088): der de lå i bildet; dørblad o.l. i egen gruppe med
+                // ankerpunkt på hengselkanten. Alt i én angring.
+                ...(editable
+                  ? {
+                      onPlaceParts: (
+                        parts: readonly {
+                          assetId: string;
+                          versionId: string;
+                          box: { x: number; y: number; w: number; h: number };
+                          anchor: "left" | "center" | "right";
+                        }[],
+                        source: { width: number; height: number },
+                      ) => {
+                        const now = cmds.current() ?? state;
+                        const original = now.layers[layer.id] ?? layer;
+                        const plan = partLayers(now, original, parts, source, () =>
+                          newId<"composition_layer">(),
+                        );
+                        if (!plan.layers.length) return;
+                        const group = newId();
+                        const label = L("Legg delene i scenen", "Put the parts in the scene");
+                        const err = cmds.run(
+                          { type: "AddLayers", layers: plan.layers },
+                          label,
+                          group,
+                        );
+                        if (!err && plan.hideOriginal)
+                          cmds.run(
+                            {
+                              type: "UpdateLayers",
+                              layers: [
+                                {
+                                  layerId: plan.hideOriginal.layerId as never,
+                                  fields: plan.hideOriginal.fields,
+                                },
+                              ],
+                            },
+                            label,
+                            group,
+                          );
+                        setBig(null);
+                        onClose();
+                      },
+                    }
+                  : {}),
               },
             }
           : {})}

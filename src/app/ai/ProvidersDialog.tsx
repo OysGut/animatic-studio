@@ -20,6 +20,10 @@ import { useState } from "react";
 import {
   PROVIDERS,
   capRemaining,
+  catalogSettings,
+  customModelsOf,
+  isModelEnabled,
+  isProviderEnabled,
   checkKeyFormat,
   formatUsd,
   CAPABILITY_LABEL,
@@ -42,9 +46,22 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { accountAiKey, useAccountAi, type ProviderKeyRow } from "./use-providers";
+import { useAiModelSettings } from "./use-ai-model-settings";
 
 const ctl =
   "h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary disabled:opacity-50";
+
+/** Leverandøren er slått av for alle brukere på adminsiden (DEC-0088). */
+function AdminOffNote() {
+  return (
+    <p role="note" className="text-[13px] text-status-uncertain">
+      {L(
+        "Administrator har slått av denne leverandøren for alle brukere. Den vises ikke i valglistene og kan ikke brukes før den slås på igjen.",
+        "The administrator has switched off this provider for all users. It is not shown in the lists and cannot be used until it is switched on again.",
+      )}
+    </p>
+  );
+}
 
 function StatusBadge({ row, builtIn }: { row: ProviderKeyRow | undefined; builtIn: boolean }) {
   if (builtIn)
@@ -204,14 +221,15 @@ function ProviderDetail({
             {L("Kan lage:", "Can make:")}{" "}
             {p.capabilities.map((c) => CAPABILITY_LABEL[c]).join(", ")} ·{" "}
             {L("modeller:", "models:")}{" "}
-            {p.models
-              .filter((m) => !m.retired)
+            {[...p.models, ...customModelsOf(p.id)]
+              .filter((m) => !m.retired && isModelEnabled(catalogSettings(), p.id, m.id))
               .map((m) => m.label)
-              .join(", ")}
+              .join(", ") || "–"}
           </p>
         </div>
         <StatusBadge row={row} builtIn={p.builtIn} />
       </div>
+      {!isProviderEnabled(catalogSettings(), p.id) ? <AdminOffNote /> : null}
       {p.builtIn ? (
         <p className="text-[13px] text-text-secondary">
           {L(
@@ -427,6 +445,8 @@ export function ProvidersDialog({
   userId: string;
 }) {
   const ai = useAccountAi(userId, open);
+  // Administratorens av/på (DEC-0088): avslåtte leverandører merkes, avslåtte modeller vises ikke
+  useAiModelSettings(open);
   const [selected, setSelected] = useState<string | null>(null);
   const rows = new Map((ai.data?.keys ?? []).map((k) => [k.provider, k]));
   const sel = PROVIDERS.find((p) => p.id === selected);
@@ -487,7 +507,13 @@ export function ProvidersDialog({
                         {p.capabilities.map((c) => CAPABILITY_LABEL[c]).join(" · ")}
                       </span>
                     </span>
-                    <StatusBadge row={rows.get(p.id)} builtIn={p.builtIn} />
+                    {isProviderEnabled(catalogSettings(), p.id) ? (
+                      <StatusBadge row={rows.get(p.id)} builtIn={p.builtIn} />
+                    ) : (
+                      <span className="shrink-0 whitespace-nowrap text-xs text-text-tertiary">
+                        {L("Slått av av administrator", "Switched off by the administrator")}
+                      </span>
+                    )}
                   </button>
                 </li>
               ))}

@@ -295,6 +295,12 @@ export const generateImage = createServerFn({ method: "POST" })
       : data.purpose === "cutout"
         ? process.env["ANIMATIC_CUTOUT_MODEL"] || CUTOUT_MODEL
         : process.env["ANIMATIC_IMAGE_MODEL"] || IMAGE_MODEL;
+    // Administrator kan ha slått av leverandøren eller modellen for alle (DEC-0088, migrasjon 0034); egne
+    // modeller (lagt til av administrator) finnes bare i innstillingene, som sendes videre under
+    const aiGate = await (
+      await import("@/adapters/account/ai-models.server")
+    ).modelGate(admin, data.provider, model);
+    if (aiGate.message) return { ok: false, message: aiGate.message };
     // Egen nøkkel (DEC-0069): modellen må finnes i katalogen, nøkkelen hos en av prosjektets eiere, og
     // eierens kostnadstak må ha plass
     const gate = own ? await import("./ai-gate.server") : null;
@@ -310,7 +316,7 @@ export const generateImage = createServerFn({ method: "POST" })
             "The database is not updated for own AI providers. Paste the message in LOVABLE_SYNC.md into Lovable (migration 0024).",
           ),
         };
-      const m = providerModel(data.provider, model);
+      const m = providerModel(data.provider, model, aiGate.settings);
       const want = data.operation === "upscale" ? "upscale" : "image";
       if (!m || m.capability !== want)
         return {
@@ -343,7 +349,7 @@ export const generateImage = createServerFn({ method: "POST" })
           ),
         };
       // Størrelsen modellen kan lage (ellers modellens standard)
-      const sz = imageSizesOf(providerModel(data.provider, model));
+      const sz = imageSizesOf(providerModel(data.provider, model, aiGate.settings));
       size = data.size && sz.sizes.includes(data.size) ? data.size : sz.standard;
       if (want === "upscale") {
         // Prisen følger størrelsen på resultatet (megapiksler): målene fra biblioteket
@@ -358,9 +364,14 @@ export const generateImage = createServerFn({ method: "POST" })
         const f = data.upscaleFactor ?? 2;
         // Ukjent størrelse: regnes som 2048 × 2048 (et øvre anslag for arbeidskopiene)
         const mp = ((w > 0 && h > 0 ? w * h : 2048 * 2048) * f * f) / 1_000_000;
-        costUsd = estimateCostUsd(data.provider, model, { megapixels: mp });
+        costUsd = estimateCostUsd(data.provider, model, { megapixels: mp }, aiGate.settings);
       } else
-        costUsd = estimateCostUsd(data.provider, model, { images: 1, ...(size ? { size } : {}) });
+        costUsd = estimateCostUsd(
+          data.provider,
+          model,
+          { images: 1, ...(size ? { size } : {}) },
+          aiGate.settings,
+        );
       const capMsg = await gate.overAccountCap(admin, ownKey.user_id, costUsd ?? 0, false);
       if (capMsg) return { ok: false, message: capMsg };
     }
@@ -393,7 +404,7 @@ export const generateImage = createServerFn({ method: "POST" })
             params: {
               trace,
               // Innsatsnivået jobben ble kjørt med (mandat 19.3, REQ-0275)
-              effort: effortOf(providerModel(data.provider, model)),
+              effort: effortOf(providerModel(data.provider, model, aiGate.settings)),
               ...(data.variantId ? { variantId: data.variantId } : {}),
             },
           }
@@ -512,7 +523,7 @@ export const generateImage = createServerFn({ method: "POST" })
                 }),
               );
         // Modellens lengdegrense (DEC-0070): ellers avviser tjenesten beskrivelsen
-        const m = providerModel(data.provider, model);
+        const m = providerModel(data.provider, model, aiGate.settings);
         const req = {
           key: secret,
           model,

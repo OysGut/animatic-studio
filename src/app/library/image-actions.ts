@@ -5,11 +5,10 @@
  */
 import {
   L,
-  alphaBounds,
+  findTrim,
   newId,
   paddedBox,
   trimPadding,
-  worthTrimming,
   type AssetKind,
   type Command,
   type PixelBox,
@@ -97,19 +96,72 @@ export function cropCanvas(
   return trim ? (trimCanvas(c) ?? c) : c;
 }
 
-/** Beskjær tett rundt det synlige (alfa), med litt luft. null når det ikke er noe å fjerne. */
-export function trimCanvas(c: HTMLCanvasElement): HTMLCanvasElement | null {
+/**
+ * Beskjær tett rundt figuren, med litt luft (Mars 15.10.2026): først ut fra gjennomsiktighet (frilagte
+ * bilder), ellers ut fra en ensfarget bakgrunn (hvit eller farget, som AI-bilder og vinkelark har).
+ * `box` er utsnittet i lerretets piksler. `reason` forteller hvorfor ingenting ble fjernet.
+ */
+export function trimCanvasInfo(
+  c: HTMLCanvasElement,
+):
+  | { readonly canvas: HTMLCanvasElement; readonly box: PixelBox; readonly by: "alpha" | "color" }
+  | { readonly reason: "full" | "empty" | "no-background" } {
   const data = c
     .getContext("2d", { willReadFrequently: true })!
     .getImageData(0, 0, c.width, c.height);
-  const b = alphaBounds(data.data, c.width, c.height);
-  if (!b || !worthTrimming(b, c.width, c.height)) return null;
-  const pb = paddedBox(b, trimPadding(b), c.width, c.height);
+  const t = findTrim(data.data, c.width, c.height);
+  if (t.kind !== "ok") return { reason: t.kind };
+  const pb = paddedBox(t.box, trimPadding(t.box), c.width, c.height);
   const out = document.createElement("canvas");
   out.width = pb.w;
   out.height = pb.h;
   out.getContext("2d")!.drawImage(c, pb.x, pb.y, pb.w, pb.h, 0, 0, pb.w, pb.h);
-  return out;
+  return { canvas: out, box: pb, by: t.by };
+}
+
+/** Beskjær tett rundt figuren (gjennomsiktig eller ensfarget bakgrunn). null når det ikke er noe å fjerne. */
+export function trimCanvas(c: HTMLCanvasElement): HTMLCanvasElement | null {
+  const t = trimCanvasInfo(c);
+  return "canvas" in t ? t.canvas : null;
+}
+
+/** Meldingen når «Fjern luften rundt» ikke har noe å fjerne. */
+export function noTrimMessage(reason: "full" | "empty" | "no-background"): string {
+  if (reason === "full")
+    return L(
+      "Det er ingen luft å fjerne: figuren fyller allerede (nesten) hele bildet.",
+      "There is no air to remove: the figure already fills (almost) the whole image.",
+    );
+  if (reason === "empty")
+    return L(
+      "Det er ingen luft å fjerne: bildet er bare bakgrunn (tomt).",
+      "There is no air to remove: the image is only background (empty).",
+    );
+  return L(
+    "Det er ingen luft å fjerne: kanten rundt bildet er verken gjennomsiktig eller ensfarget. Frilegg bildet først.",
+    "There is no air to remove: the edge around the image is neither transparent nor a single colour. Cut the image out first.",
+  );
+}
+
+/**
+ * Originalen med et område gjort gjennomsiktig (Mars 15.10.2026, «Deler»: så rammen står alene når
+ * dørbladet er tatt ut). `polygon` er i bildets piksler.
+ */
+export function eraseCanvas(src: HTMLCanvasElement, polygon: Polygon): HTMLCanvasElement {
+  const c = document.createElement("canvas");
+  c.width = src.width;
+  c.height = src.height;
+  const ctx = c.getContext("2d", { willReadFrequently: true })!;
+  ctx.drawImage(src, 0, 0);
+  if (polygon.length >= 3) {
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.beginPath();
+    polygon.forEach((p, i) => (i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)));
+    ctx.closePath();
+    ctx.fill();
+    ctx.globalCompositeOperation = "source-over";
+  }
+  return c;
 }
 
 export async function canvasToPng(c: HTMLCanvasElement, name: string): Promise<File> {
@@ -205,4 +257,53 @@ export async function saveImageTo(
   );
   if (r.error) return { error: r.error };
   return { versionId: up.versionId, variantId, assetId };
+}
+
+/**
+ * Et nytt, tomt objekt med en variant «Animatic» (til AI-deler, der bildet lages på serveren etterpå).
+ * Returnerer ID-ene, eller feilmeldingen.
+ */
+export async function createAssetWithVariant(
+  runAndWait: RunAndWait,
+  name: string,
+  assetKind: AssetKind,
+  description: string,
+  label: string,
+  group = newId(),
+): Promise<{ assetId: string; variantId: string } | { error: string }> {
+  const assetId = newId<"asset">();
+  const a = await runAndWait(
+    {
+      type: "CreateAssets",
+      assets: [
+        {
+          assetId: assetId as never,
+          fields: {
+            kind: assetKind,
+            name: name.trim().slice(0, 200) || L("Del", "Part"),
+            names: [],
+            description: description.slice(0, 2000),
+            category: "",
+            tags: [],
+          },
+        },
+      ],
+    },
+    label,
+    group,
+  );
+  if (a.error) return { error: a.error };
+  const variantId = newId<"asset_variant">();
+  const v = await runAndWait(
+    {
+      type: "CreateAssetVariant",
+      variantId: variantId as never,
+      assetId: assetId as never,
+      fields: { name: "Animatic", style: "animatic", appearance: "" },
+    },
+    label,
+    group,
+  );
+  if (v.error) return { error: v.error };
+  return { assetId, variantId };
 }

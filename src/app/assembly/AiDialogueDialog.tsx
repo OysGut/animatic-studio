@@ -20,6 +20,8 @@ import {
   sceneDialogueLines,
   speechCostUsd,
   SPEECH_MODEL,
+  catalogSettings,
+  isModelEnabled,
   tm,
   audioVersion,
   voiceUsers,
@@ -60,7 +62,10 @@ export function AiDialogueDialog({
   const projectId = state.project.id;
   const qc = useQueryClient();
   const providers = useProjectProviders(projectId, open);
-  const connected = (providers.data?.providers ?? []).includes("elevenlabs");
+  // Avslått av administrator (DEC-0088) regnes som ikke tilkoblet
+  const connected =
+    (providers.data?.providers ?? []).includes("elevenlabs") &&
+    isModelEnabled(catalogSettings(), "elevenlabs", SPEECH_MODEL);
   const voices = useQuery({
     queryKey: ["ai-voices", projectId],
     enabled: open && connected,

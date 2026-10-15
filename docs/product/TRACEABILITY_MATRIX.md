@@ -32,15 +32,15 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | Modul | Navn | Krav | P0 | Implementert | Verifisert |
 |---|---|---|---|---|---|
 | CORE | Project Core | 120 | 57 | 120 | 117 |
-| SCRIPT | Screenplay Engine | 128 | 32 | 128 | 128 |
+| SCRIPT | Screenplay Engine | 129 | 32 | 129 | 129 |
 | TIMELINE | Timeline & Assembly Engine | 107 | 29 | 107 | 107 |
-| LIBRARY | Resource Library | 81 | 10 | 70 | 66 |
+| LIBRARY | Resource Library | 83 | 10 | 72 | 68 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 39 | 39 |
-| COMPOSE | 2D Composition Engine | 70 | 14 | 70 | 69 |
+| COMPOSE | 2D Composition Engine | 73 | 14 | 73 | 72 |
 | CAMERA | Camera & Motion Engine | 32 | 2 | 32 | 32 |
 | AUDIO | Audio Engine | 42 | 2 | 42 | 42 |
 | PROMPT | Prompt Orchestration Engine | 58 | 15 | 54 | 50 |
-| PROVIDER | Provider Adapters | 45 | 6 | 43 | 38 |
+| PROVIDER | Provider Adapters | 46 | 6 | 44 | 39 |
 | QUALITYCOST | Quality & Cost Engine | 30 | 7 | 29 | 29 |
 | QUEUE | Render Queue | 36 | 13 | 36 | 33 |
 | VERSION | Version & Dependency Engine | 93 | 38 | 91 | 90 |
@@ -49,7 +49,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | EXPORT | Export Engine | 59 | 12 | 59 | 59 |
 | SECURITY | Security & Storage | 38 | 5 | 37 | 37 |
 | COLLAB | Collaboration & Access | 16 | 0 | 16 | 16 |
-| UI | Brukergrensesnitt og designsystem | 182 | 21 | 177 | 175 |
+| UI | Brukergrensesnitt og designsystem | 188 | 21 | 183 | 181 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 7 | 5 |
 
 ## Dekning per fase
@@ -60,7 +60,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | 2 | 97 | 93 |
 | 3 | 70 | 68 |
 | 4 | 85 | 84 |
-| 5 | 140 | 129 |
+| 5 | 149 | 138 |
 | 6 | 49 | 48 |
 | 7 | 63 | 62 |
 | 8 | 39 | 25 |
@@ -725,3 +725,12 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0653 | Beslutning DEC-0086 | SECURITY | src/app/account/PrivacyStatement.tsx, src/app/account/use-account.tsx, src/routes/personvern.tsx, src/app/auth/AuthScreen.tsx | 3 | tests/db/run-db-tests.ts, tests/unit/account-admin.test.ts, tests/visual/account-admin-ui.mjs, docs/development/VISUAL_QA_DEC-0086.md | Verifisert | 2026-10-15 DEC-0086: Opprettet etter Mars' ønske 15.10.2026 |
 | REQ-0654 | Beslutning DEC-0086 | QUALITYCOST | src/core/generation/cost-report.ts, src/app/account/CostReportView.tsx, src/app/account/cost-export.ts, src/adapters/account/account.functions.ts | 3 | tests/unit/cost-report.test.ts, tests/unit/account-admin.test.ts, tests/visual/account-admin-ui.mjs, docs/development/VISUAL_QA_DEC-0086.md | Verifisert | 2026-10-15 DEC-0086: Opprettet etter Mars' ønske 15.10.2026 |
 | REQ-0655 | Beslutning DEC-0086 | UI | src/app/account/AccountPage.tsx, src/app/shell/AppHeader.tsx, src/adapters/browser/account.ts, src/routes/konto.tsx | 2 | tests/db/run-db-tests.ts, tests/visual/account-admin-ui.mjs, docs/development/VISUAL_QA_DEC-0086.md | Verifisert | 2026-10-15 DEC-0086: Språkvelgeren hang seg opp (rettet); lukking med brukernavnet og «Lukk» |
+| REQ-0656 | Beslutning DEC-0088 | LIBRARY, UI | src/app/library/ImageLightbox.tsx, src/app/library/ImagePartsPanel.tsx, src/app/library/ImageAiPanels.tsx, src/core/cutout/split.ts, src/core/cutout/trim.ts | 2 | tests/unit/image-tools.test.ts, tests/visual/image-tools-ui.mjs, docs/development/VISUAL_QA_DEC-0088.md | Verifisert | 2026-10-15 DEC-0088: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0657 | Beslutning DEC-0088 | COMPOSE | src/core/composition/parts.ts, src/app/scene-editor/LayerImageDialog.tsx | 2 | tests/unit/dec0088-scene-plans.test.ts, tests/visual/image-tools-ui.mjs, docs/development/VISUAL_QA_DEC-0088.md | Verifisert | 2026-10-15 DEC-0088: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0658 | Beslutning DEC-0088 | LIBRARY, UI | src/app/scene-editor/AddElementDialog.tsx, src/core/library/scene-plans.ts, src/core/commands/apply.ts | 3 | tests/unit/dec0088-scene-plans.test.ts, tests/db/run-db-tests.ts, tests/visual/dec0088-tasks-ui.mjs, docs/development/VISUAL_QA_DEC-0088.md | Verifisert | 2026-10-15 DEC-0088: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0659 | Beslutning DEC-0088 | COMPOSE, UI | src/app/scene-editor/SceneAssetsPanel.tsx, src/core/library/scene-plans.ts | 2 | tests/unit/dec0088-scene-plans.test.ts, tests/visual/dec0088-tasks-ui.mjs, docs/development/VISUAL_QA_DEC-0088.md | Verifisert | 2026-10-15 DEC-0088: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0660 | Beslutning DEC-0088 | SCRIPT | src/app/script/NotesPanel.tsx, src/core/notes/transfer.ts, src/engine/export/screenplay-pdf.ts | 3 | tests/unit/dec0088-scene-plans.test.ts, tests/db/run-db-tests.ts, tests/visual/dec0088-tasks-ui.mjs, docs/development/VISUAL_QA_DEC-0088.md | Verifisert | 2026-10-15 DEC-0088: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0661 | Beslutning DEC-0088 | UI | src/app/shell/TaskNav.tsx, src/app/shell/current-scene.ts, src/core/library/scene-plans.ts | 2 | tests/unit/dec0088-scene-plans.test.ts, tests/visual/dec0088-tasks-ui.mjs, docs/development/VISUAL_QA_DEC-0088.md | Verifisert | 2026-10-15 DEC-0088: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0662 | Beslutning DEC-0088 | UI | src/app/projects/ProjectTodoBox.tsx, src/core/library/todo.ts | 2 | tests/unit/dec0088-scene-plans.test.ts, tests/visual/dec0088-tasks-ui.mjs, docs/development/VISUAL_QA_DEC-0088.md | Verifisert | 2026-10-15 DEC-0088: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0663 | Beslutning DEC-0088 | COMPOSE, UI | src/app/scene-editor/ScenePanels.tsx, src/app/scene-editor/LayersPanel.tsx, src/app/account/ui-prefs.ts | 4 | tests/unit/scene-panels.test.ts, tests/unit/layer-groups.test.ts, tests/db/run-db-tests.ts, tests/visual/scene-panels-ui.mjs, docs/development/VISUAL_QA_DEC-0088.md | Verifisert | 2026-10-15 DEC-0088: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0664 | Beslutning DEC-0088 | PROVIDER | src/app/admin/AiConnectionsAdmin.tsx, src/core/generation/model-settings.ts, src/adapters/account/ai-models.server.ts, src/app/admin/cron-status.ts | 4 | tests/unit/ai-model-settings.test.ts, tests/unit/ai-admin.test.ts, tests/db/run-db-tests.ts, tests/visual/ai-admin-ui.mjs, docs/development/VISUAL_QA_DEC-0088.md | Verifisert | 2026-10-15 DEC-0088: Opprettet etter Mars' ønske 15.10.2026 |

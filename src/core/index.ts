@@ -34,6 +34,8 @@ export * from "./audio";
 export * from "./generation/prompt";
 export * from "./generation/cost";
 export * from "./library/storage-paths";
+export * from "./library/scene-plans";
+export * from "./library/todo";
 export * from "./generation/cost-report";
 export * from "./generation/scene-prompt";
 export * from "./generation/style";

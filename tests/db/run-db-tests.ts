@@ -3274,6 +3274,145 @@ try {
     await sql`update public.project_members set role = 'viewer' where project_id = ${projectId} and user_id = ${BOB}`;
   });
 
+  await test("0034 (DEC-0088): visningsvalg, systemmerknader, planer for elementer og AI-tilkoblinger", async () => {
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 34, "schema_version er ikke 34");
+    const acct = async (u: string) =>
+      (await as("authenticated", u, (tx) => tx`select public.my_account() as a`))[0]![
+        "a"
+      ] as Record<string, unknown>;
+    // Visningsvalg: slås sammen per nøkkel, null fjerner, følger kontoen
+    await as(
+      "authenticated",
+      ALICE,
+      (tx) =>
+        tx`select public.set_my_ui_prefs(${tx.json({ "sceneEditor.panels": { mode: "side" }, a: 1 })})`,
+    );
+    await as(
+      "authenticated",
+      ALICE,
+      (tx) => tx`select public.set_my_ui_prefs(${tx.json({ a: null, b: true })})`,
+    );
+    const prefs = (await acct(ALICE))["ui_prefs"] as Record<string, unknown>;
+    assert(
+      isDeepStrictEqual(prefs, { "sceneEditor.panels": { mode: "side" }, b: true }),
+      `feil visningsvalg: ${JSON.stringify(prefs)}`,
+    );
+    assert(isDeepStrictEqual((await acct(BOB))["ui_prefs"], {}), "Bob har fått Alices valg");
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`select public.set_my_ui_prefs('[1]'::jsonb)`),
+      /Ugyldige visningsvalg/,
+    );
+    await expectError(
+      as("anon", null, (tx) => tx`select public.set_my_ui_prefs('{}'::jsonb)`),
+      "42501",
+    );
+    // Status og ønsker om leverandører: bare serveren; modellvalg: alle innloggede kan lese, ingen skrive
+    await sql`insert into public.app_status (key, value) values ('cron.ai-jobs', '{"ok":true}')
+              on conflict (key) do update set value = excluded.value`;
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`select * from public.app_status`),
+      "42501",
+    );
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`select * from public.ai_provider_requests`),
+      "42501",
+    );
+    await sql`insert into public.ai_model_settings (provider, model, enabled) values ('openai', '*', false)
+              on conflict (provider, model) do update set enabled = false`;
+    const ms = await as(
+      "authenticated",
+      BOB,
+      (tx) => tx`select provider, enabled from public.ai_model_settings`,
+    );
+    assert(
+      ms.some((r) => r["provider"] === "openai" && r["enabled"] === false),
+      "modellvalgene kan ikke leses",
+    );
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) => tx`insert into public.ai_model_settings (provider, model) values ('fal', 'x')`,
+      ),
+      "42501",
+    );
+    await expectError(
+      as("anon", null, (tx) => tx`select * from public.ai_model_settings`),
+      "42501",
+    );
+    await sql`delete from public.ai_model_settings`;
+
+    // Planer og systemmerknader går gjennom apply_changes og leses tilbake likt
+    let st = await loadState(projectId);
+    const occs = orderedOccurrences(
+      st,
+      Object.values(st.productions).find((p) => p.kind === "main")!.id,
+    );
+    assert(occs.length >= 2, "for få scener");
+    const assetId = "66666666-6666-7666-8666-000000000088";
+    const taskId = "66666666-6666-7666-8666-000000000089";
+    const noteId = "66666666-6666-7666-8666-000000000090";
+    st = await runCommand(st, ALICE, {
+      type: "CreateAssets",
+      assets: [
+        {
+          assetId: assetId as never,
+          fields: {
+            kind: "object",
+            name: "Teddybjørn",
+            names: [],
+            description: "",
+            category: "",
+            tags: [],
+          },
+        },
+      ],
+    });
+    st = await runCommand(st, ALICE, {
+      type: "PlanAssetInScenes",
+      assetId: assetId as never,
+      taskId,
+      fromOccurrenceId: occs[0]!.id,
+      occurrenceIds: [occs[1]!.id],
+    });
+    st = await runCommand(st, ALICE, {
+      type: "AddAnnotations",
+      annotations: [
+        {
+          annotationId: noteId as never,
+          blockId: null,
+          variantId: occs[1]!.variantId,
+          start: 0,
+          end: 0,
+          quote: "",
+          text: "Teddybjørn skal inn i scenen",
+          authorName: "Alice",
+          stampAt: new Date().toISOString(),
+          source: "system",
+          taskId,
+        },
+      ],
+    });
+    const back = await loadState(projectId);
+    const plans = back.assets[assetId as never]?.scenePlans ?? [];
+    assert(
+      plans.length === 1 && plans[0]!.occurrenceId === occs[1]!.id && plans[0]!.taskId === taskId,
+      `planene ble ikke lagret: ${JSON.stringify(plans)}`,
+    );
+    const n = back.annotations[noteId as never];
+    assert(
+      n?.source === "system" && n.taskId === taskId,
+      "systemmerknaden mistet kilde eller oppgave",
+    );
+    const [row] = await sql`select source from public.script_annotations where id = ${noteId}`;
+    assert(row!["source"] === "system", "source-kolonnen er ikke 'system'");
+    await expectError(
+      sql`update public.script_annotations set source = 'robot' where id = ${noteId}`,
+      "23514",
+    );
+  });
+
   await test("DEC-0049: sikkerhetskopi gjenopprettes som nytt prosjekt via apply_changes; alt leses tilbake likt", async () => {
     const q = (t: string) =>
       sql.unsafe(`select * from public.${t} where project_id = $1`, [projectId]);

@@ -1,8 +1,13 @@
 # Pågående arbeid
 
-Oppdatert: 2026-10-15 (økt 6, DEC-0061–0084)
+Oppdatert: 2026-10-15 (økt 6, DEC-0061–0088)
 
-## Nå: DEC-0086 – kontoer, adminside, personvern, kostnadsrapport; videohenting rettet – ferdig, venter på Mars
+## Nå: DEC-0088 – bildeverktøy, elementer i flere scener, systemmerknader, TODO, paneler, AI-tilkoblinger – ferdig, venter på Mars
+- Bygget: delelinjer og navngitte ruter, «Fjern luften rundt», «Lag variasjoner», dørdeler med hengsel; «Legg til element i scenen …» med planer for andre scener (varmgul ramme), systemmerknader med «Ferdig» og i eksport, oppgaven i toppstripen med ‹ ›, TODO-boksen; paneler side om side og lukkbare grupper lagret på kontoen; AI-tilkoblinger og cron-status på adminsiden.
+- Venter: migrasjon 0034 i Lovable; publisering for bakgrunnsjobben; Mars prøver.
+- Akseptansekriterier: REQ-0656–0664 (verifisert, se VISUAL_QA_DEC-0088.md).
+
+## Før: DEC-0086 – kontoer, adminside, personvern, kostnadsrapport; videohenting rettet – ferdig, venter på Mars
 - Bygget: Min konto, adminside, blokkering/sletting (30 dager), låste prosjekter og ny eier, personvernerklæring med versjoner og godkjenning, kostnadsrapport med eksport, «Hent videoen igjen».
 - Venter: migrasjon 0033 og pakkene i Lovable; Mars/admin fyller ut personvernfeltene; region og Lovable-plan sjekkes.
 - Akseptansekriterier: REQ-0649–0655.

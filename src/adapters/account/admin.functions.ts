@@ -509,3 +509,171 @@ export const adminSavePrivacy = createServerFn({ method: "POST" })
       ),
     };
   });
+
+// ---------------------------------------------------------------- AI-tilkoblinger (DEC-0088, migrasjon 0034)
+// Mars 15.10.2026: «administrer lovlige api koblinger» og «legg til nytt api for ai generering». Logikken
+// ligger i ai-models.server.ts; her sjekkes bare at den som spør er administrator.
+
+export interface AiAdminOverview {
+  readonly ok: boolean;
+  readonly message?: string;
+  /** Tabellene fra migrasjon 0034 finnes. */
+  readonly ready: boolean;
+  readonly settings: import("@/core").ModelSetting[];
+  readonly requests: import("./ai-models.server").ProviderRequest[];
+  readonly cron: import("./ai-models.server").CronRun | null;
+}
+
+export const fetchAiAdmin = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<AiAdminOverview> => {
+    const db = await service();
+    const empty = { ready: false, settings: [], requests: [], cron: null };
+    if (!(await isAdmin(db, context.userId, emailOf(context.claims))))
+      return { ok: false, message: NOT_ADMIN(), ...empty };
+    const m = await import("./ai-models.server");
+    const [s, r, cron] = await Promise.all([
+      m.loadModelSettings(db),
+      m.listProviderRequests(db),
+      m.readCronRun(db),
+    ]);
+    if (!s.ready || !r.ready)
+      return {
+        ok: true,
+        message: L(
+          "Databasen må oppdateres (migrasjon 0034) før AI-tilkoblingene kan administreres.",
+          "The database must be updated (migration 0034) before the AI connections can be managed.",
+        ),
+        ...empty,
+      };
+    return { ok: true, ready: true, settings: s.settings, requests: r.requests, cron };
+  });
+
+export const adminSetModelEnabled = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((d: unknown) => {
+    const x = (d ?? {}) as Record<string, unknown>;
+    if (
+      typeof x["provider"] !== "string" ||
+      typeof x["model"] !== "string" ||
+      !x["model"] ||
+      x["model"].length > 200 ||
+      typeof x["enabled"] !== "boolean"
+    )
+      throw new Error(L("Ugyldig modell", "Invalid model"));
+    return { provider: x["provider"], model: x["model"], enabled: x["enabled"] };
+  })
+  .handler(async ({ data, context }): Promise<Result> => {
+    const db = await service();
+    if (!(await isAdmin(db, context.userId, emailOf(context.claims))))
+      return { ok: false, message: NOT_ADMIN() };
+    const { setModelEnabled } = await import("./ai-models.server");
+    return setModelEnabled(db, context.userId, data.provider, data.model, data.enabled);
+  });
+
+export const adminSaveCustomModel = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((d: unknown) => {
+    // Den strenge kontrollen (leverandør, modell-ID, type, pris) står i kjernen og kjøres i handleren,
+    // så administrator får meldingen i stedet for en feil
+    const x = (d ?? {}) as Record<string, unknown>;
+    return {
+      provider: x["provider"],
+      model: x["model"],
+      kind: x["kind"],
+      label: x["label"],
+      priceUsd: x["priceUsd"],
+      priceUnit: x["priceUnit"],
+      note: x["note"],
+    } as Record<string, unknown>;
+  })
+  .handler(async ({ data, context }): Promise<Result> => {
+    const db = await service();
+    if (!(await isAdmin(db, context.userId, emailOf(context.claims))))
+      return { ok: false, message: NOT_ADMIN() };
+    const { saveCustomModel } = await import("./ai-models.server");
+    return saveCustomModel(db, context.userId, data);
+  });
+
+export const adminRemoveCustomModel = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((d: unknown) => {
+    const x = (d ?? {}) as Record<string, unknown>;
+    if (
+      typeof x["provider"] !== "string" ||
+      typeof x["model"] !== "string" ||
+      x["model"].length > 200
+    )
+      throw new Error(L("Ugyldig modell", "Invalid model"));
+    return { provider: x["provider"], model: x["model"] };
+  })
+  .handler(async ({ data, context }): Promise<Result> => {
+    const db = await service();
+    if (!(await isAdmin(db, context.userId, emailOf(context.claims))))
+      return { ok: false, message: NOT_ADMIN() };
+    const { removeCustomModel } = await import("./ai-models.server");
+    return removeCustomModel(db, data.provider, data.model);
+  });
+
+export const adminAddProviderRequest = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((d: unknown) => {
+    const x = (d ?? {}) as Record<string, unknown>;
+    return {
+      name: typeof x["name"] === "string" ? x["name"].trim() : "",
+      website: x["website"],
+      docsUrl: x["docsUrl"],
+      note: typeof x["note"] === "string" ? x["note"].trim() : "",
+    };
+  })
+  .handler(async ({ data, context }): Promise<Result> => {
+    const db = await service();
+    if (!(await isAdmin(db, context.userId, emailOf(context.claims))))
+      return { ok: false, message: NOT_ADMIN() };
+    const { addProviderRequest, cleanUrl } = await import("./ai-models.server");
+    if (!data.name || data.name.length > 120)
+      return {
+        ok: false,
+        message: L(
+          "Skriv navnet på leverandøren (høyst 120 tegn).",
+          "Enter the name of the provider (120 characters at most).",
+        ),
+      };
+    const website = cleanUrl(data.website);
+    const docsUrl = cleanUrl(data.docsUrl);
+    if (website === null || docsUrl === null)
+      return {
+        ok: false,
+        message: L(
+          "Nettadressene må begynne med https:// (eller http://).",
+          "The web addresses must start with https:// (or http://).",
+        ),
+      };
+    if (data.note.length > 2000)
+      return { ok: false, message: L("Merknaden er for lang.", "The note is too long.") };
+    return addProviderRequest(db, context.userId, {
+      name: data.name,
+      website,
+      docsUrl,
+      note: data.note,
+    });
+  });
+
+export const adminSetProviderRequestStatus = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((d: unknown) => {
+    const x = (d ?? {}) as Record<string, unknown>;
+    const status = x["status"];
+    if (typeof x["id"] !== "string" || !isUuid(x["id"]))
+      throw new Error(L("Ugyldig ønske", "Invalid request"));
+    if (status !== "open" && status !== "done" && status !== "rejected")
+      throw new Error(L("Ugyldig status", "Invalid status"));
+    return { id: x["id"], status } as const;
+  })
+  .handler(async ({ data, context }): Promise<Result> => {
+    const db = await service();
+    if (!(await isAdmin(db, context.userId, emailOf(context.claims))))
+      return { ok: false, message: NOT_ADMIN() };
+    const { setProviderRequestStatus } = await import("./ai-models.server");
+    return setProviderRequestStatus(db, data.id, data.status);
+  });

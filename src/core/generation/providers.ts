@@ -11,6 +11,16 @@
  */
 
 import { L, localized, locale } from "../i18n";
+import {
+  customModelFrom,
+  customRuleFor,
+  isModelEnabled,
+  isProviderEnabled,
+  type ModelSetting,
+} from "./model-settings";
+
+// Administratorens innstillinger (av/på og egne modeller) er en del av katalogens offentlige grensesnitt
+export * from "./model-settings";
 
 export type ProviderId = "lovable" | "openai" | "google" | "fal" | "runway" | "elevenlabs";
 
@@ -80,6 +90,8 @@ export interface ProviderModel {
   readonly editSeconds?: { readonly min: number; readonly max: number };
   /** Hvor mange figurer (med referansebilde) modellen kan følge gjennom klippet; 0 = bare tekst. */
   readonly maxElements?: number;
+  /** Lagt til av administrator (ai_model_settings, Mars 15.10.2026) – ikke i den innebygde katalogen. */
+  readonly custom?: boolean;
 }
 
 /** Innsatsnivå per oppgave (mandat 19.3): rask/økonomisk, balansert, høy/premium. */
@@ -763,20 +775,74 @@ export function isProviderId(id: unknown): id is ProviderId {
   return typeof id === "string" && PROVIDERS.some((p) => p.id === id);
 }
 
-/** Modellen hos leverandøren, eller undefined. */
-export function providerModel(provider: string, model: string): ProviderModel | undefined {
+// ---------------------------------------------------------------- administratorens innstillinger
+
+/**
+ * Innstillingene fra adminsiden (ai_model_settings) som gjelder i nettleseren nå. Settes av
+ * `useAiModelSettings` (React Query, hentes én gang og bufres), så alle valglister som bruker katalogen
+ * (providersFor, effortChoice, providerModel) skjuler avslåtte modeller og viser egne modeller uten at hver
+ * liste må hente innstillingene selv. Tom liste = katalogen som før. Serveren sender alltid innstillingene
+ * eksplisitt (parameteren `settings`) og bruker aldri denne verdien.
+ */
+let activeSettings: readonly ModelSetting[] = [];
+
+export function setCatalogSettings(settings: readonly ModelSetting[]): void {
+  activeSettings = settings;
+}
+
+export function catalogSettings(): readonly ModelSetting[] {
+  return activeSettings;
+}
+
+/** Den innebygde modellen (uten egne modeller). */
+export function builtInModel(provider: string, model: string): ProviderModel | undefined {
   return providerInfo(provider)?.models.find((m) => m.id === model);
 }
 
-/** Leverandører (med modeller) som kan lage dette, blant de tilkoblede. */
+/** Egne modeller hos leverandøren (av og på), som katalogmodeller. */
+export function customModelsOf(
+  provider: string,
+  settings: readonly ModelSetting[] = activeSettings,
+): ProviderModel[] {
+  const out: ProviderModel[] = [];
+  for (const s of settings) {
+    if (s.provider !== provider || !s.custom || builtInModel(provider, s.model)) continue;
+    // Malen (den innebygde modellen i samme familie) gir de tekniske egenskapene
+    const rule = s.kind ? customRuleFor(provider, s.kind, s.model) : undefined;
+    const m = customModelFrom(s, rule ? builtInModel(provider, rule.template) : undefined);
+    if (m) out.push(m);
+  }
+  return out;
+}
+
+/** Modellen hos leverandøren (innebygd eller lagt til av administrator), eller undefined. */
+export function providerModel(
+  provider: string,
+  model: string,
+  settings: readonly ModelSetting[] = activeSettings,
+): ProviderModel | undefined {
+  return (
+    builtInModel(provider, model) ?? customModelsOf(provider, settings).find((m) => m.id === model)
+  );
+}
+
+/**
+ * Leverandører (med modeller) som kan lage dette, blant de tilkoblede. Avslåtte leverandører og modeller
+ * er tatt bort; egne modeller (lagt til av administrator) står etter de innebygde.
+ */
 export function providersFor(
   capability: Capability,
   connected: ReadonlySet<string>,
+  settings: readonly ModelSetting[] = activeSettings,
 ): { provider: ProviderInfo; models: ProviderModel[] }[] {
-  return PROVIDERS.filter((p) => p.builtIn || connected.has(p.id))
+  return PROVIDERS.filter(
+    (p) => (p.builtIn || connected.has(p.id)) && isProviderEnabled(settings, p.id),
+  )
     .map((p) => ({
       provider: p,
-      models: p.models.filter((m) => m.capability === capability && !m.retired),
+      models: [...p.models, ...customModelsOf(p.id, settings)].filter(
+        (m) => m.capability === capability && !m.retired && isModelEnabled(settings, p.id, m.id),
+      ),
     }))
     .filter((x) => x.models.length > 0);
 }
@@ -796,8 +862,9 @@ export function estimateCostUsd(
     /** Megapiksler i resultatet (oppskalering). */
     readonly megapixels?: number;
   } = {},
+  settings: readonly ModelSetting[] = activeSettings,
 ): number | null {
-  const m = providerModel(provider, model);
+  const m = providerModel(provider, model, settings);
   if (!m) return null;
   // Ugyldige tall gir ukjent pris, aldri NaN (som ville sluppet gjennom kostnadstaket)
   for (const v of [opts.seconds, opts.images, opts.characters, opts.megapixels])
@@ -901,9 +968,10 @@ export function effortChoice(
   capability: Capability,
   level: EffortLevel,
   connected: ReadonlySet<string>,
+  settings: readonly ModelSetting[] = activeSettings,
 ): ModelChoice | null {
   // Den innebygde leverandøren velger selv modell etter formålet: regnes som én modell
-  const all = providersFor(capability, connected).flatMap((o) =>
+  const all = providersFor(capability, connected, settings).flatMap((o) =>
     (o.provider.builtIn ? o.models.slice(0, 1) : o.models).map((m) => ({
       provider: o.provider,
       model: m,

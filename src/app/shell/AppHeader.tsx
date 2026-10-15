@@ -8,6 +8,7 @@ import { ShortcutsButton, ShortcutsDialog } from "@/app/shortcuts/ShortcutsDialo
 import { LanguageSwitch } from "@/app/i18n/language";
 import { L } from "@/core";
 import { GenerationStatus } from "@/app/ai/GenerationStatus";
+import { TaskNav } from "./TaskNav";
 import { AccountWatcher, useMyAccount } from "@/app/account/use-account";
 
 interface AppHeaderProps {
@@ -44,6 +45,7 @@ export function AppHeader({ email, trail }: AppHeaderProps) {
         </>
       ) : null}
       <div className="ml-auto flex items-center gap-2">
+        {params.projectId ? <TaskNav projectId={params.projectId} /> : null}
         {params.projectId ? <GenerationStatus projectId={params.projectId} /> : null}
         <LanguageSwitch compact />
         <ShortcutsButton onClick={() => setShortcutsOpen(true)} />

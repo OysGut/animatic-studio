@@ -1,14 +1,22 @@
-Svar på KI-176/KI-178: husket nummerering, skjul endringsmerker, lagring per kategori, usikre estimater, bakgrunnsjobb (DEC-0087)
+Elementer i flere scener med oppgaver og TODO, systemmerknader, bildeverktøy, dørdeler, paneler side om side, AI-tilkoblinger (DEC-0088)
 
-Ingen databaseendring og ingen nye pakker. Lim inn docs/development/LOVABLE_SYNC.md i Lovable etter push
-(den setter opp bakgrunnsjobben).
+Migrasjon 0034, ingen nye pakker. Lim inn docs/development/LOVABLE_SYNC.md i Lovable etter push.
 
-- Manuseksport: nummereringen huskes fra forrige eksport (REQ-0482).
-- Manus: «Vis endringsmerker» i visningsvalgene skjuler de røde margmerkene (REQ-0102).
-- Lagring: nye filer i egen mappe per kategori – source/ (opplastet), generated/ (AI), temp/ (2D-scenen til
-  AI-video). Eldre filer ligger der de ligger og virker som før (REQ-0415).
-- Varighet: scener med lite eller ingen dialog vises som «usikkert» med spenn, og summen får et spenn (REQ-0110).
-- Bakgrunnsjobben tillates (DEC-0072 trukket tilbake): sender køen, henter ferdige videoer og sletter kontoer etter
-  30 dager, også når ingen har prosjektet åpent. Den bestiller aldri noe nytt.
+- Bildeverktøy: delelinjer som dras hver for seg, navngitte ruter med varmgul ramme i fokus, «Fjern luften rundt»,
+  «Lag variasjoner» med «Hva ønsker du forskjellig?» (REQ-0656).
+- Dørdeler: deler legges i scenen der de lå, med ankerpunkt på hengselsiden (REQ-0657).
+- «Legg til element i scenen …»: fra biblioteket eller nytt, med spørsmål om andre scener (alle scener med Maja,
+  samme sted, resten av filmen). I de andre scenene vises elementet med varmgul ramme og «Skal inn fordi det ble
+  lagt til i scene N» til det dras inn (REQ-0658, REQ-0659).
+- Systemmerknader i manuset med «Ferdig»; med i eksport som «Animatic Studio (systemmerknad)» (REQ-0660).
+- Oppgaven i toppstripen med forrige/neste scene som skal oppdateres (REQ-0661).
+- TODO-boks på prosjektsiden: oppgaver, notater fra andre, manusendringer, arbeidsliste og feilede AI-jobber
+  (REQ-0662).
+- Sceneeditor: paneler side om side i valgt rekkefølge og grupper som lukkes og åpnes; lagret på kontoen
+  (REQ-0663).
+- Adminside: AI-tilkoblinger (leverandører og modeller av/på, legg til modell, ønsker om ny leverandør) og når
+  bakgrunnsjobben sist kjørte (REQ-0664).
+- Retting: sikkerhetskopien avviste systemmerknadenes oppgave-ID.
 
-Tester: Vitest 125 filer / 1082 tester.
+Tester: Vitest 140 filer / 1209 tester, DB 62/62, nye nettlesertester dec0088-tasks-ui (26), image-tools-ui (48),
+scene-panels-ui (39), ai-admin-ui (46); øvrige suiter grønne.

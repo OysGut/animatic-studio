@@ -121,6 +121,9 @@ const LIBRARY_COMMANDS = new Set<string>([
   "SetAssetVisualBrief",
   "SetSoundLinks",
   "SetContextNames",
+  "PlanAssetInScenes",
+  "RemoveScenePlans",
+  "SetScenePlans",
   "SetAssetVoice",
   "CreateAssetVariant",
   "UndoCreateAssetVariant",
@@ -330,6 +333,20 @@ export function needsSchema29(command: { type: string } & Record<string, unknown
  * i stillhet (apply_changes ser bort fra kolonner tabellen ikke har), og en vinkel på et bilde ville blitt
  * avvist av utløseren som vokter bildeversjonene.
  */
+/** Planer for elementer i scener og systemmerknader (DEC-0088) krever migrasjon 0034. */
+export function needsSchema34(command: {
+  type: string;
+  annotations?: readonly { source?: string; taskId?: string }[];
+}): boolean {
+  return (
+    command.type === "PlanAssetInScenes" ||
+    command.type === "RemoveScenePlans" ||
+    command.type === "SetScenePlans" ||
+    (command.type === "AddAnnotations" &&
+      !!command.annotations?.some((a) => a.source === "system" || a.taskId))
+  );
+}
+
 /** Instrukser til AI-video av scenen (DEC-0083) krever migrasjon 0032. */
 export function needsSchema32(command: { type: string }): boolean {
   return command.type === "SetSceneVideoInstructions";
@@ -682,6 +699,18 @@ export const runCommand = createServerFn({ method: "POST" })
           message: L(
             "Databasen mangler kontinuitet for spinoffer. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0018.",
             "The database is missing continuity for spin-offs. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0018.",
+          ),
+        };
+    }
+    if (needsSchema34(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 34)
+        return {
+          ok: false,
+          code: "schema",
+          message: L(
+            "Databasen mangler oppgaver og systemmerknader. Den må oppdateres (migrasjon 0034).",
+            "The database is missing tasks and system notes. It must be updated (migration 0034).",
           ),
         };
     }

@@ -3,6 +3,8 @@
  * blokkere og slette (låst i 30 dager, kan bare låses opp av administrator), gjøre andre til administrator,
  * gi låste prosjekter ny eier og fylle ut personvernerklæringen. Administrator ser aldri innholdet i
  * prosjektene, bare navnene. Alt kontrolleres på serveren.
+ * DEC-0088 (Mars 15.10.2026): AI-tilkoblinger (slå leverandører og modeller av og på, legge til modeller, be om
+ * nye leverandører) og når bakgrunnsjobben sist kjørte – se AiConnectionsAdmin.tsx.
  */
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -20,6 +22,7 @@ import {
 } from "@/adapters/account/admin.functions";
 import { Button } from "@/components/ui/button";
 import { PRIVACY_KEY, usePrivacyPolicy } from "@/app/account/use-account";
+import { AiConnectionsAdmin, CronStatusLine, useAiAdmin } from "./AiConnectionsAdmin";
 
 export const ADMIN_KEY = ["admin-overview"] as const;
 
@@ -70,6 +73,7 @@ export function AdminPage({ myId }: { myId: string }) {
     queryFn: () => fetchAdminOverview(),
     staleTime: 15_000,
   });
+  const ai = useAiAdmin();
   const [filter, setFilter] = useState("");
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const refresh = () => void qc.invalidateQueries({ queryKey: ADMIN_KEY });
@@ -131,6 +135,7 @@ export function AdminPage({ myId }: { myId: string }) {
           )}
         </span>
       </div>
+      <CronStatusLine data={ai.data} />
       {d.purged ? (
         <p className="text-xs text-text-secondary">
           {L(
@@ -204,6 +209,8 @@ export function AdminPage({ myId }: { myId: string }) {
           </table>
         </div>
       </section>
+
+      <AiConnectionsAdmin />
 
       <PrivacyAdmin
         onDone={(r) => {

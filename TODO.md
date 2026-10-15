@@ -2,7 +2,7 @@
 
 Huskeliste over det som er tenkt gjort, men ikke bygget. Holdes oppdatert av den som utvikler (Claude eller en annen KI) ved hver leveranse.
 Kilder: beslutningsloggen (`docs/decisions/DECISION_LOG.md`), kravregisteret (`docs/product/requirements.yaml`), kjente problemer (`docs/development/KNOWN_ISSUES.md`).
-Sist oppdatert: 2026-10-15 (DEC-0087).
+Sist oppdatert: 2026-10-15 (DEC-0088).
 
 ## Bestilt av Mars, ikke bygget ennå
 - **Eksport til ProRes/MOV** for klipping i Premiere/DaVinci (DEC-0085). Nettleseren kan bare lage MP4 (H.264/VP9) og WebM; ProRes må lages hos en tjeneste (f.eks. Runway `outputFormat: "prores"` for AI-video, eller en egen konverteringstjeneste) eller i en framtidig lokal versjon.
@@ -11,17 +11,21 @@ Sist oppdatert: 2026-10-15 (DEC-0087).
 - **Stilharmonisering med AI** (REQ-0137–0145, REQ-0400–0402) – kostnaden er godkjent (DEC-0084).
 - **«Lovable» ut av grensesnittet** (REQ-0639, DEC-0084): nøytrale ord for den innebygde AI-tjenesten og for databaseoppdateringer.
 
-## Må gjøres av Mars eller administrator (DEC-0086)
+## Må gjøres av Mars eller administrator (DEC-0086, DEC-0088)
+- Publiser appen, så bakgrunnsjobben (cron) kjører; adminsiden viser nå når den sist kjørte (DEC-0088).
+- Nye AI-leverandører som er ønsket på adminsiden, bygges av Claude (DEC-0088).
 - Fyll ut personvernerklæringen på adminsiden (behandlingsansvarlig, org.nr., adresse, kontakt, lagringssted) og la en jurist lese teksten (KI-214).
 - Sjekk regionen i Lovable (Connectors → Cloud) og om planen har databehandleravtale / trening slått av.
 - Prøv blokkering, sletting og «Hent videoen igjen» med en testkonto (KI-215).
 
 ## Venter på svar eller prøving fra Mars
-- REQ-0269: adminknapp for å administrere og legge til AI-leverandører – forslag gitt i chatten 15.10.2026, venter på svar.
+- Prøv DEC-0088 i appen: «Legg til element i scenen …», oppgaven øverst, systemmerknader, TODO-boksen, dørdeler, paneler side om side og AI-tilkoblinger på adminsiden.
 - Språkvask av engelsk tekst (KI-198).
 - Prøving med ekte nøkler: vinkler, oppskalering, stilanalyse og faktaark (KI-193); AI-video av scenen med referanser, lyd og samleark (KI-204, KI-213).
 
 ## Mindre ting
+- Notater i manus mangler «løst»-status; TODO-boksen viser notater fra andre til de slettes (KI-224).
+- AI-lagde bildedeler har ukjent plass i originalen (KI-220).
 - Rydde gamle videoer av 2D-scenen i lagringen (`ai-source/`, KI-207).
 - Legge inn ferdige AI-videoer i scenen uten at prosjektet er åpent (KI-209; hentingen gjøres nå av bakgrunnsjobben), henger sammen med varsling. Videoer tapes ikke lenger: de hentes når prosjektet åpnes (inntil sju dager), og «Hent videoen igjen» finnes (DEC-0086).
 - Planlagte fagskills (del D/E i `.claude/skills/README.md`) opprettes når behovet kommer.

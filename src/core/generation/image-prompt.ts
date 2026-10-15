@@ -760,3 +760,151 @@ export function turnaroundAttachments(
   }
   return out;
 }
+
+// ---------- Variasjoner og deler av et bilde (Mars 15.10.2026) ----------
+
+/** Stilen i korte ord fra bestillingen (til variasjoner og deler). */
+function briefStyleLine(b: ImageBrief): string {
+  const s = b.style;
+  return [s.look, s.technique, s.design]
+    .map((x) => x.trim().replace(/\.$/, ""))
+    .filter(Boolean)
+    .concat(s.colours.length ? [`colours ${s.colours.join(", ")}`] : [])
+    .join("; ");
+}
+
+/** «image 1», «images 2 and 3». */
+function imagesText(ix: readonly number[]): string {
+  if (ix.length === 1) return `image ${ix[0]}`;
+  return `images ${ix.slice(0, -1).join(", ")} and ${ix[ix.length - 1]}`;
+}
+
+function backgroundLine(b: ImageBrief, keep: boolean): string {
+  if (keep) return "Keep the same background as in the original image.";
+  return b.transparent
+    ? "Transparent background, nothing else in the image."
+    : "Plain, flat, pure white background, nothing else in the image: no ground, no shadows, no scenery.";
+}
+
+/**
+ * Beskrivelsen for «Lag variasjoner» (Mars 15.10.2026: «for en dør f.eks så ønsker jeg den åpen»): bildet
+ * brukeren står i er forbildet (identitet); bare det brukeren ber om endres – identitet, stil, vinkel og
+ * utsnitt beholdes. Engelsk, som alle AI-beskrivelser. `change` er brukerens egen tekst (kan være norsk).
+ */
+export function buildVariationPrompt(
+  b: ImageBrief,
+  change: string,
+  opts: { readonly index: number; readonly count: number; readonly family: PromptFamily },
+): { readonly prompt: string; readonly negative: string | null } {
+  const what = change.trim().replace(/\s+/g, " ");
+  const noun = KIND_TEXT[b.subject.kind].replace(/^an? /, "");
+  const id = b.references.filter((r) => r.role === "identity").map((r) => r.index);
+  const style = b.references.filter((r) => r.role === "style").map((r) => r.index);
+  const src = id.length ? imagesText(id) : "the attached image";
+  const keepBg = b.purpose === "background";
+  const variation =
+    opts.count > 1
+      ? `This is variation ${opts.index + 1} of ${opts.count}: interpret the change in your own way, a little differently from the other variations.`
+      : "";
+  if (opts.family === "compact") {
+    const lines = [
+      `Edit ${src}: ${b.subject.name} (${noun}).`,
+      `Change only this (the user's words, may be Norwegian): "${what}".`,
+      "Keep exactly the same: identity, design, proportions, colours, materials, line quality, drawing style, camera angle, framing and scale.",
+      style.length ? `Style: match ${imagesText(style)} (style only).` : "",
+      briefStyleLine(b) ? `Style: ${briefStyleLine(b)}.` : "",
+      backgroundLine(b, keepBg),
+      variation,
+    ].filter(Boolean);
+    return {
+      prompt: lines.join("\n"),
+      negative: [
+        "different subject",
+        "different style",
+        "different angle",
+        "extra objects",
+        "text",
+        "letters",
+        "logos",
+        "watermarks",
+        "blurry",
+        "deformed",
+      ].join(", "),
+    };
+  }
+  const out = [
+    `Make a variation of ${b.subject.name}, ${KIND_TEXT[b.subject.kind]} in a 2D animated film, using ${src} as the original.`,
+    `The only thing that should be different (the user's own words, may be in Norwegian): "${what}". Make this change clearly and naturally for this subject.`,
+    "Keep everything else exactly as in the original: the same subject and identity, design, proportions, colours, materials, line quality, drawing style, level of detail, camera angle, framing and scale. Do not add anything else and do not redesign it.",
+    style.length
+      ? `Match the drawing style of ${imagesText(style)} (style references only; do not copy their subjects).`
+      : "",
+    briefStyleLine(b) ? `Style: ${briefStyleLine(b)}.` : "",
+    backgroundLine(b, keepBg),
+    variation,
+    "Leave out: text, letters, logos, watermarks.",
+    b.instructions.trim() ? `Project instructions (always follow): ${b.instructions.trim()}` : "",
+  ].filter(Boolean);
+  return { prompt: out.join("\n\n"), negative: null };
+}
+
+/**
+ * Beskrivelsen for én del av et bilde som eget objekt (Mars 15.10.2026: «en dørramme og et dørblad … ulike
+ * objekter slik at en kan animere at den åpner seg»): bare delen tegnes, hel og alene, i samme stil, vinkel
+ * og målestokk som originalen, på gjennomsiktig eller ensfarget bakgrunn.
+ */
+export function buildPartPrompt(
+  b: ImageBrief,
+  part: string,
+  others: readonly string[],
+  family: PromptFamily,
+): { readonly prompt: string; readonly negative: string | null } {
+  const name = part.trim().replace(/\s+/g, " ");
+  const rest = others.map((o) => o.trim()).filter((o) => o && o !== name);
+  const id = b.references.filter((r) => r.role === "identity").map((r) => r.index);
+  const style = b.references.filter((r) => r.role === "style").map((r) => r.index);
+  const src = id.length ? imagesText(id) : "the attached image";
+  const restText = rest.length ? ` Do not draw the other parts (${rest.join(", ")}).` : "";
+  const bg = b.transparent
+    ? "Transparent background, nothing else in the image."
+    : "Plain, flat, pure white background, nothing else in the image: no ground, no shadows, no scenery.";
+  if (family === "compact")
+    return {
+      prompt: [
+        `From ${src} (${b.subject.name}), draw only this part as a separate piece: "${name}" (the user's words, may be Norwegian).${restText}`,
+        "Same drawing style, colours, proportions, camera angle and scale as the original; the part complete and whole, including what is hidden behind other parts in the original.",
+        style.length ? `Style: match ${imagesText(style)} (style only).` : "",
+        briefStyleLine(b) ? `Style: ${briefStyleLine(b)}.` : "",
+        bg,
+      ]
+        .filter(Boolean)
+        .join("\n"),
+      negative: [
+        "other parts",
+        "whole object",
+        "scenery",
+        "text",
+        "letters",
+        "logos",
+        "watermarks",
+        "cast shadow",
+        "blurry",
+      ].join(", "),
+    };
+  return {
+    prompt: [
+      `Using ${src} of ${b.subject.name} as the reference, draw only one part of it as a separate piece for cut-out animation: "${name}" (the user's own words, may be in Norwegian).${restText}`,
+      "Draw the part complete and whole – including anything that is hidden behind other parts in the original – seen from the same camera angle, with the same drawing style, colours, materials, proportions and scale as in the original, so it fits exactly back into place.",
+      style.length
+        ? `Match the drawing style of ${imagesText(style)} (style references only; do not copy their subjects).`
+        : "",
+      briefStyleLine(b) ? `Style: ${briefStyleLine(b)}.` : "",
+      `${bg} Centred, with a small empty margin on all sides.`,
+      "Leave out: text, letters, logos, watermarks.",
+      b.instructions.trim() ? `Project instructions (always follow): ${b.instructions.trim()}` : "",
+    ]
+      .filter(Boolean)
+      .join("\n\n"),
+    negative: null,
+  };
+}

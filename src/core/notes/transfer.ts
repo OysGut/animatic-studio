@@ -9,6 +9,7 @@ import { newId as defaultNewId } from "../ids";
 import type { ProjectState } from "../model";
 import type { Page } from "../screenplay/paginate";
 import type { ParsedScreenplay } from "../screenplay/types";
+import { L } from "../i18n";
 import { alignBlockLines, annotationsByVariant, resolveRange } from "./index";
 
 /** Et notat lest fra en fil, festet til en posisjon i kildedokumentet. */
@@ -32,6 +33,13 @@ export interface ExportNote {
   readonly text: string;
   readonly author: string;
   readonly stampAt: string;
+  /** Systemmerknad (DEC-0088): kommer fra Animatic Studio, ikke fra en person. */
+  readonly system?: boolean;
+}
+
+/** Forfatternavnet systemmerknader får i eksportene (DEC-0088). */
+export function systemNoteAuthor(): string {
+  return L("Animatic Studio (systemmerknad)", "Animatic Studio (system note)");
 }
 
 /** Notater per blokk og nåler per forekomst, for eksport (bare synlige notater). */
@@ -46,7 +54,10 @@ export function exportNotes(
     const occ = s.occurrences[occId];
     if (!occ) continue;
     for (const a of byVariant.get(occ.variantId) ?? []) {
-      const base = { id: a.id, text: a.text, author: a.authorName, stampAt: a.stampAt };
+      const base =
+        a.source === "system"
+          ? { id: a.id, text: a.text, author: systemNoteAuthor(), stampAt: a.stampAt, system: true }
+          : { id: a.id, text: a.text, author: a.authorName, stampAt: a.stampAt };
       if (a.blockId === null) {
         pins.set(occId, [...(pins.get(occId) ?? []), { ...base, start: 0, end: 0 }]);
         continue;

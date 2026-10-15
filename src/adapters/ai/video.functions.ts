@@ -274,7 +274,12 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
           message: L("Segmentet finnes ikke i scenen.", "The segment does not exist in the scene."),
         };
     }
-    const m = providerModel(data.provider, data.model);
+    // Administrator kan ha slått av leverandøren eller modellen for alle (DEC-0088, migrasjon 0034)
+    const aiGate = await (
+      await import("@/adapters/account/ai-models.server")
+    ).modelGate(db, data.provider, data.model);
+    if (aiGate.message) return { ok: false, message: aiGate.message };
+    const m = providerModel(data.provider, data.model, aiGate.settings);
     const fromScene = !!data.sourceVideoPath;
     if (!m || m.capability !== (fromScene ? "video_edit" : "video"))
       return {
@@ -444,7 +449,12 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
           "None of the project's owners have connected this provider (AI providers on the project list).",
         ),
       };
-    const cost = estimateCostUsd(data.provider, data.model, { seconds: data.seconds });
+    const cost = estimateCostUsd(
+      data.provider,
+      data.model,
+      { seconds: data.seconds },
+      aiGate.settings,
+    );
 
     // Faste grenser, prosjektets budsjett og eierens tak – før og etter registrering
     const hourAgo = new Date(Date.now() - 3600_000).toISOString();
@@ -551,7 +561,7 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
         seconds: data.seconds,
         aspect: data.aspect,
         // Innsatsnivået jobben ble kjørt med (mandat 19.3, REQ-0275)
-        effort: effortOf(providerModel(data.provider, data.model)),
+        effort: effortOf(providerModel(data.provider, data.model, aiGate.settings)),
         ...(data.chainAfter ? { chainAfter: data.chainAfter } : {}),
         // Video fra 2D-scenen (DEC-0083): kilden, bunten og biten, og figurenes referansebilder
         ...(data.piece

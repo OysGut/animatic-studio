@@ -13,6 +13,8 @@ export interface MyAccount {
   readonly privacyVersion: number | null;
   readonly acceptedVersion: number | null;
   readonly createdAt: string | null;
+  /** Brukerens visningsvalg (migrasjon 0034, DEC-0088). Tom før migrasjonen. */
+  readonly uiPrefs: Readonly<Record<string, unknown>>;
 }
 
 /** Min konto, eller null før migrasjon 0033. */
@@ -30,6 +32,10 @@ export async function fetchMyAccount(): Promise<MyAccount | null> {
     privacyVersion: num(a["privacy_version"]),
     acceptedVersion: num(a["accepted_version"]),
     createdAt: typeof a["created_at"] === "string" ? a["created_at"] : null,
+    uiPrefs:
+      a["ui_prefs"] && typeof a["ui_prefs"] === "object" && !Array.isArray(a["ui_prefs"])
+        ? (a["ui_prefs"] as Record<string, unknown>)
+        : {},
   };
 }
 
@@ -111,4 +117,10 @@ export async function fetchProjectLock(projectId: string): Promise<ProjectLockIn
     ownerName: typeof a["owner_name"] === "string" ? a["owner_name"] : null,
     adminEmail: typeof a["admin_email"] === "string" ? a["admin_email"] : null,
   };
+}
+
+/** Lagre visningsvalg på kontoen (slås sammen med det som er lagret; null fjerner). */
+export async function saveUiPrefs(prefs: Record<string, unknown>): Promise<BackendError | null> {
+  const { error } = await db.rpc("set_my_ui_prefs", { p_prefs: prefs });
+  return plainError(error);
 }

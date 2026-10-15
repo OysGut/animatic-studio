@@ -224,6 +224,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         sound_links: a.soundLinks ?? [],
         // Migrasjon 0026 (DEC-0071)
         context_names: a.contextNames ?? [],
+        // Migrasjon 0034 (DEC-0088)
+        scene_plans: a.scenePlans ?? [],
         voice: a.voice ?? null,
         // Migrasjon 0029 (DEC-0079)
         removed: a.removed === true,
@@ -282,6 +284,9 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         edited_by_name: n.editedByName,
         edited_at: n.editedAt,
         removed: n.removed,
+        // Migrasjon 0034 (DEC-0088)
+        source: n.source ?? "user",
+        task_id: n.taskId ?? null,
       };
     }
     case "compositions": {
@@ -981,6 +986,16 @@ export function stateFromRows(r: ProjectRows): ProjectState {
               ),
             }
           : {}),
+        ...(Array.isArray(x["scene_plans"]) && (x["scene_plans"] as unknown[]).length
+          ? {
+              scenePlans: (x["scene_plans"] as Record<string, unknown>[]).map((p) => ({
+                occurrenceId: String(p["occurrenceId"]),
+                taskId: String(p["taskId"]),
+                fromOccurrenceId: String(p["fromOccurrenceId"]),
+                at: String(p["at"]),
+              })),
+            }
+          : {}),
         ...(x["voice"] && typeof x["voice"] === "object"
           ? { voice: x["voice"] as AssetVoice }
           : {}),
@@ -1038,6 +1053,8 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         editedAt:
           x["edited_at"] === null || x["edited_at"] === undefined ? null : iso(x["edited_at"]),
         removed: x["removed"] === true,
+        ...(x["source"] === "system" ? { source: "system" as const } : {}),
+        ...(typeof x["task_id"] === "string" ? { taskId: x["task_id"] } : {}),
       })),
     ),
     compositions: byId(

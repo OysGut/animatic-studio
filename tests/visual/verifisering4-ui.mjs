@@ -1181,7 +1181,8 @@ async function testLayerDoubleClick() {
   const { ctx, page } = await openPage(`${P}/scene?scene=${OCC.s1}`);
   try {
     const list = page.locator('[aria-label="Lagene, forreste øverst"]');
-    const first = list.getByRole("button").first();
+    // Første knapp med navn (gruppene har en pil foran navnet, DEC-0088)
+    const first = list.getByRole("button").filter({ hasText: /\S/ }).first();
     const name = (await first.innerText()).trim().split("\n")[0];
     await first.dblclick();
     await page.waitForTimeout(800);
