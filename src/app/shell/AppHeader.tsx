@@ -22,13 +22,13 @@ export function AppHeader({ email, trail }: AppHeaderProps) {
   const params = useParams({ strict: false }) as { projectId?: string };
   return (
     <header className="flex h-10 shrink-0 items-center gap-3 border-b border-border bg-surface-1 px-4">
-      <BackButton />
       <Link
         to="/"
         className="text-[13px] font-semibold tracking-[0.02em] text-text-primary hover:text-accent-brand"
       >
         Animatic Studio
       </Link>
+      <BackButton />
       {trail ? (
         <>
           <span aria-hidden className="text-text-tertiary">
