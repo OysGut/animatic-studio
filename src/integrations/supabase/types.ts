@@ -62,6 +62,51 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_model_settings: {
+        Row: {
+          custom: boolean
+          enabled: boolean
+          id: string
+          kind: string | null
+          label: string
+          model: string
+          note: string
+          price_unit: string
+          price_usd: number | null
+          provider: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          custom?: boolean
+          enabled?: boolean
+          id?: string
+          kind?: string | null
+          label?: string
+          model: string
+          note?: string
+          price_unit?: string
+          price_usd?: number | null
+          provider: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          custom?: boolean
+          enabled?: boolean
+          id?: string
+          kind?: string | null
+          label?: string
+          model?: string
+          note?: string
+          price_unit?: string
+          price_usd?: number | null
+          provider?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       ai_provider_keys: {
         Row: {
           ciphertext: string
@@ -110,6 +155,39 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_provider_requests: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          docs_url: string
+          id: string
+          name: string
+          note: string
+          status: string
+          website: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          docs_url?: string
+          id?: string
+          name: string
+          note?: string
+          status?: string
+          website?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          docs_url?: string
+          id?: string
+          name?: string
+          note?: string
+          status?: string
+          website?: string
+        }
+        Relationships: []
+      }
       ai_spend: {
         Row: {
           key_owner: string
@@ -143,6 +221,24 @@ export type Database = {
           added_at?: string
           added_by?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      app_status: {
+        Row: {
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value?: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: Json
         }
         Relationships: []
       }
@@ -370,6 +466,7 @@ export type Database = {
           project_id: string
           removed: boolean
           revision: number
+          scene_plans: Json
           sound_links: Json
           tags: Json
           visual_brief: string
@@ -389,6 +486,7 @@ export type Database = {
           project_id: string
           removed?: boolean
           revision?: number
+          scene_plans?: Json
           sound_links?: Json
           tags?: Json
           visual_brief?: string
@@ -408,6 +506,7 @@ export type Database = {
           project_id?: string
           removed?: boolean
           revision?: number
+          scene_plans?: Json
           sound_links?: Json
           tags?: Json
           visual_brief?: string
@@ -1604,18 +1703,21 @@ export type Database = {
         Row: {
           display_name: string
           locale: string | null
+          ui_prefs: Json
           updated_at: string
           user_id: string
         }
         Insert: {
           display_name?: string
           locale?: string | null
+          ui_prefs?: Json
           updated_at?: string
           user_id: string
         }
         Update: {
           display_name?: string
           locale?: string | null
+          ui_prefs?: Json
           updated_at?: string
           user_id?: string
         }
@@ -2065,7 +2167,9 @@ export type Database = {
           range_start: number
           removed: boolean
           revision: number
+          source: string
           stamp_at: string
+          task_id: string | null
           text: string
           variant_id: string | null
         }
@@ -2083,7 +2187,9 @@ export type Database = {
           range_start?: number
           removed?: boolean
           revision?: number
+          source?: string
           stamp_at?: string
+          task_id?: string | null
           text: string
           variant_id?: string | null
         }
@@ -2101,7 +2207,9 @@ export type Database = {
           range_start?: number
           removed?: boolean
           revision?: number
+          source?: string
           stamp_at?: string
+          task_id?: string | null
           text?: string
           variant_id?: string | null
         }
@@ -2673,6 +2781,7 @@ export type Database = {
         Returns: undefined
       }
       set_my_locale: { Args: { p_locale: string }; Returns: undefined }
+      set_my_ui_prefs: { Args: { p_prefs: Json }; Returns: undefined }
       touch_activity: { Args: never; Returns: undefined }
       upsert_my_profile: {
         Args: { p_display_name?: string }
