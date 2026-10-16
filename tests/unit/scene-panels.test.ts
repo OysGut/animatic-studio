@@ -8,6 +8,9 @@ import {
   movePanelAmong,
   movePanelTo,
   normalizeOrder,
+  isCollapsedPanels,
+  toggleCollapsed,
+  LEFT_PANELS,
   type PanelId,
 } from "@/app/scene-editor/panel-layout";
 
@@ -23,6 +26,7 @@ describe("rekkefølgen på panelene", () => {
       "assets",
       "nearbyAudio",
       "properties",
+      "script",
     ]);
     expect(normalizeOrder([])).toEqual([...PANEL_IDS]);
   });
@@ -34,15 +38,22 @@ describe("rekkefølgen på panelene", () => {
       "layers",
       "nearbyAudio",
       "assets",
+      "script",
       "notes",
     ]);
   });
 
   it("‹ › flytter ett steg, og ikke forbi kanten", () => {
     const o = normalizeOrder([]);
-    expect(movePanel(o, "layers", -1)).toEqual(["assets", "layers", "nearbyAudio", "properties"]);
+    expect(movePanel(o, "layers", -1)).toEqual([
+      "assets",
+      "layers",
+      "nearbyAudio",
+      "properties",
+      "script",
+    ]);
     expect(movePanel(o, "assets", -1)).toEqual(o);
-    expect(movePanel(o, "properties", 1)).toEqual(o);
+    expect(movePanel(o, "script", 1)).toEqual(o);
   });
 
   it("dra og slipp: foran eller etter et annet panel", () => {
@@ -52,12 +63,14 @@ describe("rekkefølgen på panelene", () => {
       "assets",
       "nearbyAudio",
       "layers",
+      "script",
     ]);
     expect(movePanelTo(o, "assets", "layers", "after")).toEqual([
       "nearbyAudio",
       "layers",
       "assets",
       "properties",
+      "script",
     ]);
     expect(movePanelTo(o, "assets", "assets", "after")).toEqual(o);
   });
@@ -71,6 +84,7 @@ describe("rekkefølgen på panelene", () => {
       "assets",
       "nearbyAudio",
       "properties",
+      "script",
     ]);
     expect(movePanelAmong(o, shown, "assets", -1)).toEqual(o);
   });
@@ -82,5 +96,29 @@ describe("rekkefølgen på panelene", () => {
     expect(isPanelPrefs({ mode: "side", order: Array(40).fill("x") })).toBe(false);
     expect(isPanelPrefs(null)).toBe(false);
     expect(isPanelPrefs([])).toBe(false);
+  });
+});
+
+describe("paneler som lukkes og åpnes (DEC-0089)", () => {
+  it("manuset er et eget panel i venstre kolonne", () => {
+    expect(PANEL_IDS).toContain("script");
+    expect(LEFT_PANELS.has("script")).toBe(true);
+  });
+
+  it("pilen lukker og åpner; ukjente og doble ID-er ryddes bort", () => {
+    expect(toggleCollapsed([], "script")).toEqual(["script"]);
+    expect(toggleCollapsed(["script", "layers"], "script")).toEqual(["layers"]);
+    expect(toggleCollapsed(["gammelt", "layers", "layers"], "assets")).toEqual([
+      "layers",
+      "assets",
+    ]);
+  });
+
+  it("bare små, gyldige lister godtas fra lagringen", () => {
+    expect(isCollapsedPanels(["script"])).toBe(true);
+    expect(isCollapsedPanels([])).toBe(true);
+    expect(isCollapsedPanels([1])).toBe(false);
+    expect(isCollapsedPanels({})).toBe(false);
+    expect(isCollapsedPanels(Array(40).fill("x"))).toBe(false);
   });
 });

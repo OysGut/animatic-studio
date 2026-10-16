@@ -227,4 +227,6 @@
 | KI-223 | 2026-10-15 | «Notater fra andre» i TODO-boksen (DEC-0088) skilles på visningsnavn; notater har ikke bruker-ID | To med samme visningsnavn regnes som samme person | Bruk ulike visningsnavn | Akseptert begrensning |
 | KI-224 | 2026-10-15 | Notater har ingen «løst»-status; notater fra andre står i TODO-boksen til de slettes | Gamle notater blir stående | Slett notatet når det er tatt hånd om | Akseptert begrensning |
 | KI-225 | 2026-10-15 | ‹ › for oppgaven i toppstripen (DEC-0088) regner fra sist valgte scene i fanen; utenfor manus og sceneeditor åpnes sceneeditoren | – | – | Akseptert begrensning |
+| KI-226 | 2026-10-16 | I manusvinduet i sceneeditoren (DEC-0089) kan man ikke merke enkeltord og velge «Legg til notat»; notat på hele elementet finnes i inspektøren | Notater på enkeltord må lages på Manus-siden | Bruk Manus-siden | Akseptert begrensning |
+| KI-227 | 2026-10-16 | Markeringen i panelet «Manus» bygger på tidene i filmen; en deaktivert scene (ikke i filmen) får ingen markering, og uten tidskobling eller lyd er tidene anslått | Markeringen kan ligge litt foran eller bak | Sett tidskoblinger | Akseptert begrensning |
 

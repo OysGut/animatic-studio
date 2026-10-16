@@ -855,3 +855,26 @@ export function filmMediaPaths(clips: readonly FilmClip[]): string[] {
     for (const p of c.parts) if (p.source === "take" && p.take?.mediaRef) out.add(p.take.mediaRef);
   return [...out];
 }
+
+/**
+ * Manusblokken som skjer på et bilde i 2D-scenen (DEC-0089: manuset i sceneeditoren markerer det som spilles
+ * av). `compFrame` er bildet i 2D-scenens egen tid; null når klippet ikke viser 2D-scenen der, eller ingen
+ * blokk dekker bildet.
+ */
+export function blockAtCompositionFrame(
+  s: ProjectState,
+  clip: FilmClip,
+  compFrame: number,
+  spans: readonly BlockSpan[] = blockSpans(s, clip),
+): string | null {
+  const local = compositionFrameInClip(clip, compFrame);
+  if (local === null) return null;
+  const f = clip.startFrame + local;
+  let best: BlockSpan | null = null;
+  for (const sp of spans) {
+    if (f < sp.startFrame || f >= sp.endFrame) continue;
+    // Karakternavn og replikk deler tid: vis replikken (den siste som starter før bildet)
+    if (!best || sp.startFrame >= best.startFrame) best = sp;
+  }
+  return best?.blockId ?? null;
+}

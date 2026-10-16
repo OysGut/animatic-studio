@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **664**
-- Prioritet: P0: 145, P1: 333, P2: 147, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 137, teknisk-anbefaling: 7
-- Status: Verifisert: 590, Implementert – ikke verifisert: 12, Under arbeid: 3, Ikke startet: 59
+- Antall krav: **667**
+- Prioritet: P0: 145, P1: 336, P2: 147, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 140, teknisk-anbefaling: 7
+- Status: Verifisert: 593, Implementert – ikke verifisert: 12, Under arbeid: 3, Ikke startet: 59
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -9077,3 +9077,45 @@ Administrator kan slå leverandører og modeller av og på, legge til modeller h
   - tests/db/run-db-tests.ts
   - tests/visual/ai-admin-ui.mjs
 - **Implementering:** src/app/admin/AiConnectionsAdmin.tsx, src/core/generation/model-settings.ts, src/adapters/account/ai-models.server.ts, src/app/admin/cron-status.ts
+
+#### REQ-0665 – Sceneeditor: panelet «Manus» med lesevisning av scenen
+Sceneeditoren har et eget panel «Manus» som kan flyttes og lukkes som de andre. Det viser sceneoverskriften og teksten for valgt scene i manusform (innrykk per elementtype), følger scenen og markerer linjen som spilles av under avspilling (tider fra tidskobling, koblet lyd eller anslag). Notater er merket med et symbol.
+
+- **Kilde:** Beslutning DEC-0089 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** COMPOSE, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Linjen som spilles av, er markert.
+  - Panelet følger valgt scene.
+- **Tester:**
+  - tests/unit/dec0089-script-in-scene.test.ts
+  - tests/visual/dec0089-script-panel-ui.mjs
+- **Implementering:** src/app/scene-editor/SceneScriptPanel.tsx, src/core/assembly/film.ts
+
+#### REQ-0666 – Sceneeditor: manuset redigeres i eget vindu, med forrige og neste scene til lesing
+«Rediger manus …» i panelet «Manus», eller dobbeltklikk på en linje, åpner et stort vindu med samme lesevisning og inspektør som på Manus-siden: tekst, elementtype, ny og fjernet blokk, del scenen, sceneoverskrift, notater, systemmerknader og angre/gjør om. Bare denne scenen redigeres; forrige og neste scene kan vises over og under, bare til lesing. Endringer går gjennom de vanlige kommandoene og flagges i 2D-scenen som andre manusendringer.
+
+- **Kilde:** Beslutning DEC-0089 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** SCRIPT, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Dobbeltklikk på en linje åpner vinduet med linjen valgt.
+  - Forrige/neste scene kan ikke redigeres i vinduet.
+- **Tester:**
+  - tests/visual/dec0089-script-panel-ui.mjs
+- **Implementering:** src/app/scene-editor/SceneScriptDialog.tsx, src/app/script/Inspector.tsx
+
+#### REQ-0667 – Sceneeditor: alle panelene kan lukkes og åpnes
+Hvert panel i sceneeditoren (I denne scenen, Lyd i scenene rundt, Lag, Egenskaper, Manus) kan lukkes og åpnes med en pil i overskriften. Stablet: et lukket panel er bare overskriften, og ˄ ˅ flytter panelet i kolonnen. Side om side: et lukket panel blir en smal stripe med navnet, og de andre panelene får plassen. Valget lagres på kontoen (profiles.ui_prefs) og følger brukeren. Forhåndsvisningen og tidslinjen kan ikke lukkes.
+
+- **Kilde:** Beslutning DEC-0089 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
+- **Moduler:** COMPOSE, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Lukket panel huskes i en ny nettleser.
+  - Lukket panel side om side blir en smal stripe.
+- **Tester:**
+  - tests/unit/scene-panels.test.ts
+  - tests/visual/dec0089-script-panel-ui.mjs
+  - tests/visual/scene-panels-ui.mjs
+- **Implementering:** src/app/scene-editor/ScenePanels.tsx, src/app/scene-editor/panel-layout.ts, src/app/scene-editor/use-scene-panels.ts

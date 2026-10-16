@@ -4,7 +4,16 @@
  * egen rulling; rekkefølgen endres ved å dra overskriften eller med ‹ ›. Det som står først, ligger lengst
  * til venstre. Visning og rekkefølge huskes på brukeren (useUiPref, som språk).
  */
-import { ChevronLeft, ChevronRight, Columns3, GripVertical, Rows3 } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Columns3,
+  GripVertical,
+  Rows3,
+} from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { L } from "@/core";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
@@ -85,12 +94,17 @@ export function SidePanels({
   panels,
   onOrder,
   onMode,
+  collapsed = NO_COLLAPSED,
+  onToggle,
 }: {
   order: readonly PanelId[];
   /** Innholdet i hvert panel; null = vises ikke nå (f.eks. ingen 2D-scene ennå). */
   panels: Readonly<Record<PanelId, ReactNode | null>>;
   onOrder: (order: PanelId[]) => void;
   onMode: (mode: PanelMode) => void;
+  /** Lukkede paneler (DEC-0089): smal stripe med navnet. */
+  collapsed?: ReadonlySet<string>;
+  onToggle?: (id: PanelId) => void;
 }) {
   const [colWidth, setColWidth] = usePaneSize("scene-editor-panel-column", 280, 220, 480, {
     viewportShare: 0.3,
@@ -109,7 +123,12 @@ export function SidePanels({
     <aside
       aria-label={L("Paneler side om side", "Panels side by side")}
       data-testid="scene-panels-side"
-      style={{ width: shown.length * colWidth + 1 }}
+      style={{
+        width:
+          shown.filter((id) => !collapsed.has(id)).length * colWidth +
+          shown.filter((id) => collapsed.has(id)).length * STRIP_PX +
+          1,
+      }}
       className="relative flex min-w-[240px] shrink flex-col border-l border-border bg-surface-1"
     >
       <PaneResizer
@@ -125,6 +144,35 @@ export function SidePanels({
         {shown.map((id, i) => {
           const title = panelTitle(id);
           const target = drop?.id === id && dragId !== null && dragId !== id ? drop : null;
+          if (collapsed.has(id))
+            return (
+              <section
+                key={id}
+                aria-label={title}
+                data-panel={id}
+                data-collapsed
+                style={{ width: STRIP_PX }}
+                className={
+                  "flex min-h-0 shrink-0 flex-col items-center bg-surface-2 " +
+                  (i > 0 ? "border-l border-border" : "")
+                }
+              >
+                <button
+                  type="button"
+                  onClick={() => onToggle?.(id)}
+                  className="flex min-h-0 w-full flex-1 flex-col items-center gap-2 py-2 text-text-secondary hover:bg-surface-3 hover:text-text-primary"
+                  aria-label={L(`Åpne «${title}»`, `Expand “${title}”`)}
+                  title={L(`Åpne «${title}»`, `Expand “${title}”`)}
+                  aria-expanded={false}
+                  data-panel-toggle={id}
+                >
+                  <ChevronRight className="size-3.5 shrink-0" aria-hidden />
+                  <span className="text-xs font-medium uppercase tracking-[0.04em] [writing-mode:vertical-rl]">
+                    {title}
+                  </span>
+                </button>
+              </section>
+            );
           return (
             <section
               key={id}
@@ -183,6 +231,7 @@ export function SidePanels({
                 className="flex h-8 shrink-0 cursor-grab items-center gap-1 border-b border-border bg-surface-2 pl-1 pr-1 active:cursor-grabbing"
               >
                 <GripVertical className="size-3.5 shrink-0 text-text-tertiary" aria-hidden />
+                {onToggle ? <CollapseButton title={title} id={id} onToggle={onToggle} /> : null}
                 <h2 className="min-w-0 flex-1 truncate text-xs font-medium uppercase tracking-[0.04em] text-text-secondary">
                   {title}
                 </h2>
@@ -219,5 +268,130 @@ export function SidePanels({
         })}
       </div>
     </aside>
+  );
+}
+
+const NO_COLLAPSED: ReadonlySet<string> = new Set();
+/** Bredden på et lukket panel side om side (px). */
+const STRIP_PX = 32;
+
+/** Pilen som lukker et åpent panel. */
+function CollapseButton({
+  title,
+  id,
+  onToggle,
+}: {
+  title: string;
+  id: PanelId;
+  onToggle: (id: PanelId) => void;
+}) {
+  return (
+    <button
+      type="button"
+      className={iconButton}
+      onClick={() => onToggle(id)}
+      aria-label={L(`Lukk «${title}»`, `Collapse “${title}”`)}
+      title={L("Lukk panelet", "Collapse the panel")}
+      aria-expanded
+      data-panel-toggle={id}
+    >
+      <ChevronDown className="size-3.5" aria-hidden />
+    </button>
+  );
+}
+
+/**
+ * Panelene over hverandre i én kolonne (stablet visning, DEC-0089): hvert panel har en overskrift med pil som
+ * lukker og åpner det, og ˄ ˅ som flytter det i kolonnen. Et lukket panel er bare overskriften.
+ */
+export function StackedPanels({
+  ids,
+  order,
+  panels,
+  collapsed,
+  onToggle,
+  onOrder,
+}: {
+  /** Panelene i denne kolonnen, i brukerens rekkefølge. */
+  ids: readonly PanelId[];
+  order: readonly PanelId[];
+  panels: Readonly<Record<PanelId, ReactNode | null>>;
+  collapsed: ReadonlySet<string>;
+  onToggle: (id: PanelId) => void;
+  onOrder: (order: PanelId[]) => void;
+}) {
+  const shown = ids.filter((id) => panels[id] != null);
+  return (
+    <>
+      {shown.map((id, i) => {
+        const title = panelTitle(id);
+        const closed = collapsed.has(id);
+        return (
+          <div
+            key={id}
+            data-panel={id}
+            data-collapsed={closed ? true : undefined}
+            className={"flex shrink-0 flex-col " + (i > 0 ? "border-t border-border" : "")}
+          >
+            <header className="flex h-7 shrink-0 items-center gap-1 bg-surface-2 pl-1 pr-1">
+              <button
+                type="button"
+                className="flex min-w-0 flex-1 items-center gap-1 rounded-sm px-1 py-0.5 text-left text-text-secondary hover:text-text-primary"
+                onClick={() => onToggle(id)}
+                aria-expanded={!closed}
+                aria-label={
+                  closed
+                    ? L(`Åpne «${title}»`, `Expand “${title}”`)
+                    : L(`Lukk «${title}»`, `Collapse “${title}”`)
+                }
+                title={
+                  closed
+                    ? L("Åpne panelet", "Expand the panel")
+                    : L("Lukk panelet", "Collapse the panel")
+                }
+                data-panel-toggle={id}
+              >
+                {closed ? (
+                  <ChevronRight className="size-3.5 shrink-0" aria-hidden />
+                ) : (
+                  <ChevronDown className="size-3.5 shrink-0" aria-hidden />
+                )}
+                <h2 className="min-w-0 truncate text-xs font-medium uppercase tracking-[0.04em]">
+                  {title}
+                </h2>
+              </button>
+              <button
+                type="button"
+                className={iconButton}
+                disabled={i === 0}
+                onClick={() => onOrder(movePanelAmong(order, shown, id, -1))}
+                aria-label={L(`Flytt «${title}» opp`, `Move “${title}” up`)}
+                title={L("Flytt opp", "Move up")}
+              >
+                <ArrowUp className="size-3.5" aria-hidden />
+              </button>
+              <button
+                type="button"
+                className={iconButton}
+                disabled={i === shown.length - 1}
+                onClick={() => onOrder(movePanelAmong(order, shown, id, 1))}
+                aria-label={L(`Flytt «${title}» ned`, `Move “${title}” down`)}
+                title={L("Flytt ned", "Move down")}
+              >
+                <ArrowDown className="size-3.5" aria-hidden />
+              </button>
+            </header>
+            {closed ? null : (
+              <div
+                data-panel-body
+                className="flex flex-col [&>section:first-child>h2:first-child]:sr-only [&>section:first-child]:border-t-0"
+              >
+                {panels[id]}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </>
   );
 }

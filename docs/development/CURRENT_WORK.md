@@ -1,8 +1,12 @@
 # Pågående arbeid
 
-Oppdatert: 2026-10-15 (økt 6, DEC-0061–0088)
+Oppdatert: 2026-10-16 (økt 6, DEC-0061–0089)
 
-## Nå: DEC-0088 – bildeverktøy, elementer i flere scener, systemmerknader, TODO, paneler, AI-tilkoblinger – ferdig, venter på Mars
+## Nå: DEC-0089 – manuset i sceneeditoren og paneler som lukkes – ferdig, venter på Mars
+- Bygget: panelet «Manus» (lesevisning med markering under avspilling), «Rediger manus …» i eget vindu med forrige/neste scene til lesing, lukking og åpning av alle panelene (huskes på kontoen).
+- Akseptansekriterier: REQ-0665–0667 (verifisert, se VISUAL_QA_DEC-0089.md).
+
+## Før: DEC-0088 – bildeverktøy, elementer i flere scener, systemmerknader, TODO, paneler, AI-tilkoblinger – ferdig, venter på Mars
 - Bygget: delelinjer og navngitte ruter, «Fjern luften rundt», «Lag variasjoner», dørdeler med hengsel; «Legg til element i scenen …» med planer for andre scener (varmgul ramme), systemmerknader med «Ferdig» og i eksport, oppgaven i toppstripen med ‹ ›, TODO-boksen; paneler side om side og lukkbare grupper lagret på kontoen; AI-tilkoblinger og cron-status på adminsiden.
 - Venter: migrasjon 0034 i Lovable; publisering for bakgrunnsjobben; Mars prøver.
 - Akseptansekriterier: REQ-0656–0664 (verifisert, se VISUAL_QA_DEC-0088.md).

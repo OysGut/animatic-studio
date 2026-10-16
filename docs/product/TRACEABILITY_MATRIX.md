@@ -32,11 +32,11 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | Modul | Navn | Krav | P0 | Implementert | Verifisert |
 |---|---|---|---|---|---|
 | CORE | Project Core | 120 | 57 | 120 | 117 |
-| SCRIPT | Screenplay Engine | 129 | 32 | 129 | 129 |
+| SCRIPT | Screenplay Engine | 130 | 32 | 130 | 130 |
 | TIMELINE | Timeline & Assembly Engine | 107 | 29 | 107 | 107 |
 | LIBRARY | Resource Library | 83 | 10 | 72 | 68 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 39 | 39 |
-| COMPOSE | 2D Composition Engine | 73 | 14 | 73 | 72 |
+| COMPOSE | 2D Composition Engine | 75 | 14 | 75 | 74 |
 | CAMERA | Camera & Motion Engine | 32 | 2 | 32 | 32 |
 | AUDIO | Audio Engine | 42 | 2 | 42 | 42 |
 | PROMPT | Prompt Orchestration Engine | 58 | 15 | 54 | 50 |
@@ -49,7 +49,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | EXPORT | Export Engine | 59 | 12 | 59 | 59 |
 | SECURITY | Security & Storage | 38 | 5 | 37 | 37 |
 | COLLAB | Collaboration & Access | 16 | 0 | 16 | 16 |
-| UI | Brukergrensesnitt og designsystem | 188 | 21 | 183 | 181 |
+| UI | Brukergrensesnitt og designsystem | 191 | 21 | 186 | 184 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 7 | 5 |
 
 ## Dekning per fase
@@ -60,7 +60,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | 2 | 97 | 93 |
 | 3 | 70 | 68 |
 | 4 | 85 | 84 |
-| 5 | 149 | 138 |
+| 5 | 152 | 141 |
 | 6 | 49 | 48 |
 | 7 | 63 | 62 |
 | 8 | 39 | 25 |
@@ -734,3 +734,6 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0662 | Beslutning DEC-0088 | UI | src/app/projects/ProjectTodoBox.tsx, src/core/library/todo.ts | 2 | tests/unit/dec0088-scene-plans.test.ts, tests/visual/dec0088-tasks-ui.mjs, docs/development/VISUAL_QA_DEC-0088.md | Verifisert | 2026-10-15 DEC-0088: Opprettet etter Mars' ønske 15.10.2026 |
 | REQ-0663 | Beslutning DEC-0088 | COMPOSE, UI | src/app/scene-editor/ScenePanels.tsx, src/app/scene-editor/LayersPanel.tsx, src/app/account/ui-prefs.ts | 4 | tests/unit/scene-panels.test.ts, tests/unit/layer-groups.test.ts, tests/db/run-db-tests.ts, tests/visual/scene-panels-ui.mjs, docs/development/VISUAL_QA_DEC-0088.md | Verifisert | 2026-10-15 DEC-0088: Opprettet etter Mars' ønske 15.10.2026 |
 | REQ-0664 | Beslutning DEC-0088 | PROVIDER | src/app/admin/AiConnectionsAdmin.tsx, src/core/generation/model-settings.ts, src/adapters/account/ai-models.server.ts, src/app/admin/cron-status.ts | 4 | tests/unit/ai-model-settings.test.ts, tests/unit/ai-admin.test.ts, tests/db/run-db-tests.ts, tests/visual/ai-admin-ui.mjs, docs/development/VISUAL_QA_DEC-0088.md | Verifisert | 2026-10-15 DEC-0088: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0665 | Beslutning DEC-0089 | COMPOSE, UI | src/app/scene-editor/SceneScriptPanel.tsx, src/core/assembly/film.ts | 2 | tests/unit/dec0089-script-in-scene.test.ts, tests/visual/dec0089-script-panel-ui.mjs, docs/development/VISUAL_QA_DEC-0089.md | Verifisert | 2026-10-16 DEC-0089: Opprettet etter Mars' ønske 16.10.2026 |
+| REQ-0666 | Beslutning DEC-0089 | SCRIPT, UI | src/app/scene-editor/SceneScriptDialog.tsx, src/app/script/Inspector.tsx | 1 | tests/visual/dec0089-script-panel-ui.mjs, docs/development/VISUAL_QA_DEC-0089.md | Verifisert | 2026-10-16 DEC-0089: Opprettet etter Mars' ønske 16.10.2026 |
+| REQ-0667 | Beslutning DEC-0089 | COMPOSE, UI | src/app/scene-editor/ScenePanels.tsx, src/app/scene-editor/panel-layout.ts, src/app/scene-editor/use-scene-panels.ts | 3 | tests/unit/scene-panels.test.ts, tests/visual/dec0089-script-panel-ui.mjs, tests/visual/scene-panels-ui.mjs, docs/development/VISUAL_QA_DEC-0089.md | Verifisert | 2026-10-16 DEC-0089: Opprettet etter Mars' ønske 16.10.2026 |

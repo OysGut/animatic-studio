@@ -72,7 +72,10 @@ import { RecordAudioDialog } from "./RecordAudioDialog";
 import { SceneToVideoDialog } from "./SceneToVideoDialog";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { NeighbourScenes } from "./NeighbourScenes";
-import { PanelBar, SidePanels } from "./ScenePanels";
+import { PanelBar, SidePanels, StackedPanels } from "./ScenePanels";
+import { SceneScriptPanel } from "./SceneScriptPanel";
+import { SceneScriptDialog } from "./SceneScriptDialog";
+import { useProfiles } from "@/app/project/use-project";
 import { useScenePanels } from "./use-scene-panels";
 import { LEFT_PANELS, type PanelId } from "./panel-layout";
 import { useFilmLanguage } from "@/app/assembly/use-film-language";
@@ -130,6 +133,7 @@ export function SceneEditorWorkspace({
       roleKnown={members.isSuccess}
       cmds={cmds}
       initialOccurrenceId={initialOccurrenceId}
+      userId={userId}
     />
   );
 }
@@ -141,7 +145,9 @@ function Editor({
   roleKnown,
   cmds,
   initialOccurrenceId,
+  userId,
 }: {
+  userId: string;
   state: ProjectState;
   editable: boolean;
   roleKnown: boolean;
@@ -195,6 +201,10 @@ function Editor({
     setCopyError(null);
   }
   const [selectedLayerId, setSelectedLayerIdState] = useState<string | null>(null);
+  // Manuset i eget vindu (DEC-0089)
+  const [scriptEdit, setScriptEdit] = useState<{ blockId: string | null } | null>(null);
+  const me = useProfiles([userId]);
+  const myName = me.data?.[userId]?.display_name || L("Medlem", "Member");
   const [selectedShotId, setSelectedShotIdState] = useState<string | null>(null);
   // Ett valg om gangen: et lag eller et kamerautsnitt
   // Stabile funksjoner, så panelene som er memoisert ikke tegnes om for hvert bilde under avspilling
@@ -494,8 +504,21 @@ function Editor({
   }
 
   const side = panelsUi.mode === "side";
+  const filmClip = occurrence ? (film.find((c) => c.occurrenceId === occurrence.id) ?? null) : null;
   /** Innholdet i hvert panel (null = vises ikke nå). Plasseringen bestemmes av brukerens valg over. */
   const panelContent: Record<PanelId, ReactNode | null> = {
+    // Manuset for scenen (DEC-0089); redigeres i eget vindu
+    script: occurrence ? (
+      <SceneScriptPanel
+        state={state}
+        occurrenceId={occurrence.id}
+        clip={filmClip}
+        frame={playback.frame}
+        playing={playback.playing}
+        editable={roleEditable}
+        onOpenEditor={(blockId) => setScriptEdit({ blockId })}
+      />
+    ) : null,
     assets: occurrence ? (
       <SceneAssetsPanel
         state={state}
@@ -525,7 +548,7 @@ function Editor({
       ) : null,
     layers: composition ? (
       <LayersPanel
-        hideHeading={side}
+        hideHeading
         state={state}
         composition={composition}
         editable={editable}
@@ -833,12 +856,15 @@ function Editor({
               </p>
             ) : null}
             {occurrence ? (
-              <div className="flex min-h-0 flex-1 flex-col">
-                {panelsUi.order
-                  .filter((id) => LEFT_PANELS.has(id))
-                  .map((id) => (
-                    <Fragment key={id}>{panelContent[id]}</Fragment>
-                  ))}
+              <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+                <StackedPanels
+                  ids={panelsUi.order.filter((id) => LEFT_PANELS.has(id))}
+                  order={panelsUi.order}
+                  panels={panelContent}
+                  collapsed={panelsUi.collapsed}
+                  onToggle={panelsUi.toggle}
+                  onOrder={panelsUi.setOrder}
+                />
               </div>
             ) : null}
           </div>
@@ -1055,6 +1081,8 @@ function Editor({
             panels={panelContent}
             onOrder={panelsUi.setOrder}
             onMode={panelsUi.setMode}
+            collapsed={panelsUi.collapsed}
+            onToggle={panelsUi.toggle}
           />
         ) : composition ? (
           <aside
@@ -1071,16 +1099,34 @@ function Editor({
               label={L("Bredde på lag og egenskaper", "Width of layers and properties")}
             />
             <PanelBar mode="stacked" onChange={panelsUi.setMode} />
-            {panelsUi.order
-              .filter((id) => !LEFT_PANELS.has(id) && panelContent[id])
-              .map((id, i) => (
-                <div key={id} className={i > 0 ? "border-t border-border" : undefined}>
-                  {panelContent[id]}
-                </div>
-              ))}
+            <StackedPanels
+              ids={panelsUi.order.filter((id) => !LEFT_PANELS.has(id))}
+              order={panelsUi.order}
+              panels={panelContent}
+              collapsed={panelsUi.collapsed}
+              onToggle={panelsUi.toggle}
+              onOrder={panelsUi.setOrder}
+            />
           </aside>
         ) : null}
       </div>
+
+      {occurrence ? (
+        <SceneScriptDialog
+          open={scriptEdit !== null}
+          onOpenChange={(o) => {
+            if (!o) setScriptEdit(null);
+          }}
+          state={state}
+          projectId={projectId}
+          productionId={productionId}
+          occurrenceId={occurrence.id}
+          initialBlockId={scriptEdit?.blockId ?? null}
+          editable={roleEditable}
+          cmds={cmds}
+          authorName={myName}
+        />
+      ) : null}
 
       <AudioClipEditor
         open={profileClip !== null}

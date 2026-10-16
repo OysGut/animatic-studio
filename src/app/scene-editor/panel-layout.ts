@@ -6,11 +6,15 @@
  */
 
 /** Stabile ID-er for panelene. Lagres hos brukeren – endres aldri (nye legges til). */
-export const PANEL_IDS = ["assets", "nearbyAudio", "layers", "properties"] as const;
+export const PANEL_IDS = ["assets", "nearbyAudio", "layers", "properties", "script"] as const;
 export type PanelId = (typeof PANEL_IDS)[number];
 
 /** Panelene som står i venstre kolonne i stablet visning (resten står til høyre, som før). */
-export const LEFT_PANELS: ReadonlySet<PanelId> = new Set<PanelId>(["assets", "nearbyAudio"]);
+export const LEFT_PANELS: ReadonlySet<PanelId> = new Set<PanelId>([
+  "assets",
+  "nearbyAudio",
+  "script",
+]);
 
 export type PanelMode = "stacked" | "side";
 
@@ -89,4 +93,25 @@ export function movePanelAmong(
   const target = shown[i + delta];
   if (i < 0 || !target) return [...order];
   return movePanelTo(order, id, target, delta < 0 ? "before" : "after");
+}
+
+/**
+ * Lukkede paneler (DEC-0089, Mars 16.10.2026: «alle boksene i tillegg til å kunne flyttes rundt også bør kunne
+ * kollapses og ekspanderes for å endre GUI til det som fungerer best»). Lagres som en liste med panel-ID-er.
+ */
+export function isCollapsedPanels(v: unknown): v is readonly string[] {
+  return (
+    Array.isArray(v) && v.length <= 32 && v.every((x) => typeof x === "string" && x.length <= 40)
+  );
+}
+
+/** Lukk eller åpne et panel (ukjente ID-er i listen fjernes). */
+export function toggleCollapsed(
+  collapsed: readonly string[],
+  id: PanelId,
+  known: readonly PanelId[] = PANEL_IDS,
+): PanelId[] {
+  const set = new Set<string>(known);
+  const clean = [...new Set(collapsed)].filter((x): x is PanelId => set.has(x));
+  return clean.includes(id) ? clean.filter((x) => x !== id) : [...clean, id];
 }

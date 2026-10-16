@@ -207,8 +207,8 @@ await run("p01-side-om-side", async (page) => {
   check(await side.isVisible(), "side om side: panelene står i kolonner");
   const order = await panelOrder(page);
   check(
-    order.join(",") === "assets,nearbyAudio,layers,properties" ||
-      order.join(",") === "assets,layers,properties",
+    order.join(",") === "assets,nearbyAudio,layers,properties,script" ||
+      order.join(",") === "assets,layers,properties,script",
     `standardrekkefølge: ${order.join(", ")}`,
   );
   const boxes = await page
