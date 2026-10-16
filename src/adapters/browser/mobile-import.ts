@@ -3,7 +3,7 @@
  * sanntid, og redaktørens handlinger (ta til behandling, knytte, skjule, tilbakekalle). Mobilsiden laster opp
  * med en signert lenke fra serveren.
  */
-import { browserClient, db, plainError, type BackendError } from "./client";
+import { browserClient, db, plainError, uniqueChannelName, type BackendError } from "./client";
 import type { MobileMediaKind } from "@/core";
 
 export interface UploadSessionRow {
@@ -88,7 +88,7 @@ export async function fetchUploadSessions(projectId: string): Promise<UploadSess
 /** Lytt på nye og endrede filer og økter i prosjektet. Returnerer en funksjon som stopper lyttingen. */
 export function subscribeMobileImports(projectId: string, onChange: () => void): () => void {
   const channel = browserClient
-    .channel(`mobilimport-${projectId}`)
+    .channel(uniqueChannelName(`mobilimport-${projectId}`))
     .on(
       "postgres_changes",
       {

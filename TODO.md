@@ -21,7 +21,7 @@ Sist oppdatert: 2026-10-16 (DEC-0090, bolk A).
 - Prøv blokkering, sletting og «Hent videoen igjen» med en testkonto (KI-215).
 
 ## Venter på svar eller prøving fra Mars
-- «Siden kunne ikke vises» på den publiserte appen: åpne «Vis teknisk feilmelding» på feilsiden neste gang, trykk «Kopier feilmeldingen» og send den, og si hvilken side du var på (KI-236, DEC-0091).
+- Prøv kameraikonet i sceneeditoren igjen etter publisering (KI-236/237 rettet); bruk «Vis teknisk feilmelding» hvis noe krasjer.
 - Svar på om tilgangen til `ai_model_settings` (lesbar for alle innloggede) skal strammes inn i neste migrering sammen med bolk B.
 - Prøv fase 2 bolk A på iPhone og Android: QR-koden på prosjektsiden og i Maja, hurtigfoto, video, «Del lenke», at bildene dukker opp som nye versjoner (KI-235).
 - Prøv DEC-0089 i sceneeditoren: panelet «Manus», «Rediger manus …» med forrige/neste scene, og lukking av panelene.

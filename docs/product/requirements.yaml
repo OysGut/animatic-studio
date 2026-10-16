@@ -26341,7 +26341,11 @@ requirements:
   - "src/routes/__root.tsx"
   verification:
   - "tests/unit/error-report.test.tsx"
+  - "tests/unit/realtime-channels.test.ts"
   history:
   - date: '2026-10-16'
     decision: DEC-0091
     change: "Bygget etter feilrapport fra den publiserte appen"
+  - date: '2026-10-16'
+    decision: DEC-0091
+    change: "Feilmeldingen viste krasjet i sceneeditoren (KI-237), rettet"

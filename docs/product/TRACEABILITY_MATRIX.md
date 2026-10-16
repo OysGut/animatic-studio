@@ -782,4 +782,4 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0710 | Beslutning DEC-0090 | AUDIO, UI | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk E) |
 | REQ-0711 | Beslutning DEC-0090 | UI, SECURITY | src/app/mobile/MobilePage.tsx | 0 | – | Implementert – ikke verifisert | 2026-10-16 DEC-0090: Bygget i bolk A; må prøves på iPhone og Android av Mars |
 | REQ-0712 | Beslutning DEC-0090 | AUDIO, LIBRARY | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk E) |
-| REQ-0713 | Beslutning DEC-0091 | UI, SECURITY | src/app/shell/error-report.ts, src/app/shell/ErrorDetails.tsx, src/routes/__root.tsx | 1 | tests/unit/error-report.test.tsx | Verifisert | 2026-10-16 DEC-0091: Bygget etter feilrapport fra den publiserte appen |
+| REQ-0713 | Beslutning DEC-0091 | UI, SECURITY | src/app/shell/error-report.ts, src/app/shell/ErrorDetails.tsx, src/routes/__root.tsx | 1 | tests/unit/error-report.test.tsx, tests/unit/realtime-channels.test.ts | Verifisert | 2026-10-16 DEC-0091: Feilmeldingen viste krasjet i sceneeditoren (KI-237), rettet |

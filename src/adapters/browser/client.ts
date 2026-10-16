@@ -12,6 +12,19 @@ export const browserClient = supabase;
 /** Nettleserklient uten genererte tabelltyper (typer genereres av Lovable etter migrasjon 0001). */
 export const db = supabase as unknown as AnyClient;
 
+let channelSeq = 0;
+/**
+ * Et kanalnavn som er unikt for hver lytter (DEC-0091, KI-237). Supabase gir tilbake den samme kanalen når
+ * navnet allerede er i bruk, og da krasjer `.on()` etter `subscribe()` – f.eks. når to deler av siden lytter
+ * på samme prosjekt, eller når en komponent monteres på nytt før den gamle kanalen er fjernet. Ikke for
+ * tilstedeværelse, der alle må dele samme navn.
+ */
+export function uniqueChannelName(base: string): string {
+  channelSeq += 1;
+  const rand = Math.random().toString(36).slice(2, 8);
+  return `${base}-${channelSeq}-${rand}`;
+}
+
 /** Feil fra backend, uten teknisk innpakning. */
 export interface BackendError {
   readonly message: string;

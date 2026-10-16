@@ -3,7 +3,7 @@
 Oppdatert: 2026-10-16 (økt 6, DEC-0061–0089)
 
 ## Nå: DEC-0091 – teknisk feilmelding på feilsiden – ferdig, venter på feilmeldingen fra Mars
-- Mars fikk «Siden kunne ikke vises» etter publiseringen. Mobilsiden på den publiserte appen og produksjonsbygget lokalt (wrangler, iPhone-visning) krasjer ikke. Feilsiden har fått «Vis teknisk feilmelding» med kopiering (`src/app/shell/ErrorDetails.tsx`, `error-report.ts`, REQ-0713); nettfeil i QR-dialogen vises på brukerens språk. Neste: rett feilen når Mars sender meldingen (KI-236).
+- Mars fikk «Siden kunne ikke vises» etter publiseringen. Mobilsiden på den publiserte appen og produksjonsbygget lokalt (wrangler, iPhone-visning) krasjer ikke. Feilsiden har fått «Vis teknisk feilmelding» med kopiering (`src/app/shell/ErrorDetails.tsx`, `error-report.ts`, REQ-0713); nettfeil i QR-dialogen vises på brukerens språk. Feilen funnet fra Mars' melding: samme sanntidskanal to ganger i sceneeditoren – rettet med unikt kanalnavn per lytter (KI-237, `tests/unit/realtime-channels.test.ts`).
 
 ## Før: DEC-0090 fase 2, bolk A – mobilbro, bilder og video, deling – ferdig, venter på Mars
 - Bygget: QR-koder per kontekst, mobilsiden med hurtigfoto, video og deling, sikre opplastingsøkter, mobilimport i biblioteket, bilder blir nye versjoner i riktig ressurs.

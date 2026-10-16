@@ -10,7 +10,7 @@ import {
   loadProjectState,
   type SchemaStatus,
 } from "@/adapters/storage/project-rows";
-import { browserClient, db } from "./client";
+import { browserClient, db, uniqueChannelName } from "./client";
 
 /** Hele prosjekttilstanden. */
 export function fetchProjectState(projectId: string): Promise<ProjectState> {
@@ -44,7 +44,7 @@ export function subscribeProjectChanges(
   onInsert: (row: ChangeLogInsert) => void,
 ): () => void {
   const channel = browserClient
-    .channel(`prosjekt-${projectId}`)
+    .channel(uniqueChannelName(`prosjekt-${projectId}`))
     .on(
       "postgres_changes",
       {
