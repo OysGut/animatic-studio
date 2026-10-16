@@ -246,6 +246,13 @@
       "when": 1792147956683,
       "tag": "0034_0035_mobile_import",
       "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "7",
+      "when": 1792151879770,
+      "tag": "0035_restrict_policy_schema_version_to_authenticated",
+      "breakpoints": true
     }
   ]
 }
