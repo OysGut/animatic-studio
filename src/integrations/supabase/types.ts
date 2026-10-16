@@ -1440,6 +1440,93 @@ export type Database = {
           },
         ]
       }
+      mobile_imports: {
+        Row: {
+          asset_id: string | null
+          asset_version_id: string | null
+          byte_size: number
+          claimed_at: string | null
+          claimed_by: string | null
+          client_file_id: string
+          confirmed_at: string | null
+          context: Json
+          contributor_name: string
+          created_at: string
+          dismissed: boolean
+          error: string | null
+          file_name: string
+          id: string
+          kind: string
+          mime_type: string
+          path: string
+          project_id: string
+          session_id: string
+          status: string
+          take_id: string | null
+        }
+        Insert: {
+          asset_id?: string | null
+          asset_version_id?: string | null
+          byte_size: number
+          claimed_at?: string | null
+          claimed_by?: string | null
+          client_file_id: string
+          confirmed_at?: string | null
+          context: Json
+          contributor_name?: string
+          created_at?: string
+          dismissed?: boolean
+          error?: string | null
+          file_name?: string
+          id?: string
+          kind: string
+          mime_type: string
+          path: string
+          project_id: string
+          session_id: string
+          status?: string
+          take_id?: string | null
+        }
+        Update: {
+          asset_id?: string | null
+          asset_version_id?: string | null
+          byte_size?: number
+          claimed_at?: string | null
+          claimed_by?: string | null
+          client_file_id?: string
+          confirmed_at?: string | null
+          context?: Json
+          contributor_name?: string
+          created_at?: string
+          dismissed?: boolean
+          error?: string | null
+          file_name?: string
+          id?: string
+          kind?: string
+          mime_type?: string
+          path?: string
+          project_id?: string
+          session_id?: string
+          status?: string
+          take_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mobile_imports_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mobile_imports_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "upload_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       posters: {
         Row: {
           created_at: string
@@ -2676,6 +2763,84 @@ export type Database = {
           },
         ]
       }
+      upload_sessions: {
+        Row: {
+          bytes_total: number
+          context: Json
+          created_at: string
+          created_by: string
+          creator_name: string
+          expires_at: string
+          files_count: number
+          id: string
+          kind: string
+          label: string
+          last_seen_at: string | null
+          max_bytes: number
+          max_files: number
+          media_kinds: string[]
+          parent_id: string | null
+          project_id: string
+          revoked_at: string | null
+          token_hash: string
+        }
+        Insert: {
+          bytes_total?: number
+          context: Json
+          created_at?: string
+          created_by: string
+          creator_name?: string
+          expires_at: string
+          files_count?: number
+          id?: string
+          kind: string
+          label?: string
+          last_seen_at?: string | null
+          max_bytes: number
+          max_files: number
+          media_kinds?: string[]
+          parent_id?: string | null
+          project_id: string
+          revoked_at?: string | null
+          token_hash: string
+        }
+        Update: {
+          bytes_total?: number
+          context?: Json
+          created_at?: string
+          created_by?: string
+          creator_name?: string
+          expires_at?: string
+          files_count?: number
+          id?: string
+          kind?: string
+          label?: string
+          last_seen_at?: string | null
+          max_bytes?: number
+          max_files?: number
+          media_kinds?: string[]
+          parent_id?: string | null
+          project_id?: string
+          revoked_at?: string | null
+          token_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "upload_sessions_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "upload_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "upload_sessions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -2694,6 +2859,11 @@ export type Database = {
         }
         Returns: Json
       }
+      attach_mobile_draft: {
+        Args: { p_asset: string; p_draft: string; p_project: string }
+        Returns: number
+      }
+      claim_mobile_import: { Args: { p_id: string }; Returns: boolean }
       create_invitation: {
         Args: { p_email: string; p_project: string; p_role?: string }
         Returns: string
@@ -2715,7 +2885,128 @@ export type Database = {
         Args: { p_actor: string; p_project: string }
         Returns: Json
       }
+      dismiss_mobile_import: {
+        Args: { p_dismissed: boolean; p_id: string }
+        Returns: undefined
+      }
       leave_project: { Args: { p_project: string }; Returns: undefined }
+      link_mobile_import: {
+        Args: {
+          p_asset: string
+          p_id: string
+          p_take: string
+          p_version: string
+        }
+        Returns: undefined
+      }
+      mobile_confirm_upload: {
+        Args: {
+          p_bytes: number
+          p_client_file_id: string
+          p_error: string
+          p_ok: boolean
+          p_token_hash: string
+        }
+        Returns: {
+          asset_id: string | null
+          asset_version_id: string | null
+          byte_size: number
+          claimed_at: string | null
+          claimed_by: string | null
+          client_file_id: string
+          confirmed_at: string | null
+          context: Json
+          contributor_name: string
+          created_at: string
+          dismissed: boolean
+          error: string | null
+          file_name: string
+          id: string
+          kind: string
+          mime_type: string
+          path: string
+          project_id: string
+          session_id: string
+          status: string
+          take_id: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "mobile_imports"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      mobile_register_upload: {
+        Args: {
+          p_bytes: number
+          p_client_file_id: string
+          p_contributor: string
+          p_file_name: string
+          p_kind: string
+          p_mime: string
+          p_path: string
+          p_token_hash: string
+        }
+        Returns: {
+          asset_id: string | null
+          asset_version_id: string | null
+          byte_size: number
+          claimed_at: string | null
+          claimed_by: string | null
+          client_file_id: string
+          confirmed_at: string | null
+          context: Json
+          contributor_name: string
+          created_at: string
+          dismissed: boolean
+          error: string | null
+          file_name: string
+          id: string
+          kind: string
+          mime_type: string
+          path: string
+          project_id: string
+          session_id: string
+          status: string
+          take_id: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "mobile_imports"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      mobile_session_touch: {
+        Args: { p_token_hash: string }
+        Returns: {
+          bytes_total: number
+          context: Json
+          created_at: string
+          created_by: string
+          creator_name: string
+          expires_at: string
+          files_count: number
+          id: string
+          kind: string
+          label: string
+          last_seen_at: string | null
+          max_bytes: number
+          max_files: number
+          media_kinds: string[]
+          parent_id: string | null
+          project_id: string
+          revoked_at: string | null
+          token_hash: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "upload_sessions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       my_account: { Args: never; Returns: Json }
       project_lock_info: { Args: { p_project: string }; Returns: Json }
       purge_project_assets: {
@@ -2762,6 +3053,7 @@ export type Database = {
         Returns: undefined
       }
       revoke_invitation: { Args: { p_invitation: string }; Returns: undefined }
+      revoke_upload_session: { Args: { p_id: string }; Returns: undefined }
       save_duration_estimate: {
         Args: {
           p_assumptions: Json
