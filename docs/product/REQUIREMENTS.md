@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **712**
-- Prioritet: P0: 145, P1: 381, P2: 147, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 185, teknisk-anbefaling: 7
-- Status: Verifisert: 609, Implementert – ikke verifisert: 13, Under arbeid: 3, Ikke startet: 87
+- Antall krav: **713**
+- Prioritet: P0: 145, P1: 381, P2: 148, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 186, teknisk-anbefaling: 7
+- Status: Verifisert: 610, Implementert – ikke verifisert: 13, Under arbeid: 3, Ikke startet: 87
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -9640,3 +9640,16 @@ Flere samtidige mobilopplastinger, store videofiler og responsive bølgeformer o
   - Flere samtidige opplastinger i test.
   - Bølgeform for lang replikk tegnes raskt.
 - **Tester:**
+
+#### REQ-0713 – Teknisk feilmelding på feilsiden
+Når en side krasjer, kan brukeren åpne «Vis teknisk feilmelding» på feilsiden og kopiere den (tidspunkt, side, feiltype, melding og de første linjene av stakken) for å sende den videre. Adressen vises uten spørrestreng og uten tokenet i mobillenker.
+
+- **Kilde:** Beslutning DEC-0091 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** –
+- **Moduler:** UI, SECURITY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Feilsiden har «Vis teknisk feilmelding» med kopiering.
+  - Teksten inneholder aldri mobiltokenet eller spørrestrengen.
+- **Tester:**
+  - tests/unit/error-report.test.tsx
+- **Implementering:** src/app/shell/error-report.ts, src/app/shell/ErrorDetails.tsx, src/routes/__root.tsx

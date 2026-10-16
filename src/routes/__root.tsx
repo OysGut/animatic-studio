@@ -15,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { useTrackNavigation } from "@/app/shell/back-navigation";
 import { LanguageRoot } from "@/app/i18n/language";
 import { L } from "@/core";
+import { ErrorDetails } from "@/app/shell/ErrorDetails";
 
 function NotFoundComponent() {
   return (
@@ -76,6 +77,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
             {L("Til forsiden", "Go to the front page")}
           </a>
         </div>
+        <ErrorDetails error={error} />
       </div>
     </div>
   );

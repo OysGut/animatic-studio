@@ -47,9 +47,9 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | L10N | Localization Engine | 40 | 4 | 39 | 39 |
 | PRESENT | Presentation Engine | 30 | 3 | 25 | 25 |
 | EXPORT | Export Engine | 60 | 12 | 59 | 59 |
-| SECURITY | Security & Storage | 44 | 5 | 43 | 42 |
+| SECURITY | Security & Storage | 45 | 5 | 44 | 43 |
 | COLLAB | Collaboration & Access | 21 | 0 | 21 | 21 |
-| UI | Brukergrensesnitt og designsystem | 204 | 21 | 193 | 190 |
+| UI | Brukergrensesnitt og designsystem | 205 | 21 | 194 | 191 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 7 | 5 |
 
 ## Dekning per fase
@@ -64,7 +64,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | 6 | 49 | 48 |
 | 7 | 63 | 62 |
 | 8 | 39 | 25 |
-| Tverrgående/prosess | 85 | 21 |
+| Tverrgående/prosess | 86 | 22 |
 
 ## Matrise
 
@@ -782,3 +782,4 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0710 | Beslutning DEC-0090 | AUDIO, UI | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk E) |
 | REQ-0711 | Beslutning DEC-0090 | UI, SECURITY | src/app/mobile/MobilePage.tsx | 0 | – | Implementert – ikke verifisert | 2026-10-16 DEC-0090: Bygget i bolk A; må prøves på iPhone og Android av Mars |
 | REQ-0712 | Beslutning DEC-0090 | AUDIO, LIBRARY | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk E) |
+| REQ-0713 | Beslutning DEC-0091 | UI, SECURITY | src/app/shell/error-report.ts, src/app/shell/ErrorDetails.tsx, src/routes/__root.tsx | 1 | tests/unit/error-report.test.tsx | Verifisert | 2026-10-16 DEC-0091: Bygget etter feilrapport fra den publiserte appen |

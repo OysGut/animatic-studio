@@ -36,7 +36,13 @@ function sessionFor(projectId: string, key: string, context: UploadContext, labe
         cache.set(key, s);
         return s;
       })
-      .catch((e: Error) => e.message)
+      // Nettleserens egne nettfeil («Failed to fetch» o.l.) vises på brukerens språk (DEC-0091)
+      .catch(() =>
+        L(
+          "QR-koden kunne ikke lages: ingen forbindelse med serveren. Prøv igjen.",
+          "The QR code could not be made: no connection to the server. Try again.",
+        ),
+      )
       .finally(() => inflight.delete(key));
     inflight.set(key, p);
   }

@@ -3,6 +3,7 @@
 Oppdatert: 2026-10-15 (økt 6, DEC-0084). Detaljert status per krav: `docs/product/TRACEABILITY_MATRIX.md` (generert).
 
 ## Sammendrag
+- **DEC-0091 (ingen migrasjon):** «Vis teknisk feilmelding» med kopiering på feilsiden; adressen uten spørrestreng og mobiltoken (REQ-0713).
 - **DEC-0090 fase 2 bolk A (migrasjon 0035):** mobilbro med QR-koder per kontekst, mobilsiden (hurtigfoto, bilder, video, «Del lenke»), sikre opplastingsøkter, mobilimport i biblioteket, bilder blir versjoner i ressursen (REQ-0668–0683; REQ-0711 venter på prøving på telefon).
 - **DEC-0089:** panelet «Manus» i sceneeditoren med markering av det som spilles av, redigering i eget vindu (forrige/neste scene til lesing), alle panelene kan lukkes og åpnes (REQ-0665–0667).
 - **DEC-0088 (migrasjon 0034):** bildeverktøy (delelinjer, navngitte ruter, luft rundt, variasjoner), dørdeler med hengsel, «Legg til element i scenen …» med planer og varmgul ramme i andre scener, systemmerknader i manus og eksport, oppgaven i toppstripen, TODO-boks på prosjektsiden, paneler side om side og lukkbare grupper (lagret på kontoen), AI-tilkoblinger og cron-status på adminsiden (REQ-0656–0664).

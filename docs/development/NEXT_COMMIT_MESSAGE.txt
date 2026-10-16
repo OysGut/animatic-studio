@@ -1,17 +1,10 @@
-Fase 2, bolk A: mobilbro med QR-koder, bilder og video fra mobilen, deling og mobilimport (DEC-0090)
+Teknisk feilmelding på feilsiden (DEC-0091, REQ-0713)
 
-Migrasjon 0035 og ny pakke (qrcode). Lim inn docs/development/LOVABLE_SYNC.md i Lovable etter push.
+Ingen migrasjon og ingen nye pakker. Lim inn docs/development/LOVABLE_SYNC.md i Lovable etter push.
 
-- «Importer fra mobil» på prosjektsiden og kameraikon i ressursen, ved ny ressurs, i sceneeditoren og i
-  bildevalget for et lag: QR-koden vises med en gang, med status for mobilen og det som er mottatt. Hver
-  kontekst (også hver scene) har sin egen kode (REQ-0668, REQ-0670, REQ-0671, REQ-0677).
-- Mobilsiden uten innlogging: hurtigfoto (bilde etter bilde, sendes automatisk med kø), velg bilder og video,
-  ta opp video, og «Del lenke» med telefonens egen deling (REQ-0669, REQ-0673–0675, REQ-0681).
-- Sikre opplastingsøkter: token lagret som hash, egen QR 2 timer, delt lenke 7 dager med eget tak og
-  tilbakekalling, innholdet sjekkes, ingen duplikater, video maks 500 MB i nettversjonen (REQ-0678–0680, REQ-0682).
-- Bilder tatt for en ressurs blir nye versjoner (ikke godkjent); bilder til en ny ressurs knyttes når den lagres;
-  video i en scene kan brukes som film for scenen (REQ-0671, REQ-0672).
-- «Mobilimport» i biblioteket med filtre for type, dato, økt, kobling og bidragsyter, og aktive lenker med
-  «Tilbakekall». Bidragsytere ser bare sine egne filer (REQ-0676, REQ-0683).
-
-Tester: Vitest 143 filer / 1228 tester, DB 63/63, ny nettlesertest dec0090-mobile-ui (35); øvrige suiter grønne.
+- Feilsiden «Siden kunne ikke vises» har fått «Vis teknisk feilmelding» med tidspunkt, side, feil og de
+  første linjene av stakken, og knappen «Kopier feilmeldingen». Adressen vises uten spørrestreng, og
+  mobillenker vises som /m/…, så teksten aldri gir tilgang til noe.
+- Nettfeil når QR-koden lages vises nå på brukerens språk i stedet for «Failed to fetch».
+- Mobilsiden og produksjonsbygget er prøvd uten krasj; feilen Mars så er notert som KI-236.
+- Tester: tests/unit/error-report.test.tsx.

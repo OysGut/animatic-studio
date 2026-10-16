@@ -237,4 +237,5 @@
 | KI-233 | 2026-10-16 | Køen på telefonen ligger i nettleserens lager; Safari kan tømme det etter 7 dager uten besøk, og private vinduer lagrer ikke (siden advarer) | Usendte filer kan gå tapt om siden ikke åpnes igjen | Send mens du har nett, eller åpne siden igjen | Akseptert begrensning |
 | KI-234 | 2026-10-16 | Mobilimporten (øktene og filene som ikke er blitt versjoner) er ikke med i sikkerhetskopien av prosjektet | – | Bilder som er blitt versjoner, er med | Akseptert begrensning |
 | KI-235 | 2026-10-16 | Bolk A er ikke prøvd på ekte iPhone og Android (testene bruker Chromiums falske kamera) | – | Mars prøver | Åpen |
+| KI-236 | 2026-10-16 | Mars fikk «Siden kunne ikke vises» på den publiserte appen; siden er ukjent. Mobilsiden og produksjonsbygget (iPhone-visning, kamera, QR-dialogen) krasjer ikke hos Claude. Feilsiden viser nå teknisk feilmelding (DEC-0091) | – | Mars sender feilmeldingen | Åpen |
 
