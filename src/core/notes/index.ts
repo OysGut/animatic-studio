@@ -326,7 +326,8 @@ export function searchHits(
   return out;
 }
 
-function formatDate(iso: string): string {
+/** Dato og klokkeslett for visning: «9. okt. 2026 kl. 14:32». */
+export function formatDate(iso: string): string {
   const d = new Date(iso);
   return Number.isNaN(d.getTime())
     ? iso

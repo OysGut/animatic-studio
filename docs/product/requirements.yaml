@@ -24970,3 +24970,1346 @@ requirements:
   - date: '2026-10-16'
     decision: DEC-0089
     change: "Opprettet etter Mars' ønske 16.10.2026"
+- id: REQ-0668
+  title: "Mobilimport fra prosjektsiden med QR-kode som vises med en gang"
+  text: "Prosjektsiden har «Importer fra mobil». Vinduet viser straks en QR-kode for prosjektet (ingen egen knapp for å vise den). Skanning med telefonens vanlige kamera åpner mobilsiden for prosjektet; ferdig opplastede filer blir tilgjengelige i prosjektet uten import på datamaskinen."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §2.3, §3"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - LIBRARY
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "M1: QR-koden vises uten ekstra klikk."
+  - "M2: skanning åpner riktig mobilside."
+  tests:
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/app/projects/ProjectOverview.tsx"
+  - "src/app/mobile/MobileImportDialog.tsx"
+  - "src/app/mobile/QrCode.tsx"
+  verification:
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0090A.md"
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk A)"
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Bygget i bolk A"
+- id: REQ-0669
+  title: "Mobilsiden: enkel, responsiv og bare det økten trenger"
+  text: "Mobilsiden er laget for iPhone og Android med store kontroller, og viser bare funksjonene som hører til økten (ta bilde, flere bilder, video, lyd, velge eksisterende bilder, video og lydfiler). Hele arbeidsgrensesnittet åpnes ikke på mobilen."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §4"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: ux
+  priority: P1
+  phase: null
+  modules:
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Bare relevante funksjoner vises for økten."
+  - "Siden virker på smal skjerm."
+  tests:
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/app/mobile/MobilePage.tsx"
+  - "src/routes/m.$token.tsx"
+  verification:
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0090A.md"
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk A)"
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Bygget i bolk A"
+- id: REQ-0670
+  title: "Kameraikon øverst til høyre i bilde- og videodialoger"
+  text: "Dialoger og paneler som arbeider med bilder eller video, har et kameraikon øverst til høyre (samme plass overalt). Klikk åpner en popup med QR-koden med en gang og forklarer hvor bildene havner (f.eks. «bildene legges til Maja»). Filene dukker opp i den åpne dialogen."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §5.1, §2.1"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - LIBRARY
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "K1–K3: kameraikon hos Maja viser QR straks; bildet dukker opp i Majas dialog."
+  tests:
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/app/mobile/MobileImportDialog.tsx"
+  - "src/app/library/AssetDetail.tsx"
+  - "src/app/scene-editor/LayerImageDialog.tsx"
+  - "src/app/scene-editor/SceneEditorWorkspace.tsx"
+  verification:
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0090A.md"
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk A)"
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Bygget i bolk A"
+- id: REQ-0671
+  title: "Én QR-kode per kontekst – alt havner rett"
+  text: "Hver kontekst får sin egen QR-kode og opplastingsøkt: prosjekt, karakter, objekt, miljø/lokasjon, scene (hver scene sin kode), bildeplass i sceneeditoren, lydressurs og replikk. Systemet husker hvor importen ble startet og registrerer filen der; det gjør den ikke til aktiv hovedreferanse. Én fil kan ha flere koblinger uten å dupliseres."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §2.2, §6, §50"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - LIBRARY
+  - SECURITY
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "K6: import til objekt, miljø eller scene havner i riktig kontekst."
+  - "K7: nytt materiale erstatter ikke godkjente ressurser."
+  - "Ulike scener gir ulike QR-koder."
+  tests:
+  - "tests/unit/mobile-import.test.ts"
+  - "tests/unit/mobile-server.test.ts"
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/core/mobile/index.ts"
+  - "src/adapters/mobile/mobile.functions.ts"
+  - "src/app/mobile/use-mobile-imports.ts"
+  verification:
+  - "tests/unit/mobile-import.test.ts"
+  - "tests/unit/mobile-server.test.ts"
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0090A.md"
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk A)"
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Bygget i bolk A"
+- id: REQ-0672
+  title: "Import til en ressurs som ikke er lagret ennå"
+  text: "Fra en ny ressurs (f.eks. ny karakter) knyttes importen til en midlertidig kontekst. Når ressursen lagres, knyttes filene til den permanente ressursen. Avbrytes opprettelsen, blir filene liggende som uknyttede i mobilimportbiblioteket."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §5.3"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - LIBRARY
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "K4–K5: bilder tatt før lagring knyttes til karakteren ved lagring."
+  - "Avbrutt opprettelse: filene finnes i Mobilimport."
+  tests:
+  - "tests/db/run-db-tests.ts"
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/app/library/LibraryWorkspace.tsx"
+  - "db/migrations/0035_mobile_import.sql"
+  verification:
+  - "tests/db/run-db-tests.ts"
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0090A.md"
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk A)"
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Bygget i bolk A"
+- id: REQ-0673
+  title: "Hurtigfotografering med automatisk opplasting og kø"
+  text: "Mobilsiden har en hurtigmodus: brukeren tar bilde etter bilde uten å velge fil, bekrefte eller starte på nytt. Hvert bilde legges i opplastingskøen og sendes mens brukeren fortsetter; status vises; ved ustabilt nett venter bildene i kø. Kameraet tar aldri bilder uten brukerens handling; tydelig «Ferdig»."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §7, §7.1"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - LIBRARY
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "M3: flere bilder etter hverandre uten bekreftelse."
+  - "Bilder i kø sendes når nettet er tilbake."
+  tests:
+  - "tests/unit/mobile-import.test.ts"
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/app/mobile/MobilePage.tsx"
+  - "src/app/mobile/upload-queue.ts"
+  verification:
+  - "tests/unit/mobile-import.test.ts"
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0090A.md"
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk A)"
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Bygget i bolk A"
+- id: REQ-0674
+  title: "Velge eksisterende bilder, video og lyd på telefonen"
+  text: "Mobilsiden lar brukeren velge filer som allerede finnes på telefonen, flere samtidig der plattformen støtter det."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §4, §7.2"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - LIBRARY
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "M5: eksisterende bilde fra telefonens bibliotek importeres."
+  tests:
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/app/mobile/MobilePage.tsx"
+  verification:
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0090A.md"
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk A)"
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Bygget i bolk A"
+- id: REQ-0675
+  title: "Videoimport fra mobilen"
+  text: "Brukeren kan ta opp eller velge video, forhåndsvise og laste opp. Videoen knyttes til konteksten (scene eller videodialog), originalfilen bevares, og programmet lager forhåndsvisning og leser metadata (varighet, størrelse)."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §8"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - LIBRARY
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "M6: video tatt opp eller valgt og lastet opp."
+  tests:
+  - "tests/unit/mobile-import.test.ts"
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/app/mobile/MobilePage.tsx"
+  - "src/app/mobile/mobile-actions.tsx"
+  - "src/app/assembly/film-import.ts"
+  verification:
+  - "tests/unit/mobile-import.test.ts"
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0090A.md"
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk A)"
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Bygget i bolk A"
+- id: REQ-0676
+  title: "Mobilimportbiblioteket"
+  text: "Alle filer fra mobilbroen registreres i ressursbiblioteket i en egen visning «Mobilimport» med filter for bilder, video, lyd, dato, importøkt, ressurskobling og bidragskilde. Bilder har miniatyr, video og lyd kan spilles av. Originalene bevares og ingenting godkjent overskrives."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §9"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - LIBRARY
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "M4: bildene står i Mobilimport."
+  - "Filtrene virker."
+  tests:
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/app/mobile/MobileImportLibrary.tsx"
+  - "src/app/library/LibraryWorkspace.tsx"
+  verification:
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0090A.md"
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk A)"
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Bygget i bolk A"
+- id: REQ-0677
+  title: "Sanntid mellom mobil og datamaskin"
+  text: "Når mobilen laster opp, oppdateres prosjektet på datamaskinen uten oppfriskning, også i åpne ressursdialoger. Importvinduet viser om mobilen er tilkoblet, antall mottatte filer, siste fil, pågående opplastinger og feil. En fil er ikke mottatt før serveren har bekreftet den."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §10"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - LIBRARY
+  - COLLAB
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "M7: filer vises på datamaskinen uten oppfriskning."
+  tests:
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/adapters/browser/mobile-import.ts"
+  - "src/app/mobile/use-mobile-imports.ts"
+  - "src/app/mobile/MobileImportDialog.tsx"
+  verification:
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0090A.md"
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk A)"
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Bygget i bolk A"
+- id: REQ-0678
+  title: "Sikre opplastingsøkter"
+  text: "Hver QR-kode og lenke er en opplastingsøkt med et langt tilfeldig token som bare gir rett til å laste opp i sin kontekst. Eier og redaktør kan lage økter. Egen QR-kode krever ikke innlogging på telefonen, gjelder 2 timer og merkes med brukerens navn. Utløp, tilbakekalling, kontroll av filtype og størrelse og begrensning av misbruk håndheves på serveren; mobilsiden får aldri skriverett til andre databaseobjekter, og alle filer registreres kontrollert."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §50, §51"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: sikkerhet
+  priority: P1
+  phase: null
+  modules:
+  - SECURITY
+  - COLLAB
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Utløpt eller tilbakekalt token avvises."
+  - "Feil filtype og for store filer avvises."
+  - "Token gir ingen lesing av manus eller andre data."
+  tests:
+  - "tests/db/run-db-tests.ts"
+  - "tests/unit/mobile-server.test.ts"
+  status: Verifisert
+  implementation:
+  - "db/migrations/0035_mobile_import.sql"
+  - "src/adapters/mobile/mobile.functions.ts"
+  verification:
+  - "tests/db/run-db-tests.ts"
+  - "tests/unit/mobile-server.test.ts"
+  - "docs/development/VISUAL_QA_DEC-0090A.md"
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk A)"
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Bygget i bolk A"
+- id: REQ-0679
+  title: "Størrelsesgrense for video (fjernes i desktopversjonen)"
+  text: "En videofil kan være inntil 500 MB i nettversjonen (lagringen i Lovable Cloud). Lengre opptak må deles opp. Den dagen en desktopversjon lages, fjernes grensen der uten nytt spørsmål til Mars."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §8, §55"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: ikke-funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - SECURITY
+  - LIBRARY
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Video over grensen avvises med forklaring."
+  - "Notat om desktopversjonen står i TODO og kildekoden."
+  tests:
+  - "tests/unit/mobile-import.test.ts"
+  status: Verifisert
+  implementation:
+  - "src/core/mobile/index.ts"
+  verification:
+  - "tests/unit/mobile-import.test.ts"
+  - "docs/development/VISUAL_QA_DEC-0090A.md"
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk A)"
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Bygget i bolk A"
+- id: REQ-0680
+  title: "Opplasting uten duplikater"
+  text: "Nye forsøk etter feil eller brutt forbindelse gir ikke duplikater (hver fil har en ID fra mobilen som serveren gjenkjenner). Flere samtidige opplastinger håndteres, og store filer lastes direkte til lagringen uten å gå gjennom appens server."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §55"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: ikke-funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - SECURITY
+  - LIBRARY
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "M8: feil under opplasting gir ikke duplikater."
+  tests:
+  - "tests/db/run-db-tests.ts"
+  - "tests/unit/mobile-import.test.ts"
+  status: Verifisert
+  implementation:
+  - "db/migrations/0035_mobile_import.sql"
+  - "src/app/mobile/upload-queue.ts"
+  verification:
+  - "tests/db/run-db-tests.ts"
+  - "tests/unit/mobile-import.test.ts"
+  - "docs/development/VISUAL_QA_DEC-0090A.md"
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk A)"
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Bygget i bolk A"
+- id: REQ-0681
+  title: "«Del lenke» fra mobilsiden"
+  text: "Mobilsiden har «Del lenke» som bruker telefonens egen delingsfunksjon (Web Share). Uten den kan lenken kopieres. Ingen egne SMS-, WhatsApp-, Messenger- eller e-postintegrasjoner."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §11"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - COLLAB
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "D1–D3: delingsfunksjonen åpnes, ellers kopier lenke."
+  tests:
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/app/mobile/MobilePage.tsx"
+  verification:
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0090A.md"
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk A)"
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Bygget i bolk A"
+- id: REQ-0682
+  title: "Delt bidragslenke med egne, begrensede rettigheter"
+  text: "En delt lenke beholder konteksten (f.eks. bilder av Maja), kan åpnes uten konto og gir bare opplasting. Den har egne rettigheter, atskilt fra den personlige QR-økten: gjelder 7 dager, kan tilbakekalles og har tak på antall filer og total størrelse. Manus, andre ressurser, prosjektinnstillinger og prosjektets AI-tjenester er utilgjengelige."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §11.1–§11.3"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: sikkerhet
+  priority: P1
+  phase: null
+  modules:
+  - SECURITY
+  - COLLAB
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "D4: åpnes uten konto."
+  - "D5: manus og innstillinger kan ikke åpnes."
+  - "D6: tilbakekalt lenke avvises."
+  tests:
+  - "tests/db/run-db-tests.ts"
+  - "tests/unit/mobile-server.test.ts"
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  status: Verifisert
+  implementation:
+  - "src/adapters/mobile/mobile.functions.ts"
+  - "db/migrations/0035_mobile_import.sql"
+  - "src/app/mobile/MobileImportLibrary.tsx"
+  verification:
+  - "tests/db/run-db-tests.ts"
+  - "tests/unit/mobile-server.test.ts"
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  - "docs/development/VISUAL_QA_DEC-0090A.md"
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk A)"
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Bygget i bolk A"
+- id: REQ-0683
+  title: "Flere bidragsytere, sporbarhet og gjennomgang"
+  text: "Flere personer kan sende til samme kontekst. Filer spores til økt eller lenke, og bidragsyteren kan oppgi et frivillig navn. En bidragsyter ser ikke andres opplastinger, bare sine egne i samme økt. Eksterne bidrag erstatter aldri aktive ressurser; de kommer inn som nye versjoner som godkjennes som før."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §11.4, §11.5, N1"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - COLLAB
+  - LIBRARY
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Bidragsyter ser bare egne opplastinger."
+  - "Filen viser hvem som sendte den."
+  tests:
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  - "tests/db/run-db-tests.ts"
+  status: Verifisert
+  implementation:
+  - "src/app/mobile/MobilePage.tsx"
+  - "src/app/mobile/MobileImportLibrary.tsx"
+  - "src/app/mobile/use-mobile-imports.ts"
+  verification:
+  - "tests/visual/dec0090-mobile-ui.mjs"
+  - "tests/db/run-db-tests.ts"
+  - "docs/development/VISUAL_QA_DEC-0090A.md"
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk A)"
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Bygget i bolk A"
+- id: REQ-0684
+  title: "Mikrofonikon og lydpopup med PC-opptak og QR samtidig"
+  text: "Lydressursdialoger og dialogredigering har et mikrofonikon øverst til høyre. Det åpner en lydpopup der «Ta opp på denne datamaskinen» og QR-koden for mobilen vises samtidig fra første øyeblikk, for akkurat denne lydkonteksten."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §5.2, §12"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "L1: PC-opptak og QR vises samtidig."
+  - "L2: PC-opptak startes uten ekstra valg."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk B)"
+- id: REQ-0685
+  title: "Hele dialogteksten vises under opptak"
+  text: "Fra en replikk viser lydpopupen hele replikken med karakter og scene, med det valgte ordet eller området fremhevet. Teksten vises også på mobilsiden, så man kan lese fra telefonen."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §13"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  - SCRIPT
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "L3: mobilen viser dialogteksten og opptakskontrollene."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk B)"
+- id: REQ-0686
+  title: "Lydopptak på PC med flere takes"
+  text: "PC-opptak har start, stopp, spill av, ta opp på nytt, behold og velg. Mikrofontillatelse håndteres. Et nytt take overskriver aldri et tidligere."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §14"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Nytt take lagres ved siden av det forrige."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk B)"
+- id: REQ-0687
+  title: "Lydopptak på mobil – brukeren velger hva som sendes"
+  text: "Mobilopptak: start, stopp, hør, nytt opptak, tilbake til tidligere, sammenligne, velge ett eller flere og laste opp bare de valgte. Lyd lastes aldri opp automatisk når opptaket stopper."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §15"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "L4–L7: Take 01 og 02 kan høres og lastes opp hver for seg eller sammen."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk B)"
+- id: REQ-0688
+  title: "Flere takes bevares"
+  text: "Alle opptak bevares som egne takes med nummer og lengde. Et nytt take sletter aldri et tidligere. Et take kan velges som aktivt, eller deler brukes i en lydkomposisjon."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §16"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  - VERSION
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "L8: nytt take sletter ikke tidligere takes."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk B)"
+- id: REQ-0689
+  title: "Opptaksstatus og lokal lagring på telefonen"
+  text: "Det vises om et opptak bare er lokalt, valgt, lastes opp, er lastet opp eller feilet. Opptak lagres lokalt i nettleseren så langt den tillater; brukeren advares før siden forlates om noe ikke er sendt, og en feilet opplasting kan prøves igjen uten nytt opptak."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §17"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Feilet opplasting prøves igjen uten nytt opptak."
+  - "Advarsel ved å forlate siden med usendte opptak."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk B)"
+- id: REQ-0690
+  title: "Opptak av ren romlyd"
+  text: "I opptaksvinduet (PC og mobil) kan brukeren ta opp noen sekunder ren romlyd, merket som romlyd, til bruk i dialogredigering og sammenklipping."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 N2"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Romlydopptak merkes og kan velges som romlydressurs."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk B)"
+- id: REQ-0691
+  title: "Integrert lydeditor"
+  text: "Mikrofonikonet finnes også der eksisterende lyd redigeres. Editoren viser eksisterende lyd og nye takes med bølgeformer, tidslinje, avspillingshode, inn- og utpunkter, trim, flere spor ved behov og forhåndsavspilling av komposisjonen."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §18"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Eksisterende lyd og nytt take vises i samme vindu."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk C)"
+- id: REQ-0692
+  title: "Ny lyd: erstatte, før, oppå, etter eller et mindre område"
+  text: "Et nytt opptak kan erstatte hele lyden eller et markert område, settes inn før eller etter, legges oppå som eget spor, eller trimmes og erstatte bare et ord eller en frase. Resultatet kan forhåndshøres før det godkjennes."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §19"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "T10: ny lyd før, over eller etter eksisterende lyd."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk C)"
+- id: REQ-0693
+  title: "Ikke-destruktiv lydkomposisjon"
+  text: "Et redigert lydresultat er en komposisjon som beskriver kildefiler, områder, plassering, pauser, romlyd, overlapp, fades/crossfades, volum og varighet. Originalfiler og takes endres aldri, og resultatet kan gjenskapes fra komposisjonsdataene."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §43, §44"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: data
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  - VERSION
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Komposisjonen gir samme lyd når den gjenskapes."
+  - "Originalfilene er uendret."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk C)"
+- id: REQ-0694
+  title: "Andre dialoger berøres aldri"
+  text: "Redigering av én dialog flytter, strekker, forkorter eller overskriver aldri andre replikker eller lydklipp, og endrer ikke ferdige filmklipp. Alle andre replikker regnes som låste: overlapper komposisjonen en annen replikk, vises en konflikt som håndteres senere. Et nytt opptak tvinges ikke inn i et gammelt tidsrom; hastighet og tonehøyde endres aldri automatisk."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §2.5, §30, §31, §45"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: prinsipp
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  - TIMELINE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "P9: andre dialoger beholder lyd og tid."
+  - "T7–T8: opptaket kan være lengre eller kortere."
+  - "Overlapp vises som konflikt."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk C)"
+- id: REQ-0695
+  title: "Angre og versjoner av lydkomposisjoner"
+  text: "Pauseendringer, innsetting, klippgrenser og bytte av take kan angres. Brukeren kan gå tilbake til opprinnelig lyd, sammenligne komposisjoner og lagre en ny variant. Nye komposisjoner er versjoner som godkjennes på samme måte som andre versjoner."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §46"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  - VERSION
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Angre gjenoppretter forrige klippgrense."
+  - "Ny variant krever godkjenning."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk C)"
+- id: REQ-0696
+  title: "Lydeksport fra lydpopupen"
+  text: "Fra samme vindu kan hele komposisjonen, et valgt område eller ett take eksporteres, lokalt eller som ny lydvariant i biblioteket. Formater: WAV og MP3, med valg av samplingsfrekvens, kanaler, filnavn og område. Eksporten flater ikke ut komposisjonen; den kan fortsatt redigeres."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §47, §48, §49"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  - EXPORT
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "E4–E6: hele, område og ett take."
+  - "E7: originaler og komposisjon bevares."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk C)"
+- id: REQ-0697
+  title: "Lydmotor for komposisjoner"
+  text: "Forhåndsavspilling og eksport bruker samme komposisjonsbeskrivelse og samme beregning, så eksporten låter som det brukeren hørte: flere kilder, trim, innsetting, overlapp, volum, fades, crossfades, romlyd og pauser."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §54"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: arkitektur
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Eksportert lyd er lik forhåndsavspillingen (test på samples)."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk C)"
+- id: REQ-0698
+  title: "Ord-til-lyd-kobling med utskiftbar analysetjeneste"
+  text: "Programmet kobler ordene i replikken til tidsrom i lyden (forced alignment) med manusteksten som utgangspunkt. Tjenesten er utskiftbar. Resultatet lagrer lyd-ID, replikk-ID, manusversjon, ord, start, slutt, usikkerhet, manuelle overstyringer og modell med versjon. Et nytt opptak analyseres uten å analysere alt på nytt; feiler analysen, virker manuell redigering."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §22, §25, §53"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: arkitektur
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  - PROVIDER
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Resultatformatet er uavhengig av tjenesten."
+  - "Manuell redigering virker uten analyse."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk D)"
+- id: REQ-0699
+  title: "Valg av analysetjeneste der brukeren er"
+  text: "Brukeren velger selv analysetjeneste (først ElevenLabs Forced Alignment, deretter f.eks. WhisperX via en vertstjeneste) eller manuell kobling, direkte i dialogeditoren uten å gå til en innstillingsside. Valget huskes. Analysen bruker brukerens egen nøkkel og krever kostnadsgodkjenning som annen AI. Norsk bokmål, nynorsk, dialekter og egennavn prøves før tjenesten anbefales."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §25, N3"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - PROVIDER
+  - QUALITYCOST
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Valget av tjeneste huskes."
+  - "Kostnaden vises og godkjennes før analysen."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk D)"
+- id: REQ-0700
+  title: "Klikk og markér ord i teksten for å velge lyd"
+  text: "Dialogeditoren viser replikken som en aktiv del av redigeringen. Klikk på et ord markerer lyden for ordet; markering av flere ord, en setning eller hele replikken markerer det samlede tidsrommet. Grensene kan justeres manuelt, usikre koblinger vises tydelig, og markeringen brukes til avspilling, opptak, trim og erstatning."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §21, §23"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  - SCRIPT
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "T1: ett ord gir riktig lydområde."
+  - "T2: to ord gir samlet område."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk D)"
+- id: REQ-0701
+  title: "Avspilling med kontekst"
+  text: "Et markert område kan spilles med justerbar lyd før og etter, eller alene. Ny tekst uten lyd spiller omkringliggende dialoglyd der den finnes."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §24"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "T3: hel setning høres med kontekst."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk D)"
+- id: REQ-0702
+  title: "Erstatte ett ord eller en frase"
+  text: "Et markert ord eller en frase kan tas opp på nytt, trimmes og plasseres i riktig tidsrom med finjusterbare klippgrenser og fades/crossfades. Originalen bevares og hele replikken trenger ikke tas opp igjen."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §20"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "T9: bare ett ord erstattes."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk D)"
+- id: REQ-0703
+  title: "Status for tekst mot lyd"
+  text: "Endret dialog vises med status: synkronisert, ny tekst uten lyd, endret tekst med gammel lyd, nytt opptak til gjennomgang og godkjent oppdatert. Status vises med farge og et annet tegn (ikke bare farge) og påvirker ikke manuseksporten."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §26"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - SCRIPT
+  - AUDIO
+  - VERSION
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "T4: ny tekst uten lyd merkes."
+  - "T5: endret tekst med eldre lyd merkes."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk D)"
+- id: REQ-0704
+  title: "Ny eller endret setning: ta opp bare det som mangler"
+  text: "Systemet finner ny tekst uten lyd (f.eks. en ny setning) og endret frase. Brukeren markerer den, mikrofonikonet åpner opptak med teksten fremhevet, og opptaket foreslås plassert riktig (etter, før, i stedet for, eller oppå). Plasseringen kan endres, ny frase får naturlig lengde, den gamle lyden bevares, og komposisjonen godkjennes før den tas i bruk."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §27, §28, §29"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  - SCRIPT
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "T6: bare den nye setningen spilles inn og plasseres riktig."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk D)"
+- id: REQ-0705
+  title: "Endre pauser mellom ord"
+  text: "I en egen tidsredigeringsmodus kan avstanden mellom to ord økes eller reduseres ved å dra dem fra hverandre, uten nytt opptak og uten å endre ordenes lyd. Vanlig markering og redigering av tekst endrer aldri timingen."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §32, §33"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "P1: pausen mellom to ord økes."
+  - "P2: ordenes lyd er uendret."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk E)"
+- id: REQ-0706
+  title: "Pauser mellom flere ord"
+  text: "Når flere ord dras fra hverandre, fordeles den ekstra tiden likt mellom de indre mellomrommene (600 ms over tre ord gir 300 + 300 ms). Hver pause kan justeres for seg etterpå."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §34"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "P3–P5: tiden fordeles likt og kan justeres."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk E)"
+- id: REQ-0707
+  title: "Pausene vises bare i produksjonsvisningen"
+  text: "Lengre pauser vises som større avstand mellom ordene i tidsredigeringsmodus. Manusteksten og eksportert manus får aldri ekstra mellomrom eller tegn; tekst og tid holdes atskilt."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §35"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: prinsipp
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  - SCRIPT
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Manuseksporten er uendret etter pauseendringer."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk E)"
+- id: REQ-0708
+  title: "Naturlig romlyd i pauser"
+  text: "Forlengede pauser fylles som standard med romlyd fra samme opptak, fra partier uten tale, klikk, bevegelser, markerte hendelser eller upassende pust. Er romlyden for kort, settes flere biter sammen med crossfade og uten tydelig gjentakelse; finnes ingen egnet romlyd, varsles brukeren. Valg: naturlig romlyd (standard), digital stillhet, valgt romlydressurs eller manuelt redigert pause. Tale endres aldri i hastighet eller tonehøyde. Romlydfylling er en hjelp, ikke en garanti for sømløst resultat."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §36, §37, §38, §39"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "P6: nye pauser fylles med romlyd."
+  - "P7: digital stillhet kan velges."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk E)"
+- id: REQ-0709
+  title: "Romlyd i overganger mellom takes"
+  text: "Romlyd kan brukes til å myke opp overganger mellom ulike takes. Overgangene kan forhåndshøres og justeres; romlyd fra ulike opptak antas ikke å være lik."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §40"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Overgang mellom to takes kan justeres og høres."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk E)"
+- id: REQ-0710
+  title: "«Spill av automatisk etter endring»"
+  text: "Dialogeditoren har avkrysningen «Spill av automatisk etter endring». Når den er på, spilles det endrede området med justerbar kontekst når en endring er fullført (ikke mens man drar), og nye avspillinger legges ikke oppå tidligere. Av: ingen automatisk avspilling."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §41, §42"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "E1–E3: av/på virker."
+  - "P8: resultatet kan forhåndshøres."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk E)"
+- id: REQ-0711
+  title: "Nettleserkompatibilitet for kamera, mikrofon og deling"
+  text: "Kamera, mikrofon (MediaDevices/MediaRecorder), filvalg, Web Share, store opplastinger, sanntid og lokal lagring verifiseres på iPhone (Safari) og Android (Chrome) over HTTPS. Tillatelser spørres alltid først og respekteres."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §52"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: ikke-funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - UI
+  - SECURITY
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Kontrollert på iPhone og Android (dokumentert)."
+  tests: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/app/mobile/MobilePage.tsx"
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk A)"
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Bygget i bolk A; må prøves på iPhone og Android av Mars"
+- id: REQ-0712
+  title: "Ytelse og pålitelighet"
+  text: "Flere samtidige mobilopplastinger, store videofiler og responsive bølgeformer og tekstmarkering uten at appen blir ustabil; tydelige feil- og statusmeldinger."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0090
+    section: "Fase 2 §55"
+    document: "docs/product/PHASE2_SPECIFICATION.md"
+  type: ikke-funksjonell
+  priority: P1
+  phase: null
+  modules:
+  - AUDIO
+  - LIBRARY
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Flere samtidige opplastinger i test."
+  - "Bølgeform for lang replikk tegnes raskt."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-16'
+    decision: DEC-0090
+    change: "Registrert fra fase 2-spesifikasjonen (bolk E)"

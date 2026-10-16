@@ -14,6 +14,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as InvitasjonRouteImport } from './routes/invitasjon'
 import { Route as KontoRouteImport } from './routes/konto'
 import { Route as PersonvernRouteImport } from './routes/personvern'
+import { Route as MTokenRouteImport } from './routes/m.$token'
 import { Route as ProsjektProjectIdRouteImport } from './routes/prosjekt.$projectId'
 import { Route as ProsjektProjectIdIndexRouteImport } from './routes/prosjekt.$projectId.index'
 import { Route as ProsjektProjectIdBibliotekRouteImport } from './routes/prosjekt.$projectId.bibliotek'
@@ -46,6 +47,11 @@ const KontoRoute = KontoRouteImport.update({
 const PersonvernRoute = PersonvernRouteImport.update({
   id: '/personvern',
   path: '/personvern',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MTokenRoute = MTokenRouteImport.update({
+  id: '/m/$token',
+  path: '/m/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProsjektProjectIdRoute = ProsjektProjectIdRouteImport.update({
@@ -98,6 +104,7 @@ export interface FileRoutesByFullPath {
   '/invitasjon': typeof InvitasjonRoute
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
+  '/m/$token': typeof MTokenRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
@@ -113,6 +120,7 @@ export interface FileRoutesByTo {
   '/invitasjon': typeof InvitasjonRoute
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
+  '/m/$token': typeof MTokenRoute
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
@@ -128,6 +136,7 @@ export interface FileRoutesById {
   '/invitasjon': typeof InvitasjonRoute
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
+  '/m/$token': typeof MTokenRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
@@ -145,6 +154,7 @@ export interface FileRouteTypes {
     | '/invitasjon'
     | '/konto'
     | '/personvern'
+    | '/m/$token'
     | '/prosjekt/$projectId'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
@@ -160,6 +170,7 @@ export interface FileRouteTypes {
     | '/invitasjon'
     | '/konto'
     | '/personvern'
+    | '/m/$token'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/montering'
@@ -174,6 +185,7 @@ export interface FileRouteTypes {
     | '/invitasjon'
     | '/konto'
     | '/personvern'
+    | '/m/$token'
     | '/prosjekt/$projectId'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
@@ -190,6 +202,7 @@ export interface RootRouteChildren {
   InvitasjonRoute: typeof InvitasjonRoute
   KontoRoute: typeof KontoRoute
   PersonvernRoute: typeof PersonvernRoute
+  MTokenRoute: typeof MTokenRoute
   ProsjektProjectIdRoute: typeof ProsjektProjectIdRouteWithChildren
   ApiPublicCronAiJobsRoute: typeof ApiPublicCronAiJobsRoute
 }
@@ -229,6 +242,13 @@ declare module '@tanstack/react-router' {
       path: '/personvern'
       fullPath: '/personvern'
       preLoaderRoute: typeof PersonvernRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m/$token': {
+      id: '/m/$token'
+      path: '/m/$token'
+      fullPath: '/m/$token'
+      preLoaderRoute: typeof MTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/prosjekt/$projectId': {
@@ -317,6 +337,7 @@ const rootRouteChildren: RootRouteChildren = {
   InvitasjonRoute: InvitasjonRoute,
   KontoRoute: KontoRoute,
   PersonvernRoute: PersonvernRoute,
+  MTokenRoute: MTokenRoute,
   ProsjektProjectIdRoute: ProsjektProjectIdRouteWithChildren,
   ApiPublicCronAiJobsRoute: ApiPublicCronAiJobsRoute,
 }

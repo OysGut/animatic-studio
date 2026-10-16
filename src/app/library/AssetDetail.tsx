@@ -70,6 +70,7 @@ import { uploadAssetAudio } from "./asset-audio";
 import { GenerateSoundPanel } from "./GenerateSoundPanel";
 import { ImageCompareDialog } from "./ImageCompareDialog";
 import { SoundLinksSection } from "./SoundLinksSection";
+import { MobileCameraButton } from "@/app/mobile/MobileImportDialog";
 import { ContextNamesSection } from "./ContextNamesSection";
 import { AssetWorklistDialog, useWorklistCount } from "./AssetWorklistDialog";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
@@ -226,6 +227,15 @@ export function AssetDetail(props: Props) {
                 ))}
               </select>
             </div>
+            {/* Kameraikonet øverst til høyre: bilder og video fra mobilen havner her (DEC-0090) */}
+            {editable && asset.kind !== "sound" ? (
+              <MobileCameraButton
+                className="mt-5"
+                projectId={props.projectId}
+                context={{ type: "asset", assetId: asset.id }}
+                label={L(`Bilder av ${asset.name}`, `Pictures of ${asset.name}`)}
+              />
+            ) : null}
           </div>
 
           <div className="flex flex-col gap-1.5">

@@ -20,6 +20,13 @@ man = load_yaml(SPEC_MANIFEST)
 if sha256(SPEC) != man["sha256"]:
     errors.append("MASTER_SPECIFICATION.md er ENDRET (kontrollsum stemmer ikke). Den skal aldri endres – endringer registreres som beslutninger.")
 
+# 1b fase 2-spesifikasjonen (DEC-0090)
+_p2 = ROOT / "docs/product/PHASE2_MANIFEST.yaml"
+if _p2.exists():
+    _m2 = load_yaml(_p2)
+    if sha256(ROOT / _m2["file"]) != _m2["sha256"]:
+        errors.append("PHASE2_SPECIFICATION.md er ENDRET (kontrollsum stemmer ikke). Den skal aldri endres – endringer registreres som beslutninger.")
+
 # 2 krav
 data = load_reqs(); reqs = data["requirements"]; ids = [r["id"] for r in reqs]
 if len(ids) != len(set(ids)): errors.append("Dupliserte krav-ID-er")

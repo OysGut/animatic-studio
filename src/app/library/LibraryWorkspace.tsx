@@ -51,6 +51,9 @@ import {
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { SaveIndicator } from "@/app/script/ScriptWorkspace";
+import { MobileCameraButton } from "@/app/mobile/MobileImportDialog";
+import { MobileImportLibrary } from "@/app/mobile/MobileImportLibrary";
+import { attachMobileDraft } from "@/adapters/browser/mobile-import";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AssetDetail } from "./AssetDetail";
@@ -107,7 +110,7 @@ export function LibraryWorkspace({
 }
 
 /** «style» = visuelle stilprofiler (REQ-0121, DEC-0078). */
-type KindFilter = AssetKind | "all" | "style";
+type KindFilter = AssetKind | "all" | "style" | "mobile";
 
 function Library({
   state,
@@ -151,6 +154,8 @@ function Library({
   }, [initialAssetId]);
   const [newKind, setNewKind] = useState<AssetKind>("character");
   const [newName, setNewName] = useState("");
+  // Utkast for bilder fra mobilen før ressursen er lagret (DEC-0090, REQ-0672)
+  const [draftKey, setDraftKey] = useState(() => newId<"draft">() as string);
   const [error, setError] = useState<string | null>(null);
   const [suggestOpen, setSuggestOpen] = useState(false);
   // Nedlastede bilder lastes opp igjen (DEC-0064): kjennes igjen på navnet
@@ -210,7 +215,8 @@ function Library({
   useEffect(() => {
     if (selected && !state.assets[selected]) setSelected(null);
   }, [state, selected]);
-  const asset = kind !== "style" && selected ? state.assets[selected] : undefined;
+  const asset =
+    kind !== "style" && kind !== "mobile" && selected ? state.assets[selected] : undefined;
   const shownStyles = styleProfiles.filter((p) => styleProfileMatches(p, search));
 
   function create() {
@@ -231,6 +237,9 @@ function Library({
     );
     setError(err);
     if (!err) {
+      // Bilder tatt med mobilen for den nye ressursen knyttes til den (de blir versjoner når de er behandlet)
+      void attachMobileDraft(projectId, draftKey, assetId);
+      setDraftKey(newId<"draft">());
       setNewName("");
       setSelected(assetId);
       if (kind !== "all" && kind !== newKind) setKind(newKind);
@@ -461,6 +470,8 @@ function Library({
                 <option value="style">
                   {L("Stilprofiler", "Style profiles")} ({styleProfiles.length})
                 </option>
+                {/* Filer fra mobilen (DEC-0090, REQ-0676) */}
+                <option value="mobile">{L("Mobilimport", "Mobile import")}</option>
               </select>
               {kind === "sound" && categories.length ? (
                 <select
@@ -478,7 +489,7 @@ function Library({
                 </select>
               ) : null}
             </div>
-            {kind !== "style" ? (
+            {kind !== "style" && kind !== "mobile" ? (
               <div className="flex items-center gap-1.5">
                 <select
                   aria-label={L("Opphav", "Origin")}
@@ -509,7 +520,7 @@ function Library({
               </div>
             ) : null}
           </div>
-          {editable && kind !== "style" ? (
+          {editable && kind !== "style" && kind !== "mobile" ? (
             <form
               className="flex shrink-0 flex-col gap-1.5 border-b border-border px-2 py-2"
               onSubmit={(e) => {
@@ -538,6 +549,20 @@ function Library({
                   onChange={(e) => setNewName(e.target.value)}
                   className="h-7 min-w-0 flex-1 bg-surface-3 text-[13px]"
                 />
+                {newKind !== "sound" ? (
+                  <MobileCameraButton
+                    projectId={projectId}
+                    context={{ type: "draft", draftKey, assetKind: newKind }}
+                    label={
+                      newName.trim()
+                        ? L(
+                            `Bilder av ${newName.trim()} (ny)`,
+                            `Pictures of ${newName.trim()} (new)`,
+                          )
+                        : L("Bilder til en ny ressurs", "Pictures for a new asset")
+                    }
+                  />
+                ) : null}
                 <Button
                   type="submit"
                   size="sm"
@@ -556,7 +581,14 @@ function Library({
               ) : null}
             </form>
           ) : null}
-          {kind === "style" ? (
+          {kind === "mobile" ? (
+            <p className="px-3 py-3 text-xs text-text-tertiary">
+              {L(
+                "Filene fra mobilen vises til høyre. Bilder tatt for en ressurs blir nye versjoner av den.",
+                "The files from the phone are shown on the right. Pictures taken for an asset become new versions of it.",
+              )}
+            </p>
+          ) : kind === "style" ? (
             <StyleProfileList
               items={shownStyles}
               selected={selectedStyle}
@@ -653,7 +685,17 @@ function Library({
 
         {/* Detaljer */}
         <div className="min-h-0 overflow-y-auto bg-bg-app">
-          {kind === "style" ? (
+          {kind === "mobile" ? (
+            <MobileImportLibrary
+              state={state}
+              projectId={projectId}
+              editable={editable}
+              onOpenAsset={(id) => {
+                setKind("all");
+                setSelected(id);
+              }}
+            />
+          ) : kind === "style" ? (
             styleItem ? (
               <StyleProfileDetail
                 state={state}

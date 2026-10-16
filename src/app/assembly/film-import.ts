@@ -52,7 +52,27 @@ class FilmReadError extends Error {}
 /** Leser lengde, oppløsning, bildefrekvens og kodeker fra filen. Kaster med en feilmelding for brukeren. */
 export async function readFilmMetadata(file: File): Promise<TakeMedia> {
   const mb = await import("mediabunny");
-  const input = new mb.Input({ source: new mb.BlobSource(file), formats: mb.ALL_FORMATS });
+  return readMeta(mb, new mb.BlobSource(file), file);
+}
+
+/**
+ * Samme som readFilmMetadata, men for en fil som allerede ligger i lagringen (f.eks. en video fra mobilen,
+ * DEC-0090): leses med en midlertidig lenke, bare de delene som trengs (ikke hele filen).
+ */
+export async function readFilmMetadataFromUrl(
+  url: string,
+  file: { readonly name: string; readonly type: string; readonly size: number },
+): Promise<TakeMedia> {
+  const mb = await import("mediabunny");
+  return readMeta(mb, new mb.UrlSource(url), file);
+}
+
+async function readMeta(
+  mb: typeof import("mediabunny"),
+  source: InstanceType<typeof import("mediabunny").Source>,
+  file: { readonly name: string; readonly type: string; readonly size: number },
+): Promise<TakeMedia> {
+  const input = new mb.Input({ source, formats: mb.ALL_FORMATS });
   try {
     const video = await input.getPrimaryVideoTrack();
     if (!video) throw new FilmReadError(L("Filen har ingen video.", "The file has no video."));

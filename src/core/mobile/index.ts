@@ -1,0 +1,266 @@
+/**
+ * Mobilbroen (fase 2, bolk A, DEC-0090): opplastingsøkter bak QR-koder og delte lenker, og filene som kommer
+ * fra mobilen. Ren TypeScript: konteksten (hvor filene skal), grenser, filtyper, lagringssti og sjekk av
+ * filinnholdet. Server og nettleser bruker de samme reglene.
+ */
+import { L } from "../i18n";
+import { isUuid } from "../ids";
+
+/** Hvor filene fra en økt skal (Mars: «for ulike scener genereres selvsagt ulike qr koder så alt havner rett»). */
+export type UploadContext =
+  | { readonly type: "project" }
+  | { readonly type: "asset"; readonly assetId: string; readonly variantId?: string | undefined }
+  /** En ressurs under opprettelse (ikke lagret ennå). Knyttes til ressursen når den lagres. */
+  | {
+      readonly type: "draft";
+      readonly draftKey: string;
+      readonly assetKind?: string | undefined;
+      readonly assetId?: string | undefined;
+    }
+  | { readonly type: "occurrence"; readonly occurrenceId: string }
+  /** Bildeplassen til et lag i sceneeditoren: nytt bilde av lagets ressurs. */
+  | {
+      readonly type: "layer";
+      readonly layerId: string;
+      readonly assetId: string;
+      readonly variantId?: string | undefined;
+    };
+
+export type MobileMediaKind = "image" | "video" | "audio";
+
+/** Egen QR-kode: ingen innlogging på telefonen, 2 timer (DEC-0090). */
+export const PERSONAL_SESSION_MS = 2 * 60 * 60 * 1000;
+/** Delt lenke: 7 dager, kan tilbakekalles (DEC-0090). */
+export const SHARED_SESSION_MS = 7 * 24 * 60 * 60 * 1000;
+export const PERSONAL_MAX_FILES = 1000;
+export const PERSONAL_MAX_BYTES = 20 * 1024 ** 3;
+export const SHARED_MAX_FILES = 200;
+export const SHARED_MAX_BYTES = 5 * 1024 ** 3;
+/**
+ * Største videofil i nettversjonen (DEC-0090, REQ-0679). NB: denne grensen skal fjernes uten å spørre Mars den
+ * dagen en desktopversjon lages (står også i TODO.md).
+ */
+export const MOBILE_VIDEO_MAX_BYTES = 500 * 1024 * 1024;
+export const MOBILE_IMAGE_MAX_BYTES = 100 * 1024 * 1024;
+export const MOBILE_AUDIO_MAX_BYTES = 400 * 1024 * 1024;
+
+export const MOBILE_IMAGE_TYPES: readonly string[] = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+];
+export const MOBILE_VIDEO_TYPES: readonly string[] = ["video/mp4", "video/quicktime", "video/webm"];
+export const MOBILE_AUDIO_TYPES: readonly string[] = [
+  "audio/mpeg",
+  "audio/wav",
+  "audio/x-wav",
+  "audio/wave",
+  "audio/ogg",
+  "audio/webm",
+  "audio/mp4",
+  "audio/x-m4a",
+  "audio/aac",
+  "audio/flac",
+];
+
+/** Filtypen ut fra MIME, eller null når den ikke tas imot. */
+export function mediaKindOf(mime: string): MobileMediaKind | null {
+  const m = mime.toLowerCase().split(";")[0]!.trim();
+  if (MOBILE_IMAGE_TYPES.includes(m)) return "image";
+  if (MOBILE_VIDEO_TYPES.includes(m)) return "video";
+  if (MOBILE_AUDIO_TYPES.includes(m)) return "audio";
+  return null;
+}
+
+export function maxBytesFor(kind: MobileMediaKind): number {
+  return kind === "video"
+    ? MOBILE_VIDEO_MAX_BYTES
+    : kind === "audio"
+      ? MOBILE_AUDIO_MAX_BYTES
+      : MOBILE_IMAGE_MAX_BYTES;
+}
+
+/** Feilmelding for en fil som ikke kan lastes opp her, eller null. */
+export function checkMobileFile(
+  mime: string,
+  bytes: number,
+  allowed: readonly MobileMediaKind[],
+): string | null {
+  const kind = mediaKindOf(mime);
+  if (!kind)
+    return L(
+      "Filtypen tas ikke imot (bilder: JPEG, PNG, WebP, GIF; video: MP4, MOV, WebM; lyd: MP3, WAV, M4A, OGG, WebM, FLAC).",
+      "This file type is not accepted (images: JPEG, PNG, WebP, GIF; video: MP4, MOV, WebM; audio: MP3, WAV, M4A, OGG, WebM, FLAC).",
+    );
+  if (!allowed.includes(kind))
+    return kind === "video"
+      ? L("Her kan du ikke laste opp video.", "You cannot upload video here.")
+      : kind === "audio"
+        ? L("Her kan du ikke laste opp lyd.", "You cannot upload audio here.")
+        : L("Her kan du ikke laste opp bilder.", "You cannot upload images here.");
+  if (!Number.isFinite(bytes) || bytes <= 0) return L("Filen er tom.", "The file is empty.");
+  const max = maxBytesFor(kind);
+  if (bytes > max)
+    return kind === "video"
+      ? L(
+          `Videoen er for stor (maks ${Math.round(max / 1024 ** 2)} MB). Del opp opptaket.`,
+          `The video is too large (max ${Math.round(max / 1024 ** 2)} MB). Split the recording.`,
+        )
+      : L(
+          `Filen er for stor (maks ${Math.round(max / 1024 ** 2)} MB).`,
+          `The file is too large (max ${Math.round(max / 1024 ** 2)} MB).`,
+        );
+  return null;
+}
+
+const EXT: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/gif": "gif",
+  "video/mp4": "mp4",
+  "video/quicktime": "mov",
+  "video/webm": "webm",
+  "audio/mpeg": "mp3",
+  "audio/wav": "wav",
+  "audio/x-wav": "wav",
+  "audio/wave": "wav",
+  "audio/ogg": "ogg",
+  "audio/webm": "webm",
+  "audio/mp4": "m4a",
+  "audio/x-m4a": "m4a",
+  "audio/aac": "aac",
+  "audio/flac": "flac",
+};
+
+/** Lagringsstien for en fil fra mobilen: `<prosjekt>/source/mobile/<økt>/<fil-ID>.<ext>` (REQ-0415). */
+export function mobileFilePath(
+  projectId: string,
+  sessionId: string,
+  clientFileId: string,
+  mime: string,
+): string {
+  const ext = EXT[mime.toLowerCase().split(";")[0]!.trim()] ?? "bin";
+  return `${projectId}/source/mobile/${sessionId}/${clientFileId}.${ext}`; // i18n-ignore
+}
+
+/**
+ * Stemmer filens første bytes med typen den sier den er? Hindrer at noe annet lastes opp med feil merkelapp.
+ * `head` er minst de 16 første bytene.
+ */
+export function sniffMatches(mime: string, head: Uint8Array): boolean {
+  const m = mime.toLowerCase().split(";")[0]!.trim();
+  const at = (i: number, ...bs: number[]) => bs.every((b, k) => head[i + k] === b);
+  const ascii = (i: number, s: string) => [...s].every((c, k) => head[i + k] === c.charCodeAt(0));
+  switch (m) {
+    case "image/jpeg":
+      return at(0, 0xff, 0xd8, 0xff);
+    case "image/png":
+      return at(0, 0x89, 0x50, 0x4e, 0x47);
+    case "image/gif":
+      return ascii(0, "GIF8");
+    case "image/webp":
+      return ascii(0, "RIFF") && ascii(8, "WEBP");
+    case "video/mp4":
+    case "video/quicktime":
+    case "audio/mp4":
+    case "audio/x-m4a":
+      return ascii(4, "ftyp") || ascii(4, "moov") || ascii(4, "mdat") || ascii(4, "wide");
+    case "video/webm":
+    case "audio/webm":
+      return at(0, 0x1a, 0x45, 0xdf, 0xa3);
+    case "audio/wav":
+    case "audio/x-wav":
+    case "audio/wave":
+      return ascii(0, "RIFF") && ascii(8, "WAVE");
+    case "audio/ogg":
+      return ascii(0, "OggS");
+    case "audio/flac":
+      return ascii(0, "fLaC");
+    case "audio/mpeg":
+      return ascii(0, "ID3") || (head[0] === 0xff && ((head[1] ?? 0) & 0xe0) === 0xe0);
+    case "audio/aac":
+      return head[0] === 0xff && ((head[1] ?? 0) & 0xf0) === 0xf0;
+    default:
+      return false;
+  }
+}
+
+/** Kontrollerer en kontekst fra nettleseren (bare kjente felt, gyldige ID-er). Gir null når den er ugyldig. */
+export function parseUploadContext(v: unknown): UploadContext | null {
+  if (!v || typeof v !== "object" || Array.isArray(v)) return null;
+  const o = v as Record<string, unknown>;
+  const id = (k: string) =>
+    typeof o[k] === "string" && isUuid(o[k] as string) ? (o[k] as string) : null;
+  const optId = (k: string) => (o[k] === undefined || o[k] === null ? undefined : (id(k) ?? false));
+  switch (o["type"]) {
+    case "project":
+      return { type: "project" };
+    case "asset": {
+      const assetId = id("assetId");
+      const variantId = optId("variantId");
+      if (!assetId || variantId === false) return null;
+      return { type: "asset", assetId, ...(variantId ? { variantId } : {}) };
+    }
+    case "draft": {
+      const draftKey = id("draftKey");
+      const kind = typeof o["assetKind"] === "string" ? (o["assetKind"] as string) : undefined;
+      if (!draftKey || (kind !== undefined && !/^[a-z]{2,20}$/.test(kind))) return null;
+      return { type: "draft", draftKey, ...(kind ? { assetKind: kind } : {}) };
+    }
+    case "occurrence": {
+      const occurrenceId = id("occurrenceId");
+      return occurrenceId ? { type: "occurrence", occurrenceId } : null;
+    }
+    case "layer": {
+      const layerId = id("layerId");
+      const assetId = id("assetId");
+      const variantId = optId("variantId");
+      if (!layerId || !assetId || variantId === false) return null;
+      return { type: "layer", layerId, assetId, ...(variantId ? { variantId } : {}) };
+    }
+    default:
+      return null;
+  }
+}
+
+/** Filtypene en kontekst tar imot (bolk A: bilder og video; lyd kommer i bolk B). */
+export function mediaKindsFor(c: UploadContext): MobileMediaKind[] {
+  switch (c.type) {
+    case "asset":
+    case "draft":
+    case "layer":
+      return ["image", "video"];
+    case "occurrence":
+    case "project":
+      return ["image", "video", "audio"];
+  }
+}
+
+/** Ressursen en fil skal bli en ny versjon av (null: bare registrert i mobilimporten / scenen). */
+export function targetAssetOf(
+  c: UploadContext,
+  resolvedAssetId?: string | null,
+): { assetId: string; variantId?: string | undefined } | null {
+  if (c.type === "asset" || c.type === "layer")
+    return { assetId: c.assetId, ...(c.variantId ? { variantId: c.variantId } : {}) };
+  if (c.type === "draft") {
+    const a = resolvedAssetId ?? c.assetId ?? null;
+    return a ? { assetId: a } : null;
+  }
+  return null;
+}
+
+/** Et frivillig navn fra bidragsyteren (trimmet, uten styretegn). */
+export function cleanContributorName(v: unknown): string {
+  if (typeof v !== "string") return "";
+  return [...v]
+    .filter((c) => {
+      const n = c.charCodeAt(0);
+      return n >= 32 && n !== 127;
+    })
+    .join("")
+    .trim()
+    .slice(0, 100);
+}

@@ -49,6 +49,7 @@ import {
 } from "@/app/library/asset-images";
 import { GenerateImagePanel } from "@/app/library/GenerateImagePanel";
 import { useActiveProduction } from "@/app/project/use-production";
+import { MobileCameraButton } from "@/app/mobile/MobileImportDialog";
 import { CutoutDialog } from "@/app/library/CutoutDialog";
 import { StyleGuideDialog } from "@/app/projects/StyleGuideSection";
 import { VisualBriefEditor } from "@/app/library/VisualBriefEditor";
@@ -307,7 +308,27 @@ function Body({
   return (
     <>
       <DialogHeader>
-        <DialogTitle>{L(`Bilde for «${layer.name}»`, `Image for “${layer.name}”`)}</DialogTitle>
+        <div className="flex items-center gap-2 pr-8">
+          <DialogTitle className="min-w-0 flex-1">
+            {L(`Bilde for «${layer.name}»`, `Image for “${layer.name}”`)}
+          </DialogTitle>
+          {/* Kameraikonet øverst til høyre: bilder fra mobilen blir nye bilder av ressursen (DEC-0090) */}
+          {editable && asset && asset.kind !== "sound" ? (
+            <MobileCameraButton
+              projectId={projectId}
+              context={{
+                type: "layer",
+                layerId: layer.id,
+                assetId: asset.id,
+                ...(layer.assetVariantId ? { variantId: layer.assetVariantId } : {}),
+              }}
+              label={L(
+                `Bilder av ${asset.name} (laget «${layer.name}»)`,
+                `Pictures of ${asset.name} (layer “${layer.name}”)`,
+              )}
+            />
+          ) : null}
+        </div>
         <DialogDescription>
           {asset
             ? L(

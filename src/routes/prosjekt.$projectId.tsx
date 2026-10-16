@@ -9,6 +9,7 @@ import { ProjectNav } from "@/app/shell/ProjectNav";
 import { fetchProjectName, upsertMyProfile } from "@/adapters/browser/projects";
 import { fetchProjectLock } from "@/adapters/browser/account";
 import { AiJobsWatcher } from "@/app/ai/video-jobs";
+import { MobileImportWatcher } from "@/app/mobile/use-mobile-imports";
 import { canEdit, useMembers } from "@/app/project/use-project";
 import { L } from "@/core";
 
@@ -106,6 +107,14 @@ function ProjectLayout() {
           ) : (
             <>
               <AiJobsWatcher
+                projectId={projectId}
+                userId={session.session.user.id}
+                editable={canEdit(
+                  members.data?.find((m) => m.user_id === session.session.user.id)?.role,
+                )}
+              />
+              {/* Bilder fra mobilen blir versjoner i ressursen de ble tatt for (DEC-0090) */}
+              <MobileImportWatcher
                 projectId={projectId}
                 userId={session.session.user.id}
                 editable={canEdit(

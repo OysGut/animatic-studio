@@ -443,10 +443,12 @@ describe("REQ-0407 – arbeidet bevares når programmet lukkes og åpnes igjen",
         ...t.matchAll(/(localStorage|sessionStorage|indexedDB)\.(setItem|open)\(\s*([^,]+),/g),
       ].map((m) => `${relative(ROOT, f)}: ${m[3]!.trim()}`);
     });
-    // Kjente nøkler: skjulte forslag, filmspråk, aktiv produksjon, manusspråk, paneler, tilbake-historikk
+    // Kjente nøkler: skjulte forslag, filmspråk, aktiv produksjon, manusspråk, paneler, tilbake-historikk.
+    // Unntak (DEC-0090, fase 2 §17): opplastingskøen på mobilen holder filer til de er sendt (DB_NAME i
+    // upload-queue.ts) – det er transport fra telefonen, ikke arbeidet i prosjektet.
     for (const u of uses)
       expect(u).toMatch(
-        /hidden|Hidden|film-?lang|key\(projectId\)|storeKey|script-lang|pane|KEY|stored|flag|width|size/i,
+        /hidden|Hidden|film-?lang|key\(projectId\)|storeKey|script-lang|pane|KEY|stored|flag|width|size|upload-queue\.ts: DB_NAME/i,
       );
     expect(uses.length).toBeGreaterThan(0);
   });

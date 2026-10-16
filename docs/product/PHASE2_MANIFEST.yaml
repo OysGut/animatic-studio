@@ -1,0 +1,13 @@
+# Manifest for fase 2-spesifikasjonen. Ikke rediger PHASE2_SPECIFICATION.md.
+file: docs/product/PHASE2_SPECIFICATION.md
+title: "ANIMATIC STUDIO – Fase 2 – komplett prosjektspesifikasjon: mobilbro, QR-koder, bilde- og videoimport, lydopptak og intelligent dialogredigering"
+received: "2026-10-16"
+received_from: "Mars (mars@gutu.no), limt inn i chatten i Claude-prosjektet «Animatic Studio»"
+sha256: 2ac2860541a325be7335e6ce79bb8d5e5cd8d08ca1f62907154280622d5dfb32
+bytes: 44034
+lines: 1659
+relation: "Tilleggsspesifikasjon til MASTER_SPECIFICATION v14. Svarene på spørsmålene (DEC-0090) gjelder foran teksten der de presiserer den (f.eks. N1 foran 11.5)."
+requirements: "REQ-0668–REQ-0712"
+protection: >
+  Filen endres aldri (kontrollsummen sjekkes av scripts/kb/check_kb.py). Endringer registreres som beslutninger i
+  docs/decisions/DECISION_LOG.md.

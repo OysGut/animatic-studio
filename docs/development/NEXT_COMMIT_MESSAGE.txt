@@ -1,11 +1,17 @@
-Manuset i sceneeditoren og paneler som lukkes og åpnes (DEC-0089)
+Fase 2, bolk A: mobilbro med QR-koder, bilder og video fra mobilen, deling og mobilimport (DEC-0090)
 
-Ingen databaseendring og ingen nye pakker. Lim inn docs/development/LOVABLE_SYNC.md i Lovable etter push.
+Migrasjon 0035 og ny pakke (qrcode). Lim inn docs/development/LOVABLE_SYNC.md i Lovable etter push.
 
-- Sceneeditoren: nytt panel «Manus» med scenens tekst i manusform; linjen som spilles av, er markert (REQ-0665).
-- «Rediger manus …» (eller dobbeltklikk på en linje) åpner manuset for scenen i eget vindu med samme redigering
-  som på Manus-siden; forrige og neste scene kan vises til lesing (REQ-0666).
-- Alle panelene kan lukkes og åpnes; stablet blir et lukket panel en overskrift (og kan flyttes opp/ned), side om
-  side en smal stripe. Huskes på kontoen. Forhåndsvisningen og tidslinjen står (REQ-0667).
+- «Importer fra mobil» på prosjektsiden og kameraikon i ressursen, ved ny ressurs, i sceneeditoren og i
+  bildevalget for et lag: QR-koden vises med en gang, med status for mobilen og det som er mottatt. Hver
+  kontekst (også hver scene) har sin egen kode (REQ-0668, REQ-0670, REQ-0671, REQ-0677).
+- Mobilsiden uten innlogging: hurtigfoto (bilde etter bilde, sendes automatisk med kø), velg bilder og video,
+  ta opp video, og «Del lenke» med telefonens egen deling (REQ-0669, REQ-0673–0675, REQ-0681).
+- Sikre opplastingsøkter: token lagret som hash, egen QR 2 timer, delt lenke 7 dager med eget tak og
+  tilbakekalling, innholdet sjekkes, ingen duplikater, video maks 500 MB i nettversjonen (REQ-0678–0680, REQ-0682).
+- Bilder tatt for en ressurs blir nye versjoner (ikke godkjent); bilder til en ny ressurs knyttes når den lagres;
+  video i en scene kan brukes som film for scenen (REQ-0671, REQ-0672).
+- «Mobilimport» i biblioteket med filtre for type, dato, økt, kobling og bidragsyter, og aktive lenker med
+  «Tilbakekall». Bidragsytere ser bare sine egne filer (REQ-0676, REQ-0683).
 
-Tester: Vitest 141 filer / 1213 tester, ny nettlesertest dec0089-script-panel-ui (26); øvrige suiter grønne.
+Tester: Vitest 143 filer / 1228 tester, DB 63/63, ny nettlesertest dec0090-mobile-ui (35); øvrige suiter grønne.

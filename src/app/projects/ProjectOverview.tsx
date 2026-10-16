@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { FileText, Send } from "lucide-react";
+import { Camera, FileText, Send } from "lucide-react";
 import { useState, type FormEvent } from "react";
+const PROJECT_CONTEXT = { type: "project" } as const;
 import { L, mainProduction, orderedOccurrences } from "@/core";
 import { createInvitation } from "@/adapters/browser/members";
 import { DurationOverview } from "./DurationOverview";
@@ -12,6 +13,7 @@ import { ProductionList } from "./ProductionList";
 import { MembersSection } from "./MembersSection";
 import { StyleGuideSection } from "./StyleGuideSection";
 import { ProjectTodoBox } from "./ProjectTodoBox";
+import { MobileImportDialog } from "@/app/mobile/MobileImportDialog";
 import { StorageSection } from "./StorageSection";
 import { ProjectCostSection } from "@/app/account/ProjectCostSection";
 import { ContinuityAnalysisPanel } from "@/app/continuity/ContinuityAnalysisPanel";
@@ -57,9 +59,12 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
     <div className="flex min-h-0 flex-1">
       <div className="min-w-0 flex-1 overflow-auto">
         <div className="mx-auto max-w-[960px] px-6 py-8">
-          <h1 className="text-2xl font-semibold tracking-tight text-text-primary">
-            {s.project.name}
-          </h1>
+          <div className="flex items-start gap-3">
+            <h1 className="min-w-0 flex-1 text-2xl font-semibold tracking-tight text-text-primary">
+              {s.project.name}
+            </h1>
+            {canEdit(myRole) ? <ProjectMobileImport projectId={projectId} /> : null}
+          </div>
           <p className="mt-1 text-[13px] text-text-secondary">
             {L("Hovedspråk norsk ·", "Main language: Norwegian ·")}{" "}
             <span className="tabular">
@@ -249,5 +254,34 @@ function InviteForm({ projectId }: { projectId: string }) {
         </div>
       ) : null}
     </div>
+  );
+}
+
+/** «Importer fra mobil» på prosjektsiden (DEC-0090, REQ-0668): QR-koden vises med en gang. */
+function ProjectMobileImport({ projectId }: { projectId: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button
+        size="sm"
+        variant="secondary"
+        onClick={() => setOpen(true)}
+        data-testid="project-mobile-import"
+        title={L(
+          "Ta bilder og video med mobilen, eller velg filer der – de kommer rett inn i prosjektet",
+          "Take pictures and video with your phone, or choose files there – they come straight into the project",
+        )}
+      >
+        <Camera />
+        {L("Importer fra mobil", "Import from mobile")}
+      </Button>
+      <MobileImportDialog
+        open={open}
+        onOpenChange={setOpen}
+        projectId={projectId}
+        context={PROJECT_CONTEXT}
+        label={L("Mobilimport til prosjektet", "Mobile import to the project")}
+      />
+    </>
   );
 }

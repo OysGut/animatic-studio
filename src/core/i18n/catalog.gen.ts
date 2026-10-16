@@ -164,6 +164,8 @@ export const CATALOG: Record<string, string> = {
   "Banen må slutte etter at den starter": "The path must end after it starts",
   "Bare dine egne siste endringer kan angres på denne måten.":
     "Only your own latest changes can be undone in this way.",
+  "Bare eier og redaktør kan lage QR-koder for opplasting.":
+    "Only the owner and editors can make QR codes for upload.",
   "Bare eieren av det nye prosjektet kan gjenopprette til det.":
     "Only the owner of the new project can restore to it.",
   "Bare eieren av prosjektet kan endre AI-budsjettet.":
@@ -337,6 +339,8 @@ export const CATALOG: Record<string, string> = {
     "The database is missing sound across several scenes and volume points. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0010.",
   "Databasen mangler lyd. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0009.":
     "The database is missing sound. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0009.",
+  "Databasen mangler mobilimport. Den må oppdateres (migrasjon 0035).":
+    "The database is missing mobile import. It must be updated (migration 0035).",
   "Databasen mangler notater på produksjonene. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0031.":
     "The database is missing notes on the productions. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0031.",
   "Databasen mangler oppgaver og systemmerknader. Den må oppdateres (migrasjon 0034).":
@@ -393,6 +397,7 @@ export const CATALOG: Record<string, string> = {
   "Den opprinnelige varianten": "The original variant",
   "Den samlede beskrivelsen er for lang (maks {0} tegn)":
     "The combined description is too long (maximum {0} characters)",
+  "Denne filtypen kan ikke lastes opp her.": "This file type cannot be uploaded here.",
   "Denne leverandøren kan ikke få egne modeller uten ny kode.":
     "This provider cannot get its own models without new code.",
   "Denne leverandøren trenger ingen nøkkel.": "This provider does not need a key.",
@@ -444,6 +449,8 @@ export const CATALOG: Record<string, string> = {
   "En annen scene er plassert i fortellingstiden i forhold til den nye scenen. Endre den først.":
     "Another scene is placed in story time relative to the new scene. Change it first.",
   "En av linjene finnes ikke i manuset": "One of the lines does not exist in the script",
+  "En delt lenke kan ikke deles videre. Be den som sendte den, om en ny.":
+    "A shared link cannot be shared on. Ask the person who sent it for a new one.",
   "En figur forandrer seg i segmentet, men det sto ikke i beskrivelsen.":
     "A figure changes within the segment, but this was not in the description.",
   "En gruppe kan ikke brukes som maske": "A group cannot be used as a mask",
@@ -513,9 +520,12 @@ export const CATALOG: Record<string, string> = {
   "Figurene beskrives bare med tekst (ingen referansebilder)":
     "The figures are described in text only (no reference images)",
   Fil: "File",
+  "Filen er for stor (maks {0} MB).": "The file is too large (max {0} MB).",
   "Filen er for stor til å hentes inn.": "The file is too large to fetch.",
   "Filen er ikke en sikkerhetskopi fra Animatic Studio.":
     "The file is not a backup from Animatic Studio.",
+  "Filen er ikke kommet fram ennå. Prøv igjen.": "The file has not arrived yet. Try again.",
+  "Filen er tom.": "The file is empty.",
   "Filinformasjon gjelder bare film": "File information only applies to film",
   "Filinformasjonen mangler.": "The file information is missing.",
   "Filmens bildefrekvens er en annen enn prosjektets; bilder gjentas eller hoppes over":
@@ -527,6 +537,8 @@ export const CATALOG: Record<string, string> = {
   "Filmens visuelle stil var med i beskrivelsen.":
     "The film's visual style was included in the description.",
   Filmlyd: "Film audio",
+  "Filtypen tas ikke imot (bilder: JPEG, PNG, WebP, GIF; video: MP4, MOV, WebM; lyd: MP3, WAV, M4A, OGG, WebM, FLAC).":
+    "This file type is not accepted (images: JPEG, PNG, WebP, GIF; video: MP4, MOV, WebM; audio: MP3, WAV, M4A, OGG, WebM, FLAC).",
   "Flere kandidater (hver koster som ett bilde)": "Several candidates (each costs as one image)",
   "Flerspråklig tale v2 (uten norsk)": "Multilingual speech v2 (no Norwegian)",
   "For mange alternative navn": "Too many alternative names",
@@ -636,6 +648,9 @@ export const CATALOG: Record<string, string> = {
   "Hastigheten må være mellom 25 og 400 %": "The speed must be between 25 and 400%",
   hendelse: "event",
   "hentet tilbake": "fetched back",
+  "Her kan du ikke laste opp bilder.": "You cannot upload images here.",
+  "Her kan du ikke laste opp lyd.": "You cannot upload audio here.",
+  "Her kan du ikke laste opp video.": "You cannot upload video here.",
   "Historiske versjoner": "Historical versions",
   "Holder en karakter lik på tvers av bilder": "Keeps a character the same across images",
   "Hovedfilmen bruker en godkjent versjon av scenen. Bekreft at den skal byttes, eller la klippingen stå.":
@@ -717,6 +732,7 @@ export const CATALOG: Record<string, string> = {
   "Inndelingen er endret i mellomtiden (av deg eller noen andre). Lukk og åpne vinduet igjen.":
     "The division was changed in the meantime (by you or someone else). Close the window and open it again.",
   "Innhold:": "Contents:",
+  "Innholdet i filen stemmer ikke med filtypen.": "The file's content does not match its type.",
   "Innrykket tekst med små bokstaver tolket som replikk":
     "Indented lower-case text interpreted as dialogue",
   Innsatsnivå: "Effort level",
@@ -804,6 +820,7 @@ export const CATALOG: Record<string, string> = {
   "Laget som skal brukes som maske, finnes ikke i denne 2D-scenen":
     "The layer to be used as a mask does not exist in this 2D scene",
   "Lagret estimat": "Saved estimate",
+  "Lagringen svarte ikke. Prøv igjen.": "The storage did not respond. Try again.",
   "Lastes ned til maskinen din og lagres ikke i prosjektet. Innstillingene huskes per produksjon.":
     "Downloaded to your computer and not saved in the project. The settings are remembered per production.",
   "Lastet opp på nytt": "Re-uploaded",
@@ -823,6 +840,9 @@ export const CATALOG: Record<string, string> = {
   "Lengde, format og oppløsning passer.": "Length, format and resolution are fine.",
   "Lengden er": "Length is",
   "Lengden må være {0}–{1} sekunder": "The length must be {0}–{1} seconds",
+  "Lenken er utløpt eller tilbakekalt.": "The link has expired or been revoked.",
+  "Lenken er utløpt eller tilbakekalt. Be om en ny QR-kode.":
+    "The link has expired or been revoked. Ask for a new QR code.",
   "leverandør: {0}": "provider: {0}",
   "Leverandøren ble ikke ferdig med videoen innen sju dager.":
     "The provider did not finish the video within seven days.",
@@ -878,6 +898,7 @@ export const CATALOG: Record<string, string> = {
     "Needs a reference image – it changes an image, it does not create from text alone",
   "Må ha startbilde": "Needs a start image",
   mål: "targets",
+  "Målet finnes ikke i prosjektet.": "The target does not exist in the project.",
   Målscenen: "The target scene",
   "Målscenen brukes også i en annen produksjon (for eksempel en spinoff) og kan ikke slås sammen herfra. Gi den andre produksjonen egen versjon av scenen først.":
     "The target scene is also used in another production (for example a spin-off) and cannot be merged from here. Give the other production its own version of the scene first.",
@@ -939,6 +960,7 @@ export const CATALOG: Record<string, string> = {
   Nei: "No",
   "Nettadressene må begynne med https:// (eller http://).":
     "The web addresses must start with https:// (or http://).",
+  "Noe gikk galt. Prøv igjen.": "Something went wrong. Try again.",
   "Noen andre endret det samme samtidig. Hent siste versjon og prøv igjen.":
     "Someone else changed the same thing at the same time. Fetch the latest version and try again.",
   "Noen andre har endret dette i mellomtiden": "Someone else has changed this in the meantime",
@@ -1335,6 +1357,8 @@ export const CATALOG: Record<string, string> = {
     "Take {0}: segment belongs to another occurrence",
   "Take {0}: ugyldig varighet": "Take {0}: invalid duration",
   "Take {0}: ukjent forekomst": "Take {0}: unknown occurrence",
+  "Taket for opplastinger på denne lenken er nådd.":
+    "The upload limit for this link has been reached.",
   "Tale fra tekst": "Speech from text",
   "Tar lengre tid enn vanlig ({0} så langt)": "Taking longer than usual ({0} so far)",
   tekst: "text",
@@ -1394,6 +1418,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig farge": "Invalid colour",
   "Ugyldig fargepalett": "Invalid colour palette",
   "Ugyldig felt": "Invalid field",
+  "Ugyldig fil": "Invalid file",
   "Ugyldig filinformasjon for filmen": "Invalid file information for the film",
   "Ugyldig filnavn": "Invalid file name",
   "Ugyldig forespørsel": "Invalid request",
@@ -1420,6 +1445,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig kobling": "Invalid link",
   "Ugyldig kommando": "Invalid command",
   "Ugyldig kommando-ID": "Invalid command ID",
+  "Ugyldig kontekst": "Invalid context",
   "Ugyldig kontinuitetshendelse": "Invalid continuity event",
   "Ugyldig kontrollsum": "Invalid checksum",
   "Ugyldig lag for masken": "Invalid layer for the mask",
@@ -1427,6 +1453,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig lagtype": "Invalid layer type",
   "Ugyldig lengde": "Invalid length",
   "Ugyldig lengde på lydfilen": "Invalid length of the audio file",
+  "Ugyldig lenke": "Invalid link",
   "Ugyldig lydklipp": "Invalid audio clip",
   "Ugyldig maske": "Invalid mask",
   "Ugyldig mediesti": "Invalid media path",
@@ -1527,6 +1554,7 @@ export const CATALOG: Record<string, string> = {
   "Ukjent feil": "Unknown error",
   "Ukjent felt i elementet ({0})": "Unknown field in the element ({0})",
   "Ukjent felt i stilprofilen": "Unknown field in the style profile",
+  "Ukjent fil": "Unknown file",
   "Ukjent handling": "Unknown action",
   "Ukjent leverandør": "Unknown provider",
   "Ukjent leverandør.": "Unknown provider.",
@@ -1624,6 +1652,8 @@ export const CATALOG: Record<string, string> = {
     "The video was started at the provider, but could not be registered here. It counts towards the cost limit.",
   "Videoen ble stoppet (innholdsregler eller ukjent feil).":
     "The video was stopped (content rules or unknown error).",
+  "Videoen er for stor (maks {0} MB). Del opp opptaket.":
+    "The video is too large (max {0} MB). Split the recording.",
   "Videoen kunne ikke lages.": "The video could not be made.",
   "Videoen kunne ikke lagres: {0}": "The video could not be saved: {0}",
   "Videoen kunne ikke startes: {0}": "The video could not be started: {0}",

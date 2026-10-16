@@ -32,24 +32,24 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | Modul | Navn | Krav | P0 | Implementert | Verifisert |
 |---|---|---|---|---|---|
 | CORE | Project Core | 120 | 57 | 120 | 117 |
-| SCRIPT | Screenplay Engine | 130 | 32 | 130 | 130 |
-| TIMELINE | Timeline & Assembly Engine | 107 | 29 | 107 | 107 |
-| LIBRARY | Resource Library | 83 | 10 | 72 | 68 |
+| SCRIPT | Screenplay Engine | 135 | 32 | 130 | 130 |
+| TIMELINE | Timeline & Assembly Engine | 108 | 29 | 107 | 107 |
+| LIBRARY | Resource Library | 96 | 10 | 84 | 80 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 39 | 39 |
 | COMPOSE | 2D Composition Engine | 75 | 14 | 75 | 74 |
 | CAMERA | Camera & Motion Engine | 32 | 2 | 32 | 32 |
-| AUDIO | Audio Engine | 42 | 2 | 42 | 42 |
+| AUDIO | Audio Engine | 69 | 2 | 42 | 42 |
 | PROMPT | Prompt Orchestration Engine | 58 | 15 | 54 | 50 |
-| PROVIDER | Provider Adapters | 46 | 6 | 44 | 39 |
-| QUALITYCOST | Quality & Cost Engine | 30 | 7 | 29 | 29 |
+| PROVIDER | Provider Adapters | 48 | 6 | 44 | 39 |
+| QUALITYCOST | Quality & Cost Engine | 31 | 7 | 29 | 29 |
 | QUEUE | Render Queue | 36 | 13 | 36 | 33 |
-| VERSION | Version & Dependency Engine | 93 | 38 | 91 | 90 |
+| VERSION | Version & Dependency Engine | 97 | 38 | 91 | 90 |
 | L10N | Localization Engine | 40 | 4 | 39 | 39 |
 | PRESENT | Presentation Engine | 30 | 3 | 25 | 25 |
-| EXPORT | Export Engine | 59 | 12 | 59 | 59 |
-| SECURITY | Security & Storage | 38 | 5 | 37 | 37 |
-| COLLAB | Collaboration & Access | 16 | 0 | 16 | 16 |
-| UI | Brukergrensesnitt og designsystem | 191 | 21 | 186 | 184 |
+| EXPORT | Export Engine | 60 | 12 | 59 | 59 |
+| SECURITY | Security & Storage | 44 | 5 | 43 | 42 |
+| COLLAB | Collaboration & Access | 21 | 0 | 21 | 21 |
+| UI | Brukergrensesnitt og designsystem | 204 | 21 | 193 | 190 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 7 | 5 |
 
 ## Dekning per fase
@@ -64,7 +64,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | 6 | 49 | 48 |
 | 7 | 63 | 62 |
 | 8 | 39 | 25 |
-| Tverrgående/prosess | 40 | 5 |
+| Tverrgående/prosess | 85 | 21 |
 
 ## Matrise
 
@@ -737,3 +737,48 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0665 | Beslutning DEC-0089 | COMPOSE, UI | src/app/scene-editor/SceneScriptPanel.tsx, src/core/assembly/film.ts | 2 | tests/unit/dec0089-script-in-scene.test.ts, tests/visual/dec0089-script-panel-ui.mjs, docs/development/VISUAL_QA_DEC-0089.md | Verifisert | 2026-10-16 DEC-0089: Opprettet etter Mars' ønske 16.10.2026 |
 | REQ-0666 | Beslutning DEC-0089 | SCRIPT, UI | src/app/scene-editor/SceneScriptDialog.tsx, src/app/script/Inspector.tsx | 1 | tests/visual/dec0089-script-panel-ui.mjs, docs/development/VISUAL_QA_DEC-0089.md | Verifisert | 2026-10-16 DEC-0089: Opprettet etter Mars' ønske 16.10.2026 |
 | REQ-0667 | Beslutning DEC-0089 | COMPOSE, UI | src/app/scene-editor/ScenePanels.tsx, src/app/scene-editor/panel-layout.ts, src/app/scene-editor/use-scene-panels.ts | 3 | tests/unit/scene-panels.test.ts, tests/visual/dec0089-script-panel-ui.mjs, tests/visual/scene-panels-ui.mjs, docs/development/VISUAL_QA_DEC-0089.md | Verifisert | 2026-10-16 DEC-0089: Opprettet etter Mars' ønske 16.10.2026 |
+| REQ-0668 | Beslutning DEC-0090 | LIBRARY, UI | src/app/projects/ProjectOverview.tsx, src/app/mobile/MobileImportDialog.tsx, src/app/mobile/QrCode.tsx | 1 | tests/visual/dec0090-mobile-ui.mjs, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
+| REQ-0669 | Beslutning DEC-0090 | UI | src/app/mobile/MobilePage.tsx, src/routes/m.$token.tsx | 1 | tests/visual/dec0090-mobile-ui.mjs, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
+| REQ-0670 | Beslutning DEC-0090 | LIBRARY, UI | src/app/mobile/MobileImportDialog.tsx, src/app/library/AssetDetail.tsx, src/app/scene-editor/LayerImageDialog.tsx, src/app/scene-editor/SceneEditorWorkspace.tsx | 1 | tests/visual/dec0090-mobile-ui.mjs, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
+| REQ-0671 | Beslutning DEC-0090 | LIBRARY, SECURITY | src/core/mobile/index.ts, src/adapters/mobile/mobile.functions.ts, src/app/mobile/use-mobile-imports.ts | 3 | tests/unit/mobile-import.test.ts, tests/unit/mobile-server.test.ts, tests/visual/dec0090-mobile-ui.mjs, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
+| REQ-0672 | Beslutning DEC-0090 | LIBRARY | src/app/library/LibraryWorkspace.tsx, db/migrations/0035_mobile_import.sql | 2 | tests/db/run-db-tests.ts, tests/visual/dec0090-mobile-ui.mjs, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
+| REQ-0673 | Beslutning DEC-0090 | LIBRARY, UI | src/app/mobile/MobilePage.tsx, src/app/mobile/upload-queue.ts | 2 | tests/unit/mobile-import.test.ts, tests/visual/dec0090-mobile-ui.mjs, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
+| REQ-0674 | Beslutning DEC-0090 | LIBRARY | src/app/mobile/MobilePage.tsx | 1 | tests/visual/dec0090-mobile-ui.mjs, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
+| REQ-0675 | Beslutning DEC-0090 | LIBRARY | src/app/mobile/MobilePage.tsx, src/app/mobile/mobile-actions.tsx, src/app/assembly/film-import.ts | 2 | tests/unit/mobile-import.test.ts, tests/visual/dec0090-mobile-ui.mjs, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
+| REQ-0676 | Beslutning DEC-0090 | LIBRARY, UI | src/app/mobile/MobileImportLibrary.tsx, src/app/library/LibraryWorkspace.tsx | 1 | tests/visual/dec0090-mobile-ui.mjs, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
+| REQ-0677 | Beslutning DEC-0090 | LIBRARY, COLLAB | src/adapters/browser/mobile-import.ts, src/app/mobile/use-mobile-imports.ts, src/app/mobile/MobileImportDialog.tsx | 1 | tests/visual/dec0090-mobile-ui.mjs, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
+| REQ-0678 | Beslutning DEC-0090 | SECURITY, COLLAB | db/migrations/0035_mobile_import.sql, src/adapters/mobile/mobile.functions.ts | 2 | tests/db/run-db-tests.ts, tests/unit/mobile-server.test.ts, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
+| REQ-0679 | Beslutning DEC-0090 | SECURITY, LIBRARY | src/core/mobile/index.ts | 1 | tests/unit/mobile-import.test.ts, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
+| REQ-0680 | Beslutning DEC-0090 | SECURITY, LIBRARY | db/migrations/0035_mobile_import.sql, src/app/mobile/upload-queue.ts | 2 | tests/db/run-db-tests.ts, tests/unit/mobile-import.test.ts, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
+| REQ-0681 | Beslutning DEC-0090 | COLLAB, UI | src/app/mobile/MobilePage.tsx | 1 | tests/visual/dec0090-mobile-ui.mjs, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
+| REQ-0682 | Beslutning DEC-0090 | SECURITY, COLLAB | src/adapters/mobile/mobile.functions.ts, db/migrations/0035_mobile_import.sql, src/app/mobile/MobileImportLibrary.tsx | 3 | tests/db/run-db-tests.ts, tests/unit/mobile-server.test.ts, tests/visual/dec0090-mobile-ui.mjs, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
+| REQ-0683 | Beslutning DEC-0090 | COLLAB, LIBRARY | src/app/mobile/MobilePage.tsx, src/app/mobile/MobileImportLibrary.tsx, src/app/mobile/use-mobile-imports.ts | 2 | tests/visual/dec0090-mobile-ui.mjs, tests/db/run-db-tests.ts, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
+| REQ-0684 | Beslutning DEC-0090 | AUDIO, UI | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk B) |
+| REQ-0685 | Beslutning DEC-0090 | AUDIO, SCRIPT | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk B) |
+| REQ-0686 | Beslutning DEC-0090 | AUDIO | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk B) |
+| REQ-0687 | Beslutning DEC-0090 | AUDIO, UI | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk B) |
+| REQ-0688 | Beslutning DEC-0090 | AUDIO, VERSION | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk B) |
+| REQ-0689 | Beslutning DEC-0090 | AUDIO, UI | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk B) |
+| REQ-0690 | Beslutning DEC-0090 | AUDIO | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk B) |
+| REQ-0691 | Beslutning DEC-0090 | AUDIO, UI | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk C) |
+| REQ-0692 | Beslutning DEC-0090 | AUDIO | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk C) |
+| REQ-0693 | Beslutning DEC-0090 | AUDIO, VERSION | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk C) |
+| REQ-0694 | Beslutning DEC-0090 | AUDIO, TIMELINE | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk C) |
+| REQ-0695 | Beslutning DEC-0090 | AUDIO, VERSION | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk C) |
+| REQ-0696 | Beslutning DEC-0090 | AUDIO, EXPORT | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk C) |
+| REQ-0697 | Beslutning DEC-0090 | AUDIO | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk C) |
+| REQ-0698 | Beslutning DEC-0090 | AUDIO, PROVIDER | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk D) |
+| REQ-0699 | Beslutning DEC-0090 | PROVIDER, QUALITYCOST | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk D) |
+| REQ-0700 | Beslutning DEC-0090 | AUDIO, SCRIPT | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk D) |
+| REQ-0701 | Beslutning DEC-0090 | AUDIO | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk D) |
+| REQ-0702 | Beslutning DEC-0090 | AUDIO | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk D) |
+| REQ-0703 | Beslutning DEC-0090 | SCRIPT, AUDIO, VERSION | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk D) |
+| REQ-0704 | Beslutning DEC-0090 | AUDIO, SCRIPT | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk D) |
+| REQ-0705 | Beslutning DEC-0090 | AUDIO, UI | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk E) |
+| REQ-0706 | Beslutning DEC-0090 | AUDIO | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk E) |
+| REQ-0707 | Beslutning DEC-0090 | AUDIO, SCRIPT | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk E) |
+| REQ-0708 | Beslutning DEC-0090 | AUDIO | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk E) |
+| REQ-0709 | Beslutning DEC-0090 | AUDIO | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk E) |
+| REQ-0710 | Beslutning DEC-0090 | AUDIO, UI | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk E) |
+| REQ-0711 | Beslutning DEC-0090 | UI, SECURITY | src/app/mobile/MobilePage.tsx | 0 | – | Implementert – ikke verifisert | 2026-10-16 DEC-0090: Bygget i bolk A; må prøves på iPhone og Android av Mars |
+| REQ-0712 | Beslutning DEC-0090 | AUDIO, LIBRARY | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk E) |

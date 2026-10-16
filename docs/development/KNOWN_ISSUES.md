@@ -229,4 +229,12 @@
 | KI-225 | 2026-10-15 | ‹ › for oppgaven i toppstripen (DEC-0088) regner fra sist valgte scene i fanen; utenfor manus og sceneeditor åpnes sceneeditoren | – | – | Akseptert begrensning |
 | KI-226 | 2026-10-16 | I manusvinduet i sceneeditoren (DEC-0089) kan man ikke merke enkeltord og velge «Legg til notat»; notat på hele elementet finnes i inspektøren | Notater på enkeltord må lages på Manus-siden | Bruk Manus-siden | Akseptert begrensning |
 | KI-227 | 2026-10-16 | Markeringen i panelet «Manus» bygger på tidene i filmen; en deaktivert scene (ikke i filmen) får ingen markering, og uten tidskobling eller lyd er tidene anslått | Markeringen kan ligge litt foran eller bak | Sett tidskoblinger | Akseptert begrensning |
+| KI-228 | 2026-10-16 | Video tatt for en ressurs (f.eks. Maja) blir ikke en versjon av ressursen – ressursversjoner er bilder. Videoen står i «Mobilimport», knyttet til ressursen | Videoen må hentes fra mobilimporten | Ta video fra scenen («Bruk som film for scenen») | Akseptert begrensning |
+| KI-229 | 2026-10-16 | Bilder fra mobilen blir versjoner først når en redaktør har prosjektet åpent i nettleseren (samme måte som AI-video, DEC-0087) | Bildene ligger i mobilimporten til da | Åpne prosjektet | Akseptert begrensning |
+| KI-230 | 2026-10-16 | HEIC-bilder tas ikke imot. iPhone gjør vanligvis om til JPEG ved opplasting fra nettleseren | Sjelden avvisning med forklaring | Velg «Mest kompatibel» i kamerainnstillingene | Akseptert begrensning |
+| KI-231 | 2026-10-16 | Hurtigfoto bruker kamerastrømmen i nettleseren; oppløsningen kan være lavere enn i kamera-appen | Litt mindre bilder | Ta bilder i kamera-appen og bruk «Velg bilder» | Akseptert begrensning |
+| KI-232 | 2026-10-16 | Opplasting vises som «sendes»/«sendt», ikke i prosent | – | – | Akseptert begrensning |
+| KI-233 | 2026-10-16 | Køen på telefonen ligger i nettleserens lager; Safari kan tømme det etter 7 dager uten besøk, og private vinduer lagrer ikke (siden advarer) | Usendte filer kan gå tapt om siden ikke åpnes igjen | Send mens du har nett, eller åpne siden igjen | Akseptert begrensning |
+| KI-234 | 2026-10-16 | Mobilimporten (øktene og filene som ikke er blitt versjoner) er ikke med i sikkerhetskopien av prosjektet | – | Bilder som er blitt versjoner, er med | Akseptert begrensning |
+| KI-235 | 2026-10-16 | Bolk A er ikke prøvd på ekte iPhone og Android (testene bruker Chromiums falske kamera) | – | Mars prøver | Åpen |
 

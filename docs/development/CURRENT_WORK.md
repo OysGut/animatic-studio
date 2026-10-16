@@ -2,7 +2,12 @@
 
 Oppdatert: 2026-10-16 (økt 6, DEC-0061–0089)
 
-## Nå: DEC-0089 – manuset i sceneeditoren og paneler som lukkes – ferdig, venter på Mars
+## Nå: DEC-0090 fase 2, bolk A – mobilbro, bilder og video, deling – ferdig, venter på Mars
+- Bygget: QR-koder per kontekst, mobilsiden med hurtigfoto, video og deling, sikre opplastingsøkter, mobilimport i biblioteket, bilder blir nye versjoner i riktig ressurs.
+- Venter: migrasjon 0035 og pakken i Lovable; prøving på iPhone og Android; OK til bolk B.
+- Akseptansekriterier: REQ-0668–0683 og REQ-0711 (se VISUAL_QA_DEC-0090A.md).
+
+## Før: DEC-0089 – manuset i sceneeditoren og paneler som lukkes – ferdig, venter på Mars
 - Bygget: panelet «Manus» (lesevisning med markering under avspilling), «Rediger manus …» i eget vindu med forrige/neste scene til lesing, lukking og åpning av alle panelene (huskes på kontoen).
 - Akseptansekriterier: REQ-0665–0667 (verifisert, se VISUAL_QA_DEC-0089.md).
 

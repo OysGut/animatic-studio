@@ -27,6 +27,7 @@ import {
   defaultLayerFields,
   compositionOfVariant,
   formatHeading,
+  sceneNumberOf,
   framesToSeconds,
   layerVersion,
   layerVersions,
@@ -74,6 +75,8 @@ import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { NeighbourScenes } from "./NeighbourScenes";
 import { PanelBar, SidePanels, StackedPanels } from "./ScenePanels";
 import { SceneScriptPanel } from "./SceneScriptPanel";
+import { MobileCameraButton } from "@/app/mobile/MobileImportDialog";
+import { SceneMobileActions } from "@/app/mobile/mobile-actions";
 import { SceneScriptDialog } from "./SceneScriptDialog";
 import { useProfiles } from "@/app/project/use-project";
 import { useScenePanels } from "./use-scene-panels";
@@ -695,6 +698,25 @@ function Editor({
             {/* Under 1400 px bare ikon (med verktøytips), så scenevelgeren får plass */}
             <span className="sr-only min-[1400px]:not-sr-only">{L("Opptak", "Recording")}</span>
           </Button>
+        ) : null}
+        {/* Bilder og video fra mobilen til denne scenen (DEC-0090): én QR-kode per scene */}
+        {roleEditable && occurrence && variant ? (
+          <MobileCameraButton
+            projectId={projectId}
+            context={{ type: "occurrence", occurrenceId: occurrence.id }}
+            label={L(
+              `Scene ${sceneNumberOf(state, occurrence) ?? ""} · ${formatHeading(variant.heading)}`,
+              `Scene ${sceneNumberOf(state, occurrence) ?? ""} · ${formatHeading(variant.heading)}`,
+            )}
+            actions={(row) => (
+              <SceneMobileActions
+                state={state}
+                cmds={cmds}
+                occurrenceId={occurrence.id}
+                row={row}
+              />
+            )}
+          />
         ) : null}
         {occurrence ? (
           <Button

@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **667**
-- Prioritet: P0: 145, P1: 336, P2: 147, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 140, teknisk-anbefaling: 7
-- Status: Verifisert: 593, Implementert – ikke verifisert: 12, Under arbeid: 3, Ikke startet: 59
+- Antall krav: **712**
+- Prioritet: P0: 145, P1: 381, P2: 147, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 185, teknisk-anbefaling: 7
+- Status: Verifisert: 609, Implementert – ikke verifisert: 13, Under arbeid: 3, Ikke startet: 87
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -9119,3 +9119,524 @@ Hvert panel i sceneeditoren (I denne scenen, Lyd i scenene rundt, Lag, Egenskape
   - tests/visual/dec0089-script-panel-ui.mjs
   - tests/visual/scene-panels-ui.mjs
 - **Implementering:** src/app/scene-editor/ScenePanels.tsx, src/app/scene-editor/panel-layout.ts, src/app/scene-editor/use-scene-panels.ts
+
+#### REQ-0668 – Mobilimport fra prosjektsiden med QR-kode som vises med en gang
+Prosjektsiden har «Importer fra mobil». Vinduet viser straks en QR-kode for prosjektet (ingen egen knapp for å vise den). Skanning med telefonens vanlige kamera åpner mobilsiden for prosjektet; ferdig opplastede filer blir tilgjengelige i prosjektet uten import på datamaskinen.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** LIBRARY, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - M1: QR-koden vises uten ekstra klikk.
+  - M2: skanning åpner riktig mobilside.
+- **Tester:**
+  - tests/visual/dec0090-mobile-ui.mjs
+- **Implementering:** src/app/projects/ProjectOverview.tsx, src/app/mobile/MobileImportDialog.tsx, src/app/mobile/QrCode.tsx
+
+#### REQ-0669 – Mobilsiden: enkel, responsiv og bare det økten trenger
+Mobilsiden er laget for iPhone og Android med store kontroller, og viser bare funksjonene som hører til økten (ta bilde, flere bilder, video, lyd, velge eksisterende bilder, video og lydfiler). Hele arbeidsgrensesnittet åpnes ikke på mobilen.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** ux · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Bare relevante funksjoner vises for økten.
+  - Siden virker på smal skjerm.
+- **Tester:**
+  - tests/visual/dec0090-mobile-ui.mjs
+- **Implementering:** src/app/mobile/MobilePage.tsx, src/routes/m.$token.tsx
+
+#### REQ-0670 – Kameraikon øverst til høyre i bilde- og videodialoger
+Dialoger og paneler som arbeider med bilder eller video, har et kameraikon øverst til høyre (samme plass overalt). Klikk åpner en popup med QR-koden med en gang og forklarer hvor bildene havner (f.eks. «bildene legges til Maja»). Filene dukker opp i den åpne dialogen.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** LIBRARY, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - K1–K3: kameraikon hos Maja viser QR straks; bildet dukker opp i Majas dialog.
+- **Tester:**
+  - tests/visual/dec0090-mobile-ui.mjs
+- **Implementering:** src/app/mobile/MobileImportDialog.tsx, src/app/library/AssetDetail.tsx, src/app/scene-editor/LayerImageDialog.tsx, src/app/scene-editor/SceneEditorWorkspace.tsx
+
+#### REQ-0671 – Én QR-kode per kontekst – alt havner rett
+Hver kontekst får sin egen QR-kode og opplastingsøkt: prosjekt, karakter, objekt, miljø/lokasjon, scene (hver scene sin kode), bildeplass i sceneeditoren, lydressurs og replikk. Systemet husker hvor importen ble startet og registrerer filen der; det gjør den ikke til aktiv hovedreferanse. Én fil kan ha flere koblinger uten å dupliseres.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** LIBRARY, SECURITY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - K6: import til objekt, miljø eller scene havner i riktig kontekst.
+  - K7: nytt materiale erstatter ikke godkjente ressurser.
+  - Ulike scener gir ulike QR-koder.
+- **Tester:**
+  - tests/unit/mobile-import.test.ts
+  - tests/unit/mobile-server.test.ts
+  - tests/visual/dec0090-mobile-ui.mjs
+- **Implementering:** src/core/mobile/index.ts, src/adapters/mobile/mobile.functions.ts, src/app/mobile/use-mobile-imports.ts
+
+#### REQ-0672 – Import til en ressurs som ikke er lagret ennå
+Fra en ny ressurs (f.eks. ny karakter) knyttes importen til en midlertidig kontekst. Når ressursen lagres, knyttes filene til den permanente ressursen. Avbrytes opprettelsen, blir filene liggende som uknyttede i mobilimportbiblioteket.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** LIBRARY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - K4–K5: bilder tatt før lagring knyttes til karakteren ved lagring.
+  - Avbrutt opprettelse: filene finnes i Mobilimport.
+- **Tester:**
+  - tests/db/run-db-tests.ts
+  - tests/visual/dec0090-mobile-ui.mjs
+- **Implementering:** src/app/library/LibraryWorkspace.tsx, db/migrations/0035_mobile_import.sql
+
+#### REQ-0673 – Hurtigfotografering med automatisk opplasting og kø
+Mobilsiden har en hurtigmodus: brukeren tar bilde etter bilde uten å velge fil, bekrefte eller starte på nytt. Hvert bilde legges i opplastingskøen og sendes mens brukeren fortsetter; status vises; ved ustabilt nett venter bildene i kø. Kameraet tar aldri bilder uten brukerens handling; tydelig «Ferdig».
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** LIBRARY, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - M3: flere bilder etter hverandre uten bekreftelse.
+  - Bilder i kø sendes når nettet er tilbake.
+- **Tester:**
+  - tests/unit/mobile-import.test.ts
+  - tests/visual/dec0090-mobile-ui.mjs
+- **Implementering:** src/app/mobile/MobilePage.tsx, src/app/mobile/upload-queue.ts
+
+#### REQ-0674 – Velge eksisterende bilder, video og lyd på telefonen
+Mobilsiden lar brukeren velge filer som allerede finnes på telefonen, flere samtidig der plattformen støtter det.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** LIBRARY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - M5: eksisterende bilde fra telefonens bibliotek importeres.
+- **Tester:**
+  - tests/visual/dec0090-mobile-ui.mjs
+- **Implementering:** src/app/mobile/MobilePage.tsx
+
+#### REQ-0675 – Videoimport fra mobilen
+Brukeren kan ta opp eller velge video, forhåndsvise og laste opp. Videoen knyttes til konteksten (scene eller videodialog), originalfilen bevares, og programmet lager forhåndsvisning og leser metadata (varighet, størrelse).
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** LIBRARY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - M6: video tatt opp eller valgt og lastet opp.
+- **Tester:**
+  - tests/unit/mobile-import.test.ts
+  - tests/visual/dec0090-mobile-ui.mjs
+- **Implementering:** src/app/mobile/MobilePage.tsx, src/app/mobile/mobile-actions.tsx, src/app/assembly/film-import.ts
+
+#### REQ-0676 – Mobilimportbiblioteket
+Alle filer fra mobilbroen registreres i ressursbiblioteket i en egen visning «Mobilimport» med filter for bilder, video, lyd, dato, importøkt, ressurskobling og bidragskilde. Bilder har miniatyr, video og lyd kan spilles av. Originalene bevares og ingenting godkjent overskrives.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** LIBRARY, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - M4: bildene står i Mobilimport.
+  - Filtrene virker.
+- **Tester:**
+  - tests/visual/dec0090-mobile-ui.mjs
+- **Implementering:** src/app/mobile/MobileImportLibrary.tsx, src/app/library/LibraryWorkspace.tsx
+
+#### REQ-0677 – Sanntid mellom mobil og datamaskin
+Når mobilen laster opp, oppdateres prosjektet på datamaskinen uten oppfriskning, også i åpne ressursdialoger. Importvinduet viser om mobilen er tilkoblet, antall mottatte filer, siste fil, pågående opplastinger og feil. En fil er ikke mottatt før serveren har bekreftet den.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** LIBRARY, COLLAB
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - M7: filer vises på datamaskinen uten oppfriskning.
+- **Tester:**
+  - tests/visual/dec0090-mobile-ui.mjs
+- **Implementering:** src/adapters/browser/mobile-import.ts, src/app/mobile/use-mobile-imports.ts, src/app/mobile/MobileImportDialog.tsx
+
+#### REQ-0678 – Sikre opplastingsøkter
+Hver QR-kode og lenke er en opplastingsøkt med et langt tilfeldig token som bare gir rett til å laste opp i sin kontekst. Eier og redaktør kan lage økter. Egen QR-kode krever ikke innlogging på telefonen, gjelder 2 timer og merkes med brukerens navn. Utløp, tilbakekalling, kontroll av filtype og størrelse og begrensning av misbruk håndheves på serveren; mobilsiden får aldri skriverett til andre databaseobjekter, og alle filer registreres kontrollert.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** sikkerhet · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** SECURITY, COLLAB
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Utløpt eller tilbakekalt token avvises.
+  - Feil filtype og for store filer avvises.
+  - Token gir ingen lesing av manus eller andre data.
+- **Tester:**
+  - tests/db/run-db-tests.ts
+  - tests/unit/mobile-server.test.ts
+- **Implementering:** db/migrations/0035_mobile_import.sql, src/adapters/mobile/mobile.functions.ts
+
+#### REQ-0679 – Størrelsesgrense for video (fjernes i desktopversjonen)
+En videofil kan være inntil 500 MB i nettversjonen (lagringen i Lovable Cloud). Lengre opptak må deles opp. Den dagen en desktopversjon lages, fjernes grensen der uten nytt spørsmål til Mars.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** ikke-funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** SECURITY, LIBRARY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Video over grensen avvises med forklaring.
+  - Notat om desktopversjonen står i TODO og kildekoden.
+- **Tester:**
+  - tests/unit/mobile-import.test.ts
+- **Implementering:** src/core/mobile/index.ts
+
+#### REQ-0680 – Opplasting uten duplikater
+Nye forsøk etter feil eller brutt forbindelse gir ikke duplikater (hver fil har en ID fra mobilen som serveren gjenkjenner). Flere samtidige opplastinger håndteres, og store filer lastes direkte til lagringen uten å gå gjennom appens server.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** ikke-funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** SECURITY, LIBRARY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - M8: feil under opplasting gir ikke duplikater.
+- **Tester:**
+  - tests/db/run-db-tests.ts
+  - tests/unit/mobile-import.test.ts
+- **Implementering:** db/migrations/0035_mobile_import.sql, src/app/mobile/upload-queue.ts
+
+#### REQ-0681 – «Del lenke» fra mobilsiden
+Mobilsiden har «Del lenke» som bruker telefonens egen delingsfunksjon (Web Share). Uten den kan lenken kopieres. Ingen egne SMS-, WhatsApp-, Messenger- eller e-postintegrasjoner.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** COLLAB, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - D1–D3: delingsfunksjonen åpnes, ellers kopier lenke.
+- **Tester:**
+  - tests/visual/dec0090-mobile-ui.mjs
+- **Implementering:** src/app/mobile/MobilePage.tsx
+
+#### REQ-0682 – Delt bidragslenke med egne, begrensede rettigheter
+En delt lenke beholder konteksten (f.eks. bilder av Maja), kan åpnes uten konto og gir bare opplasting. Den har egne rettigheter, atskilt fra den personlige QR-økten: gjelder 7 dager, kan tilbakekalles og har tak på antall filer og total størrelse. Manus, andre ressurser, prosjektinnstillinger og prosjektets AI-tjenester er utilgjengelige.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** sikkerhet · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** SECURITY, COLLAB
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - D4: åpnes uten konto.
+  - D5: manus og innstillinger kan ikke åpnes.
+  - D6: tilbakekalt lenke avvises.
+- **Tester:**
+  - tests/db/run-db-tests.ts
+  - tests/unit/mobile-server.test.ts
+  - tests/visual/dec0090-mobile-ui.mjs
+- **Implementering:** src/adapters/mobile/mobile.functions.ts, db/migrations/0035_mobile_import.sql, src/app/mobile/MobileImportLibrary.tsx
+
+#### REQ-0683 – Flere bidragsytere, sporbarhet og gjennomgang
+Flere personer kan sende til samme kontekst. Filer spores til økt eller lenke, og bidragsyteren kan oppgi et frivillig navn. En bidragsyter ser ikke andres opplastinger, bare sine egne i samme økt. Eksterne bidrag erstatter aldri aktive ressurser; de kommer inn som nye versjoner som godkjennes som før.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** COLLAB, LIBRARY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Bidragsyter ser bare egne opplastinger.
+  - Filen viser hvem som sendte den.
+- **Tester:**
+  - tests/visual/dec0090-mobile-ui.mjs
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/app/mobile/MobilePage.tsx, src/app/mobile/MobileImportLibrary.tsx, src/app/mobile/use-mobile-imports.ts
+
+#### REQ-0684 – Mikrofonikon og lydpopup med PC-opptak og QR samtidig
+Lydressursdialoger og dialogredigering har et mikrofonikon øverst til høyre. Det åpner en lydpopup der «Ta opp på denne datamaskinen» og QR-koden for mobilen vises samtidig fra første øyeblikk, for akkurat denne lydkonteksten.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO, UI
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - L1: PC-opptak og QR vises samtidig.
+  - L2: PC-opptak startes uten ekstra valg.
+- **Tester:**
+
+#### REQ-0685 – Hele dialogteksten vises under opptak
+Fra en replikk viser lydpopupen hele replikken med karakter og scene, med det valgte ordet eller området fremhevet. Teksten vises også på mobilsiden, så man kan lese fra telefonen.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO, SCRIPT
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - L3: mobilen viser dialogteksten og opptakskontrollene.
+- **Tester:**
+
+#### REQ-0686 – Lydopptak på PC med flere takes
+PC-opptak har start, stopp, spill av, ta opp på nytt, behold og velg. Mikrofontillatelse håndteres. Et nytt take overskriver aldri et tidligere.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Nytt take lagres ved siden av det forrige.
+- **Tester:**
+
+#### REQ-0687 – Lydopptak på mobil – brukeren velger hva som sendes
+Mobilopptak: start, stopp, hør, nytt opptak, tilbake til tidligere, sammenligne, velge ett eller flere og laste opp bare de valgte. Lyd lastes aldri opp automatisk når opptaket stopper.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO, UI
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - L4–L7: Take 01 og 02 kan høres og lastes opp hver for seg eller sammen.
+- **Tester:**
+
+#### REQ-0688 – Flere takes bevares
+Alle opptak bevares som egne takes med nummer og lengde. Et nytt take sletter aldri et tidligere. Et take kan velges som aktivt, eller deler brukes i en lydkomposisjon.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO, VERSION
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - L8: nytt take sletter ikke tidligere takes.
+- **Tester:**
+
+#### REQ-0689 – Opptaksstatus og lokal lagring på telefonen
+Det vises om et opptak bare er lokalt, valgt, lastes opp, er lastet opp eller feilet. Opptak lagres lokalt i nettleseren så langt den tillater; brukeren advares før siden forlates om noe ikke er sendt, og en feilet opplasting kan prøves igjen uten nytt opptak.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO, UI
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Feilet opplasting prøves igjen uten nytt opptak.
+  - Advarsel ved å forlate siden med usendte opptak.
+- **Tester:**
+
+#### REQ-0690 – Opptak av ren romlyd
+I opptaksvinduet (PC og mobil) kan brukeren ta opp noen sekunder ren romlyd, merket som romlyd, til bruk i dialogredigering og sammenklipping.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Romlydopptak merkes og kan velges som romlydressurs.
+- **Tester:**
+
+#### REQ-0691 – Integrert lydeditor
+Mikrofonikonet finnes også der eksisterende lyd redigeres. Editoren viser eksisterende lyd og nye takes med bølgeformer, tidslinje, avspillingshode, inn- og utpunkter, trim, flere spor ved behov og forhåndsavspilling av komposisjonen.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO, UI
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Eksisterende lyd og nytt take vises i samme vindu.
+- **Tester:**
+
+#### REQ-0692 – Ny lyd: erstatte, før, oppå, etter eller et mindre område
+Et nytt opptak kan erstatte hele lyden eller et markert område, settes inn før eller etter, legges oppå som eget spor, eller trimmes og erstatte bare et ord eller en frase. Resultatet kan forhåndshøres før det godkjennes.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - T10: ny lyd før, over eller etter eksisterende lyd.
+- **Tester:**
+
+#### REQ-0693 – Ikke-destruktiv lydkomposisjon
+Et redigert lydresultat er en komposisjon som beskriver kildefiler, områder, plassering, pauser, romlyd, overlapp, fades/crossfades, volum og varighet. Originalfiler og takes endres aldri, og resultatet kan gjenskapes fra komposisjonsdataene.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** data · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO, VERSION
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Komposisjonen gir samme lyd når den gjenskapes.
+  - Originalfilene er uendret.
+- **Tester:**
+
+#### REQ-0694 – Andre dialoger berøres aldri
+Redigering av én dialog flytter, strekker, forkorter eller overskriver aldri andre replikker eller lydklipp, og endrer ikke ferdige filmklipp. Alle andre replikker regnes som låste: overlapper komposisjonen en annen replikk, vises en konflikt som håndteres senere. Et nytt opptak tvinges ikke inn i et gammelt tidsrom; hastighet og tonehøyde endres aldri automatisk.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** prinsipp · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO, TIMELINE
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - P9: andre dialoger beholder lyd og tid.
+  - T7–T8: opptaket kan være lengre eller kortere.
+  - Overlapp vises som konflikt.
+- **Tester:**
+
+#### REQ-0695 – Angre og versjoner av lydkomposisjoner
+Pauseendringer, innsetting, klippgrenser og bytte av take kan angres. Brukeren kan gå tilbake til opprinnelig lyd, sammenligne komposisjoner og lagre en ny variant. Nye komposisjoner er versjoner som godkjennes på samme måte som andre versjoner.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO, VERSION
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Angre gjenoppretter forrige klippgrense.
+  - Ny variant krever godkjenning.
+- **Tester:**
+
+#### REQ-0696 – Lydeksport fra lydpopupen
+Fra samme vindu kan hele komposisjonen, et valgt område eller ett take eksporteres, lokalt eller som ny lydvariant i biblioteket. Formater: WAV og MP3, med valg av samplingsfrekvens, kanaler, filnavn og område. Eksporten flater ikke ut komposisjonen; den kan fortsatt redigeres.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO, EXPORT
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - E4–E6: hele, område og ett take.
+  - E7: originaler og komposisjon bevares.
+- **Tester:**
+
+#### REQ-0697 – Lydmotor for komposisjoner
+Forhåndsavspilling og eksport bruker samme komposisjonsbeskrivelse og samme beregning, så eksporten låter som det brukeren hørte: flere kilder, trim, innsetting, overlapp, volum, fades, crossfades, romlyd og pauser.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Eksportert lyd er lik forhåndsavspillingen (test på samples).
+- **Tester:**
+
+#### REQ-0698 – Ord-til-lyd-kobling med utskiftbar analysetjeneste
+Programmet kobler ordene i replikken til tidsrom i lyden (forced alignment) med manusteksten som utgangspunkt. Tjenesten er utskiftbar. Resultatet lagrer lyd-ID, replikk-ID, manusversjon, ord, start, slutt, usikkerhet, manuelle overstyringer og modell med versjon. Et nytt opptak analyseres uten å analysere alt på nytt; feiler analysen, virker manuell redigering.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO, PROVIDER
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Resultatformatet er uavhengig av tjenesten.
+  - Manuell redigering virker uten analyse.
+- **Tester:**
+
+#### REQ-0699 – Valg av analysetjeneste der brukeren er
+Brukeren velger selv analysetjeneste (først ElevenLabs Forced Alignment, deretter f.eks. WhisperX via en vertstjeneste) eller manuell kobling, direkte i dialogeditoren uten å gå til en innstillingsside. Valget huskes. Analysen bruker brukerens egen nøkkel og krever kostnadsgodkjenning som annen AI. Norsk bokmål, nynorsk, dialekter og egennavn prøves før tjenesten anbefales.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** PROVIDER, QUALITYCOST
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Valget av tjeneste huskes.
+  - Kostnaden vises og godkjennes før analysen.
+- **Tester:**
+
+#### REQ-0700 – Klikk og markér ord i teksten for å velge lyd
+Dialogeditoren viser replikken som en aktiv del av redigeringen. Klikk på et ord markerer lyden for ordet; markering av flere ord, en setning eller hele replikken markerer det samlede tidsrommet. Grensene kan justeres manuelt, usikre koblinger vises tydelig, og markeringen brukes til avspilling, opptak, trim og erstatning.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO, SCRIPT
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - T1: ett ord gir riktig lydområde.
+  - T2: to ord gir samlet område.
+- **Tester:**
+
+#### REQ-0701 – Avspilling med kontekst
+Et markert område kan spilles med justerbar lyd før og etter, eller alene. Ny tekst uten lyd spiller omkringliggende dialoglyd der den finnes.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - T3: hel setning høres med kontekst.
+- **Tester:**
+
+#### REQ-0702 – Erstatte ett ord eller en frase
+Et markert ord eller en frase kan tas opp på nytt, trimmes og plasseres i riktig tidsrom med finjusterbare klippgrenser og fades/crossfades. Originalen bevares og hele replikken trenger ikke tas opp igjen.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - T9: bare ett ord erstattes.
+- **Tester:**
+
+#### REQ-0703 – Status for tekst mot lyd
+Endret dialog vises med status: synkronisert, ny tekst uten lyd, endret tekst med gammel lyd, nytt opptak til gjennomgang og godkjent oppdatert. Status vises med farge og et annet tegn (ikke bare farge) og påvirker ikke manuseksporten.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** SCRIPT, AUDIO, VERSION
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - T4: ny tekst uten lyd merkes.
+  - T5: endret tekst med eldre lyd merkes.
+- **Tester:**
+
+#### REQ-0704 – Ny eller endret setning: ta opp bare det som mangler
+Systemet finner ny tekst uten lyd (f.eks. en ny setning) og endret frase. Brukeren markerer den, mikrofonikonet åpner opptak med teksten fremhevet, og opptaket foreslås plassert riktig (etter, før, i stedet for, eller oppå). Plasseringen kan endres, ny frase får naturlig lengde, den gamle lyden bevares, og komposisjonen godkjennes før den tas i bruk.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO, SCRIPT
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - T6: bare den nye setningen spilles inn og plasseres riktig.
+- **Tester:**
+
+#### REQ-0705 – Endre pauser mellom ord
+I en egen tidsredigeringsmodus kan avstanden mellom to ord økes eller reduseres ved å dra dem fra hverandre, uten nytt opptak og uten å endre ordenes lyd. Vanlig markering og redigering av tekst endrer aldri timingen.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO, UI
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - P1: pausen mellom to ord økes.
+  - P2: ordenes lyd er uendret.
+- **Tester:**
+
+#### REQ-0706 – Pauser mellom flere ord
+Når flere ord dras fra hverandre, fordeles den ekstra tiden likt mellom de indre mellomrommene (600 ms over tre ord gir 300 + 300 ms). Hver pause kan justeres for seg etterpå.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - P3–P5: tiden fordeles likt og kan justeres.
+- **Tester:**
+
+#### REQ-0707 – Pausene vises bare i produksjonsvisningen
+Lengre pauser vises som større avstand mellom ordene i tidsredigeringsmodus. Manusteksten og eksportert manus får aldri ekstra mellomrom eller tegn; tekst og tid holdes atskilt.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** prinsipp · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO, SCRIPT
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Manuseksporten er uendret etter pauseendringer.
+- **Tester:**
+
+#### REQ-0708 – Naturlig romlyd i pauser
+Forlengede pauser fylles som standard med romlyd fra samme opptak, fra partier uten tale, klikk, bevegelser, markerte hendelser eller upassende pust. Er romlyden for kort, settes flere biter sammen med crossfade og uten tydelig gjentakelse; finnes ingen egnet romlyd, varsles brukeren. Valg: naturlig romlyd (standard), digital stillhet, valgt romlydressurs eller manuelt redigert pause. Tale endres aldri i hastighet eller tonehøyde. Romlydfylling er en hjelp, ikke en garanti for sømløst resultat.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - P6: nye pauser fylles med romlyd.
+  - P7: digital stillhet kan velges.
+- **Tester:**
+
+#### REQ-0709 – Romlyd i overganger mellom takes
+Romlyd kan brukes til å myke opp overganger mellom ulike takes. Overgangene kan forhåndshøres og justeres; romlyd fra ulike opptak antas ikke å være lik.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Overgang mellom to takes kan justeres og høres.
+- **Tester:**
+
+#### REQ-0710 – «Spill av automatisk etter endring»
+Dialogeditoren har avkrysningen «Spill av automatisk etter endring». Når den er på, spilles det endrede området med justerbar kontekst når en endring er fullført (ikke mens man drar), og nye avspillinger legges ikke oppå tidligere. Av: ingen automatisk avspilling.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO, UI
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - E1–E3: av/på virker.
+  - P8: resultatet kan forhåndshøres.
+- **Tester:**
+
+#### REQ-0711 – Nettleserkompatibilitet for kamera, mikrofon og deling
+Kamera, mikrofon (MediaDevices/MediaRecorder), filvalg, Web Share, store opplastinger, sanntid og lokal lagring verifiseres på iPhone (Safari) og Android (Chrome) over HTTPS. Tillatelser spørres alltid først og respekteres.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** ikke-funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** UI, SECURITY
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Kontrollert på iPhone og Android (dokumentert).
+- **Tester:**
+- **Implementering:** src/app/mobile/MobilePage.tsx
+
+#### REQ-0712 – Ytelse og pålitelighet
+Flere samtidige mobilopplastinger, store videofiler og responsive bølgeformer og tekstmarkering uten at appen blir ustabil; tydelige feil- og statusmeldinger.
+
+- **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** ikke-funksjonell · **Prioritet:** P1 · **Fase:** –
+- **Moduler:** AUDIO, LIBRARY
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Flere samtidige opplastinger i test.
+  - Bølgeform for lang replikk tegnes raskt.
+- **Tester:**

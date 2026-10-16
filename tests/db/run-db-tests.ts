@@ -3413,6 +3413,163 @@ try {
     );
   });
 
+  await test("0035 (DEC-0090): opplastingsøkter, tak, tilbakekalling, RLS og behandling av mobilimport", async () => {
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 35, "schema_version er ikke 35");
+    const { createHash } = await import("node:crypto");
+    const h = (t: string) => createHash("sha256").update(t).digest("hex");
+    const mk = async (token: string, extra: Record<string, unknown> = {}) => {
+      const [r] = await sql`insert into public.upload_sessions ${sql({
+        project_id: projectId,
+        token_hash: h(token),
+        kind: "personal",
+        created_by: ALICE,
+        context: sql.json({ type: "project" }) as never,
+        label: "Test",
+        expires_at: new Date(Date.now() + 3600_000),
+        max_files: 3,
+        max_bytes: 1000,
+        ...extra,
+      } as never)} returning id`;
+      return r!["id"] as string;
+    };
+    const reg = (token: string, client: string, bytes = 100, kind = "image") =>
+      as(
+        "service_role",
+        null,
+        (tx) =>
+          tx`select (public.mobile_register_upload(${h(token)}, ${client}, ${`${projectId}/source/mobile/x/${client}.jpg`}, ${kind}, 'image/jpeg', ${bytes}, 'a.jpg', 'Kari')).*`,
+      ).then((r) => r[0]!);
+    const c1 = "77777777-7777-7777-8777-000000000001";
+    const c2 = "77777777-7777-7777-8777-000000000002";
+    const s1 = await mk("token-en");
+    const r1 = await reg("token-en", c1);
+    assert(
+      r1["status"] === "pending" && r1["contributor_name"] === "Kari",
+      "registreringen feilet",
+    );
+    const again = await reg("token-en", c1);
+    assert(again["id"] === r1["id"], "samme fil på nytt ga en ny rad (duplikat)");
+    const [cnt] = await sql`select files_count from public.upload_sessions where id = ${s1}`;
+    assert(cnt!["files_count"] === 1, "telleren talte duplikatet");
+    const done = (
+      await as(
+        "service_role",
+        null,
+        (tx) =>
+          tx`select (public.mobile_confirm_upload(${h("token-en")}, ${c1}, true, 90, null)).*`,
+      )
+    )[0]!;
+    assert(done["status"] === "done" && Number(done["byte_size"]) === 90, "bekreftelsen feilet");
+    // Feil filtype, tak og utløp
+    await expectError(reg("token-en", c2, 100, "audio"), /filtypen kan ikke/);
+    await expectError(reg("token-en", c2, 2000), /Taket/);
+    await mk("token-gammel", { expires_at: new Date(Date.now() - 1000) });
+    await expectError(reg("token-gammel", c2), /utløpt eller tilbakekalt/);
+    await expectError(
+      as(
+        "service_role",
+        null,
+        (tx) =>
+          tx`select public.mobile_register_upload(${h("token-en")}, ${c2}, ${"annet-prosjekt/x.jpg"}, 'image', 'image/jpeg', 10, '', '')`,
+      ),
+      /Ugyldig lagringssti/,
+    );
+    // Delt lenke stoppes når den personlige økten tilbakekalles
+    await mk("token-delt", { kind: "shared", parent_id: s1 });
+    await reg("token-delt", c2, 10);
+    await as("authenticated", ALICE, (tx) => tx`select public.revoke_upload_session(${s1})`);
+    await expectError(
+      reg("token-delt", "77777777-7777-7777-8777-000000000003", 10),
+      /utløpt eller tilbakekalt/,
+    );
+    await expectError(
+      reg("token-en", "77777777-7777-7777-8777-000000000004", 10),
+      /utløpt eller tilbakekalt/,
+    );
+    // Lesing bare for medlemmer; ingen kan skrive direkte eller kalle serverens funksjoner
+    const aliceRows = await as(
+      "authenticated",
+      ALICE,
+      (tx) => tx`select id from public.mobile_imports`,
+    );
+    assert(aliceRows.length >= 2, "medlemmet ser ikke filene");
+    const carolRows = await as(
+      "authenticated",
+      CAROL,
+      (tx) => tx`select id from public.mobile_imports`,
+    );
+    assert(carolRows.length === 0, "et ikke-medlem ser filene");
+    const carolSessions = await as(
+      "authenticated",
+      CAROL,
+      (tx) => tx`select id from public.upload_sessions`,
+    );
+    assert(carolSessions.length === 0, "et ikke-medlem ser øktene");
+    await expectError(
+      as("anon", null, (tx) => tx`select * from public.mobile_imports`),
+      "42501",
+    );
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) =>
+          tx`update public.mobile_imports set status = 'done' where id = ${r1["id"] as string}`,
+      ),
+      "42501",
+    );
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) =>
+          tx`select public.mobile_register_upload(${h("token-en")}, ${c2}, 'x', 'image', 'image/jpeg', 1, '', '')`,
+      ),
+      "42501",
+    );
+    // Behandling: bare redaktører, bare én om gangen, ikke etter at filen er knyttet
+    const id1 = r1["id"] as string;
+    await expectError(
+      as("authenticated", BOB, (tx) => tx`select public.claim_mobile_import(${id1})`),
+      "42501",
+    );
+    const won = await as(
+      "authenticated",
+      ALICE,
+      (tx) => tx`select public.claim_mobile_import(${id1}) as ok`,
+    );
+    assert(won[0]!["ok"] === true, "redaktøren fikk ikke ta filen");
+    const ver = "77777777-7777-7777-8777-0000000000aa";
+    await as(
+      "authenticated",
+      ALICE,
+      (tx) => tx`select public.link_mobile_import(${id1}, null, ${ver}, null)`,
+    );
+    const again2 = await as(
+      "authenticated",
+      ALICE,
+      (tx) => tx`select public.claim_mobile_import(${id1}) as ok`,
+    );
+    assert(again2[0]!["ok"] === false, "en knyttet fil kunne tas på nytt");
+    // Utkast knyttes til ressursen når den lagres
+    const draft = "77777777-7777-7777-8777-0000000000dd";
+    await mk("token-utkast", { context: sql.json({ type: "draft", draftKey: draft }) as never });
+    await reg("token-utkast", "77777777-7777-7777-8777-000000000005", 10);
+    const someAsset = (
+      await sql`select id from public.assets where project_id = ${projectId} limit 1`
+    )[0]!["id"] as string;
+    const n = await as(
+      "authenticated",
+      ALICE,
+      (tx) => tx`select public.attach_mobile_draft(${projectId}, ${draft}, ${someAsset}) as n`,
+    );
+    assert(n[0]!["n"] === 1, "utkastet ble ikke knyttet");
+    await as("authenticated", ALICE, (tx) => tx`select public.dismiss_mobile_import(${id1}, true)`);
+    const [d] = await sql`select dismissed from public.mobile_imports where id = ${id1}`;
+    assert(d!["dismissed"] === true, "filen ble ikke skjult");
+  });
+
   await test("DEC-0049: sikkerhetskopi gjenopprettes som nytt prosjekt via apply_changes; alt leses tilbake likt", async () => {
     const q = (t: string) =>
       sql.unsafe(`select * from public.${t} where project_id = $1`, [projectId]);
@@ -3710,6 +3867,9 @@ try {
       "asset_versions",
       "generation_jobs",
       "project_members",
+      // Filer fra mobilen er ressurser og slettes først med ressursene (DEC-0090)
+      "mobile_imports",
+      "upload_sessions",
     ];
     const before: Record<string, number> = {};
     for (const t of await projectTables()) before[t] = await count(t, projectId);

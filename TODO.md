@@ -2,9 +2,11 @@
 
 Huskeliste over det som er tenkt gjort, men ikke bygget. Holdes oppdatert av den som utvikler (Claude eller en annen KI) ved hver leveranse.
 Kilder: beslutningsloggen (`docs/decisions/DECISION_LOG.md`), kravregisteret (`docs/product/requirements.yaml`), kjente problemer (`docs/development/KNOWN_ISSUES.md`).
-Sist oppdatert: 2026-10-16 (DEC-0089).
+Sist oppdatert: 2026-10-16 (DEC-0090, bolk A).
 
 ## Bestilt av Mars, ikke bygget ennå
+- **Fase 2 (DEC-0090, REQ-0668–0712):** mobilbro, QR, bilder/video/lyd fra mobil, deling, lydopptak med takes, lydkomposisjon, ord-til-lyd, pauser og romlyd. Plan og bolker A–E i `docs/development/PHASE2_PLAN.md`. Bolk A er bygget; B–E venter på OK.
+- **Når en desktopversjon lages:** fjern grensen på 500 MB per videofil (REQ-0679) – uten å spørre Mars (DEC-0090).
 - **Eksport til ProRes/MOV** for klipping i Premiere/DaVinci (DEC-0085). Nettleseren kan bare lage MP4 (H.264/VP9) og WebM; ProRes må lages hos en tjeneste (f.eks. Runway `outputFormat: "prores"` for AI-video, eller en egen konverteringstjeneste) eller i en framtidig lokal versjon.
 - **Varsel når en generering er ferdig** – helst SMS til et mobilnummer registrert på brukeren (DEC-0085: *satt på vent*). Forslag: leverandøren melder ferdig (webhook fra fal.ai/Runway) → serveren legger inn videoen og sender varsel; ingen planlagt bakgrunnsjobb som kan bruke penger (DEC-0072). Krever valg av SMS-tjeneste (kostnad), felt for mobilnummer i brukerinnstillingene (personopplysning, samtykke) og godkjenning fra Mars.
 - **Globale ressurser** på tvers av prosjekter (REQ-0571, DEC-0084). Åpent spørsmål til Mars: hvem kan bruke en felles ressurs (eieren i egne prosjekter, alle i eierens prosjekter, et team/firma)?
@@ -19,6 +21,7 @@ Sist oppdatert: 2026-10-16 (DEC-0089).
 - Prøv blokkering, sletting og «Hent videoen igjen» med en testkonto (KI-215).
 
 ## Venter på svar eller prøving fra Mars
+- Prøv fase 2 bolk A på iPhone og Android: QR-koden på prosjektsiden og i Maja, hurtigfoto, video, «Del lenke», at bildene dukker opp som nye versjoner (KI-235).
 - Prøv DEC-0089 i sceneeditoren: panelet «Manus», «Rediger manus …» med forrige/neste scene, og lukking av panelene.
 - Prøv DEC-0088 i appen: «Legg til element i scenen …», oppgaven øverst, systemmerknader, TODO-boksen, dørdeler, paneler side om side og AI-tilkoblinger på adminsiden.
 - Språkvask av engelsk tekst (KI-198).
