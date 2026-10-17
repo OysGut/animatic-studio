@@ -223,7 +223,7 @@ export function AudioTracks({
         const h = count * LANE_H + 4;
         const muted = mutedKinds.has(kind);
         return (
-          <div key={kind} className="flex border-t border-border/60">
+          <div key={kind} className="flex border-b border-border even:bg-surface-2/40">
             <TrackLabel height={h}>
               <span
                 aria-hidden
@@ -401,7 +401,7 @@ const AudioBlock = memo(function AudioBlock({
       className={
         "group absolute flex touch-none select-none items-center overflow-hidden rounded-sm border text-left " +
         (editable ? "cursor-grab active:cursor-grabbing " : "cursor-pointer ") +
-        (selected ? "z-10 border-accent-brand outline outline-1 outline-accent-brand " : "") +
+        (selected ? "z-10 border-accent-brand outline outline-1 outline-accent-brand ring-1 ring-focus-ring " : "") +
         (dragging ? "z-20 opacity-90 shadow-[var(--shadow-float)] " : "") +
         (c.muted || missing || failed ? "opacity-50 " : "")
       }
@@ -420,7 +420,7 @@ const AudioBlock = memo(function AudioBlock({
       {width >= 40 ? (
         <span className="relative z-[1] flex min-w-0 items-center gap-1 px-1.5 text-[11px] text-text-primary [text-shadow:0_0_3px_var(--surface-1)]">
           {c.blockId ? <Link2 className="size-3 shrink-0" aria-hidden /> : null}
-          <span className="truncate">{label}</span>
+          <span className="block truncate font-medium">{label}</span>
           {c.continues ? (
             <span className="shrink-0 text-[11px] text-accent-warm" aria-hidden>
               →
