@@ -146,8 +146,8 @@ Kilde: `PHASE2_SPECIFICATION.md` (DEC-0090). Plan: `docs/development/PHASE2_PLAN
 - **Krav:** REQ-0698–0704.
 - **Nøkkelfiler:** `src/core/audio/alignment.ts`, `src/adapters/ai/alignment.functions.ts`, `src/adapters/ai/providers.server.ts` (`ADAPTERS.elevenlabs.align`), `src/app/audio/LineWordsPanel.tsx`.
 
-### Bolk E – pauser, romlyd, overganger, automatisk avspilling og ytelse (ikke startet)
-Se kapittel 6. Planen sier at bolken skal «detaljeres før bolken». Kapittel 6.3 er Claudes anbefalte detaljering, som må godkjennes før bygging.
+### Bolk E – pauser, romlyd, overganger, automatisk avspilling og ytelse (bygget 17.10, DEC-0096, ingen migrasjon)
+Detaljeringen i 6.3 ble godkjent (DEC-0097). Komposisjonsformat 2 (roller og pauser), `src/core/audio/pauses.ts`, `roomtone.ts`, `transitions.ts`, tidsredigering i ordpanelet, overganger mellom takes og automatisk avspilling etter endring. Unit-tester grønne (1294), visuell kontroll `tests/visual/dec0096-pauses-ui.mjs` 31/31 (`VISUAL_QA_DEC-0096E.md`). REQ-0708/0709 venter på prøving med ekte opptak (KI-248). **Fase 2 er dermed bygget.**
 
 ### Underveis (ferdig)
 - **DEC-0091 / REQ-0713:** «Vis teknisk feilmelding» på feilsiden.
@@ -281,9 +281,10 @@ Grunnideen er at pauser og romlyd blir **mer data i den samme komposisjonen** so
 | KI-247 | Ordkoblingen følger bare deler fra samme komposisjon etter redigering | Åpen. Viktig for E1. |
 
 ### 6.5 Åpne spørsmål til Mars/Øystein
-1. Skal bakgrunner også legges inn i halv størrelse, eller fortsatt fylle lerretet (DEC-0092)?
-2. Skal lesetilgangen til `ai_model_settings` strammes inn? I dag kan alle innloggede lese den. Lovable rettet de andre RLS-funnene, men ikke denne.
-3. Godkjennes detaljeringen av bolk E i 6.3?
+Besvart 17.10 (DEC-0097): bakgrunner fyller fortsatt lerretet i den retningen som treffer først; `ai_model_settings` strammes ikke inn; detaljeringen i 6.3 er godkjent.
+
+### 6.6 Arbeidsmåte fra 17.10 kveld
+Lovable skriver koden etter oppdrag fra Claude (Øysteins Lovable-kreditter brukes). Claude planlegger, skriver oppdragene, går gjennom diffen, kjører testene og sender rettelser. Lovable endrer bare filene oppdraget nevner, rører ikke databasen og spør Claude når noe er uklart.
 
 ---
 

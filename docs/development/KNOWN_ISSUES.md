@@ -249,4 +249,6 @@
 | KI-245 | 2026-10-17 | ElevenLabs Forced Alignment har ikke norsk på språklisten; den er bare prøvd med mocket svar. Må prøves med ekte opptak på bokmål, nynorsk og dialekt (og egennavn) før den anbefales. Grensen for «usikker» (tap ≥ 1,5) er et anslag | – | Mars prøver | Åpen |
 | KI-246 | 2026-10-17 | WhisperX (norske koblingsmodeller) via vertstjeneste er ikke bygget ennå; bare ElevenLabs og manuell kobling finnes | – | Neste kandidat | Åpen |
 | KI-247 | 2026-10-17 | Ordkoblingen for en komposisjon gjelder komposisjonen den ble laget for; etter redigering følger tidene med bare for deler som kommer fra den samme komposisjonen | – | Vurderes | Åpen |
+| KI-248 | 2026-10-17 | Romlydfylling og overganger (bolk E) er bare prøvd med syntetiske signaler og Chromiums falske mikrofon. Tersklene (støygulv + 6 dB, 80 ms til ord, klikk 12 dB over) er anslag og må prøves med ekte norske opptak | Romlyden kan høres eller mangle | Velg stillhet eller en romlydfil for pausen | Åpen (prøving) |
+| KI-249 | 2026-10-17 | Nettlesertesten dec0093 feiler på tre punkter (L6/L7: «send bare de valgte» lydopptakene fra mobilen) på `main` også uten bolk E – sett første gang 17.10. Ikke undersøkt ennå | Kan bety at «Send de valgte» på mobilen sender feil opptak | – | Åpen (Claude undersøker) |
 

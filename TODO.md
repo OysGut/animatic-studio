@@ -2,10 +2,13 @@
 
 Huskeliste over det som er tenkt gjort, men ikke bygget. Holdes oppdatert av den som utvikler (Claude eller en annen KI) ved hver leveranse.
 Kilder: beslutningsloggen (`docs/decisions/DECISION_LOG.md`), kravregisteret (`docs/product/requirements.yaml`), kjente problemer (`docs/development/KNOWN_ISSUES.md`).
-Sist oppdatert: 2026-10-16 (DEC-0090, bolk A).
+Sist oppdatert: 2026-10-17 (DEC-0096, bolk E).
 
 ## Bestilt av Mars, ikke bygget ennå
-- **Fase 2 (DEC-0090, REQ-0668–0712):** mobilbro, QR, bilder/video/lyd fra mobil, deling, lydopptak med takes, lydkomposisjon, ord-til-lyd, pauser og romlyd. Plan og bolker A–E i `docs/development/PHASE2_PLAN.md`. Bolk A er bygget; B–E venter på OK.
+- **Fase 2 (DEC-0090, REQ-0668–0712):** alle bolkene A–E er bygget (bolk E: DEC-0096). Gjenstår: prøving på ekte telefoner og med ekte norsk lyd (KI-235, KI-239, KI-245, KI-248) og feilen i nettlesertesten dec0093 (KI-249).
+- **UI-løft (Øystein 17.10.2026):** gi hele grensesnittet et profesjonelt preg etter konvensjonene i FilmCraft/Premiere (ArtCraft er Rust/egui, så ingen kode kan gjenbrukes direkte), uten å endre funksjoner. Planlagt etter bolk E: kartlegging, designretning og designtokens først, så skjerm for skjerm med skjermbilder før og etter.
+- **Fase 3 – Story Lab:** egen modul for historie- og karakterutvikling med VennTing-profiler, karaktersamtaler og regissørstyrt improvisasjon (spesifikasjon i Claude-prosjektet: `PHASE3_STORY_LAB_SPEC.md`). Tilhører manusarbeidet, ikke sceneeditoren; mulig knapp «Utforsk dialogen» i scenen. Første steg: les VennTing-prosjektet (bare lesing) og lag en integrasjonsplan.
+- **Fase 3 – Manusutforsker og scenevarighet:** tillegg til Asset Studio og globalt manusoppslag (`PHASE3_ASSET_STUDIO_ADDENDUM.md` i Claude-prosjektet): popup fra globusikonet som følger aktiv scene, «Fest» som eget vindu, og endring av scenevarighet i start, slutt eller proporsjonalt. Grunnspesifikasjonen for Asset Studio mangler – Øystein legger den inn.
 - **Når en desktopversjon lages:** fjern grensen på 500 MB per videofil (REQ-0679) – uten å spørre Mars (DEC-0090).
 - **Eksport til ProRes/MOV** for klipping i Premiere/DaVinci (DEC-0085). Nettleseren kan bare lage MP4 (H.264/VP9) og WebM; ProRes må lages hos en tjeneste (f.eks. Runway `outputFormat: "prores"` for AI-video, eller en egen konverteringstjeneste) eller i en framtidig lokal versjon.
 - **Varsel når en generering er ferdig** – helst SMS til et mobilnummer registrert på brukeren (DEC-0085: *satt på vent*). Forslag: leverandøren melder ferdig (webhook fra fal.ai/Runway) → serveren legger inn videoen og sender varsel; ingen planlagt bakgrunnsjobb som kan bruke penger (DEC-0072). Krever valg av SMS-tjeneste (kostnad), felt for mobilnummer i brukerinnstillingene (personopplysning, samtykke) og godkjenning fra Mars.
@@ -21,13 +24,12 @@ Sist oppdatert: 2026-10-16 (DEC-0090, bolk A).
 - Prøv blokkering, sletting og «Hent videoen igjen» med en testkonto (KI-215).
 
 ## Venter på svar eller prøving fra Mars
-- Prøv ord-til-lyd (bolk D) med et ekte norsk opptak: «Rediger» på et take av en replikk → «Analyser opptaket» (koster under en hundredel cent per replikk) → klikk ord og hør med kontekst. Si fra hvordan norsk fungerer (KI-245). Si OK til bolk E (pauser og romlyd) når du vil.
+- Prøv ord-til-lyd (bolk D) med et ekte norsk opptak: «Rediger» på et take av en replikk → «Analyser opptaket» (koster under en hundredel cent per replikk) → klikk ord og hør med kontekst. Si fra hvordan norsk fungerer (KI-245).
+- Prøv pauser og romlyd (bolk E): «Tidsredigering» i lydeditoren, dra et mellomrom mellom to ord, lytt til romlyden, prøv «Digital stillhet» og «Spill av automatisk etter endring». Sett inn et annet take etter og prøv «Overganger mellom takes» (KI-248).
 - Prøv lydeditoren (bolk C): «Rediger» på et take i lydvinduet, sett inn et nytt opptak etter, erstatt et område, lagre som ny versjon, «Bruk dette», og eksporter WAV og MP3.
 - Prøv lydopptak (bolk B) på iPhone og Android: mikrofonikonet i en replikk på Manus-siden, QR-koden, Take 01/02 på mobilen, send bare ett, romlyd (KI-239).
 - Prøv kameraikonet i sceneeditoren igjen etter publisering (KI-236/237 rettet); bruk «Vis teknisk feilmelding» hvis noe krasjer.
 - Arkiver de ekstra «Fra mobil»/«From mobile»-variantene på Rolf (Bibliotek → Rolf → «Arkiver varianten»), eller si fra om du vil ha «Slå sammen varianter» (KI-238).
-- Svar: skal bakgrunner også legges inn i halv størrelse, eller fortsatt fylle lerretet (DEC-0092)?
-- Svar på om tilgangen til `ai_model_settings` (lesbar for alle innloggede) skal strammes inn i neste migrering sammen med bolk B.
 - Prøv fase 2 bolk A på iPhone og Android: QR-koden på prosjektsiden og i Maja, hurtigfoto, video, «Del lenke», at bildene dukker opp som nye versjoner (KI-235).
 - Prøv DEC-0089 i sceneeditoren: panelet «Manus», «Rediger manus …» med forrige/neste scene, og lukking av panelene.
 - Prøv DEC-0088 i appen: «Legg til element i scenen …», oppgaven øverst, systemmerknader, TODO-boksen, dørdeler, paneler side om side og AI-tilkoblinger på adminsiden.
