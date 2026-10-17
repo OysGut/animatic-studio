@@ -26321,14 +26321,24 @@ requirements:
   acceptance:
   - "P1: pausen mellom to ord økes."
   - "P2: ordenes lyd er uendret."
-  tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  tests:
+  - "tests/unit/audio-pauses.test.ts"
+  status: Verifisert
+  implementation:
+  - "src/core/audio/pauses.ts"
+  - "src/core/audio/composition.ts"
+  - "src/app/audio/PauseTimingPanel.tsx"
+  - "src/app/audio/LineWordsPanel.tsx"
+  verification:
+  - "tests/unit/audio-pauses.test.ts"
+  - "tests/visual/dec0096-pauses-ui.mjs"
   history:
   - date: '2026-10-16'
     decision: DEC-0090
     change: "Registrert fra fase 2-spesifikasjonen (bolk E)"
+  - date: '2026-10-17'
+    decision: DEC-0096
+    change: "Bygget i bolk E"
 - id: REQ-0706
   title: "Pauser mellom flere ord"
   text: "Når flere ord dras fra hverandre, fordeles den ekstra tiden likt mellom de indre mellomrommene (600 ms over tre ord gir 300 + 300 ms). Hver pause kan justeres for seg etterpå."
@@ -26346,14 +26356,22 @@ requirements:
   dependencies: []
   acceptance:
   - "P3–P5: tiden fordeles likt og kan justeres."
-  tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  tests:
+  - "tests/unit/audio-pauses.test.ts"
+  status: Verifisert
+  implementation:
+  - "src/core/audio/pauses.ts"
+  - "src/app/audio/PauseTimingPanel.tsx"
+  verification:
+  - "tests/unit/audio-pauses.test.ts"
+  - "tests/visual/dec0096-pauses-ui.mjs"
   history:
   - date: '2026-10-16'
     decision: DEC-0090
     change: "Registrert fra fase 2-spesifikasjonen (bolk E)"
+  - date: '2026-10-17'
+    decision: DEC-0096
+    change: "Bygget i bolk E"
 - id: REQ-0707
   title: "Pausene vises bare i produksjonsvisningen"
   text: "Lengre pauser vises som større avstand mellom ordene i tidsredigeringsmodus. Manusteksten og eksportert manus får aldri ekstra mellomrom eller tegn; tekst og tid holdes atskilt."
@@ -26372,14 +26390,22 @@ requirements:
   dependencies: []
   acceptance:
   - "Manuseksporten er uendret etter pauseendringer."
-  tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  tests:
+  - "tests/unit/audio-pauses-script.test.ts"
+  status: Verifisert
+  implementation:
+  - "src/app/audio/PauseTimingPanel.tsx"
+  - "src/core/audio/composition.ts"
+  verification:
+  - "tests/unit/audio-pauses-script.test.ts"
+  - "tests/visual/dec0096-pauses-ui.mjs"
   history:
   - date: '2026-10-16'
     decision: DEC-0090
     change: "Registrert fra fase 2-spesifikasjonen (bolk E)"
+  - date: '2026-10-17'
+    decision: DEC-0096
+    change: "Bygget i bolk E"
 - id: REQ-0708
   title: "Naturlig romlyd i pauser"
   text: "Forlengede pauser fylles som standard med romlyd fra samme opptak, fra partier uten tale, klikk, bevegelser, markerte hendelser eller upassende pust. Er romlyden for kort, settes flere biter sammen med crossfade og uten tydelig gjentakelse; finnes ingen egnet romlyd, varsles brukeren. Valg: naturlig romlyd (standard), digital stillhet, valgt romlydressurs eller manuelt redigert pause. Tale endres aldri i hastighet eller tonehøyde. Romlydfylling er en hjelp, ikke en garanti for sømløst resultat."
@@ -26398,14 +26424,25 @@ requirements:
   acceptance:
   - "P6: nye pauser fylles med romlyd."
   - "P7: digital stillhet kan velges."
-  tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  tests:
+  - "tests/unit/roomtone.test.ts"
+  - "tests/unit/audio-engine-room.test.ts"
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/audio/roomtone.ts"
+  - "src/app/audio/room-fill.ts"
+  - "src/engine/audio/composition.ts"
+  verification:
+  - "tests/unit/roomtone.test.ts"
+  - "tests/unit/audio-engine-room.test.ts"
+  - "tests/visual/dec0096-pauses-ui.mjs"
   history:
   - date: '2026-10-16'
     decision: DEC-0090
     change: "Registrert fra fase 2-spesifikasjonen (bolk E)"
+  - date: '2026-10-17'
+    decision: DEC-0096
+    change: "Bygget i bolk E; må prøves med ekte opptak (KI-248)"
 - id: REQ-0709
   title: "Romlyd i overganger mellom takes"
   text: "Romlyd kan brukes til å myke opp overganger mellom ulike takes. Overgangene kan forhåndshøres og justeres; romlyd fra ulike opptak antas ikke å være lik."
@@ -26423,14 +26460,22 @@ requirements:
   dependencies: []
   acceptance:
   - "Overgang mellom to takes kan justeres og høres."
-  tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  tests:
+  - "tests/unit/audio-transitions.test.ts"
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/core/audio/transitions.ts"
+  - "src/app/audio/TransitionsPanel.tsx"
+  verification:
+  - "tests/unit/audio-transitions.test.ts"
+  - "tests/visual/dec0096-pauses-ui.mjs"
   history:
   - date: '2026-10-16'
     decision: DEC-0090
     change: "Registrert fra fase 2-spesifikasjonen (bolk E)"
+  - date: '2026-10-17'
+    decision: DEC-0096
+    change: "Bygget i bolk E; må prøves med ekte opptak (KI-248)"
 - id: REQ-0710
   title: "«Spill av automatisk etter endring»"
   text: "Dialogeditoren har avkrysningen «Spill av automatisk etter endring». Når den er på, spilles det endrede området med justerbar kontekst når en endring er fullført (ikke mens man drar), og nye avspillinger legges ikke oppå tidligere. Av: ingen automatisk avspilling."
@@ -26450,14 +26495,22 @@ requirements:
   acceptance:
   - "E1–E3: av/på virker."
   - "P8: resultatet kan forhåndshøres."
-  tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  tests:
+  - "tests/unit/audio-transitions.test.ts"
+  status: Verifisert
+  implementation:
+  - "src/core/audio/transitions.ts"
+  - "src/app/audio/AudioCompositionEditor.tsx"
+  verification:
+  - "tests/unit/audio-transitions.test.ts"
+  - "tests/visual/dec0096-pauses-ui.mjs"
   history:
   - date: '2026-10-16'
     decision: DEC-0090
     change: "Registrert fra fase 2-spesifikasjonen (bolk E)"
+  - date: '2026-10-17'
+    decision: DEC-0096
+    change: "Bygget i bolk E"
 - id: REQ-0711
   title: "Nettleserkompatibilitet for kamera, mikrofon og deling"
   text: "Kamera, mikrofon (MediaDevices/MediaRecorder), filvalg, Web Share, store opplastinger, sanntid og lokal lagring verifiseres på iPhone (Safari) og Android (Chrome) over HTTPS. Tillatelser spørres alltid først og respekteres."
@@ -26507,14 +26560,24 @@ requirements:
   acceptance:
   - "Flere samtidige opplastinger i test."
   - "Bølgeform for lang replikk tegnes raskt."
-  tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  tests:
+  - "tests/unit/audio-performance.test.ts"
+  - "tests/unit/mobile-server.test.ts"
+  status: Verifisert
+  implementation:
+  - "src/engine/audio/mixer.ts"
+  - "src/app/audio/room-fill.ts"
+  - "src/adapters/mobile/mobile.functions.ts"
+  verification:
+  - "tests/unit/audio-performance.test.ts"
+  - "tests/unit/mobile-server.test.ts"
   history:
   - date: '2026-10-16'
     decision: DEC-0090
     change: "Registrert fra fase 2-spesifikasjonen (bolk E)"
+  - date: '2026-10-17'
+    decision: DEC-0096
+    change: "Bygget i bolk E"
 - id: REQ-0713
   title: "Teknisk feilmelding på feilsiden"
   text: "Når en side krasjer, kan brukeren åpne «Vis teknisk feilmelding» på feilsiden og kopiere den (tidspunkt, side, feiltype, melding og de første linjene av stakken) for å sende den videre. Adressen vises uten spørrestreng og uten tokenet i mobillenker."
