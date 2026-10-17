@@ -233,6 +233,103 @@
   }
 }
 
+/* UI-løft U1: skjemakontroller som i et klippeprogram (bare utseende) */
+@layer components {
+  /* 1. Nedtrekkslister (ikke flerlinje) */
+  select:not([multiple]):not([size]),
+  select[size="1"] {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23AEB2B9' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+    padding-inline-end: 22px !important;
+    cursor: pointer;
+    transition: border-color var(--motion-fast) var(--ease-standard),
+      background-color var(--motion-fast) var(--ease-standard);
+  }
+
+  select:not([multiple]):not([size]):hover:not(:disabled):not(:focus),
+  select[size="1"]:hover:not(:disabled):not(:focus) {
+    border-color: var(--border-strong);
+  }
+
+  select:not([multiple]):not([size]):disabled,
+  select[size="1"]:disabled {
+    color: var(--text-disabled);
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  select option {
+    background-color: var(--surface-2);
+    color: var(--text-primary);
+  }
+
+  /* 2. Avkrysningsbokser, radioknapper, glidebrytere og fremdrift */
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="range"],
+  progress {
+    accent-color: var(--accent-brand);
+  }
+
+  input[type="checkbox"],
+  input[type="radio"] {
+    cursor: pointer;
+  }
+
+  input[type="checkbox"]:disabled,
+  input[type="radio"]:disabled {
+    cursor: not-allowed;
+  }
+
+  input[type="range"] {
+    cursor: pointer;
+  }
+
+  /* 3. Rullefelt i hele appen */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 6px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--border-control);
+  }
+
+  /* 4. Tallfelt: skjul spinnknappene */
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* 5. Markert tekst */
+  ::selection {
+    background: var(--accent-selection);
+  }
+}
+
 /* Markeringer i manussidene: søketreff og notater (DEC-0031, REQ-0541) */
 mark.mark-search {
   background: var(--mark-search);
