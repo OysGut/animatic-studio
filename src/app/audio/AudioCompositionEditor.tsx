@@ -4,6 +4,10 @@
  * erstatte alt, settes inn før eller etter, legges oppå eller erstatte et markert område. Endringene kan
  * angres, og resultatet lagres som ny versjon (komposisjonen følger med, så den kan redigeres videre).
  * Andre replikker i scenen flyttes aldri; overlapper lyden en annen replikk, vises det som en konflikt.
+ *
+ * Bolk E (DEC-0096): pauser mellom ord med romlyd (`PauseTimingPanel` via `LineWordsPanel`), overganger mellom
+ * takes (`TransitionsPanel`) og «Spill av automatisk etter endring» (REQ-0710): etter en fullført endring
+ * spilles det endrede området med kontekst, aldri mens man drar, og aldri oppå en avspilling som pågår.
  */
 import {
   ArrowDownToLine,
@@ -22,6 +26,8 @@ import {
   COMPOSITION_TRACKS,
   L,
   audioTakeLabel,
+  autoPlayRange,
+  changedSpan,
   compositionFromTake,
   compositionLengthMs,
   formatTakeLength,
@@ -30,15 +36,20 @@ import {
   lineInfo,
   newId,
   removeSegment,
+  roomToneAsset,
+  roomToneSceneName,
   sameComposition,
   soundTakes,
   updateSegment,
+  type AlignmentSource,
   type AudioComposition,
   type AudioSegment,
   type InsertMode,
   type ProjectState,
+  type WordAlignment,
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
+import { useUiPref } from "@/app/account/ui-prefs";
 import { Button } from "@/components/ui/button";
 import { peaks } from "@/engine/audio/mixer";
 import { renderComposition } from "@/engine/audio/composition";
@@ -53,10 +64,13 @@ import {
 } from "./composition-actions";
 import type { TakeTarget } from "./takes";
 import { LineWordsPanel } from "./LineWordsPanel";
+import { TransitionsPanel } from "./TransitionsPanel";
+import { fillRoom, roomToneFiles } from "./room-fill";
 
 const segId = () => newId<"audio_segment">();
 const sec = (ms: number) => (ms / 1000).toFixed(2);
 const TRACK_COLORS = ["#4fb3bf", "#c9a24b", "#a37bd6", "#d67b9a"];
+const isBool = (v: unknown): v is boolean => typeof v === "boolean";
 
 export function AudioCompositionEditor({
   projectId,
@@ -116,13 +130,27 @@ export function AudioCompositionEditor({
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [insertFrom, setInsertFrom] = useState(plain.at(-1)?.versionId ?? "");
+  const [contextMs, setContextMs] = useState(500);
+  const [autoPlay, setAutoPlay] = useUiPref<boolean>("audio.autoPlayAfterEdit", false, isBool);
+  const roomFiles = useMemo(() => roomToneFiles(state), [state]);
+  const info = target.kind === "line" ? lineInfo(state, target.occurrenceId, target.blockId) : null;
+  /** Reserve for romlyd i pauser: siste opptak av romlyden for scenen (bolk B, REQ-0690). */
+  const roomFallback = useMemo(() => {
+    const a = target.kind === "line" ? roomToneAsset(state, roomToneSceneName(info)) : null;
+    const t = a ? soundTakes(state, a.id).filter((x) => x.durationMs) : [];
+    return t.at(-1)?.versionId ?? null;
+  }, [state, info, target.kind]);
 
-  // Opptakene som trengs (alle takes av ressursen, så de kan settes inn)
+  // Opptakene som trengs (alle takes av ressursen, så de kan settes inn, og reserven for romlyd)
   const sourceIds = useMemo(
     () => [
-      ...new Set([...plain.map((t) => t.versionId), ...comp.segments.map((s) => s.versionId)]),
+      ...new Set([
+        ...plain.map((t) => t.versionId),
+        ...comp.segments.map((s) => s.versionId),
+        ...(roomFallback ? [roomFallback] : []),
+      ]),
     ],
-    [plain, comp],
+    [plain, comp, roomFallback],
   );
   useEffect(() => {
     let alive = true;
@@ -142,7 +170,6 @@ export function AudioCompositionEditor({
     COMPOSITION_TRACKS,
     Math.max(1, ...comp.segments.map((s) => s.track + 1)) + (comp.segments.length ? 1 : 0),
   );
-  const info = target.kind === "line" ? lineInfo(state, target.occurrenceId, target.blockId) : null;
   const conflicts = info?.clip ? lineConflicts(state, info.clip, length) : [];
   const dirty = !sameComposition(comp, initial);
 
@@ -181,18 +208,21 @@ export function AudioCompositionEditor({
     return () => cancelAnimationFrame(raf);
   }, [playing]);
 
-  async function start(fromMs: number, toMs?: number) {
+  /** Spiller komposisjonen (standard: den som vises nå). En ny avspilling stopper den forrige først. */
+  async function start(fromMs: number, toMs?: number, c: AudioComposition = comp) {
     if (!buffers) return;
     stop();
-    const mix = await renderComposition(comp, (id) => buffers.get(id), {
+    const mix = await renderComposition(c, (id) => buffers.get(id), {
       sampleRate: 48000,
       channels: 1,
     });
+    // En annen avspilling kan ha startet mens miksen ble laget: den nyeste vinner
+    stop();
     const ctx = new AudioContext();
     const src = ctx.createBufferSource();
     src.buffer = mix;
     src.connect(ctx.destination);
-    const from = Math.max(0, Math.min(fromMs, length - 1));
+    const from = Math.max(0, Math.min(fromMs, compositionLengthMs(c) - 1));
     const t0 = ctx.currentTime + 0.05;
     src.start(
       t0,
@@ -205,10 +235,29 @@ export function AudioCompositionEditor({
   }
 
   // ---------- endringer
+  /**
+   * En fullført endring: legges i angre-listen og spilles automatisk med kontekst når det er slått på
+   * (REQ-0710). Kalles aldri mens brukeren drar.
+   */
+  function edit(next: AudioComposition) {
+    const before = comp;
+    push(next);
+    if (!autoPlay) return;
+    const span = changedSpan(before, next);
+    if (!span) return;
+    const r = autoPlayRange(span, contextMs, compositionLengthMs(next));
+    void start(r.fromMs, r.toMs, next);
+  }
+  /** En pauseendring: pausene fylles med romlyd før endringen legges inn (REQ-0708). */
+  function timingEdit(next: AudioComposition, al: WordAlignment, src: AlignmentSource): string[] {
+    const r = fillRoom(next, al, src, state, buffers, roomFallback);
+    edit(r.composition);
+    return r.messages;
+  }
   const sel = comp.segments.find((s) => s.id === selected) ?? null;
   const srcMs = (s: AudioSegment) => state.assetVersions[s.versionId]?.durationMs ?? null;
   function patch(p: Partial<AudioSegment>) {
-    if (sel) push(updateSegment(comp, sel.id, p, srcMs(sel)));
+    if (sel) edit(updateSegment(comp, sel.id, p, srcMs(sel)));
   }
   function insert(mode: InsertMode, at?: { from: number; to: number }) {
     const v = state.assetVersions[insertFrom];
@@ -216,7 +265,7 @@ export function AudioCompositionEditor({
     const take = { versionId: v.id, durationMs: v.durationMs };
     const r = at ?? range;
     if (mode === "range" && !r) return;
-    push(
+    edit(
       insertTake(comp, take, mode, segId, {
         atMs: r?.from ?? playhead,
         ...(r ? { startMs: r.from, endMs: r.to } : {}),
@@ -342,6 +391,21 @@ export function AudioCompositionEditor({
           </Button>
         </div>
       </div>
+      <label
+        className="mt-1 flex w-fit items-center gap-1.5 text-xs text-text-secondary"
+        title={L(
+          "Spiller det endrede området med kontekst når en endring er fullført",
+          "Plays the changed range with context when a change is completed",
+        )}
+      >
+        <input
+          type="checkbox"
+          checked={autoPlay}
+          onChange={(e) => setAutoPlay(e.target.checked)}
+          data-testid="audio-editor-autoplay"
+        />
+        {L("Spill av automatisk etter endring", "Play automatically after a change")}
+      </label>
 
       {/* Linjal (dra for å markere et område) og sporene */}
       <div className="mt-2 select-none">
@@ -405,7 +469,13 @@ export function AudioCompositionEditor({
                     left={pct(s.atMs)}
                     width={pct(s.lengthMs)}
                     color={TRACK_COLORS[track] ?? TRACK_COLORS[0]!}
-                    label={audioTakeLabel(takeNo.get(s.versionId) ?? 0)}
+                    label={
+                      s.role === "room"
+                        ? L("Romlyd", "Room tone")
+                        : s.role === "transition"
+                          ? L("Overgang", "Transition")
+                          : audioTakeLabel(takeNo.get(s.versionId) ?? 0)
+                    }
                     buffer={buffers?.get(s.versionId)}
                     selected={s.id === selected}
                     onSelect={() => setSelected(s.id)}
@@ -461,8 +531,27 @@ export function AudioCompositionEditor({
             )
           }
           onWords={(w) => onWords?.(w)}
+          contextMs={contextMs}
+          onContextMs={setContextMs}
+          onTimingEdit={timingEdit}
+          roomFiles={roomFiles}
         />
       ) : null}
+
+      <TransitionsPanel
+        state={state}
+        comp={comp}
+        buffers={buffers}
+        roomFiles={roomFiles}
+        takeLabel={(id) =>
+          takeNo.has(id)
+            ? audioTakeLabel(takeNo.get(id)!)
+            : (roomFiles.find((f) => f.versionId === id)?.label ?? L("Opptak", "Recording"))
+        }
+        contextMs={contextMs}
+        onEdit={edit}
+        onPreview={(a, b) => void start(a, b)}
+      />
 
       {conflicts.length ? (
         <div
@@ -598,7 +687,7 @@ export function AudioCompositionEditor({
                   size="sm"
                   variant="ghost"
                   onClick={() => {
-                    push(removeSegment(comp, sel.id));
+                    edit(removeSegment(comp, sel.id));
                     setSelected(null);
                   }}
                   disabled={comp.segments.length <= 1}
@@ -721,12 +810,22 @@ function SegmentBlock({
       type="button"
       onClick={onSelect}
       className={
-        "absolute top-3 h-10 overflow-hidden rounded-sm border text-left " +
-        (selected ? "border-text-primary ring-1 ring-text-primary" : "border-transparent")
+        "absolute overflow-hidden rounded-sm border text-left " +
+        // Romlyd og overganger (bolk E) vises lavere, så talen under alltid synes
+        (s.role === "room" || s.role === "transition"
+          ? "top-8 z-10 h-5 border-dashed "
+          : "top-3 h-10 ") +
+        (selected
+          ? "border-text-primary ring-1 ring-text-primary"
+          : s.role === "room" || s.role === "transition"
+            ? "border-text-tertiary"
+            : "border-transparent")
       }
       style={{ left, width, background: `${color}22` }}
       aria-pressed={selected}
       aria-label={label}
+      title={label}
+      data-role={s.role ?? "speech"}
       data-testid="audio-editor-seg"
     >
       <canvas
@@ -736,7 +835,7 @@ function SegmentBlock({
         className="absolute inset-0 size-full"
         aria-hidden
       />
-      <span className="relative z-10 px-1 text-[11px] font-medium text-text-primary drop-shadow">
+      <span className="relative z-10 whitespace-nowrap px-1 text-[11px] leading-4 font-medium text-text-primary drop-shadow">
         {label}
       </span>
     </button>

@@ -4,8 +4,11 @@
  * lydeditoren (avspilling med eller uten kontekst, erstatning, opptak). Ord uten sikker kobling vises tydelig,
  * og nye ord som ikke har lyd, får et forslag til plassering. Ord-til-lyd kan lages med en tjeneste (betalt,
  * med kostnadsgodkjenning; valget huskes) eller for hånd.
+ *
+ * Bolk E (DEC-0096): bryteren «Tidsredigering» bytter til en egen modus der pausene mellom ordene kan endres
+ * (`PauseTimingPanel`). Vanlig markering av ord endrer aldri timingen (§33).
  */
-import { Loader2, Wand2 } from "lucide-react";
+import { Clock, Loader2, Wand2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
   L,
@@ -20,6 +23,7 @@ import {
   textChanges,
   alignmentFromProvider,
   wordUncertain,
+  type AlignmentSource,
   type AudioComposition,
   type ProjectState,
   type WordAlignment,
@@ -28,6 +32,7 @@ import type { Commands } from "@/app/project/use-commands";
 import { useUiPref } from "@/app/account/ui-prefs";
 import { alignAudio } from "@/adapters/ai/alignment.functions";
 import { Button } from "@/components/ui/button";
+import { PauseTimingPanel } from "./PauseTimingPanel";
 
 export type AlignmentService = "elevenlabs" | "manual";
 const isService = (v: unknown): v is AlignmentService => v === "elevenlabs" || v === "manual";
@@ -45,6 +50,10 @@ export function LineWordsPanel({
   onPlay,
   onSuggest,
   onWords,
+  contextMs,
+  onContextMs,
+  onTimingEdit,
+  roomFiles,
 }: {
   projectId: string;
   state: ProjectState;
@@ -65,6 +74,13 @@ export function LineWordsPanel({
   ) => void;
   /** De markerte ordene (plass i teksten), for å fremheve dem over opptaksknappene. */
   onWords: (w: { start: number; end: number } | null) => void;
+  /** Lyd før og etter ved avspilling med kontekst (ms), også ved automatisk avspilling. */
+  contextMs: number;
+  onContextMs: (ms: number) => void;
+  /** En fullført pauseendring (bolk E): editoren fyller romlyd og legger den i angre-listen. */
+  onTimingEdit: (next: AudioComposition, al: WordAlignment, src: AlignmentSource) => string[];
+  /** Romlydfilene i prosjektet (valget «Romlydfil» for en pause). */
+  roomFiles: readonly { versionId: string; label: string }[];
 }) {
   const block = state.blocks[blockId];
   const base = state.assetVersions[baseVersionId];
@@ -78,7 +94,7 @@ export function LineWordsPanel({
     isService,
   );
   const [sel, setSel] = useState<{ from: number; to: number } | null>(null);
-  const [contextMs, setContextMs] = useState(500);
+  const [timing, setTiming] = useState(false);
   const [confirm, setConfirm] = useState(false);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
@@ -287,65 +303,123 @@ export function LineWordsPanel({
             {al.provider === "manual" ? L("Koblet for hånd", "Linked by hand") : al.model}
           </span>
         ) : null}
+        <Button
+          size="sm"
+          variant={timing ? "default" : "secondary"}
+          className="ml-auto"
+          onClick={() => setTiming(!timing)}
+          disabled={!al}
+          aria-pressed={timing}
+          title={
+            al
+              ? L(
+                  "Egen modus for å endre pausene mellom ordene. Manusteksten endres ikke.",
+                  "A separate mode for changing the pauses between the words. The script text is not changed.",
+                )
+              : L(
+                  "Analyser eller koble ordene først – pausene trenger tid for ordene.",
+                  "Analyse or link the words first – the pauses need timing for the words.",
+                )
+          }
+          data-testid="line-words-timing"
+        >
+          <Clock className="size-3.5" aria-hidden />
+          {L("Tidsredigering", "Timing edit")}
+        </Button>
       </div>
 
-      <p
-        className="mt-2 flex flex-wrap gap-1 font-mono text-[13px] leading-7"
-        data-testid="line-words-text"
-      >
-        {changes.map((c, k) => {
-          const w = c.oldIndex !== null && al ? al.words[c.oldIndex] : undefined;
-          const chosen = sel && k >= sel.from && k <= sel.to;
-          const state2 =
-            c.change === "new" ? "new" : !al ? "none" : w && !wordUncertain(w) ? "ok" : "uncertain";
-          return (
-            <button
-              key={k}
-              type="button"
-              onClick={(e) => pick(k, e.shiftKey)}
-              className={
-                "rounded-sm px-1 " +
-                (chosen
-                  ? "bg-accent-warm/30 text-text-primary ring-1 ring-accent-warm "
-                  : "hover:bg-surface-3 ") +
-                (state2 === "new"
-                  ? "border border-dashed border-accent-warm text-accent-warm"
-                  : state2 === "uncertain"
-                    ? "text-text-secondary underline decoration-dotted decoration-status-uncertain underline-offset-4"
-                    : "text-text-primary")
-              }
-              data-state={state2}
-              title={
-                state2 === "new"
-                  ? L("Ny tekst uten lyd", "New text without audio")
-                  : state2 === "uncertain"
-                    ? L(
-                        "Usikker kobling – kan rettes for hånd",
-                        "Uncertain link – can be corrected by hand",
-                      )
-                    : state2 === "none"
-                      ? L("Ikke analysert ennå", "Not analysed yet")
-                      : undefined
-              }
-              data-testid="line-word"
-            >
-              {c.token.text}
-              {state2 === "new" ? <span className="sr-only">{L(" (ny)", " (new)")}</span> : null}
-              {state2 === "uncertain" ? (
-                <sup aria-hidden className="ml-0.5 text-status-uncertain">
-                  ≈
-                </sup>
-              ) : null}
-            </button>
-          );
-        })}
-      </p>
-      <p className="text-[11px] text-text-tertiary">
-        {L(
-          "Klikk på et ord for å markere lyden, Shift-klikk for flere. Stiplet = ny tekst uten lyd, ≈ = usikker kobling.",
-          "Click a word to mark its audio, Shift-click for more. Dashed = new text without audio, ≈ = uncertain link.",
-        )}
-      </p>
+      {timing && al ? (
+        <PauseTimingPanel
+          al={al}
+          src={
+            base?.composition
+              ? { kind: "composition", composition: initial }
+              : { kind: "version", versionId: baseVersionId }
+          }
+          comp={comp}
+          changes={changes}
+          sel={sel}
+          onPick={pick}
+          onEdit={(next) =>
+            onTimingEdit(
+              next,
+              al,
+              base?.composition
+                ? { kind: "composition", composition: initial }
+                : { kind: "version", versionId: baseVersionId },
+            )
+          }
+          roomFiles={roomFiles}
+        />
+      ) : (
+        <>
+          <p
+            className="mt-2 flex flex-wrap gap-1 font-mono text-[13px] leading-7"
+            data-testid="line-words-text"
+          >
+            {changes.map((c, k) => {
+              const w = c.oldIndex !== null && al ? al.words[c.oldIndex] : undefined;
+              const chosen = sel && k >= sel.from && k <= sel.to;
+              const state2 =
+                c.change === "new"
+                  ? "new"
+                  : !al
+                    ? "none"
+                    : w && !wordUncertain(w)
+                      ? "ok"
+                      : "uncertain";
+              return (
+                <button
+                  key={k}
+                  type="button"
+                  onClick={(e) => pick(k, e.shiftKey)}
+                  className={
+                    "rounded-sm px-1 " +
+                    (chosen
+                      ? "bg-accent-warm/30 text-text-primary ring-1 ring-accent-warm "
+                      : "hover:bg-surface-3 ") +
+                    (state2 === "new"
+                      ? "border border-dashed border-accent-warm text-accent-warm"
+                      : state2 === "uncertain"
+                        ? "text-text-secondary underline decoration-dotted decoration-status-uncertain underline-offset-4"
+                        : "text-text-primary")
+                  }
+                  data-state={state2}
+                  title={
+                    state2 === "new"
+                      ? L("Ny tekst uten lyd", "New text without audio")
+                      : state2 === "uncertain"
+                        ? L(
+                            "Usikker kobling – kan rettes for hånd",
+                            "Uncertain link – can be corrected by hand",
+                          )
+                        : state2 === "none"
+                          ? L("Ikke analysert ennå", "Not analysed yet")
+                          : undefined
+                  }
+                  data-testid="line-word"
+                >
+                  {c.token.text}
+                  {state2 === "new" ? (
+                    <span className="sr-only">{L(" (ny)", " (new)")}</span>
+                  ) : null}
+                  {state2 === "uncertain" ? (
+                    <sup aria-hidden className="ml-0.5 text-status-uncertain">
+                      ≈
+                    </sup>
+                  ) : null}
+                </button>
+              );
+            })}
+          </p>
+          <p className="text-[11px] text-text-tertiary">
+            {L(
+              "Klikk på et ord for å markere lyden, Shift-klikk for flere. Stiplet = ny tekst uten lyd, ≈ = usikker kobling.",
+              "Click a word to mark its audio, Shift-click for more. Dashed = new text without audio, ≈ = uncertain link.",
+            )}
+          </p>
+        </>
+      )}
 
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <label className="flex items-center gap-1 text-xs text-text-secondary">
@@ -356,7 +430,7 @@ export function LineWordsPanel({
             max={2000}
             step={100}
             value={contextMs}
-            onChange={(e) => setContextMs(Number(e.target.value))}
+            onChange={(e) => onContextMs(Number(e.target.value))}
             aria-label={L("Lyd før og etter (ms)", "Audio before and after (ms)")}
           />
           <span className="w-12 tabular-nums">{(contextMs / 1000).toFixed(1)} s</span>
