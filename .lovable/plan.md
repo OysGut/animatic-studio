@@ -1,88 +1,109 @@
-# U3a – Tidslinjen som et klippeprogram (bare utseende)
+# U2 – felles verktøylinjer og panelhoder (Premiere/DaVinci-stil)
 
-Eneste fil: `src/app/scene-editor/Timeline.tsx`. Bare `className`-strenger, pluss de få rene presentasjonselementene som er merket nedenfor. Bare tokens fra `src/styles.css`.
+Ren UI-jobb. Ingen endring i logikk, tilstand, hendelser, ruter, tekster, `L()`, `data-testid`, `aria-*`, `role` eller `title`. Bare tokens fra `src/styles.css`. Ingen pakker, ingen database.
 
-## Endringer, element for element
+## Hvor komponentene skal ligge: `src/app/shell/workspace-chrome.tsx`
 
-### 1. Sporhoder
-- **Lagrad, hode (l. 370–375):**
-  - `bg-surface-1` blir `bg-surface-2` (også når sporet ikke er valgt).
-  - `border-border` blir `border-border-strong`.
-  - Tekstfargen er `text-text-secondary`, og `text-text-primary` når sporet er valgt (som i dag).
-  - Valgt hode får i tillegg `shadow-[inset_2px_0_0_var(--accent-brand)]` som en tynn markeringsstripe til venstre.
-  - `paddingLeft` for lag i gruppe beholdes uendret.
-- **Kamerarad, hode (l. 1299):** samme endring (`bg-surface-2`, `border-border-strong`). Ikonet beholdes.
-- **«Spor»-cellen i linjalen (l. 1266):** `bg-surface-2` og `border-border-strong`.
-- **Høyde:** alle rader bruker allerede `ROW_H`, så den er lik og røres ikke.
-- **Merk:** lagradene har i dag ikke noe ikon. Kamerasporet har ett. Jeg legger ikke til ikoner (se spørsmål nederst).
+Begrunnelse: `src/components/ui/` er shadcn-mappen, og filene der genereres og byttes ut av verktøyet. Verktøylinjen og panelhodet er appens eget skall-språk, på linje med `AppHeader`, `ProjectNav` og `pane-size`, som allerede ligger i `src/app/shell/`. Én fil med fire eksporter holder importene enkle.
 
-### 2. Baner
-- **Skillelinjer (l. 367 og 1297):** `border-border/60` blir `border-border`.
-- **Valgt bane:** `bg-accent-selection` beholdes. Den ligger allerede på hele raden, og sporhodet dekker over sin del.
-- **Annenhver bakgrunn – krever godkjenning:** se avsnittet nederst.
+## Komponent-API
 
-### 3. Tidslinjal
-- **Linjalstripen (l. 1264):** `bg-surface-1` blir `bg-surface-2`.
-- **Hovedmerker (l. 203):**
-  - `border-border-control` beholdes.
-  - Teksten får `font-mono tabular`. Fra før har den `text-[11px] text-text-tertiary`.
-- **Mellommerker (l. 216):**
-  - `border-border` blir `border-border-strong`, så de synes på `surface-2`.
-  - Logikken for når de vises (bare ved 1 s-steg og ≥120 px per sekund) røres ikke.
-- **Valgfritt – krever godkjenning:** mellommerker også ved andre steg, for eksempel 4–5 delstreker per hovedsteg. Det krever ny beregning i `RulerTicks`.
+```text
+Toolbar
+  title?: ReactNode            tittel til venstre (13px, medium, text-primary)
+  status?: ReactNode           høyrestilt område (ml-auto), f.eks. «Lagret»
+  children: ReactNode          gruppene
+  className?: string           tillegg (sammenslått med cn)
+  ...rest: HTMLAttributes<div> sendes videre (data-testid, aria-label, role hvis noen finnes i dag)
+  Utseende: min-h-10, flex flex-wrap items-center gap-x-2 gap-y-1, px-3 py-1,
+            bg-surface-2, border-b border-border, shrink-0
 
-### 4. Klipp (kamerautsnitt, l. 294–311)
-- `rounded-sm` og 1 px kant finnes fra før.
-- Navnet (l. 310):
-  - legger til `block` slik at `truncate` faktisk virker;
-  - legger til `font-medium`;
-  - står fortsatt til venstre.
-- **Valgt klipp:**
-  - I dag: `border-text-primary`.
-  - Nytt: `ring-1 ring-focus-ring` i tillegg.
-  - Aktivt utsnitt under avspillingshodet beholder `accent-warm` (DEC-0045). Det vinner som i dag.
-- **Krever godkjenning:** klippet bruker i dag rå farger (`text-white/90`, `border-white/20` og en `oklch(...)`-gradient i `style`). Det bryter med regelen «bare tokens». Forslag:
-  - gradient `var(--camera-start)` → `var(--camera-end)` med `color-mix` for gjennomsiktighet;
-  - teksten blir `text-text-primary`;
-  - kanten blir `border-border-strong`.
-  - Gradienten ligger i `style`, ikke i `className`, og fargen på klippet endres litt. Derfor ber jeg om godkjenning.
+ToolbarGroup
+  children; className?        flex items-center gap-1 (hjelper, ingen rolle)
 
-### 5. Nøkkelbilder (l. 456–461)
-- Diamanten får `border border-bg-app` (1 px mørk kant).
-- Størrelse, rotasjon, posisjon og valgring er uendret.
-- **Bildeskifte-merket (l. 418):** samme kant for samme synlighet.
+ToolbarSeparator
+  ingen props                 <div aria-hidden className="mx-1 h-5 w-px bg-border-strong" />
+                              (samme DOM som dagens skillelinje, bare token byttes)
 
-### 6. Avspillingshodet
-- **Linjen (l. 1370):** `bg-accent-brand` blir `bg-text-primary`.
-- **Hodet i linjalen (l. 1290):**
-  - beholder `bg-accent-brand`;
-  - får `shadow-sm` og `ring-1 ring-bg-app`.
-- Posisjonsberegningene (`left`) røres ikke.
+ToolbarButton  = forwardRef<HTMLButtonElement, ButtonHTMLAttributes & {
+  variant?: "icon" | "default" | "primary"   (standard "default")
+  active?: boolean            visuell «på»-tilstand (bruker aria-pressed bare hvis kallstedet allerede gir det)
+  asChild?: boolean           for steder der knappen i dag er en <Link> eller DropdownMenuTrigger
+}>
+  Alltid en ekte <button type="button"> (eller Slot ved asChild), så rolle og tilgjengelig navn blir som i dag.
+  title/aria-label/onClick/disabled sendes uendret videre.
+  Felles: h-7 rounded-sm text-[13px] inline-flex items-center gap-1.5, [&_svg]:size-4,
+          focus-visible:ring-1 ring-focus-ring, disabled:opacity-40 cursor-not-allowed,
+          transition-colors var(--motion-fast)
+  icon:    size-7 justify-center text-text-secondary hover:bg-surface-3 hover:text-text-primary
+  default: px-2 text-text-secondary hover:bg-surface-3 hover:text-text-primary
+  primary: px-3 bg-accent-brand text-accent-fg font-medium hover:bg-accent-brand/90
+  active:  bg-accent-selection text-text-primary
 
-### 7. Transportlinjen
-- **Tidskoden (l. 1048):**
-  - `text-xs` blir `text-[13px]`;
-  - `font-mono tabular-nums` finnes fra før.
-- **Knappene:**
-  - `iconButton` (l. 148): `size-6` blir `size-7`. Hover er allerede felles (`hover:bg-surface-3 hover:text-text-primary`).
-  - `iconButton` er eksportert. Hvis den brukes i andre filer, får knappene der også ny størrelse. Det sjekker jeg før endringen. Brukes den andre steder, legger jeg `size-7` bare på transportknappene i denne filen i stedet.
-  - Knappen ved l. 1110 (`h-6`) blir `h-7`, så høyden blir lik.
-  - Raden får `min-h-10` i stedet for `min-h-9`.
+PanelHeader
+  title: ReactNode
+  as?: "h2" | "h3"            beholder dagens overskriftsnivå per panel (standard "h2")
+  count?: ReactNode           tall/badge etter tittelen (font-mono tabular-nums text-text-tertiary)
+  collapse?: { open: boolean; onToggle: () => void; label: string }   pil til venstre
+  actions?: ReactNode         knapper til høyre (opacity-60, opacity-100 ved group-hover/focus-within)
+  className?, ...rest         data-testid o.l. videre
+  Utseende: h-8 flex items-center gap-1.5 px-2 bg-surface-2 border-b border-border group,
+            tittel: text-[11px] font-medium uppercase tracking-wider text-text-tertiary truncate
+```
 
-## Hva jeg ikke rører
-- Logikk, tilstand, props, hendelser og beregninger for dra, zoom og posisjon, som `left`, `width`, `ROW_H`, `GUTTER`, `TRACK_X` og `TICK_STEPS`.
-- `data-testid`, `aria-*`, `role`, `title`, tekster og `L()`-kall.
-- DOM-rekkefølgen. Ingen nye elementer, bortsett fra det som er merket «krever godkjenning».
-- Lydsporene (`audioRows`), som lages utenfor denne filen, og `PercentInput`/`ctl`.
+Viktig: Der en sammenleggingsknapp eller tittel i dag er selve `<button>` (eller har `aria-expanded`), sendes eksisterende knapp/attributter inn uendret via `title`/`collapse` slik at rolle og navn ikke endres. Der et panel bruker `<h2>`/`<h3>` i dag, beholdes samme nivå.
 
-## Krever godkjenning (mer enn klasseendringer)
-1. **Annenhver bane:** Tailwind-varianten `even:` på raden er en ren klasseendring, men den teller også kameraraden, «Ingen lag»-teksten og lydsporene fra andre filer. Rytmen kan derfor bli ujevn. Det sikre alternativet er å sende `index` inn i `LayerRow`, men det er en ny prop.
-   - Forslaget mitt: bruk `even:bg-surface-2/40` og godta at lydsporene kan bryte rytmen.
-2. **Kamerautsnittets farger:** bytte fra rå farger til tokens (se punkt 4).
-3. **Valgfrie mellommerker** i linjalen ved alle steg (punkt 3).
+## Primærhandling per arbeidsområde (forslag)
+
+| Arbeidsområde | Primær | Merknad |
+|---|---|---|
+| Manus | «Importer manus …» bare når manuset er tomt; ellers ingen | spørsmål: ellers «Eksporter …»? |
+| Ressursbibliotek | «Last opp …» / «Ny ressurs» | spørsmål: hvilken av dem finnes på verktøylinjen |
+| Sceneeditor | ingen fast; evt. «Spill av» er allerede fremhevet i tidslinjen | spørsmål |
+| Montering | «Eksporter animatic …» | |
+| Utgivelse | «Eksporter plakat …» | |
+
+Bare utseendet endres – samme knapp, samme handling, samme navn.
+
+## Delsteg
+
+**U2a – komponentene + Manus**
+- NY `src/app/shell/workspace-chrome.tsx`
+- `src/app/script/ScriptWorkspace.tsx` (verktøylinjen, linje ca. 678)
+- `src/app/script/Inspector.tsx` (`Section`-hodet)
+- `src/app/script/SceneNavigator.tsx` (panelhodet «Scener»)
+- `src/app/script/TranslationPanel.tsx`, `src/app/script/NotesPanel.tsx` (panelhoder, hvis de har hode)
+
+**U2b – Ressursbibliotek**
+- `src/app/library/LibraryWorkspace.tsx` (verktøylinjen ca. 261, filterhodene ca. 437/525)
+- `src/app/library/AssetDetail.tsx`, `src/app/library/ContinuityPanel.tsx` (panelhoder)
+
+**U2c – Sceneeditor**
+- `src/app/scene-editor/SceneEditorWorkspace.tsx` (verktøylinjen ca. 618)
+- `src/app/scene-editor/ScenePanels.tsx` (panelhodene ca. 235 og 359 med opp/ned-pilene → `actions`)
+- `LayersPanel.tsx`, `SceneAssetsPanel.tsx`, `SceneScriptPanel.tsx`, `NearbyAudioPanel.tsx`
+- `inspector-fields.tsx` (`Section`), `CameraPanel.tsx` (egen `Section`), `LayerEvents.tsx`
+
+**U2d – Montering**
+- `src/app/assembly/AssemblyWorkspace.tsx` (verktøylinjen ca. 903)
+- `src/app/assembly/AssemblyToolbarMenus.tsx` (knappene i menyene → `ToolbarButton asChild`)
+- `src/app/assembly/ClipPanel.tsx`, `ClipParts.tsx`, `TechnicalSection.tsx` (panelhoder)
+
+**U2e – Utgivelse**
+- `src/app/release/PosterWorkspace.tsx` (verktøylinjen ca. 384, sidepanelhodene ca. 541/700)
+- `src/app/release/PosterInspector.tsx` (`Section`)
+
+Anslag: 1 ny fil + ca. 25 endrede filer totalt (U2a 5–6, U2b 3, U2c 9, U2d 4, U2e 2). Etter hvert delsteg: `npx tsc --noEmit`, enhetstestene som importerer de berørte filene, og ett skjermbilde av arbeidsområdet.
+
+## Det jeg ikke rører
+
+Dialoger (`*Dialog.tsx`), kontoside, admin, mobil, prosjektoversikt, `AppHeader`, `ProjectNav`, tidslinjene (U3), shadcn-filene i `src/components/ui/`.
 
 ## Spørsmål
-- Skal lagradene få et ikon til venstre, som kamerasporet har? Det er et nytt element, og ikonet må velges ut fra lagtypen (logikk). Jeg foreslår å la det være i U3a.
 
-## Kontroll etter endringen
-Kjøre `npx tsc --noEmit` og de eksisterende tidslinjetestene, og sjekke utseendet med et skjermbilde av sceneeditoren.
+1. **Bryting:** Verktøylinjene har i dag fast `h-10` uten `flex-wrap` (de bryter altså ikke nå). Er det greit at `Toolbar` får `min-h-10` + `flex-wrap`, slik at de kan bli to linjer på smale skjermer? Det endrer høyden på smale skjermer.
+2. **shadcn-`Button` i verktøylinjene:** Ca. 48 `Button` står i de fem verktøylinjene. Jeg foreslår å bytte dem til `ToolbarButton` (fortsatt `<button>`, samme navn). Alternativ: beholde `Button` og bare gi den klasser. Hvilket vil du ha?
+3. **Tittel til venstre:** I Manus står produksjonsvelgeren der i dag. Skal arbeidsområdets navn («Manus») legges til som ny tekst (krever nye `L()`-tekster, som reglene forbyr), eller skal dagens første element (produksjonsnavn/velger) regnes som tittel? Jeg foreslår det siste – ingen nye tekster.
+4. **«Lagret»-status:** Hvor den finnes i dag, flyttes den til `status`-plassen. Der den ikke finnes, legges ingen ny tekst til. OK?
+5. **Primærhandling** i Manus (når manuset ikke er tomt), Bibliotek og Sceneeditor – se tabellen.
+6. **Nivå på overskrifter:** Noen paneler bruker `<h2>`, andre `<h3>` eller `<span>`. Jeg beholder dagens element per panel så skjermlesere og tester ikke merker forskjell. OK?
