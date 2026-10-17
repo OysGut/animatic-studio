@@ -8,7 +8,7 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 - Antall krav: **714**
 - Prioritet: P0: 145, P1: 381, P2: 149, P3: 39
 - Opprinnelse: mandat: 520, brukerbeslutning: 187, teknisk-anbefaling: 7
-- Status: Verifisert: 626, Implementert – ikke verifisert: 19, Under arbeid: 3, Ikke startet: 66
+- Status: Verifisert: 631, Implementert – ikke verifisert: 21, Under arbeid: 3, Ikke startet: 59
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -9622,63 +9622,76 @@ I en egen tidsredigeringsmodus kan avstanden mellom to ord økes eller reduseres
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO, UI
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - P1: pausen mellom to ord økes.
   - P2: ordenes lyd er uendret.
 - **Tester:**
+  - tests/unit/audio-pauses.test.ts
+- **Implementering:** src/core/audio/pauses.ts, src/core/audio/composition.ts, src/app/audio/PauseTimingPanel.tsx, src/app/audio/LineWordsPanel.tsx
 
 #### REQ-0706 – Pauser mellom flere ord
 Når flere ord dras fra hverandre, fordeles den ekstra tiden likt mellom de indre mellomrommene (600 ms over tre ord gir 300 + 300 ms). Hver pause kan justeres for seg etterpå.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - P3–P5: tiden fordeles likt og kan justeres.
 - **Tester:**
+  - tests/unit/audio-pauses.test.ts
+- **Implementering:** src/core/audio/pauses.ts, src/app/audio/PauseTimingPanel.tsx
 
 #### REQ-0707 – Pausene vises bare i produksjonsvisningen
 Lengre pauser vises som større avstand mellom ordene i tidsredigeringsmodus. Manusteksten og eksportert manus får aldri ekstra mellomrom eller tegn; tekst og tid holdes atskilt.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** prinsipp · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO, SCRIPT
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Manuseksporten er uendret etter pauseendringer.
 - **Tester:**
+  - tests/unit/audio-pauses-script.test.ts
+- **Implementering:** src/app/audio/PauseTimingPanel.tsx, src/core/audio/composition.ts
 
 #### REQ-0708 – Naturlig romlyd i pauser
 Forlengede pauser fylles som standard med romlyd fra samme opptak, fra partier uten tale, klikk, bevegelser, markerte hendelser eller upassende pust. Er romlyden for kort, settes flere biter sammen med crossfade og uten tydelig gjentakelse; finnes ingen egnet romlyd, varsles brukeren. Valg: naturlig romlyd (standard), digital stillhet, valgt romlydressurs eller manuelt redigert pause. Tale endres aldri i hastighet eller tonehøyde. Romlydfylling er en hjelp, ikke en garanti for sømløst resultat.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - P6: nye pauser fylles med romlyd.
   - P7: digital stillhet kan velges.
 - **Tester:**
+  - tests/unit/roomtone.test.ts
+  - tests/unit/audio-engine-room.test.ts
+- **Implementering:** src/core/audio/roomtone.ts, src/app/audio/room-fill.ts, src/engine/audio/composition.ts
 
 #### REQ-0709 – Romlyd i overganger mellom takes
 Romlyd kan brukes til å myke opp overganger mellom ulike takes. Overgangene kan forhåndshøres og justeres; romlyd fra ulike opptak antas ikke å være lik.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Overgang mellom to takes kan justeres og høres.
 - **Tester:**
+  - tests/unit/audio-transitions.test.ts
+- **Implementering:** src/core/audio/transitions.ts, src/app/audio/TransitionsPanel.tsx
 
 #### REQ-0710 – «Spill av automatisk etter endring»
 Dialogeditoren har avkrysningen «Spill av automatisk etter endring». Når den er på, spilles det endrede området med justerbar kontekst når en endring er fullført (ikke mens man drar), og nye avspillinger legges ikke oppå tidligere. Av: ingen automatisk avspilling.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO, UI
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - E1–E3: av/på virker.
   - P8: resultatet kan forhåndshøres.
 - **Tester:**
+  - tests/unit/audio-transitions.test.ts
+- **Implementering:** src/core/audio/transitions.ts, src/app/audio/AudioCompositionEditor.tsx
 
 #### REQ-0711 – Nettleserkompatibilitet for kamera, mikrofon og deling
 Kamera, mikrofon (MediaDevices/MediaRecorder), filvalg, Web Share, store opplastinger, sanntid og lokal lagring verifiseres på iPhone (Safari) og Android (Chrome) over HTTPS. Tillatelser spørres alltid først og respekteres.
@@ -9696,11 +9709,14 @@ Flere samtidige mobilopplastinger, store videofiler og responsive bølgeformer o
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** ikke-funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO, LIBRARY
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Flere samtidige opplastinger i test.
   - Bølgeform for lang replikk tegnes raskt.
 - **Tester:**
+  - tests/unit/audio-performance.test.ts
+  - tests/unit/mobile-server.test.ts
+- **Implementering:** src/engine/audio/mixer.ts, src/app/audio/room-fill.ts, src/adapters/mobile/mobile.functions.ts
 
 #### REQ-0713 – Teknisk feilmelding på feilsiden
 Når en side krasjer, kan brukeren åpne «Vis teknisk feilmelding» på feilsiden og kopiere den (tidspunkt, side, feiltype, melding og de første linjene av stakken) for å sende den videre. Adressen vises uten spørrestreng og uten tokenet i mobillenker.
