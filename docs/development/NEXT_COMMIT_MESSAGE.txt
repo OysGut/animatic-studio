@@ -1,15 +1,3 @@
-Fase 2, bolk D: ord-til-lyd og tekstbasert lydredigering (DEC-0095, REQ-0698–0704)
+Handover for fase 2 til kontoen oystein@gutu.no
 
-Migrasjon 0036 og 0037, ny pakke (@mediabunny/mp3-encoder). Lim inn docs/development/LOVABLE_SYNC.md i Lovable etter push.
-
-- «Tekst og lyd» i lydeditoren: replikken som ord. Klikk et ord for å markere lyden (Shift for flere),
-  hør med justerbar kontekst eller bare markeringen, og erstatt eller ta opp bare det som er markert.
-- Ord-til-lyd med ElevenLabs Forced Alignment (kostnaden vises og godkjennes, eiernes nøkkel, budsjett og
-  tak som annen AI) eller manuelt. Valget står i editoren og huskes. Usikre ord merkes (≈) og kan kobles for
-  hånd. Koblingen lagres på opptaket og kan angres.
-- Status for tekst mot lyd (ny tekst uten lyd, endret tekst med gammel lyd, nytt opptak til gjennomgang,
-  godkjent, synkronisert) i lydvinduet og inspektøren – med tegn, ikke bare farge. Nye ord vises stiplet og
-  får forslag til plassering av det nye opptaket.
-- Med i samme leveranse (om ikke committet): bolk C (lydeditor, komposisjon, WAV/MP3-eksport), bolk B
-  (lydopptak med takes og romlyd), mobilvarianter (KI-238) og halv størrelse (DEC-0092).
-- Tester: word-alignment, audio-composition, audio-takes, DB-tester 0036/0037, tests/visual/dec0095-word-alignment-ui.mjs.
+Ny docs/development/HANDOVER_FASE2_OYSTEIN.md: hele planen for fase 2 (bolk A–E), status, alle krav som gjenstår (REQ-0705–0712 og uverifiserte krav), anbefalt løsning for bolk E, arbeidsmåte med Claude Desktop og Lovable, regler og prosjektinstrukser til Lovable.
