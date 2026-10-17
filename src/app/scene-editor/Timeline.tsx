@@ -161,6 +161,7 @@ export function IconButton({
   active?: boolean;
   disabled?: boolean;
   className?: string;
+  children: ReactNode;
 }) {
   return (
     <button
@@ -170,7 +171,11 @@ export function IconButton({
       aria-pressed={active}
       disabled={disabled}
       onClick={onClick}
-      className={iconButton + (active ? " bg-accent-selection text-text-primary" : "") + (className ? " " + className : "")}
+      className={
+        iconButton +
+        (active ? " bg-accent-selection text-text-primary" : "") +
+        (className ? " " + className : "")
+      }
     >
       {children}
     </button>
