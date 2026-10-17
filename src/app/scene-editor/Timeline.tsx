@@ -304,7 +304,7 @@ const CameraRow = memo(function CameraRow({
               left: start * ppf,
               width: Math.max(6, (end - start + 1) * ppf),
               background:
-                "linear-gradient(90deg, color-mix(in oklch, var(--camera-start) 70%, var(--bg-app) 30% / 85%), color-mix(in oklch, var(--camera-end) 70%, var(--bg-app) 30% / 85%))",
+                "linear-gradient(90deg, color-mix(in oklch, color-mix(in oklch, var(--camera-start) 70%, var(--bg-app)) 85%, transparent), color-mix(in oklch, color-mix(in oklch, var(--camera-end) 70%, var(--bg-app)) 85%, transparent))",
             }}
           >
             <span className="pointer-events-none block truncate px-2 font-medium">
