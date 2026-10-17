@@ -88,6 +88,7 @@ export function MobilePage({ token }: { token: string }) {
   }, [token]);
 
   useEffect(() => {
+    uploader.start();
     void queue.load().then(() => uploader.pump());
     const online = () => {
       for (const it of queue.list()) if (it.status === "failed") uploader.retry(it.id);

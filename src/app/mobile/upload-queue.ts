@@ -191,6 +191,11 @@ export class Uploader {
     private readonly concurrency = 2,
   ) {}
 
+  /** Starter opplastingen igjen (effekten i React kan stoppe og starte samme instans). */
+  start() {
+    this.stopped = false;
+  }
+
   stop() {
     this.stopped = true;
   }
