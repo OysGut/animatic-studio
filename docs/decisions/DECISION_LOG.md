@@ -1168,3 +1168,12 @@ Regler: DEC-ID-er er permanente. En beslutning endres aldri i ettertid; den erst
 - **Dato:** 2026-10-17 · **Type:** Bekreftet av bruker (Øystein)
 - **Bakgrunner** legges fortsatt inn så de fyller lerretet i den retningen de treffer først (bredde eller høyde). DEC-0092 (halv størrelse) gjelder bare ressurser. Ingen endring i koden.
 - **`ai_model_settings`** beholder dagens lesetilgang for innloggede brukere; det er ikke nødvendig å stramme den inn.
+
+## DEC-0098 – UI-løft, trinn U1 og U3: skjemakontroller og tidslinjer som i et klippeprogram
+- **Dato:** 2026-10-17 · **Type:** Bekreftet av bruker (retning: Øystein 17.10.2026, «FilmCraft/Premiere-konvensjoner, bare UI, ikke funksjon», rekkefølge etter bolk E). Detaljene er teknisk anbefaling (Claude), plan i `UI_LOFT_PLAN.md` i Claude-prosjektet.
+- **Arbeidsmåte:** første arbeid der Lovable skriver koden etter oppdrag fra Claude; Claude går gjennom diffen, kjører testene og tar skjermbilder.
+- **U1 (`src/styles.css`):** egne piler på alle nedtrekkslister, aksentfarge på avkrysning/radio/glidere, tynne mørke rullefelt, ingen spinnknapper i tallfelt, markert tekst i aksentfarge. Bare CSS.
+- **U3a/U3b (`scene-editor/Timeline.tsx`, `assembly/FilmTimeline.tsx`, `assembly/AudioTracks.tsx`):** mørkere sporhoder med tydelig kant, annenhver bane, valgt spor med aksentstripe, tidslinjal i egen stripe med monospace-tall, klipp med tydelig valgring og navn, kamerautsnittet i tokenfarger, nøkkelbilder med mørk kant, hvitt avspillingshode med aksenthode, større tidskode og like store transportknapper. `IconButton` fikk et valgfritt `className`.
+- **Ingen funksjon endret:** ingen logikk, tester, `data-testid` eller tekster. Kontroll: dec0093 28/28, dec0094 20/20, dec0095 16/16, dec0096 31/31, scene-panels 39/39, dec0088 26/26, dec0089 26/26, interactions-e2e 44/44, scene-video 39/39, verifisering4 58/58.
+- **Venter på Øystein:** U2 (felles verktøylinjer og panelhoder), U4 (arbeidsområde-faner øverst i stedet for venstremenyen) og U5 (skjerm for skjerm).
+

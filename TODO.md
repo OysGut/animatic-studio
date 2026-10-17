@@ -2,12 +2,12 @@
 
 Huskeliste over det som er tenkt gjort, men ikke bygget. Holdes oppdatert av den som utvikler (Claude eller en annen KI) ved hver leveranse.
 Kilder: beslutningsloggen (`docs/decisions/DECISION_LOG.md`), kravregisteret (`docs/product/requirements.yaml`), kjente problemer (`docs/development/KNOWN_ISSUES.md`).
-Sist oppdatert: 2026-10-17 (DEC-0096, bolk E).
+Sist oppdatert: 2026-10-17 (DEC-0098, UI-løft U1 og U3).
 
 ## Bestilt av Mars, ikke bygget ennå
-- **Fase 2 (DEC-0090, REQ-0668–0712):** alle bolkene A–E er bygget (bolk E: DEC-0096). Gjenstår: prøving på ekte telefoner og med ekte norsk lyd (KI-235, KI-239, KI-245, KI-248) og feilen i nettlesertesten dec0093 (KI-249).
-- **UI-løft (Øystein 17.10.2026):** gi hele grensesnittet et profesjonelt preg etter konvensjonene i FilmCraft/Premiere (ArtCraft er Rust/egui, så ingen kode kan gjenbrukes direkte), uten å endre funksjoner. Planlagt etter bolk E: kartlegging, designretning og designtokens først, så skjerm for skjerm med skjermbilder før og etter.
-- **Fase 3 – Story Lab:** egen modul for historie- og karakterutvikling med VennTing-profiler, karaktersamtaler og regissørstyrt improvisasjon (spesifikasjon i Claude-prosjektet: `PHASE3_STORY_LAB_SPEC.md`). Tilhører manusarbeidet, ikke sceneeditoren; mulig knapp «Utforsk dialogen» i scenen. Første steg: les VennTing-prosjektet (bare lesing) og lag en integrasjonsplan.
+- **Fase 2 (DEC-0090, REQ-0668–0712):** alle bolkene A–E er bygget (bolk E: DEC-0096). Gjenstår: prøving på ekte telefoner og med ekte norsk lyd (KI-235, KI-239, KI-245, KI-248). KI-249 er rettet.
+- **UI-løft (Øystein 17.10.2026):** gi hele grensesnittet et profesjonelt preg etter konvensjonene i FilmCraft/Premiere (ArtCraft er Rust/egui, så ingen kode kan gjenbrukes direkte), uten å endre funksjoner. U1 (skjemakontroller) og U3 (tidslinjer) er gjort (DEC-0098). U2, U4 (faner øverst) og U5 venter på Øysteins gjennomgang.
+- **Fase 3 – Story Lab:** egen modul for historie- og karakterutvikling med VennTing-profiler, karaktersamtaler og regissørstyrt improvisasjon (spesifikasjon i Claude-prosjektet: `PHASE3_STORY_LAB_SPEC.md`). Tilhører manusarbeidet, ikke sceneeditoren; mulig knapp «Utforsk dialogen» i scenen. VennTing er kartlagt; integrasjonsplan i `PHASE3_STORY_LAB_INTEGRASJONSPLAN.md` (Claude-prosjektet), med to åpne valg for Øystein.
 - **Fase 3 – Manusutforsker og scenevarighet:** tillegg til Asset Studio og globalt manusoppslag (`PHASE3_ASSET_STUDIO_ADDENDUM.md` i Claude-prosjektet): popup fra globusikonet som følger aktiv scene, «Fest» som eget vindu, og endring av scenevarighet i start, slutt eller proporsjonalt. Grunnspesifikasjonen for Asset Studio mangler – Øystein legger den inn.
 - **Når en desktopversjon lages:** fjern grensen på 500 MB per videofil (REQ-0679) – uten å spørre Mars (DEC-0090).
 - **Eksport til ProRes/MOV** for klipping i Premiere/DaVinci (DEC-0085). Nettleseren kan bare lage MP4 (H.264/VP9) og WebM; ProRes må lages hos en tjeneste (f.eks. Runway `outputFormat: "prores"` for AI-video, eller en egen konverteringstjeneste) eller i en framtidig lokal versjon.
