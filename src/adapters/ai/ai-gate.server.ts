@@ -187,6 +187,8 @@ export async function overProjectBudget(
     .eq("project_id", projectId)
     .neq("status", "failed")
     .neq("kind", "prompt")
+    // Tekstkall (T1) teller heller ikke i genereringsbudsjettet, som AI-beskrivelsene
+    .neq("kind", "text")
     .gte("created_at", monthStartUtc(new Date()).toISOString());
   const used = count ?? 0;
   if (includesThisJob ? used > limit : used >= limit)

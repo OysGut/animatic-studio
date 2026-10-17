@@ -136,6 +136,7 @@ export const CATALOG: Record<string, string> = {
     "The AI service in Lovable did not accept the key. Check that Lovable AI is turned on for the project.",
   "AI-tjenesten svarte med feil {0}{1}": "The AI service responded with an error {0}{1}",
   "AI-tjenesten svarte uten bilde.": "The AI service replied without an image.",
+  "AI-tjenesten svarte uten tekst.": "The AI service replied without text.",
   "AI-tjenesten svarte uten tekst. Prøv igjen.": "The AI service replied without text. Try again.",
   "Aleph 2 (fra 2D-scenen)": "Aleph 2 (from the 2D scene)",
   "All tekst er minst {0} pt og får plass.": "All text is at least {0} pt and fits.",
@@ -307,6 +308,8 @@ export const CATALOG: Record<string, string> = {
     "The database is not up to date for deleted items. Paste the message into LOVABLE_SYNC.md in Lovable (migration 0029).",
   "Databasen er ikke oppdatert for sletting ennå. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0011).":
     "The database is not updated for deletion yet. Paste the message into LOVABLE_SYNC.md in Lovable (migration 0011).",
+  "Databasen er ikke oppdatert for tekst-AI (migrasjon 0038).":
+    "The database is not updated for text AI (migration 0038).",
   "Databasen er ikke oppdatert. Lim inn meldingen i LOVABLE_SYNC.md i Lovable før du gjenoppretter.":
     "The database is not up to date. Paste the message in LOVABLE_SYNC.md into Lovable before you restore.",
   "Databasen må oppdateres (migrasjon 0033) før adminsiden kan brukes.":
@@ -405,6 +408,8 @@ export const CATALOG: Record<string, string> = {
   "Den opprinnelige varianten": "The original variant",
   "Den samlede beskrivelsen er for lang (maks {0} tegn)":
     "The combined description is too long (maximum {0} characters)",
+  "Den valgte tekstmodellen kan ikke brukes (ingen gyldig nøkkel, ukjent modell eller slått av).":
+    "The chosen text model cannot be used (no valid key, unknown model or switched off).",
   "Denne filtypen kan ikke lastes opp her.": "This file type cannot be uploaded here.",
   "Denne leverandøren kan ikke få egne modeller uten ny kode.":
     "This provider cannot get its own models without new code.",
@@ -625,6 +630,8 @@ export const CATALOG: Record<string, string> = {
   "Fyller hele bildet, uten figurer.": "Fills the whole image, without figures.",
   "Gå til «Get API key» → «Create API key» og kopier nøkkelen (begynner med AIza).":
     "Go to “Get API key” → “Create API key” and copy the key (it starts with AIza).",
+  "Gå til API Keys → «Create API Key», gi den navnet «Animatic Studio» og kopier den (begynner med xai-).":
+    "Go to API Keys → “Create API Key”, name it “Animatic Studio” and copy it (it starts with xai-).",
   "Gå til API Keys → «Create new key» og kopier nøkkelen (begynner med key_).":
     "Go to API Keys → “Create new key” and copy the key (it starts with key_).",
   "Gå til API keys → «Create new secret key», gi den navnet «Animatic Studio» og kopier den (begynner med sk-).":
@@ -632,6 +639,8 @@ export const CATALOG: Record<string, string> = {
   "Gå til Dashboard → Keys → «Add key», velg rollen «API» og kopier nøkkelen (id:hemmelighet).":
     "Go to Dashboard → Keys → “Add key”, choose the role “API” and copy the key (id:secret).",
   "Gå til Settings → API Keys → «Create API key».": "Go to Settings → API Keys → “Create API key”.",
+  "Gå til Settings → API keys → «Create Key», gi den navnet «Animatic Studio» og kopier den (begynner med sk-ant-).":
+    "Go to Settings → API keys → “Create Key”, name it “Animatic Studio” and copy it (it starts with sk-ant-).",
   "Genereringen kunne ikke logges: {0}": "The generation could not be logged: {0}",
   "Genereringen må bekreftes": "The generation must be confirmed",
   "Genereringen stoppet: {0}": "The generation stopped: {0}",
@@ -658,6 +667,8 @@ export const CATALOG: Record<string, string> = {
   "Grensen på {0} lyder i timen er nådd.": "The limit of {0} sounds per hour has been reached.",
   "Grensen på {0} lydjobber i timen er nådd.":
     "The limit of {0} audio jobs per hour has been reached.",
+  "Grensen på {0} tekstkall til AI i timen er nådd. Prøv igjen senere.":
+    "The limit of {0} text AI calls per hour has been reached. Try again later.",
   "Grensen på {0} videoer i timen er nådd. Legg dem i kø i stedet.":
     "The limit of {0} videos per hour has been reached. Queue them instead.",
   "Grunnlaget mangler eller er for langt": "The basis is missing or too long",
@@ -741,6 +752,10 @@ export const CATALOG: Record<string, string> = {
   "Ingen referansebilder.": "No reference images.",
   "Ingen ressurser å legge til": "No assets to add",
   "Ingen segmenter oppgitt": "No segments given",
+  "Ingen tekst-AI er tilgjengelig: ingen gyldig nøkkel, og Lovable AI er ikke slått på (LOVABLE_API_KEY mangler).":
+    "No text AI is available: no valid key, and Lovable AI is not turned on (LOVABLE_API_KEY is missing).",
+  "Ingen tekst-AI er tilgjengelig. Koble til en leverandør under «AI-leverandører».":
+    "No text AI is available. Connect a provider under “AI providers”.",
   "Ingen tilgang.": "No access.",
   "Ingen visuell stil fylt ut – bruker en enkel standardstil.":
     "No visual style filled in – using a simple default style.",
@@ -793,6 +808,9 @@ export const CATALOG: Record<string, string> = {
   "Kildescenen har produksjonssegmenter": "The source scene has production segments",
   Kildevarianten: "The source variant",
   "Kino 1.85:1 (1998 × 1080)": "Cinema 1.85:1 (1998 × 1080)",
+  "Kjøp kreditt under Billing for teamet ditt.": "Buy credit under Billing for your team.",
+  "Kjøp kreditt under Settings → Billing (API-et virker ikke uten kreditt).":
+    "Buy credit under Settings → Billing (the API does not work without credit).",
   "kl.": "at",
   "Kling 3 (fra startbilde)": "Kling 3 (from start image)",
   "Kling O3 Edit (fra 2D-scenen)": "Kling O3 Edit (from the 2D scene)",
@@ -894,6 +912,8 @@ export const CATALOG: Record<string, string> = {
   "Lovable AI (innebygd)": "Lovable AI (built in)",
   "Lovable kjente ikke igjen noen av språkmodellene. Sett ANIMATIC_TEXT_MODEL i Lovable Cloud (se LOVABLE_SYNC.md).":
     "Lovable did not recognise any of the language models. Set ANIMATIC_TEXT_MODEL in Lovable Cloud (see LOVABLE_SYNC.md).",
+  "Lovable kjente ikke igjen noen av språkmodellene. Sett ANIMATIC_TEXT_MODEL i Lovable Cloud.":
+    "Lovable did not recognise any of the language models. Set ANIMATIC_TEXT_MODEL in Lovable Cloud.",
   "Lovable-kredittene i arbeidsområdet er brukt opp. Fyll på i Lovable og prøv igjen.":
     "The Lovable credits in the workspace are used up. Top up in Lovable and try again.",
   lyd: "audio",
@@ -962,6 +982,7 @@ export const CATALOG: Record<string, string> = {
   "Modell-ID-en passer ikke med det programmet kan sende til leverandøren. Eksempler som virker: {0}.":
     "The model ID does not match what the program can send to the provider. Examples that work: {0}.",
   "modell: {0}": "model: {0}",
+  "Modellen avslo forespørselen.": "The model refused the request.",
   "Modellen er fjernet.": "The model has been removed.",
   "Modellen finnes allerede i den innebygde katalogen.":
     "The model is already in the built-in catalogue.",
@@ -1033,6 +1054,9 @@ export const CATALOG: Record<string, string> = {
   "Oppløsning {0}": "Resolution {0}",
   "Opprett en organisasjon og kjøp kreditter under Billing.":
     "Create an organisation and buy credits under Billing.",
+  "Opprett konto eller logg inn på console.anthropic.com.":
+    "Create an account or sign in at console.anthropic.com.",
+  "Opprett konto eller logg inn på console.x.ai.": "Create an account or sign in at console.x.ai.",
   "Opprett konto eller logg inn på platform.openai.com.":
     "Create an account or sign in at platform.openai.com.",
   "Opprett konto på elevenlabs.io og velg et abonnement (gratisnivået har få kreditter).":
@@ -1329,6 +1353,7 @@ export const CATALOG: Record<string, string> = {
   "Siste forekomst av scenen kan bare fjernes ved å angre opprettelsen av scenen":
     "The last occurrence of the scene can only be removed by undoing the creation of the scene",
   "Siste linje må komme etter første": "The last line must come after the first",
+  "Siste melding må være fra brukeren": "The last message must be from the user",
   "Sjekk at du kopierte hele nøkkelen, og at den ikke er slettet hos leverandøren.":
     "Check that you copied the whole key and that the provider has not deleted it.",
   "Skaleringen er for stor": "The scale is too large",
@@ -1396,6 +1421,7 @@ export const CATALOG: Record<string, string> = {
   "Synlige munnbevegelser kan kreve ny leppesynk. Filmen endres ikke automatisk.":
     "Visible mouth movements may require new lip sync. The film is not changed automatically.",
   Systeminstruks: "System instruction",
+  "Systeminstruksen er for lang": "The system instruction is too long",
   "Take {0}: segment tilhører en annen forekomst":
     "Take {0}: segment belongs to another occurrence",
   "Take {0}: ugyldig varighet": "Take {0}: invalid duration",
@@ -1408,8 +1434,14 @@ export const CATALOG: Record<string, string> = {
   Tekst: "Text",
   "Tekst før første sceneoverskrift (fortsettelse fra tidligere scene)":
     "Text before the first scene heading (continuation from an earlier scene)",
+  "Tekst med Claude: manusarbeid, karaktersamtaler og analyse. Forhåndsbetalt kreditt i Claude Console.":
+    "Text with Claude: script work, character conversations and analysis. Prepaid credit in the Claude Console.",
+  "Tekst med Grok. Forhåndsbetalt kreditt i xAI Console.":
+    "Text with Grok. Prepaid credit in the xAI Console.",
+  "Teksten ble ikke skrevet: {0}": "The text was not written: {0}",
   "Teksten ble kortet ned til {0} tegn; replikkene er beholdt ordrett.":
     "The text was shortened to {0} characters; the lines are kept verbatim.",
+  "Teksten er for lang": "The text is too long",
   "Teksten er for lang (maks {0} tegn per felt)":
     "The text is too long (maximum {0} characters per field)",
   "Teksten er for lang (maks 4000 tegn)": "The text is too long (max 4000 characters)",
@@ -1423,9 +1455,11 @@ export const CATALOG: Record<string, string> = {
   "Tittelsiden er for lang til å lagres (maks om lag 3 kB)":
     "The title page is too long to save (max about 3 kB)",
   "Tjenesten godtok ikke nøkkelen.": "The service did not accept the key.",
+  "Tjenesten svarte ikke med gyldig JSON.": "The service did not reply with valid JSON.",
   "Tjenesten svarte uten bilde.": "The service replied without an image.",
   "Tjenesten svarte uten jobb-ID.": "The service replied without a job ID.",
   "Tjenesten svarte uten lyd.": "The service replied without sound.",
+  "Tjenesten svarte uten tekst.": "The service replied without text.",
   "Tjenesten svarte uten video.": "The service replied without a video.",
   "To bilder for samme språk": "Two images for the same language",
   "To bildeskifter på samme bilde": "Two image swaps on the same frame",
@@ -1502,6 +1536,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig maske": "Invalid mask",
   "Ugyldig mediesti": "Invalid media path",
   "Ugyldig modell": "Invalid model",
+  "Ugyldig modellnavn.": "Invalid model name.",
   "Ugyldig negativ beskrivelse": "Invalid negative description",
   "Ugyldig nøkkel": "Invalid key",
   "Ugyldig nøkkel {0}": "Invalid key {0}",
@@ -1549,12 +1584,14 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig stil": "Invalid style",
   "Ugyldig stilprofil": "Invalid style profile",
   "Ugyldig størrelse": "Invalid size",
+  "Ugyldig svarlengde": "Invalid reply length",
   "Ugyldig tak": "Invalid limit",
   "Ugyldig tegn i sorteringsnøkkel: {0}": "Invalid character in sort key: {0}",
   "Ugyldig tekst": "Invalid text",
   "Ugyldig tekst i stilprofilen": "Invalid text in the style profile",
   "Ugyldig tekst på plakaten": "Invalid text on the poster",
   "Ugyldig tekstområde for notatet": "Invalid text range for the note",
+  "Ugyldig temperatur": "Invalid temperature",
   "Ugyldig tempokurve": "Invalid tempo curve",
   "Ugyldig tid for banen": "Invalid time for the path",
   "Ugyldig tid for segmentet": "Invalid time for the segment",
@@ -1586,6 +1623,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldige innholdsvalg": "Invalid content options",
   "Ugyldige instrukser": "Invalid instructions",
   "Ugyldige mål": "Invalid dimensions",
+  "Ugyldige meldinger": "Invalid messages",
   "Ugyldige referansebilder": "Invalid reference images",
   "Ugyldige revisjoner": "Invalid revisions",
   "Ugyldige tegn i kameraet": "Invalid characters in the camera",
@@ -1609,6 +1647,7 @@ export const CATALOG: Record<string, string> = {
   "Ukjent modell.": "Unknown model.",
   "Ukjent navnetype": "Unknown name type",
   "Ukjent nøkkelversjon.": "Unknown key version.",
+  "Ukjent oppgave": "Unknown task",
   "Ukjent plakattype": "Unknown poster type",
   "ukjent pris": "price unknown",
   "Ukjent relasjonstype": "Unknown relation type",
@@ -1617,6 +1656,8 @@ export const CATALOG: Record<string, string> = {
   "Ukjent språk": "Unknown language",
   "Ukjent startbilde.": "Unknown start image.",
   "Ukjent stil": "Unknown style",
+  "Ukjent tekstleverandør": "Unknown text provider",
+  "Ukjent tekstleverandør.": "Unknown text provider.",
   "Ukjent tjeneste": "Unknown service",
   "Ukjent tjeneste.": "Unknown service.",
   "Ukjent type fortellingstid": "Unknown story time type",

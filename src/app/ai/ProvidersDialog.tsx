@@ -4,7 +4,8 @@
  * prøves, krypteres og vises aldri igjen (bare de fire siste tegnene). Øverst: overordnet kostnadstak per
  * måned for alle prosjekter som bruker nøklene.
  */
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import {
   ArrowLeft,
   CheckCircle2,
@@ -30,8 +31,17 @@ import {
   type ProviderInfo,
   L,
   tm,
+  TEXT_PREFS_KEY,
+  TEXT_TASK_GROUPS,
+  TEXT_TASK_GROUP_LABEL,
+  isTextPrefs,
+  providerInfo,
+  textModelsOf,
+  type TextChoice,
+  type TextPrefs,
 } from "@/core";
 import {
+  listTextChoices,
   removeProviderKey,
   saveProviderKey,
   setAccountCap,
@@ -47,6 +57,7 @@ import {
 } from "@/components/ui/dialog";
 import { accountAiKey, useAccountAi, type ProviderKeyRow } from "./use-providers";
 import { useAiModelSettings } from "./use-ai-model-settings";
+import { useUiPref } from "@/app/account/ui-prefs";
 
 const ctl =
   "h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary disabled:opacity-50";
@@ -435,6 +446,124 @@ function CapSection({
   );
 }
 
+const LOVABLE_TEXT = "lovable";
+
+/**
+ * «Tekst-AI» (T1): leverandør og modell per oppgavegruppe. Lagres på kontoen (profiles.ui_prefs → aiText).
+ * «Automatisk» = ingen rad: serveren velger første leverandør med gyldig nøkkel, ellers innebygd AI.
+ */
+function TextAiSection({ open }: { open: boolean }) {
+  const list = useServerFn(listTextChoices);
+  const choices = useQuery({
+    queryKey: ["text-ai-choices"],
+    enabled: open,
+    queryFn: () => list(),
+  });
+  const [prefs, setPrefs] = useUiPref<TextPrefs>(TEXT_PREFS_KEY, {}, isTextPrefs);
+  const settings = catalogSettings();
+  const providers = (choices.data?.providers ?? []).filter((p) =>
+    isProviderEnabled(settings, p.provider),
+  );
+  const modelsFor = (provider: string): string[] =>
+    provider === LOVABLE_TEXT
+      ? []
+      : (() => {
+          const a = providers.find((p) => p.provider === provider);
+          return a ? textModelsOf(a).filter((m) => isModelEnabled(settings, provider, m)) : [];
+        })();
+  const update = (group: (typeof TEXT_TASK_GROUPS)[number], next: TextChoice | null) => {
+    const copy: TextPrefs = { ...prefs };
+    if (next) copy[group] = next;
+    else delete copy[group];
+    setPrefs(copy);
+  };
+  return (
+    <section
+      aria-labelledby="text-ai-title"
+      className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-3"
+    >
+      <h3 id="text-ai-title" className="text-[13px] font-medium text-text-primary">
+        {L("Tekst-AI", "Text AI")}
+      </h3>
+      <p className="text-xs text-text-tertiary">
+        {L(
+          "Velg leverandør og modell for hver type tekstoppgave. «Automatisk» bruker den første leverandøren du har en gyldig nøkkel til, ellers den innebygde AI-en.",
+          "Choose the provider and model for each kind of text task. “Automatic” uses the first provider you have a valid key for, otherwise the built-in AI.",
+        )}
+      </p>
+      {choices.isLoading ? (
+        <Loader2 className="size-4 animate-spin text-text-tertiary" aria-hidden />
+      ) : (
+        <div className="grid grid-cols-[auto_1fr_1fr] items-center gap-2">
+          {TEXT_TASK_GROUPS.map((g) => {
+            const cur = prefs[g];
+            const models = cur ? modelsFor(cur.provider) : [];
+            return (
+              <div key={g} className="contents">
+                <span className="text-[13px] text-text-secondary">{TEXT_TASK_GROUP_LABEL[g]}</span>
+                <select
+                  className={ctl}
+                  aria-label={L(
+                    `Leverandør for ${TEXT_TASK_GROUP_LABEL[g]}`,
+                    `Provider for ${TEXT_TASK_GROUP_LABEL[g]}`,
+                  )}
+                  value={cur?.provider ?? ""}
+                  onChange={(e) => {
+                    const p = e.target.value;
+                    if (!p) return update(g, null);
+                    if (p === LOVABLE_TEXT)
+                      return update(g, { provider: "lovable", model: "auto" });
+                    const first = modelsFor(p)[0];
+                    if (first) update(g, { provider: p as TextChoice["provider"], model: first });
+                  }}
+                >
+                  <option value="">{L("Automatisk", "Automatic")}</option>
+                  {providers.map((p) => (
+                    <option key={p.provider} value={p.provider}>
+                      {providerInfo(p.provider)?.name ?? p.provider}
+                    </option>
+                  ))}
+                  <option value={LOVABLE_TEXT}>{L("Innebygd AI", "Built-in AI")}</option>
+                </select>
+                <select
+                  className={ctl}
+                  aria-label={L(
+                    `Modell for ${TEXT_TASK_GROUP_LABEL[g]}`,
+                    `Model for ${TEXT_TASK_GROUP_LABEL[g]}`,
+                  )}
+                  value={cur && cur.provider !== "lovable" ? cur.model : ""}
+                  disabled={!cur || cur.provider === "lovable"}
+                  onChange={(e) =>
+                    cur && update(g, { provider: cur.provider, model: e.target.value })
+                  }
+                >
+                  {!cur || cur.provider === "lovable" ? (
+                    <option value="">{L("Velges automatisk", "Chosen automatically")}</option>
+                  ) : (
+                    (models.includes(cur.model) ? models : [cur.model, ...models]).map((m) => (
+                      <option key={m} value={m}>
+                        {m}
+                      </option>
+                    ))
+                  )}
+                </select>
+              </div>
+            );
+          })}
+        </div>
+      )}
+      {!choices.isLoading && providers.length === 0 ? (
+        <p className="text-xs text-text-tertiary">
+          {L(
+            "Du har ingen egne tekstleverandører ennå. Koble til Claude, ChatGPT, Grok eller Gemini nedenfor.",
+            "You have no text providers of your own yet. Connect Claude, ChatGPT, Grok or Gemini below.",
+          )}
+        </p>
+      ) : null}
+    </section>
+  );
+}
+
 export function ProvidersDialog({
   open,
   onOpenChange,
@@ -491,6 +620,7 @@ export function ProvidersDialog({
               capUsd={ai.data?.capUsd ?? null}
               usedUsd={ai.data?.usedUsd ?? 0}
             />
+            <TextAiSection open={open} />
             <ul className="flex flex-col gap-1.5" aria-label={L("Leverandører", "Providers")}>
               {PROVIDERS.map((p) => (
                 <li key={p.id}>

@@ -7,12 +7,13 @@
  * støtter (se katalogen i src/core/generation/providers.ts). Formatene følger leverandørenes egne
  * dokumentasjon (oktober 2026) og er ikke prøvd mot de ekte tjenestene herfra (KI-153).
  */
-import { L, type ProviderId } from "@/core";
+import { L, filterTextModels, type ProviderId, type TextProviderId } from "@/core";
 
 const T_TEST = 20_000;
 const T_IMAGE = 150_000;
 const T_SUBMIT = 60_000;
 const T_DOWNLOAD = 120_000;
+const T_TEXT = 120_000;
 /** Største video vi henter inn (lagringsgrensen og minnet i serverfunksjonen). */
 export const MAX_VIDEO_BYTES = 300 * 1024 * 1024;
 
@@ -975,7 +976,290 @@ const elevenlabs = {
 
 // ---------------------------------------------------------------- Felles
 
-export const ADAPTERS = { openai, google, fal, runway, elevenlabs } as const;
+// ---------------------------------------------------------------- tekst (T1)
+
+export interface TextMessage {
+  readonly role: "user" | "assistant";
+  readonly content: string;
+}
+
+export interface TextRequest {
+  readonly key: string;
+  readonly model: string;
+  readonly system?: string;
+  readonly messages: readonly TextMessage[];
+  readonly maxTokens: number;
+  readonly temperature?: number;
+  /** Svaret skal være ren JSON. */
+  readonly json?: boolean;
+}
+
+export interface TextResult {
+  readonly text: string;
+  readonly usage: { readonly inputTokens: number; readonly outputTokens: number };
+  readonly model: string;
+}
+
+const JSON_INSTRUCTION =
+  "Reply with a single valid JSON value only, without code fences or commentary.";
+
+const num = (v: unknown): number => (typeof v === "number" && Number.isFinite(v) ? v : 0);
+
+function emptyReply(): ProviderError {
+  return new ProviderError(
+    L("Tjenesten svarte uten tekst.", "The service replied without text."),
+    502,
+  );
+}
+
+function refusal(): ProviderError {
+  return new ProviderError(
+    L("Modellen avslo forespørselen.", "The model refused the request."),
+    422,
+  );
+}
+
+/** Kontrollerer JSON-svaret (fjerner eventuelle kodegjerder). */
+function checkJson(text: string): string {
+  const t = text
+    .trim()
+    .replace(/^```(?:json)?\s*/i, "")
+    .replace(/```$/, "")
+    .trim();
+  try {
+    JSON.parse(t);
+  } catch {
+    throw new ProviderError(
+      L("Tjenesten svarte ikke med gyldig JSON.", "The service did not reply with valid JSON."),
+      502,
+    );
+  }
+  return t;
+}
+
+/** Resonneringsmodeller hos OpenAI avviser temperature. */
+const OPENAI_REASONING = /^(o\d|gpt-5)/;
+
+/** OpenAI og xAI (samme format): Chat Completions. */
+async function openaiCompatText(
+  base: string,
+  provider: "openai" | "xai",
+  r: TextRequest,
+): Promise<TextResult> {
+  const messages = [
+    ...(r.system || r.json
+      ? [
+          {
+            role: "system",
+            content: [r.system, r.json ? JSON_INSTRUCTION : ""].filter(Boolean).join("\n\n"),
+          },
+        ]
+      : []),
+    ...r.messages.map((m) => ({ role: m.role, content: m.content })),
+  ];
+  const skipTemp = provider === "openai" && OPENAI_REASONING.test(r.model);
+  const body: Record<string, unknown> = {
+    model: r.model,
+    messages,
+    ...(provider === "openai"
+      ? { max_completion_tokens: r.maxTokens }
+      : { max_tokens: r.maxTokens }),
+    ...(r.temperature !== undefined && !skipTemp ? { temperature: r.temperature } : {}),
+    ...(r.json ? { response_format: { type: "json_object" } } : {}),
+  };
+  const res = await call(
+    `${base}/chat/completions`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${r.key}`, "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    },
+    T_TEXT,
+  );
+  const j = (await res.json()) as {
+    model?: string;
+    choices?: { message?: { content?: unknown; refusal?: unknown }; finish_reason?: string }[];
+    usage?: { prompt_tokens?: number; completion_tokens?: number };
+  };
+  const c = j.choices?.[0];
+  if (c?.message?.refusal || c?.finish_reason === "content_filter") throw refusal();
+  const content = c?.message?.content;
+  const text =
+    typeof content === "string"
+      ? content
+      : Array.isArray(content)
+        ? content
+            .map((p) =>
+              p && typeof p === "object" ? String((p as { text?: unknown }).text ?? "") : "",
+            )
+            .join("")
+        : "";
+  if (!text.trim()) throw emptyReply();
+  return {
+    text: r.json ? checkJson(text) : text,
+    usage: {
+      inputTokens: num(j.usage?.prompt_tokens),
+      outputTokens: num(j.usage?.completion_tokens),
+    },
+    model: typeof j.model === "string" ? j.model : r.model,
+  };
+}
+
+async function listIds(url: string, headers: Record<string, string>): Promise<string[]> {
+  const res = await call(url, { headers }, T_TEST);
+  const j = (await res.json()) as { data?: { id?: unknown }[] };
+  return (j.data ?? []).map((m) => m.id).filter((x): x is string => typeof x === "string");
+}
+
+const ANTHROPIC = "https://api.anthropic.com/v1";
+export const ANTHROPIC_VERSION = "2023-06-01";
+const anthropicAuth = (key: string) => ({
+  "x-api-key": key,
+  "anthropic-version": ANTHROPIC_VERSION,
+});
+
+const anthropic = {
+  async test(key: string) {
+    await call(`${ANTHROPIC}/models?limit=1`, { headers: anthropicAuth(key) }, T_TEST);
+  },
+  async listTextModels(key: string) {
+    return filterTextModels(
+      "anthropic",
+      await listIds(`${ANTHROPIC}/models?limit=1000`, anthropicAuth(key)),
+    );
+  },
+  async text(r: TextRequest): Promise<TextResult> {
+    const system = [r.system, r.json ? JSON_INSTRUCTION : ""].filter(Boolean).join("\n\n");
+    const res = await call(
+      `${ANTHROPIC}/messages`,
+      {
+        method: "POST",
+        headers: { ...anthropicAuth(r.key), "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: r.model,
+          max_tokens: r.maxTokens,
+          ...(system ? { system } : {}),
+          messages: r.messages.map((m) => ({ role: m.role, content: m.content })),
+          ...(r.temperature !== undefined ? { temperature: Math.min(1, r.temperature) } : {}),
+        }),
+      },
+      T_TEXT,
+    );
+    const j = (await res.json()) as {
+      model?: string;
+      stop_reason?: string;
+      content?: { type?: string; text?: string }[];
+      usage?: { input_tokens?: number; output_tokens?: number };
+    };
+    if (j.stop_reason === "refusal") throw refusal();
+    const text = (j.content ?? [])
+      .filter((b) => b.type === "text")
+      .map((b) => b.text ?? "")
+      .join("");
+    if (!text.trim()) throw emptyReply();
+    return {
+      text: r.json ? checkJson(text) : text,
+      usage: { inputTokens: num(j.usage?.input_tokens), outputTokens: num(j.usage?.output_tokens) },
+      model: typeof j.model === "string" ? j.model : r.model,
+    };
+  },
+};
+
+const XAI = "https://api.x.ai/v1";
+const xai = {
+  async test(key: string) {
+    await call(`${XAI}/models`, { headers: { Authorization: `Bearer ${key}` } }, T_TEST);
+  },
+  async listTextModels(key: string) {
+    return filterTextModels(
+      "xai",
+      await listIds(`${XAI}/models`, { Authorization: `Bearer ${key}` }),
+    );
+  },
+  text: (r: TextRequest) => openaiCompatText(XAI, "xai", r),
+};
+
+const openaiText = {
+  async listTextModels(key: string) {
+    return filterTextModels("openai", await listIds(`${OPENAI}/models`, openaiAuth(key)));
+  },
+  text: (r: TextRequest) => openaiCompatText(OPENAI, "openai", r),
+};
+
+const googleText = {
+  async listTextModels(key: string) {
+    const res = await call(`${GEMINI}/models?pageSize=1000`, { headers: geminiAuth(key) }, T_TEST);
+    const j = (await res.json()) as {
+      models?: { name?: unknown; supportedGenerationMethods?: unknown }[];
+    };
+    const ids = (j.models ?? [])
+      .filter(
+        (m) =>
+          Array.isArray(m.supportedGenerationMethods) &&
+          m.supportedGenerationMethods.includes("generateContent"),
+      )
+      .map((m) => (typeof m.name === "string" ? m.name.replace(/^models\//, "") : ""));
+    return filterTextModels("google", ids);
+  },
+  async text(r: TextRequest): Promise<TextResult> {
+    if (!/^[A-Za-z0-9._-]+$/.test(r.model))
+      throw new ProviderError(L("Ugyldig modellnavn.", "Invalid model name."), 400);
+    const system = [r.system, r.json ? JSON_INSTRUCTION : ""].filter(Boolean).join("\n\n");
+    const res = await call(
+      `${GEMINI}/models/${r.model}:generateContent`,
+      {
+        method: "POST",
+        headers: { ...geminiAuth(r.key), "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...(system ? { systemInstruction: { parts: [{ text: system }] } } : {}),
+          contents: r.messages.map((m) => ({
+            role: m.role === "assistant" ? "model" : "user",
+            parts: [{ text: m.content }],
+          })),
+          generationConfig: {
+            maxOutputTokens: r.maxTokens,
+            ...(r.temperature !== undefined ? { temperature: r.temperature } : {}),
+            ...(r.json ? { responseMimeType: "application/json" } : {}),
+          },
+        }),
+      },
+      T_TEXT,
+    );
+    const j = (await res.json()) as {
+      modelVersion?: string;
+      promptFeedback?: { blockReason?: string };
+      candidates?: { finishReason?: string; content?: { parts?: { text?: string }[] } }[];
+      usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number };
+    };
+    const c = j.candidates?.[0];
+    if (j.promptFeedback?.blockReason || c?.finishReason === "SAFETY") throw refusal();
+    const text = (c?.content?.parts ?? []).map((p) => p.text ?? "").join("");
+    if (!text.trim()) throw emptyReply();
+    return {
+      text: r.json ? checkJson(text) : text,
+      usage: {
+        inputTokens: num(j.usageMetadata?.promptTokenCount),
+        outputTokens: num(j.usageMetadata?.candidatesTokenCount),
+      },
+      model: typeof j.modelVersion === "string" ? j.modelVersion : r.model,
+    };
+  },
+};
+
+/** Tekstadapterne. Strømming kan senere legges til som `streamText(r)` ved siden av `text(r)`. */
+export const TEXT_ADAPTERS: Record<
+  TextProviderId,
+  {
+    text(r: TextRequest): Promise<TextResult>;
+    listTextModels(key: string): Promise<string[]>;
+  }
+> = { anthropic, openai: openaiText, google: googleText, xai };
+
+export function generateProviderText(p: TextProviderId, r: TextRequest): Promise<TextResult> {
+  return TEXT_ADAPTERS[p].text(r);
+}
+
+export const ADAPTERS = { openai, google, fal, runway, elevenlabs, anthropic, xai } as const;
 
 export type KeyedProvider = Exclude<ProviderId, "lovable">;
 

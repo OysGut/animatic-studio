@@ -26,6 +26,8 @@ const PROVIDER_IDS: readonly ProviderId[] = [
   "fal",
   "runway",
   "elevenlabs",
+  "anthropic",
+  "xai",
 ];
 const PRICE_UNITS: readonly SettingPriceUnit[] = ["", "image", "second", "call", "character"];
 
