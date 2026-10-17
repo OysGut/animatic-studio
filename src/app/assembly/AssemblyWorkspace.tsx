@@ -1,3 +1,4 @@
+import { Toolbar, ToolbarButton, ToolbarSeparator } from "@/app/shell/workspace-chrome";
 /**
  * Montering (M4 del 1, mandat kap. 15, DEC-0043): den samlede filmen – alle aktive scener i manusets
  * rekkefølge, med 2D-scenene som materiale og tittelkort der 2D-scenen mangler. Forhåndsvis hele filmen,
@@ -900,16 +901,15 @@ function Assembly({
       }}
       className="flex min-h-0 flex-1 flex-col outline-none"
     >
-      <div className="flex h-10 shrink-0 items-center gap-2 border-b border-border bg-surface-2 px-3">
+      <Toolbar>
         <span className="text-[13px] font-medium text-text-primary">
           {L("Montering", "Assembly")}
         </span>
         <ProductionPicker state={state} value={productionId} onChange={setProductionId} />
         <FilmLanguagePicker value={filmLang} onChange={setFilmLang} compact />
-        <div className="mx-1 h-5 w-px bg-border" aria-hidden />
-        <Button
-          size="sm"
-          variant="ghost"
+        <ToolbarSeparator />
+        <ToolbarButton
+          variant="icon"
           onClick={cmds.undo}
           disabled={!cmds.canUndo}
           title={
@@ -922,10 +922,9 @@ function Assembly({
           }
         >
           <Undo2 />
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
+        </ToolbarButton>
+        <ToolbarButton
+          variant="icon"
           onClick={cmds.redo}
           disabled={!cmds.canRedo}
           title={
@@ -938,7 +937,7 @@ function Assembly({
           }
         >
           <Redo2 />
-        </Button>
+        </ToolbarButton>
         {/* Antall og lengde uten avkutting; resten står i verktøytipset. Smalere enn 1600 px vises det samme i
             transportlinjen («Scene 1 av 13», samlet tid), så etiketten skjules der (DEC-0076 funn 5) */}
         <span
@@ -950,11 +949,10 @@ function Assembly({
           {clips.length} {clips.length === 1 ? L("scene", "scene") : L("scener", "scenes")} ·{" "}
           {formatSeconds(framesToSeconds(filmDurationFrames(clips), fps))}
         </span>
-        <div className="ml-auto flex min-w-0 items-center gap-1.5">
+        <div className="ml-auto flex min-w-0 flex-wrap items-center gap-1.5">
           {editable ? (
-            <Button
-              size="sm"
-              variant="ghost"
+            <ToolbarButton
+              variant="default"
               className="shrink-0"
               onClick={() => setAddAudio("dialogue")}
               disabled={clips.length === 0}
@@ -964,11 +962,10 @@ function Assembly({
               <span className="sr-only min-[1400px]:not-sr-only">
                 {L("Legg til lyd", "Add audio")}
               </span>
-            </Button>
+            </ToolbarButton>
           ) : null}
-          <Button
-            size="sm"
-            variant="secondary"
+          <ToolbarButton
+            variant="primary"
             className="shrink-0"
             onClick={() => setExportOpen(true)}
             disabled={clips.length === 0}
@@ -983,7 +980,7 @@ function Assembly({
               {L("Eksporter", "Export")}
               <span className="hidden min-[1400px]:inline"> animatic</span>
             </span>
-          </Button>
+          </ToolbarButton>
           <AssemblyMoreMenu
             editable={editable}
             hasClips={clips.length > 0}
@@ -1003,7 +1000,7 @@ function Assembly({
             hasClips={clips.length > 0}
           />
           <ShortcutsButton onClick={() => setShortcutsOpen(true)} />
-          <div className="mx-0.5 h-5 w-px shrink-0 bg-border" aria-hidden />
+          <ToolbarSeparator />
           <SaveIndicator cmds={cmds} />
           {roleKnown && !editable ? (
             <span className="text-xs text-text-tertiary">
@@ -1011,7 +1008,7 @@ function Assembly({
             </span>
           ) : null}
         </div>
-      </div>
+      </Toolbar>
       {error ? (
         <p
           role="alert"

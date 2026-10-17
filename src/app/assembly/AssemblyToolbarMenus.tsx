@@ -17,7 +17,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { Button } from "@/components/ui/button";
+import { ToolbarButton } from "@/app/shell/workspace-chrome";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   DropdownMenu,
@@ -91,10 +91,8 @@ export function AssemblyViewMenu({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button
-          size="sm"
-          variant="ghost"
-          className="h-7 shrink-0 gap-1 whitespace-nowrap px-2 text-xs"
+        <ToolbarButton
+          className="shrink-0"
           title={L(
             "Svart-hvitt, teknisk visning og eget vindu",
             "Black and white, technical view and own window",
@@ -109,7 +107,7 @@ export function AssemblyViewMenu({
             </>
           ) : null}
           <ChevronDown className="size-3" aria-hidden />
-        </Button>
+        </ToolbarButton>
       </PopoverTrigger>
       <PopoverContent align="end" className="flex w-72 flex-col gap-1 p-2">
         <ViewToggle
@@ -171,10 +169,8 @@ export function AssemblyMoreMenu({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          size="sm"
-          variant="ghost"
-          className="h-7 shrink-0 gap-1 whitespace-nowrap px-2 text-xs"
+        <ToolbarButton
+          className="shrink-0"
           title={L(
             "Standardovergang, lang film, video for flere scener, språkversjon og undertekster",
             "Standard transition, long film, video for several scenes, language version and subtitles",
@@ -183,7 +179,7 @@ export function AssemblyMoreMenu({
           <Ellipsis className="size-3.5" aria-hidden />
           {L("Mer", "More")}
           <ChevronDown className="size-3" aria-hidden />
-        </Button>
+        </ToolbarButton>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-80">
         <DropdownMenuItem className={item} onSelect={onStandardTransition}>

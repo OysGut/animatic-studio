@@ -63,7 +63,7 @@ import { ContentSyncFlag } from "./ContentSyncFlag";
 import { useContentSync } from "./use-content-sync";
 import type { Commands } from "@/app/project/use-commands";
 
-const label = "text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary";
+const label = "text-[11px] font-medium uppercase tracking-wider text-text-tertiary";
 
 export function ClipPanel({
   state,
@@ -195,11 +195,11 @@ export function ClipPanel({
         aria-label={L("Valgt scene", "Selected scene")}
         className="flex flex-col gap-2 border-b border-border p-3"
       >
-        <div className="flex items-baseline gap-2">
+        <div className="-mx-3 group flex h-8 shrink-0 items-center gap-2 border-b border-border bg-surface-2 px-2">
           <span className="font-mono text-[11px] text-text-tertiary">
             {clip.productionNumber ?? "–"}
           </span>
-          <h2 className="min-w-0 truncate text-[13px] font-medium text-text-primary">
+          <h2 className="min-w-0 truncate text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
             {formatHeading(clip.heading) || L("Uten overskrift", "Untitled")}
           </h2>
           <span className="ml-auto self-center">
@@ -438,8 +438,8 @@ export function ClipPanel({
         aria-label={L("Manus for scenen", "Script for the scene")}
         className="flex min-h-[280px] flex-1 flex-col"
       >
-        <div className="flex items-center gap-2 px-3 pb-1 pt-2">
-          <h2 className={label}>{L("Manus", "Script")}</h2>
+        <div className="group flex h-8 shrink-0 items-center gap-2 border-b border-border bg-surface-2 px-2">
+          <h2 className={label + " flex h-8 shrink-0 items-center"}>{L("Manus", "Script")}</h2>
           {editable ? (
             <button
               type="button"
@@ -889,7 +889,7 @@ function Versions({
       aria-label={L("Versjoner av scenen", "Versions of the scene")}
       className="flex flex-col gap-1.5 border-b border-border p-3"
     >
-      <h2 className={label}>{L("Versjoner av scenen", "Versions of the scene")}</h2>
+      <h2 className={label + " -mx-3 flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2"}>{L("Versjoner av scenen", "Versions of the scene")}</h2>
       {clip.inheritedFrom ? (
         <p className="text-[11px] text-text-tertiary">
           {L(
@@ -1150,7 +1150,7 @@ function TransitionRow({
       aria-label={L("Overgang inn i scenen", "Transition into the scene")}
       className="flex flex-col gap-1.5 border-b border-border p-3"
     >
-      <h2 className={label}>
+      <h2 className={label + " -mx-3 flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2"}>
         {first
           ? L("Starten av filmen", "Start of the film")
           : L("Overgang inn i scenen", "Transition into the scene")}

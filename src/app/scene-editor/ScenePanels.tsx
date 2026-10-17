@@ -19,6 +19,7 @@ import { L } from "@/core";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 import { movePanelAmong, movePanelTo, type PanelId, type PanelMode } from "./panel-layout";
 import { panelTitle } from "./use-scene-panels";
+import { PanelHeader } from "@/app/shell/workspace-chrome";
 
 /** Datatype for dra-og-slipp av et panel (verdien er panelets ID). */
 const PANEL_DRAG_TYPE = "application/x-animatic-panel";
@@ -228,13 +229,22 @@ export function SidePanels({
                   "Drag the heading to move the panel",
                 )}
                 data-panel-heading={id}
-                className="flex h-8 shrink-0 cursor-grab items-center gap-1 border-b border-border bg-surface-2 pl-1 pr-1 active:cursor-grabbing"
+                className="shrink-0 cursor-grab active:cursor-grabbing"
               >
-                <GripVertical className="size-3.5 shrink-0 text-text-tertiary" aria-hidden />
-                {onToggle ? <CollapseButton title={title} id={id} onToggle={onToggle} /> : null}
-                <h2 className="min-w-0 flex-1 truncate text-xs font-medium uppercase tracking-[0.04em] text-text-secondary">
-                  {title}
-                </h2>
+                <PanelHeader
+                  as="span"
+                  className="px-1 [&>span:first-child]:flex [&>span:first-child]:flex-1 [&>span:first-child]:items-center [&>span:first-child]:gap-1"
+                  title={
+                    <>
+                      <GripVertical className="size-3.5 shrink-0 text-text-tertiary" aria-hidden />
+                      {onToggle ? <CollapseButton title={title} id={id} onToggle={onToggle} /> : null}
+                      <h2 className="min-w-0 flex-1 truncate text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
+                        {title}
+                      </h2>
+                    </>
+                  }
+                  actions={
+                    <>
                 <button
                   type="button"
                   className={iconButton}
@@ -255,6 +265,9 @@ export function SidePanels({
                 >
                   <ChevronRight className="size-3.5" aria-hidden />
                 </button>
+                    </>
+                  }
+                />
               </header>
               {/* Panelets egen overskrift er med i rammen over: skjules her (leses fortsatt opp) */}
               <div
@@ -333,10 +346,10 @@ export function StackedPanels({
             data-collapsed={closed ? true : undefined}
             className={"flex shrink-0 flex-col " + (i > 0 ? "border-t border-border" : "")}
           >
-            <header className="flex h-7 shrink-0 items-center gap-1 bg-surface-2 pl-1 pr-1">
+            <header className="group flex h-8 shrink-0 items-center gap-1.5 border-b border-border bg-surface-2 px-2">
               <button
                 type="button"
-                className="flex min-w-0 flex-1 items-center gap-1 rounded-sm px-1 py-0.5 text-left text-text-secondary hover:text-text-primary"
+                className="flex min-w-0 flex-1 items-center gap-1 rounded-sm px-1 py-0.5 text-left text-text-tertiary hover:text-text-primary"
                 onClick={() => onToggle(id)}
                 aria-expanded={!closed}
                 aria-label={
@@ -356,13 +369,13 @@ export function StackedPanels({
                 ) : (
                   <ChevronDown className="size-3.5 shrink-0" aria-hidden />
                 )}
-                <h2 className="min-w-0 truncate text-xs font-medium uppercase tracking-[0.04em]">
+                <h2 className="min-w-0 truncate text-[11px] font-medium uppercase tracking-wider">
                   {title}
                 </h2>
               </button>
               <button
                 type="button"
-                className={iconButton}
+                className={iconButton + " opacity-60 group-hover:opacity-100 group-focus-within:opacity-100"}
                 disabled={i === 0}
                 onClick={() => onOrder(movePanelAmong(order, shown, id, -1))}
                 aria-label={L(`Flytt «${title}» opp`, `Move “${title}” up`)}
@@ -372,7 +385,7 @@ export function StackedPanels({
               </button>
               <button
                 type="button"
-                className={iconButton}
+                className={iconButton + " opacity-60 group-hover:opacity-100 group-focus-within:opacity-100"}
                 disabled={i === shown.length - 1}
                 onClick={() => onOrder(movePanelAmong(order, shown, id, 1))}
                 aria-label={L(`Flytt «${title}» ned`, `Move “${title}” down`)}

@@ -49,7 +49,7 @@ const fmt = (n: number) => String(Math.round(n * 100) / 100);
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="mb-4">
-      <h3 className="mb-1.5 text-xs font-medium uppercase tracking-[0.04em] text-text-tertiary">
+      <h3 className="-mx-3 mb-1.5 flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2 text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
         {title}
       </h3>
       <div className="flex flex-col gap-2">{children}</div>
@@ -320,7 +320,7 @@ export function CameraPanel({
   const curved = shot.curve !== null;
   return (
     <div className="p-3">
-      <h2 className="mb-3 text-[13px] font-medium text-text-primary">
+      <h2 className="-mx-3 mb-3 flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2 text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
         {L("Kamerautsnitt", "Camera shot")}
       </h2>
       {error ? (

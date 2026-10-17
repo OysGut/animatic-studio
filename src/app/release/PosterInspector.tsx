@@ -107,7 +107,7 @@ function Field({
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="flex flex-col gap-2 border-b border-border px-3 py-3">
-      <h3 className="text-[11px] font-semibold uppercase tracking-wide text-text-tertiary">
+      <h3 className="-mx-3 flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2 text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
         {title}
       </h3>
       {children}
