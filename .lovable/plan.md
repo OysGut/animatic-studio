@@ -1,158 +1,183 @@
-# T1 – Brukerens egne tekst-AI-leverandører og felles `generateText`
+# SL1 – Story Lab: datamodell og kjerne (uten brukerflate)
 
 ## Kort fortalt
-Brukeren kan koble til egne nøkler for Claude (Anthropic), ChatGPT (OpenAI), Grok (xAI) og Gemini (Google). Når en nøkkel prøves, hentes leverandørens egen modelliste og lagres. I dialogen for AI-leverandører får brukeren en ny seksjon, «Tekst-AI», der leverandør og modell velges per oppgavegruppe. All tekstgenerering går gjennom én serverfunksjon. Den velger leverandør, sjekker rettigheter, tak og kostnad, og logger uten prompttekst. Migrasjon 0038 skrives, men kjøres ikke.
+SL1 legger grunnmuren for Story Lab: karakterprofiler, profilendringer over karakterbuen, fakta og hemmeligheter med hvem som vet hva og når, en ren turmaskin for samtaler, promptbyggere og arbeidslogg for økter. Det kommer ingen skjermbilder. Profiler, stadier og fakta skrives som vanlige kommandoer med angring gjennom `runCommand` og `apply_changes`. Øktene og forslagene er arbeidslogg og skrives av egne serverfunksjoner. Migrasjon 0039 skrives, men kjøres ikke.
 
-## Filer som endres (og ingen andre)
-| Fil | Endring |
-|---|---|
-| `src/core/generation/providers.ts` | `ProviderId` får `anthropic` og `xai`. Nye katalogoppføringer. `text` på openai, google, anthropic og xai. Felt for tokenpriser. Rene hjelpefunksjoner (velge leverandør og modell, kostnadsanslag, modellfilter). |
-| `src/core/generation/model-settings.ts` | Godtar de nye leverandørene i tolking og validering (bare hvis den har en egen liste over leverandører). |
-| `src/core/i18n/catalog.gen.ts` | Bare hvis `localized()`/`L()` krever katalogoppføringer for nye tekster, som i E4–E7. |
-| `src/adapters/ai/providers.server.ts` | Adapterne `anthropic` og `xai`. `text()` og `listTextModels()` på alle fire. `ADAPTERS` utvides. |
-| `src/adapters/ai/provider-keys.functions.ts` | Lagring og prøving henter og lagrer modellisten. Nytt `listTextChoices` (leverandører med gyldig nøkkel og modeller, uten nøkler). |
-| `src/adapters/ai/text.functions.ts` (NY) | Serverfunksjonen `generateText`. |
-| `src/adapters/ai/ai-gate.server.ts` | Bare hvis eksisterende hjelpefunksjoner (`memberRole`, `projectKey`, `overAccountCap`) trenger å kjenne `text` eller de nye leverandørene. Ellers urørt. |
-| `src/app/ai/ProvidersDialog.tsx` | Seksjonen «Tekst-AI» og de to nye leverandørkortene (kortene kommer automatisk fra katalogen). |
-| `src/adapters/storage/project-rows.ts` | `EXPECTED_SCHEMA_VERSION = 38`. |
-| `db/migrations/0038_text_providers.sql` (NY) | Se SQL nedenfor. Kjøres ikke. |
-| `tests/unit/text-providers.test.ts` (NY) | Katalogen, nøkkelmønstre, valg av leverandør og modell, kostnadsanslag og modellfilter. |
-| `tests/unit/text-adapters.test.ts` (NY) | Adapterne med mocket `fetch`. |
-| `tests/unit/ai-providers.test.ts`, `provider-capabilities.test.ts` | Bare hvis de i dag sjekker den nøyaktige leverandørlisten, og derfor ville feilet. |
-| `tests/db/run-db-tests.ts` | Én liten test for 0038 (se nedenfor). |
+## Filer
 
-Jeg rører ikke `docs/`, `drizzle/`, `src/integrations/`, pakker eller databasen.
+**Nye (kjernen, plattformnøytral)**
+- `src/core/storylab/profile.ts`: `StoryProfile`, standardprofilen, `profileError` og `mergeProfile`.
+- `src/core/storylab/facts.ts`: `StoryFact`, `factError` og `knowledgeAt`.
+- `src/core/storylab/stages.ts`: `StoryProfileStage`, `stageError` og `profileAt`.
+- `src/core/storylab/engine.ts`: turmaskinen, `suggestSpeaker` og `activeDirections`.
+- `src/core/storylab/prompts.ts`: promptbyggerne, `groupTurnMessages` og `parseJsonLoose`.
+- `src/core/storylab/index.ts`
 
-## Typer og signaturer
+**Endres (kjernen)**
+- `src/core/index.ts`: `export * from "./storylab"`.
+- `src/core/ids.ts`: nye ID-typer (`story_profile`, `story_profile_stage`, `story_fact`).
+- `src/core/model.ts`: `ProjectState` får `storyProfiles`, `storyProfileStages` og `storyFacts`, og standardtilstanden får tomme verdier.
+- `src/core/commands/types.ts` og `src/core/commands/apply.ts`: de åtte kommandoene med invers.
+- `src/core/patch.ts`: tabellnavn, diff og rad↔tilstand for de tre tabellene, på samme måte som `style_profiles`.
+- `src/core/backup/index.ts`: de tre tabellene i listen, i `restoredState` og i kontrollen av referanser.
+- `src/core/i18n/catalog.gen.ts`: lages på nytt med `build-catalog.mjs`.
 
-**Kjernen (`src/core/generation/providers.ts`, plattformnøytral):**
+**Endres og lages (adaptere)**
+- `src/adapters/storage/project-rows.ts`: `fetchOptional` for de tre tabellene, og `EXPECTED_SCHEMA_VERSION = 39`.
+- `src/adapters/storylab/sessions.functions.ts` (ny): serverfunksjonene for økter og forslag.
+
+**Migrasjon og tester**
+- `db/migrations/0039_story_lab.sql` (ny).
+- `tests/unit/storylab-knowledge.test.ts`, `storylab-engine.test.ts`, `storylab-prompts.test.ts` og `storylab-commands.test.ts` (nye).
+- `tests/db/run-db-tests.ts`: nye tester for 0039.
+
+**Endres bare hvis en eksisterende test eller arkitekturkontroll krever det.** Jeg nevner dem i svaret med begrunnelse.
+- `tests/architecture/*` og `tests/invariants/*`, hvis noen kontrollerer at tabellistene i `patch.ts`, `backup` og `v_tables` er like.
+- `src/core/invariants.ts`
+- `src/adapters/storage/backup.functions.ts`, hvis gjenopprettingen har sin egen tabelliste.
+
+Ingen pakker. Jeg rører ikke `docs/`, `drizzle/`, `src/integrations/` eller brukerflaten.
+
+## Typer i grove trekk
 ```ts
-export type ProviderId = "lovable" | "openai" | "google" | "fal" | "runway" | "elevenlabs" | "anthropic" | "xai";
-export type TextProviderId = "openai" | "google" | "anthropic" | "xai";
-export const TEXT_PROVIDERS: readonly TextProviderId[] = ["anthropic", "openai", "google", "xai"];
+// profile.ts
+type SpeechLevel = "child" | "youth" | "adult" | "academic" | "street";
+interface StoryProfile {
+  psychology: { hiddenMotives: string[]; techniques: string[]; neverSay: string[]; blindSpots: string[];
+    triggers: string[]; facade: string; reality: string; demonstrations: string[] };
+  speech: { level: SpeechLevel; wordChoice: string; mood: string; typicalVocabulary: string[];
+    forbiddenExpressions: string[]; examples: string[]; maxWords?: number };
+  dramatic: { goals: string[]; innerContradictions: string[]; vulnerabilities: string[]; hides: string[];
+    beliefsAboutOthers: { assetId: AssetId; belief: string }[] };
+  person: { age?: number; occupation?: string; background?: string; values: string[]; dialect?: string;
+    formality?: "low" | "medium" | "high" };
+  notes: string;
+}
+type StoryProfilePatch = DeepPartial<StoryProfile>;   // lister erstattes helt, objekter slås sammen
+interface StoryProfileRow { id; projectId; assetId; profile: StoryProfile; removed; revision }
+function profileError(p: unknown): string | null;     // L(): felt, typer og lengder
+const PROFILE_LIMITS = { short: 200, text: 2000, listItems: 30, item: 500, examples: 20, total: 60_000 };
 
-// ProviderModel får to valgfrie felter (bare tekst):
-readonly usdPerMTokIn?: number;  readonly usdPerMTokOut?: number;
+// facts.ts
+interface StoryFact { id; projectId; text: string; kind: "fact" | "secret";
+  atSceneId: SceneId | null; knownBy: { assetId: AssetId; fromSceneId: SceneId | null }[]; removed; revision }
+function knowledgeAt(s: ProjectState, assetId: AssetId, sceneId: SceneId):
+  { facts: StoryFact[]; ownSecrets: StoryFact[] };
 
-export type TextTask = "script" | "storylab_character" | "storylab_group" | "storylab_analysis"
-  | "storylab_interview" | "storylab_profile" | "general";
-export type TextTaskGroup = "script" | "storylab_talk" | "storylab_analysis" | "general";
-export const TASK_GROUP: Record<TextTask, TextTaskGroup>;
-//   script → script; storylab_character/group/interview → storylab_talk;
-//   storylab_analysis/profile → storylab_analysis; general → general
+// stages.ts
+interface StoryProfileStage { id; projectId; assetId; fromSceneId: SceneId; patch: StoryProfilePatch; removed; revision }
+function profileAt(s: ProjectState, assetId: AssetId, sceneId: SceneId | null): StoryProfile | null;
 
-export interface TextChoice { provider: TextProviderId | "lovable"; model: string }
-export type TextPrefs = Partial<Record<TextTaskGroup, TextChoice>>;
-export function isTextPrefs(v: unknown): v is TextPrefs;
-
-export interface AvailableTextProvider { provider: TextProviderId; models: readonly string[] } // gyldig nøkkel
-export function chooseTextModel(input: {
-  explicit?: Partial<TextChoice>; task: TextTask; prefs: TextPrefs | null;
-  available: readonly AvailableTextProvider[]; isEnabled: (p: string, m: string) => boolean;
-}): { choice: TextChoice; reason: "explicit" | "pref" | "first_key" | "fallback" };
-
-export function estimateTextCostUsd(provider: string, model: string, inputTokens: number, outputTokens: number): number;
-export function approxTokens(text: string): number;          // ceil(tegn / 4)
-export function filterTextModels(provider: TextProviderId, ids: readonly string[]): string[];
+// engine.ts
+type Speaker = AssetId | "director" | "analyst";
+interface Turn { id; speaker: Speaker; text; kind: "line" | "question" | "direction" | "analysis"; at: string }
+interface Direction { id; text; target: AssetId | null; scope: "next" | "scene" | "session"; fromTurn: number }
+interface EngineState { participants: AssetId[]; mode: "qa" | "improv"; status: "idle" | "running" | "paused" | "stopped";
+  turns: Turn[]; directions: Direction[]; seed: number; maxTurnsPerRun: number; turnsThisRun: number;
+  nextSpeaker: AssetId | null; explainFor: AssetId | null }
+type EngineAction =
+  | { type: "start" } | { type: "ask"; text; to: AssetId | null; at; id }
+  | { type: "direct"; text; target: AssetId | null; scope; id } | { type: "removeDirection"; id }
+  | { type: "nextSpeaker"; assetId: AssetId | null } | { type: "appendLine"; speaker: AssetId; text; at; id }
+  | { type: "pause" } | { type: "resume" } | { type: "stop" }
+  | { type: "branchFrom"; turnIndex: number } | { type: "explain"; assetId: AssetId };
+function reduceEngine(s: EngineState, a: EngineAction): EngineState;   // ren; ID og tid kommer inn utenfra
+function suggestSpeaker(s: EngineState, names: Record<string, string>): AssetId | null;
+function activeDirections(s: EngineState, assetId: AssetId): Direction[];
 ```
+Kommandoene er `SetStoryProfile`, `RemoveStoryProfile`, `AddStoryProfileStage`, `UpdateStoryProfileStage`, `RemoveStoryProfileStage`, `AddStoryFact`, `UpdateStoryFact` og `RemoveStoryFact`.
+- `SetStoryProfile` oppretter profilen eller erstatter den. Den gamle profilen lagres i inversen.
+- «Remove» setter `removed = true`, uten å slette noe (deaktivering er ikke sletting). Angring setter flagget tilbake.
+- Kommandoene kontrollerer at ressursen er en karakter i prosjektet, at scenene finnes, at `knownBy` viser til karakterer og at profilen er gyldig.
 
-**Adapterne (`providers.server.ts`):**
-```ts
-export interface TextMessage { role: "user" | "assistant"; content: string }
-export interface TextRequest { key: string; model: string; system?: string; messages: readonly TextMessage[];
-  maxTokens: number; temperature?: number; json?: boolean; signal?: AbortSignal }
-export interface TextResult { text: string; usage: { inputTokens: number; outputTokens: number }; model: string }
-// Hver tekstadapter: text(r: TextRequest): Promise<TextResult>; listTextModels(key): Promise<string[]>
-export async function generateProviderText(p: TextProviderId, r: TextRequest): Promise<TextResult>;
-```
-Senere strømming legges til som `streamText(r): AsyncIterable<TextDelta>` ved siden av `text()`, uten å endre `TextRequest`.
+## Fortellingstid
+- Jeg gjenbruker `storyTimesCached(state)` fra `src/core/continuity`, som bygger på `storyTimes` i `views.ts`. Det er samme ordning som kontinuiteten bruker. Lineære scener får plass i hovedfilmen, og tilbakeblikk, framblikk, drømmer og tidshopp får ankerscenen pluss en forskyvning. Rekkefølgen i filmen brukes aldri.
+- `knowledgeAt(s, asset, scene)`: med `T = tid(scene)` blir et faktum kjent for karakteren når alle tre vilkårene holder:
+  - `atSceneId` er null, eller `tid(atSceneId) ≤ T`;
+  - karakteren står i `knownBy`;
+  - `fromSceneId` er null, eller `tid(fromSceneId) ≤ T`.
+- Uten `knownBy` er faktumet bare kjent for regissøren. Egne hemmeligheter (`kind: "secret"` som karakteren kjenner) returneres for seg, så prompten kan antyde dem.
+- `profileAt`: grunnprofilen og de stadiene der `tid(fromSceneId) ≤ T`, slått sammen i stigende fortellingstid. Er tidene like, avgjør stadiets ID. Uten scene brukes bare grunnprofilen.
 
-**Serverfunksjonen (`text.functions.ts`):**
-```ts
-export const generateText = createServerFn({ method: "POST" })
-  .inputValidator((d: { projectId: string; task: TextTask; system?: string; messages: TextMessage[];
-    maxTokens?: number; temperature?: number; json?: boolean; provider?: string; model?: string }) => ...)
-  .handler(...) // → { text, model, provider, usage, costUsd }
-```
+## Promptene (engelske, svar på manusets språk)
+- `characterSystemPrompt` får inn bare `knowledge.facts` og egne hemmeligheter. Andres hemmeligheter og regissørens fakta kommer aldri inn i funksjonen. Det er det testen viser med et øyeblikksbilde.
+- Midlertidig regi står under «Current state (this moment only)».
+- `analystSystemPrompt` og `sceneAnalysisPrompt` skiller «established» (med kilde: profilfelt eller blokk-ID) fra «interpretation». Svaret er JSON `{ points: [{ aspect, finding, evidence[], suggestion }] }`.
+- `profileGeneratorPrompt` ber om en `StoryProfile` som JSON, som kontrolleres med `profileError`.
+- `parseJsonLoose` tåler kodegjerder, tekst før og etter, etterfølgende komma og «smarte» anførselstegn. Den gir `null` i stedet for å kaste en feil.
+- `groupTurnMessages(state, speaker, names)`: egne replikker blir `assistant`, andre `user` med `Name: text`, og aktiv regi for taleren legges til i systemteksten. Meldingene har samme form som `generateText` i T1 tar imot.
 
-## Endepunkter per leverandør
-- **Anthropic:** `POST https://api.anthropic.com/v1/messages`, med headerne `x-api-key` og `anthropic-version: 2023-06-01`. Body: `{model, max_tokens, system, messages, temperature}`. Svaret er tekstblokkene i `content[]` slått sammen, og `usage.input_tokens`/`output_tokens`. Ved `json` legges det til en systemlinje om å svare med ren JSON, og svaret kontrolleres med `JSON.parse`. `stop_reason: "refusal"` gir en feil.
-- **OpenAI:** `POST /v1/chat/completions` med `max_completion_tokens` og `response_format: {type:"json_object"}` når `json` er satt. **Valg: Chat Completions.** Grunnen er at xAI bruker samme format, så OpenAI og xAI deler én funksjon (`openaiCompatText(base, …)`), og det gir mindre kode og færre feil. Responses-API-et gir ikke noe T1 trenger. Det kan tas inn når strømming og verktøy kommer. `temperature` sendes ikke til resonneringsmodeller (`o*`, `gpt-5*`), fordi de avviser den.
-- **xAI:** `POST https://api.x.ai/v1/chat/completions` med `Authorization: Bearer`. Bruker samme funksjon som OpenAI.
-- **Google:** `POST /v1beta/models/{model}:generateContent` med `x-goog-api-key`. `system` sendes som `systemInstruction`, og `assistant` blir rollen `model`. `generationConfig: {maxOutputTokens, temperature, responseMimeType: "application/json" ved json}`. Tokenbruken leses fra `usageMetadata.promptTokenCount`/`candidatesTokenCount`.
-- Feil går gjennom eksisterende `call()`, `failure()` og `scrubSecret()`. `testProviderKey` får en tekst på begge språk for 401/403/402/429 i samme mønster. Tidsgrensen er en ny `T_TEXT = 120_000`.
+## Migrasjon 0039 (skrives, kjøres ikke)
+- **Tabeller:**
+  - `story_profiles`: unik indeks på `(project_id, asset_id) where not removed`. `profile` jsonb er et objekt på høyst 64 kB.
+  - `story_profile_stages`: fremmednøkkel til `scenes`, og `patch` jsonb på høyst 64 kB.
+  - `story_facts`: `text` på høyst 4000 tegn, `kind` med sjekk, og `known_by` jsonb som er en liste på høyst 32 kB.
+  - Alle tre har fremmednøkler til `projects`, og til `assets` med `on delete restrict`, i samme stil som `asset_relations`.
+- **Kolonnene i `story_sessions`:**
+  - `kind` og `status` med sjekk;
+  - `context` jsonb på høyst 256 kB og `turns` jsonb på høyst 2 MB;
+  - `parent_session_id` (selvreferanse) og `from_turn`;
+  - `cost_usd` ≥ 0 og `updated_at`.
+- **Kolonnene i `story_suggestions`:** `kind` og `status` med sjekk, og `payload` jsonb på høyst 64 kB.
+- **GRANT og RLS:**
+  - Prosjektmedlemmer får lese alle fem tabellene (`select` for authenticated og en policy med `private.is_project_member(project_id)`).
+  - Klienten får ikke skrive (som i 0019), og service_role får alt.
+- **`apply_changes`:** kopieres byte for byte fra 0028, med tre nye navn bakerst i `v_tables`. Revoke og grant følger som i 0028.
+- **`delete_project`** (siste i 0021) og **`purge_project_assets`** (siste i 0035) lages på nytt. Forslag, økter, fakta, stadier og profiler slettes før `assets` og `scenes`.
+- **`purge_removed_assets`** (0029): en ressurs med Story Lab-rader som ikke er fjernet, kan ikke slettes for godt (samme vern som for `asset_relations`). Fjernede Story Lab-rader slettes sammen med ressursen.
+- Til slutt: `schema_version` 39.
 
-## Henting og filtrering av modellister
-Listen hentes ved `saveProviderKey` og `testSavedProviderKey`, når prøvingen gir «ok» eller «limited». `test()` for de fire leverandørene er da selve listekallet, så det blir ikke ekstra kall.
-- **Anthropic:** `GET /v1/models?limit=1000` → `data[].id`. Alle er chatmodeller, og alle beholdes.
-- **OpenAI:** `GET /v1/models` → `data[].id`. Disse beholdes: `^(gpt-|o\d|chatgpt-)`. Disse fjernes: `embedding|whisper|tts|dall-e|image|audio|realtime|transcribe|moderation|search|instruct|codex`.
-- **xAI:** `GET /v1/models` → `data[].id`. `grok-*` beholdes, og `image|imagine|vision-only|embed` fjernes.
-- **Google:** `GET /v1beta/models?pageSize=1000` → `models[]`. Modellen beholdes når `supportedGenerationMethods` inneholder `generateContent`, og navnet ikke inneholder `embedding|aqa|imagen|veo|tts|image`. Prefikset `models/` fjernes fra navnet.
-- Listen sorteres, kuttes til høyst 200 ID-er og lagres i `ai_provider_keys.text_models`, sammen med `text_models_at`. Hvis hentingen feiler, beholdes den gamle listen, og nøkkelen lagres likevel.
-- Brukeren velger fra den lagrede listen. Hvis listen er tom, vises katalogens standardmodeller. Administratorens bryter (`ai_model_settings`) filtrerer alltid, både i dialogen og i `generateText`.
-
-## Standardmodeller i katalogen (få, med anslåtte tokenpriser)
-- **Anthropic:** `claude-sonnet-4-5`, `claude-haiku-4-5`, `claude-opus-4-1`
-- **OpenAI:** `gpt-5`, `gpt-5-mini`
-- **xAI:** `grok-4`, `grok-3-mini`
-- **Google:** `gemini-2.5-pro`, `gemini-2.5-flash`
-
-Modeller som ikke er i katalogen, får leverandørens høyeste kjente pris i kostnadsanslaget, så anslaget heller blir for høyt enn for lavt.
-
-## `generateText` – flyt
-1. Validere input. Lengdegrensene er: `system` høyst 20 000 tegn, høyst 60 meldinger, høyst 200 000 tegn til sammen, og `maxTokens` mellom 1 og 8000 (standard 2000). `temperature` må være mellom 0 og 2, og `task` må stå på den faste listen.
-2. Innlogging (`requireSupabaseAuth`). Rollen må være minst redaktør i prosjektet, med samme `memberRole`- og `ROLE_RANK`-sjekk som i `write-prompt`.
-3. Tak per bruker per time, med `MAX_TEXT_JOBS_PER_USER_PER_HOUR = 120` og telling i `generation_jobs` (kind `text`), på samme måte som `MAX_PROMPT_JOBS_PER_USER_PER_HOUR`.
-4. Valg av leverandør og modell gjøres med `chooseTextModel`, ut fra eksplisitt valg, `ui_prefs.aiText`, første gyldige nøkkel og til slutt Lovable AI Gateway (`TEXT_MODELS`). En eksplisitt leverandør uten gyldig nøkkel gir en feil. Den faller ikke stille tilbake.
-5. Kostnadsanslaget er `approxTokens(input) + maxTokens`. Med egen nøkkel sjekkes `overAccountCap` før kallet. Med Lovable sjekkes prosjektets `ai_month_limit`, som i `write-prompt`.
-6. Nøkkelen dekrypteres på serveren (`key-vault.server.ts`), adapteren kalles, og nøkkelen forlater aldri funksjonen.
-7. Loggen i `generation_jobs` (kind `text`) får `params = {task, provider, model, inputTokens, outputTokens, costUsd, reason}`, uten prompt og uten svar. Kostnaden føres i `ai_spend` på samme måte som for de andre jobbene med egen nøkkel.
-8. Svaret er `{ text, model, provider, usage, costUsd }`. Feil gis på begge språk.
-
-## «Tekst-AI» i `ProvidersDialog.tsx`
-Seksjonen har fire rader: Manus, Story Lab (samtaler), Story Lab (analyse) og Annet. Hver rad har en nedtrekksliste for leverandør («Automatisk», Lovable og leverandørene med gyldig nøkkel) og en for modell (den lagrede listen minus det administratoren har slått av).
-**Valg: `useUiPref("aiText", {}, isTextPrefs)`** (lagres i `profiles.ui_prefs`). Grunnen er at mekanismen finnes fra før, er knyttet til kontoen og følger brukeren på tvers av enheter, og ikke krever en ny kolonne. Serveren leser `profiles.ui_prefs->'aiText'` og validerer verdien med `isTextPrefs`. Et ugyldig eller utdatert valg blir ignorert, og da brukes neste regel i rekkefølgen. All tekst skrives med `L()`.
-
-## Migrasjon 0038 (skrives, kjøres ikke), med header som i 0037
-```sql
-alter table public.ai_provider_keys drop constraint if exists ai_provider_keys_provider_check;
-alter table public.ai_provider_keys add constraint ai_provider_keys_provider_check
-  check (provider in ('openai','google','fal','runway','elevenlabs','anthropic','xai'));
-alter table public.ai_provider_keys add column if not exists text_models jsonb
-  check (text_models is null or (jsonb_typeof(text_models) = 'array' and pg_column_size(text_models) <= 32000));
-alter table public.ai_provider_keys add column if not exists text_models_at timestamptz;
-grant select (text_models, text_models_at) on public.ai_provider_keys to authenticated;
-
-alter table public.ai_model_settings drop constraint if exists ai_model_settings_provider_check;
-alter table public.ai_model_settings add constraint ai_model_settings_provider_check
-  check (provider in ('lovable','openai','google','fal','runway','elevenlabs','anthropic','xai'));
-
-alter table public.generation_jobs drop constraint if exists generation_jobs_kind_check;
-alter table public.generation_jobs add constraint generation_jobs_kind_check
-  check (kind in ('image','video','prompt','sound','text'));
-
-insert into public.schema_version (version, description)
-  values (38, '0038_text_providers: tekst-AI med egne nøkler (Anthropic, OpenAI, xAI, Google)');
-```
-Navnene på de eksisterende constraintene kontrolleres mot 0024 og 0034 før filen skrives. Hvis de har andre navn enn Postgres’ standardnavn, brukes de faktiske navnene. `ai_spend` og `ai_provider_requests` kontrolleres også, i tilfelle de har en egen leverandørsjekk som må utvides.
+## Serverfunksjoner (`sessions.functions.ts`)
+Alle krever innlogging og rollen redaktør (`memberRole`, `ROLE_RANK`). De skriver med service role og kaller ikke AI.
+- `createStorySession`, `forkStorySession` (kopierer turene til og med `fromTurn` og setter `parent_session_id`) og `getStorySession`.
+- `listStorySessions` (uten `turns`, for å holde svaret lite).
+- `appendStoryTurns` legger til turene, øker `cost_usd` og setter status. Lagringen kontrollerer størrelsen og stopper over 2 MB med en melding på begge språk.
+- `saveStorySuggestion` og `setSuggestionStatus`.
+- Før 0039 er kjørt, gir de en melding om at databasen må oppdateres.
 
 ## Tester
-- **`text-providers.test.ts`:** de nye leverandørene og nøkkelmønstrene (`sk-ant-…`, `xai-…`, `sk-…`, `AIza…`). Valgrekkefølgen i fire tilfeller, et utdatert valg som hoppes over, og en modell administratoren har slått av, som hoppes over. Kostnadsanslag for kjente og ukjente modeller, oppgavegruppene og modellfilteret på eksempellister.
-- **`text-adapters.test.ts`:** sjekker URL, headere og body per leverandør, med `temperature` utelatt for resonneringsmodeller. Svartolking og tokenbruk. Feil 401 og 429 med nøkkelen fjernet fra meldingen, Anthropics `refusal` og en Google-respons uten kandidater.
-- **`tests/db/run-db-tests.ts`:** etter 0038 godtas `provider='anthropic'` og `kind='text'`. En ukjent leverandør og en `text_models` som ikke er en liste, avvises. Kjøres hos deg, fordi DB-testene trenger lokal Postgres.
-- Jeg kjører `npx vitest run` på de nye testfilene og de to eksisterende AI-testene.
+- **`storylab-knowledge.test.ts`:**
+  - `knowledgeAt`, også tilbakeblikket: en scene som kommer senere i filmen, men tidligere i fortellingstid, kjenner ikke til senere hendelser;
+  - fakta som bare regissøren kjenner;
+  - `fromSceneId`;
+  - `profileAt` med to stadier og et tilbakeblikk.
+- **`storylab-engine.test.ts`:**
+  - regi med gyldigheten `next`, `scene` og `session`;
+  - status `paused` ved taket, og `resume` som nullstiller `turnsThisRun`;
+  - `branchFrom`;
+  - at samme taler aldri kommer tre ganger på rad, prøvd med 200 tilfeldige `seed`-verdier;
+  - at den som ble tiltalt eller nevnt, går foran;
+  - at samme `seed` gir samme taler.
+- **`storylab-prompts.test.ts`:**
+  - øyeblikksbilde av `characterSystemPrompt`, uten noen andres hemmelighet;
+  - at den egne hemmeligheten står under «hint only»;
+  - midlertidig tilstand;
+  - `groupTurnMessages`;
+  - `parseJsonLoose` med seks tilfeller.
+- **`storylab-commands.test.ts`:** alle åtte kommandoene med gjør, angre og gjør om (`applyCommand` og invers), valideringsfeil, og at en profil ikke kan lages på en ressurs som ikke er karakter.
+- **DB:**
+  - RLS-matrise for de fem tabellene: medlemmer leser, utenforstående ser ingenting, og ingen kan skrive fra klienten;
+  - `apply_changes` som skriver og angrer de tre tabellene;
+  - `delete_project` og `purge_project_assets` med Story Lab-rader.
+- Jeg kjører `npx tsc --noEmit`, de nye testene og de eksisterende testene for kommandoer, sikkerhetskopi og arkitektur.
 
-## Valgene jeg har tatt
-1. OpenAI bruker Chat Completions. Det er felles med xAI, og Responses kan tas inn senere.
-2. Valgene per oppgave lagres i `ui_prefs` (nøkkelen `aiText`), ikke i en ny kolonne.
-3. Modellisten lagres på nøkkelraden (`text_models` og `text_models_at`).
-4. Taket er 120 tekstjobber per bruker per time, egen konstant.
-5. JSON-modus: OpenAI og xAI bruker `json_object`, Google `responseMimeType`, og Anthropic får en systeminstruks pluss kontroll med `JSON.parse`.
-6. Lovable-reserven bruker eksisterende `TEXT_MODELS` gjennom gatewayen, på samme måte som `write-prompt`.
+## Risikoer
+1. **`apply_changes` lages på nytt.** Et avvik fra 0028 ville ødelagt all skriving. Jeg sammenligner derfor med `diff` mot 0028, slik at bare `v_tables` er endret.
+2. **`delete_project` og `purge_*` lages på nytt.** Feil rekkefølge gir brudd på fremmednøkler ved sletting. DB-testene dekker det.
+3. **Fremmednøkkelen til `scenes`.** Scener blir ikke slettet i vanlig bruk, men sammenslåing (`merged_into_scene_id`) kan gjøre at et stadium viser til en sammenslått scene. Fortellingstiden for en sammenslått scene følger `storyTimes`.
+4. **Profiler er store jsonb-verdier i `change_log`.** Hver lagring tar med hele den gamle og den nye profilen. Grensen på 64 kB holder det nede.
+5. **Sikkerhetskopier og gjenoppretting** må kjenne de nye tabellene. Ellers kan en gjenopprettet sikkerhetskopi mangle profiler, eller bli avvist.
+6. **Appen viser at databasen er utdatert** til du kjører 0039, fordi `EXPECTED_SCHEMA_VERSION` blir 39.
+
+## Valg jeg har tatt
+- Profilene, stadiene og fakta er prosjektdata med angring. Øktene er arbeidslogg uten angring, slik oppdraget sier.
+- I `patch` blir lister erstattet helt og objekter slått sammen, så et stadium kan fjerne en motivasjon.
+- Turmaskinen får ID og tid inn i handlingene, så den forblir ren og deterministisk.
+- Lengdegrensene i kjernen er strengere enn i databasen. Databasen er bare siste sperre.
 
 ## Spørsmål
-1. **Tak per time:** er 120 riktig, eller skal det være likt `write-prompt` (60)? Karaktersamtaler kan gi mange kall.
-2. **Lovable som reserve:** skal den brukes stille, eller skal `generateText` svare med en tydelig merknad («brukte innebygd AI») som brukergrensesnittet viser?
-3. **Prosjekt eller konto:** egne nøkler ligger på brukerens konto. Skal en redaktør i et annet prosjekt bruke **sin egen** nøkkel, slik planen legger opp til, eller nøkkelen til prosjekteieren, slik `projectKey` gjør for bilder og video?
-4. **Antall modeller i katalogen:** holder det med 2–3 standardmodeller per leverandør, og er det greit at prisene er anslag som du oppdaterer?
-5. **Ekstra filer:** godtar du at `model-settings.ts`, `ai-gate.server.ts`, `catalog.gen.ts` og de to eksisterende AI-testene endres **bare hvis** det trengs for at de nye leverandørene skal virke eller testene skal bestå? Ellers stopper jeg og spør først.
+1. **Hvem kan få profil:** bare ressurser av typen `character`, eller også andre (for eksempel et dyr eller en gruppe)?
+2. **`RemoveStoryProfile`:** skal stadiene og fakta for karakteren også markeres som fjernet, eller bare skjules så lenge profilen er fjernet?
+3. **`story_sessions.turns`:** skal turene også lagres med prompt og svar i klartekst? Det er arbeidsmaterialet. Jeg antar ja, siden dette er brukerens eget innhold (ikke `generation_jobs`-loggen fra T1).
+4. **Spesifikasjonen kap. 24:** den ligger i Claude-prosjektet, ikke i repoet. Kan du lime inn listen over analysepunktene (`aspect`), så `sceneAnalysisPrompt` følger den nøyaktig? Ellers bruker jeg en generell dramaturgisk liste og merker den som midlertidig.
+5. **Stadier ved én scene:** ett stadium per karakter per scene (en unik indeks), eller flere?
