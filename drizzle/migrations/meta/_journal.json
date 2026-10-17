@@ -253,6 +253,13 @@
       "when": 1792151879770,
       "tag": "0035_restrict_policy_schema_version_to_authenticated",
       "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1792232920690,
+      "tag": "0036_audio_compositions",
+      "breakpoints": true
     }
   ]
 }

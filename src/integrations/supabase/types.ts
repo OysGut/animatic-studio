@@ -377,6 +377,7 @@ export type Database = {
         Row: {
           byte_size: number | null
           byte_size_big: number
+          composition: Json | null
           created_at: string
           created_by: string | null
           duration_ms: number | null
@@ -397,6 +398,7 @@ export type Database = {
         Insert: {
           byte_size?: number | null
           byte_size_big: number
+          composition?: Json | null
           created_at?: string
           created_by?: string | null
           duration_ms?: number | null
@@ -417,6 +419,7 @@ export type Database = {
         Update: {
           byte_size?: number | null
           byte_size_big?: number
+          composition?: Json | null
           created_at?: string
           created_by?: string | null
           duration_ms?: number | null
