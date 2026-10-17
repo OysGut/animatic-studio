@@ -93,7 +93,7 @@ describe("OpenAI og xAI (Chat Completions)", () => {
   it("OpenAI: Bearer, max_completion_tokens, ingen temperature for resonneringsmodeller", async () => {
     const f = mockFetch(200, {
       model: "gpt-5-2025",
-      choices: [{ message: { content: "Svar" }, finish_reason: "stop" }],
+      choices: [{ message: { content: '{"svar":true}' }, finish_reason: "stop" }],
       usage: { prompt_tokens: 20, completion_tokens: 5 },
     });
     const r = await generateProviderText("openai", { ...base, model: "gpt-5", json: true });
@@ -130,7 +130,7 @@ describe("Google", () => {
   it("generateContent med x-goog-api-key, systemInstruction og rollen model", async () => {
     const f = mockFetch(200, {
       modelVersion: "gemini-2.5-pro",
-      candidates: [{ content: { parts: [{ text: "Hallo" }] }, finishReason: "STOP" }],
+      candidates: [{ content: { parts: [{ text: '"Hallo"' }] }, finishReason: "STOP" }],
       usageMetadata: { promptTokenCount: 7, candidatesTokenCount: 2 },
     });
     const r = await generateProviderText("google", {
@@ -159,7 +159,7 @@ describe("Google", () => {
       responseMimeType: "application/json",
     });
     expect(s.body!["systemInstruction"]).toBeDefined();
-    expect(r).toMatchObject({ text: "Hallo", usage: { inputTokens: 7, outputTokens: 2 } });
+    expect(r).toMatchObject({ text: '"Hallo"', usage: { inputTokens: 7, outputTokens: 2 } });
   });
 
   it("svar uten kandidater er en feil", async () => {
