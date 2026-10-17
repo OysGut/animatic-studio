@@ -737,6 +737,7 @@ function Workspace({
         ) : null}
         <ToolbarSeparator />
         <ToolbarButton
+          variant="icon"
           onClick={cmds.undo}
           disabled={!cmds.canUndo}
           title={
@@ -753,6 +754,7 @@ function Workspace({
           <Undo2 />
         </ToolbarButton>
         <ToolbarButton
+          variant="icon"
           onClick={cmds.redo}
           disabled={!cmds.canRedo}
           title={
