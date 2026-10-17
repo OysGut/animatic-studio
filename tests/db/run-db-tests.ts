@@ -3581,14 +3581,36 @@ try {
     assert(Number(v!["v"]) >= 36, "schema_version er ikke 36");
     let st = await loadState(projectId);
     const src = Object.values(st.assetVersions).find(
-      (x) => x.durationMs !== null && st.assets[st.assetVariants[x.variantId]!.assetId]?.kind === "sound",
+      (x) =>
+        x.durationMs !== null &&
+        st.assets[st.assetVariants[x.variantId]!.assetId]?.kind === "sound",
     )!;
     assert(!!src, "fant ikke et lydopptak");
     const composition = {
       format: 1 as const,
       segments: [
-        { id: "abcdef00-0000-7000-8000-0000000c0001", versionId: src.id, track: 0, atMs: 0, sourceInMs: 0, lengthMs: 1000, gainDb: 0, fadeInMs: 0, fadeOutMs: 50 },
-        { id: "abcdef00-0000-7000-8000-0000000c0002", versionId: src.id, track: 1, atMs: 500, sourceInMs: 200, lengthMs: 800, gainDb: -6, fadeInMs: 100, fadeOutMs: 100 },
+        {
+          id: "abcdef00-0000-7000-8000-0000000c0001",
+          versionId: src.id,
+          track: 0,
+          atMs: 0,
+          sourceInMs: 0,
+          lengthMs: 1000,
+          gainDb: 0,
+          fadeInMs: 0,
+          fadeOutMs: 50,
+        },
+        {
+          id: "abcdef00-0000-7000-8000-0000000c0002",
+          versionId: src.id,
+          track: 1,
+          atMs: 500,
+          sourceInMs: 200,
+          lengthMs: 800,
+          gainDb: -6,
+          fadeInMs: 100,
+          fadeOutMs: 100,
+        },
       ],
     };
     const versionId = "abcdef00-0000-7000-8000-0000000c00f1";
@@ -3615,12 +3637,22 @@ try {
     );
     // Versjonen er uforanderlig, også komposisjonen
     await expectError(
-      as("service_role", null, (tx) => tx`update public.asset_versions set composition = '{}'::jsonb where id = ${versionId}`),
+      as(
+        "service_role",
+        null,
+        (tx) =>
+          tx`update public.asset_versions set composition = '{}'::jsonb where id = ${versionId}`,
+      ),
       /INV-13/,
     );
     // Bare objekter
     await expectError(
-      as("service_role", null, (tx) => tx`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256, created_by, composition) values ('abcdef00-0000-7000-8000-0000000c00f2', ${projectId}, ${src.variantId}, 99, 'x', 'audio/wav', 1, ${"e".repeat(64)}, ${ALICE}, '[1]'::jsonb)`),
+      as(
+        "service_role",
+        null,
+        (tx) =>
+          tx`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256, created_by, composition) values ('abcdef00-0000-7000-8000-0000000c00f2', ${projectId}, ${src.variantId}, 99, 'x', 'audio/wav', 1, ${"e".repeat(64)}, ${ALICE}, '[1]'::jsonb)`,
+      ),
       /check|violates/,
     );
     // Et opptak som brukes i en komposisjon, kan ikke angres bort (kjernen)
@@ -3638,23 +3670,57 @@ try {
     assert(Number(v!["v"]) >= 37, "schema_version er ikke 37");
     let st = await loadState(projectId);
     const src = Object.values(st.assetVersions).find(
-      (x) => x.durationMs !== null && !x.composition && st.assets[st.assetVariants[x.variantId]!.assetId]?.kind === "sound",
+      (x) =>
+        x.durationMs !== null &&
+        !x.composition &&
+        st.assets[st.assetVariants[x.variantId]!.assetId]?.kind === "sound",
     )!;
     const block = Object.values(st.blocks).find((b) => b.kind === "dialogue")!;
-    const words = block.text.split(/\s+/).filter(Boolean).map((w, i) => ({ text: w, startMs: i * 100, endMs: i * 100 + 90, loss: 0.1 }));
-    const alignment = { format: 1 as const, blockId: block.id, text: block.text, words, provider: "elevenlabs", model: "elevenlabs/forced-alignment", loss: 0.1, at: new Date().toISOString() };
-    st = await runCommand(st, ALICE, { type: "SetVersionAlignment", versionId: src.id, alignment }, { [src.id]: src.revision });
+    const words = block.text
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((w, i) => ({ text: w, startMs: i * 100, endMs: i * 100 + 90, loss: 0.1 }));
+    const alignment = {
+      format: 1 as const,
+      blockId: block.id,
+      text: block.text,
+      words,
+      provider: "elevenlabs",
+      model: "elevenlabs/forced-alignment",
+      loss: 0.1,
+      at: new Date().toISOString(),
+    };
+    st = await runCommand(
+      st,
+      ALICE,
+      { type: "SetVersionAlignment", versionId: src.id, alignment },
+      { [src.id]: src.revision },
+    );
     const back = await loadState(projectId);
-    assert(sortedJson(back.assetVersions[src.id]!.alignment) === sortedJson(alignment), "koblingen avviker");
+    assert(
+      sortedJson(back.assetVersions[src.id]!.alignment) === sortedJson(alignment),
+      "koblingen avviker",
+    );
     assert(back.assetVersions[src.id]!.revision === src.revision + 1, "revisjonen økte ikke");
     // Lyden selv kan fortsatt ikke endres
     await expectError(
-      as("service_role", null, (tx) => tx`update public.asset_versions set media_path = 'x' where id = ${src.id}`),
+      as(
+        "service_role",
+        null,
+        (tx) => tx`update public.asset_versions set media_path = 'x' where id = ${src.id}`,
+      ),
       /INV-13/,
     );
     // Fjerne koblingen igjen
-    st = await runCommand(st, ALICE, { type: "SetVersionAlignment", versionId: src.id, alignment: null });
-    assert(!(await loadState(projectId)).assetVersions[src.id]!.alignment, "koblingen ble ikke fjernet");
+    st = await runCommand(st, ALICE, {
+      type: "SetVersionAlignment",
+      versionId: src.id,
+      alignment: null,
+    });
+    assert(
+      !(await loadState(projectId)).assetVersions[src.id]!.alignment,
+      "koblingen ble ikke fjernet",
+    );
   });
 
   await test("DEC-0049: sikkerhetskopi gjenopprettes som nytt prosjekt via apply_changes; alt leses tilbake likt", async () => {
@@ -4037,6 +4103,37 @@ try {
       assert((await count(t, projectId)) === 0, `${t} har fortsatt rader`);
     const p = await sql`select 1 from public.projects where id = ${projectId}`;
     assert(p.length === 0, "prosjektraden finnes fortsatt");
+  });
+  await test("0038: tekstleverandører, modelliste på nøkkelen og jobbtypen «text»", async () => {
+    const defs = await sql`
+      select conname, pg_get_constraintdef(oid) as def from pg_constraint
+      where conname in ('ai_provider_keys_provider_check', 'ai_model_settings_provider_check',
+        'generation_jobs_kind_check')`;
+    const def = (n: string) => String(defs.find((r) => r["conname"] === n)?.["def"] ?? "");
+    for (const p of ["openai", "google", "fal", "runway", "elevenlabs", "anthropic", "xai"])
+      assert(def("ai_provider_keys_provider_check").includes(`'${p}'`), `nøkler mangler ${p}`);
+    for (const p of ["lovable", "anthropic", "xai"])
+      assert(
+        def("ai_model_settings_provider_check").includes(`'${p}'`),
+        `innstillinger mangler ${p}`,
+      );
+    for (const k of ["image", "video", "prompt", "sound", "text"])
+      assert(def("generation_jobs_kind_check").includes(`'${k}'`), `jobbtype mangler ${k}`);
+    const cols = await sql`
+      select column_name from information_schema.columns
+      where table_schema = 'public' and table_name = 'ai_provider_keys'
+        and column_name in ('text_models', 'text_models_at')`;
+    assert(cols.length === 2, "modellistekolonnene mangler");
+    await expectError(
+      sql`insert into public.ai_provider_keys (id, user_id, provider, ciphertext, iv, key_hint)
+        values (gen_random_uuid(), ${ALICE}, 'ukjent', ${"x".repeat(20)}, ${"y".repeat(12)}, '…abcd')`,
+      /check/,
+    );
+    await expectError(
+      sql`insert into public.ai_provider_keys (id, user_id, provider, ciphertext, iv, key_hint, text_models)
+        values (gen_random_uuid(), ${ALICE}, 'xai', ${"x".repeat(20)}, ${"y".repeat(12)}, '…abcd', '{}'::jsonb)`,
+      /check/,
+    );
   });
 } finally {
   await sql.end();

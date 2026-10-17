@@ -9,10 +9,19 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { L, checkKeyFormat, isProviderId, keyHint, newId, MAX_ACCOUNT_CAP_USD } from "@/core";
+import {
+  L,
+  checkKeyFormat,
+  isProviderId,
+  isTextProviderId,
+  keyHint,
+  newId,
+  MAX_ACCOUNT_CAP_USD,
+  type TextProviderId,
+} from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 
-type Keyed = "openai" | "google" | "fal" | "runway" | "elevenlabs";
+type Keyed = "openai" | "google" | "fal" | "runway" | "elevenlabs" | "anthropic" | "xai";
 
 export type KeyResult =
   | { readonly ok: true; readonly status: "ok" | "untested"; readonly message: string | null }
@@ -33,6 +42,31 @@ async function schemaOk(db: AnyClient): Promise<string | null> {
         "The database is not updated for your own AI providers yet. Paste the message in LOVABLE_SYNC.md into Lovable (migration 0024).",
       )
     : null;
+}
+
+/**
+ * Tekstleverandører (T1): leverandørens egen modelliste hentes når nøkkelen godtas, og lagres på nøkkelraden
+ * (migrasjon 0038). Feiler hentingen, beholdes den gamle listen. Før 0038 hoppes dette over.
+ */
+async function storeTextModels(
+  db: AnyClient,
+  rowId: string,
+  provider: string,
+  key: string,
+): Promise<void> {
+  if (!isTextProviderId(provider)) return;
+  const s = await checkSchema(db);
+  if (s.kind === "missing" || s.version < 38) return;
+  try {
+    const { TEXT_ADAPTERS } = await import("./providers.server");
+    const models = await TEXT_ADAPTERS[provider].listTextModels(key);
+    await db
+      .from("ai_provider_keys")
+      .update({ text_models: models, text_models_at: new Date().toISOString() } as never)
+      .eq("id", rowId);
+  } catch {
+    /* listen beholdes; nøkkelen er lagret uansett */
+  }
 }
 
 /** Hvor mange ganger i timen en bruker kan lagre eller prøve nøkler (mot misbruk). */
@@ -122,6 +156,8 @@ export const saveProviderKey = createServerFn({ method: "POST" })
           `The key could not be saved: ${error.message}`,
         ),
       };
+    if (test.result === "ok" || test.result === "limited")
+      await storeTextModels(db, id, data.provider, data.key);
     return { ok: true, status, message: test.message };
   });
 
@@ -182,6 +218,7 @@ export const testSavedProviderKey = createServerFn({ method: "POST" })
         last_tested_at: new Date().toISOString(),
       } as never)
       .eq("id", r.id);
+    if (status === "ok") await storeTextModels(db, r.id, data.provider, key);
     return status === "failed"
       ? {
           ok: false,
@@ -262,6 +299,49 @@ export const projectAiProviders = createServerFn({ method: "POST" })
     if (await schemaOk(db)) return { providers: ["lovable"], missing: true };
     return {
       providers: ["lovable", ...(await projectProviderIds(db, data.projectId, context.userId))],
+      missing: false,
+    };
+  });
+
+/** En tekstleverandør med gyldig nøkkel og modellene (uten nøkkelen). */
+export interface TextProviderChoice {
+  readonly provider: TextProviderId;
+  readonly models: readonly string[];
+  readonly fetchedAt: string | null;
+}
+
+/**
+ * Brukerens egne tekstleverandører (T1) for «Tekst-AI» i dialogen: leverandør, hentede modeller og når de
+ * ble hentet. Aldri nøkler. Før migrasjon 0038 er modellistene tomme (katalogens modeller brukes da).
+ */
+export const listTextChoices = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<{ providers: TextProviderChoice[]; missing: boolean }> => {
+    const db = await admin();
+    const s = await checkSchema(db);
+    if (s.kind === "missing" || s.version < 24) return { providers: [], missing: true };
+    const withModels = s.version >= 38;
+    const { data, error } = await db
+      .from("ai_provider_keys")
+      .select(withModels ? "provider, status, text_models, text_models_at" : "provider, status")
+      .eq("user_id", context.userId)
+      .neq("status", "failed");
+    if (error) return { providers: [], missing: false };
+    const rows = (data ?? []) as unknown as {
+      provider: string;
+      text_models?: unknown;
+      text_models_at?: string | null;
+    }[];
+    return {
+      providers: rows
+        .filter((r) => isTextProviderId(r.provider))
+        .map((r) => ({
+          provider: r.provider as TextProviderId,
+          models: Array.isArray(r.text_models)
+            ? r.text_models.filter((m): m is string => typeof m === "string")
+            : [],
+          fetchedAt: r.text_models_at ?? null,
+        })),
       missing: false,
     };
   });

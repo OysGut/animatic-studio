@@ -22,7 +22,8 @@ import {
 // Administratorens innstillinger (av/på og egne modeller) er en del av katalogens offentlige grensesnitt
 export * from "./model-settings";
 
-export type ProviderId = "lovable" | "openai" | "google" | "fal" | "runway" | "elevenlabs";
+export type ProviderId =
+  "lovable" | "openai" | "google" | "fal" | "runway" | "elevenlabs" | "anthropic" | "xai";
 
 export type Capability =
   "image" | "video" | "video_edit" | "sound" | "speech" | "text" | "upscale" | "alignment";
@@ -94,6 +95,9 @@ export interface ProviderModel {
   readonly maxElements?: number;
   /** Lagt til av administrator (ai_model_settings, Mars 15.10.2026) – ikke i den innebygde katalogen. */
   readonly custom?: boolean;
+  /** Tekst (T1): anslått pris i USD per million tokens inn og ut (anslag, REQ-0281). */
+  readonly usdPerMTokIn?: number;
+  readonly usdPerMTokOut?: number;
 }
 
 /** Innsatsnivå per oppgave (mandat 19.3): rask/økonomisk, balansert, høy/premium. */
@@ -236,6 +240,8 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     },
     keyPattern: /^sk-[A-Za-z0-9_-]{20,}$/,
     models: [
+      textModel("gpt-5", "GPT-5", "premium", 1.25, 10),
+      textModel("gpt-5-mini", "GPT-5 mini", "fast", 0.25, 2),
       {
         id: "gpt-image-2.5-flare",
         get label() {
@@ -328,6 +334,8 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     },
     keyPattern: /^AIza[A-Za-z0-9_-]{30,}$/,
     models: [
+      textModel("gemini-2.5-pro", "Gemini 2.5 Pro", "premium", 1.25, 10),
+      textModel("gemini-2.5-flash", "Gemini 2.5 Flash", "fast", 0.3, 2.5),
       {
         id: "gemini-nano-banana-2.1",
         label: "Nano Banana 2.1",
@@ -788,6 +796,84 @@ export const PROVIDERS: readonly ProviderInfo[] = [
       },
     ],
   },
+  {
+    id: "anthropic",
+    name: "Anthropic Claude",
+    get description() {
+      return L(
+        "Tekst med Claude: manusarbeid, karaktersamtaler og analyse. Forhåndsbetalt kreditt i Claude Console.",
+        "Text with Claude: script work, character conversations and analysis. Prepaid credit in the Claude Console.",
+      );
+    },
+    capabilities: ["text"],
+    builtIn: false,
+    links: {
+      signup: "https://console.anthropic.com/",
+      billing: "https://console.anthropic.com/settings/billing",
+      apiKeys: "https://console.anthropic.com/settings/keys",
+      pricing: "https://www.anthropic.com/pricing#api",
+      docs: "https://docs.anthropic.com/en/api/messages",
+    },
+    get keySteps() {
+      return [
+        L(
+          "Opprett konto eller logg inn på console.anthropic.com.",
+          "Create an account or sign in at console.anthropic.com.",
+        ),
+        L(
+          "Kjøp kreditt under Settings → Billing (API-et virker ikke uten kreditt).",
+          "Buy credit under Settings → Billing (the API does not work without credit).",
+        ),
+        L(
+          "Gå til Settings → API keys → «Create Key», gi den navnet «Animatic Studio» og kopier den (begynner med sk-ant-).",
+          "Go to Settings → API keys → “Create Key”, name it “Animatic Studio” and copy it (it starts with sk-ant-).",
+        ),
+      ];
+    },
+    keyPattern: /^sk-ant-[A-Za-z0-9_-]{20,}$/,
+    models: [
+      textModel("claude-sonnet-4-5", "Claude Sonnet 4.5", "balanced", 3, 15),
+      textModel("claude-haiku-4-5", "Claude Haiku 4.5", "fast", 1, 5),
+      textModel("claude-opus-4-1", "Claude Opus 4.1", "premium", 15, 75),
+    ],
+  },
+  {
+    id: "xai",
+    name: "xAI Grok",
+    get description() {
+      return L(
+        "Tekst med Grok. Forhåndsbetalt kreditt i xAI Console.",
+        "Text with Grok. Prepaid credit in the xAI Console.",
+      );
+    },
+    capabilities: ["text"],
+    builtIn: false,
+    links: {
+      signup: "https://console.x.ai/",
+      billing: "https://console.x.ai/",
+      apiKeys: "https://console.x.ai/",
+      pricing: "https://docs.x.ai/docs/models",
+      docs: "https://docs.x.ai/docs/api-reference",
+    },
+    get keySteps() {
+      return [
+        L(
+          "Opprett konto eller logg inn på console.x.ai.",
+          "Create an account or sign in at console.x.ai.",
+        ),
+        L("Kjøp kreditt under Billing for teamet ditt.", "Buy credit under Billing for your team."),
+        L(
+          "Gå til API Keys → «Create API Key», gi den navnet «Animatic Studio» og kopier den (begynner med xai-).",
+          "Go to API Keys → “Create API Key”, name it “Animatic Studio” and copy it (it starts with xai-).",
+        ),
+      ];
+    },
+    keyPattern: /^xai-[A-Za-z0-9_-]{20,}$/,
+    models: [
+      textModel("grok-4", "Grok 4", "premium", 3, 15),
+      textModel("grok-3-mini", "Grok 3 mini", "fast", 0.3, 0.5),
+    ],
+  },
 ];
 
 export function providerInfo(id: string): ProviderInfo | undefined {
@@ -1197,4 +1283,255 @@ export function modelCapabilities(model: ProviderModel): ModelCapabilities {
     costModel: { priceUsd: model.priceUsd, unit: model.priceUnit },
     limits,
   };
+}
+
+// ---------------------------------------------------------------- tekst-AI med egne nøkler (T1)
+
+/** En tekstmodell i katalogen. Prisene er anslag (per million tokens) og kan være utdaterte. */
+function textModel(
+  id: string,
+  label: string,
+  tier: EffortLevel,
+  usdPerMTokIn: number,
+  usdPerMTokOut: number,
+): ProviderModel {
+  return {
+    id,
+    label,
+    capability: "text",
+    // Per kall: et typisk kall med 2 000 tokens inn og 1 000 ut (bare til visning)
+    priceUsd: Math.round(((2000 * usdPerMTokIn + 1000 * usdPerMTokOut) / 1e6) * 10000) / 10000,
+    priceUnit: "call",
+    tier,
+    usdPerMTokIn,
+    usdPerMTokOut,
+  };
+}
+
+export type TextProviderId = "anthropic" | "openai" | "google" | "xai";
+/** Leverandørene med egne tekstnøkler, i den rekkefølgen «første gyldige nøkkel» prøver dem. */
+export const TEXT_PROVIDERS: readonly TextProviderId[] = ["anthropic", "openai", "google", "xai"];
+
+export function isTextProviderId(v: unknown): v is TextProviderId {
+  return typeof v === "string" && (TEXT_PROVIDERS as readonly string[]).includes(v);
+}
+
+export type TextTask =
+  | "script"
+  | "storylab_character"
+  | "storylab_group"
+  | "storylab_analysis"
+  | "storylab_interview"
+  | "storylab_profile"
+  | "general";
+export const TEXT_TASKS: readonly TextTask[] = [
+  "script",
+  "storylab_character",
+  "storylab_group",
+  "storylab_analysis",
+  "storylab_interview",
+  "storylab_profile",
+  "general",
+];
+export function isTextTask(v: unknown): v is TextTask {
+  return typeof v === "string" && (TEXT_TASKS as readonly string[]).includes(v);
+}
+
+/** Oppgavegruppene brukeren velger modell for. */
+export type TextTaskGroup = "script" | "storylab_talk" | "storylab_analysis" | "general";
+export const TEXT_TASK_GROUPS: readonly TextTaskGroup[] = [
+  "script",
+  "storylab_talk",
+  "storylab_analysis",
+  "general",
+];
+export const TASK_GROUP: Record<TextTask, TextTaskGroup> = {
+  script: "script",
+  storylab_character: "storylab_talk",
+  storylab_group: "storylab_talk",
+  storylab_interview: "storylab_talk",
+  storylab_analysis: "storylab_analysis",
+  storylab_profile: "storylab_analysis",
+  general: "general",
+};
+export const TEXT_TASK_GROUP_LABEL: Record<TextTaskGroup, string> = localized({
+  script: ["Manus", "Script"],
+  storylab_talk: ["Story Lab (samtaler)", "Story Lab (conversations)"],
+  storylab_analysis: ["Story Lab (analyse)", "Story Lab (analysis)"],
+  general: ["Annet", "Other"],
+});
+
+/** Brukerens valg for én oppgavegruppe. */
+export interface TextChoice {
+  readonly provider: TextProviderId | "lovable";
+  readonly model: string;
+}
+export type TextPrefs = Partial<Record<TextTaskGroup, TextChoice>>;
+/** Nøkkelen i profiles.ui_prefs. */
+export const TEXT_PREFS_KEY = "aiText";
+
+const MODEL_ID = /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,119}$/;
+export function isTextModelId(v: unknown): v is string {
+  return typeof v === "string" && MODEL_ID.test(v);
+}
+
+export function isTextPrefs(v: unknown): v is TextPrefs {
+  if (!v || typeof v !== "object" || Array.isArray(v)) return false;
+  for (const [k, c] of Object.entries(v as Record<string, unknown>)) {
+    if (!(TEXT_TASK_GROUPS as readonly string[]).includes(k)) return false;
+    if (!c || typeof c !== "object") return false;
+    const x = c as Record<string, unknown>;
+    if (!(x["provider"] === "lovable" || isTextProviderId(x["provider"]))) return false;
+    if (!isTextModelId(x["model"])) return false;
+  }
+  return true;
+}
+
+/** En leverandør med gyldig tekstnøkkel og modellene som er hentet (tom = katalogens). */
+export interface AvailableTextProvider {
+  readonly provider: TextProviderId;
+  readonly models: readonly string[];
+}
+
+/** Modellene som kan velges hos leverandøren: den hentede listen, ellers katalogens. */
+export function textModelsOf(a: AvailableTextProvider): string[] {
+  if (a.models.length) return [...a.models];
+  return (providerInfo(a.provider)?.models ?? [])
+    .filter((m) => m.capability === "text" && !m.retired)
+    .map((m) => m.id);
+}
+
+export type TextChoiceReason = "explicit" | "pref" | "first_key" | "fallback";
+
+/**
+ * Leverandør og modell for et tekstkall (T1): eksplisitt valg, så brukerens valg for oppgavegruppen, så
+ * første leverandør med gyldig nøkkel, så Lovable AI som reserve. Avslåtte modeller (administrator) og
+ * leverandører uten nøkkel hoppes over. `lovableModel` er reservens modell.
+ * Eksplisitt valg som ikke kan brukes gir `error` (faller ikke stille tilbake).
+ */
+export function chooseTextModel(input: {
+  readonly explicit?:
+    { readonly provider?: string | undefined; readonly model?: string | undefined } | undefined;
+  readonly task: TextTask;
+  readonly prefs: TextPrefs | null;
+  readonly available: readonly AvailableTextProvider[];
+  readonly isEnabled: (provider: string, model: string) => boolean;
+  readonly lovableModel: string;
+}):
+  | { readonly choice: TextChoice; readonly reason: TextChoiceReason; readonly error?: undefined }
+  | { readonly error: string; readonly choice?: undefined; readonly reason?: undefined } {
+  const avail = new Map(input.available.map((a) => [a.provider, a]));
+  const usable = (provider: string, model: string): boolean => {
+    if (!input.isEnabled(provider, model)) return false;
+    if (provider === "lovable") return true;
+    const a = avail.get(provider as TextProviderId);
+    return !!a && textModelsOf(a).includes(model);
+  };
+  const firstModel = (provider: string): string | null => {
+    if (provider === "lovable")
+      return input.isEnabled("lovable", input.lovableModel) ? input.lovableModel : null;
+    const a = avail.get(provider as TextProviderId);
+    if (!a) return null;
+    return textModelsOf(a).find((m) => input.isEnabled(provider, m)) ?? null;
+  };
+  const ex = input.explicit;
+  if (ex && (ex.provider || ex.model)) {
+    const provider = ex.provider ?? "";
+    if (provider !== "lovable" && !isTextProviderId(provider))
+      return { error: L("Ukjent tekstleverandør.", "Unknown text provider.") };
+    const model = ex.model ?? firstModel(provider);
+    if (!model || !usable(provider, model))
+      return {
+        error: L(
+          "Den valgte tekstmodellen kan ikke brukes (ingen gyldig nøkkel, ukjent modell eller slått av).",
+          "The chosen text model cannot be used (no valid key, unknown model or switched off).",
+        ),
+      };
+    return { choice: { provider: provider as TextChoice["provider"], model }, reason: "explicit" };
+  }
+  const pref = input.prefs?.[TASK_GROUP[input.task]];
+  // Innebygd AI som valg: modellen velges av serveren
+  if (pref?.provider === "lovable" && input.isEnabled("lovable", input.lovableModel))
+    return { choice: { provider: "lovable", model: input.lovableModel }, reason: "pref" };
+  if (pref && pref.provider !== "lovable" && usable(pref.provider, pref.model))
+    return { choice: pref, reason: "pref" };
+  for (const p of TEXT_PROVIDERS) {
+    const m = firstModel(p);
+    if (m) return { choice: { provider: p, model: m }, reason: "first_key" };
+  }
+  if (input.isEnabled("lovable", input.lovableModel))
+    return { choice: { provider: "lovable", model: input.lovableModel }, reason: "fallback" };
+  return {
+    error: L(
+      "Ingen tekst-AI er tilgjengelig. Koble til en leverandør under «AI-leverandører».",
+      "No text AI is available. Connect a provider under “AI providers”.",
+    ),
+  };
+}
+
+/** Grovt anslag: ett token per fire tegn. */
+export function approxTokens(text: string): number {
+  return Math.ceil(text.length / 4);
+}
+
+/** Høyeste kjente tokenpris hos leverandøren (brukes for modeller som ikke står i katalogen). */
+function maxTextPrice(provider: string): { inp: number; out: number } {
+  const ms = (providerInfo(provider)?.models ?? []).filter(
+    (m) => m.capability === "text" && m.usdPerMTokIn !== undefined,
+  );
+  if (!ms.length) return { inp: 15, out: 75 };
+  return {
+    inp: Math.max(...ms.map((m) => m.usdPerMTokIn ?? 0)),
+    out: Math.max(...ms.map((m) => m.usdPerMTokOut ?? 0)),
+  };
+}
+
+/**
+ * Anslått kostnad (USD) for et tekstkall. Ukjente modeller får leverandørens høyeste kjente pris, så
+ * anslaget heller blir for høyt enn for lavt. Lovable (innebygd) koster 0 for nøkkeltaket.
+ */
+export function estimateTextCostUsd(
+  provider: string,
+  model: string,
+  inputTokens: number,
+  outputTokens: number,
+): number {
+  if (provider === "lovable") return 0;
+  if (!Number.isFinite(inputTokens) || !Number.isFinite(outputTokens)) return Number.NaN;
+  const m = builtInModel(provider, model);
+  const price =
+    m && m.capability === "text" && m.usdPerMTokIn !== undefined
+      ? { inp: m.usdPerMTokIn, out: m.usdPerMTokOut ?? m.usdPerMTokIn }
+      : maxTextPrice(provider);
+  const usd = (Math.max(0, inputTokens) * price.inp + Math.max(0, outputTokens) * price.out) / 1e6;
+  return Math.round(usd * 1e6) / 1e6;
+}
+
+/** Største antall modeller som lagres per nøkkel. */
+export const MAX_STORED_TEXT_MODELS = 200;
+
+const OPENAI_SKIP =
+  /embedding|whisper|tts|dall-e|image|audio|realtime|transcribe|moderation|search|instruct|codex/i;
+const XAI_SKIP = /image|imagine|vision-only|embed/i;
+const GOOGLE_SKIP = /embedding|aqa|imagen|veo|tts|image/i;
+
+/**
+ * Tekst- og chatmodellene i leverandørens egen modelliste (ID-ene), sortert, uten duplikater og høyst
+ * MAX_STORED_TEXT_MODELS. Google: `ids` er navnene uten «models/», og bare de med generateContent.
+ */
+export function filterTextModels(provider: TextProviderId, ids: readonly string[]): string[] {
+  const ok = ids.filter((id) => {
+    if (!isTextModelId(id)) return false;
+    switch (provider) {
+      case "anthropic":
+        return id.startsWith("claude");
+      case "openai":
+        return /^(gpt-|o\d|chatgpt-)/.test(id) && !OPENAI_SKIP.test(id);
+      case "xai":
+        return id.startsWith("grok") && !XAI_SKIP.test(id);
+      case "google":
+        return id.startsWith("gemini") && !GOOGLE_SKIP.test(id);
+    }
+  });
+  return [...new Set(ok)].sort().slice(0, MAX_STORED_TEXT_MODELS);
 }
