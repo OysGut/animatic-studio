@@ -153,12 +153,14 @@ export function IconButton({
   onClick,
   active,
   disabled,
+  className,
   children,
 }: {
   label: string;
   onClick: () => void;
   active?: boolean;
   disabled?: boolean;
+  className?: string;
   children: ReactNode;
 }) {
   return (
@@ -169,7 +171,11 @@ export function IconButton({
       aria-pressed={active}
       disabled={disabled}
       onClick={onClick}
-      className={iconButton + (active ? " bg-accent-selection text-text-primary" : "")}
+      className={
+        iconButton +
+        (active ? " bg-accent-selection text-text-primary" : "") +
+        (className ? " " + className : "")
+      }
     >
       {children}
     </button>
@@ -1001,16 +1007,18 @@ export function Timeline({
         label={L("Høyde på tidslinjen", "Height of the timeline")}
       />
       {/* Transport og verktøy */}
-      <div className="flex min-h-10 shrink-0 flex-wrap items-center gap-x-1.5 gap-y-1 border-b border-border px-2 py-1 [&>button:has(>svg:only-child)]:size-7">
+      <div className="flex min-h-10 shrink-0 flex-wrap items-center gap-x-1.5 gap-y-1 border-b border-border px-2 py-1">
         <IconButton
           label={L("Til start (Home)", "To start (Home)")}
           onClick={() => playback.setFrame(0)}
+          className="size-7"
         >
           <SkipBack className="size-3.5" />
         </IconButton>
         <IconButton
           label={L("Forrige bilde (pil venstre)", "Previous frame (left arrow)")}
           onClick={() => playback.setFrame(frame - 1)}
+          className="size-7"
         >
           <ChevronLeft className="size-3.5" />
         </IconButton>
@@ -1023,19 +1031,21 @@ export function Timeline({
               : L("Spill av (mellomrom)", "Play (space)")
           }
           onClick={playback.toggle}
-          className={iconButton + " bg-surface-3 text-text-primary"}
+          className={iconButton + " size-7 bg-surface-3 text-text-primary"}
         >
           {playback.playing ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}
         </button>
         <IconButton
           label={L("Neste bilde (pil høyre)", "Next frame (right arrow)")}
           onClick={() => playback.setFrame(frame + 1)}
+          className="size-7"
         >
           <ChevronRight className="size-3.5" />
         </IconButton>
         <IconButton
           label={L("Til slutt (End)", "To end (End)")}
           onClick={() => playback.setFrame(last)}
+          className="size-7"
         >
           <SkipForward className="size-3.5" />
         </IconButton>
@@ -1043,6 +1053,7 @@ export function Timeline({
           label={L("Løkke", "Loop")}
           active={playback.loop}
           onClick={() => playback.setLoop(!playback.loop)}
+          className="size-7"
         >
           <Repeat className="size-3.5" />
         </IconButton>
