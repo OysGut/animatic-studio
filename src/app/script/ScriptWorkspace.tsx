@@ -72,6 +72,7 @@ import { initials, usePresence, type PresentUser } from "@/app/project/use-prese
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { useVersionList, useVersionSnapshot } from "@/app/project/use-versions";
 import { Button } from "@/components/ui/button";
+import { Toolbar, ToolbarButton, ToolbarSeparator } from "@/app/shell/workspace-chrome";
 import { Switch } from "@/components/ui/switch";
 import { ExportDialog } from "./ExportDialog";
 import { ImportDialog } from "./ImportDialog";
@@ -675,7 +676,7 @@ function Workspace({
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       {/* Verktøylinje */}
-      <div className="flex h-10 shrink-0 items-center gap-2 border-b border-border bg-surface-2 px-3">
+      <Toolbar>
         {productions.length > 1 ? (
           <ProductionPicker state={state} value={productionId} onChange={setProductionId} />
         ) : (
@@ -718,15 +719,13 @@ function Workspace({
           </span>
         ) : null}
         {langStatus && editable ? (
-          <Button size="sm" variant="ghost" onClick={() => setImportLangOpen(true)}>
+          <ToolbarButton onClick={() => setImportLangOpen(true)}>
             <Languages />
             {L("Importer engelsk manus …", "Import English script …")}
-          </Button>
+          </ToolbarButton>
         ) : null}
         {langStatus && editable && langStatus.translated > 0 ? (
-          <Button
-            size="sm"
-            variant="ghost"
+          <ToolbarButton
             onClick={() => setRemoveLangOpen(true)}
             title={L(
               "Fjern alle oversettelser til dette språket i én endring (kan angres)",
@@ -734,12 +733,10 @@ function Workspace({
             )}
           >
             {L("Fjern oversettelsene …", "Remove the translations …")}
-          </Button>
+          </ToolbarButton>
         ) : null}
-        <div className="mx-1 h-5 w-px bg-border" aria-hidden />
-        <Button
-          size="sm"
-          variant="ghost"
+        <ToolbarSeparator />
+        <ToolbarButton
           onClick={cmds.undo}
           disabled={!cmds.canUndo}
           title={
@@ -754,10 +751,8 @@ function Workspace({
           }
         >
           <Undo2 />
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
+        </ToolbarButton>
+        <ToolbarButton
           onClick={cmds.redo}
           disabled={!cmds.canRedo}
           title={
@@ -772,11 +767,9 @@ function Workspace({
           }
         >
           <Redo2 />
-        </Button>
+        </ToolbarButton>
         {editable && state.productions[productionId]?.kind !== "main" ? (
-          <Button
-            size="sm"
-            variant="secondary"
+          <ToolbarButton
             onClick={() => setAddScenesOpen(true)}
             title={L(
               "Gjenbruk scener fra hovedfilmen eller en annen produksjon",
@@ -785,18 +778,19 @@ function Workspace({
           >
             <ListPlus />
             {L("Legg til scener …", "Add scenes …")}
-          </Button>
+          </ToolbarButton>
         ) : editable ? (
-          <Button size="sm" variant="secondary" onClick={() => setImportOpen(true)}>
+          <ToolbarButton
+            variant={hasScenes ? "default" : "primary"}
+            onClick={() => setImportOpen(true)}
+          >
             <FileUp />
             {L("Importer manus", "Import script")}
-          </Button>
+          </ToolbarButton>
         ) : null}
         {state.productions[productionId]?.kind !== "main" &&
         promotionCandidates(state, productionId).length > 0 ? (
-          <Button
-            size="sm"
-            variant="ghost"
+          <ToolbarButton
             onClick={() => setPromoteOpen(true)}
             title={L(
               "Før endringer eller nye scener fra denne produksjonen tilbake til hovedfilmen",
@@ -806,18 +800,18 @@ function Workspace({
           >
             <CornerUpLeft />
             <span className="hidden 2xl:inline">{L("Tilbakefør …", "Carry back …")}</span>
-          </Button>
+          </ToolbarButton>
         ) : null}
         {hasScenes ? (
           <>
-            <Button size="sm" variant="ghost" onClick={() => setVersionsOpen(true)}>
+            <ToolbarButton onClick={() => setVersionsOpen(true)}>
               <History />
               {L("Versjoner", "Versions")}
-            </Button>
-            <Button size="sm" variant="ghost" onClick={() => setExportOpen(true)}>
+            </ToolbarButton>
+            <ToolbarButton onClick={() => setExportOpen(true)}>
               <Download />
               {L("Eksporter", "Export")}
-            </Button>
+            </ToolbarButton>
           </>
         ) : null}
         <div className="ml-auto flex items-center gap-3">
@@ -853,10 +847,8 @@ function Workspace({
           {/* Visningsvalg samlet i én meny, så verktøylinjen ikke bryter tekst (UX-gjennomgang DEC-0076) */}
           <Popover>
             <PopoverTrigger asChild>
-              <Button
-                size="sm"
-                variant="ghost"
-                className="h-7 shrink-0 gap-1 whitespace-nowrap px-2 text-xs"
+              <ToolbarButton
+                className="gap-1 text-xs"
                 title={L(
                   "Notater, bare valgt scene og låste sider",
                   "Notes, selected scene only and locked pages",
@@ -871,7 +863,7 @@ function Workspace({
                   </>
                 ) : null}
                 <ChevronDown className="size-3" aria-hidden />
-              </Button>
+              </ToolbarButton>
             </PopoverTrigger>
             <PopoverContent align="end" className="flex w-60 flex-col gap-2 p-3">
               <label
@@ -984,7 +976,7 @@ function Workspace({
             {L("sider", "pages")}
           </span>
         </div>
-      </div>
+      </Toolbar>
 
       {/* Avvist tekst ved samtidig redigering går ikke tapt (KI-182, DEC-0078) */}
       <RejectedTextNotice cmds={cmds} />
