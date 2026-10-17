@@ -200,7 +200,7 @@ export const RulerTicks = memo(function RulerTicks({
     ticks.push(
       <div
         key={s}
-        className="absolute top-0 h-full whitespace-nowrap border-l border-border-control pl-1 text-[11px] leading-4 text-text-tertiary"
+        className="absolute top-0 h-full whitespace-nowrap border-l border-border-control pl-1 font-mono tabular text-[11px] leading-4 text-text-tertiary"
         style={{ left: s * secPx }}
       >
         {label}
@@ -213,7 +213,7 @@ export const RulerTicks = memo(function RulerTicks({
       ticks.push(
         <div
           key={`h${s}`}
-          className="absolute bottom-0 h-1.5 border-l border-border"
+          className="absolute bottom-0 h-1.5 border-l border-border-strong"
           style={{ left: s * secPx }}
         />,
       );
@@ -292,22 +292,22 @@ const CameraRow = memo(function CameraRow({
             onPointerUp={onShotPointerUp}
             onPointerCancel={onShotPointerUp}
             className={
-              "absolute top-[3px] h-[18px] overflow-hidden rounded-sm border text-[11px] leading-[16px] text-white/90 " +
+              "absolute top-[3px] h-[18px] overflow-hidden rounded-sm border text-[11px] leading-[16px] text-text-primary " +
               (sh.id === activeShotId
                 ? "border-accent-warm outline outline-1 outline-accent-warm"
                 : selected
-                  ? "border-text-primary"
-                  : "border-white/20") +
+                  ? "border-text-primary ring-1 ring-focus-ring"
+                  : "border-border-strong") +
               (editable ? " cursor-grab active:cursor-grabbing" : "")
             }
             style={{
               left: start * ppf,
               width: Math.max(6, (end - start + 1) * ppf),
               background:
-                "linear-gradient(90deg, oklch(0.5 0.1 250 / 0.85), oklch(0.5 0.12 25 / 0.85))",
+                "linear-gradient(90deg, color-mix(in oklch, var(--camera-start) 70%, var(--bg-app) 30% / 85%), color-mix(in oklch, var(--camera-end) 70%, var(--bg-app) 30% / 85%))",
             }}
           >
-            <span className="pointer-events-none truncate px-2">
+            <span className="pointer-events-none block truncate px-2 font-medium">
               {sh.name || L("Utsnitt", "Shot")}
             </span>
             {editable ? (
@@ -364,13 +364,15 @@ const LayerRow = memo(function LayerRow({
   const frames = useMemo(() => keyframeFrames(layer), [layer]);
   return (
     <div
-      className={"flex border-b border-border/60 " + (selected ? "bg-accent-selection" : "")}
+      className={"flex border-b border-border even:bg-surface-2/40 " + (selected ? "bg-accent-selection" : "")}
       style={{ height: ROW_H }}
     >
       <div
         className={
-          "sticky left-0 z-20 flex shrink-0 items-center border-r border-border px-2 text-[13px] " +
-          (selected ? "bg-surface-2 text-text-primary" : "bg-surface-1 text-text-secondary")
+          "sticky left-0 z-20 flex shrink-0 items-center border-r border-border-strong bg-surface-2 px-2 text-[13px] " +
+          (selected
+            ? "text-text-primary shadow-[inset_2px_0_0_var(--accent-brand)]"
+            : "text-text-secondary")
         }
         style={{ width: LABEL_CSS, paddingLeft: inGroup ? 20 : undefined }}
       >
@@ -415,7 +417,7 @@ const LayerRow = memo(function LayerRow({
             }}
           >
             <span className="block h-full w-0.5 bg-status-moved" />
-            <span className="absolute top-0.5 size-2 rounded-[1px] bg-status-moved" />
+            <span className="absolute top-0.5 size-2 rounded-[1px] border border-bg-app bg-status-moved" />
           </div>
         ))}
         {events?.map((ev) => (
@@ -455,7 +457,7 @@ const LayerRow = memo(function LayerRow({
             >
               <span
                 className={
-                  "block size-2 rotate-45 " +
+                  "block size-2 rotate-45 border border-bg-app " +
                   (selected ? "bg-accent-brand" : "bg-text-secondary") +
                   (isSel ? " ring-2 ring-text-primary" : "")
                 }
@@ -999,7 +1001,7 @@ export function Timeline({
         label={L("Høyde på tidslinjen", "Height of the timeline")}
       />
       {/* Transport og verktøy */}
-      <div className="flex min-h-9 shrink-0 flex-wrap items-center gap-x-1.5 gap-y-1 border-b border-border px-2 py-1">
+      <div className="flex min-h-10 shrink-0 flex-wrap items-center gap-x-1.5 gap-y-1 border-b border-border px-2 py-1 [&>button:has(>svg:only-child)]:size-7">
         <IconButton
           label={L("Til start (Home)", "To start (Home)")}
           onClick={() => playback.setFrame(0)}
@@ -1045,7 +1047,7 @@ export function Timeline({
           <Repeat className="size-3.5" />
         </IconButton>
         <span
-          className="shrink-0 whitespace-nowrap px-1 font-mono text-xs tabular-nums text-text-primary"
+          className="shrink-0 whitespace-nowrap px-1 font-mono text-[13px] tabular-nums text-text-primary"
           aria-label={L("Tid", "Time")}
         >
           {formatTimecode(frame, fps)}
@@ -1107,7 +1109,7 @@ export function Timeline({
             "Endringer på et bilde blir nøkkelbilder",
             "Changes on a frame become keyframes",
           )}
-          className="inline-flex h-6 shrink-0 items-center gap-1.5 rounded-sm px-1.5 text-xs text-text-secondary hover:bg-surface-3 hover:text-text-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-40"
+          className="inline-flex h-7 shrink-0 items-center gap-1.5 rounded-sm px-1.5 text-xs text-text-secondary hover:bg-surface-3 hover:text-text-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-40"
         >
           <span
             aria-hidden="true"
@@ -1261,9 +1263,9 @@ export function Timeline({
             } as CSSProperties
           }
         >
-          <div className="sticky top-0 z-30 flex border-b border-border bg-surface-1">
+          <div className="sticky top-0 z-30 flex border-b border-border bg-surface-2">
             <div
-              className="sticky left-0 z-10 shrink-0 border-r border-border bg-surface-1 px-2 text-xs leading-5 text-text-tertiary"
+              className="sticky left-0 z-10 shrink-0 border-r border-border-strong bg-surface-2 px-2 text-xs leading-5 text-text-tertiary"
               style={{ width: labelW }}
             >
               {L("Spor", "Tracks")}
@@ -1287,16 +1289,16 @@ export function Timeline({
               <RulerTicks ppf={ppf} durationFrames={durationFrames} fps={fpsN} />
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute top-0 size-2.5 -translate-x-1/2 rounded-b-sm bg-accent-brand"
+                className="pointer-events-none absolute top-0 size-2.5 -translate-x-1/2 rounded-b-sm bg-accent-brand shadow-sm ring-1 ring-bg-app"
                 style={{ left: frame * ppf }}
               />
             </div>
           </div>
 
           {/* Kamera */}
-          <div className="flex border-b border-border/60" style={{ height: ROW_H }}>
+          <div className="flex border-b border-border" style={{ height: ROW_H }}>
             <div
-              className="sticky left-0 z-20 flex shrink-0 items-center gap-1.5 border-r border-border bg-surface-1 px-2 text-[13px] text-text-secondary"
+              className="sticky left-0 z-20 flex shrink-0 items-center gap-1.5 border-r border-border-strong bg-surface-2 px-2 text-[13px] text-text-secondary"
               style={{ width: labelW }}
             >
               <Video className="size-3.5 shrink-0" />
@@ -1367,7 +1369,7 @@ export function Timeline({
           {/* Avspillingshodet (den eneste delen som følger bildet) */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-y-0 z-10 w-px bg-accent-brand"
+            className="pointer-events-none absolute inset-y-0 z-10 w-px bg-text-primary"
             style={{ left: TRACK_X + frame * ppf }}
           />
         </div>
