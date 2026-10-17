@@ -214,9 +214,9 @@ export function FilmTimeline(p: FilmTimelineProps) {
       <div ref={scrollRef} className="relative min-h-0 flex-1 overflow-auto">
         <div className="relative min-h-full" style={{ width: trackW + PAD + 24 }}>
           {/* Linjal: klikk eller dra for å flytte avspillingshodet */}
-          <div className="sticky top-0 z-20 flex border-b border-border bg-surface-1">
+          <div className="sticky top-0 z-20 flex border-b border-border bg-surface-2">
             <div
-              className="sticky left-0 z-10 shrink-0 bg-surface-1"
+              className="sticky left-0 z-10 shrink-0 border-r border-border-strong bg-surface-2"
               style={{ width: PAD, height: RULER_H }}
               aria-hidden
             />
@@ -236,14 +236,14 @@ export function FilmTimeline(p: FilmTimelineProps) {
               <RulerTicks ppf={ppf} durationFrames={shownDuration} fps={fpsN} />
               <div
                 aria-hidden
-                className="pointer-events-none absolute top-0 size-2.5 -translate-x-1/2 rounded-b-sm bg-accent-brand"
+                className="pointer-events-none absolute top-0 size-2.5 -translate-x-1/2 rounded-b-sm bg-accent-brand shadow-sm ring-1 ring-bg-app"
                 style={{ left: frame * ppf }}
               />
             </div>
           </div>
 
           {/* Klippene */}
-          <div className="flex pt-2">
+          <div className="flex border-b border-border pt-2">
             <TrackLabel>{L("Bilde", "Picture")}</TrackLabel>
             <div
               role="group"
@@ -353,7 +353,7 @@ export function FilmTimeline(p: FilmTimelineProps) {
           {/* Avspillingshodet */}
           <div
             aria-hidden
-            className="pointer-events-none absolute top-0 z-10 h-full w-px bg-accent-brand"
+            className="pointer-events-none absolute top-0 z-10 h-full w-px bg-text-primary"
             style={{ left: PAD + frame * ppf }}
           ></div>
         </div>
@@ -366,7 +366,7 @@ export function FilmTimeline(p: FilmTimelineProps) {
 export function TrackLabel({ children, height }: { children: ReactNode; height?: number }) {
   return (
     <div
-      className="sticky left-0 z-10 flex shrink-0 items-start gap-1 border-r border-border bg-surface-1 px-2 pt-1 text-xs text-text-secondary"
+      className="sticky left-0 z-10 flex shrink-0 items-start gap-1 border-r border-border-strong bg-surface-2 px-2 pt-1 text-xs text-text-secondary"
       style={{ width: LABEL_W, marginRight: PAD - LABEL_W, ...(height ? { height } : {}) }}
     >
       {children}
@@ -491,7 +491,7 @@ const ClipBlock = memo(function ClipBlock({
         (placeholder
           ? "border-dashed border-border-control bg-surface-2 "
           : "border-border-strong bg-surface-3 ") +
-        (selected ? "z-10 outline outline-2 -outline-offset-1 outline-accent-brand " : "") +
+        (selected ? "z-10 outline outline-2 -outline-offset-1 outline-accent-brand ring-1 ring-focus-ring " : "") +
         (dragging ? "z-20 opacity-80 shadow-[var(--shadow-float)] " : "")
       }
     >
@@ -560,7 +560,7 @@ const ClipBlock = memo(function ClipBlock({
               <Layers className="size-3 shrink-0 text-accent-brand" aria-hidden />
             )}
           </div>
-          <span className="truncate text-[11px] leading-tight text-text-primary">{heading}</span>
+          <span className="block truncate text-[11px] font-medium leading-tight text-text-primary">{heading}</span>
           <span
             className={
               "truncate font-mono text-[11px] " +
@@ -633,7 +633,7 @@ function Thumb({ state, clip, tick }: { state: ProjectState; clip: FilmClip; tic
       ref={ref}
       aria-hidden
       style={{ width: w, height: h }}
-      className="pointer-events-none shrink-0 border-r border-border bg-black"
+      className="pointer-events-none shrink-0 border-r border-border bg-bg-app"
     />
   );
 }
