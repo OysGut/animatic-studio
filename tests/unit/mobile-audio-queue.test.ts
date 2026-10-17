@@ -64,4 +64,22 @@ describe("lydopptak på mobilen", () => {
     q.remove(a.id);
     expect(q.list()).toHaveLength(1);
   });
+
+  it("opplasting virker etter stop() og start() (effekten monteres på nytt, KI-249)", async () => {
+    const { q, up, sent } = setup();
+    const a = q.add(blob(), "Take 01.webm", { local: true });
+    q.send([a.id]);
+    up.stop();
+    up.pump();
+    for (let i = 0; i < 5; i++) await tick();
+    // Stoppet instans sender ingenting: opptaket blir værende i køen
+    expect(sent).toEqual([]);
+    expect(q.list().find((x) => x.id === a.id)?.status).toBe("queued");
+    up.start();
+    q.send([a.id]);
+    up.pump();
+    for (let i = 0; i < 5; i++) await tick();
+    expect(sent).toEqual(["Take 01.webm"]);
+    expect(q.list().find((x) => x.id === a.id)?.status).toBe("sent");
+  });
 });
