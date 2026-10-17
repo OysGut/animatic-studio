@@ -12,7 +12,16 @@ import { isUuid } from "../ids";
 import { L } from "../i18n";
 import { isVoiceKind } from "./index";
 
-export const COMPOSITION_FORMAT = 1;
+/**
+ * Gjeldende format. Format 1 (bolk C) har bare deler; format 2 (bolk E, DEC-0096) kan i tillegg ha pauseendringer
+ * og en rolle på delene. Format 1 leses fortsatt, og en komposisjon blir format 2 først når den får pauser eller
+ * romlyd (`setPause`, `setPauseFill`, `fillPauseGaps`).
+ */
+export const COMPOSITION_FORMAT = 2;
+export const COMPOSITION_FORMATS_READ = [1, 2] as const;
+export const COMPOSITION_MAX_PAUSES = 2000;
+/** Største endring av én pause (± 60 s). */
+export const PAUSE_MAX_DELTA_MS = 60_000;
 export const COMPOSITION_TRACKS = 4;
 export const COMPOSITION_MAX_SEGMENTS = 400;
 /** Lengste komposisjon (10 minutter): en replikk eller en lyd, ikke en hel film. */
@@ -32,11 +41,44 @@ export interface AudioSegment {
   readonly gainDb: number;
   readonly fadeInMs: number;
   readonly fadeOutMs: number;
+  /**
+   * Hva delen er (format 2): «speech» (vanlig opptak, standard), «room» (romlyd som fyller en pause, laget
+   * automatisk og byttes ut når pausen endres) eller «transition» (romlyd under en skjøt mellom takes).
+   */
+  readonly role?: SegmentRole;
+}
+
+export type SegmentRole = "speech" | "room" | "transition";
+export const SEGMENT_ROLES: readonly SegmentRole[] = ["speech", "room", "transition"];
+
+/** Hva en forlenget pause fylles med (REQ-0708). */
+export type PauseFill =
+  | { readonly kind: "room" }
+  | { readonly kind: "silence" }
+  | { readonly kind: "asset"; readonly versionId: string }
+  | { readonly kind: "manual" };
+
+/**
+ * En endret pause mellom to ord (REQ-0705/0706). `afterWord` er indeksen i ordkoblingen (pausen mellom ordet og
+ * det neste). `deltaMs` er hvor mye lengre (eller kortere, negativ) pausen er enn i opptaket.
+ */
+export interface PauseEdit {
+  readonly id: string;
+  readonly afterWord: number;
+  readonly deltaMs: number;
+  readonly fill: PauseFill;
 }
 
 export interface AudioComposition {
-  readonly format: typeof COMPOSITION_FORMAT;
+  readonly format: (typeof COMPOSITION_FORMATS_READ)[number];
   readonly segments: readonly AudioSegment[];
+  /** Pauseendringer (bare format 2). */
+  readonly pauses?: readonly PauseEdit[];
+}
+
+/** Rollen til en del (deler uten rolle er tale). */
+export function segmentRole(s: AudioSegment): SegmentRole {
+  return s.role ?? "speech";
 }
 
 /** Hvor et nytt opptak legges (REQ-0692). */
@@ -72,7 +114,7 @@ function seg(
 
 /** En komposisjon av ett helt opptak. */
 export function compositionFromTake(take: TakeRef, newId: NewId): AudioComposition {
-  return { format: COMPOSITION_FORMAT, segments: [seg(newId, take)] };
+  return { format: 1, segments: [seg(newId, take)] };
 }
 
 /** Lengden: slutten på den siste delen (ms). */
@@ -229,7 +271,12 @@ export function removeSegment(c: AudioComposition, id: string): AudioComposition
 /** Er to komposisjoner like (for «ulagrede endringer»)? */
 export function sameComposition(a: AudioComposition, b: AudioComposition): boolean {
   const key = (c: AudioComposition) =>
-    JSON.stringify(sortedSegments(c).map(({ id: _id, ...rest }) => rest));
+    JSON.stringify([
+      sortedSegments(c).map(({ id: _id, role, ...rest }) => ({ ...rest, role: role ?? "speech" })),
+      [...(c.pauses ?? [])]
+        .sort((x, y) => x.afterWord - y.afterWord)
+        .map(({ id: _id, ...rest }) => rest),
+    ]);
   return key(a) === key(b);
 }
 
@@ -244,7 +291,10 @@ export function compositionError(
   const bad = L("Ugyldig lydkomposisjon", "Invalid audio composition");
   if (!c || typeof c !== "object") return bad;
   const o = c as Record<string, unknown>;
-  if (o["format"] !== COMPOSITION_FORMAT || !Array.isArray(o["segments"])) return bad;
+  const format = o["format"];
+  if ((format !== 1 && format !== 2) || !Array.isArray(o["segments"])) return bad;
+  const allowed = format === 1 ? ["format", "segments"] : ["format", "pauses", "segments"];
+  if (Object.keys(o).some((k) => !allowed.includes(k))) return bad;
   const segs = o["segments"] as unknown[];
   if (segs.length === 0) return L("Komposisjonen er tom", "The composition is empty");
   if (segs.length > COMPOSITION_MAX_SEGMENTS)
@@ -255,9 +305,13 @@ export function compositionError(
   for (const x of segs) {
     if (!x || typeof x !== "object") return bad;
     const s = x as Record<string, unknown>;
-    const keys = Object.keys(s).sort().join(",");
+    const keys = Object.keys(s)
+      .filter((k) => !(format === 2 && k === "role"))
+      .sort()
+      .join(",");
     if (keys !== "atMs,fadeInMs,fadeOutMs,gainDb,id,lengthMs,sourceInMs,track,versionId")
       return bad;
+    if (s["role"] !== undefined && !SEGMENT_ROLES.includes(s["role"] as SegmentRole)) return bad;
     if (typeof s["id"] !== "string" || !isUuid(s["id"]) || ids.has(s["id"])) return bad;
     ids.add(s["id"]);
     if (typeof s["versionId"] !== "string" || !isUuid(s["versionId"])) return bad;
@@ -286,7 +340,45 @@ export function compositionError(
         "The composition is too long (max 10 minutes)",
       );
   }
+  if (o["pauses"] !== undefined) {
+    if (!Array.isArray(o["pauses"]) || o["pauses"].length > COMPOSITION_MAX_PAUSES) return bad;
+    const words = new Set<number>();
+    for (const x of o["pauses"] as unknown[]) {
+      if (!x || typeof x !== "object") return bad;
+      const p = x as Record<string, unknown>;
+      if (Object.keys(p).sort().join(",") !== "afterWord,deltaMs,fill,id") return bad;
+      if (typeof p["id"] !== "string" || !isUuid(p["id"]) || ids.has(p["id"])) return bad;
+      ids.add(p["id"]);
+      if (!int(p["afterWord"], 0, 100_000) || words.has(p["afterWord"] as number)) return bad;
+      words.add(p["afterWord"] as number);
+      if (!int(p["deltaMs"], -PAUSE_MAX_DELTA_MS, PAUSE_MAX_DELTA_MS)) return bad;
+      if (pauseFillError(p["fill"], sourceMs)) return bad;
+    }
+  }
   return null;
+}
+
+function pauseFillError(f: unknown, sourceMs: (versionId: string) => number | null): boolean {
+  if (!f || typeof f !== "object") return true;
+  const o = f as Record<string, unknown>;
+  const keys = Object.keys(o).sort().join(",");
+  if (o["kind"] === "room" || o["kind"] === "silence" || o["kind"] === "manual")
+    return keys !== "kind";
+  if (o["kind"] === "asset")
+    return (
+      keys !== "kind,versionId" ||
+      typeof o["versionId"] !== "string" ||
+      !isUuid(o["versionId"]) ||
+      sourceMs(o["versionId"]) === null
+    );
+  return true;
+}
+
+/** Er verdien en lagret lydkomposisjon (format 1 eller 2)? Formen er kontrollert da den ble lagret. */
+export function isAudioComposition(v: unknown): v is AudioComposition {
+  if (!v || typeof v !== "object") return false;
+  const f = (v as { format?: unknown }).format;
+  return (f === 1 || f === 2) && Array.isArray((v as { segments?: unknown }).segments);
 }
 
 /** Lengden på et kildeopptak for en komposisjon i prosjektet (lydversjon uten egen komposisjon). */
@@ -340,6 +432,8 @@ export function cropComposition(
 ): AudioComposition {
   const from = round(Math.min(fromMs, toMs));
   const to = round(Math.max(fromMs, toMs));
+  // Pauseendringene gjelder ordene i hele komposisjonen; et utsnitt er bare lyden
+  const { pauses: _pauses, ...rest } = c;
   const segments: AudioSegment[] = [];
   for (const s of c.segments) {
     const start = Math.max(s.atMs, from);
@@ -355,7 +449,7 @@ export function cropComposition(
       fadeOutMs: end === s.atMs + s.lengthMs ? Math.min(s.fadeOutMs, lengthMs) : 0,
     });
   }
-  return { ...c, segments };
+  return { ...rest, segments };
 }
 
 /** Filnavn for en eksportert lyd: bokstaver, tall, mellomrom og bindestrek. */
