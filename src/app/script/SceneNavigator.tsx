@@ -171,9 +171,9 @@ export function SceneNavigator({
 
   return (
     <div className="flex min-h-0 flex-col">
-      <div className="flex h-8 shrink-0 items-center justify-between border-b border-border px-3 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+      <div className="flex h-8 shrink-0 items-center justify-between border-b border-border bg-surface-2 px-2 text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
         <span>{L("Scener", "Scenes")}</span>
-        <span className="tabular normal-case tracking-normal">
+        <span className="font-mono tabular-nums normal-case tracking-normal">
           {visible
             ? L(
                 `${occs.length} av ${allOccs.length} vises`,

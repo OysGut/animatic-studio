@@ -510,9 +510,9 @@ export function AssetDetail(props: Props) {
           label={L("Bredde på «Brukt i scener»", "Width of “Used in scenes”")}
         />
         <div className="border border-border bg-surface-1">
-          <div className="flex h-8 items-center justify-between border-b border-border px-3 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+          <div className="flex h-8 items-center justify-between border-b border-border bg-surface-2 px-2 text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
             <span>{L("Brukt i scener", "Used in scenes")}</span>
-            <span className="tabular normal-case tracking-normal">{usage.length}</span>
+            <span className="font-mono tabular-nums normal-case tracking-normal">{usage.length}</span>
           </div>
           {usage.length === 0 ? (
             <p className="px-3 py-3 text-xs text-text-tertiary">

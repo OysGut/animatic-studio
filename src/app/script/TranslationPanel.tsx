@@ -87,7 +87,7 @@ export function TranslationPanel({
       aria-label={L(`Oversettelse (${langName})`, `Translation (${langName})`)}
       className="mb-4 flex flex-col gap-2"
     >
-      <h3 className="text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+      <h3 className="text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
         {block
           ? L("Norsk (hovedmanus)", "Norwegian (main script)")
           : L("Scenehode – norsk", "Scene heading – Norwegian")}
@@ -117,7 +117,7 @@ export function TranslationPanel({
           )}
         </p>
       ) : null}
-      <h3 className="mt-1 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+      <h3 className="mt-1 text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
         {langName}
       </h3>
       <Textarea
