@@ -11,7 +11,7 @@ import {
   L,
 } from "@/core";
 import { sha256Hex } from "@/engine/import/browser";
-import { uploadFile } from "@/adapters/browser/storage-files";
+import { downloadFile, uploadFile } from "@/adapters/browser/storage-files";
 import type { Commands } from "@/app/project/use-commands";
 import { ASSET_BUCKET, safeFileName } from "./asset-images";
 
@@ -188,4 +188,33 @@ export async function createSoundAsset(
     if (r.error) throw new Error(r.error);
   }
   return { assetId, variantId, versionId, durationMs: media.durationMs ?? 1000 };
+}
+
+/**
+ * Lyddata til AddAssetVersion for en fil som allerede ligger i lagringen (opptak fra mobilen, bolk B):
+ * filen hentes, lengden leses og kontrollsummen regnes ut. Kaster med feilmelding.
+ */
+export async function audioMediaFromStoredFile(path: string, mime: string): Promise<AssetMedia> {
+  const { data, error } = await downloadFile(ASSET_BUCKET, path);
+  if (error || !data)
+    throw new Error(
+      L(
+        `Opptaket kunne ikke hentes: ${error?.message ?? "ukjent feil"}`,
+        `The recording could not be fetched: ${error?.message ?? "unknown error"}`,
+      ),
+    );
+  const raw = await data.arrayBuffer();
+  const [sha256, durationMs] = await Promise.all([
+    sha256Hex(new Uint8Array(raw)),
+    audioDuration(raw.slice(0)),
+  ]);
+  return {
+    path,
+    mimeType: (mime || data.type || "audio/webm").split(";")[0]!.trim(),
+    width: null,
+    height: null,
+    byteSize: raw.byteLength,
+    sha256,
+    durationMs: durationMs ?? null,
+  };
 }

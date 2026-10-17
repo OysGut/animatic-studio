@@ -5,7 +5,11 @@
  */
 import { L, newId } from "@/core";
 
-export type QueueStatus = "queued" | "uploading" | "sent" | "failed";
+/**
+ * «local»: et lydopptak som bare ligger på telefonen til brukeren velger å sende det (bolk B, REQ-0687) – lyd
+ * lastes aldri opp av seg selv når opptaket stopper.
+ */
+export type QueueStatus = "local" | "queued" | "uploading" | "sent" | "failed";
 
 export interface QueueItem {
   readonly id: string;
@@ -18,6 +22,10 @@ export interface QueueItem {
   readonly status: QueueStatus;
   readonly error?: string;
   readonly addedAt: number;
+  /** Lengden på et lydopptak (ms). */
+  readonly durationMs?: number;
+  /** Ren romlyd (REQ-0690). */
+  readonly roomTone?: boolean;
 }
 
 const DB_NAME = "animatic-mobilimport"; // i18n-ignore
@@ -94,7 +102,11 @@ export class UploadQueue {
     }
   }
 
-  add(blob: Blob, name: string): QueueItem {
+  add(
+    blob: Blob,
+    name: string,
+    opts: { local?: boolean; durationMs?: number; roomTone?: boolean } = {},
+  ): QueueItem {
     const it: QueueItem = {
       id: newId<"mobile_file">(),
       session: this.session,
@@ -102,11 +114,36 @@ export class UploadQueue {
       mime: blob.type,
       size: blob.size,
       blob,
-      status: "queued",
+      status: opts.local ? "local" : "queued",
       addedAt: Date.now(),
+      ...(opts.durationMs !== undefined ? { durationMs: opts.durationMs } : {}),
+      ...(opts.roomTone ? { roomTone: true } : {}),
     };
     this.save(it);
     return it;
+  }
+
+  /** Send de valgte lokale opptakene (eller prøv feilede på nytt). */
+  send(ids: readonly string[]) {
+    for (const id of ids) {
+      const it = this.items.get(id);
+      if (it && (it.status === "local" || it.status === "failed"))
+        this.update(id, { status: "queued" });
+    }
+  }
+
+  /** Forkast et lokalt opptak (bare før det er sendt). */
+  remove(id: string) {
+    const it = this.items.get(id);
+    if (!it || it.status !== "local") return;
+    this.items.delete(id);
+    this.emit();
+    this.forgetBlob(id);
+  }
+
+  /** Lokale opptak som ikke er sendt. */
+  local(): number {
+    return this.list().filter((x) => x.status === "local").length;
   }
 
   update(id: string, patch: Partial<Pick<QueueItem, "status" | "error">>) {

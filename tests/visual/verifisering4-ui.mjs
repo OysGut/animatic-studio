@@ -995,7 +995,10 @@ async function testPlayback() {
     await page.getByRole("button", { name: "Spill av" }).first().click();
     const samples = [];
     const hashes = new Set([hash0]);
-    for (let i = 0; i < 12; i++) {
+    // Scenen er 4 s og spilles i løkke: stopp i god tid før slutten, også på en treg maskin (pause før løkken
+    // begynner på nytt, ellers står avspillingshodet før klippene og neste kontroll blir meningsløs)
+    const t0 = Date.now();
+    for (let i = 0; i < 12 && Date.now() - t0 < 2600; i++) {
       await page.waitForTimeout(220);
       const s = await page.evaluate(() => ({
         t: performance.now(),

@@ -347,6 +347,16 @@ export function needsSchema34(command: {
   );
 }
 
+/** Lydkomposisjoner (DEC-0094) krever migrasjon 0036 – ellers ville komposisjonen gått tapt i stillhet. */
+/** Ord-til-lyd (DEC-0095) krever migrasjon 0037. */
+export function needsSchema37(command: { type: string }): boolean {
+  return command.type === "SetVersionAlignment";
+}
+
+export function needsSchema36(command: { type: string } & Record<string, unknown>): boolean {
+  return command.type === "AddAssetVersion" && command["composition"] !== undefined;
+}
+
 /** Instrukser til AI-video av scenen (DEC-0083) krever migrasjon 0032. */
 export function needsSchema32(command: { type: string }): boolean {
   return command.type === "SetSceneVideoInstructions";
@@ -699,6 +709,30 @@ export const runCommand = createServerFn({ method: "POST" })
           message: L(
             "Databasen mangler kontinuitet for spinoffer. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0018.",
             "The database is missing continuity for spin-offs. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0018.",
+          ),
+        };
+    }
+    if (needsSchema37(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 37)
+        return {
+          ok: false,
+          code: "schema",
+          message: L(
+            "Databasen mangler ord-til-lyd. Den må oppdateres (migrasjon 0037).",
+            "The database is missing word alignment. It must be updated (migration 0037).",
+          ),
+        };
+    }
+    if (needsSchema36(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 36)
+        return {
+          ok: false,
+          code: "schema",
+          message: L(
+            "Databasen mangler lydkomposisjoner. Den må oppdateres (migrasjon 0036).",
+            "The database is missing audio compositions. It must be updated (migration 0036).",
           ),
         };
     }

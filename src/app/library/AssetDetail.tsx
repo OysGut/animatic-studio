@@ -71,6 +71,7 @@ import { GenerateSoundPanel } from "./GenerateSoundPanel";
 import { ImageCompareDialog } from "./ImageCompareDialog";
 import { SoundLinksSection } from "./SoundLinksSection";
 import { MobileCameraButton } from "@/app/mobile/MobileImportDialog";
+import { TakesMicButton } from "@/app/audio/AudioTakesDialog";
 import { ContextNamesSection } from "./ContextNamesSection";
 import { AssetWorklistDialog, useWorklistCount } from "./AssetWorklistDialog";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
@@ -234,6 +235,16 @@ export function AssetDetail(props: Props) {
                 projectId={props.projectId}
                 context={{ type: "asset", assetId: asset.id }}
                 label={L(`Bilder av ${asset.name}`, `Pictures of ${asset.name}`)}
+              />
+            ) : editable ? (
+              /* Mikrofonikonet for lyd (DEC-0093): opptak på datamaskinen og mobilen, som takes */
+              <TakesMicButton
+                className="mt-5"
+                projectId={props.projectId}
+                state={state}
+                cmds={cmds}
+                target={{ kind: "sound", assetId: asset.id }}
+                label={L(`Opptak til «${asset.name}»`, `Recordings for “${asset.name}”`)}
               />
             ) : null}
           </div>

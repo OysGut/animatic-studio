@@ -18,6 +18,10 @@ export type UploadContext =
       readonly assetId?: string | undefined;
     }
   | { readonly type: "occurrence"; readonly occurrenceId: string }
+  /** Opptak (takes) til en lydressurs (fase 2, bolk B, REQ-0684). */
+  | { readonly type: "sound"; readonly assetId: string; readonly variantId?: string | undefined }
+  /** Opptak av en replikk i en scene (bolk B, REQ-0685): mobilen viser hele replikken. */
+  | { readonly type: "line"; readonly occurrenceId: string; readonly blockId: string }
   /** Bildeplassen til et lag i sceneeditoren: nytt bilde av lagets ressurs. */
   | {
       readonly type: "layer";
@@ -213,6 +217,17 @@ export function parseUploadContext(v: unknown): UploadContext | null {
       const occurrenceId = id("occurrenceId");
       return occurrenceId ? { type: "occurrence", occurrenceId } : null;
     }
+    case "sound": {
+      const assetId = id("assetId");
+      const variantId = optId("variantId");
+      if (!assetId || variantId === false) return null;
+      return { type: "sound", assetId, ...(variantId ? { variantId } : {}) };
+    }
+    case "line": {
+      const occurrenceId = id("occurrenceId");
+      const blockId = id("blockId");
+      return occurrenceId && blockId ? { type: "line", occurrenceId, blockId } : null;
+    }
     case "layer": {
       const layerId = id("layerId");
       const assetId = id("assetId");
@@ -225,9 +240,12 @@ export function parseUploadContext(v: unknown): UploadContext | null {
   }
 }
 
-/** Filtypene en kontekst tar imot (bolk A: bilder og video; lyd kommer i bolk B). */
+/** Filtypene en kontekst tar imot (bilder og video for ressurser; bare lyd for opptak, bolk B). */
 export function mediaKindsFor(c: UploadContext): MobileMediaKind[] {
   switch (c.type) {
+    case "sound":
+    case "line":
+      return ["audio"];
     case "asset":
     case "draft":
     case "layer":
@@ -243,7 +261,7 @@ export function targetAssetOf(
   c: UploadContext,
   resolvedAssetId?: string | null,
 ): { assetId: string; variantId?: string | undefined } | null {
-  if (c.type === "asset" || c.type === "layer")
+  if (c.type === "asset" || c.type === "layer" || c.type === "sound")
     return { assetId: c.assetId, ...(c.variantId ? { variantId: c.variantId } : {}) };
   if (c.type === "draft") {
     const a = resolvedAssetId ?? c.assetId ?? null;
@@ -263,4 +281,65 @@ export function cleanContributorName(v: unknown): string {
     .join("")
     .trim()
     .slice(0, 100);
+}
+
+// ---------------------------------------------------------------- lydopptak (bolk B)
+
+/** Filnavnet på et opptak fra mobilen: «take-03.webm» eller «romlyd-01.m4a» (romlyd, REQ-0690). */
+export function takeFileName(n: number, ext: string, roomTone = false): string {
+  const nr = String(Math.max(1, Math.floor(n))).padStart(2, "0");
+  return `${roomTone ? ROOM_TONE_PREFIX : "take"}-${nr}.${ext}`; // i18n-ignore: filnavn
+}
+
+/** Romlyd kjennes igjen på filnavnet (mobilimporten har ingen egen kolonne for det). */
+export const ROOM_TONE_PREFIX = "romlyd"; // i18n-ignore: filnavn
+export function isRoomToneFile(fileName: string): boolean {
+  return fileName.toLowerCase().startsWith(`${ROOM_TONE_PREFIX}-`);
+}
+
+/** «Take 01», «Take 02» … (nummer fra 1). */
+export function audioTakeLabel(n: number): string {
+  return `Take ${String(Math.max(1, Math.floor(n))).padStart(2, "0")}`; // i18n-ignore: fagord
+}
+
+/** «0:12», «1:05» – lengden på et opptak. */
+export function formatTakeLength(ms: number | null | undefined): string {
+  if (ms == null || !Number.isFinite(ms) || ms < 0) return "–";
+  const s = Math.round(ms / 1000);
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+}
+
+/** Replikken mobilen viser under opptak (REQ-0685). */
+export interface MobileScript {
+  readonly speaker: string;
+  readonly parenthetical: string;
+  readonly text: string;
+}
+
+/**
+ * Finner replikken og hvem som sier den, fra blokkene i scenevarianten i manusrekkefølge (serveren har ikke
+ * hele prosjekttilstanden). Null når blokken ikke er en replikk.
+ */
+export function scriptForLine(
+  blocks: readonly { readonly id: string; readonly kind: string; readonly text: string }[],
+  blockId: string,
+): MobileScript | null {
+  const i = blocks.findIndex((b) => b.id === blockId);
+  const block = blocks[i];
+  if (!block || block.kind !== "dialogue") return null;
+  let speaker = "";
+  let parenthetical = "";
+  for (let j = i - 1; j >= 0; j--) {
+    const b = blocks[j]!;
+    if (b.kind === "parenthetical" && !parenthetical) parenthetical = b.text.trim();
+    else if (b.kind === "character") {
+      speaker = b.text.trim();
+      break;
+    } else if (b.kind !== "parenthetical" && b.kind !== "dialogue") break;
+  }
+  return {
+    speaker: speaker.slice(0, 200),
+    parenthetical: parenthetical.slice(0, 500),
+    text: block.text.replace(/\s+/g, " ").trim().slice(0, 5000),
+  };
 }

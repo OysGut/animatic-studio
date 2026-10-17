@@ -5,7 +5,17 @@
  */
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef } from "react";
-import { L, newId, parseUploadContext, targetAssetOf, variantsOf, type ProjectState } from "@/core";
+import {
+  L,
+  roomToneSceneName,
+  isRoomToneFile,
+  lineInfo,
+  newId,
+  parseUploadContext,
+  targetAssetOf,
+  variantsOf,
+  type ProjectState,
+} from "@/core";
 import {
   claimMobileImport,
   fetchMobileImports,
@@ -19,6 +29,8 @@ import { fetchProjectState } from "@/adapters/browser/project-data";
 import { projectStateKey } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { mediaFromStoredFile } from "@/app/library/asset-images";
+import { audioMediaFromStoredFile } from "@/app/library/asset-audio";
+import { saveRoomTone, saveTake } from "@/app/audio/takes";
 
 export const mobileImportsKey = (projectId: string) => ["mobile-imports", projectId] as const;
 export const uploadSessionsKey = (projectId: string) => ["upload-sessions", projectId] as const;
@@ -64,17 +76,28 @@ export function sessionConnected(s: UploadSessionRow | undefined, now = Date.now
   return !!s?.last_seen_at && now - Date.parse(s.last_seen_at) < 45_000;
 }
 
-/** Varianten et bilde fra mobilen legges i: den valgte, ellers den første som ikke er arkivert. */
-function pickVariant(s: ProjectState, assetId: string, preferred?: string): string | null {
+/** Navnet på varianten som lages når ressursen ikke har noen (på begge språk, så den kjennes igjen). */
+const MOBILE_VARIANT_NAMES = ["Fra mobil", "From mobile"]; // i18n-ignore: gjenkjenning av begge språk
+
+/**
+ * Varianten et bilde fra mobilen legges i (DEC-0091, KI-238): den valgte, ellers en «Fra mobil»-variant som
+ * finnes fra før, ellers den første som ikke er arkivert. Null betyr at en ny «Fra mobil» må lages.
+ */
+export function pickMobileVariant(
+  s: ProjectState,
+  assetId: string,
+  preferred?: string,
+): string | null {
   const vs = variantsOf(s, assetId).filter((v) => !v.archived);
   if (preferred && vs.some((v) => v.id === preferred)) return preferred;
-  return vs[0]?.id ?? null;
+  const mobile = vs.find((v) => MOBILE_VARIANT_NAMES.includes(v.name.trim()));
+  return mobile?.id ?? vs[0]?.id ?? null;
 }
 
 /** Gjør et bilde fra mobilen til en ny versjon i ressursen. Gir feilmelding eller null. */
-async function importImage(
+export async function importImage(
   state: ProjectState,
-  cmds: Commands,
+  cmds: Pick<Commands, "runAndWait">,
   row: MobileImportRow,
 ): Promise<string | null> {
   const ctx = parseUploadContext(row.context);
@@ -84,7 +107,7 @@ async function importImage(
   if (!(await claimMobileImport(row.id))) return null;
   const who = row.contributor_name || L("mobil", "mobile");
   const group = `mobil-${row.id}`;
-  let variantId = pickVariant(state, target.assetId, target.variantId);
+  let variantId = pickMobileVariant(state, target.assetId, target.variantId);
   if (!variantId) {
     variantId = newId<"asset_variant">();
     const r = await cmds.runAndWait(
@@ -117,6 +140,51 @@ async function importImage(
   return e?.message ?? null;
 }
 
+/** Kan filen bli et take automatisk (lyd til en lydressurs eller en replikk, bolk B)? */
+function isTakeRow(r: MobileImportRow): boolean {
+  const c = parseUploadContext(r.context);
+  return r.kind === "audio" && (c?.type === "sound" || c?.type === "line");
+}
+
+/** Stedet romlyd fra en økt hører til: scenen for en replikk, ellers lydressursens navn. */
+function roomToneWhere(state: ProjectState, row: MobileImportRow): string | null {
+  const c = parseUploadContext(row.context);
+  if (c?.type === "line") {
+    return roomToneSceneName(lineInfo(state, c.occurrenceId, c.blockId));
+  }
+  if (c?.type === "sound") return state.assets[c.assetId]?.name ?? null;
+  return null;
+}
+
+/** Gjør et lydopptak fra mobilen til et nytt take (eller romlyd). Gir feilmelding eller null. */
+export async function importAudio(
+  state: ProjectState,
+  cmds: Pick<Commands, "runAndWait">,
+  row: MobileImportRow,
+): Promise<string | null> {
+  const c = parseUploadContext(row.context);
+  if (!c || (c.type !== "sound" && c.type !== "line")) return null;
+  if (c.type === "sound" && (!state.assets[c.assetId] || state.assets[c.assetId]!.removed))
+    return null;
+  if (!(await claimMobileImport(row.id))) return null;
+  const who = row.contributor_name || L("mobil", "mobile");
+  const media = await audioMediaFromStoredFile(row.path, row.mime_type);
+  const note = L(`Fra mobil (${who})`, `From mobile (${who})`);
+  const saved = isRoomToneFile(row.file_name)
+    ? await saveRoomTone(cmds, state, roomToneWhere(state, row) ?? L("Scene", "Scene"), media, note)
+    : await saveTake(
+        cmds,
+        state,
+        c.type === "sound"
+          ? { kind: "sound", assetId: c.assetId, variantId: c.variantId }
+          : { kind: "line", occurrenceId: c.occurrenceId, blockId: c.blockId },
+        media,
+        note,
+      );
+  const e = await linkMobileImport(row.id, { assetId: saved.assetId, versionId: saved.versionId });
+  return e?.message ?? null;
+}
+
 /**
  * Montert i prosjektet for redaktører: nye bilder fra mobilen blir versjoner i ressursen de ble tatt for
  * (kontekst «ressurs», «bildeplass» eller et utkast som er lagret). Video og lyd registreres bare (de knyttes
@@ -141,13 +209,15 @@ export function MobileImportWatcher({
   });
   const cmds = useCommands(projectId, userId, editable);
   const busy = useRef(new Set<string>());
+  /** Bildene behandles ett om gangen, så flere bilder samtidig ikke lager hver sin variant (KI-238). */
+  const chain = useRef<Promise<unknown>>(Promise.resolve());
   const state = project.data;
   const todo = useMemo(
     () =>
       (imports.data ?? []).filter(
         (r) =>
           r.status === "done" &&
-          r.kind === "image" &&
+          (r.kind === "image" || isTakeRow(r)) &&
           !r.asset_version_id &&
           !r.dismissed &&
           !busy.current.has(r.id),
@@ -158,9 +228,16 @@ export function MobileImportWatcher({
     if (!editable || !state) return;
     for (const r of todo) {
       const ctx = parseUploadContext(r.context);
-      if (!ctx || !targetAssetOf(ctx, r.asset_id)) continue;
+      const take = isTakeRow(r);
+      if (!ctx || (!take && !targetAssetOf(ctx, r.asset_id))) continue;
       busy.current.add(r.id);
-      void importImage(state, cmds, r)
+      chain.current = chain.current
+        // Tilstanden hentes når det er filens tur, så det forrige laget (variant, lydklipp) er med
+        .then(() =>
+          take
+            ? importAudio(cmds.current() ?? state, cmds, r)
+            : importImage(cmds.current() ?? state, cmds, r),
+        )
         .catch((e: Error) => e.message)
         .finally(() => busy.current.delete(r.id));
     }

@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **713**
-- Prioritet: P0: 145, P1: 381, P2: 148, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 186, teknisk-anbefaling: 7
-- Status: Verifisert: 610, Implementert – ikke verifisert: 13, Under arbeid: 3, Ikke startet: 87
+- Antall krav: **714**
+- Prioritet: P0: 145, P1: 381, P2: 149, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 187, teknisk-anbefaling: 7
+- Status: Verifisert: 626, Implementert – ikke verifisert: 19, Under arbeid: 3, Ikke startet: 66
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -9340,221 +9340,282 @@ Lydressursdialoger og dialogredigering har et mikrofonikon øverst til høyre. D
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO, UI
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - L1: PC-opptak og QR vises samtidig.
   - L2: PC-opptak startes uten ekstra valg.
 - **Tester:**
+  - tests/visual/dec0093-audio-ui.mjs
+- **Implementering:** src/app/audio/AudioTakesDialog.tsx, src/app/library/AssetDetail.tsx, src/app/script/Inspector.tsx, src/app/assembly/AudioClipPanel.tsx
 
 #### REQ-0685 – Hele dialogteksten vises under opptak
 Fra en replikk viser lydpopupen hele replikken med karakter og scene, med det valgte ordet eller området fremhevet. Teksten vises også på mobilsiden, så man kan lese fra telefonen.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO, SCRIPT
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - L3: mobilen viser dialogteksten og opptakskontrollene.
 - **Tester:**
+  - tests/unit/audio-takes.test.ts
+  - tests/unit/mobile-server.test.ts
+  - tests/visual/dec0093-audio-ui.mjs
+- **Implementering:** src/core/audio/takes.ts, src/core/mobile/index.ts, src/adapters/mobile/mobile.functions.ts, src/app/mobile/MobileAudio.tsx
 
 #### REQ-0686 – Lydopptak på PC med flere takes
 PC-opptak har start, stopp, spill av, ta opp på nytt, behold og velg. Mikrofontillatelse håndteres. Et nytt take overskriver aldri et tidligere.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Nytt take lagres ved siden av det forrige.
 - **Tester:**
+  - tests/unit/audio-takes.test.ts
+  - tests/visual/dec0093-audio-ui.mjs
+- **Implementering:** src/app/audio/use-recorder.ts, src/app/audio/AudioTakesDialog.tsx, src/app/audio/takes.ts
 
 #### REQ-0687 – Lydopptak på mobil – brukeren velger hva som sendes
 Mobilopptak: start, stopp, hør, nytt opptak, tilbake til tidligere, sammenligne, velge ett eller flere og laste opp bare de valgte. Lyd lastes aldri opp automatisk når opptaket stopper.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO, UI
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - L4–L7: Take 01 og 02 kan høres og lastes opp hver for seg eller sammen.
 - **Tester:**
+  - tests/unit/mobile-audio-queue.test.ts
+  - tests/visual/dec0093-audio-ui.mjs
+- **Implementering:** src/app/mobile/MobileAudio.tsx, src/app/mobile/upload-queue.ts
 
 #### REQ-0688 – Flere takes bevares
 Alle opptak bevares som egne takes med nummer og lengde. Et nytt take sletter aldri et tidligere. Et take kan velges som aktivt, eller deler brukes i en lydkomposisjon.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO, VERSION
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - L8: nytt take sletter ikke tidligere takes.
 - **Tester:**
+  - tests/unit/audio-takes.test.ts
+- **Implementering:** src/core/audio/takes.ts, src/app/audio/takes.ts, src/app/mobile/use-mobile-imports.ts
 
 #### REQ-0689 – Opptaksstatus og lokal lagring på telefonen
 Det vises om et opptak bare er lokalt, valgt, lastes opp, er lastet opp eller feilet. Opptak lagres lokalt i nettleseren så langt den tillater; brukeren advares før siden forlates om noe ikke er sendt, og en feilet opplasting kan prøves igjen uten nytt opptak.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO, UI
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Feilet opplasting prøves igjen uten nytt opptak.
   - Advarsel ved å forlate siden med usendte opptak.
 - **Tester:**
+  - tests/unit/mobile-audio-queue.test.ts
+  - tests/visual/dec0093-audio-ui.mjs
+- **Implementering:** src/app/mobile/MobileAudio.tsx, src/app/mobile/upload-queue.ts, src/app/mobile/MobilePage.tsx
 
 #### REQ-0690 – Opptak av ren romlyd
 I opptaksvinduet (PC og mobil) kan brukeren ta opp noen sekunder ren romlyd, merket som romlyd, til bruk i dialogredigering og sammenklipping.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Romlydopptak merkes og kan velges som romlydressurs.
 - **Tester:**
+  - tests/unit/audio-takes.test.ts
+  - tests/visual/dec0093-audio-ui.mjs
+- **Implementering:** src/app/audio/takes.ts, src/app/mobile/MobileAudio.tsx, src/app/audio/AudioTakesDialog.tsx
 
 #### REQ-0691 – Integrert lydeditor
 Mikrofonikonet finnes også der eksisterende lyd redigeres. Editoren viser eksisterende lyd og nye takes med bølgeformer, tidslinje, avspillingshode, inn- og utpunkter, trim, flere spor ved behov og forhåndsavspilling av komposisjonen.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO, UI
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Eksisterende lyd og nytt take vises i samme vindu.
 - **Tester:**
+  - tests/visual/dec0094-audio-editor-ui.mjs
+- **Implementering:** src/app/audio/AudioCompositionEditor.tsx, src/app/audio/AudioTakesDialog.tsx
 
 #### REQ-0692 – Ny lyd: erstatte, før, oppå, etter eller et mindre område
 Et nytt opptak kan erstatte hele lyden eller et markert område, settes inn før eller etter, legges oppå som eget spor, eller trimmes og erstatte bare et ord eller en frase. Resultatet kan forhåndshøres før det godkjennes.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - T10: ny lyd før, over eller etter eksisterende lyd.
 - **Tester:**
+  - tests/unit/audio-composition.test.ts
+  - tests/visual/dec0094-audio-editor-ui.mjs
+- **Implementering:** src/core/audio/composition.ts, src/app/audio/AudioCompositionEditor.tsx
 
 #### REQ-0693 – Ikke-destruktiv lydkomposisjon
 Et redigert lydresultat er en komposisjon som beskriver kildefiler, områder, plassering, pauser, romlyd, overlapp, fades/crossfades, volum og varighet. Originalfiler og takes endres aldri, og resultatet kan gjenskapes fra komposisjonsdataene.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** data · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO, VERSION
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Komposisjonen gir samme lyd når den gjenskapes.
   - Originalfilene er uendret.
 - **Tester:**
+  - tests/unit/audio-composition.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dec0094-audio-editor-ui.mjs
+- **Implementering:** src/core/audio/composition.ts, src/core/commands/apply.ts, src/core/patch.ts, db/migrations/0036_audio_compositions.sql, src/app/audio/composition-actions.ts
 
 #### REQ-0694 – Andre dialoger berøres aldri
 Redigering av én dialog flytter, strekker, forkorter eller overskriver aldri andre replikker eller lydklipp, og endrer ikke ferdige filmklipp. Alle andre replikker regnes som låste: overlapper komposisjonen en annen replikk, vises en konflikt som håndteres senere. Et nytt opptak tvinges ikke inn i et gammelt tidsrom; hastighet og tonehøyde endres aldri automatisk.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** prinsipp · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO, TIMELINE
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - P9: andre dialoger beholder lyd og tid.
   - T7–T8: opptaket kan være lengre eller kortere.
   - Overlapp vises som konflikt.
 - **Tester:**
+  - tests/unit/audio-composition.test.ts
+  - tests/visual/dec0094-audio-editor-ui.mjs
+- **Implementering:** src/core/audio/composition.ts, src/app/audio/AudioCompositionEditor.tsx
 
 #### REQ-0695 – Angre og versjoner av lydkomposisjoner
 Pauseendringer, innsetting, klippgrenser og bytte av take kan angres. Brukeren kan gå tilbake til opprinnelig lyd, sammenligne komposisjoner og lagre en ny variant. Nye komposisjoner er versjoner som godkjennes på samme måte som andre versjoner.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO, VERSION
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Angre gjenoppretter forrige klippgrense.
   - Ny variant krever godkjenning.
 - **Tester:**
+  - tests/unit/audio-composition.test.ts
+  - tests/visual/dec0094-audio-editor-ui.mjs
+- **Implementering:** src/app/audio/AudioCompositionEditor.tsx, src/app/audio/composition-actions.ts
 
 #### REQ-0696 – Lydeksport fra lydpopupen
 Fra samme vindu kan hele komposisjonen, et valgt område eller ett take eksporteres, lokalt eller som ny lydvariant i biblioteket. Formater: WAV og MP3, med valg av samplingsfrekvens, kanaler, filnavn og område. Eksporten flater ikke ut komposisjonen; den kan fortsatt redigeres.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO, EXPORT
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - E4–E6: hele, område og ett take.
   - E7: originaler og komposisjon bevares.
 - **Tester:**
+  - tests/visual/dec0094-audio-editor-ui.mjs
+- **Implementering:** src/app/audio/composition-actions.ts, src/app/audio/AudioCompositionEditor.tsx, src/engine/audio/composition.ts
 
 #### REQ-0697 – Lydmotor for komposisjoner
 Forhåndsavspilling og eksport bruker samme komposisjonsbeskrivelse og samme beregning, så eksporten låter som det brukeren hørte: flere kilder, trim, innsetting, overlapp, volum, fades, crossfades, romlyd og pauser.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Eksportert lyd er lik forhåndsavspillingen (test på samples).
 - **Tester:**
+  - tests/unit/audio-composition.test.ts
+  - tests/visual/dec0094-audio-editor-ui.mjs
+- **Implementering:** src/engine/audio/composition.ts
 
 #### REQ-0698 – Ord-til-lyd-kobling med utskiftbar analysetjeneste
 Programmet kobler ordene i replikken til tidsrom i lyden (forced alignment) med manusteksten som utgangspunkt. Tjenesten er utskiftbar. Resultatet lagrer lyd-ID, replikk-ID, manusversjon, ord, start, slutt, usikkerhet, manuelle overstyringer og modell med versjon. Et nytt opptak analyseres uten å analysere alt på nytt; feiler analysen, virker manuell redigering.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO, PROVIDER
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Resultatformatet er uavhengig av tjenesten.
   - Manuell redigering virker uten analyse.
 - **Tester:**
+  - tests/unit/word-alignment.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dec0095-word-alignment-ui.mjs
+- **Implementering:** src/core/audio/alignment.ts, src/core/commands/apply.ts, db/migrations/0037_word_alignment.sql, src/adapters/ai/alignment.functions.ts
 
 #### REQ-0699 – Valg av analysetjeneste der brukeren er
 Brukeren velger selv analysetjeneste (først ElevenLabs Forced Alignment, deretter f.eks. WhisperX via en vertstjeneste) eller manuell kobling, direkte i dialogeditoren uten å gå til en innstillingsside. Valget huskes. Analysen bruker brukerens egen nøkkel og krever kostnadsgodkjenning som annen AI. Norsk bokmål, nynorsk, dialekter og egennavn prøves før tjenesten anbefales.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** PROVIDER, QUALITYCOST
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Valget av tjeneste huskes.
   - Kostnaden vises og godkjennes før analysen.
 - **Tester:**
+  - tests/unit/word-alignment.test.ts
+  - tests/visual/dec0095-word-alignment-ui.mjs
+- **Implementering:** src/app/audio/LineWordsPanel.tsx, src/adapters/ai/alignment.functions.ts, src/adapters/ai/providers.server.ts, src/core/generation/providers.ts
 
 #### REQ-0700 – Klikk og markér ord i teksten for å velge lyd
 Dialogeditoren viser replikken som en aktiv del av redigeringen. Klikk på et ord markerer lyden for ordet; markering av flere ord, en setning eller hele replikken markerer det samlede tidsrommet. Grensene kan justeres manuelt, usikre koblinger vises tydelig, og markeringen brukes til avspilling, opptak, trim og erstatning.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO, SCRIPT
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - T1: ett ord gir riktig lydområde.
   - T2: to ord gir samlet område.
 - **Tester:**
+  - tests/unit/word-alignment.test.ts
+  - tests/visual/dec0095-word-alignment-ui.mjs
+- **Implementering:** src/app/audio/LineWordsPanel.tsx, src/core/audio/alignment.ts
 
 #### REQ-0701 – Avspilling med kontekst
 Et markert område kan spilles med justerbar lyd før og etter, eller alene. Ny tekst uten lyd spiller omkringliggende dialoglyd der den finnes.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - T3: hel setning høres med kontekst.
 - **Tester:**
+  - tests/visual/dec0095-word-alignment-ui.mjs
+- **Implementering:** src/app/audio/LineWordsPanel.tsx, src/app/audio/AudioCompositionEditor.tsx
 
 #### REQ-0702 – Erstatte ett ord eller en frase
 Et markert ord eller en frase kan tas opp på nytt, trimmes og plasseres i riktig tidsrom med finjusterbare klippgrenser og fades/crossfades. Originalen bevares og hele replikken trenger ikke tas opp igjen.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - T9: bare ett ord erstattes.
 - **Tester:**
+  - tests/unit/word-alignment.test.ts
+  - tests/visual/dec0095-word-alignment-ui.mjs
+  - tests/visual/dec0094-audio-editor-ui.mjs
+- **Implementering:** src/app/audio/LineWordsPanel.tsx, src/core/audio/composition.ts, src/app/audio/AudioCompositionEditor.tsx
 
 #### REQ-0703 – Status for tekst mot lyd
 Endret dialog vises med status: synkronisert, ny tekst uten lyd, endret tekst med gammel lyd, nytt opptak til gjennomgang og godkjent oppdatert. Status vises med farge og et annet tegn (ikke bare farge) og påvirker ikke manuseksporten.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** SCRIPT, AUDIO, VERSION
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - T4: ny tekst uten lyd merkes.
   - T5: endret tekst med eldre lyd merkes.
 - **Tester:**
+  - tests/unit/word-alignment.test.ts
+  - tests/visual/dec0095-word-alignment-ui.mjs
+- **Implementering:** src/core/audio/alignment.ts, src/app/audio/AudioTakesDialog.tsx, src/app/script/Inspector.tsx
 
 #### REQ-0704 – Ny eller endret setning: ta opp bare det som mangler
 Systemet finner ny tekst uten lyd (f.eks. en ny setning) og endret frase. Brukeren markerer den, mikrofonikonet åpner opptak med teksten fremhevet, og opptaket foreslås plassert riktig (etter, før, i stedet for, eller oppå). Plasseringen kan endres, ny frase får naturlig lengde, den gamle lyden bevares, og komposisjonen godkjennes før den tas i bruk.
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO, SCRIPT
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - T6: bare den nye setningen spilles inn og plasseres riktig.
 - **Tester:**
+  - tests/unit/word-alignment.test.ts
+- **Implementering:** src/core/audio/alignment.ts, src/app/audio/LineWordsPanel.tsx
 
 #### REQ-0705 – Endre pauser mellom ord
 I en egen tidsredigeringsmodus kan avstanden mellom to ord økes eller reduseres ved å dra dem fra hverandre, uten nytt opptak og uten å endre ordenes lyd. Vanlig markering og redigering av tekst endrer aldri timingen.
@@ -9653,3 +9714,16 @@ Når en side krasjer, kan brukeren åpne «Vis teknisk feilmelding» på feilsid
 - **Tester:**
   - tests/unit/error-report.test.tsx
 - **Implementering:** src/app/shell/error-report.ts, src/app/shell/ErrorDetails.tsx, src/routes/__root.tsx
+
+#### REQ-0714 – Ressurser legges inn i halv størrelse
+Når en ressurs legges inn i en scene, får laget 50 % av lerretets høyde eller bredde – det som nås først – så hele figuren synes og er lett å håndtere. Bakgrunner fyller lerretet. Lag som allerede finnes endres ikke.
+
+- **Kilde:** Beslutning DEC-0092 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** –
+- **Moduler:** COMPOSE, UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Et høyt bilde blir halve lerrethøyden, et bredt halve lerretbredden.
+  - Bakgrunner fyller lerretet.
+- **Tester:**
+  - tests/unit/layer-fit.test.ts
+- **Implementering:** src/core/composition/index.ts

@@ -878,6 +878,44 @@ const elevenlabs = {
     );
     return { bytes: new Uint8Array(await res.arrayBuffer()), mimeType: "audio/mpeg" };
   },
+  /**
+   * Ord-til-lyd (DEC-0095): manusteksten kobles til tidsrom i lyden. Svar i sekunder med usikkerhet per ord.
+   * https://elevenlabs.io/docs/api-reference/forced-alignment/create
+   */
+  async align(r: { key: string; audio: Blob; fileName: string; text: string }) {
+    const form = new FormData();
+    form.append("file", r.audio, r.fileName);
+    form.append("text", r.text);
+    const res = await call(
+      `${ELEVEN}/forced-alignment`,
+      { method: "POST", headers: elevenAuth(r.key), body: form },
+      T_IMAGE,
+    );
+    const j = (await res.json()) as {
+      words?: { text?: unknown; start?: unknown; end?: unknown; loss?: unknown }[];
+      loss?: unknown;
+    };
+    const words = (j.words ?? [])
+      .filter(
+        (w) =>
+          typeof w.text === "string" &&
+          typeof w.start === "number" &&
+          typeof w.end === "number" &&
+          Number.isFinite(w.start) &&
+          Number.isFinite(w.end),
+      )
+      .slice(0, 5000)
+      .map((w) => ({
+        text: String(w.text).slice(0, 200),
+        start: w.start as number,
+        end: w.end as number,
+        loss: typeof w.loss === "number" && Number.isFinite(w.loss) ? w.loss : null,
+      }));
+    return {
+      words,
+      loss: typeof j.loss === "number" && Number.isFinite(j.loss) ? j.loss : null,
+    };
+  },
   /** Stemmene kontoen har tilgang til (navn og ID), DEC-0071. */
   async voices(
     key: string,

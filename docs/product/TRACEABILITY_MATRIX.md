@@ -32,24 +32,24 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | Modul | Navn | Krav | P0 | Implementert | Verifisert |
 |---|---|---|---|---|---|
 | CORE | Project Core | 120 | 57 | 120 | 117 |
-| SCRIPT | Screenplay Engine | 135 | 32 | 130 | 130 |
-| TIMELINE | Timeline & Assembly Engine | 108 | 29 | 107 | 107 |
+| SCRIPT | Screenplay Engine | 135 | 32 | 134 | 132 |
+| TIMELINE | Timeline & Assembly Engine | 108 | 29 | 108 | 108 |
 | LIBRARY | Resource Library | 96 | 10 | 84 | 80 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 39 | 39 |
-| COMPOSE | 2D Composition Engine | 75 | 14 | 75 | 74 |
+| COMPOSE | 2D Composition Engine | 76 | 14 | 76 | 75 |
 | CAMERA | Camera & Motion Engine | 32 | 2 | 32 | 32 |
-| AUDIO | Audio Engine | 69 | 2 | 42 | 42 |
+| AUDIO | Audio Engine | 69 | 2 | 62 | 57 |
 | PROMPT | Prompt Orchestration Engine | 58 | 15 | 54 | 50 |
-| PROVIDER | Provider Adapters | 48 | 6 | 44 | 39 |
-| QUALITYCOST | Quality & Cost Engine | 31 | 7 | 29 | 29 |
+| PROVIDER | Provider Adapters | 48 | 6 | 46 | 40 |
+| QUALITYCOST | Quality & Cost Engine | 31 | 7 | 30 | 29 |
 | QUEUE | Render Queue | 36 | 13 | 36 | 33 |
-| VERSION | Version & Dependency Engine | 97 | 38 | 91 | 90 |
+| VERSION | Version & Dependency Engine | 97 | 38 | 95 | 94 |
 | L10N | Localization Engine | 40 | 4 | 39 | 39 |
 | PRESENT | Presentation Engine | 30 | 3 | 25 | 25 |
-| EXPORT | Export Engine | 60 | 12 | 59 | 59 |
+| EXPORT | Export Engine | 60 | 12 | 60 | 60 |
 | SECURITY | Security & Storage | 45 | 5 | 44 | 43 |
 | COLLAB | Collaboration & Access | 21 | 0 | 21 | 21 |
-| UI | Brukergrensesnitt og designsystem | 205 | 21 | 194 | 191 |
+| UI | Brukergrensesnitt og designsystem | 206 | 21 | 199 | 194 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 7 | 5 |
 
 ## Dekning per fase
@@ -64,7 +64,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | 6 | 49 | 48 |
 | 7 | 63 | 62 |
 | 8 | 39 | 25 |
-| Tverrgående/prosess | 86 | 22 |
+| Tverrgående/prosess | 87 | 38 |
 
 ## Matrise
 
@@ -753,27 +753,27 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0681 | Beslutning DEC-0090 | COLLAB, UI | src/app/mobile/MobilePage.tsx | 1 | tests/visual/dec0090-mobile-ui.mjs, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
 | REQ-0682 | Beslutning DEC-0090 | SECURITY, COLLAB | src/adapters/mobile/mobile.functions.ts, db/migrations/0035_mobile_import.sql, src/app/mobile/MobileImportLibrary.tsx | 3 | tests/db/run-db-tests.ts, tests/unit/mobile-server.test.ts, tests/visual/dec0090-mobile-ui.mjs, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
 | REQ-0683 | Beslutning DEC-0090 | COLLAB, LIBRARY | src/app/mobile/MobilePage.tsx, src/app/mobile/MobileImportLibrary.tsx, src/app/mobile/use-mobile-imports.ts | 2 | tests/visual/dec0090-mobile-ui.mjs, tests/db/run-db-tests.ts, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
-| REQ-0684 | Beslutning DEC-0090 | AUDIO, UI | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk B) |
-| REQ-0685 | Beslutning DEC-0090 | AUDIO, SCRIPT | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk B) |
-| REQ-0686 | Beslutning DEC-0090 | AUDIO | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk B) |
-| REQ-0687 | Beslutning DEC-0090 | AUDIO, UI | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk B) |
-| REQ-0688 | Beslutning DEC-0090 | AUDIO, VERSION | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk B) |
-| REQ-0689 | Beslutning DEC-0090 | AUDIO, UI | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk B) |
-| REQ-0690 | Beslutning DEC-0090 | AUDIO | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk B) |
-| REQ-0691 | Beslutning DEC-0090 | AUDIO, UI | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk C) |
-| REQ-0692 | Beslutning DEC-0090 | AUDIO | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk C) |
-| REQ-0693 | Beslutning DEC-0090 | AUDIO, VERSION | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk C) |
-| REQ-0694 | Beslutning DEC-0090 | AUDIO, TIMELINE | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk C) |
-| REQ-0695 | Beslutning DEC-0090 | AUDIO, VERSION | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk C) |
-| REQ-0696 | Beslutning DEC-0090 | AUDIO, EXPORT | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk C) |
-| REQ-0697 | Beslutning DEC-0090 | AUDIO | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk C) |
-| REQ-0698 | Beslutning DEC-0090 | AUDIO, PROVIDER | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk D) |
-| REQ-0699 | Beslutning DEC-0090 | PROVIDER, QUALITYCOST | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk D) |
-| REQ-0700 | Beslutning DEC-0090 | AUDIO, SCRIPT | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk D) |
-| REQ-0701 | Beslutning DEC-0090 | AUDIO | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk D) |
-| REQ-0702 | Beslutning DEC-0090 | AUDIO | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk D) |
-| REQ-0703 | Beslutning DEC-0090 | SCRIPT, AUDIO, VERSION | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk D) |
-| REQ-0704 | Beslutning DEC-0090 | AUDIO, SCRIPT | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk D) |
+| REQ-0684 | Beslutning DEC-0090 | AUDIO, UI | src/app/audio/AudioTakesDialog.tsx, src/app/library/AssetDetail.tsx, src/app/script/Inspector.tsx, src/app/assembly/AudioClipPanel.tsx | 1 | tests/visual/dec0093-audio-ui.mjs | Verifisert | 2026-10-16 DEC-0093: Bygget i bolk B |
+| REQ-0685 | Beslutning DEC-0090 | AUDIO, SCRIPT | src/core/audio/takes.ts, src/core/mobile/index.ts, src/adapters/mobile/mobile.functions.ts, src/app/mobile/MobileAudio.tsx | 3 | tests/unit/audio-takes.test.ts, tests/unit/mobile-server.test.ts, tests/visual/dec0093-audio-ui.mjs | Implementert – ikke verifisert | 2026-10-16 DEC-0093: Bygget i bolk B |
+| REQ-0686 | Beslutning DEC-0090 | AUDIO | src/app/audio/use-recorder.ts, src/app/audio/AudioTakesDialog.tsx, src/app/audio/takes.ts | 2 | tests/unit/audio-takes.test.ts, tests/visual/dec0093-audio-ui.mjs | Verifisert | 2026-10-16 DEC-0093: Bygget i bolk B |
+| REQ-0687 | Beslutning DEC-0090 | AUDIO, UI | src/app/mobile/MobileAudio.tsx, src/app/mobile/upload-queue.ts | 2 | tests/unit/mobile-audio-queue.test.ts, tests/visual/dec0093-audio-ui.mjs | Implementert – ikke verifisert | 2026-10-16 DEC-0093: Bygget i bolk B |
+| REQ-0688 | Beslutning DEC-0090 | AUDIO, VERSION | src/core/audio/takes.ts, src/app/audio/takes.ts, src/app/mobile/use-mobile-imports.ts | 1 | tests/unit/audio-takes.test.ts | Verifisert | 2026-10-16 DEC-0093: Bygget i bolk B |
+| REQ-0689 | Beslutning DEC-0090 | AUDIO, UI | src/app/mobile/MobileAudio.tsx, src/app/mobile/upload-queue.ts, src/app/mobile/MobilePage.tsx | 2 | tests/unit/mobile-audio-queue.test.ts, tests/visual/dec0093-audio-ui.mjs | Implementert – ikke verifisert | 2026-10-16 DEC-0093: Bygget i bolk B |
+| REQ-0690 | Beslutning DEC-0090 | AUDIO | src/app/audio/takes.ts, src/app/mobile/MobileAudio.tsx, src/app/audio/AudioTakesDialog.tsx | 2 | tests/unit/audio-takes.test.ts, tests/visual/dec0093-audio-ui.mjs | Verifisert | 2026-10-16 DEC-0093: Bygget i bolk B |
+| REQ-0691 | Beslutning DEC-0090 | AUDIO, UI | src/app/audio/AudioCompositionEditor.tsx, src/app/audio/AudioTakesDialog.tsx | 1 | tests/visual/dec0094-audio-editor-ui.mjs | Verifisert | 2026-10-16 DEC-0094: Bygget i bolk C |
+| REQ-0692 | Beslutning DEC-0090 | AUDIO | src/core/audio/composition.ts, src/app/audio/AudioCompositionEditor.tsx | 2 | tests/unit/audio-composition.test.ts, tests/visual/dec0094-audio-editor-ui.mjs | Verifisert | 2026-10-16 DEC-0094: Bygget i bolk C |
+| REQ-0693 | Beslutning DEC-0090 | AUDIO, VERSION | src/core/audio/composition.ts, src/core/commands/apply.ts, src/core/patch.ts, db/migrations/0036_audio_compositions.sql, src/app/audio/composition-actions.ts | 3 | tests/unit/audio-composition.test.ts, tests/db/run-db-tests.ts, tests/visual/dec0094-audio-editor-ui.mjs | Verifisert | 2026-10-16 DEC-0094: Bygget i bolk C |
+| REQ-0694 | Beslutning DEC-0090 | AUDIO, TIMELINE | src/core/audio/composition.ts, src/app/audio/AudioCompositionEditor.tsx | 2 | tests/unit/audio-composition.test.ts, tests/visual/dec0094-audio-editor-ui.mjs | Verifisert | 2026-10-16 DEC-0094: Bygget i bolk C |
+| REQ-0695 | Beslutning DEC-0090 | AUDIO, VERSION | src/app/audio/AudioCompositionEditor.tsx, src/app/audio/composition-actions.ts | 2 | tests/unit/audio-composition.test.ts, tests/visual/dec0094-audio-editor-ui.mjs | Verifisert | 2026-10-16 DEC-0094: Bygget i bolk C |
+| REQ-0696 | Beslutning DEC-0090 | AUDIO, EXPORT | src/app/audio/composition-actions.ts, src/app/audio/AudioCompositionEditor.tsx, src/engine/audio/composition.ts | 1 | tests/visual/dec0094-audio-editor-ui.mjs | Verifisert | 2026-10-16 DEC-0094: Bygget i bolk C |
+| REQ-0697 | Beslutning DEC-0090 | AUDIO | src/engine/audio/composition.ts | 2 | tests/unit/audio-composition.test.ts, tests/visual/dec0094-audio-editor-ui.mjs | Implementert – ikke verifisert | 2026-10-16 DEC-0094: Bygget i bolk C |
+| REQ-0698 | Beslutning DEC-0090 | AUDIO, PROVIDER | src/core/audio/alignment.ts, src/core/commands/apply.ts, db/migrations/0037_word_alignment.sql, src/adapters/ai/alignment.functions.ts | 3 | tests/unit/word-alignment.test.ts, tests/db/run-db-tests.ts, tests/visual/dec0095-word-alignment-ui.mjs | Verifisert | 2026-10-17 DEC-0095: Bygget i bolk D |
+| REQ-0699 | Beslutning DEC-0090 | PROVIDER, QUALITYCOST | src/app/audio/LineWordsPanel.tsx, src/adapters/ai/alignment.functions.ts, src/adapters/ai/providers.server.ts, src/core/generation/providers.ts | 2 | tests/unit/word-alignment.test.ts, tests/visual/dec0095-word-alignment-ui.mjs | Implementert – ikke verifisert | 2026-10-17 DEC-0095: Bygget i bolk D |
+| REQ-0700 | Beslutning DEC-0090 | AUDIO, SCRIPT | src/app/audio/LineWordsPanel.tsx, src/core/audio/alignment.ts | 2 | tests/unit/word-alignment.test.ts, tests/visual/dec0095-word-alignment-ui.mjs | Verifisert | 2026-10-17 DEC-0095: Bygget i bolk D |
+| REQ-0701 | Beslutning DEC-0090 | AUDIO | src/app/audio/LineWordsPanel.tsx, src/app/audio/AudioCompositionEditor.tsx | 1 | tests/visual/dec0095-word-alignment-ui.mjs | Verifisert | 2026-10-17 DEC-0095: Bygget i bolk D |
+| REQ-0702 | Beslutning DEC-0090 | AUDIO | src/app/audio/LineWordsPanel.tsx, src/core/audio/composition.ts, src/app/audio/AudioCompositionEditor.tsx | 3 | tests/unit/word-alignment.test.ts, tests/visual/dec0095-word-alignment-ui.mjs, tests/visual/dec0094-audio-editor-ui.mjs | Verifisert | 2026-10-17 DEC-0095: Bygget i bolk D |
+| REQ-0703 | Beslutning DEC-0090 | SCRIPT, AUDIO, VERSION | src/core/audio/alignment.ts, src/app/audio/AudioTakesDialog.tsx, src/app/script/Inspector.tsx | 2 | tests/unit/word-alignment.test.ts, tests/visual/dec0095-word-alignment-ui.mjs | Verifisert | 2026-10-17 DEC-0095: Bygget i bolk D |
+| REQ-0704 | Beslutning DEC-0090 | AUDIO, SCRIPT | src/core/audio/alignment.ts, src/app/audio/LineWordsPanel.tsx | 1 | tests/unit/word-alignment.test.ts | Implementert – ikke verifisert | 2026-10-17 DEC-0095: Bygget i bolk D |
 | REQ-0705 | Beslutning DEC-0090 | AUDIO, UI | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk E) |
 | REQ-0706 | Beslutning DEC-0090 | AUDIO | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk E) |
 | REQ-0707 | Beslutning DEC-0090 | AUDIO, SCRIPT | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk E) |
@@ -783,3 +783,4 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0711 | Beslutning DEC-0090 | UI, SECURITY | src/app/mobile/MobilePage.tsx | 0 | – | Implementert – ikke verifisert | 2026-10-16 DEC-0090: Bygget i bolk A; må prøves på iPhone og Android av Mars |
 | REQ-0712 | Beslutning DEC-0090 | AUDIO, LIBRARY | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk E) |
 | REQ-0713 | Beslutning DEC-0091 | UI, SECURITY | src/app/shell/error-report.ts, src/app/shell/ErrorDetails.tsx, src/routes/__root.tsx | 1 | tests/unit/error-report.test.tsx, tests/unit/realtime-channels.test.ts | Verifisert | 2026-10-16 DEC-0091: Feilmeldingen viste krasjet i sceneeditoren (KI-237), rettet |
+| REQ-0714 | Beslutning DEC-0092 | COMPOSE, UI | src/core/composition/index.ts | 1 | tests/unit/layer-fit.test.ts | Verifisert | 2026-10-16 DEC-0092: Bygget (var 60 %) |

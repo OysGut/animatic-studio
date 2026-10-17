@@ -24,7 +24,8 @@ export * from "./model-settings";
 
 export type ProviderId = "lovable" | "openai" | "google" | "fal" | "runway" | "elevenlabs";
 
-export type Capability = "image" | "video" | "video_edit" | "sound" | "speech" | "text" | "upscale";
+export type Capability =
+  "image" | "video" | "video_edit" | "sound" | "speech" | "text" | "upscale" | "alignment";
 
 export const CAPABILITY_LABEL: Record<Capability, string> = localized({
   upscale: ["Oppskalering", "Upscaling"],
@@ -34,6 +35,7 @@ export const CAPABILITY_LABEL: Record<Capability, string> = localized({
   sound: ["Lyd", "Sound"],
   speech: ["Tale", "Speech"],
   text: ["Tekst", "Text"],
+  alignment: ["Ord-til-lyd", "Word alignment"],
 });
 
 /**
@@ -734,6 +736,27 @@ export const PROVIDERS: readonly ProviderInfo[] = [
             L("Tale fra tekst", "Speech from text"),
             L("Egen stemme per karakter", "Own voice per character"),
             L("Norsk og 70+ språk", "Norwegian and 70+ languages"),
+          ];
+        },
+      },
+      {
+        // Ord-til-lyd (DEC-0095): samme pris som tale-til-tekst, 0,22 USD per time lyd (oktober 2026)
+        id: "forced-alignment",
+        get label() {
+          return L("Ord-til-lyd (Forced Alignment)", "Word alignment (Forced Alignment)");
+        },
+        capability: "alignment",
+        priceUsd: 0.22 / 3600,
+        priceUnit: "second",
+        tier: "balanced",
+        // Manusteksten som kobles (replikken)
+        maxPromptChars: 20_000,
+        get limits() {
+          return [
+            L(
+              "Norsk står ikke på ElevenLabs' liste over språk – må prøves (KI-245)",
+              "Norwegian is not on ElevenLabs' list of languages – must be tried (KI-245)",
+            ),
           ];
         },
       },

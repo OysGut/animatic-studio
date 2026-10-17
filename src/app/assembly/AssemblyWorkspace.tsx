@@ -1079,6 +1079,7 @@ function Assembly({
               onChange={patchAudio}
               onRemove={() => removeAudio(selectedAudio.id)}
               onOpenProfile={() => setProfileId(selectedAudio.id)}
+              cmds={cmds}
             />
           ) : (
             <ClipPanel

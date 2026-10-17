@@ -18,7 +18,21 @@ Kilde: `docs/product/PHASE2_SPECIFICATION.md`. Krav: REQ-0668–REQ-0712. Hver b
 5. «Mobilimport» i biblioteket med filtre (type, dato, økt, kobling, bidragsyter), miniatyrer og avspilling; administrer lenker (tilbakekall).
 6. Ny pakke: `qrcode` (MIT) for QR-koden. Tester: kjerne, database (RLS, token, tak, duplikater), nettleser (begge sider), og prøving på iPhone og Android av Mars.
 
-## Bolk B–E (detaljeres før hver bolk)
+## Bolk B – lydopptak og takes (bygget 16.10.2026, DEC-0093)
+- Takes = versjoner av en lydressurs; replikken knyttes til lydressursen via lydklippet i scenen. Første opptak lager ressurs og klipp der replikken begynner; «Bruk dette» bytter aktivt take.
+- QR-kontekster `sound` og `line` (bare lyd); serveren henter replikkteksten.
+- Lydvinduet med PC-opptak og QR samtidig; mobilsiden med replikken, lokale takes og «Send de valgte»; romlyd som egen ressurs merket «romlyd».
+
+## Bolk C – lydkomposisjon og eksport (bygget 16.10.2026, DEC-0094)
+- Komposisjon = deler av opptak på spor 0–3, lagret på en ny lydversjon sammen med miksen (migrasjon 0036). Kildeopptak endres aldri.
+- Lydeditoren i lydvinduet: innsetting før/etter/oppå/område, trim, volum, toning, angre, konflikt med andre replikker, forhåndsavspilling med samme miks.
+- Eksport: hele/område/ett take, WAV/MP3 (`@mediabunny/mp3-encoder`), 44,1/48 kHz, mono/stereo, lokalt eller som ny lydvariant.
+
+## Bolk D – ord-til-lyd og tekstbasert redigering (bygget 17.10.2026, DEC-0095)
+- Kobling per lydversjon (migrasjon 0037), tjenesteuavhengig format; ElevenLabs Forced Alignment direkte (0,22 USD/time), manuell kobling alltid mulig. WhisperX neste (KI-246).
+- Ordpanel i lydeditoren: klikk/Shift-klikk markerer lyd, kontekstavspilling, usikre ord, retting for hånd, status tekst mot lyd, forslag for nye ord.
+
+## Bolk E (detaljeres før bolken)
 - **B:** mikrofonikon og lydpopup (PC + QR samtidig), hele replikken vises (også på mobil), flere takes på PC og mobil, velg hva som sendes, lokal lagring og status, romlydopptak.
 - **C:** lydkomposisjon (datamodell, motor, editor med bølgeformer, spor, trim, fades), erstatte/før/oppå/etter, låste andre replikker med konfliktvisning, angre og varianter, eksport WAV/MP3.
 - **D:** ord-til-lyd (tjenestevalg i editoren, huskes; ElevenLabs først), klikk/markér ord, avspilling med kontekst, erstatt ord, status tekst mot lyd, ny/endret setning.

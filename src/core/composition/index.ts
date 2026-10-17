@@ -32,6 +32,12 @@ export const LAYER_KIND_FOR_ASSET: Record<AssetKind, LayerKind> = {
  * Felter for et nytt lag midt i scenen. Bakgrunner fyller hele formatet; andre bilder får plass innenfor
  * 60 % av høyden. Fargeflater dekker hele formatet.
  */
+/**
+ * Hvor stor en ressurs blir når den legges inn i en scene (DEC-0092, REQ-0714): 50 % av lerretets høyde eller
+ * bredde – det som nås først – så hele figuren synes og er lett å flytte. Bakgrunner fyller lerretet.
+ */
+export const LAYER_FIT_SHARE = 0.5;
+
 export function defaultLayerFields(
   s: ProjectState,
   comp: Pick<Composition, "width" | "height">,
@@ -75,7 +81,7 @@ export function defaultLayerFields(
   const fit =
     kind === "background"
       ? Math.max(comp.width / w, comp.height / h)
-      : Math.min((comp.height * 0.6) / h, (comp.width * 0.6) / w);
+      : Math.min((comp.height * LAYER_FIT_SHARE) / h, (comp.width * LAYER_FIT_SHARE) / w);
   const k = Number.isFinite(fit) && fit > 0 ? Math.round(fit * 1000) / 1000 : 1;
   return {
     kind,

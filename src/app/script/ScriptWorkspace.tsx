@@ -1149,6 +1149,7 @@ function Workspace({
               authorName={myName}
               focusNote={focusNote}
               language={lang}
+              cmds={cmds}
             />
           </div>
         </div>

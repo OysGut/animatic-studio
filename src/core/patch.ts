@@ -53,6 +53,28 @@ import type {
   TakeCoverage,
 } from "./model";
 import { isVersionView } from "./library/view";
+import { COMPOSITION_FORMAT, type AudioComposition } from "./audio/composition";
+import { ALIGNMENT_FORMAT, type WordAlignment } from "./audio/alignment";
+
+/** En lagret ordkobling (formen er kontrollert da den ble lagret). */
+function isAlignment(v: unknown): v is WordAlignment {
+  return (
+    !!v &&
+    typeof v === "object" &&
+    (v as { format?: unknown }).format === ALIGNMENT_FORMAT &&
+    Array.isArray((v as { words?: unknown }).words)
+  );
+}
+
+/** En lagret lydkomposisjon (formen er kontrollert da den ble lagret). */
+function isComposition(v: unknown): v is AudioComposition {
+  return (
+    !!v &&
+    typeof v === "object" &&
+    (v as { format?: unknown }).format === COMPOSITION_FORMAT &&
+    Array.isArray((v as { segments?: unknown }).segments)
+  );
+}
 import type { DurationAssumptions } from "./screenplay/duration";
 
 export type Row = Record<string, unknown>;
@@ -267,6 +289,10 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         removed: v.removed === true,
         // Migrasjon 0030 (DEC-0080)
         view: v.view ?? null,
+        // Migrasjon 0036 (DEC-0094): lydkomposisjonen versjonen er miksen av
+        composition: v.composition ?? null,
+        // Migrasjon 0037 (DEC-0095): ord-til-lyd
+        alignment: v.alignment ?? null,
       };
     }
     case "annotations": {
@@ -1035,6 +1061,8 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         durationMs: optNum(x["duration_ms"]),
         ...(x["removed"] === true ? { removed: true } : {}),
         ...(isVersionView(x["view"]) ? { view: x["view"] } : {}),
+        ...(isComposition(x["composition"]) ? { composition: x["composition"] } : {}),
+        ...(isAlignment(x["alignment"]) ? { alignment: x["alignment"] } : {}),
       })),
     ),
     annotations: byId(

@@ -3,6 +3,10 @@
 Oppdatert: 2026-10-15 (økt 6, DEC-0084). Detaljert status per krav: `docs/product/TRACEABILITY_MATRIX.md` (generert).
 
 ## Sammendrag
+- **DEC-0095 fase 2 bolk D (migrasjon 0037):** ord-til-lyd (ElevenLabs Forced Alignment eller manuelt, valget huskes, kostnadsgodkjenning), ord markerer lyd, kontekstavspilling, status tekst mot lyd, forslag for nye ord (REQ-0698–0704; norsk må prøves, KI-245).
+- **DEC-0094 fase 2 bolk C (migrasjon 0036, pakke `@mediabunny/mp3-encoder`):** lydkomposisjoner lagret med versjonen (miks + komposisjon), lydeditor med spor, bølgeformer, innsetting, område, trim, angre, konflikter med andre replikker, eksport WAV/MP3 (REQ-0691–0697).
+- **DEC-0093 fase 2 bolk B (ingen migrasjon):** lydopptak på PC og mobil som takes, mikrofonikon i lydressurs, replikk (inspektøren) og lydklipp, hele replikken på mobilen, takes sendes bare når de velges, romlyd (REQ-0684–0690; REQ-0685/0687/0689 venter på prøving på telefon og ordmarkering i bolk D).
+- **DEC-0092 (ingen migrasjon):** ressurser legges inn i scenen i 50 % av lerretets høyde eller bredde (REQ-0714). KI-238: én «Fra mobil»-variant per ressurs.
 - **DEC-0091 (ingen migrasjon):** «Vis teknisk feilmelding» med kopiering på feilsiden; adressen uten spørrestreng og mobiltoken (REQ-0713). Krasj i sceneeditoren (to lyttere på samme sanntidskanal) rettet med unikt kanalnavn (KI-237).
 - **DEC-0090 fase 2 bolk A (migrasjon 0035):** mobilbro med QR-koder per kontekst, mobilsiden (hurtigfoto, bilder, video, «Del lenke»), sikre opplastingsøkter, mobilimport i biblioteket, bilder blir versjoner i ressursen (REQ-0668–0683; REQ-0711 venter på prøving på telefon).
 - **DEC-0089:** panelet «Manus» i sceneeditoren med markering av det som spilles av, redigering i eget vindu (forrige/neste scene til lesing), alle panelene kan lukkes og åpnes (REQ-0665–0667).

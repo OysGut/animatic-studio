@@ -278,6 +278,7 @@ function Body({
             authorName={authorName}
             focusNote={null}
             language="nb"
+            cmds={cmds}
           />
         </div>
       </div>

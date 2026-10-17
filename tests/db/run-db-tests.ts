@@ -3570,6 +3570,93 @@ try {
     assert(d!["dismissed"] === true, "filen ble ikke skjult");
   });
 
+  const sortedJson = (x: unknown): string =>
+    JSON.stringify(x, (_k, val: unknown) =>
+      val && typeof val === "object" && !Array.isArray(val)
+        ? Object.fromEntries(Object.entries(val).sort(([a], [b]) => a.localeCompare(b)))
+        : val,
+    );
+  await test("0036 (DEC-0094): lydkomposisjonen lagres med versjonen og leses tilbake uendret", async () => {
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 36, "schema_version er ikke 36");
+    let st = await loadState(projectId);
+    const src = Object.values(st.assetVersions).find(
+      (x) => x.durationMs !== null && st.assets[st.assetVariants[x.variantId]!.assetId]?.kind === "sound",
+    )!;
+    assert(!!src, "fant ikke et lydopptak");
+    const composition = {
+      format: 1 as const,
+      segments: [
+        { id: "abcdef00-0000-7000-8000-0000000c0001", versionId: src.id, track: 0, atMs: 0, sourceInMs: 0, lengthMs: 1000, gainDb: 0, fadeInMs: 0, fadeOutMs: 50 },
+        { id: "abcdef00-0000-7000-8000-0000000c0002", versionId: src.id, track: 1, atMs: 500, sourceInMs: 200, lengthMs: 800, gainDb: -6, fadeInMs: 100, fadeOutMs: 100 },
+      ],
+    };
+    const versionId = "abcdef00-0000-7000-8000-0000000c00f1";
+    st = await runCommand(st, ALICE, {
+      type: "AddAssetVersion",
+      versionId: versionId as never,
+      variantId: src.variantId,
+      media: {
+        path: `${projectId}/source/x/${versionId}/miks.wav`,
+        mimeType: "audio/wav",
+        width: null,
+        height: null,
+        byteSize: 1000,
+        sha256: "d".repeat(64),
+        durationMs: 1300,
+      },
+      note: "Komposisjon",
+      composition,
+    });
+    const back = await loadState(projectId);
+    assert(
+      sortedJson(back.assetVersions[versionId]!.composition) === sortedJson(composition),
+      `komposisjonen avviker: ${JSON.stringify(back.assetVersions[versionId]!.composition)}`,
+    );
+    // Versjonen er uforanderlig, også komposisjonen
+    await expectError(
+      as("service_role", null, (tx) => tx`update public.asset_versions set composition = '{}'::jsonb where id = ${versionId}`),
+      /INV-13/,
+    );
+    // Bare objekter
+    await expectError(
+      as("service_role", null, (tx) => tx`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256, created_by, composition) values ('abcdef00-0000-7000-8000-0000000c00f2', ${projectId}, ${src.variantId}, 99, 'x', 'audio/wav', 1, ${"e".repeat(64)}, ${ALICE}, '[1]'::jsonb)`),
+      /check|violates/,
+    );
+    // Et opptak som brukes i en komposisjon, kan ikke angres bort (kjernen)
+    const undo = applyCommand(st, {
+      id: "44444444-4444-7444-8444-0000000c09f1" as never,
+      actor: ALICE,
+      at: new Date().toISOString(),
+      command: { type: "UndoAddAssetVersion", versionId: src.id },
+    });
+    assert(!undo.ok, "et opptak i bruk ble fjernet");
+  });
+
+  await test("0037 (DEC-0095): ord-til-lyd lagres på opptaket og kan endres, men ikke selve lyden", async () => {
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 37, "schema_version er ikke 37");
+    let st = await loadState(projectId);
+    const src = Object.values(st.assetVersions).find(
+      (x) => x.durationMs !== null && !x.composition && st.assets[st.assetVariants[x.variantId]!.assetId]?.kind === "sound",
+    )!;
+    const block = Object.values(st.blocks).find((b) => b.kind === "dialogue")!;
+    const words = block.text.split(/\s+/).filter(Boolean).map((w, i) => ({ text: w, startMs: i * 100, endMs: i * 100 + 90, loss: 0.1 }));
+    const alignment = { format: 1 as const, blockId: block.id, text: block.text, words, provider: "elevenlabs", model: "elevenlabs/forced-alignment", loss: 0.1, at: new Date().toISOString() };
+    st = await runCommand(st, ALICE, { type: "SetVersionAlignment", versionId: src.id, alignment }, { [src.id]: src.revision });
+    const back = await loadState(projectId);
+    assert(sortedJson(back.assetVersions[src.id]!.alignment) === sortedJson(alignment), "koblingen avviker");
+    assert(back.assetVersions[src.id]!.revision === src.revision + 1, "revisjonen økte ikke");
+    // Lyden selv kan fortsatt ikke endres
+    await expectError(
+      as("service_role", null, (tx) => tx`update public.asset_versions set media_path = 'x' where id = ${src.id}`),
+      /INV-13/,
+    );
+    // Fjerne koblingen igjen
+    st = await runCommand(st, ALICE, { type: "SetVersionAlignment", versionId: src.id, alignment: null });
+    assert(!(await loadState(projectId)).assetVersions[src.id]!.alignment, "koblingen ble ikke fjernet");
+  });
+
   await test("DEC-0049: sikkerhetskopi gjenopprettes som nytt prosjekt via apply_changes; alt leses tilbake likt", async () => {
     const q = (t: string) =>
       sql.unsafe(`select * from public.${t} where project_id = $1`, [projectId]);

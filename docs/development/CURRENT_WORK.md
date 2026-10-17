@@ -2,7 +2,19 @@
 
 Oppdatert: 2026-10-16 (økt 6, DEC-0061–0089)
 
-## Nå: DEC-0091 – teknisk feilmelding på feilsiden – ferdig, venter på feilmeldingen fra Mars
+## Nå: DEC-0095 fase 2, bolk D – ord-til-lyd og tekstbasert lydredigering – ferdig, venter på Mars
+- Kjerne `src/core/audio/alignment.ts` (paring, markering, manuell retting, tekstendringer, forslag til plassering, tid gjennom komposisjon, status), migrasjon 0037, `SetVersionAlignment`, server `src/adapters/ai/alignment.functions.ts` + `ADAPTERS.elevenlabs.align`, UI `LineWordsPanel.tsx` i lydeditoren, status i lydvinduet og inspektøren. Tester: word-alignment (8), DB 0037, `tests/visual/dec0095-word-alignment-ui.mjs` (16/16).
+
+## Før: DEC-0094 fase 2, bolk C – lydkomposisjon, lydeditor og eksport – ferdig, venter på Mars
+- Kjerne `src/core/audio/composition.ts` (deler, innsetting før/etter/oppå/område, trim, kontroll, konflikter, utsnitt), migrasjon 0036 (`asset_versions.composition`), motor `src/engine/audio/composition.ts` (miks, MP3 via `@mediabunny/mp3-encoder`), app `AudioCompositionEditor.tsx` + `composition-actions.ts`. Tester: audio-composition (8), DB 0036, `tests/visual/dec0094-audio-editor-ui.mjs` (20/20).
+
+## Før: DEC-0093 fase 2, bolk B – lydopptak på PC og mobil med takes og romlyd – ferdig, venter på Mars
+- Takes er versjoner av en lydressurs; replikken knyttes via lydklippet (første opptak lager ressurs og klipp). Lydvinduet (`src/app/audio/AudioTakesDialog.tsx`), opptak (`use-recorder.ts`), lagring (`src/app/audio/takes.ts`), kjerne (`src/core/audio/takes.ts`, kontekstene `sound`/`line` i `src/core/mobile`), mobil (`MobileAudio.tsx`, status «local» i køen), mottak i `MobileImportWatcher` (`importAudio`). Tester: audio-takes, mobile-audio-queue, mobile-server, `tests/visual/dec0093-audio-ui.mjs` (28/28).
+
+## Før: KI-238 og DEC-0092 – én «Fra mobil»-variant og ressurser i halv størrelse – ferdig
+- Mobilbilder behandles ett om gangen med fersk tilstand og gjenbruker «Fra mobil» (`pickMobileVariant`, `tests/unit/mobile-variant.test.ts`). Ressurser legges inn i 50 % av lerretets høyde/bredde (`LAYER_FIT_SHARE`, REQ-0714, `tests/unit/layer-fit.test.ts`).
+
+## Før: DEC-0091 – teknisk feilmelding på feilsiden – ferdig, venter på feilmeldingen fra Mars
 - Mars fikk «Siden kunne ikke vises» etter publiseringen. Mobilsiden på den publiserte appen og produksjonsbygget lokalt (wrangler, iPhone-visning) krasjer ikke. Feilsiden har fått «Vis teknisk feilmelding» med kopiering (`src/app/shell/ErrorDetails.tsx`, `error-report.ts`, REQ-0713); nettfeil i QR-dialogen vises på brukerens språk. Feilen funnet fra Mars' melding: samme sanntidskanal to ganger i sceneeditoren – rettet med unikt kanalnavn per lytter (KI-237, `tests/unit/realtime-channels.test.ts`).
 
 ## Før: DEC-0090 fase 2, bolk A – mobilbro, bilder og video, deling – ferdig, venter på Mars

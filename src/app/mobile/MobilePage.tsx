@@ -10,6 +10,7 @@ import {
   Film,
   Images,
   Loader2,
+  Music,
   RotateCw,
   Share2,
   TriangleAlert,
@@ -27,6 +28,7 @@ import {
 import { uploadWithTicket } from "@/adapters/browser/mobile-import";
 import { LanguageSwitch } from "@/app/i18n/language";
 import { UploadQueue, Uploader, type QueueItem } from "./upload-queue";
+import { MobileAudio } from "./MobileAudio";
 
 const NO_ITEMS: QueueItem[] = [];
 const serverItems = () => NO_ITEMS;
@@ -101,7 +103,8 @@ export function MobilePage({ token }: { token: string }) {
   // Advar før siden forlates med filer som ikke er sendt (og ikke kan tas vare på på telefonen)
   useEffect(() => {
     const warn = (e: BeforeUnloadEvent) => {
-      if (queue.unsent() > 0 && !queue.persistent) {
+      // Lokale lydopptak varsles alltid: nettleseren kan slette dem (REQ-0689)
+      if ((queue.unsent() > 0 && !queue.persistent) || queue.local() > 0) {
         e.preventDefault();
         e.returnValue = "";
       }
@@ -150,6 +153,8 @@ export function MobilePage({ token }: { token: string }) {
   const sent = items.filter((x) => x.status === "sent").length;
   const busy = items.filter((x) => x.status === "queued" || x.status === "uploading").length;
   const can = (k: MobileMediaKind) => kinds.includes(k);
+  // Lydopptak (bolk B): replikk eller lydressurs – takes som sendes når brukeren velger dem
+  const audioOnly = kinds.length === 1 && kinds[0] === "audio";
 
   return (
     <Shell>
@@ -201,6 +206,9 @@ export function MobilePage({ token }: { token: string }) {
             />
           </label>
         ) : null}
+        {audioOnly ? (
+          <MobileAudio script={info.script} items={items} queue={queue} uploader={uploader} />
+        ) : null}
         <div className="grid grid-cols-2 gap-3">
           {can("image") ? (
             <>
@@ -246,7 +254,7 @@ export function MobilePage({ token }: { token: string }) {
           ) : null}
           {can("audio") ? (
             <FileButton
-              icon={<Images className="size-7" aria-hidden />}
+              icon={<Music className="size-7" aria-hidden />}
               label={L("Velg lydfiler", "Choose audio files")}
               accept="audio/*"
               multiple
@@ -272,8 +280,10 @@ export function MobilePage({ token }: { token: string }) {
             )}
           </p>
         ) : null}
-        <QueueList items={items} onRetry={(id) => uploader.retry(id)} />
-        {info.kind === "personal" ? <ShareButton token={token} label={info.label ?? ""} /> : null}
+        {audioOnly ? null : <QueueList items={items} onRetry={(id) => uploader.retry(id)} />}
+        {info.kind === "personal" ? (
+          <ShareButton token={token} label={info.label ?? ""} audio={audioOnly} />
+        ) : null}
         <div className="mt-2 flex justify-center">
           <LanguageSwitch compact />
         </div>
@@ -436,7 +446,7 @@ function QueueTile({ it, onRetry }: { it: QueueItem; onRetry: (id: string) => vo
 }
 
 /** «Del lenke» (REQ-0681/0682): en egen, delt lenke med begrensede rettigheter, via telefonens deling. */
-function ShareButton({ token, label }: { token: string; label: string }) {
+function ShareButton({ token, label, audio }: { token: string; label: string; audio: boolean }) {
   const [link, setLink] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   async function share() {
@@ -455,10 +465,12 @@ function ShareButton({ token, label }: { token: string; label: string }) {
       url = `${window.location.origin}/m/${r.token}`;
       setLink(url);
     }
-    const text = L(
-      `Send bilder og video til Animatic Studio: ${label}`,
-      `Send pictures and video to Animatic Studio: ${label}`,
-    );
+    const text = audio
+      ? L(`Ta opp lyd til Animatic Studio: ${label}`, `Record audio for Animatic Studio: ${label}`)
+      : L(
+          `Send bilder og video til Animatic Studio: ${label}`,
+          `Send pictures and video to Animatic Studio: ${label}`,
+        );
     if (typeof navigator.share === "function") {
       try {
         await navigator.share({ title: "Animatic Studio", text, url });
@@ -486,10 +498,15 @@ function ShareButton({ token, label }: { token: string; label: string }) {
         {L("Del lenke", "Share link")}
       </button>
       <p className="text-xs text-text-tertiary">
-        {L(
-          "Andre kan sende inn bilder og video hit uten konto. De ser bare det de selv sender, gjelder i 7 dager og kan stoppes fra prosjektet.",
-          "Others can send pictures and video here without an account. They only see what they send themselves; it is valid for 7 days and can be stopped from the project.",
-        )}
+        {audio
+          ? L(
+              "Andre kan ta opp og sende lyd hit uten konto. De ser bare det de selv sender, gjelder i 7 dager og kan stoppes fra prosjektet.",
+              "Others can record and send audio here without an account. They only see what they send themselves; it is valid for 7 days and can be stopped from the project.",
+            )
+          : L(
+              "Andre kan sende inn bilder og video hit uten konto. De ser bare det de selv sender, gjelder i 7 dager og kan stoppes fra prosjektet.",
+              "Others can send pictures and video here without an account. They only see what they send themselves; it is valid for 7 days and can be stopped from the project.",
+            )}
       </p>
       {link ? (
         <input

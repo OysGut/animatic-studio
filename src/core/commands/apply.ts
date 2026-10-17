@@ -2,6 +2,8 @@
  * Utfører én kommando mot prosjekttilstanden. Ren funksjon: (tilstand, kommando) → ny tilstand + invers.
  * Samme funksjon brukes i klienten (rask tilbakemelding) og på serveren (autoritativ, DEC-0022).
  */
+import { compositionError, compositionSourceMs } from "../audio/composition";
+import { alignmentError } from "../audio/alignment";
 import {
   isUuid,
   type AssetVariantId,
@@ -5401,6 +5403,46 @@ function run(
       };
     }
 
+    case "SetVersionAlignment": {
+      const v = need(s.assetVersions[c.versionId], L("Opptaket", "The recording"));
+      const va = s.assetVariants[v.variantId];
+      if (s.assets[va?.assetId ?? ""]?.kind !== "sound" || v.durationMs === null)
+        fail(
+          "invalid",
+          L("Bare lydopptak kan ha ordkobling", "Only audio recordings can have word alignment"),
+        );
+      if (c.alignment !== null) {
+        const e = alignmentError(c.alignment);
+        if (e) fail("invalid", e);
+        if (!s.blocks[c.alignment.blockId])
+          fail("invalid", L("Replikken finnes ikke", "The line does not exist"));
+        if (c.alignment.words.some((w) => w.endMs !== null && w.endMs > v.durationMs! + 1000))
+          fail(
+            "invalid",
+            L(
+              "Et ord ligger etter slutten av opptaket",
+              "A word is after the end of the recording",
+            ),
+          );
+      }
+      const { alignment: _a, ...rest } = v;
+      return {
+        state: {
+          ...s,
+          assetVersions: {
+            ...s.assetVersions,
+            [v.id]: {
+              ...rest,
+              ...(c.alignment ? { alignment: c.alignment } : {}),
+              revision: rev(v),
+            },
+          },
+        },
+        inverse: { type: "SetVersionAlignment", versionId: v.id, alignment: v.alignment ?? null },
+        affected: [v.id],
+      };
+    }
+
     case "SetAssetVisualBrief": {
       const a = need(s.assets[c.assetId], L("Ressursen", "The asset"));
       if (typeof c.text !== "string") fail("invalid", L("Ugyldig tekst", "Invalid text"));
@@ -5578,7 +5620,16 @@ function run(
         const d = m.durationMs ?? null;
         if (d !== null && (!Number.isInteger(d) || d <= 0 || d > AUDIO_MAX_MS))
           fail("invalid", L("Ugyldig lengde på lydfilen", "Invalid length of the audio file"));
-      } else if (!ASSET_MIME_TYPES.includes(m.mimeType))
+        if (c.composition !== undefined) {
+          const e = compositionError(c.composition, (id) => compositionSourceMs(s, id));
+          if (e) fail("invalid", e);
+        }
+      } else if (c.composition !== undefined)
+        fail(
+          "invalid",
+          L("Bare lyd kan ha en lydkomposisjon", "Only audio can have an audio composition"),
+        );
+      else if (!ASSET_MIME_TYPES.includes(m.mimeType))
         fail(
           "invalid",
           L("Bildet må være PNG, JPEG, WebP eller GIF", "The image must be PNG, JPEG, WebP or GIF"),
@@ -5621,6 +5672,7 @@ function run(
               createdAt: env.at,
               createdBy: env.actor,
               durationMs: sound ? (m.durationMs ?? null) : null,
+              ...(sound && c.composition ? { composition: c.composition } : {}),
             },
           },
         },
@@ -5675,6 +5727,20 @@ function run(
             "The image has been through the worklist and cannot be removed.",
           ),
         );
+      // Et opptak som brukes i en lydkomposisjon eller av et lydklipp, beholdes (DEC-0094)
+      if (
+        Object.values(s.assetVersions).some((x) =>
+          x.composition?.segments.some((g) => g.versionId === ver.id),
+        ) ||
+        Object.values(s.audioClips).some((a) => !a.removed && a.versionId === ver.id)
+      )
+        fail(
+          "referenced",
+          L(
+            "Opptaket brukes i en lydkomposisjon eller i en scene og kan ikke fjernes.",
+            "The recording is used in an audio composition or in a scene and cannot be removed.",
+          ),
+        );
       // Bare det nyeste bildet kan angres bort (en versjon andre kan ha brukt, beholdes)
       if (
         Object.values(s.assetVersions).some(
@@ -5703,9 +5769,11 @@ function run(
             height: ver.height,
             byteSize: ver.byteSize,
             sha256: ver.sha256,
+            ...(ver.durationMs !== null ? { durationMs: ver.durationMs } : {}),
           },
           note: ver.note,
           number: ver.number,
+          ...(ver.composition ? { composition: ver.composition } : {}),
         },
         affected: [ver.id],
       };

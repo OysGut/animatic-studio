@@ -23,8 +23,10 @@ import {
   mediaKindsFor,
   mobileFilePath,
   parseUploadContext,
+  scriptForLine,
   sniffMatches,
   type MobileMediaKind,
+  type MobileScript,
   type UploadContext,
 } from "@/core";
 import type { AnyClient } from "@/adapters/storage/project-rows";
@@ -112,6 +114,38 @@ async function contextBelongs(
       );
     case "occurrence":
       return one("scene_occurrences", c.occurrenceId);
+    case "sound": {
+      const { data: a } = await db
+        .from("assets")
+        .select("id, kind")
+        .eq("id", c.assetId)
+        .eq("project_id", projectId)
+        .maybeSingle();
+      return (
+        (a as { kind?: string } | null)?.kind === "sound" &&
+        (!c.variantId || (await one("asset_variants", c.variantId)))
+      );
+    }
+    case "line": {
+      const { data: occ } = await db
+        .from("scene_occurrences")
+        .select("variant_id")
+        .eq("id", c.occurrenceId)
+        .eq("project_id", projectId)
+        .maybeSingle();
+      const { data: b } = await db
+        .from("script_blocks")
+        .select("variant_id, kind")
+        .eq("id", c.blockId)
+        .eq("project_id", projectId)
+        .maybeSingle();
+      const bb = b as { variant_id?: string; kind?: string } | null;
+      return (
+        !!occ &&
+        bb?.kind === "dialogue" &&
+        bb.variant_id === (occ as { variant_id?: string }).variant_id
+      );
+    }
     case "layer":
       return (
         (await one("composition_layers", c.layerId)) &&
@@ -200,6 +234,7 @@ interface SessionRow {
   readonly max_files: number;
   readonly bytes_total: number;
   readonly max_bytes: number;
+  readonly context?: unknown;
 }
 
 async function touch(db: AnyClient, token: string): Promise<SessionRow | null> {
@@ -232,6 +267,35 @@ export interface MobileSessionInfo {
   readonly mediaKinds?: MobileMediaKind[];
   readonly expiresAt?: string;
   readonly remainingFiles?: number;
+  /** Replikken som tas opp (bolk B, REQ-0685): vises på mobilen så man kan lese fra telefonen. */
+  readonly script?: MobileScript | null;
+}
+
+/** Replikken for en «line»-kontekst, lest fra databasen (aldri fra nettleseren). */
+async function lineScript(
+  db: AnyClient,
+  projectId: string,
+  c: unknown,
+): Promise<MobileScript | null> {
+  const ctx = parseUploadContext(c);
+  if (!ctx || ctx.type !== "line") return null;
+  const { data: b } = await db
+    .from("script_blocks")
+    .select("variant_id")
+    .eq("id", ctx.blockId)
+    .eq("project_id", projectId)
+    .maybeSingle();
+  const variantId = (b as { variant_id?: string } | null)?.variant_id;
+  if (!variantId) return null;
+  const { data: rows } = await db
+    .from("script_blocks")
+    .select("id, kind, text, order_key, removed")
+    .eq("variant_id", variantId)
+    .eq("project_id", projectId)
+    .eq("removed", false)
+    .order("order_key", { ascending: true })
+    .limit(2000);
+  return scriptForLine((rows ?? []) as { id: string; kind: string; text: string }[], ctx.blockId);
 }
 
 export const mobileSession = createServerFn({ method: "POST" })
@@ -256,6 +320,7 @@ export const mobileSession = createServerFn({ method: "POST" })
       mediaKinds: s.media_kinds,
       expiresAt: s.expires_at,
       remainingFiles: Math.max(0, s.max_files - s.files_count),
+      script: await lineScript(db, s.project_id, s.context),
     };
   });
 

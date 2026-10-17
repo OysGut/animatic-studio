@@ -28,6 +28,12 @@ const ASSET = "00000000-0000-7000-8000-00000000aa03";
 const ALICE = "00000000-0000-7000-8000-00000000aa04";
 const BOB = "00000000-0000-7000-8000-00000000aa05";
 const FILE = "00000000-0000-7000-8000-00000000aa06";
+const SOUND = "00000000-0000-7000-8000-00000000aa07";
+const OCC = "00000000-0000-7000-8000-00000000aa08";
+const VAR = "00000000-0000-7000-8000-00000000aa0a";
+const B1 = "00000000-0000-7000-8000-00000000aab1";
+const B2 = "00000000-0000-7000-8000-00000000aab2";
+const B3 = "00000000-0000-7000-8000-00000000aab3";
 const sha = (t: string) => createHash("sha256").update(t).digest("hex");
 
 /** Minimal falsk Supabase: tabeller, rpc og lagring (bare det funksjonene bruker). */
@@ -47,6 +53,8 @@ function fake(tables: Record<string, Row[]>) {
     const q: Record<string, unknown> = {
       select: () => q,
       eq: (k: string, v: unknown) => (filters.push([k, v]), q),
+      order: () => q,
+      limit: () => q,
       is: (k: string, v: unknown) => (filters.push([k, v]), q),
       insert: (r: Row) => {
         insertRow = { id: crypto.randomUUID(), ...r };
@@ -56,7 +64,7 @@ function fake(tables: Record<string, Row[]>) {
       single: () => Promise.resolve({ data: insertRow ?? rows()[0] ?? null, error: null }),
       maybeSingle: () => Promise.resolve({ data: rows()[0] ?? null, error: null }),
       then: (ok: (v: unknown) => unknown) =>
-        Promise.resolve({ data: insertRow, error: null }).then(ok),
+        Promise.resolve({ data: insertRow ?? rows(), error: null }).then(ok),
     };
     return q;
   };
@@ -110,10 +118,31 @@ function setup(head: number[] = [0xff, 0xd8, 0xff, 0xe0], size = 1234) {
       { project_id: P, user_id: BOB, role: "viewer", removed_at: null },
     ],
     assets: [
-      { id: ASSET, project_id: P },
+      { id: ASSET, project_id: P, kind: "character" },
+      { id: SOUND, project_id: P, kind: "sound" },
       { id: "00000000-0000-7000-8000-00000000aa09", project_id: OTHER },
     ],
     profiles: [{ user_id: ALICE, display_name: "Alice" }],
+    scene_occurrences: [{ id: OCC, project_id: P, variant_id: VAR }],
+    script_blocks: [
+      { id: B1, project_id: P, variant_id: VAR, kind: "character", text: "MAJA", removed: false },
+      {
+        id: B2,
+        project_id: P,
+        variant_id: VAR,
+        kind: "dialogue",
+        text: "Jeg tror det er noen der ute.",
+        removed: false,
+      },
+      {
+        id: B3,
+        project_id: P,
+        variant_id: VAR,
+        kind: "action",
+        text: "Det knirker.",
+        removed: false,
+      },
+    ],
     upload_sessions: [],
     mobile_imports: [],
   });
@@ -284,5 +313,58 @@ describe("mobilen uten innlogging", () => {
     );
     const again = await fns.mobileShareLink({ data: { token: r["token"] as string } });
     expect(again["ok"]).toBe(false);
+  });
+});
+
+describe("lydopptak (bolk B)", () => {
+  it("QR-kode for lyd: bare lydressurser og replikker i prosjektet, og bare lyd tillatt", async () => {
+    const f = setup();
+    const notSound = await fns.createUploadSession({
+      data: { projectId: P, context: { type: "sound", assetId: ASSET }, label: "x" },
+      context: ctx(ALICE),
+    });
+    expect(notSound["ok"]).toBe(false);
+    const notLine = await fns.createUploadSession({
+      data: { projectId: P, context: { type: "line", occurrenceId: OCC, blockId: B3 }, label: "x" },
+      context: ctx(ALICE),
+    });
+    expect(notLine["ok"]).toBe(false);
+    const ok = await fns.createUploadSession({
+      data: {
+        projectId: P,
+        context: { type: "line", occurrenceId: OCC, blockId: B2 },
+        label: "Scene 1 · MAJA",
+      },
+      context: ctx(ALICE),
+    });
+    expect(ok["ok"]).toBe(true);
+    expect(f.tables["upload_sessions"]![0]!["media_kinds"]).toEqual(["audio"]);
+  });
+
+  it("mobilen får hele replikken, lest fra databasen", async () => {
+    const f = setup();
+    const token = "c".repeat(43);
+    f.tables["upload_sessions"]!.push({
+      id: "00000000-0000-7000-8000-00000000bb09",
+      project_id: P,
+      token_hash: sha(token),
+      kind: "personal",
+      label: "Scene 1 · MAJA",
+      creator_name: "Alice",
+      media_kinds: ["audio"],
+      expires_at: new Date(Date.now() + 3600_000).toISOString(),
+      files_count: 0,
+      max_files: 10,
+      bytes_total: 0,
+      max_bytes: 1e9,
+      created_by: ALICE,
+      context: { type: "line", occurrenceId: OCC, blockId: B2 },
+    });
+    const r = await fns.mobileSession({ data: { token } });
+    expect(r["script"]).toEqual({
+      speaker: "MAJA",
+      parenthetical: "",
+      text: "Jeg tror det er noen der ute.",
+    });
   });
 });

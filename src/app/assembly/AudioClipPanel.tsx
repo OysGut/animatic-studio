@@ -2,6 +2,8 @@
  * Panelet for et valgt lydklipp (M4 del 2, mandat 13.3, DEC-0044): navn, spor, lydfil og versjon, plass i
  * scenen, lengde og kutt, volum, inn-/uttoning, replikk og demping.
  */
+import type { Commands } from "@/app/project/use-commands";
+import { TakesMicButton } from "@/app/audio/AudioTakesDialog";
 import { Link } from "@tanstack/react-router";
 import { AudioWaveform, Library, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -27,6 +29,8 @@ import {
   L,
   locale,
   languageWord,
+  lineInfo,
+  lineLabel,
 } from "@/core";
 import { Button } from "@/components/ui/button";
 
@@ -42,7 +46,10 @@ export function AudioClipPanel({
   onChange,
   onRemove,
   onOpenProfile,
+  cmds,
 }: {
+  /** Kommandoene (for nye opptak med mikrofonikonet, DEC-0093). */
+  cmds?: Commands | undefined;
   state: ProjectState;
   projectId: string;
   clip: AudioClip;
@@ -80,6 +87,28 @@ export function AudioClipPanel({
         <span className="min-w-0 truncate text-[13px] font-medium text-text-primary">
           {clip.name || asset?.name || L("Lyd", "Audio")}
         </span>
+        {/* Mikrofonikonet (DEC-0093): nye takes for replikken eller lydressursen */}
+        {editable && cmds ? (
+          <TakesMicButton
+            className="ml-auto shrink-0 self-center"
+            projectId={projectId}
+            state={state}
+            cmds={cmds}
+            target={
+              clip.blockId
+                ? { kind: "line", occurrenceId: clip.occurrenceId, blockId: clip.blockId }
+                : { kind: "sound", assetId: clip.assetId }
+            }
+            label={
+              clip.blockId
+                ? lineLabel(lineInfo(state, clip.occurrenceId, clip.blockId))
+                : L(
+                    `Opptak til «${asset?.name ?? clip.name}»`,
+                    `Recordings for “${asset?.name ?? clip.name}”`,
+                  )
+            }
+          />
+        ) : null}
       </div>
 
       <Text

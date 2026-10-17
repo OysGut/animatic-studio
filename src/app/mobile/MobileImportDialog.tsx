@@ -85,24 +85,17 @@ export function MobileImportDialog({
   );
 }
 
-function Body({
-  projectId,
-  context,
-  label,
-  actions,
-}: {
-  projectId: string;
-  context: UploadContext;
-  label: string;
-  actions?: ((row: MobileImportRow) => ReactNode) | undefined;
-}) {
+/**
+ * Økten (QR-koden) for en kontekst og det som er mottatt i den – brukt av «Importer fra mobil» og av
+ * lydvinduet (bolk B). Økten lages straks og gjenbrukes mens den gjelder.
+ */
+export function useMobileSession(projectId: string, context: UploadContext, label: string) {
   const key = keyOf(projectId, context);
   const [session, setSession] = useState<CachedSession | null>(() => {
     const c = cache.get(key);
     return c && Date.parse(c.expiresAt) - Date.now() > 15 * 60_000 ? c : null;
   });
   const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
   // Konteksten lages på nytt for hver tegning hos kalleren: nøkkelen styrer når en ny økt trengs
   const input = useRef({ context, label });
   input.current = { context, label };
@@ -131,19 +124,97 @@ function Body({
     return out;
   }, [session, sessions.data]);
   const mine = (imports.data ?? []).filter((r) => ids.has(r.session_id));
-  const received = mine.filter((r) => r.status === "done");
-  const pending = mine.filter((r) => r.status === "pending");
-  const failed = mine.filter((r) => r.status === "failed");
   const own = sessions.data?.find((s) => s.id === session?.sessionId);
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 5000);
     return () => clearInterval(t);
   }, []);
-  const connected = sessionConnected(own, now);
-  const thumbs = useImageUrls(received.filter((r) => r.kind === "image").map((r) => r.path));
-  const url = session ? mobileUrl(session.token) : "";
+  return {
+    session,
+    error,
+    url: session ? mobileUrl(session.token) : "",
+    received: mine.filter((r) => r.status === "done"),
+    pending: mine.filter((r) => r.status === "pending"),
+    failed: mine.filter((r) => r.status === "failed"),
+    connected: sessionConnected(own, now),
+    /** «Ny kode»: glem økten og lag en ny. */
+    renew: () => {
+      cache.delete(key);
+      setError(null);
+      setSession(null);
+    },
+  };
+}
 
+/** QR-koden med «Kopier lenken» (eller feilen / en plassholder mens den lages). */
+export function MobileQr({
+  m,
+  size = 220,
+}: {
+  m: ReturnType<typeof useMobileSession>;
+  size?: number;
+}) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <div className="flex flex-col items-center gap-2">
+      {m.error ? (
+        <div
+          role="alert"
+          style={{ width: size }}
+          className="flex flex-col gap-1 rounded-sm border border-status-danger/60 p-3 text-xs text-status-danger"
+        >
+          <TriangleAlert className="size-4" aria-hidden />
+          {m.error}
+        </div>
+      ) : m.session ? (
+        <QrCode value={m.url} size={size} />
+      ) : (
+        <div
+          style={{ width: size, height: size }}
+          className="animate-pulse rounded-sm bg-surface-3"
+          aria-label={L("Lager QR-koden …", "Making the QR code …")}
+          data-testid="mobile-qr-loading"
+        />
+      )}
+      {m.session ? (
+        <button
+          type="button"
+          className="flex items-center gap-1 text-xs text-text-secondary hover:text-text-primary"
+          onClick={() => {
+            void navigator.clipboard?.writeText(m.url).then(() => {
+              setCopied(true);
+              setTimeout(() => setCopied(false), 1500);
+            });
+          }}
+          data-testid="mobile-copy-link"
+        >
+          {copied ? (
+            <Check className="size-3.5" aria-hidden />
+          ) : (
+            <Copy className="size-3.5" aria-hidden />
+          )}
+          {copied ? L("Kopiert", "Copied") : L("Kopier lenken", "Copy the link")}
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+function Body({
+  projectId,
+  context,
+  label,
+  actions,
+}: {
+  projectId: string;
+  context: UploadContext;
+  label: string;
+  actions?: ((row: MobileImportRow) => ReactNode) | undefined;
+}) {
+  const m = useMobileSession(projectId, context, label);
+  const { session, received, pending, failed, connected } = m;
+  const thumbs = useImageUrls(received.filter((r) => r.kind === "image").map((r) => r.path));
   return (
     <>
       <div className="flex items-start gap-2 pr-6">
@@ -161,46 +232,7 @@ function Body({
         </div>
       </div>
       <div className="mt-3 flex flex-wrap gap-5">
-        <div className="flex flex-col items-center gap-2">
-          {error ? (
-            <div
-              role="alert"
-              className="flex w-[220px] flex-col gap-1 rounded-sm border border-status-danger/60 p-3 text-xs text-status-danger"
-            >
-              <TriangleAlert className="size-4" aria-hidden />
-              {error}
-            </div>
-          ) : session ? (
-            <QrCode value={url} />
-          ) : (
-            <div
-              style={{ width: 220, height: 220 }}
-              className="animate-pulse rounded-sm bg-surface-3"
-              aria-label={L("Lager QR-koden …", "Making the QR code …")}
-              data-testid="mobile-qr-loading"
-            />
-          )}
-          {session ? (
-            <button
-              type="button"
-              className="flex items-center gap-1 text-xs text-text-secondary hover:text-text-primary"
-              onClick={() => {
-                void navigator.clipboard?.writeText(url).then(() => {
-                  setCopied(true);
-                  setTimeout(() => setCopied(false), 1500);
-                });
-              }}
-              data-testid="mobile-copy-link"
-            >
-              {copied ? (
-                <Check className="size-3.5" aria-hidden />
-              ) : (
-                <Copy className="size-3.5" aria-hidden />
-              )}
-              {copied ? L("Kopiert", "Copied") : L("Kopier lenken", "Copy the link")}
-            </button>
-          ) : null}
-        </div>
+        <MobileQr m={m} />
         <div className="flex min-w-[240px] flex-1 flex-col gap-2 text-[13px]">
           <p className="text-text-primary" data-testid="mobile-import-label">
             {label}
@@ -286,15 +318,7 @@ function Body({
         </ul>
       ) : null}
       <div className="mt-4 flex justify-end">
-        <Button
-          size="sm"
-          variant="secondary"
-          onClick={() => {
-            cache.delete(key);
-            setSession(null);
-          }}
-          disabled={!session}
-        >
+        <Button size="sm" variant="secondary" onClick={m.renew} disabled={!session}>
           {L("Ny kode", "New code")}
         </Button>
       </div>

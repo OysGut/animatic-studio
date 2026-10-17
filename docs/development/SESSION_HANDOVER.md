@@ -51,7 +51,7 @@ KI-12, KI-14, KI-15, KI-16, KI-17 (første CI-kjøring), KI-19 (Storage), KI-20 
 KI-30 (foreldreløse bilder), KI-31 (notater fra fremmede PDF-er), KI-32 (melding ved angring), KI-33 (notater ved egen spinoff-variant), KI-34 (bruk bare fra navn), KI-35 (bøtten `assets` i Lovable).
 
 ## Neste konkrete steg
-0. DEC-0091 er committet av Mars (commit «37»). Deretter rettet KI-237: krasj i sceneeditoren fordi `subscribeMobileImports` brukte samme kanalnavn to ganger (Supabase gjenbruker kanalen, og `.on()` etter `subscribe()` kaster når kanalen er tilkoblet – skjer bare med ekte sanntid, ikke i nettlesertestene). `uniqueChannelName` i `src/adapters/browser/client.ts`, brukt i `mobile-import.ts` og `project-data.ts`; aldri for tilstedeværelse. Mars: commit, lim inn `LOVABLE_SYNC.md` (bygg og publiser), prøv kameraikonet i sceneeditoren. `ai_model_settings`-spørsmålet er fortsatt ubesvart.
+0. Siste leveranse (`animatic-dec0095d.tar.gz`): bolk D (DEC-0095, migrasjon 0037) + bolk C (DEC-0094, migrasjon 0036, pakke `@mediabunny/mp3-encoder`) + bolk B + KI-238/DEC-0092 hvis ikke committet (Mac har commit «38» = KI-237). Mars: commit, lim inn `LOVABLE_SYNC.md` (bun install, migrasjon 0036 og 0037, publiser), prøv ord-til-lyd på norsk (KI-245), si OK til bolk E. `EXPECTED_SCHEMA_VERSION` = 37. Åpne spørsmål: bakgrunner i halv størrelse (DEC-0092)? `ai_model_settings`? NB: ikke kjør `eslint --fix` på hele mapper (formatering i `RecordAudioDialog.tsx`, `AudioClipEditor.tsx`, `use-audio-playback.ts` i skyen er IKKE levert).
 1. (Gjort) Bolk A: 0035 kjørt, bøtta 2 GB uten typegrense, publisert.
 2. Mars: prøv bolk A på iPhone og Android (se `TODO.md`, KI-235), og si OK til bolk B.
 3. Claude når Mars sier OK: bolk B (lydopptak på PC og mobil med takes), deretter C–E.

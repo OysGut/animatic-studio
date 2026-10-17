@@ -36,6 +36,9 @@ import {
   type SceneHeading,
   L,
   tm,
+  lineAudioStatus,
+  lineInfo,
+  lineLabel,
 } from "@/core";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,6 +48,8 @@ import { NotesPanel } from "./NotesPanel";
 import { BlockLinksSection } from "./BlockLinksSection";
 import { StoryTimeSection } from "./StoryTimeSection";
 import type { Selection } from "./ScriptPageView";
+import type { Commands } from "@/app/project/use-commands";
+import { LineStatusBadge, TakesMicButton } from "@/app/audio/AudioTakesDialog";
 
 const EDITABLE_KINDS: BlockKind[] = [
   "action",
@@ -77,6 +82,8 @@ interface Props {
   readonly focusNote: string | null;
   /** Manusspråket i visningen (DEC-0058). Annet enn «nb»: inspektøren viser oversettelsen. */
   readonly language?: string;
+  /** Kommandoene (for lydopptak av replikken, DEC-0093). Uten: ingen mikrofon. */
+  readonly cmds?: Commands;
 }
 
 export function Inspector(props: Props) {
@@ -133,9 +140,26 @@ export function Inspector(props: Props) {
             <span className="truncate">{L("Sceneeditor", "Scene editor")}</span>
           </Link>
         ) : null}
+        {/* Mikrofonikonet for en replikk (DEC-0093): opptak på datamaskinen og mobilen */}
+        {block?.kind === "dialogue" && occ && props.editable && props.cmds ? (
+          <TakesMicButton
+            className="ml-auto shrink-0 normal-case"
+            projectId={props.projectId}
+            state={state}
+            cmds={props.cmds}
+            target={{ kind: "line", occurrenceId: occ.id, blockId: block.id }}
+            label={lineLabel(lineInfo(state, occ.id, block.id))}
+          />
+        ) : null}
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto p-3">
         {occ ? <SceneChanges {...props} occurrenceId={occ.id} /> : null}
+        {/* Tekst mot lyd for replikken (DEC-0095, REQ-0703) – påvirker ikke manuseksporten */}
+        {block?.kind === "dialogue" && occ ? (
+          <div className="mb-2">
+            <LineStatusBadge status={lineAudioStatus(state, occ.id, block.id)} />
+          </div>
+        ) : null}
         {props.language && props.language !== "nb" && occ ? (
           <TranslationPanel
             key={`${block?.id ?? occ.variantId}:${props.language}`}

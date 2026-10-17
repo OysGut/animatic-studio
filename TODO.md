@@ -21,7 +21,12 @@ Sist oppdatert: 2026-10-16 (DEC-0090, bolk A).
 - Prøv blokkering, sletting og «Hent videoen igjen» med en testkonto (KI-215).
 
 ## Venter på svar eller prøving fra Mars
+- Prøv ord-til-lyd (bolk D) med et ekte norsk opptak: «Rediger» på et take av en replikk → «Analyser opptaket» (koster under en hundredel cent per replikk) → klikk ord og hør med kontekst. Si fra hvordan norsk fungerer (KI-245). Si OK til bolk E (pauser og romlyd) når du vil.
+- Prøv lydeditoren (bolk C): «Rediger» på et take i lydvinduet, sett inn et nytt opptak etter, erstatt et område, lagre som ny versjon, «Bruk dette», og eksporter WAV og MP3.
+- Prøv lydopptak (bolk B) på iPhone og Android: mikrofonikonet i en replikk på Manus-siden, QR-koden, Take 01/02 på mobilen, send bare ett, romlyd (KI-239).
 - Prøv kameraikonet i sceneeditoren igjen etter publisering (KI-236/237 rettet); bruk «Vis teknisk feilmelding» hvis noe krasjer.
+- Arkiver de ekstra «Fra mobil»/«From mobile»-variantene på Rolf (Bibliotek → Rolf → «Arkiver varianten»), eller si fra om du vil ha «Slå sammen varianter» (KI-238).
+- Svar: skal bakgrunner også legges inn i halv størrelse, eller fortsatt fylle lerretet (DEC-0092)?
 - Svar på om tilgangen til `ai_model_settings` (lesbar for alle innloggede) skal strammes inn i neste migrering sammen med bolk B.
 - Prøv fase 2 bolk A på iPhone og Android: QR-koden på prosjektsiden og i Maja, hurtigfoto, video, «Del lenke», at bildene dukker opp som nye versjoner (KI-235).
 - Prøv DEC-0089 i sceneeditoren: panelet «Manus», «Rediger manus …» med forrige/neste scene, og lukking av panelene.

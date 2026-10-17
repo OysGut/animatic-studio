@@ -531,6 +531,12 @@ export type Command =
       readonly versionId: AssetVersionId;
       readonly view: VersionView | null;
     }
+  /** Ord-til-lyd for et opptak (DEC-0095): ny analyse eller manuell retting; null fjerner koblingen. */
+  | {
+      readonly type: "SetVersionAlignment";
+      readonly versionId: AssetVersionId;
+      readonly alignment: import("../audio/alignment").WordAlignment | null;
+    }
   /** Visuelt faktaark for en ressurs (DEC-0080): engelsk tekst; tom fjerner det. */
   | {
       readonly type: "SetAssetVisualBrief";
@@ -646,6 +652,11 @@ export type Command =
       readonly note: string;
       /** Bare ved gjør om etter angre: opprinnelig versjonsnummer (brukes hvis ledig). */
       readonly number?: number;
+      /**
+       * Lydkomposisjonen versjonen er laget av (DEC-0094, migrasjon 0036). Lydfilen i `media` er miksen av
+       * den; komposisjonen kan redigeres videre uten at kildeopptakene endres.
+       */
+      readonly composition?: import("../audio/composition").AudioComposition;
     }
   | {
       /** Eksplisitt godkjenning (REQ-0136, REQ-0145). null = ingen godkjent versjon. */

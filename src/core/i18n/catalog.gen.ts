@@ -146,6 +146,8 @@ export const CATALOG: Record<string, string> = {
   "Alle scener på {0}": "All scenes at {0}",
   "Allerede slettet": "Already deleted",
   "Alt annet": "Everything else",
+  "Analysen feilet: {0}. Du kan koble ordene for hånd.":
+    "The analysis failed: {0}. You can link the words by hand.",
   "Animatic (2D-scene)": "Animatic (2D scene)",
   "Animatic (tittelkort)": "Animatic (title card)",
   "Animatic Studio (systemmerknad)": "Animatic Studio (system note)",
@@ -181,6 +183,8 @@ export const CATALOG: Record<string, string> = {
   "Bare film kan ha manusdekning": "Only film can have script coverage",
   "Bare for administrator.": "Administrators only.",
   "Bare karakterer kan få stemme": "Only characters can have a voice",
+  "Bare lyd kan ha en lydkomposisjon": "Only audio can have an audio composition",
+  "Bare lydopptak kan ha ordkobling": "Only audio recordings can have word alignment",
   "Bare lydressurser kan kobles på denne måten": "Only audio assets can be linked in this way",
   "Bare modeller lagt til av administrator kan fjernes. De innebygde kan slås av.":
     "Only models added by an administrator can be removed. The built-in ones can be switched off.",
@@ -339,12 +343,16 @@ export const CATALOG: Record<string, string> = {
     "The database is missing sound across several scenes and volume points. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0010.",
   "Databasen mangler lyd. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0009.":
     "The database is missing sound. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0009.",
+  "Databasen mangler lydkomposisjoner. Den må oppdateres (migrasjon 0036).":
+    "The database is missing audio compositions. It must be updated (migration 0036).",
   "Databasen mangler mobilimport. Den må oppdateres (migrasjon 0035).":
     "The database is missing mobile import. It must be updated (migration 0035).",
   "Databasen mangler notater på produksjonene. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0031.":
     "The database is missing notes on the productions. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0031.",
   "Databasen mangler oppgaver og systemmerknader. Den må oppdateres (migrasjon 0034).":
     "The database is missing tasks and system notes. It must be updated (migration 0034).",
+  "Databasen mangler ord-til-lyd. Den må oppdateres (migrasjon 0037).":
+    "The database is missing word alignment. It must be updated (migration 0037).",
   "Databasen mangler plakater og relasjoner. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0019.":
     "The database is missing posters and relations. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0019.",
   "Databasen mangler planlagt lengde per scene. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0023.":
@@ -427,6 +435,8 @@ export const CATALOG: Record<string, string> = {
     "Double dialogue (^) without a line directly before – unclear who speaks at the same time",
   "Du har ikke skriverett i det nye prosjektet.":
     "You do not have write access to the new project.",
+  "Du har ikke tilgang til å analysere lyd i dette prosjektet.":
+    "You do not have access to analyse audio in this project.",
   "Du har ikke tilgang til å bruke AI i dette prosjektet.":
     "You do not have access to use AI in this project.",
   "Du har ikke tilgang til å endre dette prosjektet":
@@ -449,6 +459,7 @@ export const CATALOG: Record<string, string> = {
   "En annen scene er plassert i fortellingstiden i forhold til den nye scenen. Endre den først.":
     "Another scene is placed in story time relative to the new scene. Change it first.",
   "En av linjene finnes ikke i manuset": "One of the lines does not exist in the script",
+  "En del går forbi slutten av opptaket": "A part goes past the end of the recording",
   "En delt lenke kan ikke deles videre. Be den som sendte den, om en ny.":
     "A shared link cannot be shared on. Ask the person who sent it for a new one.",
   "En figur forandrer seg i segmentet, men det sto ikke i beskrivelsen.":
@@ -482,6 +493,7 @@ export const CATALOG: Record<string, string> = {
   endret: "edited",
   "Endret fra v{0} (lagt til)": "Changed from v{0} (added)",
   "endret fra versjon {0}": "changed from version {0}",
+  "Endret tekst med gammel lyd": "Changed text with old audio",
   "Endringen er for stor": "The change is too large",
   "Endringen kunne ikke lagres. Prøv igjen.": "The change could not be saved. Try again.",
   "Endringen må vare til en senere scene": "The change must last until a later scene",
@@ -500,6 +512,7 @@ export const CATALOG: Record<string, string> = {
     "A reference image could not be fetched from storage.",
   "Et lag kan ikke være maske for seg selv": "A layer cannot be a mask for itself",
   "Et notat på tekst har ikke scene i tillegg": "A note on text cannot also have a scene",
+  "Et ord ligger etter slutten av opptaket": "A word is after the end of the recording",
   "Et referansebilde": "A reference image",
   "Et samlebilde av figurene finnes ikke i lagringen. Prøv igjen.":
     "A reference sheet of the figures is not in storage. Try again.",
@@ -510,6 +523,8 @@ export const CATALOG: Record<string, string> = {
   "etter scene {0}": "after scene {0}",
   "Faktaarket er for langt (høyst 4000 tegn)":
     "The fact sheet is too long (at most 4,000 characters)",
+  "Fant ikke opptaket.": "The recording was not found.",
+  "Fant ikke replikken.": "The line was not found.",
   "Fant ikke scenen.": "The scene was not found.",
   "Fant ingen sceneoverskrifter (INT./EXT.). All tekst ligger i én scene uten overskrift.":
     "No scene headings (INT./EXT.) found. All text is in one scene without a heading.",
@@ -626,6 +641,7 @@ export const CATALOG: Record<string, string> = {
   "Gjenopprett: Prosjekter → «Gjenopprett fra sikkerhetskopi …». Det lages alltid et nytt prosjekt;":
     "Restore: Projects → “Restore from backup …”. A new project is always made;",
   Godkjent: "Approved",
+  "Godkjent oppdatert tekst og lyd": "Approved updated text and audio",
   "GPT Image 2.5 Flare (rask)": "GPT Image 2.5 Flare (fast)",
   "GPT Image 2.5 Sunburst (frilagt)": "GPT Image 2.5 Sunburst (cut-out)",
   "GPT Image 2.5 Sunburst (presis, frilagt)": "GPT Image 2.5 Sunburst (precise, cut-out)",
@@ -638,6 +654,8 @@ export const CATALOG: Record<string, string> = {
   "Grensen på {0} genereringer i timen er nådd. Prøv igjen senere.":
     "The limit of {0} generations per hour has been reached. Try again later.",
   "Grensen på {0} lyder i timen er nådd.": "The limit of {0} sounds per hour has been reached.",
+  "Grensen på {0} lydjobber i timen er nådd.":
+    "The limit of {0} audio jobs per hour has been reached.",
   "Grensen på {0} videoer i timen er nådd. Legg dem i kø i stedet.":
     "The limit of {0} videos per hour has been reached. Queue them instead.",
   "Grunnlaget mangler eller er for langt": "The basis is missing or too long",
@@ -779,6 +797,11 @@ export const CATALOG: Record<string, string> = {
   "Klippet versjon ({0} {1})": "Edited version ({0} {1})",
   "Køen er full ({0} videoer venter). Vent til noen er ferdige.":
     "The queue is full ({0} videos waiting). Wait until some are finished.",
+  "Komposisjonen bruker et opptak som ikke finnes eller ikke kan brukes":
+    "The composition uses a recording that does not exist or cannot be used",
+  "Komposisjonen er for lang (maks 10 minutter)": "The composition is too long (max 10 minutes)",
+  "Komposisjonen er tom": "The composition is empty",
+  "Komposisjonen har for mange deler": "The composition has too many parts",
   Kontinuitetshendelsen: "The continuity event",
   "Kontoen din er ikke aktiv. Kontakt administrator.":
     "Your account is not active. Contact the administrator.",
@@ -790,6 +813,7 @@ export const CATALOG: Record<string, string> = {
     "The account is locked and will be deleted for good in {0} days.",
   "Kort ned oversettelsen med omtrent {0} {1}.": "Shorten the translation by about {0} {1}.",
   "kortere enn segmentet ({0} av {1} s)": "shorter than the segment ({0} of {1} s)",
+  "Kostnaden må godkjennes først": "The cost must be approved first",
   "Kostnadsoversikt – AI-tjenester": "Cost statement – AI services",
   "Kostnadstaket for nøkkelen ({0} USD per måned) er nådd – brukt ca. {1} USD, denne jobben ca. {2} USD. Eieren kan endre taket under «AI-leverandører».":
     "The cost cap for the key ({0} USD per month) has been reached – about {1} USD used, this job about {2} USD. The owner can change the cap under “AI providers”.",
@@ -870,6 +894,7 @@ export const CATALOG: Record<string, string> = {
     "Lovable did not recognise any of the language models. Set ANIMATIC_TEXT_MODEL in Lovable Cloud (see LOVABLE_SYNC.md).",
   "Lovable-kredittene i arbeidsområdet er brukt opp. Fyll på i Lovable og prøv igjen.":
     "The Lovable credits in the workspace are used up. Top up in Lovable and try again.",
+  lyd: "audio",
   Lyd: "Sound",
   "Lyd eller tidskoblinger er koblet til linjer bare den nye versjonen har":
     "Audio or time links are linked to lines only the new version has",
@@ -985,6 +1010,8 @@ export const CATALOG: Record<string, string> = {
   "Norsk og 70+ språk": "Norwegian and 70+ languages",
   "Norsk og engelsk": "Norwegian and English",
   "Norsk satt eksplisitt": "Norwegian set explicitly",
+  "Norsk står ikke på ElevenLabs' liste over språk – må prøves (KI-245)":
+    "Norwegian is not on ElevenLabs' list of languages – must be tried (KI-245)",
   "Notat {0}: må høre til enten tekst eller scene":
     "Note {0}: must belong to either a text or a scene",
   "Notat {0}: ukjent blokk": "Note {0}: unknown block",
@@ -994,6 +1021,8 @@ export const CATALOG: Record<string, string> = {
   "Notatet må ha tekst (maks 10 000 tegn)": "The note must have text (max 10,000 characters)",
   "Notatet må høre til en scene eller tekst": "The note must belong to a scene or text",
   "nummerering: {0}": "numbering: {0}",
+  "Ny tekst uten lyd": "New text without audio",
+  "Nytt opptak til gjennomgang": "New recording to review",
   "Ønsket er lagret. Utvikleren lager koblingen i koden; status vises i listen.":
     "The request has been saved. The developer builds the connection in the code; the status is shown in the list.",
   "Ønsket finnes ikke.": "The request does not exist.",
@@ -1011,10 +1040,18 @@ export const CATALOG: Record<string, string> = {
   "Opprinnelig variant": "Original variant",
   "Oppskalering krever en tilkoblet leverandør (fal.ai).":
     "Upscaling requires a connected provider (fal.ai).",
+  Opptaket: "The recording",
+  "Opptaket brukes i en lydkomposisjon eller i en scene og kan ikke fjernes.":
+    "The recording is used in an audio composition or in a scene and cannot be removed.",
+  "Opptaket er for langt for ord-til-lyd (høyst 15 minutter).":
+    "The recording is too long for word alignment (15 minutes at most).",
+  "Opptaket kunne ikke hentes.": "The recording could not be fetched.",
   "Opptil 10 forbildebilder": "Up to 10 reference images",
   "Opptil 14 forbildebilder": "Up to 14 reference images",
   "opptil 1440 px": "up to 1440 px",
   "opptil 4K": "up to 4K",
+  "Ord-til-lyd (Forced Alignment)": "Word alignment (Forced Alignment)",
+  "Ord-til-lyd: {0}": "Word alignment: {0}",
   "Overgang inn": "Transition in",
   "Overgangen kan ikke være lengre enn delen": "The transition cannot be longer than the part",
   "Overgangen må være 0–{0} ms": "The transition must be 0–{0} ms",
@@ -1110,6 +1147,7 @@ export const CATALOG: Record<string, string> = {
   "Relasjonen på plakaten": "The relation on the poster",
   "Relasjonen vises på en plakat og kan ikke angres. Fjern den i stedet.":
     "The relation appears on a poster and cannot be undone. Remove it instead.",
+  Replikk: "Line",
   Replikken: "The line",
   "Replikken ble ikke lest inn: {0}": "The line could not be read aloud: {0}",
   "Replikken er {0} kortere enn tiden den har. Det kan bli en lang pause – vurder en lengre oversettelse eller la pausen stå.":
@@ -1117,6 +1155,7 @@ export const CATALOG: Record<string, string> = {
   "Replikken er for lang til å leses inn i én del.":
     "The line is too long to be read aloud in one part.",
   "Replikken er tom.": "The line is empty.",
+  "Replikken finnes ikke": "The line does not exist",
   "Replikken hører til en annen scene": "The line belongs to another scene",
   "Replikken i {0} nevner {1}, som bare er med i {2} (deaktivert).":
     "The line in {0} mentions {1}, who is only in {2} (deactivated).",
@@ -1155,6 +1194,7 @@ export const CATALOG: Record<string, string> = {
   "Ressursversjon {0}: samme nummer to ganger": "Asset version {0}: same number twice",
   "Ressursversjon {0}: ukjent variant": "Asset version {0}: unknown variant",
   "Revisjonen finnes ikke": "The revision does not exist",
+  "Romlyd – {0}": "Room tone – {0}",
   "Runway oppgir pris i kreditter: 1 kreditt = 0,01 USD.":
     "Runway states prices in credits: 1 credit = 0.01 USD.",
   "Runway trenger et startbilde.": "Runway needs a start image.",
@@ -1348,6 +1388,7 @@ export const CATALOG: Record<string, string> = {
     "Stopped partway (no reply within 15 minutes).",
   "Styrken på ease må være mellom 0 og 100 %": "The ease strength must be between 0 and 100 %",
   "svart-hvitt": "black and white",
+  Synkronisert: "In sync",
   "Synlige munnbevegelser kan kreve ny leppesynk eller en målrettet oppdatering av segmentet. Ingenting lages på nytt automatisk – det krever ditt valg og kostnadsgodkjenning.":
     "Visible mouth movements may require new lip sync or a targeted update of the segment. Nothing is regenerated automatically – it requires your choice and cost approval.",
   "Synlige munnbevegelser kan kreve ny leppesynk. Filmen endres ikke automatisk.":
@@ -1455,6 +1496,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig lengde på lydfilen": "Invalid length of the audio file",
   "Ugyldig lenke": "Invalid link",
   "Ugyldig lydklipp": "Invalid audio clip",
+  "Ugyldig lydkomposisjon": "Invalid audio composition",
   "Ugyldig maske": "Invalid mask",
   "Ugyldig mediesti": "Invalid media path",
   "Ugyldig modell": "Invalid model",
@@ -1465,6 +1507,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig notat": "Invalid note",
   "Ugyldig ønske": "Invalid request",
   "Ugyldig oppgave": "Invalid task",
+  "Ugyldig ordkobling": "Invalid word alignment",
   "Ugyldig overgang": "Invalid transition",
   "Ugyldig oversettelse": "Invalid translation",
   "Ugyldig periode": "Invalid period",
@@ -1572,6 +1615,8 @@ export const CATALOG: Record<string, string> = {
   "Ukjent språk": "Unknown language",
   "Ukjent startbilde.": "Unknown start image.",
   "Ukjent stil": "Unknown style",
+  "Ukjent tjeneste": "Unknown service",
+  "Ukjent tjeneste.": "Unknown service.",
   "Ukjent type fortellingstid": "Unknown story time type",
   "Ukjent type kontinuitetshendelse": "Unknown continuity event type",
   "Ukjent utvalg": "Unknown selection",
