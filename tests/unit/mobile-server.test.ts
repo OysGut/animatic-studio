@@ -314,6 +314,48 @@ describe("mobilen uten innlogging", () => {
     const again = await fns.mobileShareLink({ data: { token: r["token"] as string } });
     expect(again["ok"]).toBe(false);
   });
+
+  it("E7 (REQ-0712): mange opplastinger får hver sin plass; en stor video godtas, for stor avvises", async () => {
+    const f = setup();
+    const token = await session(f);
+    const ids = Array.from(
+      { length: 20 },
+      (_, i) => `00000000-0000-7000-8000-0000000cc0${String(i).padStart(2, "0")}`,
+    );
+    // Kallene sendes etter hverandre her: vitest-mockingen av dynamiske importer tåler ikke samtidige kall.
+    // Samtidige opplastinger fra telefonen (to om gangen) prøves i nettleseren (dec0090-mobile-ui.mjs).
+    const rs: Record<string, unknown>[] = [];
+    for (const [i, id] of ids.entries())
+      rs.push(
+        await fns.mobileUploadTicket({
+          data: { token, clientFileId: id, mime: "image/jpeg", bytes: 1000, fileName: `b${i}.jpg` },
+        }),
+      );
+    expect(rs.every((r) => r["ok"] === true)).toBe(true);
+    expect(new Set(rs.map((r) => r["path"])).size).toBe(20);
+    expect(f.calls.rpc.filter(([n]) => n === "mobile_register_upload")).toHaveLength(20);
+    const big = await fns.mobileUploadTicket({
+      data: {
+        token,
+        clientFileId: "00000000-0000-7000-8000-0000000cc100",
+        mime: "video/mp4",
+        bytes: 490 * 1024 * 1024,
+        fileName: "lang.mp4",
+      },
+    });
+    expect(big["ok"]).toBe(true);
+    const tooBig = await fns.mobileUploadTicket({
+      data: {
+        token,
+        clientFileId: "00000000-0000-7000-8000-0000000cc101",
+        mime: "video/mp4",
+        bytes: 600 * 1024 * 1024,
+        fileName: "for-lang.mp4",
+      },
+    });
+    expect(tooBig["ok"]).toBe(false);
+    expect(String(tooBig["message"]).length).toBeGreaterThan(5);
+  });
 });
 
 describe("lydopptak (bolk B)", () => {
