@@ -1,6 +1,7 @@
 /**
  * Lydmotoren for komposisjoner (fase 2, bolk C, DEC-0094, REQ-0697): samme miks brukes til forhåndsavspilling,
- * lagring og eksport, så det som eksporteres er det brukeren hørte. Delene legges på riktig sted med volum og
+ * lagring og eksport, så det som eksporteres er det brukeren hørte. Pauser og romlyd (bolk E) er vanlige deler i
+ * komposisjonen og mikses på samme måte (E4–E7). Delene legges på riktig sted med volum og
  * inn-/uttoning (lineært, også der delene overlapper – en enkel krysstoning). Bare på klienten (Web Audio).
  */
 import type { AudioComposition, AudioSegment } from "@/core";
@@ -13,15 +14,39 @@ export interface RenderOptions {
   readonly toMs?: number;
 }
 
+/**
+ * Romlyd og overganger (bolk E, DEC-0096) tones med jevn effekt (sinus/cosinus), så volumet holdes jevnt der to
+ * biter romlyd krysstones (REQ-0708). Tale tones lineært som før.
+ */
+function equalPower(s: AudioSegment): boolean {
+  return s.role === "room" || s.role === "transition";
+}
+
 /** Volumet (forsterkning) for en del på et tidspunkt (ms fra delens start). Ren funksjon, for tester. */
 export function segmentGainAt(s: AudioSegment, t: number): number {
   if (t < 0 || t > s.lengthMs) return 0;
   const base = Math.pow(10, s.gainDb / 20);
+  const shape = equalPower(s) ? (x: number) => Math.sin((Math.PI / 2) * x) : (x: number) => x;
   let k = 1;
-  if (s.fadeInMs > 0 && t < s.fadeInMs) k = Math.min(k, t / s.fadeInMs);
+  if (s.fadeInMs > 0 && t < s.fadeInMs) k = Math.min(k, shape(t / s.fadeInMs));
   if (s.fadeOutMs > 0 && t > s.lengthMs - s.fadeOutMs)
-    k = Math.min(k, (s.lengthMs - t) / s.fadeOutMs);
+    k = Math.min(k, shape((s.lengthMs - t) / s.fadeOutMs));
   return base * Math.max(0, k);
+}
+
+/** Punktene volumkurven tegnes gjennom (ms i komposisjonen), innenfor [start, end]. */
+export function gainPoints(s: AudioSegment, start: number, end: number): number[] {
+  const points = new Set([start, end]);
+  const steps = equalPower(s) ? 8 : 1;
+  const add = (from: number, len: number) => {
+    for (let i = 0; i <= steps; i++) {
+      const p = from + (len * i) / steps;
+      if (p > start && p < end) points.add(p);
+    }
+  };
+  if (s.fadeInMs > 0) add(s.atMs, s.fadeInMs);
+  if (s.fadeOutMs > 0) add(s.atMs + s.lengthMs - s.fadeOutMs, s.fadeOutMs);
+  return [...points].sort((a, b) => a - b);
 }
 
 /**
@@ -49,12 +74,8 @@ export async function renderComposition(
     src.buffer = buf;
     const g = ctx.createGain();
     const when = (start - from) / 1000;
-    // Volumkurven: punkter ved start, slutten av inntoningen, starten av uttoningen og slutt
-    const points = new Set([start, end]);
-    if (s.fadeInMs > 0) points.add(Math.min(end, Math.max(start, s.atMs + s.fadeInMs)));
-    if (s.fadeOutMs > 0)
-      points.add(Math.min(end, Math.max(start, s.atMs + s.lengthMs - s.fadeOutMs)));
-    const sorted = [...points].sort((a, b) => a - b);
+    // Volumkurven: punkter ved start, gjennom toningene og ved slutt
+    const sorted = gainPoints(s, start, end);
     g.gain.setValueAtTime(segmentGainAt(s, sorted[0]! - s.atMs), when);
     for (const p of sorted.slice(1))
       g.gain.linearRampToValueAtTime(segmentGainAt(s, p - s.atMs), (p - from) / 1000);

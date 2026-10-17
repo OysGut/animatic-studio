@@ -53,7 +53,7 @@ import type {
   TakeCoverage,
 } from "./model";
 import { isVersionView } from "./library/view";
-import { COMPOSITION_FORMAT, type AudioComposition } from "./audio/composition";
+import { isAudioComposition, type AudioComposition } from "./audio/composition";
 import { ALIGNMENT_FORMAT, type WordAlignment } from "./audio/alignment";
 
 /** En lagret ordkobling (formen er kontrollert da den ble lagret). */
@@ -68,12 +68,7 @@ function isAlignment(v: unknown): v is WordAlignment {
 
 /** En lagret lydkomposisjon (formen er kontrollert da den ble lagret). */
 function isComposition(v: unknown): v is AudioComposition {
-  return (
-    !!v &&
-    typeof v === "object" &&
-    (v as { format?: unknown }).format === COMPOSITION_FORMAT &&
-    Array.isArray((v as { segments?: unknown }).segments)
-  );
+  return isAudioComposition(v);
 }
 import type { DurationAssumptions } from "./screenplay/duration";
 
