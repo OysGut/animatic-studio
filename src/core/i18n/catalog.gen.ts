@@ -525,7 +525,9 @@ export const CATALOG: Record<string, string> = {
     "The fact sheet is too long (at most 4,000 characters)",
   "Fant ikke opptaket.": "The recording was not found.",
   "Fant ikke replikken.": "The line was not found.",
-  "Fant ikke scenen.": "The scene was not found.",
+"Fant ikke scenen.": "The scene was not found.",
+  "Fant ingen egnet romlyd for pausen. Velg stillhet eller en romlydfil.":
+    "No suitable room tone was found for the pause. Choose silence or a room tone file.",
   "Fant ingen sceneoverskrifter (INT./EXT.). All tekst ligger i én scene uten overskrift.":
     "No scene headings (INT./EXT.) found. All text is in one scene without a heading.",
   "Fargen må være på formen #rrggbb": "The colour must be in the form #rrggbb",

@@ -35,6 +35,7 @@ export * from "./audio/takes";
 export * from "./audio/composition";
 export * from "./audio/pauses";
 export * from "./audio/roomtone";
+export * from "./audio/transitions";
 export * from "./audio/alignment";
 export * from "./generation/prompt";
 export * from "./generation/cost";
