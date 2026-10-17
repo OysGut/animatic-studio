@@ -258,14 +258,13 @@ function Library({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="flex h-10 shrink-0 items-center gap-2 border-b border-border bg-surface-2 px-3">
+      <Toolbar>
         <span className="text-[13px] font-medium text-text-primary">
           {L("Ressursbibliotek", "Asset library")}
         </span>
-        <div className="mx-1 h-5 w-px bg-border" aria-hidden />
-        <Button
-          size="sm"
-          variant="ghost"
+        <ToolbarSeparator />
+        <ToolbarButton
+          variant="icon"
           onClick={cmds.undo}
           disabled={!cmds.canUndo}
           title={
@@ -280,10 +279,9 @@ function Library({
           }
         >
           <Undo2 />
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
+        </ToolbarButton>
+        <ToolbarButton
+          variant="icon"
           onClick={cmds.redo}
           disabled={!cmds.canRedo}
           title={
@@ -298,10 +296,8 @@ function Library({
           }
         >
           <Redo2 />
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => setTrashOpen(true)}
           title={L(
             "Slettede ressurser og bilder: hent inn igjen eller slett for godt",
@@ -311,11 +307,10 @@ function Library({
           <Trash2 />
           {L("Slettede objekter", "Deleted items")}
           {trashCount ? ` (${trashCount})` : ""}
-        </Button>
+        </ToolbarButton>
         {editable ? (
-          <Button
-            size="sm"
-            variant={suggestions.length ? "secondary" : "ghost"}
+          <ToolbarButton
+            active={suggestions.length > 0}
             onClick={() => setSuggestOpen(true)}
             disabled={suggestions.length === 0}
             title={L(
@@ -326,7 +321,7 @@ function Library({
             <Lightbulb />
             {L("Forslag fra manuset", "Suggestions from the script")}
             {suggestions.length ? ` (${suggestions.length})` : ""}
-          </Button>
+          </ToolbarButton>
         ) : null}
         {editable ? (
           <>
@@ -360,9 +355,7 @@ function Library({
                 else setReupload({ items, unknown });
               }}
             />
-            <Button
-              size="sm"
-              variant="ghost"
+            <ToolbarButton
               onClick={() => reuploadInput.current?.click()}
               title={L(
                 "Last opp bilder du har lastet ned og endret. De kjennes igjen på navnet («Ressurs - Variant - vN»).",
@@ -371,12 +364,10 @@ function Library({
             >
               <Upload />
               {L("Last opp endrede bilder …", "Upload changed images …")}
-            </Button>
+            </ToolbarButton>
           </>
         ) : null}
-        <Button
-          size="sm"
-          variant="ghost"
+        <ToolbarButton
           onClick={() => setZipOpen(true)}
           title={L(
             "Last ned ressursene som zip, per kategori eller alt samlet",
@@ -385,7 +376,7 @@ function Library({
         >
           <Download />
           {L("Last ned som zip", "Download as zip")}
-        </Button>
+        </ToolbarButton>
         <div className="ml-auto flex items-center gap-3">
           <SaveIndicator cmds={cmds} />
           {roleKnown && !editable ? (
@@ -418,7 +409,7 @@ function Library({
             </label>
           ) : null}
         </div>
-      </div>
+      </Toolbar>
 
       <div
         className="grid min-h-0 flex-1"
