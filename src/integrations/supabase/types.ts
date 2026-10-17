@@ -375,8 +375,10 @@ export type Database = {
       }
       asset_versions: {
         Row: {
+          alignment: Json | null
           byte_size: number | null
           byte_size_big: number
+          composition: Json | null
           created_at: string
           created_by: string | null
           duration_ms: number | null
@@ -395,8 +397,10 @@ export type Database = {
           width: number | null
         }
         Insert: {
+          alignment?: Json | null
           byte_size?: number | null
           byte_size_big: number
+          composition?: Json | null
           created_at?: string
           created_by?: string | null
           duration_ms?: number | null
@@ -415,8 +419,10 @@ export type Database = {
           width?: number | null
         }
         Update: {
+          alignment?: Json | null
           byte_size?: number | null
           byte_size_big?: number
+          composition?: Json | null
           created_at?: string
           created_by?: string | null
           duration_ms?: number | null
