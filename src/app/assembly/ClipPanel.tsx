@@ -1150,7 +1150,7 @@ function TransitionRow({
       aria-label={L("Overgang inn i scenen", "Transition into the scene")}
       className="flex flex-col gap-1.5 border-b border-border p-3"
     >
-      <h2 className={label + " flex h-8 shrink-0 items-center"}>
+      <h2 className={label + " -mx-3 flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2"}>
         {first
           ? L("Starten av filmen", "Start of the film")
           : L("Overgang inn i scenen", "Transition into the scene")}
