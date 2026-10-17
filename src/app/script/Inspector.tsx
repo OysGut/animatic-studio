@@ -204,7 +204,7 @@ function Section({ title, children }: { title?: string; children: ReactNode }) {
   return (
     <section className="mb-4">
       {title ? (
-        <h3 className="mb-1.5 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+        <h3 className="mb-1.5 text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
           {title}
         </h3>
       ) : null}

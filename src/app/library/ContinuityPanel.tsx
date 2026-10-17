@@ -533,7 +533,7 @@ export function ContinuityPanel({
           aria-label={L("Kontinuitetstidslinje", "Continuity timeline")}
           className="border border-border bg-surface-1"
         >
-          <div className="flex h-8 items-center gap-1.5 border-b border-border px-3 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+          <div className="flex h-8 items-center gap-1.5 border-b border-border bg-surface-2 px-2 text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
             <Clock className="size-3.5" aria-hidden />
             {L("Tidslinje i fortellingstid", "Timeline in story time")}
           </div>
