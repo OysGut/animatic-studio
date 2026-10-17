@@ -1,3 +1,4 @@
+import { Toolbar, ToolbarButton, ToolbarSeparator } from "@/app/shell/workspace-chrome";
 /**
  * Sceneeditoren (M3 del 2, mandat kap. 11, DEC-0035): én 2D-scene per scene i manuset, bygget av lag
  * (bakgrunner, mellomgrunner, karakterer, objekter …) med bilder fra ressursbiblioteket eller fargeflater.
@@ -615,12 +616,12 @@ function Editor({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="flex h-10 shrink-0 items-center gap-2 border-b border-border bg-surface-2 px-3">
+      <Toolbar>
         <span className="text-[13px] font-medium text-text-primary">
           {L("Sceneeditor", "Scene editor")}
         </span>
         <ProductionPicker state={state} value={productionId} onChange={setProductionId} />
-        <div className="mx-1 h-5 w-px bg-border" aria-hidden />
+        <ToolbarSeparator />
         <ScenePicker
           state={state}
           occurrences={occurrences}
@@ -638,10 +639,9 @@ function Editor({
           cmds={cmds}
           compact
         />
-        <div className="mx-1 h-5 w-px bg-border" aria-hidden />
-        <Button
-          size="sm"
-          variant="ghost"
+        <ToolbarSeparator />
+        <ToolbarButton
+          variant="icon"
           onClick={cmds.undo}
           disabled={!cmds.canUndo}
           title={
@@ -656,10 +656,9 @@ function Editor({
           }
         >
           <Undo2 />
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
+        </ToolbarButton>
+        <ToolbarButton
+          variant="icon"
           onClick={cmds.redo}
           disabled={!cmds.canRedo}
           title={
@@ -674,17 +673,16 @@ function Editor({
           }
         >
           <Redo2 />
-        </Button>
+        </ToolbarButton>
         {editable && composition ? (
-          <Button size="sm" variant="secondary" onClick={() => setAddOpen(true)}>
+          <ToolbarButton variant="default" onClick={() => setAddOpen(true)}>
             <Plus />
             {L("Legg til lag", "Add layer")}
-          </Button>
+          </ToolbarButton>
         ) : null}
         {audioEditable && occurrence ? (
-          <Button
-            size="sm"
-            variant="ghost"
+          <ToolbarButton
+            variant="default"
             onClick={() => {
               playback.pause();
               setRecordOpen(true);
@@ -697,7 +695,7 @@ function Editor({
             <Mic aria-hidden />
             {/* Under 1400 px bare ikon (med verktøytips), så scenevelgeren får plass */}
             <span className="sr-only min-[1400px]:not-sr-only">{L("Opptak", "Recording")}</span>
-          </Button>
+          </ToolbarButton>
         ) : null}
         {/* Bilder og video fra mobilen til denne scenen (DEC-0090): én QR-kode per scene */}
         {roleEditable && occurrence && variant ? (
@@ -719,9 +717,8 @@ function Editor({
           />
         ) : null}
         {occurrence ? (
-          <Button
-            size="sm"
-            variant="secondary"
+          <ToolbarButton
+            variant="default"
             onClick={() => {
               playback.pause();
               setAiVideoOpen(true);
@@ -734,14 +731,13 @@ function Editor({
           >
             <AiGlyph aria-hidden />
             {L("AI-video …", "AI video …")}
-          </Button>
+          </ToolbarButton>
         ) : null}
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex flex-wrap items-center gap-2">
           {composition ? (
             <>
-              <Button
-                size="sm"
-                variant={neighbours ? "secondary" : "ghost"}
+              <ToolbarButton
+                active={neighbours}
                 onClick={() => setNeighbours(!neighbours)}
                 aria-pressed={neighbours}
                 title={L(
@@ -753,12 +749,11 @@ function Editor({
                 <span className="sr-only min-[1400px]:not-sr-only">
                   {L("Naboscener", "Neighbouring scenes")}
                 </span>
-              </Button>
+              </ToolbarButton>
               {/* Forhåndsvisning med valg i en liten meny, så verktøylinjen ikke bryter tekst (DEC-0076 funn 6) */}
               <div className="flex shrink-0 items-center">
-                <Button
-                  size="sm"
-                  variant={previewOpen ? "secondary" : "ghost"}
+                <ToolbarButton
+                  active={previewOpen}
                   onClick={() => setPreviewOpen(!previewOpen)}
                   aria-pressed={previewOpen}
                   title={L(
@@ -771,12 +766,11 @@ function Editor({
                   <span className="sr-only min-[1400px]:not-sr-only">
                     {L("Forhåndsvisning", "Preview")}
                   </span>
-                </Button>
+                </ToolbarButton>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button
-                      size="sm"
-                      variant={previewOpen ? "secondary" : "ghost"}
+                    <ToolbarButton
+                      active={previewOpen}
                       className="w-6 rounded-l-none px-0"
                       aria-label={L("Valg for forhåndsvisning", "Preview options")}
                       title={
@@ -789,7 +783,7 @@ function Editor({
                       }
                     >
                       <ChevronDown className="size-3" aria-hidden />
-                    </Button>
+                    </ToolbarButton>
                   </PopoverTrigger>
                   <PopoverContent align="end" className="flex w-64 flex-col gap-1 p-3">
                     <label
@@ -843,11 +837,11 @@ function Editor({
                   </PopoverContent>
                 </Popover>
               </div>
-              <div className="h-5 w-px bg-border" aria-hidden />
+              <ToolbarSeparator />
             </>
           ) : null}
           <ShortcutsButton onClick={() => setShortcutsOpen(true)} />
-          <div className="h-5 w-px shrink-0 bg-border" aria-hidden />
+          <ToolbarSeparator />
           <SaveIndicator cmds={cmds} />
           {roleKnown && !roleEditable ? (
             <span className="text-xs text-text-tertiary">
@@ -855,7 +849,7 @@ function Editor({
             </span>
           ) : null}
         </div>
-      </div>
+      </Toolbar>
 
       <div className="flex min-h-0 flex-1">
         {/* Ressursene i scenen (side om side står de sammen med de andre panelene til høyre) */}

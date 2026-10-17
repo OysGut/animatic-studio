@@ -95,7 +95,7 @@ export function LayerEvents({
 
   return (
     <section aria-label={L("Hendelser i manuset", "Script events")} className="mb-4">
-      <h3 className="mb-1.5 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+      <h3 className="-mx-3 mb-1.5 flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2 text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
         {L("Hendelser i manuset", "Script events")}
       </h3>
       {links.length === 0 ? (

@@ -1,3 +1,4 @@
+import { Toolbar, ToolbarButton, ToolbarSeparator } from "@/app/shell/workspace-chrome";
 /**
  * Arbeidsflaten «Utgivelse» (M8 del 1, DEC-0061; mandat kap. 26, REQ-0384–0399, REQ-0403/0404,
  * REQ-0501/0502): plakater og karakterkart per produksjon, med førsteutkast fra prosjektet, direkte
@@ -381,14 +382,13 @@ function Release({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="flex h-10 shrink-0 items-center gap-2 border-b border-border bg-surface-2 px-3">
+      <Toolbar>
         <span className="text-[13px] font-medium text-text-primary">
           {L("Utgivelse", "Release")}
         </span>
-        <div className="mx-1 h-5 w-px bg-border" aria-hidden />
-        <Button
-          size="sm"
-          variant="ghost"
+        <ToolbarSeparator />
+        <ToolbarButton
+          variant="icon"
           onClick={cmds.undo}
           disabled={!cmds.canUndo}
           title={
@@ -403,10 +403,9 @@ function Release({
           }
         >
           <Undo2 />
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
+        </ToolbarButton>
+        <ToolbarButton
+          variant="icon"
           onClick={cmds.redo}
           disabled={!cmds.canRedo}
           title={
@@ -421,51 +420,47 @@ function Release({
           }
         >
           <Redo2 />
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
+        </ToolbarButton>
+        <ToolbarButton
+          variant="default"
           onClick={() => setRelOpen(true)}
           title={L("Relasjoner mellom karakterene", "Relations between the characters")}
         >
           <GitFork />
           <span className="hidden xl:inline">{L("Relasjoner", "Relations")}</span>
-        </Button>
+        </ToolbarButton>
         {shownPoster && editable ? (
           <>
-            <div className="mx-1 h-5 w-px bg-border" aria-hidden />
-            <Button
-              size="sm"
-              variant="ghost"
+            <ToolbarSeparator />
+            <ToolbarButton
+              variant="icon"
               onClick={() => newCustom("text")}
               aria-label={L("Legg til tekst", "Add text")}
               title={L("Legg til tekst", "Add text")}
             >
               <Type />
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
+            </ToolbarButton>
+            <ToolbarButton
+              variant="icon"
               onClick={() => newCustom("image")}
               aria-label={L("Legg til bilde", "Add image")}
               title={L("Legg til bilde", "Add image")}
             >
               <ImagePlus />
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
+            </ToolbarButton>
+            <ToolbarButton
+              variant="icon"
               onClick={() => newCustom("rect")}
               aria-label={L("Legg til flate", "Add shape")}
               title={L("Legg til flate", "Add shape")}
             >
               <Square />
-            </Button>
+            </ToolbarButton>
           </>
         ) : null}
         {shownPoster ? (
           <>
-            <div className="mx-1 h-5 w-px bg-border" aria-hidden />
+            <ToolbarSeparator />
             <label className="flex items-center gap-1.5 whitespace-nowrap text-xs text-text-secondary">
               <span className="hidden xl:inline">{L("Vis på", "Show in")}</span>
               <select
@@ -478,13 +473,13 @@ function Release({
                 <option value="en">{L("Engelsk", "English")}</option>
               </select>
             </label>
-            <Button size="sm" variant="secondary" onClick={() => setExportOpen(true)}>
+            <ToolbarButton variant="primary" onClick={() => setExportOpen(true)}>
               <Download />
               {L("Eksporter", "Export")}
-            </Button>
+            </ToolbarButton>
           </>
         ) : null}
-        <div className="ml-auto flex items-center gap-3">
+        <div className="ml-auto flex flex-wrap items-center gap-3">
           <SaveIndicator cmds={cmds} />
           {roleKnown && !editable ? (
             <span className="text-xs text-text-tertiary">
@@ -509,7 +504,7 @@ function Release({
             </label>
           ) : null}
         </div>
-      </div>
+      </Toolbar>
       {error ? (
         <div
           role="alert"
@@ -538,15 +533,15 @@ function Release({
             max={360}
             label={L("Bredde på plakatlisten", "Width of the poster list")}
           />
-          <div className="flex shrink-0 items-center justify-between border-b border-border px-2 py-2">
-            <span className="text-xs font-medium text-text-secondary">
+          <div className="group flex h-8 shrink-0 items-center justify-between gap-1.5 border-b border-border bg-surface-2 px-2">
+            <span className="text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
               {L(`Plakater (${posters.length})`, `Posters (${posters.length})`)}
             </span>
             {editable ? (
-              <Button size="sm" variant="ghost" onClick={() => setNewOpen(true)}>
+              <ToolbarButton className="opacity-60 group-hover:opacity-100 focus-visible:opacity-100" onClick={() => setNewOpen(true)}>
                 <Plus />
                 {L("Ny", "New")}
-              </Button>
+              </ToolbarButton>
             ) : null}
           </div>
           <ul className="min-h-0 flex-1 overflow-y-auto p-1" aria-label={L("Plakater", "Posters")}>

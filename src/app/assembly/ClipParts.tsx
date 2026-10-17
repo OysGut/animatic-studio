@@ -22,7 +22,7 @@ import {
 } from "@/core";
 import { Button } from "@/components/ui/button";
 
-const label = "text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary";
+const label = "text-[11px] font-medium uppercase tracking-wider text-text-tertiary";
 
 export function ClipParts({
   state,
@@ -55,7 +55,7 @@ export function ClipParts({
         aria-label={L("Klipp", "Clip")}
         className="flex flex-col gap-1.5 border-b border-border p-3"
       >
-        <h2 className={label}>{L("Klipp", "Clip")}</h2>
+        <h2 className={label + " -mx-3 flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2"}>{L("Klipp", "Clip")}</h2>
         <p className="text-xs text-text-tertiary">
           {L(
             "En av delene mangler kilde (2D-scenen eller filmen er borte) og vises som tittelkort.",
@@ -81,8 +81,8 @@ export function ClipParts({
       aria-label={L("Klipp", "Clip")}
       className="flex flex-col gap-1.5 border-b border-border p-3"
     >
-      <div className="flex items-center gap-2">
-        <h2 className={label}>{L("Klipp", "Clip")}</h2>
+      <div className="-mx-3 group flex h-8 shrink-0 items-center gap-2 border-b border-border bg-surface-2 px-2">
+        <h2 className={label + " flex h-8 shrink-0 items-center"}>{L("Klipp", "Clip")}</h2>
         <span className="text-[11px] text-text-tertiary">
           {parts.length === 1
             ? L("én del", "one part")

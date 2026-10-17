@@ -413,12 +413,12 @@ export const LayersPanel = memo(function LayersPanel({
 
   return (
     <section aria-label={L("Lag", "Layers")} className="flex flex-col py-1">
-      <div className="flex items-center px-3 pb-1 pt-2">
+      <div className="group flex h-8 shrink-0 items-center gap-1.5 border-b border-border bg-surface-2 px-2">
         <h2
           className={
             hideHeading
               ? "sr-only"
-              : "text-xs font-medium uppercase tracking-[0.04em] text-text-tertiary"
+              : "text-[11px] font-medium uppercase tracking-wider text-text-tertiary"
           }
         >
           {L("Lag", "Layers")} ({back.length})
@@ -427,7 +427,7 @@ export const LayersPanel = memo(function LayersPanel({
           <button
             type="button"
             onClick={newGroup}
-            className="ml-auto inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-[11px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
+            className="ml-auto inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 opacity-60 group-hover:opacity-100 focus-visible:opacity-100 text-[11px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
             title={L(
               "Lag i en gruppe flyttes, roteres og skaleres sammen. Valgt lag legges i gruppen.",
               "Layers in a group are moved, rotated and scaled together. The selected layer is put in the group.",
