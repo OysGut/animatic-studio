@@ -32,13 +32,13 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | Modul | Navn | Krav | P0 | Implementert | Verifisert |
 |---|---|---|---|---|---|
 | CORE | Project Core | 120 | 57 | 120 | 117 |
-| SCRIPT | Screenplay Engine | 135 | 32 | 134 | 132 |
+| SCRIPT | Screenplay Engine | 135 | 32 | 135 | 133 |
 | TIMELINE | Timeline & Assembly Engine | 108 | 29 | 108 | 108 |
-| LIBRARY | Resource Library | 96 | 10 | 84 | 80 |
+| LIBRARY | Resource Library | 96 | 10 | 85 | 81 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 39 | 39 |
 | COMPOSE | 2D Composition Engine | 76 | 14 | 76 | 75 |
 | CAMERA | Camera & Motion Engine | 32 | 2 | 32 | 32 |
-| AUDIO | Audio Engine | 69 | 2 | 62 | 57 |
+| AUDIO | Audio Engine | 69 | 2 | 69 | 62 |
 | PROMPT | Prompt Orchestration Engine | 58 | 15 | 54 | 50 |
 | PROVIDER | Provider Adapters | 48 | 6 | 46 | 40 |
 | QUALITYCOST | Quality & Cost Engine | 31 | 7 | 30 | 29 |
@@ -49,7 +49,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | EXPORT | Export Engine | 60 | 12 | 60 | 60 |
 | SECURITY | Security & Storage | 45 | 5 | 44 | 43 |
 | COLLAB | Collaboration & Access | 21 | 0 | 21 | 21 |
-| UI | Brukergrensesnitt og designsystem | 206 | 21 | 199 | 194 |
+| UI | Brukergrensesnitt og designsystem | 206 | 21 | 201 | 196 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 7 | 5 |
 
 ## Dekning per fase
@@ -64,7 +64,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | 6 | 49 | 48 |
 | 7 | 63 | 62 |
 | 8 | 39 | 25 |
-| Tverrgående/prosess | 87 | 38 |
+| Tverrgående/prosess | 87 | 43 |
 
 ## Matrise
 
@@ -774,13 +774,13 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0702 | Beslutning DEC-0090 | AUDIO | src/app/audio/LineWordsPanel.tsx, src/core/audio/composition.ts, src/app/audio/AudioCompositionEditor.tsx | 3 | tests/unit/word-alignment.test.ts, tests/visual/dec0095-word-alignment-ui.mjs, tests/visual/dec0094-audio-editor-ui.mjs | Verifisert | 2026-10-17 DEC-0095: Bygget i bolk D |
 | REQ-0703 | Beslutning DEC-0090 | SCRIPT, AUDIO, VERSION | src/core/audio/alignment.ts, src/app/audio/AudioTakesDialog.tsx, src/app/script/Inspector.tsx | 2 | tests/unit/word-alignment.test.ts, tests/visual/dec0095-word-alignment-ui.mjs | Verifisert | 2026-10-17 DEC-0095: Bygget i bolk D |
 | REQ-0704 | Beslutning DEC-0090 | AUDIO, SCRIPT | src/core/audio/alignment.ts, src/app/audio/LineWordsPanel.tsx | 1 | tests/unit/word-alignment.test.ts | Implementert – ikke verifisert | 2026-10-17 DEC-0095: Bygget i bolk D |
-| REQ-0705 | Beslutning DEC-0090 | AUDIO, UI | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk E) |
-| REQ-0706 | Beslutning DEC-0090 | AUDIO | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk E) |
-| REQ-0707 | Beslutning DEC-0090 | AUDIO, SCRIPT | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk E) |
-| REQ-0708 | Beslutning DEC-0090 | AUDIO | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk E) |
-| REQ-0709 | Beslutning DEC-0090 | AUDIO | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk E) |
-| REQ-0710 | Beslutning DEC-0090 | AUDIO, UI | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk E) |
+| REQ-0705 | Beslutning DEC-0090 | AUDIO, UI | src/core/audio/pauses.ts, src/core/audio/composition.ts, src/app/audio/PauseTimingPanel.tsx, src/app/audio/LineWordsPanel.tsx | 1 | tests/unit/audio-pauses.test.ts, tests/visual/dec0096-pauses-ui.mjs | Verifisert | 2026-10-17 DEC-0096: Bygget i bolk E |
+| REQ-0706 | Beslutning DEC-0090 | AUDIO | src/core/audio/pauses.ts, src/app/audio/PauseTimingPanel.tsx | 1 | tests/unit/audio-pauses.test.ts, tests/visual/dec0096-pauses-ui.mjs | Verifisert | 2026-10-17 DEC-0096: Bygget i bolk E |
+| REQ-0707 | Beslutning DEC-0090 | AUDIO, SCRIPT | src/app/audio/PauseTimingPanel.tsx, src/core/audio/composition.ts | 1 | tests/unit/audio-pauses-script.test.ts, tests/visual/dec0096-pauses-ui.mjs | Verifisert | 2026-10-17 DEC-0096: Bygget i bolk E |
+| REQ-0708 | Beslutning DEC-0090 | AUDIO | src/core/audio/roomtone.ts, src/app/audio/room-fill.ts, src/engine/audio/composition.ts | 2 | tests/unit/roomtone.test.ts, tests/unit/audio-engine-room.test.ts, tests/visual/dec0096-pauses-ui.mjs | Implementert – ikke verifisert | 2026-10-17 DEC-0096: Bygget i bolk E; må prøves med ekte opptak (KI-248) |
+| REQ-0709 | Beslutning DEC-0090 | AUDIO | src/core/audio/transitions.ts, src/app/audio/TransitionsPanel.tsx | 1 | tests/unit/audio-transitions.test.ts, tests/visual/dec0096-pauses-ui.mjs | Implementert – ikke verifisert | 2026-10-17 DEC-0096: Bygget i bolk E; må prøves med ekte opptak (KI-248) |
+| REQ-0710 | Beslutning DEC-0090 | AUDIO, UI | src/core/audio/transitions.ts, src/app/audio/AudioCompositionEditor.tsx | 1 | tests/unit/audio-transitions.test.ts, tests/visual/dec0096-pauses-ui.mjs | Verifisert | 2026-10-17 DEC-0096: Bygget i bolk E |
 | REQ-0711 | Beslutning DEC-0090 | UI, SECURITY | src/app/mobile/MobilePage.tsx | 0 | – | Implementert – ikke verifisert | 2026-10-16 DEC-0090: Bygget i bolk A; må prøves på iPhone og Android av Mars |
-| REQ-0712 | Beslutning DEC-0090 | AUDIO, LIBRARY | – | 0 | – | Ikke startet | 2026-10-16 DEC-0090: Registrert fra fase 2-spesifikasjonen (bolk E) |
+| REQ-0712 | Beslutning DEC-0090 | AUDIO, LIBRARY | src/engine/audio/mixer.ts, src/app/audio/room-fill.ts, src/adapters/mobile/mobile.functions.ts | 2 | tests/unit/audio-performance.test.ts, tests/unit/mobile-server.test.ts | Verifisert | 2026-10-17 DEC-0096: Bygget i bolk E |
 | REQ-0713 | Beslutning DEC-0091 | UI, SECURITY | src/app/shell/error-report.ts, src/app/shell/ErrorDetails.tsx, src/routes/__root.tsx | 1 | tests/unit/error-report.test.tsx, tests/unit/realtime-channels.test.ts | Verifisert | 2026-10-16 DEC-0091: Feilmeldingen viste krasjet i sceneeditoren (KI-237), rettet |
 | REQ-0714 | Beslutning DEC-0092 | COMPOSE, UI | src/core/composition/index.ts | 1 | tests/unit/layer-fit.test.ts | Verifisert | 2026-10-16 DEC-0092: Bygget (var 60 %) |
