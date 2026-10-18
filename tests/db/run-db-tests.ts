@@ -5184,6 +5184,62 @@ try {
     const rows = await as("authenticated", ALICE, (tx) => tx`select project_id from public.global_asset_projects(${ga})`);
     assert(rows.length === 1 && rows[0]!["project_id"] === p, "prosjektet vises ikke");
   });
+
+  // ---------- GP5: delingslenker (migrasjon 0047) ----------
+  await test("GP5: redaktør deler en filmversjon; nøkkelen er skjult; tilbakekalling og sletting", async () => {
+    const p = await as("authenticated", ALICE, async (tx) =>
+      (await tx`select public.create_project('GP5-prosjekt', 25, 1) as id`)[0]!["id"] as string,
+    );
+    const prod = (await sql`select id from public.productions where project_id = ${p} limit 1`)[0]!["id"] as string;
+    const rec = await as("authenticated", ALICE, async (tx) =>
+      (await tx`select public.record_export(${p}, ${prod}, 'film', 'film.mp4', '{}', '{}') as id`)[0]!["id"] as string,
+    );
+    // Ikke-medlem kan ikke dele
+    await expectError(
+      as("authenticated", BOB, (tx) => tx`select public.create_film_share(${p}, ${rec}, 'Film', 1000, 5000, 1920, 1080, 30)`),
+      "42501",
+    );
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`select public.create_film_share(${p}, ${rec}, 'Film', 1000, 5000, 1920, 1080, 14)`),
+      "22023",
+    );
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`select public.create_film_share(${p}, ${rec}, 'Film', 524288001, 5000, 1920, 1080, 30)`),
+      "23514",
+    );
+    const r = await as("authenticated", ALICE, async (tx) =>
+      (await tx`select public.create_film_share(${p}, ${rec}, 'Film', 1000, 5000, 1920, 1080, 30) as r`)[0]!["r"] as { id: string; storage_key: string },
+    );
+    assert(r.storage_key === `${p}/shares/${r.id}/film.mp4`, "stien");
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`select public.activate_film_share(${r.id}, 999)`),
+      "22023",
+    );
+    const token = await as("authenticated", ALICE, async (tx) =>
+      (await tx`select public.activate_film_share(${r.id}, 1000) as t`)[0]!["t"] as string,
+    );
+    assert(/^[0-9a-f]{64}$/.test(token), "nøkkelen");
+    const row = (await sql`select token_hash, expires_at from public.film_shares where id = ${r.id}`)[0]!;
+    assert(row["token_hash"] === (await sql`select encode(sha256(convert_to(${token}, 'UTF8')), 'hex') as h`)[0]!["h"], "hashen");
+    assert(row["expires_at"] !== null, "30 dager gir utløp");
+    // Klienten kan ikke lese nøkkelen eller hashen direkte
+    await expectError(as("authenticated", ALICE, (tx) => tx`select token from public.film_shares where id = ${r.id}`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select token_hash from public.film_shares where id = ${r.id}`), "42501");
+    const t2 = await as("authenticated", ALICE, async (tx) => (await tx`select public.film_share_token(${r.id}) as t`)[0]!["t"]);
+    assert(t2 === token, "eieren får nøkkelen for QR");
+    // anon får ingenting
+    await expectError(as("anon", null, (tx) => tx`select id from public.film_shares`), "42501");
+    // Tilbakekalling virker med en gang
+    await as("authenticated", ALICE, (tx) => tx`select public.revoke_film_share(${r.id})`);
+    const after = (await sql`select status, token from public.film_shares where id = ${r.id}`)[0]!;
+    assert(after["status"] === "revoked" && after["token"] === null, "tilbakekalt");
+    const t3 = await as("authenticated", ALICE, async (tx) => (await tx`select public.film_share_token(${r.id}) as t`)[0]!["t"]);
+    assert(t3 === null, "ingen nøkkel etter tilbakekalling");
+    // delete_project fjerner delingene og lister filen
+    const del = (await sql`select public.delete_project(${p}, ${ALICE}) as r`)[0]!["r"] as { films: string[] };
+    assert(del.films.includes(r.storage_key), "filen slettes med prosjektet");
+    assert((await sql`select 1 from public.film_shares where project_id = ${p}`).length === 0, "delingene er slettet");
+  });
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);
