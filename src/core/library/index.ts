@@ -337,6 +337,7 @@ export * from "./suggest";
 export * from "./provenance";
 export * from "./style-profiles";
 export * from "./content-sync";
+export * from "./global";
 
 /** Visningsnavn for et navn fra manuset: «BESTEMOR ANNE» → «Bestemor Anne». */
 export function displayName(name: string): string {

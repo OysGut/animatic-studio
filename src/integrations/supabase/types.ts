@@ -1939,6 +1939,7 @@ export type Database = {
           name: string
           primary_language: string
           revision: number
+          workspace_id: string | null
         }
         Insert: {
           ai_month_limit?: number | null
@@ -1959,6 +1960,7 @@ export type Database = {
           name: string
           primary_language?: string
           revision?: number
+          workspace_id?: string | null
         }
         Update: {
           ai_month_limit?: number | null
@@ -1979,8 +1981,17 @@ export type Database = {
           name?: string
           primary_language?: string
           revision?: number
+          workspace_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "projects_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       scene_occurrences: {
         Row: {
@@ -3349,6 +3360,118 @@ export type Database = {
           },
         ]
       }
+      workspace_invitations: {
+        Row: {
+          accepted_at: string | null
+          accepted_by: string | null
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          invited_by: string
+          revoked_at: string | null
+          role: string
+          token_hash: string
+          workspace_id: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          email: string
+          expires_at?: string
+          id?: string
+          invited_by: string
+          revoked_at?: string | null
+          role: string
+          token_hash: string
+          workspace_id: string
+        }
+        Update: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          invited_by?: string
+          revoked_at?: string | null
+          role?: string
+          token_hash?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_invitations_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspace_members: {
+        Row: {
+          invited_by: string | null
+          joined_at: string
+          removed_at: string | null
+          role: string
+          user_id: string
+          workspace_id: string
+        }
+        Insert: {
+          invited_by?: string | null
+          joined_at?: string
+          removed_at?: string | null
+          role: string
+          user_id: string
+          workspace_id: string
+        }
+        Update: {
+          invited_by?: string | null
+          joined_at?: string
+          removed_at?: string | null
+          role?: string
+          user_id?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_members_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspaces: {
+        Row: {
+          archived_at: string | null
+          created_at: string
+          created_by: string
+          id: string
+          name: string
+          revision: number
+        }
+        Insert: {
+          archived_at?: string | null
+          created_at?: string
+          created_by: string
+          id?: string
+          name: string
+          revision?: number
+        }
+        Update: {
+          archived_at?: string | null
+          created_at?: string
+          created_by?: string
+          id?: string
+          name?: string
+          revision?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -3356,6 +3479,10 @@ export type Database = {
     Functions: {
       accept_invitation: { Args: { p_token: string }; Returns: string }
       accept_privacy: { Args: { p_version: number }; Returns: undefined }
+      accept_workspace_invitation: {
+        Args: { p_token: string }
+        Returns: string
+      }
       apply_changes: {
         Args: {
           p_actor: string
@@ -3389,6 +3516,11 @@ export type Database = {
         }
         Returns: string
       }
+      create_workspace: { Args: { p_name: string }; Returns: string }
+      create_workspace_invitation: {
+        Args: { p_email: string; p_role?: string; p_workspace: string }
+        Returns: string
+      }
       delete_project: {
         Args: { p_actor: string; p_project: string }
         Returns: Json
@@ -3398,6 +3530,7 @@ export type Database = {
         Returns: undefined
       }
       leave_project: { Args: { p_project: string }; Returns: undefined }
+      leave_workspace: { Args: { p_workspace: string }; Returns: undefined }
       link_mobile_import: {
         Args: {
           p_asset: string
@@ -3406,6 +3539,15 @@ export type Database = {
           p_version: string
         }
         Returns: undefined
+      }
+      list_workspace_members: {
+        Args: { p_workspace: string }
+        Returns: {
+          display_name: string
+          joined_at: string
+          role: string
+          user_id: string
+        }[]
       }
       mobile_confirm_upload: {
         Args: {
@@ -3560,8 +3702,20 @@ export type Database = {
         Args: { p_project: string; p_user: string }
         Returns: undefined
       }
+      remove_workspace_member: {
+        Args: { p_user: string; p_workspace: string }
+        Returns: undefined
+      }
+      rename_workspace: {
+        Args: { p_name: string; p_workspace: string }
+        Returns: undefined
+      }
       revoke_invitation: { Args: { p_invitation: string }; Returns: undefined }
       revoke_upload_session: { Args: { p_id: string }; Returns: undefined }
+      revoke_workspace_invitation: {
+        Args: { p_invitation: string }
+        Returns: undefined
+      }
       save_duration_estimate: {
         Args: {
           p_assumptions: Json
@@ -3582,6 +3736,14 @@ export type Database = {
       }
       set_my_locale: { Args: { p_locale: string }; Returns: undefined }
       set_my_ui_prefs: { Args: { p_prefs: Json }; Returns: undefined }
+      set_project_workspace: {
+        Args: { p_project: string; p_workspace: string }
+        Returns: undefined
+      }
+      set_workspace_member_role: {
+        Args: { p_role: string; p_user: string; p_workspace: string }
+        Returns: undefined
+      }
       touch_activity: { Args: never; Returns: undefined }
       upsert_my_profile: {
         Args: { p_display_name?: string }

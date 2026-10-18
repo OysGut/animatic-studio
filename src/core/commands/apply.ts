@@ -290,6 +290,13 @@ function plannedOrFail(ms: unknown): number {
 export const ASSET_MAX_BYTES = 2 * 1024 * 1024 * 1024;
 
 /** Kontrollerer og rydder feltene (trimmer, fjerner duplikater). Samme regler i klient og server. */
+/** En ID i det globale biblioteket (GP2): bare en UUID (kobling, ingen fremmednøkkel). */
+function globalRef(id: unknown): string {
+  if (typeof id !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id))
+    fail("invalid", L("Ugyldig kobling til det globale biblioteket", "Invalid link to the global library"));
+  return id.toLowerCase();
+}
+
 function normalizeAssetFields(f: AssetFields): AssetFields {
   if (
     !f ||
@@ -5391,6 +5398,9 @@ function run(
           revision: 1,
           ...normalizeAssetFields(x.fields),
           archived: x.archived === true,
+          ...(x.globalAssetId !== undefined
+            ? { globalAssetId: globalRef(x.globalAssetId) }
+            : {}),
         };
       }
       return {
@@ -5458,6 +5468,7 @@ function run(
                 tags: a.tags,
               },
               ...(a.archived ? { archived: true } : {}),
+              ...(a.globalAssetId ? { globalAssetId: a.globalAssetId } : {}),
             };
           }),
         },
@@ -6245,6 +6256,15 @@ function run(
               createdBy: env.actor,
               durationMs: sound ? (m.durationMs ?? null) : null,
               ...(sound && c.composition ? { composition: c.composition } : {}),
+              ...(c.globalSource !== undefined
+                ? {
+                    globalSource: {
+                      assetId: globalRef(c.globalSource?.assetId),
+                      variantId: globalRef(c.globalSource?.variantId),
+                      versionId: globalRef(c.globalSource?.versionId),
+                    },
+                  }
+                : {}),
             },
           },
         },
@@ -6346,6 +6366,7 @@ function run(
           note: ver.note,
           number: ver.number,
           ...(ver.composition ? { composition: ver.composition } : {}),
+          ...(ver.globalSource ? { globalSource: ver.globalSource } : {}),
         },
         affected: [ver.id],
       };

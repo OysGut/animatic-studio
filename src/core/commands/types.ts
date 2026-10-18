@@ -524,6 +524,8 @@ export type Command =
         readonly fields: AssetFields;
         /** Bare ved gjør om etter angre (tilstanden ressursen hadde). */
         readonly archived?: boolean;
+        /** Hentet fra det globale biblioteket (GP2). */
+        readonly globalAssetId?: string;
       }[];
     }
   | { readonly type: "UpdateAsset"; readonly assetId: AssetId; readonly fields: AssetFields }
@@ -672,6 +674,8 @@ export type Command =
        * den; komposisjonen kan redigeres videre uten at kildeopptakene endres.
        */
       readonly composition?: import("../audio/composition").AudioComposition;
+      /** Kopiert fra en global versjon (GP2). Bare metadata. */
+      readonly globalSource?: import("../model").GlobalSource;
     }
   | {
       /** Eksplisitt godkjenning (REQ-0136, REQ-0145). null = ingen godkjent versjon. */

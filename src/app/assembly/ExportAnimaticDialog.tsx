@@ -42,6 +42,8 @@ import { FilmLanguagePicker, type FilmLanguage } from "./use-film-language";
 import { isEmbedded, prepareDownload, type ReadyFile } from "@/app/download";
 import { ExportHistory } from "@/app/projects/ExportHistory";
 import { useRecordExport } from "@/app/projects/use-history-records";
+import { FilmShareDialog, type ShareSource } from "@/app/share/FilmShareDialog";
+import { QrCode as QrCodeIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -145,6 +147,8 @@ export function ExportAnimaticDialog({
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState<(ReadyFile & { bytes: number }) | null>(null);
+  const [shareSource, setShareSource] = useState<ShareSource | null>(null);
+  const [shareOpen, setShareOpen] = useState(false);
   const abort = useRef<AbortController | null>(null);
   // Eksportloggen (REQ-0037, migrasjon 0028): registreres når filen er laget
   const recordExport = useRecordExport(state.project.id);
@@ -153,6 +157,7 @@ export function ExportAnimaticDialog({
   useEffect(() => {
     if (!open) return;
     setReady(null);
+    setShareSource(null);
     setSubFile(null);
     setError(null);
     setProgress(null);
@@ -413,6 +418,7 @@ export function ExportAnimaticDialog({
     )
       onSaveSettings({ size, monochrome: mono, output });
     setReady(null);
+    setShareSource(null);
     setSubFile(null);
     const ctrl = new AbortController();
     abort.current = ctrl;
@@ -542,7 +548,7 @@ export function ExportAnimaticDialog({
           ),
         );
       }
-      recordExport({
+      const recordP = recordExport({
         productionId,
         kind: "film",
         fileName: name,
@@ -560,6 +566,19 @@ export function ExportAnimaticDialog({
           format: container,
         },
         occurrenceIds: sel.clips.map((c) => c.occurrenceId),
+      });
+      // QR-deling (GP5): bundet til denne filmversjonen
+      setShareSource({
+        file: new Blob([file.bytes as BlobPart], { type: file.mimeType }),
+        mimeType: file.mimeType,
+        codec: file.codec,
+        audioCodec: file.audioCodec,
+        bytes: file.bytes.byteLength,
+        width: outW,
+        height: outH,
+        durationMs: Math.max(1, Math.round(((sel.endFrame - sel.startFrame) * fps.den * 1000) / fps.num)),
+        title: `${state.project.name} – ${what}`,
+        exportRecord: recordP,
       });
       const lost = failed.length + missingUrl.length;
       const notes: string[] = [];
@@ -998,6 +1017,17 @@ export function ExportAnimaticDialog({
               <Download className="size-3.5" aria-hidden />
               {L("Last ned", "Download")}
             </a>
+            {shareSource ? (
+              <button
+                type="button"
+                onClick={() => setShareOpen(true)}
+                className="inline-flex items-center gap-1 text-accent-brand hover:underline"
+                data-testid="film-share-open"
+              >
+                <QrCodeIcon className="size-3.5" aria-hidden />
+                {L("Del med QR-kode …", "Share with QR code …")}
+              </button>
+            ) : null}
             {subFile ? (
               <a
                 href={subFile.url}
@@ -1045,6 +1075,14 @@ export function ExportAnimaticDialog({
           </Button>
         </DialogFooter>
       </DialogContent>
+      {shareSource ? (
+        <FilmShareDialog
+          open={shareOpen}
+          onOpenChange={setShareOpen}
+          projectId={state.project.id}
+          source={shareSource}
+        />
+      ) : null}
     </Dialog>
   );
 }

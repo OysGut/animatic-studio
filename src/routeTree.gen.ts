@@ -18,6 +18,7 @@ import { Route as GruppeWorkspaceIdRouteImport } from './routes/gruppe.$workspac
 import { Route as MTokenRouteImport } from './routes/m.$token'
 import { Route as ManusutforskerProjectIdRouteImport } from './routes/manusutforsker.$projectId'
 import { Route as ProsjektProjectIdRouteImport } from './routes/prosjekt.$projectId'
+import { Route as SeTokenRouteImport } from './routes/se.$token'
 import { Route as ProsjektProjectIdIndexRouteImport } from './routes/prosjekt.$projectId.index'
 import { Route as ProsjektProjectIdBibliotekRouteImport } from './routes/prosjekt.$projectId.bibliotek'
 import { Route as ProsjektProjectIdManusRouteImport } from './routes/prosjekt.$projectId.manus'
@@ -70,6 +71,11 @@ const ManusutforskerProjectIdRoute = ManusutforskerProjectIdRouteImport.update({
 const ProsjektProjectIdRoute = ProsjektProjectIdRouteImport.update({
   id: '/prosjekt/$projectId',
   path: '/prosjekt/$projectId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SeTokenRoute = SeTokenRouteImport.update({
+  id: '/se/$token',
+  path: '/se/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProsjektProjectIdIndexRoute = ProsjektProjectIdIndexRouteImport.update({
@@ -127,6 +133,7 @@ export interface FileRoutesByFullPath {
   '/m/$token': typeof MTokenRoute
   '/manusutforsker/$projectId': typeof ManusutforskerProjectIdRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
+  '/se/$token': typeof SeTokenRoute
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
@@ -145,6 +152,7 @@ export interface FileRoutesByTo {
   '/gruppe/$workspaceId': typeof GruppeWorkspaceIdRoute
   '/m/$token': typeof MTokenRoute
   '/manusutforsker/$projectId': typeof ManusutforskerProjectIdRoute
+  '/se/$token': typeof SeTokenRoute
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
@@ -165,6 +173,7 @@ export interface FileRoutesById {
   '/m/$token': typeof MTokenRoute
   '/manusutforsker/$projectId': typeof ManusutforskerProjectIdRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
+  '/se/$token': typeof SeTokenRoute
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
@@ -186,6 +195,7 @@ export interface FileRouteTypes {
     | '/m/$token'
     | '/manusutforsker/$projectId'
     | '/prosjekt/$projectId'
+    | '/se/$token'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/montering'
@@ -204,6 +214,7 @@ export interface FileRouteTypes {
     | '/gruppe/$workspaceId'
     | '/m/$token'
     | '/manusutforsker/$projectId'
+    | '/se/$token'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/montering'
@@ -223,6 +234,7 @@ export interface FileRouteTypes {
     | '/m/$token'
     | '/manusutforsker/$projectId'
     | '/prosjekt/$projectId'
+    | '/se/$token'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/montering'
@@ -243,6 +255,7 @@ export interface RootRouteChildren {
   MTokenRoute: typeof MTokenRoute
   ManusutforskerProjectIdRoute: typeof ManusutforskerProjectIdRoute
   ProsjektProjectIdRoute: typeof ProsjektProjectIdRouteWithChildren
+  SeTokenRoute: typeof SeTokenRoute
   ApiPublicCronAiJobsRoute: typeof ApiPublicCronAiJobsRoute
 }
 
@@ -309,6 +322,13 @@ declare module '@tanstack/react-router' {
       path: '/prosjekt/$projectId'
       fullPath: '/prosjekt/$projectId'
       preLoaderRoute: typeof ProsjektProjectIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/se/$token': {
+      id: '/se/$token'
+      path: '/se/$token'
+      fullPath: '/se/$token'
+      preLoaderRoute: typeof SeTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/prosjekt/$projectId/': {
@@ -403,6 +423,7 @@ const rootRouteChildren: RootRouteChildren = {
   MTokenRoute: MTokenRoute,
   ManusutforskerProjectIdRoute: ManusutforskerProjectIdRoute,
   ProsjektProjectIdRoute: ProsjektProjectIdRouteWithChildren,
+  SeTokenRoute: SeTokenRoute,
   ApiPublicCronAiJobsRoute: ApiPublicCronAiJobsRoute,
 }
 export const routeTree = rootRouteImport

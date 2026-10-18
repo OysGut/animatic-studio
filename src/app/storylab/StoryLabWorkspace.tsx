@@ -44,8 +44,11 @@ export function StoryLabWorkspace({
   initialSuggestions,
   initialSuggestionId,
   initialCanvas,
+  initialInterview,
 }: {
   projectId: string;
+  /** GP4: start intervjuet for et nytt prosjekt med en gang. */
+  initialInterview?: boolean;
   userId: string;
   initialCanvas?: boolean;
   initialAssetId: string | null;
@@ -93,6 +96,7 @@ export function StoryLabWorkspace({
       initialSuggestions={initialSuggestions ?? false}
       initialSuggestionId={initialSuggestionId ?? null}
       initialCanvas={initialCanvas ?? false}
+      initialInterview={initialInterview ?? false}
       undoError={undoError}
     />
   );
@@ -110,9 +114,11 @@ function Lab({
   initialSuggestions,
   initialSuggestionId,
   initialCanvas,
+  initialInterview,
   undoError,
 }: {
   initialCanvas: boolean;
+  initialInterview: boolean;
   state: ProjectState;
   projectId: string;
   editable: boolean;
@@ -294,7 +300,7 @@ function Lab({
           </aside>
         )}
         <main ref={mainRef} className="flex min-h-0 min-w-0 flex-1 flex-col">
-          {view.kind === "canvas" ? <LazyCanvasView state={state} projectId={projectId} cmds={cmds} editable={editable} interviewId={view.interviewId}
+          {view.kind === "canvas" ? <LazyCanvasView state={state} projectId={projectId} cmds={cmds} editable={editable} interviewId={view.interviewId} startInterview={initialInterview}
             onInterview={(id) => setView({ kind: "canvas", interviewId: id })}
             onOpenAsset={(id) => { setAssetId(id); setLeftTab("characters"); setView({ kind: "character" }); }}
             onOpenScene={(id) => { setSceneId(id); setLeftTab("scenes"); setView({ kind: "scene", id }); }} /> : view.kind === "scene" ? <SceneLab key={view.id} state={state} projectId={projectId} sceneId={view.id} editable={editable} onScene={setSceneId} onProfile={(id) => { setAssetId(id); setView({ kind: "character" }); }} /> : !asset && view.kind !== "session" ? (

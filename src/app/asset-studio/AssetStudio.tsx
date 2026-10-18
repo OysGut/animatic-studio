@@ -69,6 +69,7 @@ import { VariantStrip, type StripImage } from "./VariantStrip";
 import { ObjectTimeline } from "./ObjectTimeline";
 import { StudioAudioTracks, muteDraftCommand } from "./StudioAudioTracks";
 import { StudioScript } from "./StudioScript";
+import { CarryOverDialog } from "@/app/scene-editor/CarryOverDialog";
 
 const isTyping = (t: EventTarget | null) =>
   t instanceof HTMLElement &&
@@ -152,6 +153,9 @@ export function AssetStudio({
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [confirmCancel, setConfirmCancel] = useState(false);
+  /** «Bruk også i …» (GP3): skrives direkte til andre scener og blander ikke inn utkastet. */
+  const [carryOpen, setCarryOpen] = useState(false);
+  const [carryMsg, setCarryMsg] = useState<string | null>(null);
   const [conflict, setConflict] = useState(false);
   const [saving, setSaving] = useState(false);
   const [imagesOpen, setImagesOpen] = useState(false);
@@ -734,6 +738,24 @@ export function AssetStudio({
             "New images, audio recordings and notes are already saved. The scene changes only when you update it.",
           )}
         </p>
+        {carryMsg ? (
+          <span role="status" className="text-xs text-text-secondary" data-testid="asset-studio-carry-status">
+            {carryMsg}
+          </span>
+        ) : null}
+        {editable && state.layers[layerId as never] ? (
+          <Button
+            variant="ghost"
+            onClick={() => setCarryOpen(true)}
+            data-testid="asset-studio-carry"
+            title={L(
+              "Kopier laget slik det er lagret i scenen til andre scener. Utkastet her tas ikke med.",
+              "Copy the layer as it is saved in the scene to other scenes. The draft here is not included.",
+            )}
+          >
+            {L("Bruk også i …", "Also use in …")}
+          </Button>
+        ) : null}
         <Button variant="ghost" onClick={requestCancel} data-testid="asset-studio-cancel">
           {L("Avbryt uten å oppdatere scenen", "Cancel without updating the scene")}
         </Button>
@@ -746,6 +768,17 @@ export function AssetStudio({
         </Button>
       </footer>
 
+      {carryOpen ? (
+        <CarryOverDialog
+          open
+          onOpenChange={setCarryOpen}
+          state={state}
+          cmds={directCmds}
+          layerId={layerId}
+          sourceOccurrenceId={occurrenceId}
+          onDone={setCarryMsg}
+        />
+      ) : null}
       <AlertDialog open={confirmCancel} onOpenChange={setConfirmCancel}>
         <AlertDialogContent className="border-border bg-surface-2" data-testid="asset-studio-cancel-confirm">
           <AlertDialogHeader>

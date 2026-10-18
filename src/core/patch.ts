@@ -264,6 +264,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         removed: a.removed === true,
         // Migrasjon 0030 (DEC-0080)
         visual_brief: a.visualBrief ?? "",
+        // Migrasjon 0046 (GP2): kobling til det globale biblioteket
+        source_global_asset_id: a.globalAssetId ?? null,
       };
     }
     case "assetVariants": {
@@ -304,6 +306,10 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         composition: v.composition ?? null,
         // Migrasjon 0037 (DEC-0095): ord-til-lyd
         alignment: v.alignment ?? null,
+        // Migrasjon 0046 (GP2)
+        source_global_asset_id: v.globalSource?.assetId ?? null,
+        source_global_variant_id: v.globalSource?.variantId ?? null,
+        source_global_version_id: v.globalSource?.versionId ?? null,
       };
     }
     case "annotations": {
@@ -1122,6 +1128,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...(typeof x["visual_brief"] === "string" && x["visual_brief"]
           ? { visualBrief: x["visual_brief"] }
           : {}),
+        ...(typeof x["source_global_asset_id"] === "string"
+          ? { globalAssetId: x["source_global_asset_id"] }
+          : {}),
       })),
     ),
     assetVariants: byId(
@@ -1156,6 +1165,17 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...(isVersionView(x["view"]) ? { view: x["view"] } : {}),
         ...(isComposition(x["composition"]) ? { composition: x["composition"] } : {}),
         ...(isAlignment(x["alignment"]) ? { alignment: x["alignment"] } : {}),
+        ...(typeof x["source_global_version_id"] === "string" &&
+        typeof x["source_global_asset_id"] === "string" &&
+        typeof x["source_global_variant_id"] === "string"
+          ? {
+              globalSource: {
+                assetId: x["source_global_asset_id"],
+                variantId: x["source_global_variant_id"],
+                versionId: x["source_global_version_id"],
+              },
+            }
+          : {}),
       })),
     ),
     annotations: byId(

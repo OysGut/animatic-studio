@@ -25,6 +25,7 @@ import { VisualBriefEditor } from "./VisualBriefEditor";
 import { ContinuityPanel } from "./ContinuityPanel";
 import { ApproveImpactDialog } from "./ApproveImpactDialog";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { SaveToGlobalButton } from "@/app/global/SaveToGlobalButton";
 import {
   ASSET_KIND_LABEL,
   ASSET_KINDS,
@@ -423,6 +424,7 @@ export function AssetDetail(props: Props) {
                   {L("Forkast", "Discard")}
                 </Button>
               ) : null}
+              {editable ? <SaveToGlobalButton projectId={props.projectId} asset={asset} /> : null}
               <Button
                 size="sm"
                 variant="ghost"

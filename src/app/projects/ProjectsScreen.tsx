@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useMemo, useState, type FormEvent } from "react";
+import { rememberIdea } from "@/app/storylab/new-project-idea";
 import {
   createProject,
   listProductionsFor,
@@ -180,13 +181,20 @@ export function ProjectsScreen({ userId }: { userId: string }) {
       a.name.localeCompare(b.name, collation()),
   );
 
+  /** GP4: kort idé til skriveassistenten (valgfri). */
+  const [idea, setIdea] = useState("");
   const create = useMutation({
-    mutationFn: (projectName: string) => createProject(projectName),
-    onSuccess: async (id) => {
+    mutationFn: async (v: { name: string; assistant: boolean }) => ({ id: await createProject(v.name), assistant: v.assistant }),
+    onSuccess: async ({ id, assistant }) => {
       setName("");
       setCreating(false);
       await qc.invalidateQueries({ queryKey: ["projects"] });
-      void navigate({ to: "/prosjekt/$projectId", params: { projectId: id } });
+      if (assistant) {
+        // Story Lab-intervjuet (SL7) startes med idéen i tekstfeltet; ingen AI-kall før brukeren sender
+        rememberIdea(id, idea);
+        setIdea("");
+        void navigate({ to: "/prosjekt/$projectId/storylab", params: { projectId: id }, search: { intervju: "ny" } });
+      } else void navigate({ to: "/prosjekt/$projectId", params: { projectId: id } });
     },
   });
 
@@ -194,7 +202,7 @@ export function ProjectsScreen({ userId }: { userId: string }) {
 
   function submit(e: FormEvent) {
     e.preventDefault();
-    if (name.trim()) create.mutate(name.trim());
+    if (name.trim()) create.mutate({ name: name.trim(), assistant: false });
   }
 
   const openProduction = (projectId: string, productionId: string) => {
@@ -241,7 +249,7 @@ export function ProjectsScreen({ userId }: { userId: string }) {
       {creating ? (
         <form
           onSubmit={submit}
-          className="mb-6 flex items-center gap-2 border border-border bg-surface-1 p-3"
+          className="mb-6 flex flex-wrap items-center gap-2 border border-border bg-surface-1 p-3"
         >
           <label htmlFor="new-project" className="sr-only">
             {L("Prosjektnavn", "Project name")}
@@ -259,12 +267,38 @@ export function ProjectsScreen({ userId }: { userId: string }) {
             className="h-8 flex-1 bg-surface-3"
             maxLength={200}
           />
-          <Button type="submit" disabled={!name.trim() || create.isPending}>
+          <Button type="submit" disabled={!name.trim() || create.isPending} data-testid="new-project-create">
             {L("Opprett", "Create")}
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={!name.trim() || create.isPending}
+            data-testid="new-project-assistant"
+            title={L(
+              "Opprett prosjektet og utvikle idéen i et intervju i Story Lab. Det du godkjenner, overføres til biblioteket og manuset.",
+              "Create the project and develop the idea in an interview in Story Lab. What you approve is transferred to the library and the script.",
+            )}
+            onClick={() => name.trim() && create.mutate({ name: name.trim(), assistant: true })}
+          >
+            <AiGlyph />
+            {L("Utvikle nytt prosjekt med skriveassistent", "Develop a new project with the writing assistant")}
           </Button>
           <Button type="button" variant="ghost" onClick={() => setCreating(false)}>
             {L("Avbryt", "Cancel")}
           </Button>
+          <label htmlFor="new-project-idea" className="sr-only">
+            {L("Kort idé", "Short idea")}
+          </label>
+          <Input
+            id="new-project-idea"
+            data-testid="new-project-idea"
+            placeholder={L("Kort idé til skriveassistenten (valgfritt)", "Short idea for the writing assistant (optional)")}
+            value={idea}
+            onChange={(e) => setIdea(e.target.value)}
+            className="h-8 basis-full bg-surface-3"
+            maxLength={4000}
+          />
         </form>
       ) : null}
       {create.isError ? (

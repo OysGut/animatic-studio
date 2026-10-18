@@ -51,6 +51,7 @@ import {
   sceneContinuityVariant,
   previousSceneCamera,
   sourceAt,
+  carryTargets,
 } from "@/core";
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
@@ -73,6 +74,7 @@ import { CameraPanel } from "./CameraPanel";
 import { Timeline } from "./Timeline";
 import { LayerImageDialog } from "./LayerImageDialog";
 import { AssetStudio } from "@/app/asset-studio/AssetStudio";
+import { CarryOverDialog, runCarryOver } from "./CarryOverDialog";
 import { RecordAudioDialog } from "./RecordAudioDialog";
 import { SceneToVideoDialog } from "./SceneToVideoDialog";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
@@ -364,6 +366,28 @@ function Editor({
     },
     [setSelectedLayerId, playback],
   );
+  /** «Bruk også i …» (GP3): laget og scenen som er forhåndsvalgt. */
+  const [carry, setCarry] = useState<{ layerId: string; preselect: string | null } | null>(null);
+  const carryNext = useCallback(
+    async (id: string): Promise<string | null> => {
+      if (!occurrenceId) return null;
+      const t = carryTargets(state, id, occurrenceId);
+      if (!t.next)
+        return L("Det er ingen neste scene i produksjonen.", "There is no next scene in the production.");
+      const opt = t.options.find((o) => o.occurrenceId === t.next);
+      if (opt?.duplicates.length) {
+        setCarry({ layerId: id, preselect: t.next });
+        return null;
+      }
+      const r = await runCarryOver(state, cmds, id, occurrenceId, [{ occurrenceId: t.next, mode: "add" }]);
+      if (r.error) return r.error;
+      return L(
+        `Lagt til i scene ${opt?.number ?? ""} ${opt?.heading ?? ""}`.trim() + ".",
+        `Added to scene ${opt?.number ?? ""} ${opt?.heading ?? ""}`.trim() + ".",
+      );
+    },
+    [occurrenceId, state, cmds],
+  );
   /** Åpne bildet stort med «Oppskaler» fremme (advarselen om forstørrelse, DEC-0080). */
   const [upscaleOpen, setUpscaleOpen] = useState(false);
   const openLayerImage = useCallback(
@@ -626,7 +650,13 @@ function Editor({
           frame={playback.frame}
           autoKey={autoKey}
           onOpenImage={() => openLayerImage(selectedLayer.id)}
-          {...(occurrenceId ? { onOpenAssetStudio: () => openAssetStudio(selectedLayer.id) } : {})}
+          {...(occurrenceId
+            ? {
+                onOpenAssetStudio: () => openAssetStudio(selectedLayer.id),
+                onCarryNext: () => carryNext(selectedLayer.id),
+                onCarryPick: () => setCarry({ layerId: selectedLayer.id, preselect: null }),
+              }
+            : {})}
           onUpscale={() => {
             setUpscaleOpen(true);
             openLayerImage(selectedLayer.id);
@@ -1273,6 +1303,19 @@ function Editor({
         cmds={cmds}
         openUpscale={upscaleOpen}
       />
+      {carry && occurrenceId ? (
+        <CarryOverDialog
+          open
+          onOpenChange={(o) => {
+            if (!o) setCarry(null);
+          }}
+          state={state}
+          cmds={cmds}
+          layerId={carry.layerId}
+          sourceOccurrenceId={occurrenceId}
+          preselect={carry.preselect}
+        />
+      ) : null}
       {studioLayerId && composition && occurrenceId && state.layers[studioLayerId as never] ? (
         <AssetStudio
           projectId={projectId}

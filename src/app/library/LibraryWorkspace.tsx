@@ -19,6 +19,7 @@ import {
   Trash2,
   Undo2,
   Upload,
+  Globe,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -58,6 +59,7 @@ import { Button } from "@/components/ui/button";
 import { Toolbar, ToolbarButton, ToolbarSeparator } from "@/app/shell/workspace-chrome";
 import { Input } from "@/components/ui/input";
 import { AssetDetail } from "./AssetDetail";
+import { GlobalLibraryDialog } from "@/app/global/GlobalLibraryDialog";
 import { useImageUrls } from "./asset-images";
 import { SuggestionsDialog } from "./SuggestionsDialog";
 import { useAnalysisStatus } from "./entity-analysis-store";
@@ -167,6 +169,7 @@ function Library({
     unknown: File[];
   } | null>(null);
   const [zipOpen, setZipOpen] = useState(false);
+  const [globalOpen, setGlobalOpen] = useState(false);
   // «Slettede objekter» (DEC-0079)
   const [trashOpen, setTrashOpen] = useState(false);
   const trashCount = useMemo(() => {
@@ -379,6 +382,17 @@ function Library({
             </ToolbarButton>
           </>
         ) : null}
+        <ToolbarButton
+          onClick={() => setGlobalOpen(true)}
+          data-testid="open-global-library"
+          title={L(
+            "Ressurser som deles i arbeidsgruppen: logoer, figurer, lyd og maler",
+            "Assets shared in the workspace: logos, figures, sound and templates",
+          )}
+        >
+          <Globe />
+          {L("Globalt bibliotek", "Global library")}
+        </ToolbarButton>
         <ToolbarButton
           onClick={() => setZipOpen(true)}
           title={L(
@@ -638,6 +652,7 @@ function Library({
                     <button
                       type="button"
                       onClick={() => setSelected(a.id)}
+                      data-asset-row={a.id}
                       aria-current={a.id === selected ? "true" : undefined}
                       className={
                         "grid w-full grid-cols-[36px_1fr] items-center gap-2 px-2 py-1.5 text-left " +
@@ -783,6 +798,14 @@ function Library({
         cmds={cmds}
         editable={editable}
         isOwner={isOwner}
+      />
+      <GlobalLibraryDialog
+        open={globalOpen}
+        onOpenChange={setGlobalOpen}
+        state={state}
+        cmds={cmds}
+        editable={editable}
+        onUsed={(id) => setSelected(id)}
       />
       <AssetZipDialog
         open={zipOpen}
