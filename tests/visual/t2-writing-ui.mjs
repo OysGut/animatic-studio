@@ -209,8 +209,17 @@ await scenario("rewrite-apply", async (page) => {
 const FIRST_IDS = new Set(FIRST_BLOCKS.map((b) => b.id));
 const untranslated = (r) => ({ ...r, translations: (r.translations ?? []).filter((t) => !FIRST_IDS.has(t.block_id)) });
 await scenario("translate-selected", async (page) => {
-  await openAssist(page);
-  await tid(page, "assist-translate").click();
+  // Marker to linjer og bruk høyreklikkmenyen (menyen tar med de markerte linjene)
+  const [a, b] = FIRST_BLOCKS.filter((x) => x.kind === "action" || x.kind === "dialogue").map((x) => x.id);
+  await page.evaluate(([a, b]) => {
+    const ea = document.querySelector(`[data-block="${a}"]`); const eb = document.querySelector(`[data-block="${b}"]`);
+    const r = document.createRange(); r.setStartBefore(ea); r.setEndAfter(eb);
+    const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    const box = ea.getBoundingClientRect();
+    ea.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true, clientX: box.x + 5, clientY: box.y + 5 }));
+  }, [a, b]);
+  await tid(page, "assist-context-menu").waitFor({ timeout: 5000 });
+  await tid(page, "assist-menu-translate").click();
   await confirmCost(page);
   check(await eventually(() => visible(page, "assist-diff")), "oversettelsesforslag vises");
   const picks = tid(page, "assist-diff-pick");
@@ -299,7 +308,10 @@ await scenario("format", async (page) => {
   await page.waitForTimeout(500);
   check(S.assist.length === 0, "formatsjekken kaller ikke AI");
   check(!(await visible(page, "assist-cost")), "ingen kostnadsbekreftelse for formatsjekk");
-});
+  check(await eventually(() => visible(page, "assist-diff")), "formatfeilen vises som forslag");
+  await tid(page, "assist-apply").click();
+  check(await eventually(() => cmds("EditBlockText").length === 1), "«Bruk» retter formatet med EditBlockText");
+}, { mutate: lower });
 
 // 9. Hurtigtaster
 await scenario("shortcuts", async (page) => {
@@ -307,6 +319,8 @@ await scenario("shortcuts", async (page) => {
   await page.keyboard.press("Alt+Shift+F");
   check(await eventually(() => visible(page, "assist-panel")), "Alt+Shift+F åpner skrivehjelpen");
   check(S.assist.length === 0, "Alt+Shift+F kaller ikke AI");
+  check(await eventually(() => visible(page, "assist-diff")), "Alt+Shift+F viser formatforslaget");
+  await tid(page, "assist-discard").click();
   await page.locator(`[data-block="${ACTION.id}"]`).first().click();
   await page.keyboard.press("Alt+Shift+R");
   check(await eventually(() => page.evaluate(() => document.activeElement?.getAttribute("data-testid") === "assist-instruction")), "Alt+Shift+R går til omskrivingsønsket");
@@ -317,7 +331,6 @@ await scenario("shortcuts", async (page) => {
   await page.locator(`[data-block="${ACTION.id}"]`).first().click();
   await page.keyboard.press("Alt+Shift+N");
   const okN = await eventually(() => visible(page, "assist-cost"));
-  if (!okN) await page.screenshot({ path: `${out}/shortcuts-n.png` });
   check(okN, "Alt+Shift+N starter neste replikk (kostnadsbekreftelse)");
 }, { mutate: lower });
 
