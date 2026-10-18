@@ -7,7 +7,15 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { PanelLeft, PanelRight, Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { L, knowledgeAt, type Asset, type ProjectState } from "@/core";
+import {
+  L,
+  RELATION_LABEL,
+  RELATION_LABEL_EN,
+  knowledgeAt,
+  locale,
+  type Asset,
+  type ProjectState,
+} from "@/core";
 import { listStorySessions } from "@/adapters/storylab/sessions.functions";
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
@@ -413,7 +421,7 @@ function ContextPanel({
               return (
                 <li key={r.id}>
                   <span className="text-text-primary">{other?.name ?? "?"}</span>
-                  {r.label ? ` – ${r.label}` : ` – ${r.kind}`}
+                  {` – ${r.label.trim() || (locale() === "en" ? RELATION_LABEL_EN : RELATION_LABEL)[r.kind]}`}
                   {r.description ? <p className="text-[12px] text-text-tertiary">{r.description}</p> : null}
                 </li>
               );
