@@ -773,7 +773,9 @@ export function librarySuggestions(s: ProjectState, productionId: string): Libra
       return lines.filter((line) => names.some((n) => lower(line).includes(n))).map((line) => line.slice(0, 300));
     });
     const classification = classifySuggestion({ name: x.name, speaker: x.reason === "speaker", heading: x.reason === "heading", contexts });
-    return { ...x, ...classification, contexts: [...new Set(contexts)].slice(0, 2) };
+    // Existing ambiguous one-scene speaker rows and merged spelling guesses still need review.
+    const confidence = x.reason === "speaker" && x.uncertain && classification.kind === "character" ? "medium" : classification.confidence;
+    return { ...x, ...classification, confidence, contexts: [...new Set(contexts)].slice(0, 2) };
   }).filter((x) => !known.has(upper(x.name)));
 }
 
