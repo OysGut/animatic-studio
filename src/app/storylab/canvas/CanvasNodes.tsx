@@ -14,7 +14,6 @@ import {
   Link2,
   MapPin,
   Milestone,
-  Sparkles,
   StickyNote,
   Undo2,
   User,
@@ -183,4 +182,3 @@ export const NODE_TYPES: Record<CanvasNodeKind, ComponentType<NodeProps<StoryFlo
   group: make("group"),
 };
 
-export { Sparkles };

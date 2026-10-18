@@ -39,13 +39,14 @@ import {
   type ProjectState,
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
-import { PanelHeader, Toolbar, ToolbarButton, ToolbarGroup, ToolbarSeparator } from "@/app/shell/workspace-chrome";
+import { Toolbar, ToolbarButton, ToolbarGroup, ToolbarSeparator } from "@/app/shell/workspace-chrome";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { KIND_ICON, NODE_TYPES, type StoryFlowNode } from "./CanvasNodes";
 import { CanvasInspector } from "./CanvasInspector";
 import { BuildFromScriptDialog } from "./BuildFromScriptDialog";
 import { InterviewView } from "../InterviewView";
 import { sceneLabel } from "../storylab-data";
+import { runGroup } from "./run-group";
 
 export interface CanvasViewProps {
   state: ProjectState;
@@ -69,15 +70,6 @@ export default function CanvasView(p: CanvasViewProps) {
 const isTyping = (t: EventTarget | null) =>
   t instanceof HTMLElement && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
 
-/** Kjører kommandoene etter hverandre som én angregruppe. Gir feilen (eller null). */
-export async function runGroup(cmds: Commands, commands: readonly Command[], label: string): Promise<string | null> {
-  const group = `canvas:${newId()}`;
-  for (const c of commands) {
-    const r = await cmds.runAndWait(c, label, group);
-    if (r.error) return r.error;
-  }
-  return null;
-}
 
 function edgeView(e: CanvasEdge, selected: boolean): Edge {
   return { id: e.id, source: e.fromNodeId, target: e.toNodeId, type: "story", selected, label: e.label, data: { kind: e.kind } };
@@ -368,4 +360,3 @@ function Canvas({ state, projectId, cmds, editable, interviewId, onInterview, on
   );
 }
 
-export { PanelHeader };
