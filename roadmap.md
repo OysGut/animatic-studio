@@ -1,4 +1,5 @@
 # MU1
+- [ ] Rett MU1/OG1-testenes teksthistorikk, overskriftsfelt og engelske gruppe; høyreforankre popupen og kontroller Vitest.
 - [x] Aktiv-scene-buss og Story Lab-scenefølging.
 - [x] Manusutforsker: popup, eksisterende søk/manus/notater og festet vindu.
 - [x] Unit-tester og mocket nettlesertest (skrevet; Øystein kjører nettlesertesten).
