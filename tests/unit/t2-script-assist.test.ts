@@ -212,7 +212,7 @@ describe("oversettelsesutkast", () => {
     const plan = planApplyProposal(sNoEn, p, new Set(p.items.map((i) => i.key)));
     if (!plan.ok) throw new Error(plan.message);
     const s = mustApply(sNoEn, plan.commands[0]!);
-    const t = Object.values(s.translations).find((x) => x.blockId === editable[0]!.id && x.language === "en")!;
+    const t = Object.values(s.translations).find((x) => !x.removed && x.blockId === editable[0]!.id && x.language === "en")!;
     expect(t.status).toBe("uncertain");
     expect(t.text).toBe("English draft.");
     expect(s.blocks[editable[0]!.id]!.text).toBe(editable[0]!.text);
