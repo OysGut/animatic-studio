@@ -120,7 +120,7 @@ async function run(label, fn, { lang = "nb", role = "owner" } = {}) {
   await context.close();
 }
 const currentScene = (page) => page.getByRole("button", { name: /^(Velg scene|Choose scene)/ }).first();
-const pick = async (page, index) => { await currentScene(page).click(); await page.getByRole("option").nth(index).click(); };
+const pick = async (page, index) => { await currentScene(page).click(); await page.getByRole("listbox").getByRole("option").nth(index).click(); };
 const status = (page) => page.getByTestId("script-explorer-status");
 const waitScene = async (page, scene) => {
   const variant = fx.rows.scene_variants.find((v) => v.id === scene.variant_id);
