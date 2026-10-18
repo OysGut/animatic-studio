@@ -817,6 +817,16 @@ export type Command =
       readonly steps: readonly Command[];
     }
   | {
+      /**
+       * Asset Studio (AS1, B5): utkastet for scenen lagres som én kommando – én transaksjon og én angring.
+       * Trinnene er bare scenekommandoer (lag, lydklipp, scenens timing); bibliotek og notater skrives direkte.
+       */
+      readonly type: "UpdateSceneDraft";
+      readonly occurrenceId: OccurrenceId;
+      readonly compositionId: CompositionId;
+      readonly steps: readonly Command[];
+    }
+  | {
       readonly type: "SetCompositionRemoved";
       readonly compositionId: CompositionId;
       readonly removed: boolean;

@@ -146,6 +146,7 @@ const COMPOSITION_COMMANDS = new Set<string>([
   "UndoCreateComposition",
   "UpdateComposition",
   "RetimeScene",
+  "UpdateSceneDraft",
   "SetCompositionStep",
   "SetCompositionRemoved",
   "AddLayers",

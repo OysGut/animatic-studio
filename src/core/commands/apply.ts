@@ -1643,6 +1643,15 @@ const RETIME_STEPS = new Set<string>([
   "SetPlannedDuration",
 ]);
 
+/** Trinnene et utkast fra Asset Studio kan inneholde (AS1): bare endringer i scenen. */
+export const SCENE_DRAFT_STEPS: ReadonlySet<string> = new Set<string>([
+  "UpdateLayers",
+  "UpdateAudioClips",
+  "UpdateComposition",
+]);
+/** Største antall trinn i ett utkast. */
+export const MAX_SCENE_DRAFT_STEPS = 200;
+
 function run(
   s: ProjectState,
   env: CommandEnvelope,
@@ -6747,6 +6756,42 @@ function run(
           ...(comp.producedFrom ? { producedFrom: comp.producedFrom } : {}),
         },
         affected: [comp.id],
+      };
+    }
+
+    case "UpdateSceneDraft": {
+      // AS1: utkastet fra Asset Studio i én kommando – én transaksjon og én angring
+      const comp = need(s.compositions[c.compositionId], L("2D-scenen", "The 2D scene"));
+      need(s.occurrences[c.occurrenceId], L("Scenen", "The scene"));
+      if (c.steps.length === 0 || c.steps.length > MAX_SCENE_DRAFT_STEPS)
+        fail("invalid", L("Ugyldig utkast for scenen", "Invalid scene draft"));
+      let cur = s;
+      const inverses: Command[] = [];
+      const affected = new Set<string>();
+      for (const step of c.steps) {
+        if (!SCENE_DRAFT_STEPS.has(step.type))
+          fail("invalid", L("Ugyldig trinn i utkastet for scenen", "Invalid step in the scene draft"));
+        if (step.type === "UpdateComposition" && step.compositionId !== comp.id)
+          fail("invalid", L("Feil 2D-scene", "Wrong 2D scene"));
+        if (
+          step.type === "UpdateLayers" &&
+          step.layers.some((x) => cur.layers[x.layerId]?.compositionId !== comp.id)
+        )
+          fail("invalid", L("Laget hører ikke til scenen", "The layer does not belong to the scene"));
+        const r = run(cur, { ...env, command: step });
+        cur = r.state;
+        inverses.unshift(r.inverse);
+        for (const id of r.affected) affected.add(id);
+      }
+      return {
+        state: cur,
+        inverse: {
+          type: "UpdateSceneDraft",
+          occurrenceId: c.occurrenceId,
+          compositionId: c.compositionId,
+          steps: inverses,
+        },
+        affected: [...affected],
       };
     }
 
