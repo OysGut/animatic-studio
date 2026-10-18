@@ -4,6 +4,15 @@ Huskeliste over det som er tenkt gjort, men ikke bygget. Holdes oppdatert av den
 Kilder: beslutningsloggen (`docs/decisions/DECISION_LOG.md`), kravregisteret (`docs/product/requirements.yaml`), kjente problemer (`docs/development/KNOWN_ISSUES.md`).
 Sist oppdatert: 2026-10-17 (DEC-0098, UI-løft U1 og U3).
 
+## Sikkerhet
+- **Invitasjoner til arbeidsgrupper (Øystein 18.10.2026):** `accept_workspace_invitation` sjekker ikke at e-posten til den som tar imot, stemmer med invitasjonen. Samme mønster som prosjektinvitasjoner. Ikke endret nå.
+- **GP5 delingslenker:** nøkkelen lagres i klartekst i `film_shares.token` (bare lesbar for redaktører og eiere via `film_share_token`) så QR-koden kan vises igjen. Vurder kryptering.
+
+## Backlogg fra den globale pakken (GP2–GP5)
+- Omkoding på serveren for deling når nettleseren ikke kan lage H.264/AAC (f.eks. Firefox). Ikke bygget; QR-dialogen forklarer i stedet.
+- Lagring av globale filer i egen bøtte per arbeidsgruppe (nå: «assets» med prefikset `global/`, bare service role).
+- Atomisk lagring av globale versjoner (nå flere kall; delvis feil kan etterlate en versjon uten fil).
+
 ## Bestilt av Mars, ikke bygget ennå
 - **OG2 (Øystein 18.10.2026):** AI-kobling linje for linje legges i backloggen. Scenekobling er tilstrekkelig nå; ingen implementering i retterunde 1.
 - **Fase 2 (DEC-0090, REQ-0668–0712):** alle bolkene A–E er bygget (bolk E: DEC-0096). Gjenstår: prøving på ekte telefoner og med ekte norsk lyd (KI-235, KI-239, KI-245, KI-248). KI-249 er rettet.

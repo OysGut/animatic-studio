@@ -39,3 +39,5 @@
 - [ ] GP3 videreføring
 - [ ] GP4 AI-start
 - [ ] GP5 QR-filmvisning – venter på svar på spørsmål 4–5
+# GP2–GP5
+- [x] GP2 globalt bibliotek (0046), GP3 videreføring, GP4 nytt prosjekt med skriveassistent, GP5 QR-deling (0047). Migrasjoner skrevet, ikke kjørt. DB- og nettlesertester kjøres av Øystein.
