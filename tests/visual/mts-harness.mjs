@@ -176,5 +176,5 @@ export function harness(defaultOut) {
     await browser?.close();
     process.exitCode = fail ? 1 : 0;
   }
-  return { fx, M: fx.mts, rows, state, check, scenario, selectLayer, waitHidden, menu, lastFields, eventually, finish, out };
+  return { fx, M: fx.mts, rows, state, check, scenario, selectLayer, waitHidden, menu, lastFields, eventually, finish, out, base, P };
 }
