@@ -1966,6 +1966,12 @@ function run(
               excerpt: null,
               activeTakeId: null,
               productionNumber: c.productionNumber ?? null,
+              ...(() => {
+                const kind = c.kind ?? "scene";
+                if (!OCCURRENCE_KINDS.includes(kind))
+                  fail("invalid", L("Ugyldig scenetype", "Invalid occurrence kind"));
+                return kind !== "scene" ? { kind } : {};
+              })(),
             },
           },
         },

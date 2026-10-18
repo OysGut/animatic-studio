@@ -102,7 +102,8 @@ import {
 } from "@/components/ui/dialog";
 import { ExportAnimaticDialog } from "./ExportAnimaticDialog";
 import { rememberScene } from "@/app/shell/current-scene";
-import { AssemblyMoreMenu, AssemblyViewMenu } from "./AssemblyToolbarMenus";
+import { AssemblyMoreMenu, AssemblyTextMenu, AssemblyViewMenu } from "./AssemblyToolbarMenus";
+import { createKindScene } from "./mts-occurrences";
 import { ShortcutsButton, ShortcutsDialog } from "@/app/shortcuts/ShortcutsDialog";
 import { isShortcutHelpKey } from "@/app/shortcuts/shortcut-list";
 
@@ -990,6 +991,20 @@ function Assembly({
             onLanguage={() => setLanguageOpen(true)}
             onSubtitles={() => setSubtitlesOpen(true)}
           />
+          {editable ? (
+            <AssemblyTextMenu
+              onCreate={(kind) => {
+                const r = createKindScene(cmds.run, state, productionId, kind);
+                if (r.error) setError(r.error);
+                else if (r.occurrenceId)
+                  void navigate({
+                    to: "/prosjekt/$projectId/scene",
+                    params: { projectId },
+                    search: { scene: r.occurrenceId },
+                  });
+              }}
+            />
+          ) : null}
           <AssemblyViewMenu
             monochrome={monochrome}
             onMonochrome={setMonochrome}

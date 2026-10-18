@@ -15,6 +15,7 @@ import {
   Languages,
   ListOrdered,
   SlidersHorizontal,
+  Type,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { ToolbarButton } from "@/app/shell/workspace-chrome";
@@ -243,6 +244,72 @@ export function AssemblyMoreMenu({
               {L(
                 "Undertekster (.srt eller .vtt) på norsk eller engelsk",
                 "Subtitles (.srt or .vtt) in Norwegian or English",
+              )}
+            </span>
+          </span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+/** «Tekst ▾» (MTS MT6/MT7): ny filmtittel, tekstscene eller rulletekst i filmstrukturen. */
+export function AssemblyTextMenu({
+  onCreate,
+}: {
+  onCreate: (kind: "title" | "text" | "credits") => void;
+}) {
+  const item = "flex items-start gap-2 text-xs";
+  const hint = "block text-[11px] text-text-tertiary";
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <ToolbarButton
+          className="shrink-0"
+          data-testid="mts-assembly-text-menu"
+          title={L(
+            "Filmtittel, tekstscene eller rulletekst – egne deler av filmen, aldri manusscener",
+            "Film title, text scene or credits – separate parts of the film, never script scenes",
+          )}
+        >
+          <Type className="size-3.5" aria-hidden />
+          {L("Tekst", "Text")}
+          <ChevronDown className="size-3" aria-hidden />
+        </ToolbarButton>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="w-80">
+        <DropdownMenuItem className={item} data-testid="mts-new-title" onSelect={() => onCreate("title")}>
+          <Type className="mt-0.5" aria-hidden />
+          <span>
+            {L("Ny filmtittel", "New film title")}
+            <span className={hint}>
+              {L(
+                "Tittelen med sider, bokstavanimasjon, logoer og eget lydspor",
+                "The title with pages, letter animation, logos and its own soundtrack",
+              )}
+            </span>
+          </span>
+        </DropdownMenuItem>
+        <DropdownMenuItem className={item} data-testid="mts-new-text" onSelect={() => onCreate("text")}>
+          <Type className="mt-0.5" aria-hidden />
+          <span>
+            {L("Ny tekstscene", "New text scene")}
+            <span className={hint}>
+              {L(
+                "En tekstscene mellom scenene, uten bilde av teksten",
+                "A text scene between the scenes, without a picture of the text",
+              )}
+            </span>
+          </span>
+        </DropdownMenuItem>
+        <DropdownMenuItem className={item} data-testid="mts-new-credits" onSelect={() => onCreate("credits")}>
+          <ListOrdered className="mt-0.5" aria-hidden />
+          <span>
+            {L("Ny rulletekst", "New credits")}
+            <span className={hint}>
+              {L(
+                "Rulletekst med eget deltakerregister, presentasjonsform og lydspor",
+                "Credits with their own list of participants, presentation and soundtrack",
               )}
             </span>
           </span>
