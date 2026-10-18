@@ -4,8 +4,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { GitBranch, Pause, Play, Square, X } from "lucide-react";
 import { ANALYST, L, activeDirections, analystSystemPrompt, characterSystemPrompt, emptyStoryProfile, factsUntil,
-  groupTurnMessages, knowledgeAt, locale, newId, reduceEngine, replayTurns, suggestSpeaker,
+  groupTurnMessages, knowledgeAt, newId, reduceEngine, replayTurns, suggestSpeaker,
   type DirectionScope, type EngineMode, type ProjectState, type StoryProfile } from "@/core";
+import { useLanguage } from "@/app/i18n/language";
 import { generateText } from "@/adapters/ai/text.functions";
 import { appendStoryTurns, forkStorySession, getStorySession, saveStorySuggestion,
   type StoredTurn, type StorySession, type StorySessionStatus } from "@/adapters/storylab/sessions.functions";
@@ -38,6 +39,7 @@ function GroupConversation({ state, projectId, session, participants, editable, 
   const seed = typeof session.context["seed"] === "number" ? session.context["seed"] : 1;
   const profiles = (session.context["profiles"] ?? {}) as Record<string, StoryProfile | null>;
   const names = nameMap(state);
+  const uiLang = useLanguage() === "en" ? "en" : "nb";
   const [mode, setMode] = useState<EngineMode>(session.context["mode"] === "improv" ? "improv" : "qa");
   const [turns, setTurns] = useState<StoredTurn[]>(session.turns);
   const turnsRef = useRef(turns);
@@ -81,14 +83,14 @@ function GroupConversation({ state, projectId, session, participants, editable, 
     const e = engineOf(ts);
     return {
       system: characterSystemPrompt({ name: names[id] ?? "?", profile: profiles[id] ?? emptyStoryProfile(),
-        knowledge: knowledgeAt(state, id, sceneId as never), situation, directions: activeDirections(e, id), language: locale() === "en" ? "en" : "nb", names }),
+        knowledge: knowledgeAt(state, id, sceneId as never), situation, directions: activeDirections(e, id), language: "nb", names }),
       messages: groupTurnMessages(e, id, names).messages,
     };
   };
   const analysisInput = (question: string, focus?: string) => ({
     system: analystSystemPrompt({ characters: participants.map((id) => ({ name: names[id] ?? "?", profile: profiles[id] ?? null })),
       facts: factsUntil(state, sceneId).map((f) => ({ text: f.text, kind: f.kind, knownBy: f.knownBy.map((k) => names[k.assetId] ?? "?") })),
-      sceneContext: situation, language: locale() === "en" ? "en" : "nb", ...(focus ? { focus: names[focus] ?? "?" } : {}) }) +
+      sceneContext: situation, language: uiLang, ...(focus ? { focus: names[focus] ?? "?" } : {}) }) +
       (focus ? "\nExplain this character's motivation from the profile, in the third person. Separate interpretation from established facts." : ""),
     messages: [{ role: "user" as const, content: turnsRef.current.filter((t) => t.kind === "line" || t.kind === "question")
       .map((t) => `${names[t.speaker] ?? "Director"}: ${t.text}`).join("\n") + `\nDirector's question: ${question}` }],
