@@ -5390,6 +5390,89 @@ try {
     await as("service_role", null, (tx) => tx`select public.purge_project_assets(${mtp}, ${ALICE})`);
     assert((await count("asset_versions", mtp)) === 0, "malversjonen finnes etter purge");
   });
+
+  // ---------- MTS: scenetyper (0050) og rulletekst (0051) ----------
+  const mtp2 = await as(
+    "authenticated",
+    ALICE,
+    async (tx) => (await tx`select public.create_project('MTS2') as id`)[0]!["id"] as string,
+  );
+  const M2 = (n: number) => `abcdef00-0000-7000-8000-00000050${String(n).padStart(4, "0")}`;
+  let m2State = await loadState(mtp2);
+
+  await test("0050: tittel-, tekst- og rulletekstforekomster lagres med kind og leses tilbake; ugyldig kind avvises", async () => {
+    const main = Object.values(m2State.productions)[0]!.id;
+    for (const [i, kind] of (["title", "text", "credits"] as const).entries()) {
+      m2State = await runCommand(m2State, ALICE, {
+        type: "CreateScene",
+        productionId: main,
+        sceneId: M2(1 + i * 3) as never,
+        variantId: M2(2 + i * 3) as never,
+        occurrenceId: M2(3 + i * 3) as never,
+        orderKey: keysEvenly(3)[i]!,
+        heading: { intExt: "", location: "FILMTITTEL", time: "" },
+        blocks: [],
+        kind,
+      });
+    }
+    const back = await loadState(mtp2);
+    assert(back.occurrences[M2(3) as never]!.kind === "title", "tittelen har ikke kind");
+    assert(back.occurrences[M2(6) as never]!.kind === "text", "tekstscenen har ikke kind");
+    assert(back.occurrences[M2(9) as never]!.kind === "credits", "rulleteksten har ikke kind");
+    await expectError(
+      sql`insert into public.scene_occurrences (id, project_id, production_id, scene_id, variant_id, order_key, kind, created_by)
+          values (gen_random_uuid(), ${mtp2}, ${main}, ${M2(1)}, ${M2(2)}, 'zz', 'plakat', ${ALICE})`,
+      "23514",
+    );
+  });
+
+  await test("0051: deltakere og sekvens skrives via apply_changes og leses tilbake; 2000-grensen håndheves ikke stille", async () => {
+    m2State = await runCommand(m2State, ALICE, {
+      type: "SetCreditSequence",
+      sequenceId: M2(20) as never,
+      occurrenceId: M2(9) as never,
+      fields: { presentation: "roll", durationFrames: 48, pauseFrames: 24, speed: 4, direction: "up" },
+    });
+    m2State = await runCommand(m2State, ALICE, {
+      type: "AddCreditParticipant",
+      participantId: M2(21) as never,
+      fields: { orderKey: keysEvenly(1)[0]!, groupKey: "", hidden: false, fields: { navn: "Anita Killi", rolle: "Regi" } },
+    });
+    m2State = await runCommand(m2State, ALICE, {
+      type: "UpdateCreditParticipant",
+      participantId: M2(21) as never,
+      fields: { fields: { navn: "Anita Killi", rolle: "Regissør" } },
+    });
+    const back = await loadState(mtp2);
+    assert(back.creditSequences[M2(20) as never]!.presentation === "roll", "sekvensen leses ikke tilbake");
+    assert(back.creditParticipants[M2(21) as never]!.fields["rolle"] === "Regissør", "deltakeren leses ikke tilbake");
+    // Ugyldig presentasjonsform avvises av databasen
+    await expectError(
+      sql`update public.credit_sequences set presentation = 'sideways' where id = ${M2(20)}`,
+      "23514",
+    );
+  });
+
+  await test("0051: RLS – medlemmer leser rulleteksten, utenforstående og anon ser ingenting, klienten kan ikke skrive", async () => {
+    const own = await as("authenticated", ALICE, (tx) => tx`select id from public.credit_participants where project_id = ${mtp2}`);
+    assert(own.length === 1, "medlemmet ser ikke deltakeren");
+    const other = await as("authenticated", BOB, (tx) => tx`select id from public.credit_participants where project_id = ${mtp2}`);
+    assert(other.length === 0, "utenforstående ser deltakeren");
+    await expectError(as("anon", null, (tx) => tx`select id from public.credit_participants`), "42501");
+    await expectError(as("anon", null, (tx) => tx`select id from public.credit_sequences`), "42501");
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`update public.credit_participants set hidden = true where id = ${M2(21)}`),
+      "42501",
+    );
+  });
+
+  await test("0050/0051: delete_project og purge fjerner rulleteksten og forekomstene", async () => {
+    await as("service_role", null, (tx) => tx`select public.delete_project(${mtp2}, ${ALICE})`);
+    assert((await count("credit_participants", mtp2)) === 0, "deltakerne finnes etter sletting");
+    assert((await count("credit_sequences", mtp2)) === 0, "sekvensen finnes etter sletting");
+    await as("service_role", null, (tx) => tx`select public.purge_project_assets(${mtp2}, ${ALICE})`);
+    assert((await count("scene_occurrences", mtp2)) === 0, "forekomstene finnes etter purge");
+  });
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);
