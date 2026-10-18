@@ -129,7 +129,7 @@ function NodeBody({ data, selected, kind }: NodeProps<StoryFlowNode> & { kind: C
         ) : (
           <Icon className="size-3.5 shrink-0 text-text-secondary" aria-hidden />
         )}
-        <span className="text-[10px] uppercase tracking-wide text-text-tertiary">{canvasNodeKindLabel(kind)}</span>
+        <span className="text-[11px] uppercase tracking-wide text-text-tertiary">{canvasNodeKindLabel(kind)}</span>
         {linked && data.onOpen ? (
           <button
             type="button"
