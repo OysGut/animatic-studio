@@ -59,7 +59,7 @@ describe("rekkefølgen på panelene", () => {
       "credits",
     ]);
     expect(movePanel(o, "assets", -1)).toEqual(o);
-    expect(movePanel(o, "script", 1)).toEqual(o);
+    expect(movePanel(o, "credits", 1)).toEqual(o);
   });
 
   it("dra og slipp: foran eller etter et annet panel", () => {

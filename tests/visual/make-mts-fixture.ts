@@ -8,6 +8,7 @@
 import { writeFileSync } from "node:fs";
 import {
   DEFAULT_COMPOSITION,
+  keyBetween,
   diffStates,
   lowerThirdStarter,
   mainProduction,
@@ -90,6 +91,65 @@ const def2: TemplateDefinition = {
 };
 s = mustApply(s, { type: "AddAssetVersion", versionId: v2 as never, variantId: tplVariant as never, media: media(v2), note: "", template: def2 });
 
+// MT6/MT7: en filmtittel, en tekstscene og en rulletekst med sekvens og deltakere
+const addKind = (kind: "title" | "text" | "credits", base: number) => {
+  s = mustApply(s, {
+    type: "CreateScene",
+    productionId: main.id,
+    sceneId: id(base) as never,
+    variantId: id(base + 1) as never,
+    occurrenceId: id(base + 2) as never,
+    orderKey: keyBetween(orderedOccurrences(s, main.id).at(-1)!.orderKey, null),
+    heading: { intExt: "", location: kind === "title" ? "FILMTITTEL" : kind === "text" ? "MELLOMTEKST" : "RULLETEKST", time: "" },
+    blocks: [],
+    kind,
+  });
+  s = mustApply(s, {
+    type: "CreateComposition",
+    compositionId: id(base + 3) as never,
+    variantId: id(base + 1) as never,
+    fields: { ...DEFAULT_COMPOSITION, name: kind, durationFrames: 144 },
+  });
+  return { occurrenceId: id(base + 2), compositionId: id(base + 3) };
+};
+const title = addKind("title", 200);
+const text = addKind("text", 210);
+const credits = addKind("credits", 220);
+// Tittelen har én side og et tekstlag med bokstavanimasjon
+s = mustApply(s, {
+  type: "AddLayers",
+  layers: [
+    {
+      layerId: id(230) as never,
+      compositionId: title.compositionId as never,
+      fields: {
+        ...textLayerFields(s.compositions[title.compositionId]!, "Jula på Dovre", "Tittel", {
+          letterAnim: { unit: "letter", effect: "appear", direction: "up", startFrame: 0, delayFrames: 3, durationFrames: 2, order: "start", seed: 1, distance: 0 },
+        }),
+        kind: "page",
+        activeRange: { from: 0, to: 72 },
+        pageTransition: null,
+      },
+    },
+  ],
+});
+s = mustApply(s, {
+  type: "SetCreditSequence",
+  sequenceId: id(240) as never,
+  occurrenceId: credits.occurrenceId as never,
+  fields: { presentation: "roll", durationFrames: 48, pauseFrames: 24, speed: 4, direction: "up" },
+});
+s = mustApply(s, {
+  type: "AddCreditParticipant",
+  participantId: id(241) as never,
+  fields: { orderKey: keyBetween(null, null), groupKey: "", hidden: false, fields: { navn: "Anita Killi", rolle: "Regi" } },
+});
+s = mustApply(s, {
+  type: "AddCreditParticipant",
+  participantId: id(242) as never,
+  fields: { orderKey: keyBetween(id(241) in s.creditParticipants ? s.creditParticipants[id(241) as never]!.orderKey : null, null), groupKey: "", hidden: false, fields: { navn: "Øystein Gutu", rolle: "Musikk" } },
+});
+
 const cs = diffStates(fixture.state, s);
 for (const [t, list] of Object.entries(cs.inserts as Record<string, unknown[]>)) rows[t] = [...(rows[t] ?? []), ...list];
 
@@ -114,6 +174,16 @@ writeFileSync(
         instance: inst,
         instanceGroup: instanceLayers.find((l) => l.kind === "group")!.id,
         instanceName: instanceLayers.find((l) => l.template?.slot === "navn")!.id,
+        titleOcc: title.occurrenceId,
+        titleComp: title.compositionId,
+        titlePage: id(230),
+        textOcc: text.occurrenceId,
+        textComp: text.compositionId,
+        creditsOcc: credits.occurrenceId,
+        creditsComp: credits.compositionId,
+        creditSeq: id(240),
+        creditP1: id(241),
+        creditP2: id(242),
         instanceRole: instanceLayers.find((l) => l.template?.slot === "rolle")!.id,
       },
     },

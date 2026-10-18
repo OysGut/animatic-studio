@@ -503,6 +503,7 @@ export function AssetStudio({
             editable={canEdit}
             replacing={seg !== undefined}
             onPick={pick}
+            cmds={directCmds}
           />
         </aside>
 

@@ -67,6 +67,7 @@ export function GlobalLibraryDialog({
   cmds,
   editable,
   onUsed,
+  fixedKind,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -74,6 +75,8 @@ export function GlobalLibraryDialog({
   cmds: Commands;
   editable: boolean;
   onUsed?: (assetId: string) => void;
+  /** GP6: vis bare én ressurstype (for eksempel maler i MTS eller bilder i Asset Studio). */
+  fixedKind?: GlobalKind;
 }) {
   const qc = useQueryClient();
   const ws = useProjectWorkspace(state.project.id);
@@ -82,7 +85,7 @@ export function GlobalLibraryDialog({
   const [selected, setSelected] = useState<string | null>(null);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
-  const [newKind, setNewKind] = useState<GlobalKind>("logo");
+  const [newKind, setNewKind] = useState<GlobalKind>(fixedKind ?? "logo");
   const [newName, setNewName] = useState("");
   const [newTags, setNewTags] = useState("");
   const newFile = useRef<HTMLInputElement>(null);
@@ -90,7 +93,10 @@ export function GlobalLibraryDialog({
   const [versionTarget, setVersionTarget] = useState<string | null>(null);
 
   const all = bundles.data ?? [];
-  const list = useMemo(() => filterGlobalAssets(all.map((b) => b.asset), filter), [all, filter]);
+  const list = useMemo(
+    () => filterGlobalAssets(all.map((b) => b.asset), filter).filter((a) => !fixedKind || a.kind === fixedKind),
+    [all, filter, fixedKind],
+  );
   const facets = useMemo(() => globalFacets(all.map((b) => b.asset)), [all]);
   const updates = useMemo(() => globalUpdates(state, all), [state, all]);
   const current: GlobalAssetBundle | undefined = all.find((b) => b.asset.id === selected);
@@ -470,6 +476,7 @@ export function GlobalLibraryDialog({
                         className={select}
                         aria-label={L("Type", "Type")}
                         value={newKind}
+                        disabled={!!fixedKind}
                         onChange={(e) => setNewKind(e.target.value as GlobalKind)}
                         data-testid="global-create-kind"
                       >

@@ -6,6 +6,7 @@ import { harness } from "./mts-harness.mjs";
 
 const h = harness("/tmp/claude-0/mts-nondestructive");
 const { M, state, check, scenario, selectLayer, eventually } = h;
+const { base, P } = h;
 
 await scenario("AI-ny-versjon-endrer-ingenting", M.sceneA, "nb", async (page) => {
   check(state.commands.length === 0, "AI: å åpne scenen med en nyere malversjon sender ingen endringer");
@@ -36,3 +37,28 @@ await scenario("AJ-behold-eller-oppdater", M.sceneA, "nb", async (page) => {
 });
 
 await h.finish();
+
+await scenario("AK-originale-bilder-bevares", M.sceneA, "nb", async (page) => {
+  // Oppdatering til ny malversjon bytter ikke ut bilde-/logolag i forekomsten (bare felt som malen styrer)
+  await selectLayer(page, M.instanceName);
+  await page.getByTestId("mts-template-update").click();
+  await eventually(() => state.commands.some((c) => c?.steps?.some((s) => s.type === "UpdateTemplateInstance")));
+  const up = state.commands.find((c) => c?.steps?.some((s) => s.type === "UpdateTemplateInstance"));
+  const touched = up.steps.flatMap((s) => (s.type === "UpdateLayers" ? s.layers.map((l) => l.layerId) : []));
+  check(touched.every((id) => id === M.instanceName || id === M.instanceRole), "AK: bare tekstlagene røres; logoer og bilder i forekomsten bevares");
+  const fields = up.steps.find((s) => s.type === "UpdateLayers")?.layers ?? [];
+  check(fields.every((l) => !l.fields.versionId), "AK: ingen bildeversjoner byttes ut");
+});
+
+await scenario("AL-eksport-er-ikke-destruktiv", M.sceneA, "nb", async (page) => {
+  // Eksporten tegner med renderFrame og endrer aldri komposisjonen: ingen kommandoer sendes
+  await page.goto(`${h.base}${h.P}/montering`, { waitUntil: "networkidle" });
+  await page.waitForTimeout(1500);
+  await page.getByText("Eksporter", { exact: false }).first().click();
+  await page.getByTestId("export-include-credits").waitFor({ timeout: 5000 });
+  check(state.commands.length === 0, "AL: eksportdialogen endrer ingenting");
+  await page.keyboard.press("Escape");
+  await page.goto(`${h.base}${h.P}/scene?scene=${M.sceneA}`, { waitUntil: "networkidle" });
+  await page.waitForTimeout(2000);
+  check((await page.locator("[data-layer-row]").count()) > 0, "AL: komposisjonen er fortsatt redigerbar etter eksporten");
+});
