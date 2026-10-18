@@ -240,8 +240,8 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     },
     keyPattern: /^sk-[A-Za-z0-9_-]{20,}$/,
     models: [
-      textModel("gpt-5", "GPT-5", "premium", 1.25, 10),
-      textModel("gpt-5-mini", "GPT-5 mini", "fast", 0.25, 2),
+      textModel("gpt-5", "GPT-5", "premium", 1.25, 10, 400000),
+      textModel("gpt-5-mini", "GPT-5 mini", "fast", 0.25, 2, 400000),
       {
         id: "gpt-image-2.5-flare",
         get label() {
@@ -334,8 +334,8 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     },
     keyPattern: /^AIza[A-Za-z0-9_-]{30,}$/,
     models: [
-      textModel("gemini-2.5-pro", "Gemini 2.5 Pro", "premium", 1.25, 10),
-      textModel("gemini-2.5-flash", "Gemini 2.5 Flash", "fast", 0.3, 2.5),
+      textModel("gemini-2.5-pro", "Gemini 2.5 Pro", "premium", 1.25, 10, 1000000),
+      textModel("gemini-2.5-flash", "Gemini 2.5 Flash", "fast", 0.3, 2.5, 1000000),
       {
         id: "gemini-nano-banana-2.1",
         label: "Nano Banana 2.1",
@@ -832,9 +832,9 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     },
     keyPattern: /^sk-ant-[A-Za-z0-9_-]{20,}$/,
     models: [
-      textModel("claude-sonnet-4-5", "Claude Sonnet 4.5", "balanced", 3, 15),
-      textModel("claude-haiku-4-5", "Claude Haiku 4.5", "fast", 1, 5),
-      textModel("claude-opus-4-1", "Claude Opus 4.1", "premium", 15, 75),
+      textModel("claude-sonnet-4-5", "Claude Sonnet 4.5", "balanced", 3, 15, 200000),
+      textModel("claude-haiku-4-5", "Claude Haiku 4.5", "fast", 1, 5, 200000),
+      textModel("claude-opus-4-1", "Claude Opus 4.1", "premium", 15, 75, 200000),
     ],
   },
   {
@@ -870,8 +870,8 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     },
     keyPattern: /^xai-[A-Za-z0-9_-]{20,}$/,
     models: [
-      textModel("grok-4", "Grok 4", "premium", 3, 15),
-      textModel("grok-3-mini", "Grok 3 mini", "fast", 0.3, 0.5),
+      textModel("grok-4", "Grok 4", "premium", 3, 15, 256000),
+      textModel("grok-3-mini", "Grok 3 mini", "fast", 0.3, 0.5, 131072),
     ],
   },
 ];
@@ -1294,11 +1294,14 @@ function textModel(
   tier: EffortLevel,
   usdPerMTokIn: number,
   usdPerMTokOut: number,
+  contextTokens: number,
 ): ProviderModel {
   return {
     id,
     label,
     capability: "text",
+    // Konservativt: halve kontekstvinduet til prompten, regnet som 4 tegn per token
+    maxPromptChars: Math.floor(contextTokens / 2) * 4,
     // Per kall: et typisk kall med 2 000 tokens inn og 1 000 ut (bare til visning)
     priceUsd: Math.round(((2000 * usdPerMTokIn + 1000 * usdPerMTokOut) / 1e6) * 10000) / 10000,
     priceUnit: "call",
