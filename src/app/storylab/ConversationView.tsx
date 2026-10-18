@@ -19,13 +19,11 @@ import {
   groupTurnMessages,
   knowledgeAt,
   locale,
-  newEngineState,
   newId,
   profileAt,
-  reduceEngine,
+  replayTurns,
   type Asset,
   type DirectionScope,
-  type EngineState,
   type ProjectState,
   type StoryProfile,
 } from "@/core";
@@ -46,26 +44,6 @@ import { names as nameMap, sceneLabel, usd, useTextEstimate } from "./storylab-d
 
 const OUT_TOKENS = 800;
 type Mode = "role" | "analysis";
-
-/** Bygger turmaskinen fra de lagrede turene. */
-export function replayTurns(participant: string, turns: readonly StoredTurn[]): EngineState {
-  let s = reduceEngine(newEngineState({ participants: [participant], mode: "qa", seed: 1, maxTurnsPerRun: 100 }), {
-    type: "start",
-  });
-  for (const t of turns) {
-    if (s.status === "paused") s = reduceEngine(s, { type: "resume" });
-    if (t.kind === "question") s = reduceEngine(s, { type: "ask", id: t.id, text: t.text, to: participant, at: t.at });
-    else if (t.kind === "direction") {
-      if (t.id.startsWith("r:")) s = reduceEngine(s, { type: "removeDirection", id: t.id.slice(2) });
-      else {
-        const scope = (/^d:(next|scene|session):/.exec(t.id)?.[1] ?? "session") as DirectionScope;
-        s = reduceEngine(s, { type: "direct", id: t.id, text: t.text, target: participant, scope, at: t.at });
-      }
-    } else s = reduceEngine(s, { type: "appendLine", id: t.id, speaker: t.speaker, text: t.text, at: t.at });
-  }
-  if (s.status === "paused") s = reduceEngine(s, { type: "resume" });
-  return s;
-}
 
 interface Ctx {
   assetId: string;
