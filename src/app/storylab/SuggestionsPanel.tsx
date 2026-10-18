@@ -25,6 +25,12 @@ export function SuggestionsPanel({ state, projectId, cmds, editable, focusedId, 
   const lock = useRef(false);
   useEffect(() => { if (focusedId) { setStatus("open"); setKind(""); } }, [focusedId]);
   useEffect(() => { if (focusedId && query.data) document.getElementById(`suggestion-${focusedId}`)?.scrollIntoView({ block: "nearest" }); }, [focusedId, query.data]);
+  useEffect(() => {
+    setDestinations((old) => Object.fromEntries(Object.entries(old).filter(([id, d]) => {
+      // A successful stack undo opens the suggestion; allow applying it again afterwards.
+      return !(query.data?.find((s) => s.id === id)?.status === "open" && cmds.undoGroup !== d.group && cmds.redoLabel === L("Bruk forslag fra Story Lab", "Use Story Lab suggestion"));
+    })));
+  }, [query.data, cmds.undoGroup, cmds.redoLabel]);
   const set = async (id: string, value: StorySuggestion["status"]) => {
     const r = await update({ data: { projectId, suggestionId: id, status: value } });
     if (!r.ok) throw new Error(r.message);
@@ -50,6 +56,7 @@ export function SuggestionsPanel({ state, projectId, cmds, editable, focusedId, 
     // Set status only after every command has been persisted. A status failure cannot repeat insertion.
     setPreview(null);
     await set(suggestion.id, "applied");
+    setStatus("applied");
   });
   const list = (query.data ?? []).filter((s) => s.status === status && (!kind || s.kind === kind) && (!sceneFilter || s.payload["sceneId"] === sceneFilter));
   const groups = new Map<string, StorySuggestion[]>();
@@ -74,6 +81,6 @@ export function SuggestionsPanel({ state, projectId, cmds, editable, focusedId, 
         </div></article>;
     })}</section>)}
     {error ? <p role="alert" className="p-2 text-xs text-status-danger">{error}</p> : null}
-    {preview ? <SuggestionPreview state={state} suggestion={preview} onClose={() => setPreview(null)} onConfirm={apply} busy={busy} /> : null}
+    {preview ? <SuggestionPreview state={state} suggestion={preview} onClose={() => setPreview(null)} onConfirm={apply} busy={busy} cmds={cmds} /> : null}
   </div>;
 }

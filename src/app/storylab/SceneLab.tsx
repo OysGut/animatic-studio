@@ -13,6 +13,7 @@ import { GroupConversationView } from "./GroupConversationView";
 import { profileStatus, usd, useTextEstimate } from "./storylab-data";
 import { sceneLabData, lineAndWordCount } from "./scene-lab-data";
 import { runSceneBatch } from "./scene-batch";
+import { SavedSuggestion, useSuggestionSaved } from "./suggestions-data";
 
 type Check = { blockId: string; result: LineCheckResult; turnId: string };
 export function SceneLab({ state, projectId, sceneId, editable, initialSession, onProfile, onScene }: {
@@ -49,6 +50,8 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
   const gen = useServerFn(generateText), create = useServerFn(createStorySession), append = useServerFn(appendStoryTurns), fork = useServerFn(forkStorySession), suggest = useServerFn(saveStorySuggestion), get = useServerFn(getStorySession);
   const list = useServerFn(listStorySessions);
   const qc = useQueryClient();
+  const saved = useSuggestionSaved(projectId);
+  const [savedId, setSavedId] = useState<string | null>(null);
   const rootId = session?.kind === "scene_improv" ? session.parentSessionId ?? session.id : null;
   const related = useQuery({ queryKey: ["scene-variants", projectId, rootId], enabled: !!rootId && !busy, queryFn: async () => {
     const r = await list({ data: { projectId } }); if (!r.ok) throw new Error(r.message);
@@ -164,13 +167,13 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
     setChosenVariants(added.map((s) => s.id)); setCompare(true); void qc.invalidateQueries({ queryKey: ["scene-variants", projectId] });
   });
   const saveSuggestion = (kind: "analysis" | "line" | "scene_draft", payload: Record<string, unknown>, s = session, turnId?: string) => perform(async () => {
-    const r = await suggest({ data: { projectId, sessionId: s?.id ?? null, kind, payload, ...(turnId ? { turnId } : {}) } }); if (!r.ok) throw new Error(r.message); setNote(L("Lagret som forslag.", "Saved as a suggestion."));
+    const r = await suggest({ data: { projectId, sessionId: s?.id ?? null, kind, payload: { ...payload, sceneId }, ...(turnId ? { turnId } : {}) } }); if (!r.ok) throw new Error(r.message); setSavedId(saved(r.id));
   });
   const evidence = (source: string) => <ToolbarButton key={source} data-testid="storylab-evidence" className="text-xs" onClick={() => {
     if (source.startsWith("profile:")) { const a = data.participants.find((a) => source.slice(8).startsWith(`${a.name}.`)); if (a) onProfile?.(a.id); }
     else { setHighlight(source); document.getElementById(`scene-block-${source}`)?.scrollIntoView({ block: "nearest", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" }); }
   }}>{source}</ToolbarButton>;
-  const checkCard = (c: Check) => <div className="border border-border bg-surface-2 p-2 text-sm" key={c.turnId}>
+  const checkCard = (c: Check) => <div className="border border-border bg-surface-2 p-2 text-sm" key={c.turnId} data-turn-id={c.turnId} tabIndex={-1}>
     <span data-testid="storylab-line-verdict" data-verdict={c.result.verdict} className="text-accent-brand">{c.result.verdict === "yes" ? L("Ja", "Yes") : c.result.verdict === "partly" ? L("Delvis", "Partly") : L("Nei", "No")}</span>
     {c.result.reasons.map((r, i) => <div key={i}><p>{r.text}</p><div className="flex flex-wrap">{r.evidence.map((e) => <ToolbarButton key={e} onClick={() => { const id = data.speakers.get(c.blockId); if (id && e.startsWith("profile.")) onProfile?.(id); else { setHighlight(c.blockId); document.getElementById(`scene-block-${c.blockId}`)?.scrollIntoView({ block: "nearest" }); } }}>{e}</ToolbarButton>)}</div></div>)}
     {c.result.rewrite ? <><p className="font-script">{c.result.rewrite}</p><ToolbarButton disabled={!editable || busy || groupBusy} onClick={() => saveSuggestion("line", { sceneId, blockId: c.blockId, original: data.blocks.find((b) => b.id === c.blockId)?.text ?? "", suggestion: c.result.rewrite }, analysisSession, c.turnId)}>{L("Lagre som forslag", "Save as suggestion")}</ToolbarButton></> : null}
@@ -207,11 +210,12 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
             return <section key={col.id} data-testid="storylab-compare-col" className="min-w-48 flex-1 border-l border-border p-2 text-sm"><PanelHeader title={col.title} />{col.turns.map((t) => <label key={t.id} className="mb-2 block"><Checkbox aria-label={L("Velg replikk", "Select line")} checked={chosenLines.includes(t.id)} onCheckedChange={(yes) => setChosenLines((old) => yes ? [...old, t.id] : old.filter((id) => id !== t.id))} /><strong className="ml-1">{state.assets[t.speaker]?.name ?? t.speaker}</strong><p>{t.text}</p></label>)}<p>{L(`${count.lines} replikker · ${count.words} ord`, `${count.lines} lines · ${count.words} words`)}</p>{col.session ? <ToolbarButton disabled={!editable || busy || groupBusy} onClick={() => saveSuggestion("scene_draft", { sceneId, turns: col.turns }, col.session)}>{L("Lagre varianten som scenetekstutkast", "Save variant as scene draft")}</ToolbarButton> : null}</section>;
           })}</div> : null}
           {compare ? <ToolbarButton disabled={!editable || busy || groupBusy || !chosenLines.length} onClick={() => perform(async () => { for (const b of data.blocks.filter((b) => b.kind === "dialogue" && chosenLines.includes(b.id))) {
-            const r = await suggest({ data: { projectId, sessionId: null, kind: "line", payload: { sceneId, speakerAssetId: data.speakers.get(b.id) ?? null, text: b.text, sessionId: null, turnId: b.id } } }); if (!r.ok) throw new Error(r.message);
+            const r = await suggest({ data: { projectId, sessionId: null, kind: "line", payload: { sceneId, speakerAssetId: data.speakers.get(b.id) ?? null, text: b.text, sessionId: null, turnId: b.id } } }); if (!r.ok) throw new Error(r.message); setSavedId(saved(r.id));
           }
-          for (const s of variants) for (const t of s.turns.filter((t) => t.kind === "line" && chosenLines.includes(t.id))) { const r = await suggest({ data: { projectId, sessionId: s.id, turnId: t.id, kind: "line", payload: { sceneId, speakerAssetId: t.speaker, text: t.text, sessionId: s.id, turnId: t.id } } }); if (!r.ok) throw new Error(r.message); } setChosenLines([]); setNote(L("Lagret som forslag.", "Saved as a suggestion.")); })}>{L("Lagre valgte som forslag", "Save selected as suggestions")}</ToolbarButton> : null}
+          for (const s of variants) for (const t of s.turns.filter((t) => t.kind === "line" && chosenLines.includes(t.id))) { const r = await suggest({ data: { projectId, sessionId: s.id, turnId: t.id, kind: "line", payload: { sceneId, speakerAssetId: t.speaker, text: t.text, sessionId: s.id, turnId: t.id } } }); if (!r.ok) throw new Error(r.message); setSavedId(saved(r.id)); } setChosenLines([]); })}>{L("Lagre valgte som forslag", "Save selected as suggestions")}</ToolbarButton> : null}
           {openId ? <p>{opened.isError ? L("Økten kunne ikke hentes.", "The session could not be loaded.") : L("Henter økten …", "Loading session …")}</p> : null}
           {note ? <p className="text-xs text-text-tertiary">{note}</p> : null}
+          {savedId ? <SavedSuggestion id={savedId} /> : null}
           {error ? <div role="alert" className="text-sm text-status-danger">{error}<ToolbarButton onClick={() => { const retry = retrySave.current; if (retry) void perform(retry); else setDialog(tab === "improv" ? "variants" : tab === "check" ? "check" : "analysis"); }}>{L("Prøv igjen", "Try again")}</ToolbarButton></div> : null}
         </div>
       </section>
