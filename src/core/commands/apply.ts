@@ -6390,6 +6390,15 @@ function run(
             "The recording is used in an audio composition or in a scene and cannot be removed.",
           ),
         );
+      // En malversjon som brukes av en forekomst, beholdes (MTS MT4, AJ)
+      if (Object.values(s.templateInstances ?? {}).some((i) => i.templateVersionId === ver.id))
+        fail(
+          "referenced",
+          L(
+            "Malversjonen brukes i en scene og kan ikke fjernes.",
+            "The template version is used in a scene and cannot be removed.",
+          ),
+        );
       // Bare det nyeste bildet kan angres bort (en versjon andre kan ha brukt, beholdes)
       if (
         Object.values(s.assetVersions).some(
