@@ -27,7 +27,7 @@
 - [x] Kontroller Manusutforskeren (bare filtre, ingen ressursforslag). Vitest: 1479 bestått, 10 eksisterende hoppet over. I18n: 0 uten engelsk. Automatisk typekontroll grønn. Nettlesertestene kjøres av Øystein.
 - [x] SV1: endring av scenevarighet (fem metoder, fyll, låste tidsrom, RetimeScene, migrasjon 0042 skrevet)
 # AS (Asset Studio)
-- [ ] AS retterunde 2: feltnivå-rebase, avgrensede egne skrivinger, app-/testrettinger a–h og tester.
+- [x] AS retterunde 2: feltnivå-rebase, eksakte egne skrivekvitteringer, skjult-lag-hit-test, pekerdrag og testrettinger a–h. Vitest 1529 bestått, 10 eksisterende hoppet over; automatisk typekontroll grønn; i18n 0 manglende. Nettlesertesten kjøres av Øystein.
 - [x] AS1: utkast, UpdateSceneDraft, skall, lagring/avbryt, konfliktdialog, tastatur.
 - [x] AS2: variantstripe, bildesegmenter, krysstoning, aktivt tidsområde (0043 skrevet), to visninger og avspillingsområder.
 - [x] AS3: lydgrupper, forhåndslyttingsdemping, medieverktøy, «Vis manus», forsøksvise redigeringer (0044 skrevet), «Bruk forslaget».

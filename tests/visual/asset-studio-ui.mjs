@@ -205,7 +205,7 @@ await scenario("kriterium-1-2", "nb", async (page, studio) => {
   check(drafts().length === 1, "én UpdateSceneDraft sendes");
   check(f?.swaps?.length === 3 && new Set(f.swaps.map((w) => w.assetId)).size === 1 && f.swaps[0].assetId === ASSET.id, "1: tre bildeskifter på det samme laget, med samme ressurs (ingen ny karakter)");
   check((cmd?.steps ?? []).every((s) => s.type !== "AddLayers"), "1: ingen nye lag");
-  check(f?.keyframes?.length === 2, "2: nøkkelbildeanimasjonen er uendret gjennom byttene");
+  check(layerSteps(cmd).every((step) => step.keyframes === undefined), "2: nøkkelbildeanimasjonen er uendret gjennom byttene (ingen nøkkelbildefelter skrives)");
   check(f?.swaps?.some((w) => w.transition?.kind === "crossfade"), "2: krysstoning er lagret på bildeskiftet");
 });
 
