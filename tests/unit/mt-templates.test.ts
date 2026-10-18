@@ -159,7 +159,7 @@ describe("MT4 ny malversjon (AI–AJ, M5)", () => {
     const nameLayer = instanceLayers(s, a.instanceId).find((l) => l.template?.slot === "navn")!;
     s = mustApply(s, {
       type: "UpdateLayers",
-      layers: [{ layerId: nameLayer.id, fields: { ...lf(nameLayer), transform: { ...nameLayer.transform, x: nameLayer.transform.x + 33 } } }],
+      layers: [{ layerId: nameLayer.id, fields: { ...(lf(nameLayer) as object), transform: { ...nameLayer.transform, x: nameLayer.transform.x + 33 } } as never }],
     });
     // Ny versjon av malen: annen farge på rollen
     const v2 = tid<"asset_version">();
