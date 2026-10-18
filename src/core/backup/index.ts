@@ -584,6 +584,8 @@ export function restoredState(
     story_canvas_nodes: t("story_canvas_nodes"),
     story_canvas_edges: t("story_canvas_edges"),
     template_instances: t("template_instances"),
+    credit_participants: t("credit_participants"),
+    credit_sequences: t("credit_sequences"),
   };
   let state: ProjectState;
   try {
