@@ -3,6 +3,7 @@
  */
 import { chromium } from "playwright";
 import { readFileSync, mkdirSync } from "node:fs";
+import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
 const [base = "http://127.0.0.1:8080", fixturePath = "/tmp/claude-0/visual-fixture.json", out = "/tmp/claude-0/translation-ai-align"] = process.argv.slice(2);
 mkdirSync(out, { recursive: true });
 const fx = JSON.parse(readFileSync(fixturePath, "utf8"));
@@ -68,7 +69,7 @@ async function mock(context, role = "owner") {
     if (path.startsWith("/storage/v1/")) return route.fulfill({ status: 200, contentType: "image/svg+xml", body: '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"/>' });
     const table = path.replace("/rest/v1/", "");
     if (table === "rpc/my_account") return json({ status: "active", is_admin: false, permanent_admin: false, locale: null, display_name: "Mars", privacy_version: 1, accepted_version: 1, created_at: "2026-10-01T10:00:00Z", ui_prefs: {} });
-    if (table === "schema_version") return json([{ version: 41 }]);
+    if (table === "schema_version") return json([{ version: VISUAL_SCHEMA_VERSION }]);
     if (table === "projects") return json(single ? fx.project : [{ ...fx.project, project_members: [{ user_id: USER.id, role }] }]);
     if (table === "project_members") return json([{ user_id: USER.id, role, joined_at: "2026-10-08T10:00:00Z" }]);
     if (table === "profiles") return json([{ user_id: USER.id, display_name: "Mars" }]);

@@ -3,6 +3,7 @@
  */
 import { chromium } from "playwright";
 import { readFileSync, mkdirSync } from "node:fs";
+import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
 const [base = "http://127.0.0.1:8080", fixturePath = "/tmp/claude-0/visual-fixture.json", out = "/tmp/claude-0/library-suggestions"] = process.argv.slice(2);
 mkdirSync(out, { recursive: true });
 const fx = JSON.parse(readFileSync(fixturePath, "utf8"));
@@ -18,7 +19,30 @@ rows.script_block_revisions = fx.rows.script_block_revisions.map((revision) => {
   const block = rows.script_blocks.find((b) => b.id === revision.block_id && b.current_rev === revision.rev);
   return block ? { ...revision, text: block.text } : revision;
 });
-let commands = [], aiCalls = [];
+let commands = [], aiCalls = [], analysisRows = [];
+// Match sceneText/contentHash: headings and visible blocks in order, never scene numbers.
+function analyzedRows(scope) {
+  const main = rows.productions.find((p) => p.kind === "main");
+  const ids = scope === "all" ? null : new Set(scope.sceneIds);
+  const seen = new Set();
+  return rows.scene_occurrences.filter((o) => o.production_id === main.id)
+    .sort((a, b) => a.order_key.localeCompare(b.order_key) || a.id.localeCompare(b.id))
+    .flatMap((o) => {
+      if (seen.has(o.scene_id) || (ids && !ids.has(o.scene_id))) return [];
+      seen.add(o.scene_id);
+      const v = rows.scene_variants.find((v) => v.id === o.variant_id);
+      const blocks = rows.script_blocks.filter((b) => !b.removed && (b.scene_variant_id ?? b.variant_id) === o.variant_id)
+        .sort((a, b) => a.order_key.localeCompare(b.order_key));
+      const text = [`${v.heading_int_ext} ${v.heading_location} ${v.heading_time}`.trim(), ...blocks.map((b) => `${b.kind}\u0001${b.text}`)].join("\u0002");
+      let a = 0x811c9dc5, b = 0x01000193 ^ 0x5bd1e995;
+      for (let i = 0; i < text.length; i++) {
+        a = Math.imul(a ^ text.charCodeAt(i), 0x01000193) >>> 0;
+        b = Math.imul(b ^ text.charCodeAt(i), 0x01000193) >>> 0;
+        b = (b ^ (b >>> 13)) >>> 0;
+      }
+      return [{ sceneId: o.scene_id, contentHash: a.toString(16).padStart(8, "0") + b.toString(16).padStart(8, "0"), items: [] }];
+    });
+}
 function serverFnName(url) {
   try {
     const b64 = new URL(url).pathname.split("/_serverFn/")[1];
@@ -68,7 +92,7 @@ async function mock(context, role = "owner") {
     if (path.startsWith("/storage/v1/")) return route.fulfill({ status: 200, contentType: "image/svg+xml", body: '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"/>' });
     const table = path.replace("/rest/v1/", "");
     if (table === "rpc/my_account") return json({ status: "active", is_admin: false, permanent_admin: false, locale: null, display_name: "Mars", privacy_version: 1, accepted_version: 1, created_at: "2026-10-01T10:00:00Z", ui_prefs: {} });
-    if (table === "schema_version") return json([{ version: 41 }]);
+    if (table === "schema_version") return json([{ version: VISUAL_SCHEMA_VERSION }]);
     if (table === "projects") return json(single ? fx.project : [{ ...fx.project, project_members: [{ user_id: USER.id, role }] }]);
     if (table === "project_members") return json([{ user_id: USER.id, role, joined_at: "2026-10-08T10:00:00Z" }]);
     if (table === "profiles") return json([{ user_id: USER.id, display_name: "Mars" }]);
@@ -84,8 +108,15 @@ async function mock(context, role = "owner") {
     if (/projectAiProviders|listTextChoices/.test(name)) return json({ providers: [], missing: false });
     if (/listStorySessions/.test(name)) return json({ ok: true, sessions: [] });
     if (/listStorySuggestions/.test(name)) return json({ ok: true, suggestions: [] });
-    if (/listEntityAnalysis/.test(name)) return json({ rows: [] });
-    if (/analyzeScriptEntities/.test(name)) { aiCalls.push(d); return json({ ok: true, analyzedScenes: 1, remainingScenes: 0, newSuggestions: 1 }); }
+    if (/listEntityAnalysis/.test(name)) return json({ rows: analysisRows });
+    if (/analyzeScriptEntities/.test(name)) {
+      aiCalls.push(d);
+      const fresh = analyzedRows(d.scope).slice(0, 40);
+      const byScene = new Map(analysisRows.map((r) => [r.sceneId, r]));
+      for (const r of fresh) byScene.set(r.sceneId, r);
+      analysisRows = [...byScene.values()];
+      return json({ ok: true, analyzedScenes: fresh.length, remainingScenes: Math.max(0, analyzedRows(d.scope).length - fresh.length), newSuggestions: 0 });
+    }
     if (/generateText/.test(name)) { aiCalls.push(d); return json({ ok: true, text: JSON.stringify({ items: [{ name: "Svarten", kind: "animal", confidence: "high", reason: "Horse description", aliasOf: "hest" }, { name: "INVENTED", kind: "object", confidence: "high", reason: "Ignore invented name" }] }), costUsd: 0.001, usedFallback: true, reason: "fallback", keyOwner: "lovable" }); }
     return json({ ok: true, lock: null });
   });
@@ -94,7 +125,7 @@ let pass = 0, fail = 0;
 const check = (condition, description) => { console.log(`  ${condition ? "ok" : "FEIL"} ${description}`); condition ? pass++ : fail++; };
 const browser = await chromium.launch({ headless: true });
 async function run(label, fn, { lang = "nb", role = "owner" } = {}) {
-  commands = []; aiCalls = [];
+  commands = []; aiCalls = []; analysisRows = [];
   const context = await browser.newContext({ viewport: { width: 1280, height: 1800 }, colorScheme: "dark" });
   await mock(context, role);
   const page = await context.newPage(); const errors = [];
@@ -133,7 +164,7 @@ await run("ai-reanalyze", async (page) => {
   await dialog.getByTestId("library-suggestions-ai").click();
   await page.waitForTimeout(500);
   check(await dialog.getByTestId("library-suggestions-cost").count() === 0, "ingen kostnadsdialog");
-  check(aiCalls.length > before && aiCalls.at(-1).scope === "all", "analyser på nytt kaller den automatiske analysen");
+  check(aiCalls.slice(before).some((c) => c.scope === "all"), "analyser på nytt kaller den automatiske analysen");
   check(JSON.stringify(names) === JSON.stringify(await dialog.getByTestId("library-suggestion").evaluateAll((els) => els.map((el) => el.dataset.name).sort())), "analysen legger ikke til navn");
   check(commands.length === 0, "analysen oppretter ingenting automatisk");
 });

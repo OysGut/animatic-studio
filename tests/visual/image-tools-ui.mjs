@@ -6,6 +6,7 @@
  */
 import { chromium } from "playwright";
 import { readFileSync, mkdirSync } from "node:fs";
+import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
 const [
   base = "http://127.0.0.1:8080",
   fixturePath = "/tmp/claude-0/visual-fixture.json",
@@ -71,7 +72,7 @@ async function mock(ctx) {
     if (path.startsWith("/storage/v1/object/sign/"))
       return route.fulfill({ status: 200, contentType: "image/svg+xml", body: WHITE_SVG });
     const table = path.replace("/rest/v1/", "");
-    if (table === "schema_version") return json([{ version: 40 }]);
+    if (table === "schema_version") return json([{ version: VISUAL_SCHEMA_VERSION }]);
     if (table === "projects") {
       if (single) return json(project);
       return json([{ ...project, project_members: [{ role: "owner", user_id: USER.id }] }]);

@@ -30,3 +30,4 @@ Kortversjonen:
 10. Active scenes travel over a source-window-scoped browser bus; pinned explorers never publish their own browsing selection.
 11. Entity recognition extends librarySuggestions with pure lexical classification; optional AI reviews existing candidates only, and assets are created exclusively through the existing confirmed command flow.
 12. Automatic recognition and translation alignment (B-047/B-048) are the only exception to the single text-AI entry point: they run through the server-only service-AI path that forces the built-in AI and builds its prompts on the server, so it can never act as an open AI proxy.
+13. User text quotas exclude the two internal service tasks, while service quotas select only built-in service tasks; this keeps user-triggered fallback calls in the user quota. Visual suites updated from schema 40 onward share a schema-version constant to avoid repeated migration edits.
