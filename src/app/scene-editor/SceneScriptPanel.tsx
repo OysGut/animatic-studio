@@ -46,7 +46,10 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
   playing,
   editable,
   onOpenEditor,
+  highlightBlockIds,
 }: {
+  /** Replikkene som markeres (Asset Studio, C1: karakterens replikker). */
+  highlightBlockIds?: ReadonlySet<string> | undefined;
   state: ProjectState;
   occurrenceId: string;
   /** Scenens klipp i filmen (for å finne det som spilles av), eller null om scenen ikke er med i filmen. */
@@ -125,12 +128,14 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
         ) : null}
         {blocks.map((b, i) => {
           const isActive = b.id === active;
+          const marked = highlightBlockIds?.has(b.id) ?? false;
           const notes = notesByBlock.get(b.id) ?? 0;
           return (
             <p
               key={b.id}
               data-script-block={b.id}
               data-active={isActive ? true : undefined}
+              data-highlight={marked ? true : undefined}
               onDoubleClick={() => onOpenEditor(b.id)}
               title={L("Dobbeltklikk for å redigere", "Double-click to edit")}
               className={
@@ -138,7 +143,8 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
                 KIND_CLASS[b.kind] +
                 " " +
                 gapBefore(b.kind, i > 0 ? blocks[i - 1]!.kind : "heading") +
-                (isActive ? " bg-accent-selection outline outline-1 outline-accent-brand/60" : "")
+                (isActive ? " bg-accent-selection outline outline-1 outline-accent-brand/60" : "") +
+                (marked && !isActive ? " bg-surface-3 font-semibold" : "")
               }
             >
               {b.kind === "parenthetical" && !b.text.startsWith("(") ? `(${b.text})` : b.text}
