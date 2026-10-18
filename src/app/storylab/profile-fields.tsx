@@ -157,7 +157,7 @@ export function FieldEditor({
   def: FieldDef;
   value: unknown;
   onChange: (v: unknown) => void;
-  disabled?: boolean;
+  disabled?: boolean | undefined;
   others?: readonly { id: string; name: string }[];
 }) {
   const id = `sl-${fieldId(def)}`;
@@ -259,7 +259,7 @@ function Chips({
   id: string;
   values: readonly string[];
   onChange: (v: string[]) => void;
-  disabled?: boolean;
+  disabled?: boolean | undefined;
   label: string;
 }) {
   const [text, setText] = useState("");
@@ -329,7 +329,7 @@ function Beliefs({
   values: readonly { assetId: string; belief: string }[];
   others: readonly { id: string; name: string }[];
   onChange: (v: { assetId: string; belief: string }[]) => void;
-  disabled?: boolean;
+  disabled?: boolean | undefined;
 }) {
   const set = (i: number, patch: Partial<{ assetId: string; belief: string }>) =>
     onChange(values.map((b, j) => (j === i ? { ...b, ...patch } : b)));
