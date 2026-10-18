@@ -49,6 +49,9 @@ const prompt = (s: ProjectState, r: AssistRequest) => {
 const fact = (s: ProjectState, text: string, kind: "fact" | "secret", atSceneId: string | null, knownBy: { assetId: string; fromSceneId: string | null }[]) =>
   mustApply(s, { type: "AddStoryFact", factId: tid(), fields: { text, kind, atSceneId, knownBy } } as never);
 const editable = blocks.filter((b) => b.kind !== "heading");
+/** Uten engelske oversettelser (fixturen har noen fra før). */
+const enIds = Object.values(s0.translations).filter((t) => !t.removed && t.language === "en").map((t) => t.id);
+const sNoEn: ProjectState = enIds.length ? mustApply(s0, { type: "SetTranslationsRemoved", translationIds: enIds, removed: true } as never) : s0;
 
 describe("forespørselen", () => {
   it("avviser ukjent type, for mange linjer og for lange ønsker", () => {
@@ -82,7 +85,7 @@ describe("promptbyggerne", () => {
 
   it("fritt ønske krever tekst; oversettelse ber om engelsk", () => {
     expect(buildAssistPrompt(s0, req({ blockIds: [editable[0]!.id], mode: "free" })).ok).toBe(false);
-    const t = prompt(s0, req({ kind: "translate" }));
+    const t = prompt(sNoEn, req({ kind: "translate" }));
     expect(t.system).toContain("English");
     expect(t.system).toMatchSnapshot();
   });
@@ -205,10 +208,10 @@ describe("forslag og «Bruk»", () => {
 describe("oversettelsesutkast", () => {
   it("lagres som usikker engelsk oversettelse, norsk endres aldri", () => {
     const r = req({ kind: "translate", blockIds: [editable[0]!.id] });
-    const p = proposalFromReply(s0, r, prompt(s0, r), JSON.stringify({ blocks: [{ ref: "b1", text: "English draft." }] }), { costUsd: 0, usedFallback: false })!;
-    const plan = planApplyProposal(s0, p, new Set(p.items.map((i) => i.key)));
+    const p = proposalFromReply(sNoEn, r, prompt(sNoEn, r), JSON.stringify({ blocks: [{ ref: "b1", text: "English draft." }] }), { costUsd: 0, usedFallback: false })!;
+    const plan = planApplyProposal(sNoEn, p, new Set(p.items.map((i) => i.key)));
     if (!plan.ok) throw new Error(plan.message);
-    const s = mustApply(s0, plan.commands[0]!);
+    const s = mustApply(sNoEn, plan.commands[0]!);
     const t = Object.values(s.translations).find((x) => x.blockId === editable[0]!.id && x.language === "en")!;
     expect(t.status).toBe("uncertain");
     expect(t.text).toBe("English draft.");
