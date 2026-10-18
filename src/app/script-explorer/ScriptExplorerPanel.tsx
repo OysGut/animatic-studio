@@ -23,10 +23,28 @@ export function ScriptExplorerPanel({ projectId, onClose }: { projectId: string;
   const previousFocus = useRef<HTMLElement | null>(null);
   useEffect(() => {
     previousFocus.current = document.activeElement as HTMLElement | null;
-    const input = popup.current?.querySelector<HTMLInputElement>('[data-testid="script-explorer-search"]');
-    (input ?? popup.current)?.focus({ preventScroll: true });
-    return () => { previousFocus.current?.focus({ preventScroll: true }); };
+    const frame = requestAnimationFrame(() => {
+      const input = popup.current?.querySelector<HTMLInputElement>('[data-testid="script-explorer-search"]');
+      (input ?? popup.current)?.focus({ preventScroll: true });
+    });
+    return () => {
+      cancelAnimationFrame(frame);
+      previousFocus.current?.focus({ preventScroll: true });
+    };
   }, []);
+  useEffect(() => {
+    if (session.status !== "signed-in") return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Escape" || e.defaultPrevented) return;
+      if (document.querySelector('[role="dialog"][aria-modal="true"], [data-radix-popper-content-wrapper]')) return;
+      const focused = document.activeElement;
+      if (focused instanceof HTMLElement && !popup.current?.contains(focused) && focused.matches('input, textarea, [contenteditable]:not([contenteditable="false"]), [role="textbox"]')) return;
+      e.stopPropagation();
+      onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onClose, session.status]);
   if (session.status !== "signed-in") return null;
   const pin = () => {
     const source = sourceWindowId();
@@ -36,7 +54,7 @@ export function ScriptExplorerPanel({ projectId, onClose }: { projectId: string;
   };
   const popupWidth = `min(${width ?? 560}px, 100vw)`;
   const popupHeight = height === null ? "min(760px, max(0px, calc(100vh - 140px)))" : `min(${height}px, 100vh)`;
-  return <div ref={popup} role="dialog" aria-modal={false} aria-label={L("Manusutforskeren", "Script explorer")} tabIndex={-1} data-testid="script-explorer" className="fixed z-40 flex flex-col overflow-hidden rounded-sm border border-border-strong bg-surface-1 shadow-[var(--shadow-float)]" style={{ left: `clamp(0px, ${x === null ? `calc(100vw - ${popupWidth} - 16px)` : `${x}px`}, max(0px, calc(100vw - ${popupWidth})))`, top: `clamp(0px, ${y ?? 76}px, max(0px, calc(100vh - ${popupHeight})))`, width: popupWidth, height: popupHeight }} onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); onClose(); } }}>
+  return <div ref={popup} role="dialog" aria-modal={false} aria-label={L("Manusutforskeren", "Script explorer")} tabIndex={-1} data-testid="script-explorer" className="fixed z-40 flex flex-col overflow-hidden rounded-sm border border-border-strong bg-surface-1 shadow-[var(--shadow-float)]" style={{ left: `clamp(0px, ${x === null ? `calc(100vw - ${popupWidth} - 16px)` : `${x}px`}, max(0px, calc(100vw - ${popupWidth})))`, top: `clamp(0px, ${y ?? 76}px, max(0px, calc(100vh - ${popupHeight})))`, width: popupWidth, height: popupHeight }}>
     <div className="flex h-9 shrink-0 items-center gap-2 border-b border-border bg-surface-2 px-3" onPointerDown={(e) => {
       if ((e.target as Element).closest("button,a")) return;
       const rect = popup.current?.getBoundingClientRect(); if (!rect) return;
