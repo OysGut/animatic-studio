@@ -6,7 +6,8 @@
  */
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Loader2, Send, Sparkles } from "lucide-react";
+import { Loader2, Send } from "lucide-react";
+import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useState } from "react";
 import {
   L,
@@ -178,7 +179,7 @@ function Interview({ state, projectId, cmds, editable, sessionId, selection, ori
               <Send />{L("Send", "Send")}
             </ToolbarButton>
             <ToolbarButton data-testid="interview-propose-nodes" disabled={busy || !asked} onClick={() => setConfirming("nodes")}>
-              <Sparkles />{L("Foreslå noder fra intervjuet …", "Propose nodes from the interview …")}
+              <AiGlyph />{L("Foreslå noder fra intervjuet …", "Propose nodes from the interview …")}
             </ToolbarButton>
           </div>
           {confirming ? (

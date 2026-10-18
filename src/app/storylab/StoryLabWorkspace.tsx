@@ -30,6 +30,7 @@ import { ConversationView, NewSessionForm } from "./ConversationView";
 import { FactsPanel } from "./FactsPanel";
 import { NewGroupDialog } from "./NewGroupDialog";
 import { SceneLab } from "./SceneLab";
+import { LazyCanvasView } from "./canvas/LazyCanvasView";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { profileStatus, sceneIdFrom, scenesByStoryTime, storyCharacters } from "./storylab-data";
 
@@ -40,9 +41,11 @@ export function StoryLabWorkspace({
   initialSceneRef,
   initialSuggestions,
   initialSuggestionId,
+  initialCanvas,
 }: {
   projectId: string;
   userId: string;
+  initialCanvas?: boolean;
   initialAssetId: string | null;
   initialSceneRef: string | null;
   initialSuggestions?: boolean;
@@ -87,12 +90,13 @@ export function StoryLabWorkspace({
       initialSceneRef={initialSceneRef}
       initialSuggestions={initialSuggestions ?? false}
       initialSuggestionId={initialSuggestionId ?? null}
+      initialCanvas={initialCanvas ?? false}
       undoError={undoError}
     />
   );
 }
 
-type View = { kind: "character" } | { kind: "new" } | { kind: "scene"; id: string } | { kind: "session"; id: string };
+type View = { kind: "canvas"; interviewId: string | null } | { kind: "character" } | { kind: "new" } | { kind: "scene"; id: string } | { kind: "session"; id: string };
 
 function Lab({
   state,
@@ -103,8 +107,10 @@ function Lab({
   initialSceneRef,
   initialSuggestions,
   initialSuggestionId,
+  initialCanvas,
   undoError,
 }: {
+  initialCanvas: boolean;
   state: ProjectState;
   projectId: string;
   editable: boolean;
@@ -123,8 +129,10 @@ function Lab({
       null,
   );
   const [sceneId, setSceneId] = useState<string | null>(() => sceneIdFrom(state, initialSceneRef ?? undefined));
-  const [view, setView] = useState<View>(() => { const id = sceneIdFrom(state, initialSceneRef ?? undefined); return id ? { kind: "scene", id } : { kind: "character" }; });
-  const [leftTab, setLeftTab] = useState<"characters" | "scenes" | "suggestions">(initialSuggestions ? "suggestions" : initialSceneRef ? "scenes" : "characters");
+  const [view, setView] = useState<View>(() => { if (initialCanvas) return { kind: "canvas", interviewId: null }; const id = sceneIdFrom(state, initialSceneRef ?? undefined); return id ? { kind: "scene", id } : { kind: "character" }; });
+  const [leftTab, setLeftTab] = useState<"characters" | "scenes" | "suggestions" | "canvas">(initialCanvas ? "canvas" : initialSuggestions ? "suggestions" : initialSceneRef ? "scenes" : "characters");
+  const hasScenes = Object.keys(state.scenes).length > 0;
+  const openCanvas = (interviewId: string | null) => { setLeftTab("canvas"); setView({ kind: "canvas", interviewId }); };
   const [focusedSuggestion, setFocusedSuggestion] = useState<string | null>(initialSuggestionId);
   const [suggestionScene, setSuggestionScene] = useState<string | null>(initialSuggestions ? initialSceneRef : null);
   const [sourceTurn, setSourceTurn] = useState<string | null>(null);
@@ -197,8 +205,8 @@ function Lab({
             style={{ width: leftW }}
           >
             <PaneResizer edge="right" size={leftW} onSize={setLeftW} min={180} max={420} label={L("Bredde på karakterpanelet", "Width of the character panel")} />
-            <div role="tablist" className="flex flex-wrap border-b border-border"><ToolbarButton role="tab" aria-selected={leftTab === "characters"} active={leftTab === "characters"} onClick={() => setLeftTab("characters")}>{L("Karakterer", "Characters")}</ToolbarButton><ToolbarButton role="tab" data-testid="storylab-tab-scenes" aria-selected={leftTab === "scenes"} active={leftTab === "scenes"} onClick={() => setLeftTab("scenes")}>{L("Scener", "Scenes")}</ToolbarButton><ToolbarButton role="tab" data-testid="storylab-tab-suggestions" aria-selected={leftTab === "suggestions"} active={leftTab === "suggestions"} onClick={() => { setLeftTab("suggestions"); setSuggestionScene(null); }}>{L(`Forslag (${suggestions.data?.filter((s) => s.status === "open").length ?? 0})`, `Suggestions (${suggestions.data?.filter((s) => s.status === "open").length ?? 0})`)}</ToolbarButton></div>
-            {leftTab === "suggestions" ? <SuggestionsPanel state={state} projectId={projectId} cmds={cmds} editable={editable} focusedId={focusedSuggestion} sceneFilter={suggestionScene} onSource={(id, turnId) => { setView({ kind: "session", id }); setSourceTurn(turnId); }} /> : leftTab === "scenes" ? <ul className="min-h-0 flex-1 overflow-y-auto py-1" data-testid="storylab-scenes">{scenesByStoryTime(state).map((s) => <li key={s.sceneId}><ToolbarButton className="w-full justify-start" active={view.kind === "scene" && view.id === s.sceneId} data-testid="storylab-scene" data-scene-id={s.sceneId} onClick={() => { setSceneId(s.sceneId); setView({ kind: "scene", id: s.sceneId }); }}>{s.label}</ToolbarButton></li>)}</ul> : <><PanelHeader title={L("Karakterer", "Characters")} count={characters.length} />
+            <div role="tablist" className="flex flex-wrap border-b border-border"><ToolbarButton role="tab" aria-selected={leftTab === "characters"} active={leftTab === "characters"} onClick={() => setLeftTab("characters")}>{L("Karakterer", "Characters")}</ToolbarButton><ToolbarButton role="tab" data-testid="storylab-tab-scenes" aria-selected={leftTab === "scenes"} active={leftTab === "scenes"} onClick={() => setLeftTab("scenes")}>{L("Scener", "Scenes")}</ToolbarButton><ToolbarButton role="tab" data-testid="storylab-tab-suggestions" aria-selected={leftTab === "suggestions"} active={leftTab === "suggestions"} onClick={() => { setLeftTab("suggestions"); setSuggestionScene(null); }}>{L(`Forslag (${suggestions.data?.filter((s) => s.status === "open").length ?? 0})`, `Suggestions (${suggestions.data?.filter((s) => s.status === "open").length ?? 0})`)}</ToolbarButton><ToolbarButton role="tab" data-testid="storylab-tab-canvas" aria-selected={leftTab === "canvas"} active={leftTab === "canvas"} onClick={() => openCanvas(view.kind === "canvas" ? view.interviewId : null)}>{L("Canvas", "Canvas")}</ToolbarButton></div>
+            {leftTab === "canvas" ? <div className="min-h-0 flex-1 overflow-y-auto p-3 text-[12px] text-text-secondary" data-testid="storylab-canvas-tab"><p>{L("Canvaset er et visuelt arbeidsrom ved siden av manuset. Ingenting overføres til manuset eller biblioteket uten at du bekrefter.", "The canvas is a visual workspace next to the script. Nothing is transferred to the script or the library unless you confirm.")}</p>{editable ? <ToolbarButton className="mt-2" data-testid="storylab-new-interview-tab" onClick={() => openCanvas(null)}>{L("Intervju – utvikle en idé", "Interview – develop an idea")}</ToolbarButton> : null}</div> : leftTab === "suggestions" ? <SuggestionsPanel state={state} projectId={projectId} cmds={cmds} editable={editable} focusedId={focusedSuggestion} sceneFilter={suggestionScene} onSource={(id, turnId) => { setView({ kind: "session", id }); setSourceTurn(turnId); }} /> : leftTab === "scenes" ? <ul className="min-h-0 flex-1 overflow-y-auto py-1" data-testid="storylab-scenes">{scenesByStoryTime(state).map((s) => <li key={s.sceneId}><ToolbarButton className="w-full justify-start" active={view.kind === "scene" && view.id === s.sceneId} data-testid="storylab-scene" data-scene-id={s.sceneId} onClick={() => { setSceneId(s.sceneId); setView({ kind: "scene", id: s.sceneId }); }}>{s.label}</ToolbarButton></li>)}</ul> : <><PanelHeader title={L("Karakterer", "Characters")} count={characters.length} />
             <ul className="min-h-0 flex-1 overflow-y-auto py-1" data-testid="storylab-characters">
               {characters.length === 0 ? (
                 <li className="px-3 py-2 text-xs text-text-tertiary">
@@ -225,7 +233,7 @@ function Lab({
               title={L("Økter", "Sessions")}
               count={sessions.data && sessions.data.ok ? sessions.data.sessions.length : undefined}
               actions={
-                editable && asset ? (
+                editable ? (
                   <DropdownMenu>
                   <DropdownMenuTrigger asChild><ToolbarButton
                     variant="icon"
@@ -237,7 +245,8 @@ function Lab({
                   </ToolbarButton>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
-                    <DropdownMenuItem onSelect={() => setView({ kind: "new" })} data-testid="storylab-new-character">{L("Samtale med én karakter", "Conversation with one character")}</DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => openCanvas(null)} data-testid="storylab-new-interview">{L("Intervju – utvikle en idé", "Interview – develop an idea")}</DropdownMenuItem>
+                    {asset ? <DropdownMenuItem onSelect={() => setView({ kind: "new" })} data-testid="storylab-new-character">{L("Samtale med én karakter", "Conversation with one character")}</DropdownMenuItem> : null}
                     <DropdownMenuItem onSelect={() => setNewGroup(true)} data-testid="storylab-new-group">{L("Gruppesamtale", "Group conversation")}</DropdownMenuItem>
                   </DropdownMenuContent>
                   </DropdownMenu>
@@ -258,10 +267,10 @@ function Lab({
                         type="button"
                         data-testid="storylab-session"
                         data-session-id={s.id}
-                        onClick={() => setView({ kind: "session", id: s.id })}
+                        onClick={() => (s.kind === "interview" ? openCanvas(s.id) : setView({ kind: "session", id: s.id }))}
                         className={
                           "flex w-full flex-col items-start px-3 py-1.5 text-left text-[13px] hover:bg-surface-3 " +
-                          (view.kind === "session" && view.id === s.id ? "bg-accent-selection text-text-primary" : "text-text-secondary")
+                          ((view.kind === "session" && view.id === s.id) || (view.kind === "canvas" && view.interviewId === s.id) ? "bg-accent-selection text-text-primary" : "text-text-secondary")
                         }
                       >
                         <span className="w-full truncate">{s.title || L("Uten navn", "Untitled")}</span>
@@ -277,10 +286,19 @@ function Lab({
           </aside>
         )}
         <main ref={mainRef} className="flex min-h-0 min-w-0 flex-1 flex-col">
-          {view.kind === "scene" ? <SceneLab key={view.id} state={state} projectId={projectId} sceneId={view.id} editable={editable} onScene={setSceneId} onProfile={(id) => { setAssetId(id); setView({ kind: "character" }); }} /> : !asset && view.kind !== "session" ? (
-            <p className="p-6 text-[13px] text-text-tertiary">
-              {L("Velg en karakter til venstre.", "Choose a character on the left.")}
-            </p>
+          {view.kind === "canvas" ? <LazyCanvasView state={state} projectId={projectId} cmds={cmds} editable={editable} interviewId={view.interviewId}
+            onInterview={(id) => setView({ kind: "canvas", interviewId: id })}
+            onOpenAsset={(id) => { setAssetId(id); setLeftTab("characters"); setView({ kind: "character" }); }}
+            onOpenScene={(id) => { setSceneId(id); setLeftTab("scenes"); setView({ kind: "scene", id }); }} /> : view.kind === "scene" ? <SceneLab key={view.id} state={state} projectId={projectId} sceneId={view.id} editable={editable} onScene={setSceneId} onProfile={(id) => { setAssetId(id); setView({ kind: "character" }); }} /> : !asset && view.kind !== "session" ? (
+            <div className="space-y-3 p-6 text-[13px] text-text-tertiary">
+              <p>{L("Velg en karakter til venstre.", "Choose a character on the left.")}</p>
+              {!hasScenes && editable ? (
+                <div className="max-w-md rounded-sm border border-border bg-surface-2 p-3 text-text-secondary" data-testid="storylab-interview-suggestion">
+                  <p>{L("Prosjektet har ingen scener ennå. Vil du utvikle idéen i et intervju?", "The project has no scenes yet. Would you like to develop the idea in an interview?")}</p>
+                  <ToolbarButton variant="primary" className="mt-2" onClick={() => openCanvas(null)}>{L("Intervju – utvikle en idé", "Interview – develop an idea")}</ToolbarButton>
+                </div>
+              ) : null}
+            </div>
           ) : view.kind === "session" ? (
             <ConversationView
               key={view.id}
@@ -313,7 +331,7 @@ function Lab({
             />
           ) : null}
         </main>
-        {rightClosed ? null : (
+        {rightClosed || view.kind === "canvas" ? null : (
           <aside
             className="relative flex shrink-0 flex-col border-l border-border bg-surface-1"
             style={{ width: rightW }}

@@ -147,6 +147,8 @@ export const CATALOG: Record<string, string> = {
   "Alle scener på {0}": "All scenes at {0}",
   "Allerede slettet": "Already deleted",
   "Alt annet": "Everything else",
+  Alternativ: "Alternative",
+  "Alternativ til": "Alternative of",
   "Analysen feilet: {0}. Du kan koble ordene for hånd.":
     "The analysis failed: {0}. You can link the words by hand.",
   "Animatic (2D-scene)": "Animatic (2D scene)",
@@ -194,6 +196,7 @@ export const CATALOG: Record<string, string> = {
   "Bare prosjekteieren kan gjøre dette.": "Only the project owner can do this.",
   "Bare prosjektets eier kan slette for godt.": "Only the project owner can delete permanently.",
   "Bare replikker kan leses inn.": "Only lines can be read aloud.",
+  "Bare scenenoder kan bli scener": "Only scene nodes can become scenes",
   "before ({0}) må være mindre enn after ({1})": "before ({0}) must be less than after ({1})",
   "Begge scenene må være i samme produksjon": "Both scenes must be in the same production",
   "Beløpene er anslått ut fra leverandørens prisliste da jobben ble bestilt. Den endelige fakturaen fra leverandøren kan avvike; bruk leverandørens jobb-ID til avstemming.":
@@ -325,6 +328,8 @@ export const CATALOG: Record<string, string> = {
     "The database must be updated (migration 0034) before the AI connections can be changed.",
   "Databasen mangler AI-budsjett og genereringsbeskrivelser. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0014.":
     "The database is missing the AI budget and generation descriptions. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0014.",
+  "Databasen mangler canvaset i Story Lab. Den må oppdateres (migrasjon 0040).":
+    "The database is missing the Story Lab canvas. It must be updated (migration 0040).",
   "Databasen mangler de nye funksjonene (overganger, svart-hvitt, grupper, bildeskifter og bevegelsesbaner). Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0013.":
     "The database is missing the new features (transitions, black and white, groups, image swaps and motion paths). Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0013.",
   "Databasen mangler det nyeste tillegget (masker, overganger, stemmer, stilprofiler). Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0026.":
@@ -479,6 +484,7 @@ export const CATALOG: Record<string, string> = {
   "En gruppe kan ikke brukes som maske": "A group cannot be used as a mask",
   "En gruppe kan ikke ha maske eller blandingsmodus": "A group cannot have a mask or blend mode",
   "En gruppe kan ikke ligge i en gruppe": "A group cannot be inside another group",
+  "En gruppe kan ikke ligge i seg selv": "A group cannot contain itself",
   "En gruppe viser ikke noe bilde selv": "A group does not show an image itself",
   "En hendelse fra hovedfilmen kan ikke gjøres lokal. Slå den av i spinoffen i stedet.":
     "An event from the main film cannot be made local. Turn it off in the spin-off instead.",
@@ -491,6 +497,7 @@ export const CATALOG: Record<string, string> = {
   "En lydfil kan ikke vises på plakaten": "An audio file cannot be shown on the poster",
   "En lydfil kan ikke vises som lag": "An audio file cannot be shown as a layer",
   "En nål på scenen har ikke tekstområde": "A pin on the scene has no text range",
+  "En node kan ikke kobles til seg selv": "A node cannot be connected to itself",
   "En oversettelse gjelder én linje eller ett scenehode":
     "A translation applies to one line or one scene heading",
   "En oversettelse kan ikke flyttes til en annen linje eller et annet språk":
@@ -514,6 +521,7 @@ export const CATALOG: Record<string, string> = {
     "The changes (notes/transitions) do not show in the picture. Approve them instead of making new videos.",
   "Endringene berører {0} {1}{2}.": "The changes affect {0} {1}{2}.",
   "er deaktivert": "is deactivated",
+  "Er i konflikt med": "Conflicts with",
   "Erstatter v{0} (lastet opp på nytt)": "Replaces v{0} (uploaded again)",
   "Et alternativt navn er for langt": "An alternative name is too long",
   "Et forbildebilde er for stort (over 20 MB) til å sendes med.":
@@ -531,6 +539,7 @@ export const CATALOG: Record<string, string> = {
   "Et segment kan bare vente på segmentet før.":
     "A segment can only wait for the segment before it.",
   "Et stikkord er for langt": "A keyword is too long",
+  "Etiketten kan være høyst {0} tegn": "The label can be at most {0} characters",
   "Ett tekstfelt er tomt ({0}) og vises ikke.": "One text field is empty ({0}) and is not shown.",
   "etter scene {0}": "after scene {0}",
   "Faktaarket er for langt (høyst 4000 tegn)":
@@ -599,6 +608,7 @@ export const CATALOG: Record<string, string> = {
   "For mange volumpunkter (maks 500)": "Too many volume points (max 500)",
   "Forandringen i segmentet var beskrevet – sjekk at den synes.":
     "The change within the segment was described – check that it shows.",
+  Forårsaker: "Causes",
   "Forbildebildene kunne ikke kontrolleres: {0}": "The reference images could not be checked: {0}",
   "Forbildebilder (referansestyring)": "Reference images (style reference)",
   Forbildebildet: "The reference image",
@@ -629,6 +639,7 @@ export const CATALOG: Record<string, string> = {
   "Forekomstene stemmer ikke med delingen": "The occurrences do not match the split",
   "Forekomstkartet stemmer ikke med bruken av scenen":
     "The occurrence map does not match the use of the scene",
+  "Fører til": "Leads to",
   "Forleng pausen før neste replikk i denne språkversjonen (krever egen klipping; hovedfilmen endres ikke).":
     "Extend the pause before the next line in this language version (requires separate editing; the main film is not changed).",
   "Form:": "Format:",
@@ -696,17 +707,24 @@ export const CATALOG: Record<string, string> = {
     "The limit of {0} videos per hour has been reached. Queue them instead.",
   "Grunnlaget mangler eller er for langt": "The basis is missing or too long",
   gruppe: "group",
+  Gruppe: "Group",
+  Gruppen: "The group",
   "Gruppen er slettet": "The group has been deleted",
   "Gruppen finnes ikke i denne 2D-scenen": "The group does not exist in this 2D scene",
+  "Gruppen har noder. Fjern dem fra gruppen først.":
+    "The group has nodes. Remove them from the group first.",
+  "Gruppen må være en gruppenode": "The group must be a group node",
   "halv størrelse": "half size",
   "Hastigheten må være mellom 25 og 400 %": "The speed must be between 25 and 400%",
   hendelse: "event",
+  Hendelse: "Event",
   "hentet tilbake": "fetched back",
   "Her kan du ikke laste opp bilder.": "You cannot upload images here.",
   "Her kan du ikke laste opp lyd.": "You cannot upload audio here.",
   "Her kan du ikke laste opp video.": "You cannot upload video here.",
   "Historiske versjoner": "Historical versions",
   "Holder en karakter lik på tvers av bilder": "Keeps a character the same across images",
+  "Hører til": "Belongs to",
   "Hovedfilmen bruker en godkjent versjon av scenen. Bekreft at den skal byttes, eller la klippingen stå.":
     "The main film uses an approved version of the scene. Confirm that it should be replaced, or leave the edit as it is.",
   "Hovedfilmens hendelser er ikke lokale": "The main film's events are not local",
@@ -736,6 +754,7 @@ export const CATALOG: Record<string, string> = {
   "I scenen": "In the scene",
   "ID {0} er allerede i bruk": "ID {0} is already in use",
   "ID {0} er brukt to ganger": "ID {0} is used twice",
+  Idé: "Idea",
   "ikke finnes lenger": "no longer exists",
   "Ikke i bruk": "Not in use",
   "Ikke slettet": "Not deleted",
@@ -814,6 +833,7 @@ export const CATALOG: Record<string, string> = {
   "Kamerautsnittet må slutte etter at det starter": "The camera shot must end after it starts",
   "Kan ikke slå en scene sammen med seg selv": "A scene cannot be merged with itself",
   "Kan ikke splitte ved første blokk": "Cannot split at the first block",
+  Karakter: "Character",
   "Karakter og replikk på samme linje – delt automatisk":
     "Character and dialogue on the same line – split automatically",
   Karakteren: "The character",
@@ -845,6 +865,9 @@ export const CATALOG: Record<string, string> = {
   "Kling 3 (fra startbilde)": "Kling 3 (from start image)",
   "Kling O3 Edit (fra 2D-scenen)": "Kling O3 Edit (from the 2D scene)",
   "Klippet versjon ({0} {1})": "Edited version ({0} {1})",
+  Koblingen: "The connection",
+  "Koblingen mangler en node": "The connection is missing a node",
+  "Koblingen peker på en fjernet node": "The connection points to a removed node",
   "Køen er full ({0} videoer venter). Vent til noen er ferdige.":
     "The queue is full ({0} videos waiting). Wait until some are finished.",
   "Komposisjonen bruker et opptak som ikke finnes eller ikke kan brukes":
@@ -852,6 +875,7 @@ export const CATALOG: Record<string, string> = {
   "Komposisjonen er for lang (maks 10 minutter)": "The composition is too long (max 10 minutes)",
   "Komposisjonen er tom": "The composition is empty",
   "Komposisjonen har for mange deler": "The composition has too many parts",
+  Konsekvens: "Consequence",
   "Konteksten er for stor": "The context is too large",
   Kontinuitetshendelsen: "The continuity event",
   "Kontoen din er ikke aktiv. Kontakt administrator.":
@@ -1039,6 +1063,13 @@ export const CATALOG: Record<string, string> = {
   Nei: "No",
   "Nettadressene må begynne med https:// (eller http://).":
     "The web addresses must start with https:// (or http://).",
+  Noden: "The node",
+  "Noden er allerede koblet": "The node is already linked",
+  "Noden er fjernet": "The node has been removed",
+  "Noden finnes ikke": "The node was not found",
+  "Noden har koblinger. Fjern dem først.": "The node has connections. Remove them first.",
+  "Noden må ha en tittel": "The node needs a title",
+  "Noden passer ikke for denne ressurstypen": "The node does not fit this asset type",
   "Noe gikk galt. Prøv igjen.": "Something went wrong. Try again.",
   "Noen andre endret det samme samtidig. Hent siste versjon og prøv igjen.":
     "Someone else changed the same thing at the same time. Fetch the latest version and try again.",
@@ -1066,6 +1097,7 @@ export const CATALOG: Record<string, string> = {
   "Norsk satt eksplisitt": "Norwegian set explicitly",
   "Norsk står ikke på ElevenLabs' liste over språk – må prøves (KI-245)":
     "Norwegian is not on ElevenLabs' list of languages – must be tried (KI-245)",
+  Notat: "Note",
   "Notat {0}: må høre til enten tekst eller scene":
     "Note {0}: must belong to either a text or a scene",
   "Notat {0}: ukjent blokk": "Note {0}: unknown block",
@@ -1137,7 +1169,9 @@ export const CATALOG: Record<string, string> = {
   "Planlagt lengde må være mellom 1 sekund og 10 timer":
     "Planned length must be between 1 second and 10 hours",
   "plass {0}, {1}": "place {0}, {1}",
+  Plotpunkt: "Plot point",
   "Posisjonen er for langt utenfor scenen": "The position is too far outside the scene",
+  Premiss: "Premise",
   "Presise endringer i et bilde": "Precise changes to an image",
   "pris ikke oppgitt": "price not given",
   "Prisen for jobben kunne ikke anslås, så kostnadstaket kan ikke kontrolleres. Jobben ble ikke sendt.":
@@ -1194,6 +1228,7 @@ export const CATALOG: Record<string, string> = {
   "Prosjektet har allerede en standard stilprofil":
     "The project already has a default style profile",
   "Prosjektet har fått ny eier.": "The project has a new owner.",
+  "Prosjektet har ingen hovedproduksjon": "The project has no main production",
   "Prosjektets AI-budsjett for denne måneden ({0} genereringer) er brukt opp. Eieren kan endre budsjettet på prosjektoversikten.":
     "The project's AI budget for this month ({0} generations) has been used up. The owner can change the budget on the project overview.",
   "Prosjektets grense på {0} AI-beskrivelser i døgnet er nådd.":
@@ -1211,6 +1246,7 @@ export const CATALOG: Record<string, string> = {
   Referanse: "Reference",
   "Referansebilder: {0}.": "Reference images: {0}.",
   Referanser: "References",
+  Relasjon: "Relation",
   Relasjonen: "The relation",
   "Relasjonen finnes allerede": "The relation already exists",
   "Relasjonen på plakaten": "The relation on the poster",
@@ -1276,6 +1312,7 @@ export const CATALOG: Record<string, string> = {
   "Samme kobling to ganger": "The same link twice",
   "Samme lag er med to ganger": "The same layer is included twice",
   "Samme lydklipp er med to ganger": "The same audio clip is included twice",
+  "Samme node er med flere ganger": "The same node is listed more than once",
   "Samme notat-ID to ganger": "The same note ID twice",
   "Samme oversettelse to ganger": "The same translation twice",
   "Samme relasjon to ganger": "The same relation twice",
@@ -1287,9 +1324,11 @@ export const CATALOG: Record<string, string> = {
     "Scene {0}: story time anchored to an unknown scene",
   "Scene {0}: ukjent opprinnelsesproduksjon": "Scene {0}: unknown origin production",
   "Scene {0}: ukjent sammenslåingsmål": "Scene {0}: unknown merge target",
+  "Scene uten overskrift": "Untitled scene",
   "Scene, variant og forekomst hører ikke sammen":
     "Scene, variant and occurrence do not belong together",
   Scenen: "The scene",
+  "Scenen å plassere etter finnes ikke": "The scene to place after was not found",
   "Scenen bruker en annen versjon av scenen nå (egen versjon eller tilbakeføring). Teksten er ikke endret.":
     "The scene now uses another version of the scene (its own version or a reversion). The text is not changed.",
   "Scenen brukes også i en annen produksjon (for eksempel en spinoff) og kan ikke deles herfra. Gi den andre produksjonen egen versjon av scenen først.":
@@ -1364,6 +1403,7 @@ export const CATALOG: Record<string, string> = {
     "The segment refers to a block in another variant",
   sek: "sec",
   "Serverhemmeligheten mangler.": "The server secret is missing.",
+  Sideplot: "Subplot",
   "Sikkerhetskopi av «{0}» fra Animatic Studio": "Backup of “{0}” from Animatic Studio",
   "Sikkerhetskopien er for stor til å gjenopprettes her":
     "The backup is too large to be restored here",
@@ -1442,6 +1482,7 @@ export const CATALOG: Record<string, string> = {
   "Startet fra siste bilde i segmentet før (sammenheng).":
     "Started from the last frame of the previous segment (continuity).",
   "Status er endret.": "The status has been changed.",
+  Sted: "Location",
   "Stemmene kunne ikke hentes: {0}": "The voices could not be loaded: {0}",
   "Stil fra «Filmens visuelle stil»{0}.": "Style from “The film's visual style”{0}.",
   "Stilen er for lang til å få plass i beskrivelsen (maks {0} tegn til sammen)":
@@ -1500,8 +1541,10 @@ export const CATALOG: Record<string, string> = {
   "Teksten er uendret": "The text is unchanged",
   "Teksten har oversettelser (for eksempel engelsk). Angre importen av oversettelsen eller fjern oversettelsene av disse linjene først.":
     "The text has translations (for example English). Undo the import of the translation or remove the translations of these lines first.",
+  "Teksten kan være høyst {0} tegn": "The text can be at most {0} characters",
   "Tenker gjennom bildet før det lages": "Thinks through the image before it is made",
   Tidskoblingen: "The time link",
+  "Tittelen kan være høyst {0} tegn": "The title can be at most {0} characters",
   Tittelkort: "Title card",
   "Tittelkort (ingen kilde)": "Title card (no source)",
   "Tittelsiden er for lang til å lagres (maks om lag 3 kB)":
@@ -1528,6 +1571,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig {0}": "Invalid {0}",
   "Ugyldig ankerpunkt": "Invalid anchor point",
   "Ugyldig antall kontinuitetshendelser": "Invalid number of continuity events",
+  "Ugyldig antall noder": "Invalid number of nodes",
   "Ugyldig antall oversettelser": "Invalid number of translations",
   "Ugyldig antall relasjoner": "Invalid number of relations",
   "Ugyldig antall tidskoblinger": "Invalid number of time links",
@@ -1575,7 +1619,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig kameraramme": "Invalid camera frame",
   "Ugyldig kamerautsnitt": "Invalid camera shot",
   "Ugyldig kilde for delen": "Invalid source for the part",
-  "Ugyldig kobling": "Invalid link",
+  "Ugyldig kobling": "Invalid connection",
   "Ugyldig kommando": "Invalid command",
   "Ugyldig kommando-ID": "Invalid command ID",
   "Ugyldig kontekst": "Invalid context",
@@ -1596,6 +1640,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig modell": "Invalid model",
   "Ugyldig modellnavn.": "Invalid model name.",
   "Ugyldig negativ beskrivelse": "Invalid negative description",
+  "Ugyldig node": "Invalid node",
   "Ugyldig nøkkel": "Invalid key",
   "Ugyldig nøkkel {0}": "Invalid key {0}",
   "Ugyldig nøkkelbilde": "Invalid keyframe",
@@ -1612,6 +1657,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig plassering eller størrelse på masken i nøkkelbilde":
     "Invalid position or size of the mask in a keyframe",
   "Ugyldig plassering i lagrekkefølgen": "Invalid position in the layer order",
+  "Ugyldig posisjon": "Invalid position",
   "Ugyldig prioritet": "Invalid priority",
   "Ugyldig produksjon": "Invalid production",
   "Ugyldig prosjekt": "Invalid project",
@@ -1706,6 +1752,7 @@ export const CATALOG: Record<string, string> = {
   "Ukjent felt i stilprofilen": "Unknown field in the style profile",
   "Ukjent fil": "Unknown file",
   "Ukjent handling": "Unknown action",
+  "Ukjent koblingstype": "Unknown connection type",
   "Ukjent leverandør": "Unknown provider",
   "Ukjent leverandør.": "Unknown provider.",
   "Ukjent lydmodell.": "Unknown sound model.",
@@ -1713,6 +1760,7 @@ export const CATALOG: Record<string, string> = {
   "Ukjent mål": "Unknown target",
   "Ukjent modell.": "Unknown model.",
   "Ukjent navnetype": "Unknown name type",
+  "Ukjent nodetype": "Unknown node type",
   "Ukjent nøkkelversjon.": "Unknown key version.",
   "Ukjent oppgave": "Unknown task",
   "Ukjent plakattype": "Unknown poster type",
@@ -1789,6 +1837,7 @@ export const CATALOG: Record<string, string> = {
   "Velg minst én linje i manuset": "Choose at least one line in the script",
   "Velg scenen der endringen er over": "Choose the scene where the change ends",
   "Velg type.": "Choose a type.",
+  Vendepunkt: "Turning point",
   "Verifiser organisasjonen hvis OpenAI ber om det (kreves for bildemodellene).":
     "Verify your organisation if OpenAI asks you to (required for the image models).",
   Versjon: "Version",
