@@ -27,6 +27,7 @@ import { CharacterWorkspace } from "./CharacterWorkspace";
 import { ConversationView, NewSessionForm } from "./ConversationView";
 import { FactsPanel } from "./FactsPanel";
 import { NewGroupDialog } from "./NewGroupDialog";
+import { SceneLab } from "./SceneLab";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { profileStatus, sceneIdFrom, scenesByStoryTime, storyCharacters } from "./storylab-data";
 
@@ -69,7 +70,7 @@ export function StoryLabWorkspace({
   );
 }
 
-type View = { kind: "character" } | { kind: "new" } | { kind: "session"; id: string };
+type View = { kind: "character" } | { kind: "new" } | { kind: "scene"; id: string } | { kind: "session"; id: string };
 
 function Lab({
   state,
@@ -94,7 +95,8 @@ function Lab({
       null,
   );
   const [sceneId, setSceneId] = useState<string | null>(() => sceneIdFrom(state, initialSceneRef ?? undefined));
-  const [view, setView] = useState<View>({ kind: "character" });
+  const [view, setView] = useState<View>(() => { const id = sceneIdFrom(state, initialSceneRef ?? undefined); return id ? { kind: "scene", id } : { kind: "character" }; });
+  const [leftTab, setLeftTab] = useState<"characters" | "scenes">(initialSceneRef ? "scenes" : "characters");
   const [newGroup, setNewGroup] = useState(false);
   useEffect(() => {
     if (initialAssetId && characters.some((c) => c.id === initialAssetId)) setAssetId(initialAssetId);
@@ -102,7 +104,7 @@ function Lab({
   }, [initialAssetId]);
   useEffect(() => {
     const s = sceneIdFrom(state, initialSceneRef ?? undefined);
-    if (s) setSceneId(s);
+    if (s) { setSceneId(s); setView({ kind: "scene", id: s }); setLeftTab("scenes"); }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialSceneRef]);
   const asset = assetId ? state.assets[assetId] : undefined;
@@ -148,7 +150,8 @@ function Lab({
             style={{ width: leftW }}
           >
             <PaneResizer edge="right" size={leftW} onSize={setLeftW} min={180} max={420} label={L("Bredde på karakterpanelet", "Width of the character panel")} />
-            <PanelHeader title={L("Karakterer", "Characters")} count={characters.length} />
+            <div role="tablist" className="flex border-b border-border"><ToolbarButton role="tab" aria-selected={leftTab === "characters"} active={leftTab === "characters"} onClick={() => setLeftTab("characters")}>{L("Karakterer", "Characters")}</ToolbarButton><ToolbarButton role="tab" data-testid="storylab-tab-scenes" aria-selected={leftTab === "scenes"} active={leftTab === "scenes"} onClick={() => setLeftTab("scenes")}>{L("Scener", "Scenes")}</ToolbarButton></div>
+            {leftTab === "scenes" ? <ul className="min-h-0 flex-1 overflow-y-auto py-1" data-testid="storylab-scenes">{scenesByStoryTime(state).map((s) => <li key={s.sceneId}><ToolbarButton className="w-full justify-start" active={view.kind === "scene" && view.id === s.sceneId} data-testid="storylab-scene" data-scene-id={s.sceneId} onClick={() => { setSceneId(s.sceneId); setView({ kind: "scene", id: s.sceneId }); }}>{s.label}</ToolbarButton></li>)}</ul> : <><PanelHeader title={L("Karakterer", "Characters")} count={characters.length} />
             <ul className="min-h-0 flex-1 overflow-y-auto py-1" data-testid="storylab-characters">
               {characters.length === 0 ? (
                 <li className="px-3 py-2 text-xs text-text-tertiary">
@@ -170,7 +173,7 @@ function Lab({
                   }}
                 />
               ))}
-            </ul>
+            </ul></>}
             <PanelHeader
               title={L("Økter", "Sessions")}
               count={sessions.data && sessions.data.ok ? sessions.data.sessions.length : undefined}
@@ -227,7 +230,7 @@ function Lab({
           </aside>
         )}
         <main className="flex min-h-0 min-w-0 flex-1 flex-col">
-          {!asset && view.kind !== "session" ? (
+          {view.kind === "scene" ? <SceneLab key={view.id} state={state} projectId={projectId} sceneId={view.id} editable={editable} onScene={setSceneId} onProfile={(id) => { setAssetId(id); setView({ kind: "character" }); }} /> : !asset && view.kind !== "session" ? (
             <p className="p-6 text-[13px] text-text-tertiary">
               {L("Velg en karakter til venstre.", "Choose a character on the left.")}
             </p>
@@ -239,6 +242,8 @@ function Lab({
               sessionId={view.id}
               editable={editable}
               onOpen={(id) => setView({ kind: "session", id })}
+              onScene={setSceneId}
+              onProfile={(id) => { setAssetId(id); setView({ kind: "character" }); }}
             />
           ) : view.kind === "new" && asset ? (
             <NewSessionForm
