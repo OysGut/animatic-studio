@@ -756,9 +756,13 @@ export function AssetStudio({
         state={view}
         projectId={projectId}
         layer={layer}
-        editable={canEdit}
+        editable={editable}
         cmds={cmds}
-        sceneWrite={(patch, label) => change({ ...fields, ...patch }, label)}
+        sceneWrite={(patch, label) =>
+          layer.locked
+            ? L("Laget er låst. Lås det opp for å endre.", "The layer is locked. Unlock it to make changes.")
+            : change({ ...fields, ...patch }, label)
+        }
       />
     </div>
   );
