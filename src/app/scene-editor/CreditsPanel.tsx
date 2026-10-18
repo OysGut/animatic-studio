@@ -29,7 +29,7 @@ const select =
 const PRESENTATION_LABEL: Record<CreditPresentation, { nb: string; en: string }> = {
   roll: { nb: "Rullende", en: "Rolling" },
   one_at_a_time: { nb: "Én om gangen", en: "One at a time" },
-  positions: { nb: "Plassert i bildet", en: "Positioned in the frame" },
+  positions: { nb: "Plassert i bildet", en: "Positioned in the frame" }, // i18n-ignore – vises via L() under
 };
 
 const ROW_H = 34;
