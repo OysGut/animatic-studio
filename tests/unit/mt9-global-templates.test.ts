@@ -40,20 +40,20 @@ function setup() {
   s = mustApply(s, { type: "CreateAssets", assets: [{ assetId, fields: { kind: "template", name: "LT", names: [], description: "", category: "", tags: [] } }] });
   s = mustApply(s, { type: "CreateAssetVariant", variantId, assetId, fields: { name: "Standard", style: "other", appearance: "" } });
   s = mustApply(s, { type: "AddAssetVersion", variantId, versionId, template: def, note: "", media: { path: `${s.project.id}/${assetId}/${versionId}/mal.png`, mimeType: "image/png", width: 480, height: 270, byteSize: 100, sha256: "a".repeat(64) } });
-  const tables: Record<string, Record<string, unknown>[]> = {
+  const tables = {
     workspace_members: [{ workspace_id: WS, user_id: USER, role: "editor" }],
     project_members: [{ project_id: s.project.id, user_id: USER, role: "owner" }],
     assets: [toRow("assets", s.assets[assetId], s.project.id)],
     asset_variants: [toRow("assetVariants", s.assetVariants[variantId], s.project.id)],
     asset_versions: [toRow("assetVersions", s.assetVersions[versionId], s.project.id)],
-    global_assets: [], global_asset_variants: [], global_asset_versions: [],
+    global_assets: [] as Record<string, unknown>[], global_asset_variants: [] as Record<string, unknown>[], global_asset_versions: [] as Record<string, unknown>[],
   };
   const db = fakeDb(tables);
   const copy = vi.fn(async () => ({ error: null }));
   const rpc = vi.fn(async (name: string, args: Record<string, unknown>) => {
-    if (name === "global_create_asset") tables.global_assets.push({ id: GA, workspace_id: WS, kind: args.p_kind, name: "LT", revision: 1 });
+    if (name === "global_create_asset") tables.global_assets.push({ id: GA, workspace_id: WS, kind: args["p_kind"], name: "LT", revision: 1 });
     if (name === "global_create_variant") tables.global_asset_variants.push({ id: GV, workspace_id: WS, global_asset_id: GA, name: "Standard", style: "other" });
-    if (name === "global_add_version") tables.global_asset_versions.push({ id: GVER, workspace_id: WS, global_asset_id: GA, variant_id: GV, number: 1, storage_key: args.p_storage_key, mime_type: args.p_mime, width: args.p_width, height: args.p_height, byte_size: args.p_bytes, sha256: args.p_sha256, template_spec: args.p_template_spec });
+    if (name === "global_add_version") tables.global_asset_versions.push({ id: GVER, workspace_id: WS, global_asset_id: GA, variant_id: GV, number: 1, storage_key: args["p_storage_key"], mime_type: args["p_mime"], width: args["p_width"], height: args["p_height"], byte_size: args["p_bytes"], sha256: args["p_sha256"], template_spec: args["p_template_spec"] });
     return { data: name === "global_create_asset" ? GA : name === "global_create_variant" ? GV : GVER, error: null };
   });
   h.db = { ...db, rpc, storage: { from: () => ({ copy }) } };
