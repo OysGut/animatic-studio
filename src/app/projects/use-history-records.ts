@@ -78,22 +78,28 @@ export function useExportRecords(
  * Registrerer en fullført eksport (REQ-0037). Kalles etter at filen er laget; feiler registreringen, er
  * eksporten likevel ferdig (filen er laget), så feilen vises bare i konsollen. Uten migrasjon 0028: ingenting.
  */
-export function useRecordExport(projectId: string): (record: NewExportRecord) => void {
+export function useRecordExport(projectId: string): (record: NewExportRecord) => Promise<string | null> {
   const schema = useSchemaAtLeast(HISTORY_SCHEMA);
   const qc = useQueryClient();
   return useCallback(
-    (record: NewExportRecord) => {
-      if (!schema) return;
+    async (record: NewExportRecord): Promise<string | null> => {
+      if (!schema) return null;
       let clean: NewExportRecord;
       try {
         clean = normalizeExportRecord(record);
       } catch (e) {
         console.warn("[eksportlogg]", (e as Error).message);
-        return;
+        return null;
       }
-      void recordExport(projectId, clean)
-        .then(() => qc.invalidateQueries({ queryKey: exportRecordsKey(clean.productionId) }))
-        .catch((e: unknown) => console.warn("[eksportlogg]", (e as Error).message));
+      // Id-en brukes av QR-delingen (GP5): delingen er bundet til denne filmversjonen
+      try {
+        const id = await recordExport(projectId, clean);
+        void qc.invalidateQueries({ queryKey: exportRecordsKey(clean.productionId) });
+        return id;
+      } catch (e) {
+        console.warn("[eksportlogg]", (e as Error).message);
+        return null;
+      }
     },
     [schema, qc, projectId],
   );
