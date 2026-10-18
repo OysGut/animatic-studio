@@ -682,6 +682,22 @@ function Editor({
         />
       )
     ) : null,
+    // Sider i tittel- og tekstscener (MTS MT6)
+    pages:
+      composition && occurrence && (occurrenceKind(occurrence) === "title" || occurrenceKind(occurrence) === "text") ? (
+        <PagesPanel
+          state={state}
+          composition={composition}
+          editable={editable}
+          run={cmds.run}
+          onSelect={setSelectedLayerId}
+        />
+      ) : null,
+    // Rulleteksten: design og deltakerregister (MTS MT7)
+    credits:
+      occurrence && occurrenceKind(occurrence) === "credits" ? (
+        <CreditsPanel state={state} occurrenceId={occurrence.id} editable={editable} run={cmds.run} />
+      ) : null,
   };
 
   return (
