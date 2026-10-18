@@ -14,25 +14,15 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
   L,
-  TEXT_PROVIDERS,
-  TEXT_PREFS_KEY,
-  chooseTextModel,
-  estimateTextCostUsd,
-  isModelEnabled,
   isTextModelId,
-  isTextPrefs,
   isTextProviderId,
   isTextTask,
   isUuid,
-  newId,
-  type AvailableTextProvider,
   type TextChoiceReason,
   type TextProviderId,
   type TextTask,
 } from "@/core";
-import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 import { GATEWAY, gatewayError, isUnknownModelError } from "./gateway";
-import { TEXT_MODELS } from "./write-prompt.functions";
 
 export const MAX_TEXT_JOBS_PER_USER_PER_HOUR = 120;
 export const MAX_TEXT_SYSTEM_CHARS = 20_000;
