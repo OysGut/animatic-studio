@@ -168,6 +168,8 @@ export function ConversationView({
     if (typeof sceneId !== "string") return <p role="alert">{L("Økten mangler en scene.", "The session has no scene.")}</p>;
     return <SceneLab key={sessionId} state={state} projectId={projectId} sceneId={sceneId} initialSession={q.data.session} editable={editable} {...(onScene ? { onScene } : {})} {...(onProfile ? { onProfile } : {})} />;
   }
+  if (q.data.session.kind === "interview")
+    return <p className="p-6 text-[13px] text-text-tertiary">{L("Intervjuet vises ved siden av canvaset. Åpne fanen «Canvas».", "The interview is shown next to the canvas. Open the “Canvas” tab.")}</p>;
   if (q.data.session.kind === "group")
     return <GroupConversationView state={state} projectId={projectId} session={q.data.session} editable={editable} onOpen={onOpen} />;
   return (
