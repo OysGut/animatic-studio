@@ -135,7 +135,12 @@ export function harness(defaultOut) {
     await ctx?.context.close();
   }
 
-  const selectLayer = (page, layerId) => page.locator(`[data-layer-row="${layerId}"]`).first().click();
+  /** Velger laget med radens valgknapp (aria-pressed). Midt på raden ligger flytt-/slettknappene, som vises ved peker over. */
+  const selectLayer = async (page, layerId) => {
+    const row = page.locator(`[data-layer-row="${layerId}"]`).first();
+    await row.locator("button[aria-pressed]").first().click();
+    await row.locator('button[aria-pressed="true"]').first().waitFor({ timeout: 5000 });
+  };
   const waitHidden = (loc) => loc.waitFor({ state: "hidden", timeout: 5000 });
   /** Åpner «Tekst»-menyen og velger et punkt; venter til menyen er lukket. */
   async function menu(page, testId) {

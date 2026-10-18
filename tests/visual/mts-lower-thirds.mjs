@@ -40,7 +40,7 @@ await scenario("Z-AA-AB-samme-design", M.sceneB, "nb", async (page) => {
   const layers = c.steps.find((s) => s.type === "AddLayers").layers;
   const nameLayer = layers.find((l) => l.fields.template?.slot === "navn");
   // Velg det nye navnelaget og endre innholdet
-  await page.locator(`[data-layer-row="${nameLayer.layerId}"]`).first().click();
+  await selectLayer(page, nameLayer.layerId);
   const n = state.commands.length;
   const field = page.getByTestId("mts-template-field-navn");
   await field.fill("Øystein Gutu");
