@@ -5476,6 +5476,71 @@ try {
     await as("service_role", null, (tx) => tx`select public.purge_project_assets(${mtp2}, ${ALICE})`);
     assert((await count("scene_occurrences", mtp2)) === 0, "forekomstene finnes etter purge");
   });
+
+  await test("0052: globale maldefinisjoner lagres, leses via RLS og bygges i et annet prosjekt", async () => {
+    const ws = await as("authenticated", ALICE, async (tx) => {
+      const [row] = await tx`select public.create_workspace('Globale maler') as id`;
+      assert(row, "gruppen mangler");
+      return row["id"] as string;
+    });
+    const ga = await as("authenticated", ALICE, async (tx) => {
+      const [row] = await tx`select public.global_create_asset(${ws}, 'template', 'LT', '', '{}', '{}') as id`;
+      assert(row, "ressursen mangler");
+      return row["id"] as string;
+    });
+    const gv = await as("authenticated", ALICE, async (tx) => {
+      const [row] = await tx`select public.global_create_variant(${ga}, 'Standard', 'other', '') as id`;
+      assert(row, "varianten mangler");
+      return row["id"] as string;
+    });
+    const [source] = await sql`select template_spec from public.asset_versions where id = ${MT(12)}`;
+    assert(source?.["template_spec"], "prosjektmalen mangler");
+    const def = source["template_spec"] as NonNullable<ProjectState["assetVersions"][string]["template"]>;
+    const sha = "a".repeat(64), key = `global/${ws}/${ga}/${sha}.png`;
+    const version = await as("authenticated", ALICE, async (tx) => {
+      const [row] = await tx`select public.global_add_version(${gv}, ${key}, 'image/png', 480, 270, 100, ${sha}, null, '', ${tx.json(def as never)}) as id`;
+      assert(row, "versjonen mangler");
+      return row["id"] as string;
+    });
+    const read = await as("authenticated", ALICE, (tx) => tx`select template_spec from public.global_asset_versions where id = ${version}`);
+    assert(isDeepStrictEqual(read[0]?.["template_spec"], def), "global maldefinisjon gikk tapt");
+    const outsider = await as("authenticated", CAROL, (tx) => tx`select template_spec from public.global_asset_versions where id = ${version}`);
+    assert(outsider.length === 0, "utenforstående kan lese malen");
+    await expectError(as("anon", null, (tx) => tx`select public.global_add_version(${gv}, ${key}, 'image/png', 480, 270, 100, ${sha}, null, '', '{}'::jsonb)`), "42501");
+    await expectError(as("authenticated", CAROL, (tx) => tx`select public.global_add_version(${gv}, ${key}, 'image/png', 480, 270, 100, ${sha}, null, '', '{}'::jsonb)`), "42501");
+    await expectError(sql`update public.global_asset_versions set template_spec = '{}'::jsonb where id = ${version}`, "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.global_add_version(${gv}, ${key}, 'image/png', 480, 270, 100, ${sha}, null, '', '[]'::jsonb)`), "23514");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.global_add_version(${gv}, ${key}, 'image/png', 480, 270, 100, ${sha}, null, '', (select jsonb_build_object('x', string_agg(md5(random()::text), '')) from generate_series(1, 10000)))`), "23514");
+    const [overloads] = await sql`select count(*)::int as n from pg_proc p join pg_namespace ns on ns.oid = p.pronamespace where ns.nspname = 'public' and p.proname = 'global_add_version'`;
+    assert(overloads?.["n"] === 1, "gammel funksjonssignatur finnes fortsatt");
+    // Den gamle kallformen uten maldata virker fortsatt via default null.
+    await as("authenticated", ALICE, (tx) => tx`select public.global_add_version(${gv}, ${key}, 'image/png', 480, 270, 100, ${sha}, null, 'uten mal')`);
+    const targetId = await as("authenticated", ALICE, async (tx) => {
+      const [row] = await tx`select public.create_project('Global mal i annet prosjekt', 25, 1) as id`;
+      assert(row, "målprosjektet mangler");
+      return row["id"] as string;
+    });
+    let target = await loadState(targetId);
+    const prod = Object.values(target.productions)[0];
+    assert(prod, "produksjonen mangler");
+    const ID = (n: number) => `01900000-0000-7000-8000-0052${String(n).padStart(8, "0")}` as never;
+    target = await runCommand(target, ALICE, { type: "CreateScene", sceneId: ID(1), variantId: ID(2), occurrenceId: ID(3), productionId: prod.id, heading: { intExt: "", location: "Scene", time: "" }, blocks: [] });
+    target = await runCommand(target, ALICE, { type: "CreateComposition", compositionId: ID(4), variantId: ID(2), fields: { name: "Scene", width: 1920, height: 1080, durationFrames: 100, background: "#000000" } });
+    const { planUseGlobal } = await import("../../src/core");
+    const plan = planUseGlobal(target, { id: ga, workspaceId: ws, kind: "template", name: "LT", description: "", categories: [], tags: [], archived: false, revision: 1 }, [{
+      variant: { id: gv, assetId: ga, name: "Standard", style: "other", appearance: "", archived: false },
+      version: { id: version, variantId: gv, assetId: ga, number: 1, storageKey: key, mimeType: "image/png", width: 480, height: 270, byteSize: 100, sha256: sha, durationMs: null, note: "", createdAt: "", template: def },
+      versionId: ID(7), media: { path: `${targetId}/mal.png`, mimeType: "image/png", width: 480, height: 270, byteSize: 100, sha256: sha },
+    }], { assetId: ID(5), variantIds: { [gv]: ID(6) } });
+    for (const c of plan.commands) target = await runCommand(target, ALICE, c);
+    let layer = 100;
+    const apply = planApplyTemplate(target, { instanceId: ID(8), compositionId: ID(4), versionId: ID(7), newLayerId: () => ID(layer++) });
+    assert(apply.ok, "malen kan ikke brukes");
+    target = await runCommand(target, ALICE, apply.command);
+    const back = await loadState(targetId);
+    assert(isDeepStrictEqual(back.assetVersions[ID(7)]?.template, def), "målprosjektet mistet malen");
+    assert(Object.values(back.layers).filter((l) => l.template?.instanceId === ID(8)).length === def.elements.length, "lagene ble ikke bygget");
+  });
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);
