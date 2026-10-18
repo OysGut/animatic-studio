@@ -31,6 +31,8 @@ import type {
   StoryProfileId,
   StoryProfileStageId,
   StoryFactId,
+  CanvasNodeId,
+  CanvasEdgeId,
 } from "./ids";
 import type { Rational } from "./time";
 import type { DurationAssumptions } from "./screenplay/duration";
@@ -852,6 +854,9 @@ export interface ProjectState {
   readonly storyProfiles: Readonly<Record<string, StoryCharacterProfile>>;
   readonly storyProfileStages: Readonly<Record<string, StoryProfileStage>>;
   readonly storyFacts: Readonly<Record<string, StoryFact>>;
+  /** Skrivecanvaset (SL7, migrasjon 0040): noder og kanter. */
+  readonly canvasNodes: Readonly<Record<string, CanvasNode>>;
+  readonly canvasEdges: Readonly<Record<string, CanvasEdge>>;
 }
 
 /**
@@ -1157,6 +1162,8 @@ export const COLLECTION_TABLES = {
   storyProfiles: "story_profiles",
   storyProfileStages: "story_profile_stages",
   storyFacts: "story_facts",
+  canvasNodes: "story_canvas_nodes",
+  canvasEdges: "story_canvas_edges",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_TABLES;
@@ -1190,6 +1197,8 @@ export function emptyProjectState(project: Project): ProjectState {
     storyProfiles: {},
     storyProfileStages: {},
     storyFacts: {},
+    canvasNodes: {},
+    canvasEdges: {},
   };
 }
 
@@ -1300,5 +1309,62 @@ export interface StoryFact extends Entity<StoryFactId> {
   /** Scenen der det skjer (null = gjelder fra begynnelsen). */
   readonly atSceneId: SceneId | null;
   readonly knownBy: readonly StoryFactKnower[];
+  readonly removed: boolean;
+}
+
+// ---------- Skrivecanvaset i Story Lab (SL7) ----------
+export type CanvasNodeKind =
+  | "premise"
+  | "plot"
+  | "subplot"
+  | "plot_point"
+  | "turning_point"
+  | "event"
+  | "consequence"
+  | "scene"
+  | "character"
+  | "location"
+  | "relation"
+  | "note"
+  | "idea"
+  | "alternative"
+  | "group";
+
+export type CanvasEdgeKind =
+  | "leads_to"
+  | "causes"
+  | "conflicts"
+  | "relation"
+  | "alternative_of"
+  | "belongs_to";
+
+/** Feltene i en canvasnode (alt unntatt id, revisjon og fjernet). */
+export interface CanvasNodeFields {
+  readonly kind: CanvasNodeKind;
+  readonly title: string;
+  readonly body: string;
+  readonly x: number;
+  readonly y: number;
+  readonly w: number;
+  readonly h: number;
+  /** Navnet på et fargetoken (for eksempel «accent-brand»), eller null for typens standard. */
+  readonly color: string | null;
+  readonly groupId: CanvasNodeId | null;
+  readonly assetId: AssetId | null;
+  readonly sceneId: SceneId | null;
+}
+
+export interface CanvasNode extends Entity<CanvasNodeId>, CanvasNodeFields {
+  readonly removed: boolean;
+}
+
+export interface CanvasEdgeFields {
+  readonly fromNodeId: CanvasNodeId;
+  readonly toNodeId: CanvasNodeId;
+  readonly label: string;
+  readonly kind: CanvasEdgeKind;
+}
+
+export interface CanvasEdge extends Entity<CanvasEdgeId>, CanvasEdgeFields {
   readonly removed: boolean;
 }

@@ -8,6 +8,8 @@ import {
   isUuid,
   type AssetVariantId,
   type BlockId,
+  type CanvasEdgeId,
+  type CanvasNodeId,
   type OccurrenceId,
   type AnnotationId,
   type ContinuityEventId,
@@ -22,6 +24,7 @@ import { L } from "../i18n";
 import { canHaveStoryProfile, profileError, profilePatchError } from "../storylab/profile";
 import { factError, type StoryFactFields } from "../storylab/facts";
 import { activeProfileOf } from "../storylab/stages";
+import { canvasEdgeError, canvasNodeError } from "../storylab/canvas";
 import { secondsToFrames, type Rational } from "../time";
 import {
   EXPORT_SETTINGS_MAX_BYTES,
@@ -170,6 +173,8 @@ function assertNewId(s: ProjectState, id: string) {
     s.storyProfiles,
     s.storyProfileStages,
     s.storyFacts,
+    s.canvasNodes,
+    s.canvasEdges,
   ];
   if (all.some((c) => c[id] !== undefined))
     fail("duplicate_id", L(`ID ${id} er allerede i bruk`, `ID ${id} is already in use`));
@@ -508,6 +513,8 @@ export function revisionOf(s: ProjectState, id: string): number | undefined {
     s.storyProfiles,
     s.storyProfileStages,
     s.storyFacts,
+    s.canvasNodes,
+    s.canvasEdges,
   ]) {
     const e = c[id];
     if (e) return e.revision;
@@ -4142,6 +4149,195 @@ function run(
       };
     }
 
+    // ---------- Skrivecanvaset (SL7) ----------
+    case "AddCanvasNodes": {
+      if (c.nodes.length === 0 || c.nodes.length > 1000)
+        fail("invalid", L("Ugyldig antall noder", "Invalid number of nodes"));
+      const added: Record<string, import("../model").CanvasNode> = {};
+      for (const n of c.nodes) {
+        assertNewId(s, n.id);
+        if (added[n.id]) fail("duplicate_id", L(`ID ${n.id} er brukt to ganger`, `ID ${n.id} is used twice`));
+        added[n.id] = { id: n.id, revision: 1, ...canvasNodeFieldsOf(n), removed: false };
+      }
+      const next = { ...s, canvasNodes: { ...s.canvasNodes, ...added } };
+      for (const n of Object.values(added)) canvasLinksOf(next, n);
+      return {
+        state: next,
+        inverse: { type: "UndoAddCanvasNodes", nodeIds: c.nodes.map((n) => n.id) },
+        affected: c.nodes.map((n) => n.id),
+      };
+    }
+
+    case "UndoAddCanvasNodes": {
+      const nodes = c.nodeIds.map((id) => need(s.canvasNodes[id], L("Noden", "The node")));
+      const ids = new Set<string>(c.nodeIds);
+      if (Object.values(s.canvasEdges).some((e) => ids.has(e.fromNodeId) || ids.has(e.toNodeId)))
+        fail("invalid", L("Noden har koblinger. Fjern dem først.", "The node has connections. Remove them first."));
+      if (Object.values(s.canvasNodes).some((n) => !ids.has(n.id) && n.groupId && ids.has(n.groupId)))
+        fail("invalid", L("Gruppen har noder. Fjern dem fra gruppen først.", "The group has nodes. Remove them from the group first."));
+      const canvasNodes = { ...s.canvasNodes };
+      for (const id of c.nodeIds) delete canvasNodes[id];
+      return {
+        state: { ...s, canvasNodes },
+        inverse: { type: "AddCanvasNodes", nodes: nodes.map((n) => ({ id: n.id, ...canvasNodeFieldsOf(n) })) },
+        affected: [...c.nodeIds],
+      };
+    }
+
+    case "UpdateCanvasNode": {
+      const n = need(s.canvasNodes[c.nodeId], L("Noden", "The node"));
+      const before = canvasNodeFieldsOf(n);
+      const fields = canvasNodeFieldsOf({ ...before, ...c.patch });
+      const updated = { ...n, ...fields, revision: n.revision + 1 };
+      const next = { ...s, canvasNodes: { ...s.canvasNodes, [n.id]: updated } };
+      canvasLinksOf(next, updated);
+      const inversePatch: Record<string, unknown> = {};
+      for (const k of Object.keys(c.patch) as (keyof typeof before)[]) inversePatch[k] = before[k];
+      return {
+        state: next,
+        inverse: { type: "UpdateCanvasNode", nodeId: n.id, patch: inversePatch as never },
+        affected: [n.id],
+      };
+    }
+
+    case "MoveCanvasNodes": {
+      if (c.moves.length === 0) fail("invalid", L("Ingen endring", "No change"));
+      const canvasNodes = { ...s.canvasNodes };
+      const back: { nodeId: CanvasNodeId; x: number; y: number; w?: number; h?: number }[] = [];
+      for (const m of c.moves) {
+        const n = need(canvasNodes[m.nodeId], L("Noden", "The node"));
+        if (back.some((b) => b.nodeId === m.nodeId))
+          fail("invalid", L("Samme node er med flere ganger", "The same node is listed more than once"));
+        const fields = canvasNodeFieldsOf({
+          ...canvasNodeFieldsOf(n),
+          x: m.x,
+          y: m.y,
+          ...(m.w !== undefined ? { w: m.w } : {}),
+          ...(m.h !== undefined ? { h: m.h } : {}),
+        });
+        back.push({
+          nodeId: n.id,
+          x: n.x,
+          y: n.y,
+          ...(m.w !== undefined ? { w: n.w } : {}),
+          ...(m.h !== undefined ? { h: n.h } : {}),
+        });
+        canvasNodes[n.id] = { ...n, ...fields, revision: n.revision + 1 };
+      }
+      return {
+        state: { ...s, canvasNodes },
+        inverse: { type: "MoveCanvasNodes", moves: back },
+        affected: back.map((b) => b.nodeId),
+      };
+    }
+
+    case "RemoveCanvasNodes": {
+      if (c.nodeIds.length === 0) fail("invalid", L("Ingen endring", "No change"));
+      const canvasNodes = { ...s.canvasNodes };
+      const canvasEdges = { ...s.canvasEdges };
+      for (const id of c.nodeIds) {
+        const n = need(canvasNodes[id], L("Noden", "The node"));
+        if (n.removed === c.removed) fail("invalid", L("Ingen endring", "No change"));
+        canvasNodes[id] = { ...n, removed: c.removed, revision: n.revision + 1 };
+      }
+      let edgeIds: string[];
+      if (c.removed) {
+        const ids = new Set<string>(c.nodeIds);
+        edgeIds = Object.values(s.canvasEdges)
+          .filter((e) => !e.removed && (ids.has(e.fromNodeId) || ids.has(e.toNodeId)))
+          .map((e) => e.id);
+      } else {
+        edgeIds = [...(c.edgeIds ?? [])];
+        for (const id of edgeIds) {
+          const e = need(canvasEdges[id], L("Koblingen", "The connection"));
+          if (!e.removed) fail("invalid", L("Ingen endring", "No change"));
+        }
+      }
+      for (const id of edgeIds) {
+        const e = canvasEdges[id]!;
+        canvasEdges[id] = { ...e, removed: c.removed, revision: e.revision + 1 };
+      }
+      if (!c.removed)
+        for (const id of edgeIds) {
+          const e = canvasEdges[id]!;
+          if (canvasNodes[e.fromNodeId]?.removed || canvasNodes[e.toNodeId]?.removed)
+            fail("invalid", L("Koblingen peker på en fjernet node", "The connection points to a removed node"));
+        }
+      return {
+        state: { ...s, canvasNodes, canvasEdges },
+        inverse: {
+          type: "RemoveCanvasNodes",
+          nodeIds: [...c.nodeIds],
+          removed: !c.removed,
+          ...(c.removed ? { edgeIds: edgeIds as CanvasEdgeId[] } : {}),
+        },
+        affected: [...c.nodeIds, ...edgeIds],
+      };
+    }
+
+    case "AddCanvasEdge": {
+      assertNewId(s, c.edgeId);
+      const fields = canvasEdgeFieldsOf(s, c.fields);
+      return {
+        state: {
+          ...s,
+          canvasEdges: { ...s.canvasEdges, [c.edgeId]: { id: c.edgeId, revision: 1, ...fields, removed: false } },
+        },
+        inverse: { type: "UndoAddCanvasEdge", edgeId: c.edgeId },
+        affected: [c.edgeId],
+      };
+    }
+
+    case "UndoAddCanvasEdge": {
+      const e = need(s.canvasEdges[c.edgeId], L("Koblingen", "The connection"));
+      const { [e.id]: _e, ...canvasEdges } = s.canvasEdges;
+      return {
+        state: { ...s, canvasEdges },
+        inverse: {
+          type: "AddCanvasEdge",
+          edgeId: e.id,
+          fields: { fromNodeId: e.fromNodeId, toNodeId: e.toNodeId, label: e.label, kind: e.kind },
+        },
+        affected: [e.id],
+      };
+    }
+
+    case "UpdateCanvasEdge": {
+      const e = need(s.canvasEdges[c.edgeId], L("Koblingen", "The connection"));
+      const before = { label: e.label, kind: e.kind };
+      const fields = canvasEdgeFieldsOf(s, {
+        fromNodeId: e.fromNodeId,
+        toNodeId: e.toNodeId,
+        ...before,
+        ...c.patch,
+      }, true);
+      const inversePatch: Record<string, unknown> = {};
+      for (const k of Object.keys(c.patch) as ("label" | "kind")[]) inversePatch[k] = before[k];
+      return {
+        state: {
+          ...s,
+          canvasEdges: { ...s.canvasEdges, [e.id]: { ...e, label: fields.label, kind: fields.kind, revision: e.revision + 1 } },
+        },
+        inverse: { type: "UpdateCanvasEdge", edgeId: e.id, patch: inversePatch as never },
+        affected: [e.id],
+      };
+    }
+
+    case "RemoveCanvasEdge": {
+      const e = need(s.canvasEdges[c.edgeId], L("Koblingen", "The connection"));
+      if (e.removed === c.removed) fail("invalid", L("Ingen endring", "No change"));
+      if (!c.removed && (s.canvasNodes[e.fromNodeId]?.removed || s.canvasNodes[e.toNodeId]?.removed))
+        fail("invalid", L("Koblingen peker på en fjernet node", "The connection points to a removed node"));
+      return {
+        state: {
+          ...s,
+          canvasEdges: { ...s.canvasEdges, [e.id]: { ...e, removed: c.removed, revision: e.revision + 1 } },
+        },
+        inverse: { type: "RemoveCanvasEdge", edgeId: e.id, removed: !c.removed },
+        affected: [e.id],
+      };
+    }
+
     case "SetContinuityEventDisabled": {
       const ev = need(
         s.continuityEvents[c.eventId],
@@ -7135,7 +7331,8 @@ function storyLabUsesAsset(s: ProjectState, id: string): boolean {
   return (
     Object.values(s.storyProfiles).some((p) => p.assetId === id) ||
     Object.values(s.storyProfileStages).some((g) => g.assetId === id) ||
-    Object.values(s.storyFacts).some((f) => f.knownBy.some((k) => k.assetId === id))
+    Object.values(s.storyFacts).some((f) => f.knownBy.some((k) => k.assetId === id)) ||
+    Object.values(s.canvasNodes).some((n) => n.assetId === id)
   );
 }
 
@@ -7145,6 +7342,51 @@ function storyLabUsesScene(s: ProjectState, id: string): boolean {
     Object.values(s.storyProfileStages).some((g) => g.fromSceneId === id) ||
     Object.values(s.storyFacts).some(
       (f) => f.atSceneId === id || f.knownBy.some((k) => k.fromSceneId === id),
-    )
+    ) ||
+    Object.values(s.canvasNodes).some((n) => n.sceneId === id)
   );
+}
+
+// ---------- Skrivecanvaset (SL7) ----------
+function canvasNodeFieldsOf(f: import("../model").CanvasNodeFields): import("../model").CanvasNodeFields {
+  const e = canvasNodeError(f);
+  if (e) fail("invalid", e);
+  return {
+    kind: f.kind,
+    title: f.title,
+    body: f.body,
+    x: f.x,
+    y: f.y,
+    w: f.w,
+    h: f.h,
+    color: f.color,
+    groupId: f.groupId,
+    assetId: f.assetId,
+    sceneId: f.sceneId,
+  };
+}
+
+/** Koblingene fra en node må finnes: gruppen er en gruppenode, ressursen og scenen finnes. */
+function canvasLinksOf(s: ProjectState, n: import("../model").CanvasNode): void {
+  if (n.groupId !== null) {
+    if (n.groupId === n.id) fail("invalid", L("En gruppe kan ikke ligge i seg selv", "A group cannot contain itself"));
+    const g = need(s.canvasNodes[n.groupId], L("Gruppen", "The group"));
+    if (g.kind !== "group") fail("invalid", L("Gruppen må være en gruppenode", "The group must be a group node"));
+  }
+  if (n.assetId !== null) need(s.assets[n.assetId], L("Ressursen", "The asset"));
+  if (n.sceneId !== null) need(s.scenes[n.sceneId], L("Scenen", "The scene"));
+}
+
+function canvasEdgeFieldsOf(
+  s: ProjectState,
+  f: import("../model").CanvasEdgeFields,
+  allowRemoved = false,
+): import("../model").CanvasEdgeFields {
+  const e = canvasEdgeError(f);
+  if (e) fail("invalid", e);
+  const a = need(s.canvasNodes[f.fromNodeId], L("Noden", "The node"));
+  const b = need(s.canvasNodes[f.toNodeId], L("Noden", "The node"));
+  if (!allowRemoved && (a.removed || b.removed))
+    fail("invalid", L("Noden er fjernet", "The node has been removed"));
+  return { fromNodeId: f.fromNodeId, toNodeId: f.toNodeId, label: f.label, kind: f.kind };
 }

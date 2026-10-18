@@ -31,6 +31,8 @@ import type {
   StoryCharacterProfile,
   StoryProfileStage,
   StoryFact,
+  CanvasNode,
+  CanvasEdge,
   PosterDocument,
   PosterKind,
   RelationKind,
@@ -113,7 +115,9 @@ type AnyEntity =
   | StyleProfile
   | StoryCharacterProfile
   | StoryProfileStage
-  | StoryFact;
+  | StoryFact
+  | CanvasNode
+  | CanvasEdge;
 
 export function toRow(collection: CollectionName, e: AnyEntity, projectId: string): Row {
   const base = { id: e.id, project_id: projectId, revision: e.revision };
@@ -534,6 +538,36 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         removed: x.removed,
       };
     }
+    // Skrivecanvaset (SL7, migrasjon 0040)
+    case "canvasNodes": {
+      const x = e as CanvasNode;
+      return {
+        ...base,
+        kind: x.kind,
+        title: x.title,
+        body: x.body,
+        x: x.x,
+        y: x.y,
+        w: x.w,
+        h: x.h,
+        color: x.color,
+        group_id: x.groupId,
+        asset_id: x.assetId,
+        scene_id: x.sceneId,
+        removed: x.removed,
+      };
+    }
+    case "canvasEdges": {
+      const x = e as CanvasEdge;
+      return {
+        ...base,
+        from_node_id: x.fromNodeId,
+        to_node_id: x.toNodeId,
+        label: x.label,
+        kind: x.kind,
+        removed: x.removed,
+      };
+    }
   }
 }
 
@@ -581,6 +615,8 @@ export const TABLE_ORDER: readonly string[] = [
   "story_profiles",
   "story_profile_stages",
   "story_facts",
+  "story_canvas_nodes",
+  "story_canvas_edges",
 ];
 
 export function diffStates(before: ProjectState, after: ProjectState): ChangeSet {
@@ -692,6 +728,9 @@ export interface ProjectRows {
   readonly story_profiles?: readonly Row[];
   readonly story_profile_stages?: readonly Row[];
   readonly story_facts?: readonly Row[];
+  /** Skrivecanvaset (migrasjon 0040). Tomt hvis migrasjonen ikke er kjørt ennå. */
+  readonly story_canvas_nodes?: readonly Row[];
+  readonly story_canvas_edges?: readonly Row[];
 }
 
 const str = (v: unknown) => String(v);
@@ -1344,6 +1383,35 @@ export function stateFromRows(r: ProjectRows): ProjectState {
             ? null
             : String(k.fromSceneId)) as never,
         })),
+        removed: x["removed"] === true,
+      })),
+    ),
+    canvasNodes: byId(
+      (r.story_canvas_nodes ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        kind: str(x["kind"]) as CanvasNode["kind"],
+        title: str(x["title"] ?? ""),
+        body: str(x["body"] ?? ""),
+        x: num(x["x"] ?? 0),
+        y: num(x["y"] ?? 0),
+        w: num(x["w"] ?? 220),
+        h: num(x["h"] ?? 120),
+        color: optStr(x["color"]),
+        groupId: optStr(x["group_id"]) as never,
+        assetId: optStr(x["asset_id"]) as never,
+        sceneId: optStr(x["scene_id"]) as never,
+        removed: x["removed"] === true,
+      })),
+    ),
+    canvasEdges: byId(
+      (r.story_canvas_edges ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        fromNodeId: str(x["from_node_id"]) as never,
+        toNodeId: str(x["to_node_id"]) as never,
+        label: str(x["label"] ?? ""),
+        kind: str(x["kind"]) as CanvasEdge["kind"],
         removed: x["removed"] === true,
       })),
     ),

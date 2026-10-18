@@ -44,6 +44,9 @@ export type StyleProfileId = Id<"style_profile">;
 export type StoryProfileId = Id<"story_profile">;
 export type StoryProfileStageId = Id<"story_profile_stage">;
 export type StoryFactId = Id<"story_fact">;
+/** Skrivecanvaset (SL7): node og kant. */
+export type CanvasNodeId = Id<"canvas_node">;
+export type CanvasEdgeId = Id<"canvas_edge">;
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
