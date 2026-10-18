@@ -16,10 +16,11 @@ import {
 } from "@/core";
 import { STUDIO_VERSION_DRAG_TYPE, type StripImage } from "./VariantStrip";
 
-type Drag =
+type Drag = (
   | { kind: "range-start" | "range-end"; frame: number }
   | { kind: "move"; index: number; frame: number }
-  | { kind: "trim"; index: number; frame: number };
+  | { kind: "trim"; index: number; frame: number }
+) & { moved?: boolean };
 
 export function ObjectTimeline({
   state,
@@ -56,8 +57,9 @@ export function ObjectTimeline({
 
   // Det som vises (med et pågående drag)
   let shown = fields;
-  if (drag?.kind === "move") shown = moveImageSegment(fields, drag.index, drag.frame);
-  if (drag?.kind === "trim") shown = trimImageSegment(fields, drag.index, drag.frame);
+  if (drag?.kind === "move" && drag.moved)
+    shown = moveImageSegment(fields, drag.index, drag.frame, dur);
+  if (drag?.kind === "trim" && drag.moved) shown = trimImageSegment(fields, drag.index, drag.frame);
   const range = fields.activeRange ?? { from: 0, to: dur - 1 };
   const shownRange =
     drag?.kind === "range-start"
@@ -75,12 +77,14 @@ export function ObjectTimeline({
   }
   function moveDrag(e: React.PointerEvent) {
     if (!drag) return;
-    setDrag({ ...drag, frame: frameAt(e.clientX) });
+    const f = frameAt(e.clientX);
+    if (f !== drag.frame || drag.moved) setDrag({ ...drag, frame: f, moved: true });
   }
   function endDrag() {
     if (!drag) return;
     const d = drag;
     setDrag(null);
+    if (!d.moved) return;
     if (d.kind === "range-start" || d.kind === "range-end") {
       const next =
         d.kind === "range-start"
@@ -92,11 +96,9 @@ export function ObjectTimeline({
         L("Endre objektets tidsområde", "Change the object's time range"),
       );
     } else if (d.kind === "move") {
-      const f = moveImageSegment(fields, d.index, d.frame);
-      if (f !== fields) onChange(f, L("Flytt bildesegment", "Move image segment"));
-    } else {
-      const f = trimImageSegment(fields, d.index, d.frame);
-      if (f !== fields) onChange(f, L("Trim bildesegment", "Trim image segment"));
+      onChange(moveImageSegment(fields, d.index, d.frame, dur), L("Flytt bildesegment", "Move image segment"));
+    } else if (d.kind === "trim") {
+      onChange(trimImageSegment(fields, d.index, d.frame), L("Trim bildesegment", "Trim image segment"));
     }
   }
 
