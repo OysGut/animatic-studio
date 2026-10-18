@@ -334,8 +334,8 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     },
     keyPattern: /^AIza[A-Za-z0-9_-]{30,}$/,
     models: [
-      textModel("gemini-2.5-pro", "Gemini 2.5 Pro", "premium", 1.25, 10, 1000000),
-      textModel("gemini-2.5-flash", "Gemini 2.5 Flash", "fast", 0.3, 2.5, 1000000),
+      textModel("gemini-2.5-pro", "Gemini 2.5 Pro", "premium", 1.25, 10, 1_000_000),
+      textModel("gemini-2.5-flash", "Gemini 2.5 Flash", "fast", 0.3, 2.5, 1_000_000),
       {
         id: "gemini-nano-banana-2.1",
         label: "Nano Banana 2.1",
