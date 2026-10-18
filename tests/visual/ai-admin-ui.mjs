@@ -319,8 +319,8 @@ await run("a01-admin-ai", "/admin", async (page) => {
   ])
     check(text.includes(t), `AI-tilkoblingene viser «${t}»`);
   check(
-    (await page.getByTestId("admin-ai-provider").count()) === 6,
-    "alle seks leverandørene fra katalogen vises",
+    (await page.getByTestId("admin-ai-provider").count()) === 8,
+    "alle åtte leverandørene fra katalogen vises",
   );
   const flux = page.locator('[data-testid="admin-ai-model"][data-model="fal-ai/flux-pro/kontext"]');
   check(
