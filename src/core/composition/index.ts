@@ -132,6 +132,11 @@ export function layerFieldsOf(l: CompositionLayer): LayerFields {
     ...(l.blend && l.blend !== "normal" ? { blend: l.blend } : {}),
     // Aktivt tidsområde (AS2): null = hele scenen (UpdateLayers skal kunne fjerne det)
     activeRange: l.activeRange ?? null,
+    // Tekst, form, effekter og malfelt (MTS): null = ingen (UpdateLayers skal kunne fjerne dem)
+    text: l.text ?? null,
+    shape: l.shape ?? null,
+    effects: l.effects ?? null,
+    template: l.template ?? null,
   };
 }
 

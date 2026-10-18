@@ -20,6 +20,12 @@ import type {
 } from "../model";
 import type { CompositionFields, LayerFields } from "../commands/types";
 import { L, localized } from "../i18n";
+import {
+  normalizeEffects,
+  normalizeShape,
+  normalizeTemplateRef,
+  normalizeTextSpec,
+} from "../typography/validate";
 
 export const LAYER_KINDS: readonly LayerKind[] = [
   "background",
@@ -30,6 +36,7 @@ export const LAYER_KINDS: readonly LayerKind[] = [
   "effect",
   "other",
   "group",
+  "text",
 ];
 
 export const LAYER_KIND_LABEL: Record<LayerKind, string> = localized({
@@ -41,6 +48,7 @@ export const LAYER_KIND_LABEL: Record<LayerKind, string> = localized({
   effect: ["Effekt", "Effect"],
   other: ["Annet", "Other"],
   group: ["Gruppe", "Group"],
+  text: ["Tekst", "Text"],
 });
 
 /** Standard parallakse per lagtype: bakgrunnen beveger seg minst, forgrunnen mest. */
@@ -53,6 +61,7 @@ export const DEFAULT_PARALLAX: Record<LayerKind, number> = {
   effect: 1,
   other: 1,
   group: 1,
+  text: 1,
 };
 
 /** Egenskapene i lagets plassering som kan animeres. */
@@ -433,7 +442,18 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
       ok: false,
       error: L("En gruppe viser ikke noe bilde selv", "A group does not show an image itself"),
     };
-  if (!group && f.assetId === null && fill === null)
+  const textLayer = f.kind === "text";
+  if (textLayer && (f.assetId !== null || fill !== null || !f.text || (f.swaps ?? []).length > 0))
+    return {
+      ok: false,
+      error: L(
+        "Et tekstlag viser tekst, ikke bilde eller fargeflate",
+        "A text layer shows text, not an image or colour fill",
+      ),
+    };
+  if (!textLayer && f.text)
+    return { ok: false, error: L("Bare tekstlag kan ha tekst", "Only text layers can have text") };
+  if (!group && !textLayer && f.assetId === null && fill === null)
     return {
       ok: false,
       error: L(
@@ -505,6 +525,19 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
     };
   const keyframes = maskKeyframes(k.value, mask.value);
   if (!keyframes.ok) return keyframes;
+  // Tekst, form, effekter og malfelt (MTS)
+  const text = f.text ? normalizeTextSpec(f.text) : ({ ok: true, value: null } as const);
+  if (!text.ok) return text;
+  const shape = normalizeShape(f.shape);
+  if (!shape.ok) return shape;
+  if (shape.value && (fill === null || f.assetId !== null))
+    return { ok: false, error: L("Bare fargeflater kan ha form", "Only colour fills can have a shape") };
+  const effects = normalizeEffects(f.effects);
+  if (!effects.ok) return effects;
+  if (effects.value && group)
+    return { ok: false, error: L("En gruppe kan ikke ha effekter", "A group cannot have effects") };
+  const tpl = normalizeTemplateRef(f.template);
+  if (!tpl.ok) return tpl;
   // Aktivt tidsområde (AS2, A3)
   const ar = f.activeRange ?? null;
   if (
@@ -536,6 +569,10 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
       ...(mask.value ? { mask: mask.value } : {}),
       ...(blend.value !== "normal" ? { blend: blend.value } : {}),
       ...(ar ? { activeRange: { from: ar.from, to: ar.to } } : {}),
+      ...(text.value ? { text: text.value } : {}),
+      ...(shape.value ? { shape: shape.value } : {}),
+      ...(effects.value ? { effects: effects.value } : {}),
+      ...(tpl.value ? { template: tpl.value } : {}),
     },
   };
 }

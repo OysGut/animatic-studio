@@ -646,6 +646,11 @@ function layerFields(s: ProjectState, f: LayerFields, prev?: CompositionLayer): 
       blend: f.blend ?? prev.blend ?? "normal",
       // Aktivt tidsområde (AS2): utelatt = uendret
       activeRange: f.activeRange === undefined ? (prev.activeRange ?? null) : f.activeRange,
+      // Tekst, form, effekter og malfelt (MTS): utelatt = uendret
+      text: f.text === undefined ? (prev.text ?? null) : f.text,
+      shape: f.shape === undefined ? (prev.shape ?? null) : f.shape,
+      effects: f.effects === undefined ? (prev.effects ?? null) : f.effects,
+      template: f.template === undefined ? (prev.template ?? null) : f.template,
     };
   // Nytt bilde i laget (annen ressurs): bilder per språk av den gamle ressursen passer ikke lenger
   if (prev && f.assetId !== prev.assetId)
@@ -769,6 +774,10 @@ function fieldsOfLayer(l: CompositionLayer): LayerFields {
     ...(l.mask ? { mask: l.mask } : {}),
     ...(l.blend && l.blend !== "normal" ? { blend: l.blend } : {}),
     ...(l.activeRange ? { activeRange: l.activeRange } : {}),
+    ...(l.text ? { text: l.text } : {}),
+    ...(l.shape ? { shape: l.shape } : {}),
+    ...(l.effects ? { effects: l.effects } : {}),
+    ...(l.template ? { template: l.template } : {}),
   };
 }
 
@@ -7085,9 +7094,23 @@ function run(
             mask: l.mask ?? null,
             blend: l.blend ?? "normal",
             activeRange: l.activeRange ?? null,
+            text: l.text ?? null,
+            shape: l.shape ?? null,
+            effects: l.effects ?? null,
+            template: l.template ?? null,
           },
         });
-        const { languageImages: _li, mask: _m, blend: _b, activeRange: _ar, ...rest } = l;
+        const {
+          languageImages: _li,
+          mask: _m,
+          blend: _b,
+          activeRange: _ar,
+          text: _tx,
+          shape: _sh,
+          effects: _ef,
+          template: _tp,
+          ...rest
+        } = l;
         layers[l.id] = { ...rest, ...layerFields(s, u.fields, l), revision: rev(l) };
       }
       checkGroups(
