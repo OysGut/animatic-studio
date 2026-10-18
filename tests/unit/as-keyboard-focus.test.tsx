@@ -35,7 +35,7 @@ function setup() {
   const occurrence = Object.values(state.occurrences).find((o) => o.variantId === composition?.variantId);
   if (!layer || !composition || !occurrence) throw new Error("Missing studio fixture");
   const draft = pushDraft(createDraft(state, occurrence.id, composition.id), {
-    type: "UpdateLayers", layers: [{ layerId: layer.id, fields: { ...layerFieldsOf(layer), opacity: 0.5 } }],
+    type: "UpdateLayers", layers: [{ layerId: layer.id, fields: { ...layerFieldsOf(layer), name: `${layer.name} edited` } }],
   });
   if (!draft.ok) throw new Error(draft.message);
   const onClose = vi.fn();
