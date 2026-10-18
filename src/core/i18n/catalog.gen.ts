@@ -32,6 +32,8 @@ export const CATALOG: Record<string, string> = {
     "“{0}” should be in the scene. Write it into the script, and save the note as done.",
   "«{0}» står i bestemt form første gang den nevnes ({1}). Skal den etableres først (for eksempel «{2} {3}»)?":
     "“{0}” is in the definite form the first time it is mentioned ({1}). Should it be introduced first (for example “{2} {3}”)?",
+  "«{0}» ville blitt kuttet eller havnet utenfor scenen ({1}). Tale og effekter fjernes aldri automatisk. Velg en annen metode eller avbryt.":
+    "“{0}” would be cut or end up outside the scene ({1}). Speech and effects are never removed automatically. Choose another method or cancel.",
   "(delsekvensen finnes ikke lenger)": "(segment no longer exists)",
   "(hendelsen finnes ikke lenger)": "(event no longer exists)",
   "(linjen finnes ikke lenger)": "(line no longer exists)",
@@ -397,6 +399,8 @@ export const CATALOG: Record<string, string> = {
   "Delen må ha versjon bare når kilden er film":
     "The part may only have a version when the source is film",
   "Delen tilhører en annen scene": "The part belongs to another scene",
+  "Delene av scenen i monteringen endres ikke; kontroller dem.":
+    "The parts of the scene in the edit are not changed; check them.",
   "Delt fra karakterlinjen": "Split from the character line",
   "Den automatiske analysen er kjørt {0} ganger i dag for dette prosjektet. Den fortsetter i morgen.":
     "The automatic analysis has run {0} times today for this project. It will continue tomorrow.",
@@ -502,6 +506,8 @@ export const CATALOG: Record<string, string> = {
   "En gruppe viser ikke noe bilde selv": "A group does not show an image itself",
   "En hendelse fra hovedfilmen kan ikke gjøres lokal. Slå den av i spinoffen i stedet.":
     "An event from the main film cannot be made local. Turn it off in the spin-off instead.",
+  "En kobling mellom manuset og tiden i scenen ville blitt kuttet. Manuskoblinger fjernes aldri automatisk. Velg en annen metode eller avbryt.":
+    "A link between the script and the time in the scene would be cut. Script links are never removed automatically. Choose another method or cancel.",
   "Én konto for mange modeller (Kling, Flux m.fl.). Betal per bruk; godt valg for video fra et startbilde.":
     "One account for many models (Kling, Flux and others). Pay as you go; a good choice for video from a start image.",
   "En lokal hendelse fjernes i stedet for å slås av":
@@ -556,6 +562,7 @@ export const CATALOG: Record<string, string> = {
   "Etiketten kan være høyst {0} tegn": "The label can be at most {0} characters",
   "Ett tekstfelt er tomt ({0}) og vises ikke.": "One text field is empty ({0}) and is not shown.",
   "etter scene {0}": "after scene {0}",
+  "etter slutt": "after the end",
   "Faktaarket er for langt (høyst 4000 tegn)":
     "The fact sheet is too long (at most 4,000 characters)",
   Faktumet: "The fact",
@@ -570,6 +577,7 @@ export const CATALOG: Record<string, string> = {
   "Fant ingen sceneoverskrifter (INT./EXT.). All tekst ligger i én scene uten overskrift.":
     "No scene headings (INT./EXT.) found. All text is in one scene without a heading.",
   "Fargen må være på formen #rrggbb": "The colour must be in the form #rrggbb",
+  "Feil 2D-scene": "Wrong 2D scene",
   "Feil prisenhet for typen.": "Wrong price unit for the type.",
   "Feil prosjekt for gjenoppretting.": "Wrong project for restoring.",
   "Feltet mangler i profilen ({0}.{1})": "The field is missing from the profile ({0}.{1})",
@@ -610,6 +618,7 @@ export const CATALOG: Record<string, string> = {
   "For mange forsøk. Vent litt og prøv igjen.": "Too many attempts. Wait a little and try again.",
   "For mange kamerautsnitt": "Too many camera shots",
   "For mange lag på én gang (maks 500)": "Too many layers at once (max 500)",
+  "For mange låste tidsrom": "Too many locked time ranges",
   "For mange lydklipp på én gang (maks 500)": "Too many audio clips at once (max 500)",
   "For mange nøkkelbilder": "Too many keyframes",
   "For mange notater i én endring": "Too many notes in one change",
@@ -620,6 +629,7 @@ export const CATALOG: Record<string, string> = {
   "For mange segmenter": "Too many segments",
   "For mange stikkord": "Too many keywords",
   "For mange volumpunkter (maks 500)": "Too many volume points (max 500)",
+  "før start": "before the start",
   "Forandringen i segmentet var beskrevet – sjekk at den synes.":
     "The change within the segment was described – check that it shows.",
   Forårsaker: "Causes",
@@ -936,6 +946,9 @@ export const CATALOG: Record<string, string> = {
     "The layer to be used as a mask does not exist in this 2D scene",
   "Lagret estimat": "Saved estimate",
   "Lagringen svarte ikke. Prøv igjen.": "The storage did not respond. Try again.",
+  "Låste tidsrom overlapper": "Locked time ranges overlap",
+  "Låste tidsrom tar {0} s, så scenen kan ikke bli {1} s. Velg en annen metode eller avbryt.":
+    "Locked ranges take {0} s, so the scene cannot be {1} s. Choose another method or cancel.",
   "Lastes ned til maskinen din og lagres ikke i prosjektet. Innstillingene huskes per produksjon.":
     "Downloaded to your computer and not saved in the project. The settings are remembered per production.",
   "Lastet opp på nytt": "Re-uploaded",
@@ -1170,6 +1183,8 @@ export const CATALOG: Record<string, string> = {
   "Ord-til-lyd (Forced Alignment)": "Word alignment (Forced Alignment)",
   "Ord-til-lyd: {0}": "Word alignment: {0}",
   "Overgang inn": "Transition in",
+  "Overgangen ble kortet ned til scenens lengde.":
+    "The transition was shortened to the scene length.",
   "Overgangen kan ikke være lengre enn delen": "The transition cannot be longer than the part",
   "Overgangen må være 0–{0} ms": "The transition must be 0–{0} ms",
   "Overgangen må vare mellom 1 og {0} bilder": "The transition must last between 1 and {0} frames",
@@ -1258,6 +1273,8 @@ export const CATALOG: Record<string, string> = {
     "The project's limit of {0} generations per day has been reached.",
   "Prosjektets grense på {0} videoer i døgnet er nådd.":
     "The project's limit of {0} videos per day has been reached.",
+  "Prosjektets standardovergang er lengre enn scenen; endre den eller gi scenen egen overgang.":
+    "The project's default transition is longer than the scene; change it or give the scene its own transition.",
   "Punktene i tempokurven må stige fra start til slutt":
     "The tempo curve points must rise from start to end",
   "Rådgivende: sjekklisten bygger på beskrivelsen og filens egenskaper, ikke på hva som faktisk vises. Se på videoen og avgjør selv.":
@@ -1381,6 +1398,8 @@ export const CATALOG: Record<string, string> = {
     "The scene no longer exists in the production and cannot be restored from here.",
   "Scenen har allerede en 2D-scene": "The scene already has a 2D scene",
   "Scenen har allerede en annen 2D-scene": "The scene already has another 2D scene",
+  "Scenen har bare {0} s fleksibel tid mellom tale, effekter og låste tidsrom; du ba om {1} s. Velg en annen metode eller avbryt.":
+    "The scene has only {0} s of flexible time between speech, effects and locked ranges; you asked for {1} s. Choose another method or cancel.",
   "Scenen har en 2D-scene i sceneeditoren og kan ikke fjernes. Slett 2D-scenen først.":
     "The scene has a 2D scene in the scene editor and cannot be removed. Delete the 2D scene first.",
   "Scenen har fått eller mistet tekst etter at den ble laget, og kan ikke angres. Deaktiver den i stedet.":
@@ -1389,6 +1408,7 @@ export const CATALOG: Record<string, string> = {
     "The scene has received material in the production. Deactivate it instead.",
   "Scenen har ikke scenenummer i originalen": "The scene has no scene number in the original",
   "Scenen har ingen 2D-scene": "The scene has no 2D scene",
+  "Scenen har ingen 2D-scene.": "The scene has no 2D scene.",
   "Scenen har ingen blokk å feste notatet til.": "The scene has no block to attach the note to.",
   "Scenen har ingen lagret inndeling for video.": "The scene has no saved breakdown for video.",
   "scenen uten nummer": "the scene without number",
@@ -1419,6 +1439,8 @@ export const CATALOG: Record<string, string> = {
   "Segmentet har produsert materiale og kan ikke fjernes":
     "The segment has produced material and cannot be removed",
   "Segmentet hører til en annen scene": "The segment belongs to another scene",
+  "Segmentet til generering har faste tider; kontroller det.":
+    "The generation segment has fixed times; check it.",
   "Segmentet tilhører en annen forekomst": "The segment belongs to another occurrence",
   "Segmentet viser til en blokk i en annen variant":
     "The segment refers to a block in another variant",
@@ -1566,7 +1588,10 @@ export const CATALOG: Record<string, string> = {
   "Teksten kan være høyst {0} tegn": "The text can be at most {0} characters",
   "Tekstgrensen kunne ikke kontrolleres.": "The text limit could not be checked.",
   "Tenker gjennom bildet før det lages": "Thinks through the image before it is made",
+  "Tiden som fjernes, overlapper et låst tidsrom. Velg en annen metode, fjern låsen eller avbryt.":
+    "The time being removed overlaps a locked range. Choose another method, remove the lock or cancel.",
   Tidskoblingen: "The time link",
+  "Tidsoppsettet er for stort": "The timing is too large",
   "Tittelen kan være høyst {0} tegn": "The title can be at most {0} characters",
   Tittelkort: "Title card",
   "Tittelkort (ingen kilde)": "Title card (no source)",
@@ -1613,6 +1638,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig demping": "Invalid mute setting",
   "Ugyldig egenskap i nøkkelbilde": "Invalid property in keyframe",
   "Ugyldig element": "Invalid element",
+  "Ugyldig endring av scenevarighet": "Invalid scene duration change",
   "Ugyldig farge": "Invalid colour",
   "Ugyldig fargepalett": "Invalid colour palette",
   "Ugyldig felt": "Invalid field",
@@ -1624,6 +1650,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig format (5–300 cm)": "Invalid format (5–300 cm)",
   "Ugyldig forskyvning": "Invalid offset",
   "Ugyldig forslag": "Invalid suggestion",
+  "Ugyldig fyll i ny tid": "Invalid padding",
   "Ugyldig gjennomsiktighet": "Invalid opacity",
   "Ugyldig grunn": "Invalid reason",
   "Ugyldig grunnlag": "Invalid basis",
@@ -1652,6 +1679,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig lag for masken": "Invalid layer for the mask",
   "Ugyldig lagringssti for bildet": "Invalid storage path for the image",
   "Ugyldig lagtype": "Invalid layer type",
+  "Ugyldig låst tidsrom": "Invalid locked time range",
   "Ugyldig lengde": "Invalid length",
   "Ugyldig lengde på lydfilen": "Invalid length of the audio file",
   "Ugyldig lenke": "Invalid link",
@@ -1727,9 +1755,11 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig tid for segmentet": "Invalid time for the segment",
   "Ugyldig tid for tidskoblingen": "Invalid time for the time link",
   "Ugyldig tidskobling": "Invalid time link",
+  "Ugyldig tidsoppsett": "Invalid timing",
   "Ugyldig tidspunkt for endringen": "Invalid time for the change",
   "Ugyldig tidspunkt for notatet": "Invalid time for the note",
   "Ugyldig tittelside": "Invalid title page",
+  "Ugyldig trinn i endring av scenevarighet": "Invalid step in scene duration change",
   "Ugyldig tur": "Invalid turn",
   "Ugyldig type faktum": "Invalid kind of fact",
   "Ugyldig type maske": "Invalid mask type",
@@ -1849,6 +1879,7 @@ export const CATALOG: Record<string, string> = {
   "Varianten tilhører en annen scene": "The variant belongs to another scene",
   "Varighet må være et ikke-negativt heltall bilder":
     "Duration must be a non-negative whole number of frames",
+  "Varigheten er uendret.": "The duration is unchanged.",
   "Velg 1–4 (hvert bilde, toere, treere eller firere)":
     "Choose 1–4 (every frame, twos, threes or fours)",
   "Velg 1–500 bilder": "Choose 1–500 images",
@@ -1857,6 +1888,8 @@ export const CATALOG: Record<string, string> = {
   "Velg en karakterprofil.": "Choose a character profile.",
   "Velg en scene i hovedproduksjonen.": "Choose a scene in the main production.",
   "Velg ett bilde å oppskalere.": "Choose one image to upscale.",
+  "Velg hva den nye tiden skal vise: frys, bakgrunn eller svart.":
+    "Choose what the new time shows: freeze, background or black.",
   "Velg hva som skal slettes": "Choose what to delete",
   "Velg minst én linje i manuset": "Choose at least one line in the script",
   "Velg scenen der endringen er over": "Choose the scene where the change ends",

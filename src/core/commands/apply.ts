@@ -47,6 +47,12 @@ import {
   normalizeCompositionFields,
   normalizeLayerFields,
 } from "../composition/fields";
+import {
+  EMPTY_TIMING,
+  isEmptyTiming,
+  normalizeTiming,
+  type CompositionTiming,
+} from "../composition/timing";
 import { compareKeys, isValidOrderKey, keyBetween, keysEvenly } from "../order-key";
 import { compositionOfVariant } from "../composition/render";
 import { isVersionView } from "../library/view";
@@ -1625,6 +1631,17 @@ export function audioClipFieldsOf(a: AudioClip): AudioClipFields {
     ...(a.speed !== undefined && a.speed !== 1 ? { speed: a.speed } : {}),
   };
 }
+
+/** Trinnene en RetimeScene kan inneholde (bare tidsendringer i scenen). */
+const RETIME_STEPS = new Set<string>([
+  "UpdateComposition",
+  "UpdateLayers",
+  "UpdateAudioClips",
+  "SetAudioClipsRemoved",
+  "UpdateTimeLinks",
+  "SetTransition",
+  "SetPlannedDuration",
+]);
 
 function run(
   s: ProjectState,
@@ -4156,7 +4173,8 @@ function run(
       const added: Record<string, import("../model").CanvasNode> = {};
       for (const n of c.nodes) {
         assertNewId(s, n.id);
-        if (added[n.id]) fail("duplicate_id", L(`ID ${n.id} er brukt to ganger`, `ID ${n.id} is used twice`));
+        if (added[n.id])
+          fail("duplicate_id", L(`ID ${n.id} er brukt to ganger`, `ID ${n.id} is used twice`));
         added[n.id] = { id: n.id, revision: 1, ...canvasNodeFieldsOf(n), removed: false };
       }
       const next = { ...s, canvasNodes: { ...s.canvasNodes, ...added } };
@@ -4172,14 +4190,31 @@ function run(
       const nodes = c.nodeIds.map((id) => need(s.canvasNodes[id], L("Noden", "The node")));
       const ids = new Set<string>(c.nodeIds);
       if (Object.values(s.canvasEdges).some((e) => ids.has(e.fromNodeId) || ids.has(e.toNodeId)))
-        fail("invalid", L("Noden har koblinger. Fjern dem først.", "The node has connections. Remove them first."));
-      if (Object.values(s.canvasNodes).some((n) => !ids.has(n.id) && n.groupId && ids.has(n.groupId)))
-        fail("invalid", L("Gruppen har noder. Fjern dem fra gruppen først.", "The group has nodes. Remove them from the group first."));
+        fail(
+          "invalid",
+          L(
+            "Noden har koblinger. Fjern dem først.",
+            "The node has connections. Remove them first.",
+          ),
+        );
+      if (
+        Object.values(s.canvasNodes).some((n) => !ids.has(n.id) && n.groupId && ids.has(n.groupId))
+      )
+        fail(
+          "invalid",
+          L(
+            "Gruppen har noder. Fjern dem fra gruppen først.",
+            "The group has nodes. Remove them from the group first.",
+          ),
+        );
       const canvasNodes = { ...s.canvasNodes };
       for (const id of c.nodeIds) delete canvasNodes[id];
       return {
         state: { ...s, canvasNodes },
-        inverse: { type: "AddCanvasNodes", nodes: nodes.map((n) => ({ id: n.id, ...canvasNodeFieldsOf(n) })) },
+        inverse: {
+          type: "AddCanvasNodes",
+          nodes: nodes.map((n) => ({ id: n.id, ...canvasNodeFieldsOf(n) })),
+        },
         affected: [...c.nodeIds],
       };
     }
@@ -4207,7 +4242,10 @@ function run(
       for (const m of c.moves) {
         const n = need(canvasNodes[m.nodeId], L("Noden", "The node"));
         if (back.some((b) => b.nodeId === m.nodeId))
-          fail("invalid", L("Samme node er med flere ganger", "The same node is listed more than once"));
+          fail(
+            "invalid",
+            L("Samme node er med flere ganger", "The same node is listed more than once"),
+          );
         const fields = canvasNodeFieldsOf({
           ...canvasNodeFieldsOf(n),
           x: m.x,
@@ -4261,7 +4299,10 @@ function run(
         for (const id of edgeIds) {
           const e = canvasEdges[id]!;
           if (canvasNodes[e.fromNodeId]?.removed || canvasNodes[e.toNodeId]?.removed)
-            fail("invalid", L("Koblingen peker på en fjernet node", "The connection points to a removed node"));
+            fail(
+              "invalid",
+              L("Koblingen peker på en fjernet node", "The connection points to a removed node"),
+            );
         }
       return {
         state: { ...s, canvasNodes, canvasEdges },
@@ -4281,7 +4322,10 @@ function run(
       return {
         state: {
           ...s,
-          canvasEdges: { ...s.canvasEdges, [c.edgeId]: { id: c.edgeId, revision: 1, ...fields, removed: false } },
+          canvasEdges: {
+            ...s.canvasEdges,
+            [c.edgeId]: { id: c.edgeId, revision: 1, ...fields, removed: false },
+          },
         },
         inverse: { type: "UndoAddCanvasEdge", edgeId: c.edgeId },
         affected: [c.edgeId],
@@ -4305,18 +4349,25 @@ function run(
     case "UpdateCanvasEdge": {
       const e = need(s.canvasEdges[c.edgeId], L("Koblingen", "The connection"));
       const before = { label: e.label, kind: e.kind };
-      const fields = canvasEdgeFieldsOf(s, {
-        fromNodeId: e.fromNodeId,
-        toNodeId: e.toNodeId,
-        ...before,
-        ...c.patch,
-      }, true);
+      const fields = canvasEdgeFieldsOf(
+        s,
+        {
+          fromNodeId: e.fromNodeId,
+          toNodeId: e.toNodeId,
+          ...before,
+          ...c.patch,
+        },
+        true,
+      );
       const inversePatch: Record<string, unknown> = {};
       for (const k of Object.keys(c.patch) as ("label" | "kind")[]) inversePatch[k] = before[k];
       return {
         state: {
           ...s,
-          canvasEdges: { ...s.canvasEdges, [e.id]: { ...e, label: fields.label, kind: fields.kind, revision: e.revision + 1 } },
+          canvasEdges: {
+            ...s.canvasEdges,
+            [e.id]: { ...e, label: fields.label, kind: fields.kind, revision: e.revision + 1 },
+          },
         },
         inverse: { type: "UpdateCanvasEdge", edgeId: e.id, patch: inversePatch as never },
         affected: [e.id],
@@ -4326,12 +4377,21 @@ function run(
     case "RemoveCanvasEdge": {
       const e = need(s.canvasEdges[c.edgeId], L("Koblingen", "The connection"));
       if (e.removed === c.removed) fail("invalid", L("Ingen endring", "No change"));
-      if (!c.removed && (s.canvasNodes[e.fromNodeId]?.removed || s.canvasNodes[e.toNodeId]?.removed))
-        fail("invalid", L("Koblingen peker på en fjernet node", "The connection points to a removed node"));
+      if (
+        !c.removed &&
+        (s.canvasNodes[e.fromNodeId]?.removed || s.canvasNodes[e.toNodeId]?.removed)
+      )
+        fail(
+          "invalid",
+          L("Koblingen peker på en fjernet node", "The connection points to a removed node"),
+        );
       return {
         state: {
           ...s,
-          canvasEdges: { ...s.canvasEdges, [e.id]: { ...e, removed: c.removed, revision: e.revision + 1 } },
+          canvasEdges: {
+            ...s.canvasEdges,
+            [e.id]: { ...e, removed: c.removed, revision: e.revision + 1 },
+          },
         },
         inverse: { type: "RemoveCanvasEdge", edgeId: e.id, removed: !c.removed },
         affected: [e.id],
@@ -6690,6 +6750,40 @@ function run(
       };
     }
 
+    case "RetimeScene": {
+      // SV1: alle tidsendringene i én kommando – én transaksjon og én angring
+      const comp = need(s.compositions[c.compositionId], L("2D-scenen", "The 2D scene"));
+      need(s.occurrences[c.occurrenceId], L("Scenen", "The scene"));
+      if (c.steps.length === 0 || c.steps.length > 20)
+        fail("invalid", L("Ugyldig endring av scenevarighet", "Invalid scene duration change"));
+      let cur = s;
+      const inverses: Command[] = [];
+      const affected = new Set<string>();
+      for (const step of c.steps) {
+        if (!RETIME_STEPS.has(step.type))
+          fail(
+            "invalid",
+            L("Ugyldig trinn i endring av scenevarighet", "Invalid step in scene duration change"),
+          );
+        if (step.type === "UpdateComposition" && step.compositionId !== comp.id)
+          fail("invalid", L("Feil 2D-scene", "Wrong 2D scene"));
+        const r = run(cur, { ...env, command: step });
+        cur = r.state;
+        inverses.unshift(r.inverse);
+        for (const id of r.affected) affected.add(id);
+      }
+      return {
+        state: cur,
+        inverse: {
+          type: "RetimeScene",
+          occurrenceId: c.occurrenceId,
+          compositionId: c.compositionId,
+          steps: inverses,
+        },
+        affected: [...affected],
+      };
+    }
+
     case "UpdateComposition": {
       const comp = need(s.compositions[c.compositionId], L("2D-scenen", "The 2D scene"));
       // Formatet endres bare samlet for prosjektet (SetProjectFormat, DEC-0039)
@@ -6702,12 +6796,28 @@ function run(
           fail("invalid", L("Kameraet er for stort", "The camera is too large"));
         camera = r.value;
       }
+      let timing = comp.timing;
+      if (c.timing !== undefined) {
+        const r = normalizeTiming(c.timing);
+        if (!r.ok) fail("invalid", r.error);
+        if (JSON.stringify(r.value).length > 60000)
+          fail("invalid", L("Tidsoppsettet er for stort", "The timing is too large"));
+        timing = isEmptyTiming(r.value) ? undefined : r.value;
+      }
+      const nextComp: ProjectState["compositions"][string] = {
+        ...comp,
+        ...fields,
+        camera,
+        revision: rev(comp),
+      };
+      if (timing) (nextComp as { timing?: CompositionTiming }).timing = timing;
+      else delete (nextComp as { timing?: CompositionTiming }).timing;
       return {
         state: {
           ...s,
           compositions: {
             ...s.compositions,
-            [comp.id]: { ...comp, ...fields, camera, revision: rev(comp) },
+            [comp.id]: nextComp,
           },
         },
         inverse: {
@@ -6721,6 +6831,7 @@ function run(
             background: comp.background,
           },
           ...(c.camera !== undefined ? { camera: comp.camera } : {}),
+          ...(c.timing !== undefined ? { timing: comp.timing ?? EMPTY_TIMING } : {}),
         },
         affected: [comp.id],
       };
@@ -7348,7 +7459,9 @@ function storyLabUsesScene(s: ProjectState, id: string): boolean {
 }
 
 // ---------- Skrivecanvaset (SL7) ----------
-function canvasNodeFieldsOf(f: import("../model").CanvasNodeFields): import("../model").CanvasNodeFields {
+function canvasNodeFieldsOf(
+  f: import("../model").CanvasNodeFields,
+): import("../model").CanvasNodeFields {
   const e = canvasNodeError(f);
   if (e) fail("invalid", e);
   return {
@@ -7369,9 +7482,11 @@ function canvasNodeFieldsOf(f: import("../model").CanvasNodeFields): import("../
 /** Koblingene fra en node må finnes: gruppen er en gruppenode, ressursen og scenen finnes. */
 function canvasLinksOf(s: ProjectState, n: import("../model").CanvasNode): void {
   if (n.groupId !== null) {
-    if (n.groupId === n.id) fail("invalid", L("En gruppe kan ikke ligge i seg selv", "A group cannot contain itself"));
+    if (n.groupId === n.id)
+      fail("invalid", L("En gruppe kan ikke ligge i seg selv", "A group cannot contain itself"));
     const g = need(s.canvasNodes[n.groupId], L("Gruppen", "The group"));
-    if (g.kind !== "group") fail("invalid", L("Gruppen må være en gruppenode", "The group must be a group node"));
+    if (g.kind !== "group")
+      fail("invalid", L("Gruppen må være en gruppenode", "The group must be a group node"));
   }
   if (n.assetId !== null) need(s.assets[n.assetId], L("Ressursen", "The asset"));
   if (n.sceneId !== null) need(s.scenes[n.sceneId], L("Scenen", "The scene"));

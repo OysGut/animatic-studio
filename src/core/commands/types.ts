@@ -803,6 +803,18 @@ export type Command =
       readonly fields: CompositionFields;
       /** Kamera (kameraeditoren). Utelatt = uendret. */
       readonly camera?: CompositionCamera;
+      /** Låste tidsrom og fyll i ny tid (SV1, migrasjon 0042). Utelatt = uendret. */
+      readonly timing?: import("../composition/timing").CompositionTiming;
+    }
+  | {
+      /**
+       * Ny varighet for hele scenen (SV1, B-041): alle endringene samlet, så de lagres i én transaksjon og
+       * angres med én angring. Lages av planRetime; trinnene er bare tidsendringer i scenen.
+       */
+      readonly type: "RetimeScene";
+      readonly occurrenceId: OccurrenceId;
+      readonly compositionId: CompositionId;
+      readonly steps: readonly Command[];
     }
   | {
       readonly type: "SetCompositionRemoved";

@@ -15,6 +15,8 @@ export * from "./group";
 export * from "./camera-handoff";
 export * from "./shape";
 export * from "./parts";
+export * from "./timing";
+export * from "./retime";
 
 /** Lagtypen et bilde fra biblioteket får som standard. */
 export const LAYER_KIND_FOR_ASSET: Record<AssetKind, LayerKind> = {

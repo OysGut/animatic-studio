@@ -14,6 +14,7 @@ import {
   SkipBack,
   SkipForward,
   Video,
+  Lock,
 } from "lucide-react";
 import {
   memo,
@@ -25,6 +26,7 @@ import {
   useState,
   type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
+  type ComponentProps,
   type ReactNode,
 } from "react";
 import {
@@ -53,9 +55,11 @@ import {
   type CompositionFields,
   type CompositionLayer,
   type Easing,
+  type LockedRange,
   type ProjectState,
   freeShotSlot,
   newId,
+  timingOf,
   L,
   localized,
 } from "@/core";
@@ -63,6 +67,7 @@ import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 import { Button } from "@/components/ui/button";
 import type { Playback } from "./use-playback";
 import { compositionFieldsOf, layerEventMarks, type LayerEventMark } from "./timeline-helpers";
+import { RetimeDialog } from "./RetimeDialog";
 
 /** Standardbredde for lagnavnene; brukeren kan dra i skillet (Mars 2026-10-13), og bredden huskes. */
 const LABEL_W = 160;
@@ -100,6 +105,14 @@ interface Props {
   readonly run: Run;
   /** Lydradene under lagene (DEC-0045): bølgeformene i scenen, så bevegelser kan treffe lyden. */
   readonly audioRows?: (g: TimelineRowGeometry) => ReactNode;
+  /** Endring av scenevarighet (SV1): scenen, lagring med svar og bildelenker til forhåndsspill. */
+  readonly retime?: {
+    readonly occurrenceId: string;
+    readonly runAndWait: ComponentProps<typeof RetimeDialog>["runAndWait"];
+    readonly imageUrls: Readonly<Record<string, string>>;
+    /** Øker når egenskapspanelet ber om dialogen. */
+    readonly request?: number;
+  };
 }
 
 /** Plassering for ekstra rader i tidslinjen. */
@@ -370,7 +383,10 @@ const LayerRow = memo(function LayerRow({
   const frames = useMemo(() => keyframeFrames(layer), [layer]);
   return (
     <div
-      className={"flex border-b border-border even:bg-surface-2/40 " + (selected ? "bg-accent-selection" : "")}
+      className={
+        "flex border-b border-border even:bg-surface-2/40 " +
+        (selected ? "bg-accent-selection" : "")
+      }
       style={{ height: ROW_H }}
     >
       <div
@@ -492,7 +508,16 @@ export function Timeline({
   onAutoKeyChange,
   run,
   audioRows,
+  retime,
 }: Props) {
+  const [retimeTarget, setRetimeTarget] = useState<number | null>(null);
+  const [endDrag, setEndDrag] = useState<{ x0: number; frames: number } | null>(null);
+  const retimeRequest = retime?.request ?? 0;
+  useEffect(() => {
+    if (retimeRequest > 0) setRetimeTarget(durationFrames);
+    // Bare når egenskapspanelet ber om det, ikke når varigheten endres
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [retimeRequest]);
   const [height, setHeight] = usePaneSize("scene-editor-timeline", 252, 150, 560, {
     axis: "y",
     viewportShare: 0.6,
@@ -952,8 +977,43 @@ export function Timeline({
     const v = Number(text.trim().replace(",", "."));
     if (text.trim() === "" || !Number.isFinite(v)) return;
     const frames = secondsToFrames(clamp(v, MIN_DURATION_SECONDS, MAX_DURATION_SECONDS), fps);
-    if (frames === composition.durationFrames) return;
-    updateComposition(L("Endre varighet", "Change duration"), { durationFrames: frames });
+    if (frames === durationFrames) return;
+    // B-041: brukeren velger metode hver gang scenen endrer lengde
+    if (retime) setRetimeTarget(frames);
+    else updateComposition(L("Endre varighet", "Change duration"), { durationFrames: frames });
+  }
+
+  /** Låste tidsrom (SV1): nytt fra avspillingshodet (1 s), eller fjernet. */
+  function setLockedRanges(next: readonly LockedRange[], label: string) {
+    const c = latest.current.composition;
+    exec(
+      {
+        type: "UpdateComposition",
+        compositionId: c.id,
+        fields: compositionFieldsOf(c),
+        timing: { ...timingOf(c), lockedRanges: next },
+      },
+      label,
+    );
+  }
+  function addLockedRange() {
+    const list = timingOf(composition).lockedRanges;
+    const start = Math.max(0, Math.min(frame, last));
+    const nextStart = list.filter((r) => r.startFrame > start).map((r) => r.startFrame);
+    const end = Math.min(durationFrames, start + Math.round(fpsN), ...nextStart);
+    if (end <= start || list.some((r) => start >= r.startFrame && start < r.endFrame)) {
+      setError(
+        L(
+          "Det er ikke plass til et låst tidsrom her. Flytt avspillingshodet.",
+          "There is no room for a locked range here. Move the playhead.",
+        ),
+      );
+      return;
+    }
+    setLockedRanges(
+      [...list, { id: newId(), startFrame: start, endFrame: end, label: "" }],
+      L("Lås tidsrom", "Lock time range"),
+    );
   }
 
   function keyAll() {
@@ -998,6 +1058,19 @@ export function Timeline({
       style={{ height }}
       className="relative flex shrink-0 flex-col border-t border-border bg-surface-1 outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-ring"
     >
+      {retime ? (
+        <RetimeDialog
+          open={retimeTarget !== null}
+          onClose={() => setRetimeTarget(null)}
+          state={state}
+          occurrenceId={retime.occurrenceId}
+          composition={composition}
+          currentFrames={durationFrames}
+          initialFrames={retimeTarget ?? durationFrames}
+          runAndWait={retime.runAndWait}
+          imageUrls={retime.imageUrls}
+        />
+      ) : null}
       <PaneResizer
         edge="top"
         size={height}
@@ -1107,6 +1180,23 @@ export function Timeline({
             }
           >
             {L("Fra manus", "From script")}
+          </Button>
+        ) : null}
+        {retime ? (
+          <Button
+            size="sm"
+            variant="ghost"
+            className="shrink-0"
+            disabled={!editable}
+            data-testid="lock-range-button"
+            title={L(
+              "Lås ett sekund fra avspillingshodet, så det står fast når scenen endrer lengde",
+              "Lock one second from the playhead, so it stays fixed when the scene changes length",
+            )}
+            onClick={addLockedRange}
+          >
+            <Lock className="size-3" />
+            {L("Lås tidsrom", "Lock time range")}
           </Button>
         ) : null}
 
@@ -1298,6 +1388,69 @@ export function Timeline({
               onPointerMove={onRulerMove}
             >
               <RulerTicks ppf={ppf} durationFrames={durationFrames} fps={fpsN} />
+              {timingOf(composition).lockedRanges.map((r) => (
+                <div
+                  key={r.id}
+                  data-testid="locked-range"
+                  title={L("Låst tidsrom", "Locked time range") + (r.label ? `: ${r.label}` : "")}
+                  className="absolute inset-y-0 flex items-start justify-end border-x border-accent-warm bg-accent-warm/25"
+                  style={{ left: r.startFrame * ppf, width: (r.endFrame - r.startFrame) * ppf }}
+                  onPointerDown={(e) => e.stopPropagation()}
+                >
+                  {editable ? (
+                    <button
+                      type="button"
+                      aria-label={L("Fjern låst tidsrom", "Remove locked range")}
+                      data-testid="locked-range-remove"
+                      className="mr-0.5 text-[11px] leading-none text-text-secondary hover:text-text-primary"
+                      onClick={() =>
+                        setLockedRanges(
+                          timingOf(composition).lockedRanges.filter((x) => x.id !== r.id),
+                          L("Fjern låst tidsrom", "Remove locked range"),
+                        )
+                      }
+                    >
+                      ×
+                    </button>
+                  ) : null}
+                </div>
+              ))}
+              {retime && editable ? (
+                <div
+                  role="slider"
+                  tabIndex={0}
+                  aria-label={L(
+                    "Slutten av scenen (dra for å endre lengden)",
+                    "End of the scene (drag to change the length)",
+                  )}
+                  aria-valuemin={1}
+                  aria-valuenow={endDrag?.frames ?? durationFrames}
+                  data-testid="scene-end-handle"
+                  className="absolute inset-y-0 z-10 w-2 -translate-x-1/2 cursor-ew-resize rounded-sm bg-accent-brand/70 touch-none"
+                  style={{ left: (endDrag?.frames ?? durationFrames) * ppf }}
+                  onPointerDown={(e) => {
+                    e.stopPropagation();
+                    e.currentTarget.setPointerCapture(e.pointerId);
+                    setEndDrag({ x0: e.clientX, frames: durationFrames });
+                  }}
+                  onPointerMove={(e) => {
+                    if (!endDrag) return;
+                    const f = Math.max(
+                      1,
+                      durationFrames + Math.round((e.clientX - endDrag.x0) / ppf),
+                    );
+                    setEndDrag({ ...endDrag, frames: f });
+                  }}
+                  onPointerUp={() => {
+                    const f = endDrag?.frames;
+                    setEndDrag(null);
+                    if (f !== undefined && f !== durationFrames) setRetimeTarget(f);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") setRetimeTarget(durationFrames);
+                  }}
+                />
+              ) : null}
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute top-0 size-2.5 -translate-x-1/2 rounded-b-sm bg-accent-brand shadow-sm ring-1 ring-bg-app"
