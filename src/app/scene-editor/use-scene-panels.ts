@@ -50,5 +50,9 @@ export function panelTitle(id: PanelId): string {
       return L("Egenskaper", "Properties");
     case "script":
       return L("Manus", "Script");
+    case "pages":
+      return L("Sider", "Pages");
+    case "credits":
+      return L("Rulletekst", "Credits");
   }
 }
