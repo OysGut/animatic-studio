@@ -18,6 +18,9 @@ import {
   roomToneAsset,
   scriptForLine,
   soundTakes,
+  versionsOf,
+  labelledViews,
+  lineAudioStatus,
   takeFileName,
   type Command,
   type ProjectState,
@@ -222,8 +225,67 @@ describe("opptak fra mobilen", () => {
     const clip = lineInfo(s, info.occurrenceId, info.blockId)!.clip!;
     const takes = soundTakes(s, clip.assetId);
     expect(takes).toHaveLength(2);
-    expect(takes[0]!.note).toContain("Kari");
-    expect(clip.versionId).toBe(takes[0]!.versionId);
+    const first = Object.values(s.assetVersions).find(
+      (v) => v.variantId === clip.assetVariantId && v.number === 1,
+    );
+    expect(first?.note).toContain("Kari");
+    expect(clip.versionId).toBe(first?.id);
     expect(Object.values(s.assets).filter((a) => a.tags.includes("romlyd"))).toHaveLength(1);
+  });
+});
+
+describe("fast rekkefølge for samtidige versjoner", () => {
+  async function simultaneous() {
+    const info = silentLine(fixture.state);
+    const cmds = fakeCmds(fixture.state);
+    const target = { kind: "line", occurrenceId: info.occurrenceId, blockId: info.blockId } as const;
+    const first = await saveTake(cmds, cmds.current(), target, media(), "første");
+    const second = await saveTake(cmds, cmds.current(), target, media(), "andre");
+    const state = cmds.current();
+    const a = state.assetVersions[first.versionId];
+    const b = state.assetVersions[second.versionId];
+    const clip = first.clipId ? state.audioClips[first.clipId] : undefined;
+    if (!a || !b || !clip) throw new Error("mangler opptak");
+    // Samme UUIDv7-tidsprefiks, men motsatt leksikografisk ID-rekkefølge.
+    const firstId = "00000000-0000-7fff-8000-000000000001" as typeof a.id;
+    const secondId = "00000000-0000-7000-8000-000000000002" as typeof b.id;
+    const versions = { ...state.assetVersions };
+    delete versions[a.id];
+    delete versions[b.id];
+    const createdAt = "2026-10-18T23:47:00.000Z";
+    versions[secondId] = { ...b, id: secondId, createdAt };
+    versions[firstId] = { ...a, id: firstId, createdAt };
+    return {
+      state: { ...state, assetVersions: versions, audioClips: {
+        ...state.audioClips, [clip.id]: { ...clip, versionId: firstId },
+      } },
+      first: { ...first, versionId: firstId }, second: { ...second, versionId: secondId }, info,
+    };
+  }
+
+  it("nummererer samtidige takes etter versjonsnummer, ikke UUID", async () => {
+    const { state, first, second } = await simultaneous();
+    expect(soundTakes(state, first.assetId).map((t) => [t.versionId, t.number])).toEqual([
+      [first.versionId, 1], [second.versionId, 2],
+    ]);
+    expect(versionsOf(state, first.variantId).map((v) => v.id)).toEqual([
+      second.versionId, first.versionId,
+    ]);
+    const reversed = { ...state, assetVersions: Object.fromEntries(Object.entries(state.assetVersions).reverse()) };
+    expect(soundTakes(reversed, first.assetId)).toEqual(soundTakes(state, first.assetId));
+  });
+
+  it("oppdager nyere take ved samme tidsstempel uten å endre aktiv lyd", async () => {
+    const { state, first, info } = await simultaneous();
+    expect(lineAudioStatus(state, info.occurrenceId, info.blockId)).toBe("new_take");
+    expect(lineInfo(state, info.occurrenceId, info.blockId)?.clip?.versionId).toBe(first.versionId);
+  });
+
+  it("velger siste merkede bilde også ved samme tidsstempel", async () => {
+    const { state, first, second } = await simultaneous();
+    const assetVersions = Object.fromEntries(Object.entries(state.assetVersions).map(([id, v]) => [
+      id, v.variantId === first.variantId ? { ...v, mimeType: "image/png", view: "front" as const } : v,
+    ]));
+    expect(labelledViews({ ...state, assetVersions }, first.assetId).map((v) => v.version.id)).toEqual([second.versionId]);
   });
 });

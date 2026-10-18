@@ -8,6 +8,7 @@ import type { ProjectState } from "../model";
 import { audioVersion } from "./index";
 import type { AudioComposition } from "./composition";
 import { L } from "../i18n";
+import { compareVersionCreation } from "../library";
 
 export const ALIGNMENT_FORMAT = 1;
 export const ALIGNMENT_MAX_WORDS = 2000;
@@ -350,7 +351,7 @@ export function lineAudioStatus(
   const newer = Object.values(s.assetVersions).some((x) => {
     if (x.removed || x.id === v.id) return false;
     const xa = s.assetVariants[x.variantId];
-    return xa?.assetId === va?.assetId && x.createdAt > v.createdAt;
+    return xa?.assetId === va?.assetId && compareVersionCreation(x, v) > 0;
   });
   if (newer) return "new_take";
   if (va?.approvedVersionId === v.id && v.alignment) return "approved";
