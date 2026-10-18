@@ -71,6 +71,7 @@ export type RetimeItemKind =
   | "keyframe"
   | "imageSwap"
   | "path"
+  | "activeRange"
   | "cameraShot"
   | "audioClip"
   | "timeLink"
@@ -464,7 +465,37 @@ export function planRetime(s: ProjectState, occurrenceId: string, opts: RetimeOp
         changed = true;
       }
     }
-    if (changed) layerSteps.push({ layerId: l.id, fields: { ...f, keyframes, swaps, path } });
+    // Aktivt tidsområde (AS2): følger tiden som nøkkelbildene; et område helt utenfor fjernes og rapporteres
+    let activeRange = f.activeRange ?? null;
+    if (activeRange) {
+      const a = mapFrame(activeRange.from);
+      const b = mapFrame(activeRange.to);
+      if (b < 0 || a >= target) {
+        note(trimmed, { kind: "activeRange", id: l.id, ownerId: l.id });
+        activeRange = null;
+        changed = true;
+      } else if (a !== activeRange.from || b !== activeRange.to) {
+        const from = Math.max(0, a);
+        activeRange = { from, to: Math.max(from, Math.min(target - 1, b)) };
+        note(a < 0 || b >= target ? trimmed : scaling ? scaled : moved, {
+          kind: "activeRange",
+          id: l.id,
+          ownerId: l.id,
+        });
+        changed = true;
+      }
+    }
+    // Krysstoning (AS2): kortes ned hvis bildet før er blitt kortere
+    const fitted = swaps.map((w, i) => {
+      if (!w.transition) return w;
+      const gap = w.frame - (i > 0 ? swaps[i - 1]!.frame : 0);
+      return w.transition.frames > gap ? { ...w, transition: { ...w.transition, frames: gap } } : w;
+    });
+    if (changed)
+      layerSteps.push({
+        layerId: l.id,
+        fields: { ...f, keyframes, swaps: fitted, path, activeRange },
+      });
   }
 
   // ---------- Kamera ----------
