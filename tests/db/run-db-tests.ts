@@ -123,6 +123,9 @@ async function loadState(projectId: string): Promise<ProjectState> {
     asset_relations: await q("asset_relations"),
     posters: await q("posters"),
     style_profiles: await q("style_profiles"),
+    story_profiles: await q("story_profiles"),
+    story_profile_stages: await q("story_profile_stages"),
+    story_facts: await q("story_facts"),
   };
   return stateFromRows(rows);
 }
@@ -4134,6 +4137,221 @@ try {
         values (gen_random_uuid(), ${ALICE}, 'xai', ${"x".repeat(20)}, ${"y".repeat(12)}, '…abcd', '{}'::jsonb)`,
       /check/,
     );
+  });
+  // ---------------------------------------------------------------- 0039 Story Lab (SL1)
+  const STORY_TABLES = [
+    "story_profiles",
+    "story_profile_stages",
+    "story_facts",
+    "story_sessions",
+    "story_suggestions",
+  ];
+  const sl = await as(
+    "authenticated",
+    ALICE,
+    async (tx) => (await tx`select public.create_project('Story Lab') as id`)[0]!["id"] as string,
+  );
+  await sql`insert into public.project_members (project_id, user_id, role) values (${sl}, ${BOB}, 'viewer')`;
+  const SL = (n: number) => `abcdef00-0000-7000-8000-00000039${String(n).padStart(4, "0")}`;
+  const slChar = SL(1);
+  const slChar2 = SL(2);
+  const slScene = SL(10);
+  const slProfile = SL(20);
+  const slStage = SL(30);
+  const slFact = SL(40);
+  const slSession = SL(50);
+  const slSuggestion = SL(60);
+  let slState = await loadState(sl);
+
+  await test("0039: Story Lab-kommandoene settes inn, oppdateres (revisjon) og leses tilbake", async () => {
+    const mainSl = Object.values(slState.productions)[0]!.id;
+    slState = await runCommand(slState, ALICE, {
+      type: "CreateScene",
+      productionId: mainSl,
+      sceneId: slScene as never,
+      variantId: SL(11) as never,
+      occurrenceId: SL(12) as never,
+      orderKey: keysEvenly(1)[0]!,
+      heading: { intExt: "INT.", location: "STUA", time: "KVELD" },
+      blocks: [],
+      productionNumber: "1",
+    });
+    slState = await runCommand(slState, ALICE, {
+      type: "CreateAssets",
+      assets: [slChar, slChar2].map((id, i) => ({
+        assetId: id as never,
+        fields: {
+          kind: "character" as const,
+          name: i ? "Anne" : "Maja",
+          names: [],
+          description: "",
+          category: "",
+          tags: [],
+        },
+      })),
+    });
+    const profile = emptyStoryProfile();
+    slState = await runCommand(slState, ALICE, {
+      type: "SetStoryProfile",
+      profileId: slProfile as never,
+      assetId: slChar as never,
+      profile,
+    });
+    slState = await runCommand(slState, ALICE, {
+      type: "SetStoryProfile",
+      profileId: slProfile as never,
+      assetId: slChar as never,
+      profile: { ...profile, notes: "oppdatert" },
+    });
+    slState = await runCommand(slState, ALICE, {
+      type: "AddStoryProfileStage",
+      stageId: slStage as never,
+      assetId: slChar as never,
+      fromSceneId: slScene as never,
+      patch: { speech: { mood: "bitter" } },
+    });
+    slState = await runCommand(slState, ALICE, {
+      type: "AddStoryFact",
+      factId: slFact as never,
+      fields: {
+        text: "Brevet er gjemt",
+        kind: "secret",
+        atSceneId: slScene as never,
+        knownBy: [{ assetId: slChar2 as never, fromSceneId: null }],
+      },
+    });
+    slState = await runCommand(slState, ALICE, {
+      type: "UpdateStoryFact",
+      factId: slFact as never,
+      fields: {
+        text: "Brevet er brent",
+        kind: "secret",
+        atSceneId: slScene as never,
+        knownBy: [{ assetId: slChar2 as never, fromSceneId: slScene as never }],
+      },
+    });
+    const back = await loadState(sl);
+    assert(back.storyProfiles[slProfile]?.profile.notes === "oppdatert", "profilen ble ikke oppdatert");
+    assert(back.storyProfiles[slProfile]?.revision === 2, "profilens revisjon ble ikke 2");
+    assert(back.storyProfileStages[slStage]?.patch.speech?.mood === "bitter", "stadiet ble ikke lagret");
+    assert(back.storyFacts[slFact]?.text === "Brevet er brent", "faktumet ble ikke oppdatert");
+    assert(back.storyFacts[slFact]?.revision === 2, "faktumets revisjon ble ikke 2");
+    assert(
+      isDeepStrictEqual(back.storyFacts[slFact]?.knownBy, [{ assetId: slChar2, fromSceneId: slScene }]),
+      "known_by ble ikke lagret likt",
+    );
+    for (const k of ["storyProfiles", "storyProfileStages", "storyFacts"] as const)
+      assert(isDeepStrictEqual(back[k], slState[k]), `${k} ble ikke lest tilbake likt`);
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 39, "schema_version er ikke 39");
+  });
+
+  await test("0039: sletting via deletes i apply_changes fjerner Story Lab-radene (angre opprettelse)", async () => {
+    const f2 = SL(41);
+    const g2 = SL(31);
+    const p2 = SL(21);
+    slState = await runCommand(slState, ALICE, {
+      type: "AddStoryFact",
+      factId: f2 as never,
+      fields: { text: "Midlertidig", kind: "fact", atSceneId: null, knownBy: [] },
+    });
+    slState = await runCommand(slState, ALICE, {
+      type: "SetStoryProfile",
+      profileId: p2 as never,
+      assetId: slChar2 as never,
+      profile: emptyStoryProfile(),
+    });
+    slState = await runCommand(slState, ALICE, {
+      type: "AddStoryProfileStage",
+      stageId: g2 as never,
+      assetId: slChar2 as never,
+      fromSceneId: slScene as never,
+      patch: {},
+    });
+    for (const [t, id] of [
+      ["story_facts", f2],
+      ["story_profiles", p2],
+      ["story_profile_stages", g2],
+    ] as const)
+      assert((await sql.unsafe(`select 1 from public.${t} where id = $1`, [id])).length === 1, `${t} ble ikke satt inn`);
+    slState = await runCommand(slState, ALICE, { type: "UndoAddStoryFact", factId: f2 as never });
+    slState = await runCommand(slState, ALICE, { type: "UndoAddStoryProfileStage", stageId: g2 as never });
+    slState = await runCommand(slState, ALICE, { type: "UndoCreateStoryProfile", profileId: p2 as never });
+    for (const [t, id] of [
+      ["story_facts", f2],
+      ["story_profiles", p2],
+      ["story_profile_stages", g2],
+    ] as const)
+      assert((await sql.unsafe(`select 1 from public.${t} where id = $1`, [id])).length === 0, `${t}: raden finnes fortsatt`);
+    const back = await loadState(sl);
+    assert(!back.storyFacts[f2] && !back.storyProfiles[p2] && !back.storyProfileStages[g2], "radene kom tilbake ved lasting");
+  });
+
+  await test("0039: høyst én aktiv profil per ressurs og ett aktivt stadium per karakter og scene", async () => {
+    await expectError(
+      sql`insert into public.story_profiles (id, project_id, asset_id, profile) values (gen_random_uuid(), ${sl}, ${slChar}, '{}'::jsonb)`,
+      /duplicate key|unique/,
+    );
+    await expectError(
+      sql`insert into public.story_profile_stages (id, project_id, asset_id, from_scene_id, patch) values (gen_random_uuid(), ${sl}, ${slChar}, ${slScene}, '{}'::jsonb)`,
+      /duplicate key|unique/,
+    );
+    // Fjernede rader teller ikke
+    await sql`insert into public.story_profiles (id, project_id, asset_id, profile, removed) values (gen_random_uuid(), ${sl}, ${slChar}, '{}'::jsonb, true)`;
+  });
+
+  await test("0039: RLS – medlemmer leser, utenforstående ser ingenting, klienten kan ikke skrive", async () => {
+    await sql`insert into public.story_sessions (id, project_id, kind, title, turns, created_by)
+      values (${slSession}, ${sl}, 'group', 'Prøve', ${sql.json([{ id: "t1", speaker: slChar, text: "Hei", kind: "line", at: "2026-10-18T10:00:00Z" }])}, ${ALICE})`;
+    await sql`insert into public.story_suggestions (id, project_id, session_id, kind, payload, created_by)
+      values (${slSuggestion}, ${sl}, ${slSession}, 'line', '{"text":"Hei"}'::jsonb, ${ALICE})`;
+    for (const t of STORY_TABLES) {
+      for (const u of [ALICE, BOB]) {
+        const rows = await as("authenticated", u, (tx) => tx.unsafe(`select id from public.${t} where project_id = $1`, [sl]));
+        assert(rows.length > 0, `${t}: medlemmet ser ingenting`);
+      }
+      const out = await as("authenticated", CAROL, (tx) => tx.unsafe(`select id from public.${t}`));
+      assert(out.length === 0, `${t}: utenforstående ser rader`);
+      await expectError(
+        as("authenticated", ALICE, (tx) => tx.unsafe(`update public.${t} set project_id = project_id where project_id = $1`, [sl])),
+        "42501",
+      );
+      await expectError(
+        as("authenticated", ALICE, (tx) => tx.unsafe(`delete from public.${t} where project_id = $1`, [sl])),
+        "42501",
+      );
+    }
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`insert into public.story_facts (id, project_id, text, kind) values (gen_random_uuid(), ${sl}, 'x', 'fact')`),
+      "42501",
+    );
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`insert into public.story_sessions (id, project_id, kind, created_by) values (gen_random_uuid(), ${sl}, 'group', ${ALICE})`),
+      "42501",
+    );
+  });
+
+  await test("0039: purge_removed_assets stoppes av en aktiv profil", async () => {
+    await sql`update public.assets set removed = true where id = ${slChar}`;
+    await expectError(
+      as("service_role", null, (tx) => tx`select public.purge_removed_assets(${sl}, ${ALICE}, ${[slChar]}::uuid[], '{}'::uuid[])`),
+      "23503",
+    );
+    assert((await sql`select 1 from public.assets where id = ${slChar}`).length === 1, "ressursen ble slettet");
+    await sql`update public.assets set removed = false where id = ${slChar}`;
+  });
+
+  await test("0039: delete_project og purge_project_assets med Story Lab-rader bryter ingen fremmednøkler", async () => {
+    await as("service_role", null, (tx) => tx`select public.delete_project(${sl}, ${ALICE})`);
+    for (const t of STORY_TABLES) assert((await count(t, sl)) === 0, `${t} har fortsatt rader etter sletting`);
+    // Samme med rader som ble lagret samtidig med slettingen
+    await sql`insert into public.story_profiles (id, project_id, asset_id, profile) values (gen_random_uuid(), ${sl}, ${slChar2}, '{}'::jsonb)`;
+    await sql`insert into public.story_facts (id, project_id, text, kind) values (gen_random_uuid(), ${sl}, 'Sent', 'fact')`;
+    await sql`insert into public.story_sessions (id, project_id, kind, created_by) values (${SL(51)}, ${sl}, 'group', ${ALICE})`;
+    await sql`insert into public.story_suggestions (id, project_id, session_id, kind, payload, created_by) values (gen_random_uuid(), ${sl}, ${SL(51)}, 'line', '{}'::jsonb, ${ALICE})`;
+    await as("service_role", null, (tx) => tx`select public.purge_project_assets(${sl}, ${ALICE})`);
+    for (const t of STORY_TABLES) assert((await count(t, sl)) === 0, `${t} har fortsatt rader etter rensing`);
+    assert((await sql`select 1 from public.projects where id = ${sl}`).length === 0, "prosjektraden finnes fortsatt");
   });
 } finally {
   await sql.end();
