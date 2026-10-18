@@ -82,4 +82,5 @@ export * from "./draft";
 export * from "./workspaces";
 export * from "./film-share";
 export * from "./typography";
+export * from "./script-assist";
 export * from "./credits";

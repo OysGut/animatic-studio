@@ -185,6 +185,21 @@ export const SHORTCUT_GROUPS: readonly ShortcutGroup[] = [
           "the scene list, with “Change order and visibility” turned on",
         ),
     ),
+    shortcut(
+      ["⌥/Alt", "⇧", "R"],
+      () => L("Skriv om markert tekst (skrivehjelp)", "Rewrite the selected text (writing assistant)"),
+      () => L("fokus på manussidene", "focus on the script pages"),
+    ),
+    shortcut(
+      ["⌥/Alt", "⇧", "N"],
+      () => L("Foreslå neste replikk (skrivehjelp)", "Suggest the next line (writing assistant)"),
+      () => L("fokus på manussidene", "focus on the script pages"),
+    ),
+    shortcut(
+      ["⌥/Alt", "⇧", "F"],
+      () => L("Formatsjekk av scenen, gratis", "Format check of the scene, free"),
+      () => L("fokus på manussidene", "focus on the script pages"),
+    ),
   ]),
 ];
 

@@ -54,3 +54,8 @@
 - [x] DB-tester 0048/0049, nettlesertester mts-engine, mts-lower-thirds, mts-nondestructive (AI–AJ) skrevet; Øystein kjører dem
 - [ ] Nettlesertester mts-engine, mts-lower-thirds, mts-nondestructive (AI–AJ)
 - [ ] MT6–MT9 neste runde (inkl. occurrences.kind, manusmarkør, filtre i manusutforsker/OG2/oversettelse)
+
+# T2 – AI-skrivehjelp i manuset
+- [x] T2.1–T2.6: kjerne, serverfunksjon, panel, diff, hurtigtaster, kontekstmeny, forlatevakt.
+- [x] T2.7 unit-tester (17).
+- [ ] Nettlesertest tests/visual/t2-writing-ui.mjs – ikke skrevet ennå.
