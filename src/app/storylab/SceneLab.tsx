@@ -44,6 +44,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
   const [note, setNote] = useState<string | null>(null);
   const [checkApproved, setCheckApproved] = useState(false);
   const [groupBusy, setGroupBusy] = useState(false);
+  const groupWorking = useRef(false);
   const retrySave = useRef<(() => Promise<void>) | null>(null);
   const gen = useServerFn(generateText), create = useServerFn(createStorySession), append = useServerFn(appendStoryTurns), fork = useServerFn(forkStorySession), suggest = useServerFn(saveStorySuggestion), get = useServerFn(getStorySession);
   const list = useServerFn(listStorySessions);
@@ -109,7 +110,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
     if (!r.ok) throw new Error(r.message); remember(r.session); return r.session;
   };
   const perform = async (action: () => Promise<void>) => {
-    if (lock.current || !editable) return;
+    if (lock.current || groupWorking.current || !editable) return;
     lock.current = true; stopped.current = false; setBusy(true); setError(null);
     try { await action(); } catch (e) { if (mounted.current) setError(e instanceof Error ? e.message : L("Handlingen kunne ikke fullføres. Prøv igjen.", "The action could not be completed. Try again.")); }
     finally { lock.current = false; if (mounted.current) setBusy(false); }
@@ -153,7 +154,10 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
       added.push(branch); setVariants((old) => [...old, branch]);
       await runSceneBatch({ state, session: branch, language, shouldStop: () => stopped.current,
         generate: async (input) => { const result = await gen({ data: { projectId, task: "storylab_group", ...input, maxTokens: 800 } }); if (!result.ok) throw new Error(result.message); if (result.usedFallback && mounted.current) setNote(L("Den innebygde AI-en ble brukt som reserve.", "The built-in AI was used as fallback.")); return result; },
-        save: async (turn, cost) => { branch = await save(branch, [turn], cost, "active"); setVariants((old) => old.map((s) => s.id === branch.id ? branch : s)); },
+        save: async (turn, cost) => {
+          retrySave.current = async () => { branch = await save(branch, [turn], cost); setVariants((old) => old.map((s) => s.id === branch.id ? branch : s)); retrySave.current = null; };
+          await retrySave.current();
+        },
       });
       branch = await save(branch, []); setVariants((old) => old.map((s) => s.id === branch.id ? branch : s));
     }
@@ -190,19 +194,22 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
       <section className="flex min-h-0 min-w-0 flex-1 flex-col">
         <PanelHeader title={L("Deltakere", "Participants")} />
         <div className="flex flex-wrap gap-1 p-2">{data.participants.map((a) => <ToolbarButton key={a.id} data-asset-id={a.id} data-profile={profileStatus(state, a.id)} onClick={() => onProfile?.(a.id)}>{a.name} · {profileStatus(state, a.id) === "active" ? L("Har profil", "Has a profile") : L("Ingen profil", "No profile")}</ToolbarButton>)}</div>
-        <div role="tablist" className="flex border-b border-border">{(["analysis", "improv", "check"] as const).map((t) => <ToolbarButton key={t} role="tab" aria-selected={tab === t} active={tab === t} data-testid={`storylab-scene-tab-${t}`} onClick={() => setTab(t)}>{t === "analysis" ? L("Analyse", "Analysis") : t === "improv" ? L("Improviser", "Improvise") : L("Replikksjekk", "Line check")}</ToolbarButton>)}</div>
+        <div role="tablist" className="flex border-b border-border">{(["analysis", "improv", "check"] as const).map((t) => <ToolbarButton key={t} role="tab" aria-selected={tab === t} active={tab === t} data-testid={`storylab-scene-tab-${t}`} disabled={busy || groupBusy} onClick={() => setTab(t)}>{t === "analysis" ? L("Analyse", "Analysis") : t === "improv" ? L("Improviser", "Improvise") : L("Replikksjekk", "Line check")}</ToolbarButton>)}</div>
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto p-2">
           {tab === "analysis" ? <><ToolbarButton data-testid="storylab-analyze" disabled={!editable || busy || groupBusy} onClick={() => setDialog("analysis")}>{L("Analyser scenen …", "Analyze scene …")}</ToolbarButton>{points.map((p) => <article key={p.aspect} data-testid="storylab-analysis-card" className="my-1 rounded-sm border border-border bg-surface-2 p-3 text-sm"><h3>{ANALYSIS_ASPECT_LABEL[p.aspect]}</h3>{p.uncertain ? <span className="text-status-uncertain">{L("usikker", "uncertain")}</span> : null}<p>{p.finding}</p><p className="text-text-secondary">{p.suggestion}</p><div className="flex flex-wrap">{p.evidence.map(evidence)}</div><ToolbarButton disabled={!editable || busy || groupBusy} onClick={() => saveSuggestion("analysis", { ...p }, analysisSession)}>{L("Lagre som forslag", "Save as suggestion")}</ToolbarButton></article>)}</> : null}
           {tab === "check" ? <div className="space-y-2">{checks.map(checkCard)}</div> : null}
-          {tab === "improv" ? <><div className="flex flex-wrap"><ToolbarButton data-testid="storylab-improvise" disabled={!editable || busy || groupBusy || data.participants.length < 2 || data.participants.length > 6} onClick={() => setDialog("improv")}>{L("Improviser scenen …", "Improvise scene …")}</ToolbarButton><ToolbarButton data-testid="storylab-variants" disabled={!editable || busy || groupBusy || session?.kind !== "scene_improv"} onClick={() => setDialog("variants")}>{L("Lag varianter …", "Create variants …")}</ToolbarButton><ToolbarButton data-testid="storylab-compare" onClick={() => setCompare(!compare)}>{L("Sammenlign", "Compare")}</ToolbarButton>{busy ? <ToolbarButton onClick={() => { stopped.current = true; }}>{L("Stopp", "Stop")}</ToolbarButton> : null}</div>
-            {session?.kind === "scene_improv" && !openId && !busy ? <GroupConversationView key={session.id} state={state} projectId={projectId} session={session} editable={editable && !busy} onOpen={setOpenId} onUpdate={setSession} onBusy={setGroupBusy} /> : null}
+          {tab === "improv" ? <><div className="flex flex-wrap"><ToolbarButton data-testid="storylab-improvise" disabled={!editable || busy || groupBusy || data.participants.length < 2 || data.participants.length > 6} onClick={() => setDialog("improv")}>{L("Improviser scenen …", "Improvise scene …")}</ToolbarButton><ToolbarButton data-testid="storylab-variants" disabled={!editable || busy || groupBusy || session?.kind !== "scene_improv"} onClick={() => setDialog("variants")}>{L("Lag varianter …", "Create variants …")}</ToolbarButton><ToolbarButton data-testid="storylab-compare" disabled={busy || groupBusy} onClick={() => setCompare(!compare)}>{L("Sammenlign", "Compare")}</ToolbarButton>{busy ? <ToolbarButton onClick={() => { stopped.current = true; }}>{L("Stopp", "Stop")}</ToolbarButton> : null}</div>
+            {session?.kind === "scene_improv" && !openId && !busy ? <GroupConversationView key={session.id} state={state} projectId={projectId} session={session} editable={editable && !busy} onOpen={setOpenId} onUpdate={setSession} onBusy={(value) => { groupWorking.current = value; setGroupBusy(value); }} /> : null}
             {variants.map((v) => <label key={v.id} className="flex items-center gap-2"><Checkbox checked={chosenVariants.includes(v.id)} onCheckedChange={(yes) => setChosenVariants((old) => yes ? [...old, v.id] : old.filter((id) => id !== v.id))} />{v.title}</label>)}
           </> : null}
           {compare ? <div className="flex shrink-0 gap-2 overflow-x-auto">{[{ id: "original", title: L("Original", "Original"), turns: data.blocks.filter((b) => b.kind === "dialogue").map((b) => ({ id: b.id, text: b.text, speaker: data.speakers.get(b.id) ?? "?" })), session: null }, ...variants.filter((v) => chosenVariants.includes(v.id)).map((v) => ({ id: v.id, title: v.title, turns: v.turns.filter((t) => t.kind === "line"), session: v }))].map((col) => {
             const count = lineAndWordCount(col.turns);
-            return <section key={col.id} data-testid="storylab-compare-col" className="min-w-48 flex-1 border-l border-border p-2 text-sm"><PanelHeader title={col.title} />{col.turns.map((t) => <label key={t.id} className="mb-2 block">{col.session ? <Checkbox aria-label={L("Velg replikk", "Select line")} checked={chosenLines.includes(t.id)} onCheckedChange={(yes) => setChosenLines((old) => yes ? [...old, t.id] : old.filter((id) => id !== t.id))} /> : null}<strong className="ml-1">{state.assets[t.speaker]?.name ?? t.speaker}</strong><p>{t.text}</p></label>)}<p>{L(`${count.lines} replikker · ${count.words} ord`, `${count.lines} lines · ${count.words} words`)}</p>{col.session ? <ToolbarButton disabled={!editable || busy || groupBusy} onClick={() => saveSuggestion("scene_draft", { sceneId, turns: col.turns }, col.session)}>{L("Lagre varianten som scenetekstutkast", "Save variant as scene draft")}</ToolbarButton> : null}</section>;
+            return <section key={col.id} data-testid="storylab-compare-col" className="min-w-48 flex-1 border-l border-border p-2 text-sm"><PanelHeader title={col.title} />{col.turns.map((t) => <label key={t.id} className="mb-2 block"><Checkbox aria-label={L("Velg replikk", "Select line")} checked={chosenLines.includes(t.id)} onCheckedChange={(yes) => setChosenLines((old) => yes ? [...old, t.id] : old.filter((id) => id !== t.id))} /><strong className="ml-1">{state.assets[t.speaker]?.name ?? t.speaker}</strong><p>{t.text}</p></label>)}<p>{L(`${count.lines} replikker · ${count.words} ord`, `${count.lines} lines · ${count.words} words`)}</p>{col.session ? <ToolbarButton disabled={!editable || busy || groupBusy} onClick={() => saveSuggestion("scene_draft", { sceneId, turns: col.turns }, col.session)}>{L("Lagre varianten som scenetekstutkast", "Save variant as scene draft")}</ToolbarButton> : null}</section>;
           })}</div> : null}
-          {compare ? <ToolbarButton disabled={!editable || busy || groupBusy || !chosenLines.length} onClick={() => perform(async () => { for (const s of variants) for (const t of s.turns.filter((t) => t.kind === "line" && chosenLines.includes(t.id))) { const r = await suggest({ data: { projectId, sessionId: s.id, turnId: t.id, kind: "line", payload: { sceneId, speakerAssetId: t.speaker, text: t.text, sessionId: s.id, turnId: t.id } } }); if (!r.ok) throw new Error(r.message); } setChosenLines([]); setNote(L("Lagret som forslag.", "Saved as a suggestion.")); })}>{L("Lagre valgte som forslag", "Save selected as suggestions")}</ToolbarButton> : null}
+          {compare ? <ToolbarButton disabled={!editable || busy || groupBusy || !chosenLines.length} onClick={() => perform(async () => { for (const b of data.blocks.filter((b) => b.kind === "dialogue" && chosenLines.includes(b.id))) {
+            const r = await suggest({ data: { projectId, sessionId: null, kind: "line", payload: { sceneId, speakerAssetId: data.speakers.get(b.id) ?? null, text: b.text, sessionId: null, turnId: b.id } } }); if (!r.ok) throw new Error(r.message);
+          }
+          for (const s of variants) for (const t of s.turns.filter((t) => t.kind === "line" && chosenLines.includes(t.id))) { const r = await suggest({ data: { projectId, sessionId: s.id, turnId: t.id, kind: "line", payload: { sceneId, speakerAssetId: t.speaker, text: t.text, sessionId: s.id, turnId: t.id } } }); if (!r.ok) throw new Error(r.message); } setChosenLines([]); setNote(L("Lagret som forslag.", "Saved as a suggestion.")); })}>{L("Lagre valgte som forslag", "Save selected as suggestions")}</ToolbarButton> : null}
           {openId ? <p>{opened.isError ? L("Økten kunne ikke hentes.", "The session could not be loaded.") : L("Henter økten …", "Loading session …")}</p> : null}
           {note ? <p className="text-xs text-text-tertiary">{note}</p> : null}
           {error ? <div role="alert" className="text-sm text-status-danger">{error}<ToolbarButton onClick={() => { const retry = retrySave.current; if (retry) void perform(retry); else setDialog(tab === "improv" ? "variants" : tab === "check" ? "check" : "analysis"); }}>{L("Prøv igjen", "Try again")}</ToolbarButton></div> : null}
@@ -217,7 +224,10 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
         let s = await make("scene_improv"); setTab("improv");
         await runSceneBatch({ state, session: s, language, shouldStop: () => stopped.current,
           generate: async (input) => { const r = await gen({ data: { projectId, task: "storylab_group", ...input, maxTokens: 800 } }); if (!r.ok) throw new Error(r.message); if (r.usedFallback) setNote(L("Den innebygde AI-en ble brukt som reserve.", "The built-in AI was used as fallback.")); return r; },
-          save: async (turn, cost) => { s = await save(s, [turn], cost, "active"); setSession(s); } });
+          save: async (turn, cost) => {
+            retrySave.current = async () => { s = await save(s, [turn], cost); setSession(s); retrySave.current = null; };
+            await retrySave.current();
+          } });
         setSession(await save(s, []));
       }); }}>{L("Bekreft", "Confirm")}</ToolbarButton>
       {estimate.error ? <p role="alert">{estimate.error}</p> : null}

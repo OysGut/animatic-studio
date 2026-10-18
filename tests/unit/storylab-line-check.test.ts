@@ -18,6 +18,6 @@ describe("SL5 replikksjekk", () => {
     expect(p.user).not.toContain("dialogue-0\n"); expect(p.user).toContain("dialogue-3\n");
     expect(p).toMatchSnapshot();
   });
-  it.each(["no json", '{"verdict":"maybe","reasons":[]}', '{"verdict":"no","reasons":[{"text":"x","evidence":["other.secret"]}]}'])("avviser ugyldig svar %s", (raw) => expect(lineCheckFromJson(raw)).toBeNull());
+  it.each(["no json", '{"verdict":"no","reasons":[{"text":"x","evidence":["profile.speech.inventedField"]}]}', '{"verdict":"maybe","reasons":[]}', '{"verdict":"no","reasons":[{"text":"x","evidence":["other.secret"]}]}'])("avviser ugyldig svar %s", (raw) => expect(lineCheckFromJson(raw)).toBeNull());
   it("validerer vurdering, profilkilder og omskriving", () => expect(lineCheckFromJson('```json\n{"verdict":"no","reasons":[{"text":"For voksent","evidence":["profile.speech.level","knowledge"]}],"rewrite":"Hei"}\n```')).toEqual({ verdict: "no", reasons: [{ text: "For voksent", evidence: ["profile.speech.level", "knowledge"] }], rewrite: "Hei" }));
 });
