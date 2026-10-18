@@ -18,19 +18,19 @@ import { names as nameMap, sceneLabel, usd, useTextEstimate } from "./storylab-d
 const OUT_TOKENS = 800;
 const tones = ["border-accent-brand", "border-status-success", "border-status-moved", "border-status-discrepancy", "border-status-running", "border-status-uncertain"];
 
-export function GroupConversationView({ state, projectId, session, editable, onOpen }: {
-  state: ProjectState; projectId: string; session: StorySession; editable: boolean; onOpen: (id: string) => void;
+export function GroupConversationView({ state, projectId, session, editable, onOpen, onUpdate, onBusy }: {
+  state: ProjectState; projectId: string; session: StorySession; editable: boolean; onOpen: (id: string) => void; onUpdate?: (session: StorySession) => void; onBusy?: (busy: boolean) => void;
 }) {
   const raw = session.context;
   const participants = Array.isArray(raw["participants"]) ? raw["participants"].filter((id): id is string =>
     typeof id === "string" && (state.assets[id]?.kind === "character" || state.assets[id]?.kind === "animal")) : [];
   if (participants.length < 2 || participants.length > 6 || new Set(participants).size !== participants.length)
     return <p role="alert" className="p-4 text-status-danger">{L("Økten har ugyldige deltakere.", "The session has invalid participants.")}</p>;
-  return <GroupConversation key={session.id} state={state} projectId={projectId} session={session} participants={participants} editable={editable} onOpen={onOpen} />;
+  return <GroupConversation key={session.id} state={state} projectId={projectId} session={session} participants={participants} editable={editable} onOpen={onOpen} {...(onUpdate ? { onUpdate } : {})} {...(onBusy ? { onBusy } : {})} />;
 }
 
-function GroupConversation({ state, projectId, session, participants, editable, onOpen }: {
-  state: ProjectState; projectId: string; session: StorySession; participants: string[]; editable: boolean; onOpen: (id: string) => void;
+function GroupConversation({ state, projectId, session, participants, editable, onOpen, onUpdate, onBusy }: {
+  state: ProjectState; projectId: string; session: StorySession; participants: string[]; editable: boolean; onOpen: (id: string) => void; onUpdate?: (session: StorySession) => void; onBusy?: (busy: boolean) => void;
 }) {
   const sceneId = typeof session.context["sceneId"] === "string" ? session.context["sceneId"] : null;
   const situation = typeof session.context["situation"] === "string" ? session.context["situation"] : "";
@@ -78,7 +78,7 @@ function GroupConversation({ state, projectId, session, participants, editable, 
     const e = engineOf(ts);
     return {
       system: characterSystemPrompt({ name: names[id] ?? "?", profile: profiles[id] ?? emptyStoryProfile(),
-        knowledge: knowledgeAt(state, id, sceneId as never), situation, directions: activeDirections(e, id), language: "nb", names }),
+        knowledge: knowledgeAt(state, id, sceneId as never), situation, directions: activeDirections(e, id), language: locale() === "en" ? "en" : "nb", names }),
       messages: groupTurnMessages(e, id, names).messages,
     };
   };
@@ -103,11 +103,12 @@ function GroupConversation({ state, projectId, session, participants, editable, 
     if (newStatus) { statusRef.current = newStatus; if (mounted.current) setStatus(newStatus); }
     qc.setQueryData<Awaited<ReturnType<typeof getStorySession>>>(["story-session", projectId, session.id], (old) =>
       ({ ok: true, session: { ...(old?.ok ? old.session : session), turns: turnsRef.current, costUsd: r.costUsd, status: statusRef.current } }));
+    onUpdate?.({ ...session, turns: turnsRef.current, costUsd: r.costUsd, status: statusRef.current });
     void qc.invalidateQueries({ queryKey: ["story-sessions", projectId] });
   };
   const withLock = async (action: () => Promise<void>) => {
     if (working.current || locked) return;
-    working.current = true; setBusy(true); setError(null); halt.current = null; serviceError.current = null; retry.current = action;
+    working.current = true; setBusy(true); onBusy?.(true); setError(null); halt.current = null; serviceError.current = null; retry.current = action;
     try {
       const pending = pendingSave.current;
       if (pending) { await save(pending.turns, pending.costUsd, "paused"); pendingSave.current = null; }
@@ -119,7 +120,7 @@ function GroupConversation({ state, projectId, session, participants, editable, 
       try { await save([], 0, stopped ? "stopped" : "paused"); } catch { /* Meldingen vises; ingen nye AI-kall startes. */ }
       if (mounted.current) setError(message);
     }
-    finally { working.current = false; if (mounted.current) setBusy(false); }
+    finally { working.current = false; if (mounted.current) { setBusy(false); onBusy?.(false); } }
   };
   const oneLine = async (ts: readonly StoredTurn[], chosen: string | null, added: StoredTurn[] = []) => {
     const e = reduceEngine(engineOf(ts), { type: "nextSpeaker", assetId: chosen });

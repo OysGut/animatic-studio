@@ -336,7 +336,7 @@ await run("hemmelighet, samtale, regi, forgrening, forslag", async (page) => {
   const majaFirst = [...S.sessions.values()].find((s) => s.context.assetId === MAJA.id && !s.parentSessionId);
   await page.locator(`[data-testid="storylab-session"][data-session-id="${majaFirst.id}"]`).click();
   await page.waitForTimeout(800);
-  check((await page.locator('[data-testid="storylab-turn"][data-mode="analysis"]').count()) === 1, "økten åpnes igjen med turene");
+  check((await page.getByTestId("storylab-turn").count()) === majaFirst.turns.filter(t => !t.id.startsWith("r:")).length && (await page.locator('[data-testid="storylab-turn"][data-mode="analysis"]').count()) >= 1, "økten åpnes igjen med turene");
 });
 
 await run(

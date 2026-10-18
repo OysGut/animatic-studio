@@ -42,6 +42,7 @@ import { Input } from "@/components/ui/input";
 import { Toolbar, ToolbarButton, ToolbarSeparator } from "@/app/shell/workspace-chrome";
 import { names as nameMap, sceneLabel, usd, useTextEstimate } from "./storylab-data";
 import { GroupConversationView } from "./GroupConversationView";
+import { SceneLab } from "./SceneLab";
 
 const OUT_TOKENS = 800;
 type Mode = "role" | "analysis";
@@ -136,12 +137,16 @@ export function ConversationView({
   sessionId,
   editable,
   onOpen,
+  onScene,
+  onProfile,
 }: {
   state: ProjectState;
   projectId: string;
   sessionId: string;
   editable: boolean;
   onOpen: (id: string) => void;
+  onScene?: (id: string) => void;
+  onProfile?: (id: string) => void;
 }) {
   const get = useServerFn(getStorySession);
   const q = useQuery({
@@ -157,6 +162,11 @@ export function ConversationView({
         {q.data && !q.data.ok ? q.data.message : L("Økten kunne ikke hentes.", "The session could not be loaded.")}
       </p>
     );
+  if (q.data.session.kind === "scene_analysis" || q.data.session.kind === "scene_improv") {
+    const sceneId = q.data.session.context["sceneId"];
+    if (typeof sceneId !== "string") return <p role="alert">{L("Økten mangler en scene.", "The session has no scene.")}</p>;
+    return <SceneLab key={sessionId} state={state} projectId={projectId} sceneId={sceneId} initialSession={q.data.session} editable={editable} {...(onScene ? { onScene } : {})} {...(onProfile ? { onProfile } : {})} />;
+  }
   if (q.data.session.kind === "group")
     return <GroupConversationView state={state} projectId={projectId} session={q.data.session} editable={editable} onOpen={onOpen} />;
   return (
