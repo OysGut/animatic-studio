@@ -51,6 +51,8 @@ export interface ShareSource {
   readonly title: string;
   /** Id-en i eksportloggen (filmversjonen). null = registreringen feilet. */
   readonly exportRecord: Promise<string | null>;
+  /** Om rulleteksten er med i filmversjonen (MTS MT8). Utelatt = ukjent. */
+  readonly creditsIncluded?: boolean;
 }
 
 const daysLabel = (d: ShareDays) =>

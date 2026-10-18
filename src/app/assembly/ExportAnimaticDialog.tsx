@@ -609,6 +609,8 @@ export function ExportAnimaticDialog({
         durationMs: Math.max(1, Math.round(((sel.endFrame - sel.startFrame) * fps.den * 1000) / fps.num)),
         title: `${state.project.name} – ${what}`,
         exportRecord: recordP,
+        // Delingen gjelder alltid denne eksporterte filmversjonen (MTS MT8)
+        creditsIncluded: includeCredits,
       });
       const lost = failed.length + missingUrl.length;
       const notes: string[] = [];
