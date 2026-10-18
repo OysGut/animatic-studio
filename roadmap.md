@@ -32,3 +32,10 @@
 - [x] AS2: variantstripe, bildesegmenter, krysstoning, aktivt tidsområde (0043 skrevet), to visninger og avspillingsområder.
 - [x] AS3: lydgrupper, forhåndslyttingsdemping, medieverktøy, «Vis manus», forsøksvise redigeringer (0044 skrevet), «Bruk forslaget».
 - [x] Unit-, DB- og nettlesertester skrevet. Migrasjoner og nettlesertester kjøres av Claude.
+
+## GP – global pakke
+- [x] GP1 arbeidsgrupper (0045 skrevet, venter på Claude)
+- [ ] GP2 globalt bibliotek – venter på godkjent GP1 og svar på åpne spørsmål 1–2
+- [ ] GP3 videreføring
+- [ ] GP4 AI-start
+- [ ] GP5 QR-filmvisning – venter på svar på spørsmål 4–5
