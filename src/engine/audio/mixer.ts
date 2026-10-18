@@ -81,6 +81,11 @@ export interface ScheduleOptions {
   readonly startAt: number;
   /** Lydtyper som er slått av. */
   readonly mutedKinds?: ReadonlySet<AudioKind>;
+  /**
+   * Enkeltklipp som er slått av bare i forhåndslyttingen (Asset Studio AS3, A6). Lagres aldri og brukes ikke
+   * av eksporten.
+   */
+  readonly mutedClipIds?: ReadonlySet<string>;
 }
 
 /**
@@ -96,7 +101,9 @@ export function scheduleAudio(
 ): AudioBufferSourceNode[] {
   const out: AudioBufferSourceNode[] = [];
   for (const it of items) {
-    if (it.clip.muted || o.mutedKinds?.has(it.clip.kind) || !it.version) continue;
+    if (it.clip.muted || o.mutedKinds?.has(it.clip.kind) || o.mutedClipIds?.has(it.clip.id))
+      continue;
+    if (!it.version) continue;
     const buf = bank.get(it.version.mediaPath);
     if (!buf) continue;
     const s = scheduleOne(ctx, destination, it, buf, o);
