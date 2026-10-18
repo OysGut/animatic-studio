@@ -389,6 +389,13 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         // Migrasjon 0043 (AS2): aktivt tidsområde
         active_from: l.activeRange ? l.activeRange.from : null,
         active_to: l.activeRange ? l.activeRange.to : null,
+        // Migrasjon 0048 (MTS): tekst, form, effekter og malfelt
+        text_spec: l.text ?? null,
+        shape: l.shape ?? null,
+        effects: l.effects ?? null,
+        template_instance_id: l.template ? l.template.instanceId : null,
+        template_key: l.template ? l.template.key : null,
+        template_slot: l.template ? l.template.slot : null,
         removed: l.removed,
       };
     }

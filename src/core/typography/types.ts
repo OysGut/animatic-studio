@@ -72,6 +72,8 @@ export interface LayerEffects {
 /** Laget er bygget fra et felt i en malforekomst (MT4). */
 export interface TemplateSlotRef {
   readonly instanceId: string;
+  /** Elementets nøkkel i malen (stabil mellom malversjoner). */
+  readonly key: string;
   /** Feltets nøkkel i malen (f.eks. «name»), eller null for et fast element i malen. */
   readonly slot: string | null;
 }

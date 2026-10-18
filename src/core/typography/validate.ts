@@ -129,9 +129,11 @@ export function normalizeTemplateRef(t: TemplateSlotRef | null | undefined): Res
   if (!t) return { ok: true, value: null };
   if (typeof t.instanceId !== "string" || t.instanceId.length < 1 || t.instanceId.length > 64)
     return bad("Ugyldig malforekomst", "Invalid template instance");
+  if (typeof t.key !== "string" || !/^[a-z0-9_-]{1,40}$/.test(t.key))
+    return bad("Ugyldig malelement", "Invalid template element");
   if (t.slot !== null && (typeof t.slot !== "string" || !/^[a-z0-9_-]{1,40}$/.test(t.slot)))
     return bad("Ugyldig malfelt", "Invalid template field");
-  return { ok: true, value: { instanceId: t.instanceId, slot: t.slot } };
+  return { ok: true, value: { instanceId: t.instanceId, key: t.key, slot: t.slot } };
 }
 
 /** Standard tekst for et nytt tekstlag. */
