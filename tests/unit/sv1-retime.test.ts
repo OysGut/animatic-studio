@@ -13,6 +13,7 @@ import {
   paddingAt,
   parseBackup,
   planRetime,
+  retimeHasTimedContent,
   renderFrame,
   restoredState,
   scriptView,
@@ -570,5 +571,25 @@ describe("SV1 – sikkerhetskopi", () => {
     const oldId = String((fixture.rows["compositions"] as Row[])[0]!["id"]);
     const c = restored.compositions[map.get(oldId)!]!;
     expect(c.timing).toEqual(timing);
+  });
+});
+
+describe("SV1 – «Fra manus» uten metodevalg bare i scener uten tidspunkter", () => {
+  it("en scene med nøkkelbilder har innhold med tidspunkter", () => {
+    const { s, occ } = scene();
+    expect(retimeHasTimedContent(s, occ)).toBe(true);
+  });
+
+  it("en scene uten nøkkelbilder, lyd eller koblinger kan endres direkte", () => {
+    const seed = seedProject(2);
+    const occ = scriptView(seed.state, seed.mainId)[1]!.occurrenceId;
+    const o = seed.state.occurrences[occ]!;
+    const s = mustApply(seed.state, {
+      type: "CreateComposition",
+      compositionId: tid<"composition">(),
+      variantId: o.variantId,
+      fields: { ...DEFAULT_COMPOSITION, durationFrames: 200, background: "#101114" },
+    });
+    expect(retimeHasTimedContent(s, occ)).toBe(false);
   });
 });

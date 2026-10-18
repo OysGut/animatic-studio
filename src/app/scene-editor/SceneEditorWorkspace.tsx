@@ -286,6 +286,19 @@ function Editor({
     [sceneSound],
   );
   const soundUrls = useImageUrls(soundPaths);
+  /** Lyden for forhåndsspillet i «Endre scenevarighet» (SV1), fra den midlertidige tilstanden. */
+  const retimeAudioOf = useCallback(
+    (s: ProjectState) => {
+      if (!occurrenceId) return { items: [], startSec: 0 };
+      const f = filmClips(s, productionId);
+      const c = f.find((x) => x.occurrenceId === occurrenceId);
+      return {
+        items: sceneWindowAudio(s, f, occurrenceId, s.project.fps, filmLang.dialogue),
+        startSec: c ? framesToSeconds(c.startFrame, s.project.fps) : 0,
+      };
+    },
+    [occurrenceId, productionId, filmLang.dialogue],
+  );
   useAudioPlayback({
     items: sceneSound,
     urls: soundUrls.data ?? null,
@@ -1082,6 +1095,8 @@ function Editor({
                   occurrenceId: occurrence.id,
                   runAndWait: cmds.runAndWait,
                   imageUrls: urls.data ?? {},
+                  audioOf: retimeAudioOf,
+                  audioUrls: soundUrls.data ?? null,
                   request: retimeRequest,
                 }}
                 audioRows={(g) => (

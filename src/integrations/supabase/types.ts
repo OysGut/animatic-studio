@@ -919,6 +919,7 @@ export type Database = {
           removed: boolean
           revision: number
           step: number
+          timing: Json
           variant_id: string
           width: number
         }
@@ -936,6 +937,7 @@ export type Database = {
           removed?: boolean
           revision?: number
           step?: number
+          timing?: Json
           variant_id: string
           width?: number
         }
@@ -953,6 +955,7 @@ export type Database = {
           removed?: boolean
           revision?: number
           step?: number
+          timing?: Json
           variant_id?: string
           width?: number
         }
