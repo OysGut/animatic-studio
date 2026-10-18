@@ -168,8 +168,10 @@ export function ConversationView({
   const q = useQuery({
     queryKey: ["story-session", projectId, sessionId],
     queryFn: () => get({ data: { projectId, sessionId } }),
+    refetchOnMount: "always",
+    refetchOnWindowFocus: false,
   });
-  if (q.isLoading) return <p className="p-6 text-[13px] text-text-tertiary">{L("Henter økten …", "Loading the session …")}</p>;
+  if (q.isLoading || !q.isFetchedAfterMount) return <p className="p-6 text-[13px] text-text-tertiary">{L("Henter økten …", "Loading the session …")}</p>;
   if (!q.data || !q.data.ok)
     return (
       <p role="alert" className="p-6 text-[13px] text-status-danger">
@@ -315,6 +317,9 @@ function Conversation({
       }
       setTurns((t) => [...t, b.qTurn, reply]);
       setCost(saved.costUsd);
+      qc.setQueryData<Awaited<ReturnType<typeof getStorySession>>>(["story-session", projectId, sessionId], (old) =>
+        old?.ok ? { ...old, session: { ...old.session, turns: [...old.session.turns, b.qTurn, reply], costUsd: saved.costUsd } } : old,
+      );
       setText("");
       setFailed(null);
       if (r.usedFallback)
@@ -332,6 +337,10 @@ function Conversation({
     const r = await append({ data: { projectId, sessionId, turns: [t], addCostUsd: 0 } });
     if (!r.ok) return setErr(r.message);
     setTurns((x) => [...x, t]);
+    setCost(r.costUsd);
+    qc.setQueryData<Awaited<ReturnType<typeof getStorySession>>>(["story-session", projectId, sessionId], (old) =>
+      old?.ok ? { ...old, session: { ...old.session, turns: [...old.session.turns, t], costUsd: r.costUsd } } : old,
+    );
   };
 
   const addDirection = () => {
@@ -397,6 +406,7 @@ function Conversation({
               onFork={async () => {
                 const r = await fork({ data: { projectId, sessionId, fromTurn: i } });
                 if (!r.ok) return setErr(r.message);
+                qc.setQueryData(["story-session", projectId, r.session.id], r);
                 await qc.invalidateQueries({ queryKey: ["story-sessions", projectId] });
                 onOpen(r.session.id);
               }}
