@@ -314,7 +314,8 @@ export const forkStorySession = createServerFn({ method: "POST" })
     const t = x["fromTurn"];
     if (!Number.isInteger(t) || (t as number) < -1)
       throw new Error(L("Ugyldig tur", "Invalid turn"));
-    return { projectId: projectIdOf(x), sessionId: idOf(x, "sessionId"), fromTurn: t as number };
+    return { projectId: projectIdOf(x), sessionId: idOf(x, "sessionId"), fromTurn: t as number,
+      ...(typeof x["title"] === "string" ? { title: x["title"].trim().slice(0, 200) } : {}) };
   })
   .handler(async ({ data, context }): Promise<{ ok: true; session: StorySession } | Fail> => {
     const g = await gate(
@@ -332,7 +333,7 @@ export const forkStorySession = createServerFn({ method: "POST" })
       id,
       project_id: data.projectId,
       kind: s.kind,
-      title: s.title,
+      title: data.title ?? s.title,
       context: s.context,
       turns: s.turns.slice(0, data.fromTurn + 1),
       parent_session_id: s.id,
