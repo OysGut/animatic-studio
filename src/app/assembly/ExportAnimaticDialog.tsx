@@ -157,6 +157,7 @@ export function ExportAnimaticDialog({
   useEffect(() => {
     if (!open) return;
     setReady(null);
+    setShareSource(null);
     setSubFile(null);
     setError(null);
     setProgress(null);
@@ -417,6 +418,7 @@ export function ExportAnimaticDialog({
     )
       onSaveSettings({ size, monochrome: mono, output });
     setReady(null);
+    setShareSource(null);
     setSubFile(null);
     const ctrl = new AbortController();
     abort.current = ctrl;
@@ -1073,6 +1075,14 @@ export function ExportAnimaticDialog({
           </Button>
         </DialogFooter>
       </DialogContent>
+      {shareSource ? (
+        <FilmShareDialog
+          open={shareOpen}
+          onOpenChange={setShareOpen}
+          projectId={state.project.id}
+          source={shareSource}
+        />
+      ) : null}
     </Dialog>
   );
 }
