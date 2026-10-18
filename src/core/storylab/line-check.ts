@@ -23,6 +23,13 @@ export function lineCheckPrompt(i: LineCheckInput): { system: string; user: stri
     user: `Scene: ${i.sceneHeading}\nPrevious dialogue (context, not established knowledge):\n${i.before.slice(-12).join("\n")}\nLine to assess:\n${i.line}`,
   };
 }
+const evidenceFields = new Set([
+  "knowledge", "profile.notes",
+  ...["hiddenMotives", "techniques", "neverSay", "blindSpots", "triggers", "facade", "reality", "demonstrations"].map((f) => `profile.psychology.${f}`),
+  ...["level", "wordChoice", "mood", "typicalVocabulary", "forbiddenExpressions", "examples", "maxWords"].map((f) => `profile.speech.${f}`),
+  ...["goals", "innerContradictions", "vulnerabilities", "hides", "beliefsAboutOthers"].map((f) => `profile.dramatic.${f}`),
+  ...["age", "occupation", "background", "values", "dialect", "formality"].map((f) => `profile.person.${f}`),
+]);
 export function lineCheckFromJson(raw: string): LineCheckResult | null {
   const j = parseJsonLoose(raw);
   if (!j || typeof j !== "object" || Array.isArray(j)) return null;
@@ -32,7 +39,7 @@ export function lineCheckFromJson(raw: string): LineCheckResult | null {
   const reasons: { text: string; evidence: string[] }[] = [];
   for (const r of o["reasons"]) {
     if (!r || typeof r !== "object" || typeof r.text !== "string" || !Array.isArray(r.evidence) ||
-      !r.evidence.every((e: unknown) => typeof e === "string" && (e === "knowledge" || /^profile\.(person|psychology|speech|dramatic|notes)(\.[a-zA-Z]+)*$/.test(e)))) return null;
+      !r.evidence.every((e: unknown) => typeof e === "string" && evidenceFields.has(e))) return null;
     reasons.push({ text: r.text.slice(0, 4000), evidence: r.evidence.slice(0, 20) });
   }
   if (o["rewrite"] !== undefined && typeof o["rewrite"] !== "string") return null;

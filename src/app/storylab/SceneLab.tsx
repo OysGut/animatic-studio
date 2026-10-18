@@ -2,9 +2,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ANALYSIS_ASPECTS, ANALYSIS_ASPECT_LABEL, L, knowledgeAt, lineCheckFromJson, lineCheckPrompt, locale, newId, parseJsonLoose, profileAt, sceneAnalysisFromJson, sceneAnalysisPrompt, unreadableReplyMessage, type LineCheckResult, type ProjectState, type SceneAnalysisPoint } from "@/core";
+import { ANALYSIS_ASPECTS, ANALYSIS_ASPECT_LABEL, L, characterSystemPrompt, emptyStoryProfile, knowledgeAt, lineCheckFromJson, lineCheckPrompt, locale, newId, parseJsonLoose, profileAt, sceneAnalysisFromJson, sceneAnalysisPrompt, unreadableReplyMessage, type LineCheckResult, type ProjectState, type SceneAnalysisPoint } from "@/core";
 import { generateText } from "@/adapters/ai/text.functions";
-import { appendStoryTurns, createStorySession, forkStorySession, getStorySession, saveStorySuggestion, type StorySession, type StoredTurn } from "@/adapters/storylab/sessions.functions";
+import { appendStoryTurns, createStorySession, forkStorySession, getStorySession, listStorySessions, saveStorySuggestion, type StorySession, type StoredTurn } from "@/adapters/storylab/sessions.functions";
 import { Toolbar, ToolbarButton, PanelHeader } from "@/app/shell/workspace-chrome";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,6 +23,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
   const language = locale() === "en" ? "en" : "nb";
   const [tab, setTab] = useState<"analysis" | "improv" | "check">(initialSession?.kind === "scene_improv" ? "improv" : "analysis");
   const [session, setSession] = useState<StorySession | null>(initialSession ?? null);
+  const [analysisSession, setAnalysisSession] = useState<StorySession | null>(initialSession?.kind === "scene_analysis" ? initialSession : null);
   const [points, setPoints] = useState<SceneAnalysisPoint[]>([]);
   const [checks, setChecks] = useState<Check[]>([]);
   const [highlight, setHighlight] = useState<string | null>(null);
@@ -45,15 +46,26 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
   const [groupBusy, setGroupBusy] = useState(false);
   const retrySave = useRef<(() => Promise<void>) | null>(null);
   const gen = useServerFn(generateText), create = useServerFn(createStorySession), append = useServerFn(appendStoryTurns), fork = useServerFn(forkStorySession), suggest = useServerFn(saveStorySuggestion), get = useServerFn(getStorySession);
+  const list = useServerFn(listStorySessions);
   const qc = useQueryClient();
+  const rootId = session?.kind === "scene_improv" ? session.parentSessionId ?? session.id : null;
+  const related = useQuery({ queryKey: ["scene-variants", projectId, rootId], enabled: !!rootId && !busy, queryFn: async () => {
+    const r = await list({ data: { projectId } }); if (!r.ok) throw new Error(r.message);
+    const out: StorySession[] = [];
+    for (const summary of r.sessions.filter((s) => s.parentSessionId === rootId && / · [ABC]$/.test(s.title))) { const got = await get({ data: { projectId, sessionId: summary.id } }); if (got.ok) out.push(got.session); }
+    return out;
+  } });
+  useEffect(() => { if (related.data) { setVariants(related.data); setChosenVariants(related.data.map((s) => s.id)); } }, [related.data]);
   const [openId, setOpenId] = useState<string | null>(null);
   const opened = useQuery({ queryKey: ["story-session", projectId, openId], queryFn: () => get({ data: { projectId, sessionId: openId ?? "" } }), enabled: !!openId, refetchOnMount: "always", refetchOnWindowFocus: false });
   useEffect(() => { mounted.current = true; onScene?.(sceneId); return () => { mounted.current = false; stopped.current = true; }; }, [sceneId]);
   useEffect(() => {
-    if (opened.data?.ok && opened.isFetchedAfterMount) { setSession(opened.data.session); setOpenId(null); }
+    if (opened.data?.ok && opened.isFetchedAfterMount && !opened.isFetching) { setSession(opened.data.session); setOpenId(null); }
   }, [opened.data, opened.isFetchedAfterMount]);
   useEffect(() => {
     if (!session || session.kind !== "scene_analysis") return;
+    setAnalysisSession(session);
+    setPoints([]);
     const cs: Check[] = [];
     for (const t of session.turns) {
       const parsed = parseJsonLoose(t.text) as { blockId?: string; result?: unknown } | null;
@@ -76,7 +88,10 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
   const checkPrompt = speaker && block ? lineCheckPrompt({ name: speaker.name, profile: profileAt(state, speaker.id, sceneId as never), knowledge: knowledgeAt(state, speaker.id, sceneId as never), sceneHeading: data.heading,
     before: data.blocks.slice(0, data.blocks.findIndex((b) => b.id === block.id)).filter((b) => b.kind === "dialogue").slice(-12).map((b) => b.text), line: block.text, language }) : null;
   const prompt = dialog === "check" && checkPrompt ? checkPrompt : analysisPrompt;
-  const estimate = useTextEstimate(dialog === "variants" || dialog === "improv" ? "storylab_group" : "storylab_analysis", dialog === "variants" || dialog === "improv" ? situation.length + 6000 : prompt.system.length + prompt.user.length, dialog === "analysis" ? 2000 : 800);
+  const batchChars = Math.max(0, ...data.participants.map((a) => characterSystemPrompt({ name: a.name, profile: profileAt(state, a.id, sceneId as never) ?? emptyStoryProfile(), knowledge: knowledgeAt(state, a.id, sceneId as never), situation, language }).length))
+    + (session?.turns.slice(0, fromTurn + 1).reduce((n, t) => n + t.text.length + 100, 0) ?? 0)
+    + Math.max(0, ...directions.map((d) => d.length)) + 8 * 800 * 4;
+  const estimate = useTextEstimate(dialog === "variants" || dialog === "improv" ? "storylab_group" : "storylab_analysis", dialog === "variants" || dialog === "improv" ? batchChars : prompt.system.length + prompt.user.length, dialog === "analysis" ? 2000 : 800);
   const remember = (s: StorySession) => { qc.setQueryData(["story-session", projectId, s.id], { ok: true, session: s }); void qc.invalidateQueries({ queryKey: ["story-sessions", projectId] }); };
   const save = async (s: StorySession, turns: StoredTurn[], cost = 0, status: "active" | "paused" = "paused") => {
     const r = await append({ data: { projectId, sessionId: s.id, turns, addCostUsd: cost, status } });
@@ -104,9 +119,9 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
     const r = await gen({ data: { projectId, task: "storylab_analysis", json: true, system: checkPrompt.system, messages: [{ role: "user", content: checkPrompt.user }], maxTokens: 800 } });
     if (!r.ok) throw new Error(r.message);
     const result = lineCheckFromJson(r.text); if (!result) throw new Error(unreadableReplyMessage());
-    const s = session?.kind === "scene_analysis" ? session : await make("scene_analysis");
+    const s = analysisSession ?? await make("scene_analysis");
     const turn: StoredTurn = { id: newId<"turn">(), speaker: "analyst", kind: "analysis", text: JSON.stringify({ blockId: selectedBlock.id, result }), at: new Date().toISOString() };
-    retrySave.current = async () => { setSession(await save(s, [turn], r.costUsd)); setTab("check"); retrySave.current = null; };
+    retrySave.current = async () => { const saved = await save(s, [turn], r.costUsd); setSession(saved); setAnalysisSession(saved); setTab("check"); retrySave.current = null; };
     await retrySave.current();
     if (r.usedFallback) setNote(L("Den innebygde AI-en ble brukt som reserve.", "The built-in AI was used as fallback."));
   });
@@ -114,10 +129,12 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
     const r = await gen({ data: { projectId, task: "storylab_analysis", json: true, system: analysisPrompt.system, messages: [{ role: "user", content: analysisPrompt.user }], maxTokens: 2000 } });
     if (!r.ok) throw new Error(r.message);
     const p = sceneAnalysisFromJson(r.text, data.blocks.map((b) => b.id));
-    if (!p || !ANALYSIS_ASPECTS.every((a) => p.filter((x) => x.aspect === a).length === 1)) throw new Error(unreadableReplyMessage());
+    const raw = parseJsonLoose(r.text) as { points?: unknown } | null;
+    if (!raw || !Array.isArray(raw.points) || raw.points.some((x) => !x || typeof x !== "object" || typeof x.finding !== "string" || typeof x.suggestion !== "string" || !Array.isArray(x.evidence) || typeof x.uncertain !== "boolean")) throw new Error(unreadableReplyMessage());
+    if (!p || p.length !== 10 || !ANALYSIS_ASPECTS.every((a) => p.filter((x) => x.aspect === a).length === 1)) throw new Error(unreadableReplyMessage());
     const s = await make("scene_analysis");
     const turn: StoredTurn = { id: newId<"turn">(), speaker: "analyst", kind: "analysis", text: r.text, at: new Date().toISOString() };
-    retrySave.current = async () => { setSession(await save(s, [turn], r.costUsd)); setPoints(p); retrySave.current = null; };
+    retrySave.current = async () => { const saved = await save(s, [turn], r.costUsd); setSession(saved); setAnalysisSession(saved); setPoints(p); retrySave.current = null; };
     await retrySave.current();
     if (r.usedFallback) setNote(L("Den innebygde AI-en ble brukt som reserve.", "The built-in AI was used as fallback."));
   });
@@ -137,7 +154,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
       });
       branch = await save(branch, []); setVariants((old) => old.map((s) => s.id === branch.id ? branch : s));
     }
-    setChosenVariants(added.map((s) => s.id)); setCompare(true);
+    setChosenVariants(added.map((s) => s.id)); setCompare(true); void qc.invalidateQueries({ queryKey: ["scene-variants", projectId] });
   });
   const saveSuggestion = (kind: "analysis" | "line" | "scene_draft", payload: Record<string, unknown>, s = session, turnId?: string) => perform(async () => {
     const r = await suggest({ data: { projectId, sessionId: s?.id ?? null, kind, payload, ...(turnId ? { turnId } : {}) } }); if (!r.ok) throw new Error(r.message); setNote(L("Lagret som forslag.", "Saved as a suggestion."));
@@ -149,7 +166,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
   const checkCard = (c: Check) => <div className="border border-border bg-surface-2 p-2 text-sm" key={c.turnId}>
     <span data-testid="storylab-line-verdict" data-verdict={c.result.verdict} className="text-accent-brand">{c.result.verdict === "yes" ? L("Ja", "Yes") : c.result.verdict === "partly" ? L("Delvis", "Partly") : L("Nei", "No")}</span>
     {c.result.reasons.map((r, i) => <div key={i}><p>{r.text}</p><div className="flex flex-wrap">{r.evidence.map((e) => <ToolbarButton key={e} onClick={() => { const id = data.speakers.get(c.blockId); if (id && e.startsWith("profile.")) onProfile?.(id); }}>{e}</ToolbarButton>)}</div></div>)}
-    {c.result.rewrite ? <><p className="font-script">{c.result.rewrite}</p><ToolbarButton disabled={!editable || busy || groupBusy} onClick={() => saveSuggestion("line", { sceneId, blockId: c.blockId, original: data.blocks.find((b) => b.id === c.blockId)?.text ?? "", suggestion: c.result.rewrite }, session, c.turnId)}>{L("Lagre som forslag", "Save as suggestion")}</ToolbarButton></> : null}
+    {c.result.rewrite ? <><p className="font-script">{c.result.rewrite}</p><ToolbarButton disabled={!editable || busy || groupBusy} onClick={() => saveSuggestion("line", { sceneId, blockId: c.blockId, original: data.blocks.find((b) => b.id === c.blockId)?.text ?? "", suggestion: c.result.rewrite }, analysisSession, c.turnId)}>{L("Lagre som forslag", "Save as suggestion")}</ToolbarButton></> : null}
     {(() => { const id = data.speakers.get(c.blockId); return id && !profileAt(state, id, sceneId as never) ? <ToolbarButton onClick={() => onProfile?.(id)}>{L("Lag profil", "Create profile")}</ToolbarButton> : null; })()}
   </div>;
   return <div data-testid="storylab-scenelab" className="flex min-h-0 flex-1 flex-col">
@@ -172,7 +189,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
         <div className="flex flex-wrap gap-1 p-2">{data.participants.map((a) => <ToolbarButton key={a.id} data-asset-id={a.id} data-profile={profileStatus(state, a.id)} onClick={() => onProfile?.(a.id)}>{a.name} · {profileStatus(state, a.id) === "active" ? L("Har profil", "Has a profile") : L("Ingen profil", "No profile")}</ToolbarButton>)}</div>
         <div role="tablist" className="flex border-b border-border">{(["analysis", "improv", "check"] as const).map((t) => <ToolbarButton key={t} role="tab" aria-selected={tab === t} active={tab === t} data-testid={`storylab-scene-tab-${t}`} onClick={() => setTab(t)}>{t === "analysis" ? L("Analyse", "Analysis") : t === "improv" ? L("Improviser", "Improvise") : L("Replikksjekk", "Line check")}</ToolbarButton>)}</div>
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto p-2">
-          {tab === "analysis" ? <><ToolbarButton data-testid="storylab-analyze" disabled={!editable || busy || groupBusy} onClick={() => setDialog("analysis")}>{L("Analyser scenen …", "Analyze scene …")}</ToolbarButton>{points.map((p) => <article key={p.aspect} data-testid="storylab-analysis-card" className="my-1 rounded-sm border border-border bg-surface-2 p-3 text-sm"><h3>{ANALYSIS_ASPECT_LABEL[p.aspect]}</h3>{p.uncertain ? <span className="text-status-uncertain">{L("usikker", "uncertain")}</span> : null}<p>{p.finding}</p><p className="text-text-secondary">{p.suggestion}</p><div className="flex flex-wrap">{p.evidence.map(evidence)}</div><ToolbarButton disabled={!editable || busy || groupBusy} onClick={() => saveSuggestion("analysis", { ...p })}>{L("Lagre som forslag", "Save as suggestion")}</ToolbarButton></article>)}</> : null}
+          {tab === "analysis" ? <><ToolbarButton data-testid="storylab-analyze" disabled={!editable || busy || groupBusy} onClick={() => setDialog("analysis")}>{L("Analyser scenen …", "Analyze scene …")}</ToolbarButton>{points.map((p) => <article key={p.aspect} data-testid="storylab-analysis-card" className="my-1 rounded-sm border border-border bg-surface-2 p-3 text-sm"><h3>{ANALYSIS_ASPECT_LABEL[p.aspect]}</h3>{p.uncertain ? <span className="text-status-uncertain">{L("usikker", "uncertain")}</span> : null}<p>{p.finding}</p><p className="text-text-secondary">{p.suggestion}</p><div className="flex flex-wrap">{p.evidence.map(evidence)}</div><ToolbarButton disabled={!editable || busy || groupBusy} onClick={() => saveSuggestion("analysis", { ...p }, analysisSession)}>{L("Lagre som forslag", "Save as suggestion")}</ToolbarButton></article>)}</> : null}
           {tab === "check" ? <div className="space-y-2">{checks.map(checkCard)}</div> : null}
           {tab === "improv" ? <><div className="flex flex-wrap"><ToolbarButton data-testid="storylab-improvise" disabled={!editable || busy || groupBusy || data.participants.length < 2 || data.participants.length > 6} onClick={() => setDialog("improv")}>{L("Improviser scenen …", "Improvise scene …")}</ToolbarButton><ToolbarButton data-testid="storylab-variants" disabled={!editable || busy || groupBusy || session?.kind !== "scene_improv"} onClick={() => setDialog("variants")}>{L("Lag varianter …", "Create variants …")}</ToolbarButton><ToolbarButton data-testid="storylab-compare" onClick={() => setCompare(!compare)}>{L("Sammenlign", "Compare")}</ToolbarButton>{busy ? <ToolbarButton onClick={() => { stopped.current = true; }}>{L("Stopp", "Stop")}</ToolbarButton> : null}</div>
             {session?.kind === "scene_improv" && !openId ? <GroupConversationView key={session.id} state={state} projectId={projectId} session={session} editable={editable && !busy} onOpen={setOpenId} onUpdate={setSession} onBusy={setGroupBusy} /> : null}
