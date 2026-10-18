@@ -2444,6 +2444,63 @@ export type Database = {
           },
         ]
       }
+      script_entity_analysis: {
+        Row: {
+          analyzed_at: string
+          content_hash: string
+          created_at: string
+          created_by: string | null
+          id: string
+          model: string
+          project_id: string
+          removed: boolean
+          result: Json
+          revision: number
+          scene_id: string
+        }
+        Insert: {
+          analyzed_at?: string
+          content_hash: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          model?: string
+          project_id: string
+          removed?: boolean
+          result?: Json
+          revision?: number
+          scene_id: string
+        }
+        Update: {
+          analyzed_at?: string
+          content_hash?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          model?: string
+          project_id?: string
+          removed?: boolean
+          result?: Json
+          revision?: number
+          scene_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "script_entity_analysis_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "script_entity_analysis_scene_id_fkey"
+            columns: ["scene_id"]
+            isOneToOne: false
+            referencedRelation: "scenes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       script_versions: {
         Row: {
           based_on_change_id: string | null
