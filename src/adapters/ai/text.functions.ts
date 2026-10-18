@@ -211,7 +211,6 @@ export const generateText = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator(validateTextInput)
   .handler(async ({ data, context }): Promise<GenerateTextResult> => {
-  .handler(async ({ data, context }): Promise<GenerateTextResult> => {
     const { runTextGeneration } = await import("./text-run.server");
     return runTextGeneration(context, data);
   });

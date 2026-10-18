@@ -196,6 +196,7 @@ export async function runTextGeneration(
     model: choice.model,
     reason,
     keyOwner,
+    ...extraParams,
   };
   const { error: logErr } = await admin.from("generation_jobs").insert({
     id: jobId,
