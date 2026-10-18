@@ -202,12 +202,11 @@ describe("MT4 sikkerhetskopi", () => {
     const x = setup();
     const a = apply(x.s, A.id, x.v1, { navn: { text: "Æ Ø Å" } });
     const s = a.s;
-    const rows: Record<string, unknown> = { project: fixture.project };
-    for (const [coll, table] of Object.entries(COLLECTION_TABLES))
-      rows[table] = Object.values(s[coll as CollectionName] as Record<string, never>).map((e) =>
+    const rows: Record<string, unknown> = { project: fixture.project, ...fixture.rows };
+    for (const coll of ["assets", "assetVariants", "assetVersions", "layers", "templateInstances"] as const)
+      rows[COLLECTION_TABLES[coll]] = Object.values(s[coll] as Record<string, never>).map((e) =>
         toRow(coll as CollectionName, e, s.project.id),
       );
-    rows["block_revisions"] = fixture.rows["block_revisions"] ?? [];
     const b = parseBackup(
       JSON.parse(
         JSON.stringify(
