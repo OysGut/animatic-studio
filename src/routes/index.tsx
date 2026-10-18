@@ -7,18 +7,14 @@ import { SchemaBanner } from "@/app/shell/SchemaBanner";
 import { L } from "@/core";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Animatic Studio" },
-      {
-        name: "description",
-        content: L(
-          "Animatic Studio – fra manus til ferdig film.",
-          "Animatic Studio – from script to finished film.",
-        ),
-      },
-    ],
-  }),
+  head: () => ({ meta: [
+    { title: L("Animatic Studio – Prosjekter", "Animatic Studio – Projects") },
+    { name: "description", content: L("Animatic Studio – fra manus til ferdig film.", "Animatic Studio – from script to finished film.") },
+    { property: "og:title", content: L("Animatic Studio – Prosjekter", "Animatic Studio – Projects") }, // i18n-ignore: metakode
+    { property: "og:description", content: L("Animatic Studio – fra manus til ferdig film.", "Animatic Studio – from script to finished film.") }, // i18n-ignore: metakode
+    { property: "og:type", content: "website" }, // i18n-ignore: metakode
+    { name: "twitter:card", content: "summary" }, // i18n-ignore: metakode
+  ] }),
   component: Index,
 });
 

@@ -8,9 +8,14 @@ import { L } from "@/core";
 
 /** Min konto (DEC-0086): profil, språk, passord, AI-forbruk, personvern og sletting. */
 export const Route = createFileRoute("/konto")({
-  head: () => ({
-    meta: [{ title: L("Min konto – Animatic Studio", "My account – Animatic Studio") }],
-  }),
+  head: () => ({ meta: [
+    { title: L("Min konto – Animatic Studio", "My account – Animatic Studio") },
+    { name: "description", content: L("Administrer kontoen, språk og AI-valg i Animatic Studio.", "Manage your account, language and AI preferences in Animatic Studio.") },
+    { property: "og:title", content: L("Min konto – Animatic Studio", "My account – Animatic Studio") }, // i18n-ignore: metakode
+    { property: "og:description", content: L("Administrer kontoen, språk og AI-valg i Animatic Studio.", "Manage your account, language and AI preferences in Animatic Studio.") }, // i18n-ignore: metakode
+    { property: "og:type", content: "website" }, // i18n-ignore: metakode
+    { name: "twitter:card", content: "summary" }, // i18n-ignore: metakode
+  ] }),
   component: AccountRoute,
 });
 

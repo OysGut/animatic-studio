@@ -10,9 +10,14 @@ const UUID = /^[0-9a-f-]{36}$/;
  * monteringen med avspillingshodet ved scenen eller replikken (fra manuset, DEC-0049).
  */
 export const Route = createFileRoute("/prosjekt/$projectId/montering")({
-  head: () => ({
-    meta: [{ title: L("Montering – Animatic Studio", "Assembly – Animatic Studio") }],
-  }),
+  head: () => ({ meta: [
+    { title: L("Montering – Animatic Studio", "Assembly – Animatic Studio") },
+    { name: "description", content: L("Monter animatic, lyd og film i Animatic Studio.", "Assemble animatic, sound and film in Animatic Studio.") },
+    { property: "og:title", content: L("Montering – Animatic Studio", "Assembly – Animatic Studio") }, // i18n-ignore: metakode
+    { property: "og:description", content: L("Monter animatic, lyd og film i Animatic Studio.", "Assemble animatic, sound and film in Animatic Studio.") }, // i18n-ignore: metakode
+    { property: "og:type", content: "website" }, // i18n-ignore: metakode
+    { name: "twitter:card", content: "summary" }, // i18n-ignore: metakode
+  ] }),
   validateSearch: (
     s: Record<string, unknown>,
   ): { scene?: string; blokk?: string; lastned?: "1" } => ({

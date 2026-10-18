@@ -8,9 +8,14 @@ import { L } from "@/core";
 
 /** Adminsiden (DEC-0086). Tilgangen kontrolleres på serveren; andre ser bare «Bare for administrator». */
 export const Route = createFileRoute("/admin")({
-  head: () => ({
-    meta: [{ title: L("Administrasjon – Animatic Studio", "Administration – Animatic Studio") }],
-  }),
+  head: () => ({ meta: [
+    { title: L("Administrasjon – Animatic Studio", "Administration – Animatic Studio") },
+    { name: "description", content: L("Administrer brukere og tjenesten i Animatic Studio.", "Manage users and the service in Animatic Studio.") },
+    { property: "og:title", content: L("Administrasjon – Animatic Studio", "Administration – Animatic Studio") }, // i18n-ignore: metakode
+    { property: "og:description", content: L("Administrer brukere og tjenesten i Animatic Studio.", "Manage users and the service in Animatic Studio.") }, // i18n-ignore: metakode
+    { property: "og:type", content: "website" }, // i18n-ignore: metakode
+    { name: "twitter:card", content: "summary" }, // i18n-ignore: metakode
+  ] }),
   component: AdminRoute,
 });
 

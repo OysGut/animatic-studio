@@ -14,7 +14,14 @@ import { canEdit, useMembers } from "@/app/project/use-project";
 import { L } from "@/core";
 
 export const Route = createFileRoute("/prosjekt/$projectId")({
-  head: () => ({ meta: [{ title: L("Prosjekt – Animatic Studio", "Project – Animatic Studio") }] }),
+  head: () => ({ meta: [
+    { title: L("Prosjekt – Animatic Studio", "Project – Animatic Studio") },
+    { name: "description", content: L("Arbeidsflater for filmprosjektet i Animatic Studio.", "Workspaces for your film project in Animatic Studio.") },
+    { property: "og:title", content: L("Prosjekt – Animatic Studio", "Project – Animatic Studio") }, // i18n-ignore: metakode
+    { property: "og:description", content: L("Arbeidsflater for filmprosjektet i Animatic Studio.", "Workspaces for your film project in Animatic Studio.") }, // i18n-ignore: metakode
+    { property: "og:type", content: "website" }, // i18n-ignore: metakode
+    { name: "twitter:card", content: "summary" }, // i18n-ignore: metakode
+  ] }),
   component: ProjectLayout,
 });
 
