@@ -153,6 +153,12 @@ export function PrivacyStatement({ policy }: { policy: PrivacyFields | null }) {
             "If you use your own API keys, you are the provider's customer, and your terms with the provider apply to what is sent. You are responsible for having the right to send the content, and for not sending personal data about others without a legal basis. We store the keys encrypted and send them only to the provider they belong to. Sending content to AI is a risk in itself: read the provider's terms before using it.",
           )}
         </p>
+        <p>
+          {L(
+            "Automatisk gjenkjenning: når et manus lastes opp, importeres eller endres, og når en oversatt versjon kobles til det norske manuset, sendes korte manusutdrag (navn, sceneoverskrifter og noen setninger) til den innebygde AI-tjenesten. Den foreslår hvilke karakterer, dyr, objekter, steder, miljøer og lyder som finnes, og hvordan scenene i oversettelsen passer sammen. Dette skjer på tjenestens regning, uten dine API-nøkler. Utdragene og svarene lagres ikke i loggene; bare forslagene lagres i prosjektet, og ingenting tas i bruk før du godkjenner det.",
+            "Automatic recognition: when a script is uploaded, imported or changed, and when a translated version is linked to the Norwegian script, short script excerpts (names, scene headings and a few sentences) are sent to the built-in AI service. It suggests which characters, animals, objects, locations, environments and sounds appear, and how the scenes in the translation match. This is at the service's expense, without your API keys. The excerpts and replies are not stored in the logs; only the suggestions are stored in the project, and nothing is used until you approve it.",
+          )}
+        </p>
       </Section>
 
       <Section title={L("7. Hvor lenge", "7. How long")}>

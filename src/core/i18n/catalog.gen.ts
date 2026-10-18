@@ -151,6 +151,9 @@ export const CATALOG: Record<string, string> = {
   "Alternativ til": "Alternative of",
   "Analysen feilet: {0}. Du kan koble ordene for hånd.":
     "The analysis failed: {0}. You can link the words by hand.",
+  "Analysen kjører allerede.": "The analysis is already running.",
+  "Analysen kunne ikke lagres.": "The analysis could not be saved.",
+  "Analysen kunne ikke logges.": "The analysis could not be logged.",
   "Animatic (2D-scene)": "Animatic (2D scene)",
   "Animatic (tittelkort)": "Animatic (title card)",
   "Animatic Studio (systemmerknad)": "Animatic Studio (system note)",
@@ -308,6 +311,8 @@ export const CATALOG: Record<string, string> = {
     "The database is not updated for AI speech. Paste the message in LOVABLE_SYNC.md into Lovable.",
   "Databasen er ikke oppdatert for AI-video{0}. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon {1}).":
     "The database is not up to date for AI video{0}. Paste the message into LOVABLE_SYNC.md in Lovable (migration {1}).",
+  "Databasen er ikke oppdatert for automatisk analyse (migrasjon 0041).":
+    "The database is not updated for automatic analysis (migration 0041).",
   "Databasen er ikke oppdatert for egne AI-leverandører. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0024).":
     "The database is not updated for your own AI providers yet. Paste the message in LOVABLE_SYNC.md into Lovable (migration 0024).",
   "Databasen er ikke oppdatert for slettede objekter. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0029).":
@@ -393,6 +398,8 @@ export const CATALOG: Record<string, string> = {
     "The part may only have a version when the source is film",
   "Delen tilhører en annen scene": "The part belongs to another scene",
   "Delt fra karakterlinjen": "Split from the character line",
+  "Den automatiske analysen er kjørt {0} ganger i dag for dette prosjektet. Den fortsetter i morgen.":
+    "The automatic analysis has run {0} times today for this project. It will continue tomorrow.",
   "Den egne versjonen er endret; angre endringene i den først":
     "The own version has been changed; undo those changes first",
   "Den egne versjonen har egne notater; angre dem først":
@@ -406,6 +413,9 @@ export const CATALOG: Record<string, string> = {
   "Den faste administratoren kan ikke endres.": "The permanent administrator cannot be changed.",
   "Den faste administratorkontoen kan ikke slettes.":
     "The permanent administrator account cannot be deleted.",
+  "Den innebygde AI-en er ikke tilgjengelig nå. Forslagene bygger på manusreglene.":
+    "The built-in AI is not available right now. The suggestions are based on script rules.",
+  "Den innebygde AI-en svarte ikke.": "The built-in AI did not respond.",
   "Den markerte teksten finnes ikke i manuset": "The selected text does not exist in the script",
   "Den nye eieren må ha en aktiv konto.": "The new owner must have an active account.",
   "Den nye scenen": "The new scene",
@@ -458,6 +468,9 @@ export const CATALOG: Record<string, string> = {
     "You do not have access to change this project",
   "Du har ikke tilgang til å generere i dette prosjektet.":
     "You do not have access to generate in this project.",
+  "Du har ikke tilgang til analysen i dette prosjektet.":
+    "You do not have access to the analysis in this project.",
+  "Du har ikke tilgang til dette prosjektet.": "You do not have access to this project.",
   "Du har ikke tilgang til Story Lab i dette prosjektet.":
     "You do not have access to Story Lab in this project.",
   "Du har ikke tilgang, eller databasen mangler 0025.":
@@ -1688,6 +1701,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig sitat": "Invalid quote",
   "Ugyldig skriftstørrelse": "Invalid font size",
   "Ugyldig sorteringsnøkkel {0}": "Invalid sort key {0}",
+  "Ugyldig språk": "Invalid language",
   "Ugyldig språk for bildet": "Invalid language for the image",
   "Ugyldig språk for filmlyden": "Invalid language for the film audio",
   "Ugyldig språk for lyden": "Invalid language for the sound",

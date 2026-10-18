@@ -1,4 +1,5 @@
 /** SL6: explicit transfer, status and source links. Undo uses the shared command stack. */
+import { requestAnalysisNow } from "@/app/library/entity-analysis-store";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -66,6 +67,8 @@ export function SuggestionsPanel({ state, projectId, cmds, editable, focusedId, 
       completed++;
     }
     setDestinations((old) => ({ ...old, [suggestion.id]: { occurrenceId: occurrence?.id ?? "", blockId, group, complete: true } }));
+    // Manustekst fra Story Lab: automatisk gjenkjenning straks (OG2)
+    if ("variantId" in target) requestAnalysisNow(projectId);
     // Set status only after every command has been persisted. A status failure cannot repeat insertion.
     setPreview(null);
     try { await set(suggestion.id, "applied"); } catch {

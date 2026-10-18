@@ -4,6 +4,9 @@
  * koblinger lagres som usikre og kan godkjennes senere i inspektøren. Det norske manuset endres ikke.
  */
 import { AlertTriangle, CheckCircle2, FileUp, Loader2 } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { alignTranslationWithAi } from "@/adapters/ai/translation-align.functions";
+import { aiAlignRequest } from "@/core/translation/align-prompt";
 import { useMemo, useRef, useState } from "react";
 import {
   LANGUAGE_LABEL,
@@ -37,6 +40,8 @@ interface Row {
   readonly approved: boolean;
   /** Den norske scenen er valgt av brukeren. */
   readonly manual?: boolean;
+  /** Forslag fra den innebygde AI-en (OG2) – må alltid godkjennes av brukeren. */
+  readonly ai?: { readonly confidence: "high" | "medium" | "low"; readonly reason: string };
 }
 
 const control =
@@ -63,6 +68,9 @@ export function TranslationImportDialog({
   const [parsed, setParsed] = useState<ParsedScreenplay | null>(null);
   const [fileName, setFileName] = useState("");
   const [rows, setRows] = useState<Row[]>([]);
+  const [aiBusy, setAiBusy] = useState(false);
+  const [aiNote, setAiNote] = useState<string | null>(null);
+  const alignAi = useServerFn(alignTranslationWithAi);
   const occs = useMemo(() => orderedOccurrences(state, productionId), [state, productionId]);
   const langName = LANGUAGE_LABEL[language] ?? language;
 
@@ -71,6 +79,54 @@ export function TranslationImportDialog({
     setRows([]);
     setErr(null);
     setFileName("");
+    setAiNote(null);
+  }
+
+  /** Den innebygde AI-en foreslår koblinger for usikre eller manglende scener (B-048). */
+  async function suggestWithAi(parsedDoc: ParsedScreenplay, links: readonly SceneLink[]) {
+    const items = aiAlignRequest(
+      links,
+      (i) => (parsedDoc.scenes[i]?.elements ?? []).filter((e) => e.kind !== "heading").map((e) => e.text),
+      occs.map((o) => o.id),
+    );
+    if (!items.length) return;
+    setAiBusy(true);
+    try {
+      const r = await alignAi({ data: { projectId: state.project.id, language, items } });
+      if (!r.ok) {
+        setAiNote(r.message);
+        return;
+      }
+      const byIndex = new Map(r.links.map((l) => [l.index, l]));
+      setRows((rs) =>
+        rs.map((row) => {
+          const ai = byIndex.get(row.link.parsedIndex);
+          if (!ai || row.manual || !ai.occurrenceId) return row;
+          const o = state.occurrences[ai.occurrenceId];
+          const p = parsedDoc.scenes[row.link.parsedIndex];
+          if (!o || !p) return row;
+          const { lines, unmatched } = alignLines(p, blocksOfVariant(state, o.variantId));
+          // Aldri stille godkjenning: AI-forslag krysses ikke av
+          return {
+            approved: false,
+            ai: { confidence: ai.confidence, reason: ai.reason },
+            link: { ...row.link, occurrenceId: o.id, certainty: "uncertain", lines, unmatched },
+          };
+        }),
+      );
+      setAiNote(
+        r.links.length
+          ? L(
+              `Den innebygde AI-en foreslo koblinger for ${r.links.length} usikre scener. Kontroller og godkjenn dem.`,
+              `The built-in AI suggested links for ${r.links.length} uncertain scenes. Check and approve them.`,
+            )
+          : null,
+      );
+    } catch {
+      setAiNote(L("Den innebygde AI-en svarte ikke. Koblingene bygger på reglene.", "The built-in AI did not respond. The links are based on rules."));
+    } finally {
+      setAiBusy(false);
+    }
   }
 
   async function read(file: File) {
@@ -85,6 +141,7 @@ export function TranslationImportDialog({
       setRows(
         links.map((link) => ({ link, approved: link.certainty === "sure" && !!link.occurrenceId })),
       );
+      void suggestWithAi(r.parsed, links);
     } catch (e) {
       setErr((e as Error).message);
     } finally {
@@ -220,6 +277,14 @@ export function TranslationImportDialog({
                 `${rows.length} scenes, ${linked.length} linked, ${lines} lines get a translation. Uncertain links are not ticked – they are saved as uncertain and can be approved later.`,
               )}
             </p>
+            {aiBusy ? (
+              <p role="status" data-testid="translation-ai-status" className="flex items-center gap-1 text-xs text-text-secondary">
+                <Loader2 className="size-3.5 animate-spin" aria-hidden />
+                {L("Den innebygde AI-en ser på de usikre koblingene …", "The built-in AI is checking the uncertain links …")}
+              </p>
+            ) : aiNote ? (
+              <p role="status" data-testid="translation-ai-status" className="text-xs text-text-secondary">{aiNote}</p>
+            ) : null}
             {dupes ? (
               <p className="flex items-center gap-1 text-xs text-status-uncertain">
                 <AlertTriangle className="size-3.5" aria-hidden />
@@ -235,6 +300,8 @@ export function TranslationImportDialog({
                 return (
                   <li
                     key={i}
+                    data-testid="translation-link"
+                    data-ai={r.ai ? "true" : undefined}
                     className="grid grid-cols-[18px_1fr_auto] items-center gap-2 border-b border-border px-2 py-1 text-xs last:border-b-0"
                   >
                     <input
@@ -268,6 +335,12 @@ export function TranslationImportDialog({
                               `${r.manual ? "Chosen manually" : r.link.certainty === "sure" ? "Certain" : "Uncertain"} · ${r.link.lines.length} lines${r.link.unmatched ? ` · ${r.link.unmatched} without a pair` : ""}`,
                             )
                           : L("Ikke koblet", "Not linked")}
+                        {o && r.ai && !r.manual
+                          ? L(
+                              ` · Forslag fra AI (${r.ai.confidence === "high" ? "sikker" : r.ai.confidence === "medium" ? "trolig" : "usikker"})${r.ai.reason ? `: ${r.ai.reason}` : ""}`,
+                              ` · AI suggestion (${r.ai.confidence === "high" ? "certain" : r.ai.confidence === "medium" ? "likely" : "uncertain"})${r.ai.reason ? `: ${r.ai.reason}` : ""}`,
+                            )
+                          : null}
                       </span>
                     </span>
                     <select
