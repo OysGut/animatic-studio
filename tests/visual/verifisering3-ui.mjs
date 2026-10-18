@@ -581,6 +581,7 @@ async function testKeyboard() {
     const order = [
       "Prosjektoversikt",
       "Manus",
+      "Story Lab",
       "Ressursbibliotek",
       "Sceneeditor",
       "Montering",

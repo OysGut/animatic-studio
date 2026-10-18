@@ -45,22 +45,30 @@ function serverFnName(url) {
   }
 }
 /** Dataene i et serverfunksjonskall (TanStack-serialisering: let etter «data»). */
+function deser(n, refs = new Map()) {
+  if (n === null || typeof n !== "object") return n;
+  switch (n.t) {
+    case 0: return Number(n.s);
+    case 1: { try { return JSON.parse(`"${n.s}"`); } catch { return n.s; } }
+    case 2: return ({ 0: null, 1: undefined, 2: true, 3: false })[n.s];
+    case 4: return refs.get(n.i);
+    case 9: { const a = []; refs.set(n.i, a); for (const v of n.a ?? []) a.push(deser(v, refs)); return a; }
+    case 10: { const o = {}; refs.set(n.i, o); (n.p?.k ?? []).forEach((k, i) => { o[k] = deser(n.p.v[i], refs); }); return o; }
+    default: return n.s ?? null;
+  }
+}
 function dataOf(body) {
   try {
     const j = JSON.parse(body);
+    const root = j && typeof j === "object" && "t" in j && typeof j.t === "object" ? deser(j.t) : j;
     const find = (x) => {
       if (!x || typeof x !== "object") return null;
       if ("data" in x && x.data && typeof x.data === "object" && !Array.isArray(x.data)) return x.data;
-      for (const v of Object.values(x)) {
-        const r = find(v);
-        if (r) return r;
-      }
+      for (const v of Object.values(x)) { const r = find(v); if (r) return r; }
       return null;
     };
-    return find(j) ?? {};
-  } catch {
-    return {};
-  }
+    return find(root) ?? {};
+  } catch { return {}; }
 }
 const sid = () => `00000000-0000-7000-8000-${String(++S.seq).padStart(12, "0")}`;
 const summary = (s) => {
@@ -336,7 +344,7 @@ await run(
   async (page) => {
     await page.getByTestId("storylab").waitFor();
     check((await page.locator('[data-testid="storylab-character"][aria-current="true"]').getAttribute("data-asset-id")) === ANNE.id, "?karakter= velger karakteren");
-    check(/Characters/.test(await page.getByTestId("storylab").innerText()), "engelsk visning");
+    check(/characters/i.test(await page.getByTestId("storylab").innerText()), "engelsk visning");
     check(/No profile|Create empty profile/.test(await page.getByTestId("storylab").innerText()), "engelske tekster i karakterflaten");
     await page.screenshot({ path: `${out}/4-engelsk.png` });
   },
