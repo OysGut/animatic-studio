@@ -20,7 +20,13 @@ export function ScriptExplorerPanel({ projectId, onClose }: { projectId: string;
   const popup = useRef<HTMLDivElement | null>(null);
   const [blocked, setBlocked] = useState<string | null>(null);
   const dragging = useRef<{ x: number; y: number; left: number; top: number; width: number; height: number; resize: boolean } | null>(null);
-  useEffect(() => { popup.current?.focus({ preventScroll: true }); }, []);
+  const previousFocus = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    previousFocus.current = document.activeElement as HTMLElement | null;
+    const input = popup.current?.querySelector<HTMLInputElement>('[data-testid="script-explorer-search"]');
+    (input ?? popup.current)?.focus({ preventScroll: true });
+    return () => { previousFocus.current?.focus({ preventScroll: true }); };
+  }, []);
   if (session.status !== "signed-in") return null;
   const pin = () => {
     const source = sourceWindowId();
