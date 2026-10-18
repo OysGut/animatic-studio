@@ -116,6 +116,28 @@ export function layerImageAt(
 }
 
 /**
+ * Krysstoning på et bilde (AS2, A2): det forrige bildet (som bilde før byttet) og hvor langt overgangen er
+ * kommet (0 → 1), eller null når laget ikke er i en krysstoning.
+ */
+export function layerCrossfadeAt(
+  l: Pick<CompositionLayer, "swaps">,
+  frame: number,
+): { readonly prevFrame: number; readonly mix: number } | null {
+  let cur: (typeof l.swaps)[number] | null = null;
+  for (const w of l.swaps) if (w.frame <= frame) cur = w;
+  if (!cur?.transition) return null;
+  const t = (frame - cur.frame + 1) / (cur.transition.frames + 1);
+  if (t >= 1) return null;
+  return { prevFrame: cur.frame - 1, mix: Math.max(0, t) };
+}
+
+/** Sann når laget er innenfor sitt aktive tidsområde på bildet (AS2, A3). Uten område: alltid. */
+export function layerActiveAt(l: Pick<CompositionLayer, "activeRange">, frame: number): boolean {
+  const r = l.activeRange;
+  return !r || (frame >= r.from && frame <= r.to);
+}
+
+/**
  * Bildet laget viser: låst versjon, ellers variantens godkjente versjon, ellers variantens nyeste,
  * ellers ressursens forsidebilde. null for fargeflater og ressurser uten bilder. Med `frame` gjelder
  * bildeskiftene i laget.
@@ -514,6 +536,11 @@ export interface RenderOptions {
   readonly view?: "scene" | "camera";
   /** Ta med skjulte lag (dempet i editoren). Standard: nei. */
   readonly includeHidden?: boolean;
+  /**
+   * Bare disse lagene (Asset Studio, «Bare objektet», AS2 A4). Grupper beregnes fortsatt, så lagene står der
+   * de står i scenen. Mangler = alle lag.
+   */
+  readonly onlyLayers?: ReadonlySet<string>;
 }
 
 /**
@@ -570,17 +597,19 @@ export function renderFrame(
       groups.set(l.id, {
         matrix: groupMatrixAt(l, frame),
         opacity: transformAt(l, frame).opacity,
-        visible: l.visible,
+        // Aktivt område (AS2): en gruppe utenfor sitt område skjuler lagene i gruppen
+        visible: l.visible && layerActiveAt(l, frame),
       });
   /** Tegneelementet for et lag (uten maske og blanding), med full dekning. */
-  const baseItem = (l: CompositionLayer): DrawItem => {
+  // `imageFrame`: bildet som velger lagets bilde (krysstoning tegner også det forrige bildet, AS2)
+  const baseItem = (l: CompositionLayer, imageFrame: number = frame): DrawItem => {
     const g = l.groupId ? groups.get(l.groupId) : undefined;
     const t = transformAt(l, frame);
     const view = cam ? viewMatrix(c, cam, l.parallax) : IDENTITY;
-    const size = layerSize(s, l, frame);
+    const size = layerSize(s, l, imageFrame);
     const model = g ? multiply(g.matrix, modelMatrix(t)) : modelMatrix(t);
-    const img = layerImageAt(l, frame);
-    const version = layerVersion(s, l, frame);
+    const img = layerImageAt(l, imageFrame);
+    const version = layerVersion(s, l, imageFrame);
     const sym = !version && img.assetId ? assetSymbol(s, img.assetId) : null;
     return {
       layerId: l.id,
@@ -602,14 +631,24 @@ export function renderFrame(
     const g = l.groupId ? groups.get(l.groupId) : undefined;
     const visible = l.visible && (g?.visible ?? true);
     if (!visible && !opts.includeHidden) continue;
+    if (opts.onlyLayers && !opts.onlyLayers.has(l.id)) continue;
+    // Aktivt tidsområde (AS2, A3): utenfor tegnes laget ikke (samme i editor, avspilling og eksport)
+    if (!layerActiveAt(l, frame)) continue;
     const base = baseItem(l);
-    const mask = itemMask(l, frame, base, byId, baseItem);
-    items.push({
-      ...base,
-      opacity: visible ? base.opacity : base.opacity * 0.25,
+    const mask = itemMask(l, frame, base, byId, (x) => baseItem(x));
+    const opacity = visible ? base.opacity : base.opacity * 0.25;
+    const extra = {
       ...(l.blend && l.blend !== "normal" ? { blend: l.blend } : {}),
       ...(mask ? { mask } : {}),
-    });
+    };
+    // Krysstoning (AS2, A2): det forrige bildet tones ut mens det nye tones inn, i sin egen størrelse
+    // rundt samme ankerpunkt; animasjonen (transform) er den samme for begge
+    const xf = layerCrossfadeAt(l, frame);
+    if (xf) {
+      const prev = baseItem(l, xf.prevFrame);
+      items.push({ ...prev, opacity: opacity * (1 - xf.mix), ...extra });
+      items.push({ ...base, opacity: opacity * xf.mix, ...extra });
+    } else items.push({ ...base, opacity, ...extra });
   }
   // Grupper i editoren: en ramme rundt lagene i gruppen (tegnes ikke)
   if (!cam)
