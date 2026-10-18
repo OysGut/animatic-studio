@@ -33,6 +33,7 @@ import type {
   StoryFact,
   CanvasNode,
   CanvasEdge,
+  TemplateInstance,
   PosterDocument,
   PosterKind,
   RelationKind,
