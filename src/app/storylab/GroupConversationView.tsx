@@ -83,14 +83,14 @@ function GroupConversation({ state, projectId, session, participants, editable, 
     const e = engineOf(ts);
     return {
       system: characterSystemPrompt({ name: names[id] ?? "?", profile: profiles[id] ?? emptyStoryProfile(),
-        knowledge: knowledgeAt(state, id, sceneId as never), situation, directions: activeDirections(e, id), language: locale() === "en" ? "en" : "nb", names }),
+        knowledge: knowledgeAt(state, id, sceneId as never), situation, directions: activeDirections(e, id), language: "nb", names }),
       messages: groupTurnMessages(e, id, names).messages,
     };
   };
   const analysisInput = (question: string, focus?: string) => ({
     system: analystSystemPrompt({ characters: participants.map((id) => ({ name: names[id] ?? "?", profile: profiles[id] ?? null })),
       facts: factsUntil(state, sceneId).map((f) => ({ text: f.text, kind: f.kind, knownBy: f.knownBy.map((k) => names[k.assetId] ?? "?") })),
-      sceneContext: situation, language: locale() === "en" ? "en" : "nb", ...(focus ? { focus: names[focus] ?? "?" } : {}) }) +
+      sceneContext: situation, language: uiLang, ...(focus ? { focus: names[focus] ?? "?" } : {}) }) +
       (focus ? "\nExplain this character's motivation from the profile, in the third person. Separate interpretation from established facts." : ""),
     messages: [{ role: "user" as const, content: turnsRef.current.filter((t) => t.kind === "line" || t.kind === "question")
       .map((t) => `${names[t.speaker] ?? "Director"}: ${t.text}`).join("\n") + `\nDirector's question: ${question}` }],

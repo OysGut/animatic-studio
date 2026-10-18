@@ -18,7 +18,6 @@ import {
   factsUntil,
   groupTurnMessages,
   knowledgeAt,
-  locale,
   newId,
   profileAt,
   replayTurns,
