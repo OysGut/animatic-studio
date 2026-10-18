@@ -578,7 +578,9 @@ export type LayerKind =
   | "effect"
   | "other"
   /** Gruppe (DEC-0052, REQ-0174): viser ikke noe selv; lagene i gruppen følger dens bevegelse, synlighet og skalering. */
-  | "group";
+  | "group"
+  /** Tekstlag (MTS, migrasjon 0048): redigerbar tekst og typografi i `text`. */
+  | "text";
 
 /** Plassering av et lag i scenen. Posisjon er midtpunktet i scenens koordinater (piksler). */
 export interface LayerTransform {
@@ -789,6 +791,14 @@ export interface CompositionLayer extends Entity<LayerId> {
   readonly blend?: BlendMode;
   /** Aktivt tidsområde (AS2, migrasjon 0043): laget tegnes bare innenfor. Mangler/null = hele scenen. */
   readonly activeRange?: LayerActiveRange | null;
+  /** Tekst og typografi (MTS, migrasjon 0048). Bare tekstlag. */
+  readonly text?: import("./typography/types").TextSpec | null;
+  /** Grafisk form for en fargeflate (MTS, migrasjon 0048). Mangler = rektangel. */
+  readonly shape?: import("./typography/types").ShapeSpec | null;
+  /** Skygge, glød og kontur (MTS, migrasjon 0048). Mangler = ingen. */
+  readonly effects?: import("./typography/types").LayerEffects | null;
+  /** Malforekomsten og feltet laget er bygget fra (MTS MT4). Mangler = ikke fra mal. */
+  readonly template?: import("./typography/types").TemplateSlotRef | null;
   readonly removed: boolean;
 }
 

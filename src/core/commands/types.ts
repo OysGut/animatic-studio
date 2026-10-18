@@ -143,6 +143,11 @@ export interface LayerFields {
   readonly blend?: BlendMode;
   /** Aktivt tidsområde (AS2). Utelatt = uendret ved endring, hele scenen ved nytt lag. null = hele scenen. */
   readonly activeRange?: LayerActiveRange | null;
+  /** Tekst, form, effekter og malfelt (MTS). Utelatt = uendret ved endring, ingen ved nytt lag. */
+  readonly text?: import("../typography/types").TextSpec | null;
+  readonly shape?: import("../typography/types").ShapeSpec | null;
+  readonly effects?: import("../typography/types").LayerEffects | null;
+  readonly template?: import("../typography/types").TemplateSlotRef | null;
 }
 
 export interface NewLayer {
