@@ -3,6 +3,7 @@
  * visuelle varianter med bildeversjoner og godkjenning (REQ-0135, REQ-0136, REQ-0146, REQ-0149)
  * og scenene der ressursen er brukt (REQ-0131). Kontinuitet (DEC-0055) i ContinuityPanel.
  */
+import { Link } from "@tanstack/react-router";
 import {
   Archive,
   ArchiveRestore,

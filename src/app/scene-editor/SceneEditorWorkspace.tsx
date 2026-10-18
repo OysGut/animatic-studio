@@ -4,6 +4,7 @@ import { Toolbar, ToolbarButton, ToolbarSeparator } from "@/app/shell/workspace-
  * (bakgrunner, mellomgrunner, karakterer, objekter …) med bilder fra ressursbiblioteket eller fargeflater.
  * Kamera, tidslinje og avspilling kommer i neste leveranse (mandat kap. 12).
  */
+import { Link } from "@tanstack/react-router";
 import { ProductionPicker, useActiveProduction } from "@/app/project/use-production";
 import {
   AlertTriangle,
