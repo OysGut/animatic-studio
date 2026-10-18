@@ -31,7 +31,7 @@ const SECRET = "MAJAS-HEMMELIGHET: hun knuste vasen";
 const rows = { ...fx.rows };
 const SCENE_OCC = fx.rows.scene_occurrences.find((o) => {
   const blocks = fx.rows.script_blocks.filter((b) => b.scene_variant_id === o.variant_id || b.variant_id === o.variant_id);
-  return blocks.some((b) => b.kind === "character" && /MAJA/i.test(b.text)) && blocks.some((b) => b.kind === "character" && /BESTEMOR ANNE/i.test(b.text));
+  return blocks.some((b) => b.kind === "character" && /MAJA/i.test(b.text)) && blocks.some((b) => b.kind === "character" && /BESTEMOR/i.test(b.text));
 });
 if (!SCENE_OCC) throw new Error("Fixture mangler scene med Maja og Bestemor Anne");
 const SCENE_ID = SCENE_OCC.scene_id;
