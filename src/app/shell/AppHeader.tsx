@@ -1,6 +1,6 @@
 import { Link, useParams, useRouterState } from "@tanstack/react-router";
-import { LogOut, Shield, UserRound } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { Globe, LogOut, Shield, UserRound } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
 import { signOut } from "@/adapters/browser/auth";
 import { Button } from "@/components/ui/button";
 import { BackButton, useCloseToPrevious } from "./back-navigation";
@@ -10,6 +10,7 @@ import { L } from "@/core";
 import { GenerationStatus } from "@/app/ai/GenerationStatus";
 import { TaskNav } from "./TaskNav";
 import { AccountWatcher, useMyAccount } from "@/app/account/use-account";
+import { ScriptExplorerPanel } from "@/app/script-explorer/ScriptExplorerPanel";
 
 interface AppHeaderProps {
   readonly email?: string | undefined;
@@ -27,6 +28,15 @@ export function AppHeader({ email, trail }: AppHeaderProps) {
   // Klikk på brukernavnet igjen på «Min konto» lukker siden (tilbake dit man kom fra)
   const onAccount = useRouterState({ select: (s) => s.location.pathname }) === "/konto";
   const closeAccount = useCloseToPrevious();
+  const [explorerOpen, setExplorerOpen] = useState(false);
+  useEffect(() => {
+    if (!params.projectId) return;
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && !e.altKey && e.key.toLowerCase() === "f") { e.preventDefault(); setExplorerOpen(true); }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [params.projectId]);
   return (
     <header className="flex h-10 shrink-0 items-center gap-3 border-b border-border bg-surface-1 px-4">
       <Link
@@ -45,6 +55,7 @@ export function AppHeader({ email, trail }: AppHeaderProps) {
         </>
       ) : null}
       <div className="ml-auto flex items-center gap-2">
+        {params.projectId ? <Button variant="ghost" size="icon" data-testid="script-explorer-button" title={L("Manusutforskeren", "Script explorer")} aria-label={L("Manusutforskeren", "Script explorer")} onClick={() => setExplorerOpen(true)}><Globe className="size-4" /></Button> : null}
         {params.projectId ? <TaskNav projectId={params.projectId} /> : null}
         {params.projectId ? <GenerationStatus projectId={params.projectId} /> : null}
         <LanguageSwitch compact />
@@ -106,6 +117,7 @@ export function AppHeader({ email, trail }: AppHeaderProps) {
           </Button>
         ) : null}
       </div>
+      {params.projectId && explorerOpen ? <ScriptExplorerPanel key={params.projectId} projectId={params.projectId} onClose={() => setExplorerOpen(false)} /> : null}
     </header>
   );
 }

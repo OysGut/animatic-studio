@@ -12,6 +12,7 @@ import {
   RELATION_LABEL,
   RELATION_LABEL_EN,
   knowledgeAt,
+  mainProduction,
   locale,
   type Asset,
   type ProjectState,
@@ -33,6 +34,7 @@ import { SceneLab } from "./SceneLab";
 import { LazyCanvasView } from "./canvas/LazyCanvasView";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { profileStatus, sceneIdFrom, scenesByStoryTime, storyCharacters } from "./storylab-data";
+import { rememberScene } from "@/app/shell/current-scene";
 
 export function StoryLabWorkspace({
   projectId,
@@ -129,6 +131,12 @@ function Lab({
       null,
   );
   const [sceneId, setSceneId] = useState<string | null>(() => sceneIdFrom(state, initialSceneRef ?? undefined));
+  useEffect(() => {
+    if (!sceneId) return;
+    const production = mainProduction(state);
+    const occurrence = Object.values(state.occurrences).find((o) => o.active && o.productionId === production?.id && o.sceneId === sceneId);
+    if (occurrence) rememberScene(projectId, occurrence.id, occurrence.sceneId);
+  }, [projectId, sceneId, state.occurrences, state.productions]);
   const [view, setView] = useState<View>(() => { if (initialCanvas) return { kind: "canvas", interviewId: null }; const id = sceneIdFrom(state, initialSceneRef ?? undefined); return id ? { kind: "scene", id } : { kind: "character" }; });
   const [leftTab, setLeftTab] = useState<"characters" | "scenes" | "suggestions" | "canvas">(initialCanvas ? "canvas" : initialSuggestions ? "suggestions" : initialSceneRef ? "scenes" : "characters");
   const hasScenes = Object.keys(state.scenes).length > 0;

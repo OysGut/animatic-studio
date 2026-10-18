@@ -47,6 +47,7 @@ import { BuildFromScriptDialog } from "./BuildFromScriptDialog";
 import { InterviewView } from "../InterviewView";
 import { sceneLabel } from "../storylab-data";
 import { runGroup } from "./run-group";
+import { nextCanvasPosition } from "./node-placement";
 
 export interface CanvasViewProps {
   state: ProjectState;
@@ -205,12 +206,18 @@ function Canvas({ state, projectId, cmds, editable, interviewId, onInterview, on
     return { x: Math.round(p.x - 110), y: Math.round(p.y - 60) };
   };
   const select = (ids: readonly string[]) => setNodes((list) => list.map((n) => ({ ...n, selected: ids.includes(n.id) })));
+  const addedPositions = useRef(new Map<string, { x: number; y: number }>());
+  const lastAddedPosition = useRef<{ x: number; y: number } | null>(null);
+  useEffect(() => {
+    for (const id of addedPositions.current.keys()) if (state.canvasNodes[id]) addedPositions.current.delete(id);
+  }, [state.canvasNodes]);
   const addNode = (kind: CanvasNodeKind) => {
     const id = newId<"canvas_node">();
-    let pos = center();
-    while (live.some((n) => Math.abs(n.x - pos.x) < 12 && Math.abs(n.y - pos.y) < 12)) pos = { x: pos.x + 24, y: pos.y + 24 };
+    const pos = nextCanvasPosition(center(), lastAddedPosition.current, [...live, ...addedPositions.current.values()]);
     const f = canvasNodeDefaults(kind, { ...pos, title: canvasNodeKindLabel(kind) });
     if (!run({ type: "AddCanvasNodes", nodes: [{ id, ...f }] }, L("Ny node", "New node"))) {
+      addedPositions.current.set(id, pos);
+      lastAddedPosition.current = pos;
       setTimeout(() => { select([id]); setSide("inspector"); setFocusTitle((x) => x + 1); }, 0);
     }
   };

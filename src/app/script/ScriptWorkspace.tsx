@@ -185,8 +185,8 @@ function Workspace({
     blockId: initialBlock,
   });
   useEffect(
-    () => rememberScene(projectId, selection.occurrenceId),
-    [projectId, selection.occurrenceId],
+    () => rememberScene(projectId, selection.occurrenceId, state.occurrences[selection.occurrenceId ?? ""]?.sceneId ?? null),
+    [projectId, selection.occurrenceId, state.occurrences],
   );
   // Scenen har fått egen versjon (ForkVariant, DEC-0057): valgt linje flyttes til den nye versjonen
   useEffect(() => {

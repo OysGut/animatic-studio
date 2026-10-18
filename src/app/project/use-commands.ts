@@ -211,7 +211,7 @@ function addRejected(list: readonly RejectedEdit[], r: RejectedEdit): RejectedEd
   return [...list.filter((x) => x.id !== r.id), r];
 }
 
-export function useCommands(projectId: string, actorId: string, enabled: boolean, onUndo?: (group: string | undefined) => void) {
+export function useCommands(projectId: string, actorId: string, enabled: boolean, onUndo?: (group: string | undefined) => void, keyboard = true) {
   const qc = useQueryClient();
   const [undoStack, setUndo] = useState<HistoryEntry[]>([]);
   const [redoStack, setRedo] = useState<HistoryEntry[]>([]);
@@ -565,6 +565,7 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
 
   // Tastatur: Cmd/Ctrl+Z, Shift+Cmd/Ctrl+Z og Ctrl+Y. I tekstfelt gjelder feltets egen angre.
   useEffect(() => {
+    if (!keyboard) return;
     function onKey(e: KeyboardEvent) {
       const t = e.target as HTMLElement | null;
       if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
@@ -581,7 +582,7 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [undo, redo]);
+  }, [undo, redo, keyboard]);
 
   const clearError = useCallback(
     () => setStatus((s) => (s.kind === "error" ? { kind: "idle" } : s)),
