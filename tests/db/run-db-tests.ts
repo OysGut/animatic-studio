@@ -5343,7 +5343,7 @@ try {
       await expectError(
         tx`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256, template_spec)
            values (gen_random_uuid(), ${mtp}, ${MT(11)}, 99, ${`${mtp}/${MT(10)}/stor/mal.png`}, 'image/png', 1, ${"e".repeat(64)},
-                   (select jsonb_build_object('x', string_agg(md5(random()::text), '')) from generate_series(1, 10000))))`,
+                   (select jsonb_build_object('x', string_agg(md5(random()::text), '')) from generate_series(1, 10000)))`,
         "23514",
       );
       await tx`rollback to savepoint stor_mal`;
