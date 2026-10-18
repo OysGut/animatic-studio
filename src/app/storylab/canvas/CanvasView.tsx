@@ -207,7 +207,9 @@ function Canvas({ state, projectId, cmds, editable, interviewId, onInterview, on
   const select = (ids: readonly string[]) => setNodes((list) => list.map((n) => ({ ...n, selected: ids.includes(n.id) })));
   const addNode = (kind: CanvasNodeKind) => {
     const id = newId<"canvas_node">();
-    const f = canvasNodeDefaults(kind, { ...center(), title: canvasNodeKindLabel(kind) });
+    let pos = center();
+    while (live.some((n) => Math.abs(n.x - pos.x) < 12 && Math.abs(n.y - pos.y) < 12)) pos = { x: pos.x + 24, y: pos.y + 24 };
+    const f = canvasNodeDefaults(kind, { ...pos, title: canvasNodeKindLabel(kind) });
     if (!run({ type: "AddCanvasNodes", nodes: [{ id, ...f }] }, L("Ny node", "New node"))) {
       setTimeout(() => { select([id]); setSide("inspector"); setFocusTitle((x) => x + 1); }, 0);
     }
@@ -329,6 +331,7 @@ function Canvas({ state, projectId, cmds, editable, interviewId, onInterview, on
             minZoom={0.05}
             maxZoom={2.5}
             fitView
+            fitViewOptions={{ maxZoom: 1, padding: 0.1 }}
             proOptions={{ hideAttribution: true }}
             colorMode="dark"
             style={{ background: "var(--bg-app)" }}
