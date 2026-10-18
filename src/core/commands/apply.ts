@@ -1643,6 +1643,15 @@ const RETIME_STEPS = new Set<string>([
   "SetPlannedDuration",
 ]);
 
+/** Trinnene et utkast fra Asset Studio kan inneholde (AS1): bare endringer i scenen. */
+export const SCENE_DRAFT_STEPS: ReadonlySet<string> = new Set<string>([
+  "UpdateLayers",
+  "UpdateAudioClips",
+  "UpdateComposition",
+]);
+/** Største antall trinn i ett utkast. */
+export const MAX_SCENE_DRAFT_STEPS = 200;
+
 function run(
   s: ProjectState,
   env: CommandEnvelope,
