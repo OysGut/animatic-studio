@@ -5,7 +5,6 @@
  */
 import { describe, expect, it } from "vitest";
 import {
-  AddOccurrenceError,
   CREDIT_PARTICIPANTS_MAX,
   applyCommand,
   creditDrawTexts,
@@ -27,7 +26,6 @@ import {
   type ProjectState,
   type SceneOccurrence,
 } from "@/core";
-import { frames } from "./helpers/fixtures";
 
 function occ(partial: Partial<SceneOccurrence> & Pick<SceneOccurrence, "id">): SceneOccurrence {
   return {
