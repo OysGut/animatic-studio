@@ -8,9 +8,14 @@ import { L } from "@/core";
 
 /** Personvernerklæringen (DEC-0086): kan leses uten innlogging, fra forsiden og fra kontosiden. */
 export const Route = createFileRoute("/personvern")({
-  head: () => ({
-    meta: [{ title: L("Personvern – Animatic Studio", "Privacy – Animatic Studio") }],
-  }),
+  head: () => ({ meta: [
+    { title: L("Personvern – Animatic Studio", "Privacy – Animatic Studio") },
+    { name: "description", content: L("Les personvernerklæringen for Animatic Studio.", "Read the privacy statement for Animatic Studio.") },
+    { property: "og:title", content: L("Personvern – Animatic Studio", "Privacy – Animatic Studio") }, // i18n-ignore: metakode
+    { property: "og:description", content: L("Les personvernerklæringen for Animatic Studio.", "Read the privacy statement for Animatic Studio.") }, // i18n-ignore: metakode
+    { property: "og:type", content: "website" }, // i18n-ignore: metakode
+    { name: "twitter:card", content: "summary" }, // i18n-ignore: metakode
+  ] }),
   component: PrivacyPage,
 });
 

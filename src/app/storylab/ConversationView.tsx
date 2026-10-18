@@ -43,6 +43,7 @@ import { Toolbar, ToolbarButton, ToolbarSeparator } from "@/app/shell/workspace-
 import { names as nameMap, sceneLabel, usd, useTextEstimate } from "./storylab-data";
 import { GroupConversationView } from "./GroupConversationView";
 import { SceneLab } from "./SceneLab";
+import { SavedSuggestion, useSuggestionSaved } from "./suggestions-data";
 
 const OUT_TOKENS = 800;
 type Mode = "role" | "analysis";
@@ -217,6 +218,8 @@ function Conversation({
   const append = useServerFn(appendStoryTurns);
   const fork = useServerFn(forkStorySession);
   const suggest = useServerFn(saveStorySuggestion);
+  const saved = useSuggestionSaved(projectId);
+  const [savedId, setSavedId] = useState<string | null>(null);
   const qc = useQueryClient();
 
   const asset = state.assets[ctx.assetId];
@@ -402,8 +405,8 @@ function Conversation({
                 onOpen(r.session.id);
               }}
               onSuggest={async (kind) => {
-                const r = await suggest({ data: { projectId, sessionId, turnId: t.id, kind, payload: { text: t.text, speaker: t.speaker } } });
-                setNote(r.ok ? L("Lagret som forslag.", "Saved as a suggestion.") : r.message);
+                const r = await suggest({ data: { projectId, sessionId, turnId: t.id, kind, payload: { text: t.text, speaker: t.speaker, assetId: ctx.assetId, sceneId: ctx.sceneId } } });
+                if (r.ok) setSavedId(saved(r.id)); else setNote(r.message);
               }}
             />
           ),
@@ -426,6 +429,7 @@ function Conversation({
           </div>
         ) : null}
         {note ? <p className="text-[12px] text-text-tertiary" data-testid="storylab-note">{note}</p> : null}
+        {savedId ? <SavedSuggestion id={savedId} /> : null}
       </div>
       {editable ? (
         <div className="shrink-0 space-y-2 border-t border-border bg-surface-1 p-3">
@@ -557,7 +561,7 @@ function TurnView({
           ? "border-l-2 border-border-strong bg-surface-1"
           : "border-l-2 border-accent-brand bg-surface-2";
   return (
-    <div className={"rounded-sm px-3 py-2 text-[13px] " + tone} data-testid="storylab-turn" data-mode={mode} data-kind={turn.kind}>
+    <div className={"rounded-sm px-3 py-2 text-[13px] " + tone} data-testid="storylab-turn" data-mode={mode} data-kind={turn.kind} data-turn-id={turn.id} tabIndex={-1}>
       <div className="mb-0.5 flex items-center gap-2 text-[11px] text-text-tertiary">
         <span className="font-medium uppercase tracking-wide">{speaker}</span>
         {mode === "analysis" ? <span>{L("utenfor rollen", "out of character")}</span> : null}

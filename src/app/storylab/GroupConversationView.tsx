@@ -14,6 +14,7 @@ import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { names as nameMap, sceneLabel, usd, useTextEstimate } from "./storylab-data";
+import { SavedSuggestion, useSuggestionSaved } from "./suggestions-data";
 
 const OUT_TOKENS = 800;
 const tones = ["border-accent-brand", "border-status-success", "border-status-moved", "border-status-discrepancy", "border-status-running", "border-status-uncertain"];
@@ -66,6 +67,8 @@ function GroupConversation({ state, projectId, session, participants, editable, 
   const gen = useServerFn(generateText);
   const fork = useServerFn(forkStorySession);
   const suggest = useServerFn(saveStorySuggestion);
+  const saved = useSuggestionSaved(projectId);
+  const [savedId, setSavedId] = useState<string | null>(null);
   const qc = useQueryClient();
   const engineOf = (ts: readonly StoredTurn[]) => replayTurns({ participants, mode, seed }, ts);
   const engine = reduceEngine(engineOf(turns), { type: "nextSpeaker", assetId: next });
@@ -202,7 +205,7 @@ function GroupConversation({ state, projectId, session, participants, editable, 
     </div>
     <div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3">
       {turns.filter((t) => !t.id.startsWith("r:")).map((t) => <div key={t.id} data-testid="storylab-turn" data-kind={t.kind} data-mode={t.kind === "line" ? "role" : t.kind === "analysis" ? "analysis" : t.kind === "direction" ? "direction" : "role"}
-        data-speaker={t.speaker} className={`rounded-sm border-l-2 bg-surface-2 p-2 text-sm ${t.kind === "analysis" ? "border-status-running" : t.kind === "direction" ? "border-status-uncertain" : tones[participants.indexOf(t.speaker)] ?? "border-border-strong"}`}>
+        data-speaker={t.speaker} data-turn-id={t.id} tabIndex={-1} className={`rounded-sm border-l-2 bg-surface-2 p-2 text-sm ${t.kind === "analysis" ? "border-status-running" : t.kind === "direction" ? "border-status-uncertain" : tones[participants.indexOf(t.speaker)] ?? "border-border-strong"}`}>
         <div className="flex flex-wrap items-center gap-1 text-xs text-text-tertiary">
           <span className="font-medium">{t.speaker === "director" ? L("Regissør", "Director") : t.speaker === ANALYST ? L("Analyse", "Analysis") : names[t.speaker] ?? "?"}</span>
           {t.kind === "analysis" ? <span>{L("utenfor rollen", "out of character")}</span> : null}
@@ -215,8 +218,8 @@ function GroupConversation({ state, projectId, session, participants, editable, 
             {t.kind === "line" ? <ToolbarButton disabled={busy || locked} data-testid="storylab-explain" onClick={() => request({ kind: "analysis", focus: t.speaker, question: `Explain why ${names[t.speaker] ?? "this character"} said: ${t.text}` })}>{L("Hvorfor sa du det?", "Why did you say that?")}</ToolbarButton> : null}
             <select className="h-7" value="" disabled={busy} aria-label={L("Lagre som forslag", "Save as suggestion")} data-testid="storylab-suggest"
               onChange={async (e) => { if (!e.target.value) return; try { const r = await suggest({ data: { projectId, sessionId: session.id, turnId: t.id,
-                kind: e.target.value as "line" | "motivation" | "analysis", payload: { text: t.text, speaker: t.speaker } } });
-                setNote(r.ok ? L("Lagret som forslag.", "Saved as a suggestion.") : r.message);
+                kind: e.target.value as "line" | "motivation" | "analysis", payload: { text: t.text, speaker: t.speaker, sceneId } } });
+                if (r.ok) setSavedId(saved(r.id)); else setNote(r.message);
               } catch { setError(L("Forslaget kunne ikke lagres.", "The suggestion could not be saved.")); } }}>
               <option value="">{L("Lagre som forslag …", "Save as suggestion …")}</option>
               <option value="line">{L("Replikk", "Line")}</option><option value="motivation">{L("Motivasjon", "Motivation")}</option><option value="analysis">{L("Analyse", "Analysis")}</option>
@@ -226,6 +229,7 @@ function GroupConversation({ state, projectId, session, participants, editable, 
       </div>)}
       {error ? <div role="alert" data-testid="storylab-error" className="text-sm text-status-danger">{error}<ToolbarButton disabled={busy || locked} onClick={() => { const action = retry.current; if (action) void withLock(action); }} data-testid="storylab-retry">{L("Prøv igjen", "Try again")}</ToolbarButton></div> : null}
       {note ? <p className="text-xs text-text-tertiary" data-testid="storylab-note">{note}</p> : null}
+      {savedId ? <SavedSuggestion id={savedId} /> : null}
     </div>
     <div className="shrink-0 space-y-2 border-t border-border bg-surface-1 p-3">
       <details data-testid="storylab-knowledge" className="text-xs text-text-secondary"><summary>{L(`Hva vet ${names[speaker] ?? "?"} nå?`, `What does ${names[speaker] ?? "?"} know now?`)}</summary>

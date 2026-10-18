@@ -9,9 +9,14 @@ export const Route = createFileRoute("/invitasjon")({
   validateSearch: (search: Record<string, unknown>) => ({
     token: typeof search["token"] === "string" ? search["token"] : "",
   }),
-  head: () => ({
-    meta: [{ title: L("Invitasjon – Animatic Studio", "Invitation – Animatic Studio") }],
-  }),
+  head: () => ({ meta: [
+    { title: L("Invitasjon – Animatic Studio", "Invitation – Animatic Studio") },
+    { name: "description", content: L("Godta en prosjektinvitasjon i Animatic Studio.", "Accept a project invitation in Animatic Studio.") },
+    { property: "og:title", content: L("Invitasjon – Animatic Studio", "Invitation – Animatic Studio") }, // i18n-ignore: metakode
+    { property: "og:description", content: L("Godta en prosjektinvitasjon i Animatic Studio.", "Accept a project invitation in Animatic Studio.") }, // i18n-ignore: metakode
+    { property: "og:type", content: "website" }, // i18n-ignore: metakode
+    { name: "twitter:card", content: "summary" }, // i18n-ignore: metakode
+  ] }),
   component: AcceptInvitation,
 });
 

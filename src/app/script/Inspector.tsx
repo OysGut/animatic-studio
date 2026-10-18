@@ -51,6 +51,7 @@ import { StoryTimeSection } from "./StoryTimeSection";
 import type { Selection } from "./ScriptPageView";
 import type { Commands } from "@/app/project/use-commands";
 import { LineStatusBadge, TakesMicButton } from "@/app/audio/AudioTakesDialog";
+import { useStorySuggestions } from "@/app/storylab/suggestions-data";
 
 const EDITABLE_KINDS: BlockKind[] = [
   "action",
@@ -91,6 +92,8 @@ export function Inspector(props: Props) {
   const { state, selection } = props;
   const block = selection.blockId ? state.blocks[selection.blockId] : undefined;
   const occ = selection.occurrenceId ? state.occurrences[selection.occurrenceId] : undefined;
+  const suggestions = useStorySuggestions(props.projectId);
+  const openCount = occ ? suggestions.data?.filter((s) => s.status === "open" && s.payload["sceneId"] === occ.sceneId).length ?? 0 : 0;
   return (
     <aside aria-label={L("Inspektør", "Inspector")} className="flex min-h-0 flex-col">
       <div className="flex h-8 min-w-0 shrink-0 items-center gap-1 overflow-hidden border-b border-border px-3 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
@@ -170,6 +173,7 @@ export function Inspector(props: Props) {
         ) : null}
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto p-3">
+        {occ && openCount > 0 ? <Link to="/prosjekt/$projectId/storylab" params={{ projectId: props.projectId }} search={{ scene: occ.sceneId, forslag: "open" }} data-testid="script-storylab-suggestions" className="mb-2 block text-xs text-accent-brand">{L(`${openCount} forslag fra Story Lab`, `${openCount} suggestions from Story Lab`)}</Link> : null}
         {occ ? <SceneChanges {...props} occurrenceId={occ.id} /> : null}
         {/* Tekst mot lyd for replikken (DEC-0095, REQ-0703) – påvirker ikke manuseksporten */}
         {block?.kind === "dialogue" && occ ? (
@@ -269,7 +273,7 @@ function UncertainBox({
 }
 
 /** Varianten deles med hovedfilmen og kan ikke endres fra en annen produksjon uten egen variant (INV-04). */
-function ForkNotice({
+export function ForkNotice({
   state,
   productionId,
   occurrenceId,

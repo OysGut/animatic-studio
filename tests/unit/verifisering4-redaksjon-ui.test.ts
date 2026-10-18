@@ -61,6 +61,7 @@ vi.mock("@/adapters/storage/commands.functions", () => ({
   runCommand: (a: unknown) => h.runCommand(a),
 }));
 vi.mock("@/adapters/ai/video.functions", () => ({ startVideoGeneration: vi.fn() }));
+vi.mock("@/app/storylab/suggestions-data", () => ({ useStorySuggestions: () => ({ data: [] }) }));
 vi.mock("@/app/ai/use-ai-jobs", () => ({
   aiJobsKey: (projectId: string) => ["ai-jobs", projectId],
   useAiJobs: () => ({ data: { jobs: [], monthCount: 0 } }),
