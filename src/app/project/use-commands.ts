@@ -211,7 +211,7 @@ function addRejected(list: readonly RejectedEdit[], r: RejectedEdit): RejectedEd
   return [...list.filter((x) => x.id !== r.id), r];
 }
 
-export function useCommands(projectId: string, actorId: string, enabled: boolean) {
+export function useCommands(projectId: string, actorId: string, enabled: boolean, onUndo?: (group: string | undefined) => void) {
   const qc = useQueryClient();
   const [undoStack, setUndo] = useState<HistoryEntry[]>([]);
   const [redoStack, setRedo] = useState<HistoryEntry[]>([]);
@@ -541,7 +541,13 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
     const { back, rest } = replay(last, "undo");
     if (back) setRedo((x) => [...x, back]);
     if (rest && back) setUndo((u) => [...u, rest]);
-  }, [undoStack, replay]);
+    if (back && !rest) void queue.current.then(async () => {
+      await reloading.current;
+      // A failed undo restores its steps to the stack; notify only after successful persistence.
+      if (!reloadWhenIdle.current && generation.current === undoGeneration) onUndo?.(last.group);
+    });
+    const undoGeneration = generation.current;
+  }, [undoStack, replay, onUndo]);
 
   const redo = useCallback(() => {
     const last = redoStack[redoStack.length - 1];
@@ -656,6 +662,7 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
     canUndo: undoStack.length > 0,
     canRedo: redoStack.length > 0,
     undoLabel: undoStack[undoStack.length - 1]?.label ?? null,
+    undoGroup: undoStack[undoStack.length - 1]?.group ?? null,
     redoLabel: redoStack[redoStack.length - 1]?.label ?? null,
     status,
     clearError,
