@@ -28,10 +28,10 @@ export function sourceWindowId(): string {
 function bus(projectId: string) {
   const existing = buses.get(projectId);
   if (existing) return existing;
-  const name = "animatic-active-scene:" + projectId;
+  const KEY = "animatic-active-scene:" + projectId;
   let transport: SceneTransport;
   if (typeof BroadcastChannel !== "undefined") {
-    const channel = new BroadcastChannel(name);
+    const channel = new BroadcastChannel(KEY);
     transport = {
       send: (message) => channel.postMessage(message),
       listen: (receive) => {
@@ -44,11 +44,11 @@ function bus(projectId: string) {
   } else {
     transport = {
       send: (message: SceneMessage) => {
-        try { window.localStorage.setItem(name, JSON.stringify({ message, nonce: window.crypto.randomUUID() })); window.localStorage.removeItem(name); } catch { /* Same-window subscription still works. */ }
+        try { window.localStorage.setItem(KEY, JSON.stringify({ message, nonce: window.crypto.randomUUID() })); window.localStorage.removeItem(KEY); } catch { /* Same-window subscription still works. */ }
       },
       listen: (receive) => {
         const fn = (e: StorageEvent) => {
-          if (e.key !== name || !e.newValue) return;
+          if (e.key !== KEY || !e.newValue) return;
           try { receive((JSON.parse(e.newValue) as { message: unknown }).message); } catch { /* Ignore malformed events. */ }
         };
         window.addEventListener("storage", fn);

@@ -66,7 +66,7 @@ function ExplorerContent({ state, editable, cmds, ...props }: Props & { state: P
   const pages = useMemo(() => filterPages(scriptPages(state, productionId, { lockedPages: true }).pages, new Set(visibleId ? [visibleId] : [])), [state, productionId, visibleId]);
   const groups = useMemo(() => explorerGroups(state, productionId, { text: query, ...(character ? { character } : {}), ...(assetId ? { assetId } : {}) }, kind === "all" ? undefined : kind), [state, productionId, query, character, assetId, kind]);
   const decor = useMemo(() => pageDecorations(pages, state, { query: query || character || state.assets[assetId]?.name || "", notes: true }), [pages, state, query, character, assetId]);
-  useEffect(() => { setNoteTarget(null); setNoteId(null); root.current?.scrollTo({ top: 0 }); }, [visibleId]);
+  useEffect(() => { setNoteTarget(null); setNoteId(null); if (mode === "follow") setSelection({ occurrenceId: visibleId, blockId: null }); root.current?.scrollTo({ top: 0 }); }, [visibleId, mode]);
   useEffect(() => {
     if (!selection.blockId || mode === "follow") return;
     const block = [...(root.current?.querySelectorAll<HTMLElement>("[data-block]") ?? [])].find((element) => element.dataset["block"] === selection.blockId);

@@ -1,5 +1,5 @@
 import { PinIcon, X } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { L } from "@/core";
 import { useSession } from "@/app/auth/use-session";
 import { useStoredNumber } from "@/app/shell/pane-size";
@@ -20,6 +20,7 @@ export function ScriptExplorerPanel({ projectId, onClose }: { projectId: string;
   const popup = useRef<HTMLDivElement | null>(null);
   const [blocked, setBlocked] = useState<string | null>(null);
   const dragging = useRef<{ x: number; y: number; left: number; top: number; width: number; height: number; resize: boolean } | null>(null);
+  useEffect(() => { popup.current?.focus({ preventScroll: true }); }, []);
   if (session.status !== "signed-in") return null;
   const pin = () => {
     const source = sourceWindowId();
