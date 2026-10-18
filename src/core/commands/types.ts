@@ -28,6 +28,8 @@ import type {
   StoryProfileId,
   StoryProfileStageId,
   StoryFactId,
+  CanvasNodeId,
+  CanvasEdgeId,
   GenerationPromptId,
   UserId,
   VariantId,
@@ -37,6 +39,8 @@ import type { StoryProfile, StoryProfilePatch } from "../storylab/profile";
 import type { StoryFactFields } from "../storylab/facts";
 import type {
   AssetKind,
+  CanvasEdgeFields,
+  CanvasNodeFields,
   AssetName,
   AudioKind,
   ExportSettings,
@@ -1013,7 +1017,50 @@ export type Command =
       readonly factId: StoryFactId;
       readonly fields: StoryFactFields;
     }
-  | { readonly type: "RemoveStoryFact"; readonly factId: StoryFactId; readonly removed: boolean };
+  | { readonly type: "RemoveStoryFact"; readonly factId: StoryFactId; readonly removed: boolean }
+  // ---------- Skrivecanvaset (SL7) ----------
+  | {
+      readonly type: "AddCanvasNodes";
+      readonly nodes: readonly (CanvasNodeFields & { readonly id: CanvasNodeId })[];
+    }
+  | { readonly type: "UndoAddCanvasNodes"; readonly nodeIds: readonly CanvasNodeId[] }
+  | {
+      readonly type: "UpdateCanvasNode";
+      readonly nodeId: CanvasNodeId;
+      readonly patch: Partial<CanvasNodeFields>;
+    }
+  | {
+      readonly type: "MoveCanvasNodes";
+      readonly moves: readonly {
+        readonly nodeId: CanvasNodeId;
+        readonly x: number;
+        readonly y: number;
+        readonly w?: number;
+        readonly h?: number;
+      }[];
+    }
+  | {
+      /**
+       * Fjerner (removed: true) nodene og kantene deres, eller tar dem tilbake (removed: false). Ved
+       * tilbakeføring gjelder `edgeIds` (kantene som ble fjernet sammen med nodene).
+       */
+      readonly type: "RemoveCanvasNodes";
+      readonly nodeIds: readonly CanvasNodeId[];
+      readonly removed: boolean;
+      readonly edgeIds?: readonly CanvasEdgeId[];
+    }
+  | {
+      readonly type: "AddCanvasEdge";
+      readonly edgeId: CanvasEdgeId;
+      readonly fields: CanvasEdgeFields;
+    }
+  | { readonly type: "UndoAddCanvasEdge"; readonly edgeId: CanvasEdgeId }
+  | {
+      readonly type: "UpdateCanvasEdge";
+      readonly edgeId: CanvasEdgeId;
+      readonly patch: Partial<Pick<CanvasEdgeFields, "label" | "kind">>;
+    }
+  | { readonly type: "RemoveCanvasEdge"; readonly edgeId: CanvasEdgeId; readonly removed: boolean };
 
 /** En oversettelse av en manuslinje eller et scenehode (DEC-0058). */
 export interface TranslationFields {

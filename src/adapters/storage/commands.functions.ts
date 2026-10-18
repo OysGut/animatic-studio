@@ -410,6 +410,23 @@ export function needsSchema39(command: { type: string }): boolean {
   return STORY_LAB_COMMANDS.has(command.type);
 }
 
+/** Skrivecanvaset i Story Lab (SL7) krever migrasjon 0040. */
+const CANVAS_COMMANDS = new Set([
+  "AddCanvasNodes",
+  "UndoAddCanvasNodes",
+  "UpdateCanvasNode",
+  "MoveCanvasNodes",
+  "RemoveCanvasNodes",
+  "AddCanvasEdge",
+  "UndoAddCanvasEdge",
+  "UpdateCanvasEdge",
+  "RemoveCanvasEdge",
+]);
+
+export function needsSchema40(command: { type: string }): boolean {
+  return CANVAS_COMMANDS.has(command.type);
+}
+
 /** Filmens visuelle stil for AI (DEC-0065) krever migrasjon 0021. */
 export function needsSchema21(command: { type: string }): boolean {
   return STYLE_COMMANDS.has(command.type);
@@ -731,6 +748,18 @@ export const runCommand = createServerFn({ method: "POST" })
           message: L(
             "Databasen mangler kontinuitet for spinoffer. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0018.",
             "The database is missing continuity for spin-offs. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0018.",
+          ),
+        };
+    }
+    if (needsSchema40(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 40)
+        return {
+          ok: false,
+          code: "schema",
+          message: L(
+            "Databasen mangler canvaset i Story Lab. Den må oppdateres (migrasjon 0040).",
+            "The database is missing the Story Lab canvas. It must be updated (migration 0040).",
           ),
         };
     }
