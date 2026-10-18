@@ -148,9 +148,10 @@ export function GlobalLibraryDialog({
 
   async function create() {
     const file = newFile.current?.files?.[0];
-    if (!ws.workspaceId || !newName.trim() || !file) return;
+    const workspaceId = ws.workspaceId;
+    if (!workspaceId || !newName.trim() || !file) return;
     await act(async () => {
-      const id = await createGlobalAsset(ws.workspaceId!, {
+      const id = await createGlobalAsset(workspaceId, {
         kind: newKind,
         name: newName.trim(),
         description: "",
@@ -162,12 +163,20 @@ export function GlobalLibraryDialog({
         style: "reference",
         appearance: "",
       });
-      await uploadGlobalVersion(ws.workspaceId!, id, variant, file);
       setNewName("");
       setNewTags("");
       if (newFile.current) newFile.current.value = "";
-      refresh();
       setSelected(id);
+      try {
+        await uploadGlobalVersion(workspaceId, id, variant, file);
+      } catch {
+        throw new Error(L(
+          "Ressursen ble opprettet uten fil. Opplastingen av filen feilet. Prøv igjen fra ressursen med «Last opp fil …».",
+          "The asset was created without a file. The file upload failed. Please try again from the asset using “Upload file …”.",
+        ));
+      } finally {
+        refresh();
+      }
       return L("Den globale ressursen er laget.", "The global asset has been created.");
     });
   }
@@ -388,7 +397,7 @@ export function GlobalLibraryDialog({
                                   versionFile.current?.click();
                                 }}
                               >
-                                {L("Ny versjon …", "New version …")}
+                                {vs.length ? L("Ny versjon …", "New version …") : L("Last opp fil …", "Upload file …")}
                               </Button>
                             ) : null}
                           </div>

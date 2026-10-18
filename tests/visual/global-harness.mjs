@@ -66,6 +66,9 @@ export function setup(hooks = {}) {
       const single = (request.headers()["accept"] ?? "").includes("vnd.pgrst.object");
       if (path.startsWith("/auth/v1/user")) return json(USER);
       if (path.startsWith("/auth/v1/")) return json({});
+      if (path.startsWith("/storage/v1/object/upload/sign/") && request.method() === "PUT") {
+        return json({ Key: decodeURIComponent(path.slice("/storage/v1/object/upload/sign/".length)) });
+      }
       if (path.startsWith("/storage/v1/object/sign/") && request.method() === "POST") {
         const body = JSON.parse(request.postData() ?? "{}");
         return json((body.paths ?? []).map((p) => ({ path: p, signedURL: `/object/sign/assets/${p}?token=t`, error: null })));
