@@ -21,6 +21,7 @@ import { Route as ProsjektProjectIdBibliotekRouteImport } from './routes/prosjek
 import { Route as ProsjektProjectIdManusRouteImport } from './routes/prosjekt.$projectId.manus'
 import { Route as ProsjektProjectIdMonteringRouteImport } from './routes/prosjekt.$projectId.montering'
 import { Route as ProsjektProjectIdSceneRouteImport } from './routes/prosjekt.$projectId.scene'
+import { Route as ProsjektProjectIdStorylabRouteImport } from './routes/prosjekt.$projectId.storylab'
 import { Route as ProsjektProjectIdUtgivelseRouteImport } from './routes/prosjekt.$projectId.utgivelse'
 import { Route as ApiPublicCronAiJobsRouteImport } from './routes/api/public/cron/ai-jobs'
 
@@ -86,6 +87,12 @@ const ProsjektProjectIdSceneRoute = ProsjektProjectIdSceneRouteImport.update({
   path: '/scene',
   getParentRoute: () => ProsjektProjectIdRoute,
 } as any)
+const ProsjektProjectIdStorylabRoute =
+  ProsjektProjectIdStorylabRouteImport.update({
+    id: '/storylab',
+    path: '/storylab',
+    getParentRoute: () => ProsjektProjectIdRoute,
+  } as any)
 const ProsjektProjectIdUtgivelseRoute =
   ProsjektProjectIdUtgivelseRouteImport.update({
     id: '/utgivelse',
@@ -110,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
   '/prosjekt/$projectId/scene': typeof ProsjektProjectIdSceneRoute
+  '/prosjekt/$projectId/storylab': typeof ProsjektProjectIdStorylabRoute
   '/prosjekt/$projectId/utgivelse': typeof ProsjektProjectIdUtgivelseRoute
   '/prosjekt/$projectId/': typeof ProsjektProjectIdIndexRoute
   '/api/public/cron/ai-jobs': typeof ApiPublicCronAiJobsRoute
@@ -125,6 +133,7 @@ export interface FileRoutesByTo {
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
   '/prosjekt/$projectId/scene': typeof ProsjektProjectIdSceneRoute
+  '/prosjekt/$projectId/storylab': typeof ProsjektProjectIdStorylabRoute
   '/prosjekt/$projectId/utgivelse': typeof ProsjektProjectIdUtgivelseRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdIndexRoute
   '/api/public/cron/ai-jobs': typeof ApiPublicCronAiJobsRoute
@@ -142,6 +151,7 @@ export interface FileRoutesById {
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
   '/prosjekt/$projectId/scene': typeof ProsjektProjectIdSceneRoute
+  '/prosjekt/$projectId/storylab': typeof ProsjektProjectIdStorylabRoute
   '/prosjekt/$projectId/utgivelse': typeof ProsjektProjectIdUtgivelseRoute
   '/prosjekt/$projectId/': typeof ProsjektProjectIdIndexRoute
   '/api/public/cron/ai-jobs': typeof ApiPublicCronAiJobsRoute
@@ -160,6 +170,7 @@ export interface FileRouteTypes {
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/montering'
     | '/prosjekt/$projectId/scene'
+    | '/prosjekt/$projectId/storylab'
     | '/prosjekt/$projectId/utgivelse'
     | '/prosjekt/$projectId/'
     | '/api/public/cron/ai-jobs'
@@ -175,6 +186,7 @@ export interface FileRouteTypes {
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/montering'
     | '/prosjekt/$projectId/scene'
+    | '/prosjekt/$projectId/storylab'
     | '/prosjekt/$projectId/utgivelse'
     | '/prosjekt/$projectId'
     | '/api/public/cron/ai-jobs'
@@ -191,6 +203,7 @@ export interface FileRouteTypes {
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/montering'
     | '/prosjekt/$projectId/scene'
+    | '/prosjekt/$projectId/storylab'
     | '/prosjekt/$projectId/utgivelse'
     | '/prosjekt/$projectId/'
     | '/api/public/cron/ai-jobs'
@@ -293,6 +306,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProsjektProjectIdSceneRouteImport
       parentRoute: typeof ProsjektProjectIdRoute
     }
+    '/prosjekt/$projectId/storylab': {
+      id: '/prosjekt/$projectId/storylab'
+      path: '/storylab'
+      fullPath: '/prosjekt/$projectId/storylab'
+      preLoaderRoute: typeof ProsjektProjectIdStorylabRouteImport
+      parentRoute: typeof ProsjektProjectIdRoute
+    }
     '/prosjekt/$projectId/utgivelse': {
       id: '/prosjekt/$projectId/utgivelse'
       path: '/utgivelse'
@@ -315,6 +335,7 @@ interface ProsjektProjectIdRouteChildren {
   ProsjektProjectIdManusRoute: typeof ProsjektProjectIdManusRoute
   ProsjektProjectIdMonteringRoute: typeof ProsjektProjectIdMonteringRoute
   ProsjektProjectIdSceneRoute: typeof ProsjektProjectIdSceneRoute
+  ProsjektProjectIdStorylabRoute: typeof ProsjektProjectIdStorylabRoute
   ProsjektProjectIdUtgivelseRoute: typeof ProsjektProjectIdUtgivelseRoute
   ProsjektProjectIdIndexRoute: typeof ProsjektProjectIdIndexRoute
 }
@@ -324,6 +345,7 @@ const ProsjektProjectIdRouteChildren: ProsjektProjectIdRouteChildren = {
   ProsjektProjectIdManusRoute: ProsjektProjectIdManusRoute,
   ProsjektProjectIdMonteringRoute: ProsjektProjectIdMonteringRoute,
   ProsjektProjectIdSceneRoute: ProsjektProjectIdSceneRoute,
+  ProsjektProjectIdStorylabRoute: ProsjektProjectIdStorylabRoute,
   ProsjektProjectIdUtgivelseRoute: ProsjektProjectIdUtgivelseRoute,
   ProsjektProjectIdIndexRoute: ProsjektProjectIdIndexRoute,
 }
