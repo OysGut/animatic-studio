@@ -76,7 +76,7 @@ begin
   return null;
 end $$;
 -- Utsatt til slutten av transaksjonen: en gruppe og nodene i den kan legges inn i samme endring
-create constraint trigger story_canvas_nodes_check after insert or update on public.story_canvas_nodes
+create constraint trigger story_canvas_nodes_integrity after insert or update on public.story_canvas_nodes
   deferrable initially deferred for each row execute function private.story_canvas_node_check();
 
 create or replace function private.story_canvas_edge_check() returns trigger
@@ -88,7 +88,7 @@ begin
   end if;
   return null;
 end $$;
-create constraint trigger story_canvas_edges_check after insert or update on public.story_canvas_edges
+create constraint trigger story_canvas_edges_integrity after insert or update on public.story_canvas_edges
   deferrable initially deferred for each row execute function private.story_canvas_edge_check();
 
 -- ---------- apply_changes: som 0039, med canvastabellene ----------
