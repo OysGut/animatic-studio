@@ -5524,7 +5524,7 @@ try {
     const prod = Object.values(target.productions)[0];
     assert(prod, "produksjonen mangler");
     const ID = (n: number) => `01900000-0000-7000-8000-0052${String(n).padStart(8, "0")}` as never;
-    target = await runCommand(target, ALICE, { type: "CreateScene", sceneId: ID(1), variantId: ID(2), occurrenceId: ID(3), productionId: prod.id, heading: { intExt: "", location: "Scene", time: "" }, blocks: [] });
+    target = await runCommand(target, ALICE, { type: "CreateScene", sceneId: ID(1), variantId: ID(2), occurrenceId: ID(3), productionId: prod.id, orderKey: keyBetween(null, null), heading: { intExt: "", location: "Scene", time: "" }, blocks: [] });
     target = await runCommand(target, ALICE, { type: "CreateComposition", compositionId: ID(4), variantId: ID(2), fields: { name: "Scene", width: 1920, height: 1080, durationFrames: 100, background: "#000000" } });
     const { planUseGlobal } = await import("../../src/core");
     const plan = planUseGlobal(target, { id: ga, workspaceId: ws, kind: "template", name: "LT", description: "", categories: [], tags: [], archived: false, revision: 1 }, [{

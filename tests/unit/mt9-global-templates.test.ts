@@ -40,12 +40,14 @@ function setup() {
   s = mustApply(s, { type: "CreateAssets", assets: [{ assetId, fields: { kind: "template", name: "LT", names: [], description: "", category: "", tags: [] } }] });
   s = mustApply(s, { type: "CreateAssetVariant", variantId, assetId, fields: { name: "Standard", style: "other", appearance: "" } });
   s = mustApply(s, { type: "AddAssetVersion", variantId, versionId, template: def, note: "", media: { path: `${s.project.id}/${assetId}/${versionId}/mal.png`, mimeType: "image/png", width: 480, height: 270, byteSize: 100, sha256: "a".repeat(64) } });
+  const asset = s.assets[assetId], variant = s.assetVariants[variantId], version = s.assetVersions[versionId];
+  if (!asset || !variant || !version) throw new Error("Fixture mangler malressurs");
   const tables = {
     workspace_members: [{ workspace_id: WS, user_id: USER, role: "editor" }],
     project_members: [{ project_id: s.project.id, user_id: USER, role: "owner" }],
-    assets: [toRow("assets", s.assets[assetId], s.project.id)],
-    asset_variants: [toRow("assetVariants", s.assetVariants[variantId], s.project.id)],
-    asset_versions: [toRow("assetVersions", s.assetVersions[versionId], s.project.id)],
+    assets: [toRow("assets", asset, s.project.id)],
+    asset_variants: [toRow("assetVariants", variant, s.project.id)],
+    asset_versions: [toRow("assetVersions", version, s.project.id)],
     global_assets: [] as Record<string, unknown>[], global_asset_variants: [] as Record<string, unknown>[], global_asset_versions: [] as Record<string, unknown>[],
   };
   const db = fakeDb(tables);
