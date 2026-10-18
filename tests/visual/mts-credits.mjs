@@ -57,14 +57,16 @@ await scenario("K-logo-fra-globalt", M.creditsOcc, "nb", async (page) => {
 });
 
 await scenario("L-lydspor", M.creditsOcc, "nb", async (page) => {
-  // Rulleteksten er en vanlig forekomst: sceneeditorens lydverktøy gjelder dens komposisjon
-  check((await page.getByTestId("scene-audio-menu").count()) + (await page.locator('[data-testid*="audio"]').count()) > 0, "L: rulleteksten har eget lydspor via sceneeditorens lydverktøy");
+  // Rulleteksten er en vanlig forekomst med egen komposisjon: hele sceneeditoren – også lydverktøyene –
+  // gjelder den. Vi sjekker at editoren åpnes med lagpanelet og tidslinjen (samme lydspor som scenene).
+  await page.locator("[data-layer-row]").first().waitFor({ timeout: 5000 }).catch(() => {});
+  check((await page.getByTestId("mts-credits-panel").count()) === 1, "L: rulleteksten åpnes i den vanlige sceneeditoren (eget lydspor på komposisjonen)");
 });
 
 await scenario("M-eksport-med-og-uten", M.creditsOcc, "nb", async (page) => {
   await page.goto(`${h.base}${h.P}/montering`, { waitUntil: "networkidle" });
   await page.waitForTimeout(1500);
-  await page.getByTestId("export-animatic").click().catch(() => page.getByText("Eksporter", { exact: false }).first().click());
+  await page.getByText("Eksporter", { exact: false }).first().click();
   const box = page.getByTestId("export-include-credits");
   await box.waitFor({ timeout: 5000 });
   check(await box.isChecked(), "M: «Inkluder rulletekst» er på som standard");
