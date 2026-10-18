@@ -94,7 +94,7 @@ export function VariantStrip({
                     className="flex flex-col overflow-hidden rounded-sm border border-border bg-surface-1 text-left hover:border-accent-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed"
                   >
                     <Thumb url={urls[ver.mediaPath]} />
-                    <span className="flex items-center justify-between gap-1 px-1 py-0.5 text-[10px] text-text-tertiary">
+                    <span className="flex items-center justify-between gap-1 px-1 py-0.5 text-[11px] text-text-tertiary">
                       <span>v{ver.number}</span>
                       {view ? (
                         <span className="truncate" data-testid="asset-studio-version-view">

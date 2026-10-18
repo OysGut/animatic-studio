@@ -112,7 +112,7 @@ export function StudioAudioTracks({
               <div className="relative h-4 flex-1 rounded-sm bg-surface-2">
                 <div
                   className={
-                    "absolute top-0 h-full truncate rounded-sm px-1 text-[10px] leading-4 " +
+                    "absolute top-0 h-full truncate rounded-sm px-1 text-[11px] leading-4 " +
                     (on ? "bg-surface-3 text-text-secondary" : "bg-surface-2 text-text-tertiary line-through")
                   }
                   style={{
