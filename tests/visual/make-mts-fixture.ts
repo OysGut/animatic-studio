@@ -103,10 +103,10 @@ writeFileSync(
       mts: {
         compA: compA.id,
         occA: occA.id,
-        sceneA: occA.sceneId,
+        sceneA: occA.id,
         compB,
         occB: occB.id,
-        sceneB: occB.sceneId,
+        sceneB: occB.id,
         textLayer,
         templateAsset: tplAsset,
         v1,

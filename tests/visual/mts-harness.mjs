@@ -103,7 +103,7 @@ export function harness(defaultOut) {
   const check = (condition, description) => { console.log(`  ${condition ? "ok" : "FEIL"} ${description}`); condition ? pass++ : fail++; };
   let browser;
 
-  /** Åpner sceneeditoren for scenen (sceneId) på språket. */
+  /** Åpner sceneeditoren for sceneforekomsten (occurrenceId, som `?scene=` tar) på språket. */
   async function open(sceneId, lang = "nb", role = "owner") {
     browser ??= await chromium.launch({ headless: true });
     const context = await browser.newContext({ viewport: { width: 1280, height: 1800 }, colorScheme: "dark" });
@@ -155,10 +155,21 @@ export function harness(defaultOut) {
     }
     return null;
   }
+  /** Spør etter `cond` med jevne mellomrom til den er sann eller tiden går ut (for kontroller som venter på en sendt kommando). */
+  async function eventually(cond, ms = 3000) {
+    const end = Date.now() + ms;
+    for (;;) {
+      let v = false;
+      try { v = await cond(); } catch { v = false; }
+      if (v) return true;
+      if (Date.now() >= end) return false;
+      await new Promise((r) => setTimeout(r, 100));
+    }
+  }
   async function finish() {
     console.log(`RESULTAT ${pass} bestått, ${fail} feilet`);
     await browser?.close();
     process.exitCode = fail ? 1 : 0;
   }
-  return { fx, M: fx.mts, rows, state, check, scenario, selectLayer, waitHidden, menu, lastFields, finish, out };
+  return { fx, M: fx.mts, rows, state, check, scenario, selectLayer, waitHidden, menu, lastFields, eventually, finish, out };
 }
