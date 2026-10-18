@@ -30,9 +30,9 @@ import {
 function occ(partial: Partial<SceneOccurrence> & Pick<SceneOccurrence, "id">): SceneOccurrence {
   return {
     revision: 1,
-    productionId: "p",
-    sceneId: `sc-${partial.id}`,
-    variantId: `v-${partial.id}`,
+    productionId: "p" as never,
+    sceneId: `sc-${partial.id}` as never,
+    variantId: `v-${partial.id}` as never,
     orderKey: partial.id,
     active: true,
     excerpt: null,
@@ -43,7 +43,7 @@ function occ(partial: Partial<SceneOccurrence> & Pick<SceneOccurrence, "id">): S
 }
 
 function withOccurrences(...os: SceneOccurrence[]): ProjectState {
-  const s = emptyProjectState("p");
+  const s = emptyProjectState({ id: "p" } as never);
   return {
     ...s,
     occurrences: Object.fromEntries(os.map((o) => [o.id, o])),
@@ -58,16 +58,16 @@ describe("MT6: scenetyper og manusinvarianten", () => {
       occ({ id: "c", kind: "text" }),
       occ({ id: "d", kind: "credits" }),
     );
-    expect(occurrenceKind(s.occurrences.a!)).toBe("scene");
-    expect(isScriptOccurrence(s.occurrences.b!)).toBe(false);
+    expect(occurrenceKind(s.occurrences["a"]!)).toBe("scene");
+    expect(isScriptOccurrence(s.occurrences["b"]!)).toBe(false);
     const view = scriptView(s, "p");
     // Markøren er med i visningen, men uten nummer og blokker
     expect(view.map((v) => v.occurrenceId)).toEqual(["a", "b", "c", "d"]);
     expect(view.find((v) => v.occurrenceId === "b")?.marker).toBe("title");
     expect(view.find((v) => v.occurrenceId === "b")?.blocks).toEqual([]);
     // Bare manusscenen nummereres
-    expect(mainSceneNumbers(s, "p").size).toBe(1);
-    expect(exportNumbering(s, "p").size).toBe(1);
+    expect(mainSceneNumbers(s).size).toBe(1);
+    expect(exportNumbering(s, "p" as never).size).toBe(1);
     // Manussidene viser markøren, ikke sceneblokker
     const pages = scriptPages(s, "p");
     const all = pages.pages.flatMap((pg) => pg.lines.map((l) => l.text)).join(" ");
