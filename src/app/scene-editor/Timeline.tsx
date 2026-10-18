@@ -1016,6 +1016,65 @@ export function Timeline({
     );
   }
 
+  /** Dra i kantene på et låst tidsrom, eller lag et nytt med Shift + dra over linjalen (SV1). */
+  const [rangeDrag, setRangeDrag] = useState<{
+    id: string | null;
+    edge: "start" | "end" | "new";
+    anchor: number;
+    start: number;
+    end: number;
+  } | null>(null);
+  function rangeFrameAt(clientX: number): number {
+    const rect = trackRef.current?.getBoundingClientRect();
+    if (!rect) return 0;
+    return clamp(Math.round((clientX - rect.left) / ppf), 0, durationFrames);
+  }
+  function moveRangeDrag(clientX: number) {
+    if (!rangeDrag) return;
+    const f = rangeFrameAt(clientX);
+    if (rangeDrag.edge === "start")
+      setRangeDrag({ ...rangeDrag, start: Math.min(f, rangeDrag.anchor - 1) });
+    else if (rangeDrag.edge === "end")
+      setRangeDrag({ ...rangeDrag, end: Math.max(f, rangeDrag.anchor + 1) });
+    else
+      setRangeDrag({
+        ...rangeDrag,
+        start: Math.min(f, rangeDrag.anchor),
+        end: Math.max(f, rangeDrag.anchor),
+      });
+  }
+  function finishRangeDrag() {
+    const d = rangeDrag;
+    setRangeDrag(null);
+    if (!d || d.end <= d.start) return;
+    const list = timingOf(latest.current.composition).lockedRanges;
+    const others = list.filter((r) => r.id !== d.id);
+    if (others.some((r) => d.start < r.endFrame && d.end > r.startFrame)) {
+      setError(
+        L(
+          "Låste tidsrom kan ikke overlappe hverandre.",
+          "Locked ranges cannot overlap each other.",
+        ),
+      );
+      return;
+    }
+    if (d.id === null)
+      setLockedRanges(
+        [...list, { id: newId(), startFrame: d.start, endFrame: d.end, label: "" }],
+        L("Lås tidsrom", "Lock time range"),
+      );
+    else {
+      const old = list.find((r) => r.id === d.id);
+      if (!old || (old.startFrame === d.start && old.endFrame === d.end)) return;
+      setLockedRanges(
+        list.map((r) => (r.id === d.id ? { ...r, startFrame: d.start, endFrame: d.end } : r)),
+        L("Endre låst tidsrom", "Change locked range"),
+      );
+    }
+  }
+
+
+
   function keyAll() {
     if (!selectedLayer) return;
     updateKeys(selectedLayer, L("Nøkkelbilde", "Keyframe"), keyAllAt(selectedLayer, frame));
@@ -1069,6 +1128,8 @@ export function Timeline({
           initialFrames={retimeTarget ?? durationFrames}
           runAndWait={retime.runAndWait}
           imageUrls={retime.imageUrls}
+          audioOf={retime.audioOf}
+          audioUrls={retime.audioUrls}
         />
       ) : null}
       <PaneResizer
@@ -1173,11 +1234,21 @@ export function Timeline({
               "Bruk varigheten som er beregnet fra manuset",
               "Use the duration calculated from the script",
             )}
-            onClick={() =>
-              updateComposition(L("Varighet fra manus", "Duration from script"), {
-                durationFrames: 0,
-              })
-            }
+            onClick={() => {
+              // B-041: lengdeendringer brukeren gjør, går gjennom metodevalget – unntatt i en scene uten
+              // innhold med tidspunkter, eller når den beregnede lengden er den samme.
+              const calculated = compositionDuration(state, { ...composition, durationFrames: 0 });
+              if (
+                retime &&
+                calculated !== durationFrames &&
+                retimeHasTimedContent(state, retime.occurrenceId)
+              )
+                setRetimeTarget(calculated);
+              else
+                updateComposition(L("Varighet fra manus", "Duration from script"), {
+                  durationFrames: 0,
+                });
+            }}
           >
             {L("Fra manus", "From script")}
           </Button>
@@ -1382,39 +1453,107 @@ export function Timeline({
             <div style={{ width: GUTTER }} className="shrink-0" aria-hidden="true" />
             <div
               ref={trackRef}
+              data-testid="timeline-ruler"
               className="relative h-5 shrink-0 cursor-col-resize touch-none"
               style={{ width: trackW }}
-              onPointerDown={onRulerDown}
-              onPointerMove={onRulerMove}
+              onPointerDown={(e) => {
+                // Shift + dra over linjalen lager et låst tidsrom (SV1)
+                if (e.shiftKey && retime && editable && e.button === 0) {
+                  e.currentTarget.setPointerCapture(e.pointerId);
+                  const f = rangeFrameAt(e.clientX);
+                  setRangeDrag({ id: null, edge: "new", anchor: f, start: f, end: f });
+                  return;
+                }
+                onRulerDown(e);
+              }}
+              onPointerMove={(e) => {
+                if (rangeDrag) moveRangeDrag(e.clientX);
+                else onRulerMove(e);
+              }}
+              onPointerUp={() => {
+                if (rangeDrag) finishRangeDrag();
+              }}
+              onPointerCancel={() => setRangeDrag(null)}
             >
               <RulerTicks ppf={ppf} durationFrames={durationFrames} fps={fpsN} />
-              {timingOf(composition).lockedRanges.map((r) => (
+              {rangeDrag?.id === null ? (
                 <div
-                  key={r.id}
-                  data-testid="locked-range"
-                  title={L("Låst tidsrom", "Locked time range") + (r.label ? `: ${r.label}` : "")}
-                  className="absolute inset-y-0 flex items-start justify-end border-x border-accent-warm bg-accent-warm/25"
-                  style={{ left: r.startFrame * ppf, width: (r.endFrame - r.startFrame) * ppf }}
-                  onPointerDown={(e) => e.stopPropagation()}
-                >
-                  {editable ? (
-                    <button
-                      type="button"
-                      aria-label={L("Fjern låst tidsrom", "Remove locked range")}
-                      data-testid="locked-range-remove"
-                      className="mr-0.5 text-[11px] leading-none text-text-secondary hover:text-text-primary"
-                      onClick={() =>
-                        setLockedRanges(
-                          timingOf(composition).lockedRanges.filter((x) => x.id !== r.id),
-                          L("Fjern låst tidsrom", "Remove locked range"),
-                        )
+                  data-testid="locked-range-draft"
+                  className="pointer-events-none absolute inset-y-0 border-x border-accent-warm bg-accent-warm/25"
+                  style={{
+                    left: rangeDrag.start * ppf,
+                    width: (rangeDrag.end - rangeDrag.start) * ppf,
+                  }}
+                />
+              ) : null}
+              {timingOf(composition).lockedRanges.map((orig) => {
+                const r =
+                  rangeDrag && rangeDrag.id === orig.id
+                    ? { ...orig, startFrame: rangeDrag.start, endFrame: rangeDrag.end }
+                    : orig;
+                const edge = (which: "start" | "end") =>
+                  editable ? (
+                    <div
+                      role="slider"
+                      tabIndex={-1}
+                      aria-label={
+                        which === "start"
+                          ? L("Starten av det låste tidsrommet", "Start of the locked range")
+                          : L("Slutten av det låste tidsrommet", "End of the locked range")
                       }
-                    >
-                      ×
-                    </button>
-                  ) : null}
-                </div>
-              ))}
+                      aria-valuenow={which === "start" ? r.startFrame : r.endFrame}
+                      data-testid={`locked-range-${which}`}
+                      className={
+                        "absolute inset-y-0 w-1.5 cursor-ew-resize touch-none bg-accent-warm/70 " +
+                        (which === "start" ? "left-0" : "right-0")
+                      }
+                      onPointerDown={(e) => {
+                        if (e.button !== 0) return;
+                        e.stopPropagation();
+                        e.currentTarget.setPointerCapture(e.pointerId);
+                        setRangeDrag({
+                          id: orig.id,
+                          edge: which,
+                          anchor: which === "start" ? orig.endFrame : orig.startFrame,
+                          start: orig.startFrame,
+                          end: orig.endFrame,
+                        });
+                      }}
+                      onPointerMove={(e) => moveRangeDrag(e.clientX)}
+                      onPointerUp={finishRangeDrag}
+                      onPointerCancel={() => setRangeDrag(null)}
+                    />
+                  ) : null;
+                return (
+                  <div
+                    key={r.id}
+                    data-testid="locked-range"
+                    title={L("Låst tidsrom", "Locked time range") + (r.label ? `: ${r.label}` : "")}
+                    className="absolute inset-y-0 flex items-start justify-end border-x border-accent-warm bg-accent-warm/25"
+                    style={{ left: r.startFrame * ppf, width: (r.endFrame - r.startFrame) * ppf }}
+                    onPointerDown={(e) => e.stopPropagation()}
+                  >
+                    {edge("start")}
+                    {editable ? (
+                      <button
+                        type="button"
+                        aria-label={L("Fjern låst tidsrom", "Remove locked range")}
+                        data-testid="locked-range-remove"
+                        className="relative mr-2 text-[11px] leading-none text-text-secondary hover:text-text-primary"
+                        onClick={() =>
+                          setLockedRanges(
+                            timingOf(composition).lockedRanges.filter((x) => x.id !== r.id),
+                            L("Fjern låst tidsrom", "Remove locked range"),
+                          )
+                        }
+                      >
+                        ×
+                      </button>
+                    ) : null}
+                    {edge("end")}
+                  </div>
+                );
+              })}
               {retime && editable ? (
                 <div
                   role="slider"
