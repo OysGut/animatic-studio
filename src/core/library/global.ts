@@ -11,6 +11,7 @@ import { L, localized, collation } from "../i18n";
 import type { Asset, AssetKind, AssetVersion, ProjectState, VisualStyle } from "../model";
 import type { AssetId, AssetVariantId, AssetVersionId } from "../ids";
 import type { AssetMedia, Command } from "../commands/types";
+import type { TemplateDefinition } from "../typography/template";
 
 /** Typer i det globale biblioteket (§3). Utvidbart uten nytt bibliotek (§3.7). */
 export const GLOBAL_KINDS = [
@@ -52,6 +53,8 @@ export function projectKindOf(kind: GlobalKind): AssetKind {
       return "environment";
     case "sound":
       return "sound";
+    case "template":
+      return "template";
     default:
       return "other";
   }
@@ -69,6 +72,8 @@ export function globalKindOf(kind: AssetKind): GlobalKind {
       return "environment";
     case "sound":
       return "sound";
+    case "template":
+      return "template";
     default:
       return "other";
   }
@@ -88,6 +93,7 @@ export interface GlobalVersion {
   readonly durationMs: number | null;
   readonly note: string;
   readonly createdAt: string;
+  readonly template?: TemplateDefinition | null;
 }
 
 export interface GlobalVariant {
@@ -330,6 +336,7 @@ export function planUseGlobal(
         `From the global library (v${it.version.number})`,
       ),
       globalSource: { assetId: asset.id, variantId: it.variant.id, versionId: it.version.id },
+      ...(it.version.template ? { template: it.version.template } : {}),
     });
     if (fresh)
       commands.push({ type: "ApproveAssetVersion", variantId, versionId: it.versionId });

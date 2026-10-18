@@ -12,6 +12,7 @@ import {
   type GlobalVariant,
   type GlobalVersion,
   type VisualStyle,
+  type TemplateDefinition,
 } from "@/core";
 import { browserClient, db } from "./client";
 
@@ -77,6 +78,7 @@ export async function listGlobalBundles(workspaceId: string): Promise<GlobalAsse
     durationMs: optNum(r["duration_ms"]),
     note: str(r["note"]),
     createdAt: str(r["created_at"]),
+    template: (r["template_spec"] ?? null) as TemplateDefinition | null,
   }));
   return assets.map((asset) => ({
     asset,

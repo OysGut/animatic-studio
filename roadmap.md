@@ -1,4 +1,8 @@
 # MU1
+## MT retterunde 4
+- [x] Bevar globale maldefinisjoner gjennom lagring og bruk; 0052 skrevet, ikke kjørt.
+- [x] Rundtur- og DB-tester skrevet; S venter; fixture, unit-tester og mockede nettlesertester grønne. DB-testen kjøres av Claude sammen med 0052.
+
 - [x] Flytende popup på z-40, under Radix-portalene (z-50) og over arbeidsflaten. Tsc rent; vitest 1451 bestått.
 - [x] Rett MU1/OG1-testenes teksthistorikk, overskriftsfelt og engelske gruppe; høyreforankre popupen. Vitest: 1451 bestått etter omkjøring med to arbeidere; automatisk typekontroll grønn. Øystein kjører nettlesertestene.
 - [x] Aktiv-scene-buss og Story Lab-scenefølging.

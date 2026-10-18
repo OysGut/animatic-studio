@@ -16,6 +16,7 @@ await scenario("S-ny-tekstscene-fra-monteringen", M.sceneA, "nb", async (page) =
   const create = state.commands.find((c) => c?.type === "CreateScene" && c.kind === "text");
   check(!!create, "S: tekstscenen lages som egen forekomst i filmstrukturen");
   check(create.blocks.length === 0 && create.heading.location.length > 0, "S: den er aldri en manusscene (ingen manusblokker, bare en markør)");
+  await eventually(() => state.commands.some((c) => c?.type === "CreateComposition"));
   check(state.commands.some((c) => c?.type === "CreateComposition"), "S: tekstscenen får sin egen komposisjon");
 });
 
