@@ -4354,6 +4354,105 @@ try {
     for (const t of STORY_TABLES) assert((await count(t, sl)) === 0, `${t} har fortsatt rader etter rensing`);
     assert((await sql`select 1 from public.projects where id = ${sl}`).length === 0, "prosjektraden finnes fortsatt");
   });
+  // ---------------------------------------------------------------- 0040 Skrivecanvas (SL7)
+  const CANVAS_TABLES = ["story_canvas_nodes", "story_canvas_edges"];
+  const cv = await as(
+    "authenticated",
+    ALICE,
+    async (tx) => (await tx`select public.create_project('Canvas') as id`)[0]!["id"] as string,
+  );
+  await sql`insert into public.project_members (project_id, user_id, role) values (${cv}, ${BOB}, 'viewer')`;
+  const CV = (n: number) => `abcdef00-0000-7000-8000-00000040${String(n).padStart(4, "0")}`;
+  const cvNode = (n: number, kind = "idea", over: Record<string, unknown> = {}) => ({
+    id: CV(n) as never, kind: kind as never, title: `Node ${n}`, body: "", x: n * 10, y: 0, w: 220, h: 120,
+    color: null, groupId: null, assetId: null, sceneId: null, ...over,
+  });
+  let cvState = await loadState(cv);
+
+  await test("0040: canvaskommandoene skrives via apply_changes og leses tilbake", async () => {
+    cvState = await runCommand(cvState, ALICE, {
+      type: "AddCanvasNodes",
+      nodes: [cvNode(1, "group"), cvNode(2, "premise", { groupId: CV(1) }), cvNode(3, "event")],
+    });
+    cvState = await runCommand(cvState, ALICE, {
+      type: "AddCanvasEdge", edgeId: CV(10) as never,
+      fields: { fromNodeId: CV(2) as never, toNodeId: CV(3) as never, label: "fører til", kind: "leads_to" },
+    });
+    cvState = await runCommand(cvState, ALICE, { type: "UpdateCanvasNode", nodeId: CV(2) as never, patch: { title: "Premiss", color: "accent-brand" } });
+    cvState = await runCommand(cvState, ALICE, { type: "MoveCanvasNodes", moves: [{ nodeId: CV(2) as never, x: 55.5, y: 66 }, { nodeId: CV(3) as never, x: 77, y: 88 }] });
+    cvState = await runCommand(cvState, ALICE, { type: "UpdateCanvasEdge", edgeId: CV(10) as never, patch: { kind: "causes" } });
+    cvState = await runCommand(cvState, ALICE, { type: "RemoveCanvasNodes", nodeIds: [CV(3) as never], removed: true });
+    assert(cvState.canvasEdges[CV(10)]?.removed === true, "kanten ble ikke fjernet med noden");
+    cvState = await runCommand(cvState, ALICE, { type: "RemoveCanvasNodes", nodeIds: [CV(3) as never], removed: false, edgeIds: [CV(10) as never] });
+    const back = await loadState(cv);
+    for (const k of ["canvasNodes", "canvasEdges"] as const)
+      assert(isDeepStrictEqual(back[k], cvState[k]), `${k} ble ikke lest tilbake likt`);
+    assert(back.canvasNodes[CV(2)]?.x === 55.5 && back.canvasNodes[CV(2)]?.groupId === CV(1), "posisjon eller gruppe ble ikke lagret");
+    assert(back.canvasEdges[CV(10)]?.removed === false && back.canvasEdges[CV(10)]?.kind === "causes", "kanten ble ikke tatt tilbake");
+    const [v] = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(v!["v"]) >= 40, "schema_version er ikke 40");
+  });
+
+  await test("0040: angre opprettelse sletter nodene og kanten (deletes i apply_changes)", async () => {
+    cvState = await runCommand(cvState, ALICE, { type: "AddCanvasNodes", nodes: [cvNode(4), cvNode(5)] });
+    cvState = await runCommand(cvState, ALICE, {
+      type: "AddCanvasEdge", edgeId: CV(11) as never,
+      fields: { fromNodeId: CV(4) as never, toNodeId: CV(5) as never, label: "", kind: "relation" },
+    });
+    cvState = await runCommand(cvState, ALICE, { type: "UndoAddCanvasEdge", edgeId: CV(11) as never });
+    cvState = await runCommand(cvState, ALICE, { type: "UndoAddCanvasNodes", nodeIds: [CV(4) as never, CV(5) as never] });
+    assert((await sql`select 1 from public.story_canvas_nodes where id in (${CV(4)}, ${CV(5)})`).length === 0, "nodene finnes fortsatt");
+    assert((await sql`select 1 from public.story_canvas_edges where id = ${CV(11)}`).length === 0, "kanten finnes fortsatt");
+  });
+
+  await test("0040: en kant må peke på noder i samme prosjekt, og gruppen må være en gruppenode", async () => {
+    const other = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('Annet') as id`)[0]!["id"] as string);
+    await sql`insert into public.story_canvas_nodes (id, project_id, kind) values (${CV(20)}, ${other}, 'idea')`;
+    await expectError(
+      sql`insert into public.story_canvas_edges (id, project_id, from_node_id, to_node_id, kind) values (gen_random_uuid(), ${cv}, ${CV(2)}, ${CV(20)}, 'leads_to')`,
+      /samme prosjekt|23514/,
+    );
+    await expectError(
+      sql`insert into public.story_canvas_nodes (id, project_id, kind, group_id) values (gen_random_uuid(), ${cv}, 'idea', ${CV(3)})`,
+      /gruppenode|23514/,
+    );
+    await expectError(
+      sql`insert into public.story_canvas_nodes (id, project_id, kind, title) values (gen_random_uuid(), ${cv}, 'idea', ${"x".repeat(301)})`,
+      /check/,
+    );
+    await expectError(
+      sql`insert into public.story_canvas_nodes (id, project_id, kind) values (gen_random_uuid(), ${cv}, 'ukjent')`,
+      /check/,
+    );
+    await sql`delete from public.story_canvas_nodes where id = ${CV(20)}`;
+  });
+
+  await test("0040: RLS – medlemmer leser, utenforstående ser ingenting, klienten kan ikke skrive", async () => {
+    for (const t of CANVAS_TABLES) {
+      for (const u of [ALICE, BOB]) {
+        const rows = await as("authenticated", u, (tx) => tx.unsafe(`select id from public.${t} where project_id = $1`, [cv]));
+        assert(rows.length > 0, `${t}: medlemmet ser ingenting`);
+      }
+      const out = await as("authenticated", CAROL, (tx) => tx.unsafe(`select id from public.${t} where project_id = $1`, [cv]));
+      assert(out.length === 0, `${t}: utenforstående ser rader`);
+      await expectError(as("authenticated", ALICE, (tx) => tx.unsafe(`update public.${t} set project_id = project_id where project_id = $1`, [cv])), "42501");
+      await expectError(as("authenticated", ALICE, (tx) => tx.unsafe(`delete from public.${t} where project_id = $1`, [cv])), "42501");
+    }
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`insert into public.story_canvas_nodes (id, project_id, kind) values (gen_random_uuid(), ${cv}, 'idea')`),
+      "42501",
+    );
+  });
+
+  await test("0040: delete_project og purge_project_assets med canvasrader bryter ingen fremmednøkler", async () => {
+    await as("service_role", null, (tx) => tx`select public.delete_project(${cv}, ${ALICE})`);
+    for (const t of CANVAS_TABLES) assert((await count(t, cv)) === 0, `${t} har fortsatt rader etter sletting`);
+    await sql`insert into public.story_canvas_nodes (id, project_id, kind) values (${CV(30)}, ${cv}, 'group')`;
+    await sql`insert into public.story_canvas_nodes (id, project_id, kind, group_id) values (${CV(31)}, ${cv}, 'idea', ${CV(30)})`;
+    await sql`insert into public.story_canvas_edges (id, project_id, from_node_id, to_node_id, kind) values (gen_random_uuid(), ${cv}, ${CV(30)}, ${CV(31)}, 'belongs_to')`;
+    await as("service_role", null, (tx) => tx`select public.purge_project_assets(${cv}, ${ALICE})`);
+    for (const t of CANVAS_TABLES) assert((await count(t, cv)) === 0, `${t} har fortsatt rader etter rensing`);
+  });
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);
