@@ -1,7 +1,7 @@
 /** SL6: explicit transfer, status and source links. Undo uses the shared command stack. */
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { L, formatHeading, newId, suggestionText, suggestionToCommands, type ProjectState, type SuggestionTarget, type TransferSuggestion } from "@/core";
 import { setSuggestionStatus, type StorySuggestion, type StorySuggestionKind } from "@/adapters/storylab/sessions.functions";
@@ -23,19 +23,14 @@ export function SuggestionsPanel({ state, projectId, cmds, editable, focusedId, 
   const [busy, setBusy] = useState(false), [error, setError] = useState<string | null>(null);
   const destinationKey = ["story-suggestion-transfers", projectId];
   type Destination = { occurrenceId: string; blockId: string | null; group: string; complete: boolean };
-  const [destinations, setDestinationsState] = useState<Record<string, Destination>>(() => qc.getQueryData(destinationKey) ?? {});
+  const destinationQuery = useQuery<Record<string, Destination>>({ queryKey: destinationKey, queryFn: async () => ({}), enabled: false, initialData: {}, staleTime: Infinity });
+  const destinations = destinationQuery.data ?? {};
   const setDestinations = (fn: (old: Record<string, Destination>) => Record<string, Destination>) => {
-    setDestinationsState((old) => { const next = fn(old); qc.setQueryData(destinationKey, next); return next; });
+    qc.setQueryData<Record<string, Destination>>(destinationKey, (old) => fn(old ?? {}));
   };
   const lock = useRef(false);
   useEffect(() => { if (focusedId) { setStatus("open"); setKind(""); } }, [focusedId]);
   useEffect(() => { if (focusedId && query.data) document.getElementById(`suggestion-${focusedId}`)?.scrollIntoView({ block: "nearest" }); }, [focusedId, query.data]);
-  useEffect(() => {
-    setDestinations((old) => Object.fromEntries(Object.entries(old).filter(([id, d]) => {
-      // A successful stack undo opens the suggestion; allow applying it again afterwards.
-      return !(query.data?.find((s) => s.id === id)?.status === "open" && cmds.redoGroup === d.group && cmds.status.kind === "idle");
-    })));
-  }, [query.data, cmds.redoGroup, cmds.status]);
   const set = async (id: string, value: StorySuggestion["status"]) => {
     const r = await update({ data: { projectId, suggestionId: id, status: value } });
     if (!r.ok) throw new Error(r.message);

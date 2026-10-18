@@ -60,6 +60,7 @@ export function StoryLabWorkspace({
     void setStatus({ data: { projectId, suggestionId: id, status: "open" } }).then((r) => {
       if (!r.ok) { setUndoError(r.message); return; }
       qc.setQueryData<StorySuggestion[]>(suggestionKey(projectId), (old) => old?.map((s) => s.id === id ? { ...s, status: "open" } : s));
+      qc.setQueryData<Record<string, unknown>>(["story-suggestion-transfers", projectId], (old) => Object.fromEntries(Object.entries(old ?? {}).filter(([key]) => key !== id)));
       void qc.invalidateQueries({ queryKey: suggestionKey(projectId) });
     }).catch(() => setUndoError(L("Overføringen er angret, men forslaget kunne ikke gjenåpnes.", "The transfer was undone, but the suggestion could not be reopened.")));
   }, [projectId, qc, setStatus]);

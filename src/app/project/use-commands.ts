@@ -658,7 +658,6 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
     canRedo: redoStack.length > 0,
     undoLabel: undoStack[undoStack.length - 1]?.label ?? null,
     undoGroup: undoStack[undoStack.length - 1]?.group ?? null,
-    redoGroup: redoStack[redoStack.length - 1]?.group ?? null,
     redoLabel: redoStack[redoStack.length - 1]?.label ?? null,
     status,
     clearError,
