@@ -96,7 +96,7 @@ export function StudioAudioTracks({
         ) : null}
         {clips.map((c) => {
           const start = c.offsetMs / 1000;
-          const len = Math.max(0.05, c.durationMs / 1000);
+          const len = Math.max(0.05, c.lengthMs / 1000);
           const name = c.name || state.assets[c.assetId]?.name || L("Lydklipp", "Audio clip");
           const on = !previewMuted.has(c.id);
           return (
