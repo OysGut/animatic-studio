@@ -23,7 +23,7 @@ function setup() {
   const candidate = sceneSuggestions(state, prod.id, occurrence.id, all)[0];
   const scene = analysisScenes(state, prod.id).find((s) => s.sceneId === occurrence.sceneId);
   if (!candidate || !scene) throw new Error("Missing scene");
-  const stored = [{ sceneId: scene.sceneId, contentHash: scene.hash, items: [{ name: candidate.name, kind: "sound" as const, confidence: "medium" as const, reason: "Saved sound assessment" }] }];
+  const stored = [{ sceneId: scene.sceneId, contentHash: scene.hash, items: [{ name: candidate.name, kind: "sound" as const, confidence: "medium" as const, reason: "Saved sound assessment" }] }] as const;
   return { state, prod, all, occurrence, candidate, stored };
 }
 describe("OG2 scene analysis", () => {
