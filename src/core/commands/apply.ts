@@ -6432,6 +6432,7 @@ function run(
           note: ver.note,
           number: ver.number,
           ...(ver.composition ? { composition: ver.composition } : {}),
+          ...(ver.template ? { template: ver.template } : {}),
           ...(ver.globalSource ? { globalSource: ver.globalSource } : {}),
         },
         affected: [ver.id],
