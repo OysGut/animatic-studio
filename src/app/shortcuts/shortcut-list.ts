@@ -71,6 +71,7 @@ export const SHORTCUT_GROUPS: readonly ShortcutGroup[] = [
       () => L("i montering og sceneeditor", "in assembly and scene editor"),
     ),
     shortcut(["Esc"], () => L("Lukk dialog eller meny", "Close dialog or menu")),
+    shortcut(["⌘/Ctrl", "⇧", "F"], () => L("Åpne Manusutforskeren", "Open script explorer")),
   ]),
   group("montering", () => L("Montering", "Assembly"), [
     shortcut(

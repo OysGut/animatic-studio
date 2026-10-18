@@ -216,7 +216,7 @@ function Assembly({
   const playback = usePlayback(duration, fps, false);
   const images = useFilmImages(view, clips);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  useEffect(() => rememberScene(projectId, selectedId), [projectId, selectedId]);
+  useEffect(() => rememberScene(projectId, selectedId, state.occurrences[selectedId ?? ""]?.sceneId ?? null), [projectId, selectedId, state.occurrences]);
   const [follow, setFollow] = useStoredFlag("assembly-follow", true);
   // Hele filmen i svart-hvitt (visning; foreslås i eksporten, REQ-0573)
   const [monochrome, setMonochrome] = useStoredFlag("assembly-monochrome", false);

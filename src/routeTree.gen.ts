@@ -15,6 +15,7 @@ import { Route as InvitasjonRouteImport } from './routes/invitasjon'
 import { Route as KontoRouteImport } from './routes/konto'
 import { Route as PersonvernRouteImport } from './routes/personvern'
 import { Route as MTokenRouteImport } from './routes/m.$token'
+import { Route as ManusutforskerProjectIdRouteImport } from './routes/manusutforsker.$projectId'
 import { Route as ProsjektProjectIdRouteImport } from './routes/prosjekt.$projectId'
 import { Route as ProsjektProjectIdIndexRouteImport } from './routes/prosjekt.$projectId.index'
 import { Route as ProsjektProjectIdBibliotekRouteImport } from './routes/prosjekt.$projectId.bibliotek'
@@ -53,6 +54,11 @@ const PersonvernRoute = PersonvernRouteImport.update({
 const MTokenRoute = MTokenRouteImport.update({
   id: '/m/$token',
   path: '/m/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManusutforskerProjectIdRoute = ManusutforskerProjectIdRouteImport.update({
+  id: '/manusutforsker/$projectId',
+  path: '/manusutforsker/$projectId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProsjektProjectIdRoute = ProsjektProjectIdRouteImport.update({
@@ -112,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
   '/m/$token': typeof MTokenRoute
+  '/manusutforsker/$projectId': typeof ManusutforskerProjectIdRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
@@ -129,6 +136,7 @@ export interface FileRoutesByTo {
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
   '/m/$token': typeof MTokenRoute
+  '/manusutforsker/$projectId': typeof ManusutforskerProjectIdRoute
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
@@ -146,6 +154,7 @@ export interface FileRoutesById {
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
   '/m/$token': typeof MTokenRoute
+  '/manusutforsker/$projectId': typeof ManusutforskerProjectIdRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
@@ -165,6 +174,7 @@ export interface FileRouteTypes {
     | '/konto'
     | '/personvern'
     | '/m/$token'
+    | '/manusutforsker/$projectId'
     | '/prosjekt/$projectId'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
@@ -182,6 +192,7 @@ export interface FileRouteTypes {
     | '/konto'
     | '/personvern'
     | '/m/$token'
+    | '/manusutforsker/$projectId'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/montering'
@@ -198,6 +209,7 @@ export interface FileRouteTypes {
     | '/konto'
     | '/personvern'
     | '/m/$token'
+    | '/manusutforsker/$projectId'
     | '/prosjekt/$projectId'
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
@@ -216,6 +228,7 @@ export interface RootRouteChildren {
   KontoRoute: typeof KontoRoute
   PersonvernRoute: typeof PersonvernRoute
   MTokenRoute: typeof MTokenRoute
+  ManusutforskerProjectIdRoute: typeof ManusutforskerProjectIdRoute
   ProsjektProjectIdRoute: typeof ProsjektProjectIdRouteWithChildren
   ApiPublicCronAiJobsRoute: typeof ApiPublicCronAiJobsRoute
 }
@@ -262,6 +275,13 @@ declare module '@tanstack/react-router' {
       path: '/m/$token'
       fullPath: '/m/$token'
       preLoaderRoute: typeof MTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/manusutforsker/$projectId': {
+      id: '/manusutforsker/$projectId'
+      path: '/manusutforsker/$projectId'
+      fullPath: '/manusutforsker/$projectId'
+      preLoaderRoute: typeof ManusutforskerProjectIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/prosjekt/$projectId': {
@@ -360,6 +380,7 @@ const rootRouteChildren: RootRouteChildren = {
   KontoRoute: KontoRoute,
   PersonvernRoute: PersonvernRoute,
   MTokenRoute: MTokenRoute,
+  ManusutforskerProjectIdRoute: ManusutforskerProjectIdRoute,
   ProsjektProjectIdRoute: ProsjektProjectIdRouteWithChildren,
   ApiPublicCronAiJobsRoute: ApiPublicCronAiJobsRoute,
 }

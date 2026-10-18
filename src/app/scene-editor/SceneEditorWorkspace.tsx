@@ -176,7 +176,7 @@ function Editor({
       (wanted && occurrences.some((o) => o.id === wanted) ? wanted : occurrences[0]?.id) ?? null
     );
   });
-  useEffect(() => rememberScene(projectId, occurrenceId), [projectId, occurrenceId]);
+  useEffect(() => rememberScene(projectId, occurrenceId, state.occurrences[occurrenceId ?? ""]?.sceneId ?? null), [projectId, occurrenceId, state.occurrences]);
   // Scenen er borte (annen bruker, angre) eller ingen var valgt (tomt prosjekt før import): velg første
   useEffect(() => {
     if (!occurrences.length) return;

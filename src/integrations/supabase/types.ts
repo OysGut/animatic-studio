@@ -2508,6 +2508,156 @@ export type Database = {
           },
         ]
       }
+      story_canvas_edges: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          from_node_id: string
+          id: string
+          kind: string
+          label: string
+          project_id: string
+          removed: boolean
+          revision: number
+          to_node_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          from_node_id: string
+          id: string
+          kind: string
+          label?: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          to_node_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          from_node_id?: string
+          id?: string
+          kind?: string
+          label?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          to_node_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_canvas_edges_from_node_id_fkey"
+            columns: ["from_node_id"]
+            isOneToOne: false
+            referencedRelation: "story_canvas_nodes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "story_canvas_edges_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "story_canvas_edges_to_node_id_fkey"
+            columns: ["to_node_id"]
+            isOneToOne: false
+            referencedRelation: "story_canvas_nodes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      story_canvas_nodes: {
+        Row: {
+          asset_id: string | null
+          body: string
+          color: string | null
+          created_at: string
+          created_by: string | null
+          group_id: string | null
+          h: number
+          id: string
+          kind: string
+          project_id: string
+          removed: boolean
+          revision: number
+          scene_id: string | null
+          title: string
+          w: number
+          x: number
+          y: number
+        }
+        Insert: {
+          asset_id?: string | null
+          body?: string
+          color?: string | null
+          created_at?: string
+          created_by?: string | null
+          group_id?: string | null
+          h?: number
+          id: string
+          kind: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          scene_id?: string | null
+          title?: string
+          w?: number
+          x?: number
+          y?: number
+        }
+        Update: {
+          asset_id?: string | null
+          body?: string
+          color?: string | null
+          created_at?: string
+          created_by?: string | null
+          group_id?: string | null
+          h?: number
+          id?: string
+          kind?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          scene_id?: string | null
+          title?: string
+          w?: number
+          x?: number
+          y?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_canvas_nodes_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "story_canvas_nodes_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "story_canvas_nodes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "story_canvas_nodes_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "story_canvas_nodes_scene_id_fkey"
+            columns: ["scene_id"]
+            isOneToOne: false
+            referencedRelation: "scenes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       story_facts: {
         Row: {
           at_scene_id: string | null

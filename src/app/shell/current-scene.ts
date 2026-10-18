@@ -3,10 +3,95 @@
  * scene per prosjekt for denne fanen, så «Sceneeditor» i hovedmenyen åpner scenen du sto på – ikke scene 1.
  * Bare i minnet (ingen lagring); ugyldige ID-er ignoreres av skjermen som leser.
  */
-const last = new Map<string, string>();
+import { useEffect, useState } from "react";
+import { createActiveSceneBus, type ActiveScene, type SceneMessage, type SceneTransport } from "./active-scene-bus";
 
-export function rememberScene(projectId: string, occurrenceId: string | null | undefined): void {
-  if (occurrenceId) last.set(projectId, occurrenceId);
+const last = new Map<string, string>();
+const buses = new Map<string, ReturnType<typeof createActiveSceneBus>>();
+let identity: string | null = null;
+
+/** Called only after hydration or from browser handlers. */
+export function sourceWindowId(): string {
+  if (identity) return identity;
+  const key = "animatic:window-id";
+  try {
+    const stored = JSON.parse(window.sessionStorage.getItem(key) ?? "null") as { id?: string; name?: string } | null;
+    if (stored?.id && stored.name === window.name) identity = stored.id;
+  } catch { /* Storage may be unavailable. */ }
+  identity ??= window.crypto.randomUUID();
+  // A newly opened/duplicated tab can inherit sessionStorage, but not this main-window name.
+  if (!window.name) window.name = `animatic-main-${identity}`;
+  try { window.sessionStorage.setItem(key, JSON.stringify({ id: identity, name: window.name })); } catch { /* Memory fallback. */ }
+  return identity;
+}
+
+function bus(projectId: string) {
+  const existing = buses.get(projectId);
+  if (existing) return existing;
+  const name = "animatic-active-scene:" + projectId;
+  let transport: SceneTransport;
+  if (typeof BroadcastChannel !== "undefined") {
+    const channel = new BroadcastChannel(name);
+    transport = {
+      send: (message) => channel.postMessage(message),
+      listen: (receive) => {
+        const fn = (e: MessageEvent<unknown>) => receive(e.data);
+        channel.addEventListener("message", fn);
+        return () => channel.removeEventListener("message", fn);
+      },
+      close: () => channel.close(),
+    };
+  } else {
+    transport = {
+      send: (message: SceneMessage) => {
+        try { window.localStorage.setItem(name, JSON.stringify({ message, nonce: window.crypto.randomUUID() })); window.localStorage.removeItem(name); } catch { /* Same-window subscription still works. */ }
+      },
+      listen: (receive) => {
+        const fn = (e: StorageEvent) => {
+          if (e.key !== name || !e.newValue) return;
+          try { receive((JSON.parse(e.newValue) as { message: unknown }).message); } catch { /* Ignore malformed events. */ }
+        };
+        window.addEventListener("storage", fn);
+        return () => window.removeEventListener("storage", fn);
+      },
+      close: () => undefined,
+    };
+  }
+  const next = createActiveSceneBus(sourceWindowId(), transport);
+  buses.set(projectId, next);
+  return next;
+}
+
+export function rememberScene(projectId: string, occurrenceId: string | null | undefined, sceneId: string | null = null): void {
+  if (!occurrenceId) return;
+  last.set(projectId, occurrenceId);
+  if (typeof window !== "undefined") bus(projectId).publish(occurrenceId, sceneId);
+}
+
+export function useActiveSceneInfo(projectId: string, source?: string) {
+  const [scene, setScene] = useState<ActiveScene | null>(null);
+  const [closed, setClosed] = useState(false);
+  useEffect(() => {
+    const channel = bus(projectId);
+    const id = source ?? sourceWindowId();
+    let deadline: ReturnType<typeof setTimeout> | undefined;
+    const update = () => { setScene(channel.get(id)); if (channel.get(id)) setClosed(false); };
+    update();
+    const unsubscribe = channel.subscribe(update);
+    const ask = () => {
+      const sentAt = Date.now();
+      channel.ask(id);
+      deadline = setTimeout(() => setClosed((channel.get(id)?.at ?? 0) < sentAt), 10_000);
+    };
+    if (source) ask();
+    const heartbeat = source ? setInterval(ask, 12_000) : undefined;
+    return () => { unsubscribe(); clearTimeout(deadline); clearInterval(heartbeat); };
+  }, [projectId, source]);
+  return { scene, closed };
+}
+
+export function useActiveScene(projectId: string, sourceWindowId?: string): string | null {
+  return useActiveSceneInfo(projectId, sourceWindowId).scene?.occurrenceId ?? null;
 }
 
 export function lastScene(projectId: string): string | null {
