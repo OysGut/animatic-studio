@@ -264,7 +264,7 @@ await run("koble, flytte og angre, slette og angre", async (page) => {
   await page.locator(`[data-node-id="${a.id}"]`).click();
   await page.locator(`[data-node-id="${b.id}"]`).click({ modifiers: ["Shift"] });
   await page.getByTestId("canvas-connect").click();
-  await page.getByTestId("canvas-edge").first().waitFor();
+  await page.getByTestId("canvas-edge").first().waitFor({ state: "attached" });
   check(cmd("AddCanvasEdge").length === 1 && cmd("AddCanvasEdge")[0].fields.fromNodeId === a.id, "to noder kobles med AddCanvasEdge");
   // Flytt
   const box = await page.locator(`[data-node-id="${a.id}"]`).boundingBox();
@@ -288,7 +288,7 @@ await run("koble, flytte og angre, slette og angre", async (page) => {
   await waitUntil(() => cmd("RemoveCanvasNodes").length === 2, "undo delete");
   const u = cmd("RemoveCanvasNodes")[1];
   check(u.removed === false && (u.edgeIds ?? []).length === 1, "angre tar tilbake noden og kanten");
-  await page.getByTestId("canvas-edge").first().waitFor();
+  await page.getByTestId("canvas-edge").first().waitFor({ state: "attached" });
   check(await page.getByTestId("canvas-edge").count() === 1, "kanten vises igjen");
 }, { nodes: [rowNode(1, { title: "A", x: 100, y: 100 }), rowNode(2, { title: "B", x: 500, y: 100 })] });
 
