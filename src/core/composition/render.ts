@@ -609,7 +609,7 @@ export function groupMatrixAt(group: CompositionLayer, frame: number): Matrix {
 export function groupOf(s: ProjectState, l: CompositionLayer): CompositionLayer | null {
   if (l.groupId === null) return null;
   const g = s.layers[l.groupId];
-  return g && g.kind === "group" && !g.removed && g.compositionId === l.compositionId ? g : null;
+  return g && (g.kind === "group" || g.kind === "page") && !g.removed && g.compositionId === l.compositionId ? g : null;
 }
 
 /** Tegnelisten for ett bilde av 2D-scenen (bakerst først). */
@@ -643,15 +643,24 @@ export function renderFrame(
   const layers = layersOf(s, compositionId).filter(
     (l) => !backgroundOnly || l.kind === "background",
   );
-  const groups = new Map<string, { matrix: Matrix; opacity: number; visible: boolean }>();
+  const groups = new Map<string, { matrix: Matrix; opacity: number; visible: boolean; fade: number }>();
   for (const l of layers)
-    if (l.kind === "group")
+    if (l.kind === "group" || l.kind === "page") {
+      // Sideovergangen (MTS MT6): lagene i siden tones inn over overgangens bilder fra sidens start
+      let fade = 1;
+      const pt = l.kind === "page" ? l.pageTransition : null;
+      if (pt && l.activeRange) {
+        const into = frame - l.activeRange.from;
+        if (into >= 0 && into < pt.frames) fade = (into + 1) / pt.frames;
+      }
       groups.set(l.id, {
         matrix: groupMatrixAt(l, frame),
         opacity: transformAt(l, frame).opacity,
         // Aktivt område (AS2): en gruppe utenfor sitt område skjuler lagene i gruppen
         visible: l.visible && layerActiveAt(l, frame),
+        fade,
       });
+    }
   /** Tegneelementet for et lag (uten maske og blanding), med full dekning. */
   // `imageFrame`: bildet som velger lagets bilde (krysstoning tegner også det forrige bildet, AS2)
   const baseItem = (l: CompositionLayer, imageFrame: number = frame): DrawItem => {
@@ -676,14 +685,14 @@ export function renderFrame(
       width: size.width,
       height: size.height,
       matrix: multiply(view, model),
-      opacity: t.opacity * (g?.opacity ?? 1),
+      opacity: t.opacity * (g?.opacity ?? 1) * (g?.fade ?? 1),
       locked: l.locked,
       name: l.name,
     };
   };
   const byId = new Map(layers.map((l) => [l.id, l]));
   for (const l of layers) {
-    if (l.kind === "group") continue;
+    if (l.kind === "group" || l.kind === "page") continue;
     const g = l.groupId ? groups.get(l.groupId) : undefined;
     const visible = l.visible && (g?.visible ?? true);
     if (!visible && !opts.includeHidden) continue;
@@ -707,10 +716,10 @@ export function renderFrame(
       items.push({ ...base, opacity: opacity * xf.mix, ...extra });
     } else items.push({ ...base, opacity, ...extra });
   }
-  // Grupper i editoren: en ramme rundt lagene i gruppen (tegnes ikke)
+  // Grupper og sider i editoren: en ramme rundt lagene i gruppen/siden (tegnes ikke)
   if (!cam)
     for (const l of layers) {
-      if (l.kind !== "group") continue;
+      if (l.kind !== "group" && l.kind !== "page") continue;
       const corners = items
         .filter((it) => s.layers[it.layerId]?.groupId === l.id)
         .flatMap((it) => itemCorners(it));

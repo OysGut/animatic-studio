@@ -49,6 +49,9 @@ export type StoryFactId = Id<"story_fact">;
 /** Skrivecanvaset (SL7): node og kant. */
 export type CanvasNodeId = Id<"canvas_node">;
 export type CanvasEdgeId = Id<"canvas_edge">;
+/** Rulletekst (MTS MT7): deltaker og sekvens. */
+export type CreditParticipantId = Id<"credit_participant">;
+export type CreditSequenceId = Id<"credit_sequence">;
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 

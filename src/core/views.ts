@@ -4,7 +4,12 @@
  */
 import type { OccurrenceId, ProductionId, SceneId, TakeId } from "./ids";
 import { compareKeys } from "./order-key";
-import type { ProjectState, SceneHeading, SceneOccurrence, ScriptBlock } from "./model";
+import { occurrenceKind, type ProjectState, type SceneHeading, type SceneOccurrence, type ScriptBlock } from "./model";
+
+/** Er forekomsten en manusscene? Tittel-, tekst- og rulletekstscener (MTS MT6) er ikke det. */
+export function isScriptOccurrence(o: SceneOccurrence): boolean {
+  return occurrenceKind(o) === "scene";
+}
 
 /** Alle forekomster i produksjonen i rekkefølge (også deaktiverte). */
 export function orderedOccurrences(
@@ -56,6 +61,11 @@ export interface ScriptSceneView {
   readonly heading: SceneHeading;
   readonly productionNumber: string | null;
   readonly blocks: readonly ScriptBlock[];
+  /**
+   * Markør i manusvisningen (MTS MT6): tittel-, tekst- og rulletekstscener er ikke manusscener, men vises
+   * som en markør på plassen sin. De nummereres aldri og har ingen blokker.
+   */
+  readonly marker?: "title" | "text" | "credits";
 }
 
 /** Aktivt manus (mandat 2: deaktiverte scener utelates). */
@@ -63,13 +73,25 @@ export function scriptView(
   s: ProjectState,
   productionId: ProductionId | string,
 ): ScriptSceneView[] {
-  return activeStructure(s, productionId).map((o) => ({
-    occurrenceId: o.id,
-    sceneId: o.sceneId,
-    heading: s.variants[o.variantId]?.heading ?? { intExt: "", location: "", time: "" },
-    productionNumber: sceneNumberOf(s, o),
-    blocks: blocksOfVariant(s, o.variantId),
-  }));
+  return activeStructure(s, productionId).map((o) => {
+    const kind = occurrenceKind(o);
+    if (kind !== "scene")
+      return {
+        occurrenceId: o.id,
+        sceneId: o.sceneId,
+        heading: { intExt: "", location: "", time: "" },
+        productionNumber: null,
+        blocks: [],
+        marker: kind,
+      };
+    return {
+      occurrenceId: o.id,
+      sceneId: o.sceneId,
+      heading: s.variants[o.variantId]?.heading ?? { intExt: "", location: "", time: "" },
+      productionNumber: sceneNumberOf(s, o),
+      blocks: blocksOfVariant(s, o.variantId),
+    };
+  });
 }
 
 export interface AssemblyItemView {
@@ -199,7 +221,7 @@ export function mainSceneNumbers(s: ProjectState): ReadonlyMap<string, string> {
   m = new Map();
   const main = Object.values(s.productions).find((p) => p.kind === "main");
   if (main) {
-    const occs = orderedOccurrences(s, main.id).filter((o) => o.productionNumber);
+    const occs = orderedOccurrences(s, main.id).filter((o) => o.productionNumber && isScriptOccurrence(o));
     for (const o of [...occs.filter((x) => x.active), ...occs.filter((x) => !x.active)])
       if (!m.has(o.sceneId)) m.set(o.sceneId, o.productionNumber!);
   }

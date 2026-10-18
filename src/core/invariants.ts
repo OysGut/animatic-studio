@@ -341,7 +341,7 @@ export function checkInvariants(s: ProjectState): Violation[] {
       if (!ve || ve.variantId !== l.assetVariantId)
         add("MODEL", L(`Lag ${l.id}: ugyldig versjon`, `Layer ${l.id}: invalid version`));
     }
-    if (l.kind !== "group" && l.assetId === null && l.fill === null && !(l.kind === "text" && l.text))
+    if (l.kind !== "group" && l.kind !== "page" && l.assetId === null && l.fill === null && !(l.kind === "text" && l.text))
       add("MODEL", L(`Lag ${l.id}: viser ingenting`, `Layer ${l.id}: shows nothing`));
     let keys = keysByComp.get(l.compositionId);
     if (!keys) keysByComp.set(l.compositionId, (keys = new Set()));

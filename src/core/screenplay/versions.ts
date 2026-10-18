@@ -4,7 +4,7 @@
  * format som snapshotFromState, slik at det kan testes og sammenlignes i kjernen.
  */
 import type { Asset, BlockKind, ProjectState, SceneHeading } from "../model";
-import { blocksOfVariant, orderedOccurrences } from "../views";
+import { blocksOfVariant, isScriptOccurrence, orderedOccurrences } from "../views";
 import { characterName, mentions } from "./filter";
 import { L, localized } from "../i18n";
 import { formatHeading, type PaginationScene } from "./paginate";
@@ -50,7 +50,7 @@ export function snapshotFromState(s: ProjectState, productionId: string): Script
   return {
     format: 1,
     productionId,
-    scenes: orderedOccurrences(s, productionId).map((o) => {
+    scenes: orderedOccurrences(s, productionId).filter(isScriptOccurrence).map((o) => {
       const v = s.variants[o.variantId];
       return {
         occurrenceId: o.id,

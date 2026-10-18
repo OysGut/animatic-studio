@@ -148,6 +148,8 @@ export interface LayerFields {
   readonly shape?: import("../typography/types").ShapeSpec | null;
   readonly effects?: import("../typography/types").LayerEffects | null;
   readonly template?: import("../typography/types").TemplateSlotRef | null;
+  /** Overgangen inn i siden (bare sidelag, MTS MT6). Utelatt = uendret ved endring, kutt ved nytt lag. */
+  readonly pageTransition?: import("../model").Transition | null;
 }
 
 export interface NewLayer {
@@ -384,13 +386,15 @@ export type Command =
        */
       readonly sourceVariantId?: VariantId;
     }
-  | {
+    | {
       readonly type: "AddOccurrence";
       readonly productionId: ProductionId;
       readonly occurrenceId: OccurrenceId;
       readonly sceneId: SceneId;
       readonly variantId: VariantId;
       readonly orderKey: string;
+      /** Scenetypen (MTS MT6). Utelatt = «scene». */
+      readonly kind?: import("../model").OccurrenceKind;
     }
   | {
       readonly type: "CreateSegments";
@@ -721,6 +725,61 @@ export type Command =
       readonly annotationIdMap?: Readonly<Record<string, AnnotationId>>;
     }
   | { readonly type: "UndoAddOccurrence"; readonly occurrenceId: OccurrenceId }
+  | {
+      /** Ny deltaker i rulleteksten (MTS MT7). */
+      readonly type: "AddCreditParticipant";
+      readonly participantId: import("../ids").CreditParticipantId;
+      readonly fields: {
+        readonly orderKey: string;
+        readonly groupKey: string;
+        readonly hidden: boolean;
+        readonly fields: Readonly<Record<string, string>>;
+        readonly logoAssetId?: AssetId | null;
+        readonly logoVersionId?: AssetVersionId | null;
+        readonly imageAssetId?: AssetId | null;
+        readonly imageVersionId?: AssetVersionId | null;
+      };
+    }
+  | {
+      /** Endre en deltaker (feltnivå; bare feltene som er med, endres). */
+      readonly type: "UpdateCreditParticipant";
+      readonly participantId: import("../ids").CreditParticipantId;
+      readonly fields: Partial<{
+        readonly orderKey: string;
+        readonly groupKey: string;
+        readonly hidden: boolean;
+        readonly fields: Readonly<Record<string, string>>;
+        readonly logoAssetId: AssetId | null;
+        readonly logoVersionId: AssetVersionId | null;
+        readonly imageAssetId: AssetId | null;
+        readonly imageVersionId: AssetVersionId | null;
+      }>;
+    }
+  | {
+      /** Fjern en deltaker (removed = true; kan angres). */
+      readonly type: "RemoveCreditParticipant";
+      readonly participantId: import("../ids").CreditParticipantId;
+    }
+  | {
+      /** Lag eller endre rulletekstsekvensen for en forekomst (MTS MT7). */
+      readonly type: "SetCreditSequence";
+      readonly sequenceId: import("../ids").CreditSequenceId;
+      readonly occurrenceId: OccurrenceId;
+      readonly fields: {
+        readonly presentation: import("../model").CreditPresentation;
+        readonly durationFrames: number;
+        readonly pauseFrames: number;
+        readonly transition?: import("../model").Transition | null;
+        readonly speed: number;
+        readonly direction: "up" | "down";
+        readonly groupTemplates?: Readonly<Record<string, AssetVersionId>>;
+      };
+    }
+  | {
+      /** Fjern rulletekstsekvensen (removed = true; kan angres). */
+      readonly type: "RemoveCreditSequence";
+      readonly sequenceId: import("../ids").CreditSequenceId;
+    }
   | {
       /**
        * Overfør en ny scene fra en avledet produksjon til en annen produksjon (hovedfilmen, DEC-0060,

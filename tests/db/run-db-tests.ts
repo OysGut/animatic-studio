@@ -5337,17 +5337,16 @@ try {
     const spec = await sql`select template_spec from public.asset_versions where id = ${MT(12)}`;
     assert((spec[0]!["template_spec"] as { category: string }).category === "lower_third", "maldefinisjonen ble ikke lagret");
     // Størrelsesgrensen (256 kB) håndheves av databasen. Versjoner er uforanderlige (INV-13), så grensen
-    // prøves med en ny versjonsrad i en egen transaksjon med savepoint, som rulles tilbake.
-    await sql.begin(async (tx) => {
-      await tx`savepoint stor_mal`;
-      await expectError(
-        tx`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256, template_spec)
+    // prøves med en ny versjonsrad i en egen transaksjon (postgres.js avviser hele transaksjonen når
+    // setningen feiler, så transaksjonen ligger inne i expectError).
+    await expectError(
+      sql.begin(
+        async (tx) => tx`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256, template_spec)
            values (gen_random_uuid(), ${mtp}, ${MT(11)}, 99, ${`${mtp}/${MT(10)}/stor/mal.png`}, 'image/png', 1, ${"e".repeat(64)},
                    (select jsonb_build_object('x', string_agg(md5(random()::text), '')) from generate_series(1, 10000)))`,
-        "23514",
-      );
-      await tx`rollback to savepoint stor_mal`;
-    });
+      ),
+      "23514",
+    );
     const plan = planApplyTemplate(mtState, { instanceId: MT(20), compositionId: MT(4), versionId: MT(12), newLayerId: () => MT(n++) });
     assert(plan.ok, "planen feilet");
     if (!plan.ok) return;

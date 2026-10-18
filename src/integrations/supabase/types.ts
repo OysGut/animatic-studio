@@ -401,6 +401,7 @@ export type Database = {
           source_global_asset_id: string | null
           source_global_variant_id: string | null
           source_global_version_id: string | null
+          template_spec: Json | null
           variant_id: string
           view: string | null
           width: number | null
@@ -426,6 +427,7 @@ export type Database = {
           source_global_asset_id?: string | null
           source_global_variant_id?: string | null
           source_global_version_id?: string | null
+          template_spec?: Json | null
           variant_id: string
           view?: string | null
           width?: number | null
@@ -451,6 +453,7 @@ export type Database = {
           source_global_asset_id?: string | null
           source_global_variant_id?: string | null
           source_global_version_id?: string | null
+          template_spec?: Json | null
           variant_id?: string
           view?: string | null
           width?: number | null
@@ -795,6 +798,7 @@ export type Database = {
           composition_id: string
           created_at: string
           created_by: string | null
+          effects: Json | null
           fill: string | null
           group_id: string | null
           height: number
@@ -813,6 +817,11 @@ export type Database = {
           removed: boolean
           reviewed_versions: Json
           revision: number
+          shape: Json | null
+          template_instance_id: string | null
+          template_key: string | null
+          template_slot: string | null
+          text_spec: Json | null
           transform: Json
           version_id: string | null
           visible: boolean
@@ -828,6 +837,7 @@ export type Database = {
           composition_id: string
           created_at?: string
           created_by?: string | null
+          effects?: Json | null
           fill?: string | null
           group_id?: string | null
           height: number
@@ -846,6 +856,11 @@ export type Database = {
           removed?: boolean
           reviewed_versions?: Json
           revision?: number
+          shape?: Json | null
+          template_instance_id?: string | null
+          template_key?: string | null
+          template_slot?: string | null
+          text_spec?: Json | null
           transform: Json
           version_id?: string | null
           visible?: boolean
@@ -861,6 +876,7 @@ export type Database = {
           composition_id?: string
           created_at?: string
           created_by?: string | null
+          effects?: Json | null
           fill?: string | null
           group_id?: string | null
           height?: number
@@ -879,6 +895,11 @@ export type Database = {
           removed?: boolean
           reviewed_versions?: Json
           revision?: number
+          shape?: Json | null
+          template_instance_id?: string | null
+          template_key?: string | null
+          template_slot?: string | null
+          text_spec?: Json | null
           transform?: Json
           version_id?: string | null
           visible?: boolean
@@ -911,6 +932,13 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "composition_layers_template_instance_fkey"
+            columns: ["template_instance_id"]
+            isOneToOne: false
+            referencedRelation: "template_instances"
             referencedColumns: ["id"]
           },
           {
@@ -3426,6 +3454,74 @@ export type Database = {
             columns: ["segment_id"]
             isOneToOne: false
             referencedRelation: "production_segments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      template_instances: {
+        Row: {
+          composition_id: string
+          content: Json
+          created_at: string
+          created_by: string | null
+          id: string
+          project_id: string
+          removed: boolean
+          revision: number
+          template_asset_id: string
+          template_version_id: string
+        }
+        Insert: {
+          composition_id: string
+          content?: Json
+          created_at?: string
+          created_by?: string | null
+          id: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          template_asset_id: string
+          template_version_id: string
+        }
+        Update: {
+          composition_id?: string
+          content?: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          template_asset_id?: string
+          template_version_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "template_instances_composition_id_fkey"
+            columns: ["composition_id"]
+            isOneToOne: false
+            referencedRelation: "compositions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "template_instances_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "template_instances_template_asset_id_fkey"
+            columns: ["template_asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "template_instances_template_version_id_fkey"
+            columns: ["template_version_id"]
+            isOneToOne: false
+            referencedRelation: "asset_versions"
             referencedColumns: ["id"]
           },
         ]

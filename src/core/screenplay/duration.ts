@@ -5,7 +5,7 @@
  */
 import type { BlockKind, ProjectState } from "../model";
 import type { ScriptSnapshot } from "./versions";
-import { blocksOfVariant, orderedOccurrences, sceneNumberOf } from "../views";
+import { blocksOfVariant, isScriptOccurrence, orderedOccurrences, sceneNumberOf } from "../views";
 import { US_LETTER_LAYOUT, wrapText, type Pagination } from "./paginate";
 
 export interface DurationAssumptions {
@@ -231,7 +231,7 @@ export function estimateProduction(
       });
     }
   }
-  const scenes: SceneEstimate[] = orderedOccurrences(s, productionId).map((o) => {
+  const scenes: SceneEstimate[] = orderedOccurrences(s, productionId).filter(isScriptOccurrence).map((o) => {
     const { dialogueWords, actionLines, seconds } = estimateBlocks(
       blocksOfVariant(s, o.variantId),
       assumptions,
