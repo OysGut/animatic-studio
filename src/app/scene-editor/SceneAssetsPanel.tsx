@@ -27,6 +27,7 @@ import {
 } from "@/core";
 import { useImageUrls } from "@/app/library/asset-images";
 import { SuggestionsDialog } from "@/app/library/SuggestionsDialog";
+import { useAnalysisRows } from "@/app/library/entity-analysis-store";
 import type { Commands } from "@/app/project/use-commands";
 import { sceneSuggestions } from "./scene-suggestions";
 import { AddElementDialog } from "./AddElementDialog";
@@ -60,6 +61,7 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
   cmds?: Commands;
 }) {
   const navigate = useNavigate();
+  const analysis = useAnalysisRows(projectId);
   // Elementer som skal inn i scenen fra en annen scene (DEC-0088): gul ramme til de er dratt inn
   const pending = useMemo(() => pendingPlansFor(state, occurrenceId), [state, occurrenceId]);
   const pendingById = useMemo(() => new Map(pending.map((p) => [p.asset.id, p])), [pending]);
@@ -106,9 +108,9 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
     [state.assets, state.occurrences, state.blocks, state.variants, productionId],
   );
   const missing = useMemo(
-    () => sceneSuggestions(state, productionId, occurrenceId, allSuggestions),
+    () => sceneSuggestions(state, productionId, occurrenceId, allSuggestions, analysis),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [allSuggestions, occurrenceId],
+    [allSuggestions, occurrenceId, analysis],
   );
   /** Forslagene som vises i dialogen (ett navn, eller alle i scenen). */
   const [adding, setAdding] = useState<readonly LibrarySuggestion[] | null>(null);
@@ -380,6 +382,10 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                     {x.possibleMatch ? L(" · mulig treff", " · possible match") : ""}
                   </span>
                 </span>
+                <span className="text-[11px] text-text-tertiary">
+                  {x.confidence === "high" ? L("Sikker", "Confident") : x.confidence === "medium" ? L("Trolig", "Likely") : L("Usikker", "Uncertain")}
+                </span>
+                {x.evidence ? <p className="break-words text-xs text-text-secondary">{x.evidence}</p> : null}
                 {canAdd ? (
                   <button
                     type="button"

@@ -14,6 +14,19 @@ import type { AnyClient } from "@/adapters/storage/project-rows";
 
 export const ROLE_RANK: Record<string, number> = { viewer: 1, commenter: 2, editor: 3, owner: 4 };
 
+/** Only generateText tasks count, including user-triggered calls using the built-in fallback. */
+export async function userTextJobsInHour(admin: AnyClient, userId: string, hourAgo: string): Promise<number> {
+  const { count, error } = await admin
+    .from("generation_jobs")
+    .select("id", { count: "exact", head: true })
+    .eq("created_by", userId)
+    .eq("kind", "text")
+    .or("params->>task.is.null,params->>task.not.in.(entity_analysis,translation_align)")
+    .gte("created_at", hourAgo);
+  if (error) throw new Error(L("Tekstgrensen kunne ikke kontrolleres.", "The text limit could not be checked."));
+  return count ?? 0;
+}
+
 export interface KeyRow {
   readonly id: string;
   readonly user_id: string;

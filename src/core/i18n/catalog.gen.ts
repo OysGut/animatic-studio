@@ -1564,6 +1564,7 @@ export const CATALOG: Record<string, string> = {
   "Teksten har oversettelser (for eksempel engelsk). Angre importen av oversettelsen eller fjern oversettelsene av disse linjene først.":
     "The text has translations (for example English). Undo the import of the translation or remove the translations of these lines first.",
   "Teksten kan være høyst {0} tegn": "The text can be at most {0} characters",
+  "Tekstgrensen kunne ikke kontrolleres.": "The text limit could not be checked.",
   "Tenker gjennom bildet før det lages": "Thinks through the image before it is made",
   Tidskoblingen: "The time link",
   "Tittelen kan være høyst {0} tegn": "The title can be at most {0} characters",

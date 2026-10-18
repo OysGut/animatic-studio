@@ -5,6 +5,7 @@ Kilder: beslutningsloggen (`docs/decisions/DECISION_LOG.md`), kravregisteret (`d
 Sist oppdatert: 2026-10-17 (DEC-0098, UI-løft U1 og U3).
 
 ## Bestilt av Mars, ikke bygget ennå
+- **OG2 (Øystein 18.10.2026):** AI-kobling linje for linje legges i backloggen. Scenekobling er tilstrekkelig nå; ingen implementering i retterunde 1.
 - **Fase 2 (DEC-0090, REQ-0668–0712):** alle bolkene A–E er bygget (bolk E: DEC-0096). Gjenstår: prøving på ekte telefoner og med ekte norsk lyd (KI-235, KI-239, KI-245, KI-248). KI-249 er rettet.
 - **UI-løft (Øystein 17.10.2026):** gi hele grensesnittet et profesjonelt preg etter konvensjonene i FilmCraft/Premiere (ArtCraft er Rust/egui, så ingen kode kan gjenbrukes direkte), uten å endre funksjoner. U1 (skjemakontroller) og U3 (tidslinjer) er gjort (DEC-0098). U2, U4 (faner øverst) og U5 venter på Øysteins gjennomgang.
 - **Fase 3 – Story Lab:** egen modul for historie- og karakterutvikling med VennTing-profiler, karaktersamtaler og regissørstyrt improvisasjon (spesifikasjon i Claude-prosjektet: `PHASE3_STORY_LAB_SPEC.md`). Tilhører manusarbeidet, ikke sceneeditoren; mulig knapp «Utforsk dialogen» i scenen. VennTing er kartlagt; integrasjonsplan i `PHASE3_STORY_LAB_INTEGRASJONSPLAN.md` (Claude-prosjektet), med to åpne valg for Øystein.

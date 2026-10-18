@@ -19,3 +19,9 @@
 - [x] AI-forslag i engelsk språkkobling (må godkjennes).
 - [x] Personverntekst og AGENTS.md-regel.
 - [x] Unit- og nettlesertester.
+
+# OG2 retterunde 1
+- [x] Rett reanalysemock og samle skjemaversjon i nettlesertestene.
+- [x] Skill brukerens tekstgrense fra tjenestens tak; test begge veier.
+- [x] Bruk lagret analyse i sceneforslag og SceneAssetsPanel; test begge.
+- [x] Kontroller Manusutforskeren (bare filtre, ingen ressursforslag). Vitest: 1479 bestått, 10 eksisterende hoppet over. I18n: 0 uten engelsk. Automatisk typekontroll grønn. Nettlesertestene kjøres av Øystein.

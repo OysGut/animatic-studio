@@ -256,7 +256,7 @@ export const generateText = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator(validateTextInput)
   .handler(async ({ data, context }): Promise<GenerateTextResult> => {
-    const { memberRole, ROLE_RANK, overAccountCap } = await import("./ai-gate.server");
+    const { memberRole, ROLE_RANK, overAccountCap, userTextJobsInHour } = await import("./ai-gate.server");
     const role = await memberRole(
       context.supabase as unknown as AnyClient,
       data.projectId,
@@ -299,13 +299,8 @@ export const generateText = createServerFn({ method: "POST" })
 
     const hourAgo = new Date(Date.now() - 3600_000).toISOString();
     const overHourly = async (extra: number): Promise<string | null> => {
-      const { count } = await admin
-        .from("generation_jobs")
-        .select("id", { count: "exact", head: true })
-        .eq("created_by", context.userId)
-        .eq("kind", "text")
-        .gte("created_at", hourAgo);
-      return (count ?? 0) - extra >= MAX_TEXT_JOBS_PER_USER_PER_HOUR
+      const count = await userTextJobsInHour(admin, context.userId, hourAgo);
+      return count - extra >= MAX_TEXT_JOBS_PER_USER_PER_HOUR
         ? L(
             `Grensen på ${MAX_TEXT_JOBS_PER_USER_PER_HOUR} tekstkall til AI i timen er nådd. Prøv igjen senere.`,
             `The limit of ${MAX_TEXT_JOBS_PER_USER_PER_HOUR} text AI calls per hour has been reached. Try again later.`,

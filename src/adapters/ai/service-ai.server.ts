@@ -45,6 +45,8 @@ export async function runServiceAi(input: {
     .select("id, created_at, params")
     .eq("project_id", projectId)
     .eq("kind", "text")
+    .eq("params->>keyOwner", "lovable")
+    .in("params->>task", SERVICE_TASKS)
     .gte("created_at", dayAgo)
     .order("created_at", { ascending: false })
     .limit(500);
