@@ -1,103 +1,198 @@
-# SV1 – Endring av scenevarighet (B-041)
+# Oppdrag AS – Asset Studio (AS1–AS3)
 
-Brukeren velger metode hver gang hele scenen endrer lengde (feltet «Varighet», dra i sluttpunktet, egenskapspanelet). Ingen stille standard. Gjelder bare hele scenen; lagvarighet hører til AS2 og flytter aldri andre lag eller dialog.
+En fokusert arbeidsflate for ett lag (karakter eller objekt) i én sceneforekomst. Den åpnes fra sceneeditoren med knappen «Asset Studio» på et lag og med Alt+dobbeltklikk på laget. Studioet bygger på lagene, nøkkelbildene, bildeskiftene, lyden og medieverktøyene som finnes. Det kommer ingen ny motor.
 
-## 1. Kjernefunksjon `src/core/composition/retime.ts` (ren, plattformnøytral)
+## Felles grunnmur: prøveversjon (B5) og to skrivekanaler (B4)
 
 ```text
-planRetime(state, occurrenceId, {
-  targetFrames, method: "start"|"end"|"pauses"|"stretch_all"|"stretch_visual",
-  fill?: "freeze"|"background"|"black",   // kreves for start/end ved forlengelse
-  keepAmbience: boolean,                   // standard true
-  flexible?: FlexibleOptions               // overstyring for tester
-}) -> { ok: true, command: RetimeScene, report } | { ok: false, reason, report }
+ Asset Studio
+ ├─ Utkast for scenen (lokalt)      → én RetimeScene-lignende samlekommando ved «Oppdater scenen og lukk»
+ │    lag, bildeskifter, aktivt område, demping, nøkkelbilder
+ └─ Direkte kommandoer (med en gang) → bibliotek (opplasting, varianter, versjoner, AI, frilegging,
+                                        lyd, takes) og notater; de overlever Avbryt
 ```
 
-`report`: før/etter (bilder og ms), metode, `moved[]`, `trimmed[]`, `scaled[]` (type + id: keyframe, imageSwap, path, cameraShot, audioClip, volumeKey, fade, timeLink, pause, clipPart), `gapsBefore[]`/`gapsAfter[]`, `lockedConflicts[]`, `audioNotFitting[]`, `reason` på norsk og engelsk via `L()`.
+- Ny ren hjelper i `src/core/draft.ts`, kalt `createDraft(base)`. Den har funksjonene `push(cmd)`, `undo()`, `redo()`, `state()` og `steps()`. Den bruker `applyCommand` på en kopi, og direkte kommandoer fra biblioteket kan tas inn med `rebase(newBase)`.
+  - Utkastet godtar bare en hviteliste av scenekommandoer: `UpdateLayers`, `UpdateAudioClips` (bare `muted`) og `UpdateComposition` (bare timing). Andre kommandoer gir en feil i koden. Slik holdes de to kanalene adskilt.
+  - SV1-forhåndsspillet i `RetimeDialog` flyttes over til samme hjelper. Oppførselen er den samme, og testene viser det.
+- Ved lagring blir utkastet én samlet kommando, `UpdateSceneDraft {occurrenceId, compositionId, steps}`. Den kjøres med samme mekanisme som `RetimeScene`: trinnene utføres i rekkefølge, og inversen er trinnene i motsatt rekkefølge. Det gir én transaksjon, én angring og revisjonene fra da studioet ble åpnet (`baseRevisions` fra åpningstidspunktet).
+  - Alternativt kan `RetimeScene` generaliseres. Se åpent spørsmål 1.
+- Revisjonskonflikt (F3): `AssetStudioConflictDialog` viser hvilke lag eller klipp som er endret av andre. Det regnes ut ved å sammenligne `revision` på objektene i utkastet mellom grunnlaget og den ferske tilstanden.
+  - Valget «Legg utkastet oppå» kjører trinnene på nytt mot den ferske tilstanden (`rebase`) og viser forhåndsvisningen før ny lagring. Feiler et trinn i valideringen, vises det, og ingenting lagres.
+  - Valget «Forkast» lukker uten lagring. Ingenting overskrives i stillhet.
 
-Metodene:
-- **Start:** alt forskyves med differansen. Ved forkorting trimmes innhold før nytt bilde 0 (rapporteres). Ved forlengelse legges `padding.start` med valgt fyll.
-- **Slutt:** ingenting forskyves. Forkorting trimmer innhold etter slutten (rapporteres, som `beyondEnd`). Forlengelse legger `padding.end`.
-- **Fordel på pausene:** se punkt 2. Talelyd, musikk og video strekkes aldri; bare startpunkt flyttes.
-- **Strekk alt:** all visuell tid skaleres med faktor `target/før`. Lydklippenes start følger med. For dialogklipp med ordjustering endres ordmellomrommene med `setPause`/`spreadPause` fra `core/audio/pauses.ts`, slik at klippets lengde følger skalaen; ordene selv endres ikke. Uten ordjustering flyttes bare starten.
-- **Strekk alt unntatt lydfilene:** som over, men lydklipp (start, lengde, innhold, fades, volumpunkter) står urørt.
+## AS1 – Skall og prøveversjon
 
-Låste tidsrom (punkt 3) holdes faste i metode 3–5; skalering skjer bare utenfor dem. Låst innhold som må flyttes eller trimmes gir `lockedConflicts` og `ok:false`.
+Filer:
+- `src/core/draft.ts` (ny) og eksport i `src/core/index.ts`.
+- `src/core/commands/types.ts` og `apply.ts`: `UpdateSceneDraft` med hvitelisten og inversen.
+- `src/adapters/storage/commands.functions.ts`: `UpdateSceneDraft` legges til i 2D-kommandoene.
+- `src/app/asset-studio/` (ny mappe):
+  - `AssetStudio.tsx`: fullskjermsflate over sceneeditoren, med tre kolonner og fast bunnlinje;
+  - `use-asset-studio-draft.ts`;
+  - `StudioFooter.tsx`: «Oppdater scenen og lukk» og «Avbryt uten å oppdatere scenen». Avbryt spør først når utkastet ikke er tomt;
+  - `AssetStudioConflictDialog.tsx`.
+- `src/app/scene-editor/LayerInspector.tsx`: knappen «Asset Studio».
+- `src/app/scene-editor/Stage.tsx`: Alt+dobbeltklikk.
+- `src/app/scene-editor/SceneEditorWorkspace.tsx`: åpner og lukker studioet.
+- `src/app/scene-editor/RetimeDialog.tsx`: bruker `createDraft`.
 
-## 2. Fleksible mellomrom (metode 3) – forslag
+Ingen migrasjon i AS1.
 
-Godtar Claudes forslag, med to presiseringer:
-- **Ankre:** dialog-, forteller- og effektklipp (hele spennet fra start til slutt), video- og filmdeler (`ClipPart` med kilde `take`), låste tidsrom. Musikk og atmosfære ankrer ikke; startpunktet deres flyttes med posisjonen i mellomrommet de starter i.
-- **Mellomrom:** scenestart → første anker, mellom ankrene (sammenslåtte overlappende anker), siste anker → slutt. Mellomrom under 1 bilde regnes ikke.
-- Ny tid fordeles proporsjonalt med mellomrommenes lengde (§11: 1/2/3 s + 3 s → +0,5/+1/+1,5 s). Ved forkorting trekkes det fra proporsjonalt; ingen mellomrom blir negative.
-- Nøkkelbilder, bildeskifter, banepunkter, kamerautsnitt og tidskoblinger inne i et mellomrom skaleres lineært innenfor mellomrommet; ting inne i et anker flyttes med ankeret uendret.
-- Pausene inne i et dialogopptak (DEC-0096) er **ikke** fleksible i metode 3 – de hører til metode 4. (Åpent spørsmål 1.)
+Tester:
+- `tests/unit/as1-draft.test.ts`:
+  - utkast med push, angre og gjør om;
+  - hvitelisten avviser kommandoer for biblioteket;
+  - inversen av `UpdateSceneDraft` gir samme tilstand som før;
+  - rebase på en endret tilstand.
+- Eksisterende tester for SV1 forblir grønne.
+- DB: `UpdateSceneDraft` gjennom `apply_changes`, og revisjonskonflikt avviser hele kommandoen.
+- `tests/visual/asset-studio-shell.mjs`:
+  - åpning med knappen og med Alt+dobbeltklikk;
+  - Avbryt etter en endring spør først, og scenen er uendret;
+  - Oppdater gir én lagring og én angring;
+  - mocket konflikt viser dialogen, med både «Legg oppå» og «Forkast»;
+  - opplasting overlever Avbryt.
 
-## 3. Låste tidsrom
+## AS2 – Bilde og tid
 
-`lockedRanges: { id, startFrame, endFrame, label }[]` på komposisjonen. Settes i tidslinjen (merk et område → «Lås tidsrom», fjernes fra kontekstmenyen). Uavhengig av `CompositionLayer.locked`. Lagres i ny jsonb-kolonne (punkt 4) – **krever migrasjon 0042**.
+Datamodell:
+- `ImageSwap.transition?: { kind: "cut" | "crossfade"; frames: number }`. Feltet mangler betyr kutt. Det ligger i den eksisterende jsonb-kolonnen `image_swaps`, så ingen migrasjon trengs. Validering: `frames` er mellom 1 og avstanden til forrige bytte.
+- `CompositionLayer.activeFrom?: number | null` og `activeTo?: number | null` (inkludert). Null betyr hele scenen.
+  - Dette krever migrasjon 0043 med nye kolonnene `composition_layers.active_from` og `active_to` (integer null, check `>= 0` og `active_to >= active_from`), og `schema_version` blir 43.
+  - `apply_changes` henter kolonnelisten selv (`private.table_columns`), slik det ble sjekket i SV1. Den røres derfor ikke. Det sjekkes på nytt før migrasjonen skrives.
+  - `EXPECTED_SCHEMA_VERSION` og `tests/visual/schema-version.mjs` settes til 43.
+  - `patch.ts`, `project-rows.ts`, `layerFieldsOf` og validering av lagfelt oppdateres. Backup tar med feltene via `layerFieldsOf`, med test.
+- Samspill:
+  - Utenfor området tegnes laget ikke.
+  - Innenfor gjelder `visible` og opasitetsnøkkelbildene som før. Effektiv opasitet = nøkkelbilde × synlig × innenfor området.
+  - `visible = false` skjuler alltid laget.
+  - Nøkkelbildene beregnes på scenens tid og tidsforskyves ikke.
+  - Gruppelag: et barn tegnes bare når både gruppen og barnet er innenfor sine områder.
+  - SV1 (`planRetime`) skalerer området med samme regler som nøkkelbildene. Metode 1 (Start) og metode 2 (Slutt) trimmer og rapporterer.
 
-## 4. Fyll i ny tid
+Tegning og avspilling:
+- `renderFrame`, `RenderOptions`:
+  - `onlyLayers?: ReadonlySet<string>` for «Bare objektet» (grupper som er forfedre, beregnes fortsatt for matrisen);
+  - `fitTo?: {width, height}` gir en tilpasning til visningen bare i forhåndsvisningen, ikke i den lagrede transformasjonen.
+- `layerImageAt` returnerer også `{from, to, mix}` under en krysstoning. Komposisjonen tegner to bilder med opasitetene `1 − mix` og `mix`, med samme matrise, maske og blanding.
+- Eksporten (`engine/export/animatic.ts`, `film-video.ts`) og avspillingen bruker den samme `renderFrame`, så de forblir like. En test sammenligner `renderFrame` i kameravisning med eksportens bildeliste for krysstoning og aktivt område.
+- `usePlayback(durationFrames, fps, loop, range?: {from, to})`: område med løkke for objektets aktive område eller hele scenen.
 
-`padding: { start: { frames, fill }, end: { frames, fill } }`, `fill` = freeze | background | black. Lagres sammen med låste tidsrom i én ny kolonne `compositions.timing jsonb not null default '{"lockedRanges":[],"padding":null}'` med check på type og størrelse (≤ 64 kB), som `camera`.
+Brukerflate (`src/app/asset-studio/`):
+- `VariantStrip.tsx`: alle versjoner på tvers av variantene, gruppert per variant, med merke for vinkel (`AssetVersion.view`). Kan dras med `ASSET_DRAG_TYPE` og versjons-ID.
+- `ObjectTimeline.tsx`: bildesegmenter avledet fra `swaps` og basisbildet.
+  - Segmentene kan flyttes, trimmes (flytter neste bytte), fjernes (fjerner byttet, aldri bildet) og erstattes.
+  - Hvert bytte har et valg mellom kutt og krysstoning, med varighet.
+  - Endene på det aktive området kan dras, og området kan også settes med tall.
+- `StudioPreview.tsx`: veksling mellom «Bare objektet» og «Hele scenen», og mellom avspilling av objektets område og hele scenen.
+- Ny kjernehjelper `src/core/composition/segments.ts`: `segmentsOf(layer)`, `moveSegment`, `trimSegment`, `removeSegment`, `replaceSegment`. Alle er rene og gir nye `swaps` til `UpdateLayers`.
 
-Tegning: én ren funksjon `paddingAt(c, frame)` i core. `renderFrame` (render.ts) bruker den: freeze → tegn innholdsbilde 0 / siste innholdsbilde; background → bare bakgrunnen; black → svart. Forhåndsvisning (canvas-compositoren) og eksport (`engine/export/animatic.ts`, film-video) går begge gjennom `renderFrame`, så resultatet er likt; en unit-test sammenligner pikslene via soft-canvas. Lyd: med `keepAmbience` forlenges musikk- og atmosfæreklipp som spiller over kanten (innenfor kildens lengde, ellers rapporteres i `audioNotFitting`); ingen annen lyd legges til.
+Tester:
+- `tests/unit/as2-segments.test.ts`:
+  - segmentoperasjonene og at laget beholder sin identitet;
+  - validering av krysstoningen;
+  - `layerImageAt`-mix;
+  - `onlyLayers` og `fitTo`;
+  - aktivt område sammen med `visible`, opasitet og grupper;
+  - retime av området;
+  - backup og gjenoppretting;
+  - lik forhåndsvisning og eksport;
+  - `usePlayback` med område.
+- DB: kolonnene i 0043, check-reglene, skriving via `apply_changes` og sletting eller purge (de følger laget).
+- `tests/visual/asset-studio-image-time.mjs`:
+  - dra en versjon inn som segment;
+  - trimme, fjerne og erstatte;
+  - krysstoning;
+  - dra i området;
+  - begge forhåndsvisningene og begge avspillingsområdene.
 
-Innholdstid = `durationFrames − padding.start − padding.end`; alle eksisterende tider forblir innholdslokale ved start-padding? **Nei** – for enkelhet forskyves tidene fysisk ved Start-metoden, og padding brukes bare til tegningen av fyllområdet. Padding nullstilles ved neste retime som berører den kanten.
+## AS3 – Lyd, media og manus
 
-## 5. Avrunding
+Lyd:
+- Ny kjernehjelper `src/core/audio/asset-tracks.ts`: `assetAudioGroups(state, occurrenceId, assetId)` gir `{scene: [...music|ambience|sfx], character: [...dialogue der lineInfo.speaker eller soundLinks peker til ressursen], takes}`. Den er ren.
+- `useAudioPlayback` får `mutedClipIds?: ReadonlySet<string>`, som en liten utvidelse av `scheduleAudio` og `addLoaded`. `mutedKinds` er uendret.
+- `StudioAudioTracks.tsx`: grupperte spor med start og lengde, på linje med segmentene. Avkrysning per klipp og per gruppe gjelder bare forhåndslyttingen og begge visningene.
+  - Handlingen «Lagre demping i scenen» legger `UpdateAudioClips` med `muted` i utkastet.
 
-Hjelper `distributeLargestRemainder(total, weights)` i core: hele bilder for visuell tid, hele ms for lyd; summen blir alltid eksakt målvarigheten. Skalering av enkeltpunkter: `round(start + (f − start) · faktor)`, med monotoni sikret (to punkter bytter aldri rekkefølge, sammenfallende punkter slås ikke sammen stille – rapporteres). Tester med §11-eksemplet i både bilder (25 fps) og ms.
+Medieverktøy (A7), `StudioMediaToolbar.tsx`, gjenbruker komponentene som finnes:
+- opplasting og `MobileCameraButton` fra `LayerImageDialog`;
+- `CutoutDialog`, som lagrer en ny versjon;
+- `GenerateImagePanel`;
+- `TurnaroundPanel`, som eksporteres fra der den ligger nå. Komponenten endres ikke;
+- opplasting av lyd, `RecordAudioDialog`/`AudioTakesDialog`, `AudioCompositionEditor` og sammenligning av takes.
 
-## 6. For lite fleksibel tid (§13)
+Alt dette skrives direkte, ikke via utkastet. Nye ressurser kobles til `assetId` for laget.
 
-Forkorting større enn summen av fleksible mellomrom, eller treff i låst tidsrom → `ok:false` med forklaring («Scenen har bare 1,2 s fleksibel tid; du ba om −2 s»). Ingen kommando lages. Dialogen viser forklaringen og tilbyr annen metode eller Avbryt.
+Manus:
+- `SceneScriptPanel` får `highlightSpeaker?: assetId`, som markerer karakterens replikker. Visningen «Vis manus» står i høyre kolonne.
+- Forsøksvis manusredigering (C2–C3, F4):
+  - Ny `Annotation.kind?: "note" | "trial_edit"` og `suggestedText?: string`.
+  - Migrasjon 0043 (samme fil som AS2):
+    - `script_annotations.suggested_text text null check (length <= 10000)`;
+    - `kind text not null default 'note' check (kind in ('note','trial_edit'))`;
+    - check: `trial_edit` krever `block_id` og `suggested_text`.
+    - `source` utvides ikke. Den forblir `user`/`system`, så ingen check må byttes.
+  - Kommandoene `AddAnnotation`/`UpdateAnnotation` får feltene, og inversene som finnes, dekker dem. Sletting skjer med den vanlige notatslettingen (`removed`).
+  - `NotesPanel` viser original (`quote`) og forslag. «Bruk forslaget» åpner en bekreftelse og kjører `EditBlockText` via den vanlige manusredigeringen. Notatet blir stående, og brukeren kan slette det.
+  - Eksport og backup tar med feltene.
 
-## 7. Utførelse – ny kommando `RetimeScene`
+Filer:
+- `src/core/audio/asset-tracks.ts`;
+- `src/app/audio/use-audio-playback.ts`;
+- `src/engine/audio/mixer.ts`;
+- `src/app/asset-studio/StudioAudioTracks.tsx`, `StudioMediaToolbar.tsx`, `StudioScript.tsx` og `TrialEditForm.tsx`;
+- `SceneScriptPanel.tsx`;
+- `src/app/script/NotesPanel.tsx`;
+- `src/core/model.ts`, `src/core/notes/index.ts`, `patch.ts` og `project-rows.ts`;
+- backup.
 
-Én samlet kommando er realistisk og foretrekkes:
-- Innhold: `compositionId`, ny `durationFrames`, nye `timing`, og fullstendige nye feltverdier for berørte lag, lydklipp, tidskoblinger og kamera (samme form som `UpdateLayers`/`UpdateAudioClips`/`UpdateTimeLinks`/`UpdateComposition`), pluss `occurrence.plannedMs` hvis satt.
-- Invers: samme kommando med de gamle verdiene (snapshot før), testet med angre/gjør om.
-- Patch: én patch med alle rader → én `apply_changes`-transaksjon med revisjonssjekk per rad. Endrer noen andre en rad i mellomtiden, avvises hele kommandoen og dialogen ber om ny beregning. Aldri delvis lagret.
-- `planRetime` bygger kommandoen; validering i `apply.ts` gjentar sjekkene (varighet innenfor 1 s–1 t, monotone tider, ingen negative ms).
+Tester:
+- `tests/unit/as3-audio-notes.test.ts`:
+  - gruppering av lyd via `speaker` og `soundLinks`;
+  - demping per klipp i `scheduleAudio`;
+  - at demping ikke lagres uten den eksplisitte handlingen;
+  - et trial_edit-notat validerer, angres og gjøres om;
+  - «Bruk forslaget» gir `EditBlockText`;
+  - backup.
+- DB: feltene og check-reglene i 0043.
+- `tests/visual/asset-studio-audio-media.mjs` og `asset-studio-script.mjs`:
+  - forhåndslytting med demping;
+  - lagring av demping;
+  - at medieverktøyene åpner;
+  - at et AI-bilde blir en ny versjon (mocket);
+  - at et notat med forsøksvis redigering overlever Avbryt;
+  - «Bruk forslaget» med bekreftelse;
+  - engelsk visning.
 
-## 8. Brukerflate (`src/app/scene-editor/`)
+Akseptansekriteriene 1–8 og 15 i diffen fordeles på disse fire nettlesertestene. Jeg har ikke selve teksten i diffen. Hvert steg merkes derfor med kriterienummeret ut fra beskrivelsen i oppdraget. Det må kontrolleres.
 
-- `RetimeDialog.tsx` «Endre scenevarighet»: ny varighet (s) eller +/−, fem metoder som radioknapper (ingen forhåndsvalg), fyll (vises bare for Start/Slutt ved forlengelse, ingen forhåndsvalg), «La atmosfære og musikk fortsette» (avkrysset), rapporten i klartekst, før/etter-stripe, «Forhåndsspill», «Bruk», «Avbryt». Bruk er deaktivert til metode (og fyll ved behov) er valgt og planen er `ok`.
-- `RetimeStrip.tsx`: to tynne stripe-rader (før/etter) med ankre, mellomrom, låste tidsrom og padding i designtokens.
-- Forhåndsspill: `applyCommand` lokalt på en kopi av tilstanden, spilles i den eksisterende avspillingen; ingen lagring.
-- Innganger: feltet «Varighet» (`commitDuration` åpner dialogen i stedet for `UpdateComposition` direkte), nytt dragbart sluttpunkt på scenens tidslinje (slipp → dialog med målverdien), og varighetsfeltet i egenskapspanelet.
-- Låste tidsrom: visning og kontekstmeny i tidslinjen.
-- All tekst med `L()`, katalogen regenereres, `data-testid` på alle kontroller.
+## Migrasjon (samlet)
 
-## 9. Tester
+`db/migrations/0043_asset_studio.sql`:
+- `composition_layers.active_from` og `active_to`;
+- `script_annotations.kind` og `suggested_text`;
+- `schema_version` blir 43.
 
-- Unit `tests/unit/sv1-retime.test.ts`: hver metode (forleng/forkort), §11-eksemplet, største-rest-summen, låste tidsrom, for lite tid (`ok:false`, ingen kommando), at tale, musikk og video aldri får endret lengde eller hastighet i metode 1–3 og 5, at metode 4 bare endrer ordmellomrom, fyll og `keepAmbience`.
-- Kommando: `RetimeScene` virker, invers, angre/gjør om, revisjonskonflikt.
-- Render: `paddingAt` + soft-canvas lik i forhåndsvisning og eksport.
-- DB (`tests/db/run-db-tests.ts`): kolonnen `timing` (check, default), `RetimeScene` via `apply_changes` i én transaksjon, konflikt gir full avvisning.
-- Nettleser `tests/visual/scene-duration-ui.mjs` (mønster fra `dec0096-pauses-ui.mjs`, `VISUAL_SCHEMA_VERSION`): testene G–L og 13–15, både norsk og engelsk visning. Jeg skriver den; Claude kjører den.
-
-## 10. Migrasjon 0042
-
-`db/migrations/0042_composition_timing.sql`: ny kolonne `compositions.timing`; `apply_changes` kopieres ordrett fra siste definisjon og endres bare hvis kolonnelisten for `compositions` er eksplisitt; `schema_version` 42 og `EXPECTED_SCHEMA_VERSION = 42`, `VISUAL_SCHEMA_VERSION = 42`. Mapping i `project-rows.ts`, backup tar med feltet (`src/core/backup`). Skrives, kjøres ikke.
+Migrasjonen skrives, men kjøres ikke. Den kan deles i 0043 (AS2) og 0044 (AS3) hvis stegene leveres hver for seg.
 
 ## Risikoer
 
-- Metode 4 krever ordjustering; uten den kan dialogopptak ikke strekkes – rapporteres per klipp.
-- Skalering kan få to nøkkelbilder til å falle på samme bilde ved kraftig forkorting.
-- Overlappende scener (`Transition.frames`) og `ClipPart`/`ProductionSegment` i filmen påvirkes av ny lengde; `ClipPart` med video holdes som anker, men montasjens delgrenser må beregnes på nytt.
-- Stor kommando (mange lag) – grensene for patch-størrelse må sjekkes.
+- Utkast som lever lenge, gir flere konflikter. Rebasen kan feile på enkeltrinn, og det håndteres i dialogen.
+- Krysstoning dobler tegningen i overgangen. Det er bare innenfor overgangen.
+- Et aktivt område sammen med SV1-retime og overganger gir nye grensetilfeller. Testene dekker dem.
+- Dra og slipp på tidslinjen er kode som ligner `Timeline`. Felles hjelpere fra `timeline-helpers.ts` gjenbrukes.
+- Demping per klipp må ikke lekke inn i eksporten. Det testes.
 
 ## Åpne spørsmål
 
-1. Skal dialogens interne pauser (DEC-0096) også være fleksible i metode 3, eller bare i metode 4 (mitt forslag)?
-2. Skal `plannedMs` på forekomsten følge den nye varigheten, eller bare `durationFrames`?
-3. Ved Start-metoden: skal tidskoblinger til manusblokker som havner før bilde 0 trimmes eller avvise planen?
-4. Gjelder metodevalget også når scenen følger beregnet varighet (`durationFrames = 0`) og manuset endres? Mitt forslag: nei, bare ved brukerens egne endringer.
-5. Bekreft migrasjon 0042 med ny kolonne `timing` (alternativ: lagre i `camera`-jsonb uten migrasjon, som jeg fraråder).
+1. Skal det bli en ny `UpdateSceneDraft`, eller skal `RetimeScene` generaliseres til en felles samlekommando? Jeg anbefaler en ny kommando, så SV1 forblir uendret.
+2. Notat for forsøksvis redigering: i oppdraget står det «blockId og variantId». Tabellen krever i dag enten blokk eller variant (`check ((block_id is null) <> (variant_id is null))`). Holder det med `blockId`, siden varianten følger av blokken? Det er det jeg foreslår.
+3. Skal `source`/type utvides med en ny verdi i `source`, eller skal den nye kolonnen `kind` brukes, slik jeg foreslår?
+4. Skal kriteriene 9–14 i diffen, som ikke er nevnt, være utenfor dette oppdraget?
+5. Krysstoning mellom bilder med ulik størrelse: skal begge tegnes i sin egen størrelse rundt samme sentrum? Det foreslår jeg.
+6. Skal migrasjonen være én fil (0043) eller to (0043/0044)?
 
-## Filer (forventet)
+## Endrede filer (i planmodus)
 
-Nye: `src/core/composition/retime.ts`, `src/core/composition/timing.ts` (paddingAt, lockedRanges, distribuering), `src/app/scene-editor/RetimeDialog.tsx`, `RetimeStrip.tsx`, `db/migrations/0042_composition_timing.sql`, tester over.
-Endres: `src/core/model` (Composition.timing), `src/core/commands/types.ts` og `apply.ts` (RetimeScene), `src/core/composition/render.ts`, `src/core/backup`, `src/adapters/storage/project-rows.ts`, `SceneEditorWorkspace.tsx` og egenskapspanelet, scenens tidslinje, `tests/db/run-db-tests.ts`, `tests/visual/schema-version.mjs`, `catalog.gen.ts`, `roadmap.md`.
+- `.lovable/plan.md`
