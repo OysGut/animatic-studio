@@ -774,6 +774,8 @@ export type Database = {
       }
       composition_layers: {
         Row: {
+          active_from: number | null
+          active_to: number | null
           anchor: Json | null
           asset_id: string | null
           asset_variant_id: string | null
@@ -805,6 +807,8 @@ export type Database = {
           width: number
         }
         Insert: {
+          active_from?: number | null
+          active_to?: number | null
           anchor?: Json | null
           asset_id?: string | null
           asset_variant_id?: string | null
@@ -836,6 +840,8 @@ export type Database = {
           width: number
         }
         Update: {
+          active_from?: number | null
+          active_to?: number | null
           anchor?: Json | null
           asset_id?: string | null
           asset_variant_id?: string | null
@@ -2263,6 +2269,7 @@ export type Database = {
           edited_at: string | null
           edited_by_name: string | null
           id: string
+          kind: string
           project_id: string
           quote: string
           range_end: number
@@ -2271,6 +2278,7 @@ export type Database = {
           revision: number
           source: string
           stamp_at: string
+          suggested_text: string | null
           task_id: string | null
           text: string
           variant_id: string | null
@@ -2283,6 +2291,7 @@ export type Database = {
           edited_at?: string | null
           edited_by_name?: string | null
           id: string
+          kind?: string
           project_id: string
           quote?: string
           range_end?: number
@@ -2291,6 +2300,7 @@ export type Database = {
           revision?: number
           source?: string
           stamp_at?: string
+          suggested_text?: string | null
           task_id?: string | null
           text: string
           variant_id?: string | null
@@ -2303,6 +2313,7 @@ export type Database = {
           edited_at?: string | null
           edited_by_name?: string | null
           id?: string
+          kind?: string
           project_id?: string
           quote?: string
           range_end?: number
@@ -2311,6 +2322,7 @@ export type Database = {
           revision?: number
           source?: string
           stamp_at?: string
+          suggested_text?: string | null
           task_id?: string | null
           text?: string
           variant_id?: string | null

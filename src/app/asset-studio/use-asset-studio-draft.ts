@@ -19,6 +19,7 @@ import {
   type Command,
   type ProjectState,
   type SceneDraft,
+  type DraftOwnWrite,
 } from "@/core";
 
 export interface AssetStudioDraft {
@@ -35,10 +36,9 @@ export interface AssetStudioDraft {
   redo: () => void;
   replace: (d: SceneDraft) => void;
   /**
-   * En direkte skriving fra studioet selv (lydopptak, «Bruk dette», bibliotek): den neste endringen i den lagrede
-   * tilstanden legges under utkastet uten konflikt, så egne skrivinger aldri gir falsk konflikt ved lagring.
+   * En kvittering for en egen direkte skriving: bare de berørte radene, feltene og revisjonene er egne.
    */
-  markOwnWrite: () => void;
+  markOwnWrite: (write: DraftOwnWrite) => void;
 }
 
 export function useAssetStudioDraft(
@@ -50,15 +50,15 @@ export function useAssetStudioDraft(
     createDraft(live, occurrenceId, compositionId),
   );
 
-  const ownWrites = useRef(0);
+  const ownWrites = useRef<DraftOwnWrite[]>([]);
   // Legg utkastet oppå den nye lagrede tilstanden når det kan gjøres uten konflikt, eller når endringen er
   // studioets egen direkte skriving
   useEffect(() => {
-    const own = ownWrites.current > 0;
-    ownWrites.current = 0;
+    const own = ownWrites.current;
+    ownWrites.current = [];
     setDraft((d) => {
       if (d.base === live) return d;
-      if (!own && draftConflicts(d, live).length) return d;
+      if (draftConflicts(d, live, own).length) return d;
       const r = rebaseDraft(d, live);
       return r.ok ? r.draft : d;
     });
@@ -87,8 +87,8 @@ export function useAssetStudioDraft(
     undo: () => setDraft((d) => undoDraft(d)),
     redo: () => setDraft((d) => redoDraft(d)),
     replace: setDraft,
-    markOwnWrite: () => {
-      ownWrites.current += 1;
+    markOwnWrite: (write) => {
+      ownWrites.current.push(write);
     },
   };
 }

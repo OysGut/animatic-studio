@@ -21,9 +21,10 @@ const LAYER = fx.rows.composition_layers.find((l) => l.composition_id === COMP.i
 const ASSET = fx.rows.assets.find((a) => a.id === LAYER.asset_id);
 const V0 = fx.rows.asset_variants.find((v) => v.asset_id === ASSET.id);
 const VER0 = fx.rows.asset_versions.find((v) => v.variant_id === V0.id);
+const HIDDEN = fx.rows.composition_layers.find((l) => l.composition_id === COMP.id && !l.visible && l.kind !== "group");
 // Fire varianter med ett bilde hver (kriterium 1)
 const id = (n) => `00000000-0000-7000-8000-0000a5${String(n).padStart(6, "0")}`;
-const VARIANTS = [1, 2, 3].map((i) => ({ ...V0, id: id(i), name: `Variant ${i + 1}` }));
+const VARIANTS = [1, 2, 3].map((i) => ({ ...V0, id: id(i), name: `Variant ${i + 1}`, approved_version_id: id(9 + i) }));
 const VERSIONS = VARIANTS.map((v, i) => ({ ...VER0, id: id(10 + i), variant_id: v.id, number: 1, view: ["side", "back", "three_quarter"][i] }));
 const TEMPLATE = fx.rows.audio_clips.find((a) => a.kind === "dialogue") ?? fx.rows.audio_clips[0];
 const LINE = fx.rows.script_blocks.find((b) => b.variant_id === OCC.variant_id && b.kind === "dialogue");
@@ -36,7 +37,7 @@ const rows = {
   assets: fx.rows.assets.map((a) => (a.id === ASSET.id ? { ...a, kind: "character", name: CHAR ? CHAR.text : a.name } : a)),
   asset_variants: [...fx.rows.asset_variants, ...VARIANTS],
   asset_versions: [...fx.rows.asset_versions, ...VERSIONS],
-  composition_layers: fx.rows.composition_layers.map((l) => (l.id === LAYER.id ? { ...l, image_swaps: [], locked: false, active_from: null, active_to: null, keyframes: [{ frame: 0, property: "x", value: 0, easing: "linear" }, { frame: 48, property: "x", value: 200, easing: "linear" }] } : l)),
+  composition_layers: fx.rows.composition_layers.map((l) => (l.id === LAYER.id ? { ...l, transform: { ...l.transform, x: COMP.width / 2, y: COMP.height / 2 }, image_swaps: [], locked: false, visible: true, group_id: null, motion_path: null, active_from: null, active_to: null, keyframes: [{ frame: 0, property: "x", value: COMP.width / 2, easing: "linear" }, { frame: 48, property: "x", value: COMP.width / 2 + 200, easing: "linear" }] } : l.id === HIDDEN?.id ? { ...l, transform: { ...l.transform, x: COMP.width / 2, y: COMP.height / 2 }, keyframes: [], motion_path: null } : l)),
   audio_clips: [...fx.rows.audio_clips.filter((a) => a.occurrence_id !== OCC.id), clip(DLG, "dialogue", "Replikk", 500, LINE?.id ?? null), clip(MUSIC, "music", "Musikk", 0, null)],
 };
 let commands = [];
@@ -139,7 +140,7 @@ async function open(lang) {
 
 /** Åpner Asset Studio for laget via knappen i egenskapspanelet. */
 async function openStudio(page, studio) {
-  await page.getByText(LAYER.name, { exact: true }).first().click();
+  await page.locator(`[data-layer-row="${LAYER.id}"]`).first().click();
   await page.getByTestId("open-asset-studio").click();
   await studio.waitFor({ timeout: 5000 });
 }
@@ -156,6 +157,8 @@ async function save(page, studio) {
 }
 
 async function scenario(name, lang, fn) {
+  commands = [];
+  conflictNext = false;
   const { context, page, errors, studio } = await open(lang);
   try {
     await openStudio(page, studio);
@@ -175,13 +178,13 @@ await scenario("skall", "nb", async (page, studio) => {
   await waitHidden(studio);
   check(commands.length === before, "Avbryt med tomt utkast lukker uten spørsmål og sender ingenting");
   // Alt + dobbeltklikk åpner også studioet
-  const canvas = page.locator("canvas").first();
-  const b = await canvas.boundingBox();
-  await page.keyboard.down("Alt");
-  await canvas.dblclick({ position: { x: b.width / 2, y: b.height / 2 }, modifiers: ["Alt"] });
-  await page.keyboard.up("Alt");
+  const canvas = page.getByTestId("scene-stage");
+  const view = await canvas.evaluate((el) => ({ x: Number(el.dataset.viewX), y: Number(el.dataset.viewY), zoom: Number(el.dataset.viewZoom) }));
+  // Maja is at the scene centre; a hidden foreground layer overlaps this point.
+  await canvas.dblclick({ position: { x: view.x + COMP.width / 2 * view.zoom, y: view.y + COMP.height / 2 * view.zoom }, modifiers: ["Alt"] });
   await page.waitForTimeout(300);
   check(await studio.count() > 0, "Alt + dobbeltklikk på laget åpner Asset Studio");
+  check(HIDDEN && await studio.getByTestId("asset-studio-properties").getByText(LAYER.name, { exact: false }).count() > 0, "Alt + dobbeltklikk velger Maja under et skjult lag");
 });
 
 await scenario("kriterium-1-2", "nb", async (page, studio) => {
@@ -202,7 +205,7 @@ await scenario("kriterium-1-2", "nb", async (page, studio) => {
   check(drafts().length === 1, "én UpdateSceneDraft sendes");
   check(f?.swaps?.length === 3 && new Set(f.swaps.map((w) => w.assetId)).size === 1 && f.swaps[0].assetId === ASSET.id, "1: tre bildeskifter på det samme laget, med samme ressurs (ingen ny karakter)");
   check((cmd?.steps ?? []).every((s) => s.type !== "AddLayers"), "1: ingen nye lag");
-  check(f?.keyframes?.length === 2, "2: nøkkelbildeanimasjonen er uendret gjennom byttene");
+  check(layerSteps(cmd).every((step) => step.keyframes === undefined), "2: nøkkelbildeanimasjonen er uendret gjennom byttene (ingen nøkkelbildefelter skrives)");
   check(f?.swaps?.some((w) => w.transition?.kind === "crossfade"), "2: krysstoning er lagret på bildeskiftet");
 });
 
@@ -260,12 +263,10 @@ await scenario("kriterium-7-8", "nb", async (page, studio) => {
   await dropVersion(page, VERSIONS[0].id, 0.5);
   // Forsøksvis manusredigering: lagres med en gang som notat
   const trial = page.getByTestId("asset-studio-trial-edit").first();
-  if (await trial.count()) {
-    await trial.click();
-    await page.getByTestId("asset-studio-trial-suggestion").fill("En helt ny replikk");
-    await page.getByTestId("asset-studio-trial-save").click();
-    await page.waitForTimeout(200);
-  }
+  await trial.click();
+  await page.getByTestId("asset-studio-trial-suggestion").fill("En helt ny replikk");
+  await page.getByTestId("asset-studio-trial-save").click();
+  await waitHidden(page.getByTestId("asset-studio-trial-form"));
   const note = commands.find((c) => c?.type === "AddAnnotations");
   check(note?.annotations?.[0]?.kind === "trial_edit" && note.annotations[0].suggestedText === "En helt ny replikk", "8: forsøksvis manusendring sendes med en gang som notat med forslag");
   check(note?.annotations?.[0]?.quote?.length > 0, "8: notatet har originalteksten");

@@ -14,10 +14,12 @@ import { Pause, Play, Redo2, Undo2, Unlock, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   L,
+  applyCommand,
   assetAudioGroups,
   assetLineIds,
   compositionDuration,
   draftCommand,
+  draftConflicts,
   filmClips,
   framesToSeconds,
   imageSegmentsOf,
@@ -107,27 +109,29 @@ export function AssetStudio({
   // egne, så utkastet legges oppå dem automatisk
   const mark = d.markOwnWrite;
   const directCmds = useMemo<Commands>(
-    () => ({
+    () => {
+      const track = <T,>(command: Parameters<Commands["run"]>[0], action: () => T): T => {
+        const before = cmds.current();
+        const result = action();
+        const after = cmds.current();
+        if (before && after && before !== after) {
+          const applied = applyCommand(before, {
+            id: "studio-own-write" as never,
+            actor: "00000000-0000-0000-0000-000000000000" as never,
+            at: new Date(0).toISOString(), command,
+          });
+          if (applied.ok) mark({ before, after: applied.state, affected: applied.affected });
+        }
+        return result;
+      };
+      return {
       ...cmds,
-      run: (...a: Parameters<Commands["run"]>) => {
-        mark();
-        return cmds.run(...a);
-      },
-      runSilent: (...a: Parameters<Commands["runSilent"]>) => {
-        mark();
-        return cmds.runSilent(...a);
-      },
-      runQueued: (...a: Parameters<Commands["runQueued"]>) => {
-        mark();
-        return cmds.runQueued(...a);
-      },
-      runAndWait: async (...a: Parameters<Commands["runAndWait"]>) => {
-        mark();
-        const r = await cmds.runAndWait(...a);
-        mark();
-        return r;
-      },
-    }),
+      run: (...a: Parameters<Commands["run"]>) => track(a[0], () => cmds.run(...a)),
+      runSilent: (...a: Parameters<Commands["runSilent"]>) => track(a[0], () => cmds.runSilent(...a)),
+      runQueued: (...a: Parameters<Commands["runQueued"]>) => track(a[0], () => cmds.runQueued(...a)),
+      runAndWait: (...a: Parameters<Commands["runAndWait"]>) => track(a[0], () => cmds.runAndWait(...a)),
+      };
+    },
     [cmds, mark],
   );
   const comp = view.compositions[composition.id] ?? composition;
@@ -237,7 +241,17 @@ export function AssetStudio({
   }
 
   async function save() {
-    const cmd = draftCommand(d.draft);
+    const fresh = cmds.current() ?? state;
+    if (draftConflicts(d.draft, fresh).length) {
+      setConflict(true);
+      return;
+    }
+    const rebased = rebaseDraft(d.draft, fresh);
+    if (!rebased.ok) {
+      setError(rebased.message);
+      return;
+    }
+    const cmd = draftCommand(rebased.draft);
     if (!cmd) {
       onClose();
       return;
