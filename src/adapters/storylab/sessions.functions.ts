@@ -29,6 +29,49 @@ export const STORY_SUGGESTION_KINDS = [
 ] as const;
 export type StorySuggestionKind = (typeof STORY_SUGGESTION_KINDS)[number];
 
+export interface StorySuggestion {
+  readonly id: string;
+  readonly sessionId: string | null;
+  readonly turnId: string | null;
+  readonly kind: StorySuggestionKind;
+  readonly payload: { [k: string]: JsonValue };
+  readonly status: "open" | "applied" | "discarded";
+  readonly createdAt: string;
+  readonly createdBy: string;
+}
+
+export const listStorySuggestions = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => {
+    const x = obj(d);
+    const status = x["status"], kind = x["kind"];
+    if (status !== undefined && !oneOf(["open", "applied", "discarded"] as const, status))
+      throw new Error(L("Ugyldig status", "Invalid status"));
+    if (kind !== undefined && !oneOf(STORY_SUGGESTION_KINDS, kind))
+      throw new Error(L("Ukjent type forslag", "Unknown kind of suggestion"));
+    return { projectId: projectIdOf(x),
+      ...(status !== undefined ? { status: status as StorySuggestion["status"] } : {}),
+      ...(kind !== undefined ? { kind: kind as StorySuggestionKind } : {}),
+      ...(x["sessionId"] !== undefined ? { sessionId: idOf(x, "sessionId") } : {}) };
+  })
+  .handler(async ({ data, context }): Promise<{ ok: true; suggestions: StorySuggestion[] } | Fail> => {
+    const g = await gate(context.supabase as unknown as AnyClient, data.projectId, context.userId, "editor");
+    if ("ok" in g) return g;
+    let query = g.admin.from("story_suggestions")
+      .select("id, session_id, turn_id, kind, payload, status, created_at, created_by")
+      .eq("project_id", data.projectId);
+    if (data.status) query = query.eq("status", data.status);
+    if (data.kind) query = query.eq("kind", data.kind);
+    if (data.sessionId) query = query.eq("session_id", data.sessionId);
+    const { data: rows, error } = await query.order("created_at", { ascending: false }).limit(500);
+    if (error) return fail(L("Forslagene kunne ikke hentes.", "The suggestions could not be loaded."));
+    return { ok: true, suggestions: ((rows ?? []) as Record<string, unknown>[]).map((r) => ({
+      id: String(r["id"]), sessionId: r["session_id"] as string | null, turnId: r["turn_id"] as string | null,
+      kind: r["kind"] as StorySuggestionKind, payload: r["payload"] as StorySuggestion["payload"],
+      status: r["status"] as StorySuggestion["status"], createdAt: String(r["created_at"]), createdBy: String(r["created_by"]),
+    })) };
+  });
+
 /** Grensene (litt under databasens, så brukeren får en forståelig melding). */
 export const MAX_SESSION_TURNS_BYTES = 2_000_000;
 export const MAX_SESSION_CONTEXT_BYTES = 250_000;
