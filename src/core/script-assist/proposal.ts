@@ -54,7 +54,7 @@ export interface Proposal {
 }
 
 type Ids = (kind: string) => string;
-const defaultIds: Ids = (k) => newId(k as never);
+const defaultIds: Ids = () => newId();
 const NEW_KINDS: readonly BlockKind[] = ["action", "character", "parenthetical", "dialogue", "transition", "shot"];
 const clip = (t: string) => t.trim().slice(0, MAX_ASSIST_BLOCK_CHARS);
 

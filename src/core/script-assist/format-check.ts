@@ -3,7 +3,7 @@
  * endres før brukeren velger «Bruk».
  */
 import { newId } from "../ids";
-import type { BlockKind, ProjectState, SceneHeading } from "../model";
+import { occurrenceKind, type BlockKind, type ProjectState, type SceneHeading } from "../model";
 import type { Proposal, ProposalItem } from "./proposal";
 import { sceneBlocks } from "./prompts";
 
@@ -75,10 +75,10 @@ export function formatCheck(s: ProjectState, productionId: string, occurrenceId:
   }
   const occ = s.occurrences[occurrenceId];
   const v = occ ? s.variants[occ.variantId] : undefined;
-  const scene = occ && (occ.kind === undefined || occ.kind === "scene");
+  const scene = occ && occurrenceKind(occ) === "scene";
   const fixed = v && scene ? formatHeadingFix(v.heading) : null;
   return {
-    id: newId("proposal" as never),
+    id: newId(),
     kind: "format",
     productionId,
     occurrenceId,
