@@ -27,7 +27,7 @@ type Fields = Pick<LayerFields, "assetId" | "assetVariantId" | "versionId" | "sw
 
 const sorted = (list: readonly ImageSwap[]) => [...list].sort((a, b) => a.frame - b.frame);
 
-export function segmentsOf(f: Fields, durationFrames: number): ImageSegment[] {
+export function imageSegmentsOf(f: Fields, durationFrames: number): ImageSegment[] {
   const swaps = sorted(f.swaps);
   const end = Math.max(1, durationFrames);
   const out: ImageSegment[] = [
@@ -74,9 +74,9 @@ const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, M
  * Legg inn et bilde fra `frame` (dra fra variantstripen). På bilde 0 erstattes lagets eget bilde; på et
  * bilde med et bytte erstattes byttets bilde. Ellers kommer det et nytt bytte.
  */
-export function insertSegment<F extends Fields>(f: F, frame: number, img: SegmentImage): F {
+export function insertImageSegment<F extends Fields>(f: F, frame: number, img: SegmentImage): F {
   const at = Math.max(0, Math.round(frame));
-  if (at === 0) return replaceSegment(f, 0, img);
+  if (at === 0) return replaceImageSegment(f, 0, img);
   const swaps = sorted(f.swaps);
   const i = swaps.findIndex((w) => w.frame === at);
   const swap: ImageSwap = {
@@ -91,7 +91,7 @@ export function insertSegment<F extends Fields>(f: F, frame: number, img: Segmen
 }
 
 /** Erstatt bildet i et segment (samme tid). */
-export function replaceSegment<F extends Fields>(f: F, index: number, img: SegmentImage): F {
+export function replaceImageSegment<F extends Fields>(f: F, index: number, img: SegmentImage): F {
   if (index === 0)
     return {
       ...f,
@@ -115,7 +115,7 @@ export function replaceSegment<F extends Fields>(f: F, index: number, img: Segme
  * Flytt et segment (hele segmentet, samme lengde): starten og byttet etter flyttes like mye, innenfor
  * nabosegmentene. Lagets eget bilde (0) starter alltid på 0 og kan ikke flyttes.
  */
-export function moveSegment<F extends Fields>(
+export function moveImageSegment<F extends Fields>(
   f: F,
   index: number,
   newStart: number,
@@ -138,7 +138,7 @@ export function moveSegment<F extends Fields>(
 }
 
 /** Trim slutten av et segment: flytter byttet etter (innenfor nabosegmentene). Siste segment: uendret. */
-export function trimSegment<F extends Fields>(f: F, index: number, newEnd: number): F {
+export function trimImageSegment<F extends Fields>(f: F, index: number, newEnd: number): F {
   const swaps = sorted(f.swaps);
   const next = swaps[index];
   if (!next) return f;
@@ -152,7 +152,7 @@ export function trimSegment<F extends Fields>(f: F, index: number, newEnd: numbe
  * Fjern et segment: byttet fjernes, og segmentet før fortsetter. Fjernes lagets eget bilde (0), tar det
  * første byttets bilde over fra starten. Bildet i biblioteket berøres aldri. null når laget bare har ett.
  */
-export function removeSegment<F extends Fields>(f: F, index: number): F | null {
+export function removeImageSegment<F extends Fields>(f: F, index: number): F | null {
   const swaps = sorted(f.swaps);
   if (index === 0) {
     const first = swaps[0];
@@ -173,7 +173,7 @@ export function removeSegment<F extends Fields>(f: F, index: number): F | null {
 }
 
 /** Overgangen inn i et segment: kutt (null) eller krysstoning med varighet (kortes ned til bildet før). */
-export function setSegmentTransition<F extends Fields>(
+export function setImageSegmentTransition<F extends Fields>(
   f: F,
   index: number,
   frames: number | null,
