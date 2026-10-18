@@ -1,65 +1,65 @@
-# SL7 – Skrivecanvas og intervju i Story Lab
+# OG2 – Automatisk gjenkjenning og språkkobling med den innebygde AI-en (B-047, B-048)
 
-Ingen databaseendringer kjøres. Migrasjonen skrives som fil. Eneste nye pakke er `@xyflow/react@^12`.
+Ingen nye pakker. Krever migrasjon 0041 (skrives, kjøres av Claude). Ressurser og koblinger opprettes aldri automatisk.
 
-## Migrasjon – `db/migrations/0040_story_canvas.sql` (kjøres ikke)
-- `story_canvas_nodes` og `story_canvas_edges` som i oppdraget. Check-constraints på `kind`, tekstlengder (`title` ≤ 300, `body` ≤ 8000, `label` ≤ 200) og `color` (token-navn eller null).
-- `group_id` er en selvreferanse. En trigger sjekker at den peker på en node med `kind = 'group'` i samme prosjekt. En trigger på kanter sjekker at begge nodene tilhører kantens prosjekt.
-- `asset_id` og `scene_id` får `on delete restrict`.
-- RLS: lesing via `private.is_project_member`, ingen skriving fra klienten. GRANT select til authenticated og all til service_role.
-- `apply_changes`, `delete_project`, `purge_project_assets` og `purge_removed_assets` kopieres ordrett fra 0039. Endringer:
-  - begge tabellene legges i `v_tables`;
-  - delete-rekkefølgen er kanter, så noder, og begge før `story_facts`;
-  - purge-funksjonene fjerner noder og kanter som peker på assets eller scener som slettes, før de slettes.
-- `schema_version` blir 40. `EXPECTED_SCHEMA_VERSION` blir 40.
-- Sjekkes før skriving: om CHECK-constrainten på `story_sessions.kind` tillater `interview`. Hvis ikke, utvides den i samme migrasjon. Det er et avvik, og det rapporteres.
+## 1. Serverfunksjon `analyzeScriptEntities`
+Fil: `src/adapters/ai/entity-analysis.functions.ts` (+ `entity-analysis.server.ts` for selve kallet).
+- Inndata: `{ projectId, scope: "all" | { sceneIds: string[] } }`. Validerer UUID-er, maks 500 scene-ID-er. Ingen fri tekst fra klienten.
+- Tilgang: `requireSupabaseAuth` + redaktør/eier i prosjektet (samme sjekk som andre AI-funksjoner).
+- Serveren laster prosjekttilstanden selv (`project-rows.ts`), kjører `librarySuggestions` + `classifySuggestion` per scene, og bygger prompten med eksisterende `classifyEntitiesPrompt` (300 tegn per utdrag, `maxPromptChars`).
+- Egen intern vei `lovableTextInternal(...)` i `text.functions.ts`-modulen eksportert fra en `.server.ts` (den eksisterende `lovableText` gjenbrukes, ikke kopieres). Tvinger leverandør `lovable` og `LOVABLE_API_KEY`; leser aldri `ai_provider_keys` eller `ui_prefs.aiText`.
+- Tak: 20 kjøringer per prosjekt per døgn (telles i `generation_jobs`), pluss maks 40 scener per kjøring (større manus deles i flere kjøringer som telles samlet som én «analyse» per import, se åpne spørsmål).
+- Logging: én rad i `generation_jobs` (kind `text`, task `entity_analysis`, `key_owner = null` som betyr tjenesten, `cost_usd`), uten prompt eller svar. Kolonnen `key_owner` er uuid i dag, så «lovable» uttrykkes som null + task.
+- Svar: `{ ok, analyzedScenes, newSuggestions, usedRules: boolean }` eller `{ ok:false, reason }` med tospråklig melding.
+- Ny task i `generateText`-listen trengs ikke; dette er en egen intern vei (avvik fra «ett inngangspunkt» i animatic-ai-tekst, begrunnet i B-047 – må bekreftes, se åpne spørsmål).
 
-## Kommandoer (`src/core/commands`)
-- `AddCanvasNodes` med invers `RemoveCanvasNodes` (bare nodene).
-- `UpdateCanvasNode` (feltpatch) med invers patch av de gamle verdiene.
-- `MoveCanvasNodes` (liste av {id,x,y}) med invers med de gamle posisjonene.
-- `RemoveCanvasNodes` fjerner også de tilknyttede kantene. Inversen gjenoppretter begge.
-- `AddCanvasEdge`, `UpdateCanvasEdge` og `RemoveCanvasEdge` med inverser.
-- Alle går via `runCommand`. Flerkommando-handlinger (intervjunoder og overføringer) kjøres som én angregruppe med den eksisterende grupperingen i `use-commands.ts`.
+## 2. Lagring – migrasjon `0041_script_entity_analysis.sql`
+Tabell `public.script_entity_analysis`:
+- `id`, `project_id`, `scene_id` (fk `scenes` on delete restrict), `content_hash text`, `result jsonb` (check: størrelse ≤ 64 kB), `model text`, `analyzed_at`, `created_by`, `removed bool default false`, `revision`, `created_at`. Unik `(project_id, scene_id)`.
+- RLS: medlemmer leser (`private.is_project_member`); ingen klientskriving. Bare service role skriver (arbeidslogg-mønsteret, ikke `apply_changes`).
+- Ikke i `v_tables` (skrives ikke via kommandoer). Utvid `delete_project`, `purge_project_assets` og `purge_removed_assets` (kopiert ordrett fra siste definisjon i 0040), slett før `scenes`.
+- `schema_version` → 41 og `EXPECTED_SCHEMA_VERSION`.
+- Backup: tas ikke med (avledet data, regenereres) – foreslått, se åpne spørsmål.
+- Lasting: ny lesefunksjon `listEntityAnalysis({ projectId })` (ikke en del av `ProjectState`).
+- DB-tester i `tests/db/run-db-tests.ts`: medlem leser, ikke-medlem ser ingenting, klient kan ikke skrive, `delete_project` og purge sletter radene.
 
-## Filliste
-Nye filer:
-- `db/migrations/0040_story_canvas.sql`
-- `src/core/storylab/canvas.ts`: typer, `canvasNodeError`, `canvasEdgeError`, `layoutFromStructure`, `canvasSummary` (≤ 4000 tegn, uten fakta og hemmeligheter)
-- `src/core/storylab/interview.ts`: `interviewSystemPrompt`, `interviewToNodesPrompt`, `interviewNodesFromJson`
-- `src/core/storylab/canvas-transfer.ts`: ren planlegging av `CreateAssets`, `SetStoryProfile`, `CreateScene` og koblingen (`UpdateCanvasNode`)
-- `src/app/storylab/canvas/`: `CanvasView.tsx`, `CanvasToolbar.tsx`, `CanvasNode.tsx` (nodetyper med ikon og token), `CanvasInspector.tsx`, `CanvasTransferDialog.tsx`, `BuildFromScriptDialog.tsx`, `canvas-data.ts`
-- `src/app/storylab/InterviewView.tsx` og `InterviewNodesPreview.tsx`
-- Tester: `tests/unit/storylab-canvas-commands.test.ts`, `storylab-canvas.test.ts`, `storylab-interview.test.ts`, `storylab-canvas-transfer.test.ts` og `tests/visual/storylab-canvas-ui.mjs`
+## 3. Når analysen kjøres
+Klientkrok `src/app/library/use-entity-analysis.ts`, montert i prosjektskallet:
+- etter vellykket manusimport (`scope: "all"`);
+- etter Story Lab-overføringer som lager manustekst (SL6/SL7 «Opprett scene i manuset», scenetekstutkast) – de endrede scene-ID-ene sendes;
+- inkrementelt: 30 s debounce etter siste manusendring; `sceneContentHash(scene)` i `src/core/library/analysis-hash.ts` (ren, deterministisk hash av overskrift + blokktekster i rekkefølge) sammenlignes med lagret `content_hash`; bare avvikende scener sendes. Serveren regner hashen på nytt og hopper over uendrede.
+- Alltid i bakgrunnen, én kjøring om gangen per fane (ikke blokkerende).
+- Status i forslagsknappen: «Analyserer manuset …» → «12 nye forslag» / feilmerknad, med `L()`.
 
-Endrede filer:
-- `src/core/commands/types.ts` og `apply.ts`
-- `src/core/storylab/index.ts`
-- `ProjectState`-typen
-- `src/adapters/storage/project-rows.ts`
-- `src/core/backup`
-- `src/adapters/storylab/sessions.functions.ts`, bare hvis `interview` mangler i en whitelist
-- `StoryLabWorkspace.tsx`: Canvas-fanen, forslag om intervju på startsiden og panelet ved siden av canvaset
-- ruten `prosjekt.$projectId.storylab.tsx`: søkeparameter `view=canvas`
-- `tests/db/run-db-tests.ts`
-- `package.json`: `@xyflow/react`
-- i18n-katalogen (regenereres)
+## 4. Bruk av resultatet
+- `librarySuggestions` får valgfritt `analysis`-argument; AI-type, sikkerhet, begrunnelse og `aliasOf` overstyrer regelbasert resultat når hashen stemmer. Ellers brukes regelsignalene (som i OG1).
+- SuggestionsDialog: «Forbedre med AI …» erstattes av «Analyser på nytt» (kaller `analyzeScriptEntities`, ingen kostnadsdialog). Merknad «Typene er satt av den innebygde AI-en» / regelbasert hvis AI manglet.
+- Ingen ressurser opprettes automatisk; «Legg til valgte» som før.
+- Manusutforskeren og SceneAssetsPanel leser samme data, ingen nye kall.
 
-## Komponenter
-- **Canvas:** React Flow med egne nodetyper, `onlyRenderVisibleElements` for 500 noder og memoiserte noder. Ved dragStop lagres én `MoveCanvasNodes` for alle nodene som er flyttet. Tekst i inspektøren lagres med debounce (cirka 600 ms) som `UpdateCanvasNode`.
-- **Snarveier:** Delete, Ctrl/Cmd+D, piltaster (8 px, med Shift 32 px) og Tab. Hver node er fokuserbar med `aria-label`.
-- **Klikk på en koblet node:** asset åpner karakterflaten, scene åpner Scenelaben (`?scene=`).
-- **Intervju:** samme oppsett som `ConversationView`: kostnadsbekreftelse, løpende sum, `appendStoryTurns` og hurtigbufferrettingen fra SL3. Språket kommer fra `useLanguage()`. «Foreslå noder …» viser en forhåndsvisning med avkryssing og plassering automatisk eller ved utvalget.
-- **Overføring:** inspektøren viser knapper etter type. Forhåndsvisningen bruker `ForkNotice` og kjører det som én angregruppe. Etterpå vises en lenke til biblioteket eller manuset. Scenen opprettes med de samme hjelperne for orderKey og ny scene som manuseditoren bruker.
-- Alle tekster bruker `L()`, og bare designtokens brukes. `data-testid` er som i oppdraget.
+## 5. Språkkobling `alignTranslationWithAi`
+Fil: `src/adapters/ai/translation-align.functions.ts`; kjerne `src/core/translation/align-prompt.ts` (`alignmentPrompt`, `alignmentFromJson`).
+- Dagens kobling skjer i nettleseren i `TranslationImportDialog` (`alignTranslation`/`alignLines`); det finnes ingen lagret import-ID. Forslag: inndata `{ projectId, versionId, items: [{ importedSceneIndex, candidateSceneIds, importedLines: string[] }] }` der serveren selv henter norske utdrag fra databasen og klipper importerte utdrag til 300 tegn, maks 60 usikre scener og 400 linjer. Importert tekst må komme fra klienten (filen er ikke lagret) – begrenset og bare brukt i en fast prompt.
+- Kjøres automatisk etter regelbasert kobling, bare for `uncertain`/manglende scener og linjer.
+- Svar JSON `{ scenes: [{ imported, norwegianSceneId|null, confidence, reason }], lines: [...] }`, validert; ukjente ID-er forkastes.
+- Resultatet fyller forslag i den eksisterende godkjenningen. AI-«sikker» blir fortsatt markert for gjennomgang hvis regelkoblingen var usikker (ingen stille godkjenning). Norsk manus endres aldri (REQ-0331).
+- Samme tak (deler døgnkvoten) og logging (task `translation_align`).
 
-## Risikoer
-- **Ytelse:** 500 noder på under 3 sekunder krever virtualisering og at nodedata ikke lages på nytt ved hver render.
-- **Stilark:** React Flow har sitt eget stilark. Det importeres og overstyres med tokens, slik at det ikke blir hardkodede farger.
-- **SSR:** React Flow er bare for nettleseren. Canvaset lastes lazy bak `ClientOnly`.
-- **Delvis lagring:** flerkommandogrupper (intervju og overføring) har ingen atomisk transaksjon, samme kjente begrensning som i SL6.
-- **Hurtigtaster:** canvasets snarveier kan kollidere med de globale angre-snarveiene og med fokus i tekstfelt. De skal bare gjelde når canvaset har fokus.
-- **Migrasjonen:** kopi av lange SQL-funksjoner kan gi feil. Jeg gjør en diff mot 0039 for å vise at bare tabellene og rekkefølgen er endret.
-- **Uklare punkter (jeg antar slik hvis du ikke sier noe annet):**
-  - «Grupper» lager en `group`-node rundt utvalget og setter `group_id`.
-  - Dyr opprettes med kind `animal`, hvis den finnes i `CreateAssets`. Hvis ikke, spør jeg.
+## 6. Tester
+- Unit: `analysis-hash` (stabil, endres ved tekstendring, uavhengig av scenenummer), promptøyeblikksbilder for begge promptbyggere (bare manusutdrag, ingen Story Lab-hemmeligheter/notater, lengdegrenser), `alignmentFromJson` tåler ugyldig JSON, sammenslåing AI → forslag, regelreserve.
+- Server: taklogikk som ren funksjon i kjernen (`dailyQuotaError`).
+- DB: se punkt 2.
+- Nettleser (Claude kjører): `tests/visual/entity-analysis-ui.mjs` (import utløser analyse, status i knappen, typer uten kostnadsdialog, «Analyser på nytt», engelsk visning) og `tests/visual/translation-ai-align-ui.mjs` (AI-koblinger vises som forslag og må godkjennes). Mocket AI og serverfunksjoner.
+
+## 7. Risikoer og åpne spørsmål
+1. Avvik fra animatic-ai-tekst «ett inngangspunkt» og «kostnadsbekreftelse alltid»: B-047 gjør dette bevisst. Bekreft at intern vei utenfor `generateText` er ønsket.
+2. Kostnadstak: 20 kjøringer/prosjekt/døgn + scenetak per kjøring. Skal det i tillegg finnes et samlet månedstak for tjenesten?
+3. Innebygd AI utilgjengelig (402/403/429/5xx): regelbaserte forslag brukes, diskret merknad, ingen automatisk ny kjøring før neste manusendring eller «Analyser på nytt». 402/403 lagres som pausetilstand per prosjekt i ett døgn (ingen kolonne – telles via feilet jobb i `generation_jobs`).
+4. Backup: skal analysen tas med eller regenereres etter gjenoppretting? (Forslag: regenereres.)
+5. Språkkobling krever at importert tekst sendes fra klienten; er det akseptabelt, eller skal importfilen lagres først?
+6. Personvern: manusutdrag sendes til AI uten brukerens valg – bekreft at dette dekkes av B-047.
+7. Samtidige redaktører kan trigge samme analyse; serveren hopper over scener med lik hash, og en lås per prosjekt (siste jobb < 60 s) hindrer dobbeltkjøring.
+
+## Filer
+Nye: `db/migrations/0041_script_entity_analysis.sql`, `src/adapters/ai/entity-analysis.functions.ts`, `entity-analysis.server.ts`, `translation-align.functions.ts`, `src/core/library/analysis-hash.ts`, `src/core/translation/align-prompt.ts`, `src/app/library/use-entity-analysis.ts`, unit-/DB-/nettlesertester.
+Endres: `text.functions.ts` (eksponere intern lovable-vei), `suggest.ts`, `SuggestionsDialog.tsx`, `TranslationImportDialog.tsx`, Story Lab-overføringene, `project-rows.ts` (skjemaversjon), `tests/db/run-db-tests.ts`, i18n-katalog.
