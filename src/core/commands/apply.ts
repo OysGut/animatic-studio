@@ -20,6 +20,7 @@ import {
   type VariantId,
 } from "../ids";
 import { checkInvariants } from "../invariants";
+import { materializeDraftStep, sparseDraftStep } from "./draft-fields";
 import { L } from "../i18n";
 import { canHaveStoryProfile, profileError, profilePatchError } from "../storylab/profile";
 import { factError, type StoryFactFields } from "../storylab/facts";
@@ -6831,9 +6832,10 @@ function run(
           step.layers.some((x) => cur.layers[x.layerId]?.compositionId !== comp.id)
         )
           fail("invalid", L("Laget hører ikke til scenen", "The layer does not belong to the scene"));
-        const r = run(cur, { ...env, command: step });
+        const r = run(cur, { ...env, command: materializeDraftStep(cur, step) });
+        const inverse = sparseDraftStep(r.state, cur, r.inverse);
         cur = r.state;
-        inverses.unshift(r.inverse);
+        inverses.unshift(inverse);
         for (const id of r.affected) affected.add(id);
       }
       return {
