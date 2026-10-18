@@ -116,7 +116,7 @@ export function PagesPanel({
     const layer = pages.find((p) => p.id === layerId);
     if (!layer) return;
     const children = layersOf(state, composition.id).filter((l) => l.groupId === layerId);
-    const newPageId = newId<"composition_layer>();
+    const newPageId = newId<"composition_layer">();
     const last = pages[pages.length - 1]!;
     const span = (layer.activeRange?.to ?? 0) - (layer.activeRange?.from ?? 0);
     const from = last.activeRange?.to ?? 0;
