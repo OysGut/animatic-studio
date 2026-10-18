@@ -19,6 +19,7 @@ import {
   assetLineIds,
   compositionDuration,
   draftCommand,
+  draftConflicts,
   filmClips,
   framesToSeconds,
   imageSegmentsOf,
@@ -240,7 +241,17 @@ export function AssetStudio({
   }
 
   async function save() {
-    const cmd = draftCommand(d.draft);
+    const fresh = cmds.current() ?? state;
+    if (draftConflicts(d.draft, fresh).length) {
+      setConflict(true);
+      return;
+    }
+    const rebased = rebaseDraft(d.draft, fresh);
+    if (!rebased.ok) {
+      setError(rebased.message);
+      return;
+    }
+    const cmd = draftCommand(rebased.draft);
     if (!cmd) {
       onClose();
       return;

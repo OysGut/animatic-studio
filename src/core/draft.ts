@@ -79,7 +79,7 @@ export function isDraftEmpty(d: SceneDraft): boolean {
   return d.steps.length === 0;
 }
 
-/** Legg utkastet oppå en nyere tilstand (etter direkte skriving eller revisjonskonflikt). */
+/** Legg feltene i utkastet oppå en nyere tilstand. Ved konflikt kalles dette bare etter eksplisitt godkjenning. */
 export function rebaseDraft(
   d: SceneDraft,
   newBase: ProjectState,
@@ -133,7 +133,7 @@ export function draftConflicts(d: SceneDraft, fresh: ProjectState, own: readonly
   for (const step of [...d.steps, ...d.redo]) mapDraftFields(step, (id, fields) => {
     const base = draftRow(d.base, id);
     const row = draftRow(fresh, id);
-    if (!row || row.removed !== base?.removed) conflicts.add(id);
+    if (!row || row['removed'] !== base?.['removed']) conflicts.add(id);
     for (const path of draftFieldPaths(fields)) {
       if (sameDraftValue(draftValueAt(base, path), draftValueAt(row, path))) continue;
       // An own write only excuses its exact fields at its exact revision. A coalesced foreign
@@ -142,7 +142,7 @@ export function draftConflicts(d: SceneDraft, fresh: ProjectState, own: readonly
         if (!write.affected.includes(id)) return false;
         const before = draftRow(write.before, id);
         const after = draftRow(write.after, id);
-        return row?.revision === after?.revision &&
+        return row?.['revision'] === after?.['revision'] &&
           !sameDraftValue(draftValueAt(before, path), draftValueAt(after, path)) &&
           sameDraftValue(draftValueAt(after, path), draftValueAt(row, path));
       });

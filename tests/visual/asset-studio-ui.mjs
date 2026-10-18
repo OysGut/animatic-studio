@@ -177,11 +177,11 @@ await scenario("skall", "nb", async (page, studio) => {
   await waitHidden(studio);
   check(commands.length === before, "Avbryt med tomt utkast lukker uten spørsmål og sender ingenting");
   // Alt + dobbeltklikk åpner også studioet
-  const canvas = page.locator("canvas").first();
-  const b = await canvas.boundingBox();
+  const canvas = page.getByTestId("scene-stage");
   const view = await canvas.evaluate((el) => ({ x: Number(el.dataset.viewX), y: Number(el.dataset.viewY), zoom: Number(el.dataset.viewZoom) }));
-  // The fixture's x key at frame zero is 0; y comes from the layer transform.
-  await canvas.dblclick({ position: { x: view.x, y: view.y + LAYER.transform.y * view.zoom }, modifiers: ["Alt"] });
+  // Pick inside the image, not its anchor at x=0 (which can be behind the view toolbar).
+  const localX = Math.min(LAYER.width * Math.abs(LAYER.transform.scaleX) / 4, 80);
+  await canvas.dblclick({ position: { x: view.x + localX * view.zoom, y: view.y + LAYER.transform.y * view.zoom }, modifiers: ["Alt"] });
   await page.waitForTimeout(300);
   check(await studio.count() > 0, "Alt + dobbeltklikk på laget åpner Asset Studio");
 });

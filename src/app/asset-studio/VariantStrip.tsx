@@ -68,7 +68,7 @@ export function VariantStrip({
             </p>
             <div className="grid grid-cols-2 gap-1.5">
               {versions.map((ver) => {
-                const img = { assetId: assetId!, assetVariantId: variant.id, versionId: ver.id };
+                const img = { assetId: variant.assetId, assetVariantId: variant.id, versionId: ver.id };
                 const view = ver.view as VersionView | null | undefined;
                 return (
                   <button

@@ -1507,6 +1507,10 @@ export function Stage({
     >
       <canvas
         ref={canvasRef}
+        data-testid="scene-stage"
+        data-view-x={view.x}
+        data-view-y={view.y}
+        data-view-zoom={view.zoom}
         role="img"
         aria-label={label}
         className="absolute inset-0 h-full w-full touch-none"

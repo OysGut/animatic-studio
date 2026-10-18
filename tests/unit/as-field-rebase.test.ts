@@ -11,7 +11,8 @@ import { envelope, mustApply, tid } from "../helpers/fixtures";
 
 function setup() {
   const s = fixture.state;
-  const layer = Object.values(s.layers).find((l) => l.kind !== "group" && l.assetId);
+  const layer = Object.values(s.layers).find((l) => l.kind !== "group" && l.assetId &&
+    Object.values(s.assetVariants).some((v) => v.assetId === l.assetId && Object.values(s.assetVersions).some((ver) => ver.variantId === v.id)));
   if (!layer) throw new Error("Missing image layer");
   const comp = s.compositions[layer.compositionId];
   const occ = Object.values(s.occurrences).find((o) => o.variantId === comp?.variantId);
@@ -34,11 +35,11 @@ describe("AS round 2 – field-level drafts", () => {
   it("keeps the new take version alongside draft muting, including save and undo", () => {
     const { s, comp, occ, clip } = setup();
     const d = push(createDraft(s, occ.id, comp.id), mute(s, clip.id, true));
-    const old = s.assetVersions[clip.versionId ?? ""];
+    const old = Object.values(s.assetVersions).find((v) => s.assetVariants[v.variantId]?.assetId === clip.assetId);
     if (!old) throw new Error("Missing sound version");
     const versionId = tid<"asset_version">();
     const withVersion = { ...s, assetVersions: { ...s.assetVersions, [versionId]: { ...old, id: versionId } } } as ProjectState;
-    const fresh = mustApply(withVersion, { type: "UpdateAudioClips", clips: [{ clipId: clip.id, fields: { ...audioClipFieldsOf(clip), versionId } }] });
+    const fresh = mustApply(withVersion, { type: "UpdateAudioClips", clips: [{ clipId: clip.id, fields: { ...audioClipFieldsOf(clip), assetVariantId: old.variantId, versionId } }] });
     expect(draftConflicts(d, fresh)).toEqual([]);
     const rebased = rebaseDraft(d, fresh);
     if (!rebased.ok) throw new Error(rebased.message);
@@ -47,7 +48,7 @@ describe("AS round 2 – field-level drafts", () => {
     expect(cmd.type === "UpdateSceneDraft" && cmd.steps[0]).toEqual({ type: "UpdateAudioClips", clips: [{ clipId: clip.id, fields: { muted: true } }] });
     const saved = applyCommand(fresh, envelope(cmd, undefined, draftBaseRevisions(rebased.draft)));
     if (!saved.ok) throw new Error(saved.error.message);
-    expect(saved.state.audioClips[clip.id]).toMatchObject({ muted: true, versionId, revision: fresh.audioClips[clip.id]?.revision + 1 });
+    expect(saved.state.audioClips[clip.id]).toMatchObject({ muted: true, versionId, revision: (fresh.audioClips[clip.id]?.revision ?? 0) + 1 });
     const undone = mustApply(saved.state, saved.inverse);
     expect(undone.audioClips[clip.id]).toMatchObject({ muted: clip.muted, versionId });
   });
@@ -81,8 +82,8 @@ describe("AS round 2 – field-level drafts", () => {
 
   it("three variants of the same asset insert three swaps and preserve animation", () => {
     const { s, comp, occ, layer } = setup();
-    const variant = s.assetVariants[layer.assetVariantId ?? ""];
-    const version = s.assetVersions[layer.versionId ?? ""];
+    const variant = Object.values(s.assetVariants).find((v) => v.assetId === layer.assetId);
+    const version = Object.values(s.assetVersions).find((v) => v.variantId === variant?.id);
     if (!variant || !version) throw new Error("Missing asset fixture");
     let fresh = s;
     const images = [1, 2, 3].map(() => {

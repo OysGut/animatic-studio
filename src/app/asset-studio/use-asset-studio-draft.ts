@@ -36,8 +36,7 @@ export interface AssetStudioDraft {
   redo: () => void;
   replace: (d: SceneDraft) => void;
   /**
-   * En direkte skriving fra studioet selv (lydopptak, «Bruk dette», bibliotek): den neste endringen i den lagrede
-   * tilstanden legges under utkastet uten konflikt, så egne skrivinger aldri gir falsk konflikt ved lagring.
+   * En kvittering for en egen direkte skriving: bare de berørte radene, feltene og revisjonene er egne.
    */
   markOwnWrite: (write: DraftOwnWrite) => void;
 }
