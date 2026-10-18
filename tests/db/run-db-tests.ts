@@ -4814,6 +4814,177 @@ try {
     await as("service_role", null, (tx) => tx`select public.delete_project(${rt}, ${ALICE})`);
     assert((await count("compositions", rt)) === 0, "2D-scenen finnes etter sletting");
   });
+  // ---------------------------------------------------------------- 0043/0044 Asset Studio (AS1–AS3)
+  const asp = await as(
+    "authenticated",
+    ALICE,
+    async (tx) => (await tx`select public.create_project('Asset Studio') as id`)[0]!["id"] as string,
+  );
+  const AS = (n: number) => `abcdef00-0000-7000-8000-00000043${String(n).padStart(4, "0")}`;
+  let asState = await loadState(asp);
+
+  await test("AS1: UpdateSceneDraft lagres i én transaksjon og angres (med aktivt område, 0043)", async () => {
+    const main = Object.values(asState.productions)[0]!.id;
+    const k = keysEvenly(2);
+    asState = await runCommand(asState, ALICE, {
+      type: "CreateScene",
+      productionId: main,
+      sceneId: AS(1) as never,
+      variantId: AS(2) as never,
+      occurrenceId: AS(3) as never,
+      orderKey: keysEvenly(1)[0]!,
+      heading: { intExt: "INT.", location: "STUA", time: "DAG" },
+      blocks: [
+        { blockId: AS(10) as never, kind: "character", text: "MAJA", orderKey: k[0]! },
+        {
+          blockId: AS(11) as never,
+          kind: "dialogue",
+          text: "Jeg tror det er noen der ute.",
+          orderKey: k[1]!,
+        },
+      ],
+      productionNumber: "1",
+    });
+    asState = await runCommand(asState, ALICE, {
+      type: "CreateComposition",
+      compositionId: AS(4) as never,
+      variantId: AS(2) as never,
+      fields: { ...DEFAULT_COMPOSITION, durationFrames: 100 },
+    });
+    const c = asState.compositions[AS(4)]!;
+    asState = await runCommand(asState, ALICE, {
+      type: "AddLayers",
+      layers: [
+        {
+          layerId: AS(5) as never,
+          compositionId: AS(4) as never,
+          fields: defaultLayerFields(asState, c, { fill: "#24324a", name: "Maja" }),
+        },
+      ],
+    });
+    let d = createDraft(asState, AS(3), AS(4));
+    for (const x of [10, 20]) {
+      const f = layerFieldsOf(d.state.layers[AS(5) as never]!);
+      const r = pushDraft(d, {
+        type: "UpdateLayers",
+        layers: [
+          {
+            layerId: AS(5) as never,
+            fields: { ...f, transform: { ...f.transform, x }, activeRange: { from: 10, to: 60 } },
+          },
+        ],
+      });
+      assert(r.ok, "utkastet avviste trinnet");
+      if (r.ok) d = r.draft;
+    }
+    const cmd = draftCommand(d)!;
+    const before = asState;
+    asState = await runCommand(asState, ALICE, cmd);
+    const row =
+      await sql`select transform, active_from, active_to from public.composition_layers where id = ${AS(5)}`;
+    assert((row[0]!["transform"] as { x: number }).x === 20, "utkastet ble ikke lagret");
+    assert(
+      row[0]!["active_from"] === 10 && row[0]!["active_to"] === 60,
+      "aktivt område ble ikke lagret",
+    );
+    const back = await loadState(asp);
+    assert(back.layers[AS(5) as never]!.activeRange?.to === 60, "aktivt område leses ikke tilbake");
+    const res = applyCommand(before, {
+      id: AS(90) as never,
+      actor: ALICE as never,
+      at: new Date().toISOString(),
+      command: cmd,
+    });
+    assert(res.ok && res.inverse.type === "UpdateSceneDraft", "inversen er ikke UpdateSceneDraft");
+    if (res.ok) asState = await runCommand(asState, ALICE, res.inverse);
+    const undone =
+      await sql`select active_from, active_to from public.composition_layers where id = ${AS(5)}`;
+    assert(
+      undone[0]!["active_from"] === null && undone[0]!["active_to"] === null,
+      "angring virket ikke",
+    );
+  });
+
+  await test("AS1: revisjonskonflikt avviser hele UpdateSceneDraft", async () => {
+    let d = createDraft(asState, AS(3), AS(4));
+    const f = layerFieldsOf(d.state.layers[AS(5) as never]!);
+    const r = pushDraft(d, {
+      type: "UpdateLayers",
+      layers: [{ layerId: AS(5) as never, fields: { ...f, transform: { ...f.transform, x: 999 } } }],
+    });
+    if (r.ok) d = r.draft;
+    await sql`update public.composition_layers set revision = revision + 1 where id = ${AS(5)}`;
+    await expectError(runCommand(asState, ALICE, draftCommand(d)!), "P0409");
+    const row = await sql`select transform from public.composition_layers where id = ${AS(5)}`;
+    assert((row[0]!["transform"] as { x: number }).x !== 999, "utkastet ble lagret ved konflikt");
+    asState = await loadState(asp);
+  });
+
+  await test("0043: check på aktivt område", async () => {
+    await expectError(
+      sql`update public.composition_layers set active_from = 10, active_to = 5 where id = ${AS(5)}`,
+      "23514",
+    );
+    await expectError(
+      sql`update public.composition_layers set active_from = 10, active_to = null where id = ${AS(5)}`,
+      "23514",
+    );
+  });
+
+  await test("0044: forsøksvis manusredigering lagres, angres og har check", async () => {
+    const before = asState;
+    const cmd: Command = {
+      type: "AddAnnotations",
+      annotations: [
+        {
+          annotationId: AS(20) as never,
+          blockId: AS(11) as never,
+          variantId: null,
+          start: 4,
+          end: 8,
+          quote: "tror",
+          text: "Forsøksvis manusredigering",
+          authorName: "Alice",
+          kind: "trial_edit",
+          suggestedText: "vet",
+        },
+      ],
+    };
+    asState = await runCommand(asState, ALICE, cmd);
+    const row =
+      await sql`select kind, suggested_text from public.script_annotations where id = ${AS(20)}`;
+    assert(
+      row[0]!["kind"] === "trial_edit" && row[0]!["suggested_text"] === "vet",
+      "feltene ble ikke lagret",
+    );
+    const back = await loadState(asp);
+    assert(back.annotations[AS(20) as never]!.suggestedText === "vet", "forslaget leses ikke tilbake");
+    await expectError(
+      sql`update public.script_annotations set suggested_text = null where id = ${AS(20)}`,
+      "23514",
+    );
+    await expectError(
+      sql`update public.script_annotations set kind = 'annet' where id = ${AS(20)}`,
+      "23514",
+    );
+    const res = applyCommand(before, {
+      id: AS(91) as never,
+      actor: ALICE as never,
+      at: new Date().toISOString(),
+      command: cmd,
+    });
+    assert(res.ok, "kommandoen feilet lokalt");
+    if (res.ok) asState = await runCommand(asState, ALICE, res.inverse);
+    assert(
+      (await sql`select 1 from public.script_annotations where id = ${AS(20)}`).length === 0,
+      "angring fjernet ikke notatet",
+    );
+  });
+
+  await test("0043/0044: delete_project sletter lag og notater med de nye feltene", async () => {
+    await as("service_role", null, (tx) => tx`select public.delete_project(${asp}, ${ALICE})`);
+    assert((await count("composition_layers", asp)) === 0, "lagene finnes etter sletting");
+  });
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);
