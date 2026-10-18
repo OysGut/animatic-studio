@@ -1402,7 +1402,7 @@ export function Timeline({
                       type="button"
                       aria-label={L("Fjern låst tidsrom", "Remove locked range")}
                       data-testid="locked-range-remove"
-                      className="mr-0.5 text-[10px] leading-none text-text-secondary hover:text-text-primary"
+                      className="mr-0.5 text-[11px] leading-none text-text-secondary hover:text-text-primary"
                       onClick={() =>
                         setLockedRanges(
                           timingOf(composition).lockedRanges.filter((x) => x.id !== r.id),
