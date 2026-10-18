@@ -464,6 +464,7 @@ export const CATALOG: Record<string, string> = {
     "You do not have access, or the database is missing 0025.",
   "Du har ikke tilgang.": "You do not have access.",
   "Du kan ikke blokkere eller slette deg selv her.": "You cannot block or delete yourself here.",
+  "Dyrenavn eller dyrebeskrivelse ved navnet": "Animal name or animal description beside the name",
   "E-postadressen stemmer ikke med kontoen din.": "The email address does not match your account.",
   "Egen stemme per karakter": "Own voice per character",
   Eksportfiler: "Export files",
@@ -681,6 +682,7 @@ export const CATALOG: Record<string, string> = {
   "Genererte mediefiler": "Generated media files",
   "Gi nøkkelen tilgang til «Sound Effects» (og «Text to Speech» om dere vil bruke stemmer), og kopier den.":
     "Give the key access to “Sound Effects” (and “Text to Speech” if you want to use voices), and copy it.",
+  "Gjenkjent i leksikonet": "Recognized in the lexicon",
   "Gjennomsiktig bakgrunn": "Transparent background",
   "Gjennomsiktig bakgrunn.": "Transparent background.",
   "Gjenopprett: Prosjekter → «Gjenopprett fra sikkerhetskopi …». Det lages alltid et nytt prosjekt;":
@@ -715,6 +717,7 @@ export const CATALOG: Record<string, string> = {
     "The group has nodes. Remove them from the group first.",
   "Gruppen må være en gruppenode": "The group must be a group node",
   "halv størrelse": "half size",
+  "Har replikk i manuset": "Has dialogue in the script",
   "Hastigheten må være mellom 25 og 400 %": "The speed must be between 25 and 400%",
   hendelse: "event",
   Hendelse: "Event",
@@ -1055,9 +1058,13 @@ export const CATALOG: Record<string, string> = {
     "The model accepts at most {0} characters: removed {1}.",
   "Myk kant må være mellom 0 og {0} px": "The soft edge must be between 0 and {0} px",
   "Myk overgang inn": "Soft transition in",
+  "Navn uten tydelig typesignal – må vurderes": "Name without a clear type signal – needs review",
   "Navnet er for langt": "The name is too long",
   "Navnet er for langt (maks 200 tegn)": "The name is too long (maximum 200 characters)",
   "Navnet inneholder ugyldige tegn": "The name contains invalid characters",
+  "Navnet står ved et dyreverb": "The name appears beside an animal verb",
+  "Navnet står ved et verb for et levende vesen":
+    "The name appears beside a verb for a living being",
   "Navnet stemmer ikke med prosjektnavnet.": "The name does not match the project name.",
   "Negativ beskrivelse": "Negative description",
   Nei: "No",
@@ -1116,6 +1123,7 @@ export const CATALOG: Record<string, string> = {
     "The session is full. Create a new session (branch from a turn) to continue.",
   "Økten finnes ikke": "The session was not found",
   "Økten kunne ikke lagres: {0}": "The session could not be saved: {0}",
+  "Omtales som noe vi hører": "Described as something we hear",
   "Ønsket er lagret. Utvikleren lager koblingen i koden; status vises i listen.":
     "The request has been saved. The developer builds the connection in the code; the status is shown in the list.",
   "Ønsket finnes ikke.": "The request does not exist.",
@@ -1469,6 +1477,7 @@ export const CATALOG: Record<string, string> = {
   "Stående 9:16 (1080 × 1920)": "Portrait 9:16 (1080 × 1920)",
   standard: "default",
   Standard: "Default",
+  "Står i sceneoverskriften": "Appears in the scene heading",
   "start i lydfilen": "start in the audio file",
   "start i scenen": "start in the scene",
   "Start replikken {0} tidligere – da får den plass.": "Start the line {0} earlier – then it fits.",

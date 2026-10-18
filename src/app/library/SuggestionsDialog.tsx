@@ -3,6 +3,11 @@
  * før brukeren har valgt det. Navn som ligner en eksisterende ressurs, kan legges til som alternativt navn
  * i stedet for som ny ressurs – men bare når brukeren velger det.
  */
+import { useServerFn } from "@tanstack/react-start";
+import { generateText } from "@/adapters/ai/text.functions";
+import { useTextEstimate, usd } from "@/app/storylab/storylab-data";
+import { useLanguage } from "@/app/i18n/language";
+import { classifyEntitiesPrompt, classificationFromJson, type AIClassification } from "@/core/library/classification-prompt";
 import { Loader2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -31,37 +36,19 @@ import {
 } from "@/components/ui/dialog";
 
 type Choice = "skip" | "new" | "alias";
-type PickableKind = "character" | "animal" | "object" | "other";
+type PickableKind = "character" | "animal" | "object" | "location" | "environment" | "sound";
 
-const KIND_CHOICES: readonly PickableKind[] = ["character", "animal", "object", "other"];
+const KIND_CHOICES: readonly PickableKind[] = ["character", "animal", "object", "location", "environment", "sound"];
 
 const key = (x: LibrarySuggestion) => `${x.reason}|${x.name}`;
 
-const GROUPS: readonly { reason: LibrarySuggestion["reason"]; title: string }[] = [
-  {
-    reason: "speaker",
-    get title() {
-      return L("Karakterer", "Characters");
-    },
-  },
-  {
-    reason: "named",
-    get title() {
-      return L("Navngitte ting uten replikk", "Named things without lines");
-    },
-  },
-  {
-    reason: "heading",
-    get title() {
-      return L("Lokasjoner", "Locations");
-    },
-  },
-  {
-    reason: "object",
-    get title() {
-      return L("Objekter og rekvisitter", "Objects and props");
-    },
-  },
+const GROUPS: readonly { kind: PickableKind; title: string }[] = [
+  { kind: "character", get title() { return L("Karakterer", "Characters"); } },
+  { kind: "animal", get title() { return L("Dyr", "Animals"); } },
+  { kind: "object", get title() { return L("Objekter", "Objects"); } },
+  { kind: "location", get title() { return L("Steder", "Locations"); } },
+  { kind: "environment", get title() { return L("Miljø", "Environments"); } },
+  { kind: "sound", get title() { return L("Lyd", "Sound"); } },
 ];
 
 const hiddenStorageKey = (projectId: string) => `animatic:hidden-suggestions:${projectId}`;
@@ -121,6 +108,15 @@ function fieldsOf(a: Asset): AssetFields {
   };
 }
 
+function ClassificationCost({ inputChars, busy, onConfirm, onCancel }: { inputChars: number; busy: boolean; onConfirm: () => void; onCancel: () => void }) {
+  const estimate = useTextEstimate("general", inputChars, 3000);
+  return <div role="alertdialog" aria-label={L("Bekreft AI-vurdering", "Confirm AI classification")} data-testid="library-suggestions-cost" className="flex flex-wrap items-center gap-2 border border-border p-3 text-xs">
+    <p>{estimate.loading ? L("Beregner kostnad …", "Estimating cost …") : estimate.error ?? L(`Anslått ${usd(estimate.usd)} · ${estimate.label}`, `Estimated ${usd(estimate.usd)} · ${estimate.label}`)}</p>
+    <Button size="sm" data-testid="library-suggestions-ai-confirm" disabled={estimate.loading || !!estimate.error || busy} onClick={onConfirm}>{L("Bekreft", "Confirm")}</Button>
+    <Button size="sm" variant="ghost" onClick={onCancel}>{L("Avbryt", "Cancel")}</Button>
+  </div>;
+}
+
 export function SuggestionsDialog({
   open,
   onOpenChange,
@@ -136,10 +132,17 @@ export function SuggestionsDialog({
   cmds: Commands;
   projectId: string;
 }) {
+  const language = useLanguage();
+  const gen = useServerFn(generateText);
+  const [ai, setAI] = useState<Record<string, AIClassification>>({});
+  const [confirmAI, setConfirmAI] = useState(false);
+  const [aiBusy, setAIBusy] = useState(false);
+  const [fallback, setFallback] = useState(false);
+  const prompt = classifyEntitiesPrompt({ candidates: suggestions, contexts: Object.fromEntries(suggestions.map((s) => [s.name, s.contexts ?? []])), language });
   // Standard: sikre nye navn krysses av; mulige treff og gjetninger må brukeren ta stilling til selv
   const initial = useMemo(() => {
     const m: Record<string, Choice> = {};
-    for (const s of suggestions) m[key(s)] = s.possibleMatch || s.uncertain ? "skip" : "new";
+    for (const s of suggestions) m[key(s)] = s.possibleMatch || (s.confidence ? s.confidence !== "high" : s.uncertain) ? "skip" : "new";
     return m;
   }, [suggestions]);
   const [choice, setChoice] = useState<Record<string, Choice>>(initial);
@@ -151,6 +154,7 @@ export function SuggestionsDialog({
     if (open) {
       setChoice(initial);
       setKindChoice({});
+      setAI({}); setConfirmAI(false); setFallback(false);
       setHidden(readHidden(projectId));
       setErr(null);
     }
@@ -159,8 +163,20 @@ export function SuggestionsDialog({
 
   const hiddenSet = useMemo(() => new Set(hidden), [hidden]);
   const visible = suggestions.filter((s) => !hiddenSet.has(key(s)));
-  const kindOf = (s: LibrarySuggestion): AssetKind =>
-    s.kindUncertain ? (kindChoice[key(s)] ?? "character") : s.kind;
+  const kindOf = (s: LibrarySuggestion): AssetKind => kindChoice[key(s)] ?? ai[s.name]?.kind ?? s.kind;
+  const confidenceOf = (s: LibrarySuggestion) => ai[s.name]?.confidence ?? s.confidence ?? (s.uncertain ? "low" : "high");
+  async function improve() {
+    setAIBusy(true); setErr(null); setConfirmAI(false);
+    try {
+      const r = await gen({ data: { projectId, task: "general", json: true, system: prompt.system, messages: [{ role: "user", content: prompt.user }], maxTokens: 3000 } });
+      if (!r.ok) { setErr(r.message); return; }
+      const parsed = classificationFromJson(r.text).filter((x) => suggestions.some((s) => s.name === x.name));
+      if (!parsed.length) { setErr(L("Svaret kunne ikke tolkes. Prøv igjen.", "The response could not be read. Try again.")); return; }
+      setAI(Object.fromEntries(parsed.map((x) => [x.name, x])));
+      setFallback(r.usedFallback);
+    } catch { setErr(L("AI-vurderingen feilet. Prøv igjen.", "AI classification failed. Try again.")); }
+    finally { setAIBusy(false); }
+  }
 
   function hide(k: string) {
     const next = [...new Set([...hidden, k])];
@@ -180,7 +196,8 @@ export function SuggestionsDialog({
     setBusy(true);
     setErr(null);
     try {
-      if (chosenNew.length) {
+      const firstNew = chosenNew[0];
+      if (firstNew) {
         const r = await cmds.runAndWait(
           {
             type: "CreateAssets",
@@ -202,8 +219,8 @@ export function SuggestionsDialog({
           },
           chosenNew.length === 1
             ? L(
-                `Ny ressurs «${suggestedName(chosenNew[0]!)}»`,
-                `New asset “${suggestedName(chosenNew[0]!)}”`,
+                `Ny ressurs «${suggestedName(firstNew)}»`,
+                `New asset “${suggestedName(firstNew)}”`,
               )
             : L(
                 `${chosenNew.length} nye ressurser fra manuset`,
@@ -218,7 +235,8 @@ export function SuggestionsDialog({
       // Alternative navn samles per ressurs (én endring hver)
       const byAsset = new Map<string, string[]>();
       for (const s of chosenAlias) {
-        const id = s.possibleMatch!.assetId;
+        const id = s.possibleMatch?.assetId;
+        if (!id) continue;
         const a = state.assets[id];
         if (!a) continue;
         byAsset.set(id, [...(byAsset.get(id) ?? []), s.name, ...suggestionAliases(s, a.name)]);
@@ -263,22 +281,24 @@ export function SuggestionsDialog({
 
   const groups = GROUPS.map((g) => ({
     ...g,
-    items: visible.filter((s) => s.reason === g.reason),
+    items: visible.filter((s) => kindOf(s) === g.kind),
   }));
   const total = chosenNew.length + chosenAlias.length;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] max-w-[720px] overflow-y-auto border-border bg-surface-2">
+      <DialogContent data-testid="library-suggestions" className="max-h-[90vh] max-w-[720px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{L("Forslag fra manuset", "Suggestions from the script")}</DialogTitle>
           <DialogDescription>
-            {L(
-              "Karakterer, navngitte ting, steder og ting som går igjen i manuset, men som ikke finnes i biblioteket ennå. Ingenting legges til før du velger det. Usikre forslag er ikke valgt på forhånd. Andre skrivemåter blir alternative navn, så ressursen finnes i alle scenene.",
-              "Characters, named things, places and things that recur in the script but are not in the library yet. Nothing is added until you choose it. Uncertain suggestions are not pre-selected. Other spellings become alternative names, so the asset exists in every scene.",
-            )}
+            {L("Forslag fra manuset", "Suggestions from the script")}
           </DialogDescription>
         </DialogHeader>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="outline" data-testid="library-suggestions-ai" disabled={busy || aiBusy || !visible.length} onClick={() => setConfirmAI(true)}>{aiBusy ? <Loader2 className="animate-spin" /> : null}{L("Forbedre med AI …", "Improve with AI …")}</Button>
+          {fallback ? <p role="status" className="text-xs text-status-uncertain">{L("Den innebygde AI-en ble brukt som reserve.", "The built-in AI was used as a fallback.")}</p> : null}
+        </div>
+        {confirmAI ? <ClassificationCost inputChars={prompt.system.length + prompt.user.length} busy={aiBusy} onConfirm={() => void improve()} onCancel={() => setConfirmAI(false)} /> : null}
         {visible.length === 0 && hiddenCount === 0 ? (
           <p className="text-[13px] text-text-secondary">
             {L(
@@ -289,12 +309,12 @@ export function SuggestionsDialog({
         ) : null}
         {groups.map((g) =>
           g.items.length ? (
-            <section key={g.reason} className="flex flex-col gap-1">
+            <section key={g.kind} data-testid="library-suggestions-group" data-kind={g.kind} className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <h3 className="text-xs font-medium uppercase tracking-[0.04em] text-text-tertiary">
                   {g.title} ({g.items.length})
                 </h3>
-                <button
+                <Button variant="ghost" size="sm"
                   type="button"
                   className="text-xs text-accent-brand hover:underline"
                   onClick={() =>
@@ -306,8 +326,8 @@ export function SuggestionsDialog({
                   }
                 >
                   {L("Velg alle uten mulig treff", "Select all without a possible match")}
-                </button>
-                <button
+                </Button>
+                <Button variant="ghost" size="sm"
                   type="button"
                   className="text-xs text-text-tertiary hover:text-text-primary hover:underline"
                   onClick={() =>
@@ -319,7 +339,7 @@ export function SuggestionsDialog({
                   }
                 >
                   {L("Velg ingen", "Select none")}
-                </button>
+                </Button>
               </div>
               <ul className="border border-border bg-surface-1">
                 {g.items.map((s) => {
@@ -329,6 +349,7 @@ export function SuggestionsDialog({
                   return (
                     <li
                       key={k}
+                      data-testid="library-suggestion" data-name={s.name} data-kind={kind}
                       className="flex items-center gap-2 border-b border-border px-3 py-1.5 text-[13px] last:border-b-0"
                     >
                       <input
@@ -349,29 +370,21 @@ export function SuggestionsDialog({
                           <span className="ml-2 text-xs text-text-tertiary">
                             {scenesLabel(s.scenes)}
                           </span>
-                          {s.uncertain ? (
-                            <span
-                              className="ml-2 text-xs text-status-uncertain"
-                              title={L(
-                                "Gjetning fra teksten – sjekk før du legger til",
-                                "A guess from the text – check before you add",
-                              )}
-                            >
-                              {L("usikker", "uncertain")}
-                            </span>
-                          ) : null}
+                          <span className="ml-2 text-xs text-status-uncertain" data-testid="library-suggestion-confidence">{confidenceOf(s) === "high" ? L("Sikker", "Confident") : confidenceOf(s) === "medium" ? L("Trolig", "Likely") : L("Usikker", "Uncertain")}</span>
                         </div>
+                        <p className="break-words text-xs text-text-secondary">{ai[s.name]?.reason ?? s.evidence ?? ""}</p>
+                        {ai[s.name]?.aliasOf && suggestions.some((candidate) => candidate.name === ai[s.name]?.aliasOf) ? <p className="break-words text-xs text-status-uncertain">{L(`Mulig samme som «${ai[s.name]?.aliasOf}» – du avgjør`, `Possibly the same as “${ai[s.name]?.aliasOf}” – you decide`)}</p> : null}
                         <div className="truncate text-xs text-text-tertiary" title={evidence(s)}>
                           {evidence(s)}
                         </div>
                       </div>
-                      {s.kindUncertain && c === "new" ? (
                         <select
                           aria-label={L(
                             `Hva slags type er ${s.name}?`,
                             `What kind of ${s.name} is it?`,
                           )}
-                          value={kindChoice[k] ?? "character"}
+                          data-testid="library-suggestion-kind"
+                          value={kind}
                           onChange={(e) =>
                             setKindChoice((x) => ({ ...x, [k]: e.target.value as PickableKind }))
                           }
@@ -383,7 +396,6 @@ export function SuggestionsDialog({
                             </option>
                           ))}
                         </select>
-                      ) : null}
                       {s.possibleMatch ? (
                         <select
                           aria-label={L(`Hva skal ${s.name} bli?`, `What should ${s.name} become?`)}
@@ -407,14 +419,14 @@ export function SuggestionsDialog({
                       ) : (
                         <span className="text-xs text-text-tertiary">→ {suggestedName(s)}</span>
                       )}
-                      <button
+                      <Button variant="ghost" size="sm"
                         type="button"
                         className="text-xs text-text-tertiary hover:text-text-primary"
                         title={L("Ikke foreslå igjen", "Do not suggest again")}
                         onClick={() => hide(k)}
                       >
                         {L("Skjul", "Hide")}
-                      </button>
+                      </Button>
                     </li>
                   );
                 })}
@@ -429,18 +441,18 @@ export function SuggestionsDialog({
         ) : null}
         <div className="flex items-center justify-end gap-2">
           {hiddenCount > 0 ? (
-            <button
+            <Button variant="ghost" size="sm"
               type="button"
               className="mr-auto text-xs text-text-tertiary hover:text-text-primary hover:underline"
               onClick={showHidden}
             >
               {L(`Vis skjulte (${hiddenCount})`, `Show hidden (${hiddenCount})`)}
-            </button>
+            </Button>
           ) : null}
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
             {L("Avbryt", "Cancel")}
           </Button>
-          <Button onClick={() => void apply()} disabled={busy || total === 0}>
+          <Button data-testid="library-suggestions-add" onClick={() => void apply()} disabled={busy || aiBusy || total === 0}>
             {busy ? <Loader2 className="animate-spin" /> : null}
             {total === 0 ? L("Legg til", "Add") : L(`Legg til ${total}`, `Add ${total}`)}
           </Button>
