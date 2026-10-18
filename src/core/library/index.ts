@@ -22,6 +22,7 @@ export const ASSET_KIND_LABEL: Record<AssetKind, string> = localized({
   environment: ["Miljø / bakgrunn", "Environment / background"],
   other: ["Annet", "Other"],
   sound: ["Lyd", "Sound"],
+  template: ["Grafisk mal", "Graphic template"],
 });
 
 export const ASSET_KIND_PLURAL: Record<AssetKind, string> = localized({
@@ -32,6 +33,7 @@ export const ASSET_KIND_PLURAL: Record<AssetKind, string> = localized({
   environment: ["Miljøer", "Environments"],
   other: ["Annet", "Other"],
   sound: ["Lyd", "Sound"],
+  template: ["Grafiske maler", "Graphic templates"],
 });
 
 /** Foretrukket navn og alle alternative navn (REQ-0126). */
@@ -314,6 +316,7 @@ export function assetsInScene(
     object: 4,
     other: 5,
     sound: 6,
+    template: 7,
   };
   const out: { asset: Asset; how: UsageHow }[] = [];
   for (const [assetId, uses] of allAssetUsage(s, productionId)) {

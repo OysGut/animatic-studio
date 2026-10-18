@@ -355,7 +355,7 @@ export function planUpdateTemplateValues(
 
 function layerFieldsForUpdate(l: CompositionLayer): LayerFields {
   const { template, ...f } = fieldsForTemplate(l);
-  return { ...f, locked: l.locked, template: l.template ?? template };
+  return { ...f, locked: l.locked, template: l.template ?? template ?? null };
 }
 
 const sameJson = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);

@@ -98,6 +98,7 @@ export interface ChangeSet {
 }
 
 type AnyEntity =
+  | TemplateInstance
   | Production
   | Scene
   | SceneVariant

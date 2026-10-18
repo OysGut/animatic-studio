@@ -28,6 +28,8 @@ export const LAYER_KIND_FOR_ASSET: Record<AssetKind, LayerKind> = {
   other: "other",
   // Lyd vises aldri som lag (filtreres bort i lagvalget)
   sound: "other",
+  // Maler brukes gjennom «Bruk mal», aldri som bilde
+  template: "other",
 };
 
 /**

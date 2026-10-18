@@ -7085,7 +7085,7 @@ function run(
     case "UndoAddTemplateInstance": {
       const inst = need(s.templateInstances[c.instanceId], L("Malforekomsten", "The template instance"));
       if (Object.values(s.layers).some((l) => l.template?.instanceId === inst.id))
-        fail("in_use", L("Malforekomsten har lag", "The template instance has layers"));
+        fail("referenced", L("Malforekomsten har lag", "The template instance has layers"));
       const templateInstances = { ...s.templateInstances };
       delete templateInstances[inst.id];
       return {
