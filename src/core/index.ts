@@ -77,3 +77,4 @@ export * from "./library/symbol";
 export * from "./library/view";
 export * from "./i18n";
 export * from "./mobile";
+export * from "./storylab";

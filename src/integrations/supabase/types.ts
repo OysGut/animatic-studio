@@ -120,6 +120,8 @@ export type Database = {
           provider: string
           status: string
           status_message: string | null
+          text_models: Json | null
+          text_models_at: string | null
           updated_at: string
           user_id: string
         }
@@ -135,6 +137,8 @@ export type Database = {
           provider: string
           status?: string
           status_message?: string | null
+          text_models?: Json | null
+          text_models_at?: string | null
           updated_at?: string
           user_id: string
         }
@@ -150,6 +154,8 @@ export type Database = {
           provider?: string
           status?: string
           status_message?: string | null
+          text_models?: Json | null
+          text_models_at?: string | null
           updated_at?: string
           user_id?: string
         }

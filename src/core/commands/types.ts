@@ -25,11 +25,16 @@ import type {
   AssetRelationId,
   PosterId,
   StyleProfileId,
+  StoryProfileId,
+  StoryProfileStageId,
+  StoryFactId,
   GenerationPromptId,
   UserId,
   VariantId,
 } from "../ids";
 import type { VersionView } from "../library/view";
+import type { StoryProfile, StoryProfilePatch } from "../storylab/profile";
+import type { StoryFactFields } from "../storylab/facts";
 import type {
   AssetKind,
   AssetName,
@@ -963,7 +968,52 @@ export type Command =
       readonly type: "SetTranslationsRemoved";
       readonly translationIds: readonly TranslationId[];
       readonly removed: boolean;
-    };
+    }
+  /** Story Lab (SL1): karakterprofil – oppretter eller erstatter profilen for ressursen. */
+  | {
+      readonly type: "SetStoryProfile";
+      readonly profileId: StoryProfileId;
+      readonly assetId: AssetId;
+      readonly profile: StoryProfile;
+    }
+  | { readonly type: "UndoCreateStoryProfile"; readonly profileId: StoryProfileId }
+  /** Fjerner (removed: true) eller henter tilbake (false) profilen. Stadier og fakta røres ikke. */
+  | {
+      readonly type: "RemoveStoryProfile";
+      readonly profileId: StoryProfileId;
+      readonly removed: boolean;
+    }
+  | {
+      readonly type: "AddStoryProfileStage";
+      readonly stageId: StoryProfileStageId;
+      readonly assetId: AssetId;
+      readonly fromSceneId: SceneId;
+      readonly patch: StoryProfilePatch;
+    }
+  | { readonly type: "UndoAddStoryProfileStage"; readonly stageId: StoryProfileStageId }
+  | {
+      readonly type: "UpdateStoryProfileStage";
+      readonly stageId: StoryProfileStageId;
+      readonly fromSceneId: SceneId;
+      readonly patch: StoryProfilePatch;
+    }
+  | {
+      readonly type: "RemoveStoryProfileStage";
+      readonly stageId: StoryProfileStageId;
+      readonly removed: boolean;
+    }
+  | {
+      readonly type: "AddStoryFact";
+      readonly factId: StoryFactId;
+      readonly fields: StoryFactFields;
+    }
+  | { readonly type: "UndoAddStoryFact"; readonly factId: StoryFactId }
+  | {
+      readonly type: "UpdateStoryFact";
+      readonly factId: StoryFactId;
+      readonly fields: StoryFactFields;
+    }
+  | { readonly type: "RemoveStoryFact"; readonly factId: StoryFactId; readonly removed: boolean };
 
 /** En oversettelse av en manuslinje eller et scenehode (DEC-0058). */
 export interface TranslationFields {

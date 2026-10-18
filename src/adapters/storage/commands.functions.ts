@@ -107,6 +107,9 @@ const INVERSE_ONLY = new Set<string>([
   "UndoAddLayers",
   "UndoSetProjectFormat",
   "UndoAddAudioClips",
+  "UndoCreateStoryProfile",
+  "UndoAddStoryProfileStage",
+  "UndoAddStoryFact",
 ]);
 
 /** Kommandoer som skriver til tabellene fra migrasjon 0004 (ressursbibliotek og notater). */
@@ -386,6 +389,25 @@ export function needsSchema25(command: { type: string }): boolean {
 /** Planlagt lengde per scene (REQ-0111/0113) krever migrasjon 0023. */
 export function needsSchema23(command: { type: string }): boolean {
   return command.type === "SetPlannedDuration";
+}
+
+/** Story Lab (SL1): profiler, stadier og fakta krever migrasjon 0039. */
+const STORY_LAB_COMMANDS = new Set([
+  "SetStoryProfile",
+  "UndoCreateStoryProfile",
+  "RemoveStoryProfile",
+  "AddStoryProfileStage",
+  "UndoAddStoryProfileStage",
+  "UpdateStoryProfileStage",
+  "RemoveStoryProfileStage",
+  "AddStoryFact",
+  "UndoAddStoryFact",
+  "UpdateStoryFact",
+  "RemoveStoryFact",
+]);
+
+export function needsSchema39(command: { type: string }): boolean {
+  return STORY_LAB_COMMANDS.has(command.type);
 }
 
 /** Filmens visuelle stil for AI (DEC-0065) krever migrasjon 0021. */
@@ -709,6 +731,18 @@ export const runCommand = createServerFn({ method: "POST" })
           message: L(
             "Databasen mangler kontinuitet for spinoffer. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0018.",
             "The database is missing continuity for spin-offs. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0018.",
+          ),
+        };
+    }
+    if (needsSchema39(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 39)
+        return {
+          ok: false,
+          code: "schema",
+          message: L(
+            "Databasen mangler Story Lab. Den må oppdateres (migrasjon 0039).",
+            "The database is missing Story Lab. It must be updated (migration 0039).",
           ),
         };
     }

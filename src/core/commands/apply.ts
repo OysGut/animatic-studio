@@ -19,6 +19,9 @@ import {
 } from "../ids";
 import { checkInvariants } from "../invariants";
 import { L } from "../i18n";
+import { canHaveStoryProfile, profileError, profilePatchError } from "../storylab/profile";
+import { factError, type StoryFactFields } from "../storylab/facts";
+import { activeProfileOf } from "../storylab/stages";
 import { secondsToFrames, type Rational } from "../time";
 import {
   EXPORT_SETTINGS_MAX_BYTES,
@@ -164,6 +167,9 @@ function assertNewId(s: ProjectState, id: string) {
     s.assetRelations,
     s.posters,
     s.styleProfiles,
+    s.storyProfiles,
+    s.storyProfileStages,
+    s.storyFacts,
   ];
   if (all.some((c) => c[id] !== undefined))
     fail("duplicate_id", L(`ID ${id} er allerede i bruk`, `ID ${id} is already in use`));
@@ -499,6 +505,9 @@ export function revisionOf(s: ProjectState, id: string): number | undefined {
     s.assetRelations,
     s.posters,
     s.styleProfiles,
+    s.storyProfiles,
+    s.storyProfileStages,
+    s.storyFacts,
   ]) {
     const e = c[id];
     if (e) return e.revision;
@@ -574,6 +583,8 @@ function usedByPresentation(
     Object.values(s.assetRelations).some((r) => r.fromAssetId === id || r.toAssetId === id)
   )
     return true;
+  // Story Lab (SL1): profiler, stadier og fakta viser til karakteren
+  if (key === "assets" && storyLabUsesAsset(s, id)) return true;
   if (
     key === "versions" &&
     Object.values(s.styleProfiles).some((p) => p.guide.referenceVersionIds.includes(id))
@@ -1837,7 +1848,15 @@ function run(
             x.derivedFromSceneId === c.sceneId ||
             x.storyTime.anchorSceneId === c.sceneId),
       );
-      if (otherUse || otherVariants || hasTakes || hasSegments || referencedByScenes) {
+      const referencedByStoryLab = storyLabUsesScene(s, c.sceneId);
+      if (
+        otherUse ||
+        otherVariants ||
+        hasTakes ||
+        hasSegments ||
+        referencedByScenes ||
+        referencedByStoryLab
+      ) {
         fail(
           "referenced",
           L(
@@ -3885,6 +3904,241 @@ function run(
         },
         inverse: { type: "SetStyleProfileRemoved", profileId: p.id, removed: !c.removed },
         affected: [p.id],
+      };
+    }
+
+    // ---------- Story Lab (SL1) ----------
+
+    case "SetStoryProfile": {
+      const asset = storyAsset(s, c.assetId);
+      const e = profileError(c.profile);
+      if (e) fail("invalid", e);
+      const prev = s.storyProfiles[c.profileId];
+      if (prev) {
+        if (prev.assetId !== asset.id)
+          fail(
+            "invalid",
+            L("Profilen hører til en annen karakter", "The profile belongs to another character"),
+          );
+        if (prev.removed)
+          fail(
+            "invalid",
+            L(
+              "Profilen er fjernet. Hent den tilbake først.",
+              "The profile has been removed. Restore it first.",
+            ),
+          );
+        return {
+          state: {
+            ...s,
+            storyProfiles: {
+              ...s.storyProfiles,
+              [prev.id]: { ...prev, profile: c.profile, revision: rev(prev) },
+            },
+          },
+          inverse: {
+            type: "SetStoryProfile",
+            profileId: prev.id,
+            assetId: prev.assetId,
+            profile: prev.profile,
+          },
+          affected: [prev.id],
+        };
+      }
+      assertNewId(s, c.profileId);
+      if (activeProfileOf(s, asset.id))
+        fail(
+          "invalid",
+          L("Karakteren har allerede en profil", "The character already has a profile"),
+        );
+      return {
+        state: {
+          ...s,
+          storyProfiles: {
+            ...s.storyProfiles,
+            [c.profileId]: {
+              id: c.profileId,
+              revision: 1,
+              assetId: asset.id,
+              profile: c.profile,
+              removed: false,
+            },
+          },
+        },
+        inverse: { type: "UndoCreateStoryProfile", profileId: c.profileId },
+        affected: [c.profileId],
+      };
+    }
+
+    case "UndoCreateStoryProfile": {
+      const p = need(s.storyProfiles[c.profileId], L("Profilen", "The profile"));
+      const { [p.id]: _p, ...storyProfiles } = s.storyProfiles;
+      return {
+        state: { ...s, storyProfiles },
+        inverse: {
+          type: "SetStoryProfile",
+          profileId: p.id,
+          assetId: p.assetId,
+          profile: p.profile,
+        },
+        affected: [p.id],
+      };
+    }
+
+    case "RemoveStoryProfile": {
+      const p = need(s.storyProfiles[c.profileId], L("Profilen", "The profile"));
+      if (p.removed === c.removed) fail("invalid", L("Ingen endring", "No change"));
+      if (!c.removed && activeProfileOf(s, p.assetId))
+        fail(
+          "invalid",
+          L("Karakteren har allerede en profil", "The character already has a profile"),
+        );
+      return {
+        state: {
+          ...s,
+          storyProfiles: {
+            ...s.storyProfiles,
+            [p.id]: { ...p, removed: c.removed, revision: rev(p) },
+          },
+        },
+        inverse: { type: "RemoveStoryProfile", profileId: p.id, removed: !c.removed },
+        affected: [p.id],
+      };
+    }
+
+    case "AddStoryProfileStage": {
+      assertNewId(s, c.stageId);
+      const asset = storyAsset(s, c.assetId);
+      need(s.scenes[c.fromSceneId], L("Scenen", "The scene"));
+      const e = profilePatchError(c.patch);
+      if (e) fail("invalid", e);
+      assertOneStagePerScene(s, asset.id, c.fromSceneId, c.stageId);
+      return {
+        state: {
+          ...s,
+          storyProfileStages: {
+            ...s.storyProfileStages,
+            [c.stageId]: {
+              id: c.stageId,
+              revision: 1,
+              assetId: asset.id,
+              fromSceneId: c.fromSceneId,
+              patch: c.patch,
+              removed: false,
+            },
+          },
+        },
+        inverse: { type: "UndoAddStoryProfileStage", stageId: c.stageId },
+        affected: [c.stageId],
+      };
+    }
+
+    case "UndoAddStoryProfileStage": {
+      const g = need(s.storyProfileStages[c.stageId], L("Stadiet", "The stage"));
+      const { [g.id]: _g, ...storyProfileStages } = s.storyProfileStages;
+      return {
+        state: { ...s, storyProfileStages },
+        inverse: {
+          type: "AddStoryProfileStage",
+          stageId: g.id,
+          assetId: g.assetId,
+          fromSceneId: g.fromSceneId,
+          patch: g.patch,
+        },
+        affected: [g.id],
+      };
+    }
+
+    case "UpdateStoryProfileStage": {
+      const g = need(s.storyProfileStages[c.stageId], L("Stadiet", "The stage"));
+      need(s.scenes[c.fromSceneId], L("Scenen", "The scene"));
+      const e = profilePatchError(c.patch);
+      if (e) fail("invalid", e);
+      if (!g.removed) assertOneStagePerScene(s, g.assetId, c.fromSceneId, g.id);
+      return {
+        state: {
+          ...s,
+          storyProfileStages: {
+            ...s.storyProfileStages,
+            [g.id]: { ...g, fromSceneId: c.fromSceneId, patch: c.patch, revision: rev(g) },
+          },
+        },
+        inverse: {
+          type: "UpdateStoryProfileStage",
+          stageId: g.id,
+          fromSceneId: g.fromSceneId,
+          patch: g.patch,
+        },
+        affected: [g.id],
+      };
+    }
+
+    case "RemoveStoryProfileStage": {
+      const g = need(s.storyProfileStages[c.stageId], L("Stadiet", "The stage"));
+      if (g.removed === c.removed) fail("invalid", L("Ingen endring", "No change"));
+      if (!c.removed) assertOneStagePerScene(s, g.assetId, g.fromSceneId, g.id);
+      return {
+        state: {
+          ...s,
+          storyProfileStages: {
+            ...s.storyProfileStages,
+            [g.id]: { ...g, removed: c.removed, revision: rev(g) },
+          },
+        },
+        inverse: { type: "RemoveStoryProfileStage", stageId: g.id, removed: !c.removed },
+        affected: [g.id],
+      };
+    }
+
+    case "AddStoryFact": {
+      assertNewId(s, c.factId);
+      const fields = storyFactFieldsOf(s, c.fields);
+      return {
+        state: {
+          ...s,
+          storyFacts: {
+            ...s.storyFacts,
+            [c.factId]: { id: c.factId, revision: 1, ...fields, removed: false },
+          },
+        },
+        inverse: { type: "UndoAddStoryFact", factId: c.factId },
+        affected: [c.factId],
+      };
+    }
+
+    case "UndoAddStoryFact": {
+      const f = need(s.storyFacts[c.factId], L("Faktumet", "The fact"));
+      const { [f.id]: _f, ...storyFacts } = s.storyFacts;
+      return {
+        state: { ...s, storyFacts },
+        inverse: { type: "AddStoryFact", factId: f.id, fields: factFieldsOf(f) },
+        affected: [f.id],
+      };
+    }
+
+    case "UpdateStoryFact": {
+      const f = need(s.storyFacts[c.factId], L("Faktumet", "The fact"));
+      const fields = storyFactFieldsOf(s, c.fields);
+      return {
+        state: {
+          ...s,
+          storyFacts: { ...s.storyFacts, [f.id]: { ...f, ...fields, revision: rev(f) } },
+        },
+        inverse: { type: "UpdateStoryFact", factId: f.id, fields: factFieldsOf(f) },
+        affected: [f.id],
+      };
+    }
+
+    case "RemoveStoryFact": {
+      const f = need(s.storyFacts[c.factId], L("Faktumet", "The fact"));
+      if (f.removed === c.removed) fail("invalid", L("Ingen endring", "No change"));
+      return {
+        state: {
+          ...s,
+          storyFacts: { ...s.storyFacts, [f.id]: { ...f, removed: c.removed, revision: rev(f) } },
+        },
+        inverse: { type: "RemoveStoryFact", factId: f.id, removed: !c.removed },
+        affected: [f.id],
       };
     }
 
@@ -6822,4 +7076,75 @@ export function applyCommand(state: ProjectState, env: CommandEnvelope): ApplyRe
     }
     throw e;
   }
+}
+
+// ---------- Story Lab (SL1) ----------
+
+/** Ressursen som får profil, stadium eller kunnskap: må finnes, ikke være fjernet, og være karakter eller dyr. */
+function storyAsset(s: ProjectState, assetId: string) {
+  const a = need(s.assets[assetId], L("Karakteren", "The character"));
+  if (a.removed) fail("invalid", L("Karakteren er fjernet", "The character has been removed"));
+  if (!canHaveStoryProfile(a.kind))
+    fail(
+      "invalid",
+      L(
+        "Bare karakterer og dyr kan ha en profil i Story Lab",
+        "Only characters and animals can have a profile in Story Lab",
+      ),
+    );
+  return a;
+}
+
+function assertOneStagePerScene(s: ProjectState, assetId: string, sceneId: string, selfId: string) {
+  if (
+    Object.values(s.storyProfileStages).some(
+      (g) => g.id !== selfId && !g.removed && g.assetId === assetId && g.fromSceneId === sceneId,
+    )
+  )
+    fail(
+      "invalid",
+      L(
+        "Karakteren har allerede et stadium fra denne scenen",
+        "The character already has a stage from this scene",
+      ),
+    );
+}
+
+function factFieldsOf(f: import("../model").StoryFact): StoryFactFields {
+  return { text: f.text, kind: f.kind, atSceneId: f.atSceneId, knownBy: f.knownBy };
+}
+
+function storyFactFieldsOf(s: ProjectState, f: StoryFactFields): StoryFactFields {
+  const e = factError(f);
+  if (e) fail("invalid", e);
+  if (f.atSceneId !== null) need(s.scenes[f.atSceneId], L("Scenen", "The scene"));
+  for (const k of f.knownBy) {
+    storyAsset(s, k.assetId);
+    if (k.fromSceneId !== null) need(s.scenes[k.fromSceneId], L("Scenen", "The scene"));
+  }
+  return {
+    text: f.text.trim(),
+    kind: f.kind,
+    atSceneId: f.atSceneId,
+    knownBy: f.knownBy.map((k) => ({ assetId: k.assetId, fromSceneId: k.fromSceneId })),
+  };
+}
+
+/** Viser Story Lab til ressursen (også fjernede rader, de finnes i databasen)? */
+function storyLabUsesAsset(s: ProjectState, id: string): boolean {
+  return (
+    Object.values(s.storyProfiles).some((p) => p.assetId === id) ||
+    Object.values(s.storyProfileStages).some((g) => g.assetId === id) ||
+    Object.values(s.storyFacts).some((f) => f.knownBy.some((k) => k.assetId === id))
+  );
+}
+
+/** Viser Story Lab til scenen? */
+function storyLabUsesScene(s: ProjectState, id: string): boolean {
+  return (
+    Object.values(s.storyProfileStages).some((g) => g.fromSceneId === id) ||
+    Object.values(s.storyFacts).some(
+      (f) => f.atSceneId === id || f.knownBy.some((k) => k.fromSceneId === id),
+    )
+  );
 }

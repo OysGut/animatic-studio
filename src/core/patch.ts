@@ -28,6 +28,9 @@ import type {
   Poster,
   StyleGuide,
   StyleProfile,
+  StoryCharacterProfile,
+  StoryProfileStage,
+  StoryFact,
   PosterDocument,
   PosterKind,
   RelationKind,
@@ -107,7 +110,10 @@ type AnyEntity =
   | AudioClip
   | AssetRelation
   | Poster
-  | StyleProfile;
+  | StyleProfile
+  | StoryCharacterProfile
+  | StoryProfileStage
+  | StoryFact;
 
 export function toRow(collection: CollectionName, e: AnyEntity, projectId: string): Row {
   const base = { id: e.id, project_id: projectId, revision: e.revision };
@@ -502,6 +508,32 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         removed: x.removed,
       };
     }
+    // Story Lab (SL1, migrasjon 0039)
+    case "storyProfiles": {
+      const x = e as StoryCharacterProfile;
+      return { ...base, asset_id: x.assetId, profile: x.profile, removed: x.removed };
+    }
+    case "storyProfileStages": {
+      const x = e as StoryProfileStage;
+      return {
+        ...base,
+        asset_id: x.assetId,
+        from_scene_id: x.fromSceneId,
+        patch: x.patch,
+        removed: x.removed,
+      };
+    }
+    case "storyFacts": {
+      const x = e as StoryFact;
+      return {
+        ...base,
+        text: x.text,
+        kind: x.kind,
+        at_scene_id: x.atSceneId,
+        known_by: x.knownBy,
+        removed: x.removed,
+      };
+    }
   }
 }
 
@@ -546,6 +578,9 @@ export const TABLE_ORDER: readonly string[] = [
   "asset_relations",
   "posters",
   "style_profiles",
+  "story_profiles",
+  "story_profile_stages",
+  "story_facts",
 ];
 
 export function diffStates(before: ProjectState, after: ProjectState): ChangeSet {
@@ -653,6 +688,10 @@ export interface ProjectRows {
   readonly asset_relations?: readonly Row[];
   readonly posters?: readonly Row[];
   readonly style_profiles?: readonly Row[];
+  /** Story Lab (migrasjon 0039). Tomt hvis migrasjonen ikke er kjørt ennå. */
+  readonly story_profiles?: readonly Row[];
+  readonly story_profile_stages?: readonly Row[];
+  readonly story_facts?: readonly Row[];
 }
 
 const str = (v: unknown) => String(v);
@@ -1270,6 +1309,41 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...(Array.isArray(x["applies_to"]) && (x["applies_to"] as unknown[]).length
           ? { appliesTo: (x["applies_to"] as string[]).map(String) as StyleUse[] }
           : {}),
+        removed: x["removed"] === true,
+      })),
+    ),
+    storyProfiles: byId(
+      (r.story_profiles ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        assetId: str(x["asset_id"]) as never,
+        profile: json(x["profile"]) as StoryCharacterProfile["profile"],
+        removed: x["removed"] === true,
+      })),
+    ),
+    storyProfileStages: byId(
+      (r.story_profile_stages ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        assetId: str(x["asset_id"]) as never,
+        fromSceneId: str(x["from_scene_id"]) as never,
+        patch: (json(x["patch"]) ?? {}) as StoryProfileStage["patch"],
+        removed: x["removed"] === true,
+      })),
+    ),
+    storyFacts: byId(
+      (r.story_facts ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        text: str(x["text"] ?? ""),
+        kind: (x["kind"] === "secret" ? "secret" : "fact") as StoryFact["kind"],
+        atSceneId: optStr(x["at_scene_id"]) as never,
+        knownBy: ((json(x["known_by"]) as StoryFact["knownBy"] | null) ?? []).map((k) => ({
+          assetId: String(k.assetId) as never,
+          fromSceneId: (k.fromSceneId === null || k.fromSceneId === undefined
+            ? null
+            : String(k.fromSceneId)) as never,
+        })),
         removed: x["removed"] === true,
       })),
     ),

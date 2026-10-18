@@ -28,9 +28,13 @@ import type {
   TakeId,
   UserId,
   VariantId,
+  StoryProfileId,
+  StoryProfileStageId,
+  StoryFactId,
 } from "./ids";
 import type { Rational } from "./time";
 import type { DurationAssumptions } from "./screenplay/duration";
+import type { StoryProfile, StoryProfilePatch } from "./storylab/profile";
 
 export const PRIMARY_LANGUAGE = "nb" as const; // INV-05
 
@@ -844,6 +848,10 @@ export interface ProjectState {
   readonly posters: Readonly<Record<string, Poster>>;
   /** Filmens visuelle stil for AI (DEC-0065): stilprofiler, én er standard. */
   readonly styleProfiles: Readonly<Record<string, StyleProfile>>;
+  /** Story Lab (SL1, migrasjon 0039): karakterprofiler, stadier i karakterbuen og fakta. */
+  readonly storyProfiles: Readonly<Record<string, StoryCharacterProfile>>;
+  readonly storyProfileStages: Readonly<Record<string, StoryProfileStage>>;
+  readonly storyFacts: Readonly<Record<string, StoryFact>>;
 }
 
 /**
@@ -1146,6 +1154,9 @@ export const COLLECTION_TABLES = {
   assetRelations: "asset_relations",
   posters: "posters",
   styleProfiles: "style_profiles",
+  storyProfiles: "story_profiles",
+  storyProfileStages: "story_profile_stages",
+  storyFacts: "story_facts",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_TABLES;
@@ -1176,6 +1187,9 @@ export function emptyProjectState(project: Project): ProjectState {
     assetRelations: {},
     posters: {},
     styleProfiles: {},
+    storyProfiles: {},
+    storyProfileStages: {},
+    storyFacts: {},
   };
 }
 
@@ -1253,3 +1267,38 @@ export type StyleUse =
   | "poster"
   | "animatic"
   | "ai_video";
+
+// ---------- Story Lab (SL1, migrasjon 0039) ----------
+
+/** Karakterprofilen for én ressurs («character» eller «animal»). Høyst én aktiv per ressurs. */
+export interface StoryCharacterProfile extends Entity<StoryProfileId> {
+  readonly assetId: AssetId;
+  readonly profile: StoryProfile;
+  readonly removed: boolean;
+}
+
+/** Profilendring fra en scene i fortellingstid (karakterbuen). Høyst ett aktivt per karakter og scene. */
+export interface StoryProfileStage extends Entity<StoryProfileStageId> {
+  readonly assetId: AssetId;
+  readonly fromSceneId: SceneId;
+  readonly patch: StoryProfilePatch;
+  readonly removed: boolean;
+}
+
+export type StoryFactKind = "fact" | "secret";
+
+/** Hvem som kjenner et faktum, og fra hvilken scene (null = fra begynnelsen). */
+export interface StoryFactKnower {
+  readonly assetId: AssetId;
+  readonly fromSceneId: SceneId | null;
+}
+
+/** Et faktum eller en hemmelighet. Uten `knownBy` vet bare regissøren om det. */
+export interface StoryFact extends Entity<StoryFactId> {
+  readonly text: string;
+  readonly kind: StoryFactKind;
+  /** Scenen der det skjer (null = gjelder fra begynnelsen). */
+  readonly atSceneId: SceneId | null;
+  readonly knownBy: readonly StoryFactKnower[];
+  readonly removed: boolean;
+}
