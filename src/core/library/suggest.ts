@@ -15,6 +15,8 @@ import type { Asset, AssetKind, ProjectState } from "../model";
 import { blocksOfVariant, orderedOccurrences } from "../views";
 import { characterName, sceneMentions } from "../screenplay/filter";
 import { L } from "../i18n";
+import { nounForms, LEXICON_FORMS } from "./lexicon";
+import { classifySuggestion, type Confidence } from "./classify";
 
 export type SuggestionReason = "speaker" | "named" | "heading" | "object";
 
@@ -54,6 +56,9 @@ export interface SuggestionSource {
 }
 
 export interface LibrarySuggestion {
+  readonly confidence?: Confidence;
+  readonly evidence?: string;
+  readonly contexts?: readonly string[];
   readonly kind: AssetKind;
   /** Navnet slik det står i manuset (karakterer og steder med store bokstaver, objekter i grunnform). */
   readonly name: string;
@@ -394,14 +399,6 @@ const ARTICLES = new Set(["en", "ei", "et"]);
 const POSTPOSED = new Set(["sin", "si", "sitt", "sine", "hans", "hennes", "deres"]);
 
 /** Bøyningsformer av et substantiv i ubestemt form: sekk → sekken, sekker, sekkene … */
-function nounForms(w: string): string[] {
-  const forms = [w, `${w}en`, `${w}et`, `${w}a`, `${w}er`, `${w}ene`, `${w}ane`];
-  if (w.endsWith("e")) {
-    const s = w.slice(0, -1);
-    forms.push(`${w}n`, `${w}t`, `${s}a`, `${w}r`, `${w}ne`);
-  }
-  return forms;
-}
 
 /** Ubestemt form av et ord i bestemt form («sekken» → «sekk», «lykta» → «lykt»), om det ser slik ut. */
 function indefinite(w: string): string | null {
@@ -429,7 +426,7 @@ function scenesOf(s: ProjectState, productionId: string): Scene[] {
     const parts: string[] = [];
     for (const b of blocksOfVariant(s, o.variantId)) {
       if (b.kind === "character") {
-        const n = characterName(b.text);
+        const n = b.text.trim();
         if (n) rawSpeakers.add(n);
       } else if (b.kind === "action" || b.kind === "shot") parts.push(b.text);
     }
@@ -579,7 +576,7 @@ function namedSuggestions(
       const w = m[0];
       if (w.length < 3 || !/^\p{Lu}\p{Ll}+$/u.test(w)) continue;
       const key = upper(w);
-      if (NAMED_STOP.has(key) || speakerWords.has(key) || locationWords.has(key)) continue;
+      if (NAMED_STOP.has(key) || LEXICON_FORMS.has(lower(w)) || speakerWords.has(key) || locationWords.has(key)) continue;
       // Eieform av et kjent navn («Majas») er samme navn
       if (key.endsWith("S") && speakerWords.has(key.slice(0, -1))) continue;
       const before = sc.action.slice(0, m.index).trimEnd();
@@ -596,7 +593,8 @@ function namedSuggestions(
   const out: LibrarySuggestion[] = [];
   for (const [key, idx] of anywhere) {
     // Minst to ganger midt i en setning og i minst to scener
-    if ((midSentence.get(key) ?? 0) < 2 || idx.size < 2 || knownKeys.has(key)) continue;
+    const classification = classifySuggestion({ name: display.get(key) ?? key, contexts: [...idx].map((i) => scenes[i]?.action ?? "") });
+    if ((((midSentence.get(key) ?? 0) < 2 || idx.size < 2) && classification.confidence === "low") || ((midSentence.get(key) ?? 0) === 0 && classification.kind !== "animal" && classification.confidence !== "high") || knownKeys.has(key)) continue;
     out.push({
       kind: "character",
       name: display.get(key)!,
@@ -749,12 +747,34 @@ export function librarySuggestions(s: ProjectState, productionId: string): Libra
     for (const m of upper(sc.location).matchAll(WORD)) locationWords.add(m[0]);
   const named = namedSuggestions(scenes, all, speakerWords, locationWords);
   const namedWords = new Set(named.map((x) => upper(x.name)));
-  return [
+  const suggestions = [
     ...chars,
     ...named,
     ...locationSuggestions(scenes, all),
     ...objectSuggestions(scenes, all, new Set([...speakerWords, ...namedWords, ...locationWords])),
   ];
+  // Animals and supernatural beings must survive even a single mention without an article.
+  const lexical = new Tally();
+  scenes.forEach((sc, i) => {
+    for (const m of lower(sc.action).matchAll(WORD)) {
+      const entry = LEXICON_FORMS.get(m[0]);
+      if (entry && (entry.kind === "animal" || entry.kind === "character")) lexical.add(entry.base, i, m[0], "form");
+    }
+  });
+  const known = new Set(all.flatMap(assetKeys));
+  for (const [name, idx] of lexical.scenes) {
+    if (known.has(upper(name)) || suggestions.some((x) => nounForms(name).some((f) => upper(f) === upper(x.name)))) continue;
+    suggestions.push({ name, kind: "animal", reason: "object", scenes: idx.size, possibleMatch: findSimilar(upper(name), all), sources: lexical.sourcesOf(name), uncertain: false, kindUncertain: false, sceneNumbers: numbersOf(scenes, idx) });
+  }
+  return suggestions.map((x) => {
+    const contexts = scenes.flatMap((sc) => {
+      const names = [x.name, ...x.sources.map((r) => r.name)].map(lower);
+      const lines = [sc.location, ...sc.action.split(/\n|(?<=[.!?])\s+/u), ...sc.rawSpeakers];
+      return lines.filter((line) => names.some((n) => lower(line).includes(n))).map((line) => line.slice(0, 300));
+    });
+    const classification = classifySuggestion({ name: x.name, speaker: x.reason === "speaker", heading: x.reason === "heading", contexts });
+    return { ...x, ...classification, contexts: [...new Set(contexts)].slice(0, 2) };
+  }).filter((x) => !known.has(upper(x.name)));
 }
 
 /** Navnene en ny ressurs fra forslaget får som alternative navn (skrivemåtene i manuset). */

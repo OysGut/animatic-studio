@@ -28,3 +28,4 @@ Kortversjonen:
 8. Story Lab transfers are planned in the platform-neutral transfer helper and executed through the shared command stack; this preserves validation and grouped undo without direct project-data writes.
 9. The script explorer reuses screenplay pagination, filtering, search and annotations; its local selection never changes the source workspace except through explicit navigation.
 10. Active scenes travel over a source-window-scoped browser bus; pinned explorers never publish their own browsing selection.
+11. Entity recognition extends librarySuggestions with pure lexical classification; optional AI reviews existing candidates only, and assets are created exclusively through the existing confirmed command flow.
