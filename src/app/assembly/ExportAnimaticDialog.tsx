@@ -200,7 +200,7 @@ export function ExportAnimaticDialog({
     () =>
       includeCredits
         ? clips
-        : clips.filter((c) => occurrenceKind(state.occurrences[c.occurrenceId]) !== "credits"),
+        : clips.filter((c) => state.occurrences[c.occurrenceId] !== undefined && occurrenceKind(state.occurrences[c.occurrenceId]!) !== "credits"),
     [clips, includeCredits, state],
   );
   const partSel = useMemo(
