@@ -21,16 +21,21 @@ export function SuggestionsPanel({ state, projectId, cmds, editable, focusedId, 
   const [kind, setKind] = useState<StorySuggestionKind | "">("");
   const [preview, setPreview] = useState<StorySuggestion | null>(null);
   const [busy, setBusy] = useState(false), [error, setError] = useState<string | null>(null);
-  const [destinations, setDestinations] = useState<Record<string, { occurrenceId: string; blockId: string | null; group: string }>>({});
+  const destinationKey = ["story-suggestion-transfers", projectId];
+  type Destination = { occurrenceId: string; blockId: string | null; group: string; complete: boolean };
+  const [destinations, setDestinationsState] = useState<Record<string, Destination>>(() => qc.getQueryData(destinationKey) ?? {});
+  const setDestinations = (fn: (old: Record<string, Destination>) => Record<string, Destination>) => {
+    setDestinationsState((old) => { const next = fn(old); qc.setQueryData(destinationKey, next); return next; });
+  };
   const lock = useRef(false);
   useEffect(() => { if (focusedId) { setStatus("open"); setKind(""); } }, [focusedId]);
   useEffect(() => { if (focusedId && query.data) document.getElementById(`suggestion-${focusedId}`)?.scrollIntoView({ block: "nearest" }); }, [focusedId, query.data]);
   useEffect(() => {
     setDestinations((old) => Object.fromEntries(Object.entries(old).filter(([id, d]) => {
       // A successful stack undo opens the suggestion; allow applying it again afterwards.
-      return !(query.data?.find((s) => s.id === id)?.status === "open" && cmds.undoGroup !== d.group && cmds.redoLabel === L("Bruk forslag fra Story Lab", "Use Story Lab suggestion"));
+      return !(query.data?.find((s) => s.id === id)?.status === "open" && cmds.redoGroup === d.group && cmds.status.kind === "idle");
     })));
-  }, [query.data, cmds.undoGroup, cmds.redoLabel]);
+  }, [query.data, cmds.redoGroup, cmds.status]);
   const set = async (id: string, value: StorySuggestion["status"]) => {
     const r = await update({ data: { projectId, suggestionId: id, status: value } });
     if (!r.ok) throw new Error(r.message);
@@ -45,17 +50,28 @@ export function SuggestionsPanel({ state, projectId, cmds, editable, focusedId, 
     const plan = suggestionToCommands(current, suggestion, target);
     if (!plan.ok) throw new Error(plan.message);
     const group = `storylab:${suggestion.id}:${newId()}`;
-    for (const command of plan.commands) {
-      const r = await cmds.runAndWait(command, L("Bruk forslag fra Story Lab", "Use Story Lab suggestion"), group);
-      if (r.error) throw new Error(r.error);
-    }
     const occurrence = "variantId" in target ? Object.values(current.occurrences).find((o) => o.active && o.productionId === target.productionId && o.variantId === target.variantId) : undefined;
     const first = plan.commands[0];
     const blockId = first?.type === "InsertBlock" ? first.block.blockId : first?.type === "EditBlockText" ? first.blockId : first?.type === "AddAnnotations" ? first.annotations[0]?.blockId ?? null : null;
-    setDestinations((old) => ({ ...old, [suggestion.id]: { occurrenceId: occurrence?.id ?? "", blockId, group } }));
+    let completed = 0;
+    for (const command of plan.commands) {
+      const r = await cmds.runAndWait(command, L("Bruk forslag fra Story Lab", "Use Story Lab suggestion"), group);
+      if (r.error) {
+        if (completed) {
+          setDestinations((old) => ({ ...old, [suggestion.id]: { occurrenceId: occurrence?.id ?? "", blockId, group, complete: false } }));
+          setPreview(null);
+          throw new Error(L(`Overføringen ble bare delvis lagret. Angre før du prøver igjen. ${r.error}`, `The transfer was only partially saved. Undo before trying again. ${r.error}`));
+        }
+        throw new Error(r.error);
+      }
+      completed++;
+    }
+    setDestinations((old) => ({ ...old, [suggestion.id]: { occurrenceId: occurrence?.id ?? "", blockId, group, complete: true } }));
     // Set status only after every command has been persisted. A status failure cannot repeat insertion.
     setPreview(null);
-    await set(suggestion.id, "applied");
+    try { await set(suggestion.id, "applied"); } catch {
+      throw new Error(L("Overføringen er lagret, men statusen kunne ikke oppdateres. Velg «Merk som brukt» eller angre.", "The transfer was saved, but its status could not be updated. Choose ‘Mark applied’ or undo."));
+    }
     setStatus("applied");
   });
   const list = (query.data ?? []).filter((s) => s.status === status && (!kind || s.kind === kind) && (!sceneFilter || s.payload["sceneId"] === sceneFilter));
@@ -67,7 +83,7 @@ export function SuggestionsPanel({ state, projectId, cmds, editable, focusedId, 
     {query.isPending ? <p className="p-2 text-xs">{L("Henter forslag …", "Loading suggestions …")}</p> : null}
     {query.isError ? <div role="alert" className="p-2 text-xs text-status-danger">{L("Forslagene kunne ikke hentes.", "The suggestions could not be loaded.")}<ToolbarButton onClick={() => void query.refetch()}>{L("Prøv igjen", "Try again")}</ToolbarButton></div> : null}
     {!query.isPending && !query.isError && !list.length ? <p className="p-2 text-xs text-text-tertiary">{L("Ingen forslag med disse filtrene.", "No suggestions match these filters.")}</p> : null}
-    {[...groups].map(([sceneId, suggestions]) => <section key={sceneId} className="p-2"><PanelHeader title={sceneId ? formatHeading(Object.values(state.variants).find((v) => v.sceneId === sceneId)?.heading ?? { } as never) : L("Uten scene", "No scene")} />{suggestions.map((s) => {
+    {[...groups].map(([sceneId, suggestions]) => <section key={sceneId} className="p-2"><PanelHeader title={sceneId ? (() => { const v = Object.values(state.variants).find((v) => v.sceneId === sceneId); return v ? formatHeading(v.heading) : sceneId; })() : L("Uten scene", "No scene")} />{suggestions.map((s) => {
       const destination = destinations[s.id];
       const action = s.kind === "line" ? s.payload["blockId"] ? L("Bruk i manus …", "Use in script …") : L("Sett inn i manus …", "Insert into script …") : s.kind === "scene_draft" ? L("Sett inn utkast …", "Insert draft …") : s.kind === "profile_change" ? L("Bruk på profilen …", "Apply to profile …") : L("Legg som notat i manus …", "Add as script note …");
       return <article key={s.id} id={`suggestion-${s.id}`} data-testid="storylab-suggestion" data-suggestion-id={s.id} data-kind={s.kind} data-status={s.status} className={`mb-2 min-w-0 rounded-sm border bg-surface-2 p-2 text-xs ${focusedId === s.id ? "border-accent-brand" : "border-border"}`}><strong>{suggestionKindLabels()[s.kind]}</strong><span className="ml-2 text-text-tertiary">{statusLabels()[s.status]}</span><p className="my-2 line-clamp-4 break-words whitespace-pre-wrap">{suggestionText(s)}</p>
@@ -77,7 +93,7 @@ export function SuggestionsPanel({ state, projectId, cmds, editable, focusedId, 
           {editable && destination && cmds.undoGroup === destination.group ? <ToolbarButton data-testid="storylab-suggestion-undo" disabled={busy} onClick={() => cmds.undo()}>{L("Angre", "Undo")}</ToolbarButton> : null}
           {editable && s.status !== "discarded" ? <ToolbarButton data-testid="storylab-suggestion-discard" disabled={busy} onClick={() => void perform(() => set(s.id, "discarded"))}>{L("Forkast", "Discard")}</ToolbarButton> : null}
           {editable && s.status !== "open" ? <ToolbarButton data-testid="storylab-suggestion-reopen" disabled={busy} onClick={() => void perform(() => set(s.id, "open"))}>{L("Gjenåpne", "Reopen")}</ToolbarButton> : null}
-          {editable && destination && s.status === "open" ? <ToolbarButton disabled={busy} onClick={() => void perform(() => set(s.id, "applied"))}>{L("Merk som brukt", "Mark applied")}</ToolbarButton> : null}
+          {editable && destination?.complete && s.status === "open" ? <ToolbarButton disabled={busy} onClick={() => void perform(() => set(s.id, "applied"))}>{L("Merk som brukt", "Mark applied")}</ToolbarButton> : null}
         </div></article>;
     })}</section>)}
     {error ? <p role="alert" className="p-2 text-xs text-status-danger">{error}</p> : null}

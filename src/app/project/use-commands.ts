@@ -525,7 +525,7 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
           if (mode === "undo") setUndo((u) => [...u, back]);
           else setRedo((r) => [...r, back]);
         });
-      return result;
+      return { ...result, done: Promise.all(pending.map((p) => p.done)).then((errors) => errors.every((e) => e === null)) };
     },
     [exec],
   );
@@ -538,15 +538,10 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
       setStatus({ kind: "error", message: conflictUndo() });
       return;
     }
-    const undoGeneration = generation.current;
-    const { back, rest } = replay(last, "undo");
+    const { back, rest, done } = replay(last, "undo");
     if (back) setRedo((x) => [...x, back]);
     if (rest && back) setUndo((u) => [...u, rest]);
-    if (back && !rest) void queue.current.then(async () => {
-      await reloading.current;
-      // A failed undo restores its steps to the stack; notify only after successful persistence.
-      if (!reloadWhenIdle.current && generation.current === undoGeneration) onUndo?.(last.group);
-    });
+    if (back && !rest) void done.then((ok) => { if (ok) onUndo?.(last.group); });
   }, [undoStack, replay, onUndo]);
 
   const redo = useCallback(() => {
@@ -663,6 +658,7 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
     canRedo: redoStack.length > 0,
     undoLabel: undoStack[undoStack.length - 1]?.label ?? null,
     undoGroup: undoStack[undoStack.length - 1]?.group ?? null,
+    redoGroup: redoStack[redoStack.length - 1]?.group ?? null,
     redoLabel: redoStack[redoStack.length - 1]?.label ?? null,
     status,
     clearError,
