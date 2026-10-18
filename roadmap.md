@@ -21,7 +21,7 @@
 - [x] Unit- og nettlesertester.
 
 # OG2 retterunde 1
-- [ ] Rett reanalysemock og samle skjemaversjon i nettlesertestene.
-- [ ] Skill brukerens tekstgrense fra tjenestens tak; test begge veier.
-- [ ] Bruk lagret analyse i sceneforslag og SceneAssetsPanel; test begge.
-- [ ] Kontroller Manusutforskeren og kjør unit-tester og i18n-kontroll.
+- [x] Rett reanalysemock og samle skjemaversjon i nettlesertestene.
+- [x] Skill brukerens tekstgrense fra tjenestens tak; test begge veier.
+- [x] Bruk lagret analyse i sceneforslag og SceneAssetsPanel; test begge.
+- [x] Kontroller Manusutforskeren (bare filtre, ingen ressursforslag). Vitest: 1479 bestått, 10 eksisterende hoppet over. I18n: 0 uten engelsk. Automatisk typekontroll grønn. Nettlesertestene kjøres av Øystein.
