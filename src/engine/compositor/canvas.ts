@@ -449,6 +449,10 @@ function domToMatrix(m: DOMMatrix): Matrix {
 function paintFill(ctx: Ctx2D, it: DrawItem, x: number, y: number) {
   ctx.fillStyle = it.fill ?? "#808080";
   const sh = it.shape;
+  if (!sh && !it.effects?.outline) {
+    ctx.fillRect(x, y, it.width, it.height);
+    return;
+  }
   ctx.beginPath();
   if (sh?.type === "ellipse") ctx.ellipse(0, 0, it.width / 2, it.height / 2, 0, 0, Math.PI * 2);
   else if (sh && sh.type === "rect" && sh.radius > 0 && "roundRect" in ctx)
