@@ -108,6 +108,15 @@ function fieldsOf(a: Asset): AssetFields {
   };
 }
 
+function ClassificationCost({ inputChars, busy, onConfirm, onCancel }: { inputChars: number; busy: boolean; onConfirm: () => void; onCancel: () => void }) {
+  const estimate = useTextEstimate("general", inputChars, 3000);
+  return <div role="alertdialog" aria-label={L("Bekreft AI-vurdering", "Confirm AI classification")} data-testid="library-suggestions-cost" className="flex flex-wrap items-center gap-2 border border-border p-3 text-xs">
+    <p>{estimate.loading ? L("Beregner kostnad …", "Estimating cost …") : estimate.error ?? L(`Anslått ${usd(estimate.usd)} · ${estimate.label}`, `Estimated ${usd(estimate.usd)} · ${estimate.label}`)}</p>
+    <Button size="sm" data-testid="library-suggestions-ai-confirm" disabled={estimate.loading || !!estimate.error || busy} onClick={onConfirm}>{L("Bekreft", "Confirm")}</Button>
+    <Button size="sm" variant="ghost" onClick={onCancel}>{L("Avbryt", "Cancel")}</Button>
+  </div>;
+}
+
 export function SuggestionsDialog({
   open,
   onOpenChange,
@@ -130,7 +139,6 @@ export function SuggestionsDialog({
   const [aiBusy, setAIBusy] = useState(false);
   const [fallback, setFallback] = useState(false);
   const prompt = classifyEntitiesPrompt({ candidates: suggestions, contexts: Object.fromEntries(suggestions.map((s) => [s.name, s.contexts ?? []])), language });
-  const estimate = useTextEstimate("general", prompt.system.length + prompt.user.length, 3000);
   // Standard: sikre nye navn krysses av; mulige treff og gjetninger må brukeren ta stilling til selv
   const initial = useMemo(() => {
     const m: Record<string, Choice> = {};
@@ -290,11 +298,7 @@ export function SuggestionsDialog({
           <Button variant="outline" data-testid="library-suggestions-ai" disabled={busy || aiBusy || !visible.length} onClick={() => setConfirmAI(true)}>{aiBusy ? <Loader2 className="animate-spin" /> : null}{L("Forbedre med AI …", "Improve with AI …")}</Button>
           {fallback ? <p role="status" className="text-xs text-status-uncertain">{L("Den innebygde AI-en ble brukt som reserve.", "The built-in AI was used as a fallback.")}</p> : null}
         </div>
-        {confirmAI ? <div role="alertdialog" aria-label={L("Bekreft AI-vurdering", "Confirm AI classification")} data-testid="library-suggestions-cost" className="flex flex-wrap items-center gap-2 border border-border p-3 text-xs">
-          <p>{estimate.loading ? L("Beregner kostnad …", "Estimating cost …") : estimate.error ?? L(`Anslått ${usd(estimate.usd)} · ${estimate.label}`, `Estimated ${usd(estimate.usd)} · ${estimate.label}`)}</p>
-          <Button size="sm" data-testid="library-suggestions-ai-confirm" disabled={estimate.loading || !!estimate.error || aiBusy} onClick={() => void improve()}>{L("Bekreft", "Confirm")}</Button>
-          <Button size="sm" variant="ghost" onClick={() => setConfirmAI(false)}>{L("Avbryt", "Cancel")}</Button>
-        </div> : null}
+        {confirmAI ? <ClassificationCost inputChars={prompt.system.length + prompt.user.length} busy={aiBusy} onConfirm={() => void improve()} onCancel={() => setConfirmAI(false)} /> : null}
         {visible.length === 0 && hiddenCount === 0 ? (
           <p className="text-[13px] text-text-secondary">
             {L(
