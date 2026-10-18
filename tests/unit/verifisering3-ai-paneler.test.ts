@@ -32,6 +32,8 @@ vi.mock("@/adapters/ai/provider-keys.functions", () => ({
   testSavedProviderKey: vi.fn(),
   removeProviderKey: vi.fn(),
   setAccountCap: vi.fn(),
+  // Tekst-AI-delen fra T1 (ingen tekstnøkler i denne testen)
+  listTextChoices: vi.fn(async () => ({ providers: [] })),
 }));
 vi.mock("@/app/ai/use-project-providers", () => ({
   useProjectProviders: () => ({

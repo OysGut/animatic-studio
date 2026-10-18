@@ -234,7 +234,7 @@ begin
   end loop;
 
   -- 3) Fjernede rader (bare ved angre av opprettelse), motsatt rekkefølge
-  foreach v_t in array array['style_profiles','posters','asset_relations','translations','continuity_events','generation_prompts','time_links','clip_parts','audio_clips','composition_layers','compositions','script_annotations','asset_versions','asset_variants','assets',
+  foreach v_t in array array['story_facts','story_profile_stages','story_profiles','style_profiles','posters','asset_relations','translations','continuity_events','generation_prompts','time_links','clip_parts','audio_clips','composition_layers','compositions','script_annotations','asset_versions','asset_variants','assets',
                              'takes','production_segments','scene_occurrences','script_blocks','scene_variants','scenes','productions'] loop
     for v_row in select * from jsonb_array_elements(coalesce(p_changes -> 'deletes' -> v_t, '[]'::jsonb)) loop
       execute format('delete from public.%I where id = ($1 ->> ''id'')::uuid and project_id = $2 and revision = ($1 ->> ''expected_revision'')::int', v_t)

@@ -45,7 +45,7 @@ function ProjectLayout() {
     <div className="flex h-screen flex-col bg-bg-app">
       <AppHeader email={session.session.user.email} trail={name.data?.name} />
       <SchemaBanner />
-      <div className="flex min-h-0 flex-1">
+      <div className="flex min-h-0 flex-1 flex-col">
         <ProjectNav projectId={projectId} />
         <div className="flex min-h-0 min-w-0 flex-1 flex-col">
           {lock.data?.lock ? (

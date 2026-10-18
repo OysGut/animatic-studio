@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { L, localized } from "@/core";
-import { PaneResizer, usePaneSize, useStoredFlag } from "./pane-size";
+import { useStoredFlag } from "./pane-size";
 
 /** Arbeidsflatene (INFORMATION_ARCHITECTURE.md). Flatene som ikke er bygget ennå vises deaktivert med milepæl. */
 const LATER: { label: string; icon: ReactNode; milestone: string }[] = [];
@@ -66,43 +66,19 @@ const LINKS = [
 ] as const;
 
 const item =
-  "flex h-8 items-center gap-2 rounded-sm px-2 text-[13px] text-text-secondary hover:bg-surface-3 hover:text-text-primary [&_svg]:size-4 [&_svg]:shrink-0 focus-visible:outline-2 focus-visible:outline-focus-ring";
-const active = "bg-accent-selection font-medium text-text-primary";
+  "relative flex h-9 shrink-0 items-center gap-2 whitespace-nowrap px-3 text-[13px] text-text-secondary hover:text-text-primary [&_svg]:size-4 [&_svg]:shrink-0 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus-ring";
+/** Aktiv fane: 2 px strek nederst i merkefargen, som faneskillet i Premiere. Ingen fylt bakgrunn. */
+const active =
+  "font-medium text-text-primary after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-accent-brand";
 
-/** Menyen til venstre. Kan slås sammen til en smal stripe med ikoner (DEC-0040); valget huskes. */
+/** Fanerad med arbeidsflatene øverst (U4). Kan slås sammen til bare ikoner (DEC-0040); valget huskes. */
 export function ProjectNav({ projectId }: { projectId: string }) {
-  const [width, setWidth] = usePaneSize("project-nav", 184, 140, 320);
   const [collapsed, setCollapsed] = useStoredFlag("project-nav-collapsed", false);
   return (
     <nav
       aria-label="Arbeidsflater"
-      style={{ width: collapsed ? 44 : width }}
-      className="relative flex shrink-0 flex-col gap-0.5 border-r border-border bg-surface-1 p-1.5"
+      className="flex h-9 shrink-0 items-stretch overflow-x-auto overflow-y-hidden border-b border-border bg-surface-1"
     >
-      {collapsed ? null : (
-        <PaneResizer
-          edge="right"
-          size={width}
-          onSize={setWidth}
-          min={140}
-          max={320}
-          label={L("Bredde på menyen", "Menu width")}
-        />
-      )}
-      <button
-        type="button"
-        onClick={() => setCollapsed(!collapsed)}
-        className={item + (collapsed ? " justify-center px-0" : " justify-end")}
-        aria-label={collapsed ? L("Vis menyen", "Show menu") : L("Skjul menyen", "Hide menu")}
-        aria-expanded={!collapsed}
-        title={
-          collapsed
-            ? L("Vis menyen", "Show menu")
-            : L("Skjul menyen (bare ikoner)", "Hide menu (icons only)")
-        }
-      >
-        {collapsed ? <PanelLeftOpen aria-hidden /> : <PanelLeftClose aria-hidden />}
-      </button>
       {LINKS.map((l) => {
         const label = NAV_LABEL[l.labelKey];
         return (
@@ -111,13 +87,13 @@ export function ProjectNav({ projectId }: { projectId: string }) {
             to={l.to}
             params={{ projectId }}
             activeOptions={{ exact: l.exact }}
-            className={item + (collapsed ? " justify-center px-0" : "")}
+            className={item + (collapsed ? " px-2.5" : "")}
             activeProps={{ className: active, "aria-current": "page" }}
             title={collapsed ? label : undefined}
             aria-label={collapsed ? label : undefined}
           >
             {l.icon}
-            {collapsed ? null : <span className="truncate">{label}</span>}
+            {collapsed ? null : <span>{label}</span>}
           </Link>
         );
       })}
@@ -132,21 +108,33 @@ export function ProjectNav({ projectId }: { projectId: string }) {
           }
           title={L(`${w.label} – kommer i ${w.milestone}`, `${w.label} – coming in ${w.milestone}`)}
           className={
-            "flex h-8 cursor-not-allowed items-center gap-2 px-2 text-[13px] text-text-disabled [&_svg]:size-4 [&_svg]:shrink-0" +
-            (collapsed ? " justify-center px-0" : "")
+            "flex h-9 shrink-0 cursor-not-allowed items-center gap-2 whitespace-nowrap px-3 text-[13px] text-text-disabled [&_svg]:size-4 [&_svg]:shrink-0" +
+            (collapsed ? " px-2.5" : "")
           }
         >
           {w.icon}
           {collapsed ? null : (
             <>
-              <span className="truncate">{w.label}</span>
-              <span className="ml-auto font-mono text-[11px] text-text-disabled">
-                {w.milestone}
-              </span>
+              <span>{w.label}</span>
+              <span className="font-mono text-[11px] text-text-disabled">{w.milestone}</span>
             </>
           )}
         </span>
       ))}
+      <button
+        type="button"
+        onClick={() => setCollapsed(!collapsed)}
+        className={item + " ml-auto px-2.5"}
+        aria-label={collapsed ? L("Vis menyen", "Show menu") : L("Skjul menyen", "Hide menu")}
+        aria-expanded={!collapsed}
+        title={
+          collapsed
+            ? L("Vis menyen", "Show menu")
+            : L("Skjul menyen (bare ikoner)", "Hide menu (icons only)")
+        }
+      >
+        {collapsed ? <PanelLeftOpen aria-hidden /> : <PanelLeftClose aria-hidden />}
+      </button>
     </nav>
   );
 }
