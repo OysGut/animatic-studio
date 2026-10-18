@@ -5493,9 +5493,14 @@ try {
       assert(row, "varianten mangler");
       return row["id"] as string;
     });
-    const [source] = await sql`select template_spec from public.asset_versions where id = ${MT(12)}`;
-    assert(source?.["template_spec"], "prosjektmalen mangler");
-    const def = source["template_spec"] as NonNullable<ProjectState["assetVersions"][string]["template"]>;
+    const { textLayerFields } = await import("../../src/core/typography/starters");
+    const def: NonNullable<ProjectState["assetVersions"][string]["template"]> = {
+      format: "animatic-template", formatVersion: 1, category: "lower_third",
+      width: 1920, height: 1080,
+      slots: [{ key: "navn", label: "Navn", kind: "text" }],
+      elements: [{ key: "name", slot: "navn", parentKey: null,
+        fields: textLayerFields({ width: 1920, height: 1080 }, "Æ Ø Å", "Navn") }],
+    };
     const sha = "a".repeat(64), key = `global/${ws}/${ga}/${sha}.png`;
     const version = await as("authenticated", ALICE, async (tx) => {
       const [row] = await tx`select public.global_add_version(${gv}, ${key}, 'image/png', 480, 270, 100, ${sha}, null, '', ${tx.json(def as never)}) as id`;
