@@ -76,6 +76,12 @@ function isComposition(v: unknown): v is AudioComposition {
   return isAudioComposition(v);
 }
 import type { DurationAssumptions } from "./screenplay/duration";
+import {
+  EMPTY_TIMING,
+  isEmptyTiming,
+  normalizeTiming,
+  type CompositionTiming,
+} from "./composition/timing";
 
 export type Row = Record<string, unknown>;
 
@@ -336,6 +342,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         produced_from: c.producedFrom ?? {},
         // Migrasjon 0029 (DEC-0079)
         step: c.step ?? 1,
+        // Migrasjon 0042 (SV1): alltid med, så en tilbakestilling lagres
+        timing: c.timing ?? EMPTY_TIMING,
       };
     }
     case "layers": {
@@ -851,6 +859,12 @@ function assetVersionsFromJson(v: unknown): { assetVersions?: Record<string, str
  * Grunnlaget for 2D-scenen (migrasjon 0014): manuslinjenes revisjoner og ressursversjonene (REQ-0022).
  * Tomt eller manglende = ukjent.
  */
+/** Tidsoppsettet fra raden (migrasjon 0042); ugyldig eller tomt gir ingen. */
+function compositionTiming(v: unknown): { timing?: CompositionTiming } {
+  const r = normalizeTiming(json(v));
+  return r.ok && !isEmptyTiming(r.value) ? { timing: r.value } : {};
+}
+
 function compositionProducedFrom(v: unknown): { producedFrom?: ProducedFrom } {
   const p = json(v) as { blockRevisions?: Record<string, unknown>; assetVersions?: unknown } | null;
   const revs = p?.blockRevisions;
@@ -1172,6 +1186,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         removed: x["removed"] === true,
         ...compositionProducedFrom(x["produced_from"]),
         ...(num(x["step"] ?? 1) > 1 ? { step: num(x["step"]) } : {}),
+        ...compositionTiming(x["timing"]),
       })),
     ),
     layers: byId(

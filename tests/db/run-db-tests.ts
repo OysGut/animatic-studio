@@ -20,6 +20,7 @@ import {
   type ProjectState,
   type UserId,
   DEFAULT_COMPOSITION,
+  planRetime,
   defaultLayerFields,
   layerFieldsOf,
   audioClipFieldsOf,
@@ -4234,13 +4235,21 @@ try {
       },
     });
     const back = await loadState(sl);
-    assert(back.storyProfiles[slProfile]?.profile.notes === "oppdatert", "profilen ble ikke oppdatert");
+    assert(
+      back.storyProfiles[slProfile]?.profile.notes === "oppdatert",
+      "profilen ble ikke oppdatert",
+    );
     assert(back.storyProfiles[slProfile]?.revision === 2, "profilens revisjon ble ikke 2");
-    assert(back.storyProfileStages[slStage]?.patch.speech?.mood === "bitter", "stadiet ble ikke lagret");
+    assert(
+      back.storyProfileStages[slStage]?.patch.speech?.mood === "bitter",
+      "stadiet ble ikke lagret",
+    );
     assert(back.storyFacts[slFact]?.text === "Brevet er brent", "faktumet ble ikke oppdatert");
     assert(back.storyFacts[slFact]?.revision === 2, "faktumets revisjon ble ikke 2");
     assert(
-      isDeepStrictEqual(back.storyFacts[slFact]?.knownBy, [{ assetId: slChar2, fromSceneId: slScene }]),
+      isDeepStrictEqual(back.storyFacts[slFact]?.knownBy, [
+        { assetId: slChar2, fromSceneId: slScene },
+      ]),
       "known_by ble ikke lagret likt",
     );
     for (const k of ["storyProfiles", "storyProfileStages", "storyFacts"] as const)
@@ -4276,18 +4285,33 @@ try {
       ["story_profiles", p2],
       ["story_profile_stages", g2],
     ] as const)
-      assert((await sql.unsafe(`select 1 from public.${t} where id = $1`, [id])).length === 1, `${t} ble ikke satt inn`);
+      assert(
+        (await sql.unsafe(`select 1 from public.${t} where id = $1`, [id])).length === 1,
+        `${t} ble ikke satt inn`,
+      );
     slState = await runCommand(slState, ALICE, { type: "UndoAddStoryFact", factId: f2 as never });
-    slState = await runCommand(slState, ALICE, { type: "UndoAddStoryProfileStage", stageId: g2 as never });
-    slState = await runCommand(slState, ALICE, { type: "UndoCreateStoryProfile", profileId: p2 as never });
+    slState = await runCommand(slState, ALICE, {
+      type: "UndoAddStoryProfileStage",
+      stageId: g2 as never,
+    });
+    slState = await runCommand(slState, ALICE, {
+      type: "UndoCreateStoryProfile",
+      profileId: p2 as never,
+    });
     for (const [t, id] of [
       ["story_facts", f2],
       ["story_profiles", p2],
       ["story_profile_stages", g2],
     ] as const)
-      assert((await sql.unsafe(`select 1 from public.${t} where id = $1`, [id])).length === 0, `${t}: raden finnes fortsatt`);
+      assert(
+        (await sql.unsafe(`select 1 from public.${t} where id = $1`, [id])).length === 0,
+        `${t}: raden finnes fortsatt`,
+      );
     const back = await loadState(sl);
-    assert(!back.storyFacts[f2] && !back.storyProfiles[p2] && !back.storyProfileStages[g2], "radene kom tilbake ved lasting");
+    assert(
+      !back.storyFacts[f2] && !back.storyProfiles[p2] && !back.storyProfileStages[g2],
+      "radene kom tilbake ved lasting",
+    );
   });
 
   await test("0039: høyst én aktiv profil per ressurs og ett aktivt stadium per karakter og scene", async () => {
@@ -4310,26 +4334,42 @@ try {
       values (${slSuggestion}, ${sl}, ${slSession}, 'line', '{"text":"Hei"}'::jsonb, ${ALICE})`;
     for (const t of STORY_TABLES) {
       for (const u of [ALICE, BOB]) {
-        const rows = await as("authenticated", u, (tx) => tx.unsafe(`select id from public.${t} where project_id = $1`, [sl]));
+        const rows = await as("authenticated", u, (tx) =>
+          tx.unsafe(`select id from public.${t} where project_id = $1`, [sl]),
+        );
         assert(rows.length > 0, `${t}: medlemmet ser ingenting`);
       }
       const out = await as("authenticated", CAROL, (tx) => tx.unsafe(`select id from public.${t}`));
       assert(out.length === 0, `${t}: utenforstående ser rader`);
       await expectError(
-        as("authenticated", ALICE, (tx) => tx.unsafe(`update public.${t} set project_id = project_id where project_id = $1`, [sl])),
+        as("authenticated", ALICE, (tx) =>
+          tx.unsafe(`update public.${t} set project_id = project_id where project_id = $1`, [sl]),
+        ),
         "42501",
       );
       await expectError(
-        as("authenticated", ALICE, (tx) => tx.unsafe(`delete from public.${t} where project_id = $1`, [sl])),
+        as("authenticated", ALICE, (tx) =>
+          tx.unsafe(`delete from public.${t} where project_id = $1`, [sl]),
+        ),
         "42501",
       );
     }
     await expectError(
-      as("authenticated", ALICE, (tx) => tx`insert into public.story_facts (id, project_id, text, kind) values (gen_random_uuid(), ${sl}, 'x', 'fact')`),
+      as(
+        "authenticated",
+        ALICE,
+        (tx) =>
+          tx`insert into public.story_facts (id, project_id, text, kind) values (gen_random_uuid(), ${sl}, 'x', 'fact')`,
+      ),
       "42501",
     );
     await expectError(
-      as("authenticated", ALICE, (tx) => tx`insert into public.story_sessions (id, project_id, kind, created_by) values (gen_random_uuid(), ${sl}, 'group', ${ALICE})`),
+      as(
+        "authenticated",
+        ALICE,
+        (tx) =>
+          tx`insert into public.story_sessions (id, project_id, kind, created_by) values (gen_random_uuid(), ${sl}, 'group', ${ALICE})`,
+      ),
       "42501",
     );
   });
@@ -4337,24 +4377,37 @@ try {
   await test("0039: purge_removed_assets stoppes av en aktiv profil", async () => {
     await sql`update public.assets set removed = true where id = ${slChar}`;
     await expectError(
-      as("service_role", null, (tx) => tx`select public.purge_removed_assets(${sl}, ${ALICE}, ${[slChar]}::uuid[], '{}'::uuid[])`),
+      as(
+        "service_role",
+        null,
+        (tx) =>
+          tx`select public.purge_removed_assets(${sl}, ${ALICE}, ${[slChar]}::uuid[], '{}'::uuid[])`,
+      ),
       "23503",
     );
-    assert((await sql`select 1 from public.assets where id = ${slChar}`).length === 1, "ressursen ble slettet");
+    assert(
+      (await sql`select 1 from public.assets where id = ${slChar}`).length === 1,
+      "ressursen ble slettet",
+    );
     await sql`update public.assets set removed = false where id = ${slChar}`;
   });
 
   await test("0039: delete_project og purge_project_assets med Story Lab-rader bryter ingen fremmednøkler", async () => {
     await as("service_role", null, (tx) => tx`select public.delete_project(${sl}, ${ALICE})`);
-    for (const t of STORY_TABLES) assert((await count(t, sl)) === 0, `${t} har fortsatt rader etter sletting`);
+    for (const t of STORY_TABLES)
+      assert((await count(t, sl)) === 0, `${t} har fortsatt rader etter sletting`);
     // Samme med rader som ble lagret samtidig med slettingen
     await sql`insert into public.story_profiles (id, project_id, asset_id, profile) values (gen_random_uuid(), ${sl}, ${slChar2}, '{}'::jsonb)`;
     await sql`insert into public.story_facts (id, project_id, text, kind) values (gen_random_uuid(), ${sl}, 'Sent', 'fact')`;
     await sql`insert into public.story_sessions (id, project_id, kind, created_by) values (${SL(51)}, ${sl}, 'group', ${ALICE})`;
     await sql`insert into public.story_suggestions (id, project_id, session_id, kind, payload, created_by) values (gen_random_uuid(), ${sl}, ${SL(51)}, 'line', '{}'::jsonb, ${ALICE})`;
     await as("service_role", null, (tx) => tx`select public.purge_project_assets(${sl}, ${ALICE})`);
-    for (const t of STORY_TABLES) assert((await count(t, sl)) === 0, `${t} har fortsatt rader etter rensing`);
-    assert((await sql`select 1 from public.projects where id = ${sl}`).length === 0, "prosjektraden finnes fortsatt");
+    for (const t of STORY_TABLES)
+      assert((await count(t, sl)) === 0, `${t} har fortsatt rader etter rensing`);
+    assert(
+      (await sql`select 1 from public.projects where id = ${sl}`).length === 0,
+      "prosjektraden finnes fortsatt",
+    );
   });
   // ---------------------------------------------------------------- 0040 Skrivecanvas (SL7)
   const CANVAS_TABLES = ["story_canvas_nodes", "story_canvas_edges"];
@@ -4366,8 +4419,19 @@ try {
   await sql`insert into public.project_members (project_id, user_id, role) values (${cv}, ${BOB}, 'viewer')`;
   const CV = (n: number) => `abcdef00-0000-7000-8000-00000040${String(n).padStart(4, "0")}`;
   const cvNode = (n: number, kind = "idea", over: Record<string, unknown> = {}) => ({
-    id: CV(n) as never, kind: kind as never, title: `Node ${n}`, body: "", x: n * 10, y: 0, w: 220, h: 120,
-    color: null, groupId: null, assetId: null, sceneId: null, ...over,
+    id: CV(n) as never,
+    kind: kind as never,
+    title: `Node ${n}`,
+    body: "",
+    x: n * 10,
+    y: 0,
+    w: 220,
+    h: 120,
+    color: null,
+    groupId: null,
+    assetId: null,
+    sceneId: null,
+    ...over,
   });
   let cvState = await loadState(cv);
 
@@ -4377,38 +4441,94 @@ try {
       nodes: [cvNode(1, "group"), cvNode(2, "premise", { groupId: CV(1) }), cvNode(3, "event")],
     });
     cvState = await runCommand(cvState, ALICE, {
-      type: "AddCanvasEdge", edgeId: CV(10) as never,
-      fields: { fromNodeId: CV(2) as never, toNodeId: CV(3) as never, label: "fører til", kind: "leads_to" },
+      type: "AddCanvasEdge",
+      edgeId: CV(10) as never,
+      fields: {
+        fromNodeId: CV(2) as never,
+        toNodeId: CV(3) as never,
+        label: "fører til",
+        kind: "leads_to",
+      },
     });
-    cvState = await runCommand(cvState, ALICE, { type: "UpdateCanvasNode", nodeId: CV(2) as never, patch: { title: "Premiss", color: "accent-brand" } });
-    cvState = await runCommand(cvState, ALICE, { type: "MoveCanvasNodes", moves: [{ nodeId: CV(2) as never, x: 55.5, y: 66 }, { nodeId: CV(3) as never, x: 77, y: 88 }] });
-    cvState = await runCommand(cvState, ALICE, { type: "UpdateCanvasEdge", edgeId: CV(10) as never, patch: { kind: "causes" } });
-    cvState = await runCommand(cvState, ALICE, { type: "RemoveCanvasNodes", nodeIds: [CV(3) as never], removed: true });
+    cvState = await runCommand(cvState, ALICE, {
+      type: "UpdateCanvasNode",
+      nodeId: CV(2) as never,
+      patch: { title: "Premiss", color: "accent-brand" },
+    });
+    cvState = await runCommand(cvState, ALICE, {
+      type: "MoveCanvasNodes",
+      moves: [
+        { nodeId: CV(2) as never, x: 55.5, y: 66 },
+        { nodeId: CV(3) as never, x: 77, y: 88 },
+      ],
+    });
+    cvState = await runCommand(cvState, ALICE, {
+      type: "UpdateCanvasEdge",
+      edgeId: CV(10) as never,
+      patch: { kind: "causes" },
+    });
+    cvState = await runCommand(cvState, ALICE, {
+      type: "RemoveCanvasNodes",
+      nodeIds: [CV(3) as never],
+      removed: true,
+    });
     assert(cvState.canvasEdges[CV(10)]?.removed === true, "kanten ble ikke fjernet med noden");
-    cvState = await runCommand(cvState, ALICE, { type: "RemoveCanvasNodes", nodeIds: [CV(3) as never], removed: false, edgeIds: [CV(10) as never] });
+    cvState = await runCommand(cvState, ALICE, {
+      type: "RemoveCanvasNodes",
+      nodeIds: [CV(3) as never],
+      removed: false,
+      edgeIds: [CV(10) as never],
+    });
     const back = await loadState(cv);
     for (const k of ["canvasNodes", "canvasEdges"] as const)
       assert(isDeepStrictEqual(back[k], cvState[k]), `${k} ble ikke lest tilbake likt`);
-    assert(back.canvasNodes[CV(2)]?.x === 55.5 && back.canvasNodes[CV(2)]?.groupId === CV(1), "posisjon eller gruppe ble ikke lagret");
-    assert(back.canvasEdges[CV(10)]?.removed === false && back.canvasEdges[CV(10)]?.kind === "causes", "kanten ble ikke tatt tilbake");
+    assert(
+      back.canvasNodes[CV(2)]?.x === 55.5 && back.canvasNodes[CV(2)]?.groupId === CV(1),
+      "posisjon eller gruppe ble ikke lagret",
+    );
+    assert(
+      back.canvasEdges[CV(10)]?.removed === false && back.canvasEdges[CV(10)]?.kind === "causes",
+      "kanten ble ikke tatt tilbake",
+    );
     const [v] = await sql`select max(version) as v from public.schema_version`;
     assert(Number(v!["v"]) >= 40, "schema_version er ikke 40");
   });
 
   await test("0040: angre opprettelse sletter nodene og kanten (deletes i apply_changes)", async () => {
-    cvState = await runCommand(cvState, ALICE, { type: "AddCanvasNodes", nodes: [cvNode(4), cvNode(5)] });
     cvState = await runCommand(cvState, ALICE, {
-      type: "AddCanvasEdge", edgeId: CV(11) as never,
+      type: "AddCanvasNodes",
+      nodes: [cvNode(4), cvNode(5)],
+    });
+    cvState = await runCommand(cvState, ALICE, {
+      type: "AddCanvasEdge",
+      edgeId: CV(11) as never,
       fields: { fromNodeId: CV(4) as never, toNodeId: CV(5) as never, label: "", kind: "relation" },
     });
-    cvState = await runCommand(cvState, ALICE, { type: "UndoAddCanvasEdge", edgeId: CV(11) as never });
-    cvState = await runCommand(cvState, ALICE, { type: "UndoAddCanvasNodes", nodeIds: [CV(4) as never, CV(5) as never] });
-    assert((await sql`select 1 from public.story_canvas_nodes where id in (${CV(4)}, ${CV(5)})`).length === 0, "nodene finnes fortsatt");
-    assert((await sql`select 1 from public.story_canvas_edges where id = ${CV(11)}`).length === 0, "kanten finnes fortsatt");
+    cvState = await runCommand(cvState, ALICE, {
+      type: "UndoAddCanvasEdge",
+      edgeId: CV(11) as never,
+    });
+    cvState = await runCommand(cvState, ALICE, {
+      type: "UndoAddCanvasNodes",
+      nodeIds: [CV(4) as never, CV(5) as never],
+    });
+    assert(
+      (await sql`select 1 from public.story_canvas_nodes where id in (${CV(4)}, ${CV(5)})`)
+        .length === 0,
+      "nodene finnes fortsatt",
+    );
+    assert(
+      (await sql`select 1 from public.story_canvas_edges where id = ${CV(11)}`).length === 0,
+      "kanten finnes fortsatt",
+    );
   });
 
   await test("0040: en kant må peke på noder i samme prosjekt, og gruppen må være en gruppenode", async () => {
-    const other = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('Annet') as id`)[0]!["id"] as string);
+    const other = await as(
+      "authenticated",
+      ALICE,
+      async (tx) => (await tx`select public.create_project('Annet') as id`)[0]!["id"] as string,
+    );
     await sql`insert into public.story_canvas_nodes (id, project_id, kind) values (${CV(20)}, ${other}, 'idea')`;
     await expectError(
       sql`insert into public.story_canvas_edges (id, project_id, from_node_id, to_node_id, kind) values (gen_random_uuid(), ${cv}, ${CV(2)}, ${CV(20)}, 'leads_to')`,
@@ -4432,28 +4552,49 @@ try {
   await test("0040: RLS – medlemmer leser, utenforstående ser ingenting, klienten kan ikke skrive", async () => {
     for (const t of CANVAS_TABLES) {
       for (const u of [ALICE, BOB]) {
-        const rows = await as("authenticated", u, (tx) => tx.unsafe(`select id from public.${t} where project_id = $1`, [cv]));
+        const rows = await as("authenticated", u, (tx) =>
+          tx.unsafe(`select id from public.${t} where project_id = $1`, [cv]),
+        );
         assert(rows.length > 0, `${t}: medlemmet ser ingenting`);
       }
-      const out = await as("authenticated", CAROL, (tx) => tx.unsafe(`select id from public.${t} where project_id = $1`, [cv]));
+      const out = await as("authenticated", CAROL, (tx) =>
+        tx.unsafe(`select id from public.${t} where project_id = $1`, [cv]),
+      );
       assert(out.length === 0, `${t}: utenforstående ser rader`);
-      await expectError(as("authenticated", ALICE, (tx) => tx.unsafe(`update public.${t} set project_id = project_id where project_id = $1`, [cv])), "42501");
-      await expectError(as("authenticated", ALICE, (tx) => tx.unsafe(`delete from public.${t} where project_id = $1`, [cv])), "42501");
+      await expectError(
+        as("authenticated", ALICE, (tx) =>
+          tx.unsafe(`update public.${t} set project_id = project_id where project_id = $1`, [cv]),
+        ),
+        "42501",
+      );
+      await expectError(
+        as("authenticated", ALICE, (tx) =>
+          tx.unsafe(`delete from public.${t} where project_id = $1`, [cv]),
+        ),
+        "42501",
+      );
     }
     await expectError(
-      as("authenticated", ALICE, (tx) => tx`insert into public.story_canvas_nodes (id, project_id, kind) values (gen_random_uuid(), ${cv}, 'idea')`),
+      as(
+        "authenticated",
+        ALICE,
+        (tx) =>
+          tx`insert into public.story_canvas_nodes (id, project_id, kind) values (gen_random_uuid(), ${cv}, 'idea')`,
+      ),
       "42501",
     );
   });
 
   await test("0040: delete_project og purge_project_assets med canvasrader bryter ingen fremmednøkler", async () => {
     await as("service_role", null, (tx) => tx`select public.delete_project(${cv}, ${ALICE})`);
-    for (const t of CANVAS_TABLES) assert((await count(t, cv)) === 0, `${t} har fortsatt rader etter sletting`);
+    for (const t of CANVAS_TABLES)
+      assert((await count(t, cv)) === 0, `${t} har fortsatt rader etter sletting`);
     await sql`insert into public.story_canvas_nodes (id, project_id, kind) values (${CV(30)}, ${cv}, 'group')`;
     await sql`insert into public.story_canvas_nodes (id, project_id, kind, group_id) values (${CV(31)}, ${cv}, 'idea', ${CV(30)})`;
     await sql`insert into public.story_canvas_edges (id, project_id, from_node_id, to_node_id, kind) values (gen_random_uuid(), ${cv}, ${CV(30)}, ${CV(31)}, 'belongs_to')`;
     await as("service_role", null, (tx) => tx`select public.purge_project_assets(${cv}, ${ALICE})`);
-    for (const t of CANVAS_TABLES) assert((await count(t, cv)) === 0, `${t} har fortsatt rader etter rensing`);
+    for (const t of CANVAS_TABLES)
+      assert((await count(t, cv)) === 0, `${t} har fortsatt rader etter rensing`);
   });
   // ---------------------------------------------------------------- 0041 Automatisk gjenkjenning (OG2)
   const ea = await as(
@@ -4462,32 +4603,86 @@ try {
     async (tx) => (await tx`select public.create_project('Analyse') as id`)[0]!["id"] as string,
   );
   await sql`insert into public.project_members (project_id, user_id, role) values (${ea}, ${BOB}, 'viewer')`;
-  const eaProd = (await sql`select id from public.productions where project_id = ${ea} limit 1`)[0]!["id"] as string;
+  const eaProd = (
+    await sql`select id from public.productions where project_id = ${ea} limit 1`
+  )[0]!["id"] as string;
   const EA = (n: number) => `abcdef00-0000-7000-8000-00000041${String(n).padStart(4, "0")}`;
   const eaRow = async (scene: string) => {
     await sql`insert into public.scenes (id, project_id, origin_production_id) values (${scene}, ${ea}, ${eaProd}) on conflict do nothing`;
-    await as("service_role", null, (tx) => tx`insert into public.script_entity_analysis (project_id, scene_id, content_hash, result) values (${ea}, ${scene}, 'abc', '{"items":[]}'::jsonb)`);
+    await as(
+      "service_role",
+      null,
+      (tx) =>
+        tx`insert into public.script_entity_analysis (project_id, scene_id, content_hash, result) values (${ea}, ${scene}, 'abc', '{"items":[]}'::jsonb)`,
+    );
   };
 
   await test("0041: service role skriver analysen; medlemmer leser, utenforstående ser ingenting", async () => {
     await eaRow(EA(1));
     for (const u of [ALICE, BOB]) {
-      const rows = await as("authenticated", u, (tx) => tx`select id from public.script_entity_analysis where project_id = ${ea}`);
+      const rows = await as(
+        "authenticated",
+        u,
+        (tx) => tx`select id from public.script_entity_analysis where project_id = ${ea}`,
+      );
       assert(rows.length === 1, "medlemmet ser ikke analysen");
     }
-    const out = await as("authenticated", CAROL, (tx) => tx`select id from public.script_entity_analysis where project_id = ${ea}`);
+    const out = await as(
+      "authenticated",
+      CAROL,
+      (tx) => tx`select id from public.script_entity_analysis where project_id = ${ea}`,
+    );
     assert(out.length === 0, "utenforstående ser analysen");
   });
 
   await test("0041: klienten kan ikke skrive analysen direkte", async () => {
-    await expectError(as("authenticated", ALICE, (tx) => tx`insert into public.script_entity_analysis (project_id, scene_id, content_hash) values (${ea}, ${EA(1)}, 'x')`), "42501");
-    await expectError(as("authenticated", ALICE, (tx) => tx`update public.script_entity_analysis set content_hash = 'y' where project_id = ${ea}`), "42501");
-    await expectError(as("authenticated", ALICE, (tx) => tx`delete from public.script_entity_analysis where project_id = ${ea}`), "42501");
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) =>
+          tx`insert into public.script_entity_analysis (project_id, scene_id, content_hash) values (${ea}, ${EA(1)}, 'x')`,
+      ),
+      "42501",
+    );
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) =>
+          tx`update public.script_entity_analysis set content_hash = 'y' where project_id = ${ea}`,
+      ),
+      "42501",
+    );
+    await expectError(
+      as(
+        "authenticated",
+        ALICE,
+        (tx) => tx`delete from public.script_entity_analysis where project_id = ${ea}`,
+      ),
+      "42501",
+    );
   });
 
   await test("0041: én rad per scene, og grensene på innholdet holder", async () => {
-    await expectError(as("service_role", null, (tx) => tx`insert into public.script_entity_analysis (project_id, scene_id, content_hash) values (${ea}, ${EA(1)}, 'dup')`), "23505");
-    await expectError(as("service_role", null, (tx) => tx`insert into public.script_entity_analysis (project_id, scene_id, content_hash) values (${ea}, ${EA(1)}, '')`), "23514");
+    await expectError(
+      as(
+        "service_role",
+        null,
+        (tx) =>
+          tx`insert into public.script_entity_analysis (project_id, scene_id, content_hash) values (${ea}, ${EA(1)}, 'dup')`,
+      ),
+      "23505",
+    );
+    await expectError(
+      as(
+        "service_role",
+        null,
+        (tx) =>
+          tx`insert into public.script_entity_analysis (project_id, scene_id, content_hash) values (${ea}, ${EA(1)}, '')`,
+      ),
+      "23514",
+    );
   });
 
   await test("0041: delete_project og purge_project_assets sletter analysen", async () => {
@@ -4495,9 +4690,127 @@ try {
     assert((await count("script_entity_analysis", ea)) === 0, "analysen finnes etter sletting");
     await as("service_role", null, (tx) => tx`select public.purge_project_assets(${ea}, ${ALICE})`);
     assert((await count("script_entity_analysis", ea)) === 0, "analysen finnes etter rensing");
-    assert((await sql`select 1 from public.projects where id = ${ea}`).length === 0, "prosjektraden finnes fortsatt");
+    assert(
+      (await sql`select 1 from public.projects where id = ${ea}`).length === 0,
+      "prosjektraden finnes fortsatt",
+    );
   });
 
+  // ---------------------------------------------------------------- 0042 Endring av scenevarighet (SV1)
+  const rt = await as(
+    "authenticated",
+    ALICE,
+    async (tx) => (await tx`select public.create_project('Varighet') as id`)[0]!["id"] as string,
+  );
+  const RT = (n: number) => `abcdef00-0000-7000-8000-00000042${String(n).padStart(4, "0")}`;
+  let rtState = await loadState(rt);
+
+  await test("0042: timing har standardverdi og check, og RetimeScene lagres i én transaksjon og angres", async () => {
+    const main = Object.values(rtState.productions)[0]!.id;
+    rtState = await runCommand(rtState, ALICE, {
+      type: "CreateScene",
+      productionId: main,
+      sceneId: RT(1) as never,
+      variantId: RT(2) as never,
+      occurrenceId: RT(3) as never,
+      orderKey: keysEvenly(1)[0]!,
+      heading: { intExt: "INT.", location: "STUA", time: "DAG" },
+      blocks: [],
+      productionNumber: "1",
+    });
+    rtState = await runCommand(rtState, ALICE, {
+      type: "CreateComposition",
+      compositionId: RT(4) as never,
+      variantId: RT(2) as never,
+      fields: { ...DEFAULT_COMPOSITION, durationFrames: 100 },
+    });
+    const c = rtState.compositions[RT(4)]!;
+    rtState = await runCommand(rtState, ALICE, {
+      type: "AddLayers",
+      layers: [
+        {
+          layerId: RT(5) as never,
+          compositionId: RT(4) as never,
+          fields: {
+            ...defaultLayerFields(rtState, c, { fill: "#24324a", name: "Himmel" }),
+            keyframes: [{ frame: 50, property: "x", value: 10, easing: "linear" }],
+          },
+        },
+      ],
+    });
+    const def = await sql`select timing from public.compositions where id = ${RT(4)}`;
+    assert(
+      Array.isArray((def[0]!["timing"] as { lockedRanges: unknown[] }).lockedRanges),
+      "standardverdien mangler",
+    );
+    await expectError(
+      sql`update public.compositions set timing = '[]'::jsonb where id = ${RT(4)}`,
+      "23514",
+    );
+
+    const plan = planRetime(rtState, RT(3), {
+      targetFrames: 150,
+      method: "end",
+      fill: "black",
+      keepAmbience: true,
+    });
+    assert(plan.ok, "planen feilet");
+    const before = rtState;
+    rtState = await runCommand(rtState, ALICE, plan.command);
+    const row =
+      await sql`select duration_frames, timing from public.compositions where id = ${RT(4)}`;
+    assert(row[0]!["duration_frames"] === 150, "varigheten ble ikke lagret");
+    const tm = row[0]!["timing"] as { padding: { end: { frames: number; fill: string } } };
+    assert(
+      tm.padding.end.frames === 50 && tm.padding.end.fill === "black",
+      "fyllet ble ikke lagret",
+    );
+    const back = await loadState(rt);
+    assert(
+      back.compositions[RT(4)]!.timing?.padding.end?.frames === 50,
+      "timing leses ikke tilbake",
+    );
+
+    // Angre: inversen er én RetimeScene
+    const res = applyCommand(before, {
+      id: RT(90) as never,
+      actor: ALICE as never,
+      at: new Date().toISOString(),
+      command: plan.command,
+    });
+    assert(res.ok && res.inverse.type === "RetimeScene", "inversen er ikke RetimeScene");
+    rtState = await runCommand(rtState, ALICE, res.inverse);
+    const undone =
+      await sql`select duration_frames, timing from public.compositions where id = ${RT(4)}`;
+    assert(undone[0]!["duration_frames"] === 100, "angring satte ikke varigheten tilbake");
+  });
+
+  await test("0042: revisjonskonflikt avviser hele RetimeScene (ingenting lagres delvis)", async () => {
+    const plan = planRetime(rtState, RT(3), {
+      targetFrames: 200,
+      method: "stretch_visual",
+      keepAmbience: true,
+    });
+    assert(plan.ok, "planen feilet");
+    // Noen andre endrer laget i mellomtiden
+    await sql`update public.composition_layers set revision = revision + 1 where id = ${RT(5)}`;
+    await expectError(runCommand(rtState, ALICE, plan.command), "P0409");
+    const row = await sql`select duration_frames from public.compositions where id = ${RT(4)}`;
+    assert(
+      row[0]!["duration_frames"] === 100,
+      "varigheten ble lagret selv om kommandoen ble avvist",
+    );
+    const kf = await sql`select keyframes from public.composition_layers where id = ${RT(5)}`;
+    assert(
+      (kf[0]!["keyframes"] as { frame: number }[])[0]!.frame === 50,
+      "laget ble endret delvis",
+    );
+  });
+
+  await test("0042: delete_project sletter 2D-scener med timing uten feil", async () => {
+    await as("service_role", null, (tx) => tx`select public.delete_project(${rt}, ${ALICE})`);
+    assert((await count("compositions", rt)) === 0, "2D-scenen finnes etter sletting");
+  });
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);

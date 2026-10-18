@@ -25,3 +25,4 @@
 - [x] Skill brukerens tekstgrense fra tjenestens tak; test begge veier.
 - [x] Bruk lagret analyse i sceneforslag og SceneAssetsPanel; test begge.
 - [x] Kontroller Manusutforskeren (bare filtre, ingen ressursforslag). Vitest: 1479 bestått, 10 eksisterende hoppet over. I18n: 0 uten engelsk. Automatisk typekontroll grønn. Nettlesertestene kjøres av Øystein.
+- [x] SV1: endring av scenevarighet (fem metoder, fyll, låste tidsrom, RetimeScene, migrasjon 0042 skrevet)

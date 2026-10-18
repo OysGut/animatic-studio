@@ -3,6 +3,7 @@
  * `renderFrame(tilstand, 2D-scene, bilde)` → tegneliste. Brukes av editoren, avspillingen og senere eksport,
  * slik at det du ser er det du får. Ingen nettleser-API-er her (tegningen skjer i src/engine/compositor).
  */
+import { paddingAt } from "./timing";
 import type {
   AnimatedProperty,
   AssetVersion,
@@ -550,11 +551,19 @@ export function renderFrame(
 ): Frame {
   const c = s.compositions[compositionId];
   if (!c) return { width: 0, height: 0, background: "#000000", items: [] };
+  // Fyll i ny tid (SV1): bare i avspilling og eksport (kameravisning), så editoren viser alt innhold
+  const padded =
+    opts.view === "camera" ? paddingAt(c, frameIn) : { kind: "content" as const, frame: frameIn };
+  if (padded.kind === "black")
+    return { width: c.width, height: c.height, background: "#000000", items: [] };
+  const backgroundOnly = padded.kind === "background";
   // Toere/treere: lag, kamera og bildeskifter følger samme trinnvise tid
-  const frame = steppedFrame(frameIn, c.step);
+  const frame = steppedFrame(padded.frame, c.step);
   const cam = opts.view === "camera" ? cameraAt(c, frame) : null;
   const items: DrawItem[] = [];
-  const layers = layersOf(s, compositionId);
+  const layers = layersOf(s, compositionId).filter(
+    (l) => !backgroundOnly || l.kind === "background",
+  );
   const groups = new Map<string, { matrix: Matrix; opacity: number; visible: boolean }>();
   for (const l of layers)
     if (l.kind === "group")

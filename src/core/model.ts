@@ -711,6 +711,8 @@ export interface Composition extends Entity<CompositionId> {
    * motion. Filmen beholder bildefrekvensen sin. Mangler = 1.
    */
   readonly step?: number;
+  /** Låste tidsrom og fyll i ny tid (SV1, B-041, migrasjon 0042). Mangler = ingen. */
+  readonly timing?: import("./composition/timing").CompositionTiming;
 }
 
 export interface CompositionLayer extends Entity<LayerId> {
@@ -1331,12 +1333,7 @@ export type CanvasNodeKind =
   | "group";
 
 export type CanvasEdgeKind =
-  | "leads_to"
-  | "causes"
-  | "conflicts"
-  | "relation"
-  | "alternative_of"
-  | "belongs_to";
+  "leads_to" | "causes" | "conflicts" | "relation" | "alternative_of" | "belongs_to";
 
 /** Feltene i en canvasnode (alt unntatt id, revisjon og fjernet). */
 export interface CanvasNodeFields {

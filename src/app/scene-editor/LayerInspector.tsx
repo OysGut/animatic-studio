@@ -1000,10 +1000,13 @@ export function CompositionInspector({
   composition,
   editable,
   run,
+  onChangeDuration,
 }: {
   composition: Composition;
   editable: boolean;
   run: Run;
+  /** Åpner «Endre scenevarighet» (SV1). */
+  onChangeDuration?: () => void;
 }) {
   const [error, setError] = useState<string | null>(null);
   const off = !editable;
@@ -1035,6 +1038,18 @@ export function CompositionInspector({
           placeholder={L("Uten navn", "Untitled")}
           onCommit={(name) => apply(L("Endre navn på 2D-scene", "Rename 2D scene"), { name })}
         />
+        {onChangeDuration ? (
+          <Button
+            size="sm"
+            variant="secondary"
+            className="mt-2"
+            disabled={off}
+            data-testid="inspector-change-duration"
+            onClick={onChangeDuration}
+          >
+            {L("Endre scenevarighet …", "Change scene duration …")}
+          </Button>
+        ) : null}
       </Section>
 
       <Section title="Format">

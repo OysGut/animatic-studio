@@ -176,7 +176,15 @@ function Editor({
       (wanted && occurrences.some((o) => o.id === wanted) ? wanted : occurrences[0]?.id) ?? null
     );
   });
-  useEffect(() => rememberScene(projectId, occurrenceId, state.occurrences[occurrenceId ?? ""]?.sceneId ?? null), [projectId, occurrenceId, state.occurrences]);
+  useEffect(
+    () =>
+      rememberScene(
+        projectId,
+        occurrenceId,
+        state.occurrences[occurrenceId ?? ""]?.sceneId ?? null,
+      ),
+    [projectId, occurrenceId, state.occurrences],
+  );
   // Scenen er borte (annen bruker, angre) eller ingen var valgt (tomt prosjekt før import): velg første
   useEffect(() => {
     if (!occurrences.length) return;
@@ -248,6 +256,7 @@ function Editor({
   }, []);
   // «Ressurs oppdatert» (REQ-0022): scener laget med en eldre ressursversjon
   const contentSync = useContentSync(state, projectId, productionId);
+  const [retimeRequest, setRetimeRequest] = useState(0);
   const duration = useMemo(
     () => (composition ? compositionDuration(state, composition) : 1),
     [state, composition],
@@ -611,6 +620,7 @@ function Editor({
           composition={composition}
           editable={editable}
           run={cmds.run}
+          onChangeDuration={() => setRetimeRequest((n) => n + 1)}
         />
       )
     ) : null,
@@ -1068,6 +1078,12 @@ function Editor({
                 autoKey={autoKey}
                 onAutoKeyChange={setAutoKey}
                 run={cmds.run}
+                retime={{
+                  occurrenceId: occurrence.id,
+                  runAndWait: cmds.runAndWait,
+                  imageUrls: urls.data ?? {},
+                  request: retimeRequest,
+                }}
                 audioRows={(g) => (
                   <SceneAudioRows
                     state={state}
