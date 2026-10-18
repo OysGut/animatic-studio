@@ -543,6 +543,7 @@ function BlockPanel({
           authorName={authorName}
           newTarget={{ blockId: block.id, variantId: null, start: 0, end: 0, quote: "" }}
           newLabel={L("Notat på hele elementet", "Note on the whole element")}
+          productionId={productionId}
         />
         <p className="mt-1 text-[11px] text-text-tertiary">
           {L(

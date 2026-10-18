@@ -10,6 +10,7 @@ import {
   formatStamp,
   newId,
   resolveRange,
+  trialEditResult,
   type Annotation,
   type Command,
   type NewAnnotation,
@@ -40,6 +41,11 @@ interface Props {
   readonly newTarget: Omit<NewAnnotation, "annotationId" | "text" | "authorName"> | null;
   readonly newLabel: string;
   readonly showQuotes?: boolean;
+  /**
+   * Produksjonen manuset redigeres i: med den viser en forsøksvis manusredigering (AS3) «Bruk forslaget»,
+   * som går gjennom vanlig manusredigering (EditBlockText) etter bekreftelse.
+   */
+  readonly productionId?: string;
 }
 
 export function NotesPanel({
@@ -52,6 +58,7 @@ export function NotesPanel({
   newTarget,
   newLabel,
   showQuotes = true,
+  productionId,
 }: Props) {
   const [adding, setAdding] = useState(false);
   const [draft, setDraft] = useState("");
@@ -90,6 +97,7 @@ export function NotesPanel({
           focused={n.id === focusId}
           showQuote={showQuotes}
           authorName={authorName}
+          productionId={productionId}
         />
       ))}
       {editable && newTarget ? (
@@ -141,7 +149,9 @@ function NoteCard({
   focused,
   showQuote,
   authorName,
+  productionId,
 }: {
+  productionId?: string | undefined;
   authorName: string;
   state: ProjectState;
   note: Annotation;
@@ -153,6 +163,7 @@ function NoteCard({
   const [editing, setEditing] = useState(false);
   const [text, setText] = useState(note.text);
   const [confirm, setConfirm] = useState(false);
+  const [applying, setApplying] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -162,6 +173,9 @@ function NoteCard({
   const range = block ? resolveRange(note, block.text) : null;
   // Merknad fra programmet (DEC-0088): varm farge, merket «Systemmerknad», «Ferdig» lukker den
   const system = note.source === "system";
+  // Forsøksvis manusredigering (AS3, C3): original og forslag; «Bruk forslaget» via vanlig manusredigering
+  const trial = note.kind === "trial_edit";
+  const proposed = block ? trialEditResult(note, block.text) : null;
 
   return (
     <div
@@ -215,6 +229,20 @@ function NoteCard({
       ) : (
         <span className={formatEdited(note) ? "h-5" : "h-2.5"} aria-hidden />
       )}
+      {trial ? (
+        <div className="flex flex-col gap-0.5 text-[12px]" data-testid="trial-edit-note">
+          <span className="text-[11px] font-medium text-note">
+            {L("Forsøksvis manusredigering", "Trial script edit")}
+          </span>
+          <span className="text-text-tertiary">
+            {L("Original:", "Original:")}{" "}
+            <span className="line-through">{note.quote || block?.text || ""}</span>
+          </span>
+          <span className="text-text-primary">
+            {L("Forslag:", "Suggestion:")} {note.suggestedText}
+          </span>
+        </div>
+      ) : null}
       {editing ? (
         <>
           <Textarea
@@ -272,6 +300,26 @@ function NoteCard({
               {L("Ferdig", "Done")}
             </button>
           ) : null}
+          {trial && productionId ? (
+            <button
+              type="button"
+              data-testid="trial-edit-apply"
+              disabled={proposed === null}
+              className="mr-2 flex items-center gap-1 rounded-sm bg-note/15 px-1.5 text-[11px] text-text-primary hover:bg-note/25 disabled:opacity-50"
+              title={
+                proposed === null
+                  ? L(
+                      "Teksten i manuset er endret, så forslaget kan ikke settes inn automatisk",
+                      "The text in the script has changed, so the suggestion cannot be inserted automatically",
+                    )
+                  : L("Sett forslaget inn i manuset (spør først)", "Insert the suggestion in the script (asks first)")
+              }
+              onClick={() => setApplying(true)}
+            >
+              <Check className="size-3" aria-hidden />
+              {L("Bruk forslaget", "Use the suggestion")}
+            </button>
+          ) : null}
           <button
             type="button"
             className="flex items-center gap-1 text-[11px] text-text-tertiary hover:text-text-primary"
@@ -297,6 +345,55 @@ function NoteCard({
         <p role="alert" className="text-xs text-status-danger">
           {err}
         </p>
+      ) : null}
+      {trial && productionId && block ? (
+        <AlertDialog open={applying} onOpenChange={setApplying}>
+          <AlertDialogContent className="border-border bg-surface-2">
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {L("Bruke forslaget i manuset?", "Use the suggestion in the script?")}
+              </AlertDialogTitle>
+              <AlertDialogDescription asChild>
+                <div className="flex flex-col gap-1 text-[13px]">
+                  <span>
+                    {L("Nå:", "Now:")} {block.text}
+                  </span>
+                  <span className="text-text-primary">
+                    {L("Blir:", "Becomes:")} {proposed}
+                  </span>
+                  <span>
+                    {L(
+                      "Endringen er en vanlig manusredigering og kan angres med ⌘/Ctrl + Z. Notatet blir stående til du sletter det.",
+                      "The change is an ordinary script edit and can be undone with ⌘/Ctrl + Z. The note stays until you delete it.",
+                    )}
+                  </span>
+                </div>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{L("Avbryt", "Cancel")}</AlertDialogCancel>
+              <AlertDialogAction
+                data-testid="trial-edit-confirm"
+                onClick={() => {
+                  if (proposed === null) return;
+                  setErr(
+                    run(
+                      {
+                        type: "EditBlockText",
+                        productionId: productionId as never,
+                        blockId: block.id,
+                        text: proposed,
+                      },
+                      L("Bruk forslaget", "Use the suggestion"),
+                    ),
+                  );
+                }}
+              >
+                {L("Bruk forslaget", "Use the suggestion")}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       ) : null}
       <AlertDialog open={confirm} onOpenChange={setConfirm}>
         <AlertDialogContent className="border-border bg-surface-2">
