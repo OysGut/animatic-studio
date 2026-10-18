@@ -75,6 +75,7 @@ const STYLE_LABEL: Record<AssetVariant["style"], string> = localized({
 export function LayerImageDialog({
   open,
   onOpenChange,
+  onCloseAutoFocus,
   state,
   projectId,
   layer,
@@ -90,6 +91,7 @@ export function LayerImageDialog({
   sceneWrite?: ((patch: Partial<LayerFields>, label: string) => string | null) | undefined;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onCloseAutoFocus?: (event: Event) => void;
   state: ProjectState;
   projectId: string;
   layer: CompositionLayer | null;
@@ -100,7 +102,7 @@ export function LayerImageDialog({
 }) {
   return (
     <Dialog open={open && layer !== null} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[86vh] max-w-[min(1120px,calc(100vw-64px))] overflow-y-auto border-border bg-surface-2">
+      <DialogContent onCloseAutoFocus={onCloseAutoFocus} className="max-h-[86vh] max-w-[min(1120px,calc(100vw-64px))] overflow-y-auto border-border bg-surface-2">
         {layer ? (
           <Body
             state={state}

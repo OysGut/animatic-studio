@@ -299,16 +299,28 @@ export function AssetStudio({
 
   // Tastatur: Esc lukker underdialoger først (Radix), deretter «Avbryt». ⌘/Ctrl + Z virker på utkastet.
   // Tastene fra studioet når ikke sceneeditoren under.
+  useEffect(() => {
+    const onEscape = (e: KeyboardEvent) => {
+      const root = rootRef.current;
+      if (e.key !== "Escape" || e.defaultPrevented || !root || imagesOpen || confirmCancel || conflict) return;
+      const overlay = Array.from(document.querySelectorAll(
+        '[role="dialog"],[role="alertdialog"],[data-radix-popper-content-wrapper]',
+      )).some((el) => el !== root && el.getAttribute("data-state") !== "closed");
+      if (overlay) return;
+      e.preventDefault();
+      e.stopPropagation();
+      requestCancel();
+    };
+    window.addEventListener("keydown", onEscape, true);
+    return () => window.removeEventListener("keydown", onEscape, true);
+  });
+
   function onKeyDown(e: React.KeyboardEvent) {
     const target = e.target as HTMLElement;
     const inSub = target.closest('[role="dialog"],[role="alertdialog"]');
     e.stopPropagation();
     if (inSub && inSub !== rootRef.current) return;
-    if (e.key === "Escape") {
-      e.preventDefault();
-      requestCancel();
-      return;
-    }
+    if (e.key === "Escape") return;
     if (isTyping(e.target)) return;
     const mod = e.metaKey || e.ctrlKey;
     if (mod && e.key.toLowerCase() === "z") {
@@ -794,6 +806,11 @@ export function AssetStudio({
       <LayerImageDialog
         open={imagesOpen}
         onOpenChange={setImagesOpen}
+        onCloseAutoFocus={(e) => {
+          e.preventDefault();
+          const opener = rootRef.current?.querySelector<HTMLElement>('[data-testid="asset-studio-images"]');
+          (opener ?? rootRef.current)?.focus();
+        }}
         state={view}
         projectId={projectId}
         layer={layer}
