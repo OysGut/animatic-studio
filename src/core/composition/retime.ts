@@ -795,3 +795,20 @@ function remixFor(
 export function retimeMethodNeedsFill(method: RetimeMethod, deltaFrames: number): boolean {
   return (method === "start" || method === "end") && deltaFrames > 0;
 }
+
+/**
+ * Om scenen har innhold med tidspunkter (nøkkelbilder, bildeskifter, baner, kamerautsnitt, lydklipp,
+ * manuskoblinger eller låste tidsrom). En scene uten slikt kan endre lengde direkte, uten metodevalg.
+ */
+export function retimeHasTimedContent(s: ProjectState, occurrenceId: string): boolean {
+  const occ = s.occurrences[occurrenceId];
+  const comp = occ ? compositionForOccurrence(s, occ) : undefined;
+  if (!occ || !comp) return false;
+  if (comp.camera.shots.length > 0 || timingOf(comp).lockedRanges.length > 0) return true;
+  for (const l of layersOf(s, comp.id)) {
+    const f = layerFieldsOf(l);
+    if (f.keyframes.length > 0 || f.swaps.length > 0 || f.path) return true;
+  }
+  if (Object.values(s.audioClips).some((a) => a.occurrenceId === occ.id && !a.removed)) return true;
+  return Object.values(s.timeLinks).some((t) => t.occurrenceId === occ.id && !t.removed);
+}
