@@ -19,6 +19,11 @@ export interface ScriptPagesOptions {
   readonly layout?: PageLayout;
 }
 
+/** Markøren i manusvisningen for tittel-, tekst- og rulletekstscener (MTS MT6). Aldri nummerert. */
+export function markerText(marker: "title" | "text" | "credits"): string {
+  return marker === "title" ? "[FILMTITTEL]" : marker === "text" ? "[MELLOMTEKST]" : "[RULLETEKST]"; // i18n-ignore – manusets formatord
+}
+
 export function scriptPaginationInput(
   s: ProjectState,
   productionId: string,
@@ -36,7 +41,7 @@ export function scriptPaginationInput(
   return view.map((sc) => ({
     occurrenceId: sc.occurrenceId,
     number: sc.productionNumber,
-    headingText: formatHeading(sc.heading),
+    headingText: sc.marker ? markerText(sc.marker) : formatHeading(sc.heading),
     ...locked(sc.blocks[0]?.sourceRef?.page),
     blocks: sc.blocks.map((b) => ({
       id: b.id,

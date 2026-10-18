@@ -29,14 +29,18 @@ import { activeProfileOf } from "../storylab/stages";
 import { canvasEdgeError, canvasNodeError } from "../storylab/canvas";
 import { secondsToFrames, type Rational } from "../time";
 import {
+  CREDIT_PARTICIPANTS_MAX,
   EXPORT_SETTINGS_MAX_BYTES,
+  OCCURRENCE_KINDS,
   STILL_MIME_TYPES,
   TITLE_PAGE_MAX_BYTES,
   TITLE_PAGE_MAX_LINE,
   TITLE_PAGE_MAX_LINES,
   exportSettingsBytes,
+  occurrenceKind,
   type ExportSettings,
 } from "../model";
+import { creditParticipantError, creditSequenceError } from "../credits";
 import {
   formatMapping,
   isAllowedFps,
@@ -654,6 +658,8 @@ function layerFields(s: ProjectState, f: LayerFields, prev?: CompositionLayer): 
       shape: f.shape === undefined ? (prev.shape ?? null) : f.shape,
       effects: f.effects === undefined ? (prev.effects ?? null) : f.effects,
       template: f.template === undefined ? (prev.template ?? null) : f.template,
+      // Sideovergang (MTS MT6): utelatt = uendret
+      pageTransition: f.pageTransition === undefined ? (prev.pageTransition ?? null) : f.pageTransition,
     };
   // Nytt bilde i laget (annen ressurs): bilder per språk av den gamle ressursen passer ikke lenger
   if (prev && f.assetId !== prev.assetId)
@@ -809,8 +815,11 @@ function checkMasks(before: ProjectState, after: ProjectState, ids: readonly str
           "The layer to be used as a mask does not exist in this 2D scene",
         ),
       );
-    if (target.kind === "group")
-      fail("invalid", L("En gruppe kan ikke brukes som maske", "A group cannot be used as a mask"));
+    if (target.kind === "group" || target.kind === "page")
+      fail(
+        "invalid",
+        L("En gruppe eller side kan ikke brukes som maske", "A group or page cannot be used as a mask"),
+      );
     const seen = new Set<string>([l.id]);
     let cur: CompositionLayer | undefined = target;
     while (cur && cur.mask?.kind === "layer") {
@@ -837,7 +846,7 @@ function checkGroups(before: ProjectState, after: ProjectState, ids: readonly st
     const l = after.layers[id];
     if (!l || l.groupId === null || before.layers[id]?.groupId === l.groupId) continue;
     const g = after.layers[l.groupId];
-    if (!g || g.kind !== "group" || g.compositionId !== l.compositionId || g.id === l.id)
+    if (!g || (g.kind !== "group" && g.kind !== "page") || g.compositionId !== l.compositionId || g.id === l.id)
       fail(
         "invalid",
         L("Gruppen finnes ikke i denne 2D-scenen", "The group does not exist in this 2D scene"),
@@ -2723,6 +2732,10 @@ function run(
       }
       assertNewId(s, c.occurrenceId);
       assertKey(c.orderKey);
+      // Scenetypen (MTS MT6): utelatt/«scene» = vanlig manusscene
+      const kind = c.kind ?? "scene";
+      if (!OCCURRENCE_KINDS.includes(kind))
+        fail("invalid", L("Ugyldig scenetype", "Invalid occurrence kind"));
       return {
         state: {
           ...s,
@@ -2739,6 +2752,7 @@ function run(
               excerpt: null,
               activeTakeId: null,
               productionNumber: null,
+              ...(kind !== "scene" ? { kind } : {}),
             },
           },
         },
@@ -2780,8 +2794,174 @@ function run(
           sceneId: o.sceneId,
           variantId: o.variantId,
           orderKey: o.orderKey,
+          ...(o.kind && o.kind !== "scene" ? { kind: o.kind } : {}),
         },
         affected: [o.id],
+      };
+    }
+
+    case "AddCreditParticipant": {
+      assertNewId(s, c.participantId);
+      const count = Object.values(s.creditParticipants).filter((p) => !p.removed).length;
+      if (count >= CREDIT_PARTICIPANTS_MAX)
+        fail(
+          "invalid",
+          L(
+            `Rulleteksten kan ha høyst ${CREDIT_PARTICIPANTS_MAX} deltakere`,
+            `The credits can have at most ${CREDIT_PARTICIPANTS_MAX} participants`,
+          ),
+        );
+      const err = creditParticipantError({ orderKey: c.fields.orderKey, groupKey: c.fields.groupKey, fields: c.fields.fields });
+      if (err) fail("invalid", err);
+      assertKey(c.fields.orderKey);
+      const p: import("../model").CreditParticipant = {
+        id: c.participantId,
+        revision: 1,
+        orderKey: c.fields.orderKey,
+        groupKey: c.fields.groupKey,
+        hidden: c.fields.hidden === true,
+        fields: c.fields.fields,
+        logoAssetId: c.fields.logoAssetId ?? null,
+        logoVersionId: c.fields.logoVersionId ?? null,
+        imageAssetId: c.fields.imageAssetId ?? null,
+        imageVersionId: c.fields.imageVersionId ?? null,
+        removed: false,
+      };
+      return {
+        state: { ...s, creditParticipants: { ...s.creditParticipants, [p.id]: p } },
+        inverse: { type: "RemoveCreditParticipant", participantId: p.id },
+        affected: [p.id],
+      };
+    }
+
+    case "UpdateCreditParticipant": {
+      const p = need(s.creditParticipants[c.participantId], L("Deltakeren", "The participant"));
+      const next = {
+        orderKey: c.fields.orderKey ?? p.orderKey,
+        groupKey: c.fields.groupKey ?? p.groupKey,
+        fields: c.fields.fields ?? p.fields,
+      };
+      const err = creditParticipantError(next);
+      if (err) fail("invalid", err);
+      if (c.fields.orderKey !== undefined) assertKey(c.fields.orderKey);
+      const updated: import("../model").CreditParticipant = {
+        ...p,
+        orderKey: next.orderKey,
+        groupKey: next.groupKey,
+        hidden: c.fields.hidden ?? p.hidden,
+        fields: next.fields,
+        logoAssetId: c.fields.logoAssetId === undefined ? p.logoAssetId : c.fields.logoAssetId,
+        logoVersionId: c.fields.logoVersionId === undefined ? p.logoVersionId : c.fields.logoVersionId,
+        imageAssetId: c.fields.imageAssetId === undefined ? p.imageAssetId : c.fields.imageAssetId,
+        imageVersionId: c.fields.imageVersionId === undefined ? p.imageVersionId : c.fields.imageVersionId,
+        revision: rev(p),
+      };
+      const inverseFields: Record<string, unknown> = {};
+      for (const k of Object.keys(c.fields)) inverseFields[k] = p[k as keyof typeof p] ?? null;
+      return {
+        state: { ...s, creditParticipants: { ...s.creditParticipants, [p.id]: updated } },
+        inverse: { type: "UpdateCreditParticipant", participantId: p.id, fields: inverseFields },
+        affected: [p.id],
+      };
+    }
+
+    case "RemoveCreditParticipant": {
+      const p = need(s.creditParticipants[c.participantId], L("Deltakeren", "The participant"));
+      if (p.removed) fail("invalid", L("Deltakeren er allerede fjernet", "The participant is already removed"));
+      return {
+        state: {
+          ...s,
+          creditParticipants: { ...s.creditParticipants, [p.id]: { ...p, removed: true, revision: rev(p) } },
+        },
+        inverse: {
+          type: "AddCreditParticipant",
+          participantId: p.id,
+          fields: {
+            orderKey: p.orderKey,
+            groupKey: p.groupKey,
+            hidden: p.hidden,
+            fields: p.fields,
+            logoAssetId: p.logoAssetId ?? null,
+            logoVersionId: p.logoVersionId ?? null,
+            imageAssetId: p.imageAssetId ?? null,
+            imageVersionId: p.imageVersionId ?? null,
+          },
+        },
+        affected: [p.id],
+      };
+    }
+
+    case "SetCreditSequence": {
+      const o = need(s.occurrences[c.occurrenceId], L("Forekomsten", "The occurrence"));
+      if (occurrenceKind(o) !== "credits")
+        fail("invalid", L("Forekomsten er ikke en rulletekst", "The occurrence is not a credits sequence"));
+      const err = creditSequenceError(c.fields);
+      if (err) fail("invalid", err);
+      const existing = Object.values(s.creditSequences).find(
+        (q) => q.occurrenceId === o.id && !q.removed,
+      );
+      if (existing && existing.id !== c.sequenceId)
+        fail("invalid", L("Forekomsten har allerede en rulletekst", "The occurrence already has a credits sequence"));
+      const prev = s.creditSequences[c.sequenceId];
+      const seq: import("../model").CreditSequence = {
+        id: c.sequenceId,
+        revision: prev ? rev(prev) : 1,
+        occurrenceId: o.id,
+        presentation: c.fields.presentation,
+        durationFrames: c.fields.durationFrames,
+        pauseFrames: c.fields.pauseFrames,
+        transition: c.fields.transition ?? null,
+        speed: c.fields.speed,
+        direction: c.fields.direction,
+        ...(c.fields.groupTemplates ? { groupTemplates: c.fields.groupTemplates } : {}),
+        removed: false,
+      };
+      return {
+        state: { ...s, creditSequences: { ...s.creditSequences, [seq.id]: seq } },
+        inverse: prev
+          ? {
+              type: "SetCreditSequence",
+              sequenceId: prev.id,
+              occurrenceId: prev.occurrenceId,
+              fields: {
+                presentation: prev.presentation,
+                durationFrames: prev.durationFrames,
+                pauseFrames: prev.pauseFrames,
+                transition: prev.transition ?? null,
+                speed: prev.speed,
+                direction: prev.direction,
+                ...(prev.groupTemplates ? { groupTemplates: prev.groupTemplates } : {}),
+              },
+            }
+          : // Angre av opprettelse: sekvensen fjernes (removed = true)
+            { type: "RemoveCreditSequence", sequenceId: seq.id },
+        affected: [seq.id],
+      };
+    }
+
+    case "RemoveCreditSequence": {
+      const q = need(s.creditSequences[c.sequenceId], L("Rulleteksten", "The credits sequence"));
+      if (q.removed) fail("invalid", L("Rulleteksten er allerede fjernet", "The credits sequence is already removed"));
+      return {
+        state: {
+          ...s,
+          creditSequences: { ...s.creditSequences, [q.id]: { ...q, removed: true, revision: rev(q) } },
+        },
+        inverse: {
+          type: "SetCreditSequence",
+          sequenceId: q.id,
+          occurrenceId: q.occurrenceId,
+          fields: {
+            presentation: q.presentation,
+            durationFrames: q.durationFrames,
+            pauseFrames: q.pauseFrames,
+            transition: q.transition ?? null,
+            speed: q.speed,
+            direction: q.direction,
+            ...(q.groupTemplates ? { groupTemplates: q.groupTemplates } : {}),
+          },
+        },
+        affected: [q.id],
       };
     }
 
@@ -5749,6 +5929,13 @@ function run(
           titlePage = [...x.titlePage];
         }
       }
+      // «Inkluder rulletekst» (MTS MT8): utelatt = beholdes, standard er på
+      let includeCredits = p.exportSettings?.includeCredits;
+      if (x !== null && x.includeCredits !== undefined) {
+        if (x.includeCredits !== null && typeof x.includeCredits !== "boolean")
+          fail("invalid", L("Ugyldige eksportinnstillinger", "Invalid export settings"));
+        includeCredits = x.includeCredits ?? undefined;
+      }
       const settings: ExportSettings | null =
         x === null
           ? null
@@ -5757,6 +5944,7 @@ function run(
               monochrome: x.monochrome,
               output: x.output,
               ...(titlePage !== undefined ? { titlePage } : {}),
+              ...(includeCredits !== undefined ? { includeCredits } : {}),
             };
       if (
         settings &&

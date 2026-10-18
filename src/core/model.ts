@@ -115,6 +115,11 @@ export interface ExportSettings {
    * eksportdialogen. Mangler = ikke satt (prosjektnavnet foreslås); tom liste = ingen tittelside.
    */
   readonly titlePage?: readonly string[];
+  /**
+   * «Inkluder rulletekst» i eksporten (MTS MT8, §26/§57): filtrerer bort forekomster med kind «credits»
+   * bare i eksporten; ingenting slettes eller deaktiveres. Mangler = på (standard).
+   */
+  readonly includeCredits?: boolean;
 }
 
 /** Største lagrede eksportinnstillinger i byte (sjekken i migrasjon 0027 er 4096 byte for jsonb). */
@@ -256,6 +261,20 @@ export interface BlockRevision {
   readonly createdAt: string;
 }
 
+/**
+ * Scenetypen til en forekomst (MTS MT6, migrasjon 0050): «scene» er en vanlig manusscene. «title»
+ * (filmtittel), «text» (tekstscene) og «credits» (rulletekst) er deler av filmen, ikke av manuset: de
+ * vises aldri i manusvisningen (unntatt som markør), nummereres aldri og hoppes over av manusutforskeren,
+ * den automatiske gjenkjenningen (OG2) og oversettelseskoblingen. Mangler = «scene».
+ */
+export type OccurrenceKind = "scene" | "title" | "text" | "credits";
+export const OCCURRENCE_KINDS: readonly OccurrenceKind[] = ["scene", "title", "text", "credits"];
+
+/** Scenetypen (mangler = «scene»). */
+export function occurrenceKind(o: { readonly kind?: OccurrenceKind }): OccurrenceKind {
+  return o.kind ?? "scene";
+}
+
 export interface SceneOccurrence extends Entity<OccurrenceId> {
   readonly productionId: ProductionId;
   readonly sceneId: SceneId;
@@ -280,6 +299,8 @@ export interface SceneOccurrence extends Entity<OccurrenceId> {
    * figurene skal spille. Sendes sammen med filmens stil og figurenes beskrivelser. Mangler/tom = ingen.
    */
   readonly videoInstructions?: string;
+  /** Scenetypen (MTS MT6). Mangler = «scene». */
+  readonly kind?: OccurrenceKind;
 }
 
 /**
@@ -593,7 +614,11 @@ export type LayerKind =
   /** Gruppe (DEC-0052, REQ-0174): viser ikke noe selv; lagene i gruppen følger dens bevegelse, synlighet og skalering. */
   | "group"
   /** Tekstlag (MTS, migrasjon 0048): redigerbar tekst og typografi i `text`. */
-  | "text";
+  | "text"
+  /** Side (MTS MT6, migrasjon 0050): en side i en tittel- eller tekstscene. Oppfører seg som en gruppe
+   * (lagene i den følger dens bevegelse og synlighet), med `activeRange` som synlighetsintervall og
+   * `pageTransition` som overgangen inn i siden. */
+  | "page";
 
 /** Plassering av et lag i scenen. Posisjon er midtpunktet i scenens koordinater (piksler). */
 export interface LayerTransform {
@@ -812,6 +837,8 @@ export interface CompositionLayer extends Entity<LayerId> {
   readonly effects?: import("./typography/types").LayerEffects | null;
   /** Malforekomsten og feltet laget er bygget fra (MTS MT4). Mangler = ikke fra mal. */
   readonly template?: import("./typography/types").TemplateSlotRef | null;
+  /** Overgangen inn i siden (bare sidelag, MTS MT6, migrasjon 0050). Mangler = kutt. */
+  readonly pageTransition?: Transition | null;
   readonly removed: boolean;
 }
 
@@ -915,6 +942,9 @@ export interface ProjectState {
   readonly canvasEdges: Readonly<Record<string, CanvasEdge>>;
   /** Malforekomster (MTS MT4, migrasjon 0049). */
   readonly templateInstances: Readonly<Record<string, TemplateInstance>>;
+  /** Rulletekst (MTS MT7, migrasjon 0051): deltakerregisteret og sekvensen per forekomst. */
+  readonly creditParticipants: Readonly<Record<string, CreditParticipant>>;
+  readonly creditSequences: Readonly<Record<string, CreditSequence>>;
 }
 
 /**
@@ -928,6 +958,59 @@ export interface TemplateInstance extends Entity<import("./ids").TemplateInstanc
   readonly values: import("./typography/template").TemplateValues;
   readonly removed: boolean;
 }
+
+// ---------- Rulletekst (MTS MT7, §16–26, migrasjon 0051) ----------
+
+/**
+ * En deltaker i rulleteksten (§17): adskilt fra malen. `fields` er valgfrie felt (nøkkel → tekst, f.eks.
+ * navn, rolle, selskap); `groupKey` grupperer (f.eks. «Regi», «Medvirkende»). `hidden` skjuler uten å
+ * slette. Logo- og bildereferanser peker på ressursversjoner i prosjektet.
+ */
+export interface CreditParticipant extends Entity<import("./ids").CreditParticipantId> {
+  readonly orderKey: string;
+  readonly groupKey: string;
+  readonly hidden: boolean;
+  readonly fields: Readonly<Record<string, string>>;
+  readonly logoAssetId?: AssetId | null | undefined;
+  readonly logoVersionId?: AssetVersionId | null | undefined;
+  readonly imageAssetId?: AssetId | null | undefined;
+  readonly imageVersionId?: AssetVersionId | null | undefined;
+  readonly removed: boolean;
+}
+
+/** Presentasjonsformene for rulleteksten (§21). */
+export type CreditPresentation = "roll" | "one_at_a_time" | "positions";
+export const CREDIT_PRESENTATIONS: readonly CreditPresentation[] = [
+  "roll",
+  "one_at_a_time",
+  "positions",
+];
+
+/**
+ * Rulleteksten for én forekomst (kind «credits», §19–21): presentasjonsform, varighet per deltaker,
+ * pause, overgang, hastighet, retning og malvariant per gruppe. Lagene for deltakerne lagres ikke –
+ * de lages virtuelt av renderFrame fra mal, deltakere og tid (§63).
+ */
+export interface CreditSequence extends Entity<import("./ids").CreditSequenceId> {
+  readonly occurrenceId: OccurrenceId;
+  readonly presentation: CreditPresentation;
+  /** Varighet per deltaker i bilder (one_at_a_time/positions). */
+  readonly durationFrames: number;
+  /** Pause mellom deltakerne i bilder. */
+  readonly pauseFrames: number;
+  /** Overgangen mellom deltakerne (mangler = kutt). */
+  readonly transition?: Transition | null;
+  /** Rullehastighet i piksler per bilde (roll). */
+  readonly speed: number;
+  /** Rulleretning (roll): opp (standard) eller ned. */
+  readonly direction: "up" | "down";
+  /** Malvariant per gruppe (groupKey → malversjon). Mangler = standardoppsettet. */
+  readonly groupTemplates?: Readonly<Record<string, AssetVersionId>>;
+  readonly removed: boolean;
+}
+
+/** Øvre grenser (§63, godkjent): 2000 deltakere; ingenting kuttes stille. */
+export const CREDIT_PARTICIPANTS_MAX = 2000;
 
 /**
  * En del av et klipp i filmen (DEC-0048, REQ-0220–0222, REQ-0239): et utsnitt [inMs, outMs) av en importert
@@ -1235,6 +1318,8 @@ export const COLLECTION_TABLES = {
   canvasNodes: "story_canvas_nodes",
   canvasEdges: "story_canvas_edges",
   templateInstances: "template_instances",
+  creditParticipants: "credit_participants",
+  creditSequences: "credit_sequences",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_TABLES;
@@ -1271,6 +1356,8 @@ export function emptyProjectState(project: Project): ProjectState {
     canvasNodes: {},
     canvasEdges: {},
     templateInstances: {},
+    creditParticipants: {},
+    creditSequences: {},
   };
 }
 

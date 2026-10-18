@@ -3,7 +3,7 @@
  * scene-ID-er eller produksjonsnumre (REQ-0085, INV-02).
  */
 import type { ProjectState, SceneHeading } from "../model";
-import { orderedOccurrences, blocksOfVariant, sceneNumberOf } from "../views";
+import { orderedOccurrences, blocksOfVariant, isScriptOccurrence, sceneNumberOf } from "../views";
 import { formatHeading, type PaginationScene } from "./paginate";
 import { fountainMarksOf } from "./fountain";
 import { L } from "../i18n";
@@ -72,7 +72,10 @@ export function exportNumbering(
   productionId: string,
   opts: NumberingOptions,
 ): NumberedScene[] {
-  const occs = orderedOccurrences(s, productionId).filter((o) => o.active || opts.includeInactive);
+  // Tittel-, tekst- og rulletekstscener (MTS MT6) nummereres aldri og er aldri med i manuseksporten
+  const occs = orderedOccurrences(s, productionId).filter(
+    (o) => (o.active || opts.includeInactive) && isScriptOccurrence(o),
+  );
   const out: NumberedScene[] = [];
   if (opts.method === "continuous") {
     let n = 0;

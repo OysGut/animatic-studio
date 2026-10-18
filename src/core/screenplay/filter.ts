@@ -3,7 +3,7 @@
  * aktive innhold (REQ-0075).
  */
 import type { ProjectState } from "../model";
-import { blocksOfVariant, orderedOccurrences } from "../views";
+import { blocksOfVariant, isScriptOccurrence, orderedOccurrences } from "../views";
 import { formatHeading, type Page } from "./paginate";
 import { annotationsByVariant } from "../notes";
 
@@ -137,7 +137,7 @@ export function sceneHasWordPrefix(s: ProjectState, variantId: string, name: str
 
 /** Karakterene i en produksjon (alle med replikk), sortert etter antall scener. */
 export function charactersInProduction(s: ProjectState, productionId: string): CharacterInfo[] {
-  const occs = orderedOccurrences(s, productionId);
+  const occs = orderedOccurrences(s, productionId).filter(isScriptOccurrence);
   const texts = occs.map((o) => sceneText(s, o.variantId));
   const names = new Set<string>();
   for (const t of texts) for (const n of t.speakers) names.add(n);
@@ -201,6 +201,7 @@ export function matchingOccurrences(
   const text = f.text?.trim().toLocaleLowerCase("nb") ?? "";
   const out = new Set<string>();
   for (const o of orderedOccurrences(s, productionId)) {
+    if (!isScriptOccurrence(o)) continue; // MTS MT6: tittel/tekst/rulletekst er ikke manusscener
     if (f.character) {
       const names = f.characterNames?.length ? f.characterNames : [f.character];
       if (!names.some((n) => sceneHasCharacter(s, o.variantId, n))) continue;

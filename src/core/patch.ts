@@ -34,6 +34,8 @@ import type {
   CanvasNode,
   CanvasEdge,
   TemplateInstance,
+  CreditParticipant,
+  CreditSequence,
   PosterDocument,
   PosterKind,
   RelationKind,
@@ -43,6 +45,7 @@ import type {
   Scene,
   SceneOccurrence,
   SceneVariant,
+  OccurrenceKind,
   ScriptBlock,
   Take,
   TransitionKind,
@@ -99,6 +102,8 @@ export interface ChangeSet {
 
 type AnyEntity =
   | TemplateInstance
+  | CreditParticipant
+  | CreditSequence
   | Production
   | Scene
   | SceneVariant
@@ -208,6 +213,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         planned_ms: o.plannedMs ?? null,
         // Migrasjon 0032 (DEC-0083); ukjente kolonner hoppes over av apply_changes før den er kjørt
         video_instructions: o.videoInstructions ?? "",
+        // Migrasjon 0050 (MTS MT6); ukjente kolonner hoppes over av apply_changes før den er kjørt
+        kind: o.kind ?? "scene",
       };
     }
     case "segments": {
@@ -400,6 +407,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         template_instance_id: l.template ? l.template.instanceId : null,
         template_key: l.template ? l.template.key : null,
         template_slot: l.template ? l.template.slot : null,
+        // Migrasjon 0050 (MTS MT6): overgangen inn i siden (bare sidelag)
+        page_transition: l.pageTransition ?? null,
         removed: l.removed,
       };
     }
@@ -610,6 +619,37 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         removed: x.removed,
       };
     }
+    case "creditParticipants": {
+      const x = e as CreditParticipant;
+      return {
+        ...base,
+        order_key: x.orderKey,
+        group_key: x.groupKey,
+        hidden: x.hidden,
+        fields: x.fields,
+        logo_asset_id: x.logoAssetId ?? null,
+        logo_version_id: x.logoVersionId ?? null,
+        image_asset_id: x.imageAssetId ?? null,
+        image_version_id: x.imageVersionId ?? null,
+        removed: x.removed,
+      };
+    }
+    case "creditSequences": {
+      const x = e as CreditSequence;
+      return {
+        ...base,
+        occurrence_id: x.occurrenceId,
+        presentation: x.presentation,
+        duration_frames: x.durationFrames,
+        pause_frames: x.pauseFrames,
+        transition_kind: x.transition ? transitionKindToDb(x.transition.kind) : null,
+        transition_frames: x.transition?.frames ?? 0,
+        speed: x.speed,
+        direction: x.direction,
+        group_templates: x.groupTemplates ?? {},
+        removed: x.removed,
+      };
+    }
   }
 }
 
@@ -645,6 +685,8 @@ export const TABLE_ORDER: readonly string[] = [
   "script_annotations",
   "compositions",
   "template_instances",
+  "credit_participants",
+  "credit_sequences",
   "composition_layers",
   "audio_clips",
   "clip_parts",
@@ -776,6 +818,9 @@ export interface ProjectRows {
   readonly story_canvas_edges?: readonly Row[];
   /** Malforekomster (migrasjon 0049). Tomt hvis migrasjonen ikke er kjørt ennå. */
   readonly template_instances?: readonly Row[];
+  /** Rulletekst (migrasjon 0051). Tomt hvis migrasjonen ikke er kjørt ennå. */
+  readonly credit_participants?: readonly Row[];
+  readonly credit_sequences?: readonly Row[];
 }
 
 const str = (v: unknown) => String(v);
@@ -1066,6 +1111,10 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...(typeof x["video_instructions"] === "string" && x["video_instructions"]
           ? { videoInstructions: x["video_instructions"] }
           : {}),
+        // Migrasjon 0050 (MTS MT6): scenetypen (mangler = «scene»)
+        ...(typeof x["kind"] === "string" && x["kind"] !== "scene"
+          ? { kind: x["kind"] as OccurrenceKind }
+          : {}),
       })),
     ),
     segments: byId(
@@ -1288,6 +1337,8 @@ export function stateFromRows(r: ProjectRows): ProjectState {
               },
             }
           : {}),
+        // Migrasjon 0050 (MTS MT6): overgangen inn i siden
+        ...(json(x["page_transition"]) ? { pageTransition: json(x["page_transition"]) as never } : {}),
         removed: x["removed"] === true,
       })),
     ),
@@ -1511,6 +1562,45 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         templateAssetId: str(x["template_asset_id"]) as never,
         templateVersionId: str(x["template_version_id"]) as never,
         values: ((json(x["content"]) as object | null) ?? {}) as never,
+        removed: x["removed"] === true,
+      })),
+    ),
+    creditParticipants: byId(
+      (r.credit_participants ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        orderKey: str(x["order_key"]),
+        groupKey: str(x["group_key"] ?? ""),
+        hidden: x["hidden"] === true,
+        fields: ((json(x["fields"]) as object | null) ?? {}) as never,
+        logoAssetId: optStr(x["logo_asset_id"]) as never,
+        logoVersionId: optStr(x["logo_version_id"]) as never,
+        imageAssetId: optStr(x["image_asset_id"]) as never,
+        imageVersionId: optStr(x["image_version_id"]) as never,
+        removed: x["removed"] === true,
+      })),
+    ),
+    creditSequences: byId(
+      (r.credit_sequences ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        occurrenceId: str(x["occurrence_id"]) as never,
+        presentation: str(x["presentation"]) as never,
+        durationFrames: num(x["duration_frames"]),
+        pauseFrames: num(x["pause_frames"]),
+        ...(transitionKindFromDb(x["transition_kind"])
+          ? {
+              transition: {
+                kind: transitionKindFromDb(x["transition_kind"]),
+                frames: num(x["transition_frames"]),
+              } as never,
+            }
+          : {}),
+        speed: num(x["speed"]),
+        direction: str(x["direction"]) as never,
+        ...((json(x["group_templates"]) as object | null)
+          ? { groupTemplates: json(x["group_templates"]) as never }
+          : {}),
         removed: x["removed"] === true,
       })),
     ),

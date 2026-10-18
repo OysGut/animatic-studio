@@ -12,7 +12,7 @@
  * Skrivemåtene som slås sammen, blir alternative navn når forslaget legges til, så bruken i manuset finnes.
  */
 import type { Asset, AssetKind, ProjectState } from "../model";
-import { blocksOfVariant, orderedOccurrences } from "../views";
+import { blocksOfVariant, isScriptOccurrence, orderedOccurrences } from "../views";
 import { characterName, sceneMentions } from "../screenplay/filter";
 import { L } from "../i18n";
 import { nounForms, LEXICON_FORMS } from "./lexicon";
@@ -421,7 +421,7 @@ interface Scene {
 }
 
 function scenesOf(s: ProjectState, productionId: string): Scene[] {
-  return orderedOccurrences(s, productionId).map((o) => {
+  return orderedOccurrences(s, productionId).filter(isScriptOccurrence).map((o) => {
     const rawSpeakers = new Set<string>();
     const parts: string[] = [];
     for (const b of blocksOfVariant(s, o.variantId)) {

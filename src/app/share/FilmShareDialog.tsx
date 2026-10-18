@@ -51,6 +51,8 @@ export interface ShareSource {
   readonly title: string;
   /** Id-en i eksportloggen (filmversjonen). null = registreringen feilet. */
   readonly exportRecord: Promise<string | null>;
+  /** Om rulleteksten er med i filmversjonen (MTS MT8). Utelatt = ukjent. */
+  readonly creditsIncluded?: boolean;
 }
 
 const daysLabel = (d: ShareDays) =>
@@ -150,6 +152,13 @@ export function FilmShareDialog({
               "The link shows only this film version. It gives no access to the script, assets or anything else in the project.",
             )}
           </DialogDescription>
+          {source.creditsIncluded !== undefined ? (
+            <p className="text-xs text-text-tertiary" data-testid="film-share-credits-note">
+              {source.creditsIncluded
+                ? L("Rulleteksten er med i denne versjonen.", "The credits are included in this version.")
+                : L("Rulleteksten er ikke med i denne versjonen.", "The credits are not included in this version.")}
+            </p>
+          ) : null}
         </DialogHeader>
 
         {!ready ? (

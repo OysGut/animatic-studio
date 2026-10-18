@@ -12,7 +12,7 @@ import { framesToSeconds } from "../time";
 import { assetsInScene } from "../library";
 import { outdatedLayers } from "../library/impact";
 import { translationStatus } from "../translation";
-import { blocksOfVariant, orderedOccurrences, sceneNumberOf } from "../views";
+import { blocksOfVariant, isScriptOccurrence, orderedOccurrences, sceneNumberOf } from "../views";
 import { estimateProduction, type ProductionEstimate } from "../screenplay/duration";
 import { matchingOccurrences, type SceneFilter } from "../screenplay/filter";
 import { filmClips } from "./film";
@@ -110,7 +110,7 @@ export function productionStatus(
   for (const l of outdatedLayers(s))
     outdatedByComp.set(l.compositionId, (outdatedByComp.get(l.compositionId) ?? 0) + 1);
 
-  const rows: SceneStatusRow[] = orderedOccurrences(s, productionId).map((o) => {
+  const rows: SceneStatusRow[] = orderedOccurrences(s, productionId).filter(isScriptOccurrence).map((o) => {
     const clip = clips.get(o.id);
     const est = estimates.get(o.id) ?? 0;
     const compFrames = compByVariant.get(o.variantId)?.frames;

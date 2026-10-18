@@ -15,7 +15,7 @@ import type { ParsedScene, ParsedScreenplay } from "../screenplay/types";
 import { parseHeading } from "../screenplay/parse";
 import { characterName } from "../screenplay/filter";
 import { formatHeading } from "../screenplay/paginate";
-import { blocksOfVariant, orderedOccurrences } from "../views";
+import { blocksOfVariant, isScriptOccurrence, orderedOccurrences } from "../views";
 import { textAtRevision } from "../assembly/discrepancy";
 import { blockSpans, filmClips } from "../assembly/film";
 import { framesToSeconds } from "../time";
@@ -90,7 +90,7 @@ export function translationStatus(
   let translated = 0;
   const seen = new Set<string>();
   for (const o of orderedOccurrences(s, productionId)) {
-    if (!o.active || seen.has(o.variantId)) continue;
+    if (!o.active || seen.has(o.variantId) || !isScriptOccurrence(o)) continue;
     seen.add(o.variantId);
     for (const b of blocksOfVariant(s, o.variantId)) {
       if (b.kind === "heading" || !b.text.trim()) continue;
@@ -305,7 +305,7 @@ export function alignTranslation(
   productionId: string,
   parsed: ParsedScreenplay,
 ): SceneLink[] {
-  const occs = orderedOccurrences(s, productionId);
+  const occs = orderedOccurrences(s, productionId).filter(isScriptOccurrence);
   const P = parsed.scenes.filter((p) => !p.isContinuation || p.elements.length);
   const pSig = P.map(sigOfParsed);
   const nSig = occs.map((o) =>

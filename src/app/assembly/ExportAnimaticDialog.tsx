@@ -45,6 +45,7 @@ import { isEmbedded, prepareDownload, type ReadyFile } from "@/app/download";
 import { ExportHistory } from "@/app/projects/ExportHistory";
 import { useRecordExport } from "@/app/projects/use-history-records";
 import { FilmShareDialog, type ShareSource } from "@/app/share/FilmShareDialog";
+import { occurrenceKind } from "@/core";
 import { QrCode as QrCodeIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -151,6 +152,8 @@ export function ExportAnimaticDialog({
   const [ready, setReady] = useState<(ReadyFile & { bytes: number }) | null>(null);
   const [shareSource, setShareSource] = useState<ShareSource | null>(null);
   const [shareOpen, setShareOpen] = useState(false);
+  // «Inkluder rulletekst» (MTS MT8, §26/§57): på som standard; valget filtrerer bare i eksporten
+  const [includeCredits, setIncludeCredits] = useState(true);
   const abort = useRef<AbortController | null>(null);
   // Eksportloggen (REQ-0037, migrasjon 0028): registreres når filen er laget
   const recordExport = useRecordExport(state.project.id);
@@ -174,6 +177,7 @@ export function ExportAnimaticDialog({
       setSize(saved.size);
       setOutput(saved.output);
     }
+    setIncludeCredits(saved?.includeCredits ?? true);
     if (initialScope && (initialScope !== "selected" || selectedId)) setScope(initialScope);
     else if (scope === "selected" && !selectedId) setScope("film");
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -192,11 +196,18 @@ export function ExportAnimaticDialog({
   const fps = state.project.fps;
   // Alle utvalg unntatt hele filmen går gjennom filmSelection: lyd og undertekster følger scenen sin, så lyd
   // fra scenen før ikke lekker inn i overlappen (KI-85, som «Valgte scener» etter KI-172)
-  const partSel = useMemo(
-    () => exportSelection(clips, scope, { selectedId, fromId, toId, picked }),
-    [clips, scope, selectedId, fromId, toId, picked],
+  const exportClips = useMemo(
+    () =>
+      includeCredits
+        ? clips
+        : clips.filter((c) => state.occurrences[c.occurrenceId] !== undefined && occurrenceKind(state.occurrences[c.occurrenceId]!) !== "credits"),
+    [clips, includeCredits, state],
   );
-  const filmSel = useMemo(() => filmRange(clips, { kind: "film" }), [clips]);
+  const partSel = useMemo(
+    () => exportSelection(exportClips, scope, { selectedId, fromId, toId, picked }),
+    [exportClips, scope, selectedId, fromId, toId, picked],
+  );
+  const filmSel = useMemo(() => filmRange(exportClips, { kind: "film" }), [exportClips]);
   const sel = partSel ?? filmSel;
   const audioItems = useMemo(
     () =>
@@ -435,7 +446,7 @@ export function ExportAnimaticDialog({
       onSaveSettings &&
       (!saved || saved.size !== size || saved.monochrome !== mono || saved.output !== output)
     )
-      onSaveSettings({ size, monochrome: mono, output });
+      onSaveSettings({ size, monochrome: mono, output, includeCredits });
     setReady(null);
     setShareSource(null);
     setSubFile(null);
@@ -598,6 +609,8 @@ export function ExportAnimaticDialog({
         durationMs: Math.max(1, Math.round(((sel.endFrame - sel.startFrame) * fps.den * 1000) / fps.num)),
         title: `${state.project.name} – ${what}`,
         exportRecord: recordP,
+        // Delingen gjelder alltid denne eksporterte filmversjonen (MTS MT8)
+        creditsIncluded: includeCredits,
       });
       const lost = failed.length + missingUrl.length;
       const notes: string[] = [];
@@ -857,6 +870,16 @@ export function ExportAnimaticDialog({
                 className="size-3.5 accent-[var(--accent-brand)]"
               />
               {L("Hele filmen i svart-hvitt", "The whole film in black and white")}
+            </label>
+            <label className="flex items-center gap-2 pt-1 text-[13px] text-text-primary">
+              <input
+                type="checkbox"
+                data-testid="export-include-credits"
+                checked={includeCredits}
+                onChange={(e) => setIncludeCredits(e.target.checked)}
+                className="size-3.5 accent-[var(--accent-brand)]"
+              />
+              {L("Inkluder rulletekst", "Include credits")}
             </label>
             <p className="pt-1 text-xs text-text-tertiary">
               {L(

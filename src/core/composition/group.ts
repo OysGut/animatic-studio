@@ -30,7 +30,7 @@ export function regroupFields(
   const base = { ...layerFieldsOf(layer), groupId: groupId as LayerFields["groupId"] };
   const from = groupOf(s, layer);
   const target = groupId ? s.layers[groupId] : undefined;
-  const to = target && target.kind === "group" && !target.removed ? target : null;
+  const to = target && (target.kind === "group" || target.kind === "page") && !target.removed ? target : null;
   const fromM: Matrix = from ? groupMatrixAt(from, frame) : IDENTITY;
   const toInv = to ? invert(groupMatrixAt(to, frame)) : IDENTITY;
   if (!toInv) return base;

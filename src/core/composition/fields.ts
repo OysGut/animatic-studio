@@ -2,6 +2,7 @@
  * Felter og grenser for 2D-scener og lag (M3 del 2, mandat kap. 11). Ren logikk uten avhengigheter.
  * `normalize…` returnerer normaliserte felter eller en norsk feilmelding.
  */
+import { TRANSITION_KINDS } from "../model";
 import type {
   AnimatedProperty,
   BlendMode,
@@ -37,6 +38,7 @@ export const LAYER_KINDS: readonly LayerKind[] = [
   "other",
   "group",
   "text",
+  "page",
 ];
 
 export const LAYER_KIND_LABEL: Record<LayerKind, string> = localized({
@@ -49,6 +51,7 @@ export const LAYER_KIND_LABEL: Record<LayerKind, string> = localized({
   other: ["Annet", "Other"],
   group: ["Gruppe", "Group"],
   text: ["Tekst", "Text"],
+  page: ["Side", "Page"],
 });
 
 /** Standard parallakse per lagtype: bakgrunnen beveger seg minst, forgrunnen mest. */
@@ -62,6 +65,7 @@ export const DEFAULT_PARALLAX: Record<LayerKind, number> = {
   other: 1,
   group: 1,
   text: 1,
+  page: 1,
 };
 
 /** Egenskapene i lagets plassering som kan animeres. */
@@ -436,11 +440,15 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
       ok: false,
       error: L("Fargen må være på formen #rrggbb", "The colour must be in the form #rrggbb"),
     };
-  const group = f.kind === "group";
+  // Sidelag (MTS MT6) oppfører seg som grupper: viser ikke noe selv, kan ikke ligge i en gruppe
+  const group = f.kind === "group" || f.kind === "page";
   if (group && (f.assetId !== null || fill !== null || (f.swaps ?? []).length > 0))
     return {
       ok: false,
-      error: L("En gruppe viser ikke noe bilde selv", "A group does not show an image itself"),
+      error:
+        f.kind === "page"
+          ? L("En side viser ikke noe bilde selv", "A page does not show an image itself")
+          : L("En gruppe viser ikke noe bilde selv", "A group does not show an image itself"),
     };
   const textLayer = f.kind === "text";
   if (textLayer && (f.assetId !== null || fill !== null || !f.text || (f.swaps ?? []).length > 0))
@@ -538,6 +546,21 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
     return { ok: false, error: L("En gruppe kan ikke ha effekter", "A group cannot have effects") };
   const tpl = normalizeTemplateRef(f.template);
   if (!tpl.ok) return tpl;
+  // Overgangen inn i siden (MTS MT6): bare sidelag; «cut» lagres ikke (mangler = kutt)
+  let pageTransition: import("../model").Transition | null = null;
+  if (f.pageTransition !== undefined && f.pageTransition !== null) {
+    const pt = f.pageTransition;
+    if (f.kind !== "page")
+      return { ok: false, error: L("Bare sider kan ha en sideovergang", "Only pages can have a page transition") };
+    if (
+      !TRANSITION_KINDS.includes(pt.kind) ||
+      !Number.isInteger(pt.frames) ||
+      pt.frames < 0 ||
+      pt.frames > 10_000
+    )
+      return { ok: false, error: L("Ugyldig sideovergang", "Invalid page transition") };
+    if (pt.kind !== "cut" && pt.frames > 0) pageTransition = { kind: pt.kind, frames: pt.frames };
+  }
   // Aktivt tidsområde (AS2, A3)
   const ar = f.activeRange ?? null;
   if (
@@ -573,6 +596,7 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
       ...(shape.value ? { shape: shape.value } : {}),
       ...(effects.value ? { effects: effects.value } : {}),
       ...(tpl.value ? { template: tpl.value } : {}),
+      ...(pageTransition ? { pageTransition } : {}),
     },
   };
 }
