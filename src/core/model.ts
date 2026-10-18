@@ -546,6 +546,10 @@ export interface Annotation extends Entity<AnnotationId> {
   readonly source?: "system";
   /** Oppgaven merknaden hører til (planen for et element i flere scener). */
   readonly taskId?: string;
+  /** Notattype (AS3, migrasjon 0044). Mangler = vanlig notat. */
+  readonly kind?: "trial_edit";
+  /** Forsøksvis manusredigering (AS3, C2): den foreslåtte teksten for det markerte utdraget (`quote`). */
+  readonly suggestedText?: string;
 }
 
 // ---------- 2D-sceneeditor (M3 del 2, mandat kap. 11–12, DEC-0035) ----------
@@ -631,6 +635,17 @@ export interface ImageSwap {
   readonly assetId: AssetId;
   readonly assetVariantId: AssetVariantId | null;
   readonly versionId: AssetVersionId | null;
+  /**
+   * Overgang inn i bildet (Asset Studio AS2, A2): krysstoning over `frames` bilder fra `frame`. Mangler = hardt
+   * kutt. Lagres i image_swaps (jsonb).
+   */
+  readonly transition?: { readonly kind: "crossfade"; readonly frames: number };
+}
+
+/** Lagets aktive tidsområde (AS2, A3): bildene fra og med `from` til og med `to`. */
+export interface LayerActiveRange {
+  readonly from: number;
+  readonly to: number;
 }
 
 /** Punkt på en bevegelsesbane. `smooth`: kurvet gjennom punktet; ellers et hjørne (rette linjer). */
@@ -758,6 +773,8 @@ export interface CompositionLayer extends Entity<LayerId> {
   readonly reviewedVersions?: readonly string[];
   /** Blandingsmodus (REQ-0175, migrasjon 0026). Mangler = «normal». */
   readonly blend?: BlendMode;
+  /** Aktivt tidsområde (AS2, migrasjon 0043): laget tegnes bare innenfor. Mangler/null = hele scenen. */
+  readonly activeRange?: LayerActiveRange | null;
   readonly removed: boolean;
 }
 
