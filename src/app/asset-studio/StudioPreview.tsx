@@ -2,6 +2,7 @@
  * Forhåndsvisningen i Asset Studio (AS2, A4): «Bare objektet» tegner bare laget, tilpasset vinduet, uten å endre
  * den virkelige plasseringen; «Hele scenen» er kameravisningen med alle lag. Begge tegner fra utkastet.
  */
+import { textSpecsOf, useTextFonts } from "@/engine/typography/fonts";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { L, renderFrame, type Composition, type ProjectState } from "@/core";
 import { ImageCache, drawFrame } from "@/engine/compositor/canvas";
@@ -57,6 +58,7 @@ export function StudioPreview({
 
   useEffect(() => cache.ensure(urls), [cache, urls]);
 
+  const fontsVersion = useTextFonts(textSpecsOf(state, composition.id)).version;
   const out = useMemo(
     () =>
       mode === "object"
@@ -65,7 +67,8 @@ export function StudioPreview({
             onlyLayers: new Set([layerId]),
           })
         : renderFrame(state, composition.id, frame, { view: "camera" }),
-    [state, composition.id, frame, mode, layerId],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [state, composition.id, frame, mode, layerId, fontsVersion],
   );
 
   useEffect(() => {

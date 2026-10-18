@@ -63,6 +63,7 @@ import { SceneAudioRows } from "./SceneAudioRows";
 import { NearbyAudioPanel } from "./NearbyAudioPanel";
 import { Button } from "@/components/ui/button";
 import { AddLayerDialog } from "./AddLayerDialog";
+import { TextMenu } from "./TextMenu";
 import { CompositionInspector, LayerInspector } from "./LayerInspector";
 import { LayersPanel } from "./LayersPanel";
 import { Stage } from "./Stage";
@@ -647,6 +648,8 @@ function Editor({
           layer={selectedLayer}
           editable={editable}
           run={cmds.run}
+          projectId={projectId}
+          runAndWait={cmds.runAndWait}
           frame={playback.frame}
           autoKey={autoKey}
           onOpenImage={() => openLayerImage(selectedLayer.id)}
@@ -760,6 +763,9 @@ function Editor({
             <Plus />
             {L("Legg til lag", "Add layer")}
           </ToolbarButton>
+        ) : null}
+        {editable && composition ? (
+          <TextMenu state={state} composition={composition} run={cmds.run} onAdded={setSelectedLayerId} />
         ) : null}
         {audioEditable && occurrence ? (
           <ToolbarButton

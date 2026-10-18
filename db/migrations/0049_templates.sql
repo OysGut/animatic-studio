@@ -3,7 +3,7 @@
 -- Tre nivåer: maldefinisjon (uforanderlig ressursversjon av en ressurs med kind 'template', definisjonen i
 -- asset_versions.template_spec og en miniatyr som fil), innhold (template_instances.content) og forekomst
 -- (template_instances i én 2D-scene med låst malversjon; vanlige lag peker hit).
--- 1. assets.kind får 'template'. 2. asset_versions.template_spec (jsonb, høyst 512 kB).
+-- 1. assets.kind får 'template'. 2. asset_versions.template_spec (jsonb, høyst 256 kB).
 -- 3. public.template_instances: prosjektdata, skrives bare via apply_changes; on delete restrict.
 --    composition_layers.template_instance_id får fremmednøkkel hit.
 -- 4. apply_changes: som 0040, med template_instances i v_tables (etter compositions) og i delete-rekkefølgen
@@ -19,7 +19,7 @@ alter table public.assets add constraint assets_kind_check
   check (kind in ('character','object','location','animal','environment','other','sound','template'));
 
 alter table public.asset_versions add column if not exists template_spec jsonb
-  check (template_spec is null or (jsonb_typeof(template_spec) = 'object' and pg_column_size(template_spec) <= 524288));
+  check (template_spec is null or (jsonb_typeof(template_spec) = 'object' and pg_column_size(template_spec) <= 262144));
 
 create table public.template_instances (
   id uuid primary key,

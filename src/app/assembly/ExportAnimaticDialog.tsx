@@ -32,6 +32,8 @@ import {
   toSrt,
   toVtt,
 } from "@/core";
+import { useTextFonts } from "@/engine/typography/fonts";
+import type { TextSpec } from "@/core";
 import { ExportError, canExportVideo, exportAnimatic, loadImages } from "@/engine/export/animatic";
 import {
   STEM_MAX_SECONDS,
@@ -217,7 +219,7 @@ export function ExportAnimaticDialog({
   const outH = size === "full" ? fullH : Math.round(fullH / 2);
 
   // Eksportkontroll (mandat 29.6): sceneorden, skjulte scener, materiale og manglende filer
-  const { checks, paths, audioPaths } = useMemo(() => {
+  const { checks: baseChecks, paths, audioPaths, texts } = useMemo(() => {
     const out: Check[] = [];
     const n = sel.clips.length;
     out.push({
@@ -283,11 +285,13 @@ export function ExportAnimaticDialog({
         ),
       });
     const need = new Set<string>();
+    const texts: TextSpec[] = [];
     let missingVersions = 0;
     for (const c of sel.clips) {
       if (!c.compositionId || !c.parts.some((p) => p.source === "composition")) continue;
       for (const l of layersOf(state, c.compositionId)) {
         if (!l.visible) continue;
+        if (l.kind === "text" && l.text) texts.push(l.text);
         const vs = layerVersions(state, l);
         for (const v of vs) need.add(v.mediaPath);
         if (vs.length === 0 && l.assetId !== null) missingVersions++;
@@ -389,7 +393,7 @@ export function ExportAnimaticDialog({
     const audioPaths = [
       ...new Set(usedAudio.flatMap((it) => (it.version ? [it.version.mediaPath] : []))),
     ];
-    return { checks: out, paths: output === "dialogue" ? [] : [...need], audioPaths };
+    return { checks: out, paths: output === "dialogue" ? [] : [...need], audioPaths, texts };
   }, [
     sel,
     scope,
@@ -405,6 +409,21 @@ export function ExportAnimaticDialog({
     subtitles,
   ]);
 
+  // Fontene for tekstlagene (MTS §61): lastes nå; eksporten venter på dem. Manglende font gir advarsel.
+  const fontState = useTextFonts(output === "dialogue" ? [] : texts);
+  const checks: Check[] =
+    fontState.missing.length > 0
+      ? [
+          ...baseChecks,
+          {
+            level: "warn",
+            text: L(
+              `Fonten mangler: ${fontState.missing.join(", ")}. Teksten tegnes med en reservefont.`,
+              `Missing font: ${fontState.missing.join(", ")}. The text is drawn with a fallback font.`,
+            ),
+          },
+        ]
+      : baseChecks;
   const warnings = checks.some((c) => c.level === "warn");
   const busy = progress !== null && ready === null && error === null;
   const supported = canExportVideo();

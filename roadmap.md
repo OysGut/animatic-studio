@@ -42,10 +42,11 @@
 # GP2–GP5
 - [x] GP2 globalt bibliotek (0046), GP3 videreføring, GP4 nytt prosjekt med skriveassistent, GP5 QR-deling (0047). Migrasjoner skrevet, ikke kjørt. DB- og nettlesertester kjøres av Øystein.
 # MT (Motion Typography) runde 1
-- [x] MT1 kjerne: tekst-, form- og effektmodell, renderFrame/canvas, 0048 (lat fontlasting gjenstår)
-- [ ] MT2 egenskapspanel for tekst, «Legg til tekst»
-- [~] MT3 kjerne ferdig (bokstavanimasjon, oppsett); UI gjenstår
-- [~] MT4 kjerne, kommandoer og 0049 ferdig; «Lagre som mal»-UI gjenstår
-- [ ] MT5 lower thirds og «Bruk samme design som i scene …»
+- [x] MT1: modell, renderFrame/canvas, 0048, lat fontlasting og fontsReady i eksporten
+- [x] MT2 egenskapspanel for tekst, form og effekter, «Legg til tekst»
+- [x] MT3 bokstavanimasjon og knapper for inn/ut
+- [x] MT4 «Lagre som mal» med miniatyr, varsel og oppdatering ved ny malversjon; 256 kB-grense
+- [x] MT5 lower thirds og «Bruk samme design som i scene …»
+- [x] DB-tester 0048/0049, nettlesertester mts-engine, mts-lower-thirds, mts-nondestructive (AI–AJ) skrevet; Øystein kjører dem
 - [ ] Nettlesertester mts-engine, mts-lower-thirds, mts-nondestructive (AI–AJ)
 - [ ] MT6–MT9 neste runde (inkl. occurrences.kind, manusmarkør, filtre i manusutforsker/OG2/oversettelse)

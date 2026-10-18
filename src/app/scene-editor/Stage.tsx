@@ -6,6 +6,7 @@
  */
 import { ZoomIn, ZoomOut } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { textSpecsOf, useTextFonts } from "@/engine/typography/fonts";
 import {
   applyMatrix,
   cameraAt,
@@ -670,12 +671,15 @@ export function Stage({
       },
     };
   }, [state, draft, pathDraft, maskDraft]);
+  // Fontene for tekstlagene lastes først nå (MTS §61); ny måling når de er lastet
+  const fontsVersion = useTextFonts(textSpecsOf(state, composition.id)).version;
   const frame = useMemo(
     () =>
       cameraMode
         ? renderFrame(state, composition.id, time, { view: "camera" })
         : renderFrame(stateWithDraft, composition.id, time, { view: "scene", includeHidden: true }),
-    [state, stateWithDraft, composition, time, cameraMode],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [state, stateWithDraft, composition, time, cameraMode, fontsVersion],
   );
   const canEdit = editable && !playing && !cameraMode;
   // Kamerautsnittet som vises: valgt, ellers det som gjelder på bildet (med utkast under dra)
