@@ -17,7 +17,9 @@ import {
   globalKindOf,
   isGlobalPathOf,
   isUuid,
+  templateError,
   type AssetMedia,
+  type TemplateDefinition,
 } from "@/core";
 import type { AnyClient } from "@/adapters/storage/project-rows";
 
@@ -175,6 +177,7 @@ export interface GlobalVersionInput {
   readonly sha256: string;
   readonly durationMs: number | null;
   readonly note: string;
+  readonly template?: TemplateDefinition | null;
 }
 
 function intOrNull(v: unknown): number | null {
@@ -192,6 +195,11 @@ export const registerGlobalVersion = createServerFn({ method: "POST" })
     };
     const byteSize = x["byteSize"];
     if (typeof byteSize !== "number" || !Number.isInteger(byteSize) || byteSize <= 0) bad();
+    const template = x["template"] ?? null;
+    if (template !== null) {
+      const error = templateError(template);
+      if (error) throw new Error(error);
+    }
     return {
       variantId: uuid(x["variantId"]),
       path: s("path", 600),
@@ -202,6 +210,7 @@ export const registerGlobalVersion = createServerFn({ method: "POST" })
       sha256: s("sha256", 64),
       durationMs: intOrNull(x["durationMs"]),
       note: s("note", 2000),
+      template: template as TemplateDefinition | null,
     };
   })
   .handler(async ({ data, context }): Promise<string> => {
@@ -226,6 +235,7 @@ export const registerGlobalVersion = createServerFn({ method: "POST" })
       p_sha256: data.sha256,
       p_duration_ms: data.durationMs,
       p_note: data.note,
+      p_template_spec: data.template ?? null,
     });
     if (error) throw new Error(error.message);
     return id as string;
@@ -283,7 +293,7 @@ export const saveAssetToGlobal = createServerFn({ method: "POST" })
     }[]).filter((v) => !v.archived);
     const { data: versions } = await db
       .from("asset_versions")
-      .select("id, variant_id, number, media_path, mime_type, width, height, byte_size_big, sha256, duration_ms, note, removed")
+      .select("id, variant_id, number, media_path, mime_type, width, height, byte_size_big, sha256, duration_ms, note, removed, template_spec")
       .in(
         "variant_id",
         vars.map((v) => v.id),
@@ -301,6 +311,7 @@ export const saveAssetToGlobal = createServerFn({ method: "POST" })
       duration_ms: number | null;
       note: string;
       removed: boolean | null;
+      template_spec: TemplateDefinition | null;
     }[])
       .filter((v) => !v.removed && v.media_path.startsWith(`${data.projectId}/`))
       .sort((x, y) => x.number - y.number);
@@ -338,6 +349,7 @@ export const saveAssetToGlobal = createServerFn({ method: "POST" })
           p_sha256: ver.sha256,
           p_duration_ms: ver.duration_ms,
           p_note: ver.note ?? "",
+          p_template_spec: ver.template_spec ?? null,
         });
         if (e3) throw new Error(e3.message);
         count++;

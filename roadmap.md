@@ -1,4 +1,8 @@
 # MU1
+## MT retterunde 4
+- [ ] Bevar globale maldefinisjoner gjennom lagring og bruk; skriv 0052 uten å kjøre den.
+- [ ] Rundtur- og DB-tester, venting i S, fixture og regresjonskontroll.
+
 - [x] Flytende popup på z-40, under Radix-portalene (z-50) og over arbeidsflaten. Tsc rent; vitest 1451 bestått.
 - [x] Rett MU1/OG1-testenes teksthistorikk, overskriftsfelt og engelske gruppe; høyreforankre popupen. Vitest: 1451 bestått etter omkjøring med to arbeidere; automatisk typekontroll grønn. Øystein kjører nettlesertestene.
 - [x] Aktiv-scene-buss og Story Lab-scenefølging.
