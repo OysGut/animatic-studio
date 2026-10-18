@@ -227,7 +227,6 @@ const waitUntil = async (condition, label, timeout = 20000) => {
   const start = Date.now();
   while (!condition()) { if (Date.now() - start > timeout) throw new Error(label); await new Promise((resolve) => setTimeout(resolve, 40)); }
 };
-async function confirm(page) { await page.getByTestId("storylab-suggestions-confirm").click(); }
 
 const DIALOGUE = SCENE_BLOCKS.find((b) => b.kind === "dialogue");
 if (!DIALOGUE) throw new Error("Fixture lacks dialogue");
@@ -289,7 +288,7 @@ await run("improvisert replikk etter valgt blokk", async (page) => {
   const cs = S.commands.map((d) => d.command);
   check(cs.length === 2 && cs.every((c) => c.type === "InsertBlock"), "replikk gir to InsertBlock");
   check(cs[0].block.kind === "character" && cs[0].block.text === MAJA.name.toUpperCase() && cs[1].block.kind === "dialogue", "talernavn kommer fra biblioteket");
-  check(cs[0].block.orderKey > SCENE_BLOCKS[0].order_key && cs[0].block.orderKey < cs[1].block.orderKey, "nye blokker sorteres etter valgt blokk");
+  check(cs[0].block.orderKey > (SCENE_BLOCKS[0].order_key ?? SCENE_BLOCKS[0].orderKey) && cs[0].block.orderKey < cs[1].block.orderKey, "nye blokker sorteres etter valgt blokk");
 });
 await run("sceneutkast", async (page) => {
   await preview(page, 2); await apply(page, 2);
@@ -298,7 +297,7 @@ await run("sceneutkast", async (page) => {
 await run("profil med valgte felt", async (page) => {
   await preview(page, 3);
   const fields = page.getByTestId("storylab-suggestion-preview").locator("[data-field]");
-  await fields.filter({ has: page.locator('[type="checkbox"]') }).first().getByRole("checkbox").uncheck();
+  await page.getByTestId("storylab-suggestion-preview").locator('[data-field="speech.wordChoice"]').getByRole("checkbox").uncheck();
   await apply(page, 3);
   const c = S.commands[0].command;
   check(c.type === "SetStoryProfile" && c.assetId === MAJA.id, "profil går gjennom SetStoryProfile");
