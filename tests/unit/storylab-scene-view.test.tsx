@@ -51,3 +51,31 @@ it("replikksjekk bruker analysis-task og lagrer resultat med permanent blokk-ID"
   expect(saved.result.verdict).toBe("no"); expect(s.data.blocks.some((b) => b.id === saved.blockId)).toBe(true);
   expect(h.gen.mock.calls[0]?.[0]).toMatchObject({ data: { task: "storylab_analysis", json: true } });
 });
+it("lagret sceneanalyse åpnes uten nytt AI-kall", async () => {
+  const main = mainProduction(fixture.state); if (!main) throw new Error("Missing main");
+  const scene = orderedOccurrences(fixture.state, main.id).find((o) => sceneLabData(fixture.state, o.sceneId).participants.length >= 2); if (!scene) throw new Error("Missing scene");
+  const initial = { id: "stored", kind: "scene_analysis", context: { sceneId: scene.sceneId }, turns: [{ id: "analysis", kind: "analysis", text: JSON.stringify({ points: ANALYSIS_ASPECTS.map((aspect) => ({ aspect, finding: "Finding", evidence: [], suggestion: "Suggestion", uncertain: false })) }) }], costUsd: 0.02 } as unknown as StorySession;
+  setup(initial); expect(h.gen).not.toHaveBeenCalled(); expect(h.create).not.toHaveBeenCalled();
+});
+it("A B C forgrenes tomt, får øktregi og kjører 24 sekvensielle kall", async () => {
+  const main = mainProduction(fixture.state); if (!main) throw new Error("Missing main");
+  const scene = orderedOccurrences(fixture.state, main.id).find((o) => sceneLabData(fixture.state, o.sceneId).participants.length >= 2); if (!scene) throw new Error("Missing scene");
+  const participants = sceneLabData(fixture.state, scene.sceneId).participants.map((a) => a.id);
+  const initial = { id: "improv", kind: "scene_improv", title: "Scene", context: { sceneId: scene.sceneId, participants, profiles: {}, seed: 1, mode: "improv", situation: "Middag" }, turns: [], costUsd: 0 } as unknown as StorySession;
+  setup(initial);
+  let active = 0, maximum = 0;
+  h.gen.mockImplementation(async () => { active++; maximum = Math.max(maximum, active); await Promise.resolve(); active--; return { ok: true, text: "Hei", costUsd: 0.01, usedFallback: false }; });
+  let count = 0;
+  h.fork.mockImplementation(async ({ data }) => ({ ok: true, session: { ...initial, id: `branch-${++count}`, title: data.title, parentSessionId: initial.id, turns: [] } }));
+  fireEvent.click(screen.getByTestId("storylab-variants"));
+  for (const letter of ["a", "b", "c"]) fireEvent.change(screen.getByTestId(`storylab-variant-${letter}`), { target: { value: `Direction ${letter}` } });
+  expect(h.gen).not.toHaveBeenCalled(); fireEvent.click(screen.getByTestId("storylab-scene-confirm"));
+  await waitFor(() => expect(h.gen).toHaveBeenCalledTimes(24));
+  await waitFor(() => expect(h.append).toHaveBeenCalledTimes(30));
+  expect(maximum).toBe(1);
+  expect(h.fork.mock.calls.map(([arg]) => arg.data.fromTurn)).toEqual([-1, -1, -1]);
+  expect(h.fork.mock.calls.map(([arg]) => arg.data.title.slice(-1))).toEqual(["A", "B", "C"]);
+  expect(h.gen.mock.calls[0]?.[0].data.system).toContain("Direction a");
+  expect(h.gen.mock.calls[8]?.[0].data.system).toContain("Direction b");
+  expect(h.gen.mock.calls[16]?.[0].data.system).toContain("Direction c");
+});
