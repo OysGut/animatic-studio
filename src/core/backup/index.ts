@@ -63,6 +63,9 @@ export const BACKUP_STATE_TABLES = [
   "asset_relations",
   "posters",
   "style_profiles",
+  "story_profiles",
+  "story_profile_stages",
+  "story_facts",
 ] as const;
 export type BackupStateTable = (typeof BACKUP_STATE_TABLES)[number];
 
@@ -428,6 +431,39 @@ export function assertSelfContained(b: BackupData, map: ReadonlyMap<string, stri
           ),
         );
   }
+  assertStoryLabRefs(b, map);
+}
+
+/** Story Lab (SL1): hvem som vet (story_facts.known_by) og hva karakteren tror om andre (profilen). */
+function assertStoryLabRefs(b: BackupData, map: ReadonlyMap<string, string>): void {
+  const bad = (col: string) =>
+    new Error(
+      L(
+        `Sikkerhetskopien viser til noe som ikke er med i den (${col}) og kan ikke brukes.`,
+        `The backup refers to something that is not in it (${col}) and cannot be used.`,
+      ),
+    );
+  const ref = (v: unknown, col: string, nullable: boolean) => {
+    if ((v === null || v === undefined) && nullable) return;
+    if (typeof v !== "string" || !map.has(v)) throw bad(col);
+  };
+  for (const r of b.tables["story_facts"] ?? []) {
+    const k = (r as Record<string, unknown>)["known_by"];
+    const list = typeof k === "string" ? safeJson(k) : k;
+    if (!Array.isArray(list)) throw bad("story_facts.known_by");
+    for (const w of list as Record<string, unknown>[]) {
+      ref(w?.["assetId"], "story_facts.known_by", false);
+      ref(w?.["fromSceneId"], "story_facts.known_by", true);
+    }
+  }
+  for (const r of b.tables["story_profiles"] ?? []) {
+    const p = (r as Record<string, unknown>)["profile"];
+    const prof = (typeof p === "string" ? safeJson(p) : p) as {
+      dramatic?: { beliefsAboutOthers?: { assetId?: unknown }[] };
+    } | null;
+    for (const x of prof?.dramatic?.beliefsAboutOthers ?? [])
+      ref(x?.assetId, "story_profiles.profile", false);
+  }
 }
 
 function safeJson(t: string): unknown {
@@ -527,6 +563,9 @@ export function restoredState(
     asset_relations: t("asset_relations"),
     posters: t("posters"),
     style_profiles: t("style_profiles"),
+    story_profiles: t("story_profiles"),
+    story_profile_stages: t("story_profile_stages"),
+    story_facts: t("story_facts"),
   };
   let state: ProjectState;
   try {

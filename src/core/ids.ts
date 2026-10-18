@@ -40,6 +40,10 @@ export type TranslationId = Id<"translation">;
 export type AssetRelationId = Id<"asset_relation">;
 export type PosterId = Id<"poster">;
 export type StyleProfileId = Id<"style_profile">;
+/** Story Lab (SL1): karakterprofil, stadium i karakterbuen og faktum/hemmelighet. */
+export type StoryProfileId = Id<"story_profile">;
+export type StoryProfileStageId = Id<"story_profile_stage">;
+export type StoryFactId = Id<"story_fact">;
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
