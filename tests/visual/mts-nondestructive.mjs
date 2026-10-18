@@ -5,7 +5,7 @@
 import { harness } from "./mts-harness.mjs";
 
 const h = harness("/tmp/claude-0/mts-nondestructive");
-const { M, state, check, scenario, selectLayer } = h;
+const { M, state, check, scenario, selectLayer, eventually } = h;
 
 await scenario("AI-ny-versjon-endrer-ingenting", M.sceneA, "nb", async (page) => {
   check(state.commands.length === 0, "AI: å åpne scenen med en nyere malversjon sender ingen endringer");
@@ -21,8 +21,10 @@ await scenario("AJ-behold-eller-oppdater", M.sceneA, "nb", async (page) => {
   const field = page.getByTestId("mts-template-field-navn");
   await field.fill("Lokal endring");
   await field.blur();
+  await eventually(() => state.commands.length > 0);
   check(!state.commands.some((c) => c?.steps?.some((s) => s.type === "UpdateTemplateInstance" && s.fields.templateVersionId === M.v2)), "AJ: eksisterende malversjon beholdes når innholdet endres");
   await page.getByTestId("mts-template-update").click();
+  await eventually(() => state.commands.some((c) => c?.steps?.some((s) => s.type === "UpdateTemplateInstance" && s.fields.templateVersionId === M.v2)));
   const up = state.commands.find((c) => c?.steps?.some((s) => s.type === "UpdateTemplateInstance" && s.fields.templateVersionId === M.v2));
   check(!!up, "AJ: «Oppdater til ny versjon» bytter til versjon 2 i én kommando");
   const role = up?.steps?.find((s) => s.type === "UpdateLayers")?.layers?.find((l) => l.layerId === M.instanceRole);

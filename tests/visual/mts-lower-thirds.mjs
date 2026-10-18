@@ -5,7 +5,7 @@
 import { harness } from "./mts-harness.mjs";
 
 const h = harness("/tmp/claude-0/mts-lower-thirds");
-const { M, state, check, scenario, selectLayer, waitHidden, menu } = h;
+const { M, state, check, scenario, selectLayer, waitHidden, menu, eventually } = h;
 
 await scenario("X-lag-lower-third-mal", M.sceneA, "nb", async (page) => {
   await menu(page, "mts-add-lower-third");
@@ -21,6 +21,7 @@ await scenario("X-lag-lower-third-mal", M.sceneA, "nb", async (page) => {
   await page.getByTestId("mts-save-template-name").fill("Min lower third");
   await page.getByTestId("mts-save-template-confirm").click();
   await waitHidden(dialog);
+  await eventually(() => state.commands.some((c) => c?.type === "AddAssetVersion"));
   const ver = state.commands.find((c) => c?.type === "AddAssetVersion");
   check(ver?.template?.category === "lower_third" && ver.template.slots.map((s) => s.key).join(",") === "navn,rolle", "X: malen har feltene navn og rolle");
 });
@@ -33,6 +34,7 @@ await scenario("Y-bruk-i-scene", M.sceneA, "nb", async (page) => {
 
 await scenario("Z-AA-AB-samme-design", M.sceneB, "nb", async (page) => {
   await menu(page, `mts-same-design-${M.instance}`);
+  await eventually(() => state.commands.some((x) => x?.type === "ApplyTemplate"));
   const c = state.commands.find((x) => x?.type === "ApplyTemplate");
   const inst = c?.steps?.find((s) => s.type === "AddTemplateInstance");
   check(inst && inst.instanceId !== M.instance, "Z: «Bruk samme design» lager en ny forekomst (ny rad)");
@@ -48,6 +50,7 @@ await scenario("Z-AA-AB-samme-design", M.sceneB, "nb", async (page) => {
   const role = page.getByTestId("mts-template-field-rolle");
   await role.fill("Produsent");
   await role.blur();
+  await eventually(() => state.commands.slice(n).filter((x) => x?.type === "ApplyTemplate").length === 2);
   const later = state.commands.slice(n).filter((x) => x?.type === "ApplyTemplate");
   check(later.length === 2, "AA: navn og rolle endres i egenskapspanelet");
   const touched = later.flatMap((x) => x.steps.flatMap((s) => (s.type === "UpdateTemplateInstance" ? [s.instanceId] : s.layers?.map((l) => l.layerId) ?? [])));
