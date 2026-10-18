@@ -6,6 +6,7 @@
 import type { AudioClip, ProjectState } from "../model";
 import { assetNames, nameKey } from "../library";
 import { lineInfo } from "./takes";
+import { blocksOfVariant } from "../views";
 
 export interface AssetAudioGroups {
   /** Musikk, atmosfære og effekter i scenen som ikke hører til ressursen. */
@@ -42,4 +43,19 @@ export function assetAudioGroups(
     else if (c.kind === "music" || c.kind === "ambience" || c.kind === "sfx") scene.push(c);
   }
   return { scene, asset };
+}
+
+/** Replikkene i scenen der ressursen er taleren (for «Vis manus» og forsøksvis redigering, AS3). */
+export function assetLineIds(s: ProjectState, occurrenceId: string, assetId: string): string[] {
+  const occ = s.occurrences[occurrenceId];
+  const asset = s.assets[assetId];
+  if (!occ || !asset) return [];
+  const keys = new Set(assetNames(asset).filter((n) => n.trim()).map(nameKey));
+  const out: string[] = [];
+  for (const b of blocksOfVariant(s, occ.variantId)) {
+    if (b.kind !== "dialogue") continue;
+    const info = lineInfo(s, occurrenceId, b.id);
+    if (info?.speaker && keys.has(nameKey(info.speaker))) out.push(b.id);
+  }
+  return out;
 }
