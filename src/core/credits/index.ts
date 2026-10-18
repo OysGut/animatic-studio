@@ -16,7 +16,7 @@ import {
 import type { CreditParticipantId, CreditSequenceId, OccurrenceId } from "../ids";
 
 /** Feltnøklene som brukes i standardoppsettet (malen kan ha flere; deltakerens `fields` følger malen). */
-export const CREDIT_FIELD_KEYS = ["navn", "rolle"] as const;
+export const CREDIT_FIELD_KEYS = ["navn", "rolle"] as const; // i18n-ignore – interne feltnøkler
 
 /** Synlige deltakere i rekkefølge (skjulte tas aldri med; rekkefølgen endrer ikke malen). */
 export function creditParticipantsOf(

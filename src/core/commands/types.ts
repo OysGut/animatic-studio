@@ -257,6 +257,8 @@ export type Command =
       readonly storyTime?: StoryTime;
       readonly productionNumber?: string | null;
       readonly headingUncertainty?: string | null;
+      /** Scenetype (MTS MT6): utelatt/«scene» = vanlig manusscene. */
+      readonly kind?: import("../model").OccurrenceKind;
     }
   | {
       /** Hele manuset importeres i én atomisk kommando som kan angres samlet (mandat 4.1–4.3). */

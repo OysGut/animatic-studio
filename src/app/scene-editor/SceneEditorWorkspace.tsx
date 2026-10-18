@@ -41,6 +41,7 @@ import {
   isSharedIn,
   newId,
   ownCopyCommands,
+  occurrenceKind,
   orderedOccurrences,
   audioClipFieldsOf,
   audioVersion,
@@ -64,6 +65,8 @@ import { NearbyAudioPanel } from "./NearbyAudioPanel";
 import { Button } from "@/components/ui/button";
 import { AddLayerDialog } from "./AddLayerDialog";
 import { TextMenu } from "./TextMenu";
+import { PagesPanel } from "./PagesPanel";
+import { CreditsPanel } from "./CreditsPanel";
 import { CompositionInspector, LayerInspector } from "./LayerInspector";
 import { LayersPanel } from "./LayersPanel";
 import { Stage } from "./Stage";
@@ -682,6 +685,22 @@ function Editor({
         />
       )
     ) : null,
+    // Sider i tittel- og tekstscener (MTS MT6)
+    pages:
+      composition && occurrence && (occurrenceKind(occurrence) === "title" || occurrenceKind(occurrence) === "text") ? (
+        <PagesPanel
+          state={state}
+          composition={composition}
+          editable={editable}
+          run={cmds.run}
+          onSelect={setSelectedLayerId}
+        />
+      ) : null,
+    // Rulleteksten: design og deltakerregister (MTS MT7)
+    credits:
+      occurrence && occurrenceKind(occurrence) === "credits" ? (
+        <CreditsPanel state={state} occurrenceId={occurrence.id} editable={editable} run={cmds.run} />
+      ) : null,
   };
 
   return (
