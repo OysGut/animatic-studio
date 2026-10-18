@@ -11,6 +11,7 @@ import {
   Copy,
   FlipHorizontal2,
   FlipVertical2,
+  Clapperboard,
   Image as ImageIcon,
   Ratio,
   Trash2,
