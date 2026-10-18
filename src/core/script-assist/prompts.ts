@@ -261,7 +261,7 @@ function scenePrompt(s: ProjectState, r: AssistRequest): AssistPrompt | string {
   const prevBlocks = after ? sceneBlocks(s, after.id) : [];
   const haystack = `${brief}\n${prevBlocks.filter((b) => b.kind === "character").map((b) => b.text).join("\n")}`.toLowerCase();
   const cast = characterAssets(s).filter((a) =>
-    [a.name, ...a.names].some((n) => n.trim() && haystack.includes(n.trim().toLowerCase())),
+    [a.name, ...a.names.map((x) => x.name)].some((n) => n.trim() && haystack.includes(n.trim().toLowerCase())),
   );
   // Flere karakterer skriver i samme scene: ingen hemmeligheter, bare det hver av dem vet
   const castText = cast
