@@ -41,6 +41,9 @@ import {
   scriptOnlyChoice,
   transferSceneCommands,
   posterDraft,
+  createDraft,
+  pushDraft,
+  draftCommand,
 } from "../../src/core";
 
 const ADMIN_URL = process.env["DATABASE_URL"] ?? "postgres://postgres@localhost:54329/postgres";
