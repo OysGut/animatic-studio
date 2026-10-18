@@ -240,8 +240,8 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     },
     keyPattern: /^sk-[A-Za-z0-9_-]{20,}$/,
     models: [
-      textModel("gpt-5", "GPT-5", "premium", 1.25, 10, 400000),
-      textModel("gpt-5-mini", "GPT-5 mini", "fast", 0.25, 2, 400000),
+      textModel("gpt-5", "GPT-5", "premium", 1.25, 10, 400_000),
+      textModel("gpt-5-mini", "GPT-5 mini", "fast", 0.25, 2, 400_000),
       {
         id: "gpt-image-2.5-flare",
         get label() {
@@ -832,9 +832,9 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     },
     keyPattern: /^sk-ant-[A-Za-z0-9_-]{20,}$/,
     models: [
-      textModel("claude-sonnet-4-5", "Claude Sonnet 4.5", "balanced", 3, 15, 200000),
-      textModel("claude-haiku-4-5", "Claude Haiku 4.5", "fast", 1, 5, 200000),
-      textModel("claude-opus-4-1", "Claude Opus 4.1", "premium", 15, 75, 200000),
+      textModel("claude-sonnet-4-5", "Claude Sonnet 4.5", "balanced", 3, 15, 200_000),
+      textModel("claude-haiku-4-5", "Claude Haiku 4.5", "fast", 1, 5, 200_000),
+      textModel("claude-opus-4-1", "Claude Opus 4.1", "premium", 15, 75, 200_000),
     ],
   },
   {
@@ -870,8 +870,8 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     },
     keyPattern: /^xai-[A-Za-z0-9_-]{20,}$/,
     models: [
-      textModel("grok-4", "Grok 4", "premium", 3, 15, 256000),
-      textModel("grok-3-mini", "Grok 3 mini", "fast", 0.3, 0.5, 131072),
+      textModel("grok-4", "Grok 4", "premium", 3, 15, 256_000),
+      textModel("grok-3-mini", "Grok 3 mini", "fast", 0.3, 0.5, 131_072),
     ],
   },
 ];
