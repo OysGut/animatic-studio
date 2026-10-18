@@ -37,3 +37,4 @@ Kortversjonen:
 17. The global library (GP2) is owned by workspaces and written only through security-definer functions; using a global asset copies its files into the project once per global version and keeps the link only as metadata, so projects and backups never depend on workspace membership.
 18. Carry-over between scenes (GP3) is planned by the pure planCarryOver and run as one undo group of existing commands; it never targets the source 2D scene, so it cannot mix with an open Asset Studio draft.
 19. Film shares (GP5) bind a hashed token to one exported film version uploaded as mp4; the public /se/$token page resolves only through a server function that returns title, format, duration and a short-lived signed URL.
+20. Text-layer fonts come only from the licensed catalog in src/core/typography/fonts.ts, load lazily (incl. real italics) via src/engine/typography, and export awaits fontsReady; this keeps startup light and preview/export text identical.

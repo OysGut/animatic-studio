@@ -40,7 +40,8 @@ create index template_instances_version_idx on public.template_instances (templa
 alter table public.template_instances enable row level security;
 create policy template_instances_read on public.template_instances for select to authenticated
   using (private.is_project_member(project_id));
-revoke insert, update, delete, truncate on public.template_instances from anon, authenticated;
+revoke all on public.template_instances from anon;
+revoke insert, update, delete, truncate on public.template_instances from authenticated;
 grant select on public.template_instances to authenticated;
 grant all on public.template_instances to service_role;
 

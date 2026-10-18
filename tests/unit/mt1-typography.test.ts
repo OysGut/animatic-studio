@@ -55,3 +55,15 @@ describe("Arkitektur: tekstlag tegnes bare i canvas.ts", () => {
     expect(bad).toEqual([]);
   });
 });
+
+describe("MT1 retterunde: ekte kursiv", () => {
+  it("kursiv tekst ber om ekte kursivfil når fonten har den, ellers bare vanlig vekt", async () => {
+    const { fontsNeeded } = await import("@/core/typography/fonts");
+    expect(fontsNeeded([{ fontId: "lora", weight: 700, italic: true }])).toEqual([
+      { fontId: "lora", weight: 700 },
+      { fontId: "lora", weight: 700, italic: true },
+    ]);
+    expect(fontsNeeded([{ fontId: "cinzel", weight: 400, italic: true }])).toEqual([{ fontId: "cinzel", weight: 400 }]);
+    expect(fontsNeeded([{ fontId: "lora", weight: 400, italic: false }])).toEqual([{ fontId: "lora", weight: 400 }]);
+  });
+});
