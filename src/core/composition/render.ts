@@ -747,6 +747,44 @@ export function renderFrame(
         name: l.name,
       });
     }
+  // Rulletekst (MTS MT7, §63): deltakerlagene lagres ikke – de lages virtuelt fra sekvensen, deltakerne
+  // og tiden, og bare det som er synlig i bildet, tegnes. Samme vei i forhåndsvisning og eksport.
+  const credits = creditsForComposition(s, compositionId);
+  if (credits && !backgroundOnly) {
+    for (const t of creditDrawTexts(s, credits, frame, c.width, c.height)) {
+      const spec: TextSpec = {
+        content: t.text,
+        fontId: "inter",
+        size: t.size,
+        weight: 400,
+        italic: false,
+        color: "#ffffff",
+        letterSpacing: 0,
+        lineHeight: 1.2,
+        align: "center",
+        vAlign: "top",
+        wrap: false,
+      };
+      const lay = layoutText(spec, c.width, t.size * 1.5);
+      items.push({
+        layerId: `credit:${t.participantId}`,
+        kind: "text",
+        version: null,
+        fill: null,
+        width: c.width,
+        height: t.size * 1.5,
+        matrix: translate(t.x, t.y + (t.size * 1.5) / 2),
+        opacity: t.opacity,
+        locked: true,
+        name: t.text,
+        text: {
+          font: lay.font,
+          color: spec.color,
+          glyphs: lay.glyphs.map((g) => ({ char: g.char, x: g.x, y: g.y, opacity: 1, dx: 0, dy: 0, scale: 1 })),
+        },
+      });
+    }
+  }
   return { width: c.width, height: c.height, background: c.background, items };
 }
 
