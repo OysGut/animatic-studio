@@ -5375,7 +5375,7 @@ try {
     await sql`update public.assets set removed = true where id = ${MT(10)}`;
     await expectError(
       as("service_role", null, (tx) => tx`select public.purge_removed_assets(${mtp}, ${ALICE}, ${[MT(10)]}::uuid[], ${[]}::uuid[])`),
-      "P0001",
+      "23503",
     );
     await sql`update public.assets set removed = false where id = ${MT(10)}`;
     await as("service_role", null, (tx) => tx`select public.delete_project(${mtp}, ${ALICE})`);
