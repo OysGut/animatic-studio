@@ -86,7 +86,7 @@ function scene() {
     fields: { ...DEFAULT_COMPOSITION, durationFrames: 200 },
   });
   const layerId = tid<"composition_layer">();
-  const base = defaultLayerFields(s, s.compositions[compositionId]!, { name: "Maja" });
+  const base = defaultLayerFields(s, s.compositions[compositionId]!, { fill: "#808080", name: "Maja" });
   s = mustApply(s, {
     type: "AddLayers",
     layers: [
@@ -153,7 +153,8 @@ describe("AS2 – bildesegmenter (kriterium 1 og 2)", () => {
     const r = removeImageSegment(f, 1)!;
     expect(r.swaps).toHaveLength(0);
     const n = update(update(s, layerId, f), layerId, r);
-    expect(n.assetVersions[images[1]!.versionId as never]?.removed).toBe(false);
+    expect(n.assetVersions[images[1]!.versionId as never]).toBeDefined();
+    expect(n.assetVersions[images[1]!.versionId as never]?.removed ?? false).toBe(false);
   });
 });
 
