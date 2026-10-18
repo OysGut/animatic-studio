@@ -13,7 +13,7 @@ import {
   type TextSpec,
 } from "@/core";
 import { resetTextMeasure } from "@/engine/compositor/canvas";
-import { FONT_LOADERS } from "./font-loaders";
+import { FONT_ITALIC_LOADERS, FONT_LOADERS } from "./font-loaders";
 
 type Status = "loading" | "ready" | "missing";
 const status = new Map<string, Status>();
@@ -26,25 +26,25 @@ function bump() {
   for (const l of listeners) l();
 }
 
-const keyOf = (fontId: string, weight: number) => `${fontId}:${weight}`;
+const keyOf = (fontId: string, weight: number, italic?: boolean) => `${fontId}:${weight}${italic ? ":i" : ""}`;
 
 /** Test-krok: gjør at en font regnes som manglende (brukes av nettlesertestene via window). */
 const forcedMissing = new Set<string>();
 
-async function loadOne(fontId: string, weight: number): Promise<void> {
-  const key = keyOf(fontId, weight);
+async function loadOne(fontId: string, weight: number, italic = false): Promise<void> {
+  const key = keyOf(fontId, weight, italic);
   const f = fontById(fontId);
   if (!f) return;
   try {
     if (forcedMissing.has(fontId)) throw new Error("missing");
     if (f.loading === "lazy") {
-      const loader = FONT_LOADERS[fontId]?.[weight];
+      const loader = (italic ? FONT_ITALIC_LOADERS : FONT_LOADERS)[fontId]?.[weight];
       if (!loader) throw new Error("no loader");
       await loader();
     }
     if (typeof document !== "undefined" && document.fonts) {
       // Æ, ø og å er med i prøveteksten, så latin-ext-delen lastes også
-      const css = cssFont({ fontId, size: 32, weight, italic: false });
+      const css = cssFont({ fontId, size: 32, weight, italic });
       const faces = await document.fonts.load(css, "AÆØÅaæøå"); // i18n-ignore – prøvetegn
       if (f.loading === "lazy" && faces.length === 0) throw new Error("not loaded");
     }
@@ -56,16 +56,18 @@ async function loadOne(fontId: string, weight: number): Promise<void> {
 }
 
 /** Last fontene (id + vekt). Gir løftet som er ferdig når alle er lastet eller meldt som manglende. */
-export function ensureFonts(list: readonly { fontId: string; weight: number }[]): Promise<void> {
+export function ensureFonts(
+  list: readonly { fontId: string; weight: number; italic?: boolean }[],
+): Promise<void> {
   const jobs: Promise<void>[] = [];
-  for (const { fontId, weight } of list) {
-    const key = keyOf(fontId, weight);
+  for (const { fontId, weight, italic } of list) {
+    const key = keyOf(fontId, weight, italic);
     const st = status.get(key);
     if (st === "ready" || st === "missing") continue;
     let p = pending.get(key);
     if (!p) {
       status.set(key, "loading");
-      p = loadOne(fontId, weight);
+      p = loadOne(fontId, weight, italic === true);
       pending.set(key, p);
     }
     jobs.push(p);
@@ -91,7 +93,7 @@ export function missingFonts(specs: Iterable<TextSpec>): string[] {
       continue;
     }
     for (const n of fontsNeeded([s]))
-      if (status.get(keyOf(n.fontId, n.weight)) === "missing") out.add(f.label);
+      if (status.get(keyOf(n.fontId, n.weight, n.italic)) === "missing") out.add(f.label);
   }
   return [...out];
 }
@@ -121,7 +123,7 @@ export function useFontsVersion(): number {
 export function useTextFonts(specs: readonly TextSpec[]): { missing: string[]; version: number } {
   const v = useFontsVersion();
   const key = fontsNeeded(specs)
-    .map((n) => keyOf(n.fontId, n.weight))
+    .map((n) => keyOf(n.fontId, n.weight, n.italic))
     .join(",");
   useEffect(() => {
     if (key) void ensureFonts(fontsNeeded(specs));

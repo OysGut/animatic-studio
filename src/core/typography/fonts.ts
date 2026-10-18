@@ -9,6 +9,8 @@ export interface FontEntry {
   readonly family: string;
   readonly label: string;
   readonly weights: readonly number[];
+  /** Vektene som har ekte kursivfiler (lastes lat). Andre vekter tegnes skråstilt av nettleseren. */
+  readonly italics?: readonly number[];
   readonly category: "serif" | "sans" | "display" | "mono";
   readonly license: "OFL-1.1";
   /** npm-pakken filene kommer fra. */
@@ -21,16 +23,16 @@ export const FONT_CATALOG: readonly FontEntry[] = [
   { id: "inter", family: "Inter Variable", label: "Inter", weights: [300, 400, 700, 900], category: "sans", license: "OFL-1.1", source: "@fontsource-variable/inter", loading: "css" },
   { id: "jetbrains-mono", family: "JetBrains Mono", label: "JetBrains Mono", weights: [400], category: "mono", license: "OFL-1.1", source: "@fontsource/jetbrains-mono", loading: "css" },
   { id: "courier-prime", family: "Courier Prime", label: "Courier Prime", weights: [400, 700], category: "mono", license: "OFL-1.1", source: "@fontsource/courier-prime", loading: "css" },
-  { id: "playfair-display", family: "Playfair Display", label: "Playfair Display", weights: [400, 700, 900], category: "serif", license: "OFL-1.1", source: "@fontsource/playfair-display", loading: "lazy" },
-  { id: "cormorant-garamond", family: "Cormorant Garamond", label: "Cormorant Garamond", weights: [300, 400, 700], category: "serif", license: "OFL-1.1", source: "@fontsource/cormorant-garamond", loading: "lazy" },
+  { id: "playfair-display", italics: [400, 700], family: "Playfair Display", label: "Playfair Display", weights: [400, 700, 900], category: "serif", license: "OFL-1.1", source: "@fontsource/playfair-display", loading: "lazy" },
+  { id: "cormorant-garamond", italics: [400, 700], family: "Cormorant Garamond", label: "Cormorant Garamond", weights: [300, 400, 700], category: "serif", license: "OFL-1.1", source: "@fontsource/cormorant-garamond", loading: "lazy" },
   { id: "cinzel", family: "Cinzel", label: "Cinzel", weights: [400, 700, 900], category: "display", license: "OFL-1.1", source: "@fontsource/cinzel", loading: "lazy" },
   { id: "bebas-neue", family: "Bebas Neue", label: "Bebas Neue", weights: [400], category: "display", license: "OFL-1.1", source: "@fontsource/bebas-neue", loading: "lazy" },
   { id: "oswald", family: "Oswald", label: "Oswald", weights: [300, 400, 700], category: "sans", license: "OFL-1.1", source: "@fontsource/oswald", loading: "lazy" },
-  { id: "montserrat", family: "Montserrat", label: "Montserrat", weights: [300, 400, 700, 900], category: "sans", license: "OFL-1.1", source: "@fontsource/montserrat", loading: "lazy" },
-  { id: "lora", family: "Lora", label: "Lora", weights: [400, 700], category: "serif", license: "OFL-1.1", source: "@fontsource/lora", loading: "lazy" },
-  { id: "source-serif-4", family: "Source Serif 4", label: "Source Serif 4", weights: [300, 400, 700, 900], category: "serif", license: "OFL-1.1", source: "@fontsource/source-serif-4", loading: "lazy" },
-  { id: "libre-baskerville", family: "Libre Baskerville", label: "Libre Baskerville", weights: [400, 700], category: "serif", license: "OFL-1.1", source: "@fontsource/libre-baskerville", loading: "lazy" },
-  { id: "raleway", family: "Raleway", label: "Raleway", weights: [300, 400, 700, 900], category: "sans", license: "OFL-1.1", source: "@fontsource/raleway", loading: "lazy" },
+  { id: "montserrat", italics: [400, 700], family: "Montserrat", label: "Montserrat", weights: [300, 400, 700, 900], category: "sans", license: "OFL-1.1", source: "@fontsource/montserrat", loading: "lazy" },
+  { id: "lora", italics: [400, 700], family: "Lora", label: "Lora", weights: [400, 700], category: "serif", license: "OFL-1.1", source: "@fontsource/lora", loading: "lazy" },
+  { id: "source-serif-4", italics: [400, 700], family: "Source Serif 4", label: "Source Serif 4", weights: [300, 400, 700, 900], category: "serif", license: "OFL-1.1", source: "@fontsource/source-serif-4", loading: "lazy" },
+  { id: "libre-baskerville", italics: [400, 700], family: "Libre Baskerville", label: "Libre Baskerville", weights: [400, 700], category: "serif", license: "OFL-1.1", source: "@fontsource/libre-baskerville", loading: "lazy" },
+  { id: "raleway", italics: [400, 700], family: "Raleway", label: "Raleway", weights: [300, 400, 700, 900], category: "sans", license: "OFL-1.1", source: "@fontsource/raleway", loading: "lazy" },
 ];
 
 export const DEFAULT_FONT_ID = "inter";
@@ -56,15 +58,17 @@ export function cssFont(spec: { fontId: string; size: number; weight: number; it
 
 /** Fontene (id og vekt) en mengde tekstlag trenger, for lasting før forhåndsvisning og eksport. */
 export function fontsNeeded(
-  specs: Iterable<{ fontId: string; weight: number } | null | undefined>,
-): { fontId: string; weight: number }[] {
-  const out = new Map<string, { fontId: string; weight: number }>();
+  specs: Iterable<{ fontId: string; weight: number; italic?: boolean } | null | undefined>,
+): { fontId: string; weight: number; italic?: boolean }[] {
+  const out = new Map<string, { fontId: string; weight: number; italic?: boolean }>();
   for (const s of specs) {
     if (!s) continue;
     const f = fontById(s.fontId);
     if (!f) continue;
     const w = nearestWeight(f, s.weight);
     out.set(`${f.id}:${w}`, { fontId: f.id, weight: w });
+    // Ekte kursiv lastes i tillegg når fonten har den for vekten (ellers skråstiller nettleseren)
+    if (s.italic && f.italics?.includes(w)) out.set(`${f.id}:${w}:i`, { fontId: f.id, weight: w, italic: true });
   }
   return [...out.values()];
 }
