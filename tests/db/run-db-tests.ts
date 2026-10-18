@@ -4985,6 +4985,113 @@ try {
     await as("service_role", null, (tx) => tx`select public.delete_project(${asp}, ${ALICE})`);
     assert((await count("composition_layers", asp)) === 0, "lagene finnes etter sletting");
   });
+
+  // ---------- GP1: arbeidsgrupper (migrasjon 0045) ----------
+  await test("GP1: eier oppretter gruppe, inviterer, og bare medlemmer ser gruppen", async () => {
+    const ws = await as("authenticated", ALICE, async (tx) =>
+      (await tx`select public.create_workspace('Trollfilm') as id`)[0]!["id"] as string,
+    );
+    const outsider = await as("authenticated", CAROL, (tx) =>
+      tx`select id from public.workspaces where id = ${ws}`,
+    );
+    assert(outsider.length === 0, "ikke-medlem ser gruppen");
+    const outsiderMembers = await as("authenticated", CAROL, (tx) =>
+      tx`select user_id from public.workspace_members where workspace_id = ${ws}`,
+    );
+    assert(outsiderMembers.length === 0, "ikke-medlem ser medlemslisten");
+    await expectError(
+      as("authenticated", CAROL, (tx) => tx`select * from public.list_workspace_members(${ws})`),
+      "42501",
+    );
+    const token = await as("authenticated", ALICE, async (tx) =>
+      (await tx`select public.create_workspace_invitation(${ws}, 'bob@example.no', 'member') as t`)[0]!["t"] as string,
+    );
+    const joined = await as("authenticated", BOB, async (tx) =>
+      (await tx`select public.accept_workspace_invitation(${token}) as w`)[0]!["w"],
+    );
+    assert(joined === ws, "feil gruppe");
+    const seen = await as("authenticated", BOB, (tx) => tx`select id from public.workspaces where id = ${ws}`);
+    assert(seen.length === 1, "medlem ser ikke gruppen");
+    const invs = await as("authenticated", BOB, (tx) =>
+      tx`select id from public.workspace_invitations where workspace_id = ${ws}`,
+    );
+    assert(invs.length === 0, "vanlig medlem ser invitasjoner");
+    await expectError(
+      as("authenticated", BOB, (tx) => tx`select public.accept_workspace_invitation(${token})`),
+      "22023",
+    );
+    // Medlem kan ikke invitere eller endre roller
+    await expectError(
+      as("authenticated", BOB, (tx) => tx`select public.create_workspace_invitation(${ws}, 'x@example.no', 'member')`),
+      "42501",
+    );
+    await expectError(
+      as("authenticated", BOB, (tx) => tx`select public.set_workspace_member_role(${ws}, ${BOB}, 'owner')`),
+      "42501",
+    );
+    // Klienten kan ikke skrive direkte
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`update public.workspaces set name = 'x' where id = ${ws}`),
+      "42501",
+    );
+    // Minst én eier
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`select public.leave_workspace(${ws})`),
+      "42501",
+    );
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`select public.set_workspace_member_role(${ws}, ${ALICE}, 'member')`),
+      "42501",
+    );
+    // Fjernet medlem mister tilgangen
+    await as("authenticated", ALICE, (tx) => tx`select public.remove_workspace_member(${ws}, ${BOB})`);
+    const after = await as("authenticated", BOB, (tx) => tx`select id from public.workspaces where id = ${ws}`);
+    assert(after.length === 0, "fjernet medlem ser fortsatt gruppen");
+    // Tilbakekalt invitasjon kan ikke brukes
+    const t2 = await as("authenticated", ALICE, async (tx) =>
+      (await tx`select public.create_workspace_invitation(${ws}, 'carol@example.no', 'editor') as t`)[0]!["t"] as string,
+    );
+    const [inv] = await sql`select id from public.workspace_invitations where workspace_id = ${ws} and accepted_at is null`;
+    await as("authenticated", ALICE, (tx) => tx`select public.revoke_workspace_invitation(${inv!["id"]})`);
+    await expectError(
+      as("authenticated", CAROL, (tx) => tx`select public.accept_workspace_invitation(${t2})`),
+      "22023",
+    );
+  });
+
+  await test("GP1: bare prosjekteier kobler prosjekt til en gruppe hun er med i; kobling gir ingen prosjekttilgang", async () => {
+    const ws = await as("authenticated", ALICE, async (tx) =>
+      (await tx`select public.create_workspace('Gruppe 2') as id`)[0]!["id"] as string,
+    );
+    const p = await as("authenticated", ALICE, async (tx) =>
+      (await tx`select public.create_project('GP1-prosjekt', 25, 1) as id`)[0]!["id"] as string,
+    );
+    const tok = await as("authenticated", ALICE, async (tx) =>
+      (await tx`select public.create_workspace_invitation(${ws}, 'bob@example.no', 'editor') as t`)[0]!["t"] as string,
+    );
+    await as("authenticated", BOB, (tx) => tx`select public.accept_workspace_invitation(${tok})`);
+    // Bob er i gruppen, men ikke eier av prosjektet
+    await expectError(
+      as("authenticated", BOB, (tx) => tx`select public.set_project_workspace(${p}, ${ws})`),
+      "42501",
+    );
+    // Alice kan ikke koble til en gruppe hun ikke er med i
+    const other = await as("authenticated", CAROL, async (tx) =>
+      (await tx`select public.create_workspace('Carols') as id`)[0]!["id"] as string,
+    );
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`select public.set_project_workspace(${p}, ${other})`),
+      "42501",
+    );
+    await as("authenticated", ALICE, (tx) => tx`select public.set_project_workspace(${p}, ${ws})`);
+    const [row] = await sql`select workspace_id from public.projects where id = ${p}`;
+    assert(row!["workspace_id"] === ws, "prosjektet ble ikke koblet");
+    const bobSees = await as("authenticated", BOB, (tx) => tx`select id from public.projects where id = ${p}`);
+    assert(bobSees.length === 0, "gruppemedlem fikk prosjekttilgang");
+    await as("authenticated", ALICE, (tx) => tx`select public.set_project_workspace(${p}, null)`);
+    const [row2] = await sql`select workspace_id from public.projects where id = ${p}`;
+    assert(row2!["workspace_id"] === null, "prosjektet ble ikke frakoblet");
+  });
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);

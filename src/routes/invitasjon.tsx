@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import { useSession } from "@/app/auth/use-session";
 import { AuthScreen } from "@/app/auth/AuthScreen";
 import { acceptInvitation } from "@/adapters/browser/members";
+import { acceptWorkspaceInvitation } from "@/adapters/browser/workspaces";
 import { L } from "@/core";
 
 export const Route = createFileRoute("/invitasjon")({
   validateSearch: (search: Record<string, unknown>) => ({
     token: typeof search["token"] === "string" ? search["token"] : "",
+    type: search["type"] === "gruppe" ? ("gruppe" as const) : undefined,
   }),
   head: () => ({ meta: [
     { title: L("Invitasjon – Animatic Studio", "Invitation – Animatic Studio") },
@@ -21,13 +23,25 @@ export const Route = createFileRoute("/invitasjon")({
 });
 
 function AcceptInvitation() {
-  const { token } = Route.useSearch();
+  const { token, type } = Route.useSearch();
   const session = useSession();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (session.status !== "signed-in" || !token) return;
+    const invalid = L(
+      "Invitasjonen er ugyldig, utløpt eller allerede brukt.",
+      "The invitation is invalid, has expired or has already been used.",
+    );
+    // Gruppeinvitasjon (GP1): samme flyt, men til arbeidsgruppens side
+    if (type === "gruppe") {
+      void acceptWorkspaceInvitation(token).then(({ workspaceId, error: e }) => {
+        if (e || !workspaceId) setError(invalid);
+        else void navigate({ to: "/gruppe/$workspaceId", params: { workspaceId } });
+      });
+      return;
+    }
     void acceptInvitation(token).then(({ projectId, error: e }) => {
       if (e || !projectId)
         setError(
@@ -38,7 +52,7 @@ function AcceptInvitation() {
         );
       else void navigate({ to: "/prosjekt/$projectId", params: { projectId } });
     });
-  }, [session.status, token, navigate]);
+  }, [session.status, token, type, navigate]);
 
   if (session.status === "loading") return <div className="min-h-screen bg-bg-app" aria-busy />;
   if (session.status === "signed-out") return <AuthScreen />;

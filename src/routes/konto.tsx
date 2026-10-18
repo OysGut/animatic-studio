@@ -27,7 +27,7 @@ function AccountRoute() {
     <div className="flex min-h-screen flex-col bg-bg-app">
       <AppHeader email={session.session.user.email} trail={L("Min konto", "My account")} />
       <SchemaBanner />
-      <AccountPage email={session.session.user.email ?? ""} />
+      <AccountPage email={session.session.user.email ?? ""} userId={session.session.user.id} />
     </div>
   );
 }
