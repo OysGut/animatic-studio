@@ -276,9 +276,9 @@ await scenario("next-line", async (page) => {
   check(await eventually(() => visible(page, "assist-diff")), "replikkforslag vises");
   check(S.assist[0] === "next_line", "kind=next_line");
   await tid(page, "assist-apply").click();
-  check(await eventually(() => cmds("InsertBlock").length >= 2), "«Bruk» setter inn karakter og replikk");
-  const kinds = cmds("InsertBlock").map((c) => c.block.kind);
-  check(kinds[0] === "character" && kinds.includes("dialogue"), "rekkefølge karakter → replikk");
+  check(await eventually(() => cmds("InsertBlock").length >= 3), "«Bruk» setter inn karakter, parentes og replikk");
+  const kinds = cmds("InsertBlock").slice().sort((a, b) => a.block.orderKey.localeCompare(b.block.orderKey)).map((c) => c.block.kind);
+  check(JSON.stringify(kinds) === JSON.stringify(["character", "parenthetical", "dialogue"]), "rekkefølge karakter → parentes → replikk ut fra orderKey");
 });
 
 // 7. Scene fra node, med advarsel når noden er brukt

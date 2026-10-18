@@ -1,4 +1,8 @@
 # MU1
+## T2 og samtidige takes – rettinger
+- [x] Vent på alle tre innsettinger og kontroller orderKey i T2-testen.
+- [x] Stabiliser take-/versjonsrekkefølge og test samme tidsstempel med motsatt UUID-rekkefølge.
+- [x] Kjør hele Vitest-suiten tre ganger: 1623 bestått, 0 feilet, 10 eksisterende hoppet over hver gang.
 ## MT retterunde 4
 - [x] Bevar globale maldefinisjoner gjennom lagring og bruk; 0052 skrevet, ikke kjørt.
 - [x] Rundtur- og DB-tester skrevet; S venter; fixture, unit-tester og mockede nettlesertester grønne. DB-testen kjøres av Claude sammen med 0052.

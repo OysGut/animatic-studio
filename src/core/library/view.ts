@@ -5,6 +5,7 @@
  */
 import type { AssetVersion, ProjectState } from "../model";
 import { localized } from "../i18n";
+import { compareVersionCreation } from "./index";
 
 export const VERSION_VIEWS = [
   "front",
@@ -72,7 +73,7 @@ export function labelledViews(
     if (!variants.has(v.variantId) || v.removed || !v.view || !v.mimeType.startsWith("image/"))
       continue;
     const cur = best.get(v.view);
-    if (!cur || v.createdAt > cur.createdAt) best.set(v.view, v);
+    if (!cur || compareVersionCreation(v, cur) > 0) best.set(v.view, v);
   }
   return VERSION_VIEWS.flatMap((view) => {
     const version = best.get(view);

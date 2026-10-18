@@ -8,7 +8,7 @@ import type { Asset, AudioClip, ProjectState } from "../model";
 import { blocksOfVariant, sceneNumberOf } from "../views";
 import { filmClips } from "../assembly/film";
 import { sceneDialogueLines } from "../generation/speech";
-import { variantsOf, versionsOf } from "../library";
+import { compareVersionCreation, variantsOf, versionsOf } from "../library";
 import { formatHeading } from "../screenplay/paginate";
 import { L } from "../i18n";
 import { audioVersion } from "./index";
@@ -35,9 +35,13 @@ export interface SoundTake {
 /** Alle opptakene av en lydressurs, eldste først (variantene som ikke er arkivert). */
 export function soundTakes(s: ProjectState, assetId: string): SoundTake[] {
   const out: Omit<SoundTake, "number">[] = [];
-  for (const va of variantsOf(s, assetId)) {
-    if (va.archived) continue;
-    for (const v of versionsOf(s, va.id))
+  const versions = variantsOf(s, assetId)
+    .filter((va) => !va.archived)
+    .flatMap((va) => versionsOf(s, va.id))
+    .sort(compareVersionCreation);
+  for (const v of versions) {
+    const va = s.assetVariants[v.variantId];
+    if (!va) continue;
       out.push({
         versionId: v.id,
         variantId: va.id,
@@ -50,9 +54,6 @@ export function soundTakes(s: ProjectState, assetId: string): SoundTake[] {
         composition: !!v.composition,
       });
   }
-  out.sort(
-    (a, b) => a.createdAt.localeCompare(b.createdAt) || a.versionId.localeCompare(b.versionId),
-  );
   return out.map((t, i) => ({ ...t, number: i + 1 }));
 }
 

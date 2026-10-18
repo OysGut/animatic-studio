@@ -67,6 +67,12 @@ export function variantsOf(s: ProjectState, assetId: string): AssetVariant[] {
 }
 
 /** Versjonene av en variant, nyeste først (uten slettede bilder, DEC-0079). */
+/** Fast opprettelsesrekkefølge også når flere versjoner har samme tidsstempel. */
+export function compareVersionCreation(a: AssetVersion, b: AssetVersion): number {
+  return a.createdAt.localeCompare(b.createdAt) || a.number - b.number ||
+    a.variantId.localeCompare(b.variantId) || a.id.localeCompare(b.id);
+}
+
 export function versionsOf(s: ProjectState, variantId: string): AssetVersion[] {
   return allVersionsOf(s, variantId).filter((v) => !v.removed);
 }
@@ -75,7 +81,7 @@ export function versionsOf(s: ProjectState, variantId: string): AssetVersion[] {
 export function allVersionsOf(s: ProjectState, variantId: string): AssetVersion[] {
   return Object.values(s.assetVersions)
     .filter((v) => v.variantId === variantId)
-    .sort((a, b) => b.number - a.number);
+    .sort((a, b) => b.number - a.number || compareVersionCreation(b, a));
 }
 
 /** «Slettede objekter» (DEC-0079): slettede ressurser og slettede enkeltbilder i ressurser som finnes. */
@@ -95,7 +101,8 @@ export function trashContents(s: ProjectState): {
   }
   versions.sort(
     (a, b) =>
-      a.asset.name.localeCompare(b.asset.name, collation()) || b.version.number - a.version.number,
+      a.asset.name.localeCompare(b.asset.name, collation()) || b.version.number - a.version.number ||
+      compareVersionCreation(b.version, a.version),
   );
   return { assets, versions };
 }
