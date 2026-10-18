@@ -7,6 +7,8 @@ import { ProductionDialog } from "@/app/projects/ProductionDialog";
 import { PromotionDialog } from "@/app/projects/PromotionDialog";
 import { TranslationImportDialog } from "./TranslationImportDialog";
 import { RemoveTranslationsDialog } from "./RemoveTranslationsDialog";
+import { WritingPanel, type AssistTrigger } from "./assist/WritingPanel";
+import { AssistContextMenu, assistShortcut, selectedBlockIdsIn } from "./assist/assist-ui";
 import {
   ChevronDown,
   CornerUpLeft,
@@ -270,6 +272,28 @@ function Workspace({
   // Tilstedeværelse: hvem andre er i prosjektet, og hvilken scene de står i
   const me = useProfiles([userId]);
   const myName = me.data?.[userId]?.display_name || L("Medlem", "Member");
+  // Skrivehjelpen (T2): egen fane ved inspektøren, hurtigtaster og kontekstmeny
+  const [rightTab, setRightTab] = useState<"inspector" | "assist">("inspector");
+  const [assistTrigger, setAssistTrigger] = useState<AssistTrigger | null>(null);
+  const [assistMenu, setAssistMenu] = useState<{ x: number; y: number; blockIds: string[] } | null>(null);
+  const assistAvailable = editable && lang === "nb";
+  const selectedBlockIds = useCallback(() => selectedBlockIdsIn(scrollRef.current), []);
+  const triggerAssist = useCallback((t: Omit<AssistTrigger, "nonce">) => {
+    setRightTab("assist");
+    setAssistTrigger({ ...t, nonce: Date.now() });
+  }, []);
+  useEffect(() => {
+    if (!assistAvailable) return;
+    const onKey = (e: globalThis.KeyboardEvent) => {
+      const action = assistShortcut(e);
+      if (!action) return;
+      e.preventDefault();
+      const ids = selectedBlockIds();
+      triggerAssist({ action, blockIds: ids.length ? ids : selection.blockId ? [selection.blockId] : [] });
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [assistAvailable, selectedBlockIds, triggerAssist, selection.blockId]);
   const others = usePresence(
     projectId,
     userId,
@@ -1041,6 +1065,15 @@ function Workspace({
             )}
             onKeyDown={onPagesKey}
             onMouseUp={onPagesMouseUp}
+            onContextMenu={(e) => {
+              if (!assistAvailable) return;
+              const el = (e.target as HTMLElement).closest("[data-block]");
+              const id = el?.getAttribute("data-block");
+              if (!id) return;
+              e.preventDefault();
+              const ids = selectedBlockIds();
+              setAssistMenu({ x: e.clientX, y: e.clientY, blockIds: ids.includes(id) ? ids : [id] });
+            }}
             onScroll={() => {
               setPendingNote((p) => (p && !p.open ? null : p));
               if (scrollTick.current !== null) return;
@@ -1127,6 +1160,33 @@ function Workspace({
               max={640}
               label={L("Bredde på inspektøren", "Width of the inspector")}
             />
+            {assistAvailable ? (
+              <div className="flex h-8 shrink-0 items-center gap-1 border-b border-border px-2 text-[12px]" role="tablist">
+                <button type="button" role="tab" aria-selected={rightTab === "inspector"} data-testid="script-tab-inspector" onClick={() => setRightTab("inspector")} className={"rounded-sm px-2 py-0.5 " + (rightTab === "inspector" ? "bg-surface-3 text-text-primary" : "text-text-secondary hover:text-text-primary")}>
+                  {L("Inspektør", "Inspector")}
+                </button>
+                <button type="button" role="tab" aria-selected={rightTab === "assist"} data-testid="script-tab-assist" onClick={() => setRightTab("assist")} className={"rounded-sm px-2 py-0.5 " + (rightTab === "assist" ? "bg-surface-3 text-text-primary" : "text-text-secondary hover:text-text-primary")}>
+                  {L("Skrivehjelp", "Writing assistant")}
+                </button>
+              </div>
+            ) : null}
+            {assistAvailable ? (
+              <div className={rightTab === "assist" ? "flex min-h-0 flex-1 flex-col" : "hidden"}>
+                <WritingPanel
+                  projectId={projectId}
+                  state={state}
+                  productionId={productionId}
+                  selection={selection}
+                  editable={editable}
+                  cmds={cmds}
+                  authorName={myName}
+                  getSelectedBlockIds={selectedBlockIds}
+                  trigger={assistTrigger}
+                  onSelect={(s) => select(s, true)}
+                />
+              </div>
+            ) : null}
+            {rightTab === "inspector" || !assistAvailable ? (
             <Inspector
               projectId={projectId}
               state={state}
@@ -1145,6 +1205,7 @@ function Workspace({
               language={lang}
               cmds={cmds}
             />
+            ) : null}
           </div>
         </div>
       ) : (
@@ -1215,6 +1276,18 @@ function Workspace({
         </div>
       )}
 
+      {assistMenu ? (
+        <AssistContextMenu
+          x={assistMenu.x}
+          y={assistMenu.y}
+          onClose={() => setAssistMenu(null)}
+          onPick={(action, mode) => {
+            const ids = assistMenu.blockIds;
+            setAssistMenu(null);
+            triggerAssist({ action, blockIds: ids, ...(mode ? { mode } : {}) });
+          }}
+        />
+      ) : null}
       {hasScenes ? (
         <VersionsDialog
           open={versionsOpen}
