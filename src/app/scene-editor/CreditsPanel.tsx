@@ -20,6 +20,8 @@ import {
 } from "@/core";
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { Button } from "@/components/ui/button";
+import { GlobalLibraryDialog } from "@/app/global/GlobalLibraryDialog";
+import type { Commands } from "@/app/project/use-commands";
 
 const input =
   "h-7 w-full rounded-sm border border-border-control bg-surface-3 px-1.5 text-[12px] text-text-primary";
@@ -145,11 +147,14 @@ function ParticipantsTab({
   state,
   editable,
   run,
+  cmds,
 }: {
   state: ProjectState;
   editable: boolean;
   run: (command: Command, label: string) => string | null;
+  cmds?: Commands;
 }) {
+  const [logoFor, setLogoFor] = useState<string | null>(null);
   const participants = useMemo(
     () =>
       Object.values(state.creditParticipants)
@@ -281,6 +286,20 @@ function ParticipantsTab({
                 />
                 {L("Skjul", "Hide")}
               </label>
+              {editable && cmds ? (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  data-testid="mts-credit-logo"
+                  title={L(
+                    "Logo fra det globale biblioteket ved siden av navnet (K)",
+                    "Logo from the global library next to the name (K)",
+                  )}
+                  onClick={() => setLogoFor(p.id)}
+                >
+                  {p.logoAssetId ? L("Bytt logo", "Change logo") : L("Logo …", "Logo …")}
+                </Button>
+              ) : null}
               {editable ? (
                 <Button size="sm" variant="ghost" data-testid="mts-credit-remove" onClick={() => remove(p)}>
                   {L("Fjern", "Remove")}
@@ -301,6 +320,33 @@ function ParticipantsTab({
           {L("Ny deltaker", "New participant")}
         </Button>
       ) : null}
+      {cmds ? (
+        <GlobalLibraryDialog
+          open={logoFor !== null}
+          onOpenChange={(open) => !open && setLogoFor(null)}
+          state={state}
+          cmds={cmds}
+          editable={editable}
+          fixedKind="logo"
+          onUsed={(assetId) => {
+            if (!logoFor) return;
+            const fresh = cmds.current() ?? state;
+            const variant = Object.values(fresh.assetVariants).find((v) => v.assetId === assetId && !v.archived && !v.removed);
+            const version = variant
+              ? Object.values(fresh.assetVersions).filter((v) => v.variantId === variant.id && !v.removed).sort((a, b) => b.number - a.number)[0]
+              : undefined;
+            run(
+              {
+                type: "UpdateCreditParticipant",
+                participantId: logoFor as never,
+                fields: { logoAssetId: assetId as never, logoVersionId: (version?.id ?? null) as never },
+              },
+              L("Sett logo på deltakeren", "Set the participant's logo"),
+            );
+            setLogoFor(null);
+          }}
+        />
+      ) : null}
     </div>
   );
 }
@@ -310,11 +356,13 @@ export function CreditsPanel({
   occurrenceId,
   editable,
   run,
+  cmds,
 }: {
   state: ProjectState;
   occurrenceId: string;
   editable: boolean;
   run: (command: Command, label: string) => string | null;
+  cmds?: Commands;
 }) {
   const [tab, setTab] = useState<"design" | "participants">("participants");
   const seq = creditSequenceOf(state, occurrenceId);
@@ -352,7 +400,7 @@ export function CreditsPanel({
           </p>
         )
       ) : (
-        <ParticipantsTab state={state} editable={editable} run={run} />
+        <ParticipantsTab state={state} editable={editable} run={run} cmds={cmds} />
       )}
     </section>
   );

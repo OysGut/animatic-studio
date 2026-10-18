@@ -699,7 +699,7 @@ function Editor({
     // Rulleteksten: design og deltakerregister (MTS MT7)
     credits:
       occurrence && occurrenceKind(occurrence) === "credits" ? (
-        <CreditsPanel state={state} occurrenceId={occurrence.id} editable={editable} run={cmds.run} />
+        <CreditsPanel state={state} occurrenceId={occurrence.id} editable={editable} run={cmds.run} cmds={cmds} />
       ) : null,
   };
 
