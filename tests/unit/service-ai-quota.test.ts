@@ -24,7 +24,7 @@ function database(rows: Row[]): AnyClient {
       },
       gte: (_k: string, v: string) => { filters.push((r) => (r.created_at ?? "") >= v); return q; },
       order: () => q, limit: () => q,
-      insert: (r: Row) => { rows.push(r); return Promise.resolve({ error: null }); },
+      insert: (r: Row) => { rows.push({ created_at: new Date().toISOString(), ...r }); return Promise.resolve({ error: null }); },
       update: () => q,
       then: (resolve: (v: unknown) => unknown) => {
         const selected = rows.filter((r) => filters.every((f) => f(r)));
