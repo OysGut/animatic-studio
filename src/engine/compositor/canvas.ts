@@ -427,7 +427,7 @@ function release(img: LoadingImage): void {
 function applyShadow(ctx: Ctx2D, it: DrawItem) {
   const e = it.effects;
   if (!e) return;
-  const k = matrixScale(ctx.getTransform ? domToMatrix(ctx.getTransform()) : it.matrix);
+  const k = matrixScale(domToMatrix(ctx.getTransform()));
   if (e.shadow) {
     ctx.shadowColor = e.shadow.color;
     ctx.shadowBlur = e.shadow.blur * k;
