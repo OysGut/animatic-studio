@@ -45,4 +45,16 @@ describe("script explorer grouping", () => {
     expect(url.searchParams.get("scene")).toBe(id); expect(url.searchParams.get("blokk")).toBe(id);
     expect(validateExplorerSearch({ modus: "invalid", scene: "42", kilde: "no", q: 1 })).toEqual({ modus: "follow" });
   });
+  it("finds library objects through alternative names in dialogue, even without a placed asset", () => {
+    const { state, mainId } = seedProject(1);
+    const occurrence = orderedOccurrences(state, mainId)[0];
+    if (!occurrence) throw new Error("missing scene");
+    const dialogue = blocksOfVariant(state, occurrence.variantId).find((b) => b.kind === "dialogue");
+    if (!dialogue) throw new Error("missing dialogue");
+    const id = "00000000-0000-7000-8000-000000000099" as keyof typeof state.assets;
+    const changed = { ...state, assets: { ...state.assets, [id]: { id, revision: 1, kind: "object" as const, name: "Vase", names: [{ name: "krukke", kind: "alias" as const, language: null }], description: "", category: "", tags: [], archived: false } }, blocks: { ...state.blocks, [dialogue.id]: { ...dialogue, text: "Har du sett krukken?" } } };
+    const groups = explorerGroups(changed, mainId, { assetId: id });
+    expect(groups).toHaveLength(1);
+    expect(groups[0]?.hits[0]).toMatchObject({ blockId: dialogue.id, query: "krukke" });
+  });
 });

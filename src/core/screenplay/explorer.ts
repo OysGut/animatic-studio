@@ -2,7 +2,7 @@
 import { assetNames } from "../library";
 import { matchingScenes } from "../assembly/status";
 import { annotationsOfVariant, searchHits, type HitKind } from "../notes";
-import { blocksOfVariant, orderedOccurrences } from "../views";
+import { blocksOfVariant, orderedOccurrences, sceneNumberOf } from "../views";
 import type { ProjectState } from "../model";
 import { characterName, matchingOccurrences, mentions, sceneMentions, sceneSpeakers, type SceneFilter } from "./filter";
 import { formatHeading } from "./paginate";
@@ -68,7 +68,7 @@ export function explorerGroups(state: ProjectState, productionId: string, filter
       if ((occurrence.productionNumber ?? "").includes(query)) add(null, "number", occurrence.productionNumber ?? "", query);
     }
     if (!hits.length && !query) add(null, "heading", heading, "");
-    if (hits.length) out.push({ occurrenceId: occurrence.id, heading, number: occurrence.productionNumber, role: filter.character ? participates ? "participates" : "mentioned" : null, hits });
+    if (hits.length) out.push({ occurrenceId: occurrence.id, heading, number: sceneNumberOf(state, occurrence), role: filter.character ? participates ? "participates" : "mentioned" : null, hits });
   }
   return out;
 }

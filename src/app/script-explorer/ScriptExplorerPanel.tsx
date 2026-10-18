@@ -28,7 +28,7 @@ export function ScriptExplorerPanel({ projectId, onClose }: { projectId: string;
     const opened = window.open(url, `animatic-manusutforsker-${projectId}-${source}`, `popup,width=${Math.round(width ?? 1100)},height=${Math.round(height ?? 800)}`);
     if (opened) { opened.focus(); onClose(); } else setBlocked(url);
   };
-  return <div ref={popup} role="dialog" aria-modal={false} aria-label={L("Manusutforskeren", "Script explorer")} tabIndex={-1} data-testid="script-explorer" className="fixed z-50 flex flex-col overflow-hidden rounded-sm border border-border-strong bg-surface-1 shadow-xl" style={{ left: `clamp(0px, ${x ?? 80}px, max(0px, 100vw - 320px))`, top: `clamp(0px, ${y ?? 80}px, max(0px, 100vh - 80px))`, width: `min(${width ?? 1100}px, 100vw)`, height: `min(${height ?? 760}px, calc(100vh - 40px))` }} onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); onClose(); } }}>
+  return <div ref={popup} role="dialog" aria-modal={false} aria-label={L("Manusutforskeren", "Script explorer")} tabIndex={-1} data-testid="script-explorer" className="fixed z-50 flex flex-col overflow-hidden rounded-sm border border-border-strong bg-surface-1 shadow-[var(--shadow-float)]" style={{ left: `clamp(0px, ${x ?? 80}px, max(0px, 100vw - 320px))`, top: `clamp(0px, ${y ?? 80}px, max(0px, 100vh - 80px))`, width: `min(${width ?? 1100}px, 100vw)`, height: `min(${height ?? 760}px, calc(100vh - 40px))` }} onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); onClose(); } }}>
     <div className="flex h-9 shrink-0 items-center gap-2 border-b border-border bg-surface-2 px-3" onPointerDown={(e) => {
       if ((e.target as Element).closest("button,a")) return;
       const rect = popup.current?.getBoundingClientRect(); if (!rect) return;

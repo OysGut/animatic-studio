@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, ExternalLink, Undo2, Redo2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { L, annotationsOfVariant, charactersInProduction, filterPages, formatHeading, mainProduction, orderedOccurrences, pageDecorations, scriptPages, HIT_LABEL, type NewAnnotation, type ProjectState } from "@/core";
+import { L, annotationsOfVariant, charactersInProduction, filterPages, formatHeading, mainProduction, orderedOccurrences, pageDecorations, scriptPages, sceneNumberOf, HIT_LABEL, type NewAnnotation, type ProjectState } from "@/core";
 import { explorerContext, explorerGroups, type ExplorerHit } from "@/core/screenplay/explorer";
 import { ScriptPageView, type Selection } from "@/app/script/ScriptPageView";
 import { NotesPanel } from "@/app/script/NotesPanel";
@@ -79,7 +79,7 @@ function ExplorerContent({ state, editable, cmds, ...props }: Props & { state: P
   const localScene = (offset: number) => { const next = occurrences[index + offset]; if (next) { setMode("search"); select({ occurrenceId: next.id, blockId: null }); } };
   const block = selection.blockId ? state.blocks[selection.blockId] : undefined;
   const target = noteTarget ?? (block && block.variantId === occurrence?.variantId ? { blockId: block.id, variantId: null, quote: "", start: 0, end: 0 } : variant ? { blockId: null, variantId: variant.id, quote: "", start: 0, end: 0 } : null);
-  const title = variant ? `${occurrence?.productionNumber ?? ""} ${formatHeading(variant.heading)}`.trim() : L("Ingen aktiv scene", "No active scene");
+  const title = variant && occurrence ? `${sceneNumberOf(state, occurrence) ?? ""} ${formatHeading(variant.heading)}`.trim() : L("Ingen aktiv scene", "No active scene");
   const resultGroups = character ? [
     { label: L("Deltar", "Participates"), items: groups.filter((g) => g.role === "participates") },
     { label: L("Omtales", "Mentioned"), items: groups.filter((g) => g.role === "mentioned") },
