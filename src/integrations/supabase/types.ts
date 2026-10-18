@@ -398,6 +398,9 @@ export type Database = {
           removed: boolean
           revision: number
           sha256: string
+          source_global_asset_id: string | null
+          source_global_variant_id: string | null
+          source_global_version_id: string | null
           variant_id: string
           view: string | null
           width: number | null
@@ -420,6 +423,9 @@ export type Database = {
           removed?: boolean
           revision?: number
           sha256: string
+          source_global_asset_id?: string | null
+          source_global_variant_id?: string | null
+          source_global_version_id?: string | null
           variant_id: string
           view?: string | null
           width?: number | null
@@ -442,6 +448,9 @@ export type Database = {
           removed?: boolean
           revision?: number
           sha256?: string
+          source_global_asset_id?: string | null
+          source_global_variant_id?: string | null
+          source_global_version_id?: string | null
           variant_id?: string
           view?: string | null
           width?: number | null
@@ -480,6 +489,7 @@ export type Database = {
           revision: number
           scene_plans: Json
           sound_links: Json
+          source_global_asset_id: string | null
           tags: Json
           visual_brief: string
           voice: Json | null
@@ -500,6 +510,7 @@ export type Database = {
           revision?: number
           scene_plans?: Json
           sound_links?: Json
+          source_global_asset_id?: string | null
           tags?: Json
           visual_brief?: string
           voice?: Json | null
@@ -520,6 +531,7 @@ export type Database = {
           revision?: number
           scene_plans?: Json
           sound_links?: Json
+          source_global_asset_id?: string | null
           tags?: Json
           visual_brief?: string
           voice?: Json | null
@@ -1208,6 +1220,100 @@ export type Database = {
           },
         ]
       }
+      film_shares: {
+        Row: {
+          activated_at: string | null
+          byte_size: number
+          created_at: string
+          created_by: string
+          duration_ms: number
+          expires_at: string | null
+          export_record_id: string
+          height: number
+          id: string
+          mime_type: string
+          production_id: string
+          project_id: string
+          revoked_at: string | null
+          revoked_by: string | null
+          share_days: number | null
+          status: string
+          storage_key: string
+          title: string
+          token: string | null
+          token_hash: string | null
+          width: number
+        }
+        Insert: {
+          activated_at?: string | null
+          byte_size: number
+          created_at?: string
+          created_by: string
+          duration_ms: number
+          expires_at?: string | null
+          export_record_id: string
+          height: number
+          id?: string
+          mime_type: string
+          production_id: string
+          project_id: string
+          revoked_at?: string | null
+          revoked_by?: string | null
+          share_days?: number | null
+          status?: string
+          storage_key: string
+          title: string
+          token?: string | null
+          token_hash?: string | null
+          width: number
+        }
+        Update: {
+          activated_at?: string | null
+          byte_size?: number
+          created_at?: string
+          created_by?: string
+          duration_ms?: number
+          expires_at?: string | null
+          export_record_id?: string
+          height?: number
+          id?: string
+          mime_type?: string
+          production_id?: string
+          project_id?: string
+          revoked_at?: string | null
+          revoked_by?: string | null
+          share_days?: number | null
+          status?: string
+          storage_key?: string
+          title?: string
+          token?: string | null
+          token_hash?: string | null
+          width?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "film_shares_export_record_id_fkey"
+            columns: ["export_record_id"]
+            isOneToOne: false
+            referencedRelation: "export_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "film_shares_production_id_fkey"
+            columns: ["production_id"]
+            isOneToOne: false
+            referencedRelation: "productions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "film_shares_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       generation_jobs: {
         Row: {
           asset_id: string | null
@@ -1394,6 +1500,186 @@ export type Database = {
             columns: ["segment_id"]
             isOneToOne: false
             referencedRelation: "production_segments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      global_asset_variants: {
+        Row: {
+          appearance: string
+          archived_at: string | null
+          created_at: string
+          created_by: string
+          global_asset_id: string
+          id: string
+          name: string
+          revision: number
+          style: string
+          workspace_id: string
+        }
+        Insert: {
+          appearance?: string
+          archived_at?: string | null
+          created_at?: string
+          created_by: string
+          global_asset_id: string
+          id?: string
+          name: string
+          revision?: number
+          style?: string
+          workspace_id: string
+        }
+        Update: {
+          appearance?: string
+          archived_at?: string | null
+          created_at?: string
+          created_by?: string
+          global_asset_id?: string
+          id?: string
+          name?: string
+          revision?: number
+          style?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "global_asset_variants_global_asset_id_fkey"
+            columns: ["global_asset_id"]
+            isOneToOne: false
+            referencedRelation: "global_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "global_asset_variants_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      global_asset_versions: {
+        Row: {
+          byte_size: number
+          created_at: string
+          created_by: string
+          duration_ms: number | null
+          global_asset_id: string
+          height: number | null
+          id: string
+          mime_type: string
+          note: string
+          number: number
+          sha256: string
+          storage_key: string
+          variant_id: string
+          width: number | null
+          workspace_id: string
+        }
+        Insert: {
+          byte_size: number
+          created_at?: string
+          created_by: string
+          duration_ms?: number | null
+          global_asset_id: string
+          height?: number | null
+          id?: string
+          mime_type: string
+          note?: string
+          number: number
+          sha256: string
+          storage_key: string
+          variant_id: string
+          width?: number | null
+          workspace_id: string
+        }
+        Update: {
+          byte_size?: number
+          created_at?: string
+          created_by?: string
+          duration_ms?: number | null
+          global_asset_id?: string
+          height?: number | null
+          id?: string
+          mime_type?: string
+          note?: string
+          number?: number
+          sha256?: string
+          storage_key?: string
+          variant_id?: string
+          width?: number | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "global_asset_versions_global_asset_id_fkey"
+            columns: ["global_asset_id"]
+            isOneToOne: false
+            referencedRelation: "global_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "global_asset_versions_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "global_asset_variants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "global_asset_versions_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      global_assets: {
+        Row: {
+          archived_at: string | null
+          categories: string[]
+          created_at: string
+          created_by: string
+          description: string
+          id: string
+          kind: string
+          name: string
+          revision: number
+          tags: string[]
+          workspace_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          categories?: string[]
+          created_at?: string
+          created_by: string
+          description?: string
+          id?: string
+          kind: string
+          name: string
+          revision?: number
+          tags?: string[]
+          workspace_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          categories?: string[]
+          created_at?: string
+          created_by?: string
+          description?: string
+          id?: string
+          kind?: string
+          name?: string
+          revision?: number
+          tags?: string[]
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "global_assets_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -3483,6 +3769,10 @@ export type Database = {
         Args: { p_token: string }
         Returns: string
       }
+      activate_film_share: {
+        Args: { p_byte_size: number; p_share: string }
+        Returns: string
+      }
       apply_changes: {
         Args: {
           p_actor: string
@@ -3499,6 +3789,19 @@ export type Database = {
         Returns: number
       }
       claim_mobile_import: { Args: { p_id: string }; Returns: boolean }
+      create_film_share: {
+        Args: {
+          p_byte_size: number
+          p_duration_ms: number
+          p_export_record: string
+          p_height: number
+          p_project: string
+          p_share_days: number
+          p_title: string
+          p_width: number
+        }
+        Returns: Json
+      }
       create_invitation: {
         Args: { p_email: string; p_project: string; p_role?: string }
         Returns: string
@@ -3528,6 +3831,63 @@ export type Database = {
       dismiss_mobile_import: {
         Args: { p_dismissed: boolean; p_id: string }
         Returns: undefined
+      }
+      film_share_token: { Args: { p_share: string }; Returns: string }
+      global_add_version: {
+        Args: {
+          p_bytes: number
+          p_duration_ms: number
+          p_height: number
+          p_mime: string
+          p_note: string
+          p_sha256: string
+          p_storage_key: string
+          p_variant: string
+          p_width: number
+        }
+        Returns: string
+      }
+      global_asset_projects: {
+        Args: { p_asset: string }
+        Returns: {
+          project_id: string
+          project_name: string
+        }[]
+      }
+      global_create_asset: {
+        Args: {
+          p_categories: string[]
+          p_description: string
+          p_kind: string
+          p_name: string
+          p_tags: string[]
+          p_workspace: string
+        }
+        Returns: string
+      }
+      global_create_variant: {
+        Args: {
+          p_appearance: string
+          p_asset: string
+          p_name: string
+          p_style: string
+        }
+        Returns: string
+      }
+      global_set_asset_archived: {
+        Args: { p_archived: boolean; p_asset: string }
+        Returns: undefined
+      }
+      global_update_asset: {
+        Args: {
+          p_asset: string
+          p_categories: string[]
+          p_description: string
+          p_name: string
+          p_revision: number
+          p_tags: string[]
+        }
+        Returns: number
       }
       leave_project: { Args: { p_project: string }; Returns: undefined }
       leave_workspace: { Args: { p_workspace: string }; Returns: undefined }
@@ -3710,6 +4070,7 @@ export type Database = {
         Args: { p_name: string; p_workspace: string }
         Returns: undefined
       }
+      revoke_film_share: { Args: { p_share: string }; Returns: undefined }
       revoke_invitation: { Args: { p_invitation: string }; Returns: undefined }
       revoke_upload_session: { Args: { p_id: string }; Returns: undefined }
       revoke_workspace_invitation: {

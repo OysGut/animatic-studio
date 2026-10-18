@@ -4,6 +4,7 @@
  * `src/adapters/global/global-library.functions.ts`.
  */
 import {
+  L,
   isGlobalKind,
   type GlobalAsset,
   type GlobalAssetBundle,
@@ -148,8 +149,14 @@ export async function createGlobalVariant(
 
 /** Laster opp til en signert opplastingslenke fra serveren. */
 export async function uploadToSignedPath(path: string, token: string, file: Blob): Promise<void> {
-  const { error } = await browserClient.storage
-    .from("assets")
-    .uploadToSignedUrl(path, token, file, { ...(file.type ? { contentType: file.type } : {}), upsert: true });
-  fail(error);
+  try {
+    const { data, error } = await browserClient.storage
+      .from("assets")
+      .uploadToSignedUrl(path, token, file, { ...(file.type ? { contentType: file.type } : {}), upsert: true });
+    // Storage SDK parses JSON internally. Treat malformed/non-JSON responses as upload failures too.
+    if (error || !data || typeof data.fullPath !== "string" || !data.fullPath)
+      throw new Error("Invalid upload response");
+  } catch {
+    throw new Error(L("Opplastingen av filen feilet. Prøv igjen.", "The file upload failed. Please try again."));
+  }
 }
