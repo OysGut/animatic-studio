@@ -2,7 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ANALYSIS_ASPECTS, ANALYSIS_ASPECT_LABEL, L, characterSystemPrompt, emptyStoryProfile, knowledgeAt, lineCheckFromJson, lineCheckPrompt, locale, newId, parseJsonLoose, profileAt, sceneAnalysisFromJson, sceneAnalysisPrompt, unreadableReplyMessage, type LineCheckResult, type ProjectState, type SceneAnalysisPoint } from "@/core";
+import { ANALYSIS_ASPECTS, ANALYSIS_ASPECT_LABEL, L, characterSystemPrompt, emptyStoryProfile, knowledgeAt, lineCheckFromJson, lineCheckPrompt, newId, parseJsonLoose, profileAt, sceneAnalysisFromJson, sceneAnalysisPrompt, unreadableReplyMessage, type LineCheckResult, type ProjectState, type SceneAnalysisPoint } from "@/core";
+import { useLanguage } from "@/app/i18n/language";
 import { generateText } from "@/adapters/ai/text.functions";
 import { appendStoryTurns, createStorySession, forkStorySession, getStorySession, listStorySessions, saveStorySuggestion, type StorySession, type StoredTurn } from "@/adapters/storylab/sessions.functions";
 import { Toolbar, ToolbarButton, PanelHeader } from "@/app/shell/workspace-chrome";
@@ -21,7 +22,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
   initialSession?: StorySession; onProfile?: (id: string) => void; onScene?: (id: string) => void;
 }) {
   const data = sceneLabData(state, sceneId);
-  const language = locale() === "en" ? "en" : "nb";
+  const language = useLanguage() === "en" ? "en" : "nb";
   const [tab, setTab] = useState<"analysis" | "improv" | "check">(initialSession?.kind === "scene_improv" ? "improv" : "analysis");
   const [session, setSession] = useState<StorySession | null>(initialSession ?? null);
   const [analysisSession, setAnalysisSession] = useState<StorySession | null>(initialSession?.kind === "scene_analysis" ? initialSession : null);
@@ -95,7 +96,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
   const checkPrompt = speaker && block ? lineCheckPrompt({ name: speaker.name, profile: profileAt(state, speaker.id, sceneId as never), knowledge: knowledgeAt(state, speaker.id, sceneId as never), sceneHeading: data.heading,
     before: data.blocks.slice(0, data.blocks.findIndex((b) => b.id === block.id)).filter((b) => b.kind === "dialogue").slice(-12).map((b) => b.text), line: block.text, language }) : null;
   const prompt = dialog === "check" && checkPrompt ? checkPrompt : analysisPrompt;
-  const batchChars = Math.max(0, ...data.participants.map((a) => characterSystemPrompt({ name: a.name, profile: profileAt(state, a.id, sceneId as never) ?? emptyStoryProfile(), knowledge: knowledgeAt(state, a.id, sceneId as never), situation, language }).length))
+  const batchChars = Math.max(0, ...data.participants.map((a) => characterSystemPrompt({ name: a.name, profile: profileAt(state, a.id, sceneId as never) ?? emptyStoryProfile(), knowledge: knowledgeAt(state, a.id, sceneId as never), situation, language: "nb" }).length))
     + (session?.turns.slice(0, fromTurn + 1).reduce((n, t) => n + t.text.length + 100, 0) ?? 0)
     + Math.max(0, ...directions.map((d) => d.length)) + 8 * 800 * 4;
   const estimate = useTextEstimate(dialog === "variants" || dialog === "improv" ? "storylab_group" : "storylab_analysis", dialog === "variants" || dialog === "improv" ? batchChars : prompt.system.length + prompt.user.length, dialog === "analysis" ? 2000 : 800);
@@ -155,7 +156,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
       if (!r.ok) throw new Error(r.message);
       let branch = await save(r.session, [{ id: `d:session:all:${newId<"direction">()}`, speaker: "director", kind: "direction", text: direction, at: new Date().toISOString(), to: null }], 0, "active");
       added.push(branch); setVariants((old) => [...old, branch]);
-      await runSceneBatch({ state, session: branch, language, shouldStop: () => stopped.current,
+      await runSceneBatch({ state, session: branch, language: "nb", shouldStop: () => stopped.current,
         generate: async (input) => { const result = await gen({ data: { projectId, task: "storylab_group", ...input, maxTokens: 800 } }); if (!result.ok) throw new Error(result.message); if (result.usedFallback && mounted.current) setNote(L("Den innebygde AI-en ble brukt som reserve.", "The built-in AI was used as fallback.")); return result; },
         save: async (turn, cost) => {
           retrySave.current = async () => { branch = await save(branch, [turn], cost); setVariants((old) => old.map((s) => s.id === branch.id ? branch : s)); retrySave.current = null; };
@@ -226,7 +227,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
       <p className="text-sm text-text-secondary">{L(`Anslått: ${usd(estimate.usd * (dialog === "variants" ? directions.filter((d) => d.trim()).length * 8 : dialog === "improv" ? 8 : 1))} · ${estimate.label}`, `Estimated: ${usd(estimate.usd * (dialog === "variants" ? directions.filter((d) => d.trim()).length * 8 : dialog === "improv" ? 8 : 1))} · ${estimate.label}`)}</p>
       <ToolbarButton variant="primary" data-testid="storylab-scene-confirm" disabled={busy || estimate.loading || !!estimate.error || (dialog === "variants" && !directions.some((d) => d.trim()))} onClick={() => { const action = dialog; setDialog(null); if (action === "analysis") void analyze(); else if (action === "check") { setCheckApproved(true); void checkLine(); } else if (action === "variants") void runVariants(); else void perform(async () => {
         let s = await make("scene_improv"); setTab("improv");
-        await runSceneBatch({ state, session: s, language, shouldStop: () => stopped.current,
+        await runSceneBatch({ state, session: s, language: "nb", shouldStop: () => stopped.current,
           generate: async (input) => { const r = await gen({ data: { projectId, task: "storylab_group", ...input, maxTokens: 800 } }); if (!r.ok) throw new Error(r.message); if (r.usedFallback) setNote(L("Den innebygde AI-en ble brukt som reserve.", "The built-in AI was used as fallback.")); return r; },
           save: async (turn, cost) => {
             retrySave.current = async () => { s = await save(s, [turn], cost); setSession(s); retrySave.current = null; };
