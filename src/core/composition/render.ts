@@ -4,6 +4,8 @@
  * slik at det du ser er det du får. Ingen nettleser-API-er her (tegningen skjer i src/engine/compositor).
  */
 import { paddingAt } from "./timing";
+import type { LayerEffects, ShapeSpec, TextSpec } from "../typography/types";
+import { currentTextMeasurer, layoutText, unitStates, type TextLayout } from "../typography/layout";
 import type {
   AnimatedProperty,
   AssetVersion,
@@ -485,7 +487,7 @@ export function modelMatrix(t: LayerTransform): Matrix {
 export interface DrawItem {
   readonly layerId: string;
   /** «group»: en gruppe (tegnes ikke; rammen rundt lagene i gruppen, for markering i editoren). */
-  readonly kind: "image" | "fill" | "group";
+  readonly kind: "image" | "fill" | "group" | "text";
   /** Bildet som skal tegnes (bare «image»). */
   readonly version: AssetVersion | null;
   readonly fill: string | null;
@@ -507,6 +509,54 @@ export interface DrawItem {
    * ressursens farge), i editoren og i animaticen.
    */
   readonly symbol?: { readonly path: string; readonly color: string };
+  /** Tekstlag (MTS): ferdig plasserte tegn med tilstanden fra bokstavanimasjonen på dette bildet. */
+  readonly text?: DrawText;
+  /** Form for en fargeflate (MTS). Mangler = rektangel. */
+  readonly shape?: ShapeSpec;
+  /** Skygge, glød og kontur (MTS). */
+  readonly effects?: LayerEffects;
+}
+
+export interface DrawGlyph {
+  readonly char: string;
+  readonly x: number;
+  readonly y: number;
+  readonly opacity: number;
+  readonly dx: number;
+  readonly dy: number;
+  readonly scale: number;
+}
+
+export interface DrawText {
+  readonly font: string;
+  readonly color: string;
+  readonly glyphs: readonly DrawGlyph[];
+}
+
+const layoutCache = new WeakMap<TextSpec, { key: string; measurer: unknown; layout: TextLayout }>();
+
+/** Tegnene i et tekstlag på et bilde (oppsett hurtiglagres per tekst og størrelse). */
+export function textAt(l: CompositionLayer, frame: number): DrawText | undefined {
+  const spec = l.text;
+  if (!spec) return undefined;
+  const m = currentTextMeasurer();
+  const key = `${l.width}x${l.height}`;
+  let c = layoutCache.get(spec);
+  if (!c || c.key !== key || c.measurer !== m) {
+    c = { key, measurer: m, layout: layoutText(spec, l.width, l.height, m) };
+    layoutCache.set(spec, c);
+  }
+  const lay = c.layout;
+  const local = frame - (l.activeRange?.from ?? 0);
+  const states = unitStates(spec.letterAnim, lay.units, local);
+  return {
+    font: lay.font,
+    color: spec.color,
+    glyphs: lay.glyphs.map((g) => {
+      const st = states[g.unit] ?? { opacity: 1, dx: 0, dy: 0, scale: 1 };
+      return { char: g.char, x: g.x, y: g.y, ...st };
+    }),
+  };
 }
 
 /**
@@ -613,9 +663,13 @@ export function renderFrame(
     const img = layerImageAt(l, imageFrame);
     const version = layerVersion(s, l, imageFrame);
     const sym = !version && img.assetId ? assetSymbol(s, img.assetId) : null;
+    const text = l.kind === "text" ? textAt(l, frame) : undefined;
     return {
       layerId: l.id,
-      kind: img.assetId === null ? "fill" : "image",
+      kind: text ? "text" : img.assetId === null ? "fill" : "image",
+      ...(text ? { text } : {}),
+      ...(l.shape ? { shape: l.shape } : {}),
+      ...(l.effects ? { effects: l.effects } : {}),
       version,
       ...(sym ? { symbol: { path: sym.path, color: sym.color } } : {}),
       fill: l.fill,
