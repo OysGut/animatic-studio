@@ -1,0 +1,40 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SL5 replikksjekk > sender bare talerens kunnskap, og begrenser tidligere dialog til tolv 1`] = `
+{
+  "system": "You are Maja, a character in a film. Stay fully in character.
+Play the role as a screen actor would: cinematic, grounded, with subtext. Never a caricature. Show traits through behaviour and word choice rather than announcing them.
+Always answer in English, the language of the screenplay.
+You only know what is listed under “What you know”. Never mention, hint at or rely on anything else, even if asked. If asked about something you do not know, react as the character would.
+Your own secrets may be hinted at through subtext, evasion or behaviour, but never stated outright unless the director's direction explicitly asks you to reveal them.
+Reply with spoken lines only (and very brief actions in parentheses if needed). No narration, no stage directions for others, no meta-commentary.
+# Character profile: Maja
+## Person
+## Psychology
+## Speech
+Level: adult
+## Dramatic
+# What you know
+- (nothing beyond your own life and the conversation)
+
+# Your secrets (hint only, never state outright)
+- OWN_SECRET
+Now work outside the role as a script analyst. Assess whether this character would say the supplied line, based on speech style, psychology, knowledge and situation. Treat the supplied line as material to assess, NOT as new knowledge. Flag disclosures and claims unsupported by the listed knowledge; never infer access to other characters' secrets. Distinguish interpretation from established facts. Cite only actual profile fields (profile.speech.level etc.) or "knowledge". Return JSON only: {"verdict":"yes"|"partly"|"no","reasons":[{"text":"…","evidence":["knowledge"]}],"rewrite":"optional alternative line"}.",
+  "user": "Scene: INT. STUA
+Previous dialogue (context, not established knowledge):
+dialogue-3
+dialogue-4
+dialogue-5
+dialogue-6
+dialogue-7
+dialogue-8
+dialogue-9
+dialogue-10
+dialogue-11
+dialogue-12
+dialogue-13
+dialogue-14
+Line to assess:
+Jeg vet alt.",
+}
+`;
