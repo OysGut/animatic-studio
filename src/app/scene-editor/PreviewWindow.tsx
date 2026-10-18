@@ -9,6 +9,7 @@
  * per skjermpunkt. Størrelse, plassering og zoom huskes for begge former, også når vinduet lukkes og åpnes
  * igjen (automatisk ved avspilling) og mellom økter.
  */
+import { textSpecsOf, useTextFonts } from "@/engine/typography/fonts";
 import { ExternalLink, PanelBottomClose, X } from "lucide-react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -111,9 +112,11 @@ function PreviewCanvas({
     return () => sharedCache.release(c);
   }, []);
 
+  const fontsVersion = useTextFonts(textSpecsOf(state, composition.id)).version;
   const out = useMemo(
     () => renderFrame(state, composition.id, frame, { view: "camera" }),
-    [state, composition.id, frame],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [state, composition.id, frame, fontsVersion],
   );
 
   useEffect(() => {

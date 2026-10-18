@@ -6,6 +6,8 @@ import { LayerEvents } from "./LayerEvents";
 import { LayerSwaps } from "./LayerSwaps";
 import { LayerMotion } from "./LayerMotion";
 import { LayerMaskSection } from "./LayerMaskSection";
+import { TextInspector } from "./TextInspector";
+import type { RunAndWait } from "./mts-actions";
 import {
   AlertTriangle,
   Copy,
@@ -175,7 +177,12 @@ export function LayerInspector({
   durationFrames,
   drawingPath = false,
   onDrawingPathChange,
+  projectId,
+  runAndWait,
 }: {
+  /** For «Lagre som mal» (MTS MT4): opplasting av miniatyren og kommandoer som ventes på. */
+  projectId?: string;
+  runAndWait?: RunAndWait;
   state: ProjectState;
   composition: Composition;
   layer: CompositionLayer;
@@ -983,6 +990,17 @@ export function LayerInspector({
         onDrawingChange={(on) => onDrawingPathChange?.(on)}
       />
 
+      <TextInspector
+        state={state}
+        composition={composition}
+        layer={layer}
+        editable={editable}
+        run={run}
+        frame={frame}
+        durationFrames={durationFrames}
+        onError={setError}
+        {...(projectId && runAndWait ? { projectId, runAndWait } : {})}
+      />
       <Section title={L("Synlighet", "Visibility")}>
         <label className="flex items-center gap-2 text-[13px] text-text-primary">
           <input

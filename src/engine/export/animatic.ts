@@ -7,6 +7,7 @@
  * i biter på 20 sekunder med samme plassering som avspillingen og kodes som AAC eller Opus.
  * Bare på klienten.
  */
+import { fontsReady, textSpecsOf } from "@/engine/typography/fonts";
 import {
   L,
   cueAt,
@@ -125,6 +126,8 @@ export async function exportAnimatic(o: AnimaticExportOptions): Promise<Animatic
       ),
     );
 
+  // Fontene må være lastet før første bilde (MTS §61): samme filer som i forhåndsvisningen
+  await fontsReady(textSpecsOf(o.state));
   const source = new mb.CanvasSource(canvas, { codec, quality: mb.QUALITY_HIGH });
   const fps = o.fps.num / o.fps.den;
   output.addVideoTrack(source, { frameRate: fps });

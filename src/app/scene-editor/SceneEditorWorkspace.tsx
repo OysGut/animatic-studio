@@ -647,6 +647,8 @@ function Editor({
           layer={selectedLayer}
           editable={editable}
           run={cmds.run}
+          projectId={projectId}
+          runAndWait={cmds.runAndWait}
           frame={playback.frame}
           autoKey={autoKey}
           onOpenImage={() => openLayerImage(selectedLayer.id)}
