@@ -3,11 +3,13 @@
  * visuelle varianter med bildeversjoner og godkjenning (REQ-0135, REQ-0136, REQ-0146, REQ-0149)
  * og scenene der ressursen er brukt (REQ-0131). Kontinuitet (DEC-0055) i ContinuityPanel.
  */
+import { Link } from "@tanstack/react-router";
 import {
   Archive,
   ArchiveRestore,
   Check,
   Crop,
+  Drama,
   ImagePlus,
   Loader2,
   Music,
@@ -228,6 +230,22 @@ export function AssetDetail(props: Props) {
                 ))}
               </select>
             </div>
+            {asset.kind === "character" || asset.kind === "animal" ? (
+              <Link
+                to="/prosjekt/$projectId/storylab"
+                params={{ projectId: props.projectId }}
+                search={{ karakter: asset.id }}
+                data-testid="asset-storylab"
+                className="mt-5 inline-flex h-9 shrink-0 items-center gap-1.5 rounded-sm px-2 text-[13px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
+                title={L(
+                  `Snakk med ${asset.name} i Story Lab`,
+                  `Talk to ${asset.name} in Story Lab`,
+                )}
+              >
+                <Drama className="size-4" aria-hidden />
+                {L(`Snakk med ${asset.name} i Story Lab`, `Talk to ${asset.name} in Story Lab`)}
+              </Link>
+            ) : null}
             {/* Kameraikonet øverst til høyre: bilder og video fra mobilen havner her (DEC-0090) */}
             {editable && asset.kind !== "sound" ? (
               <MobileCameraButton

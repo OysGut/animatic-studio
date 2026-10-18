@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import {
   Clapperboard,
+  Drama,
   FileText,
   Film,
   Layers,
@@ -20,6 +21,7 @@ const LATER: { label: string; icon: ReactNode; milestone: string }[] = [];
 const NAV_LABEL = localized({
   overview: ["Prosjektoversikt", "Project overview"],
   script: ["Manus", "Script"],
+  storylab: ["Story Lab", "Story Lab"],
   library: ["Ressursbibliotek", "Asset library"],
   scene: ["Sceneeditor", "Scene editor"],
   assembly: ["Montering", "Assembly"],
@@ -37,6 +39,12 @@ const LINKS = [
     to: "/prosjekt/$projectId/manus",
     labelKey: "script",
     icon: <FileText aria-hidden />,
+    exact: false,
+  },
+  {
+    to: "/prosjekt/$projectId/storylab",
+    labelKey: "storylab",
+    icon: <Drama aria-hidden />,
     exact: false,
   },
   {
