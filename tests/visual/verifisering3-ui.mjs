@@ -372,9 +372,9 @@ async function testAreas() {
     const links = await nav.getByRole("link").allInnerTexts();
     check(
       "REQ-0427",
-      "hovedmenyen har seks arbeidsflater",
+      "hovedmenyen har sju arbeidsflater",
       links.map((x) => x.trim()).join("|") ===
-        "Prosjektoversikt|Manus|Ressursbibliotek|Sceneeditor|Montering|Utgivelse",
+        "Prosjektoversikt|Manus|Story Lab|Ressursbibliotek|Sceneeditor|Montering|Utgivelse",
       links.join(", "),
     );
     check(

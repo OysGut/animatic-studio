@@ -10,6 +10,7 @@ import {
   ChevronDown,
   Clapperboard,
   Copy,
+  Drama,
   Layers,
   Mic,
   MonitorPlay,
@@ -674,6 +675,20 @@ function Editor({
         >
           <Redo2 />
         </ToolbarButton>
+        {occurrence ? (
+          <ToolbarButton variant="icon" asChild>
+            <Link
+              to="/prosjekt/$projectId/storylab"
+              params={{ projectId }}
+              search={{ scene: occurrence.sceneId }}
+              data-testid="scene-editor-storylab"
+              title={L("Utforsk dialogen i Story Lab", "Explore the dialogue in Story Lab")}
+              aria-label={L("Utforsk dialogen", "Explore the dialogue")}
+            >
+              <Drama />
+            </Link>
+          </ToolbarButton>
+        ) : null}
         {editable && composition ? (
           <ToolbarButton variant="default" onClick={() => setAddOpen(true)}>
             <Plus />

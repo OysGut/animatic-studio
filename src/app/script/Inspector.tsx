@@ -9,6 +9,7 @@ import {
   Check,
   Clapperboard,
   CopyPlus,
+  Drama,
   Eye,
   GitMerge,
   Layers,
@@ -138,6 +139,22 @@ export function Inspector(props: Props) {
           >
             <Layers className="size-3.5 shrink-0" aria-hidden />
             <span className="truncate">{L("Sceneeditor", "Scene editor")}</span>
+          </Link>
+        ) : null}
+        {occ && !block ? (
+          <Link
+            to="/prosjekt/$projectId/storylab"
+            params={{ projectId: props.projectId }}
+            search={{ scene: occ.sceneId }}
+            data-testid="inspector-storylab"
+            className="flex min-w-0 items-center gap-1 rounded-sm px-1 normal-case tracking-normal text-text-secondary hover:bg-surface-3 hover:text-text-primary"
+            title={L(
+              "Undersøk scenen i Story Lab (velges som tidspunkt i fortellingen)",
+              "Explore the scene in Story Lab (chosen as the point in the story)",
+            )}
+          >
+            <Drama className="size-3.5 shrink-0" aria-hidden />
+            <span className="truncate">{L("Undersøk scene i Story Lab", "Explore scene in Story Lab")}</span>
           </Link>
         ) : null}
         {/* Mikrofonikonet for en replikk (DEC-0093): opptak på datamaskinen og mobilen */}
