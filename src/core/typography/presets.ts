@@ -3,7 +3,8 @@
  * redigeres etterpå i tidslinjen. Ingen egen animasjonsmodell.
  */
 import type { CompositionLayer, Keyframe, TransformProperty } from "../model";
-import { localized } from "../i18n";
+import { L, localized } from "../i18n";
+import type { LetterAnimation } from "./types";
 
 export type MotionPreset = "fade" | "slide" | "zoom" | "rotate";
 export type PresetDirection = "up" | "down" | "left" | "right";
@@ -62,4 +63,54 @@ export function applyMotionPreset(
     added.push({ frame: b, property, value: v2, easing: "linear" });
   }
   return [...kept, ...added].sort((x, y) => x.frame - y.frame || x.property.localeCompare(y.property));
+}
+
+/** Standard bokstavanimasjon når laget ikke har en fra før (MT3, §9). */
+export const DEFAULT_LETTER_ANIM: LetterAnimation = {
+  unit: "letter",
+  effect: "appear",
+  direction: "up",
+  startFrame: 0,
+  delayFrames: 3,
+  durationFrames: 6,
+  order: "start",
+  seed: 1,
+  distance: 40,
+};
+
+/** Fullstendig bokstavanimasjon fra den nåværende (eller standardverdiene) og endringen. */
+export function letterAnimWith(
+  current: Partial<LetterAnimation> | null | undefined,
+  patch: Partial<LetterAnimation>,
+): LetterAnimation {
+  return { ...DEFAULT_LETTER_ANIM, ...(current ?? {}), ...patch };
+}
+
+export type PresetWindow = { ok: true; startFrame: number } | { ok: false; reason: string };
+
+/**
+ * Hvor inn- og utanimasjonen ligger (MT3): inn starter ved starten av lagets synlige område (eller ved
+ * avspillingshodet når det står inne i området), ut slutter ved slutten av området. Inn og ut overlapper aldri.
+ */
+export function presetWindow(
+  layer: Pick<CompositionLayer, "activeRange">,
+  phase: "in" | "out",
+  o: { readonly frame: number; readonly sceneFrames: number; readonly durationFrames: number },
+): PresetWindow {
+  const from = Math.max(0, Math.round(layer.activeRange?.from ?? 0));
+  const to = Math.max(from, Math.round(layer.activeRange?.to ?? o.sceneFrames));
+  const len = Math.max(1, Math.round(o.durationFrames));
+  if (to - from < 2 * len)
+    return {
+      ok: false,
+      reason: L(
+        `Laget er for kort for både inn- og utanimasjon: ${to - from} bilder, men det trengs ${2 * len}. Gjør animasjonen kortere eller laget lengre.`,
+        `The layer is too short for both an in and an out animation: ${to - from} frames, but ${2 * len} are needed. Make the animation shorter or the layer longer.`,
+      ),
+    };
+  const outStart = to - len;
+  if (phase === "out") return { ok: true, startFrame: outStart };
+  const f = Math.round(o.frame);
+  const start = f >= from && f + len <= outStart ? f : from;
+  return { ok: true, startFrame: start };
 }
