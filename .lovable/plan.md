@@ -1,140 +1,63 @@
-# Plan – T2: AI-skrivehjelp i manuset
+# U2 – Felles tetthet for verktøylinjer og panelhoder
 
-Skillene animatic-ai-tekst, animatic-story-lab, animatic-arkitektur-og-data, animatic-testing, animatic-i18n og animatic-ui-designsystem gjelder. T2 bygger på T1 (`generateText`, oppgavegruppen «Manus», kostnadsbekreftelse og reserve). Det kommer ingen ny AI-vei og ingen ny manusmotor.
+## Utgangspunkt (lest i koden)
+- `src/app/shell/workspace-chrome.tsx` har allerede `Toolbar`, `ToolbarGroup`, `ToolbarSeparator`, `ToolbarButton` (icon/default/primary) og `PanelHeader`. U2 bygger videre på dem; ingen nye navn som konkurrerer.
+- Avvik fra målet i dag: `Toolbar` er `min-h-10` og bryter til flere linjer; ikonknapper bruker `title` i stedet for Radix-verktøytips; skrift og sporing er hardkodet (`text-[11px]`, `text-[13px]`, `tracking-wider`); `PanelHeader`-handlingene er halvt skjult (opacity 60).
+- Bruk i dag: Story Lab, Asset Studio, manuset og sceneeditoren bruker delene mye. Prosjektoversikten bruker dem ikke; biblioteket, monteringen og utgivelsen bare delvis. `StackedPanels` i `ScenePanels.tsx` har sitt eget `<header>` + `<h2>`.
+- Monteringen har allerede en manuell «Mer ▾» (`AssemblyMoreMenu`). Den beholdes som den er.
+- 94 hardkodede farger i `src/app` (se egen seksjon).
 
-## Arbeidspakker
-- **T2.1 Grunnmur:** kjernens promptbyggere, diffen, forslagsmodellen, serverfunksjonen og skrivepanelet med diff.
-- **T2.2 Omskriving** av markert tekst.
-- **T2.3 Neste replikk / fortsett scenen** (Story Lab-kunnskap).
-- **T2.4 Scene fra beskrivelse eller fra en canvasnode.**
-- **T2.5 Språkvask og formatsjekk** (formatsjekken er regelbasert og gratis).
-- **T2.6 Oversettelsesutkast** (engelsk, merkes som usikkert).
-- **T2.7 Tester** (unit, snapshot og `tests/visual/t2-writing-ui.mjs`).
+## 1. Komponenter og API (alt i `workspace-chrome.tsx`)
 
-## 1. Plassering i manuseditoren (ScriptWorkspace)
-- **Kontekstmeny** på en markert blokk eller flere blokker (ScriptPageView): «Skriv om …» med en undermeny (Kortere, Tydeligere, Mer muntlig, Annen tone …, Fritt ønske …), «Språkvask», «Oversettelsesutkast».
-- **Inspektøren** (Inspector) får knappen «Skrivehjelp» for den valgte blokken.
-- **Sidepanelet «Skrivehjelp»** er en ny fane ved siden av Notater og Oversettelse. Der finner du:
-  - Neste replikk: velg karakter og eventuelt et ønske;
-  - Fortsett scenen;
-  - Ny scene fra beskrivelse;
-  - Ny scene fra Story Lab-node: velg node;
-  - Formatsjekk: kjør gratis;
-  - Språkvask: scene eller valgte blokker;
-  - Oversettelsesutkast: blokkene som mangler engelsk.
-- Forslaget med diff vises i panelet.
-- **Hurtigtaster:**
-  - ⌘/Ctrl+Shift+R: Skriv om;
-  - ⌘/Ctrl+Shift+J: Neste replikk;
-  - ⌘/Ctrl+Shift+K: Formatsjekk.
-  - Hurtigtastene virker ikke mens et tekstfelt har fokus, og de vises i verktøytipsene.
-- Alt er skjult eller deaktivert for leseroller (`editable`). Samme panel kan senere gjenbrukes i SceneScriptDialog. Det er ikke med i denne runden.
+```text
+Toolbar        { title?, status?, overflow?: "wrap" | "menu" (standard "wrap"), moreLabel? , ...div }
+ToolbarGroup   { priority?: number, ...div }      // lavest prioritet flyttes først i «Mer …»
+ToolbarSeparator
+ToolbarButton  { variant: icon|default|primary, active?, asChild? }   // uendret API
+IconButton     { label: string, shortcut?: string, active?, side?, ...button }
+PanelHeader    { title, as?, count?, collapse?, actions? }            // uendret API
+```
 
-## 2. Promptbyggere i kjernen (`src/core/script-assist/`, rene)
-- `rewritePrompt({ blocks, neighbours, mode, instruction, language })`
-- `nextLinePrompt({ state, occurrenceId, afterBlockId, characterAssetId, instruction })`. Den bruker `knowledgeAt(state, assetId, sceneId)` og `profileAt()` i fortellingstid. Andre karakterers hemmeligheter og senere hendelser kommer aldri med.
-- `sceneDraftPrompt({ description | canvasNode, characters, location, storyTimeNeighbours })`. Kunnskapen gjelder per karakter på tidspunktet scenen settes inn.
-- `polishPrompt({ blocks })`. Den gjelder bare språket, og formatet tas regelbasert.
-- `translateDraftPrompt({ blocks, glossary: karakternavn/steder })`
-- Felles regler:
-  - Instruksen er på engelsk.
-  - «Reply in Norwegian Bokmål» for hovedmanuset, eller på målspråket for oversettelse.
-  - Svaret er strengt JSON, i formatet `{ blocks: [{ id?, type, text, character? }] }`.
-  - Lengden kortes mot `maxPromptChars`.
-  - Det sendes bare et utdrag: de valgte blokkene, ± N blokker rundt dem og sceneoverskriften.
-- Parsere: `parseJsonLoose` og validering av svaret (blokktyper, lengder og bare kjente ID-er), som returnerer `null` ved uleselige svar.
-- `formatCheck(state, occurrenceId)` er ren regelbasert sjekk og gratis. Den ser på:
-  - karakternavn med store bokstaver;
-  - parenteser alene og i riktig posisjon;
-  - sceneoverskrift (INT/EXT, sted, tid);
-  - tomme blokker, doble mellomrom og typografiske anførselstegn.
-  - Resultatet blir forslag i samme diff-format.
-- `wordDiff(a, b)` er en ren diff på ordnivå (LCS), med segmentene lik, fjernet og lagt til.
+- **Toolbar:** fast høyde 32 px (`h-8`, token `--toolbar-h`), faste mellomrom (`--toolbar-gap`), `ToolbarSeparator` mellom grupper. `overflow="menu"`: en `ResizeObserver` måler gruppene; grupper som ikke får plass, vises i en Radix `DropdownMenu` «Mer …» (`L("Mer …","More …")`) til høyre. Elementene flyttes ikke i DOM ved full bredde, så tester ved 1280 px ser samme markup. Standard er `wrap` (dagens oppførsel, nå 32 px per linje), så ingenting skjules uten at skjermen ber om det.
+- **Primærhandling:** `ToolbarButton variant="primary"` i `accent-brand`. Utviklingsvarsel (bare dev, `console.warn`) hvis mer enn én primærknapp finnes i samme `Toolbar`.
+- **IconButton:** 28 px, Radix `Tooltip` med navn + hurtigtast (`<kbd>`), `aria-label={label}`, synlig fokus (`focus-visible:ring-focus-ring`). Hurtigtasten hentes som tekst fra eksisterende `shortcut-list.ts` der den finnes; ingen nye taster. `title` fjernes ikke der en test leser den (se tester). `TooltipProvider` legges én gang i arbeidsflate-skallet hvis det ikke allerede finnes.
+- **PanelHeader:** 32 px, tittel 11 px store bokstaver med sporing fra tokens, handlinger til høyre alltid synlige (tekst-tertiær, hover/fokus primær — ingen funksjon bare ved hover), sammenleggingspil med `aria-expanded`. Ny valgfri `toggleTitle`-variant der hele tittelen er knappen, slik `StackedPanels` gjør i dag.
 
-## 3. Serverfunksjon og kostnad
-- Ny fil: `src/adapters/ai/script-assist.functions.ts` (`createServerFn`, innlogging og rollen redaktør eller eier).
-  - Klienten sender **bare ID-er og valg**:
-    - `projectId`, `kind`, `occurrenceId`, `blockIds`, `characterAssetId`, `canvasNodeId`, `mode`;
-    - ønsket som fritekst (inntil 500 tegn);
-    - provider/model fra T1-valget.
-  - Serveren laster prosjekttilstanden, sjekker skjemaet, bygger prompten med kjernebyggerne og kaller den samme interne T1-kjøringen som `generateText` (leverandørvalg, nøkkeleier, reserve, 120 kall i timen og logging i `generation_jobs` uten promptinnhold).
-  - Oppgaven er `script`, og gruppen «Manus» brukes.
-  - Svaret har `{ ok, proposal, costUsd, provider, model, usedFallback, reason, keyOwner, baseRevisions }`.
-- `estimateScriptAssist` er en ren funksjon i kjernen. Den regner tokener ut fra utdragets lengde og forventet svar, med prisen for den valgte modellen. Den vises i den vanlige bekreftelsen fra T1 (første kall i økten), og etter det vises en løpende sum (CostLines).
-- Prompter, svar og nøkler logges aldri.
+## 2. Nye tokens i `styles.css`
+`--toolbar-h` (32px), `--toolbar-gap`, `--icon-button` (28px), `--text-ui` (13px), `--text-label` (11px), `--tracking-label`, samt eventuelle manglende semantiske farger som trengs for å erstatte hardkodede verdier (f.eks. `--overlay-scrim`, `--canvas-checker`, `--on-media`). Paletten selv endres ikke.
 
-## 4. Forslagsmodellen
-- **Forslagene finnes bare i minnet** (React-tilstand i skrivepanelet), så det trengs ingen ny tabell. Begrunnelsen er at forslagene er flyktige. Det som skal tas vare på, lagres som `trial_edit`-notat, og kostnaden logges allerede i `generation_jobs`.
-- Et forslag består av `{ kind, occurrenceId, items: [{ blockId | null (ny), oldText, newText, type, baseRevision }], costUsd }`.
-- **Bruk** og **Bruk delvis** (avkrysning per blokk) gir en plan i kjernen, `planApplyProposal(state, proposal, selected)`. Den gir en liste med vanlige kommandoer (`EditBlockText`, `InsertBlocks`, `CreateScene`, `AddTranslations`/`UpdateTranslations`), som kjøres som **én angregruppe** gjennom den vanlige kommandokjeden med revisjonssjekk.
-- **Konflikt:** er blokkens revisjon eller tekst endret siden forslaget ble laget, merkes blokken «Endret av noen andre». Den kan ikke brukes før brukeren lager forslaget på nytt eller forkaster det. Ingenting skrives stille. Avviser serveren på grunn av revisjonen, vises den samme konflikten.
-- **Lagre som forsøksvis redigering** lager ett `trial_edit`-notat per blokk, med original og forslag (den eksisterende notatkommandoen fra AS3).
-- **Forkast** fjerner forslaget fra minnet.
-- **Oversettelse:**
-  - Utkastet lagres som `status: "uncertain"` i den eksisterende oversettelsesmodellen.
-  - Det overskriver aldri en godkjent oversettelse.
-  - Norsk endres aldri (REQ-0331).
-  - Det vises bare for blokker som mangler oversettelse.
+## 3. Skjerm for skjerm (bare markup/stil)
+1. **Sceneeditoren:** `SceneEditorWorkspace` verktøylinje → `Toolbar overflow="menu"` med grupper (verktøy, lag, avspilling, eksport), én primær («Eksporter» eller dagens viktigste). `StackedPanels`-hodet → `PanelHeader` (toggleTitle + flytt opp/ned som `IconButton`). `PagesPanel`, `CreditsPanel`, `TextMenu`, `SceneAssetsPanel`, `LayerInspector`: egne `h2/h3` → `PanelHeader`.
+2. **Monteringen:** verktøylinjen til 32 px, ikonknapper → `IconButton`. `AssemblyMoreMenu/ViewMenu/TextMenu` beholdes; `overflow` forblir `wrap` her (manuell «Mer» finnes). Panelhoder i `ClipPanel`, `AudioClipPanel`, `ScriptChanges` → `PanelHeader`.
+3. **Manuset:** `ScriptWorkspace` verktøylinje → grupper + separatorer; `NotesPanel`, `WritingPanel`, `VersionsDialog`-hoder → `PanelHeader`. Hurtigtastene Alt+Shift+R/N/F vises i verktøytipsene.
+4. **Biblioteket:** `LibraryWorkspace` verktøylinje → `Toolbar`; `AssetDetail`, `ContinuityPanel`, `GenerateImagePanel` hoder → `PanelHeader`; ikonknapper → `IconButton`.
+5. **Story Lab:** bruker allerede delene; ensretter høyde, bytter ikonknapper til `IconButton`, fjerner egne h2-stiler i `StoryLabWorkspace`/`ConversationView`.
+6. **Prosjektoversikten:** innfører `Toolbar` øverst og `PanelHeader` på seksjonene (`DurationOverview`, `StyleGuideSection` m.fl.) i stedet for egne `h2`.
+7. **Utgivelsen:** `PosterWorkspace` verktøylinje og `PosterInspector`-hoder ensrettes; én primær.
+8. **Asset Studio:** `AssetStudio`, `VariantStrip`, `StudioScript` – ikonknapper → `IconButton`, høyde 32 px.
+9. **MTS-panelene:** `TextInspector`, `PagesPanel`, `CreditsPanel`, `LayerMotion` – hoder → `PanelHeader`.
 
-## 5. Diff-visningen
-- Komponenten `ProposalDiff` viser gammel og ny tekst side om side per blokk, med markering på ordnivå. Fjernet tekst er gjennomstreket med en dempet farge, og tillagt tekst er markert med accent-token.
-- Nye blokker vises med «Ny». Blokktypen og karakteren vises.
-- Avkrysning per blokk og knappene «Bruk», «Bruk valgte», «Lagre som forsøksvis redigering» og «Forkast».
-- Merknaden fra T1 vises ved bruk av reserven.
-- Alle tekster bruker L(nb, en), og bare designtokens brukes.
+Overskriftsnivå (`h2`/`h3`) beholdes per sted via `as`, så skjermleserstruktur er uendret.
 
-## 6. Migrasjon
-- **Det trengs ingen migrasjon 0053**, forutsatt at forslagene bare er i minnet og task `script` (som finnes fra før) brukes. Det bekreftes i åpent spørsmål 1.
+## 4. Hardkodede farger (pekes på, byttes til tokens)
+Flest: `library/ImageViewer.tsx` (17), `release/PosterCanvas.tsx` (10), `mobile/MobilePage.tsx` (8), `library/ImageLightbox.tsx` (8), `library/CutoutDialog.tsx` (5), `scene-editor/TextInspector.tsx`, `Stage.tsx`, `PreviewWindow.tsx` (4 hver), `script/ScriptPageView.tsx` (3), og 1–2 i ca. 15 andre filer (full liste i oppstarten av byggingen).
+Unntak som **ikke** byttes: farger som er brukerinnhold eller eksportdata (plakatens/tekstlagets valgte farger, QR-kode svart/hvitt, papirhvit manusside hvis den er utskriftsnær) — disse er data, ikke tema. Hvert unntak listes i svaret.
 
-## 7. Tester
-- **Unit:**
-  - snapshot av hver promptbygger;
-  - parserne og validering av svarene;
-  - `wordDiff`;
-  - `formatCheck` (hver regel);
-  - `estimateScriptAssist`;
-  - `planApplyProposal`: Bruk, Bruk delvis, én angregruppe med angre og gjør om, konflikt ved endret revisjon, og at oversettelse blir uncertain og ikke overskriver en godkjent oversettelse.
-- **Kunnskapsgrense (obligatorisk):** `nextLinePrompt` og `sceneDraftPrompt` for karakter A tar aldri med B sine hemmeligheter, fakta uten `knownBy` eller hendelser etter tidspunktet. Egne hemmeligheter merkes «hint only».
-- **Arkitektur:** promptbyggerne ligger i `src/core`. Klienten sender aldri `system`/`messages` til script-assist.
-- **Nettleser:** `tests/visual/t2-writing-ui.mjs` mocker `generateText`/script-assist med faste svar. Den sjekker:
-  - Skriv om → diff → Bruk (en `EditBlockText` i én gruppe);
-  - Bruk delvis;
-  - Lagre som forsøksvis redigering (trial_edit);
-  - Forkast (ingen kommando);
-  - konflikt (blokken endres før Bruk);
-  - neste replikk;
-  - scene fra node;
-  - formatsjekk uten AI-kall;
-  - oversettelse som uncertain;
-  - kostnadsbekreftelse;
-  - engelsk visning.
-  - Den bruker `eventually`, `data-testid` og `VISUAL_SCHEMA_VERSION` 52.
-- **DB-tester:** ingen, siden det ikke er noen migrasjon.
+## 5. Tester som berøres
+- Mål: ingen testendringer. Alle `data-testid`, tekster, roller og navn beholdes; `aria-label` settes til samme tekst som før.
+- `tests/visual/scene-panels-ui.mjs` bruker ett `title`-oppslag: `title` beholdes på den knappen, så testen er uendret.
+- `screens.mjs`, `verifisering3/4-ui.mjs`, `interactions-e2e.mjs`, `export-e2e.mjs` tar skjermbilder/målinger; pikselreferanser (hvis noen sammenlignes) vil endre seg. Hvis det skjer, rapporteres hvilke bilder som må fornyes — de fornyes ikke uten godkjenning.
+- «Mer …» på sceneeditoren slår bare inn under testbredden (1280 px), så ingen knapp flytter i eksisterende tester.
+- Nye unit-tester: `tests/unit/u2-toolbar-overflow.test.ts` (ren fordelingsfunksjon `planToolbarOverflow(widths, available, priorities)` i `src/app/shell/`), og én test for maks én primær. Ny nettlesertest `tests/visual/u2-chrome-ui.mjs`: høyde 32 px på alle verktøylinjer, verktøytips med hurtigtast ved fokus, «Mer …» ved 900 px, fokusring synlig, kontrastsjekk AA på tekst i hoder.
 
-## Risikoer
-- AI-en kan svare med feil blokk-ID-er eller format. Det løses med streng validering, og ukjente ID-er gir nye blokker eller avvisning.
-- Lange scener kan sprenge prompten. Det løses med et begrenset utdrag og en tydelig melding.
-- Hemmeligheter kan lekke via scenetekst som allerede står i manuset. Bare manusteksten før tidspunktet sendes, og testen dekker det.
-- Diff-visningen på ordnivå kan bli treg på store blokker. Grensen er 2000 tegn per blokk.
+## 6. Risikoer
+- Radix Tooltip legger til wrapper/portal: kan endre `:first-child`-selektorer (f.eks. `[&>section:first-child>h2]` i `StackedPanels`). Sjekkes per sted.
+- Fast 32 px høyde kan klippe innhold som i dag bryter (lange norske tekster). Derfor `wrap` som standard og `menu` bare der planen sier det.
+- Tekst-tertiær på `surface-2` må måles mot AA (4,5:1) når handlingene ikke lenger dempes.
+- Stor flate (≈ 60 filer): gjøres skjerm for skjerm med tsc/vitest/i18n etter hver skjerm.
+- Tilfeldige lokale stiler (`text-[11px]` o.l.) i innhold — ikke verktøylinjer/hoder — røres ikke i denne runden.
 
 ## Åpne spørsmål
-1. **Oppgave:** bruke den eksisterende `script`-oppgaven for alle fem funksjonene (anbefalt, uten migrasjon), eller egne oppgaver (`script_rewrite` …)? Egne oppgaver kan kreve en check i `generation_jobs` og dermed 0053.
-2. **Forslag i minnet:** er det greit at forslag som ikke er lagret, forsvinner når man lukker manuset, så lenge «Lagre som forsøksvis redigering» finnes?
-3. **Ny scene:** settes den inn etter den valgte scenen? Skal en node som allerede er knyttet til en scene, gi en ny variant eller bli avvist?
-4. **Hurtigtastene over:** godkjent, eller ønsker du andre?
-5. **Oversettelsesutkast:** bare engelsk i denne runden, eller alle språkversjoner i prosjektet?
-
-## Tekniske detaljer
-- **Nye filer:**
-  - `src/core/script-assist/{prompts,parse,diff,format-check,apply,estimate,index}.ts`
-  - `src/adapters/ai/script-assist.functions.ts`
-  - `src/app/script/assist/{WritingPanel,ProposalDiff,RewriteMenu}.tsx`
-  - `tests/unit/t2-*.test.ts`
-  - `tests/visual/t2-writing-ui.mjs`
-- **Endres:**
-  - `ScriptWorkspace.tsx` (fanen og hurtigtastene);
-  - `ScriptPageView.tsx` (kontekstmenyen);
-  - `Inspector.tsx` (knappen);
-  - `src/core/index.ts` (eksport);
-  - T1-kjøringen i `text.functions.ts` trekkes ut til en intern serverhjelper, slik at script-assist bruker samme leverandørvalg, kvote og logging uten at klienten sender prompten. Oppførselen ellers er uendret.
-- Ingen nye npm-pakker.
+1. Hvilken knapp er primærhandling på hver skjerm? Forslag: Sceneeditor «Eksporter», montering «Eksporter animatic», manus «Ny scene», bibliotek «Ny ressurs», Story Lab «Send», prosjekt «Åpne manus», utgivelse «Eksporter plakat», Asset Studio «Lagre», MTS ingen.
+2. Skal «Mer …» automatisk også brukes i manusets og bibliotekets verktøylinjer, eller bare i sceneeditoren?
+3. Godtas at pikselreferanser i skjermbildetestene fornyes etter godkjenning, hvis de finnes?
