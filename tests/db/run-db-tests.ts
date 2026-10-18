@@ -138,6 +138,9 @@ async function loadState(projectId: string): Promise<ProjectState> {
     story_facts: await q("story_facts"),
     story_canvas_nodes: await q("story_canvas_nodes"),
     story_canvas_edges: await q("story_canvas_edges"),
+    template_instances: await q("template_instances"),
+    credit_participants: await q("credit_participants"),
+    credit_sequences: await q("credit_sequences"),
   };
   return stateFromRows(rows);
 }
