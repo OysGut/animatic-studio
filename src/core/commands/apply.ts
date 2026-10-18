@@ -5525,6 +5525,14 @@ function run(
 
     case "UpdateAsset": {
       const a = need(s.assets[c.assetId], L("Ressursen", "The asset"));
+      if ((a.kind === "template") !== (c.fields.kind === "template"))
+        fail(
+          "invalid",
+          L(
+            "En mal kan ikke gjøres om til en annen ressurstype, eller omvendt",
+            "A template cannot be changed into another asset type, or the other way round",
+          ),
+        );
       return {
         state: {
           ...s,
