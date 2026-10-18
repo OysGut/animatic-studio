@@ -1639,7 +1639,7 @@ function oneRevisionPerRow(before: ProjectState, after: ProjectState): ProjectSt
   for (const key of Object.keys(after) as (keyof ProjectState)[]) {
     const a = after[key] as unknown;
     const b = before[key] as unknown;
-    if (a === b || !a || typeof a !== "object" || Array.isArray(a)) continue;
+    if (key === "project" || a === b || !a || typeof a !== "object" || Array.isArray(a)) continue;
     const table = a as Record<string, unknown>;
     const old = (b && typeof b === "object" ? b : {}) as Record<string, unknown>;
     let next: Record<string, unknown> | null = null;
