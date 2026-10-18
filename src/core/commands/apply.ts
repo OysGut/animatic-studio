@@ -316,7 +316,8 @@ function normalizeAssetFields(f: AssetFields): AssetFields {
     f.tags.some((t) => typeof t !== "string")
   )
     fail("invalid", L("Ufullstendige ressursfelter", "Incomplete asset fields"));
-  if (!(ASSET_KINDS as readonly string[]).includes(f.kind))
+  // «template» (MTS MT4) står ikke i ASSET_KINDS, så den ikke vises i typevalgene for vanlige ressurser
+  if (!(ASSET_KINDS as readonly string[]).includes(f.kind) && f.kind !== "template")
     fail("invalid", L("Ukjent ressurstype", "Unknown asset type"));
   const name = f.name.trim();
   if (!name || name.length > 200)
