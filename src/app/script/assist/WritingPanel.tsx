@@ -37,9 +37,10 @@ import type { Commands } from "@/app/project/use-commands";
 import type { Selection } from "../ScriptPageView";
 import { ProposalDiff } from "./ProposalDiff";
 
-export type AssistAction = "rewrite" | "next_line" | "format";
+export type AssistAction = AssistKind | "format";
 export interface AssistTrigger {
   readonly action: AssistAction;
+  readonly mode?: RewriteMode;
   readonly blockIds: readonly string[];
   readonly nonce: number;
 }
@@ -132,9 +133,11 @@ export function WritingPanel({
   useEffect(() => {
     if (!trigger) return;
     setTargets(trigger.blockIds);
+    if (trigger.mode) setMode(trigger.mode);
     if (trigger.action === "format") runFormat();
-    else if (trigger.action === "rewrite") setTimeout(() => instructionRef.current?.focus(), 30);
-    else if (trigger.action === "next_line") start("next_line", trigger.blockIds);
+    else if (trigger.action === "rewrite" && (!trigger.mode || trigger.mode === "tone" || trigger.mode === "free"))
+      setTimeout(() => instructionRef.current?.focus(), 30);
+    else if (trigger.action !== "scene") start(trigger.action, trigger.blockIds, trigger.mode);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trigger?.nonce]);
 
@@ -150,10 +153,10 @@ export function WritingPanel({
     if (blocker.status === "blocked") setLeaving("route");
   }, [blocker.status]);
 
-  function request(kind: AssistKind, blockIds: readonly string[]): AssistRequest {
+  function request(kind: AssistKind, blockIds: readonly string[], m: RewriteMode = mode): AssistRequest {
     const base = { kind, productionId, occurrenceId: occ?.id ?? null, blockIds: [] as string[] };
     if (kind === "rewrite")
-      return { ...base, blockIds: [...blockIds], mode, ...(instruction.trim() ? { instruction: instruction.trim() } : {}) };
+      return { ...base, blockIds: [...blockIds], mode: m, ...(instruction.trim() ? { instruction: instruction.trim() } : {}) };
     if (kind === "polish" || kind === "translate") return { ...base, blockIds: [...blockIds] };
     if (kind === "next_line") {
       const after = blockIds[blockIds.length - 1] ?? selection.blockId ?? null;
@@ -171,12 +174,12 @@ export function WritingPanel({
     };
   }
 
-  function start(kind: AssistKind, blockIds = targets.length ? targets : currentTargets()) {
+  function start(kind: AssistKind, blockIds = targets.length ? targets : currentTargets(), m?: RewriteMode) {
     setError(null);
     if (proposal) return setError({ message: L("Velg først hva som skal skje med forslaget som ligger her.", "First choose what to do with the current suggestion."), retry: null });
     if (kind === "scene" && node?.sceneId && !nodeConfirmed)
       return setError({ message: L("Bekreft at du vil lage en ny, separat scene fra noden.", "Confirm that you want to create a new, separate scene from the node."), retry: null });
-    const r = request(kind, blockIds);
+    const r = request(kind, blockIds, m ?? mode);
     const built = buildAssistPrompt(state, r);
     if (!built.ok) return setError({ message: built.message, retry: null });
     if (!confirmed) return setPending({ request: r, prompt: built.prompt });
