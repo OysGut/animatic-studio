@@ -869,6 +869,16 @@ export function ExportAnimaticDialog({
               />
               {L("Hele filmen i svart-hvitt", "The whole film in black and white")}
             </label>
+            <label className="flex items-center gap-2 pt-1 text-[13px] text-text-primary">
+              <input
+                type="checkbox"
+                data-testid="export-include-credits"
+                checked={includeCredits}
+                onChange={(e) => setIncludeCredits(e.target.checked)}
+                className="size-3.5 accent-[var(--accent-brand)]"
+              />
+              {L("Inkluder rulletekst", "Include credits")}
+            </label>
             <p className="pt-1 text-xs text-text-tertiary">
               {L(
                 "Scener som er satt til svart-hvitt, blir det uansett. Med lyden fra lydsporene (dempede spor er ikke med). Filformat og undertekster velges under.",
