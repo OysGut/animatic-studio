@@ -261,7 +261,7 @@ function Conversation({
         knownBy: f.knownBy.map((k) => names[k.assetId] ?? "?"),
       })),
       sceneContext: ctx.situation,
-      language: locale() === "en" ? "en" : "nb",
+      language: uiLang,
     });
     return {
       qTurn,
