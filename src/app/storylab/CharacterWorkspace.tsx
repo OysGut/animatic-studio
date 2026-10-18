@@ -2,7 +2,8 @@
  * Story Lab (SL2): karakterflaten – profilen felt for felt (lagres automatisk med SetStoryProfile),
  * karakterbuen (stadier fra en scene) og «Lag profil med AI …».
  */
-import { MessageSquare, Plus, Sparkles, Trash2, Undo2 } from "lucide-react";
+import { MessageSquare, Plus, Trash2, Undo2 } from "lucide-react";
+import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   L,
@@ -138,7 +139,7 @@ export function CharacterWorkspace({
         </ToolbarButton>
         {editable ? (
           <ToolbarButton onClick={() => setGenOpen(true)} data-testid="storylab-generate">
-            <Sparkles />
+            <AiGlyph />
             {L("Lag profil med AI …", "Create profile with AI …")}
           </ToolbarButton>
         ) : null}

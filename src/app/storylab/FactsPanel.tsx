@@ -108,7 +108,7 @@ function FactRow({
       <div className="flex items-start gap-2">
         <span
           className={
-            "mt-0.5 shrink-0 rounded-sm px-1 text-[10px] uppercase " +
+            "mt-0.5 shrink-0 rounded-sm px-1 text-[11px] uppercase " +
             (fact.kind === "secret" ? "bg-status-warning/15 text-status-warning" : "bg-surface-3 text-text-tertiary")
           }
         >

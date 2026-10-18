@@ -9,22 +9,7 @@ const UUID = /^[0-9a-f-]{36}$/;
  * forekomst-ID> velger tidspunktet i fortellingen (fra manus og sceneeditoren).
  */
 export const Route = createFileRoute("/prosjekt/$projectId/storylab")({
-  head: () => ({
-    meta: [
-      { title: "Story Lab – Animatic Studio" },
-      {
-        name: "description",
-        content: "Karakterprofiler, fakta og samtaler med karakterene i filmen.",
-      },
-      { property: "og:title", content: "Story Lab – Animatic Studio" },
-      {
-        property: "og:description",
-        content: "Karakterprofiler, fakta og samtaler med karakterene i filmen.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-    ],
-  }),
+  head: () => ({ meta: [{ title: "Story Lab – Animatic Studio" }] }),
   validateSearch: (s: Record<string, unknown>): { karakter?: string; scene?: string } => ({
     ...(typeof s["karakter"] === "string" && UUID.test(s["karakter"])
       ? { karakter: s["karakter"] }
