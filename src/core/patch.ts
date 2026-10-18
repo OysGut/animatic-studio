@@ -1254,6 +1254,19 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...(typeof x["active_from"] === "number" && typeof x["active_to"] === "number"
           ? { activeRange: { from: x["active_from"], to: x["active_to"] } }
           : {}),
+        // Migrasjon 0048 (MTS)
+        ...(json(x["text_spec"]) ? { text: json(x["text_spec"]) as never } : {}),
+        ...(json(x["shape"]) ? { shape: json(x["shape"]) as never } : {}),
+        ...(json(x["effects"]) ? { effects: json(x["effects"]) as never } : {}),
+        ...(typeof x["template_instance_id"] === "string" && typeof x["template_key"] === "string"
+          ? {
+              template: {
+                instanceId: x["template_instance_id"],
+                key: x["template_key"],
+                slot: optStr(x["template_slot"]),
+              },
+            }
+          : {}),
         removed: x["removed"] === true,
       })),
     ),
