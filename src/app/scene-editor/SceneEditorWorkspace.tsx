@@ -64,6 +64,8 @@ import { NearbyAudioPanel } from "./NearbyAudioPanel";
 import { Button } from "@/components/ui/button";
 import { AddLayerDialog } from "./AddLayerDialog";
 import { TextMenu } from "./TextMenu";
+import { PagesPanel } from "./PagesPanel";
+import { CreditsPanel } from "./CreditsPanel";
 import { CompositionInspector, LayerInspector } from "./LayerInspector";
 import { LayersPanel } from "./LayersPanel";
 import { Stage } from "./Stage";
