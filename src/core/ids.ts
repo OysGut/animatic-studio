@@ -28,6 +28,8 @@ export type AnnotationId = Id<"annotation">;
 export type CompositionId = Id<"composition">;
 export type LayerId = Id<"composition_layer">;
 export type AudioClipId = Id<"audio_clip">;
+/** Malforekomst (MTS MT4). */
+export type TemplateInstanceId = Id<"template_instance">;
 /** Montering del 4 (DEC-0048): deler av et klipp og tidskoblinger for manusblokker. */
 export type ClipPartId = Id<"clip_part">;
 export type TimeLinkId = Id<"time_link">;

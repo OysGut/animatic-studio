@@ -381,7 +381,15 @@ export interface TakeMedia {
 
 /** Ressurstype. «sound» = lydfil (dialog, musikk, effekter …) i samme bibliotek (mandat 13.2, DEC-0044). */
 export type AssetKind =
-  "character" | "object" | "location" | "animal" | "environment" | "other" | "sound";
+  | "character"
+  | "object"
+  | "location"
+  | "animal"
+  | "environment"
+  | "other"
+  | "sound"
+  /** Grafisk mal (MTS MT4, migrasjon 0049): versjonene bærer maldefinisjonen i `template`. */
+  | "template";
 
 /** Type alternativt navn (REQ-0126). */
 export type AssetNameKind = "alias" | "nickname" | "former" | "language";
@@ -504,6 +512,11 @@ export interface AssetVersion extends Entity<AssetVersionId> {
   readonly durationMs: number | null;
   /** Global versjon filen er kopiert fra (GP2). Mangler = prosjektets egen. */
   readonly globalSource?: GlobalSource;
+  /**
+   * Maldefinisjonen (MTS MT4, migrasjon 0049) når ressursen er en mal. Filen er en miniatyr av malen.
+   * Uforanderlig som resten av versjonen.
+   */
+  readonly template?: import("./typography/template").TemplateDefinition;
   /** Slettet bilde (DEC-0079): vises bare i «Slettede objekter». Selve bildet endres aldri. */
   readonly removed?: boolean;
   /**
@@ -578,7 +591,9 @@ export type LayerKind =
   | "effect"
   | "other"
   /** Gruppe (DEC-0052, REQ-0174): viser ikke noe selv; lagene i gruppen følger dens bevegelse, synlighet og skalering. */
-  | "group";
+  | "group"
+  /** Tekstlag (MTS, migrasjon 0048): redigerbar tekst og typografi i `text`. */
+  | "text";
 
 /** Plassering av et lag i scenen. Posisjon er midtpunktet i scenens koordinater (piksler). */
 export interface LayerTransform {
@@ -789,6 +804,14 @@ export interface CompositionLayer extends Entity<LayerId> {
   readonly blend?: BlendMode;
   /** Aktivt tidsområde (AS2, migrasjon 0043): laget tegnes bare innenfor. Mangler/null = hele scenen. */
   readonly activeRange?: LayerActiveRange | null;
+  /** Tekst og typografi (MTS, migrasjon 0048). Bare tekstlag. */
+  readonly text?: import("./typography/types").TextSpec | null;
+  /** Grafisk form for en fargeflate (MTS, migrasjon 0048). Mangler = rektangel. */
+  readonly shape?: import("./typography/types").ShapeSpec | null;
+  /** Skygge, glød og kontur (MTS, migrasjon 0048). Mangler = ingen. */
+  readonly effects?: import("./typography/types").LayerEffects | null;
+  /** Malforekomsten og feltet laget er bygget fra (MTS MT4). Mangler = ikke fra mal. */
+  readonly template?: import("./typography/types").TemplateSlotRef | null;
   readonly removed: boolean;
 }
 
@@ -890,6 +913,20 @@ export interface ProjectState {
   /** Skrivecanvaset (SL7, migrasjon 0040): noder og kanter. */
   readonly canvasNodes: Readonly<Record<string, CanvasNode>>;
   readonly canvasEdges: Readonly<Record<string, CanvasEdge>>;
+  /** Malforekomster (MTS MT4, migrasjon 0049). */
+  readonly templateInstances: Readonly<Record<string, TemplateInstance>>;
+}
+
+/**
+ * En mal brukt i én 2D-scene (MTS MT4, §12): låst malversjon og innholdet. Lagene som er bygget fra den,
+ * peker hit med `CompositionLayer.template`.
+ */
+export interface TemplateInstance extends Entity<import("./ids").TemplateInstanceId> {
+  readonly compositionId: CompositionId;
+  readonly templateAssetId: AssetId;
+  readonly templateVersionId: AssetVersionId;
+  readonly values: import("./typography/template").TemplateValues;
+  readonly removed: boolean;
 }
 
 /**
@@ -1197,6 +1234,7 @@ export const COLLECTION_TABLES = {
   storyFacts: "story_facts",
   canvasNodes: "story_canvas_nodes",
   canvasEdges: "story_canvas_edges",
+  templateInstances: "template_instances",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_TABLES;
@@ -1232,6 +1270,7 @@ export function emptyProjectState(project: Project): ProjectState {
     storyFacts: {},
     canvasNodes: {},
     canvasEdges: {},
+    templateInstances: {},
   };
 }
 

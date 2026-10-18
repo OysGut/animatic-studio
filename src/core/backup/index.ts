@@ -68,6 +68,7 @@ export const BACKUP_STATE_TABLES = [
   "story_facts",
   "story_canvas_nodes",
   "story_canvas_edges",
+  "template_instances",
 ] as const;
 export type BackupStateTable = (typeof BACKUP_STATE_TABLES)[number];
 
@@ -580,6 +581,7 @@ export function restoredState(
     story_facts: t("story_facts"),
     story_canvas_nodes: t("story_canvas_nodes"),
     story_canvas_edges: t("story_canvas_edges"),
+    template_instances: t("template_instances"),
   };
   let state: ProjectState;
   try {

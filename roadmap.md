@@ -41,3 +41,11 @@
 - [ ] GP5 QR-filmvisning – venter på svar på spørsmål 4–5
 # GP2–GP5
 - [x] GP2 globalt bibliotek (0046), GP3 videreføring, GP4 nytt prosjekt med skriveassistent, GP5 QR-deling (0047). Migrasjoner skrevet, ikke kjørt. DB- og nettlesertester kjøres av Øystein.
+# MT (Motion Typography) runde 1
+- [x] MT1 kjerne: tekst-, form- og effektmodell, renderFrame/canvas, 0048 (lat fontlasting gjenstår)
+- [ ] MT2 egenskapspanel for tekst, «Legg til tekst»
+- [~] MT3 kjerne ferdig (bokstavanimasjon, oppsett); UI gjenstår
+- [~] MT4 kjerne, kommandoer og 0049 ferdig; «Lagre som mal»-UI gjenstår
+- [ ] MT5 lower thirds og «Bruk samme design som i scene …»
+- [ ] Nettlesertester mts-engine, mts-lower-thirds, mts-nondestructive (AI–AJ)
+- [ ] MT6–MT9 neste runde (inkl. occurrences.kind, manusmarkør, filtre i manusutforsker/OG2/oversettelse)

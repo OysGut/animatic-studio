@@ -143,6 +143,11 @@ export interface LayerFields {
   readonly blend?: BlendMode;
   /** Aktivt tidsområde (AS2). Utelatt = uendret ved endring, hele scenen ved nytt lag. null = hele scenen. */
   readonly activeRange?: LayerActiveRange | null;
+  /** Tekst, form, effekter og malfelt (MTS). Utelatt = uendret ved endring, ingen ved nytt lag. */
+  readonly text?: import("../typography/types").TextSpec | null;
+  readonly shape?: import("../typography/types").ShapeSpec | null;
+  readonly effects?: import("../typography/types").LayerEffects | null;
+  readonly template?: import("../typography/types").TemplateSlotRef | null;
 }
 
 export interface NewLayer {
@@ -676,6 +681,8 @@ export type Command =
       readonly composition?: import("../audio/composition").AudioComposition;
       /** Kopiert fra en global versjon (GP2). Bare metadata. */
       readonly globalSource?: import("../model").GlobalSource;
+      /** Maldefinisjonen (MTS MT4) når ressursen er en mal; filen er malens miniatyr. */
+      readonly template?: import("../typography/template").TemplateDefinition;
     }
   | {
       /** Eksplisitt godkjenning (REQ-0136, REQ-0145). null = ingen godkjent versjon. */
@@ -842,6 +849,33 @@ export type Command =
       readonly removed: boolean;
     }
   | { readonly type: "AddLayers"; readonly layers: readonly NewLayer[] }
+  // ---------- Maler (MTS MT4) ----------
+  | {
+      readonly type: "AddTemplateInstance";
+      readonly instanceId: import("../ids").TemplateInstanceId;
+      readonly fields: import("../typography/template").TemplateInstanceFields;
+    }
+  | {
+      readonly type: "UndoAddTemplateInstance";
+      readonly instanceId: import("../ids").TemplateInstanceId;
+    }
+  | {
+      /** Nytt innhold eller ny malversjon for en forekomst. */
+      readonly type: "UpdateTemplateInstance";
+      readonly instanceId: import("../ids").TemplateInstanceId;
+      readonly fields: {
+        readonly values: import("../typography/template").TemplateValues;
+        readonly templateVersionId: AssetVersionId;
+      };
+    }
+  | {
+      /**
+       * Bruk mal, nytt innhold eller ny malversjon som én samlet kommando (ett angretrinn, én revisjon per rad).
+       * Trinnene er vanlige kommandoer (TEMPLATE_STEPS).
+       */
+      readonly type: "ApplyTemplate";
+      readonly steps: readonly Command[];
+    }
   | { readonly type: "UndoAddLayers"; readonly layerIds: readonly LayerId[] }
   | {
       /** Endre ett eller flere lag samtidig (f.eks. flytte en gruppe). Én angring. */

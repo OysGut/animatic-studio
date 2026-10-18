@@ -147,6 +147,10 @@ const COMPOSITION_COMMANDS = new Set<string>([
   "UpdateComposition",
   "RetimeScene",
   "UpdateSceneDraft",
+  "ApplyTemplate",
+  "AddTemplateInstance",
+  "UndoAddTemplateInstance",
+  "UpdateTemplateInstance",
   "SetCompositionStep",
   "SetCompositionRemoved",
   "AddLayers",
@@ -424,6 +428,32 @@ const CANVAS_COMMANDS = new Set([
   "UpdateCanvasEdge",
   "RemoveCanvasEdge",
 ]);
+
+/** Malforekomster og maler (MTS MT4) krever migrasjon 0049. */
+export function needsSchema49(command: { type: string } & Record<string, unknown>): boolean {
+  if (["ApplyTemplate", "AddTemplateInstance", "UndoAddTemplateInstance", "UpdateTemplateInstance"].includes(command.type))
+    return true;
+  if (command.type === "AddAssetVersion") return command["template"] !== undefined;
+  if (command.type === "CreateAssets")
+    return ((command["assets"] as { fields?: { kind?: string } }[] | undefined) ?? []).some(
+      (a) => a.fields?.kind === "template",
+    );
+  return false;
+}
+
+/** Tekstlag, former og effekter (MTS MT1) krever migrasjon 0048. */
+export function needsSchema48(command: { type: string } & Record<string, unknown>): boolean {
+  const layers = (cmd: Record<string, unknown>): unknown[] => {
+    if (cmd["type"] === "AddLayers" || cmd["type"] === "UpdateLayers")
+      return ((cmd["layers"] as { fields?: unknown }[] | undefined) ?? []).map((l) => l.fields);
+    if (Array.isArray(cmd["steps"])) return (cmd["steps"] as Record<string, unknown>[]).flatMap(layers);
+    return [];
+  };
+  return layers(command).some((f) => {
+    const x = (f ?? {}) as Record<string, unknown>;
+    return x["kind"] === "text" || !!x["text"] || !!x["shape"] || !!x["effects"] || !!x["template"];
+  });
+}
 
 export function needsSchema40(command: { type: string }): boolean {
   return CANVAS_COMMANDS.has(command.type);
@@ -750,6 +780,19 @@ export const runCommand = createServerFn({ method: "POST" })
           message: L(
             "Databasen mangler kontinuitet for spinoffer. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0018.",
             "The database is missing continuity for spin-offs. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0018.",
+          ),
+        };
+    }
+    if (needsSchema48(data.command as never) || needsSchema49(data.command as never)) {
+      const schema = await checkSchema(admin);
+      const need = needsSchema49(data.command as never) ? 49 : 48;
+      if (schema.kind === "missing" || schema.version < need)
+        return {
+          ok: false,
+          code: "schema",
+          message: L(
+            `Databasen mangler tekstlag og maler. Den må oppdateres (migrasjon 00${need}).`,
+            `The database is missing text layers and templates. It must be updated (migration 00${need}).`,
           ),
         };
     }

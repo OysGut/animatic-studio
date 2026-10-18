@@ -33,6 +33,7 @@ import type {
   StoryFact,
   CanvasNode,
   CanvasEdge,
+  TemplateInstance,
   PosterDocument,
   PosterKind,
   RelationKind,
@@ -97,6 +98,7 @@ export interface ChangeSet {
 }
 
 type AnyEntity =
+  | TemplateInstance
   | Production
   | Scene
   | SceneVariant
@@ -310,6 +312,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         source_global_asset_id: v.globalSource?.assetId ?? null,
         source_global_variant_id: v.globalSource?.variantId ?? null,
         source_global_version_id: v.globalSource?.versionId ?? null,
+        // Migrasjon 0049 (MTS MT4): maldefinisjonen
+        template_spec: v.template ?? null,
       };
     }
     case "annotations": {
@@ -389,6 +393,13 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         // Migrasjon 0043 (AS2): aktivt tidsområde
         active_from: l.activeRange ? l.activeRange.from : null,
         active_to: l.activeRange ? l.activeRange.to : null,
+        // Migrasjon 0048 (MTS): tekst, form, effekter og malfelt
+        text_spec: l.text ?? null,
+        shape: l.shape ?? null,
+        effects: l.effects ?? null,
+        template_instance_id: l.template ? l.template.instanceId : null,
+        template_key: l.template ? l.template.key : null,
+        template_slot: l.template ? l.template.slot : null,
         removed: l.removed,
       };
     }
@@ -577,6 +588,17 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         removed: x.removed,
       };
     }
+    case "templateInstances": {
+      const x = e as TemplateInstance;
+      return {
+        ...base,
+        composition_id: x.compositionId,
+        template_asset_id: x.templateAssetId,
+        template_version_id: x.templateVersionId,
+        content: x.values,
+        removed: x.removed,
+      };
+    }
     case "canvasEdges": {
       const x = e as CanvasEdge;
       return {
@@ -622,6 +644,7 @@ export const TABLE_ORDER: readonly string[] = [
   "asset_versions",
   "script_annotations",
   "compositions",
+  "template_instances",
   "composition_layers",
   "audio_clips",
   "clip_parts",
@@ -751,6 +774,8 @@ export interface ProjectRows {
   /** Skrivecanvaset (migrasjon 0040). Tomt hvis migrasjonen ikke er kjørt ennå. */
   readonly story_canvas_nodes?: readonly Row[];
   readonly story_canvas_edges?: readonly Row[];
+  /** Malforekomster (migrasjon 0049). Tomt hvis migrasjonen ikke er kjørt ennå. */
+  readonly template_instances?: readonly Row[];
 }
 
 const str = (v: unknown) => String(v);
@@ -1164,6 +1189,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...(x["removed"] === true ? { removed: true } : {}),
         ...(isVersionView(x["view"]) ? { view: x["view"] } : {}),
         ...(isComposition(x["composition"]) ? { composition: x["composition"] } : {}),
+        ...(json(x["template_spec"]) && typeof json(x["template_spec"]) === "object"
+          ? { template: json(x["template_spec"]) as never }
+          : {}),
         ...(isAlignment(x["alignment"]) ? { alignment: x["alignment"] } : {}),
         ...(typeof x["source_global_version_id"] === "string" &&
         typeof x["source_global_asset_id"] === "string" &&
@@ -1246,6 +1274,19 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...reviewedFromRow(x["reviewed_versions"]),
         ...(typeof x["active_from"] === "number" && typeof x["active_to"] === "number"
           ? { activeRange: { from: x["active_from"], to: x["active_to"] } }
+          : {}),
+        // Migrasjon 0048 (MTS)
+        ...(json(x["text_spec"]) ? { text: json(x["text_spec"]) as never } : {}),
+        ...(json(x["shape"]) ? { shape: json(x["shape"]) as never } : {}),
+        ...(json(x["effects"]) ? { effects: json(x["effects"]) as never } : {}),
+        ...(typeof x["template_instance_id"] === "string" && typeof x["template_key"] === "string"
+          ? {
+              template: {
+                instanceId: x["template_instance_id"],
+                key: x["template_key"],
+                slot: optStr(x["template_slot"]),
+              },
+            }
           : {}),
         removed: x["removed"] === true,
       })),
@@ -1459,6 +1500,17 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         toNodeId: str(x["to_node_id"]) as never,
         label: str(x["label"] ?? ""),
         kind: str(x["kind"]) as CanvasEdge["kind"],
+        removed: x["removed"] === true,
+      })),
+    ),
+    templateInstances: byId(
+      (r.template_instances ?? []).map((x) => ({
+        id: str(x["id"]) as never,
+        revision: num(x["revision"]),
+        compositionId: str(x["composition_id"]) as never,
+        templateAssetId: str(x["template_asset_id"]) as never,
+        templateVersionId: str(x["template_version_id"]) as never,
+        values: ((json(x["content"]) as object | null) ?? {}) as never,
         removed: x["removed"] === true,
       })),
     ),

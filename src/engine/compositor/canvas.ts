@@ -3,7 +3,49 @@
  * Brukes av sceneeditoren og avspillingen; eksporten bruker samme funksjon på et OffscreenCanvas.
  * Bare på klienten (nettleser-API-er).
  */
-import { L, matrixScale, multiply, type DrawItem, type Frame, type Matrix } from "@/core";
+import {
+  L,
+  matrixScale,
+  multiply,
+  registerTextMeasurer,
+  type DrawItem,
+  type Frame,
+  type Matrix,
+} from "@/core";
+
+/**
+ * Tekstmåling for tekstlag (MTS §60–61): samme Canvas-måling i editoren, avspillingen og eksporten, så
+ * tegnene plasseres likt. Registreres når lerretsmodulen lastes.
+ */
+let measureCtx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D | null = null;
+function measureContext() {
+  if (measureCtx) return measureCtx;
+  if (typeof OffscreenCanvas !== "undefined")
+    measureCtx = new OffscreenCanvas(1, 1).getContext("2d") as OffscreenCanvasRenderingContext2D;
+  else if (typeof document !== "undefined")
+    measureCtx = document.createElement("canvas").getContext("2d");
+  return measureCtx;
+}
+const measureCache = new Map<string, number>();
+export function canvasMeasureText(font: string, text: string): number {
+  const key = `${font}\u0000${text}`;
+  const hit = measureCache.get(key);
+  if (hit !== undefined) return hit;
+  const ctx = measureContext();
+  if (!ctx) return [...text].length * 10;
+  ctx.font = font;
+  const w = ctx.measureText(text).width;
+  if (measureCache.size > 20000) measureCache.clear();
+  measureCache.set(key, w);
+  return w;
+}
+/** Tømmer målingene (etter at en font er lastet, så nye mål brukes). */
+export function resetTextMeasure(): void {
+  measureCache.clear();
+  // Ny funksjonsidentitet: renderFrame lager nytt oppsett
+  registerTextMeasurer((f, t) => canvasMeasureText(f, t));
+}
+if (typeof window !== "undefined") registerTextMeasurer((f, t) => canvasMeasureText(f, t));
 
 export type ImageSource = CanvasImageSource & { readonly width: number; readonly height: number };
 
@@ -63,9 +105,11 @@ function paintItem(ctx: Ctx2D, it: DrawItem, v: Matrix, opts: DrawOptions, place
   ctx.globalAlpha = it.opacity;
   const x = -it.width / 2;
   const y = -it.height / 2;
-  if (it.kind === "fill") {
-    ctx.fillStyle = it.fill ?? "#808080";
-    ctx.fillRect(x, y, it.width, it.height);
+  applyShadow(ctx, it);
+  if (it.kind === "text") {
+    paintText(ctx, it);
+  } else if (it.kind === "fill") {
+    paintFill(ctx, it, x, y);
   } else {
     const img = it.version ? opts.images.get(it.version.mediaPath) : undefined;
     if (img) ctx.drawImage(img, x, y, it.width, it.height);
@@ -377,4 +421,92 @@ function release(img: LoadingImage): void {
   img.onload = null;
   img.onerror = null;
   img.src = "";
+}
+
+/** Skygge eller glød (MTS §4): Canvas-skygge på hele elementet. Glød er en skygge uten forskyvning. */
+function applyShadow(ctx: Ctx2D, it: DrawItem) {
+  const e = it.effects;
+  if (!e) return;
+  const k = matrixScale(domToMatrix(ctx.getTransform()));
+  if (e.shadow) {
+    ctx.shadowColor = e.shadow.color;
+    ctx.shadowBlur = e.shadow.blur * k;
+    ctx.shadowOffsetX = e.shadow.offsetX * k;
+    ctx.shadowOffsetY = e.shadow.offsetY * k;
+  } else if (e.glow) {
+    ctx.shadowColor = e.glow.color;
+    ctx.shadowBlur = e.glow.blur * k;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+  }
+}
+
+function domToMatrix(m: DOMMatrix): Matrix {
+  return [m.a, m.b, m.c, m.d, m.e, m.f];
+}
+
+/** Fargeflate med form (rektangel med runde hjørner, ellipse eller linje) og eventuell kantlinje. */
+function paintFill(ctx: Ctx2D, it: DrawItem, x: number, y: number) {
+  ctx.fillStyle = it.fill ?? "#808080";
+  const sh = it.shape;
+  if (!sh && !it.effects?.outline) {
+    ctx.fillRect(x, y, it.width, it.height);
+    return;
+  }
+  ctx.beginPath();
+  if (sh?.type === "ellipse") ctx.ellipse(0, 0, it.width / 2, it.height / 2, 0, 0, Math.PI * 2);
+  else if (sh && sh.type === "rect" && sh.radius > 0 && "roundRect" in ctx)
+    ctx.roundRect(x, y, it.width, it.height, Math.min(sh.radius, it.width / 2, it.height / 2));
+  else ctx.rect(x, y, it.width, it.height);
+  ctx.fill();
+  const stroke = sh?.stroke ?? (it.effects?.outline ? it.effects.outline : null);
+  if (stroke && stroke.width > 0) {
+    ctx.shadowColor = "transparent";
+    ctx.strokeStyle = stroke.color;
+    ctx.lineWidth = stroke.width;
+    ctx.stroke();
+  }
+}
+
+/** Tekstlag (MTS): hvert tegn på plassen renderFrame har beregnet, med sin egen tilstand. */
+function paintText(ctx: Ctx2D, it: DrawItem) {
+  const t = it.text;
+  if (!t) return;
+  ctx.font = t.font;
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+  const base = ctx.globalAlpha;
+  const outline = it.effects?.outline;
+  for (const g of t.glyphs) {
+    if (g.opacity <= 0) continue;
+    ctx.globalAlpha = base * g.opacity;
+    const gx = g.x + g.dx;
+    const gy = g.y + g.dy;
+    if (g.scale !== 1) {
+      ctx.save();
+      ctx.translate(gx, gy);
+      ctx.scale(g.scale, g.scale);
+      drawGlyph(ctx, g.char, 0, 0, t.color, outline);
+      ctx.restore();
+    } else drawGlyph(ctx, g.char, gx, gy, t.color, outline);
+  }
+  ctx.globalAlpha = base;
+}
+
+function drawGlyph(
+  ctx: Ctx2D,
+  ch: string,
+  x: number,
+  y: number,
+  color: string,
+  outline: { color: string; width: number } | null | undefined,
+) {
+  if (outline && outline.width > 0) {
+    ctx.strokeStyle = outline.color;
+    ctx.lineWidth = outline.width * 2;
+    ctx.lineJoin = "round";
+    ctx.strokeText(ch, x, y);
+  }
+  ctx.fillStyle = color;
+  ctx.fillText(ch, x, y);
 }

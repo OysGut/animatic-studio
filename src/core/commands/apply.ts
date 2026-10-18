@@ -22,6 +22,7 @@ import {
 import { checkInvariants } from "../invariants";
 import { materializeDraftStep, sparseDraftStep } from "./draft-fields";
 import { L } from "../i18n";
+import { templateError, type TemplateValues } from "../typography/template";
 import { canHaveStoryProfile, profileError, profilePatchError } from "../storylab/profile";
 import { factError, type StoryFactFields } from "../storylab/facts";
 import { activeProfileOf } from "../storylab/stages";
@@ -182,6 +183,7 @@ function assertNewId(s: ProjectState, id: string) {
     s.storyFacts,
     s.canvasNodes,
     s.canvasEdges,
+    s.templateInstances ?? {},
   ];
   if (all.some((c) => c[id] !== undefined))
     fail("duplicate_id", L(`ID ${id} er allerede i bruk`, `ID ${id} is already in use`));
@@ -314,7 +316,8 @@ function normalizeAssetFields(f: AssetFields): AssetFields {
     f.tags.some((t) => typeof t !== "string")
   )
     fail("invalid", L("Ufullstendige ressursfelter", "Incomplete asset fields"));
-  if (!(ASSET_KINDS as readonly string[]).includes(f.kind))
+  // «template» (MTS MT4) står ikke i ASSET_KINDS, så den ikke vises i typevalgene for vanlige ressurser
+  if (!(ASSET_KINDS as readonly string[]).includes(f.kind) && f.kind !== "template")
     fail("invalid", L("Ukjent ressurstype", "Unknown asset type"));
   const name = f.name.trim();
   if (!name || name.length > 200)
@@ -646,6 +649,11 @@ function layerFields(s: ProjectState, f: LayerFields, prev?: CompositionLayer): 
       blend: f.blend ?? prev.blend ?? "normal",
       // Aktivt tidsområde (AS2): utelatt = uendret
       activeRange: f.activeRange === undefined ? (prev.activeRange ?? null) : f.activeRange,
+      // Tekst, form, effekter og malfelt (MTS): utelatt = uendret
+      text: f.text === undefined ? (prev.text ?? null) : f.text,
+      shape: f.shape === undefined ? (prev.shape ?? null) : f.shape,
+      effects: f.effects === undefined ? (prev.effects ?? null) : f.effects,
+      template: f.template === undefined ? (prev.template ?? null) : f.template,
     };
   // Nytt bilde i laget (annen ressurs): bilder per språk av den gamle ressursen passer ikke lenger
   if (prev && f.assetId !== prev.assetId)
@@ -769,6 +777,10 @@ function fieldsOfLayer(l: CompositionLayer): LayerFields {
     ...(l.mask ? { mask: l.mask } : {}),
     ...(l.blend && l.blend !== "normal" ? { blend: l.blend } : {}),
     ...(l.activeRange ? { activeRange: l.activeRange } : {}),
+    ...(l.text ? { text: l.text } : {}),
+    ...(l.shape ? { shape: l.shape } : {}),
+    ...(l.effects ? { effects: l.effects } : {}),
+    ...(l.template ? { template: l.template } : {}),
   };
 }
 
@@ -1690,6 +1702,41 @@ export function audioClipFieldsOf(a: AudioClip): AudioClipFields {
     ...(a.language !== undefined ? { language: a.language } : {}),
     ...(a.speed !== undefined && a.speed !== 1 ? { speed: a.speed } : {}),
   };
+}
+
+/** Trinnene en ApplyTemplate kan inneholde (MTS MT4). */
+export const TEMPLATE_STEPS: ReadonlySet<string> = new Set<string>([
+  "AddTemplateInstance",
+  "UndoAddTemplateInstance",
+  "UpdateTemplateInstance",
+  "AddLayers",
+  "UndoAddLayers",
+  "UpdateLayers",
+  "SetLayersRemoved",
+]);
+
+/** Innholdet i en malforekomst (null = gyldig). */
+function templateValuesError(s: ProjectState, v: TemplateValues): string | null {
+  if (!v || typeof v !== "object" || Array.isArray(v)) return L("Ugyldig innhold", "Invalid content");
+  const entries = Object.entries(v);
+  if (entries.length > 100) return L("For mange felt", "Too many fields");
+  for (const [k, x] of entries) {
+    if (!/^[a-z0-9_-]{1,40}$/.test(k)) return L("Ugyldig felt", "Invalid field");
+    if (x && "text" in x) {
+      if (typeof x.text !== "string") return L("Ugyldig tekst", "Invalid text");
+      const n = [...x.text].length;
+      if (n > 2000)
+        return L(
+          `Teksten i feltet har ${n} tegn. Grensen er 2000 tegn.`,
+          `The text in the field has ${n} characters. The limit is 2000 characters.`,
+        );
+    } else if (x && "assetId" in x) {
+      if (!s.assets[x.assetId]) return L("Bildet i feltet finnes ikke", "The image in the field does not exist");
+      if (x.assetVariantId !== null && s.assetVariants[x.assetVariantId]?.assetId !== x.assetId)
+        return L("Ugyldig variant i feltet", "Invalid variant in the field");
+    } else return L("Ugyldig innhold", "Invalid content");
+  }
+  return null;
 }
 
 /** Trinnene en RetimeScene kan inneholde (bare tidsendringer i scenen). */
@@ -5478,6 +5525,14 @@ function run(
 
     case "UpdateAsset": {
       const a = need(s.assets[c.assetId], L("Ressursen", "The asset"));
+      if ((a.kind === "template") !== (c.fields.kind === "template"))
+        fail(
+          "invalid",
+          L(
+            "En mal kan ikke gjøres om til en annen ressurstype, eller omvendt",
+            "A template cannot be changed into another asset type, or the other way round",
+          ),
+        );
       return {
         state: {
           ...s,
@@ -6212,6 +6267,16 @@ function run(
           "invalid",
           L("Bare lyd kan ha en lydkomposisjon", "Only audio can have an audio composition"),
         );
+      else if ((s.assets[va.assetId]?.kind === "template") !== (c.template !== undefined))
+        fail(
+          "invalid",
+          L(
+            "En mal må ha en maldefinisjon, og bare maler kan ha det",
+            "A template must have a template definition, and only templates can have one",
+          ),
+        );
+      else if (c.template !== undefined && templateError(c.template))
+        fail("invalid", templateError(c.template)!);
       else if (!ASSET_MIME_TYPES.includes(m.mimeType))
         fail(
           "invalid",
@@ -6256,6 +6321,7 @@ function run(
               createdBy: env.actor,
               durationMs: sound ? (m.durationMs ?? null) : null,
               ...(sound && c.composition ? { composition: c.composition } : {}),
+              ...(c.template !== undefined ? { template: c.template } : {}),
               ...(c.globalSource !== undefined
                 ? {
                     globalSource: {
@@ -6333,6 +6399,15 @@ function run(
             "The recording is used in an audio composition or in a scene and cannot be removed.",
           ),
         );
+      // En malversjon som brukes av en forekomst, beholdes (MTS MT4, AJ)
+      if (Object.values(s.templateInstances ?? {}).some((i) => i.templateVersionId === ver.id))
+        fail(
+          "referenced",
+          L(
+            "Malversjonen brukes i en scene og kan ikke fjernes.",
+            "The template version is used in a scene and cannot be removed.",
+          ),
+        );
       // Bare det nyeste bildet kan angres bort (en versjon andre kan ha brukt, beholdes)
       if (
         Object.values(s.assetVersions).some(
@@ -6366,6 +6441,7 @@ function run(
           note: ver.note,
           number: ver.number,
           ...(ver.composition ? { composition: ver.composition } : {}),
+          ...(ver.template ? { template: ver.template } : {}),
           ...(ver.globalSource ? { globalSource: ver.globalSource } : {}),
         },
         affected: [ver.id],
@@ -6983,6 +7059,113 @@ function run(
       };
     }
 
+    case "AddTemplateInstance": {
+      assertNewId(s, c.instanceId);
+      const f = c.fields;
+      const comp = need(s.compositions[f.compositionId], L("2D-scenen", "The 2D scene"));
+      if (comp.removed) fail("invalid", L("2D-scenen er slettet", "The 2D scene has been deleted"));
+      const ver = need(s.assetVersions[f.templateVersionId], L("Malversjonen", "The template version"));
+      const asset = s.assets[f.templateAssetId];
+      if (!asset || asset.kind !== "template" || !ver.template || s.assetVariants[ver.variantId]?.assetId !== asset.id)
+        fail("invalid", L("Versjonen er ikke en mal", "The version is not a template"));
+      const e = templateValuesError(s, f.values);
+      if (e) fail("invalid", e);
+      return {
+        state: {
+          ...s,
+          templateInstances: {
+            ...s.templateInstances,
+            [c.instanceId]: {
+              id: c.instanceId,
+              revision: 1,
+              compositionId: comp.id,
+              templateAssetId: asset.id,
+              templateVersionId: ver.id,
+              values: f.values,
+              removed: false,
+            },
+          },
+        },
+        inverse: { type: "UndoAddTemplateInstance", instanceId: c.instanceId },
+        affected: [c.instanceId],
+      };
+    }
+
+    case "UndoAddTemplateInstance": {
+      const inst = need(s.templateInstances[c.instanceId], L("Malforekomsten", "The template instance"));
+      if (Object.values(s.layers).some((l) => l.template?.instanceId === inst.id))
+        fail("referenced", L("Malforekomsten har lag", "The template instance has layers"));
+      const templateInstances = { ...s.templateInstances };
+      delete templateInstances[inst.id];
+      return {
+        state: { ...s, templateInstances },
+        inverse: {
+          type: "AddTemplateInstance",
+          instanceId: inst.id,
+          fields: {
+            compositionId: inst.compositionId,
+            templateAssetId: inst.templateAssetId,
+            templateVersionId: inst.templateVersionId,
+            values: inst.values,
+          },
+        },
+        affected: [inst.id],
+      };
+    }
+
+    case "UpdateTemplateInstance": {
+      const inst = need(s.templateInstances[c.instanceId], L("Malforekomsten", "The template instance"));
+      const ver = need(s.assetVersions[c.fields.templateVersionId], L("Malversjonen", "The template version"));
+      if (!ver.template || s.assetVariants[ver.variantId]?.assetId !== inst.templateAssetId)
+        fail("invalid", L("Versjonen hører til en annen mal", "The version belongs to another template"));
+      const e = templateValuesError(s, c.fields.values);
+      if (e) fail("invalid", e);
+      return {
+        state: {
+          ...s,
+          templateInstances: {
+            ...s.templateInstances,
+            [inst.id]: { ...inst, values: c.fields.values, templateVersionId: ver.id, revision: rev(inst) },
+          },
+        },
+        inverse: {
+          type: "UpdateTemplateInstance",
+          instanceId: inst.id,
+          fields: { values: inst.values, templateVersionId: inst.templateVersionId },
+        },
+        affected: [inst.id],
+      };
+    }
+
+    case "ApplyTemplate": {
+      if (c.steps.length === 0 || c.steps.length > 20)
+        fail("invalid", L("Ugyldig malendring", "Invalid template change"));
+      let cur = s;
+      const inverses: Command[] = [];
+      const affected = new Set<string>();
+      for (const step of c.steps) {
+        if (!TEMPLATE_STEPS.has(step.type))
+          fail("invalid", L("Ugyldig trinn i malendringen", "Invalid step in the template change"));
+        const r = run(cur, { ...env, command: step });
+        cur = r.state;
+        inverses.unshift(r.inverse);
+        for (const id of r.affected) affected.add(id);
+      }
+      // Lag som peker på en malforekomst, må peke på en som finnes, i samme 2D-scene
+      for (const id of affected) {
+        const l = cur.layers[id];
+        if (!l?.template) continue;
+        const inst = cur.templateInstances[l.template.instanceId];
+        if (!inst || inst.compositionId !== l.compositionId)
+          fail("invalid", L("Laget peker på en ukjent malforekomst", "The layer refers to an unknown template instance"));
+      }
+      return {
+        state: oneRevisionPerRow(s, cur),
+        inverse: { type: "ApplyTemplate", steps: inverses },
+        affected: [...affected],
+      };
+    }
+
     case "AddLayers": {
       if (c.layers.length === 0) fail("invalid", L("Ingen lag å legge til", "No layers to add"));
       if (c.layers.length > 500)
@@ -7085,9 +7268,23 @@ function run(
             mask: l.mask ?? null,
             blend: l.blend ?? "normal",
             activeRange: l.activeRange ?? null,
+            text: l.text ?? null,
+            shape: l.shape ?? null,
+            effects: l.effects ?? null,
+            template: l.template ?? null,
           },
         });
-        const { languageImages: _li, mask: _m, blend: _b, activeRange: _ar, ...rest } = l;
+        const {
+          languageImages: _li,
+          mask: _m,
+          blend: _b,
+          activeRange: _ar,
+          text: _tx,
+          shape: _sh,
+          effects: _ef,
+          template: _tp,
+          ...rest
+        } = l;
         layers[l.id] = { ...rest, ...layerFields(s, u.fields, l), revision: rev(l) };
       }
       checkGroups(
