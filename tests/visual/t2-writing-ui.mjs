@@ -147,7 +147,9 @@ async function scenario(name, fn, { lang = "nb", blokk = ACTION.id, nodes = [], 
     await page.goto(base, { waitUntil: "domcontentloaded" });
     const exp = Math.floor(Date.now() / 1000) + 86400;
     await page.evaluate(([key, value, l]) => { localStorage.setItem(key, value); localStorage.setItem("animatic:lang", l); }, [`sb-${ref}-auth-token`, JSON.stringify({ access_token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.sig", refresh_token: "r", token_type: "bearer", expires_in: 86400, expires_at: exp, user: USER }), lang]);
-    await page.goto(`${base}${P}/manus?scene=${FIRST.id}&blokk=${blokk}`, { waitUntil: "networkidle" });
+    const target = `${base}${P}/manus?scene=${FIRST.id}&blokk=${blokk}`;
+    // Første lasting kan avbrytes mens dev-serveren bygger: prøv én gang til
+    await page.goto(target, { waitUntil: "networkidle" }).catch(() => page.goto(target, { waitUntil: "networkidle" }));
     await page.waitForTimeout(2000);
     await fn(page);
     check(errors.length === 0, `${name}: ingen kjørefeil (${errors.join(" | ").slice(0, 200)})`);
@@ -204,6 +206,8 @@ await scenario("rewrite-apply", async (page) => {
 });
 
 // 2. Bruk valgte (oversettelse, to linjer → én), status uncertain
+const FIRST_IDS = new Set(FIRST_BLOCKS.map((b) => b.id));
+const untranslated = (r) => ({ ...r, translations: (r.translations ?? []).filter((t) => !FIRST_IDS.has(t.block_id)) });
 await scenario("translate-selected", async (page) => {
   await openAssist(page);
   await tid(page, "assist-translate").click();
@@ -219,7 +223,7 @@ await scenario("translate-selected", async (page) => {
   check(items.length === n - 1, "bare de valgte linjene kommer med");
   check(items.every((i) => i.fields.status === "uncertain" && i.fields.language === "en"), "oversettelsen lagres som uncertain på engelsk");
   check(cmds("EditBlockText").length === 0, "norsk tekst endres ikke");
-});
+}, { mutate: untranslated });
 
 // 3. Lagre som forsøksvis redigering
 await scenario("trial-edit", async (page) => {
@@ -242,13 +246,13 @@ await scenario("discard", async (page) => {
 // 5. Konflikt: linjen endres før «Bruk»
 await scenario("conflict", async (page) => {
   await rewrite(page);
-  await page.locator(`[data-block="${ACTION.id}"]`).first().click();
-  await page.keyboard.press("Enter");
-  const editor = page.locator("textarea:focus");
+  // Linjen endres i inspektøren mens forslaget ligger i panelet
+  await tid(page, "script-tab-inspector").click();
+  const editor = page.getByRole("textbox", { name: /^(Tekst|Text)$/ }).first();
   await editor.waitFor({ timeout: 5000 });
-  await editor.press("End");
-  await editor.type(" endret");
+  await editor.fill(`${ACTION.text} endret`);
   await editor.press("Control+Enter");
+  await tid(page, "script-tab-assist").click();
   check(await eventually(() => cmds("EditBlockText").length === 1), "linjen er endret i manuset");
   check(await eventually(() => visible(page, "assist-conflict-note")), "konflikt vises");
   check(await tid(page, "assist-apply").isDisabled(), "«Bruk» er sperret ved konflikt");
@@ -312,7 +316,9 @@ await scenario("shortcuts", async (page) => {
   check(!(await visible(page, "assist-cost")), "hurtigtast virker ikke mens et tekstfelt har fokus");
   await page.locator(`[data-block="${ACTION.id}"]`).first().click();
   await page.keyboard.press("Alt+Shift+N");
-  check(await eventually(() => visible(page, "assist-cost")), "Alt+Shift+N starter neste replikk (kostnadsbekreftelse)");
+  const okN = await eventually(() => visible(page, "assist-cost"));
+  if (!okN) await page.screenshot({ path: `${out}/shortcuts-n.png` });
+  check(okN, "Alt+Shift+N starter neste replikk (kostnadsbekreftelse)");
 }, { mutate: lower });
 
 // 10. «Forkast forslaget?» ved bytte av scene
@@ -342,7 +348,7 @@ await scenario("english", async (page) => {
   await tid(page, "assist-confirm").click();
   await tid(page, "assist-diff").waitFor({ timeout: 5000 });
   const actions = await tid(page, "assist-proposal").innerText();
-  check(/Apply/.test(actions) && /Discard/.test(actions), "knappene er på engelsk");
+  check(/Use/.test(actions) && /Discard/.test(actions), "knappene er på engelsk");
   await page.screenshot({ path: `${out}/english.png` });
 }, { lang: "en" });
 
