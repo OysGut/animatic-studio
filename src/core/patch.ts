@@ -45,6 +45,7 @@ import type {
   Scene,
   SceneOccurrence,
   SceneVariant,
+  OccurrenceKind,
   ScriptBlock,
   Take,
   TransitionKind,
@@ -101,6 +102,8 @@ export interface ChangeSet {
 
 type AnyEntity =
   | TemplateInstance
+  | CreditParticipant
+  | CreditSequence
   | Production
   | Scene
   | SceneVariant
@@ -1110,7 +1113,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
           : {}),
         // Migrasjon 0050 (MTS MT6): scenetypen (mangler = «scene»)
         ...(typeof x["kind"] === "string" && x["kind"] !== "scene"
-          ? { kind: x["kind"] as SceneOccurrence["kind"] }
+          ? { kind: x["kind"] as OccurrenceKind }
           : {}),
       })),
     ),

@@ -971,10 +971,10 @@ export interface CreditParticipant extends Entity<import("./ids").CreditParticip
   readonly groupKey: string;
   readonly hidden: boolean;
   readonly fields: Readonly<Record<string, string>>;
-  readonly logoAssetId?: AssetId | null;
-  readonly logoVersionId?: AssetVersionId | null;
-  readonly imageAssetId?: AssetId | null;
-  readonly imageVersionId?: AssetVersionId | null;
+  readonly logoAssetId?: AssetId | null | undefined;
+  readonly logoVersionId?: AssetVersionId | null | undefined;
+  readonly imageAssetId?: AssetId | null | undefined;
+  readonly imageVersionId?: AssetVersionId | null | undefined;
   readonly removed: boolean;
 }
 
