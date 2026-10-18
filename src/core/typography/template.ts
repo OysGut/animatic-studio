@@ -64,7 +64,7 @@ export type TemplateValue =
 export type TemplateValues = Readonly<Record<string, TemplateValue>>;
 
 export const MAX_TEMPLATE_ELEMENTS = 100;
-export const MAX_TEMPLATE_JSON = 512 * 1024;
+export const MAX_TEMPLATE_JSON = 256 * 1024;
 
 const KEY = /^[a-z0-9_-]{1,40}$/;
 
