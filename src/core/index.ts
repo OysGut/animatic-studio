@@ -79,3 +79,4 @@ export * from "./i18n";
 export * from "./mobile";
 export * from "./storylab";
 export * from "./draft";
+export * from "./workspaces";
