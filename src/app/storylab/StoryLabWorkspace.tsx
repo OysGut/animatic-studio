@@ -3,10 +3,10 @@
  * Høyre: kontekst (tidspunkt i fortellingen, hva karakteren vet, relasjoner) og fakta. Panelene kan lukkes
  * og endre bredde. All skriving i prosjektdata går via kommandoene (runCommand → apply_changes).
  */
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { PanelLeft, PanelRight, Plus } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   L,
   RELATION_LABEL,
@@ -16,7 +16,9 @@ import {
   type Asset,
   type ProjectState,
 } from "@/core";
-import { listStorySessions } from "@/adapters/storylab/sessions.functions";
+import { listStorySessions, setSuggestionStatus, type StorySuggestion } from "@/adapters/storylab/sessions.functions";
+import { SuggestionsPanel } from "./SuggestionsPanel";
+import { SuggestionsNavigation, suggestionKey, useStorySuggestions } from "./suggestions-data";
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { SaveIndicator } from "@/app/script/ScriptWorkspace";
@@ -36,16 +38,32 @@ export function StoryLabWorkspace({
   userId,
   initialAssetId,
   initialSceneRef,
+  initialSuggestions,
+  initialSuggestionId,
 }: {
   projectId: string;
   userId: string;
   initialAssetId: string | null;
   initialSceneRef: string | null;
+  initialSuggestions?: boolean;
+  initialSuggestionId?: string | null;
 }) {
   const query = useProjectState(projectId);
   const members = useMembers(projectId);
   const editable = canEdit(members.data?.find((m) => m.user_id === userId)?.role);
-  const cmds = useCommands(projectId, userId, editable);
+  const qc = useQueryClient();
+  const setStatus = useServerFn(setSuggestionStatus);
+  const [undoError, setUndoError] = useState<string | null>(null);
+  const onUndo = useCallback((group: string | undefined) => {
+    const id = group?.startsWith("storylab:") ? group.split(":")[1] : undefined;
+    if (!id) return;
+    void setStatus({ data: { projectId, suggestionId: id, status: "open" } }).then((r) => {
+      if (!r.ok) { setUndoError(r.message); return; }
+      qc.setQueryData<StorySuggestion[]>(suggestionKey(projectId), (old) => old?.map((s) => s.id === id ? { ...s, status: "open" } : s));
+      void qc.invalidateQueries({ queryKey: suggestionKey(projectId) });
+    }).catch(() => setUndoError(L("Overføringen er angret, men forslaget kunne ikke gjenåpnes.", "The transfer was undone, but the suggestion could not be reopened.")));
+  }, [projectId, qc, setStatus]);
+  const cmds = useCommands(projectId, userId, editable, onUndo);
   if (query.isLoading)
     return (
       <p className="p-6 text-[13px] text-text-tertiary">
@@ -66,6 +84,9 @@ export function StoryLabWorkspace({
       cmds={cmds}
       initialAssetId={initialAssetId}
       initialSceneRef={initialSceneRef}
+      initialSuggestions={initialSuggestions ?? false}
+      initialSuggestionId={initialSuggestionId ?? null}
+      undoError={undoError}
     />
   );
 }
@@ -79,6 +100,9 @@ function Lab({
   cmds,
   initialAssetId,
   initialSceneRef,
+  initialSuggestions,
+  initialSuggestionId,
+  undoError,
 }: {
   state: ProjectState;
   projectId: string;
@@ -86,6 +110,9 @@ function Lab({
   cmds: Commands;
   initialAssetId: string | null;
   initialSceneRef: string | null;
+  initialSuggestions: boolean;
+  initialSuggestionId: string | null;
+  undoError: string | null;
 }) {
   const characters = storyCharacters(state);
   const [assetId, setAssetId] = useState<string | null>(
@@ -96,7 +123,25 @@ function Lab({
   );
   const [sceneId, setSceneId] = useState<string | null>(() => sceneIdFrom(state, initialSceneRef ?? undefined));
   const [view, setView] = useState<View>(() => { const id = sceneIdFrom(state, initialSceneRef ?? undefined); return id ? { kind: "scene", id } : { kind: "character" }; });
-  const [leftTab, setLeftTab] = useState<"characters" | "scenes">(initialSceneRef ? "scenes" : "characters");
+  const [leftTab, setLeftTab] = useState<"characters" | "scenes" | "suggestions">(initialSuggestions ? "suggestions" : initialSceneRef ? "scenes" : "characters");
+  const [focusedSuggestion, setFocusedSuggestion] = useState<string | null>(initialSuggestionId);
+  const [suggestionScene, setSuggestionScene] = useState<string | null>(initialSuggestions ? initialSceneRef : null);
+  const [sourceTurn, setSourceTurn] = useState<string | null>(null);
+  const mainRef = useRef<HTMLElement | null>(null);
+  const suggestions = useStorySuggestions(projectId);
+  useEffect(() => { if (initialSuggestions) { setLeftTab("suggestions"); setSuggestionScene(initialSceneRef); setFocusedSuggestion(initialSuggestionId); } }, [initialSuggestions, initialSuggestionId, initialSceneRef]);
+  useEffect(() => {
+    const root = mainRef.current;
+    if (!root || !sourceTurn) return;
+    const reveal = () => {
+      const turn = [...root.querySelectorAll<HTMLElement>("[data-turn-id]")].find((el) => el.dataset["turnId"] === sourceTurn);
+      if (!turn) return false;
+      turn.scrollIntoView({ block: "center" }); turn.focus(); turn.classList.add("ring-1", "ring-accent-brand"); return true;
+    };
+    if (reveal()) return;
+    const observer = new MutationObserver(() => { if (reveal()) observer.disconnect(); });
+    observer.observe(root, { childList: true, subtree: true }); return () => observer.disconnect();
+  }, [sourceTurn, view]);
   const [newGroup, setNewGroup] = useState(false);
   useEffect(() => {
     if (initialAssetId && characters.some((c) => c.id === initialAssetId)) setAssetId(initialAssetId);
@@ -104,7 +149,7 @@ function Lab({
   }, [initialAssetId]);
   useEffect(() => {
     const s = sceneIdFrom(state, initialSceneRef ?? undefined);
-    if (s) { setSceneId(s); setView({ kind: "scene", id: s }); setLeftTab("scenes"); }
+    if (s) { setSceneId(s); setView({ kind: "scene", id: s }); if (!initialSuggestions) setLeftTab("scenes"); }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialSceneRef]);
   const asset = assetId ? state.assets[assetId] : undefined;
@@ -121,7 +166,8 @@ function Lab({
   });
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col" data-testid="storylab">
+    <SuggestionsNavigation.Provider value={(id) => { setFocusedSuggestion(id); setSuggestionScene(null); setLeftTab("suggestions"); setLeftClosed(false); }}><div className="flex min-h-0 flex-1 flex-col" data-testid="storylab">
+      {undoError ? <p role="alert" className="p-2 text-xs text-status-danger">{undoError}</p> : null}
       <Toolbar title={L("Story Lab", "Story Lab")} status={<SaveIndicator cmds={cmds} />}>
         <ToolbarSeparator />
         <ToolbarButton
@@ -150,8 +196,8 @@ function Lab({
             style={{ width: leftW }}
           >
             <PaneResizer edge="right" size={leftW} onSize={setLeftW} min={180} max={420} label={L("Bredde på karakterpanelet", "Width of the character panel")} />
-            <div role="tablist" className="flex border-b border-border"><ToolbarButton role="tab" aria-selected={leftTab === "characters"} active={leftTab === "characters"} onClick={() => setLeftTab("characters")}>{L("Karakterer", "Characters")}</ToolbarButton><ToolbarButton role="tab" data-testid="storylab-tab-scenes" aria-selected={leftTab === "scenes"} active={leftTab === "scenes"} onClick={() => setLeftTab("scenes")}>{L("Scener", "Scenes")}</ToolbarButton></div>
-            {leftTab === "scenes" ? <ul className="min-h-0 flex-1 overflow-y-auto py-1" data-testid="storylab-scenes">{scenesByStoryTime(state).map((s) => <li key={s.sceneId}><ToolbarButton className="w-full justify-start" active={view.kind === "scene" && view.id === s.sceneId} data-testid="storylab-scene" data-scene-id={s.sceneId} onClick={() => { setSceneId(s.sceneId); setView({ kind: "scene", id: s.sceneId }); }}>{s.label}</ToolbarButton></li>)}</ul> : <><PanelHeader title={L("Karakterer", "Characters")} count={characters.length} />
+            <div role="tablist" className="flex flex-wrap border-b border-border"><ToolbarButton role="tab" aria-selected={leftTab === "characters"} active={leftTab === "characters"} onClick={() => setLeftTab("characters")}>{L("Karakterer", "Characters")}</ToolbarButton><ToolbarButton role="tab" data-testid="storylab-tab-scenes" aria-selected={leftTab === "scenes"} active={leftTab === "scenes"} onClick={() => setLeftTab("scenes")}>{L("Scener", "Scenes")}</ToolbarButton><ToolbarButton role="tab" data-testid="storylab-tab-suggestions" aria-selected={leftTab === "suggestions"} active={leftTab === "suggestions"} onClick={() => { setLeftTab("suggestions"); setSuggestionScene(null); }}>{L(`Forslag (${suggestions.data?.filter((s) => s.status === "open").length ?? 0})`, `Suggestions (${suggestions.data?.filter((s) => s.status === "open").length ?? 0})`)}</ToolbarButton></div>
+            {leftTab === "suggestions" ? <SuggestionsPanel state={state} projectId={projectId} cmds={cmds} editable={editable} focusedId={focusedSuggestion} sceneFilter={suggestionScene} onSource={(id, turnId) => { setView({ kind: "session", id }); setSourceTurn(turnId); }} /> : leftTab === "scenes" ? <ul className="min-h-0 flex-1 overflow-y-auto py-1" data-testid="storylab-scenes">{scenesByStoryTime(state).map((s) => <li key={s.sceneId}><ToolbarButton className="w-full justify-start" active={view.kind === "scene" && view.id === s.sceneId} data-testid="storylab-scene" data-scene-id={s.sceneId} onClick={() => { setSceneId(s.sceneId); setView({ kind: "scene", id: s.sceneId }); }}>{s.label}</ToolbarButton></li>)}</ul> : <><PanelHeader title={L("Karakterer", "Characters")} count={characters.length} />
             <ul className="min-h-0 flex-1 overflow-y-auto py-1" data-testid="storylab-characters">
               {characters.length === 0 ? (
                 <li className="px-3 py-2 text-xs text-text-tertiary">
@@ -229,7 +275,7 @@ function Lab({
             </ul>
           </aside>
         )}
-        <main className="flex min-h-0 min-w-0 flex-1 flex-col">
+        <main ref={mainRef} className="flex min-h-0 min-w-0 flex-1 flex-col">
           {view.kind === "scene" ? <SceneLab key={view.id} state={state} projectId={projectId} sceneId={view.id} editable={editable} onScene={setSceneId} onProfile={(id) => { setAssetId(id); setView({ kind: "character" }); }} /> : !asset && view.kind !== "session" ? (
             <p className="p-6 text-[13px] text-text-tertiary">
               {L("Velg en karakter til venstre.", "Choose a character on the left.")}
@@ -285,7 +331,7 @@ function Lab({
       </div>
       {newGroup ? <NewGroupDialog state={state} projectId={projectId} initialSceneId={sceneId}
         onClose={() => setNewGroup(false)} onCreated={(id) => { setNewGroup(false); setView({ kind: "session", id }); }} /> : null}
-    </div>
+    </div></SuggestionsNavigation.Provider>
   );
 }
 

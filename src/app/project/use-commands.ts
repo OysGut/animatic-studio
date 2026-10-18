@@ -538,6 +538,7 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
       setStatus({ kind: "error", message: conflictUndo() });
       return;
     }
+    const undoGeneration = generation.current;
     const { back, rest } = replay(last, "undo");
     if (back) setRedo((x) => [...x, back]);
     if (rest && back) setUndo((u) => [...u, rest]);
@@ -546,7 +547,6 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
       // A failed undo restores its steps to the stack; notify only after successful persistence.
       if (!reloadWhenIdle.current && generation.current === undoGeneration) onUndo?.(last.group);
     });
-    const undoGeneration = generation.current;
   }, [undoStack, replay, onUndo]);
 
   const redo = useCallback(() => {

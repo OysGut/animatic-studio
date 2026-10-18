@@ -2,10 +2,10 @@
 import type { Command } from "../commands/types";
 import { applyCommand } from "../commands/apply";
 import { L } from "../i18n";
-import { newId, type AssetId, type ProductionId, type VariantId } from "../ids";
-import type { ProjectState } from "../model";
+import { newId, type ProductionId, type VariantId, type UserId } from "../ids";
+import { mainProduction, type ProjectState } from "../model";
 import { keyBetween } from "../order-key";
-import { blocksOfVariant, mainProduction } from "../views";
+import { blocksOfVariant } from "../views";
 import { activeProfileOf } from "./stages";
 import { canHaveStoryProfile, emptyStoryProfile, mergeProfile, profilePatchError, type StoryProfilePatch } from "./profile";
 
@@ -94,7 +94,7 @@ export function suggestionToCommands(state: ProjectState, suggestion: TransferSu
   // Reuse command validation (including INV-04), without altering the caller's state.
   let next = state;
   for (const command of commands) {
-    const r = applyCommand(next, { id: newId<"command">(), actor: "00000000-0000-7000-8000-000000000000" as AssetId as never, at: "2026-01-01T00:00:00.000Z", command });
+    const r = applyCommand(next, { id: newId<"command">(), actor: "00000000-0000-7000-8000-000000000000" as UserId, at: "2026-01-01T00:00:00.000Z", command });
     if (!r.ok) return fail(r.error.message);
     next = r.state;
   }
