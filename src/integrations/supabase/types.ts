@@ -812,6 +812,7 @@ export type Database = {
           motion_path: Json | null
           name: string
           order_key: string
+          page_transition: Json | null
           parallax: number
           project_id: string
           removed: boolean
@@ -851,6 +852,7 @@ export type Database = {
           motion_path?: Json | null
           name?: string
           order_key: string
+          page_transition?: Json | null
           parallax?: number
           project_id: string
           removed?: boolean
@@ -890,6 +892,7 @@ export type Database = {
           motion_path?: Json | null
           name?: string
           order_key?: string
+          page_transition?: Json | null
           parallax?: number
           project_id?: string
           removed?: boolean
@@ -1138,6 +1141,162 @@ export type Database = {
             columns: ["until_scene_id"]
             isOneToOne: false
             referencedRelation: "scenes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      credit_participants: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          fields: Json
+          group_key: string
+          hidden: boolean
+          id: string
+          image_asset_id: string | null
+          image_version_id: string | null
+          logo_asset_id: string | null
+          logo_version_id: string | null
+          order_key: string
+          project_id: string
+          removed: boolean
+          revision: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          fields?: Json
+          group_key?: string
+          hidden?: boolean
+          id: string
+          image_asset_id?: string | null
+          image_version_id?: string | null
+          logo_asset_id?: string | null
+          logo_version_id?: string | null
+          order_key: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          fields?: Json
+          group_key?: string
+          hidden?: boolean
+          id?: string
+          image_asset_id?: string | null
+          image_version_id?: string | null
+          logo_asset_id?: string | null
+          logo_version_id?: string | null
+          order_key?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credit_participants_image_asset_id_fkey"
+            columns: ["image_asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "credit_participants_image_version_id_fkey"
+            columns: ["image_version_id"]
+            isOneToOne: false
+            referencedRelation: "asset_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "credit_participants_logo_asset_id_fkey"
+            columns: ["logo_asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "credit_participants_logo_version_id_fkey"
+            columns: ["logo_version_id"]
+            isOneToOne: false
+            referencedRelation: "asset_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "credit_participants_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      credit_sequences: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          direction: string
+          duration_frames: number
+          group_templates: Json
+          id: string
+          occurrence_id: string
+          pause_frames: number
+          presentation: string
+          project_id: string
+          removed: boolean
+          revision: number
+          speed: number
+          transition_frames: number
+          transition_kind: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          direction?: string
+          duration_frames: number
+          group_templates?: Json
+          id: string
+          occurrence_id: string
+          pause_frames?: number
+          presentation: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          speed: number
+          transition_frames?: number
+          transition_kind?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          direction?: string
+          duration_frames?: number
+          group_templates?: Json
+          id?: string
+          occurrence_id?: string
+          pause_frames?: number
+          presentation?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          speed?: number
+          transition_frames?: number
+          transition_kind?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credit_sequences_occurrence_id_fkey"
+            columns: ["occurrence_id"]
+            isOneToOne: false
+            referencedRelation: "scene_occurrences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "credit_sequences_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
         ]
@@ -1600,6 +1759,7 @@ export type Database = {
           number: number
           sha256: string
           storage_key: string
+          template_spec: Json | null
           variant_id: string
           width: number | null
           workspace_id: string
@@ -1617,6 +1777,7 @@ export type Database = {
           number: number
           sha256: string
           storage_key: string
+          template_spec?: Json | null
           variant_id: string
           width?: number | null
           workspace_id: string
@@ -1634,6 +1795,7 @@ export type Database = {
           number?: number
           sha256?: string
           storage_key?: string
+          template_spec?: Json | null
           variant_id?: string
           width?: number | null
           workspace_id?: string
@@ -2316,6 +2478,7 @@ export type Database = {
           excerpt_in: number | null
           excerpt_out: number | null
           id: string
+          kind: string
           monochrome: boolean
           order_key: string
           planned_ms: number | null
@@ -2339,6 +2502,7 @@ export type Database = {
           excerpt_in?: number | null
           excerpt_out?: number | null
           id: string
+          kind?: string
           monochrome?: boolean
           order_key: string
           planned_ms?: number | null
@@ -2362,6 +2526,7 @@ export type Database = {
           excerpt_in?: number | null
           excerpt_out?: number | null
           id?: string
+          kind?: string
           monochrome?: boolean
           order_key?: string
           planned_ms?: number | null
@@ -3938,6 +4103,7 @@ export type Database = {
           p_note: string
           p_sha256: string
           p_storage_key: string
+          p_template_spec?: Json
           p_variant: string
           p_width: number
         }
