@@ -158,8 +158,8 @@ export function RetimeDialog({
   runAndWait: RunAndWait;
   imageUrls: Readonly<Record<string, string>>;
   /** Lyden i scenen for en tilstand: klippene i filmtid og scenens start (s). */
-  audioOf?: (s: ProjectState) => { items: readonly FilmAudioItem[]; startSec: number };
-  audioUrls?: Readonly<Record<string, string>> | null;
+  audioOf?: ((s: ProjectState) => { items: readonly FilmAudioItem[]; startSec: number }) | undefined;
+  audioUrls?: Readonly<Record<string, string>> | null | undefined;
 }) {
   const fps = state.project.fps;
   const fpsN = fps.num / fps.den;
@@ -481,7 +481,7 @@ function PreviewPlayer({
   frames: number;
   fps: number;
   imageUrls: Readonly<Record<string, string>>;
-  audioOf?: (s: ProjectState) => { items: readonly FilmAudioItem[]; startSec: number };
+  audioOf?: ((s: ProjectState) => { items: readonly FilmAudioItem[]; startSec: number }) | undefined;
   audioUrls: Readonly<Record<string, string>> | null;
 }) {
   const ref = useRef<HTMLCanvasElement | null>(null);
