@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { blocksOfVariant, orderedOccurrences } from "@/core";
 import { explorerContext, explorerGroups } from "@/core/screenplay/explorer";
 import { explorerUrl, validateExplorerSearch } from "@/app/script-explorer/explorer-state";
-import { seedProject } from "../helpers/fixtures";
+import { seedProject, tid } from "../helpers/fixtures";
 
 describe("script explorer grouping", () => {
   it("separates speaking scenes from mentions in other characters' dialogue", () => {
@@ -51,7 +51,7 @@ describe("script explorer grouping", () => {
     if (!occurrence) throw new Error("missing scene");
     const dialogue = blocksOfVariant(state, occurrence.variantId).find((b) => b.kind === "dialogue");
     if (!dialogue) throw new Error("missing dialogue");
-    const id = "00000000-0000-7000-8000-000000000099" as keyof typeof state.assets;
+    const id = tid<"asset">();
     const changed = { ...state, assets: { ...state.assets, [id]: { id, revision: 1, kind: "object" as const, name: "Vase", names: [{ name: "krukke", kind: "alias" as const, language: null }], description: "", category: "", tags: [], archived: false } }, blocks: { ...state.blocks, [dialogue.id]: { ...dialogue, text: "Har du sett krukken?" } } };
     const groups = explorerGroups(changed, mainId, { assetId: id });
     expect(groups).toHaveLength(1);
