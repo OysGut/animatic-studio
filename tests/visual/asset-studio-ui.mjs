@@ -21,6 +21,7 @@ const LAYER = fx.rows.composition_layers.find((l) => l.composition_id === COMP.i
 const ASSET = fx.rows.assets.find((a) => a.id === LAYER.asset_id);
 const V0 = fx.rows.asset_variants.find((v) => v.asset_id === ASSET.id);
 const VER0 = fx.rows.asset_versions.find((v) => v.variant_id === V0.id);
+const HIDDEN = fx.rows.composition_layers.find((l) => l.composition_id === COMP.id && !l.visible && l.kind !== "group");
 // Fire varianter med ett bilde hver (kriterium 1)
 const id = (n) => `00000000-0000-7000-8000-0000a5${String(n).padStart(6, "0")}`;
 const VARIANTS = [1, 2, 3].map((i) => ({ ...V0, id: id(i), name: `Variant ${i + 1}`, approved_version_id: id(9 + i) }));
@@ -36,7 +37,7 @@ const rows = {
   assets: fx.rows.assets.map((a) => (a.id === ASSET.id ? { ...a, kind: "character", name: CHAR ? CHAR.text : a.name } : a)),
   asset_variants: [...fx.rows.asset_variants, ...VARIANTS],
   asset_versions: [...fx.rows.asset_versions, ...VERSIONS],
-  composition_layers: fx.rows.composition_layers.map((l) => (l.id === LAYER.id ? { ...l, image_swaps: [], locked: false, active_from: null, active_to: null, keyframes: [{ frame: 0, property: "x", value: 0, easing: "linear" }, { frame: 48, property: "x", value: 200, easing: "linear" }] } : l)),
+  composition_layers: fx.rows.composition_layers.map((l) => (l.id === LAYER.id ? { ...l, transform: { ...l.transform, x: COMP.width / 2, y: COMP.height / 2 }, image_swaps: [], locked: false, visible: true, group_id: null, motion_path: null, active_from: null, active_to: null, keyframes: [{ frame: 0, property: "x", value: COMP.width / 2, easing: "linear" }, { frame: 48, property: "x", value: COMP.width / 2 + 200, easing: "linear" }] } : l.id === HIDDEN?.id ? { ...l, transform: { ...l.transform, x: COMP.width / 2, y: COMP.height / 2 }, keyframes: [], motion_path: null } : l)),
   audio_clips: [...fx.rows.audio_clips.filter((a) => a.occurrence_id !== OCC.id), clip(DLG, "dialogue", "Replikk", 500, LINE?.id ?? null), clip(MUSIC, "music", "Musikk", 0, null)],
 };
 let commands = [];
@@ -179,11 +180,11 @@ await scenario("skall", "nb", async (page, studio) => {
   // Alt + dobbeltklikk åpner også studioet
   const canvas = page.getByTestId("scene-stage");
   const view = await canvas.evaluate((el) => ({ x: Number(el.dataset.viewX), y: Number(el.dataset.viewY), zoom: Number(el.dataset.viewZoom) }));
-  // Pick inside the image, not its anchor at x=0 (which can be behind the view toolbar).
-  const localX = Math.min(LAYER.width * Math.abs(LAYER.transform.scaleX) / 4, 80);
-  await canvas.dblclick({ position: { x: view.x + localX * view.zoom, y: view.y + LAYER.transform.y * view.zoom }, modifiers: ["Alt"] });
+  // Maja is at the scene centre; a hidden foreground layer overlaps this point.
+  await canvas.dblclick({ position: { x: view.x + COMP.width / 2 * view.zoom, y: view.y + COMP.height / 2 * view.zoom }, modifiers: ["Alt"] });
   await page.waitForTimeout(300);
   check(await studio.count() > 0, "Alt + dobbeltklikk på laget åpner Asset Studio");
+  check(HIDDEN && await studio.getByTestId("asset-studio-properties").getByText(LAYER.name, { exact: false }).count() > 0, "Alt + dobbeltklikk velger Maja under et skjult lag");
 });
 
 await scenario("kriterium-1-2", "nb", async (page, studio) => {

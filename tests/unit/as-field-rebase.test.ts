@@ -38,7 +38,8 @@ describe("AS round 2 – field-level drafts", () => {
     const old = Object.values(s.assetVersions).find((v) => s.assetVariants[v.variantId]?.assetId === clip.assetId);
     if (!old) throw new Error("Missing sound version");
     const versionId = tid<"asset_version">();
-    const withVersion = { ...s, assetVersions: { ...s.assetVersions, [versionId]: { ...old, id: versionId } } } as ProjectState;
+    const number = Math.max(...Object.values(s.assetVersions).filter((v) => v.variantId === old.variantId).map((v) => v.number)) + 1;
+    const withVersion = { ...s, assetVersions: { ...s.assetVersions, [versionId]: { ...old, id: versionId, number } } } as ProjectState;
     const fresh = mustApply(withVersion, { type: "UpdateAudioClips", clips: [{ clipId: clip.id, fields: { ...audioClipFieldsOf(clip), assetVariantId: old.variantId, versionId } }] });
     expect(draftConflicts(d, fresh)).toEqual([]);
     const rebased = rebaseDraft(d, fresh);

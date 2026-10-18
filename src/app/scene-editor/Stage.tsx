@@ -1311,6 +1311,15 @@ export function Stage({
   /** Dobbeltklikk på banen bytter mellom rett og kurvet (mandat 12.3). */
   function onDoubleClick(e: React.MouseEvent<HTMLCanvasElement>) {
     const p = screenPoint(e);
+    if (e.altKey && onOpenAssetStudio && !cameraMode && !drawPath) {
+      const sp = toScene(view, p);
+      const hit = hitTest(frame, sp.x, sp.y, { includeLocked: true });
+      if (hit) {
+        onSelect(hit.layerId);
+        onOpenAssetStudio(hit.layerId);
+      }
+      return;
+    }
     if (drawPath) return; // tegnemodus: dobbeltklikk åpner ikke bildevalget
     // Dobbeltklikk på et punkt i bevegelsesbanen: kurvet ↔ hjørne
     const pi = pickPathPoint(p);

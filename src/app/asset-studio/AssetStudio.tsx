@@ -120,7 +120,7 @@ export function AssetStudio({
             actor: "00000000-0000-0000-0000-000000000000" as never,
             at: new Date(0).toISOString(), command,
           });
-          if (applied.ok) mark({ before, after, affected: applied.affected });
+          if (applied.ok) mark({ before, after: applied.state, affected: applied.affected });
         }
         return result;
       };
