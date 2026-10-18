@@ -189,6 +189,18 @@ function ParticipantsTab({
     );
   const remove = (p: CreditParticipant) =>
     run({ type: "RemoveCreditParticipant", participantId: p.id }, L("Fjern deltakeren", "Remove the participant"));
+  // Rekkefølgen endres med nye orderKey-er; malen røres aldri (H)
+  const move = (p: CreditParticipant, delta: -1 | 1) => {
+    const i = participants.findIndex((x) => x.id === p.id);
+    const j = i + delta;
+    if (i < 0 || j < 0 || j >= participants.length) return;
+    const before = participants[j - 1]?.orderKey ?? null;
+    const after = participants[j + 1]?.orderKey ?? null;
+    run(
+      { type: "UpdateCreditParticipant", participantId: p.id, fields: { orderKey: keyBetween(before, after) } },
+      L("Flytt deltakeren", "Move the participant"),
+    );
+  };
 
   // Virtualisering (§63): bare radene i bildet tegnes
   const start = Math.max(0, Math.floor(scroll / ROW_H) - 4);
@@ -239,6 +251,26 @@ function ParticipantsTab({
                 defaultValue={p.fields["rolle"] ?? ""}
                 onBlur={(e) => e.target.value !== (p.fields["rolle"] ?? "") && update(p, { rolle: e.target.value })}
               />
+              <Button
+                size="sm"
+                variant="ghost"
+                data-testid="mts-credit-up"
+                aria-label={L("Flytt opp", "Move up")}
+                disabled={!editable}
+                onClick={() => move(p, -1)}
+              >
+                ↑
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                data-testid="mts-credit-down"
+                aria-label={L("Flytt ned", "Move down")}
+                disabled={!editable}
+                onClick={() => move(p, 1)}
+              >
+                ↓
+              </Button>
               <label className="flex items-center gap-0.5 text-[11px] text-text-tertiary" title={L("Skjulte deltakere tegnes ikke", "Hidden participants are not drawn")}>
                 <input
                   type="checkbox"
