@@ -19,6 +19,7 @@ import {
   RETIME_METHODS,
   type Command,
   type Composition,
+  type FilmAudioItem,
   type PaddingFill,
   type ProjectState,
   type RetimeMethod,
@@ -37,6 +38,7 @@ import {
 } from "@/components/ui/dialog";
 import { loadVersionBuffers, saveComposition } from "@/app/audio/composition-actions";
 import { RetimeStrip } from "./RetimeStrip";
+import { useAudioPlayback } from "@/app/audio/use-audio-playback";
 
 type RunAndWait = (
   command: Command,
@@ -143,6 +145,8 @@ export function RetimeDialog({
   initialFrames,
   runAndWait,
   imageUrls,
+  audioOf,
+  audioUrls,
 }: {
   open: boolean;
   onClose: () => void;
@@ -153,6 +157,9 @@ export function RetimeDialog({
   initialFrames: number;
   runAndWait: RunAndWait;
   imageUrls: Readonly<Record<string, string>>;
+  /** Lyden i scenen for en tilstand: klippene i filmtid og scenens start (s). */
+  audioOf?: (s: ProjectState) => { items: readonly FilmAudioItem[]; startSec: number };
+  audioUrls?: Readonly<Record<string, string>> | null;
 }) {
   const fps = state.project.fps;
   const fpsN = fps.num / fps.den;
@@ -413,6 +420,8 @@ export function RetimeDialog({
             frames={plan?.report.afterFrames ?? 1}
             fps={fpsN}
             imageUrls={imageUrls}
+            audioOf={audioOf}
+            audioUrls={audioUrls ?? null}
           />
         ) : null}
 
@@ -464,17 +473,29 @@ function PreviewPlayer({
   frames,
   fps,
   imageUrls,
+  audioOf,
+  audioUrls,
 }: {
   state: ProjectState;
   compositionId: string;
   frames: number;
   fps: number;
   imageUrls: Readonly<Record<string, string>>;
+  audioOf?: (s: ProjectState) => { items: readonly FilmAudioItem[]; startSec: number };
+  audioUrls: Readonly<Record<string, string>> | null;
 }) {
   const ref = useRef<HTMLCanvasElement | null>(null);
   const [frame, setFrame] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [tick, setTick] = useState(0);
+  // Lyden fra den midlertidige tilstanden, så forskjellen mellom metodene høres
+  const sound = useMemo(() => audioOf?.(state) ?? { items: [], startSec: 0 }, [audioOf, state]);
+  useAudioPlayback({
+    items: sound.items,
+    urls: audioOf ? audioUrls : null,
+    playing,
+    time: sound.startSec + frame / fps,
+  });
   const cache = useMemo(() => new ImageCache(() => setTick((t) => t + 1)), []);
   const consumer = useRef({});
   useEffect(() => {

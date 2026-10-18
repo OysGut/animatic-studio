@@ -38,6 +38,8 @@ import {
   framesToSeconds,
   keyAllAt,
   keyframeFrames,
+  compositionDuration,
+  retimeHasTimedContent,
   layerFieldsOf,
   layersOf,
   moveKeyframes,
@@ -110,6 +112,9 @@ interface Props {
     readonly occurrenceId: string;
     readonly runAndWait: ComponentProps<typeof RetimeDialog>["runAndWait"];
     readonly imageUrls: Readonly<Record<string, string>>;
+    /** Lyden i scenen for en (midlertidig) tilstand, til forhåndsspillet. */
+    readonly audioOf?: ComponentProps<typeof RetimeDialog>["audioOf"];
+    readonly audioUrls?: Readonly<Record<string, string>> | null;
     /** Øker når egenskapspanelet ber om dialogen. */
     readonly request?: number;
   };
