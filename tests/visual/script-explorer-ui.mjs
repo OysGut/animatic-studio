@@ -24,6 +24,10 @@ const FIRST_CHARACTER = FIRST_BLOCKS.find((b) => b.kind === "character");
 if (!SECOND_BLOCK || !FIRST_CHARACTER) throw new Error("Fixture needs action and character blocks");
 const CHARACTER = FIRST_CHARACTER.text.replace(/\s*\([^)]*\)/g, "").trim().toUpperCase();
 const rows = { ...fx.rows, script_blocks: fx.rows.script_blocks.map((b) => b.id === SECOND_BLOCK.id ? { ...b, text: `${TOKEN}. ${CHARACTER} kommer inn.` } : variantOfBlock(b) === SECOND.variant_id && b.kind === "character" ? { ...b, text: "MU1-ANNEN" } : b) };
+rows.script_block_revisions = fx.rows.script_block_revisions.map((revision) => {
+  const block = rows.script_blocks.find((b) => b.id === revision.block_id && b.current_rev === revision.rev);
+  return block ? { ...revision, text: block.text } : revision;
+});
 let commands = [];
 function serverFnName(url) {
   try {
@@ -120,13 +124,19 @@ const pick = async (page, index) => { await currentScene(page).click(); await pa
 const status = (page) => page.getByTestId("script-explorer-status");
 const waitScene = async (page, scene) => {
   const variant = fx.rows.scene_variants.find((v) => v.id === scene.variant_id);
-  const location = variant.heading.location;
+  const location = variant.heading_location;
   await status(page).filter({ hasText: location }).waitFor();
 };
 await run("popup-search-pin", async (page, context) => {
   await page.getByTestId("script-explorer-button").click();
   const explorer = page.getByTestId("script-explorer"); await explorer.waitFor();
   check(await explorer.getAttribute("aria-modal") === "false", "A: globus åpner ikke-modal popup");
+  const rect = await explorer.boundingBox();
+  check(rect?.width === 560 && rect?.height === 760 && rect?.x === 704 && rect?.y === 76, "popupstandard: 560 × 760, 16 px fra høyre og under prosjektfanene");
+  await page.setViewportSize({ width: 640, height: 600 });
+  const resized = await explorer.boundingBox();
+  check(resized && resized.x >= 0 && resized.y >= 0 && resized.x + resized.width <= 640 && resized.y + resized.height <= 600 && resized.height === 460, "popupen holdes innenfor vinduet ved størrelsesendring");
+  await page.setViewportSize({ width: 1280, height: 1800 });
   await waitScene(page, FIRST);
   await pick(page, 1); await waitScene(page, SECOND);
   check(await status(page).getAttribute("data-mode") === "follow", "B: scenebytte følges uten å fange fokus");

@@ -14,6 +14,10 @@ const P = `/prosjekt/${fx.project.id}`;
 const action = fx.rows.script_blocks.find((b) => b.kind === "action");
 if (!action) throw new Error("Fixture needs an action block");
 const rows = { ...fx.rows, script_blocks: fx.rows.script_blocks.map((b) => b.id === action.id ? { ...b, text: "Den gamle hesten Svarten vrinsker. Katten Måns mjauer. En nisse går inn." } : b) };
+rows.script_block_revisions = fx.rows.script_block_revisions.map((revision) => {
+  const block = rows.script_blocks.find((b) => b.id === revision.block_id && b.current_rev === revision.rev);
+  return block ? { ...revision, text: block.text } : revision;
+});
 let commands = [], aiCalls = [];
 function serverFnName(url) {
   try {
@@ -137,7 +141,7 @@ await run("english", async (page) => {
   const dialog = page.getByTestId("library-suggestions");
   check(await dialog.getByTestId("library-suggestions-ai").innerText() === "Improve with AI …", "engelsk AI-knapp");
   const animals = dialog.locator('[data-testid="library-suggestions-group"][data-kind="animal"]');
-  check((await animals.innerText()).includes("Animals"), "engelsk dyregruppe");
+  check(/animals/i.test(await animals.innerText()), "engelsk dyregruppe");
 }, { lang: "en" });
 console.log(`RESULTAT ${pass} bestått, ${fail} feilet`);
 await browser.close(); process.exitCode = fail ? 1 : 0;
