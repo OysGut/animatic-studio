@@ -34,7 +34,7 @@ export function mapDraftFields(cmd: Command, map: (id: string, fields: Fields) =
   if (cmd.type === "UpdateComposition") {
     const fields = map(cmd.compositionId, { ...cmd.fields, ...(cmd.camera !== undefined ? { camera: cmd.camera } : {}), ...(cmd.timing !== undefined ? { timing: cmd.timing } : {}) });
     const { camera, timing, ...rest } = fields;
-    return { ...cmd, fields: rest, ...(camera !== undefined ? { camera } : {}), ...(timing !== undefined ? { timing } : {}) } as unknown as Command;
+    return { type: cmd.type, compositionId: cmd.compositionId, fields: rest, ...(camera !== undefined ? { camera } : {}), ...(timing !== undefined ? { timing } : {}) } as unknown as Command;
   }
   return cmd;
 }

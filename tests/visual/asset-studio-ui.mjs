@@ -23,7 +23,7 @@ const V0 = fx.rows.asset_variants.find((v) => v.asset_id === ASSET.id);
 const VER0 = fx.rows.asset_versions.find((v) => v.variant_id === V0.id);
 // Fire varianter med ett bilde hver (kriterium 1)
 const id = (n) => `00000000-0000-7000-8000-0000a5${String(n).padStart(6, "0")}`;
-const VARIANTS = [1, 2, 3].map((i) => ({ ...V0, id: id(i), name: `Variant ${i + 1}` }));
+const VARIANTS = [1, 2, 3].map((i) => ({ ...V0, id: id(i), name: `Variant ${i + 1}`, approved_version_id: id(9 + i) }));
 const VERSIONS = VARIANTS.map((v, i) => ({ ...VER0, id: id(10 + i), variant_id: v.id, number: 1, view: ["side", "back", "three_quarter"][i] }));
 const TEMPLATE = fx.rows.audio_clips.find((a) => a.kind === "dialogue") ?? fx.rows.audio_clips[0];
 const LINE = fx.rows.script_blocks.find((b) => b.variant_id === OCC.variant_id && b.kind === "dialogue");
@@ -139,7 +139,7 @@ async function open(lang) {
 
 /** Åpner Asset Studio for laget via knappen i egenskapspanelet. */
 async function openStudio(page, studio) {
-  await page.getByText(LAYER.name, { exact: true }).first().click();
+  await page.locator(`[data-layer-row="${LAYER.id}"]`).first().click();
   await page.getByTestId("open-asset-studio").click();
   await studio.waitFor({ timeout: 5000 });
 }
@@ -156,6 +156,8 @@ async function save(page, studio) {
 }
 
 async function scenario(name, lang, fn) {
+  commands = [];
+  conflictNext = false;
   const { context, page, errors, studio } = await open(lang);
   try {
     await openStudio(page, studio);
@@ -177,9 +179,9 @@ await scenario("skall", "nb", async (page, studio) => {
   // Alt + dobbeltklikk åpner også studioet
   const canvas = page.locator("canvas").first();
   const b = await canvas.boundingBox();
-  await page.keyboard.down("Alt");
-  await canvas.dblclick({ position: { x: b.width / 2, y: b.height / 2 }, modifiers: ["Alt"] });
-  await page.keyboard.up("Alt");
+  const view = await canvas.evaluate((el) => ({ x: Number(el.dataset.viewX), y: Number(el.dataset.viewY), zoom: Number(el.dataset.viewZoom) }));
+  // The fixture's x key at frame zero is 0; y comes from the layer transform.
+  await canvas.dblclick({ position: { x: view.x, y: view.y + LAYER.transform.y * view.zoom }, modifiers: ["Alt"] });
   await page.waitForTimeout(300);
   check(await studio.count() > 0, "Alt + dobbeltklikk på laget åpner Asset Studio");
 });
@@ -260,12 +262,10 @@ await scenario("kriterium-7-8", "nb", async (page, studio) => {
   await dropVersion(page, VERSIONS[0].id, 0.5);
   // Forsøksvis manusredigering: lagres med en gang som notat
   const trial = page.getByTestId("asset-studio-trial-edit").first();
-  if (await trial.count()) {
-    await trial.click();
-    await page.getByTestId("asset-studio-trial-suggestion").fill("En helt ny replikk");
-    await page.getByTestId("asset-studio-trial-save").click();
-    await page.waitForTimeout(200);
-  }
+  await trial.click();
+  await page.getByTestId("asset-studio-trial-suggestion").fill("En helt ny replikk");
+  await page.getByTestId("asset-studio-trial-save").click();
+  await waitHidden(page.getByTestId("asset-studio-trial-form"));
   const note = commands.find((c) => c?.type === "AddAnnotations");
   check(note?.annotations?.[0]?.kind === "trial_edit" && note.annotations[0].suggestedText === "En helt ny replikk", "8: forsøksvis manusendring sendes med en gang som notat med forslag");
   check(note?.annotations?.[0]?.quote?.length > 0, "8: notatet har originalteksten");

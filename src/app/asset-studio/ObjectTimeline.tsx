@@ -47,6 +47,7 @@ export function ObjectTimeline({
 }) {
   const trackRef = useRef<HTMLDivElement | null>(null);
   const [drag, setDrag] = useState<Drag | null>(null);
+  const dragRef = useRef<Drag | null>(null);
   const dur = Math.max(1, durationFrames);
   const pct = (f: number) => `${(Math.min(dur, Math.max(0, f)) / dur) * 100}%`;
   const frameAt = (clientX: number) => {
@@ -73,16 +74,23 @@ export function ObjectTimeline({
     if (!editable) return;
     e.stopPropagation();
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    dragRef.current = d;
     setDrag(d);
   }
   function moveDrag(e: React.PointerEvent) {
-    if (!drag) return;
+    const current = dragRef.current;
+    if (!current) return;
     const f = frameAt(e.clientX);
-    if (f !== drag.frame || drag.moved) setDrag({ ...drag, frame: f, moved: true });
+    if (f !== current.frame || current.moved) {
+      const next = { ...current, frame: f, moved: true };
+      dragRef.current = next;
+      setDrag(next);
+    }
   }
   function endDrag() {
-    if (!drag) return;
-    const d = drag;
+    const d = dragRef.current;
+    if (!d) return;
+    dragRef.current = null;
     setDrag(null);
     if (!d.moved) return;
     if (d.kind === "range-start" || d.kind === "range-end") {
@@ -142,6 +150,7 @@ export function ObjectTimeline({
             onPointerDown={(e) => startDrag(e, { kind: "range-start", frame: shownRange.from })}
             onPointerMove={moveDrag}
             onPointerUp={endDrag}
+             onPointerCancel={() => { dragRef.current = null; setDrag(null); }}
           />
           <button
             type="button"
@@ -154,6 +163,7 @@ export function ObjectTimeline({
             onPointerDown={(e) => startDrag(e, { kind: "range-end", frame: shownRange.to })}
             onPointerMove={moveDrag}
             onPointerUp={endDrag}
+             onPointerCancel={() => { dragRef.current = null; setDrag(null); }}
           />
         </div>
         {/* Bildesegmenter */}

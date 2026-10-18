@@ -495,6 +495,8 @@ export interface DrawItem {
   readonly matrix: Matrix;
   readonly opacity: number;
   readonly locked: boolean;
+  /** Hidden items can be drawn as editor ghosts but never intercept pointer selection. */
+  readonly hidden?: boolean;
   readonly name: string;
   /** Blandingsmodus (REQ-0175). Mangler = «normal». */
   readonly blend?: BlendMode;
@@ -638,6 +640,7 @@ export function renderFrame(
     const mask = itemMask(l, frame, base, byId, (x) => baseItem(x));
     const opacity = visible ? base.opacity : base.opacity * 0.25;
     const extra = {
+      ...(!visible ? { hidden: true } : {}),
       ...(l.blend && l.blend !== "normal" ? { blend: l.blend } : {}),
       ...(mask ? { mask } : {}),
     };
@@ -754,7 +757,7 @@ export function hitTest(
 ): DrawItem | null {
   for (let i = frame.items.length - 1; i >= 0; i--) {
     const it = frame.items[i]!;
-    if (it.kind === "group") continue; // grupper velges i lagpanelet (eller ved å dra rammen)
+    if (it.kind === "group" || it.hidden) continue; // hidden ghosts never intercept visible layers
     if (it.locked && !opts.includeLocked) continue;
     const inv = invert(it.matrix);
     if (!inv) continue;
