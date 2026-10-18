@@ -59,6 +59,7 @@ function GroupConversation({ state, projectId, session, participants, editable, 
   const [approved, setApproved] = useState(false);
   const [batchApproved, setBatchApproved] = useState(false);
   const retry = useRef<(() => Promise<void>) | null>(null);
+  const pendingSave = useRef<{ turns: StoredTurn[]; costUsd: number } | null>(null);
   const serviceError = useRef<string | null>(null);
   const [confirm, setConfirm] = useState<null | { kind: "qa" | "batch" | "analysis"; question?: string; focus?: string }>(null);
   const append = useServerFn(appendStoryTurns);
@@ -98,9 +99,8 @@ function GroupConversation({ state, projectId, session, participants, editable, 
     if (!r.ok) { serviceError.current = r.message; throw new Error("Session save failed"); }
     const known = new Set(turnsRef.current.map((t) => t.id));
     turnsRef.current = [...turnsRef.current, ...added.filter((t) => !known.has(t.id))];
-    setTurns(turnsRef.current);
-    setCost(r.costUsd);
-    if (newStatus) { statusRef.current = newStatus; setStatus(newStatus); }
+    if (mounted.current) { setTurns(turnsRef.current); setCost(r.costUsd); }
+    if (newStatus) { statusRef.current = newStatus; if (mounted.current) setStatus(newStatus); }
     qc.setQueryData<Awaited<ReturnType<typeof getStorySession>>>(["story-session", projectId, session.id], (old) =>
       ({ ok: true, session: { ...(old?.ok ? old.session : session), turns: turnsRef.current, costUsd: r.costUsd, status: statusRef.current } }));
     void qc.invalidateQueries({ queryKey: ["story-sessions", projectId] });
@@ -108,9 +108,18 @@ function GroupConversation({ state, projectId, session, participants, editable, 
   const withLock = async (action: () => Promise<void>) => {
     if (working.current || locked) return;
     working.current = true; setBusy(true); setError(null); halt.current = null; serviceError.current = null; retry.current = action;
-    try { await action(); }
-    catch { setStatus("paused"); statusRef.current = "paused"; setError(serviceError.current ?? L("Samtalen kunne ikke fortsette. Prøv igjen. En generert replikk som ikke ble lagret, må hentes på nytt.", "The conversation could not continue. Try again. A generated line that was not saved must be requested again.")); }
-    finally { working.current = false; setBusy(false); }
+    try {
+      const pending = pendingSave.current;
+      if (pending) { await save(pending.turns, pending.costUsd, "paused"); pendingSave.current = null; }
+      else await action();
+    }
+    catch {
+      const message = serviceError.current ?? L("Samtalen kunne ikke fortsette. Prøv igjen.", "The conversation could not continue. Try again.");
+      const stopped = halt.current === "stop";
+      try { await save([], 0, stopped ? "stopped" : "paused"); } catch { /* Meldingen vises; ingen nye AI-kall startes. */ }
+      if (mounted.current) setError(message);
+    }
+    finally { working.current = false; if (mounted.current) setBusy(false); }
   };
   const oneLine = async (ts: readonly StoredTurn[], chosen: string | null, added: StoredTurn[] = []) => {
     const e = reduceEngine(engineOf(ts), { type: "nextSpeaker", assetId: chosen });
@@ -119,9 +128,13 @@ function GroupConversation({ state, projectId, session, participants, editable, 
     const r = await gen({ data: { projectId, task: "storylab_group", ...characterInput(id, ts), maxTokens: OUT_TOKENS } });
     if (!r.ok) { serviceError.current = r.message; throw new Error("Generation failed"); }
     const turn: StoredTurn = { id: newId<"turn">(), speaker: id, kind: "line", text: r.text, at: new Date().toISOString() };
-    await save([...added, turn], r.costUsd);
-    setNext(null);
-    if (r.usedFallback) setNote(L("Den innebygde AI-en ble brukt som reserve.", "The built-in AI was used as fallback."));
+    pendingSave.current = { turns: [...added, turn], costUsd: r.costUsd };
+    await save(pendingSave.current.turns, r.costUsd);
+    pendingSave.current = null;
+    if (mounted.current) {
+      setNext(null);
+      if (r.usedFallback) setNote(L("Den innebygde AI-en ble brukt som reserve.", "The built-in AI was used as fallback."));
+    }
   };
   const finish = async (fallback: StorySessionStatus) => {
     await save([], 0, halt.current === "stop" ? "stopped" : halt.current === "pause" || !mounted.current ? "paused" : fallback);
@@ -143,7 +156,9 @@ function GroupConversation({ state, projectId, session, participants, editable, 
   const analyse = (question: string, focus?: string) => withLock(async () => {
     const r = await gen({ data: { projectId, task: "storylab_analysis", ...analysisInput(question, focus), maxTokens: OUT_TOKENS } });
     if (!r.ok) { serviceError.current = r.message; throw new Error("Analysis failed"); }
-    await save([{ id: newId<"turn">(), speaker: ANALYST, text: r.text, kind: "analysis", to: focus ?? null, at: new Date().toISOString() }], r.costUsd);
+    pendingSave.current = { turns: [{ id: newId<"turn">(), speaker: ANALYST, text: r.text, kind: "analysis", to: focus ?? null, at: new Date().toISOString() }], costUsd: r.costUsd };
+    await save(pendingSave.current.turns, r.costUsd);
+    pendingSave.current = null;
     setText("");
     if (r.usedFallback) setNote(L("Den innebygde AI-en ble brukt som reserve.", "The built-in AI was used as fallback."));
     await finish(statusRef.current);

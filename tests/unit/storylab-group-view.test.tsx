@@ -110,3 +110,32 @@ it("Stopp under et kall lagrer svaret og stopped før det tillates nye turer", a
   expect(h.gen).toHaveBeenCalledTimes(1);
   expect(screen.getByTestId("storylab-run-batch")).toBeDisabled();
 });
+
+it("Stopp lagres også når pågående generering feiler", async () => {
+  const s = setup();
+  let finish: ((value: unknown) => void) | undefined;
+  h.gen.mockImplementation(() => new Promise((resolve) => { finish = resolve; }));
+  fireEvent.click(screen.getByTestId("storylab-run-batch"));
+  fireEvent.click(screen.getByTestId("storylab-confirm-send"));
+  await waitFor(() => expect(h.gen).toHaveBeenCalledTimes(1));
+  fireEvent.click(screen.getByTestId("storylab-stop"));
+  if (!finish) throw new Error("missing pending generation");
+  finish({ ok: false, message: "Feil fra tjenesten" });
+  await waitFor(() => expect(s.status()).toBe("stopped"));
+  expect(s.stored()).toHaveLength(0);
+  expect(screen.getByTestId("storylab-input")).toBeDisabled();
+});
+
+it("mislykket lagring prøves igjen uten et nytt betalt AI-kall", async () => {
+  const s = setup();
+  h.append.mockImplementationOnce(async () => ({ ok: true, turns: 0, costUsd: 0 }));
+  h.append.mockImplementationOnce(async () => ({ ok: false, message: "Lagring feilet" }));
+  fireEvent.click(screen.getByTestId("storylab-run-batch"));
+  fireEvent.click(screen.getByTestId("storylab-confirm-send"));
+  await waitFor(() => expect(screen.getByTestId("storylab-retry")).not.toBeDisabled());
+  expect(h.gen).toHaveBeenCalledTimes(1);
+  expect(s.stored()).toHaveLength(0);
+  fireEvent.click(screen.getByTestId("storylab-retry"));
+  await waitFor(() => expect(s.stored()).toHaveLength(1));
+  expect(h.gen).toHaveBeenCalledTimes(1);
+});
