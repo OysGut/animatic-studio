@@ -100,17 +100,17 @@ export function presetWindow(
   const from = Math.max(0, Math.round(layer.activeRange?.from ?? 0));
   const to = Math.max(from, Math.round(layer.activeRange?.to ?? o.sceneFrames));
   const len = Math.max(1, Math.round(o.durationFrames));
-  if (to - from < 2 * len)
+  if (to - from <= 2 * len)
     return {
       ok: false,
       reason: L(
-        `Laget er for kort for både inn- og utanimasjon: ${to - from} bilder, men det trengs ${2 * len}. Gjør animasjonen kortere eller laget lengre.`,
-        `The layer is too short for both an in and an out animation: ${to - from} frames, but ${2 * len} are needed. Make the animation shorter or the layer longer.`,
+        `Laget er for kort for både inn- og utanimasjon: ${to - from} bilder, men det trengs minst ${2 * len + 1}. Gjør animasjonen kortere eller laget lengre.`,
+        `The layer is too short for both an in and an out animation: ${to - from} frames, but at least ${2 * len + 1} are needed. Make the animation shorter or the layer longer.`,
       ),
     };
   const outStart = to - len;
   if (phase === "out") return { ok: true, startFrame: outStart };
   const f = Math.round(o.frame);
-  const start = f >= from && f + len <= outStart ? f : from;
+  const start = f >= from && f + len < outStart ? f : from;
   return { ok: true, startFrame: start };
 }

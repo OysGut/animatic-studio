@@ -12,6 +12,9 @@ import {
   MOTION_PRESET_LABEL,
   TEMPLATE_CATEGORIES,
   applyMotionPreset,
+  letterAnimWith,
+  normalizeLetterAnim,
+  presetWindow,
   fontById,
   fpsToNumber,
   layerFieldsOf,
@@ -339,17 +342,6 @@ function TextSection({
 
 // ---------- Bokstavanimasjon (MT3, §9, §29) ----------
 
-const DEFAULT_LETTER: LetterAnimation = {
-  unit: "letter",
-  effect: "appear",
-  direction: "up",
-  startFrame: 0,
-  delayFrames: 3,
-  durationFrames: 6,
-  order: "start",
-  seed: 1,
-  distance: 40,
-};
 
 function LetterSection({
   text,
@@ -361,12 +353,25 @@ function LetterSection({
   apply: (label: string, patch: Partial<LayerFields>) => void;
 }) {
   const a = text.letterAnim ?? null;
-  const set = (p: Partial<LetterAnimation> | null) =>
-    apply(L("Endre bokstavanimasjon", "Change letter animation"), {
-      text: { ...text, letterAnim: p === null ? null : { ...(a ?? DEFAULT_LETTER), ...p } },
-    });
+  const [err, setErr] = useState<string | null>(null);
+  const set = (p: Partial<LetterAnimation> | null) => {
+    // Mangler laget bokstavanimasjon, brukes standardverdiene (enhet, forsinkelse, varighet …)
+    const next = p === null ? null : letterAnimWith(a, p);
+    const checked = normalizeLetterAnim(next);
+    if (!checked.ok) {
+      setErr(checked.error);
+      return;
+    }
+    setErr(null);
+    apply(L("Endre bokstavanimasjon", "Change letter animation"), { text: { ...text, letterAnim: checked.value } });
+  };
   return (
     <Section title={L("Bokstavanimasjon", "Letter animation")}>
+      {err ? (
+        <p role="alert" data-testid="mts-letter-error" className="text-xs text-status-discrepancy">
+          {err}
+        </p>
+      ) : null}
       <Field label={L("Effekt", "Effect")}>
         <select
           data-testid="mts-letter-effect"
@@ -585,10 +590,15 @@ function PresetSection({
   const [dir, setDir] = useState<PresetDirection>("left");
   const [secs, setSecs] = useState(0.5);
   const len = Math.max(1, Math.round(secs * fps));
-  const range = layer.activeRange ?? null;
-  const end = range ? range.to : durationFrames;
+  const [err, setErr] = useState<string | null>(null);
   function add(phase: "in" | "out") {
-    const startFrame = phase === "in" ? frame : Math.max(0, Math.min(frame, end - len));
+    const w = presetWindow(layer, phase, { frame, sceneFrames: durationFrames, durationFrames: len });
+    if (!w.ok) {
+      setErr(w.reason);
+      return;
+    }
+    setErr(null);
+    const startFrame = w.startFrame;
     const keyframes = applyMotionPreset(layer, preset, {
       phase,
       startFrame,
@@ -649,10 +659,15 @@ function PresetSection({
           {L("Legg til ut", "Add out")}
         </Button>
       </div>
+      {err ? (
+        <p role="alert" data-testid="mts-preset-error" className="text-xs text-status-discrepancy">
+          {err}
+        </p>
+      ) : null}
       <Hint>
         {L(
-          "Lager vanlige nøkkelbilder fra avspillingshodet. De kan endres i tidslinjen.",
-          "Creates ordinary keyframes from the playhead. They can be changed in the timeline.",
+          "Inn starter ved starten av laget (eller ved avspillingshodet når det står inne i laget), ut slutter ved slutten av laget. Nøkkelbildene kan endres i tidslinjen.",
+          "In starts at the start of the layer (or at the playhead when it is inside the layer), out ends at the end of the layer. The keyframes can be changed in the timeline.",
         )}
       </Hint>
     </Section>
