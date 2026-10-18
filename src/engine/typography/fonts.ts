@@ -45,7 +45,7 @@ async function loadOne(fontId: string, weight: number): Promise<void> {
     if (typeof document !== "undefined" && document.fonts) {
       // Æ, ø og å er med i prøveteksten, så latin-ext-delen lastes også
       const css = cssFont({ fontId, size: 32, weight, italic: false });
-      const faces = await document.fonts.load(css, "AÆØÅaæøå");
+      const faces = await document.fonts.load(css, "AÆØÅaæøå"); // i18n-ignore – prøvetegn
       if (f.loading === "lazy" && faces.length === 0) throw new Error("not loaded");
     }
     status.set(key, "ready");
