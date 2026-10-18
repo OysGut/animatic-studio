@@ -77,7 +77,7 @@ export function assistRequestError(r: unknown): string | null {
 
 /** Hovedmanuset er på norsk bokmål (REQ-0331); oversettelsesutkastet på engelsk. */
 export function replyLanguage(kind: AssistKind): string {
-  return kind === "translate" ? "English" : "Norwegian Bokmål";
+  return kind === "translate" ? "English" : "Norwegian Bokmål"; // i18n-ignore: promptspråk
 }
 
 const KIND_LABEL: Record<BlockKind, string> = {
