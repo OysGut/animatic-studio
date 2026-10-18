@@ -144,6 +144,9 @@ export function StudioAudioTracks({
     <div className="flex flex-col gap-2 pt-2" data-testid="asset-studio-audio">
       {group(L("Scenens lyd", "Scene sound"), "asset-studio-audio-scene", sceneClips)}
       {group(L(`${assetName}s lyd`, `${assetName}'s sound`), "asset-studio-audio-asset", assetClips)}
+      <p className="text-[11px] text-text-tertiary" data-testid="asset-studio-audio-direct-note">
+        {L("Lydopptak lagres i scenen med en gang", "Audio recordings are saved in the scene straight away")}
+      </p>
       <div className="flex items-center gap-2">
         <Button
           size="sm"

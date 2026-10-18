@@ -103,6 +103,33 @@ export function AssetStudio({
 }) {
   const d = useAssetStudioDraft(state, occurrenceId, composition.id);
   const view = d.view;
+  // Direkte skrivinger fra verktøyene i studioet (bibliotek, notater, lydopptak og «Bruk dette») merkes som
+  // egne, så utkastet legges oppå dem automatisk
+  const mark = d.markOwnWrite;
+  const directCmds = useMemo<Commands>(
+    () => ({
+      ...cmds,
+      run: (...a: Parameters<Commands["run"]>) => {
+        mark();
+        return cmds.run(...a);
+      },
+      runSilent: (...a: Parameters<Commands["runSilent"]>) => {
+        mark();
+        return cmds.runSilent(...a);
+      },
+      runQueued: (...a: Parameters<Commands["runQueued"]>) => {
+        mark();
+        return cmds.runQueued(...a);
+      },
+      runAndWait: async (...a: Parameters<Commands["runAndWait"]>) => {
+        mark();
+        const r = await cmds.runAndWait(...a);
+        mark();
+        return r;
+      },
+    }),
+    [cmds, mark],
+  );
   const comp = view.compositions[composition.id] ?? composition;
   const layer = view.layers[layerId as never];
   const fps = view.project.fps;
@@ -474,7 +501,7 @@ export function AssetStudio({
               <StudioAudioTracks
                 state={view}
                 projectId={projectId}
-                cmds={cmds}
+                cmds={directCmds}
                 occurrenceId={occurrenceId}
                 assetName={asset?.name ?? layer.name}
                 sceneClips={groups.scene}
@@ -661,7 +688,7 @@ export function AssetStudio({
           </div>
           <StudioScript
             state={view}
-            cmds={cmds}
+            cmds={directCmds}
             occurrenceId={occurrenceId}
             clip={clip}
             frame={playback.frame}
@@ -757,7 +784,7 @@ export function AssetStudio({
         projectId={projectId}
         layer={layer}
         editable={editable}
-        cmds={cmds}
+        cmds={directCmds}
         sceneWrite={(patch, label) =>
           layer.locked
             ? L("Laget er låst. Lås det opp for å endre.", "The layer is locked. Unlock it to make changes.")

@@ -7,7 +7,7 @@
  * nye tilstanden, så lenge ingen av objektene utkastet endrer er endret av andre. Ellers beholdes utkastet, og
  * konflikten vises ved lagring (F3) – aldri stille overskriving.
  */
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   createDraft,
   draftConflicts,
@@ -34,6 +34,11 @@ export interface AssetStudioDraft {
   undo: () => void;
   redo: () => void;
   replace: (d: SceneDraft) => void;
+  /**
+   * En direkte skriving fra studioet selv (lydopptak, «Bruk dette», bibliotek): den neste endringen i den lagrede
+   * tilstanden legges under utkastet uten konflikt, så egne skrivinger aldri gir falsk konflikt ved lagring.
+   */
+  markOwnWrite: () => void;
 }
 
 export function useAssetStudioDraft(
@@ -45,11 +50,15 @@ export function useAssetStudioDraft(
     createDraft(live, occurrenceId, compositionId),
   );
 
-  // Legg utkastet oppå den nye lagrede tilstanden når det kan gjøres uten konflikt
+  const ownWrites = useRef(0);
+  // Legg utkastet oppå den nye lagrede tilstanden når det kan gjøres uten konflikt, eller når endringen er
+  // studioets egen direkte skriving
   useEffect(() => {
+    const own = ownWrites.current > 0;
+    ownWrites.current = 0;
     setDraft((d) => {
       if (d.base === live) return d;
-      if (draftConflicts(d, live).length) return d;
+      if (!own && draftConflicts(d, live).length) return d;
       const r = rebaseDraft(d, live);
       return r.ok ? r.draft : d;
     });
@@ -78,5 +87,8 @@ export function useAssetStudioDraft(
     undo: () => setDraft((d) => undoDraft(d)),
     redo: () => setDraft((d) => redoDraft(d)),
     replace: setDraft,
+    markOwnWrite: () => {
+      ownWrites.current += 1;
+    },
   };
 }
