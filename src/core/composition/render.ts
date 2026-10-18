@@ -24,6 +24,18 @@ import { compareKeys } from "../order-key";
 import { MASK_FIELD, isMaskProperty } from "./fields";
 import { coverVersion, versionsOf } from "../library";
 import { assetSymbol } from "../library/symbol";
+import { occurrenceKind, type CreditSequence } from "../model";
+import { creditDrawTexts, creditSequenceOf } from "../credits";
+
+/** Rulletekstsekvensen for 2D-scenen, når forekomsten er en rulletekst (MTS MT7). */
+export function creditsForComposition(s: ProjectState, compositionId: string): CreditSequence | null {
+  const comp = s.compositions[compositionId];
+  if (!comp) return null;
+  const occ = Object.values(s.occurrences).find(
+    (o) => o.variantId === comp.variantId && o.active && occurrenceKind(o) === "credits",
+  );
+  return occ ? creditSequenceOf(s, occ.id) : null;
+}
 
 /** 2D-transformasjon [a, b, c, d, e, f] som i Canvas: x' = a·x + c·y + e, y' = b·x + d·y + f. */
 export type Matrix = readonly [number, number, number, number, number, number];
