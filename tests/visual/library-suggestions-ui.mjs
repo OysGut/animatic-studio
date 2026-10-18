@@ -68,7 +68,7 @@ async function mock(context, role = "owner") {
     if (path.startsWith("/storage/v1/")) return route.fulfill({ status: 200, contentType: "image/svg+xml", body: '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"/>' });
     const table = path.replace("/rest/v1/", "");
     if (table === "rpc/my_account") return json({ status: "active", is_admin: false, permanent_admin: false, locale: null, display_name: "Mars", privacy_version: 1, accepted_version: 1, created_at: "2026-10-01T10:00:00Z", ui_prefs: {} });
-    if (table === "schema_version") return json([{ version: 40 }]);
+    if (table === "schema_version") return json([{ version: 41 }]);
     if (table === "projects") return json(single ? fx.project : [{ ...fx.project, project_members: [{ user_id: USER.id, role }] }]);
     if (table === "project_members") return json([{ user_id: USER.id, role, joined_at: "2026-10-08T10:00:00Z" }]);
     if (table === "profiles") return json([{ user_id: USER.id, display_name: "Mars" }]);
@@ -84,6 +84,8 @@ async function mock(context, role = "owner") {
     if (/projectAiProviders|listTextChoices/.test(name)) return json({ providers: [], missing: false });
     if (/listStorySessions/.test(name)) return json({ ok: true, sessions: [] });
     if (/listStorySuggestions/.test(name)) return json({ ok: true, suggestions: [] });
+    if (/listEntityAnalysis/.test(name)) return json({ rows: [] });
+    if (/analyzeScriptEntities/.test(name)) { aiCalls.push(d); return json({ ok: true, analyzedScenes: 1, remainingScenes: 0, newSuggestions: 1 }); }
     if (/generateText/.test(name)) { aiCalls.push(d); return json({ ok: true, text: JSON.stringify({ items: [{ name: "Svarten", kind: "animal", confidence: "high", reason: "Horse description", aliasOf: "hest" }, { name: "INVENTED", kind: "object", confidence: "high", reason: "Ignore invented name" }] }), costUsd: 0.001, usedFallback: true, reason: "fallback", keyOwner: "lovable" }); }
     return json({ ok: true, lock: null });
   });
@@ -123,23 +125,21 @@ await run("groups-and-type", async (page) => {
   const create = commands.find((c) => c.type === "CreateAssets");
   check(create?.assets.some((a) => /Måns/i.test(a.fields.name) && a.fields.kind === "object"), "CreateAssets bruker valgt type");
 });
-await run("ai-confirmation", async (page) => {
+await run("ai-reanalyze", async (page) => {
+  // OG2 (B-047): innebygd AI uten kostnadsdialog; «Analyser på nytt» oppretter ingenting
   const dialog = page.getByTestId("library-suggestions");
   const names = await dialog.getByTestId("library-suggestion").evaluateAll((els) => els.map((el) => el.dataset.name).sort());
+  const before = aiCalls.length;
   await dialog.getByTestId("library-suggestions-ai").click();
-  check(aiCalls.length === 0 && commands.length === 0, "AI krever kostnadsbekreftelse og skriver ingen ressurser");
-  await dialog.getByTestId("library-suggestions-cost").waitFor();
-  check((await dialog.getByTestId("library-suggestions-cost").innerText()).includes("Innebygd AI"), "leverandør og anslått kostnad vises");
-  await dialog.getByTestId("library-suggestions-ai-confirm").click();
   await page.waitForTimeout(500);
-  check(aiCalls.length === 1 && aiCalls[0].task === "general" && aiCalls[0].json === true, "klassifisering bruker general og JSON");
-  check(JSON.stringify(names) === JSON.stringify(await dialog.getByTestId("library-suggestion").evaluateAll((els) => els.map((el) => el.dataset.name).sort())), "AI legger ikke til navn eller endrer kandidatlisten");
-  check(commands.length === 0, "AI-vurderingen oppretter ingenting automatisk");
-  check(await dialog.getByText(/Den innebygde AI-en ble brukt som reserve/).isVisible(), "reserve vises");
+  check(await dialog.getByTestId("library-suggestions-cost").count() === 0, "ingen kostnadsdialog");
+  check(aiCalls.length > before && aiCalls.at(-1).scope === "all", "analyser på nytt kaller den automatiske analysen");
+  check(JSON.stringify(names) === JSON.stringify(await dialog.getByTestId("library-suggestion").evaluateAll((els) => els.map((el) => el.dataset.name).sort())), "analysen legger ikke til navn");
+  check(commands.length === 0, "analysen oppretter ingenting automatisk");
 });
 await run("english", async (page) => {
   const dialog = page.getByTestId("library-suggestions");
-  check(await dialog.getByTestId("library-suggestions-ai").innerText() === "Improve with AI …", "engelsk AI-knapp");
+  check(await dialog.getByTestId("library-suggestions-ai").innerText() === "Analyse again", "engelsk AI-knapp");
   const animals = dialog.locator('[data-testid="library-suggestions-group"][data-kind="animal"]');
   check(/animals/i.test(await animals.innerText()), "engelsk dyregruppe");
 }, { lang: "en" });

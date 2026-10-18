@@ -12,3 +12,10 @@
 - [x] Valgfri AI-vurdering med kostnadsbekreftelse og gjennomgang per type.
 - [x] Unit-tester og mocket nettlesertest (skrevet og syntakskontrollert; Øystein kjører den).
 - [x] Vitest: 1451 bestått, 0 feilet, 10 eksisterende hoppet over. I18n: 0 uten engelsk. Automatisk typekontroll: build OK.
+# OG2
+- [x] Migrasjon 0041 (skrevet, ikke kjørt), DB-tester.
+- [x] Serverfunksjoner med innebygd AI, tak og lås.
+- [x] Bakgrunnsanalyse, status i forslagsknappen, «Analyser på nytt».
+- [x] AI-forslag i engelsk språkkobling (må godkjennes).
+- [x] Personverntekst og AGENTS.md-regel.
+- [x] Unit- og nettlesertester.

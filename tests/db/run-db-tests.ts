@@ -4455,6 +4455,49 @@ try {
     await as("service_role", null, (tx) => tx`select public.purge_project_assets(${cv}, ${ALICE})`);
     for (const t of CANVAS_TABLES) assert((await count(t, cv)) === 0, `${t} har fortsatt rader etter rensing`);
   });
+  // ---------------------------------------------------------------- 0041 Automatisk gjenkjenning (OG2)
+  const ea = await as(
+    "authenticated",
+    ALICE,
+    async (tx) => (await tx`select public.create_project('Analyse') as id`)[0]!["id"] as string,
+  );
+  await sql`insert into public.project_members (project_id, user_id, role) values (${ea}, ${BOB}, 'viewer')`;
+  const eaProd = (await sql`select id from public.productions where project_id = ${ea} limit 1`)[0]!["id"] as string;
+  const EA = (n: number) => `abcdef00-0000-7000-8000-00000041${String(n).padStart(4, "0")}`;
+  const eaRow = async (scene: string) => {
+    await sql`insert into public.scenes (id, project_id, origin_production_id) values (${scene}, ${ea}, ${eaProd}) on conflict do nothing`;
+    await as("service_role", null, (tx) => tx`insert into public.script_entity_analysis (project_id, scene_id, content_hash, result) values (${ea}, ${scene}, 'abc', '{"items":[]}'::jsonb)`);
+  };
+
+  await test("0041: service role skriver analysen; medlemmer leser, utenforstående ser ingenting", async () => {
+    await eaRow(EA(1));
+    for (const u of [ALICE, BOB]) {
+      const rows = await as("authenticated", u, (tx) => tx`select id from public.script_entity_analysis where project_id = ${ea}`);
+      assert(rows.length === 1, "medlemmet ser ikke analysen");
+    }
+    const out = await as("authenticated", CAROL, (tx) => tx`select id from public.script_entity_analysis where project_id = ${ea}`);
+    assert(out.length === 0, "utenforstående ser analysen");
+  });
+
+  await test("0041: klienten kan ikke skrive analysen direkte", async () => {
+    await expectError(as("authenticated", ALICE, (tx) => tx`insert into public.script_entity_analysis (project_id, scene_id, content_hash) values (${ea}, ${EA(1)}, 'x')`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`update public.script_entity_analysis set content_hash = 'y' where project_id = ${ea}`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`delete from public.script_entity_analysis where project_id = ${ea}`), "42501");
+  });
+
+  await test("0041: én rad per scene, og grensene på innholdet holder", async () => {
+    await expectError(as("service_role", null, (tx) => tx`insert into public.script_entity_analysis (project_id, scene_id, content_hash) values (${ea}, ${EA(1)}, 'dup')`), "23505");
+    await expectError(as("service_role", null, (tx) => tx`insert into public.script_entity_analysis (project_id, scene_id, content_hash) values (${ea}, ${EA(1)}, '')`), "23514");
+  });
+
+  await test("0041: delete_project og purge_project_assets sletter analysen", async () => {
+    await as("service_role", null, (tx) => tx`select public.delete_project(${ea}, ${ALICE})`);
+    assert((await count("script_entity_analysis", ea)) === 0, "analysen finnes etter sletting");
+    await as("service_role", null, (tx) => tx`select public.purge_project_assets(${ea}, ${ALICE})`);
+    assert((await count("script_entity_analysis", ea)) === 0, "analysen finnes etter rensing");
+    assert((await sql`select 1 from public.projects where id = ${ea}`).length === 0, "prosjektraden finnes fortsatt");
+  });
+
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);

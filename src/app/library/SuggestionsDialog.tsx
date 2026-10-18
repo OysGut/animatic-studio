@@ -3,11 +3,9 @@
  * før brukeren har valgt det. Navn som ligner en eksisterende ressurs, kan legges til som alternativt navn
  * i stedet for som ny ressurs – men bare når brukeren velger det.
  */
-import { useServerFn } from "@tanstack/react-start";
-import { generateText } from "@/adapters/ai/text.functions";
-import { useTextEstimate, usd } from "@/app/storylab/storylab-data";
-import { useLanguage } from "@/app/i18n/language";
-import { classifyEntitiesPrompt, classificationFromJson, type AIClassification } from "@/core/library/classification-prompt";
+import { requestReanalyze, useAnalysisRows, useAnalysisStatus } from "./entity-analysis-store";
+import { analysisScenes, mergeAnalysis } from "@/core/library/analysis-hash";
+import type { AIClassification } from "@/core/library/classification-prompt";
 import { Loader2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -17,6 +15,7 @@ import {
   SOURCE_NOTE_LABEL,
   displayName,
   nameKey,
+  mainProduction,
   newId,
   suggestionAliases,
   type Asset,
@@ -108,15 +107,6 @@ function fieldsOf(a: Asset): AssetFields {
   };
 }
 
-function ClassificationCost({ inputChars, busy, onConfirm, onCancel }: { inputChars: number; busy: boolean; onConfirm: () => void; onCancel: () => void }) {
-  const estimate = useTextEstimate("general", inputChars, 3000);
-  return <div role="alertdialog" aria-label={L("Bekreft AI-vurdering", "Confirm AI classification")} data-testid="library-suggestions-cost" className="flex flex-wrap items-center gap-2 border border-border p-3 text-xs">
-    <p>{estimate.loading ? L("Beregner kostnad …", "Estimating cost …") : estimate.error ?? L(`Anslått ${usd(estimate.usd)} · ${estimate.label}`, `Estimated ${usd(estimate.usd)} · ${estimate.label}`)}</p>
-    <Button size="sm" data-testid="library-suggestions-ai-confirm" disabled={estimate.loading || !!estimate.error || busy} onClick={onConfirm}>{L("Bekreft", "Confirm")}</Button>
-    <Button size="sm" variant="ghost" onClick={onCancel}>{L("Avbryt", "Cancel")}</Button>
-  </div>;
-}
-
 export function SuggestionsDialog({
   open,
   onOpenChange,
@@ -132,13 +122,15 @@ export function SuggestionsDialog({
   cmds: Commands;
   projectId: string;
 }) {
-  const language = useLanguage();
-  const gen = useServerFn(generateText);
-  const [ai, setAI] = useState<Record<string, AIClassification>>({});
-  const [confirmAI, setConfirmAI] = useState(false);
+  // Automatisk analyse med den innebygde AI-en (OG2): lagret per scene, gjelder bare uendrede scener
+  const stored = useAnalysisRows(projectId);
+  const status = useAnalysisStatus(projectId);
   const [aiBusy, setAIBusy] = useState(false);
-  const [fallback, setFallback] = useState(false);
-  const prompt = classifyEntitiesPrompt({ candidates: suggestions, contexts: Object.fromEntries(suggestions.map((s) => [s.name, s.contexts ?? []])), language });
+  const ai = useMemo<Record<string, AIClassification>>(() => {
+    const prod = mainProduction(state);
+    return prod && stored.length ? mergeAnalysis(suggestions, stored, analysisScenes(state, prod.id)) : {};
+  }, [state, suggestions, stored]);
+  const aiCount = Object.keys(ai).length;
   // Standard: sikre nye navn krysses av; mulige treff og gjetninger må brukeren ta stilling til selv
   const initial = useMemo(() => {
     const m: Record<string, Choice> = {};
@@ -154,7 +146,6 @@ export function SuggestionsDialog({
     if (open) {
       setChoice(initial);
       setKindChoice({});
-      setAI({}); setConfirmAI(false); setFallback(false);
       setHidden(readHidden(projectId));
       setErr(null);
     }
@@ -166,15 +157,11 @@ export function SuggestionsDialog({
   const kindOf = (s: LibrarySuggestion): AssetKind => kindChoice[key(s)] ?? ai[s.name]?.kind ?? s.kind;
   const confidenceOf = (s: LibrarySuggestion) => ai[s.name]?.confidence ?? s.confidence ?? (s.uncertain ? "low" : "high");
   async function improve() {
-    setAIBusy(true); setErr(null); setConfirmAI(false);
+    setAIBusy(true); setErr(null);
     try {
-      const r = await gen({ data: { projectId, task: "general", json: true, system: prompt.system, messages: [{ role: "user", content: prompt.user }], maxTokens: 3000 } });
-      if (!r.ok) { setErr(r.message); return; }
-      const parsed = classificationFromJson(r.text).filter((x) => suggestions.some((s) => s.name === x.name));
-      if (!parsed.length) { setErr(L("Svaret kunne ikke tolkes. Prøv igjen.", "The response could not be read. Try again.")); return; }
-      setAI(Object.fromEntries(parsed.map((x) => [x.name, x])));
-      setFallback(r.usedFallback);
-    } catch { setErr(L("AI-vurderingen feilet. Prøv igjen.", "AI classification failed. Try again.")); }
+      const e = await requestReanalyze(projectId);
+      if (e) setErr(e);
+    } catch { setErr(L("Analysen feilet. Prøv igjen.", "The analysis failed. Try again.")); }
     finally { setAIBusy(false); }
   }
 
@@ -295,10 +282,15 @@ export function SuggestionsDialog({
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-wrap items-center gap-2">
-          <Button variant="outline" data-testid="library-suggestions-ai" disabled={busy || aiBusy || !visible.length} onClick={() => setConfirmAI(true)}>{aiBusy ? <Loader2 className="animate-spin" /> : null}{L("Forbedre med AI …", "Improve with AI …")}</Button>
-          {fallback ? <p role="status" className="text-xs text-status-uncertain">{L("Den innebygde AI-en ble brukt som reserve.", "The built-in AI was used as a fallback.")}</p> : null}
+          <Button variant="outline" data-testid="library-suggestions-ai" disabled={busy || aiBusy || status.kind === "running" || !visible.length} onClick={() => void improve()}>{aiBusy || status.kind === "running" ? <Loader2 className="animate-spin" /> : null}{L("Analyser på nytt", "Analyse again")}</Button>
+          <p role="status" data-testid="library-suggestions-ai-status" className="text-xs text-text-secondary">
+            {status.kind === "running"
+              ? L("Analyserer manuset …", "Analysing the script …")
+              : aiCount
+                ? L(`Typene for ${aiCount} forslag er satt av den innebygde AI-en.`, `The types of ${aiCount} suggestions were set by the built-in AI.`)
+                : L("Typene bygger på manusreglene.", "The types are based on script rules.")}
+          </p>
         </div>
-        {confirmAI ? <ClassificationCost inputChars={prompt.system.length + prompt.user.length} busy={aiBusy} onConfirm={() => void improve()} onCancel={() => setConfirmAI(false)} /> : null}
         {visible.length === 0 && hiddenCount === 0 ? (
           <p className="text-[13px] text-text-secondary">
             {L(

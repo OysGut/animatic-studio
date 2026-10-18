@@ -2,6 +2,7 @@
  * Overføring fra en canvasnode til prosjektet (SL7 §5): forhåndsvisning, bekreftelse, én angregruppe og en
  * lenke til resultatet. Kommandoene planlegges i kjernen (canvasNodeToCommands).
  */
+import { requestAnalysisNow } from "@/app/library/entity-analysis-store";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import {
@@ -49,6 +50,8 @@ export function CanvasTransferDialog({ state, projectId, cmds, node, onClose }: 
       const e = await runGroup(cmds, plan.commands, L("Overfør fra canvaset", "Transfer from the canvas"));
       if (e) return setErr(e);
       setDone(plan.result);
+      // Ny manustekst: automatisk gjenkjenning straks (OG2)
+      if (node.kind === "scene") requestAnalysisNow(projectId);
     } finally { setBusy(false); }
   };
 

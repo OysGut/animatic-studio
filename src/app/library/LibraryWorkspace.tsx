@@ -60,6 +60,7 @@ import { Input } from "@/components/ui/input";
 import { AssetDetail } from "./AssetDetail";
 import { useImageUrls } from "./asset-images";
 import { SuggestionsDialog } from "./SuggestionsDialog";
+import { useAnalysisStatus } from "./entity-analysis-store";
 import { AssetZipDialog } from "./AssetZip";
 import { ReuploadDialog, type ReuploadItem } from "./ReuploadDialog";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
@@ -191,6 +192,7 @@ function Library({
     return new Map([...all].map(([id, u]) => [id, u.length]));
   }, [state, productionId]);
   const suggestions = useMemo(() => librarySuggestions(state, productionId), [state, productionId]);
+  const analysis = useAnalysisStatus(projectId);
   const q = search.trim().toLocaleLowerCase(collation());
   const shown = all.filter(
     (a) =>
@@ -322,6 +324,15 @@ function Library({
             <Lightbulb />
             {L("Forslag fra manuset", "Suggestions from the script")}
             {suggestions.length ? ` (${suggestions.length})` : ""}
+            {analysis.kind === "running" ? (
+              <span data-testid="library-analysis-status" className="text-text-tertiary">
+                {L(" · Analyserer manuset …", " · Analysing the script …")}
+              </span>
+            ) : analysis.kind === "done" && analysis.newSuggestions > 0 ? (
+              <span data-testid="library-analysis-status" className="text-text-tertiary">
+                {L(` · ${analysis.newSuggestions} nye forslag`, ` · ${analysis.newSuggestions} new suggestions`)}
+              </span>
+            ) : null}
           </ToolbarButton>
         ) : null}
         {editable ? (

@@ -190,7 +190,7 @@ const modelsOf = (row: TextKeyRow): string[] =>
     : [];
 
 /** Lovable AI Gateway (reserven): Chat Completions. */
-async function lovableText(
+export async function lovableText(
   key: string,
   models: readonly string[],
   d: GenerateTextInput,

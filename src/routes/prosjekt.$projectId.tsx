@@ -10,6 +10,7 @@ import { fetchProjectName, upsertMyProfile } from "@/adapters/browser/projects";
 import { fetchProjectLock } from "@/adapters/browser/account";
 import { AiJobsWatcher } from "@/app/ai/video-jobs";
 import { MobileImportWatcher } from "@/app/mobile/use-mobile-imports";
+import { EntityAnalysisWatcher } from "@/app/library/use-entity-analysis";
 import { canEdit, useMembers } from "@/app/project/use-project";
 import { L } from "@/core";
 
@@ -124,6 +125,13 @@ function ProjectLayout() {
               <MobileImportWatcher
                 projectId={projectId}
                 userId={session.session.user.id}
+                editable={canEdit(
+                  members.data?.find((m) => m.user_id === session.session.user.id)?.role,
+                )}
+              />
+              {/* Automatisk gjenkjenning med den innebygde AI-en (OG2, B-047) */}
+              <EntityAnalysisWatcher
+                projectId={projectId}
                 editable={canEdit(
                   members.data?.find((m) => m.user_id === session.session.user.id)?.role,
                 )}
