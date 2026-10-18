@@ -36,8 +36,6 @@ await scenario("AJ-behold-eller-oppdater", M.sceneA, "nb", async (page) => {
   check(true, "AJ: varselet forsvinner etter oppdateringen");
 });
 
-await h.finish();
-
 await scenario("AK-originale-bilder-bevares", M.sceneA, "nb", async (page) => {
   // Oppdatering til ny malversjon bytter ikke ut bilde-/logolag i forekomsten (bare felt som malen styrer)
   await selectLayer(page, M.instanceName);
@@ -62,3 +60,5 @@ await scenario("AL-eksport-er-ikke-destruktiv", M.sceneA, "nb", async (page) => 
   await page.waitForTimeout(2000);
   check((await page.locator("[data-layer-row]").count()) > 0, "AL: komposisjonen er fortsatt redigerbar etter eksporten");
 });
+
+await h.finish();
