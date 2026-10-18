@@ -324,6 +324,9 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         // Migrasjon 0034 (DEC-0088)
         source: n.source ?? "user",
         task_id: n.taskId ?? null,
+        // Migrasjon 0044 (AS3)
+        kind: n.kind ?? "note",
+        suggested_text: n.kind ? (n.suggestedText ?? "") : null,
       };
     }
     case "compositions": {
@@ -377,6 +380,9 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         blend: l.blend ?? "normal",
         // Migrasjon 0027 (DEC-0072)
         reviewed_versions: l.reviewedVersions ?? [],
+        // Migrasjon 0043 (AS2): aktivt tidsområde
+        active_from: l.activeRange ? l.activeRange.from : null,
+        active_to: l.activeRange ? l.activeRange.to : null,
         removed: l.removed,
       };
     }
@@ -1170,6 +1176,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         removed: x["removed"] === true,
         ...(x["source"] === "system" ? { source: "system" as const } : {}),
         ...(typeof x["task_id"] === "string" ? { taskId: x["task_id"] } : {}),
+        ...(x["kind"] === "trial_edit"
+          ? { kind: "trial_edit" as const, suggestedText: str(x["suggested_text"] ?? "") }
+          : {}),
       })),
     ),
     compositions: byId(
@@ -1215,6 +1224,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...languageImagesFromRow(x["language_images"]),
         ...maskBlendFromRow(x["mask"], x["blend"]),
         ...reviewedFromRow(x["reviewed_versions"]),
+        ...(typeof x["active_from"] === "number" && typeof x["active_to"] === "number"
+          ? { activeRange: { from: x["active_from"], to: x["active_to"] } }
+          : {}),
         removed: x["removed"] === true,
       })),
     ),

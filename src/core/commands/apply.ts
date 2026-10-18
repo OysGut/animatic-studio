@@ -383,6 +383,22 @@ function normalizeVariantFields(f: AssetVariantFields): AssetVariantFields {
 // ---------- Notater ----------
 
 function normalizeAnnotation(s: ProjectState, n: NewAnnotation, now: string): Annotation {
+  // Forsøksvis manusredigering (AS3, C2): bare på tekst, med foreslått tekst
+  if (n.kind !== undefined) {
+    if (n.kind !== "trial_edit")
+      fail("invalid", L("Ukjent notattype", "Unknown note type"));
+    if (n.blockId === null)
+      fail(
+        "invalid",
+        L(
+          "En forsøksvis manusredigering må høre til en manuslinje",
+          "A trial script edit must belong to a script line",
+        ),
+      );
+    if (typeof n.suggestedText !== "string" || n.suggestedText.length > 10_000)
+      fail("invalid", L("Ugyldig foreslått tekst", "Invalid suggested text"));
+  } else if (n.suggestedText !== undefined)
+    fail("invalid", L("Foreslått tekst uten forsøksvis redigering", "Suggested text without a trial edit"));
   const text = n.text.trim();
   if (!text || text.length > 10_000)
     fail(
@@ -465,6 +481,7 @@ function normalizeAnnotation(s: ProjectState, n: NewAnnotation, now: string): An
       removed: false,
       ...(n.source === "system" ? { source: "system" as const } : {}),
       ...(n.taskId !== undefined ? { taskId: checkTaskId(n.taskId) } : {}),
+      ...(n.kind === "trial_edit" ? { kind: "trial_edit" as const, suggestedText: n.suggestedText! } : {}),
     };
   }
 }
@@ -619,6 +636,8 @@ function layerFields(s: ProjectState, f: LayerFields, prev?: CompositionLayer): 
       // Maske og blandingsmodus (REQ-0175): utelatt = uendret
       mask: f.mask === undefined ? (prev.mask ?? null) : f.mask,
       blend: f.blend ?? prev.blend ?? "normal",
+      // Aktivt tidsområde (AS2): utelatt = uendret
+      activeRange: f.activeRange === undefined ? (prev.activeRange ?? null) : f.activeRange,
     };
   // Nytt bilde i laget (annen ressurs): bilder per språk av den gamle ressursen passer ikke lenger
   if (prev && f.assetId !== prev.assetId)
@@ -741,6 +760,7 @@ function fieldsOfLayer(l: CompositionLayer): LayerFields {
     ...(l.languageImages?.length ? { languageImages: l.languageImages } : {}),
     ...(l.mask ? { mask: l.mask } : {}),
     ...(l.blend && l.blend !== "normal" ? { blend: l.blend } : {}),
+    ...(l.activeRange ? { activeRange: l.activeRange } : {}),
   };
 }
 
@@ -6339,6 +6359,7 @@ function run(
           stampAt: a.stampAt,
           ...(a.source ? { source: a.source } : {}),
           ...(a.taskId ? { taskId: a.taskId } : {}),
+          ...(a.kind ? { kind: a.kind, suggestedText: a.suggestedText ?? "" } : {}),
         });
         delete annotations[id];
       }
@@ -7008,9 +7029,10 @@ function run(
             languageImages: l.languageImages ?? [],
             mask: l.mask ?? null,
             blend: l.blend ?? "normal",
+            activeRange: l.activeRange ?? null,
           },
         });
-        const { languageImages: _li, mask: _m, blend: _b, ...rest } = l;
+        const { languageImages: _li, mask: _m, blend: _b, activeRange: _ar, ...rest } = l;
         layers[l.id] = { ...rest, ...layerFields(s, u.fields, l), revision: rev(l) };
       }
       checkGroups(

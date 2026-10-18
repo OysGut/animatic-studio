@@ -310,14 +310,36 @@ export function normalizeSwaps(list: readonly ImageSwap[]): Result<readonly Imag
       };
     if (w.versionId !== null && w.assetVariantId === null)
       return { ok: false, error: L("Versjon uten variant", "Version without a variant") };
+    const tr = w.transition;
+    if (tr !== undefined && tr !== null) {
+      if (tr.kind !== "crossfade" || !Number.isInteger(tr.frames) || tr.frames < 1 || tr.frames > 10_000)
+        return {
+          ok: false,
+          error: L("Ugyldig overgang i bildeskiftet", "Invalid transition in the image swap"),
+        };
+    }
     out.push({
       frame: w.frame,
       assetId: w.assetId,
       assetVariantId: w.assetVariantId ?? null,
       versionId: w.versionId ?? null,
+      ...(tr ? { transition: { kind: "crossfade" as const, frames: tr.frames } } : {}),
     });
   }
   out.sort((a, b) => a.frame - b.frame);
+  // Krysstoningen kan ikke være lengre enn bildet før (AS2, A2)
+  for (let i = 0; i < out.length; i++) {
+    const w = out[i]!;
+    const gap = w.frame - (i > 0 ? out[i - 1]!.frame : 0);
+    if (w.transition && w.transition.frames > gap)
+      return {
+        ok: false,
+        error: L(
+          "Krysstoningen er lengre enn bildet før",
+          "The crossfade is longer than the image before it",
+        ),
+      };
+  }
   return { ok: true, value: out };
 }
 
@@ -483,6 +505,13 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
     };
   const keyframes = maskKeyframes(k.value, mask.value);
   if (!keyframes.ok) return keyframes;
+  // Aktivt tidsområde (AS2, A3)
+  const ar = f.activeRange ?? null;
+  if (
+    ar !== null &&
+    (!Number.isInteger(ar.from) || !Number.isInteger(ar.to) || ar.from < 0 || ar.to < ar.from)
+  )
+    return { ok: false, error: L("Ugyldig aktivt område", "Invalid active range") };
   return {
     ok: true,
     value: {
@@ -506,6 +535,7 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
       ...(langs.value.length ? { languageImages: langs.value } : {}),
       ...(mask.value ? { mask: mask.value } : {}),
       ...(blend.value !== "normal" ? { blend: blend.value } : {}),
+      ...(ar ? { activeRange: { from: ar.from, to: ar.to } } : {}),
     },
   };
 }

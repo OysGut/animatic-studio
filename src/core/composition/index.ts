@@ -130,6 +130,8 @@ export function layerFieldsOf(l: CompositionLayer): LayerFields {
     // Maske og blandingsmodus (REQ-0175): bare når de er satt (utelatt = uendret ved endring)
     ...(l.mask ? { mask: l.mask } : {}),
     ...(l.blend && l.blend !== "normal" ? { blend: l.blend } : {}),
+    // Aktivt tidsområde (AS2): null = hele scenen (UpdateLayers skal kunne fjerne det)
+    activeRange: l.activeRange ?? null,
   };
 }
 

@@ -77,6 +77,7 @@ import type {
   ImageSwap,
   MotionPath,
   LayerMask,
+  LayerActiveRange,
   BlendMode,
 } from "../model";
 import type { Rational } from "../time";
