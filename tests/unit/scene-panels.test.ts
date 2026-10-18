@@ -70,6 +70,8 @@ describe("rekkefølgen på panelene", () => {
       "nearbyAudio",
       "layers",
       "script",
+      "pages",
+      "credits",
     ]);
     expect(movePanelTo(o, "assets", "layers", "after")).toEqual([
       "nearbyAudio",
@@ -77,6 +79,8 @@ describe("rekkefølgen på panelene", () => {
       "assets",
       "properties",
       "script",
+      "pages",
+      "credits",
     ]);
     expect(movePanelTo(o, "assets", "assets", "after")).toEqual(o);
   });
@@ -91,6 +95,8 @@ describe("rekkefølgen på panelene", () => {
       "nearbyAudio",
       "properties",
       "script",
+      "pages",
+      "credits",
     ]);
     expect(movePanelAmong(o, shown, "assets", -1)).toEqual(o);
   });
