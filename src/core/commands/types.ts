@@ -77,6 +77,7 @@ import type {
   ImageSwap,
   MotionPath,
   LayerMask,
+  LayerActiveRange,
   BlendMode,
 } from "../model";
 import type { Rational } from "../time";
@@ -140,6 +141,8 @@ export interface LayerFields {
   /** Maske og blandingsmodus (REQ-0175). Utelatt = uendret ved endring, ingen/«normal» ved nytt lag. */
   readonly mask?: LayerMask | null;
   readonly blend?: BlendMode;
+  /** Aktivt tidsområde (AS2). Utelatt = uendret ved endring, hele scenen ved nytt lag. null = hele scenen. */
+  readonly activeRange?: LayerActiveRange | null;
 }
 
 export interface NewLayer {
@@ -182,6 +185,9 @@ export interface NewAnnotation {
   readonly source?: "system";
   /** Oppgaven merknaden hører til (DEC-0088). */
   readonly taskId?: string;
+  /** Forsøksvis manusredigering (AS3): type og foreslått tekst. */
+  readonly kind?: "trial_edit";
+  readonly suggestedText?: string;
 }
 
 /** Opplastet bilde for en ressursversjon (filen ligger i den private bøtten «assets»). */

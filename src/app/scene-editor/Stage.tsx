@@ -84,6 +84,8 @@ interface StageProps {
   onTogglePlay?: () => void;
   /** Dobbeltklikk på et lag: velg bilde for laget (DEC-0044). */
   onOpenLayerImage?: (layerId: string) => void;
+  /** Alt + dobbeltklikk på et lag: åpne Asset Studio for laget (AS1). */
+  onOpenAssetStudio?: (layerId: string) => void;
   /** Tegn en bevegelsesbane for valgt lag (DEC-0052): punktene i lagets koordinater. */
   drawPath?: boolean;
   onPathDrawn?: (points: { x: number; y: number }[]) => void;
@@ -537,6 +539,7 @@ export function Stage({
   autoKey,
   onTogglePlay,
   onOpenLayerImage,
+  onOpenAssetStudio,
   drawPath = false,
   onPathDrawn,
   onDrawCancel,
@@ -1329,13 +1332,16 @@ export function Stage({
     }
     const t = overlayShot ? pickShot(p) : null;
     if (!overlayShot || t?.kind !== "path") {
-      // Dobbeltklikk på et lag: velg et annet bilde for det (DEC-0044)
-      if (cameraMode || !onOpenLayerImage) return;
+      // Dobbeltklikk på et lag: velg et annet bilde for det (DEC-0044); med Alt: Asset Studio (AS1)
+      if (cameraMode) return;
+      const studio = e.altKey && onOpenAssetStudio;
+      if (!studio && !onOpenLayerImage) return;
       const sp = toScene(view, p);
       const hit = hitTest(frame, sp.x, sp.y, { includeLocked: true });
       if (hit) {
         onSelect(hit.layerId);
-        onOpenLayerImage(hit.layerId);
+        if (studio) onOpenAssetStudio(hit.layerId);
+        else onOpenLayerImage?.(hit.layerId);
       }
       return;
     }

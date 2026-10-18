@@ -72,6 +72,7 @@ import { PopoutPreview, PreviewWindow } from "./PreviewWindow";
 import { CameraPanel } from "./CameraPanel";
 import { Timeline } from "./Timeline";
 import { LayerImageDialog } from "./LayerImageDialog";
+import { AssetStudio } from "@/app/asset-studio/AssetStudio";
 import { RecordAudioDialog } from "./RecordAudioDialog";
 import { SceneToVideoDialog } from "./SceneToVideoDialog";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
@@ -353,6 +354,16 @@ function Editor({
   const [neighbours, setNeighbours] = useStoredFlag("scene-editor-neighbours", false);
   /** Laget som får nytt bilde (dobbeltklikk, DEC-0044). */
   const [imageLayerId, setImageLayerId] = useState<string | null>(null);
+  /** Laget som er åpent i Asset Studio (AS1). */
+  const [studioLayerId, setStudioLayerId] = useState<string | null>(null);
+  const openAssetStudio = useCallback(
+    (id: string) => {
+      setSelectedLayerId(id);
+      playback.pause();
+      setStudioLayerId(id);
+    },
+    [setSelectedLayerId, playback],
+  );
   /** Åpne bildet stort med «Oppskaler» fremme (advarselen om forstørrelse, DEC-0080). */
   const [upscaleOpen, setUpscaleOpen] = useState(false);
   const openLayerImage = useCallback(
@@ -615,6 +626,7 @@ function Editor({
           frame={playback.frame}
           autoKey={autoKey}
           onOpenImage={() => openLayerImage(selectedLayer.id)}
+          {...(occurrenceId ? { onOpenAssetStudio: () => openAssetStudio(selectedLayer.id) } : {})}
           onUpscale={() => {
             setUpscaleOpen(true);
             openLayerImage(selectedLayer.id);
@@ -1026,6 +1038,7 @@ function Editor({
                   autoKey={autoKey}
                   onTogglePlay={playback.toggle}
                   onOpenLayerImage={openLayerImage}
+                  onOpenAssetStudio={openAssetStudio}
                   drawPath={drawingPath}
                   onPathDrawn={pathDrawn}
                   onDrawCancel={() => setDrawPathFor(null)}
@@ -1260,6 +1273,22 @@ function Editor({
         cmds={cmds}
         openUpscale={upscaleOpen}
       />
+      {studioLayerId && composition && occurrenceId && state.layers[studioLayerId as never] ? (
+        <AssetStudio
+          projectId={projectId}
+          state={state}
+          cmds={cmds}
+          composition={composition}
+          occurrenceId={occurrenceId}
+          productionId={productionId}
+          layerId={studioLayerId}
+          editable={editable}
+          audioEditable={audioEditable}
+          authorName={myName}
+          audioOf={(s) => retimeAudioOf(s).items}
+          onClose={() => setStudioLayerId(null)}
+        />
+      ) : null}
       <ShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} current="sceneeditor" />
       {occurrence && aiVideoOpen ? (
         <SceneToVideoDialog

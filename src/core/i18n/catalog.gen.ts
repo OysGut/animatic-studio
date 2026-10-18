@@ -499,6 +499,8 @@ export const CATALOG: Record<string, string> = {
     "A shared link cannot be shared on. Ask the person who sent it for a new one.",
   "En figur forandrer seg i segmentet, men det sto ikke i beskrivelsen.":
     "A figure changes within the segment, but this was not in the description.",
+  "En forsøksvis manusredigering må høre til en manuslinje":
+    "A trial script edit must belong to a script line",
   "En gruppe kan ikke brukes som maske": "A group cannot be used as a mask",
   "En gruppe kan ikke ha maske eller blandingsmodus": "A group cannot have a mask or blend mode",
   "En gruppe kan ikke ligge i en gruppe": "A group cannot be inside another group",
@@ -664,6 +666,7 @@ export const CATALOG: Record<string, string> = {
   "Forekomstkartet stemmer ikke med bruken av scenen":
     "The occurrence map does not match the use of the scene",
   "Fører til": "Leads to",
+  "Foreslått tekst uten forsøksvis redigering": "Suggested text without a trial edit",
   "Forleng pausen før neste replikk i denne språkversjonen (krever egen klipping; hovedfilmen endres ikke).":
     "Extend the pause before the next line in this language version (requires separate editing; the main film is not changed).",
   "Form:": "Format:",
@@ -920,6 +923,7 @@ export const CATALOG: Record<string, string> = {
     "The cost cap for the key ({0} USD per month) has been reached – about {1} USD used, this job about {2} USD. The owner can change the cap under “AI providers”.",
   "Kronebeløpene er regnet om med Norges Banks valutakurs (USD/NOK) for dagen jobben ble laget, eller siste noterte kurs før den.":
     "The NOK amounts are converted with Norges Bank's exchange rate (USD/NOK) for the day the job was made, or the last rate quoted before it.",
+  "Krysstoningen er lengre enn bildet før": "The crossfade is longer than the image before it",
   "Kunne ikke lese {0}: {1}": "Could not read {0}: {1}",
   "Kunne ikke lese prosjektet: {0}": "Could not read the project: {0}",
   Kutt: "Cut",
@@ -939,6 +943,7 @@ export const CATALOG: Record<string, string> = {
   "Laget {0} (formatversjon {1}, databaseversjon {2}).":
     "Made {0} (format version {1}, database version {2}).",
   "Laget det skal flyttes bak": "The layer to move behind",
+  "Laget hører ikke til scenen": "The layer does not belong to the scene",
   "Laget hører ikke til scenens 2D-scene": "The layer does not belong to the scene's 2D scene",
   "Laget må vise et bilde fra biblioteket eller en fargeflate":
     "The layer must show an image from the library or a colour fill",
@@ -1617,6 +1622,7 @@ export const CATALOG: Record<string, string> = {
   "Ufullstendige ressursfelter": "Incomplete asset fields",
   "Ufullstendige variantfelter": "Incomplete variant fields",
   "Ugyldig {0}": "Invalid {0}",
+  "Ugyldig aktivt område": "Invalid active range",
   "Ugyldig ankerpunkt": "Invalid anchor point",
   "Ugyldig antall kontinuitetshendelser": "Invalid number of continuity events",
   "Ugyldig antall noder": "Invalid number of nodes",
@@ -1645,6 +1651,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig fil": "Invalid file",
   "Ugyldig filinformasjon for filmen": "Invalid file information for the film",
   "Ugyldig filnavn": "Invalid file name",
+  "Ugyldig foreslått tekst": "Invalid suggested text",
   "Ugyldig forespørsel": "Invalid request",
   "Ugyldig format": "Invalid format",
   "Ugyldig format (5–300 cm)": "Invalid format (5–300 cm)",
@@ -1700,6 +1707,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig oppgave": "Invalid task",
   "Ugyldig ordkobling": "Invalid word alignment",
   "Ugyldig overgang": "Invalid transition",
+  "Ugyldig overgang i bildeskiftet": "Invalid transition in the image swap",
   "Ugyldig oversettelse": "Invalid translation",
   "Ugyldig periode": "Invalid period",
   "Ugyldig plakat": "Invalid poster",
@@ -1760,9 +1768,11 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig tidspunkt for notatet": "Invalid time for the note",
   "Ugyldig tittelside": "Invalid title page",
   "Ugyldig trinn i endring av scenevarighet": "Invalid step in scene duration change",
+  "Ugyldig trinn i utkastet for scenen": "Invalid step in the scene draft",
   "Ugyldig tur": "Invalid turn",
   "Ugyldig type faktum": "Invalid kind of fact",
   "Ugyldig type maske": "Invalid mask type",
+  "Ugyldig utkast for scenen": "Invalid scene draft",
   "Ugyldig utvalg": "Invalid selection",
   "Ugyldig valg": "Invalid choice",
   "Ugyldig valg for «løper videre»": "Invalid choice for “continues”",
@@ -1816,6 +1826,7 @@ export const CATALOG: Record<string, string> = {
   "Ukjent navnetype": "Unknown name type",
   "Ukjent nodetype": "Unknown node type",
   "Ukjent nøkkelversjon.": "Unknown key version.",
+  "Ukjent notattype": "Unknown note type",
   "Ukjent oppgave": "Unknown task",
   "Ukjent plakattype": "Unknown poster type",
   "ukjent pris": "price unknown",

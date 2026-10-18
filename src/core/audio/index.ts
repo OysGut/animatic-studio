@@ -295,3 +295,4 @@ export function filmTakeAudio(clips: readonly FilmClip[], fps: Rational): FilmAu
 export function sourceSpan(it: Pick<FilmAudioItem, "length" | "speed">): number {
   return it.length * (it.speed ?? 1);
 }
+export * from "./asset-tracks";

@@ -43,6 +43,7 @@ export function useAudioPlayback({
   playing,
   time,
   mutedKinds,
+  mutedClipIds,
 }: {
   items: readonly FilmAudioItem[];
   /** Mediesti → lenke for lydfilene. */
@@ -51,13 +52,15 @@ export function useAudioPlayback({
   /** Avspillingshodet (s). */
   time: number;
   mutedKinds?: ReadonlySet<AudioKind>;
+  /** Klipp som er dempet bare i denne avspillingen (Asset Studio, forhåndslytting). Lagres aldri. */
+  mutedClipIds?: ReadonlySet<string>;
 }) {
   const ctxRef = useRef<AudioContext | null>(null);
   const masterRef = useRef<GainNode | null>(null);
   const session = useRef<Session | null>(null);
   const loaded = useAudioLoaded();
-  const latest = useRef({ items, mutedKinds, time });
-  latest.current = { items, mutedKinds, time };
+  const latest = useRef({ items, mutedKinds, mutedClipIds, time });
+  latest.current = { items, mutedKinds, mutedClipIds, time };
 
   // Last lydfilene på forhånd
   useEffect(() => {
@@ -88,11 +91,12 @@ export function useAudioPlayback({
     }
     if (ctx.state === "suspended") void ctx.resume();
     const startAt = ctx.currentTime + 0.04;
-    const { items: list, mutedKinds: muted } = latest.current;
+    const { items: list, mutedKinds: muted, mutedClipIds: mutedClips } = latest.current;
     const sources = scheduleAudio(ctx, masterRef.current!, list, audioBank, {
       from,
       startAt,
       ...(muted ? { mutedKinds: muted } : {}),
+      ...(mutedClips ? { mutedClipIds: mutedClips } : {}),
     });
     const scheduled = new Set(
       list
@@ -107,13 +111,13 @@ export function useAudioPlayback({
     const s = session.current;
     const ctx = ctxRef.current;
     if (!s || !ctx || !masterRef.current) return;
-    const { items: list, mutedKinds: muted } = latest.current;
+    const { items: list, mutedKinds: muted, mutedClipIds: mutedClips } = latest.current;
     for (const it of list) {
       if (s.scheduled.has(it.clip.id) || !it.version) continue;
       const buf = audioBank.get(it.version.mediaPath);
       if (!buf) continue;
       s.scheduled.add(it.clip.id);
-      if (it.clip.muted || muted?.has(it.clip.kind)) continue;
+      if (it.clip.muted || muted?.has(it.clip.kind) || mutedClips?.has(it.clip.id)) continue;
       const src = scheduleOne(ctx, masterRef.current, it, buf, {
         from: s.from,
         startAt: s.startAt,
@@ -131,7 +135,7 @@ export function useAudioPlayback({
     // Bildet bestemmer tiden; lyden følger
     start(latest.current.time);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playing, items, mutedKinds]);
+  }, [playing, items, mutedKinds, mutedClipIds]);
 
   // En lydfil er ferdig dekodet under avspilling: legg bare den inn
   useEffect(() => {

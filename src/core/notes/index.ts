@@ -351,3 +351,14 @@ export function formatEdited(
   return `${L("endret", "edited")}${who} · ${formatDate(a.editedAt)}`;
 }
 export * from "./transfer";
+
+/**
+ * Forsøksvis manusredigering (Asset Studio AS3, C3): linjens tekst med forslaget satt inn der utdraget står nå,
+ * eller null når notatet ikke er en forsøksvis redigering eller utdraget ikke finnes lenger.
+ */
+export function trialEditResult(a: Annotation, blockText: string): string | null {
+  if (a.kind !== "trial_edit" || a.suggestedText === undefined) return null;
+  const r = resolveRange(a, blockText);
+  if (!r.found) return null;
+  return blockText.slice(0, r.start) + a.suggestedText + blockText.slice(r.end);
+}

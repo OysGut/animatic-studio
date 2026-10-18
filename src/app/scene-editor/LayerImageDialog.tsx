@@ -81,7 +81,13 @@ export function LayerImageDialog({
   editable,
   cmds,
   openUpscale = false,
+  sceneWrite,
 }: {
+  /**
+   * Asset Studio (AS1, B4): endringer av laget går til utkastet i stedet for rett til scenen. Nye bilder og
+   * versjoner lagres fortsatt med en gang i biblioteket. Med denne er «Legg delene i scenen» skjult.
+   */
+  sceneWrite?: ((patch: Partial<LayerFields>, label: string) => string | null) | undefined;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   state: ProjectState;
@@ -104,6 +110,7 @@ export function LayerImageDialog({
             cmds={cmds}
             onClose={() => onOpenChange(false)}
             openUpscale={openUpscale}
+            sceneWrite={sceneWrite}
           />
         ) : null}
       </DialogContent>
@@ -119,7 +126,9 @@ function Body({
   cmds,
   onClose,
   openUpscale,
+  sceneWrite,
 }: {
+  sceneWrite?: ((patch: Partial<LayerFields>, label: string) => string | null) | undefined;
   state: ProjectState;
   projectId: string;
   layer: CompositionLayer;
@@ -195,6 +204,11 @@ function Body({
   const [styleOpen, setStyleOpen] = useState(false);
 
   function setLayer(label: string, patch: Partial<LayerFields>) {
+    if (sceneWrite) {
+      const e = sceneWrite(patch, label);
+      setError(e);
+      return e === null;
+    }
     const err = cmds.run(
       {
         type: "UpdateLayers",
@@ -721,7 +735,7 @@ function Body({
                 },
                 // «Legg delene i scenen» (DEC-0088): der de lå i bildet; dørblad o.l. i egen gruppe med
                 // ankerpunkt på hengselkanten. Alt i én angring.
-                ...(editable
+                ...(editable && !sceneWrite
                   ? {
                       onPlaceParts: (
                         parts: readonly {

@@ -11,6 +11,7 @@ import {
   Copy,
   FlipHorizontal2,
   FlipVertical2,
+  Clapperboard,
   Image as ImageIcon,
   Ratio,
   Trash2,
@@ -166,6 +167,7 @@ export function LayerInspector({
   frame,
   autoKey,
   onOpenImage,
+  onOpenAssetStudio,
   onSeek,
   onUpscale,
   durationFrames,
@@ -185,6 +187,8 @@ export function LayerInspector({
   autoKey: boolean;
   /** Åpne bildevalget for laget (samme som dobbeltklikk, DEC-0044). */
   onOpenImage?: () => void;
+  /** Åpne laget i Asset Studio (AS1). Utelatt: ingen knapp. */
+  onOpenAssetStudio?: () => void;
   /** Flytt avspillingshodet (hendelser i manuset). */
   onSeek?: (frame: number) => void;
   /** Oppskaler bildet laget viser (advarselen om forstørrelse over 1:1). Utelatt: ingen knapp. */
@@ -660,6 +664,22 @@ export function LayerInspector({
 
       {isGroup ? null : (
         <Section title={L("Bilde", "Image")}>
+          {onOpenAssetStudio ? (
+            <Button
+              size="sm"
+              variant="secondary"
+              className="self-start"
+              onClick={onOpenAssetStudio}
+              data-testid="open-asset-studio"
+              title={L(
+                "Arbeid med dette objektet alene: bilder, tid, lyd og manus (Alt + dobbeltklikk på laget)",
+                "Work on this object alone: images, timing, sound and script (Alt + double-click the layer)",
+              )}
+            >
+              <Clapperboard />
+              {L("Asset Studio", "Asset Studio")}
+            </Button>
+          ) : null}
           {onOpenImage ? (
             <Button size="sm" variant="secondary" className="self-start" onClick={onOpenImage}>
               <ImageIcon />
