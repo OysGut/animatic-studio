@@ -8,7 +8,6 @@ import {
   L,
   TRANSITION_KINDS,
   compositionDuration,
-  keyBetween,
   layerFieldsOf,
   layersOf,
   newId,
@@ -208,7 +207,6 @@ export function PagesPanel({
         ) : null}
       </div>
       <p className="px-2 pb-2 text-[11px] text-text-tertiary">
-        {keyBetween ? "" : ""}
         {L(
           "Lagene i scenen legges inn i siden du velger. Tidsrommet dras i tidslinjen.",
           "The layers in the scene are placed in the page you select. The time range is dragged in the timeline.",
