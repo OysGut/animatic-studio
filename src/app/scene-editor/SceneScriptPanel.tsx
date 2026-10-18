@@ -47,7 +47,10 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
   editable,
   onOpenEditor,
   highlightBlockIds,
+  hideEditButton = false,
 }: {
+  /** Skjul «Rediger manus …» (Asset Studio: manuset endres der bare som forsøksvise redigeringer). */
+  hideEditButton?: boolean;
   /** Replikkene som markeres (Asset Studio, C1: karakterens replikker). */
   highlightBlockIds?: ReadonlySet<string> | undefined;
   state: ProjectState;
@@ -97,7 +100,7 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
       <h2 className="flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2 text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
         {L("Manus", "Script")}
       </h2>
-      <div className="flex items-center gap-2 px-2 pb-1 pt-1">
+      <div className={"flex items-center gap-2 px-2 pb-1 pt-1" + (hideEditButton ? " hidden" : "")}>
         <button
           type="button"
           onClick={() => onOpenEditor(null)}
