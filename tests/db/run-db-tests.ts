@@ -44,6 +44,11 @@ import {
   createDraft,
   pushDraft,
   draftCommand,
+  lowerThirdStarter,
+  planApplyTemplate,
+  planUpdateTemplateValues,
+  templateFromLayers,
+  textLayerFields,
 } from "../../src/core";
 
 const ADMIN_URL = process.env["DATABASE_URL"] ?? "postgres://postgres@localhost:54329/postgres";
@@ -5239,6 +5244,145 @@ try {
     const del = (await sql`select public.delete_project(${p}, ${ALICE}) as r`)[0]!["r"] as { films: string[] };
     assert(del.films.includes(r.storage_key), "filen slettes med prosjektet");
     assert((await sql`select 1 from public.film_shares where project_id = ${p}`).length === 0, "delingene er slettet");
+  });
+
+  // ---------- MTS: tekstlag (0048) og maler (0049) ----------
+  const mtp = await as(
+    "authenticated",
+    ALICE,
+    async (tx) => (await tx`select public.create_project('MTS') as id`)[0]!["id"] as string,
+  );
+  const MT = (n: number) => `abcdef00-0000-7000-8000-00000049${String(n).padStart(4, "0")}`;
+  let mtState = await loadState(mtp);
+  let mtGroupId = "";
+
+  await test("0048: tekstlag, form og effekter lagres via apply_changes og leses tilbake", async () => {
+    const main = Object.values(mtState.productions)[0]!.id;
+    mtState = await runCommand(mtState, ALICE, {
+      type: "CreateScene",
+      productionId: main,
+      sceneId: MT(1) as never,
+      variantId: MT(2) as never,
+      occurrenceId: MT(3) as never,
+      orderKey: keysEvenly(1)[0]!,
+      heading: { intExt: "INT.", location: "STUA", time: "DAG" },
+      blocks: [],
+      productionNumber: "1",
+    });
+    mtState = await runCommand(mtState, ALICE, {
+      type: "CreateComposition",
+      compositionId: MT(4) as never,
+      variantId: MT(2) as never,
+      fields: { ...DEFAULT_COMPOSITION, durationFrames: 100 },
+    });
+    const c = mtState.compositions[MT(4)]!;
+    const text = textLayerFields(c, "Jula på Dovre – ÆØÅ", "Tittel", {
+      fontId: "cinzel",
+      letterAnim: { unit: "letter", effect: "appear", direction: "up", startFrame: 0, delayFrames: 3, durationFrames: 1, order: "start", seed: 1, distance: 0 },
+    });
+    mtState = await runCommand(mtState, ALICE, {
+      type: "AddLayers",
+      layers: [
+        { layerId: MT(5) as never, compositionId: MT(4) as never, fields: { ...text, effects: { shadow: { color: "#000000", blur: 8, offsetX: 2, offsetY: 2 } } } },
+        {
+          layerId: MT(6) as never,
+          compositionId: MT(4) as never,
+          fields: { ...defaultLayerFields(mtState, c, { fill: "#101820", name: "Flate" }), shape: { type: "rect", radius: 12, stroke: null } },
+        },
+      ],
+    });
+    const back = await loadState(mtp);
+    const l = back.layers[MT(5) as never]!;
+    assert(l.kind === "text" && l.text?.content === "Jula på Dovre – ÆØÅ", "teksten leses ikke tilbake");
+    assert(l.text?.fontId === "cinzel" && l.text.letterAnim?.delayFrames === 3, "typografien leses ikke tilbake");
+    assert(l.effects?.shadow?.blur === 8, "effekten leses ikke tilbake");
+    assert(back.layers[MT(6) as never]!.shape?.radius === 12, "formen leses ikke tilbake");
+    // Et tekstlag uten tekst, og tekst på et bildelag, avvises av databasen
+    await expectError(sql`update public.composition_layers set text_spec = null where id = ${MT(5)}`, "23514");
+    await expectError(sql`update public.composition_layers set text_spec = '{"content":"x"}'::jsonb where id = ${MT(6)}`, "23514");
+  });
+
+  await test("0049: mal med template_spec, forekomst og lag lagres i én transaksjon; nytt innhold endrer ikke malen", async () => {
+    const c = mtState.compositions[MT(4)]!;
+    let n = 100;
+    const layers = lowerThirdStarter(c, {
+      newLayerId: () => MT(n++),
+      groupName: "Lower third",
+      nameLabel: "Navn",
+      roleLabel: "Rolle",
+      name: "Anita Killi",
+      role: "Regi",
+    });
+    mtState = await runCommand(mtState, ALICE, { type: "AddLayers", layers });
+    mtGroupId = layers[0]!.layerId;
+    const def = templateFromLayers(mtState, MT(4), [mtGroupId], { category: "lower_third" });
+    mtState = await runCommand(mtState, ALICE, {
+      type: "CreateAssets",
+      assets: [{ assetId: MT(10) as never, fields: { kind: "template", name: "LT", names: [], description: "", category: "lower_third", tags: [] } }],
+    });
+    mtState = await runCommand(mtState, ALICE, {
+      type: "CreateAssetVariant",
+      variantId: MT(11) as never,
+      assetId: MT(10) as never,
+      fields: { name: "Standard", style: "other", appearance: "" },
+    });
+    mtState = await runCommand(mtState, ALICE, {
+      type: "AddAssetVersion",
+      versionId: MT(12) as never,
+      variantId: MT(11) as never,
+      media: { path: `${mtp}/${MT(10)}/${MT(12)}/mal.png`, mimeType: "image/png", width: 480, height: 270, byteSize: 100, sha256: "c".repeat(64), durationMs: null },
+      note: "",
+      template: def,
+    });
+    const spec = await sql`select template_spec from public.asset_versions where id = ${MT(12)}`;
+    assert((spec[0]!["template_spec"] as { category: string }).category === "lower_third", "maldefinisjonen ble ikke lagret");
+    // Størrelsesgrensen (256 kB) håndheves av databasen
+    await expectError(
+      sql`update public.asset_versions set template_spec = jsonb_build_object('x', repeat('a', 300000)) where id = ${MT(12)}`,
+      "23514",
+    );
+    const plan = planApplyTemplate(mtState, { instanceId: MT(20), compositionId: MT(4), versionId: MT(12), newLayerId: () => MT(n++) });
+    assert(plan.ok, "planen feilet");
+    if (!plan.ok) return;
+    mtState = await runCommand(mtState, ALICE, plan.command);
+    const inst = await sql`select template_version_id, composition_id from public.template_instances where id = ${MT(20)}`;
+    assert(inst[0]!["template_version_id"] === MT(12), "forekomsten ble ikke lagret");
+    const linked = await sql`select count(*)::int as n, max(revision) as r from public.composition_layers where template_instance_id = ${MT(20)}`;
+    assert(linked[0]!["n"] === 4 && Number(linked[0]!["r"]) === 1, "lagene fra malen har ikke én revisjon per rad");
+    const upd = planUpdateTemplateValues(mtState, MT(20), { navn: { text: "Øystein Gutu" } });
+    assert(upd.ok, "oppdateringen feilet");
+    if (!upd.ok) return;
+    mtState = await runCommand(mtState, ALICE, upd.command);
+    const back = await loadState(mtp);
+    assert(Object.values(back.layers).some((l) => l.template?.instanceId === MT(20) && l.text?.content === "Øystein Gutu"), "innholdet ble ikke lagret");
+    const spec2 = await sql`select template_spec from public.asset_versions where id = ${MT(12)}`;
+    assert(isDeepStrictEqual(spec2[0]!["template_spec"], spec[0]!["template_spec"]), "malen ble endret");
+  });
+
+  await test("0049: RLS – medlemmer leser forekomstene, utenforstående ser ingenting, klienten kan ikke skrive", async () => {
+    const own = await as("authenticated", ALICE, (tx) => tx`select id from public.template_instances where project_id = ${mtp}`);
+    assert(own.length === 1, "medlemmet ser ikke forekomsten");
+    const other = await as("authenticated", BOB, (tx) => tx`select id from public.template_instances where project_id = ${mtp}`);
+    assert(other.length === 0, "utenforstående ser forekomsten");
+    await expectError(
+      as("authenticated", ALICE, (tx) => tx`update public.template_instances set content = '{}'::jsonb where id = ${MT(20)}`),
+      "42501",
+    );
+    await expectError(as("anon", null, (tx) => tx`select id from public.template_instances`), "42501");
+  });
+
+  await test("0049: en mal i bruk kan ikke slettes for godt; delete_project og purge sletter forekomstene", async () => {
+    await sql`update public.assets set removed = true where id = ${MT(10)}`;
+    await expectError(
+      as("service_role", null, (tx) => tx`select public.purge_removed_assets(${mtp}, ${ALICE}, ${[MT(10)]}::uuid[], ${[]}::uuid[])`),
+      "P0001",
+    );
+    await sql`update public.assets set removed = false where id = ${MT(10)}`;
+    await as("service_role", null, (tx) => tx`select public.delete_project(${mtp}, ${ALICE})`);
+    assert((await count("template_instances", mtp)) === 0, "forekomstene finnes etter sletting");
+    assert((await count("composition_layers", mtp)) === 0, "lagene finnes etter sletting");
+    await as("service_role", null, (tx) => tx`select public.purge_project_assets(${mtp}, ${ALICE})`);
+    assert((await count("asset_versions", mtp)) === 0, "malversjonen finnes etter purge");
   });
 } finally {
   await sql.end();
