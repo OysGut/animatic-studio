@@ -20,7 +20,7 @@ it("gruppeprompt for B utelater As hemmelighet og analyseturer (øyeblikksbilde)
   ];
   const names = { [a.id]: "Maja", [b.id]: "Bestemor Anne" };
   const e = replayTurns({ participants: [a.id, b.id], mode: "improv", seed: 42 }, turns);
-  const system = characterSystemPrompt({ name: names[b.id], profile: emptyStoryProfile(), knowledge: knowledgeAt(s, b.id, null),
+  const system = characterSystemPrompt({ name: names[b.id] ?? "Bestemor Anne", profile: emptyStoryProfile(), knowledge: knowledgeAt(s, b.id, ""),
     directions: activeDirections(e, b.id), language: "nb", names });
   const messages = groupTurnMessages(e, b.id, names);
   expect(system).not.toContain(secret);

@@ -7,7 +7,7 @@ const A = "a0000000-0000-7000-8000-000000000001";
 const B = "b0000000-0000-7000-8000-000000000002";
 const options = { participants: [A, B], mode: "improv" as const, seed: 42 };
 const at = "2026-10-18T05:43:00.000Z";
-const direction = (id: string, to?: string | null): Turn => ({ id, speaker: "director", text: "nervøs", kind: "direction", at, to });
+const direction = (id: string, to?: string | null): Turn => ({ id, speaker: "director", text: "nervøs", kind: "direction", at, ...(to !== undefined ? { to } : {}) });
 const line = (id: string, speaker: string): Turn => ({ id, speaker, text: "Hei", kind: "line", at });
 
 describe("replayTurns", () => {

@@ -9,7 +9,7 @@ import { ANALYST, L, activeDirections, analystSystemPrompt, characterSystemPromp
 import { generateText } from "@/adapters/ai/text.functions";
 import { appendStoryTurns, forkStorySession, getStorySession, saveStorySuggestion,
   type StoredTurn, type StorySession, type StorySessionStatus } from "@/adapters/storylab/sessions.functions";
-import { Toolbar, ToolbarButton, PanelHeader } from "@/app/shell/workspace-chrome";
+import { Toolbar, ToolbarButton } from "@/app/shell/workspace-chrome";
 import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -57,6 +57,9 @@ function GroupConversation({ state, projectId, session, participants, editable, 
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
   const [approved, setApproved] = useState(false);
+  const [batchApproved, setBatchApproved] = useState(false);
+  const retry = useRef<(() => Promise<void>) | null>(null);
+  const serviceError = useRef<string | null>(null);
   const [confirm, setConfirm] = useState<null | { kind: "qa" | "batch" | "analysis"; question?: string; focus?: string }>(null);
   const append = useServerFn(appendStoryTurns);
   const gen = useServerFn(generateText);
@@ -81,7 +84,7 @@ function GroupConversation({ state, projectId, session, participants, editable, 
   const analysisInput = (question: string, focus?: string) => ({
     system: analystSystemPrompt({ characters: participants.map((id) => ({ name: names[id] ?? "?", profile: profiles[id] ?? null })),
       facts: factsUntil(state, sceneId).map((f) => ({ text: f.text, kind: f.kind, knownBy: f.knownBy.map((k) => names[k.assetId] ?? "?") })),
-      sceneContext: situation, language: locale() === "en" ? "en" : "nb", focus: focus ? names[focus] : undefined }) +
+      sceneContext: situation, language: locale() === "en" ? "en" : "nb", ...(focus ? { focus: names[focus] ?? "?" } : {}) }) +
       (focus ? "\nExplain this character's motivation from the profile, in the third person. Separate interpretation from established facts." : ""),
     messages: [{ role: "user" as const, content: turnsRef.current.filter((t) => t.kind === "line" || t.kind === "question")
       .map((t) => `${names[t.speaker] ?? "Director"}: ${t.text}`).join("\n") + `\nDirector's question: ${question}` }],
@@ -92,7 +95,7 @@ function GroupConversation({ state, projectId, session, participants, editable, 
 
   const save = async (added: StoredTurn[], addCostUsd = 0, newStatus?: StorySessionStatus) => {
     const r = await append({ data: { projectId, sessionId: session.id, turns: added, addCostUsd, ...(newStatus ? { status: newStatus } : {}) } });
-    if (!r.ok) throw new Error(r.message);
+    if (!r.ok) { serviceError.current = r.message; throw new Error("Session save failed"); }
     const known = new Set(turnsRef.current.map((t) => t.id));
     turnsRef.current = [...turnsRef.current, ...added.filter((t) => !known.has(t.id))];
     setTurns(turnsRef.current);
@@ -104,9 +107,9 @@ function GroupConversation({ state, projectId, session, participants, editable, 
   };
   const withLock = async (action: () => Promise<void>) => {
     if (working.current || locked) return;
-    working.current = true; setBusy(true); setError(null); halt.current = null;
+    working.current = true; setBusy(true); setError(null); halt.current = null; serviceError.current = null; retry.current = action;
     try { await action(); }
-    catch { setError(L("Samtalen kunne ikke fortsette. Prøv igjen. En generert replikk som ikke ble lagret, må hentes på nytt.", "The conversation could not continue. Try again. A generated line that was not saved must be requested again.")); }
+    catch { setStatus("paused"); statusRef.current = "paused"; setError(serviceError.current ?? L("Samtalen kunne ikke fortsette. Prøv igjen. En generert replikk som ikke ble lagret, må hentes på nytt.", "The conversation could not continue. Try again. A generated line that was not saved must be requested again.")); }
     finally { working.current = false; setBusy(false); }
   };
   const oneLine = async (ts: readonly StoredTurn[], chosen: string | null, added: StoredTurn[] = []) => {
@@ -114,7 +117,7 @@ function GroupConversation({ state, projectId, session, participants, editable, 
     const id = suggestSpeaker(e, names);
     if (!id) throw new Error("No speaker");
     const r = await gen({ data: { projectId, task: "storylab_group", ...characterInput(id, ts), maxTokens: OUT_TOKENS } });
-    if (!r.ok) throw new Error(r.message);
+    if (!r.ok) { serviceError.current = r.message; throw new Error("Generation failed"); }
     const turn: StoredTurn = { id: newId<"turn">(), speaker: id, kind: "line", text: r.text, at: new Date().toISOString() };
     await save([...added, turn], r.costUsd);
     setNext(null);
@@ -139,7 +142,7 @@ function GroupConversation({ state, projectId, session, participants, editable, 
   });
   const analyse = (question: string, focus?: string) => withLock(async () => {
     const r = await gen({ data: { projectId, task: "storylab_analysis", ...analysisInput(question, focus), maxTokens: OUT_TOKENS } });
-    if (!r.ok) throw new Error(r.message);
+    if (!r.ok) { serviceError.current = r.message; throw new Error("Analysis failed"); }
     await save([{ id: newId<"turn">(), speaker: ANALYST, text: r.text, kind: "analysis", to: focus ?? null, at: new Date().toISOString() }], r.costUsd);
     setText("");
     if (r.usedFallback) setNote(L("Den innebygde AI-en ble brukt som reserve.", "The built-in AI was used as fallback."));
@@ -153,7 +156,7 @@ function GroupConversation({ state, projectId, session, participants, editable, 
   };
   const request = (action: NonNullable<typeof confirm>) => {
     if (locked || busy) return;
-    if (!approved) setConfirm(action); else execute(action);
+    if (!approved || (action.kind === "batch" && !batchApproved)) setConfirm(action); else execute(action);
   };
   const pauseOrStop = (stop: boolean) => {
     halt.current = stop ? "stop" : "pause";
@@ -205,7 +208,7 @@ function GroupConversation({ state, projectId, session, participants, editable, 
           </div> : null}
         </div><p className="whitespace-pre-wrap text-text-primary">{t.text}</p>
       </div>)}
-      {error ? <div role="alert" data-testid="storylab-error" className="text-sm text-status-danger">{error}<ToolbarButton onClick={() => setError(null)}>{L("Prøv igjen", "Try again")}</ToolbarButton></div> : null}
+      {error ? <div role="alert" data-testid="storylab-error" className="text-sm text-status-danger">{error}<ToolbarButton disabled={busy || locked} onClick={() => { const action = retry.current; if (action) void withLock(action); }} data-testid="storylab-retry">{L("Prøv igjen", "Try again")}</ToolbarButton></div> : null}
       {note ? <p className="text-xs text-text-tertiary" data-testid="storylab-note">{note}</p> : null}
     </div>
     <div className="shrink-0 space-y-2 border-t border-border bg-surface-1 p-3">
@@ -233,7 +236,7 @@ function GroupConversation({ state, projectId, session, participants, editable, 
       <p className="text-xs text-text-tertiary" data-testid="storylab-estimate">{L(`Anslått: ${usd(est.usd * (mode === "improv" && !analysis ? 8 : 1))} · ${est.label}`, `Estimated: ${usd(est.usd * (mode === "improv" && !analysis ? 8 : 1))} · ${est.label}`)}</p>
       {confirm ? <div className="flex flex-wrap items-center gap-2 text-xs" data-testid="storylab-confirm">
         <span>{L(`Bekreft anslått kostnad: ${usd(est.usd * (confirm.kind === "batch" ? 8 : 1))} · ${est.label}`, `Confirm estimated cost: ${usd(est.usd * (confirm.kind === "batch" ? 8 : 1))} · ${est.label}`)}</span>
-        <ToolbarButton variant="primary" disabled={est.loading || !!est.error || busy || locked} data-testid="storylab-confirm-send" onClick={() => { setApproved(true); execute(confirm); }}>{L("Bekreft", "Confirm")}</ToolbarButton>
+        <ToolbarButton variant="primary" disabled={est.loading || !!est.error || busy || locked} data-testid="storylab-confirm-send" onClick={() => { setApproved(true); if (confirm.kind === "batch") setBatchApproved(true); execute(confirm); }}>{L("Bekreft", "Confirm")}</ToolbarButton>
         <ToolbarButton onClick={() => setConfirm(null)}>{L("Avbryt", "Cancel")}</ToolbarButton>
       </div> : null}
       {est.error ? <p role="alert" className="text-xs text-status-danger">{est.error}</p> : null}

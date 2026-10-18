@@ -21,3 +21,5 @@ Les `README.md` (startside: hvor alt ligger), `CLAUDE.md` og `TODO.md` før du g
 4. Hemmeligheter (API-nøkler) skal bare ligge i backend-hemmelighetslageret, aldri i klientkode, repo eller logger.
 5. Animatic Studios databasemigrasjoner ligger i `db/migrations/NNNN_navn.sql`. Når Mars ber om det: kjør den angitte filen nøyaktig som den står (ikke omskriv, del opp eller «forbedre» SQL-en), og deploy serverfunksjoner uten å endre koden. Ikke rør `db/`, `src/adapters/` eller `src/integrations/supabase/` utover det Lovable selv genererer.
 6. Ikke force-push, rebase eller squash på `main`.
+
+- Story Lab views reconstruct stored turns through the platform-neutral `src/core/storylab/replay.ts`; this keeps legacy direction formats and group playback consistent.
