@@ -681,6 +681,8 @@ export type Command =
       readonly composition?: import("../audio/composition").AudioComposition;
       /** Kopiert fra en global versjon (GP2). Bare metadata. */
       readonly globalSource?: import("../model").GlobalSource;
+      /** Maldefinisjonen (MTS MT4) når ressursen er en mal; filen er malens miniatyr. */
+      readonly template?: import("../typography/template").TemplateDefinition;
     }
   | {
       /** Eksplisitt godkjenning (REQ-0136, REQ-0145). null = ingen godkjent versjon. */
@@ -847,6 +849,33 @@ export type Command =
       readonly removed: boolean;
     }
   | { readonly type: "AddLayers"; readonly layers: readonly NewLayer[] }
+  // ---------- Maler (MTS MT4) ----------
+  | {
+      readonly type: "AddTemplateInstance";
+      readonly instanceId: import("../ids").TemplateInstanceId;
+      readonly fields: import("../typography/template").TemplateInstanceFields;
+    }
+  | {
+      readonly type: "UndoAddTemplateInstance";
+      readonly instanceId: import("../ids").TemplateInstanceId;
+    }
+  | {
+      /** Nytt innhold eller ny malversjon for en forekomst. */
+      readonly type: "UpdateTemplateInstance";
+      readonly instanceId: import("../ids").TemplateInstanceId;
+      readonly fields: {
+        readonly values: import("../typography/template").TemplateValues;
+        readonly templateVersionId: AssetVersionId;
+      };
+    }
+  | {
+      /**
+       * Bruk mal, nytt innhold eller ny malversjon som én samlet kommando (ett angretrinn, én revisjon per rad).
+       * Trinnene er vanlige kommandoer (TEMPLATE_STEPS).
+       */
+      readonly type: "ApplyTemplate";
+      readonly steps: readonly Command[];
+    }
   | { readonly type: "UndoAddLayers"; readonly layerIds: readonly LayerId[] }
   | {
       /** Endre ett eller flere lag samtidig (f.eks. flytte en gruppe). Én angring. */
