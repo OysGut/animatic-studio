@@ -12,6 +12,7 @@ const h = vi.hoisted(() => ({ gen: vi.fn(), create: vi.fn(), append: vi.fn(), fo
 vi.mock("@tanstack/react-start", () => ({ useServerFn: (fn: unknown) => fn }));
 vi.mock("@/adapters/ai/text.functions", () => ({ generateText: (arg: unknown) => h.gen(arg) }));
 vi.mock("@/adapters/storylab/sessions.functions", () => ({ createStorySession: (arg: unknown) => h.create(arg), appendStoryTurns: (arg: unknown) => h.append(arg), forkStorySession: (arg: unknown) => h.fork(arg), saveStorySuggestion: (arg: unknown) => h.suggest(arg), getStorySession: vi.fn(), listStorySessions: (arg: unknown) => h.list(arg) }));
+vi.mock("@/adapters/ai/provider-keys.functions", () => ({ listTextChoices: vi.fn() }));
 vi.mock("@/app/storylab/GroupConversationView", () => ({ GroupConversationView: () => null }));
 vi.mock("@/app/storylab/storylab-data", async (importOriginal) => ({ ...await importOriginal<Record<string, unknown>>(), useTextEstimate: () => ({ usd: 0.01, label: "Test model", loading: false, error: null }) }));
 afterEach(cleanup);
