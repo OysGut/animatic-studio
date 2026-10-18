@@ -115,7 +115,7 @@ const addKind = (kind: "title" | "text" | "credits", base: number) => {
 const title = addKind("title", 200);
 const text = addKind("text", 210);
 const credits = addKind("credits", 220);
-// Tittelen har én side og et tekstlag med bokstavanimasjon
+// Tittelen har én side (uten tekst – sider er beholdere) og et tekstlag inni med bokstavanimasjon
 s = mustApply(s, {
   type: "AddLayers",
   layers: [
@@ -127,8 +127,19 @@ s = mustApply(s, {
           letterAnim: { unit: "letter", effect: "appear", direction: "up", startFrame: 0, delayFrames: 3, durationFrames: 2, order: "start", seed: 1, distance: 0 },
         }),
         kind: "page",
+        text: null,
         activeRange: { from: 0, to: 72 },
         pageTransition: null,
+      },
+    },
+    {
+      layerId: id(231) as never,
+      compositionId: title.compositionId as never,
+      fields: {
+        ...textLayerFields(s.compositions[title.compositionId]!, "Jula på Dovre", "Tittel", {
+          letterAnim: { unit: "letter", effect: "appear", direction: "up", startFrame: 0, delayFrames: 3, durationFrames: 2, order: "start", seed: 1, distance: 0 },
+        }),
+        groupId: id(230) as never,
       },
     },
   ],
