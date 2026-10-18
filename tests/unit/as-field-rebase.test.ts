@@ -8,6 +8,7 @@ import {
 } from "@/core";
 import { fixture } from "../visual/fixture-state";
 import { envelope, mustApply, tid } from "../helpers/fixtures";
+import { muteDraftCommand } from "@/app/asset-studio/StudioAudioTracks";
 
 function setup() {
   const s = fixture.state;
@@ -32,6 +33,23 @@ const mute = (s: ProjectState, id: string, muted: boolean): Command => {
 };
 
 describe("AS round 2 – field-level drafts", () => {
+  it("active range and explicit muting save only the edited fields and clip", () => {
+    const { s, comp, occ, layer, clip } = setup();
+    let d = push(createDraft(s, occ.id, comp.id), { type: "UpdateLayers", layers: [{ layerId: layer.id, fields: { ...layerFieldsOf(layer), activeRange: { from: 0, to: 50 } } }] });
+    const muteCommand = muteDraftCommand(s, [clip], new Set([clip.id]));
+    if (!muteCommand) throw new Error("Expected mute command");
+    d = push(d, muteCommand);
+    const command = draftCommand(d);
+    if (!command || command.type !== "UpdateSceneDraft") throw new Error("Missing draft");
+    expect(command.steps).toEqual([
+      { type: "UpdateLayers", layers: [{ layerId: layer.id, fields: { activeRange: { from: 0, to: 50 } } }] },
+      { type: "UpdateAudioClips", clips: [{ clipId: clip.id, fields: { muted: true } }] },
+    ]);
+    const saved = mustApply(s, command);
+    expect(saved.layers[layer.id]?.activeRange).toEqual({ from: 0, to: 50 });
+    expect(saved.compositions[comp.id]).toEqual(comp);
+    expect(saved.audioClips[clip.id]?.muted).toBe(true);
+  });
   it("keeps the new take version alongside draft muting, including save and undo", () => {
     const { s, comp, occ, clip } = setup();
     const d = push(createDraft(s, occ.id, comp.id), mute(s, clip.id, true));
