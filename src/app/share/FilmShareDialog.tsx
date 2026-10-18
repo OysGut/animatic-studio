@@ -152,6 +152,13 @@ export function FilmShareDialog({
               "The link shows only this film version. It gives no access to the script, assets or anything else in the project.",
             )}
           </DialogDescription>
+          {source.creditsIncluded !== undefined ? (
+            <p className="text-xs text-text-tertiary" data-testid="film-share-credits-note">
+              {source.creditsIncluded
+                ? L("Rulleteksten er med i denne versjonen.", "The credits are included in this version.")
+                : L("Rulleteksten er ikke med i denne versjonen.", "The credits are not included in this version.")}
+            </p>
+          ) : null}
         </DialogHeader>
 
         {!ready ? (
