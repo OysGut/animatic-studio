@@ -75,7 +75,7 @@ const moveLayer = (s: ProjectState, id: string, x: number): Command => {
 const gainClip = (s: ProjectState, id: string, gainDb: number): Command =>
   ({
     type: "UpdateAudioClips",
-    clips: [{ clipId: id, fields: { ...audioClipFieldsOf(s.audioClips[id as never]!), gainDb } }],
+    clips: [{ clipId: id as never, fields: { ...audioClipFieldsOf(s.audioClips[id as never]!), gainDb } }],
   }) as Command;
 
 function draftWith(s: ProjectState, occ: string, comp: string, n: number, layerId: string, clipId: string): SceneDraft {
