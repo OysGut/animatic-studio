@@ -35,7 +35,7 @@ const h = setup({
   },
 });
 
-await h.run("q1-q5-share", "$P/film", async (page) => {
+await h.run("q1-q5-share", "$P/montering", async (page) => {
   await page.getByRole("button", { name: /Eksporter|Export/ }).first().click();
   const exportBtn = page.getByRole("dialog").getByRole("button", { name: /^(Eksporter|Lag video|Export|Make video)/ }).last();
   await exportBtn.click();
