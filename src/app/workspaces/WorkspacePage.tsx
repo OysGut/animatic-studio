@@ -170,7 +170,7 @@ export function WorkspacePage({ workspaceId, myId }: { workspaceId: string; myId
                   <span className="flex items-center gap-2">
                     <select
                       className={select}
-                      aria-label={L(`Rolle for ${label}`, `Role for ${label}`)}
+                      aria-label={`${L("Rolle for", "Role for")} ${label}`}
                       value={m.role}
                       onChange={(e) => {
                         const r = e.target.value as WorkspaceRole;

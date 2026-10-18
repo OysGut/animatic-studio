@@ -14,6 +14,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as InvitasjonRouteImport } from './routes/invitasjon'
 import { Route as KontoRouteImport } from './routes/konto'
 import { Route as PersonvernRouteImport } from './routes/personvern'
+import { Route as GruppeWorkspaceIdRouteImport } from './routes/gruppe.$workspaceId'
 import { Route as MTokenRouteImport } from './routes/m.$token'
 import { Route as ManusutforskerProjectIdRouteImport } from './routes/manusutforsker.$projectId'
 import { Route as ProsjektProjectIdRouteImport } from './routes/prosjekt.$projectId'
@@ -49,6 +50,11 @@ const KontoRoute = KontoRouteImport.update({
 const PersonvernRoute = PersonvernRouteImport.update({
   id: '/personvern',
   path: '/personvern',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GruppeWorkspaceIdRoute = GruppeWorkspaceIdRouteImport.update({
+  id: '/gruppe/$workspaceId',
+  path: '/gruppe/$workspaceId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MTokenRoute = MTokenRouteImport.update({
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/invitasjon': typeof InvitasjonRoute
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
+  '/gruppe/$workspaceId': typeof GruppeWorkspaceIdRoute
   '/m/$token': typeof MTokenRoute
   '/manusutforsker/$projectId': typeof ManusutforskerProjectIdRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
@@ -135,6 +142,7 @@ export interface FileRoutesByTo {
   '/invitasjon': typeof InvitasjonRoute
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
+  '/gruppe/$workspaceId': typeof GruppeWorkspaceIdRoute
   '/m/$token': typeof MTokenRoute
   '/manusutforsker/$projectId': typeof ManusutforskerProjectIdRoute
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
@@ -153,6 +161,7 @@ export interface FileRoutesById {
   '/invitasjon': typeof InvitasjonRoute
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
+  '/gruppe/$workspaceId': typeof GruppeWorkspaceIdRoute
   '/m/$token': typeof MTokenRoute
   '/manusutforsker/$projectId': typeof ManusutforskerProjectIdRoute
   '/prosjekt/$projectId': typeof ProsjektProjectIdRouteWithChildren
@@ -173,6 +182,7 @@ export interface FileRouteTypes {
     | '/invitasjon'
     | '/konto'
     | '/personvern'
+    | '/gruppe/$workspaceId'
     | '/m/$token'
     | '/manusutforsker/$projectId'
     | '/prosjekt/$projectId'
@@ -191,6 +201,7 @@ export interface FileRouteTypes {
     | '/invitasjon'
     | '/konto'
     | '/personvern'
+    | '/gruppe/$workspaceId'
     | '/m/$token'
     | '/manusutforsker/$projectId'
     | '/prosjekt/$projectId/bibliotek'
@@ -208,6 +219,7 @@ export interface FileRouteTypes {
     | '/invitasjon'
     | '/konto'
     | '/personvern'
+    | '/gruppe/$workspaceId'
     | '/m/$token'
     | '/manusutforsker/$projectId'
     | '/prosjekt/$projectId'
@@ -227,6 +239,7 @@ export interface RootRouteChildren {
   InvitasjonRoute: typeof InvitasjonRoute
   KontoRoute: typeof KontoRoute
   PersonvernRoute: typeof PersonvernRoute
+  GruppeWorkspaceIdRoute: typeof GruppeWorkspaceIdRoute
   MTokenRoute: typeof MTokenRoute
   ManusutforskerProjectIdRoute: typeof ManusutforskerProjectIdRoute
   ProsjektProjectIdRoute: typeof ProsjektProjectIdRouteWithChildren
@@ -268,6 +281,13 @@ declare module '@tanstack/react-router' {
       path: '/personvern'
       fullPath: '/personvern'
       preLoaderRoute: typeof PersonvernRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gruppe/$workspaceId': {
+      id: '/gruppe/$workspaceId'
+      path: '/gruppe/$workspaceId'
+      fullPath: '/gruppe/$workspaceId'
+      preLoaderRoute: typeof GruppeWorkspaceIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/m/$token': {
@@ -379,6 +399,7 @@ const rootRouteChildren: RootRouteChildren = {
   InvitasjonRoute: InvitasjonRoute,
   KontoRoute: KontoRoute,
   PersonvernRoute: PersonvernRoute,
+  GruppeWorkspaceIdRoute: GruppeWorkspaceIdRoute,
   MTokenRoute: MTokenRoute,
   ManusutforskerProjectIdRoute: ManusutforskerProjectIdRoute,
   ProsjektProjectIdRoute: ProsjektProjectIdRouteWithChildren,

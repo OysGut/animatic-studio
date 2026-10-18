@@ -15,6 +15,7 @@ import { useCloseToPrevious } from "@/app/shell/back-navigation";
 import { useSchemaAtLeast } from "@/app/shell/use-schema";
 import { Button } from "@/components/ui/button";
 import { CostReportView } from "./CostReportView";
+import { WorkspacesCard } from "@/app/workspaces/WorkspacesCard";
 import { MY_ACCOUNT_KEY, PrivacyLink, useMyAccount } from "./use-account";
 
 function Card({ title, children, id }: { title: string; children: React.ReactNode; id?: string }) {
@@ -32,7 +33,7 @@ function Card({ title, children, id }: { title: string; children: React.ReactNod
 const input =
   "h-8 w-full rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary";
 
-export function AccountPage({ email }: { email: string }) {
+export function AccountPage({ email, userId }: { email: string; userId?: string }) {
   const qc = useQueryClient();
   const ready = useSchemaAtLeast(33);
   const account = useMyAccount();
@@ -220,6 +221,8 @@ export function AccountPage({ email }: { email: string }) {
           />
         ) : null}
       </Card>
+
+      {userId ? <WorkspacesCard userId={userId} /> : null}
 
       <Card title={L("Personvern", "Privacy")}>
         <p className="text-[13px] text-text-secondary">
