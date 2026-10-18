@@ -1,17 +1,16 @@
 /**
- * Nettlesertest SL4: Story Lab – fanen, karakterflaten (profilfelt lagres med SetStoryProfile),
- * «Lag profil med AI …» med forhåndsvisning og «Bruk valgte felt», fakta og hemmeligheter (en hemmelighet
- * bare Maja vet sendes aldri i prompten for Bestemor), samtale i rollen og i analyse, regi for neste replikk,
- * forgrening, forslag, åpne økten igjen og engelsk visning. Oppsettet er kopiert fra dec0096-pauses-ui.mjs:
+ * Nettlesertest SL4: grupper, kunnskapsgrenser, målrettet regi, analyse, forklaring,
+ * forgrening, stopp, gjenåpning, åtte sekvensielle kall, pause og engelsk visning.
+ * Oppsett og seroval-dekoding er kopiert fra storylab-ui.mjs:
  * Supabase og serverfunksjonene mockes (ingenting lagres eller betales), også generateText med faste svar.
- *   ENV_FILE=…/.env node storylab-ui.mjs <baseUrl> <fixture.json> [utmappe]
+ *   ENV_FILE=…/.env node storylab-group-ui.mjs <baseUrl> <fixture.json> [utmappe]
  */
 import { chromium } from "playwright";
 import { readFileSync, mkdirSync } from "node:fs";
 const [
   base = "http://127.0.0.1:8080",
   fixturePath = "/tmp/claude-0/visual-fixture.json",
-  out = "/tmp/claude-0/storylab",
+  out = "/tmp/claude-0/storylab-group",
 ] = process.argv.slice(2);
 mkdirSync(out, { recursive: true });
 const fx = JSON.parse(readFileSync(fixturePath, "utf8"));
@@ -222,14 +221,12 @@ const waitUntil = async (condition, label, timeout = 15000) => {
 };
 async function idle(page) {
   await group(page).getByTestId("storylab-send").waitFor();
-  await waitUntil(asyncDummy, "idle");
   await page.waitForFunction(() => {
     const root = document.querySelector('[data-testid="storylab-group"]');
     const status = root?.querySelector('[data-testid="storylab-group-status"]');
     return status && /klar|pause|stoppet|ready|paused|stopped/i.test(status.textContent);
   });
 }
-const asyncDummy = () => true;
 async function createGroup(page, mode = "qa") {
   await page.getByTestId("storylab-new-session").click();
   await page.getByTestId("storylab-new-group").click();
