@@ -75,11 +75,17 @@ export function useActiveSceneInfo(projectId: string, source?: string) {
     const channel = bus(projectId);
     const id = source ?? sourceWindowId();
     let deadline: ReturnType<typeof setTimeout> | undefined;
-    const update = () => { setScene(channel.get(id)); if (channel.get(id)) setClosed(false); };
+    let receivedAt = 0;
+    const update = () => {
+      const next = channel.get(id);
+      setScene(next);
+      if (next && next.at >= receivedAt) { receivedAt = next.at; setClosed(false); }
+    };
     update();
     const unsubscribe = channel.subscribe(update);
     const ask = () => {
       const sentAt = Date.now();
+      receivedAt = sentAt;
       channel.ask(id);
       deadline = setTimeout(() => setClosed((channel.get(id)?.at ?? 0) < sentAt), 10_000);
     };

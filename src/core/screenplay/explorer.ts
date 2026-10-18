@@ -49,7 +49,7 @@ export function explorerGroups(state: ProjectState, productionId: string, filter
       blocks.some((b) => b.kind !== "character" && mentions(b.text, characterName(name))));
     if (filter.character && !participates && !mentioned) continue;
     if (asset && !library?.has(occurrence.id) && !mentioned && !participates &&
-      !names.some((name) => formatHeading(variant.heading).toLocaleLowerCase("nb").includes(name.toLocaleLowerCase("nb")))) continue;
+      !names.some((name) => [formatHeading(variant.heading), ...blocks.map((b) => b.text)].some((text) => text.toLocaleLowerCase("nb").includes(name.toLocaleLowerCase("nb"))))) continue;
     const kinds = existingHits.get(occurrence.id) ?? [];
     if (query && kind && !kinds.includes(kind)) continue;
     const heading = formatHeading(variant.heading);

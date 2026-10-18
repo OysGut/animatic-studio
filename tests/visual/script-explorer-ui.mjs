@@ -179,7 +179,7 @@ await run("notes", async (page) => {
   const block = FIRST_BLOCKS.find((b) => b.kind === "action") ?? FIRST_BLOCKS[0];
   await explorer.locator(`[data-block="${block.id}"]`).first().click();
   await explorer.getByTestId("script-explorer-note").getByRole("button", { name: "Legg til notat", exact: true }).click();
-  await explorer.getByRole("textbox", { name: "" }).last().fill("MU1 notat uten manusendring");
+  await explorer.getByTestId("script-explorer-note").getByRole("textbox").fill("MU1 notat uten manusendring");
   await explorer.getByRole("button", { name: "Lagre notat", exact: true }).click();
   await page.waitForTimeout(700);
   const note = commands.find((c) => c.type === "AddAnnotations");
