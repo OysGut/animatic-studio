@@ -32,7 +32,7 @@ export function suggestionProfilePatch(p: Readonly<Record<string, unknown>>): St
 
 export function suggestionText(s: Pick<TransferSuggestion, "payload">): string {
   const p = s.payload;
-  return textOf(p, "suggestion") || textOf(p, "text") || [textOf(p, "finding"), textOf(p, "motivation")].filter(Boolean).join("\n") || JSON.stringify(p);
+  return textOf(p, "text") || [textOf(p, "finding"), textOf(p, "suggestion"), textOf(p, "motivation")].filter(Boolean).join("\n") || JSON.stringify(p);
 }
 
 export function suggestionToCommands(state: ProjectState, suggestion: TransferSuggestion, target: SuggestionTarget): SuggestionTransfer {
@@ -53,6 +53,7 @@ export function suggestionToCommands(state: ProjectState, suggestion: TransferSu
     const variant = state.variants[target.variantId];
     const occurrence = Object.values(state.occurrences).find((o) => o.active && o.productionId === target.productionId && o.variantId === target.variantId);
     if (!main || main.id !== target.productionId || !variant || !occurrence || !state.scenes[variant.sceneId]) return fail(L("Scenen finnes ikke i hovedproduksjonen.", "The scene does not exist in the main production."));
+    if (typeof p["sceneId"] === "string" && !state.scenes[p["sceneId"]]) return fail(L("Kildescenen finnes ikke.", "The source scene does not exist."));
     const blocks = blocksOfVariant(state, target.variantId);
     const after = target.afterBlockId === null ? undefined : blocks.find((b) => b.id === target.afterBlockId);
     if (target.afterBlockId !== null && !after) return fail(L("Blokken finnes ikke i denne scenen.", "The block does not exist in this scene."));

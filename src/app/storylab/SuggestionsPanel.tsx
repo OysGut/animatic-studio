@@ -47,6 +47,10 @@ export function SuggestionsPanel({ state, projectId, cmds, editable, focusedId, 
     await cmds.whenIdle();
     const current = cmds.current();
     if (!current) throw new Error(L("Prosjektet kunne ikke hentes.", "The project could not be loaded."));
+    if (("assetId" in target && JSON.stringify(current.storyProfiles) !== JSON.stringify(state.storyProfiles)) ||
+      ("variantId" in target && Object.values(current.blocks).filter((b) => b.variantId === target.variantId).some((b) => JSON.stringify(b) !== JSON.stringify(state.blocks[b.id])))) {
+      throw new Error(L("Innholdet ble endret mens forhåndsvisningen var åpen. Lukk og åpne forhåndsvisningen på nytt.", "The content changed while the preview was open. Close and reopen the preview."));
+    }
     const plan = suggestionToCommands(current, suggestion, target);
     if (!plan.ok) throw new Error(plan.message);
     const group = `storylab:${suggestion.id}:${newId()}`;

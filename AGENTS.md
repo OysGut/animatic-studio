@@ -25,3 +25,4 @@ Kortversjonen:
 5. Migrasjoner skrives som `db/migrations/NNNN_navn.sql`. Lovable kjører dem aldri; Claude kjører dem etter at DB-testene er grønne. `src/integrations/supabase/` er autogenerert.
 6. Ikke force-push, rebase eller squash på `main`.
 7. Story Lab-visningene bygger de lagrede turene opp igjen med `src/core/storylab/replay.ts`.
+8. Story Lab transfers are planned in the platform-neutral transfer helper and executed through the shared command stack; this preserves validation and grouped undo without direct project-data writes.
