@@ -152,7 +152,7 @@ function ParticipantsTab({
   state: ProjectState;
   editable: boolean;
   run: (command: Command, label: string) => string | null;
-  cmds?: Commands;
+  cmds?: Commands | undefined;
 }) {
   const [logoFor, setLogoFor] = useState<string | null>(null);
   const participants = useMemo(
@@ -331,7 +331,7 @@ function ParticipantsTab({
           onUsed={(assetId) => {
             if (!logoFor) return;
             const fresh = cmds.current() ?? state;
-            const variant = Object.values(fresh.assetVariants).find((v) => v.assetId === assetId && !v.archived && !v.removed);
+            const variant = Object.values(fresh.assetVariants).find((v) => v.assetId === assetId && !v.archived);
             const version = variant
               ? Object.values(fresh.assetVersions).filter((v) => v.variantId === variant.id && !v.removed).sort((a, b) => b.number - a.number)[0]
               : undefined;
@@ -362,7 +362,7 @@ export function CreditsPanel({
   occurrenceId: string;
   editable: boolean;
   run: (command: Command, label: string) => string | null;
-  cmds?: Commands;
+  cmds?: Commands | undefined;
 }) {
   const [tab, setTab] = useState<"design" | "participants">("participants");
   const seq = creditSequenceOf(state, occurrenceId);
