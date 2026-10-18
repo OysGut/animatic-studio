@@ -12,6 +12,7 @@ import { fixture } from "../visual/fixture-state";
 const h = vi.hoisted(() => ({ list: vi.fn(), status: vi.fn(), run: vi.fn() }));
 vi.mock("@tanstack/react-start", () => ({ useServerFn: (fn: unknown) => fn }));
 vi.mock("@/app/script/Inspector", () => ({ ForkNotice: () => null }));
+vi.mock("@/adapters/ai/provider-keys.functions", () => ({ listTextChoices: vi.fn() }));
 vi.mock("@/adapters/storylab/sessions.functions", () => ({ listStorySuggestions: (a: unknown) => h.list(a), setSuggestionStatus: (a: unknown) => h.status(a) }));
 vi.mock("@tanstack/react-router", () => ({ Link: ({ children }: { children: React.ReactNode }) => createElement("a", null, children) }));
 afterEach(cleanup);
