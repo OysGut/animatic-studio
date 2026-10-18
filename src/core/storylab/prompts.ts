@@ -9,7 +9,7 @@ import { emptyStoryProfile, mergeProfile, profileError, type StoryProfile } from
 import { ANALYST, DIRECTOR, activeDirections, type Direction, type EngineState } from "./engine";
 
 const LANG_NAME: Record<string, string> = {
-  nb: "Norwegian (Bokmål)",
+  nb: "Norwegian (Bokmal)",
   nn: "Norwegian (Nynorsk)",
   en: "English",
 };

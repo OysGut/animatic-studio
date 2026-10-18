@@ -53,7 +53,7 @@ describe("characterSystemPrompt", () => {
     expect(prompt).toContain("Det er julaften");
     expect(prompt).toMatch(/# Your secrets \(hint only, never state outright\)\n- MAJAS-HEMMELIGHET/);
     expect(prompt).toMatch(/# Current state \(this moment only, not part of the personality\)\n- Maja er bakfull/);
-    expect(prompt).toContain("Norwegian (Bokmål)");
+    expect(prompt).toContain("Norwegian (Bokmal)");
     expect(prompt).toMatchSnapshot();
   });
 });
