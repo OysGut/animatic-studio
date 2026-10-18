@@ -784,7 +784,7 @@ function Editor({
           </ToolbarButton>
         ) : null}
         {editable && composition ? (
-          <TextMenu state={state} composition={composition} run={cmds.run} onAdded={setSelectedLayerId} />
+          <TextMenu state={state} composition={composition} run={cmds.run} cmds={cmds} onAdded={setSelectedLayerId} />
         ) : null}
         {audioEditable && occurrence ? (
           <ToolbarButton

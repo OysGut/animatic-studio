@@ -14,6 +14,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ToolbarButton } from "@/app/shell/workspace-chrome";
+import { GlobalLibraryDialog } from "@/app/global/GlobalLibraryDialog";
+import type { Commands } from "@/app/project/use-commands";
 import {
   addLowerThird,
   addTextLayer,
@@ -41,13 +43,17 @@ export function TextMenu({
   state,
   composition,
   run,
+  cmds,
   onAdded,
 }: {
   state: ProjectState;
   composition: Composition;
   run: Run;
+  /** GP6: trengs for «bruk i prosjekt» fra det globale biblioteket. */
+  cmds: Commands;
   onAdded: (layerId: string) => void;
 }) {
+  const [globalOpen, setGlobalOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const templates = useMemo(() => projectTemplates(state), [state]);
   const uses = useMemo(
@@ -104,6 +110,10 @@ export function TextMenu({
               ))}
             </>
           ) : null}
+          <DropdownMenuSeparator />
+          <DropdownMenuItem data-testid="mts-global-templates" onSelect={() => setGlobalOpen(true)}>
+            {L("Fra globalt bibliotek …", "From the global library …")}
+          </DropdownMenuItem>
           {templates.length > 0 ? (
             <>
               <DropdownMenuSeparator />
@@ -124,6 +134,27 @@ export function TextMenu({
           ) : null}
         </DropdownMenuContent>
       </DropdownMenu>
+      <GlobalLibraryDialog
+        open={globalOpen}
+        onOpenChange={setGlobalOpen}
+        state={state}
+        cmds={cmds}
+        editable
+        fixedKind="template"
+        onUsed={(assetId) => {
+          // Tilstanden er skrevet; finn nyeste malversjon av ressursen og bruk den (M2)
+          const fresh = cmds.current() ?? state;
+          const vers = Object.values(fresh.assetVersions).filter(
+            (v) => v.template && !v.removed && fresh.assetVariants[v.variantId]?.assetId === assetId,
+          );
+          const latest = vers.sort((x, y) => y.number - x.number)[0];
+          if (latest) {
+            const name = fresh.assets[assetId]?.name ?? "";
+            const r = applyTemplateVersion(run, fresh, composition, latest.id, undefined, L(`Bruk mal «${name}»`, `Use template “${name}”`));
+            setError(r.error);
+          }
+        }}
+      />
       {error ? (
         <span role="alert" data-testid="mts-text-menu-error" className="text-xs text-status-danger">
           {error}
