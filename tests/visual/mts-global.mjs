@@ -12,15 +12,6 @@ const GTV = "00000000-0000-4000-8000-00000000b010";
 const GLV = "00000000-0000-4000-8000-00000000b011";
 const sha = "a".repeat(64);
 const key = (a) => `global/${WS}/${a}/${sha}.png`;
-const templateSpec = {
-  category: "lower_third",
-  slots: [{ key: "navn", label: "Navn" }, { key: "rolle", label: "Rolle" }],
-  elements: [
-    { slot: null, name: "Gruppe", fields: { kind: "group", name: "Lower third", transform: { x: 60, y: 500, scaleX: 1, scaleY: 1, rotation: 0, opacity: 1 } } },
-    { slot: "navn", name: "Navn", fields: { kind: "text", name: "Navn", transform: { x: 0, y: 0, scaleX: 1, scaleY: 1, rotation: 0, opacity: 1 }, text: { content: "Navn", fontId: "inter", size: 48, color: "#ffffff", align: "left", bold: false, italic: false, maxWidth: null, letterAnim: null } } },
-    { slot: "rolle", name: "Rolle", fields: { kind: "text", name: "Rolle", transform: { x: 0, y: 60, scaleX: 1, scaleY: 1, rotation: 0, opacity: 1 }, text: { content: "Rolle", fontId: "inter", size: 32, color: "#cccccc", align: "left", bold: false, italic: false, maxWidth: null, letterAnim: null } } },
-  ],
-};
 const g = {
   assets: [
     { id: GT, workspace_id: WS, kind: "template", name: "Global lower third", description: "", categories: [], tags: [], archived_at: null, revision: 1 },
@@ -31,7 +22,7 @@ const g = {
     { id: GLV, workspace_id: WS, global_asset_id: GL, name: "Farge", style: "reference", appearance: "", archived_at: null },
   ],
   versions: [
-    { id: "00000000-0000-4000-8000-00000000c010", workspace_id: WS, global_asset_id: GT, variant_id: GTV, number: 1, storage_key: key(GT), mime_type: "image/png", width: 10, height: 10, byte_size: 100, sha256: sha, duration_ms: null, note: "", template_spec: templateSpec, created_at: "2026-10-18T00:00:00Z" },
+    { id: "00000000-0000-4000-8000-00000000c010", workspace_id: WS, global_asset_id: GT, variant_id: GTV, number: 1, storage_key: key(GT), mime_type: "image/png", width: 10, height: 10, byte_size: 100, sha256: sha, duration_ms: null, note: "", template_spec: null, created_at: "2026-10-18T00:00:00Z" },
     { id: "00000000-0000-4000-8000-00000000c011", workspace_id: WS, global_asset_id: GL, variant_id: GLV, number: 1, storage_key: key(GL), mime_type: "image/png", width: 10, height: 10, byte_size: 100, sha256: sha, duration_ms: null, note: "", created_at: "2026-10-18T00:00:00Z" },
   ],
 };
@@ -63,6 +54,9 @@ const h = setup({
 });
 
 const M = h.fx.mts;
+// Bruk en gyldig mal fra den felles fixturen, med format, stabile nøkler og komplette lagfelter.
+g.versions[0].template_spec = h.fx.rows.asset_versions.find((v) => v.id === M.v1)?.template_spec;
+if (!g.versions[0].template_spec) throw new Error("Fixture mangler maldefinisjon");
 
 await h.run("M1-AC-global-mal-i-bruk", `$P/scene?scene=${M.occB}`, async (page) => {
   // AC/M1: den globale malen nås fra Tekst-menyen og brukes i prosjektet
