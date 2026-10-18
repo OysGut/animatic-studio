@@ -19,3 +19,9 @@
 - [x] AI-forslag i engelsk språkkobling (må godkjennes).
 - [x] Personverntekst og AGENTS.md-regel.
 - [x] Unit- og nettlesertester.
+
+# OG2 retterunde 1
+- [ ] Rett reanalysemock og samle skjemaversjon i nettlesertestene.
+- [ ] Skill brukerens tekstgrense fra tjenestens tak; test begge veier.
+- [ ] Bruk lagret analyse i sceneforslag og SceneAssetsPanel; test begge.
+- [ ] Kontroller Manusutforskeren og kjør unit-tester og i18n-kontroll.
