@@ -1629,6 +1629,38 @@ function audioFields(
 /** Språkkode (DEC-0058/0059), f.eks. «nb», «en» eller «en-GB». */
 const LANGUAGE_CODE = /^[a-z]{2}(-[A-Z]{2})?$/;
 
+/**
+ * Samlede kommandoer (UpdateSceneDraft, RetimeScene): hver rad som trinnene endrer, skrives én gang per
+ * transaksjon, så revisjonen blir opprinnelig revisjon + 1 (1 for nye rader) uansett hvor mange trinn som rører
+ * raden. Det samme gjelder inversen. Slik stemmer patchen og baseRevisions med apply_changes.
+ */
+function oneRevisionPerRow(before: ProjectState, after: ProjectState): ProjectState {
+  let out: ProjectState | null = null;
+  for (const key of Object.keys(after) as (keyof ProjectState)[]) {
+    const a = after[key] as unknown;
+    const b = before[key] as unknown;
+    if (a === b || !a || typeof a !== "object" || Array.isArray(a)) continue;
+    const table = a as Record<string, unknown>;
+    const old = (b && typeof b === "object" ? b : {}) as Record<string, unknown>;
+    let next: Record<string, unknown> | null = null;
+    for (const [id, row] of Object.entries(table)) {
+      if (row === old[id] || !row || typeof row !== "object") continue;
+      const r = row as { revision?: unknown };
+      if (typeof r.revision !== "number") continue;
+      const prev = old[id] as { revision?: unknown } | undefined;
+      const want = prev && typeof prev.revision === "number" ? prev.revision + 1 : 1;
+      if (r.revision === want) continue;
+      next ??= { ...table };
+      next[id] = { ...(row as object), revision: want };
+    }
+    if (next) {
+      out ??= { ...after };
+      (out as unknown as Record<string, unknown>)[key] = next;
+    }
+  }
+  return out ?? after;
+}
+
 export function audioClipFieldsOf(a: AudioClip): AudioClipFields {
   return {
     occurrenceId: a.occurrenceId,
@@ -6805,7 +6837,7 @@ function run(
         for (const id of r.affected) affected.add(id);
       }
       return {
-        state: cur,
+        state: oneRevisionPerRow(s, cur),
         inverse: {
           type: "UpdateSceneDraft",
           occurrenceId: c.occurrenceId,
@@ -6839,7 +6871,7 @@ function run(
         for (const id of r.affected) affected.add(id);
       }
       return {
-        state: cur,
+        state: oneRevisionPerRow(s, cur),
         inverse: {
           type: "RetimeScene",
           occurrenceId: c.occurrenceId,
