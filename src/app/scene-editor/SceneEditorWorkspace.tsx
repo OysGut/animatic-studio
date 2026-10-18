@@ -41,6 +41,7 @@ import {
   isSharedIn,
   newId,
   ownCopyCommands,
+  occurrenceKind,
   orderedOccurrences,
   audioClipFieldsOf,
   audioVersion,
