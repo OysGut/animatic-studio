@@ -240,7 +240,7 @@ await run("sceneanalyse, improvisasjon, varianter og replikksjekk", async (page)
   await lab.getByTestId("storylab-evidence").first().click();
   check(await lab.locator('[data-testid="storylab-scene-block"][data-highlighted="true"]').count() === 1, "kildechip markerer blokk");
   const analysis = [...S.sessions.values()].find((s) => s.kind === "scene_analysis"); const before = S.gen.length;
-  await page.getByTestId("storylab-character").first().click();
+  await page.locator(`[data-testid="storylab-scene"]:not([data-scene-id="${SCENE_ID}"])`).last().click();
   await page.locator(`[data-testid="storylab-session"][data-session-id="${analysis.id}"]`).click();
   await page.getByTestId("storylab-analysis-card").first().waitFor();
   check(S.gen.length === before, "lagret analyse åpnes uten AI-kall");
