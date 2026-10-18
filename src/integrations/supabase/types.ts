@@ -2508,6 +2508,280 @@ export type Database = {
           },
         ]
       }
+      story_facts: {
+        Row: {
+          at_scene_id: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          kind: string
+          known_by: Json
+          project_id: string
+          removed: boolean
+          revision: number
+          text: string
+        }
+        Insert: {
+          at_scene_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id: string
+          kind: string
+          known_by?: Json
+          project_id: string
+          removed?: boolean
+          revision?: number
+          text: string
+        }
+        Update: {
+          at_scene_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          known_by?: Json
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_facts_at_scene_id_fkey"
+            columns: ["at_scene_id"]
+            isOneToOne: false
+            referencedRelation: "scenes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "story_facts_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      story_profile_stages: {
+        Row: {
+          asset_id: string
+          created_at: string
+          created_by: string | null
+          from_scene_id: string
+          id: string
+          patch: Json
+          project_id: string
+          removed: boolean
+          revision: number
+        }
+        Insert: {
+          asset_id: string
+          created_at?: string
+          created_by?: string | null
+          from_scene_id: string
+          id: string
+          patch: Json
+          project_id: string
+          removed?: boolean
+          revision?: number
+        }
+        Update: {
+          asset_id?: string
+          created_at?: string
+          created_by?: string | null
+          from_scene_id?: string
+          id?: string
+          patch?: Json
+          project_id?: string
+          removed?: boolean
+          revision?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_profile_stages_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "story_profile_stages_from_scene_id_fkey"
+            columns: ["from_scene_id"]
+            isOneToOne: false
+            referencedRelation: "scenes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "story_profile_stages_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      story_profiles: {
+        Row: {
+          asset_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          profile: Json
+          project_id: string
+          removed: boolean
+          revision: number
+        }
+        Insert: {
+          asset_id: string
+          created_at?: string
+          created_by?: string | null
+          id: string
+          profile: Json
+          project_id: string
+          removed?: boolean
+          revision?: number
+        }
+        Update: {
+          asset_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          profile?: Json
+          project_id?: string
+          removed?: boolean
+          revision?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_profiles_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "story_profiles_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      story_sessions: {
+        Row: {
+          context: Json
+          cost_usd: number
+          created_at: string
+          created_by: string
+          from_turn: number | null
+          id: string
+          kind: string
+          parent_session_id: string | null
+          project_id: string
+          status: string
+          title: string
+          turns: Json
+          updated_at: string
+        }
+        Insert: {
+          context?: Json
+          cost_usd?: number
+          created_at?: string
+          created_by: string
+          from_turn?: number | null
+          id: string
+          kind: string
+          parent_session_id?: string | null
+          project_id: string
+          status?: string
+          title?: string
+          turns?: Json
+          updated_at?: string
+        }
+        Update: {
+          context?: Json
+          cost_usd?: number
+          created_at?: string
+          created_by?: string
+          from_turn?: number | null
+          id?: string
+          kind?: string
+          parent_session_id?: string | null
+          project_id?: string
+          status?: string
+          title?: string
+          turns?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_sessions_parent_session_id_fkey"
+            columns: ["parent_session_id"]
+            isOneToOne: false
+            referencedRelation: "story_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "story_sessions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      story_suggestions: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: string
+          kind: string
+          payload: Json
+          project_id: string
+          session_id: string | null
+          status: string
+          turn_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          id: string
+          kind: string
+          payload: Json
+          project_id: string
+          session_id?: string | null
+          status?: string
+          turn_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          kind?: string
+          payload?: Json
+          project_id?: string
+          session_id?: string | null
+          status?: string
+          turn_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_suggestions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "story_suggestions_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "story_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       style_profiles: {
         Row: {
           applies_to: Json
