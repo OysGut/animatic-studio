@@ -432,6 +432,18 @@ export interface Asset extends Entity<AssetId> {
    * bildebeskrivelsene i stedet for rå manusutdrag. Mangler/tom = ikke laget.
    */
   readonly visualBrief?: string;
+  /**
+   * Den globale ressursen prosjektressursen er hentet fra (GP2, migrasjon 0046). Bare en kobling (metadata):
+   * filene er prosjektets egne kopier, så prosjektet virker uten tilgang til arbeidsgruppen.
+   */
+  readonly globalAssetId?: string;
+}
+
+/** Hvilken global versjon en prosjektversjon er kopiert fra (GP2). Bare metadata. */
+export interface GlobalSource {
+  readonly assetId: string;
+  readonly variantId: string;
+  readonly versionId: string;
 }
 
 export interface ContextName {
@@ -490,6 +502,8 @@ export interface AssetVersion extends Entity<AssetVersionId> {
   readonly createdBy: string;
   /** Lengde i millisekunder for lydfiler (null for bilder). */
   readonly durationMs: number | null;
+  /** Global versjon filen er kopiert fra (GP2). Mangler = prosjektets egen. */
+  readonly globalSource?: GlobalSource;
   /** Slettet bilde (DEC-0079): vises bare i «Slettede objekter». Selve bildet endres aldri. */
   readonly removed?: boolean;
   /**

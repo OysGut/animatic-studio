@@ -8,7 +8,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2, Send } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { takeIdea } from "./new-project-idea";
 import {
   L,
   canvasSummary,
@@ -45,6 +46,8 @@ export interface InterviewViewProps {
   selection: readonly CanvasNode[];
   origin: { x: number; y: number };
   onAdded: (ids: string[]) => void;
+  /** GP4: lag intervjuøkten med en gang (nytt prosjekt). Ingen AI-kall før brukeren sender. */
+  autoStart?: boolean;
 }
 
 export function InterviewView(p: InterviewViewProps) {
@@ -69,6 +72,13 @@ export function InterviewView(p: InterviewViewProps) {
       p.onCreated(r.session.id);
     } catch (e) { setErr(e instanceof Error ? e.message : String(e)); } finally { setBusy(false); }
   };
+  const auto = useRef(false);
+  useEffect(() => {
+    if (!p.autoStart || p.sessionId || !p.editable || auto.current) return;
+    auto.current = true;
+    void start();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [p.autoStart, p.sessionId, p.editable]);
   if (!p.sessionId)
     return (
       <div className="space-y-2 p-3 text-[13px]" data-testid="storylab-interview">
@@ -89,7 +99,7 @@ function Interview({ state, projectId, cmds, editable, sessionId, selection, ori
 }) {
   const [turns, setTurns] = useState<StoredTurn[]>([...initialTurns]);
   const [cost, setCost] = useState(initialCost);
-  const [text, setText] = useState("");
+  const [text, setText] = useState(() => (initialTurns.length ? "" : takeIdea(projectId)));
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [failed, setFailed] = useState<string | null>(null);

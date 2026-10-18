@@ -55,6 +55,8 @@ export interface CanvasViewProps {
   cmds: Commands;
   editable: boolean;
   interviewId: string | null;
+  /** GP4: åpne intervjuet og start det med en gang (nytt prosjekt). */
+  startInterview?: boolean;
   onInterview: (id: string) => void;
   onOpenAsset: (id: string) => void;
   onOpenScene: (id: string) => void;
@@ -96,11 +98,11 @@ function StoryEdge(p: EdgeProps) {
 }
 const EDGE_TYPES = { story: StoryEdge };
 
-function Canvas({ state, projectId, cmds, editable, interviewId, onInterview, onOpenAsset, onOpenScene }: CanvasViewProps) {
+function Canvas({ state, projectId, cmds, editable, interviewId, startInterview, onInterview, onOpenAsset, onOpenScene }: CanvasViewProps) {
   const flow = useReactFlow<StoryFlowNode>();
   const wrap = useRef<HTMLDivElement | null>(null);
   const [err, setErr] = useState<string | null>(null);
-  const [side, setSide] = useState<"inspector" | "interview">(interviewId ? "interview" : "inspector");
+  const [side, setSide] = useState<"inspector" | "interview">(interviewId || startInterview ? "interview" : "inspector");
   const [build, setBuild] = useState(false);
   const [focusTitle, setFocusTitle] = useState(0);
   useEffect(() => { if (interviewId) setSide("interview"); }, [interviewId]);
@@ -361,7 +363,7 @@ function Canvas({ state, projectId, cmds, editable, interviewId, onInterview, on
         {side === "inspector" ? (
           <CanvasInspector state={state} projectId={projectId} cmds={cmds} editable={editable} selected={selected} edgeId={selectedEdge?.id ?? null} focusTitle={focusTitle} onError={setErr} onOpen={onOpen} />
         ) : (
-          <InterviewView state={state} projectId={projectId} cmds={cmds} editable={editable} sessionId={interviewId} onCreated={onInterview}
+          <InterviewView state={state} projectId={projectId} cmds={cmds} editable={editable} sessionId={interviewId} onCreated={onInterview} autoStart={!!startInterview}
             selection={selected} origin={{ x: 0, y: bottom }} onAdded={(ids) => setTimeout(() => select(ids), 0)} />
         )}
       </aside>

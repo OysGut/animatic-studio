@@ -5092,6 +5092,98 @@ try {
     const [row2] = await sql`select workspace_id from public.projects where id = ${p}`;
     assert(row2!["workspace_id"] === null, "prosjektet ble ikke frakoblet");
   });
+
+  // ---------- GP2: globalt bibliotek (migrasjon 0046) ----------
+  await test("GP2: medlem leser, redaktør publiserer, eier arkiverer; ikke-medlem og fjernet medlem ser ingenting", async () => {
+    const ws = await as("authenticated", ALICE, async (tx) =>
+      (await tx`select public.create_workspace('Bibliotek') as id`)[0]!["id"] as string,
+    );
+    const tEd = await as("authenticated", ALICE, async (tx) =>
+      (await tx`select public.create_workspace_invitation(${ws}, 'bob@example.no', 'editor') as t`)[0]!["t"] as string,
+    );
+    await as("authenticated", BOB, (tx) => tx`select public.accept_workspace_invitation(${tEd})`);
+    const tMem = await as("authenticated", ALICE, async (tx) =>
+      (await tx`select public.create_workspace_invitation(${ws}, 'carol@example.no', 'member') as t`)[0]!["t"] as string,
+    );
+    await as("authenticated", CAROL, (tx) => tx`select public.accept_workspace_invitation(${tMem})`);
+    // Medlem kan ikke legge til
+    await expectError(
+      as("authenticated", CAROL, (tx) => tx`select public.global_create_asset(${ws}, 'logo', 'Logo', '', '{}', '{}')`),
+      "42501",
+    );
+    const ga = await as("authenticated", BOB, async (tx) =>
+      (await tx`select public.global_create_asset(${ws}, 'logo', 'Trollfilm-logo', 'Hovedlogo', '{Merkevare}', '{logo}') as id`)[0]!["id"] as string,
+    );
+    const gv = await as("authenticated", BOB, async (tx) =>
+      (await tx`select public.global_create_variant(${ga}, 'Farge', 'reference', '') as id`)[0]!["id"] as string,
+    );
+    const sha = "b".repeat(64);
+    const key = `global/${ws}/${ga}/${sha}.png`;
+    // Feil sti avvises
+    await expectError(
+      as("authenticated", BOB, (tx) => tx`select public.global_add_version(${gv}, ${"global/" + ws + "/x/" + sha + ".png"}, 'image/png', 10, 10, 100, ${sha}, null, '')`),
+      "22023",
+    );
+    const v1 = await as("authenticated", BOB, async (tx) =>
+      (await tx`select public.global_add_version(${gv}, ${key}, 'image/png', 10, 10, 100, ${sha}, null, '') as id`)[0]!["id"] as string,
+    );
+    const v2 = await as("authenticated", BOB, async (tx) =>
+      (await tx`select public.global_add_version(${gv}, ${key}, 'image/png', 10, 10, 100, ${sha}, null, 'ny') as id`)[0]!["id"] as string,
+    );
+    const nums = await sql`select number from public.global_asset_versions where id in (${v1}, ${v2}) order by number`;
+    assert(nums.map((r) => r["number"]).join(",") === "1,2", "versjonsnumrene");
+    // Uforanderlige versjoner
+    await expectError(sql`update public.global_asset_versions set note = 'x' where id = ${v1}`, "42501");
+    // Medlem leser
+    const seen = await as("authenticated", CAROL, (tx) => tx`select id from public.global_asset_versions where global_asset_id = ${ga}`);
+    assert(seen.length === 2, "medlem ser ikke versjonene");
+    // Ikke-medlem (Dave finnes ikke; bruk en ny bruker uten medlemskap)
+    const DAVE = "44444444-4444-7444-8444-444444444444";
+    await sql`insert into auth.users (id, email) values (${DAVE}, 'dave@example.no') on conflict do nothing`;
+    const outsider = await as("authenticated", DAVE, (tx) => tx`select id from public.global_assets where id = ${ga}`);
+    assert(outsider.length === 0, "ikke-medlem ser global ressurs (G10)");
+    await expectError(
+      as("authenticated", DAVE, (tx) => tx`select * from public.global_asset_projects(${ga})`),
+      "42501",
+    );
+    // Klienten kan ikke skrive direkte
+    await expectError(
+      as("authenticated", BOB, (tx) => tx`update public.global_assets set name = 'x' where id = ${ga}`),
+      "42501",
+    );
+    // Revisjonskontroll på metadata
+    await as("authenticated", BOB, (tx) => tx`select public.global_update_asset(${ga}, 1, 'Logo', '', '{}', '{logo}')`);
+    await expectError(
+      as("authenticated", BOB, (tx) => tx`select public.global_update_asset(${ga}, 1, 'Logo 2', '', '{}', '{}')`),
+      "P0409",
+    );
+    // Bare eier arkiverer
+    await expectError(
+      as("authenticated", BOB, (tx) => tx`select public.global_set_asset_archived(${ga}, true)`),
+      "42501",
+    );
+    await as("authenticated", ALICE, (tx) => tx`select public.global_set_asset_archived(${ga}, true)`);
+    // Tilbakekalt medlemskap: Carol fjernes og ser ingenting
+    await as("authenticated", ALICE, (tx) => tx`select public.remove_workspace_member(${ws}, ${CAROL})`);
+    const removed = await as("authenticated", CAROL, (tx) => tx`select id from public.global_assets where id = ${ga}`);
+    assert(removed.length === 0, "fjernet medlem ser fortsatt ressursen");
+  });
+
+  await test("GP2: «brukt i prosjekter» viser bare prosjekter brukeren er med i", async () => {
+    const ws = await as("authenticated", ALICE, async (tx) =>
+      (await tx`select public.create_workspace('Bibliotek 2') as id`)[0]!["id"] as string,
+    );
+    const ga = await as("authenticated", ALICE, async (tx) =>
+      (await tx`select public.global_create_asset(${ws}, 'logo', 'Logo', '', '{}', '{}') as id`)[0]!["id"] as string,
+    );
+    const p = await as("authenticated", ALICE, async (tx) =>
+      (await tx`select public.create_project('GP2-prosjekt', 25, 1) as id`)[0]!["id"] as string,
+    );
+    const aid = "55555555-5555-7555-8555-555555555555";
+    await sql`insert into public.assets (id, project_id, kind, name, created_by, source_global_asset_id) values (${aid}, ${p}, 'other', 'Logo', ${ALICE}, ${ga})`;
+    const rows = await as("authenticated", ALICE, (tx) => tx`select project_id from public.global_asset_projects(${ga})`);
+    assert(rows.length === 1 && rows[0]!["project_id"] === p, "prosjektet vises ikke");
+  });
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);

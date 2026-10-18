@@ -18,8 +18,9 @@ export const Route = createFileRoute("/prosjekt/$projectId/storylab")({
     { property: "og:description", content: L("Utforsk karakterer, analyser scener og prøv dialogvarianter i Animatic Studio.", "Explore characters, analyze scenes and try dialogue variants in Animatic Studio.") },
     // i18n-ignore: standard metadata keys
     { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
-  validateSearch: (s: Record<string, unknown>): { karakter?: string; scene?: string; forslag?: string; visning?: "canvas" } => ({
+  validateSearch: (s: Record<string, unknown>): { karakter?: string; scene?: string; forslag?: string; visning?: "canvas"; intervju?: "ny" } => ({
     ...(s["visning"] === "canvas" ? { visning: "canvas" as const } : {}),
+    ...(s["intervju"] === "ny" ? { intervju: "ny" as const } : {}),
     ...(typeof s["forslag"] === "string" && (s["forslag"] === "open" || UUID.test(s["forslag"])) ? { forslag: s["forslag"] } : {}),
     ...(typeof s["karakter"] === "string" && UUID.test(s["karakter"])
       ? { karakter: s["karakter"] }
@@ -31,7 +32,7 @@ export const Route = createFileRoute("/prosjekt/$projectId/storylab")({
 
 function StoryLabRoute() {
   const { projectId } = Route.useParams();
-  const { karakter, scene, forslag, visning } = Route.useSearch();
+  const { karakter, scene, forslag, visning, intervju } = Route.useSearch();
   const session = useSession();
   if (session.status !== "signed-in") return null;
   return (
@@ -42,7 +43,8 @@ function StoryLabRoute() {
       initialSceneRef={scene ?? null}
       initialSuggestions={!!forslag}
       initialSuggestionId={forslag && forslag !== "open" ? forslag : null}
-      initialCanvas={visning === "canvas"}
+      initialCanvas={visning === "canvas" || intervju === "ny"}
+      initialInterview={intervju === "ny"}
     />
   );
 }

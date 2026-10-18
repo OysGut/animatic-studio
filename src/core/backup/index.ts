@@ -353,7 +353,17 @@ export function remapValue<T>(v: T, map: ReadonlyMap<string, string>): T {
  * Kolonner med ID-er som ikke er referanser til noe i prosjektet (overskrives eller nulles ved gjenoppretting).
  * task_id (DEC-0088) samler systemmerknadene og planene for én oppgave; den beholdes som den er.
  */
-const NON_REFERENCE = new Set(["project_id", "change_id", "based_on_change_id", "task_id"]);
+const NON_REFERENCE = new Set([
+  "project_id",
+  "change_id",
+  "based_on_change_id",
+  "task_id",
+  // Koblingen til det globale biblioteket (GP2) er bare metadata; filene er prosjektets egne kopier, så
+  // gjenopprettingen virker uten tilgang til arbeidsgruppen. ID-ene beholdes som de er.
+  "source_global_asset_id",
+  "source_global_variant_id",
+  "source_global_version_id",
+]);
 
 /**
  * Alle referanser (kolonner som slutter på `_id`) må peke på noe som er med i sikkerhetskopien. Ellers kunne

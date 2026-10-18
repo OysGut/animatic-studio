@@ -168,6 +168,8 @@ export function LayerInspector({
   autoKey,
   onOpenImage,
   onOpenAssetStudio,
+  onCarryNext,
+  onCarryPick,
   onSeek,
   onUpscale,
   durationFrames,
@@ -189,12 +191,17 @@ export function LayerInspector({
   onOpenImage?: () => void;
   /** Åpne laget i Asset Studio (AS1). Utelatt: ingen knapp. */
   onOpenAssetStudio?: () => void;
+  /** «Bruk videre i neste scene» (GP3). Gir meldingen som vises. Utelatt: ingen knapp. */
+  onCarryNext?: () => Promise<string | null>;
+  /** «Bruk også i …» (GP3). Utelatt: ingen knapp. */
+  onCarryPick?: () => void;
   /** Flytt avspillingshodet (hendelser i manuset). */
   onSeek?: (frame: number) => void;
   /** Oppskaler bildet laget viser (advarselen om forstørrelse over 1:1). Utelatt: ingen knapp. */
   onUpscale?: () => void;
 }) {
   const [error, setError] = useState<string | null>(null);
+  const [carryMsg, setCarryMsg] = useState<string | null>(null);
   const off = !editable;
   /** Hvordan «Speilvend» virker: hele laget, eller fra avspillingshodet (glidende eller brått). */
   const [flipMode, setFlipMode] = useState<FlipMode>("whole");
@@ -679,6 +686,37 @@ export function LayerInspector({
               <Clapperboard />
               {L("Asset Studio", "Asset Studio")}
             </Button>
+          ) : null}
+          {editable && (onCarryNext || onCarryPick) ? (
+            <div className="flex flex-wrap gap-1" data-testid="carry-over-actions">
+              {onCarryNext ? (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  data-testid="carry-next"
+                  title={L(
+                    "Kopier laget til neste scene i produksjonen. Bevegelsen der blir lokal.",
+                    "Copy the layer to the next scene in the production. Its motion there is local.",
+                  )}
+                  onClick={() => {
+                    setCarryMsg(null);
+                    void onCarryNext().then(setCarryMsg);
+                  }}
+                >
+                  {L("Bruk videre i neste scene", "Use in next scene")}
+                </Button>
+              ) : null}
+              {onCarryPick ? (
+                <Button size="sm" variant="ghost" data-testid="carry-pick" onClick={onCarryPick}>
+                  {L("Bruk også i …", "Also use in …")}
+                </Button>
+              ) : null}
+            </div>
+          ) : null}
+          {carryMsg ? (
+            <p role="status" className="text-xs text-text-secondary" data-testid="carry-over-status">
+              {carryMsg}
+            </p>
           ) : null}
           {onOpenImage ? (
             <Button size="sm" variant="secondary" className="self-start" onClick={onOpenImage}>
