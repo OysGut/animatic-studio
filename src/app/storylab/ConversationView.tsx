@@ -41,6 +41,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Toolbar, ToolbarButton, ToolbarSeparator } from "@/app/shell/workspace-chrome";
 import { names as nameMap, sceneLabel, usd, useTextEstimate } from "./storylab-data";
+import { GroupConversationView } from "./GroupConversationView";
 
 const OUT_TOKENS = 800;
 type Mode = "role" | "analysis";
@@ -156,6 +157,8 @@ export function ConversationView({
         {q.data && !q.data.ok ? q.data.message : L("Økten kunne ikke hentes.", "The session could not be loaded.")}
       </p>
     );
+  if (q.data.session.kind === "group")
+    return <GroupConversationView state={state} projectId={projectId} session={q.data.session} editable={editable} onOpen={onOpen} />;
   return (
     <Conversation
       state={state}

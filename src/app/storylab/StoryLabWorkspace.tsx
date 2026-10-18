@@ -26,6 +26,8 @@ import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
 import { CharacterWorkspace } from "./CharacterWorkspace";
 import { ConversationView, NewSessionForm } from "./ConversationView";
 import { FactsPanel } from "./FactsPanel";
+import { NewGroupDialog } from "./NewGroupDialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { profileStatus, sceneIdFrom, scenesByStoryTime, storyCharacters } from "./storylab-data";
 
 export function StoryLabWorkspace({
@@ -93,6 +95,7 @@ function Lab({
   );
   const [sceneId, setSceneId] = useState<string | null>(() => sceneIdFrom(state, initialSceneRef ?? undefined));
   const [view, setView] = useState<View>({ kind: "character" });
+  const [newGroup, setNewGroup] = useState(false);
   useEffect(() => {
     if (initialAssetId && characters.some((c) => c.id === initialAssetId)) setAssetId(initialAssetId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -173,15 +176,21 @@ function Lab({
               count={sessions.data && sessions.data.ok ? sessions.data.sessions.length : undefined}
               actions={
                 editable && asset ? (
-                  <ToolbarButton
+                  <DropdownMenu>
+                  <DropdownMenuTrigger asChild><ToolbarButton
                     variant="icon"
-                    onClick={() => setView({ kind: "new" })}
                     aria-label={L("Ny økt", "New session")}
                     title={L("Ny økt", "New session")}
                     data-testid="storylab-new-session"
                   >
-                    <Plus />
+                    <Plus data-testid="storylab-new-menu" />
                   </ToolbarButton>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem onSelect={() => setView({ kind: "new" })} data-testid="storylab-new-character">{L("Samtale med én karakter", "Conversation with one character")}</DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => setNewGroup(true)} data-testid="storylab-new-group">{L("Gruppesamtale", "Group conversation")}</DropdownMenuItem>
+                  </DropdownMenuContent>
+                  </DropdownMenu>
                 ) : null
               }
             />
@@ -269,6 +278,8 @@ function Lab({
           </aside>
         )}
       </div>
+      {newGroup ? <NewGroupDialog state={state} projectId={projectId} initialSceneId={sceneId}
+        onClose={() => setNewGroup(false)} onCreated={(id) => { setNewGroup(false); setView({ kind: "session", id }); }} /> : null}
     </div>
   );
 }
