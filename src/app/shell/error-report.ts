@@ -12,7 +12,7 @@ export function safePagePath(href: string): string {
   } catch {
     path = href.split(/[?#]/)[0] ?? "";
   }
-  return path.replace(/^\/m\/[^/]+/, "/m/…");
+  return path.replace(/^\/m\/[^/]+/, "/m/…").replace(/^\/se\/[^/]+/, "/se/…");
 }
 
 const MAX_STACK_LINES = 8;
