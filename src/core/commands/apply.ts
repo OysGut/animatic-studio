@@ -1,4 +1,5 @@
 import { applyRigCommand } from "../animation/rig-commands";
+import { applyBehaviorCommand } from "../animation/behavior-commands";
 /**
  * Utfører én kommando mot prosjekttilstanden. Ren funksjon: (tilstand, kommando) → ny tilstand + invers.
  * Samme funksjon brukes i klienten (rask tilbakemelding) og på serveren (autoritativ, DEC-0022).
@@ -189,6 +190,7 @@ function assertNewId(s: ProjectState, id: string) {
     s.canvasNodes,
     s.canvasEdges,
     s.animationRigs, s.animationRigVersions, s.animationUses,
+    s.lipsyncResults, s.animationPatterns,
     s.templateInstances ?? {},
   ];
   if (all.some((c) => c[id] !== undefined))
@@ -556,6 +558,7 @@ export function revisionOf(s: ProjectState, id: string): number | undefined {
     s.canvasNodes,
     s.canvasEdges,
     s.animationRigs, s.animationRigVersions, s.animationUses,
+    s.lipsyncResults, s.animationPatterns,
   ]) {
     const e = c[id];
     if (e) return e.revision;
@@ -1764,7 +1767,8 @@ const RETIME_STEPS = new Set<string>([
 
 /** Trinnene et utkast fra Asset Studio kan inneholde (AS1): bare endringer i scenen. */
 export const SCENE_DRAFT_STEPS: ReadonlySet<string> = new Set<string>([
-  "CreateRig", "SaveRigVersion", "SetRigAnchors", "AttachAnimationUse", "SetAnimationLayerEnabled", "UndoAnimationChange",
+  "CreateRig", "SaveRigVersion", "SetRigAnchors", "AttachAnimationUse", "SetAnimationLayerEnabled", "SetAnimationBehavior", "UndoAnimationChange",
+  "SaveLipsyncResult", "SetLipsyncEnabled", "SetLipsyncOverrides", "SaveAnimationPattern", "RemoveAnimationPattern", "UndoBehaviorChange",
   "UpdateLayers",
   "UpdateAudioClips",
   "UpdateComposition",
@@ -1788,8 +1792,11 @@ function run(
   });
 
   switch (c.type) {
-    case "CreateRig": case "SaveRigVersion": case "SetRigAnchors": case "AttachAnimationUse": case "SetAnimationLayerEnabled": case "UndoAnimationChange": {
+    case "CreateRig": case "SaveRigVersion": case "SetRigAnchors": case "AttachAnimationUse": case "SetAnimationLayerEnabled": case "SetAnimationBehavior": case "UndoAnimationChange": {
       try { return applyRigCommand(s, c); } catch (error) { fail("invalid", error instanceof Error ? error.message : L("Ugyldig animasjonsoppsett", "Invalid animation setup")); }
+    }
+    case "SaveLipsyncResult": case "SetLipsyncEnabled": case "SetLipsyncOverrides": case "SaveAnimationPattern": case "RemoveAnimationPattern": case "UndoBehaviorChange": {
+      try { return applyBehaviorCommand(s, c); } catch (error) { fail("invalid", error instanceof Error ? error.message : L("Ugyldig animasjonsdata", "Invalid animation data")); }
     }
     case "CreateProduction": {
       assertNewId(s, c.productionId);

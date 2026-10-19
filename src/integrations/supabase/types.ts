@@ -2147,6 +2147,8 @@ export type Database = {
       }
       mobile_imports: {
         Row: {
+          approved_at: string | null
+          approved_rig_version_id: string | null
           asset_id: string | null
           asset_version_id: string | null
           byte_size: number
@@ -2170,6 +2172,8 @@ export type Database = {
           take_id: string | null
         }
         Insert: {
+          approved_at?: string | null
+          approved_rig_version_id?: string | null
           asset_id?: string | null
           asset_version_id?: string | null
           byte_size: number
@@ -2193,6 +2197,8 @@ export type Database = {
           take_id?: string | null
         }
         Update: {
+          approved_at?: string | null
+          approved_rig_version_id?: string | null
           asset_id?: string | null
           asset_version_id?: string | null
           byte_size?: number
@@ -4388,6 +4394,8 @@ export type Database = {
           p_token_hash: string
         }
         Returns: {
+          approved_at: string | null
+          approved_rig_version_id: string | null
           asset_id: string | null
           asset_version_id: string | null
           byte_size: number
@@ -4429,6 +4437,8 @@ export type Database = {
           p_token_hash: string
         }
         Returns: {
+          approved_at: string | null
+          approved_rig_version_id: string | null
           asset_id: string | null
           asset_version_id: string | null
           byte_size: number

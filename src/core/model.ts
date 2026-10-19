@@ -1,4 +1,6 @@
 import type { AnimationRig, AnimationRigVersion, AnimationUse } from "./animation/rig";
+import type { LipsyncResult } from "./animation/lipsync";
+import type { AnimationPattern } from "./animation/patterns";
 /**
  * Domenemodell (docs/architecture/DOMAIN_MODEL.md, DATA_RELATIONSHIPS.md).
  * Tilstanden speiler databasetabellene. Alle entiteter har permanent `id` og `revision`
@@ -909,6 +911,10 @@ export interface ProjectState {
   readonly animationRigs: Readonly<Record<string, AnimationRig>>;
   readonly animationRigVersions: Readonly<Record<string, AnimationRigVersion>>;
   readonly animationUses: Readonly<Record<string, AnimationUse>>;
+  /** CA5: leppesynk per replikk og take (migrasjon 0056). */
+  readonly lipsyncResults: Readonly<Record<string, LipsyncResult>>;
+  /** CA6: navngitte minianimasjonsmønstre (migrasjon 0056). */
+  readonly animationPatterns: Readonly<Record<string, AnimationPattern>>;
   readonly project: Project;
   readonly productions: Readonly<Record<string, Production>>;
   readonly scenes: Readonly<Record<string, Scene>>;
@@ -1327,6 +1333,8 @@ export const COLLECTION_TABLES = {
   animationRigs: "animation_rigs",
   animationRigVersions: "animation_rig_versions",
   animationUses: "animation_uses",
+  lipsyncResults: "lipsync_results",
+  animationPatterns: "animation_patterns",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_TABLES;
@@ -1366,6 +1374,7 @@ export function emptyProjectState(project: Project): ProjectState {
     creditParticipants: {},
     creditSequences: {},
     animationRigs: {}, animationRigVersions: {}, animationUses: {},
+    lipsyncResults: {}, animationPatterns: {},
   };
 }
 

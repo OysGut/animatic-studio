@@ -2,13 +2,14 @@
 import { L } from "../i18n";
 import { isUuid } from "../ids";
 import type { ProjectState } from "../model";
-import { rigSpecError, type AnimationRig, type AnimationRigVersion, type AnimationUse, type RigSpec, type RigAnchors } from "./rig";
+import { rigSpecError, type AnimationRig, type AnimationRigVersion, type AnimationUse, type RigSpec, type RigAnchors, type UseBehavior } from "./rig";
 export type RigCommand =
   | { type: "CreateRig"; rigId: string; variantId: string }
   | { type: "SaveRigVersion"; rigId: string; versionId: string; sourceVersionId: string; spec: RigSpec }
   | { type: "SetRigAnchors"; rigId: string; versionId: string; sourceVersionId: string; anchors: RigAnchors }
   | { type: "AttachAnimationUse"; useId: string; layerId: string; occurrenceId: string; rigVersionId: string }
   | { type: "SetAnimationLayerEnabled"; useId: string; enabled: boolean }
+  | { type: "SetAnimationBehavior"; useId: string; behavior: UseBehavior }
   | { type: "UndoAnimationChange"; rigs: Readonly<Record<string, AnimationRig | null>>; versions: Readonly<Record<string, AnimationRigVersion | null>>; uses: Readonly<Record<string, AnimationUse | null>> };
 export function applyRigCommand(s: ProjectState, c: RigCommand) {
   const rigs = { ...s.animationRigs }, versions = { ...s.animationRigVersions }, uses = { ...s.animationUses };
@@ -50,6 +51,21 @@ export function applyRigCommand(s: ProjectState, c: RigCommand) {
   } else if (c.type === "SetAnimationLayerEnabled") {
     const use = uses[c.useId]; if (!use || use.removed || typeof c.enabled !== "boolean") return invalid(L("Animasjonsbruken finnes ikke", "The animation use was not found"));
     oldUses[use.id] = use; uses[use.id] = { ...use, enabled: c.enabled, revision: use.revision + 1 };
+  } else if (c.type === "SetAnimationBehavior") {
+    const use = uses[c.useId]; if (!use || use.removed) return invalid(L("Animasjonsbruken finnes ikke", "The animation use was not found"));
+    const b = c.behavior;
+    if (!b || typeof b !== "object") return invalid(L("Ugyldig animasjonsatferd", "Invalid animation behavior"));
+    for (const pid of [b.leftEyePatternId, b.rightEyePatternId, ...(b.overlayPatternIds ?? [])]) {
+      if (pid == null) continue;
+      const p = s.animationPatterns[pid];
+      if (!p || p.removed) return invalid(L("Mønsteret finnes ikke", "The pattern was not found"));
+    }
+    if (b.seed !== undefined && (!Number.isInteger(b.seed) || b.seed < 0 || b.seed > 0xffffffff)) return invalid(L("Ugyldig seed", "Invalid seed"));
+    for (const blink of b.manualBlinks ?? []) {
+      if (!blink || !["left", "right", "both"].includes(blink.eye) || !Number.isInteger(blink.frame) || !Number.isInteger(blink.endFrame) || blink.endFrame <= blink.frame || blink.intensity < 0 || blink.intensity > 1)
+        return invalid(L("Ugyldig blink", "Invalid blink"));
+    }
+    oldUses[use.id] = use; uses[use.id] = { ...use, behavior: structuredClone(b), revision: use.revision + 1 };
   } else {
     for (const [id, row] of Object.entries(c.rigs)) { oldRigs[id] = rigs[id] ?? null; if (row) rigs[id] = { ...row, revision: (rigs[id]?.revision ?? 0) + 1 }; else delete rigs[id]; }
     for (const [id, row] of Object.entries(c.versions)) { oldVersions[id] = versions[id] ?? null; if (row) versions[id] = { ...row, revision: (versions[id]?.revision ?? 0) + 1 }; else delete versions[id]; }
