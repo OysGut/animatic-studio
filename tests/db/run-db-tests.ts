@@ -5964,7 +5964,35 @@ try {
     assert((await sql`select 1 from public.dialogue_versions where project_id = ${dvProject}`).length === 0, "versjoner igjen etter sletting");
     await as("service_role", null, (tx) => tx`select public.purge_project_assets(${dvProject}, ${ALICE})`);
     assert((await sql`select 1 from public.projects where id = ${dvProject}`).length === 0, "prosjektet ble ikke slettet");
-    assert((await sql`select max(version) as v from public.schema_version`)[0]!["v"] === 60, "skjemaversjon 60");
+    assert((await sql`select max(version) as v from public.schema_version`)[0]!["v"] === 61, "skjemaversjon 61");
+  });
+
+  await test("0061: batchtabeller har RLS og bare lesetilgang for medlemmer", async () => {
+    for (const table of ["dialogue_batches", "dialogue_batch_items"]) {
+      const rows = await sql`select relrowsecurity as rls from pg_class where oid=${`public.${table}`}::regclass`;
+      assert(rows[0]?.["rls"] === true, `${table}: RLS mangler`);
+      const grants = await sql`select has_table_privilege('anon',${`public.${table}`},'SELECT') as anon,has_table_privilege('authenticated',${`public.${table}`},'SELECT') as read,has_table_privilege('authenticated',${`public.${table}`},'INSERT') as write,has_table_privilege('service_role',${`public.${table}`},'INSERT') as service`;
+      assert(grants[0]?.["anon"] === false && grants[0]?.["read"] === true && grants[0]?.["write"] === false && grants[0]?.["service"] === true, `${table}: grants avviker`);
+    }
+  });
+  await test("0061: jobbfunk­sjoner er server-only, transaksjonelle og beskytter lease og gjentak", async () => {
+    for (const signature of ["public.create_dialogue_batch(uuid,uuid,uuid,uuid,jsonb,jsonb,uuid,uuid)","public.claim_dialogue_batch(uuid,uuid)","public.complete_dialogue_batch_item(uuid,uuid,jsonb,jsonb,jsonb)","public.resume_dialogue_batch(uuid,uuid,uuid)"]) {
+      const rights = await sql`select has_function_privilege('authenticated',${signature},'EXECUTE') as client,has_function_privilege('anon',${signature},'EXECUTE') as anon,has_function_privilege('service_role',${signature},'EXECUTE') as service`;
+      assert(rights[0]?.["client"] === false && rights[0]?.["anon"] === false && rights[0]?.["service"] === true, `${signature}: tilgang avviker`);
+    }
+    const definitions = await sql`select pg_get_functiondef('public.complete_dialogue_batch_item(uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) as body`;
+    assert(String(definitions[0]?.["body"]).includes("public.apply_changes"), "prosjektendringen er ikke transaksjonell");
+    assert(String(definitions[0]?.["body"]).includes("lease_token"), "leasevernet mangler");
+    const missing = await as("service_role", null, tx => tx`select public.claim_dialogue_batch('00000000-0000-7000-8000-000000006199','00000000-0000-7000-8000-000000006198') as item`);
+    assert(missing[0]?.["item"] === null, "manglende jobb ble startet");
+  });
+  await test("0061: uavhengige språkfelt og tom lydprompt finnes uten endring av gamle lydfiler", async () => {
+    for (const [table,column] of [["projects","script_language"],["scene_variants","script_language"],["script_blocks","script_language"],["script_blocks","speech_language"],["audio_clips","speech_language"],["audio_clips","placement_estimated"]]) {
+      const found = await sql`select 1 from information_schema.columns where table_schema='public' and table_name=${table} and column_name=${column}`;
+      assert(found.length === 1, `${table}.${column} mangler`);
+    }
+    const constraint = await sql`select pg_get_constraintdef(oid) as definition from pg_constraint where conname='generation_jobs_prompt_check' and conrelid='public.generation_jobs'::regclass`;
+    assert(String(constraint[0]?.["definition"]).includes("sound"), "lydprompt kan ikke utelate manusinnhold");
   });
 
 } finally {
