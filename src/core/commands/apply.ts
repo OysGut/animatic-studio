@@ -1,3 +1,4 @@
+import { assetVoiceError } from "../dialogue/voice";
 import { applyRigCommand } from "../animation/rig-commands";
 import { applyBehaviorCommand } from "../animation/behavior-commands";
 import {
@@ -26,6 +27,8 @@ import { alignmentError } from "../audio/alignment";
 import {
   isUuid,
   type AssetVariantId,
+  type AssetId,
+  type AudioClipId,
   type BlockId,
   type CanvasEdgeId,
   type CanvasNodeId,
@@ -6165,15 +6168,8 @@ function run(
       if (a.kind !== "character" && a.kind !== "animal" && a.kind !== "other")
         fail("invalid", L("Bare karakterer kan få stemme", "Only characters can have a voice"));
       const v = c.voice;
-      if (
-        v !== null &&
-        (v?.provider !== "elevenlabs" ||
-          typeof v.voiceId !== "string" ||
-          !/^[A-Za-z0-9_-]{1,64}$/.test(v.voiceId) ||
-          typeof v.label !== "string" ||
-          v.label.length > 120)
-      )
-        fail("invalid", L("Ugyldig stemme", "Invalid voice"));
+      const voiceError = assetVoiceError(v);
+      if (voiceError) fail("invalid", voiceError);
       return {
         state: {
           ...s,
@@ -6181,7 +6177,7 @@ function run(
             ...s.assets,
             [a.id]: {
               ...a,
-              voice: v ? { provider: v.provider, voiceId: v.voiceId, label: v.label.trim() } : null,
+              voice: v ? { ...v, label: v.label.trim(), ...(v.settings ? { settings: { ...v.settings } } : {}) } : null,
               revision: rev(a),
             },
           },
@@ -6189,6 +6185,24 @@ function run(
         inverse: { type: "SetAssetVoice", assetId: a.id, voice: a.voice ?? null },
         affected: [a.id],
       };
+    }
+
+    case "SetDialogueCharacter":
+    case "RestoreDialogueCharacters": {
+      const links = c.type === "SetDialogueCharacter" ? c.clipIds.map(clipId => ({ clipId, characterAssetId: c.characterAssetId })) : c.links;
+      if (!links.length || links.length > 1000) fail("invalid", L("Ugyldig karakterkobling", "Invalid character link"));
+      const audioClips = { ...s.audioClips };
+      const back: { clipId: AudioClipId; characterAssetId: AssetId | null }[] = [];
+      for (const link of links) {
+        const clip = need(s.audioClips[link.clipId], L("Replikken", "The line"));
+        if (clip.removed || !isVersionedKind(clip)) fail("invalid", L("Bare dialog kan kobles til en karakter", "Only dialogue can be linked to a character"));
+        const asset = link.characterAssetId ? s.assets[link.characterAssetId] : null;
+        if (link.characterAssetId && (!asset || asset.removed || !["character", "animal", "other"].includes(asset.kind)))
+          fail("invalid", L("Karakteren finnes ikke", "The character was not found"));
+        back.push({ clipId: clip.id, characterAssetId: (clip.characterAssetId ?? null) as AssetId | null });
+        audioClips[clip.id] = { ...clip, characterAssetId: link.characterAssetId, revision: rev(clip) };
+      }
+      return { state: { ...s, audioClips }, inverse: { type: "RestoreDialogueCharacters", links: back }, affected: links.map(l => l.clipId) };
     }
 
     case "SetSoundLinks": {
@@ -7734,10 +7748,12 @@ function run(
           ...file,
           ...clipOwnEdit(a),
           ...LEGACY_META,
-          scriptRevision: s.blocks[a.blockId!]?.currentRev ?? null,
+          scriptRevision: a.blockId ? s.blocks[a.blockId]?.currentRev ?? null : null,
+          ...(c.dialogueMeta ?? {}),
           removed: false,
         };
         audioClips[a.id] = { ...a, activeVersionId: vid };
+        if (c.dialogueMeta) dialogueVersionFields(s, a, (dialogueVersions as Record<string, DialogueVersion>)[vid] as DialogueVersion);
       }
       return {
         state: { ...s, audioClips, dialogueVersions },

@@ -73,6 +73,12 @@ export function harness(defaultOut) {
         state.uploadBodies.push(request.postDataBuffer());
         return json({ Key: key, Id: "00000000-0000-7000-8000-0000a7999999" });
       }
+      if (path.startsWith("/storage/v1/") && /\.(wav|mp3|webm|m4a|ogg)/.test(path)) {
+        const rate = 8000, samples = rate * 6, wav = Buffer.alloc(44 + samples * 2);
+        wav.write("RIFF"); wav.writeUInt32LE(wav.length - 8, 4); wav.write("WAVEfmt ", 8); wav.writeUInt32LE(16, 16); wav.writeUInt16LE(1, 20); wav.writeUInt16LE(1, 22); wav.writeUInt32LE(rate, 24); wav.writeUInt32LE(rate * 2, 28); wav.writeUInt16LE(2, 32); wav.writeUInt16LE(16, 34); wav.write("data", 36); wav.writeUInt32LE(samples * 2, 40);
+        for (let i = 0; i < samples; i++) wav.writeInt16LE(Math.round(Math.sin(i / 8) * 5000), 44 + i * 2);
+        return route.fulfill({ status: 200, contentType: "audio/wav", headers: { "Access-Control-Allow-Origin": "*" }, body: wav });
+      }
       if (path.startsWith("/storage/v1/")) return route.fulfill({ status: 200, contentType: "image/svg+xml", headers: { "Access-Control-Allow-Origin": "*" }, body: '<svg xmlns="http://www.w3.org/2000/svg" width="240" height="320"><rect width="240" height="320" fill="#277b85"/><rect x="0" y="210" width="240" height="110" fill="#f3b84a"/><circle cx="120" cy="95" r="55" fill="#f4c9a0"/><path d="M45 210Q120 115 195 210" fill="#e86265"/><circle cx="102" cy="90" r="6"/><circle cx="138" cy="90" r="6"/></svg>' });
       const table = path.replace("/rest/v1/", "");
       if (table === "rpc/my_account") return json({ status: "active", is_admin: false, permanent_admin: false, locale: null, display_name: "Mars", privacy_version: 1, accepted_version: 1, created_at: "2026-10-01T10:00:00Z", ui_prefs: {} });
@@ -92,6 +98,9 @@ export function harness(defaultOut) {
         return json({ ok: true, changeId: "mts", affected: [], inverse: null, revisions: {} });
       }
       if (/pumpProjectQueue/.test(name)) return json({ sent: 0 });
+      if (/^listVoices(?:_|$)/.test(name)) return json({ ok: true, voices: [{ voiceId: "mock_voice", name: "Test voice", description: "Custom voice", previewUrl: null }, { voiceId: "other_voice", name: "Alternative voice", description: "", previewUrl: null }] });
+      if (/^listSpeechModels(?:_|$)/.test(name)) return json({ ok: true, models: [{ modelId: "eleven_v3", name: "Eleven v3", languages: [{ code: "no", name: "Norwegian" }, { code: "es", name: "Spanish" }], maxCharacters: 5000, costMultiplier: 1 }] });
+      if (/^generateSpeech(?:_|$)/.test(name)) { state.rpcs.push({ name: "generateSpeech", body: d }); return json({ ok: true, assetId: "00000000-0000-7000-8000-00000000d401", versionId: "00000000-0000-7000-8000-00000000d402", text: "Mock dialogue", scriptRevision: d.scriptRevision, costUsd: 0.001, media: { path: `${fx.project.id}/mock-speech.wav`, mimeType: "audio/wav", width: null, height: null, byteSize: 96044, sha256: "a".repeat(64) } }); }
       if (/projectAiProviders|listTextChoices/.test(name)) return json({ providers: [], missing: false });
       if (/listStorySessions/.test(name)) return json({ ok: true, sessions: [] });
       if (/listStorySuggestions/.test(name)) return json({ ok: true, suggestions: [] });
@@ -106,8 +115,8 @@ export function harness(defaultOut) {
 
   /** Åpner sceneeditoren for sceneforekomsten (occurrenceId, som `?scene=` tar) på språket. */
   async function open(sceneId, lang = "nb", role = "owner") {
-    browser ??= await chromium.launch({ headless: true });
-    const context = await browser.newContext({ viewport: { width: 1280, height: 1800 }, colorScheme: "dark" });
+    browser ??= await chromium.launch({ headless: true, args: ["--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"] });
+    const context = await browser.newContext({ viewport: { width: 1280, height: 1800 }, colorScheme: "dark", permissions: ["microphone"] });
     await mock(context, role);
     const page = await context.newPage();
     const errors = [];

@@ -489,6 +489,9 @@ export interface AssetVoice {
   readonly voiceId: string;
   /** Navnet som vises (fra leverandørens liste). */
   readonly label: string;
+  readonly modelId?: string;
+  readonly language?: string;
+  readonly settings?: import("./dialogue/voice").SpeechSettings;
 }
 
 export type SoundLinkKind = "asset" | "block" | "scene" | "segment" | "event" | "production";

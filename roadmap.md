@@ -1,10 +1,19 @@
+# DV3+DV4 – Dialogeditor og stemme (19.10.2026)
+- [x] DV3: eksisterende opptaksdialog med kontekst, versjonsbølger, forhåndslytting, aktivt valg og bekreftet sletting.
+- [x] DV3: bekreftede karakterkoblinger og ett spor per karakter i begge tidslinjer; overlapp varsles uten flytting.
+- [x] DV4: full standardstemme i assets.voice, levende modell-/språkliste, lokal enkeltgenerering og tapsfrie metadata.
+- [x] Tester: utvidet tapsfrihet, nettverksvern, DV3/DV4-suiter og bestilte regresjoner; kravregister og kunnskapsbase.
+
+- [ ] Kontroller DB-regresjon hos Claude: lokal Postgres utilgjengelig. Ingen 0061.
+- [ ] Innebygd opprettelse av ny egendefinert stemme: kontorettigheter/samtykkeflyt ikke verifisert; eksisterende stemmer kan kobles, opprettelse skjer hos ElevenLabs.
+
 # DV1+DV2 – Dialog og stemme (19.10.2026)
 - [x] Spesifikasjonsfil (komprimert gjengivelse) i docs/product/phase3/DIALOGUE_VOICE_SPEC.md.
 - [x] DV1: klikk i manus flytter avspillingshodet (ord → tidskobling → klippstart → anker), estimert/mangler, dobbeltklikk åpner opptaksdialogen med replikken.
 - [x] DV2: migrasjon 0060 skrevet og testet lokalt (ikke kjørt i Cloud – Claude kjører den).
 - [x] DV2: kommandoer med invers, én speilingsfunksjon, lydeditor redigerer aktiv versjon.
 - [x] Tester: egenskapstest tapsfrihet, speiling, backup-rundtur, DB 0060, dv1/dv2 visuelle suiter, regresjon.
-- [ ] Senere DV-steg (DV3–DV8): versjonsliste i dialogeditoren, note_flags, bokmerker, stemmer/generering, avvik.
+- [ ] Senere DV-steg (DV5–DV8): note_flags, bokmerker, massegenerering og avvik.
 
 # B2 / estimatliste – 19.10.2026
 - [x] DEC-0099 fra leverte kilder, REQ-0740–0749, build_docs/check_kb.

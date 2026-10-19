@@ -17,6 +17,10 @@ import {
   isUuid,
   newId,
   providerModel,
+  speechSettingsError,
+  speechLanguageError,
+  type SpeechSettings,
+  type SpeechModel,
 } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 
@@ -100,6 +104,7 @@ export type SpeechResult =
       readonly media: AssetMedia;
       readonly text: string;
       readonly costUsd: number | null;
+      readonly scriptRevision?: number;
     }
   | { readonly ok: false; readonly message: string };
 
@@ -113,7 +118,16 @@ export const generateSpeech = createServerFn({ method: "POST" })
       throw new Error(L("Ugyldig stemme", "Invalid voice"));
     if (x["approved"] !== true)
       throw new Error(L("Genereringen må bekreftes", "The generation must be confirmed"));
-    return { projectId: x["projectId"], blockId: x["blockId"], voiceId: x["voiceId"] };
+    const model = x["modelId"] ?? SPEECH_MODEL;
+    const language = x["language"] ?? SPEECH_LANGUAGE;
+    const settings = x["settings"] ?? {};
+    if (typeof model !== "string" || !/^[A-Za-z0-9_-]{1,100}$/.test(model) || typeof language !== "string" || !/^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$/.test(language))
+      throw new Error(L("Ugyldig modell eller talespråk", "Invalid model or speech language"));
+    const problem = speechSettingsError(settings);
+    if (problem) throw new Error(problem);
+    const expectedRevision = x["scriptRevision"];
+    if (expectedRevision !== undefined && (!Number.isInteger(expectedRevision) || Number(expectedRevision) < 1)) throw new Error(L("Ugyldig manusrevisjon", "Invalid script revision"));
+    return { projectId: x["projectId"], blockId: x["blockId"], voiceId: x["voiceId"], model, language, settings: settings as SpeechSettings, expectedRevision };
   })
   .handler(async ({ data, context }): Promise<SpeechResult> => {
     const a = await editorAccess(context.supabase, data.projectId, context.userId);
@@ -145,25 +159,27 @@ export const generateSpeech = createServerFn({ method: "POST" })
     // Teksten fra manuset (ikke fra nettleseren)
     const { data: block } = await db
       .from("script_blocks")
-      .select("id, kind, text, removed")
+      .select("id, kind, text, removed, current_rev")
       .eq("id", data.blockId)
       .eq("project_id", data.projectId)
       .maybeSingle();
-    const b = block as { kind: string; text: string; removed: boolean } | null;
+    const b = block as { kind: string; text: string; removed: boolean; current_rev: number } | null;
     if (!b || b.removed || b.kind !== "dialogue")
       return {
         ok: false,
         message: L("Bare replikker kan leses inn.", "Only lines can be read aloud."),
       };
+    if (data.expectedRevision !== undefined && b.current_rev !== data.expectedRevision)
+      return { ok: false, message: L("Manuset er endret. Kontroller replikken og godkjenn kostnaden på nytt.", "The script has changed. Review the line and approve the cost again.") };
     const text = b.text.replace(/\s+/g, " ").trim();
     // Administrator kan ha slått av ElevenLabs eller talemodellen for alle (DEC-0088, migrasjon 0034)
     const aiGate = await (
       await import("@/adapters/account/ai-models.server")
-    ).modelGate(db, "elevenlabs", SPEECH_MODEL);
+    ).modelGate(db, "elevenlabs", data.model);
     if (aiGate.message) return { ok: false, message: aiGate.message };
-    const m = providerModel("elevenlabs", SPEECH_MODEL);
-    if (!text || !m) return { ok: false, message: L("Replikken er tom.", "The line is empty.") };
-    if (text.length > (m.maxPromptChars ?? 5000))
+    const m = providerModel("elevenlabs", data.model);
+    if (!text) return { ok: false, message: L("Replikken er tom.", "The line is empty.") };
+    if (text.length > (m?.maxPromptChars ?? 5000))
       return {
         ok: false,
         message: L(
@@ -180,7 +196,8 @@ export const generateSpeech = createServerFn({ method: "POST" })
           "None of the project's owners has connected ElevenLabs (AI providers).",
         ),
       };
-    const cost = estimateCostUsd("elevenlabs", SPEECH_MODEL, { characters: text.length });
+    const cost = estimateCostUsd("elevenlabs", data.model, { characters: text.length });
+    if (cost === null) return { ok: false, message: L("Modellprisen er ukjent. Administratoren må registrere prisen før generering.", "The model price is unknown. An administrator must register the price before generation.") };
     const hourAgo = new Date(Date.now() - 3600_000).toISOString();
     const limits = async (extra: number): Promise<string | null> => {
       const { count } = await db
@@ -200,7 +217,7 @@ export const generateSpeech = createServerFn({ method: "POST" })
         (proj as { ai_month_limit?: number | null }).ai_month_limit,
         extra === 1,
       );
-      return budget ?? gate.overAccountCap(db, key.user_id, cost ?? 0, extra === 1);
+      return budget ?? gate.overAccountCap(db, key.user_id, cost ?? Number.NaN, extra === 1);
     };
     const before = await limits(0);
     if (before) return { ok: false, message: before };
@@ -210,8 +227,8 @@ export const generateSpeech = createServerFn({ method: "POST" })
       project_id: data.projectId,
       kind: "sound",
       provider: "elevenlabs",
-      model: SPEECH_MODEL,
-      prompt: text,
+      model: data.model,
+      prompt: "",
       status: "running",
       created_by: context.userId,
       provider_key_id: key.id,
@@ -219,8 +236,11 @@ export const generateSpeech = createServerFn({ method: "POST" })
       cost_usd: cost,
       params: {
         speech: true,
+        language: data.language,
+        settings: data.settings,
+        scriptRevision: b.current_rev,
         // Innsatsnivået jobben ble kjørt med (mandat 19.3, REQ-0275)
-        effort: effortOf(providerModel("elevenlabs", SPEECH_MODEL)),
+        effort: effortOf(providerModel("elevenlabs", data.model)),
         voiceId: data.voiceId,
         blockId: data.blockId,
         // Sporbarhet (DEC-0072, REQ-0257)
@@ -257,13 +277,22 @@ export const generateSpeech = createServerFn({ method: "POST" })
         provider: key.provider,
         rowId: key.id,
       });
+      const [models, voices] = await Promise.all([ADAPTERS.elevenlabs.speechModels(secret), ADAPTERS.elevenlabs.voices(secret)]);
+      const liveModel = models.find(m => m.modelId === data.model);
+      if (!liveModel || !voices.some(v => v.voiceId === data.voiceId))
+        throw new Error(L("Stemmen eller modellen er ikke tilgjengelig på kontoen.", "The voice or model is not available in the account."));
+      const languageError = speechLanguageError(liveModel, data.language);
+      if (languageError) throw new Error(languageError);
+      if (liveModel.maxCharacters !== null && text.length > liveModel.maxCharacters)
+        throw new Error(L("Replikken er for lang for modellen.", "The line is too long for the model."));
       charged = true;
       const out = await ADAPTERS.elevenlabs.speech({
         key: secret,
-        model: SPEECH_MODEL,
+        model: data.model,
         voiceId: data.voiceId,
         text,
-        language: SPEECH_LANGUAGE,
+        language: data.language,
+        settings: data.settings,
       });
       if (!out.bytes.byteLength)
         throw new Error(L("Tjenesten svarte uten lyd.", "The service replied without sound."));
@@ -290,6 +319,7 @@ export const generateSpeech = createServerFn({ method: "POST" })
         versionId,
         text,
         costUsd: cost,
+        scriptRevision: b.current_rev,
         media: {
           path,
           mimeType: "audio/mpeg",
@@ -314,4 +344,26 @@ export const generateSpeech = createServerFn({ method: "POST" })
         ),
       };
     }
+  });
+
+/** DV4: model/language choices come from the authorized account, not a fixed UI list. */
+export const listSpeechModels = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((d: unknown) => {
+    const x = (d ?? {}) as Record<string, unknown>;
+    if (!isId(x["projectId"])) throw new Error(L("Ugyldig prosjekt", "Invalid project"));
+    return { projectId: x["projectId"] };
+  })
+  .handler(async ({ data, context }): Promise<{ ok: true; models: SpeechModel[] } | { ok: false; message: string }> => {
+    const a = await editorAccess(context.supabase, data.projectId, context.userId);
+    if (!a) return { ok: false, message: L("Du har ikke tilgang.", "You do not have access.") };
+    const key = await a.gate.projectKey(a.db, data.projectId, "elevenlabs", context.userId);
+    if (!key) return { ok: false, message: L("ElevenLabs er ikke koblet til.", "ElevenLabs is not connected.") };
+    const { decryptKey } = await import("./key-vault.server");
+    const { ADAPTERS, scrubSecret } = await import("./providers.server");
+    let secret: string | null = null;
+    try {
+      secret = await decryptKey(key, { userId: key.user_id, provider: key.provider, rowId: key.id });
+      return { ok: true, models: await ADAPTERS.elevenlabs.speechModels(secret) };
+    } catch (e) { return { ok: false, message: scrubSecret((e as Error).message, secret).slice(0, 300) }; }
   });

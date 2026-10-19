@@ -1,5 +1,19 @@
 # Implementeringsstatus – Animatic Studio
 
+## DV3/DV4 – 19.10.2026
+- DV1/DV2 og migrasjon 0060 er Cloud-verifisert/publisert av Øystein; skjemaversjon 60. Denne runden lager ingen 0061 og erstatter ingen databasefunksjoner: assets.voice er eksisterende størrelsesbegrenset JSONB; character_asset_id finnes fra 0060.
+- DV3 utvider RecordAudioDialog, ikke en konkurrerende editor: stor replikk/kontekst, karaktervalg og portrett, opptak, stablede versjoner, separat forhåndslytting, aktiv filmversjon, bekreftet reversibel sletting av inaktiv versjon. Karakterforslag krever bekreftelse; nye opptak kan få entydig karakterkobling. Begge tidslinjer projiserer karakterspor; overlapp varsles, andre linjer flyttes ikke.
+- DV4: standardstemme med modell, språk og innstillinger; kontoens stemmer/modeller via eksisterende serveradapter. Lokal generering går gjennom kostnadsport, sjekker manusrevisjon og språk, blir ny aktiv versjon og bevarer tidligere filer/redigering. Generert fil oppretter egen lydressurs; forelderversjon bevares. Jobblogg lagrer ikke manusreplikken. Ukjent modellpris blokkerer generering.
+- Egendefinert stemme: eksisterende kontostemme kan velges. Opprettelse skjer hos ElevenLabs via lenke; leverandøren håndhever kontoadgang/samtykke/rettigheter. Ingen innebygd stemmekloning eller verifikasjon av kontoens opprettelsesrettigheter. Dette er et eksplisitt avvik/avgrensning, ikke rapportert som full funksjon.
+- Krav M1–M5, D1–D8, L1–L10 og V1–V7 registrert som REQ-0750–0779 med original oppdragskilde og status «Implementert – ikke verifisert»; ingen nye beslutningsnumre oppfunnet. build_docs/check_kb OK: 779 krav, 12 skills, 0 udekkede mandatlinjer. PyYAML installert isolert i /tmp.
+- Tester: Vitest 1774 bestått, 0 feilet, 10 eksisterende hoppet over (227 filer bestått, 2 eksisterende hoppet over). Automatisk typekontroll/build OK; ingen manuell tsc-kjøring i dette miljøet. i18n 0 tekster uten engelsk.
+- Nettleser: DV3 48/48 (NO/EN, falsk mikrofon, kobling, preview uten aktivering, valg, bekreftet sletting og begge spor); DV4 24/24 (NO/EN, lokal overstyring, godkjent mockgenerering, metadata, bibliotekstandard). Ingen ekte ElevenLabs-kall.
+- Regresjon: DV1 15/15, DV2 7/7, CA1–CA8 17/17/20/25/13/15/26/22 (155/155), U5 65/65, scene-panels 39/39, dec0093-audio-ui 28/28, dec0094-audio-editor-ui 24/24.
+- Verifisering4 51/54: gammel suite har hardkodet nettlesersti og reserveoppstart uten falsk mikrofon, derfor to REQ-0583-feil; Courier Prime måles 6,439 em og gir én REQ-0050-feil. Forventninger beholdt. Ny DV3-suite prøver opptak med falsk mikrofon på begge språk og består. Første sideåpning i DV3 feilet sporadisk med ERR_ABORTED; siste fullkjøring 48/48. Gammel lydsuite fikk tidsavbrudd i lang samlet kjøring; separat fullkjøring 28/28.
+- DB-tester og ekte kontoflyt ikke kjørt i denne runden: lokal Postgres på 54329 er ikke tilgjengelig. Ingen databaseendring er gjort. Øysteins tidligere DB 127/127/backfill-verifikasjon beholdes som tidligere verifikasjon, ikke ny kjøring.
+- DV5–DV8 (massegenerering, avvik, gule lapper, bokmerker) utenfor denne leveransen. KI-167/KI-209/KI-243 er uendret.
+
+
 Oppdatert: 2026-10-19. Eldre sammendrag under beholdes som historikk. Detaljert status per krav: `docs/product/TRACEABILITY_MATRIX.md` (generert).
 
 ## Gjeldende status – 19.10.2026

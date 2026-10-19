@@ -1,5 +1,11 @@
 # Kjente problemer og risikoer – Animatic Studio
 
+## DV3/DV4-verifikasjon
+- Ny egendefinert stemme opprettes hos ElevenLabs, ikke i appen; kontoens rettigheter/samtykke er ikke verifisert.
+- Ingen lokal Postgres; DB-kjøring gjenstår hos Claude. Ingen ny migrasjon.
+- Verifisering4 51/54 i dette miljøet (gammel nettleser-reserve uten falsk mikrofon, Courier Prime-bredde); ny DV3-opptakstest består på begge språk.
+
+
 | ID | Dato | Beskrivelse | Konsekvens | Tiltak | Status |
 |---|---|---|---|---|---|
 | KI-01 | 2026-10-08 | Mandatet har mange dupliserte linjer og en tom kodeblokk (l. 173–176) | Ingen funksjonell; kan forvirre | Bevart uendret; dokumentert i SPEC_MANIFEST. Ryddes i ev. v15 av Mars | Åpen (kosmetisk) – ryddes av Mars i ev. v15 |

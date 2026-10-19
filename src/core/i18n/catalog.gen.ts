@@ -139,6 +139,9 @@ export const CATALOG: Record<string, string> = {
   "AI-tjenesten svarte uten bilde.": "The AI service replied without an image.",
   "AI-tjenesten svarte uten tekst.": "The AI service replied without text.",
   "AI-tjenesten svarte uten tekst. Prøv igjen.": "The AI service replied without text. Try again.",
+  "aktiv versjon er slettet": "active version is deleted",
+  "aktiv versjon mangler eller tilhører et annet klipp":
+    "active version is missing or belongs to another clip",
   "Aleph 2 (fra 2D-scenen)": "Aleph 2 (from the 2D scene)",
   "All tekst er minst {0} pt og får plass.": "All text is at least {0} pt and fits.",
   "Alle linjene har allerede engelsk oversettelse": "All lines already have an English translation",
@@ -178,6 +181,7 @@ export const CATALOG: Record<string, string> = {
   "Bakgrunnsfargen må være på formen #rrggbb": "The background colour must be in the form #rrggbb",
   "Banen må ha mellom 2 og {0} punkter": "The path must have between 2 and {0} points",
   "Banen må slutte etter at den starter": "The path must end after it starts",
+  "Bare dialog kan kobles til en karakter": "Only dialogue can be linked to a character",
   "Bare dine egne siste endringer kan angres på denne måten.":
     "Only your own latest changes can be undone in this way.",
   "Bare eier og redaktør i gruppen kan legge til i det globale biblioteket":
@@ -211,6 +215,7 @@ export const CATALOG: Record<string, string> = {
   "Bare prosjekteieren kan gjøre dette.": "Only the project owner can do this.",
   "Bare prosjektets eier kan rydde filer.": "Only the project owner can clean up files.",
   "Bare prosjektets eier kan slette for godt.": "Only the project owner can delete permanently.",
+  "Bare replikker har lydversjoner": "Only lines have audio versions",
   "Bare replikker kan leses inn.": "Only lines can be read aloud.",
   "Bare scenenoder kan bli scener": "Only scene nodes can become scenes",
   "Bare sider kan ha en sideovergang": "Only pages can have a page transition",
@@ -434,6 +439,8 @@ export const CATALOG: Record<string, string> = {
   "Delt fra karakterlinjen": "Split from the character line",
   Deltakeren: "The participant",
   "Deltakeren er allerede fjernet": "The participant is already removed",
+  "Den aktive versjonen kan ikke slettes. Velg en annen først.":
+    "The active version cannot be deleted. Choose another first.",
   "Den automatiske analysen er kjørt {0} ganger i dag for dette prosjektet. Den fortsetter i morgen.":
     "The automatic analysis has run {0} times today for this project. It will continue tomorrow.",
   "Den egne versjonen er endret; angre endringene i den først":
@@ -449,6 +456,7 @@ export const CATALOG: Record<string, string> = {
   "Den faste administratoren kan ikke endres.": "The permanent administrator cannot be changed.",
   "Den faste administratorkontoen kan ikke slettes.":
     "The permanent administrator account cannot be deleted.",
+  "Den forrige lydversjonen finnes ikke": "The previous audio version was not found",
   "Den innebygde AI-en er ikke slått på. Kontakt administratoren.":
     "The built-in AI is not enabled. Contact the administrator.",
   "Den innebygde AI-en er ikke tilgjengelig nå. Forslagene bygger på manusreglene.":
@@ -532,6 +540,7 @@ export const CATALOG: Record<string, string> = {
   "Elementet viser et ukjent felt": "The element shows an unknown field",
   "Elementtypen er uendret": "The element type is unchanged",
   "Eleven v3 (norsk)": "Eleven v3 (Norwegian)",
+  "ElevenLabs er ikke koblet til.": "ElevenLabs is not connected.",
   "En annen scene er plassert i fortellingstiden i forhold til den nye scenen. Endre den først.":
     "Another scene is placed in story time relative to the new scene. Change it first.",
   "En av linjene finnes ikke i manuset": "One of the lines does not exist in the script",
@@ -675,6 +684,7 @@ export const CATALOG: Record<string, string> = {
     "This file type is not accepted (images: JPEG, PNG, WebP, GIF; video: MP4, MOV, WebM; audio: MP3, WAV, M4A, OGG, WebM, FLAC).",
   "Flere kandidater (hver koster som ett bilde)": "Several candidates (each costs as one image)",
   "Flerspråklig tale v2 (uten norsk)": "Multilingual speech v2 (no Norwegian)",
+  "For lang tekst i lydversjonen": "Text in the audio version is too long",
   "For lang tekst i profilen ({0})": "Text too long in the profile ({0})",
   "For lang tekst i profilen (notes)": "Text too long in the profile (notes)",
   "For mange alternative navn": "Too many alternative names",
@@ -740,6 +750,7 @@ export const CATALOG: Record<string, string> = {
   "Forekomstene stemmer ikke med delingen": "The occurrences do not match the split",
   "Forekomstkartet stemmer ikke med bruken av scenen":
     "The occurrence map does not match the use of the scene",
+  "Foreldreversjonen hører ikke til replikken": "The parent version does not belong to the line",
   "Fører til": "Leads to",
   "Foreslått tekst uten forsøksvis redigering": "Suggested text without a trial edit",
   "Forleng pausen før neste replikk i denne språkversjonen (krever egen klipping; hovedfilmen endres ikke).":
@@ -950,6 +961,7 @@ export const CATALOG: Record<string, string> = {
     "Character and dialogue on the same line – split automatically",
   Karakteren: "The character",
   "Karakteren er fjernet": "The character has been removed",
+  "Karakteren finnes ikke": "The character was not found",
   "Karakteren finnes ikke.": "The character does not exist.",
   "Karakteren har allerede en profil": "The character already has a profile",
   "Karakteren har allerede et stadium fra denne scenen":
@@ -1112,10 +1124,21 @@ export const CATALOG: Record<string, string> = {
   "Lyden må være MP3, WAV, OGG, WebM, M4A/AAC eller FLAC":
     "The sound must be MP3, WAV, OGG, WebM, M4A/AAC or FLAC",
   Lydfilen: "The audio file",
+  "Lydfilen finnes ikke": "The audio file was not found",
   "Lydfiler kan ikke ha relasjoner": "Audio files cannot have relations",
   Lydklippet: "The audio clip",
+  "Lydkomposisjonen finnes ikke": "The audio composition was not found",
   "Lydlengde {0}–{1} s": "Audio length {0}–{1} s",
+  "Lydopptaket finnes ikke": "The recording was not found",
+  "Lydvarianten finnes ikke": "The audio variant was not found",
   Lydversjonen: "The audio version",
+  "Lydversjonen er aktiv og slettes ikke": "The audio version is active and is not deleted",
+  "Lydversjonen er slettet": "The audio version is deleted",
+  "Lydversjonen har leppesynk og slettes ikke": "The audio version has lip sync and is not deleted",
+  "Lydversjonen har leppesynk. Angre leppesynket først.":
+    "The audio version has lip sync. Undo the lip sync first.",
+  "Lydversjonen hører ikke til replikken": "The audio version does not belong to the line",
+  "Lydversjonen hører til en annen replikk": "The audio version belongs to another line",
   "Må bekreftes": "Must be confirmed",
   "Må ha et forbildebilde – den endrer et bilde, lager ikke fra bare tekst":
     "Needs a reference image – it changes an image, it does not create from text alone",
@@ -1147,6 +1170,8 @@ export const CATALOG: Record<string, string> = {
   Manusblokken: "The script block",
   "Manuset er endret etter at videoen ble laget.":
     "The script has changed since the video was made.",
+  "Manuset er endret. Kontroller replikken og godkjenn kostnaden på nytt.":
+    "The script has changed. Review the line and approve the cost again.",
   "Manuset inneholder ingen scener": "The script contains no scenes",
   "Manuslinjen finnes ikke": "The script line was not found",
   "Manuslinjen hører ikke til en scene": "The script line does not belong to a scene",
@@ -1184,10 +1209,14 @@ export const CATALOG: Record<string, string> = {
     "The model does not make sound: the lines are used for lip movement and acting.",
   "Modellen lager ikke video hos denne leverandøren.":
     "This model does not make video with this provider.",
+  "Modellen støtter ikke det valgte talespråket. Velg språk eller modell selv.":
+    "The model does not support the selected speech language. Choose a language or model yourself.",
   "Modellen tar imot {0}–{1} sekunder om gangen.": "The model accepts {0}–{1} seconds at a time.",
   "Modellen tar imot høyst {0} referansebilder.": "The model accepts at most {0} reference images.",
   "Modellen tar imot høyst {0} tegn: tok bort {1}.":
     "The model accepts at most {0} characters: removed {1}.",
+  "Modellprisen er ukjent. Administratoren må registrere prisen før generering.":
+    "The model price is unknown. An administrator must register the price before generation.",
   "Mønsteret finnes ikke": "The pattern was not found",
   "Mønsteret må ha et navn": "The pattern needs a name",
   "Myk kant må være mellom 0 og {0} px": "The soft edge must be between 0 and {0} px",
@@ -1416,17 +1445,27 @@ export const CATALOG: Record<string, string> = {
   "Replikken ble ikke lest inn: {0}": "The line could not be read aloud: {0}",
   "Replikken er {0} kortere enn tiden den har. Det kan bli en lang pause – vurder en lengre oversettelse eller la pausen stå.":
     "The line is {0} shorter than the time it has. This may leave a long pause – consider a longer translation or leave the pause.",
+  "Replikken er for lang for modellen.": "The line is too long for the model.",
   "Replikken er for lang til å leses inn i én del.":
     "The line is too long to be read aloud in one part.",
   "Replikken er tom.": "The line is empty.",
   "Replikken finnes ikke": "The line does not exist",
   "Replikken finnes ikke i denne scenen.": "The line does not exist in this scene.",
   "Replikken har allerede leppesynk for dette taket": "The line already has lip sync for this take",
+  "Replikken har flere lydversjoner eller leppesynk. Ingen versjon slettes; angre dem først.":
+    "The line has several audio versions or lip sync. No version is deleted; undo them first.",
+  "Replikken har ingen aktiv lydversjon": "The line has no active audio version",
+  "Replikken har ingen lydversjon ennå. Last prosjektet på nytt.":
+    "The line has no audio version yet. Reload the project.",
+  "Replikken har lydversjoner som ikke kan fjernes. Ingen lydversjon slettes.":
+    "The line has audio versions that cannot be removed. No audio version is deleted.",
   "Replikken hører til en annen scene": "The line belongs to another scene",
   "Replikken i {0} nevner {1}, som bare er med i {2} (deaktivert).":
     "The line in {0} mentions {1}, who is only in {2} (deactivated).",
   "Replikken i {0} nevner {1}, som bare vises i {2} i hovedfilmen. Den scenen er ikke med i {3}.":
     "The line in {0} mentions {1}, who only appears in {2} in the main film. That scene is not in {3}.",
+  "Replikken ville overlappe en annen replikk fra samme karakter. Ingen andre replikker flyttes.":
+    "The line would overlap another line by the same character. No other lines are moved.",
   "Replikkene alene er for lange for denne modellen. Del segmentet i kortere deler eller velg en annen modell.":
     "The lines alone are too long for this model. Split the segment into shorter parts or choose another model.",
   "Replikkene i segmentet er for lange for denne modellen (de må sendes ordrett). Del segmentet eller velg en annen modell.":
@@ -1638,6 +1677,7 @@ export const CATALOG: Record<string, string> = {
   "Som 2D-scenen (720–3840 px)": "As the 2D scene (720–3840 px)",
   "Som 2D-scenen (opptil 1080p)": "As the 2D scene (up to 1080p)",
   "Sømløs løkke": "Seamless loop",
+  "speilingen avviker fra aktiv versjon": "the mirror differs from the active version",
   "Spinoffens klipping bruker 2D-scenen, men hovedfilmen har ingen 2D-scene. Velg også lagene (da kopieres 2D-scenen).":
     "The spin-off's edit uses the 2D scene, but the main film has no 2D scene. Also choose the layers (then the 2D scene is copied).",
   "Spinoffens klipping går lenger enn hovedfilmens 2D-scene. Velg også «Timing» (lengden på 2D-scenen).":
@@ -1662,6 +1702,8 @@ export const CATALOG: Record<string, string> = {
     "Started from the last frame of the previous segment (continuity).",
   "Status er endret.": "The status has been changed.",
   Sted: "Location",
+  "Stemmen eller modellen er ikke tilgjengelig på kontoen.":
+    "The voice or model is not available in the account.",
   "Stemmene kunne ikke hentes: {0}": "The voices could not be loaded: {0}",
   "Stil fra «Filmens visuelle stil»{0}.": "Style from “The film's visual style”{0}.",
   "Stilen er for lang til å få plass i beskrivelsen (maks {0} tegn til sammen)":
@@ -1832,6 +1874,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig kamerautsnitt": "Invalid camera shot",
   "Ugyldig kantlinje": "Invalid stroke",
   "Ugyldig karakteratferd": "Invalid character behavior",
+  "Ugyldig karakterkobling": "Invalid character link",
   "Ugyldig kilde for delen": "Invalid source for the part",
   "Ugyldig kobling": "Invalid connection",
   "Ugyldig kobling til det globale biblioteket": "Invalid link to the global library",
@@ -1856,16 +1899,19 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig lydhash": "Invalid audio hash",
   "Ugyldig lydklipp": "Invalid audio clip",
   "Ugyldig lydkomposisjon": "Invalid audio composition",
+  "Ugyldig lydversjon": "Invalid audio version",
   "Ugyldig mal": "Invalid template",
   "Ugyldig malelement": "Invalid template element",
   "Ugyldig malendring": "Invalid template change",
   "Ugyldig malfelt": "Invalid template field",
   "Ugyldig malforekomst": "Invalid template instance",
   "Ugyldig malformat": "Invalid template format",
+  "Ugyldig manusrevisjon": "Invalid script revision",
   "Ugyldig markørfarge": "Invalid marker color",
   "Ugyldig maske": "Invalid mask",
   "Ugyldig mediesti": "Invalid media path",
   "Ugyldig modell": "Invalid model",
+  "Ugyldig modell eller talespråk": "Invalid model or speech language",
   "Ugyldig modellnavn.": "Invalid model name.",
   "Ugyldig mønster": "Invalid pattern",
   "Ugyldig munnformsekvens": "Invalid mouth shape sequence",
@@ -1889,6 +1935,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig periode": "Invalid period",
   "Ugyldig plakat": "Invalid poster",
   "Ugyldig planlagt lengde": "Invalid planned length",
+  "Ugyldig plassering": "Invalid position",
   "Ugyldig plassering av masken": "Invalid position of the mask",
   "Ugyldig plassering av rigg-del": "Invalid rig part placement",
   "Ugyldig plassering eller størrelse på masken i nøkkelbilde":
@@ -1903,6 +1950,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig prosjekt-ID": "Invalid project ID",
   "Ugyldig punkt i banen": "Invalid point in the path",
   "Ugyldig pust": "Invalid breathing",
+  "Ugyldig redigering": "Invalid edit",
   "Ugyldig rekkefølge": "Invalid order",
   "Ugyldig relasjon": "Invalid relation",
   "Ugyldig replikk": "Invalid line",
@@ -1993,6 +2041,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldige filer": "Invalid files",
   "Ugyldige forbildebilder": "Invalid reference images",
   "Ugyldige forbildebilder (høyst 12)": "Invalid reference images (at most 12)",
+  "Ugyldige genereringsinnstillinger": "Invalid generation settings",
   "Ugyldige innholdsvalg": "Invalid content options",
   "Ugyldige instrukser": "Invalid instructions",
   "Ugyldige mål": "Invalid dimensions",
@@ -2001,6 +2050,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldige referansebilder": "Invalid reference images",
   "Ugyldige revisjoner": "Invalid revisions",
   "Ugyldige rigg-deler": "Invalid rig parts",
+  "Ugyldige stemmeinnstillinger": "Invalid voice settings",
   "Ugyldige tegn i kameraet": "Invalid characters in the camera",
   "Ugyldige turer": "Invalid turns",
   ukjent: "unknown",
@@ -2022,6 +2072,7 @@ export const CATALOG: Record<string, string> = {
   "Ukjent leppesynkkilde": "Unknown lip sync source",
   "Ukjent leverandør": "Unknown provider",
   "Ukjent leverandør.": "Unknown provider.",
+  "Ukjent lydkilde": "Unknown audio source",
   "Ukjent lydmodell.": "Unknown sound model.",
   "Ukjent lydtype": "Unknown audio type",
   "Ukjent mål": "Unknown target",
@@ -2042,6 +2093,7 @@ export const CATALOG: Record<string, string> = {
   "Ukjent språk": "Unknown language",
   "Ukjent startbilde.": "Unknown start image.",
   "Ukjent stil": "Unknown style",
+  "Ukjent taler": "Unknown speaker",
   "Ukjent tekstleverandør": "Unknown text provider",
   "Ukjent tekstleverandør.": "Unknown text provider.",
   "Ukjent tjeneste": "Unknown service",

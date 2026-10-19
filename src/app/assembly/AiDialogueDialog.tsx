@@ -204,6 +204,7 @@ export function AiDialogueDialog({
         }
         const name = `${l.speaker} – ${l.text.split(" ").slice(0, 5).join(" ")}`.slice(0, 120);
         const variantId = newId<"asset_variant">();
+        const dialogueClipId = newId<"audio_clip">();
         const group = newId();
         const steps = [
           {
@@ -243,9 +244,10 @@ export function AiDialogueDialog({
           },
           {
             type: "AddAudioClips",
+            dialogueMeta: { source: "ai", provider: "elevenlabs", voiceId: l.character?.voice?.voiceId ?? null, modelId: SPEECH_MODEL, settings: { language: "no" }, scriptRevision: r.scriptRevision, parentVersionId: null },
             clips: [
               {
-                clipId: newId<"audio_clip">(),
+                clipId: dialogueClipId,
                 fields: {
                   occurrenceId: clip.occurrenceId,
                   kind: "dialogue",
@@ -267,6 +269,7 @@ export function AiDialogueDialog({
               },
             ],
           },
+          ...(l.character ? [{ type: "SetDialogueCharacter", clipIds: [dialogueClipId], characterAssetId: l.character.id }] : []),
         ];
         let err: string | null = null;
         for (const c of steps) {

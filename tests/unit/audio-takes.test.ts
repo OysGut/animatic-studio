@@ -52,6 +52,22 @@ vi.mock("@/app/library/asset-audio", () => ({
   const { saveTake, saveRoomTone, chooseTake } = await import("@/app/audio/takes");
 const { importAudio } = await import("@/app/mobile/use-mobile-imports");
 
+it("DV4 creates generated files on their own asset while preserving previous versions and parent", async () => {
+  const { dvBase, dvId } = await import("../helpers/dialogue-fixture");
+  const { s, clipId } = dvBase();
+  const clip = s.audioClips[clipId]; if (!clip || !clip.blockId) throw new Error("fixture");
+  const cmds = fakeCmds(s);
+  const createdAsset = dvId(600);
+  const result = await saveTake(cmds as never, s, { kind: "line", occurrenceId: clip.occurrenceId, blockId: clip.blockId }, media(), "AI", createdAsset,
+    { source: "ai", provider: "elevenlabs", voiceId: "mock_voice", modelId: "eleven_v3", settings: { language: "no" }, scriptRevision: 4, parentVersionId: null }, true);
+  const now = cmds.current();
+  expect(result.assetId).toBe(createdAsset); expect(result.clipId).toBe(clipId);
+  expect(now.dialogueVersions[clip.activeVersionId ?? ""]).toEqual(s.dialogueVersions[clip.activeVersionId ?? ""]);
+  const active = now.dialogueVersions[now.audioClips[clipId]?.activeVersionId ?? ""];
+  expect(active?.assetId).toBe(createdAsset); expect(active?.parentVersionId).toBe(clip.activeVersionId);
+  expect(active?.scriptRevision).toBe(4); expect(active?.source).toBe("ai");
+});
+
 const P = fixture.project.id;
 let n = 0;
 const media = (ms = 3000) => ({
@@ -147,9 +163,12 @@ describe("takes for en replikk", () => {
     const clip = first.clipId ? cmds.current().audioClips[first.clipId] : undefined;
     if (!clip) throw new Error("mangler klipp");
     const secondId = "00000000-0000-7000-8000-00000000cc02" as typeof clip.id;
-    const state = { ...cmds.current(), audioClips: { ...cmds.current().audioClips,
+    const originalVersion = cmds.current().dialogueVersions[clip.activeVersionId ?? ""];
+    if (!originalVersion) throw new Error("mangler lydversjon");
+    const secondVersionId = "00000000-0000-7000-8000-00000000cc03";
+    const state = { ...cmds.current(), dialogueVersions: { ...cmds.current().dialogueVersions, [secondVersionId]: { ...originalVersion, id: secondVersionId, clipId: secondId } }, audioClips: { ...cmds.current().audioClips,
       [clip.id]: { ...clip, muted: true },
-      [secondId]: { ...clip, id: secondId, muted: false, offsetMs: clip.offsetMs + 2000 },
+      [secondId]: { ...clip, id: secondId, activeVersionId: secondVersionId, muted: false, offsetMs: clip.offsetMs + 2000 },
     } };
     return { state, firstId: clip.id, secondId, target };
   }

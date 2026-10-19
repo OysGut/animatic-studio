@@ -962,6 +962,7 @@ export type Command = import("../animation/rig-commands").RigCommand
   | {
       readonly type: "AddAudioClips";
       readonly clips: readonly { readonly clipId: AudioClipId; readonly fields: AudioClipFields }[];
+      readonly dialogueMeta?: import("../dialogue/versions").DialogueVersionMeta;
     }
   | { readonly type: "UndoAddAudioClips"; readonly clipIds: readonly AudioClipId[] }
   | {
@@ -978,6 +979,15 @@ export type Command = import("../animation/rig-commands").RigCommand
       readonly activeVersionIds?: Readonly<Record<string, string>>;
     }
   // ---------- Lydversjoner per replikk (DV2, migrasjon 0060) ----------
+  | {
+      readonly type: "SetDialogueCharacter";
+      readonly clipIds: readonly AudioClipId[];
+      readonly characterAssetId: AssetId | null;
+    }
+  | {
+      readonly type: "RestoreDialogueCharacters";
+      readonly links: readonly { readonly clipId: AudioClipId; readonly characterAssetId: AssetId | null }[];
+    }
   | {
       /** Ny lydversjon for en replikkforekomst (opptak, AI, opplasting). Ingenting overskrives. */
       readonly type: "AddDialogueVersion";

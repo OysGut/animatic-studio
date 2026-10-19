@@ -1,4 +1,8 @@
 import "@testing-library/jest-dom/vitest";
+import { denyTestNetwork } from "../../tests/helpers/network-guard";
+
+// DV4: vi.stubGlobal('fetch', mock) replaces this guard for each test; restoring returns to denial.
+globalThis.fetch = denyTestNetwork;
 
 // Tester i node-miljø (src/core, tests/invariants) har ikke window.
 if (typeof window !== "undefined") {
