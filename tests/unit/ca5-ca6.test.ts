@@ -13,13 +13,10 @@ const fps = fixture.state.project.fps;
 
 function baseState(): ProjectState {
   const s = fixture.state;
-  const clip = Object.values(s.audioClips).find(c => !c.removed && c.kind === "dialogue" && c.blockId)!;
-  const occ = s.occurrences[clip.occurrenceId]!;
-  const take = Object.values(s.takes).find(t => !t.removed) ?? Object.values(s.takes)[0]!;
-  return {
-    ...s,
-    occurrences: { ...s.occurrences, [occ.id]: { ...occ, activeTakeId: take.id } },
-  };
+  const occ = Object.values(s.occurrences).find(o => o.activeTakeId && !o.removed)!;
+  const clip = Object.values(s.audioClips).find(c => !c.removed && c.kind === "dialogue" && c.blockId && c.occurrenceId === occ.id)!;
+  void clip;
+  return s;
 }
 const clipOf = (s: ProjectState) => Object.values(s.audioClips).find(c => !c.removed && c.kind === "dialogue" && c.blockId)!;
 const takeOf = (s: ProjectState) => s.occurrences[clipOf(s).occurrenceId]!.activeTakeId!;
