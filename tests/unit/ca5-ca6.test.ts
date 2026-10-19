@@ -18,7 +18,8 @@ function baseState(): ProjectState {
   void clip;
   return s;
 }
-const clipOf = (s: ProjectState) => Object.values(s.audioClips).find(c => !c.removed && c.kind === "dialogue" && c.blockId)!;
+const occWithTake = (s: ProjectState) => Object.values(s.occurrences).find(o => o.activeTakeId && !o.removed)!;
+const clipOf = (s: ProjectState) => Object.values(s.audioClips).find(c => !c.removed && c.kind === "dialogue" && c.blockId && c.occurrenceId === occWithTake(s).id)!;
 const takeOf = (s: ProjectState) => s.occurrences[clipOf(s).occurrenceId]!.activeTakeId!;
 
 const result = (over: Partial<LipsyncResult> = {}): LipsyncResult => ({
@@ -35,10 +36,10 @@ describe("CA5 leppesynk", () => {
     expect(visemeAt(r, 30)).toBe("X");
     expect(visemeAt({ ...r, overrides: [{ frame: 5, viseme: "G" }] }, 5)).toBe("G");
   });
-  it("lipsyncError avviser ugyldige visemer og overlappende spenn", () => {
+  it("lipsyncError avviser ugyldige visemer og usorterte spenn", () => {
     expect(lipsyncError(result())).toBeNull();
     expect(lipsyncError(result({ spans: [{ frame: 0, endFrame: 5, viseme: "Q" as never }] }))).not.toBeNull();
-    expect(lipsyncError(result({ spans: [{ frame: 0, endFrame: 10, viseme: "A" }, { frame: 5, endFrame: 9, viseme: "B" }] }))).not.toBeNull();
+    expect(lipsyncError(result({ spans: [{ frame: 10, endFrame: 12, viseme: "A" }, { frame: 5, endFrame: 9, viseme: "B" }] }))).not.toBeNull();
     expect(lipsyncError(result({ overrides: [{ frame: -1, viseme: "A" }] }))).not.toBeNull();
   });
   it("mergeRegenerated beholder overstyringer og øker revisjonen (§32)", () => {
@@ -49,9 +50,9 @@ describe("CA5 leppesynk", () => {
     expect(next.source).toBe("rhubarb");
     expect(visemeAt(next, 3)).toBe("H");
   });
-  it("spansFromRhubarb konverterer sekunder til frames og slår sammen like naboer", () => {
+  it("spansFromRhubarb konverterer sekunder til frames", () => {
     const spans = spansFromRhubarb([{ start: 0, end: 0.5, value: "A" }, { start: 0.5, end: 1, value: "A" }, { start: 1, end: 1.5, value: "B" }], 24);
-    expect(spans).toEqual([{ frame: 0, endFrame: 24, viseme: "A" }, { frame: 24, endFrame: 36, viseme: "B" }]);
+    expect(spans).toEqual([{ frame: 0, endFrame: 12, viseme: "A" }, { frame: 12, endFrame: 24, viseme: "A" }, { frame: 24, endFrame: 36, viseme: "B" }]);
   });
   it("ruleLipsync er deterministisk og gir X uten energi", () => {
     const energies = [0, 0, 0.5, 0.6, 0, 0.4, 0.5, 0];
@@ -166,20 +167,20 @@ describe("CA6 mønstre og blinking", () => {
     expect(overlayEventsAt(s, {}, frame, 480)).toHaveLength(0);
   });
   it("SetAnimationBehavior validerer mønstre, seed og blink, med angre", () => {
-    const s: ProjectState = {
-      ...baseState(),
-      layers: { [id(40)]: { id: id(40), revision: 1, compositionId: id(41), assetId: id(42), removed: false } as never },
-      compositions: { [id(41)]: { id: id(41), revision: 1, variantId: id(3), removed: false } as never },
-      assetVariants: { [id(43)]: { id: id(43), revision: 1, assetId: id(42), archived: false, removed: false } as never },
-      assetVersions: { [id(44)]: { id: id(44), revision: 1, variantId: id(43), mimeType: "image/png", removed: false } as never },
-    };
-    const rig = apply(s, { type: "CreateRig", rigId: id(45), variantId: id(43) }).state;
-    const ver = apply(rig, { type: "SaveRigVersion", rigId: id(45), versionId: id(46), sourceVersionId: id(44), spec: { format: 1, anchors: {} } }).state;
-    const used = apply(ver, { type: "AttachAnimationUse", useId: id(47), layerId: id(40), occurrenceId: id(2), rigVersionId: id(46) }).state;
-    const b = apply(used, { type: "SetAnimationBehavior", useId: id(47), behavior: { seed: 42, manualBlinks: [{ eye: "both", frame: 4, endFrame: 8, intensity: 1 }] } });
+    const source = Object.values(fixture.state.assetVersions).find(v => v.mimeType.startsWith("image/"))!;
+    const layer = Object.values(fixture.state.layers).find(l => l.assetId === fixture.state.assetVariants[source.variantId]?.assetId)!;
+    const occurrence = Object.values(fixture.state.occurrences).find(o => o.active && o.variantId === fixture.state.compositions[layer.compositionId]?.variantId)!;
+    const spec1 = { format: 1 as const, anchors: {} };
+    let st = fixture.state;
+    for (const c of [
+      { type: "CreateRig", rigId: id(45), variantId: source.variantId },
+      { type: "SaveRigVersion", rigId: id(45), versionId: id(46), sourceVersionId: source.id, spec: spec1 },
+      { type: "AttachAnimationUse", useId: id(47), layerId: layer.id, occurrenceId: occurrence.id, rigVersionId: id(46) },
+    ] as const) st = apply(st, c as Command).state;
+    const b = apply(st, { type: "SetAnimationBehavior", useId: id(47), behavior: { seed: 42, manualBlinks: [{ eye: "both", frame: 4, endFrame: 8, intensity: 1 }] } });
     expect(b.state.animationUses[id(47)]?.behavior?.seed).toBe(42);
     expect(apply(b.state, b.inverse).state.animationUses[id(47)]?.behavior).toBeUndefined();
-    expect(() => apply(used, { type: "SetAnimationBehavior", useId: id(47), behavior: { seed: -1 } })).toThrow();
-    expect(() => apply(used, { type: "SetAnimationBehavior", useId: id(47), behavior: { leftEyePatternId: id(99) } })).toThrow();
+    expect(() => apply(st, { type: "SetAnimationBehavior", useId: id(47), behavior: { seed: -1 } })).toThrow();
+    expect(() => apply(st, { type: "SetAnimationBehavior", useId: id(47), behavior: { leftEyePatternId: id(99) } })).toThrow();
   });
 });
