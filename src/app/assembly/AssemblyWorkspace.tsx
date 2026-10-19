@@ -1,4 +1,4 @@
-import { Toolbar, ToolbarButton, ToolbarSeparator, IconButton } from "@/app/shell/workspace-chrome";
+import { Toolbar, ToolbarButton, ToolbarSeparator, IconButton as ChromeIconButton } from "@/app/shell/workspace-chrome";
 /**
  * Montering (M4 del 1, mandat kap. 15, DEC-0043): den samlede filmen – alle aktive scener i manusets
  * rekkefølge, med 2D-scenene som materiale og tittelkort der 2D-scenen mangler. Forhåndsvis hele filmen,
@@ -909,7 +909,7 @@ function Assembly({
         <ProductionPicker state={state} value={productionId} onChange={setProductionId} />
         <FilmLanguagePicker value={filmLang} onChange={setFilmLang} compact />
         <ToolbarSeparator />
-        <IconButton
+        <ChromeIconButton
           onClick={cmds.undo}
           disabled={!cmds.canUndo}
           title={
@@ -922,8 +922,8 @@ function Assembly({
           }
         >
           <Undo2 />
-        </IconButton>
-        <IconButton
+        </ChromeIconButton>
+        <ChromeIconButton
           onClick={cmds.redo}
           disabled={!cmds.canRedo}
           title={
@@ -936,7 +936,7 @@ function Assembly({
           }
         >
           <Redo2 />
-        </IconButton>
+        </ChromeIconButton>
         {/* Antall og lengde uten avkutting; resten står i verktøytipset. Smalere enn 1600 px vises det samme i
             transportlinjen («Scene 1 av 13», samlet tid), så etiketten skjules der (DEC-0076 funn 5) */}
         <span
