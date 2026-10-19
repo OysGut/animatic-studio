@@ -32,7 +32,10 @@ export function applyBehaviorCommand(s: ProjectState, c: BehaviorCommand) {
     if (!existing && Object.values(lipsync).some(x => !x.removed && x.clipId === r.clipId && x.takeId === r.takeId))
       invalid(L("Replikken har allerede leppesynk for dette taket", "The line already has lip sync for this take"));
     rememberL(r.id);
-    lipsync[r.id] = { ...r, revision: (existing?.revision ?? 0) + 1 };
+    // DV2: synken gjelder lydversjonen som er aktiv nå
+    const dv = r.dialogueVersionId ?? clip!.activeVersionId ?? null;
+    if (dv !== null && s.dialogueVersions[dv]?.clipId !== r.clipId) invalid(L("Lydversjonen hører ikke til replikken", "The audio version does not belong to the line"));
+    lipsync[r.id] = { ...r, ...(dv !== null ? { dialogueVersionId: dv } : {}), revision: (existing?.revision ?? 0) + 1 };
   } else if (c.type === "SetLipsyncEnabled") {
     const r = lipsync[c.lipsyncId];
     if (!r || r.removed || typeof c.enabled !== "boolean") return invalid(L("Leppesynket finnes ikke", "The lip sync was not found"));

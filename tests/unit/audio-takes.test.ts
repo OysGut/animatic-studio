@@ -295,8 +295,12 @@ describe("fast rekkefølge for samtidige versjoner", () => {
     const createdAt = "2026-10-18T23:47:00.000Z";
     versions[secondId] = { ...b, id: secondId, createdAt };
     versions[firstId] = { ...a, id: firstId, createdAt };
+    // DV2: lydversjonene til replikken peker på de samme opptakene (samme omdøping)
+    const rename = (id: string | null) => (id === a.id ? firstId : id === b.id ? secondId : id);
+    const dialogueVersions = Object.fromEntries(Object.entries(state.dialogueVersions).map(
+      ([k, v]) => [k, { ...v, assetVersionId: rename(v.assetVersionId) }]));
     return {
-      state: { ...state, assetVersions: versions, audioClips: {
+      state: { ...state, assetVersions: versions, dialogueVersions, audioClips: {
         ...state.audioClips, [clip.id]: { ...clip, versionId: firstId },
       } },
       first: { ...first, versionId: firstId }, second: { ...second, versionId: secondId }, info,

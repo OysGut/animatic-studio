@@ -55,7 +55,10 @@ export function RecordAudioDialog({
   onPlay,
   onStop,
   onAdded,
+  initialBlockId = null,
 }: {
+  /** DV1: replikken som er valgt når vinduet åpnes fra et dobbeltklikk i manuset (M3/M4). */
+  initialBlockId?: string | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   state: ProjectState;
@@ -117,6 +120,14 @@ export function RecordAudioDialog({
   }
 
   // Lukkes vinduet: stopp mikrofonen og glem opptaket
+  // DV1: åpnet fra manuset – riktig replikk er valgt, sporet er dialog
+  useEffect(() => {
+    if (!open || !initialBlockId) return;
+    if (state.blocks[initialBlockId]?.kind !== "dialogue") return;
+    setKind("dialogue");
+    setBlockId(initialBlockId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, initialBlockId]);
   useEffect(() => {
     if (open) return;
     cleanup();
@@ -293,7 +304,7 @@ export function RecordAudioDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
-      <DialogContent className="max-w-[520px] border-border bg-surface-2">
+      <DialogContent className="max-w-[520px] border-border bg-surface-2" data-testid="record-audio-dialog">
         <DialogHeader>
           <DialogTitle>{L("Lydopptak", "Audio recording")}</DialogTitle>
           <DialogDescription>
@@ -322,6 +333,7 @@ export function RecordAudioDialog({
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
             <span className={legend}>{L("Replikk (valgfritt)", "Line (optional)")}</span>
             <select
+              data-testid="record-line-select"
               value={blockId}
               disabled={busy || lines.length === 0}
               onChange={(e) => setBlockId(e.target.value)}

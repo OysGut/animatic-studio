@@ -1,5 +1,22 @@
 import { applyRigCommand } from "../animation/rig-commands";
 import { applyBehaviorCommand } from "../animation/behavior-commands";
+import {
+  DIALOGUE_VERSION_SOURCES,
+  activeDialogueVersion,
+  clipOwnEdit,
+  dialogueOverlaps,
+  dialogueVersionIdFor,
+  editOf,
+  fileOf,
+  isVersionedKind,
+  mirrorDialogueClips,
+  orphanDialogueVersions,
+  sameFile,
+  versionsOfClip,
+  type DialogueEdit,
+  type DialogueVersion,
+  type DialogueVersionFields,
+} from "../dialogue/versions";
 /**
  * Utfører én kommando mot prosjekttilstanden. Ren funksjon: (tilstand, kommando) → ny tilstand + invers.
  * Samme funksjon brukes i klienten (rask tilbakemelding) og på serveren (autoritativ, DEC-0022).
@@ -191,6 +208,7 @@ function assertNewId(s: ProjectState, id: string) {
     s.canvasEdges,
     s.animationRigs, s.animationRigVersions, s.animationUses,
     s.lipsyncResults, s.animationPatterns,
+    s.dialogueVersions,
     s.templateInstances ?? {},
   ];
   if (all.some((c) => c[id] !== undefined))
@@ -562,6 +580,7 @@ export function revisionOf(s: ProjectState, id: string): number | undefined {
     s.canvasEdges,
     s.animationRigs, s.animationRigVersions, s.animationUses,
     s.lipsyncResults, s.animationPatterns,
+    s.dialogueVersions,
   ]) {
     const e = c[id];
     if (e) return e.revision;
@@ -1697,6 +1716,80 @@ function oneRevisionPerRow(before: ProjectState, after: ProjectState): ProjectSt
     }
   }
   return out ?? after;
+}
+
+const LEGACY_META = {
+  source: "legacy" as const,
+  provider: null,
+  voiceId: null,
+  modelId: null,
+  settings: {},
+  parentVersionId: null,
+};
+
+/** Validerer redigeringen i en lydversjon med samme regler som et lydklipp (DV2). */
+function dialogueEditFields(s: ProjectState, a: AudioClip, v: DialogueVersion | null, e: DialogueEdit): DialogueEdit {
+  if (!e || typeof e !== "object") fail("invalid", L("Ugyldig redigering", "Invalid edit"));
+  const f = audioFields(s, {
+    ...audioClipFieldsOf(a),
+    ...(v ? { assetId: v.assetId as never, assetVariantId: v.assetVariantId as never, versionId: v.assetVersionId as never } : {}),
+    sourceInMs: e.sourceInMs,
+    lengthMs: e.lengthMs,
+    gainDb: e.gainDb,
+    fadeInMs: e.fadeInMs,
+    fadeOutMs: e.fadeOutMs,
+    volumeKeys: e.volumeKeys,
+    speed: e.speed,
+  });
+  const compositionId = e.compositionId ?? null;
+  if (compositionId !== null && !s.assetVersions[compositionId]?.composition)
+    fail("invalid", L("Lydkomposisjonen finnes ikke", "The audio composition was not found"));
+  return { ...editFromAudioFields(f), compositionId };
+}
+
+/** Redigeringen i validerte klippfelt. Hastigheten er utelatt når den er 1 – den arves aldri fra klippet. */
+function editFromAudioFields(f: AudioClipFields): DialogueEdit {
+  return {
+    sourceInMs: f.sourceInMs,
+    lengthMs: f.lengthMs,
+    gainDb: f.gainDb,
+    fadeInMs: f.fadeInMs,
+    fadeOutMs: f.fadeOutMs,
+    volumeKeys: f.volumeKeys,
+    speed: f.speed ?? 1,
+    compositionId: null,
+  };
+}
+
+function dialogueVersionFields(s: ProjectState, a: AudioClip, f: DialogueVersionFields): DialogueVersionFields {
+  if (!f || typeof f !== "object") fail("invalid", L("Ugyldig lydversjon", "Invalid audio version"));
+  if (!DIALOGUE_VERSION_SOURCES.includes(f.source)) fail("invalid", L("Ukjent lydkilde", "Unknown audio source"));
+  const file = fileOf(f);
+  const asset = s.assets[file.assetId];
+  if (!asset || asset.kind !== "sound") fail("invalid", L("Lydfilen finnes ikke", "The audio file was not found"));
+  if (file.assetVariantId !== null && s.assetVariants[file.assetVariantId]?.assetId !== file.assetId)
+    fail("invalid", L("Lydvarianten finnes ikke", "The audio variant was not found"));
+  if (file.assetVersionId !== null && !s.assetVersions[file.assetVersionId])
+    fail("invalid", L("Lydopptaket finnes ikke", "The recording was not found"));
+  const short = (x: unknown, max: number) => (x === null || x === undefined ? null : typeof x === "string" && x.length <= max ? x : fail("invalid", L("For lang tekst i lydversjonen", "Text in the audio version is too long")));
+  if (f.settings === null || typeof f.settings !== "object" || Array.isArray(f.settings) || JSON.stringify(f.settings).length > 8192)
+    fail("invalid", L("Ugyldige genereringsinnstillinger", "Invalid generation settings"));
+  if (f.scriptRevision !== null && !(Number.isInteger(f.scriptRevision) && f.scriptRevision > 0))
+    fail("invalid", L("Ugyldig manusrevisjon", "Invalid script revision"));
+  if (f.parentVersionId !== null && s.dialogueVersions[f.parentVersionId]?.clipId !== a.id)
+    fail("invalid", L("Foreldreversjonen hører ikke til replikken", "The parent version does not belong to the line"));
+  const edit = dialogueEditFields(s, a, { ...(f as unknown as DialogueVersion) }, f);
+  return {
+    ...file,
+    ...edit,
+    source: f.source,
+    provider: short(f.provider, 40),
+    voiceId: short(f.voiceId, 200),
+    modelId: short(f.modelId, 200),
+    settings: f.settings,
+    scriptRevision: f.scriptRevision,
+    parentVersionId: f.parentVersionId,
+  };
 }
 
 export function audioClipFieldsOf(a: AudioClip): AudioClipFields {
@@ -7625,8 +7718,29 @@ function run(
           removed: false,
         };
       }
+      // DV2: en ny replikkforekomst får sin første lydversjon (deterministisk ID) og spiller den
+      let dialogueVersions = s.dialogueVersions;
+      for (const n of c.clips) {
+        const a = audioClips[n.clipId]!;
+        if (!isVersionedKind(a)) continue;
+        const file = { assetId: a.assetId, assetVariantId: a.assetVariantId, assetVersionId: a.versionId };
+        const vid = dialogueVersionIdFor(a.id, file);
+        assertNewId(s, vid);
+        dialogueVersions = dialogueVersions === s.dialogueVersions ? { ...dialogueVersions } : dialogueVersions;
+        (dialogueVersions as Record<string, DialogueVersion>)[vid] = {
+          id: vid,
+          revision: 1,
+          clipId: a.id,
+          ...file,
+          ...clipOwnEdit(a),
+          ...LEGACY_META,
+          scriptRevision: s.blocks[a.blockId!]?.currentRev ?? null,
+          removed: false,
+        };
+        audioClips[a.id] = { ...a, activeVersionId: vid };
+      }
       return {
-        state: { ...s, audioClips },
+        state: { ...s, audioClips, dialogueVersions },
         inverse: { type: "UndoAddAudioClips", clipIds: c.clips.map((n) => n.clipId) },
         affected: c.clips.map((n) => n.clipId),
       };
@@ -7634,13 +7748,35 @@ function run(
 
     case "UndoAddAudioClips": {
       const audioClips = { ...s.audioClips };
+      let dialogueVersions = s.dialogueVersions;
       const restored = c.clipIds.map((id) => {
         const a = need(s.audioClips[id], L("Lydklippet", "The audio clip"));
         delete audioClips[id];
+        // DV2: bare den første versjonen (laget sammen med klippet) går med. Finnes flere, er det lagt til
+        // opptak eller redigering siden – da angres ikke opprettelsen (ingen lydversjon går tapt).
+        const versions = versionsOfClip(s, id, true);
+        if (versions.length) {
+          const first = dialogueVersionIdFor(id, {
+            assetId: a.assetId,
+            assetVariantId: a.assetVariantId,
+            assetVersionId: a.versionId,
+          });
+          if (versions.length > 1 || versions[0]!.id !== first || Object.values(s.lipsyncResults).some((r) => r.clipId === id))
+            fail(
+              "referenced",
+              L(
+                "Replikken har flere lydversjoner eller leppesynk. Ingen versjon slettes; angre dem først.",
+                "The line has several audio versions or lip sync. No version is deleted; undo them first.",
+              ),
+              versions.map((v) => v.id),
+            );
+          dialogueVersions = dialogueVersions === s.dialogueVersions ? { ...dialogueVersions } : dialogueVersions;
+          delete (dialogueVersions as Record<string, DialogueVersion>)[first];
+        }
         return a;
       });
       return {
-        state: { ...s, audioClips },
+        state: { ...s, audioClips, dialogueVersions },
         inverse: {
           type: "AddAudioClips",
           clips: restored.map((a) => ({ clipId: a.id, fields: audioClipFieldsOf(a) })),
@@ -7658,18 +7794,216 @@ function run(
           L("Samme lydklipp er med to ganger", "The same audio clip is included twice"),
         );
       const audioClips = { ...s.audioClips };
+      const dialogueVersions: Record<string, DialogueVersion> = { ...s.dialogueVersions };
       const before: { clipId: AudioClip["id"]; fields: AudioClipFields }[] = [];
+      const beforeActive: Record<string, string> = {};
+      const created: string[] = [];
+      const restored: string[] = [];
+      const touchedVersions: string[] = [];
       for (const u of c.clips) {
         const a = need(s.audioClips[u.clipId], L("Lydklippet", "The audio clip"));
         before.push({ clipId: a.id, fields: audioClipFieldsOf(a) });
         // Alle feltene erstattes; språket fjernes når det ikke er med (standard for lydtypen)
         const { language: _lang, ...rest } = a;
-        audioClips[a.id] = { ...rest, ...audioFields(s, u.fields), revision: rev(a) };
+        const f = audioFields(s, u.fields);
+        const active = activeDialogueVersion(s, a);
+        if (!active) {
+          audioClips[a.id] = { ...rest, ...f, revision: rev(a) };
+          continue;
+        }
+        beforeActive[a.id] = active.id;
+        // DV2: versjonert replikk. Plassering og metadata hører til klippet; fil og redigering til versjonen.
+        // Klippets speilfelt settes av mirrorDialogueClips etterpå.
+        audioClips[a.id] = {
+          ...rest,
+          occurrenceId: f.occurrenceId,
+          kind: f.kind,
+          name: f.name,
+          blockId: f.blockId,
+          offsetMs: f.offsetMs,
+          muted: f.muted,
+          continues: f.continues,
+          ...(f.language !== undefined ? { language: f.language } : {}),
+          revision: rev(a),
+        };
+        const file = { assetId: f.assetId, assetVariantId: f.assetVariantId, assetVersionId: f.versionId };
+        const edit: DialogueEdit = { ...editFromAudioFields(f), compositionId: active.compositionId };
+        if (sameFile(active, file)) {
+          dialogueVersions[active.id] = { ...active, ...edit, revision: rev(active) };
+          touchedVersions.push(active.id);
+          continue;
+        }
+        // Ny fil (nytt take valgt): bytt til versjonen for den filen med SIN redigering, eller lag en ny.
+        const exact = c.activeVersionIds?.[a.id];
+        const candidates = versionsOfClip(s, a.id, true).filter((v) => sameFile(v, file));
+        const existing =
+          candidates.find((v) => v.id === exact) ?? candidates.find((v) => !v.removed) ?? candidates[0];
+        if (existing) {
+          if (existing.removed) {
+            dialogueVersions[existing.id] = { ...existing, removed: false, revision: rev(existing) };
+            touchedVersions.push(existing.id);
+            restored.push(existing.id);
+          }
+          audioClips[a.id] = { ...audioClips[a.id]!, activeVersionId: existing.id };
+          continue;
+        }
+        const vid = dialogueVersionIdFor(a.id, file);
+        assertNewId(s, vid);
+        dialogueVersions[vid] = {
+          id: vid,
+          revision: 1,
+          clipId: a.id,
+          ...file,
+          ...edit,
+          ...LEGACY_META,
+          parentVersionId: active.id,
+          scriptRevision: f.blockId ? (s.blocks[f.blockId]?.currentRev ?? null) : null,
+          removed: false,
+        };
+        created.push(vid);
+        audioClips[a.id] = { ...audioClips[a.id]!, activeVersionId: vid };
+      }
+      // Inversen fjerner versjonene som ble laget her – bare de som ikke lenger er aktive eller brukt
+      for (const id of c.dropDialogueVersions ?? []) {
+        const v = dialogueVersions[id];
+        if (!v) continue;
+        if (Object.values(audioClips).some((x) => x.activeVersionId === id))
+          fail("referenced", L("Lydversjonen er aktiv og slettes ikke", "The audio version is active and is not deleted"), [id]);
+        if (Object.values(s.lipsyncResults).some((r) => r.dialogueVersionId === id))
+          fail("referenced", L("Lydversjonen har leppesynk og slettes ikke", "The audio version has lip sync and is not deleted"), [id]);
+        delete dialogueVersions[id];
+      }
+      const reRemoved: string[] = [];
+      for (const id of c.reRemoveDialogueVersions ?? []) {
+        const v = dialogueVersions[id];
+        if (!v || v.removed) continue;
+        if (Object.values(audioClips).some((x) => x.activeVersionId === id))
+          fail("referenced", L("Lydversjonen er aktiv og slettes ikke", "The audio version is active and is not deleted"), [id]);
+        dialogueVersions[id] = { ...v, removed: true, revision: rev(s.dialogueVersions[id] ?? v) };
+        reRemoved.push(id);
       }
       return {
-        state: { ...s, audioClips },
-        inverse: { type: "UpdateAudioClips", clips: before },
-        affected: c.clips.map((x) => x.clipId),
+        state: { ...s, audioClips, dialogueVersions },
+        inverse: {
+          type: "UpdateAudioClips",
+          clips: before,
+          ...(created.length ? { dropDialogueVersions: created } : {}),
+          ...(restored.length ? { reRemoveDialogueVersions: restored } : {}),
+          ...(Object.keys(beforeActive).length ? { activeVersionIds: beforeActive } : {}),
+        },
+        affected: [...new Set([...c.clips.map((x) => x.clipId), ...created, ...touchedVersions, ...(c.dropDialogueVersions ?? []), ...reRemoved])],
+      };
+    }
+
+    // ---------- Lydversjoner per replikk (DV2) ----------
+
+    case "AddDialogueVersion": {
+      const a = need(s.audioClips[c.clipId], L("Replikken", "The line"));
+      if (!isVersionedKind(a))
+        fail("invalid", L("Bare replikker har lydversjoner", "Only lines have audio versions"));
+      assertNewId(s, c.dialogueVersionId);
+      const v = dialogueVersionFields(s, a, c.fields);
+      const prev = activeDialogueVersion(s, a);
+      // Et klipp uten versjon ennå (før backfill) får aldri en versjon som overskriver redigeringen i klippet
+      if (!prev)
+        fail(
+          "invalid",
+          L("Replikken har ingen lydversjon ennå. Last prosjektet på nytt.", "The line has no audio version yet. Reload the project."),
+        );
+      const row: DialogueVersion = { id: c.dialogueVersionId, revision: 1, clipId: a.id, ...v, removed: false };
+      const activate = c.activate;
+      return {
+        state: {
+          ...s,
+          dialogueVersions: { ...s.dialogueVersions, [row.id]: row },
+          audioClips: activate ? { ...s.audioClips, [a.id]: { ...a, activeVersionId: row.id, revision: rev(a) } } : s.audioClips,
+        },
+        inverse: { type: "UndoAddDialogueVersion", dialogueVersionId: row.id, restoreActiveId: activate ? prev.id : null },
+        affected: activate ? [row.id, a.id] : [row.id],
+      };
+    }
+
+    case "UndoAddDialogueVersion": {
+      const v = need(s.dialogueVersions[c.dialogueVersionId], L("Lydversjonen", "The audio version"));
+      const a = need(s.audioClips[v.clipId], L("Replikken", "The line"));
+      if (Object.values(s.lipsyncResults).some((r) => r.dialogueVersionId === v.id))
+        fail("referenced", L("Lydversjonen har leppesynk. Angre leppesynket først.", "The audio version has lip sync. Undo the lip sync first."), [v.id]);
+      const wasActive = a.activeVersionId === v.id;
+      let clip = a;
+      if (wasActive) {
+        const back = c.restoreActiveId ? s.dialogueVersions[c.restoreActiveId] : undefined;
+        if (!back || back.clipId !== a.id)
+          fail("invalid", L("Den forrige lydversjonen finnes ikke", "The previous audio version was not found"));
+        clip = { ...a, activeVersionId: back.id, revision: rev(a) };
+      }
+      const dialogueVersions = { ...s.dialogueVersions };
+      delete dialogueVersions[v.id];
+      const { id: _id, revision: _r, clipId: _c, createdAt: _at, removed: _rm, ...fields } = v;
+      return {
+        state: { ...s, dialogueVersions, audioClips: clip === a ? s.audioClips : { ...s.audioClips, [a.id]: clip } },
+        inverse: { type: "AddDialogueVersion", dialogueVersionId: v.id, clipId: a.id, fields, activate: wasActive },
+        affected: wasActive ? [v.id, a.id] : [v.id],
+      };
+    }
+
+    case "SetActiveDialogueVersion": {
+      const a = need(s.audioClips[c.clipId], L("Replikken", "The line"));
+      const v = need(s.dialogueVersions[c.dialogueVersionId], L("Lydversjonen", "The audio version"));
+      if (v.clipId !== a.id)
+        fail("invalid", L("Lydversjonen hører til en annen replikk", "The audio version belongs to another line"));
+      if (v.removed) fail("invalid", L("Lydversjonen er slettet", "The audio version is deleted"));
+      const prev = a.activeVersionId ?? null;
+      if (prev === v.id) fail("invalid", L("Ingen endring", "No change"));
+      if (!prev) fail("invalid", L("Replikken har ingen aktiv lydversjon", "The line has no active audio version"));
+      return {
+        state: { ...s, audioClips: { ...s.audioClips, [a.id]: { ...a, activeVersionId: v.id, revision: rev(a) } } },
+        inverse: { type: "SetActiveDialogueVersion", clipId: a.id, dialogueVersionId: prev },
+        affected: [a.id],
+      };
+    }
+
+    case "UpdateDialogueVersionEdit": {
+      const v = need(s.dialogueVersions[c.dialogueVersionId], L("Lydversjonen", "The audio version"));
+      const a = need(s.audioClips[v.clipId], L("Replikken", "The line"));
+      const edit = dialogueEditFields(s, a, v, c.edit);
+      return {
+        state: { ...s, dialogueVersions: { ...s.dialogueVersions, [v.id]: { ...v, ...edit, revision: rev(v) } } },
+        inverse: { type: "UpdateDialogueVersionEdit", dialogueVersionId: v.id, edit: editOf(v) },
+        affected: [v.id],
+      };
+    }
+
+    case "MoveDialogueLine": {
+      const a = need(s.audioClips[c.clipId], L("Replikken", "The line"));
+      if (!Number.isInteger(c.offsetMs) || c.offsetMs < 0 || c.offsetMs > AUDIO_MAX_MS)
+        fail("invalid", L("Ugyldig plassering", "Invalid position"));
+      if (c.offsetMs === a.offsetMs) fail("invalid", L("Ingen endring", "No change"));
+      const clash = dialogueOverlaps(s, a.id, c.offsetMs);
+      if (clash.length && !c.allowOverlap)
+        fail(
+          "invalid",
+          L(
+            "Replikken ville overlappe en annen replikk fra samme karakter. Ingen andre replikker flyttes.",
+            "The line would overlap another line by the same character. No other lines are moved.",
+          ),
+          clash,
+        );
+      return {
+        state: { ...s, audioClips: { ...s.audioClips, [a.id]: { ...a, offsetMs: c.offsetMs, revision: rev(a) } } },
+        inverse: { type: "MoveDialogueLine", clipId: a.id, offsetMs: a.offsetMs, allowOverlap: true },
+        affected: [a.id],
+      };
+    }
+
+    case "SetDialogueVersionRemoved": {
+      const v = need(s.dialogueVersions[c.dialogueVersionId], L("Lydversjonen", "The audio version"));
+      if (typeof c.removed !== "boolean" || v.removed === c.removed) fail("invalid", L("Ingen endring", "No change"));
+      if (c.removed && s.audioClips[v.clipId]?.activeVersionId === v.id)
+        fail("invalid", L("Den aktive versjonen kan ikke slettes. Velg en annen først.", "The active version cannot be deleted. Choose another first."));
+      return {
+        state: { ...s, dialogueVersions: { ...s.dialogueVersions, [v.id]: { ...v, removed: c.removed, revision: rev(v) } } },
+        inverse: { type: "SetDialogueVersionRemoved", dialogueVersionId: v.id, removed: !c.removed },
+        affected: [v.id],
       };
     }
 
@@ -7718,7 +8052,8 @@ export function applyCommand(state: ProjectState, env: CommandEnvelope): ApplyRe
       }
     }
     const ran = run(state, env);
-    const { inverse, affected } = ran;
+    const { inverse } = ran;
+    let affected = ran.affected;
     let next = ran.state;
     // Notater på tekst eller scener som forsvinner (angre av import, ny scene, innsetting …):
     // slettede notater fjernes med, synlige notater stopper endringen med en tydelig melding (DEC-0031)
@@ -7918,6 +8253,22 @@ export function applyCommand(state: ProjectState, env: CommandEnvelope): ApplyRe
           lost,
         );
       if (translations) next = { ...next, translations };
+    }
+    // DV2: lydversjoner uten replikk stoppes; klippets speilfelt settes fra aktiv versjon – ett sted
+    if (next.audioClips !== state.audioClips || next.dialogueVersions !== state.dialogueVersions) {
+      const orphans = orphanDialogueVersions(next);
+      if (orphans.length)
+        fail(
+          "referenced",
+          L(
+            "Replikken har lydversjoner som ikke kan fjernes. Ingen lydversjon slettes.",
+            "The line has audio versions that cannot be removed. No audio version is deleted.",
+          ),
+          orphans,
+        );
+      const m = mirrorDialogueClips(state, next);
+      next = m.state;
+      if (m.touched.length) affected = [...new Set([...affected, ...m.touched])];
     }
     const violations = checkInvariants(next);
     if (violations.length > 0) {

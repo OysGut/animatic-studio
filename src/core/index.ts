@@ -87,3 +87,5 @@ export * from "./credits";
 
 export * from "./animation/rig";
 export * from "./animation/evaluate";
+export * from "./dialogue/versions";
+export * from "./dialogue/navigation";

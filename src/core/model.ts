@@ -898,6 +898,14 @@ export interface AudioClip extends Entity<AudioClipId> {
   readonly language?: string;
   /** Hastighet (DEC-0079): 0,25–4 (25–400 %). Tonehøyden følger hastigheten. Mangler = 1. */
   readonly speed?: number;
+  /**
+   * DV2 (migrasjon 0060): replikkens aktive lydversjon. Satt bare for dialog med replikk. Når satt, er
+   * versjonen eneste kilde for fil og redigering; klippets fil- og redigeringsfelt er en speiling som bare
+   * `mirrorDialogueClips` (src/core/dialogue) skriver. Mangler/null = vanlig lydklipp (musikk, effekter …).
+   */
+  readonly activeVersionId?: string | null;
+  /** DV2: karakteren (ressurs) som sier replikken. Mangler/null = ikke koblet ennå. */
+  readonly characterAssetId?: string | null;
   readonly removed: boolean;
 }
 
@@ -917,6 +925,8 @@ export interface ProjectState {
   readonly lipsyncResults: Readonly<Record<string, LipsyncResult>>;
   /** CA6: navngitte minianimasjonsmønstre (migrasjon 0056). */
   readonly animationPatterns: Readonly<Record<string, AnimationPattern>>;
+  /** DV2: lydversjoner per replikkforekomst (migrasjon 0060). */
+  readonly dialogueVersions: Readonly<Record<string, import("./dialogue/versions").DialogueVersion>>;
   readonly project: Project;
   readonly productions: Readonly<Record<string, Production>>;
   readonly scenes: Readonly<Record<string, Scene>>;
@@ -1337,6 +1347,7 @@ export const COLLECTION_TABLES = {
   animationUses: "animation_uses",
   lipsyncResults: "lipsync_results",
   animationPatterns: "animation_patterns",
+  dialogueVersions: "dialogue_versions",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_TABLES;
@@ -1377,6 +1388,7 @@ export function emptyProjectState(project: Project): ProjectState {
     creditSequences: {},
     animationRigs: {}, animationRigVersions: {}, animationUses: {},
     lipsyncResults: {}, animationPatterns: {},
+    dialogueVersions: {},
   };
 }
 

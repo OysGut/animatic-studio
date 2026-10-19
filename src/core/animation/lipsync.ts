@@ -41,6 +41,11 @@ export interface LipsyncResult {
   readonly overrides: readonly { readonly frame: number; readonly viseme: Viseme }[];
   /** Av/på per replikk (§33). Lyden blir værende. */
   readonly enabled: boolean;
+  /**
+   * DV2 (migrasjon 0060): lydversjonen som ble analysert. Er en annen versjon aktiv, er synken utdatert
+   * (`lipsyncOutdated`). Mangler = eldre rad uten versjon (følger klippet som før).
+   */
+  readonly dialogueVersionId?: string | null;
   readonly removed: boolean;
 }
 

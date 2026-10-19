@@ -78,11 +78,12 @@ describe("CA5 leppesynk", () => {
     const s = baseState();
     const r = result();
     const one = apply(s, { type: "SaveLipsyncResult", result: r });
-    expect(one.state.lipsyncResults[r.id]).toEqual(r);
+    // DV2 (migrasjon 0060): synken knyttes til replikkens aktive lydversjon
+    expect(one.state.lipsyncResults[r.id]).toEqual({ ...r, dialogueVersionId: s.audioClips[r.clipId]?.activeVersionId });
     const undone = apply(one.state, one.inverse);
     expect(undone.state.lipsyncResults[r.id]).toBeUndefined();
     const redone = apply(undone.state, undone.inverse);
-    expect(redone.state.lipsyncResults[r.id]).toEqual(r);
+    expect(redone.state.lipsyncResults[r.id]).toEqual(one.state.lipsyncResults[r.id]);
   });
   it("SaveLipsyncResult avviser duplikat per klipp og take, og ukjent klipp", () => {
     const s = baseState();

@@ -49,6 +49,8 @@ import {
   planUpdateTemplateValues,
   templateFromLayers,
   textLayerFields,
+  dialogueMirrorViolations,
+  BACKUP_STATE_TABLES,
 } from "../../src/core";
 
 const ADMIN_URL = process.env["DATABASE_URL"] ?? "postgres://postgres@localhost:54329/postgres";
@@ -143,6 +145,7 @@ async function loadState(projectId: string): Promise<ProjectState> {
     credit_sequences: await q("credit_sequences"),
     animation_rigs: await q("animation_rigs"), animation_rig_versions: await q("animation_rig_versions"), animation_uses: await q("animation_uses"),
     lipsync_results: await q("lipsync_results"), animation_patterns: await q("animation_patterns"),
+    dialogue_versions: await q("dialogue_versions"),
   };
   return stateFromRows(rows);
 }
@@ -3777,6 +3780,8 @@ try {
       asset_relations: await q("asset_relations"),
       posters: await q("posters"),
       style_profiles: await q("style_profiles"),
+      // DV2 (0060): lydversjonene hører med når lydklippene er med
+      dialogue_versions: await q("dialogue_versions"),
     } as unknown as ProjectRows;
     const versions = await q("script_versions");
     const docs = await q("imported_documents");
@@ -5838,7 +5843,128 @@ try {
     const [row] = await sql`select status from public.mobile_imports where client_file_id = ${SX(12)}`;
     assert(row!["status"] !== "done", "fil bekreftet etter tilbakekalling");
     await expectError(as("authenticated", ALICE, (tx) => tx`select public.mobile_confirm_upload(${hash}, ${SX(12)}, true, 100, null)`), "42501");
-    assert((await sql`select max(version) as v from public.schema_version`)[0]!["v"] === 59, "skjemaversjon 59");
+    assert((await sql`select max(version) as v from public.schema_version`)[0]!["v"] >= 59, "skjemaversjon minst 59");
+  });
+
+  // ---------------------------------------------------------------- 0060 (DV2): lydversjoner per replikk
+  const DV = (n: number) => `01900000-0000-7000-8000-0060${String(n).padStart(8, "0")}` as never;
+  let dvProject = "";
+  let dvState: ProjectState | null = null;
+  const dvEdit = { sourceInMs: 300, lengthMs: 2400, gainDb: -4.5, fadeInMs: 120, fadeOutMs: 260, volumeKeys: [{ t: 0, db: 0 }, { t: 900, db: -9 }], speed: 1.5 };
+  await test("0060: ny replikk får en lydversjon med nøyaktig redigering via apply_changes; speilingen stemmer", async () => {
+    dvProject = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('DV2') as id`)[0]!["id"] as string);
+    let st = await loadState(dvProject);
+    const production = Object.values(st.productions).find((p) => p.kind === "main")!;
+    st = await runCommand(st, ALICE, { type: "CreateScene", sceneId: DV(1), variantId: DV(2), occurrenceId: DV(3), productionId: production.id, orderKey: keyBetween(null, null), heading: { intExt: "INT.", location: "KJØKKEN", time: "DAG" }, blocks: [] });
+    await as("service_role", null, (tx) => tx`insert into public.script_blocks(id,project_id,variant_id,kind,order_key,text,created_by) values (${DV(4)},${dvProject},${DV(2)},'dialogue','a1','Hei, Rolf.',${ALICE})`);
+    await as("service_role", null, (tx) => tx`insert into public.script_block_revisions(project_id,block_id,rev,text,author) values (${dvProject},${DV(4)},1,'Hei, Rolf.',${ALICE})`);
+    st = await loadState(dvProject);
+    st = await runCommand(st, ALICE, { type: "CreateAssets", assets: [{ assetId: DV(5), fields: { kind: "sound", name: "Maja", names: [], description: "", category: "", tags: [] } }] });
+    st = await runCommand(st, ALICE, { type: "CreateAssetVariant", variantId: DV(6), assetId: DV(5), fields: { name: "Lyd", style: "other", appearance: "" } });
+    for (const [v, n] of [[DV(7), 1], [DV(8), 2]] as const)
+      st = await runCommand(st, ALICE, { type: "AddAssetVersion", versionId: v, variantId: DV(6), media: { path: `${dvProject}/${DV(5)}/${v}/take${n}.webm`, mimeType: "audio/webm", width: null, height: null, byteSize: 1000 + n, sha256: String(n).repeat(64), durationMs: 5000 }, note: "" });
+    st = await runCommand(st, ALICE, { type: "AddAudioClips", clips: [{ clipId: DV(9), fields: { occurrenceId: DV(3), kind: "dialogue", name: "Maja", assetId: DV(5), assetVariantId: DV(6), versionId: DV(7), blockId: DV(4), offsetMs: 1000, ...dvEdit, muted: false, continues: false } }] });
+    const loaded = await loadState(dvProject);
+    const clip = loaded.audioClips[DV(9)]!;
+    const v = loaded.dialogueVersions[clip.activeVersionId!]!;
+    assert(v && v.clipId === DV(9) && v.assetVersionId === DV(7), "første versjon mangler");
+    assert(v.sourceInMs === 300 && v.lengthMs === 2400 && v.gainDb === -4.5 && v.fadeInMs === 120 && v.fadeOutMs === 260 && v.speed === 1.5 && isDeepStrictEqual(v.volumeKeys, dvEdit.volumeKeys), `redigering avviker: ${JSON.stringify(v)}`);
+    assert(dialogueMirrorViolations(loaded).length === 0, "speilingen avviker etter lasting");
+    dvState = loaded;
+  });
+
+  await test("0060: bytte mellom versjoner bevarer hver versjons redigering og replikkens plassering (L7–L9)", async () => {
+    let st = dvState!;
+    const clip = st.audioClips[DV(9)]!;
+    const first = clip.activeVersionId!;
+    // Nytt take valgt (eksisterende lydflyt) → ny versjon; rediger den
+    st = await runCommand(st, ALICE, { type: "UpdateAudioClips", clips: [{ clipId: DV(9), fields: { ...audioClipFieldsOf(st.audioClips[DV(9)]!), versionId: DV(8) } }] });
+    const second = st.audioClips[DV(9)]!.activeVersionId!;
+    assert(second !== first, "ny versjon ble ikke laget");
+    st = await runCommand(st, ALICE, { type: "UpdateDialogueVersionEdit", dialogueVersionId: second, edit: { sourceInMs: 0, lengthMs: 1800, gainDb: 2, fadeInMs: 0, fadeOutMs: 50, volumeKeys: [], speed: 1, compositionId: null } });
+    st = await runCommand(st, ALICE, { type: "MoveDialogueLine", clipId: DV(9), offsetMs: 2500 });
+    st = await runCommand(st, ALICE, { type: "SetActiveDialogueVersion", clipId: DV(9), dialogueVersionId: first });
+    const loaded = await loadState(dvProject);
+    const a = loaded.audioClips[DV(9)]!;
+    const v1 = loaded.dialogueVersions[first]!;
+    const v2 = loaded.dialogueVersions[second]!;
+    assert(a.activeVersionId === first && a.offsetMs === 2500, "aktiv versjon eller plassering feil");
+    assert(v1.sourceInMs === 300 && v1.speed === 1.5 && isDeepStrictEqual(v1.volumeKeys, dvEdit.volumeKeys), "versjon A mistet redigering");
+    assert(v2.lengthMs === 1800 && v2.gainDb === 2 && v2.fadeOutMs === 50, "versjon B mistet redigering");
+    assert(a.lengthMs === 2400 && a.sourceInMs === 300 && a.versionId === DV(7), "speilingen følger ikke aktiv versjon");
+    assert(Object.values(loaded.dialogueVersions).filter((x) => x.clipId === DV(9)).length === 2, "en versjon gikk tapt");
+    dvState = loaded;
+  });
+
+  await test("0060: backfill av et eksisterende klipp gir en versjon med identiske verdier", async () => {
+    await as("service_role", null, (tx) => tx`insert into public.audio_clips(id,project_id,occurrence_id,kind,asset_id,asset_variant_id,version_id,block_id,offset_ms,source_in_ms,length_ms,gain_db,fade_in_ms,fade_out_ms,volume_keys,speed,created_by) values (${DV(20)},${dvProject},${DV(3)},'dialogue',${DV(5)},${DV(6)},${DV(8)},${DV(4)},9000,450,3100,-6.5,80,640,${tx.json([{ t: 0, db: -3 }, { t: 1500, db: -18 }, { t: 3000, db: 0 }])},0.75,${ALICE})`);
+    await as("service_role", null, (tx) => tx`insert into public.audio_clips(id,project_id,occurrence_id,kind,asset_id,offset_ms,length_ms,created_by) values (${DV(21)},${dvProject},${DV(3)},'music',${DV(5)},0,1000,${ALICE})`);
+    const file = readFileSync(join(root, "db/migrations/0060_dialogue_versions.sql"), "utf8");
+    const block = file.slice(file.indexOf("-- Backfill:"), file.indexOf("-- Slutt på backfill"));
+    await sql.begin((tx) => tx.unsafe(block));
+    const [c] = await sql`select * from public.audio_clips where id = ${DV(20)}`;
+    const [v] = await sql`select * from public.dialogue_versions where clip_id = ${DV(20)}`;
+    assert(c && v && c["active_version_id"] === v["id"], "klippet fikk ikke aktiv versjon");
+    for (const [cc, vc] of <[string, string][]>[["asset_id", "asset_id"], ["asset_variant_id", "asset_variant_id"], ["version_id", "asset_version_id"], ["source_in_ms", "source_in_ms"], ["length_ms", "length_ms"], ["gain_db", "gain_db"], ["fade_in_ms", "fade_in_ms"], ["fade_out_ms", "fade_out_ms"], ["speed", "speed"]])
+      assert(String(c[cc]) === String(v[vc]), `${cc} avviker: ${c[cc]} / ${v[vc]}`);
+    assert(isDeepStrictEqual(c["volume_keys"], v["volume_keys"]), "volumkurven avviker");
+    assert(v["source"] === "legacy", "kilde");
+    assert((await sql`select 1 from public.dialogue_versions where clip_id = ${DV(21)}`).length === 0, "musikk fikk versjon");
+    const loaded = await loadState(dvProject);
+    assert(dialogueMirrorViolations(loaded).length === 0, "speilingen avviker etter backfill");
+    dvState = loaded;
+  });
+
+  await test("0060: grants og RLS nekter anon, ikke-medlemmer og direkte skriving; aktiv versjon må høre til klippet", async () => {
+    assert((await as("authenticated", ALICE, (tx) => tx`select id from public.dialogue_versions where project_id = ${dvProject}`)).length >= 3, "medlem ser ikke versjonene");
+    assert((await as("authenticated", CAROL, (tx) => tx`select id from public.dialogue_versions where project_id = ${dvProject}`)).length === 0, "ikke-medlem ser versjoner");
+    await expectError(as("anon", null, (tx) => tx`select id from public.dialogue_versions`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`delete from public.dialogue_versions where project_id = ${dvProject}`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`update public.audio_clips set active_version_id = null where project_id = ${dvProject}`), "42501");
+    const other = Object.values(dvState!.dialogueVersions).find((x) => x.clipId === DV(20))!;
+    await expectError(as("service_role", null, (tx) => tx`update public.audio_clips set active_version_id = ${other.id} where id = ${DV(9)}`), "23503");
+    await expectError(sql`delete from public.dialogue_versions where project_id = ${dvProject}`, "23503");
+  });
+
+  await test("0060: purge_removed_assets blokkeres av en lydversjon (også inaktiv)", async () => {
+    let st = await loadState(dvProject);
+    st = await runCommand(st, ALICE, { type: "SetAssetVersionsRemoved", versionIds: [DV(8)], removed: true }).catch(() => st);
+    const [row] = await sql`select removed from public.asset_versions where id = ${DV(8)}`;
+    if (row?.["removed"] !== true) await as("service_role", null, (tx) => tx`update public.asset_versions set removed = true where id = ${DV(8)}`);
+    await expectError(as("service_role", null, (tx) => tx`select public.purge_removed_assets(${dvProject}, ${ALICE}, ${[]}::uuid[], ${[DV(8)]}::uuid[])`), "23503");
+    assert((await sql`select 1 from public.asset_versions where id = ${DV(8)}`).length === 1, "opptaket ble slettet");
+    assert((await sql`select 1 from public.dialogue_versions where asset_version_id = ${DV(8)}`).length >= 1, "versjonen forsvant");
+  });
+
+  await test("0060: zip-sikkerhetskopi tar med lydversjonene; gjenopprettet prosjekt har samme redigering og aktivt valg", async () => {
+    const old = await loadState(dvProject);
+    const q = (t: string) => sql.unsafe(`select * from public.${t} where project_id = $1`, [dvProject]);
+    const rows = { project: (await sql`select * from public.projects where id = ${dvProject}`)[0]!, productions: await q("productions"), scenes: await q("scenes"), scene_variants: await q("scene_variants"), script_blocks: await q("script_blocks"), script_block_revisions: await q("script_block_revisions"), scene_occurrences: await q("scene_occurrences"), production_segments: await q("production_segments"), takes: await q("takes"), assets: await q("assets"), asset_variants: await q("asset_variants"), asset_versions: await q("asset_versions"), audio_clips: await q("audio_clips"), dialogue_versions: await q("dialogue_versions") } as unknown as ProjectRows;
+    assert(!(BACKUP_STATE_TABLES as readonly string[]).includes("user_bookmarks"), "personlige bokmerker i sikkerhetskopien");
+    const backup = parseBackup(JSON.parse(JSON.stringify(makeBackup({ rows, scriptVersions: [], importedDocuments: [], changeLog: [], generationJobs: [], schemaVersion: 60, createdAt: new Date().toISOString(), include: new Set(["lyd"]) }))), 60);
+    assert((backup.tables["dialogue_versions"] ?? []).length === Object.keys(old.dialogueVersions).length, "versjonene mangler i filen");
+    const newId = await as("authenticated", BOB, async (tx) => (await tx`select public.create_project('DV2 gjenopprettet') as id`)[0]!["id"] as string);
+    const base = await loadState(newId);
+    const main = Object.values(base.productions).find((p) => p.kind === "main")!;
+    const map = await backupIdMap(backup, newId, main.id);
+    const target = restoredState(backup, map, base, BOB);
+    await as("service_role", null, (tx) => tx`select public.apply_changes(${newId}, ${BOB}, ${"55555555-5555-7555-8555-000000006001"}, ${tx.json({ type: "RestoreBackup" })}, ${null}, ${tx.json(diffStates(base, target) as never)})`);
+    const back = await loadState(newId);
+    const sig = (st: ProjectState) => Object.values(st.audioClips).filter((a) => a.activeVersionId).map((a) => {
+      const v = st.dialogueVersions[a.activeVersionId!]!;
+      const all = Object.values(st.dialogueVersions).filter((x) => x.clipId === a.id).map((x) => [x.lengthMs, x.sourceInMs, x.gainDb, x.speed, JSON.stringify(x.volumeKeys)].join("|")).sort();
+      return [a.offsetMs, v.lengthMs, v.sourceInMs, v.speed, all.join(";")].join("/");
+    }).sort();
+    assert(isDeepStrictEqual(sig(back), sig(old)), `rundtur avviker: ${JSON.stringify(sig(back))} / ${JSON.stringify(sig(old))}`);
+    assert(dialogueMirrorViolations(back).length === 0, "speilingen avviker etter gjenoppretting");
+  });
+
+  await test("0060: delete_project og purge_project_assets fjerner lydversjoner barn-først", async () => {
+    await as("service_role", null, (tx) => tx`select public.delete_project(${dvProject}, ${ALICE})`);
+    assert((await sql`select 1 from public.dialogue_versions where project_id = ${dvProject}`).length === 0, "versjoner igjen etter sletting");
+    await as("service_role", null, (tx) => tx`select public.purge_project_assets(${dvProject}, ${ALICE})`);
+    assert((await sql`select 1 from public.projects where id = ${dvProject}`).length === 0, "prosjektet ble ikke slettet");
+    assert((await sql`select max(version) as v from public.schema_version`)[0]!["v"] === 60, "skjemaversjon 60");
   });
 
 } finally {
