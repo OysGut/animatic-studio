@@ -595,6 +595,21 @@ end $$;
 revoke all on function public.complete_dialogue_batch_item(uuid,uuid,jsonb,jsonb,jsonb) from public,anon,authenticated;
 grant execute on function public.complete_dialogue_batch_item(uuid,uuid,jsonb,jsonb,jsonb) to service_role;
 
+create or replace function public.transition_dialogue_batch_item(p_item uuid,p_lease uuid,p_patch jsonb)
+returns void language plpgsql security definer set search_path = '' as $$
+declare v_item public.dialogue_batch_items; v_batch public.dialogue_batches;
+begin
+  select * into v_item from public.dialogue_batch_items where id=p_item for update;
+  if not found then raise exception 'Missing item'; end if;
+  select * into v_batch from public.dialogue_batches where id=v_item.batch_id for update;
+  if v_batch.status <> 'running' or v_batch.lease_token is distinct from p_lease or v_batch.lease_until <= now() or v_item.status not in ('waiting','generating','ready') then raise exception 'Invalid lease' using errcode='42501'; end if;
+  if p_patch->>'status' not in ('generating','ready','failed') then raise exception 'Invalid transition'; end if;
+  update public.dialogue_batch_items set status=p_patch->>'status',attempts=coalesce((p_patch->>'attempts')::integer,attempts),result=coalesce(p_patch->'result',result),error=p_patch->>'error',retryable=coalesce((p_patch->>'retryable')::boolean,retryable) where id=p_item;
+  update public.dialogue_batches set lease_until=now()+interval '10 minutes' where id=v_batch.id;
+end $$;
+revoke all on function public.transition_dialogue_batch_item(uuid,uuid,jsonb) from public,anon,authenticated;
+grant execute on function public.transition_dialogue_batch_item(uuid,uuid,jsonb) to service_role;
+
 create or replace function public.resume_dialogue_batch(p_project uuid,p_batch uuid,p_actor uuid)
 returns void language plpgsql security definer set search_path = '' as $$
 declare v_batch public.dialogue_batches;

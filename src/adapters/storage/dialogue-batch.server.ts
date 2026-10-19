@@ -11,6 +11,10 @@ export async function processDialogueBatch(db: AnyClient, batchId: string, userD
   if (!claimed) return { processed: 0 };
   const batch = claimed as { id: string; project_id: string; created_by: string; character_id: string; voice: AssetVoice };
   let processed = 0;
+  const transition = async (itemId: unknown, patch: Record<string, unknown>) => {
+    const { error } = await db.rpc("transition_dialogue_batch_item", { p_item: itemId, p_lease: lease, p_patch: patch });
+    if (error) throw new Error(error.message);
+  };
   try {
     const role = await memberRole(db, batch.project_id, batch.created_by);
     if ((ROLE_RANK[role ?? ""] ?? 0) < (ROLE_RANK["editor"] ?? 3)) {
@@ -24,12 +28,12 @@ export async function processDialogueBatch(db: AnyClient, batchId: string, userD
       if (guard?.status !== "running" || guard?.lease_token !== lease) break;
       let result = item["result"] as Extract<Awaited<ReturnType<typeof runSpeech>>, { ok: true }> | null;
       if (!result) {
-        await db.from("dialogue_batch_items").update({ status: "generating", attempts: Number(item["attempts"] ?? 0) + 1 }).eq("id", item["id"]).eq("status", "waiting");
+        await transition(item["id"], { status: "generating", attempts: Number(item["attempts"] ?? 0) + 1 });
         const out = await runSpeech({ projectId: batch.project_id, blockId: String(item["block_id"]), voiceId: batch.voice.voiceId, model: batch.voice.modelId ?? "eleven_v3", language: String(item["language"]), settings: batch.voice.settings ?? {}, expectedRevision: item["script_revision"], jobId: String(item["job_id"]), batch: true }, { userId: batch.created_by, supabase: userDb });
         if (!out.ok) {
           const blocked = out.status === 402 || out.status === 403;
           const retryable = !out.ambiguous && (out.status === 429 || (typeof out.status === "number" && out.status >= 500));
-          await db.from("dialogue_batch_items").update({ status: "failed", error: out.message, retryable }).eq("id", item["id"]);
+          await transition(item["id"], { status: "failed", error: out.message, retryable });
           if (blocked || out.ambiguous || out.status === 429) {
             await db.from("dialogue_batches").update({ status: "paused", pause_reason: out.message, access_blocked: blocked }).eq("id", batchId).eq("lease_token", lease);
             break;
@@ -39,8 +43,7 @@ export async function processDialogueBatch(db: AnyClient, batchId: string, userD
         const { text: _text, ...receipt } = out;
         result = { ...receipt, text: "" };
         // Persist the provider receipt before any project mutation. A retry only reapplies this result.
-        const { error: receiptError } = await db.from("dialogue_batch_items").update({ result: receipt, status: "ready" }).eq("id", item["id"]);
-        if (receiptError) throw new Error(receiptError.message);
+        await transition(item["id"], { result: receipt, status: "ready" });
       }
       const state = await loadProjectState(db, batch.project_id);
       const command: Command = { type: "ApplyGeneratedDialogue", occurrenceId: String(item["occurrence_id"]), blockId: String(item["block_id"]), characterId: batch.character_id,
@@ -48,7 +51,7 @@ export async function processDialogueBatch(db: AnyClient, batchId: string, userD
         metadata: { source: "ai", provider: "elevenlabs", voiceId: batch.voice.voiceId, modelId: batch.voice.modelId ?? "eleven_v3", settings: { ...batch.voice.settings, language: String(item["language"]) }, scriptRevision: Number(item["script_revision"]), parentVersionId: null } };
       const applied = applyCommand(state, { id: String(item["command_id"]) as never, actor: batch.created_by as never, at: new Date().toISOString(), command });
       if (!applied.ok) {
-        await db.from("dialogue_batch_items").update({ status: "failed", retryable: false, error: applied.error.message }).eq("id", item["id"]);
+        await transition(item["id"], { status: "failed", retryable: false, error: applied.error.message });
         processed++; continue;
       }
       // SQL wraps apply_changes plus the completion receipt in a single transaction.

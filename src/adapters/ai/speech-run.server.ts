@@ -110,6 +110,7 @@ export async function runSpeech(data: SpeechInput, context: { supabase: unknown;
         .select("id", { count: "exact", head: true })
         .eq("created_by", context.userId)
         .eq("kind", "sound")
+        .neq("status", "queued")
         .gte("created_at", hourAgo);
       if ((count ?? 0) - extra >= MAX_SPEECH_JOBS_PER_USER_PER_HOUR)
         return L(
@@ -124,8 +125,8 @@ export async function runSpeech(data: SpeechInput, context: { supabase: unknown;
       );
       return budget ?? gate.overAccountCap(db, key.user_id, cost ?? Number.NaN, extra === 1);
     };
-    const before = await limits(data.jobId ? 1 : 0);
-    if (before) return { ok: false, message: before };
+    const before = await limits(0);
+    if (before) return { ok: false, message: before, status: data.batch ? 429 : null };
     const jobId = data.jobId ?? newId<"generation_job">();
     const jobRow = {
       id: jobId,
@@ -170,7 +171,7 @@ export async function runSpeech(data: SpeechInput, context: { supabase: unknown;
     if (after) {
       if (data.jobId) await db.from("generation_jobs").update({ status: "failed", error: after }).eq("id", jobId);
       else await db.from("generation_jobs").delete().eq("id", jobId).eq("status", "running");
-      return { ok: false, message: after };
+      return { ok: false, message: after, status: data.batch ? 429 : null };
     }
     const finish = async (patch: Record<string, unknown>) => {
       const { error } = await db
