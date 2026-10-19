@@ -193,7 +193,7 @@ for (const [name, path] of [["scene", "/scene"], ["manus", "/manus"], ["bibliote
 }
 
 await run("u2-ikonknapp", "/scene", async (page) => {
-  console.log("antall", await page.locator("[data-icon-button]").count(), await page.getByRole("button", { name: /^(Angre|Undo)/ }).evaluateAll((b) => b.map((x) => x.outerHTML.slice(0, 300))), await page.locator("[data-toolbar-group] button").evaluateAll((b) => b.slice(0, 6).map((x) => x.outerHTML.slice(0, 160))));
+
   const size = await page.locator("button[data-icon-button]").first().boundingBox();
   check(size && Math.round(size.height) === 28 && Math.round(size.width) === 28, "ikonknappen er 28 × 28 px");
 });

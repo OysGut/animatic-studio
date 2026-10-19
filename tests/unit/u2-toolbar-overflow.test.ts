@@ -23,3 +23,11 @@ describe("U2 primærhandling", () => {
     expect(countPrimary(["primary", "primary"])).toBe(2);
   });
 });
+
+import { cn } from "@/lib/utils";
+describe("U2 tokens i klassehjelperen", () => {
+  it("beholder skriftstørrelsestokenet ved siden av en tekstfarge", () => {
+    expect(cn("text-chrome-label text-text-tertiary")).toBe("text-chrome-label text-text-tertiary");
+    expect(cn("text-chrome text-text-secondary")).toBe("text-chrome text-text-secondary");
+  });
+});
