@@ -11,6 +11,7 @@ import { VISEMES, type Viseme } from "./parts";
 export const LIPSYNC_ALGORITHM_VERSION = 1;
 export const LIPSYNC_MAX_FRAMES = 100_000;
 export type LipsyncSource = "rhubarb" | "rule";
+export const VISEME_ORDER: readonly Viseme[] = VISEMES;
 
 /** Én munnform over et frame-intervall [frame, endFrame). */
 export interface VisemeSpan {
