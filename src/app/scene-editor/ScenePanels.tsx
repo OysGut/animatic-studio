@@ -346,10 +346,10 @@ export function StackedPanels({
             data-collapsed={closed ? true : undefined}
             className={"flex shrink-0 flex-col " + (i > 0 ? "border-t border-border" : "")}
           >
-            <header className="group flex h-8 shrink-0 items-center gap-1.5 border-b border-border bg-surface-2 px-2">
+            <header className="group flex h-toolbar shrink-0 items-center gap-1.5 border-b border-border bg-surface-2 px-2">
               <button
                 type="button"
-                className="flex min-w-0 flex-1 items-center gap-1 rounded-sm px-1 py-0.5 text-left text-text-tertiary hover:text-text-primary"
+                className="flex min-w-0 flex-1 items-center gap-1 rounded-sm px-1 py-0.5 text-left text-text-tertiary hover:text-text-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-focus-ring"
                 onClick={() => onToggle(id)}
                 aria-expanded={!closed}
                 aria-label={
@@ -369,13 +369,13 @@ export function StackedPanels({
                 ) : (
                   <ChevronDown className="size-3.5 shrink-0" aria-hidden />
                 )}
-                <h2 className="min-w-0 truncate text-[11px] font-medium uppercase tracking-wider">
+                <h2 className="min-w-0 truncate text-chrome-label font-medium uppercase tracking-label">
                   {title}
                 </h2>
               </button>
               <button
                 type="button"
-                className={iconButton + " opacity-60 group-hover:opacity-100 group-focus-within:opacity-100"}
+                className={iconButton}
                 disabled={i === 0}
                 onClick={() => onOrder(movePanelAmong(order, shown, id, -1))}
                 aria-label={L(`Flytt «${title}» opp`, `Move “${title}” up`)}
@@ -385,7 +385,7 @@ export function StackedPanels({
               </button>
               <button
                 type="button"
-                className={iconButton + " opacity-60 group-hover:opacity-100 group-focus-within:opacity-100"}
+                className={iconButton}
                 disabled={i === shown.length - 1}
                 onClick={() => onOrder(movePanelAmong(order, shown, id, 1))}
                 aria-label={L(`Flytt «${title}» ned`, `Move “${title}” down`)}

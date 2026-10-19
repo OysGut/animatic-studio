@@ -20,7 +20,7 @@ import {
 import { createPortal } from "react-dom";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { L } from "@/app/i18n";
+import { L } from "@/core";
 import { cn } from "@/lib/utils";
 import { countPrimary, planToolbarOverflow } from "./toolbar-overflow";
 
