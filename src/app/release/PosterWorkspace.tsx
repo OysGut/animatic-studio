@@ -389,6 +389,7 @@ function Release({
         <ToolbarSeparator />
         <IconButton
           onClick={cmds.undo}
+          shortcut="⌘Z"
           disabled={!cmds.canUndo}
           title={
             cmds.undoLabel
@@ -405,6 +406,7 @@ function Release({
         </IconButton>
         <IconButton
           onClick={cmds.redo}
+          shortcut="⇧⌘Z"
           disabled={!cmds.canRedo}
           title={
             cmds.redoLabel

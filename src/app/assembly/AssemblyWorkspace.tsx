@@ -911,6 +911,7 @@ function Assembly({
         <ToolbarSeparator />
         <ChromeIconButton
           onClick={cmds.undo}
+          shortcut="⌘Z"
           disabled={!cmds.canUndo}
           title={
             cmds.undoLabel
@@ -925,6 +926,7 @@ function Assembly({
         </ChromeIconButton>
         <ChromeIconButton
           onClick={cmds.redo}
+          shortcut="⇧⌘Z"
           disabled={!cmds.canRedo}
           title={
             cmds.redoLabel

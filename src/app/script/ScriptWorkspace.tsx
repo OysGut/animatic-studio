@@ -765,6 +765,7 @@ function Workspace({
         <ToolbarGroup priority={7}>
         <IconButton
           onClick={cmds.undo}
+          shortcut="⌘Z"
           disabled={!cmds.canUndo}
           title={
             cmds.undoLabel
@@ -781,6 +782,7 @@ function Workspace({
         </IconButton>
         <IconButton
           onClick={cmds.redo}
+          shortcut="⇧⌘Z"
           disabled={!cmds.canRedo}
           title={
             cmds.redoLabel
