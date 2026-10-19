@@ -1898,7 +1898,7 @@ function run(
       if (c.language !== null && languageTagError(c.language)) fail("invalid", languageTagError(c.language) ?? "");
       if (c.target === "project") {
         if (c.targetId !== s.project.id) fail("invalid", L("Feil prosjekt", "Wrong project"));
-        const project = { ...s.project, scriptLanguage: c.language ?? undefined, revision: rev(s.project) };
+        const project: ProjectState["project"] = { ...s.project, ...(c.language ? { scriptLanguage: c.language } : {}), revision: rev(s.project) };
         if (c.language === null) delete project.scriptLanguage;
         return { state: { ...s, project }, inverse: { ...c, language: s.project.scriptLanguage ?? null }, affected: [s.project.id] };
       }
