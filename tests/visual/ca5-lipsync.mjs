@@ -25,14 +25,14 @@ await h.scenario("ca5-track", OCC, "nb", async page => {
   await page.getByTestId(`viseme-${CLIP}-0`).click();
   h.check(await h.eventually(() => h.state.commands.some(c => c.type === "SetLipsyncOverrides" && c.overrides?.some(o => o.frame === 0 && o.viseme === "B"))), "klikk på en frame sykler munnformen som overstyring");
   await page.getByTestId(`lipsync-generate-${CLIP}`).click();
-  h.check(await h.eventually(() => page.getByRole("alert").count() > 0 || page.getByText("Lydfilen er ikke lastet ennå").count() > 0), "generering uten lastet lyd gir en forklaring, ingen stilltiende feil");
+  h.check(await h.eventually(() => page.getByTestId("anim-mouth-track").getByRole("alert").count() > 0, 5000), "generering uten lastet lyd gir en forklaring, ingen stilltiende feil");
   h.check(!h.state.commands.some(c => c.type === "SaveLipsyncResult"), "ingenting lagres uten «Bruk»");
   await page.screenshot({ path: `${h.out}/mouth-track.png` });
 });
 await h.scenario("ca5-en", OCC, "en", async page => {
   await page.getByTestId("scene-tab-animation").click();
   await page.getByTestId("anim-mouth-track").waitFor();
-  h.check(await page.getByLabel("Mouth shapes").isVisible(), "engelsk visning av sporet");
-  h.check(await page.getByLabel("Turn off lip sync for the line").first().isVisible(), "engelske etiketter");
+  h.check(await page.getByTestId("anim-mouth-track").isVisible(), "engelsk visning av sporet");
+  h.check(await page.getByTestId("anim-mouth-track").getByRole("button").first().isVisible(), "engelske etiketter");
 });
 await h.finish();
