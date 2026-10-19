@@ -53,7 +53,10 @@ import {
   previousSceneCamera,
   sourceAt,
   carryTargets,
+  scriptSeekTarget,
 } from "@/core";
+import { NoteFlagControl } from "@/app/dialogue/NoteFlagControl";
+import { publishSceneBookmark } from "@/app/shell/bookmark-context";
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { SaveIndicator } from "@/app/script/ScriptWorkspace";
@@ -121,7 +124,9 @@ export function SceneEditorWorkspace({
   initialOccurrenceId,
   initialLineId = null,
   initialFrame = null,
+  initialTab = null,
 }: {
+  initialTab?: string | null;
   projectId: string;
   userId: string;
   initialOccurrenceId: string | null;
@@ -162,6 +167,7 @@ export function SceneEditorWorkspace({
       initialOccurrenceId={initialOccurrenceId}
       initialLineId={initialLineId}
       initialFrame={initialFrame}
+      initialTab={initialTab}
       userId={userId}
     />
   );
@@ -176,8 +182,10 @@ function Editor({
   initialOccurrenceId,
   initialLineId = null,
   initialFrame = null,
+  initialTab = null,
   userId,
 }: {
+  initialTab?: string | null;
   initialLineId?: string | null;
   initialFrame?: number | null;
   userId: string;
@@ -288,7 +296,7 @@ function Editor({
     () => (composition ? compositionDuration(state, composition) : 1),
     [state, composition],
   );
-  const [sceneTab, setSceneTab] = useState("scene");
+  const [sceneTab, setSceneTab] = useState(initialTab ?? "scene");
   const [animationRange, setAnimationRange] = useState<{ from: number; to: number } | null>(null);
   useEffect(() => { setAnimationRange(null); }, [composition?.id]);
   const playback = usePlayback(duration, state.project.fps, true, sceneTab === "animation" ? animationRange : null);
@@ -1118,6 +1126,13 @@ function Editor({
                   {copyError ? <span className="text-status-danger">{copyError}</span> : null}
                 </div>
               ) : null}
+              {entrySeek ? (
+                <div role="status" data-testid="scene-entry-seek" className="flex min-h-8 shrink-0 items-center gap-2 border-b border-border bg-status-uncertain-bg px-3 py-1 text-xs text-text-primary">
+                  {entrySeek}
+                  <Button size="sm" variant="ghost" className="h-6" onClick={() => setEntrySeek(null)}>{L("Lukk", "Close")}</Button>
+                </div>
+              ) : null}
+              {occurrence ? <div className="flex h-7 shrink-0 items-center gap-2 border-b border-border px-3 text-xs text-text-secondary"><NoteFlagControl state={state} kind="occurrence" targetId={occurrence.id} run={cmds.run} editable={roleEditable} />{L("Huskelapp for scenen", "Note flag for the scene")}</div> : null}
               {found.length > 0 ? (
                 <div
                   role="status"
