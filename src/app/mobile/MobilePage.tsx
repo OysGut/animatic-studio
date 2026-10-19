@@ -492,7 +492,7 @@ function ShareButton({ token, label, audio }: { token: string; label: string; au
       <button
         type="button"
         onClick={() => void share()}
-        className="flex h-12 items-center justify-center gap-2 rounded-md bg-accent-brand text-base font-medium text-on-media"
+        className="flex h-12 items-center justify-center gap-2 rounded-md bg-accent-brand text-base font-medium text-accent-fg"
         data-testid="mobile-share"
       >
         <Share2 className="size-5" aria-hidden />
