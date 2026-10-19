@@ -847,7 +847,7 @@ function Editor({
           </ToolbarButton>
         ) : null}
         </ToolbarGroup>
-        <div data-toolbar-fixed className="ml-auto flex flex-wrap items-center gap-2">
+        <div data-toolbar-fixed className="ml-auto flex shrink-0 flex-nowrap items-center gap-2">
           {composition ? (
             <>
               <ToolbarButton
