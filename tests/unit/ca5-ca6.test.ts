@@ -9,7 +9,7 @@ import { DEFAULT_BLINK_SPEC, mulberry32, patternError, patternEventAt, planPatte
 import { eyeStateAt, mouthVisemeAt, overlayEventsAt } from "@/core/animation/evaluate";
 
 const id = (n: number) => `01900000-0000-7000-8000-0056${String(n).padStart(8, "0")}`;
-const fps = { num: 24, den: 1 };
+const fps = fixture.state.project.fps;
 
 function baseState(): ProjectState {
   const s = fixture.state;
@@ -18,7 +18,6 @@ function baseState(): ProjectState {
   const take = Object.values(s.takes).find(t => !t.removed) ?? Object.values(s.takes)[0]!;
   return {
     ...s,
-    project: { ...s.project, fps },
     occurrences: { ...s.occurrences, [occ.id]: { ...occ, activeTakeId: take.id } },
   };
 }
@@ -97,7 +96,7 @@ describe("CA5 leppesynk", () => {
   });
   it("mouthVisemeAt bruker bare aktivert leppesynk i klippets tidsrom", () => {
     const s = apply(baseState(), { type: "SaveLipsyncResult", result: result() }).state;
-    const clip = clipOf(s); const start = Math.round(clip.offsetMs / 1000 * 24);
+    const clip = clipOf(s); const start = Math.round(clip.offsetMs / 1000 * fps.num / fps.den);
     expect(mouthVisemeAt(s, clip.occurrenceId, start)).toBe("A");
     expect(mouthVisemeAt(s, clip.occurrenceId, start - 1)).toBe("X");
     const off = apply(s, { type: "SetLipsyncEnabled", lipsyncId: id(7), enabled: false }).state;
