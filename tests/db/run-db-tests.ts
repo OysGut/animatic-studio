@@ -5695,6 +5695,38 @@ try {
     assert((await sql`select id from public.projects where id = ${caProject}`).length === 0, "project not purged");
   });
 
+  // ---------- CA7: globale animasjonsoppsett (migrasjon 0057) ----------
+  await test("0057: redaktør publiserer låste animasjonsversjoner; medlem, ikke-medlem og anon nektes", async () => {
+    const ws = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_workspace('Animasjon') as id`)[0]!["id"] as string);
+    const tEd = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_workspace_invitation(${ws}, 'bob@example.no', 'editor') as t`)[0]!["t"] as string);
+    await as("authenticated", BOB, (tx) => tx`select public.accept_workspace_invitation(${tEd})`);
+    const ga = await as("authenticated", BOB, async (tx) => (await tx`select public.global_create_asset(${ws}, 'logo', 'Figur', '', '{}', '{}') as id`)[0]!["id"] as string);
+    const gv = await as("authenticated", BOB, async (tx) => (await tx`select public.global_create_variant(${ga}, 'Farge', 'reference', '') as id`)[0]!["id"] as string);
+    const rig = { format: 1, anchors: { mouth: { x: 0.5, y: 0.6 } }, sourceGlobalVersionId: gv };
+    const pats = [{ key: "p1", name: "Blink", color: "#fff", spec: { format: 1 } }];
+    // Medlem uten redaktørrolle og ikke-medlem kan ikke publisere
+    await expectError(as("authenticated", CAROL, (tx) => tx`select public.global_publish_animation(${gv}, ${sql.json(rig)}, ${sql.json(pats)}, '')`), "42501");
+    // Ugyldig spesifikasjon avvises
+    await expectError(as("authenticated", BOB, (tx) => tx`select public.global_publish_animation(${gv}, ${sql.json({ format: 2, anchors: {} })}, '[]'::jsonb, '')`), "22023");
+    await expectError(as("authenticated", BOB, (tx) => tx`select public.global_publish_animation(${gv}, ${sql.json(rig)}, '{}'::jsonb, '')`), "22023");
+    const a1 = await as("authenticated", BOB, async (tx) => (await tx`select public.global_publish_animation(${gv}, ${sql.json(rig)}, ${sql.json(pats)}, 'første') as id`)[0]!["id"] as string);
+    await as("authenticated", BOB, (tx) => tx`select public.global_publish_animation(${gv}, ${sql.json(rig)}, '[]'::jsonb, '')`);
+    const rows = await as("authenticated", ALICE, (tx) => tx`select number, workspace_id, global_asset_id from public.global_animation_specs where variant_id = ${gv} order by number`);
+    assert(rows.length === 2 && rows[0]!["number"] === 1 && rows[1]!["number"] === 2, "nummerering per variant");
+    assert(rows[0]!["workspace_id"] === ws && rows[0]!["global_asset_id"] === ga, "gruppe og ressurs fra varianten");
+    // Ikke-medlem ser ingenting; anon har ingen tilgang
+    const carol = await as("authenticated", CAROL, (tx) => tx`select id from public.global_animation_specs where variant_id = ${gv}`);
+    assert(carol.length === 0, "ikke-medlem ser oppsett");
+    await expectError(as("anon", null, (tx) => tx`select id from public.global_animation_specs`), "42501");
+    // Direkte skriving er stengt; publiserte versjoner er uforanderlige også for service role
+    await expectError(as("authenticated", BOB, (tx) => tx`insert into public.global_animation_specs (workspace_id, global_asset_id, variant_id, number, rig_spec, created_by) values (${ws}, ${ga}, ${gv}, 9, ${sql.json(rig)}, ${BOB})`), "42501");
+    await expectError(as("authenticated", BOB, (tx) => tx`update public.global_animation_specs set note = 'x' where id = ${a1}`), "42501");
+    await expectError(as("service_role", null, (tx) => tx`update public.global_animation_specs set note = 'x' where id = ${a1}`), "42501");
+    await expectError(as("service_role", null, (tx) => tx`delete from public.global_animation_specs where id = ${a1}`), "42501");
+    const version = await sql`select max(version) as v from public.schema_version`;
+    assert(Number(version[0]!["v"]) === 57, "skjemaversjon 57");
+  });
+
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);

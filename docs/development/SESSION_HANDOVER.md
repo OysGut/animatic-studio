@@ -74,3 +74,12 @@ KI-30 (foreldreløse bilder), KI-31 (notater fra fremmede PDF-er), KI-32 (meldin
 - CA5 er ikke med: munnformvalg er lokal forhåndsvisning, ingen automatisk tidsfesting eller Rhubarb/WASM installert. Ingen nye pakker eller betalte AI-kall.
 - Nye tester: tests/unit/ca4-parts.test.ts (11), tests/visual/ca4-mouth-mask.mjs (25), tre nye 0055-DB-tester (hele DB-suiten 110/110). CA1 17/17, CA2 17/17, CA3 20/20. Endelig Vitest-tall i chatten.
 - Neste: Claude kontrollerer SQL/diff, kjører 0055 i Cloud og verifiserer en ekte mobilinnsending før publisering.
+
+
+## CA5–CA8 – 19.10.2026
+- CA5/CA6 er verifisert og publisert (migrasjon 0056 er kjørt). I denne runden er CA5-meldingen gjort robust.
+- CA7: kjernen ligger i `src/core/animation/character.ts` (arv, overstyringer, bruk i andre scener, historikk og gjenoppretting) og `global-rig.ts` (publisering og innlesing). Den nye kommandoen er `AdoptRigVersion` («bare her» / «oppdater alle», med invers). Brukerflaten er `CharacterPanel.tsx`.
+- CA8: `src/core/animation/rhythm.ts` planlegger via `planRetime(gapChanges)` og gir én `RetimeScene`. Brukerflaten er `RhythmPanel.tsx`. Eksportvalgene ligger i `UseBehavior.export` og brukes i `evaluateCharacterFrame` og i `characterPass` i lerretsrendereren.
+- Migrasjon 0057 (skjemaversjon 57) er ikke kjørt i Cloud. Den erstatter ingen funksjoner (`apply_changes`, `delete_project` og purge er uendret).
+- Tester: tsc ok; vitest 1705 bestått, 10 hoppet over; DB 114/114; ca7 26/26; ca8 22/22; ca1–ca6 17/17/20/25/13/15; asset-studio 57/57; scene-panels 39/39.
+- Neste: Claude kjører 0057. Deretter skal Cmd/Ctrl-dragmodusen for rytme bygges (se KNOWN_ISSUES).

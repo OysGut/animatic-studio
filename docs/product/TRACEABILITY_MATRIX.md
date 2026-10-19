@@ -21,9 +21,9 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | INV-10 | Produksjonsteknisk segmentering endrer ikke manusscenenes identiteter. | 11 | 11 |
 | INV-11 | Generativ AI er valgfritt for ordinær 2D-animatic-avspilling og eksport. | 13 | 13 |
 | INV-12 | Betalte API-kall følger eksplisitte kostnadsgodkjenninger. | 20 | 17 |
-| INV-13 | Delte ressurser er versjonerte og ikke-destruktive. | 30 | 25 |
+| INV-13 | Delte ressurser er versjonerte og ikke-destruktive. | 33 | 28 |
 | INV-14 | Deaktivering/skjuling er aldri sletting; materiale kan gjenaktiveres. | 17 | 17 |
-| INV-C1 | Ingen stille overskriving ved samarbeid (revisjonskontroll) – DEC-0003/DEC-0010. | 7 | 7 |
+| INV-C1 | Ingen stille overskriving ved samarbeid (revisjonskontroll) – DEC-0003/DEC-0010. | 12 | 12 |
 | INV-C2 | Tilgang håndheves i backend (RLS) – teknisk, DEC-0010. | 3 | 3 |
 | INV-C3 | Bare medlemmer med kostnadsrett kan godkjenne betalte kall – midlertidig, DEC-0018/Q-01. | 1 | 1 |
 
@@ -36,7 +36,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | TIMELINE | Timeline & Assembly Engine | 108 | 29 | 108 | 108 |
 | LIBRARY | Resource Library | 96 | 10 | 85 | 81 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 39 | 39 |
-| COMPOSE | 2D Composition Engine | 81 | 14 | 81 | 80 |
+| COMPOSE | 2D Composition Engine | 86 | 14 | 86 | 85 |
 | CAMERA | Camera & Motion Engine | 32 | 2 | 32 | 32 |
 | AUDIO | Audio Engine | 69 | 2 | 69 | 62 |
 | PROMPT | Prompt Orchestration Engine | 58 | 15 | 54 | 50 |
@@ -46,10 +46,10 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | VERSION | Version & Dependency Engine | 97 | 38 | 95 | 94 |
 | L10N | Localization Engine | 40 | 4 | 39 | 39 |
 | PRESENT | Presentation Engine | 30 | 3 | 25 | 25 |
-| EXPORT | Export Engine | 60 | 12 | 60 | 60 |
+| EXPORT | Export Engine | 61 | 12 | 61 | 61 |
 | SECURITY | Security & Storage | 45 | 5 | 44 | 43 |
 | COLLAB | Collaboration & Access | 21 | 0 | 21 | 21 |
-| UI | Brukergrensesnitt og designsystem | 211 | 21 | 206 | 201 |
+| UI | Brukergrensesnitt og designsystem | 216 | 21 | 211 | 206 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 7 | 5 |
 
 ## Dekning per fase
@@ -58,7 +58,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 |---|---|---|
 | 1 | 72 | 67 |
 | 2 | 97 | 93 |
-| 3 | 75 | 73 |
+| 3 | 80 | 78 |
 | 4 | 85 | 84 |
 | 5 | 152 | 141 |
 | 6 | 49 | 48 |
@@ -789,3 +789,8 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0717 | Beslutning B-058 / CA4-oppdrag 2026-10-19 | COMPOSE, UI | db/migrations/0055_animation_parts_mobile.sql | 2 | tests/unit/ca4-parts.test.ts, tests/db/run-db-tests.ts, tests/visual/ca4-mouth-mask.mjs | Verifisert | 2026-10-19 B-058 / CA4-oppdrag: Bygget og testet lokalt med mock; migrasjon 0055 er ikke kjørt i Cloud. |
 | REQ-0718 | Beslutning B-058 / CA4-oppdrag 2026-10-19 | COMPOSE, UI | src/core/animation/parts.ts | 2 | tests/unit/ca4-parts.test.ts, tests/db/run-db-tests.ts, tests/visual/ca4-mouth-mask.mjs | Verifisert | 2026-10-19 B-058 / CA4-oppdrag: Bygget og testet lokalt med mock; migrasjon 0055 er ikke kjørt i Cloud. |
 | REQ-0719 | Beslutning B-058 / CA4-oppdrag 2026-10-19 | COMPOSE, UI | src/app/scene-editor/animation/DialogueTrack.tsx | 2 | tests/unit/ca4-parts.test.ts, tests/db/run-db-tests.ts, tests/visual/ca4-mouth-mask.mjs | Verifisert | 2026-10-19 B-058 / CA4-oppdrag: Bygget og testet lokalt med mock; migrasjon 0055 er ikke kjørt i Cloud. |
+| REQ-0720 | Beslutning B-058 / CA5-oppdrag 2026-10-19 | COMPOSE, UI | src/core/animation/lipsync.ts, src/core/animation/behavior-commands.ts, src/engine/lipsync/analyze.ts, src/app/scene-editor/animation/MouthTrack.tsx | 2 | tests/unit/ca5-ca6.test.ts, tests/db/run-db-tests.ts, tests/visual/ca5-lipsync.mjs | Verifisert | 2026-10-19 B-058 / CA5-oppdrag: Bygget og testet lokalt med mock; migrasjon 0056 er ikke kjørt i Cloud. |
+| REQ-0721 | Beslutning B-058 / CA6-oppdrag 2026-10-19 | COMPOSE, UI | src/core/animation/patterns.ts, src/core/animation/behavior-commands.ts, src/app/scene-editor/animation/BlinkPanel.tsx, src/app/scene-editor/animation/PatternStudio.tsx | 2 | tests/unit/ca5-ca6.test.ts, tests/db/run-db-tests.ts, tests/visual/ca6-blink-patterns.mjs | Verifisert | 2026-10-19 B-058 / CA6-oppdrag: Bygget og testet lokalt med mock; migrasjon 0056 er ikke kjørt i Cloud. |
+| REQ-0722 | Beslutning B-058 / CA7-oppdrag 2026-10-19 | COMPOSE, UI | src/core/animation/character.ts, src/core/animation/global-rig.ts, src/core/animation/rig-commands.ts, src/adapters/browser/global-library.ts, src/app/scene-editor/animation/CharacterPanel.tsx, db/migrations/0057_global_animation.sql | 2 | tests/unit/ca7-ca8.test.ts, tests/db/run-db-tests.ts, tests/visual/ca7-global.mjs | Verifisert | 2026-10-19 B-058 / CA7-oppdrag: Bygget og testet lokalt med mock og lokal Postgres; migrasjon 0057 er ikke kjørt i Cloud. |
+| REQ-0723 | Beslutning B-058 / CA8-oppdrag 2026-10-19 | COMPOSE, UI | src/core/animation/rhythm.ts, src/core/composition/retime.ts, src/app/scene-editor/animation/RhythmPanel.tsx | 2 | tests/unit/ca7-ca8.test.ts, tests/visual/ca8-rhythm-export.mjs | Verifisert | 2026-10-19 B-058 / CA8-oppdrag: Bygget og testet lokalt med mock. Cmd/Ctrl-dragmodusen fra §73–§96 er ikke bygget (se KNOWN_ISSUES). |
+| REQ-0724 | Beslutning B-058 / CA8-oppdrag 2026-10-19 | COMPOSE, EXPORT, UI | src/core/animation/evaluate.ts, src/core/animation/rig.ts, src/engine/compositor/canvas.ts, src/engine/export/animatic.ts, src/app/assembly/ExportAnimaticDialog.tsx, src/app/scene-editor/animation/CharacterPanel.tsx | 2 | tests/unit/ca7-ca8.test.ts, tests/visual/ca8-rhythm-export.mjs | Verifisert | 2026-10-19 B-058 / CA8-oppdrag: Bygget og testet lokalt med mock. |

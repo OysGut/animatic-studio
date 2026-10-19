@@ -25,7 +25,7 @@ await h.scenario("ca5-track", OCC, "nb", async page => {
   await page.getByTestId(`viseme-${CLIP}-0`).click();
   h.check(await h.eventually(() => h.state.commands.some(c => c.type === "SetLipsyncOverrides" && c.overrides?.some(o => o.frame === 0 && o.viseme === "B"))), "klikk på en frame sykler munnformen som overstyring");
   await page.getByTestId(`lipsync-generate-${CLIP}`).click();
-  h.check(await h.eventually(() => page.getByRole("alert").count() > 0, 5000), "generering uten lastet lyd gir en forklaring, ingen stilltiende feil");
+  h.check(await h.eventually(async () => ((await page.getByTestId("lipsync-message").textContent()) ?? "").trim().length > 0, 5000), "generering uten lastet lyd gir en forklaring, ingen stilltiende feil");
   h.check(!h.state.commands.some(c => c.type === "SaveLipsyncResult"), "ingenting lagres uten «Bruk»");
   await page.screenshot({ path: `${h.out}/mouth-track.png` });
 });

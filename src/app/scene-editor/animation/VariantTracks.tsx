@@ -12,14 +12,16 @@ import { FaceMarkDialog } from "./FaceMarkDialog";
 import { animationUseOf } from "@/core/animation/rig";
 import { MouthShapeEditor } from "./MouthShapeEditor";
 import { BlinkPanel } from "./BlinkPanel";
+import { CharacterPanel } from "./CharacterPanel";
 import { layerVersion } from "@/core/composition/render";
 import { ScanFace, Power, Speech, UserRound, Package, Mountain } from "lucide-react";
 import type { AnimWindow } from "./TimeNavigator";
 
 type Selection = { layerId: string; index: number };
-export function VariantTracks({ state, compositionId, occurrenceId, duration, view, frame, editable, run, onSeek, onStudio }: {
+export function VariantTracks({ state, compositionId, occurrenceId, duration, view, frame, editable, run, runGroup, onJump, onSeek, onStudio }: {
   state: ProjectState; compositionId: string; occurrenceId: string; duration: number; view: AnimWindow; frame: number; editable: boolean;
   run: (c: Command, label: string) => string | null; onSeek: (f: number) => void; onStudio: (id: string) => void;
+  runGroup?: (commands: readonly Command[], label: string) => Promise<string | null>; onJump?: (occurrenceId: string) => void;
 }) {
   const tracks = animationImageTracks(state, compositionId, duration);
   const [mouthVersion, setMouthVersion] = useState<string | null>(null);
@@ -63,6 +65,9 @@ export function VariantTracks({ state, compositionId, occurrenceId, duration, vi
       <IconButton data-testid="ca4-open-mouth" label={L("Munnformer og rigg-deler", "Mouth shapes and rig parts")} disabled={!editable || !segment?.version || current?.layer.locked || !urls[segment.version.mediaPath]} onClick={() => setMouthVersion(segment?.version?.id ?? null)}><Speech /></IconButton>
       <IconButton data-testid="ca3-animation-enabled" aria-pressed={use?.enabled ?? false} label={L("Animasjon i denne scenen", "Animation in this scene")} active={use?.enabled ?? false} disabled={!editable || !use || current?.layer.locked} onClick={() => { if (use) setError(run({ type: "SetAnimationLayerEnabled", useId: use.id, enabled: !use.enabled }, L("Endre animasjon i scenen", "Change scene animation"))); }}><Power /></IconButton>
       {use ? <BlinkPanel state={state} use={use} frame={frame} editable={editable && !current?.layer.locked} run={run} /> : null}
+      {use ? <CharacterPanel state={state} use={use} editable={editable && !current?.layer.locked} run={run}
+        runGroup={runGroup ?? (async (cs, label) => { for (const c of cs) { const e = run(c, label); if (e) return e; } return null; })}
+        onJump={onJump ?? (() => undefined)} /> : null}
       {current ? <ToolbarButton data-testid="anim-open-asset-studio" onClick={() => onStudio(current.layer.id)}>{L("Asset Studio", "Asset Studio")}</ToolbarButton> : null}
     </ToolbarGroup></Toolbar>
     {current && segment ? <div className="flex flex-wrap items-center gap-2 border-b border-border p-2 text-xs text-text-secondary">

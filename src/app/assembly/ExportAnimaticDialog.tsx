@@ -60,6 +60,7 @@ import { audioBank } from "@/app/audio/use-audio-playback";
 import { signedUrls } from "@/app/library/asset-images";
 import { formatSeconds } from "./FilmTimeline";
 import { exportSelection, type ExportScope } from "./export-selection";
+import { hasSeparateCharacterLayers } from "@/core/animation/character";
 
 type Scope = ExportScope;
 type Size = "full" | "half";
@@ -146,6 +147,8 @@ export function ExportAnimaticDialog({
   const [container, setContainer] = useState<"mp4" | "webm">("mp4");
   const [subMode, setSubMode] = useState<"burn" | "srt" | "vtt" | "none">("burn");
   const [subFile, setSubFile] = useState<ReadyFile | null>(null);
+  const [charFile, setCharFile] = useState<ReadyFile | null>(null);
+  const separateLayers = hasSeparateCharacterLayers(state);
   const langName = languageWord(language.dialogue);
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -164,6 +167,7 @@ export function ExportAnimaticDialog({
     setReady(null);
     setShareSource(null);
     setSubFile(null);
+    setCharFile(null);
     setError(null);
     setProgress(null);
     const first = clips[0]?.occurrenceId ?? "";
@@ -450,6 +454,7 @@ export function ExportAnimaticDialog({
     setReady(null);
     setShareSource(null);
     setSubFile(null);
+    setCharFile(null);
     const ctrl = new AbortController();
     abort.current = ctrl;
     setProgress({ done: 0, total: sel.endFrame - sel.startFrame });
@@ -544,6 +549,8 @@ export function ExportAnimaticDialog({
         ...(language.subtitles && subMode === "burn" ? { subtitles } : {}),
         mp4: container === "mp4",
         webm: container === "webm",
+        // CA8: karakterlag satt til «eget lag» utelates fra hovedfilmen og lages som egen fil
+        ...(separateLayers ? { characterPass: "main" as const } : {}),
         onProgress: (done, total) => {
           if (abort.current === ctrl) setProgress({ done, total });
         },
@@ -557,6 +564,15 @@ export function ExportAnimaticDialog({
       );
       const f = prepareDownload(file.bytes, name, file.mimeType);
       setReady({ ...f, bytes: file.bytes.byteLength });
+      if (separateLayers) {
+        const layers = await exportAnimatic({
+          state, clips: sel.clips, startFrame: sel.startFrame, endFrame: sel.endFrame, width: outW, height: outH, fps,
+          images, signal: ctrl.signal, mp4: container === "mp4", webm: container === "webm", characterPass: "separate",
+        });
+        if (abort.current !== ctrl || ctrl.signal.aborted) return;
+        const layerName = name.replace(/(\.[^.]+)$/, `${L(" – karakterlag", " – character layers")}.${layers.extension.replace(/^\./, "")}`);
+        setCharFile(prepareDownload(layers.bytes, layerName, layers.mimeType));
+      }
       // Undertekstene som egen fil (SRT/VTT), med samme tider som videoen
       if (language.subtitles && (subMode === "srt" || subMode === "vtt")) {
         const from = (sel.startFrame * fps.den * 1000) / fps.num;
@@ -1069,6 +1085,17 @@ export function ExportAnimaticDialog({
                 <QrCodeIcon className="size-3.5" aria-hidden />
                 {L("Del med QR-kode …", "Share with QR code …")}
               </button>
+            ) : null}
+            {charFile ? (
+              <a
+                href={charFile.url}
+                download={charFile.name}
+                data-testid="export-character-layers"
+                className="inline-flex items-center gap-1 text-accent-brand hover:underline"
+              >
+                <Download className="size-3.5" aria-hidden />
+                {L("Last ned karakterlagene", "Download the character layers")}
+              </a>
             ) : null}
             {subFile ? (
               <a

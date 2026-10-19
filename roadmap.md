@@ -89,7 +89,11 @@
 - [x] Rett canvas-testens venting på én kant (maks 3 sekunder).
 - [x] CA3: riggmodell, ansiktsmarkering og migrasjoner 0053/0054 skrevet; unit- og mocktester grønne.
 - [x] CA3 DB-verifisering og Cloud-aktivering bekreftet av Øystein.
-- [ ] CA5–CA8 — venter på egne oppdrag.
+- [x] CA5/CA6: leppesynk, blink og mønstre (0056 kjørt).
+- [x] CA7: global gjenbruk, arv og versjonering; migrasjon 0057 skrevet.
+- [x] CA8: rytmeverktøyet og eksportvalg per lag.
+- [ ] CA7 Cloud-aktivering: Claude kjører migrasjon 0057.
+- [ ] CA8 Cmd/Ctrl-dragmodus for rytme (§73–§96): ikke bestilt i denne runden.
 
 ## CA5 + CA6 (2026-10-19)
 - [ ] CA5: leppesynk (Rhubarb WASM / regelbasert reserve), lipsync_results, av/på per replikk, forslag med Bruk/Forkast, munnformsspor, overstyringer, evaluateCharacterFrame

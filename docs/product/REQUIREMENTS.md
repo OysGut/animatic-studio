@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **719**
-- Prioritet: P0: 145, P1: 386, P2: 149, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 192, teknisk-anbefaling: 7
-- Status: Verifisert: 636, Implementert – ikke verifisert: 21, Under arbeid: 3, Ikke startet: 59
+- Antall krav: **724**
+- Prioritet: P0: 145, P1: 391, P2: 149, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 197, teknisk-anbefaling: 7
+- Status: Verifisert: 641, Implementert – ikke verifisert: 21, Under arbeid: 3, Ikke startet: 59
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -9808,3 +9808,86 @@ Forhåndsvisningen toppjusteres. Alle bildespor har miniatyr eller typeikon. Dia
   - tests/unit/ca4-parts.test.ts
   - tests/visual/ca4-mouth-mask.mjs
 - **Implementering:** src/app/scene-editor/animation/DialogueTrack.tsx
+
+#### REQ-0720 – Automatisk leppesynk per replikk med brukerens bekreftelse
+Leppesynk analyseres i nettleseren (Rhubarb WASM, regelbasert reserve), lagres per replikk og take med kilde, versjon og lydhash, kan slås av/på per replikk, og ny eller endret synk vises som forslag med «Bruk»/«Forkast». Manuelle overstyringer overlever ny generering.
+
+- **Kilde:** Beslutning B-058 / CA5-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, UI · **Invarianter:** INV-13, INV-C1
+- **Avhengigheter:** REQ-0719
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Analyse med Rhubarb (fonetisk) som WASM på klienten; regelbasert reserve ved feil.
+  - Resultatet lagres i lipsync_results per replikk og take, med kilde, algoritmeversjon og lydhash.
+  - Av/på per replikk og «generer på nytt» per replikk; forslag krever «Bruk».
+  - Manuelle frame-overstyringer lagres og overlever ny generering.
+- **Tester:**
+  - tests/unit/ca5-ca6.test.ts
+  - tests/visual/ca5-lipsync.mjs
+- **Implementering:** src/core/animation/lipsync.ts, src/core/animation/behavior-commands.ts, src/engine/lipsync/analyze.ts, src/app/scene-editor/animation/MouthTrack.tsx
+
+#### REQ-0721 – Blinking, manuelle blink og navngitte animasjonsmønstre med seed
+Blinking per øye med tilfeldig intervall styrt av seed, manuelle blink og halvlukkede perioder, og navngitte mønstre (f.eks. «nervøs blinking») som gjenbrukes i prosjektet. Seed per bruk gjør resultatet deterministisk ved eksport.
+
+- **Kilde:** Beslutning B-058 / CA6-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, UI · **Invarianter:** INV-13, INV-C1
+- **Avhengigheter:** REQ-0720
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Blinking per øye med seed-styrt intervall; manuelle blink og halvlukket.
+  - Navngitte mønstre lagres i animation_patterns og gjenbrukes per bruk.
+  - Samme seed gir samme hendelser på tvers av oppfriskning og maskiner.
+- **Tester:**
+  - tests/unit/ca5-ca6.test.ts
+  - tests/visual/ca6-blink-patterns.mjs
+- **Implementering:** src/core/animation/patterns.ts, src/core/animation/behavior-commands.ts, src/app/scene-editor/animation/BlinkPanel.tsx, src/app/scene-editor/animation/PatternStudio.tsx
+
+#### REQ-0722 – Rigger og mønstre i det globale biblioteket, arvet karakteratferd og valg av oppdatering
+Rigg-oppsett med mønstre kan publiseres som låste versjoner i arbeidsgruppens globale bibliotek og tas inn i andre prosjekter; nyere globale versjoner tas inn bare etter bekreftelse. Karakteratferd (blink, pust, tics, standardmønstre) lagres på karakterens oppsett og arves av alle bruk; lokale overstyringer vises tydelig. Ved endring vises «brukes i N andre scener» med hopp, og brukeren velger «bare her» eller «oppdater alle». Versjonshistorikk med sammenligning og «gjenopprett som ny versjon»; ingenting slettes.
+
+- **Kilde:** Beslutning B-058 / CA7-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, UI · **Invarianter:** INV-13, INV-C1
+- **Avhengigheter:** REQ-0721
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Publisering lager en ny, uforanderlig versjon i global_animation_specs (migrasjon 0057); bare eier og redaktør i gruppen kan publisere.
+  - Bruk i prosjekt kopierer oppsettet inn som ny prosjektversjon med opprinnelse (låst versjon); nyere global versjon krever bekreftelse.
+  - Effektiv atferd = karakterens standard med scenens lokale verdier over; lokale overstyringer merkes og kan tilbakestilles.
+  - «Brukes i N andre scener» med liste og hopp; «bare her» og «oppdater alle» er én kommando (AdoptRigVersion) med angring; ingenting oppdateres automatisk.
+  - Historikk med sammenligning og «gjenopprett som ny versjon»; ingen versjoner slettes.
+- **Tester:**
+  - tests/unit/ca7-ca8.test.ts
+  - tests/visual/ca7-global.mjs
+- **Implementering:** src/core/animation/character.ts, src/core/animation/global-rig.ts, src/core/animation/rig-commands.ts, src/adapters/browser/global-library.ts, src/app/scene-editor/animation/CharacterPanel.tsx, db/migrations/0057_global_animation.sql
+
+#### REQ-0723 – Rytmeverktøyet (oransje) med forhåndsvisning og én angring
+Rytmeverktøyet (Director's Rhythm Engine) er oransje markert og gjenbruker RetimeScene: takt, pause og vekt per replikk, skjæringspunkt og forskyvning samlet eller proporsjonalt. Endringen forhåndsvises med ny scenetid og mellomrom før «Bruk», og «Bruk» er én angring. Ingenting lagres før «Bruk».
+
+- **Kilde:** Beslutning B-058 / CA8-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, UI · **Invarianter:** INV-C1
+- **Avhengigheter:** REQ-0721
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - planRhythm bygger på planRetime (metode «pauses») med eksplisitte endringer per mellomrom; mellomrom går aldri under null.
+  - Mellomrom før skjæringspunktet endres ikke.
+  - «Bruk» kjører én RetimeScene; «Forkast» lagrer ingenting.
+- **Tester:**
+  - tests/unit/ca7-ca8.test.ts
+  - tests/visual/ca8-rhythm-export.mjs
+- **Implementering:** src/core/animation/rhythm.ts, src/core/composition/retime.ts, src/app/scene-editor/animation/RhythmPanel.tsx
+
+#### REQ-0724 – Eksportvalg per karakterlag: innhold og innbrent eller eget lag
+Per lag velges om munnformer, blink, overlegg, masker og justeringer tas med, og om karakterdelene brennes inn eller eksporteres som eget lag. Valgene brukes i den felles tegnelisten, så forhåndsvisning og eksport er like; «eget lag» gir en egen fil ved eksport. Ingenting slettes.
+
+- **Kilde:** Beslutning B-058 / CA8-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, EXPORT, UI · **Invarianter:** INV-C1
+- **Avhengigheter:** REQ-0720; REQ-0721
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Eksportvalgene lagres i animasjonsbrukens atferd via SetAnimationBehavior og valideres.
+  - evaluateCharacterFrame legger rigg-delene i tegnelisten etter valgene; samme tilstand gir samme bilde.
+  - Med «eget lag» utelates delene fra hovedfilmen og eksporteres som egen fil.
+- **Tester:**
+  - tests/unit/ca7-ca8.test.ts
+  - tests/visual/ca8-rhythm-export.mjs
+- **Implementering:** src/core/animation/evaluate.ts, src/core/animation/rig.ts, src/engine/compositor/canvas.ts, src/engine/export/animatic.ts, src/app/assembly/ExportAnimaticDialog.tsx, src/app/scene-editor/animation/CharacterPanel.tsx

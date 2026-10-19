@@ -1767,7 +1767,7 @@ const RETIME_STEPS = new Set<string>([
 
 /** Trinnene et utkast fra Asset Studio kan inneholde (AS1): bare endringer i scenen. */
 export const SCENE_DRAFT_STEPS: ReadonlySet<string> = new Set<string>([
-  "CreateRig", "SaveRigVersion", "SetRigAnchors", "AttachAnimationUse", "SetAnimationLayerEnabled", "SetAnimationBehavior", "UndoAnimationChange",
+  "CreateRig", "SaveRigVersion", "SetRigAnchors", "AttachAnimationUse", "SetAnimationLayerEnabled", "SetAnimationBehavior", "AdoptRigVersion", "UndoAnimationChange",
   "SaveLipsyncResult", "SetLipsyncEnabled", "SetLipsyncOverrides", "SaveAnimationPattern", "RemoveAnimationPattern", "UndoBehaviorChange",
   "UpdateLayers",
   "UpdateAudioClips",
@@ -1792,7 +1792,7 @@ function run(
   });
 
   switch (c.type) {
-    case "CreateRig": case "SaveRigVersion": case "SetRigAnchors": case "AttachAnimationUse": case "SetAnimationLayerEnabled": case "SetAnimationBehavior": case "UndoAnimationChange": {
+    case "CreateRig": case "SaveRigVersion": case "SetRigAnchors": case "AttachAnimationUse": case "SetAnimationLayerEnabled": case "SetAnimationBehavior": case "AdoptRigVersion": case "UndoAnimationChange": {
       try { return applyRigCommand(s, c); } catch (error) { fail("invalid", error instanceof Error ? error.message : L("Ugyldig animasjonsoppsett", "Invalid animation setup")); }
     }
     case "SaveLipsyncResult": case "SetLipsyncEnabled": case "SetLipsyncOverrides": case "SaveAnimationPattern": case "RemoveAnimationPattern": case "UndoBehaviorChange": {

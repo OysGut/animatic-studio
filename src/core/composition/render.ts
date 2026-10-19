@@ -528,6 +528,18 @@ export interface DrawItem {
   readonly shape?: ShapeSpec;
   /** Skygge, glød og kontur (MTS). */
   readonly effects?: LayerEffects;
+  /**
+   * CA5–CA8: rigg-del eller karakterlag. `separate` = eksporteres som eget lag (utelates fra hovedbildet);
+   * `adjustments` og `part` (masker/tegning) er med bare når eksportvalgene sier det.
+   */
+  readonly character?: {
+    readonly useId: string;
+    readonly slot: string;
+    readonly separate: boolean;
+    readonly adjustments?: import("../animation/parts").PartAdjustments;
+    readonly part?: import("../animation/parts").RigPart;
+    readonly overlays?: readonly { readonly patternId: string; readonly intensity: number }[];
+  };
 }
 
 export interface DrawGlyph {
