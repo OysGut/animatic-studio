@@ -1,4 +1,4 @@
-import { Toolbar, ToolbarButton, ToolbarSeparator } from "@/app/shell/workspace-chrome";
+import { Toolbar, ToolbarButton, ToolbarSeparator, IconButton } from "@/app/shell/workspace-chrome";
 /**
  * Sceneeditoren (M3 del 2, mandat kap. 11, DEC-0035): én 2D-scene per scene i manuset, bygget av lag
  * (bakgrunner, mellomgrunner, karakterer, objekter …) med bilder fra ressursbiblioteket eller fargeflater.
@@ -729,8 +729,7 @@ function Editor({
           compact
         />
         <ToolbarSeparator />
-        <ToolbarButton
-          variant="icon"
+        <IconButton
           onClick={cmds.undo}
           disabled={!cmds.canUndo}
           title={
@@ -738,16 +737,15 @@ function Editor({
               ? L(`Angre: ${cmds.undoLabel} (⌘Z)`, `Undo: ${cmds.undoLabel} (⌘Z)`)
               : L("Angre (⌘Z)", "Undo (⌘Z)")
           }
-          aria-label={
+          label={
             cmds.undoLabel
               ? L(`Angre: ${cmds.undoLabel}`, `Undo: ${cmds.undoLabel}`)
               : L("Angre", "Undo")
           }
         >
           <Undo2 />
-        </ToolbarButton>
-        <ToolbarButton
-          variant="icon"
+        </IconButton>
+        <IconButton
           onClick={cmds.redo}
           disabled={!cmds.canRedo}
           title={
@@ -755,14 +753,14 @@ function Editor({
               ? L(`Gjør om: ${cmds.redoLabel} (⇧⌘Z)`, `Redo: ${cmds.redoLabel} (⇧⌘Z)`)
               : L("Gjør om (⇧⌘Z)", "Redo (⇧⌘Z)")
           }
-          aria-label={
+          label={
             cmds.redoLabel
               ? L(`Gjør om: ${cmds.redoLabel}`, `Redo: ${cmds.redoLabel}`)
               : L("Gjør om", "Redo")
           }
         >
           <Redo2 />
-        </ToolbarButton>
+        </IconButton>
         {occurrence ? (
           <ToolbarButton variant="icon" asChild>
             <Link
