@@ -138,7 +138,7 @@ export function ScenePicker({
                   : L("Velg en scene", "Choose a scene"))}
             </span>
             {current && !current.o.active ? (
-              <span className="shrink-0 rounded-sm bg-surface-1 px-1 text-[11px] uppercase text-text-tertiary">
+              <span className="shrink-0 rounded-sm bg-surface-1 px-1 text-chrome-label uppercase text-text-tertiary">
                 {L("Deaktivert", "Inactive")}
               </span>
             ) : null}

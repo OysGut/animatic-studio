@@ -84,7 +84,7 @@ export function FilmViewer({
           role="img"
           aria-label={L("Filmen på avspillingshodet", "The film at the playhead")}
           style={{ width: cssW, height: cssH }}
-          className="block bg-black shadow-[0_0_0_1px_var(--border)]"
+          className="block bg-media shadow-[0_0_0_1px_var(--border)]"
         />
       )}
     </div>

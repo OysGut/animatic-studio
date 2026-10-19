@@ -32,6 +32,15 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+  /* U2: felles tetthet for verktøylinjer og panelhoder. */
+  --spacing-toolbar: 2rem;
+  --spacing-icon-btn: 1.75rem;
+  --spacing-toolbar-gap: 0.25rem;
+  --text-chrome: 13px;
+  --text-chrome-label: 11px;
+  --tracking-label: 0.06em;
+  --color-media: var(--media-bg);
+  --color-on-media: var(--on-media);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -173,6 +182,9 @@
   --script-paper-light: oklch(0.925 0.01 87.5);
   --script-ink-light: oklch(0.222 0 0);
   --accent-brand: oklch(0.727 0.098 207.2);
+  /* U2: flater for bilde og film (alltid mørk) og tekst oppå dem. */
+  --media-bg: oklch(0 0 0);
+  --on-media: oklch(1 0 0);
   /* Varmgul: lyd som løper over flere scener og det aktive bildeutsnittet (DEC-0045) */
   --accent-warm: oklch(0.84 0.15 82);
   --accent-selection: oklch(0.727 0.098 207.2 / 22%);

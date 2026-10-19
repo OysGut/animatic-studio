@@ -141,7 +141,7 @@ export function ContinuityAnalysisPanel({
         ) : (
           groups.map((g) => (
             <div key={g.kind} className="border-b border-border last:border-b-0">
-              <h3 className="flex items-center gap-2 px-4 pb-1 pt-2.5 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+              <h3 className="flex items-center gap-2 px-4 pb-1 pt-2.5 text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
                 {FINDING_LABEL[g.kind]}
                 <span className="tabular normal-case tracking-normal">{g.items.length}</span>
               </h3>

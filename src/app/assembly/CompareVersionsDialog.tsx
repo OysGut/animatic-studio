@@ -203,7 +203,7 @@ function Side({
           </option>
         ))}
       </select>
-      <div className="flex aspect-video w-full bg-black">
+      <div className="flex aspect-video w-full bg-media">
         <FilmViewer
           state={state}
           clips={clips}

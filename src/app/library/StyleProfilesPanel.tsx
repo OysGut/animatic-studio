@@ -134,7 +134,7 @@ export function StyleProfileDetail({
     <div className="flex max-w-[860px] flex-col gap-4 p-5">
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
-          <p className="text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+          <p className="text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
             {L("Visuell stilprofil", "Visual style profile")}
           </p>
           <h2 className="text-lg font-semibold text-text-primary">{item.profile.name}</h2>

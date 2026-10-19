@@ -534,7 +534,7 @@ function Release({
             label={L("Bredde på plakatlisten", "Width of the poster list")}
           />
           <div className="group flex h-8 shrink-0 items-center justify-between gap-1.5 border-b border-border bg-surface-2 px-2">
-            <span className="text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
+            <span className="text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
               {L(`Plakater (${posters.length})`, `Posters (${posters.length})`)}
             </span>
             {editable ? (

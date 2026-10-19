@@ -285,7 +285,7 @@ export function DurationOverview({
   );
   const stat = (label: string, value: string, note: string) => (
     <div className="flex flex-col">
-      <span className="text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+      <span className="text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
         {label}
       </span>
       <span className="tabular text-lg font-semibold text-text-primary">{value}</span>
@@ -337,7 +337,7 @@ export function DurationOverview({
       </div>
       <div className="grid grid-cols-[1fr_300px] gap-4">
         <div className="border border-border bg-surface-1 p-4">
-          <p className="text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+          <p className="text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
             {L("Forventet lengde nå", "Expected length now")}
           </p>
           <p className="tabular text-3xl font-semibold tracking-tight text-text-primary">
@@ -411,7 +411,7 @@ export function DurationOverview({
           </p>
         </div>
         <div className="flex flex-col gap-1.5 border border-border bg-surface-1 p-3">
-          <p className="mb-1 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+          <p className="mb-1 text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
             {L("Antakelser for estimatet", "Assumptions for the estimate")}
           </p>
           {num(
@@ -684,7 +684,7 @@ export function DurationOverview({
           </div>
           <div className="mt-2 max-h-[480px] overflow-y-auto border border-border bg-surface-1">
             <table className="w-full text-[13px]">
-              <thead className="sticky top-0 bg-surface-2 text-left text-[11px] uppercase tracking-[0.04em] text-text-tertiary">
+              <thead className="sticky top-0 bg-surface-2 text-left text-chrome-label uppercase tracking-[0.04em] text-text-tertiary">
                 <tr>
                   <th className="w-14 px-3 py-1.5 font-medium">{L("Nr.", "No.")}</th>
                   <th className="px-3 py-1.5 font-medium">Scene</th>

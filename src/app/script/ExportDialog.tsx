@@ -256,7 +256,7 @@ export function ExportDialog({
 
         <div className="grid grid-cols-2 gap-5">
           <fieldset className="flex flex-col gap-2">
-            <legend className="mb-1 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+            <legend className="mb-1 text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
               {L("Format", "Format")}
             </legend>
             <label className={radio}>
@@ -315,7 +315,7 @@ export function ExportDialog({
             </label>
           </fieldset>
           <fieldset className="flex flex-col gap-2">
-            <legend className="mb-1 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+            <legend className="mb-1 text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
               {L("Scenenummer", "Scene numbering")}
             </legend>
             <label className={radio}>
@@ -501,7 +501,7 @@ export function ExportDialog({
           </p>
         ) : null}
         <div className={method === "historical" && !historical ? "hidden" : undefined}>
-          <p className="mb-1 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+          <p className="mb-1 text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
             {L("Forhåndsvisning av nummerering", "Numbering preview")}{" "}
             {changed
               ? L(`· ${changed} endret`, `· ${changed} changed`)

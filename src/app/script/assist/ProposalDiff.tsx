@@ -76,7 +76,7 @@ export function ProposalDiff({
   const isNew = proposal.kind === "next_line" || proposal.kind === "scene";
   return (
     <div className="space-y-2" data-testid="assist-diff">
-      <div className="grid grid-cols-[20px_1fr_1fr] gap-2 text-[11px] uppercase tracking-wider text-text-tertiary">
+      <div className="grid grid-cols-[20px_1fr_1fr] gap-2 text-chrome-label uppercase tracking-label text-text-tertiary">
         <span />
         <span>{proposal.kind === "translate" ? L("Norsk", "Norwegian") : L("Nå", "Now")}</span>
         <span>{proposal.kind === "translate" ? L("Engelsk utkast", "English draft") : L("Forslag", "Suggestion")}</span>

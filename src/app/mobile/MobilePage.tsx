@@ -416,7 +416,7 @@ function QueueTile({ it, onRetry }: { it: QueueItem; onRetry: (id: string) => vo
           <Film className="size-6 text-text-tertiary" aria-hidden />
         )}
       </div>
-      <span className="absolute right-1 top-1 rounded-full bg-black/60 p-1">
+      <span className="absolute right-1 top-1 rounded-full bg-media/60 p-1">
         {it.status === "sent" ? (
           <Check className="size-3.5 text-status-success" aria-label={L("Sendt", "Sent")} />
         ) : it.status === "failed" ? (
@@ -426,7 +426,7 @@ function QueueTile({ it, onRetry }: { it: QueueItem; onRetry: (id: string) => vo
           />
         ) : (
           <Loader2
-            className="size-3.5 animate-spin text-white"
+            className="size-3.5 animate-spin text-on-media"
             aria-label={it.status === "uploading" ? L("Sendes", "Sending") : L("I kø", "Queued")}
           />
         )}
@@ -492,7 +492,7 @@ function ShareButton({ token, label, audio }: { token: string; label: string; au
       <button
         type="button"
         onClick={() => void share()}
-        className="flex h-12 items-center justify-center gap-2 rounded-md bg-accent-brand text-base font-medium text-white"
+        className="flex h-12 items-center justify-center gap-2 rounded-md bg-accent-brand text-base font-medium text-accent-fg"
         data-testid="mobile-share"
       >
         <Share2 className="size-5" aria-hidden />
@@ -600,10 +600,10 @@ function QuickCamera({
     onShot(blob, n);
   }
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-black" data-testid="mobile-camera">
+    <div className="fixed inset-0 z-50 flex flex-col bg-media" data-testid="mobile-camera">
       <video ref={videoRef} playsInline muted className="min-h-0 flex-1 object-contain" />
       {flash ? (
-        <div className="pointer-events-none absolute inset-0 bg-white/70" aria-hidden />
+        <div className="pointer-events-none absolute inset-0 bg-on-media/70" aria-hidden />
       ) : null}
       {error ? (
         <p
@@ -617,7 +617,7 @@ function QuickCamera({
         <button
           type="button"
           onClick={onClose}
-          className="flex h-12 min-w-[88px] items-center justify-center gap-1 rounded-full bg-white/15 px-4 text-sm text-white"
+          className="flex h-12 min-w-[88px] items-center justify-center gap-1 rounded-full bg-on-media/15 px-4 text-sm text-on-media"
           data-testid="mobile-camera-done"
         >
           <X className="size-4" aria-hidden />
@@ -628,10 +628,10 @@ function QuickCamera({
           onClick={() => void shoot()}
           disabled={!!error}
           aria-label={L("Ta bilde", "Take picture")}
-          className="size-20 rounded-full border-4 border-white bg-white/30 active:bg-white/70 disabled:opacity-40"
+          className="size-20 rounded-full border-4 border-on-media bg-on-media/30 active:bg-on-media/70 disabled:opacity-40"
           data-testid="mobile-shutter"
         />
-        <span className="min-w-[88px] text-right text-xs text-white/80" aria-live="polite">
+        <span className="min-w-[88px] text-right text-xs text-on-media/80" aria-live="polite">
           {L(`${count} tatt`, `${count} taken`)}
           <br />
           {busy ? L(`${busy} sendes`, `${busy} sending`) : L(`${sent} sendt`, `${sent} sent`)}

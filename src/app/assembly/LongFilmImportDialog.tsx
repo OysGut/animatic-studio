@@ -285,7 +285,7 @@ export function LongFilmImportDialog({
                   src={url}
                   controls
                   muted
-                  className="aspect-video w-full rounded-sm bg-black"
+                  className="aspect-video w-full rounded-sm bg-media"
                   aria-label={L("Forhåndsvisning av filmen", "Preview of the film")}
                 />
               ) : null}

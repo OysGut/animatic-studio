@@ -40,7 +40,7 @@ export function StorageSection({ state, projectId }: { state: ProjectState; proj
         </summary>
         <table className="mt-2 w-full border border-border bg-surface-1 text-[13px]">
           <thead>
-            <tr className="border-b border-border text-left text-[11px] uppercase tracking-[0.04em] text-text-tertiary">
+            <tr className="border-b border-border text-left text-chrome-label uppercase tracking-[0.04em] text-text-tertiary">
               <th className="px-3 py-1.5 font-medium">{L("Kategori", "Category")}</th>
               <th className="px-3 py-1.5 text-right font-medium">{L("Antall", "Count")}</th>
               <th className="px-3 py-1.5 text-right font-medium">{L("Størrelse", "Size")}</th>

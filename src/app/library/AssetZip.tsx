@@ -173,7 +173,7 @@ export function AssetZipPanel({
       className="flex flex-col gap-2"
     >
       {compact ? null : (
-        <h3 className="text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+        <h3 className="text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
           {L("Last ned ressurser som zip", "Download assets as zip")}
         </h3>
       )}

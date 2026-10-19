@@ -96,7 +96,7 @@ export function Inspector(props: Props) {
   const openCount = occ ? suggestions.data?.filter((s) => s.status === "open" && s.payload["sceneId"] === occ.sceneId).length ?? 0 : 0;
   return (
     <aside aria-label={L("Inspektør", "Inspector")} className="flex min-h-0 flex-col">
-      <div className="flex h-8 min-w-0 shrink-0 items-center gap-1 overflow-hidden border-b border-border px-3 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+      <div className="flex h-8 min-w-0 shrink-0 items-center gap-1 overflow-hidden border-b border-border px-3 text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
         <span className="shrink-0">
           {block
             ? L("Manusblokk", "Script block")
@@ -225,7 +225,7 @@ function Section({ title, children }: { title?: string; children: ReactNode }) {
   return (
     <section className="mb-4">
       {title ? (
-        <h3 className="mb-1.5 text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
+        <h3 className="mb-1.5 text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
           {title}
         </h3>
       ) : null}

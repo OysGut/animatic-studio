@@ -125,7 +125,7 @@ export function DurationHistory({
             "Expected film length over time, per script version and saved estimate",
           )}
         </caption>
-        <thead className="bg-surface-2 text-left text-[11px] uppercase tracking-[0.04em] text-text-tertiary">
+        <thead className="bg-surface-2 text-left text-chrome-label uppercase tracking-[0.04em] text-text-tertiary">
           <tr>
             <th className="px-3 py-1.5 font-medium">{L("Versjon", "Version")}</th>
             <th className="w-28 px-3 py-1.5 font-medium">{L("Dato", "Date")}</th>

@@ -132,7 +132,7 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
       aria-label={L("I denne scenen", "In this scene")}
       className="flex min-h-0 flex-col border-t border-border"
     >
-      <h2 className="flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2 text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
+      <h2 className="flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2 text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
         {L("I denne scenen", "In this scene")} ({items.length})
       </h2>
       {canAdd ? (
@@ -247,7 +247,7 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                   ) : null}
                   {plan ? (
                     <span
-                      className="absolute left-1 top-1 z-[1] rounded-sm bg-accent-warm px-1 text-[11px] font-medium text-black"
+                      className="absolute left-1 top-1 z-[1] rounded-sm bg-accent-warm px-1 text-[11px] font-medium text-accent-fg"
                       title={L(
                         `Skal inn i scenen: lagt til fra scene ${plan.fromNumber ?? "?"} (${new Date(plan.plan.at).toLocaleDateString()}). Dra det inn på lerretet.`,
                         `Should be in the scene: added from scene ${plan.fromNumber ?? "?"} (${new Date(plan.plan.at).toLocaleDateString()}). Drag it onto the canvas.`,
@@ -341,7 +341,7 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
       {missing.length ? (
         <div className="px-2 pb-2" data-testid="scene-missing-assets">
           <div className="flex items-center gap-1 px-1 pb-1">
-            <h3 className="min-w-0 flex-1 text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
+            <h3 className="min-w-0 flex-1 text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
               {L("Fra manuset, ikke i biblioteket", "From the script, not in the library")} (
               {missing.length})
             </h3>

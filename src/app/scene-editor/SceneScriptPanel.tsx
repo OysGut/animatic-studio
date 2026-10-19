@@ -97,7 +97,7 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
     : L("Vis manuset …", "View the script …");
   return (
     <section aria-label={L("Manus", "Script")} className="flex min-h-0 flex-col">
-      <h2 className="flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2 text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
+      <h2 className="flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2 text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
         {L("Manus", "Script")}
       </h2>
       <div className={"flex items-center gap-2 px-2 pb-1 pt-1" + (hideEditButton ? " hidden" : "")}>

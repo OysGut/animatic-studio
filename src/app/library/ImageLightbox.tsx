@@ -572,7 +572,7 @@ export function ImageLightbox({
                         "absolute left-1.5 top-1.5 leading-none " +
                         (on
                           ? "text-base font-bold text-accent-warm"
-                          : "rounded-sm bg-black/45 px-1 py-0.5 text-[11px] text-white/90")
+                          : "rounded-sm bg-media/45 px-1 py-0.5 text-[11px] text-on-media/90")
                       }
                       style={{
                         textShadow: on

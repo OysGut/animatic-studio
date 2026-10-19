@@ -21,7 +21,7 @@ export function TechnicalSection({
       aria-label={L("Teknisk", "Technical")}
       className="flex flex-col gap-2 border-b border-border p-3"
     >
-      <h2 className="-mx-3 flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2 text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
+      <h2 className="-mx-3 flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2 text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
         {L("Teknisk", "Technical")}
       </h2>
       <Rows rows={info.scene} />

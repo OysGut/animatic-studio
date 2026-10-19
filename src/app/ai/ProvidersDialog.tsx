@@ -253,7 +253,7 @@ function ProviderDetail({
           <section aria-labelledby="steps-title">
             <h4
               id="steps-title"
-              className="mb-1.5 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary"
+              className="mb-1.5 text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary"
             >
               {L("Slik kobler du til", "How to connect")}
             </h4>

@@ -68,7 +68,7 @@ export function ProductionList({
   return (
     <>
       <div className="border border-border bg-surface-1">
-        <div className="grid grid-cols-[1fr_140px_70px_70px_auto] border-b border-border px-4 py-2 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+        <div className="grid grid-cols-[1fr_140px_70px_70px_auto] border-b border-border px-4 py-2 text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
           <span>{L("Navn og notat", "Name and note")}</span>
           <span>{L("Type", "Type")}</span>
           <span className="text-right">{L("Scener", "Scenes")}</span>

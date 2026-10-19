@@ -361,7 +361,7 @@ function Line({
           (selected
             ? " bg-accent-selection outline outline-1 outline-accent-brand/40"
             : interactive
-              ? " hover:bg-white/[0.04]"
+              ? " hover:bg-on-media/[0.04]"
               : "") +
           (uncertain
             ? " decoration-status-uncertain underline decoration-wavy underline-offset-4"

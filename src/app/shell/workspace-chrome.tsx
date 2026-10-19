@@ -3,41 +3,192 @@
  * <button>-elementer, og title, aria-* og hendelser sendes uendret videre, så rolle og navn blir som før.
  */
 import { Slot } from "@radix-ui/react-slot";
-import { ChevronDown, ChevronRight } from "lucide-react";
-import { forwardRef, type ButtonHTMLAttributes, type HTMLAttributes, type ReactNode } from "react";
+import { ChevronDown, ChevronRight, MoreHorizontal } from "lucide-react";
+import {
+  createContext,
+  forwardRef,
+  useContext,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ButtonHTMLAttributes,
+  type HTMLAttributes,
+  type ReactNode,
+} from "react";
+import { createPortal } from "react-dom";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { L } from "@/core";
 import { cn } from "@/lib/utils";
+import { countPrimary, planToolbarOverflow } from "./toolbar-overflow";
 
-/** Verktøylinjen under appheaderen: minst 40 px, kan bryte til flere linjer på smale skjermer. */
+const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
+
+type OverflowCtx = {
+  register: (id: string, priority: number) => () => void;
+  hidden: ReadonlySet<string>;
+  target: HTMLElement | null;
+};
+const OverflowContext = createContext<OverflowCtx | null>(null);
+
+/**
+ * Verktøylinjen under appheaderen: rader på 32 px. `overflow="wrap"` (standard) bryter til flere rader;
+ * `overflow="menu"` flytter grupper som ikke får plass, inn i «Mer …» (lavest `priority` først).
+ */
 export function Toolbar({
   title,
   status,
   children,
   className,
+  overflow = "wrap",
+  moreLabel,
   ...rest
 }: Omit<HTMLAttributes<HTMLDivElement>, "title"> & {
   title?: ReactNode;
   status?: ReactNode;
   children?: ReactNode;
+  overflow?: "wrap" | "menu";
+  moreLabel?: string;
 }) {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const groups = useRef(new Map<string, number>());
+  const widths = useRef(new Map<string, number>());
+  const [hidden, setHidden] = useState<ReadonlySet<string>>(new Set());
+  const [target, setTarget] = useState<HTMLElement | null>(null);
+  const [tick, setTick] = useState(0);
+  const menu = overflow === "menu";
+
+  const ctx: OverflowCtx | null = menu
+    ? {
+        hidden,
+        target,
+        register: (id, priority) => {
+          groups.current.set(id, priority);
+          setTick((t) => t + 1);
+          return () => {
+            groups.current.delete(id);
+            widths.current.delete(id);
+            setTick((t) => t + 1);
+          };
+        },
+      }
+    : null;
+
+  useIsoLayoutEffect(() => {
+    if (!menu || !rootRef.current) return;
+    const root = rootRef.current;
+    const measure = () => {
+      const ids = [...groups.current.keys()];
+      for (const id of ids) {
+        const el = root.querySelector<HTMLElement>(`[data-toolbar-group="${CSS.escape(id)}"]`);
+        if (el) widths.current.set(id, el.offsetWidth + 4);
+      }
+      const fixed = [...root.querySelectorAll<HTMLElement>("[data-toolbar-fixed]")].reduce(
+        (s, el) => s + el.offsetWidth + 8,
+        0,
+      );
+      const avail = root.clientWidth - 24 - fixed;
+      const plan = planToolbarOverflow(
+        ids.map((id) => widths.current.get(id) ?? 0),
+        avail,
+        ids.map((id) => groups.current.get(id) ?? 0),
+        36,
+      );
+      const next = new Set(plan.map((i) => ids[i]!));
+      setHidden((prev) =>
+        prev.size === next.size && [...prev].every((x) => next.has(x)) ? prev : next,
+      );
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(root);
+    return () => ro.disconnect();
+  }, [menu, tick]);
+
+  useEffect(() => {
+    if (!import.meta.env.DEV || !rootRef.current) return;
+    const n = countPrimary(
+      [...rootRef.current.querySelectorAll<HTMLElement>("[data-toolbar-variant]")].map(
+        (el) => el.dataset["toolbarVariant"],
+      ),
+    );
+    if (n > 1) console.warn("Toolbar: at most one primary action per toolbar (U2).");
+  });
+
   return (
-    <div
-      {...rest}
-      className={cn(
-        "flex min-h-10 shrink-0 flex-wrap items-center gap-x-2 gap-y-1 border-b border-border bg-surface-2 px-3 py-1",
-        className,
-      )}
-    >
-      {title ? (
-        <div className="flex items-center text-[13px] font-medium text-text-primary">{title}</div>
-      ) : null}
-      {children}
-      {status ? <div className="ml-auto flex flex-wrap items-center gap-3">{status}</div> : null}
-    </div>
+    <TooltipProvider delayDuration={400}>
+      <OverflowContext.Provider value={ctx}>
+        <div
+          ref={rootRef}
+          {...rest}
+          className={cn(
+            "flex min-h-toolbar shrink-0 items-center gap-x-2 border-b border-border bg-surface-2 px-3",
+            menu ? "flex-nowrap overflow-hidden" : "flex-wrap gap-y-0.5",
+            className,
+          )}
+        >
+          {title ? (
+            <div
+              data-toolbar-fixed
+              className="flex h-toolbar items-center text-chrome font-medium text-text-primary"
+            >
+              {title}
+            </div>
+          ) : null}
+          {children}
+          {menu ? (
+            <Popover>
+              <PopoverTrigger asChild>
+                <ToolbarButton
+                  variant="icon"
+                  data-toolbar-fixed
+                  aria-label={moreLabel ?? L("Mer …", "More …")}
+                  title={moreLabel ?? L("Mer …", "More …")}
+                  className={hidden.size === 0 ? "hidden" : ""}
+                >
+                  <MoreHorizontal aria-hidden />
+                </ToolbarButton>
+              </PopoverTrigger>
+              <PopoverContent
+                forceMount
+                align="end"
+                className="flex w-auto max-w-[min(90vw,32rem)] flex-col gap-1 bg-surface-2 p-1 data-[state=closed]:hidden"
+              >
+                <div ref={setTarget} className="flex flex-col gap-1" />
+              </PopoverContent>
+            </Popover>
+          ) : null}
+          {status ? (
+            <div data-toolbar-fixed className="ml-auto flex flex-wrap items-center gap-3">
+              {status}
+            </div>
+          ) : null}
+        </div>
+      </OverflowContext.Provider>
+    </TooltipProvider>
   );
 }
 
-export function ToolbarGroup({ className, ...rest }: HTMLAttributes<HTMLDivElement>) {
-  return <div {...rest} className={cn("flex items-center gap-1", className)} />;
+export function ToolbarGroup({
+  className,
+  priority = 0,
+  ...rest
+}: HTMLAttributes<HTMLDivElement> & { priority?: number }) {
+  const ctx = useContext(OverflowContext);
+  const id = useId();
+  const register = ctx?.register;
+  useIsoLayoutEffect(() => (register ? register(id, priority) : undefined), [id, priority, !!register]);
+  const node = (
+    <div
+      {...rest}
+      data-toolbar-group={ctx ? id : undefined}
+      className={cn("flex h-toolbar shrink-0 items-center gap-toolbar-gap", className)}
+    />
+  );
+  if (ctx && ctx.hidden.has(id) && ctx.target) return createPortal(node, ctx.target);
+  return node;
 }
 
 /** Tynn loddrett skillelinje mellom gruppene. */
@@ -48,16 +199,17 @@ export function ToolbarSeparator() {
 export type ToolbarButtonVariant = "icon" | "default" | "primary";
 
 const base =
-  "inline-flex h-7 shrink-0 cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-sm text-[13px] transition-colors duration-[var(--motion-fast)] ease-[var(--ease-standard)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-focus-ring disabled:cursor-not-allowed disabled:opacity-40 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0";
+  "inline-flex h-icon-btn shrink-0 cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-sm text-chrome transition-colors duration-[var(--motion-fast)] ease-[var(--ease-standard)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-focus-ring disabled:cursor-not-allowed disabled:opacity-40 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0";
 
 const variants: Record<ToolbarButtonVariant, string> = {
-  icon: "size-7 justify-center text-text-secondary hover:bg-surface-3 hover:text-text-primary disabled:hover:bg-transparent",
+  icon: "size-icon-btn justify-center text-text-secondary hover:bg-surface-3 hover:text-text-primary disabled:hover:bg-transparent",
   default:
     "px-2 text-text-secondary hover:bg-surface-3 hover:text-text-primary disabled:hover:bg-transparent",
-  primary: "px-3 font-medium bg-accent-brand text-accent-fg hover:bg-accent-brand/90",
+  primary:
+    "px-3 font-medium bg-accent-brand text-accent-fg hover:bg-accent-brand/90 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-offset-surface-2",
 };
 
-/** Knapp i verktøylinjen: 28 px høy, i tre varianter. */
+/** Knapp i verktøylinjen: 28 px høy, i tre varianter. Høyst én `primary` per verktøylinje. */
 export const ToolbarButton = forwardRef<
   HTMLButtonElement,
   ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -74,6 +226,7 @@ export const ToolbarButton = forwardRef<
     <Comp
       ref={ref}
       {...(asChild ? {} : { type: type ?? "button" })}
+      data-toolbar-variant={variant}
       {...rest}
       className={cn(
         base,
@@ -82,6 +235,39 @@ export const ToolbarButton = forwardRef<
         className,
       )}
     />
+  );
+});
+
+/**
+ * Ikonknapp på 28 px med verktøytips (navn + ev. hurtigtast). `aria-label` kommer fra samme tekst.
+ * `title` sendes bare videre hvis den gis eksplisitt (eksisterende tester kan lese den).
+ */
+export const IconButton = forwardRef<
+  HTMLButtonElement,
+  ButtonHTMLAttributes<HTMLButtonElement> & {
+    label: string;
+    shortcut?: string;
+    active?: boolean;
+    side?: "top" | "bottom" | "left" | "right";
+  }
+>(function IconButton({ label, shortcut, side = "bottom", ...rest }, ref) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <ToolbarButton ref={ref} variant="icon" aria-label={label} {...rest} />
+      </TooltipTrigger>
+      <TooltipContent
+        side={side}
+        className="flex items-center gap-2 rounded-sm border border-border bg-surface-3 px-2 py-1 text-chrome-label text-text-primary"
+      >
+        <span>{label}</span>
+        {shortcut ? (
+          <kbd className="rounded-sm border border-border-strong px-1 font-mono text-text-secondary">
+            {shortcut}
+          </kbd>
+        ) : null}
+      </TooltipContent>
+    </Tooltip>
   );
 });
 
@@ -105,7 +291,7 @@ export function PanelHeader({
     <div
       {...rest}
       className={cn(
-        "group flex h-8 shrink-0 items-center gap-1.5 border-b border-border bg-surface-2 px-2",
+        "group flex h-toolbar shrink-0 items-center gap-1.5 border-b border-border bg-surface-2 px-2",
         className,
       )}
     >
@@ -116,7 +302,7 @@ export function PanelHeader({
           aria-expanded={collapse.open}
           aria-label={collapse.label}
           title={collapse.label}
-          className="inline-flex size-5 items-center justify-center rounded-sm text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
+          className="inline-flex size-5 items-center justify-center rounded-sm text-text-tertiary hover:bg-surface-3 hover:text-text-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-focus-ring"
         >
           {collapse.open ? (
             <ChevronDown className="size-3.5" aria-hidden />
@@ -125,17 +311,13 @@ export function PanelHeader({
           )}
         </button>
       ) : null}
-      <Heading className="min-w-0 truncate text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
+      <Heading className="min-w-0 truncate text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
         {title}
       </Heading>
       {count !== undefined && count !== null ? (
-        <span className="font-mono text-[11px] tabular-nums text-text-tertiary">{count}</span>
+        <span className="font-mono text-chrome-label tabular-nums text-text-tertiary">{count}</span>
       ) : null}
-      {actions ? (
-        <div className="ml-auto flex items-center gap-0.5 opacity-60 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
-          {actions}
-        </div>
-      ) : null}
+      {actions ? <div className="ml-auto flex items-center gap-0.5">{actions}</div> : null}
     </div>
   );
 }
