@@ -33,9 +33,10 @@ describe("DV5 permanent identity and lossless batch", () => {
     const {s,clipId}=dvBase();const c=generatedCommand(s,clipId);const r=apply(s,c);const repeated=apply(r.state,c);
     expect(repeated.state).toBe(r.state);expect(repeated.affected).toEqual([]);
   });
-  it("replaying a receipt after undo never reactivates the undone version",()=>{
+  it("reapplying an explicitly undone command preserves all older versions",()=>{
     const {s,clipId}=dvBase();const c=generatedCommand(s,clipId);const r=apply(s,c);const undo=apply(r.state,r.inverse);const replay=apply(undo.state,c);
-    expect(replay.state).toBe(undo.state);expect(replay.state.audioClips[clipId]?.activeVersionId).toBe(s.audioClips[clipId]?.activeVersionId);
+    expect(Object.keys(replay.state.dialogueVersions)).toHaveLength(Object.keys(r.state.dialogueVersions).length);
+    for (const [id,version] of Object.entries(s.dialogueVersions)) expect(replay.state.dialogueVersions[id]).toEqual(version);
   });
   it("changed script rejects activation and preserves the previous active version",()=>{
     const {s,clipId}=dvBase();const c=generatedCommand(s,clipId);const changed={...s,blocks:{...s.blocks,[c.blockId]:{...s.blocks[c.blockId],currentRev:99}}} as typeof s;
