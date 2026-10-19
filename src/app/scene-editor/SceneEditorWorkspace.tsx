@@ -107,6 +107,8 @@ import { ShortcutsButton, ShortcutsDialog } from "@/app/shortcuts/ShortcutsDialo
 import { isShortcutHelpKey } from "@/app/shortcuts/shortcut-list";
 import { isTypingTarget } from "./Timeline";
 import { AnimationWorkspace } from "./animation/AnimationWorkspace";
+import { VariantTracks } from "./animation/VariantTracks";
+import { DialogueTrack } from "./animation/DialogueTrack";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function SceneEditorWorkspace({
@@ -978,7 +980,12 @@ function Editor({
       {sceneTab === "animation" && composition && occurrence ? (
         <AnimationWorkspace key={composition.id} state={state} composition={composition} duration={duration}
           playback={playback} range={animationRange ?? { from: 0, to: duration - 1 }} onRange={setAnimationRange}
-          urls={urls.data ?? {}} />
+          urls={urls.data ?? {}} tracks={animView => <>
+            <VariantTracks state={state} compositionId={composition.id} duration={duration} view={animView}
+              frame={playback.frame} editable={editable} run={cmds.run} onSeek={playback.setFrame} onStudio={openAssetStudio} />
+            <DialogueTrack state={state} occurrenceId={occurrence.id} language={filmLang.dialogue}
+              view={animView} onOpen={setProfileId} />
+          </>} />
       ) : (
       <div className="flex min-h-0 flex-1">
         {/* Ressursene i scenen (side om side står de sammen med de andre panelene til høyre) */}
