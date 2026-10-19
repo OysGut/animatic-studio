@@ -17,8 +17,8 @@ function baseState(): ProjectState {
     project: { ...s.project, id: id(1), fps },
     occurrences: { [id(2)]: { id: id(2), revision: 1, variantId: id(3), activeTakeId: id(9), active: true, removed: false } as never },
     variants: { [id(3)]: { id: id(3), revision: 1, sceneId: id(4), removed: false } as never },
-    blocks: { [id(5)]: { id: id(5), revision: 1, text: "Hallo verden", removed: false } as never },
-    takes: { [id(9)]: { id: id(9), revision: 1 } as never },
+    blocks: { [id(5)]: { id: id(5), revision: 1, text: "Hallo verden", orderKey: "a1", removed: false } as never },
+    takes: { [id(9)]: { id: id(9), revision: 1, orderKey: "a1" } as never },
     audioClips: { [id(6)]: { id: id(6), revision: 1, occurrenceId: id(2), kind: "dialogue", blockId: id(5), offsetMs: 1000, sourceInMs: 0, lengthMs: 2000, removed: false } as never },
   };
 }
