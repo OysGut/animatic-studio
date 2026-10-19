@@ -3,6 +3,7 @@
  * visuelle varianter med bildeversjoner og godkjenning (REQ-0135, REQ-0136, REQ-0146, REQ-0149)
  * og scenene der ressursen er brukt (REQ-0131). Kontinuitet (DEC-0055) i ContinuityPanel.
  */
+import { NoteFlagControl } from "@/app/dialogue/NoteFlagControl";
 import { Link } from "@tanstack/react-router";
 import {
   Archive,
@@ -1039,8 +1040,9 @@ function VariantCard({
           </form>
         ) : (
           <div className="min-w-0 flex-1">
-            <p className="text-[13px] font-medium text-text-primary">
+            <p className="flex items-center gap-1 text-[13px] font-medium text-text-primary">
               {variant.name}
+              <NoteFlagControl state={state} kind="asset_variant" targetId={variant.id} run={cmds.run} editable={editable} />
               {variant.archived ? (
                 <span className="ml-2 text-xs font-normal text-text-tertiary">
                   {L("Arkivert", "Archived")}
@@ -1189,6 +1191,7 @@ function VariantCard({
                   (approved ? "border-status-success bg-status-success-bg" : "border-border")
                 }
               >
+                <div className="flex justify-end"><NoteFlagControl state={state} kind="asset_version" targetId={ver.id} run={cmds.run} editable={editable} /></div>
                 {asset.kind === "sound" ? (
                   <div className="flex h-[120px] flex-col items-center justify-center gap-2 bg-surface-3 px-1">
                     <Music className="size-6 text-text-tertiary" aria-hidden />
