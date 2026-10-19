@@ -1,4 +1,7 @@
 # MU1
+# CA designpuss og CA3
+- [ ] A: faner, pen tidslinjal, Tilpass, miniatyrer/etiketter, kvadrater, navigator og lyd nederst; tester.
+- [ ] B: rigmodell/kommandoer/evaluering, ansiktsmarkering, av/på, backup, migrasjoner og tester.
 ## T2 og samtidige takes – rettinger
 - [x] Vent på alle tre innsettinger og kontroller orderKey i T2-testen.
 - [x] Stabiliser take-/versjonsrekkefølge og test samme tidsstempel med motsatt UUID-rekkefølge.

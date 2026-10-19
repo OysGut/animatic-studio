@@ -1,3 +1,4 @@
+import type { AnimationRig, AnimationRigVersion, AnimationUse } from "./animation/rig";
 /**
  * Endringssett mellom to tilstander (DEC-0022). Serveren kjører kommandoen i kjernen og sender
  * endringssettet til databasen, som lagrer alt atomisk og avviser det hvis noen rad har fått ny
@@ -100,7 +101,7 @@ export interface ChangeSet {
   readonly blockRevisions: readonly Row[];
 }
 
-type AnyEntity =
+type AnyEntity = AnimationRig | AnimationRigVersion | AnimationUse
   | TemplateInstance
   | CreditParticipant
   | CreditSequence
@@ -619,6 +620,9 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         removed: x.removed,
       };
     }
+    case "animationRigs": { const x = e as AnimationRig; return { ...base, variant_id: x.variantId, current_version_id: x.currentVersionId, removed: x.removed }; }
+    case "animationRigVersions": { const x = e as AnimationRigVersion; return { ...base, rig_id: x.rigId, source_version_id: x.sourceVersionId, number: x.number, spec: x.spec, algorithm_version: x.algorithmVersion, removed: x.removed }; }
+    case "animationUses": { const x = e as AnimationUse; return { ...base, layer_id: x.layerId, occurrence_id: x.occurrenceId, rig_version_id: x.rigVersionId, enabled: x.enabled, removed: x.removed }; }
     case "creditParticipants": {
       const x = e as CreditParticipant;
       return {
@@ -682,12 +686,15 @@ export const TABLE_ORDER: readonly string[] = [
   "assets",
   "asset_variants",
   "asset_versions",
+  "animation_rigs",
+  "animation_rig_versions",
   "script_annotations",
   "compositions",
   "template_instances",
   "credit_participants",
   "credit_sequences",
   "composition_layers",
+  "animation_uses",
   "audio_clips",
   "clip_parts",
   "time_links",
@@ -821,6 +828,9 @@ export interface ProjectRows {
   /** Rulletekst (migrasjon 0051). Tomt hvis migrasjonen ikke er kjørt ennå. */
   readonly credit_participants?: readonly Row[];
   readonly credit_sequences?: readonly Row[];
+  readonly animation_rigs?: readonly Row[];
+  readonly animation_rig_versions?: readonly Row[];
+  readonly animation_uses?: readonly Row[];
 }
 
 const str = (v: unknown) => String(v);
@@ -1565,6 +1575,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         removed: x["removed"] === true,
       })),
     ),
+    animationRigs: byId((r.animation_rigs ?? []).map(x => ({ id: str(x["id"]), revision: num(x["revision"]), variantId: str(x["variant_id"]), currentVersionId: optStr(x["current_version_id"]), removed: x["removed"] === true }))),
+    animationRigVersions: byId((r.animation_rig_versions ?? []).map(x => ({ id: str(x["id"]), revision: num(x["revision"]), rigId: str(x["rig_id"]), sourceVersionId: str(x["source_version_id"]), number: num(x["number"]), spec: json(x["spec"]) as AnimationRigVersion["spec"], algorithmVersion: 1 as const, removed: x["removed"] === true }))),
+    animationUses: byId((r.animation_uses ?? []).map(x => ({ id: str(x["id"]), revision: num(x["revision"]), layerId: str(x["layer_id"]), occurrenceId: str(x["occurrence_id"]), rigVersionId: str(x["rig_version_id"]), enabled: x["enabled"] === true, removed: x["removed"] === true }))),
     creditParticipants: byId(
       (r.credit_participants ?? []).map((x) => ({
         id: str(x["id"]) as never,

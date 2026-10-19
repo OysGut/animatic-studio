@@ -1,3 +1,4 @@
+import { evaluateCharacterFrame } from "../animation/evaluate";
 /**
  * Én deterministisk rendringsfunksjon for 2D-scener (ADR-0008, mandat kap. 11–12, 14):
  * `renderFrame(tilstand, 2D-scene, bilde)` → tegneliste. Brukes av editoren, avspillingen og senere eksport,
@@ -797,7 +798,7 @@ export function renderFrame(
       });
     }
   }
-  return { width: c.width, height: c.height, background: c.background, items };
+  return evaluateCharacterFrame(s, compositionId, frame, { width: c.width, height: c.height, background: c.background, items });
 }
 
 /**

@@ -158,12 +158,14 @@ export const CATALOG: Record<string, string> = {
   "Analysen kjører allerede.": "The analysis is already running.",
   "Analysen kunne ikke lagres.": "The analysis could not be saved.",
   "Analysen kunne ikke logges.": "The analysis could not be logged.",
+  "Animasjonsbruken finnes ikke": "The animation use was not found",
   "Animatic (2D-scene)": "Animatic (2D scene)",
   "Animatic (tittelkort)": "Animatic (title card)",
   "Animatic Studio (systemmerknad)": "Animatic Studio (system note)",
   "ANIMATIC_KEY_ENCRYPTION_KEY må være 32 byte (base64).":
     "ANIMATIC_KEY_ENCRYPTION_KEY must be 32 bytes (base64).",
   "Ankeret ville gitt en sirkel i fortellingstiden": "The anchor would create a loop in story time",
+  "Ankerpunkter må ligge innenfor bildet": "Anchors must be within the image",
   "Ankerscenen finnes ikke": "The anchor scene does not exist",
   "annet format enn prosjektet ({0}×{1})": "different format from the project ({0}×{1})",
   "Anslag: ca. {0} igjen": "Estimate: about {0} left",
@@ -274,6 +276,7 @@ export const CATALOG: Record<string, string> = {
   "Bildet må være PNG, JPEG, WebP eller GIF": "The image must be PNG, JPEG, WebP or GIF",
   "Bildet mangler ressurs": "The image is missing an asset",
   "Bildet på plakaten": "The image on the poster",
+  "Bildet tilhører ikke oppsettets variant": "The image does not belong to the setup variant",
   Bildeversjonen: "The image version",
   "Bildeversjonen for språket": "The image version for the language",
   "Blokk {0}: gjeldende tekst stemmer ikke med revisjonshistorikken":
@@ -345,6 +348,8 @@ export const CATALOG: Record<string, string> = {
     "The database must be updated (migration 0034) before the AI connections can be changed.",
   "Databasen mangler AI-budsjett og genereringsbeskrivelser. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0014.":
     "The database is missing the AI budget and generation descriptions. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0014.",
+  "Databasen mangler animasjonsoppsett. Kjør migrasjon 0053 og 0054 først.":
+    "The database is missing animation setups. Run migrations 0053 and 0054 first.",
   "Databasen mangler canvaset i Story Lab. Den må oppdateres (migrasjon 0040).":
     "The database is missing the Story Lab canvas. It must be updated (migration 0040).",
   "Databasen mangler de nye funksjonene (overganger, svart-hvitt, grupper, bildeskifter og bevegelsesbaner). Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0013.":
@@ -611,6 +616,7 @@ export const CATALOG: Record<string, string> = {
   "Feil 2D-scene": "Wrong 2D scene",
   "Feil prisenhet for typen.": "Wrong price unit for the type.",
   "Feil prosjekt for gjenoppretting.": "Wrong project for restoring.",
+  "Feil scene for animasjonsbruken": "Wrong scene for the animation use",
   "Feltet er for langt (maks 500 tegn)": "The field is too long (max 500 characters)",
   "Feltet mangler i profilen ({0}.{1})": "The field is missing from the profile ({0}.{1})",
   "Feltnavnet er for langt": "The field name is too long",
@@ -993,6 +999,7 @@ export const CATALOG: Record<string, string> = {
   "Laget det skal flyttes bak": "The layer to move behind",
   "Laget er for kort for både inn- og utanimasjon: {0} bilder, men det trengs minst {1}. Gjør animasjonen kortere eller laget lengre.":
     "The layer is too short for both an in and an out animation: {0} frames, but at least {1} are needed. Make the animation shorter or the layer longer.",
+  "Laget har allerede et animasjonsoppsett": "The layer already has an animation setup",
   "Laget hører ikke til scenen": "The layer does not belong to the scene",
   "Laget hører ikke til scenens 2D-scene": "The layer does not belong to the scene's 2D scene",
   "Laget må vise et bilde fra biblioteket eller en fargeflate":
@@ -1246,6 +1253,11 @@ export const CATALOG: Record<string, string> = {
   "Opprett konto på fal.ai (logg inn med GitHub eller Google).":
     "Create an account at fal.ai (sign in with GitHub or Google).",
   "Opprinnelig variant": "Original variant",
+  "Oppsettet brukes fortsatt. Angre bruken først.":
+    "The setup is still in use. Undo its use first.",
+  "Oppsettet er større enn 512 kB": "The setup exceeds 512 kB",
+  "Oppsettet finnes ikke": "The setup was not found",
+  "Oppsettet kan ikke brukes på dette laget": "The setup cannot be used on this layer",
   "Oppskalering krever en tilkoblet leverandør (fal.ai).":
     "Upscaling requires a connected provider (fal.ai).",
   Opptaket: "The recording",
@@ -1713,6 +1725,7 @@ export const CATALOG: Record<string, string> = {
   "Ufullstendige variantfelter": "Incomplete variant fields",
   "Ugyldig {0}": "Invalid {0}",
   "Ugyldig aktivt område": "Invalid active range",
+  "Ugyldig animasjonsoppsett": "Invalid animation setup",
   "Ugyldig ankerpunkt": "Invalid anchor point",
   "Ugyldig antall kontinuitetshendelser": "Invalid number of continuity events",
   "Ugyldig antall noder": "Invalid number of nodes",
@@ -1738,6 +1751,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig egenskap i nøkkelbilde": "Invalid property in keyframe",
   "Ugyldig element": "Invalid element",
   "Ugyldig element i malen": "Invalid element in the template",
+  "Ugyldig eller brukt ID": "Invalid or used ID",
   "Ugyldig endring av scenevarighet": "Invalid scene duration change",
   "Ugyldig farge": "Invalid colour",
   "Ugyldig fargepalett": "Invalid colour palette",
@@ -2015,6 +2029,8 @@ export const CATALOG: Record<string, string> = {
     "The variant has images and cannot be removed. Archive it instead.",
   "Varianten hører til en annen ressurs": "The variant belongs to another asset",
   "Varianten må ha et navn (maks 200 tegn)": "The variant must have a name (max 200 characters)",
+  "Varianten mangler eller har allerede et oppsett":
+    "The variant is missing or already has a setup",
   "Varianten på plakaten": "The variant on the poster",
   "Varianten tilhører en annen scene": "The variant belongs to another scene",
   "Varighet må være et ikke-negativt heltall bilder":

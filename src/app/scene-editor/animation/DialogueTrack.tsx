@@ -4,7 +4,7 @@ import { PanelHeader, ToolbarButton } from "@/app/shell/workspace-chrome";
 import type { AnimWindow } from "./TimeNavigator";
 export function DialogueTrack({ state, occurrenceId, language, view, onOpen }: { state: ProjectState; occurrenceId: string; language: string; view: AnimWindow; onOpen: (id: string) => void }) {
   const tracks = animationDialogueTracks(state, occurrenceId, language);
-  return <section data-testid="anim-dialogue-tracks"><PanelHeader title={L("Dialog", "Dialogue")} />
+  return <section data-testid="anim-dialogue-tracks" className="mt-auto shrink-0 border-t border-border"><PanelHeader title={L("Dialog", "Dialogue")} />
     {tracks.length === 0 ? <p className="p-3 text-xs text-text-tertiary">{L("Ingen dialogopptak i scenen.", "No dialogue recordings in the scene.")}</p> : null}
     {tracks.map(t => <div key={t.clip.id} data-anim-track={t.clip.id} className="flex h-10 border-b border-border">
       <ToolbarButton className="h-full w-40 truncate border-r border-border" onClick={() => onOpen(t.clip.id)}>{t.clip.name}</ToolbarButton>

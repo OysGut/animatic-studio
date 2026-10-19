@@ -10,7 +10,7 @@ export function AnimPreview({ state, composition, frame, urls }: { state: Projec
   const wrap = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const [size, setSize] = useState({ w: 1, h: 1 });
-  const [zoom, setZoom] = useState(1);
+  const [zoom, setZoom] = useState<number | "fit">("fit");
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const drag = useRef<{ x: number; y: number; pan: typeof pan } | null>(null);
   const [tick, setTick] = useState(0);
@@ -28,16 +28,18 @@ export function AnimPreview({ state, composition, frame, urls }: { state: Projec
     c.width = Math.max(1, Math.round(size.w * dpr)); c.height = Math.max(1, Math.round(size.h * dpr));
     const out = renderFrame(state, composition.id, frame, { view: "camera" });
     const fit = fitView({ x: 0, y: 0, w: out.width, h: out.height }, c.width, c.height, 1);
-    const k = fit[0] * zoom;
+    const k = zoom === "fit" ? fit[0] : zoom * dpr;
+    ctx.clearRect(0, 0, c.width, c.height);
     drawFrame(ctx, out, { view: [k, 0, 0, k, c.width / 2 - k * out.width / 2 + pan.x * dpr, c.height / 2 - k * out.height / 2 + pan.y * dpr], images: cache.images, placeholders: true });
   }, [state, composition.id, frame, size, zoom, pan, tick, cache, fonts]);
   return <section data-testid="anim-preview" className="flex min-h-0 flex-1 flex-col">
     <PanelHeader title={L("Forhåndsvisning", "Preview")} />
     <Toolbar><ToolbarGroup>
-      <select data-testid="anim-preview-zoom" aria-label={L("Zoom i forhåndsvisningen", "Preview zoom")} value={zoom} onChange={e => setZoom(Number(e.target.value))} className="h-7 rounded-sm border border-border-control bg-surface-3 text-xs text-text-primary">
-        {[0.5, 1, 2, 4, 8].map(z => <option key={z} value={z}>{z * 100}%</option>)}
+      <select data-testid="anim-preview-zoom" aria-label={L("Zoom i forhåndsvisningen", "Preview zoom")} value={zoom} onChange={e => { setZoom(e.target.value === "fit" ? "fit" : Number(e.target.value)); setPan({ x: 0, y: 0 }); }} className="h-7 rounded-sm border border-border-control bg-surface-3 text-xs text-text-primary">
+        <option value="fit">{L("Tilpass", "Fit")}</option>
+         {[0.5, 1, 2, 4].map(z => <option key={z} value={z}>{z * 100}%</option>)}
       </select>
-      <IconButton label={L("Tilbakestill visningen", "Reset view")} onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }}><RotateCcw /></IconButton>
+      <IconButton label={L("Tilbakestill visningen", "Reset view")} onClick={() => { setZoom("fit"); setPan({ x: 0, y: 0 }); }}><RotateCcw /></IconButton>
     </ToolbarGroup></Toolbar>
     <div ref={wrap} data-testid="anim-preview-pan" data-pan-x={pan.x} data-pan-y={pan.y} tabIndex={0} role="img" aria-label={L("Forhåndsvisning av scenen", "Scene preview")}
       className="relative min-h-0 flex-1 touch-none overflow-hidden bg-media focus-visible:ring-2 focus-visible:ring-focus-ring"

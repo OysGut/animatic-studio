@@ -25,3 +25,33 @@ export function clampAnimationWindow(from: number, span: number, duration: numbe
   const length = Math.min(Math.max(1, duration), Math.max(1, Math.round(span)));
   return { from: Math.min(Math.max(0, Math.round(from)), Math.max(0, duration - length)), span: length };
 }
+
+/** Nice ruler steps in project frames; labels are aligned to the scene origin. */
+export function animationRuler(from: number, span: number, fps: Rational, width: number) {
+  validateFps(fps);
+  const rate = fps.num / fps.den;
+  const desired = span / Math.max(1, Math.floor(width / 88));
+  const choices = [...[1, 2, 5, 10].filter(f => f < rate), ...[1, 2, 5, 10, 15, 30, 60, 120, 300, 600, 900, 1800, 3600].map(s => Math.round(s * rate))];
+  let step = choices.find(s => s >= desired) ?? Math.round(3600 * rate);
+  while (step < desired) step *= 2;
+  const subsecond = step < rate;
+  const ticks = [];
+  for (let frame = Math.ceil(from / step) * step; frame < from + span; frame += step) {
+    const text = formatAnimationTime(frame, fps);
+    ticks.push({ frame, label: subsecond ? text : text.slice(0, text.lastIndexOf(":")) });
+  }
+  const minor = span / Math.max(1, width) <= 0.15 ? 1 : 0;
+  const frames = [];
+  if (minor) for (let f = Math.ceil(from); f < from + span; f++) frames.push(f);
+  return { step, ticks, frames };
+}
+
+/** Navigator edge drags keep the opposite edge fixed. */
+export function resizeAnimationWindow(from: number, span: number, delta: number, edge: "from" | "to", duration: number) {
+  const end = from + span;
+  if (edge === "from") {
+    const start = Math.max(0, Math.min(end - 1, Math.round(from + delta)));
+    return clampAnimationWindow(start, end - start, duration);
+  }
+  return clampAnimationWindow(from, Math.max(1, Math.min(duration - from, Math.round(span + delta))), duration);
+}

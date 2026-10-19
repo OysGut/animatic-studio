@@ -237,7 +237,7 @@ export interface BlockPlacement {
   readonly orderKey: string;
 }
 
-export type Command =
+export type Command = import("../animation/rig-commands").RigCommand
   | {
       readonly type: "CreateProduction";
       readonly productionId: ProductionId;

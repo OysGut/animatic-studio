@@ -141,6 +141,7 @@ async function loadState(projectId: string): Promise<ProjectState> {
     template_instances: await q("template_instances"),
     credit_participants: await q("credit_participants"),
     credit_sequences: await q("credit_sequences"),
+    animation_rigs: await q("animation_rigs"), animation_rig_versions: await q("animation_rig_versions"), animation_uses: await q("animation_uses"),
   };
   return stateFromRows(rows);
 }
@@ -5546,6 +5547,64 @@ try {
     assert(isDeepStrictEqual(back.assetVersions[ID(7)]?.template, def), "målprosjektet mistet malen");
     assert(Object.values(back.layers).filter((l) => l.template?.instanceId === ID(8)).length === def.elements.length, "lagene ble ikke bygget");
   });
+
+  // CA3: own project fixture, independent of all preceding typography tests.
+  let caProject = "", caState: ProjectState;
+  const CA = (n: number) => `01900000-0000-7000-8000-0053${String(n).padStart(8, "0")}` as never;
+  await test("0053/0054: rig versions and scene use round trip through apply_changes", async () => {
+    const p = await as("authenticated", ALICE, tx => tx`select public.create_project('CA3') as id`);
+    caProject = String(p[0]?.["id"]); caState = await loadState(caProject);
+    const production = Object.values(caState.productions).find(p => p.kind === "main"); assert(production, "main missing");
+    caState = await runCommand(caState, ALICE, { type: "CreateAssets", assets: [{ assetId: CA(1), fields: { kind: "character", name: "CA3", names: [], description: "", category: "", tags: [] } }] });
+    caState = await runCommand(caState, ALICE, { type: "CreateAssetVariant", assetId: CA(1), variantId: CA(2), fields: { name: "Front", style: "illustrated", appearance: "" } });
+    caState = await runCommand(caState, ALICE, { type: "AddAssetVersion", variantId: CA(2), versionId: CA(3), media: { mediaPath: `${caProject}/face.png`, mimeType: "image/png", width: 100, height: 100, byteSize: 100, sha256: "a".repeat(64) }, note: "" });
+    caState = await runCommand(caState, ALICE, { type: "CreateScene", sceneId: CA(4), variantId: CA(5), occurrenceId: CA(6), productionId: production.id, orderKey: keyBetween(null, null), heading: { intExt: "", location: "CA3", time: "" }, blocks: [] });
+    caState = await runCommand(caState, ALICE, { type: "CreateComposition", compositionId: CA(7), variantId: CA(5), fields: { name: "CA3", width: 1920, height: 1080, durationFrames: 100, background: "#000000" } });
+    caState = await runCommand(caState, ALICE, { type: "AddLayers", layers: [{ layerId: CA(8), compositionId: CA(7), fields: { ...defaultLayerFields(), kind: "character", name: "CA3", assetId: CA(1), assetVariantId: CA(2), versionId: CA(3) } }] });
+    caState = await runCommand(caState, ALICE, { type: "UpdateSceneDraft", compositionId: CA(7), occurrenceId: CA(6), steps: [
+      { type: "CreateRig", rigId: CA(9), variantId: CA(2) },
+      { type: "SetRigAnchors", rigId: CA(9), versionId: CA(10), sourceVersionId: CA(3), anchors: { mouth: { x: .5, y: .6 } } },
+      { type: "AttachAnimationUse", useId: CA(11), layerId: CA(8), occurrenceId: CA(6), rigVersionId: CA(10) },
+    ] });
+    const loaded = await loadState(caProject);
+    assert(isDeepStrictEqual(loaded.animationRigs, caState.animationRigs), "rig mismatch");
+    assert(isDeepStrictEqual(loaded.animationRigVersions, caState.animationRigVersions), "version mismatch");
+    assert(isDeepStrictEqual(loaded.animationUses, caState.animationUses), "use mismatch");
+    assert(loaded.animationRigs[CA(9)]?.revision === 1, "oneRevisionPerRow");
+  });
+  await test("0053/0054: RLS and grants deny anon, nonmembers and direct client writes", async () => {
+    for (const table of ["animation_rigs", "animation_rig_versions", "animation_uses"]) {
+      const owner = await as("authenticated", ALICE, tx => tx.unsafe(`select * from public.${table} where project_id = $1`, [caProject]));
+      const outsider = await as("authenticated", CAROL, tx => tx.unsafe(`select * from public.${table} where project_id = $1`, [caProject]));
+      assert(owner.length === 1 && outsider.length === 0, `RLS ${table}`);
+      await expectError(as("anon", null, tx => tx.unsafe(`select * from public.${table}`)), "42501");
+      await expectError(as("authenticated", ALICE, tx => tx.unsafe(`update public.${table} set removed = true where project_id = $1`, [caProject])), "42501");
+      await expectError(as("authenticated", ALICE, tx => tx.unsafe(`delete from public.${table} where project_id = $1`, [caProject])), "42501");
+    }
+  });
+  await test("0053/0054: stale use revisions rejected and disable preserves all setup data", async () => {
+    const before = await loadState(caProject);
+    const command: Command = { type: "SetAnimationLayerEnabled", useId: CA(11), enabled: false };
+    caState = await runCommand(before, ALICE, command);
+    const patch = diffStates(before, caState);
+    await expectError(as("service_role", null, tx => tx`select public.apply_changes(${caProject}, ${ALICE}, ${CA(12)}, ${tx.json(command as never)}, '{}'::jsonb, ${tx.json(patch as never)})`), "P0409");
+    const back = await loadState(caProject);
+    assert(back.animationUses[CA(11)]?.enabled === false && !back.animationUses[CA(11)]?.removed, "disable deleted use");
+    assert(isDeepStrictEqual(back.animationRigVersions, before.animationRigVersions), "disable mutated rig");
+    await expectError(sql`update public.animation_rig_versions set spec = '{"format":1,"anchors":{}}'::jsonb where id = ${CA(10)}`, "22023");
+  });
+  await test("0053/0054: purge rejects referenced sources; delete_project and purge remove rigs child-first", async () => {
+    await expectError(sql`select public.purge_removed_assets(${caProject}, ${ALICE}, '{}'::uuid[], array[${CA(3)}]::uuid[])`, "22023");
+    await sql`update public.asset_versions set removed = true where id = ${CA(3)}`;
+    await expectError(sql`select public.purge_removed_assets(${caProject}, ${ALICE}, '{}'::uuid[], array[${CA(3)}]::uuid[])`, "23503");
+    await as("service_role", null, tx => tx`select public.delete_project(${caProject}, ${ALICE})`);
+    for (const table of ["animation_uses", "animation_rig_versions", "animation_rigs"]) {
+      const rows = await sql.unsafe(`select * from public.${table} where project_id = $1`, [caProject]); assert(rows.length === 0, `${table} not deleted`);
+    }
+    await as("service_role", null, tx => tx`select public.purge_project_assets(${caProject}, ${ALICE})`);
+    assert((await sql`select id from public.projects where id = ${caProject}`).length === 0, "project not purged");
+  });
+
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);

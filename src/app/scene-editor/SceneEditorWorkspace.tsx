@@ -972,16 +972,16 @@ function Editor({
         </div>
       </Toolbar>
       <Tabs value={sceneTab} onValueChange={setSceneTab}>
-        <TabsList className="h-8 rounded-none bg-surface-2">
-          <TabsTrigger value="scene" data-testid="scene-tab-scene">{L("Scene", "Scene")}</TabsTrigger>
-          <TabsTrigger value="animation" data-testid="scene-tab-animation">{L("Animasjon", "Animation")}</TabsTrigger>
+        <TabsList className="h-8 w-full justify-start rounded-none border-b border-border bg-surface-2 p-0">
+          <TabsTrigger value="scene" data-testid="scene-tab-scene" className="h-8 rounded-none border-b-2 border-transparent text-xs data-[state=active]:border-accent-brand data-[state=active]:bg-surface-2 data-[state=active]:shadow-none">{L("Scene", "Scene")}</TabsTrigger>
+          <TabsTrigger value="animation" data-testid="scene-tab-animation" className="h-8 rounded-none border-b-2 border-transparent text-xs data-[state=active]:border-accent-brand data-[state=active]:bg-surface-2 data-[state=active]:shadow-none">{L("Animasjon", "Animation")}</TabsTrigger>
         </TabsList>
       </Tabs>
       {sceneTab === "animation" && composition && occurrence ? (
         <AnimationWorkspace key={composition.id} state={state} composition={composition} duration={duration}
           playback={playback} range={animationRange ?? { from: 0, to: duration - 1 }} onRange={setAnimationRange}
           urls={urls.data ?? {}} tracks={animView => <>
-            <VariantTracks state={state} compositionId={composition.id} duration={duration} view={animView}
+            <VariantTracks state={state} compositionId={composition.id} occurrenceId={occurrence.id} duration={duration} view={animView}
               frame={playback.frame} editable={editable} run={cmds.run} onSeek={playback.setFrame} onStudio={openAssetStudio} />
             <DialogueTrack state={state} occurrenceId={occurrence.id} language={filmLang.dialogue}
               view={animView} onOpen={setProfileId} />
