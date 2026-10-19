@@ -9,6 +9,7 @@ import { LanguageSwitch } from "@/app/i18n/language";
 import { L } from "@/core";
 import { GenerationStatus } from "@/app/ai/GenerationStatus";
 import { TaskNav } from "./TaskNav";
+import { BookmarkMenu } from "./BookmarkMenu";
 import { AccountWatcher, useMyAccount } from "@/app/account/use-account";
 import { ScriptExplorerPanel } from "@/app/script-explorer/ScriptExplorerPanel";
 
@@ -56,6 +57,7 @@ export function AppHeader({ email, trail }: AppHeaderProps) {
       ) : null}
       <div className="ml-auto flex items-center gap-2">
         {params.projectId ? <Button variant="ghost" size="icon" data-testid="script-explorer-button" title={L("Manusutforskeren", "Script explorer")} aria-label={L("Manusutforskeren", "Script explorer")} onClick={() => setExplorerOpen(true)}><Globe className="size-4" /></Button> : null}
+        {params.projectId && email ? <BookmarkMenu projectId={params.projectId} /> : null}
         {params.projectId ? <TaskNav projectId={params.projectId} /> : null}
         {params.projectId ? <GenerationStatus projectId={params.projectId} /> : null}
         <LanguageSwitch compact />
