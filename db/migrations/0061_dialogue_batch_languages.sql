@@ -25,6 +25,7 @@ create table public.dialogue_batches (
   voice jsonb not null check (jsonb_typeof(voice) = 'object' and pg_column_size(voice) <= 8192),
   status text not null default 'running' check (status in ('running','paused','done')),
   pause_reason text check (pause_reason is null or length(pause_reason) <= 2000),
+  access_blocked boolean not null default false,
   lease_token uuid,
   lease_until timestamptz,
   created_by uuid not null,
@@ -568,7 +569,7 @@ begin
   if not found or v_batch.status <> 'running' or v_batch.lease_until > now() then return null; end if;
   -- Never replay a possibly charged request after a crashed process. Reconcile durable job receipts.
   update public.dialogue_batch_items i set result=j.params->'result',status='ready' from public.generation_jobs j where i.batch_id=p_batch and i.status='generating' and j.id=i.job_id and j.status='done' and j.params->'result' is not null;
-  update public.dialogue_batch_items set status='failed',retryable=false,error='Genereringen ble avbrutt med ukjent resultat. Ikke generer på nytt før leverandørresultatet er avklart.' where batch_id=p_batch and status='generating';
+  update public.dialogue_batch_items set status='failed',retryable=false,error='The generation was interrupted with an unknown result. Do not regenerate until the provider result is reconciled.' where batch_id=p_batch and status='generating';
   update public.dialogue_batches set lease_token=p_lease,lease_until=now()+interval '10 minutes' where id=p_batch returning * into v_batch;
   return to_jsonb(v_batch);
 end $$;
@@ -601,6 +602,7 @@ begin
   if private.member_role_rank(p_project,p_actor) < private.role_rank('editor') then raise exception 'Forbidden' using errcode='42501'; end if;
   select * into v_batch from public.dialogue_batches where id=p_batch and project_id=p_project for update;
   if not found or v_batch.lease_until > now() then raise exception 'Job is busy or missing'; end if;
+  if v_batch.access_blocked then raise exception 'Provider access must be restored before starting fresh work' using errcode='42501'; end if;
   if private.member_role_rank(p_project,v_batch.created_by) < private.role_rank('editor') then raise exception 'Owner editing permission removed' using errcode='42501'; end if;
   update public.dialogue_batch_items set status='waiting',error=null where batch_id=p_batch and status='failed' and retryable and attempts < 10;
   update public.generation_jobs j set status='queued',error=null from public.dialogue_batch_items i where i.batch_id=p_batch and i.job_id=j.id and i.status='waiting';

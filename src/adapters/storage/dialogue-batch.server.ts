@@ -28,9 +28,10 @@ export async function processDialogueBatch(db: AnyClient, batchId: string, userD
         const out = await runSpeech({ projectId: batch.project_id, blockId: String(item["block_id"]), voiceId: batch.voice.voiceId, model: batch.voice.modelId ?? "eleven_v3", language: String(item["language"]), settings: batch.voice.settings ?? {}, expectedRevision: item["script_revision"], jobId: String(item["job_id"]), batch: true }, { userId: batch.created_by, supabase: userDb });
         if (!out.ok) {
           const blocked = out.status === 402 || out.status === 403;
-          await db.from("dialogue_batch_items").update({ status: "failed", error: out.message, retryable: !blocked && !out.ambiguous }).eq("id", item["id"]);
+          const retryable = !out.ambiguous && (out.status === 429 || (out.status !== null && out.status >= 500));
+          await db.from("dialogue_batch_items").update({ status: "failed", error: out.message, retryable }).eq("id", item["id"]);
           if (blocked || out.ambiguous || out.status === 429) {
-            await db.from("dialogue_batches").update({ status: "paused", pause_reason: out.message }).eq("id", batchId).eq("lease_token", lease);
+            await db.from("dialogue_batches").update({ status: "paused", pause_reason: out.message, access_blocked: blocked }).eq("id", batchId).eq("lease_token", lease);
             break;
           }
           processed++; continue;
