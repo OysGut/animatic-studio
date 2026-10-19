@@ -185,7 +185,7 @@ try {
         return { width: preview.width, height: preview.height, panelGap: panel ? panel.bottom - preview.bottom : Infinity, columnGap: column ? column.bottom - preview.bottom : Infinity, useful };
       });
       h.check(measurements.height > 0 && (measurements.useful || (measurements.panelGap <= 120 && measurements.columnGap <= 120)),
-        `${width}: ingen svart restflate over 120 px (${Math.round(measurements.columnGap)} px)`);
+        `${width}: ingen svart restflate over 120 px (${measurements.useful ? "lagliste med panelfarge" : `${Math.round(measurements.columnGap)} px`})`);
       const comp = h.rows.compositions.find(c => c.variant_id === occ.variant_id && !c.removed);
       h.check(comp && Math.abs(measurements.width / measurements.height - comp.width / comp.height) < 0.02, `${width}: bildeformat bevart`);
       await page.screenshot({ path: `${h.out}/animasjon-polish-${width}.png` });
