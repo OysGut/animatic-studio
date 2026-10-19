@@ -74,7 +74,7 @@
 
 ## CA – Character Animation Studio (plan godkjent 19.10.2026)
 - [x] CA0 Spesifikasjon lagret (docs/product/phase3/CHARACTER_ANIMATION_SPEC.md)
-- [ ] CA1 Fane, tidslinje, avspillingsområde, navigator, forhåndsvisning og tester — pågår
-- [ ] CA2 Bildevarianter, dialogspor og tester — i denne runden
-- [ ] Rett canvas-testens venting på én kant (maks 3 sekunder).
+- [x] CA1 Fane, tidslinje, avspillingsområde, navigator, forhåndsvisning og tester
+- [x] CA2 Bildevarianter, dialogspor og tester
+- [x] Rett canvas-testens venting på én kant (maks 3 sekunder).
 - [ ] CA3–CA8 — venter på egne oppdrag; Rhubarb, vektormasker og 512 kB er avklart.

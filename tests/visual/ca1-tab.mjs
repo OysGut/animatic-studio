@@ -52,6 +52,7 @@ await h.scenario("ca1", occ.id, "nb", async page => {
   h.check(Number(await separator.getAttribute("aria-valuenow")) !== before, "dra-kant tilgjengelig med tastatur");
   await page.getByTestId("scene-tab-scene").click(); await page.getByTestId("scene-tab-animation").click();
   h.check(h.state.commands.length === 0, "visningskontroller skriver ikke prosjektdata");
+  await page.screenshot({ path: `${h.out}/ca1-animation.png` });
 });
 await h.scenario("ca1-en", occ.id, "en", async page => {
   h.check(await page.getByTestId("scene-tab-animation").textContent() === "Animation", "engelsk fane");
