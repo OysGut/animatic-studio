@@ -210,12 +210,6 @@ export async function runSpeech(data: SpeechInput, context: { supabase: unknown;
       if (!out.bytes.byteLength)
         throw new Error(L("Tjenesten svarte uten lyd.", "The service replied without sound."));
       let durationMs: number | undefined;
-      if (data.batch) {
-        const { Input, BufferSource, ALL_FORMATS } = await import("mediabunny");
-        const input = new Input({ source: new BufferSource(out.bytes), formats: ALL_FORMATS });
-        try { durationMs = Math.round(await input.computeDuration() * 1000); } finally { input.dispose(); }
-        if (!durationMs || !Number.isFinite(durationMs)) throw new Error(L("Lydlengden kunne ikke måles. Ikke generer på nytt.", "The audio duration could not be measured. Do not regenerate."));
-      }
       const assetId = newId<"asset">();
       const versionId = newId<"asset_version">();
       const path = assetFilePath(data.projectId, "generated", assetId, versionId, "ai-tale.mp3");
@@ -232,6 +226,13 @@ export async function runSpeech(data: SpeechInput, context: { supabase: unknown;
             `The sound could not be saved: ${upErr.message}`,
           ),
         );
+      if (data.batch) {
+        await finish({ status: "running", result_path: path });
+        const { Input, BufferSource, ALL_FORMATS } = await import("mediabunny");
+        const input = new Input({ source: new BufferSource(out.bytes), formats: ALL_FORMATS });
+        try { durationMs = Math.round(await input.computeDuration() * 1000); } finally { input.dispose(); }
+        if (!durationMs || !Number.isFinite(durationMs)) throw new Error(L("Lydlengden kunne ikke måles. Filen er bevart; ikke generer på nytt.", "The audio duration could not be measured. The file is preserved; do not regenerate."));
+      }
       const result: Extract<SpeechResult, { ok: true }> = {
         ok: true,
         assetId,
