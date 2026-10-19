@@ -55,6 +55,8 @@ export interface AnimaticExportOptions {
   readonly mp4?: boolean;
   /** Alltid WebM (VP9/AV1) – brukerens valg i nedlastingen (DEC-0085). */
   readonly webm?: boolean;
+  /** CA8: «main» utelater karakterlag satt til eget lag; «separate» lager filen med bare dem. */
+  readonly characterPass?: "all" | "main" | "separate";
 }
 
 export interface AnimaticFile {
@@ -182,6 +184,7 @@ export async function exportAnimatic(o: AnimaticExportOptions): Promise<Animatic
         images: o.images,
         placeholders: false,
         monochrome: o.monochrome ?? false,
+        ...(o.characterPass ? { characterPass: o.characterPass } : {}),
         ...(video ? { video: video.provider } : {}),
         ...(o.subtitles?.length
           ? { subtitle: cueAt(o.subtitles, (o.startFrame + i) * step * 1000)?.text ?? null }

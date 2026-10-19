@@ -19,7 +19,7 @@ export function harness(defaultOut) {
   const USER = { id: "00000000-0000-7000-8000-a11ce0000001", email: "mars@example.no", aud: "authenticated", role: "authenticated" };
   const P = `/prosjekt/${fx.project.id}`;
   const rows = fx.rows;
-  const state = { commands: [], uploads: [] };
+  const state = { commands: [], uploads: [], rpcs: [] };
 
   function serverFnName(url) {
     try {
@@ -79,7 +79,7 @@ export function harness(defaultOut) {
       if (table === "projects") return json(single ? fx.project : [{ ...fx.project, project_members: [{ user_id: USER.id, role }] }]);
       if (table === "project_members") return json([{ user_id: USER.id, role, joined_at: "2026-10-08T10:00:00Z" }]);
       if (table === "profiles") return json([{ user_id: USER.id, display_name: "Mars" }]);
-      if (path.startsWith("/rest/v1/rpc/")) return json(null);
+      if (path.startsWith("/rest/v1/rpc/")) { let body = null; try { body = JSON.parse(request.postData() ?? "null"); } catch { body = null; } state.rpcs.push({ name: path.slice("/rest/v1/rpc/".length), body }); return json(null); }
       if (path.startsWith("/realtime/")) return route.abort();
       return json(single ? rows[table]?.[0] ?? null : Number(url.searchParams.get("offset") ?? 0) > 0 ? [] : rows[table] ?? []);
     });
@@ -122,6 +122,7 @@ export function harness(defaultOut) {
   async function scenario(name, sceneId, lang, fn) {
     state.commands = [];
     state.uploads = [];
+    state.rpcs = [];
     let ctx;
     try {
       ctx = await open(sceneId, lang);

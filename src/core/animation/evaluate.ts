@@ -1,7 +1,8 @@
 /** Shared evaluator boundary; CA3 anchors are non-rendering metadata, never destructive transforms. */
 import type { ProjectState } from "../model";
 import type { Frame } from "../composition/render";
-import { layerVersion, layersOf } from "../composition/render";
+import { layerVersion, layersOf, multiply, translate, rotate, scale, type DrawItem } from "../composition/render";
+import { effectiveBehavior, exportFlagsOf, breathScaleAt } from "./character";
 import { fpsToNumber, secondsToFrames } from "../time";
 import { rigSpecError } from "./rig";
 import { visemeAt } from "./lipsync";
@@ -67,14 +68,75 @@ export function overlayEventsAt(
   return out;
 }
 
+/** Ansiktsankeret en rigg-del plasseres fra. */
+function anchorOfSlot(slot: string): "mouth" | "leftEye" | "rightEye" | "head" | "nose" {
+  if (slot.startsWith("mouth:")) return "mouth";
+  if (slot.startsWith("eye:left")) return "leftEye";
+  if (slot.startsWith("eye:right")) return "rightEye";
+  return slot === "nose" ? "nose" : "head";
+}
+
+/**
+ * CA5–CA8: rigg-delene (munnform, lukkede øyne) legges som egne tegneelementer rett over karakterlaget, med
+ * eksportvalgene til bruken (§103–§106). Forhåndsvisning og eksport går gjennom samme funksjon, så de er like.
+ * Uten aktivert oppsett returneres bildet uendret.
+ */
 export function evaluateCharacterFrame(s: ProjectState, compositionId: string, frame: number, base: Frame): Frame {
-  // CA5/CA6 resolves the active mouth/eye/overlay parts per layer; the compositor draws them (rig-parts.ts).
   // Resolve only the currently visible variant, so swaps never inherit another variant's setup (§47).
+  let items: DrawItem[] | null = null;
+  const fps = fpsToNumber(s.project.fps);
   for (const layer of layersOf(s, compositionId)) {
     const version = layerVersion(s, layer, frame);
     const setup = characterRigAt(s, layer.id, version?.variantId ?? null);
-    // CA3 establishes the shared, version-gated boundary; anchors alone draw no new pixels.
     if (!setup) continue;
+    const list: DrawItem[] = items ?? [...base.items];
+    const index = list.findIndex(it => it.layerId === layer.id && it.kind === "image");
+    if (index < 0) continue;
+    items = list;
+    const host = list[index]!;
+    const flags = exportFlagsOf(setup.use);
+    const eff = effectiveBehavior(s, setup.use);
+    const use = { ...setup.use, behavior: eff.behavior };
+    const breath = breathScaleAt(eff.behavior.breath, frame, fps);
+    const matrix = breath === 1 ? host.matrix : multiply(host.matrix, multiply(translate(0, host.height / 2), multiply(scale(1, breath), translate(0, -host.height / 2))));
+    if (breath !== 1) list[index] = { ...host, matrix };
+    const spec = setup.version.spec;
+    const parts = spec.parts ?? {};
+    const slots: { slot: string; opacity: number }[] = [];
+    if (flags.mouth) {
+      const v = mouthVisemeAt(s, setup.use.occurrenceId, frame);
+      if (parts[`mouth:${v}`]?.versionId) slots.push({ slot: `mouth:${v}`, opacity: 1 });
+    }
+    if (flags.blink) for (const eye of ["left", "right"] as const) {
+      const closed = eyeStateAt(s, use, setup.rig.id, eye, frame, frame + 1).closed;
+      if (closed > 0 && parts[`eye:${eye}:closed`]?.versionId) slots.push({ slot: `eye:${eye}:closed`, opacity: closed });
+    }
+    const overlays = flags.overlay ? overlayEventsAt(s, use, frame, frame + 1) : [];
+    const extra: DrawItem[] = [];
+    for (const { slot, opacity } of slots) {
+      const part = parts[slot]!;
+      const image = part.versionId ? s.assetVersions[part.versionId] : undefined;
+      if (!image || image.removed) continue;
+      const a = spec.anchors[anchorOfSlot(slot)] ?? { x: 0.5, y: 0.5 };
+      const cx = (a.x + part.x - 0.5) * host.width, cy = (a.y + part.y - 0.5) * host.height;
+      extra.push({
+        layerId: `${layer.id}:rig:${slot}`, kind: "image", version: image, fill: null,
+        width: part.width * host.width, height: part.height * host.height,
+        matrix: multiply(matrix, multiply(translate(cx, cy), rotate(part.rotation))),
+        opacity: host.opacity * opacity * (flags.adjust ? part.adjustments.opacity : 1),
+        locked: true, name: slot,
+        ...(host.blend ? { blend: host.blend } : {}),
+        character: {
+          useId: setup.use.id, slot, separate: flags.mode === "separate",
+          ...(flags.adjust ? { adjustments: part.adjustments } : {}),
+          ...(flags.masks && (part.mask.length || part.drawing.length) ? { part } : {}),
+        },
+      });
+    }
+    // Overlegg uten eget bilde merkes på verten, så tegnelaget kan vise dem (§39–§44)
+    if (overlays.length)
+      list[index] = { ...list[index]!, character: { useId: setup.use.id, slot: "host", separate: false, overlays: overlays.map(o => ({ patternId: o.pattern.id, intensity: o.event.intensity })) } };
+    list.splice(index + 1, 0, ...extra);
   }
-  return base;
+  return items ? { ...base, items } : base;
 }

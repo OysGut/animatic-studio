@@ -35,6 +35,8 @@ export interface FilmDrawOptions {
   readonly monochrome?: boolean;
   /** Undertekst som vises i bildet (DEC-0059, REQ-0352), eller null. */
   readonly subtitle?: string | null;
+  /** CA8: karakterlag som eksporteres som eget lag (se DrawOptions.characterPass). */
+  readonly characterPass?: "all" | "main" | "separate";
 }
 
 type Canvas2D = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
@@ -256,6 +258,7 @@ function drawSource(
       view: [k, 0, 0, k, ox, oy],
       images: o.images,
       placeholders: o.placeholders ?? false,
+      ...(o.characterPass ? { characterPass: o.characterPass } : {}),
     });
     ctx.restore();
   } else {

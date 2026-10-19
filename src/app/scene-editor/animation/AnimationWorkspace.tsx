@@ -11,10 +11,12 @@ import { TimeNavigator, type AnimWindow } from "./TimeNavigator";
 import { AnimPreview } from "./AnimPreview";
 import type { AnimationRange } from "./PlayRange";
 
-export function AnimationWorkspace({ state, composition, duration, playback, range, onRange, urls, tracks }: {
+export function AnimationWorkspace({ state, composition, duration, playback, range, onRange, urls, tracks, tools }: {
   state: ProjectState; composition: Composition; duration: number; playback: Playback;
   range: AnimationRange; onRange: (r: AnimationRange) => void; urls: Readonly<Record<string, string>>;
   tracks?: (view: AnimWindow) => ReactNode;
+  /** CA8: rytmeverktøyet og andre verktøy i verktøylinjen. */
+  tools?: ReactNode;
 }) {
   const [window, setWindow] = useState<AnimWindow>({ from: 0, span: duration });
   const view = clampAnimationWindow(window.from, window.span, duration);
@@ -36,7 +38,7 @@ export function AnimationWorkspace({ state, composition, duration, playback, ran
       <IconButton data-testid="anim-loop" label={L("Løkke", "Loop")} active={playback.loop} onClick={() => playback.setLoop(!playback.loop)}><Repeat /></IconButton>
       <output data-testid="anim-time" className="font-mono text-xs text-text-primary">{formatAnimationTime(playback.frame, state.project.fps)}</output>
       <input data-testid="anim-zoom" type="range" aria-label={L("Zoom i tidslinjen", "Timeline zoom")} min={1} max={duration} value={view.span} onChange={e => setWindow(clampAnimationWindow(view.from, Number(e.target.value), duration))} className="w-24 accent-accent-brand" />
-    </ToolbarGroup></Toolbar>
+    </ToolbarGroup>{tools ? <ToolbarGroup>{tools}</ToolbarGroup> : null}</Toolbar>
     <div className="flex min-h-0 flex-1 flex-col md:flex-row">
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <TimeNavigator duration={duration} window={view} onChange={setWindow} />

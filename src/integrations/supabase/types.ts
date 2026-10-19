@@ -212,6 +212,67 @@ export type Database = {
         }
         Relationships: []
       }
+      animation_patterns: {
+        Row: {
+          color: string
+          created_at: string
+          created_by: string
+          id: string
+          name: string
+          project_id: string
+          removed: boolean
+          revision: number
+          rig_id: string | null
+          spec: Json
+        }
+        Insert: {
+          color: string
+          created_at?: string
+          created_by: string
+          id: string
+          name: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          rig_id?: string | null
+          spec: Json
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          name?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          rig_id?: string | null
+          spec?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animation_patterns_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "animation_patterns_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animation_patterns_rig_id_fkey"
+            columns: ["rig_id"]
+            isOneToOne: false
+            referencedRelation: "animation_rigs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       animation_rig_versions: {
         Row: {
           algorithm_version: number
@@ -347,6 +408,7 @@ export type Database = {
       }
       animation_uses: {
         Row: {
+          behavior: Json | null
           created_at: string
           created_by: string
           enabled: boolean
@@ -359,6 +421,7 @@ export type Database = {
           rig_version_id: string
         }
         Insert: {
+          behavior?: Json | null
           created_at?: string
           created_by: string
           enabled?: boolean
@@ -371,6 +434,7 @@ export type Database = {
           rig_version_id: string
         }
         Update: {
+          behavior?: Json | null
           created_at?: string
           created_by?: string
           enabled?: boolean
@@ -2141,6 +2205,99 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lipsync_results: {
+        Row: {
+          algorithm_version: number
+          audio_hash: string
+          block_id: string | null
+          clip_id: string
+          created_at: string
+          created_by: string
+          enabled: boolean
+          id: string
+          overrides: Json
+          project_id: string
+          removed: boolean
+          revision: number
+          source: string
+          spans: Json
+          take_id: string
+          text_hash: string
+        }
+        Insert: {
+          algorithm_version: number
+          audio_hash: string
+          block_id?: string | null
+          clip_id: string
+          created_at?: string
+          created_by: string
+          enabled?: boolean
+          id: string
+          overrides?: Json
+          project_id: string
+          removed?: boolean
+          revision?: number
+          source: string
+          spans?: Json
+          take_id: string
+          text_hash?: string
+        }
+        Update: {
+          algorithm_version?: number
+          audio_hash?: string
+          block_id?: string | null
+          clip_id?: string
+          created_at?: string
+          created_by?: string
+          enabled?: boolean
+          id?: string
+          overrides?: Json
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          source?: string
+          spans?: Json
+          take_id?: string
+          text_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lipsync_results_block_id_fkey"
+            columns: ["block_id"]
+            isOneToOne: false
+            referencedRelation: "script_blocks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lipsync_results_clip_id_fkey"
+            columns: ["clip_id"]
+            isOneToOne: false
+            referencedRelation: "audio_clips"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lipsync_results_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "lipsync_results_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lipsync_results_take_id_fkey"
+            columns: ["take_id"]
+            isOneToOne: false
+            referencedRelation: "takes"
             referencedColumns: ["id"]
           },
         ]

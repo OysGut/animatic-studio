@@ -111,6 +111,8 @@ import { VariantTracks } from "./animation/VariantTracks";
 import { DialogueTrack } from "./animation/DialogueTrack";
 import { MouthTrack } from "./animation/MouthTrack";
 import { PatternStudio } from "./animation/PatternStudio";
+import { RhythmPanel } from "./animation/RhythmPanel";
+import { runGroup } from "@/app/storylab/canvas/run-group";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function SceneEditorWorkspace({
@@ -984,13 +986,14 @@ function Editor({
           playback={playback} range={animationRange ?? { from: 0, to: duration - 1 }} onRange={setAnimationRange}
           urls={urls.data ?? {}} tracks={animView => <>
             <VariantTracks state={state} compositionId={composition.id} occurrenceId={occurrence.id} duration={duration} view={animView}
-              frame={playback.frame} editable={editable} run={cmds.run} onSeek={playback.setFrame} onStudio={openAssetStudio} />
+              frame={playback.frame} editable={editable} run={cmds.run} onSeek={playback.setFrame} onStudio={openAssetStudio}
+              runGroup={(cs, label) => runGroup(cmds, cs, label)} onJump={pickScene} />
             <DialogueTrack state={state} occurrenceId={occurrence.id} language={filmLang.dialogue}
               view={animView} onOpen={setProfileId} />
             <MouthTrack state={state} occurrenceId={occurrence.id} language={filmLang.dialogue}
               view={animView} frame={playback.frame} editable={editable} run={cmds.run} urls={urls.data ?? {}} />
             <PatternStudio state={state} duration={duration} editable={editable} run={cmds.run} />
-          </>} />
+          </>} tools={<RhythmPanel state={state} occurrenceId={occurrence.id} editable={editable} run={cmds.run} />} />
       ) : (
       <div className="flex min-h-0 flex-1">
         {/* Ressursene i scenen (side om side står de sammen med de andre panelene til høyre) */}

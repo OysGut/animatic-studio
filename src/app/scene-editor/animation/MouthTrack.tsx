@@ -77,7 +77,7 @@ export function MouthTrack({ state, occurrenceId, language, view, frame, editabl
         <IconButton data-testid="lipsync-apply" label={L("Bruk", "Apply")} onClick={applyProposal}><Check /></IconButton>
         <IconButton data-testid="lipsync-discard" label={L("Forkast", "Discard")} onClick={() => setProposal(null)}><X /></IconButton>
       </span> : null}
-      {error ? <span role="alert" className="ml-auto text-[11px] text-danger">{error}</span> : null}
+      <span aria-live="assertive" data-testid="lipsync-message" className="ml-auto text-[11px] text-danger">{error ? <span role="alert">{error}</span> : null}</span>
     </div>
     {tracks.map(t => {
       const result = resultOf(t.clip.id);

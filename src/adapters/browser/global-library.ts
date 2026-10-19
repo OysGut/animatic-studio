@@ -14,6 +14,7 @@ import {
   type VisualStyle,
   type TemplateDefinition,
 } from "@/core";
+import type { GlobalAnimationSpec } from "@/core/animation/global-rig";
 import { browserClient, db } from "./client";
 
 function fail(e: { message: string } | null): void {
@@ -161,4 +162,40 @@ export async function uploadToSignedPath(path: string, token: string, file: Blob
   } catch {
     throw new Error(L("Opplastingen av filen feilet. Prøv igjen.", "The file upload failed. Please try again."));
   }
+}
+
+/** CA7 (migrasjon 0057): publiserte animasjonsoppsett i gruppen, nyeste først per variant. */
+export async function listGlobalAnimationSpecs(workspaceId: string): Promise<GlobalAnimationSpec[]> {
+  const { data, error } = await db.from("global_animation_specs").select("*").eq("workspace_id", workspaceId);
+  fail(error);
+  return ((data ?? []) as Row[])
+    .map((r) => ({
+      id: str(r["id"]),
+      workspaceId: str(r["workspace_id"]),
+      globalAssetId: str(r["global_asset_id"]),
+      variantId: str(r["variant_id"]),
+      number: num(r["number"]),
+      rig: r["rig_spec"] as GlobalAnimationSpec["rig"],
+      patterns: (Array.isArray(r["patterns"]) ? r["patterns"] : []) as GlobalAnimationSpec["patterns"],
+      note: str(r["note"]),
+      createdAt: str(r["created_at"]),
+    }))
+    .sort((a, b) => b.number - a.number);
+}
+
+/** Publiserer en ny, låst versjon av oppsettet (rollen sjekkes i databasen). */
+export async function publishGlobalAnimation(
+  variantId: string,
+  rig: GlobalAnimationSpec["rig"],
+  patterns: GlobalAnimationSpec["patterns"],
+  note: string,
+): Promise<string> {
+  const { data, error } = await db.rpc("global_publish_animation", {
+    p_variant: variantId,
+    p_rig_spec: rig as never,
+    p_patterns: patterns as never,
+    p_note: note,
+  });
+  fail(error);
+  return data as string;
 }

@@ -2,7 +2,7 @@
 import { L } from "../i18n";
 import { isUuid } from "../ids";
 import type { ProjectState } from "../model";
-import { rigSpecError, type AnimationRig, type AnimationRigVersion, type AnimationUse, type RigSpec, type RigAnchors, type UseBehavior } from "./rig";
+import { rigSpecError, breathError, exportFlagsError, type AnimationRig, type AnimationRigVersion, type AnimationUse, type RigSpec, type RigAnchors, type UseBehavior } from "./rig";
 export type RigCommand =
   | { type: "CreateRig"; rigId: string; variantId: string }
   | { type: "SaveRigVersion"; rigId: string; versionId: string; sourceVersionId: string; spec: RigSpec }
@@ -10,6 +10,8 @@ export type RigCommand =
   | { type: "AttachAnimationUse"; useId: string; layerId: string; occurrenceId: string; rigVersionId: string }
   | { type: "SetAnimationLayerEnabled"; useId: string; enabled: boolean }
   | { type: "SetAnimationBehavior"; useId: string; behavior: UseBehavior }
+  /** CA7: flytt valgte bruk til en annen versjon av samme oppsett («bare her» / «oppdater alle»). */
+  | { type: "AdoptRigVersion"; useIds: readonly string[]; rigVersionId: string }
   | { type: "UndoAnimationChange"; rigs: Readonly<Record<string, AnimationRig | null>>; versions: Readonly<Record<string, AnimationRigVersion | null>>; uses: Readonly<Record<string, AnimationUse | null>> };
 export function applyRigCommand(s: ProjectState, c: RigCommand) {
   const rigs = { ...s.animationRigs }, versions = { ...s.animationRigVersions }, uses = { ...s.animationUses };
@@ -65,7 +67,19 @@ export function applyRigCommand(s: ProjectState, c: RigCommand) {
       if (!blink || !["left", "right", "both"].includes(blink.eye) || !Number.isInteger(blink.frame) || !Number.isInteger(blink.endFrame) || blink.endFrame <= blink.frame || blink.intensity < 0 || blink.intensity > 1)
         return invalid(L("Ugyldig blink", "Invalid blink"));
     }
+    if (breathError(b.breath) || exportFlagsError(b.export)) return invalid(L("Ugyldig animasjonsatferd", "Invalid animation behavior"));
     oldUses[use.id] = use; uses[use.id] = { ...use, behavior: structuredClone(b), revision: use.revision + 1 };
+  } else if (c.type === "AdoptRigVersion") {
+    const version = versions[c.rigVersionId];
+    if (!version || version.removed || !Array.isArray(c.useIds) || !c.useIds.length || c.useIds.length > 500 || new Set(c.useIds).size !== c.useIds.length) return invalid(L("Ugyldig oppdatering av oppsettet", "Invalid setup update"));
+    for (const id of c.useIds) {
+      const use = uses[id];
+      const from = use ? versions[use.rigVersionId] : undefined;
+      if (!use || use.removed || !from || from.rigId !== version.rigId) return invalid(L("Bruken hører ikke til oppsettet", "The use does not belong to the setup"));
+      if (use.rigVersionId === version.id) continue;
+      oldUses[id] = use; uses[id] = { ...use, rigVersionId: version.id, revision: use.revision + 1 };
+    }
+    if (!Object.keys(oldUses).length) return invalid(L("Alle valgte scener bruker allerede denne versjonen", "All chosen scenes already use this version"));
   } else {
     for (const [id, row] of Object.entries(c.rigs)) { oldRigs[id] = rigs[id] ?? null; if (row) rigs[id] = { ...row, revision: (rigs[id]?.revision ?? 0) + 1 }; else delete rigs[id]; }
     for (const [id, row] of Object.entries(c.versions)) { oldVersions[id] = versions[id] ?? null; if (row) versions[id] = { ...row, revision: (versions[id]?.revision ?? 0) + 1 }; else delete versions[id]; }

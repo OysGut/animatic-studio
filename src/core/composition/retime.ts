@@ -65,6 +65,11 @@ export interface RetimeOptions {
     Record<string, { readonly versionId: string; readonly lengthMs: number }>
   >;
   readonly newId?: () => string;
+  /**
+   * CA8 (rytmeverktøyet): eksplisitt endring i bilder for hvert fleksible mellomrom (metode «pauses»), i samme
+   * rekkefølge som `report.gapsBefore`. Målet må være varigheten før pluss summen av endringene.
+   */
+  readonly gapChanges?: readonly number[];
 }
 
 export type RetimeItemKind =
@@ -173,6 +178,7 @@ function piecesAround(
   fixed: readonly RetimeGap[],
   before: number,
   target: number,
+  explicit?: readonly number[],
 ): { pieces: Piece[]; gaps: RetimeGap[]; newGaps: RetimeGap[] } | null {
   const anchors = merge(
     fixed.map((r) => ({
@@ -192,10 +198,19 @@ function piecesAround(
   const flexTotal = flex.reduce((a, p) => a + (p.a1 - p.a0), 0);
   const delta = target - before;
   if (flexTotal <= 0 || -delta > flexTotal) return null;
-  const change = distributeLargestRemainder(
-    delta,
-    flex.map((p) => p.a1 - p.a0),
-  );
+  if (
+    explicit &&
+    (explicit.length !== flex.length ||
+      explicit.some((x, i) => !Number.isInteger(x) || flex[i]!.a1 - flex[i]!.a0 + x < 0) ||
+      explicit.reduce((a, x) => a + x, 0) !== delta)
+  )
+    return null;
+  const change = explicit
+    ? [...explicit]
+    : distributeLargestRemainder(
+        delta,
+        flex.map((p) => p.a1 - p.a0),
+      );
   const pieces: Piece[] = [];
   const newGaps: RetimeGap[] = [];
   let b = 0;
@@ -289,7 +304,8 @@ export function planRetime(s: ProjectState, occurrenceId: string, opts: RetimeOp
   });
   const fail = (reason: string): RetimePlan => ({ ok: false, reason, report: report() });
 
-  if (d === 0) return fail(L("Varigheten er uendret.", "The duration is unchanged."));
+  if (d === 0 && !(method === "pauses" && opts.gapChanges?.some((x) => x !== 0)))
+    return fail(L("Varigheten er uendret.", "The duration is unchanged."));
   const extending = d > 0;
   if ((method === "start" || method === "end") && extending && !opts.fill)
     return fail(
@@ -333,7 +349,7 @@ export function planRetime(s: ProjectState, occurrenceId: string, opts: RetimeOp
         pos += len;
       }
     }
-    const r = piecesAround(fixed, before, target);
+    const r = piecesAround(fixed, before, target, method === "pauses" ? opts.gapChanges : undefined);
     if (!r) {
       const anchored = merge(
         fixed.map((x) => ({
