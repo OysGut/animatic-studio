@@ -44,6 +44,7 @@ export function useAudioPlayback({
   time,
   mutedKinds,
   mutedClipIds,
+  previewBuffers,
 }: {
   items: readonly FilmAudioItem[];
   /** Mediesti → lenke for lydfilene. */
@@ -54,6 +55,8 @@ export function useAudioPlayback({
   mutedKinds?: ReadonlySet<AudioKind>;
   /** Klipp som er dempet bare i denne avspillingen (Asset Studio, forhåndslytting). Lagres aldri. */
   mutedClipIds?: ReadonlySet<string>;
+  /** Lokale, ferdige mikser for forhåndslytting. Ingen opplasting eller deling via audioBank. */
+  previewBuffers?: ReadonlyMap<string, AudioBuffer> | undefined;
 }) {
   const ctxRef = useRef<AudioContext | null>(null);
   const masterRef = useRef<GainNode | null>(null);
@@ -97,10 +100,11 @@ export function useAudioPlayback({
       startAt,
       ...(muted ? { mutedKinds: muted } : {}),
       ...(mutedClips ? { mutedClipIds: mutedClips } : {}),
+      ...(previewBuffers ? { previewBuffers } : {}),
     });
     const scheduled = new Set(
       list
-        .filter((it) => it.version && audioBank.get(it.version.mediaPath))
+        .filter((it) => previewBuffers?.has(it.clip.id) || (it.version && audioBank.get(it.version.mediaPath)))
         .map((it) => it.clip.id),
     );
     session.current = { startAt, from, sources, scheduled };
@@ -114,7 +118,7 @@ export function useAudioPlayback({
     const { items: list, mutedKinds: muted, mutedClipIds: mutedClips } = latest.current;
     for (const it of list) {
       if (s.scheduled.has(it.clip.id) || !it.version) continue;
-      const buf = audioBank.get(it.version.mediaPath);
+      const buf = previewBuffers?.get(it.clip.id) ?? audioBank.get(it.version.mediaPath);
       if (!buf) continue;
       s.scheduled.add(it.clip.id);
       if (it.clip.muted || muted?.has(it.clip.kind) || mutedClips?.has(it.clip.id)) continue;
@@ -135,7 +139,7 @@ export function useAudioPlayback({
     // Bildet bestemmer tiden; lyden følger
     start(latest.current.time);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playing, items, mutedKinds, mutedClipIds]);
+  }, [playing, items, mutedKinds, mutedClipIds, previewBuffers]);
 
   // En lydfil er ferdig dekodet under avspilling: legg bare den inn
   useEffect(() => {

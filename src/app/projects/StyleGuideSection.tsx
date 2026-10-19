@@ -550,8 +550,8 @@ export function StyleGuideDialog({
                 <p>
                   {Math.min(6, draft.referenceVersionIds.length)}{" "}
                   {L(
-                    "forbildebilder sendes til en språkmodell i Lovable AI, som beskriver stilen. Det bruker litt kreditter (langt mindre enn et bilde) og endrer ingenting før du velger hva som skal inn.",
-                    "reference images are sent to a language model in Lovable AI, which describes the style. It uses a few credits (far less than an image) and changes nothing until you choose what goes in.",
+                    "forbildebilder sendes til en språkmodell i innebygd AI, som beskriver stilen. Det bruker litt kreditter (langt mindre enn et bilde) og endrer ingenting før du velger hva som skal inn.",
+                    "reference images are sent to a language model in built-in AI, which describes the style. It uses a few credits (far less than an image) and changes nothing until you choose what goes in.",
                   )}
                 </p>
                 <div className="flex gap-2">

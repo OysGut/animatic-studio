@@ -98,8 +98,8 @@ export const restoreBackup = createServerFn({ method: "POST" })
       return {
         ok: false,
         message: L(
-          "Databasen er ikke oppdatert. Lim inn meldingen i LOVABLE_SYNC.md i Lovable før du gjenoppretter.",
-          "The database is not up to date. Paste the message in LOVABLE_SYNC.md into Lovable before you restore.",
+          "Databasen er ikke oppdatert. Kontakt administratoren for å oppdatere Animatic Studio.",
+          "The database is not up to date. Contact the administrator to update Animatic Studio.",
         ),
       };
 

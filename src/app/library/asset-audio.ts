@@ -89,8 +89,8 @@ export async function uploadAssetAudio(
     if (/mime|type.*not.*(allowed|supported)/i.test(error.message))
       throw new Error(
         L(
-          "Lagringen tar ikke imot lydfiler ennå. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0009).",
-          "The storage does not accept audio files yet. Paste the message into LOVABLE_SYNC.md in Lovable (migration 0009).",
+          "Lagringen tar ikke imot lydfiler ennå. Kontakt administratoren for å oppdatere Animatic Studio.",
+          "The storage does not accept audio files yet. Contact the administrator to update Animatic Studio.",
         ),
       );
     throw new Error(

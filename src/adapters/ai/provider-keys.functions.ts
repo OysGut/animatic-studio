@@ -38,8 +38,8 @@ async function schemaOk(db: AnyClient): Promise<string | null> {
   const s = await checkSchema(db);
   return s.kind === "missing" || s.version < 24
     ? L(
-        "Databasen er ikke oppdatert for egne AI-leverandører. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0024).",
-        "The database is not updated for your own AI providers yet. Paste the message in LOVABLE_SYNC.md into Lovable (migration 0024).",
+        "Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere Animatic Studio.",
+        "The database is not updated for your own AI providers yet. Contact the administrator to update Animatic Studio.",
       )
     : null;
 }

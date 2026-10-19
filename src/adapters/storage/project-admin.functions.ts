@@ -68,8 +68,8 @@ async function ownerContext(
   const schema = await checkSchema(admin);
   if (schema.kind === "missing" || schema.version < 11)
     return L(
-      "Databasen er ikke oppdatert for sletting ennå. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0011).",
-      "The database is not updated for deletion yet. Paste the message into LOVABLE_SYNC.md in Lovable (migration 0011).",
+      "Databasen er ikke oppdatert for sletting ennå. Kontakt administratoren for å oppdatere Animatic Studio.",
+      "The database is not updated for deletion yet. Contact the administrator to update Animatic Studio.",
     );
   const { data: project } = await admin
     .from("projects")

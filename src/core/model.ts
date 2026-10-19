@@ -588,6 +588,8 @@ export interface Annotation extends Entity<AnnotationId> {
   /** Sist endret av (navn) og når – vises som «endret av …» (DEC-0032). null = aldri endret. */
   readonly editedByName: string | null;
   readonly editedAt: string | null;
+  /** Løst er uavhengig av sletting; mangler på eldre sikkerhetskopier = åpent. */
+  readonly resolved?: boolean;
   /** Slettet (kan angres). Slettede notater vises og eksporteres ikke. */
   readonly removed: boolean;
   /**

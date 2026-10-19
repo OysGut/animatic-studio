@@ -13,6 +13,7 @@ import {
   type AssetVersion,
   type AudioComposition,
   type ProjectState,
+  type WordAlignment,
 } from "@/core";
 import { audioBank } from "@/app/audio/use-audio-playback";
 import { signedUrls } from "@/app/library/asset-images";
@@ -86,19 +87,22 @@ export async function saveComposition(
   c: AudioComposition,
   buffers: ReadonlyMap<string, AudioBuffer>,
   note: string,
+  options?: { readonly group?: string; readonly alignment?: WordAlignment; readonly prepared?: AudioBuffer | undefined },
 ): Promise<{ variantId: string; versionId: string; durationMs: number | null }> {
   if (!state.assets[assetId])
     throw new Error(L("Lydressursen finnes ikke", "The audio asset does not exist"));
   if (compositionLengthMs(c) <= 0)
     throw new Error(L("Komposisjonen er tom", "The composition is empty"));
-  const blob = await encodeComposition(c, buffers, {
+  const blob = options?.prepared
+    ? new Blob([encodeWav(channelsOf(options.prepared), options.prepared.sampleRate) as BlobPart], { type: "audio/wav" })
+    : await encodeComposition(c, buffers, {
     format: "wav",
     sampleRate: 48000,
     channels: 1,
   });
   const file = new File([blob], "komposisjon.wav", { type: "audio/wav" }); // i18n-ignore – filnavn
   const { versionId, media } = await uploadAssetAudio(projectId, assetId, file);
-  const group = newId<"command">();
+  const group = options?.group ?? newId<"command">();
   let variantId: string;
   if ("variantId" in target) variantId = target.variantId;
   else {
@@ -123,6 +127,7 @@ export async function saveComposition(
       media,
       note,
       composition: c,
+      ...(options?.alignment ? { alignment: options.alignment } : {}),
     },
     L("Ny lydkomposisjon", "New audio composition"),
     group,

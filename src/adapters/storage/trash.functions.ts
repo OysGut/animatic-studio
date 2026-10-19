@@ -69,8 +69,8 @@ export const purgeRemoved = createServerFn({ method: "POST" })
       return {
         ok: false,
         message: L(
-          "Databasen er ikke oppdatert for slettede objekter. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0029).",
-          "The database is not up to date for deleted items. Paste the message into LOVABLE_SYNC.md in Lovable (migration 0029).",
+          "Databasen er ikke oppdatert for slettede objekter. Kontakt administratoren for å oppdatere Animatic Studio.",
+          "The database is not up to date for deleted items. Contact the administrator to update Animatic Studio.",
         ),
       };
     const { data: res, error } = await admin.rpc("purge_removed_assets", {

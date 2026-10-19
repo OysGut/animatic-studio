@@ -23,6 +23,7 @@ import {
   textChanges,
   alignmentFromProvider,
   wordUncertain,
+  wordSpansInComposition,
   type AlignmentSource,
   type AudioComposition,
   type ProjectState,
@@ -133,11 +134,11 @@ export function LineWordsPanel({
       if (o === null || o === undefined) continue;
       const r = rangeForWords(al, o, o);
       if (!r) continue;
-      const a = toComp(r.startMs);
-      const b = toComp(r.endMs);
-      if (a === null || b === null) continue;
-      s = Math.min(s, a);
-      e = Math.max(e, b);
+      const span = wordSpansInComposition(comp, al, base?.composition
+        ? { kind: "composition", composition: initial } : { kind: "version", versionId: baseVersionId })[o];
+      if (!span) continue;
+      s = Math.min(s, span.startMs);
+      e = Math.max(e, span.endMs);
     }
     return Number.isFinite(s) ? { from: Math.round(s), to: Math.round(e) } : null;
   }

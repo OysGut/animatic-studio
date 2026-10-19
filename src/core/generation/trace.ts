@@ -47,7 +47,7 @@ export interface GenerationTrace {
 export const SYSTEM_INSTRUCTIONS: Readonly<Record<string, { label: () => string; text: string }>> =
   {
     "prompt-writer": {
-      label: () => L("Beskrivelsesskriveren (Lovable AI)", "Description writer (Lovable AI)"),
+      label: () => L("Beskrivelsesskriveren (innebygd AI)", "Description writer (built-in AI)"),
       text: PROMPT_WRITER_SYSTEM,
     },
   };

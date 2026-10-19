@@ -97,6 +97,12 @@ export function wordSpansInComposition(
   });
 }
 
+/** Ny kompositionskobling; kildeopptakets kobling endres aldri. */
+export function alignmentInComposition(c: AudioComposition, a: WordAlignment, src: AlignmentSource): WordAlignment {
+  const spans = wordSpansInComposition(c, a, src);
+  return { ...a, words: a.words.map((word, i) => ({ ...word, startMs: spans[i]?.startMs ?? null, endMs: spans[i]?.endMs ?? null })) };
+}
+
 /** Mellomrommet etter ord nr. `i` i komposisjonen nå: [slutten på ordet, starten på det neste]. */
 export function gapAfterWord(
   c: AudioComposition,

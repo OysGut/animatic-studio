@@ -576,8 +576,8 @@ export function ExportDialog({
             {isEmbedded() ? (
               <p className="mt-1.5 text-text-secondary">
                 {L(
-                  "Startet ikke nedlastingen? Forhåndsvisningen i Lovable kan blokkere nedlastinger. Åpne appen i en egen fane (knappen for ny fane øverst i forhåndsvisningen) og eksporter derfra.",
-                  "Did the download not start? The Lovable preview can block downloads. Open the app in a separate tab (the new-tab button at the top of the preview) and export from there.",
+                  "Startet ikke nedlastingen? Forhåndsvisningen i Animatic Studio kan blokkere nedlastinger. Åpne appen i en egen fane (knappen for ny fane øverst i forhåndsvisningen) og eksporter derfra.",
+                  "Did the download not start? The Animatic Studio preview can block downloads. Open the app in a separate tab (the new-tab button at the top of the preview) and export from there.",
                 )}
               </p>
             ) : null}

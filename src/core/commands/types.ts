@@ -179,6 +179,7 @@ export interface AssetVariantFields {
 /** Et nytt notat (DEC-0031). Enten blockId med tegnområde, eller variantId (nål på scenen). */
 export interface NewAnnotation {
   readonly annotationId: AnnotationId;
+  readonly resolved?: boolean;
   readonly blockId: BlockId | null;
   readonly variantId: VariantId | null;
   readonly start: number;
@@ -686,6 +687,7 @@ export type Command = import("../animation/rig-commands").RigCommand
        * den; komposisjonen kan redigeres videre uten at kildeopptakene endres.
        */
       readonly composition?: import("../audio/composition").AudioComposition;
+      readonly alignment?: import("../audio/alignment").WordAlignment;
       /** Kopiert fra en global versjon (GP2). Bare metadata. */
       readonly globalSource?: import("../model").GlobalSource;
       /** Maldefinisjonen (MTS MT4) når ressursen er en mal; filen er malens miniatyr. */
@@ -831,6 +833,7 @@ export type Command = import("../animation/rig-commands").RigCommand
       readonly annotationId: AnnotationId;
       readonly removed: boolean;
     }
+  | { readonly type: "SetAnnotationResolved"; readonly annotationId: AnnotationId; readonly resolved: boolean }
   // ---------- Prosjektets format (DEC-0039) ----------
   | {
       /** Bildeformat og bildefrekvens for hele prosjektet. Alle 2D-scener tilpasses. */

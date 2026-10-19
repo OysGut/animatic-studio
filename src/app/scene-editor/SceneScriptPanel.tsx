@@ -6,7 +6,9 @@
  */
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { FileText, MessageSquare } from "lucide-react";
-import { memo, useEffect, useMemo, useRef } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { NotesPanel } from "@/app/script/NotesPanel";
+import { Button } from "@/components/ui/button";
 import {
   L,
   annotationsOfVariant,
@@ -17,6 +19,8 @@ import {
   sceneNumberOf,
   type BlockKind,
   type FilmClip,
+  type Command,
+  type NewAnnotation,
   type ProjectState,
 } from "@/core";
 
@@ -49,6 +53,8 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
   onOpenEditor,
   highlightBlockIds,
   hideEditButton = false,
+  run,
+  authorName = "",
 }: {
   /** Skjul «Rediger manus …» (Asset Studio: manuset endres der bare som forsøksvise redigeringer). */
   hideEditButton?: boolean;
@@ -64,7 +70,10 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
   editable: boolean;
   /** Åpne redigeringen (med en linje valgt, eller scenen). */
   onOpenEditor: (blockId: string | null) => void;
+  run?: (command: Command, label: string) => string | null;
+  authorName?: string;
 }) {
+  const [noteTarget, setNoteTarget] = useState<Omit<NewAnnotation, "annotationId" | "text" | "authorName"> | null>(null);
   const occ = state.occurrences[occurrenceId];
   const variant = occ ? state.variants[occ.variantId] : undefined;
   const blocks = useMemo(
@@ -117,6 +126,24 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
       <div
         ref={listRef}
         data-testid="scene-script"
+        onMouseUp={() => {
+          if (!editable || !run || hideEditButton) return;
+          const selection = window.getSelection();
+          if (!selection || selection.isCollapsed || selection.rangeCount !== 1) return;
+          const range = selection.getRangeAt(0);
+          const element = range.startContainer.parentElement?.closest<HTMLElement>("[data-script-text]");
+          if (!element || !element.contains(range.endContainer)) return;
+          const blockId = element.dataset["scriptText"];
+          const block = blockId ? state.blocks[blockId] : undefined;
+          if (!block) return;
+          const before = document.createRange();
+          before.selectNodeContents(element);
+          before.setEnd(range.startContainer, range.startOffset);
+          const start = before.toString().length;
+          const end = start + range.toString().length;
+          if (end > start && end <= block.text.length)
+            setNoteTarget({ blockId: block.id, variantId: null, start, end, quote: block.text.slice(start, end) });
+        }}
         className="px-3 pb-3 font-script text-[12px] leading-[1.35] text-text-primary"
       >
         <p className="font-bold uppercase" data-script-heading>
@@ -149,7 +176,9 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
                 (marked && !isActive ? " bg-surface-3 font-semibold" : "")
               }
             >
-              {b.kind === "parenthetical" && !b.text.startsWith("(") ? `(${b.text})` : b.text}
+              {b.kind === "parenthetical" && !b.text.startsWith("(") ? "(" : null}
+              <span data-script-text={b.id}>{b.text}</span>
+              {b.kind === "parenthetical" && !b.text.startsWith("(") ? ")" : null}
               {notes ? (
                 <span
                   className="absolute -right-2.5 top-0 text-note"
@@ -162,6 +191,13 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
           );
         })}
       </div>
+      {noteTarget && run ? (
+        <div className="border-t border-border px-3 py-2" data-testid="scene-word-note">
+          <NotesPanel state={state} notes={[]} editable={editable} run={run} authorName={authorName}
+            newTarget={noteTarget} newLabel={L("Legg til notat på markeringen", "Add note to selection")} />
+          <Button size="sm" variant="ghost" onClick={() => setNoteTarget(null)}>{L("Lukk", "Close")}</Button>
+        </div>
+      ) : null}
     </section>
   );
 });

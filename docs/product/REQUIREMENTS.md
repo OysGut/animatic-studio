@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **739**
-- Prioritet: P0: 145, P1: 406, P2: 149, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 212, teknisk-anbefaling: 7
-- Status: Verifisert: 656, Implementert – ikke verifisert: 21, Under arbeid: 3, Ikke startet: 59
+- Antall krav: **749**
+- Prioritet: P0: 145, P1: 416, P2: 149, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 222, teknisk-anbefaling: 7
+- Status: Verifisert: 656, Implementert – ikke verifisert: 22, Under arbeid: 13, Ikke startet: 58
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -8712,11 +8712,14 @@ Grensesnittet nevner ikke Lovable (heller ikke i meldinger om databaseoppdaterin
 - **Kilde:** Beslutning DEC-0084 · **Opprinnelse:** brukerbeslutning · **Type:** ux · **Prioritet:** P1 · **Fase:** 5
 - **Moduler:** UI
 - **Avhengigheter:** REQ-0629
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Ingen brukervendt tekst inneholder «Lovable».
 - **Tester:**
-  - enhet: søk i brukervendt tekst
+  - tests/unit/app-brand.test.ts
+  - tests/visual/backlog-b2-ui.mjs
+- **Implementering:** src/core/generation/providers.ts, src/adapters/ai/gateway.ts, src/app/shell/SchemaBanner.tsx, src/core/i18n/catalog.gen.ts
+- **Merknad:** Appstyrte tekster og katalog uten Lovable; plattform-eide integrasjoner og auth-e-postoppsett er urørt og ikke fullstendig verifisert.
 
 #### REQ-0640 – Den globale beskrivelsen er én redigerbar tekst for hele prosjektet
 Filmens visuelle stil settes sammen til én tekst som vises i sin helhet. Brukeren kan åpne den for redigering med tydelig melding om at endringen gjelder hele prosjektet. Den redigerte teksten er den ene versjonen og brukes av all AI-generering; «Tilbake til feltene» setter den sammen av feltene igjen.
@@ -10090,3 +10093,149 @@ Filmdelelenker har sikre token, utløp og tilbaketrekking. Mobilopplasting valid
   - tests/unit/security-review.test.ts
   - tests/db/run-db-tests.ts
 - **Implementering:** src/adapters/share/film-share.functions.ts, src/adapters/mobile/mobile.functions.ts
+
+#### REQ-0740 – Fra filmidé til Story Lab-canvas
+Brukeren starter med en kort filmidé. Adaptive spørsmål utvikler plot, karakterer og miljøer på skrivecanvaset. Godkjente forslag overføres som redigerbart prosjektinnhold.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Under arbeid
+- **Akseptansekriterier:**
+  - Brukeren starter med en kort filmidé. Adaptive spørsmål utvikler plot, karakterer og miljøer på skrivecanvaset. Godkjente forslag overføres som redigerbart prosjektinnhold.
+- **Tester:**
+  - tests/unit/storylab-interview.test.ts
+  - tests/unit/storylab-canvas.test.ts
+  - tests/visual/storylab-canvas-ui.mjs
+- **Implementering:** src/app/storylab/new-project-idea.ts, src/app/storylab/InterviewView.tsx, src/core/storylab/canvas-transfer.ts
+- **Merknad:** Deldekning: featuretester; samlet idé → adaptive spørsmål → canvas → godkjent overføring er ikke verifisert ende til ende.
+
+#### REQ-0741 – Psykologisk karaktereditor og bevart arbeid
+Maja åpnes fra karakteroversikten. Profilen kan åpnes og redigeres, og egenskapene bevares. Brukeren går tilbake til canvaset uten å miste arbeid.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Under arbeid
+- **Akseptansekriterier:**
+  - Maja åpnes fra karakteroversikten. Profilen kan åpnes og redigeres, og egenskapene bevares. Brukeren går tilbake til canvaset uten å miste arbeid.
+- **Tester:**
+  - tests/unit/storylab-replay.test.ts
+  - tests/visual/storylab-ui.mjs
+- **Implementering:** src/app/storylab/CharacterWorkspace.tsx, src/core/storylab/profile.ts
+- **Merknad:** Profil og gjenåpning har tester; samlet retur til canvas med lagret profil trenger eksplisitt akseptansetest.
+
+#### REQ-0742 – Individuell samtale ved valgt tidspunkt
+Maja svarer ut fra profil og valgt fortellingstid. Brukeren kan bytte til analysemodus.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Under arbeid
+- **Akseptansekriterier:**
+  - Maja svarer ut fra profil og valgt fortellingstid. Brukeren kan bytte til analysemodus.
+- **Tester:**
+  - tests/unit/storylab-knowledge.test.ts
+  - tests/unit/storylab-replay.test.ts
+  - tests/visual/storylab-ui.mjs
+- **Implementering:** src/app/storylab/ConversationView.tsx, src/core/storylab/prompts.ts
+- **Merknad:** Dekning for kunnskap, modus og samtale; hele kapittelreisen er ikke samlet verifisert.
+
+#### REQ-0743 – Gruppesamtale med regi og pause
+Brukeren velger Maja og Ola og beskriver en situasjon. Karakterene improviserer. Regissøren kan stoppe, pause, stille spørsmål og endre instrukser.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Under arbeid
+- **Akseptansekriterier:**
+  - Brukeren velger Maja og Ola og beskriver en situasjon. Karakterene improviserer. Regissøren kan stoppe, pause, stille spørsmål og endre instrukser.
+- **Tester:**
+  - tests/unit/storylab-engine.test.ts
+  - tests/unit/storylab-group-view.test.tsx
+  - tests/visual/storylab-group-ui.mjs
+- **Implementering:** src/app/storylab/GroupConversationView.tsx, src/core/storylab/engine.ts
+- **Merknad:** Motoren tester pause og regi. Full akseptansereise er ikke samlet kontrollert.
+
+#### REQ-0744 – Midlertidige tilstander endrer ikke profilen
+Regi som «Maja er bakfull» påvirker improvisasjonen uten å endre den permanente profilen.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Under arbeid
+- **Akseptansekriterier:**
+  - Regi som «Maja er bakfull» påvirker improvisasjonen uten å endre den permanente profilen.
+- **Tester:**
+  - tests/unit/storylab-engine.test.ts
+  - tests/unit/storylab-group-prompts.test.ts
+- **Implementering:** src/core/storylab/engine.ts, src/core/storylab/prompts.ts
+- **Merknad:** Regi har next/scene/session-levetid; konkret bakfull → uendret permanent profil-akseptanse er ikke påvist.
+
+#### REQ-0745 – Kunnskapsgrenser per deltaker
+Før en avsløring kjenner karakterene ikke avsløringen. Kunnskap skilles per deltaker og følger fortellingstid. Andres hemmeligheter lekker aldri.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Under arbeid
+- **Akseptansekriterier:**
+  - Før en avsløring kjenner karakterene ikke avsløringen. Kunnskap skilles per deltaker og følger fortellingstid. Andres hemmeligheter lekker aldri.
+- **Tester:**
+  - tests/unit/storylab-knowledge.test.ts
+  - tests/unit/storylab-group-prompts.test.ts
+  - tests/visual/storylab-scene-ui.mjs
+- **Implementering:** src/core/storylab/facts.ts, src/core/storylab/prompts.ts
+- **Merknad:** Direkte tester av før/etter avsløring, knownBy, tilbakeblikk og utelating av andres hemmeligheter. UI-akseptanse er separat.
+
+#### REQ-0746 – Rådgivende analyse av eksisterende scene
+Dialog og handling analyseres mot profiler og kontekst. Forslag forklares; originalen endres ikke automatisk.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Under arbeid
+- **Akseptansekriterier:**
+  - Dialog og handling analyseres mot profiler og kontekst. Forslag forklares; originalen endres ikke automatisk.
+- **Tester:**
+  - tests/unit/storylab-scene-batch.test.ts
+  - tests/unit/storylab-line-check.test.ts
+  - tests/visual/storylab-scene-ui.mjs
+- **Implementering:** src/app/storylab/SceneLab.tsx, src/core/storylab/line-check.ts
+- **Merknad:** Analyse og forslag har tester; samlet kapittelreise er ikke kontrollert.
+
+#### REQ-0747 – Alternative improvisasjoner og sammenligning
+To improvisasjoner med ulike instrukser kan lagres og sammenlignes. Brukeren velger elementer fra begge.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Under arbeid
+- **Akseptansekriterier:**
+  - To improvisasjoner med ulike instrukser kan lagres og sammenlignes. Brukeren velger elementer fra begge.
+- **Tester:**
+  - tests/unit/storylab-suggestions-view.test.tsx
+  - tests/visual/storylab-scene-ui.mjs
+  - tests/visual/storylab-suggestions-ui.mjs
+- **Implementering:** src/app/storylab/SceneLab.tsx, src/app/storylab/SuggestionsPanel.tsx
+- **Merknad:** A/B/C sammenlignes i scenelaben; lagring/sammenligning av to gruppeimprovisasjoner er ikke fullstendig påvist.
+
+#### REQ-0748 – Godkjent overføring til redigerbart manus
+Et utdrag blir et redigerbart manusforslag. Brukeren godkjenner før overføring; ingenting overskrives automatisk. Overføring bruker vanlige kommandoer og én angregruppe.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Under arbeid
+- **Akseptansekriterier:**
+  - Et utdrag blir et redigerbart manusforslag. Brukeren godkjenner før overføring; ingenting overskrives automatisk. Overføring bruker vanlige kommandoer og én angregruppe.
+- **Tester:**
+  - tests/unit/storylab-transfer.test.ts
+  - tests/unit/storylab-transfer-undo.test.tsx
+  - tests/visual/storylab-suggestions-ui.mjs
+- **Implementering:** src/core/storylab/transfer.ts, src/app/storylab/SuggestionPreview.tsx
+- **Merknad:** Direkte tester av EditBlockText/InsertBlock, bevart original og samlet angring; samlet kapittelreise er separat.
+
+#### REQ-0749 – VennTing-teknologien er en selvstendig kopi
+Integrasjonsplanen bevarer VennTing-data. Ø-9 presiserer kopi inne i Animatic Studio, ikke levende synkronisering. VennTing røres ikke.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Under arbeid
+- **Akseptansekriterier:**
+  - Integrasjonsplanen bevarer VennTing-data. Ø-9 presiserer kopi inne i Animatic Studio, ikke levende synkronisering. VennTing røres ikke.
+- **Tester:**
+  - tests/unit/storylab-prompts.test.ts
+- **Implementering:** src/core/storylab/prompts.ts
+- **Merknad:** Kopiert promptmodul påvist; ingen ny tilgang til VennTing. Data-bevaring i VennTing er ikke testbar i dette prosjektet.

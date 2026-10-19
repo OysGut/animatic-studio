@@ -133,8 +133,8 @@ export function PrivacyStatement({ policy }: { policy: PrivacyFields | null }) {
       <Section title={L("5. Hvor dataene lagres", "5. Where the data is stored")}>
         <p>
           {L(
-            "Tjenesten driftes på Lovable Cloud (database, filer og innlogging levert av Supabase), som er vår databehandler. Lagringssted: ",
-            "The service runs on Lovable Cloud (database, files and sign-in provided by Supabase), which is our data processor. Storage location: ",
+            "Animatic Studio bruker en skyplattform for database, filer og innlogging. Lagringssted: ",
+            "Animatic Studio bruker en skyplattform for database, filer og innlogging. Lagringssted: ",
           )}
           <strong className="text-text-primary">{p?.storageRegion || missing()}</strong>.
         </p>

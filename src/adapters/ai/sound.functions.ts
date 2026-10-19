@@ -104,8 +104,8 @@ export const generateSound = createServerFn({ method: "POST" })
       return {
         ok: false,
         message: L(
-          "Databasen er ikke oppdatert for AI-lyd. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0024).",
-          "The database is not updated for AI sound. Paste the message in LOVABLE_SYNC.md into Lovable (migration 0024).",
+          "Databasen er ikke oppdatert for AI-lyd. Kontakt administratoren for å oppdatere Animatic Studio.",
+          "The database is not updated for AI sound. Contact the administrator to update Animatic Studio.",
         ),
       };
     const { data: proj } = await db

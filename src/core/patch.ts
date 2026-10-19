@@ -341,6 +341,7 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         edited_by_name: n.editedByName,
         edited_at: n.editedAt,
         removed: n.removed,
+        resolved: n.resolved === true,
         // Migrasjon 0034 (DEC-0088)
         source: n.source ?? "user",
         task_id: n.taskId ?? null,
@@ -1290,6 +1291,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
           x["edited_at"] === null || x["edited_at"] === undefined ? null : iso(x["edited_at"]),
         removed: x["removed"] === true,
         ...(x["source"] === "system" ? { source: "system" as const } : {}),
+        resolved: x["resolved"] === true,
         ...(typeof x["task_id"] === "string" ? { taskId: x["task_id"] } : {}),
         ...(x["kind"] === "trial_edit"
           ? { kind: "trial_edit" as const, suggestedText: str(x["suggested_text"] ?? "") }

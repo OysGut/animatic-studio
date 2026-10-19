@@ -192,8 +192,8 @@ export const generateImage = createServerFn({ method: "POST" })
       return {
         ok: false,
         message: L(
-          "Databasen mangler loggen for AI-generering. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0010).",
-          "The database is missing the AI generation log. Paste the message in LOVABLE_SYNC.md into Lovable (migration 0010).",
+          "Databasen mangler loggen for AI-generering. Kontakt administratoren for å oppdatere Animatic Studio.",
+          "The database is missing the AI generation log. Contact the administrator to update Animatic Studio.",
         ),
       };
     const own = data.provider !== "lovable";
@@ -210,8 +210,8 @@ export const generateImage = createServerFn({ method: "POST" })
       return {
         ok: false,
         message: L(
-          "AI er ikke slått på for prosjektet i Lovable (LOVABLE_API_KEY mangler). Se LOVABLE_SYNC.md.",
-          "AI is not switched on for the project in Lovable (LOVABLE_API_KEY is missing). See LOVABLE_SYNC.md.",
+          "Den innebygde AI-en er ikke slått på. Kontakt administratoren.",
+          "The built-in AI is not enabled. Contact the administrator.",
         ),
       };
 
@@ -312,8 +312,8 @@ export const generateImage = createServerFn({ method: "POST" })
         return {
           ok: false,
           message: L(
-            "Databasen er ikke oppdatert for egne AI-leverandører. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0024).",
-            "The database is not updated for own AI providers. Paste the message in LOVABLE_SYNC.md into Lovable (migration 0024).",
+            "Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is not updated for own AI providers. Contact the administrator to update Animatic Studio.",
           ),
         };
       const m = providerModel(data.provider, model, aiGate.settings);

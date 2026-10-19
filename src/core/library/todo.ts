@@ -40,7 +40,7 @@ export function projectTodo(
   const me = opts.myName.trim().toLocaleLowerCase();
   const notesFromOthers: TodoNote[] = [];
   for (const a of Object.values(s.annotations)) {
-    if (a.removed || a.source === "system") continue;
+    if (a.removed || a.resolved || a.source === "system") continue;
     if (me && a.authorName.trim().toLocaleLowerCase() === me) continue;
     const variantId = noteVariantId(s, a);
     if (!variantId) continue;

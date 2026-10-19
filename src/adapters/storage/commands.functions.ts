@@ -139,6 +139,7 @@ const LIBRARY_COMMANDS = new Set<string>([
   "AddAnnotations",
   "EditAnnotation",
   "SetAnnotationRemoved",
+  "SetAnnotationResolved",
 ]);
 
 /** Kommandoer som skriver til tabellene fra migrasjon 0007 (2D-sceneeditoren). */
@@ -678,8 +679,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler ressursbiblioteket og notatene. Kjør migrasjon 0004 i Lovable (se LOVABLE_SYNC.md).",
-            "The database is missing the asset library and notes. Run migration 0004 in Lovable (see LOVABLE_SYNC.md).",
+            "Databasen mangler ressursbiblioteket og notatene. Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing the asset library and notes. Contact the administrator to update Animatic Studio.",
           ),
         };
     }
@@ -691,8 +692,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler prosjektformatet. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0008.",
-            "The database is missing the project format. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0008.",
+            "Databasen mangler prosjektformatet. Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing the project format. Contact the administrator to update Animatic Studio.",
           ),
         };
     }
@@ -704,8 +705,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler lyd. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0009.",
-            "The database is missing sound. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0009.",
+            "Databasen mangler lyd. Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing sound. Contact the administrator to update Animatic Studio.",
           ),
         };
     }
@@ -716,8 +717,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler klipping og tidskoblinger. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0012.",
-            "The database is missing clipping and time links. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0012.",
+            "Databasen mangler klipping og tidskoblinger. Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing clipping and time links. Contact the administrator to update Animatic Studio.",
           ),
         };
     }
@@ -728,8 +729,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler de nye funksjonene (overganger, svart-hvitt, grupper, bildeskifter og bevegelsesbaner). Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0013.",
-            "The database is missing the new features (transitions, black and white, groups, image swaps and motion paths). Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0013.",
+            "Databasen mangler de nye funksjonene (overganger, svart-hvitt, grupper, bildeskifter og bevegelsesbaner). Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing the new features (transitions, black and white, groups, image swaps and motion paths). Contact the administrator to update Animatic Studio.",
           ),
         };
     }
@@ -741,8 +742,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler AI-budsjett og genereringsbeskrivelser. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0014.",
-            "The database is missing the AI budget and generation descriptions. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0014.",
+            "Databasen mangler AI-budsjett og genereringsbeskrivelser. Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing the AI budget and generation descriptions. Contact the administrator to update Animatic Studio.",
           ),
         };
     }
@@ -753,8 +754,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler kontinuitet for karakterene. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0015.",
-            "The database is missing continuity for the characters. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0015.",
+            "Databasen mangler kontinuitet for karakterene. Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing continuity for the characters. Contact the administrator to update Animatic Studio.",
           ),
         };
     }
@@ -765,8 +766,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler språkversjoner av manuset. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0016.",
-            "The database is missing language versions of the script. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0016.",
+            "Databasen mangler språkversjoner av manuset. Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing language versions of the script. Contact the administrator to update Animatic Studio.",
           ),
         };
     }
@@ -777,8 +778,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler språkversjoner av filmen (lyd og bilder per språk). Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0017.",
-            "The database is missing language versions of the film (audio and images per language). Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0017.",
+            "Databasen mangler språkversjoner av filmen (lyd og bilder per språk). Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing language versions of the film (audio and images per language). Contact the administrator to update Animatic Studio.",
           ),
         };
     }
@@ -789,8 +790,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler kontinuitet for spinoffer. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0018.",
-            "The database is missing continuity for spin-offs. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0018.",
+            "Databasen mangler kontinuitet for spinoffer. Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing continuity for spin-offs. Contact the administrator to update Animatic Studio.",
           ),
         };
     }
@@ -886,8 +887,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler notater på produksjonene. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0031.",
-            "The database is missing notes on the productions. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0031.",
+            "Databasen mangler notater på produksjonene. Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing notes on the productions. Contact the administrator to update Animatic Studio.",
           ),
         };
     }
@@ -898,8 +899,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler tillegget for vinkler på bilder og visuelle faktaark. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0030.",
-            "The database is missing the addition for angles on images and visual fact sheets. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0030.",
+            "Databasen mangler tillegget for vinkler på bilder og visuelle faktaark. Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing the addition for angles on images and visual fact sheets. Contact the administrator to update Animatic Studio.",
           ),
         };
     }
@@ -910,8 +911,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler tillegget for slettede objekter, lydhastighet og «animer på toere». Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0029.",
-            "The database is missing the addition for deleted items, sound speed and “animate on twos”. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0029.",
+            "Databasen mangler tillegget for slettede objekter, lydhastighet og «animer på toere». Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing the addition for deleted items, sound speed and “animate on twos”. Contact the administrator to update Animatic Studio.",
           ),
         };
     }
@@ -922,8 +923,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler tillegget for lagrede varighetsestimater og eksportlogg. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0028.",
-            "The database is missing the addition for saved duration estimates and the export log. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0028.",
+            "Databasen mangler tillegget for lagrede varighetsestimater og eksportlogg. Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing the addition for saved duration estimates and the export log. Contact the administrator to update Animatic Studio.",
           ),
         };
     }
@@ -934,8 +935,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler tillegget for arbeidslisten og eksportinnstillinger. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0027.",
-            "The database is missing the addition for the worklist and export settings. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0027.",
+            "Databasen mangler tillegget for arbeidslisten og eksportinnstillinger. Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing the addition for the worklist and export settings. Contact the administrator to update Animatic Studio.",
           ),
         };
     }
@@ -946,8 +947,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler det nyeste tillegget (masker, overganger, stemmer, stilprofiler). Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0026.",
-            "The database is missing the newest addition (masks, transitions, voices, style profiles). Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0026.",
+            "Databasen mangler det nyeste tillegget (masker, overganger, stemmer, stilprofiler). Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing the newest addition (masks, transitions, voices, style profiles). Contact the administrator to update Animatic Studio.",
           ),
         };
     }
@@ -958,8 +959,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler koblinger for lyd. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0025.",
-            "The database is missing sound links. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0025.",
+            "Databasen mangler koblinger for lyd. Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing sound links. Contact the administrator to update Animatic Studio.",
           ),
         };
     }
@@ -970,8 +971,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler planlagt lengde per scene. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0023.",
-            "The database is missing planned length per scene. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0023.",
+            "Databasen mangler planlagt lengde per scene. Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing planned length per scene. Contact the administrator to update Animatic Studio.",
           ),
         };
     }
@@ -982,8 +983,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler filmens visuelle stil. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0021.",
-            "The database is missing the film's visual style. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0021.",
+            "Databasen mangler filmens visuelle stil. Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing the film's visual style. Contact the administrator to update Animatic Studio.",
           ),
         };
     }
@@ -994,8 +995,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler plakater og relasjoner. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0019.",
-            "The database is missing posters and relations. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0019.",
+            "Databasen mangler plakater og relasjoner. Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing posters and relations. Contact the administrator to update Animatic Studio.",
           ),
         };
     }
@@ -1006,8 +1007,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler importert film og overganger. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0011.",
-            "The database is missing imported film and transitions. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0011.",
+            "Databasen mangler importert film og overganger. Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing imported film and transitions. Contact the administrator to update Animatic Studio.",
           ),
         };
     }
@@ -1018,8 +1019,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler lyd over flere scener og volumpunkter. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0010.",
-            "The database is missing sound across several scenes and volume points. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0010.",
+            "Databasen mangler lyd over flere scener og volumpunkter. Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing sound across several scenes and volume points. Contact the administrator to update Animatic Studio.",
           ),
         };
     }
@@ -1031,8 +1032,8 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: L(
-            "Databasen mangler sceneeditoren. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0007.",
-            "The database is missing the scene editor. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0007.",
+            "Databasen mangler sceneeditoren. Kontakt administratoren for å oppdatere Animatic Studio.",
+            "The database is missing the scene editor. Contact the administrator to update Animatic Studio.",
           ),
         };
     }

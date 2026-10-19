@@ -190,8 +190,8 @@ export async function lovableText(
   return {
     ok: false,
     message: L(
-      "Lovable kjente ikke igjen noen av språkmodellene. Sett ANIMATIC_TEXT_MODEL i Lovable Cloud.",
-      "Lovable did not recognise any of the language models. Set ANIMATIC_TEXT_MODEL in Lovable Cloud.",
+      "Animatic Studio kjente ikke igjen noen av språkmodellene. Sett ANIMATIC_TEXT_MODEL i Animatic Studio.",
+      "Animatic Studio did not recognise any of the language models. Set ANIMATIC_TEXT_MODEL in Animatic Studio.",
     ),
     model: last,
   };

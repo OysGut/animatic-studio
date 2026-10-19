@@ -131,8 +131,8 @@ export const generateSpeech = createServerFn({ method: "POST" })
       return {
         ok: false,
         message: L(
-          "Databasen er ikke oppdatert for AI-tale. Lim inn meldingen i LOVABLE_SYNC.md i Lovable.",
-          "The database is not updated for AI speech. Paste the message in LOVABLE_SYNC.md into Lovable.",
+          "Databasen er ikke oppdatert for AI-tale. Kontakt administratoren for å oppdatere Animatic Studio.",
+          "The database is not updated for AI speech. Contact the administrator to update Animatic Studio.",
         ),
       };
     const { data: proj } = await db

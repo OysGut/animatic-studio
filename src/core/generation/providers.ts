@@ -156,12 +156,12 @@ export const PROVIDERS: readonly ProviderInfo[] = [
   {
     id: "lovable",
     get name() {
-      return L("Lovable AI (innebygd)", "Lovable AI (built in)");
+      return L("Innebygd AI", "Built-in AI");
     },
     get description() {
       return L(
-        "Bruker kredittene i Lovable-arbeidsområdet. Ingen egen nøkkel – slått på for prosjektet i Lovable.",
-        "Uses the credits in your Lovable workspace. No key of your own – switched on for the project in Lovable.",
+        "Bruker kredittene i Animatic Studio-arbeidsområdet. Ingen egen nøkkel – slått på for prosjektet i Animatic Studio.",
+        "Uses the credits in your Animatic Studio workspace. No key of your own – switched on for the project in Animatic Studio.",
       );
     },
     capabilities: ["image", "text"],

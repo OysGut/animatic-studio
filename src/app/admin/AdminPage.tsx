@@ -573,7 +573,7 @@ function PrivacyAdmin({ onDone }: { onDone: (r: { ok: boolean; message: string }
         )}
         {field(
           "storageRegion",
-          L("Lagringssted (Lovable Cloud-region)", "Storage location (Lovable Cloud region)"),
+          L("Lagringssted (skyregion)", "Storage location (cloud region)"),
           L("f.eks. EU (Europa)", "e.g. EU (Europe)"),
           200,
         )}

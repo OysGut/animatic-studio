@@ -815,8 +815,8 @@ export function GenerateImagePanel({
                 {choice.provider === "lovable" ? (
                   <>
                     {L(
-                      "Dette bruker kreditter i Lovable-arbeidsområdet (",
-                      "This uses credits in the Lovable workspace (",
+                      "Dette bruker kreditter i Animatic Studio-arbeidsområdet (",
+                      "This uses credits in the Animatic Studio workspace (",
                     )}
                     {candidates > 1
                       ? L(`${candidates} bilder`, `${candidates} images`)
@@ -865,8 +865,8 @@ export function GenerateImagePanel({
                         {
                           label: L("Modell", "Model"),
                           value: L(
-                            "Innebygd bildemodell (Lovable AI)",
-                            "Built-in image model (Lovable AI)",
+                            "Innebygd bildemodell (innebygd AI)",
+                            "Built-in image model (built-in AI)",
                           ),
                         },
                         {

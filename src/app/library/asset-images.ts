@@ -166,8 +166,8 @@ async function uploadOne(
     if (/bucket not found/i.test(error.message))
       throw new Error(
         L(
-          "Lagringsbøtten for bilder mangler. Kjør migrasjon 0004 i Lovable (se LOVABLE_SYNC.md).",
-          "The image storage bucket is missing. Run migration 0004 in Lovable (see LOVABLE_SYNC.md).",
+          "Lagringsbøtten for bilder mangler. Kontakt administratoren for å oppdatere Animatic Studio.",
+          "The image storage bucket is missing. Contact the administrator to update Animatic Studio.",
         ),
       );
     throw new Error(
