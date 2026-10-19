@@ -18,7 +18,7 @@ create table public.animation_uses (
 );
 grant select on public.animation_uses to authenticated;
 grant all on public.animation_uses to service_role;
-revoke all on public.animation_uses from anon;
+revoke all on public.animation_uses from anon, authenticated;
 alter table public.animation_uses enable row level security;
 create policy animation_uses_read on public.animation_uses for select to authenticated
   using (private.is_project_member(project_id));

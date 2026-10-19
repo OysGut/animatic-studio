@@ -16,7 +16,7 @@ create table public.animation_rigs (
 );
 grant select on public.animation_rigs to authenticated;
 grant all on public.animation_rigs to service_role;
-revoke all on public.animation_rigs from anon;
+revoke all on public.animation_rigs from anon, authenticated;
 alter table public.animation_rigs enable row level security;
 create policy animation_rigs_read on public.animation_rigs for select to authenticated
   using (private.is_project_member(project_id));
@@ -38,7 +38,7 @@ create table public.animation_rig_versions (
 );
 grant select on public.animation_rig_versions to authenticated;
 grant all on public.animation_rig_versions to service_role;
-revoke all on public.animation_rig_versions from anon;
+revoke all on public.animation_rig_versions from anon, authenticated;
 alter table public.animation_rig_versions enable row level security;
 create policy animation_rig_versions_read on public.animation_rig_versions for select to authenticated
   using (private.is_project_member(project_id));
