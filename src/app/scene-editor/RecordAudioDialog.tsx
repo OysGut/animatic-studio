@@ -21,6 +21,7 @@ import type { Commands } from "@/app/project/use-commands";
 import { DialogueVersions } from "./DialogueVersions";
 import { DialogueCharacters } from "./DialogueCharacters";
 import { GenerateDialogue } from "./GenerateDialogue";
+import { DialogueLanguageControls } from "./DialogueLanguageControls";
 import { AssetThumb, useAssetCovers } from "@/app/library/AssetThumb";
 import { saveTake } from "@/app/audio/takes";
 import { uploadAssetAudio } from "@/app/library/asset-audio";
@@ -460,6 +461,7 @@ export function RecordAudioDialog({
         ) : null}
 
         {kind === "dialogue" && blockId ? <>
+          <DialogueLanguageControls key={blockId} state={state} occurrenceId={occurrenceId} blockId={blockId} characterId={characterId} cmds={cmds} disabled={busy} />
           {selectedClip ? <DialogueVersions state={state} clip={selectedClip} cmds={cmds} onStopScene={onStop} /> : null}
           <GenerateDialogue state={state} projectId={projectId} occurrenceId={occurrenceId} blockId={blockId} characterId={characterId} cmds={cmds} onSaved={() => {}} onBusy={setGenerating} />
           <DialogueCharacters state={state} occurrenceId={occurrenceId} cmds={cmds} />

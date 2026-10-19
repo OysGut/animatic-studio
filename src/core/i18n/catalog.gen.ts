@@ -216,6 +216,7 @@ export const CATALOG: Record<string, string> = {
   "Bare prosjektets eier kan rydde filer.": "Only the project owner can clean up files.",
   "Bare prosjektets eier kan slette for godt.": "Only the project owner can delete permanently.",
   "Bare replikker har lydversjoner": "Only lines have audio versions",
+  "Bare replikker har talespråk": "Only dialogue lines have speech language",
   "Bare replikker kan leses inn.": "Only lines can be read aloud.",
   "Bare scenenoder kan bli scener": "Only scene nodes can become scenes",
   "Bare sider kan ha en sideovergang": "Only pages can have a page transition",
@@ -479,6 +480,8 @@ export const CATALOG: Record<string, string> = {
   "Den valgte tekstmodellen kan ikke brukes (ingen gyldig nøkkel, ukjent modell eller slått av).":
     "The chosen text model cannot be used (no valid key, unknown model or switched off).",
   "Denne filtypen kan ikke lastes opp her.": "This file type cannot be uploaded here.",
+  "Denne karakteren har replikker på flere språk. Kontroller hvilket språk som skal brukes før du genererer tale.":
+    "This character has lines in several languages. Check which language to use before generating speech.",
   "Denne leverandøren kan ikke få egne modeller uten ny kode.":
     "This provider cannot get its own models without new code.",
   "Denne leverandøren trenger ingen nøkkel.": "This provider does not need a key.",
@@ -511,6 +514,7 @@ export const CATALOG: Record<string, string> = {
   "Du har ikke skriverett i det nye prosjektet.":
     "You do not have write access to the new project.",
   "Du har ikke skriverett i prosjektet": "You cannot edit this project",
+  "Du har ikke skrivetilgang.": "You do not have editing permission.",
   "Du har ikke tilgang til å analysere lyd i dette prosjektet.":
     "You do not have access to analyse audio in this project.",
   "Du har ikke tilgang til å bruke AI i dette prosjektet.":
@@ -642,6 +646,7 @@ export const CATALOG: Record<string, string> = {
   "Fargen må være på formen #rrggbb": "The colour must be in the form #rrggbb",
   "Feil 2D-scene": "Wrong 2D scene",
   "Feil prisenhet for typen.": "Wrong price unit for the type.",
+  "Feil prosjekt": "Wrong project",
   "Feil prosjekt for gjenoppretting.": "Wrong project for restoring.",
   "Feil scene for animasjonsbruken": "Wrong scene for the animation use",
   "Feltet er for langt (maks 500 tegn)": "The field is too long (max 500 characters)",
@@ -793,6 +798,7 @@ export const CATALOG: Record<string, string> = {
   "Genereringen kunne ikke logges: {0}": "The generation could not be logged: {0}",
   "Genereringen må bekreftes": "The generation must be confirmed",
   "Genereringen stoppet: {0}": "The generation stopped: {0}",
+  "Generert tale": "Generated speech",
   "Genererte mediefiler": "Generated media files",
   "Gi nøkkelen tilgang til «Sound Effects» (og «Text to Speech» om dere vil bruke stemmer), og kopier den.":
     "Give the key access to “Sound Effects” (and “Text to Speech” if you want to use voices), and copy it.",
@@ -912,6 +918,7 @@ export const CATALOG: Record<string, string> = {
   "Ingen lyd valgt": "No audio selected",
   "Ingen nøkkel er lagt inn for denne leverandøren.": "No key has been added for this provider.",
   "Ingen notater å legge til": "No notes to add",
+  "Ingen prosjekteier har koblet til ElevenLabs.": "No project owner has connected ElevenLabs.",
   "Ingen referansebilder.": "No reference images.",
   "Ingen ressurser å legge til": "No assets to add",
   "Ingen segmenter oppgitt": "No segments given",
@@ -939,8 +946,11 @@ export const CATALOG: Record<string, string> = {
   inntoning: "fade in",
   "Instruksene er for lange (høyst {0} tegn)":
     "The instructions are too long (at most {0} characters)",
+  "Jobben ble stoppet. Lagrede resultater beholdes; gjenoppta uten å generere dem på nytt.":
+    "The job stopped. Saved results are retained; resume without regenerating them.",
   "Jobben er allerede sendt til leverandøren.": "The job has already been sent to the provider.",
   "Jobben feilet.": "The job failed.",
+  "Jobben finnes ikke": "The job was not found",
   "Jobben finnes ikke.": "The job does not exist.",
   "Jobben kom aldri i gang hos leverandøren.": "The job never started at the provider.",
   "Jobben kunne ikke logges: {0}": "The job could not be logged: {0}",
@@ -948,6 +958,8 @@ export const CATALOG: Record<string, string> = {
     "The job started, but could not be registered: {0}",
   "Jobber som feilet uten å koste noe, og jobber som venter i køen, er ikke med. «Betalt, ikke lagret» er med fordi leverandøren kan ha tatt betalt.":
     "Jobs that failed without cost, and jobs waiting in the queue, are not included. “Paid, not saved” is included because the provider may have charged for it.",
+  "Jobbresultatet kunne ikke lagres. Ikke generer på nytt før resultatet er avklart.":
+    "The job result could not be saved. Do not regenerate until the result is reconciled.",
   "Kallet kunne ikke logges: {0}": "The call could not be logged: {0}",
   "Kamerabevegelsen fra animaticen var med.": "The camera movement from the animatic was included.",
   "Kameraet er for stort": "The camera is too large",
@@ -962,6 +974,7 @@ export const CATALOG: Record<string, string> = {
   Karakteren: "The character",
   "Karakteren er fjernet": "The character has been removed",
   "Karakteren finnes ikke": "The character was not found",
+  "Karakteren finnes ikke i prosjektet.": "The character was not found in this project.",
   "Karakteren finnes ikke.": "The character does not exist.",
   "Karakteren har allerede en profil": "The character already has a profile",
   "Karakteren har allerede et stadium fra denne scenen":
@@ -1129,6 +1142,8 @@ export const CATALOG: Record<string, string> = {
   Lydklippet: "The audio clip",
   "Lydkomposisjonen finnes ikke": "The audio composition was not found",
   "Lydlengde {0}–{1} s": "Audio length {0}–{1} s",
+  "Lydlengden kunne ikke måles. Ikke generer på nytt.":
+    "The audio duration could not be measured. Do not regenerate.",
   "Lydopptaket finnes ikke": "The recording was not found",
   "Lydvarianten finnes ikke": "The audio variant was not found",
   Lydversjonen: "The audio version",
@@ -1168,10 +1183,14 @@ export const CATALOG: Record<string, string> = {
   "Manus, scener, 2D-scener, lag, lyd- og klippdeler, koblinger, notater og ressursbeskrivelser i databasen.":
     "Script, scenes, 2D scenes, layers, audio and clip parts, links, notes and asset descriptions in the database.",
   Manusblokken: "The script block",
+  "Manuset eller valget er endret. Kontroller og bekreft jobben på nytt.":
+    "The script or selection has changed. Review and approve the job again.",
   "Manuset er endret etter at videoen ble laget.":
     "The script has changed since the video was made.",
   "Manuset er endret. Kontroller replikken og godkjenn kostnaden på nytt.":
     "The script has changed. Review the line and approve the cost again.",
+  "Manuset er endret. Resultatet er bevart, men ikke aktivert.":
+    "The script has changed. The result is preserved but not activated.",
   "Manuset inneholder ingen scener": "The script contains no scenes",
   "Manuslinjen finnes ikke": "The script line was not found",
   "Manuslinjen hører ikke til en scene": "The script line does not belong to a scene",
@@ -1182,6 +1201,7 @@ export const CATALOG: Record<string, string> = {
   "Masken må ha bredde og høyde over 0": "The mask must have a width and height above 0",
   "Maskene går i ring (lagene maskerer hverandre)":
     "The masks form a loop (the layers mask each other)",
+  "Massegenerert replikk": "Batch-generated line",
   Materiale: "Material",
   "med notater": "with notes",
   "med undertekster": "with subtitles",
@@ -1215,6 +1235,7 @@ export const CATALOG: Record<string, string> = {
   "Modellen tar imot høyst {0} referansebilder.": "The model accepts at most {0} reference images.",
   "Modellen tar imot høyst {0} tegn: tok bort {1}.":
     "The model accepts at most {0} characters: removed {1}.",
+  "Modellprisen er ukjent.": "The model price is unknown.",
   "Modellprisen er ukjent. Administratoren må registrere prisen før generering.":
     "The model price is unknown. An administrator must register the price before generation.",
   "Mønsteret finnes ikke": "The pattern was not found",
@@ -1248,6 +1269,10 @@ export const CATALOG: Record<string, string> = {
     "Someone else has changed this in the meantime. Fetch the latest version and try again.",
   "Noen andre har endret teksten siden forslaget ble laget. Lag forslaget på nytt.":
     "Someone else changed the text after the suggestion was made. Create the suggestion again.",
+  "Noen av de valgte scenene har allerede innspilt eller generert tale. Nye lydfiler blir lagt til som alternative versjoner og settes som aktive for de aktuelle replikkene. Ingen eksisterende lydfiler eller redigeringer blir slettet. Du kan senere velge tilbake en tidligere versjon.":
+    "Some of the selected scenes already have recorded or generated speech. New audio files will be added as alternative versions and made active for the selected lines. No existing audio files or edits will be deleted. You can choose a previous version again later.",
+  "Noen replikker feilet. Tidligere lyd er bevart.":
+    "Some lines failed. Previous audio is preserved.",
   "Nøkkelen er fjernet, så videoen kan ikke hentes.":
     "The key was removed, so the video cannot be fetched.",
   "Nøkkelen er fjernet.": "The key was removed.",
@@ -1443,6 +1468,7 @@ export const CATALOG: Record<string, string> = {
   Replikk: "Line",
   Replikken: "The line",
   "Replikken ble ikke lest inn: {0}": "The line could not be read aloud: {0}",
+  "Replikken eller karakteren finnes ikke": "The line or character was not found",
   "Replikken er {0} kortere enn tiden den har. Det kan bli en lang pause – vurder en lengre oversettelse eller la pausen stå.":
     "The line is {0} shorter than the time it has. This may leave a long pause – consider a longer translation or leave the pause.",
   "Replikken er for lang for modellen.": "The line is too long for the model.",
@@ -1667,6 +1693,7 @@ export const CATALOG: Record<string, string> = {
   "Skriv hva du ønsker": "Write what you want",
   "Skriv navnet på leverandøren (høyst 120 tegn).":
     "Enter the name of the provider (120 characters at most).",
+  "Skrivetilgangen er fjernet.": "Editing permission has been removed.",
   "slå av beskrivelser av steder eller objekter": "turn off descriptions of places or objects",
   "Slå på betaling (et Google Cloud-faktureringskonto) – video og de beste bildemodellene krever det.":
     "Turn on billing (a Google Cloud billing account) – video and the best image models require it.",
@@ -1683,6 +1710,7 @@ export const CATALOG: Record<string, string> = {
   "Spinoffens klipping går lenger enn hovedfilmens 2D-scene. Velg også «Timing» (lengden på 2D-scenen).":
     "The spin-off's edit runs longer than the main film's 2D scene. Also choose “Timing” (the length of the 2D scene).",
   "språk: {0}": "language: {0}",
+  Språkmålet: "The language target",
   Stadiet: "The stage",
   "Stående 9:16 (1080 × 1920)": "Portrait 9:16 (1080 × 1920)",
   standard: "default",
@@ -1803,6 +1831,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig {0}": "Invalid {0}",
   "Ugyldig aktivt område": "Invalid active range",
   "Ugyldig algoritmeversjon": "Invalid algorithm version",
+  "Ugyldig angring av generering": "Invalid generation undo",
   "Ugyldig animasjonsatferd": "Invalid animation behavior",
   "Ugyldig animasjonsdata": "Invalid animation data",
   "Ugyldig animasjonsoppsett": "Invalid animation setup",
@@ -1812,6 +1841,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig antall oversettelser": "Invalid number of translations",
   "Ugyldig antall relasjoner": "Invalid number of relations",
   "Ugyldig antall tidskoblinger": "Invalid number of time links",
+  "Ugyldig BCP-47-språkkode.": "Invalid BCP-47 language tag.",
   "Ugyldig bekreftelse": "Invalid confirmation",
   "Ugyldig bevegelsesbane": "Invalid motion path",
   "Ugyldig bildefrekvens {0}/{1}": "Invalid frame rate {0}/{1}",
@@ -1833,6 +1863,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig element": "Invalid element",
   "Ugyldig element i malen": "Invalid element in the template",
   "Ugyldig eller brukt ID": "Invalid or used ID",
+  "Ugyldig eller ubekreftet jobb": "Invalid or unapproved job",
   "Ugyldig endring av scenevarighet": "Invalid scene duration change",
   "Ugyldig farge": "Invalid colour",
   "Ugyldig fargepalett": "Invalid colour palette",
@@ -1849,6 +1880,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig forskyvning": "Invalid offset",
   "Ugyldig forslag": "Invalid suggestion",
   "Ugyldig fyll i ny tid": "Invalid padding",
+  "Ugyldig generert tale": "Invalid generated speech",
   "Ugyldig gjennomsiktighet": "Invalid opacity",
   "Ugyldig glød": "Invalid glow",
   "Ugyldig grunn": "Invalid reason",
@@ -1956,6 +1988,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig replikk": "Invalid line",
   "Ugyldig replikk for ordkobling": "Invalid line for word alignment",
   "Ugyldig replikk i utkastet.": "Invalid line in the draft.",
+  "Ugyldig replikkvalg": "Invalid line selection",
   "Ugyldig ressurs": "Invalid asset",
   "Ugyldig retning": "Invalid direction",
   "Ugyldig revisjon": "Invalid revision",
@@ -1979,6 +2012,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig språk for filmlyden": "Invalid language for the film audio",
   "Ugyldig språk for lyden": "Invalid language for the sound",
   "Ugyldig språkkode": "Invalid language code",
+  "Ugyldig språkmål": "Invalid language target",
   "Ugyldig startbilde": "Invalid start image",
   "Ugyldig status": "Invalid status",
   "Ugyldig stemme": "Invalid voice",

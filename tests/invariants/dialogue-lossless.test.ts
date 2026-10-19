@@ -20,6 +20,7 @@ import {
 import { mulberry32 } from "@/core/animation/patterns";
 import { envelope } from "../helpers/fixtures";
 import { dvBase, dvId } from "../helpers/dialogue-fixture";
+import { generatedCommand } from "../helpers/generated-dialogue";
 
 type Versions = ProjectState["dialogueVersions"];
 const strip = (v: Versions) =>
@@ -116,4 +117,29 @@ function runSequence(seed: number, steps: number) {
 describe("DV2 tapsfrihet (egenskapstest)", () => {
   for (const seed of [1, 7, 42, 1337, 2026, 90210, 314159, 271828])
     it(`seed ${seed}: 120 tilfeldige steg uten tap av lydversjon eller redigering`, () => runSequence(seed, 120));
+});
+
+describe("DV5 batch, delvis feil og gjenopptak uten tap", () => {
+  for (const seed of [1, 42, 2026, 90210]) it(`seed ${seed}: 30 batchresultater med feil og gjentatte kvitteringer`, () => {
+    const { s: initial, clipId } = dvBase();
+    let state = initial;
+    const random = mulberry32(seed);
+    const undoStack: Command[] = [];
+    for (let i=0;i<30;i++) {
+      const command=generatedCommand(state,clipId,1000+i*10);
+      const before=state;
+      const failed=random()<0.3;
+      const attempt=applyCommand(state,envelope(failed?{...command,metadata:{...command.metadata,scriptRevision:9999}}:command));
+      if(failed) { expect(attempt.ok).toBe(false);expect(state.dialogueVersions).toBe(before.dialogueVersions); }
+      const success=failed?applyCommand(state,envelope(command)):attempt;
+      if(!success.ok)throw new Error(success.error.message);
+      state=success.state;undoStack.push(success.inverse);
+      for(const [id,v] of Object.entries(before.dialogueVersions))expect(state.dialogueVersions[id]).toEqual(v);
+      const resumed=applyCommand(state,envelope(command));if(!resumed.ok)throw new Error(resumed.error.message);
+      expect(resumed.state).toBe(state);expect(dialogueMirrorViolations(state)).toEqual([]);
+    }
+    for(const inverse of undoStack.reverse()) { const undo=applyCommand(state,envelope(inverse));if(!undo.ok)throw new Error(undo.error.message);state=undo.state; }
+    expect(strip(state.dialogueVersions)).toEqual(strip(initial.dialogueVersions));
+    expect(state.audioClips[clipId]?.activeVersionId).toBe(initial.audioClips[clipId]?.activeVersionId);
+  });
 });

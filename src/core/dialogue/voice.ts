@@ -1,6 +1,7 @@
 /** DV4: live provider capabilities, separate speech language and immutable generation settings. */
 import { L } from "../i18n";
 import type { AssetVoice } from "../model";
+import { languageTagError } from "./languages";
 
 export interface SpeechModel {
   readonly modelId: string;
@@ -25,7 +26,7 @@ export function assetVoiceError(voice: AssetVoice | null): string | null {
   if (voice.provider !== "elevenlabs" || !/^[A-Za-z0-9_-]{1,64}$/.test(voice.voiceId) ||
       typeof voice.label !== "string" || voice.label.length > 120 ||
       (voice.modelId !== undefined && !/^[A-Za-z0-9_-]{1,100}$/.test(voice.modelId)) ||
-      (voice.language !== undefined && !/^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$/.test(voice.language)))
+      (voice.language !== undefined && languageTagError(voice.language)))
     return L("Ugyldig stemme", "Invalid voice");
   return voice.settings === undefined ? null : speechSettingsError(voice.settings);
 }

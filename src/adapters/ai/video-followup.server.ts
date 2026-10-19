@@ -263,6 +263,7 @@ export async function markStoppedSyncJobs(
       finished_at: new Date(now).toISOString(),
     } as never)
     .in("kind", ["image", "sound", "prompt"])
+    .or("params->>kind.is.null,params->>kind.neq.dialogue_batch")
     .eq("status", "running")
     .lt("created_at", new Date(now - 15 * 60_000).toISOString());
   const { data } = await (projectId ? base.eq("project_id", projectId) : base).select("id");

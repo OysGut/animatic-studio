@@ -92,3 +92,5 @@ export * from "./dialogue/navigation";
 
 export * from "./dialogue/characters";
 export * from "./dialogue/voice";
+export * from "./dialogue/languages";
+export * from "./dialogue/batch";

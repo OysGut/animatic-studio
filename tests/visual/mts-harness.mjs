@@ -19,7 +19,7 @@ export function harness(defaultOut) {
   const USER = { id: "00000000-0000-7000-8000-a11ce0000001", email: "mars@example.no", aud: "authenticated", role: "authenticated" };
   const P = `/prosjekt/${fx.project.id}`;
   const rows = fx.rows;
-  const state = { commands: [], uploads: [], uploadBodies: [], rpcs: [] };
+  const state = { commands: [], uploads: [], uploadBodies: [], rpcs: [], batches: [] };
 
   function serverFnName(url) {
     try {
@@ -98,6 +98,17 @@ export function harness(defaultOut) {
         return json({ ok: true, changeId: "mts", affected: [], inverse: null, revisions: {} });
       }
       if (/pumpProjectQueue/.test(name)) return json({ sent: 0 });
+      if (/^listDialogueBatches(?:_|$)/.test(name)) return json(state.batches);
+      if (/^createDialogueBatch(?:_|$)/.test(name)) {
+        state.rpcs.push({ name: "createDialogueBatch", body: d });
+        const existing = state.batches.find(b => b.requestId === d.requestId);
+        if (existing) return json({ id: existing.id });
+        const id = `00000000-0000-7000-8000-${String(610000 + state.batches.length).padStart(12,"0")}`;
+        state.batches.push({ id, requestId: d.requestId, status: "running", pause_reason: null, voice: d.voice, items: d.lines.map((l,i) => ({ id: `${id}:${i}`, block_id: l.key.split(":")[1], occurrence_id: l.key.split(":")[0], language: l.language, status: "waiting", error: null, retryable: true })) });
+        return json({ id });
+      }
+      if (/^advanceDialogueBatch(?:_|$)/.test(name)) { state.rpcs.push({ name: "advanceDialogueBatch", body:d }); const b=state.batches.find(b=>b.id===d.batchId); if(b){for(const item of b.items.slice(0,2))item.status="done";b.status=b.items.every(i=>i.status==="done")?"done":"running";} return json({processed:2}); }
+      if (/^resumeDialogueBatch(?:_|$)/.test(name)) { state.rpcs.push({name:"resumeDialogueBatch",body:d});return json({ok:true}); }
       if (/^listVoices(?:_|$)/.test(name)) return json({ ok: true, voices: [{ voiceId: "mock_voice", name: "Test voice", description: "Custom voice", previewUrl: null }, { voiceId: "other_voice", name: "Alternative voice", description: "", previewUrl: null }] });
       if (/^listSpeechModels(?:_|$)/.test(name)) return json({ ok: true, models: [{ modelId: "eleven_v3", name: "Eleven v3", languages: [{ code: "no", name: "Norwegian" }, { code: "es", name: "Spanish" }], maxCharacters: 5000, costMultiplier: 1 }] });
       if (/^generateSpeech(?:_|$)/.test(name)) { state.rpcs.push({ name: "generateSpeech", body: d }); return json({ ok: true, assetId: "00000000-0000-7000-8000-00000000d401", versionId: "00000000-0000-7000-8000-00000000d402", text: "Mock dialogue", scriptRevision: d.scriptRevision, costUsd: 0.001, media: { path: `${fx.project.id}/mock-speech.wav`, mimeType: "audio/wav", width: null, height: null, byteSize: 96044, sha256: "a".repeat(64) } }); }
@@ -134,6 +145,7 @@ export function harness(defaultOut) {
     state.uploads = [];
     state.uploadBodies = [];
     state.rpcs = [];
+    state.batches = [];
     let ctx;
     try {
       ctx = await open(sceneId, lang);

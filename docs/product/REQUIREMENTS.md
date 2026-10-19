@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **779**
-- Prioritet: P0: 147, P1: 444, P2: 149, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 252, teknisk-anbefaling: 7
-- Status: Verifisert: 656, Implementert – ikke verifisert: 52, Under arbeid: 13, Ikke startet: 58
+- Antall krav: **800**
+- Prioritet: P0: 147, P1: 465, P2: 149, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 273, teknisk-anbefaling: 7
+- Status: Verifisert: 656, Implementert – ikke verifisert: 73, Under arbeid: 13, Ikke startet: 58
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -10684,3 +10684,339 @@ endret standardstemme endrer ikke tidligere filer
   - tests/unit/dv3-dv4.test.ts
 - **Implementering:** src/app/library/CharacterVoiceSection.tsx, src/app/scene-editor/GenerateDialogue.tsx, src/adapters/ai/speech.functions.ts
 - **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §128. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0780 – DV G1: handlingen i Asset Library gjelder bare aktivt prosjekt
+handlingen i Asset Library gjelder bare aktivt prosjekt
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - handlingen i Asset Library gjelder bare aktivt prosjekt
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0781 – DV G2: dekning viser scener som mangler tale helt eller delvis
+dekning viser scener som mangler tale helt eller delvis
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - dekning viser scener som mangler tale helt eller delvis
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0782 – DV G3: brukeren velger scener og replikker
+brukeren velger scener og replikker
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - brukeren velger scener og replikker
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0783 – DV G4: ordrett advarsel ved eksisterende lyd
+ordrett advarsel ved eksisterende lyd
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - ordrett advarsel ved eksisterende lyd
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0784 – DV G5: ny generering blir aktiv versjon
+ny generering blir aktiv versjon
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - ny generering blir aktiv versjon
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0785 – DV G6: ingen eksisterende lyd eller redigering slettes
+ingen eksisterende lyd eller redigering slettes
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - ingen eksisterende lyd eller redigering slettes
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0786 – DV G7: feil lar tidligere aktiv versjon stå
+feil lar tidligere aktiv versjon stå
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - feil lar tidligere aktiv versjon stå
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0787 – DV G8: kostnadsestimat og eksplisitt bekreftelse før betalte kall
+kostnadsestimat og eksplisitt bekreftelse før betalte kall
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - kostnadsestimat og eksplisitt bekreftelse før betalte kall
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0788 – DV G9: usikkert tidsestimat når forsvarlig
+usikkert tidsestimat når forsvarlig
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - usikkert tidsestimat når forsvarlig
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0789 – DV G10: varig fremdrift per replikk med gjenopptak
+varig fremdrift per replikk med gjenopptak
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - varig fremdrift per replikk med gjenopptak
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0790 – DV G11: automatisk plassering i riktig replikk og scene
+automatisk plassering i riktig replikk og scene
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - automatisk plassering i riktig replikk og scene
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0791 – DV G12: minimal gyldig 2D-scene opprettes ved behov
+minimal gyldig 2D-scene opprettes ved behov
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - minimal gyldig 2D-scene opprettes ved behov
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0792 – DV G13: tekniske gjentak oppretter ingen duplikater
+tekniske gjentak oppretter ingen duplikater
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - tekniske gjentak oppretter ingen duplikater
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0793 – DV S1: UiLocale, scriptLanguage og speechLanguage er uavhengige
+UiLocale, scriptLanguage og speechLanguage er uavhengige
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - UiLocale, scriptLanguage og speechLanguage er uavhengige
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0794 – DV S2: flere BCP-47-talespråk i samme prosjekt
+flere BCP-47-talespråk i samme prosjekt
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - flere BCP-47-talespråk i samme prosjekt
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0795 – DV S3: talespråk kan overstyres per replikk
+talespråk kan overstyres per replikk
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - talespråk kan overstyres per replikk
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0796 – DV S4: støtte kontrolleres mot modellens levende språkdata
+støtte kontrolleres mot modellens levende språkdata
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - støtte kontrolleres mot modellens levende språkdata
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0797 – DV S5: usikker språkdeteksjon varsler før massegenerering
+usikker språkdeteksjon varsler før massegenerering
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - usikker språkdeteksjon varsler før massegenerering
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0798 – DV S6: brukeren kan velge samlet generering med advarsel
+brukeren kan velge samlet generering med advarsel
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - brukeren kan velge samlet generering med advarsel
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0799 – DV S7: separate språkjobber med egne stemmer og modeller
+separate språkjobber med egne stemmer og modeller
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - separate språkjobber med egne stemmer og modeller
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0800 – DV S8: brukeren velger innhold og estimater per språkjobb
+brukeren velger innhold og estimater per språkjobb
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - brukeren velger innhold og estimater per språkjobb
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.

@@ -62,6 +62,11 @@ export function fakeDb(tables: Record<string, Row[]>, files: readonly string[] =
           filters.push((r) => r[k] !== v);
           return q;
         },
+        or(expression: string) {
+          if (expression === "params->>kind.is.null,params->>kind.neq.dialogue_batch") filters.push(r => (r["params"] as Row | undefined)?.["kind"] !== "dialogue_batch");
+          else throw new Error(`Unsupported fake filter: ${expression}`);
+          return q;
+        },
         lt(k: string, v: string) {
           filters.push((r) => String(r[k] ?? "") < v);
           return q;

@@ -980,6 +980,28 @@ export type Command = import("../animation/rig-commands").RigCommand
     }
   // ---------- Lydversjoner per replikk (DV2, migrasjon 0060) ----------
   | {
+      readonly type: "SetDialogueLanguage";
+      readonly target: "project" | "variant" | "block" | "clip" | "blockSpeech";
+      readonly targetId: string;
+      readonly language: string | null;
+    }
+  | {
+      readonly type: "ApplyGeneratedDialogue";
+      readonly occurrenceId: string;
+      readonly blockId: string;
+      readonly characterId: string;
+      readonly assetId: string;
+      readonly variantId: string;
+      readonly versionId: string;
+      readonly clipId: string;
+      readonly dialogueVersionId: string;
+      readonly compositionId: string;
+      readonly media: AssetMedia;
+      readonly metadata: import("../dialogue/versions").DialogueVersionMeta;
+      readonly language: string;
+    }
+  | { readonly type: "UndoGeneratedDialogue"; readonly steps: readonly Command[] }
+  | {
       readonly type: "SetDialogueCharacter";
       readonly clipIds: readonly AudioClipId[];
       readonly characterAssetId: AssetId | null;

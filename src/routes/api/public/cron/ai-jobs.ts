@@ -45,6 +45,11 @@ export const Route = createFileRoute("/api/public/cron/ai-jobs")({
           Object.assign(run, summary);
           // Køen (fra 0025): send ventende jobber der det er blitt ledig plass
           if (schema.version >= 25) run.sent = await pumpVideoQueue(db, { budgetMs: 20_000 });
+          if (schema.version >= 61) {
+            const { pumpDialogueBatches } = await import("@/adapters/storage/dialogue-batch.server");
+            const speech = await pumpDialogueBatches(db);
+            run.checked += speech.processed;
+          }
           // Kontoer der de 30 dagene er gått (fra 0033)
           if (schema.version >= 33) {
             const { purgeDueAccounts } = await import("@/adapters/account/admin.functions");

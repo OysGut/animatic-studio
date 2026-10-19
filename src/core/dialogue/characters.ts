@@ -24,6 +24,21 @@ export function suggestedDialogueCharacter(s: ProjectState, occurrenceId: string
   return matches.length === 1 ? matches[0] ?? null : null;
 }
 
+/** One suggestion per permanent line/asset identity; confirmation links every duplicate clip. */
+export function dialogueCharacterSuggestions(s: ProjectState, occurrenceId: string) {
+  const groups = new Map<string, { clip: AudioClip; clipIds: AudioClip["id"][]; asset: ProjectState["assets"][string] }>();
+  for (const clip of Object.values(s.audioClips)) {
+    if (clip.removed || clip.kind !== "dialogue" || clip.occurrenceId !== occurrenceId || !clip.blockId || clip.characterAssetId) continue;
+    const asset = suggestedDialogueCharacter(s, occurrenceId, clip.blockId);
+    if (!asset) continue;
+    const key = `${clip.blockId}:${asset.id}`;
+    const existing = groups.get(key);
+    if (existing) existing.clipIds.push(clip.id);
+    else groups.set(key, { clip, clipIds: [clip.id], asset });
+  }
+  return [...groups.values()];
+}
+
 export function dialogueTrackLabel(s: ProjectState, clip: AudioClip): string {
   return (clip.characterAssetId ? s.assets[clip.characterAssetId]?.name : null) ||
     dialogueSpeaker(s, clip.occurrenceId, clip.blockId) || L("Ukjent taler", "Unknown speaker");

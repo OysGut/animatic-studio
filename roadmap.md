@@ -1,10 +1,18 @@
+# DV5+DV6 – Massegenerering og språk (19.10.2026)
+- [x] Fjern doble forslag per replikk og ressurs.
+- [x] DV5: dekning, valg, bekreftelse, idempotente jobbelementer og tapsfri plassering; migrasjon 0061 skrevet.
+- [x] DV6: uavhengige språk, replikkoverstyring og brukerbestemt jobbfordeling.
+- [x] Enhetstester, DV5/DV6, DV1–DV4, CA1–CA8, U5, lyd og kravregister.
+- [ ] DB og Cloud ende-til-ende: blokkert av manglende lokal Postgres og ikke-kjørt 0061.
+- [ ] Full batch-angring i brukerflaten og gjenoppretting av leverandørblokk: serverhistorikken finnes, men tilkobling til lokal angreliste/tilgangsgjenoppretting gjenstår.
+
 # DV3+DV4 – Dialogeditor og stemme (19.10.2026)
 - [x] DV3: eksisterende opptaksdialog med kontekst, versjonsbølger, forhåndslytting, aktivt valg og bekreftet sletting.
 - [x] DV3: bekreftede karakterkoblinger og ett spor per karakter i begge tidslinjer; overlapp varsles uten flytting.
 - [x] DV4: full standardstemme i assets.voice, levende modell-/språkliste, lokal enkeltgenerering og tapsfrie metadata.
 - [x] Tester: utvidet tapsfrihet, nettverksvern, DV3/DV4-suiter og bestilte regresjoner; kravregister og kunnskapsbase.
 
-- [ ] Kontroller DB-regresjon hos Claude: lokal Postgres utilgjengelig. Ingen 0061.
+- [x] DB 127/127 og publisering av DV3/DV4 bekreftet av Øystein.
 - [ ] Innebygd opprettelse av ny egendefinert stemme: kontorettigheter/samtykkeflyt ikke verifisert; eksisterende stemmer kan kobles, opprettelse skjer hos ElevenLabs.
 
 # DV1+DV2 – Dialog og stemme (19.10.2026)

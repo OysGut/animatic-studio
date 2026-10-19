@@ -77,6 +77,7 @@ export interface Project extends Entity<ProjectId> {
   readonly frameWidth: number;
   readonly frameHeight: number;
   readonly primaryLanguage: typeof PRIMARY_LANGUAGE;
+  readonly scriptLanguage?: string | null;
   /** Overgangen scener får når de ikke har en egen (DEC-0051, REQ-0577). Mangler = kutt. */
   readonly defaultTransition?: Transition;
   /**
@@ -217,6 +218,7 @@ export interface SceneHeading {
 }
 
 export interface SceneVariant extends Entity<VariantId> {
+  readonly scriptLanguage?: string | null;
   readonly sceneId: SceneId;
   /** null = delt hovedvariant; ellers eid av én produksjon (24.5). */
   readonly ownerProductionId: ProductionId | null;
@@ -227,6 +229,8 @@ export interface SceneVariant extends Entity<VariantId> {
 }
 
 export interface ScriptBlock extends Entity<BlockId> {
+  readonly scriptLanguage?: string | null;
+  readonly speechLanguage?: string | null;
   readonly variantId: VariantId;
   readonly kind: BlockKind;
   readonly orderKey: string;
@@ -909,6 +913,8 @@ export interface AudioClip extends Entity<AudioClipId> {
   readonly activeVersionId?: string | null;
   /** DV2: karakteren (ressurs) som sier replikken. Mangler/null = ikke koblet ennå. */
   readonly characterAssetId?: string | null;
+  readonly speechLanguage?: string | null;
+  readonly placementEstimated?: boolean;
   readonly removed: boolean;
 }
 

@@ -1,4 +1,7 @@
 import { assetVoiceError } from "../dialogue/voice";
+import { languageTagError } from "../dialogue/languages";
+import { lineInfo } from "../audio/takes";
+import { DEFAULT_COMPOSITION } from "../composition/fields";
 import { applyRigCommand } from "../animation/rig-commands";
 import { applyBehaviorCommand } from "../animation/behavior-commands";
 import {
@@ -1891,6 +1894,57 @@ function run(
   });
 
   switch (c.type) {
+    case "SetDialogueLanguage": {
+      if (c.language !== null && languageTagError(c.language)) fail("invalid", languageTagError(c.language) ?? "");
+      if (c.target === "project") {
+        if (c.targetId !== s.project.id) fail("invalid", L("Feil prosjekt", "Wrong project"));
+        const { scriptLanguage: _language, ...base } = s.project;
+        const project: ProjectState["project"] = { ...base, ...(c.language ? { scriptLanguage: c.language } : {}), revision: rev(s.project) };
+        return { state: { ...s, project }, inverse: { ...c, language: s.project.scriptLanguage ?? null }, affected: [s.project.id] };
+      }
+      const collection = c.target === "variant" ? "variants" : c.target === "block" || c.target === "blockSpeech" ? "blocks" : c.target === "clip" ? "audioClips" : null;
+      if (!collection) fail("invalid", L("Ugyldig språkmål", "Invalid language target"));
+      const rows = s[collection];
+      const row = need(rows[c.targetId], L("Språkmålet", "The language target"));
+      if (c.target === "clip" && (row as import("../model").AudioClip).kind !== "dialogue") fail("invalid", L("Bare replikker har talespråk", "Only dialogue lines have speech language"));
+      const field = c.target === "clip" || c.target === "blockSpeech" ? "speechLanguage" : "scriptLanguage";
+      const previous = (row as unknown as Record<string, unknown>)[field] as string | null | undefined;
+      const updated = { ...row, [field]: c.language, revision: rev(row) };
+      if (c.language === null) delete (updated as unknown as Record<string, unknown>)[field];
+      return { state: { ...s, [collection]: { ...rows, [row.id]: updated } }, inverse: { ...c, language: previous ?? null }, affected: [row.id] };
+    }
+    case "ApplyGeneratedDialogue": {
+      // Current version identity deduplicates local repeats; persisted job/change receipts fence replay after undo.
+      if (s.assetVersions[c.versionId] || s.dialogueVersions[c.dialogueVersionId]) return { state: s, inverse: { type: "UndoGeneratedDialogue", steps: [] }, affected: [] };
+      const info = lineInfo(s, c.occurrenceId, c.blockId);
+      const character = s.assets[c.characterId];
+      if (!info || !character || character.removed || !["character", "animal", "other"].includes(character.kind)) fail("invalid", L("Replikken eller karakteren finnes ikke", "The line or character was not found"));
+      if (c.metadata.scriptRevision !== s.blocks[c.blockId]?.currentRev) fail("revision_conflict", L("Manuset er endret. Resultatet er bevart, men ikke aktivert.", "The script has changed. The result is preserved but not activated."));
+      if (c.metadata.source !== "ai" || !c.media.durationMs || c.media.durationMs <= 0 || languageTagError(c.language)) fail("invalid", L("Ugyldig generert tale", "Invalid generated speech"));
+      let cur = s;
+      const inverses: Command[] = [];
+      const affected = new Set<string>();
+      const execute = (command: Command) => { const result = run(cur, { ...env, command }); const mirrored = mirrorDialogueClips(cur, result.state); cur = mirrored.state; inverses.unshift(result.inverse); [...result.affected, ...mirrored.touched].forEach(id => affected.add(id)); };
+      if (!Object.values(cur.compositions).some(comp => !comp.removed && comp.variantId === s.occurrences[c.occurrenceId]?.variantId)) execute({ type: "CreateComposition", compositionId: c.compositionId as never, variantId: s.occurrences[c.occurrenceId]?.variantId as never, fields: { ...DEFAULT_COMPOSITION, width: s.project.frameWidth, height: s.project.frameHeight, durationFrames: Math.max(1, Math.ceil((info.startMs + c.media.durationMs) * s.project.fps.num / s.project.fps.den / 1000)) } });
+      execute({ type: "CreateAssets", assets: [{ assetId: c.assetId as never, fields: { kind: "sound", name: info.text.slice(0, 200), names: [], description: "", category: "", tags: [] } }] });
+      execute({ type: "CreateAssetVariant", assetId: c.assetId as never, variantId: c.variantId as never, fields: { name: L("Generert tale", "Generated speech"), style: "other", appearance: "" } });
+      execute({ type: "AddAssetVersion", variantId: c.variantId as never, versionId: c.versionId as never, media: c.media, note: L("Massegenerert replikk", "Batch-generated line") });
+      const existing = info.clip;
+      const clipId = existing?.id ?? c.clipId;
+      if (existing) execute({ type: "AddDialogueVersion", dialogueVersionId: c.dialogueVersionId, clipId: existing.id, activate: true, fields: { assetId: c.assetId, assetVariantId: c.variantId, assetVersionId: c.versionId, sourceInMs: 0, lengthMs: c.media.durationMs, gainDb: 0, fadeInMs: 0, fadeOutMs: 0, volumeKeys: [], speed: 1, compositionId: null, ...c.metadata, parentVersionId: existing.activeVersionId ?? null } });
+      else execute({ type: "AddAudioClips", dialogueMeta: c.metadata, clips: [{ clipId: c.clipId as never, fields: { occurrenceId: c.occurrenceId as never, kind: "dialogue", name: info.text.slice(0, 200), assetId: c.assetId as never, assetVariantId: c.variantId as never, versionId: c.versionId as never, blockId: c.blockId as never, offsetMs: info.startMs, sourceInMs: 0, lengthMs: c.media.durationMs, gainDb: 0, fadeInMs: 0, fadeOutMs: 0, muted: false, continues: false, volumeKeys: [] } }] });
+      execute({ type: "SetDialogueCharacter", clipIds: [clipId as never], characterAssetId: c.characterId as never });
+      const clip = cur.audioClips[clipId];
+      if (clip && !existing) cur = { ...cur, audioClips: { ...cur.audioClips, [clipId]: { ...clip, placementEstimated: true } } };
+      return { state: oneRevisionPerRow(s, cur), inverse: { type: "UndoGeneratedDialogue", steps: inverses }, affected: [...affected] };
+    }
+    case "UndoGeneratedDialogue": {
+      const allowed = new Set(["UndoCreateComposition", "CreateComposition", "UndoCreateAssets", "CreateAssets", "UndoCreateAssetVariant", "CreateAssetVariant", "UndoAddAssetVersion", "AddAssetVersion", "UndoAddAudioClips", "AddAudioClips", "UndoAddDialogueVersion", "AddDialogueVersion", "SetDialogueCharacter", "RestoreDialogueCharacters"]);
+      if (c.steps.length > 20 || c.steps.some(step => !allowed.has(step.type))) fail("invalid", L("Ugyldig angring av generering", "Invalid generation undo"));
+      let cur = s; const inverses: Command[] = []; const affected = new Set<string>();
+      for (const step of c.steps) { const result = run(cur, { ...env, command: step }); const mirrored = mirrorDialogueClips(cur, result.state); cur = mirrored.state; inverses.unshift(result.inverse); [...result.affected, ...mirrored.touched].forEach(id => affected.add(id)); }
+      return { state: oneRevisionPerRow(s, cur), inverse: { type: "UndoGeneratedDialogue", steps: inverses }, affected: [...affected] };
+    }
     case "CreateRig": case "SaveRigVersion": case "SetRigAnchors": case "AttachAnimationUse": case "SetAnimationLayerEnabled": case "SetAnimationBehavior": case "AdoptRigVersion": case "UndoAnimationChange": {
       try { return applyRigCommand(s, c); } catch (error) { fail("invalid", error instanceof Error ? error.message : L("Ugyldig animasjonsoppsett", "Invalid animation setup")); }
     }
