@@ -705,12 +705,15 @@ function Editor({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <Toolbar>
+      <Toolbar overflow="menu">
+        <ToolbarGroup priority={9}>
         <span className="text-[13px] font-medium text-text-primary">
           {L("Sceneeditor", "Scene editor")}
         </span>
         <ProductionPicker state={state} value={productionId} onChange={setProductionId} />
+        </ToolbarGroup>
         <ToolbarSeparator />
+        <ToolbarGroup priority={8}>
         <ScenePicker
           state={state}
           occurrences={occurrences}
@@ -728,7 +731,9 @@ function Editor({
           cmds={cmds}
           compact
         />
+        </ToolbarGroup>
         <ToolbarSeparator />
+        <ToolbarGroup priority={7}>
         <IconButton
           onClick={cmds.undo}
           disabled={!cmds.canUndo}
@@ -761,6 +766,8 @@ function Editor({
         >
           <Redo2 />
         </IconButton>
+        </ToolbarGroup>
+        <ToolbarGroup priority={1}>
         {occurrence ? (
           <ToolbarButton variant="icon" asChild>
             <Link
@@ -837,7 +844,8 @@ function Editor({
             {L("AI-video …", "AI video …")}
           </ToolbarButton>
         ) : null}
-        <div className="ml-auto flex flex-wrap items-center gap-2">
+        </ToolbarGroup>
+        <div data-toolbar-fixed className="ml-auto flex flex-wrap items-center gap-2">
           {composition ? (
             <>
               <ToolbarButton
