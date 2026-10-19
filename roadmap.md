@@ -69,3 +69,5 @@
 - [x] «Mer …» i sceneeditoren, manuset og biblioteket; ikonknapper byttet på alle skjermer
 - [x] Nettlesertest u2-chrome-ui.mjs (20/20)
 - [ ] Primærknapper som ikke finnes i dag (sceneeditor «Eksporter», manus «Ny scene», bibliotek «Ny ressurs», prosjekt «Åpne manus") – venter på avklaring
+
+- U2 del 2: åpent — sceneeditorens verktøylinje blir 2 rader ved 1280 px med lange navn (32 px og «alt synlig» går ikke begge); fire primærknapper finnes ikke (venter på svar).
