@@ -706,7 +706,7 @@ function Editor({
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <Toolbar overflow="menu">
-        <ToolbarGroup priority={9}>
+        <ToolbarGroup priority={9} className="[&>select]:max-w-[180px] [&>select]:truncate">
         <span className="text-chrome font-medium text-text-primary">
           {L("Sceneeditor", "Scene editor")}
         </span>
@@ -847,7 +847,7 @@ function Editor({
           </ToolbarButton>
         ) : null}
         </ToolbarGroup>
-        <div data-toolbar-fixed className="ml-auto flex flex-wrap items-center gap-2">
+        <div data-toolbar-fixed className="ml-auto flex shrink-0 flex-nowrap items-center gap-2">
           {composition ? (
             <>
               <ToolbarButton

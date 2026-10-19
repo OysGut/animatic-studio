@@ -113,7 +113,7 @@ export function ScenePicker({
         <PopoverTrigger asChild>
           <button
             type="button"
-            className="flex h-7 min-w-[160px] max-w-[420px] flex-1 items-center gap-2 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary hover:bg-surface-2"
+            className="flex h-7 min-w-[160px] max-w-[220px] flex-1 items-center gap-2 truncate rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary hover:bg-surface-2"
             aria-label={
               current
                 ? L(
