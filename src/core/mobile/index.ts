@@ -24,7 +24,7 @@ export type UploadContext =
   /** Opptak (takes) til en lydressurs (fase 2, bolk B, REQ-0684). */
   | { readonly type: "sound"; readonly assetId: string; readonly variantId?: string | undefined }
   /** Opptak av en replikk i en scene (bolk B, REQ-0685): mobilen viser hele replikken. */
-  | { readonly type: "line"; readonly occurrenceId: string; readonly blockId: string }
+  | { readonly type: "line"; readonly occurrenceId: string; readonly blockId: string; readonly clipId?: string }
   /** Bildeplassen til et lag i sceneeditoren: nytt bilde av lagets ressurs. */
   | {
       readonly type: "layer";
@@ -234,7 +234,8 @@ export function parseUploadContext(v: unknown): UploadContext | null {
     case "line": {
       const occurrenceId = id("occurrenceId");
       const blockId = id("blockId");
-      return occurrenceId && blockId ? { type: "line", occurrenceId, blockId } : null;
+      const clipId = optId("clipId");
+      return occurrenceId && blockId && clipId !== false ? { type: "line", occurrenceId, blockId, ...(clipId ? { clipId } : {}) } : null;
     }
     case "layer": {
       const layerId = id("layerId");

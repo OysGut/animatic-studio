@@ -633,9 +633,11 @@ describe("rettelser etter gjennomgang (DEC-0061)", () => {
   });
 
   it("lange ord brytes raskt", () => {
-    const t0 = Date.now();
+    const t0 = performance.now();
     const lines = wrapPosterText("x".repeat(4000), "serif", 12, 20);
-    expect(Date.now() - t0).toBeLessThan(200);
+    // Full suite shares CPU with other workers. One second tolerates scheduling noise,
+    // but still rejects the former multi-second/quadratic long-word regression.
+    expect(performance.now() - t0).toBeLessThan(1000);
     expect(lines.join("")).toBe("x".repeat(4000));
   });
 

@@ -1,4 +1,9 @@
 # MU1
+## Dokumentasjon og backlogg (2026-10-19)
+- [ ] A: tydelige fixturebilder i Story Lab og animasjon; kontroller lasting.
+- [ ] B: beslutningslogg, kravdekning og samordnet status; build_docs/check_kb.
+- [ ] C: stabil take-rekkefølge og tidstest, malbilder, valgt lydklipp, dra lydsegmenter med én angring.
+- [ ] Vitest to ganger, lokale DB-tester og bestilte visuelle regresjoner.
 ## U5-polish
 - [x] Initial og typeikon i Story Lab/bibliotek og miniatyrer i alle animasjonssporhoder.
 - [x] Toppjustert forhåndsvisning med skrivebeskyttet lagliste og panelfarge under bildet.

@@ -145,6 +145,11 @@ async function contextBelongs(
         .eq("project_id", projectId)
         .maybeSingle();
       const bb = b as { variant_id?: string; kind?: string } | null;
+      if (c.clipId) {
+        const { data: clip } = await db.from("audio_clips").select("occurrence_id, block_id, removed")
+          .eq("id", c.clipId).eq("project_id", projectId).maybeSingle();
+        if (!clip || clip.removed || clip.occurrence_id !== c.occurrenceId || clip.block_id !== c.blockId) return false;
+      }
       return (
         !!occ &&
         bb?.kind === "dialogue" &&

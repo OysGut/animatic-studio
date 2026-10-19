@@ -130,9 +130,9 @@ function Body({
   const context: UploadContext =
     target.kind === "sound"
       ? { type: "sound", assetId: target.assetId, variantId: target.variantId }
-      : { type: "line", occurrenceId: target.occurrenceId, blockId: target.blockId };
+      : { type: "line", occurrenceId: target.occurrenceId, blockId: target.blockId, ...(target.clipId ? { clipId: target.clipId } : {}) };
   const m = useMobileSession(projectId, context, label);
-  const info = target.kind === "line" ? lineInfo(state, target.occurrenceId, target.blockId) : null;
+  const info = target.kind === "line" ? lineInfo(state, target.occurrenceId, target.blockId, target.clipId) : null;
   const assetId = target.kind === "sound" ? target.assetId : (info?.clip?.assetId ?? null);
   const takes = useMemo(() => (assetId ? soundTakes(state, assetId) : []), [state, assetId]);
   const active =

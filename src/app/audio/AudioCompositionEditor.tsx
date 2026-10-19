@@ -114,7 +114,10 @@ export function AudioCompositionEditor({
     list: [initial],
     at: 0,
   });
-  const comp = history.list[history.at]!;
+  const storedComp = history.list[history.at] ?? initial;
+  const [dragPreview, setDragPreview] = useState<AudioComposition | null>(null);
+  const segmentDrag = useRef<{ pointerId: number; x: number; msPerPixel: number; base: AudioComposition; segment: AudioSegment; next: AudioComposition } | null>(null);
+  const comp = dragPreview ?? storedComp;
   const push = useCallback((next: AudioComposition) => {
     setHistory((h) => {
       const cur = h.list[h.at]!;
@@ -133,7 +136,7 @@ export function AudioCompositionEditor({
   const [contextMs, setContextMs] = useState(500);
   const [autoPlay, setAutoPlay] = useUiPref<boolean>("audio.autoPlayAfterEdit", false, isBool);
   const roomFiles = useMemo(() => roomToneFiles(state), [state]);
-  const info = target.kind === "line" ? lineInfo(state, target.occurrenceId, target.blockId) : null;
+  const info = target.kind === "line" ? lineInfo(state, target.occurrenceId, target.blockId, target.clipId) : null;
   /** Reserve for romlyd i pauser: siste opptak av romlyden for scenen (bolk B, REQ-0690). */
   const roomFallback = useMemo(() => {
     const a = target.kind === "line" ? roomToneAsset(state, roomToneSceneName(info)) : null;
@@ -240,7 +243,7 @@ export function AudioCompositionEditor({
    * (REQ-0710). Kalles aldri mens brukeren drar.
    */
   function edit(next: AudioComposition) {
-    const before = comp;
+    const before = storedComp;
     push(next);
     if (!autoPlay) return;
     const span = changedSpan(before, next);
@@ -479,6 +482,30 @@ export function AudioCompositionEditor({
                     buffer={buffers?.get(s.versionId)}
                     selected={s.id === selected}
                     onSelect={() => setSelected(s.id)}
+                    onPointerDown={(e) => {
+                      if (e.button !== 0) return;
+                      const width = ruler.current?.getBoundingClientRect().width;
+                      if (!width) return;
+                      e.currentTarget.setPointerCapture(e.pointerId);
+                      setSelected(s.id);
+                      segmentDrag.current = { pointerId: e.pointerId, x: e.clientX, msPerPixel: view / width, base: storedComp, segment: s, next: storedComp };
+                    }}
+                    onPointerMove={(e) => {
+                      const d = segmentDrag.current;
+                      if (!d || d.pointerId !== e.pointerId) return;
+                      const atMs = Math.max(0, Math.round(d.segment.atMs + (e.clientX - d.x) * d.msPerPixel));
+                      d.next = updateSegment(d.base, d.segment.id, { atMs }, srcMs(d.segment));
+                      setDragPreview(d.next);
+                    }}
+                    onPointerUp={(e) => {
+                      const d = segmentDrag.current;
+                      if (!d || d.pointerId !== e.pointerId) return;
+                      segmentDrag.current = null;
+                      setDragPreview(null);
+                      edit(d.next);
+                    }}
+                    onPointerCancel={() => { segmentDrag.current = null; setDragPreview(null); }}
+                    onLostPointerCapture={() => { segmentDrag.current = null; setDragPreview(null); }}
                   />
                 ))}
             </div>
@@ -780,6 +807,11 @@ function SegmentBlock({
   buffer,
   selected,
   onSelect,
+  onPointerDown,
+  onPointerMove,
+  onPointerUp,
+  onPointerCancel,
+  onLostPointerCapture,
 }: {
   s: AudioSegment;
   left: string;
@@ -789,6 +821,11 @@ function SegmentBlock({
   buffer: AudioBuffer | undefined;
   selected: boolean;
   onSelect: () => void;
+  onPointerDown: React.PointerEventHandler<HTMLButtonElement>;
+  onPointerMove: React.PointerEventHandler<HTMLButtonElement>;
+  onPointerUp: React.PointerEventHandler<HTMLButtonElement>;
+  onPointerCancel: React.PointerEventHandler<HTMLButtonElement>;
+  onLostPointerCapture: React.PointerEventHandler<HTMLButtonElement>;
 }) {
   const canvas = useRef<HTMLCanvasElement | null>(null);
   useEffect(() => {
@@ -806,11 +843,17 @@ function SegmentBlock({
     }
   }, [buffer, s.sourceInMs, s.lengthMs, color]);
   return (
-    <button
+    <Button
+      variant="ghost"
       type="button"
       onClick={onSelect}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerCancel}
+      onLostPointerCapture={onLostPointerCapture}
       className={
-        "absolute overflow-hidden rounded-sm border text-left " +
+        "absolute block touch-none cursor-grab overflow-hidden rounded-sm border p-0 text-left active:cursor-grabbing " +
         // Romlyd og overganger (bolk E) vises lavere, så talen under alltid synes
         (s.role === "room" || s.role === "transition"
           ? "top-8 z-10 h-5 border-dashed "
@@ -826,6 +869,7 @@ function SegmentBlock({
       aria-label={label}
       title={label}
       data-role={s.role ?? "speech"}
+      data-at-ms={s.atMs}
       data-testid="audio-editor-seg"
     >
       <canvas
@@ -838,7 +882,7 @@ function SegmentBlock({
       <span className="relative z-10 whitespace-nowrap px-1 text-[11px] leading-4 font-medium text-text-primary drop-shadow">
         {label}
       </span>
-    </button>
+    </Button>
   );
 }
 

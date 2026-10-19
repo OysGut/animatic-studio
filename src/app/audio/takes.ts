@@ -28,7 +28,7 @@ type Run = Pick<Commands, "runAndWait">;
 
 export type TakeTarget =
   | { readonly kind: "sound"; readonly assetId: string; readonly variantId?: string | undefined }
-  | { readonly kind: "line"; readonly occurrenceId: string; readonly blockId: string };
+  | { readonly kind: "line"; readonly occurrenceId: string; readonly blockId: string; readonly clipId?: string };
 
 async function run(cmds: Run, c: Command, label: string, group: string): Promise<void> {
   const r = await cmds.runAndWait(c, label, group);
@@ -137,7 +137,7 @@ export async function saveTake(
     const versionId = await addVersion(cmds, variantId, media, note, group);
     return { assetId: target.assetId, variantId, versionId, clipId: null };
   }
-  const info = lineInfo(state, target.occurrenceId, target.blockId);
+  const info = lineInfo(state, target.occurrenceId, target.blockId, target.clipId);
   if (!info) throw new Error(L("Replikken finnes ikke lenger.", "The line no longer exists."));
   if (info.clip) {
     const assetId = info.clip.assetId;
@@ -256,7 +256,7 @@ export async function chooseTake(
 ): Promise<void> {
   const group = newId<"command">();
   if (target.kind === "line") {
-    const info = lineInfo(state, target.occurrenceId, target.blockId);
+    const info = lineInfo(state, target.occurrenceId, target.blockId, target.clipId);
     if (info?.clip) {
       const f = audioClipFieldsOf(info.clip);
       await run(

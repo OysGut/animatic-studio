@@ -49,7 +49,7 @@ vi.mock("@/app/library/asset-audio", () => ({
   ),
 }));
 
-const { saveTake, saveRoomTone, chooseTake } = await import("@/app/audio/takes");
+  const { saveTake, saveRoomTone, chooseTake } = await import("@/app/audio/takes");
 const { importAudio } = await import("@/app/mobile/use-mobile-imports");
 
 const P = fixture.project.id;
@@ -139,6 +139,46 @@ describe("kontekstene for lydopptak", () => {
 });
 
 describe("takes for en replikk", () => {
+  async function twoClips() {
+    const info = silentLine(fixture.state);
+    const cmds = fakeCmds(fixture.state);
+    const target = { kind: "line", occurrenceId: info.occurrenceId, blockId: info.blockId } as const;
+    const first = await saveTake(cmds, cmds.current(), target, media(3000), "første");
+    const clip = first.clipId ? cmds.current().audioClips[first.clipId] : undefined;
+    if (!clip) throw new Error("mangler klipp");
+    const secondId = "00000000-0000-7000-8000-00000000cc02" as typeof clip.id;
+    const state = { ...cmds.current(), audioClips: { ...cmds.current().audioClips,
+      [clip.id]: { ...clip, muted: true },
+      [secondId]: { ...clip, id: secondId, muted: false, offsetMs: clip.offsetMs + 2000 },
+    } };
+    return { state, firstId: clip.id, secondId, target };
+  }
+
+  it("bruker det udempede aktive klippet når ingen klipp er valgt", async () => {
+    const { state, target, secondId } = await twoClips();
+    expect(lineInfo(state, target.occurrenceId, target.blockId)?.clip?.id).toBe(secondId);
+  });
+
+  it("nye takes og valg av take treffer valgt klipp, ikke første klipp", async () => {
+    const { state, target, firstId, secondId } = await twoClips();
+    const cmds = fakeCmds(state);
+    const chosen = { ...target, clipId: secondId };
+    const saved = await saveTake(cmds, state, chosen, media(4700), "valgt klipp");
+    expect(lineInfo(state, target.occurrenceId, target.blockId, firstId)?.clip?.id).toBe(firstId);
+    await chooseTake(cmds, cmds.current(), chosen, { variantId: saved.variantId, versionId: saved.versionId, durationMs: 4700 });
+    expect(cmds.current().audioClips[secondId]?.versionId).toBe(saved.versionId);
+    expect(cmds.current().audioClips[secondId]?.lengthMs).toBe(4700);
+    expect(cmds.current().audioClips[firstId]).toEqual(state.audioClips[firstId]);
+  });
+
+  it("mobilkonteksten bevarer valgt klipp og avviser ugyldig klipp-ID", () => {
+    const occurrenceId = "00000000-0000-7000-8000-0000000000a1";
+    const blockId = "00000000-0000-7000-8000-0000000000b1";
+    const clipId = "00000000-0000-7000-8000-0000000000c1";
+    expect(parseUploadContext({ type: "line", occurrenceId, blockId, clipId })).toEqual({ type: "line", occurrenceId, blockId, clipId });
+    expect(parseUploadContext({ type: "line", occurrenceId, blockId, clipId: "invalid" })).toBeNull();
+  });
+
   it("første opptak lager lydressurs og lydklipp der replikken begynner; neste take erstatter ikke", async () => {
     const info = silentLine(fixture.state);
     const cmds = fakeCmds(fixture.state);

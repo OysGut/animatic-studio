@@ -28,6 +28,8 @@ import {
 import { drawFrame } from "@/engine/compositor/canvas";
 import { fontsReady, textSpecsOf } from "@/engine/typography/fonts";
 import { uploadAssetImage } from "@/app/library/asset-images";
+import { ASSET_BUCKET, createSignedUrls } from "@/adapters/browser/storage-files";
+import type { ImageSource } from "@/engine/compositor/canvas";
 
 export type Run = (command: Command, label: string, group?: string) => string | null;
 export type RunAndWait = (
@@ -152,6 +154,19 @@ export async function templateThumbnail(
     for (const l of layersOf(state, comp.id)) if (l.groupId === id) only.add(l.id);
   }
   const out = renderFrame(state, comp.id, frame, { view: "scene", onlyLayers: only });
+  const paths = [...new Set(out.items.flatMap(item => item.version ? [item.version.mediaPath] : []))];
+  const images = new Map<string, ImageSource>();
+  if (paths.length) {
+    const urls = await createSignedUrls(ASSET_BUCKET, paths, 600);
+    await Promise.all(urls.map(({ path, signedUrl }) => new Promise<void>((resolve, reject) => {
+      const image = new Image();
+      image.crossOrigin = "anonymous";
+      image.onload = () => { images.set(path, image); resolve(); };
+      image.onerror = () => reject(new Error(L("Kunne ikke laste bildet til malminiatyren", "Could not load the image for the template thumbnail")));
+      image.src = signedUrl;
+    })));
+    if (images.size !== paths.length) throw new Error(L("Kunne ikke laste bildet til malminiatyren", "Could not load the image for the template thumbnail"));
+  }
   const W = 480;
   const k = W / comp.width;
   const canvas = document.createElement("canvas");
@@ -159,7 +174,7 @@ export async function templateThumbnail(
   canvas.height = Math.max(1, Math.round(comp.height * k));
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error(L("Kunne ikke lage miniatyren", "Could not make the thumbnail"));
-  drawFrame(ctx, out, { view: [k, 0, 0, k, 0, 0], images: new Map(), placeholders: false });
+  drawFrame(ctx, out, { view: [k, 0, 0, k, 0, 0], images, placeholders: false });
   const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, "image/png"));
   if (!blob) throw new Error(L("Kunne ikke lage miniatyren", "Could not make the thumbnail"));
   return new File([blob], "mal.png", { type: "image/png" }); // i18n-ignore – filnavn
