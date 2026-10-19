@@ -275,6 +275,7 @@ export const IconButton = forwardRef<
           ref={ref}
           variant="icon"
           aria-label={label}
+          data-icon-button
           {...rest}
           onFocus={(e) => {
             onFocus?.(e);

@@ -193,7 +193,7 @@ for (const [name, path] of [["scene", "/scene"], ["manus", "/manus"], ["bibliote
 }
 
 await run("u2-ikonknapp", "/scene", async (page) => {
-  const btn = page.locator("[data-toolbar-group] button[aria-label]").first();
+  const btn = page.locator("[data-toolbar-group] button[data-icon-button]:not([disabled])").first();
   const box = await btn.boundingBox();
   check(box && Math.round(box.height) === 28 && Math.round(box.width) === 28, "ikonknappen er 28 × 28 px");
   await btn.hover();
