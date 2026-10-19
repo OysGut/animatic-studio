@@ -27,7 +27,9 @@ await h.scenario("ca5-track", OCC, "nb", async page => {
   const gen = page.getByTestId(`lipsync-generate-${CLIP}`);
   console.log("  debug: disabled =", await gen.getAttribute("disabled"), "takeId-seed ok");
   await gen.click({ force: true });
-  h.check(await h.eventually(() => page.getByTestId("anim-mouth-track").getByRole("alert").count() > 0, 5000), "generering uten lastet lyd gir en forklaring, ingen stilltiende feil");
+  await page.waitForTimeout(800);
+  console.log("  debug: alerts =", await page.getByRole("alert").count(), "html snippet:", (await page.getByTestId("anim-mouth-track").innerHTML()).slice(0, 300));
+  h.check(await page.getByRole("alert").count() > 0, "generering uten lastet lyd gir en forklaring, ingen stilltiende feil");
   h.check(!h.state.commands.some(c => c.type === "SaveLipsyncResult"), "ingenting lagres uten «Bruk»");
   await page.screenshot({ path: `${h.out}/mouth-track.png` });
 });
