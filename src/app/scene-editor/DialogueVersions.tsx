@@ -9,6 +9,7 @@ import { AudioClipEditor } from "@/app/audio/AudioClipEditor";
 import { scheduleOne } from "@/engine/audio/mixer";
 import type { Commands } from "@/app/project/use-commands";
 
+import { NoteFlagControl } from "@/app/dialogue/NoteFlagControl";
 export function DialogueVersions({ state, clip, cmds, onStopScene }: { state: ProjectState; clip: AudioClip; cmds: Commands; onStopScene: () => void }) {
   const versions = versionsOfClip(state, clip.id);
   const files = versions.map(v => ({ v, clip: mirroredClip({ ...clip, activeVersionId: v.id }, v) }));
@@ -45,6 +46,7 @@ export function DialogueVersions({ state, clip, cmds, onStopScene }: { state: Pr
             setPreview(v.id); if (source.current) source.current.onended = () => setPreview(null);
           }}>{preview === v.id ? L("Stopp forhåndslytting", "Stop preview") : L("Forhåndslytt", "Preview")}</Button>
           <Button data-testid="dialogue-version-activate" size="sm" variant="secondary" disabled={active} onClick={() => { stop(); setError(cmds.run({ type: "SetActiveDialogueVersion", clipId: clip.id, dialogueVersionId: v.id }, L("Velg filmversjon", "Choose film version"))); }}>{L("Bruk i filmen", "Use in film")}</Button>
+          <NoteFlagControl state={state} kind="dialogue_version" targetId={v.id} run={cmds.run} editable />
           <Button data-testid="dialogue-version-edit" size="sm" variant="ghost" onClick={() => { stop(); setEditing(v.id); }}>{L("Rediger lydprofil", "Edit audio profile")}</Button>
           <Button data-testid="dialogue-version-delete" size="sm" variant="ghost" disabled={active} onClick={() => setDeleting(v.id)}>{L("Slett versjon …", "Delete version …")}</Button>
         </div>

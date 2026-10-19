@@ -15,10 +15,11 @@ import {
   type AudioKind,
   dialogueSpeaker,
   suggestedDialogueCharacter,
-  type ProjectState,
-} from "@/core";
+  type ProjectState, lineDrift } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { DialogueVersions } from "./DialogueVersions";
+import { DriftBadge, DriftDiffView } from "@/app/dialogue/DriftBadge";
+import { NoteFlagControl } from "@/app/dialogue/NoteFlagControl";
 import { DialogueCharacters } from "./DialogueCharacters";
 import { GenerateDialogue } from "./GenerateDialogue";
 import { DialogueLanguageControls } from "./DialogueLanguageControls";
@@ -359,6 +360,8 @@ export function RecordAudioDialog({
           <div className="flex items-center gap-3">{characterId ? <AssetThumb state={state} assetId={characterId} url={covers[characterId]} /> : null}<strong data-testid="dialogue-character-name" className="text-base text-text-primary">{character?.name ?? dialogueSpeaker(state, occurrenceId, blockId)}</strong></div>
           {contextBefore.map(b => <p key={b.id} data-testid="dialogue-context-before" className="text-sm text-text-primary opacity-70">{b.text}</p>)}
           <p data-testid="dialogue-active-text" className="whitespace-pre-wrap break-words text-xl leading-relaxed text-text-primary">{state.blocks[blockId]?.text}</p>
+          {lineDrift(state, occurrenceId, blockId).status === "drift" ? <div data-testid="dialogue-drift" role="status" className="rounded-sm border border-status-danger/40 bg-status-danger-bg p-2"><div className="mb-1 flex items-center gap-2 text-xs text-status-danger"><DriftBadge state={state} projectId={projectId} occurrenceId={occurrenceId} blockId={blockId} run={cmds.run} editable={!busy} onGo={() => onOpenChange(false)} />{L("Manuset er endret etter at den aktive lyden ble laget. Endringene står i rødt:", "The script changed after the active audio was made. The changes are shown in red:")}</div><DriftDiffView state={state} occurrenceId={occurrenceId} blockId={blockId} /></div> : <DriftBadge state={state} projectId={projectId} occurrenceId={occurrenceId} blockId={blockId} run={cmds.run} editable={!busy} onGo={() => onOpenChange(false)} />}
+          {selectedClip ? <div className="flex items-center gap-2 text-xs text-text-secondary"><NoteFlagControl state={state} kind="audio_clip" targetId={selectedClip.id} run={cmds.run} editable={!busy} />{L("Huskelapp for replikkens lydsegment", "Note flag for the line's audio segment")}</div> : null}
           {contextAfter.map(b => <p key={b.id} data-testid="dialogue-context-after" className="text-sm text-text-primary opacity-70">{b.text}</p>)}
           <label className="flex flex-col gap-1 text-xs text-text-secondary">{L("Karakter", "Character")}<select data-testid="dialogue-character-select" value={characterId ?? ""} disabled={busy} className={select} onChange={e => {
             const id = e.target.value || null; setCharacterPick(id ?? "");
