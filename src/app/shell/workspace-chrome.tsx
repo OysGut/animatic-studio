@@ -279,9 +279,9 @@ export const IconButton = forwardRef<
           {...rest}
           onFocus={(e) => {
             onFocus?.(e);
-            // Verktøytipset åpnes bare ved peker: et tips som åpner seg ved fokus, ville fanget Esc
-            // (f.eks. når fokus kommer tilbake fra en dialog) og endret tastaturbruken.
-            e.preventDefault();
+            // Tipset åpnes ved tastaturfokus (focus-visible), ikke ved klikk. Første tast lukker det
+            // (se over) før resten av appen ser tasten, så Esc og hurtigtaster virker som før.
+            if (!e.currentTarget.matches(":focus-visible")) e.preventDefault();
           }}
           onPointerMove={(e) => {
             onPointerMove?.(e);

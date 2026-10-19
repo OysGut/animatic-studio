@@ -3,6 +3,7 @@
  * før og etter. «Bruk i scenen» legger samme lyd (spor, volum, toninger, volumpunkter) inn i scenen man
  * jobber med – enkelt å føre atmosfære og musikk videre.
  */
+import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { Check, ChevronLeft, ChevronRight, Pause, Play, Plus } from "lucide-react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -144,9 +145,7 @@ export const NearbyAudioPanel = memo(function NearbyAudioPanel({
       aria-label={L("Lyd i scenene rundt", "Audio in the surrounding scenes")}
       className="flex min-h-0 flex-col border-t border-border"
     >
-      <h2 className="flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2 text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
-        {L("Lyd i scenene rundt", "Audio in the surrounding scenes")}
-      </h2>
+      <PanelHeader as="h2" title={L("Lyd i scenene rundt", "Audio in the surrounding scenes")} />
       <div className="flex items-center gap-1 px-2 pb-1">
         <button
           type="button"

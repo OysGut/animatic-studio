@@ -3,6 +3,7 @@
  * tidspunkt der laget gjør noe i 2D-scenen. En blokk kan ha flere hendelser, og et lag kan høre til flere
  * blokker. Tiden er i 2D-scenens egen tid, så koblingen følger 2D-scenen også når klippet kuttes.
  */
+import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { Link2, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
@@ -95,9 +96,7 @@ export function LayerEvents({
 
   return (
     <section aria-label={L("Hendelser i manuset", "Script events")} className="mb-4">
-      <h3 className="-mx-3 mb-1.5 flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2 text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
-        {L("Hendelser i manuset", "Script events")}
-      </h3>
+      <PanelHeader as="h3" className="-mx-3 mb-1.5" title={L("Hendelser i manuset", "Script events")} />
       {links.length === 0 ? (
         <p className="text-xs text-text-tertiary">
           {L(

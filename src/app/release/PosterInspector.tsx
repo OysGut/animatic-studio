@@ -3,6 +3,7 @@
  * utvalg av karakterer, steder og objekter (REQ-0388/0389), tekstene på norsk og engelsk (REQ-0403/0404),
  * elementets egenskaper (REQ-0398/0399) og kontrollen av lesbarhet (REQ-0392).
  */
+import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { AlertTriangle, CheckCircle2, Info, LayoutTemplate, RotateCcw, Trash2 } from "lucide-react";
 import {
@@ -107,9 +108,7 @@ function Field({
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="flex flex-col gap-2 border-b border-border px-3 py-3">
-      <h3 className="-mx-3 flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2 text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
-        {title}
-      </h3>
+      <PanelHeader as="h3" className="-mx-3" title={title} />
       {children}
     </section>
   );

@@ -6,6 +6,7 @@
  * biblioteket» – samme forslag og samme dialog som «Forslag fra manuset» i biblioteket. Ingenting legges
  * til før brukeren velger det.
  */
+import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { useNavigate } from "@tanstack/react-router";
 import { BookPlus, Check, ListPlus, Plus, X } from "lucide-react";
 import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
@@ -132,9 +133,7 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
       aria-label={L("I denne scenen", "In this scene")}
       className="flex min-h-0 flex-col border-t border-border"
     >
-      <h2 className="flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2 text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
-        {L("I denne scenen", "In this scene")} ({items.length})
-      </h2>
+      <PanelHeader as="h2" title={<>{L("I denne scenen", "In this scene")} ({items.length})</>} />
       {canAdd ? (
         <div className="px-2 pb-1">
           <button

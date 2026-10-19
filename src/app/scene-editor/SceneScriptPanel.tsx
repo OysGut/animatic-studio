@@ -4,6 +4,7 @@
  * mulig å ta opp i en popup og endre slik en ønsker»). Lesevisning av scenen i manusform; det som spilles av,
  * er markert. «Rediger manus …» (eller dobbeltklikk på en linje) åpner redigeringen i et eget vindu.
  */
+import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { FileText, MessageSquare } from "lucide-react";
 import { memo, useEffect, useMemo, useRef } from "react";
 import {
@@ -97,9 +98,7 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
     : L("Vis manuset …", "View the script …");
   return (
     <section aria-label={L("Manus", "Script")} className="flex min-h-0 flex-col">
-      <h2 className="flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2 text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
-        {L("Manus", "Script")}
-      </h2>
+      <PanelHeader as="h2" title={L("Manus", "Script")} />
       <div className={"flex items-center gap-2 px-2 pb-1 pt-1" + (hideEditButton ? " hidden" : "")}>
         <button
           type="button"

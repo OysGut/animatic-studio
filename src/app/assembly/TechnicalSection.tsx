@@ -2,6 +2,7 @@
  * Teknisk visning (DEC-0072, REQ-0103): tidskoder, bildenummer, materiale, kilde-inn/-ut og filinformasjon for
  * scenen og delene. Slås av og på med «Teknisk» i verktøylinjen, så den vanlige visningen forblir enkel.
  */
+import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { L, playheadRows, technicalInfo, type FilmClip, type ProjectState } from "@/core";
 
 export function TechnicalSection({
@@ -21,9 +22,7 @@ export function TechnicalSection({
       aria-label={L("Teknisk", "Technical")}
       className="flex flex-col gap-2 border-b border-border p-3"
     >
-      <h2 className="-mx-3 flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2 text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
-        {L("Teknisk", "Technical")}
-      </h2>
+      <PanelHeader as="h2" className="-mx-3" title={L("Teknisk", "Technical")} />
       <Rows rows={info.scene} />
       {here ? (
         <div className="flex flex-col gap-0.5">

@@ -41,6 +41,8 @@
   --tracking-label: 0.06em;
   --color-media: var(--media-bg);
   --color-on-media: var(--on-media);
+  --color-paper: var(--paper);
+  --color-on-paper: var(--on-paper);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -185,6 +187,9 @@
   /* U2: flater for bilde og film (alltid mørk) og tekst oppå dem. */
   --media-bg: oklch(0 0 0);
   --on-media: oklch(1 0 0);
+  /* Lys lesevisning i manuset (papir). */
+  --paper: oklch(1 0 0);
+  --on-paper: oklch(0 0 0);
   /* Varmgul: lyd som løper over flere scener og det aktive bildeutsnittet (DEC-0045) */
   --accent-warm: oklch(0.84 0.15 82);
   --accent-selection: oklch(0.727 0.098 207.2 / 22%);

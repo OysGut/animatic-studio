@@ -2,6 +2,7 @@
  * Egenskaper for valgt kamerautsnitt (mandat kap. 12): navn, tid, hastighetskurve, start- og sluttramme og bane.
  * Hver endring er én UpdateComposition (alle komposisjonsfelt + nytt kamera) som kan angres.
  */
+import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { useRef, useState, type ReactNode } from "react";
 import {
   EASINGS,
@@ -49,9 +50,7 @@ const fmt = (n: number) => String(Math.round(n * 100) / 100);
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="mb-4">
-      <h3 className="-mx-3 mb-1.5 flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2 text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
-        {title}
-      </h3>
+      <PanelHeader as="h3" className="-mx-3 mb-1.5" title={title} />
       <div className="flex flex-col gap-2">{children}</div>
     </section>
   );
@@ -320,9 +319,7 @@ export function CameraPanel({
   const curved = shot.curve !== null;
   return (
     <div className="p-3">
-      <h2 className="-mx-3 mb-3 flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2 text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
-        {L("Kamerautsnitt", "Camera shot")}
-      </h2>
+      <PanelHeader as="h2" className="-mx-3 mb-3" title={L("Kamerautsnitt", "Camera shot")} />
       {error ? (
         <p role="alert" className="mb-3 text-xs text-status-danger">
           {error}

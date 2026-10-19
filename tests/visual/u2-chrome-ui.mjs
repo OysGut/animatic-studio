@@ -174,23 +174,87 @@ const moreBtn = (page) => page.getByRole("button", { name: /^(Mer …|More …)$
 const rowHeights = (page) =>
   page.locator("[data-toolbar-group]").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height));
 
+const toolbarHeights = (page) =>
+  page.locator("[data-toolbar-group]").evaluateAll((els) =>
+    [...new Set(els.map((e) => e.parentElement))].map((t) => t.getBoundingClientRect().height),
+  );
+
 for (const [name, path] of [["scene", "/scene"], ["manus", "/manus"], ["bibliotek", "/bibliotek"]]) {
   await run(`u2-${name}-1280`, path, async (page) => {
     const hs = await rowHeights(page);
     check(hs.length > 0 && hs.every((h) => Math.round(h) === 32), `${name}: gruppene i verktøylinjen er 32 px høye`);
+    const ts = await toolbarHeights(page);
+    check(ts.length > 0 && ts.every((h) => Math.round(h) >= 32 && Math.round(h) <= 33), `${name}: verktøylinjen er 32 px høy (${ts.map(Math.round).join(", ")})`);
     check(!(await moreBtn(page).isVisible()), `${name}: ved 1280 px er alt synlig, «Mer …» er skjult`);
   });
+}
+
+await run("u2-scene-900", "/scene", async (page) => {
+  const more = moreBtn(page);
+  check(await more.isVisible(), "sceneeditoren: ved 900 px vises «Mer …»");
+  await more.focus();
+  await page.keyboard.press("Enter");
+  await page.waitForTimeout(300);
+  const inside = await page.locator("[data-radix-popper-content-wrapper] [data-toolbar-group]").count();
+  check(inside > 0, "sceneeditoren: grupper som ikke får plass, ligger i «Mer …»");
+  await page.keyboard.press("Escape");
+}, { width: 900 });
+
+for (const [name, path] of [["manus", "/manus"], ["bibliotek", "/bibliotek"]]) {
   await run(`u2-${name}-smal`, path, async (page) => {
-    const more = moreBtn(page);
-    check(await more.isVisible(), `${name}: ved 760 px vises «Mer …»`);
-    await more.focus();
-    await page.keyboard.press("Enter");
-    await page.waitForTimeout(300);
-    const inside = await page.locator("[data-radix-popper-content-wrapper] [data-toolbar-group]").count();
-    check(inside > 0, `${name}: grupper som ikke får plass, ligger i «Mer …»`);
-    await page.keyboard.press("Escape");
+    check(await moreBtn(page).isVisible(), `${name}: ved 760 px vises «Mer …»`);
   }, { width: 760 });
 }
+
+await run("u2-tips-fokus", "/scene", async (page) => {
+  const undo = page.locator('button[data-icon-button][aria-label^="Angre"]').first();
+  await undo.waitFor({ timeout: 8000 });
+  // Bare for visningen: gjør knappen fokuserbar uten å kjøre noe.
+  await undo.evaluate((e) => e.removeAttribute("disabled"));
+  const label = await undo.getAttribute("aria-label");
+  // Tastaturfokus: Tab fra elementet foran.
+  await undo.evaluate((e) => {
+    const prev = document.createElement("button");
+    prev.id = "u2-prev";
+    e.before(prev);
+  });
+  await page.locator("#u2-prev").focus();
+  await page.keyboard.press("Tab");
+  await page.waitForTimeout(700);
+  const tip = page.getByRole("tooltip");
+  const text = (await tip.count()) ? await tip.first().innerText() : "";
+  check(text.includes(label ?? "§"), "tastaturfokus på ikonknappen viser verktøytips med navnet");
+  check(text.includes("⌘Z"), "verktøytipset viser hurtigtasten");
+  await page.keyboard.press("Shift");
+  await page.waitForTimeout(300);
+  check((await page.getByRole("tooltip").count()) === 0, "en tast lukker verktøytipset");
+});
+
+await run("u2-panelkontrast", "/scene", async (page) => {
+  const ratios = await page.locator("[data-panel] header h2, [data-panel] header h3, div.h-toolbar > h2, div.h-toolbar > h3").evaluateAll((els) => {
+    const rgb = (c) => {
+      const cv = document.createElement("canvas").getContext("2d");
+      cv.fillStyle = c; cv.fillRect(0, 0, 1, 1);
+      return [...cv.getImageData(0, 0, 1, 1).data].slice(0, 3);
+    };
+    const lum = ([r, g, b]) => {
+      const f = (v) => ((v /= 255) <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
+      return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+    };
+    const bgOf = (el) => {
+      for (let n = el; n; n = n.parentElement) {
+        const c = getComputedStyle(n).backgroundColor;
+        if (c && c !== "rgba(0, 0, 0, 0)" && c !== "transparent") return c;
+      }
+      return "rgb(0,0,0)";
+    };
+    return els.filter((e) => e.offsetParent).map((e) => {
+      const a = lum(rgb(getComputedStyle(e).color)), b = lum(rgb(bgOf(e)));
+      return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+    });
+  });
+  check(ratios.length > 0 && ratios.every((r) => r >= 4.5), `titlene i panelhodene har kontrast ≥ 4,5:1 (laveste ${Math.min(...ratios).toFixed(2)})`);
+});
 
 await run("u2-ikonknapp", "/scene", async (page) => {
 
