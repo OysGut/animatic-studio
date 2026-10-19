@@ -177,8 +177,8 @@ export function VisualBriefEditor({
         >
           <p>
             {L(
-              `Manusets omtale av ${asset.name} (og forsidebildet) sendes til en språkmodell i Lovable AI, som lager et utkast. Det bruker litt kreditter (langt mindre enn et bilde).`,
-              `The script's mentions of ${asset.name} (and the cover image) are sent to a language model in Lovable AI, which makes a draft. It uses a few credits (far less than an image).`,
+              `Manusets omtale av ${asset.name} (og forsidebildet) sendes til en språkmodell i innebygd AI, som lager et utkast. Det bruker litt kreditter (langt mindre enn et bilde).`,
+              `The script's mentions of ${asset.name} (and the cover image) are sent to a language model in built-in AI, which makes a draft. It uses a few credits (far less than an image).`,
             )}
             {text.trim()
               ? L(

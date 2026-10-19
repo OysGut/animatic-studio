@@ -31,8 +31,8 @@ function ago(minutes: number): string {
 export function cronSummary(run: CronRun | null, now = Date.now()): CronSummary {
   const warning = () =>
     L(
-      `Bakgrunnsjobben har ikke kjørt de siste ${CRON_STALE_MINUTES} minuttene. Sjekk at appen er publisert og jobben er satt opp i Lovable.`,
-      `The background job has not run in the last ${CRON_STALE_MINUTES} minutes. Check that the app is published and the job is set up in Lovable.`,
+      `Bakgrunnsjobben har ikke kjørt de siste ${CRON_STALE_MINUTES} minuttene. Sjekk at appen er publisert og jobben er satt opp i Animatic Studio.`,
+      `The background job has not run in the last ${CRON_STALE_MINUTES} minutes. Check that the app is published and the job is set up in Animatic Studio.`,
     );
   const t = run ? Date.parse(run.at) : Number.NaN;
   if (!run || !Number.isFinite(t))

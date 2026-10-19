@@ -27003,7 +27003,7 @@ requirements:
   history:
   - date: '2026-10-19'
     decision: DEC-0099
-    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; Kap. 42–51 er supplert i B2 fra REQ-0740; historisk oppdragsdekning beholdes.
 - id: REQ-0726
   title: 'Tekst-AI: autentisering, kvoter og trygge logger'
   text: Bare autoriserte prosjektredaktører og eiere starter tekstkall; inndata har maksimal lengde og timegrense og prosjektbudsjett
@@ -27038,7 +27038,7 @@ requirements:
   history:
   - date: '2026-10-19'
     decision: DEC-0099
-    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; Kap. 42–51 er supplert i B2 fra REQ-0740; historisk oppdragsdekning beholdes.
 - id: REQ-0727
   title: 'Story Lab: profil og karakterbue'
   text: Profilfelt og scenestadier lagres med validerte kommandoer og ordinær angring. profileAt følger fortellingstid.
@@ -27069,7 +27069,7 @@ requirements:
   history:
   - date: '2026-10-19'
     decision: DEC-0099
-    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; Kap. 42–51 er supplert i B2 fra REQ-0740; historisk oppdragsdekning beholdes.
 - id: REQ-0728
   title: 'Story Lab: kunnskapsgrenser'
   text: knowledgeAt inkluderer bare fakta karakteren kjenner på valgt fortellingstid; ukjente hemmeligheter og senere hendelser utelates
@@ -27102,7 +27102,7 @@ requirements:
   history:
   - date: '2026-10-19'
     decision: DEC-0099
-    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; Kap. 42–51 er supplert i B2 fra REQ-0740; historisk oppdragsdekning beholdes.
 - id: REQ-0729
   title: 'Story Lab: turer, regi og forgrening'
   text: Samme taler kommer aldri tre ganger på rad. Standard åtte turer før pause; regi har next, scene eller session-gyldighet, og
@@ -27135,7 +27135,7 @@ requirements:
   history:
   - date: '2026-10-19'
     decision: DEC-0099
-    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; Kap. 42–51 er supplert i B2 fra REQ-0740; historisk oppdragsdekning beholdes.
 - id: REQ-0730
   title: 'Story Lab: økter og arbeidsflater'
   text: Karakterer, grupper, scenelab, intervju og canvas gjenbruker profiler og økter med lagret kontekst og kan fortsettes uten tap
@@ -27174,7 +27174,7 @@ requirements:
   history:
   - date: '2026-10-19'
     decision: DEC-0099
-    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; Kap. 42–51 er supplert i B2 fra REQ-0740; historisk oppdragsdekning beholdes.
 - id: REQ-0731
   title: 'Story Lab: godkjent overføring og angring'
   text: Forslag kommer aldri automatisk inn i manus eller profil. Brukeren får forhåndsvisning og bekrefter; overføring bruker eksisterende
@@ -27207,7 +27207,7 @@ requirements:
   history:
   - date: '2026-10-19'
     decision: DEC-0099
-    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; Kap. 42–51 er supplert i B2 fra REQ-0740; historisk oppdragsdekning beholdes.
 - id: REQ-0732
   title: 'Story Lab: analysespråk og manusets språk'
   text: Analyse og replikksjekk følger UI-språket; rolle-replikker følger manusets språk, foreløpig nb.
@@ -27238,7 +27238,7 @@ requirements:
   history:
   - date: '2026-10-19'
     decision: DEC-0099
-    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; Kap. 42–51 er supplert i B2 fra REQ-0740; historisk oppdragsdekning beholdes.
 - id: REQ-0733
   title: 'CA1: integrert animasjonsfane og framepresis navigasjon'
   text: Scene og Animasjon bruker samme scenedata; tidskode, én-frame-steg, avspilling, navigator og område endrer ikke scenetransformasjonen.
@@ -27269,7 +27269,7 @@ requirements:
   history:
   - date: '2026-10-19'
     decision: DEC-0099
-    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; Kap. 42–51 er supplert i B2 fra REQ-0740; historisk oppdragsdekning beholdes.
 - id: REQ-0734
   title: 'CA2: scene-pinnede bildevarianter og lydspor'
   text: Animasjonen bruker eksisterende lag og bildesegmenter, variante- og versjonsetiketter, valgt lyd og felles sceneklokke.
@@ -27300,7 +27300,7 @@ requirements:
   history:
   - date: '2026-10-19'
     decision: DEC-0099
-    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; Kap. 42–51 er supplert i B2 fra REQ-0740; historisk oppdragsdekning beholdes.
 - id: REQ-0735
   title: 'CA3: uforanderlig rigg, ankerpunkter og ikke-destruktiv bruk'
   text: Riggversjoner, ansiktsankre og scene-av/på går gjennom kommandoer med invers; uten rigg er hele framen identisk med tidligere
@@ -27334,7 +27334,7 @@ requirements:
   history:
   - date: '2026-10-19'
     decision: DEC-0099
-    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; Kap. 42–51 er supplert i B2 fra REQ-0740; historisk oppdragsdekning beholdes.
 - id: REQ-0736
   title: 'U5: konsistent presentasjon og fungerende miniatyrer'
   text: Skjermene bruker felles tetthet, tokens, tilgjengelig fokus og tilstander. Miniatyrer viser faktisk bilde, ellers initial og
@@ -27365,7 +27365,7 @@ requirements:
   history:
   - date: '2026-10-19'
     decision: DEC-0099
-    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; Kap. 42–51 er supplert i B2 fra REQ-0740; historisk oppdragsdekning beholdes.
 - id: REQ-0737
   title: 'CA8/U5: rytmedrag og beskyttede tidsområder'
   text: Cmd/Ctrl-drag planlegger rytmeendringen via RetimeScene med én angring; beskyttede områder flyttes aldri.
@@ -27396,7 +27396,7 @@ requirements:
   history:
   - date: '2026-10-19'
     decision: DEC-0099
-    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; Kap. 42–51 er supplert i B2 fra REQ-0740; historisk oppdragsdekning beholdes.
 - id: REQ-0738
   title: 'Ø-11: invitasjoner og klientens minste lesetilgang'
   text: Prosjekt- og gruppeinvitasjoner krever riktig innlogget e-post, trimmet og case-insensitivt, med utløp og engangsbruk. AI-hemmeligheter
@@ -27429,7 +27429,7 @@ requirements:
   history:
   - date: '2026-10-19'
     decision: DEC-0099
-    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; Kap. 42–51 er supplert i B2 fra REQ-0740; historisk oppdragsdekning beholdes.
 - id: REQ-0739
   title: 'Ø-11: film- og mobilopplastingsvern'
   text: Filmdelelenker har sikre token, utløp og tilbaketrekking. Mobilopplasting validerer token, aktiv økt, størrelse og filtype uten
@@ -27462,4 +27462,373 @@ requirements:
   history:
   - date: '2026-10-19'
     decision: DEC-0099
-    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; Kap. 42–51 er supplert i B2 fra REQ-0740; historisk oppdragsdekning beholdes.
+
+- id: REQ-0740
+  title: Fra filmidé til Story Lab-canvas
+  text: Brukeren starter med en kort filmidé. Adaptive spørsmål utvikler plot, karakterer og miljøer på skrivecanvaset.
+    Godkjente forslag overføres som redigerbart prosjektinnhold.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '42'
+    document: docs/decisions/DECISION_LOG.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - Brukeren starter med en kort filmidé. Adaptive spørsmål utvikler plot, karakterer og miljøer på skrivecanvaset.
+    Godkjente forslag overføres som redigerbart prosjektinnhold.
+  tests:
+  - tests/unit/storylab-interview.test.ts
+  - tests/unit/storylab-canvas.test.ts
+  - tests/visual/storylab-canvas-ui.mjs
+  status: Under arbeid
+  implementation:
+  - src/app/storylab/new-project-idea.ts
+  - src/app/storylab/InterviewView.tsx
+  - src/core/storylab/canvas-transfer.ts
+  verification:
+  - tests/unit/storylab-interview.test.ts
+  - tests/unit/storylab-canvas.test.ts
+  - tests/visual/storylab-canvas-ui.mjs
+  notes: 'Deldekning: featuretester; samlet idé → adaptive spørsmål → canvas → godkjent overføring er ikke verifisert
+    ende til ende.'
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse.
+
+- id: REQ-0741
+  title: Psykologisk karaktereditor og bevart arbeid
+  text: Maja åpnes fra karakteroversikten. Profilen kan åpnes og redigeres, og egenskapene bevares. Brukeren går
+    tilbake til canvaset uten å miste arbeid.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '43'
+    document: docs/decisions/DECISION_LOG.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - Maja åpnes fra karakteroversikten. Profilen kan åpnes og redigeres, og egenskapene bevares. Brukeren går tilbake
+    til canvaset uten å miste arbeid.
+  tests:
+  - tests/unit/storylab-replay.test.ts
+  - tests/visual/storylab-ui.mjs
+  status: Under arbeid
+  implementation:
+  - src/app/storylab/CharacterWorkspace.tsx
+  - src/core/storylab/profile.ts
+  verification:
+  - tests/unit/storylab-replay.test.ts
+  - tests/visual/storylab-ui.mjs
+  notes: Profil og gjenåpning har tester; samlet retur til canvas med lagret profil trenger eksplisitt akseptansetest.
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse.
+
+- id: REQ-0742
+  title: Individuell samtale ved valgt tidspunkt
+  text: Maja svarer ut fra profil og valgt fortellingstid. Brukeren kan bytte til analysemodus.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '44'
+    document: docs/decisions/DECISION_LOG.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - Maja svarer ut fra profil og valgt fortellingstid. Brukeren kan bytte til analysemodus.
+  tests:
+  - tests/unit/storylab-knowledge.test.ts
+  - tests/unit/storylab-replay.test.ts
+  - tests/visual/storylab-ui.mjs
+  status: Under arbeid
+  implementation:
+  - src/app/storylab/ConversationView.tsx
+  - src/core/storylab/prompts.ts
+  verification:
+  - tests/unit/storylab-knowledge.test.ts
+  - tests/unit/storylab-replay.test.ts
+  - tests/visual/storylab-ui.mjs
+  notes: Dekning for kunnskap, modus og samtale; hele kapittelreisen er ikke samlet verifisert.
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse.
+
+- id: REQ-0743
+  title: Gruppesamtale med regi og pause
+  text: Brukeren velger Maja og Ola og beskriver en situasjon. Karakterene improviserer. Regissøren kan stoppe,
+    pause, stille spørsmål og endre instrukser.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '45'
+    document: docs/decisions/DECISION_LOG.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - Brukeren velger Maja og Ola og beskriver en situasjon. Karakterene improviserer. Regissøren kan stoppe, pause,
+    stille spørsmål og endre instrukser.
+  tests:
+  - tests/unit/storylab-engine.test.ts
+  - tests/unit/storylab-group-view.test.tsx
+  - tests/visual/storylab-group-ui.mjs
+  status: Under arbeid
+  implementation:
+  - src/app/storylab/GroupConversationView.tsx
+  - src/core/storylab/engine.ts
+  verification:
+  - tests/unit/storylab-engine.test.ts
+  - tests/unit/storylab-group-view.test.tsx
+  - tests/visual/storylab-group-ui.mjs
+  notes: Motoren tester pause og regi. Full akseptansereise er ikke samlet kontrollert.
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse.
+
+- id: REQ-0744
+  title: Midlertidige tilstander endrer ikke profilen
+  text: Regi som «Maja er bakfull» påvirker improvisasjonen uten å endre den permanente profilen.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '46'
+    document: docs/decisions/DECISION_LOG.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - Regi som «Maja er bakfull» påvirker improvisasjonen uten å endre den permanente profilen.
+  tests:
+  - tests/unit/storylab-engine.test.ts
+  - tests/unit/storylab-group-prompts.test.ts
+  status: Under arbeid
+  implementation:
+  - src/core/storylab/engine.ts
+  - src/core/storylab/prompts.ts
+  verification:
+  - tests/unit/storylab-engine.test.ts
+  - tests/unit/storylab-group-prompts.test.ts
+  notes: Regi har next/scene/session-levetid; konkret bakfull → uendret permanent profil-akseptanse er ikke påvist.
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse.
+
+- id: REQ-0745
+  title: Kunnskapsgrenser per deltaker
+  text: Før en avsløring kjenner karakterene ikke avsløringen. Kunnskap skilles per deltaker og følger fortellingstid.
+    Andres hemmeligheter lekker aldri.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '47'
+    document: docs/decisions/DECISION_LOG.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - Før en avsløring kjenner karakterene ikke avsløringen. Kunnskap skilles per deltaker og følger fortellingstid.
+    Andres hemmeligheter lekker aldri.
+  tests:
+  - tests/unit/storylab-knowledge.test.ts
+  - tests/unit/storylab-group-prompts.test.ts
+  - tests/visual/storylab-scene-ui.mjs
+  status: Under arbeid
+  implementation:
+  - src/core/storylab/facts.ts
+  - src/core/storylab/prompts.ts
+  verification:
+  - tests/unit/storylab-knowledge.test.ts
+  - tests/unit/storylab-group-prompts.test.ts
+  - tests/visual/storylab-scene-ui.mjs
+  notes: Direkte tester av før/etter avsløring, knownBy, tilbakeblikk og utelating av andres hemmeligheter. UI-akseptanse
+    er separat.
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse.
+
+- id: REQ-0746
+  title: Rådgivende analyse av eksisterende scene
+  text: Dialog og handling analyseres mot profiler og kontekst. Forslag forklares; originalen endres ikke automatisk.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '48'
+    document: docs/decisions/DECISION_LOG.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - Dialog og handling analyseres mot profiler og kontekst. Forslag forklares; originalen endres ikke automatisk.
+  tests:
+  - tests/unit/storylab-scene-batch.test.ts
+  - tests/unit/storylab-line-check.test.ts
+  - tests/visual/storylab-scene-ui.mjs
+  status: Under arbeid
+  implementation:
+  - src/app/storylab/SceneLab.tsx
+  - src/core/storylab/line-check.ts
+  verification:
+  - tests/unit/storylab-scene-batch.test.ts
+  - tests/unit/storylab-line-check.test.ts
+  - tests/visual/storylab-scene-ui.mjs
+  notes: Analyse og forslag har tester; samlet kapittelreise er ikke kontrollert.
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse.
+
+- id: REQ-0747
+  title: Alternative improvisasjoner og sammenligning
+  text: To improvisasjoner med ulike instrukser kan lagres og sammenlignes. Brukeren velger elementer fra begge.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '49'
+    document: docs/decisions/DECISION_LOG.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - To improvisasjoner med ulike instrukser kan lagres og sammenlignes. Brukeren velger elementer fra begge.
+  tests:
+  - tests/unit/storylab-suggestions-view.test.tsx
+  - tests/visual/storylab-scene-ui.mjs
+  - tests/visual/storylab-suggestions-ui.mjs
+  status: Under arbeid
+  implementation:
+  - src/app/storylab/SceneLab.tsx
+  - src/app/storylab/SuggestionsPanel.tsx
+  verification:
+  - tests/unit/storylab-suggestions-view.test.tsx
+  - tests/visual/storylab-scene-ui.mjs
+  - tests/visual/storylab-suggestions-ui.mjs
+  notes: A/B/C sammenlignes i scenelaben; lagring/sammenligning av to gruppeimprovisasjoner er ikke fullstendig
+    påvist.
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse.
+
+- id: REQ-0748
+  title: Godkjent overføring til redigerbart manus
+  text: Et utdrag blir et redigerbart manusforslag. Brukeren godkjenner før overføring; ingenting overskrives automatisk.
+    Overføring bruker vanlige kommandoer og én angregruppe.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '50'
+    document: docs/decisions/DECISION_LOG.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - Et utdrag blir et redigerbart manusforslag. Brukeren godkjenner før overføring; ingenting overskrives automatisk.
+    Overføring bruker vanlige kommandoer og én angregruppe.
+  tests:
+  - tests/unit/storylab-transfer.test.ts
+  - tests/unit/storylab-transfer-undo.test.tsx
+  - tests/visual/storylab-suggestions-ui.mjs
+  status: Under arbeid
+  implementation:
+  - src/core/storylab/transfer.ts
+  - src/app/storylab/SuggestionPreview.tsx
+  verification:
+  - tests/unit/storylab-transfer.test.ts
+  - tests/unit/storylab-transfer-undo.test.tsx
+  - tests/visual/storylab-suggestions-ui.mjs
+  notes: Direkte tester av EditBlockText/InsertBlock, bevart original og samlet angring; samlet kapittelreise er
+    separat.
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse.
+
+- id: REQ-0749
+  title: VennTing-teknologien er en selvstendig kopi
+  text: Integrasjonsplanen bevarer VennTing-data. Ø-9 presiserer kopi inne i Animatic Studio, ikke levende synkronisering.
+    VennTing røres ikke.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '51'
+    document: docs/decisions/DECISION_LOG.md
+  type: arkitektur
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - Integrasjonsplanen bevarer VennTing-data. Ø-9 presiserer kopi inne i Animatic Studio, ikke levende synkronisering.
+    VennTing røres ikke.
+  tests:
+  - tests/unit/storylab-prompts.test.ts
+  status: Under arbeid
+  implementation:
+  - src/core/storylab/prompts.ts
+  verification:
+  - tests/unit/storylab-prompts.test.ts
+  notes: Kopiert promptmodul påvist; ingen ny tilgang til VennTing. Data-bevaring i VennTing er ikke testbar i dette
+    prosjektet.
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse.

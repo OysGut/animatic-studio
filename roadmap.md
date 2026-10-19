@@ -1,8 +1,14 @@
+## B2 og estimatliste – 19.10.2026
+- [ ] REQ-0639: avsendertekster uten Lovable; KI-167 serveruttak.
+- [ ] KI-224/226 notater, KI-220 bildedeler, KI-207 bekreftet rydding, KI-209 bakgrunnsinnlegging.
+- [ ] KI-243 klientisolert MP3, KI-247 ordkobling, SV1 metode 4 forhåndslytting i minnet.
+- [ ] Nye tester per punkt; Vitest, lokal DB og bestilte visuelle regresjoner; rapport og status.
+
 # MU1
 ## Dokumentasjon og backlogg (2026-10-19)
 - [x] A: tydelige fixturebilder i Story Lab og animasjon; kontroller lasting.
 - [x] B: DEC-0099, tilgjengelige kravkilder og samordnet status; build_docs/check_kb.
-- [ ] Full avstemming mot Ø-8–Ø-12/B-022–B-061 og Story Lab kap. 42–51 — originalfiler mangler.
+- [ ] B2: DEC-0099 fra leverte kilder; krav kap. 42–51; build_docs/check_kb.
 - [x] C: stabil take-rekkefølge og tidstest, malbilder, valgt lydklipp, dra lydsegmenter med én angring.
 - [x] Vitest to ganger, lokale DB-tester og bestilte visuelle regresjoner.
 ## U5-polish

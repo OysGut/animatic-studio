@@ -244,8 +244,8 @@ function ProviderDetail({
       {p.builtIn ? (
         <p className="text-[13px] text-text-secondary">
           {L(
-            "Denne er alltid tilgjengelig og bruker kredittene i Lovable-arbeidsområdet. Prosjektets AI-budsjett gjelder.",
-            "This is always available and uses the credits in the Lovable workspace. The project's AI budget applies.",
+            "Denne er alltid tilgjengelig og bruker kredittene i Animatic Studio-arbeidsområdet. Prosjektets AI-budsjett gjelder.",
+            "This is always available and uses the credits in the Animatic Studio workspace. The project's AI budget applies.",
           )}
         </p>
       ) : (
@@ -602,8 +602,8 @@ export function ProvidersDialog({
         ) : ai.data?.missing ? (
           <p role="alert" className="text-[13px] text-status-uncertain">
             {L(
-              "Databasen er ikke oppdatert for egne AI-leverandører ennå. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0024).",
-              "The database is not yet updated for your own AI providers. Paste the message into LOVABLE_SYNC.md in Lovable (migration 0024).",
+              "Databasen er ikke oppdatert for egne AI-leverandører ennå. Kontakt administratoren for å oppdatere Animatic Studio.",
+              "The database is not yet updated for your own AI providers. Contact the administrator to update Animatic Studio.",
             )}
           </p>
         ) : sel ? (

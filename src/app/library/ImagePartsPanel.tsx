@@ -210,6 +210,19 @@ export function PartsPanel({
                     setMade((cur) => cur.map((x, j) => (j === i ? { ...x, anchor: a } : x)))
                   }
                 />
+                {!p.rest && tools.onPlaceParts ? (
+                  <div className="grid grid-cols-4 gap-1" data-testid="part-placement">
+                    {(["x", "y", "w", "h"] as const).map((key) => (
+                      <input key={key} type="number" className={field} value={p.box[key]} min={key === "w" || key === "h" ? 1 : 0}
+                        aria-label={L(`Plassering ${key} for «${p.name}»`, `Placement ${key} for “${p.name}”`)}
+                        onChange={(event) => {
+                          const value = Number(event.target.value);
+                          if (!Number.isFinite(value) || value < (key === "w" || key === "h" ? 1 : 0)) return;
+                          setMade((cur) => cur.map((part, j) => j === i ? { ...part, box: { ...part.box, [key]: value } } : part));
+                        }} />
+                    ))}
+                  </div>
+                ) : null}
               </li>
             ))}
           </ul>

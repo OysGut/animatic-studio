@@ -177,8 +177,8 @@ export function VersionsDialog(props: Props) {
         {missingTable ? (
           <p role="alert" className="text-[13px] text-status-uncertain">
             {L(
-              "Databasen mangler manusversjoner. Kjør migrasjon 0003 i Lovable (se LOVABLE_SYNC.md).",
-              "The database is missing script versions. Run migration 0003 in Lovable (see LOVABLE_SYNC.md).",
+              "Databasen mangler manusversjoner. Kontakt administratoren for å oppdatere Animatic Studio.",
+              "The database is missing script versions. Contact the administrator to update Animatic Studio.",
             )}
           </p>
         ) : view.kind === "list" ? (

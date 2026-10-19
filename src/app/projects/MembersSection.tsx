@@ -63,8 +63,8 @@ function message(e: unknown): string {
   const m = e instanceof Error ? e.message : String(e);
   if (/function .*remove_member|could not find the function .*remove_member/i.test(m))
     return L(
-      "Databasen mangler fjerning av medlemmer. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0023.",
-      "The database cannot remove members yet. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0023.",
+      "Databasen mangler fjerning av medlemmer. Kontakt administratoren for å oppdatere Animatic Studio.",
+      "The database cannot remove members yet. Contact the administrator to update Animatic Studio.",
     );
   if (
     /function .*(set_member_role|set_invitation_role|revoke_invitation)|could not find the function/i.test(
@@ -72,8 +72,8 @@ function message(e: unknown): string {
     )
   )
     return L(
-      "Databasen mangler endring av roller. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0020.",
-      "The database cannot change roles yet. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0020.",
+      "Databasen mangler endring av roller. Kontakt administratoren for å oppdatere Animatic Studio.",
+      "The database cannot change roles yet. Contact the administrator to update Animatic Studio.",
     );
   return tm(m);
 }

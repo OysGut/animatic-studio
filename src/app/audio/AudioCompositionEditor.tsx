@@ -26,6 +26,7 @@ import {
   COMPOSITION_TRACKS,
   L,
   audioTakeLabel,
+  alignmentInComposition,
   autoPlayRange,
   changedSpan,
   compositionFromTake,
@@ -303,6 +304,8 @@ export function AudioCompositionEditor({
           `Komposisjon av ${new Set(comp.segments.map((x) => x.versionId)).size} opptak`,
           `Composition of ${new Set(comp.segments.map((x) => x.versionId)).size} recordings`,
         ),
+        base.alignment ? { alignment: alignmentInComposition(comp, base.alignment, base.composition
+          ? { kind: "composition", composition: initial } : { kind: "version", versionId: baseVersionId }) } : undefined,
       );
       onSaved?.(r.versionId);
     } catch (e) {

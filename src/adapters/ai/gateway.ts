@@ -19,8 +19,8 @@ export function validReferencePath(projectId: string, p: unknown): p is string {
 export function gatewayError(status: number, body: string): string {
   if (status === 402)
     return L(
-      "Lovable-kredittene i arbeidsområdet er brukt opp. Fyll på i Lovable og prøv igjen.",
-      "The Lovable credits in the workspace are used up. Top up in Lovable and try again.",
+      "AI-kredittene i arbeidsområdet er brukt opp. Fyll på og prøv igjen.",
+      "The workspace's AI credits are used up. Top up and try again.",
     );
   if (status === 429)
     return L(
@@ -29,8 +29,8 @@ export function gatewayError(status: number, body: string): string {
     );
   if (status === 401 || status === 403)
     return L(
-      "AI-tjenesten i Lovable godtok ikke nøkkelen. Sjekk at Lovable AI er slått på for prosjektet.",
-      "The AI service in Lovable did not accept the key. Check that Lovable AI is turned on for the project.",
+      "Den innebygde AI-en er ikke tilgjengelig. Kontakt administratoren.",
+      "The built-in AI is unavailable. Contact the administrator.",
     );
   if (status === 400 && /safety|policy|moderation/i.test(body))
     return L(

@@ -177,8 +177,8 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
       return {
         ok: false,
         message: L(
-          "Databasen er ikke oppdatert for AI-skrevne beskrivelser. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0022).",
-          "The database is not updated for AI-written descriptions. Paste the message in LOVABLE_SYNC.md into Lovable (migration 0022).",
+          "Databasen er ikke oppdatert for AI-skrevne beskrivelser. Kontakt administratoren for å oppdatere Animatic Studio.",
+          "The database is not updated for AI-written descriptions. Contact the administrator to update Animatic Studio.",
         ),
       };
     // Teksten skrives med Lovable AI: administrator kan ha slått av hele leverandøren (DEC-0088)
@@ -191,8 +191,8 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
       return {
         ok: false,
         message: L(
-          "AI er ikke slått på for prosjektet i Lovable (LOVABLE_API_KEY mangler). Se LOVABLE_SYNC.md.",
-          "AI is not turned on for the project in Lovable (LOVABLE_API_KEY is missing). See LOVABLE_SYNC.md.",
+          "Den innebygde AI-en er ikke slått på. Kontakt administratoren.",
+          "The built-in AI is not enabled. Contact the administrator.",
         ),
       };
 
@@ -441,8 +441,8 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
       return {
         ok: false,
         message: L(
-          "Lovable kjente ikke igjen noen av språkmodellene. Sett ANIMATIC_TEXT_MODEL i Lovable Cloud (se LOVABLE_SYNC.md).",
-          "Lovable did not recognise any of the language models. Set ANIMATIC_TEXT_MODEL in Lovable Cloud (see LOVABLE_SYNC.md).",
+          "Ingen av språkmodellene er tilgjengelige. Kontakt administratoren.",
+          "None of the language models are available. Contact the administrator.",
         ),
       };
     } catch (e) {

@@ -428,12 +428,12 @@ export function TurnaroundPanel({
               `${count} ${count === 1 ? "bilde" : "bilder"}${
                 unit !== null
                   ? ` · anslått ${formatUsd(unit * count)}`
-                  : " · bruker Lovable-kreditter"
+                  : " · bruker AI-kreditter"
               }. Teller i prosjektets AI-budsjett.`,
               `${count} ${count === 1 ? "image" : "images"}${
                 unit !== null
                   ? ` · estimated ${formatUsd(unit * count)}`
-                  : " · uses Lovable credits"
+                  : " · uses AI credits"
               }. Counts towards the project's AI budget.`,
             )}
       </p>
@@ -830,12 +830,12 @@ export function CostConfirm({
               `${count} ${count === 1 ? "bilde" : "bilder"}${
                 unit !== null
                   ? ` · anslått ${formatUsd(unit * count)}`
-                  : " · bruker Lovable-kreditter"
+                  : " · bruker AI-kreditter"
               }. Teller i prosjektets AI-budsjett.`,
               `${count} ${count === 1 ? "image" : "images"}${
                 unit !== null
                   ? ` · estimated ${formatUsd(unit * count)}`
-                  : " · uses Lovable credits"
+                  : " · uses AI credits"
               }. Counts towards the project's AI budget.`,
             )}
       </p>

@@ -27,9 +27,7 @@ export function SchemaBanner() {
               `Databasen har versjon ${data.version}, men appen trenger versjon ${data.expected}. `,
               `The database is at version ${data.version}, but the app needs version ${data.expected}. `,
             )}
-        {L("Send synkmeldingen i Lovable (se", "Send the sync message in Lovable (see")}{" "}
-        <span className="font-mono text-xs">docs/development/LOVABLE_SYNC.md</span>
-        {L(", del B) for å kjøre migrasjon", ", part B) to run migration")}{" "}
+        {L("Kontakt administratoren for å oppdatere Animatic Studio til versjon", "Contact the administrator to update Animatic Studio to version")}{" "}
         <span className="font-mono text-xs tabular">
           {String(EXPECTED_SCHEMA_VERSION).padStart(4, "0")}
         </span>

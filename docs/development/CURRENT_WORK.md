@@ -10,7 +10,7 @@ Oppdatert: 2026-10-19 (DEC-0099, dokumentasjon og backlogg)
 - C3/MT4: last bildelag før malminiatyren tegnes; pixeltest av faktisk opplastet PNG.
 - C4/KI-241: eksplisitt clipId følger lydvindu, studio, opptak og mobilkontekst; uten valg brukes første udempede klipp i tidsrekkefølge. Mobilserveren kontrollerer at valgt klipp tilhører replikk og prosjekt.
 - C5/KI-242: dra deler med lokal forhåndsvisning; ett angresteg ved slipp, ingen ved avbrudd. Lagres som tidligere via kommandoer, ikke direkte skriving.
-- DEC-0099 og REQ-0725–0739 registrerer tilgjengelige T1/Story Lab-, CA1–CA3-, U5- og sikkerhetskilder. Eksisterende CA4–CA8 REQ-0715–0724 beholdes. Originale Ø/B-notater og Story Lab kap. 42–51 mangler; ingen oppdiktet godkjenning.
+- DEC-0099 og REQ-0725–0739 registrerer tilgjengelige T1/Story Lab-, CA1–CA3-, U5- og sikkerhetskilder. Eksisterende CA4–CA8 REQ-0715–0724 beholdes. B2-kildene fra Øystein er levert: DEC-0099 er supplert og kap. 42–51 registrert som REQ-0740–0749 med ærlig deldekning.
 - Tester: Vitest 1723/0 to ganger, 10 eksisterende hoppet over; DB 120/120; U5 65/65; CA1–CA8 17/17/20/25/13/15/26/22; scene-panels 39/39; verifisering4 58/58; Story Lab 32/32; verifisering3 73/73; interactions 44/44; lydeditor 24/24; MTS 42/16/16/13/13/13/17 (130/130).
 
 ## Historikk: DEC-0095 fase 2, bolk D – ord-til-lyd og tekstbasert lydredigering – ferdig, venter på Mars

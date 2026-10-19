@@ -239,8 +239,8 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
       return {
         ok: false,
         message: L(
-          `Databasen er ikke oppdatert for AI-video${data.queue ? " i kø" : ""}. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon ${data.queue ? "0025" : "0024"}).`,
-          `The database is not up to date for AI video${data.queue ? " in the queue" : ""}. Paste the message into LOVABLE_SYNC.md in Lovable (migration ${data.queue ? "0025" : "0024"}).`,
+          `Databasen er ikke oppdatert for AI-video${data.queue ? " i kø" : ""}. Kontakt administratoren for å oppdatere Animatic Studio."0025" : "0024"}).`,
+          `The database is not up to date for AI video${data.queue ? " in the queue" : ""}. Contact the administrator to update Animatic Studio."0025" : "0024"}).`,
         ),
       };
     const { data: proj } = await db

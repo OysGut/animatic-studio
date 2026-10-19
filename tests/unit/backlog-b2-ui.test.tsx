@@ -1,0 +1,50 @@
+import { createElement } from "react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { SceneScriptPanel } from "@/app/scene-editor/SceneScriptPanel";
+import { AiSourceCleanup } from "@/app/ai/AiSourceCleanup";
+import { fixture } from "../visual/fixture-state";
+import { blocksOfVariant } from "@/core";
+const h = vi.hoisted(() => ({ preview: vi.fn(), confirm: vi.fn() }));
+vi.mock("@tanstack/react-start", () => ({ useServerFn: (fn: unknown) => fn }));
+vi.mock("@/adapters/ai/source-cleanup.functions", () => ({ previewAiSourceCleanup: (args: unknown) => h.preview(args), confirmAiSourceCleanup: (args: unknown) => h.confirm(args) }));
+vi.mock("@/app/script/Inspector", () => ({ ForkNotice: () => null }));
+afterEach(() => { cleanup(); vi.clearAllMocks(); window.getSelection()?.removeAllRanges(); });
+describe("KI-226", () => {
+  it("selection becomes an exact word annotation only after submission", async () => {
+    const state = fixture.state;
+    const occurrence = Object.values(state.occurrences).find((o) => blocksOfVariant(state, o.variantId).some((b) => b.kind === "dialogue" && b.text.length > 5));
+    if (!occurrence) throw new Error("Missing script");
+    const block = blocksOfVariant(state, occurrence.variantId).find((b) => b.kind === "dialogue" && b.text.length > 5);
+    if (!block) throw new Error("Missing line");
+    const run = vi.fn((_command: unknown, _label: string) => null);
+    const view = render(createElement(SceneScriptPanel, { state, occurrenceId: occurrence.id, clip: null, frame: 0, playing: false, editable: true, onOpenEditor: vi.fn(), run, authorName: "Test" }));
+    const text = view.container.querySelector(`[data-script-text="${block.id}"]`)?.firstChild;
+    if (!text) throw new Error("Missing text node");
+    const range = document.createRange(); range.setStart(text, 1); range.setEnd(text, 4);
+    window.getSelection()?.addRange(range);
+    fireEvent.mouseUp(screen.getByTestId("scene-script"));
+    expect(run).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "Legg til notat på markeringen" }));
+    fireEvent.change(screen.getByRole("textbox"), { target: { value: "Sjekk dette ordet" } });
+    fireEvent.click(screen.getByRole("button", { name: "Lagre notat" }));
+    await waitFor(() => expect(run).toHaveBeenCalledTimes(1));
+    expect(run.mock.calls[0]?.[0]).toMatchObject({ type: "AddAnnotations", annotations: [{ blockId: block.id, start: 1, end: 4, quote: block.text.slice(1, 4), text: "Sjekk dette ordet" }] });
+  });
+});
+describe("KI-207", () => {
+  it("cancel cannot delete; confirmation sends only previewed paths", async () => {
+    h.preview.mockResolvedValue([{ path: "p/ai-source/old.mp4", bytes: 100 }]);
+    h.confirm.mockResolvedValue({ deleted: 1 });
+    render(createElement(AiSourceCleanup, { projectId: "p" }));
+    fireEvent.click(screen.getByRole("button", { name: "Rydd gamle videokilder …" }));
+    await screen.findByRole("alertdialog");
+    expect(h.confirm).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "Avbryt" }));
+    expect(h.confirm).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "Rydd gamle videokilder …" }));
+    await screen.findByRole("alertdialog");
+    fireEvent.click(screen.getByRole("button", { name: "Slett for godt" }));
+    await waitFor(() => expect(h.confirm).toHaveBeenCalledWith({ data: { projectId: "p", paths: ["p/ai-source/old.mp4"] } }));
+  });
+});

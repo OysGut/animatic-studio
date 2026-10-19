@@ -595,6 +595,8 @@ function Editor({
         playing={playback.playing}
         editable={roleEditable}
         onOpenEditor={(blockId) => setScriptEdit({ blockId })}
+        run={cmds.run}
+        authorName={myName}
       />
     ) : null,
     assets: occurrence ? (

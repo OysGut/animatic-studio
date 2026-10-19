@@ -65,6 +65,7 @@ import { RefetchVideoButton, canRefetchVideo } from "./RefetchVideoButton";
 import { ProvidersDialog } from "./ProvidersDialog";
 import { claimVideo } from "./video-jobs";
 import { useProjectProviders } from "./use-project-providers";
+import { AiSourceCleanup } from "./AiSourceCleanup";
 
 /** Leverandørene prosjektet kan bruke, og veien til å koble til flere (DEC-0069). */
 function ProviderLine({ projectId, userId }: { projectId: string; userId: string }) {
@@ -264,6 +265,7 @@ export function AiPanel({
       </p>
 
       <ProviderLine projectId={projectId} userId={userId} />
+      {isOwner ? <AiSourceCleanup projectId={projectId} /> : null}
       {unclaimed.length ? (
         <div
           role="status"
@@ -598,8 +600,8 @@ function Budget({
       <p className="mt-2 text-xs text-text-tertiary">
         {isOwner
           ? L(
-              "Når rammen er nådd, stopper serveren nye genereringer til neste måned. Prisen er ditt eget anslag (Lovable viser forbruket i arbeidsområdet) og brukes bare til å vise anslått kostnad.",
-              "When the limit is reached, the server stops new generations until next month. The price is your own estimate (Lovable shows the usage in the workspace) and is only used to show the estimated cost.",
+              "Når rammen er nådd, stopper serveren nye genereringer til neste måned. Prisen er ditt eget anslag (Animatic Studio viser forbruket i arbeidsområdet) og brukes bare til å vise anslått kostnad.",
+              "When the limit is reached, the server stops new generations until next month. The price is your own estimate (Animatic Studio shows the usage in the workspace) and is only used to show the estimated cost.",
             )
           : L("Bare eieren kan endre budsjettet.", "Only the owner can change the budget.")}
       </p>

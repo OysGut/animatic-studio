@@ -294,6 +294,22 @@ describe("Systemmerknader i eksport og TODO-oversikten (DEC-0088)", () => {
 });
 
 describe("Dørdeler (DEC-0088)", () => {
+  it("KI-220: explicit AI-part source coordinates determine scene placement", () => {
+    const { s: initial, occ, assetId, assetVariantId, versionId } = setup();
+    const occurrence = occ[0];
+    if (!occurrence) throw new Error("Missing scene");
+    const placed = place(initial, occurrence.id, assetId, assetVariantId);
+    const original = placed.s.layers[placed.layerId];
+    if (!original) throw new Error("Missing original layer");
+    const out = partLayers(placed.s, original, [{ assetId, versionId, box: { x: 100, y: 50, w: 80, h: 40 }, anchor: "center" }], { width: 400, height: 200 }, () => tid<"layer">());
+    const layer = out.layers[0];
+    if (!layer) throw new Error("Missing placed part");
+    const kx = original.transform.scaleX * original.width / 400;
+    const ky = original.transform.scaleY * original.height / 200;
+    expect(layer.fields.transform.x).toBeCloseTo(original.transform.x - 60 * kx, 0);
+    expect(layer.fields.transform.y).toBeCloseTo(original.transform.y - 30 * ky, 0);
+    expect(layer.fields.versionId).toBe(versionId);
+  });
   it("dørblad med hengsel til venstre får gruppe med ankerpunkt på venstre kant", () => {
     const { s: s0, occ, assetId, assetVariantId, versionId } = setup();
     const placed = place(s0, occ[0]!.id, assetId, assetVariantId);

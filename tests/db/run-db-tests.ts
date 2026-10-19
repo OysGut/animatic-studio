@@ -3427,6 +3427,12 @@ try {
     );
     const [row] = await sql`select source from public.script_annotations where id = ${noteId}`;
     assert(row!["source"] === "system", "source-kolonnen er ikke 'system'");
+    const resolved = await runCommand(st, ALICE, { type: "SetAnnotationResolved", annotationId: noteId as never, resolved: true });
+    const readResolved = await loadState(projectId);
+    assert(readResolved.annotations[noteId as never]?.resolved === true && !readResolved.annotations[noteId as never]?.removed, "løst må lagres uten sletting");
+    await expectError(as("authenticated", ALICE, (tx) => tx`update public.script_annotations set resolved = false where id = ${noteId}`), "42501");
+    const reopened = await runCommand(resolved, ALICE, { type: "SetAnnotationResolved", annotationId: noteId as never, resolved: false });
+    assert(reopened.annotations[noteId as never]?.resolved === false, "notatet kunne ikke åpnes igjen");
     await expectError(
       sql`update public.script_annotations set source = 'robot' where id = ${noteId}`,
       "23514",
@@ -5832,7 +5838,7 @@ try {
     const [row] = await sql`select status from public.mobile_imports where client_file_id = ${SX(12)}`;
     assert(row!["status"] !== "done", "fil bekreftet etter tilbakekalling");
     await expectError(as("authenticated", ALICE, (tx) => tx`select public.mobile_confirm_upload(${hash}, ${SX(12)}, true, 100, null)`), "42501");
-    assert((await sql`select max(version) as v from public.schema_version`)[0]!["v"] === 58, "skjemaversjon 58");
+    assert((await sql`select max(version) as v from public.schema_version`)[0]!["v"] === 59, "skjemaversjon 59");
   });
 
 } finally {

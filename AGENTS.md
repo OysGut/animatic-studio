@@ -25,13 +25,13 @@ Kortversjonen:
 5. Migrasjoner skrives som `db/migrations/NNNN_navn.sql`. Lovable kjører dem aldri; Claude kjører dem etter at DB-testene er grønne. `src/integrations/supabase/` er autogenerert.
 6. Ikke force-push, rebase eller squash på `main`.
 7. Story Lab-visningene bygger de lagrede turene opp igjen med `src/core/storylab/replay.ts`.
-8. Story Lab transfers are planned in the platform-neutral transfer helper and executed through the shared command stack; this preserves validation and grouped undo without direct project-data writes.
-9. The script explorer reuses screenplay pagination, filtering, search and annotations; its local selection never changes the source workspace except through explicit navigation.
-10. Active scenes travel over a source-window-scoped browser bus; pinned explorers never publish their own browsing selection.
-11. Entity recognition extends librarySuggestions with pure lexical classification; optional AI reviews existing candidates only, and assets are created exclusively through the existing confirmed command flow.
+8. Story Lab transfers use pure planning and shared commands for validation and grouped undo.
+9. Script explorer reuses pagination, filtering, search and notes; only explicit navigation changes its source.
+10. Active scenes use a source-window bus; pinned explorers never publish their browsing selection.
+11. Recognition classifies librarySuggestions; AI reviews candidates only, and confirmed commands create assets.
 12. Automatic recognition and translation alignment (B-047/B-048) are the only exception to the single text-AI entry point: they run through the server-only service-AI path that forces the built-in AI and builds its prompts on the server, so it can never act as an open AI proxy.
 13. User text quotas exclude the two internal service tasks, while service quotas select only built-in service tasks; this keeps user-triggered fallback calls in the user quota. Visual suites updated from schema 40 onward share a schema-version constant to avoid repeated migration edits.
-14. Pure planRetime plans duration changes; one RetimeScene groups existing time commands for one transaction, one undo and full revision-conflict rejection.
+14. RetimeScene uses pure plans and revision checks in one undo; word-gap previews reuse their in-memory audio in saves.
 15. Asset Studio stores scene draft steps as field-level changes and saves them in one UpdateSceneDraft with current base revisions; rebasing preserves unrelated fields, and own-write receipts identify exact affected rows, fields and revisions so concurrent edits cannot be silently overwritten.
 16. Workspaces (GP1) are read-only to clients and changed only through security-definer functions in the database; linking a project to a workspace never grants project access, so project RLS stays the single source of project permissions.
 17. The global library (GP2) is owned by workspaces and written only through security-definer functions; using a global asset copies its files into the project once per global version and keeps the link only as metadata, so projects and backups never depend on workspace membership.
@@ -41,3 +41,6 @@ Kortversjonen:
 21. Asset-version creation ordering uses compareVersionCreation (timestamp, persisted version number, variant and version IDs); numeric version lists retain number-first ordering, so same-millisecond recordings never depend on random UUID order within a variant.
 22. Character Animation reuses composition layers, image segments, selected audio, segment helpers, scene clock and command stack to keep preview/export consistent. Immutable variant rigs are scene-pinned; marking uses one UpdateSceneDraft, preserves frames, and disabling retains setup. Rig-part image imports use a rig-only UpdateSceneDraft; triggers commit approval receipts, which backups omit to preserve ordinary Asset Studio imports and portable restoration.
 23. Invitations bind to the invited email: acceptance functions compare it with the signed-in auth email, so a leaked invitation link never grants access to someone else.
+
+24. Note resolution is reversible, not removal; audio edits persist projected alignment without changing sources.
+25. MP3 encoding is client-only; owner-confirmed AI-source cleanup rechecks references server-side to protect used media.

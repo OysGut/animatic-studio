@@ -180,6 +180,7 @@ function NoteCard({
   return (
     <div
       ref={ref}
+      data-note-resolved={note.resolved === true}
       className={
         "relative flex flex-col gap-1 border-l-2 bg-surface-2 py-1.5 pl-2 pr-2 " +
         (system ? "border-accent-warm " : "border-note ") +
@@ -198,6 +199,7 @@ function NoteCard({
           {L("Systemmerknad", "System note")}
         </span>
       ) : null}
+      {note.resolved ? <span className="text-xs text-status-success">{L("Løst", "Resolved")}</span> : null}
       <span className="absolute right-1.5 top-1 text-right text-[11px] leading-tight text-text-tertiary">
         {formatStamp(note)}
         {formatEdited(note) ? <span className="block">{formatEdited(note)}</span> : null}
@@ -278,6 +280,15 @@ function NoteCard({
       )}
       {editable && !editing ? (
         <div className="flex gap-1">
+          {!system ? (
+            <Button size="sm" variant="ghost" data-testid="note-resolve" onClick={() => setErr(run(
+              { type: "SetAnnotationResolved", annotationId: note.id, resolved: !note.resolved },
+              note.resolved ? L("Åpne notatet igjen", "Reopen note") : L("Løs notatet", "Resolve note"),
+            ))}>
+              <Check className="size-3" aria-hidden />
+              {note.resolved ? L("Åpne igjen", "Reopen") : L("Marker som løst", "Resolve")}
+            </Button>
+          ) : null}
           {system ? (
             <button
               type="button"

@@ -128,15 +128,13 @@ export const CATALOG: Record<string, string> = {
     "The administrator has switched off this AI provider for all users. Choose another provider.",
   "Administrator har slått av denne AI-modellen for alle brukere. Velg en annen modell.":
     "The administrator has switched off this AI model for all users. Choose another model.",
-  "AI er ikke slått på for prosjektet i Lovable (LOVABLE_API_KEY mangler). Se LOVABLE_SYNC.md.":
-    "AI is not turned on for the project in Lovable (LOVABLE_API_KEY is missing). See LOVABLE_SYNC.md.",
   "AI er slått av for prosjektet (budsjettet er 0). Eieren kan endre det på prosjektoversikten.":
     "AI is turned off for the project (the budget is 0). The owner can change this on the project overview.",
+  "AI-kredittene i arbeidsområdet er brukt opp. Fyll på og prøv igjen.":
+    "The workspace's AI credits are used up. Top up and try again.",
   "AI-tjenesten avviste beskrivelsen (innholdsregler). Endre beskrivelsen og prøv igjen.":
     "The AI service rejected the description (content rules). Change the description and try again.",
   "AI-tjenesten brukte for lang tid. Prøv igjen.": "The AI service took too long. Try again.",
-  "AI-tjenesten i Lovable godtok ikke nøkkelen. Sjekk at Lovable AI er slått på for prosjektet.":
-    "The AI service in Lovable did not accept the key. Check that Lovable AI is turned on for the project.",
   "AI-tjenesten svarte med feil {0}{1}": "The AI service responded with an error {0}{1}",
   "AI-tjenesten svarte uten bilde.": "The AI service replied without an image.",
   "AI-tjenesten svarte uten tekst.": "The AI service replied without text.",
@@ -164,6 +162,8 @@ export const CATALOG: Record<string, string> = {
   "Animatic (2D-scene)": "Animatic (2D scene)",
   "Animatic (tittelkort)": "Animatic (title card)",
   "Animatic Studio (systemmerknad)": "Animatic Studio (system note)",
+  "Animatic Studio kjente ikke igjen noen av språkmodellene. Sett ANIMATIC_TEXT_MODEL i Animatic Studio.":
+    "Animatic Studio did not recognise any of the language models. Set ANIMATIC_TEXT_MODEL in Animatic Studio.",
   "ANIMATIC_KEY_ENCRYPTION_KEY må være 32 byte (base64).":
     "ANIMATIC_KEY_ENCRYPTION_KEY must be 32 bytes (base64).",
   "Ankeret ville gitt en sirkel i fortellingstiden": "The anchor would create a loop in story time",
@@ -209,6 +209,7 @@ export const CATALOG: Record<string, string> = {
   "Bare modeller lagt til av administrator kan fjernes. De innebygde kan slås av.":
     "Only models added by an administrator can be removed. The built-in ones can be switched off.",
   "Bare prosjekteieren kan gjøre dette.": "Only the project owner can do this.",
+  "Bare prosjektets eier kan rydde filer.": "Only the project owner can clean up files.",
   "Bare prosjektets eier kan slette for godt.": "Only the project owner can delete permanently.",
   "Bare replikker kan leses inn.": "Only lines can be read aloud.",
   "Bare scenenoder kan bli scener": "Only scene nodes can become scenes",
@@ -237,7 +238,7 @@ export const CATALOG: Record<string, string> = {
   "Beskrivelsen mangler eller er for lang (høyst 1000 tegn)":
     "The description is missing or too long (1000 characters at most)",
   "Beskrivelsen som ble sendt, er ikke kjent.": "The description that was sent is not known.",
-  "Beskrivelsesskriveren (Lovable AI)": "Description writer (Lovable AI)",
+  "Beskrivelsesskriveren (innebygd AI)": "Description writer (built-in AI)",
   "Betalt, ikke lagret": "Paid, not saved",
   "Betegnelsen må ha 1–80 tegn": "The designation must have 1–80 characters",
   "Bevarer bildet slik det er, bare skarpere": "Keeps the image as it is, just sharper",
@@ -315,8 +316,8 @@ export const CATALOG: Record<string, string> = {
     "The width must be a whole number between 16 and 16384",
   "bruk korte beskrivelser i stedet for utfyllende": "use short descriptions instead of full ones",
   "Bruken hører ikke til oppsettet": "The use does not belong to the setup",
-  "Bruker kredittene i Lovable-arbeidsområdet. Ingen egen nøkkel – slått på for prosjektet i Lovable.":
-    "Uses the credits in your Lovable workspace. No key of your own – switched on for the project in Lovable.",
+  "Bruker kredittene i Animatic Studio-arbeidsområdet. Ingen egen nøkkel – slått på for prosjektet i Animatic Studio.":
+    "Uses the credits in your Animatic Studio workspace. No key of your own – switched on for the project in Animatic Studio.",
   "Brukeren er administrator.": "The user is an administrator.",
   "Brukeren er blokkert.": "The user is blocked.",
   "Brukeren er ikke lenger administrator.": "The user is no longer an administrator.",
@@ -325,26 +326,26 @@ export const CATALOG: Record<string, string> = {
   "ca. 1 megapiksel": "about 1 megapixel",
   "ca. 2K": "about 2K",
   "Clarity – med AI-detaljer": "Clarity – with AI detail",
-  "Databasen er ikke oppdatert for AI-lyd. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0024).":
-    "The database is not updated for AI sound. Paste the message in LOVABLE_SYNC.md into Lovable (migration 0024).",
-  "Databasen er ikke oppdatert for AI-skrevne beskrivelser. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0022).":
-    "The database is not updated for AI-written descriptions. Paste the message in LOVABLE_SYNC.md into Lovable (migration 0022).",
-  "Databasen er ikke oppdatert for AI-tale. Lim inn meldingen i LOVABLE_SYNC.md i Lovable.":
-    "The database is not updated for AI speech. Paste the message in LOVABLE_SYNC.md into Lovable.",
-  "Databasen er ikke oppdatert for AI-video{0}. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon {1}).":
-    "The database is not up to date for AI video{0}. Paste the message into LOVABLE_SYNC.md in Lovable (migration {1}).",
+  "Databasen er ikke oppdatert for AI-lyd. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is not updated for AI sound. Contact the administrator to update Animatic Studio.",
+  "Databasen er ikke oppdatert for AI-skrevne beskrivelser. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is not updated for AI-written descriptions. Contact the administrator to update Animatic Studio.",
+  "Databasen er ikke oppdatert for AI-tale. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is not updated for AI speech. Contact the administrator to update Animatic Studio.",
+  'Databasen er ikke oppdatert for AI-video{0}. Kontakt administratoren for å oppdatere Animatic Studio."0025" : "0024"}).':
+    'The database is not up to date for AI video{0}. Contact the administrator to update Animatic Studio."0025" : "0024"}).',
   "Databasen er ikke oppdatert for automatisk analyse (migrasjon 0041).":
     "The database is not updated for automatic analysis (migration 0041).",
-  "Databasen er ikke oppdatert for egne AI-leverandører. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0024).":
-    "The database is not updated for your own AI providers yet. Paste the message in LOVABLE_SYNC.md into Lovable (migration 0024).",
-  "Databasen er ikke oppdatert for slettede objekter. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0029).":
-    "The database is not up to date for deleted items. Paste the message into LOVABLE_SYNC.md in Lovable (migration 0029).",
-  "Databasen er ikke oppdatert for sletting ennå. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0011).":
-    "The database is not updated for deletion yet. Paste the message into LOVABLE_SYNC.md in Lovable (migration 0011).",
+  "Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is not updated for your own AI providers yet. Contact the administrator to update Animatic Studio.",
+  "Databasen er ikke oppdatert for slettede objekter. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is not up to date for deleted items. Contact the administrator to update Animatic Studio.",
+  "Databasen er ikke oppdatert for sletting ennå. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is not updated for deletion yet. Contact the administrator to update Animatic Studio.",
   "Databasen er ikke oppdatert for tekst-AI (migrasjon 0038).":
     "The database is not updated for text AI (migration 0038).",
-  "Databasen er ikke oppdatert. Lim inn meldingen i LOVABLE_SYNC.md i Lovable før du gjenoppretter.":
-    "The database is not up to date. Paste the message in LOVABLE_SYNC.md into Lovable before you restore.",
+  "Databasen er ikke oppdatert. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is not up to date. Contact the administrator to update Animatic Studio.",
   "Databasen må oppdateres (migrasjon 0033) før adminsiden kan brukes.":
     "The database must be updated (migration 0033) before the admin page can be used.",
   "Databasen må oppdateres (migrasjon 0033) før kontoen kan slettes.":
@@ -353,76 +354,76 @@ export const CATALOG: Record<string, string> = {
     "The database must be updated (migration 0034) before the AI connections can be managed.",
   "Databasen må oppdateres (migrasjon 0034) før AI-tilkoblingene kan endres.":
     "The database must be updated (migration 0034) before the AI connections can be changed.",
-  "Databasen mangler AI-budsjett og genereringsbeskrivelser. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0014.":
-    "The database is missing the AI budget and generation descriptions. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0014.",
+  "Databasen mangler AI-budsjett og genereringsbeskrivelser. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing the AI budget and generation descriptions. Contact the administrator to update Animatic Studio.",
   "Databasen mangler animasjonsoppsett. Kjør migrasjon 0053 og 0054 først.":
     "The database is missing animation setups. Run migrations 0053 and 0054 first.",
   "Databasen mangler canvaset i Story Lab. Den må oppdateres (migrasjon 0040).":
     "The database is missing the Story Lab canvas. It must be updated (migration 0040).",
-  "Databasen mangler de nye funksjonene (overganger, svart-hvitt, grupper, bildeskifter og bevegelsesbaner). Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0013.":
-    "The database is missing the new features (transitions, black and white, groups, image swaps and motion paths). Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0013.",
-  "Databasen mangler det nyeste tillegget (masker, overganger, stemmer, stilprofiler). Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0026.":
-    "The database is missing the newest addition (masks, transitions, voices, style profiles). Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0026.",
-  "Databasen mangler filmens visuelle stil. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0021.":
-    "The database is missing the film's visual style. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0021.",
-  "Databasen mangler importert film og overganger. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0011.":
-    "The database is missing imported film and transitions. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0011.",
+  "Databasen mangler de nye funksjonene (overganger, svart-hvitt, grupper, bildeskifter og bevegelsesbaner). Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing the new features (transitions, black and white, groups, image swaps and motion paths). Contact the administrator to update Animatic Studio.",
+  "Databasen mangler det nyeste tillegget (masker, overganger, stemmer, stilprofiler). Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing the newest addition (masks, transitions, voices, style profiles). Contact the administrator to update Animatic Studio.",
+  "Databasen mangler filmens visuelle stil. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing the film's visual style. Contact the administrator to update Animatic Studio.",
+  "Databasen mangler importert film og overganger. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing imported film and transitions. Contact the administrator to update Animatic Studio.",
   "Databasen mangler instrukser for AI-video. Den må oppdateres (migrasjon 0032).":
     "The database is missing instructions for AI video. It must be updated (migration 0032).",
-  "Databasen mangler klipping og tidskoblinger. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0012.":
-    "The database is missing clipping and time links. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0012.",
-  "Databasen mangler koblinger for lyd. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0025.":
-    "The database is missing sound links. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0025.",
-  "Databasen mangler kontinuitet for karakterene. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0015.":
-    "The database is missing continuity for the characters. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0015.",
-  "Databasen mangler kontinuitet for spinoffer. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0018.":
-    "The database is missing continuity for spin-offs. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0018.",
+  "Databasen mangler klipping og tidskoblinger. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing clipping and time links. Contact the administrator to update Animatic Studio.",
+  "Databasen mangler koblinger for lyd. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing sound links. Contact the administrator to update Animatic Studio.",
+  "Databasen mangler kontinuitet for karakterene. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing continuity for the characters. Contact the administrator to update Animatic Studio.",
+  "Databasen mangler kontinuitet for spinoffer. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing continuity for spin-offs. Contact the administrator to update Animatic Studio.",
   "Databasen mangler leppesynk og mønstre. Kjør migrasjon 0056 først.":
     "The database is missing lip sync and patterns. Run migration 0056 first.",
-  "Databasen mangler loggen for AI-generering. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0010).":
-    "The database is missing the AI generation log. Paste the message in LOVABLE_SYNC.md into Lovable (migration 0010).",
-  "Databasen mangler lyd over flere scener og volumpunkter. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0010.":
-    "The database is missing sound across several scenes and volume points. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0010.",
-  "Databasen mangler lyd. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0009.":
-    "The database is missing sound. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0009.",
+  "Databasen mangler loggen for AI-generering. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing the AI generation log. Contact the administrator to update Animatic Studio.",
+  "Databasen mangler lyd over flere scener og volumpunkter. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing sound across several scenes and volume points. Contact the administrator to update Animatic Studio.",
+  "Databasen mangler lyd. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing sound. Contact the administrator to update Animatic Studio.",
   "Databasen mangler lydkomposisjoner. Den må oppdateres (migrasjon 0036).":
     "The database is missing audio compositions. It must be updated (migration 0036).",
   "Databasen mangler mobilimport. Den må oppdateres (migrasjon 0035).":
     "The database is missing mobile import. It must be updated (migration 0035).",
-  "Databasen mangler notater på produksjonene. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0031.":
-    "The database is missing notes on the productions. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0031.",
+  "Databasen mangler notater på produksjonene. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing notes on the productions. Contact the administrator to update Animatic Studio.",
   "Databasen mangler oppgaver og systemmerknader. Den må oppdateres (migrasjon 0034).":
     "The database is missing tasks and system notes. It must be updated (migration 0034).",
   "Databasen mangler ord-til-lyd. Den må oppdateres (migrasjon 0037).":
     "The database is missing word alignment. It must be updated (migration 0037).",
-  "Databasen mangler plakater og relasjoner. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0019.":
-    "The database is missing posters and relations. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0019.",
-  "Databasen mangler planlagt lengde per scene. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0023.":
-    "The database is missing planned length per scene. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0023.",
-  "Databasen mangler prosjektformatet. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0008.":
-    "The database is missing the project format. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0008.",
-  "Databasen mangler ressursbiblioteket og notatene. Kjør migrasjon 0004 i Lovable (se LOVABLE_SYNC.md).":
-    "The database is missing the asset library and notes. Run migration 0004 in Lovable (see LOVABLE_SYNC.md).",
+  "Databasen mangler plakater og relasjoner. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing posters and relations. Contact the administrator to update Animatic Studio.",
+  "Databasen mangler planlagt lengde per scene. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing planned length per scene. Contact the administrator to update Animatic Studio.",
+  "Databasen mangler prosjektformatet. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing the project format. Contact the administrator to update Animatic Studio.",
+  "Databasen mangler ressursbiblioteket og notatene. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing the asset library and notes. Contact the administrator to update Animatic Studio.",
   "Databasen mangler rigg-deler. Kjør migrasjon 0055 først.":
     "The database is missing rig parts. Run migration 0055 first.",
-  "Databasen mangler sceneeditoren. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0007.":
-    "The database is missing the scene editor. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0007.",
-  "Databasen mangler språkversjoner av filmen (lyd og bilder per språk). Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0017.":
-    "The database is missing language versions of the film (audio and images per language). Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0017.",
-  "Databasen mangler språkversjoner av manuset. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0016.":
-    "The database is missing language versions of the script. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0016.",
+  "Databasen mangler sceneeditoren. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing the scene editor. Contact the administrator to update Animatic Studio.",
+  "Databasen mangler språkversjoner av filmen (lyd og bilder per språk). Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing language versions of the film (audio and images per language). Contact the administrator to update Animatic Studio.",
+  "Databasen mangler språkversjoner av manuset. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing language versions of the script. Contact the administrator to update Animatic Studio.",
   "Databasen mangler Story Lab. Den må oppdateres (migrasjon 0039).":
     "The database is missing Story Lab. It must be updated (migration 0039).",
   "Databasen mangler tekstlag og maler. Den må oppdateres (migrasjon 00{0}).":
     "The database is missing text layers and templates. It must be updated (migration 00{0}).",
-  "Databasen mangler tillegget for arbeidslisten og eksportinnstillinger. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0027.":
-    "The database is missing the addition for the worklist and export settings. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0027.",
-  "Databasen mangler tillegget for lagrede varighetsestimater og eksportlogg. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0028.":
-    "The database is missing the addition for saved duration estimates and the export log. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0028.",
-  "Databasen mangler tillegget for slettede objekter, lydhastighet og «animer på toere». Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0029.":
-    "The database is missing the addition for deleted items, sound speed and “animate on twos”. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0029.",
-  "Databasen mangler tillegget for vinkler på bilder og visuelle faktaark. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0030.":
-    "The database is missing the addition for angles on images and visual fact sheets. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0030.",
+  "Databasen mangler tillegget for arbeidslisten og eksportinnstillinger. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing the addition for the worklist and export settings. Contact the administrator to update Animatic Studio.",
+  "Databasen mangler tillegget for lagrede varighetsestimater og eksportlogg. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing the addition for saved duration estimates and the export log. Contact the administrator to update Animatic Studio.",
+  "Databasen mangler tillegget for slettede objekter, lydhastighet og «animer på toere». Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing the addition for deleted items, sound speed and “animate on twos”. Contact the administrator to update Animatic Studio.",
+  "Databasen mangler tillegget for vinkler på bilder og visuelle faktaark. Kontakt administratoren for å oppdatere Animatic Studio.":
+    "The database is missing the addition for angles on images and visual fact sheets. Contact the administrator to update Animatic Studio.",
   "Delen {0} finnes ikke i scenen": "Part {0} does not exist in the scene",
   "Delen må ha versjon bare når kilden er film":
     "The part may only have a version when the source is film",
@@ -448,8 +449,12 @@ export const CATALOG: Record<string, string> = {
   "Den faste administratoren kan ikke endres.": "The permanent administrator cannot be changed.",
   "Den faste administratorkontoen kan ikke slettes.":
     "The permanent administrator account cannot be deleted.",
+  "Den innebygde AI-en er ikke slått på. Kontakt administratoren.":
+    "The built-in AI is not enabled. Contact the administrator.",
   "Den innebygde AI-en er ikke tilgjengelig nå. Forslagene bygger på manusreglene.":
     "The built-in AI is not available right now. The suggestions are based on script rules.",
+  "Den innebygde AI-en er ikke tilgjengelig. Kontakt administratoren.":
+    "The built-in AI is unavailable. Contact the administrator.",
   "Den innebygde AI-en svarte ikke.": "The built-in AI did not respond.",
   "Den markerte teksten finnes ikke i manuset": "The selected text does not exist in the script",
   "Den nye eieren må ha en aktiv konto.": "The new owner must have an active account.",
@@ -647,6 +652,10 @@ export const CATALOG: Record<string, string> = {
   "Filen er større enn 500 MB. Eksporter i halv størrelse eller et kortere utvalg for å dele den.":
     "The file is larger than 500 MB. Export at half size or a shorter selection to share it.",
   "Filen er tom.": "The file is empty.",
+  "Filene er endret eller brukes fortsatt. Beregn på nytt.":
+    "The files have changed or are still in use. Check again.",
+  "Filene kunne ikke kontrolleres sikkert.": "The files could not be checked safely.",
+  "Filene kunne ikke slettes. Prøv igjen.": "The files could not be deleted. Try again.",
   "Filinformasjon gjelder bare film": "File information only applies to film",
   "Filinformasjonen mangler.": "The file information is missing.",
   "Filmen må eksporteres som MP4 med H.264 for å kunne deles på mobil. Velg MP4 i eksporten. Hvis nettleseren ikke kan lage H.264, bruk Chrome, Edge eller Safari.":
@@ -678,10 +687,12 @@ export const CATALOG: Record<string, string> = {
   "For mange forespørsler akkurat nå. Vent et minutt og prøv igjen.":
     "Too many requests right now. Wait a minute and try again.",
   "For mange forsøk. Vent litt og prøv igjen.": "Too many attempts. Wait a little and try again.",
+  "For mange jobber til trygg opprydding.": "Too many jobs for safe cleanup.",
   "For mange kamerautsnitt": "Too many camera shots",
   "For mange lag på én gang (maks 500)": "Too many layers at once (max 500)",
   "For mange låste tidsrom": "Too many locked time ranges",
   "For mange lydklipp på én gang (maks 500)": "Too many audio clips at once (max 500)",
+  "For mange mapper til trygg opprydding.": "Too many folders for safe cleanup.",
   "For mange munnformer": "Too many mouth shapes",
   "For mange nøkkelbilder": "Too many keyframes",
   "For mange notater i én endring": "Too many notes in one change",
@@ -870,6 +881,8 @@ export const CATALOG: Record<string, string> = {
     "None of the project's owners has connected ElevenLabs (AI providers).",
   "Ingen av segmentenes valgte videoer er laget fra det gamle manuset.":
     "None of the segments' chosen videos were made from the old script.",
+  "Ingen av språkmodellene er tilgjengelige. Kontakt administratoren.":
+    "None of the language models are available. Contact the administrator.",
   "Ingen beskrivelse å fjerne": "No description to remove",
   "Ingen beskrivelse av utseendet – lag et faktaark eller skriv en beskrivelse av objektet.":
     "No description of the appearance – make a fact sheet or write a description of the object.",
@@ -891,8 +904,8 @@ export const CATALOG: Record<string, string> = {
   "Ingen referansebilder.": "No reference images.",
   "Ingen ressurser å legge til": "No assets to add",
   "Ingen segmenter oppgitt": "No segments given",
-  "Ingen tekst-AI er tilgjengelig: ingen gyldig nøkkel, og Lovable AI er ikke slått på (LOVABLE_API_KEY mangler).":
-    "No text AI is available: no valid key, and Lovable AI is not turned on (LOVABLE_API_KEY is missing).",
+  "Ingen tekst-AI er tilgjengelig: ingen gyldig nøkkel, og innebygd AI er ikke slått på.":
+    "No text AI is available: no valid key, and built-in AI is not turned on.",
   "Ingen tekst-AI er tilgjengelig. Koble til en leverandør under «AI-leverandører».":
     "No text AI is available. Connect a provider under “AI providers”.",
   "Ingen tilgang til gruppen": "No access to the workspace",
@@ -906,6 +919,7 @@ export const CATALOG: Record<string, string> = {
     "In and out points must be whole milliseconds, and out must be after in",
   "Inndelingen er endret i mellomtiden (av deg eller noen andre). Lukk og åpne vinduet igjen.":
     "The division was changed in the meantime (by you or someone else). Close the window and open it again.",
+  "Innebygd AI": "Built-in AI",
   "Innhold:": "Contents:",
   "Innholdet i filen stemmer ikke med filtypen.": "The file's content does not match its type.",
   "Innrykket tekst med små bokstaver tolket som replikk":
@@ -1076,13 +1090,6 @@ export const CATALOG: Record<string, string> = {
     "Sign in at aistudio.google.com with a Google account.",
   "Logg inn på dev.runwayml.com (utviklerportalen, egen fra vanlig Runway-abonnement).":
     "Sign in at dev.runwayml.com (the developer portal, separate from a regular Runway subscription).",
-  "Lovable AI (innebygd)": "Lovable AI (built in)",
-  "Lovable kjente ikke igjen noen av språkmodellene. Sett ANIMATIC_TEXT_MODEL i Lovable Cloud (se LOVABLE_SYNC.md).":
-    "Lovable did not recognise any of the language models. Set ANIMATIC_TEXT_MODEL in Lovable Cloud (see LOVABLE_SYNC.md).",
-  "Lovable kjente ikke igjen noen av språkmodellene. Sett ANIMATIC_TEXT_MODEL i Lovable Cloud.":
-    "Lovable did not recognise any of the language models. Set ANIMATIC_TEXT_MODEL in Lovable Cloud.",
-  "Lovable-kredittene i arbeidsområdet er brukt opp. Fyll på i Lovable og prøv igjen.":
-    "The Lovable credits in the workspace are used up. Top up in Lovable and try again.",
   lyd: "audio",
   Lyd: "Sound",
   "Lyd eller tidskoblinger er koblet til linjer bare den nye versjonen har":
@@ -1396,6 +1403,7 @@ export const CATALOG: Record<string, string> = {
   "Redusert lesbarhet: ": "Reduced legibility: ",
   Referanse: "Reference",
   "Referansebilder: {0}.": "Reference images: {0}.",
+  "Referansene kunne ikke kontrolleres sikkert.": "References could not be checked safely.",
   Referanser: "References",
   Relasjon: "Relation",
   Relasjonen: "The relation",
@@ -1867,6 +1875,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig nøkkel {0}": "Invalid key {0}",
   "Ugyldig nøkkelbilde": "Invalid keyframe",
   "Ugyldig notat": "Invalid note",
+  "Ugyldig notatstatus": "Invalid note status",
   "Ugyldig ønske": "Invalid request",
   "Ugyldig oppdatering av oppsettet": "Invalid setup update",
   "Ugyldig oppgave": "Invalid task",
@@ -1897,6 +1906,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig rekkefølge": "Invalid order",
   "Ugyldig relasjon": "Invalid relation",
   "Ugyldig replikk": "Invalid line",
+  "Ugyldig replikk for ordkobling": "Invalid line for word alignment",
   "Ugyldig replikk i utkastet.": "Invalid line in the draft.",
   "Ugyldig ressurs": "Invalid asset",
   "Ugyldig retning": "Invalid direction",
@@ -1980,6 +1990,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldige eksportinnstillinger": "Invalid export settings",
   "Ugyldige eksportvalg": "Invalid export options",
   "Ugyldige farger": "Invalid colours",
+  "Ugyldige filer": "Invalid files",
   "Ugyldige forbildebilder": "Invalid reference images",
   "Ugyldige forbildebilder (høyst 12)": "Invalid reference images (at most 12)",
   "Ugyldige innholdsvalg": "Invalid content options",
@@ -2101,6 +2112,7 @@ export const CATALOG: Record<string, string> = {
   "Velg en scene i hovedproduksjonen.": "Choose a scene in the main production.",
   "Velg en scenenode": "Select a scene node",
   "Velg ett bilde å oppskalere.": "Choose one image to upscale.",
+  "Velg filer før sletting": "Select files before deleting",
   "Velg høyst {0} linjer": "Select at most {0} lines",
   "Velg hva den nye tiden skal vise: frys, bakgrunn eller svart.":
     "Choose what the new time shows: freeze, background or black.",

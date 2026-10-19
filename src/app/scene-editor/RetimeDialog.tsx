@@ -7,6 +7,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   L,
   applyCommand,
+  alignmentInComposition,
   framesToSeconds,
   localized,
   newId,
@@ -39,6 +40,7 @@ import {
 import { loadVersionBuffers, saveComposition } from "@/app/audio/composition-actions";
 import { RetimeStrip } from "./RetimeStrip";
 import { useAudioPlayback } from "@/app/audio/use-audio-playback";
+import { renderComposition } from "@/engine/audio/composition";
 
 type RunAndWait = (
   command: Command,
@@ -170,6 +172,8 @@ export function RetimeDialog({
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<{ text: string; conflict: boolean } | null>(null);
   const [nonce, setNonce] = useState(0);
+  const [prepared, setPrepared] = useState<{ plan: RetimePlan; buffers: ReadonlyMap<string, AudioBuffer>; sources: ReadonlyMap<string, AudioBuffer> } | null>(null);
+  const [prepareError, setPrepareError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -214,8 +218,28 @@ export function RetimeDialog({
     return r.ok ? r.state : null;
   }, [plan, state]);
 
+  useEffect(() => {
+    let alive = true;
+    setPrepared(null);
+    setPrepareError(null);
+    if (!plan?.ok || !plan.report.remix.length) return;
+    void (async () => {
+      const ids = [...new Set(plan.report.remix.flatMap((r) => r.composition.segments.map((s) => s.versionId)))];
+      const sources = await loadVersionBuffers(ids.map((id) => state.assetVersions[id]).filter((v) => v !== undefined));
+      if (ids.some((id) => !sources.has(id))) throw new Error(L("Lyden kunne ikke lastes til forhåndslytting.", "The audio could not be loaded for preview."));
+      const buffers = new Map<string, AudioBuffer>();
+      for (const remix of plan.report.remix) {
+        const buffer = await renderComposition(remix.composition, (id) => sources.get(id), { sampleRate: 48000, channels: 1 });
+        buffers.set(remix.clipId, buffer);
+      }
+      if (alive) setPrepared({ plan, buffers, sources });
+    })().catch((error: unknown) => { if (alive) setPrepareError(error instanceof Error ? error.message : L("Forhåndslyttingen kunne ikke lages.", "The preview could not be prepared.")); });
+    return () => { alive = false; };
+  }, [plan, state]);
+  const ready = !plan?.ok || !plan.report.remix.length || prepared?.plan === plan;
+
   async function apply() {
-    if (!plan?.ok || target === null || !method) return;
+    if (!plan?.ok || target === null || !method || !ready) return;
     setError(null);
     let p: RetimePlan = plan;
     const group = newId<"command">();
@@ -226,9 +250,9 @@ export function RetimeDialog({
         );
         const remixed: Record<string, { versionId: string; lengthMs: number }> = {};
         for (const r of p.report.remix) {
-          const ids = [...new Set(r.composition.segments.map((x) => x.versionId))];
-          const versions = ids.map((id) => state.assetVersions[id]).filter((v) => v !== undefined);
-          const buffers = await loadVersionBuffers(versions);
+          const current = prepared;
+          if (!current || current.plan !== plan) throw new Error(L("Beregn forhåndslyttingen på nytt.", "Prepare the preview again."));
+          const base = state.assetVersions[r.baseVersionId];
           const saved = await saveComposition(
             { runAndWait },
             state,
@@ -236,11 +260,13 @@ export function RetimeDialog({
             r.assetId,
             { variantId: r.variantId },
             r.composition,
-            buffers,
+            current.sources,
             L(
               "Ordmellomrom endret med scenevarigheten",
               "Word gaps changed with the scene duration",
             ),
+            { group, prepared: current.buffers.get(r.clipId), ...(base?.alignment ? { alignment: alignmentInComposition(r.composition, base.alignment,
+              base.composition ? { kind: "composition", composition: base.composition } : { kind: "version", versionId: base.id }) } : {}) },
           );
           const len = r.composition.segments.reduce((m, x) => Math.max(m, x.atMs + x.lengthMs), 0);
           remixed[r.clipId] = { versionId: saved.versionId, lengthMs: saved.durationMs ?? len };
@@ -413,7 +439,9 @@ export function RetimeDialog({
           </p>
         )}
 
-        {previewState ? (
+        {prepareError ? <p role="alert" className="text-xs text-status-danger" data-testid="retime-audio-error">{prepareError}</p> : null}
+        {!ready && !prepareError ? <p role="status" className="text-xs text-text-secondary">{L("Lager forhåndslytting med nye ordmellomrom …", "Preparing preview with new word gaps …")}</p> : null}
+        {previewState && ready ? (
           <PreviewPlayer
             state={previewState}
             compositionId={composition.id}
@@ -422,6 +450,7 @@ export function RetimeDialog({
             imageUrls={imageUrls}
             audioOf={audioOf}
             audioUrls={audioUrls ?? null}
+            previewBuffers={prepared?.plan === plan ? prepared.buffers : undefined}
           />
         ) : null}
 
@@ -455,7 +484,7 @@ export function RetimeDialog({
           </Button>
           <Button
             onClick={() => void apply()}
-            disabled={!plan?.ok || !!busy || !!error}
+            disabled={!plan?.ok || !!busy || !!error || !ready}
             data-testid="retime-apply"
           >
             {L("Bruk", "Apply")}
@@ -475,6 +504,7 @@ function PreviewPlayer({
   imageUrls,
   audioOf,
   audioUrls,
+  previewBuffers,
 }: {
   state: ProjectState;
   compositionId: string;
@@ -483,18 +513,26 @@ function PreviewPlayer({
   imageUrls: Readonly<Record<string, string>>;
   audioOf?: ((s: ProjectState) => { items: readonly FilmAudioItem[]; startSec: number }) | undefined;
   audioUrls: Readonly<Record<string, string>> | null;
+  previewBuffers?: ReadonlyMap<string, AudioBuffer> | undefined;
 }) {
   const ref = useRef<HTMLCanvasElement | null>(null);
   const [frame, setFrame] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [tick, setTick] = useState(0);
   // Lyden fra den midlertidige tilstanden, så forskjellen mellom metodene høres
-  const sound = useMemo(() => audioOf?.(state) ?? { items: [], startSec: 0 }, [audioOf, state]);
+  const sound = useMemo(() => {
+    const sound = audioOf?.(state) ?? { items: [], startSec: 0 };
+    return { ...sound, items: sound.items.map((item) => {
+      const buffer = previewBuffers?.get(item.clip.id);
+      return buffer ? { ...item, sourceIn: 0, length: buffer.duration, fullLength: buffer.duration, speed: 1 } : item;
+    }) };
+  }, [audioOf, state, previewBuffers]);
   useAudioPlayback({
     items: sound.items,
     urls: audioOf ? audioUrls : null,
     playing,
     time: sound.startSec + frame / fps,
+    previewBuffers,
   });
   const cache = useMemo(() => new ImageCache(() => setTick((t) => t + 1)), []);
   const consumer = useRef({});

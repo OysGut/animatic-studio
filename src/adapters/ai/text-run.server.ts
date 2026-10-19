@@ -183,8 +183,8 @@ export async function runTextGeneration(
       return {
         ok: false,
         message: L(
-          "Ingen tekst-AI er tilgjengelig: ingen gyldig nøkkel, og Lovable AI er ikke slått på (LOVABLE_API_KEY mangler).",
-          "No text AI is available: no valid key, and Lovable AI is not turned on (LOVABLE_API_KEY is missing).",
+          "Ingen tekst-AI er tilgjengelig: ingen gyldig nøkkel, og innebygd AI er ikke slått på.",
+          "No text AI is available: no valid key, and built-in AI is not turned on.",
         ),
       };
   }

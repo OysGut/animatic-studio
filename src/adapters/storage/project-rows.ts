@@ -6,7 +6,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { L, stateFromRows, type ProjectRows, type ProjectState, type Row } from "@/core";
 
 /** Skjemaversjonen denne koden forventer (db/migrations). Øk ved hver ny migrasjon. */
-export const EXPECTED_SCHEMA_VERSION = 58;
+export const EXPECTED_SCHEMA_VERSION = 59;
 
 const PAGE = 1000;
 

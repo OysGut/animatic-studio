@@ -402,6 +402,8 @@ function normalizeVariantFields(f: AssetVariantFields): AssetVariantFields {
 // ---------- Notater ----------
 
 function normalizeAnnotation(s: ProjectState, n: NewAnnotation, now: string): Annotation {
+  if (n.resolved !== undefined && typeof n.resolved !== "boolean")
+    fail("invalid", L("Ugyldig notatstatus", "Invalid note status"));
   // Forsøksvis manusredigering (AS3, C2): bare på tekst, med foreslått tekst
   if (n.kind !== undefined) {
     if (n.kind !== "trial_edit")
@@ -498,6 +500,7 @@ function normalizeAnnotation(s: ProjectState, n: NewAnnotation, now: string): An
       editedByName: null,
       editedAt: null,
       removed: false,
+      resolved: n.resolved === true,
       ...(n.source === "system" ? { source: "system" as const } : {}),
       ...(n.taskId !== undefined ? { taskId: checkTaskId(n.taskId) } : {}),
       ...(n.kind === "trial_edit" ? { kind: "trial_edit" as const, suggestedText: n.suggestedText! } : {}),
@@ -6455,6 +6458,14 @@ function run(
       if (!m.path.startsWith(`${s.project.id}/`) || m.path.length > 600 || m.path.includes(".."))
         fail("invalid", L("Ugyldig lagringssti for bildet", "Invalid storage path for the image"));
       const sound = s.assets[va.assetId]?.kind === "sound";
+      if (c.alignment !== undefined) {
+        if (!sound || !s.blocks[c.alignment.blockId]) fail("invalid", L("Ugyldig replikk for ordkobling", "Invalid line for word alignment"));
+        const error = alignmentError(c.alignment);
+        if (error) fail("invalid", error);
+        const duration = m.durationMs;
+        if (typeof duration !== "number" || c.alignment.words.some((w) => w.endMs !== null && w.endMs > duration + 1000))
+          fail("invalid", L("Et ord ligger etter slutten av opptaket", "A word is after the end of the recording"));
+      }
       if (sound) {
         if (!AUDIO_MIME_TYPES.includes(m.mimeType))
           fail(
@@ -6530,6 +6541,7 @@ function run(
               createdBy: env.actor,
               durationMs: sound ? (m.durationMs ?? null) : null,
               ...(sound && c.composition ? { composition: c.composition } : {}),
+              ...(c.alignment ? { alignment: c.alignment } : {}),
               ...(c.template !== undefined ? { template: c.template } : {}),
               ...(c.globalSource !== undefined
                 ? {
@@ -6650,6 +6662,7 @@ function run(
           note: ver.note,
           number: ver.number,
           ...(ver.composition ? { composition: ver.composition } : {}),
+          ...(ver.alignment ? { alignment: ver.alignment } : {}),
           ...(ver.template ? { template: ver.template } : {}),
           ...(ver.globalSource ? { globalSource: ver.globalSource } : {}),
         },
@@ -6696,6 +6709,7 @@ function run(
           text: a.text,
           authorName: a.authorName,
           stampAt: a.stampAt,
+          resolved: a.resolved === true,
           ...(a.source ? { source: a.source } : {}),
           ...(a.taskId ? { taskId: a.taskId } : {}),
           ...(a.kind ? { kind: a.kind, suggestedText: a.suggestedText ?? "" } : {}),
@@ -6756,6 +6770,16 @@ function run(
           editedByName: a.editedByName,
           editedAt: a.editedAt,
         },
+        affected: [a.id],
+      };
+    }
+
+    case "SetAnnotationResolved": {
+      const a = need(s.annotations[c.annotationId], L("Notatet", "The note"));
+      if (typeof c.resolved !== "boolean") fail("invalid", L("Ugyldig notatstatus", "Invalid note status"));
+      return {
+        state: { ...s, annotations: { ...s.annotations, [a.id]: { ...a, resolved: c.resolved, revision: rev(a) } } },
+        inverse: { type: "SetAnnotationResolved", annotationId: a.id, resolved: a.resolved === true },
         affected: [a.id],
       };
     }

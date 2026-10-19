@@ -86,6 +86,7 @@ export interface ScheduleOptions {
    * av eksporten.
    */
   readonly mutedClipIds?: ReadonlySet<string>;
+  readonly previewBuffers?: ReadonlyMap<string, AudioBuffer>;
 }
 
 /**
@@ -104,7 +105,7 @@ export function scheduleAudio(
     if (it.clip.muted || o.mutedKinds?.has(it.clip.kind) || o.mutedClipIds?.has(it.clip.id))
       continue;
     if (!it.version) continue;
-    const buf = bank.get(it.version.mediaPath);
+    const buf = o.previewBuffers?.get(it.clip.id) ?? bank.get(it.version.mediaPath);
     if (!buf) continue;
     const s = scheduleOne(ctx, destination, it, buf, o);
     if (s) out.push(s);

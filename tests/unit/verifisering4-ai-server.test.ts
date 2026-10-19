@@ -232,7 +232,7 @@ describe("REQ-0565 – AI-bilder gjennom Lovable AI Gateway (simulert)", () => {
     const r = await gen({ data: input(), context: ctx(EDITOR) });
     expect(r).toMatchObject({
       ok: false,
-      message: expect.stringMatching(/LOVABLE_API_KEY mangler/),
+      message: expect.stringMatching(/innebygde AI-en er ikke slått på/),
     });
     expect(sent).toEqual([]);
     expect(jobsOf(db)).toEqual([]);
