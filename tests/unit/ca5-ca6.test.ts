@@ -1,6 +1,8 @@
 /** CA5/CA6: leppesynk, mønstre og atferd – validering, determinisme, angre/gjør om. */
 import { describe, expect, it } from "vitest";
-import { applyCommand, emptyProjectState, type ProjectState } from "@/core";
+import { applyCommand, emptyProjectState, type Command, type ProjectState } from "@/core";
+import { envelope } from "../helpers/fixtures";
+function apply(s: ProjectState, c: Command) { const r = applyCommand(s, envelope(c)); if (!r.ok) throw new Error(r.error.message); return r; }
 import { audioHashOf, lipsyncError, mergeRegenerated, ruleLipsync, spansFromRhubarb, textHashOf, visemeAt, type LipsyncResult } from "@/core/animation/lipsync";
 import { DEFAULT_BLINK_SPEC, mulberry32, patternError, patternEventAt, planPatternEvents, type AnimationPattern, type PatternSpec } from "@/core/animation/patterns";
 import { eyeStateAt, mouthVisemeAt, overlayEventsAt } from "@/core/animation/evaluate";
@@ -70,32 +72,32 @@ describe("CA5 leppesynk", () => {
   it("SaveLipsyncResult lagrer via kommando, med invers og angre/gjør om", () => {
     const s = baseState();
     const r = result();
-    const one = applyCommand(s, { type: "SaveLipsyncResult", result: r });
+    const one = apply(s, { type: "SaveLipsyncResult", result: r });
     expect(one.state.lipsyncResults[r.id]).toEqual(r);
-    const undone = applyCommand(one.state, one.inverse);
+    const undone = apply(one.state, one.inverse);
     expect(undone.state.lipsyncResults[r.id]).toBeUndefined();
-    const redone = applyCommand(undone.state, undone.inverse);
+    const redone = apply(undone.state, undone.inverse);
     expect(redone.state.lipsyncResults[r.id]).toEqual(r);
   });
   it("SaveLipsyncResult avviser duplikat per klipp og take, og ukjent klipp", () => {
     const s = baseState();
-    const one = applyCommand(s, { type: "SaveLipsyncResult", result: result() });
-    expect(() => applyCommand(one.state, { type: "SaveLipsyncResult", result: result({ id: id(8) }) })).toThrow();
-    expect(() => applyCommand(s, { type: "SaveLipsyncResult", result: result({ clipId: id(99) }) })).toThrow();
+    const one = apply(s, { type: "SaveLipsyncResult", result: result() });
+    expect(() => apply(one.state, { type: "SaveLipsyncResult", result: result({ id: id(8) }) })).toThrow();
+    expect(() => apply(s, { type: "SaveLipsyncResult", result: result({ clipId: id(99) }) })).toThrow();
   });
   it("SetLipsyncEnabled og SetLipsyncOverrides endrer bare raden, med angre", () => {
-    const s = applyCommand(baseState(), { type: "SaveLipsyncResult", result: result() }).state;
-    const off = applyCommand(s, { type: "SetLipsyncEnabled", lipsyncId: id(7), enabled: false });
+    const s = apply(baseState(), { type: "SaveLipsyncResult", result: result() }).state;
+    const off = apply(s, { type: "SetLipsyncEnabled", lipsyncId: id(7), enabled: false });
     expect(off.state.lipsyncResults[id(7)]?.enabled).toBe(false);
-    expect(applyCommand(off.state, off.inverse).state.lipsyncResults[id(7)]?.enabled).toBe(true);
-    const ov = applyCommand(s, { type: "SetLipsyncOverrides", lipsyncId: id(7), overrides: [{ frame: 1, viseme: "F" }] });
+    expect(apply(off.state, off.inverse).state.lipsyncResults[id(7)]?.enabled).toBe(true);
+    const ov = apply(s, { type: "SetLipsyncOverrides", lipsyncId: id(7), overrides: [{ frame: 1, viseme: "F" }] });
     expect(visemeAt(ov.state.lipsyncResults[id(7)]!, 1)).toBe("F");
   });
   it("mouthVisemeAt bruker bare aktivert leppesynk i klippets tidsrom", () => {
-    const s = applyCommand(baseState(), { type: "SaveLipsyncResult", result: result() }).state;
+    const s = apply(baseState(), { type: "SaveLipsyncResult", result: result() }).state;
     expect(mouthVisemeAt(s, id(2), 24)).toBe("A"); // klippet starter på frame 24 (1 s)
     expect(mouthVisemeAt(s, id(2), 10)).toBe("X");
-    const off = applyCommand(s, { type: "SetLipsyncEnabled", lipsyncId: id(7), enabled: false }).state;
+    const off = apply(s, { type: "SetLipsyncEnabled", lipsyncId: id(7), enabled: false }).state;
     expect(mouthVisemeAt(off, id(2), 24)).toBe("X");
   });
 });
@@ -136,16 +138,16 @@ describe("CA6 mønstre og blinking", () => {
   it("SaveAnimationPattern og RemoveAnimationPattern med angre/gjør om", () => {
     const s = baseState();
     const p: AnimationPattern = { id: id(20), revision: 1, rigId: null, name: "Nervøs blinking", color: "#a1b2c3", spec, removed: false };
-    const one = applyCommand(s, { type: "SaveAnimationPattern", pattern: p });
+    const one = apply(s, { type: "SaveAnimationPattern", pattern: p });
     expect(one.state.animationPatterns[p.id]).toEqual(p);
-    const two = applyCommand(one.state, { type: "RemoveAnimationPattern", patternId: p.id });
+    const two = apply(one.state, { type: "RemoveAnimationPattern", patternId: p.id });
     expect(two.state.animationPatterns[p.id]?.removed).toBe(true);
-    const back = applyCommand(two.state, two.inverse);
+    const back = apply(two.state, two.inverse);
     expect(back.state.animationPatterns[p.id]?.removed).toBe(false);
-    expect(applyCommand(back.state, back.inverse).state.animationPatterns[p.id]?.removed).toBe(true);
+    expect(apply(back.state, back.inverse).state.animationPatterns[p.id]?.removed).toBe(true);
   });
   it("eyeStateAt: manuelle blink vinner, avslått blinking er åpen, mønsteret bestemmer ellers", () => {
-    const s = applyCommand(baseState(), { type: "SaveAnimationPattern", pattern: { id: id(20), revision: 1, rigId: null, name: "B", color: "#a1b2c3", spec, removed: false } }).state;
+    const s = apply(baseState(), { type: "SaveAnimationPattern", pattern: { id: id(20), revision: 1, rigId: null, name: "B", color: "#a1b2c3", spec, removed: false } }).state;
     const use = { behavior: { manualBlinks: [{ eye: "left" as const, frame: 10, endFrame: 14, intensity: 0.5 }] } };
     expect(eyeStateAt(s, use, id(30), "left", 12, 480).closed).toBe(0.5);
     expect(eyeStateAt(s, use, id(30), "right", 12, 480).closed).toBe(0);
@@ -157,7 +159,7 @@ describe("CA6 mønstre og blinking", () => {
   });
   it("overlayEventsAt henter bare aktive overleggsmønstre", () => {
     const overlay: AnimationPattern = { id: id(21), revision: 1, rigId: null, name: "Pust", color: "#3fae7a", spec: { ...spec, target: "overlay" }, removed: false };
-    const s = applyCommand(baseState(), { type: "SaveAnimationPattern", pattern: overlay }).state;
+    const s = apply(baseState(), { type: "SaveAnimationPattern", pattern: overlay }).state;
     const events = planPatternEvents(overlay.spec, 0, 480, 24);
     const frame = events[0]!.frame;
     expect(overlayEventsAt(s, { behavior: { overlayPatternIds: [id(21)] } }, frame, 480)).toHaveLength(1);
@@ -172,13 +174,13 @@ describe("CA6 mønstre og blinking", () => {
       assetVariants: { [id(43)]: { id: id(43), revision: 1, assetId: id(42), archived: false, removed: false } as never },
       assetVersions: { [id(44)]: { id: id(44), revision: 1, variantId: id(43), mimeType: "image/png", removed: false } as never },
     };
-    const rig = applyCommand(s, { type: "CreateRig", rigId: id(45), variantId: id(43) }).state;
-    const ver = applyCommand(rig, { type: "SaveRigVersion", rigId: id(45), versionId: id(46), sourceVersionId: id(44), spec: { format: 1, anchors: {} } }).state;
-    const used = applyCommand(ver, { type: "AttachAnimationUse", useId: id(47), layerId: id(40), occurrenceId: id(2), rigVersionId: id(46) }).state;
-    const b = applyCommand(used, { type: "SetAnimationBehavior", useId: id(47), behavior: { seed: 42, manualBlinks: [{ eye: "both", frame: 4, endFrame: 8, intensity: 1 }] } });
+    const rig = apply(s, { type: "CreateRig", rigId: id(45), variantId: id(43) }).state;
+    const ver = apply(rig, { type: "SaveRigVersion", rigId: id(45), versionId: id(46), sourceVersionId: id(44), spec: { format: 1, anchors: {} } }).state;
+    const used = apply(ver, { type: "AttachAnimationUse", useId: id(47), layerId: id(40), occurrenceId: id(2), rigVersionId: id(46) }).state;
+    const b = apply(used, { type: "SetAnimationBehavior", useId: id(47), behavior: { seed: 42, manualBlinks: [{ eye: "both", frame: 4, endFrame: 8, intensity: 1 }] } });
     expect(b.state.animationUses[id(47)]?.behavior?.seed).toBe(42);
-    expect(applyCommand(b.state, b.inverse).state.animationUses[id(47)]?.behavior).toBeUndefined();
-    expect(() => applyCommand(used, { type: "SetAnimationBehavior", useId: id(47), behavior: { seed: -1 } })).toThrow();
-    expect(() => applyCommand(used, { type: "SetAnimationBehavior", useId: id(47), behavior: { leftEyePatternId: id(99) } })).toThrow();
+    expect(apply(b.state, b.inverse).state.animationUses[id(47)]?.behavior).toBeUndefined();
+    expect(() => apply(used, { type: "SetAnimationBehavior", useId: id(47), behavior: { seed: -1 } })).toThrow();
+    expect(() => apply(used, { type: "SetAnimationBehavior", useId: id(47), behavior: { leftEyePatternId: id(99) } })).toThrow();
   });
 });
