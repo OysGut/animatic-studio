@@ -1264,7 +1264,7 @@ function Editor({
           </aside>
         ) : null}
       </div>
-
+      )}
       {occurrence ? (
         <SceneScriptDialog
           open={scriptEdit !== null}
