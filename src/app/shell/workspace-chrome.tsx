@@ -57,8 +57,26 @@ export function Toolbar({
   const widths = useRef(new Map<string, number>());
   const [hidden, setHidden] = useState<ReadonlySet<string>>(new Set());
   const [target, setTarget] = useState<HTMLElement | null>(null);
+  const [open, setOpen] = useState(false);
+  const parkRef = useRef<HTMLDivElement>(null);
   const [tick, setTick] = useState(0);
   const menu = overflow === "menu";
+  const overflowing = menu && hidden.size > 0;
+
+  // Skjulte grupper bor i en vanlig DOM-node; den parkeres utenfor verktøylinjen når menyen er lukket,
+  // så ingen Radix-meny eller dismissable layer er montert uten at «Mer …» faktisk er åpen.
+  useIsoLayoutEffect(() => {
+    if (!menu || target) return;
+    const el = document.createElement("div");
+    el.className = "flex flex-col items-start gap-1";
+    setTarget(el);
+  }, [menu, target]);
+  useIsoLayoutEffect(() => {
+    if (!overflowing && open) setOpen(false);
+  }, [overflowing, open]);
+  useIsoLayoutEffect(() => {
+    if (target && parkRef.current && !open) parkRef.current.appendChild(target);
+  }, [target, open, overflowing]);
 
   const ctx: OverflowCtx | null = menu
     ? {
@@ -139,27 +157,29 @@ export function Toolbar({
             </div>
           ) : null}
           {children}
-          {menu ? (
-            <PopoverPrimitive.Root>
+          {overflowing ? (
+            <PopoverPrimitive.Root open={open} onOpenChange={setOpen}>
               <PopoverPrimitive.Trigger asChild>
                 <ToolbarButton
                   variant="icon"
                   data-toolbar-fixed
                   aria-label={moreLabel ?? L("Mer …", "More …")}
                   title={moreLabel ?? L("Mer …", "More …")}
-                  className={hidden.size === 0 ? "hidden" : ""}
                 >
                   <MoreHorizontal aria-hidden />
                 </ToolbarButton>
               </PopoverPrimitive.Trigger>
-              <PopoverPrimitive.Portal forceMount>
+              <PopoverPrimitive.Portal>
                 <PopoverPrimitive.Content
-                  forceMount
                   align="end"
                   sideOffset={4}
-                  className="z-50 flex max-w-[min(90vw,32rem)] flex-col gap-1 rounded-md border border-border bg-surface-2 p-1 shadow-md outline-none data-[state=closed]:hidden"
+                  className="z-50 flex max-w-[min(90vw,32rem)] flex-col gap-1 rounded-md border border-border bg-surface-2 p-1 shadow-md outline-none"
                 >
-                  <div ref={setTarget} className="flex flex-col items-start gap-1" />
+                  <div
+                    ref={(el) => {
+                      if (el && target) el.appendChild(target);
+                    }}
+                  />
                 </PopoverPrimitive.Content>
               </PopoverPrimitive.Portal>
             </PopoverPrimitive.Root>
@@ -170,6 +190,7 @@ export function Toolbar({
             </div>
           ) : null}
         </div>
+        {menu ? <div ref={parkRef} hidden aria-hidden /> : null}
       </OverflowContext.Provider>
     </TooltipProvider>
   );
