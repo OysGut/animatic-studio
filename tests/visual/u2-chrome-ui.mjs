@@ -207,8 +207,9 @@ await run("u2-verktoytips", "/utgivelse", async (page) => {
   await page.waitForTimeout(700);
   const tip = page.getByRole("tooltip");
   check(await tip.count() > 0, "verktøytipset vises ved peker etter en kort pause");
-  await page.keyboard.press("Escape");
-  await page.waitForTimeout(100);
+  await page.keyboard.press("Shift");
+  await page.waitForTimeout(400);
+  console.log("tips", await page.locator("[data-radix-popper-content-wrapper]").evaluateAll((e) => e.map((x) => x.outerHTML.slice(0, 200))));
   check((await page.getByRole("tooltip").count()) === 0, "en tast lukker verktøytipset");
   await btn.focus();
   await page.keyboard.press("Tab");
