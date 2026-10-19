@@ -36,6 +36,12 @@ export const createDialogueBatch = createServerFn({ method: "POST" }).middleware
   const character = state.assets[data.characterId];
   if (!character || character.removed || character.archived || !["character", "animal", "other"].includes(character.kind)) throw new Error(L("Karakteren finnes ikke i prosjektet.", "The character was not found in this project."));
   const coverage = characterDialogueCoverage(state, data.characterId).flatMap(s => s.lines);
+  const { projectKey, overAccountCap, overProjectBudget } = await import("../ai/ai-gate.server");
+  const key = await projectKey(db, data.projectId, "elevenlabs", context.userId);
+  if (!key) throw new Error(L("Ingen prosjekteier har koblet til ElevenLabs.", "No project owner has connected ElevenLabs."));
+  const { modelGate } = await import("../account/ai-models.server");
+  const allowed = await modelGate(db, "elevenlabs", data.voice.modelId ?? "eleven_v3");
+  if (allowed.message) throw new Error(allowed.message);
   const selected = data.lines.map(l => {
     const line = coverage.find(c => c.key === l.key);
     if (!line || line.scriptRevision !== l.revision) throw new Error(L("Manuset eller valget er endret. Kontroller og bekreft jobben på nytt.", "The script or selection has changed. Review and approve the job again."));
@@ -43,7 +49,12 @@ export const createDialogueBatch = createServerFn({ method: "POST" }).middleware
     if (cost === null) throw new Error(L("Modellprisen er ukjent.", "The model price is unknown."));
     return { id: newId<"command">(), job_id: newId<"generation_job">(), occurrence_id: line.occurrenceId, block_id: line.blockId, script_revision: l.revision, language: l.language, cost, variant_id: newId<"asset_variant">(), version_id: newId<"asset_version">(), clip_id: newId<"audio_clip">(), dialogue_version_id: newId<"dialogue_version">(), composition_id: newId<"composition">(), command_id: newId<"command">() };
   });
-  const { data: id, error } = await db.rpc("create_dialogue_batch", { p_project: data.projectId, p_actor: context.userId, p_request: data.requestId, p_character: data.characterId, p_voice: data.voice, p_items: selected });
+  const total = selected.reduce((n,item)=>n+item.cost,0);
+  const cap = await overAccountCap(db,key.user_id,total,false);
+  if (cap) throw new Error(cap);
+  const budget = await overProjectBudget(db,data.projectId,state.project.aiMonthLimit,false);
+  if (budget) throw new Error(budget);
+  const { data: id, error } = await db.rpc("create_dialogue_batch", { p_project: data.projectId, p_actor: context.userId, p_request: data.requestId, p_character: data.characterId, p_voice: data.voice, p_items: selected, p_key: key.id, p_key_owner: key.user_id });
   if (error) throw new Error(error.message);
   return { id: String(id) };
 });

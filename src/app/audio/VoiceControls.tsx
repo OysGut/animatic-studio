@@ -44,6 +44,7 @@ export function VoiceControls({ projectId, value, onChange, disabled = false }: 
         </select></label>
       </div>
       {model && speechLanguageError(model, language) ? <p role="alert" className="text-xs text-status-danger">{speechLanguageError(model, language)}</p> : null}
+      <p className="text-xs text-text-tertiary">{L("Modellens språkstøtte er kjent; denne stemmens uttale på valgt språk er ikke bekreftet.", "The model's language support is known; this voice's pronunciation in the selected language is not verified.")}</p>
       <div className="grid grid-cols-2 gap-3">
         {([ ["stability", L("Stabilitet", "Stability"), 0, 1, 0.5], ["similarity_boost", L("Stemmelikhet", "Similarity"), 0, 1, 0.75], ["style", L("Stil", "Style"), 0, 1, 0], ["speed", L("Talehastighet", "Speech speed"), 0.7, 1.2, 1] ] as const).map(([key, label, min, max, fallback]) => <label key={key} className="flex flex-col gap-1 text-xs text-text-secondary">{label}<input data-testid={`voice-${key}`} type="range" min={min} max={max} step={0.05} disabled={disabled} value={typeof settings[key] === "number" ? settings[key] : fallback} onChange={e => setSetting(key, Number(e.target.value))} /></label>)}
         <label className="col-span-2 flex items-center gap-2 text-xs text-text-secondary"><input type="checkbox" checked={settings["use_speaker_boost"] === true} disabled={disabled} onChange={e => setSetting("use_speaker_boost", e.target.checked)} />{L("Fremhev stemmen", "Speaker boost")}</label>

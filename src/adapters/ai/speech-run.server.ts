@@ -171,11 +171,13 @@ export async function runSpeech(data: SpeechInput, context: { supabase: unknown;
       else await db.from("generation_jobs").delete().eq("id", jobId).eq("status", "running");
       return { ok: false, message: after };
     }
-    const finish = (patch: Record<string, unknown>) =>
-      db
+    const finish = async (patch: Record<string, unknown>) => {
+      const { error } = await db
         .from("generation_jobs")
         .update({ ...patch, finished_at: new Date().toISOString() } as never)
         .eq("id", jobId);
+      if (error) throw new Error(L("Jobbresultatet kunne ikke lagres. Ikke generer på nytt før resultatet er avklart.", "The job result could not be saved. Do not regenerate until the result is reconciled."));
+    };
     let charged = false;
     let secret: string | null = null;
     const { ADAPTERS, ProviderError, scrubSecret } = await import("./providers.server");
