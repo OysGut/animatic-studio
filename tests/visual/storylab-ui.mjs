@@ -219,6 +219,14 @@ async function run(name, act, { lang = "nb", path = "" } = {}) {
 }
 
 const pick = (page, assetId) => page.locator(`[data-testid="storylab-character"][data-asset-id="${assetId}"]`).click();
+async function eventually(condition, timeout = 5000) {
+  const end = Date.now() + timeout;
+  do {
+    if (await condition()) return true;
+    await new Promise(resolve => setTimeout(resolve, 100));
+  } while (Date.now() < end);
+  return false;
+}
 async function newSession(page, assetId) {
   await pick(page, assetId);
   await page.getByTestId("storylab-talk").click();
@@ -255,7 +263,7 @@ await run("fane og profil", async (page) => {
 
   // Lag profil med AI
   await page.getByTestId("storylab-generate").click();
-  check(/anslått/.test(await page.getByTestId("storylab-generate-cost").innerText()), "anslått kostnad og modell vises");
+  check(await eventually(async () => /anslått/.test(await page.getByTestId("storylab-generate-cost").innerText()), 5000), "anslått kostnad og modell vises");
   await page.getByTestId("storylab-generate-run").click();
   await page.getByTestId("storylab-generate-preview").waitFor();
   check(S.gen.at(-1)?.task === "storylab_profile", "generateText kalles med storylab_profile");

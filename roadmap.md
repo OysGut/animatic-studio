@@ -1,4 +1,8 @@
 # MU1
+## U5-polish
+- [ ] Initial og typeikon i Story Lab/bibliotek og miniatyrer i alle animasjonssporhoder.
+- [ ] Krymp toppjustert forhåndsvisningspanel uten svart restflate.
+- [ ] Stabil kostnadsventing; utvid U5-kontroller og kjør U5, CA1–CA8 og Story Lab samt Vitest.
 # CA4
 - [x] Forhåndsvisning toppjustert, alle spor med bilde/typeikon, lyd rett under sporene.
 - [x] Munnformeditor, tegneark, vektorpensel og ikke-destruktive deljusteringer.

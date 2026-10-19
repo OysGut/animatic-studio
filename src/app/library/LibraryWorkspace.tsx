@@ -6,13 +6,13 @@
  */
 import { TrashDialog } from "./TrashDialog";
 import { AssetSymbolIcon } from "./AssetSymbolIcon";
+import { AssetThumb } from "./AssetThumb";
 import { useActiveProduction } from "@/app/project/use-production";
 import { useNavigate } from "@tanstack/react-router";
 import {
   Archive,
   Download,
   Lightbulb,
-  Music,
   Plus,
   Redo2,
   Search,
@@ -687,21 +687,7 @@ function Library({
                         (a.archived ? " opacity-60" : "")
                       }
                     >
-                      <span
-                        data-testid="asset-thumb"
-                        className={
-                          "flex items-center justify-center overflow-hidden rounded-sm bg-surface-3 text-[11px] font-medium text-text-tertiary " +
-                          (grid ? "aspect-square w-full" : "size-9")
-                        }
-                      >
-                        {a.kind === "sound" ? (
-                          <Music className="size-4" aria-hidden />
-                        ) : url ? (
-                          <img src={url} alt="" className="size-full object-cover" />
-                        ) : (
-                          <AssetSymbolIcon state={state} assetId={a.id} className="size-7" />
-                        )}
-                      </span>
+                      <AssetThumb state={state} assetId={a.id} url={url} size={grid ? "lg" : "md"} />
                       <span className="min-w-0">
                         <span className="flex items-center gap-1 truncate text-[13px] text-text-primary">
                           {a.kind !== "sound" ? (

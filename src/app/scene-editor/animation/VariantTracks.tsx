@@ -3,6 +3,7 @@ import { Copy, ImagePlus, Pencil, Trash2 } from "lucide-react";
 import { L, layerFieldsOf, insertImageSegment, replaceImageSegment, removeImageSegment, moveImageSegment, trimImageSegment, variantsOf, versionsOf, type Command, type LayerFields, type ProjectState } from "@/core";
 import { animationImageTracks } from "@/core/animation/tracks";
 import { useImageUrls } from "@/app/library/asset-images";
+import { AssetThumb } from "@/app/library/AssetThumb";
 import { VariantStrip, type StripImage } from "@/app/asset-studio/VariantStrip";
 import { Toolbar, ToolbarGroup, IconButton, ToolbarButton } from "@/app/shell/workspace-chrome";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -90,7 +91,7 @@ export function VariantTracks({ state, compositionId, occurrenceId, duration, vi
       return <div key={layer.id} data-anim-track={layer.id} className="flex h-12 shrink-0 border-b border-border">
         <HoverCard openDelay={400}>
           <HoverCardTrigger asChild><ToolbarButton className="h-full w-40 shrink-0 justify-start gap-2 overflow-hidden border-r border-border px-2" onClick={() => setSelected({ layerId: layer.id, index: 0 })}>
-            <span className="flex size-6 shrink-0 items-center justify-center">{thumb && urls[thumb.mediaPath] ? <img data-testid="anim-layer-thumbnail" className="size-6 object-contain" alt="" src={urls[thumb.mediaPath]} /> : <Fallback data-testid="anim-layer-fallback" data-asset-kind={assetKind ?? "prop"} className="size-5 text-text-tertiary" />}</span>
+            <span data-testid={thumb && urls[thumb.mediaPath] ? "anim-layer-thumbnail" : "anim-layer-fallback"} data-asset-kind={assetKind ?? "prop"} className="flex size-6 shrink-0 items-center justify-center">{layer.assetId ? <AssetThumb state={state} assetId={layer.assetId} url={thumb ? urls[thumb.mediaPath] : undefined} size="sm" /> : <Fallback className="size-5 text-text-tertiary" />}</span>
             <span className="truncate">{layer.name}</span>
           </ToolbarButton></HoverCardTrigger>
           {thumb && urls[thumb.mediaPath] ? <HoverCardContent className="w-60 p-0" side="right"><img data-testid="anim-layer-hover" className="max-h-60 w-60 object-contain" src={urls[thumb.mediaPath]} alt={layer.name} /></HoverCardContent> : null}

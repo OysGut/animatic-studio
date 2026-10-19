@@ -34,7 +34,7 @@ export function AnimPreview({ state, composition, frame, urls }: { state: Projec
   }, [state, composition.id, frame, size, zoom, pan, tick, cache, fonts]);
   // U5: forhåndsvisningen har scenens bildeformat; resten av panelet er vanlig panelflate (ingen stor svart flate)
   const aspect = `${Math.max(1, composition.width)} / ${Math.max(1, composition.height)}`;
-  return <section data-testid="anim-preview" className="flex min-h-0 flex-1 flex-col bg-surface-1">
+  return <section data-testid="anim-preview" className="flex min-h-0 w-full flex-col bg-surface-1">
     <PanelHeader title={L("Forhåndsvisning", "Preview")} />
     <Toolbar><ToolbarGroup>
       <select data-testid="anim-preview-zoom" aria-label={L("Zoom i forhåndsvisningen", "Preview zoom")} value={zoom} onChange={e => { setZoom(e.target.value === "fit" ? "fit" : Number(e.target.value)); setPan({ x: 0, y: 0 }); }} className="h-7 rounded-sm border border-border-control bg-surface-3 text-xs text-text-primary">
@@ -50,7 +50,7 @@ export function AnimPreview({ state, composition, frame, urls }: { state: Projec
       onPointerMove={e => { const d = drag.current; if (d) setPan({ x: d.pan.x + e.clientX - d.x, y: d.pan.y + e.clientY - d.y }); }}
       onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }}
       onKeyDown={e => { if (!e.shiftKey || !e.key.startsWith("Arrow")) return; e.preventDefault(); e.stopPropagation(); setPan(p => ({ x: p.x + (e.key === "ArrowRight" ? 10 : e.key === "ArrowLeft" ? -10 : 0), y: p.y + (e.key === "ArrowDown" ? 10 : e.key === "ArrowUp" ? -10 : 0) })); }}>
-      <canvas ref={canvas} data-testid="anim-preview-canvas" data-frame={frame} className="block h-full w-full" />
+      <canvas ref={canvas} data-testid="anim-preview-canvas" data-frame={frame} className="absolute inset-0 block h-full w-full" />
     </div>
   </section>;
 }
