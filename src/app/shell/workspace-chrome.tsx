@@ -108,13 +108,13 @@ export function Toolbar({
   }, [menu, tick]);
 
   useEffect(() => {
-    if (process.env.NODE_ENV === "production" || !rootRef.current) return;
+    if (!import.meta.env.DEV || !rootRef.current) return;
     const n = countPrimary(
       [...rootRef.current.querySelectorAll<HTMLElement>("[data-toolbar-variant]")].map(
-        (el) => el.dataset.toolbarVariant,
+        (el) => el.dataset["toolbarVariant"],
       ),
     );
-    if (n > 1) console.warn("Toolbar: høyst én primærhandling per verktøylinje (U2).");
+    if (n > 1) console.warn("Toolbar: at most one primary action per toolbar (U2).");
   });
 
   return (
