@@ -1,7 +1,7 @@
 # MU1
 # CA designpuss og CA3
-- [ ] A: faner, pen tidslinjal, Tilpass, miniatyrer/etiketter, kvadrater, navigator og lyd nederst; tester.
-- [ ] B: rigmodell/kommandoer/evaluering, ansiktsmarkering, av/på, backup, migrasjoner og tester.
+- [x] A: faner, pen tidslinjal, Tilpass, miniatyrer/etiketter, kvadrater, navigator og lyd nederst; tester.
+- [x] B: rigmodell/kommandoer/evaluering, ansiktsmarkering, av/på, backup, migrasjoner og tester.
 ## T2 og samtidige takes – rettinger
 - [x] Vent på alle tre innsettinger og kontroller orderKey i T2-testen.
 - [x] Stabiliser take-/versjonsrekkefølge og test samme tidsstempel med motsatt UUID-rekkefølge.
@@ -80,4 +80,6 @@
 - [x] CA1 Fane, tidslinje, avspillingsområde, navigator, forhåndsvisning og tester
 - [x] CA2 Bildevarianter, dialogspor og tester
 - [x] Rett canvas-testens venting på én kant (maks 3 sekunder).
-- [ ] CA3–CA8 — venter på egne oppdrag; Rhubarb, vektormasker og 512 kB er avklart.
+- [x] CA3: riggmodell, ansiktsmarkering og migrasjoner 0053/0054 skrevet; unit- og mocktester grønne.
+- [ ] CA3 DB-verifisering og aktivering — Øystein kjører migrasjoner og DB-testene.
+- [ ] CA4–CA8 — venter på egne oppdrag; Rhubarb, vektormasker og 512 kB er avklart.

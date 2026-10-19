@@ -50,6 +50,9 @@ alter table public.animation_rigs add constraint animation_rigs_current_version
 create function private.validate_animation_rig() returns trigger language plpgsql set search_path = '' as $$
 begin
   if TG_TABLE_NAME = 'animation_rigs' then
+    -- Deferred events may describe rows updated again or deleted later in this transaction.
+    select * into new from public.animation_rigs where id = new.id;
+    if not found then return null; end if;
     if not exists (select 1 from public.asset_variants v where v.id = new.variant_id and v.project_id = new.project_id) then
       raise exception 'Varianten tilhører et annet prosjekt' using errcode = '23503';
     end if;
