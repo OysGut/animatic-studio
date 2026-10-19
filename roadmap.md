@@ -71,3 +71,8 @@
 - [ ] Primærknapper som ikke finnes i dag (sceneeditor «Eksporter», manus «Ny scene», bibliotek «Ny ressurs», prosjekt «Åpne manus") – venter på avklaring
 
 - U2 del 3: ferdig. Nye primærknapper tas i U4/U5.
+
+## CA – Character Animation Studio (plan godkjent 19.10.2026)
+- [x] CA0 Spesifikasjon lagret (docs/product/phase3/CHARACTER_ANIMATION_SPEC.md)
+- [ ] CA1 Fane, tidslinje, avspillingsområde, navigator, forhåndsvisning — venter på oppdrag
+- [ ] CA2–CA8 — venter på oppdrag og svar på åpne spørsmål (Rhubarb-pakke/WASM, maskelagring, størrelsesgrense)
