@@ -1,6 +1,6 @@
 /** DV5: durable sequential work, leased per batch; no browser or page-load orchestration. */
 import { applyCommand, diffStates, newId, L, type Command, type AssetVoice } from "@/core";
-import { loadProjectState, type AnyClient } from "../storage/project-rows";
+import { loadProjectState, checkSchema, type AnyClient } from "../storage/project-rows";
 import { runSpeech } from "../ai/speech-run.server";
 import { memberRole, ROLE_RANK } from "../ai/ai-gate.server";
 
@@ -11,6 +11,8 @@ export async function processDialogueBatch(db: AnyClient, batchId: string, userD
   if (!claimed) return { processed: 0 };
   const batch = claimed as { id: string; project_id: string; created_by: string; character_id: string; voice: AssetVoice };
   let processed = 0;
+  const schema = await checkSchema(db);
+  const reviews = schema.kind !== "missing" && schema.version >= 62;
   const transition = async (itemId: unknown, patch: Record<string, unknown>) => {
     const { error } = await db.rpc("transition_dialogue_batch_item", { p_item: itemId, p_lease: lease, p_patch: patch });
     if (error) throw new Error(error.message);
@@ -32,7 +34,8 @@ export async function processDialogueBatch(db: AnyClient, batchId: string, userD
         const out = await runSpeech({ projectId: batch.project_id, blockId: String(item["block_id"]), voiceId: batch.voice.voiceId, model: batch.voice.modelId ?? "eleven_v3", language: String(item["language"]), settings: batch.voice.settings ?? {}, expectedRevision: item["script_revision"], jobId: String(item["job_id"]), batch: true }, { userId: batch.created_by, supabase: userDb });
         if (!out.ok) {
           const blocked = out.status === 402 || out.status === 403;
-          const retryable = !out.ambiguous && (out.status === 429 || (typeof out.status === "number" && out.status >= 500));
+          // 402/403: the provider refused before billing; retried only after the user reconfirms access (reconfirm_dialogue_batch).
+          const retryable = !out.ambiguous && (blocked || out.status === 429 || (typeof out.status === "number" && out.status >= 500));
           await transition(item["id"], { status: "failed", error: out.message, retryable });
           if (blocked || out.ambiguous || out.status === 429) {
             await db.from("dialogue_batches").update({ status: "paused", pause_reason: out.message, access_blocked: blocked }).eq("id", batchId).eq("lease_token", lease);
@@ -48,7 +51,7 @@ export async function processDialogueBatch(db: AnyClient, batchId: string, userD
       const state = await loadProjectState(db, batch.project_id);
       const command: Command = { type: "ApplyGeneratedDialogue", occurrenceId: String(item["occurrence_id"]), blockId: String(item["block_id"]), characterId: batch.character_id,
         assetId: result.assetId, variantId: String(item["variant_id"]), versionId: String(item["version_id"]), clipId: String(item["clip_id"]), dialogueVersionId: String(item["dialogue_version_id"]), compositionId: String(item["composition_id"]), media: result.media, language: String(item["language"]),
-        metadata: { source: "ai", provider: "elevenlabs", voiceId: batch.voice.voiceId, modelId: batch.voice.modelId ?? "eleven_v3", settings: { ...batch.voice.settings, language: String(item["language"]) }, scriptRevision: Number(item["script_revision"]), parentVersionId: null } };
+        ...(reviews ? { reviewId: String(item["command_id"]) } : {}), metadata: { source: "ai", provider: "elevenlabs", voiceId: batch.voice.voiceId, modelId: batch.voice.modelId ?? "eleven_v3", settings: { ...batch.voice.settings, language: String(item["language"]) }, scriptRevision: Number(item["script_revision"]), parentVersionId: null } };
       const applied = applyCommand(state, { id: String(item["command_id"]) as never, actor: batch.created_by as never, at: new Date().toISOString(), command });
       if (!applied.ok) {
         await transition(item["id"], { status: "skipped", retryable: false, error: applied.error.message });

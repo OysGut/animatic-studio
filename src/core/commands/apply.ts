@@ -1,5 +1,7 @@
 import { assetVoiceError } from "../dialogue/voice";
 import { languageTagError } from "../dialogue/languages";
+import { clipDrift, type DialogueReview } from "../dialogue/drift";
+import { NOTE_FLAG_TARGETS, NOTE_FLAG_MAX_TEXT, type NoteFlag } from "../notes/flags";
 import { lineInfo } from "../audio/takes";
 import { DEFAULT_COMPOSITION } from "../composition/fields";
 import { applyRigCommand } from "../animation/rig-commands";
