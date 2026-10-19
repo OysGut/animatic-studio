@@ -111,3 +111,12 @@
 - [x] Del B: Cmd/Ctrl-dra og beskyttede tidsområder via RetimeScene
 - [x] Del C: KI-SL-1 (lydtestene ventet ikke på dekodet lyd)
 - [ ] «Sist endret» på prosjektkortene: krever en kolonne for sist endret (ikke bestilt; ingen migrasjon i U5)
+
+## Sikkerhets-TODO Ø-11 (2026-10-19)
+- [x] AssetThumb: reserve ved lasting/feil, u5-test med feilende URL
+- [x] Invitasjoner krever riktig e-post (prosjekt + gruppe), DB-tester
+- [x] ai_model_settings / ai_provider_keys lesetilgang, DB-tester
+- [x] Story Lab RLS + tekst-AI-serverfunksjoner (auth, medlemskap, grenser, validering, ingen lekkasje)
+- [x] Linter/advisor, npm audit, GP5-lenker, mobilopplasting
+- [x] SECURITY_REVIEW_2026-10.md, KNOWN_ISSUES, SESSION_HANDOVER
+- [ ] Kjør migrasjon 0058 i Cloud (Claude)

@@ -146,6 +146,24 @@ await h.scenario("u5-engelsk", occ.id, "en", async (page) => {
   h.check(/grid|list/i.test(label ?? ""), `engelsk tekst på bryteren (${label})`);
 });
 
+// Bildelenker som feiler: reserven skal vises og data-has-image bli «false» (ikke tom grå flate).
+await h.scenario("u5-bilde-feiler", occ.id, "nb", async (page) => {
+  await page.route("**/object/sign/**", (route) => route.request().method() === "GET" ? route.fulfill({ status: 404, body: "" }) : route.fallback());
+  await page.goto(`${h.base}${h.P}/storylab`, { waitUntil: "networkidle" });
+  const list = page.getByTestId("storylab-characters");
+  const rows = await list.getByTestId("storylab-character").count();
+  h.check(withImage.length > 0, `fixturen har karakterer med bilde (${withImage.length})`);
+  h.check(await h.eventually(async () => (await list.locator('[data-testid="asset-thumb"][data-has-image="false"] [data-testid="asset-thumb-fallback"]').count()) === rows, 5000), `feilende bilde gir reserve for alle karakterer (${rows})`);
+  h.check((await list.locator('[data-testid="asset-thumb"][data-has-image="true"]').count()) === 0, "ingen miniatyr står med ødelagt bilde");
+  await checkReserves(page, list, "Story Lab med feilende bilder");
+  await page.goto(`${h.base}${h.P}/scene?scene=${occ.id}`, { waitUntil: "networkidle" });
+  await page.getByTestId("scene-tab-animation").click();
+  const tracks = page.getByTestId("anim-variant-tracks");
+  h.check(await h.eventually(async () => (await tracks.locator('[data-testid="asset-thumb"][data-has-image="true"]').count()) === 0, 5000), "sporhodene viser reserve når bildet feiler");
+  await checkReserves(page, tracks, "Karakterspor med feilende bilder");
+  await page.screenshot({ path: `${h.out}/bilde-feiler.png` });
+});
+
 // Fjern bare karakterbildene fra den mockede visningen for å bevise reserven,
 // uavhengig av hvilke bilder den vanlige fixturen inneholder.
 const originalVersions = h.rows.asset_versions;

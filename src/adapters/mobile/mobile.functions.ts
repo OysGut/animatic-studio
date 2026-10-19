@@ -402,7 +402,8 @@ export const mobileUploadTicket = createServerFn({ method: "POST" })
     if (r?.status === "done") return { ok: true, message: "", path: r.path ?? path, done: true };
     const { data: up, error: upErr } = await db.storage
       .from(BUCKET)
-      .createSignedUploadUrl(r?.path ?? path, { upsert: true });
+      // Ø-11: uten overskriving, så en bekreftet fil ikke kan byttes ut med lenken etterpå
+      .createSignedUploadUrl(r?.path ?? path, { upsert: false });
     if (upErr || !up)
       return {
         ok: false,
@@ -444,10 +445,12 @@ export const mobileConfirmUpload = createServerFn({ method: "POST" })
     const hash = await hashToken(data.token);
     const { data: sess } = await db
       .from("upload_sessions")
-      .select("id, media_kinds")
+      .select("id, media_kinds, revoked_at, expires_at")
       .eq("token_hash", hash)
       .maybeSingle();
-    const s = sess as { id: string; media_kinds: MobileMediaKind[] } | null;
+    const sx = sess as { id: string; media_kinds: MobileMediaKind[]; revoked_at: string | null; expires_at: string } | null;
+    // Ø-11: tilbakekalt eller utløpt økt kan ikke bekrefte flere filer
+    const s = sx && !sx.revoked_at && Date.parse(sx.expires_at) > Date.now() ? sx : null;
     if (!s) return { ok: false, message: L("Ugyldig lenke", "Invalid link") };
     const { data: row } = await db
       .from("mobile_imports")

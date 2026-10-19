@@ -170,6 +170,9 @@ export async function uploadWithTicket(
 ): Promise<BackendError | null> {
   const { error } = await browserClient.storage
     .from("assets")
-    .uploadToSignedUrl(path, uploadToken, body, { contentType, upsert: true });
+    .uploadToSignedUrl(path, uploadToken, body, { contentType, upsert: false });
+  // Ø-11: lenken kan ikke overskrive en fil. Finnes filen allerede (et tidligere forsøk kom fram), er den
+  // lastet opp; serveren kontrollerer innholdet ved bekreftelsen.
+  if (error && /exist|duplicate|409/i.test(`${(error as { statusCode?: string }).statusCode ?? ""} ${error.message}`)) return null;
   return plainError(error);
 }

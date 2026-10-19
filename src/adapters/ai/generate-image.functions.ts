@@ -728,7 +728,8 @@ export const generateImage = createServerFn({ method: "POST" })
       }
       if (log.length > 0)
         // Vellykket etter færre valg: noter hvorfor, så det kan rettes
-        console.warn("[generateImage] lyktes etter nye forsøk:", log.join(" | ").slice(0, 600)); // i18n-ignore
+        // Bare status og valg i serverloggen, aldri leverandørens svartekst (kan gjenta prompten, Ø-11)
+        console.warn("[generateImage] lyktes etter nye forsøk:", log.map((l) => l.split("]:")[0] + "]").join(" | ").slice(0, 600)); // i18n-ignore
       const json = (await res.json()) as { data?: { b64_json?: string; url?: string }[] };
       const first = json.data?.[0];
       let bytes: Uint8Array;
