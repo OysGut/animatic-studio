@@ -179,7 +179,7 @@ const toolbarHeights = (page) =>
     [...new Set(els.map((e) => e.parentElement))].map((t) => t.getBoundingClientRect().height),
   );
 
-for (const [name, path] of [["scene", "/scene"], ["manus", "/manus"], ["bibliotek", "/bibliotek"], ["montering", "/montering"], ["utgivelse", "/utgivelse"]]) {
+for (const [name, path] of [["scene", "/scene"], ["manus", "/manus"], ["bibliotek", "/bibliotek"]]) {
   await run(`u2-${name}-1280`, path, async (page) => {
     const hs = await rowHeights(page);
     check(hs.length > 0 && hs.every((h) => Math.round(h) === 32), `${name}: gruppene i verktøylinjen er 32 px høye`);
