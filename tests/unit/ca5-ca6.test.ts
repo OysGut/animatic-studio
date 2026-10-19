@@ -2,29 +2,31 @@
 import { describe, expect, it } from "vitest";
 import { applyCommand, emptyProjectState, type Command, type ProjectState } from "@/core";
 import { envelope } from "../helpers/fixtures";
+import { fixture } from "../visual/fixture-state";
 function apply(s: ProjectState, c: Command) { const r = applyCommand(s, envelope(c)); if (!r.ok) throw new Error(r.error.message); return r; }
 import { audioHashOf, lipsyncError, mergeRegenerated, ruleLipsync, spansFromRhubarb, textHashOf, visemeAt, type LipsyncResult } from "@/core/animation/lipsync";
 import { DEFAULT_BLINK_SPEC, mulberry32, patternError, patternEventAt, planPatternEvents, type AnimationPattern, type PatternSpec } from "@/core/animation/patterns";
 import { eyeStateAt, mouthVisemeAt, overlayEventsAt } from "@/core/animation/evaluate";
 
-const id = (n: number) => `${"0".repeat(8)}-0000-4000-8000-${String(n).padStart(12, "0")}`;
+const id = (n: number) => `01900000-0000-7000-8000-0056${String(n).padStart(8, "0")}`;
 const fps = { num: 24, den: 1 };
 
 function baseState(): ProjectState {
-  const s = emptyProjectState();
+  const s = fixture.state;
+  const clip = Object.values(s.audioClips).find(c => !c.removed && c.kind === "dialogue" && c.blockId)!;
+  const occ = s.occurrences[clip.occurrenceId]!;
   return {
     ...s,
-    project: { ...s.project, id: id(1), fps },
-    occurrences: { [id(2)]: { id: id(2), revision: 1, variantId: id(3), activeTakeId: id(9), active: true, removed: false } as never },
-    variants: { [id(3)]: { id: id(3), revision: 1, sceneId: id(4), removed: false } as never },
-    blocks: { [id(5)]: { id: id(5), revision: 1, text: "Hallo verden", orderKey: "a1", removed: false } as never },
-    takes: { [id(9)]: { id: id(9), revision: 1, orderKey: "a1" } as never },
-    audioClips: { [id(6)]: { id: id(6), revision: 1, occurrenceId: id(2), kind: "dialogue", blockId: id(5), offsetMs: 1000, sourceInMs: 0, lengthMs: 2000, removed: false } as never },
+    project: { ...s.project, fps },
+    occurrences: { ...s.occurrences, [occ.id]: { ...occ, activeTakeId: occ.activeTakeId ?? id(9) } },
+    takes: occ.activeTakeId ? s.takes : { ...s.takes, [id(9)]: { id: id(9), revision: 1, orderKey: "a1" } as never },
   };
 }
+const clipOf = (s: ProjectState) => Object.values(s.audioClips).find(c => !c.removed && c.kind === "dialogue" && c.blockId)!;
+const takeOf = (s: ProjectState) => s.occurrences[clipOf(s).occurrenceId]!.activeTakeId!;
 
 const result = (over: Partial<LipsyncResult> = {}): LipsyncResult => ({
-  id: id(7), revision: 1, clipId: id(6), takeId: id(9), blockId: id(5), source: "rule", algorithmVersion: 1,
+  id: id(7), revision: 1, clipId: clipOf(fixture.state).id, takeId: takeOf(baseState()), blockId: clipOf(fixture.state).blockId, source: "rule", algorithmVersion: 1,
   audioHash: "abc123", textHash: "def456", spans: [{ frame: 0, endFrame: 12, viseme: "A" }, { frame: 12, endFrame: 24, viseme: "D" }],
   overrides: [], enabled: true, removed: false, ...over,
 });
@@ -95,10 +97,11 @@ describe("CA5 leppesynk", () => {
   });
   it("mouthVisemeAt bruker bare aktivert leppesynk i klippets tidsrom", () => {
     const s = apply(baseState(), { type: "SaveLipsyncResult", result: result() }).state;
-    expect(mouthVisemeAt(s, id(2), 24)).toBe("A"); // klippet starter på frame 24 (1 s)
-    expect(mouthVisemeAt(s, id(2), 10)).toBe("X");
+    const clip = clipOf(s); const start = Math.round(clip.offsetMs / 1000 * 24);
+    expect(mouthVisemeAt(s, clip.occurrenceId, start)).toBe("A");
+    expect(mouthVisemeAt(s, clip.occurrenceId, start - 1)).toBe("X");
     const off = apply(s, { type: "SetLipsyncEnabled", lipsyncId: id(7), enabled: false }).state;
-    expect(mouthVisemeAt(off, id(2), 24)).toBe("X");
+    expect(mouthVisemeAt(off, clip.occurrenceId, start)).toBe("X");
   });
 });
 
