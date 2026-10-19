@@ -129,7 +129,7 @@ export function StudioAudioTracks({
                   projectId={projectId}
                   state={state}
                   cmds={cmds}
-                  target={{ kind: "line", occurrenceId, blockId: c.blockId }}
+                  target={{ kind: "line", occurrenceId, blockId: c.blockId, clipId: c.id }}
                   label={L(`Takes for ${name}`, `Takes for ${name}`)}
                 />
               ) : null}

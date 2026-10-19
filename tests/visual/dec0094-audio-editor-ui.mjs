@@ -315,6 +315,21 @@ await run(
     const before = await lenOf(page);
     check(Math.abs(before - 3.5) < 0.05, `lengden er opptakets (${before} s)`);
     await page.screenshot({ path: `${out}/e01a-editor.png` });
+    const block = ed.getByTestId("audio-editor-seg").first();
+    const box = await block.boundingBox();
+    if (!box) throw new Error("mangler lydsegment");
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width / 2 + 100, box.y + box.height / 2, { steps: 12 });
+    await page.mouse.up();
+    const movedAt = Number(await block.getAttribute("data-at-ms"));
+    check(movedAt > 0, `dra flytter delen (${movedAt} ms)`);
+    await ed.getByTestId("audio-editor-undo").click();
+    check(Number(await block.getAttribute("data-at-ms")) === 0, "én angring gjenoppretter hele draget");
+    check(await ed.getByTestId("audio-editor-undo").isDisabled(), "pekerbevegelsene opprettet ikke ekstra angresteg");
+    await ed.getByRole("button", { name: "Gjør om", exact: true }).click();
+    check(Number(await block.getAttribute("data-at-ms")) === movedAt, "gjør om gjenoppretter draget");
+    await ed.getByTestId("audio-editor-undo").click();
     // Sett inn det nye opptaket etter
     await ed.getByTestId("audio-editor-take").selectOption({ index: 1 });
     await ed.getByTestId("audio-editor-after").click();

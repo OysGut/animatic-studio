@@ -2,10 +2,9 @@
 
 Huskeliste over det som er tenkt gjort, men ikke bygget. Holdes oppdatert av den som utvikler (Claude eller en annen KI) ved hver leveranse.
 Kilder: beslutningsloggen (`docs/decisions/DECISION_LOG.md`), kravregisteret (`docs/product/requirements.yaml`), kjente problemer (`docs/development/KNOWN_ISSUES.md`).
-Sist oppdatert: 2026-10-17 (DEC-0098, UI-løft U1 og U3).
+Sist oppdatert: 2026-10-19 (DEC-0099, dokumentasjon og backlogg).
 
 ## Sikkerhet
-- **Invitasjoner til arbeidsgrupper (Øystein 18.10.2026):** `accept_workspace_invitation` sjekker ikke at e-posten til den som tar imot, stemmer med invitasjonen. Samme mønster som prosjektinvitasjoner. Ikke endret nå.
 - **GP5 delingslenker:** nøkkelen lagres i klartekst i `film_shares.token` (bare lesbar for redaktører og eiere via `film_share_token`) så QR-koden kan vises igjen. Vurder kryptering.
 
 ## Backlogg fra den globale pakken (GP2–GP5)
@@ -16,15 +15,10 @@ Sist oppdatert: 2026-10-17 (DEC-0098, UI-løft U1 og U3).
 ## Bestilt av Mars, ikke bygget ennå
 - **OG2 (Øystein 18.10.2026):** AI-kobling linje for linje legges i backloggen. Scenekobling er tilstrekkelig nå; ingen implementering i retterunde 1.
 - **Fase 2 (DEC-0090, REQ-0668–0712):** alle bolkene A–E er bygget (bolk E: DEC-0096). Gjenstår: prøving på ekte telefoner og med ekte norsk lyd (KI-235, KI-239, KI-245, KI-248). KI-249 er rettet.
-- **UI-løft (Øystein 17.10.2026):** gi hele grensesnittet et profesjonelt preg etter konvensjonene i FilmCraft/Premiere (ArtCraft er Rust/egui, så ingen kode kan gjenbrukes direkte), uten å endre funksjoner. U1 (skjemakontroller) og U3 (tidslinjer) er gjort (DEC-0098). U2, U4 (faner øverst) og U5 venter på Øysteins gjennomgang.
-- **Fase 3 – Story Lab:** egen modul for historie- og karakterutvikling med VennTing-profiler, karaktersamtaler og regissørstyrt improvisasjon (spesifikasjon i Claude-prosjektet: `PHASE3_STORY_LAB_SPEC.md`). Tilhører manusarbeidet, ikke sceneeditoren; mulig knapp «Utforsk dialogen» i scenen. VennTing er kartlagt; integrasjonsplan i `PHASE3_STORY_LAB_INTEGRASJONSPLAN.md` (Claude-prosjektet), med to åpne valg for Øystein.
-- **Fase 3 – Manusutforsker og scenevarighet:** tillegg til Asset Studio og globalt manusoppslag (`PHASE3_ASSET_STUDIO_ADDENDUM.md` i Claude-prosjektet): popup fra globusikonet som følger aktiv scene, «Fest» som eget vindu, og endring av scenevarighet i start, slutt eller proporsjonalt. Grunnspesifikasjonen for Asset Studio mangler – Øystein legger den inn.
 - **Når en desktopversjon lages:** fjern grensen på 500 MB per videofil (REQ-0679) – uten å spørre Mars (DEC-0090).
 - **Eksport til ProRes/MOV** for klipping i Premiere/DaVinci (DEC-0085). Nettleseren kan bare lage MP4 (H.264/VP9) og WebM; ProRes må lages hos en tjeneste (f.eks. Runway `outputFormat: "prores"` for AI-video, eller en egen konverteringstjeneste) eller i en framtidig lokal versjon.
 - **Varsel når en generering er ferdig** – helst SMS til et mobilnummer registrert på brukeren (DEC-0085: *satt på vent*). Forslag: leverandøren melder ferdig (webhook fra fal.ai/Runway) → serveren legger inn videoen og sender varsel; ingen planlagt bakgrunnsjobb som kan bruke penger (DEC-0072). Krever valg av SMS-tjeneste (kostnad), felt for mobilnummer i brukerinnstillingene (personopplysning, samtykke) og godkjenning fra Mars.
-- **Globale ressurser** på tvers av prosjekter (REQ-0571, DEC-0084). Åpent spørsmål til Mars: hvem kan bruke en felles ressurs (eieren i egne prosjekter, alle i eierens prosjekter, et team/firma)?
 - **Stilharmonisering med AI** (REQ-0137–0145, REQ-0400–0402) – kostnaden er godkjent (DEC-0084).
-- **«Lovable» ut av grensesnittet** (REQ-0639, DEC-0084): nøytrale ord for den innebygde AI-tjenesten og for databaseoppdateringer.
 
 ## Må gjøres av Mars eller administrator (DEC-0086, DEC-0088)
 - Publiser appen, så bakgrunnsjobben (cron) kjører; adminsiden viser nå når den sist kjørte (DEC-0088).
@@ -54,8 +48,12 @@ Sist oppdatert: 2026-10-17 (DEC-0098, UI-løft U1 og U3).
 - Legge inn ferdige AI-videoer i scenen uten at prosjektet er åpent (KI-209; hentingen gjøres nå av bakgrunnsjobben), henger sammen med varsling. Videoer tapes ikke lenger: de hentes når prosjektet åpnes (inntil sju dager), og «Hent videoen igjen» finnes (DEC-0086).
 - Planlagte fagskills (del D/E i `.claude/skills/README.md`) opprettes når behovet kommer.
 
-## Krav som ikke er ferdige (fra kravregisteret)
-Generert fra `docs/product/requirements.yaml` 2026-10-15. Status «Verifisert» krever test eller dokumentert kontroll.
+## Dokumentasjonsavstemming
+- Originalene Ø-8–Ø-12/B-022–B-061 og PHASE3_STORY_LAB_SPEC kap. 42–51 må leveres for full paragrafvis avstemming. Tilgjengelige oppdrag er konsolidert i DEC-0099; ingen kildeinnhold er oppdiktet.
+- Ferdig og fjernet fra byggebackloggen: T1, Story Lab, Manusutforsker, SV1, GP1–GP5, MT1–MT9/GP6, T2, CA1–CA8, U2/U4/U5, Ø-11, KI-240/241/242/251/252/255 og MT4-bilder. Øvrig ekte lyd-/mobilprøving over er fortsatt åpen.
+
+## Krav som ikke er ferdige
+Maskinelt avstemt fra requirements.yaml; status alene er ikke en ny produktbeslutning.
 
 ### Under arbeid (3)
 
@@ -63,18 +61,13 @@ Generert fra `docs/product/requirements.yaml` 2026-10-15. Status «Verifisert» 
 - REQ-0451 – Fase 1: Arkitektur og datamodell
 - REQ-0455 – Fase 4: Tidslinje, lyd og filmmontering
 
-### Implementert – ikke verifisert (17)
+### Implementert – ikke verifisert (21)
 
 - REQ-0022 – Skille strukturell og innholdsmessig synkronisering
-- REQ-0102 – Teknisk metadata forstyrrer ikke manuslayout
-- REQ-0110 – Usikre estimater presenteres som usikre
 - REQ-0121 – Sentralt ressursbibliotek
-- REQ-0146 – Scener bytter ikke automatisk variant
 - REQ-0269 – Leverandøruavhengig AI-arkitektur
 - REQ-0291 – Jobber uavhengige av nettleserfane
 - REQ-0293 – Vedvarende backend-jobbarkitektur
-- REQ-0415 – Skille mellom lagringskategorier
-- REQ-0482 – Prinsipp 4: Eksportnummerering velges av brukeren hver gang
 - REQ-0504 – Prinsipp 26: Jobber og status bevares mellom økter
 - REQ-0623 – Lag andre vinkler med AI
 - REQ-0625 – Stilanalyse av forbildebildene
@@ -82,6 +75,15 @@ Generert fra `docs/product/requirements.yaml` 2026-10-15. Status «Verifisert» 
 - REQ-0627 – Seedream 4.5 og Qwen-Image-Edit
 - REQ-0628 – Oppskalering
 - REQ-0633 – Send 2D-scenen til AI-video fra sceneeditoren
+- REQ-0685 – Hele dialogteksten vises under opptak
+- REQ-0687 – Lydopptak på mobil – brukeren velger hva som sendes
+- REQ-0689 – Opptaksstatus og lokal lagring på telefonen
+- REQ-0697 – Lydmotor for komposisjoner
+- REQ-0699 – Valg av analysetjeneste der brukeren er
+- REQ-0704 – Ny eller endret setning: ta opp bare det som mangler
+- REQ-0708 – Naturlig romlyd i pauser
+- REQ-0709 – Romlyd i overganger mellom takes
+- REQ-0711 – Nettleserkompatibilitet for kamera, mikrofon og deling
 
 ### Ikke startet (59)
 

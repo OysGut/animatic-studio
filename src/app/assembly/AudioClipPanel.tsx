@@ -96,7 +96,7 @@ export function AudioClipPanel({
             cmds={cmds}
             target={
               clip.blockId
-                ? { kind: "line", occurrenceId: clip.occurrenceId, blockId: clip.blockId }
+                ? { kind: "line", occurrenceId: clip.occurrenceId, blockId: clip.blockId, clipId: clip.id }
                 : { kind: "sound", assetId: clip.assetId }
             }
             label={

@@ -19,7 +19,7 @@ export function harness(defaultOut) {
   const USER = { id: "00000000-0000-7000-8000-a11ce0000001", email: "mars@example.no", aud: "authenticated", role: "authenticated" };
   const P = `/prosjekt/${fx.project.id}`;
   const rows = fx.rows;
-  const state = { commands: [], uploads: [], rpcs: [] };
+  const state = { commands: [], uploads: [], uploadBodies: [], rpcs: [] };
 
   function serverFnName(url) {
     try {
@@ -70,9 +70,10 @@ export function harness(defaultOut) {
       if (path.startsWith("/storage/v1/object/") && (request.method() === "POST" || request.method() === "PUT")) {
         const key = path.replace("/storage/v1/object/", "");
         state.uploads.push(key);
+        state.uploadBodies.push(request.postDataBuffer());
         return json({ Key: key, Id: "00000000-0000-7000-8000-0000a7999999" });
       }
-      if (path.startsWith("/storage/v1/")) return route.fulfill({ status: 200, contentType: "image/svg+xml", body: '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"/>' });
+      if (path.startsWith("/storage/v1/")) return route.fulfill({ status: 200, contentType: "image/svg+xml", headers: { "Access-Control-Allow-Origin": "*" }, body: '<svg xmlns="http://www.w3.org/2000/svg" width="240" height="320"><rect width="240" height="320" fill="#277b85"/><rect x="0" y="210" width="240" height="110" fill="#f3b84a"/><circle cx="120" cy="95" r="55" fill="#f4c9a0"/><path d="M45 210Q120 115 195 210" fill="#e86265"/><circle cx="102" cy="90" r="6"/><circle cx="138" cy="90" r="6"/></svg>' });
       const table = path.replace("/rest/v1/", "");
       if (table === "rpc/my_account") return json({ status: "active", is_admin: false, permanent_admin: false, locale: null, display_name: "Mars", privacy_version: 1, accepted_version: 1, created_at: "2026-10-01T10:00:00Z", ui_prefs: {} });
       if (table === "schema_version") return json([{ version: VISUAL_SCHEMA_VERSION }]);
@@ -122,6 +123,7 @@ export function harness(defaultOut) {
   async function scenario(name, sceneId, lang, fn) {
     state.commands = [];
     state.uploads = [];
+    state.uploadBodies = [];
     state.rpcs = [];
     let ctx;
     try {

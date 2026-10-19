@@ -74,12 +74,12 @@ export interface LineInfo {
   readonly sceneNumber: string | null;
   /** Når replikken begynner i scenen (ms), anslått som i resten av appen. */
   readonly startMs: number;
-  /** Lydklippet replikken har i scenen (det første), eller null. */
+  /** Valgt lydklipp, ellers første udempede klipp i tidsrekkefølge, eller null. */
   readonly clip: AudioClip | null;
 }
 
 /** Replikken i en scene: hvem som sier den, teksten og lyden den har. Null når den ikke finnes. */
-export function lineInfo(s: ProjectState, occurrenceId: string, blockId: string): LineInfo | null {
+export function lineInfo(s: ProjectState, occurrenceId: string, blockId: string, clipId?: string): LineInfo | null {
   const occ = s.occurrences[occurrenceId];
   if (!occ) return null;
   const blocks = blocksOfVariant(s, occ.variantId);
@@ -103,7 +103,8 @@ export function lineInfo(s: ProjectState, occurrenceId: string, blockId: string)
   const clip =
     Object.values(s.audioClips)
       .filter((a) => !a.removed && a.occurrenceId === occurrenceId && a.blockId === blockId)
-      .sort((a, b) => a.offsetMs - b.offsetMs)[0] ?? null;
+      .sort((a, b) => Number(b.id === clipId) - Number(a.id === clipId) ||
+        Number(a.muted) - Number(b.muted) || a.offsetMs - b.offsetMs || a.id.localeCompare(b.id))[0] ?? null;
   const variant = s.variants[occ.variantId];
   return {
     occurrenceId,

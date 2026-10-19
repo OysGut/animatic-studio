@@ -107,10 +107,11 @@ await h.scenario("u5-storylab-miniatyrer", occ.id, "nb", async (page) => {
   const rows = await list.getByTestId("storylab-character").count();
   const thumbs = await list.getByTestId("asset-thumb").count();
   h.check(rows > 0 && thumbs === rows, `hver karakter i listen har miniatyr (${thumbs}/${rows})`);
-  if (withImage.length) h.check(await h.eventually(async () => (await list.locator('[data-testid="asset-thumb"][data-has-image="true"] img').count()) > 0, 5000), `godkjent bilde vises i listen (${withImage.length} med bilde)`);
+  if (withImage.length) h.check(await h.eventually(async () => (await list.locator('[data-testid="asset-thumb"][data-image-state="ok"] img').evaluateAll(imgs => imgs.length > 0 && imgs.every(img => img.complete && img.naturalWidth === 240 && img.naturalHeight === 320))), 5000), `tydelig testbilde er lastet i listen (${withImage.length} med bilde)`);
   await page.getByTestId("storylab-view-toggle").click();
   h.check((await list.getAttribute("data-view")) === "grid", "bryteren viser rutenett");
   h.check((await list.getByTestId("asset-thumb").count()) === rows, "rutenettet har miniatyr for hver karakter");
+  h.check(await h.eventually(async () => (await list.locator('[data-image-state="ok"] img').count()) === withImage.length, 5000), "rutenettets gyldige bilder er ferdig lastet, ikke bare URL-er");
   await page.screenshot({ path: `${h.out}/storylab-rutenett.png` });
   await page.getByTestId("storylab-view-toggle").click();
   h.check((await list.getAttribute("data-view")) === "list", "bryteren går tilbake til liste");
@@ -129,6 +130,7 @@ await h.scenario("u5-bibliotek-rutenett", occ.id, "nb", async (page) => {
 await h.scenario("u5-animasjon", occ.id, "nb", async (page) => {
   await page.getByTestId("scene-tab-animation").click();
   await page.waitForTimeout(800);
+  h.check(await h.eventually(async () => (await page.getByTestId("anim-variant-tracks").locator('[data-image-state="ok"] img').evaluateAll(imgs => imgs.length > 0 && imgs.every(img => img.naturalWidth === 240))), 5000), "animasjonens sporhoder viser ferdig lastede testbilder");
   const pan = await page.getByTestId("anim-preview-pan").boundingBox();
   const panel = await page.getByTestId("anim-preview").boundingBox();
   h.check(pan && panel && pan.height <= panel.height, `forhåndsvisningen har scenens format (${Math.round(pan?.width ?? 0)}×${Math.round(pan?.height ?? 0)})`);

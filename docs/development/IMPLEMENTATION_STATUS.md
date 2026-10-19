@@ -1,8 +1,19 @@
 # Implementeringsstatus – Animatic Studio
 
-Oppdatert: 2026-10-15 (økt 6, DEC-0084). Detaljert status per krav: `docs/product/TRACEABILITY_MATRIX.md` (generert).
+Oppdatert: 2026-10-19. Eldre sammendrag under beholdes som historikk. Detaljert status per krav: `docs/product/TRACEABILITY_MATRIX.md` (generert).
 
-## Sammendrag
+## Gjeldende status – 19.10.2026
+- Øystein har verifisert og publisert T1, Story Lab, Manusutforskeren, OG1/OG2, SV1, Asset Studio, GP1–GP5, MT1–MT9, T2, CA1–CA8, U5 og Ø-11. Cloud er på skjemaversjon 58; migrasjonene til og med 0058 er kjørt av Claude/Øystein og hashkontrollert. Ingen ny migrasjon i dokumentasjonsrunden.
+- A: gyldig men tom fixture-SVG var årsaken til grå karakterkort/sporhoder; tydelige testbilder og kontroll av naturalWidth/naturalHeight. Ingen komponentendring nødvendig.
+- C1: behold én eksisterende compareVersionCreation-regel: tidsstempel → lagret versjonsnummer → variant-ID → versjons-ID. Samtidige takes i samme variant sorteres ikke etter tilfeldig UUID; eksisterende konkrete tester beholdt.
+- C2/KI-255: performance.now og 1000 ms toleranse under full suite, med full innholdskontroll; fanger fortsatt sekundlang/kvadratisk regresjon.
+- C3/MT4: last bildelag før malminiatyren tegnes; pixeltest av faktisk opplastet PNG.
+- C4/KI-241: eksplisitt clipId følger lydvindu, studio, opptak og mobilkontekst; uten valg brukes første udempede klipp i tidsrekkefølge. Mobilserveren kontrollerer at valgt klipp tilhører replikk og prosjekt.
+- C5/KI-242: dra deler med lokal forhåndsvisning; ett angresteg ved slipp, ingen ved avbrudd. Lagres som tidligere via kommandoer, ikke direkte skriving.
+- DEC-0099 og REQ-0725–0739 registrerer tilgjengelige T1/Story Lab-, CA1–CA3-, U5- og sikkerhetskilder. Eksisterende CA4–CA8 REQ-0715–0724 beholdes. Originale Ø/B-notater og Story Lab kap. 42–51 mangler; ingen oppdiktet godkjenning.
+- Tester: Vitest 1723/0 to ganger, 10 eksisterende hoppet over; DB 120/120; U5 65/65; CA1–CA8 17/17/20/25/13/15/26/22; scene-panels 39/39; verifisering4 58/58; Story Lab 32/32; verifisering3 73/73; interactions 44/44; lydeditor 24/24; MTS 42/16/16/13/13/13/17 (130/130).
+
+## Historisk sammendrag
 - **DEC-0095 fase 2 bolk D (migrasjon 0037):** ord-til-lyd (ElevenLabs Forced Alignment eller manuelt, valget huskes, kostnadsgodkjenning), ord markerer lyd, kontekstavspilling, status tekst mot lyd, forslag for nye ord (REQ-0698–0704; norsk må prøves, KI-245).
 - **DEC-0094 fase 2 bolk C (migrasjon 0036, pakke `@mediabunny/mp3-encoder`):** lydkomposisjoner lagret med versjonen (miks + komposisjon), lydeditor med spor, bølgeformer, innsetting, område, trim, angre, konflikter med andre replikker, eksport WAV/MP3 (REQ-0691–0697).
 - **DEC-0093 fase 2 bolk B (ingen migrasjon):** lydopptak på PC og mobil som takes, mikrofonikon i lydressurs, replikk (inspektøren) og lydklipp, hele replikken på mobilen, takes sendes bare når de velges, romlyd (REQ-0684–0690; REQ-0685/0687/0689 venter på prøving på telefon og ordmarkering i bolk D).
@@ -73,9 +84,9 @@ Oppdatert: 2026-10-15 (økt 6, DEC-0084). Detaljert status per krav: `docs/produ
 ## Moduler
 | Modul | Status | Hva finnes |
 |---|---|---|
-| CORE | Under arbeid | Kommandoer med invers (40 typer), invarianter, visninger, endringssett, notater |
+| CORE | Under arbeid | Kommandoer med invers, sceneutkast og transaksjonell revisjonskontroll, invarianter, visninger, endringssett, notater |
 | SCRIPT | Under arbeid | Tolkning PDF/DOCX, import, sidebryting, låste sider, nummerering, arbeidsflaten «Manus» |
-| EXPORT | Under arbeid | Manus til PDF (sidetro) og DOCX (redigerbar); animatic-video (MP4/WebM) i nettleseren uten lyd (DEC-0043) |
+| EXPORT | Under arbeid | Manus til PDF (sidetro) og DOCX (redigerbar); animatic-video (MP4/WebM) med lydmiks, riggdeler og lagvise CA8-valg |
 | VERSION | Under arbeid | Blokkrevisjoner, kommandologg, angre/gjør om per bruker, `outdatedTakes`, manusversjoner med sammenligning linje for linje |
 | LIBRARY | Under arbeid | Ressursbibliotek med alternative navn, varianter, bildeversjoner, godkjenning, bruk i manus, forslag (DEC-0030) |
 | COLLAB | Under arbeid | Medlemskap, roller, invitasjoner, profiler, sanntid, revisjonskontroll |
@@ -83,7 +94,7 @@ Oppdatert: 2026-10-15 (økt 6, DEC-0084). Detaljert status per krav: `docs/produ
 | TIMELINE / CONTINUITY | Under arbeid | Tidsmodell, fortellingstid; filmtidslinjen «Montering» med flytting, lengder, avspilling av hele filmen (DEC-0043) |
 | UI | Under arbeid | Prosjekt, manus (navigator, sider, inspektør, import, eksport, versjoner, notater, søketreff), ressursbibliotek |
 | AUDIO | Under arbeid | Lydfiler i biblioteket, lydspor i monteringen (dialog, forteller, effekter, atmosfære, musikk), Web Audio-avspilling og miksing i eksporten (DEC-0044); lyd som løper over flere scener, lydprofil med volumpunkter, lyd i scenene rundt og bølgeformer i sceneeditoren (DEC-0045) |
-| Øvrige moduler | Ikke startet | – |
+| Fase 3 | Levert og verifisert for bestilte pakker | Story Lab, Asset Studio, GP, MTS, T2, CA1–CA8 og U5; øvrige udekkede mandatkrav følger kravregisteret |
 - **DEC-0075:** kravverifisering runde 3, kostnadsanslag med alle elementer, nøytralt AI-ikon, sammenlign versjoner av en scene, karakterer og objekter i manusversjoner, tidsmodell begge veier, innsatsnivå per jobb, køen telles på nytt. Krav: 488 Verifisert, 33 Implementert – ikke verifisert, 7 Under arbeid, 64 Ikke startet.
 - **DEC-0076:** kravverifisering runde 4 og UX-gjennomgang mot de ni kvalitetene. Krav: 514 Verifisert, 15 Implementert – ikke verifisert, 5 Under arbeid, 58 Ikke startet.
 - **DEC-0078:** migrasjon 0028 (estimater, eksportlogg, antakelser), adapterlag i nettleseren, versjonsgjenoppretting, bibliotek med stilprofiler og opphav, innholdsmessig synk, UX-runde og 30 kjente problemer. Krav: 517 Verifisert, 14 Implementert – ikke verifisert, 3 Under arbeid, 58 Ikke startet.

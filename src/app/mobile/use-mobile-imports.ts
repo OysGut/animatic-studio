@@ -177,7 +177,7 @@ export async function importAudio(
         state,
         c.type === "sound"
           ? { kind: "sound", assetId: c.assetId, variantId: c.variantId }
-          : { kind: "line", occurrenceId: c.occurrenceId, blockId: c.blockId },
+          : { kind: "line", occurrenceId: c.occurrenceId, blockId: c.blockId, ...(c.clipId ? { clipId: c.clipId } : {}) },
         media,
         note,
       );

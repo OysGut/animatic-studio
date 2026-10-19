@@ -924,11 +924,26 @@ async function audioSession(page, since, itemsExpr) {
         `return (async () => { ${LOAD_STATE}
         const { audioBank } = await import("/src/app/audio/use-audio-playback.ts");
         const items = ${itemsExpr};
+        const { createSignedUrls, ASSET_BUCKET } = await import("/src/adapters/browser/storage-files.ts");
+        const paths = [...new Set(items.filter(x => x.version).map(x => x.version.mediaPath))];
+        const urls = await createSignedUrls(ASSET_BUCKET, paths, 600);
+        await audioBank.loadAll(Object.fromEntries(urls.map(x => [x.path, x.signedUrl])));
         const starts = window.__starts.slice(since);
+        // HMR can create another AudioBank for the unversioned dynamic import used by this probe.
+        // Compare every decoded sample, not object identity, so we still prove the exact source audio.
+        const sameAudio = (a, b) => {
+          if (!a || !b || a.sampleRate !== b.sampleRate || a.length !== b.length || a.numberOfChannels !== b.numberOfChannels) return false;
+          if (a === b) return true;
+          for (let channel = 0; channel < a.numberOfChannels; channel++) {
+            const x = a.getChannelData(channel), y = b.getChannelData(channel);
+            for (let i = 0; i < x.length; i++) if (x[i] !== y[i]) return false;
+          }
+          return true;
+        };
         // Samme lydfil kan brukes av flere klipp (f.eks. to deler av en film): alle kandidatene tas med
         return starts.map((st) => {
           const cands = items
-            .filter((x) => x.version && audioBank.get(x.version.mediaPath) === st.buffer)
+            .filter((x) => x.version && sameAudio(audioBank.get(x.version.mediaPath), st.buffer))
             .map((it) => ({ start: it.start, sourceIn: it.sourceIn, name: it.clip.name || it.clip.kind }));
           return { when: st.when, offset: st.offset, now: st.now, ctx: st.ctx, cands, item: cands[0] ?? null };
         });
