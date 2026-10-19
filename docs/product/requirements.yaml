@@ -26865,3 +26865,111 @@ requirements:
   - date: '2026-10-19'
     decision: "B-058 / CA6-oppdrag"
     change: "Bygget og testet lokalt med mock; migrasjon 0056 er ikke kjørt i Cloud."
+- id: REQ-0722
+  title: "Rigger og mønstre i det globale biblioteket, arvet karakteratferd og valg av oppdatering"
+  text: "Rigg-oppsett med mønstre kan publiseres som låste versjoner i arbeidsgruppens globale bibliotek og tas inn i andre prosjekter; nyere globale versjoner tas inn bare etter bekreftelse. Karakteratferd (blink, pust, tics, standardmønstre) lagres på karakterens oppsett og arves av alle bruk; lokale overstyringer vises tydelig. Ved endring vises «brukes i N andre scener» med hopp, og brukeren velger «bare her» eller «oppdater alle». Versjonshistorikk med sammenligning og «gjenopprett som ny versjon»; ingenting slettes."
+  origin: brukerbeslutning
+  source:
+    decision: "B-058 / CA7-oppdrag 2026-10-19"
+    section: "45–53, 68–70"
+    document: docs/product/phase3/CHARACTER_ANIMATION_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules: [COMPOSE, UI]
+  invariants: [INV-13, INV-C1]
+  dependencies: [REQ-0721]
+  acceptance:
+  - "Publisering lager en ny, uforanderlig versjon i global_animation_specs (migrasjon 0057); bare eier og redaktør i gruppen kan publisere."
+  - "Bruk i prosjekt kopierer oppsettet inn som ny prosjektversjon med opprinnelse (låst versjon); nyere global versjon krever bekreftelse."
+  - "Effektiv atferd = karakterens standard med scenens lokale verdier over; lokale overstyringer merkes og kan tilbakestilles."
+  - "«Brukes i N andre scener» med liste og hopp; «bare her» og «oppdater alle» er én kommando (AdoptRigVersion) med angring; ingenting oppdateres automatisk."
+  - "Historikk med sammenligning og «gjenopprett som ny versjon»; ingen versjoner slettes."
+  tests:
+  - tests/unit/ca7-ca8.test.ts
+  - tests/visual/ca7-global.mjs
+  status: Implementert
+  implementation:
+  - src/core/animation/character.ts
+  - src/core/animation/global-rig.ts
+  - src/core/animation/rig-commands.ts
+  - src/adapters/browser/global-library.ts
+  - src/app/scene-editor/animation/CharacterPanel.tsx
+  - db/migrations/0057_global_animation.sql
+  verification:
+  - tests/unit/ca7-ca8.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/ca7-global.mjs
+  history:
+  - date: '2026-10-19'
+    decision: "B-058 / CA7-oppdrag"
+    change: "Bygget og testet lokalt med mock og lokal Postgres; migrasjon 0057 er ikke kjørt i Cloud."
+- id: REQ-0723
+  title: "Rytmeverktøyet (oransje) med forhåndsvisning og én angring"
+  text: "Rytmeverktøyet (Director's Rhythm Engine) er oransje markert og gjenbruker RetimeScene: takt, pause og vekt per replikk, skjæringspunkt og forskyvning samlet eller proporsjonalt. Endringen forhåndsvises med ny scenetid og mellomrom før «Bruk», og «Bruk» er én angring. Ingenting lagres før «Bruk»."
+  origin: brukerbeslutning
+  source:
+    decision: "B-058 / CA8-oppdrag 2026-10-19"
+    section: "71–99"
+    document: docs/product/phase3/CHARACTER_ANIMATION_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules: [COMPOSE, UI]
+  invariants: [INV-C1]
+  dependencies: [REQ-0721]
+  acceptance:
+  - "planRhythm bygger på planRetime (metode «pauses») med eksplisitte endringer per mellomrom; mellomrom går aldri under null."
+  - "Mellomrom før skjæringspunktet endres ikke."
+  - "«Bruk» kjører én RetimeScene; «Forkast» lagrer ingenting."
+  tests:
+  - tests/unit/ca7-ca8.test.ts
+  - tests/visual/ca8-rhythm-export.mjs
+  status: Implementert
+  implementation:
+  - src/core/animation/rhythm.ts
+  - src/core/composition/retime.ts
+  - src/app/scene-editor/animation/RhythmPanel.tsx
+  verification:
+  - tests/unit/ca7-ca8.test.ts
+  - tests/visual/ca8-rhythm-export.mjs
+  history:
+  - date: '2026-10-19'
+    decision: "B-058 / CA8-oppdrag"
+    change: "Bygget og testet lokalt med mock. Cmd/Ctrl-dragmodusen fra §73–§96 er ikke bygget (se KNOWN_ISSUES)."
+- id: REQ-0724
+  title: "Eksportvalg per karakterlag: innhold og innbrent eller eget lag"
+  text: "Per lag velges om munnformer, blink, overlegg, masker og justeringer tas med, og om karakterdelene brennes inn eller eksporteres som eget lag. Valgene brukes i den felles tegnelisten, så forhåndsvisning og eksport er like; «eget lag» gir en egen fil ved eksport. Ingenting slettes."
+  origin: brukerbeslutning
+  source:
+    decision: "B-058 / CA8-oppdrag 2026-10-19"
+    section: "103–106"
+    document: docs/product/phase3/CHARACTER_ANIMATION_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules: [COMPOSE, EXPORT, UI]
+  invariants: [INV-C1]
+  dependencies: [REQ-0720, REQ-0721]
+  acceptance:
+  - "Eksportvalgene lagres i animasjonsbrukens atferd via SetAnimationBehavior og valideres."
+  - "evaluateCharacterFrame legger rigg-delene i tegnelisten etter valgene; samme tilstand gir samme bilde."
+  - "Med «eget lag» utelates delene fra hovedfilmen og eksporteres som egen fil."
+  tests:
+  - tests/unit/ca7-ca8.test.ts
+  - tests/visual/ca8-rhythm-export.mjs
+  status: Implementert
+  implementation:
+  - src/core/animation/evaluate.ts
+  - src/core/animation/rig.ts
+  - src/engine/compositor/canvas.ts
+  - src/engine/export/animatic.ts
+  - src/app/assembly/ExportAnimaticDialog.tsx
+  - src/app/scene-editor/animation/CharacterPanel.tsx
+  verification:
+  - tests/unit/ca7-ca8.test.ts
+  - tests/visual/ca8-rhythm-export.mjs
+  history:
+  - date: '2026-10-19'
+    decision: "B-058 / CA8-oppdrag"
+    change: "Bygget og testet lokalt med mock."
