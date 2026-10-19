@@ -41,27 +41,41 @@ Sist oppdatert: 2026-10-19 (DEC-0099, dokumentasjon og backlogg).
 - Prøving med ekte nøkler: vinkler, oppskalering, stilanalyse og faktaark (KI-193); AI-video av scenen med referanser, lyd og samleark (KI-204, KI-213).
 
 ## Mindre ting
-- Notater i manus mangler «løst»-status; TODO-boksen viser notater fra andre til de slettes (KI-224).
-- AI-lagde bildedeler har ukjent plass i originalen (KI-220).
-- Notat på enkeltord i manusvinduet i sceneeditoren (KI-226).
-- Rydde gamle videoer av 2D-scenen i lagringen (`ai-source/`, KI-207).
+- KI-167: serveruttak av siste videobilde krever en tilgjengelig, godkjent medietjeneste eller kompatibel decoder. Ingen slik tjeneste er konfigurert; nettleseruttak beholdes.
+- KI-243: MP3 ligger i createClientOnlyFn; produksjonsartefakt må kontrolleres av Claude før punktet lukkes.
+- Verifisering4: 57/58 her; REQ-0050 målte 6,439 em i stedet for 6 em. Testen er ikke svekket.
+
+- KI-207: owner-bekreftet rydding er bygget/testet med falsk lagring; prøv mot ekte Cloud-lagring før produksjonsbruk. Ingen automatisk sletting.
 - Legge inn ferdige AI-videoer i scenen uten at prosjektet er åpent (KI-209; hentingen gjøres nå av bakgrunnsjobben), henger sammen med varsling. Videoer tapes ikke lenger: de hentes når prosjektet åpnes (inntil sju dager), og «Hent videoen igjen» finnes (DEC-0086).
 - Planlagte fagskills (del D/E i `.claude/skills/README.md`) opprettes når behovet kommer.
 
 ## Dokumentasjonsavstemming
-- Originalene Ø-8–Ø-12/B-022–B-061 og PHASE3_STORY_LAB_SPEC kap. 42–51 må leveres for full paragrafvis avstemming. Tilgjengelige oppdrag er konsolidert i DEC-0099; ingen kildeinnhold er oppdiktet.
+- Øysteins leverte sammendrag og kap. 42–51 er registrert i DEC-0099/REQ-0740–0749. Kravene har konkrete testhenvisninger og deldekningsmerknader; ikke alle kapittelreiser er ende-til-ende-verifisert.
 - Ferdig og fjernet fra byggebackloggen: T1, Story Lab, Manusutforsker, SV1, GP1–GP5, MT1–MT9/GP6, T2, CA1–CA8, U2/U4/U5, Ø-11, KI-240/241/242/251/252/255 og MT4-bilder. Øvrig ekte lyd-/mobilprøving over er fortsatt åpen.
 
 ## Krav som ikke er ferdige
 Maskinelt avstemt fra requirements.yaml; status alene er ikke en ny produktbeslutning.
 
-### Under arbeid (3)
+### Under arbeid (13)
 
 - REQ-0037 – Stabile identifikatorer for alle domeneobjekter
 - REQ-0451 – Fase 1: Arkitektur og datamodell
 - REQ-0455 – Fase 4: Tidslinje, lyd og filmmontering
 
-### Implementert – ikke verifisert (21)
+- REQ-0740 – Fra filmidé til Story Lab-canvas
+- REQ-0741 – Psykologisk karaktereditor og bevart arbeid
+- REQ-0742 – Individuell samtale ved valgt tidspunkt
+- REQ-0743 – Gruppesamtale med regi og pause
+- REQ-0744 – Midlertidige tilstander endrer ikke profilen
+- REQ-0745 – Kunnskapsgrenser per deltaker
+- REQ-0746 – Rådgivende analyse av eksisterende scene
+- REQ-0747 – Alternative improvisasjoner og sammenligning
+- REQ-0748 – Godkjent overføring til redigerbart manus
+- REQ-0749 – VennTing-teknologien er en selvstendig kopi
+
+### Implementert – ikke verifisert (22)
+
+- REQ-0639 – Avsendertekst: app verifisert; plattformstyrt auth-e-post ikke kontrollert.
 
 - REQ-0022 – Skille strukturell og innholdsmessig synkronisering
 - REQ-0121 – Sentralt ressursbibliotek
@@ -85,7 +99,7 @@ Maskinelt avstemt fra requirements.yaml; status alene er ikke en ny produktbeslu
 - REQ-0709 – Romlyd i overganger mellom takes
 - REQ-0711 – Nettleserkompatibilitet for kamera, mikrofon og deling
 
-### Ikke startet (59)
+### Ikke startet (58)
 
 - REQ-0049 – Be om manglende referansefiler
 - REQ-0137 – AI-basert stilharmonisering
@@ -145,4 +159,3 @@ Maskinelt avstemt fra requirements.yaml; status alene er ikke en ny produktbeslu
 - REQ-0519 – Overordnet mål: kreativ kontroll og teknisk automatisering
 - REQ-0530 – Claudes rolle i prosjektet
 - REQ-0571 – Globale ressurser på tvers av prosjekter
-- REQ-0639 – Leverandørnavnet «Lovable» står ikke i grensesnittet

@@ -49,7 +49,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | EXPORT | Export Engine | 61 | 12 | 61 | 61 |
 | SECURITY | Security & Storage | 49 | 5 | 48 | 47 |
 | COLLAB | Collaboration & Access | 21 | 0 | 21 | 21 |
-| UI | Brukergrensesnitt og designsystem | 228 | 21 | 223 | 208 |
+| UI | Brukergrensesnitt og designsystem | 228 | 21 | 224 | 208 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 7 | 5 |
 
 ## Dekning per fase
@@ -708,7 +708,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0636 | Beslutning DEC-0083 | AUDIO, VERSION | src/app/ai/video-jobs.ts, src/adapters/ai/providers.server.ts | 1 | tests/unit/scene-to-video.test.ts | Verifisert | 2026-10-15 DEC-0083: Opprettet etter Mars' ønske 15.10.2026 |
 | REQ-0637 | Beslutning DEC-0083 | UI, VERSION, TIMELINE | src/app/scene-editor/SceneToVideoDialog.tsx, src/core/generation/scene-to-video.ts | 2 | tests/unit/scene-to-video.test.ts, tests/visual/scene-video-ui.mjs, docs/development/VISUAL_QA_DEC-0083.md | Verifisert | 2026-10-15 DEC-0083: Opprettet etter Mars' ønske 15.10.2026 |
 | REQ-0638 | Beslutning DEC-0083 | QUALITYCOST, PROVIDER | src/core/generation/scene-to-video.ts, src/app/scene-editor/SceneToVideoDialog.tsx | 2 | tests/unit/scene-to-video.test.ts, tests/visual/scene-video-ui.mjs, docs/development/VISUAL_QA_DEC-0083.md | Verifisert | 2026-10-15 DEC-0083: Opprettet etter Mars' ønske 15.10.2026 |
-| REQ-0639 | Beslutning DEC-0084 | UI | – | 1 | – | Ikke startet | 2026-10-15 DEC-0084: Opprettet etter Mars' ønske 15.10.2026 |
+| REQ-0639 | Beslutning DEC-0084 | UI | src/core/generation/providers.ts, src/adapters/ai/gateway.ts, src/app/shell/SchemaBanner.tsx, src/core/i18n/catalog.gen.ts | 2 | tests/unit/app-brand.test.ts, tests/visual/backlog-b2-ui.mjs | Implementert – ikke verifisert | 2026-10-19 DEC-0099: B2: nøytral avsendertekst, språkpar og katalogtest; plattformstyrt e-post er utenfor endringsområdet. |
 | REQ-0640 | Beslutning DEC-0085 | PROVIDER | src/core/generation/style.ts, src/app/projects/GlobalStyleText.tsx | 2 | tests/unit/scene-to-video.test.ts, tests/visual/scene-video-ui.mjs, docs/development/VISUAL_QA_DEC-0085.md | Verifisert | 2026-10-15 DEC-0085: Opprettet etter Mars' ønske 15.10.2026 |
 | REQ-0641 | Beslutning DEC-0085 | PROVIDER | src/app/scene-editor/SceneToVideoDialog.tsx | 1 | tests/visual/scene-video-ui.mjs, docs/development/VISUAL_QA_DEC-0085.md | Verifisert | 2026-10-15 DEC-0085: Opprettet etter Mars' ønske 15.10.2026 |
 | REQ-0642 | Beslutning DEC-0085 | PROVIDER | src/core/generation/scene-to-video.ts, src/app/scene-editor/SceneToVideoDialog.tsx, src/app/ai/write-prompt.functions.ts | 1 | tests/unit/scene-to-video.test.ts, docs/development/VISUAL_QA_DEC-0085.md | Verifisert | 2026-10-15 DEC-0085: Opprettet etter Mars' ønske 15.10.2026 |

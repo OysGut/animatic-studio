@@ -8,7 +8,7 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 - Antall krav: **749**
 - Prioritet: P0: 145, P1: 416, P2: 149, P3: 39
 - Opprinnelse: mandat: 520, brukerbeslutning: 222, teknisk-anbefaling: 7
-- Status: Verifisert: 656, Implementert – ikke verifisert: 21, Under arbeid: 13, Ikke startet: 59
+- Status: Verifisert: 656, Implementert – ikke verifisert: 22, Under arbeid: 13, Ikke startet: 58
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -8712,11 +8712,14 @@ Grensesnittet nevner ikke Lovable (heller ikke i meldinger om databaseoppdaterin
 - **Kilde:** Beslutning DEC-0084 · **Opprinnelse:** brukerbeslutning · **Type:** ux · **Prioritet:** P1 · **Fase:** 5
 - **Moduler:** UI
 - **Avhengigheter:** REQ-0629
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Ingen brukervendt tekst inneholder «Lovable».
 - **Tester:**
-  - enhet: søk i brukervendt tekst
+  - tests/unit/app-brand.test.ts
+  - tests/visual/backlog-b2-ui.mjs
+- **Implementering:** src/core/generation/providers.ts, src/adapters/ai/gateway.ts, src/app/shell/SchemaBanner.tsx, src/core/i18n/catalog.gen.ts
+- **Merknad:** Appstyrte tekster og katalog uten Lovable; plattform-eide integrasjoner og auth-e-postoppsett er urørt og ikke fullstendig verifisert.
 
 #### REQ-0640 – Den globale beskrivelsen er én redigerbar tekst for hele prosjektet
 Filmens visuelle stil settes sammen til én tekst som vises i sin helhet. Brukeren kan åpne den for redigering med tydelig melding om at endringen gjelder hele prosjektet. Den redigerte teksten er den ene versjonen og brukes av all AI-generering; «Tilbake til feltene» setter den sammen av feltene igjen.

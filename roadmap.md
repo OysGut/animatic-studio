@@ -1,14 +1,18 @@
-## B2 og estimatliste – 19.10.2026
-- [ ] REQ-0639: avsendertekster uten Lovable; KI-167 serveruttak.
-- [ ] KI-224/226 notater, KI-220 bildedeler, KI-207 bekreftet rydding, KI-209 bakgrunnsinnlegging.
-- [ ] KI-243 klientisolert MP3, KI-247 ordkobling, SV1 metode 4 forhåndslytting i minnet.
-- [ ] Nye tester per punkt; Vitest, lokal DB og bestilte visuelle regresjoner; rapport og status.
+# B2 / estimatliste – 19.10.2026
+- [x] DEC-0099 fra leverte kilder, REQ-0740–0749, build_docs/check_kb.
+- [x] Appens avsendertekst, KI-224/226 notater, KI-220 plassering, KI-207 bekreftelsesflyt.
+- [x] KI-247 projisert kobling og SV1 metode 4 minnemiks før Bruk, tester.
+- [x] Vitest to fullførte grønne kjøringer, lokal DB, U5, CA1–CA8, scene-panels, lydeditor, B2 NO/EN.
+- [ ] KI-167/KI-209: blokkert av manglende godkjent servermedietjeneste/decoder; full bakgrunnsinnlegging ikke bygget.
+- [ ] KI-243 produksjonsartefakt: klientgrense innført; ferdig serverartefakt må kontrolleres av Claude.
+- [ ] Verifisering4 REQ-0050: miljøet måler 6,439 em, 57/58; forventningen er beholdt.
+- [ ] Cloud 0059 og ekte storage-prøving: Claude kjører migrasjonen og prøver rydding.
 
 # MU1
 ## Dokumentasjon og backlogg (2026-10-19)
 - [x] A: tydelige fixturebilder i Story Lab og animasjon; kontroller lasting.
 - [x] B: DEC-0099, tilgjengelige kravkilder og samordnet status; build_docs/check_kb.
-- [ ] B2: DEC-0099 fra leverte kilder; krav kap. 42–51; build_docs/check_kb.
+- [x] B2: DEC-0099 fra leverte kilder; krav kap. 42–51; build_docs/check_kb.
 - [x] C: stabil take-rekkefølge og tidstest, malbilder, valgt lydklipp, dra lydsegmenter med én angring.
 - [x] Vitest to ganger, lokale DB-tester og bestilte visuelle regresjoner.
 ## U5-polish

@@ -109,3 +109,13 @@ KI-30 (foreldreløse bilder), KI-31 (notater fra fremmede PDF-er), KI-32 (meldin
 - `docs/development/KNOWN_ISSUES.md`, `docs/development/IMPLEMENTATION_STATUS.md`, `docs/development/SESSION_HANDOVER.md`, `docs/development/CURRENT_WORK.md`, `TODO.md`, `roadmap.md`: gjeldende status, løste punkter fjernet og kildeblokkering eksplisitt.
 - Språkkatalogen ble regenerert; ingen nye uoversatte tekster. Ingen prosjektavhengigheter, migrasjoner, AGENTS.md, autogenererte integrasjoner eller VennTing endret.
 - Automatisk kodekontroll viste build OK. Separat `npx tsc --noEmit` er ikke kjørt i denne agentrunden.
+
+## B2 / estimatliste – lokal leveranse 19.10.2026
+- DEC-0099 supplert fra Øysteins to kilder; REQ-0740–0749 kap. 42–51 med konkrete implementation/verification og deldekning, aldri oppdiktet full godkjenning. REQ-0639 apptekster/katalog nøytralisert. Plattformstyrte filer/konfigurasjon er urørt.
+- KI-224 løst-status via SetAnnotationResolved med invers/gjør om og DB-rundtur. KI-226 eksakt enkeltordmarkering → AddAnnotations i sceneeditor. KI-220 redigerbar kildeboks x/y/w/h før eksisterende partLayers-kommandoflyt.
+- KI-207 eierbekreftet liste/sletting av gamle ubrukte ai-source-MP4, serveren re-sjekker jobber/referanser. Ingen automatisk sletting; ikke prøvd mot ekte lagring. 30 dager er en konservativ teknisk kandidatgrense, ikke ny godkjent produktregel.
+- KI-247 ordtider projiseres og persisteres på ny lydversjon; gamle tider endres ikke. SV1 metode 4 lager ordmellomrommiksen i minnet før Bruk, og saveComposition bruker samme buffer og angregruppe som RetimeScene.
+- KI-243 encoder pakket i createClientOnlyFn; nettleser MP3 verifisert, produksjonsartefakt ikke kontrollert. KI-167/KI-209 fortsatt åpne: ingen godkjent servermedietjeneste; ingen ny konkurrerende mediemotor eller utrygg automatisk dataskriving introdusert.
+- Migrasjon 0059_annotation_resolved.sql: kun resolved på script_annotations, revoke/grant, schema 59. Ingen apply_changes/delete_project/purge-funksjoner erstattet; ikke kjørt i Cloud. Cloud står fortsatt på 58.
+- Tester: Vitest 1736 bestått/0 feilet, to fullførte kjøringer med maxWorkers=2; 10 eksisterende hoppet over. Første standardparallelle sluttkjøring hadde to 5 s import-timeouts; ingen forventninger/timeouts endret. Lokal DB 120/120. CA1–CA8 17/17/20/25/13/15/26/22 (155/155). U5 65/65, scene-panels 39/39, lydeditor 24/24, ny B2 NO/EN 14/14. Verifisering4 57/58: bare eksisterende Courier Prime-breddekrav feilet (6,439 em vs 6); REQ-0583 6/6 med riktig testmikrofon, REQ-0210 5/5, REQ-0578 7/7. Testen er ikke svekket.
+- Automatisk typekontroll: build OK. Separat tsc/typecheck ikke kjørt. i18n 0 manglende engelsk; build_docs/check_kb OK. VennTing urørt.

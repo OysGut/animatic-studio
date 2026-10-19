@@ -24015,8 +24015,9 @@ requirements:
     change: "Opprettet etter Mars' ønske 15.10.2026"
 
 - id: REQ-0639
-  title: "Leverandørnavnet «Lovable» står ikke i grensesnittet"
-  text: "Grensesnittet nevner ikke Lovable (heller ikke i meldinger om databaseoppdatering). Den innebygde AI-tjenesten og databasen omtales nøytralt, så teksten stemmer også når tjenesten kjøres lokalt."
+  title: Leverandørnavnet «Lovable» står ikke i grensesnittet
+  text: Grensesnittet nevner ikke Lovable (heller ikke i meldinger om databaseoppdatering). Den innebygde AI-tjenesten
+    og databasen omtales nøytralt, så teksten stemmer også når tjenesten kjøres lokalt.
   origin: brukerbeslutning
   source:
     decision: DEC-0084
@@ -24029,16 +24030,28 @@ requirements:
   dependencies:
   - REQ-0629
   acceptance:
-  - "Ingen brukervendt tekst inneholder «Lovable»."
+  - Ingen brukervendt tekst inneholder «Lovable».
   tests:
-  - "enhet: søk i brukervendt tekst"
-  status: Ikke startet
-  implementation: []
-  verification: []
+  - tests/unit/app-brand.test.ts
+  - tests/visual/backlog-b2-ui.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/generation/providers.ts
+  - src/adapters/ai/gateway.ts
+  - src/app/shell/SchemaBanner.tsx
+  - src/core/i18n/catalog.gen.ts
+  verification:
+  - tests/unit/app-brand.test.ts
+  - tests/visual/backlog-b2-ui.mjs
   history:
   - date: '2026-10-15'
     decision: DEC-0084
-    change: "Opprettet etter Mars' ønske 15.10.2026"
+    change: Opprettet etter Mars' ønske 15.10.2026
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: 'B2: nøytral avsendertekst, språkpar og katalogtest; plattformstyrt e-post er utenfor endringsområdet.'
+  notes: Appstyrte tekster og katalog uten Lovable; plattform-eide integrasjoner og auth-e-postoppsett er urørt
+    og ikke fullstendig verifisert.
 
 - id: REQ-0640
   title: "Den globale beskrivelsen er én redigerbar tekst for hele prosjektet"
