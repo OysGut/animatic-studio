@@ -74,4 +74,30 @@ export const resumeDialogueBatch = createServerFn({ method: "POST" }).middleware
   const { error } = await db.rpc("resume_dialogue_batch", { p_project: data.projectId, p_batch: id, p_actor: context.userId });
   if (error) throw new Error(error.message);
   return { ok: true };
+});function batchInput(raw: unknown) {
+  const { projectId, raw: x } = projectInput(raw);
+  if (typeof x["batchId"] !== "string" || !isUuid(x["batchId"])) throw new Error(L("Ugyldig jobb", "Invalid job"));
+  return { projectId, batchId: x["batchId"], approved: x["approved"] === true };
+}
+/** DV5-rest: angre alle ferdige resultater i jobben med de lagrede inverse kommandoene. */
+export const undoDialogueBatchJob = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator(batchInput).handler(async ({ data, context }) => {
+  const db = await access(context.supabase, data.projectId, context.userId);
+  const { undoDialogueBatch } = await import("./dialogue-batch.server");
+  return undoDialogueBatch(db, data.projectId, data.batchId, context.userId);
+});
+/** DV5-rest: gjenopptak etter leverandørblokk. Krever ny eksplisitt bekreftelse og en gyldig nøkkel. */
+export const reconfirmDialogueBatch = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator(batchInput).handler(async ({ data, context }) => {
+  if (!data.approved) throw new Error(L("Bekreft kostnaden på nytt før jobben fortsetter.", "Approve the cost again before the job continues."));
+  const db = await access(context.supabase, data.projectId, context.userId);
+  const { data: batch } = await db.from("dialogue_batches").select("voice,access_blocked").eq("id", data.batchId).eq("project_id", data.projectId).maybeSingle();
+  if (!batch) throw new Error(L("Jobben finnes ikke", "The job was not found"));
+  const { projectKey } = await import("../ai/ai-gate.server");
+  const key = await projectKey(db, data.projectId, "elevenlabs", context.userId);
+  if (!key) throw new Error(L("Tilgangen til ElevenLabs er ikke tilbake ennå.", "Access to ElevenLabs has not been restored yet."));
+  const { modelGate } = await import("../account/ai-models.server");
+  const allowed = await modelGate(db, "elevenlabs", (batch.voice as AssetVoice).modelId ?? "eleven_v3");
+  if (allowed.message) throw new Error(allowed.message);
+  const { error } = await db.rpc("reconfirm_dialogue_batch", { p_project: data.projectId, p_batch: data.batchId, p_actor: context.userId });
+  if (error) throw new Error(error.message);
+  return { ok: true };
 });

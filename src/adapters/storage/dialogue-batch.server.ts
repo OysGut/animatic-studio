@@ -82,3 +82,30 @@ export async function pumpDialogueBatches(db: AnyClient) {
   const batch = data?.[0];
   return batch ? processDialogueBatch(db, batch.id) : { processed: 0 };
 }
+/**
+ * DV5-rest: «Angre hele jobben». Bruker de lagrede inverse kommandoene fra kommandologgen, i omvendt rekkefølge,
+ * og skriver hver angring som en vanlig endring via apply_changes (revisjonskontroll). Angrede elementer merkes
+ * «undone» og kjøres aldri igjen, så ingen betalt generering gjentas. Stopper ved første konflikt.
+ */
+export async function undoDialogueBatch(db: AnyClient, projectId: string, batchId: string, actor: string) {
+  const { data: batch } = await db.from("dialogue_batches").select("id,status,lease_until").eq("id", batchId).eq("project_id", projectId).maybeSingle();
+  if (!batch) throw new Error(L("Jobben finnes ikke", "The job was not found"));
+  if (batch.status === "running" && batch.lease_until && new Date(String(batch.lease_until)) > new Date()) throw new Error(L("Jobben kjører. Vent til den er ferdig eller satt på pause.", "The job is running. Wait until it is done or paused."));
+  const { data: items, error } = await db.from("dialogue_batch_items").select("id,command_id,position").eq("batch_id", batchId).eq("status", "done").order("position", { ascending: false });
+  if (error) throw new Error(error.message);
+  let undone = 0;
+  for (const item of (items ?? []) as { id: string; command_id: string }[]) {
+    const { data: log } = await db.from("change_log").select("inverse").eq("id", item.command_id).eq("project_id", projectId).maybeSingle();
+    const inverse = (log as { inverse?: Command } | null)?.inverse;
+    if (!inverse) { await db.from("dialogue_batch_items").update({ status: "undone" }).eq("id", item.id).eq("status", "done"); continue; }
+    const state = await loadProjectState(db, projectId);
+    const applied = applyCommand(state, { id: newId<"command">(), actor: actor as never, at: new Date().toISOString(), command: inverse });
+    if (!applied.ok) throw new Error(L(`Angringen stoppet etter ${undone} replikker: ${applied.error.message}`, `Undo stopped after ${undone} lines: ${applied.error.message}`));
+    const id = newId<"command">();
+    const { error: applyError } = await db.rpc("apply_changes", { p_project: projectId, p_actor: actor, p_command_id: id, p_command: inverse, p_inverse: applied.inverse, p_changes: diffStates(state, applied.state) });
+    if (applyError) throw new Error(L(`Angringen stoppet etter ${undone} replikker. Noen har endret replikken siden.`, `Undo stopped after ${undone} lines. Someone has changed the line since.`));
+    await db.from("dialogue_batch_items").update({ status: "undone", error: null, retryable: false }).eq("id", item.id).eq("status", "done");
+    undone++;
+  }
+  return { undone };
+}
