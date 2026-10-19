@@ -19,7 +19,7 @@ export function VariantTracks({ state, compositionId, duration, view, frame, edi
   const [picking, setPicking] = useState<Selection | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [draft, setDraft] = useState<{ layerId: string; fields: LayerFields } | null>(null);
-  const drag = useRef<{ layerId: string; index: number; kind: "move" | "trim"; x: number; start: number; fields: LayerFields; width: number; next?: LayerFields } | null>(null);
+  const drag = useRef<{ layerId: string; revision: number; index: number; kind: "move" | "trim"; x: number; start: number; fields: LayerFields; width: number; next?: LayerFields } | null>(null);
   const paths = useMemo(() => tracks.flatMap(t => t.layer.assetId ? variantsOf(state, t.layer.assetId).flatMap(v => versionsOf(state, v.id).map(ver => ver.mediaPath)) : []), [state, compositionId]);
   const urls = useImageUrls(paths).data ?? {};
   const current = selected ? tracks.find(t => t.layer.id === selected.layerId) : undefined;
@@ -36,6 +36,10 @@ export function VariantTracks({ state, compositionId, duration, view, frame, edi
   }
   function finish() {
     const d = drag.current; drag.current = null; setDraft(null);
+    if (d?.next && state.layers[d.layerId]?.revision !== d.revision) {
+      setError(L("Laget er endret av en annen bruker. Prøv igjen.", "Another user changed the layer. Please try again."));
+      return;
+    }
     if (d?.next) write(d.layerId, d.next, d.kind === "move" ? L("Flytt bildesegment", "Move image segment") : L("Trim bildesegment", "Trim image segment"));
   }
   const positions = (start: number, end: number) => ({ left: `${(start - view.from) / view.span * 100}%`, width: `${(end - start) / view.span * 100}%`, minWidth: end - start === 1 ? "1.75rem" : undefined });
@@ -66,8 +70,8 @@ export function VariantTracks({ state, compositionId, duration, view, frame, edi
           {track.segments[0]?.version && urls[track.segments[0].version.mediaPath] ? <img className="size-8 object-contain" alt="" src={urls[track.segments[0].version.mediaPath]} /> : null}
           <span className="truncate">{layer.name}</span>
         </ToolbarButton>
-        <div className="relative min-w-0 flex-1 overflow-hidden bg-surface-0">
-          {segments.filter(s => s.end > active.from && s.start <= active.to).map(s => {
+        <div className="relative min-w-0 flex-1 bg-surface-0">
+          {segments.filter(s => s.end > active.from && s.start <= active.to && s.end > view.from && s.start < view.from + view.span).map(s => {
             const start = Math.max(s.start, active.from), end = Math.min(s.end, active.to + 1);
             const name = s.variant?.name ?? layer.name;
             return <ToolbarButton key={s.index} data-testid="anim-segment" data-layer-id={layer.id} data-index={s.index} data-start={start} data-end={end} data-version-id={s.version?.id} data-asset-id={s.image?.assetId}
@@ -78,7 +82,7 @@ export function VariantTracks({ state, compositionId, duration, view, frame, edi
                 if (!editable || layer.locked || s.index === 0) return;
                 const width = e.currentTarget.parentElement?.clientWidth; if (!width) return;
                 e.currentTarget.setPointerCapture(e.pointerId);
-                drag.current = { layerId: layer.id, index: s.index, kind: "move", x: e.clientX, start: s.start, fields: layerFieldsOf(layer), width };
+                drag.current = { layerId: layer.id, revision: layer.revision, index: s.index, kind: "move", x: e.clientX, start: s.start, fields: layerFieldsOf(layer), width };
               }}
               onPointerMove={e => { const d = drag.current; if (!d) return; const delta = Math.round((e.clientX - d.x) / d.width * view.span); if (!delta) return;
                 d.next = d.kind === "move" ? moveImageSegment(d.fields, d.index, d.start + delta, duration) : trimImageSegment(d.fields, d.index, d.start + delta);
@@ -89,7 +93,7 @@ export function VariantTracks({ state, compositionId, duration, view, frame, edi
               {end - start > 1 ? <span className="truncate px-1 text-xs">{name}</span> : null}
               {s.version && urls[s.version.mediaPath] ? <img data-testid="anim-segment-hover" src={urls[s.version.mediaPath]} alt={name} className="pointer-events-none absolute bottom-full left-0 z-30 mb-2 hidden h-32 w-32 border border-border bg-surface-1 object-contain group-hover:block group-focus-visible:block" /> : null}
               {editable && !layer.locked && s.end < duration ? <span data-testid="anim-segment-trim" role="separator" aria-label={L("Trim slutten av segmentet", "Trim the end of the segment")} className="absolute inset-y-0 right-0 w-2 cursor-ew-resize bg-border-control"
-                onPointerDown={e => { e.stopPropagation(); const width = e.currentTarget.parentElement?.parentElement?.clientWidth; if (!width) return; e.currentTarget.parentElement?.setPointerCapture(e.pointerId); drag.current = { layerId: layer.id, index: s.index, kind: "trim", x: e.clientX, start: s.end, fields: layerFieldsOf(layer), width }; }} /> : null}
+                onPointerDown={e => { e.stopPropagation(); const width = e.currentTarget.parentElement?.parentElement?.clientWidth; if (!width) return; e.currentTarget.parentElement?.setPointerCapture(e.pointerId); drag.current = { layerId: layer.id, revision: layer.revision, index: s.index, kind: "trim", x: e.clientX, start: s.end, fields: layerFieldsOf(layer), width }; }} /> : null}
             </ToolbarButton>;
           })}
         </div>
