@@ -37,9 +37,8 @@ Kortversjonen:
 17. The global library (GP2) is owned by workspaces and written only through security-definer functions; using a global asset copies its files into the project once per global version and keeps the link only as metadata, so projects and backups never depend on workspace membership.
 18. Carry-over between scenes (GP3) is planned by the pure planCarryOver and run as one undo group of existing commands; it never targets the source 2D scene, so it cannot mix with an open Asset Studio draft.
 19. Film shares (GP5) bind a hashed token to one exported film version uploaded as mp4; the public /se/$token page resolves only through a server function that returns title, format, duration and a short-lived signed URL.
-20. Text-layer fonts come only from the licensed catalog in src/core/typography/fonts.ts, load lazily (incl. real italics) via src/engine/typography, and export awaits fontsReady; this keeps startup light and preview/export text identical.
+20. Subdirectories have their own AGENTS.md (src/core/typography, src/core/animation); read it before changing files there.
 21. Asset-version creation ordering uses compareVersionCreation (timestamp, persisted version number, variant and version IDs); numeric version lists retain number-first ordering, so same-millisecond recordings never depend on random UUID order within a variant.
-22. Character Animation reuses composition layers, image segments, selected audio, segment helpers, scene clock and command stack to keep preview/export consistent. Immutable variant rigs are scene-pinned; marking uses one UpdateSceneDraft, preserves frames, and disabling retains setup. Rig-part image imports use a rig-only UpdateSceneDraft; triggers commit approval receipts, which backups omit to preserve ordinary Asset Studio imports and portable restoration.
 23. Invitations bind to the invited email: acceptance functions compare it with the signed-in auth email, so a leaked invitation link never grants access to someone else.
 
 24. Note resolution is reversible, not removal; audio edits persist projected alignment without changing sources.
