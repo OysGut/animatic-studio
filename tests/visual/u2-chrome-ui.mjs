@@ -197,7 +197,7 @@ await run("u2-ikonknapp", "/scene", async (page) => {
   check(size && Math.round(size.height) === 28 && Math.round(size.width) === 28, "ikonknappen er 28 × 28 px");
 });
 
-await run("u2-verktoytips", "/plakat", async (page) => {
+await run("u2-verktoytips", "/utgivelse", async (page) => {
   const btn = page.locator("button[data-icon-button]:not([disabled])").first();
   await btn.waitFor({ timeout: 8000 });
   const box = await btn.boundingBox();
