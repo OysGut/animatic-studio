@@ -1,4 +1,4 @@
-import { Toolbar, ToolbarButton, ToolbarSeparator } from "@/app/shell/workspace-chrome";
+import { Toolbar, ToolbarButton, ToolbarSeparator, IconButton } from "@/app/shell/workspace-chrome";
 /**
  * Arbeidsflaten «Utgivelse» (M8 del 1, DEC-0061; mandat kap. 26, REQ-0384–0399, REQ-0403/0404,
  * REQ-0501/0502): plakater og karakterkart per produksjon, med førsteutkast fra prosjektet, direkte
@@ -387,8 +387,7 @@ function Release({
           {L("Utgivelse", "Release")}
         </span>
         <ToolbarSeparator />
-        <ToolbarButton
-          variant="icon"
+        <IconButton
           onClick={cmds.undo}
           disabled={!cmds.canUndo}
           title={
@@ -396,16 +395,15 @@ function Release({
               ? L(`Angre: ${cmds.undoLabel} (⌘Z)`, `Undo: ${cmds.undoLabel} (⌘Z)`)
               : L("Angre (⌘Z)", "Undo (⌘Z)")
           }
-          aria-label={
+          label={
             cmds.undoLabel
               ? L(`Angre: ${cmds.undoLabel}`, `Undo: ${cmds.undoLabel}`)
               : L("Angre", "Undo")
           }
         >
           <Undo2 />
-        </ToolbarButton>
-        <ToolbarButton
-          variant="icon"
+        </IconButton>
+        <IconButton
           onClick={cmds.redo}
           disabled={!cmds.canRedo}
           title={
@@ -413,14 +411,14 @@ function Release({
               ? L(`Gjør om: ${cmds.redoLabel} (⇧⌘Z)`, `Redo: ${cmds.redoLabel} (⇧⌘Z)`)
               : L("Gjør om (⇧⌘Z)", "Redo (⇧⌘Z)")
           }
-          aria-label={
+          label={
             cmds.redoLabel
               ? L(`Gjør om: ${cmds.redoLabel}`, `Redo: ${cmds.redoLabel}`)
               : L("Gjør om", "Redo")
           }
         >
           <Redo2 />
-        </ToolbarButton>
+        </IconButton>
         <ToolbarButton
           variant="default"
           onClick={() => setRelOpen(true)}
@@ -432,30 +430,27 @@ function Release({
         {shownPoster && editable ? (
           <>
             <ToolbarSeparator />
-            <ToolbarButton
-              variant="icon"
+            <IconButton
               onClick={() => newCustom("text")}
-              aria-label={L("Legg til tekst", "Add text")}
+              label={L("Legg til tekst", "Add text")}
               title={L("Legg til tekst", "Add text")}
             >
               <Type />
-            </ToolbarButton>
-            <ToolbarButton
-              variant="icon"
+            </IconButton>
+            <IconButton
               onClick={() => newCustom("image")}
-              aria-label={L("Legg til bilde", "Add image")}
+              label={L("Legg til bilde", "Add image")}
               title={L("Legg til bilde", "Add image")}
             >
               <ImagePlus />
-            </ToolbarButton>
-            <ToolbarButton
-              variant="icon"
+            </IconButton>
+            <IconButton
               onClick={() => newCustom("rect")}
-              aria-label={L("Legg til flate", "Add shape")}
+              label={L("Legg til flate", "Add shape")}
               title={L("Legg til flate", "Add shape")}
             >
               <Square />
-            </ToolbarButton>
+            </IconButton>
           </>
         ) : null}
         {shownPoster ? (

@@ -56,7 +56,7 @@ import { MobileCameraButton } from "@/app/mobile/MobileImportDialog";
 import { MobileImportLibrary } from "@/app/mobile/MobileImportLibrary";
 import { attachMobileDraft } from "@/adapters/browser/mobile-import";
 import { Button } from "@/components/ui/button";
-import { Toolbar, ToolbarButton, ToolbarSeparator } from "@/app/shell/workspace-chrome";
+import { Toolbar, ToolbarButton, ToolbarSeparator, IconButton } from "@/app/shell/workspace-chrome";
 import { Input } from "@/components/ui/input";
 import { AssetDetail } from "./AssetDetail";
 import { GlobalLibraryDialog } from "@/app/global/GlobalLibraryDialog";
@@ -269,8 +269,7 @@ function Library({
           {L("Ressursbibliotek", "Asset library")}
         </span>
         <ToolbarSeparator />
-        <ToolbarButton
-          variant="icon"
+        <IconButton
           onClick={cmds.undo}
           disabled={!cmds.canUndo}
           title={
@@ -278,16 +277,15 @@ function Library({
               ? L(`Angre: ${cmds.undoLabel} (⌘Z)`, `Undo: ${cmds.undoLabel} (⌘Z)`)
               : L("Angre (⌘Z)", "Undo (⌘Z)")
           }
-          aria-label={
+          label={
             cmds.undoLabel
               ? L(`Angre: ${cmds.undoLabel}`, `Undo: ${cmds.undoLabel}`)
               : L("Angre", "Undo")
           }
         >
           <Undo2 />
-        </ToolbarButton>
-        <ToolbarButton
-          variant="icon"
+        </IconButton>
+        <IconButton
           onClick={cmds.redo}
           disabled={!cmds.canRedo}
           title={
@@ -295,14 +293,14 @@ function Library({
               ? L(`Gjør om: ${cmds.redoLabel} (⇧⌘Z)`, `Redo: ${cmds.redoLabel} (⇧⌘Z)`)
               : L("Gjør om (⇧⌘Z)", "Redo (⇧⌘Z)")
           }
-          aria-label={
+          label={
             cmds.redoLabel
               ? L(`Gjør om: ${cmds.redoLabel}`, `Redo: ${cmds.redoLabel}`)
               : L("Gjør om", "Redo")
           }
         >
           <Redo2 />
-        </ToolbarButton>
+        </IconButton>
         <ToolbarButton
           onClick={() => setTrashOpen(true)}
           title={L(

@@ -10,7 +10,7 @@ import { useLanguage } from "@/app/i18n/language";
 import { generateText } from "@/adapters/ai/text.functions";
 import { appendStoryTurns, forkStorySession, getStorySession, saveStorySuggestion,
   type StoredTurn, type StorySession, type StorySessionStatus } from "@/adapters/storylab/sessions.functions";
-import { Toolbar, ToolbarButton } from "@/app/shell/workspace-chrome";
+import { Toolbar, ToolbarButton, IconButton } from "@/app/shell/workspace-chrome";
 import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -212,11 +212,11 @@ function GroupConversation({ state, projectId, session, participants, editable, 
           <span className="font-medium">{t.speaker === "director" ? L("Regissør", "Director") : t.speaker === ANALYST ? L("Analyse", "Analysis") : names[t.speaker] ?? "?"}</span>
           {t.kind === "analysis" ? <span>{L("utenfor rollen", "out of character")}</span> : null}
           {editable ? <div className="ml-auto flex flex-wrap gap-1">
-            <ToolbarButton variant="icon" disabled={busy} data-testid="storylab-fork" title={L("Forgren herfra", "Branch from here")} aria-label={L("Forgren herfra", "Branch from here")}
+            <IconButton disabled={busy} data-testid="storylab-fork" title={L("Forgren herfra", "Branch from here")} label={L("Forgren herfra", "Branch from here")}
               onClick={async () => { try { const r = await fork({ data: { projectId, sessionId: session.id, fromTurn: turns.findIndex((x) => x.id === t.id) } });
                 if (!r.ok) { setError(r.message); return; } qc.setQueryData(["story-session", projectId, r.session.id], r);
                 await qc.invalidateQueries({ queryKey: ["story-sessions", projectId] }); onOpen(r.session.id);
-              } catch { setError(L("Forgrening kunne ikke opprettes.", "The branch could not be created.")); } }}><GitBranch /></ToolbarButton>
+              } catch { setError(L("Forgrening kunne ikke opprettes.", "The branch could not be created.")); } }}><GitBranch /></IconButton>
             {t.kind === "line" ? <ToolbarButton disabled={busy || locked} data-testid="storylab-explain" onClick={() => request({ kind: "analysis", focus: t.speaker, question: `Explain why ${names[t.speaker] ?? "this character"} said: ${t.text}` })}>{L("Hvorfor sa du det?", "Why did you say that?")}</ToolbarButton> : null}
             <select className="h-7" value="" disabled={busy} aria-label={L("Lagre som forslag", "Save as suggestion")} data-testid="storylab-suggest"
               onChange={async (e) => { if (!e.target.value) return; try { const r = await suggest({ data: { projectId, sessionId: session.id, turnId: t.id,
@@ -239,7 +239,7 @@ function GroupConversation({ state, projectId, session, participants, editable, 
       </details>
       <div className="flex flex-wrap gap-1">{directions.map((d) => <span key={d.id} data-testid="storylab-direction" data-target={d.target ?? "all"} className="flex items-center gap-1 rounded-sm bg-surface-3 px-2 text-xs">
         {d.target ? names[d.target] ?? "?" : L("Alle", "Everyone")}: {d.text}
-        <ToolbarButton variant="icon" disabled={busy || locked} title={L("Fjern regi", "Remove direction")} aria-label={L("Fjern regi", "Remove direction")} onClick={() => persistDirection({ id: `r:${d.id}`, speaker: "director", text: "", kind: "direction", at: new Date().toISOString() })}><X /></ToolbarButton>
+        <IconButton disabled={busy || locked} title={L("Fjern regi", "Remove direction")} label={L("Fjern regi", "Remove direction")} onClick={() => persistDirection({ id: `r:${d.id}`, speaker: "director", text: "", kind: "direction", at: new Date().toISOString() })}><X /></IconButton>
       </span>)}</div>
       <div className="flex flex-wrap gap-1">
         <Input className="min-w-0 flex-1" disabled={busy || locked} value={direction} onChange={(e) => setDirection(e.target.value)} data-testid="storylab-direction-text" aria-label={L("Regi / tilstand", "Direction / state")} placeholder={L("Regi / tilstand", "Direction / state")} />

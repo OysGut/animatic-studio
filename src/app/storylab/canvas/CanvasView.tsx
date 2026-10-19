@@ -39,7 +39,7 @@ import {
   type ProjectState,
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
-import { Toolbar, ToolbarButton, ToolbarGroup, ToolbarSeparator } from "@/app/shell/workspace-chrome";
+import { Toolbar, ToolbarButton, ToolbarGroup, ToolbarSeparator, IconButton } from "@/app/shell/workspace-chrome";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { KIND_ICON, NODE_TYPES, type StoryFlowNode } from "./CanvasNodes";
 import { CanvasInspector } from "./CanvasInspector";
@@ -311,10 +311,10 @@ function Canvas({ state, projectId, cmds, editable, interviewId, startInterview,
             </ToolbarGroup>
           ) : null}
           <ToolbarSeparator />
-          <ToolbarButton variant="icon" aria-label={L("Zoom inn", "Zoom in")} title={L("Zoom inn", "Zoom in")} onClick={() => void flow.zoomIn()}><ZoomIn /></ToolbarButton>
-          <ToolbarButton variant="icon" aria-label={L("Zoom ut", "Zoom out")} title={L("Zoom ut", "Zoom out")} onClick={() => void flow.zoomOut()}><ZoomOut /></ToolbarButton>
-          <ToolbarButton variant="icon" data-testid="canvas-fit" aria-label={L("Tilpass", "Fit")} title={L("Tilpass", "Fit")} onClick={() => void flow.fitView({ padding: 0.1 })}><Maximize /></ToolbarButton>
-          <ToolbarButton variant="icon" disabled={!selected.length} aria-label={L("Fokuser på utvalg", "Focus on selection")} title={L("Fokuser på utvalg", "Focus on selection")} onClick={() => void flow.fitView({ nodes: selected.map((n) => ({ id: n.id })), padding: 0.4 })}><Focus /></ToolbarButton>
+          <IconButton label={L("Zoom inn", "Zoom in")} title={L("Zoom inn", "Zoom in")} onClick={() => void flow.zoomIn()}><ZoomIn /></IconButton>
+          <IconButton label={L("Zoom ut", "Zoom out")} title={L("Zoom ut", "Zoom out")} onClick={() => void flow.zoomOut()}><ZoomOut /></IconButton>
+          <IconButton data-testid="canvas-fit" label={L("Tilpass", "Fit")} title={L("Tilpass", "Fit")} onClick={() => void flow.fitView({ padding: 0.1 })}><Maximize /></IconButton>
+          <IconButton disabled={!selected.length} label={L("Fokuser på utvalg", "Focus on selection")} title={L("Fokuser på utvalg", "Focus on selection")} onClick={() => void flow.fitView({ nodes: selected.map((n) => ({ id: n.id })), padding: 0.4 })}><Focus /></IconButton>
         </Toolbar>
         {err ? <p role="alert" className="border-b border-border px-3 py-1 text-xs text-status-danger">{err}</p> : null}
         <div ref={wrap} className="relative min-h-0 flex-1" data-testid="storylab-canvas" onKeyDownCapture={onKeyDownCapture}

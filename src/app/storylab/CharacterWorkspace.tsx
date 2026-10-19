@@ -21,7 +21,7 @@ import {
   type StoryProfileStage,
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
-import { PanelHeader, Toolbar, ToolbarButton } from "@/app/shell/workspace-chrome";
+import { PanelHeader, Toolbar, ToolbarButton, IconButton } from "@/app/shell/workspace-chrome";
 import { ProfileGenerateDialog } from "./ProfileGenerateDialog";
 import {
   FieldEditor,
@@ -288,10 +288,9 @@ function ArcSection({
         }}
         actions={
           editable && free ? (
-            <ToolbarButton
-              variant="icon"
+            <IconButton
               data-testid="storylab-stage-add"
-              aria-label={L("Nytt stadium", "New stage")}
+              label={L("Nytt stadium", "New stage")}
               title={L("Nytt stadium", "New stage")}
               onClick={() =>
                 setErr(
@@ -309,7 +308,7 @@ function ArcSection({
               }
             >
               <Plus />
-            </ToolbarButton>
+            </IconButton>
           ) : null
         }
       />
@@ -418,16 +417,15 @@ function StageEditor({
             </ToolbarButton>
           ) : null}
           {editable ? (
-            <ToolbarButton
-              variant="icon"
-              aria-label={L("Fjern stadiet", "Remove the stage")}
+            <IconButton
+              label={L("Fjern stadiet", "Remove the stage")}
               title={L("Fjern stadiet", "Remove the stage")}
               onClick={() =>
                 onError(cmds.run({ type: "RemoveStoryProfileStage", stageId: stage.id, removed: true }, L("Fjern stadium", "Remove stage")))
               }
             >
               <Trash2 />
-            </ToolbarButton>
+            </IconButton>
           ) : null}
         </span>
       </div>

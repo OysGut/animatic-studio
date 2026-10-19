@@ -1,4 +1,4 @@
-import { Toolbar, ToolbarButton, ToolbarSeparator } from "@/app/shell/workspace-chrome";
+import { Toolbar, ToolbarButton, ToolbarSeparator, IconButton } from "@/app/shell/workspace-chrome";
 /**
  * Montering (M4 del 1, mandat kap. 15, DEC-0043): den samlede filmen – alle aktive scener i manusets
  * rekkefølge, med 2D-scenene som materiale og tittelkort der 2D-scenen mangler. Forhåndsvis hele filmen,
@@ -909,8 +909,7 @@ function Assembly({
         <ProductionPicker state={state} value={productionId} onChange={setProductionId} />
         <FilmLanguagePicker value={filmLang} onChange={setFilmLang} compact />
         <ToolbarSeparator />
-        <ToolbarButton
-          variant="icon"
+        <IconButton
           onClick={cmds.undo}
           disabled={!cmds.canUndo}
           title={
@@ -918,14 +917,13 @@ function Assembly({
               ? `${L("Angre", "Undo")}: ${cmds.undoLabel} (⌘Z)`
               : L("Angre (⌘Z)", "Undo (⌘Z)")
           }
-          aria-label={
+          label={
             cmds.undoLabel ? `${L("Angre", "Undo")}: ${cmds.undoLabel}` : L("Angre", "Undo")
           }
         >
           <Undo2 />
-        </ToolbarButton>
-        <ToolbarButton
-          variant="icon"
+        </IconButton>
+        <IconButton
           onClick={cmds.redo}
           disabled={!cmds.canRedo}
           title={
@@ -933,12 +931,12 @@ function Assembly({
               ? `${L("Gjør om", "Redo")}: ${cmds.redoLabel} (⇧⌘Z)`
               : L("Gjør om (⇧⌘Z)", "Redo (⇧⌘Z)")
           }
-          aria-label={
+          label={
             cmds.redoLabel ? `${L("Gjør om", "Redo")}: ${cmds.redoLabel}` : L("Gjør om", "Redo")
           }
         >
           <Redo2 />
-        </ToolbarButton>
+        </IconButton>
         {/* Antall og lengde uten avkutting; resten står i verktøytipset. Smalere enn 1600 px vises det samme i
             transportlinjen («Scene 1 av 13», samlet tid), så etiketten skjules der (DEC-0076 funn 5) */}
         <span

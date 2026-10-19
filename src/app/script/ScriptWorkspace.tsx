@@ -74,7 +74,7 @@ import { initials, usePresence, type PresentUser } from "@/app/project/use-prese
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { useVersionList, useVersionSnapshot } from "@/app/project/use-versions";
 import { Button } from "@/components/ui/button";
-import { Toolbar, ToolbarButton, ToolbarSeparator } from "@/app/shell/workspace-chrome";
+import { Toolbar, ToolbarButton, ToolbarSeparator, IconButton } from "@/app/shell/workspace-chrome";
 import { Switch } from "@/components/ui/switch";
 import { ExportDialog } from "./ExportDialog";
 import { ImportDialog } from "./ImportDialog";
@@ -760,8 +760,7 @@ function Workspace({
           </ToolbarButton>
         ) : null}
         <ToolbarSeparator />
-        <ToolbarButton
-          variant="icon"
+        <IconButton
           onClick={cmds.undo}
           disabled={!cmds.canUndo}
           title={
@@ -769,16 +768,15 @@ function Workspace({
               ? L(`Angre: ${cmds.undoLabel} (⌘Z)`, `Undo: ${cmds.undoLabel} (⌘Z)`)
               : L("Angre (⌘Z)", "Undo (⌘Z)")
           }
-          aria-label={
+          label={
             cmds.undoLabel
               ? L(`Angre: ${cmds.undoLabel}`, `Undo: ${cmds.undoLabel}`)
               : L("Angre", "Undo")
           }
         >
           <Undo2 />
-        </ToolbarButton>
-        <ToolbarButton
-          variant="icon"
+        </IconButton>
+        <IconButton
           onClick={cmds.redo}
           disabled={!cmds.canRedo}
           title={
@@ -786,14 +784,14 @@ function Workspace({
               ? L(`Gjør om: ${cmds.redoLabel} (⇧⌘Z)`, `Redo: ${cmds.redoLabel} (⇧⌘Z)`)
               : L("Gjør om (⇧⌘Z)", "Redo (⇧⌘Z)")
           }
-          aria-label={
+          label={
             cmds.redoLabel
               ? L(`Gjør om: ${cmds.redoLabel}`, `Redo: ${cmds.redoLabel}`)
               : L("Gjør om", "Redo")
           }
         >
           <Redo2 />
-        </ToolbarButton>
+        </IconButton>
         {editable && state.productions[productionId]?.kind !== "main" ? (
           <ToolbarButton
             onClick={() => setAddScenesOpen(true)}
