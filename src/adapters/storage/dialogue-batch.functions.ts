@@ -15,7 +15,7 @@ function projectInput(raw: unknown) {
   if (typeof x["projectId"] !== "string" || !isUuid(x["projectId"])) throw new Error(L("Ugyldig prosjekt", "Invalid project"));
   return { projectId: x["projectId"], raw: x };
 }
-export interface DialogueBatchView { id: string; status: string; pause_reason: string | null; voice: AssetVoice; items: { id: string; block_id: string; occurrence_id: string; status: string; error: string | null; retryable: boolean; language: string }[] }
+export interface DialogueBatchView { id: string; status: string; pause_reason: string | null; access_blocked?: boolean; voice: AssetVoice; items: { id: string; block_id: string; occurrence_id: string; status: string; error: string | null; retryable: boolean; language: string }[] }
 export const listDialogueBatches = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator(projectInput).handler(async ({ data, context }): Promise<DialogueBatchView[]> => {
   const db = await access(context.supabase, data.projectId, context.userId);
   const { data: rows, error } = await db.from("dialogue_batches").select("*,items:dialogue_batch_items(id,block_id,occurrence_id,status,error,retryable,language)").eq("project_id", data.projectId).order("created_at", { ascending: false }).limit(30);

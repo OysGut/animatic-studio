@@ -95,7 +95,7 @@ export function DialogueBatchPanel({ state, asset, projectId, editable }: { stat
       {(jobs.data ?? []).map(job => <section key={job.id} data-testid="dialogue-batch-job" className="border-t border-border pt-3"><PanelHeader title={`${job.voice.label} · ${job.voice.modelId ?? ""}`} />
         <ul className="text-xs">{job.items.map(item => <li key={item.id} data-testid="dialogue-batch-progress" className="py-1">{state.blocks[item.block_id]?.text} · {item.language} · {item.status === "waiting" ? L("Venter", "Waiting") : item.status === "generating" ? L("Genererer", "Generating") : item.status === "ready" ? L("Lyd lagret, venter på innlegging", "Audio saved, awaiting placement") : item.status === "done" ? L("Ferdig", "Done") : item.status === "skipped" ? L("Hoppet over", "Skipped") : L("Feilet", "Failed")}{item.error ? <span role="alert" className="text-status-danger"> · {item.error}</span> : null}</li>)}</ul>
         {job.pause_reason ? <p role="alert" className="text-xs text-status-danger">{job.pause_reason}</p> : null}
-        <Button data-testid="dialogue-batch-resume" size="sm" variant="secondary" disabled={busy} onClick={() => void advance(job.id, job.status !== "running")}>{L("Gjenoppta / prøv feilede på nytt", "Resume / retry failed lines")}</Button>
+        <Button data-testid="dialogue-batch-resume" size="sm" variant="secondary" disabled={busy || job.access_blocked === true || job.status === "done"} onClick={() => void advance(job.id, job.status !== "running")}>{L("Gjenoppta / prøv feilede på nytt", "Resume / retry failed lines")}</Button>
       </section>)}
     </DialogContent></Dialog>
   </>;

@@ -140,6 +140,7 @@ export async function runSpeech(data: SpeechInput, context: { supabase: unknown;
       key_owner: key.user_id,
       cost_usd: cost,
       params: {
+        ...(data.batch ? { kind: "dialogue_batch" } : {}),
         speech: true,
         language: data.language,
         settings: data.settings,
