@@ -5593,6 +5593,43 @@ try {
     assert(isDeepStrictEqual(back.animationRigVersions, before.animationRigVersions), "disable mutated rig");
     await expectError(sql`update public.animation_rig_versions set spec = '{"format":1,"anchors":{}}'::jsonb where id = ${CA(10)}`, "22023");
   });
+  await test("0055: rig parts save with mobile approval in one revision-checked transaction", async () => {
+    const context = { type: "rig", purpose: "mouth_shape", target: { assetId: CA(1), variantId: CA(2), sourceVersionId: CA(3), slot: "mouth:A" } };
+    await as("service_role", null, tx => tx`insert into public.upload_sessions(id,project_id,token_hash,kind,created_by,context,media_kinds,expires_at,max_files,max_bytes) values (${CA(20)},${caProject},${"5".repeat(64)},'personal',${ALICE},${tx.json(context)},array['image'],now()+interval '1 hour',10,100000)`);
+    await as("service_role", null, tx => tx`insert into public.mobile_imports(id,project_id,session_id,client_file_id,path,kind,mime_type,byte_size,status,context) values (${CA(21)},${caProject},${CA(20)},${CA(22)},${caProject+"/mouth.png"},'image','image/png',100,'done',${tx.json(context)})`);
+    const part = { versionId: CA(24), mobileImportId: CA(21), drawing: [], mask: [{mode:"subtract" as const,radius:.1,feather:.5,points:[{x:.5,y:.5}]}], x:0,y:0,width:.2,height:.1,rotation:0,adjustments:{brightness:1.5,contrast:.8,saturation:1.2,hue:20,opacity:.7} };
+    const spec = { format:1 as const,anchors:{mouth:{x:.5,y:.6}},parts:{"mouth:A":part} };
+    const before = await loadState(caProject);
+    caState = await runCommand(before,ALICE,{type:"UpdateSceneDraft",compositionId:CA(7),occurrenceId:CA(6),steps:[
+      {type:"CreateAssetVariant",assetId:CA(1),variantId:CA(23),fields:{name:"Mouth",style:"illustrated",appearance:""}},
+      {type:"AddAssetVersion",variantId:CA(23),versionId:CA(24),media:{path:caProject+"/mouth.png",mimeType:"image/png",width:320,height:320,byteSize:100,sha256:"5".repeat(64)},note:""},
+      {type:"SaveRigVersion",rigId:CA(9),versionId:CA(25),sourceVersionId:CA(3),spec},
+      {type:"AttachAnimationUse",useId:CA(11),layerId:CA(8),occurrenceId:CA(6),rigVersionId:CA(25)}]});
+    const loaded = await loadState(caProject);
+    assert(isDeepStrictEqual(loaded.animationRigVersions[CA(25)]?.spec,spec),"parts lost");
+    assert(loaded.animationRigs[CA(9)]?.revision === (before.animationRigs[CA(9)]?.revision??0)+1,"more than one rig revision");
+    const [row] = await sql`select * from public.mobile_imports where id=${CA(21)}`;
+    assert(row?.["approved_rig_version_id"]===CA(25)&&row?.["asset_version_id"]===CA(24)&&row?.["approved_at"],"not approved atomically");
+    assert(isDeepStrictEqual(loaded.assetVersions[CA(3)],before.assetVersions[CA(3)]),"source changed");
+    await expectError(sql`delete from public.asset_versions where id=${CA(24)}`,"23503");
+  });
+  await test("0055: RLS, anon and authenticated direct writes are denied",async()=>{
+    for(const table of ["animation_rigs","animation_rig_versions","animation_uses","mobile_imports","upload_sessions"]){
+      assert((await as("authenticated",BOB,tx=>tx.unsafe(`select id from public.${table} where project_id=$1`,[caProject]))).length===0,"nonmember read");
+      await expectError(as("anon",null,tx=>tx.unsafe(`select id from public.${table}`)),"42501");
+      await expectError(as("authenticated",ALICE,tx=>tx.unsafe(`delete from public.${table} where project_id=$1`,[caProject])),"42501");
+    }
+    assert((await as("authenticated",ALICE,tx=>tx`select id from public.animation_rig_versions where id=${CA(25)}`)).length===1,"member cannot read");
+  });
+  await test("0055: mismatched approval rolls back the entire patch; ordinary mobile context still works",async()=>{
+    const before=await loadState(caProject);
+    const spec={...before.animationRigVersions[CA(25)]?.spec,format:1 as const,anchors:{mouth:{x:.5,y:.6}},parts:{"mouth:B":before.animationRigVersions[CA(25)]?.spec.parts?.["mouth:A"] as never}};
+    await expectError(runCommand(before,ALICE,{type:"SaveRigVersion",rigId:CA(9),versionId:CA(26),sourceVersionId:CA(3),spec}),"22023");
+    const loaded=await loadState(caProject); assert(isDeepStrictEqual(loaded.animationRigs,before.animationRigs),"partial rig update"); assert(!loaded.animationRigVersions[CA(26)],"partial version insert");
+    await as("service_role",null,tx=>tx`insert into public.upload_sessions(id,project_id,token_hash,kind,created_by,context,expires_at,max_files,max_bytes) values (${CA(27)},${caProject},${"6".repeat(64)},'personal',${ALICE},'{}',now()+interval '1 hour',10,100000)`);
+    await expectError(as("service_role",null,tx=>tx`insert into public.upload_sessions(id,project_id,token_hash,kind,created_by,context,expires_at,max_files,max_bytes) values (${CA(28)},${caProject},${"7".repeat(64)},'personal',${ALICE},${tx.json({type:"rig",purpose:"mouth_shape",target:{assetId:CA(1),variantId:CA(2),sourceVersionId:CA(3),slot:"mouth:Z"}})},now()+interval '1 hour',10,100000)`),"22023");
+  });
+
   await test("0053/0054: purge rejects referenced sources; delete_project and purge remove rigs child-first", async () => {
     await expectError(sql`select public.purge_removed_assets(${caProject}, ${ALICE}, '{}'::uuid[], array[${CA(3)}]::uuid[])`, "22023");
     await sql`update public.asset_versions set removed = true where id = ${CA(3)}`;

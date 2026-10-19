@@ -104,6 +104,11 @@ async function contextBelongs(
     return !!data;
   };
   switch (c.type) {
+    case "rig": {
+      const { data: v } = await db.from("asset_versions").select("variant_id, mime_type, removed").eq("id", c.target.sourceVersionId).eq("project_id", projectId).maybeSingle();
+      const { data: a } = await db.from("asset_variants").select("asset_id, archived").eq("id", c.target.variantId).eq("project_id", projectId).maybeSingle();
+      return !!v && !v.removed && String(v.mime_type).startsWith("image/") && v.variant_id === c.target.variantId && !!a && !a.archived && a.asset_id === c.target.assetId;
+    }
     case "project":
     case "draft":
       return true;
@@ -269,6 +274,8 @@ export interface MobileSessionInfo {
   readonly remainingFiles?: number;
   /** Replikken som tas opp (bolk B, REQ-0685): vises på mobilen så man kan lese fra telefonen. */
   readonly script?: MobileScript | null;
+  readonly rigCapture?: { readonly referenceUrl: string; readonly slot: string };
+
 }
 
 /** Replikken for en «line»-kontekst, lest fra databasen (aldri fra nettleseren). */
@@ -311,9 +318,23 @@ export const mobileSession = createServerFn({ method: "POST" })
           "The link has expired or been revoked. Ask for a new QR code.",
         ),
       };
+    const uploadContext = parseUploadContext(s.context);
+    let rigCapture: MobileSessionInfo["rigCapture"];
+    if (uploadContext?.type === "rig") {
+      const { data: v } = await db.from("asset_versions").select("media_path").eq("id", uploadContext.target.sourceVersionId).eq("project_id", s.project_id).maybeSingle();
+      if (v?.media_path) {
+        const { data: signed } = await db.storage.from(BUCKET).createSignedUrl(String(v.media_path), 300);
+        if (signed?.signedUrl) {
+          const browserOrigin = process.env["VITE_SUPABASE_URL"];
+          const referenceUrl = browserOrigin ? new URL(new URL(signed.signedUrl).pathname + new URL(signed.signedUrl).search, browserOrigin).href : signed.signedUrl;
+          rigCapture = { referenceUrl, slot: uploadContext.target.slot };
+        }
+      }
+    }
     return {
       ok: true,
       message: "",
+      ...(rigCapture ? { rigCapture } : {}),
       kind: s.kind,
       label: s.label,
       from: s.creator_name,

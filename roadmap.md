@@ -1,4 +1,11 @@
 # MU1
+# CA4
+- [x] Forhåndsvisning toppjustert, alle spor med bilde/typeikon, lyd rett under sporene.
+- [x] Munnformeditor, tegneark, vektorpensel og ikke-destruktive deljusteringer.
+- [x] QR-import med eksplisitt rigg-godkjenning og migrasjon 0055.
+- [x] Unit-/DB-/mocktester, CA1–CA3-regresjoner og dokumentasjon.
+- CA5 tas separat; denne pakken fullfører CA4.
+- [ ] CA4 Cloud-aktivering og ekte mobiltest — Claude må kjøre migrasjon 0055.
 # CA designpuss og CA3
 - [x] A: faner, pen tidslinjal, Tilpass, miniatyrer/etiketter, kvadrater, navigator og lyd nederst; tester.
 - [x] B: rigmodell/kommandoer/evaluering, ansiktsmarkering, av/på, backup, migrasjoner og tester.
@@ -81,5 +88,5 @@
 - [x] CA2 Bildevarianter, dialogspor og tester
 - [x] Rett canvas-testens venting på én kant (maks 3 sekunder).
 - [x] CA3: riggmodell, ansiktsmarkering og migrasjoner 0053/0054 skrevet; unit- og mocktester grønne.
-- [ ] CA3 DB-verifisering og aktivering — Øystein kjører migrasjoner og DB-testene.
-- [ ] CA4–CA8 — venter på egne oppdrag; Rhubarb, vektormasker og 512 kB er avklart.
+- [x] CA3 DB-verifisering og Cloud-aktivering bekreftet av Øystein.
+- [ ] CA5–CA8 — venter på egne oppdrag.

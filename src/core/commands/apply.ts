@@ -1771,6 +1771,7 @@ export const SCENE_DRAFT_STEPS: ReadonlySet<string> = new Set<string>([
 ]);
 /** Største antall trinn i ett utkast. */
 export const MAX_SCENE_DRAFT_STEPS = 200;
+const RIG_IMPORT_STEPS = new Set(["CreateAssetVariant", "AddAssetVersion", "UndoCreateAssetVariant", "UndoAddAssetVersion"]);
 
 function run(
   s: ProjectState,
@@ -7120,8 +7121,9 @@ function run(
       let cur = s;
       const inverses: Command[] = [];
       const affected = new Set<string>();
+      const rigImport = c.steps.some(step => step.type === "SaveRigVersion" || step.type === "UndoAnimationChange");
       for (const step of c.steps) {
-        if (!SCENE_DRAFT_STEPS.has(step.type))
+        if (!SCENE_DRAFT_STEPS.has(step.type) && !(rigImport && RIG_IMPORT_STEPS.has(step.type)))
           fail("invalid", L("Ugyldig trinn i utkastet for scenen", "Invalid step in the scene draft"));
         if (step.type === "UpdateComposition" && step.compositionId !== comp.id)
           fail("invalid", L("Feil 2D-scene", "Wrong 2D scene"));
@@ -7130,6 +7132,11 @@ function run(
           step.layers.some((x) => cur.layers[x.layerId]?.compositionId !== comp.id)
         )
           fail("invalid", L("Laget hører ikke til scenen", "The layer does not belong to the scene"));
+        if (["CreateAssetVariant", "AddAssetVersion", "UndoCreateAssetVariant", "UndoAddAssetVersion"].includes(step.type)) {
+          const allowedAssets = new Set(Object.values(cur.layers).filter(l => !l.removed && l.compositionId === comp.id).map(l => l.assetId));
+          const assetId = step.type === "CreateAssetVariant" ? step.assetId : step.type === "AddAssetVersion" || step.type === "UndoCreateAssetVariant" ? cur.assetVariants[step.variantId]?.assetId : step.type === "UndoAddAssetVersion" ? cur.assetVariants[cur.assetVersions[step.versionId]?.variantId ?? ""]?.assetId : undefined;
+          if (!assetId || !allowedAssets.has(assetId)) fail("invalid", L("Rigg-delen tilhører ikke scenen", "The rig part does not belong to the scene"));
+        }
         if (step.type === "AttachAnimationUse" && (step.occurrenceId !== c.occurrenceId || cur.layers[step.layerId]?.compositionId !== comp.id)) fail("invalid", L("Feil scene for animasjonsbruken", "Wrong scene for the animation use"));
         if (step.type === "SetAnimationLayerEnabled" && cur.animationUses[step.useId]?.occurrenceId !== c.occurrenceId) fail("invalid", L("Feil scene for animasjonsbruken", "Wrong scene for the animation use"));
         const r = run(cur, { ...env, command: materializeDraftStep(cur, step) });

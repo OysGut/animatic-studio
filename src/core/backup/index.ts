@@ -200,6 +200,8 @@ export function makeBackup(input: BackupInput): BackupData {
   const tables: Record<string, readonly Row[]> = {};
   for (const t of BACKUP_STATE_TABLES)
     tables[t] = (rows as unknown as Record<string, Row[]>)[t] ?? [];
+  // The approval receipt belongs to the upload workflow, not to restored project data.
+  tables["animation_rig_versions"] = (tables["animation_rig_versions"] ?? []).map(withoutRigImportReceipts);
   tables["script_versions"] = input.scriptVersions;
   tables["imported_documents"] = input.importedDocuments;
   return {
@@ -341,6 +343,15 @@ export async function backupIdMap(
 }
 
 /** Bytter alle kjente ID-er (også inne i tekst, som filstier og øyeblikksbilder). */
+function withoutRigImportReceipts(row: Row): Row {
+  const spec = row["spec"] as { parts?: Record<string, Record<string, unknown>> } | undefined;
+  if (!spec?.parts) return row;
+  return { ...row, spec: { ...spec, parts: Object.fromEntries(Object.entries(spec.parts).map(([slot, p]) => {
+    const { mobileImportId: _receipt, ...part } = p;
+    return [slot, part];
+  })) } };
+}
+
 export function remapValue<T>(v: T, map: ReadonlyMap<string, string>): T {
   if (typeof v === "string") return v.replace(UUID_G, (m) => map.get(m) ?? m) as T;
   if (Array.isArray(v)) return v.map((x) => remapValue(x, map)) as T;
@@ -446,6 +457,12 @@ export function assertSelfContained(b: BackupData, map: ReadonlyMap<string, stri
             "The backup refers to something that is not in it (style_profiles.guide) and cannot be used.",
           ),
         );
+  }
+  for (const row of b.tables["animation_rig_versions"] ?? []) {
+    const spec = row["spec"] as { parts?: Record<string, { versionId?: unknown }> } | undefined;
+    for (const part of Object.values(spec?.parts ?? {}))
+      if (part.versionId != null && (typeof part.versionId !== "string" || !map.has(part.versionId)))
+        throw new Error(L("Sikkerhetskopien mangler bildet til en rigg-del.", "The backup is missing a rig part image."));
   }
   assertStoryLabRefs(b, map);
 }
@@ -587,7 +604,7 @@ export function restoredState(
     template_instances: t("template_instances"),
     credit_participants: t("credit_participants"),
     credit_sequences: t("credit_sequences"),
-    animation_rigs: t("animation_rigs"), animation_rig_versions: t("animation_rig_versions"), animation_uses: t("animation_uses"),
+    animation_rigs: t("animation_rigs"), animation_rig_versions: t("animation_rig_versions").map(withoutRigImportReceipts), animation_uses: t("animation_uses"),
   };
   let state: ProjectState;
   try {

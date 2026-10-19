@@ -31,6 +31,11 @@ export function applyRigCommand(s: ProjectState, c: RigCommand) {
     const previous = rig.currentVersionId ? versions[rig.currentVersionId] : undefined;
     const spec: RigSpec = c.type === "SetRigAnchors" ? { ...(previous?.spec ?? { format: 1 }), anchors: c.anchors } : c.spec;
     const error = rigSpecError(spec); if (error) invalid(error);
+    for (const part of Object.values(spec.parts ?? {})) {
+      if (!part.versionId) continue;
+      const image = s.assetVersions[part.versionId];
+      if (!image || image.removed || !image.mimeType.startsWith("image/") || s.assetVariants[image.variantId]?.assetId !== s.assetVariants[rig.variantId]?.assetId) invalid(L("Rigg-delen tilhører ikke ressursen", "The rig part does not belong to the asset"));
+    }
     oldRigs[rig.id] = rig; oldVersions[c.versionId] = null;
     versions[c.versionId] = { id: c.versionId, revision: 1, rigId: rig.id, sourceVersionId: c.sourceVersionId, number: Math.max(0, ...Object.values(versions).filter(v => v.rigId === rig.id).map(v => v.number)) + 1, spec: structuredClone(spec), algorithmVersion: 1, removed: false };
     rigs[rig.id] = { ...rig, currentVersionId: c.versionId, revision: rig.revision + 1 };

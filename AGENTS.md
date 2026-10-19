@@ -42,3 +42,5 @@ Kortversjonen:
 22. Character Animation is a view of existing composition layers, image segments and selected audio clips; reuse segment helpers and the scene playback clock so edits use the same command stack and preview/export remain consistent.
 
 23. Rigs are immutable variant versions; scene uses pin a version. Face marking uses one UpdateSceneDraft; anchors preserve frames and disabling preserves setup.
+
+24. CA4 rig-part imports are staged as image versions in a rig-only UpdateSceneDraft; approval receipts are committed by database triggers and omitted from backups, so ordinary Asset Studio import rules and portable restoration remain unchanged.

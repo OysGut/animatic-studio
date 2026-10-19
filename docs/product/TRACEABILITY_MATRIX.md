@@ -21,9 +21,9 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | INV-10 | Produksjonsteknisk segmentering endrer ikke manusscenenes identiteter. | 11 | 11 |
 | INV-11 | Generativ AI er valgfritt for ordinær 2D-animatic-avspilling og eksport. | 13 | 13 |
 | INV-12 | Betalte API-kall følger eksplisitte kostnadsgodkjenninger. | 20 | 17 |
-| INV-13 | Delte ressurser er versjonerte og ikke-destruktive. | 25 | 20 |
+| INV-13 | Delte ressurser er versjonerte og ikke-destruktive. | 30 | 25 |
 | INV-14 | Deaktivering/skjuling er aldri sletting; materiale kan gjenaktiveres. | 17 | 17 |
-| INV-C1 | Ingen stille overskriving ved samarbeid (revisjonskontroll) – DEC-0003/DEC-0010. | 2 | 2 |
+| INV-C1 | Ingen stille overskriving ved samarbeid (revisjonskontroll) – DEC-0003/DEC-0010. | 7 | 7 |
 | INV-C2 | Tilgang håndheves i backend (RLS) – teknisk, DEC-0010. | 3 | 3 |
 | INV-C3 | Bare medlemmer med kostnadsrett kan godkjenne betalte kall – midlertidig, DEC-0018/Q-01. | 1 | 1 |
 
@@ -36,7 +36,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | TIMELINE | Timeline & Assembly Engine | 108 | 29 | 108 | 108 |
 | LIBRARY | Resource Library | 96 | 10 | 85 | 81 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 39 | 39 |
-| COMPOSE | 2D Composition Engine | 76 | 14 | 76 | 75 |
+| COMPOSE | 2D Composition Engine | 81 | 14 | 81 | 80 |
 | CAMERA | Camera & Motion Engine | 32 | 2 | 32 | 32 |
 | AUDIO | Audio Engine | 69 | 2 | 69 | 62 |
 | PROMPT | Prompt Orchestration Engine | 58 | 15 | 54 | 50 |
@@ -49,7 +49,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | EXPORT | Export Engine | 60 | 12 | 60 | 60 |
 | SECURITY | Security & Storage | 45 | 5 | 44 | 43 |
 | COLLAB | Collaboration & Access | 21 | 0 | 21 | 21 |
-| UI | Brukergrensesnitt og designsystem | 206 | 21 | 201 | 196 |
+| UI | Brukergrensesnitt og designsystem | 211 | 21 | 206 | 201 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 7 | 5 |
 
 ## Dekning per fase
@@ -58,7 +58,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 |---|---|---|
 | 1 | 72 | 67 |
 | 2 | 97 | 93 |
-| 3 | 70 | 68 |
+| 3 | 75 | 73 |
 | 4 | 85 | 84 |
 | 5 | 152 | 141 |
 | 6 | 49 | 48 |
@@ -784,3 +784,8 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0712 | Beslutning DEC-0090 | AUDIO, LIBRARY | src/engine/audio/mixer.ts, src/app/audio/room-fill.ts, src/adapters/mobile/mobile.functions.ts | 2 | tests/unit/audio-performance.test.ts, tests/unit/mobile-server.test.ts | Verifisert | 2026-10-17 DEC-0096: Bygget i bolk E |
 | REQ-0713 | Beslutning DEC-0091 | UI, SECURITY | src/app/shell/error-report.ts, src/app/shell/ErrorDetails.tsx, src/routes/__root.tsx | 1 | tests/unit/error-report.test.tsx, tests/unit/realtime-channels.test.ts | Verifisert | 2026-10-16 DEC-0091: Feilmeldingen viste krasjet i sceneeditoren (KI-237), rettet |
 | REQ-0714 | Beslutning DEC-0092 | COMPOSE, UI | src/core/composition/index.ts | 1 | tests/unit/layer-fit.test.ts | Verifisert | 2026-10-16 DEC-0092: Bygget (var 60 %) |
+| REQ-0715 | Beslutning B-058 / CA4-oppdrag 2026-10-19 | COMPOSE, UI | src/app/scene-editor/animation/MouthShapeEditor.tsx | 2 | tests/unit/ca4-parts.test.ts, tests/db/run-db-tests.ts, tests/visual/ca4-mouth-mask.mjs | Verifisert | 2026-10-19 B-058 / CA4-oppdrag: Bygget og testet lokalt med mock; migrasjon 0055 er ikke kjørt i Cloud. |
+| REQ-0716 | Beslutning B-058 / CA4-oppdrag 2026-10-19 | COMPOSE, UI | src/engine/export/mouth-sheet.ts | 2 | tests/unit/ca4-parts.test.ts, tests/db/run-db-tests.ts, tests/visual/ca4-mouth-mask.mjs | Verifisert | 2026-10-19 B-058 / CA4-oppdrag: Bygget og testet lokalt med mock; migrasjon 0055 er ikke kjørt i Cloud. |
+| REQ-0717 | Beslutning B-058 / CA4-oppdrag 2026-10-19 | COMPOSE, UI | db/migrations/0055_animation_parts_mobile.sql | 2 | tests/unit/ca4-parts.test.ts, tests/db/run-db-tests.ts, tests/visual/ca4-mouth-mask.mjs | Verifisert | 2026-10-19 B-058 / CA4-oppdrag: Bygget og testet lokalt med mock; migrasjon 0055 er ikke kjørt i Cloud. |
+| REQ-0718 | Beslutning B-058 / CA4-oppdrag 2026-10-19 | COMPOSE, UI | src/core/animation/parts.ts | 2 | tests/unit/ca4-parts.test.ts, tests/db/run-db-tests.ts, tests/visual/ca4-mouth-mask.mjs | Verifisert | 2026-10-19 B-058 / CA4-oppdrag: Bygget og testet lokalt med mock; migrasjon 0055 er ikke kjørt i Cloud. |
+| REQ-0719 | Beslutning B-058 / CA4-oppdrag 2026-10-19 | COMPOSE, UI | src/app/scene-editor/animation/DialogueTrack.tsx | 2 | tests/unit/ca4-parts.test.ts, tests/db/run-db-tests.ts, tests/visual/ca4-mouth-mask.mjs | Verifisert | 2026-10-19 B-058 / CA4-oppdrag: Bygget og testet lokalt med mock; migrasjon 0055 er ikke kjørt i Cloud. |

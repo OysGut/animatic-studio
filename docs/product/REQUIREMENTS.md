@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **714**
-- Prioritet: P0: 145, P1: 381, P2: 149, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 187, teknisk-anbefaling: 7
-- Status: Verifisert: 631, Implementert – ikke verifisert: 21, Under arbeid: 3, Ikke startet: 59
+- Antall krav: **719**
+- Prioritet: P0: 145, P1: 386, P2: 149, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 192, teknisk-anbefaling: 7
+- Status: Verifisert: 636, Implementert – ikke verifisert: 21, Under arbeid: 3, Ikke startet: 59
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -9743,3 +9743,68 @@ Når en ressurs legges inn i en scene, får laget 50 % av lerretets høyde eller
 - **Tester:**
   - tests/unit/layer-fit.test.ts
 - **Implementering:** src/core/composition/index.ts
+
+#### REQ-0715 – Munnformer i uforanderlige rigg-versjoner
+Rhubarb A–H og X tegnes eller importeres, forhåndsvises med replikklyd og plasseres relativt til CA3-ankerpunktet. Andre scener beholder sin festede versjon.
+
+- **Kilde:** Beslutning B-058 / CA4-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, UI · **Invarianter:** INV-13, INV-C1
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Rhubarb A–H og X tegnes eller importeres, forhåndsvises med replikklyd og plasseres relativt til CA3-ankerpunktet. Andre scener beholder sin festede versjon.
+- **Tester:**
+  - tests/unit/ca4-parts.test.ts
+  - tests/visual/ca4-mouth-mask.mjs
+- **Implementering:** src/app/scene-editor/animation/MouthShapeEditor.tsx
+
+#### REQ-0716 – Tegneark per rigg-versjon
+Ett PNG-ark med alle deler, munnformer og øyne kan eksporteres og importeres i et lokalt utkast. Ingenting tas i bruk før Lagre.
+
+- **Kilde:** Beslutning B-058 / CA4-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, UI · **Invarianter:** INV-13, INV-C1
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Ett PNG-ark med alle deler, munnformer og øyne kan eksporteres og importeres i et lokalt utkast. Ingenting tas i bruk før Lagre.
+- **Tester:**
+  - tests/unit/ca4-parts.test.ts
+  - tests/visual/ca4-mouth-mask.mjs
+- **Implementering:** src/engine/export/mouth-sheet.ts
+
+#### REQ-0717 – Godkjent QR-import av rigg-deler
+Mobilbroen mottar kun bilder til rigg-del eller munnform. Mobilen viser referanse, zoom, rotasjon, flytting og Tilpass. Bildet tas i bruk bare etter eksplisitt godkjenning og samlet revisjonskontrollert lagring.
+
+- **Kilde:** Beslutning B-058 / CA4-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, UI · **Invarianter:** INV-13, INV-C1
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Mobilbroen mottar kun bilder til rigg-del eller munnform. Mobilen viser referanse, zoom, rotasjon, flytting og Tilpass. Bildet tas i bruk bare etter eksplisitt godkjenning og samlet revisjonskontrollert lagring.
+- **Tester:**
+  - tests/unit/ca4-parts.test.ts
+  - tests/visual/ca4-mouth-mask.mjs
+- **Implementering:** db/migrations/0055_animation_parts_mobile.sql
+
+#### REQ-0718 – Vektormasker og ikke-destruktive bildejusteringer
+Legg til, trekk fra og myk kant lagres som vektordata. Lysstyrke, kontrast, metning, fargetone og opasitet lagres i rigg-versjonen. Hele oppsettet er begrenset til 512 KiB; originaler endres ikke.
+
+- **Kilde:** Beslutning B-058 / CA4-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, UI · **Invarianter:** INV-13, INV-C1
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Legg til, trekk fra og myk kant lagres som vektordata. Lysstyrke, kontrast, metning, fargetone og opasitet lagres i rigg-versjonen. Hele oppsettet er begrenset til 512 KiB; originaler endres ikke.
+- **Tester:**
+  - tests/unit/ca4-parts.test.ts
+  - tests/visual/ca4-mouth-mask.mjs
+- **Implementering:** src/core/animation/parts.ts
+
+#### REQ-0719 – Toppjustert forhåndsvisning og sammenhengende animasjonsspor
+Forhåndsvisningen toppjusteres. Alle bildespor har miniatyr eller typeikon. Dialog og lyd følger rett under bildesporene i en scrollbar tidslinje.
+
+- **Kilde:** Beslutning B-058 / CA4-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, UI · **Invarianter:** INV-13, INV-C1
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Forhåndsvisningen toppjusteres. Alle bildespor har miniatyr eller typeikon. Dialog og lyd følger rett under bildesporene i en scrollbar tidslinje.
+- **Tester:**
+  - tests/unit/ca4-parts.test.ts
+  - tests/visual/ca4-mouth-mask.mjs
+- **Implementering:** src/app/scene-editor/animation/DialogueTrack.tsx

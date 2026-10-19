@@ -30,7 +30,7 @@ export function AnimPreview({ state, composition, frame, urls }: { state: Projec
     const fit = fitView({ x: 0, y: 0, w: out.width, h: out.height }, c.width, c.height, 1);
     const k = zoom === "fit" ? fit[0] : zoom * dpr;
     ctx.clearRect(0, 0, c.width, c.height);
-    drawFrame(ctx, out, { view: [k, 0, 0, k, c.width / 2 - k * out.width / 2 + pan.x * dpr, c.height / 2 - k * out.height / 2 + pan.y * dpr], images: cache.images, placeholders: true });
+    drawFrame(ctx, out, { view: [k, 0, 0, k, c.width / 2 - k * out.width / 2 + pan.x * dpr, pan.y * dpr], images: cache.images, placeholders: true });
   }, [state, composition.id, frame, size, zoom, pan, tick, cache, fonts]);
   return <section data-testid="anim-preview" className="flex min-h-0 flex-1 flex-col">
     <PanelHeader title={L("Forhåndsvisning", "Preview")} />

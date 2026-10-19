@@ -63,3 +63,14 @@ KI-30 (foreldreløse bilder), KI-31 (notater fra fremmede PDF-er), KI-32 (meldin
 3. Mars: svar på KI-176/KI-178 (anbefalingene står i chatten 15.10) og hvem som skal kunne bruke felles ressurser (REQ-0571).
 4. Claude når Mars sier OK: «Lovable» ut av grensesnittet (REQ-0639), stilharmonisering (REQ-0137–0145), globale ressurser (REQ-0571).
 5. Siste testtilstand (DEC-0086): tsc rent, Vitest 133 filer / 1118 tester, DB 61/61, account-admin-ui 52/52, scene-video-ui 39/39, verifisering3 73/73, verifisering4 58/58, interactions 44/44, export-e2e, språkkontrollen 0 treff, ESLint 0 feil i `src/`. Se også `TODO.md`.
+
+
+## CA4 – 19.10.2026
+- CA1–CA3 er ifølge Øystein publisert og Cloud-skjemaversjon er 54. CA4 skriver 0055_animation_parts_mobile.sql, men kjører den ikke i Cloud.
+- Bygget: toppjustert forhåndsvisning, miniatyr/typeikon på bildespor og dialog/lyd rett under; Rhubarb A–H + X, rigg-deler/øyebilder, PNG-tegneark (960 × 1600), lokale vektormasker og fem bildejusteringer.
+- Munnformeditoren oppretter én SaveRigVersion og AttachAnimationUse i UpdateSceneDraft. Importerte bilder bruker CreateAssetVariant/AddAssetVersion i samme riggspesifikke transaksjon. Det vanlige Asset Studio-utkastet godtar fortsatt ikke bibliotekimport.
+- Mobilen gjenbruker upload_sessions/mobile_imports og opplastingskøen. Rigg-kontekst har purpose/target; mobilen viser referanse og bildejusteringer. Godkjenning er lokal til Lagre, og triggere på rigg-versjonen registrerer kvitteringen atomisk i mobile_imports. Ingen endringer i apply_changes-definisjonen. Privilegier følger revoke → grant select → grant service_role.
+- Backup kontrollerer og remapper delbilder, men fjerner mobileImportId (midlertidig arbeidslogg). Versjoner beskytter sine bildereferanser mot hard sletting.
+- CA5 er ikke med: munnformvalg er lokal forhåndsvisning, ingen automatisk tidsfesting eller Rhubarb/WASM installert. Ingen nye pakker eller betalte AI-kall.
+- Nye tester: tests/unit/ca4-parts.test.ts (11), tests/visual/ca4-mouth-mask.mjs (25), tre nye 0055-DB-tester (hele DB-suiten 110/110). CA1 17/17, CA2 17/17, CA3 20/20. Endelig Vitest-tall i chatten.
+- Neste: Claude kontrollerer SQL/diff, kjører 0055 i Cloud og verifiserer en ekte mobilinnsending før publisering.

@@ -212,6 +212,214 @@ export type Database = {
         }
         Relationships: []
       }
+      animation_rig_versions: {
+        Row: {
+          algorithm_version: number
+          created_at: string
+          created_by: string
+          id: string
+          number: number
+          project_id: string
+          removed: boolean
+          revision: number
+          rig_id: string
+          source_version_id: string
+          spec: Json
+        }
+        Insert: {
+          algorithm_version?: number
+          created_at?: string
+          created_by: string
+          id: string
+          number: number
+          project_id: string
+          removed?: boolean
+          revision?: number
+          rig_id: string
+          source_version_id: string
+          spec: Json
+        }
+        Update: {
+          algorithm_version?: number
+          created_at?: string
+          created_by?: string
+          id?: string
+          number?: number
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          rig_id?: string
+          source_version_id?: string
+          spec?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animation_rig_versions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "animation_rig_versions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animation_rig_versions_rig_id_fkey"
+            columns: ["rig_id"]
+            isOneToOne: false
+            referencedRelation: "animation_rigs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animation_rig_versions_source_version_id_fkey"
+            columns: ["source_version_id"]
+            isOneToOne: false
+            referencedRelation: "asset_versions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      animation_rigs: {
+        Row: {
+          created_at: string
+          created_by: string
+          current_version_id: string | null
+          id: string
+          project_id: string
+          removed: boolean
+          revision: number
+          variant_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          current_version_id?: string | null
+          id: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          variant_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          current_version_id?: string | null
+          id?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          variant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animation_rigs_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "animation_rigs_current_version"
+            columns: ["current_version_id"]
+            isOneToOne: false
+            referencedRelation: "animation_rig_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animation_rigs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animation_rigs_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "asset_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      animation_uses: {
+        Row: {
+          created_at: string
+          created_by: string
+          enabled: boolean
+          id: string
+          layer_id: string
+          occurrence_id: string
+          project_id: string
+          removed: boolean
+          revision: number
+          rig_version_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          enabled?: boolean
+          id: string
+          layer_id: string
+          occurrence_id: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          rig_version_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          enabled?: boolean
+          id?: string
+          layer_id?: string
+          occurrence_id?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          rig_version_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animation_uses_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "animation_uses_layer_id_fkey"
+            columns: ["layer_id"]
+            isOneToOne: false
+            referencedRelation: "composition_layers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animation_uses_occurrence_id_fkey"
+            columns: ["occurrence_id"]
+            isOneToOne: false
+            referencedRelation: "scene_occurrences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animation_uses_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animation_uses_rig_version_id_fkey"
+            columns: ["rig_version_id"]
+            isOneToOne: false
+            referencedRelation: "animation_rig_versions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       app_admins: {
         Row: {
           added_at: string

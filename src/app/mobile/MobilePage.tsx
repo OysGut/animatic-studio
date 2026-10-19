@@ -28,6 +28,7 @@ import {
 import { uploadWithTicket } from "@/adapters/browser/mobile-import";
 import { LanguageSwitch } from "@/app/i18n/language";
 import { UploadQueue, Uploader, type QueueItem } from "./upload-queue";
+import { MouthShapeCapture } from "./MouthShapeCapture";
 import { MobileAudio } from "./MobileAudio";
 
 const NO_ITEMS: QueueItem[] = [];
@@ -207,11 +208,12 @@ export function MobilePage({ token }: { token: string }) {
             />
           </label>
         ) : null}
+        {info.rigCapture ? <MouthShapeCapture referenceUrl={info.rigCapture.referenceUrl} slot={info.rigCapture.slot} onConfirm={file => { queue.add(file, file.name); uploader.pump(); }} /> : null}
         {audioOnly ? (
           <MobileAudio script={info.script} items={items} queue={queue} uploader={uploader} />
         ) : null}
         <div className="grid grid-cols-2 gap-3">
-          {can("image") ? (
+          {can("image") && !info.rigCapture ? (
             <>
               <BigButton
                 icon={<Camera className="size-7" aria-hidden />}
