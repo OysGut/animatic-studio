@@ -14,8 +14,7 @@ import {
   L,
   type AudioClipFields,
   type FilmAudioItem,
-  type ProjectState,
-} from "@/core";
+  type ProjectState, clipDrift } from "@/core";
 import { audioBank } from "@/app/audio/use-audio-playback";
 import { AUDIO_KIND_COLOR, Wave } from "@/app/assembly/AudioTracks";
 import type { TimelineRowGeometry } from "./Timeline";
@@ -118,6 +117,7 @@ export function SceneAudioRows({
                 data-testid="scene-dialogue-segment"
                 data-clip-id={c.id}
                 data-overlap={dialogueOverlaps(state, c.id).length > 0}
+                data-drift={c.kind === "dialogue" && !!c.blockId && clipDrift(state, c).status === "drift"}
                 onClick={() => {
                   if (!drag) onFrame(Math.round(from * g.fps));
                 }}
@@ -167,7 +167,8 @@ export function SceneAudioRows({
                   "pointer-events-auto absolute top-[3px] flex touch-none overflow-hidden rounded-sm border text-left " +
                   (movable ? "cursor-grab active:cursor-grabbing " : "") +
                   (d ? "z-10 shadow-[var(--shadow-float)] " : "") +
-                  (c.muted ? "opacity-50" : "")
+                  (c.muted ? "opacity-50" : "") +
+                  (c.kind === "dialogue" && c.blockId && clipDrift(state, c).status === "drift" ? " outline outline-2 outline-status-danger" : "")
                 }
                 style={{
                   left: from * pps,
