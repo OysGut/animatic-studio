@@ -51,6 +51,6 @@ await h.scenario("ca6-en", occ.id, "en", async page => {
   await page.getByTestId("blink-panel-open").click();
   h.check(await page.getByLabel("Blinking and eyes").last().isVisible(), "engelsk blinkepanel");
   await page.keyboard.press("Escape");
-  h.check(await page.getByLabel("Patterns").isVisible(), "engelsk mønsterstudio");
+  h.check(await page.getByTestId("pattern-studio").isVisible(), "engelsk mønsterstudio");
 });
 await h.finish();
