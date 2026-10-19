@@ -51,7 +51,7 @@ export async function processDialogueBatch(db: AnyClient, batchId: string, userD
         metadata: { source: "ai", provider: "elevenlabs", voiceId: batch.voice.voiceId, modelId: batch.voice.modelId ?? "eleven_v3", settings: { ...batch.voice.settings, language: String(item["language"]) }, scriptRevision: Number(item["script_revision"]), parentVersionId: null } };
       const applied = applyCommand(state, { id: String(item["command_id"]) as never, actor: batch.created_by as never, at: new Date().toISOString(), command });
       if (!applied.ok) {
-        await transition(item["id"], { status: "failed", retryable: false, error: applied.error.message });
+        await transition(item["id"], { status: "skipped", retryable: false, error: applied.error.message });
         processed++; continue;
       }
       // SQL wraps apply_changes plus the completion receipt in a single transaction.

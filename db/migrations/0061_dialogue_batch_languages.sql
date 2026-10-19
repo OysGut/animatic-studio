@@ -580,10 +580,11 @@ create or replace function public.complete_dialogue_batch_item(p_item uuid,p_lea
 returns jsonb language plpgsql security definer set search_path = '' as $$
 declare v_item public.dialogue_batch_items; v_batch public.dialogue_batches; v_result jsonb;
 begin
-  select * into v_item from public.dialogue_batch_items where id=p_item for update;
+  select * into v_item from public.dialogue_batch_items where id=p_item;
   if not found then raise exception 'Missing item'; end if;
-  if v_item.status='done' then return jsonb_build_object('ok',true); end if;
   select * into v_batch from public.dialogue_batches where id=v_item.batch_id for update;
+  select * into v_item from public.dialogue_batch_items where id=p_item for update;
+  if v_item.status='done' then return jsonb_build_object('ok',true); end if;
   if v_batch.status <> 'running' or v_batch.lease_token is distinct from p_lease or v_batch.lease_until <= now() or v_item.status <> 'ready' then raise exception 'Invalid lease' using errcode='42501'; end if;
   if p_command->>'type' <> 'ApplyGeneratedDialogue' or (p_command->>'blockId')::uuid <> v_item.block_id or (p_command->>'occurrenceId')::uuid <> v_item.occurrence_id then raise exception 'Invalid command'; end if;
   if not exists(select 1 from public.change_log where id=v_item.command_id and project_id=v_item.project_id) then
@@ -599,11 +600,12 @@ create or replace function public.transition_dialogue_batch_item(p_item uuid,p_l
 returns void language plpgsql security definer set search_path = '' as $$
 declare v_item public.dialogue_batch_items; v_batch public.dialogue_batches;
 begin
-  select * into v_item from public.dialogue_batch_items where id=p_item for update;
+  select * into v_item from public.dialogue_batch_items where id=p_item;
   if not found then raise exception 'Missing item'; end if;
   select * into v_batch from public.dialogue_batches where id=v_item.batch_id for update;
+  select * into v_item from public.dialogue_batch_items where id=p_item for update;
   if v_batch.status <> 'running' or v_batch.lease_token is distinct from p_lease or v_batch.lease_until <= now() or v_item.status not in ('waiting','generating','ready') then raise exception 'Invalid lease' using errcode='42501'; end if;
-  if p_patch->>'status' not in ('generating','ready','failed') then raise exception 'Invalid transition'; end if;
+  if p_patch->>'status' not in ('generating','ready','failed','skipped') then raise exception 'Invalid transition'; end if;
   update public.dialogue_batch_items set status=p_patch->>'status',attempts=coalesce((p_patch->>'attempts')::integer,attempts),result=coalesce(p_patch->'result',result),error=p_patch->>'error',retryable=coalesce((p_patch->>'retryable')::boolean,retryable) where id=p_item;
   update public.dialogue_batches set lease_until=now()+interval '10 minutes' where id=v_batch.id;
 end $$;
