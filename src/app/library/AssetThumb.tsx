@@ -1,6 +1,6 @@
 /**
  * U5 (punkt 3): miniatyrbilde av ressursen (godkjent bilde, ellers nyeste) i lister. Uten bilde vises
- * ressursens symbol (DEC-0079), og lyd får notesymbol. Lenkene hentes samlet med useAssetCovers.
+ * initial og typeikon for karakter/dyr, og typeikon ellers. Lenkene hentes samlet med useAssetCovers.
  */
 import { useMemo } from "react";
 import { Music, UserRound, PawPrint, Package, Mountain } from "lucide-react";
@@ -63,7 +63,7 @@ export function AssetThumb({
       ) : (
         <span data-testid="asset-thumb-fallback" data-asset-kind={asset?.kind ?? "prop"} aria-hidden className="flex size-full items-center justify-center text-text-secondary">
           {character ? <span data-testid="asset-thumb-initial" className={cn("font-semibold leading-none", size === "lg" ? "text-4xl" : size === "sm" ? "text-sm" : "text-xl")}>{asset.name.trim().slice(0, 1).toLocaleUpperCase()}</span> : null}
-          <Fallback className={character ? cn("absolute bottom-0 right-0 bg-surface-3", size === "lg" ? "m-1 size-5" : "size-3") : size === "lg" ? "size-1/2" : "size-4"} />
+          <Fallback className={character ? cn("absolute bottom-0 right-0", size === "lg" ? "m-1 size-5" : "size-2") : size === "lg" ? "size-1/2" : "size-4"} />
         </span>
       )}
     </span>

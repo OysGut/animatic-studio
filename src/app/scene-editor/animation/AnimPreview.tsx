@@ -1,6 +1,7 @@
 /** Camera preview shares rendering and fonts with the scene/export engines. View transforms are local. */
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { L, renderFrame, type Composition, type ProjectState } from "@/core";
+import { L, layersOf, renderFrame, type Composition, type ProjectState } from "@/core";
+import { AssetThumb } from "@/app/library/AssetThumb";
 import { ImageCache, drawFrame } from "@/engine/compositor/canvas";
 import { textSpecsOf, useTextFonts } from "@/engine/typography/fonts";
 import { fitView } from "@/app/asset-studio/StudioPreview";
@@ -34,7 +35,7 @@ export function AnimPreview({ state, composition, frame, urls }: { state: Projec
   }, [state, composition.id, frame, size, zoom, pan, tick, cache, fonts]);
   // U5: forhåndsvisningen har scenens bildeformat; resten av panelet er vanlig panelflate (ingen stor svart flate)
   const aspect = `${Math.max(1, composition.width)} / ${Math.max(1, composition.height)}`;
-  return <section data-testid="anim-preview" className="flex min-h-0 w-full flex-col bg-surface-1">
+  return <section data-testid="anim-preview" className="flex min-h-0 w-full flex-1 flex-col bg-surface-1">
     <PanelHeader title={L("Forhåndsvisning", "Preview")} />
     <Toolbar><ToolbarGroup>
       <select data-testid="anim-preview-zoom" aria-label={L("Zoom i forhåndsvisningen", "Preview zoom")} value={zoom} onChange={e => { setZoom(e.target.value === "fit" ? "fit" : Number(e.target.value)); setPan({ x: 0, y: 0 }); }} className="h-7 rounded-sm border border-border-control bg-surface-3 text-xs text-text-primary">
@@ -45,12 +46,21 @@ export function AnimPreview({ state, composition, frame, urls }: { state: Projec
     </ToolbarGroup></Toolbar>
     <div ref={wrap} data-testid="anim-preview-pan" data-pan-x={pan.x} data-pan-y={pan.y} tabIndex={0} role="img" aria-label={L("Forhåndsvisning av scenen", "Scene preview")}
       style={{ aspectRatio: aspect }}
-      className="relative max-h-full min-h-0 w-full shrink touch-none overflow-hidden border-b border-border bg-media focus-visible:ring-2 focus-visible:ring-focus-ring"
+      className="relative min-h-0 w-full shrink-0 touch-none overflow-hidden border-b border-border bg-media focus-visible:ring-2 focus-visible:ring-focus-ring"
       onPointerDown={e => { e.currentTarget.setPointerCapture(e.pointerId); drag.current = { x: e.clientX, y: e.clientY, pan }; }}
       onPointerMove={e => { const d = drag.current; if (d) setPan({ x: d.pan.x + e.clientX - d.x, y: d.pan.y + e.clientY - d.y }); }}
       onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }}
       onKeyDown={e => { if (!e.shiftKey || !e.key.startsWith("Arrow")) return; e.preventDefault(); e.stopPropagation(); setPan(p => ({ x: p.x + (e.key === "ArrowRight" ? 10 : e.key === "ArrowLeft" ? -10 : 0), y: p.y + (e.key === "ArrowDown" ? 10 : e.key === "ArrowUp" ? -10 : 0) })); }}>
       <canvas ref={canvas} data-testid="anim-preview-canvas" data-frame={frame} className="absolute inset-0 block h-full w-full" />
+    </div>
+    <div data-testid="anim-preview-layers" className="min-h-0 flex-1 overflow-y-auto bg-surface-1">
+      <PanelHeader title={L("Lag", "Layers")} />
+      <ul className="divide-y divide-border">
+        {layersOf(state, composition.id).map(layer => <li key={layer.id} className="flex items-center gap-2 px-2 py-1 text-xs text-text-secondary">
+          {layer.assetId ? <AssetThumb state={state} assetId={layer.assetId} size="sm" /> : <span className="size-6 shrink-0" aria-hidden />}
+          <span className="truncate">{layer.name}</span>
+        </li>)}
+      </ul>
     </div>
   </section>;
 }

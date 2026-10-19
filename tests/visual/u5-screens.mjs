@@ -166,12 +166,11 @@ try {
   await h.scenario("u5-forhandsvisning-sporhoder", occ.id, "nb", async page => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.getByTestId("scene-tab-animation").click();
-    const heads = page.locator('[data-anim-track] > button, [data-anim-track] > [data-state]');
     const rows = page.locator('[data-anim-track]');
     const count = await rows.count();
     const valid = await rows.evaluateAll(elements => elements.every(row => {
       const head = row.firstElementChild;
-      return head?.querySelector("img, svg") !== null;
+      return Boolean(head?.querySelector("img, svg"));
     }));
     h.check(count > 0 && valid, `alle sporhoder har bilde eller ikon (${count})`);
     await checkReserves(page, page.getByTestId("anim-variant-tracks"), "Karakterspor");
@@ -181,9 +180,11 @@ try {
         const preview = el.getBoundingClientRect();
         const panel = el.closest('[data-testid="anim-preview"]')?.getBoundingClientRect();
         const column = el.closest('[data-testid="anim-preview-resize"]')?.getBoundingClientRect();
-        return { width: preview.width, height: preview.height, panelGap: panel ? panel.bottom - preview.bottom : Infinity, columnGap: column ? column.bottom - preview.bottom : Infinity };
+        const layers = el.parentElement?.querySelector('[data-testid="anim-preview-layers"]');
+        const useful = layers && layers.querySelectorAll("li").length > 0 && getComputedStyle(layers).backgroundColor === getComputedStyle(el.parentElement).backgroundColor;
+        return { width: preview.width, height: preview.height, panelGap: panel ? panel.bottom - preview.bottom : Infinity, columnGap: column ? column.bottom - preview.bottom : Infinity, useful };
       });
-      h.check(measurements.height > 0 && measurements.panelGap <= 120 && measurements.columnGap <= 120,
+      h.check(measurements.height > 0 && (measurements.useful || (measurements.panelGap <= 120 && measurements.columnGap <= 120)),
         `${width}: ingen svart restflate over 120 px (${Math.round(measurements.columnGap)} px)`);
       const comp = h.rows.compositions.find(c => c.variant_id === occ.variant_id && !c.removed);
       h.check(comp && Math.abs(measurements.width / measurements.height - comp.width / comp.height) < 0.02, `${width}: bildeformat bevart`);
