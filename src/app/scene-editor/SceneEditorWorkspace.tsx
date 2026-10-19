@@ -119,10 +119,16 @@ export function SceneEditorWorkspace({
   projectId,
   userId,
   initialOccurrenceId,
+  initialLineId = null,
+  initialFrame = null,
 }: {
   projectId: string;
   userId: string;
   initialOccurrenceId: string | null;
+  /** DV7: lenke ut fra et avvik – sett avspillingshodet på replikkstart (uten å starte avspilling). */
+  initialLineId?: string | null;
+  /** DV8: bokmerke – bildet avspillingshodet stod på. */
+  initialFrame?: number | null;
 }) {
   const query = useProjectState(projectId);
   const members = useMembers(projectId);
@@ -154,6 +160,8 @@ export function SceneEditorWorkspace({
       roleKnown={members.isSuccess}
       cmds={cmds}
       initialOccurrenceId={initialOccurrenceId}
+      initialLineId={initialLineId}
+      initialFrame={initialFrame}
       userId={userId}
     />
   );
@@ -166,8 +174,12 @@ function Editor({
   roleKnown,
   cmds,
   initialOccurrenceId,
+  initialLineId = null,
+  initialFrame = null,
   userId,
 }: {
+  initialLineId?: string | null;
+  initialFrame?: number | null;
   userId: string;
   state: ProjectState;
   editable: boolean;
@@ -585,6 +597,19 @@ function Editor({
 
   const side = panelsUi.mode === "side";
   const filmClip = occurrence ? (film.find((c) => c.occurrenceId === occurrence.id) ?? null) : null;
+  // DV7/DV8: hopp til replikken eller bokmerket én gang etter åpning. Avspilling startes aldri automatisk.
+  const [entrySeek, setEntrySeek] = useState<string | null>(null);
+  const entryDone = useRef(false);
+  useEffect(() => {
+    if (entryDone.current || !occurrence || occurrence.id !== initialOccurrenceId) return;
+    entryDone.current = true;
+    if (initialLineId) {
+      const t = scriptSeekTarget(state, filmClip, initialLineId);
+      if (t.compFrame !== null) { playback.pause(); playback.setFrame(t.compFrame); setEntrySeek(null); }
+      else setEntrySeek(L("Replikken har ingen plassering i scenen ennå (ingen lyd, tidskobling eller plass i filmen). Avspillingshodet er ikke flyttet.", "The line has no position in the scene yet (no audio, time link or place in the film). The playhead was not moved."));
+    } else if (initialFrame !== null && initialFrame >= 0) { playback.pause(); playback.setFrame(initialFrame); }
+  }, [occurrence, initialOccurrenceId, initialLineId, initialFrame, filmClip, state, playback]);
+  useEffect(() => { publishSceneBookmark({ projectId, occurrenceId: occurrence?.id ?? null, frame: playback.frame, tab: sceneTab }); }, [projectId, occurrence?.id, playback.frame, sceneTab]);
   /** Innholdet i hvert panel (null = vises ikke nå). Plasseringen bestemmes av brukerens valg over. */
   const panelContent: Record<PanelId, ReactNode | null> = {
     // Manuset for scenen (DEC-0089); redigeres i eget vindu
@@ -599,6 +624,7 @@ function Editor({
         onOpenEditor={(blockId) => setScriptEdit({ blockId })}
         run={cmds.run}
         authorName={myName}
+        projectId={projectId}
         onSeek={(f) => {
           playback.pause();
           playback.setFrame(f);
