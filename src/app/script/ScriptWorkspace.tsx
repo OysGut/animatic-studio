@@ -1088,7 +1088,7 @@ function Workspace({
             }}
             className={
               "relative min-h-0 overflow-auto outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus-ring " +
-              (showOnlySelected && lightReading ? "bg-white" : "bg-bg-app")
+              (showOnlySelected && lightReading ? "bg-paper" : "bg-bg-app")
             }
           >
             {onlySelected && !selection.occurrenceId ? (

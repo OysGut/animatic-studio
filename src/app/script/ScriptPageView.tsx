@@ -438,7 +438,7 @@ function FlowSheet({
       <section
         aria-label={L("Valgt scene (lesevisning)", "Selected scene (reading view)")}
         data-flow
-        className={"relative mx-auto font-script " + (light ? "text-black" : "text-text-primary")}
+        className={"relative mx-auto font-script " + (light ? "text-on-paper" : "text-text-primary")}
         style={{
           width: "51em",
           height: `${FLOW_TOP_EM + flow.rows + 2}em`,
