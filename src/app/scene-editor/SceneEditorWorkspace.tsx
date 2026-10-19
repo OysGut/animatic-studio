@@ -109,6 +109,8 @@ import { isTypingTarget } from "./Timeline";
 import { AnimationWorkspace } from "./animation/AnimationWorkspace";
 import { VariantTracks } from "./animation/VariantTracks";
 import { DialogueTrack } from "./animation/DialogueTrack";
+import { MouthTrack } from "./animation/MouthTrack";
+import { PatternStudio } from "./animation/PatternStudio";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function SceneEditorWorkspace({
@@ -985,6 +987,9 @@ function Editor({
               frame={playback.frame} editable={editable} run={cmds.run} onSeek={playback.setFrame} onStudio={openAssetStudio} />
             <DialogueTrack state={state} occurrenceId={occurrence.id} language={filmLang.dialogue}
               view={animView} onOpen={setProfileId} />
+            <MouthTrack state={state} occurrenceId={occurrence.id} language={filmLang.dialogue}
+              view={animView} frame={playback.frame} editable={editable} run={cmds.run} urls={urls.data ?? {}} />
+            <PatternStudio state={state} duration={duration} editable={editable} run={cmds.run} />
           </>} />
       ) : (
       <div className="flex min-h-0 flex-1">

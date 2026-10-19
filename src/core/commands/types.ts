@@ -238,6 +238,7 @@ export interface BlockPlacement {
 }
 
 export type Command = import("../animation/rig-commands").RigCommand
+  | import("../animation/behavior-commands").BehaviorCommand
   | {
       readonly type: "CreateProduction";
       readonly productionId: ProductionId;

@@ -90,3 +90,10 @@
 - [x] CA3: riggmodell, ansiktsmarkering og migrasjoner 0053/0054 skrevet; unit- og mocktester grønne.
 - [x] CA3 DB-verifisering og Cloud-aktivering bekreftet av Øystein.
 - [ ] CA5–CA8 — venter på egne oppdrag.
+
+## CA5 + CA6 (2026-10-19)
+- [ ] CA5: leppesynk (Rhubarb WASM / regelbasert reserve), lipsync_results, av/på per replikk, forslag med Bruk/Forkast, munnformsspor, overstyringer, evaluateCharacterFrame
+- [ ] CA6: blinking med seed, overlegg/løkker, kurveeditor, navngitte mønstre, deterministisk seed per bruk
+- [ ] Migrasjon 0056 (lipsync_results m.m.), DB-tester
+- [ ] Visuelle suiter ca5-lipsync.mjs + ca6-blink-patterns.mjs, regresjon ca1–ca4
+- [ ] Docs: requirements, KNOWN_ISSUES, SESSION_HANDOVER

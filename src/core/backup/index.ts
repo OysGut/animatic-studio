@@ -72,6 +72,7 @@ export const BACKUP_STATE_TABLES = [
   "credit_participants",
   "credit_sequences",
   "animation_rigs", "animation_rig_versions", "animation_uses",
+  "lipsync_results", "animation_patterns",
 ] as const;
 export type BackupStateTable = (typeof BACKUP_STATE_TABLES)[number];
 
@@ -605,6 +606,7 @@ export function restoredState(
     credit_participants: t("credit_participants"),
     credit_sequences: t("credit_sequences"),
     animation_rigs: t("animation_rigs"), animation_rig_versions: t("animation_rig_versions").map(withoutRigImportReceipts), animation_uses: t("animation_uses"),
+    lipsync_results: t("lipsync_results"), animation_patterns: t("animation_patterns"),
   };
   let state: ProjectState;
   try {

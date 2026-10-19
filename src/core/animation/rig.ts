@@ -10,7 +10,21 @@ export type RigAnchors = Readonly<Partial<Record<FaceAnchor, RelativePoint>>>;
 export interface RigSpec { readonly format: 1; readonly anchors: RigAnchors; readonly parts?: Readonly<Record<string, RigPart>> }
 export interface AnimationRig { readonly id: string; readonly revision: number; readonly variantId: string; readonly currentVersionId: string | null; readonly removed: boolean }
 export interface AnimationRigVersion { readonly id: string; readonly revision: number; readonly rigId: string; readonly number: number; readonly sourceVersionId: string; readonly spec: RigSpec; readonly algorithmVersion: 1; readonly removed: boolean }
-export interface AnimationUse { readonly id: string; readonly revision: number; readonly layerId: string; readonly occurrenceId: string; readonly rigVersionId: string; readonly enabled: boolean; readonly removed: boolean }
+/** CA6 (§35–§44, §67): per-scene-innstillinger for en animasjonsbruk. Mangler = standardatferd. */
+export interface UseBehavior {
+  /** Automatisk blinking av/på (§35). Mangler = på. */
+  readonly blinkEnabled?: boolean;
+  /** Mønster per øye (§36); null = ikke noe mønster. Mangler = riggens standard. */
+  readonly leftEyePatternId?: string | null;
+  readonly rightEyePatternId?: string | null;
+  /** Lokalt seed for denne forekomsten (§67); påvirker ikke andre scener. */
+  readonly seed?: number;
+  /** Manuelle blink/halvlukkede perioder (frames), redigerbare (§35, §37). */
+  readonly manualBlinks?: readonly { readonly eye: "left" | "right" | "both"; readonly frame: number; readonly endFrame: number; readonly intensity: number }[];
+  /** Aktive overleggsmønstre på laget (§39–§44). */
+  readonly overlayPatternIds?: readonly string[];
+}
+export interface AnimationUse { readonly id: string; readonly revision: number; readonly layerId: string; readonly occurrenceId: string; readonly rigVersionId: string; readonly enabled: boolean; readonly behavior?: UseBehavior; readonly removed: boolean }
 export function rigSpecError(spec: RigSpec): string | null {
   if (!spec || spec.format !== 1 || !spec.anchors || typeof spec.anchors !== "object" || Array.isArray(spec.anchors)) return L("Ugyldig animasjonsoppsett", "Invalid animation setup");
   if (new TextEncoder().encode(JSON.stringify(spec)).length > RIG_MAX_BYTES) return L("Oppsettet er større enn 512 kB", "The setup exceeds 512 kB");

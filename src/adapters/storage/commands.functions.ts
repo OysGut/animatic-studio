@@ -632,6 +632,10 @@ export const runCommand = createServerFn({ method: "POST" })
       if (schema.kind === "missing" || schema.version < 54) return { ok: false, code: "schema", message: L("Databasen mangler animasjonsoppsett. Kjør migrasjon 0053 og 0054 først.", "The database is missing animation setups. Run migrations 0053 and 0054 first.") };
       if (schema.version < 55 && animationSteps.some(step => step.type === "SaveRigVersion" && Object.keys(step.spec.parts ?? {}).length > 0)) return { ok: false, code: "schema", message: L("Databasen mangler rigg-deler. Kjør migrasjon 0055 først.", "The database is missing rig parts. Run migration 0055 first.") };
     }
+    if (animationSteps.some(step => ["SaveLipsyncResult", "SetLipsyncEnabled", "SetLipsyncOverrides", "SaveAnimationPattern", "RemoveAnimationPattern", "UndoBehaviorChange"].includes(step.type))) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 56) return { ok: false, code: "schema", message: L("Databasen mangler leppesynk og mønstre. Kjør migrasjon 0056 først.", "The database is missing lip sync and patterns. Run migration 0056 first.") };
+    }
     // Stempelet på nye notater settes av serveren (navnet i profilen og tidspunktet nå), så ingen kan
     // skrive notater i andres navn. Bare notater fra en importert fil beholder filens navn og tid (DEC-0031).
     if (data.command.type === "AddAnnotations" && !data.command.imported) {
