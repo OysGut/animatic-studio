@@ -90,6 +90,8 @@ const MAX_COMMAND_CHARS = 6_000_000;
  * vilkårlig innhold.
  */
 const INVERSE_ONLY = new Set<string>([
+  "UndoReviewDialogueDrift",
+  "UndoAddNoteFlag",
   "UndoGeneratedDialogue",
   "RestoreDialogueCharacters",
   "UndoAnimationChange",
@@ -641,6 +643,11 @@ export const runCommand = createServerFn({ method: "POST" })
     if (animationSteps.some(step => ["SaveLipsyncResult", "SetLipsyncEnabled", "SetLipsyncOverrides", "SaveAnimationPattern", "RemoveAnimationPattern", "UndoBehaviorChange"].includes(step.type))) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 56) return { ok: false, code: "schema", message: L("Databasen mangler leppesynk og mønstre. Kjør migrasjon 0056 først.", "The database is missing lip sync and patterns. Run migration 0056 first.") };
+    }
+    // DV7/DV8: avviksgjennomganger og huskelapper krever migrasjon 0062
+    if (["ReviewDialogueDrift", "UndoReviewDialogueDrift", "AddNoteFlag", "UndoAddNoteFlag", "UpdateNoteFlag", "SetNoteFlagRemoved"].includes(data.command.type)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 62) return { ok: false, code: "schema", message: L("Databasen mangler avviksgjennomgang og huskelapper. Kjør migrasjon 0062 først.", "The database is missing drift reviews and note flags. Run migration 0062 first.") };
     }
     // Stempelet på nye notater settes av serveren (navnet i profilen og tidspunktet nå), så ingen kan
     // skrive notater i andres navn. Bare notater fra en importert fil beholder filens navn og tid (DEC-0031).
