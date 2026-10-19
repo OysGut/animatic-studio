@@ -74,7 +74,7 @@ import { initials, usePresence, type PresentUser } from "@/app/project/use-prese
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { useVersionList, useVersionSnapshot } from "@/app/project/use-versions";
 import { Button } from "@/components/ui/button";
-import { Toolbar, ToolbarButton, ToolbarSeparator, IconButton } from "@/app/shell/workspace-chrome";
+import { Toolbar, ToolbarButton, ToolbarSeparator, ToolbarGroup, IconButton } from "@/app/shell/workspace-chrome";
 import { Switch } from "@/components/ui/switch";
 import { ExportDialog } from "./ExportDialog";
 import { ImportDialog } from "./ImportDialog";

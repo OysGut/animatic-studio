@@ -56,7 +56,7 @@ import { MobileCameraButton } from "@/app/mobile/MobileImportDialog";
 import { MobileImportLibrary } from "@/app/mobile/MobileImportLibrary";
 import { attachMobileDraft } from "@/adapters/browser/mobile-import";
 import { Button } from "@/components/ui/button";
-import { Toolbar, ToolbarButton, ToolbarSeparator, IconButton } from "@/app/shell/workspace-chrome";
+import { Toolbar, ToolbarButton, ToolbarSeparator, ToolbarGroup, IconButton } from "@/app/shell/workspace-chrome";
 import { Input } from "@/components/ui/input";
 import { AssetDetail } from "./AssetDetail";
 import { GlobalLibraryDialog } from "@/app/global/GlobalLibraryDialog";
