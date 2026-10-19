@@ -89,6 +89,17 @@ await h.scenario("u5-skjermer", occ.id, "nb", async (page) => {
 
 const characters = h.rows.assets.filter((a) => !a.removed && (a.kind === "character" || a.kind === "animal"));
 const withImage = characters.filter((a) => h.rows.asset_variants.some((v) => v.asset_id === a.id && h.rows.asset_versions.some((x) => x.variant_id === v.id && x.mime_type?.startsWith("image/"))));
+async function checkReserves(page, root, label) {
+  const reserves = root.getByTestId("asset-thumb-fallback");
+  const n = await reserves.count();
+  const valid = await reserves.evaluateAll(elements => elements.every(el => {
+    const r = el.getBoundingClientRect();
+    const initial = el.querySelector('[data-testid="asset-thumb-initial"]');
+    const character = ["character", "animal"].includes(el.dataset.assetKind);
+    return r.width > 0 && r.height > 0 && el.querySelector("svg") && (!character || initial?.textContent.trim());
+  }));
+  h.check(n > 0 && valid, `${label}: synlig reserve med initial og typeikon (${n})`);
+}
 await h.scenario("u5-storylab-miniatyrer", occ.id, "nb", async (page) => {
   await page.goto(`${h.base}${h.P}/storylab`, { waitUntil: "networkidle" });
   await page.waitForTimeout(1500);
@@ -134,5 +145,53 @@ await h.scenario("u5-engelsk", occ.id, "en", async (page) => {
   const label = await page.getByTestId("storylab-view-toggle").getAttribute("aria-label");
   h.check(/grid|list/i.test(label ?? ""), `engelsk tekst på bryteren (${label})`);
 });
+
+// Fjern bare karakterbildene fra den mockede visningen for å bevise reserven,
+// uavhengig av hvilke bilder den vanlige fixturen inneholder.
+const originalVersions = h.rows.asset_versions;
+const characterVariantIds = new Set(h.rows.asset_variants.filter(v => characters.some(a => a.id === v.asset_id)).map(v => v.id));
+h.rows.asset_versions = originalVersions.filter(v => !characterVariantIds.has(v.variant_id));
+try {
+  await h.scenario("u5-reserver", occ.id, "nb", async page => {
+    await page.goto(`${h.base}${h.P}/storylab`, { waitUntil: "networkidle" });
+    await checkReserves(page, page.getByTestId("storylab-characters"), "Story Lab liste");
+    await page.getByTestId("storylab-view-toggle").click();
+    await checkReserves(page, page.getByTestId("storylab-characters"), "Story Lab rutenett");
+    await page.screenshot({ path: `${h.out}/storylab-reserver.png` });
+    await page.goto(`${h.base}${h.P}/bibliotek`, { waitUntil: "networkidle" });
+    await checkReserves(page, page.locator('ul[data-view]').first(), "Bibliotek liste");
+    await page.getByTestId("library-view-toggle").click();
+    await checkReserves(page, page.locator('ul[data-view]').first(), "Bibliotek rutenett");
+  });
+  await h.scenario("u5-forhandsvisning-sporhoder", occ.id, "nb", async page => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.getByTestId("scene-tab-animation").click();
+    const heads = page.locator('[data-anim-track] > button, [data-anim-track] > [data-state]');
+    const rows = page.locator('[data-anim-track]');
+    const count = await rows.count();
+    const valid = await rows.evaluateAll(elements => elements.every(row => {
+      const head = row.firstElementChild;
+      return head?.querySelector("img, svg") !== null;
+    }));
+    h.check(count > 0 && valid, `alle sporhoder har bilde eller ikon (${count})`);
+    await checkReserves(page, page.getByTestId("anim-variant-tracks"), "Karakterspor");
+    for (const width of [1280, 1600]) {
+      await page.setViewportSize({ width, height: width === 1280 ? 900 : 1000 });
+      const measurements = await page.getByTestId("anim-preview-pan").evaluate(el => {
+        const preview = el.getBoundingClientRect();
+        const panel = el.closest('[data-testid="anim-preview"]')?.getBoundingClientRect();
+        const column = el.closest('[data-testid="anim-preview-resize"]')?.getBoundingClientRect();
+        return { width: preview.width, height: preview.height, panelGap: panel ? panel.bottom - preview.bottom : Infinity, columnGap: column ? column.bottom - preview.bottom : Infinity };
+      });
+      h.check(measurements.height > 0 && measurements.panelGap <= 120 && measurements.columnGap <= 120,
+        `${width}: ingen svart restflate over 120 px (${Math.round(measurements.columnGap)} px)`);
+      const comp = h.rows.compositions.find(c => c.variant_id === occ.variant_id && !c.removed);
+      h.check(comp && Math.abs(measurements.width / measurements.height - comp.width / comp.height) < 0.02, `${width}: bildeformat bevart`);
+      await page.screenshot({ path: `${h.out}/animasjon-polish-${width}.png` });
+    }
+  });
+} finally {
+  h.rows.asset_versions = originalVersions;
+}
 
 await h.finish();
