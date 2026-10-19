@@ -27,6 +27,14 @@ const KEY_ID = "00000000-0000-7000-8000-00000000c001";
 const OWNER = "00000000-0000-7000-8000-00000000u001".replace("u", "b");
 
 describe("bakgrunnskøen følger opp videojobber uten åpen fane", () => {
+  it("ordinary timeout cleanup never marks leased dialogue batch jobs lost", async () => {
+    const old = new Date(Date.now()-3600_000).toISOString();
+    const batch = { id: "batch", kind: "sound", status: "running", created_at: old, params: { kind: "dialogue_batch" } };
+    const ordinary = { id: "ordinary", kind: "sound", status: "running", created_at: old, params: {} };
+    const db = fakeDb({ generation_jobs: [batch,ordinary] });
+    expect(await markStoppedSyncJobs(db as unknown as AnyClient)).toBe(1);
+    expect(batch.status).toBe("running");expect(ordinary.status).toBe("lost");
+  });
   beforeEach(() => {
     vi.stubEnv("SUPABASE_SERVICE_ROLE_KEY", "test-service-role-secret");
     vi.stubEnv("ANIMATIC_KEY_ENCRYPTION_KEY", "");
