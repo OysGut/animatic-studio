@@ -20,7 +20,7 @@ import {
 import { mulberry32 } from "@/core/animation/patterns";
 import { envelope } from "../helpers/fixtures";
 import { dvBase, dvId } from "../helpers/dialogue-fixture";
-import { generatedCommand } from "../unit/dv5-dv6.test";
+import { generatedCommand } from "../helpers/generated-dialogue";
 
 type Versions = ProjectState["dialogueVersions"];
 const strip = (v: Versions) =>
