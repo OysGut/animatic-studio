@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **724**
-- Prioritet: P0: 145, P1: 391, P2: 149, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 197, teknisk-anbefaling: 7
-- Status: Verifisert: 641, Implementert – ikke verifisert: 21, Under arbeid: 3, Ikke startet: 59
+- Antall krav: **739**
+- Prioritet: P0: 145, P1: 406, P2: 149, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 212, teknisk-anbefaling: 7
+- Status: Verifisert: 656, Implementert – ikke verifisert: 21, Under arbeid: 3, Ikke startet: 59
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -9891,3 +9891,202 @@ Per lag velges om munnformer, blink, overlegg, masker og justeringer tas med, og
   - tests/unit/ca7-ca8.test.ts
   - tests/visual/ca8-rhythm-export.mjs
 - **Implementering:** src/core/animation/evaluate.ts, src/core/animation/rig.ts, src/engine/compositor/canvas.ts, src/engine/export/animatic.ts, src/app/assembly/ExportAnimaticDialog.tsx, src/app/scene-editor/animation/CharacterPanel.tsx
+
+#### REQ-0725 – Tekst-AI med egne nøkler og modellvalg
+T1 bruker egne tekstleverandører, virkelige modellister og valg per oppgavegruppe; administratorens modellkontroll gjelder.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** PROVIDER
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - T1 bruker egne tekstleverandører, virkelige modellister og valg per oppgavegruppe; administratorens modellkontroll gjelder.
+- **Tester:**
+  - tests/unit/text-providers.test.ts
+  - tests/unit/text-adapters.test.ts
+- **Implementering:** src/core/generation/providers.ts, src/adapters/ai/text.functions.ts
+
+#### REQ-0726 – Tekst-AI: autentisering, kvoter og trygge logger
+Bare autoriserte prosjektredaktører og eiere starter tekstkall; inndata har maksimal lengde og timegrense og prosjektbudsjett håndheves. Nøkler, prompter og svar logges ikke.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** sikkerhet · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** SECURITY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Bare autoriserte prosjektredaktører og eiere starter tekstkall; inndata har maksimal lengde og timegrense og prosjektbudsjett håndheves. Nøkler, prompter og svar logges ikke.
+- **Tester:**
+  - tests/unit/security-review.test.ts
+  - tests/unit/service-ai-quota.test.ts
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/adapters/ai/text.functions.ts, src/adapters/ai/text-run.server.ts
+
+#### REQ-0727 – Story Lab: profil og karakterbue
+Profilfelt og scenestadier lagres med validerte kommandoer og ordinær angring. profileAt følger fortellingstid.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Profilfelt og scenestadier lagres med validerte kommandoer og ordinær angring. profileAt følger fortellingstid.
+- **Tester:**
+  - tests/unit/storylab-commands.test.ts
+  - tests/unit/storylab-knowledge.test.ts
+- **Implementering:** src/core/storylab/profile.ts, src/core/storylab/stages.ts
+
+#### REQ-0728 – Story Lab: kunnskapsgrenser
+knowledgeAt inkluderer bare fakta karakteren kjenner på valgt fortellingstid; ukjente hemmeligheter og senere hendelser utelates fra karakterprompter.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** sikkerhet · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** SECURITY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - knowledgeAt inkluderer bare fakta karakteren kjenner på valgt fortellingstid; ukjente hemmeligheter og senere hendelser utelates fra karakterprompter.
+- **Tester:**
+  - tests/unit/storylab-knowledge.test.ts
+  - tests/unit/storylab-prompts.test.ts
+- **Implementering:** src/core/storylab/facts.ts, src/core/storylab/prompts.ts
+
+#### REQ-0729 – Story Lab: turer, regi og forgrening
+Samme taler kommer aldri tre ganger på rad. Standard åtte turer før pause; regi har next, scene eller session-gyldighet, og samtaler kan forgrenes.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Samme taler kommer aldri tre ganger på rad. Standard åtte turer før pause; regi har next, scene eller session-gyldighet, og samtaler kan forgrenes.
+- **Tester:**
+  - tests/unit/storylab-engine.test.ts
+  - tests/unit/storylab-replay.test.ts
+- **Implementering:** src/core/storylab/engine.ts, src/core/storylab/replay.ts
+
+#### REQ-0730 – Story Lab: økter og arbeidsflater
+Karakterer, grupper, scenelab, intervju og canvas gjenbruker profiler og økter med lagret kontekst og kan fortsettes uten tap av turer.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Karakterer, grupper, scenelab, intervju og canvas gjenbruker profiler og økter med lagret kontekst og kan fortsettes uten tap av turer.
+- **Tester:**
+  - tests/visual/storylab-ui.mjs
+  - tests/unit/storylab-group-view.test.tsx
+  - tests/unit/storylab-scene-view.test.tsx
+  - tests/unit/storylab-interview.test.ts
+  - tests/unit/storylab-canvas.test.ts
+- **Implementering:** src/app/storylab/StoryLabWorkspace.tsx, src/adapters/storylab/sessions.functions.ts
+
+#### REQ-0731 – Story Lab: godkjent overføring og angring
+Forslag kommer aldri automatisk inn i manus eller profil. Brukeren får forhåndsvisning og bekrefter; overføring bruker eksisterende kommandoer og samlet angring.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** SCRIPT
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Forslag kommer aldri automatisk inn i manus eller profil. Brukeren får forhåndsvisning og bekrefter; overføring bruker eksisterende kommandoer og samlet angring.
+- **Tester:**
+  - tests/unit/storylab-transfer.test.ts
+  - tests/unit/storylab-transfer-undo.test.tsx
+- **Implementering:** src/core/storylab/transfer.ts, src/app/storylab/SuggestionPreview.tsx
+
+#### REQ-0732 – Story Lab: analysespråk og manusets språk
+Analyse og replikksjekk følger UI-språket; rolle-replikker følger manusets språk, foreløpig nb.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Analyse og replikksjekk følger UI-språket; rolle-replikker følger manusets språk, foreløpig nb.
+- **Tester:**
+  - tests/unit/storylab-scene-view.test.tsx
+  - tests/visual/storylab-ui.mjs
+- **Implementering:** src/app/storylab/SceneLab.tsx, src/app/storylab/ConversationView.tsx
+
+#### REQ-0733 – CA1: integrert animasjonsfane og framepresis navigasjon
+Scene og Animasjon bruker samme scenedata; tidskode, én-frame-steg, avspilling, navigator og område endrer ikke scenetransformasjonen.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Scene og Animasjon bruker samme scenedata; tidskode, én-frame-steg, avspilling, navigator og område endrer ikke scenetransformasjonen.
+- **Tester:**
+  - tests/unit/ca-time-format.test.ts
+  - tests/visual/ca1-tab.mjs
+- **Implementering:** src/app/scene-editor/animation/AnimationWorkspace.tsx, src/core/animation/time-format.ts
+
+#### REQ-0734 – CA2: scene-pinnede bildevarianter og lydspor
+Animasjonen bruker eksisterende lag og bildesegmenter, variante- og versjonsetiketter, valgt lyd og felles sceneklokke.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Animasjonen bruker eksisterende lag og bildesegmenter, variante- og versjonsetiketter, valgt lyd og felles sceneklokke.
+- **Tester:**
+  - tests/unit/ca-tracks.test.ts
+  - tests/visual/ca2-variants.mjs
+- **Implementering:** src/core/animation/tracks.ts, src/app/scene-editor/animation/VariantTracks.tsx
+
+#### REQ-0735 – CA3: uforanderlig rigg, ankerpunkter og ikke-destruktiv bruk
+Riggversjoner, ansiktsankre og scene-av/på går gjennom kommandoer med invers; uten rigg er hele framen identisk med tidligere rendering.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Riggversjoner, ansiktsankre og scene-av/på går gjennom kommandoer med invers; uten rigg er hele framen identisk med tidligere rendering.
+- **Tester:**
+  - tests/unit/ca-rig.test.ts
+  - tests/visual/ca3-rig.mjs
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/animation/rig.ts, src/core/animation/evaluate.ts
+
+#### REQ-0736 – U5: konsistent presentasjon og fungerende miniatyrer
+Skjermene bruker felles tetthet, tokens, tilgjengelig fokus og tilstander. Miniatyrer viser faktisk bilde, ellers initial og typeikon også ved lasting og feil.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Skjermene bruker felles tetthet, tokens, tilgjengelig fokus og tilstander. Miniatyrer viser faktisk bilde, ellers initial og typeikon også ved lasting og feil.
+- **Tester:**
+  - tests/visual/u5-screens.mjs
+- **Implementering:** src/app/library/AssetThumb.tsx, src/app/shell/screen-states.tsx
+
+#### REQ-0737 – CA8/U5: rytmedrag og beskyttede tidsområder
+Cmd/Ctrl-drag planlegger rytmeendringen via RetimeScene med én angring; beskyttede områder flyttes aldri.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** TIMELINE
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Cmd/Ctrl-drag planlegger rytmeendringen via RetimeScene med én angring; beskyttede områder flyttes aldri.
+- **Tester:**
+  - tests/unit/u5-rhythm-drag.test.ts
+  - tests/visual/ca8-rhythm-export.mjs
+- **Implementering:** src/core/animation/rhythm.ts, src/app/scene-editor/animation/RhythmDrag.tsx
+
+#### REQ-0738 – Ø-11: invitasjoner og klientens minste lesetilgang
+Prosjekt- og gruppeinvitasjoner krever riktig innlogget e-post, trimmet og case-insensitivt, med utløp og engangsbruk. AI-hemmeligheter er ikke lesbare for klienter. Story Lab har RLS.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** sikkerhet · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** SECURITY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Prosjekt- og gruppeinvitasjoner krever riktig innlogget e-post, trimmet og case-insensitivt, med utløp og engangsbruk. AI-hemmeligheter er ikke lesbare for klienter. Story Lab har RLS.
+- **Tester:**
+  - tests/db/run-db-tests.ts
+  - tests/unit/security-review.test.ts
+- **Implementering:** db/migrations/0058_security_review.sql, src/adapters/account/ai-models.server.ts
+
+#### REQ-0739 – Ø-11: film- og mobilopplastingsvern
+Filmdelelenker har sikre token, utløp og tilbaketrekking. Mobilopplasting validerer token, aktiv økt, størrelse og filtype uten overskriving.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** sikkerhet · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** SECURITY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Filmdelelenker har sikre token, utløp og tilbaketrekking. Mobilopplasting validerer token, aktiv økt, størrelse og filtype uten overskriving.
+- **Tester:**
+  - tests/unit/security-review.test.ts
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/adapters/share/film-share.functions.ts, src/adapters/mobile/mobile.functions.ts

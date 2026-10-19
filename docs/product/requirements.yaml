@@ -26990,14 +26990,16 @@ requirements:
   dependencies: []
   acceptance:
   - T1 bruker egne tekstleverandører, virkelige modellister og valg per oppgavegruppe; administratorens modellkontroll gjelder.
-  tests: &id001
+  tests:
   - tests/unit/text-providers.test.ts
   - tests/unit/text-adapters.test.ts
   status: Verifisert
   implementation:
   - src/core/generation/providers.ts
   - src/adapters/ai/text.functions.ts
-  verification: *id001
+  verification:
+  - tests/unit/text-providers.test.ts
+  - tests/unit/text-adapters.test.ts
   history:
   - date: '2026-10-19'
     decision: DEC-0099
@@ -27021,7 +27023,7 @@ requirements:
   acceptance:
   - Bare autoriserte prosjektredaktører og eiere starter tekstkall; inndata har maksimal lengde og timegrense og prosjektbudsjett håndheves.
     Nøkler, prompter og svar logges ikke.
-  tests: &id001
+  tests:
   - tests/unit/security-review.test.ts
   - tests/unit/service-ai-quota.test.ts
   - tests/db/run-db-tests.ts
@@ -27029,7 +27031,10 @@ requirements:
   implementation:
   - src/adapters/ai/text.functions.ts
   - src/adapters/ai/text-run.server.ts
-  verification: *id001
+  verification:
+  - tests/unit/security-review.test.ts
+  - tests/unit/service-ai-quota.test.ts
+  - tests/db/run-db-tests.ts
   history:
   - date: '2026-10-19'
     decision: DEC-0099
@@ -27051,14 +27056,16 @@ requirements:
   dependencies: []
   acceptance:
   - Profilfelt og scenestadier lagres med validerte kommandoer og ordinær angring. profileAt følger fortellingstid.
-  tests: &id001
+  tests:
   - tests/unit/storylab-commands.test.ts
   - tests/unit/storylab-knowledge.test.ts
   status: Verifisert
   implementation:
   - src/core/storylab/profile.ts
   - src/core/storylab/stages.ts
-  verification: *id001
+  verification:
+  - tests/unit/storylab-commands.test.ts
+  - tests/unit/storylab-knowledge.test.ts
   history:
   - date: '2026-10-19'
     decision: DEC-0099
@@ -27082,14 +27089,16 @@ requirements:
   acceptance:
   - knowledgeAt inkluderer bare fakta karakteren kjenner på valgt fortellingstid; ukjente hemmeligheter og senere hendelser utelates
     fra karakterprompter.
-  tests: &id001
+  tests:
   - tests/unit/storylab-knowledge.test.ts
   - tests/unit/storylab-prompts.test.ts
   status: Verifisert
   implementation:
   - src/core/storylab/facts.ts
   - src/core/storylab/prompts.ts
-  verification: *id001
+  verification:
+  - tests/unit/storylab-knowledge.test.ts
+  - tests/unit/storylab-prompts.test.ts
   history:
   - date: '2026-10-19'
     decision: DEC-0099
@@ -27113,14 +27122,16 @@ requirements:
   acceptance:
   - Samme taler kommer aldri tre ganger på rad. Standard åtte turer før pause; regi har next, scene eller session-gyldighet, og samtaler
     kan forgrenes.
-  tests: &id001
+  tests:
   - tests/unit/storylab-engine.test.ts
   - tests/unit/storylab-replay.test.ts
   status: Verifisert
   implementation:
   - src/core/storylab/engine.ts
   - src/core/storylab/replay.ts
-  verification: *id001
+  verification:
+  - tests/unit/storylab-engine.test.ts
+  - tests/unit/storylab-replay.test.ts
   history:
   - date: '2026-10-19'
     decision: DEC-0099
@@ -27144,7 +27155,7 @@ requirements:
   acceptance:
   - Karakterer, grupper, scenelab, intervju og canvas gjenbruker profiler og økter med lagret kontekst og kan fortsettes uten tap av
     turer.
-  tests: &id001
+  tests:
   - tests/visual/storylab-ui.mjs
   - tests/unit/storylab-group-view.test.tsx
   - tests/unit/storylab-scene-view.test.tsx
@@ -27154,7 +27165,12 @@ requirements:
   implementation:
   - src/app/storylab/StoryLabWorkspace.tsx
   - src/adapters/storylab/sessions.functions.ts
-  verification: *id001
+  verification:
+  - tests/visual/storylab-ui.mjs
+  - tests/unit/storylab-group-view.test.tsx
+  - tests/unit/storylab-scene-view.test.tsx
+  - tests/unit/storylab-interview.test.ts
+  - tests/unit/storylab-canvas.test.ts
   history:
   - date: '2026-10-19'
     decision: DEC-0099
@@ -27178,14 +27194,16 @@ requirements:
   acceptance:
   - Forslag kommer aldri automatisk inn i manus eller profil. Brukeren får forhåndsvisning og bekrefter; overføring bruker eksisterende
     kommandoer og samlet angring.
-  tests: &id001
+  tests:
   - tests/unit/storylab-transfer.test.ts
   - tests/unit/storylab-transfer-undo.test.tsx
   status: Verifisert
   implementation:
   - src/core/storylab/transfer.ts
   - src/app/storylab/SuggestionPreview.tsx
-  verification: *id001
+  verification:
+  - tests/unit/storylab-transfer.test.ts
+  - tests/unit/storylab-transfer-undo.test.tsx
   history:
   - date: '2026-10-19'
     decision: DEC-0099
@@ -27207,14 +27225,16 @@ requirements:
   dependencies: []
   acceptance:
   - Analyse og replikksjekk følger UI-språket; rolle-replikker følger manusets språk, foreløpig nb.
-  tests: &id001
+  tests:
   - tests/unit/storylab-scene-view.test.tsx
   - tests/visual/storylab-ui.mjs
   status: Verifisert
   implementation:
   - src/app/storylab/SceneLab.tsx
   - src/app/storylab/ConversationView.tsx
-  verification: *id001
+  verification:
+  - tests/unit/storylab-scene-view.test.tsx
+  - tests/visual/storylab-ui.mjs
   history:
   - date: '2026-10-19'
     decision: DEC-0099
@@ -27236,14 +27256,16 @@ requirements:
   dependencies: []
   acceptance:
   - Scene og Animasjon bruker samme scenedata; tidskode, én-frame-steg, avspilling, navigator og område endrer ikke scenetransformasjonen.
-  tests: &id001
+  tests:
   - tests/unit/ca-time-format.test.ts
   - tests/visual/ca1-tab.mjs
   status: Verifisert
   implementation:
   - src/app/scene-editor/animation/AnimationWorkspace.tsx
   - src/core/animation/time-format.ts
-  verification: *id001
+  verification:
+  - tests/unit/ca-time-format.test.ts
+  - tests/visual/ca1-tab.mjs
   history:
   - date: '2026-10-19'
     decision: DEC-0099
@@ -27265,14 +27287,16 @@ requirements:
   dependencies: []
   acceptance:
   - Animasjonen bruker eksisterende lag og bildesegmenter, variante- og versjonsetiketter, valgt lyd og felles sceneklokke.
-  tests: &id001
+  tests:
   - tests/unit/ca-tracks.test.ts
   - tests/visual/ca2-variants.mjs
   status: Verifisert
   implementation:
   - src/core/animation/tracks.ts
   - src/app/scene-editor/animation/VariantTracks.tsx
-  verification: *id001
+  verification:
+  - tests/unit/ca-tracks.test.ts
+  - tests/visual/ca2-variants.mjs
   history:
   - date: '2026-10-19'
     decision: DEC-0099
@@ -27295,7 +27319,7 @@ requirements:
   dependencies: []
   acceptance:
   - Riggversjoner, ansiktsankre og scene-av/på går gjennom kommandoer med invers; uten rigg er hele framen identisk med tidligere rendering.
-  tests: &id001
+  tests:
   - tests/unit/ca-rig.test.ts
   - tests/visual/ca3-rig.mjs
   - tests/db/run-db-tests.ts
@@ -27303,7 +27327,10 @@ requirements:
   implementation:
   - src/core/animation/rig.ts
   - src/core/animation/evaluate.ts
-  verification: *id001
+  verification:
+  - tests/unit/ca-rig.test.ts
+  - tests/visual/ca3-rig.mjs
+  - tests/db/run-db-tests.ts
   history:
   - date: '2026-10-19'
     decision: DEC-0099
@@ -27327,13 +27354,14 @@ requirements:
   acceptance:
   - Skjermene bruker felles tetthet, tokens, tilgjengelig fokus og tilstander. Miniatyrer viser faktisk bilde, ellers initial og typeikon
     også ved lasting og feil.
-  tests: &id001
+  tests:
   - tests/visual/u5-screens.mjs
   status: Verifisert
   implementation:
   - src/app/library/AssetThumb.tsx
   - src/app/shell/screen-states.tsx
-  verification: *id001
+  verification:
+  - tests/visual/u5-screens.mjs
   history:
   - date: '2026-10-19'
     decision: DEC-0099
@@ -27355,14 +27383,16 @@ requirements:
   dependencies: []
   acceptance:
   - Cmd/Ctrl-drag planlegger rytmeendringen via RetimeScene med én angring; beskyttede områder flyttes aldri.
-  tests: &id001
+  tests:
   - tests/unit/u5-rhythm-drag.test.ts
   - tests/visual/ca8-rhythm-export.mjs
   status: Verifisert
   implementation:
   - src/core/animation/rhythm.ts
   - src/app/scene-editor/animation/RhythmDrag.tsx
-  verification: *id001
+  verification:
+  - tests/unit/u5-rhythm-drag.test.ts
+  - tests/visual/ca8-rhythm-export.mjs
   history:
   - date: '2026-10-19'
     decision: DEC-0099
@@ -27386,14 +27416,16 @@ requirements:
   acceptance:
   - Prosjekt- og gruppeinvitasjoner krever riktig innlogget e-post, trimmet og case-insensitivt, med utløp og engangsbruk. AI-hemmeligheter
     er ikke lesbare for klienter. Story Lab har RLS.
-  tests: &id001
+  tests:
   - tests/db/run-db-tests.ts
   - tests/unit/security-review.test.ts
   status: Verifisert
   implementation:
   - db/migrations/0058_security_review.sql
   - src/adapters/account/ai-models.server.ts
-  verification: *id001
+  verification:
+  - tests/db/run-db-tests.ts
+  - tests/unit/security-review.test.ts
   history:
   - date: '2026-10-19'
     decision: DEC-0099
@@ -27417,14 +27449,16 @@ requirements:
   acceptance:
   - Filmdelelenker har sikre token, utløp og tilbaketrekking. Mobilopplasting validerer token, aktiv økt, størrelse og filtype uten
     overskriving.
-  tests: &id001
+  tests:
   - tests/unit/security-review.test.ts
   - tests/db/run-db-tests.ts
   status: Verifisert
   implementation:
   - src/adapters/share/film-share.functions.ts
   - src/adapters/mobile/mobile.functions.ts
-  verification: *id001
+  verification:
+  - tests/unit/security-review.test.ts
+  - tests/db/run-db-tests.ts
   history:
   - date: '2026-10-19'
     decision: DEC-0099

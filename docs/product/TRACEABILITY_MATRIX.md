@@ -31,25 +31,25 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 
 | Modul | Navn | Krav | P0 | Implementert | Verifisert |
 |---|---|---|---|---|---|
-| CORE | Project Core | 120 | 57 | 120 | 117 |
-| SCRIPT | Screenplay Engine | 135 | 32 | 135 | 133 |
-| TIMELINE | Timeline & Assembly Engine | 108 | 29 | 108 | 108 |
+| CORE | Project Core | 122 | 57 | 122 | 119 |
+| SCRIPT | Screenplay Engine | 136 | 32 | 136 | 134 |
+| TIMELINE | Timeline & Assembly Engine | 109 | 29 | 109 | 109 |
 | LIBRARY | Resource Library | 96 | 10 | 85 | 81 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 39 | 39 |
-| COMPOSE | 2D Composition Engine | 86 | 14 | 86 | 85 |
+| COMPOSE | 2D Composition Engine | 89 | 14 | 89 | 88 |
 | CAMERA | Camera & Motion Engine | 32 | 2 | 32 | 32 |
 | AUDIO | Audio Engine | 69 | 2 | 69 | 62 |
 | PROMPT | Prompt Orchestration Engine | 58 | 15 | 54 | 50 |
-| PROVIDER | Provider Adapters | 48 | 6 | 46 | 40 |
+| PROVIDER | Provider Adapters | 49 | 6 | 47 | 41 |
 | QUALITYCOST | Quality & Cost Engine | 31 | 7 | 30 | 29 |
 | QUEUE | Render Queue | 36 | 13 | 36 | 33 |
 | VERSION | Version & Dependency Engine | 97 | 38 | 95 | 94 |
-| L10N | Localization Engine | 40 | 4 | 39 | 39 |
+| L10N | Localization Engine | 41 | 4 | 40 | 40 |
 | PRESENT | Presentation Engine | 30 | 3 | 25 | 25 |
 | EXPORT | Export Engine | 61 | 12 | 61 | 61 |
-| SECURITY | Security & Storage | 45 | 5 | 44 | 43 |
+| SECURITY | Security & Storage | 49 | 5 | 48 | 47 |
 | COLLAB | Collaboration & Access | 21 | 0 | 21 | 21 |
-| UI | Brukergrensesnitt og designsystem | 216 | 21 | 211 | 206 |
+| UI | Brukergrensesnitt og designsystem | 218 | 21 | 213 | 208 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 7 | 5 |
 
 ## Dekning per fase
@@ -58,7 +58,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 |---|---|---|
 | 1 | 72 | 67 |
 | 2 | 97 | 93 |
-| 3 | 80 | 78 |
+| 3 | 95 | 93 |
 | 4 | 85 | 84 |
 | 5 | 152 | 141 |
 | 6 | 49 | 48 |
@@ -794,3 +794,18 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0722 | Beslutning B-058 / CA7-oppdrag 2026-10-19 | COMPOSE, UI | src/core/animation/character.ts, src/core/animation/global-rig.ts, src/core/animation/rig-commands.ts, src/adapters/browser/global-library.ts, src/app/scene-editor/animation/CharacterPanel.tsx, db/migrations/0057_global_animation.sql | 2 | tests/unit/ca7-ca8.test.ts, tests/db/run-db-tests.ts, tests/visual/ca7-global.mjs | Verifisert | 2026-10-19 B-058 / CA7-oppdrag: Bygget og testet lokalt med mock og lokal Postgres; migrasjon 0057 er ikke kjørt i Cloud. |
 | REQ-0723 | Beslutning B-058 / CA8-oppdrag 2026-10-19 | COMPOSE, UI | src/core/animation/rhythm.ts, src/core/composition/retime.ts, src/app/scene-editor/animation/RhythmPanel.tsx | 2 | tests/unit/ca7-ca8.test.ts, tests/visual/ca8-rhythm-export.mjs | Verifisert | 2026-10-19 B-058 / CA8-oppdrag: Bygget og testet lokalt med mock. Cmd/Ctrl-dragmodusen fra §73–§96 er ikke bygget (se KNOWN_ISSUES). |
 | REQ-0724 | Beslutning B-058 / CA8-oppdrag 2026-10-19 | COMPOSE, EXPORT, UI | src/core/animation/evaluate.ts, src/core/animation/rig.ts, src/engine/compositor/canvas.ts, src/engine/export/animatic.ts, src/app/assembly/ExportAnimaticDialog.tsx, src/app/scene-editor/animation/CharacterPanel.tsx | 2 | tests/unit/ca7-ca8.test.ts, tests/visual/ca8-rhythm-export.mjs | Verifisert | 2026-10-19 B-058 / CA8-oppdrag: Bygget og testet lokalt med mock. |
+| REQ-0725 | Beslutning DEC-0099 | PROVIDER | src/core/generation/providers.ts, src/adapters/ai/text.functions.ts | 2 | tests/unit/text-providers.test.ts, tests/unit/text-adapters.test.ts | Verifisert | 2026-10-19 DEC-0099: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon. |
+| REQ-0726 | Beslutning DEC-0099 | SECURITY | src/adapters/ai/text.functions.ts, src/adapters/ai/text-run.server.ts | 3 | tests/unit/security-review.test.ts, tests/unit/service-ai-quota.test.ts, tests/db/run-db-tests.ts | Verifisert | 2026-10-19 DEC-0099: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon. |
+| REQ-0727 | Beslutning DEC-0099 | CORE | src/core/storylab/profile.ts, src/core/storylab/stages.ts | 2 | tests/unit/storylab-commands.test.ts, tests/unit/storylab-knowledge.test.ts | Verifisert | 2026-10-19 DEC-0099: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon. |
+| REQ-0728 | Beslutning DEC-0099 | SECURITY | src/core/storylab/facts.ts, src/core/storylab/prompts.ts | 2 | tests/unit/storylab-knowledge.test.ts, tests/unit/storylab-prompts.test.ts | Verifisert | 2026-10-19 DEC-0099: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon. |
+| REQ-0729 | Beslutning DEC-0099 | CORE | src/core/storylab/engine.ts, src/core/storylab/replay.ts | 2 | tests/unit/storylab-engine.test.ts, tests/unit/storylab-replay.test.ts | Verifisert | 2026-10-19 DEC-0099: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon. |
+| REQ-0730 | Beslutning DEC-0099 | UI | src/app/storylab/StoryLabWorkspace.tsx, src/adapters/storylab/sessions.functions.ts | 5 | tests/visual/storylab-ui.mjs, tests/unit/storylab-group-view.test.tsx, tests/unit/storylab-scene-view.test.tsx, tests/unit/storylab-interview.test.ts, tests/unit/storylab-canvas.test.ts | Verifisert | 2026-10-19 DEC-0099: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon. |
+| REQ-0731 | Beslutning DEC-0099 | SCRIPT | src/core/storylab/transfer.ts, src/app/storylab/SuggestionPreview.tsx | 2 | tests/unit/storylab-transfer.test.ts, tests/unit/storylab-transfer-undo.test.tsx | Verifisert | 2026-10-19 DEC-0099: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon. |
+| REQ-0732 | Beslutning DEC-0099 | L10N | src/app/storylab/SceneLab.tsx, src/app/storylab/ConversationView.tsx | 2 | tests/unit/storylab-scene-view.test.tsx, tests/visual/storylab-ui.mjs | Verifisert | 2026-10-19 DEC-0099: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon. |
+| REQ-0733 | Beslutning DEC-0099 | COMPOSE | src/app/scene-editor/animation/AnimationWorkspace.tsx, src/core/animation/time-format.ts | 2 | tests/unit/ca-time-format.test.ts, tests/visual/ca1-tab.mjs | Verifisert | 2026-10-19 DEC-0099: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon. |
+| REQ-0734 | Beslutning DEC-0099 | COMPOSE | src/core/animation/tracks.ts, src/app/scene-editor/animation/VariantTracks.tsx | 2 | tests/unit/ca-tracks.test.ts, tests/visual/ca2-variants.mjs | Verifisert | 2026-10-19 DEC-0099: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon. |
+| REQ-0735 | Beslutning DEC-0099 | COMPOSE | src/core/animation/rig.ts, src/core/animation/evaluate.ts | 3 | tests/unit/ca-rig.test.ts, tests/visual/ca3-rig.mjs, tests/db/run-db-tests.ts | Verifisert | 2026-10-19 DEC-0099: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon. |
+| REQ-0736 | Beslutning DEC-0099 | UI | src/app/library/AssetThumb.tsx, src/app/shell/screen-states.tsx | 1 | tests/visual/u5-screens.mjs | Verifisert | 2026-10-19 DEC-0099: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon. |
+| REQ-0737 | Beslutning DEC-0099 | TIMELINE | src/core/animation/rhythm.ts, src/app/scene-editor/animation/RhythmDrag.tsx | 2 | tests/unit/u5-rhythm-drag.test.ts, tests/visual/ca8-rhythm-export.mjs | Verifisert | 2026-10-19 DEC-0099: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon. |
+| REQ-0738 | Beslutning DEC-0099 | SECURITY | db/migrations/0058_security_review.sql, src/adapters/account/ai-models.server.ts | 2 | tests/db/run-db-tests.ts, tests/unit/security-review.test.ts | Verifisert | 2026-10-19 DEC-0099: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon. |
+| REQ-0739 | Beslutning DEC-0099 | SECURITY | src/adapters/share/film-share.functions.ts, src/adapters/mobile/mobile.functions.ts | 2 | tests/unit/security-review.test.ts, tests/db/run-db-tests.ts | Verifisert | 2026-10-19 DEC-0099: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon. |
