@@ -967,6 +967,57 @@ export type Command = import("../animation/rig-commands").RigCommand
   | {
       readonly type: "UpdateAudioClips";
       readonly clips: readonly { readonly clipId: AudioClipId; readonly fields: AudioClipFields }[];
+      /**
+       * DV2: lydversjoner kommandoen opprettet (ny fil på en versjonert replikk) og som inversen fjerner igjen.
+       * Settes bare av inversen; versjoner som er aktive eller brukt av leppesynk, fjernes aldri.
+       */
+      readonly dropDialogueVersions?: readonly string[];
+      /** DV2: slettede versjoner kommandoen hentet inn igjen (gammelt take valgt på nytt), som inversen sletter igjen. */
+      readonly reRemoveDialogueVersions?: readonly string[];
+      /** DV2: nøyaktig hvilken versjon som skal bli aktiv per klipp (brukes av inversen når flere versjoner har samme fil). */
+      readonly activeVersionIds?: Readonly<Record<string, string>>;
+    }
+  // ---------- Lydversjoner per replikk (DV2, migrasjon 0060) ----------
+  | {
+      /** Ny lydversjon for en replikkforekomst (opptak, AI, opplasting). Ingenting overskrives. */
+      readonly type: "AddDialogueVersion";
+      readonly dialogueVersionId: string;
+      readonly clipId: AudioClipId;
+      readonly fields: import("../dialogue/versions").DialogueVersionFields;
+      /** Gjør den nye versjonen aktiv. */
+      readonly activate: boolean;
+    }
+  | {
+      /** Bare som invers av AddDialogueVersion. `restoreActiveId`: aktiv versjon igjen hvis denne var aktiv. */
+      readonly type: "UndoAddDialogueVersion";
+      readonly dialogueVersionId: string;
+      readonly restoreActiveId: string | null;
+    }
+  | {
+      /** Velg hvilken versjon som spilles i scenen. Plasseringen og alle versjoners redigering er uendret. */
+      readonly type: "SetActiveDialogueVersion";
+      readonly clipId: AudioClipId;
+      readonly dialogueVersionId: string;
+    }
+  | {
+      /** Endre redigeringen i én lydversjon (trim, volum, fades, volumpunkter, hastighet, komposisjon). */
+      readonly type: "UpdateDialogueVersionEdit";
+      readonly dialogueVersionId: string;
+      readonly edit: import("../dialogue/versions").DialogueEdit;
+    }
+  | {
+      /** Flytt replikken i scenen. Versjonenes redigering endres ikke; andre replikker flyttes aldri. */
+      readonly type: "MoveDialogueLine";
+      readonly clipId: AudioClipId;
+      readonly offsetMs: number;
+      /** Tillat overlapp med samme taler (brukeren har bekreftet). */
+      readonly allowOverlap?: boolean;
+    }
+  | {
+      /** Eksplisitt «Slett versjon» (etter bekreftelse) eller angring av den. Aktiv versjon kan ikke slettes. */
+      readonly type: "SetDialogueVersionRemoved";
+      readonly dialogueVersionId: string;
+      readonly removed: boolean;
     }
   | {
       readonly type: "SetAudioClipsRemoved";

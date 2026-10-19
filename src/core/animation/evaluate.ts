@@ -25,6 +25,8 @@ export function mouthVisemeAt(s: ProjectState, occurrenceId: string, frame: numb
     if (r.removed || !r.enabled) continue;
     const clip = s.audioClips[r.clipId];
     if (!clip || clip.removed || clip.occurrenceId !== occurrenceId) continue;
+    // DV2: synk for en annen lydversjon enn den som spilles, brukes ikke (utdatert)
+    if (r.dialogueVersionId && clip.activeVersionId && r.dialogueVersionId !== clip.activeVersionId) continue;
     const start = secondsToFrames(clip.offsetMs / 1000, fps);
     const end = secondsToFrames((clip.offsetMs + clip.lengthMs) / 1000, fps);
     if (frame >= start && frame < end) return visemeAt(r, frame - start);

@@ -363,6 +363,8 @@ function Editor({
       : null;
   const [addOpen, setAddOpen] = useState(false);
   const [recordOpen, setRecordOpen] = useState(false);
+  /** DV1: replikken opptaksvinduet åpnes med (dobbeltklikk i manuset), eller null (mikrofonikonet). */
+  const [recordBlockId, setRecordBlockId] = useState<string | null>(null);
   const [aiVideoOpen, setAiVideoOpen] = useState(false);
   /** Avvik ved manusendring for scenen (DEC-0054). */
   const found = useSceneDiscrepancies(state, occurrenceId);
@@ -597,6 +599,18 @@ function Editor({
         onOpenEditor={(blockId) => setScriptEdit({ blockId })}
         run={cmds.run}
         authorName={myName}
+        onSeek={(f) => {
+          playback.pause();
+          playback.setFrame(f);
+        }}
+        onOpenDialogue={
+          audioEditable
+            ? (blockId) => {
+                setRecordBlockId(blockId);
+                setRecordOpen(true);
+              }
+            : undefined
+        }
       />
     ) : null,
     assets: occurrence ? (
@@ -1414,7 +1428,11 @@ function Editor({
       {occurrence && audioEditable ? (
         <RecordAudioDialog
           open={recordOpen}
-          onOpenChange={setRecordOpen}
+          onOpenChange={(o) => {
+            setRecordOpen(o);
+            if (!o) setRecordBlockId(null);
+          }}
+          initialBlockId={recordBlockId}
           state={state}
           projectId={projectId}
           cmds={cmds}

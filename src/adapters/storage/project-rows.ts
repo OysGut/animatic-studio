@@ -6,7 +6,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { L, stateFromRows, type ProjectRows, type ProjectState, type Row } from "@/core";
 
 /** Skjemaversjonen denne koden forventer (db/migrations). Øk ved hver ny migrasjon. */
-export const EXPECTED_SCHEMA_VERSION = 59;
+export const EXPECTED_SCHEMA_VERSION = 60;
 
 const PAGE = 1000;
 
@@ -109,7 +109,7 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     canvasEdges,
     templateInstances,
     creditParticipants,
-    creditSequences, animationRigs, animationRigVersions, animationUses, lipsyncResults, animationPatterns,
+    creditSequences, animationRigs, animationRigVersions, animationUses, lipsyncResults, animationPatterns, dialogueVersions,
   ] = await Promise.all([
     fetchAll(db, "productions", projectId),
     fetchAll(db, "scenes", projectId),
@@ -147,6 +147,7 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     fetchOptional(db, "animation_uses", projectId),
     fetchOptional(db, "lipsync_results", projectId),
     fetchOptional(db, "animation_patterns", projectId),
+    fetchOptional(db, "dialogue_versions", projectId),
   ]);
   return {
     project: project as Row,
@@ -183,6 +184,7 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     credit_sequences: creditSequences,
     animation_rigs: animationRigs, animation_rig_versions: animationRigVersions, animation_uses: animationUses,
     lipsync_results: lipsyncResults, animation_patterns: animationPatterns,
+    dialogue_versions: dialogueVersions,
   };
 }
 

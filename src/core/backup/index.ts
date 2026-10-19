@@ -73,6 +73,7 @@ export const BACKUP_STATE_TABLES = [
   "credit_sequences",
   "animation_rigs", "animation_rig_versions", "animation_uses",
   "lipsync_results", "animation_patterns",
+  "dialogue_versions",
 ] as const;
 export type BackupStateTable = (typeof BACKUP_STATE_TABLES)[number];
 
@@ -379,6 +380,9 @@ const NON_REFERENCE = new Set([
   "source_global_asset_id",
   "source_global_variant_id",
   "source_global_version_id",
+  // Lydversjoner (DV2): leverandørens stemme- og modell-ID er ikke prosjektrader
+  "voice_id",
+  "model_id",
 ]);
 
 /**
@@ -607,6 +611,7 @@ export function restoredState(
     credit_sequences: t("credit_sequences"),
     animation_rigs: t("animation_rigs"), animation_rig_versions: t("animation_rig_versions").map(withoutRigImportReceipts), animation_uses: t("animation_uses"),
     lipsync_results: t("lipsync_results"), animation_patterns: t("animation_patterns"),
+    dialogue_versions: t("dialogue_versions"),
   };
   let state: ProjectState;
   try {

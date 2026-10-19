@@ -8,6 +8,7 @@ import type { FilmClip } from "../assembly/film";
 import { coverVersion, versionsOf } from "../library";
 import { framesToSeconds, type Rational } from "../time";
 import { L, localized } from "../i18n";
+import { clipEditOf, clipFileOf } from "../dialogue/versions";
 
 export const AUDIO_KIND_LABEL: Record<AudioKind, string> = localized({
   dialogue: ["Dialog", "Dialogue"],
@@ -52,13 +53,15 @@ export function playsIn(a: Pick<AudioClip, "kind" | "language">, lang: string): 
 
 /** Lydfilen klippet spiller: låst versjon, ellers variantens godkjente/nyeste, ellers ressursens nyeste. */
 export function audioVersion(s: ProjectState, a: AudioClip): AssetVersion | null {
-  if (a.versionId !== null) return s.assetVersions[a.versionId] ?? null;
-  if (a.assetVariantId !== null) {
-    const va = s.assetVariants[a.assetVariantId];
+  // DV2: en versjonert replikk spiller filen til sin aktive lydversjon
+  const f = clipFileOf(s, a);
+  if (f.assetVersionId !== null) return s.assetVersions[f.assetVersionId] ?? null;
+  if (f.assetVariantId !== null) {
+    const va = s.assetVariants[f.assetVariantId];
     if (va?.approvedVersionId) return s.assetVersions[va.approvedVersionId] ?? null;
-    return versionsOf(s, a.assetVariantId)[0] ?? null;
+    return versionsOf(s, f.assetVariantId)[0] ?? null;
   }
-  return coverVersion(s, a.assetId);
+  return coverVersion(s, f.assetId);
 }
 
 /** Lyden i én scene (ikke fjernet), etter start. Med språk: bare lyden som spilles i det språket. */
@@ -122,23 +125,26 @@ export interface FilmAudioItem {
 }
 
 function item(
+  s: ProjectState,
   clip: AudioClip,
   version: AssetVersion | null,
   start: number,
   maxLength = Infinity,
 ): FilmAudioItem {
+  // DV2: redigeringen kommer fra aktiv lydversjon (klippets egne felt for uversjonert lyd)
+  const e = clipEditOf(s, clip);
   return {
     clip,
     version,
     start,
-    length: Math.min(clip.lengthMs / 1000, maxLength),
-    fullLength: clip.lengthMs / 1000,
-    keys: clip.volumeKeys.map((k) => ({ t: k.t / 1000, db: k.db })),
-    sourceIn: clip.sourceInMs / 1000,
-    ...(clip.speed !== undefined && clip.speed !== 1 ? { speed: clip.speed } : {}),
-    gain: Math.pow(10, clip.gainDb / 20),
-    fadeIn: clip.fadeInMs / 1000,
-    fadeOut: clip.fadeOutMs / 1000,
+    length: Math.min(e.lengthMs / 1000, maxLength),
+    fullLength: e.lengthMs / 1000,
+    keys: e.volumeKeys.map((k) => ({ t: k.t / 1000, db: k.db })),
+    sourceIn: e.sourceInMs / 1000,
+    ...(e.speed !== 1 ? { speed: e.speed } : {}),
+    gain: Math.pow(10, e.gainDb / 20),
+    fadeIn: e.fadeInMs / 1000,
+    fadeOut: e.fadeOutMs / 1000,
   };
 }
 
@@ -164,7 +170,7 @@ export function filmAudio(
       ? Infinity
       : framesToSeconds(scene.durationFrames, fps) - a.offsetMs / 1000;
     if (room <= 0) continue;
-    out.push(item(a, audioVersion(s, a), sceneStart + a.offsetMs / 1000, room));
+    out.push(item(s, a, audioVersion(s, a), sceneStart + a.offsetMs / 1000, room));
   }
   return out.sort((x, y) => x.start - y.start || x.clip.id.localeCompare(y.clip.id));
 }
@@ -180,7 +186,7 @@ export function sceneAudioItems(
   lang: string = MAIN_LANGUAGE,
 ): FilmAudioItem[] {
   return sceneAudio(s, occurrenceId, lang)
-    .map((a) => item(a, audioVersion(s, a), a.offsetMs / 1000, sceneSeconds - a.offsetMs / 1000))
+    .map((a) => item(s, a, audioVersion(s, a), a.offsetMs / 1000, sceneSeconds - a.offsetMs / 1000))
     .filter((it) => it.length > 0);
 }
 

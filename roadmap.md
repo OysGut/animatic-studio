@@ -1,3 +1,11 @@
+# DV1+DV2 – Dialog og stemme (19.10.2026)
+- [x] Spesifikasjonsfil (komprimert gjengivelse) i docs/product/phase3/DIALOGUE_VOICE_SPEC.md.
+- [x] DV1: klikk i manus flytter avspillingshodet (ord → tidskobling → klippstart → anker), estimert/mangler, dobbeltklikk åpner opptaksdialogen med replikken.
+- [x] DV2: migrasjon 0060 skrevet og testet lokalt (ikke kjørt i Cloud – Claude kjører den).
+- [x] DV2: kommandoer med invers, én speilingsfunksjon, lydeditor redigerer aktiv versjon.
+- [x] Tester: egenskapstest tapsfrihet, speiling, backup-rundtur, DB 0060, dv1/dv2 visuelle suiter, regresjon.
+- [ ] Senere DV-steg (DV3–DV8): versjonsliste i dialogeditoren, note_flags, bokmerker, stemmer/generering, avvik.
+
 # B2 / estimatliste – 19.10.2026
 - [x] DEC-0099 fra leverte kilder, REQ-0740–0749, build_docs/check_kb.
 - [x] Appens avsendertekst, KI-224/226 notater, KI-220 plassering, KI-207 bekreftelsesflyt.
