@@ -15,11 +15,11 @@ function baseState(): ProjectState {
   const s = fixture.state;
   const clip = Object.values(s.audioClips).find(c => !c.removed && c.kind === "dialogue" && c.blockId)!;
   const occ = s.occurrences[clip.occurrenceId]!;
+  const take = Object.values(s.takes).find(t => !t.removed) ?? Object.values(s.takes)[0]!;
   return {
     ...s,
     project: { ...s.project, fps },
-    occurrences: { ...s.occurrences, [occ.id]: { ...occ, activeTakeId: occ.activeTakeId ?? id(9) } },
-    takes: occ.activeTakeId ? s.takes : { ...s.takes, [id(9)]: { id: id(9), revision: 1, orderKey: "a1" } as never },
+    occurrences: { ...s.occurrences, [occ.id]: { ...occ, activeTakeId: take.id } },
   };
 }
 const clipOf = (s: ProjectState) => Object.values(s.audioClips).find(c => !c.removed && c.kind === "dialogue" && c.blockId)!;
