@@ -264,11 +264,12 @@ function Library({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <Toolbar>
-        <span className="text-[13px] font-medium text-text-primary">
+      <Toolbar overflow="menu">
+        <span className="text-chrome font-medium text-text-primary">
           {L("Ressursbibliotek", "Asset library")}
         </span>
         <ToolbarSeparator />
+        <ToolbarGroup priority={7}>
         <IconButton
           onClick={cmds.undo}
           disabled={!cmds.canUndo}
@@ -301,6 +302,8 @@ function Library({
         >
           <Redo2 />
         </IconButton>
+        </ToolbarGroup>
+        <ToolbarGroup priority={1}>
         <ToolbarButton
           onClick={() => setTrashOpen(true)}
           title={L(
@@ -401,7 +404,8 @@ function Library({
           <Download />
           {L("Last ned som zip", "Download as zip")}
         </ToolbarButton>
-        <div className="ml-auto flex items-center gap-3">
+        </ToolbarGroup>
+        <div data-toolbar-fixed className="ml-auto flex items-center gap-3">
           <SaveIndicator cmds={cmds} />
           {roleKnown && !editable ? (
             <span className="text-xs text-text-tertiary">
