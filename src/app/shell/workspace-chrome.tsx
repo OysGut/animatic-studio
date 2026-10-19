@@ -254,7 +254,7 @@ export const IconButton = forwardRef<
     active?: boolean;
     side?: "top" | "bottom" | "left" | "right";
   }
->(function IconButton({ label, shortcut, side = "bottom", onPointerMove, ...rest }, ref) {
+>(function IconButton({ label, shortcut, side = "bottom", onPointerMove, onFocus, ...rest }, ref) {
   return (
     <TooltipProvider delayDuration={400}>
     <Tooltip>
@@ -264,6 +264,12 @@ export const IconButton = forwardRef<
           variant="icon"
           aria-label={label}
           {...rest}
+          onFocus={(e) => {
+            onFocus?.(e);
+            // Verktøytipset åpnes bare ved peker: et tips som åpner seg ved fokus, ville fanget Esc
+            // (f.eks. når fokus kommer tilbake fra en dialog) og endret tastaturbruken.
+            e.preventDefault();
+          }}
           onPointerMove={(e) => {
             onPointerMove?.(e);
             // Ikke åpne verktøytips mens en knapp holdes nede (dra i tidslinje eller lerret).
