@@ -47,7 +47,7 @@ export function AnimationWorkspace({ state, composition, duration, playback, ran
         <TimeNavigator duration={duration} window={view} onChange={setWindow} />
         <AnimTimeline fps={state.project.fps} duration={duration} playback={playback} view={view} range={range} onRange={onRange} {...(rhythm ? { rhythm } : {})}>{tracks?.(view)}</AnimTimeline>
       </div>
-      <div data-testid="anim-preview-resize" className="relative flex min-h-64 shrink-0 border-l border-border" style={{ width }}>
+      <div data-testid="anim-preview-resize" className="relative flex min-h-0 shrink-0 border-l border-border bg-surface-1" style={{ width }}>
         <PaneResizer edge="left" size={width} onSize={setWidth} min={200} max={700} label={L("Bredde på forhåndsvisningen", "Preview width")} />
         <AnimPreview state={state} composition={composition} frame={playback.frame} urls={urls} />
       </div>

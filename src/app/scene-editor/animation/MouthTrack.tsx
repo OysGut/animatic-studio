@@ -13,6 +13,7 @@ import { analyzeLipsync, lipsyncDraft } from "@/engine/lipsync/analyze";
 import { audioVersion } from "@/core/audio";
 import { IconButton } from "@/app/shell/workspace-chrome";
 import type { AnimWindow } from "./TimeNavigator";
+import { AssetThumb } from "@/app/library/AssetThumb";
 
 const VISEME_COLORS: Record<string, string> = {
   A: "var(--viseme-a)", B: "var(--viseme-b)", C: "var(--viseme-c)", D: "var(--viseme-d)", E: "var(--viseme-e)", F: "var(--viseme-f)", G: "var(--viseme-g)", H: "var(--viseme-h)", X: "var(--viseme-x)",
@@ -87,6 +88,7 @@ export function MouthTrack({ state, occurrenceId, language, view, frame, editabl
       const active = frame >= t.start && frame < t.end;
       return <div key={t.clip.id} data-testid={`mouth-row-${t.clip.id}`} className="relative flex h-7 items-center border-b border-border bg-surface-1">
         <div className="flex w-40 shrink-0 items-center gap-1 truncate px-2">
+          <AssetThumb state={state} assetId={t.clip.assetId} size="sm" />
           <span className="truncate text-[11px] text-text-secondary">{t.block?.text ?? t.clip.name}</span>
           {result ? <IconButton data-testid={`lipsync-toggle-${t.clip.id}`} aria-pressed={result.enabled} label={result.enabled ? L("Slå av leppesynk for replikken", "Turn off lip sync for the line") : L("Slå på leppesynk for replikken", "Turn on lip sync for the line")} active={result.enabled} disabled={!editable}
             onClick={() => setError(run({ type: "SetLipsyncEnabled", lipsyncId: result.id, enabled: !result.enabled }, L("Endre leppesynk", "Change lip sync")))}><Mic /></IconButton> : null}

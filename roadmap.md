@@ -1,4 +1,8 @@
 # MU1
+## U5-polish
+- [x] Initial og typeikon i Story Lab/bibliotek og miniatyrer i alle animasjonssporhoder.
+- [x] Toppjustert forhåndsvisning med skrivebeskyttet lagliste og panelfarge under bildet.
+- [x] Stabil kostnadsventing; U5 56/56, CA1–CA8 155/155, Story Lab 32/32; Vitest 1714 bestått, 10 eksisterende hoppet over.
 # CA4
 - [x] Forhåndsvisning toppjustert, alle spor med bilde/typeikon, lyd rett under sporene.
 - [x] Munnformeditor, tegneark, vektorpensel og ikke-destruktive deljusteringer.
