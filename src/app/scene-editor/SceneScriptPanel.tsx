@@ -8,6 +8,7 @@ import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { FileText, MessageSquare } from "lucide-react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { NotesPanel } from "@/app/script/NotesPanel";
+import { DriftBadge } from "@/app/dialogue/DriftBadge";
 import { Button } from "@/components/ui/button";
 import {
   L,
@@ -61,7 +62,10 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
   authorName = "",
   onSeek,
   onOpenDialogue,
+  projectId,
 }: {
+  /** DV7: prosjektet (for avvikslenken). */
+  projectId?: string | undefined;
   /** DV1: enkeltklikk flytter avspillingshodet hit (bildet i 2D-scenen). */
   onSeek?: ((compFrame: number) => void) | undefined;
   /** DV1: dobbeltklikk på en replikk åpner opptaks- og dialogvinduet med replikken valgt. */
@@ -262,6 +266,7 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
               {b.kind === "parenthetical" && !b.text.startsWith("(") ? "(" : null}
               <span data-script-text={b.id}>{b.text}</span>
               {b.kind === "parenthetical" && !b.text.startsWith("(") ? ")" : null}
+              {b.kind === "dialogue" && projectId ? <span className="ml-1 font-sans"><DriftBadge state={state} projectId={projectId} occurrenceId={occurrenceId} blockId={b.id} run={run} editable={editable} onGo={onSeek ? () => { const t = scriptSeekTarget(state, clip, b.id); setSeek(t); if (t.compFrame !== null) onSeek(t.compFrame); } : undefined} /></span> : null}
               {notes ? (
                 <span
                   className="absolute -right-2.5 top-0 text-note"
