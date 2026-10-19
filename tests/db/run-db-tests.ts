@@ -5988,6 +5988,7 @@ try {
   });
   await test("0061: uavhengige språkfelt og tom lydprompt finnes uten endring av gamle lydfiler", async () => {
     for (const [table,column] of [["projects","script_language"],["scene_variants","script_language"],["script_blocks","script_language"],["script_blocks","speech_language"],["audio_clips","speech_language"],["audio_clips","placement_estimated"]]) {
+      if (!table || !column) throw new Error("Invalid language column fixture");
       const found = await sql`select 1 from information_schema.columns where table_schema='public' and table_name=${table} and column_name=${column}`;
       assert(found.length === 1, `${table}.${column} mangler`);
     }
