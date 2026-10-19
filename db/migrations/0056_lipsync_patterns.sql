@@ -55,7 +55,7 @@ create policy animation_patterns_read on public.animation_patterns for select to
 create function private.validate_lipsync_result() returns trigger language plpgsql set search_path = '' as $$
 begin
   if not exists (select 1 from public.audio_clips c
-    join public.takes t on t.id = new.take_id and t.project_id = new.project_id and not t.removed
+    join public.takes t on t.id = new.take_id and t.project_id = new.project_id
     where c.id = new.clip_id and c.project_id = new.project_id and not c.removed and c.kind = 'dialogue') then
     raise exception 'Leppesynket hører ikke til en replikk i prosjektet' using errcode = '23503';
   end if;
