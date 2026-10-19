@@ -11,6 +11,7 @@ for(const lang of ["nb","en"])await h.scenario(`dv5-${lang}`,clip.occurrence_id,
   h.check(await page.getByTestId("dialogue-batch-line").count()>0,"coverage contains character lines");
   h.check(await page.getByTestId("dialogue-batch-warning").isVisible(),"existing audio warning visible");
   await page.getByTestId("dialogue-batch-together").check();
+  await page.getByTestId("dialogue-batch-dialog").getByTestId("voice-select").selectOption("mock_voice");
   h.check(!h.state.rpcs.some(r=>r.name==="createDialogueBatch"),"no batch before approval");
   await page.getByTestId("dialogue-batch-start").click();
   h.check(await page.getByTestId("dialogue-batch-confirm").isVisible(),"explicit approval screen");

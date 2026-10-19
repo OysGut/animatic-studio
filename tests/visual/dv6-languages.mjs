@@ -15,6 +15,7 @@ for(const lang of ["nb","en"])await h.scenario(`dv6-${lang}`,clip.occurrence_id,
   await page.goto(h.base+h.P+`/bibliotek?asset=${character.id}`);await page.getByTestId("dialogue-batch-open").click();await page.getByTestId("dialogue-batch-all").click();
   const tags=page.getByTestId("dialogue-batch-line-language");await tags.first().fill("no");if(await tags.count()>1)await tags.nth(1).fill("es");
   await page.getByTestId("dialogue-batch-split").check();
+  for (const config of await page.getByTestId("dialogue-language-job").all()) await config.getByTestId("voice-select").selectOption("mock_voice");
   h.check(await page.getByTestId("dialogue-language-job").count()>=2,"one visible job configuration per language");
   h.check(!h.state.rpcs.some(r=>r.name==="createDialogueBatch"),"language detection never generates automatically");
   await page.getByTestId("dialogue-batch-start").click();await page.getByTestId("dialogue-batch-approve").click();

@@ -56,7 +56,10 @@ export async function processDialogueBatch(db: AnyClient, batchId: string, userD
       processed++;
     }
     const { count } = await db.from("dialogue_batch_items").select("id", { count: "exact", head: true }).eq("batch_id", batchId).in("status", ["waiting", "generating", "ready"]);
-    if (count === 0) await db.from("dialogue_batches").update({ status: "done" }).eq("id", batchId).eq("status", "running");
+    if (count === 0) {
+      const { count: failed } = await db.from("dialogue_batch_items").select("id", { count: "exact", head: true }).eq("batch_id", batchId).eq("status", "failed");
+      await db.from("dialogue_batches").update({ status: failed ? "paused" : "done", ...(failed ? { pause_reason: L("Noen replikker feilet. Tidligere lyd er bevart.", "Some lines failed. Previous audio is preserved.") } : {}) }).eq("id", batchId).eq("status", "running").eq("lease_token", lease);
+    }
     return { processed };
   } catch (error) {
     await db.from("dialogue_batches").update({ status: "paused", pause_reason: L("Jobben ble stoppet. Lagrede resultater beholdes; gjenoppta uten å generere dem på nytt.", "The job stopped. Saved results are retained; resume without regenerating them.") }).eq("id", batchId).eq("lease_token", lease);
