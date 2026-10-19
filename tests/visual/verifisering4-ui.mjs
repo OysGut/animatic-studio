@@ -924,6 +924,10 @@ async function audioSession(page, since, itemsExpr) {
         `return (async () => { ${LOAD_STATE}
         const { audioBank } = await import("/src/app/audio/use-audio-playback.ts");
         const items = ${itemsExpr};
+        const { createSignedUrls, ASSET_BUCKET } = await import("/src/adapters/browser/storage-files.ts");
+        const paths = [...new Set(items.filter(x => x.version).map(x => x.version.mediaPath))];
+        const urls = await createSignedUrls(ASSET_BUCKET, paths, 600);
+        await audioBank.loadAll(Object.fromEntries(urls.map(x => [x.path, x.signedUrl])));
         const starts = window.__starts.slice(since);
         // HMR can create another AudioBank for the unversioned dynamic import used by this probe.
         // Compare every decoded sample, not object identity, so we still prove the exact source audio.
