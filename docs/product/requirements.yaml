@@ -26794,3 +26794,74 @@ requirements:
   - date: '2026-10-19'
     decision: "B-058 / CA4-oppdrag"
     change: "Bygget og testet lokalt med mock; migrasjon 0055 er ikke kjørt i Cloud."
+- id: REQ-0720
+  title: "Automatisk leppesynk per replikk med brukerens bekreftelse"
+  text: "Leppesynk analyseres i nettleseren (Rhubarb WASM, regelbasert reserve), lagres per replikk og take med kilde, versjon og lydhash, kan slås av/på per replikk, og ny eller endret synk vises som forslag med «Bruk»/«Forkast». Manuelle overstyringer overlever ny generering."
+  origin: brukerbeslutning
+  source:
+    decision: "B-058 / CA5-oppdrag 2026-10-19"
+    section: "29–33"
+    document: docs/product/phase3/CHARACTER_ANIMATION_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules: [COMPOSE, UI]
+  invariants: [INV-13, INV-C1]
+  dependencies: [REQ-0719]
+  acceptance:
+  - "Analyse med Rhubarb (fonetisk) som WASM på klienten; regelbasert reserve ved feil."
+  - "Resultatet lagres i lipsync_results per replikk og take, med kilde, algoritmeversjon og lydhash."
+  - "Av/på per replikk og «generer på nytt» per replikk; forslag krever «Bruk»."
+  - "Manuelle frame-overstyringer lagres og overlever ny generering."
+  tests:
+  - tests/unit/ca5-ca6.test.ts
+  - tests/visual/ca5-lipsync.mjs
+  status: Verifisert
+  implementation:
+  - src/core/animation/lipsync.ts
+  - src/core/animation/behavior-commands.ts
+  - src/engine/lipsync/analyze.ts
+  - src/app/scene-editor/animation/MouthTrack.tsx
+  verification:
+  - tests/unit/ca5-ca6.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/ca5-lipsync.mjs
+  history:
+  - date: '2026-10-19'
+    decision: "B-058 / CA5-oppdrag"
+    change: "Bygget og testet lokalt med mock; migrasjon 0056 er ikke kjørt i Cloud."
+- id: REQ-0721
+  title: "Blinking, manuelle blink og navngitte animasjonsmønstre med seed"
+  text: "Blinking per øye med tilfeldig intervall styrt av seed, manuelle blink og halvlukkede perioder, og navngitte mønstre (f.eks. «nervøs blinking») som gjenbrukes i prosjektet. Seed per bruk gjør resultatet deterministisk ved eksport."
+  origin: brukerbeslutning
+  source:
+    decision: "B-058 / CA6-oppdrag 2026-10-19"
+    section: "34–38, 54–70"
+    document: docs/product/phase3/CHARACTER_ANIMATION_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules: [COMPOSE, UI]
+  invariants: [INV-13, INV-C1]
+  dependencies: [REQ-0720]
+  acceptance:
+  - "Blinking per øye med seed-styrt intervall; manuelle blink og halvlukket."
+  - "Navngitte mønstre lagres i animation_patterns og gjenbrukes per bruk."
+  - "Samme seed gir samme hendelser på tvers av oppfriskning og maskiner."
+  tests:
+  - tests/unit/ca5-ca6.test.ts
+  - tests/visual/ca6-blink-patterns.mjs
+  status: Verifisert
+  implementation:
+  - src/core/animation/patterns.ts
+  - src/core/animation/behavior-commands.ts
+  - src/app/scene-editor/animation/BlinkPanel.tsx
+  - src/app/scene-editor/animation/PatternStudio.tsx
+  verification:
+  - tests/unit/ca5-ca6.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/ca6-blink-patterns.mjs
+  history:
+  - date: '2026-10-19'
+    decision: "B-058 / CA6-oppdrag"
+    change: "Bygget og testet lokalt med mock; migrasjon 0056 er ikke kjørt i Cloud."
