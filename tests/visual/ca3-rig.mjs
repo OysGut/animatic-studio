@@ -2,10 +2,10 @@
 import { harness } from "./mts-harness.mjs";
 if (!process.argv[3]) process.argv[3] = "/tmp/claude-0/visual-fixture.json";
 const h = harness("/tmp/claude-0/ca3-rig");
-const layer = h.rows.composition_layers.find(l => !l.removed && l.asset_id && h.rows.asset_versions.some(v => v.variant_id === l.asset_variant_id && v.mime_type.startsWith("image/")));
+const layer = h.rows.composition_layers.find(l => !l.removed && l.asset_id && h.rows.asset_versions.some(v => h.rows.asset_variants.some(a => a.id === v.variant_id && a.asset_id === l.asset_id) && v.mime_type.startsWith("image/")));
 const comp = h.rows.compositions.find(c => c.id === layer?.composition_id);
 const occ = h.rows.scene_occurrences.find(o => o.variant_id === comp?.variant_id && o.active);
-const source = h.rows.asset_versions.find(v => v.id === layer?.version_id) ?? h.rows.asset_versions.find(v => v.variant_id === layer?.asset_variant_id);
+const source = h.rows.asset_versions.find(v => v.id === layer?.version_id) ?? h.rows.asset_versions.find(v => h.rows.asset_variants.some(a => a.id === v.variant_id && a.asset_id === layer?.asset_id));
 if (!layer || !comp || !occ || !source) throw new Error("Missing composed image fixture");
 const ID = n => `01900000-0000-7000-8000-0053${String(n).padStart(8, "0")}`;
 const anchors = { head: { x: .5, y: .2 }, mouth: { x: .5, y: .6 }, nose: { x: .5, y: .4 }, leftEye: { x: .4, y: .3 }, rightEye: { x: .6, y: .3 } };
