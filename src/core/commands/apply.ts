@@ -1914,7 +1914,7 @@ function run(
       return { state: { ...s, [collection]: { ...rows, [row.id]: updated } }, inverse: { ...c, language: previous ?? null }, affected: [row.id] };
     }
     case "ApplyGeneratedDialogue": {
-      // Stable job-owned version identity is a receipt, even after explicit undo/deactivation.
+      // Current version identity deduplicates local repeats; persisted job/change receipts fence replay after undo.
       if (s.assetVersions[c.versionId] || s.dialogueVersions[c.dialogueVersionId]) return { state: s, inverse: { type: "UndoGeneratedDialogue", steps: [] }, affected: [] };
       const info = lineInfo(s, c.occurrenceId, c.blockId);
       const character = s.assets[c.characterId];

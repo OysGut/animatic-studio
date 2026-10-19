@@ -22,6 +22,16 @@ beforeEach(() => {
   h.db = fakeWriteDb({ schema_version: [{ version: 60 }], projects: [{ id: P, deleted_at: null }], script_blocks: [{ id: B, project_id: P, kind: "dialogue", text: "Hemmelig replikk", removed: false, current_rev: 7 }] });
 });
 describe("DV4 server cost and manuscript boundary", () => {
+  it("queued batch reservations do not consume the 300-per-hour execution quota", async () => {
+    const db = h.db as ReturnType<typeof fakeWriteDb>;
+    db.tables["generation_jobs"] = Array.from({length:301},(_,i)=>({id:`queued-${i}`,created_by:"editor",kind:"sound",status:"queued",created_at:new Date().toISOString()}));
+    expect((await call()).ok).toBe(true);expect(h.speech).toHaveBeenCalledTimes(1);
+  });
+  it("300 executed sounds block the next call without touching older audio", async () => {
+    const db = h.db as ReturnType<typeof fakeWriteDb>;
+    db.tables["generation_jobs"] = Array.from({length:300},(_,i)=>({id:`done-${i}`,created_by:"editor",kind:"sound",status:"done",created_at:new Date().toISOString()}));
+    expect((await call()).ok).toBe(false);expect(h.speech).not.toHaveBeenCalled();expect(db.tables["generation_jobs"]).toHaveLength(300);
+  });
   it("requires explicit approval and never calls a provider without it", async () => { await expect(call({ approved: false })).rejects.toThrow(); expect(h.speech).not.toHaveBeenCalled(); });
   it("rejects viewers before reading account capabilities", async () => { h.role = "viewer"; expect((await call()).ok).toBe(false); expect(h.models).not.toHaveBeenCalled(); expect(h.speech).not.toHaveBeenCalled(); });
   it("rejects changed manuscript revisions before generating", async () => { expect((await call({ scriptRevision: 6 })).ok).toBe(false); expect(h.speech).not.toHaveBeenCalled(); });
