@@ -133,7 +133,7 @@ export function Toolbar({
           {title ? (
             <div
               data-toolbar-fixed
-              className="flex h-toolbar items-center text-chrome font-medium text-text-primary"
+              className="flex h-toolbar items-center text-[length:var(--text-chrome)] font-medium text-text-primary"
             >
               {title}
             </div>
@@ -203,7 +203,7 @@ export function ToolbarSeparator() {
 export type ToolbarButtonVariant = "icon" | "default" | "primary";
 
 const base =
-  "inline-flex h-icon-btn shrink-0 cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-sm text-chrome transition-colors duration-[var(--motion-fast)] ease-[var(--ease-standard)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-focus-ring disabled:cursor-not-allowed disabled:opacity-40 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0";
+  "inline-flex h-icon-btn shrink-0 cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-sm text-[length:var(--text-chrome)] transition-colors duration-[var(--motion-fast)] ease-[var(--ease-standard)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-focus-ring disabled:cursor-not-allowed disabled:opacity-40 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0";
 
 const variants: Record<ToolbarButtonVariant, string> = {
   icon: "size-icon-btn justify-center text-text-secondary hover:bg-surface-3 hover:text-text-primary disabled:hover:bg-transparent",
@@ -275,7 +275,7 @@ export const IconButton = forwardRef<
           ref={ref}
           variant="icon"
           aria-label={label}
-          data-icon-button
+          data-icon-button=""
           {...rest}
           onFocus={(e) => {
             onFocus?.(e);
@@ -292,7 +292,7 @@ export const IconButton = forwardRef<
       </TooltipTrigger>
       <TooltipContent
         side={side}
-        className="pointer-events-none flex items-center gap-2 rounded-sm border border-border bg-surface-3 px-2 py-1 text-chrome-label text-text-primary data-[state=closed]:animate-none"
+        className="pointer-events-none flex items-center gap-2 rounded-sm border border-border bg-surface-3 px-2 py-1 text-[length:var(--text-[length:var(--text-chrome)]-label)] text-text-primary data-[state=closed]:animate-none"
       >
         <span>{label}</span>
         {shortcut ? (
@@ -346,11 +346,11 @@ export function PanelHeader({
           )}
         </button>
       ) : null}
-      <Heading className="min-w-0 truncate text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
+      <Heading className="min-w-0 truncate text-[length:var(--text-[length:var(--text-chrome)]-label)] font-medium uppercase tracking-label text-text-tertiary">
         {title}
       </Heading>
       {count !== undefined && count !== null ? (
-        <span className="font-mono text-chrome-label tabular-nums text-text-tertiary">{count}</span>
+        <span className="font-mono text-[length:var(--text-[length:var(--text-chrome)]-label)] tabular-nums text-text-tertiary">{count}</span>
       ) : null}
       {actions ? <div className="ml-auto flex items-center gap-0.5">{actions}</div> : null}
     </div>
