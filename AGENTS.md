@@ -44,3 +44,4 @@ Kortversjonen:
 
 24. Note resolution is reversible, not removal; audio edits persist projected alignment without changing sources.
 25. MP3 encoding is client-only; owner-confirmed AI-source cleanup rechecks references server-side to protect used media.
+26. Dialogue audio versions (DV2): audio_clips own scene placement and the active version; dialogue_versions own file and edit, and the clip's legacy fields are only a mirror written by mirrorDialogueClips, so older readers stay correct while no version edit can be lost.
