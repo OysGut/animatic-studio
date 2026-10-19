@@ -192,10 +192,16 @@ for (const [name, path] of [["scene", "/scene"], ["manus", "/manus"], ["bibliote
   }, { width: 760 });
 }
 
-await run("u2-ikonknapp", "/storylab", async (page) => {
+await run("u2-ikonknapp", "/scene", async (page) => {
+  const size = await page.locator("button[data-icon-button]").first().boundingBox();
+  check(size && Math.round(size.height) === 28 && Math.round(size.width) === 28, "ikonknappen er 28 × 28 px");
+});
+
+await run("u2-verktoytips", "/plakat", async (page) => {
   const btn = page.locator("button[data-icon-button]:not([disabled])").first();
+  await btn.waitFor({ timeout: 8000 });
   const box = await btn.boundingBox();
-  check(box && Math.round(box.height) === 28 && Math.round(box.width) === 28, "ikonknappen er 28 × 28 px");
+  check(!!box, "en aktiv ikonknapp finnes");
   await btn.hover();
   await page.waitForTimeout(700);
   const tip = page.getByRole("tooltip");
