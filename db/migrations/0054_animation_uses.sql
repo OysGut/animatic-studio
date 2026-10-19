@@ -16,9 +16,9 @@ create table public.animation_uses (
   created_at timestamptz not null default now(),
   created_by uuid not null references public.profiles (user_id)
 );
+revoke all on public.animation_uses from anon, authenticated;
 grant select on public.animation_uses to authenticated;
 grant all on public.animation_uses to service_role;
-revoke all on public.animation_uses from anon, authenticated;
 alter table public.animation_uses enable row level security;
 create policy animation_uses_read on public.animation_uses for select to authenticated
   using (private.is_project_member(project_id));
