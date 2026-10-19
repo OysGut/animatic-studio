@@ -1,5 +1,16 @@
 # Implementeringsstatus – Animatic Studio
 
+## DV5/DV6 – 19.10.2026, kode levert; Cloud-verifikasjon gjenstår
+- Doble forslag grupperes per permanent replikk/ressurs; bekreftelse kobler alle tilhørende klipp.
+- Massegenerering i karakterens Lyd/Stemme-seksjon: scene-/linjevalg, dekning, ordrett eksisterende-lyd-advarsel, eksplisitt kostnadsgodkjenning, separate språkjobber og varig fremdrift. Ukjent pris blokkerer start. Tidsanslag er uttrykkelig usikkert.
+- Språk: UiLocale er uavhengig; prosjekt/variant/blokk styrer scriptLanguage, replikk/karakter/genereringsvalg styrer speechLanguage. BCP-47 og Unicode Segmenter; levende modellkapabiliteter, ingen skjult språkbytte. Stemmens faktiske uttale er ikke verifisert.
+- Batcharbeid ligger i lagringsadapteren: lease-fencede overganger, to linjer per kjøring, varig leverandørkvittering før applyCommand/apply_changes, atomisk completion/change_log. Betalte tvetydige resultater gjentas ikke. 402/403 stopper batchen varig uten probes. Vanlig tidsavbruddsrydding ekskluderer batchjobber.
+- Migrasjon 0061 skrevet, IKKE kjørt mot Cloud eller lokal DB. Forventet skjema 61. Fire funksjoner basert på 0060; purge_removed_assets beholdt ordrett. Ny overgangsfunksjon har service-only execute. DB-testene har tre nye 0061-kontroller, men kjøring stoppet før første test: localhost:54329 ECONNREFUSED. Claude må kontrollere og kjøre migrasjonen.
+- Tester: automatisk typekontroll/build OK; Vitest 1804 bestått, 0 feilet, 10 eksisterende hoppet over. Nye DV5/DV6 unit 23, tapsfrihet 12; kø-/timegrensetester også grønne. DV5 20/20, DV6 16/16, DV1 15/15, DV2 7/7, DV3 48/48, DV4 24/24; CA1–CA8 155/155, U5 65/65, scene-panels 39/39, lydeditor 24/24, lyd-UI 28/28 på isolert gjentak (første 27/28, QR-race). Verifisering4 51/54: to falsk-mikrofonkontroller og Courier Prime-måling, ikke grønn i dette miljøet.
+- Krav REQ-0780–0800 (G1–G13/S1–S8) registrert som Implementert – ikke verifisert. build_docs/check_kb OK: 800 krav, ingen udekkede mandatlinjer. i18n OK. Ingen ekte/betalte ElevenLabs-kall eller publisering.
+- Åpne avvik: batchresultater har reversible kommandoer og serverhistorikk, men lokal bruker-angreliste er ikke koblet til bakgrunnsresultatene. Leverandørblokkede batcher krever ny brukerstart etter gjenopprettet tilgang; eksisterende blokkert batch kan ikke gjenopptas via API. Full database-/receipt-/retry-ende-til-ende-test gjenstår; UI-suitene bruker faste mockede svar. Automatisk videreføring krever eksisterende cron-plan; den ble ikke kontrollert i Cloud.
+
+
 ## DV3/DV4 – 19.10.2026
 - DV1/DV2 og migrasjon 0060 er Cloud-verifisert/publisert av Øystein; skjemaversjon 60. Denne runden lager ingen 0061 og erstatter ingen databasefunksjoner: assets.voice er eksisterende størrelsesbegrenset JSONB; character_asset_id finnes fra 0060.
 - DV3 utvider RecordAudioDialog, ikke en konkurrerende editor: stor replikk/kontekst, karaktervalg og portrett, opptak, stablede versjoner, separat forhåndslytting, aktiv filmversjon, bekreftet reversibel sletting av inaktiv versjon. Karakterforslag krever bekreftelse; nye opptak kan få entydig karakterkobling. Begge tidslinjer projiserer karakterspor; overlapp varsles, andre linjer flyttes ikke.

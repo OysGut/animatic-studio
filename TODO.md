@@ -1,5 +1,12 @@
 # TODO – Animatic Studio
 
+## DV5/DV6 – rester før full verifikasjon
+- Claude: lokal DB og migrasjon 0061, nye RLS/grant/lease-tester og ende-til-ende med faste lydresultater.
+- Koble bakgrunnsresultatenes serverhistorikk til brukerens lokale angreliste.
+- Avklar gjenopprettet leverandørtilgang for varig blokkerte batcher uten automatiske probes.
+- Kontroller eksisterende cron-plan i Cloud og verifisering4-mikrofon/font i Claudes miljø.
+
+
 ## DV3/DV4 – kontroll hos Claude
 - Kjør DB-regresjon mot lokal Postgres (utilgjengelig i skriveøkten); ingen ny migrasjon.
 - Kontroller hosted ElevenLabs-konto og retten til å opprette egen stemme; opprettelse skjer foreløpig i leverandørens Voice Lab, ikke i appen.
