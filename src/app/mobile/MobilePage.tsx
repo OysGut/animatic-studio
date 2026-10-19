@@ -327,7 +327,7 @@ function BigButton({
       type="button"
       onClick={onClick}
       data-testid={testId}
-      className="flex min-h-[112px] flex-col items-center justify-center gap-2 rounded-lg border border-border bg-surface-2 p-3 text-center text-base font-medium text-text-primary active:bg-surface-3"
+      className="flex min-h-[112px] flex-col items-center justify-center gap-2 rounded-lg border border-border bg-surface-2 p-3 text-center text-base font-medium text-text-primary active:bg-surface-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
     >
       {icon}
       {label}
@@ -437,7 +437,7 @@ function QueueTile({ it, onRetry }: { it: QueueItem; onRetry: (id: string) => vo
         <button
           type="button"
           onClick={() => onRetry(it.id)}
-          className="flex items-center justify-center gap-1 rounded-sm bg-surface-2 py-1 text-[11px] text-text-primary"
+          className="flex min-h-11 items-center justify-center gap-1 rounded-sm bg-surface-2 py-2 text-xs text-text-primary focus-visible:ring-2 focus-visible:ring-focus-ring"
           title={it.error}
         >
           <RotateCw className="size-3" aria-hidden />
@@ -516,7 +516,7 @@ function ShareButton({ token, label, audio }: { token: string; label: string; au
           readOnly
           value={link}
           onFocus={(e) => e.target.select()}
-          className="h-9 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary"
+          className="h-11 rounded-sm border border-border-control bg-surface-3 px-2 text-sm text-text-primary"
           data-testid="mobile-share-link"
         />
       ) : null}

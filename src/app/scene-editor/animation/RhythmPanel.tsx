@@ -11,6 +11,9 @@ import { planRhythm, RHYTHM_TEMPO_MAX, RHYTHM_TEMPO_MIN, type RhythmLine } from 
 import { formatAnimationTime, formatFrameGap } from "@/core/animation/time-format";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
+import { timingOf } from "@/core/composition/timing";
+import { compositionForOccurrence } from "@/core/composition/retime";
+import { compositionFieldsOf } from "../timeline-helpers";
 
 export function RhythmPanel({ state, occurrenceId, editable, run }: {
   state: ProjectState; occurrenceId: string; editable: boolean;
@@ -33,6 +36,16 @@ export function RhythmPanel({ state, occurrenceId, editable, run }: {
   const setLine = (id: string, patch: RhythmLine) => setLines(l => ({ ...l, [id]: { ...l[id], ...patch } }));
   const delta = plan ? plan.afterFrames - plan.beforeFrames : 0;
   const ready = !!plan?.retime?.ok;
+  // U5 del B: beskyttede tidsområder = scenens låste tidsrom (lagret, vises også i tidslinjen)
+  const occ = state.occurrences[occurrenceId];
+  const comp = occ ? compositionForOccurrence(state, occ) : undefined;
+  const locked = comp ? timingOf(comp).lockedRanges : [];
+  const [protFrom, setProtFrom] = useState(0);
+  const [protTo, setProtTo] = useState(25);
+  const setProtected = (next: typeof locked, label: string) => {
+    if (!comp) return;
+    setError(run({ type: "UpdateComposition", compositionId: comp.id, fields: compositionFieldsOf(comp), timing: { ...timingOf(comp), lockedRanges: next } } as Command, label));
+  };
 
   const apply = () => {
     if (!plan?.retime?.ok) return;
@@ -81,6 +94,28 @@ export function RhythmPanel({ state, occurrenceId, editable, run }: {
               className="h-7 w-14 rounded-sm border border-border-control bg-surface-3 px-1 text-text-primary" /></label>
         </div>)}
       </div> : <p className="text-[11px] text-text-tertiary">{L("Scenen har ingen replikker. Takt og forskyvning virker på mellomrommene.", "The scene has no lines. Tempo and shift act on the gaps.")}</p>}
+      <fieldset data-testid="ca8-rhythm-protected" className="space-y-1 rounded-sm border border-border p-2">
+        <legend className="px-1 text-[11px] text-text-secondary">{L("Beskyttede tidsområder (flyttes aldri)", "Protected ranges (never moved)")}</legend>
+        {locked.map(r => <div key={r.id} data-testid={`ca8-rhythm-protected-${r.id}`} className="flex items-center justify-between font-mono text-[11px] text-text-secondary">
+          <span>{formatAnimationTime(r.startFrame, fps)} – {formatAnimationTime(r.endFrame, fps)}</span>
+          <button type="button" disabled={!editable} className="rounded-sm px-1 text-text-tertiary hover:text-text-primary focus-visible:ring-2 focus-visible:ring-focus-ring"
+            aria-label={L("Fjern beskyttelsen", "Remove the protection")}
+            onClick={() => setProtected(locked.filter(x => x.id !== r.id), L("Fjern beskyttet tidsområde", "Remove protected range"))}>×</button>
+        </div>)}
+        <div className="flex items-center gap-1 text-xs text-text-secondary">
+          <label className="flex items-center gap-1">{L("Fra", "From")}
+            <input data-testid="ca8-rhythm-protect-from" type="number" min={0} value={protFrom} onChange={e => setProtFrom(Math.max(0, Math.round(Number(e.target.value) || 0)))}
+              className="h-7 w-14 rounded-sm border border-border-control bg-surface-3 px-1 text-text-primary" /></label>
+          <label className="flex items-center gap-1">{L("til", "to")}
+            <input data-testid="ca8-rhythm-protect-to" type="number" min={1} value={protTo} onChange={e => setProtTo(Math.max(1, Math.round(Number(e.target.value) || 0)))}
+              className="h-7 w-14 rounded-sm border border-border-control bg-surface-3 px-1 text-text-primary" /></label>
+          <Button size="sm" variant="outline" data-testid="ca8-rhythm-protect-add" disabled={!editable || protTo <= protFrom || locked.some(r => protFrom < r.endFrame && protTo > r.startFrame)}
+            onClick={() => setProtected([...locked, { id: crypto.randomUUID(), startFrame: protFrom, endFrame: protTo, label: L("Beskyttet (rytme)", "Protected (rhythm)") }], L("Beskytt tidsområde", "Protect range"))}>
+            {L("Beskytt", "Protect")}
+          </Button>
+        </div>
+        <p className="text-[11px] text-text-tertiary">{L("Hold Cmd/Ctrl og dra i tidslinjen for å justere rytmen direkte. Shift fordeler.", "Hold Cmd/Ctrl and drag in the timeline to adjust the rhythm directly. Shift spreads.")}</p>
+      </fieldset>
       <div data-testid="ca8-rhythm-preview" className="space-y-0.5 rounded-sm border border-accent-warm/40 bg-surface-2 p-2">
         <div className="text-[11px] text-accent-warm">{L("Forhåndsvisning", "Preview")}{delta ? ` · ${delta > 0 ? "+" : "−"} ${formatFrameGap(Math.abs(delta), fps)}` : ""}</div>
         {plan?.gaps.map((g, i) => {

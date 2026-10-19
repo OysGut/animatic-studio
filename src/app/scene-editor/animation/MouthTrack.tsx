@@ -15,7 +15,7 @@ import { IconButton } from "@/app/shell/workspace-chrome";
 import type { AnimWindow } from "./TimeNavigator";
 
 const VISEME_COLORS: Record<string, string> = {
-  A: "#7c5cd6", B: "#4f7fd4", C: "#3d9db8", D: "#3fae7a", E: "#8fb04a", F: "#c9a03c", G: "#cf7a3a", H: "#c25454", X: "#5b6472",
+  A: "var(--viseme-a)", B: "var(--viseme-b)", C: "var(--viseme-c)", D: "var(--viseme-d)", E: "var(--viseme-e)", F: "var(--viseme-f)", G: "var(--viseme-g)", H: "var(--viseme-h)", X: "var(--viseme-x)",
 };
 
 export function MouthTrack({ state, occurrenceId, language, view, frame, editable, run, urls }: {
@@ -77,7 +77,7 @@ export function MouthTrack({ state, occurrenceId, language, view, frame, editabl
         <IconButton data-testid="lipsync-apply" label={L("Bruk", "Apply")} onClick={applyProposal}><Check /></IconButton>
         <IconButton data-testid="lipsync-discard" label={L("Forkast", "Discard")} onClick={() => setProposal(null)}><X /></IconButton>
       </span> : null}
-      <span aria-live="assertive" data-testid="lipsync-message" className="ml-auto text-[11px] text-danger">{error ? <span role="alert">{error}</span> : null}</span>
+      <span aria-live="assertive" data-testid="lipsync-message" className="ml-auto text-[11px] text-status-danger">{error ? <span role="alert">{error}</span> : null}</span>
     </div>
     {tracks.map(t => {
       const result = resultOf(t.clip.id);
@@ -91,7 +91,7 @@ export function MouthTrack({ state, occurrenceId, language, view, frame, editabl
           {result ? <IconButton data-testid={`lipsync-toggle-${t.clip.id}`} aria-pressed={result.enabled} label={result.enabled ? L("Slå av leppesynk for replikken", "Turn off lip sync for the line") : L("Slå på leppesynk for replikken", "Turn on lip sync for the line")} active={result.enabled} disabled={!editable}
             onClick={() => setError(run({ type: "SetLipsyncEnabled", lipsyncId: result.id, enabled: !result.enabled }, L("Endre leppesynk", "Change lip sync")))}><Mic /></IconButton> : null}
           <IconButton data-testid={`lipsync-generate-${t.clip.id}`} label={result ? L("Generer leppesynk på nytt", "Regenerate lip sync") : L("Generer leppesynk", "Generate lip sync")} disabled={!editable || busy || !takeId} onClick={() => void analyze(t.clip.id)}><RefreshCw /></IconButton>
-          {stale ? <span className="text-[11px] text-warning" title={L("Lyden er endret etter analysen", "The audio changed after the analysis")}>!</span> : null}
+          {stale ? <span className="text-[11px] text-status-discrepancy" title={L("Lyden er endret etter analysen", "The audio changed after the analysis")}>!</span> : null}
         </div>
         <div className="relative h-full min-w-0 flex-1">
           {shown?.spans.map(span => {
@@ -101,8 +101,8 @@ export function MouthTrack({ state, occurrenceId, language, view, frame, editabl
             return <button key={span.frame} type="button" data-testid={`viseme-${t.clip.id}-${span.frame}`} data-viseme={viseme}
               aria-label={L(`Munnform ${viseme}`, `Mouth shape ${viseme}`)} disabled={!editable || isProposal || !result}
               onClick={() => result && cycleViseme(result, span)}
-              className={"absolute top-1 h-5 rounded-sm " + (isProposal ? "opacity-60 outline-dashed outline-1 outline-accent-brand" : "") + (active ? "" : " opacity-80")}
-              style={{ left: `${px(a)}%`, width: `${Math.max(0.4, px(b) - px(a))}%`, background: VISEME_COLORS[viseme] }} />;
+              className={"absolute top-1 flex h-5 items-center justify-center overflow-hidden rounded-sm font-mono text-[11px] font-semibold leading-none text-accent-fg focus-visible:ring-2 focus-visible:ring-focus-ring " + (isProposal ? "opacity-60 outline-dashed outline-1 outline-accent-brand" : "") + (active ? "" : " opacity-80")}
+              style={{ left: `${px(a)}%`, width: `${Math.max(0.4, px(b) - px(a))}%`, background: VISEME_COLORS[viseme] }}><span aria-hidden data-testid="viseme-letter">{viseme}</span></button>;
           })}
           {!shown ? <span className="absolute top-1.5 text-[11px] text-text-tertiary" style={{ left: `${px(t.start)}%` }}>{takeId ? L("Ingen leppesynk ennå", "No lip sync yet") : L("Velg et take først", "Choose a take first")}</span> : null}
         </div>

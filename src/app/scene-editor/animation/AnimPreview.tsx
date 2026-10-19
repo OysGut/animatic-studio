@@ -32,7 +32,9 @@ export function AnimPreview({ state, composition, frame, urls }: { state: Projec
     ctx.clearRect(0, 0, c.width, c.height);
     drawFrame(ctx, out, { view: [k, 0, 0, k, c.width / 2 - k * out.width / 2 + pan.x * dpr, pan.y * dpr], images: cache.images, placeholders: true });
   }, [state, composition.id, frame, size, zoom, pan, tick, cache, fonts]);
-  return <section data-testid="anim-preview" className="flex min-h-0 flex-1 flex-col">
+  // U5: forhåndsvisningen har scenens bildeformat; resten av panelet er vanlig panelflate (ingen stor svart flate)
+  const aspect = `${Math.max(1, composition.width)} / ${Math.max(1, composition.height)}`;
+  return <section data-testid="anim-preview" className="flex min-h-0 flex-1 flex-col bg-surface-1">
     <PanelHeader title={L("Forhåndsvisning", "Preview")} />
     <Toolbar><ToolbarGroup>
       <select data-testid="anim-preview-zoom" aria-label={L("Zoom i forhåndsvisningen", "Preview zoom")} value={zoom} onChange={e => { setZoom(e.target.value === "fit" ? "fit" : Number(e.target.value)); setPan({ x: 0, y: 0 }); }} className="h-7 rounded-sm border border-border-control bg-surface-3 text-xs text-text-primary">
@@ -42,7 +44,8 @@ export function AnimPreview({ state, composition, frame, urls }: { state: Projec
       <IconButton label={L("Tilbakestill visningen", "Reset view")} onClick={() => { setZoom("fit"); setPan({ x: 0, y: 0 }); }}><RotateCcw /></IconButton>
     </ToolbarGroup></Toolbar>
     <div ref={wrap} data-testid="anim-preview-pan" data-pan-x={pan.x} data-pan-y={pan.y} tabIndex={0} role="img" aria-label={L("Forhåndsvisning av scenen", "Scene preview")}
-      className="relative min-h-0 flex-1 touch-none overflow-hidden bg-media focus-visible:ring-2 focus-visible:ring-focus-ring"
+      style={{ aspectRatio: aspect }}
+      className="relative max-h-full min-h-0 w-full shrink touch-none overflow-hidden border-b border-border bg-media focus-visible:ring-2 focus-visible:ring-focus-ring"
       onPointerDown={e => { e.currentTarget.setPointerCapture(e.pointerId); drag.current = { x: e.clientX, y: e.clientY, pan }; }}
       onPointerMove={e => { const d = drag.current; if (d) setPan({ x: d.pan.x + e.clientX - d.x, y: d.pan.y + e.clientY - d.y }); }}
       onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }}

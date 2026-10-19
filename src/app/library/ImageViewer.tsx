@@ -317,7 +317,7 @@ export function ImageViewer({
         </Button>
       </div>
       {error ? (
-        <p role="alert" className="bg-red-950 px-3 py-1.5 text-xs text-red-200">
+        <p role="alert" className="bg-status-danger-bg px-3 py-1.5 text-xs text-status-danger">
           {error}
         </p>
       ) : null}

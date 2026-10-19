@@ -89,6 +89,6 @@ export function PatternStudio({ state, duration, editable, run }: {
         <p className="text-[11px] text-text-tertiary">{L("Samme seed gir samme kurve – også ved eksport.", "The same seed gives the same curve – also on export.")}</p>
       </div> : <p className="flex-1 p-3 text-[11px] text-text-tertiary">{L("Velg et mønster, eller lag et nytt.", "Choose a pattern, or create a new one.")}</p>}
     </div>
-    {error ? <p role="alert" className="px-2 pb-1 text-[11px] text-danger">{error}</p> : null}
+    {error ? <p role="alert" className="px-2 pb-1 text-[11px] text-status-danger">{error}</p> : null}
   </section>;
 }

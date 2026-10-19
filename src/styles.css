@@ -200,6 +200,16 @@
   --status-discrepancy-bg: oklch(0.742 0.144 54.4 / 14%);
   --status-uncertain-bg: oklch(0.797 0.134 84.3 / 14%);
   --status-moved-bg: oklch(0.74 0.12 300 / 16%);
+  /* U5: munnformene A–H/X i leppesynksporet (fast, lesbar rekkefølge i fargesirkelen) */
+  --viseme-a: oklch(0.62 0.15 290);
+  --viseme-b: oklch(0.62 0.13 260);
+  --viseme-c: oklch(0.66 0.1 220);
+  --viseme-d: oklch(0.68 0.13 160);
+  --viseme-e: oklch(0.72 0.13 125);
+  --viseme-f: oklch(0.74 0.12 85);
+  --viseme-g: oklch(0.68 0.14 55);
+  --viseme-h: oklch(0.62 0.15 25);
+  --viseme-x: oklch(0.5 0.02 255);
   /* Notater (DEC-0031) og søketreff (REQ-0541) */
   --note: oklch(0.8 0.12 70);
   --note-bg: oklch(0.8 0.12 70 / 18%);

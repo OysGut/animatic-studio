@@ -696,7 +696,7 @@ export function ExportAnimaticDialog({
         </DialogHeader>
 
         <div className="grid grid-cols-2 gap-5">
-          <fieldset className="flex flex-col gap-2" disabled={busy}>
+          <fieldset className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-3" disabled={busy}>
             <legend className={legend}>{L("Hva", "What")}</legend>
             <label className={radio}>
               <input
@@ -845,7 +845,7 @@ export function ExportAnimaticDialog({
             ) : null}
           </fieldset>
 
-          <fieldset className="flex flex-col gap-2" disabled={busy}>
+          <fieldset className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-3" disabled={busy}>
             <legend className={legend}>{L("Størrelse", "Size")}</legend>
             <label className={radio}>
               <input
@@ -906,7 +906,7 @@ export function ExportAnimaticDialog({
           </fieldset>
         </div>
 
-        <fieldset className="flex flex-col gap-2" disabled={busy}>
+        <fieldset className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-3" disabled={busy}>
           <legend className={legend}>{L("Språk og innhold", "Language and content")}</legend>
           <FilmLanguagePicker value={language} onChange={onLanguage} />
           <div className="flex flex-wrap gap-4">
@@ -1030,14 +1030,15 @@ export function ExportAnimaticDialog({
         ) : null}
 
         {progress && !ready ? (
-          <div className="flex flex-col gap-1" aria-live="polite">
+          <div data-testid="export-progress" className="flex flex-col gap-1.5 rounded-sm border border-accent-brand/50 bg-accent-selection p-3" aria-live="polite">
+            <p className="text-[13px] font-medium text-text-primary">{L("Eksporterer …", "Exporting …")}</p>
             <div
               role="progressbar"
               aria-valuenow={pct}
               aria-valuemin={0}
               aria-valuemax={100}
               aria-label={L("Fremdrift", "Progress")}
-              className="h-1.5 overflow-hidden rounded-full bg-surface-3"
+              className="h-2 overflow-hidden rounded-full bg-surface-3"
             >
               <div
                 className="h-full bg-accent-brand transition-[width]"
@@ -1052,16 +1053,18 @@ export function ExportAnimaticDialog({
         ) : null}
 
         {error ? (
-          <p role="alert" className="text-xs text-status-danger">
+          <p role="alert" className="rounded-sm border border-status-danger/50 bg-status-danger-bg p-3 text-xs text-status-danger">
             {error}
           </p>
         ) : null}
 
         {ready ? (
           <p
-            className="flex flex-wrap items-center gap-2 text-xs text-text-secondary"
+            data-testid="export-done"
+            className="flex flex-wrap items-center gap-2 rounded-sm border border-status-success/50 bg-status-success-bg p-3 text-xs text-text-secondary"
             role="status"
           >
+            <CheckCircle2 className="size-4 shrink-0 text-status-success" aria-hidden />
             {L("Ferdig:", "Done:")} {ready.name} (
             {(ready.bytes / 1024 / 1024).toLocaleString(locale(), {
               maximumFractionDigits: 1,

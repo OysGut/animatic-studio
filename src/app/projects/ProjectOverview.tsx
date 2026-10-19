@@ -19,6 +19,7 @@ import { ProjectCostSection } from "@/app/account/ProjectCostSection";
 import { ContinuityAnalysisPanel } from "@/app/continuity/ContinuityAnalysisPanel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ErrorState, LoadingState } from "@/app/shell/screen-states";
 
 export function ProjectOverview({ projectId, userId }: { projectId: string; userId: string }) {
   const state = useProjectState(projectId);
@@ -28,28 +29,31 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
 
   if (state.isLoading)
     return (
-      <p className="p-6 text-[13px] text-text-tertiary">
-        {L("Henter prosjektet …", "Loading the project …")}
-      </p>
+      <div className="mx-auto w-full max-w-[960px] px-6 py-8">
+        <LoadingState label={L("Henter prosjektet …", "Loading the project …")} rows={4} />
+      </div>
     );
   if (state.isError || !state.data)
     return (
-      <div role="alert" className="p-6">
-        <p className="text-[13px] text-status-danger">
-          {L(
+      <div className="mx-auto w-full max-w-[960px] px-6 py-8">
+        <ErrorState
+          message={L(
             "Prosjektet kunne ikke hentes. Det finnes ikke, du har ikke tilgang, eller noe gikk galt.",
             "The project could not be loaded. It does not exist, you do not have access, or something went wrong.",
           )}
-        </p>
-        {state.error ? (
-          <p className="mt-2 font-mono text-xs text-text-tertiary">
-            {L(
-              "Teknisk detalj (send gjerne til Claude):",
-              "Technical detail (feel free to send to Claude):",
-            )}{" "}
-            {state.error.message}
-          </p>
-        ) : null}
+          detail={
+            state.error ? (
+              <span className="font-mono">
+                {L(
+                  "Teknisk detalj (send gjerne til Claude):",
+                  "Technical detail (feel free to send to Claude):",
+                )}{" "}
+                {state.error.message}
+              </span>
+            ) : null
+          }
+          onRetry={() => void state.refetch()}
+        />
       </div>
     );
   const s = state.data;

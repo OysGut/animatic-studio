@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import { memo, type ComponentType } from "react";
 import { L, canvasNodeKindLabel, type CanvasNode, type CanvasNodeKind, type ProjectState } from "@/core";
-import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
+import { AssetThumb } from "@/app/library/AssetThumb";
 
 export const KIND_ICON: Record<CanvasNodeKind, LucideIcon> = {
   premise: BookOpen,
@@ -92,6 +92,8 @@ export interface CanvasNodeData extends Record<string, unknown> {
   readonly node: CanvasNode;
   readonly state: ProjectState;
   readonly sceneInfo: { heading: string; time: string } | null;
+  /** U5: URL til ressursens forsidebilde, hentet samlet i canvaset. */
+  readonly cover?: string | undefined;
   readonly onOpen: ((n: CanvasNode) => void) | null;
 }
 export type StoryFlowNode = Node<CanvasNodeData>;
@@ -125,7 +127,7 @@ function NodeBody({ data, selected, kind }: NodeProps<StoryFlowNode> & { kind: C
       <Handle type="target" position={Position.Left} aria-label={L("Koble hit", "Connect here")} />
       <div className="flex min-w-0 items-center gap-1.5">
         {(kind === "character" || kind === "location") && n.assetId ? (
-          <AssetSymbolIcon state={data.state} assetId={n.assetId} className="size-6 shrink-0" />
+          <AssetThumb state={data.state} assetId={n.assetId} url={data.cover} size="sm" />
         ) : (
           <Icon className="size-3.5 shrink-0 text-text-secondary" aria-hidden />
         )}
@@ -181,4 +183,5 @@ export const NODE_TYPES: Record<CanvasNodeKind, ComponentType<NodeProps<StoryFlo
   alternative: make("alternative"),
   group: make("group"),
 };
+
 

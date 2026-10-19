@@ -5,7 +5,7 @@
  */
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { PanelLeft, PanelRight, Plus } from "lucide-react";
+import { LayoutGrid, List, PanelLeft, PanelRight, Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   L,
@@ -25,7 +25,7 @@ import { useCommands, type Commands } from "@/app/project/use-commands";
 import { SaveIndicator } from "@/app/script/ScriptWorkspace";
 import { PanelHeader, Toolbar, ToolbarButton, ToolbarSeparator, IconButton } from "@/app/shell/workspace-chrome";
 import { PaneResizer, usePaneSize, useStoredFlag } from "@/app/shell/pane-size";
-import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
+import { AssetThumb, useAssetCovers } from "@/app/library/AssetThumb";
 import { CharacterWorkspace } from "./CharacterWorkspace";
 import { ConversationView, NewSessionForm } from "./ConversationView";
 import { FactsPanel } from "./FactsPanel";
@@ -130,6 +130,7 @@ function Lab({
   undoError: string | null;
 }) {
   const characters = storyCharacters(state);
+  const covers = useAssetCovers(state, characters.map((c) => c.id));
   const [assetId, setAssetId] = useState<string | null>(
     () =>
       (initialAssetId && characters.some((c) => c.id === initialAssetId) ? initialAssetId : null) ??
@@ -178,6 +179,8 @@ function Lab({
   const asset = assetId ? state.assets[assetId] : undefined;
 
   const [leftW, setLeftW] = usePaneSize("storylab-left", 240, 180, 420);
+  // U5: rutenett eller liste for karakterene, husket i nettleseren
+  const [charGrid, setCharGrid] = useStoredFlag("storylab-characters-grid", false);
   const [rightW, setRightW] = usePaneSize("storylab-right", 320, 240, 520);
   const [leftClosed, setLeftClosed] = useStoredFlag("storylab-left-closed", false);
   const [rightClosed, setRightClosed] = useStoredFlag("storylab-right-closed", false);
@@ -218,8 +221,8 @@ function Lab({
           >
             <PaneResizer edge="right" size={leftW} onSize={setLeftW} min={180} max={420} label={L("Bredde på karakterpanelet", "Width of the character panel")} />
             <div role="tablist" className="flex flex-wrap border-b border-border"><ToolbarButton role="tab" aria-selected={leftTab === "characters"} active={leftTab === "characters"} onClick={() => setLeftTab("characters")}>{L("Karakterer", "Characters")}</ToolbarButton><ToolbarButton role="tab" data-testid="storylab-tab-scenes" aria-selected={leftTab === "scenes"} active={leftTab === "scenes"} onClick={() => setLeftTab("scenes")}>{L("Scener", "Scenes")}</ToolbarButton><ToolbarButton role="tab" data-testid="storylab-tab-suggestions" aria-selected={leftTab === "suggestions"} active={leftTab === "suggestions"} onClick={() => { setLeftTab("suggestions"); setSuggestionScene(null); }}>{L(`Forslag (${suggestions.data?.filter((s) => s.status === "open").length ?? 0})`, `Suggestions (${suggestions.data?.filter((s) => s.status === "open").length ?? 0})`)}</ToolbarButton><ToolbarButton role="tab" data-testid="storylab-tab-canvas" aria-selected={leftTab === "canvas"} active={leftTab === "canvas"} onClick={() => openCanvas(view.kind === "canvas" ? view.interviewId : null)}>{L("Canvas", "Canvas")}</ToolbarButton></div>
-            {leftTab === "canvas" ? <div className="min-h-0 flex-1 overflow-y-auto p-3 text-[12px] text-text-secondary" data-testid="storylab-canvas-tab"><p>{L("Canvaset er et visuelt arbeidsrom ved siden av manuset. Ingenting overføres til manuset eller biblioteket uten at du bekrefter.", "The canvas is a visual workspace next to the script. Nothing is transferred to the script or the library unless you confirm.")}</p>{editable ? <ToolbarButton className="mt-2" data-testid="storylab-new-interview-tab" onClick={() => openCanvas(null)}>{L("Intervju – utvikle en idé", "Interview – develop an idea")}</ToolbarButton> : null}</div> : leftTab === "suggestions" ? <SuggestionsPanel state={state} projectId={projectId} cmds={cmds} editable={editable} focusedId={focusedSuggestion} sceneFilter={suggestionScene} onSource={(id, turnId) => { setView({ kind: "session", id }); setSourceTurn(turnId); }} /> : leftTab === "scenes" ? <ul className="min-h-0 flex-1 overflow-y-auto py-1" data-testid="storylab-scenes">{scenesByStoryTime(state).map((s) => <li key={s.sceneId}><ToolbarButton className="w-full justify-start" active={view.kind === "scene" && view.id === s.sceneId} data-testid="storylab-scene" data-scene-id={s.sceneId} onClick={() => { setSceneId(s.sceneId); setView({ kind: "scene", id: s.sceneId }); }}>{s.label}</ToolbarButton></li>)}</ul> : <><PanelHeader title={L("Karakterer", "Characters")} count={characters.length} />
-            <ul className="min-h-0 flex-1 overflow-y-auto py-1" data-testid="storylab-characters">
+            {leftTab === "canvas" ? <div className="min-h-0 flex-1 overflow-y-auto p-3 text-[12px] text-text-secondary" data-testid="storylab-canvas-tab"><p>{L("Canvaset er et visuelt arbeidsrom ved siden av manuset. Ingenting overføres til manuset eller biblioteket uten at du bekrefter.", "The canvas is a visual workspace next to the script. Nothing is transferred to the script or the library unless you confirm.")}</p>{editable ? <ToolbarButton className="mt-2" data-testid="storylab-new-interview-tab" onClick={() => openCanvas(null)}>{L("Intervju – utvikle en idé", "Interview – develop an idea")}</ToolbarButton> : null}</div> : leftTab === "suggestions" ? <SuggestionsPanel state={state} projectId={projectId} cmds={cmds} editable={editable} focusedId={focusedSuggestion} sceneFilter={suggestionScene} onSource={(id, turnId) => { setView({ kind: "session", id }); setSourceTurn(turnId); }} /> : leftTab === "scenes" ? <ul className="min-h-0 flex-1 overflow-y-auto py-1" data-testid="storylab-scenes">{scenesByStoryTime(state).map((s) => <li key={s.sceneId}><ToolbarButton className="w-full justify-start" active={view.kind === "scene" && view.id === s.sceneId} data-testid="storylab-scene" data-scene-id={s.sceneId} onClick={() => { setSceneId(s.sceneId); setView({ kind: "scene", id: s.sceneId }); }}>{s.label}</ToolbarButton></li>)}</ul> : <><PanelHeader title={L("Karakterer", "Characters")} count={characters.length} actions={<IconButton data-testid="storylab-view-toggle" aria-pressed={charGrid} label={charGrid ? L("Vis som liste", "Show as list") : L("Vis som rutenett", "Show as grid")} onClick={() => setCharGrid(!charGrid)}>{charGrid ? <List /> : <LayoutGrid />}</IconButton>} />
+            <ul className={"min-h-0 flex-1 overflow-y-auto py-1" + (charGrid ? " grid auto-rows-min grid-cols-[repeat(auto-fill,minmax(88px,1fr))] gap-1 px-1" : "")} data-testid="storylab-characters" data-view={charGrid ? "grid" : "list"}>
               {characters.length === 0 ? (
                 <li className="px-3 py-2 text-xs text-text-tertiary">
                   {L(
@@ -234,6 +237,8 @@ function Lab({
                   state={state}
                   asset={c}
                   selected={c.id === assetId}
+                  url={covers[c.id]}
+                  grid={charGrid}
                   onPick={() => {
                     setAssetId(c.id);
                     setView({ kind: "character" });
@@ -370,11 +375,15 @@ function CharacterRow({
   asset,
   selected,
   onPick,
+  url,
+  grid,
 }: {
   state: ProjectState;
   asset: Asset;
   selected: boolean;
   onPick: () => void;
+  url?: string | undefined;
+  grid?: boolean;
 }) {
   const st = profileStatus(state, asset.id);
   const mark =
@@ -393,14 +402,17 @@ function CharacterRow({
         aria-current={selected ? "true" : undefined}
         onClick={onPick}
         className={
-          "flex w-full items-center gap-2 px-3 py-1.5 text-left text-[13px] hover:bg-surface-3 " +
+          (grid
+            ? "relative flex w-full flex-col items-stretch gap-1 rounded-sm p-1 text-left text-[12px] hover:bg-surface-3 "
+            : "flex w-full items-center gap-2 px-3 py-1.5 text-left text-[13px] hover:bg-surface-3 ") +
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring " +
           (selected ? "bg-accent-selection text-text-primary" : "text-text-secondary")
         }
       >
-        <AssetSymbolIcon state={state} assetId={asset.id} className="size-6 shrink-0" />
-        <span className="min-w-0 flex-1 truncate">{asset.name}</span>
+        <AssetThumb state={state} assetId={asset.id} url={url} size={grid ? "lg" : "md"} />
+        <span className={grid ? "min-w-0 truncate pr-4" : "min-w-0 flex-1 truncate"}>{asset.name}</span>
         <span
-          className={st === "active" ? "text-accent-brand" : "text-text-tertiary"}
+          className={(grid ? "absolute right-1.5 top-1.5 " : "") + (st === "active" ? "text-accent-brand" : "text-text-tertiary")}
           title={mark.text}
           aria-label={mark.text}
         >

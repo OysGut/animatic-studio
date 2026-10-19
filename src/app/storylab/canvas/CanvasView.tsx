@@ -4,6 +4,7 @@
  * flytting lagres ved dragStop som én MoveCanvasNodes, tekst lagres med debounce.
  * Lastes bare i nettleseren (se LazyCanvasView).
  */
+import { useAssetCovers } from "@/app/library/AssetThumb";
 import "@xyflow/react/dist/style.css";
 import {
   Background,
@@ -113,6 +114,9 @@ function Canvas({ state, projectId, cmds, editable, interviewId, startInterview,
   }, [onOpenAsset, onOpenScene]);
 
   const live = useMemo(() => Object.values(state.canvasNodes).filter((n) => !n.removed), [state.canvasNodes]);
+  // U5: forsidebildene hentes én gang for hele canvaset (ikke per node), så store canvas laster like raskt
+  const assetIds = useMemo(() => [...new Set(live.flatMap((n) => (n.assetId ? [n.assetId] : [])))].sort(), [live]);
+  const covers = useAssetCovers(state, assetIds);
   const sceneInfo = useCallback((n: CanvasNode) => {
     if (!n.sceneId) return null;
     const v = Object.values(state.variants).find((x) => x.sceneId === n.sceneId);
@@ -129,8 +133,8 @@ function Canvas({ state, projectId, cmds, editable, interviewId, startInterview,
     draggable: editable,
     zIndex: n.kind === "group" ? -1 : 0,
     ariaLabel: `${canvasNodeKindLabel(n.kind)}: ${n.title || L("Uten tittel", "Untitled")}`,
-    data: { node: n, state, sceneInfo: sceneInfo(n), onOpen: n.assetId || n.sceneId ? onOpen : null },
-  }), [editable, state, sceneInfo, onOpen]);
+    data: { node: n, state, sceneInfo: sceneInfo(n), cover: n.assetId ? covers[n.assetId] : undefined, onOpen: n.assetId || n.sceneId ? onOpen : null },
+  }), [editable, state, sceneInfo, onOpen, covers]);
 
   const [nodes, setNodes] = useState<StoryFlowNode[]>(() => live.map((n) => toFlow(n, false)));
   const [edges, setEdges] = useState<Edge[]>([]);

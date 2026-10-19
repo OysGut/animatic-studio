@@ -20,7 +20,10 @@ import {
   Undo2,
   Upload,
   Globe,
+  LayoutGrid,
+  List,
 } from "lucide-react";
+import { useStoredFlag } from "@/app/shell/pane-size";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   L,
@@ -148,6 +151,8 @@ function Library({
   const [category, setCategory] = useState("");
   const [showArchived, setShowArchived] = useState(false);
   const [listWidth, setListWidth] = usePaneSize("library-list", 300, 220, 560);
+  // U5: rutenett eller liste, husket i nettleseren
+  const [grid, setGrid] = useStoredFlag("library-assets-grid", false);
   const [selected, setSelected] = useState<string | null>(() =>
     initialAssetId && state.assets[initialAssetId] ? initialAssetId : null,
   );
@@ -628,9 +633,24 @@ function Library({
               }
             />
           ) : (
+            <>
+            <div className="flex h-7 shrink-0 items-center justify-end border-b border-border px-1">
+              <IconButton
+                data-testid="library-view-toggle"
+                aria-pressed={grid}
+                label={grid ? L("Vis som liste", "Show as list") : L("Vis som rutenett", "Show as grid")}
+                onClick={() => setGrid(!grid)}
+              >
+                {grid ? <List /> : <LayoutGrid />}
+              </IconButton>
+            </div>
             <ul
               aria-label={L("Ressurser", "Assets")}
-              className="min-h-0 flex-1 overflow-y-auto py-1"
+              data-view={grid ? "grid" : "list"}
+              className={
+                "min-h-0 flex-1 overflow-y-auto py-1" +
+                (grid ? " grid auto-rows-min grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-1 px-1" : "")
+              }
             >
               {shown.length === 0 ? (
                 <li className="px-3 py-4 text-[13px] text-text-tertiary">
@@ -659,12 +679,21 @@ function Library({
                       data-asset-row={a.id}
                       aria-current={a.id === selected ? "true" : undefined}
                       className={
-                        "grid w-full grid-cols-[36px_1fr] items-center gap-2 px-2 py-1.5 text-left " +
+                        (grid
+                          ? "flex w-full flex-col items-stretch gap-1 rounded-sm p-1 text-left "
+                          : "grid w-full grid-cols-[36px_1fr] items-center gap-2 px-2 py-1.5 text-left ") +
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring " +
                         (a.id === selected ? "bg-accent-selection" : "hover:bg-surface-3") +
                         (a.archived ? " opacity-60" : "")
                       }
                     >
-                      <span className="flex size-9 items-center justify-center overflow-hidden rounded-sm bg-surface-3 text-[11px] font-medium text-text-tertiary">
+                      <span
+                        data-testid="asset-thumb"
+                        className={
+                          "flex items-center justify-center overflow-hidden rounded-sm bg-surface-3 text-[11px] font-medium text-text-tertiary " +
+                          (grid ? "aspect-square w-full" : "size-9")
+                        }
+                      >
                         {a.kind === "sound" ? (
                           <Music className="size-4" aria-hidden />
                         ) : url ? (
@@ -702,6 +731,7 @@ function Library({
                 );
               })}
             </ul>
+            </>
           )}
         </div>
 
