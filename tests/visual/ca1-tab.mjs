@@ -1,0 +1,50 @@
+/** CA1 §113. Fixed project fixture and mocked services; no paid calls. */
+import { harness } from "./mts-harness.mjs";
+const h = harness("/tmp/claude-0/ca1-tab");
+const comp = h.rows.compositions.find(c => !c.removed);
+const occ = h.rows.scene_occurrences.find(o => o.variant_id === comp?.variant_id);
+if (!occ) throw new Error("Fixture missing composed scene occurrence");
+await h.scenario("ca1", occ.id, "nb", async page => {
+  await page.getByTestId("scene-tab-animation").click();
+  await page.getByTestId("animation-workspace").waitFor();
+  h.check(await page.getByTestId("scene-tab-scene").isVisible(), "begge faner");
+  await page.getByTestId("anim-frame-forward").click();
+  h.check(await page.getByTestId("anim-playhead").getAttribute("data-frame") === "1", "frame frem");
+  await page.getByTestId("anim-frame-back").click();
+  h.check(await page.getByTestId("anim-playhead").getAttribute("data-frame") === "0", "frame tilbake");
+  const ruler = await page.getByTestId("anim-ruler").boundingBox();
+  await page.mouse.move(ruler.x + ruler.width * .3, ruler.y + 10); await page.mouse.down();
+  await page.mouse.move(ruler.x + ruler.width * .5, ruler.y + 10, { steps: 5 }); await page.mouse.up();
+  h.check(Number(await page.getByTestId("anim-playhead").getAttribute("data-frame")) > 0, "hodet klikkes og dras");
+  await page.getByTestId("anim-zoom").fill("10");
+  await page.getByTestId("anim-navigator").focus(); await page.keyboard.press("ArrowLeft");
+  h.check(Number(await page.getByTestId("anim-navigator").getAttribute("aria-valuemax")) > 0, "navigator innzoomet");
+  await page.getByTestId("anim-range-start").focus(); await page.keyboard.press("ArrowRight");
+  await page.getByTestId("anim-range-end").focus(); await page.keyboard.press("Home");
+  // A short, inclusive range exercises wrap without changing the composition.
+  const end = page.getByTestId("anim-range-end");
+  await end.evaluate(el => el.focus());
+  const endValue = Number(await end.getAttribute("aria-valuenow"));
+  for (let i = 0; i < endValue - 4; i++) await page.keyboard.press("ArrowLeft");
+  await page.getByTestId("anim-play").click();
+  h.check((await page.getByTestId("anim-play").getAttribute("aria-label")).includes("Stopp"), "Spill blir Stopp");
+  await page.waitForTimeout(500);
+  h.check(Number(await page.getByTestId("anim-playhead").getAttribute("data-frame")) <= 4, "avspillingsområdet løkker");
+  await page.getByTestId("anim-play").click();
+  await page.getByTestId("anim-preview-zoom").selectOption("2");
+  const pan = await page.getByTestId("anim-preview-pan").boundingBox();
+  await page.mouse.move(pan.x + 40, pan.y + 40); await page.mouse.down(); await page.mouse.move(pan.x + 70, pan.y + 60); await page.mouse.up();
+  h.check(Number(await page.getByTestId("anim-preview-pan").getAttribute("data-pan-x")) !== 0, "panorering");
+  const separator = page.getByTestId("anim-preview-resize").getByRole("separator");
+  const before = Number(await separator.getAttribute("aria-valuenow"));
+  await separator.focus(); await page.keyboard.press("ArrowLeft");
+  h.check(Number(await separator.getAttribute("aria-valuenow")) !== before, "dra-kant tilgjengelig med tastatur");
+  await page.getByTestId("scene-tab-scene").click(); await page.getByTestId("scene-tab-animation").click();
+  h.check(h.state.commands.length === 0, "visningskontroller skriver ikke prosjektdata");
+});
+await h.scenario("ca1-en", occ.id, "en", async page => {
+  h.check(await page.getByTestId("scene-tab-animation").textContent() === "Animation", "engelsk fane");
+  await page.getByTestId("scene-tab-animation").click();
+  h.check((await page.getByTestId("anim-play").getAttribute("aria-label")).includes("Play"), "engelsk avspilling");
+});
+await h.finish();
