@@ -1,4 +1,5 @@
 /** Versioned, variant-owned character setup. All positions are relative to the source image. */
+import { isPartSlot, rigPartError, type RigPart } from "./parts";
 import { L } from "../i18n";
 import type { ProjectState } from "../model";
 export const RIG_MAX_BYTES = 512 * 1024;
@@ -6,7 +7,7 @@ export const FACE_ANCHORS = ["head", "mouth", "nose", "leftEye", "rightEye"] as 
 export type FaceAnchor = typeof FACE_ANCHORS[number];
 export interface RelativePoint { readonly x: number; readonly y: number }
 export type RigAnchors = Readonly<Partial<Record<FaceAnchor, RelativePoint>>>;
-export interface RigSpec { readonly format: 1; readonly anchors: RigAnchors }
+export interface RigSpec { readonly format: 1; readonly anchors: RigAnchors; readonly parts?: Readonly<Record<string, RigPart>> }
 export interface AnimationRig { readonly id: string; readonly revision: number; readonly variantId: string; readonly currentVersionId: string | null; readonly removed: boolean }
 export interface AnimationRigVersion { readonly id: string; readonly revision: number; readonly rigId: string; readonly number: number; readonly sourceVersionId: string; readonly spec: RigSpec; readonly algorithmVersion: 1; readonly removed: boolean }
 export interface AnimationUse { readonly id: string; readonly revision: number; readonly layerId: string; readonly occurrenceId: string; readonly rigVersionId: string; readonly enabled: boolean; readonly removed: boolean }
@@ -15,6 +16,10 @@ export function rigSpecError(spec: RigSpec): string | null {
   if (new TextEncoder().encode(JSON.stringify(spec)).length > RIG_MAX_BYTES) return L("Oppsettet er større enn 512 kB", "The setup exceeds 512 kB");
   for (const [key, point] of Object.entries(spec.anchors)) {
     if (!(FACE_ANCHORS as readonly string[]).includes(key) || !point || !Number.isFinite(point.x) || !Number.isFinite(point.y) || point.x < 0 || point.x > 1 || point.y < 0 || point.y > 1) return L("Ankerpunkter må ligge innenfor bildet", "Anchors must be within the image");
+  }
+  if (spec.parts !== undefined) {
+    if (!spec.parts || typeof spec.parts !== "object" || Array.isArray(spec.parts)) return L("Ugyldige rigg-deler", "Invalid rig parts");
+    for (const [slot, part] of Object.entries(spec.parts)) if (!isPartSlot(slot) || rigPartError(part)) return L("Ugyldig rigg-del", "Invalid rig part");
   }
   return null;
 }

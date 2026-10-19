@@ -13,7 +13,7 @@ export function characterRigAt(s: ProjectState, layerId: string, variantId: stri
   return { use, rig, version };
 }
 export function evaluateCharacterFrame(s: ProjectState, compositionId: string, frame: number, base: Frame): Frame {
-  // CA4–CA6 add virtual mouth/eye/overlay draw items here. Marking alone leaves every pixel unchanged.
+  // CA4 authors the immutable shape set; CA5/CA6 add timed virtual mouth/eye draw items here.
   // Resolve only the currently visible variant, so swaps never inherit another variant's setup (§47).
   for (const layer of layersOf(s, compositionId)) {
     const version = layerVersion(s, layer, frame);

@@ -26644,3 +26644,153 @@ requirements:
   - date: '2026-10-16'
     decision: DEC-0092
     change: "Bygget (var 60 %)"
+- id: REQ-0715
+  title: "Munnformer i uforanderlige rigg-versjoner"
+  text: "Rhubarb A–H og X tegnes eller importeres, forhåndsvises med replikklyd og plasseres relativt til CA3-ankerpunktet. Andre scener beholder sin festede versjon."
+  origin: brukerbeslutning
+  source:
+    decision: "B-058 / CA4-oppdrag 2026-10-19"
+    section: "21–22"
+    document: docs/product/phase3/CHARACTER_ANIMATION_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules: [COMPOSE, UI]
+  invariants: [INV-13, INV-C1]
+  dependencies: []
+  acceptance:
+  - "Rhubarb A–H og X tegnes eller importeres, forhåndsvises med replikklyd og plasseres relativt til CA3-ankerpunktet. Andre scener beholder sin festede versjon."
+  tests:
+  - tests/unit/ca4-parts.test.ts
+  - tests/visual/ca4-mouth-mask.mjs
+  status: Verifisert
+  implementation:
+  - src/app/scene-editor/animation/MouthShapeEditor.tsx
+  verification:
+  - tests/unit/ca4-parts.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/ca4-mouth-mask.mjs
+  history:
+  - date: '2026-10-19'
+    decision: "B-058 / CA4-oppdrag"
+    change: "Bygget og testet lokalt med mock; migrasjon 0055 er ikke kjørt i Cloud."
+- id: REQ-0716
+  title: "Tegneark per rigg-versjon"
+  text: "Ett PNG-ark med alle deler, munnformer og øyne kan eksporteres og importeres i et lokalt utkast. Ingenting tas i bruk før Lagre."
+  origin: brukerbeslutning
+  source:
+    decision: "B-058 / CA4-oppdrag 2026-10-19"
+    section: "22, 38"
+    document: docs/product/phase3/CHARACTER_ANIMATION_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules: [COMPOSE, UI]
+  invariants: [INV-13, INV-C1]
+  dependencies: []
+  acceptance:
+  - "Ett PNG-ark med alle deler, munnformer og øyne kan eksporteres og importeres i et lokalt utkast. Ingenting tas i bruk før Lagre."
+  tests:
+  - tests/unit/ca4-parts.test.ts
+  - tests/visual/ca4-mouth-mask.mjs
+  status: Verifisert
+  implementation:
+  - src/engine/export/mouth-sheet.ts
+  verification:
+  - tests/unit/ca4-parts.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/ca4-mouth-mask.mjs
+  history:
+  - date: '2026-10-19'
+    decision: "B-058 / CA4-oppdrag"
+    change: "Bygget og testet lokalt med mock; migrasjon 0055 er ikke kjørt i Cloud."
+- id: REQ-0717
+  title: "Godkjent QR-import av rigg-deler"
+  text: "Mobilbroen mottar kun bilder til rigg-del eller munnform. Mobilen viser referanse, zoom, rotasjon, flytting og Tilpass. Bildet tas i bruk bare etter eksplisitt godkjenning og samlet revisjonskontrollert lagring."
+  origin: brukerbeslutning
+  source:
+    decision: "B-058 / CA4-oppdrag 2026-10-19"
+    section: "23–25"
+    document: docs/product/phase3/CHARACTER_ANIMATION_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules: [COMPOSE, UI]
+  invariants: [INV-13, INV-C1]
+  dependencies: []
+  acceptance:
+  - "Mobilbroen mottar kun bilder til rigg-del eller munnform. Mobilen viser referanse, zoom, rotasjon, flytting og Tilpass. Bildet tas i bruk bare etter eksplisitt godkjenning og samlet revisjonskontrollert lagring."
+  tests:
+  - tests/unit/ca4-parts.test.ts
+  - tests/visual/ca4-mouth-mask.mjs
+  status: Verifisert
+  implementation:
+  - db/migrations/0055_animation_parts_mobile.sql
+  verification:
+  - tests/unit/ca4-parts.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/ca4-mouth-mask.mjs
+  history:
+  - date: '2026-10-19'
+    decision: "B-058 / CA4-oppdrag"
+    change: "Bygget og testet lokalt med mock; migrasjon 0055 er ikke kjørt i Cloud."
+- id: REQ-0718
+  title: "Vektormasker og ikke-destruktive bildejusteringer"
+  text: "Legg til, trekk fra og myk kant lagres som vektordata. Lysstyrke, kontrast, metning, fargetone og opasitet lagres i rigg-versjonen. Hele oppsettet er begrenset til 512 KiB; originaler endres ikke."
+  origin: brukerbeslutning
+  source:
+    decision: "B-058 / CA4-oppdrag 2026-10-19"
+    section: "26–28"
+    document: docs/product/phase3/CHARACTER_ANIMATION_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules: [COMPOSE, UI]
+  invariants: [INV-13, INV-C1]
+  dependencies: []
+  acceptance:
+  - "Legg til, trekk fra og myk kant lagres som vektordata. Lysstyrke, kontrast, metning, fargetone og opasitet lagres i rigg-versjonen. Hele oppsettet er begrenset til 512 KiB; originaler endres ikke."
+  tests:
+  - tests/unit/ca4-parts.test.ts
+  - tests/visual/ca4-mouth-mask.mjs
+  status: Verifisert
+  implementation:
+  - src/core/animation/parts.ts
+  verification:
+  - tests/unit/ca4-parts.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/ca4-mouth-mask.mjs
+  history:
+  - date: '2026-10-19'
+    decision: "B-058 / CA4-oppdrag"
+    change: "Bygget og testet lokalt med mock; migrasjon 0055 er ikke kjørt i Cloud."
+- id: REQ-0719
+  title: "Toppjustert forhåndsvisning og sammenhengende animasjonsspor"
+  text: "Forhåndsvisningen toppjusteres. Alle bildespor har miniatyr eller typeikon. Dialog og lyd følger rett under bildesporene i en scrollbar tidslinje."
+  origin: brukerbeslutning
+  source:
+    decision: "B-058 / CA4-oppdrag 2026-10-19"
+    section: "113–114"
+    document: docs/product/phase3/CHARACTER_ANIMATION_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules: [COMPOSE, UI]
+  invariants: [INV-13, INV-C1]
+  dependencies: []
+  acceptance:
+  - "Forhåndsvisningen toppjusteres. Alle bildespor har miniatyr eller typeikon. Dialog og lyd følger rett under bildesporene i en scrollbar tidslinje."
+  tests:
+  - tests/unit/ca4-parts.test.ts
+  - tests/visual/ca4-mouth-mask.mjs
+  status: Verifisert
+  implementation:
+  - src/app/scene-editor/animation/DialogueTrack.tsx
+  verification:
+  - tests/unit/ca4-parts.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/ca4-mouth-mask.mjs
+  history:
+  - date: '2026-10-19'
+    decision: "B-058 / CA4-oppdrag"
+    change: "Bygget og testet lokalt med mock; migrasjon 0055 er ikke kjørt i Cloud."

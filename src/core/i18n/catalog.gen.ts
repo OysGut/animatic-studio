@@ -394,6 +394,8 @@ export const CATALOG: Record<string, string> = {
     "The database is missing the project format. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0008.",
   "Databasen mangler ressursbiblioteket og notatene. Kjør migrasjon 0004 i Lovable (se LOVABLE_SYNC.md).":
     "The database is missing the asset library and notes. Run migration 0004 in Lovable (see LOVABLE_SYNC.md).",
+  "Databasen mangler rigg-deler. Kjør migrasjon 0055 først.":
+    "The database is missing rig parts. Run migration 0055 first.",
   "Databasen mangler sceneeditoren. Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0007.":
     "The database is missing the scene editor. Paste the message in LOVABLE_SYNC.md into Lovable to run migration 0007.",
   "Databasen mangler språkversjoner av filmen (lyd og bilder per språk). Lim inn meldingen i LOVABLE_SYNC.md i Lovable for å kjøre migrasjon 0017.":
@@ -1285,6 +1287,7 @@ export const CATALOG: Record<string, string> = {
   Pågår: "Running",
   "Parallaksen må være mellom 0 og 4": "The parallax must be between 0 and 4",
   Parametere: "Parameters",
+  "Penselstrøk må ligge innenfor bildet": "Brush strokes must be within the image",
   "Personvernerklæringen er lagret som versjon {0}. Brukerne blir bedt om å lese den ved neste innlogging.":
     "The privacy statement is saved as version {0}. Users are asked to read it at their next sign-in.",
   Plakaten: "The poster",
@@ -1433,6 +1436,8 @@ export const CATALOG: Record<string, string> = {
   "Ressursversjon {0}: samme nummer to ganger": "Asset version {0}: same number twice",
   "Ressursversjon {0}: ukjent variant": "Asset version {0}: unknown variant",
   "Revisjonen finnes ikke": "The revision does not exist",
+  "Rigg-delen tilhører ikke ressursen": "The rig part does not belong to the asset",
+  "Rigg-delen tilhører ikke scenen": "The rig part does not belong to the scene",
   "Romlyd – {0}": "Room tone – {0}",
   Rulleteksten: "The credits sequence",
   "Rulleteksten er allerede fjernet": "The credits sequence is already removed",
@@ -1561,6 +1566,7 @@ export const CATALOG: Record<string, string> = {
   "Sikkerhetskopien har en ugyldig stilprofil og kan ikke brukes.":
     "The backup has an invalid style profile and cannot be used.",
   "Sikkerhetskopien må ha nøyaktig én hovedfilm.": "The backup must have exactly one main film.",
+  "Sikkerhetskopien mangler bildet til en rigg-del.": "The backup is missing a rig part image.",
   "Sikkerhetskopien mangler data.": "The backup is missing data.",
   "Sikkerhetskopien mangler fillisten.": "The backup is missing the file list.",
   "Sikkerhetskopien mangler hovedfilmen.": "The backup is missing the main film.",
@@ -1839,6 +1845,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig plakat": "Invalid poster",
   "Ugyldig planlagt lengde": "Invalid planned length",
   "Ugyldig plassering av masken": "Invalid position of the mask",
+  "Ugyldig plassering av rigg-del": "Invalid rig part placement",
   "Ugyldig plassering eller størrelse på masken i nøkkelbilde":
     "Invalid position or size of the mask in a keyframe",
   "Ugyldig plassering i lagrekkefølgen": "Invalid position in the layer order",
@@ -1857,6 +1864,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig ressurs": "Invalid asset",
   "Ugyldig retning": "Invalid direction",
   "Ugyldig revisjon": "Invalid revision",
+  "Ugyldig rigg-del": "Invalid rig part",
   "Ugyldig rolle": "Invalid role",
   "Ugyldig rotasjon": "Invalid rotation",
   "Ugyldig scene": "Invalid scene",
@@ -1923,6 +1931,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig volumpunkt (tid i ms, nivå mellom −60 og +12 dB)":
     "Invalid volume point (time in ms, level between −60 and +12 dB)",
   "Ugyldige antakelser for varighetsestimatet": "Invalid assumptions for the duration estimate",
+  "Ugyldige bildejusteringer": "Invalid image adjustments",
   "Ugyldige bildemål": "Invalid image dimensions",
   "Ugyldige bilder": "Invalid images",
   "Ugyldige bilder per språk": "Invalid images per language",
@@ -1935,8 +1944,10 @@ export const CATALOG: Record<string, string> = {
   "Ugyldige instrukser": "Invalid instructions",
   "Ugyldige mål": "Invalid dimensions",
   "Ugyldige meldinger": "Invalid messages",
+  "Ugyldige penselstrøk": "Invalid brush strokes",
   "Ugyldige referansebilder": "Invalid reference images",
   "Ugyldige revisjoner": "Invalid revisions",
+  "Ugyldige rigg-deler": "Invalid rig parts",
   "Ugyldige tegn i kameraet": "Invalid characters in the camera",
   "Ugyldige turer": "Invalid turns",
   ukjent: "unknown",

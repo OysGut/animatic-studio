@@ -3,11 +3,14 @@
  * fra mobilen. Ren TypeScript: konteksten (hvor filene skal), grenser, filtyper, lagringssti og sjekk av
  * filinnholdet. Server og nettleser bruker de samme reglene.
  */
+import { isPartSlot } from "../animation/parts";
 import { L } from "../i18n";
 import { isUuid } from "../ids";
 
 /** Hvor filene fra en økt skal (Mars: «for ulike scener genereres selvsagt ulike qr koder så alt havner rett»). */
 export type UploadContext =
+  | { readonly type: "rig"; readonly purpose: "mouth_shape" | "rig_part"; readonly target: { readonly assetId: string; readonly variantId: string; readonly sourceVersionId: string; readonly slot: string } }
+
   | { readonly type: "project" }
   | { readonly type: "asset"; readonly assetId: string; readonly variantId?: string | undefined }
   /** En ressurs under opprettelse (ikke lagret ennå). Knyttes til ressursen når den lagres. */
@@ -199,6 +202,11 @@ export function parseUploadContext(v: unknown): UploadContext | null {
     typeof o[k] === "string" && isUuid(o[k] as string) ? (o[k] as string) : null;
   const optId = (k: string) => (o[k] === undefined || o[k] === null ? undefined : (id(k) ?? false));
   switch (o["type"]) {
+    case "rig": {
+      const t = o["target"] as Record<string, unknown> | undefined;
+      if (!t || typeof t !== "object" || !["mouth_shape", "rig_part"].includes(String(o["purpose"])) || ![t["assetId"], t["variantId"], t["sourceVersionId"]].every(v => typeof v === "string" && isUuid(v)) || !isPartSlot(t["slot"]) || (o["purpose"] === "mouth_shape") !== String(t["slot"]).startsWith("mouth:")) return null;
+      return { type: "rig", purpose: o["purpose"] as "mouth_shape" | "rig_part", target: { assetId: String(t["assetId"]), variantId: String(t["variantId"]), sourceVersionId: String(t["sourceVersionId"]), slot: String(t["slot"]) } };
+    }
     case "project":
       return { type: "project" };
     case "asset": {
@@ -243,6 +251,8 @@ export function parseUploadContext(v: unknown): UploadContext | null {
 /** Filtypene en kontekst tar imot (bilder og video for ressurser; bare lyd for opptak, bolk B). */
 export function mediaKindsFor(c: UploadContext): MobileMediaKind[] {
   switch (c.type) {
+    case "rig":
+      return ["image"];
     case "sound":
     case "line":
       return ["audio"];
