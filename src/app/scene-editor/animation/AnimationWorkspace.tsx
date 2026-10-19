@@ -21,7 +21,7 @@ export function AnimationWorkspace({ state, composition, duration, playback, ran
   const [width, setWidth] = usePaneSize("animation-preview", 340, 200, 700, { viewportShare: 0.5 });
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
-      if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey || isTypingTarget(e.target)) return;
+      if (e.repeat || e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey || isTypingTarget(e.target)) return;
       if (e.target instanceof HTMLElement && e.target.closest('[role="dialog"], [role="menu"], [role="slider"], [role="tablist"]')) return;
       if (e.key === "ArrowLeft" || e.key === "ArrowRight") { e.preventDefault(); playback.pause(); playback.setFrame(playback.frame + (e.key === "ArrowRight" ? 1 : -1)); }
       if (e.key === " " && !(e.target instanceof HTMLElement && e.target.closest("button"))) { e.preventDefault(); playback.toggle(); }

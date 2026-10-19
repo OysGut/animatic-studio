@@ -13,6 +13,7 @@ export function AnimTimeline({ fps, duration, playback, view, range, onRange, ch
       <PlayRange range={range} duration={duration} view={view} onChange={onRange} />
       <div data-testid="anim-ruler" role="slider" tabIndex={0} aria-label={L("Avspillingshode", "Playhead")} aria-valuenow={playback.frame} aria-valuemin={0} aria-valuemax={duration - 1}
         className="relative h-8 cursor-ew-resize border-b border-border bg-surface-2 focus-visible:ring-2 focus-visible:ring-focus-ring"
+        onKeyDown={e => { if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return; e.preventDefault(); e.stopPropagation(); playback.pause(); playback.setFrame(playback.frame + (e.key === "ArrowRight" ? 1 : -1)); }}
         onPointerDown={e => { playback.pause(); e.currentTarget.setPointerCapture(e.pointerId); seek(e.clientX); }} onPointerMove={e => { if (e.currentTarget.hasPointerCapture(e.pointerId)) seek(e.clientX); }}>
         {[0, 1, 2, 3, 4].map(i => <span key={i} className="absolute top-1 font-mono text-xs text-text-secondary" style={{ left: `${i * 20}%` }}>{formatAnimationTime(view.from + Math.round(view.span * i / 5), fps)}</span>)}
       </div>

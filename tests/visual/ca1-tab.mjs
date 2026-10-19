@@ -1,5 +1,6 @@
 /** CA1 §113. Fixed project fixture and mocked services; no paid calls. */
 import { harness } from "./mts-harness.mjs";
+if (!process.argv[3]) process.argv[3] = "/tmp/claude-0/visual-fixture.json";
 const h = harness("/tmp/claude-0/ca1-tab");
 const comp = h.rows.compositions.find(c => !c.removed);
 const occ = h.rows.scene_occurrences.find(o => o.variant_id === comp?.variant_id);
@@ -16,9 +17,12 @@ await h.scenario("ca1", occ.id, "nb", async page => {
   await page.mouse.move(ruler.x + ruler.width * .3, ruler.y + 10); await page.mouse.down();
   await page.mouse.move(ruler.x + ruler.width * .5, ruler.y + 10, { steps: 5 }); await page.mouse.up();
   h.check(Number(await page.getByTestId("anim-playhead").getAttribute("data-frame")) > 0, "hodet klikkes og dras");
-  await page.getByTestId("anim-zoom").fill("10");
-  await page.getByTestId("anim-navigator").focus(); await page.keyboard.press("ArrowLeft");
+  await page.getByTestId("anim-zoom").fill("1");
+  await page.getByTestId("anim-navigator").focus(); await page.keyboard.press("ArrowRight");
+  h.check(await page.getByTestId("anim-navigator-window").evaluate(el => el.getBoundingClientRect().width) > 0, "zoom til én frame");
   h.check(Number(await page.getByTestId("anim-navigator").getAttribute("aria-valuemax")) > 0, "navigator innzoomet");
+  await page.getByTestId("anim-zoom").fill(String(Number(await page.getByTestId("anim-ruler").getAttribute("aria-valuemax")) + 1));
+  await page.getByTestId("anim-navigator").focus(); await page.keyboard.press("ArrowLeft");
   await page.getByTestId("anim-range-start").focus(); await page.keyboard.press("ArrowRight");
   await page.getByTestId("anim-range-end").focus(); await page.keyboard.press("Home");
   // A short, inclusive range exercises wrap without changing the composition.
@@ -27,6 +31,13 @@ await h.scenario("ca1", occ.id, "nb", async page => {
   const endValue = Number(await end.getAttribute("aria-valuenow"));
   for (let i = 0; i < endValue - 4; i++) await page.keyboard.press("ArrowLeft");
   await page.getByTestId("anim-play").click();
+  await page.locator("body").click({ position: { x: 5, y: 5 } });
+  await page.keyboard.press("ArrowRight");
+  const keyFrame = Number(await page.getByTestId("anim-playhead").getAttribute("data-frame"));
+  await page.keyboard.press("ArrowLeft");
+  h.check(Number(await page.getByTestId("anim-playhead").getAttribute("data-frame")) === keyFrame - 1, "piltaster flytter én frame");
+  await page.keyboard.press("Space");
+  h.check((await page.getByTestId("anim-play").getAttribute("aria-label")).includes("Spill"), "mellomrom stopper");
   h.check((await page.getByTestId("anim-play").getAttribute("aria-label")).includes("Stopp"), "Spill blir Stopp");
   await page.waitForTimeout(500);
   h.check(Number(await page.getByTestId("anim-playhead").getAttribute("data-frame")) <= 4, "avspillingsområdet løkker");
