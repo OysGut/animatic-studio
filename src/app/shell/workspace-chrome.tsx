@@ -18,7 +18,7 @@ import {
   type ReactNode,
 } from "react";
 import { createPortal } from "react-dom";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { L } from "@/core";
 import { cn } from "@/lib/utils";
@@ -81,9 +81,9 @@ export function Toolbar({
     const root = rootRef.current;
     const measure = () => {
       const ids = [...groups.current.keys()];
-      for (const id of ids) {
-        const el = root.querySelector<HTMLElement>(`[data-toolbar-group="${CSS.escape(id)}"]`);
-        if (el) widths.current.set(id, el.offsetWidth + 4);
+      for (const el of root.querySelectorAll<HTMLElement>("[data-toolbar-group]")) {
+        const id = el.dataset["toolbarGroup"];
+        if (id) widths.current.set(id, el.offsetWidth + 4);
       }
       const fixed = [...root.querySelectorAll<HTMLElement>("[data-toolbar-fixed]")].reduce(
         (s, el) => s + el.offsetWidth + 8,
@@ -102,6 +102,7 @@ export function Toolbar({
       );
     };
     measure();
+    if (typeof ResizeObserver === "undefined") return;
     const ro = new ResizeObserver(measure);
     ro.observe(root);
     return () => ro.disconnect();
@@ -139,8 +140,8 @@ export function Toolbar({
           ) : null}
           {children}
           {menu ? (
-            <Popover>
-              <PopoverTrigger asChild>
+            <PopoverPrimitive.Root>
+              <PopoverPrimitive.Trigger asChild>
                 <ToolbarButton
                   variant="icon"
                   data-toolbar-fixed
@@ -150,15 +151,18 @@ export function Toolbar({
                 >
                   <MoreHorizontal aria-hidden />
                 </ToolbarButton>
-              </PopoverTrigger>
-              <PopoverContent
-                forceMount
-                align="end"
-                className="flex w-auto max-w-[min(90vw,32rem)] flex-col gap-1 bg-surface-2 p-1 data-[state=closed]:hidden"
-              >
-                <div ref={setTarget} className="flex flex-col gap-1" />
-              </PopoverContent>
-            </Popover>
+              </PopoverPrimitive.Trigger>
+              <PopoverPrimitive.Portal forceMount>
+                <PopoverPrimitive.Content
+                  forceMount
+                  align="end"
+                  sideOffset={4}
+                  className="z-50 flex max-w-[min(90vw,32rem)] flex-col gap-1 rounded-md border border-border bg-surface-2 p-1 shadow-md outline-none data-[state=closed]:hidden"
+                >
+                  <div ref={setTarget} className="flex flex-col items-start gap-1" />
+                </PopoverPrimitive.Content>
+              </PopoverPrimitive.Portal>
+            </PopoverPrimitive.Root>
           ) : null}
           {status ? (
             <div data-toolbar-fixed className="ml-auto flex flex-wrap items-center gap-3">
@@ -250,11 +254,22 @@ export const IconButton = forwardRef<
     active?: boolean;
     side?: "top" | "bottom" | "left" | "right";
   }
->(function IconButton({ label, shortcut, side = "bottom", ...rest }, ref) {
+>(function IconButton({ label, shortcut, side = "bottom", onPointerMove, ...rest }, ref) {
   return (
+    <TooltipProvider delayDuration={400}>
     <Tooltip>
       <TooltipTrigger asChild>
-        <ToolbarButton ref={ref} variant="icon" aria-label={label} {...rest} />
+        <ToolbarButton
+          ref={ref}
+          variant="icon"
+          aria-label={label}
+          {...rest}
+          onPointerMove={(e) => {
+            onPointerMove?.(e);
+            // Ikke åpne verktøytips mens en knapp holdes nede (dra i tidslinje eller lerret).
+            if (e.buttons !== 0) e.preventDefault();
+          }}
+        />
       </TooltipTrigger>
       <TooltipContent
         side={side}
@@ -268,6 +283,7 @@ export const IconButton = forwardRef<
         ) : null}
       </TooltipContent>
     </Tooltip>
+    </TooltipProvider>
   );
 });
 
