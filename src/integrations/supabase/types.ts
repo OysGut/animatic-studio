@@ -3197,6 +3197,7 @@ export type Database = {
           range_end: number
           range_start: number
           removed: boolean
+          resolved: boolean
           revision: number
           source: string
           stamp_at: string
@@ -3219,6 +3220,7 @@ export type Database = {
           range_end?: number
           range_start?: number
           removed?: boolean
+          resolved?: boolean
           revision?: number
           source?: string
           stamp_at?: string
@@ -3241,6 +3243,7 @@ export type Database = {
           range_end?: number
           range_start?: number
           removed?: boolean
+          resolved?: boolean
           revision?: number
           source?: string
           stamp_at?: string
