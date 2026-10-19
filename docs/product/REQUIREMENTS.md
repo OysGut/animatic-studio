@@ -8,7 +8,7 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 - Antall krav: **724**
 - Prioritet: P0: 145, P1: 391, P2: 149, P3: 39
 - Opprinnelse: mandat: 520, brukerbeslutning: 197, teknisk-anbefaling: 7
-- Status: Verifisert: 638, Implementert – ikke verifisert: 21, Under arbeid: 3, Ikke startet: 59, Implementert: 3
+- Status: Verifisert: 641, Implementert – ikke verifisert: 21, Under arbeid: 3, Ikke startet: 59
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -9848,7 +9848,7 @@ Rigg-oppsett med mønstre kan publiseres som låste versjoner i arbeidsgruppens 
 - **Kilde:** Beslutning B-058 / CA7-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** COMPOSE, UI · **Invarianter:** INV-13, INV-C1
 - **Avhengigheter:** REQ-0721
-- **Status:** Implementert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Publisering lager en ny, uforanderlig versjon i global_animation_specs (migrasjon 0057); bare eier og redaktør i gruppen kan publisere.
   - Bruk i prosjekt kopierer oppsettet inn som ny prosjektversjon med opprinnelse (låst versjon); nyere global versjon krever bekreftelse.
@@ -9866,7 +9866,7 @@ Rytmeverktøyet (Director's Rhythm Engine) er oransje markert og gjenbruker Reti
 - **Kilde:** Beslutning B-058 / CA8-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** COMPOSE, UI · **Invarianter:** INV-C1
 - **Avhengigheter:** REQ-0721
-- **Status:** Implementert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - planRhythm bygger på planRetime (metode «pauses») med eksplisitte endringer per mellomrom; mellomrom går aldri under null.
   - Mellomrom før skjæringspunktet endres ikke.
@@ -9882,7 +9882,7 @@ Per lag velges om munnformer, blink, overlegg, masker og justeringer tas med, og
 - **Kilde:** Beslutning B-058 / CA8-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** COMPOSE, EXPORT, UI · **Invarianter:** INV-C1
 - **Avhengigheter:** REQ-0720; REQ-0721
-- **Status:** Implementert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Eksportvalgene lagres i animasjonsbrukens atferd via SetAnimationBehavior og valideres.
   - evaluateCharacterFrame legger rigg-delene i tegnelisten etter valgene; samme tilstand gir samme bilde.

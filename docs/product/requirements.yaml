@@ -26888,7 +26888,7 @@ requirements:
   tests:
   - tests/unit/ca7-ca8.test.ts
   - tests/visual/ca7-global.mjs
-  status: Implementert
+  status: Verifisert
   implementation:
   - src/core/animation/character.ts
   - src/core/animation/global-rig.ts
@@ -26925,7 +26925,7 @@ requirements:
   tests:
   - tests/unit/ca7-ca8.test.ts
   - tests/visual/ca8-rhythm-export.mjs
-  status: Implementert
+  status: Verifisert
   implementation:
   - src/core/animation/rhythm.ts
   - src/core/composition/retime.ts
@@ -26958,7 +26958,7 @@ requirements:
   tests:
   - tests/unit/ca7-ca8.test.ts
   - tests/visual/ca8-rhythm-export.mjs
-  status: Implementert
+  status: Verifisert
   implementation:
   - src/core/animation/evaluate.ts
   - src/core/animation/rig.ts
