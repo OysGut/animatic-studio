@@ -21,7 +21,7 @@ import {
   type ProjectState,
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
-import { PanelHeader, ToolbarButton } from "@/app/shell/workspace-chrome";
+import { PanelHeader, ToolbarButton, IconButton } from "@/app/shell/workspace-chrome";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { COLOR_TOKENS, colorLabel } from "./CanvasNodes";
@@ -219,10 +219,10 @@ function EdgeRow({ state, cmds, editable, edgeId, from, onError }: {
         <Input disabled={!editable} aria-label={L("Etikett", "Label")} placeholder={L("Etikett", "Label")} maxLength={CANVAS_LABEL_MAX} value={label}
           onChange={(x) => setLabel(x.target.value)} onBlur={save} onKeyDown={(x) => { if (x.key === "Enter") save(); }} />
         {editable ? (
-          <ToolbarButton variant="icon" aria-label={L("Fjern koblingen", "Remove the connection")} title={L("Fjern koblingen", "Remove the connection")}
+          <IconButton label={L("Fjern koblingen", "Remove the connection")} title={L("Fjern koblingen", "Remove the connection")}
             onClick={() => onError(cmds.run({ type: "RemoveCanvasEdge", edgeId: e.id, removed: true }, L("Fjern kobling", "Remove connection")))}>
             <Trash2 />
-          </ToolbarButton>
+          </IconButton>
         ) : null}
       </div>
     </div>

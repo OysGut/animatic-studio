@@ -1,4 +1,4 @@
-import { Toolbar, ToolbarButton, ToolbarSeparator } from "@/app/shell/workspace-chrome";
+import { Toolbar, ToolbarButton, ToolbarSeparator, ToolbarGroup, IconButton } from "@/app/shell/workspace-chrome";
 /**
  * Sceneeditoren (M3 del 2, mandat kap. 11, DEC-0035): én 2D-scene per scene i manuset, bygget av lag
  * (bakgrunner, mellomgrunner, karakterer, objekter …) med bilder fra ressursbiblioteket eller fargeflater.
@@ -705,12 +705,15 @@ function Editor({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <Toolbar>
-        <span className="text-[13px] font-medium text-text-primary">
+      <Toolbar overflow="menu">
+        <ToolbarGroup priority={9}>
+        <span className="text-chrome font-medium text-text-primary">
           {L("Sceneeditor", "Scene editor")}
         </span>
         <ProductionPicker state={state} value={productionId} onChange={setProductionId} />
+        </ToolbarGroup>
         <ToolbarSeparator />
+        <ToolbarGroup priority={8}>
         <ScenePicker
           state={state}
           occurrences={occurrences}
@@ -728,9 +731,10 @@ function Editor({
           cmds={cmds}
           compact
         />
+        </ToolbarGroup>
         <ToolbarSeparator />
-        <ToolbarButton
-          variant="icon"
+        <ToolbarGroup priority={7}>
+        <IconButton
           onClick={cmds.undo}
           disabled={!cmds.canUndo}
           title={
@@ -738,16 +742,15 @@ function Editor({
               ? L(`Angre: ${cmds.undoLabel} (⌘Z)`, `Undo: ${cmds.undoLabel} (⌘Z)`)
               : L("Angre (⌘Z)", "Undo (⌘Z)")
           }
-          aria-label={
+          label={
             cmds.undoLabel
               ? L(`Angre: ${cmds.undoLabel}`, `Undo: ${cmds.undoLabel}`)
               : L("Angre", "Undo")
           }
         >
           <Undo2 />
-        </ToolbarButton>
-        <ToolbarButton
-          variant="icon"
+        </IconButton>
+        <IconButton
           onClick={cmds.redo}
           disabled={!cmds.canRedo}
           title={
@@ -755,14 +758,16 @@ function Editor({
               ? L(`Gjør om: ${cmds.redoLabel} (⇧⌘Z)`, `Redo: ${cmds.redoLabel} (⇧⌘Z)`)
               : L("Gjør om (⇧⌘Z)", "Redo (⇧⌘Z)")
           }
-          aria-label={
+          label={
             cmds.redoLabel
               ? L(`Gjør om: ${cmds.redoLabel}`, `Redo: ${cmds.redoLabel}`)
               : L("Gjør om", "Redo")
           }
         >
           <Redo2 />
-        </ToolbarButton>
+        </IconButton>
+        </ToolbarGroup>
+        <ToolbarGroup priority={1}>
         {occurrence ? (
           <ToolbarButton variant="icon" asChild>
             <Link
@@ -839,7 +844,8 @@ function Editor({
             {L("AI-video …", "AI video …")}
           </ToolbarButton>
         ) : null}
-        <div className="ml-auto flex flex-wrap items-center gap-2">
+        </ToolbarGroup>
+        <div data-toolbar-fixed className="ml-auto flex flex-wrap items-center gap-2">
           {composition ? (
             <>
               <ToolbarButton

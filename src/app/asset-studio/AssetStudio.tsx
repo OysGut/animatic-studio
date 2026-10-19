@@ -55,8 +55,7 @@ import {
   Toolbar,
   ToolbarButton,
   ToolbarGroup,
-  ToolbarSeparator,
-} from "@/app/shell/workspace-chrome";
+  ToolbarSeparator, IconButton } from "@/app/shell/workspace-chrome";
 import { useImageUrls } from "@/app/library/asset-images";
 import { useAudioPlayback } from "@/app/audio/use-audio-playback";
 import { LayerImageDialog } from "@/app/scene-editor/LayerImageDialog";
@@ -399,26 +398,24 @@ export function AssetStudio({
         }
       >
         <ToolbarGroup>
-          <ToolbarButton
-            variant="icon"
+          <IconButton
             onClick={d.undo}
             disabled={!d.canUndo}
-            aria-label={L("Angre i utkastet", "Undo in the draft")}
+            label={L("Angre i utkastet", "Undo in the draft")}
             title={L("Angre i utkastet (⌘/Ctrl + Z)", "Undo in the draft (⌘/Ctrl + Z)")}
             data-testid="asset-studio-undo"
           >
             <Undo2 className="size-4" />
-          </ToolbarButton>
-          <ToolbarButton
-            variant="icon"
+          </IconButton>
+          <IconButton
             onClick={d.redo}
             disabled={!d.canRedo}
-            aria-label={L("Gjør om i utkastet", "Redo in the draft")}
+            label={L("Gjør om i utkastet", "Redo in the draft")}
             title={L("Gjør om i utkastet (⇧ + ⌘/Ctrl + Z)", "Redo in the draft (⇧ + ⌘/Ctrl + Z)")}
             data-testid="asset-studio-redo"
           >
             <Redo2 className="size-4" />
-          </ToolbarButton>
+          </IconButton>
         </ToolbarGroup>
         <ToolbarSeparator />
         <ToolbarGroup>
@@ -439,15 +436,14 @@ export function AssetStudio({
         </ToolbarGroup>
         <ToolbarSeparator />
         <ToolbarGroup>
-          <ToolbarButton
-            variant="icon"
+          <IconButton
             onClick={playback.toggle}
-            aria-label={playback.playing ? L("Pause", "Pause") : L("Spill av", "Play")}
+            label={playback.playing ? L("Pause", "Pause") : L("Spill av", "Play")}
             title={playback.playing ? L("Pause (mellomrom)", "Pause (space)") : L("Spill av (mellomrom)", "Play (space)")}
             data-testid="asset-studio-play"
           >
             {playback.playing ? <Pause className="size-4" /> : <Play className="size-4" />}
-          </ToolbarButton>
+          </IconButton>
           <ToolbarButton
             active={area === "object"}
             onClick={() => setArea("object")}

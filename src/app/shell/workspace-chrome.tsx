@@ -17,8 +17,8 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from "react";
-import { createPortal } from "react-dom";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { createPortal, flushSync } from "react-dom";
+import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { L } from "@/core";
 import { cn } from "@/lib/utils";
@@ -81,9 +81,9 @@ export function Toolbar({
     const root = rootRef.current;
     const measure = () => {
       const ids = [...groups.current.keys()];
-      for (const id of ids) {
-        const el = root.querySelector<HTMLElement>(`[data-toolbar-group="${CSS.escape(id)}"]`);
-        if (el) widths.current.set(id, el.offsetWidth + 4);
+      for (const el of root.querySelectorAll<HTMLElement>("[data-toolbar-group]")) {
+        const id = el.dataset["toolbarGroup"];
+        if (id) widths.current.set(id, el.offsetWidth + 4);
       }
       const fixed = [...root.querySelectorAll<HTMLElement>("[data-toolbar-fixed]")].reduce(
         (s, el) => s + el.offsetWidth + 8,
@@ -102,6 +102,7 @@ export function Toolbar({
       );
     };
     measure();
+    if (typeof ResizeObserver === "undefined") return;
     const ro = new ResizeObserver(measure);
     ro.observe(root);
     return () => ro.disconnect();
@@ -139,8 +140,8 @@ export function Toolbar({
           ) : null}
           {children}
           {menu ? (
-            <Popover>
-              <PopoverTrigger asChild>
+            <PopoverPrimitive.Root>
+              <PopoverPrimitive.Trigger asChild>
                 <ToolbarButton
                   variant="icon"
                   data-toolbar-fixed
@@ -150,15 +151,18 @@ export function Toolbar({
                 >
                   <MoreHorizontal aria-hidden />
                 </ToolbarButton>
-              </PopoverTrigger>
-              <PopoverContent
-                forceMount
-                align="end"
-                className="flex w-auto max-w-[min(90vw,32rem)] flex-col gap-1 bg-surface-2 p-1 data-[state=closed]:hidden"
-              >
-                <div ref={setTarget} className="flex flex-col gap-1" />
-              </PopoverContent>
-            </Popover>
+              </PopoverPrimitive.Trigger>
+              <PopoverPrimitive.Portal forceMount>
+                <PopoverPrimitive.Content
+                  forceMount
+                  align="end"
+                  sideOffset={4}
+                  className="z-50 flex max-w-[min(90vw,32rem)] flex-col gap-1 rounded-md border border-border bg-surface-2 p-1 shadow-md outline-none data-[state=closed]:hidden"
+                >
+                  <div ref={setTarget} className="flex flex-col items-start gap-1" />
+                </PopoverPrimitive.Content>
+              </PopoverPrimitive.Portal>
+            </PopoverPrimitive.Root>
           ) : null}
           {status ? (
             <div data-toolbar-fixed className="ml-auto flex flex-wrap items-center gap-3">
@@ -250,15 +254,45 @@ export const IconButton = forwardRef<
     active?: boolean;
     side?: "top" | "bottom" | "left" | "right";
   }
->(function IconButton({ label, shortcut, side = "bottom", ...rest }, ref) {
+>(function IconButton({ label, shortcut, side = "bottom", onPointerMove, onFocus, ...rest }, ref) {
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (!open) return;
+    // Enhver tast lukker tipset før resten av appen ser tasten, så Esc og hurtigtaster virker som før.
+    const close = () => flushSync(() => setOpen(false));
+    window.addEventListener("keydown", close, true);
+    window.addEventListener("pointerdown", close, true);
+    return () => {
+      window.removeEventListener("keydown", close, true);
+      window.removeEventListener("pointerdown", close, true);
+    };
+  }, [open]);
   return (
-    <Tooltip>
+    <TooltipProvider delayDuration={400}>
+    <Tooltip open={open} onOpenChange={setOpen}>
       <TooltipTrigger asChild>
-        <ToolbarButton ref={ref} variant="icon" aria-label={label} {...rest} />
+        <ToolbarButton
+          ref={ref}
+          variant="icon"
+          aria-label={label}
+          data-icon-button=""
+          {...rest}
+          onFocus={(e) => {
+            onFocus?.(e);
+            // Verktøytipset åpnes bare ved peker: et tips som åpner seg ved fokus, ville fanget Esc
+            // (f.eks. når fokus kommer tilbake fra en dialog) og endret tastaturbruken.
+            e.preventDefault();
+          }}
+          onPointerMove={(e) => {
+            onPointerMove?.(e);
+            // Ikke åpne verktøytips mens en knapp holdes nede (dra i tidslinje eller lerret).
+            if (e.buttons !== 0) e.preventDefault();
+          }}
+        />
       </TooltipTrigger>
       <TooltipContent
         side={side}
-        className="flex items-center gap-2 rounded-sm border border-border bg-surface-3 px-2 py-1 text-chrome-label text-text-primary"
+        className="pointer-events-none flex items-center gap-2 rounded-sm border border-border bg-surface-3 px-2 py-1 text-[length:var(--text-chrome-label)] text-text-primary data-[state=closed]:animate-none"
       >
         <span>{label}</span>
         {shortcut ? (
@@ -268,6 +302,7 @@ export const IconButton = forwardRef<
         ) : null}
       </TooltipContent>
     </Tooltip>
+    </TooltipProvider>
   );
 });
 
@@ -311,11 +346,11 @@ export function PanelHeader({
           )}
         </button>
       ) : null}
-      <Heading className="min-w-0 truncate text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
+      <Heading className="min-w-0 truncate text-[length:var(--text-chrome-label)] font-medium uppercase tracking-label text-text-tertiary">
         {title}
       </Heading>
       {count !== undefined && count !== null ? (
-        <span className="font-mono text-chrome-label tabular-nums text-text-tertiary">{count}</span>
+        <span className="font-mono text-[length:var(--text-chrome-label)] tabular-nums text-text-tertiary">{count}</span>
       ) : null}
       {actions ? <div className="ml-auto flex items-center gap-0.5">{actions}</div> : null}
     </div>

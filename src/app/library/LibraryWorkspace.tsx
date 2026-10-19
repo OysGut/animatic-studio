@@ -56,7 +56,7 @@ import { MobileCameraButton } from "@/app/mobile/MobileImportDialog";
 import { MobileImportLibrary } from "@/app/mobile/MobileImportLibrary";
 import { attachMobileDraft } from "@/adapters/browser/mobile-import";
 import { Button } from "@/components/ui/button";
-import { Toolbar, ToolbarButton, ToolbarSeparator } from "@/app/shell/workspace-chrome";
+import { Toolbar, ToolbarButton, ToolbarSeparator, ToolbarGroup, IconButton } from "@/app/shell/workspace-chrome";
 import { Input } from "@/components/ui/input";
 import { AssetDetail } from "./AssetDetail";
 import { GlobalLibraryDialog } from "@/app/global/GlobalLibraryDialog";
@@ -264,13 +264,13 @@ function Library({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <Toolbar>
-        <span className="text-[13px] font-medium text-text-primary">
+      <Toolbar overflow="menu">
+        <span className="text-chrome font-medium text-text-primary">
           {L("Ressursbibliotek", "Asset library")}
         </span>
         <ToolbarSeparator />
-        <ToolbarButton
-          variant="icon"
+        <ToolbarGroup priority={7}>
+        <IconButton
           onClick={cmds.undo}
           disabled={!cmds.canUndo}
           title={
@@ -278,16 +278,15 @@ function Library({
               ? L(`Angre: ${cmds.undoLabel} (⌘Z)`, `Undo: ${cmds.undoLabel} (⌘Z)`)
               : L("Angre (⌘Z)", "Undo (⌘Z)")
           }
-          aria-label={
+          label={
             cmds.undoLabel
               ? L(`Angre: ${cmds.undoLabel}`, `Undo: ${cmds.undoLabel}`)
               : L("Angre", "Undo")
           }
         >
           <Undo2 />
-        </ToolbarButton>
-        <ToolbarButton
-          variant="icon"
+        </IconButton>
+        <IconButton
           onClick={cmds.redo}
           disabled={!cmds.canRedo}
           title={
@@ -295,14 +294,16 @@ function Library({
               ? L(`Gjør om: ${cmds.redoLabel} (⇧⌘Z)`, `Redo: ${cmds.redoLabel} (⇧⌘Z)`)
               : L("Gjør om (⇧⌘Z)", "Redo (⇧⌘Z)")
           }
-          aria-label={
+          label={
             cmds.redoLabel
               ? L(`Gjør om: ${cmds.redoLabel}`, `Redo: ${cmds.redoLabel}`)
               : L("Gjør om", "Redo")
           }
         >
           <Redo2 />
-        </ToolbarButton>
+        </IconButton>
+        </ToolbarGroup>
+        <ToolbarGroup priority={1}>
         <ToolbarButton
           onClick={() => setTrashOpen(true)}
           title={L(
@@ -403,7 +404,8 @@ function Library({
           <Download />
           {L("Last ned som zip", "Download as zip")}
         </ToolbarButton>
-        <div className="ml-auto flex items-center gap-3">
+        </ToolbarGroup>
+        <div data-toolbar-fixed className="ml-auto flex items-center gap-3">
           <SaveIndicator cmds={cmds} />
           {roleKnown && !editable ? (
             <span className="text-xs text-text-tertiary">

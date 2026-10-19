@@ -63,3 +63,9 @@
 - [x] T2.1–T2.6: kjerne, serverfunksjon, panel, diff, hurtigtaster, kontekstmeny, forlatevakt.
 - [x] T2.7 unit-tester (17).
 - [ ] Nettlesertest tests/visual/t2-writing-ui.mjs – ikke skrevet ennå.
+
+# U2 – Felles tetthet for verktøylinjer og panelhoder
+- [x] Felles komponenter (Toolbar 32 px, «Mer …», IconButton med verktøytips, PanelHeader) og tokens
+- [x] «Mer …» i sceneeditoren, manuset og biblioteket; ikonknapper byttet på alle skjermer
+- [x] Nettlesertest u2-chrome-ui.mjs (20/20)
+- [ ] Primærknapper som ikke finnes i dag (sceneeditor «Eksporter», manus «Ny scene», bibliotek «Ny ressurs», prosjekt «Åpne manus") – venter på avklaring

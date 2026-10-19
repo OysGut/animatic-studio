@@ -6,7 +6,7 @@ import { Pencil, Plus, Trash2, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { L, factError, newId, type ProjectState, type StoryFact, type StoryFactFields } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
-import { PanelHeader, ToolbarButton } from "@/app/shell/workspace-chrome";
+import { PanelHeader, ToolbarButton, IconButton } from "@/app/shell/workspace-chrome";
 import { Textarea } from "@/components/ui/textarea";
 import { sceneLabel, scenesByStoryTime, storyCharacters } from "./storylab-data";
 
@@ -27,15 +27,14 @@ export function FactsPanel({ state, cmds, editable }: { state: ProjectState; cmd
         count={facts.length}
         actions={
           editable ? (
-            <ToolbarButton
-              variant="icon"
+            <IconButton
               onClick={() => setAdding(true)}
-              aria-label={L("Nytt faktum", "New fact")}
+              label={L("Nytt faktum", "New fact")}
               title={L("Nytt faktum", "New fact")}
               data-testid="storylab-fact-add"
             >
               <Plus />
-            </ToolbarButton>
+            </IconButton>
           ) : null
         }
       />

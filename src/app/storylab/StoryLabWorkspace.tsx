@@ -23,7 +23,7 @@ import { SuggestionsNavigation, suggestionKey, useStorySuggestions } from "./sug
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { SaveIndicator } from "@/app/script/ScriptWorkspace";
-import { PanelHeader, Toolbar, ToolbarButton, ToolbarSeparator } from "@/app/shell/workspace-chrome";
+import { PanelHeader, Toolbar, ToolbarButton, ToolbarSeparator, IconButton } from "@/app/shell/workspace-chrome";
 import { PaneResizer, usePaneSize, useStoredFlag } from "@/app/shell/pane-size";
 import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
 import { CharacterWorkspace } from "./CharacterWorkspace";
@@ -193,24 +193,22 @@ function Lab({
       {undoError ? <p role="alert" className="p-2 text-xs text-status-danger">{undoError}</p> : null}
       <Toolbar title={L("Story Lab", "Story Lab")} status={<SaveIndicator cmds={cmds} />}>
         <ToolbarSeparator />
-        <ToolbarButton
-          variant="icon"
+        <IconButton
           active={!leftClosed}
           onClick={() => setLeftClosed(!leftClosed)}
-          aria-label={leftClosed ? L("Vis karakterpanelet", "Show the character panel") : L("Skjul karakterpanelet", "Hide the character panel")}
+          label={leftClosed ? L("Vis karakterpanelet", "Show the character panel") : L("Skjul karakterpanelet", "Hide the character panel")}
           title={leftClosed ? L("Vis karakterpanelet", "Show the character panel") : L("Skjul karakterpanelet", "Hide the character panel")}
         >
           <PanelLeft />
-        </ToolbarButton>
-        <ToolbarButton
-          variant="icon"
+        </IconButton>
+        <IconButton
           active={!rightClosed}
           onClick={() => setRightClosed(!rightClosed)}
-          aria-label={rightClosed ? L("Vis kontekstpanelet", "Show the context panel") : L("Skjul kontekstpanelet", "Hide the context panel")}
+          label={rightClosed ? L("Vis kontekstpanelet", "Show the context panel") : L("Skjul kontekstpanelet", "Hide the context panel")}
           title={rightClosed ? L("Vis kontekstpanelet", "Show the context panel") : L("Skjul kontekstpanelet", "Hide the context panel")}
         >
           <PanelRight />
-        </ToolbarButton>
+        </IconButton>
       </Toolbar>
       <div className="flex min-h-0 flex-1">
         {leftClosed ? null : (
@@ -249,14 +247,13 @@ function Lab({
               actions={
                 editable ? (
                   <DropdownMenu>
-                  <DropdownMenuTrigger asChild><ToolbarButton
-                    variant="icon"
-                    aria-label={L("Ny økt", "New session")}
+                  <DropdownMenuTrigger asChild><IconButton
+                    label={L("Ny økt", "New session")}
                     title={L("Ny økt", "New session")}
                     data-testid="storylab-new-session"
                   >
                     <Plus data-testid="storylab-new-menu" />
-                  </ToolbarButton>
+                  </IconButton>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
                     <DropdownMenuItem onSelect={() => openCanvas(null)} data-testid="storylab-new-interview">{L("Intervju – utvikle en idé", "Interview – develop an idea")}</DropdownMenuItem>
