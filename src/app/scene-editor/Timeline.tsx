@@ -231,16 +231,27 @@ export const RulerTicks = memo(function RulerTicks({
       </div>,
     );
   }
-  // Delstreker (halve sekunder når det er plass til dem)
-  if (step === 1 && secPx >= 120) {
-    for (let s = 0.5; s < totalSec; s += 1)
+  // U5: mellommerker. Hvert hovedtrinn deles i 10, 5, 4 eller 2 (minst 8 px mellom merkene); midtmerket er
+  // lengre. Ved ett sekunds trinn og god plass vises ett merke per bilde.
+  const stepPx = step * secPx;
+  const perFrame = step === 1 && ppf >= 8;
+  const div = perFrame ? fps : ([10, 5, 4, 2].find((n) => stepPx / n >= 8) ?? 1);
+  if (div > 1) {
+    const minor = step / div;
+    const count = Math.floor(totalSec / minor);
+    for (let i = 1; i <= count; i++) {
+      if (i % div === 0) continue;
+      const t = i * minor;
+      const mid = div % 2 === 0 && i % div === div / 2;
       ticks.push(
         <div
-          key={`h${s}`}
-          className="absolute bottom-0 h-1.5 border-l border-border-strong"
-          style={{ left: s * secPx }}
+          key={`m${i}`}
+          data-testid="ruler-minor-tick"
+          className={"absolute bottom-0 border-l " + (mid ? "h-2 border-border-strong" : "h-1 border-border-control")}
+          style={{ left: t * secPx }}
         />,
       );
+    }
   }
   return <>{ticks}</>;
 });

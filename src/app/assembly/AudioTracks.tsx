@@ -246,11 +246,11 @@ export function AudioTracks({
                     : L("Demp sporet (også i eksporten)", "Mute the track (also in the export)")
                 }
                 className={
-                  "rounded-sm p-0.5 hover:bg-surface-3 " +
-                  (muted ? "text-status-danger" : "text-text-tertiary hover:text-text-primary")
+                  "rounded-sm p-0.5 hover:bg-surface-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring " +
+                  (muted ? "bg-status-danger-bg text-status-danger" : "text-text-tertiary hover:text-text-primary")
                 }
               >
-                {muted ? <VolumeX className="size-3.5" /> : <Volume2 className="size-3.5" />}
+                {muted ? <VolumeX className="size-3.5" aria-hidden /> : <Volume2 className="size-3.5" aria-hidden />}
               </button>
               {editable ? (
                 <button

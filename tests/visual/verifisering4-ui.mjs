@@ -973,10 +973,42 @@ const parseTc = (t, fps = 25) => {
   return m ? ((+m[1] * 60 + +m[2]) * 60 + +m[3]) * fps + +m[4] : null;
 };
 
+
+/**
+ * KI-SL-1: venter til lydfilene for scenen (og naboscenene) er hentet og dekodet før avspillingen startes.
+ * På en treg maskin startet testen avspillingen før dekodingen var ferdig; da ble lydkildene aldri startet i
+ * første økt, og kontrollene for REQ-0210/0578 feilet selv om appen var riktig.
+ */
+async function waitForAudio(page, occId, timeout = 20000) {
+  const t0 = Date.now();
+  while (Date.now() - t0 < timeout) {
+    const ready = await page
+      .evaluate(
+        async ({ occId, LOAD_STATE }) => {
+          const fn = new Function(
+            "occId",
+            `return (async () => { ${LOAD_STATE}
+            const { audioBank } = await import("/src/app/audio/use-audio-playback.ts");
+            const items = core.sceneWindowAudio(s, film, occId, s.project.fps, "nb").filter((x) => x.version);
+            return items.length > 0 && items.every((x) => audioBank.get(x.version.mediaPath));
+          })()`,
+          );
+          return fn(occId);
+        },
+        { occId, LOAD_STATE },
+      )
+      .catch(() => false);
+    if (ready) return true;
+    await page.waitForTimeout(250);
+  }
+  return false;
+}
+
 async function testPlayback() {
   const { ctx, page } = await openPage(`${P}/scene?scene=${OCC.s1}`);
   try {
     await page.waitForTimeout(1500);
+    await waitForAudio(page, OCC.s1);
     const tid = page.locator('[aria-label="Tid"]');
     const canvasHash = () =>
       page.evaluate(() =>
@@ -1062,6 +1094,7 @@ async function testNeighbours() {
   try {
     await page.getByRole("button", { name: "Naboscener" }).click();
     await page.waitForTimeout(800);
+    await waitForAudio(page, OCC.s2);
     const strip = page.locator('[aria-label="Naboscener"]');
     const parts = await strip.locator("div.flex.h-full").allInnerTexts();
     check(
@@ -1265,7 +1298,10 @@ async function testRecording() {
     await page.getByRole("button", { name: "Pause" }).first().click();
     const at = parseTc(await page.locator('[aria-label="Tid"]').innerText());
     const before = savedCommands.length;
-    await page.getByRole("button", { name: /^Opptak$/ }).click();
+    // Ved 1280 px kan opptaksknappen ligge i verktøylinjens «Mer …»-meny (U2)
+    const recBtn = () => page.getByRole("button", { name: /^(Opptak|Ta opp en replikk eller lyd fra avspillingshodet)$/ }).or(page.getByRole("menuitem", { name: /^(Opptak|Ta opp en replikk eller lyd fra avspillingshodet)$/ }));
+    if (!(await recBtn().count())) await page.getByRole("button", { name: "Mer …" }).first().click();
+    await recBtn().first().click();
     const dialog = page.getByRole("dialog");
     await dialog.getByPlaceholder("Opptak (dato og tid)").fill("Prøveopptak");
     await dialog
@@ -1362,7 +1398,7 @@ async function testRecording() {
     );
     await shot(page, "v4-17-opptak-trimmet");
   } catch (e) {
-    check("REQ-0583", "opptaket kunne gjennomføres", false, String(e).split("\n")[0]);
+    check("REQ-0583", "opptaket kunne gjennomføres", false, String(e).split("\n").slice(0, 3).join(" "));
   } finally {
     await ctx.close();
   }

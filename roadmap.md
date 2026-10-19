@@ -92,8 +92,8 @@
 - [x] CA5/CA6: leppesynk, blink og mønstre (0056 kjørt).
 - [x] CA7: global gjenbruk, arv og versjonering; migrasjon 0057 skrevet.
 - [x] CA8: rytmeverktøyet og eksportvalg per lag.
-- [ ] CA7 Cloud-aktivering: Claude kjører migrasjon 0057.
-- [ ] CA8 Cmd/Ctrl-dragmodus for rytme (§73–§96): ikke bestilt i denne runden.
+- [x] CA7 Cloud-aktivering: migrasjon 0057 kjørt.
+- [x] CA8 Cmd/Ctrl-dragmodus og beskyttede tidsområder (U5 del B).
 
 ## CA5 + CA6 (2026-10-19)
 - [ ] CA5: leppesynk (Rhubarb WASM / regelbasert reserve), lipsync_results, av/på per replikk, forslag med Bruk/Forkast, munnformsspor, overstyringer, evaluateCharacterFrame
@@ -101,3 +101,9 @@
 - [ ] Migrasjon 0056 (lipsync_results m.m.), DB-tester
 - [ ] Visuelle suiter ca5-lipsync.mjs + ca6-blink-patterns.mjs, regresjon ca1–ca4
 - [ ] Docs: requirements, KNOWN_ISSUES, SESSION_HANDOVER
+
+## U5 (2026-10-19)
+- [x] Del A: skjerm for skjerm (prosjekter, manus, bibliotek/Story Lab, sceneeditor/animasjon, montering, eksport, mobil, felles tilstander)
+- [x] Del B: Cmd/Ctrl-dra og beskyttede tidsområder via RetimeScene
+- [x] Del C: KI-SL-1 (lydtestene ventet ikke på dekodet lyd)
+- [ ] «Sist endret» på prosjektkortene: krever en kolonne for sist endret (ikke bestilt; ingen migrasjon i U5)

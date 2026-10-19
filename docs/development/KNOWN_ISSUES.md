@@ -265,3 +265,10 @@
 - CA8: rytmeverktøyet er bygget som et oransje panel (takt, pause/vekt per replikk, skjæringspunkt og forskyvning). Den direkte Cmd/Ctrl-dragmodusen i tidslinjen (§73–§96) og beskyttede intervaller er ikke bygget ennå.
 - CA8: «eget lag» eksporterer karakterdelene som en egen videofil i et ekstra eksportpass. Videoformatet har ingen alfakanal, så laget har ensfarget bakgrunn.
 - Oppdragsregelen sier at AGENTS.md ikke skal endres. Arkitekturregelen for CA7/CA8 er derfor ikke ført inn der.
+- U5 (2026-10-19): prosjektkortene viser ikke «sist endret». Prosjektene har bare opprettelsestid i databasen; å vise noe annet ville vært oppdiktet. Krever en egen kolonne (migrasjon) – lagt i roadmap.
+- U5: prosjektkortets miniatyr er en tittelflis (forbokstav på filmstripe), ikke et bilde fra prosjektet; prosjektlisten laster ikke prosjektdata.
+- U5: sporhodene i monteringen viser bare demping (finnes i logikken). Lås og synlighet finnes ikke i logikken og vises derfor ikke.
+- U5: lerretstegning (beskjæring, scene, plakat) bruker fortsatt faste fargeverdier i canvas-koden; det er tegnedata, ikke grensesnittfarger.
+- KI-SL-1 lukket (U5 del C): verifisering4-ui spilte av før lydfilene var dekodet. Testen venter nå på at all lyd i scenevinduet er lastet. REQ-0210 5/5 og REQ-0578 7/7.
+- U5: verifisering4-ui REQ-0583 (opptak med falsk mikrofon) og REQ-0050 (tegnbredde i Courier Prime) feiler i Lovables testmiljø: opptaket starter ikke uten ekte medieenhet, og skriftmålingen avviker (6,44 em mot 6,0 em). Ikke knyttet til U5-endringene; bør sjekkes i Claudes miljø.
+

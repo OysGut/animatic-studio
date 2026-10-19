@@ -55,6 +55,8 @@ import {
 } from "./ProjectDangerDialogs";
 import { BackupDialog, RestoreBackupDialog } from "./BackupDialogs";
 import { ProvidersDialog } from "@/app/ai/ProvidersDialog";
+import { EmptyState, ErrorState, LoadingState } from "@/app/shell/screen-states";
+import { Film } from "lucide-react";
 
 interface ProjectRow {
   id: string;
@@ -320,25 +322,28 @@ export function ProjectsScreen({ userId }: { userId: string }) {
       ) : null}
 
       {projects.isLoading ? (
-        <p className="border border-border bg-surface-1 px-4 py-6 text-[13px] text-text-tertiary">
-          {L("Henter prosjekter …", "Loading projects …")}
-        </p>
+        <LoadingState label={L("Henter prosjekter …", "Loading projects …")} rows={3} />
       ) : projects.isError ? (
-        <p className="border border-border bg-surface-1 px-4 py-6 text-[13px] text-status-danger">
-          {L("Prosjektene kunne ikke hentes.", "The projects could not be loaded.")}
-        </p>
+        <ErrorState
+          message={L("Prosjektene kunne ikke hentes.", "The projects could not be loaded.")}
+          onRetry={() => void projects.refetch()}
+        />
       ) : live.length === 0 ? (
-        <div className="border border-border bg-surface-1 px-4 py-10 text-center">
-          <p className="text-[13px] text-text-secondary">
-            {L("Du har ingen prosjekter ennå.", "You have no projects yet.")}
-          </p>
-          <p className="mt-1 text-xs text-text-tertiary">
-            {L(
-              "Opprett et prosjekt, eller be en prosjekteier om en invitasjon.",
-              "Create a project, or ask a project owner for an invitation.",
-            )}
-          </p>
-        </div>
+        <EmptyState
+          title={L("Du har ingen prosjekter ennå.", "You have no projects yet.")}
+          hint={L(
+            "Opprett et prosjekt, eller be en prosjekteier om en invitasjon.",
+            "Create a project, or ask a project owner for an invitation.",
+          )}
+          action={
+            !creating ? (
+              <Button onClick={() => setCreating(true)} data-testid="projects-empty-create">
+                <Plus />
+                {L("Opprett ditt første prosjekt", "Create your first project")}
+              </Button>
+            ) : null
+          }
+        />
       ) : (
         <ul className="flex flex-col gap-3" aria-label={L("Prosjekter", "Projects")}>
           {sorted.map((p) => {
@@ -354,9 +359,23 @@ export function ProjectsScreen({ userId }: { userId: string }) {
               <li
                 key={p.id}
                 data-testid="project-box"
-                className="border border-border bg-surface-1"
+                className="overflow-hidden rounded-sm border border-border bg-surface-1 transition-colors focus-within:border-border-strong hover:border-border-strong"
               >
                 <div className="flex items-start gap-3 border-b border-border px-4 py-3">
+                  {/* U5: miniatyr (filmrute med prosjektets forbokstav) og nøkkeltall */}
+                  <Link
+                    to="/prosjekt/$projectId"
+                    params={{ projectId: p.id }}
+                    tabIndex={-1}
+                    aria-hidden
+                    data-testid="project-thumb"
+                    className="relative flex h-14 w-24 shrink-0 items-center justify-center overflow-hidden rounded-sm border border-border-control bg-surface-2"
+                  >
+                    <Film className="absolute left-1.5 top-1.5 size-3 text-text-tertiary" aria-hidden />
+                    <span className="text-xl font-semibold text-text-secondary">
+                      {p.name.trim().charAt(0).toUpperCase() || "·"}
+                    </span>
+                  </Link>
                   <div className="min-w-0 flex-1">
                     <Link
                       to="/prosjekt/$projectId"
@@ -391,6 +410,12 @@ export function ProjectsScreen({ userId }: { userId: string }) {
                           ? L("1 medlem", "1 member")
                           : L(`${members.length} medlemmer`, `${members.length} members`)}
                       </span>
+                      {tree.length ? (
+                        <span className="flex items-center gap-1 text-text-tertiary" data-testid="project-film-count">
+                          <Film className="size-3" aria-hidden />
+                          {tree.length === 1 ? L("1 film", "1 film") : L(`${tree.length} filmer`, `${tree.length} films`)}
+                        </span>
+                      ) : null}
                       <span className="tabular text-text-tertiary">
                         {L(`Opprettet ${date(p.created_at)}`, `Created ${date(p.created_at)}`)}
                       </span>

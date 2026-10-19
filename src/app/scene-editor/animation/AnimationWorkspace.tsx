@@ -10,13 +10,16 @@ import { AnimTimeline } from "./AnimTimeline";
 import { TimeNavigator, type AnimWindow } from "./TimeNavigator";
 import { AnimPreview } from "./AnimPreview";
 import type { AnimationRange } from "./PlayRange";
+import type { RhythmDragProps } from "./RhythmDrag";
 
-export function AnimationWorkspace({ state, composition, duration, playback, range, onRange, urls, tracks, tools }: {
+export function AnimationWorkspace({ state, composition, duration, playback, range, onRange, urls, tracks, tools, rhythm }: {
   state: ProjectState; composition: Composition; duration: number; playback: Playback;
   range: AnimationRange; onRange: (r: AnimationRange) => void; urls: Readonly<Record<string, string>>;
   tracks?: (view: AnimWindow) => ReactNode;
   /** CA8: rytmeverktøyet og andre verktøy i verktøylinjen. */
   tools?: ReactNode;
+  /** U5 del B: dra-modusen med Cmd/Ctrl i tidslinjen. */
+  rhythm?: RhythmDragProps;
 }) {
   const [window, setWindow] = useState<AnimWindow>({ from: 0, span: duration });
   const view = clampAnimationWindow(window.from, window.span, duration);
@@ -42,7 +45,7 @@ export function AnimationWorkspace({ state, composition, duration, playback, ran
     <div className="flex min-h-0 flex-1 flex-col md:flex-row">
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <TimeNavigator duration={duration} window={view} onChange={setWindow} />
-        <AnimTimeline fps={state.project.fps} duration={duration} playback={playback} view={view} range={range} onRange={onRange}>{tracks?.(view)}</AnimTimeline>
+        <AnimTimeline fps={state.project.fps} duration={duration} playback={playback} view={view} range={range} onRange={onRange} {...(rhythm ? { rhythm } : {})}>{tracks?.(view)}</AnimTimeline>
       </div>
       <div data-testid="anim-preview-resize" className="relative flex min-h-64 shrink-0 border-l border-border" style={{ width }}>
         <PaneResizer edge="left" size={width} onSize={setWidth} min={200} max={700} label={L("Bredde på forhåndsvisningen", "Preview width")} />

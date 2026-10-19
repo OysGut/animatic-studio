@@ -287,11 +287,26 @@ function Body({
         </div>
       </div>
       {received.length ? (
-        <ul className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4" data-testid="mobile-received">
+        <>
+        {/* U5: tydelig godkjenningskø – antall som venter, og venter/godkjent på hver fil */}
+        <div className="mt-4 flex items-center gap-2 border-b border-border pb-1" data-testid="mobile-queue-header">
+          <span className="text-chrome-label uppercase tracking-label text-text-tertiary">{L("Mottatt", "Received")}</span>
+          <span className="rounded-sm bg-surface-3 px-1.5 font-mono text-[11px] text-text-secondary">{received.length}</span>
+          {actions ? (
+            <span className="ml-auto rounded-sm bg-status-uncertain-bg px-1.5 text-[11px] text-status-uncertain" data-testid="mobile-queue-waiting">
+              {L(`${received.filter((r) => !r.asset_version_id && !r.dismissed).length} venter på godkjenning`, `${received.filter((r) => !r.asset_version_id && !r.dismissed).length} waiting for approval`)}
+            </span>
+          ) : null}
+        </div>
+        <ul className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-4" data-testid="mobile-received">
           {received.slice(0, 24).map((r) => (
             <li
               key={r.id}
-              className="flex flex-col gap-1 rounded-sm border border-border bg-surface-1 p-1"
+              data-queue-state={r.asset_version_id ? "approved" : "waiting"}
+              className={
+                "flex flex-col gap-1 rounded-sm border bg-surface-1 p-1 " +
+                (actions && !r.asset_version_id && !r.dismissed ? "border-status-uncertain/60" : "border-border")
+              }
             >
               <div className="flex aspect-square items-center justify-center overflow-hidden bg-surface-3">
                 {r.kind === "image" && thumbs.data?.[r.path] ? (
@@ -316,6 +331,7 @@ function Body({
             </li>
           ))}
         </ul>
+        </>
       ) : null}
       <div className="mt-4 flex justify-end">
         <Button size="sm" variant="secondary" onClick={m.renew} disabled={!session}>

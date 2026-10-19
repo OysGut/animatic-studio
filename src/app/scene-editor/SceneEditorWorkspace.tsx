@@ -993,7 +993,8 @@ function Editor({
             <MouthTrack state={state} occurrenceId={occurrence.id} language={filmLang.dialogue}
               view={animView} frame={playback.frame} editable={editable} run={cmds.run} urls={urls.data ?? {}} />
             <PatternStudio state={state} duration={duration} editable={editable} run={cmds.run} />
-          </>} tools={<RhythmPanel state={state} occurrenceId={occurrence.id} editable={editable} run={cmds.run} />} />
+          </>} tools={<RhythmPanel state={state} occurrenceId={occurrence.id} editable={editable} run={cmds.run} />}
+            rhythm={{ state, occurrenceId: occurrence.id, editable, run: cmds.run }} />
       ) : (
       <div className="flex min-h-0 flex-1">
         {/* Ressursene i scenen (side om side står de sammen med de andre panelene til høyre) */}

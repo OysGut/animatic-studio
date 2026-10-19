@@ -26,7 +26,20 @@ export interface RhythmOptions {
   /** Ekstra forskyvning ved skjæringspunktet (§77) eller fordelt proporsjonalt (§78, «shift»). */
   readonly shiftFrames?: number;
   readonly proportional?: boolean;
+  /**
+   * Beskyttede tidsområder (§80, U5 del B) i tillegg til scenens låste tidsrom. Rytmeverktøyet flytter dem
+   * aldri: bare mellomrom som starter etter slutten av alle beskyttede områder, kan endres.
+   */
+  readonly protectedRanges?: readonly { readonly startFrame: number; readonly endFrame: number }[];
   readonly newId?: () => string;
+}
+
+/** Første bilde der rytmeverktøyet kan endre noe (etter alle beskyttede og låste tidsrom). */
+export function rhythmProtectedEnd(s: ProjectState, occurrenceId: string, extra: RhythmOptions["protectedRanges"] = []): number {
+  const occ = s.occurrences[occurrenceId];
+  const comp = occ ? compositionForOccurrence(s, occ) : undefined;
+  const locked = comp?.timing?.lockedRanges ?? [];
+  return [...locked, ...extra].reduce((m, r) => Math.max(m, r.endFrame), 0);
 }
 
 export interface RhythmGap {
@@ -72,13 +85,16 @@ export function planRhythm(s: ProjectState, occurrenceId: string, o: RhythmOptio
     .filter((a) => a.occurrenceId === occurrenceId && !a.removed && (a.kind === "dialogue" || a.kind === "narration"))
     .map((a) => ({ id: a.id, start: Math.floor(frameOfMs(a.offsetMs)) }))
     .sort((a, b) => a.start - b.start || (a.id < b.id ? -1 : 1));
+  const guard = rhythmProtectedEnd(s, occurrenceId, o.protectedRanges);
   const cut = o.cutFrame ?? 0;
+  // Et mellomrom som starter før slutten av et beskyttet område, ville flyttet området: det står fast
+  const frozen = (g: RetimeGap) => g.endFrame <= cut || g.startFrame < guard;
   const out: { before: RetimeGap; change: number; clipId: string | null }[] = [];
   for (const g of gaps) {
     const len = g.endFrame - g.startFrame;
     const next = speech.find((c) => c.start >= g.endFrame - 1) ?? null;
     const clipId = next && next.start <= g.endFrame + 1 ? next.id : null;
-    if (g.endFrame <= cut) {
+    if (frozen(g)) {
       out.push({ before: g, change: 0, clipId });
       continue;
     }
@@ -90,7 +106,7 @@ export function planRhythm(s: ProjectState, occurrenceId: string, o: RhythmOptio
   // Forskyvning ved skjæringspunktet: samlet i første mellomrom etter punktet, eller fordelt (§77–§78)
   const shift = Math.round(o.shiftFrames ?? 0);
   if (shift) {
-    const after = out.map((g, i) => ({ g, i })).filter((x) => x.g.before.endFrame > cut);
+    const after = out.map((g, i) => ({ g, i })).filter((x) => !frozen(x.g.before));
     if (after.length) {
       const parts = o.proportional
         ? distributeLargestRemainder(shift, after.map((x) => Math.max(1, x.g.before.endFrame - x.g.before.startFrame)))
@@ -111,4 +127,22 @@ export function planRhythm(s: ProjectState, occurrenceId: string, o: RhythmOptio
     ...(o.newId ? { newId: o.newId } : {}),
   });
   return { gaps: gapsOut, beforeFrames: before, afterFrames: after, retime, error: retime.ok ? null : retime.reason };
+}
+
+/** Piksler per frame-trinn ved vertikalt drag (§95). */
+export const RHYTHM_VERTICAL_STEP_PX = 8;
+
+/**
+ * §94–§96: forskyvning fra et drag. Vannrett gir rask justering (frames under pekeren), loddrett ±1 frame per
+ * trinn (opp = +), og skrått blander de to jevnt etter vinkelen (cos²/sin²), så overgangen er uten hopp og
+ * ingenting telles dobbelt.
+ */
+export function rhythmDragShift(dxFrames: number, dyPx: number): number {
+  const steps = -dyPx / RHYTHM_VERTICAL_STEP_PX;
+  const dx = Math.abs(dxFrames), dy = Math.abs(steps);
+  if (dx + dy === 0) return 0;
+  const len2 = dx * dx + dy * dy;
+  const h = (dx * dx) / len2, v = (dy * dy) / len2;
+  const r = Math.round(dxFrames * h + steps * v);
+  return r === 0 ? 0 : r;
 }

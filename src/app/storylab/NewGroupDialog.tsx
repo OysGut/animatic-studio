@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { ToolbarButton, PanelHeader } from "@/app/shell/workspace-chrome";
-import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
+import { AssetThumb, useAssetCovers } from "@/app/library/AssetThumb";
 import { scenesByStoryTime, storyCharacters } from "./storylab-data";
 
 export function NewGroupDialog({ state, projectId, initialSceneId, onClose, onCreated }: {
@@ -16,6 +16,7 @@ export function NewGroupDialog({ state, projectId, initialSceneId, onClose, onCr
   onClose: () => void; onCreated: (id: string) => void;
 }) {
   const characters = storyCharacters(state);
+  const covers = useAssetCovers(state, characters.map((c) => c.id));
   const [participants, setParticipants] = useState<string[]>([]);
   const [sceneId, setSceneId] = useState(initialSceneId);
   const [situation, setSituation] = useState("");
@@ -51,7 +52,7 @@ export function NewGroupDialog({ state, projectId, initialSceneId, onClose, onCr
           <Checkbox checked={participants.includes(a.id)} disabled={busy || (!participants.includes(a.id) && participants.length >= 6)}
             data-testid="storylab-participant" data-asset-id={a.id} aria-label={a.name}
             onCheckedChange={(checked) => setParticipants((p) => checked ? [...p, a.id] : p.filter((id) => id !== a.id))} />
-          <AssetSymbolIcon state={state} assetId={a.id} className="size-6" />{a.name}
+          <AssetThumb state={state} assetId={a.id} url={covers[a.id]} size="sm" />{a.name}
         </label>)}
       </div>
       {!valid ? <p className="text-xs text-text-tertiary">{L("Velg mellom 2 og 6 deltakere.", "Choose between 2 and 6 participants.")}</p> : null}

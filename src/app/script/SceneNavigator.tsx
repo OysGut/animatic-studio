@@ -447,13 +447,13 @@ export function SceneNavigator({
                         </span>
                       )}
                       {uncertainSet.has(o.id) ? (
-                        <span className="flex items-center gap-0.5 text-status-uncertain">
+                        <span className="flex items-center gap-0.5 rounded-sm bg-status-uncertain-bg px-1 text-status-uncertain">
                           <AlertTriangle className="size-3" aria-hidden />
                           {L("Usikker", "Uncertain")}
                         </span>
                       ) : null}
                       {isMoved ? (
-                        <span className="text-status-moved">{L("Flyttet", "Moved")}</span>
+                        <span className="rounded-sm bg-status-moved-bg px-1 text-status-moved">{L("Flyttet", "Moved")}</span>
                       ) : null}
                       {state.scenes[o.sceneId] &&
                       state.scenes[o.sceneId]!.storyTime.kind !== "linear" ? (
@@ -474,7 +474,7 @@ export function SceneNavigator({
                         </span>
                       ) : null}
                       {v && v.ownerProductionId !== null ? (
-                        <span>{L("Egen versjon", "Own version")}</span>
+                        <span data-testid="nav-variant-badge" className="rounded-sm bg-status-running-bg px-1 text-status-running">{L("Egen versjon", "Own version")}</span>
                       ) : null}
                       {presence?.get(o.id)?.length ? (
                         <span

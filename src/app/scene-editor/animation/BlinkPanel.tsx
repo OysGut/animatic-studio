@@ -70,7 +70,7 @@ export function BlinkPanel({ state, use, frame, editable, run }: {
         </div>)}
         {!blinks.length ? <p className="text-[11px] text-text-tertiary">{L("Ingen manuelle blink ennå.", "No manual blinks yet.")}</p> : null}
       </div>
-      {error ? <p role="alert" className="text-[11px] text-danger">{error}</p> : null}
+      {error ? <p role="alert" className="text-[11px] text-status-danger">{error}</p> : null}
     </PopoverContent>
   </Popover>;
 }

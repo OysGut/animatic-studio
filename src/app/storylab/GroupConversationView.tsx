@@ -11,7 +11,7 @@ import { generateText } from "@/adapters/ai/text.functions";
 import { appendStoryTurns, forkStorySession, getStorySession, saveStorySuggestion,
   type StoredTurn, type StorySession, type StorySessionStatus } from "@/adapters/storylab/sessions.functions";
 import { Toolbar, ToolbarButton, IconButton } from "@/app/shell/workspace-chrome";
-import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
+import { AssetThumb, useAssetCovers } from "@/app/library/AssetThumb";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { names as nameMap, sceneLabel, usd, useTextEstimate } from "./storylab-data";
@@ -35,6 +35,7 @@ function GroupConversation({ state, projectId, session, participants, editable, 
   state: ProjectState; projectId: string; session: StorySession; participants: string[]; editable: boolean; onOpen: (id: string) => void; onUpdate?: (session: StorySession) => void; onBusy?: (busy: boolean) => void;
 }) {
   const sceneId = typeof session.context["sceneId"] === "string" ? session.context["sceneId"] : null;
+  const covers = useAssetCovers(state, participants);
   const situation = typeof session.context["situation"] === "string" ? session.context["situation"] : "";
   const seed = typeof session.context["seed"] === "number" ? session.context["seed"] : 1;
   const profiles = (session.context["profiles"] ?? {}) as Record<string, StoryProfile | null>;
@@ -200,7 +201,7 @@ function GroupConversation({ state, projectId, session, participants, editable, 
       <ToolbarButton active={next === null} disabled={busy || locked} onClick={() => setNext(null)} data-testid="storylab-auto">{L("Auto", "Auto")}</ToolbarButton>
       {participants.map((id, i) => <ToolbarButton key={id} active={id === speaker} disabled={busy || locked} onClick={() => setNext(id)}
         data-testid="storylab-participant" data-asset-id={id} aria-pressed={id === speaker} className={`border-b-2 ${tones[i] ?? tones[0]}`}>
-        <AssetSymbolIcon state={state} assetId={id} className="size-6" />{names[id] ?? "?"}
+        <AssetThumb state={state} assetId={id} url={covers[id]} size="sm" />{names[id] ?? "?"}
       </ToolbarButton>)}
       <span className="text-xs text-text-secondary" data-testid="storylab-next-speaker" data-asset-id={speaker}>{L(`Neste taler: ${names[speaker] ?? "?"}`, `Next speaker: ${names[speaker] ?? "?"}`)}</span>
       <span className="text-xs text-text-tertiary">{sceneLabel(state, sceneId)}</span>
