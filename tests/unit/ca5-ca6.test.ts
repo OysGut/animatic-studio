@@ -1,6 +1,8 @@
 /** CA5/CA6: leppesynk, mønstre og atferd – validering, determinisme, angre/gjør om. */
 import { describe, expect, it } from "vitest";
 import { applyCommand, emptyProjectState, type Command, type ProjectState } from "@/core";
+import type { Take } from "@/core/model";
+import type { TakeId } from "@/core/ids";
 import { envelope } from "../helpers/fixtures";
 import { fixture } from "../visual/fixture-state";
 function apply(s: ProjectState, c: Command) { const r = applyCommand(s, envelope(c)); if (!r.ok) throw new Error(r.error.message); return r; }
@@ -16,7 +18,7 @@ function baseState(): ProjectState {
   const clip = Object.values(s.audioClips).find(c => !c.removed && c.kind === "dialogue" && c.blockId)!;
   const occ = s.occurrences[clip.occurrenceId]!;
   const source = Object.values(s.takes)[0]!;
-  const take = { ...source, id: id(9), occurrenceId: occ.id };
+  const take: Take = { ...source, id: id(9) as TakeId, occurrenceId: occ.id };
   return {
     ...s,
     takes: { ...s.takes, [take.id]: take },

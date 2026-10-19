@@ -142,6 +142,7 @@ async function loadState(projectId: string): Promise<ProjectState> {
     credit_participants: await q("credit_participants"),
     credit_sequences: await q("credit_sequences"),
     animation_rigs: await q("animation_rigs"), animation_rig_versions: await q("animation_rig_versions"), animation_uses: await q("animation_uses"),
+    lipsync_results: await q("lipsync_results"), animation_patterns: await q("animation_patterns"),
   };
   return stateFromRows(rows);
 }
@@ -5628,6 +5629,58 @@ try {
     const loaded=await loadState(caProject); assert(isDeepStrictEqual(loaded.animationRigs,before.animationRigs),"partial rig update"); assert(!loaded.animationRigVersions[CA(26)],"partial version insert");
     await as("service_role",null,tx=>tx`insert into public.upload_sessions(id,project_id,token_hash,kind,created_by,context,expires_at,max_files,max_bytes) values (${CA(27)},${caProject},${"6".repeat(64)},'personal',${ALICE},'{}',now()+interval '1 hour',10,100000)`);
     await expectError(as("service_role",null,tx=>tx`insert into public.upload_sessions(id,project_id,token_hash,kind,created_by,context,expires_at,max_files,max_bytes) values (${CA(28)},${caProject},${"7".repeat(64)},'personal',${ALICE},${tx.json({type:"rig",purpose:"mouth_shape",target:{assetId:CA(1),variantId:CA(2),sourceVersionId:CA(3),slot:"mouth:Z"}})},now()+interval '1 hour',10,100000)`),"22023");
+  });
+
+  const C6 = (n: number) => `01900000-0000-7000-8000-0056${String(n).padStart(8, "0")}` as never;
+  let c6Project = "";
+  await test("0056: leppesynk og mønster rundtur via apply_changes, med validering", async () => {
+    const p = await as("authenticated", ALICE, tx => tx`select public.create_project('CA5') as id`);
+    c6Project = String(p[0]?.["id"]);
+    let st = await loadState(c6Project);
+    const production = Object.values(st.productions).find(p => p.kind === "main")!;
+    st = await runCommand(st, ALICE, { type: "CreateAssets", assets: [{ assetId: C6(1), fields: { kind: "character", name: "CA5", names: [], description: "", category: "", tags: [] } }] });
+    st = await runCommand(st, ALICE, { type: "CreateAssetVariant", assetId: C6(1), variantId: C6(2), fields: { name: "Front", style: "illustrated", appearance: "" } });
+    st = await runCommand(st, ALICE, { type: "CreateScene", sceneId: C6(4), variantId: C6(5), occurrenceId: C6(6), productionId: production.id, orderKey: keyBetween(null, null), heading: { intExt: "", location: "CA5", time: "" }, blocks: [] });
+    // Opptak, dialogklipp og manuslinje settes opp direkte (testdata, ikke prosjektskriving via kommando).
+    await as("service_role", null, tx => tx`insert into public.takes(id,project_id,occurrence_id,kind,status,created_by) values (${C6(9)},${c6Project},${C6(6)},'audio_only','in_progress',${ALICE})`);
+    await as("service_role", null, tx => tx`insert into public.script_blocks(id,project_id,variant_id,kind,order_key,text,created_by) values (${C6(10)},${c6Project},${C6(5)},'dialogue','a1','Hei',${ALICE})`);
+    await as("service_role", null, tx => tx`insert into public.script_block_revisions(project_id,block_id,rev,text,author) values (${c6Project},${C6(10)},1,'Hei',${ALICE})`);
+    await as("service_role", null, tx => tx`insert into public.audio_clips(id,project_id,occurrence_id,kind,asset_id,block_id,offset_ms,length_ms,created_by) values (${C6(11)},${c6Project},${C6(6)},'dialogue',${C6(1)},${C6(10)},0,2000,${ALICE})`);
+    st = await loadState(c6Project);
+    const lipsync = { id: C6(12), revision: 1, clipId: C6(11), takeId: C6(9), blockId: C6(10), source: "rule" as const, algorithmVersion: 1, audioHash: "abc123", textHash: "def456", spans: [{ frame: 0, endFrame: 12, viseme: "A" as const }, { frame: 12, endFrame: 24, viseme: "B" as const }], overrides: [{ frame: 5, viseme: "C" as const }], enabled: true, removed: false };
+    const pattern = { id: C6(13), revision: 1, rigId: null, name: "Nervøs blinking", color: "#a1b2c3", spec: { format: 1 as const, target: "eyes" as const, intervalMinMs: 2000, intervalMaxMs: 5000, durationMinFrames: 2, durationMaxFrames: 4, intensity: 1, seed: 18427, vary: { interval: true, duration: false, intensity: false }, algorithmVersion: 1 as const }, removed: false };
+    st = await runCommand(st, ALICE, { type: "SaveLipsyncResult", result: lipsync });
+    st = await runCommand(st, ALICE, { type: "SaveAnimationPattern", pattern });
+    const loaded = await loadState(c6Project);
+    assert(isDeepStrictEqual(loaded.lipsyncResults, st.lipsyncResults), "lipsync mismatch");
+    assert(isDeepStrictEqual(loaded.animationPatterns, st.animationPatterns), "pattern mismatch");
+    // Duplikat per klipp+take avvises i kjernen; den unike indeksen er siste skanse.
+    await expectError(runCommand(st, ALICE, { type: "SaveLipsyncResult", result: { ...lipsync, id: C6(14) } }), /allerede leppesynk/);
+    // Ugyldige verdier avvises: ukjent klipp, ukjent kilde, ugyldig farge.
+    await expectError(runCommand(st, ALICE, { type: "SaveLipsyncResult", result: { ...lipsync, id: C6(15), clipId: C6(90) } }), /Replikken finnes ikke/);
+    await expectError(as("service_role", null, tx => tx`insert into public.lipsync_results(id,project_id,clip_id,take_id,source,algorithm_version,audio_hash,created_by) values (${C6(16)},${c6Project},${C6(11)},${C6(9)},'ukjent',1,'x',${ALICE})`), "23514");
+    await expectError(as("service_role", null, tx => tx`insert into public.animation_patterns(id,project_id,name,color,spec,created_by) values (${C6(17)},${c6Project},'X','blå','{}',${ALICE})`), "23514");
+    await expectError(as("service_role", null, tx => tx`insert into public.animation_patterns(id,project_id,rig_id,name,color,spec,created_by) values (${C6(18)},${c6Project},${C6(91)},'X','#a1b2c3','{}',${ALICE})`), "23503");
+  });
+  await test("0056: grants og RLS nekter anon, ikke-medlemmer og direkte skriving", async () => {
+    for (const table of ["lipsync_results", "animation_patterns"]) {
+      assert((await as("authenticated", ALICE, tx => tx.unsafe(`select id from public.${table} where project_id = $1`, [c6Project]))).length === 1, `medlem leser ${table}`);
+      assert((await as("authenticated", CAROL, tx => tx.unsafe(`select id from public.${table} where project_id = $1`, [c6Project]))).length === 0, `RLS ${table}`);
+      await expectError(as("anon", null, tx => tx.unsafe(`select id from public.${table}`)), "42501");
+      await expectError(as("authenticated", ALICE, tx => tx.unsafe(`update public.${table} set removed = true where project_id = $1`, [c6Project])), "42501");
+      await expectError(as("authenticated", ALICE, tx => tx.unsafe(`delete from public.${table} where project_id = $1`, [c6Project])), "42501");
+    }
+  });
+  await test("0056: sletting av take/klipp i bruk blokkeres; delete_project rydder barn-først", async () => {
+    await expectError(sql`delete from public.takes where id = ${C6(9)}`, "P0001");
+    await expectError(sql`delete from public.audio_clips where id = ${C6(11)}`, "23503");
+    await expectError(sql`delete from public.script_blocks where id = ${C6(10)}`, "23503");
+    await as("service_role", null, tx => tx`select public.delete_project(${c6Project}, ${ALICE})`);
+    for (const table of ["lipsync_results", "animation_patterns"]) {
+      assert((await sql.unsafe(`select id from public.${table} where project_id = $1`, [c6Project])).length === 0, `${table} ikke slettet`);
+    }
+    await as("service_role", null, tx => tx`select public.purge_project_assets(${c6Project}, ${ALICE})`);
+    assert((await sql`select id from public.projects where id = ${c6Project}`).length === 0, "prosjekt ikke fjernet");
   });
 
   await test("0053/0054: purge rejects referenced sources; delete_project and purge remove rigs child-first", async () => {

@@ -91,7 +91,7 @@ export function MouthTrack({ state, occurrenceId, language, view, frame, editabl
           {result ? <IconButton data-testid={`lipsync-toggle-${t.clip.id}`} aria-pressed={result.enabled} label={result.enabled ? L("Slå av leppesynk for replikken", "Turn off lip sync for the line") : L("Slå på leppesynk for replikken", "Turn on lip sync for the line")} active={result.enabled} disabled={!editable}
             onClick={() => setError(run({ type: "SetLipsyncEnabled", lipsyncId: result.id, enabled: !result.enabled }, L("Endre leppesynk", "Change lip sync")))}><Mic /></IconButton> : null}
           <IconButton data-testid={`lipsync-generate-${t.clip.id}`} label={result ? L("Generer leppesynk på nytt", "Regenerate lip sync") : L("Generer leppesynk", "Generate lip sync")} disabled={!editable || busy || !takeId} onClick={() => void analyze(t.clip.id)}><RefreshCw /></IconButton>
-          {stale ? <span className="text-[10px] text-warning" title={L("Lyden er endret etter analysen", "The audio changed after the analysis")}>!</span> : null}
+          {stale ? <span className="text-[11px] text-warning" title={L("Lyden er endret etter analysen", "The audio changed after the analysis")}>!</span> : null}
         </div>
         <div className="relative h-full min-w-0 flex-1">
           {shown?.spans.map(span => {
@@ -104,7 +104,7 @@ export function MouthTrack({ state, occurrenceId, language, view, frame, editabl
               className={"absolute top-1 h-5 rounded-sm " + (isProposal ? "opacity-60 outline-dashed outline-1 outline-accent-brand" : "") + (active ? "" : " opacity-80")}
               style={{ left: `${px(a)}%`, width: `${Math.max(0.4, px(b) - px(a))}%`, background: VISEME_COLORS[viseme] }} />;
           })}
-          {!shown ? <span className="absolute top-1.5 text-[10px] text-text-tertiary" style={{ left: `${px(t.start)}%` }}>{takeId ? L("Ingen leppesynk ennå", "No lip sync yet") : L("Velg et take først", "Choose a take first")}</span> : null}
+          {!shown ? <span className="absolute top-1.5 text-[11px] text-text-tertiary" style={{ left: `${px(t.start)}%` }}>{takeId ? L("Ingen leppesynk ennå", "No lip sync yet") : L("Velg et take først", "Choose a take first")}</span> : null}
         </div>
       </div>;
     })}

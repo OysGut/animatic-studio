@@ -86,7 +86,7 @@ export function PatternStudio({ state, duration, editable, run }: {
         <svg data-testid="pattern-graph" role="img" aria-label={L("Mønsterkurven", "The pattern curve")} viewBox={`0 0 ${duration} 10`} preserveAspectRatio="none" className="h-16 w-full rounded-sm border border-border bg-surface-1">
           {events.map((e, i) => <rect key={i} data-testid={`pattern-event-${i}`} x={e.frame} y={10 - e.intensity * 9} width={Math.max(0.5, e.endFrame - e.frame)} height={e.intensity * 9} fill={selected.color} opacity={0.85} />)}
         </svg>
-        <p className="text-[10px] text-text-tertiary">{L("Samme seed gir samme kurve – også ved eksport.", "The same seed gives the same curve – also on export.")}</p>
+        <p className="text-[11px] text-text-tertiary">{L("Samme seed gir samme kurve – også ved eksport.", "The same seed gives the same curve – also on export.")}</p>
       </div> : <p className="flex-1 p-3 text-[11px] text-text-tertiary">{L("Velg et mønster, eller lag et nytt.", "Choose a pattern, or create a new one.")}</p>}
     </div>
     {error ? <p role="alert" className="px-2 pb-1 text-[11px] text-danger">{error}</p> : null}
