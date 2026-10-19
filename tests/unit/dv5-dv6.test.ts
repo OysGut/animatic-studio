@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { applyCommand, dialogueCharacterSuggestions, suggestedDialogueCharacter, characterDialogueCoverage, languageTagError, scriptLanguageOf, speechLanguageOf, unicodeTextParts, diffStates, stateFromRows, dialogueMirrorViolations, type Command } from "@/core";
+import { applyCommand, dialogueCharacterSuggestions, suggestedDialogueCharacter, characterDialogueCoverage, languageTagError, scriptLanguageOf, speechLanguageOf, unicodeTextParts, unicodeSentences, batchTimeEstimate, diffStates, stateFromRows, dialogueMirrorViolations, type Command } from "@/core";
 import { envelope } from "../helpers/fixtures";
 import { dvBase, dvId } from "../helpers/dialogue-fixture";
 
@@ -68,5 +68,7 @@ describe("DV6 independent BCP-47 preferences",()=>{
     expect(unicodeTextParts("Cafe\u0301 déjà vu!","fr")).toEqual(unicodeTextParts("Café déjà vu.","fr"));
     expect(unicodeTextParts("你好世界。","zh").length).toBeGreaterThan(1);
     expect(unicodeTextParts("مرحبا بالعالم","ar")).toEqual(["مرحبا","بالعالم"]);
+    expect(unicodeSentences("你好。再见！","zh")).toEqual(["你好。","再见！"]);
   });
+  it("provides a bounded uncertain processing estimate",()=>{ expect(batchTimeEstimate([{text:"x".repeat(250)}])).toEqual({minSeconds:3,maxSeconds:30,uncertain:true}); });
 });

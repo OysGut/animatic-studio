@@ -124,7 +124,7 @@ export async function runSpeech(data: SpeechInput, context: { supabase: unknown;
       );
       return budget ?? gate.overAccountCap(db, key.user_id, cost ?? Number.NaN, extra === 1);
     };
-    const before = await limits(0);
+    const before = await limits(data.jobId ? 1 : 0);
     if (before) return { ok: false, message: before };
     const jobId = data.jobId ?? newId<"generation_job">();
     const jobRow = {
