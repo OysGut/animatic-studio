@@ -1,3 +1,4 @@
+import type { AnimationRig, AnimationRigVersion, AnimationUse } from "./animation/rig";
 /**
  * Domenemodell (docs/architecture/DOMAIN_MODEL.md, DATA_RELATIONSHIPS.md).
  * Tilstanden speiler databasetabellene. Alle entiteter har permanent `id` og `revision`
@@ -905,6 +906,9 @@ export interface VolumeKey {
 }
 
 export interface ProjectState {
+  readonly animationRigs: Readonly<Record<string, AnimationRig>>;
+  readonly animationRigVersions: Readonly<Record<string, AnimationRigVersion>>;
+  readonly animationUses: Readonly<Record<string, AnimationUse>>;
   readonly project: Project;
   readonly productions: Readonly<Record<string, Production>>;
   readonly scenes: Readonly<Record<string, Scene>>;
@@ -1320,6 +1324,9 @@ export const COLLECTION_TABLES = {
   templateInstances: "template_instances",
   creditParticipants: "credit_participants",
   creditSequences: "credit_sequences",
+  animationRigs: "animation_rigs",
+  animationRigVersions: "animation_rig_versions",
+  animationUses: "animation_uses",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_TABLES;
@@ -1358,6 +1365,7 @@ export function emptyProjectState(project: Project): ProjectState {
     templateInstances: {},
     creditParticipants: {},
     creditSequences: {},
+    animationRigs: {}, animationRigVersions: {}, animationUses: {},
   };
 }
 

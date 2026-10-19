@@ -1,3 +1,4 @@
+import { applyRigCommand } from "../animation/rig-commands";
 /**
  * Utfører én kommando mot prosjekttilstanden. Ren funksjon: (tilstand, kommando) → ny tilstand + invers.
  * Samme funksjon brukes i klienten (rask tilbakemelding) og på serveren (autoritativ, DEC-0022).
@@ -187,6 +188,7 @@ function assertNewId(s: ProjectState, id: string) {
     s.storyFacts,
     s.canvasNodes,
     s.canvasEdges,
+    s.animationRigs, s.animationRigVersions, s.animationUses,
     s.templateInstances ?? {},
   ];
   if (all.some((c) => c[id] !== undefined))
@@ -553,6 +555,7 @@ export function revisionOf(s: ProjectState, id: string): number | undefined {
     s.storyFacts,
     s.canvasNodes,
     s.canvasEdges,
+    s.animationRigs, s.animationRigVersions, s.animationUses,
   ]) {
     const e = c[id];
     if (e) return e.revision;
@@ -1761,6 +1764,7 @@ const RETIME_STEPS = new Set<string>([
 
 /** Trinnene et utkast fra Asset Studio kan inneholde (AS1): bare endringer i scenen. */
 export const SCENE_DRAFT_STEPS: ReadonlySet<string> = new Set<string>([
+  "CreateRig", "SaveRigVersion", "SetRigAnchors", "AttachAnimationUse", "SetAnimationLayerEnabled", "UndoAnimationChange",
   "UpdateLayers",
   "UpdateAudioClips",
   "UpdateComposition",
@@ -1783,6 +1787,9 @@ function run(
   });
 
   switch (c.type) {
+    case "CreateRig": case "SaveRigVersion": case "SetRigAnchors": case "AttachAnimationUse": case "SetAnimationLayerEnabled": case "UndoAnimationChange": {
+      try { return applyRigCommand(s, c); } catch (error) { fail("invalid", error instanceof Error ? error.message : L("Ugyldig animasjonsoppsett", "Invalid animation setup")); }
+    }
     case "CreateProduction": {
       assertNewId(s, c.productionId);
       if (!c.name.trim())
@@ -7123,6 +7130,8 @@ function run(
           step.layers.some((x) => cur.layers[x.layerId]?.compositionId !== comp.id)
         )
           fail("invalid", L("Laget hører ikke til scenen", "The layer does not belong to the scene"));
+        if (step.type === "AttachAnimationUse" && (step.occurrenceId !== c.occurrenceId || cur.layers[step.layerId]?.compositionId !== comp.id)) fail("invalid", L("Feil scene for animasjonsbruken", "Wrong scene for the animation use"));
+        if (step.type === "SetAnimationLayerEnabled" && cur.animationUses[step.useId]?.occurrenceId !== c.occurrenceId) fail("invalid", L("Feil scene for animasjonsbruken", "Wrong scene for the animation use"));
         const r = run(cur, { ...env, command: materializeDraftStep(cur, step) });
         const inverse = sparseDraftStep(r.state, cur, r.inverse);
         cur = r.state;

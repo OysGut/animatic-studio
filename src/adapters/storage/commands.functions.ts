@@ -90,6 +90,7 @@ const MAX_COMMAND_CHARS = 6_000_000;
  * vilkårlig innhold.
  */
 const INVERSE_ONLY = new Set<string>([
+  "UndoAnimationChange",
   "UndoCreateProduction",
   "UndoCreateScene",
   "UndoInsertBlock",
@@ -624,6 +625,11 @@ export const runCommand = createServerFn({ method: "POST" })
             "The image has been approved and cannot be removed.",
           ),
         };
+    }
+    const animationSteps = data.command.type === "UpdateSceneDraft" ? data.command.steps : [data.command];
+    if (animationSteps.some(step => ["CreateRig", "SaveRigVersion", "SetRigAnchors", "AttachAnimationUse", "SetAnimationLayerEnabled", "UndoAnimationChange"].includes(step.type))) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 54) return { ok: false, code: "schema", message: L("Databasen mangler animasjonsoppsett. Kjør migrasjon 0053 og 0054 først.", "The database is missing animation setups. Run migrations 0053 and 0054 first.") };
     }
     // Stempelet på nye notater settes av serveren (navnet i profilen og tidspunktet nå), så ingen kan
     // skrive notater i andres navn. Bare notater fra en importert fil beholder filens navn og tid (DEC-0031).
