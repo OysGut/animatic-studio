@@ -204,7 +204,7 @@ export function AssetWorklistDialog({
                         `Versjon ${oldV?.number ?? ""} nå i scenen`,
                         `Version ${oldV?.number ?? ""} now in the scene`,
                       )}
-                      className="aspect-video w-full bg-black object-contain"
+                      className="aspect-video w-full bg-media object-contain"
                     />
                     <figcaption className="text-[11px] text-text-tertiary">
                       {L("Nå i scenen", "Now in the scene")} (v{oldV?.number})
@@ -218,7 +218,7 @@ export function AssetWorklistDialog({
                         `Godkjent versjon ${newV?.number ?? ""}`,
                         `Approved version ${newV?.number ?? ""}`,
                       )}
-                      className="aspect-video w-full bg-black object-contain"
+                      className="aspect-video w-full bg-media object-contain"
                     />
                     <figcaption className="text-[11px] text-text-tertiary">
                       {L("Godkjent", "Approved")} (v{newV?.number})

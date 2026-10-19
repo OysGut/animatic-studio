@@ -172,7 +172,7 @@ export function CompareTakesDialog({
                       playsInline
                       muted={side === 1}
                       onEnded={() => setPlaying(false)}
-                      className="aspect-video w-full bg-black"
+                      className="aspect-video w-full bg-media"
                       aria-label={label(t)}
                     />
                     <AttemptInfo take={t} job={jobFor(t)} />

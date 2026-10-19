@@ -86,7 +86,7 @@ export function MobileAudio({
           <button
             type="button"
             onClick={rec.stop}
-            className="flex size-24 items-center justify-center rounded-full bg-status-danger text-white active:opacity-80"
+            className="flex size-24 items-center justify-center rounded-full bg-status-danger text-on-media active:opacity-80"
             aria-label={L("Stopp opptaket", "Stop the recording")}
             data-testid="mobile-rec-stop"
           >

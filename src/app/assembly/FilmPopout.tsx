@@ -122,7 +122,7 @@ export function FilmPopout({
   const container = previewPopup.container();
   if (!win || !container) return null;
   return createPortal(
-    <div className="flex h-full flex-col bg-black text-text-primary">
+    <div className="flex h-full flex-col bg-media text-text-primary">
       <div
         className="flex shrink-0 items-center gap-1.5 border-b border-border bg-surface-1 px-2"
         style={{ height: H }}
@@ -154,7 +154,7 @@ export function FilmPopout({
           role="img"
           aria-label={L("Filmen på avspillingshodet", "The film at the playhead")}
           style={{ width: cssW, height: cssH }}
-          className="block bg-black"
+          className="block bg-media"
         />
       </div>
     </div>,

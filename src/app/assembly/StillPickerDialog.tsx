@@ -124,7 +124,7 @@ export function StillPickerDialog({
                     <img
                       src={urls.data[x.version.mediaPath]}
                       alt=""
-                      className="aspect-video w-full bg-black object-contain"
+                      className="aspect-video w-full bg-media object-contain"
                     />
                   ) : (
                     <span className="flex aspect-video w-full items-center justify-center bg-surface-3">

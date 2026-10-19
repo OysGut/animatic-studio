@@ -81,7 +81,7 @@ function PreviewVideo({
       preload="auto"
       aria-label={L("Versjonen som brukes i filmen", "The version used in the film")}
       style={{ width: cssWidth, height: cssHeight, display: "block", flex: "none" }}
-      className="bg-black object-contain"
+      className="bg-media object-contain"
     />
   );
 }
@@ -149,7 +149,7 @@ function PreviewCanvas({
       role="img"
       aria-label={L("Bildet slik det blir i filmen", "The image as it will be in the film")}
       style={{ width: cssWidth, height: cssHeight, display: "block", flex: "none" }}
-      className="bg-black"
+      className="bg-media"
     />
   );
 }
@@ -372,7 +372,7 @@ export function PreviewWindow({
           <X className="size-3.5" aria-hidden />
         </button>
       </div>
-      <div className="overflow-auto rounded-b-md bg-black" style={{ width: inner, height: bodyH }}>
+      <div className="overflow-auto rounded-b-md bg-media" style={{ width: inner, height: bodyH }}>
         {/* Faste zoomnivåer som er større enn vinduet: rull for å se resten */}
         {p.film ? (
           <PreviewVideo film={p.film} cssWidth={canvasW} cssHeight={canvasH} />
@@ -709,7 +709,7 @@ export function PopoutPreview({
   }
 
   return createPortal(
-    <div className="flex h-full flex-col bg-black text-text-primary">
+    <div className="flex h-full flex-col bg-media text-text-primary">
       <div
         className="flex shrink-0 items-center gap-1.5 border-b border-border bg-surface-1 px-2"
         style={{ height: HEADER }}

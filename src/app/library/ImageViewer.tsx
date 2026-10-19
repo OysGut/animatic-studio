@@ -204,25 +204,25 @@ export function ImageViewer({
       role="dialog"
       aria-modal="true"
       aria-label={L(`Bilde: ${name}`, `Image: ${name}`)}
-      className="fixed inset-0 z-[100] flex flex-col text-white"
-      style={{ background: "rgb(8, 8, 10)" }}
+      className="fixed inset-0 z-[100] flex flex-col text-on-media"
+      style={{ background: "var(--media-bg)" }}
     >
-      <div className="flex h-11 shrink-0 items-center gap-2 border-b border-white/10 px-3">
+      <div className="flex h-11 shrink-0 items-center gap-2 border-b border-on-media/10 px-3">
         <span className="min-w-0 flex-1 truncate text-[13px]" title={name}>
           {name}
           {v.width && v.height ? (
-            <span className="ml-2 text-white/50">
+            <span className="ml-2 text-on-media/50">
               {v.width} × {v.height}
             </span>
           ) : null}
-          {v.note ? <span className="ml-2 text-white/50">· {v.note}</span> : null}
+          {v.note ? <span className="ml-2 text-on-media/50">· {v.note}</span> : null}
         </span>
         {versions.length > 1 ? (
-          <span className="flex items-center gap-1 text-xs text-white/70">
+          <span className="flex items-center gap-1 text-xs text-on-media/70">
             <Button
               size="icon"
               variant="ghost"
-              className="size-8 text-white hover:bg-white/10"
+              className="size-8 text-on-media hover:bg-on-media/10"
               disabled={index === 0}
               onClick={() => onIndex(index - 1)}
               aria-label={L("Forrige versjon", "Previous version")}
@@ -234,7 +234,7 @@ export function ImageViewer({
             <Button
               size="icon"
               variant="ghost"
-              className="size-8 text-white hover:bg-white/10"
+              className="size-8 text-on-media hover:bg-on-media/10"
               disabled={index === versions.length - 1}
               onClick={() => onIndex(index + 1)}
               aria-label={L("Neste versjon", "Next version")}
@@ -244,11 +244,11 @@ export function ImageViewer({
             </Button>
           </span>
         ) : null}
-        <span className="mx-1 h-5 w-px bg-white/15" aria-hidden />
+        <span className="mx-1 h-5 w-px bg-on-media/15" aria-hidden />
         <Button
           size="icon"
           variant="ghost"
-          className="size-8 text-white hover:bg-white/10"
+          className="size-8 text-on-media hover:bg-on-media/10"
           onClick={() => zoomAt(0.8)}
           aria-label={L("Zoom ut", "Zoom out")}
           title={L("Zoom ut (−)", "Zoom out (−)")}
@@ -256,7 +256,7 @@ export function ImageViewer({
           <Minus />
         </Button>
         <span
-          className="w-12 text-center font-mono text-xs tabular-nums text-white/80"
+          className="w-12 text-center font-mono text-xs tabular-nums text-on-media/80"
           aria-live="polite"
         >
           {Math.round(view.zoom * 100)} %
@@ -264,7 +264,7 @@ export function ImageViewer({
         <Button
           size="icon"
           variant="ghost"
-          className="size-8 text-white hover:bg-white/10"
+          className="size-8 text-on-media hover:bg-on-media/10"
           onClick={() => zoomAt(1.25)}
           aria-label={L("Zoom inn", "Zoom in")}
           title={L("Zoom inn (+)", "Zoom in (+)")}
@@ -274,7 +274,7 @@ export function ImageViewer({
         <Button
           size="sm"
           variant="ghost"
-          className="text-white hover:bg-white/10"
+          className="text-on-media hover:bg-on-media/10"
           onClick={fit}
           title={L("Hele bildet (0)", "Whole image (0)")}
         >
@@ -284,7 +284,7 @@ export function ImageViewer({
         <Button
           size="sm"
           variant="ghost"
-          className="text-white hover:bg-white/10"
+          className="text-on-media hover:bg-on-media/10"
           onClick={() => {
             if (!natural || !box.current) return;
             const r = box.current.getBoundingClientRect();
@@ -308,7 +308,7 @@ export function ImageViewer({
           ref={closeRef}
           size="icon"
           variant="ghost"
-          className="size-8 text-white hover:bg-white/10"
+          className="size-8 text-on-media hover:bg-on-media/10"
           onClick={onClose}
           aria-label={L("Lukk", "Close")}
           title={L("Lukk (Esc)", "Close (Esc)")}
@@ -357,10 +357,10 @@ export function ImageViewer({
             }}
           />
         ) : (
-          <Loader2 className="absolute left-1/2 top-1/2 size-6 -translate-x-1/2 -translate-y-1/2 animate-spin text-white/60" />
+          <Loader2 className="absolute left-1/2 top-1/2 size-6 -translate-x-1/2 -translate-y-1/2 animate-spin text-on-media/60" />
         )}
       </div>
-      <p className="shrink-0 px-3 py-1.5 text-center text-[11px] text-white/50">
+      <p className="shrink-0 px-3 py-1.5 text-center text-[11px] text-on-media/50">
         {L(
           "Rullehjul zoomer · dra for å flytte · dobbeltklikk veksler mellom hele bildet og zoom · ← → bytter versjon · Esc lukker",
           "Scroll wheel zooms · drag to move · double-click switches between the whole image and zoom · ← → changes version · Esc closes",

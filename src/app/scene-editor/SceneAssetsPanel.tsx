@@ -247,7 +247,7 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                   ) : null}
                   {plan ? (
                     <span
-                      className="absolute left-1 top-1 z-[1] rounded-sm bg-accent-warm px-1 text-[11px] font-medium text-black"
+                      className="absolute left-1 top-1 z-[1] rounded-sm bg-accent-warm px-1 text-[11px] font-medium text-accent-fg"
                       title={L(
                         `Skal inn i scenen: lagt til fra scene ${plan.fromNumber ?? "?"} (${new Date(plan.plan.at).toLocaleDateString()}). Dra det inn på lerretet.`,
                         `Should be in the scene: added from scene ${plan.fromNumber ?? "?"} (${new Date(plan.plan.at).toLocaleDateString()}). Drag it onto the canvas.`,
