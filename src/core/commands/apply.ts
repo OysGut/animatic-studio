@@ -1898,7 +1898,9 @@ function run(
       if (c.language !== null && languageTagError(c.language)) fail("invalid", languageTagError(c.language) ?? "");
       if (c.target === "project") {
         if (c.targetId !== s.project.id) fail("invalid", L("Feil prosjekt", "Wrong project"));
-        return { state: { ...s, project: { ...s.project, scriptLanguage: c.language, revision: rev(s.project) } }, inverse: { ...c, language: s.project.scriptLanguage ?? null }, affected: [s.project.id] };
+        const project = { ...s.project, scriptLanguage: c.language ?? undefined, revision: rev(s.project) };
+        if (c.language === null) delete project.scriptLanguage;
+        return { state: { ...s, project }, inverse: { ...c, language: s.project.scriptLanguage ?? null }, affected: [s.project.id] };
       }
       const collection = c.target === "variant" ? "variants" : c.target === "block" || c.target === "blockSpeech" ? "blocks" : c.target === "clip" ? "audioClips" : null;
       if (!collection) fail("invalid", L("Ugyldig språkmål", "Invalid language target"));
@@ -1907,7 +1909,9 @@ function run(
       if (c.target === "clip" && (row as import("../model").AudioClip).kind !== "dialogue") fail("invalid", L("Bare replikker har talespråk", "Only dialogue lines have speech language"));
       const field = c.target === "clip" || c.target === "blockSpeech" ? "speechLanguage" : "scriptLanguage";
       const previous = (row as unknown as Record<string, unknown>)[field] as string | null | undefined;
-      return { state: { ...s, [collection]: { ...rows, [row.id]: { ...row, [field]: c.language, revision: rev(row) } } }, inverse: { ...c, language: previous ?? null }, affected: [row.id] };
+      const updated = { ...row, [field]: c.language, revision: rev(row) };
+      if (c.language === null) delete (updated as unknown as Record<string, unknown>)[field];
+      return { state: { ...s, [collection]: { ...rows, [row.id]: updated } }, inverse: { ...c, language: previous ?? null }, affected: [row.id] };
     }
     case "ApplyGeneratedDialogue": {
       // Stable job-owned version identity is a receipt, even after explicit undo/deactivation.

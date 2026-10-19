@@ -23,7 +23,7 @@ export function unicodeTextParts(text: string, language = "und"): string[] {
     .filter(p => p.isWordLike).map(p => p.segment.toLocaleLowerCase(language === "und" ? undefined : language));
 }
 export function detectDialogueLanguage(text: string, declared: string) {
-  const tests: readonly [RegExp, string][] = [[/\p{Script=Hiragana}|\p{Script=Katakana}/u, "ja"], [/\p{Script=Han}/u, "zh"], [/\p{Script=Hangul}/u, "ko"], [/\p{Script=Arabic}/u, "ar"], [/\p{Script=Cyrillic}/u, "ru"], [/\p{Script=Devanagari}/u, "hi"]];
+  const tests: readonly [RegExp, string][] = [[/\p{Script=Hiragana}|\p{Script=Katakana}/u, "ja"], [/\p{Script=Han}/u, "zh"], [/\p{Script=Hangul}/u, "ko"], [/\p{Script=Arabic}/u, "ar"], [/\p{Script=Cyrillic}/u, "ru"], [/\p{Script=Devanagari}/u, "hi"]]; // i18n-ignore: BCP-47 language identifiers, not UI copy
   // Script is a hint, never certainty about the spoken language.
   const hint = tests.find(([re]) => re.test(text));
   return { language: hint?.[1] ?? declared, declared, uncertain: true };
