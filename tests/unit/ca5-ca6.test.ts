@@ -13,13 +13,17 @@ const fps = fixture.state.project.fps;
 
 function baseState(): ProjectState {
   const s = fixture.state;
-  const occ = Object.values(s.occurrences).find(o => o.activeTakeId && !o.removed)!;
-  const clip = Object.values(s.audioClips).find(c => !c.removed && c.kind === "dialogue" && c.blockId && c.occurrenceId === occ.id)!;
-  void clip;
-  return s;
+  const clip = Object.values(s.audioClips).find(c => !c.removed && c.kind === "dialogue" && c.blockId)!;
+  const occ = s.occurrences[clip.occurrenceId]!;
+  const source = Object.values(s.takes)[0]!;
+  const take = { ...source, id: id(9), occurrenceId: occ.id };
+  return {
+    ...s,
+    takes: { ...s.takes, [take.id]: take },
+    occurrences: { ...s.occurrences, [occ.id]: { ...occ, activeTakeId: take.id } },
+  };
 }
-const occWithTake = (s: ProjectState) => Object.values(s.occurrences).find(o => o.activeTakeId && !o.removed)!;
-const clipOf = (s: ProjectState) => Object.values(s.audioClips).find(c => !c.removed && c.kind === "dialogue" && c.blockId && c.occurrenceId === occWithTake(s).id)!;
+const clipOf = (s: ProjectState) => Object.values(s.audioClips).find(c => !c.removed && c.kind === "dialogue" && c.blockId)!;
 const takeOf = (s: ProjectState) => s.occurrences[clipOf(s).occurrenceId]!.activeTakeId!;
 
 const result = (over: Partial<LipsyncResult> = {}): LipsyncResult => ({
