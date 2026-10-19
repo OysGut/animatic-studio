@@ -24,12 +24,8 @@ await h.scenario("ca5-track", OCC, "nb", async page => {
   h.check(await page.getByTestId(`lipsync-toggle-${CLIP}`).getAttribute("aria-pressed") === "false", "sporet vises som avslått uten å slettes");
   await page.getByTestId(`viseme-${CLIP}-0`).click();
   h.check(await h.eventually(() => h.state.commands.some(c => c.type === "SetLipsyncOverrides" && c.overrides?.some(o => o.frame === 0 && o.viseme === "B"))), "klikk på en frame sykler munnformen som overstyring");
-  const gen = page.getByTestId(`lipsync-generate-${CLIP}`);
-  console.log("  debug: disabled =", await gen.getAttribute("disabled"), "takeId-seed ok");
-  await gen.click({ force: true });
-  await page.waitForTimeout(800);
-  console.log("  debug: alerts =", await page.getByRole("alert").count(), "html snippet:", (await page.getByTestId("anim-mouth-track").innerHTML()).slice(0, 300));
-  h.check(await page.getByRole("alert").count() > 0, "generering uten lastet lyd gir en forklaring, ingen stilltiende feil");
+  await page.getByTestId(`lipsync-generate-${CLIP}`).click();
+  h.check(await h.eventually(() => page.getByRole("alert").count() > 0, 5000), "generering uten lastet lyd gir en forklaring, ingen stilltiende feil");
   h.check(!h.state.commands.some(c => c.type === "SaveLipsyncResult"), "ingenting lagres uten «Bruk»");
   await page.screenshot({ path: `${h.out}/mouth-track.png` });
 });
