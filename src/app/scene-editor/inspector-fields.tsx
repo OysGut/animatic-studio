@@ -1,4 +1,5 @@
 /** Små skjemaelementer i egenskapspanelene i sceneeditoren. */
+import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { useRef, useState, type ReactNode } from "react";
 import { Diamond } from "lucide-react";
 import { L } from "@/core";
@@ -9,9 +10,7 @@ export const inputClass =
 export function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="mb-4">
-      <h3 className="-mx-3 mb-1.5 flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2 text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
-        {title}
-      </h3>
+      <PanelHeader as="h3" className="-mx-3 mb-1.5" title={title} />
       <div className="flex flex-col gap-2">{children}</div>
     </section>
   );
