@@ -255,3 +255,13 @@
 
 | KI-251 | 2026-10-19 | CA4 krever migrasjon 0055; bare isolert lokal database er testet | Cloud er fortsatt på 54 inntil migrasjonen kjøres | Claude kontrollerer og kjører 0055, deretter publisering | Åpen – aktivering i Cloud |
 | KI-252 | 2026-10-19 | CA4 lager munnformsett og lokale forhåndsvisninger; automatisk tidsfestet leppesynk og Rhubarb er CA5 | Ingen automatisk munnbevegelse i scene eller eksport ennå | CA5 i egen pakke, ingen betalte kall gjort | Planlagt |
+
+
+## CA5–CA8 – 19.10.2026
+- CA5: meldingen «Lydfilen er ikke lastet ennå» settes før analysen og WASM-lastingen starter, i et `aria-live`-område med `role="alert"` på selve meldingen (testid `lipsync-message`). Suiten venter på teksten i stedet for å telle varsler.
+- CA7: migrasjon 0057 (`global_animation_specs`, `global_publish_animation`) er skrevet og testet lokalt (DB 114/114), men ikke kjørt i Cloud. Før den er kjørt, svarer publiseringen med feil og listen over globale oppsett er tom.
+- CA7: pust og tics er enkel, deterministisk atferd (sinus-skalering for pust; tics som navngitte overleggsmønstre). Det finnes ingen egen tics-editor utover mønsterstudioet.
+- CA7: global publisering krever at kildebildet (og bildene til rigg-delene) allerede finnes i det globale biblioteket med samme SHA-256. Ellers forklarer dialogen at ressursen må lagres i biblioteket først.
+- CA8: rytmeverktøyet er bygget som et oransje panel (takt, pause/vekt per replikk, skjæringspunkt og forskyvning). Den direkte Cmd/Ctrl-dragmodusen i tidslinjen (§73–§96) og beskyttede intervaller er ikke bygget ennå.
+- CA8: «eget lag» eksporterer karakterdelene som en egen videofil i et ekstra eksportpass. Videoformatet har ingen alfakanal, så laget har ensfarget bakgrunn.
+- Oppdragsregelen sier at AGENTS.md ikke skal endres. Arkitekturregelen for CA7/CA8 er derfor ikke ført inn der.
