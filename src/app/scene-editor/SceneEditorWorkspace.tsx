@@ -1,4 +1,4 @@
-import { Toolbar, ToolbarButton, ToolbarSeparator, IconButton } from "@/app/shell/workspace-chrome";
+import { Toolbar, ToolbarButton, ToolbarSeparator, ToolbarGroup, IconButton } from "@/app/shell/workspace-chrome";
 /**
  * Sceneeditoren (M3 del 2, mandat kap. 11, DEC-0035): én 2D-scene per scene i manuset, bygget av lag
  * (bakgrunner, mellomgrunner, karakterer, objekter …) med bilder fra ressursbiblioteket eller fargeflater.
@@ -707,7 +707,7 @@ function Editor({
     <div className="flex min-h-0 flex-1 flex-col">
       <Toolbar overflow="menu">
         <ToolbarGroup priority={9}>
-        <span className="text-[13px] font-medium text-text-primary">
+        <span className="text-chrome font-medium text-text-primary">
           {L("Sceneeditor", "Scene editor")}
         </span>
         <ProductionPicker state={state} value={productionId} onChange={setProductionId} />
