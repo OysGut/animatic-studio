@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { FaceMarkDialog } from "./FaceMarkDialog";
 import { animationUseOf } from "@/core/animation/rig";
 import { MouthShapeEditor } from "./MouthShapeEditor";
+import { BlinkPanel } from "./BlinkPanel";
 import { layerVersion } from "@/core/composition/render";
 import { ScanFace, Power, Speech, UserRound, Package, Mountain } from "lucide-react";
 import type { AnimWindow } from "./TimeNavigator";
@@ -61,6 +62,7 @@ export function VariantTracks({ state, compositionId, occurrenceId, duration, vi
       <IconButton data-testid="ca3-mark-face" label={L("Marker ansikt", "Mark face")} disabled={!editable || !segment?.version || current?.layer.locked || !urls[segment.version.mediaPath]} onClick={() => setFaceVersion(segment?.version?.id ?? null)}><ScanFace /></IconButton>
       <IconButton data-testid="ca4-open-mouth" label={L("Munnformer og rigg-deler", "Mouth shapes and rig parts")} disabled={!editable || !segment?.version || current?.layer.locked || !urls[segment.version.mediaPath]} onClick={() => setMouthVersion(segment?.version?.id ?? null)}><Speech /></IconButton>
       <IconButton data-testid="ca3-animation-enabled" aria-pressed={use?.enabled ?? false} label={L("Animasjon i denne scenen", "Animation in this scene")} active={use?.enabled ?? false} disabled={!editable || !use || current?.layer.locked} onClick={() => { if (use) setError(run({ type: "SetAnimationLayerEnabled", useId: use.id, enabled: !use.enabled }, L("Endre animasjon i scenen", "Change scene animation"))); }}><Power /></IconButton>
+      {use ? <BlinkPanel state={state} use={use} frame={frame} editable={editable && !current?.layer.locked} run={run} /> : null}
       {current ? <ToolbarButton data-testid="anim-open-asset-studio" onClick={() => onStudio(current.layer.id)}>{L("Asset Studio", "Asset Studio")}</ToolbarButton> : null}
     </ToolbarGroup></Toolbar>
     {current && segment ? <div className="flex flex-wrap items-center gap-2 border-b border-border p-2 text-xs text-text-secondary">
