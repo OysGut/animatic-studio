@@ -256,17 +256,31 @@ export const IconButton = forwardRef<
   }
 >(function IconButton({ label, shortcut, side = "bottom", onPointerMove, onFocus, ...rest }, ref) {
   const [open, setOpen] = useState(false);
+  const tabFocus = useRef(false);
   useEffect(() => {
-    if (!open) return;
-    // Enhver tast lukker tipset før resten av appen ser tasten, så Esc og hurtigtaster virker som før.
-    const close = () => flushSync(() => setOpen(false));
-    window.addEventListener("keydown", close, true);
-    window.addEventListener("pointerdown", close, true);
-    return () => {
-      window.removeEventListener("keydown", close, true);
-      window.removeEventListener("pointerdown", close, true);
+    let reset: ReturnType<typeof setTimeout> | undefined;
+    // Lukk før Radix ser tasten, uten å hindre dialogens eller studioets tastaturhåndtering.
+    const keydown = (event: KeyboardEvent) => {
+      tabFocus.current = event.key === "Tab";
+      clearTimeout(reset);
+      reset = setTimeout(() => { tabFocus.current = false; }, 0);
+      flushSync(() => setOpen(false));
     };
-  }, [open]);
+    const clearTabFocus = () => { tabFocus.current = false; };
+    const pointerdown = () => {
+      clearTabFocus();
+      flushSync(() => setOpen(false));
+    };
+    window.addEventListener("keydown", keydown, true);
+    window.addEventListener("keyup", clearTabFocus, true);
+    window.addEventListener("pointerdown", pointerdown, true);
+    return () => {
+      clearTimeout(reset);
+      window.removeEventListener("keydown", keydown, true);
+      window.removeEventListener("keyup", clearTabFocus, true);
+      window.removeEventListener("pointerdown", pointerdown, true);
+    };
+  }, []);
   return (
     <TooltipProvider delayDuration={400}>
     <Tooltip open={open} onOpenChange={setOpen}>
@@ -279,9 +293,11 @@ export const IconButton = forwardRef<
           {...rest}
           onFocus={(e) => {
             onFocus?.(e);
-            // Tipset åpnes ved tastaturfokus (focus-visible), ikke ved klikk. Første tast lukker det
-            // (se over) før resten av appen ser tasten, så Esc og hurtigtaster virker som før.
-            if (!e.currentTarget.matches(":focus-visible")) e.preventDefault();
+            const fromTab = tabFocus.current && !e.defaultPrevented;
+            tabFocus.current = false;
+            // Radix må ikke åpne ved programmatisk fokus, selv om :focus-visible matcher.
+            e.preventDefault();
+            if (fromTab) setOpen(true);
           }}
           onPointerMove={(e) => {
             onPointerMove?.(e);
@@ -292,6 +308,7 @@ export const IconButton = forwardRef<
       </TooltipTrigger>
       <TooltipContent
         side={side}
+        onEscapeKeyDown={() => flushSync(() => setOpen(false))}
         className="pointer-events-none flex items-center gap-2 rounded-sm border border-border bg-surface-3 px-2 py-1 text-[length:var(--text-chrome-label)] text-text-primary data-[state=closed]:animate-none"
       >
         <span>{label}</span>
