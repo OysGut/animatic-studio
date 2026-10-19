@@ -79,7 +79,7 @@ export async function analyzeLipsync(input: AnalyzeInput): Promise<AnalyzeOutput
   const rhubarb = await loadRhubarb();
   if (rhubarb) {
     try {
-      const result = await rhubarb.Rhubarb.getLipSync(Buffer.from(pcm.buffer.slice(pcm.byteOffset, pcm.byteOffset + pcm.byteLength) as ArrayBuffer), { dialogText: input.dialogText || undefined });
+      const result = await rhubarb.Rhubarb.getLipSync(Buffer.from(pcm.buffer.slice(pcm.byteOffset, pcm.byteOffset + pcm.byteLength) as ArrayBuffer), (input.dialogText ? { dialogText: input.dialogText } : {}));
       const spans = spansFromRhubarb(result.mouthCues, input.fps);
       if (spans.length > 0) return { spans, source: "rhubarb", audioHash, textHash };
     } catch {
