@@ -42,7 +42,7 @@ export function VariantTracks({ state, compositionId, duration, view, frame, edi
     }
     if (d?.next) write(d.layerId, d.next, d.kind === "move" ? L("Flytt bildesegment", "Move image segment") : L("Trim bildesegment", "Trim image segment"));
   }
-  const positions = (start: number, end: number) => ({ left: `${(start - view.from) / view.span * 100}%`, width: `${(end - start) / view.span * 100}%`, minWidth: end - start === 1 ? "1.75rem" : undefined });
+  const positions = (start: number, end: number) => ({ left: `${(start - view.from) / view.span * 100}%`, width: `${(end - start) / view.span * 100}%`, minWidth: end - start === 1 ? "1.75rem" : undefined, zIndex: end - start === 1 ? 2 : 1 });
   return <section data-testid="anim-variant-tracks">
     <Toolbar><ToolbarGroup>
       <IconButton data-testid="anim-segment-add" label={L("Legg inn bildehendelse", "Insert image event")} disabled={!editable || !current || current.layer.locked} onClick={() => current && setPicking({ layerId: current.layer.id, index: -1 })}><ImagePlus /></IconButton>
