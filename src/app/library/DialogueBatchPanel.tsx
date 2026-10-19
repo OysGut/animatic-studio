@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { L, characterDialogueCoverage, selectedDialogueCounts, estimateCostUsd, formatUsd, newId, existingSpeechWarning, multilingualSpeechWarning, batchTimeEstimate, speechLanguageError, languageTagError, type ProjectState, type Asset, type AssetVoice } from "@/core";
-import { createDialogueBatch, advanceDialogueBatch, resumeDialogueBatch, listDialogueBatches } from "@/adapters/ai/dialogue-batch.functions";
+import { createDialogueBatch, advanceDialogueBatch, resumeDialogueBatch, listDialogueBatches } from "@/adapters/storage/dialogue-batch.functions";
 import { VoiceControls } from "@/app/audio/VoiceControls";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";

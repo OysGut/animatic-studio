@@ -4,7 +4,7 @@ import { L, isUuid, assetVoiceError, characterDialogueCoverage, estimateCostUsd,
 import type { AnyClient } from "../storage/project-rows";
 
 async function access(supabase: unknown, projectId: string, userId: string) {
-  const { memberRole, ROLE_RANK } = await import("./ai-gate.server");
+  const { memberRole, ROLE_RANK } = await import("../ai/ai-gate.server");
   const role = await memberRole(supabase as AnyClient, projectId, userId);
   if ((ROLE_RANK[role ?? ""] ?? 0) < (ROLE_RANK["editor"] ?? 3)) throw new Error(L("Du har ikke skrivetilgang.", "You do not have editing permission."));
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

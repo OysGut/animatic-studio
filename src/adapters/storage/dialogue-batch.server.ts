@@ -1,8 +1,8 @@
 /** DV5: durable sequential work, leased per batch; no browser or page-load orchestration. */
 import { applyCommand, diffStates, newId, L, type Command, type AssetVoice } from "@/core";
 import { loadProjectState, type AnyClient } from "../storage/project-rows";
-import { runSpeech } from "./speech-run.server";
-import { memberRole, ROLE_RANK } from "./ai-gate.server";
+import { runSpeech } from "../ai/speech-run.server";
+import { memberRole, ROLE_RANK } from "../ai/ai-gate.server";
 
 export async function processDialogueBatch(db: AnyClient, batchId: string, userDb: unknown = db) {
   const lease = newId<"command">();
