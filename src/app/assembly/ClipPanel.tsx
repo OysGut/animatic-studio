@@ -199,7 +199,7 @@ export function ClipPanel({
           <span className="font-mono text-[11px] text-text-tertiary">
             {clip.productionNumber ?? "–"}
           </span>
-          <h2 className="min-w-0 truncate text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
+          <h2 className="min-w-0 truncate text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
             {formatHeading(clip.heading) || L("Uten overskrift", "Untitled")}
           </h2>
           <span className="ml-auto self-center">

@@ -144,7 +144,7 @@ export const NearbyAudioPanel = memo(function NearbyAudioPanel({
       aria-label={L("Lyd i scenene rundt", "Audio in the surrounding scenes")}
       className="flex min-h-0 flex-col border-t border-border"
     >
-      <h2 className="flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2 text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
+      <h2 className="flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2 text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
         {L("Lyd i scenene rundt", "Audio in the surrounding scenes")}
       </h2>
       <div className="flex items-center gap-1 px-2 pb-1">

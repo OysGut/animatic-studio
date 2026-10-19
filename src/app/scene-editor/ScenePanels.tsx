@@ -25,7 +25,7 @@ import { PanelHeader } from "@/app/shell/workspace-chrome";
 const PANEL_DRAG_TYPE = "application/x-animatic-panel";
 
 const iconButton =
-  "inline-flex size-6 shrink-0 items-center justify-center rounded-sm text-text-secondary hover:bg-surface-3 hover:text-text-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent";
+  "inline-flex size-6 shrink-0 items-center justify-center rounded-sm text-text-secondary hover:bg-surface-3 hover:text-text-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-focus-ring disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent";
 
 /** Knappen som bytter mellom stablet og side om side. */
 export function PanelModeButton({
@@ -238,7 +238,7 @@ export function SidePanels({
                     <>
                       <GripVertical className="size-3.5 shrink-0 text-text-tertiary" aria-hidden />
                       {onToggle ? <CollapseButton title={title} id={id} onToggle={onToggle} /> : null}
-                      <h2 className="min-w-0 flex-1 truncate text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
+                      <h2 className="min-w-0 flex-1 truncate text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
                         {title}
                       </h2>
                     </>

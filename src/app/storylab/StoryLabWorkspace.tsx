@@ -499,7 +499,7 @@ function ContextPanel({
                 ))}
                 {knowledge.ownSecrets.map((f) => (
                   <li key={f.id} className="text-text-secondary">
-                    <span className="mr-1 text-[11px] uppercase text-status-warning">{L("Hemmelighet", "Secret")}</span>
+                    <span className="mr-1 text-chrome-label uppercase text-status-warning">{L("Hemmelighet", "Secret")}</span>
                     {f.text}
                   </li>
                 ))}

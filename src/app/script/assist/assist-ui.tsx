@@ -91,7 +91,7 @@ export function AssistContextMenu({
       className="fixed z-50 min-w-[200px] rounded-md border border-border bg-surface-2 p-1 shadow-lg"
       style={{ left: x, top: y }}
     >
-      <p className="px-2 py-1 text-[11px] uppercase tracking-wider text-text-tertiary">{L("Skriv om …", "Rewrite …")}</p>
+      <p className="px-2 py-1 text-chrome-label uppercase tracking-label text-text-tertiary">{L("Skriv om …", "Rewrite …")}</p>
       {REWRITE_MODES.map((m) => item(MODE_LABEL[m](), "rewrite", m, `assist-menu-rewrite-${m}`))}
       <div className="my-1 h-px bg-border" />
       {item(L("Språkvask", "Language polish"), "polish", undefined, "assist-menu-polish")}

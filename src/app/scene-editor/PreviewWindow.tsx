@@ -340,7 +340,7 @@ export function PreviewWindow({
           setY(Math.round(clampY(y + d[1]!)));
         }}
       >
-        <span className="truncate text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+        <span className="truncate text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
           {L("Ferdig utsnitt", "Finished shot")}
         </span>
         {note ? (
@@ -714,7 +714,7 @@ export function PopoutPreview({
         className="flex shrink-0 items-center gap-1.5 border-b border-border bg-surface-1 px-2"
         style={{ height: HEADER }}
       >
-        <span className="truncate text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+        <span className="truncate text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
           {L("Ferdig utsnitt", "Finished shot")}
         </span>
         <span className="truncate text-[11px] text-text-tertiary">

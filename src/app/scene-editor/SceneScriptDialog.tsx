@@ -144,7 +144,7 @@ function Body({
         aria-label={label}
         role="region"
       >
-        <p className="px-6 pt-3 font-sans text-[11px] uppercase tracking-[0.04em] text-text-tertiary">
+        <p className="px-6 pt-3 font-sans text-chrome-label uppercase tracking-[0.04em] text-text-tertiary">
           {label}
         </p>
         <ScriptPageView

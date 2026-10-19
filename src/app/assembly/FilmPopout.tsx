@@ -127,7 +127,7 @@ export function FilmPopout({
         className="flex shrink-0 items-center gap-1.5 border-b border-border bg-surface-1 px-2"
         style={{ height: H }}
       >
-        <span className="truncate text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+        <span className="truncate text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
           {L("Montering", "Assembly")}
         </span>
         <span className="truncate text-[11px] text-text-tertiary">

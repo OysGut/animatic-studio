@@ -299,7 +299,7 @@ export function WritingPanel({
 
       {proposal ? (
         <section className="space-y-3" data-testid="assist-proposal" data-kind={proposal.kind}>
-          <h3 className="text-[11px] font-medium uppercase tracking-wider text-text-tertiary">
+          <h3 className="text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
             {proposal.kind === "format" ? L("Formatsjekk", "Format check") : ACTION_LABEL[proposal.kind]()}
           </h3>
           {proposal.usedFallback ? (
@@ -390,7 +390,7 @@ export function WritingPanel({
       ) : null}
 
       <section className="space-y-2">
-        <h3 className="text-[11px] font-medium uppercase tracking-wider text-text-tertiary">{L("Skriv om", "Rewrite")}</h3>
+        <h3 className="text-chrome-label font-medium uppercase tracking-label text-text-tertiary">{L("Skriv om", "Rewrite")}</h3>
         <p className="text-[12px] text-text-tertiary" data-testid="assist-target-count">
           {n ? L(`${n} linjer valgt`, `${n} lines selected`) : L("Marker en replikk eller handling i manuset.", "Select a line or action in the script.")}
         </p>
@@ -411,7 +411,7 @@ export function WritingPanel({
       </section>
 
       <section className="space-y-2">
-        <h3 className="text-[11px] font-medium uppercase tracking-wider text-text-tertiary">{L("Neste replikk", "Next line")}</h3>
+        <h3 className="text-chrome-label font-medium uppercase tracking-label text-text-tertiary">{L("Neste replikk", "Next line")}</h3>
         <select className="w-full rounded-sm border border-border bg-surface-2 px-2 py-1" value={characterId || characters[0]?.id || ""} onChange={(e) => setCharacterId(e.target.value)} data-testid="assist-character" aria-label={L("Karakter", "Character")}>
           {characters.map((a) => (
             <option key={a.id} value={a.id}>{a.name}</option>
@@ -426,7 +426,7 @@ export function WritingPanel({
       </section>
 
       <section className="space-y-2">
-        <h3 className="text-[11px] font-medium uppercase tracking-wider text-text-tertiary">{L("Ny scene", "New scene")}</h3>
+        <h3 className="text-chrome-label font-medium uppercase tracking-label text-text-tertiary">{L("Ny scene", "New scene")}</h3>
         <select className="w-full rounded-sm border border-border bg-surface-2 px-2 py-1" value={nodeId} onChange={(e) => { setNodeId(e.target.value); setNodeConfirmed(false); }} data-testid="assist-scene-node" aria-label={L("Scenenode", "Scene node")}>
           <option value="">{L("Fra beskrivelse", "From description")}</option>
           {sceneNodes.map((c) => (
@@ -449,7 +449,7 @@ export function WritingPanel({
       </section>
 
       <section className="space-y-2">
-        <h3 className="text-[11px] font-medium uppercase tracking-wider text-text-tertiary">{L("Sjekk og oversettelse", "Check and translation")}</h3>
+        <h3 className="text-chrome-label font-medium uppercase tracking-label text-text-tertiary">{L("Sjekk og oversettelse", "Check and translation")}</h3>
         <div className="flex flex-wrap gap-2">
           <ToolbarButton disabled={disabled || !occ} onClick={runFormat} data-testid="assist-format" title={L("Formatsjekk, gratis (Alt + Shift + F)", "Format check, free (Alt + Shift + F)")}>
             {L("Formatsjekk", "Format check")}

@@ -145,7 +145,7 @@ export function TrashDialog({
           <div className="flex max-h-[55vh] flex-col gap-3 overflow-y-auto">
             {trash.assets.length ? (
               <section aria-label={L("Slettede ressurser", "Deleted assets")}>
-                <h3 className="pb-1 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+                <h3 className="pb-1 text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
                   {L("Ressurser", "Assets")} ({trash.assets.length})
                 </h3>
                 <ul className="border border-border bg-surface-1">
@@ -224,7 +224,7 @@ export function TrashDialog({
             ) : null}
             {trash.versions.length ? (
               <section aria-label={L("Slettede bilder", "Deleted images")}>
-                <h3 className="pb-1 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+                <h3 className="pb-1 text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
                   {L("Bilder", "Images")} ({trash.versions.length})
                 </h3>
                 <ul className="border border-border bg-surface-1">

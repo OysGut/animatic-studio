@@ -365,7 +365,7 @@ function Body({
             aria-label={L("Standardbilde", "Default image")}
             className="flex flex-col gap-1.5"
           >
-            <h3 className="text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+            <h3 className="text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
               {L("Følger biblioteket", "Follows the library")}
             </h3>
             <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-2">
@@ -420,7 +420,7 @@ function Body({
                   className="flex flex-col gap-1.5"
                 >
                   <div className="flex items-baseline gap-2">
-                    <h3 className="text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary">
+                    <h3 className="text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
                       {v.name || L("Uten navn", "Without name")}
                     </h3>
                     <span className="text-[11px] text-text-tertiary">

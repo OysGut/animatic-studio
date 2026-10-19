@@ -49,7 +49,7 @@ export function ShortcutsDialog({
             <section key={g.id} aria-labelledby={`hurtigtaster-${g.id}`}>
               <h3
                 id={`hurtigtaster-${g.id}`}
-                className="mb-1 text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary"
+                className="mb-1 text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary"
               >
                 {g.title}
                 {g.id === current ? " (her)" : ""}
