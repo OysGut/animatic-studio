@@ -242,6 +242,14 @@ const waitUntil = async (condition, label, timeout = 20000) => {
   while (!condition()) { if (Date.now() - start > timeout) throw new Error(label); await new Promise((resolve) => setTimeout(resolve, 40)); }
 };
 const cmd = (type) => S.commands.map((d) => d.command).filter((c) => c?.type === type);
+async function eventually(condition, timeout = 3000) {
+  const deadline = Date.now() + timeout;
+  do {
+    if (await condition()) return true;
+    await new Promise(resolve => setTimeout(resolve, 40));
+  } while (Date.now() < deadline);
+  return false;
+}
 const nodeLoc = (page, kind) => page.locator(`[data-testid="canvas-node"]${kind ? `[data-kind="${kind}"]` : ""}`);
 async function addNode(page, kind) {
   await page.getByTestId("canvas-add").click();
@@ -290,7 +298,7 @@ await run("koble, flytte og angre, slette og angre", async (page) => {
   const u = cmd("RemoveCanvasNodes")[1];
   check(u.removed === false && (u.edgeIds ?? []).length === 1, "angre tar tilbake noden og kanten");
   await page.getByTestId("canvas-edge").first().waitFor({ state: "attached" });
-  check(await page.getByTestId("canvas-edge").count() === 1, "kanten vises igjen");
+  check(await eventually(async () => await page.getByTestId("canvas-edge").count() === 1), "kanten vises igjen");
 }, { nodes: [rowNode(1, { title: "A", x: 100, y: 100 }), rowNode(2, { title: "B", x: 500, y: 100 })] });
 
 await run("bygg fra manuset", async (page) => {
