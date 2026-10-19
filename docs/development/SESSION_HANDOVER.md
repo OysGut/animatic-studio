@@ -81,5 +81,5 @@ KI-30 (foreldreløse bilder), KI-31 (notater fra fremmede PDF-er), KI-32 (meldin
 - CA7: kjernen ligger i `src/core/animation/character.ts` (arv, overstyringer, bruk i andre scener, historikk og gjenoppretting) og `global-rig.ts` (publisering og innlesing). Den nye kommandoen er `AdoptRigVersion` («bare her» / «oppdater alle», med invers). Brukerflaten er `CharacterPanel.tsx`.
 - CA8: `src/core/animation/rhythm.ts` planlegger via `planRetime(gapChanges)` og gir én `RetimeScene`. Brukerflaten er `RhythmPanel.tsx`. Eksportvalgene ligger i `UseBehavior.export` og brukes i `evaluateCharacterFrame` og i `characterPass` i lerretsrendereren.
 - Migrasjon 0057 (skjemaversjon 57) er ikke kjørt i Cloud. Den erstatter ingen funksjoner (`apply_changes`, `delete_project` og purge er uendret).
-- Tester: tsc ok; vitest 1704+16; DB 114/114; ca7 26/26; ca8 22/22; ca1–ca6 17/17/20/25/13/15; asset-studio 57/57; scene-panels 39/39.
+- Tester: tsc ok; vitest 1705 bestått, 10 hoppet over; DB 114/114; ca7 26/26; ca8 22/22; ca1–ca6 17/17/20/25/13/15; asset-studio 57/57; scene-panels 39/39.
 - Neste: Claude kjører 0057. Deretter skal Cmd/Ctrl-dragmodusen for rytme bygges (se KNOWN_ISSUES).
