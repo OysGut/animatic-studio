@@ -529,9 +529,9 @@ revoke all on function public.purge_removed_assets(uuid, uuid, uuid[], uuid[]) f
 grant execute on function public.purge_removed_assets(uuid, uuid, uuid[], uuid[]) to service_role;
 
 
-create or replace function public.create_dialogue_batch(p_project uuid, p_actor uuid, p_request uuid, p_character uuid, p_voice jsonb, p_items jsonb)
+create or replace function public.create_dialogue_batch(p_project uuid, p_actor uuid, p_request uuid, p_character uuid, p_voice jsonb, p_items jsonb, p_key uuid, p_key_owner uuid)
 returns uuid language plpgsql security definer set search_path = '' as $$
-declare v_id uuid; v_item jsonb; v_position integer := 0;
+declare v_id uuid; v_item jsonb; v_position integer := 0; v_limit integer; v_used integer;
 begin
   perform 1 from public.projects where id = p_project and deleted_at is null for update;
   if not found or private.member_role_rank(p_project,p_actor) < private.role_rank('editor') then raise exception 'Forbidden' using errcode = '42501'; end if;
@@ -540,21 +540,25 @@ begin
   if jsonb_typeof(p_items) <> 'array' or jsonb_array_length(p_items) not between 1 and 1000 then raise exception 'Invalid items' using errcode = '22023'; end if;
   if not exists(select 1 from public.assets where id=p_character and project_id=p_project and not removed and kind in ('character','animal','other')) then raise exception 'Invalid character' using errcode='22023'; end if;
   if jsonb_typeof(p_voice) <> 'object' or p_voice->>'provider' <> 'elevenlabs' or length(coalesce(p_voice->>'voiceId','')) not between 1 and 200 then raise exception 'Invalid voice' using errcode='22023'; end if;
+  if not exists(select 1 from public.ai_provider_keys where id=p_key and user_id=p_key_owner and provider='elevenlabs' and status <> 'failed') then raise exception 'Invalid provider key' using errcode='42501'; end if;
+  select ai_month_limit into v_limit from public.projects where id=p_project;
+  select count(*) into v_used from public.generation_jobs where project_id=p_project and status <> 'failed' and kind not in ('text','prompt') and created_at >= date_trunc('month',now() at time zone 'UTC') at time zone 'UTC';
+  if v_limit is not null and v_used+jsonb_array_length(p_items)>v_limit then raise exception 'Project generation budget exceeded' using errcode='22023'; end if;
   v_id := gen_random_uuid();
   insert into public.dialogue_batches(id,project_id,request_id,character_id,voice,created_by) values(v_id,p_project,p_request,p_character,p_voice,p_actor);
   for v_item in select * from jsonb_array_elements(p_items) loop
     if not exists (select 1 from public.script_blocks b join public.scene_occurrences o on o.variant_id = b.variant_id and o.project_id = b.project_id where b.id = (v_item->>'block_id')::uuid and o.id = (v_item->>'occurrence_id')::uuid and b.project_id = p_project and b.kind = 'dialogue' and not b.removed and o.active and b.current_rev = (v_item->>'script_revision')::integer) then raise exception 'Invalid line' using errcode = '22023'; end if;
     if length(coalesce(v_item->>'language','')) not between 2 and 100 or (v_item->>'cost')::numeric < 0 then raise exception 'Invalid estimate or language'; end if;
-    insert into public.generation_jobs(id,project_id,kind,provider,model,prompt,status,created_by,cost_usd,params)
-    values((v_item->>'job_id')::uuid,p_project,'sound','elevenlabs',coalesce(p_voice->>'modelId','eleven_v3'),'','queued',p_actor,(v_item->>'cost')::numeric,jsonb_build_object('kind','dialogue_batch','batchId',v_id,'blockId',v_item->>'block_id','language',v_item->>'language'));
+    insert into public.generation_jobs(id,project_id,kind,provider,model,prompt,status,created_by,cost_usd,params,provider_key_id,key_owner)
+    values((v_item->>'job_id')::uuid,p_project,'sound','elevenlabs',coalesce(p_voice->>'modelId','eleven_v3'),'','queued',p_actor,(v_item->>'cost')::numeric,jsonb_build_object('kind','dialogue_batch','batchId',v_id,'blockId',v_item->>'block_id','language',v_item->>'language'),p_key,p_key_owner);
     insert into public.dialogue_batch_items(id,batch_id,project_id,job_id,occurrence_id,block_id,script_revision,language,position,variant_id,version_id,clip_id,dialogue_version_id,composition_id,command_id,created_by)
     values((v_item->>'id')::uuid,v_id,p_project,(v_item->>'job_id')::uuid,(v_item->>'occurrence_id')::uuid,(v_item->>'block_id')::uuid,(v_item->>'script_revision')::integer,v_item->>'language',v_position,(v_item->>'variant_id')::uuid,(v_item->>'version_id')::uuid,(v_item->>'clip_id')::uuid,(v_item->>'dialogue_version_id')::uuid,(v_item->>'composition_id')::uuid,(v_item->>'command_id')::uuid,p_actor);
     v_position := v_position + 1;
   end loop;
   return v_id;
 end $$;
-revoke all on function public.create_dialogue_batch(uuid,uuid,uuid,uuid,jsonb,jsonb) from public,anon,authenticated;
-grant execute on function public.create_dialogue_batch(uuid,uuid,uuid,uuid,jsonb,jsonb) to service_role;
+revoke all on function public.create_dialogue_batch(uuid,uuid,uuid,uuid,jsonb,jsonb,uuid,uuid) from public,anon,authenticated;
+grant execute on function public.create_dialogue_batch(uuid,uuid,uuid,uuid,jsonb,jsonb,uuid,uuid) to service_role;
 
 create or replace function public.claim_dialogue_batch(p_batch uuid,p_lease uuid)
 returns jsonb language plpgsql security definer set search_path = '' as $$

@@ -918,6 +918,7 @@ export const CATALOG: Record<string, string> = {
   "Ingen lyd valgt": "No audio selected",
   "Ingen nøkkel er lagt inn for denne leverandøren.": "No key has been added for this provider.",
   "Ingen notater å legge til": "No notes to add",
+  "Ingen prosjekteier har koblet til ElevenLabs.": "No project owner has connected ElevenLabs.",
   "Ingen referansebilder.": "No reference images.",
   "Ingen ressurser å legge til": "No assets to add",
   "Ingen segmenter oppgitt": "No segments given",
@@ -957,6 +958,8 @@ export const CATALOG: Record<string, string> = {
     "The job started, but could not be registered: {0}",
   "Jobber som feilet uten å koste noe, og jobber som venter i køen, er ikke med. «Betalt, ikke lagret» er med fordi leverandøren kan ha tatt betalt.":
     "Jobs that failed without cost, and jobs waiting in the queue, are not included. “Paid, not saved” is included because the provider may have charged for it.",
+  "Jobbresultatet kunne ikke lagres. Ikke generer på nytt før resultatet er avklart.":
+    "The job result could not be saved. Do not regenerate until the result is reconciled.",
   "Kallet kunne ikke logges: {0}": "The call could not be logged: {0}",
   "Kamerabevegelsen fra animaticen var med.": "The camera movement from the animatic was included.",
   "Kameraet er for stort": "The camera is too large",
