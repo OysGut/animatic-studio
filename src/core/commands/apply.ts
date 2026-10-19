@@ -1936,12 +1936,13 @@ function run(
       if (existing) execute({ type: "AddDialogueVersion", dialogueVersionId: c.dialogueVersionId, clipId: existing.id, activate: true, fields: { assetId: c.assetId, assetVariantId: c.variantId, assetVersionId: c.versionId, sourceInMs: 0, lengthMs: c.media.durationMs, gainDb: 0, fadeInMs: 0, fadeOutMs: 0, volumeKeys: [], speed: 1, compositionId: null, ...c.metadata, parentVersionId: existing.activeVersionId ?? null } });
       else execute({ type: "AddAudioClips", dialogueMeta: c.metadata, clips: [{ clipId: c.clipId as never, fields: { occurrenceId: c.occurrenceId as never, kind: "dialogue", name: info.text.slice(0, 200), assetId: c.assetId as never, assetVariantId: c.variantId as never, versionId: c.versionId as never, blockId: c.blockId as never, offsetMs: info.startMs, sourceInMs: 0, lengthMs: c.media.durationMs, gainDb: 0, fadeInMs: 0, fadeOutMs: 0, muted: false, continues: false, volumeKeys: [] } }] });
       execute({ type: "SetDialogueCharacter", clipIds: [clipId as never], characterAssetId: c.characterId as never });
+      if (c.reviewId && !(cur.dialogueReviews ?? {})[c.reviewId]) execute({ type: "ReviewDialogueDrift", reviewId: c.reviewId, clipId, basis: "generated" });
       const clip = cur.audioClips[clipId];
       if (clip && !existing) cur = { ...cur, audioClips: { ...cur.audioClips, [clipId]: { ...clip, placementEstimated: true } } };
       return { state: oneRevisionPerRow(s, cur), inverse: { type: "UndoGeneratedDialogue", steps: inverses }, affected: [...affected] };
     }
     case "UndoGeneratedDialogue": {
-      const allowed = new Set(["UndoCreateComposition", "CreateComposition", "UndoCreateAssets", "CreateAssets", "UndoCreateAssetVariant", "CreateAssetVariant", "UndoAddAssetVersion", "AddAssetVersion", "UndoAddAudioClips", "AddAudioClips", "UndoAddDialogueVersion", "AddDialogueVersion", "SetDialogueCharacter", "RestoreDialogueCharacters"]);
+      const allowed = new Set(["UndoCreateComposition", "CreateComposition", "UndoCreateAssets", "CreateAssets", "UndoCreateAssetVariant", "CreateAssetVariant", "UndoAddAssetVersion", "AddAssetVersion", "UndoAddAudioClips", "AddAudioClips", "UndoAddDialogueVersion", "AddDialogueVersion", "SetDialogueCharacter", "RestoreDialogueCharacters", "ReviewDialogueDrift", "UndoReviewDialogueDrift"]);
       if (c.steps.length > 20 || c.steps.some(step => !allowed.has(step.type))) fail("invalid", L("Ugyldig angring av generering", "Invalid generation undo"));
       let cur = s; const inverses: Command[] = []; const affected = new Set<string>();
       for (const step of c.steps) { const result = run(cur, { ...env, command: step }); const mirrored = mirrorDialogueClips(cur, result.state); cur = mirrored.state; inverses.unshift(result.inverse); [...result.affected, ...mirrored.touched].forEach(id => affected.add(id)); }
@@ -6937,6 +6938,51 @@ function run(
       };
     }
 
+    case "ReviewDialogueDrift": {
+      assertNewId(s, c.reviewId);
+      const clip = need(s.audioClips[c.clipId], L("Replikken", "The line"));
+      const d = clipDrift(s, clip);
+      if (!d.versionId) fail("invalid", L("Replikken har ingen aktiv lydversjon", "The line has no active audio version"));
+      const basis = c.basis ?? "manual";
+      if (basis === "manual" && d.status !== "drift" && d.status !== "unknown") fail("invalid", L("Replikken har ikke avvik", "The line has no difference"));
+      if (basis === "generated" && d.audioRevision !== d.currentRevision) fail("invalid", L("Generert lyd må følge gjeldende manus", "Generated audio must follow the current script"));
+      const review: DialogueReview = { id: c.reviewId, revision: 1, dialogueVersionId: d.versionId!, blockId: d.blockId, blockRevision: d.currentRevision, basis, createdBy: env.actor, createdAt: env.at, removed: false };
+      return { state: { ...s, dialogueReviews: { ...(s.dialogueReviews ?? {}), [review.id]: review } }, inverse: { type: "UndoReviewDialogueDrift", reviewId: review.id }, affected: [review.id] };
+    }
+    case "UndoReviewDialogueDrift": {
+      const r = need((s.dialogueReviews ?? {})[c.reviewId], L("Gjennomgangen", "The review"));
+      const reviews = { ...(s.dialogueReviews ?? {}) };
+      delete reviews[r.id];
+      const clip = Object.values(s.audioClips).find(a => a.activeVersionId === r.dialogueVersionId || s.dialogueVersions[r.dialogueVersionId]?.clipId === a.id);
+      return { state: { ...s, dialogueReviews: reviews }, inverse: { type: "ReviewDialogueDrift", reviewId: r.id, clipId: clip?.id ?? "", basis: r.basis }, affected: [r.id] };
+    }
+    case "AddNoteFlag": {
+      assertNewId(s, c.flagId);
+      if (!NOTE_FLAG_TARGETS.includes(c.targetKind) || !isUuid(c.targetId)) fail("invalid", L("Ugyldig mål for huskelappen", "Invalid target for the note flag"));
+      if (typeof c.text !== "string" || c.text.length > NOTE_FLAG_MAX_TEXT) fail("invalid", L("Teksten er for lang", "The text is too long"));
+      const exists = { dialogue_version: s.dialogueVersions, audio_clip: s.audioClips, asset_version: s.assetVersions, asset_variant: s.assetVariants, occurrence: s.occurrences }[c.targetKind][c.targetId];
+      if (!exists) fail("not_found", L("Elementet finnes ikke", "The item was not found"));
+      const flag: NoteFlag = { id: c.flagId, revision: 1, targetKind: c.targetKind, targetId: c.targetId, text: c.text, enabled: true, createdBy: env.actor, createdAt: env.at, editedBy: null, editedAt: null, removed: false };
+      return { state: { ...s, noteFlags: { ...(s.noteFlags ?? {}), [flag.id]: flag } }, inverse: { type: "UndoAddNoteFlag", flagId: flag.id }, affected: [flag.id] };
+    }
+    case "UndoAddNoteFlag": {
+      const f = need((s.noteFlags ?? {})[c.flagId], L("Huskelappen", "The note flag"));
+      const flags = { ...(s.noteFlags ?? {}) };
+      delete flags[f.id];
+      return { state: { ...s, noteFlags: flags }, inverse: { type: "AddNoteFlag", flagId: f.id, targetKind: f.targetKind, targetId: f.targetId, text: f.text }, affected: [f.id] };
+    }
+    case "UpdateNoteFlag": {
+      const f = need((s.noteFlags ?? {})[c.flagId], L("Huskelappen", "The note flag"));
+      if (c.text !== undefined && (typeof c.text !== "string" || c.text.length > NOTE_FLAG_MAX_TEXT)) fail("invalid", L("Teksten er for lang", "The text is too long"));
+      if (c.enabled !== undefined && typeof c.enabled !== "boolean") fail("invalid", L("Ugyldig status", "Invalid status"));
+      // H5: å slå av lappen beholder teksten
+      const next: NoteFlag = { ...f, ...(c.text !== undefined ? { text: c.text } : {}), ...(c.enabled !== undefined ? { enabled: c.enabled } : {}), editedBy: env.actor, editedAt: env.at, revision: rev(f) };
+      return { state: { ...s, noteFlags: { ...(s.noteFlags ?? {}), [f.id]: next } }, inverse: { type: "UpdateNoteFlag", flagId: f.id, ...(c.text !== undefined ? { text: f.text } : {}), ...(c.enabled !== undefined ? { enabled: f.enabled } : {}) }, affected: [f.id] };
+    }
+    case "SetNoteFlagRemoved": {
+      const f = need((s.noteFlags ?? {})[c.flagId], L("Huskelappen", "The note flag"));
+      return { state: { ...s, noteFlags: { ...(s.noteFlags ?? {}), [f.id]: { ...f, removed: c.removed === true, revision: rev(f) } } }, inverse: { type: "SetNoteFlagRemoved", flagId: f.id, removed: f.removed }, affected: [f.id] };
+    }
     case "SetAnnotationResolved": {
       const a = need(s.annotations[c.annotationId], L("Notatet", "The note"));
       if (typeof c.resolved !== "boolean") fail("invalid", L("Ugyldig notatstatus", "Invalid note status"));

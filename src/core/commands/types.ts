@@ -999,8 +999,18 @@ export type Command = import("../animation/rig-commands").RigCommand
       readonly media: AssetMedia;
       readonly metadata: import("../dialogue/versions").DialogueVersionMeta;
       readonly language: string;
+      /** DV7 (R6): gjennomgangen med grunnlaget «generated» for revisjonen lyden ble laget fra. */
+      readonly reviewId?: string;
     }
   | { readonly type: "UndoGeneratedDialogue"; readonly steps: readonly Command[] }
+  /** DV7 (A9): «Merk som gjennomgått» for aktiv versjon ved blokkens gjeldende revisjon. */
+  | { readonly type: "ReviewDialogueDrift"; readonly reviewId: string; readonly clipId: string; readonly basis?: "manual" | "generated" }
+  | { readonly type: "UndoReviewDialogueDrift"; readonly reviewId: string }
+  /** DV8: gule huskelapper. */
+  | { readonly type: "AddNoteFlag"; readonly flagId: string; readonly targetKind: import("../notes/flags").NoteFlagTargetKind; readonly targetId: string; readonly text: string }
+  | { readonly type: "UndoAddNoteFlag"; readonly flagId: string }
+  | { readonly type: "UpdateNoteFlag"; readonly flagId: string; readonly text?: string; readonly enabled?: boolean }
+  | { readonly type: "SetNoteFlagRemoved"; readonly flagId: string; readonly removed: boolean }
   | {
       readonly type: "SetDialogueCharacter";
       readonly clipIds: readonly AudioClipId[];
