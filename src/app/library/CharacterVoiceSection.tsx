@@ -20,7 +20,7 @@ export function CharacterVoiceSection({ state, asset, projectId, cmds, editable 
     </div>
     <p className="mt-2 text-xs text-text-tertiary">{L("Opprettelse av egen stemme hos ElevenLabs krever kontotilgang, rettigheter og samtykke. Hent stemmelisten igjen etterpå.", "Creating a custom voice at ElevenLabs requires account access, rights and consent. Refresh the voice list afterwards.")}</p>
     {error ? <p role="alert" className="text-xs text-status-danger">{error}</p> : null}
-    <div className="mt-3"><DialogueBatchPanel state={state} asset={asset} projectId={projectId} editable={editable} /></div>
+    <div className="mt-3 flex flex-wrap gap-2"><DialogueBatchPanel state={state} asset={asset} projectId={projectId} editable={editable} /><DialogueBatchPanel state={state} asset={asset} projectId={projectId} editable={editable} drift /></div>
     {([ ["record", L("Innspilte versjoner", "Recorded versions")], ["ai", L("Genererte versjoner", "Generated versions")] ] as const).map(([source, title]) => <div key={source} className="mt-3"><PanelHeader title={title} count={versions.filter(v => v.source === source).length} />
       <ul className="text-xs text-text-secondary">{versions.filter(v => v.source === source).map(v => <li key={v.id} data-testid="character-audio-version" className="border-b border-border py-1">{state.blocks[state.audioClips[v.clipId]?.blockId ?? ""]?.text ?? state.assets[v.assetId]?.name} {v.modelId ? ` · ${v.modelId}` : ""}</li>)}</ul>
     </div>)}
