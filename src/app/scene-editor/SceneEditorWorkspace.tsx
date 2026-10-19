@@ -106,6 +106,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ShortcutsButton, ShortcutsDialog } from "@/app/shortcuts/ShortcutsDialog";
 import { isShortcutHelpKey } from "@/app/shortcuts/shortcut-list";
 import { isTypingTarget } from "./Timeline";
+import { AnimationWorkspace } from "./animation/AnimationWorkspace";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function SceneEditorWorkspace({
   projectId,
@@ -268,7 +270,10 @@ function Editor({
     () => (composition ? compositionDuration(state, composition) : 1),
     [state, composition],
   );
-  const playback = usePlayback(duration, state.project.fps);
+  const [sceneTab, setSceneTab] = useState("scene");
+  const [animationRange, setAnimationRange] = useState<{ from: number; to: number } | null>(null);
+  useEffect(() => { setAnimationRange(null); }, [composition?.id]);
+  const playback = usePlayback(duration, state.project.fps, true, sceneTab === "animation" ? animationRange : null);
   // Lyden i scenen spilles med (DEC-0044)
   // Filmens scener (for lyd som løper inn fra tidligere scener og lyd i scenene rundt, DEC-0045)
   // Språkversjonen som er valgt i monteringen (DEC-0059): bare den lyden spilles
@@ -964,7 +969,17 @@ function Editor({
           ) : null}
         </div>
       </Toolbar>
-
+      <Tabs value={sceneTab} onValueChange={setSceneTab}>
+        <TabsList className="h-8 rounded-none bg-surface-2">
+          <TabsTrigger value="scene" data-testid="scene-tab-scene">{L("Scene", "Scene")}</TabsTrigger>
+          <TabsTrigger value="animation" data-testid="scene-tab-animation">{L("Animasjon", "Animation")}</TabsTrigger>
+        </TabsList>
+      </Tabs>
+      {sceneTab === "animation" && composition && occurrence ? (
+        <AnimationWorkspace key={composition.id} state={state} composition={composition} duration={duration}
+          playback={playback} range={animationRange ?? { from: 0, to: duration - 1 }} onRange={setAnimationRange}
+          urls={urls.data ?? {}} />
+      ) : (
       <div className="flex min-h-0 flex-1">
         {/* Ressursene i scenen (side om side står de sammen med de andre panelene til høyre) */}
         {side ? null : (
