@@ -1,8 +1,10 @@
 # DV5+DV6 – Massegenerering og språk (19.10.2026)
-- [ ] Fjern doble forslag per replikk og ressurs.
-- [ ] DV5: dekning, valg, bekreftelse, idempotente jobbelementer og tapsfri plassering.
-- [ ] DV6: uavhengige språk, replikkoverstyring og brukerbestemt jobbfordeling.
-- [ ] Tester, regresjon og kravregister.
+- [x] Fjern doble forslag per replikk og ressurs.
+- [x] DV5: dekning, valg, bekreftelse, idempotente jobbelementer og tapsfri plassering; migrasjon 0061 skrevet.
+- [x] DV6: uavhengige språk, replikkoverstyring og brukerbestemt jobbfordeling.
+- [x] Enhetstester, DV5/DV6, DV1–DV4, CA1–CA8, U5, lyd og kravregister.
+- [ ] DB og Cloud ende-til-ende: blokkert av manglende lokal Postgres og ikke-kjørt 0061.
+- [ ] Full batch-angring i brukerflaten og gjenoppretting av leverandørblokk: serverhistorikken finnes, men tilkobling til lokal angreliste/tilgangsgjenoppretting gjenstår.
 
 # DV3+DV4 – Dialogeditor og stemme (19.10.2026)
 - [x] DV3: eksisterende opptaksdialog med kontekst, versjonsbølger, forhåndslytting, aktivt valg og bekreftet sletting.
