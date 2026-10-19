@@ -17,7 +17,7 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from "react";
-import { createPortal } from "react-dom";
+import { createPortal, flushSync } from "react-dom";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { L } from "@/core";
@@ -255,9 +255,21 @@ export const IconButton = forwardRef<
     side?: "top" | "bottom" | "left" | "right";
   }
 >(function IconButton({ label, shortcut, side = "bottom", onPointerMove, onFocus, ...rest }, ref) {
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (!open) return;
+    // Enhver tast lukker tipset før resten av appen ser tasten, så Esc og hurtigtaster virker som før.
+    const close = () => flushSync(() => setOpen(false));
+    window.addEventListener("keydown", close, true);
+    window.addEventListener("pointerdown", close, true);
+    return () => {
+      window.removeEventListener("keydown", close, true);
+      window.removeEventListener("pointerdown", close, true);
+    };
+  }, [open]);
   return (
     <TooltipProvider delayDuration={400}>
-    <Tooltip>
+    <Tooltip open={open} onOpenChange={setOpen}>
       <TooltipTrigger asChild>
         <ToolbarButton
           ref={ref}
@@ -279,7 +291,7 @@ export const IconButton = forwardRef<
       </TooltipTrigger>
       <TooltipContent
         side={side}
-        className="flex items-center gap-2 rounded-sm border border-border bg-surface-3 px-2 py-1 text-chrome-label text-text-primary"
+        className="pointer-events-none flex items-center gap-2 rounded-sm border border-border bg-surface-3 px-2 py-1 text-chrome-label text-text-primary data-[state=closed]:animate-none"
       >
         <span>{label}</span>
         {shortcut ? (
