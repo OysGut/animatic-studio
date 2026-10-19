@@ -5560,7 +5560,7 @@ try {
     caState = await runCommand(caState, ALICE, { type: "AddAssetVersion", variantId: CA(2), versionId: CA(3), media: { path: `${caProject}/face.png`, mimeType: "image/png", width: 100, height: 100, byteSize: 100, sha256: "a".repeat(64) }, note: "" });
     caState = await runCommand(caState, ALICE, { type: "CreateScene", sceneId: CA(4), variantId: CA(5), occurrenceId: CA(6), productionId: production.id, orderKey: keyBetween(null, null), heading: { intExt: "", location: "CA3", time: "" }, blocks: [] });
     caState = await runCommand(caState, ALICE, { type: "CreateComposition", compositionId: CA(7), variantId: CA(5), fields: { name: "CA3", width: 1920, height: 1080, durationFrames: 100, background: "#000000" } });
-    caState = await runCommand(caState, ALICE, { type: "AddLayers", layers: [{ layerId: CA(8), compositionId: CA(7), fields: { ...defaultLayerFields(caState, CA(1), "character"), name: "CA3", assetId: CA(1), assetVariantId: CA(2), versionId: CA(3) } }] });
+    caState = await runCommand(caState, ALICE, { type: "AddLayers", layers: [{ layerId: CA(8), compositionId: CA(7), fields: { ...defaultLayerFields(caState, { width: 1920, height: 1080 }, { assetId: CA(1), assetVariantId: CA(2) }), name: "CA3", assetId: CA(1), assetVariantId: CA(2), versionId: CA(3) } }] });
     caState = await runCommand(caState, ALICE, { type: "UpdateSceneDraft", compositionId: CA(7), occurrenceId: CA(6), steps: [
       { type: "CreateRig", rigId: CA(9), variantId: CA(2) },
       { type: "SetRigAnchors", rigId: CA(9), versionId: CA(10), sourceVersionId: CA(3), anchors: { mouth: { x: .5, y: .6 } } },
