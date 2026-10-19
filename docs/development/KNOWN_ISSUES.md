@@ -241,9 +241,6 @@
 | KI-237 | 2026-10-16 | To lyttere på mobilimporten i samme prosjekt (prosjektets mottak og kameravinduet i sceneeditoren) brukte samme kanalnavn; Supabase ga tilbake den allerede tilkoblede kanalen, og `.on()` krasjet siden. Nettlesertestene fanget det ikke fordi kanalen aldri blir tilkoblet uten ekte sanntid. Rettet med unikt kanalnavn per lytter (`uniqueChannelName`), også for prosjektendringene; test `tests/unit/realtime-channels.test.ts` | – | Claude | Løst |
 | KI-238 | 2026-10-16 | Flere bilder fra mobilen til en ressurs uten varianter ga én ny «Fra mobil»-variant per bilde (Rolf fikk tre, én «From mobile»): bildene ble behandlet samtidig med samme tilstand. Rettet: ett om gangen med fersk tilstand, og en «Fra mobil»/«From mobile»-variant gjenbrukes (`pickMobileVariant`); test `tests/unit/mobile-variant.test.ts`. De doble variantene i Mars' testprosjekt må arkiveres i appen (Claude når ikke prosjektdataene) | – | Claude / Mars | Løst |
 | KI-239 | 2026-10-16 | Lydopptak fra mobilen (bolk B) er bare prøvd med Chromiums falske mikrofon; iPhone (Safari tar opp MP4/AAC) og Android må prøves av Mars | – | Mars prøver | Åpen |
-| KI-240 | 2026-10-16 | Lydvinduet viser hele replikken, men kan ikke markere et valgt ord eller område ennå (REQ-0685): det kommer med ord-til-lyd i bolk D | – | Bolk D | Åpen |
-| KI-241 | 2026-10-16 | En replikk som har lyd med to klipp i scenen: nye takes legges i lydressursen til det første klippet | – | Vurderes i bolk C | Åpen |
-| KI-242 | 2026-10-16 | Lydeditoren: delene flyttes med tallfelt, ikke ved å dra dem i sporet (områdevalg og avspillingshode kan dras) | – | Vurderes etter Mars' prøving | Åpen |
 | KI-243 | 2026-10-16 | MP3-koderen (LAME som WASM) kommer også med i serverpakken (ca. 0,4 MB komprimert), selv om den bare brukes i nettleseren | – | Claude | Åpen |
 | KI-244 | 2026-10-16 | Playwright viser «download» som filnavn når navnet har æ/ø/å; i vanlige nettlesere brukes navnet. Testen bruker et navn uten æøå | – | – | Notert |
 | KI-245 | 2026-10-17 | ElevenLabs Forced Alignment har ikke norsk på språklisten; den er bare prøvd med mocket svar. Må prøves med ekte opptak på bokmål, nynorsk og dialekt (og egennavn) før den anbefales. Grensen for «usikker» (tap ≥ 1,5) er et anslag | – | Mars prøver | Åpen |
@@ -253,16 +250,12 @@
 | KI-249 | 2026-10-17 | Nettlesertesten dec0093 feilet på L6/L7: «Send de valgte» på mobilen sendte ingenting. Årsak: `Uploader.stop()` i opprydningen av effekten i `MobilePage` stoppet instansen for godt når effekten ble kjørt på nytt (StrictMode/ny montering) | Opptak ble stående «i kø» | – | Rettet 17.10: `Uploader.start()` i effekten, unit-test, dec0093 28/28 |
 | KI-250 | 2026-10-17 | `tests/visual/screens.mjs` stopper ved skudd 33 (venter på tidslinjalen i regionen «Tidslinje»); skuddene 01–32 tas. Gjaldt også før UI-løftet | Færre skjermbilder i oversikten | Andre visuelle tester dekker tidslinjen | Åpen (testverktøy) |
 
-| KI-251 | 2026-10-19 | CA4 krever migrasjon 0055; bare isolert lokal database er testet | Cloud er fortsatt på 54 inntil migrasjonen kjøres | Claude kontrollerer og kjører 0055, deretter publisering | Åpen – aktivering i Cloud |
-| KI-252 | 2026-10-19 | CA4 lager munnformsett og lokale forhåndsvisninger; automatisk tidsfestet leppesynk og Rhubarb er CA5 | Ingen automatisk munnbevegelse i scene eller eksport ennå | CA5 i egen pakke, ingen betalte kall gjort | Planlagt |
 
 
 ## CA5–CA8 – 19.10.2026
 - CA5: meldingen «Lydfilen er ikke lastet ennå» settes før analysen og WASM-lastingen starter, i et `aria-live`-område med `role="alert"` på selve meldingen (testid `lipsync-message`). Suiten venter på teksten i stedet for å telle varsler.
-- CA7: migrasjon 0057 (`global_animation_specs`, `global_publish_animation`) er skrevet og testet lokalt (DB 114/114), men ikke kjørt i Cloud. Før den er kjørt, svarer publiseringen med feil og listen over globale oppsett er tom.
 - CA7: pust og tics er enkel, deterministisk atferd (sinus-skalering for pust; tics som navngitte overleggsmønstre). Det finnes ingen egen tics-editor utover mønsterstudioet.
 - CA7: global publisering krever at kildebildet (og bildene til rigg-delene) allerede finnes i det globale biblioteket med samme SHA-256. Ellers forklarer dialogen at ressursen må lagres i biblioteket først.
-- CA8: rytmeverktøyet er bygget som et oransje panel (takt, pause/vekt per replikk, skjæringspunkt og forskyvning). Den direkte Cmd/Ctrl-dragmodusen i tidslinjen (§73–§96) og beskyttede intervaller er ikke bygget ennå.
 - CA8: «eget lag» eksporterer karakterdelene som en egen videofil i et ekstra eksportpass. Videoformatet har ingen alfakanal, så laget har ensfarget bakgrunn.
 - Oppdragsregelen sier at AGENTS.md ikke skal endres. Arkitekturregelen for CA7/CA8 er derfor ikke ført inn der.
 - U5 (2026-10-19): prosjektkortene viser ikke «sist endret». Prosjektene har bare opprettelsestid i databasen; å vise noe annet ville vært oppdiktet. Krever en egen kolonne (migrasjon) – lagt i roadmap.
@@ -270,8 +263,13 @@
 - U5: sporhodene i monteringen viser bare demping (finnes i logikken). Lås og synlighet finnes ikke i logikken og vises derfor ikke.
 - U5: lerretstegning (beskjæring, scene, plakat) bruker fortsatt faste fargeverdier i canvas-koden; det er tegnedata, ikke grensesnittfarger.
 - KI-SL-1 lukket (U5 del C): verifisering4-ui spilte av før lydfilene var dekodet. Testen venter nå på at all lyd i scenevinduet er lastet. REQ-0210 5/5 og REQ-0578 7/7.
-- U5: verifisering4-ui REQ-0583 (opptak med falsk mikrofon) og REQ-0050 (tegnbredde i Courier Prime) feiler i Lovables testmiljø: opptaket starter ikke uten ekte medieenhet, og skriftmålingen avviker (6,44 em mot 6,0 em). Ikke knyttet til U5-endringene; bør sjekkes i Claudes miljø.
 - KI-253 (2026-10-19, Ø-11): `brace-expansion` (via exceljs) og `nanoid` (via docx) har høye DoS-advarsler uten fiks i samme hovedversjon. Brukes bare lokalt ved eksport med faste mønstre. Åpen – oppdater når exceljs/docx slipper nye versjoner. Se SECURITY_REVIEW_2026-10.md S-16.
 - KI-254 (2026-10-19, Ø-11): en signert filmlenke som allerede er utstedt, virker inntil 10 minutter etter at delingen er trukket tilbake. Akseptert (S-14).
-- KI-255 (2026-10-19): `presentation.test.ts` «lange ord brytes raskt» har en tidsgrense på 200 ms og kan feile når hele testsuiten kjører under høy last; består alene. Åpen (testens tidsgrense).
 - Ø-11 lukket: invitasjoner krever riktig e-post, anon uten tabelltilgang, mobilbekreftelse bare i aktiv økt, ingen leverandørsvar i serverloggen (migrasjon 0058, SECURITY_REVIEW_2026-10.md).
+
+## Dokumentasjonsrunde 19.10.2026
+- Lukket: KI-240 (ordmarkering i bolk D), KI-241 (valgt klipp, ellers første udempede klipp), KI-242 (dra med én angring), KI-251/252 (CA4–CA8 og Cloud 58), KI-255 (1000 ms med performance.now, fortsatt full innholdsassert og vern mot sekundlang regresjon).
+- MT4: malminiatyrer laster faktisk bildelag før drawFrame; pixeltest kontrollerer det gule feltet i lagret PNG.
+- Story Lab/sporhoder: tidligere fixture svarte med gyldig, tom 10×10 SVG. Tydelig 240×320 testbilde viser nå at miniatyrer virker; reserve ved feil/lasting er fortsatt testet.
+- Verifisering4: forventet Chromium-sti ble gjenopprettet lokalt; lydproben lastet en egen AudioBank etter HMR. Proben laster nå kildefilene og sammenligner alle dekodede samples i stedet for objektidentitet. Timingkravene er uendret. 58/58; REQ-0050/0583 fungerer også her.
+- Dokumentasjonskilde mangler: Ø-8–Ø-12/B-022–B-061-prosjektnotater og Story Lab-spesifikasjon kap. 42–51. DEC-0099/REQ-0725–0739 bruker bare tilgjengelige oppdrag; full avstemming krever originalene.

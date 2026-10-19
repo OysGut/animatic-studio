@@ -26973,3 +26973,459 @@ requirements:
   - date: '2026-10-19'
     decision: "B-058 / CA8-oppdrag"
     change: "Bygget og testet lokalt med mock."
+- id: REQ-0725
+  title: Tekst-AI med egne nøkler og modellvalg
+  text: T1 bruker egne tekstleverandører, virkelige modellister og valg per oppgavegruppe; administratorens modellkontroll gjelder.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: T1-oppdrag 17.10.2026
+    document: docs/decisions/DECISION_LOG.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - PROVIDER
+  invariants: []
+  dependencies: []
+  acceptance:
+  - T1 bruker egne tekstleverandører, virkelige modellister og valg per oppgavegruppe; administratorens modellkontroll gjelder.
+  tests: &id001
+  - tests/unit/text-providers.test.ts
+  - tests/unit/text-adapters.test.ts
+  status: Verifisert
+  implementation:
+  - src/core/generation/providers.ts
+  - src/adapters/ai/text.functions.ts
+  verification: *id001
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+- id: REQ-0726
+  title: 'Tekst-AI: autentisering, kvoter og trygge logger'
+  text: Bare autoriserte prosjektredaktører og eiere starter tekstkall; inndata har maksimal lengde og timegrense og prosjektbudsjett
+    håndheves. Nøkler, prompter og svar logges ikke.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: T1 og Ø-11-oppdrag
+    document: docs/decisions/DECISION_LOG.md
+  type: sikkerhet
+  priority: P1
+  phase: 3
+  modules:
+  - SECURITY
+  invariants: []
+  dependencies: []
+  acceptance:
+  - Bare autoriserte prosjektredaktører og eiere starter tekstkall; inndata har maksimal lengde og timegrense og prosjektbudsjett håndheves.
+    Nøkler, prompter og svar logges ikke.
+  tests: &id001
+  - tests/unit/security-review.test.ts
+  - tests/unit/service-ai-quota.test.ts
+  - tests/db/run-db-tests.ts
+  status: Verifisert
+  implementation:
+  - src/adapters/ai/text.functions.ts
+  - src/adapters/ai/text-run.server.ts
+  verification: *id001
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+- id: REQ-0727
+  title: 'Story Lab: profil og karakterbue'
+  text: Profilfelt og scenestadier lagres med validerte kommandoer og ordinær angring. profileAt følger fortellingstid.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: SL1-oppdrag 17.10.2026
+    document: docs/decisions/DECISION_LOG.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - Profilfelt og scenestadier lagres med validerte kommandoer og ordinær angring. profileAt følger fortellingstid.
+  tests: &id001
+  - tests/unit/storylab-commands.test.ts
+  - tests/unit/storylab-knowledge.test.ts
+  status: Verifisert
+  implementation:
+  - src/core/storylab/profile.ts
+  - src/core/storylab/stages.ts
+  verification: *id001
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+- id: REQ-0728
+  title: 'Story Lab: kunnskapsgrenser'
+  text: knowledgeAt inkluderer bare fakta karakteren kjenner på valgt fortellingstid; ukjente hemmeligheter og senere hendelser utelates
+    fra karakterprompter.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: SL1/SL2/SL3-oppdrag
+    document: docs/decisions/DECISION_LOG.md
+  type: sikkerhet
+  priority: P1
+  phase: 3
+  modules:
+  - SECURITY
+  invariants: []
+  dependencies: []
+  acceptance:
+  - knowledgeAt inkluderer bare fakta karakteren kjenner på valgt fortellingstid; ukjente hemmeligheter og senere hendelser utelates
+    fra karakterprompter.
+  tests: &id001
+  - tests/unit/storylab-knowledge.test.ts
+  - tests/unit/storylab-prompts.test.ts
+  status: Verifisert
+  implementation:
+  - src/core/storylab/facts.ts
+  - src/core/storylab/prompts.ts
+  verification: *id001
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+- id: REQ-0729
+  title: 'Story Lab: turer, regi og forgrening'
+  text: Samme taler kommer aldri tre ganger på rad. Standard åtte turer før pause; regi har next, scene eller session-gyldighet, og
+    samtaler kan forgrenes.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: SL1-oppdrag 17.10.2026
+    document: docs/decisions/DECISION_LOG.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - Samme taler kommer aldri tre ganger på rad. Standard åtte turer før pause; regi har next, scene eller session-gyldighet, og samtaler
+    kan forgrenes.
+  tests: &id001
+  - tests/unit/storylab-engine.test.ts
+  - tests/unit/storylab-replay.test.ts
+  status: Verifisert
+  implementation:
+  - src/core/storylab/engine.ts
+  - src/core/storylab/replay.ts
+  verification: *id001
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+- id: REQ-0730
+  title: 'Story Lab: økter og arbeidsflater'
+  text: Karakterer, grupper, scenelab, intervju og canvas gjenbruker profiler og økter med lagret kontekst og kan fortsettes uten tap
+    av turer.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: SL2–SL7-oppdrag i samtalehistorikken
+    document: docs/decisions/DECISION_LOG.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - Karakterer, grupper, scenelab, intervju og canvas gjenbruker profiler og økter med lagret kontekst og kan fortsettes uten tap av
+    turer.
+  tests: &id001
+  - tests/visual/storylab-ui.mjs
+  - tests/unit/storylab-group-view.test.tsx
+  - tests/unit/storylab-scene-view.test.tsx
+  - tests/unit/storylab-interview.test.ts
+  - tests/unit/storylab-canvas.test.ts
+  status: Verifisert
+  implementation:
+  - src/app/storylab/StoryLabWorkspace.tsx
+  - src/adapters/storylab/sessions.functions.ts
+  verification: *id001
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+- id: REQ-0731
+  title: 'Story Lab: godkjent overføring og angring'
+  text: Forslag kommer aldri automatisk inn i manus eller profil. Brukeren får forhåndsvisning og bekrefter; overføring bruker eksisterende
+    kommandoer og samlet angring.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: SL6-oppdrag og godkjent overføringsregel
+    document: docs/decisions/DECISION_LOG.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - SCRIPT
+  invariants: []
+  dependencies: []
+  acceptance:
+  - Forslag kommer aldri automatisk inn i manus eller profil. Brukeren får forhåndsvisning og bekrefter; overføring bruker eksisterende
+    kommandoer og samlet angring.
+  tests: &id001
+  - tests/unit/storylab-transfer.test.ts
+  - tests/unit/storylab-transfer-undo.test.tsx
+  status: Verifisert
+  implementation:
+  - src/core/storylab/transfer.ts
+  - src/app/storylab/SuggestionPreview.tsx
+  verification: *id001
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+- id: REQ-0732
+  title: 'Story Lab: analysespråk og manusets språk'
+  text: Analyse og replikksjekk følger UI-språket; rolle-replikker følger manusets språk, foreløpig nb.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: B-034 / retting 18.10.2026
+    document: docs/decisions/DECISION_LOG.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  invariants: []
+  dependencies: []
+  acceptance:
+  - Analyse og replikksjekk følger UI-språket; rolle-replikker følger manusets språk, foreløpig nb.
+  tests: &id001
+  - tests/unit/storylab-scene-view.test.tsx
+  - tests/visual/storylab-ui.mjs
+  status: Verifisert
+  implementation:
+  - src/app/storylab/SceneLab.tsx
+  - src/app/storylab/ConversationView.tsx
+  verification: *id001
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+- id: REQ-0733
+  title: 'CA1: integrert animasjonsfane og framepresis navigasjon'
+  text: Scene og Animasjon bruker samme scenedata; tidskode, én-frame-steg, avspilling, navigator og område endrer ikke scenetransformasjonen.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: CA1 / §3–§10
+    document: docs/decisions/DECISION_LOG.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - Scene og Animasjon bruker samme scenedata; tidskode, én-frame-steg, avspilling, navigator og område endrer ikke scenetransformasjonen.
+  tests: &id001
+  - tests/unit/ca-time-format.test.ts
+  - tests/visual/ca1-tab.mjs
+  status: Verifisert
+  implementation:
+  - src/app/scene-editor/animation/AnimationWorkspace.tsx
+  - src/core/animation/time-format.ts
+  verification: *id001
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+- id: REQ-0734
+  title: 'CA2: scene-pinnede bildevarianter og lydspor'
+  text: Animasjonen bruker eksisterende lag og bildesegmenter, variante- og versjonsetiketter, valgt lyd og felles sceneklokke.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: CA2 / §11–§19
+    document: docs/decisions/DECISION_LOG.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - Animasjonen bruker eksisterende lag og bildesegmenter, variante- og versjonsetiketter, valgt lyd og felles sceneklokke.
+  tests: &id001
+  - tests/unit/ca-tracks.test.ts
+  - tests/visual/ca2-variants.mjs
+  status: Verifisert
+  implementation:
+  - src/core/animation/tracks.ts
+  - src/app/scene-editor/animation/VariantTracks.tsx
+  verification: *id001
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+- id: REQ-0735
+  title: 'CA3: uforanderlig rigg, ankerpunkter og ikke-destruktiv bruk'
+  text: Riggversjoner, ansiktsankre og scene-av/på går gjennom kommandoer med invers; uten rigg er hele framen identisk med tidligere
+    rendering.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: CA3 / §20, §45–§50
+    document: docs/decisions/DECISION_LOG.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - Riggversjoner, ansiktsankre og scene-av/på går gjennom kommandoer med invers; uten rigg er hele framen identisk med tidligere rendering.
+  tests: &id001
+  - tests/unit/ca-rig.test.ts
+  - tests/visual/ca3-rig.mjs
+  - tests/db/run-db-tests.ts
+  status: Verifisert
+  implementation:
+  - src/core/animation/rig.ts
+  - src/core/animation/evaluate.ts
+  verification: *id001
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+- id: REQ-0736
+  title: 'U5: konsistent presentasjon og fungerende miniatyrer'
+  text: Skjermene bruker felles tetthet, tokens, tilgjengelig fokus og tilstander. Miniatyrer viser faktisk bilde, ellers initial og
+    typeikon også ved lasting og feil.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: U5 og polishoppdrag 19.10.2026
+    document: docs/decisions/DECISION_LOG.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - Skjermene bruker felles tetthet, tokens, tilgjengelig fokus og tilstander. Miniatyrer viser faktisk bilde, ellers initial og typeikon
+    også ved lasting og feil.
+  tests: &id001
+  - tests/visual/u5-screens.mjs
+  status: Verifisert
+  implementation:
+  - src/app/library/AssetThumb.tsx
+  - src/app/shell/screen-states.tsx
+  verification: *id001
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+- id: REQ-0737
+  title: 'CA8/U5: rytmedrag og beskyttede tidsområder'
+  text: Cmd/Ctrl-drag planlegger rytmeendringen via RetimeScene med én angring; beskyttede områder flyttes aldri.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: U5 del B / CA §73–§96
+    document: docs/decisions/DECISION_LOG.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - TIMELINE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - Cmd/Ctrl-drag planlegger rytmeendringen via RetimeScene med én angring; beskyttede områder flyttes aldri.
+  tests: &id001
+  - tests/unit/u5-rhythm-drag.test.ts
+  - tests/visual/ca8-rhythm-export.mjs
+  status: Verifisert
+  implementation:
+  - src/core/animation/rhythm.ts
+  - src/app/scene-editor/animation/RhythmDrag.tsx
+  verification: *id001
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+- id: REQ-0738
+  title: 'Ø-11: invitasjoner og klientens minste lesetilgang'
+  text: Prosjekt- og gruppeinvitasjoner krever riktig innlogget e-post, trimmet og case-insensitivt, med utløp og engangsbruk. AI-hemmeligheter
+    er ikke lesbare for klienter. Story Lab har RLS.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: Ø-11-oppdrag og godkjenning av 0058
+    document: docs/decisions/DECISION_LOG.md
+  type: sikkerhet
+  priority: P1
+  phase: 3
+  modules:
+  - SECURITY
+  invariants: []
+  dependencies: []
+  acceptance:
+  - Prosjekt- og gruppeinvitasjoner krever riktig innlogget e-post, trimmet og case-insensitivt, med utløp og engangsbruk. AI-hemmeligheter
+    er ikke lesbare for klienter. Story Lab har RLS.
+  tests: &id001
+  - tests/db/run-db-tests.ts
+  - tests/unit/security-review.test.ts
+  status: Verifisert
+  implementation:
+  - db/migrations/0058_security_review.sql
+  - src/adapters/account/ai-models.server.ts
+  verification: *id001
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.
+- id: REQ-0739
+  title: 'Ø-11: film- og mobilopplastingsvern'
+  text: Filmdelelenker har sikre token, utløp og tilbaketrekking. Mobilopplasting validerer token, aktiv økt, størrelse og filtype uten
+    overskriving.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: Ø-11-oppdrag og godkjenning av 0058
+    document: docs/decisions/DECISION_LOG.md
+  type: sikkerhet
+  priority: P1
+  phase: 3
+  modules:
+  - SECURITY
+  invariants: []
+  dependencies: []
+  acceptance:
+  - Filmdelelenker har sikre token, utløp og tilbaketrekking. Mobilopplasting validerer token, aktiv økt, størrelse og filtype uten
+    overskriving.
+  tests: &id001
+  - tests/unit/security-review.test.ts
+  - tests/db/run-db-tests.ts
+  status: Verifisert
+  implementation:
+  - src/adapters/share/film-share.functions.ts
+  - src/adapters/mobile/mobile.functions.ts
+  verification: *id001
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; ikke full avstemming mot manglende Story Lab-spesifikasjon.

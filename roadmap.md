@@ -1,9 +1,10 @@
 # MU1
 ## Dokumentasjon og backlogg (2026-10-19)
-- [ ] A: tydelige fixturebilder i Story Lab og animasjon; kontroller lasting.
-- [ ] B: beslutningslogg, kravdekning og samordnet status; build_docs/check_kb.
-- [ ] C: stabil take-rekkefølge og tidstest, malbilder, valgt lydklipp, dra lydsegmenter med én angring.
-- [ ] Vitest to ganger, lokale DB-tester og bestilte visuelle regresjoner.
+- [x] A: tydelige fixturebilder i Story Lab og animasjon; kontroller lasting.
+- [x] B: DEC-0099, tilgjengelige kravkilder og samordnet status; build_docs/check_kb.
+- [ ] Full avstemming mot Ø-8–Ø-12/B-022–B-061 og Story Lab kap. 42–51 — originalfiler mangler.
+- [x] C: stabil take-rekkefølge og tidstest, malbilder, valgt lydklipp, dra lydsegmenter med én angring.
+- [x] Vitest to ganger, lokale DB-tester og bestilte visuelle regresjoner.
 ## U5-polish
 - [x] Initial og typeikon i Story Lab/bibliotek og miniatyrer i alle animasjonssporhoder.
 - [x] Toppjustert forhåndsvisning med skrivebeskyttet lagliste og panelfarge under bildet.
@@ -14,7 +15,7 @@
 - [x] QR-import med eksplisitt rigg-godkjenning og migrasjon 0055.
 - [x] Unit-/DB-/mocktester, CA1–CA3-regresjoner og dokumentasjon.
 - CA5 tas separat; denne pakken fullfører CA4.
-- [ ] CA4 Cloud-aktivering og ekte mobiltest — Claude må kjøre migrasjon 0055.
+- [x] CA4 Cloud-aktivering (0055) bekreftet. Ekte mobilprøving følges i TODO.
 # CA designpuss og CA3
 - [x] A: faner, pen tidslinjal, Tilpass, miniatyrer/etiketter, kvadrater, navigator og lyd nederst; tester.
 - [x] B: rigmodell/kommandoer/evaluering, ansiktsmarkering, av/på, backup, migrasjoner og tester.
@@ -62,10 +63,10 @@
 
 ## GP – global pakke
 - [x] GP1 arbeidsgrupper (0045 skrevet, venter på Claude)
-- [ ] GP2 globalt bibliotek – venter på godkjent GP1 og svar på åpne spørsmål 1–2
-- [ ] GP3 videreføring
-- [ ] GP4 AI-start
-- [ ] GP5 QR-filmvisning – venter på svar på spørsmål 4–5
+- [x] GP2 globalt bibliotek levert og publisert.
+- [x] GP3 videreføring
+- [x] GP4 AI-start
+- [x] GP5 QR-filmvisning
 # GP2–GP5
 - [x] GP2 globalt bibliotek (0046), GP3 videreføring, GP4 nytt prosjekt med skriveassistent, GP5 QR-deling (0047). Migrasjoner skrevet, ikke kjørt. DB- og nettlesertester kjøres av Øystein.
 # MT (Motion Typography) runde 1
@@ -75,13 +76,13 @@
 - [x] MT4 «Lagre som mal» med miniatyr, varsel og oppdatering ved ny malversjon; 256 kB-grense
 - [x] MT5 lower thirds og «Bruk samme design som i scene …»
 - [x] DB-tester 0048/0049, nettlesertester mts-engine, mts-lower-thirds, mts-nondestructive (AI–AJ) skrevet; Øystein kjører dem
-- [ ] Nettlesertester mts-engine, mts-lower-thirds, mts-nondestructive (AI–AJ)
-- [ ] MT6–MT9 neste runde (inkl. occurrences.kind, manusmarkør, filtre i manusutforsker/OG2/oversettelse)
+- [x] Nettlesertester mts-engine, mts-lower-thirds, mts-nondestructive (AI–AJ)
+- [x] MT6–MT9 og GP6 levert, verifisert og publisert.
 
 # T2 – AI-skrivehjelp i manuset
 - [x] T2.1–T2.6: kjerne, serverfunksjon, panel, diff, hurtigtaster, kontekstmeny, forlatevakt.
 - [x] T2.7 unit-tester (17).
-- [ ] Nettlesertest tests/visual/t2-writing-ui.mjs – ikke skrevet ennå.
+- [x] Nettlesertest tests/visual/t2-writing-ui.mjs levert og verifisert (69/69 hos Øystein).
 
 # U2 – Felles tetthet for verktøylinjer og panelhoder
 - [x] Felles komponenter (Toolbar 32 px, «Mer …», IconButton med verktøytips, PanelHeader) og tokens
@@ -105,11 +106,11 @@
 - [x] CA8 Cmd/Ctrl-dragmodus og beskyttede tidsområder (U5 del B).
 
 ## CA5 + CA6 (2026-10-19)
-- [ ] CA5: leppesynk (Rhubarb WASM / regelbasert reserve), lipsync_results, av/på per replikk, forslag med Bruk/Forkast, munnformsspor, overstyringer, evaluateCharacterFrame
-- [ ] CA6: blinking med seed, overlegg/løkker, kurveeditor, navngitte mønstre, deterministisk seed per bruk
-- [ ] Migrasjon 0056 (lipsync_results m.m.), DB-tester
-- [ ] Visuelle suiter ca5-lipsync.mjs + ca6-blink-patterns.mjs, regresjon ca1–ca4
-- [ ] Docs: requirements, KNOWN_ISSUES, SESSION_HANDOVER
+- [x] CA5: leppesynk (Rhubarb WASM / regelbasert reserve), lipsync_results, av/på per replikk, forslag med Bruk/Forkast, munnformsspor, overstyringer, evaluateCharacterFrame
+- [x] CA6: blinking med seed, overlegg/løkker, kurveeditor, navngitte mønstre, deterministisk seed per bruk
+- [x] Migrasjon 0056 (lipsync_results m.m.), DB-tester
+- [x] Visuelle suiter ca5-lipsync.mjs + ca6-blink-patterns.mjs, regresjon ca1–ca4
+- [x] Docs: requirements, KNOWN_ISSUES, SESSION_HANDOVER
 
 ## U5 (2026-10-19)
 - [x] Del A: skjerm for skjerm (prosjekter, manus, bibliotek/Story Lab, sceneeditor/animasjon, montering, eksport, mobil, felles tilstander)
@@ -124,4 +125,4 @@
 - [x] Story Lab RLS + tekst-AI-serverfunksjoner (auth, medlemskap, grenser, validering, ingen lekkasje)
 - [x] Linter/advisor, npm audit, GP5-lenker, mobilopplasting
 - [x] SECURITY_REVIEW_2026-10.md, KNOWN_ISSUES, SESSION_HANDOVER
-- [ ] Kjør migrasjon 0058 i Cloud (Claude)
+- [x] Migrasjon 0058 kjørt i Cloud og hashkontrollert av Claude/Øystein.
