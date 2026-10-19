@@ -5724,7 +5724,115 @@ try {
     await expectError(as("service_role", null, (tx) => tx`update public.global_animation_specs set note = 'x' where id = ${a1}`), "42501");
     await expectError(as("service_role", null, (tx) => tx`delete from public.global_animation_specs where id = ${a1}`), "42501");
     const version = await sql`select max(version) as v from public.schema_version`;
-    assert(Number(version[0]!["v"]) === 57, "skjemaversjon 57");
+    assert((await sql`select 1 from public.schema_version where version = 57`).length === 1, "skjemaversjon 57 registrert");
+  });
+
+  // ---------- Ø-11: sikkerhetsgjennomgang (migrasjon 0058) ----------
+  const SX = (n: number) => `01900000-0000-7000-8000-0058${String(n).padStart(8, "0")}` as never;
+  await test("0058: prosjektinvitasjon – feil e-post avvises, riktig e-post (trim/store bokstaver) godtas, brukt og utløpt avvises", async () => {
+    const p = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('Sikkerhet') as id`)[0]!["id"] as string);
+    const tok = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_invitation(${p}, '  Bob@Example.NO ', 'viewer') as t`)[0]!["t"] as string);
+    await expectError(as("authenticated", CAROL, (tx) => tx`select public.accept_invitation(${tok})`), "AS403");
+    const carol = await sql`select 1 from public.project_members where project_id = ${p} and user_id = ${CAROL}`;
+    assert(carol.length === 0, "feil bruker ble medlem");
+    const [inv] = await sql`select accepted_at from public.project_invitations where project_id = ${p}`;
+    assert(inv!["accepted_at"] === null, "invitasjonen ble brukt opp av feil bruker");
+    const joined = await as("authenticated", BOB, async (tx) => (await tx`select public.accept_invitation(${tok}) as p`)[0]!["p"]);
+    assert(joined === p, "riktig e-post ble ikke godtatt");
+    await expectError(as("authenticated", BOB, (tx) => tx`select public.accept_invitation(${tok})`), "22023");
+    const old = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_invitation(${p}, 'carol@example.no', 'viewer') as t`)[0]!["t"] as string);
+    await sql`update public.project_invitations set expires_at = now() - interval '1 minute' where project_id = ${p} and email = 'carol@example.no'`;
+    await expectError(as("authenticated", CAROL, (tx) => tx`select public.accept_invitation(${old})`), "22023");
+    // En eier blir aldri nedgradert av en invitasjon til sin egen adresse
+    const self = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_invitation(${p}, 'alice@example.no', 'viewer') as t`)[0]!["t"] as string);
+    await as("authenticated", ALICE, (tx) => tx`select public.accept_invitation(${self})`);
+    const [own] = await sql`select role from public.project_members where project_id = ${p} and user_id = ${ALICE}`;
+    assert(own!["role"] === "owner", `eieren ble ${own!["role"]}`);
+    // anon kan ikke godta
+    await expectError(as("anon", null, (tx) => tx`select public.accept_invitation(${tok})`), "42501");
+  });
+
+  await test("0058: gruppeinvitasjon – feil e-post avvises, riktig e-post godtas, brukt og utløpt avvises", async () => {
+    const ws = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_workspace('Sikker gruppe') as id`)[0]!["id"] as string);
+    const tok = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_workspace_invitation(${ws}, 'BOB@example.no', 'member') as t`)[0]!["t"] as string);
+    await expectError(as("authenticated", CAROL, (tx) => tx`select public.accept_workspace_invitation(${tok})`), "AS403");
+    assert((await sql`select 1 from public.workspace_members where workspace_id = ${ws} and user_id = ${CAROL}`).length === 0, "feil bruker ble medlem");
+    const joined = await as("authenticated", BOB, async (tx) => (await tx`select public.accept_workspace_invitation(${tok}) as w`)[0]!["w"]);
+    assert(joined === ws, "riktig e-post ble ikke godtatt");
+    await expectError(as("authenticated", BOB, (tx) => tx`select public.accept_workspace_invitation(${tok})`), "22023");
+    const old = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_workspace_invitation(${ws}, 'carol@example.no', 'member') as t`)[0]!["t"] as string);
+    await sql`update public.workspace_invitations set expires_at = now() - interval '1 minute' where workspace_id = ${ws} and email = 'carol@example.no'`;
+    await expectError(as("authenticated", CAROL, (tx) => tx`select public.accept_workspace_invitation(${old})`), "22023");
+  });
+
+  await test("0058: AI-nøkler og modellinnstillinger – anon, annen bruker og eier", async () => {
+    await as("service_role", null, (tx) => tx`insert into public.ai_provider_keys (id, user_id, provider, ciphertext, iv, key_hint) values (${SX(1)}, ${ALICE}, 'openai', ${"c".repeat(40)}, ${"i".repeat(16)}, '…abcd')`);
+    await as("service_role", null, (tx) => tx`insert into public.ai_model_settings (provider, model, enabled, updated_by) values ('openai', 'sikker-test', false, ${ALICE})`);
+    // anon: ingenting
+    for (const t of ["ai_provider_keys", "ai_model_settings", "ai_account_limits", "ai_spend", "ai_provider_requests", "generation_jobs"])
+      await expectError(as("anon", null, (tx) => tx.unsafe(`select 1 from public.${t}`)), "42501");
+    // Annen bruker: ser ikke Alices nøkkel, og ingen kan lese de hemmelige feltene
+    assert((await as("authenticated", BOB, (tx) => tx`select id from public.ai_provider_keys where id = ${SX(1)}`)).length === 0, "annen bruker ser nøkkelen");
+    for (const col of ["ciphertext", "iv", "key_version"]) {
+      await expectError(as("authenticated", BOB, (tx) => tx.unsafe(`select ${col} from public.ai_provider_keys`)), "42501");
+      await expectError(as("authenticated", ALICE, (tx) => tx.unsafe(`select ${col} from public.ai_provider_keys`)), "42501");
+    }
+    // Eieren ser hint og status for sin egen nøkkel
+    const own = await as("authenticated", ALICE, (tx) => tx`select key_hint, status from public.ai_provider_keys where id = ${SX(1)}`);
+    assert(own.length === 1 && own[0]!["key_hint"] === "…abcd", "eieren ser ikke sin nøkkel");
+    // Ingen klient kan skrive nøkler eller innstillinger direkte
+    await expectError(as("authenticated", ALICE, (tx) => tx`update public.ai_provider_keys set label = 'x' where id = ${SX(1)}`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`insert into public.ai_model_settings (provider, model) values ('openai', 'x')`), "42501");
+    // Modellinnstillingene: appens kolonner kan leses, administratorens ID ikke
+    const ms = await as("authenticated", BOB, (tx) => tx`select provider, model, enabled, custom, kind, label, price_usd, price_unit, note, updated_at from public.ai_model_settings where model = 'sikker-test'`);
+    assert(ms.length === 1 && ms[0]!["enabled"] === false, "innstillingen kan ikke leses");
+    await expectError(as("authenticated", BOB, (tx) => tx`select updated_by from public.ai_model_settings`), "42501");
+    await expectError(as("authenticated", BOB, (tx) => tx`select * from public.ai_model_settings`), "42501");
+    // Andres forbruk og tak er skjult
+    await as("service_role", null, (tx) => tx`insert into public.ai_account_limits (user_id, monthly_cap_usd) values (${ALICE}, 10) on conflict do nothing`);
+    assert((await as("authenticated", BOB, (tx) => tx`select 1 from public.ai_account_limits where user_id = ${ALICE}`)).length === 0, "annen bruker ser kostnadstaket");
+  });
+
+  await test("0058: Story Lab-tabeller – RLS, ikke-medlem ser ingenting, ingen direkte skriving, anon nektes", async () => {
+    const tables = ["story_profiles", "story_profile_stages", "story_facts", "story_sessions", "story_suggestions", "story_canvas_nodes", "story_canvas_edges"];
+    const rls = await sql`select relname from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and relname = any(${tables}) and relrowsecurity`;
+    assert(rls.length === tables.length, `RLS mangler på ${tables.filter((t) => !rls.some((r) => r["relname"] === t)).join(", ")}`);
+    for (const t of tables) {
+      await expectError(as("anon", null, (tx) => tx.unsafe(`select 1 from public.${t}`)), "42501");
+      await expectError(as("authenticated", ALICE, (tx) => tx.unsafe(`delete from public.${t}`)), "42501");
+      await expectError(as("authenticated", ALICE, (tx) => tx.unsafe(`update public.${t} set project_id = project_id`)), "42501");
+      const seen = await as("authenticated", CAROL, (tx) => tx.unsafe(`select distinct project_id from public.${t}`));
+      const mine = new Set((await sql`select project_id from public.project_members where user_id = ${CAROL} and removed_at is null`).map((r) => r["project_id"]));
+      assert(seen.every((r) => mine.has(r["project_id"])), `${t}: ikke-medlem ser andres rader`);
+    }
+  });
+
+  await test("0058: skjemaet – RLS overalt, security definer med search_path, ingen anon-kjøring eller anon-tabelltilgang", async () => {
+    const noRls = await sql`select relname from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and relkind in ('r', 'p') and not relrowsecurity`;
+    assert(noRls.length === 0, `uten RLS: ${noRls.map((r) => r["relname"]).join(", ")}`);
+    const noPath = await sql`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname in ('public', 'private') and p.prosecdef and not exists (select 1 from unnest(coalesce(p.proconfig, '{}')) c where c like 'search_path=%')`;
+    assert(noPath.length === 0, `security definer uten search_path: ${noPath.map((r) => r["proname"]).join(", ")}`);
+    const anonFns = await sql`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.prosecdef and has_function_privilege('anon', p.oid, 'execute')`;
+    assert(anonFns.length === 0, `anon kan kjøre: ${anonFns.map((r) => r["proname"]).join(", ")}`);
+    const anonTables = await sql`select relname from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and relkind in ('r', 'p', 'v', 'm') and relname not in ('schema_version', 'privacy_policy') and (has_table_privilege('anon', c.oid, 'select') or has_table_privilege('anon', c.oid, 'insert') or has_table_privilege('anon', c.oid, 'update') or has_table_privilege('anon', c.oid, 'delete'))`;
+    assert(anonTables.length === 0, `anon har tabelltilgang: ${anonTables.map((r) => r["relname"]).join(", ")}`);
+    const authWrites = await sql`select relname from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and relkind = 'r' and (has_table_privilege('authenticated', c.oid, 'insert') or has_table_privilege('authenticated', c.oid, 'update') or has_table_privilege('authenticated', c.oid, 'delete'))`;
+    assert(authWrites.length === 0, `innloggede kan skrive direkte i: ${authWrites.map((r) => r["relname"]).join(", ")}`);
+  });
+
+  await test("0058: mobilopplasting – tom fil avvises, tilbakekalt økt kan ikke bekrefte", async () => {
+    const p = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('Mobil sikkerhet') as id`)[0]!["id"] as string);
+    const hash = "8".repeat(64);
+    await as("service_role", null, (tx) => tx`insert into public.upload_sessions (id, project_id, token_hash, kind, created_by, context, media_kinds, expires_at, max_files, max_bytes) values (${SX(10)}, ${p}, ${hash}, 'personal', ${ALICE}, '{}', array['image'], now() + interval '1 hour', 10, 100000)`);
+    await expectError(as("service_role", null, (tx) => tx`select public.mobile_register_upload(${hash}, ${SX(11)}, ${p + "/m/a.png"}, 'image', 'image/png', 0, 'a.png', '')`), "22023");
+    await as("service_role", null, (tx) => tx`select public.mobile_register_upload(${hash}, ${SX(12)}, ${p + "/m/b.png"}, 'image', 'image/png', 100, 'b.png', '')`);
+    await expectError(as("service_role", null, (tx) => tx`select public.mobile_register_upload(${hash}, ${SX(13)}, ${"annet/m/c.png"}, 'image', 'image/png', 100, 'c.png', '')`), "22023");
+    await as("authenticated", ALICE, (tx) => tx`select public.revoke_upload_session(${SX(10)})`);
+    await expectError(as("service_role", null, (tx) => tx`select public.mobile_confirm_upload(${hash}, ${SX(12)}, true, 100, null)`), "28000");
+    const [row] = await sql`select status from public.mobile_imports where client_file_id = ${SX(12)}`;
+    assert(row!["status"] !== "done", "fil bekreftet etter tilbakekalling");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.mobile_confirm_upload(${hash}, ${SX(12)}, true, 100, null)`), "42501");
+    assert((await sql`select max(version) as v from public.schema_version`)[0]!["v"] === 58, "skjemaversjon 58");
   });
 
 } finally {

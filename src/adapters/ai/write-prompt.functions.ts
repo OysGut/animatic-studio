@@ -432,7 +432,8 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
           };
         }
         // i18n-ignore: serverlogg for utvikleren
-        if (log.length) console.warn("[writeImagePrompt] modeller hoppet over:", log.join(" | "));
+        // Bare modell og status i serverloggen: leverandørens svartekst kan gjenta prompten (Ø-11)
+        if (log.length) console.warn("[writeImagePrompt] modeller hoppet over:", log.map((l) => l.split(" ").slice(0, 2).join(" ")).join(" | "));
         await finish({ status: "done", model, result_text: written });
         return { ok: true, prompt: written, model, jobId };
       }

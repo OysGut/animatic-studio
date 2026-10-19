@@ -271,4 +271,7 @@
 - U5: lerretstegning (beskjæring, scene, plakat) bruker fortsatt faste fargeverdier i canvas-koden; det er tegnedata, ikke grensesnittfarger.
 - KI-SL-1 lukket (U5 del C): verifisering4-ui spilte av før lydfilene var dekodet. Testen venter nå på at all lyd i scenevinduet er lastet. REQ-0210 5/5 og REQ-0578 7/7.
 - U5: verifisering4-ui REQ-0583 (opptak med falsk mikrofon) og REQ-0050 (tegnbredde i Courier Prime) feiler i Lovables testmiljø: opptaket starter ikke uten ekte medieenhet, og skriftmålingen avviker (6,44 em mot 6,0 em). Ikke knyttet til U5-endringene; bør sjekkes i Claudes miljø.
-
+- KI-253 (2026-10-19, Ø-11): `brace-expansion` (via exceljs) og `nanoid` (via docx) har høye DoS-advarsler uten fiks i samme hovedversjon. Brukes bare lokalt ved eksport med faste mønstre. Åpen – oppdater når exceljs/docx slipper nye versjoner. Se SECURITY_REVIEW_2026-10.md S-16.
+- KI-254 (2026-10-19, Ø-11): en signert filmlenke som allerede er utstedt, virker inntil 10 minutter etter at delingen er trukket tilbake. Akseptert (S-14).
+- KI-255 (2026-10-19): `presentation.test.ts` «lange ord brytes raskt» har en tidsgrense på 200 ms og kan feile når hele testsuiten kjører under høy last; består alene. Åpen (testens tidsgrense).
+- Ø-11 lukket: invitasjoner krever riktig e-post, anon uten tabelltilgang, mobilbekreftelse bare i aktiv økt, ingen leverandørsvar i serverloggen (migrasjon 0058, SECURITY_REVIEW_2026-10.md).

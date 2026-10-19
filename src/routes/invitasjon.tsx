@@ -34,16 +34,22 @@ function AcceptInvitation() {
       "Invitasjonen er ugyldig, utløpt eller allerede brukt.",
       "The invitation is invalid, has expired or has already been used.",
     );
+    const wrong = L(
+      "Invitasjonen gjelder en annen e-postadresse. Logg inn med adressen invitasjonen ble sendt til.",
+      "The invitation is for a different email address. Sign in with the address the invitation was sent to.",
+    );
     // Gruppeinvitasjon (GP1): samme flyt, men til arbeidsgruppens side
     if (type === "gruppe") {
-      void acceptWorkspaceInvitation(token).then(({ workspaceId, error: e }) => {
-        if (e || !workspaceId) setError(invalid);
+      void acceptWorkspaceInvitation(token).then(({ workspaceId, error: e, wrongEmail }) => {
+        if (wrongEmail) setError(wrong);
+        else if (e || !workspaceId) setError(invalid);
         else void navigate({ to: "/gruppe/$workspaceId", params: { workspaceId } });
       });
       return;
     }
-    void acceptInvitation(token).then(({ projectId, error: e }) => {
-      if (e || !projectId)
+    void acceptInvitation(token).then(({ projectId, error: e, wrongEmail }) => {
+      if (wrongEmail) setError(wrong);
+      else if (e || !projectId)
         setError(
           L(
             "Invitasjonen er ugyldig, utløpt eller allerede brukt.",

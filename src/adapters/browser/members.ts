@@ -86,7 +86,9 @@ export async function createInvitation(
 /** Tar imot en invitasjon; gir prosjekt-ID eller feil. */
 export async function acceptInvitation(
   token: string,
-): Promise<{ projectId: string | null; error: boolean }> {
+): Promise<{ projectId: string | null; error: boolean; wrongEmail?: boolean }> {
   const { data, error } = await db.rpc("accept_invitation", { p_token: token });
-  return { projectId: error ? null : (data as string), error: Boolean(error) };
+  // Ø-11 (0058): invitasjonen gjelder en annen e-postadresse enn den innloggede brukerens
+  const wrongEmail = (error as { code?: string } | null)?.code === "AS403";
+  return { projectId: error ? null : (data as string), error: Boolean(error), wrongEmail };
 }

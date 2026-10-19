@@ -27,7 +27,10 @@ export async function loadModelSettings(
   db: AnyClient,
 ): Promise<{ ready: boolean; settings: ModelSetting[] }> {
   try {
-    const { data, error } = await db.from("ai_model_settings").select("*");
+    // Ø-11 (0058): bare kolonnene appen bruker (updated_by kan ikke leses av vanlige brukere)
+    const { data, error } = await db
+      .from("ai_model_settings")
+      .select("id, provider, model, enabled, custom, kind, label, price_usd, price_unit, note, updated_at");
     if (error) return { ready: false, settings: [] };
     return {
       ready: true,
