@@ -842,10 +842,12 @@ export type Database = {
           name: string
           occurrence_id: string
           offset_ms: number
+          placement_estimated: boolean
           project_id: string
           removed: boolean
           revision: number
           source_in_ms: number
+          speech_language: string | null
           speed: number
           version_id: string | null
           volume_keys: Json
@@ -870,10 +872,12 @@ export type Database = {
           name?: string
           occurrence_id: string
           offset_ms: number
+          placement_estimated?: boolean
           project_id: string
           removed?: boolean
           revision?: number
           source_in_ms?: number
+          speech_language?: string | null
           speed?: number
           version_id?: string | null
           volume_keys?: Json
@@ -898,10 +902,12 @@ export type Database = {
           name?: string
           occurrence_id?: string
           offset_ms?: number
+          placement_estimated?: boolean
           project_id?: string
           removed?: boolean
           revision?: number
           source_in_ms?: number
+          speech_language?: string | null
           speed?: number
           version_id?: string | null
           volume_keys?: Json
@@ -1586,6 +1592,156 @@ export type Database = {
           },
           {
             foreignKeyName: "credit_sequences_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dialogue_batch_items: {
+        Row: {
+          attempts: number
+          batch_id: string
+          block_id: string
+          clip_id: string
+          command_id: string
+          composition_id: string
+          created_at: string
+          created_by: string
+          dialogue_version_id: string
+          error: string | null
+          id: string
+          job_id: string
+          language: string
+          occurrence_id: string
+          position: number
+          project_id: string
+          result: Json | null
+          retryable: boolean
+          script_revision: number
+          status: string
+          variant_id: string
+          version_id: string
+        }
+        Insert: {
+          attempts?: number
+          batch_id: string
+          block_id: string
+          clip_id: string
+          command_id: string
+          composition_id: string
+          created_at?: string
+          created_by: string
+          dialogue_version_id: string
+          error?: string | null
+          id: string
+          job_id: string
+          language: string
+          occurrence_id: string
+          position?: number
+          project_id: string
+          result?: Json | null
+          retryable?: boolean
+          script_revision: number
+          status?: string
+          variant_id: string
+          version_id: string
+        }
+        Update: {
+          attempts?: number
+          batch_id?: string
+          block_id?: string
+          clip_id?: string
+          command_id?: string
+          composition_id?: string
+          created_at?: string
+          created_by?: string
+          dialogue_version_id?: string
+          error?: string | null
+          id?: string
+          job_id?: string
+          language?: string
+          occurrence_id?: string
+          position?: number
+          project_id?: string
+          result?: Json | null
+          retryable?: boolean
+          script_revision?: number
+          status?: string
+          variant_id?: string
+          version_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dialogue_batch_items_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "dialogue_batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dialogue_batch_items_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: true
+            referencedRelation: "generation_jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dialogue_batch_items_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dialogue_batches: {
+        Row: {
+          access_blocked: boolean
+          character_id: string
+          created_at: string
+          created_by: string
+          id: string
+          lease_token: string | null
+          lease_until: string | null
+          pause_reason: string | null
+          project_id: string
+          request_id: string
+          status: string
+          voice: Json
+        }
+        Insert: {
+          access_blocked?: boolean
+          character_id: string
+          created_at?: string
+          created_by: string
+          id: string
+          lease_token?: string | null
+          lease_until?: string | null
+          pause_reason?: string | null
+          project_id: string
+          request_id: string
+          status?: string
+          voice: Json
+        }
+        Update: {
+          access_blocked?: boolean
+          character_id?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          lease_token?: string | null
+          lease_until?: string | null
+          pause_reason?: string | null
+          project_id?: string
+          request_id?: string
+          status?: string
+          voice?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dialogue_batches_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
@@ -3011,6 +3167,7 @@ export type Database = {
           name: string
           primary_language: string
           revision: number
+          script_language: string | null
           workspace_id: string | null
         }
         Insert: {
@@ -3032,6 +3189,7 @@ export type Database = {
           name: string
           primary_language?: string
           revision?: number
+          script_language?: string | null
           workspace_id?: string | null
         }
         Update: {
@@ -3053,6 +3211,7 @@ export type Database = {
           name?: string
           primary_language?: string
           revision?: number
+          script_language?: string | null
           workspace_id?: string | null
         }
         Relationships: [
@@ -3189,6 +3348,7 @@ export type Database = {
           project_id: string
           revision: number
           scene_id: string
+          script_language: string | null
           uncertainty: string | null
         }
         Insert: {
@@ -3203,6 +3363,7 @@ export type Database = {
           project_id: string
           revision?: number
           scene_id: string
+          script_language?: string | null
           uncertainty?: string | null
         }
         Update: {
@@ -3217,6 +3378,7 @@ export type Database = {
           project_id?: string
           revision?: number
           scene_id?: string
+          script_language?: string | null
           uncertainty?: string | null
         }
         Relationships: [
@@ -3494,7 +3656,9 @@ export type Database = {
           project_id: string
           removed: boolean
           revision: number
+          script_language: string | null
           source_ref: Json | null
+          speech_language: string | null
           text: string
           uncertainty: string | null
           variant_id: string
@@ -3510,7 +3674,9 @@ export type Database = {
           project_id: string
           removed?: boolean
           revision?: number
+          script_language?: string | null
           source_ref?: Json | null
+          speech_language?: string | null
           text?: string
           uncertainty?: string | null
           variant_id: string
@@ -3526,7 +3692,9 @@ export type Database = {
           project_id?: string
           removed?: boolean
           revision?: number
+          script_language?: string | null
           source_ref?: Json | null
+          speech_language?: string | null
           text?: string
           uncertainty?: string | null
           variant_id?: string
@@ -4648,7 +4816,34 @@ export type Database = {
         Args: { p_asset: string; p_draft: string; p_project: string }
         Returns: number
       }
+      claim_dialogue_batch: {
+        Args: { p_batch: string; p_lease: string }
+        Returns: Json
+      }
       claim_mobile_import: { Args: { p_id: string }; Returns: boolean }
+      complete_dialogue_batch_item: {
+        Args: {
+          p_changes: Json
+          p_command: Json
+          p_inverse: Json
+          p_item: string
+          p_lease: string
+        }
+        Returns: Json
+      }
+      create_dialogue_batch: {
+        Args: {
+          p_actor: string
+          p_character: string
+          p_items: Json
+          p_key: string
+          p_key_owner: string
+          p_project: string
+          p_request: string
+          p_voice: Json
+        }
+        Returns: string
+      }
       create_film_share: {
         Args: {
           p_byte_size: number
@@ -4944,6 +5139,10 @@ export type Database = {
         Args: { p_name: string; p_workspace: string }
         Returns: undefined
       }
+      resume_dialogue_batch: {
+        Args: { p_actor: string; p_batch: string; p_project: string }
+        Returns: undefined
+      }
       revoke_film_share: { Args: { p_share: string }; Returns: undefined }
       revoke_invitation: { Args: { p_invitation: string }; Returns: undefined }
       revoke_upload_session: { Args: { p_id: string }; Returns: undefined }
@@ -4980,6 +5179,10 @@ export type Database = {
         Returns: undefined
       }
       touch_activity: { Args: never; Returns: undefined }
+      transition_dialogue_batch_item: {
+        Args: { p_item: string; p_lease: string; p_patch: Json }
+        Returns: undefined
+      }
       upsert_my_profile: {
         Args: { p_display_name?: string }
         Returns: undefined
