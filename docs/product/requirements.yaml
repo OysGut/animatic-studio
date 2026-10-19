@@ -28889,3 +28889,823 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+
+- id: REQ-0780
+  title: 'DV G1: handlingen i Asset Library gjelder bare aktivt prosjekt'
+  text: handlingen i Asset Library gjelder bare aktivt prosjekt
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '130'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - handlingen i Asset Library gjelder bare aktivt prosjekt
+  tests:
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/batch.ts
+  - src/core/dialogue/languages.ts
+  - src/adapters/storage/dialogue-batch.functions.ts
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/app/library/DialogueBatchPanel.tsx
+  - db/migrations/0061_dialogue_batch_languages.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
+    gjenstår.'
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0781
+  title: 'DV G2: dekning viser scener som mangler tale helt eller delvis'
+  text: dekning viser scener som mangler tale helt eller delvis
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '130'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - dekning viser scener som mangler tale helt eller delvis
+  tests:
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/batch.ts
+  - src/core/dialogue/languages.ts
+  - src/adapters/storage/dialogue-batch.functions.ts
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/app/library/DialogueBatchPanel.tsx
+  - db/migrations/0061_dialogue_batch_languages.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
+    gjenstår.'
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0782
+  title: 'DV G3: brukeren velger scener og replikker'
+  text: brukeren velger scener og replikker
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '130'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - brukeren velger scener og replikker
+  tests:
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/batch.ts
+  - src/core/dialogue/languages.ts
+  - src/adapters/storage/dialogue-batch.functions.ts
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/app/library/DialogueBatchPanel.tsx
+  - db/migrations/0061_dialogue_batch_languages.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
+    gjenstår.'
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0783
+  title: 'DV G4: ordrett advarsel ved eksisterende lyd'
+  text: ordrett advarsel ved eksisterende lyd
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '130'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - ordrett advarsel ved eksisterende lyd
+  tests:
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/batch.ts
+  - src/core/dialogue/languages.ts
+  - src/adapters/storage/dialogue-batch.functions.ts
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/app/library/DialogueBatchPanel.tsx
+  - db/migrations/0061_dialogue_batch_languages.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
+    gjenstår.'
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0784
+  title: 'DV G5: ny generering blir aktiv versjon'
+  text: ny generering blir aktiv versjon
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '130'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - ny generering blir aktiv versjon
+  tests:
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/batch.ts
+  - src/core/dialogue/languages.ts
+  - src/adapters/storage/dialogue-batch.functions.ts
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/app/library/DialogueBatchPanel.tsx
+  - db/migrations/0061_dialogue_batch_languages.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
+    gjenstår.'
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0785
+  title: 'DV G6: ingen eksisterende lyd eller redigering slettes'
+  text: ingen eksisterende lyd eller redigering slettes
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '130'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - ingen eksisterende lyd eller redigering slettes
+  tests:
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/batch.ts
+  - src/core/dialogue/languages.ts
+  - src/adapters/storage/dialogue-batch.functions.ts
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/app/library/DialogueBatchPanel.tsx
+  - db/migrations/0061_dialogue_batch_languages.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
+    gjenstår.'
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0786
+  title: 'DV G7: feil lar tidligere aktiv versjon stå'
+  text: feil lar tidligere aktiv versjon stå
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '130'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - feil lar tidligere aktiv versjon stå
+  tests:
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/batch.ts
+  - src/core/dialogue/languages.ts
+  - src/adapters/storage/dialogue-batch.functions.ts
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/app/library/DialogueBatchPanel.tsx
+  - db/migrations/0061_dialogue_batch_languages.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
+    gjenstår.'
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0787
+  title: 'DV G8: kostnadsestimat og eksplisitt bekreftelse før betalte kall'
+  text: kostnadsestimat og eksplisitt bekreftelse før betalte kall
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '130'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - kostnadsestimat og eksplisitt bekreftelse før betalte kall
+  tests:
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/batch.ts
+  - src/core/dialogue/languages.ts
+  - src/adapters/storage/dialogue-batch.functions.ts
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/app/library/DialogueBatchPanel.tsx
+  - db/migrations/0061_dialogue_batch_languages.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
+    gjenstår.'
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0788
+  title: 'DV G9: usikkert tidsestimat når forsvarlig'
+  text: usikkert tidsestimat når forsvarlig
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '130'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - usikkert tidsestimat når forsvarlig
+  tests:
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/batch.ts
+  - src/core/dialogue/languages.ts
+  - src/adapters/storage/dialogue-batch.functions.ts
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/app/library/DialogueBatchPanel.tsx
+  - db/migrations/0061_dialogue_batch_languages.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
+    gjenstår.'
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0789
+  title: 'DV G10: varig fremdrift per replikk med gjenopptak'
+  text: varig fremdrift per replikk med gjenopptak
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '130'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - varig fremdrift per replikk med gjenopptak
+  tests:
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/batch.ts
+  - src/core/dialogue/languages.ts
+  - src/adapters/storage/dialogue-batch.functions.ts
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/app/library/DialogueBatchPanel.tsx
+  - db/migrations/0061_dialogue_batch_languages.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
+    gjenstår.'
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0790
+  title: 'DV G11: automatisk plassering i riktig replikk og scene'
+  text: automatisk plassering i riktig replikk og scene
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '130'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - automatisk plassering i riktig replikk og scene
+  tests:
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/batch.ts
+  - src/core/dialogue/languages.ts
+  - src/adapters/storage/dialogue-batch.functions.ts
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/app/library/DialogueBatchPanel.tsx
+  - db/migrations/0061_dialogue_batch_languages.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
+    gjenstår.'
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0791
+  title: 'DV G12: minimal gyldig 2D-scene opprettes ved behov'
+  text: minimal gyldig 2D-scene opprettes ved behov
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '130'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - minimal gyldig 2D-scene opprettes ved behov
+  tests:
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/batch.ts
+  - src/core/dialogue/languages.ts
+  - src/adapters/storage/dialogue-batch.functions.ts
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/app/library/DialogueBatchPanel.tsx
+  - db/migrations/0061_dialogue_batch_languages.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
+    gjenstår.'
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0792
+  title: 'DV G13: tekniske gjentak oppretter ingen duplikater'
+  text: tekniske gjentak oppretter ingen duplikater
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '130'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - tekniske gjentak oppretter ingen duplikater
+  tests:
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/batch.ts
+  - src/core/dialogue/languages.ts
+  - src/adapters/storage/dialogue-batch.functions.ts
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/app/library/DialogueBatchPanel.tsx
+  - db/migrations/0061_dialogue_batch_languages.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
+    gjenstår.'
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0793
+  title: 'DV S1: UiLocale, scriptLanguage og speechLanguage er uavhengige'
+  text: UiLocale, scriptLanguage og speechLanguage er uavhengige
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '131'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - UiLocale, scriptLanguage og speechLanguage er uavhengige
+  tests:
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/batch.ts
+  - src/core/dialogue/languages.ts
+  - src/adapters/storage/dialogue-batch.functions.ts
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/app/library/DialogueBatchPanel.tsx
+  - db/migrations/0061_dialogue_batch_languages.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
+    gjenstår.'
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0794
+  title: 'DV S2: flere BCP-47-talespråk i samme prosjekt'
+  text: flere BCP-47-talespråk i samme prosjekt
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '131'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - flere BCP-47-talespråk i samme prosjekt
+  tests:
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/batch.ts
+  - src/core/dialogue/languages.ts
+  - src/adapters/storage/dialogue-batch.functions.ts
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/app/library/DialogueBatchPanel.tsx
+  - db/migrations/0061_dialogue_batch_languages.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
+    gjenstår.'
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0795
+  title: 'DV S3: talespråk kan overstyres per replikk'
+  text: talespråk kan overstyres per replikk
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '131'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - talespråk kan overstyres per replikk
+  tests:
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/batch.ts
+  - src/core/dialogue/languages.ts
+  - src/adapters/storage/dialogue-batch.functions.ts
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/app/library/DialogueBatchPanel.tsx
+  - db/migrations/0061_dialogue_batch_languages.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
+    gjenstår.'
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0796
+  title: 'DV S4: støtte kontrolleres mot modellens levende språkdata'
+  text: støtte kontrolleres mot modellens levende språkdata
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '131'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - støtte kontrolleres mot modellens levende språkdata
+  tests:
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/batch.ts
+  - src/core/dialogue/languages.ts
+  - src/adapters/storage/dialogue-batch.functions.ts
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/app/library/DialogueBatchPanel.tsx
+  - db/migrations/0061_dialogue_batch_languages.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
+    gjenstår.'
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0797
+  title: 'DV S5: usikker språkdeteksjon varsler før massegenerering'
+  text: usikker språkdeteksjon varsler før massegenerering
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '131'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - usikker språkdeteksjon varsler før massegenerering
+  tests:
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/batch.ts
+  - src/core/dialogue/languages.ts
+  - src/adapters/storage/dialogue-batch.functions.ts
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/app/library/DialogueBatchPanel.tsx
+  - db/migrations/0061_dialogue_batch_languages.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
+    gjenstår.'
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0798
+  title: 'DV S6: brukeren kan velge samlet generering med advarsel'
+  text: brukeren kan velge samlet generering med advarsel
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '131'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - brukeren kan velge samlet generering med advarsel
+  tests:
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/batch.ts
+  - src/core/dialogue/languages.ts
+  - src/adapters/storage/dialogue-batch.functions.ts
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/app/library/DialogueBatchPanel.tsx
+  - db/migrations/0061_dialogue_batch_languages.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
+    gjenstår.'
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0799
+  title: 'DV S7: separate språkjobber med egne stemmer og modeller'
+  text: separate språkjobber med egne stemmer og modeller
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '131'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - separate språkjobber med egne stemmer og modeller
+  tests:
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/batch.ts
+  - src/core/dialogue/languages.ts
+  - src/adapters/storage/dialogue-batch.functions.ts
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/app/library/DialogueBatchPanel.tsx
+  - db/migrations/0061_dialogue_batch_languages.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
+    gjenstår.'
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0800
+  title: 'DV S8: brukeren velger innhold og estimater per språkjobb'
+  text: brukeren velger innhold og estimater per språkjobb
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '131'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - brukeren velger innhold og estimater per språkjobb
+  tests:
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/batch.ts
+  - src/core/dialogue/languages.ts
+  - src/adapters/storage/dialogue-batch.functions.ts
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/app/library/DialogueBatchPanel.tsx
+  - db/migrations/0061_dialogue_batch_languages.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon
+    gjenstår.'
+  history:
+  - date: '2026-10-19'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
