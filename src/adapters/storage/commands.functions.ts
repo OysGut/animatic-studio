@@ -90,6 +90,7 @@ const MAX_COMMAND_CHARS = 6_000_000;
  * vilkårlig innhold.
  */
 const INVERSE_ONLY = new Set<string>([
+  "UndoGeneratedDialogue",
   "RestoreDialogueCharacters",
   "UndoAnimationChange",
   "UndoCreateProduction",
@@ -116,6 +117,7 @@ const INVERSE_ONLY = new Set<string>([
 
 /** Kommandoer som skriver til tabellene fra migrasjon 0004 (ressursbibliotek og notater). */
 const LIBRARY_COMMANDS = new Set<string>([
+  "ApplyGeneratedDialogue",
   "SetDialogueCharacter",
   "RestoreDialogueCharacters",
   "CreateAssets",

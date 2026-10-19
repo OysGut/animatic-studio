@@ -177,6 +177,7 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         heading_location: v.heading.location,
         heading_time: v.heading.time,
         uncertainty: v.uncertainty,
+        script_language: v.scriptLanguage ?? null,
       };
     }
     case "blocks": {
@@ -189,6 +190,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         current_rev: b.currentRev,
         text: b.text,
         language: b.language,
+        script_language: b.scriptLanguage ?? null,
+        speech_language: b.speechLanguage ?? null,
         source_ref: b.sourceRef,
         uncertainty: b.uncertainty,
         removed: b.removed,
@@ -445,6 +448,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         // Migrasjon 0060 (DV2): aktiv lydversjon og taler
         active_version_id: a.activeVersionId ?? null,
         character_asset_id: a.characterAssetId ?? null,
+        speech_language: a.speechLanguage ?? null,
+        placement_estimated: a.placementEstimated ?? false,
         removed: a.removed,
       };
     }
@@ -779,6 +784,7 @@ export function diffStates(before: ProjectState, after: ProjectState): ChangeSet
         revision: after.project.revision,
         expected_revision: before.project.revision,
         name: after.project.name,
+        script_language: after.project.scriptLanguage ?? null,
         fps_num: after.project.fps.num,
         fps_den: after.project.fps.den,
         frame_width: after.project.frameWidth,
@@ -1062,6 +1068,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
       frameWidth: num(p["frame_width"] ?? 1920),
       frameHeight: num(p["frame_height"] ?? 1080),
       primaryLanguage: "nb",
+      scriptLanguage: optStr(p["script_language"]),
       ...defaultTransitionFromRow(p),
       ...(p["ai_month_limit"] === null || p["ai_month_limit"] === undefined
         ? {}
@@ -1105,6 +1112,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         id: str(x["id"]) as never,
         revision: num(x["revision"]),
         sceneId: str(x["scene_id"]) as never,
+        scriptLanguage: optStr(x["script_language"]),
         ownerProductionId: optStr(x["owner_production_id"]) as never,
         basedOnVariantId: optStr(x["based_on_variant_id"]) as never,
         heading: {
@@ -1125,7 +1133,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         currentRev: num(x["current_rev"]),
         text: str(x["text"]),
         language: "nb" as const,
+        scriptLanguage: optStr(x["script_language"]),
         sourceRef: (x["source_ref"] as { page: number; y: number } | null | undefined) ?? null,
+        speechLanguage: optStr(x["speech_language"]),
         uncertainty: optStr(x["uncertainty"]),
         removed: x["removed"] === true,
       })),
@@ -1422,6 +1432,8 @@ export function stateFromRows(r: ProjectRows): ProjectState {
           : {}),
         ...(x["active_version_id"] ? { activeVersionId: str(x["active_version_id"]) } : {}),
         ...(x["character_asset_id"] ? { characterAssetId: str(x["character_asset_id"]) } : {}),
+        speechLanguage: optStr(x["speech_language"]),
+        placementEstimated: x["placement_estimated"] === true,
         removed: x["removed"] === true,
       })),
     ),

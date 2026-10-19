@@ -1,0 +1,18 @@
+import { useState } from "react";
+import { L, scriptLanguageOf, speechLanguageOf, languageTagError, type ProjectState } from "@/core";
+import type { Commands } from "@/app/project/use-commands";
+import { Button } from "@/components/ui/button";
+
+export function DialogueLanguageControls({ state, occurrenceId, blockId, characterId, cmds, disabled }: { state: ProjectState; occurrenceId: string; blockId: string; characterId: string | null; cmds: Commands; disabled: boolean }) {
+  const block = state.blocks[blockId];
+  const clip = Object.values(state.audioClips).find(c => !c.removed && c.occurrenceId === occurrenceId && c.blockId === blockId);
+  const [error, setError] = useState<string | null>(null);
+  const field = "h-8 w-32 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary";
+  const targets = [ { target: "project" as const, id: state.project.id, label: L("Prosjektets manusspråk", "Project script language"), value: state.project.scriptLanguage ?? "", test: "project-script-language" }, { target: "variant" as const, id: block?.variantId ?? "", label: L("Variantens manusspråk", "Variant script language"), value: state.variants[block?.variantId ?? ""]?.scriptLanguage ?? "", test: "variant-script-language" }, { target: "block" as const, id: blockId, label: L("Replikkens manusspråk", "Line script language"), value: block?.scriptLanguage ?? "", test: "block-script-language" } ];
+  return <section data-testid="dialogue-language-controls" className="flex flex-col gap-2 border-t border-border pt-2">
+    <p className="text-xs text-text-secondary">{L(`Gjeldende manusspråk: ${scriptLanguageOf(state, blockId)} · talespråk: ${speechLanguageOf(state, occurrenceId, blockId, characterId)}`, `Current script language: ${scriptLanguageOf(state, blockId)} · speech language: ${speechLanguageOf(state, occurrenceId, blockId, characterId)}`)}</p>
+    {targets.map(t => <label key={t.target} className="flex flex-wrap items-center justify-between gap-2 text-xs text-text-secondary">{t.label}<input key={`${t.id}:${t.value}`} data-testid={t.test} className={field} defaultValue={t.value} disabled={disabled} placeholder={L("Arv", "Inherit")} onBlur={e => { const value = e.target.value.trim(); if (value === t.value) return; const problem = value ? languageTagError(value) : null; setError(problem ?? cmds.run({ type: "SetDialogueLanguage", target: t.target, targetId: t.id, language: value || null }, L("Endre manusspråk", "Change script language"))); }} /></label>)}
+    <label className="flex flex-wrap items-center justify-between gap-2 text-xs text-text-secondary">{L("Replikkens talespråk", "Line speech language")}<input key={`${clip?.id ?? blockId}:${clip?.speechLanguage ?? block?.speechLanguage}`} data-testid="line-speech-language" className={field} defaultValue={clip?.speechLanguage ?? block?.speechLanguage ?? ""} disabled={disabled} placeholder={L("Arv fra karakter", "Inherit from character")} onBlur={e => { const value = e.target.value.trim(); const problem = value ? languageTagError(value) : null; setError(problem ?? cmds.run({ type: "SetDialogueLanguage", target: clip ? "clip" : "blockSpeech", targetId: clip?.id ?? blockId, language: value || null }, L("Endre talespråk", "Change speech language"))); }} /></label>
+    {error ? <p role="alert" className="text-xs text-status-danger">{error}<Button size="sm" variant="ghost" onClick={() => setError(null)}>{L("Lukk", "Close")}</Button></p> : null}
+  </section>;
+}

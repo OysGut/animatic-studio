@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { L, estimateCostUsd, formatUsd, SPEECH_MODEL, type AssetVoice, type ProjectState } from "@/core";
+import { L, estimateCostUsd, formatUsd, SPEECH_MODEL, speechLanguageOf, type AssetVoice, type ProjectState } from "@/core";
 import { VoiceControls } from "@/app/audio/VoiceControls";
 import { generateSpeech } from "@/adapters/ai/speech.functions";
 import { Button } from "@/components/ui/button";
@@ -9,13 +9,15 @@ import { saveTake } from "@/app/audio/takes";
 import type { Commands } from "@/app/project/use-commands";
 
 export function GenerateDialogue({ state, projectId, occurrenceId, blockId, characterId, cmds, onSaved, onBusy }: { state: ProjectState; projectId: string; occurrenceId: string; blockId: string; characterId: string | null; cmds: Commands; onSaved: () => void; onBusy: (busy: boolean) => void }) {
-  const standard = characterId ? state.assets[characterId]?.voice ?? null : null;
+  const defaultVoice = characterId ? state.assets[characterId]?.voice ?? null : null;
+  const language = speechLanguageOf(state, occurrenceId, blockId, characterId);
+  const standard = defaultVoice ? { ...defaultVoice, language } : null;
   const [voice, setVoice] = useState<AssetVoice | null>(standard);
   const [open, setOpen] = useState(false);
   const [confirm, setConfirm] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  useEffect(() => { setVoice(standard); setConfirm(false); }, [blockId, characterId, standard]);
+  useEffect(() => { setVoice(defaultVoice ? { ...defaultVoice, language } : null); setConfirm(false); }, [blockId, characterId, defaultVoice, language]);
   const block = state.blocks[blockId];
   const model = voice?.modelId ?? SPEECH_MODEL;
   const cost = estimateCostUsd("elevenlabs", model, { characters: block?.text.replace(/\s+/g, " ").trim().length ?? 0 });

@@ -21,6 +21,7 @@ import {
   speechLanguageError,
   type SpeechSettings,
   type SpeechModel,
+  languageTagError,
 } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 
@@ -106,7 +107,7 @@ export type SpeechResult =
       readonly costUsd: number | null;
       readonly scriptRevision?: number;
     }
-  | { readonly ok: false; readonly message: string };
+  | { readonly ok: false; readonly message: string; readonly status?: number | null; readonly ambiguous?: boolean };
 
 export const generateSpeech = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -121,7 +122,7 @@ export const generateSpeech = createServerFn({ method: "POST" })
     const model = x["modelId"] ?? SPEECH_MODEL;
     const language = x["language"] ?? SPEECH_LANGUAGE;
     const settings = x["settings"] ?? {};
-    if (typeof model !== "string" || !/^[A-Za-z0-9_-]{1,100}$/.test(model) || typeof language !== "string" || !/^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$/.test(language))
+    if (typeof model !== "string" || !/^[A-Za-z0-9_-]{1,100}$/.test(model) || typeof language !== "string" || languageTagError(language))
       throw new Error(L("Ugyldig modell eller talespråk", "Invalid model or speech language"));
     const problem = speechSettingsError(settings);
     if (problem) throw new Error(problem);
@@ -130,220 +131,8 @@ export const generateSpeech = createServerFn({ method: "POST" })
     return { projectId: x["projectId"], blockId: x["blockId"], voiceId: x["voiceId"], model, language, settings: settings as SpeechSettings, expectedRevision };
   })
   .handler(async ({ data, context }): Promise<SpeechResult> => {
-    const a = await editorAccess(context.supabase, data.projectId, context.userId);
-    if (!a)
-      return {
-        ok: false,
-        message: L(
-          "Du har ikke tilgang til å generere i dette prosjektet.",
-          "You do not have access to generate in this project.",
-        ),
-      };
-    const { gate, db } = a;
-    const schema = await checkSchema(db);
-    if (schema.kind === "missing" || schema.version < 24)
-      return {
-        ok: false,
-        message: L(
-          "Databasen er ikke oppdatert for AI-tale. Kontakt administratoren for å oppdatere Animatic Studio.",
-          "The database is not updated for AI speech. Contact the administrator to update Animatic Studio.",
-        ),
-      };
-    const { data: proj } = await db
-      .from("projects")
-      .select("*")
-      .eq("id", data.projectId)
-      .maybeSingle();
-    if (!proj || (proj as { deleted_at?: string | null }).deleted_at)
-      return { ok: false, message: L("Prosjektet er slettet.", "The project has been deleted.") };
-    // Teksten fra manuset (ikke fra nettleseren)
-    const { data: block } = await db
-      .from("script_blocks")
-      .select("id, kind, text, removed, current_rev")
-      .eq("id", data.blockId)
-      .eq("project_id", data.projectId)
-      .maybeSingle();
-    const b = block as { kind: string; text: string; removed: boolean; current_rev: number } | null;
-    if (!b || b.removed || b.kind !== "dialogue")
-      return {
-        ok: false,
-        message: L("Bare replikker kan leses inn.", "Only lines can be read aloud."),
-      };
-    if (data.expectedRevision !== undefined && b.current_rev !== data.expectedRevision)
-      return { ok: false, message: L("Manuset er endret. Kontroller replikken og godkjenn kostnaden på nytt.", "The script has changed. Review the line and approve the cost again.") };
-    const text = b.text.replace(/\s+/g, " ").trim();
-    // Administrator kan ha slått av ElevenLabs eller talemodellen for alle (DEC-0088, migrasjon 0034)
-    const aiGate = await (
-      await import("@/adapters/account/ai-models.server")
-    ).modelGate(db, "elevenlabs", data.model);
-    if (aiGate.message) return { ok: false, message: aiGate.message };
-    const m = providerModel("elevenlabs", data.model);
-    if (!text) return { ok: false, message: L("Replikken er tom.", "The line is empty.") };
-    if (text.length > (m?.maxPromptChars ?? 5000))
-      return {
-        ok: false,
-        message: L(
-          "Replikken er for lang til å leses inn i én del.",
-          "The line is too long to be read aloud in one part.",
-        ),
-      };
-    const key = await gate.projectKey(db, data.projectId, "elevenlabs", context.userId);
-    if (!key)
-      return {
-        ok: false,
-        message: L(
-          "Ingen av prosjektets eiere har koblet til ElevenLabs (AI-leverandører).",
-          "None of the project's owners has connected ElevenLabs (AI providers).",
-        ),
-      };
-    const cost = estimateCostUsd("elevenlabs", data.model, { characters: text.length });
-    if (cost === null) return { ok: false, message: L("Modellprisen er ukjent. Administratoren må registrere prisen før generering.", "The model price is unknown. An administrator must register the price before generation.") };
-    const hourAgo = new Date(Date.now() - 3600_000).toISOString();
-    const limits = async (extra: number): Promise<string | null> => {
-      const { count } = await db
-        .from("generation_jobs")
-        .select("id", { count: "exact", head: true })
-        .eq("created_by", context.userId)
-        .eq("kind", "sound")
-        .gte("created_at", hourAgo);
-      if ((count ?? 0) - extra >= MAX_SPEECH_JOBS_PER_USER_PER_HOUR)
-        return L(
-          `Grensen på ${MAX_SPEECH_JOBS_PER_USER_PER_HOUR} lyder i timen er nådd.`,
-          `The limit of ${MAX_SPEECH_JOBS_PER_USER_PER_HOUR} sounds per hour has been reached.`,
-        );
-      const budget = await gate.overProjectBudget(
-        db,
-        data.projectId,
-        (proj as { ai_month_limit?: number | null }).ai_month_limit,
-        extra === 1,
-      );
-      return budget ?? gate.overAccountCap(db, key.user_id, cost ?? Number.NaN, extra === 1);
-    };
-    const before = await limits(0);
-    if (before) return { ok: false, message: before };
-    const jobId = newId<"generation_job">();
-    const { error: logErr } = await db.from("generation_jobs").insert({
-      id: jobId,
-      project_id: data.projectId,
-      kind: "sound",
-      provider: "elevenlabs",
-      model: data.model,
-      prompt: "",
-      status: "running",
-      created_by: context.userId,
-      provider_key_id: key.id,
-      key_owner: key.user_id,
-      cost_usd: cost,
-      params: {
-        speech: true,
-        language: data.language,
-        settings: data.settings,
-        scriptRevision: b.current_rev,
-        // Innsatsnivået jobben ble kjørt med (mandat 19.3, REQ-0275)
-        effort: effortOf(providerModel("elevenlabs", data.model)),
-        voiceId: data.voiceId,
-        blockId: data.blockId,
-        // Sporbarhet (DEC-0072, REQ-0257)
-        trace: await (
-          await import("./trace.server")
-        ).buildTrace(db, data.projectId, { modelParams: { voiceId: data.voiceId } }),
-      },
-    } as never);
-    if (logErr)
-      return {
-        ok: false,
-        message: L(
-          `Jobben kunne ikke logges: ${logErr.message}`,
-          `The job could not be logged: ${logErr.message}`,
-        ),
-      };
-    const after = await limits(1);
-    if (after) {
-      await db.from("generation_jobs").delete().eq("id", jobId).eq("status", "running");
-      return { ok: false, message: after };
-    }
-    const finish = (patch: Record<string, unknown>) =>
-      db
-        .from("generation_jobs")
-        .update({ ...patch, finished_at: new Date().toISOString() } as never)
-        .eq("id", jobId);
-    let charged = false;
-    let secret: string | null = null;
-    const { ADAPTERS, ProviderError, scrubSecret } = await import("./providers.server");
-    try {
-      const { decryptKey } = await import("./key-vault.server");
-      secret = await decryptKey(key, {
-        userId: key.user_id,
-        provider: key.provider,
-        rowId: key.id,
-      });
-      const [models, voices] = await Promise.all([ADAPTERS.elevenlabs.speechModels(secret), ADAPTERS.elevenlabs.voices(secret)]);
-      const liveModel = models.find(m => m.modelId === data.model);
-      if (!liveModel || !voices.some(v => v.voiceId === data.voiceId))
-        throw new Error(L("Stemmen eller modellen er ikke tilgjengelig på kontoen.", "The voice or model is not available in the account."));
-      const languageError = speechLanguageError(liveModel, data.language);
-      if (languageError) throw new Error(languageError);
-      if (liveModel.maxCharacters !== null && text.length > liveModel.maxCharacters)
-        throw new Error(L("Replikken er for lang for modellen.", "The line is too long for the model."));
-      charged = true;
-      const out = await ADAPTERS.elevenlabs.speech({
-        key: secret,
-        model: data.model,
-        voiceId: data.voiceId,
-        text,
-        language: data.language,
-        settings: data.settings,
-      });
-      if (!out.bytes.byteLength)
-        throw new Error(L("Tjenesten svarte uten lyd.", "The service replied without sound."));
-      const assetId = newId<"asset">();
-      const versionId = newId<"asset_version">();
-      const path = assetFilePath(data.projectId, "generated", assetId, versionId, "ai-tale.mp3");
-      const { error: upErr } = await db.storage
-        .from(BUCKET)
-        .upload(path, new Blob([out.bytes as unknown as ArrayBuffer], { type: "audio/mpeg" }), {
-          contentType: "audio/mpeg",
-          upsert: false,
-        });
-      if (upErr)
-        throw new Error(
-          L(
-            `Lyden kunne ikke lagres: ${upErr.message}`,
-            `The sound could not be saved: ${upErr.message}`,
-          ),
-        );
-      await finish({ status: "done", result_path: path });
-      return {
-        ok: true,
-        assetId,
-        versionId,
-        text,
-        costUsd: cost,
-        scriptRevision: b.current_rev,
-        media: {
-          path,
-          mimeType: "audio/mpeg",
-          width: null,
-          height: null,
-          byteSize: out.bytes.byteLength,
-          sha256: await sha256(out.bytes),
-        },
-      };
-    } catch (e) {
-      const message = scrubSecret(
-        (e as Error).message || L("Ukjent feil", "Unknown error"),
-        secret,
-      ).slice(0, 2000);
-      const rejected = e instanceof ProviderError && e.status >= 400 && e.status < 500;
-      await finish({ status: charged && !rejected ? "lost" : "failed", error: message });
-      return {
-        ok: false,
-        message: L(
-          `Replikken ble ikke lest inn: ${message}`,
-          `The line could not be read aloud: ${message}`,
-        ),
-      };
-    }
+    const { runSpeech } = await import("./speech-run.server");
+    return runSpeech(data, context);
   });
 
 /** DV4: model/language choices come from the authorized account, not a fixed UI list. */
