@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **749**
-- Prioritet: P0: 145, P1: 416, P2: 149, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 222, teknisk-anbefaling: 7
-- Status: Verifisert: 656, Implementert – ikke verifisert: 22, Under arbeid: 13, Ikke startet: 58
+- Antall krav: **779**
+- Prioritet: P0: 147, P1: 444, P2: 149, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 252, teknisk-anbefaling: 7
+- Status: Verifisert: 656, Implementert – ikke verifisert: 52, Under arbeid: 13, Ikke startet: 58
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -10239,3 +10239,448 @@ Integrasjonsplanen bevarer VennTing-data. Ø-9 presiserer kopi inne i Animatic S
   - tests/unit/storylab-prompts.test.ts
 - **Implementering:** src/core/storylab/prompts.ts
 - **Merknad:** Kopiert promptmodul påvist; ingen ny tilgang til VennTing. Data-bevaring i VennTing er ikke testbar i dette prosjektet.
+
+#### REQ-0750 – DV M1: enkeltklikk på tidsplassert replikk flytter avspillingshodet
+enkeltklikk på tidsplassert replikk flytter avspillingshodet
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - enkeltklikk på tidsplassert replikk flytter avspillingshodet
+- **Tester:**
+  - tests/visual/dv1-script-nav.mjs
+  - tests/unit/dialogue-navigation.test.ts
+- **Implementering:** src/core/dialogue/navigation.ts, src/app/scene-editor/SceneScriptPanel.tsx
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §126. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0751 – DV M2: hovedvisningen oppdateres
+hovedvisningen oppdateres
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - hovedvisningen oppdateres
+- **Tester:**
+  - tests/visual/dv1-script-nav.mjs
+  - tests/unit/dialogue-navigation.test.ts
+- **Implementering:** src/core/dialogue/navigation.ts, src/app/scene-editor/SceneScriptPanel.tsx
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §126. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0752 – DV M3: dobbeltklikk åpner riktig dialogeditor
+dobbeltklikk åpner riktig dialogeditor
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - dobbeltklikk åpner riktig dialogeditor
+- **Tester:**
+  - tests/visual/dv1-script-nav.mjs
+  - tests/unit/dialogue-navigation.test.ts
+- **Implementering:** src/core/dialogue/navigation.ts, src/app/scene-editor/SceneScriptPanel.tsx
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §126. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0753 – DV M4: riktig replikk forhåndsvalgt
+riktig replikk forhåndsvalgt
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - riktig replikk forhåndsvalgt
+- **Tester:**
+  - tests/visual/dv1-script-nav.mjs
+  - tests/unit/dialogue-navigation.test.ts
+- **Implementering:** src/core/dialogue/navigation.ts, src/app/scene-editor/SceneScriptPanel.tsx
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §126. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0754 – DV M5: manglende timing uten falsk presisjon
+manglende timing uten falsk presisjon
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - manglende timing uten falsk presisjon
+- **Tester:**
+  - tests/visual/dv1-script-nav.mjs
+  - tests/unit/dialogue-navigation.test.ts
+- **Implementering:** src/core/dialogue/navigation.ts, src/app/scene-editor/SceneScriptPanel.tsx
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §126. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0755 – DV D1: aktiv replikk lesbar under opptak
+aktiv replikk lesbar under opptak
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - aktiv replikk lesbar under opptak
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §127. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0756 – DV D2: kontekst i ca. 70 % styrke
+kontekst i ca. 70 % styrke
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - kontekst i ca. 70 % styrke
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §127. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0757 – DV D3: miniatyr når den finnes
+miniatyr når den finnes
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - miniatyr når den finnes
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §127. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0758 – DV D4: navn tydelig
+navn tydelig
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - navn tydelig
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §127. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0759 – DV D5: velge annen replikk i nedtrekkslisten
+velge annen replikk i nedtrekkslisten
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - velge annen replikk i nedtrekkslisten
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §127. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0760 – DV D6: sceneavspilling under opptak virker
+sceneavspilling under opptak virker
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - sceneavspilling under opptak virker
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §127. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon. Eldre verifisering4-test mistet falsk mikrofon ved nettleser-reserve; ekte opptak må fortsatt kontrolleres.
+
+#### REQ-0761 – DV D7: flere takes uten overskriving
+flere takes uten overskriving
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - flere takes uten overskriving
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §127. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0762 – DV D8: eksisterende lydprofil (volumkurver, hastighet, bølgeform) virker
+eksisterende lydprofil (volumkurver, hastighet, bølgeform) virker
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - eksisterende lydprofil (volumkurver, hastighet, bølgeform) virker
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §127. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0763 – DV L1: ett felles spor per karakter
+ett felles spor per karakter
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - ett felles spor per karakter
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0764 – DV L2: spornavn er karakternavn
+spornavn er karakternavn
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - spornavn er karakternavn
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0765 – DV L3: replikker er separate segmenter
+replikker er separate segmenter
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - replikker er separate segmenter
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0766 – DV L4: versjoner stablet i dialogeditoren
+versjoner stablet i dialogeditoren
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - versjoner stablet i dialogeditoren
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0767 – DV L5: forhåndslytting
+forhåndslytting
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - forhåndslytting
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0768 – DV L6: bare aktiv versjon spilles i scenen
+bare aktiv versjon spilles i scenen
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - bare aktiv versjon spilles i scenen
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0769 – DV L7: tidligere versjoner bevares
+tidligere versjoner bevares
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - tidligere versjoner bevares
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0770 – DV L8: volumkurver, klipping, hastighet og fades bevares ved bytte
+volumkurver, klipping, hastighet og fades bevares ved bytte
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - volumkurver, klipping, hastighet og fades bevares ved bytte
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0771 – DV L9: gjenvalgt versjon arver gjeldende plassering
+gjenvalgt versjon arver gjeldende plassering
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - gjenvalgt versjon arver gjeldende plassering
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0772 – DV L10: ulik varighet uten utilsiktet overlapp
+ulik varighet uten utilsiktet overlapp
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - ulik varighet uten utilsiktet overlapp
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0773 – DV V1: «Generer lydfil»
+«Generer lydfil»
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - «Generer lydfil»
+- **Tester:**
+  - tests/visual/dv4-voice.mjs
+  - tests/unit/dv4-speech-server.test.ts
+  - tests/unit/dv3-dv4.test.ts
+- **Implementering:** src/app/library/CharacterVoiceSection.tsx, src/app/scene-editor/GenerateDialogue.tsx, src/adapters/ai/speech.functions.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §128. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0774 – DV V2: standardstemme forhåndsvalgt
+standardstemme forhåndsvalgt
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - standardstemme forhåndsvalgt
+- **Tester:**
+  - tests/visual/dv4-voice.mjs
+  - tests/unit/dv4-speech-server.test.ts
+  - tests/unit/dv3-dv4.test.ts
+- **Implementering:** src/app/library/CharacterVoiceSection.tsx, src/app/scene-editor/GenerateDialogue.tsx, src/adapters/ai/speech.functions.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §128. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0775 – DV V3: lokale overstyringer
+lokale overstyringer
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - lokale overstyringer
+- **Tester:**
+  - tests/visual/dv4-voice.mjs
+  - tests/unit/dv4-speech-server.test.ts
+  - tests/unit/dv3-dv4.test.ts
+- **Implementering:** src/app/library/CharacterVoiceSection.tsx, src/app/scene-editor/GenerateDialogue.tsx, src/adapters/ai/speech.functions.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §128. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0776 – DV V4: nye genereringer som separate versjoner
+nye genereringer som separate versjoner
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - nye genereringer som separate versjoner
+- **Tester:**
+  - tests/visual/dv4-voice.mjs
+  - tests/unit/dv4-speech-server.test.ts
+  - tests/unit/dv3-dv4.test.ts
+- **Implementering:** src/app/library/CharacterVoiceSection.tsx, src/app/scene-editor/GenerateDialogue.tsx, src/adapters/ai/speech.functions.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §128. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0777 – DV V5: Lyd / Stemme-seksjon per karakter
+Lyd / Stemme-seksjon per karakter
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Lyd / Stemme-seksjon per karakter
+- **Tester:**
+  - tests/visual/dv4-voice.mjs
+  - tests/unit/dv4-speech-server.test.ts
+  - tests/unit/dv3-dv4.test.ts
+- **Implementering:** src/app/library/CharacterVoiceSection.tsx, src/app/scene-editor/GenerateDialogue.tsx, src/adapters/ai/speech.functions.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §128. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0778 – DV V6: velge ElevenLabs-stemme når integrasjonen finnes
+velge ElevenLabs-stemme når integrasjonen finnes
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - velge ElevenLabs-stemme når integrasjonen finnes
+- **Tester:**
+  - tests/visual/dv4-voice.mjs
+  - tests/unit/dv4-speech-server.test.ts
+  - tests/unit/dv3-dv4.test.ts
+- **Implementering:** src/app/library/CharacterVoiceSection.tsx, src/app/scene-editor/GenerateDialogue.tsx, src/adapters/ai/speech.functions.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §128. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon. Kontoens eksisterende stemmer/modeller hentes. Opprettelse av ny egendefinert stemme skjer hos ElevenLabs, som håndhever konto og samtykke; ingen innebygd kloning.
+
+#### REQ-0779 – DV V7: endret standardstemme endrer ikke tidligere filer
+endret standardstemme endrer ikke tidligere filer
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - endret standardstemme endrer ikke tidligere filer
+- **Tester:**
+  - tests/visual/dv4-voice.mjs
+  - tests/unit/dv4-speech-server.test.ts
+  - tests/unit/dv3-dv4.test.ts
+- **Implementering:** src/app/library/CharacterVoiceSection.tsx, src/app/scene-editor/GenerateDialogue.tsx, src/adapters/ai/speech.functions.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §128. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.

@@ -21,6 +21,7 @@ import {
   type AssetMedia,
   type Command,
   type ProjectState,
+  type DialogueVersionMeta,
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 
@@ -127,6 +128,8 @@ export async function saveTake(
   note: string,
   /** ID-en en ny lydressurs skal få (så filen allerede ligger i ressursens mappe). */
   newAssetId?: string,
+  dialogueMeta?: DialogueVersionMeta,
+  activate = false,
 ): Promise<SavedTake> {
   const group = newId<"command">();
   if (target.kind === "sound") {
@@ -140,12 +143,24 @@ export async function saveTake(
   const info = lineInfo(state, target.occurrenceId, target.blockId, target.clipId);
   if (!info) throw new Error(L("Replikken finnes ikke lenger.", "The line no longer exists."));
   if (info.clip) {
-    const assetId = info.clip.assetId;
-    let variantId = soundVariant(state, assetId, info.clip.assetVariantId ?? undefined);
+    const generated = dialogueMeta?.source === "ai" && newAssetId
+      ? await newSoundAsset(cmds, lineTitle(info), L("Generert tale", "Generated speech"), group, { assetId: newAssetId, category: L("Dialog (AI)", "Dialogue (AI)") })
+      : null;
+    const assetId = generated?.assetId ?? info.clip.assetId;
+    let variantId = generated?.variantId ?? soundVariant(state, assetId, info.clip.assetVariantId ?? undefined);
     if (!variantId)
       variantId = (await newVariant(cmds, assetId, L("Opptak", "Recordings"), group)).variantId;
     const versionId = await addVersion(cmds, variantId, media, note, group);
-    return { assetId, variantId, versionId, clipId: null };
+    await run(cmds, {
+      type: "AddDialogueVersion", dialogueVersionId: newId<"dialogue_version">(), clipId: info.clip.id,
+      fields: { assetId, assetVariantId: variantId, assetVersionId: versionId,
+        sourceInMs: 0, lengthMs: Math.max(1, media.durationMs ?? 1000), gainDb: 0,
+        fadeInMs: 0, fadeOutMs: 0, volumeKeys: [], speed: 1, compositionId: null,
+        source: "record", provider: null, voiceId: null, modelId: null, settings: {},
+        scriptRevision: state.blocks[target.blockId]?.currentRev ?? null,
+        ...dialogueMeta, parentVersionId: info.clip.activeVersionId ?? null }, activate,
+    }, L("Ny lydversjon for replikken", "New audio version for the line"), group);
+    return { assetId, variantId, versionId, clipId: generated ? info.clip.id : null };
   }
   // Første opptak av replikken: ny lydressurs og et lydklipp der replikken begynner
   const made = await newSoundAsset(cmds, lineTitle(info), L("Opptak", "Recordings"), group, {
@@ -158,6 +173,7 @@ export async function saveTake(
     cmds,
     {
       type: "AddAudioClips",
+      dialogueMeta: dialogueMeta ?? { source: "record", provider: null, voiceId: null, modelId: null, settings: {}, scriptRevision: state.blocks[target.blockId]?.currentRev ?? null, parentVersionId: null },
       clips: [
         {
           clipId: clipId as never,

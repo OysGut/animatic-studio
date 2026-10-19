@@ -9,6 +9,8 @@
 import { useState } from "react";
 import {
   AUDIO_KIND_LABEL,
+  groupDialogueTracks,
+  dialogueOverlaps,
   L,
   type AudioClipFields,
   type FilmAudioItem,
@@ -69,7 +71,9 @@ export function SceneAudioRows({
   };
   return (
     <div role="group" aria-label={L("Lyd i scenen", "Audio in the scene")}>
-      {items.map((it) => {
+      {groupDialogueTracks(state, items).map(group => <div key={group.key} data-testid="scene-character-track" data-character-track={group.key} className="relative border-b border-border/60" style={{ height: g.rowH }}>
+        <div className="sticky left-0 z-20 flex h-full items-center border-r border-border bg-surface-1 px-2 text-xs text-text-secondary" style={{ width: g.labelW }}>{group.label}</div>
+        {group.items.map((it) => {
         const c = it.clip;
         const incoming = c.occurrenceId !== occurrenceId;
         const color = c.continues ? "var(--accent-warm)" : AUDIO_KIND_COLOR[c.kind];
@@ -84,9 +88,9 @@ export function SceneAudioRows({
         const visible = start + len - from;
         const fromScene = incoming ? state.occurrences[c.occurrenceId]?.productionNumber : null;
         return (
-          <div key={c.id} className="flex border-b border-border/60" style={{ height: g.rowH }}>
+          <div key={c.id} className="pointer-events-none absolute inset-0 flex" style={{ height: g.rowH }}>
             <div
-              className="sticky left-0 z-20 flex shrink-0 items-center gap-1.5 border-r border-border bg-surface-1 px-2 text-[12px] text-text-secondary"
+              className="invisible shrink-0"
               style={{ width: g.labelW }}
               title={`${c.name || L("Lyd", "Audio")} – ${AUDIO_KIND_LABEL[c.kind]}${
                 incoming
@@ -111,6 +115,9 @@ export function SceneAudioRows({
             <div className="relative" style={{ height: g.rowH, flex: "1 0 auto" }}>
               <button
                 type="button"
+                data-testid="scene-dialogue-segment"
+                data-clip-id={c.id}
+                data-overlap={dialogueOverlaps(state, c.id).length > 0}
                 onClick={() => {
                   if (!drag) onFrame(Math.round(from * g.fps));
                 }}
@@ -157,7 +164,7 @@ export function SceneAudioRows({
                 )}`}
                 aria-label={`${c.name || L("Lyd", "Audio")}, ${AUDIO_KIND_LABEL[c.kind]}`}
                 className={
-                  "absolute top-[3px] flex touch-none overflow-hidden rounded-sm border text-left " +
+                  "pointer-events-auto absolute top-[3px] flex touch-none overflow-hidden rounded-sm border text-left " +
                   (movable ? "cursor-grab active:cursor-grabbing " : "") +
                   (d ? "z-10 shadow-[var(--shadow-float)] " : "") +
                   (c.muted ? "opacity-50" : "")
@@ -185,7 +192,7 @@ export function SceneAudioRows({
             </div>
           </div>
         );
-      })}
+      })}</div>)}
     </div>
   );
 }

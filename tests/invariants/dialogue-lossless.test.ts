@@ -60,15 +60,16 @@ function runSequence(seed: number, steps: number) {
       command = { type: "UpdateAudioClips", clips: [{ clipId: clipId as never, fields: { ...audioClipFieldsOf(clip), ...e, speed: e.speed } }] };
     } else if (roll < 0.65)
       command = { type: "UpdateDialogueVersionEdit", dialogueVersionId: pick(versions).id, edit: randomEdit(r) };
-    else if (roll < 0.75)
+    else if (roll < 0.75) {
+      const source = pick(["record", "ai", "upload"] as const);
       command = {
         type: "AddDialogueVersion",
         dialogueVersionId: dvId(next++),
         clipId: clipId as never,
-        fields: { assetId: clip.assetId, assetVariantId: dvId(1), assetVersionId: pick(takes), ...randomEdit(r), source: pick(["record", "ai", "upload"] as const), provider: null, voiceId: null, modelId: null, settings: {}, scriptRevision: null, parentVersionId: clip.activeVersionId ?? null },
+        fields: { assetId: clip.assetId, assetVariantId: dvId(1), assetVersionId: pick(takes), ...randomEdit(r), source, provider: source === "ai" ? "elevenlabs" : null, voiceId: source === "ai" ? "mock_voice" : null, modelId: source === "ai" ? "eleven_v3" : null, settings: source === "ai" ? { stability: 0.5, language: "no" } : {}, scriptRevision: 3, parentVersionId: clip.activeVersionId ?? null },
         activate: r() < 0.6,
       };
-    else if (roll < 0.85) {
+    } else if (roll < 0.85) {
       const other = versions.filter((v) => v.id !== clip.activeVersionId);
       if (other.length) command = { type: "SetActiveDialogueVersion", clipId: clipId as never, dialogueVersionId: pick(other).id };
     } else if (roll < 0.93) command = { type: "MoveDialogueLine", clipId: clipId as never, offsetMs: Math.floor(r() * 30_000) + 1, allowOverlap: true };
@@ -90,6 +91,8 @@ function runSequence(seed: number, steps: number) {
         expect(res.state.dialogueVersions[id], `seed ${seed} steg ${i}: ${command.type} fjernet versjon ${id}`).toBeDefined();
       for (const [id, v] of Object.entries(res.state.dialogueVersions)) {
         const old = before[id];
+        if (old && !old.removed && v.removed)
+          expect(command.type, "only confirmed deletion changes removed").toBe("SetDialogueVersionRemoved");
         if (old && JSON.stringify(strip({ x: old })) !== JSON.stringify(strip({ x: v })))
           expect(res.affected, `seed ${seed} steg ${i}: ${command.type} endret versjon ${id} uten å oppgi den`).toContain(id);
       }

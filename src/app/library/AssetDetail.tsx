@@ -75,6 +75,7 @@ import { ImageCompareDialog } from "./ImageCompareDialog";
 import { SoundLinksSection } from "./SoundLinksSection";
 import { MobileCameraButton } from "@/app/mobile/MobileImportDialog";
 import { TakesMicButton } from "@/app/audio/AudioTakesDialog";
+import { CharacterVoiceSection } from "./CharacterVoiceSection";
 import { ContextNamesSection } from "./ContextNamesSection";
 import { AssetWorklistDialog, useWorklistCount } from "./AssetWorklistDialog";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
@@ -488,6 +489,7 @@ export function AssetDetail(props: Props) {
           ) : null}
         </section>
 
+        {["character", "animal", "other"].includes(asset.kind) ? <CharacterVoiceSection state={state} asset={asset} projectId={props.projectId} cmds={cmds} editable={editable} /> : null}
         {asset.kind !== "sound" ? (
           <section className="border border-border bg-surface-1 p-4">
             <VisualBriefEditor state={state} asset={asset} cmds={cmds} editable={editable} />

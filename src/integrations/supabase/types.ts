@@ -823,9 +823,11 @@ export type Database = {
       }
       audio_clips: {
         Row: {
+          active_version_id: string | null
           asset_id: string
           asset_variant_id: string | null
           block_id: string | null
+          character_asset_id: string | null
           continues: boolean
           created_at: string
           created_by: string | null
@@ -849,9 +851,11 @@ export type Database = {
           volume_keys: Json
         }
         Insert: {
+          active_version_id?: string | null
           asset_id: string
           asset_variant_id?: string | null
           block_id?: string | null
+          character_asset_id?: string | null
           continues?: boolean
           created_at?: string
           created_by?: string | null
@@ -875,9 +879,11 @@ export type Database = {
           volume_keys?: Json
         }
         Update: {
+          active_version_id?: string | null
           asset_id?: string
           asset_variant_id?: string | null
           block_id?: string | null
+          character_asset_id?: string | null
           continues?: boolean
           created_at?: string
           created_by?: string | null
@@ -902,6 +908,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "audio_clips_active_version_id_fkey"
+            columns: ["active_version_id"]
+            isOneToOne: false
+            referencedRelation: "dialogue_versions"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "audio_clips_asset_id_fkey"
             columns: ["asset_id"]
             isOneToOne: false
@@ -920,6 +933,13 @@ export type Database = {
             columns: ["block_id"]
             isOneToOne: false
             referencedRelation: "script_blocks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audio_clips_character_asset_id_fkey"
+            columns: ["character_asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
             referencedColumns: ["id"]
           },
           {
@@ -1566,6 +1586,140 @@ export type Database = {
           },
           {
             foreignKeyName: "credit_sequences_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dialogue_versions: {
+        Row: {
+          asset_id: string
+          asset_variant_id: string | null
+          asset_version_id: string | null
+          clip_id: string
+          composition_id: string | null
+          created_at: string
+          created_by: string | null
+          fade_in_ms: number
+          fade_out_ms: number
+          gain_db: number
+          id: string
+          length_ms: number
+          model_id: string | null
+          parent_version_id: string | null
+          project_id: string
+          provider: string | null
+          removed: boolean
+          revision: number
+          script_revision: number | null
+          settings: Json
+          source: string
+          source_in_ms: number
+          speed: number
+          voice_id: string | null
+          volume_keys: Json
+        }
+        Insert: {
+          asset_id: string
+          asset_variant_id?: string | null
+          asset_version_id?: string | null
+          clip_id: string
+          composition_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          fade_in_ms?: number
+          fade_out_ms?: number
+          gain_db?: number
+          id: string
+          length_ms: number
+          model_id?: string | null
+          parent_version_id?: string | null
+          project_id: string
+          provider?: string | null
+          removed?: boolean
+          revision?: number
+          script_revision?: number | null
+          settings?: Json
+          source?: string
+          source_in_ms?: number
+          speed?: number
+          voice_id?: string | null
+          volume_keys?: Json
+        }
+        Update: {
+          asset_id?: string
+          asset_variant_id?: string | null
+          asset_version_id?: string | null
+          clip_id?: string
+          composition_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          fade_in_ms?: number
+          fade_out_ms?: number
+          gain_db?: number
+          id?: string
+          length_ms?: number
+          model_id?: string | null
+          parent_version_id?: string | null
+          project_id?: string
+          provider?: string | null
+          removed?: boolean
+          revision?: number
+          script_revision?: number | null
+          settings?: Json
+          source?: string
+          source_in_ms?: number
+          speed?: number
+          voice_id?: string | null
+          volume_keys?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dialogue_versions_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dialogue_versions_asset_variant_id_fkey"
+            columns: ["asset_variant_id"]
+            isOneToOne: false
+            referencedRelation: "asset_variants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dialogue_versions_asset_version_id_fkey"
+            columns: ["asset_version_id"]
+            isOneToOne: false
+            referencedRelation: "asset_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dialogue_versions_clip_id_fkey"
+            columns: ["clip_id"]
+            isOneToOne: false
+            referencedRelation: "audio_clips"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dialogue_versions_composition_id_fkey"
+            columns: ["composition_id"]
+            isOneToOne: false
+            referencedRelation: "asset_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dialogue_versions_parent_version_id_fkey"
+            columns: ["parent_version_id"]
+            isOneToOne: false
+            referencedRelation: "dialogue_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dialogue_versions_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
@@ -2278,6 +2432,7 @@ export type Database = {
           clip_id: string
           created_at: string
           created_by: string
+          dialogue_version_id: string | null
           enabled: boolean
           id: string
           overrides: Json
@@ -2296,6 +2451,7 @@ export type Database = {
           clip_id: string
           created_at?: string
           created_by: string
+          dialogue_version_id?: string | null
           enabled?: boolean
           id: string
           overrides?: Json
@@ -2314,6 +2470,7 @@ export type Database = {
           clip_id?: string
           created_at?: string
           created_by?: string
+          dialogue_version_id?: string | null
           enabled?: boolean
           id?: string
           overrides?: Json
@@ -2346,6 +2503,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "lipsync_results_dialogue_version_id_fkey"
+            columns: ["dialogue_version_id"]
+            isOneToOne: false
+            referencedRelation: "dialogue_versions"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "lipsync_results_project_id_fkey"

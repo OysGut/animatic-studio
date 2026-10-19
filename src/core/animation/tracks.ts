@@ -4,6 +4,7 @@ import { imageSegmentsOf } from "../composition/segments";
 import { audioVersion, clipLanguage } from "../audio";
 import { secondsToFrames } from "../time";
 import type { ProjectState } from "../model";
+import { clipEditOf } from "../dialogue/versions";
 
 export function animationImageTracks(state: ProjectState, compositionId: string, duration: number) {
   return layersOf(state, compositionId).filter(layer => layer.assetId || layer.swaps.length).map(layer => ({
@@ -23,7 +24,7 @@ export function animationDialogueTracks(state: ProjectState, occurrenceId: strin
     .map(clip => ({
       clip, version: audioVersion(state, clip), block: clip.blockId ? state.blocks[clip.blockId] : undefined,
       start: secondsToFrames(clip.offsetMs / 1000, state.project.fps),
-      end: secondsToFrames((clip.offsetMs + clip.lengthMs) / 1000, state.project.fps),
+      end: secondsToFrames((clip.offsetMs + clipEditOf(state, clip).lengthMs) / 1000, state.project.fps),
     }));
 }
 

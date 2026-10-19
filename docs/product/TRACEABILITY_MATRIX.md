@@ -31,7 +31,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 
 | Modul | Navn | Krav | P0 | Implementert | Verifisert |
 |---|---|---|---|---|---|
-| CORE | Project Core | 132 | 57 | 132 | 119 |
+| CORE | Project Core | 162 | 59 | 162 | 119 |
 | SCRIPT | Screenplay Engine | 136 | 32 | 136 | 134 |
 | TIMELINE | Timeline & Assembly Engine | 109 | 29 | 109 | 109 |
 | LIBRARY | Resource Library | 96 | 10 | 85 | 81 |
@@ -49,7 +49,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | EXPORT | Export Engine | 61 | 12 | 61 | 61 |
 | SECURITY | Security & Storage | 49 | 5 | 48 | 47 |
 | COLLAB | Collaboration & Access | 21 | 0 | 21 | 21 |
-| UI | Brukergrensesnitt og designsystem | 228 | 21 | 224 | 208 |
+| UI | Brukergrensesnitt og designsystem | 258 | 23 | 254 | 208 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 7 | 5 |
 
 ## Dekning per fase
@@ -58,7 +58,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 |---|---|---|
 | 1 | 72 | 67 |
 | 2 | 97 | 93 |
-| 3 | 105 | 93 |
+| 3 | 135 | 93 |
 | 4 | 85 | 84 |
 | 5 | 152 | 141 |
 | 6 | 49 | 48 |
@@ -819,3 +819,33 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0747 | Beslutning DEC-0099 | CORE, UI | src/app/storylab/SceneLab.tsx, src/app/storylab/SuggestionsPanel.tsx | 3 | tests/unit/storylab-suggestions-view.test.tsx, tests/visual/storylab-scene-ui.mjs, tests/visual/storylab-suggestions-ui.mjs | Under arbeid | 2026-10-19 DEC-0099: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse. |
 | REQ-0748 | Beslutning DEC-0099 | CORE, UI | src/core/storylab/transfer.ts, src/app/storylab/SuggestionPreview.tsx | 3 | tests/unit/storylab-transfer.test.ts, tests/unit/storylab-transfer-undo.test.tsx, tests/visual/storylab-suggestions-ui.mjs | Under arbeid | 2026-10-19 DEC-0099: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse. |
 | REQ-0749 | Beslutning DEC-0099 | CORE, UI | src/core/storylab/prompts.ts | 1 | tests/unit/storylab-prompts.test.ts | Under arbeid | 2026-10-19 DEC-0099: Registrert fra Øysteins B2-kilde kap. 42–51. Deldekning er oppgitt, ikke forvekslet med full akseptanse. |
+| REQ-0750 | Beslutning DEC-0099 | CORE, UI | src/core/dialogue/navigation.ts, src/app/scene-editor/SceneScriptPanel.tsx | 2 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0751 | Beslutning DEC-0099 | CORE, UI | src/core/dialogue/navigation.ts, src/app/scene-editor/SceneScriptPanel.tsx | 2 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0752 | Beslutning DEC-0099 | CORE, UI | src/core/dialogue/navigation.ts, src/app/scene-editor/SceneScriptPanel.tsx | 2 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0753 | Beslutning DEC-0099 | CORE, UI | src/core/dialogue/navigation.ts, src/app/scene-editor/SceneScriptPanel.tsx | 2 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0754 | Beslutning DEC-0099 | CORE, UI | src/core/dialogue/navigation.ts, src/app/scene-editor/SceneScriptPanel.tsx | 2 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0755 | Beslutning DEC-0099 | CORE, UI | src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0756 | Beslutning DEC-0099 | CORE, UI | src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0757 | Beslutning DEC-0099 | CORE, UI | src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0758 | Beslutning DEC-0099 | CORE, UI | src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0759 | Beslutning DEC-0099 | CORE, UI | src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0760 | Beslutning DEC-0099 | CORE, UI | src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0761 | Beslutning DEC-0099 | CORE, UI | src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0762 | Beslutning DEC-0099 | CORE, UI | src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0763 | Beslutning DEC-0099 | CORE, UI | src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0764 | Beslutning DEC-0099 | CORE, UI | src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0765 | Beslutning DEC-0099 | CORE, UI | src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0766 | Beslutning DEC-0099 | CORE, UI | src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0767 | Beslutning DEC-0099 | CORE, UI | src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0768 | Beslutning DEC-0099 | CORE, UI | src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0769 | Beslutning DEC-0099 | CORE, UI | src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0770 | Beslutning DEC-0099 | CORE, UI | src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0771 | Beslutning DEC-0099 | CORE, UI | src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0772 | Beslutning DEC-0099 | CORE, UI | src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0773 | Beslutning DEC-0099 | CORE, UI | src/app/library/CharacterVoiceSection.tsx, src/app/scene-editor/GenerateDialogue.tsx, src/adapters/ai/speech.functions.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0774 | Beslutning DEC-0099 | CORE, UI | src/app/library/CharacterVoiceSection.tsx, src/app/scene-editor/GenerateDialogue.tsx, src/adapters/ai/speech.functions.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0775 | Beslutning DEC-0099 | CORE, UI | src/app/library/CharacterVoiceSection.tsx, src/app/scene-editor/GenerateDialogue.tsx, src/adapters/ai/speech.functions.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0776 | Beslutning DEC-0099 | CORE, UI | src/app/library/CharacterVoiceSection.tsx, src/app/scene-editor/GenerateDialogue.tsx, src/adapters/ai/speech.functions.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0777 | Beslutning DEC-0099 | CORE, UI | src/app/library/CharacterVoiceSection.tsx, src/app/scene-editor/GenerateDialogue.tsx, src/adapters/ai/speech.functions.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0778 | Beslutning DEC-0099 | CORE, UI | src/app/library/CharacterVoiceSection.tsx, src/app/scene-editor/GenerateDialogue.tsx, src/adapters/ai/speech.functions.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0779 | Beslutning DEC-0099 | CORE, UI | src/app/library/CharacterVoiceSection.tsx, src/app/scene-editor/GenerateDialogue.tsx, src/adapters/ai/speech.functions.ts | 3 | – | Implementert – ikke verifisert | 2026-10-19 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |

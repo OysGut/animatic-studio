@@ -1,0 +1,34 @@
+/** DV4: account-backed choices and local generation through explicit cost approval. */
+import { harness } from "./mts-harness.mjs";
+const h = harness("/tmp/browser/dv4");
+const clip = h.rows.audio_clips.find(c => c.kind === "dialogue" && c.block_id && !c.removed);
+const character = h.rows.assets.find(a => a.kind === "character");
+if (!clip || !character) throw new Error("Missing fixture");
+for (const lang of ["nb", "en"]) await h.scenario(`dv4-${lang}`, clip.occurrence_id, lang, async page => {
+  await page.getByTestId("scene-script").locator(`[data-script-block="${clip.block_id}"] [data-script-text]`).dblclick();
+  await page.getByTestId("dialogue-character-select").selectOption(character.id);
+  await page.getByTestId("dialogue-generate-open").click();
+  h.check(await page.getByTestId("voice-select").inputValue() === "mock_voice", "character default preselected");
+  await page.getByTestId("voice-select").selectOption("other_voice");
+  await page.getByTestId("voice-language").selectOption("es");
+  h.check(!h.state.commands.some(c => c.type === "SetAssetVoice"), "local override never changes default");
+  await page.getByTestId("dialogue-generation-start").click();
+  h.check(await page.getByTestId("dialogue-generation-confirm").isVisible(), "cost and preservation warning before generation");
+  h.check(!h.state.rpcs.some(r => r.name === "generateSpeech"), "no paid call before approval");
+  await page.getByTestId("dialogue-generation-approve").click();
+  h.check(await h.eventually(() => h.state.commands.some(c => c.type === "AddDialogueVersion"), 5000), "generated file becomes a separate dialogue version");
+  const c = h.state.commands.find(c => c.type === "AddDialogueVersion");
+  h.check(c?.fields.source === "ai" && c?.fields.voiceId === "other_voice" && c?.fields.settings.language === "es", "generation metadata preserves local settings");
+  h.check(c?.activate === true, "new generation becomes active");
+  h.check(!h.state.commands.some(c => /Removed|UndoAddDialogueVersion/.test(c.type)), "generation never deletes old versions");
+  await page.getByTestId("record-audio-dialog").screenshot({ path: `${h.out}/generation-${lang}.png` });
+  await page.getByTestId("record-audio-dialog").getByRole("button", { name: lang === "nb" ? "Avbryt" : "Cancel", exact: true }).last().click();
+  await page.goto(h.base + h.P + `/bibliotek?asset=${character.id}`);
+  await page.getByTestId("character-voice-section").waitFor();
+  h.check(await page.getByTestId("character-voice-section").isVisible(), "character library owns Audio / Voice section");
+  await page.getByTestId("voice-select").selectOption("other_voice");
+  await page.getByTestId("voice-save-default").click();
+  h.check(h.state.commands.some(c => c.type === "SetAssetVoice" && c.voice?.voiceId === "other_voice"), "saving default uses reversible command");
+  h.check(!h.state.commands.some(c => c.type === "UpdateDialogueVersionEdit"), "new default never edits existing audio versions");
+});
+await h.finish();

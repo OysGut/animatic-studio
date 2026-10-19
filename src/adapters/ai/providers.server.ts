@@ -946,6 +946,16 @@ const elevenlabs = {
             : null,
       }));
   },
+  /** DV4: provider's current TTS models and language capabilities. */
+  async speechModels(key: string): Promise<import("@/core/dialogue/voice").SpeechModel[]> {
+    const res = await call(`${ELEVEN}/models`, { headers: elevenAuth(key) }, T_TEST);
+    const rows = await res.json() as { model_id?: string; name?: string; can_do_text_to_speech?: boolean; languages?: { language_id: string; name: string }[]; maximum_text_length_per_request?: number; character_cost_multiplier?: number }[];
+    return rows.filter(m => m.can_do_text_to_speech && typeof m.model_id === "string")
+      .map(m => ({ modelId: String(m.model_id), name: String(m.name ?? m.model_id).slice(0, 120),
+        languages: (m.languages ?? []).filter(l => typeof l.language_id === "string" && typeof l.name === "string").map(l => ({ code: l.language_id, name: l.name })),
+        maxCharacters: typeof m.maximum_text_length_per_request === "number" ? m.maximum_text_length_per_request : null,
+        costMultiplier: typeof m.character_cost_multiplier === "number" ? m.character_cost_multiplier : null }));
+  },
   /** Tale fra tekst med en bestemt stemme (MP3), DEC-0071. */
   async speech(r: {
     key: string;
@@ -953,6 +963,7 @@ const elevenlabs = {
     voiceId: string;
     text: string;
     language?: string;
+    settings?: import("@/core/dialogue/voice").SpeechSettings;
   }) {
     if (!/^[A-Za-z0-9_-]{1,64}$/.test(r.voiceId))
       throw new ProviderError(L("Ugyldig stemme.", "Invalid voice."), 400);
@@ -964,6 +975,7 @@ const elevenlabs = {
         body: JSON.stringify({
           text: r.text,
           model_id: r.model,
+          ...(r.settings ? { voice_settings: r.settings } : {}),
           // Uten språk gjetter modellen – og norsk ble lest som dansk
           ...(r.language ? { language_code: r.language } : {}),
         }),

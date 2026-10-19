@@ -13,9 +13,17 @@ import {
   locale,
   newId,
   type AudioKind,
+  dialogueSpeaker,
+  suggestedDialogueCharacter,
   type ProjectState,
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
+import { DialogueVersions } from "./DialogueVersions";
+import { DialogueCharacters } from "./DialogueCharacters";
+import { GenerateDialogue } from "./GenerateDialogue";
+import { AssetThumb, useAssetCovers } from "@/app/library/AssetThumb";
+import { saveTake } from "@/app/audio/takes";
+import { uploadAssetAudio } from "@/app/library/asset-audio";
 import { createSoundAsset } from "@/app/library/asset-audio";
 import { useFilmLanguage } from "@/app/assembly/use-film-language";
 import { Button } from "@/components/ui/button";
@@ -79,6 +87,7 @@ export function RecordAudioDialog({
   const [blockId, setBlockId] = useState("");
   const [name, setName] = useState("");
   const [playAlong, setPlayAlong] = useState(true);
+  const [generating, setGenerating] = useState(false);
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState<string | null>(null);
   const [seconds, setSeconds] = useState(0);
@@ -88,6 +97,16 @@ export function RecordAudioDialog({
   const rec = useRef<{ recorder: MediaRecorder; stream: MediaStream; started: number } | null>(
     null,
   );
+  const selectedClip = Object.values(state.audioClips).find(c => !c.removed && c.kind === "dialogue" && c.occurrenceId === occurrenceId && c.blockId === blockId);
+  const [characterPick, setCharacterPick] = useState<string | null>(null);
+  useEffect(() => setCharacterPick(null), [blockId]);
+  const characterId = characterPick ?? selectedClip?.characterAssetId ?? null;
+  const character = characterId ? state.assets[characterId] : null;
+  const covers = useAssetCovers(state, characterId ? [characterId] : []);
+  const blocks = blocksOfVariant(state, variantId);
+  const index = blocks.findIndex(b => b.id === blockId);
+  const contextBefore = blocks.slice(Math.max(0, index - 3), index).filter(b => ["dialogue", "action"].includes(b.kind));
+  const contextAfter = blocks.slice(index + 1, index + 4).filter(b => ["dialogue", "action"].includes(b.kind));
   const startMs = Math.max(0, Math.round((frame / fps) * 1000));
 
   const lines = useMemo(() => {
@@ -249,14 +268,33 @@ export function RecordAudioDialog({
       const title = name.trim() || L(`Opptak ${stamp}`, `Recording ${stamp}`);
       // i18n-ignore – filnavn
       const file = new File([take.blob], `opptak.${take.ext}`, { type: take.blob.type });
-      const made = await createSoundAsset(cmds, projectId, file, title);
-      const clipId = newId<"audio_clip">();
+      let clipId: string;
+      if (kind === "dialogue" && blockId) {
+        const targetAsset = selectedClip?.assetId ?? newId<"asset">();
+        const uploaded = await uploadAssetAudio(projectId, targetAsset, file);
+        const current = cmds.current();
+        if (!current) throw new Error(L("Prosjektet er lukket.", "The project is closed."));
+        const saved = await saveTake(cmds, current, { kind: "line", occurrenceId, blockId, ...(selectedClip ? { clipId: selectedClip.id } : {}) }, uploaded.media, title, targetAsset, undefined, true);
+        const fresh = cmds.current();
+        if (!fresh) throw new Error(L("Prosjektet er lukket.", "The project is closed."));
+        const clip = saved.clipId ? fresh.audioClips[saved.clipId] : selectedClip;
+        if (!clip) throw new Error(L("Replikken finnes ikke lenger.", "The line no longer exists."));
+        clipId = clip.id;
+        // A new recording can use the uniquely matched screenplay speaker. Legacy rows need confirmation.
+        const speaker = characterId ?? suggestedDialogueCharacter(fresh, occurrenceId, blockId)?.id ?? null;
+        if (speaker) {
+          const linked = await cmds.runAndWait({ type: "SetDialogueCharacter", clipIds: [clip.id], characterAssetId: speaker as never }, L("Koble karakter til opptaket", "Link character to recording"));
+          if (linked.error) throw new Error(linked.error);
+        }
+      } else {
+        const made = await createSoundAsset(cmds, projectId, file, title);
+        const createdClipId = newId<"audio_clip">();
       const r = await cmds.runAndWait(
         {
           type: "AddAudioClips",
           clips: [
             {
-              clipId: clipId as never,
+              clipId: createdClipId as never,
               fields: {
                 occurrenceId: occurrenceId as never,
                 kind,
@@ -285,18 +323,20 @@ export function RecordAudioDialog({
         L(`Lydopptak «${title}»`, `Audio recording “${title}”`),
       );
       if (r.error) throw new Error(r.error);
+        clipId = createdClipId;
+      }
       URL.revokeObjectURL(take.url);
       setTake(null);
       setPhase("idle");
-      onAdded(clipId);
-      onOpenChange(false);
+      if (kind !== "dialogue" || !blockId) onAdded(clipId);
+      if (kind !== "dialogue" || !blockId) onOpenChange(false);
     } catch (e) {
       setError((e as Error).message);
       setPhase("done");
     }
   }
 
-  const busy = phase === "starting" || phase === "recording" || phase === "saving";
+  const busy = generating || phase === "starting" || phase === "recording" || phase === "saving";
   const select =
     "h-8 min-w-0 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary disabled:opacity-50";
   const legend = "text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary";
@@ -304,7 +344,7 @@ export function RecordAudioDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
-      <DialogContent className="max-w-[520px] border-border bg-surface-2" data-testid="record-audio-dialog">
+      <DialogContent className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2" data-testid="record-audio-dialog">
         <DialogHeader>
           <DialogTitle>{L("Lydopptak", "Audio recording")}</DialogTitle>
           <DialogDescription>
@@ -314,6 +354,16 @@ export function RecordAudioDialog({
             )}
           </DialogDescription>
         </DialogHeader>
+        {kind === "dialogue" && blockId ? <section data-testid="dialogue-context" className="flex flex-col gap-3">
+          <div className="flex items-center gap-3">{characterId ? <AssetThumb state={state} assetId={characterId} url={covers[characterId]} /> : null}<strong data-testid="dialogue-character-name" className="text-base text-text-primary">{character?.name ?? dialogueSpeaker(state, occurrenceId, blockId)}</strong></div>
+          {contextBefore.map(b => <p key={b.id} data-testid="dialogue-context-before" className="text-sm text-text-primary opacity-70">{b.text}</p>)}
+          <p data-testid="dialogue-active-text" className="whitespace-pre-wrap break-words text-xl leading-relaxed text-text-primary">{state.blocks[blockId]?.text}</p>
+          {contextAfter.map(b => <p key={b.id} data-testid="dialogue-context-after" className="text-sm text-text-primary opacity-70">{b.text}</p>)}
+          <label className="flex flex-col gap-1 text-xs text-text-secondary">{L("Karakter", "Character")}<select data-testid="dialogue-character-select" value={characterId ?? ""} disabled={busy} className={select} onChange={e => {
+            const id = e.target.value || null; setCharacterPick(id ?? "");
+            if (selectedClip) setError(cmds.run({ type: "SetDialogueCharacter", clipIds: [selectedClip.id], characterAssetId: id as never }, L("Velg karakter for replikken", "Choose character for line")));
+          }}><option value="">{L("Ikke koblet", "Not linked")}</option>{Object.values(state.assets).filter(a => !a.removed && !a.archived && ["character", "animal", "other"].includes(a.kind)).map(a => <option key={a.id} value={a.id}>{a.name}</option>)}</select></label>
+        </section> : null}
         <div className="grid grid-cols-2 gap-3">
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
             <span className={legend}>{L("Spor", "Track")}</span>
@@ -355,7 +405,7 @@ export function RecordAudioDialog({
             <span className={legend}>{L("Navn i biblioteket", "Name in the library")}</span>
             <input
               value={name}
-              disabled={phase === "saving"}
+              disabled={busy}
               maxLength={200}
               placeholder={L("Opptak (dato og tid)", "Recording (date and time)")}
               onChange={(e) => setName(e.target.value)}
@@ -374,6 +424,7 @@ export function RecordAudioDialog({
           </label>
         </div>
 
+        {playAlong ? <p role="status" data-testid="dialogue-headphones" className="text-xs text-status-uncertain">{L("Bruk hodetelefoner når scenen spilles under opptak.", "Use headphones when the scene plays during recording.")}</p> : null}
         <div className="flex items-center gap-3 rounded-sm border border-border bg-surface-1 p-3">
           {phase === "recording" ? (
             <>
@@ -390,12 +441,12 @@ export function RecordAudioDialog({
           ) : take ? (
             <>
               <audio src={take.url} controls className="h-8 min-w-0 flex-1" />
-              <Button variant="ghost" size="sm" disabled={phase === "saving"} onClick={discard}>
+              <Button variant="ghost" size="sm" disabled={busy} onClick={discard}>
                 {L("Forkast", "Discard")}
               </Button>
             </>
           ) : (
-            <Button onClick={() => void start()} disabled={phase === "starting"}>
+            <Button onClick={() => void start()} disabled={busy}>
               {phase === "starting" ? <Loader2 className="animate-spin" /> : <Mic />}
               {L("Ta opp", "Record")}
             </Button>
@@ -408,11 +459,16 @@ export function RecordAudioDialog({
           </p>
         ) : null}
 
+        {kind === "dialogue" && blockId ? <>
+          {selectedClip ? <DialogueVersions state={state} clip={selectedClip} cmds={cmds} onStopScene={onStop} /> : null}
+          <GenerateDialogue state={state} projectId={projectId} occurrenceId={occurrenceId} blockId={blockId} characterId={characterId} cmds={cmds} onSaved={() => {}} onBusy={setGenerating} />
+          <DialogueCharacters state={state} occurrenceId={occurrenceId} cmds={cmds} />
+        </> : null}
         <DialogFooter>
           <Button variant="secondary" disabled={busy} onClick={() => onOpenChange(false)}>
             {L("Avbryt", "Cancel")}
           </Button>
-          <Button disabled={!take || phase === "saving"} onClick={() => void save()}>
+          <Button disabled={!take || busy} onClick={() => void save()}>
             {phase === "saving" ? <Loader2 className="animate-spin" /> : null}
             {L("Legg i scenen", "Add to scene")}
           </Button>

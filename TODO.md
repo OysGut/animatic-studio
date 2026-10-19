@@ -1,5 +1,11 @@
 # TODO – Animatic Studio
 
+## DV3/DV4 – kontroll hos Claude
+- Kjør DB-regresjon mot lokal Postgres (utilgjengelig i skriveøkten); ingen ny migrasjon.
+- Kontroller hosted ElevenLabs-konto og retten til å opprette egen stemme; opprettelse skjer foreløpig i leverandørens Voice Lab, ikke i appen.
+- Verifiser verifisering4-opptak/font i Claudes nettlesermiljø; DV3 falsk-mikrofon-suite er grønn.
+
+
 Huskeliste over det som er tenkt gjort, men ikke bygget. Holdes oppdatert av den som utvikler (Claude eller en annen KI) ved hver leveranse.
 Kilder: beslutningsloggen (`docs/decisions/DECISION_LOG.md`), kravregisteret (`docs/product/requirements.yaml`), kjente problemer (`docs/development/KNOWN_ISSUES.md`).
 Sist oppdatert: 2026-10-19 (DEC-0099, dokumentasjon og backlogg).
