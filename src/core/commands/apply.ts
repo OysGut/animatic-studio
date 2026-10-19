@@ -215,6 +215,7 @@ function assertNewId(s: ProjectState, id: string) {
     s.animationRigs, s.animationRigVersions, s.animationUses,
     s.lipsyncResults, s.animationPatterns,
     s.dialogueVersions,
+    s.dialogueReviews ?? {}, s.noteFlags ?? {},
     s.templateInstances ?? {},
   ];
   if (all.some((c) => c[id] !== undefined))
@@ -587,6 +588,7 @@ export function revisionOf(s: ProjectState, id: string): number | undefined {
     s.animationRigs, s.animationRigVersions, s.animationUses,
     s.lipsyncResults, s.animationPatterns,
     s.dialogueVersions,
+    s.dialogueReviews ?? {}, s.noteFlags ?? {},
   ]) {
     const e = c[id];
     if (e) return e.revision;
