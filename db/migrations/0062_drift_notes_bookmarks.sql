@@ -89,7 +89,8 @@ returns boolean language plpgsql security definer set search_path = '' as $$
 declare v_count integer;
 begin
   if auth.uid() is null then raise exception 'Forbidden' using errcode = '42501'; end if;
-  delete from public.user_bookmarks where user_id = auth.uid() and project_id = p_project and updated_at = p_updated_at;
+  delete from public.user_bookmarks where user_id = auth.uid() and project_id = p_project and updated_at < p_updated_at + interval '1 millisecond';
+  -- Et nyere bokmerke (satt etter det brukeren navigerte til) fjernes ikke
   get diagnostics v_count = row_count;
   return v_count > 0;
 end $$;
