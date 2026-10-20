@@ -2,7 +2,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { inflateSync } from "node:zlib";
 import { defaultLayerFields, orderedOccurrences, renderFrame } from "@/core";
-import { alphaExportError, alphaSceneClip, alphaPixels, alphaRange, alphaFileBase,
+import { alphaExportError, alphaSceneClip, alphaPixels, alphaRange, alphaFileBase, alphaLayerIds,
   DEFAULT_ALPHA_SETTINGS, isAlphaSettings } from "@/core/layer-alpha";
 import { drawFilmFrame } from "@/engine/compositor/film";
 import { drawFrame } from "@/engine/compositor/canvas";
@@ -112,6 +112,19 @@ describe("P4 choices and format gate", () => {
     expect(isAlphaSettings(DEFAULT_ALPHA_SETTINGS)).toBe(true);
     expect(isAlphaSettings({ ...DEFAULT_ALPHA_SETTINGS, alpha: "unknown" })).toBe(false);
     expect(isAlphaSettings({ ...DEFAULT_ALPHA_SETTINGS, layerIds: [5] })).toBe(false);
+  });
+  it("group selection includes descendants regardless of ordering", () => {
+    const { s, c, solid, edge } = setup();
+    const a = s.layers[solid], b = s.layers[edge];
+    if (!a || !b) throw new Error("Missing layers");
+    const group = tid<"composition_layer">(), nested = tid<"composition_layer">();
+    const state = { ...s, layers: {
+      [edge]: { ...b, groupId: nested, orderKey: "a" },
+      [nested]: { ...a, id: nested, kind: "group" as const, groupId: group, orderKey: "b" },
+      [group]: { ...a, id: group, kind: "group" as const, groupId: null, orderKey: "c" },
+      [solid]: { ...a, groupId: group, orderKey: "d" },
+    } };
+    expect([...alphaLayerIds(state, c, [group])].sort()).toEqual([group,nested,solid,edge].sort());
   });
   it("file names include scene, layers and range without path separators", () => {
     expect(alphaFileBase("Scene 1", ["Maja", "Prop/1"], 12, 24)).toBe("Scene 1 - Maja + Prop-1 - f12-24");

@@ -50,6 +50,16 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
   const number = occurrence ? sceneNumberOf(state, occurrence) : null;
   const scene = number ? L(`Scene ${number} ${composition.name}`, `Scene ${number} ${composition.name}`) : composition.name;
   const patch = (p: Partial<AlphaExportSettings>) => setOptions(o => ({ ...o, ...p }));
+  async function cancellable<T>(promise: Promise<T>, signal: AbortSignal): Promise<T> {
+    if (signal.aborted) throw new DOMException(L("Avbrutt", "Cancelled"), "AbortError");
+    let stop: (() => void) | undefined;
+    try {
+      return await Promise.race([promise, new Promise<never>((_, reject) => {
+        stop = () => reject(new DOMException(L("Avbrutt", "Cancelled"), "AbortError"));
+        signal.addEventListener("abort", stop, { once: true });
+      })]);
+    } finally { if (stop) signal.removeEventListener("abort", stop); }
+  }
 
   async function run() {
     if (validation || busy) return;
@@ -67,8 +77,8 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
           const image = p.versionId ? state.assetVersions[p.versionId] : undefined;
           return image ? [image.mediaPath] : [];
         }))])];
-      const urls = paths.length ? await signedUrls(paths, 4 * 60 * 60) : {};
-      const { images, failed } = await loadImages(urls);
+      const urls = paths.length ? await cancellable(signedUrls(paths, 4 * 60 * 60), ctrl.signal) : {};
+      const { images, failed } = await cancellable(loadImages(urls), ctrl.signal);
       if (failed.length) throw new Error(L("Noen bilder kunne ikke lastes. Prøv igjen før eksport.", "Some images could not be loaded. Retry before exporting."));
       await exportAlphaLayers({ state, composition, settings: options, images, sink, fileBase: base,
         signal: ctrl.signal, onProgress: (done, total) => setProgress({ done, total }) });
