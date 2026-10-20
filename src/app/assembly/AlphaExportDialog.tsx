@@ -43,7 +43,7 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
   const validation = alphaExportError(state, composition, options);
   const range = alphaRange(composition, options);
   const occurrence = Object.values(state.occurrences).find(o => o.variantId === composition.variantId && o.active);
-  const number = occurrence ? sceneNumberOf(state, occurrence.id) : null;
+  const number = occurrence ? sceneNumberOf(state, occurrence) : null;
   const scene = number ? L(`Scene ${number} ${composition.name}`, `Scene ${number} ${composition.name}`) : composition.name;
   const patch = (p: Partial<AlphaExportSettings>) => setOptions(o => ({ ...o, ...p }));
 
