@@ -8,6 +8,7 @@ h.rows.quality_profiles=[{id:pid,project_id:h.fx.project.id,name:"Final test",re
 h.fx.project.active_quality_profile_id=pid;
 for (const lang of ["nb","en"]) await h.scenario(`p6-${lang}`,clip.occurrence_id,lang,async page=>{
   await page.getByTestId("scene-script").locator(`[data-script-block="${clip.block_id}"] [data-script-text]`).dblclick();
+  await page.getByTestId("dialogue-character-select").selectOption(h.rows.assets.find(a=>a.kind==="character").id);
   await page.getByTestId("dialogue-generate-open").click();
   const picker=page.getByTestId("quality-profile-picker");
   h.check(await picker.inputValue()==="active","active project profile initially selected");

@@ -71,7 +71,7 @@ export function BatchVideoDialog({
   const [pick, setPick] = useState("");
   const quality = useQualityProfile(state);
   const recommended = profileChoice("video", quality.profile, new Set(available.data?.providers ?? []));
-  const chosen = flat.find((x) => `${x.provider.id}|${x.model.id}` === pick) ?? (recommended ? flat.find(m => m.model.id === recommended.model.id) : null) ?? flat[0] ?? null;
+  const chosen = flat.find((x) => `${x.provider.id}|${x.model.id}` === pick) ?? (recommended ? flat.find(m => m.model.id === recommended.model.id && m.provider.id === recommended.provider.id) : null) ?? flat[0] ?? null;
   const [aspect, setAspect] = useState<"16:9" | "9:16">(
     state.project.frameWidth >= state.project.frameHeight ? "16:9" : "9:16",
   );

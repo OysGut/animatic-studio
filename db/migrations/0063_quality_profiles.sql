@@ -43,12 +43,12 @@ create function private.guard_quality_profile_job() returns trigger
 language plpgsql security definer set search_path = '' as $$
 declare v_profile public.quality_profiles; v_used integer; v_limit integer; v_id uuid;
 begin
-  if new.params->'qualityProfile' is null or new.params->'qualityProfile' = 'null'::jsonb
-    or new.kind in ('text','prompt') then return new; end if;
   if TG_OP = 'UPDATE' and new.params->'qualityProfile' is distinct from old.params->'qualityProfile'
-    and old.params->'qualityProfile' is not null then
+    and old.params->'qualityProfile' is not null and old.params->'qualityProfile' <> 'null'::jsonb then
     raise exception 'Quality profile snapshot is immutable' using errcode='22023';
   end if;
+  if new.params->'qualityProfile' is null or new.params->'qualityProfile' = 'null'::jsonb
+    or new.kind in ('text','prompt') then return new; end if;
   perform 1 from public.projects where id=new.project_id and deleted_at is null for update;
   if not found then raise exception 'Project not found' using errcode='42501'; end if;
   v_id := (new.params->'qualityProfile'->>'id')::uuid;

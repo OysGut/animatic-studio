@@ -38,7 +38,7 @@ export function GenerateDialogue({ state, projectId, occurrenceId, blockId, char
       const current = cmds.current();
       if (!current) throw new Error(L("Prosjektet er lukket.", "The project is closed."));
       const result = await saveTake(cmds, current, { kind: "line", occurrenceId, blockId }, { ...r.media, durationMs }, L("AI-generert replikk", "AI-generated line"), r.assetId,
-        { source: "ai", provider: "elevenlabs", voiceId: approvedVoice.voiceId, modelId: model, settings: { ...approvedVoice.settings, language: approvedVoice.language ?? "no" }, scriptRevision: r.scriptRevision ?? block.currentRev, parentVersionId: Object.values(current.audioClips).find(c => !c.removed && c.occurrenceId === occurrenceId && c.blockId === blockId)?.activeVersionId ?? null }, true);
+        { source: "ai", provider: "elevenlabs", voiceId: approvedVoice.voiceId, modelId: model, settings: { ...approvedVoice.settings, language: approvedVoice.language ?? "no", ...(quality.profile ? {qualityProfileId:quality.profile.id, qualityProfileName:quality.profile.name, qualityProfileSnapshot:JSON.stringify(qualityProfileSnapshot(quality.profile))} : {}) }, scriptRevision: r.scriptRevision ?? block.currentRev, parentVersionId: Object.values(current.audioClips).find(c => !c.removed && c.occurrenceId === occurrenceId && c.blockId === blockId)?.activeVersionId ?? null }, true);
       const fresh = cmds.current();
       if (!fresh) throw new Error(L("Prosjektet er lukket.", "The project is closed."));
       const clip = result.clipId ? fresh.audioClips[result.clipId] : Object.values(fresh.audioClips).find(c => !c.removed && c.occurrenceId === occurrenceId && c.blockId === blockId);

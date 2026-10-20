@@ -106,7 +106,8 @@ export function SceneVideoSection({
   );
   const chainUrls = useImageUrls(chainPaths);
   // Kandidater (mandat 19.7): flere videoer per segment å velge mellom
-  const [candidates, setCandidates] = useState(1);
+  const [candidateOverride, setCandidates] = useState<number | null>(null);
+  const candidates = candidateOverride ?? quality.profile?.spec.variants ?? 1;
   // Myk overgang (0,5 s) mellom segmentene når scenen settes sammen (DEC-0071)
   const [softChoice, setSoft] = useState(true);
   // Myke overganger krever migrasjon 0026; på eldre databaser settes scenen sammen med rene kutt
