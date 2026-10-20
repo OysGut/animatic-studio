@@ -337,7 +337,7 @@ await run(
     check((await takes.count()) === 2, "L4: Take 01 og Take 02 er tatt opp");
     check((await page.locator("[data-testid=mobile-take] audio").count()) === 2, "L5: begge kan høres før opplasting");
     check(MOBILE.tickets === 0, "lyd lastes ikke opp når opptaket stopper");
-    check(/Take 02/.test(await takes.first().innerText()) && /Valgt/.test(await takes.first().innerText()), "nytt take er valgt, men ikke sendt");
+    check(/Take 02/.test(await takes.first().innerText()) && (EN ? /Chosen|Selected/ : /Valgt/).test(await takes.first().innerText()), "nytt take er valgt, men ikke sendt");
     await page.screenshot({ path: `${out}/a03a-takes.png` });
     // Bare Take 01: fjern valget på Take 02
     await takes.first().getByTestId("mobile-take-choose").uncheck();
@@ -354,7 +354,7 @@ await run(
     await page.waitForTimeout(1300);
     await page.getByTestId("mobile-rec-stop").click();
     await page.waitForTimeout(700);
-    check(/Romlyd 1/.test(await page.getByTestId("mobile-takes").innerText()), "romlyd tas opp for seg og merkes");
+    check((EN ? /Room tone 1/ : /Romlyd 1/).test(await page.getByTestId("mobile-takes").innerText()), "romlyd tas opp for seg og merkes");
     await page.screenshot({ path: `${out}/a03b-sendt.png`, fullPage: true });
   },
   { path: `/m/${TOKEN}`, mobile: true, width: 390, height: 844 },

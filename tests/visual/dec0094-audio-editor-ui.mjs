@@ -375,7 +375,7 @@ await run(
     await page.mouse.click(r.x + 2, r.y + r.height / 2);
     await ed.getByTestId("audio-editor-play").click();
     await page.waitForTimeout(400);
-    check(/Stopp/.test(await ed.getByTestId("audio-editor-play").innerText()), "forhåndsavspilling av komposisjonen");
+    check((EN ? /Stop/ : /Stopp/).test(await ed.getByTestId("audio-editor-play").innerText()), "forhåndsavspilling av komposisjonen");
     await ed.getByTestId("audio-editor-play").click();
     // Lagre som ny versjon: komposisjonen sendes med
     const uploadsBefore = PC.uploads;
