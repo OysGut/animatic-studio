@@ -30,7 +30,7 @@ import {
   jobProgress,
   type JobState,
   jobState,
-  L,
+  L, jobQualityProfile,
   locale,
   newId,
   PRIORITY_LABEL,

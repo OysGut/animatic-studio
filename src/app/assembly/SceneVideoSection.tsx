@@ -365,6 +365,7 @@ export function SceneVideoSection({
       <p className="text-xs text-text-tertiary">
       <QualityProfilePicker state={state} value={quality.choice} disabled={busy} onChange={v => { quality.setChoice(v); setPick(""); setConfirm(null); }} /><QualityProfileBudget error={quality.budgetError} />
 
+
         {L(
           "Ingen videoleverandør er koblet til. Prosjektets eier kan koble til en under «AI-leverandører» på prosjektlisten (f.eks. Google Veo, Runway, OpenAI Sora eller fal.ai/Kling).",
           "No video provider is connected. The project owner can connect one under “AI providers” on the project list (e.g. Google Veo, Runway, OpenAI Sora or fal.ai/Kling).",
