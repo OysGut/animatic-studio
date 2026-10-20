@@ -1,8 +1,7 @@
-import { normalizeLanguageTag } from "./languages";
 /** DV4: live provider capabilities, separate speech language and immutable generation settings. */
 import { L } from "../i18n";
 import type { AssetVoice } from "../model";
-import { languageTagError } from "./languages";
+import { languageTagError, normalizeLanguageTag } from "./languages";
 
 export interface SpeechModel {
   readonly modelId: string;

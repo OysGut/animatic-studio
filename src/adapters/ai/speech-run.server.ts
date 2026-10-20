@@ -12,6 +12,7 @@ import {
   providerModel,
   speechSettingsError,
   speechLanguageError,
+  providerLanguageCode,
   type SpeechSettings,
   type SpeechModel,
 } from "@/core";

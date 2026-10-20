@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { L, SPEECH_MODEL, SPEECH_LANGUAGE, type AssetVoice, type SpeechSettings, speechLanguageError } from "@/core";
+import { L, SPEECH_MODEL, SPEECH_LANGUAGE, type AssetVoice, type SpeechSettings, speechLanguageError, normalizeLanguageTag, languageLabel } from "@/core";
 import { listVoices, listSpeechModels } from "@/adapters/ai/speech.functions";
 import { Button } from "@/components/ui/button";
 
