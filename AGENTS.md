@@ -49,3 +49,4 @@ Kortversjonen:
 30. Film and alpha exports share a browser-local queue mounted at the root; closures capture inputs, so navigation preserves work while tab closure cannot resume a canvas encoder.
 
 31. Line correspondence uses scene-scoped block and translation IDs, reversible commands and translated projections only; backup remaps both arrays so Norwegian sources never change.
+32. ProRes/MOV export uses our own TypeScript encoder in Web Workers behind AlphaEncoder and an append-only MOV writer (one mdat per sample, moov last), so files stream to OPFS without GPL code or seeking.
