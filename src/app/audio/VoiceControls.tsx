@@ -11,7 +11,7 @@ export function VoiceControls({ projectId, value, onChange, disabled = false }: 
   const vs = voices.data?.ok ? voices.data.voices ?? [] : [];
   const ms = models.data?.ok ? models.data.models ?? [] : [];
   const modelId = value?.modelId ?? SPEECH_MODEL;
-  const language = value?.language ?? SPEECH_LANGUAGE;
+  const language = normalizeLanguageTag(value?.language ?? SPEECH_LANGUAGE);
   const model = ms.find(m => m.modelId === modelId);
   const set = (patch: Partial<AssetVoice>) => { if (value) onChange({ ...value, ...patch }); };
   const settings = value?.settings ?? {};
