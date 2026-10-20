@@ -597,7 +597,7 @@ begin
     raise exception 'Brukes fortsatt i en lydversjon av en replikk. Ingen lydversjon slettes.' using errcode = '23503';
   end if;
   if exists (select 1 from public.asset_relations r where r.project_id = p_project
-             and (r.fromAsset_id = any (v_assets) or r.toAsset_id = any (v_assets))) then
+             and (r.from_asset_id = any (v_assets) or r.to_asset_id = any (v_assets))) then
     raise exception 'Har fortsatt relasjoner i karakterkartet. Fjern dem først.' using errcode = '23503';
   end if;
   -- Story Lab (SL1): profil, stadium eller kunnskap som fortsatt gjelder, eller tro om ressursen i en profil

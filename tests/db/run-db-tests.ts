@@ -5969,7 +5969,7 @@ try {
     assert((await sql`select 1 from public.dialogue_versions where project_id = ${dvProject}`).length === 0, "versjoner igjen etter sletting");
     await as("service_role", null, (tx) => tx`select public.purge_project_assets(${dvProject}, ${ALICE})`);
     assert((await sql`select 1 from public.projects where id = ${dvProject}`).length === 0, "prosjektet ble ikke slettet");
-    assert((await sql`select max(version) as v from public.schema_version`)[0]!["v"] === 64, "skjemaversjon 64");
+    assert((await sql`select max(version) as v from public.schema_version`)[0]!["v"] === 65, "skjemaversjon 65");
   });
 
   await test("0061: batchtabeller har RLS og bare lesetilgang for medlemmer", async () => {
