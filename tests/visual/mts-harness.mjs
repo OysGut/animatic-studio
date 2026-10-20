@@ -8,6 +8,7 @@
 import { chromium } from "playwright";
 import { readFileSync, mkdirSync } from "node:fs";
 import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
+import { uiLang } from "./ui-lang.mjs";
 
 export function harness(defaultOut) {
   const [base = "http://127.0.0.1:8080", fixturePath = "/tmp/claude-0/mts-fixture.json", out = defaultOut] = process.argv.slice(2);
@@ -178,7 +179,7 @@ export function harness(defaultOut) {
     state.batches = [];
     let ctx;
     try {
-      ctx = await open(sceneId, lang);
+      ctx = await open(sceneId, uiLang(lang));
       await fn(ctx.page);
       check(ctx.errors.length === 0, `${name}: ingen kjørefeil (${ctx.errors.join(" | ").slice(0, 200)})`);
     } catch (error) {

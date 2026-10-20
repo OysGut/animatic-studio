@@ -11,6 +11,7 @@
  *   ENV_FILE=…/.env node dec0090-mobile-ui.mjs <baseUrl> <fixture.json> [utmappe]
  */
 import { chromium } from "playwright";
+import { uiLang } from "./ui-lang.mjs";
 import { readFileSync, mkdirSync } from "node:fs";
 const [
   base = "http://127.0.0.1:8080",
@@ -211,7 +212,8 @@ const check = (ok, text) => {
 };
 
 /** Ny nettleser (tomt lokalt lager) som åpner sceneeditoren. */
-async function run(name, act, { lang = "nb", width = 1600, height = 900, path = "", mobile = false } = {}) {
+async function run(name, act, { lang: askedLang = "nb", width = 1600, height = 900, path = "", mobile = false } = {}) {
+  const lang = uiLang(askedLang);
   const ctx = await browser.newContext({ viewport: { width, height }, colorScheme: "dark", ...(mobile ? { isMobile: true, hasTouch: true, permissions: ["camera", "microphone"] } : { permissions: ["microphone"] }) });
   await mock(ctx);
   const page = await ctx.newPage();
