@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Download } from "lucide-react";
-import { L, layersOf, layerVersions, sceneNumberOf, type Composition, type ProjectState } from "@/core";
+import { L, qualityProfileSnapshot, layersOf, layerVersions, sceneNumberOf, type Composition, type ProjectState } from "@/core";
 import { alphaExportError, alphaFileBase, alphaRange, DEFAULT_ALPHA_SETTINGS, isAlphaSettings,
   type AlphaExportSettings } from "@/core/layer-alpha";
 import { exportAlphaLayers, openAlphaSink, supportsVp9Alpha } from "@/engine/export/alpha";
 import { loadImages } from "@/engine/export/animatic";
 import { signedUrls } from "@/app/library/asset-images";
+import { exportQueue } from "./export-queue";
+import { QualityProfilePicker, useQualityProfile } from "@/app/ai/QualityProfilePicker";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
@@ -14,6 +16,9 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
   state: ProjectState; composition: Composition; initialLayerIds?: readonly string[];
   open: boolean; onOpenChange: (open: boolean) => void;
 }) {
+  const quality = useQualityProfile(state);
+  const appliedProfile = useRef<string | null>(null);
+  const taskId = useRef<string | null>(null);
   const storageKey = `animatic:alpha-export:${state.project.id}`;
   const layers = useMemo(() => layersOf(state, composition.id), [state, composition.id]);
   const [options, setOptions] = useState<AlphaExportSettings>(DEFAULT_ALPHA_SETTINGS);
@@ -41,8 +46,14 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
     // Opening seeds a draft; preference updates must not reset an edited selection.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
-  useEffect(() => { if (!open) abort.current?.abort(); }, [open]);
-  useEffect(() => () => { abort.current?.abort(); }, []);
+  useEffect(() => {
+    const key = quality.profile ? JSON.stringify(quality.profile) : null;
+    if (!open || key === appliedProfile.current) return;
+    appliedProfile.current = key;
+    const preset = quality.profile?.spec.export;
+    if (preset) setOptions(o => ({ ...o, ...(preset.alpha ? { alpha: preset.alpha } : {}),
+      ...(preset.format === "png-seq" ? { format: "png-seq" } : preset.format === "webm" ? { format: "webm-vp9" } : {}) }));
+  }, [quality.profile, open]);
   useEffect(() => () => { if (ready) URL.revokeObjectURL(ready.url); }, [ready]);
   const validation = alphaExportError(state, composition, options);
   const range = alphaRange(composition, options);
@@ -63,8 +74,12 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
 
   async function run() {
     if (validation || busy) return;
+    const snapshot = quality.profile ? qualityProfileSnapshot(quality.profile) : null;
     const ctrl = new AbortController(); abort.current = ctrl;
     setError(null); setReady(null); setProgress({ done: 0, total: range.end - range.start });
+    taskId.current = exportQueue.enqueue(scene, async (signal, report) => {
+    signal.addEventListener("abort", () => ctrl.abort(), { once: true });
+    if (signal.aborted) ctrl.abort();
     let sink: Awaited<ReturnType<typeof openAlphaSink>> | null = null;
     try {
       try { localStorage.setItem(storageKey, JSON.stringify(options)); } catch { /* Session only. */ }
@@ -81,12 +96,14 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
       const { images, failed } = await cancellable(loadImages(urls), ctrl.signal);
       if (failed.length) throw new Error(L("Noen bilder kunne ikke lastes. Prøv igjen før eksport.", "Some images could not be loaded. Retry before exporting."));
       await exportAlphaLayers({ state, composition, settings: options, images, sink, fileBase: base,
-        signal: ctrl.signal, onProgress: (done, total) => setProgress({ done, total }) });
+        signal: ctrl.signal, onProgress: (done, total) => { setProgress({ done, total }); report(done, total); } });
       setReady(sink.link?.() ?? null);
     } catch (e) {
       await sink?.abort().catch(() => undefined);
       setError((e as Error).name === "AbortError" ? L("Eksporten er avbrutt. Ingen fil er lagret.", "Export cancelled. No file was saved.") : (e as Error).message);
+      throw e;
     } finally { setProgress(null); abort.current = null; }
+    }, snapshot);
   }
   return <Dialog open={open} onOpenChange={onOpenChange}>
     <DialogContent className="max-w-xl border-border bg-surface-2" data-testid="alpha-export-dialog">
@@ -94,6 +111,7 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
         <DialogTitle>{L("Eksporter lag med gjennomsiktighet", "Export layers with transparency")}</DialogTitle>
         <DialogDescription>{scene}</DialogDescription>
       </DialogHeader>
+      <QualityProfilePicker state={state} value={quality.choice} disabled={busy} onChange={v => quality.setChoice(v)} />
       <fieldset disabled={busy} className="flex min-w-0 flex-col gap-4 text-xs text-text-secondary">
         <div className="flex flex-col gap-2">
           <span>{L("Lag", "Layers")}</span>
@@ -137,9 +155,10 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
         {L(`Eksporterer ${progress.done} av ${progress.total} bilder`, `Exporting ${progress.done} of ${progress.total} frames`)}
         <progress className="mt-2 w-full" value={progress.done} max={progress.total} />
       </div> : null}
+      {ready && quality.profile ? <p data-testid="alpha-quality-profile" className="text-xs text-text-secondary">{L(`Laget med profil ${quality.profile.name}`, `Made with profile ${quality.profile.name}`)}</p> : null}
       {ready ? <a data-testid="alpha-download" className="text-xs text-accent-brand underline" href={ready.url} download={ready.name}>{L("Last ned", "Download")}</a> : null}
       <DialogFooter>
-        <Button variant="ghost" data-testid="alpha-cancel" onClick={() => busy ? abort.current?.abort() : onOpenChange(false)}>{busy ? L("Avbryt", "Cancel") : L("Lukk", "Close")}</Button>
+        <Button variant="ghost" data-testid="alpha-cancel" onClick={() => busy && taskId.current ? exportQueue.cancel(taskId.current) : onOpenChange(false)}>{busy ? L("Avbryt", "Cancel") : L("Lukk", "Close")}</Button>
         <Button data-testid="alpha-start" disabled={busy || !!validation || (options.format === "webm-vp9" && support !== true)} onClick={() => void run()}><Download />{L("Eksporter", "Export")}</Button>
       </DialogFooter>
     </DialogContent>

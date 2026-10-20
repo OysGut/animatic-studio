@@ -26,7 +26,7 @@ import {
   type ExportSettings,
   type FilmClip,
   type ProjectState,
-  L,
+  L, qualityProfileSnapshot,
   locale,
   languageWord,
   toSrt,
@@ -61,6 +61,8 @@ import { signedUrls } from "@/app/library/asset-images";
 import { formatSeconds } from "./FilmTimeline";
 import { exportSelection, type ExportScope } from "./export-selection";
 import { hasSeparateCharacterLayers } from "@/core/animation/character";
+import { exportQueue } from "./export-queue";
+import { QualityProfilePicker, useQualityProfile } from "@/app/ai/QualityProfilePicker";
 import { AlphaExportDialog } from "./AlphaExportDialog";
 
 type Scope = ExportScope;
@@ -135,6 +137,11 @@ export function ExportAnimaticDialog({
   onLanguage: (patch: Partial<FilmLanguage>) => void;
   subtitles: readonly SubtitleCue[];
 }) {
+  const quality = useQualityProfile(state);
+  const appliedProfile = useRef<string | null>(null);
+  const queueId = useRef<string | null>(null);
+  const [profileResolution, setProfileResolution] = useState<string | null>(null);
+  const [bitrateKbps, setBitrateKbps] = useState<number | null>(null);
   const [scope, setScope] = useState<Scope>("film");
   const [alphaOpen, setAlphaOpen] = useState(false);
   const alphaClip = clips.find(c => c.occurrenceId === selectedId);
@@ -196,10 +203,15 @@ export function ExportAnimaticDialog({
     },
     [ready],
   );
-  // Lukkes dialogen under eksport: avbryt
   useEffect(() => {
-    if (!open) abort.current?.abort();
-  }, [open]);
+    const key = quality.profile ? JSON.stringify(quality.profile) : null;
+    if (!open || key === appliedProfile.current) return;
+    appliedProfile.current = key;
+    const preset = quality.profile?.spec.export;
+    if (preset?.format === "mp4" || preset?.format === "webm") setContainer(preset.format);
+    setBitrateKbps(preset?.bitrateKbps ?? null);
+    setProfileResolution(quality.profile?.spec.resolution ?? null);
+  }, [quality.profile, open]);
 
   const fps = state.project.fps;
   // Alle utvalg unntatt hele filmen går gjennom filmSelection: lyd og undertekster følger scenen sin, så lyd
@@ -234,8 +246,10 @@ export function ExportAnimaticDialog({
 
   const fullW = state.project.frameWidth;
   const fullH = state.project.frameHeight;
-  const outW = size === "full" ? fullW : Math.round(fullW / 2);
-  const outH = size === "full" ? fullH : Math.round(fullH / 2);
+  const targetSide = profileResolution === "1K" ? 1024 : profileResolution === "2K" ? 2048 : profileResolution === "4K" ? 4096 : Math.max(fullW, fullH);
+  const scale = targetSide / Math.max(fullW, fullH) * (size === "half" ? 0.5 : 1);
+  const outW = Math.max(2, Math.round(fullW * scale / 2) * 2);
+  const outH = Math.max(2, Math.round(fullH * scale / 2) * 2);
 
   // Eksportkontroll (mandat 29.6): sceneorden, skjulte scener, materiale og manglende filer
   const { checks: baseChecks, paths, audioPaths, texts } = useMemo(() => {
@@ -447,7 +461,14 @@ export function ExportAnimaticDialog({
   const busy = progress !== null && ready === null && error === null;
   const supported = canExportVideo();
 
-  async function run() {
+  function enqueueExport() {
+    const snapshot = quality.profile ? qualityProfileSnapshot(quality.profile) : null;
+    setProgress({ done: 0, total: sel.endFrame - sel.startFrame });
+    queueId.current = exportQueue.enqueue(state.project.name, async (signal, report) => {
+      await run(signal, report);
+    }, snapshot);
+  }
+  async function run(queueSignal: AbortSignal, report: (done: number, total: number) => void) {
     setError(null);
     const saved = state.productions[productionId]?.exportSettings;
     if (
@@ -461,6 +482,8 @@ export function ExportAnimaticDialog({
     setCharFile(null);
     const ctrl = new AbortController();
     abort.current = ctrl;
+    queueSignal.addEventListener("abort", () => ctrl.abort(), { once: true });
+    if (queueSignal.aborted) ctrl.abort();
     setProgress({ done: 0, total: sel.endFrame - sel.startFrame });
     try {
       const subset: Record<string, string> = {};
@@ -522,7 +545,7 @@ export function ExportAnimaticDialog({
           productionId,
           kind: "audio",
           fileName: name,
-          settings: { output, scope, language: language.dialogue },
+          settings: { output, scope, language: language.dialogue, qualityProfileId: quality.profile?.id ?? null, qualityProfileName: quality.profile?.name ?? null, qualityProfileSnapshot: quality.profile ? JSON.stringify(qualityProfileSnapshot(quality.profile)) : null },
           occurrenceIds: sel.clips.map((c) => c.occurrenceId),
         });
         if (lostAudio > 0)
@@ -551,12 +574,13 @@ export function ExportAnimaticDialog({
         filmUrls: await freshFilmUrls(sel.clips, filmUrls),
         // Undertekstene brennes bare inn når det er valgt (DEC-0085)
         ...(language.subtitles && subMode === "burn" ? { subtitles } : {}),
+        bitrateKbps,
         mp4: container === "mp4",
         webm: container === "webm",
         // CA8: karakterlag satt til «eget lag» utelates fra hovedfilmen og lages som egen fil
         ...(separateLayers ? { characterPass: "main" as const } : {}),
         onProgress: (done, total) => {
-          if (abort.current === ctrl) setProgress({ done, total });
+          if (abort.current === ctrl) { setProgress({ done, total }); report(done, total); }
         },
       });
       // Dialogen ble lukket (eller en ny eksport startet) mens denne pågikk
@@ -613,7 +637,7 @@ export function ExportAnimaticDialog({
           subtitles: !!language.subtitles && subMode !== "none",
           subtitleMode: language.subtitles ? subMode : "none",
           subtitleLanguage: language.subtitles,
-          format: container,
+          format: container, bitrateKbps, qualityProfileId: quality.profile?.id ?? null, qualityProfileName: quality.profile?.name ?? null, qualityProfileSnapshot: quality.profile ? JSON.stringify(qualityProfileSnapshot(quality.profile)) : null,
         },
         occurrenceIds: sel.clips.map((c) => c.occurrenceId),
       });
@@ -700,6 +724,11 @@ export function ExportAnimaticDialog({
             )}
           </DialogDescription>
         </DialogHeader>
+        <QualityProfilePicker state={state} value={quality.choice} disabled={busy} onChange={quality.setChoice} />
+        <div className="flex flex-wrap gap-3 text-xs text-text-secondary">
+          <label>{L("Oppløsning", "Resolution")} <select data-testid="export-profile-resolution" value={profileResolution ?? ""} disabled={busy} onChange={e => setProfileResolution(e.target.value || null)} className="h-7 border border-border-control bg-surface-3"><option value="">{L("Prosjektformat", "Project format")}</option>{["1K","2K","4K"].map(r => <option key={r}>{r}</option>)}</select></label>
+          <label>{L("Bitrate (kbps)", "Bitrate (kbps)")} <input data-testid="export-profile-bitrate" type="number" min={100} max={100000} value={bitrateKbps ?? ""} disabled={busy} onChange={e => setBitrateKbps(e.target.value ? Number(e.target.value) : null)} className="h-7 w-24 border border-border-control bg-surface-3" /></label>
+        </div>
 
         <div className="grid grid-cols-2 gap-5">
           <fieldset className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-3" disabled={busy}>
@@ -1134,7 +1163,7 @@ export function ExportAnimaticDialog({
 
         <DialogFooter>
           {busy ? (
-            <Button variant="ghost" onClick={() => abort.current?.abort()}>
+            <Button variant="ghost" onClick={() => queueId.current ? exportQueue.cancel(queueId.current) : abort.current?.abort()}>
               {L("Avbryt", "Cancel")}
             </Button>
           ) : (
@@ -1143,7 +1172,7 @@ export function ExportAnimaticDialog({
             </Button>
           )}
           <Button
-            onClick={() => void run()}
+            onClick={enqueueExport}
             disabled={
               busy ||
               (!supported && output === "video") ||
