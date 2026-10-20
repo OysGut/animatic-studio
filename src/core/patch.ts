@@ -3,6 +3,7 @@ import type { LipsyncResult } from "./animation/lipsync";
 import type { DialogueVersion } from "./dialogue/versions";
 import type { DialogueReview } from "./dialogue/drift";
 import type { NoteFlag } from "./notes/flags";
+import type { QualityProfile } from "./generation/quality-profile";
 import type { AnimationPattern } from "./animation/patterns";
 /**
  * Endringssett mellom to tilstander (DEC-0022). Serveren kjører kommandoen i kjernen og sender
@@ -489,6 +490,10 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
       const f = e as unknown as NoteFlag;
       return { ...base, target_kind: f.targetKind, target_id: f.targetId, text: f.text, enabled: f.enabled, edited_by: f.editedBy ?? null, edited_at: f.editedAt ?? null, removed: f.removed };
     }
+    case "qualityProfiles": {
+      const q = e as unknown as QualityProfile;
+      return { ...base, name: q.name, spec: q.spec ?? {}, edited_by: q.editedBy ?? null, edited_at: q.editedAt ?? null, removed: q.removed };
+    }
     case "clipParts": {
       const c = e as ClipPart;
       return {
@@ -764,6 +769,7 @@ export const TABLE_ORDER: readonly string[] = [
   "story_canvas_nodes",
   "story_canvas_edges",
   "note_flags",
+  "quality_profiles",
 ];
 
 export function diffStates(before: ProjectState, after: ProjectState): ChangeSet {
@@ -821,6 +827,10 @@ export function diffStates(before: ProjectState, after: ProjectState): ChangeSet
         // Antakelsene for varighetsestimatet (KI-28, migrasjon 0028): bare når de er endret (null = standard)
         ...(after.project.durationAssumptions !== before.project.durationAssumptions
           ? { duration_assumptions: after.project.durationAssumptions ?? null }
+          : {}),
+        // Aktiv kvalitetsprofil (M8, migrasjon 0063): bare når den er endret (null = ingen aktiv profil)
+        ...(after.project.activeQualityProfileId !== before.project.activeQualityProfileId
+          ? { active_quality_profile_id: after.project.activeQualityProfileId ?? null }
           : {}),
       },
     ];
@@ -893,6 +903,8 @@ export interface ProjectRows {
   /** DV7/DV8 (migrasjon 0062). Tomt hvis migrasjonen ikke er kjørt ennå. */
   readonly dialogue_reviews?: readonly Row[];
   readonly note_flags?: readonly Row[];
+  /** M8 kvalitetsprofiler (migrasjon 0063). Tomt hvis migrasjonen ikke er kjørt ennå. */
+  readonly quality_profiles?: readonly Row[];
 }
 
 const str = (v: unknown) => String(v);
@@ -1092,6 +1104,10 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ? {}
         : { aiPricePerImage: Number(p["ai_price_per_image"]) }),
       ...durationAssumptionsFromRow(p["duration_assumptions"]),
+      // Aktiv kvalitetsprofil (M8, migrasjon 0063); kolonnen mangler før migrasjonen er kjørt
+      ...(p["active_quality_profile_id"]
+        ? { activeQualityProfileId: str(p["active_quality_profile_id"]) }
+        : {}),
     },
     productions: byId(
       r.productions.map((x) => ({
@@ -1494,6 +1510,17 @@ export function stateFromRows(r: ProjectRows): ProjectState {
       (r.note_flags ?? []).map((x): NoteFlag => ({
         id: str(x["id"]), revision: num(x["revision"]), targetKind: str(x["target_kind"]) as NoteFlag["targetKind"], targetId: str(x["target_id"]),
         text: str(x["text"] ?? ""), enabled: x["enabled"] !== false,
+        ...(x["created_by"] ? { createdBy: str(x["created_by"]) } : {}),
+        ...(x["created_at"] ? { createdAt: iso(x["created_at"]) } : {}),
+        ...(x["edited_by"] ? { editedBy: str(x["edited_by"]) } : {}),
+        ...(x["edited_at"] ? { editedAt: iso(x["edited_at"]) } : {}),
+        removed: x["removed"] === true,
+      })),
+    ),
+    qualityProfiles: byId(
+      (r.quality_profiles ?? []).map((x): QualityProfile => ({
+        id: str(x["id"]), revision: num(x["revision"]), name: str(x["name"] ?? ""),
+        spec: (x["spec"] && typeof x["spec"] === "object" ? x["spec"] : {}) as QualityProfile["spec"],
         ...(x["created_by"] ? { createdBy: str(x["created_by"]) } : {}),
         ...(x["created_at"] ? { createdAt: iso(x["created_at"]) } : {}),
         ...(x["edited_by"] ? { editedBy: str(x["edited_by"]) } : {}),
