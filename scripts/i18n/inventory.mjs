@@ -138,7 +138,10 @@ export function inventorySource(source, file = 'src/example.tsx') {
   const literals = (node) => {
     if (!consumed.has(node) && (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node) || ts.isTemplateExpression(node) || ts.isJsxText(node))) {
       const parent = node.parent;
-      const excluded = ts.isImportDeclaration(parent) || ts.isExportDeclaration(parent) || ts.isLiteralTypeNode(parent) || ((ts.isPropertyAssignment(parent) || ts.isPropertySignature(parent)) && parent.name === node) || ts.isElementAccessExpression(parent);
+      // A migrated t("key") call: the key is an identifier, not user-facing text (keeps candidates.v1.json small).
+      const keyArgument = ts.isStringLiteral(node) && ts.isCallExpression(parent) && parent.arguments[0] === node && ts.isIdentifier(parent.expression)
+        && ['t', 'tk', 'tKey', 'tx', 'i18nT'].includes(parent.expression.text) && /^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(node.text);
+      const excluded = keyArgument || ts.isImportDeclaration(parent) || ts.isExportDeclaration(parent) || ts.isLiteralTypeNode(parent) || ((ts.isPropertyAssignment(parent) || ts.isPropertySignature(parent)) && parent.name === node) || ts.isElementAccessExpression(parent);
       if (!excluded) {
         const text = ts.isJsxText(node) ? node.text : textOf(node, sf).text;
         if (text?.trim()) candidates.push({ ...location(node), kind: ts.isJsxText(node) ? 'jsx-text' : 'literal-candidate', text, raw: node.getText(sf), ignored: /i18n-ignore/.test(source.split('\n').slice(Math.max(0, location(node).line - 2), location(node).line).join('\n')) });
