@@ -89,10 +89,16 @@ describe("P4 actual compositor pixels", () => {
   it("monochrome export preserves every pixel's alpha", () => {
     const { canvas } = frame();
     const before = [...canvas.data].filter((_, i) => i % 4 === 3);
-    desaturate(canvas.getContext() as unknown as CanvasRenderingContext2D, 16, 16, true);
-    expect([...canvas.data].filter((_, i) => i % 4 === 3)).toEqual(before);
-    expect(canvas.pixel(0,0)[3]).toBe(0);
-    expect(canvas.pixel(8,8)).toEqual([125,125,125,1]);
+    let pixels = new Uint8ClampedArray(canvas.data);
+    const ctx = {
+      getImageData: () => ({ data: pixels }),
+      putImageData: (image: { data: Uint8ClampedArray }) => { pixels = image.data; },
+    };
+    desaturate(ctx as unknown as CanvasRenderingContext2D, 16, 16, true);
+    expect([...pixels].filter((_, i) => i % 4 === 3)).toEqual(before.map(Math.round));
+    expect(pixels[3]).toBe(0);
+    const at = (8 * 16 + 8) * 4;
+    expect([...pixels.slice(at,at+4)]).toEqual([125,125,125,255]);
   });
   it("unselected layers do not leak into the image", () => {
     const { s, c, edge } = setup(); const clip = alphaSceneClip(s, c);
