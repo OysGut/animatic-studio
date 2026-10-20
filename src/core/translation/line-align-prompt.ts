@@ -41,7 +41,7 @@ export function parseLineAlignment(raw: string,s: ProjectState,variantId: string
   for (const item of list) {
     const x=item as Partial<LineLinkFields> | null;
     const f={...x,variantId,language,origin:"ai"} as LineLinkFields;
-    if (!x || lineLinkError(s,f) || f.sourceBlockIds.some(id=>!sources.has(id)||usedSources.has(id)) || f.targetTranslationIds.some(id=>!targets.has(id)||usedTargets.has(id))) {discarded++;continue;}
+    if (!x || (x.variantId !== undefined && x.variantId !== variantId) || (x.language !== undefined && x.language !== language) || lineLinkError(s,f) || f.sourceBlockIds.some(id=>!sources.has(id)||usedSources.has(id)) || f.targetTranslationIds.some(id=>!targets.has(id)||usedTargets.has(id))) {discarded++;continue;}
     f.sourceBlockIds.forEach(id=>usedSources.add(id)); f.targetTranslationIds.forEach(id=>usedTargets.add(id)); links.push(f);
   }
   return {links,discarded};

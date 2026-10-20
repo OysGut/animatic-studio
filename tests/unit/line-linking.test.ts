@@ -40,7 +40,9 @@ describe("B-050 line linking",()=>{
     const b=makeBackup({rows,scriptVersions:[],importedDocuments:[],changeLog:[],generationJobs:[],schemaVersion:64,createdAt:"2026-10-20T00:00:00Z",include:new Set()});
     expect(b.tables["translation_line_links"]).toHaveLength(1);
     const pid=tid<"project">(),main=tid<"production">();const map=await backupIdMap(b,pid,main);
-    const restored=restoredState(b,map,emptyProjectState({...s.project,id:pid}),tid());
+    const originalMain=Object.values(s.productions).find(p=>p.kind === "main");if(!originalMain)throw new Error("missing main");
+    const base={...emptyProjectState({...s.project,id:pid}),productions:{[main]:{...originalMain,id:main}}};
+    const restored=restoredState(b,map,base,tid());
     const l=Object.values(restored.translationLineLinks)[0];expect(l?.sourceBlockIds).toEqual(fields.sourceBlockIds.map(x=>map.get(x)));expect(l?.targetTranslationIds).toEqual(fields.targetTranslationIds.map(x=>map.get(x)));
   });
   it("storage roundtrip includes array references",()=>{const {s,fields}=fixture();const id=tid();const r=apply(s,{type:"SetLineLink",linkId:id,fields});const patch=diffStates(s,r.state);const row=patch.inserts["translation_line_links"]?.[0];expect(row?.["source_block_ids"]).toEqual(fields.sourceBlockIds);expect(row?.["target_translation_ids"]).toEqual(fields.targetTranslationIds);});
