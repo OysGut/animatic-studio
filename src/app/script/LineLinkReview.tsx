@@ -30,6 +30,7 @@ export function LineLinkReview({state,variantId,language,editable,run}:{state:Pr
     finally {setBusy(false);}
   }
   const allRows=[...targets.filter(t=>!scopedLinks.some(l=>l.targetTranslationIds.includes(t.id))).map(t=>({id:t.id,origin:"rule",confidence:t.status==="approved"?1:0.5,reason:"",sourceBlockIds:t.blockId?[t.blockId]:[],targetTranslationIds:[t.id],saved:false})),...links.map(l=>({...l,saved:true}))];
+  const ruleApprovals=allRows.filter(l=>!l.saved && l.confidence >= threshold).map(l=>({linkId:newId(),fields:{variantId,language,sourceBlockIds:l.sourceBlockIds,targetTranslationIds:l.targetTranslationIds,origin:"rule" as const,confidence:l.confidence,reason:l.reason}}));
   return <>
     <Button size="sm" variant="outline" data-testid="line-links-open" onClick={()=>setOpen(true)}>{L("Gjennomgå linjekoblinger","Review line links")}</Button>
     <Dialog open={open} onOpenChange={setOpen}><DialogContent data-testid="line-links-dialog" className="max-h-[90vh] max-w-3xl overflow-y-auto border-border bg-surface-2">
@@ -37,7 +38,7 @@ export function LineLinkReview({state,variantId,language,editable,run}:{state:Pr
       <div className="flex flex-wrap items-center gap-2">
         <select data-testid="line-links-filter" aria-label={L("Kilde","Source")} className={control} value={filter} onChange={e=>setFilter(e.target.value)}>{["all","rule","ai","approved","manual"].map(o=><option key={o} value={o}>{o==="all"?L("Alle kilder","All sources"):originLabel(o)}</option>)}</select>
         <label className="flex items-center gap-2 text-xs text-text-secondary">{L("Terskel","Threshold")}<input data-testid="line-links-threshold" type="number" min={0} max={1} step={0.05} className={control} value={threshold} onChange={e=>setThreshold(Number(e.target.value))}/></label>
-        <Button size="sm" data-testid="line-links-approve-threshold" disabled={!editable||(!linksAboveThreshold(links,threshold).length&&!proposals.some(p=>p.confidence>=threshold))} onClick={()=>{if (command({type:"ApproveLineLinks",linkIds:linksAboveThreshold(links,threshold),additions:proposals.filter(p=>p.confidence>=threshold).map(fields=>({linkId:newId(),fields}))})) setProposals(ps=>ps.filter(p=>p.confidence<threshold));}}>{L("Godkjenn over terskel","Approve above threshold")}</Button>
+        <Button size="sm" data-testid="line-links-approve-threshold" disabled={!editable||(!linksAboveThreshold(links,threshold).length&&!proposals.some(p=>p.confidence>=threshold)&&!ruleApprovals.length)} onClick={()=>{if (command({type:"ApproveLineLinks",linkIds:linksAboveThreshold(links,threshold),additions:[...ruleApprovals,...proposals.filter(p=>p.confidence>=threshold).map(fields=>({linkId:newId(),fields}))]})) setProposals(ps=>ps.filter(p=>p.confidence<threshold));}}>{L("Godkjenn over terskel","Approve above threshold")}</Button>
         <Button size="sm" variant="outline" data-testid="line-links-estimate" disabled={!editable||busy||!scope.targets.length} onClick={()=>void request()}>{busy?L("Analyserer …","Analysing …"):L("Foreslå med AI","Suggest with AI")}</Button>
       </div>
       {estimate?<div data-testid="line-links-cost" className="flex flex-col gap-2 border-y border-border py-3 text-xs text-text-secondary">
