@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { L, getLanguage, getUiLanguage, localized, locale, pseudoText, setLanguage, tm } from "@/core";
 import { CodedError, SERVER_ERRORS, decodeServerError, serverError, serverErrorText } from "@/core/i18n/server-errors";
 import { t } from "@/core/i18n/keyed";
+import nbCatalog from "@/core/i18n/locales/nb.json";
 // @ts-expect-error mjs-verktøy uten typer
 import { pseudoText as inventoryPseudo } from "../../scripts/i18n/inventory.mjs";
 
@@ -29,8 +30,13 @@ describe("ML2a testspråk en-XA", () => {
     expect(tm("helt ukjent tekst")).toBe("helt ukjent tekst");
   });
   it("t() bruker visningsspråket", () => {
-    const key = Object.keys((globalThis as never as Record<string, unknown>) ?? {}).length >= 0 ? null : null;
-    expect(key).toBeNull();
+    const [key, msg] = Object.entries(nbCatalog as Record<string, { text: string | null; executable?: boolean; parameters?: unknown[] }>).find(
+      ([, m]) => m.executable !== false && m.text && !/\{/.test(m.text) && !(m.parameters?.length),
+    )!;
+    expect(t(key)).toBe(msg.text);
+    setLanguage("en-XA");
+    expect(t(key)).toBe(t(key, {}, "en-XA"));
+    expect(t(key)).not.toBe(msg.text);
   });
 });
 
@@ -61,8 +67,5 @@ describe("ML2a stabile serverfeil", () => {
       expect(code).toMatch(/^[a-z_]+$/);
       expect(nb && en).toBeTruthy();
     }
-  });
-  it("nøkkel-API-et virker fortsatt med eksplisitt språk", () => {
-    expect(typeof t).toBe("function");
   });
 });
