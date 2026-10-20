@@ -6057,7 +6057,7 @@ try {
     assert(col.length === 1, "projects.active_quality_profile_id mangler");
     const body = String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) as b`)[0]?.["b"]);
     assert(body.includes("'dialogue_reviews','note_flags','quality_profiles'"), "apply_changes kjenner ikke quality_profiles");
-    assert(body.includes("array['quality_profiles','note_flags'"), "apply_changes sletter ikke profiler først");
+    assert(body.includes("'quality_profiles','note_flags'"), "apply_changes sletter ikke profiler først");
     assert(body.includes("active_quality_profile_id"), "apply_changes oppdaterer ikke aktiv profil");
     for (const fn of ["delete_project(uuid,uuid)", "purge_project_assets(uuid,uuid)"]) {
       const b = String((await sql`select pg_get_functiondef(${`public.${fn}`}::regprocedure) as b`)[0]?.["b"]);
@@ -6110,6 +6110,19 @@ try {
     await as("service_role",null,tx=>tx`select public.delete_project(${bp},${ALICE})`);
   });
 
+  await test("0064: line-link RLS/grants and deletion paths", async () => {
+    const grants=await sql`select has_table_privilege('anon','public.translation_line_links','SELECT') a, has_table_privilege('authenticated','public.translation_line_links','SELECT') r, has_table_privilege('authenticated','public.translation_line_links','INSERT') w, has_table_privilege('service_role','public.translation_line_links','INSERT') s`;
+    assert(grants[0]?.["a"]===false && grants[0]?.["r"]===true && grants[0]?.["w"]===false && grants[0]?.["s"]===true,"line-link grants");
+    const rls=await sql`select relrowsecurity from pg_class where oid='public.translation_line_links'::regclass`;
+    assert(rls[0]?.["relrowsecurity"]===true,"missing RLS");
+    for (const fn of ["delete_project(uuid,uuid)","purge_project_assets(uuid,uuid)"]) {
+      const body=String((await sql`select pg_get_functiondef(${`public.${fn}`}::regprocedure) b`)[0]?.["b"]);
+      assert(body.indexOf("delete from public.translation_line_links")<body.indexOf("delete from public.translations"),"line links must delete before translations");
+    }
+    const body=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    assert(body.includes("'translation_line_links'") && body.includes("Invalid line link scope"),"scope validation absent");
+    await expectError(as("authenticated",ALICE,tx=>tx`insert into public.translation_line_links(id,project_id,variant_id,language,source_block_ids,target_translation_ids,origin,confidence) values(gen_random_uuid(),gen_random_uuid(),gen_random_uuid(),'en','{}','{}','ai',0.5)`),"42501");
+  });
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);

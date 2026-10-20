@@ -91,6 +91,7 @@ const MAX_COMMAND_CHARS = 6_000_000;
  */
 const INVERSE_ONLY = new Set<string>([
   "UndoReviewDialogueDrift",
+  "UndoAddLineLink",
   "UndoAddNoteFlag",
   "UndoGeneratedDialogue",
   "RestoreDialogueCharacters",
@@ -770,6 +771,10 @@ export const runCommand = createServerFn({ method: "POST" })
             "The database is missing continuity for the characters. Contact the administrator to update Animatic Studio.",
           ),
         };
+    }
+    if (["SetLineLink","UndoAddLineLink","ApproveLineLinks","RejectLineLinks","RestoreLineLinks"].includes(data.command.type)) {
+      const schema=await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 64) return {ok:false,code:"schema",message:L("Linjekoblinger krever databaseversjon 64.","Line links require database version 64.")};
     }
     if (SCHEMA16_COMMANDS.has(data.command.type)) {
       const schema = await checkSchema(admin);
