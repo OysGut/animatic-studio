@@ -11,18 +11,18 @@ import { getUiLanguage, pseudoText, tm } from "./index";
 
 /** Kode → [norsk mal, engelsk mal]. Koder endres eller gjenbrukes aldri. */
 export const SERVER_ERRORS = {
-  invalid_request: ["Ugyldig forespørsel", "Invalid request"],
-  invalid_project_id: ["Ugyldig prosjekt-ID", "Invalid project ID"],
-  invalid_command: ["Ugyldig kommando", "Invalid command"],
-  invalid_revisions: ["Ugyldige revisjoner", "Invalid revisions"],
-  change_too_large: ["Endringen er for stor", "The change is too large"],
-  invalid_command_id: ["Ugyldig kommando-ID", "Invalid command ID"],
-  no_workspace_access: ["Ingen tilgang til gruppen", "No access to the workspace"],
-  asset_missing: ["Ressursen finnes ikke", "The asset does not exist"],
-  storage_no_response: ["Lagringen svarte ikke", "The storage did not respond"],
-  invalid_storage_path: ["Ugyldig lagringssti", "Invalid storage path"],
-  invalid_script_revision: ["Ugyldig manusrevisjon", "Invalid script revision"],
-  text_too_long: ["Teksten er for lang (maks {max} tegn)", "The text is too long (max {max} characters)"],
+  invalid_request: ["Ugyldig forespørsel", "Invalid request"], // i18n-ignore: nb/en-par i feilkatalogen
+  invalid_project_id: ["Ugyldig prosjekt-ID", "Invalid project ID"], // i18n-ignore: nb/en-par i feilkatalogen
+  invalid_command: ["Ugyldig kommando", "Invalid command"], // i18n-ignore: nb/en-par i feilkatalogen
+  invalid_revisions: ["Ugyldige revisjoner", "Invalid revisions"], // i18n-ignore: nb/en-par i feilkatalogen
+  change_too_large: ["Endringen er for stor", "The change is too large"], // i18n-ignore: nb/en-par i feilkatalogen
+  invalid_command_id: ["Ugyldig kommando-ID", "Invalid command ID"], // i18n-ignore: nb/en-par i feilkatalogen
+  no_workspace_access: ["Ingen tilgang til gruppen", "No access to the workspace"], // i18n-ignore: nb/en-par i feilkatalogen
+  asset_missing: ["Ressursen finnes ikke", "The asset does not exist"], // i18n-ignore: nb/en-par i feilkatalogen
+  storage_no_response: ["Lagringen svarte ikke", "The storage did not respond"], // i18n-ignore: nb/en-par i feilkatalogen
+  invalid_storage_path: ["Ugyldig lagringssti", "Invalid storage path"], // i18n-ignore: nb/en-par i feilkatalogen
+  invalid_script_revision: ["Ugyldig manusrevisjon", "Invalid script revision"], // i18n-ignore: nb/en-par i feilkatalogen
+  text_too_long: ["Teksten er for lang (maks {max} tegn)", "The text is too long (max {max} characters)"], // i18n-ignore: nb/en-par i feilkatalogen
 } as const satisfies Record<string, readonly [string, string]>;
 
 export type ServerErrorCode = keyof typeof SERVER_ERRORS;
@@ -57,6 +57,14 @@ export class CodedError extends Error {
     super(tr(code, params, "nb"));
     this.name = "CodedError";
   }
+}
+
+/**
+ * Gi en eksisterende feil en stabil kode uten å endre teksten (så tekstinventaret og `tm` er uendret).
+ * Bruk denne der meldingen allerede står som `L(...)`.
+ */
+export function withCode<E extends Error>(error: E, code: ServerErrorCode, params: MessageParameters = {}): E & { code: ServerErrorCode; params: MessageParameters } {
+  return Object.assign(error, { code, params });
 }
 
 /** Lag en feil med stabil kode (kastes på serveren). */
