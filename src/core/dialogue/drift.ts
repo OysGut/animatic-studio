@@ -10,6 +10,7 @@
 import type { AudioClip, ProjectState } from "../model";
 import { activeDialogueVersion } from "./versions";
 import { L } from "../i18n";
+import { textAtRevision } from "../assembly/discrepancy";
 
 export type DialogueReviewBasis = "manual" | "generated";
 export interface DialogueReview {
@@ -91,21 +92,14 @@ export const DRIFT_LABEL = (status: DriftStatus): string => ({
   unknown: L("Ukjent hvilken manusversjon lyden ble laget fra", "Unknown which script version the audio was made from"),
 })[status];
 
-/** Teksten blokken hadde ved en revisjon (historikken), eller null når den ikke finnes. */
-export function textAtRevision(s: ProjectState, blockId: string, rev: number): string | null {
-  const block = s.blocks[blockId];
-  if (block && block.currentRev === rev) return block.text;
-  const hit = s.blockRevisions.filter(r => r.blockId === blockId && r.rev === rev).at(-1);
-  return hit ? hit.text : null;
-}
-
 export type DiffPart = { readonly kind: "same" | "added" | "removed"; readonly text: string };
 
 /** Ordvis sammenligning som tåler Unicode (NFC, `Intl.Segmenter`), også skrift uten mellomrom. */
-export function wordDiff(before: string, after: string, language = "und"): DiffPart[] {
+export function unicodeWordDiff(before: string, after: string, language = "und"): DiffPart[] {
   const split = (t: string) => [...new Intl.Segmenter(language, { granularity: "word" }).segment(t.normalize("NFC"))].map(x => x.segment);
   const a = split(before), b = split(after);
   const n = a.length, m = b.length;
+  if (n * m > 250_000) return [{ kind: "removed", text: before }, { kind: "added", text: after }];
   const dp: number[][] = Array.from({ length: n + 1 }, () => new Array<number>(m + 1).fill(0));
   for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--)
     dp[i]![j] = a[i] === b[j] ? dp[i + 1]![j + 1]! + 1 : Math.max(dp[i + 1]![j]!, dp[i]![j + 1]!);
@@ -132,5 +126,5 @@ export function driftDiff(s: ProjectState, d: LineDrift, language = "und"): Diff
   const before = textAtRevision(s, d.blockId, d.audioRevision);
   const after = s.blocks[d.blockId]?.text;
   if (before === null || after === undefined) return null;
-  return wordDiff(before, after, language);
+  return unicodeWordDiff(before, after, language);
 }
