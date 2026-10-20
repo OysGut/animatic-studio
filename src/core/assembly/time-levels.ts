@@ -7,6 +7,7 @@
 import { type Rational } from "../time";
 import { L } from "../i18n";
 import { clipAtFrame, partAt, type FilmClip } from "./film";
+import { t } from "@/core/i18n/keyed";
 
 /** Tid i kilden: millisekunder i en filmfil (versjon), bilde i 2D-scenen, eller tittelkort (ingen kildetid). */
 export type SourceTime =
@@ -68,7 +69,7 @@ export function partToScene(clip: FilmClip, partIndex: number, partFrame: number
   const p = clip.parts[partIndex];
   if (!p)
     throw new Error(
-      L(`Delen ${partIndex} finnes ikke i scenen`, `Part ${partIndex} does not exist in the scene`),
+      t("core-assembly-time-levels.part-to-scene.message.ea6113e5d84e", { partIndex: String(partIndex) }),
     );
   return p.startFrame + partFrame;
 }

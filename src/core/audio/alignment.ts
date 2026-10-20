@@ -9,6 +9,7 @@ import { audioVersion } from "./index";
 import type { AudioComposition } from "./composition";
 import { L } from "../i18n";
 import { compareVersionCreation } from "../library";
+import { t as tk } from "@/core/i18n/keyed";
 
 export const ALIGNMENT_FORMAT = 1;
 export const ALIGNMENT_MAX_WORDS = 2000;
@@ -177,7 +178,7 @@ export function setWordTiming(
 
 /** Kontroll av en kobling (fra nettleseren). Gir feilmelding eller null. */
 export function alignmentError(a: unknown): string | null {
-  const bad = L("Ugyldig ordkobling", "Invalid word alignment");
+  const bad = tk("core-audio-alignment.bad.message.6119346ca9dd");
   if (!a || typeof a !== "object") return bad;
   const o = a as Record<string, unknown>;
   if (o["format"] !== ALIGNMENT_FORMAT) return bad;
@@ -304,19 +305,19 @@ export type LineAudioStatus = "no_audio" | "changed_text" | "new_take" | "approv
 
 export const LINE_STATUS_LABEL = {
   get no_audio() {
-    return L("Ny tekst uten lyd", "New text without audio");
+    return tk("core-audio-alignment.line-status-label.message.e6bb2f6891ac");
   },
   get changed_text() {
-    return L("Endret tekst med gammel lyd", "Changed text with old audio");
+    return tk("core-audio-alignment.line-status-label.message.07d247dde540");
   },
   get new_take() {
-    return L("Nytt opptak til gjennomgang", "New recording to review");
+    return tk("core-audio-alignment.line-status-label.message.5e164d56b1c5");
   },
   get approved() {
-    return L("Godkjent oppdatert tekst og lyd", "Approved updated text and audio");
+    return tk("core-audio-alignment.line-status-label.message.7b30975b5db5");
   },
   get synced() {
-    return L("Synkronisert", "In sync");
+    return tk("core-audio-alignment.line-status-label.message.aa18b01dffeb");
   },
 } as const satisfies Record<LineAudioStatus, string>;
 

@@ -35,6 +35,7 @@ import {
 import { useFilmImages } from "./film-images";
 import { useFilmVideo } from "./film-video";
 import { FilmViewer } from "./FilmViewer";
+import { t } from "@/core/i18n/keyed";
 
 export function CompareVersionsDialog({
   open,
@@ -76,28 +77,22 @@ export function CompareVersionsDialog({
       <DialogContent className="max-w-5xl">
         <DialogHeader>
           <DialogTitle>
-            {L(`Sammenlign versjoner – ${title}`, `Compare versions – ${title}`)}
+            {t("app-assembly-compare-versions-dialog.compare-versions-dialog.dialog-title.763b38e1cfcb", { title: String(title) })}
           </DialogTitle>
           <DialogDescription>
-            {L(
-              "Velg to versjoner av scenen. De spilles og spoles sammen; ingen av dem endres eller tas i bruk herfra.",
-              "Choose two versions of the scene. They play and scrub together; neither of them is changed or taken into use from here.",
-            )}
+            {t("app-assembly-compare-versions-dialog.compare-versions-dialog.dialog-description.6e8743cb3be9")}
           </DialogDescription>
         </DialogHeader>
         {versions.length < 2 || !a || !b ? (
           <p className="text-[13px] text-text-secondary">
-            {L(
-              "Scenen har bare én versjon. Importer film, lag AI-video eller legg inn et stillbilde for å kunne sammenligne.",
-              "The scene has only one version. Import a film, make an AI video or add a still image to be able to compare.",
-            )}
+            {t("app-assembly-compare-versions-dialog.compare-versions-dialog.p.27a6b20a4bd8")}
           </p>
         ) : (
           <>
             <div className="flex flex-wrap items-center gap-2">
               <Button size="sm" variant="secondary" onClick={playback.toggle}>
                 {playback.playing ? <Pause /> : <Play />}
-                {playback.playing ? "Pause" : L("Spill begge", "Play both")}
+                {playback.playing ? "Pause" : t("app-assembly-compare-versions-dialog.compare-versions-dialog.button.eaa3d5b28abe")}
               </Button>
               <input
                 type="range"
@@ -105,28 +100,25 @@ export function CompareVersionsDialog({
                 max={Math.max(0, total - 1)}
                 value={playback.frame}
                 onChange={(e) => playback.setFrame(Number(e.target.value))}
-                aria-label={L("Felles avspillingshode", "Shared playhead")}
+                aria-label={t("app-assembly-compare-versions-dialog.compare-versions-dialog.aria-label.0b6a63c28038")}
                 className="min-w-[160px] flex-1 accent-[var(--accent-brand)]"
               />
               <span className="font-mono text-[11px] text-text-secondary">
                 {formatTimecode(playback.frame, fps)}
               </span>
               <label className="flex items-center gap-1.5 text-xs text-text-secondary">
-                {L("Følg", "Follow")}
+                {t("app-assembly-compare-versions-dialog.compare-versions-dialog.label.e6eee3008e33")}
                 <select
-                  aria-label={L(
-                    "Hvordan versjonene følger hverandre",
-                    "How the versions follow each other",
-                  )}
+                  aria-label={t("app-assembly-compare-versions-dialog.compare-versions-dialog.aria-label.c22f2b70880e")}
                   value={sync}
                   onChange={(e) => setSync(e.target.value as CompareSync)}
                   className="h-7 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
                 >
                   <option value="time">
-                    {L("samme tid fra start", "same time from the start")}
+                    {t("app-assembly-compare-versions-dialog.compare-versions-dialog.option.961d046fdb77")}
                   </option>
                   <option value="relative">
-                    {L("samme andel av lengden", "same share of the length")}
+                    {t("app-assembly-compare-versions-dialog.compare-versions-dialog.option.c0e71281f04e")}
                   </option>
                 </select>
               </label>
@@ -146,10 +138,7 @@ export function CompareVersionsDialog({
               ))}
             </div>
             <p className="text-[11px] text-text-tertiary">
-              {L(
-                "Sammenligningen er uten lyd. Når en versjon er kortere, står siste bilde til den andre er ferdig (med «samme tid fra start»).",
-                "The comparison has no sound. When one version is shorter, its last frame stays until the other has finished (with “same time from the start”).",
-              )}
+              {t("app-assembly-compare-versions-dialog.compare-versions-dialog.p.c599c487de6b")}
             </p>
           </>
         )}
@@ -189,8 +178,8 @@ function Side({
       <select
         aria-label={
           side === 0
-            ? L("Versjon til venstre", "Version on the left")
-            : L("Versjon til høyre", "Version on the right")
+            ? t("app-assembly-compare-versions-dialog.side.aria-label.540a1efa6927")
+            : t("app-assembly-compare-versions-dialog.side.aria-label.e17a5ba4e357")
         }
         value={version.key}
         onChange={(e) => onPick(e.target.value)}
@@ -199,7 +188,7 @@ function Side({
         {versions.map((x) => (
           <option key={x.key} value={x.key}>
             {x.label}
-            {x.inUse ? L(" (i bruk)", " (in use)") : ""}
+            {x.inUse ? t("app-assembly-compare-versions-dialog.side.option.40a721e7ebae") : ""}
           </option>
         ))}
       </select>
@@ -217,23 +206,23 @@ function Side({
         <dt className="text-text-tertiary">Type</dt>
         <dd className="text-text-primary">
           {VERSION_KIND_LABEL[version.kind]}
-          {version.inUse ? L(" · i bruk i filmen", " · in use in the film") : ""}
+          {version.inUse ? t("app-assembly-compare-versions-dialog.side.dd.3ada6939a19e") : ""}
         </dd>
-        <dt className="text-text-tertiary">{L("Lengde", "Length")}</dt>
+        <dt className="text-text-tertiary">{t("app-assembly-compare-versions-dialog.side.dt.0d40bd1ff3d6")}</dt>
         <dd className="font-mono text-text-primary">
           {secs.toLocaleString(locale(), { maximumFractionDigits: 2 })} s · {version.durationFrames}{" "}
-          {L("bilder", "frames")}
+          {t("app-assembly-compare-versions-dialog.side.dd.64b62ae6f6fc")}
         </dd>
-        <dt className="text-text-tertiary">{L("Laget", "Created")}</dt>
+        <dt className="text-text-tertiary">{t("app-assembly-compare-versions-dialog.side.dt.b09628b98445")}</dt>
         <dd className="text-text-primary">
           {version.createdAt
             ? new Date(version.createdAt).toLocaleString(locale(), {
                 dateStyle: "medium",
                 timeStyle: "short",
               })
-            : L("ukjent", "unknown")}
+            : t("app-assembly-compare-versions-dialog.side.dd.c8cf517ec842")}
         </dd>
-        <dt className="text-text-tertiary">{L("Her", "Here")}</dt>
+        <dt className="text-text-tertiary">{t("app-assembly-compare-versions-dialog.side.dt.fa7bbe45c333")}</dt>
         <dd className="font-mono text-text-primary">{formatTimecode(frame, fps)}</dd>
       </dl>
     </div>

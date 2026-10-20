@@ -30,6 +30,7 @@ import {
   L,
 } from "@/core";
 import { Button } from "@/components/ui/button";
+import { t } from "@/core/i18n/keyed";
 
 const control =
   "h-7 w-full min-w-0 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary disabled:opacity-60";
@@ -130,18 +131,18 @@ function Bilingual({
   return (
     <div className="grid grid-cols-1 gap-1.5">
       <Field
-        label={`${label} (${L("norsk", "Norwegian")})`}
+        label={`${label} (${t("app-release-poster-inspector.bilingual.label.e68a78963db2")})`}
         value={value.nb}
         disabled={disabled}
         multiline={multiline ?? false}
         onCommit={(nb) => onCommit({ ...value, nb })}
       />
       <Field
-        label={`${label} (${L("engelsk", "English")})`}
+        label={`${label} (${t("app-release-poster-inspector.bilingual.label.2f1aee6df04c")})`}
         value={value.en}
         disabled={disabled}
         multiline={multiline ?? false}
-        placeholder={L("Tom: norsk tekst brukes", "Empty: the Norwegian text is used")}
+        placeholder={t("app-release-poster-inspector.bilingual.placeholder.701d079a0cb5")}
         onCommit={(en) => onCommit({ ...value, en })}
       />
     </div>
@@ -234,14 +235,14 @@ export function PosterSettings({
       o = { ...o, shortDescriptions: false, longDescriptions: false, relationTexts: false };
     if ((k === "shortDescriptions" || k === "longDescriptions") && on)
       o = { ...o, imagesAndNamesOnly: false };
-    onDocument({ ...doc, options: o }, L("Endre innhold på plakaten", "Change poster content"));
+    onDocument({ ...doc, options: o }, t("app-release-poster-inspector.toggle.on-document.0faf3ea023af"));
   };
   const pick = (list: "characters" | "places" | "objects", id: string, on: boolean) => {
     const cur = doc[list];
     const next = on ? [...cur, id] : cur.filter((x) => x !== id);
     onDocument(
       { ...doc, [list]: next },
-      L("Endre utvalget på plakaten", "Change the selection on the poster"),
+      t("app-release-poster-inspector.pick.on-document.9c091bedf2a3"),
     );
   };
   const candidates = (list: "characters" | "places" | "objects") => {
@@ -268,13 +269,13 @@ export function PosterSettings({
 
   return (
     <div className="flex flex-col">
-      <Section title={L("Plakat", "Poster")}>
+      <Section title={t("app-release-poster-inspector.poster-settings.title.080c03a5a101")}>
         <Field
-          label={L("Navn", "Name")}
+          label={t("app-release-poster-inspector.poster-settings.label.d618c321e720")}
           value={poster.name}
           disabled={ro}
           onCommit={(name) =>
-            name.trim() && onPoster({ name }, L("Endre navn på plakaten", "Rename the poster"))
+            name.trim() && onPoster({ name }, t("app-release-poster-inspector.poster-settings.on-poster.668f5ed1f83d"))
           }
         />
         <div className="grid grid-cols-2 gap-2">
@@ -286,7 +287,7 @@ export function PosterSettings({
               onChange={(e) =>
                 onPoster(
                   { kind: e.target.value as PosterKind },
-                  L("Endre plakattype", "Change poster type"),
+                  t("app-release-poster-inspector.poster-settings.on-poster.95f5171868f5"),
                 )
               }
               className={control}
@@ -299,20 +300,20 @@ export function PosterSettings({
             </select>
           </label>
           <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
-            {L("Språk", "Language")}
+            {t("app-release-poster-inspector.poster-settings.label.d24bde1ca89e")}
             <select
               value={poster.language}
               disabled={ro}
               onChange={(e) =>
                 onPoster(
                   { language: e.target.value as "nb" | "en" },
-                  L("Endre språk på plakaten", "Change the poster language"),
+                  t("app-release-poster-inspector.poster-settings.on-poster.3e76f71503df"),
                 )
               }
               className={control}
             >
-              <option value="nb">{L("Norsk", "Norwegian")}</option>
-              <option value="en">{L("Engelsk", "English")}</option>
+              <option value="nb">{t("app-release-poster-inspector.poster-settings.option.cf6b065837cf")}</option>
+              <option value="en">{t("app-release-poster-inspector.poster-settings.option.e6ed30832c1c")}</option>
             </select>
           </label>
         </div>
@@ -323,7 +324,7 @@ export function PosterSettings({
             disabled={ro}
             onChange={(e) => {
               const f = POSTER_FORMATS.find((x) => x.id === e.target.value);
-              if (f) onPoster({ widthMm: f.w, heightMm: f.h }, L("Endre format", "Change format"));
+              if (f) onPoster({ widthMm: f.w, heightMm: f.h }, t("app-release-poster-inspector.poster-settings.on-poster.7305f75e196e"));
             }}
             className={control}
           >
@@ -332,58 +333,58 @@ export function PosterSettings({
                 {f.name}
               </option>
             ))}
-            {!format ? <option value="custom">{L("Eget format", "Custom format")}</option> : null}
+            {!format ? <option value="custom">{t("app-release-poster-inspector.poster-settings.option.53af7efc3961")}</option> : null}
           </select>
         </label>
         <div className="grid grid-cols-2 gap-2">
           <Field
-            label={L("Bredde (cm)", "Width (cm)")}
+            label={t("app-release-poster-inspector.poster-settings.label.f7167f2f6db5")}
             type="number"
             value={String(poster.widthMm / 10)}
             disabled={ro}
             onCommit={(v) => {
               const n = Number(v.replace(",", "."));
               if (n >= 5 && n <= 300)
-                onPoster({ widthMm: n * 10 }, L("Endre format", "Change format"));
+                onPoster({ widthMm: n * 10 }, t("app-release-poster-inspector.poster-settings.on-poster.7305f75e196e.2"));
             }}
           />
           <Field
-            label={L("Høyde (cm)", "Height (cm)")}
+            label={t("app-release-poster-inspector.poster-settings.label.caea5248c457")}
             type="number"
             value={String(poster.heightMm / 10)}
             disabled={ro}
             onCommit={(v) => {
               const n = Number(v.replace(",", "."));
               if (n >= 5 && n <= 300)
-                onPoster({ heightMm: n * 10 }, L("Endre format", "Change format"));
+                onPoster({ heightMm: n * 10 }, t("app-release-poster-inspector.poster-settings.on-poster.7305f75e196e.3"));
             }}
           />
         </div>
         <p className="text-[11px] text-text-tertiary">
-          {L("Minste lesbare tekst i dette formatet:", "Smallest readable text in this format:")}{" "}
+          {t("app-release-poster-inspector.poster-settings.p.c843bbf68646")}{" "}
           {Math.round(minReadablePt(poster.widthMm))} pt.
         </p>
       </Section>
 
-      <Section title={L("Stil", "Style")}>
+      <Section title={t("app-release-poster-inspector.poster-settings.title.62bd578be6e4")}>
         <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
-          {L("Fargepalett", "Colour palette")}
+          {t("app-release-poster-inspector.poster-settings.label.dc300cfc34a0")}
           <select
             value={PALETTES.find((p) => p.name === doc.palette.name)?.name ?? ""}
             disabled={ro}
             onChange={(e) => {
               const p = PALETTES.find((x) => x.name === e.target.value);
-              if (p) onDocument({ ...doc, palette: p }, L("Endre stil", "Change style"));
+              if (p) onDocument({ ...doc, palette: p }, t("app-release-poster-inspector.poster-settings.on-document.def7df9d3fd9"));
             }}
             className={control}
           >
             {!PALETTES.some((p) => p.name === doc.palette.name) ? (
-              <option value="">{L("Egen", "Custom")}</option>
+              <option value="">{t("app-release-poster-inspector.poster-settings.option.baae3966c5fc")}</option>
             ) : null}
             {PALETTES.map((p) => (
               <option key={p.name} value={p.name}>
                 {paletteLabel(p.name)}
-                {p.name === analysis.palette.name ? L(" (foreslått)", " (suggested)") : ""}
+                {p.name === analysis.palette.name ? t("app-release-poster-inspector.poster-settings.option.3ca6b49373b6") : ""}
               </option>
             ))}
           </select>
@@ -397,10 +398,10 @@ export function PosterSettings({
               <ColorInput
                 aria-label={
                   {
-                    background: L("Bakgrunnsfarge", "Background colour"),
-                    text: L("Tekstfarge", "Text colour"),
-                    accent: L("Aksentfarge", "Accent colour"),
-                    muted: L("Dempet farge", "Muted colour"),
+                    background: t("app-release-poster-inspector.background.background.b4b9947e469f"),
+                    text: t("app-release-poster-inspector.text.text.8fc21fb0debb"),
+                    accent: t("app-release-poster-inspector.accent.accent.31c7d61e82e7"),
+                    muted: t("app-release-poster-inspector.muted.muted.6ed0859703dd"),
                   }[k]
                 }
                 value={doc.palette[k]}
@@ -408,7 +409,7 @@ export function PosterSettings({
                 onCommit={(value) =>
                   onDocument(
                     { ...doc, palette: { ...doc.palette, name: "Egen", [k]: value } },
-                    L("Endre farge", "Change colour"),
+                    t("app-release-poster-inspector.poster-settings.on-document.d6facbb2af09"),
                     `palette:${poster.id}:${k}`,
                   )
                 }
@@ -416,10 +417,10 @@ export function PosterSettings({
               />
               {
                 {
-                  background: L("Bakgrunn", "Background"),
-                  text: L("Tekst", "Text"),
-                  accent: L("Aksent", "Accent"),
-                  muted: L("Dempet", "Muted"),
+                  background: t("app-release-poster-inspector.background.background.909f488bfdb8"),
+                  text: t("app-release-poster-inspector.text.text.91322597c1d2"),
+                  accent: t("app-release-poster-inspector.accent.accent.9a36a844cd1c"),
+                  muted: t("app-release-poster-inspector.muted.muted.f93aac6e9328"),
                 }[k]
               }
             </label>
@@ -427,25 +428,25 @@ export function PosterSettings({
         </div>
       </Section>
 
-      <Section title={L("Tekster", "Texts")}>
+      <Section title={t("app-release-poster-inspector.poster-settings.title.5ea77e7fd94e")}>
         <Bilingual
-          label={L("Tittel", "Title")}
+          label={t("app-release-poster-inspector.poster-settings.label.76c766b3293e")}
           value={doc.title}
           disabled={ro}
-          onCommit={(title) => onDocument({ ...doc, title }, L("Endre tittel", "Change title"))}
+          onCommit={(title) => onDocument({ ...doc, title }, t("app-release-poster-inspector.poster-settings.on-document.76cb1debf047"))}
         />
         <Bilingual
-          label={L("Sjanger og stemning", "Genre and mood")}
+          label={t("app-release-poster-inspector.poster-settings.label.9843441a4ed2")}
           value={doc.genre}
           disabled={ro}
-          onCommit={(genre) => onDocument({ ...doc, genre }, L("Endre sjanger", "Change genre"))}
+          onCommit={(genre) => onDocument({ ...doc, genre }, t("app-release-poster-inspector.poster-settings.on-document.413d1b72987d"))}
         />
         <Bilingual
-          label={L("Slagord", "Tagline")}
+          label={t("app-release-poster-inspector.poster-settings.label.bcea48b950bf")}
           value={doc.tagline}
           disabled={ro}
           onCommit={(tagline) =>
-            onDocument({ ...doc, tagline }, L("Endre slagord", "Change tagline"))
+            onDocument({ ...doc, tagline }, t("app-release-poster-inspector.poster-settings.on-document.2a43aa2f90c6"))
           }
         />
         <Bilingual
@@ -454,12 +455,12 @@ export function PosterSettings({
           disabled={ro}
           multiline
           onCommit={(logline) =>
-            onDocument({ ...doc, logline }, L("Endre logline", "Change logline"))
+            onDocument({ ...doc, logline }, t("app-release-poster-inspector.poster-settings.on-document.22553ad64a2a"))
           }
         />
       </Section>
 
-      <Section title={L("Innhold", "Content")}>
+      <Section title={t("app-release-poster-inspector.poster-settings.title.3f66ceb9e842")}>
         <div className="grid grid-cols-1 gap-1">
           {POSTER_OPTION_LABEL.map(([k, label]) => (
             <label key={k} className="flex items-center gap-2 text-xs text-text-primary">
@@ -483,15 +484,15 @@ export function PosterSettings({
             key={list}
             title={`${
               {
-                characters: L("Karakterer", "Characters"),
-                places: L("Steder", "Places"),
-                objects: L("Objekter", "Objects"),
+                characters: t("app-release-poster-inspector.characters.characters.6813a139c3eb"),
+                places: t("app-release-poster-inspector.places.places.d595921f1fd8"),
+                objects: t("app-release-poster-inspector.objects.objects.9f4ef282532e"),
               }[list]
-            } (${doc[list].length} ${L("valgt", "selected")})`}
+            } (${doc[list].length} ${t("app-release-poster-inspector.poster-settings.title.ed32d315d129")})`}
           >
             {all.length === 0 ? (
               <p className="text-[11px] text-text-tertiary">
-                {L("Ingen i biblioteket.", "None in the library.")}
+                {t("app-release-poster-inspector.poster-settings.p.6f14fe5f4a16")}
               </p>
             ) : (
               <ul className="flex max-h-48 flex-col gap-0.5 overflow-y-auto">
@@ -530,16 +531,13 @@ export function PosterSettings({
       })}
 
       {editable ? (
-        <Section title={L("Utkast", "Draft")}>
+        <Section title={t("app-release-poster-inspector.poster-settings.title.a50a256fdc63")}>
           <p className="text-[11px] text-text-tertiary">
-            {L(
-              "Lager plakaten på nytt fra innholdet over. Det du har flyttet eller endret selv, forsvinner (kan angres).",
-              "Makes the poster again from the content above. What you have moved or changed yourself disappears (can be undone).",
-            )}
+            {t("app-release-poster-inspector.poster-settings.p.fa63270ab77e")}
           </p>
           <Button size="sm" variant="secondary" onClick={onRedraft}>
             <LayoutTemplate />
-            {L("Lag utkastet på nytt", "Redraft the poster")}
+            {t("app-release-poster-inspector.poster-settings.button.41c0a022c8ae")}
           </Button>
         </Section>
       ) : null}
@@ -591,7 +589,7 @@ export function ElementInspector({
         if (Number.isFinite(n))
           onChange(
             { [key]: n * scale },
-            L(`Endre ${label.toLowerCase()}`, `Change ${label.toLowerCase()}`),
+            t("app-release-poster-inspector.num.on-change.b6b1183fe4fd", { value1: String(label.toLowerCase()) }),
           );
       }}
     />
@@ -607,16 +605,10 @@ export function ElementInspector({
       <Section title={`Element: ${ROLE_LABEL[e.role] ?? e.role}${asset ? ` – ${asset.name}` : ""}`}>
         <p className="text-[11px] text-text-tertiary">
           {e.auto
-            ? L(
-                "Laget av programmet. Endrer du det, blir det ditt og står når innholdet endres.",
-                "Made by the app. If you change it, it becomes yours and stays when the content changes.",
-              )
+            ? t("app-release-poster-inspector.element-inspector.p.241b7c63b034")
             : e.role === "custom"
-              ? L("Eget element.", "Custom element.")
-              : L(
-                  "Endret av deg. Står når innholdet endres.",
-                  "Changed by you. Stays when the content changes.",
-                )}
+              ? t("app-release-poster-inspector.element-inspector.p.c203b5a6725b")
+              : t("app-release-poster-inspector.element-inspector.p.10a1b7bc27b5")}
         </p>
         <label className="flex items-center gap-2 text-xs text-text-primary">
           <input
@@ -627,81 +619,81 @@ export function ElementInspector({
               onChange(
                 { visible: ev.target.checked },
                 ev.target.checked
-                  ? L("Vis element", "Show element")
-                  : L("Skjul element", "Hide element"),
+                  ? t("app-release-poster-inspector.element-inspector.on-change.b556ee1a8cdf")
+                  : t("app-release-poster-inspector.element-inspector.on-change.0c0e947baff3"),
               )
             }
             className="size-3.5 accent-[var(--accent-brand)]"
           />
-          {L("Synlig", "Visible")}
+          {t("app-release-poster-inspector.element-inspector.label.78b5be9a9eec")}
         </label>
         {e.kind !== "relation" ? (
           <div className="grid grid-cols-2 gap-1.5">
             {num("X", "x", 10, "cm")}
             {num("Y", "y", 10, "cm")}
-            {num(L("Bredde", "Width"), "w", 10, "cm")}
-            {num(L("Høyde", "Height"), "h", 10, "cm")}
-            {num(L("Rotasjon", "Rotation"), "rotation", 1, L("grader", "degrees"))}
+            {num(t("app-release-poster-inspector.element-inspector.num.3212162adbb9"), "w", 10, "cm")}
+            {num(t("app-release-poster-inspector.element-inspector.num.273f9af4132f"), "h", 10, "cm")}
+            {num(t("app-release-poster-inspector.element-inspector.num.da69649b9eb8"), "rotation", 1, t("app-release-poster-inspector.element-inspector.num.7e6d751da4af"))}
           </div>
         ) : null}
       </Section>
 
       {e.kind === "text" || e.kind === "relation" ? (
-        <Section title={L("Tekst", "Text")}>
+        <Section title={t("app-release-poster-inspector.element-inspector.title.e9fbbd403aec")}>
           <Bilingual
-            label={L("Tekst", "Text")}
+            label={t("app-release-poster-inspector.element-inspector.label.e9fbbd403aec")}
             value={e.text ?? { nb: "", en: "" }}
             disabled={ro}
             multiline
-            onCommit={(text) => onChange({ text }, L("Endre tekst", "Change text"))}
+            onCommit={(text) => onChange({ text }, t("app-release-poster-inspector.element-inspector.on-change.d2d4d09164ef"))}
           />
           <div className="grid grid-cols-2 gap-1.5">
             <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
-              {L("Skrift", "Font")}
+              {t("app-release-poster-inspector.element-inspector.label.f918229d9270")}
               <select
                 value={e.font ?? "serif"}
                 disabled={ro}
                 onChange={(ev) =>
                   onChange(
                     { font: ev.target.value as "serif" | "sans" },
-                    L("Endre skrift", "Change font"),
+                    t("app-release-poster-inspector.element-inspector.on-change.0aa1a59cf36f"),
                   )
                 }
                 className={control}
               >
-                <option value="serif">{L("Antikva (Times)", "Serif (Times)")}</option>
-                <option value="sans">{L("Grotesk (Helvetica)", "Sans (Helvetica)")}</option>
+                <option value="serif">{t("app-release-poster-inspector.element-inspector.option.835f0f675c81")}</option>
+                <option value="sans">{t("app-release-poster-inspector.element-inspector.option.630edc49d5ca")}</option>
               </select>
             </label>
-            {num(L("Størrelse", "Size"), "size", 1, "pt")}
+            {num(t("app-release-poster-inspector.element-inspector.num.3e623a8ea29f"), "size", 1, "pt")}
             {e.kind === "text" ? (
               <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
-                {L("Justering", "Alignment")}
+                {t("app-release-poster-inspector.element-inspector.label.dc05a260e3fa")}
                 <select
                   value={e.align ?? "center"}
                   disabled={ro}
                   onChange={(ev) =>
                     onChange(
                       { align: ev.target.value as "left" | "center" | "right" },
-                      L("Endre justering", "Change alignment"),
+                      t("app-release-poster-inspector.element-inspector.on-change.a2883ee2fad3"),
                     )
                   }
                   className={control}
                 >
-                  <option value="left">{L("Venstre", "Left")}</option>
-                  <option value="center">{L("Midtstilt", "Centred")}</option>
-                  <option value="right">{L("Høyre", "Right")}</option>
+                  <option value="left">{t("app-release-poster-inspector.element-inspector.option.047d46e4c76b")}</option>
+                  <option value="center">{t("app-release-poster-inspector.element-inspector.option.cc130b27b750")}</option>
+                  <option value="right">{t("app-release-poster-inspector.element-inspector.option.0817808ae29a")}</option>
                 </select>
               </label>
             ) : null}
-            {e.kind === "text" ? num(L("Sperring", "Tracking"), "tracking", 1, "1/1000 em") : null}
+            {e.kind === "text" ? num(t("app-release-poster-inspector.element-inspector.num.8a200f74cd6b"), "tracking", 1, "1/1000 em") : null}
             <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
-              {L("Farge", "Colour")}
+              {t("app-release-poster-inspector.element-inspector.label.905640d8322f")}
               <ColorInput
                 value={e.color ?? poster.document.palette.text}
                 disabled={ro}
                 onCommit={(value) =>
-                  onChange({ color: value }, L("Endre farge", "Change colour"), `color:${e.id}`)
+                  onChange({ color: value }, t("app-release-poster-inspector.element-inspector.on-change.e4e743923888"), `color:${e.id}`)
                 }
                 className="h-7"
               />
@@ -716,12 +708,12 @@ export function ElementInspector({
                 onChange={(ev) =>
                   onChange(
                     { bold: ev.target.checked, ...(ev.target.checked ? { italic: false } : {}) },
-                    L("Endre skrift", "Change font"),
+                    t("app-release-poster-inspector.element-inspector.on-change.0aa1a59cf36f.2"),
                   )
                 }
                 className="size-3.5 accent-[var(--accent-brand)]"
               />
-              {L("Halvfet", "Bold")}
+              {t("app-release-poster-inspector.element-inspector.label.478ff984c35e")}
             </label>
             {(e.font ?? "serif") === "serif" ? (
               <label className="flex items-center gap-1.5 text-xs text-text-primary">
@@ -732,12 +724,12 @@ export function ElementInspector({
                   onChange={(ev) =>
                     onChange(
                       { italic: ev.target.checked, ...(ev.target.checked ? { bold: false } : {}) },
-                      L("Endre skrift", "Change font"),
+                      t("app-release-poster-inspector.element-inspector.on-change.0aa1a59cf36f.3"),
                     )
                   }
                   className="size-3.5 accent-[var(--accent-brand)]"
                 />
-                {L("Kursiv", "Italic")}
+                {t("app-release-poster-inspector.element-inspector.label.eac19d8e106e")}
               </label>
             ) : null}
             {e.kind === "text" ? (
@@ -747,11 +739,11 @@ export function ElementInspector({
                   checked={e.uppercase ?? false}
                   disabled={ro}
                   onChange={(ev) =>
-                    onChange({ uppercase: ev.target.checked }, L("Endre skrift", "Change font"))
+                    onChange({ uppercase: ev.target.checked }, t("app-release-poster-inspector.element-inspector.on-change.0aa1a59cf36f.4"))
                   }
                   className="size-3.5 accent-[var(--accent-brand)]"
                 />
-                {L("Store bokstaver", "Capitals")}
+                {t("app-release-poster-inspector.element-inspector.label.9e443a3526a5")}
               </label>
             ) : null}
           </div>
@@ -759,24 +751,24 @@ export function ElementInspector({
       ) : null}
 
       {e.kind === "relation" ? (
-        <Section title={L("Linje", "Line")}>
+        <Section title={t("app-release-poster-inspector.element-inspector.title.3cc1d71d3465")}>
           <div className="grid grid-cols-2 gap-1.5">
             <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
-              {L("Linjefarge", "Line colour")}
+              {t("app-release-poster-inspector.element-inspector.label.a86049b85f6d")}
               <ColorInput
                 value={e.stroke ?? "#ffffff"}
                 disabled={ro}
                 onCommit={(value) =>
                   onChange(
                     { stroke: value },
-                    L("Endre linjefarge", "Change line colour"),
+                    t("app-release-poster-inspector.element-inspector.on-change.d8705ce5e0f3"),
                     `stroke:${e.id}`,
                   )
                 }
                 className="h-7"
               />
             </label>
-            {num(L("Tykkelse", "Thickness"), "strokeWidth", 1, "mm")}
+            {num(t("app-release-poster-inspector.element-inspector.num.8788f005a4dc"), "strokeWidth", 1, "mm")}
           </div>
           <label className="flex items-center gap-1.5 text-xs text-text-primary">
             <input
@@ -784,26 +776,26 @@ export function ElementInspector({
               checked={e.dashed ?? false}
               disabled={ro}
               onChange={(ev) =>
-                onChange({ dashed: ev.target.checked }, L("Endre linje", "Change line"))
+                onChange({ dashed: ev.target.checked }, t("app-release-poster-inspector.element-inspector.on-change.30fcdec342d4"))
               }
               className="size-3.5 accent-[var(--accent-brand)]"
             />
-            {L("Stiplet", "Dashed")}
+            {t("app-release-poster-inspector.element-inspector.label.43ca714179c4")}
           </label>
         </Section>
       ) : null}
 
       {e.kind === "image" ? (
-        <Section title={L("Bilde", "Image")}>
+        <Section title={t("app-release-poster-inspector.element-inspector.title.e98cd2f8a5a0")}>
           <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
-            {L("Ressurs", "Asset")}
+            {t("app-release-poster-inspector.element-inspector.label.449e4324fffc")}
             <select
               value={e.assetId ?? ""}
               disabled={ro}
               onChange={(ev) =>
                 onChange(
                   { assetId: ev.target.value as never, assetVariantId: null, versionId: null },
-                  L("Bytt bilde", "Change image"),
+                  t("app-release-poster-inspector.element-inspector.on-change.f4fde8162495"),
                 )
               }
               className={control}
@@ -824,12 +816,12 @@ export function ElementInspector({
                 onChange={(ev) =>
                   onChange(
                     { assetVariantId: (ev.target.value || null) as never, versionId: null },
-                    L("Bytt variant", "Change variant"),
+                    t("app-release-poster-inspector.element-inspector.on-change.12b4624bd2fb"),
                   )
                 }
                 className={control}
               >
-                <option value="">{L("Forsidebildet", "The cover image")}</option>
+                <option value="">{t("app-release-poster-inspector.element-inspector.option.e4771266e271")}</option>
                 {variants.map((v) => (
                   <option key={v.id} value={v.id}>
                     {v.name}
@@ -840,22 +832,22 @@ export function ElementInspector({
           ) : null}
           {versions.length > 1 ? (
             <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
-              {L("Versjon", "Version")}
+              {t("app-release-poster-inspector.element-inspector.label.b20262857972")}
               <select
                 value={e.versionId ?? ""}
                 disabled={ro}
                 onChange={(ev) =>
                   onChange(
                     { versionId: (ev.target.value || null) as never },
-                    L("Bytt versjon", "Change version"),
+                    t("app-release-poster-inspector.element-inspector.on-change.7a27c2072c12"),
                   )
                 }
                 className={control}
               >
-                <option value="">{L("Godkjent eller nyeste", "Approved or latest")}</option>
+                <option value="">{t("app-release-poster-inspector.element-inspector.option.37292afe116b")}</option>
                 {versions.map((v) => (
                   <option key={v.id} value={v.id}>
-                    {L("Versjon", "Version")} {v.number}
+                    {t("app-release-poster-inspector.element-inspector.option.b20262857972")} {v.number}
                   </option>
                 ))}
               </select>
@@ -869,41 +861,38 @@ export function ElementInspector({
               disabled={ro}
               data-testid="poster-harmonize"
               onClick={onHarmonize}
-              title={L(
-                "Tegn om bildet til plakatens felles stil med AI (koster, bekreftes først). Originalen endres ikke.",
-                "Redraw the image in the poster's shared style with AI (costs, confirmed first). The original does not change.",
-              )}
+              title={t("app-release-poster-inspector.element-inspector.title.a5dd5de6878f")}
             >
-              {L("Harmoniser stil …", "Harmonize style …")}
+              {t("app-release-poster-inspector.element-inspector.button.f568217d5eee")}
             </Button>
           ) : null}
           <div className="grid grid-cols-2 gap-1.5">
             <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
-              {L("Tilpasning", "Fit")}
+              {t("app-release-poster-inspector.element-inspector.label.8534544fad56")}
               <select
                 value={e.fit ?? "cover"}
                 disabled={ro}
                 onChange={(ev) =>
                   onChange(
                     { fit: ev.target.value as "cover" | "contain" },
-                    L("Endre tilpasning", "Change fit"),
+                    t("app-release-poster-inspector.element-inspector.on-change.f40d8e1e9fa6"),
                   )
                 }
                 className={control}
               >
-                <option value="contain">{L("Hele bildet", "Whole image")}</option>
-                <option value="cover">{L("Fyll rammen", "Fill the frame")}</option>
+                <option value="contain">{t("app-release-poster-inspector.element-inspector.option.cc93c9e05f5c")}</option>
+                <option value="cover">{t("app-release-poster-inspector.element-inspector.option.e3f412286b9d")}</option>
               </select>
             </label>
             <Field
-              label={L("Dekkevne (%)", "Opacity (%)")}
+              label={t("app-release-poster-inspector.element-inspector.label.28d7250686e8")}
               type="number"
               value={String(Math.round((e.opacity ?? 1) * 100))}
               disabled={ro}
               onCommit={(v) => {
                 const n = Number(v);
                 if (n >= 0 && n <= 100)
-                  onChange({ opacity: n / 100 }, L("Endre dekkevne", "Change opacity"));
+                  onChange({ opacity: n / 100 }, t("app-release-poster-inspector.element-inspector.on-change.cb50faab5279"));
               }}
             />
           </div>
@@ -911,59 +900,59 @@ export function ElementInspector({
       ) : null}
 
       {e.kind === "rect" ? (
-        <Section title={L("Flate", "Fill")}>
+        <Section title={t("app-release-poster-inspector.element-inspector.title.6a5955d62cf5")}>
           <div className="grid grid-cols-2 gap-1.5">
             <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
-              {L("Farge", "Colour")}
+              {t("app-release-poster-inspector.element-inspector.label.905640d8322f.2")}
               <ColorInput
                 value={e.fill ?? "#000000"}
                 disabled={ro}
                 onCommit={(value) =>
-                  onChange({ fill: value }, L("Endre farge", "Change colour"), `fill:${e.id}`)
+                  onChange({ fill: value }, t("app-release-poster-inspector.element-inspector.on-change.e4e743923888.2"), `fill:${e.id}`)
                 }
                 className="h-7"
               />
             </label>
             <Field
-              label={L("Dekkevne (%)", "Opacity (%)")}
+              label={t("app-release-poster-inspector.element-inspector.label.28d7250686e8.2")}
               type="number"
               value={String(Math.round((e.opacity ?? 1) * 100))}
               disabled={ro}
               onCommit={(v) => {
                 const n = Number(v);
                 if (n >= 0 && n <= 100)
-                  onChange({ opacity: n / 100 }, L("Endre dekkevne", "Change opacity"));
+                  onChange({ opacity: n / 100 }, t("app-release-poster-inspector.element-inspector.on-change.cb50faab5279.2"));
               }}
             />
-            {num(L("Hjørner", "Corners"), "radius", 1, "mm")}
+            {num(t("app-release-poster-inspector.element-inspector.num.099003fd2c1f"), "radius", 1, "mm")}
           </div>
         </Section>
       ) : null}
 
       {editable ? (
-        <Section title={L("Handlinger", "Actions")}>
+        <Section title={t("app-release-poster-inspector.element-inspector.title.e65d846821e0")}>
           <div className="flex flex-wrap gap-1.5">
             <Button size="sm" variant="ghost" onClick={() => onOrder("front")}>
-              {L("Flytt fram", "Bring forward")}
+              {t("app-release-poster-inspector.element-inspector.button.d2c02687b715")}
             </Button>
             <Button size="sm" variant="ghost" onClick={() => onOrder("back")}>
-              {L("Flytt bak", "Send back")}
+              {t("app-release-poster-inspector.element-inspector.button.c6f0bfbd255e")}
             </Button>
             {!e.auto && e.role !== "custom" ? (
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={onReset}
-                title={L("Programmet lager elementet på nytt", "The app makes the element again")}
+                title={t("app-release-poster-inspector.element-inspector.title.3dff3eeeb264")}
               >
                 <RotateCcw />
-                {L("Tilbakestill", "Reset")}
+                {t("app-release-poster-inspector.element-inspector.button.b56be23e106d")}
               </Button>
             ) : null}
             {e.role === "custom" ? (
               <Button size="sm" variant="ghost" onClick={onRemove}>
                 <Trash2 />
-                {L("Fjern", "Remove")}
+                {t("app-release-poster-inspector.element-inspector.button.6c9ccab16bf6")}
               </Button>
             ) : null}
           </div>
@@ -993,7 +982,7 @@ export function PosterChecksList({
   return (
     <ul
       className="flex flex-col gap-1.5 px-3 py-3"
-      aria-label={L("Kontroll av plakaten", "Check of the poster")}
+      aria-label={t("app-release-poster-inspector.poster-checks-list.aria-label.4278fd595e5b")}
     >
       {checks.map((c, i) => (
         <li
@@ -1023,10 +1012,10 @@ export function PosterChecksList({
               <button
                 type="button"
                 className="ml-1 text-accent-brand underline-offset-2 hover:underline"
-                aria-label={L(`Vis i plakaten: ${c.text}`, `Show in the poster: ${c.text}`)}
+                aria-label={t("app-release-poster-inspector.poster-checks-list.aria-label.896b8a01afb9", { text: String(c.text) })}
                 onClick={() => onShow(c.elementIds!)}
               >
-                {L("Vis", "Show")}
+                {t("app-release-poster-inspector.poster-checks-list.button.f1ac6a3203ce")}
               </button>
             ) : null}
           </span>

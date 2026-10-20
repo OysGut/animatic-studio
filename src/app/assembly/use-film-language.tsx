@@ -5,6 +5,7 @@
  */
 import { useCallback, useEffect, useState } from "react";
 import { FILM_LANGUAGES, L, LANGUAGE_LABEL, MAIN_LANGUAGE } from "@/core";
+import { t } from "@/core/i18n/keyed";
 
 const LANGUAGE_NAME_EN: Record<string, string> = { nb: "Norwegian", en: "English" };
 
@@ -74,11 +75,11 @@ export function FilmLanguagePicker({
     <span className="flex items-center gap-1.5 text-xs text-text-secondary">
       <label
         className="flex items-center gap-1"
-        title={L("Språket dialogen spilles på", "The language the dialogue is played in")}
+        title={t("app-assembly-use-film-language.film-language-picker.title.8b30b9325922")}
       >
-        {compact ? null : <span>{L("Dialog", "Dialogue")}</span>}
+        {compact ? null : <span>{t("app-assembly-use-film-language.film-language-picker.span.661b3ef825e5")}</span>}
         <select
-          aria-label={L("Dialogspråk", "Dialogue language")}
+          aria-label={t("app-assembly-use-film-language.film-language-picker.aria-label.d46efc8b1a97")}
           value={value.dialogue}
           onChange={(e) => onChange({ dialogue: e.target.value })}
           className={select}
@@ -86,7 +87,7 @@ export function FilmLanguagePicker({
           {FILM_LANGUAGES.map((l) => (
             <option key={l} value={l}>
               {compact
-                ? L(`Dialog: ${languageName(l)}`, `Dialogue: ${languageName(l)}`)
+                ? t("app-assembly-use-film-language.film-language-picker.option.d89a5efb9970", { value1: String(languageName(l)) })
                 : languageName(l)}
             </option>
           ))}
@@ -94,20 +95,20 @@ export function FilmLanguagePicker({
       </label>
       <label
         className="flex items-center gap-1"
-        title={L("Undertekster i bildet", "Subtitles on screen")}
+        title={t("app-assembly-use-film-language.film-language-picker.title.233b1fd9f82d")}
       >
-        {compact ? null : <span>{L("Undertekster", "Subtitles")}</span>}
+        {compact ? null : <span>{t("app-assembly-use-film-language.film-language-picker.span.c78aa0770613")}</span>}
         <select
-          aria-label={L("Undertekster i bildet", "Subtitles on screen")}
+          aria-label={t("app-assembly-use-film-language.film-language-picker.aria-label.233b1fd9f82d")}
           value={value.subtitles ?? ""}
           onChange={(e) => onChange({ subtitles: e.target.value || null })}
           className={select}
         >
-          <option value="">{compact ? L("Tekst: av", "Text: off") : L("Ingen", "None")}</option>
+          <option value="">{compact ? t("app-assembly-use-film-language.film-language-picker.option.e6d77d1da4e8") : t("app-assembly-use-film-language.film-language-picker.option.277eb8e5d05e")}</option>
           {FILM_LANGUAGES.map((l) => (
             <option key={l} value={l}>
               {compact
-                ? L(`Tekst: ${languageName(l)}`, `Text: ${languageName(l)}`)
+                ? t("app-assembly-use-film-language.film-language-picker.option.b782b5169db7", { value1: String(languageName(l)) })
                 : languageName(l)}
             </option>
           ))}

@@ -6,6 +6,7 @@
 import type { Page } from "@/core/screenplay";
 import type { NotePlacement } from "@/core/notes";
 import { L } from "@/core";
+import { t as tk } from "@/core/i18n/keyed";
 
 const PAGE_W = 612;
 const PAGE_H = 792;
@@ -121,7 +122,7 @@ function highlight(n: NotePlacement): string {
   return (
     `<< /Type /Annot /Subtype /Highlight /F 4 /Rect [${[x1, y1, x2, y2].map(fmt).join(" ")}]` +
     ` /QuadPoints [${quads.map(fmt).join(" ")}] /C [1 0.82 0.3] /CA 0.45` +
-    ` /T ${pdfText(n.note.author)} /Contents ${pdfText(n.note.text)} /Subj (${n.note.system ? L("Systemmerknad", "System note") : L("Notat", "Note")})` +
+    ` /T ${pdfText(n.note.author)} /Contents ${pdfText(n.note.text)} /Subj (${n.note.system ? tk("engine-export-screenplay-pdf.highlight.message.3392376758bb") : tk("engine-export-screenplay-pdf.highlight.message.e5475048d630")})` +
     ` /NM ${pdfString(n.note.id)}${date ? ` /M ${date} /CreationDate ${date}` : ""} >>`
   );
 }

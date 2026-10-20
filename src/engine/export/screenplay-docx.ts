@@ -7,6 +7,7 @@ import { zipSync, strToU8 } from "fflate";
 import { L, type BlockKind } from "@/core";
 import type { PaginationScene } from "@/core/screenplay";
 import type { ExportNote } from "@/core/notes";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Kommentar i dokumentet (notat, DEC-0031). */
 interface CommentMark {
@@ -158,7 +159,7 @@ function commentXml(id: number, n: ExportNote): string {
     .split("\n")
     .map((line) => `<w:p><w:r><w:t xml:space="preserve">${esc(line)}</w:t></w:r></w:p>`)
     .join("");
-  return `<w:comment w:id="${id}" w:author="${esc(n.author || L("Ukjent", "Unknown"))}"${date} w:initials="${esc(initials)}">${paras}</w:comment>`;
+  return `<w:comment w:id="${id}" w:author="${esc(n.author || tk("engine-export-screenplay-docx.comment-xml.esc.e1c01748c122"))}"${date} w:initials="${esc(initials)}">${paras}</w:comment>`;
 }
 
 const RPR = `<w:rFonts w:ascii="Courier New" w:hAnsi="Courier New" w:cs="Courier New" w:eastAsia="Courier New"/><w:sz w:val="24"/><w:szCs w:val="24"/><w:lang w:val="nb-NO"/>`;

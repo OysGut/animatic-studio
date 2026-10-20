@@ -5,6 +5,7 @@
  */
 import { L, isVoiceKind, type FilmAudioItem } from "@/core";
 import { type AudioBank, renderAudio } from "../audio/mixer";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Lydklippene som hører til dialogsporet: tale (dialog og forteller), ikke lyden i importert film. */
 export function dialogueItems(items: readonly FilmAudioItem[]): FilmAudioItem[] {
@@ -113,7 +114,7 @@ export async function exportDialogueStemParts(o: {
   const CHUNK = 30;
   let written = 0;
   for (let t = 0; t < seconds - 1e-9 && written < total; t += CHUNK) {
-    if (o.signal?.aborted) throw new DOMException(L("Avbrutt", "Cancelled"), "AbortError");
+    if (o.signal?.aborted) throw new DOMException(tk("engine-export-audio-stem.export-dialogue-stem-parts.message.e1c7d00a2fa3"), "AbortError");
     const len = Math.min(CHUNK, seconds - t);
     const buf = await renderAudio(items, o.bank, o.from + t, len, rate);
     const at = Math.round(t * rate);

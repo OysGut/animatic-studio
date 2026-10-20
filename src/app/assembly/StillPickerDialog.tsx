@@ -27,6 +27,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { t } from "@/core/i18n/keyed";
 
 export function StillPickerDialog({
   open,
@@ -65,14 +66,11 @@ export function StillPickerDialog({
       () => newId(),
     );
     if (!cmds) {
-      setErr(L("Ugyldig lengde.", "Invalid length."));
+      setErr(t("app-assembly-still-picker-dialog.use.set-err.d6d1647a3a4a"));
       return;
     }
     const group = newId();
-    const label = L(
-      `Stillbilde «${choice.asset.name}» i scenen`,
-      `Still “${choice.asset.name}” in the scene`,
-    );
+    const label = t("app-assembly-still-picker-dialog.label.message.9781cfe4b26a", { name: String(choice.asset.name) });
     for (const c of cmds) {
       const e = run(c as never, label, group);
       if (e) {
@@ -87,24 +85,18 @@ export function StillPickerDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
-          <DialogTitle>{L("Stillbilde i scenen", "Still in the scene")}</DialogTitle>
+          <DialogTitle>{t("app-assembly-still-picker-dialog.still-picker-dialog.dialog-title.28558823f25b")}</DialogTitle>
           <DialogDescription>
-            {L(
-              "Velg et bilde fra ressursbiblioteket og hvor lenge det skal vises. Bildet vises uendret i visningen og i eksporten; lengden kan endres etterpå under «Klipp».",
-              "Choose an image from the asset library and how long it should be shown. The image is shown unchanged in the view and in the export; the length can be changed afterwards under “Cut”.",
-            )}
+            {t("app-assembly-still-picker-dialog.still-picker-dialog.dialog-description.9f4d3f5ee91f")}
           </DialogDescription>
         </DialogHeader>
         {list.length === 0 ? (
           <p className="text-[13px] text-text-secondary">
-            {L(
-              "Biblioteket har ingen bilder ennå. Last opp et bilde i ressursbiblioteket først.",
-              "The library has no images yet. Upload an image to the asset library first.",
-            )}
+            {t("app-assembly-still-picker-dialog.still-picker-dialog.p.1fdddb5367ae")}
           </p>
         ) : (
           <ul
-            aria-label={L("Bilder i biblioteket", "Images in the library")}
+            aria-label={t("app-assembly-still-picker-dialog.still-picker-dialog.aria-label.c4b236bfb135")}
             className="grid max-h-[50vh] grid-cols-4 gap-2 overflow-y-auto"
           >
             {list.map((x) => (
@@ -142,11 +134,11 @@ export function StillPickerDialog({
         )}
         <div className="flex flex-wrap items-center gap-3 text-xs text-text-secondary">
           <label className="flex items-center gap-1.5">
-            {L("Varighet", "Duration")}
+            {t("app-assembly-still-picker-dialog.still-picker-dialog.label.b9ffbc090132")}
             <input
               type="text"
               inputMode="decimal"
-              aria-label={L("Varighet i sekunder", "Duration in seconds")}
+              aria-label={t("app-assembly-still-picker-dialog.still-picker-dialog.aria-label.91d513018426")}
               value={seconds}
               onChange={(e) => setSeconds(e.target.value)}
               className="h-7 w-16 rounded-sm border border-border-control bg-surface-3 px-1.5 text-right text-xs text-text-primary"
@@ -160,7 +152,7 @@ export function StillPickerDialog({
               checked={mode === "replace"}
               onChange={() => setMode("replace")}
             />
-            {L("Hele scenen", "Whole scene")}
+            {t("app-assembly-still-picker-dialog.still-picker-dialog.label.dc7a50469a15")}
           </label>
           <label className="flex items-center gap-1.5">
             <input
@@ -169,12 +161,12 @@ export function StillPickerDialog({
               checked={mode === "append"}
               onChange={() => setMode("append")}
             />
-            {L("Ny del etter de andre", "New part after the others")}
+            {t("app-assembly-still-picker-dialog.still-picker-dialog.label.1235bc0e83a2")}
           </label>
           {!msOk ? (
             <span className="text-status-danger">
-              {L("Mellom", "Between")} {(STILL_MIN_MS / 1000).toLocaleString(locale())} s{" "}
-              {L("og", "and")} {STILL_MAX_MS / 60000} min
+              {t("app-assembly-still-picker-dialog.still-picker-dialog.span.31617481fb17")} {(STILL_MIN_MS / 1000).toLocaleString(locale())} s{" "}
+              {t("app-assembly-still-picker-dialog.still-picker-dialog.span.1f9e9b8828c2")} {STILL_MAX_MS / 60000} min
             </span>
           ) : null}
         </div>
@@ -185,10 +177,10 @@ export function StillPickerDialog({
         ) : null}
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            {L("Avbryt", "Cancel")}
+            {t("app-assembly-still-picker-dialog.still-picker-dialog.button.bd66ef2bbdde")}
           </Button>
           <Button onClick={use} disabled={!choice || !msOk}>
-            {L("Bruk stillbildet", "Use the still")}
+            {t("app-assembly-still-picker-dialog.still-picker-dialog.button.b8acc1584ae5")}
           </Button>
         </DialogFooter>
       </DialogContent>

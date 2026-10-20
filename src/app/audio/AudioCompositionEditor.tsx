@@ -67,6 +67,7 @@ import type { TakeTarget } from "./takes";
 import { LineWordsPanel } from "./LineWordsPanel";
 import { TransitionsPanel } from "./TransitionsPanel";
 import { fillRoom, roomToneFiles } from "./room-fill";
+import { t as tk } from "@/core/i18n/keyed";
 
 const segId = () => newId<"audio_segment">();
 const sec = (ms: number) => (ms / 1000).toFixed(2);
@@ -292,18 +293,12 @@ export function AudioCompositionEditor({
         assetId,
         newVariant
           ? {
-              newVariantName: L(
-                `Komposisjon ${variants.length + 1}`,
-                `Composition ${variants.length + 1}`,
-              ),
+              newVariantName: tk("app-audio-audio-composition-editor.new-variant-name.new-variant-name.7f96bb4e9d2a", { value1: String(variants.length + 1) }),
             }
           : { variantId: base.variantId },
         comp,
         buffers,
-        L(
-          `Komposisjon av ${new Set(comp.segments.map((x) => x.versionId)).size} opptak`,
-          `Composition of ${new Set(comp.segments.map((x) => x.versionId)).size} recordings`,
-        ),
+        tk("app-audio-audio-composition-editor.r.save-composition.720e7f996ccf", { size: String(new Set(comp.segments.map((x) => x.versionId)).size) }),
         base.alignment ? { alignment: alignmentInComposition(comp, base.alignment, base.composition
           ? { kind: "composition", composition: initial } : { kind: "version", versionId: baseVersionId }) } : undefined,
       );
@@ -327,16 +322,16 @@ export function AudioCompositionEditor({
   if (!base) return null;
   return (
     <section
-      aria-label={L("Lydeditor", "Audio editor")}
+      aria-label={tk("app-audio-audio-composition-editor.audio-composition-editor.aria-label.9d52027a3a22")}
       className="mt-4 rounded-sm border border-border bg-surface-1 p-3"
       data-testid="audio-editor"
     >
       <div className="flex flex-wrap items-center gap-2">
         <h3 className="text-[13px] font-semibold text-text-primary">
-          {L("Lydeditor", "Audio editor")}
+          {tk("app-audio-audio-composition-editor.audio-composition-editor.h3.9d52027a3a22")}
         </h3>
         <span className="text-xs text-text-tertiary" data-testid="audio-editor-length">
-          {L(`Lengde ${formatTakeLength(length)}`, `Length ${formatTakeLength(length)}`)} (
+          {tk("app-audio-audio-composition-editor.audio-composition-editor.span.d1903aac5e2c", { value1: String(formatTakeLength(length)) })} (
           {sec(length)} s)
         </span>
         <div className="ml-auto flex flex-wrap items-center gap-1">
@@ -355,17 +350,17 @@ export function AudioCompositionEditor({
               <Play className="size-3.5" aria-hidden />
             )}
             {playing
-              ? L("Stopp", "Stop")
+              ? tk("app-audio-audio-composition-editor.audio-composition-editor.button.3524af1b392b")
               : range
-                ? L("Spill området", "Play the range")
-                : L("Spill av", "Play")}
+                ? tk("app-audio-audio-composition-editor.audio-composition-editor.button.05ef90f6e083")
+                : tk("app-audio-audio-composition-editor.audio-composition-editor.button.41c2c0719b13")}
           </Button>
           <Button
             size="sm"
             variant="ghost"
             onClick={() => setHistory((h) => ({ ...h, at: Math.max(0, h.at - 1) }))}
             disabled={history.at === 0}
-            aria-label={L("Angre", "Undo")}
+            aria-label={tk("app-audio-audio-composition-editor.audio-composition-editor.aria-label.67ba5bd1715b")}
             data-testid="audio-editor-undo"
           >
             <Undo2 className="size-3.5" aria-hidden />
@@ -375,7 +370,7 @@ export function AudioCompositionEditor({
             variant="ghost"
             onClick={() => setHistory((h) => ({ ...h, at: Math.min(h.list.length - 1, h.at + 1) }))}
             disabled={history.at >= history.list.length - 1}
-            aria-label={L("Gjør om", "Redo")}
+            aria-label={tk("app-audio-audio-composition-editor.audio-composition-editor.aria-label.0e2c8ae776fd")}
           >
             <Redo2 className="size-3.5" aria-hidden />
           </Button>
@@ -384,25 +379,19 @@ export function AudioCompositionEditor({
             variant="ghost"
             onClick={() => push(initial)}
             disabled={!dirty}
-            title={L(
-              "Tilbake til lyden editoren startet med",
-              "Back to the audio the editor started with",
-            )}
+            title={tk("app-audio-audio-composition-editor.audio-composition-editor.title.40a9117272be")}
           >
             <RotateCcw className="size-3.5" aria-hidden />
-            {L("Opprinnelig", "Original")}
+            {tk("app-audio-audio-composition-editor.audio-composition-editor.button.75b8e78a7dc7")}
           </Button>
           <Button size="sm" variant="ghost" onClick={onClose}>
-            {L("Lukk editoren", "Close the editor")}
+            {tk("app-audio-audio-composition-editor.audio-composition-editor.button.50156bfa1804")}
           </Button>
         </div>
       </div>
       <label
         className="mt-1 flex w-fit items-center gap-1.5 text-xs text-text-secondary"
-        title={L(
-          "Spiller det endrede området med kontekst når en endring er fullført",
-          "Plays the changed range with context when a change is completed",
-        )}
+        title={tk("app-audio-audio-composition-editor.audio-composition-editor.title.95f58cc7ae89")}
       >
         <input
           type="checkbox"
@@ -410,7 +399,7 @@ export function AudioCompositionEditor({
           onChange={(e) => setAutoPlay(e.target.checked)}
           data-testid="audio-editor-autoplay"
         />
-        {L("Spill av automatisk etter endring", "Play automatically after a change")}
+        {tk("app-audio-audio-composition-editor.audio-composition-editor.label.6d88e09a4fd9")}
       </label>
 
       {/* Linjal (dra for å markere et område) og sporene */}
@@ -435,10 +424,7 @@ export function AudioCompositionEditor({
             drag.current = null;
           }}
           data-testid="audio-editor-ruler"
-          title={L(
-            "Klikk for avspillingshodet, dra for å markere et område",
-            "Click for the playhead, drag to mark a range",
-          )}
+          title={tk("app-audio-audio-composition-editor.audio-composition-editor.title.4ce6868ab1a5")}
         >
           {Array.from({ length: Math.floor(view / 1000) + 1 }, (_, i) => (
             <span
@@ -464,7 +450,7 @@ export function AudioCompositionEditor({
               data-testid={`audio-editor-track-${track}`}
             >
               <span className="pointer-events-none absolute left-1 top-0.5 z-10 text-[11px] text-text-tertiary">
-                {track === 0 ? L("Dialog", "Dialogue") : L(`Oppå ${track}`, `Over ${track}`)}
+                {track === 0 ? tk("app-audio-audio-composition-editor.audio-composition-editor.span.c2186790f73f") : tk("app-audio-audio-composition-editor.audio-composition-editor.span.fb5190cfd1ef", { track: String(track) })}
               </span>
               {comp.segments
                 .filter((s) => s.track === track)
@@ -477,9 +463,9 @@ export function AudioCompositionEditor({
                     color={TRACK_COLORS[track] ?? TRACK_COLORS[0]!}
                     label={
                       s.role === "room"
-                        ? L("Romlyd", "Room tone")
+                        ? tk("app-audio-audio-composition-editor.audio-composition-editor.label.0a06cde621c2")
                         : s.role === "transition"
-                          ? L("Overgang", "Transition")
+                          ? tk("app-audio-audio-composition-editor.audio-composition-editor.label.1874464e28c9")
                           : audioTakeLabel(takeNo.get(s.versionId) ?? 0)
                     }
                     buffer={buffers?.get(s.versionId)}
@@ -528,14 +514,8 @@ export function AudioCompositionEditor({
         </div>
         <p className="mt-1 text-[11px] text-text-tertiary">
           {range
-            ? L(
-                `Område ${sec(range.from)}–${sec(range.to)} s`,
-                `Range ${sec(range.from)}–${sec(range.to)} s`,
-              )
-            : L(
-                `Avspillingshodet ${sec(playhead)} s · dra i linjalen for å markere et område`,
-                `Playhead ${sec(playhead)} s · drag in the ruler to mark a range`,
-              )}
+            ? tk("app-audio-audio-composition-editor.audio-composition-editor.p.7065eb723e3c", { value1: String(sec(range.from)), value2: String(sec(range.to)) })
+            : tk("app-audio-audio-composition-editor.audio-composition-editor.p.a25c49fbb5f6", { value1: String(sec(playhead)) })}
         </p>
       </div>
 
@@ -576,7 +556,7 @@ export function AudioCompositionEditor({
         takeLabel={(id) =>
           takeNo.has(id)
             ? audioTakeLabel(takeNo.get(id)!)
-            : (roomFiles.find((f) => f.versionId === id)?.label ?? L("Opptak", "Recording"))
+            : (roomFiles.find((f) => f.versionId === id)?.label ?? tk("app-audio-audio-composition-editor.audio-composition-editor.take-label.f173975ae47e"))
         }
         contextMs={contextMs}
         onEdit={edit}
@@ -603,7 +583,7 @@ export function AudioCompositionEditor({
         {/* Nytt opptak inn i lyden */}
         <div className="flex flex-col gap-2" data-testid="audio-editor-insert">
           <label className="flex items-center gap-2 text-xs text-text-secondary">
-            {L("Opptak", "Recording")}
+            {tk("app-audio-audio-composition-editor.audio-composition-editor.label.f173975ae47e")}
             <select
               value={insertFrom}
               onChange={(e) => setInsertFrom(e.target.value)}
@@ -620,11 +600,11 @@ export function AudioCompositionEditor({
           <div className="flex flex-wrap gap-1">
             {(
               [
-                ["replace", L("Erstatt alt", "Replace all")],
-                ["before", L("Sett inn før", "Insert before")],
-                ["after", L("Sett inn etter", "Insert after")],
-                ["over", L("Legg oppå", "Lay over")],
-                ["range", L("Erstatt området", "Replace the range")],
+                ["replace", tk("app-audio-audio-composition-editor.audio-composition-editor.replace-l-erstatt-alt-replace-all-before-l-sett-inn-f-r-insert-before-after-l-sett-inn-etter-insert-after-over-l-legg-opp-lay-over-range-l-erstatt-omr-det-replace-the-range-as-const-map.872ea73e6f8e")],
+                ["before", tk("app-audio-audio-composition-editor.audio-composition-editor.replace-l-erstatt-alt-replace-all-before-l-sett-inn-f-r-insert-before-after-l-sett-inn-etter-insert-after-over-l-legg-opp-lay-over-range-l-erstatt-omr-det-replace-the-range-as-const-map.233f8436d11d")],
+                ["after", tk("app-audio-audio-composition-editor.audio-composition-editor.replace-l-erstatt-alt-replace-all-before-l-sett-inn-f-r-insert-before-after-l-sett-inn-etter-insert-after-over-l-legg-opp-lay-over-range-l-erstatt-omr-det-replace-the-range-as-const-map.c373b3af7d95")],
+                ["over", tk("app-audio-audio-composition-editor.audio-composition-editor.replace-l-erstatt-alt-replace-all-before-l-sett-inn-f-r-insert-before-after-l-sett-inn-etter-insert-after-over-l-legg-opp-lay-over-range-l-erstatt-omr-det-replace-the-range-as-const-map.f1b15291807a")],
+                ["range", tk("app-audio-audio-composition-editor.audio-composition-editor.replace-l-erstatt-alt-replace-all-before-l-sett-inn-f-r-insert-before-after-l-sett-inn-etter-insert-after-over-l-legg-opp-lay-over-range-l-erstatt-omr-det-replace-the-range-as-const-map.26de2d7fb401")],
               ] as const
             ).map(([mode, label]) => (
               <Button
@@ -636,12 +616,9 @@ export function AudioCompositionEditor({
                 data-testid={`audio-editor-${mode}`}
                 title={
                   mode === "over"
-                    ? L(
-                        "Som eget spor fra avspillingshodet (eller områdets start)",
-                        "As its own track from the playhead (or the start of the range)",
-                      )
+                    ? tk("app-audio-audio-composition-editor.audio-composition-editor.title.9a36c5cadf4c")
                     : mode === "range"
-                      ? L("Marker først et område i linjalen", "First mark a range in the ruler")
+                      ? tk("app-audio-audio-composition-editor.audio-composition-editor.title.13decbe81ab5")
                       : undefined
                 }
               >
@@ -650,10 +627,7 @@ export function AudioCompositionEditor({
             ))}
           </div>
           <p className="text-[11px] text-text-tertiary">
-            {L(
-              "Bare denne lyden endres. Andre replikker i scenen flyttes aldri, og hastighet og tonehøyde endres ikke.",
-              "Only this audio changes. Other lines in the scene are never moved, and speed and pitch are not changed.",
-            )}
+            {tk("app-audio-audio-composition-editor.audio-composition-editor.p.2e4cd52c75fc")}
           </p>
         </div>
 
@@ -662,45 +636,45 @@ export function AudioCompositionEditor({
           {sel ? (
             <>
               <p className="text-xs font-medium text-text-primary">
-                {L("Valgt del", "Selected part")}: {audioTakeLabel(takeNo.get(sel.versionId) ?? 0)}
+                {tk("app-audio-audio-composition-editor.audio-composition-editor.p.f1841e31c8e0")}: {audioTakeLabel(takeNo.get(sel.versionId) ?? 0)}
               </p>
               <div className="grid grid-cols-3 gap-1.5">
                 <Num
-                  label={L("Start (s)", "Start (s)")}
+                  label={tk("app-audio-audio-composition-editor.audio-composition-editor.label.67a39042bb28")}
                   value={sel.atMs / 1000}
                   onCommit={(v) => patch({ atMs: v * 1000 })}
                 />
                 <Num
-                  label={L("Inn i opptaket (s)", "Into the recording (s)")}
+                  label={tk("app-audio-audio-composition-editor.audio-composition-editor.label.9939654aed83")}
                   value={sel.sourceInMs / 1000}
                   onCommit={(v) => patch({ sourceInMs: v * 1000 })}
                 />
                 <Num
-                  label={L("Lengde (s)", "Length (s)")}
+                  label={tk("app-audio-audio-composition-editor.audio-composition-editor.label.11ee3b2a7d7f")}
                   value={sel.lengthMs / 1000}
                   onCommit={(v) => patch({ lengthMs: v * 1000 })}
                   testId="audio-editor-seg-length"
                 />
                 <Num
-                  label={L("Volum (dB)", "Volume (dB)")}
+                  label={tk("app-audio-audio-composition-editor.audio-composition-editor.label.f827dbbb5ed1")}
                   value={sel.gainDb}
                   step={0.5}
                   onCommit={(v) => patch({ gainDb: v })}
                 />
                 <Num
-                  label={L("Inntoning (s)", "Fade in (s)")}
+                  label={tk("app-audio-audio-composition-editor.audio-composition-editor.label.4e11188e1ccc")}
                   value={sel.fadeInMs / 1000}
                   onCommit={(v) => patch({ fadeInMs: v * 1000 })}
                 />
                 <Num
-                  label={L("Uttoning (s)", "Fade out (s)")}
+                  label={tk("app-audio-audio-composition-editor.audio-composition-editor.label.c0aec40693a7")}
                   value={sel.fadeOutMs / 1000}
                   onCommit={(v) => patch({ fadeOutMs: v * 1000 })}
                 />
               </div>
               <div className="flex flex-wrap items-center gap-1">
                 <label className="flex items-center gap-1 text-xs text-text-secondary">
-                  {L("Spor", "Track")}
+                  {tk("app-audio-audio-composition-editor.audio-composition-editor.label.6b547bef3cb4")}
                   <select
                     value={sel.track}
                     onChange={(e) => patch({ track: Number(e.target.value) })}
@@ -708,7 +682,7 @@ export function AudioCompositionEditor({
                   >
                     {Array.from({ length: COMPOSITION_TRACKS }, (_, t) => (
                       <option key={t} value={t}>
-                        {t === 0 ? L("Dialog", "Dialogue") : L(`Oppå ${t}`, `Over ${t}`)}
+                        {t === 0 ? tk("app-audio-audio-composition-editor.audio-composition-editor.option.c2186790f73f") : tk("app-audio-audio-composition-editor.audio-composition-editor.option.a6255436a612", { t: String(t) })}
                       </option>
                     ))}
                   </select>
@@ -723,16 +697,13 @@ export function AudioCompositionEditor({
                   disabled={comp.segments.length <= 1}
                 >
                   <Trash2 className="size-3.5" aria-hidden />
-                  {L("Fjern delen", "Remove the part")}
+                  {tk("app-audio-audio-composition-editor.audio-composition-editor.button.8561046162e3")}
                 </Button>
               </div>
             </>
           ) : (
             <p className="text-xs text-text-tertiary">
-              {L(
-                "Klikk på en del i sporene for å trimme, flytte eller endre volum og toning.",
-                "Click a part in the tracks to trim, move or change volume and fades.",
-              )}
+              {tk("app-audio-audio-composition-editor.audio-composition-editor.p.029b05140722")}
             </p>
           )}
         </div>
@@ -756,7 +727,7 @@ export function AudioCompositionEditor({
           ) : (
             <Save className="size-3.5" aria-hidden />
           )}
-          {L("Lagre som ny versjon", "Save as a new version")}
+          {tk("app-audio-audio-composition-editor.audio-composition-editor.button.a7068d1bd98b")}
         </Button>
         <Button
           size="sm"
@@ -766,13 +737,10 @@ export function AudioCompositionEditor({
           data-testid="audio-editor-save-variant"
         >
           {busy === "variant" ? <Loader2 className="size-3.5 animate-spin" aria-hidden /> : null}
-          {L("Lagre som ny variant", "Save as a new variant")}
+          {tk("app-audio-audio-composition-editor.audio-composition-editor.button.493ec91deaad")}
         </Button>
         <span className="text-[11px] text-text-tertiary">
-          {L(
-            "Originalopptakene endres aldri. Den nye versjonen brukes først når du velger «Bruk dette».",
-            "The original recordings never change. The new version is used only when you choose “Use this”.",
-          )}
+          {tk("app-audio-audio-composition-editor.audio-composition-editor.span.23c6ca7247c8")}
         </span>
       </div>
 
@@ -781,7 +749,7 @@ export function AudioCompositionEditor({
         buffers={buffers}
         range={range}
         plain={plain}
-        name={state.assets[assetId]?.name ?? L("lyd", "audio")}
+        name={state.assets[assetId]?.name ?? tk("app-audio-audio-composition-editor.audio-composition-editor.name.88fa2b50d824")}
         onToLibrary={async (part, label) => {
           if (!buffers) return;
           const s = cmds.current() ?? state;
@@ -793,7 +761,7 @@ export function AudioCompositionEditor({
             { newVariantName: label },
             part,
             buffers,
-            L("Eksportert fra lydeditoren", "Exported from the audio editor"),
+            tk("app-audio-audio-composition-editor.audio-composition-editor.save-composition.d37bf97b47b1"),
           );
         }}
       />
@@ -972,10 +940,7 @@ function ExportPanel({
       else {
         await onToLibrary(part(), fileName.trim() || name);
         setMsg(
-          L(
-            "Lagt i biblioteket som ny lydvariant.",
-            "Added to the library as a new audio variant.",
-          ),
+          tk("app-audio-audio-composition-editor.run.set-msg.db0aaa8584fe"),
         );
       }
     } catch (x) {
@@ -989,27 +954,27 @@ function ExportPanel({
   return (
     <details className="mt-3 border-t border-border pt-3" data-testid="audio-export">
       <summary className="cursor-pointer text-[13px] font-semibold text-text-primary">
-        {L("Eksporter lyd", "Export audio")}
+        {tk("app-audio-audio-composition-editor.export-panel.summary.8ef8b966bcc4")}
       </summary>
       <div className="mt-2 flex flex-wrap items-end gap-2 text-xs text-text-secondary">
         <label className="flex flex-col gap-0.5">
-          {L("Hva", "What")}
+          {tk("app-audio-audio-composition-editor.export-panel.label.4f37349adcb7")}
           <select
             value={what}
             onChange={(x) => setWhat(x.target.value as never)}
             className={sel}
             data-testid="audio-export-what"
           >
-            <option value="all">{L("Hele komposisjonen", "The whole composition")}</option>
+            <option value="all">{tk("app-audio-audio-composition-editor.export-panel.option.fc0541446aab")}</option>
             <option value="range" disabled={!range}>
-              {L("Valgt område", "Selected range")}
+              {tk("app-audio-audio-composition-editor.export-panel.option.afaa57bb0c9f")}
             </option>
-            <option value="take">{L("Ett take", "One take")}</option>
+            <option value="take">{tk("app-audio-audio-composition-editor.export-panel.option.09450f3bfac3")}</option>
           </select>
         </label>
         {what === "take" ? (
           <label className="flex flex-col gap-0.5">
-            {L("Take", "Take")}
+            {tk("app-audio-audio-composition-editor.export-panel.label.426984d5e0dd")}
             <select value={take} onChange={(x) => setTake(x.target.value)} className={sel}>
               {plain.map((t) => (
                 <option key={t.versionId} value={t.versionId}>
@@ -1020,7 +985,7 @@ function ExportPanel({
           </label>
         ) : null}
         <label className="flex flex-col gap-0.5">
-          {L("Format", "Format")}
+          {tk("app-audio-audio-composition-editor.export-panel.label.352d4a63d8df")}
           <select
             value={e.format}
             onChange={(x) => setE({ ...e, format: x.target.value as never })}
@@ -1032,7 +997,7 @@ function ExportPanel({
           </select>
         </label>
         <label className="flex flex-col gap-0.5">
-          {L("Samplingsfrekvens", "Sample rate")}
+          {tk("app-audio-audio-composition-editor.export-panel.label.5c232dab2d42")}
           <select
             value={e.sampleRate}
             onChange={(x) => setE({ ...e, sampleRate: Number(x.target.value) as never })}
@@ -1043,18 +1008,18 @@ function ExportPanel({
           </select>
         </label>
         <label className="flex flex-col gap-0.5">
-          {L("Kanaler", "Channels")}
+          {tk("app-audio-audio-composition-editor.export-panel.label.0317fe27675b")}
           <select
             value={e.channels}
             onChange={(x) => setE({ ...e, channels: Number(x.target.value) as never })}
             className={sel}
           >
-            <option value={1}>{L("Mono", "Mono")}</option>
-            <option value={2}>{L("Stereo", "Stereo")}</option>
+            <option value={1}>{tk("app-audio-audio-composition-editor.export-panel.option.9b9974dab1b4")}</option>
+            <option value={2}>{tk("app-audio-audio-composition-editor.export-panel.option.58195c9bb254")}</option>
           </select>
         </label>
         <label className="flex min-w-[160px] flex-1 flex-col gap-0.5">
-          {L("Filnavn", "File name")}
+          {tk("app-audio-audio-composition-editor.export-panel.label.20e83fee6db8")}
           <input
             value={fileName}
             onChange={(x) => setFileName(x.target.value)}
@@ -1073,7 +1038,7 @@ function ExportPanel({
           ) : (
             <ArrowDownToLine className="size-3.5" aria-hidden />
           )}
-          {L("Last ned", "Download")}
+          {tk("app-audio-audio-composition-editor.export-panel.button.25dc84876b4e")}
         </Button>
         <Button
           size="sm"
@@ -1083,7 +1048,7 @@ function ExportPanel({
           data-testid="audio-export-library"
         >
           {busy === "library" ? <Loader2 className="size-3.5 animate-spin" aria-hidden /> : null}
-          {L("Legg i biblioteket", "Add to the library")}
+          {tk("app-audio-audio-composition-editor.export-panel.button.76863e99321a")}
         </Button>
       </div>
       {msg ? (
@@ -1092,10 +1057,7 @@ function ExportPanel({
         </p>
       ) : null}
       <p className="mt-1 text-[11px] text-text-tertiary">
-        {L(
-          "Eksporten flater ikke ut komposisjonen – den kan fortsatt redigeres.",
-          "Exporting does not flatten the composition – it can still be edited.",
-        )}
+        {tk("app-audio-audio-composition-editor.export-panel.p.4329bacc0e0b")}
       </p>
     </details>
   );

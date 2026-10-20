@@ -8,6 +8,7 @@ import { fontsReady, textSpecsOf } from "../typography/fonts";
 import { encodePngStrips } from "./png-writer";
 import { writeZip, type ZipSink } from "./zip";
 import type { Composition } from "@/core";
+import { t } from "@/core/i18n/keyed";
 
 export interface AlphaEncoder {
   encode(canvas: HTMLCanvasElement, frame: number): Promise<void>;
@@ -82,7 +83,7 @@ export async function openAlphaSink(name: string, mime: string): Promise<ZipSink
 }
 
 function checkAbort(signal: AbortSignal) {
-  if (signal.aborted) throw new DOMException(L("Avbrutt", "Cancelled"), "AbortError");
+  if (signal.aborted) throw new DOMException(t("engine-export-alpha.check-abort.message.beb939e7ae1f"), "AbortError");
 }
 
 class PngSequenceEncoder implements AlphaEncoder {
@@ -90,7 +91,7 @@ class PngSequenceEncoder implements AlphaEncoder {
   constructor(private readonly o: AlphaExportOptions) {}
   async encode(canvas: HTMLCanvasElement): Promise<void> {
     const ctx = canvas.getContext("2d");
-    if (!ctx) throw new Error(L("Lerretet er ikke tilgjengelig.", "The canvas is unavailable."));
+    if (!ctx) throw new Error(t("engine-export-alpha.encode.message.6a81b8072f16"));
     this.parts = await encodePngStrips({ width: canvas.width, height: canvas.height }, async (y, rows) => {
       checkAbort(this.o.signal);
       return alphaPixels(ctx.getImageData(0, y, canvas.width, rows).data, this.o.settings.alpha);
@@ -109,8 +110,7 @@ class PngSequenceEncoder implements AlphaEncoder {
 
 async function webmEncoder(o: AlphaExportOptions, canvas: HTMLCanvasElement): Promise<AlphaEncoder> {
   if (!await supportsVp9Alpha(canvas.width, canvas.height))
-    throw new Error(L("Denne nettleseren støtter ikke WebM VP9 med alfa. Velg PNG-sekvens.",
-      "This browser does not support WebM VP9 with alpha. Choose a PNG sequence."));
+    throw new Error(t("engine-export-alpha.webm-encoder.message.5cce70f6bde9"));
   const mb = await import("mediabunny");
   const input = o.settings.alpha === "premultiplied" ? document.createElement("canvas") : canvas;
   input.width = canvas.width; input.height = canvas.height;
@@ -147,7 +147,7 @@ async function proresEncoder(o: AlphaExportOptions, canvas: HTMLCanvasElement, t
   await mov.start();
   const pool = new p.ProResPool();
   const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error(L("Lerretet er ikke tilgjengelig.", "The canvas is unavailable."));
+  if (!ctx) throw new Error(t("engine-export-alpha.prores-encoder.message.4f544d8dc2c6"));
   const inFlight: Promise<Uint8Array>[] = [];
   const drain = async (keep: number) => { while (inFlight.length > keep) { const f = await inFlight.shift()!; checkAbort(o.signal); await mov.addVideo(f); } };
   return {
@@ -168,13 +168,13 @@ export async function exportAlphaLayers(o: AlphaExportOptions): Promise<void> {
     const error = alphaExportError(o.state, o.composition, o.settings);
     if (error) throw new Error(error);
     const clip = alphaSceneClip(o.state, o.composition);
-    if (!clip) throw new Error(L("Scenens plassering mangler.", "The scene's location is missing."));
+    if (!clip) throw new Error(t("engine-export-alpha.export-alpha-layers.message.3199d6a2083f"));
     const range = alphaRange(o.composition, o.settings);
     const total = range.end - range.start;
     const canvas = document.createElement("canvas");
     canvas.width = o.composition.width; canvas.height = o.composition.height;
     const ctx = canvas.getContext("2d", { alpha: true });
-    if (!ctx) throw new Error(L("Lerretet er ikke tilgjengelig.", "The canvas is unavailable."));
+    if (!ctx) throw new Error(t("engine-export-alpha.export-alpha-layers.message.f48e9ce41a0f"));
     await fontsReady(textSpecsOf(o.state)); checkAbort(o.signal);
     const layers = alphaLayerIds(o.state, o.composition, o.settings.layerIds);
     const draw = (i: number) => drawFilmFrame(ctx, o.state, [clip], range.start + i, {

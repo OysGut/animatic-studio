@@ -13,6 +13,7 @@ import { QualityProfilePicker, useQualityProfile } from "@/app/ai/QualityProfile
 import { useRecordExport } from "@/app/projects/use-history-records";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { t } from "@/core/i18n/keyed";
 
 const control = "h-7 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary";
 export function AlphaExportDialog({ state, composition, initialLayerIds, open, onOpenChange }: {
@@ -66,14 +67,14 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
   const range = alphaRange(composition, options);
   const occurrence = Object.values(state.occurrences).find(o => o.variantId === composition.variantId && o.active);
   const number = occurrence ? sceneNumberOf(state, occurrence) : null;
-  const scene = number ? L(`Scene ${number} ${composition.name}`, `Scene ${number} ${composition.name}`) : composition.name;
+  const scene = number ? t("app-assembly-alpha-export-dialog.scene.message.f3a836e2fac7", { number: String(number), name: String(composition.name) }) : composition.name;
   const patch = (p: Partial<AlphaExportSettings>) => setOptions(o => ({ ...o, ...p }));
   async function cancellable<T>(promise: Promise<T>, signal: AbortSignal): Promise<T> {
-    if (signal.aborted) throw new DOMException(L("Avbrutt", "Cancelled"), "AbortError");
+    if (signal.aborted) throw new DOMException(t("app-assembly-alpha-export-dialog.cancellable.message.314a2988409f"), "AbortError");
     let stop: (() => void) | undefined;
     try {
       return await Promise.race([promise, new Promise<never>((_, reject) => {
-        stop = () => reject(new DOMException(L("Avbrutt", "Cancelled"), "AbortError"));
+        stop = () => reject(new DOMException(t("app-assembly-alpha-export-dialog.cancellable.reject.314a2988409f"), "AbortError"));
         signal.addEventListener("abort", stop, { once: true });
       })]);
     } finally { if (stop) signal.removeEventListener("abort", stop); }
@@ -102,14 +103,14 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
         }))])];
       const urls = paths.length ? await cancellable(signedUrls(paths, 4 * 60 * 60), ctrl.signal) : {};
       const { images, failed } = await cancellable(loadImages(urls), ctrl.signal);
-      if (failed.length) throw new Error(L("Noen bilder kunne ikke lastes. Prøv igjen før eksport.", "Some images could not be loaded. Retry before exporting."));
+      if (failed.length) throw new Error(t("app-assembly-alpha-export-dialog.run.export-queue-enqueue.f32fb4588ab1"));
       await exportAlphaLayers({ state, composition, settings: options, images, sink, fileBase: base,
         signal: ctrl.signal, onProgress: (done, total) => { setProgress({ done, total }); report(done, total); } });
       setReady(sink.link?.() ?? null);
       if (occurrence) await recordExport({ productionId:occurrence.productionId,kind:"film",fileName:`${base}.${ext}`,occurrenceIds:[occurrence.id],settings:{format:options.format,alpha:options.alpha,layerIds:[...options.layerIds],effects:options.effects,startFrame:range.start,endFrame:range.end,qualityProfileId:snapshot?.id??null,qualityProfileName:snapshot?.name??null,qualityProfileSnapshot:snapshot?JSON.stringify(snapshot):null} });
     } catch (e) {
       await sink?.abort().catch(() => undefined);
-      setError((e as Error).name === "AbortError" ? L("Eksporten er avbrutt. Ingen fil er lagret.", "Export cancelled. No file was saved.") : (e as Error).message);
+      setError((e as Error).name === "AbortError" ? t("app-assembly-alpha-export-dialog.run.set-error.ab4411585291") : (e as Error).message);
       throw e;
     } finally { setProgress(null); abort.current = null; }
     }, snapshot);
@@ -117,13 +118,13 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
   return <Dialog open={open} onOpenChange={onOpenChange}>
     <DialogContent className="max-w-xl border-border bg-surface-2" data-testid="alpha-export-dialog">
       <DialogHeader>
-        <DialogTitle>{L("Eksporter lag med gjennomsiktighet", "Export layers with transparency")}</DialogTitle>
+        <DialogTitle>{t("app-assembly-alpha-export-dialog.alpha-export-dialog.dialog-title.72cd53baff93")}</DialogTitle>
         <DialogDescription>{scene}</DialogDescription>
       </DialogHeader>
       <QualityProfilePicker stacked state={state} value={quality.choice} disabled={busy} onChange={v => { quality.setChoice(v); const id = v === "active" ? state.project.activeQualityProfileId : v; const preset = id && v !== "none" ? state.qualityProfiles[id]?.spec.export : null; if (preset) patch({ ...(preset.alpha ? {alpha:preset.alpha} : {}), ...(preset.format === "png-seq" ? {format:"png-seq"} : preset.format === "webm" ? {format:"webm-vp9"} : preset.format === "prores" && supportsProRes() ? {format:"mov-prores4444"} : {}) }); }} />
       <fieldset disabled={busy} className="flex min-w-0 flex-col gap-4 text-xs text-text-secondary">
         <div className="flex flex-col gap-2">
-          <span>{L("Lag", "Layers")}</span>
+          <span>{t("app-assembly-alpha-export-dialog.alpha-export-dialog.span.08ea728eefd2")}</span>
           <div className="max-h-48 overflow-y-auto border border-border p-2">
             {layers.map(l => <label key={l.id} className="flex items-center gap-2 py-1">
               <input type="checkbox" data-testid={`alpha-layer-${l.id}`} checked={options.layerIds.includes(l.id)}
@@ -132,46 +133,46 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
             </label>)}
           </div>
         </div>
-        <label className="flex items-center justify-between gap-3">{L("Tidsrom", "Range")}
+        <label className="flex items-center justify-between gap-3">{t("app-assembly-alpha-export-dialog.alpha-export-dialog.label.126f17402939")}
           <select className={control} data-testid="alpha-range" value={options.range} onChange={e => patch({ range: e.target.value as AlphaExportSettings["range"] })}>
-            <option value="scene">{L("Hele scenen", "Whole scene")}</option>
-            <option value="in-out">{L("Inn/ut", "In/out")}</option>
+            <option value="scene">{t("app-assembly-alpha-export-dialog.alpha-export-dialog.option.143f6b819d53")}</option>
+            <option value="in-out">{t("app-assembly-alpha-export-dialog.alpha-export-dialog.option.cf3ce2d4c668")}</option>
           </select>
         </label>
         {options.range === "in-out" ? <div className="grid grid-cols-2 gap-3">
-          <label className="flex flex-col gap-1">{L("Inn (bilde)", "In (frame)")}<input className={control} data-testid="alpha-in" type="number" min={0} max={composition.durationFrames - 1} value={options.inFrame} onChange={e => patch({ inFrame: Number(e.target.value) })} /></label>
-          <label className="flex flex-col gap-1">{L("Ut (første bilde utenfor)", "Out (first excluded frame)")}<input className={control} data-testid="alpha-out" type="number" min={1} max={composition.durationFrames} value={options.outFrame} onChange={e => patch({ outFrame: Number(e.target.value) })} /></label>
+          <label className="flex flex-col gap-1">{t("app-assembly-alpha-export-dialog.alpha-export-dialog.label.df494ab02c7e")}<input className={control} data-testid="alpha-in" type="number" min={0} max={composition.durationFrames - 1} value={options.inFrame} onChange={e => patch({ inFrame: Number(e.target.value) })} /></label>
+          <label className="flex flex-col gap-1">{t("app-assembly-alpha-export-dialog.alpha-export-dialog.label.fa8d28c5a400")}<input className={control} data-testid="alpha-out" type="number" min={1} max={composition.durationFrames} value={options.outFrame} onChange={e => patch({ outFrame: Number(e.target.value) })} /></label>
         </div> : null}
-        <label className="flex items-center gap-2"><input type="checkbox" data-testid="alpha-effects" checked={options.effects} onChange={e => patch({ effects: e.target.checked })} />{L("Med effekter", "Include effects")}</label>
-        <label className="flex items-center justify-between gap-3">{L("Format", "Format")}
+        <label className="flex items-center gap-2"><input type="checkbox" data-testid="alpha-effects" checked={options.effects} onChange={e => patch({ effects: e.target.checked })} />{t("app-assembly-alpha-export-dialog.alpha-export-dialog.label.963e888325f8")}</label>
+        <label className="flex items-center justify-between gap-3">{t("app-assembly-alpha-export-dialog.alpha-export-dialog.label.3c00ab5c7134")}
           <select className={control} data-testid="alpha-format" value={options.format} onChange={e => patch({ format: e.target.value as AlphaExportSettings["format"] })}>
-            <option value="png-seq">{L("PNG-sekvens i ZIP", "PNG sequence in ZIP")}</option>
-            <option value="webm-vp9" disabled={support !== true}>{L("WebM VP9 med alfa", "WebM VP9 with alpha")}</option>
-            <option value="mov-prores4444" disabled={!proresOk}>{L("ProRes 4444 med alfa (MOV)", "ProRes 4444 with alpha (MOV)")}</option>
+            <option value="png-seq">{t("app-assembly-alpha-export-dialog.alpha-export-dialog.option.7d412b42e2d2")}</option>
+            <option value="webm-vp9" disabled={support !== true}>{t("app-assembly-alpha-export-dialog.alpha-export-dialog.option.2e32fd4b57ee")}</option>
+            <option value="mov-prores4444" disabled={!proresOk}>{t("app-assembly-alpha-export-dialog.alpha-export-dialog.option.1c985467b60e")}</option>
           </select>
         </label>
         {!proresOk ? <p role="status" data-testid="alpha-prores-unavailable">{PRORES_UNSUPPORTED()}</p> : null}
-        {options.format === "mov-prores4444" ? <p data-testid="alpha-prores-note">{L("ProRes 4444 med 16-biters alfa, Rec.709, uten lyd. Store filer lagres direkte i nettleserens lagring.", "ProRes 4444 with 16-bit alpha, Rec.709, no audio. Large files are written straight to browser storage.")}</p> : null}
-        {support !== true ? <p role="status" data-testid="alpha-webm-unavailable">{support === null ? L("Kontrollerer WebM-alfastøtte …", "Checking WebM alpha support …") : L("WebM VP9 med alfa støttes ikke i denne nettleseren. Velg PNG-sekvens.", "WebM VP9 with alpha is not supported in this browser. Choose a PNG sequence.")}</p> : null}
-        <label className="flex items-center justify-between gap-3">{L("Alfa", "Alpha")}
+        {options.format === "mov-prores4444" ? <p data-testid="alpha-prores-note">{t("app-assembly-alpha-export-dialog.alpha-export-dialog.p.27029199f02f")}</p> : null}
+        {support !== true ? <p role="status" data-testid="alpha-webm-unavailable">{support === null ? t("app-assembly-alpha-export-dialog.alpha-export-dialog.p.8203935ad45f") : t("app-assembly-alpha-export-dialog.alpha-export-dialog.p.8f788203b75b")}</p> : null}
+        <label className="flex items-center justify-between gap-3">{t("app-assembly-alpha-export-dialog.alpha-export-dialog.label.55599ce69587")}
           <select className={control} data-testid="alpha-mode" value={options.alpha} onChange={e => patch({ alpha: e.target.value as AlphaExportSettings["alpha"] })}>
-            <option value="straight">{L("Rett (standard for PNG)", "Straight (PNG default)")}</option>
-            <option value="premultiplied">{L("Premultiplisert", "Premultiplied")}</option>
+            <option value="straight">{t("app-assembly-alpha-export-dialog.alpha-export-dialog.option.76ff42a610aa")}</option>
+            <option value="premultiplied">{t("app-assembly-alpha-export-dialog.alpha-export-dialog.option.9a3274c0d6cf")}</option>
           </select>
         </label>
-        <p>{L("Rett alfa beholder fargene i kanten. Premultiplisert alfa ganger fargene med gjennomsiktigheten; velg samme tolkning i programmet som leser filen.", "Straight alpha preserves edge colours. Premultiplied alpha multiplies colours by opacity; use the matching interpretation in the program reading the file.")}</p>
+        <p>{t("app-assembly-alpha-export-dialog.alpha-export-dialog.p.53a22e5ba25e")}</p>
       </fieldset>
       {validation ? <p role="alert" className="text-xs text-status-danger">{validation}</p> : null}
       {error ? <p role="alert" data-testid="alpha-error" className="text-xs text-status-danger">{error}</p> : null}
       {progress ? <div role="status" data-testid="alpha-progress" className="text-xs text-text-primary">
-        {L(`Eksporterer ${progress.done} av ${progress.total} bilder`, `Exporting ${progress.done} of ${progress.total} frames`)}
+        {t("app-assembly-alpha-export-dialog.alpha-export-dialog.div.6c4fcbefe6e7", { done: String(progress.done), total: String(progress.total) })}
         <progress className="mt-2 w-full" value={progress.done} max={progress.total} />
       </div> : null}
-      {ready && quality.profile ? <p data-testid="alpha-quality-profile" className="text-xs text-text-secondary">{L(`Laget med profil ${quality.profile.name}`, `Made with profile ${quality.profile.name}`)}</p> : null}
-      {ready ? <a data-testid="alpha-download" className="text-xs text-accent-brand underline" href={ready.url} download={ready.name}>{L("Last ned", "Download")}</a> : null}
+      {ready && quality.profile ? <p data-testid="alpha-quality-profile" className="text-xs text-text-secondary">{t("app-assembly-alpha-export-dialog.alpha-export-dialog.p.a9317c6b4e7a", { name: String(quality.profile.name) })}</p> : null}
+      {ready ? <a data-testid="alpha-download" className="text-xs text-accent-brand underline" href={ready.url} download={ready.name}>{t("app-assembly-alpha-export-dialog.alpha-export-dialog.a.4fc17a53a494")}</a> : null}
       <DialogFooter>
-        <Button variant="ghost" data-testid="alpha-cancel" onClick={() => busy && taskId.current ? exportQueue.cancel(taskId.current) : onOpenChange(false)}>{busy ? L("Avbryt", "Cancel") : L("Lukk", "Close")}</Button>
-        <Button data-testid="alpha-start" disabled={busy || !!validation || (options.format === "webm-vp9" && support !== true) || (options.format === "mov-prores4444" && !proresOk)} onClick={() => void run()}><Download />{L("Eksporter", "Export")}</Button>
+        <Button variant="ghost" data-testid="alpha-cancel" onClick={() => busy && taskId.current ? exportQueue.cancel(taskId.current) : onOpenChange(false)}>{busy ? t("app-assembly-alpha-export-dialog.alpha-export-dialog.button.c47662924ceb") : t("app-assembly-alpha-export-dialog.alpha-export-dialog.button.b560be5571e5")}</Button>
+        <Button data-testid="alpha-start" disabled={busy || !!validation || (options.format === "webm-vp9" && support !== true) || (options.format === "mov-prores4444" && !proresOk)} onClick={() => void run()}><Download />{t("app-assembly-alpha-export-dialog.alpha-export-dialog.button.09b88a706a31")}</Button>
       </DialogFooter>
     </DialogContent>
   </Dialog>;

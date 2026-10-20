@@ -67,6 +67,7 @@ import { hasSeparateCharacterLayers } from "@/core/animation/character";
 import { exportQueue } from "./export-queue";
 import { QualityProfilePicker, useQualityProfile } from "@/app/ai/QualityProfilePicker";
 import { AlphaExportDialog } from "./AlphaExportDialog";
+import { t } from "@/core/i18n/keyed";
 
 type Scope = ExportScope;
 type Size = "full" | "half";
@@ -272,7 +273,7 @@ export function ExportAnimaticDialog({
                 framesToSeconds(sel.endFrame - sel.startFrame, fps),
               )}.`,
             )
-          : L("Utvalget har ingen scener.", "The selection has no scenes."),
+          : t("app-assembly-export-animatic-dialog.text.text.75885539b60d"),
     });
     if (scope === "film") {
       const inactive = orderedOccurrences(state, productionId).filter((o) => !o.active).length;
@@ -398,18 +399,12 @@ export function ExportAnimaticDialog({
                 `Dialogspor (${langName}): ${voices.length} ${voices.length === 1 ? "lydklipp" : "lydklipp"} med dialog og forteller. Musikk, effekter og lyden i importert film er ikke med.`,
                 `Dialogue track (${langName}): ${voices.length} ${voices.length === 1 ? "audio clip" : "audio clips"} with dialogue and narration. Music, effects and the sound in imported film are not included.`,
               )
-            : L(
-                `Ingen dialog på ${langName} i utvalget – dialogsporet blir stille.`,
-                `No dialogue in ${langName} in the selection – the dialogue track will be silent.`,
-              ),
+            : t("app-assembly-export-animatic-dialog.text.text.5bf200104906", { langName: String(langName) }),
       });
     if (output === "dialogue" && to - from > STEM_MAX_SECONDS)
       out.push({
         level: "warn",
-        text: L(
-          `Dialogsporet lages for de første ${STEM_MAX_SECONDS / 3600} timene (grensen for WAV-filer). Velg et utvalg av scener for resten.`,
-          `The dialogue track is made for the first ${STEM_MAX_SECONDS / 3600} hours (the limit for WAV files). Choose a selection of scenes for the rest.`,
-        ),
+        text: t("app-assembly-export-animatic-dialog.text.text.c8d201ba6102", { value1: String(STEM_MAX_SECONDS / 3600) }),
       });
     if (output === "video" && language.subtitles && subMode === "burn") {
       const n = subtitles.filter((c) => c.startMs < to * 1000 && c.endMs > from * 1000).length;
@@ -417,14 +412,8 @@ export function ExportAnimaticDialog({
         level: n > 0 ? "ok" : "warn",
         text:
           n > 0
-            ? L(
-                `${n} undertekster på ${languageWord(language.subtitles)} brennes inn i bildet.`,
-                `${n} subtitles in ${languageWord(language.subtitles)} are burned into the image.`,
-              )
-            : L(
-                "Ingen undertekster i utvalget (replikkene mangler oversettelse eller tid).",
-                "No subtitles in the selection (the lines lack a translation or timing).",
-              ),
+            ? t("app-assembly-export-animatic-dialog.text.text.88ce0c88ca76", { n: String(n), value2: String(languageWord(language.subtitles)) })
+            : t("app-assembly-export-animatic-dialog.text.text.871c91046db1"),
       });
     }
     const usedAudio = output === "dialogue" ? voices : audible;
@@ -455,10 +444,7 @@ export function ExportAnimaticDialog({
           ...baseChecks,
           {
             level: "warn",
-            text: L(
-              `Fonten mangler: ${fontState.missing.join(", ")}. Teksten tegnes med en reservefont.`,
-              `Missing font: ${fontState.missing.join(", ")}. The text is drawn with a fallback font.`,
-            ),
+            text: t("app-assembly-export-animatic-dialog.text.text.cabe1e05bf3e", { value1: String(fontState.missing.join(", ")) }),
           },
         ]
       : baseChecks;
@@ -509,22 +495,19 @@ export function ExportAnimaticDialog({
         audioBank.loadAll(audioSubset),
       ]);
       const lostAudio = audioPaths.filter((p) => !audioBank.get(p)).length;
-      if (ctrl.signal.aborted) throw new DOMException(L("Avbrutt", "Cancelled"), "AbortError");
+      if (ctrl.signal.aborted) throw new DOMException(t("app-assembly-export-animatic-dialog.run.message.13e8459375d0"), "AbortError");
       const date = new Date().toISOString().slice(0, 10);
       const what =
         scope === "film"
           ? "animatic"
           : scope === "pick" && sel.clips.length > 1
-            ? L(`${sel.clips.length} scener`, `${sel.clips.length} scenes`)
+            ? t("app-assembly-export-animatic-dialog.what.message.3a6e463a56aa", { length: String(sel.clips.length) })
             : sel.clips.length === 1
               ? L(
                   `scene ${sel.clips[0]!.productionNumber ?? ""}`.trim(),
                   `scene ${sel.clips[0]!.productionNumber ?? ""}`.trim(),
                 )
-              : L(
-                  `scener ${sel.clips[0]!.productionNumber ?? ""}–${sel.clips[sel.clips.length - 1]!.productionNumber ?? ""}`,
-                  `scenes ${sel.clips[0]!.productionNumber ?? ""}–${sel.clips[sel.clips.length - 1]!.productionNumber ?? ""}`,
-                );
+              : t("app-assembly-export-animatic-dialog.what.message.9903432debbd", { value1: String(sel.clips[0]!.productionNumber ?? ""), value2: String(sel.clips[sel.clips.length - 1]!.productionNumber ?? "") });
       if (output === "dialogue") {
         // Bare dialogsporet som WAV (DEC-0059, REQ-0350)
         const stem = await exportDialogueStemParts({
@@ -543,7 +526,7 @@ export function ExportAnimaticDialog({
         });
         if (abort.current !== ctrl || ctrl.signal.aborted) return;
         const name = safeName(
-          `${state.project.name} – ${what} – ${L("dialog", "dialogue")} ${langName} – ${date}.wav`,
+          `${state.project.name} – ${what} – ${t("app-assembly-export-animatic-dialog.name.safe-name.dd70017cc00c")} ${langName} – ${date}.wav`,
         );
         const f = prepareDownload(stem.parts, name, "audio/wav");
         setReady({ ...f, bytes: stem.bytes });
@@ -636,7 +619,7 @@ export function ExportAnimaticDialog({
           images, signal: ctrl.signal, mp4: container === "mp4", webm: container === "webm", characterPass: "separate",
         });
         if (abort.current !== ctrl || ctrl.signal.aborted) return;
-        const layerName = name.replace(/(\.[^.]+)$/, `${L(" – karakterlag", " – character layers")}.${layers.extension.replace(/^\./, "")}`);
+        const layerName = name.replace(/(\.[^.]+)$/, `${t("app-assembly-export-animatic-dialog.layer-name.name-replace.d5c1e01b1ae9")}.${layers.extension.replace(/^\./, "")}`);
         setCharFile(prepareDownload(layers.bytes, layerName, layers.mimeType));
       }
       // Undertekstene som egen fil (SRT/VTT), med samme tider som videoen
@@ -712,13 +695,10 @@ export function ExportAnimaticDialog({
         );
       if (audioPaths.length > lostAudio && file.audioCodec === null)
         notes.push(
-          L(
-            "nettleseren kunne ikke kode lyd, så videoen er uten lyd",
-            "the browser could not encode audio, so the video has no sound",
-          ),
+          t("app-assembly-export-animatic-dialog.run.notes-push.92d5ae0011bd"),
         );
       if (notes.length)
-        setError(L(`Ferdig, men ${notes.join("; ")}.`, `Done, but ${notes.join("; ")}.`));
+        setError(t("app-assembly-export-animatic-dialog.run.set-error.91c5e749a865", { value1: String(notes.join("; ")) }));
     } catch (e) {
       if (abort.current !== ctrl) return;
       if ((e as Error).name === "AbortError") setProgress(null);
@@ -749,29 +729,23 @@ export function ExportAnimaticDialog({
     <Dialog open={open && !alphaOpen} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90dvh] max-w-[640px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
-          <DialogTitle>{L("Eksporter animatic", "Export animatic")}</DialogTitle>
+          <DialogTitle>{t("app-assembly-export-animatic-dialog.export-animatic-dialog.dialog-title.f19f9faf7736")}</DialogTitle>
           <DialogDescription>
-            {L(
-              "Videoen lages her i nettleseren av alt som er i filmen – 2D-scener, importert film, AI-video og lydsporene – uten nye kostnader. Eksporten endrer ingenting i prosjektet.",
-              "The video is made here in the browser from everything in the film – 2D scenes, imported film, AI video and the audio tracks – at no extra cost. The export changes nothing in the project.",
-            )}{" "}
-            {L("Produksjon:", "Production:")}{" "}
+            {t("app-assembly-export-animatic-dialog.export-animatic-dialog.dialog-description.0b1d776f5d50")}{" "}
+            {t("app-assembly-export-animatic-dialog.export-animatic-dialog.dialog-description.bc2b417caa92")}{" "}
             <strong>{state.productions[productionId]?.name ?? "–"}</strong>{" "}
-            {L(
-              "(en spinoff, trailer eller pitchfilm velges øverst i monteringen).",
-              "(a spin-off, trailer or pitch film is chosen at the top of the assembly).",
-            )}
+            {t("app-assembly-export-animatic-dialog.export-animatic-dialog.dialog-description.44d85f195f4d")}
           </DialogDescription>
         </DialogHeader>
         <QualityProfilePicker state={state} value={quality.choice} disabled={busy} onChange={quality.setChoice} />
         <div className="flex flex-wrap gap-3 text-xs text-text-secondary">
-          <label>{L("Oppløsning", "Resolution")} <select data-testid="export-profile-resolution" value={profileResolution ?? ""} disabled={busy} onChange={e => setProfileResolution(e.target.value || null)} className="h-7 border border-border-control bg-surface-3"><option value="">{L("Prosjektformat", "Project format")}</option>{["1K","2K","4K"].map(r => <option key={r}>{r}</option>)}</select></label>
-          <label>{L("Bitrate (kbps)", "Bitrate (kbps)")} <input data-testid="export-profile-bitrate" type="number" min={100} max={100000} value={bitrateKbps ?? ""} disabled={busy} onChange={e => setBitrateKbps(e.target.value ? Number(e.target.value) : null)} className="h-7 w-24 border border-border-control bg-surface-3" /></label>
+          <label>{t("app-assembly-export-animatic-dialog.export-animatic-dialog.label.5d34e7666129")} <select data-testid="export-profile-resolution" value={profileResolution ?? ""} disabled={busy} onChange={e => setProfileResolution(e.target.value || null)} className="h-7 border border-border-control bg-surface-3"><option value="">{t("app-assembly-export-animatic-dialog.export-animatic-dialog.option.ba073253e1c7")}</option>{["1K","2K","4K"].map(r => <option key={r}>{r}</option>)}</select></label>
+          <label>{t("app-assembly-export-animatic-dialog.export-animatic-dialog.label.2c678aca5ccf")} <input data-testid="export-profile-bitrate" type="number" min={100} max={100000} value={bitrateKbps ?? ""} disabled={busy} onChange={e => setBitrateKbps(e.target.value ? Number(e.target.value) : null)} className="h-7 w-24 border border-border-control bg-surface-3" /></label>
         </div>
 
         <div className="grid grid-cols-2 gap-5">
           <fieldset className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-3" disabled={busy}>
-            <legend className={legend}>{L("Hva", "What")}</legend>
+            <legend className={legend}>{t("app-assembly-export-animatic-dialog.export-animatic-dialog.legend.615a07faf36f")}</legend>
             <label className={radio}>
               <input
                 type="radio"
@@ -781,9 +755,9 @@ export function ExportAnimaticDialog({
                 className="mt-1"
               />
               <span>
-                {L("Hele filmen", "The whole film")}
+                {t("app-assembly-export-animatic-dialog.export-animatic-dialog.span.a903a50c6b16")}
                 <span className="block text-xs text-text-tertiary">
-                  {L("Alle aktive scener", "All active scenes")}
+                  {t("app-assembly-export-animatic-dialog.export-animatic-dialog.span.6c196015cc85")}
                 </span>
               </span>
             </label>
@@ -797,7 +771,7 @@ export function ExportAnimaticDialog({
                 className="mt-1"
               />
               <span>
-                {L("Valgt scene", "Selected scene")}
+                {t("app-assembly-export-animatic-dialog.export-animatic-dialog.span.0668da8035a2")}
                 <span className="block text-xs text-text-tertiary">
                   {selectedId
                     ? (() => {
@@ -806,7 +780,7 @@ export function ExportAnimaticDialog({
                           ? `${c.productionNumber ?? ""} ${formatHeading(c.heading)}`.trim()
                           : "–";
                       })()
-                    : L("Velg en scene i tidslinjen først", "Select a scene in the timeline first")}
+                    : t("app-assembly-export-animatic-dialog.export-animatic-dialog.span.8110be288723")}
                 </span>
               </span>
             </label>
@@ -819,11 +793,11 @@ export function ExportAnimaticDialog({
                 className="mt-1"
               />
               <span className="flex min-w-0 flex-1 flex-col gap-1">
-                {L("Fra scene til scene", "From scene to scene")}
+                {t("app-assembly-export-animatic-dialog.export-animatic-dialog.span.f85957df67da")}
                 {/* Lange scenehoder skal ikke presse valgene ut av kolonnen */}
                 <span className="flex min-w-0 flex-col gap-1 overflow-hidden text-xs text-text-tertiary">
                   <select
-                    aria-label={L("Første scene", "First scene")}
+                    aria-label={t("app-assembly-export-animatic-dialog.export-animatic-dialog.aria-label.b9d371cb37dc")}
                     value={fromId}
                     onChange={(e) => {
                       setFromId(e.target.value);
@@ -838,7 +812,7 @@ export function ExportAnimaticDialog({
                     ))}
                   </select>
                   <select
-                    aria-label={L("Siste scene", "Last scene")}
+                    aria-label={t("app-assembly-export-animatic-dialog.export-animatic-dialog.aria-label.35a8e5049bbd")}
                     value={toId}
                     onChange={(e) => {
                       setToId(e.target.value);
@@ -864,19 +838,16 @@ export function ExportAnimaticDialog({
                 className="mt-1"
               />
               <span className="flex min-w-0 flex-1 flex-col gap-1">
-                {L("Valgte scener", "Selected scenes")}
+                {t("app-assembly-export-animatic-dialog.export-animatic-dialog.span.d672908d89ab")}
                 <span className="block text-xs text-text-tertiary">
-                  {L(
-                    "Kryss av scenene; de settes etter hverandre i filmens rekkefølge",
-                    "Tick the scenes; they are put one after another in the film's order",
-                  )}
+                  {t("app-assembly-export-animatic-dialog.export-animatic-dialog.span.3c06d61df09f")}
                 </span>
               </span>
             </label>
             {scope === "pick" ? (
               <div className="flex flex-col gap-1">
                 <ul
-                  aria-label={L("Scener i eksporten", "Scenes in the export")}
+                  aria-label={t("app-assembly-export-animatic-dialog.export-animatic-dialog.aria-label.a55a23ad7ecc")}
                   className="max-h-40 overflow-y-auto border border-border bg-surface-1"
                 >
                   {clips.map((c) => (
@@ -905,14 +876,14 @@ export function ExportAnimaticDialog({
                     className="text-text-secondary hover:underline"
                     onClick={() => setPicked(new Set(clips.map((c) => c.occurrenceId)))}
                   >
-                    {L("Alle", "All")}
+                    {t("app-assembly-export-animatic-dialog.export-animatic-dialog.button.12f530b9d538")}
                   </button>
                   <button
                     type="button"
                     className="text-text-secondary hover:underline"
                     onClick={() => setPicked(new Set())}
                   >
-                    {L("Ingen", "None")}
+                    {t("app-assembly-export-animatic-dialog.export-animatic-dialog.button.3e118f61a604")}
                   </button>
                 </span>
               </div>
@@ -920,7 +891,7 @@ export function ExportAnimaticDialog({
           </fieldset>
 
           <fieldset className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-3" disabled={busy}>
-            <legend className={legend}>{L("Størrelse", "Size")}</legend>
+            <legend className={legend}>{t("app-assembly-export-animatic-dialog.export-animatic-dialog.legend.5aedb80937f3")}</legend>
             <label className={radio}>
               <input
                 type="radio"
@@ -930,7 +901,7 @@ export function ExportAnimaticDialog({
                 className="mt-1"
               />
               <span>
-                {L("Full størrelse", "Full size")}
+                {t("app-assembly-export-animatic-dialog.export-animatic-dialog.span.50e6c869c89f")}
                 <span className="block text-xs text-text-tertiary">
                   {fullW} × {fullH} px
                 </span>
@@ -945,10 +916,10 @@ export function ExportAnimaticDialog({
                 className="mt-1"
               />
               <span>
-                {L("Halv størrelse", "Half size")}
+                {t("app-assembly-export-animatic-dialog.export-animatic-dialog.span.4786d6ff3d56")}
                 <span className="block text-xs text-text-tertiary">
                   {Math.round(fullW / 2)} × {Math.round(fullH / 2)} px –{" "}
-                  {L("raskere og mindre fil", "faster and a smaller file")}
+                  {t("app-assembly-export-animatic-dialog.export-animatic-dialog.span.01940e0f9135")}
                 </span>
               </span>
             </label>
@@ -959,7 +930,7 @@ export function ExportAnimaticDialog({
                 onChange={(e) => setMono(e.target.checked)}
                 className="size-3.5 accent-[var(--accent-brand)]"
               />
-              {L("Hele filmen i svart-hvitt", "The whole film in black and white")}
+              {t("app-assembly-export-animatic-dialog.export-animatic-dialog.label.5f480757a5cd")}
             </label>
             <label className="flex items-center gap-2 pt-1 text-[13px] text-text-primary">
               <input
@@ -969,19 +940,16 @@ export function ExportAnimaticDialog({
                 onChange={(e) => setIncludeCredits(e.target.checked)}
                 className="size-3.5 accent-[var(--accent-brand)]"
               />
-              {L("Inkluder rulletekst", "Include credits")}
+              {t("app-assembly-export-animatic-dialog.export-animatic-dialog.label.8ed585b4e68c")}
             </label>
             <p className="pt-1 text-xs text-text-tertiary">
-              {L(
-                "Scener som er satt til svart-hvitt, blir det uansett. Med lyden fra lydsporene (dempede spor er ikke med). Filformat og undertekster velges under.",
-                "Scenes set to black and white stay that way. With the sound from the audio tracks (muted tracks are not included). File format and subtitles are chosen below.",
-              )}
+              {t("app-assembly-export-animatic-dialog.export-animatic-dialog.p.abc8b0f00b0f")}
             </p>
           </fieldset>
         </div>
 
         <fieldset className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-3" disabled={busy}>
-          <legend className={legend}>{L("Språk og innhold", "Language and content")}</legend>
+          <legend className={legend}>{t("app-assembly-export-animatic-dialog.export-animatic-dialog.legend.ce685e047b9b")}</legend>
           <FilmLanguagePicker value={language} onChange={onLanguage} />
           <div className="flex flex-wrap gap-4">
             <label className={radio}>
@@ -993,11 +961,11 @@ export function ExportAnimaticDialog({
                 className="mt-1"
               />
               <span>
-                {L("Video", "Video")}
+                {t("app-assembly-export-animatic-dialog.export-animatic-dialog.span.c5a5dd431c08")}
                 <span className="block text-xs text-text-tertiary">
-                  {L("Bilde og all lyd på", "Picture and all sound in")} {langName}
+                  {t("app-assembly-export-animatic-dialog.export-animatic-dialog.span.34d2cfe81860")} {langName}
                   {language.subtitles && subMode === "burn"
-                    ? L(", med undertekster i bildet", ", with subtitles in the picture")
+                    ? t("app-assembly-export-animatic-dialog.export-animatic-dialog.span.afd88c929cf8")
                     : ""}
                 </span>
               </span>
@@ -1011,10 +979,10 @@ export function ExportAnimaticDialog({
                 className="mt-1"
               />
               <span>
-                {L("Bare dialogspor (WAV)", "Dialogue track only (WAV)")}
+                {t("app-assembly-export-animatic-dialog.export-animatic-dialog.span.d9fec06c5ad4")}
                 <span className="block text-xs text-text-tertiary">
-                  {L("Dialog og forteller på", "Dialogue and narration in")} {langName}
-                  {L(", uten musikk og effekter", ", without music and effects")}
+                  {t("app-assembly-export-animatic-dialog.export-animatic-dialog.span.297264f4ac41")} {langName}
+                  {t("app-assembly-export-animatic-dialog.export-animatic-dialog.span.d0a240494b79")}
                 </span>
               </span>
             </label>
@@ -1022,7 +990,7 @@ export function ExportAnimaticDialog({
           {output === "video" ? (
             <div className="flex flex-wrap items-center gap-4 text-xs text-text-secondary">
               <label className="flex items-center gap-1.5">
-                {L("Filformat", "File format")}
+                {t("app-assembly-export-animatic-dialog.export-animatic-dialog.label.b1d0162bac69")}
                 <select
                   value={container}
                   onChange={(e) => setContainer(e.target.value as "mp4" | "webm" | "mov")}
@@ -1030,20 +998,20 @@ export function ExportAnimaticDialog({
                   data-testid="export-format"
                 >
                   <option value="mp4">
-                    {L("MP4 (H.264 – spilles overalt)", "MP4 (H.264 – plays everywhere)")}
+                    {t("app-assembly-export-animatic-dialog.export-animatic-dialog.option.153f422a846d")}
                   </option>
                   <option value="webm">
-                    {L("WebM (VP9 – mindre fil)", "WebM (VP9 – smaller file)")}
+                    {t("app-assembly-export-animatic-dialog.export-animatic-dialog.option.764c8c46455e")}
                   </option>
                   <option value="mov" disabled={!proresOk}>
-                    {L("MOV (ProRes 422 HQ – for videoredigering)", "MOV (ProRes 422 HQ – for editing)")}
+                    {t("app-assembly-export-animatic-dialog.export-animatic-dialog.option.e9f321399391")}
                   </option>
                 </select>
               </label>
               {!proresOk ? <p role="status" data-testid="export-prores-unavailable" className="w-full">{PRORES_UNSUPPORTED()}</p> : null}
-              {container === "mov" ? <p data-testid="export-prores-note" className="w-full">{L("ProRes 422 HQ, Rec.709, lyd som PCM 48 kHz. Store filer lagres direkte i nettleserens lagring.", "ProRes 422 HQ, Rec.709, audio as PCM 48 kHz. Large files are written straight to browser storage.")}</p> : null}
+              {container === "mov" ? <p data-testid="export-prores-note" className="w-full">{t("app-assembly-export-animatic-dialog.export-animatic-dialog.p.bc1109fa88f7")}</p> : null}
               <label className="flex items-center gap-1.5">
-                {L("Undertekster", "Subtitles")}
+                {t("app-assembly-export-animatic-dialog.export-animatic-dialog.label.65f5cf932bea")}
                 <select
                   value={language.subtitles ? subMode : "none"}
                   disabled={!language.subtitles}
@@ -1053,16 +1021,13 @@ export function ExportAnimaticDialog({
                   title={
                     language.subtitles
                       ? undefined
-                      : L(
-                          "Velg et språk for undertekster over for å få undertekster",
-                          "Choose a subtitle language above to get subtitles",
-                        )
+                      : t("app-assembly-export-animatic-dialog.export-animatic-dialog.title.7a2a35a8ab00")
                   }
                 >
-                  <option value="burn">{L("Brent inn i bildet", "Burned into the picture")}</option>
-                  <option value="srt">{L("Egen fil (SRT)", "Separate file (SRT)")}</option>
-                  <option value="vtt">{L("Egen fil (WebVTT)", "Separate file (WebVTT)")}</option>
-                  <option value="none">{L("Ingen", "None")}</option>
+                  <option value="burn">{t("app-assembly-export-animatic-dialog.export-animatic-dialog.option.b08e214de259")}</option>
+                  <option value="srt">{t("app-assembly-export-animatic-dialog.export-animatic-dialog.option.0ebe3e55b619")}</option>
+                  <option value="vtt">{t("app-assembly-export-animatic-dialog.export-animatic-dialog.option.2b5e1d4e3c6e")}</option>
+                  <option value="none">{t("app-assembly-export-animatic-dialog.export-animatic-dialog.option.3e118f61a604")}</option>
                 </select>
               </label>
             </div>
@@ -1070,27 +1035,27 @@ export function ExportAnimaticDialog({
         </fieldset>
 
         <section
-          aria-label={L("Kontroll før eksport", "Check before export")}
+          aria-label={t("app-assembly-export-animatic-dialog.export-animatic-dialog.aria-label.ad4ffafdd70d")}
           className="flex flex-col gap-1.5"
         >
-          <h3 className={legend}>{L("Kontroll før eksport", "Check before export")}</h3>
+          <h3 className={legend}>{t("app-assembly-export-animatic-dialog.export-animatic-dialog.h3.ad4ffafdd70d")}</h3>
           <ul className="flex flex-col gap-1">
             {checks.map((c, i) => (
               <li key={i} className="flex items-start gap-2 text-xs text-text-secondary">
                 {c.level === "ok" ? (
                   <CheckCircle2
                     className="mt-px size-3.5 shrink-0 text-status-success"
-                    aria-label={L("OK", "OK")}
+                    aria-label={t("app-assembly-export-animatic-dialog.export-animatic-dialog.aria-label.71e6fb36d69d")}
                   />
                 ) : c.level === "warn" ? (
                   <AlertTriangle
                     className="mt-px size-3.5 shrink-0 text-status-discrepancy"
-                    aria-label={L("Merk", "Note")}
+                    aria-label={t("app-assembly-export-animatic-dialog.export-animatic-dialog.aria-label.c5724fbd8c35")}
                   />
                 ) : (
                   <Info
                     className="mt-px size-3.5 shrink-0 text-text-tertiary"
-                    aria-label={L("Info", "Info")}
+                    aria-label={t("app-assembly-export-animatic-dialog.export-animatic-dialog.aria-label.aed8a09c683a")}
                   />
                 )}
                 {c.text}
@@ -1101,22 +1066,19 @@ export function ExportAnimaticDialog({
 
         {!supported ? (
           <p role="alert" className="text-xs text-status-danger">
-            {L(
-              "Denne nettleseren kan ikke lage video. Bruk en nyere utgave av Chrome, Edge, Safari eller Firefox.",
-              "This browser cannot make video. Use a newer version of Chrome, Edge, Safari or Firefox.",
-            )}
+            {t("app-assembly-export-animatic-dialog.export-animatic-dialog.p.f77b75c919bf")}
           </p>
         ) : null}
 
         {progress && !ready ? (
           <div data-testid="export-progress" className="flex flex-col gap-1.5 rounded-sm border border-accent-brand/50 bg-accent-selection p-3" aria-live="polite">
-            <p className="text-[13px] font-medium text-text-primary">{L("Eksporterer …", "Exporting …")}</p>
+            <p className="text-[13px] font-medium text-text-primary">{t("app-assembly-export-animatic-dialog.export-animatic-dialog.p.7f00060d6fdc")}</p>
             <div
               role="progressbar"
               aria-valuenow={pct}
               aria-valuemin={0}
               aria-valuemax={100}
-              aria-label={L("Fremdrift", "Progress")}
+              aria-label={t("app-assembly-export-animatic-dialog.export-animatic-dialog.aria-label.8071e51b2042")}
               className="h-2 overflow-hidden rounded-full bg-surface-3"
             >
               <div
@@ -1125,7 +1087,7 @@ export function ExportAnimaticDialog({
               />
             </div>
             <p className="text-xs text-text-tertiary">
-              {L("Bilde", "Image")} {progress.done} {L("av", "of")} {progress.total} (
+              {t("app-assembly-export-animatic-dialog.export-animatic-dialog.p.e33a9cb0d6da")} {progress.done} {t("app-assembly-export-animatic-dialog.export-animatic-dialog.p.cc610166b8e0")} {progress.total} (
               {formatTimecode(progress.done, fps)}) – {pct} %
             </p>
           </div>
@@ -1144,7 +1106,7 @@ export function ExportAnimaticDialog({
             role="status"
           >
             <CheckCircle2 className="size-4 shrink-0 text-status-success" aria-hidden />
-            {L("Ferdig:", "Done:")} {ready.name} (
+            {t("app-assembly-export-animatic-dialog.export-animatic-dialog.p.2fb3e37c871d")} {ready.name} (
             {(ready.bytes / 1024 / 1024).toLocaleString(locale(), {
               maximumFractionDigits: 1,
             })}{" "}
@@ -1155,7 +1117,7 @@ export function ExportAnimaticDialog({
               className="inline-flex items-center gap-1 text-accent-brand hover:underline"
             >
               <Download className="size-3.5" aria-hidden />
-              {L("Last ned", "Download")}
+              {t("app-assembly-export-animatic-dialog.export-animatic-dialog.a.1596dc39c65c")}
             </a>
             {shareSource ? (
               <button
@@ -1165,7 +1127,7 @@ export function ExportAnimaticDialog({
                 data-testid="film-share-open"
               >
                 <QrCodeIcon className="size-3.5" aria-hidden />
-                {L("Del med QR-kode …", "Share with QR code …")}
+                {t("app-assembly-export-animatic-dialog.export-animatic-dialog.button.2b28b2dd28a0")}
               </button>
             ) : null}
             {charFile ? (
@@ -1176,7 +1138,7 @@ export function ExportAnimaticDialog({
                 className="inline-flex items-center gap-1 text-accent-brand hover:underline"
               >
                 <Download className="size-3.5" aria-hidden />
-                {L("Last ned karakterlagene", "Download the character layers")}
+                {t("app-assembly-export-animatic-dialog.export-animatic-dialog.a.151b30635bc0")}
               </a>
             ) : null}
             {subFile ? (
@@ -1186,33 +1148,30 @@ export function ExportAnimaticDialog({
                 className="inline-flex items-center gap-1 text-accent-brand hover:underline"
               >
                 <Download className="size-3.5" aria-hidden />
-                {L("Last ned undertekstene", "Download the subtitles")}
+                {t("app-assembly-export-animatic-dialog.export-animatic-dialog.a.be9aad8ec9f6")}
               </a>
             ) : null}
             {isEmbedded() ? (
               <span className="text-text-tertiary">
-                {L(
-                  "Hvis nedlastingen ikke starter: åpne programmet i en egen fane.",
-                  "If the download does not start: open the app in a separate tab.",
-                )}
+                {t("app-assembly-export-animatic-dialog.export-animatic-dialog.span.2dc1a9f9edd0")}
               </span>
             ) : null}
           </p>
         ) : null}
 
         <ExportHistory productionId={productionId} kinds={["film", "audio"]} />
-        <Button variant="outline" size="sm" data-testid="export-alpha-open" disabled={busy || !alphaComposition} onClick={() => setAlphaOpen(true)} title={L("Velg en scene med 2D-komposisjon i monteringen.", "Select a scene with a 2D composition in the assembly.")}>
-          <Download />{L("Eksporter lag med gjennomsiktighet …", "Export layers with transparency …")}
+        <Button variant="outline" size="sm" data-testid="export-alpha-open" disabled={busy || !alphaComposition} onClick={() => setAlphaOpen(true)} title={t("app-assembly-export-animatic-dialog.export-animatic-dialog.title.d2997bee334d")}>
+          <Download />{t("app-assembly-export-animatic-dialog.export-animatic-dialog.button.4ca3b34859ad")}
         </Button>
 
         <DialogFooter className="border-t border-border bg-surface-2 py-2">
           {busy ? (
             <Button variant="ghost" onClick={() => queueId.current ? exportQueue.cancel(queueId.current) : abort.current?.abort()}>
-              {L("Avbryt", "Cancel")}
+              {t("app-assembly-export-animatic-dialog.export-animatic-dialog.button.d51bb9abaaf8")}
             </Button>
           ) : (
             <Button variant="ghost" onClick={() => onOpenChange(false)}>
-              {L("Lukk", "Close")}
+              {t("app-assembly-export-animatic-dialog.export-animatic-dialog.button.fab9aaaf69c0")}
             </Button>
           )}
           <Button
@@ -1226,7 +1185,7 @@ export function ExportAnimaticDialog({
             }
           >
             <Download />
-            {warnings ? L("Eksporter likevel", "Export anyway") : L("Eksporter", "Export")}
+            {warnings ? t("app-assembly-export-animatic-dialog.export-animatic-dialog.button.93f2ccf9eceb") : t("app-assembly-export-animatic-dialog.export-animatic-dialog.button.24d7c267343a")}
           </Button>
         </DialogFooter>
       </DialogContent>

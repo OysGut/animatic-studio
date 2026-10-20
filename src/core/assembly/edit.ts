@@ -8,6 +8,7 @@ import type { ClipPartId, TakeId } from "../ids";
 import type { Rational } from "../time";
 import type { ProjectState, Take } from "../model";
 import type { FilmClip } from "./film";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Korteste del (ms). */
 export const MIN_PART_MS = 40;
@@ -236,6 +237,6 @@ export function takeLabel(s: ProjectState, t: Take): string {
     );
   }
   return (
-    t.media?.fileName ?? (t.kind === "ai_video" ? "AI-video" : L("Importert film", "Imported film"))
+    t.media?.fileName ?? (t.kind === "ai_video" ? "AI-video" : tk("core-assembly-edit.take-label.message.b98ad3f87ffa"))
   );
 }

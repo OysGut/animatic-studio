@@ -21,6 +21,7 @@ import { uploadAssetAudio } from "@/app/library/asset-audio";
 import type { Commands } from "@/app/project/use-commands";
 import { channelsOf, encodeMp3, renderComposition } from "@/engine/audio/composition";
 import { encodeWav } from "@/engine/export/audio-stem";
+import { t } from "@/core/i18n/keyed";
 
 type Run = Pick<Commands, "runAndWait">;
 
@@ -90,9 +91,9 @@ export async function saveComposition(
   options?: { readonly group?: string; readonly alignment?: WordAlignment; readonly prepared?: AudioBuffer | undefined },
 ): Promise<{ variantId: string; versionId: string; durationMs: number | null }> {
   if (!state.assets[assetId])
-    throw new Error(L("Lydressursen finnes ikke", "The audio asset does not exist"));
+    throw new Error(t("app-audio-composition-actions.save-composition.message.8b88c3041b9e"));
   if (compositionLengthMs(c) <= 0)
-    throw new Error(L("Komposisjonen er tom", "The composition is empty"));
+    throw new Error(t("app-audio-composition-actions.save-composition.message.93292f862c68"));
   const blob = options?.prepared
     ? new Blob([encodeWav(channelsOf(options.prepared), options.prepared.sampleRate) as BlobPart], { type: "audio/wav" })
     : await encodeComposition(c, buffers, {
@@ -114,7 +115,7 @@ export async function saveComposition(
         assetId: assetId as never,
         fields: { name: target.newVariantName.slice(0, 200), style: "other", appearance: "" },
       },
-      L("Ny lydvariant", "New audio variant"),
+      t("app-audio-composition-actions.r.cmds-run-and-wait.0736e8baf62b"),
       group,
     );
     if (r.error) throw new Error(r.error);
@@ -129,7 +130,7 @@ export async function saveComposition(
       composition: c,
       ...(options?.alignment ? { alignment: options.alignment } : {}),
     },
-    L("Ny lydkomposisjon", "New audio composition"),
+    t("app-audio-composition-actions.r.cmds-run-and-wait.8d636143a97e"),
     group,
   );
   if (r.error) throw new Error(r.error);

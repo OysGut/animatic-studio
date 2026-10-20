@@ -9,14 +9,9 @@ import { coverVersion, versionsOf } from "../library";
 import { framesToSeconds, type Rational } from "../time";
 import { L, localized } from "../i18n";
 import { clipEditOf, clipFileOf } from "../dialogue/versions";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
-export const AUDIO_KIND_LABEL: Record<AudioKind, string> = localized({
-  dialogue: ["Dialog", "Dialogue"],
-  narration: ["Forteller", "Narration"],
-  sfx: ["Effekter", "Effects"],
-  ambience: ["Atmosfære", "Ambience"],
-  music: ["Musikk", "Music"],
-});
+export const AUDIO_KIND_LABEL: Record<AudioKind, string> = tLocalized({ dialogue: "core-audio-index.audio-kind-label.dialogue.496fc3ccd9d7", narration: "core-audio-index.audio-kind-label.narration.eac0d9233796", sfx: "core-audio-index.audio-kind-label.sfx.5417ddbee494", ambience: "core-audio-index.audio-kind-label.ambience.063ae2ad0777", music: "core-audio-index.audio-kind-label.music.887b04818ab4" });
 
 /** Sporenes rekkefølge i tidslinjen. */
 export const AUDIO_TRACK_ORDER: readonly AudioKind[] = [
@@ -263,7 +258,7 @@ export function filmTakeAudio(clips: readonly FilmClip[], fps: Rational): FilmAu
         revision: t.revision,
         occurrenceId: c.occurrenceId,
         kind: "dialogue",
-        name: t.media?.fileName ?? L("Filmlyd", "Film audio"),
+        name: t.media?.fileName ?? tk("core-audio-index.name.name.8b12358ce61a"),
         assetId: t.id,
         assetVariantId: null,
         versionId: null,

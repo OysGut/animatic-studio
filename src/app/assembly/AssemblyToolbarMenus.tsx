@@ -28,6 +28,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { L } from "@/core";
+import { t } from "@/core/i18n/keyed";
 
 function ViewToggle({
   checked,
@@ -94,17 +95,14 @@ export function AssemblyViewMenu({
       <PopoverTrigger asChild>
         <ToolbarButton
           className="shrink-0"
-          title={L(
-            "Svart-hvitt, teknisk visning og eget vindu",
-            "Black and white, technical view and own window",
-          )}
+          title={t("app-assembly-assembly-toolbar-menus.assembly-view-menu.title.395f0d2fd144")}
         >
           <SlidersHorizontal className="size-3.5" aria-hidden />
-          {L("Visning", "View")}
+          {t("app-assembly-assembly-toolbar-menus.assembly-view-menu.toolbar-button.69d57e54d93f")}
           {changed ? (
             <>
               <span className="size-1.5 rounded-full bg-accent-brand" aria-hidden />
-              <span className="sr-only">{L("(endret)", "(changed)")}</span>
+              <span className="sr-only">{t("app-assembly-assembly-toolbar-menus.assembly-view-menu.span.b51ea08ac7fd")}</span>
             </>
           ) : null}
           <ChevronDown className="size-3" aria-hidden />
@@ -115,32 +113,23 @@ export function AssemblyViewMenu({
           checked={monochrome}
           onChange={onMonochrome}
           icon={<Contrast className="size-3.5" aria-hidden />}
-          label={L("Svart-hvitt", "Black and white")}
-          hint={L(
-            "Hele filmen i svart-hvitt (foreslås også i eksporten). Enkeltscener settes i panelet.",
-            "The whole film in black and white (also suggested in the export). Single scenes are set in the panel.",
-          )}
+          label={t("app-assembly-assembly-toolbar-menus.assembly-view-menu.label.01c8a4adb4ee")}
+          hint={t("app-assembly-assembly-toolbar-menus.assembly-view-menu.hint.c8799e1a1b38")}
         />
         <ViewToggle
           checked={technical}
           onChange={onTechnical}
           icon={<Binary className="size-3.5" aria-hidden />}
-          label={L("Teknisk visning", "Technical view")}
-          hint={L(
-            "Tidskoder, bildenummer og filinformasjon for scenen og delene.",
-            "Timecodes, frame numbers and file information for the scene and its parts.",
-          )}
+          label={t("app-assembly-assembly-toolbar-menus.assembly-view-menu.label.1875f107bdf2")}
+          hint={t("app-assembly-assembly-toolbar-menus.assembly-view-menu.hint.7ef8ca936164")}
         />
         <ViewToggle
           checked={popout}
           onChange={onPopout}
           disabled={!hasClips}
           icon={<ExternalLink className="size-3.5" aria-hidden />}
-          label={L("Eget vindu", "Own window")}
-          hint={L(
-            "Filmen i et eget vindu, f.eks. på en annen skjerm.",
-            "The film in its own window, e.g. on another screen.",
-          )}
+          label={t("app-assembly-assembly-toolbar-menus.assembly-view-menu.label.379433325ec3")}
+          hint={t("app-assembly-assembly-toolbar-menus.assembly-view-menu.hint.4073080dcf51")}
         />
       </PopoverContent>
     </Popover>
@@ -172,13 +161,10 @@ export function AssemblyMoreMenu({
       <DropdownMenuTrigger asChild>
         <ToolbarButton
           className="shrink-0"
-          title={L(
-            "Standardovergang, lang film, video for flere scener, språkversjon og undertekster",
-            "Standard transition, long film, video for several scenes, language version and subtitles",
-          )}
+          title={t("app-assembly-assembly-toolbar-menus.assembly-more-menu.title.f9678342eb3f")}
         >
           <Ellipsis className="size-3.5" aria-hidden />
-          {L("Mer", "More")}
+          {t("app-assembly-assembly-toolbar-menus.assembly-more-menu.toolbar-button.9500f81ed2f1")}
           <ChevronDown className="size-3" aria-hidden />
         </ToolbarButton>
       </DropdownMenuTrigger>
@@ -186,12 +172,9 @@ export function AssemblyMoreMenu({
         <DropdownMenuItem className={item} onSelect={onStandardTransition}>
           <Blend className="mt-0.5" aria-hidden />
           <span>
-            {L("Standardovergang …", "Standard transition …")}
+            {t("app-assembly-assembly-toolbar-menus.assembly-more-menu.span.ab09f51a7299")}
             <span className={hint}>
-              {L(
-                "Overgangen alle scener får når de ikke har sin egen",
-                "The transition every scene gets when it has none of its own",
-              )}
+              {t("app-assembly-assembly-toolbar-menus.assembly-more-menu.span.858915123c30")}
             </span>
           </span>
         </DropdownMenuItem>
@@ -200,24 +183,18 @@ export function AssemblyMoreMenu({
             <DropdownMenuItem className={item} disabled={!hasClips} onSelect={onLongFilm}>
               <Film className="mt-0.5" aria-hidden />
               <span>
-                {L("Importer lang film …", "Import long film …")}
+                {t("app-assembly-assembly-toolbar-menus.assembly-more-menu.span.b31fa66aac0d")}
                 <span className={hint}>
-                  {L(
-                    "Én filmfil som dekker flere scener: last opp én gang og del den på scenene",
-                    "One film file covering several scenes: upload it once and split it across the scenes",
-                  )}
+                  {t("app-assembly-assembly-toolbar-menus.assembly-more-menu.span.a00cb1223443")}
                 </span>
               </span>
             </DropdownMenuItem>
             <DropdownMenuItem className={item} disabled={!hasClips} onSelect={onBatchVideo}>
               <ListOrdered className="mt-0.5" aria-hidden />
               <span>
-                {L("Video for flere scener …", "Video for several scenes …")}
+                {t("app-assembly-assembly-toolbar-menus.assembly-more-menu.span.d6d5b8aa43a6")}
                 <span className={hint}>
-                  {L(
-                    "AI-video for flere scener på én gang (legges i kø, kostnaden vises først)",
-                    "AI video for several scenes at once (queued, the cost is shown first)",
-                  )}
+                  {t("app-assembly-assembly-toolbar-menus.assembly-more-menu.span.83312a07b4b1")}
                 </span>
               </span>
             </DropdownMenuItem>
@@ -227,24 +204,18 @@ export function AssemblyMoreMenu({
         <DropdownMenuItem className={item} disabled={!hasClips} onSelect={onLanguage}>
           <Languages className="mt-0.5" aria-hidden />
           <span>
-            {L("Språkversjon …", "Language version …")}
+            {t("app-assembly-assembly-toolbar-menus.assembly-more-menu.span.76e679caba93")}
             <span className={hint}>
-              {L(
-                "Engelsk versjon: oversettelse, dialoglyd, timing og leppesynk scene for scene",
-                "English version: translation, dialogue audio, timing and lip sync scene by scene",
-              )}
+              {t("app-assembly-assembly-toolbar-menus.assembly-more-menu.span.991717bc5d88")}
             </span>
           </span>
         </DropdownMenuItem>
         <DropdownMenuItem className={item} disabled={!hasClips} onSelect={onSubtitles}>
           <Captions className="mt-0.5" aria-hidden />
           <span>
-            {L("Undertekster …", "Subtitles …")}
+            {t("app-assembly-assembly-toolbar-menus.assembly-more-menu.span.73cb3f01c570")}
             <span className={hint}>
-              {L(
-                "Undertekster (.srt eller .vtt) på norsk eller engelsk",
-                "Subtitles (.srt or .vtt) in Norwegian or English",
-              )}
+              {t("app-assembly-assembly-toolbar-menus.assembly-more-menu.span.c4a4525c233b")}
             </span>
           </span>
         </DropdownMenuItem>
@@ -267,13 +238,10 @@ export function AssemblyTextMenu({
         <ToolbarButton
           className="shrink-0"
           data-testid="mts-assembly-text-menu"
-          title={L(
-            "Filmtittel, tekstscene eller rulletekst – egne deler av filmen, aldri manusscener",
-            "Film title, text scene or credits – separate parts of the film, never script scenes",
-          )}
+          title={t("app-assembly-assembly-toolbar-menus.assembly-text-menu.title.63be1f7caa03")}
         >
           <Type className="size-3.5" aria-hidden />
-          {L("Tekst", "Text")}
+          {t("app-assembly-assembly-toolbar-menus.assembly-text-menu.toolbar-button.ddcebaf15757")}
           <ChevronDown className="size-3" aria-hidden />
         </ToolbarButton>
       </DropdownMenuTrigger>
@@ -281,36 +249,27 @@ export function AssemblyTextMenu({
         <DropdownMenuItem className={item} data-testid="mts-new-title" onSelect={() => onCreate("title")}>
           <Type className="mt-0.5" aria-hidden />
           <span>
-            {L("Ny filmtittel", "New film title")}
+            {t("app-assembly-assembly-toolbar-menus.assembly-text-menu.span.b427447d511c")}
             <span className={hint}>
-              {L(
-                "Tittelen med sider, bokstavanimasjon, logoer og eget lydspor",
-                "The title with pages, letter animation, logos and its own soundtrack",
-              )}
+              {t("app-assembly-assembly-toolbar-menus.assembly-text-menu.span.2dcfdcfa50e3")}
             </span>
           </span>
         </DropdownMenuItem>
         <DropdownMenuItem className={item} data-testid="mts-new-text" onSelect={() => onCreate("text")}>
           <Type className="mt-0.5" aria-hidden />
           <span>
-            {L("Ny tekstscene", "New text scene")}
+            {t("app-assembly-assembly-toolbar-menus.assembly-text-menu.span.3ac0157a7fde")}
             <span className={hint}>
-              {L(
-                "En tekstscene mellom scenene, uten bilde av teksten",
-                "A text scene between the scenes, without a picture of the text",
-              )}
+              {t("app-assembly-assembly-toolbar-menus.assembly-text-menu.span.1af01e8ee77b")}
             </span>
           </span>
         </DropdownMenuItem>
         <DropdownMenuItem className={item} data-testid="mts-new-credits" onSelect={() => onCreate("credits")}>
           <ListOrdered className="mt-0.5" aria-hidden />
           <span>
-            {L("Ny rulletekst", "New credits")}
+            {t("app-assembly-assembly-toolbar-menus.assembly-text-menu.span.5c715309aeaa")}
             <span className={hint}>
-              {L(
-                "Rulletekst med eget deltakerregister, presentasjonsform og lydspor",
-                "Credits with their own list of participants, presentation and soundtrack",
-              )}
+              {t("app-assembly-assembly-toolbar-menus.assembly-text-menu.span.6159c48c3561")}
             </span>
           </span>
         </DropdownMenuItem>

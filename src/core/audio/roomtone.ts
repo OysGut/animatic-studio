@@ -11,6 +11,7 @@
 import { L } from "../i18n";
 import type { AudioComposition, AudioSegment } from "./composition";
 import type { PauseGap } from "./pauses";
+import { t } from "@/core/i18n/keyed";
 
 type NewId = () => string;
 
@@ -204,10 +205,7 @@ export interface FillResult {
 }
 
 export const NO_ROOM_TONE_MESSAGE = () =>
-  L(
-    "Fant ingen egnet romlyd for pausen. Velg stillhet eller en romlydfil.",
-    "No suitable room tone was found for the pause. Choose silence or a room tone file.",
-  );
+  t("core-audio-roomtone.no-room-tone-message.message.82980bb806dc");
 
 /**
  * Fyller hullene i pausene med romlyd (rollen «room», dialogsporet). Gammel romlyd i komposisjonen tas bort

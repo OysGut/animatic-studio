@@ -23,23 +23,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { AiUpdateSection } from "./AiUpdateSection";
 import { MaterialUpdateSection } from "./MaterialUpdateSection";
+import { t, tLocalized } from "@/core/i18n/keyed";
 
 type Run = (command: Command, label: string, group?: string) => string | null;
 
-const KIND_LABEL: Record<ScriptChange["kind"], string> = localized({
-  changed: ["Endret", "Changed"],
-  added: ["Ny", "New"],
-  removed: ["Fjernet", "Removed"],
-});
-const BLOCK_LABEL: Record<string, string> = localized({
-  action: ["Handling", "Action"],
-  character: ["Karakter", "Character"],
-  parenthetical: ["Parentes", "Parenthetical"],
-  dialogue: ["Replikk", "Dialogue"],
-  transition: ["Overgang", "Transition"],
-  shot: ["Bilde", "Shot"],
-  note: ["Notat", "Note"],
-});
+const KIND_LABEL: Record<ScriptChange["kind"], string> = tLocalized({ changed: "app-assembly-script-changes.kind-label.changed.ae3016118a56", added: "app-assembly-script-changes.kind-label.added.31d38e95b60c", removed: "app-assembly-script-changes.kind-label.removed.b27783470548" });
+const BLOCK_LABEL: Record<string, string> = tLocalized({ action: "app-assembly-script-changes.block-label.action.ee8e866e26ba", character: "app-assembly-script-changes.block-label.character.0469bdf9cd69", parenthetical: "app-assembly-script-changes.block-label.parenthetical.d522e2896d55", dialogue: "app-assembly-script-changes.block-label.dialogue.42c9ace5fada", transition: "app-assembly-script-changes.block-label.transition.9c6eafc661b2", shot: "app-assembly-script-changes.block-label.shot.2f1d222efcf4", note: "app-assembly-script-changes.block-label.note.8ea9ea73de7c" });
 
 /** Avvikene for én scene (samme beregning som i tidslinjen). */
 export function useSceneDiscrepancies(state: ProjectState, occurrenceId: string | null) {
@@ -96,10 +85,7 @@ export function ScriptChanges({
     const takeIds = mats.filter((m) => m.kind === "take").map((m) => m.id);
     if (compositionIds.length + takeIds.length === 0) {
       setError(
-        L(
-          "2D-scenen deles med hovedfilmen. Godkjenn den i hovedfilmen, eller lag egen versjon.",
-          "The 2D scene is shared with the main film. Approve it in the main film, or make your own version.",
-        ),
+        t("app-assembly-script-changes.accept.set-error.20b4e675ea8c"),
       );
       return;
     }
@@ -111,7 +97,7 @@ export function ScriptChanges({
           compositionIds: compositionIds as never,
           takeIds: takeIds as never,
         },
-        L("Godkjenn manusendringer", "Approve script changes"),
+        t("app-assembly-script-changes.accept.run.19e7a21a6fbc"),
       ),
     );
   }
@@ -125,10 +111,7 @@ export function ScriptChanges({
     const cmds = revertCommands(items);
     if (cmds.length === 0) {
       setError(
-        L(
-          "Endringen kan ikke angres herfra (den gamle teksten finnes ikke lenger).",
-          "The change cannot be undone from here (the old text no longer exists).",
-        ),
+        t("app-assembly-script-changes.revert.set-error.54686c2defae"),
       );
       return;
     }
@@ -143,10 +126,7 @@ export function ScriptChanges({
       });
       if (!r.ok) {
         setError(
-          L(
-            `Manusendringen kan ikke angres herfra: ${r.error.message}`,
-            `The script change cannot be undone from here: ${r.error.message}`,
-          ),
+          t("app-assembly-script-changes.revert.set-error.b7b6c7de1c03", { message: String(r.error.message) }),
         );
         return;
       }
@@ -157,8 +137,8 @@ export function ScriptChanges({
       const err = run(
         c,
         items.length === 1
-          ? L("Angre manusendring", "Undo script change")
-          : L("Angre manusendringer", "Undo script changes"),
+          ? t("app-assembly-script-changes.err.run.e13f1a16d396")
+          : t("app-assembly-script-changes.err.run.a650eeadf3fd"),
         group,
       );
       if (err) {
@@ -173,26 +153,17 @@ export function ScriptChanges({
 
   return (
     <section
-      aria-label={L(
-        "Manuset er endret etter materialet",
-        "The script has changed since the material was made",
-      )}
+      aria-label={t("app-assembly-script-changes.script-changes.aria-label.f59d7fa8a8ea")}
       className="flex flex-col gap-2 border border-status-danger/40 bg-status-danger-bg p-3"
     >
       <h3 className="flex items-center gap-1.5 text-[13px] font-medium text-text-primary">
         <AlertTriangle className="size-4 text-status-danger" aria-hidden />
-        {L(
-          "Manuset er endret etter materialet",
-          "The script has changed since the material was made",
-        )}
+        {t("app-assembly-script-changes.script-changes.h3.f59d7fa8a8ea")}
       </h3>
       <p className="text-xs text-text-secondary">
-        {L("Gjelder:", "Applies to:")}{" "}
-        {mats.map((m) => `${m.label}${m.inUse ? L(" (i bruk)", " (in use)") : ""}`).join(", ")}.{" "}
-        {L(
-          "Velg selv hva som skal skje – ingenting endres automatisk.",
-          "Choose what should happen – nothing changes automatically.",
-        )}
+        {t("app-assembly-script-changes.script-changes.p.7944b2da44d5")}{" "}
+        {mats.map((m) => `${m.label}${m.inUse ? t("app-assembly-script-changes.script-changes.mats-map.162242c259fd") : ""}`).join(", ")}.{" "}
+        {t("app-assembly-script-changes.script-changes.p.8badd53c669b")}
       </p>
       <ul className="flex max-h-60 flex-col gap-1.5 overflow-y-auto">
         {list.map((c) => (
@@ -216,12 +187,9 @@ export function ScriptChanges({
                   type="button"
                   onClick={() => revert([c])}
                   className="ml-auto flex items-center gap-0.5 rounded-sm px-1 text-[11px] text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
-                  title={L(
-                    "Sett bare denne linjen tilbake slik den var da materialet ble laget",
-                    "Set only this line back to how it was when the material was made",
-                  )}
+                  title={t("app-assembly-script-changes.script-changes.title.cc920a262c60")}
                 >
-                  <Undo2 className="size-3" aria-hidden /> {L("Angre denne", "Undo this")}
+                  <Undo2 className="size-3" aria-hidden /> {t("app-assembly-script-changes.script-changes.button.5620fee34f5e")}
                 </button>
               ) : null}
             </div>
@@ -238,7 +206,7 @@ export function ScriptChanges({
         confirmUndo ? (
           <div
             role="alertdialog"
-            aria-label={L("Bekreft angring", "Confirm undo")}
+            aria-label={t("app-assembly-script-changes.script-changes.aria-label.934b8ec4ecf3")}
             className="flex flex-col gap-2 rounded-sm border border-border bg-surface-2 p-2"
           >
             <p className="text-xs text-text-primary">
@@ -250,10 +218,10 @@ export function ScriptChanges({
             <div className="flex gap-2">
               <Button size="sm" variant="destructive" onClick={() => revert(list)}>
                 <Undo2 />
-                {L("Ja, angre manusendringene", "Yes, undo the script changes")}
+                {t("app-assembly-script-changes.script-changes.button.21037f1fa2c8")}
               </Button>
               <Button size="sm" variant="ghost" onClick={() => setConfirmUndo(false)}>
-                {L("Avbryt", "Cancel")}
+                {t("app-assembly-script-changes.script-changes.button.8f4b9b46eb57")}
               </Button>
             </div>
           </div>
@@ -263,13 +231,10 @@ export function ScriptChanges({
               size="sm"
               variant="secondary"
               onClick={accept}
-              title={L(
-                "Materialet passer fortsatt: godkjenn manuset slik det er nå",
-                "The material still fits: approve the script as it is now",
-              )}
+              title={t("app-assembly-script-changes.script-changes.title.62670b210884")}
             >
               <Check />
-              {L("Godkjenn", "Approve")}
+              {t("app-assembly-script-changes.script-changes.button.fb637a851499")}
             </Button>
             {hasComposition && showEditorLink ? (
               <Button size="sm" variant="secondary" asChild>
@@ -277,13 +242,10 @@ export function ScriptChanges({
                   to="/prosjekt/$projectId/scene"
                   params={{ projectId }}
                   search={{ scene: occurrenceId }}
-                  title={L(
-                    "Oppdater 2D-scenen i sceneeditoren; godkjenn etterpå",
-                    "Update the 2D scene in the scene editor; approve afterwards",
-                  )}
+                  title={t("app-assembly-script-changes.script-changes.title.f7139e770dc3")}
                 >
                   <Layers />
-                  {L("Oppdater i sceneeditoren", "Update in the scene editor")}
+                  {t("app-assembly-script-changes.script-changes.link.41ed5a0c21bb")}
                 </Link>
               </Button>
             ) : null}
@@ -292,13 +254,10 @@ export function ScriptChanges({
               variant="ghost"
               disabled={reversible === 0}
               onClick={() => setConfirmUndo(true)}
-              title={L(
-                "Sett manuset tilbake slik det var da materialet ble laget",
-                "Set the script back to how it was when the material was made",
-              )}
+              title={t("app-assembly-script-changes.script-changes.title.dce647973f82")}
             >
               <Undo2 />
-              {L("Angre manusendringene", "Undo script changes")}
+              {t("app-assembly-script-changes.script-changes.button.43036cac0cc8")}
             </Button>
           </div>
         )
@@ -316,10 +275,7 @@ export function ScriptChanges({
       ) : null}
       {mats.some((m) => m.kind === "take" && state.takes[m.id]?.kind !== "ai_video") ? (
         <p className="text-[11px] text-text-tertiary">
-          {L(
-            "Film oppdateres ved å importere en ny versjon («Importer ferdig film …»); den gamle beholdes.",
-            "The film is updated by importing a new version («Import finished film …»); the old one is kept.",
-          )}
+          {t("app-assembly-script-changes.script-changes.p.a52d400b509a")}
         </p>
       ) : null}
       {error ? (

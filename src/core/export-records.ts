@@ -3,19 +3,13 @@
  * permanent ID med produksjon, type, innstillinger, filnavn, scenene som var med, hvem og når. Raden lagres
  * etter at filen er laget og endres aldri. Eksporten selv endrer ingenting i prosjektet (REQ-0085).
  */
-
 import { L, localized } from "./i18n";
+import { t, tLocalized } from "@/core/i18n/keyed";
 
 export const EXPORT_KINDS = ["film", "script", "audio", "subtitles", "poster"] as const;
 export type ExportKind = (typeof EXPORT_KINDS)[number];
 
-export const EXPORT_KIND_LABEL: Record<ExportKind, string> = localized({
-  film: ["Film", "Film"],
-  script: ["Manus", "Script"],
-  audio: ["Lyd", "Audio"],
-  subtitles: ["Undertekster", "Subtitles"],
-  poster: ["Plakat", "Poster"],
-});
+export const EXPORT_KIND_LABEL: Record<ExportKind, string> = tLocalized({ film: "core-export-records.export-kind-label.film.811601c84f2d", script: "core-export-records.export-kind-label.script.c898115de018", audio: "core-export-records.export-kind-label.audio.10319e1f9218", subtitles: "core-export-records.export-kind-label.subtitles.97599c1409e6", poster: "core-export-records.export-kind-label.poster.4075a2784752" });
 
 /** Høyst så mange scener lagres per eksport (samme grense i databasen). */
 export const MAX_EXPORT_SCENES = 5000;
@@ -48,12 +42,12 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
  */
 export function normalizeExportRecord(x: NewExportRecord): NewExportRecord {
   if (!EXPORT_KINDS.includes(x.kind))
-    throw new Error(L("Ukjent eksporttype", "Unknown export type"));
+    throw new Error(t("core-export-records.normalize-export-record.message.8135aeee283d"));
   const fileName = typeof x.fileName === "string" ? x.fileName.trim() : "";
   if (!fileName || fileName.length > 300)
-    throw new Error(L("Ugyldig filnavn", "Invalid file name"));
+    throw new Error(t("core-export-records.normalize-export-record.message.c5525d17bc65"));
   if (typeof x.productionId !== "string" || !UUID.test(x.productionId))
-    throw new Error(L("Ugyldig produksjon", "Invalid production"));
+    throw new Error(t("core-export-records.normalize-export-record.message.969a6792a5c9"));
   const settings: Record<string, ExportSettingValue> = {};
   for (const [k, v] of Object.entries(x.settings ?? {})) {
     if (k.length > 60) continue;
@@ -69,11 +63,11 @@ export function normalizeExportRecord(x: NewExportRecord): NewExportRecord {
       settings[k] = [...(v as readonly string[])];
   }
   if (JSON.stringify(settings).length > MAX_EXPORT_SETTINGS_CHARS)
-    throw new Error(L("For mange eksportinnstillinger", "Too many export settings"));
+    throw new Error(t("core-export-records.normalize-export-record.message.5ba06df3bd6a"));
   const ids = [...new Set(x.occurrenceIds ?? [])];
   if (ids.some((id) => typeof id !== "string" || !UUID.test(id)))
-    throw new Error(L("Ugyldig scene-ID", "Invalid scene ID"));
-  if (ids.length > MAX_EXPORT_SCENES) throw new Error(L("For mange scener", "Too many scenes"));
+    throw new Error(t("core-export-records.normalize-export-record.message.c604b192c997"));
+  if (ids.length > MAX_EXPORT_SCENES) throw new Error(t("core-export-records.normalize-export-record.message.9c37d64b2e7a"));
   return { productionId: x.productionId, kind: x.kind, fileName, settings, occurrenceIds: ids };
 }
 
@@ -102,17 +96,17 @@ export function describeExportSettings(
   const s = r.settings;
   const parts: string[] = [];
   if (typeof s["format"] === "string") parts.push(String(s["format"]).toUpperCase());
-  if (s["size"] === "half") parts.push(L("halv størrelse", "half size"));
-  else if (s["size"] === "full") parts.push(L("full størrelse", "full size"));
+  if (s["size"] === "half") parts.push(t("core-export-records.describe-export-settings.parts-push.4517c46dee3c"));
+  else if (s["size"] === "full") parts.push(t("core-export-records.describe-export-settings.parts-push.c4b5cd2d5210"));
   if (typeof s["width"] === "number" && typeof s["height"] === "number")
     parts.push(`${s["width"]}×${s["height"]}`);
-  if (s["monochrome"] === true) parts.push(L("svart-hvitt", "black and white"));
+  if (s["monochrome"] === true) parts.push(t("core-export-records.describe-export-settings.parts-push.afd863bfe823"));
   if (typeof s["numbering"] === "string")
-    parts.push(L(`nummerering: ${s["numbering"]}`, `numbering: ${s["numbering"]}`));
+    parts.push(t("core-export-records.describe-export-settings.parts-push.3832d2ecc9eb", { value1: String(s["numbering"]) }));
   if (typeof s["language"] === "string" && s["language"] !== "nb")
-    parts.push(L(`språk: ${s["language"]}`, `language: ${s["language"]}`));
-  if (s["subtitles"] === true) parts.push(L("med undertekster", "with subtitles"));
-  if (s["withNotes"] === true) parts.push(L("med notater", "with notes"));
+    parts.push(t("core-export-records.describe-export-settings.parts-push.197857d64b78", { value1: String(s["language"]) }));
+  if (s["subtitles"] === true) parts.push(t("core-export-records.describe-export-settings.parts-push.97c3415c7fc1"));
+  if (s["withNotes"] === true) parts.push(t("core-export-records.describe-export-settings.parts-push.16fe725d1217"));
   if (r.occurrenceIds.length)
     parts.push(
       L(
@@ -120,6 +114,6 @@ export function describeExportSettings(
         `${r.occurrenceIds.length} ${r.occurrenceIds.length === 1 ? "scene" : "scenes"}`,
       ),
     );
-  if (typeof s["qualityProfileName"] === "string") parts.push(L(`Laget med profil ${s["qualityProfileName"]}`, `Made with profile ${s["qualityProfileName"]}`));
+  if (typeof s["qualityProfileName"] === "string") parts.push(t("core-export-records.describe-export-settings.parts-push.5eb68c2ddf11", { value1: String(s["qualityProfileName"]) }));
   return parts.join(" · ");
 }

@@ -36,6 +36,7 @@ import { CostConfirm } from "@/app/library/ImageAiPanels";
 import { DialogueBatchPanel } from "@/app/library/DialogueBatchPanel";
 import { usd, useTextEstimate } from "@/app/storylab/storylab-data";
 import { Button } from "@/components/ui/button";
+import { t as tk } from "@/core/i18n/keyed";
 
 type Run = (command: Command, label: string, group?: string) => string | null;
 const OUT_TOKENS = 1500;
@@ -74,7 +75,7 @@ export function MaterialUpdateSection({
       if (!r.ok) return setErr(tm(r.message));
       const parsed = materialUpdateFromJson(parseJsonLoose(r.text), targets);
       if (!parsed)
-        return setErr(L("Svaret fra AI kunne ikke brukes. Prøv igjen.", "The AI reply could not be used. Try again."));
+        return setErr(tk("app-assembly-material-update-section.suggest.set-err.21d0327a1e46"));
       setResult(parsed);
     } catch (e) {
       setErr(tm((e as Error).message));
@@ -85,16 +86,13 @@ export function MaterialUpdateSection({
 
   return (
     <div data-testid="material-update" className="flex flex-col gap-1.5 rounded-sm border border-border bg-surface-1 p-2 text-xs">
-      <p className="font-medium text-text-primary">{L("Oppdater materialet med AI", "Update the material with AI")}</p>
+      <p className="font-medium text-text-primary">{tk("app-assembly-material-update-section.material-update-section.p.ec2235904c46")}</p>
       <p className="text-text-secondary">
-        {L(
-          "Forslagene blir nye versjoner eller notater. Ingenting tas i bruk før du velger det, og alt kan angres.",
-          "Suggestions become new versions or notes. Nothing is used until you choose it, and everything can be undone.",
-        )}
+        {tk("app-assembly-material-update-section.material-update-section.p.e251a8fbdae9")}
       </p>
       {targets.dialogueCharacters.length ? (
         <div data-testid="material-update-dialogue" className="flex flex-wrap items-center gap-1.5">
-          <span className="text-text-secondary">{L("Replikker med endret tekst:", "Lines with changed text:")}</span>
+          <span className="text-text-secondary">{tk("app-assembly-material-update-section.material-update-section.span.06cdf7450cbb")}</span>
           {targets.dialogueCharacters.map((id) =>
             state.assets[id] ? (
               <DialogueBatchPanel key={id} state={state} asset={state.assets[id]!} projectId={projectId} editable drift />
@@ -104,7 +102,7 @@ export function MaterialUpdateSection({
       ) : null}
       {textTargets > 0 && !result ? (
         confirm ? (
-          <div role="alertdialog" aria-label={L("Bekreft AI-forslag", "Confirm AI suggestions")} className="flex flex-col gap-1.5">
+          <div role="alertdialog" aria-label={tk("app-assembly-material-update-section.material-update-section.aria-label.a252f79e8c42")} className="flex flex-col gap-1.5">
             <p data-testid="material-update-cost" className="text-text-primary">
               {L(
                 `${targets.images.length} ${targets.images.length === 1 ? "bilde" : "bilder"} og ${targets.shots.length} ${targets.shots.length === 1 ? "linje" : "linjer"} · ${est.label} · anslått ${usd(est.usd)}. Vil du fortsette?`,
@@ -113,17 +111,17 @@ export function MaterialUpdateSection({
             </p>
             <div className="flex gap-2">
               <Button size="sm" data-testid="material-update-run" onClick={() => void suggest()} disabled={busy || !!est.error}>
-                <AiGlyph /> {L("Ja, lag forslag", "Yes, make suggestions")}
+                <AiGlyph /> {tk("app-assembly-material-update-section.material-update-section.button.e85ea31c0da7")}
               </Button>
               <Button size="sm" variant="ghost" onClick={() => setConfirm(false)}>
-                {L("Avbryt", "Cancel")}
+                {tk("app-assembly-material-update-section.material-update-section.button.ac6617b6350a")}
               </Button>
             </div>
           </div>
         ) : (
           <Button size="sm" variant="secondary" className="self-start" data-testid="material-update-open" disabled={busy || est.loading || !!est.error} onClick={() => setConfirm(true)}>
             {busy ? <Loader2 className="animate-spin" /> : <AiGlyph />}
-            {err ? L("Prøv igjen …", "Try again …") : L("Lag forslag med AI …", "Make suggestions with AI …")}
+            {err ? tk("app-assembly-material-update-section.material-update-section.button.4ca6aa5c4053") : tk("app-assembly-material-update-section.material-update-section.button.2e6c0830e3e8")}
           </Button>
         )
       ) : null}
@@ -138,7 +136,7 @@ export function MaterialUpdateSection({
             <ShotSuggestion key={x.blockId} state={state} blockId={x.blockId} text={x.text} run={run} />
           ))}
           <Button size="sm" variant="ghost" className="self-start" onClick={() => setResult(null)}>
-            {L("Forkast forslagene", "Discard the suggestions")}
+            {tk("app-assembly-material-update-section.material-update-section.button.07c67a9c84bd")}
           </Button>
         </div>
       ) : null}
@@ -152,24 +150,24 @@ function ShotSuggestion({ state, blockId, text, run }: { state: ProjectState; bl
   const [err, setErr] = useState<string | null>(null);
   return (
     <div data-testid="material-update-shot" className="flex flex-col gap-1 rounded-sm bg-surface-2 p-1.5">
-      <p className="text-text-tertiary">{L("Forslag til shot/scenebeskrivelse", "Suggested shot/scene description")}</p>
+      <p className="text-text-tertiary">{tk("app-assembly-material-update-section.shot-suggestion.p.aa5aa5166d5e")}</p>
       <p className="text-text-primary">{text}</p>
       {saved ? (
-        <p role="status" className="text-status-success">{L("Lagret som notat på linjen (kan angres).", "Saved as a note on the line (can be undone).")}</p>
+        <p role="status" className="text-status-success">{tk("app-assembly-material-update-section.shot-suggestion.p.b04882f6ada7")}</p>
       ) : (
         <Button
           size="sm"
           variant="secondary"
           className="self-start"
           onClick={() => {
-            const c = shotSuggestionNote(state, blockId, text, newId<"annotation">(), L("AI-forslag:", "AI suggestion:"), L("AI-forslag", "AI suggestion"));
-            if (!c) return setErr(L("Linjen finnes ikke lenger.", "The line no longer exists."));
-            const e = run(c, L("Lagre AI-forslag som notat", "Save AI suggestion as note"));
+            const c = shotSuggestionNote(state, blockId, text, newId<"annotation">(), tk("app-assembly-material-update-section.c.shot-suggestion-note.7568761b1a80"), tk("app-assembly-material-update-section.c.shot-suggestion-note.64d558e7f269"));
+            if (!c) return setErr(tk("app-assembly-material-update-section.shot-suggestion.set-err.3e298ea56fdc"));
+            const e = run(c, tk("app-assembly-material-update-section.e.run.1361b547e4cc"));
             if (e) setErr(e);
             else setSaved(true);
           }}
         >
-          {L("Lagre som notat på linjen", "Save as a note on the line")}
+          {tk("app-assembly-material-update-section.shot-suggestion.button.9436df7232e9")}
         </Button>
       )}
       {err ? <p role="alert" className="text-status-danger">{err}</p> : null}
@@ -239,7 +237,7 @@ function ImageSuggestion({
           media: r.media,
           note: `AI-oppdatering etter manusendring (${r.model})`.slice(0, 200),
         } as Command,
-        L(`Ny versjon av «${target.name}» (AI)`, `New version of “${target.name}” (AI)`),
+        tk("app-assembly-material-update-section.e.run.158a7aa59692", { name: String(target.name) }),
       );
       if (e) throw new Error(e);
       setMade({ versionId: r.versionId, variantId, model: r.model });
@@ -253,7 +251,7 @@ function ImageSuggestion({
   return (
     <div data-testid="material-update-image" className="flex flex-col gap-1 rounded-sm bg-surface-2 p-1.5">
       <label className="text-text-tertiary" htmlFor={`mu-${target.layerId}`}>
-        {L(`Ny bildebeskrivelse for «${target.name}»`, `New image description for “${target.name}”`)}
+        {tk("app-assembly-material-update-section.image-suggestion.label.9124cba33494", { name: String(target.name) })}
       </label>
       <textarea
         id={`mu-${target.layerId}`}
@@ -266,10 +264,10 @@ function ImageSuggestion({
       {made ? (
         <div className="flex flex-col gap-1">
           <p role="status" className="text-status-success">
-            {L(`Ny versjon lagret (${made.model}). Den er ikke tatt i bruk ennå.`, `New version saved (${made.model}). It is not in use yet.`)}
+            {tk("app-assembly-material-update-section.image-suggestion.p.ee22c61fed17", { model: String(made.model) })}
           </p>
           {used ? (
-            <p className="text-text-secondary">{L("Brukes nå i scenen (kan angres).", "Now used in the scene (can be undone).")}</p>
+            <p className="text-text-secondary">{tk("app-assembly-material-update-section.image-suggestion.p.6c6600289bca")}</p>
           ) : (
             <Button
               size="sm"
@@ -278,18 +276,18 @@ function ImageSuggestion({
               data-testid="material-update-use"
               onClick={() => {
                 const c = useVersionOnLayerCommand(state, target.layerId, made.variantId, made.versionId);
-                if (!c) return setErr(L("Laget finnes ikke lenger.", "The layer no longer exists."));
-                const e = run(c, L("Bruk ny versjon i scenen", "Use new version in the scene"));
+                if (!c) return setErr(tk("app-assembly-material-update-section.image-suggestion.set-err.65b282fe20df"));
+                const e = run(c, tk("app-assembly-material-update-section.e.run.2c12a1655a02"));
                 if (e) setErr(e);
                 else setUsed(true);
               }}
             >
-              {L("Bruk i scenen", "Use in the scene")}
+              {tk("app-assembly-material-update-section.image-suggestion.button.6bf8142245ff")}
             </Button>
           )}
         </div>
       ) : !variantId ? (
-        <p className="text-text-tertiary">{L("Ressursen har ingen variant å legge versjonen i.", "The asset has no variant to add the version to.")}</p>
+        <p className="text-text-tertiary">{tk("app-assembly-material-update-section.image-suggestion.p.905e6603d643")}</p>
       ) : (
         <>
           <QualityProfilePicker state={state} value={quality.choice} onChange={quality.setChoice} disabled={busy} />
@@ -303,10 +301,10 @@ function ImageSuggestion({
             onClose={() => setConfirm(false)}
             disabled={false}
             busy={busy}
-            emptyText={L("Skriv en bildebeskrivelse først.", "Write an image description first.")}
-            confirmLabel={L("Bekreft nytt bilde", "Confirm new image")}
+            emptyText={tk("app-assembly-material-update-section.image-suggestion.empty-text.37a1f9cdd66a")}
+            confirmLabel={tk("app-assembly-material-update-section.image-suggestion.confirm-label.740972fb70a3")}
             icon={<AiGlyph />}
-            startLabel={L("Lag nytt bilde …", "Make new image …")}
+            startLabel={tk("app-assembly-material-update-section.image-suggestion.start-label.26d5378e79b1")}
           />
         </>
       )}

@@ -106,6 +106,7 @@ import { AssemblyMoreMenu, AssemblyTextMenu, AssemblyViewMenu } from "./Assembly
 import { createKindScene } from "./mts-occurrences";
 import { ShortcutsButton, ShortcutsDialog } from "@/app/shortcuts/ShortcutsDialog";
 import { isShortcutHelpKey } from "@/app/shortcuts/shortcut-list";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Scene og blokk som skal vises når monteringen åpnes (fra manuset). */
 export interface AssemblyFocus {
@@ -132,16 +133,16 @@ export function AssemblyWorkspace({
   if (query.isLoading)
     return (
       <p className="p-6 text-[13px] text-text-tertiary">
-        {L("Henter filmen …", "Loading the film …")}
+        {tk("app-assembly-assembly-workspace.assembly-workspace.p.1d8f7cb242c0")}
       </p>
     );
   if (query.isError || !query.data)
     return (
       <div role="alert" className="p-6 text-[13px] text-status-danger">
-        {L("Filmen kunne ikke hentes.", "The film could not be loaded.")}
+        {tk("app-assembly-assembly-workspace.assembly-workspace.div.fc914a519614")}
         {query.error ? (
           <p className="mt-2 font-mono text-xs text-text-tertiary">
-            {L("Teknisk detalj:", "Technical detail:")} {query.error.message}
+            {tk("app-assembly-assembly-workspace.assembly-workspace.p.9b1a7a1d2f85")} {query.error.message}
           </p>
         ) : null}
       </div>
@@ -304,10 +305,7 @@ function Assembly({
     if (!clip) {
       // Prøves igjen hvis klippene endres (f.eks. når siste versjon er hentet)
       setError(
-        L(
-          "Scenen er ikke med i filmen (den er deaktivert eller hører til en spinoff).",
-          "The scene is not in the film (it is deactivated or belongs to a spin-off).",
-        ),
+        tk("app-assembly-assembly-workspace.assembly.set-error.949322dec77c"),
       );
       return;
     }
@@ -338,7 +336,7 @@ function Assembly({
         const f = await uploadFilm(projectId, file, fps);
         // Importen og «ta i bruk» angres som ett steg (DEC-0049)
         const group = newId();
-        const label = `${L("Importer film", "Import film")} «${f.media.fileName}»`;
+        const label = `${tk("app-assembly-assembly-workspace.label.use-callback.c41ca6769417")} «${f.media.fileName}»`;
         const r = await cmds.runAndWait(
           {
             type: "AddTake",
@@ -368,14 +366,11 @@ function Assembly({
         );
         return err === null
           ? null
-          : L(
-              "Filmen er lagret som versjon, men kunne ikke tas i bruk.",
-              "The film was saved as a version, but could not be put into use.",
-            );
+          : tk("app-assembly-assembly-workspace.import-film.use-callback.884caffa931e");
       } catch (e) {
         return (
           (e as Error).message ||
-          L("Filmen kunne ikke importeres.", "The film could not be imported.")
+          tk("app-assembly-assembly-workspace.import-film.use-callback.fc8e581212e6")
         );
       }
     },
@@ -416,7 +411,7 @@ function Assembly({
           occurrenceId: occurrenceId as never,
           orderKey: keyBetween(k(before?.occurrenceId), k(after?.occurrenceId)),
         },
-        `${L("Flytt scene", "Move scene")} ${clip.productionNumber ?? ""}`.trim(),
+        `${tk("app-assembly-assembly-workspace.ok.l-flytt-scene-move-scene-clip-production-number-trim.a784d233dc12")} ${clip.productionNumber ?? ""}`.trim(),
       );
       if (!ok) pendingMove.current = null;
     },
@@ -466,18 +461,12 @@ function Assembly({
     if (!parts) {
       setError(
         a.clip.source === "placeholder"
-          ? L(
-              "Et tittelkort kan ikke splittes. Lag en 2D-scene eller importer film først.",
-              "A title card cannot be split. Create a 2D scene or import a film first.",
-            )
-          : L(
-              "Avspillingshodet står på en grense mellom deler – flytt det litt og prøv igjen.",
-              "The playhead is on a boundary between parts – move it a little and try again.",
-            ),
+          ? tk("app-assembly-assembly-workspace.split-at-playhead.set-error.5f4a236e0d33")
+          : tk("app-assembly-assembly-workspace.split-at-playhead.set-error.99ed856267bf"),
       );
       return;
     }
-    editScene(a.clip.occurrenceId, parts, L("Splitt klipp", "Split clip"));
+    editScene(a.clip.occurrenceId, parts, tk("app-assembly-assembly-workspace.split-at-playhead.edit-scene.8f8fcb7367d7"));
   }, [clips, playback.frame, fps, editScene]);
 
   // ---------- Tidskoblinger for manus (DEC-0048) ----------
@@ -499,12 +488,12 @@ function Assembly({
         const first = existing.sort((a, b) => a.startMs - b.startMs)[0]!;
         return run(
           { type: "UpdateTimeLinks", links: [{ linkId: first.id, fields }] },
-          L("Flytt tidskobling", "Move time link"),
+          tk("app-assembly-assembly-workspace.link-block.run.d66c3bdb2917"),
         );
       }
       return run(
         { type: "AddTimeLinks", links: [{ linkId: newId() as never, fields }] },
-        L("Koble replikk til tid", "Link line to time"),
+        tk("app-assembly-assembly-workspace.link-block.run.d68f7c111217"),
       );
     },
     [state.timeLinks, run],
@@ -513,7 +502,7 @@ function Assembly({
     (linkId: string) =>
       run(
         { type: "SetTimeLinksRemoved", linkIds: [linkId as never], removed: true },
-        L("Fjern tidskobling", "Remove time link"),
+        tk("app-assembly-assembly-workspace.remove-link.run.57971ac983e9"),
       ),
     [run],
   );
@@ -524,10 +513,7 @@ function Assembly({
     const local = playback.frame - c.startFrame;
     if (local < 0 || local >= c.durationFrames) {
       setError(
-        L(
-          "Avspillingshodet er utenfor scenen du synker. Gå tilbake til scenen og prøv igjen.",
-          "The playhead is outside the scene you are syncing. Go back to the scene and try again.",
-        ),
+        tk("app-assembly-assembly-workspace.stamp-sync.set-error.87c6adb87ed0"),
       );
       return;
     }
@@ -553,7 +539,7 @@ function Assembly({
       const commands = ownCopyCommands(state, o.id) ?? [];
       const group = newId();
       for (const c of commands)
-        if (!run(c, L("Egen versjon av scenen", "Own version of the scene"), group)) return false;
+        if (!run(c, tk("app-assembly-assembly-workspace.own-first.run.bb0ac33af548"), group)) return false;
       const fork = commands.find((c) => c.type === "ForkVariant");
       const comp = commands.find((c) => c.type === "CreateComposition");
       return {
@@ -578,7 +564,7 @@ function Assembly({
         editScene(
           occurrenceId,
           trimPart(parts, i, { outMs: last.outMs + delta }, maxMsOf(clip, last.takeId)),
-          L("Kutt slutten av klippet", "Trim the end of the clip"),
+          tk("app-assembly-assembly-workspace.set-duration.edit-scene.f1243940677b"),
         );
         return;
       }
@@ -593,7 +579,7 @@ function Assembly({
           compositionId: (own?.compositionId ?? c.id) as never,
           fields: { ...fieldsOf(c), durationFrames: frames },
         },
-        L("Endre lengde på scene", "Change scene length"),
+        tk("app-assembly-assembly-workspace.set-duration.run.93037e188cc9"),
         own?.group,
       );
     },
@@ -633,8 +619,8 @@ function Assembly({
       run(
         { type: "UpdateAudioClips", clips: [{ clipId: a.id, fields }] },
         moved
-          ? L("Flytt lyd til annen scene", "Move audio to another scene")
-          : L("Flytt eller kutt lyd", "Move or trim audio"),
+          ? tk("app-assembly-assembly-workspace.change-audio.run.83c8e78bb682")
+          : tk("app-assembly-assembly-workspace.change-audio.run.d4a448e66b27"),
       );
     },
     [state.audioClips, state.blocks, clips, fps, run],
@@ -666,7 +652,7 @@ function Assembly({
     if (
       run(
         { type: "SetAudioClipsRemoved", clipIds: [clipId as never], removed: true },
-        L("Fjern lyd", "Remove audio"),
+        tk("app-assembly-assembly-workspace.remove-audio.run.625a7fda0a72"),
       )
     )
       setSelectedAudioId(null);
@@ -688,7 +674,7 @@ function Assembly({
           height: state.project.frameHeight,
         },
       },
-      L("Ny 2D-scene", "New 2D scene"),
+      tk("app-assembly-assembly-workspace.create-composition.run.0c7ee942ce1b"),
       own?.group,
     );
   }
@@ -698,7 +684,7 @@ function Assembly({
     if (
       run(
         { type: "SetOccurrenceActive", occurrenceId: occurrenceId as never, active: false },
-        L("Deaktiver scene", "Deactivate scene"),
+        tk("app-assembly-assembly-workspace.deactivate.run.09bb85ab865e"),
       )
     )
       setSelectedId(clips[i + 1]?.occurrenceId ?? clips[i - 1]?.occurrenceId ?? null);
@@ -813,19 +799,19 @@ function Assembly({
 
   const withComposition = clips.filter((c) => c.source === "composition").length;
   const sceneLabel = at
-    ? `${L("Scene", "Scene")} ${at.clip.productionNumber ?? at.index + 1} ${L("av", "of")} ${clips.length}`
-    : L("Ingen scener", "No scenes");
+    ? `${tk("app-assembly-assembly-workspace.scene-label.message.83ced6a1cde5")} ${at.clip.productionNumber ?? at.index + 1} ${tk("app-assembly-assembly-workspace.scene-label.message.e93b420c48d9")} ${clips.length}`
+    : tk("app-assembly-assembly-workspace.scene-label.message.1c09b0cc2ead");
 
   const toolbar = (
     <>
       <IconButton
-        label={L("Til start av filmen (Home)", "To the start of the film (Home)")}
+        label={tk("app-assembly-assembly-workspace.toolbar.label.c39c47b65127")}
         onClick={() => playback.setFrame(0)}
       >
         <SkipBack className="size-3.5" />
       </IconButton>
       <IconButton
-        label={L("Forrige scene (pil opp)", "Previous scene (up arrow)")}
+        label={tk("app-assembly-assembly-workspace.toolbar.label.142cd882dd0b")}
         onClick={() =>
           goToScene(at && playback.frame === at.clip.startFrame ? at.index - 1 : (at?.index ?? 0))
         }
@@ -833,18 +819,18 @@ function Assembly({
         <ChevronFirst className="size-3.5" />
       </IconButton>
       <IconButton
-        label={L("Forrige bilde (pil venstre)", "Previous frame (left arrow)")}
+        label={tk("app-assembly-assembly-workspace.toolbar.label.56d58bf4cbd8")}
         onClick={() => playback.setFrame(playback.frame - 1)}
       >
         <ChevronLeft className="size-3.5" />
       </IconButton>
       <button
         type="button"
-        aria-label={playback.playing ? "Pause" : L("Spill av", "Play")}
+        aria-label={playback.playing ? "Pause" : tk("app-assembly-assembly-workspace.toolbar.aria-label.5e8db678678e")}
         title={
           playback.playing
-            ? L("Pause (mellomrom eller K)", "Pause (space or K)")
-            : L("Spill av hele filmen (mellomrom eller K)", "Play the whole film (space or K)")
+            ? tk("app-assembly-assembly-workspace.toolbar.title.ccac5ec9c64d")
+            : tk("app-assembly-assembly-workspace.toolbar.title.a6cd6a6948cd")
         }
         onClick={playback.toggle}
         className={iconButton + " bg-surface-3 text-text-primary"}
@@ -852,25 +838,25 @@ function Assembly({
         {playback.playing ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}
       </button>
       <IconButton
-        label={L("Neste bilde (pil høyre)", "Next frame (right arrow)")}
+        label={tk("app-assembly-assembly-workspace.toolbar.label.8e8efc898013")}
         onClick={() => playback.setFrame(playback.frame + 1)}
       >
         <ChevronRight className="size-3.5" />
       </IconButton>
       <IconButton
-        label={L("Neste scene (pil ned)", "Next scene (down arrow)")}
+        label={tk("app-assembly-assembly-workspace.toolbar.label.f44841beb32e")}
         onClick={() => goToScene((at?.index ?? -1) + 1)}
       >
         <ChevronLast className="size-3.5" />
       </IconButton>
       <IconButton
-        label={L("Til slutten av filmen (End)", "To the end of the film (End)")}
+        label={tk("app-assembly-assembly-workspace.toolbar.label.11829848bd8d")}
         onClick={() => playback.setFrame(duration - 1)}
       >
         <SkipForward className="size-3.5" />
       </IconButton>
       <IconButton
-        label={L("Spill i løkke", "Loop playback")}
+        label={tk("app-assembly-assembly-workspace.toolbar.label.2b9d51745b9c")}
         active={playback.loop}
         onClick={() => playback.setLoop(!playback.loop)}
       >
@@ -878,7 +864,7 @@ function Assembly({
       </IconButton>
       <span
         className="shrink-0 whitespace-nowrap px-1 font-mono text-xs tabular-nums text-text-primary"
-        aria-label={L("Tid i filmen", "Time in the film")}
+        aria-label={tk("app-assembly-assembly-workspace.toolbar.aria-label.958627778c0c")}
       >
         {formatTimecode(playback.frame, fps)}
         <span className="text-text-tertiary">
@@ -904,7 +890,7 @@ function Assembly({
     >
       <Toolbar>
         <span className="text-[13px] font-medium text-text-primary">
-          {L("Montering", "Assembly")}
+          {tk("app-assembly-assembly-workspace.assembly.span.1a7d97686d0b")}
         </span>
         <ProductionPicker state={state} value={productionId} onChange={setProductionId} />
         <FilmLanguagePicker value={filmLang} onChange={setFilmLang} compact />
@@ -915,11 +901,11 @@ function Assembly({
           disabled={!cmds.canUndo}
           title={
             cmds.undoLabel
-              ? `${L("Angre", "Undo")}: ${cmds.undoLabel} (⌘Z)`
-              : L("Angre (⌘Z)", "Undo (⌘Z)")
+              ? `${tk("app-assembly-assembly-workspace.assembly.title.83d9a2d2fa50")}: ${cmds.undoLabel} (⌘Z)`
+              : tk("app-assembly-assembly-workspace.assembly.title.6a7a7c1ed5bb")
           }
           label={
-            cmds.undoLabel ? `${L("Angre", "Undo")}: ${cmds.undoLabel}` : L("Angre", "Undo")
+            cmds.undoLabel ? `${tk("app-assembly-assembly-workspace.assembly.label.83d9a2d2fa50")}: ${cmds.undoLabel}` : tk("app-assembly-assembly-workspace.assembly.label.83d9a2d2fa50.2")
           }
         >
           <Undo2 />
@@ -930,11 +916,11 @@ function Assembly({
           disabled={!cmds.canRedo}
           title={
             cmds.redoLabel
-              ? `${L("Gjør om", "Redo")}: ${cmds.redoLabel} (⇧⌘Z)`
-              : L("Gjør om (⇧⌘Z)", "Redo (⇧⌘Z)")
+              ? `${tk("app-assembly-assembly-workspace.assembly.title.0638f663ce98")}: ${cmds.redoLabel} (⇧⌘Z)`
+              : tk("app-assembly-assembly-workspace.assembly.title.55a386bcfe77")
           }
           label={
-            cmds.redoLabel ? `${L("Gjør om", "Redo")}: ${cmds.redoLabel}` : L("Gjør om", "Redo")
+            cmds.redoLabel ? `${tk("app-assembly-assembly-workspace.assembly.label.0638f663ce98")}: ${cmds.redoLabel}` : tk("app-assembly-assembly-workspace.assembly.label.0638f663ce98.2")
           }
         >
           <Redo2 />
@@ -943,11 +929,11 @@ function Assembly({
             transportlinjen («Scene 1 av 13», samlet tid), så etiketten skjules der (DEC-0076 funn 5) */}
         <span
           className="ml-1 hidden shrink-0 whitespace-nowrap text-xs tabular-nums text-text-tertiary min-[1600px]:inline"
-          title={`${clips.length} ${clips.length === 1 ? L("scene", "scene") : L("scener", "scenes")} · ${formatSeconds(
+          title={`${clips.length} ${clips.length === 1 ? tk("app-assembly-assembly-workspace.assembly.title.b58ddf67bd0b") : tk("app-assembly-assembly-workspace.assembly.title.7ffc5bbf0ac2")} · ${formatSeconds(
             framesToSeconds(filmDurationFrames(clips), fps),
-          )} · ${withComposition} ${L("med 2D-scene", "with 2D scene")}`}
+          )} · ${withComposition} ${tk("app-assembly-assembly-workspace.assembly.title.b9a2b55a75f8")}`}
         >
-          {clips.length} {clips.length === 1 ? L("scene", "scene") : L("scener", "scenes")} ·{" "}
+          {clips.length} {clips.length === 1 ? tk("app-assembly-assembly-workspace.assembly.span.b58ddf67bd0b") : tk("app-assembly-assembly-workspace.assembly.span.7ffc5bbf0ac2")} ·{" "}
           {formatSeconds(framesToSeconds(filmDurationFrames(clips), fps))}
         </span>
         <div className="ml-auto flex min-w-0 flex-wrap items-center gap-1.5">
@@ -957,11 +943,11 @@ function Assembly({
               className="shrink-0"
               onClick={() => setAddAudio("dialogue")}
               disabled={clips.length === 0}
-              title={L("Legg til lyd ved avspillingshodet", "Add audio at the playhead")}
+              title={tk("app-assembly-assembly-workspace.assembly.title.a4e814b2575e")}
             >
               <Music aria-hidden />
               <span className="sr-only min-[1400px]:not-sr-only">
-                {L("Legg til lyd", "Add audio")}
+                {tk("app-assembly-assembly-workspace.assembly.span.5c1637368019")}
               </span>
             </ToolbarButton>
           ) : null}
@@ -970,15 +956,12 @@ function Assembly({
             className="shrink-0"
             onClick={() => setExportOpen(true)}
             disabled={clips.length === 0}
-            title={L(
-              "Lag en video av filmen eller et utvalg av scener",
-              "Make a video of the film or a selection of scenes",
-            )}
-            aria-label={L("Eksporter animatic", "Export animatic")}
+            title={tk("app-assembly-assembly-workspace.assembly.title.fb7019e1c867")}
+            aria-label={tk("app-assembly-assembly-workspace.assembly.aria-label.5a7d076c826d")}
           >
             <Download aria-hidden />
             <span>
-              {L("Eksporter", "Export")}
+              {tk("app-assembly-assembly-workspace.assembly.span.044d39dcba66")}
               <span className="hidden min-[1400px]:inline"> animatic</span>
             </span>
           </ToolbarButton>
@@ -1019,7 +1002,7 @@ function Assembly({
           <SaveIndicator cmds={cmds} />
           {roleKnown && !editable ? (
             <span className="text-xs text-text-tertiary">
-              {L("Bare lesetilgang", "Read-only access")}
+              {tk("app-assembly-assembly-workspace.assembly.span.a14ddf71893d")}
             </span>
           ) : null}
         </div>
@@ -1058,10 +1041,7 @@ function Assembly({
               onBlocked={() => {
                 setPopout(false);
                 setError(
-                  L(
-                    "Nettleseren stoppet det egne vinduet. Tillat sprettoppvinduer for siden.",
-                    "The browser blocked the separate window. Allow pop-ups for this site.",
-                  ),
+                  tk("app-assembly-assembly-workspace.assembly.set-error.88501b4de63b"),
                 );
               }}
               onTogglePlay={playback.toggle}
@@ -1069,7 +1049,7 @@ function Assembly({
           ) : null}
         </main>
         <aside
-          aria-label={L("Scene og manus", "Scene and script")}
+          aria-label={tk("app-assembly-assembly-workspace.assembly.aria-label.39de45f5517b")}
           style={{ width: panelW }}
           className="relative flex shrink-0 flex-col border-l border-border bg-surface-1"
         >
@@ -1079,7 +1059,7 @@ function Assembly({
             onSize={setPanelW}
             min={260}
             max={620}
-            label={L("Bredde på scenepanelet", "Width of the scene panel")}
+            label={tk("app-assembly-assembly-workspace.assembly.label.45c0094c0be8")}
           />
           {selectedAudio && !selectedAudio.removed ? (
             <AudioClipPanel
@@ -1121,10 +1101,7 @@ function Assembly({
                   const ms = maxMsOf(selected, null);
                   if (!selected.compositionId || ms >= AUDIO_MAX_MS) {
                     setError(
-                      L(
-                        "Scenen har ingen 2D-scene å bruke i stedet.",
-                        "The scene has no 2D scene to use instead.",
-                      ),
+                      tk("app-assembly-assembly-workspace.assembly.set-error.e803c2f05b4f"),
                     );
                     return;
                   }
@@ -1139,7 +1116,7 @@ function Assembly({
                         outMs: ms,
                       },
                     ],
-                    L("Bruk animatic i spinoffen", "Use animatic in the spin-off"),
+                    tk("app-assembly-assembly-workspace.assembly.edit-scene.2748b87bec00"),
                     null,
                   );
                   return;
@@ -1148,15 +1125,15 @@ function Assembly({
                   selected.occurrenceId,
                   [],
                   takeId
-                    ? L("Bruk importert film", "Use imported film")
-                    : L("Bruk animatic", "Use animatic"),
+                    ? tk("app-assembly-assembly-workspace.assembly.edit-scene.4b47c410e455")
+                    : tk("app-assembly-assembly-workspace.assembly.edit-scene.c00bb9bfb041"),
                   takeId,
                 );
               }}
               onTakeStatus={(takeId, status) =>
                 run(
                   { type: "SetTakeStatus", takeId: takeId as never, status },
-                  L("Endre status for film", "Change film status"),
+                  tk("app-assembly-assembly-workspace.assembly.run.e9dfeeb52745"),
                 )
               }
               maxMsOf={(takeId) => (selected ? maxMsOf(selected, takeId) : AUDIO_MAX_MS)}
@@ -1165,7 +1142,7 @@ function Assembly({
               }
               onResetParts={() =>
                 selected &&
-                editScene(selected.occurrenceId, [], L("Hele klippet igjen", "Whole clip again"))
+                editScene(selected.occurrenceId, [], tk("app-assembly-assembly-workspace.assembly.edit-scene.8325c78eb5d7"))
               }
               onSplit={() => {
                 // Splitt i den valgte scenen; står hodet utenfor, flyttes det til midten av scenen først
@@ -1175,10 +1152,7 @@ function Assembly({
                 ) {
                   playback.setFrame(selected.startFrame + Math.floor(selected.durationFrames / 2));
                   setError(
-                    L(
-                      "Avspillingshodet er flyttet til scenen. Plasser det der klippet skal deles, og trykk igjen.",
-                      "The playhead was moved to the scene. Place it where the clip should be split, and press again.",
-                    ),
+                    tk("app-assembly-assembly-workspace.assembly.set-error.c0945ea8a36b"),
                   );
                   return;
                 }
@@ -1195,10 +1169,7 @@ function Assembly({
                 const local = playback.frame - selected.startFrame;
                 if (local < 0 || local >= selected.durationFrames) {
                   setError(
-                    L(
-                      "Avspillingshodet er utenfor scenen. Flytt det inn i scenen først.",
-                      "The playhead is outside the scene. Move it into the scene first.",
-                    ),
+                    tk("app-assembly-assembly-workspace.assembly.set-error.8953fcd86dee"),
                   );
                   return;
                 }
@@ -1212,7 +1183,7 @@ function Assembly({
                 selected &&
                 run(
                   { type: "SetTransition", occurrenceId: selected.occurrenceId, transition: t },
-                  L("Endre overgang", "Change transition"),
+                  tk("app-assembly-assembly-workspace.assembly.run.3435357980c9"),
                 )
               }
               onMonochrome={(on) =>
@@ -1224,8 +1195,8 @@ function Assembly({
                     monochrome: on,
                   },
                   on
-                    ? L("Svart-hvitt for scenen", "Black and white for the scene")
-                    : L("Farger for scenen", "Colour for the scene"),
+                    ? tk("app-assembly-assembly-workspace.assembly.run.d338ad550595")
+                    : tk("app-assembly-assembly-workspace.assembly.run.81888de53927"),
                 )
               }
             />
@@ -1316,7 +1287,7 @@ function Assembly({
                     productionId: productionId as never,
                     settings,
                   },
-                  L("Lagre eksportinnstillingene", "Save the export settings"),
+                  tk("app-assembly-assembly-workspace.on-save-settings.cmds-run-silent.1f0df78b0f6e"),
                 ),
             }
           : {})}
@@ -1342,12 +1313,9 @@ function Assembly({
       <Dialog open={standardOpen} onOpenChange={setStandardOpen}>
         <DialogContent className="max-w-[440px] border-border bg-surface-2">
           <DialogHeader>
-            <DialogTitle>{L("Standardovergang", "Default transition")}</DialogTitle>
+            <DialogTitle>{tk("app-assembly-assembly-workspace.assembly.dialog-title.1ef99e056ac7")}</DialogTitle>
             <DialogDescription>
-              {L(
-                "Overgangen alle scener får når de ikke har sin egen. Scener med eget valg endres ikke.",
-                "The transition every scene gets when it has no transition of its own. Scenes with their own choice are not changed.",
-              )}
+              {tk("app-assembly-assembly-workspace.assembly.dialog-description.5beee04573fc")}
             </DialogDescription>
           </DialogHeader>
           <TransitionEditor
@@ -1361,7 +1329,7 @@ function Assembly({
               if (JSON.stringify(next) === JSON.stringify(now)) return;
               run(
                 { type: "SetDefaultTransition", transition: next },
-                L("Endre standardovergang", "Change default transition"),
+                tk("app-assembly-assembly-workspace.assembly.run.5999f58ce31a"),
               );
             }}
           />

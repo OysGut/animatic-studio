@@ -21,6 +21,7 @@ import {
   type Take,
 } from "@/core";
 import { Button } from "@/components/ui/button";
+import { t as tk } from "@/core/i18n/keyed";
 
 const label = "text-[11px] font-medium uppercase tracking-wider text-text-tertiary";
 
@@ -52,19 +53,16 @@ export function ClipParts({
     if (!clip.edited) return null;
     return (
       <section
-        aria-label={L("Klipp", "Clip")}
+        aria-label={tk("app-assembly-clip-parts.clip-parts.aria-label.b5dad0f44b23")}
         className="flex flex-col gap-1.5 border-b border-border p-3"
       >
-        <h2 className={label + " -mx-3 flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2"}>{L("Klipp", "Clip")}</h2>
+        <h2 className={label + " -mx-3 flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2"}>{tk("app-assembly-clip-parts.clip-parts.h2.b5dad0f44b23")}</h2>
         <p className="text-xs text-text-tertiary">
-          {L(
-            "En av delene mangler kilde (2D-scenen eller filmen er borte) og vises som tittelkort.",
-            "One of the parts has no source (the 2D scene or film is gone) and is shown as a title card.",
-          )}
+          {tk("app-assembly-clip-parts.clip-parts.p.0514e3afce37")}
         </p>
         {editable ? (
           <Button size="sm" variant="secondary" className="self-start" onClick={onReset}>
-            <RotateCcw /> {L("Hele klippet igjen", "Whole clip again")}
+            <RotateCcw /> {tk("app-assembly-clip-parts.clip-parts.button.c80119357046")}
           </Button>
         ) : null}
       </section>
@@ -78,27 +76,24 @@ export function ClipParts({
 
   return (
     <section
-      aria-label={L("Klipp", "Clip")}
+      aria-label={tk("app-assembly-clip-parts.clip-parts.aria-label.b5dad0f44b23.2")}
       className="flex flex-col gap-1.5 border-b border-border p-3"
     >
       <div className="-mx-3 group flex h-8 shrink-0 items-center gap-2 border-b border-border bg-surface-2 px-2">
-        <h2 className={label + " flex h-8 shrink-0 items-center"}>{L("Klipp", "Clip")}</h2>
+        <h2 className={label + " flex h-8 shrink-0 items-center"}>{tk("app-assembly-clip-parts.clip-parts.h2.b5dad0f44b23.2")}</h2>
         <span className="text-[11px] text-text-tertiary">
           {parts.length === 1
-            ? L("én del", "one part")
-            : L(`${parts.length} deler`, `${parts.length} parts`)}
+            ? tk("app-assembly-clip-parts.clip-parts.span.ebec0aeec253")
+            : tk("app-assembly-clip-parts.clip-parts.span.bfe1a3480422", { length: String(parts.length) })}
         </span>
         {clip.edited && editable && !clip.inheritedFrom ? (
           <button
             type="button"
             onClick={onReset}
             className="ml-auto flex items-center gap-1 rounded-sm px-1 text-[11px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-            title={L(
-              "Fjern kutt og splitting: hele versjonen brukes igjen",
-              "Remove cuts and splits: the whole version is used again",
-            )}
+            title={tk("app-assembly-clip-parts.clip-parts.title.1c7bfb496256")}
           >
-            <RotateCcw className="size-3" aria-hidden /> {L("Hele klippet", "Whole clip")}
+            <RotateCcw className="size-3" aria-hidden /> {tk("app-assembly-clip-parts.clip-parts.button.b2d3da6336ed")}
           </button>
         ) : null}
       </div>
@@ -122,7 +117,7 @@ export function ClipParts({
                   <Layers className="size-3.5 shrink-0 text-accent-brand" aria-hidden />
                 )}
                 <select
-                  aria-label={L(`Kilde for del ${i + 1}`, `Source for part ${i + 1}`)}
+                  aria-label={tk("app-assembly-clip-parts.clip-parts.aria-label.1538b2bace0c", { value1: String(i + 1) })}
                   value={p.takeId ?? ""}
                   disabled={!editable}
                   onChange={(e) =>
@@ -133,13 +128,13 @@ export function ClipParts({
                         { takeId: e.target.value || null },
                         maxMsOf(e.target.value || null),
                       ),
-                      L("Bytt kilde for del", "Change source for part"),
+                      tk("app-assembly-clip-parts.clip-parts.edit.685bf9c582b9"),
                     )
                   }
                   className="h-6 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1 text-xs text-text-primary disabled:opacity-50"
                 >
                   {canAnimatic ? (
-                    <option value="">{L("Animatic (2D-scene)", "Animatic (2D scene)")}</option>
+                    <option value="">{tk("app-assembly-clip-parts.clip-parts.option.7632fe4d3f95")}</option>
                   ) : null}
                   {films.map((t) => (
                     <option key={t.id} value={t.id}>
@@ -156,37 +151,31 @@ export function ClipParts({
                 </span>
                 {i > 0 ? (
                   <select
-                    aria-label={L(`Overgang inn i del ${i + 1}`, `Transition into part ${i + 1}`)}
-                    title={L(
-                      "Myk overgang fra delen før (krysstoning, scenen blir ikke kortere)",
-                      "Soft transition from the previous part (cross-dissolve, the scene does not get shorter)",
-                    )}
+                    aria-label={tk("app-assembly-clip-parts.clip-parts.aria-label.2d624eee09e6", { value1: String(i + 1) })}
+                    title={tk("app-assembly-clip-parts.clip-parts.title.d8ca1c2e35aa")}
                     value={String(p.transitionMs ?? 0)}
                     disabled={!editable}
                     onChange={(e) =>
                       edit(
                         setPartTransition(parts, i, Number(e.target.value)),
-                        L("Overgang mellom deler", "Transition between parts"),
+                        tk("app-assembly-clip-parts.clip-parts.edit.165076610641"),
                       )
                     }
                     className="h-6 shrink-0 rounded-sm border border-border-control bg-surface-3 px-1 text-[11px] text-text-primary disabled:opacity-50"
                   >
-                    <option value="0">{L("Kutt", "Cut")}</option>
-                    <option value="250">{L("Tone 0,25 s", "Dissolve 0.25 s")}</option>
-                    <option value="500">{L("Tone 0,5 s", "Dissolve 0.5 s")}</option>
-                    <option value="1000">{L("Tone 1 s", "Dissolve 1 s")}</option>
-                    <option value="2000">{L("Tone 2 s", "Dissolve 2 s")}</option>
+                    <option value="0">{tk("app-assembly-clip-parts.clip-parts.option.3913cda02d76")}</option>
+                    <option value="250">{tk("app-assembly-clip-parts.clip-parts.option.e765fd4973a3")}</option>
+                    <option value="500">{tk("app-assembly-clip-parts.clip-parts.option.048281f6722b")}</option>
+                    <option value="1000">{tk("app-assembly-clip-parts.clip-parts.option.78173653a9e5")}</option>
+                    <option value="2000">{tk("app-assembly-clip-parts.clip-parts.option.0894298c24f6")}</option>
                   </select>
                 ) : null}
                 {editable && parts.length > 1 ? (
                   <button
                     type="button"
-                    onClick={() => edit(removePart(parts, i), L("Fjern del", "Remove part"))}
-                    aria-label={L(`Fjern del ${i + 1}`, `Remove part ${i + 1}`)}
-                    title={L(
-                      "Fjern delen (kildemediet beholdes)",
-                      "Remove the part (the source media is kept)",
-                    )}
+                    onClick={() => edit(removePart(parts, i), tk("app-assembly-clip-parts.clip-parts.edit.831f674d8fe9"))}
+                    aria-label={tk("app-assembly-clip-parts.clip-parts.aria-label.d6c133661d07", { value1: String(i + 1) })}
+                    title={tk("app-assembly-clip-parts.clip-parts.title.8a801aedfec8")}
                     className="rounded-sm p-0.5 text-text-tertiary hover:bg-surface-3 hover:text-status-danger"
                   >
                     <Trash2 className="size-3.5" />
@@ -195,27 +184,27 @@ export function ClipParts({
               </div>
               <div className="mt-1 grid grid-cols-2 gap-2">
                 <PointInput
-                  label={L("Inn", "In")}
+                  label={tk("app-assembly-clip-parts.clip-parts.label.e6be0aafb79f")}
                   ms={p.inMs}
                   fps={fps}
                   disabled={!editable}
                   onChange={(ms) =>
                     edit(
                       trimPart(parts, i, { inMs: ms }, maxMs),
-                      L("Endre innpunkt", "Change in point"),
+                      tk("app-assembly-clip-parts.clip-parts.edit.e397358d955a"),
                     )
                   }
                   step={frameMs}
                 />
                 <PointInput
-                  label={L("Ut", "Out")}
+                  label={tk("app-assembly-clip-parts.clip-parts.label.1895eb0f75a5")}
                   ms={p.outMs}
                   fps={fps}
                   disabled={!editable}
                   onChange={(ms) =>
                     edit(
                       trimPart(parts, i, { outMs: ms }, maxMs),
-                      L("Endre utpunkt", "Change out point"),
+                      tk("app-assembly-clip-parts.clip-parts.edit.e497d809b818"),
                     )
                   }
                   step={frameMs}
@@ -231,12 +220,9 @@ export function ClipParts({
           variant="secondary"
           className="self-start"
           onClick={onSplit}
-          title={L(
-            "Del klippet i to der avspillingshodet står (tasten S). Begge delene bruker samme kilde.",
-            "Split the clip in two at the playhead (key S). Both parts use the same source.",
-          )}
+          title={tk("app-assembly-clip-parts.clip-parts.title.c460bb6637c8")}
         >
-          <Scissors /> {L("Splitt ved avspillingshodet", "Split at the playhead")}
+          <Scissors /> {tk("app-assembly-clip-parts.clip-parts.button.fd2194a99a7b")}
         </Button>
       ) : null}
     </section>
@@ -285,15 +271,15 @@ function PointInput({
         className={btn}
         disabled={disabled}
         onClick={() => onChange(Math.max(0, Math.round((frame - 1) * step)))}
-        aria-label={L(`${l}: ett bilde tilbake`, `${l}: one frame back`)}
-        title={L("Ett bilde tilbake", "One frame back")}
+        aria-label={tk("app-assembly-clip-parts.point-input.aria-label.dc1592f615eb", { l: String(l) })}
+        title={tk("app-assembly-clip-parts.point-input.title.85a7cc6df4fa")}
       >
         <Minus className="size-3" />
       </button>
       <input
         type="text"
         inputMode="decimal"
-        aria-label={L(`${l}punkt i sekunder`, `${l} point in seconds`)}
+        aria-label={tk("app-assembly-clip-parts.point-input.aria-label.577bba60303f", { l: String(l) })}
         disabled={disabled}
         value={draft ?? String(seconds)}
         onFocus={() => setDraft(String(seconds))}
@@ -307,15 +293,15 @@ function PointInput({
           }
         }}
         className="h-6 w-14 min-w-0 rounded-sm border border-border-control bg-surface-3 px-1 font-mono text-xs text-text-primary disabled:opacity-50"
-        title={L(`Bilde ${frame}`, `Frame ${frame}`)}
+        title={tk("app-assembly-clip-parts.point-input.title.d4a803d3be6e", { frame: String(frame) })}
       />
       <button
         type="button"
         className={btn}
         disabled={disabled}
         onClick={() => onChange(Math.round((frame + 1) * step))}
-        aria-label={L(`${l}: ett bilde fram`, `${l}: one frame forward`)}
-        title={L("Ett bilde fram", "One frame forward")}
+        aria-label={tk("app-assembly-clip-parts.point-input.aria-label.90ebac78dd45", { l: String(l) })}
+        title={tk("app-assembly-clip-parts.point-input.title.693a4d5aa0e1")}
       >
         <Plus className="size-3" />
       </button>

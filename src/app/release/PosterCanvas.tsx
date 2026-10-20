@@ -31,6 +31,7 @@ import {
   type Corner,
   type DragMode,
 } from "./poster-handles";
+import { t } from "@/core/i18n/keyed";
 
 interface Drag {
   readonly id: string;
@@ -170,10 +171,10 @@ export function PosterCanvas({
           drag.id,
           patch,
           drag.mode === "move"
-            ? L("Flytt element", "Move element")
+            ? t("app-release-poster-canvas.end-drag.on-commit.8cccd431d926")
             : drag.mode === "rotate"
-              ? L("Roter element", "Rotate element")
-              : L("Endre størrelse", "Resize"),
+              ? t("app-release-poster-canvas.end-drag.on-commit.00f5884f9520")
+              : t("app-release-poster-canvas.end-drag.on-commit.40400006785f"),
         );
     }
     setDrag(null);
@@ -222,7 +223,7 @@ export function PosterCanvas({
     onCommit(
       selected.id,
       { x: selected.x + d[0]!, y: selected.y + d[1]! },
-      L("Flytt element", "Move element"),
+      t("app-release-poster-canvas.on-key.on-commit.07742901f562"),
       `nudge:${poster.id}:${selected.id}`,
     );
   };
@@ -239,10 +240,7 @@ export function PosterCanvas({
     <svg
       ref={svgRef}
       role="application"
-      aria-label={L(
-        `Plakaten «${poster.name}». Klikk for å velge et element, dra for å flytte, piltaster flytter valgt element.`,
-        `The poster “${poster.name}”. Click to select an element, drag to move it, arrow keys move the selected element.`,
-      )}
+      aria-label={t("app-release-poster-canvas.poster-canvas.aria-label.01176a13ea38", { name: String(poster.name) })}
       tabIndex={0}
       viewBox={`0 0 ${W} ${H}`}
       preserveAspectRatio="xMidYMid meet"
@@ -372,7 +370,7 @@ export function PosterCanvas({
                 strokeWidth={outline}
                 strokeDasharray={`${outline * 4} ${outline * 3}`}
               >
-                <title>{L("Teksten får ikke plass", "The text does not fit")}</title>
+                <title>{t("app-release-poster-canvas.poster-canvas.title.1f5e3badbf23")}</title>
               </rect>
             ) : null}
           </g>
@@ -393,7 +391,7 @@ export function PosterCanvas({
               onPointerDown={(ev) => startDrag(ev, e.id, "move")}
               style={{ cursor: "move" }}
             >
-              <title>{L("Tomt tekstfelt", "Empty text box")}</title>
+              <title>{t("app-release-poster-canvas.poster-canvas.title.9f1a8c9f0f53")}</title>
             </rect>
           ))
         : null}
@@ -443,7 +441,7 @@ export function PosterCanvas({
                 pointerEvents="none"
               />
               <circle
-                aria-label={L("Roter (Shift: trinn på 15°)", "Rotate (Shift: 15° steps)")}
+                aria-label={t("app-release-poster-canvas.poster-canvas.aria-label.9c3e64951ba2")}
                 cx={selected.x + selected.w / 2}
                 cy={selected.y - handle * 2.6}
                 r={handle * 0.6}
@@ -453,7 +451,7 @@ export function PosterCanvas({
                 style={{ cursor: "grab" }}
                 onPointerDown={(e) => startDrag(e, selected.id, "rotate")}
               >
-                <title>{L("Roter (Shift: trinn på 15°)", "Rotate (Shift: 15° steps)")}</title>
+                <title>{t("app-release-poster-canvas.poster-canvas.title.9c3e64951ba2")}</title>
               </circle>
             </>
           ) : null}
@@ -461,10 +459,7 @@ export function PosterCanvas({
           {(selected.kind === "line" ? [] : CORNERS).map((c) => (
             <rect
               key={c}
-              aria-label={L(
-                "Endre størrelse (Shift: behold forholdet)",
-                "Resize (Shift: keep the proportions)",
-              )}
+              aria-label={t("app-release-poster-canvas.poster-canvas.aria-label.47e78ff53838")}
               x={selected.x + (c === "ne" || c === "se" ? selected.w : 0) - handle / 2}
               y={selected.y + (c === "sw" || c === "se" ? selected.h : 0) - handle / 2}
               width={handle}
@@ -476,10 +471,7 @@ export function PosterCanvas({
               onPointerDown={(e) => startDrag(e, selected.id, c)}
             >
               <title>
-                {L(
-                  "Endre størrelse (Shift: behold forholdet)",
-                  "Resize (Shift: keep the proportions)",
-                )}
+                {t("app-release-poster-canvas.poster-canvas.title.47e78ff53838")}
               </title>
             </rect>
           ))}

@@ -12,6 +12,7 @@ import { compareVersionCreation, variantsOf, versionsOf } from "../library";
 import { formatHeading } from "../screenplay/paginate";
 import { L } from "../i18n";
 import { audioVersion } from "./index";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Merket på lydressurser med ren romlyd (REQ-0690). */
 export const ROOM_TONE_TAG = "romlyd"; // i18n-ignore: lagret merke
@@ -132,7 +133,7 @@ export function activeLineTake(s: ProjectState, info: LineInfo): string | null {
 
 /** Navnet på romlyden for en scene eller lydressurs: «Romlyd – Scene 3» / «Room tone – Scene 3». */
 export function roomToneName(where: string): string {
-  return L(`Romlyd – ${where}`, `Room tone – ${where}`);
+  return tk("core-audio-takes.room-tone-name.message.7ddabab07da7", { where: String(where) });
 }
 
 /** Romlydressursen for et sted (merket «romlyd», navnet på norsk eller engelsk), eller null. */
@@ -154,14 +155,14 @@ export function roomToneAsset(s: ProjectState, where: string): Asset | null {
 
 /** Stedet romlyden for en replikk hører til: «Scene 3», ellers sceneoverskriften. */
 export function roomToneSceneName(info: Pick<LineInfo, "sceneNumber" | "heading"> | null): string {
-  if (info?.sceneNumber) return L(`Scene ${info.sceneNumber}`, `Scene ${info.sceneNumber}`);
-  return info?.heading || L("Scene", "Scene");
+  if (info?.sceneNumber) return tk("core-audio-takes.room-tone-scene-name.message.3fb147d0a861", { sceneNumber: String(info.sceneNumber) });
+  return info?.heading || tk("core-audio-takes.room-tone-scene-name.message.a37ad1ffd219");
 }
 
 /** «Scene 3 · MAJA» – hva et replikkopptak gjelder (vist i lydvinduet og på mobilen). */
 export function lineLabel(info: Pick<LineInfo, "sceneNumber" | "speaker"> | null): string {
   const scene = info?.sceneNumber
-    ? L(`Scene ${info.sceneNumber}`, `Scene ${info.sceneNumber}`)
-    : L("Replikk", "Line");
+    ? tk("core-audio-takes.scene.message.a5438f48fcfd", { sceneNumber: String(info.sceneNumber) })
+    : tk("core-audio-takes.scene.message.0103405b4ba8");
   return info?.speaker ? `${scene} · ${info.speaker}` : scene;
 }
