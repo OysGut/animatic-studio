@@ -20,11 +20,7 @@ for(const lang of ["nb","en"])await h.scenario(`p5-${lang}`,occ.id,lang,async pa
     return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({result:{ok:true,estimate:true,costUsd:0,servicePaid:true,fingerprint:"mock-fingerprint",lines:3,profileName:null},context:{}})});
   });
   await page.getByRole("combobox",{name:lang==="nb"?"Manusspråk":"Script language",exact:true}).selectOption("en");
-  console.log("step language selected");
-  await page.getByTestId("script-tab-inspector").click();
-  console.log("step inspector selected");
   await page.locator(`[data-block="${blocks[0].id}"]`).first().click();
-  console.log("step block selected");
   await page.getByTestId("line-links-open").click();
   const dialog=page.getByTestId("line-links-dialog");
   h.check(await dialog.getByTestId("line-link-row").count()===3,"rules appear before AI");
