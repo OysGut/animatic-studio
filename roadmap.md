@@ -46,3 +46,8 @@
 - [ ] ML2d: sceneeditor (inkl. en-XA-overløp på 64 px, som ligger i sceneeditoren, ikke i skallet)
 - [ ] ML2e: montering og lyd, bibliotek og Asset Studio
 - [ ] ML2f: kjerne og server
+
+## B-049 ML2d – sceneeditor (20.10.2026)
+- [x] 1 761 av 1 785 tekstpar flyttet med migrate.mjs; 24 på broen (19 ulik plassholderkontrakt, 5 dynamiske) til ML2f.
+- [x] 64 px overløp med en-XA og åpen opptaksdialog rettet i verktøyraden; ingen norske tekster igjen.
+- [x] Regresjon grønn: paneler, dv2, ca1–ca8, u5, mts ×3, dv7, ml2-languages 199/199, vitest 1939/0.
