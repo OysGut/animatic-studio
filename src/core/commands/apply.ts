@@ -1,3 +1,4 @@
+import { lineLinkError, type TranslationLineLink } from "../translation/line-align-prompt";
 import { assetVoiceError } from "../dialogue/voice";
 import { languageTagError } from "../dialogue/languages";
 import { clipDrift, type DialogueReview } from "../dialogue/drift";
@@ -4928,6 +4929,39 @@ function run(
         inverse: { type: "SetContinuityEventsRemoved", eventIds: c.eventIds, removed: !c.removed },
         affected: [...c.eventIds],
       };
+    }
+
+    case "SetLineLink": {
+      if (lineLinkError(s,c.fields)) fail("invalid",L("Ugyldig linjekobling eller språkversjon.","Invalid line link or language version."));
+      const old=(s.translationLineLinks ?? {})[c.linkId];
+      if (!old) assertNewId(s,c.linkId);
+      const link: TranslationLineLink={...c.fields,id:c.linkId,revision:old ? rev(old) : 1,removed:false,createdBy:old?.createdBy ?? env.actor,createdAt:old?.createdAt ?? env.at};
+      return {state:{...s,translationLineLinks:{...(s.translationLineLinks ?? {}),[link.id]:link}},inverse:old ? {type:"RestoreLineLinks",items:[old]} : {type:"UndoAddLineLink",linkId:link.id},affected:[link.id]};
+    }
+    case "UndoAddLineLink": {
+      const old=need((s.translationLineLinks ?? {})[c.linkId],L("Linjekoblingen","The line link"));
+      const links={...(s.translationLineLinks ?? {})}; delete links[old.id];
+      return {state:{...s,translationLineLinks:links},inverse:{type:"SetLineLink",linkId:old.id,fields:old},affected:[old.id]};
+    }
+    case "ApproveLineLinks":
+    case "RejectLineLinks": {
+      if (!c.linkIds.length || c.linkIds.length > 400 || new Set(c.linkIds).size !== c.linkIds.length) fail("invalid",L("Ugyldig antall koblinger.","Invalid number of links."));
+      const links={...(s.translationLineLinks ?? {})}; const old: TranslationLineLink[]=[];
+      for (const id of c.linkIds) {
+        const link=need(links[id],L("Linjekoblingen","The line link"));
+        if (lineLinkError(s,link)) fail("invalid",L("Koblingen er ikke lenger gyldig.","The link is no longer valid."));
+        old.push(link); links[id]={...link,revision:rev(link),...(c.type === "ApproveLineLinks" ? {origin:"approved" as const,removed:false} : {removed:c.removed})};
+      }
+      return {state:{...s,translationLineLinks:links},inverse:{type:"RestoreLineLinks",items:old},affected:[...c.linkIds]};
+    }
+    case "RestoreLineLinks": {
+      const links={...(s.translationLineLinks ?? {})}; const old: TranslationLineLink[]=[];
+      for (const item of c.items) {
+        const now=need(links[item.id],L("Linjekoblingen","The line link"));
+        if (lineLinkError(s,item)) fail("invalid",L("Ugyldig linjekobling.","Invalid line link."));
+        old.push(now);links[item.id]={...item,revision:rev(now)};
+      }
+      return {state:{...s,translationLineLinks:links},inverse:{type:"RestoreLineLinks",items:old},affected:c.items.map(i=>i.id)};
     }
 
     case "AddTranslations": {

@@ -77,6 +77,7 @@ export const BACKUP_STATE_TABLES = [
   "dialogue_reviews",
   "note_flags",
   "quality_profiles",
+  "translation_line_links",
 ] as const;
 export type BackupStateTable = (typeof BACKUP_STATE_TABLES)[number];
 
@@ -207,6 +208,7 @@ export function makeBackup(input: BackupInput): BackupData {
     tables[t] = (rows as unknown as Record<string, Row[]>)[t] ?? [];
   // The approval receipt belongs to the upload workflow, not to restored project data.
   tables["animation_rig_versions"] = (tables["animation_rig_versions"] ?? []).map(withoutRigImportReceipts);
+  tables["translation_line_links"] = (tables["translation_line_links"] ?? []).filter(r => r["origin"] === "approved" || r["origin"] === "manual");
   tables["script_versions"] = input.scriptVersions;
   tables["imported_documents"] = input.importedDocuments;
   return {
@@ -406,6 +408,12 @@ export function assertSelfContained(b: BackupData, map: ReadonlyMap<string, stri
             ),
           );
       }
+  for (const r of b.tables["translation_line_links"] ?? [])
+    for (const key of ["source_block_ids","target_translation_ids"]) {
+      const ids=r[key];
+      if (!Array.isArray(ids) || ids.some(id=>typeof id !== "string" || !map.has(id)))
+        throw new Error(L("Sikkerhetskopien har en ugyldig linjekobling.","The backup contains an invalid line link."));
+    }
   // Bildeskifter (DEC-0052) og bilder per språk (DEC-0059) i lag viser til ressurser inne i JSON
   for (const r of b.tables["composition_layers"] ?? [])
     for (const col of ["image_swaps", "language_images"]) {
@@ -620,6 +628,7 @@ export function restoredState(
     dialogue_reviews: t("dialogue_reviews"),
     note_flags: t("note_flags"),
     quality_profiles: t("quality_profiles"),
+    translation_line_links: t("translation_line_links"),
   };
   let state: ProjectState;
   try {

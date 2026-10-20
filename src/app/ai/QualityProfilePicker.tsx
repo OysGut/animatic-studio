@@ -31,18 +31,20 @@ export function QualityProfilePicker({
   value,
   onChange,
   disabled,
+  stacked = false,
 }: {
   state: Pick<ProjectState, "project" | "qualityProfiles">;
   value: QualityProfileChoice;
   onChange: (v: QualityProfileChoice) => void;
   disabled?: boolean;
+  stacked?: boolean;
 }) {
   const profiles = qualityProfilesOf(state);
   if (profiles.length === 0) return null;
   const activeId = state.project.activeQualityProfileId ?? null;
   const active = activeId ? state.qualityProfiles[activeId] : null;
   return (
-    <label className="flex items-center gap-1.5 text-xs text-text-secondary">
+    <label className={stacked ? "flex flex-col gap-2 text-xs text-text-secondary" : "flex items-center gap-1.5 text-xs text-text-secondary"}>
       {L("Kvalitetsprofil", "Quality profile")}
       <select
         data-testid="quality-profile-picker"

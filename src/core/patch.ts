@@ -1,3 +1,4 @@
+import type { TranslationLineLink } from "./translation/line-align-prompt";
 import type { AnimationRig, AnimationRigVersion, AnimationUse } from "./animation/rig";
 import type { LipsyncResult } from "./animation/lipsync";
 import type { DialogueVersion } from "./dialogue/versions";
@@ -554,6 +555,10 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         removed: c.removed,
       };
     }
+    case "translationLineLinks": {
+      const l=e as unknown as TranslationLineLink;
+      return {...base,variant_id:l.variantId,language:l.language,source_block_ids:l.sourceBlockIds,target_translation_ids:l.targetTranslationIds,origin:l.origin,confidence:l.confidence,reason:l.reason,removed:l.removed};
+    }
     case "translations": {
       const t = e as Translation;
       return {
@@ -770,6 +775,7 @@ export const TABLE_ORDER: readonly string[] = [
   "story_canvas_edges",
   "note_flags",
   "quality_profiles",
+  "translation_line_links",
 ];
 
 export function diffStates(before: ProjectState, after: ProjectState): ChangeSet {
@@ -905,6 +911,7 @@ export interface ProjectRows {
   readonly note_flags?: readonly Row[];
   /** M8 kvalitetsprofiler (migrasjon 0063). Tomt hvis migrasjonen ikke er kjørt ennå. */
   readonly quality_profiles?: readonly Row[];
+  readonly translation_line_links?: readonly Row[];
 }
 
 const str = (v: unknown) => String(v);
@@ -1592,6 +1599,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         removed: x["removed"] === true,
       })),
     ),
+    translationLineLinks: byId((r.translation_line_links ?? []).map((x): TranslationLineLink => ({id:str(x["id"]),revision:num(x["revision"]),variantId:str(x["variant_id"]),language:str(x["language"]),sourceBlockIds:json(x["source_block_ids"]) as string[],targetTranslationIds:json(x["target_translation_ids"]) as string[],origin:str(x["origin"]) as TranslationLineLink["origin"],confidence:num(x["confidence"]),reason:str(x["reason"]),removed:x["removed"]===true}))),
     translations: byId(
       (r.translations ?? []).map((x) => ({
         id: str(x["id"]) as never,
