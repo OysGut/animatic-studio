@@ -11,6 +11,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   applyCommand,
+  newId,
   emptyStoryProfile,
   diffStates,
   keysEvenly,
@@ -6118,10 +6119,10 @@ try {
     const sceneId=newId(),variantId=newId(),blockId=newId(),occurrenceId=newId();
     const created=applyCommand(initial,{id:newId(),actor:ALICE,at:new Date().toISOString(),command:{type:"CreateScene",productionId:prod.id,sceneId:sceneId as never,variantId:variantId as never,occurrenceId:occurrenceId as never,orderKey:"a0",heading:{intExt:"INT.",location:"TEST",time:"DAG"},blocks:[{blockId:blockId as never,kind:"dialogue",text:"Norsk linje",orderKey:"a0"}]}});
     assert(created.ok,"scene command failed");
-    await as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"CreateScene"})},${sql.json(created.inverse)},${sql.json(diffStates(initial,created.state))})`);
+    await as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"CreateScene"})},${sql.json(JSON.parse(JSON.stringify(created.inverse)))},${sql.json(JSON.parse(JSON.stringify(diffStates(initial,created.state))))})`);
     const translationId=newId();const translated=applyCommand(created.state,{id:newId(),actor:ALICE,at:new Date().toISOString(),command:{type:"AddTranslations",items:[{translationId:translationId as never,fields:{blockId:blockId as never,variantId:null,language:"en",text:"English line",basedOnRev:1,status:"uncertain"}}]}});
     assert(translated.ok,"translation command failed");
-    await as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"AddTranslations"})},${sql.json(translated.inverse)},${sql.json(diffStates(created.state,translated.state))})`);
+    await as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"AddTranslations"})},${sql.json(JSON.parse(JSON.stringify(translated.inverse)))},${sql.json(JSON.parse(JSON.stringify(diffStates(created.state,translated.state))))})`);
     const id=newId();const row={id,project_id:bp,variant_id:variantId,language:"en",source_block_ids:[blockId],target_translation_ids:[translationId],origin:"approved",confidence:0.9,reason:"Evidence",removed:false,revision:1};
     await as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"SetLineLink"})},${sql.json({type:"UndoAddLineLink",linkId:id})},${sql.json({inserts:{translation_line_links:[row]}})})`);
     assert((await as("authenticated",BOB,tx=>tx`select id from public.translation_line_links where project_id=${bp}`)).length===1,"member cannot read");
