@@ -31,8 +31,8 @@ Kortversjonen:
 12. Only recognition and translation alignment (B-047/B-048) bypass the text-AI entry point: server-only service AI forces the built-in model and builds prompts, never an open proxy.
 13. User quotas exclude these two service tasks; service quotas count only built-in service tasks. Visual suites share one schema-version constant.
 14. RetimeScene uses pure plans and revision checks in one undo; word-gap previews reuse their in-memory audio in saves.
-16. Workspaces (GP1) are read-only to clients and changed only through security-definer functions in the database; linking a project to a workspace never grants project access, so project RLS stays the single source of project permissions.
-17. The global library (GP2) is owned by workspaces and written only through security-definer functions; using a global asset copies its files into the project once per global version and keeps the link only as metadata, so projects and backups never depend on workspace membership.
+16. Workspaces (GP1) change only via security-definer functions; linking a project never grants access, so project RLS stays the only permission source.
+17. The global library (GP2) is written via security-definer functions; using an asset copies its files once per global version, so projects never depend on workspace membership.
 18. Carry-over between scenes (GP3) is planned by the pure planCarryOver and run as one undo group of existing commands; it never targets the source 2D scene, so it cannot mix with an open Asset Studio draft.
 19. Film shares (GP5) bind a hashed token to one exported film version uploaded as mp4; the public /se/$token page resolves only through a server function that returns title, format, duration and a short-lived signed URL.
 20. Subdirectories have their own AGENTS.md (src/core/typography, src/core/animation, src/app/asset-studio); read it before changing files there.
@@ -45,11 +45,11 @@ Kortversjonen:
 27. Batches keep leased receipts so paid calls never replay. Drift is computed; bookmarks are private RPC rows; note flags are commands.
 28. Alpha exports share drawFilmFrame; adapters finalize first.
 
-29. Quality profiles use immutable per-result snapshots; a generation_jobs trigger serializes profile budget reservations under the project lock so concurrent clients cannot exceed a profile cap.
+29. Quality profiles use immutable per-result snapshots; a generation_jobs trigger serializes budget reservations under the project lock so caps hold.
 30. Film/alpha exports share a root-mounted browser queue; navigation keeps work, tab closure cannot resume it.
 
 31. Line links use scene-scoped block/translation IDs and reversible commands; backup remaps both, so Norwegian sources never change.
 32. ProRes uses our own worker encoder and an append-only MOV writer (moov last), so exports stream to OPFS without GPL code.
 33. Harmonization (P8): one image runner; "only here" is an archived variant; batches keep receipts so billed work never replays.
 34. M6: additive updates, computed forecasts; contextNames review tracks targets/checks/AI scores.
-35. ML1 keeps the legacy i18n bridge unchanged; keyed messages use injected catalogs, explicit locale/fallbacks, and a frozen AST mapping baseline so no source text is lost.
+35. i18n: the L() bridge stays until the inventory is empty; keyed catalogs use explicit fallbacks and a frozen AST baseline (no text lost). Language switches never remount (routes/memo panels use useLanguage) so drafts survive; server error codes are additive and never rewrite L() sites.

@@ -32,6 +32,7 @@ import { useAnalysisRows } from "@/app/library/entity-analysis-store";
 import type { Commands } from "@/app/project/use-commands";
 import { sceneSuggestions } from "./scene-suggestions";
 import { AddElementDialog } from "./AddElementDialog";
+import { useLanguage } from "@/app/i18n/language";
 
 /** Datatype for dra-og-slipp fra panelet til lerretet (verdien er ressursens ID). */
 export const ASSET_DRAG_TYPE = "application/x-animatic-asset";
@@ -61,6 +62,7 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
   /** For «Legg til i biblioteket» (KI-49). Uten den vises navnene uten knapp. */
   cmds?: Commands;
 }) {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const navigate = useNavigate();
   const analysis = useAnalysisRows(projectId);
   // Elementer som skal inn i scenen fra en annen scene (DEC-0088): gul ramme til de er dratt inn

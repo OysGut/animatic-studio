@@ -90,8 +90,10 @@ export function AccountWatcher() {
       else if (!a.locale) void saveMyLocale(getLanguage()).catch(() => undefined);
       return;
     }
-    if (a.locale !== lang)
-      void saveMyLocale(lang).then(() => qc.invalidateQueries({ queryKey: MY_ACCOUNT_KEY }));
+    // Testspråket en-XA lagres aldri på kontoen; det regnes som engelsk
+    const base = lang === "nb" ? "nb" : "en";
+    if (a.locale !== base)
+      void saveMyLocale(base).then(() => qc.invalidateQueries({ queryKey: MY_ACCOUNT_KEY }));
   }, [a, lang, qc]);
 
   // En konto som er blokkert eller låst for sletting, logges ut (innloggingen er også sperret)

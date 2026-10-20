@@ -13,6 +13,7 @@ import { MobileImportWatcher } from "@/app/mobile/use-mobile-imports";
 import { EntityAnalysisWatcher } from "@/app/library/use-entity-analysis";
 import { canEdit, useMembers } from "@/app/project/use-project";
 import { L } from "@/core";
+import { useLanguage } from "@/app/i18n/language";
 
 export const Route = createFileRoute("/prosjekt/$projectId")({
   head: () => ({ meta: [
@@ -27,6 +28,7 @@ export const Route = createFileRoute("/prosjekt/$projectId")({
 });
 
 function ProjectLayout() {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const { projectId } = Route.useParams();
   const session = useSession();
   const signedIn = session.status === "signed-in";

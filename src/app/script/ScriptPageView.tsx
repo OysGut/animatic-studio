@@ -14,6 +14,7 @@ import {
   type ProjectState,
   tm,
 } from "@/core";
+import { useLanguage } from "@/app/i18n/language";
 
 export interface Selection {
   readonly occurrenceId: string | null;
@@ -131,6 +132,7 @@ const PageSheet = memo(function PageSheet({
   changed,
   language,
 }: SheetProps) {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   return (
     <section
       aria-label={L(`Side ${page.number}`, `Page ${page.number}`)}

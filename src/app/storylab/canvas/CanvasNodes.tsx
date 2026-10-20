@@ -24,6 +24,7 @@ import {
 import { memo, type ComponentType } from "react";
 import { L, canvasNodeKindLabel, type CanvasNode, type CanvasNodeKind, type ProjectState } from "@/core";
 import { AssetThumb } from "@/app/library/AssetThumb";
+import { useLanguage } from "@/app/i18n/language";
 
 export const KIND_ICON: Record<CanvasNodeKind, LucideIcon> = {
   premise: BookOpen,
@@ -99,6 +100,7 @@ export interface CanvasNodeData extends Record<string, unknown> {
 export type StoryFlowNode = Node<CanvasNodeData>;
 
 function NodeBody({ data, selected, kind }: NodeProps<StoryFlowNode> & { kind: CanvasNodeKind }) {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const n = data.node;
   const Icon = KIND_ICON[kind];
   const accent = (n.color && COLOR_TOKENS[n.color]) || KIND_ACCENT[kind];

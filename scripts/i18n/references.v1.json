@@ -73,10 +73,10 @@
   },
   {
     "file": "src/app/account/use-account.tsx",
-    "line": 113,
+    "line": 115,
     "column": 21,
-    "start": 3769,
-    "end": 3782,
+    "start": 3888,
+    "end": 3901,
     "scope": "accept",
     "context": "setError",
     "kind": "tm",
@@ -1141,10 +1141,10 @@
   },
   {
     "file": "src/app/script/ScriptPageView.tsx",
-    "line": 280,
+    "line": 282,
     "column": 83,
-    "start": 8461,
-    "end": 8474,
+    "start": 8585,
+    "end": 8598,
     "scope": "line",
     "context": "title",
     "kind": "tm",
@@ -1221,6 +1221,18 @@
     "context": "setMsg",
     "kind": "tm",
     "raw": "tm((e as Error).message)",
+    "key": null
+  },
+  {
+    "file": "src/core/i18n/server-errors.ts",
+    "line": 103,
+    "column": 10,
+    "start": 5414,
+    "end": 5425,
+    "scope": "server-error-text",
+    "context": "message",
+    "kind": "tm",
+    "raw": "tm(message)",
     "key": null
   }
 ]

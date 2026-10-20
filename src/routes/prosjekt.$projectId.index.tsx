@@ -2,6 +2,7 @@ import { L } from "@/core";
 import { createFileRoute } from "@tanstack/react-router";
 import { useSession } from "@/app/auth/use-session";
 import { ProjectOverview } from "@/app/projects/ProjectOverview";
+import { useLanguage } from "@/app/i18n/language";
 
 export const Route = createFileRoute("/prosjekt/$projectId/")({
   head: () => ({ meta: [
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/prosjekt/$projectId/")({
 });
 
 function OverviewRoute() {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const { projectId } = Route.useParams();
   const session = useSession();
   if (session.status !== "signed-in") return null;

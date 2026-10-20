@@ -5,6 +5,7 @@ import { AuthScreen } from "@/app/auth/AuthScreen";
 import { acceptInvitation } from "@/adapters/browser/members";
 import { acceptWorkspaceInvitation } from "@/adapters/browser/workspaces";
 import { L } from "@/core";
+import { useLanguage } from "@/app/i18n/language";
 
 export const Route = createFileRoute("/invitasjon")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/invitasjon")({
 });
 
 function AcceptInvitation() {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const { token, type } = Route.useSearch();
   const session = useSession();
   const navigate = useNavigate();

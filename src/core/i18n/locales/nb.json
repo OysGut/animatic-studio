@@ -18324,6 +18324,12 @@
     "parameters": [],
     "executable": true
   },
+  "app-i18n-language.language-switch.title.52f62cdf7cf1": {
+    "text": "Testspråk (bare i utvikling)",
+    "source": "\"Testspråk (bare i utvikling)\"",
+    "parameters": [],
+    "executable": true
+  },
   "app-library-approve-impact-dialog.prod.message.a3119ecda93c": {
     "text": "annen produksjon",
     "source": "\"annen produksjon\"",

@@ -28,6 +28,7 @@ import {
   type NewAnnotation,
   type ProjectState,
 } from "@/core";
+import { useLanguage } from "@/app/i18n/language";
 
 /** Innrykk og stil per elementtype, omtrent som på manusarket. */
 const KIND_CLASS: Record<BlockKind, string> = {
@@ -87,6 +88,7 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
   run?: (command: Command, label: string) => string | null;
   authorName?: string;
 }) {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const [noteTarget, setNoteTarget] = useState<Omit<NewAnnotation, "annotationId" | "text" | "authorName"> | null>(null);
   const [seek, setSeek] = useState<ScriptSeek | null>(null);
   const clickTimer = useRef<ReturnType<typeof setTimeout> | null>(null);

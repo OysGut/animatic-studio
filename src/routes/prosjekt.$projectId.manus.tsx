@@ -2,6 +2,7 @@ import { L } from "@/core";
 import { createFileRoute } from "@tanstack/react-router";
 import { useSession } from "@/app/auth/use-session";
 import { ScriptWorkspace } from "@/app/script/ScriptWorkspace";
+import { useLanguage } from "@/app/i18n/language";
 
 /**
  * ?scene=<forekomst-ID> åpner manuset med scenen valgt (f.eks. fra «Brukt i scener» i biblioteket);
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/prosjekt/$projectId/manus")({
 });
 
 function ScriptRoute() {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const { projectId } = Route.useParams();
   const { scene, blokk } = Route.useSearch();
   const session = useSession();

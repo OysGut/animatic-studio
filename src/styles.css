@@ -375,3 +375,8 @@ span.mark-search-chip {
   background: var(--mark-search);
   color: var(--text-primary);
 }
+
+/* ML2a: skjult til lagret språk er satt (se LANGUAGE_BOOT_SCRIPT) */
+html.lang-pending body {
+  visibility: hidden;
+}

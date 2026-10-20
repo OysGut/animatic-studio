@@ -22,6 +22,7 @@ import { drawFilmFrame } from "@/engine/compositor/film";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 import { RulerTicks } from "@/app/scene-editor/Timeline";
 import { filmImageCache } from "./film-images";
+import { useLanguage } from "@/app/i18n/language";
 
 /** Sporoverskriftene til venstre. */
 export const LABEL_W = 132;
@@ -419,6 +420,7 @@ const ClipBlock = memo(function ClipBlock({
   onPointerCancel: () => void;
   onDoubleClick: () => void;
 }) {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const w = Math.max(3, clip.durationFrames * ppf);
   const placeholder = clip.source === "placeholder";
   const heading = formatHeading(clip.heading);

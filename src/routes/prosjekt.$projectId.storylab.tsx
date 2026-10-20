@@ -2,6 +2,7 @@ import { L } from "@/core";
 import { createFileRoute } from "@tanstack/react-router";
 import { useSession } from "@/app/auth/use-session";
 import { StoryLabWorkspace } from "@/app/storylab/StoryLabWorkspace";
+import { useLanguage } from "@/app/i18n/language";
 
 const UUID = /^[0-9a-f-]{36}$/;
 
@@ -31,6 +32,7 @@ export const Route = createFileRoute("/prosjekt/$projectId/storylab")({
 });
 
 function StoryLabRoute() {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const { projectId } = Route.useParams();
   const { karakter, scene, forslag, visning, intervju } = Route.useSearch();
   const session = useSession();

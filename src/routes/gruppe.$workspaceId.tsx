@@ -5,6 +5,7 @@ import { AppHeader } from "@/app/shell/AppHeader";
 import { SchemaBanner } from "@/app/shell/SchemaBanner";
 import { WorkspacePage } from "@/app/workspaces/WorkspacePage";
 import { L } from "@/core";
+import { useLanguage } from "@/app/i18n/language";
 
 /** Adminsiden for en arbeidsgruppe (GP1). Tilgangen håndheves i databasen. */
 export const Route = createFileRoute("/gruppe/$workspaceId")({
@@ -20,6 +21,7 @@ export const Route = createFileRoute("/gruppe/$workspaceId")({
 });
 
 function WorkspaceRoute() {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const { workspaceId } = Route.useParams();
   const session = useSession();
   if (session.status === "loading") return <div className="min-h-screen bg-bg-app" aria-busy />;

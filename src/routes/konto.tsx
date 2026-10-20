@@ -5,6 +5,7 @@ import { AppHeader } from "@/app/shell/AppHeader";
 import { SchemaBanner } from "@/app/shell/SchemaBanner";
 import { AccountPage } from "@/app/account/AccountPage";
 import { L } from "@/core";
+import { useLanguage } from "@/app/i18n/language";
 
 /** Min konto (DEC-0086): profil, språk, passord, AI-forbruk, personvern og sletting. */
 export const Route = createFileRoute("/konto")({
@@ -20,6 +21,7 @@ export const Route = createFileRoute("/konto")({
 });
 
 function AccountRoute() {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const session = useSession();
   if (session.status === "loading") return <div className="min-h-screen bg-bg-app" aria-busy />;
   if (session.status === "signed-out") return <AuthScreen />;
