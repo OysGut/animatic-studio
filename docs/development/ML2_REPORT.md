@@ -311,3 +311,45 @@ De trenger flertallsmeldinger, det vil si nye katalogoppføringer. Derfor tas de
 - u5-screens: 65/65.
 - verifisering4: 51/54. De tre feilene er de samme miljøfeilene som før: mikrofon (to kontroller) og fontmålet 6,439 em.
 - DB-tester er ikke kjørt i ML2b fordi ingen databasekode er endret.
+
+## ML2c – manus (20.10.2026)
+
+**Omfang:** manuseditoren og skrivevisningen, import og eksport (`src/app/script`), manusutforskeren (`src/app/script-explorer`), Story Lab (`src/app/storylab`), linjekoblinger og oversettelse (P5, i `src/app/script`) og dialog. Dialogfilene er `src/app/dialogue`, sceneeditorens manus- og dialogfiler (`SceneScriptPanel`, `SceneScriptDialog`, `DialogueCharacters`, `DialogueLanguageControls`, `DialogueVersions`, `GenerateDialogue`, `RecordAudioDialog`) og dialoglyden i `src/app/audio` (`AudioTakesDialog`, `LineWordsPanel`, `VoiceControls`, `takes.ts`, `use-recorder.ts`).
+
+| Mål | Verdi |
+|---|---|
+| Tekstpar i inventaret | 9 964, ingen tapt |
+| Flyttet totalt | 2 643 av 9 964 (26,5 %); 6 av dem er avløst av håndskrevne meldinger |
+| Flyttet i manus | 1 444 av 1 457 (99,1 %) |
+| Gjenstående bro | 7 321 par (73,5 %); 13 av dem i manus, 0 i skall og konto |
+| Konflikter | 266, uendret; de 27 gruppene som venter på Mars, er ikke slått sammen |
+
+**Flertallsformer for de seks skall- og kontotekstene:** de nye meldingene ligger i `src/core/i18n/authored.json` (flertall, valg og dato). Hver melding viser hvilken ML1-nøkkel den avløser, og den gamle teksten bevares frosset i inventaret. Tekstene er ordrett de gamle, og en test sjekker dem for både 1 og flere:
+- sikkerhetskopi med manglende filer;
+- prognosegrunnlag (scener og replikker);
+- endringer ført over til hovedfilmen;
+- antall varianter;
+- utløpsdato for delt film, som nå formateres etter visningsspråket;
+- blokkert eier, med og uten eiernavn.
+
+**Avvik fra ML2a-verifiseringen, rettet:**
+- *Pseudo-oversatt språkkode («norsk bokmål (nnbb)»).* Det var to feil. Språknavnet ble vist på norsk også på engelsk, fordi visningsspråket «en-GB» ikke ble gjenkjent som engelsk (`languageLabel`). I tillegg pseudo-oversatte broen innsatte verdier. Manusflatene bruker nå `t()`, der innsatte verdier som koder, tall, ID-er og navn aldri pseudo-oversettes. Begge deler er dekket av tester.
+- *Norske begrunnelser i sceneeditoren på en-XA («Har replikk i manuset», «Står i sceneoverskriften»).* Begrunnelsen lagres på norsk av gjenkjenningen på serveren. Ressurspanelet i sceneeditoren viser den nå gjennom `tm()`. Samme felt i bibliotekets forslagsdialog (`SuggestionsDialog`) hører til ML2e.
+
+**Igjen på broen i manus (13):** disse trenger håndskrevne flertalls- eller valgmeldinger:
+- LineLinkReview:51 (antall uparede linjer)
+- SceneNavigator:458 (antall notater)
+- SceneNavigator:500/504 (scene uten nummer)
+- ScriptPageView:283
+- TranslationImportDialog:216/249/331/337 (språknavn og sikkerhetsord)
+- GenerateDialogue:54 og LineWordsPanel:265 (kostnadsanslag)
+- RemoveTranslationsDialog:44 og VersionsDialog:773 (dynamiske uttrykk)
+
+De tas sammen med flertallstekstene i ML2f, eller tidligere hvis Mars ønsker det.
+
+### Tester (ML2c)
+- Vitest: 1 939 bestått, 0 feilet, 10 eksisterende hoppet over. Nytt: de seks håndskrevne meldingene ordrett på nb og en, en-XA uten pseudo-oversatte verdier, og engelske språknavn ved «en-GB».
+- Språksjekken: 0 feil. Inventaret er ferskt.
+- ml2-languages: 181/181. Ny del: manus, Story Lab, manusutforskeren og sceneeditorens manus på nb, en og en-XA, uten vannrett rulling, uten pseudo-oversatte språkkoder og uten norske begrunnelser. I dialogen sjekkes at språknavnet er på engelsk med urørt kode.
+- t2-writing-ui 69/69, dv1-script-nav 15/15, dv3-dialogue-editor 48/48, dv6-languages 16/16, dv7-drift 28/28 (med mts-fixture), p5-line-linking 24/24, storylab-ui 32/32.
+- Funn: overløpet på 64 px i sceneeditoren vises fortsatt i ML2a-scenarioet med åpen opptaksdialog, og hører til ML2d. Sceneeditorens manusvisning uten dialog har 0 px.
