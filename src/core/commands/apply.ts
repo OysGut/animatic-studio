@@ -133,6 +133,7 @@ import { blocksOfVariant } from "../views";
 import { normalizeDurationAssumptions, sameDurationAssumptions } from "../screenplay/duration";
 import { MAX_PROMPT_CHARS } from "../generation/prompt";
 import type {
+  AssetMedia,
   RelationFields,
   PosterFields,
   StyleProfileFields,
@@ -6725,6 +6726,15 @@ function run(
             "The variant is used in a 2D scene and cannot be removed.",
           ),
         );
+      // P8 (REQ-0144): en foretrukket referanse for en stilprofil peker på varianten
+      if (Object.values(s.stylePreferredReferences ?? {}).some((r) => !r.removed && r.variantId === va.id))
+        fail(
+          "referenced",
+          L(
+            "Varianten er en foretrukket referanse for en stilprofil og kan ikke fjernes.",
+            "The variant is a preferred reference for a style profile and cannot be removed.",
+          ),
+        );
       const assetVariants = { ...s.assetVariants };
       delete assetVariants[va.id];
       return {
@@ -6894,6 +6904,15 @@ function run(
     case "UndoAddAssetVersion": {
       const ver = need(s.assetVersions[c.versionId], L("Versjonen", "The version"));
       const va = s.assetVariants[ver.variantId];
+      // P8: metadataen om en harmonisering må fjernes sammen med bildet (samme angregruppe)
+      if (Object.values(s.styleHarmonizations ?? {}).some((h) => !h.removed && (h.versionId === ver.id || h.sourceVersionId === ver.id || h.referenceVersionId === ver.id)))
+        fail(
+          "referenced",
+          L(
+            "Bildet har harmoniseringsmetadata og kan ikke fjernes alene. Angre hele harmoniseringen.",
+            "The image has harmonization metadata and cannot be removed on its own. Undo the whole harmonization.",
+          ),
+        );
       if (va?.approvedVersionId === ver.id)
         fail(
           "referenced",
