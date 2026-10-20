@@ -125,14 +125,15 @@ describe("M8 quality profiles – rules", () => {
   it("profileChoice: explicit model wins, otherwise the profile's effort decides; null without a profile", () => {
     const connected = new Set<string>();
     expect(profileChoice("image", null, connected)).toBeNull();
+    // Uten uttrykkelig modell velger profilens innsatsnivå, nøyaktig som effortChoice
     const byEffort = profileChoice("image", { spec: { effort: "fast" } }, connected);
     expect(byEffort).not.toBeNull();
-    expect(byEffort!.model.tier ?? "balanced").toBe("fast");
+    expect(byEffort!.model.id).toBe(effortChoice("image", "fast", connected)!.model.id);
     const explicit = profileChoice("image", { spec: { models: { image: byEffort!.model.id } } }, connected);
     expect(explicit!.model.id).toBe(byEffort!.model.id);
     // En modell som ikke finnes lenger, faller tilbake på innsatsnivået
     const gone = profileChoice("image", { spec: { models: { image: "finnes-ikke" }, effort: "premium" } }, connected);
-    expect(gone!.model.tier ?? "balanced").toBe("premium");
+    expect(gone!.model.id).toBe(effortChoice("image", "premium", connected)!.model.id);
   });
   it("profile budget: remaining count, or null without a limit", () => {
     expect(profileBudgetRemaining(null, 5)).toBeNull();
