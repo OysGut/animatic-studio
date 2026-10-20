@@ -48,8 +48,8 @@ Kortversjonen:
 29. Quality profiles use immutable per-result snapshots; a generation_jobs trigger serializes budget reservations under the project lock so caps hold.
 30. Film/alpha exports share a root-mounted browser queue; navigation keeps work, tab closure cannot resume it.
 
-31. Line links use scene-scoped block/translation IDs and reversible commands; backup remaps both, so Norwegian sources never change. ML3: one language_versions row per project+target tag (nb is always the source); rows carry an optional version ID, older rows derive from project+language, so nothing is backfilled or merged.
+31. Line links use scene-scoped block/translation IDs and reversible commands; backup remaps both, so Norwegian sources never change. ML3: one language version per project+tag (nb source); old rows derive from project+language, so nothing is backfilled or merged.
 32. ProRes uses our own worker encoder and an append-only MOV writer (moov last), so exports stream to OPFS without GPL code.
 33. Harmonization (P8): one image runner; "only here" is an archived variant; batches keep receipts so billed work never replays.
 34. M6: additive updates, computed forecasts; contextNames review tracks targets/checks/AI scores.
-35. i18n: all text uses t()/tLocalized with keyed catalogs, explicit fallbacks and a frozen AST baseline (no text lost); check.mjs rejects new L()/localized() calls; authored.json holds plural/select/date messages; tm() only for old stored server messages. Language switches never remount, so drafts survive; server error codes are additive.
+35. i18n: all text uses t()/tLocalized with keyed catalogs and a frozen AST baseline (no text lost); check.mjs rejects new L()/localized(); authored.json holds plural/select/date messages; tm() only for old stored server messages. Language switches never remount; server error codes are additive.
