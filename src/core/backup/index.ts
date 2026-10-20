@@ -76,6 +76,7 @@ export const BACKUP_STATE_TABLES = [
   "dialogue_versions",
   "dialogue_reviews",
   "note_flags",
+  "quality_profiles",
 ] as const;
 export type BackupStateTable = (typeof BACKUP_STATE_TABLES)[number];
 
@@ -579,6 +580,8 @@ export function restoredState(
       ai_price_per_image: p["ai_price_per_image"] ?? null,
       // Antakelsene for varighetsestimat (migrasjon 0028, KI-28) følger med sikkerhetskopien
       duration_assumptions: p["duration_assumptions"] ?? null,
+      // Aktiv kvalitetsprofil (M8, migrasjon 0063) følger med; ID-en omskrives av remapValue nedenfor
+      active_quality_profile_id: p["active_quality_profile_id"] ?? null,
     },
     productions: t("productions"),
     scenes: t("scenes"),
@@ -616,6 +619,7 @@ export function restoredState(
     dialogue_versions: t("dialogue_versions"),
     dialogue_reviews: t("dialogue_reviews"),
     note_flags: t("note_flags"),
+    quality_profiles: t("quality_profiles"),
   };
   let state: ProjectState;
   try {
