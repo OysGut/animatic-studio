@@ -287,6 +287,8 @@ export function GenerateImagePanel({
       ),
     );
   }, [insertPrompt]);
+  // Kandidater (mandat 19.7): flere bilder å velge mellom, hvert som egen versjon
+  const [candidates, setCandidates] = useState(1);
   const usage = budget
     ? aiUsage(budget, jobs.data?.jobs ?? [], new Date(), jobs.data?.monthCount ?? undefined)
     : null;
@@ -312,8 +314,6 @@ export function GenerateImagePanel({
     if (!edited && followAuto.current) setPrompt(auto);
   }, [auto, edited]);
   const [confirm, setConfirm] = useState(false);
-  // Kandidater (mandat 19.7): flere bilder å velge mellom, hvert som egen versjon
-  const [candidates, setCandidates] = useState(1);
   const costUsd =
     choice.provider === "lovable"
       ? null
