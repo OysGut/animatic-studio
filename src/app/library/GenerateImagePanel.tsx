@@ -393,6 +393,8 @@ export function GenerateImagePanel({
             model: choice.provider === "lovable" ? null : choice.model,
             size,
             ...(negative ? { negativePrompt: negative } : {}),
+            // M8 (REQ-0859): profilen bildet lages med, som øyeblikksbilde i jobbens metadata
+            ...(profile ? { qualityProfile: qualityProfileSnapshot(profile) } : {}),
             approved: true,
           },
         });
