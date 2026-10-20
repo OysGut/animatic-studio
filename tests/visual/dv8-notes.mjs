@@ -2,6 +2,7 @@
 import { harness } from "./mts-harness.mjs";
 const h = harness("/tmp/browser/dv8");
 const occ = h.M.driftOcc ?? h.rows.scene_occurrences[0].id;
+h.rows.user_bookmarks = [{ target: { view: "scene", occurrenceId: occ, frame: 24, tab: "scene" }, updated_at: "2026-10-20T10:00:00.123456Z" }];
 for (const lang of ["nb", "en"]) await h.scenario(`dv8-${lang}`, occ, lang, async page => {
   // Bokmerke: sett i toppmenyen
   h.check(await page.getByTestId("bookmark-set").isVisible(), "set bookmark in the top menu");
@@ -24,5 +25,10 @@ for (const lang of ["nb", "en"]) await h.scenario(`dv8-${lang}`, occ, lang, asyn
   h.check(await box.isVisible(), "notes and flags box on the project page");
   for (const id of ["note-flags-sort", "note-flags-creator", "note-flags-kind", "note-flags-active"]) h.check(await box.getByTestId(id).isVisible(), `${id} visible`);
   await box.screenshot({ path: `${h.out}/${lang}-overview.png` });
+  // Fortsett ved bokmerke: navigerer først, fjerner etterpå (B3)
+  h.state.rpcs = [];
+  await page.getByTestId("bookmark-resume").click();
+  h.check(await h.eventually(() => page.url().includes(`scene=${occ}`) && page.url().includes("at=24"), 5000), "resume opens the right scene and time");
+  h.check(await h.eventually(() => h.state.rpcs.some(r => r.name === "consume_my_bookmark" && r.body?.p_updated_at === "2026-10-20T10:00:00.123456Z"), 4000), "bookmark consumed after successful navigation");
 });
 await h.finish();
