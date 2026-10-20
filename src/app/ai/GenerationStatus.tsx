@@ -12,6 +12,7 @@ import {
   JOB_STATE_LABEL,
   L,
   formatHeading,
+  jobQualityProfile,
   jobState,
   locale,
   tm,
