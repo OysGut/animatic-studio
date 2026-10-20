@@ -5964,7 +5964,7 @@ try {
     assert((await sql`select 1 from public.dialogue_versions where project_id = ${dvProject}`).length === 0, "versjoner igjen etter sletting");
     await as("service_role", null, (tx) => tx`select public.purge_project_assets(${dvProject}, ${ALICE})`);
     assert((await sql`select 1 from public.projects where id = ${dvProject}`).length === 0, "prosjektet ble ikke slettet");
-    assert((await sql`select max(version) as v from public.schema_version`)[0]!["v"] === 62, "skjemaversjon 62");
+    assert((await sql`select max(version) as v from public.schema_version`)[0]!["v"] === 63, "skjemaversjon 63");
   });
 
   await test("0061: batchtabeller har RLS og bare lesetilgang for medlemmer", async () => {
@@ -6004,7 +6004,7 @@ try {
       assert(g[0]?.["anon"] === false && g[0]?.["read"] === true && g[0]?.["ins"] === false && g[0]?.["del"] === false && g[0]?.["service"] === true, `${table}: grants avviker`);
     }
     const body = String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) as b`)[0]?.["b"]);
-    assert(body.includes("'dialogue_reviews','note_flags'") && body.includes("array['note_flags','dialogue_reviews','animation_patterns'"), "apply_changes kjenner ikke de nye tabellene i riktig rekkefølge");
+    assert(body.includes("'dialogue_reviews','note_flags'") && body.includes("'note_flags','dialogue_reviews','animation_patterns'"), "apply_changes kjenner ikke de nye tabellene i riktig rekkefølge");
     for (const fn of ["delete_project(uuid,uuid)", "purge_project_assets(uuid,uuid)"]) {
       const b = String((await sql`select pg_get_functiondef(${`public.${fn}`}::regprocedure) as b`)[0]?.["b"]);
       assert(b.indexOf("note_flags") < b.indexOf("delete from public.dialogue_versions") && b.includes("user_bookmarks") && b.includes("dialogue_reviews"), `${fn}: rydder ikke barn først`);
@@ -6079,7 +6079,7 @@ try {
     await as("service_role", null, (tx) => tx`select public.apply_changes(${bp}, ${ALICE}, ${"00000000-0000-7000-8000-000000006303"}, ${sql.json({ type: "SetActiveQualityProfile" })}, ${sql.json({ type: "SetActiveQualityProfile" })}, ${sql.json({ updates: { projects: [{ id: bp, revision: 2, expected_revision: 1, active_quality_profile_id: pid }] } })})`);
     const seen = await as("authenticated", ALICE, (tx) => tx`select active_quality_profile_id from public.projects where id = ${bp}`);
     assert(seen[0]?.["active_quality_profile_id"] === pid, "aktiv profil ble ikke satt");
-    await expectError(as("service_role", null, (tx) => tx`select public.apply_changes(${bp}, ${ALICE}, ${"00000000-0000-7000-8000-000000006304"}, ${sql.json({ type: "UpdateQualityProfile" })}, ${sql.json({ type: "UpdateQualityProfile" })}, ${sql.json({ updates: { quality_profiles: [{ ...row, name: "Kino 2", revision: 2, expected_revision: 2 }] } })})`), "P0409");
+    await expectError(as("service_role", null, (tx) => tx`select public.apply_changes(${bp}, ${ALICE}, ${"00000000-0000-7000-8000-000000006304"}, ${sql.json({ type: "UpdateQualityProfile" })}, ${sql.json({ type: "UpdateQualityProfile" })}, ${sql.json({ updates: { quality_profiles: [{ ...row, name: "Kino 2", revision: 6, expected_revision: 5 }] } })})`), "P0409");
     assert((await as("authenticated", CAROL, (tx) => tx`select 1 from public.quality_profiles where project_id = ${bp}`)).length === 0, "ikke-medlem ser profilene");
     await as("service_role", null, (tx) => tx`select public.delete_project(${bp}, ${ALICE})`);
     assert((await sql`select 1 from public.quality_profiles where project_id = ${bp}`).length === 0, "profiler igjen etter sletting");
