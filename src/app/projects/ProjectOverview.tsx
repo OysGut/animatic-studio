@@ -14,6 +14,7 @@ import { MembersSection } from "./MembersSection";
 import { StyleGuideSection } from "./StyleGuideSection";
 import { ProjectTodoBox } from "./ProjectTodoBox";
 import { NoteFlagsOverview } from "./NoteFlagsOverview";
+import { QualityProfilesSection } from "./QualityProfilesSection";
 import { MobileImportDialog } from "@/app/mobile/MobileImportDialog";
 import { StorageSection } from "./StorageSection";
 import { ProjectCostSection } from "@/app/account/ProjectCostSection";
@@ -94,6 +95,9 @@ export function ProjectOverview({ projectId, userId }: { projectId: string; user
           />
 
           <NoteFlagsOverview state={s} projectId={projectId} names={Object.fromEntries(Object.entries(profiles.data ?? {}).map(([id, p]) => [id, p?.display_name ?? ""]))} />
+
+          {/* Kvalitetsprofiler (M8, REQ-0854–0862) */}
+          <QualityProfilesSection state={s} projectId={projectId} userId={userId} editable={canEdit(myRole)} />
 
           <section aria-labelledby="prod-title" className="mt-8">
             <h2 id="prod-title" className="mb-2 text-base font-semibold text-text-primary">
