@@ -114,10 +114,21 @@ export function createTranslator(manifest: LanguageManifest, catalogs: Readonly<
   const errors = catalogErrors(manifest, catalogs);
   if (errors.length) throw new Error(errors.join('\n'));
   const languages = new Map(manifest.languages.map((lang) => [lang.tag, lang]));
+  // Chains are pure per requested tag; cache them so render-time lookups do not revalidate the manifest.
+  const chains = new Map<string, { readonly normalized: string; readonly chain: readonly string[] }>();
+  const resolve = (requested: string) => {
+    let hit = chains.get(requested);
+    if (!hit) {
+      const normalized = canonicalLocale(requested);
+      hit = { normalized, chain: fallbackChain(manifest, normalized) };
+      chains.set(requested, hit);
+    }
+    return hit;
+  };
   return (key: string, params: MessageParameters = {}, requested = 'nb'): string => {
-    const normalized = canonicalLocale(requested);
+    const { normalized, chain } = resolve(requested);
     if (!catalogs['nb']?.[key]) throw new Error(`Unknown translation key: ${key}`);
-    for (const tag of fallbackChain(manifest, normalized)) {
+    for (const tag of chain) {
       const message = catalogs[tag]?.[key];
       if (!message) continue;
       if (message.executable === false) throw new Error(`Legacy expression requires explicit migration: ${key}`);

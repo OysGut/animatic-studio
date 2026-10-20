@@ -14,13 +14,14 @@ import { EntityAnalysisWatcher } from "@/app/library/use-entity-analysis";
 import { canEdit, useMembers } from "@/app/project/use-project";
 import { L } from "@/core";
 import { useLanguage } from "@/app/i18n/language";
+import { t } from "@/core/i18n/keyed";
 
 export const Route = createFileRoute("/prosjekt/$projectId")({
   head: () => ({ meta: [
-    { title: L("Prosjekt – Animatic Studio", "Project – Animatic Studio") },
-    { name: "description", content: L("Arbeidsflater for filmprosjektet i Animatic Studio.", "Workspaces for your film project in Animatic Studio.") },
-    { property: "og:title", content: L("Prosjekt – Animatic Studio", "Project – Animatic Studio") }, // i18n-ignore: metakode
-    { property: "og:description", content: L("Arbeidsflater for filmprosjektet i Animatic Studio.", "Workspaces for your film project in Animatic Studio.") }, // i18n-ignore: metakode
+    { title: t("routes-prosjekt-project-id.title.title.d35e8c26f18a") },
+    { name: "description", content: t("routes-prosjekt-project-id.content.content.323705133be5") },
+    { property: "og:title", content: t("routes-prosjekt-project-id.content.content.05f369d5fe5c") }, // i18n-ignore: metakode
+    { property: "og:description", content: t("routes-prosjekt-project-id.content.content.323705133be5.2") }, // i18n-ignore: metakode
     { property: "og:type", content: "website" }, // i18n-ignore: metakode
     { name: "twitter:card", content: "summary" }, // i18n-ignore: metakode
   ] }),
@@ -64,7 +65,7 @@ function ProjectLayout() {
               data-testid="project-locked"
             >
               <h1 className="text-lg font-semibold text-text-primary">
-                {L("Prosjektet er låst", "The project is locked")}
+                {t("routes-prosjekt-project-id.project-layout.h1.83c2e8141203")}
               </h1>
               <p className="mt-2 text-[13px] text-text-secondary">
                 {lock.data.lock === "owner_blocked"
@@ -73,45 +74,33 @@ function ProjectLayout() {
                       `The owner of the project is blocked. Contact ${lock.data.ownerName ? `the owner (${lock.data.ownerName}) or ` : ""}the administrator at ${lock.data.adminEmail ?? ""}.`,
                     )
                   : lock.data.lock === "no_owner"
-                    ? L(
-                        `Prosjektet har ingen eier. Kontakt administrator på ${lock.data.adminEmail ?? ""}.`,
-                        `The project has no owner. Contact the administrator at ${lock.data.adminEmail ?? ""}.`,
-                      )
-                    : L(
-                        `Eieren av prosjektet har slettet kontoen sin. Administrator kan gi prosjektet en ny eier: kontakt ${lock.data.adminEmail ?? ""}.`,
-                        `The owner of the project has deleted their account. The administrator can give the project a new owner: contact ${lock.data.adminEmail ?? ""}.`,
-                      )}
+                    ? t("routes-prosjekt-project-id.project-layout.p.aba08d0d2b17", { value1: String(lock.data.adminEmail ?? "") })
+                    : t("routes-prosjekt-project-id.project-layout.p.f6f3bd8e7d04", { value1: String(lock.data.adminEmail ?? "") })}
               </p>
               <p className="mt-2 text-xs text-text-tertiary">
-                {L(
-                  "Ingenting i prosjektet er slettet. Det åpnes igjen når eieren låses opp eller prosjektet får en ny eier.",
-                  "Nothing in the project has been deleted. It opens again when the owner is unlocked or the project gets a new owner.",
-                )}
+                {t("routes-prosjekt-project-id.project-layout.p.5622c808d147")}
               </p>
               <Link
                 to="/"
                 className="mt-4 inline-block text-[13px] text-accent-brand underline-offset-2 hover:underline"
               >
-                {L("Til prosjektlisten", "To the project list")}
+                {t("routes-prosjekt-project-id.project-layout.link.015885f8011d")}
               </Link>
             </div>
           ) : name.data?.deleted ? (
             // Slettet prosjekt (DEC-0046): bare ressursene finnes, og de håndteres fra prosjektlisten
             <div className="mx-auto mt-16 max-w-[460px] px-6 text-center">
               <h1 className="text-lg font-semibold text-text-primary">
-                {L("Prosjektet er slettet", "The project has been deleted")}
+                {t("routes-prosjekt-project-id.project-layout.h1.034a12e7f5db")}
               </h1>
               <p className="mt-2 text-[13px] text-text-secondary">
-                {L(
-                  "Ressursene (bilder og lyd) er tatt vare på. Du finner dem under «Ressurser fra slettede prosjekter» i prosjektlisten.",
-                  "The assets (images and audio) have been kept. You will find them under “Assets from deleted projects” in the project list.",
-                )}
+                {t("routes-prosjekt-project-id.project-layout.p.9cb6096fbb82")}
               </p>
               <Link
                 to="/"
                 className="mt-4 inline-block text-[13px] text-accent-brand underline-offset-2 hover:underline"
               >
-                {L("Til prosjektlisten", "To the project list")}
+                {t("routes-prosjekt-project-id.project-layout.link.015885f8011d.2")}
               </Link>
             </div>
           ) : (

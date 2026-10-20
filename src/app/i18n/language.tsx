@@ -10,6 +10,7 @@ import { Languages } from "lucide-react";
 import { useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from "react";
 import { L, getUiLanguage, isUiLang, onLanguageChange, setLanguage, type UiLang } from "@/core";
 import manifest from "@/core/i18n/manifest.json";
+import { t } from "@/core/i18n/keyed";
 
 export const LANGUAGE_KEY = "animatic:lang";
 /** Klasse på <html> mens lagret språk settes (skjuler siden, se `LANGUAGE_BOOT_SCRIPT`). */
@@ -54,8 +55,15 @@ function stored(): UiLang | null {
   }
 }
 
+/** Roten er hydrert; sider som hydreres etterpå (egne kodebiter) melder fra via useLanguage. */
+let rootSettled = false;
+const lateHydration = new Set<() => void>();
+
 /** Gjeldende visningsspråk (tegner komponenten på nytt når det endres). */
 export function useLanguage(): UiLang {
+  useEffect(() => {
+    if (rootSettled) for (const f of [...lateHydration]) f();
+  }, []);
   return useSyncExternalStore(onLanguageChange, getUiLanguage, () => "nb");
 }
 
@@ -73,9 +81,33 @@ export function chooseLanguage(lang: UiLang) {
 /** Rundt hele appen: henter lagret språk før skjermen males, og oppdaterer <html lang>. */
 export function LanguageRoot({ children }: { children: ReactNode }) {
   const lang = useLanguage();
-  useIso(() => {
+  useEffect(() => {
+    // Lagret språk settes først når sidens egen del er hydrert: ruter ligger i egne kodebiter og
+    // hydreres etter roten, og ville ellers fått et annet språk enn serveren tegnet. Siden er skjult
+    // (lang-pending) til da; vakturet sørger for at den aldri blir stående skjult.
     const s = stored();
-    if (s) setLanguage(s);
+    rootSettled = true;
+    if (!s) return;
+    let done = false;
+    const apply = () => {
+      if (done) return;
+      done = true;
+      lateHydration.delete(onLate);
+      setLanguage(s);
+    };
+    // Flere deler kan hydreres etter hverandre: vent til det har vært stille en kort stund.
+    let quiet: number | undefined;
+    const onLate = () => {
+      window.clearTimeout(quiet);
+      quiet = window.setTimeout(() => window.requestAnimationFrame(() => window.requestAnimationFrame(apply)), 150);
+    };
+    lateHydration.add(onLate);
+    const guard = window.setTimeout(apply, 2800);
+    return () => {
+      lateHydration.delete(onLate);
+      window.clearTimeout(guard);
+      window.clearTimeout(quiet);
+    };
   }, []);
   useIso(() => {
     const d = document.documentElement;
@@ -98,8 +130,8 @@ export function LanguageSwitch({ compact = false }: { compact?: boolean }) {
   return (
     <div
       role="group"
-      aria-label={L("Språk", "Language")}
-      title={L("Språk i tjenesten", "Language of the app")}
+      aria-label={t("app-i18n-language.language-switch.aria-label.a2595484506d")}
+      title={t("app-i18n-language.language-switch.title.691fad620f12")}
       data-testid="language-switch"
       className="flex items-center gap-0.5 rounded-sm border border-border bg-surface-1 p-0.5"
     >
@@ -110,7 +142,7 @@ export function LanguageSwitch({ compact = false }: { compact?: boolean }) {
           type="button"
           aria-pressed={lang === o.tag}
           data-testid={`language-${o.tag}`}
-          title={o.testOnly ? L("Testspråk (bare i utvikling)", "Test language (development only)") : o.nativeName}
+          title={o.testOnly ? t("app-i18n-language.language-switch.title.52f62cdf7cf1") : o.nativeName}
           className={seg(lang === o.tag)}
           onClick={() => chooseLanguage(o.tag)}
           lang={o.tag}

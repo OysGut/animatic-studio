@@ -5,6 +5,7 @@
  */
 import { useCallback, useRef, useState, useSyncExternalStore } from "react";
 import { L } from "@/core";
+import { t } from "@/core/i18n/keyed";
 
 const PREFIX = "animatic:pane:";
 const cache = new Map<string, number>();
@@ -166,7 +167,7 @@ export function PaneResizer({
       aria-valuemin={min}
       aria-valuemax={max}
       tabIndex={0}
-      title={`${label} – ${L("dra for å endre, dobbeltklikk for standard", "drag to change, double-click for the default")}`}
+      title={`${label} – ${t("app-shell-pane-size.pane-resizer.title.e38c76f18960")}`}
       onPointerDown={(e) => {
         e.preventDefault();
         e.currentTarget.setPointerCapture(e.pointerId);

@@ -9,6 +9,7 @@ import { L, tm, WORKSPACE_ROLE_LABEL } from "@/core";
 import { createWorkspace, listMyWorkspaces } from "@/adapters/browser/workspaces";
 import { useSchemaAtLeast } from "@/app/shell/use-schema";
 import { Button } from "@/components/ui/button";
+import { t } from "@/core/i18n/keyed";
 
 export const MY_WORKSPACES_KEY = ["my-workspaces"] as const;
 
@@ -51,13 +52,10 @@ export function WorkspacesCard({ userId }: { userId: string }) {
       className="flex flex-col gap-3 rounded-md border border-border bg-surface-1 p-4"
     >
       <h2 className="text-sm font-semibold text-text-primary">
-        {L("Arbeidsgrupper", "Workspaces")}
+        {t("app-workspaces-workspaces-card.workspaces-card.h2.d8a76c716a20")}
       </h2>
       <p className="text-xs text-text-tertiary">
-        {L(
-          "En arbeidsgruppe eier et felles ressursbibliotek. Å være med i en gruppe gir ikke tilgang til gruppens prosjekter.",
-          "A workspace owns a shared asset library. Being in a workspace does not give access to its projects.",
-        )}
+        {t("app-workspaces-workspaces-card.workspaces-card.p.83c05b086205")}
       </p>
       {list.data?.length ? (
         <ul className="flex flex-col gap-1">
@@ -77,7 +75,7 @@ export function WorkspacesCard({ userId }: { userId: string }) {
         </ul>
       ) : list.isSuccess ? (
         <p className="text-xs text-text-secondary">
-          {L("Du er ikke med i noen arbeidsgruppe.", "You are not in any workspace.")}
+          {t("app-workspaces-workspaces-card.workspaces-card.p.a3a6ede1a37c")}
         </p>
       ) : null}
       <div className="flex gap-2">
@@ -85,8 +83,8 @@ export function WorkspacesCard({ userId }: { userId: string }) {
           className={input}
           value={name}
           maxLength={200}
-          aria-label={L("Navn på ny arbeidsgruppe", "Name of new workspace")}
-          placeholder={L("Navn på ny arbeidsgruppe", "Name of new workspace")}
+          aria-label={t("app-workspaces-workspaces-card.workspaces-card.aria-label.ddc2b6b3f64a")}
+          placeholder={t("app-workspaces-workspaces-card.workspaces-card.placeholder.ddc2b6b3f64a")}
           onChange={(e) => setName(e.target.value)}
           data-testid="workspace-new-name"
         />
@@ -96,7 +94,7 @@ export function WorkspacesCard({ userId }: { userId: string }) {
           onClick={() => void create()}
           data-testid="workspace-create"
         >
-          {L("Opprett", "Create")}
+          {t("app-workspaces-workspaces-card.workspaces-card.button.ff2ce537682b")}
         </Button>
       </div>
       {msg ? (

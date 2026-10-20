@@ -5,36 +5,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { L } from "@/core";
 import { PrivacyLink } from "@/app/account/use-account";
+import { t } from "@/core/i18n/keyed";
 
 type Mode = "signin" | "signup";
 
 function norwegianAuthError(message: string): string {
   const m = message.toLowerCase();
   if (m.includes("banned"))
-    return L(
-      "Kontoen er sperret (blokkert eller låst for sletting). Kontakt administrator: oystein@gutu.no.",
-      "The account is locked (blocked or locked for deletion). Contact the administrator: oystein@gutu.no.",
-    );
+    return t("app-auth-auth-screen.norwegian-auth-error.message.2c6406a859ea");
   if (m.includes("invalid login"))
-    return L("Feil e-post eller passord.", "Wrong email or password.");
+    return t("app-auth-auth-screen.norwegian-auth-error.message.95c18548f154");
   if (m.includes("email not confirmed"))
-    return L(
-      "E-postadressen er ikke bekreftet ennå. Sjekk innboksen din.",
-      "The email address is not confirmed yet. Check your inbox.",
-    );
+    return t("app-auth-auth-screen.norwegian-auth-error.message.e4bd6f3f7df3");
   if (m.includes("already registered"))
-    return L(
-      "Det finnes allerede en konto med denne e-postadressen.",
-      "An account with this email address already exists.",
-    );
+    return t("app-auth-auth-screen.norwegian-auth-error.message.fa8299739ce5");
   if (m.includes("password"))
-    return L("Passordet må ha minst 8 tegn.", "The password must be at least 8 characters.");
+    return t("app-auth-auth-screen.norwegian-auth-error.message.b3dd07f3b76a");
   if (m.includes("rate limit"))
-    return L(
-      "For mange forsøk. Vent litt og prøv igjen.",
-      "Too many attempts. Wait a little and try again.",
-    );
-  return L("Noe gikk galt. Prøv igjen.", "Something went wrong. Try again.");
+    return t("app-auth-auth-screen.norwegian-auth-error.message.9048c2290f5e");
+  return t("app-auth-auth-screen.norwegian-auth-error.message.4b326751900a");
 }
 
 /** Innlogging (e-post + passord eller innloggingslenke). Ingen markedsføringsflate – rett til arbeid. */
@@ -51,7 +40,7 @@ export function AuthScreen() {
   async function submit(e: FormEvent) {
     e.preventDefault();
     if (mode === "signup" && !readPrivacy) {
-      setError(L("Les personvernerklæringen først.", "Read the privacy statement first."));
+      setError(t("app-auth-auth-screen.submit.set-error.d5170069ebaf"));
       return;
     }
     setBusy(true);
@@ -66,16 +55,13 @@ export function AuthScreen() {
     if (res.error) setError(norwegianAuthError(res.error.message));
     else if (mode === "signup" && !res.session)
       setNotice(
-        L(
-          "Kontoen er opprettet. Bekreft e-postadressen via lenken vi sendte deg.",
-          "The account has been created. Confirm your email address via the link we sent you.",
-        ),
+        t("app-auth-auth-screen.submit.set-notice.a389c2300257"),
       );
   }
 
   async function sendLink() {
     if (!email) {
-      setError(L("Skriv inn e-postadressen først.", "Enter your email address first."));
+      setError(t("app-auth-auth-screen.send-link.set-error.7166e0585ba7"));
       return;
     }
     setBusy(true);
@@ -86,10 +72,7 @@ export function AuthScreen() {
     if (res.error) setError(norwegianAuthError(res.error.message));
     else
       setNotice(
-        L(
-          `Vi har sendt en innloggingslenke til ${email}.`,
-          `We have sent a sign-in link to ${email}.`,
-        ),
+        t("app-auth-auth-screen.send-link.set-notice.ff4036e3c48c", { email: String(email) }),
       );
   }
 
@@ -101,10 +84,7 @@ export function AuthScreen() {
             Animatic Studio
           </h1>
           <p className="mt-1 text-[13px] text-text-secondary">
-            {L(
-              "Fra manus til ferdig film – i én sammenhengende produksjon.",
-              "From script to finished film – in one continuous production.",
-            )}
+            {t("app-auth-auth-screen.auth-screen.p.e99ee6ebdf9f")}
           </p>
         </div>
         <form
@@ -113,11 +93,11 @@ export function AuthScreen() {
           aria-labelledby="auth-title"
         >
           <h2 id="auth-title" className="text-base font-semibold text-text-primary">
-            {mode === "signin" ? L("Logg inn", "Sign in") : L("Opprett konto", "Create account")}
+            {mode === "signin" ? t("app-auth-auth-screen.auth-screen.h2.852d2eee9390") : t("app-auth-auth-screen.auth-screen.h2.a327ce9931d2")}
           </h2>
           <div className="space-y-1.5">
             <Label htmlFor="email" className="text-xs text-text-secondary">
-              {L("E-post", "Email")}
+              {t("app-auth-auth-screen.auth-screen.label.7c26d484c7c6")}
             </Label>
             <Input
               id="email"
@@ -131,7 +111,7 @@ export function AuthScreen() {
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="password" className="text-xs text-text-secondary">
-              {L("Passord", "Password")}
+              {t("app-auth-auth-screen.auth-screen.label.d38edc077535")}
             </Label>
             <Input
               id="password"
@@ -154,14 +134,14 @@ export function AuthScreen() {
                 data-testid="signup-privacy"
               />
               <span>
-                {L("Jeg har lest ", "I have read the ")}
+                {t("app-auth-auth-screen.auth-screen.span.58227f6df4c1")}
                 <a
                   href="/personvern"
                   target="_blank"
                   rel="noreferrer"
                   className="text-accent-brand underline-offset-2 hover:underline"
                 >
-                  {L("personvernerklæringen", "privacy statement")}
+                  {t("app-auth-auth-screen.auth-screen.a.8a48040d6096")}
                 </a>
               </span>
             </label>
@@ -177,7 +157,7 @@ export function AuthScreen() {
             </p>
           ) : null}
           <Button type="submit" className="w-full" disabled={busy}>
-            {mode === "signin" ? L("Logg inn", "Sign in") : L("Opprett konto", "Create account")}
+            {mode === "signin" ? t("app-auth-auth-screen.auth-screen.button.852d2eee9390") : t("app-auth-auth-screen.auth-screen.button.a327ce9931d2")}
           </Button>
           <div className="flex items-center justify-between pt-1 text-xs">
             <button
@@ -186,8 +166,8 @@ export function AuthScreen() {
               onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
             >
               {mode === "signin"
-                ? L("Ny bruker? Opprett konto", "New user? Create an account")
-                : L("Har du konto? Logg inn", "Have an account? Sign in")}
+                ? t("app-auth-auth-screen.auth-screen.button.22a66d43cb57")
+                : t("app-auth-auth-screen.auth-screen.button.0c501076b9f7")}
             </button>
             <button
               type="button"
@@ -195,7 +175,7 @@ export function AuthScreen() {
               onClick={() => void sendLink()}
               disabled={busy}
             >
-              {L("Send innloggingslenke", "Send sign-in link")}
+              {t("app-auth-auth-screen.auth-screen.button.54c2a58316bb")}
             </button>
           </div>
         </form>

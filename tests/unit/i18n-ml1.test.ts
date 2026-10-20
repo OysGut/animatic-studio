@@ -77,7 +77,7 @@ describe('ML1 language/catalog contract', () => {
   });
   it('generated keyed API preserves text and exposes pseudo only on explicit use', () => {
     const mapping = JSON.parse(readFileSync('scripts/i18n/mapping.v1.json', 'utf8'));
-    const entry = mapping.entries.find((e: { nb: { kind: string; text: string }; en: { kind: string } }) => e.nb.kind === 'literal' && e.en.kind === 'literal' && e.nb.text === 'Lagre');
+    const entry = mapping.entries.find((e: { migrated?: boolean; nb: { kind: string; text: string }; en: { kind: string } }) => e.migrated && e.nb.kind === 'literal' && e.en.kind === 'literal' && e.nb.text === 'Lagre');
     expect(entry).toBeDefined();
     expect(t(entry.key, {}, 'nb')).toBe(entry.nb.text);
     expect(t(entry.key, {}, 'en')).toBe(entry.en.text);
@@ -151,5 +151,43 @@ describe('ML1 AST/exact preservation', () => {
     expect(result.entries[2].en.text).toBe('Unresolved');
     expect(result.pseudo).toContain('{name}');
     expect(result.pseudo).not.toContain('Hello');
+  });
+});
+describe('ML2b migration tool', () => {
+  it('moves L/localized to keys without changing text, keeps distinct keys for same text and leaves conflicts on the bridge', () => {
+    const source = 'import { L, localized } from "@/core/i18n";\nconst M = localized({ a: ["Ja", "Yes"] });\nexport const f = (n: number) => [L("Lukk", "Close"), L("Lukk", "Close"), L(`${n} scener`, `${n} scenes`), L(`${n} av ${n}`, `${n}`)];\n';
+    const output = execFileSync('node', ['--input-type=module', '-e', `
+      import { collectInventory } from './scripts/i18n/inventory.mjs';
+      import { migrateSource } from './scripts/i18n/migrate.mjs';
+      import { mkdtempSync,mkdirSync,writeFileSync,readFileSync,rmSync } from 'node:fs';
+      const root=mkdtempSync('/tmp/ml2b-'); mkdirSync(root+'/src'); writeFileSync(root+'/src/a.ts', ${JSON.stringify(source)});
+      const first=collectInventory(root);
+      const out=migrateSource(readFileSync(root+'/src/a.ts','utf8'),'src/a.ts',first);
+      writeFileSync(root+'/src/a.ts', out.source);
+      const second=collectInventory(root, first);
+      rmSync(root,{recursive:true,force:true});
+      console.log(JSON.stringify({source:out.source,stats:out.stats,firstKeys:first.entries.map(e=>e.key).sort(),secondKeys:second.entries.map(e=>e.key).sort(),migrated:second.entries.filter(e=>e.migrated).length}));`], { encoding: 'utf8' });
+    const r = JSON.parse(output);
+    expect(r.stats).toEqual({ moved: 4, bridge: 1, reasons: { 'parameter-contract': 1 } });
+    expect(r.source).toContain('tLocalized({ a: "');
+    expect(r.source).toContain('{ n: String(n) }');
+    expect(r.source).toMatch(/import \{ L \} from "@\/core\/i18n";/);
+    expect(r.secondKeys).toEqual(r.firstKeys);
+    expect(r.migrated).toBe(4);
+    const lukk = [...r.source.matchAll(/t\("([^"]+)"\)/g)].map((m: RegExpMatchArray) => m[1]);
+    expect(new Set(lukk).size).toBe(2);
+  });
+});
+describe('ML2b runtime catalog', () => {
+  it('every migrated text pair renders exactly its frozen nb/en text through t()', () => {
+    const mapping = JSON.parse(readFileSync('scripts/i18n/mapping.v1.json', 'utf8'));
+    const migrated = mapping.entries.filter((e: { migrated?: boolean }) => e.migrated);
+    expect(migrated.length).toBeGreaterThanOrEqual(1193);
+    for (const e of migrated) {
+      const params = Object.fromEntries(e.nb.parameters.map((p: { name: string }) => [p.name, `«${p.name}»`]));
+      const fill = (text: string) => text.replace(/\{([A-Za-z_]\w*)\}/g, (_, n: string) => `«${n}»`);
+      expect(t(e.key, params, 'nb')).toBe(fill(e.nb.text));
+      expect(t(e.key, params, 'en')).toBe(fill(e.en.text));
+    }
   });
 });

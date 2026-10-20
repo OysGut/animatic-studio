@@ -23,6 +23,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { PRIVACY_KEY, usePrivacyPolicy } from "@/app/account/use-account";
 import { AiConnectionsAdmin, CronStatusLine, useAiAdmin } from "./AiConnectionsAdmin";
+import { t } from "@/core/i18n/keyed";
 
 export const ADMIN_KEY = ["admin-overview"] as const;
 
@@ -39,32 +40,32 @@ const usd = (n: number) =>
 
 export const STATUS_LABEL = (s: AdminUser["status"]) =>
   s === "active"
-    ? L("Aktiv", "Active")
+    ? t("app-admin-admin-page.status-label.message.3005b09235d1")
     : s === "blocked"
-      ? L("Blokkert", "Blocked")
+      ? t("app-admin-admin-page.status-label.message.4d66d8f3924e")
       : s === "deleting"
-        ? L("Låst for sletting", "Locked for deletion")
-        : L("Slettet", "Deleted");
+        ? t("app-admin-admin-page.status-label.message.c871f437464f")
+        : t("app-admin-admin-page.status-label.message.206bb82b7e7f");
 
 export const LOCK_LABEL = (l: string | null) =>
   l === "owner_blocked"
-    ? L("Eieren er blokkert", "The owner is blocked")
+    ? t("app-admin-admin-page.lock-label.message.ca356997515f")
     : l === "owner_deleting"
-      ? L("Eieren har slettet kontoen (30 dager)", "The owner has deleted the account (30 days)")
+      ? t("app-admin-admin-page.lock-label.message.c4561b5891e8")
       : l === "owner_deleted"
-        ? L("Eieren er slettet", "The owner is deleted")
+        ? t("app-admin-admin-page.lock-label.message.2ff1c8869e6d")
         : l === "no_owner"
-          ? L("Ingen eier", "No owner")
-          : L("Åpent", "Open");
+          ? t("app-admin-admin-page.lock-label.message.7ae247ff81a8")
+          : t("app-admin-admin-page.lock-label.message.9e87f490421f");
 
 const ROLE = (r: string) =>
   r === "owner"
-    ? L("eier", "owner")
+    ? t("app-admin-admin-page.role.message.df84d28482ad")
     : r === "editor"
-      ? L("redaktør", "editor")
+      ? t("app-admin-admin-page.role.message.e25b204fd065")
       : r === "commenter"
-        ? L("kommentator", "commenter")
-        : L("leser", "viewer");
+        ? t("app-admin-admin-page.role.message.521dbbacf178")
+        : t("app-admin-admin-page.role.message.348741ee89a8");
 
 export function AdminPage({ myId }: { myId: string }) {
   const qc = useQueryClient();
@@ -96,17 +97,17 @@ export function AdminPage({ myId }: { myId: string }) {
     return (
       <p className="m-8 flex items-center gap-2 text-sm text-text-tertiary">
         <Loader2 className="size-4 animate-spin" aria-hidden />
-        {L("Henter brukerne …", "Fetching the users …")}
+        {t("app-admin-admin-page.admin-page.p.c9f9e0fc0c12")}
       </p>
     );
   if (!q.data?.ok)
     return (
       <main className="mx-auto max-w-[640px] px-6 py-10 text-center">
         <h1 className="text-lg font-semibold text-text-primary">
-          {L("Administrasjon", "Administration")}
+          {t("app-admin-admin-page.admin-page.h1.c31a2370fb06")}
         </h1>
         <p className="mt-2 text-sm text-text-secondary">
-          {tm(q.data?.message ?? L("Ingen tilgang.", "No access."))}
+          {tm(q.data?.message ?? t("app-admin-admin-page.admin-page.p.9dc3db4e207e"))}
         </p>
       </main>
     );
@@ -126,22 +127,16 @@ export function AdminPage({ myId }: { myId: string }) {
     >
       <div className="flex flex-wrap items-baseline gap-3">
         <h1 className="text-lg font-semibold text-text-primary">
-          {L("Administrasjon", "Administration")}
+          {t("app-admin-admin-page.admin-page.h1.c31a2370fb06.2")}
         </h1>
         <span className="text-xs text-text-tertiary">
-          {L(
-            `${counts.total} brukere · ${counts.admins} administratorer · ${counts.blocked} blokkert · ${counts.deleting} låst for sletting`,
-            `${counts.total} users · ${counts.admins} administrators · ${counts.blocked} blocked · ${counts.deleting} locked for deletion`,
-          )}
+          {t("app-admin-admin-page.admin-page.span.f0f0d620cbb8", { total: String(counts.total), admins: String(counts.admins), blocked: String(counts.blocked), deleting: String(counts.deleting) })}
         </span>
       </div>
       <CronStatusLine data={ai.data} />
       {d.purged ? (
         <p className="text-xs text-text-secondary">
-          {L(
-            `${d.purged} konto(er) var låst i 30 dager og er nå slettet for godt (anonymisert).`,
-            `${d.purged} account(s) had been locked for 30 days and are now deleted for good (anonymised).`,
-          )}
+          {t("app-admin-admin-page.admin-page.p.c03358df5eb2", { purged: String(d.purged) })}
         </p>
       ) : null}
       {msg ? (
@@ -159,13 +154,10 @@ export function AdminPage({ myId }: { myId: string }) {
           data-testid="admin-locked"
         >
           <h2 className="text-sm font-semibold text-text-primary">
-            {L(`Låste prosjekter (${locked.length})`, `Locked projects (${locked.length})`)}
+            {t("app-admin-admin-page.admin-page.h2.06305ce350de", { length: String(locked.length) })}
           </h2>
           <p className="text-xs text-text-tertiary">
-            {L(
-              "Medlemmene ser bare en melding om at prosjektet er låst. Gi prosjektet en ny eier for å åpne det igjen; tidligere eiere blir redaktører.",
-              "The members only see a message that the project is locked. Give the project a new owner to open it again; former owners become editors.",
-            )}
+            {t("app-admin-admin-page.admin-page.p.9da1ccc31370")}
           </p>
           {locked.map((p) => (
             <LockedProject key={p.id} p={p} users={active} onDone={report} />
@@ -175,15 +167,15 @@ export function AdminPage({ myId }: { myId: string }) {
 
       <section className="flex flex-col gap-2 rounded-md border border-border bg-surface-1 p-4">
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-semibold text-text-primary">{L("Brukere", "Users")}</h2>
+          <h2 className="text-sm font-semibold text-text-primary">{t("app-admin-admin-page.admin-page.h2.89e04d89f8fc")}</h2>
           <label className="ml-auto flex items-center gap-1.5 rounded-sm border border-border-control bg-surface-3 px-2">
             <Search className="size-3.5 text-text-tertiary" aria-hidden />
             <input
               className="h-7 w-56 bg-transparent text-xs text-text-primary outline-none"
-              placeholder={L("Søk på navn eller e-post", "Search by name or email")}
+              placeholder={t("app-admin-admin-page.admin-page.placeholder.7909773c3a75")}
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              aria-label={L("Søk", "Search")}
+              aria-label={t("app-admin-admin-page.admin-page.aria-label.25f6a8737929")}
             />
           </label>
         </div>
@@ -191,13 +183,13 @@ export function AdminPage({ myId }: { myId: string }) {
           <table className="w-full text-xs" data-testid="admin-users">
             <thead className="text-left text-text-tertiary">
               <tr>
-                <th className="px-2 py-1">{L("Bruker", "User")}</th>
-                <th className="px-2 py-1">{L("Laget", "Created")}</th>
-                <th className="px-2 py-1">{L("Sist aktiv", "Last active")}</th>
-                <th className="px-2 py-1">{L("Status", "Status")}</th>
-                <th className="px-2 py-1">{L("Prosjekter", "Projects")}</th>
-                <th className="px-2 py-1 text-right">{L("AI totalt", "AI total")}</th>
-                <th className="px-2 py-1 text-right">{L("Siste 30 dager", "Last 30 days")}</th>
+                <th className="px-2 py-1">{t("app-admin-admin-page.admin-page.th.0f9fd2c60917")}</th>
+                <th className="px-2 py-1">{t("app-admin-admin-page.admin-page.th.44988da3f7a8")}</th>
+                <th className="px-2 py-1">{t("app-admin-admin-page.admin-page.th.3fbb21c899fa")}</th>
+                <th className="px-2 py-1">{t("app-admin-admin-page.admin-page.th.20e10a7b2643")}</th>
+                <th className="px-2 py-1">{t("app-admin-admin-page.admin-page.th.e20a386237c9")}</th>
+                <th className="px-2 py-1 text-right">{t("app-admin-admin-page.admin-page.th.3e4e0008e278")}</th>
+                <th className="px-2 py-1 text-right">{t("app-admin-admin-page.admin-page.th.f3d57d96435f")}</th>
                 <th className="px-2 py-1" />
               </tr>
             </thead>
@@ -221,7 +213,7 @@ export function AdminPage({ myId }: { myId: string }) {
 
       <details className="rounded-md border border-border bg-surface-1 p-4">
         <summary className="cursor-pointer text-sm font-semibold text-text-primary">
-          {L(`Alle prosjekter (${d.projects.length})`, `All projects (${d.projects.length})`)}
+          {t("app-admin-admin-page.admin-page.summary.0b5e6de839a1", { length: String(d.projects.length) })}
         </summary>
         <table className="mt-2 w-full text-xs">
           <tbody>
@@ -229,7 +221,7 @@ export function AdminPage({ myId }: { myId: string }) {
               <tr key={p.id} className="border-t border-border/60">
                 <td className="px-2 py-1 text-text-primary">{p.name}</td>
                 <td className="px-2 py-1 text-text-secondary">
-                  {p.owners.map((o) => o.name || L("(uten navn)", "(no name)")).join(", ") || "–"}
+                  {p.owners.map((o) => o.name || t("app-admin-admin-page.admin-page.p-owners-map.6b27b8a87422")).join(", ") || "–"}
                 </td>
                 <td className="px-2 py-1 text-text-tertiary">{day(p.createdAt)}</td>
                 <td
@@ -283,14 +275,14 @@ function UserRow({
       <tr className="border-t border-border/60 align-top" data-testid="admin-user">
         <td className="px-2 py-1.5">
           <div className="flex items-center gap-1 text-text-primary">
-            {deleted ? L("Slettet bruker", "Deleted user") : u.displayName || u.email}
+            {deleted ? t("app-admin-admin-page.user-row.div.f5649f3f9ab8") : u.displayName || u.email}
             {u.isAdmin ? (
               <ShieldCheck
                 className="size-3.5 text-accent-brand"
                 aria-label={
                   u.permanentAdmin
-                    ? L("Fast administrator", "Permanent administrator")
-                    : L("Administrator", "Administrator")
+                    ? t("app-admin-admin-page.user-row.aria-label.93cd0b1f3adf")
+                    : t("app-admin-admin-page.user-row.aria-label.d2afaa70c2f7")
                 }
               />
             ) : null}
@@ -307,7 +299,7 @@ function UserRow({
           </span>
           {u.status === "deleting" ? (
             <div className="text-text-tertiary">
-              {L(`slettes ${day(u.deleteAfter)}`, `deleted on ${day(u.deleteAfter)}`)}
+              {t("app-admin-admin-page.user-row.div.968f3528e774", { value1: String(day(u.deleteAfter)) })}
             </div>
           ) : null}
           {u.reason ? <div className="text-text-tertiary">{u.reason}</div> : null}
@@ -316,7 +308,7 @@ function UserRow({
           {u.projects.length ? (
             <details>
               <summary className="cursor-pointer">
-                {L(`${u.projects.length} prosjekter`, `${u.projects.length} projects`)}
+                {t("app-admin-admin-page.user-row.summary.d15fbb3c3e67", { length: String(u.projects.length) })}
               </summary>
               <ul className="mt-1">
                 {u.projects.map((p) => (
@@ -332,7 +324,7 @@ function UserRow({
         </td>
         <td className="whitespace-nowrap px-2 py-1.5 text-right text-text-secondary">
           {usd(u.spendUsd)}
-          <div className="text-text-tertiary">{L(`${u.jobs} jobber`, `${u.jobs} jobs`)}</div>
+          <div className="text-text-tertiary">{t("app-admin-admin-page.user-row.div.7c6ac8d95edb", { jobs: String(u.jobs) })}</div>
         </td>
         <td className="whitespace-nowrap px-2 py-1.5 text-right text-text-secondary">
           {usd(u.spend30Usd)}
@@ -349,7 +341,7 @@ function UserRow({
                     disabled={busy}
                     onClick={() => setAsk("block")}
                   >
-                    {L("Blokker …", "Block …")}
+                    {t("app-admin-admin-page.user-row.button.b6ab829d744f")}
                   </Button>
                   <Button
                     size="sm"
@@ -358,7 +350,7 @@ function UserRow({
                     disabled={busy}
                     onClick={() => setAsk("delete")}
                   >
-                    {L("Slett …", "Delete …")}
+                    {t("app-admin-admin-page.user-row.button.cb769d080c0b")}
                   </Button>
                 </>
               ) : null}
@@ -370,7 +362,7 @@ function UserRow({
                   disabled={busy}
                   onClick={() => void act("unblock")}
                 >
-                  {L("Opphev blokkering", "Unblock")}
+                  {t("app-admin-admin-page.user-row.button.4df65aa68db3")}
                 </Button>
               ) : null}
               {u.status === "deleting" ? (
@@ -381,7 +373,7 @@ function UserRow({
                   disabled={busy}
                   onClick={() => void act("unlock")}
                 >
-                  {L("Lås opp", "Unlock")}
+                  {t("app-admin-admin-page.user-row.button.68c8209ac8bf")}
                 </Button>
               ) : null}
               {u.status === "active" && !u.permanentAdmin ? (
@@ -393,8 +385,8 @@ function UserRow({
                   onClick={() => void admin(!u.isAdmin)}
                 >
                   {u.isAdmin
-                    ? L("Fjern som admin", "Remove as admin")
-                    : L("Gjør til admin", "Make admin")}
+                    ? t("app-admin-admin-page.user-row.button.db04b71d2910")
+                    : t("app-admin-admin-page.user-row.button.526696b6d467")}
                 </Button>
               ) : null}
             </div>
@@ -407,18 +399,12 @@ function UserRow({
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs text-text-primary">
                 {ask === "block"
-                  ? L(
-                      "Blokker: brukeren kan ikke logge inn. Er hen eier, låses prosjektene for alle til blokkeringen oppheves eller prosjektet får ny eier.",
-                      "Block: the user cannot sign in. If they are an owner, the projects are locked for everyone until the block is lifted or the project gets a new owner.",
-                    )
-                  : L(
-                      "Slett: kontoen låses i 30 dager og anonymiseres deretter. Prosjektene brukeren eier, låses til de får ny eier.",
-                      "Delete: the account is locked for 30 days and then anonymised. The projects the user owns are locked until they get a new owner.",
-                    )}
+                  ? t("app-admin-admin-page.user-row.span.8502946aecd1")
+                  : t("app-admin-admin-page.user-row.span.3dcd54e05365")}
               </span>
               <input
                 className="h-7 min-w-[220px] flex-1 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary"
-                placeholder={L("Begrunnelse (valgfri)", "Reason (optional)")}
+                placeholder={t("app-admin-admin-page.user-row.placeholder.f511fee39a87")}
                 value={reason}
                 maxLength={500}
                 onChange={(e) => setReason(e.target.value)}
@@ -431,11 +417,11 @@ function UserRow({
                 onClick={() => void act(ask)}
               >
                 {ask === "block"
-                  ? L("Blokker", "Block")
-                  : L("Slett (30 dager)", "Delete (30 days)")}
+                  ? t("app-admin-admin-page.user-row.button.5781720b249a")
+                  : t("app-admin-admin-page.user-row.button.2681a9925e30")}
               </Button>
               <Button size="sm" variant="ghost" className={btn} onClick={() => setAsk(null)}>
-                {L("Avbryt", "Cancel")}
+                {t("app-admin-admin-page.user-row.button.2638f1efa4a4")}
               </Button>
             </div>
           </td>
@@ -470,19 +456,16 @@ function LockedProject({
       <span className="text-status-danger">{LOCK_LABEL(p.lock)}</span>
       <span className="text-text-tertiary">
         {p.owners.length
-          ? L(
-              `Eier: ${p.owners.map((o) => o.name || "–").join(", ")}`,
-              `Owner: ${p.owners.map((o) => o.name || "–").join(", ")}`,
-            )
+          ? t("app-admin-admin-page.locked-project.span.82c6d58b4834", { value1: String(p.owners.map((o) => o.name || "–").join(", ")) })
           : ""}
       </span>
       <select
         className="ml-auto h-7 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary"
         value={owner}
         onChange={(e) => setOwner(e.target.value)}
-        aria-label={L("Ny eier", "New owner")}
+        aria-label={t("app-admin-admin-page.locked-project.aria-label.cddf3e254116")}
       >
-        <option value="">{L("Velg ny eier …", "Choose new owner …")}</option>
+        <option value="">{t("app-admin-admin-page.locked-project.option.09fba6744c76")}</option>
         {users.map((u) => (
           <option key={u.id} value={u.id}>
             {u.displayName ? `${u.displayName} (${u.email})` : u.email}
@@ -490,7 +473,7 @@ function LockedProject({
         ))}
       </select>
       <Button size="sm" disabled={!owner || busy} onClick={() => void go()}>
-        {L("Gi ny eier", "Give new owner")}
+        {t("app-admin-admin-page.locked-project.button.677727d39088")}
       </Button>
     </div>
   );
@@ -539,50 +522,47 @@ function PrivacyAdmin({ onDone }: { onDone: (r: { ok: boolean; message: string }
     >
       <div className="flex items-baseline gap-2">
         <h2 className="text-sm font-semibold text-text-primary">
-          {L("Personvernerklæringen", "The privacy statement")}
+          {t("app-admin-admin-page.privacy-admin.h2.83f00283bf55")}
         </h2>
         <span className="text-xs text-text-tertiary">
-          {p ? L(`Versjon ${p.version}`, `Version ${p.version}`) : ""}
+          {p ? t("app-admin-admin-page.privacy-admin.span.5b5f920144eb", { version: String(p.version) }) : ""}
         </span>
         <Link
           to="/personvern"
           className="ml-auto text-xs text-accent-brand underline-offset-2 hover:underline"
         >
-          {L("Se erklæringen", "View the statement")}
+          {t("app-admin-admin-page.privacy-admin.link.5678f4294d88")}
         </Link>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         {field(
           "controllerName",
-          L("Behandlingsansvarlig (navn)", "Controller (name)"),
-          L("f.eks. Diagonalen AS", "e.g. Diagonalen AS"),
+          t("app-admin-admin-page.privacy-admin.field.b0b933fa56ec"),
+          t("app-admin-admin-page.privacy-admin.field.d57b35cd2237"),
           200,
         )}
-        {field("orgNumber", L("Organisasjonsnummer", "Organisation number"), "123 456 789", 40)}
+        {field("orgNumber", t("app-admin-admin-page.privacy-admin.field.c4ba7c3fb7b2"), "123 456 789", 40)}
         {field(
           "address",
-          L("Adresse", "Address"),
-          L("Gate, postnummer og sted", "Street, postcode and town"),
+          t("app-admin-admin-page.privacy-admin.field.c5ea01529e3d"),
+          t("app-admin-admin-page.privacy-admin.field.358c7b1c8cc3"),
           400,
         )}
         {field(
           "contactEmail",
-          L("Kontakt-e-post for personvern", "Contact email for privacy"),
+          t("app-admin-admin-page.privacy-admin.field.534b4d72fdab"),
           "personvern@…",
           200,
         )}
         {field(
           "storageRegion",
-          L("Lagringssted (skyregion)", "Storage location (cloud region)"),
-          L("f.eks. EU (Europa)", "e.g. EU (Europe)"),
+          t("app-admin-admin-page.privacy-admin.field.0001604ca29a"),
+          t("app-admin-admin-page.privacy-admin.field.53824a104508"),
           200,
         )}
       </div>
       <label className="flex flex-col gap-1 text-xs text-text-secondary">
-        {L(
-          "Mer informasjon (valgfritt, vises nederst)",
-          "More information (optional, shown at the end)",
-        )}
+        {t("app-admin-admin-page.privacy-admin.label.14ad85b60799")}
         <textarea
           className="min-h-[70px] rounded-sm border border-border-control bg-surface-3 px-2 py-1.5 text-[13px] text-text-primary"
           value={cur["note"] ?? ""}
@@ -592,13 +572,10 @@ function PrivacyAdmin({ onDone }: { onDone: (r: { ok: boolean; message: string }
       </label>
       <div className="flex items-center gap-3">
         <Button size="sm" disabled={!f || busy} onClick={() => void save()}>
-          {L("Lagre som ny versjon", "Save as new version")}
+          {t("app-admin-admin-page.privacy-admin.button.b9d1e1700d6f")}
         </Button>
         <span className="text-[11px] text-text-tertiary">
-          {L(
-            "Alle brukerne blir bedt om å lese erklæringen på nytt ved neste innlogging.",
-            "All users are asked to read the statement again at their next sign-in.",
-          )}
+          {t("app-admin-admin-page.privacy-admin.span.a9f0baada789")}
         </span>
       </div>
     </section>

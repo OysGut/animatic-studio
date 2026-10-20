@@ -36,6 +36,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { AI_MODEL_SETTINGS_KEY } from "@/app/ai/use-ai-model-settings";
 import { cronSummary } from "./cron-status";
+import { t } from "@/core/i18n/keyed";
 
 export const AI_ADMIN_KEY = ["admin-ai"] as const;
 
@@ -43,24 +44,24 @@ type Report = (r: { ok: boolean; message: string }) => void;
 
 const KIND_LABEL = (k: ModelKind) =>
   k === "image"
-    ? L("Bilde", "Image")
+    ? t("app-admin-ai-connections-admin.kind-label.message.9a18abfb4d7d")
     : k === "video"
-      ? L("Video", "Video")
+      ? t("app-admin-ai-connections-admin.kind-label.message.f398947a7a6f")
       : k === "sound"
-        ? L("Lyd", "Sound")
-        : L("Tekst", "Text");
+        ? t("app-admin-ai-connections-admin.kind-label.message.b6de91fc1aba")
+        : t("app-admin-ai-connections-admin.kind-label.message.1ebfa38059d9");
 
 const UNIT_LABEL = (u: string) =>
   u === "image"
-    ? L("per bilde", "per image")
+    ? t("app-admin-ai-connections-admin.unit-label.message.f2a5828f6f0d")
     : u === "second"
-      ? L("per sekund", "per second")
+      ? t("app-admin-ai-connections-admin.unit-label.message.60907cb754e7")
       : u === "character"
-        ? L("per tegn", "per character")
-        : L("per kall", "per call");
+        ? t("app-admin-ai-connections-admin.unit-label.message.6c75bc38ff8d")
+        : t("app-admin-ai-connections-admin.unit-label.message.54ff4b676dd7");
 
 const STATUS_LABEL = (s: ProviderRequest["status"]) =>
-  s === "open" ? L("Åpen", "Open") : s === "done" ? L("Ferdig", "Done") : L("Avvist", "Rejected");
+  s === "open" ? t("app-admin-ai-connections-admin.status-label.message.633d8ff6da76") : s === "done" ? t("app-admin-ai-connections-admin.status-label.message.0cfcf74a0634") : t("app-admin-ai-connections-admin.status-label.message.7953ba35f50d");
 
 const ctl =
   "h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary disabled:opacity-50";
@@ -81,10 +82,7 @@ export function CronStatusLine({ data }: { data: AiAdminOverview | undefined }) 
     return (
       <p className="flex items-center gap-1.5 text-xs text-text-tertiary" data-testid="admin-cron">
         <Clock className="size-3.5" aria-hidden />
-        {L(
-          "Bakgrunnsjobb: status vises når databasen er oppdatert (migrasjon 0034).",
-          "Background job: the status is shown when the database is updated (migration 0034).",
-        )}
+        {t("app-admin-ai-connections-admin.cron-status-line.p.3f1974e5a0ea")}
       </p>
     );
   const s = cronSummary(data.cron);
@@ -106,7 +104,7 @@ export function CronStatusLine({ data }: { data: AiAdminOverview | undefined }) 
       ) : null}
       {s.error ? (
         <p className="text-status-danger">
-          {L(`Siste kjøring feilet: ${s.error}`, `The last run failed: ${s.error}`)}
+          {t("app-admin-ai-connections-admin.cron-status-line.p.8dc7cfb4c6c1", { error: String(s.error) })}
         </p>
       ) : null}
     </div>
@@ -132,13 +130,10 @@ export function AiConnectionsAdmin() {
     >
       <div className="flex flex-wrap items-center gap-3">
         <h2 className="text-sm font-semibold text-text-primary">
-          {L("AI-tilkoblinger", "AI connections")}
+          {t("app-admin-ai-connections-admin.ai-connections-admin.h2.c716664a2ff0")}
         </h2>
         <span className="text-xs text-text-tertiary">
-          {L(
-            "Hvilke AI-leverandører og modeller alle brukerne kan velge, og hva de koster.",
-            "Which AI providers and models all users can choose, and what they cost.",
-          )}
+          {t("app-admin-ai-connections-admin.ai-connections-admin.span.68c07c1eef88")}
         </span>
         <Button
           size="sm"
@@ -153,7 +148,7 @@ export function AiConnectionsAdmin() {
           ) : (
             <ChevronRight className="size-3.5" aria-hidden />
           )}
-          {L("Administrer AI-tilkoblinger", "Manage AI connections")}
+          {t("app-admin-ai-connections-admin.ai-connections-admin.button.93fab67d265a")}
         </Button>
       </div>
       {open && msg ? (
@@ -168,11 +163,11 @@ export function AiConnectionsAdmin() {
       {!open ? null : q.isLoading ? (
         <p className="flex items-center gap-2 text-xs text-text-tertiary">
           <Loader2 className="size-3.5 animate-spin" aria-hidden />
-          {L("Henter AI-tilkoblingene …", "Fetching the AI connections …")}
+          {t("app-admin-ai-connections-admin.ai-connections-admin.p.66afa263d9a2")}
         </p>
       ) : q.isError || !d ? (
         <p className="text-xs text-status-danger" role="alert">
-          {L("AI-tilkoblingene kunne ikke hentes.", "The AI connections could not be fetched.")}
+          {t("app-admin-ai-connections-admin.ai-connections-admin.p.7e478e2636bb")}
         </p>
       ) : !d.ok ? (
         <p className="text-xs text-status-danger">{tm(d.message ?? "")}</p>
@@ -180,10 +175,7 @@ export function AiConnectionsAdmin() {
         <p className="text-xs text-status-uncertain" role="alert" data-testid="admin-ai-missing">
           {tm(
             d.message ??
-              L(
-                "Databasen må oppdateres (migrasjon 0034).",
-                "The database must be updated (migration 0034).",
-              ),
+              t("app-admin-ai-connections-admin.ai-connections-admin.p.b24a1bdacb73"),
           )}
         </p>
       ) : (
@@ -215,10 +207,7 @@ function AiConnections({ data, onDone }: { data: AiAdminOverview; onDone: Report
   return (
     <div className="flex flex-col gap-3">
       <p className="text-xs text-text-tertiary">
-        {L(
-          "Det som er slått av, vises ikke i valglistene i appen og avvises på serveren. Prisene er anslag fra leverandørenes prislister (eller det administrator har oppgitt). Hver bruker trenger fortsatt sin egen nøkkel hos leverandøren.",
-          "What is switched off is not shown in the lists in the app and is refused on the server. The prices are estimates from the providers' price lists (or what the administrator has entered). Each user still needs their own key with the provider.",
-        )}
+        {t("app-admin-ai-connections-admin.ai-connections.p.d0a5a7034ad3")}
       </p>
       {catalog.map((p) => (
         <div
@@ -234,13 +223,13 @@ function AiConnections({ data, onDone }: { data: AiAdminOverview; onDone: Report
             </span>
             <label className="ml-auto flex items-center gap-2 text-xs text-text-secondary">
               {p.enabled
-                ? L("Leverandøren er på", "The provider is on")
-                : L("Leverandøren er av", "The provider is off")}
+                ? t("app-admin-ai-connections-admin.ai-connections.label.d07ba4d88564")
+                : t("app-admin-ai-connections-admin.ai-connections.label.3a8d163c2802")}
               <Switch
                 checked={p.enabled}
                 disabled={busy !== null}
                 onCheckedChange={(on) => void toggle(p.id, "*", on)}
-                aria-label={L(`Slå ${p.name} av eller på`, `Switch ${p.name} off or on`)}
+                aria-label={t("app-admin-ai-connections-admin.ai-connections.aria-label.10c96c996fde", { name: String(p.name) })}
               />
             </label>
           </div>
@@ -254,11 +243,11 @@ function AiConnections({ data, onDone }: { data: AiAdminOverview; onDone: Report
             </colgroup>
             <thead className="text-left text-text-tertiary">
               <tr>
-                <th className="px-2 py-1 font-normal">{L("Modell", "Model")}</th>
-                <th className="px-2 py-1 font-normal">{L("Lager", "Makes")}</th>
-                <th className="px-2 py-1 font-normal">{L("Pris (anslag)", "Price (estimate)")}</th>
-                <th className="px-2 py-1 font-normal">{L("Kan", "Can")}</th>
-                <th className="px-2 py-1 text-right font-normal">{L("På", "On")}</th>
+                <th className="px-2 py-1 font-normal">{t("app-admin-ai-connections-admin.ai-connections.th.4c8e24376f67")}</th>
+                <th className="px-2 py-1 font-normal">{t("app-admin-ai-connections-admin.ai-connections.th.23e8b38d536a")}</th>
+                <th className="px-2 py-1 font-normal">{t("app-admin-ai-connections-admin.ai-connections.th.3f85891d2b10")}</th>
+                <th className="px-2 py-1 font-normal">{t("app-admin-ai-connections-admin.ai-connections.th.1650b76803f4")}</th>
+                <th className="px-2 py-1 text-right font-normal">{t("app-admin-ai-connections-admin.ai-connections.th.ebd4b70f28b9")}</th>
               </tr>
             </thead>
             <tbody>
@@ -309,11 +298,8 @@ function ModelRow({
         {m.custom ? (
           <div className="text-[11px] text-accent-brand">
             {m.broken
-              ? L(
-                  "Lagt til av administrator – kan ikke brukes (ID-en passer ikke lenger)",
-                  "Added by administrator – cannot be used (the ID no longer fits)",
-                )
-              : L("Lagt til av administrator", "Added by administrator")}
+              ? t("app-admin-ai-connections-admin.model-row.div.dc18abc7793b")
+              : t("app-admin-ai-connections-admin.model-row.div.f6f9438cc790")}
           </div>
         ) : null}
         {m.note ? <div className="text-[11px] text-text-tertiary">{m.note}</div> : null}
@@ -335,7 +321,7 @@ function ModelRow({
                   disabled={busy}
                   onClick={onRemove}
                 >
-                  {L("Fjern", "Remove")}
+                  {t("app-admin-ai-connections-admin.model-row.button.5e4c5ad020b6")}
                 </Button>
                 <Button
                   size="sm"
@@ -343,7 +329,7 @@ function ModelRow({
                   className="h-6 px-2 text-[11px]"
                   onClick={() => setAsk(false)}
                 >
-                  {L("Avbryt", "Cancel")}
+                  {t("app-admin-ai-connections-admin.model-row.button.6f0707929bbb")}
                 </Button>
               </>
             ) : (
@@ -354,7 +340,7 @@ function ModelRow({
                 disabled={busy}
                 onClick={() => setAsk(true)}
               >
-                {L("Fjern …", "Remove …")}
+                {t("app-admin-ai-connections-admin.model-row.button.6b0ba4aa9467")}
               </Button>
             )
           ) : null}
@@ -362,7 +348,7 @@ function ModelRow({
             checked={m.enabled}
             disabled={busy}
             onCheckedChange={onToggle}
-            aria-label={L(`Slå ${m.label} av eller på`, `Switch ${m.label} off or on`)}
+            aria-label={t("app-admin-ai-connections-admin.model-row.aria-label.b2d42ee1e8bb", { label: String(m.label) })}
           />
         </div>
       </td>
@@ -429,7 +415,7 @@ function AddModelForm({ onDone }: { onDone: Report }) {
           data-testid="admin-ai-add"
         >
           <Plus className="size-3.5" aria-hidden />
-          {L("Legg til ny modell", "Add a new model")}
+          {t("app-admin-ai-connections-admin.add-model-form.button.646c07f8a446")}
         </Button>
       </div>
     );
@@ -439,17 +425,14 @@ function AddModelForm({ onDone }: { onDone: Report }) {
       data-testid="admin-ai-add-form"
     >
       <h3 className="text-[13px] font-semibold text-text-primary">
-        {L("Legg til ny modell", "Add a new model")}
+        {t("app-admin-ai-connections-admin.add-model-form.h3.646c07f8a446")}
       </h3>
       <p className="text-xs text-text-tertiary">
-        {L(
-          "Hos leverandører vi allerede støtter kan en ny modell legges til uten ny kode – men bare modeller i samme familie som de innebygde, fordi programmet sender de samme feltene. Den nye modellen arver lengder, startbilde og andre tekniske egenskaper fra den innebygde modellen i familien. Prisen du oppgir, brukes i kostnadsanslaget.",
-          "With providers we already support, a new model can be added without new code – but only models in the same family as the built-in ones, because the program sends the same fields. The new model inherits lengths, start image and other technical properties from the built-in model in the family. The price you enter is used in the cost estimate.",
-        )}
+        {t("app-admin-ai-connections-admin.add-model-form.p.ea91262cd1eb")}
       </p>
       <div className="grid gap-3 sm:grid-cols-3">
         <label className="flex flex-col gap-1 text-xs text-text-secondary">
-          {L("Leverandør", "Provider")}
+          {t("app-admin-ai-connections-admin.add-model-form.label.452bbe3f193b")}
           <select
             className={ctl}
             value={provider}
@@ -464,7 +447,7 @@ function AddModelForm({ onDone }: { onDone: Report }) {
           </select>
         </label>
         <label className="flex flex-col gap-1 text-xs text-text-secondary">
-          {L("Type", "Type")}
+          {t("app-admin-ai-connections-admin.add-model-form.label.4703e723783f")}
           <select
             className={ctl}
             value={k}
@@ -479,7 +462,7 @@ function AddModelForm({ onDone }: { onDone: Report }) {
           </select>
         </label>
         <label className="flex flex-col gap-1 text-xs text-text-secondary">
-          {L("Modell-ID hos leverandøren", "Model ID at the provider")}
+          {t("app-admin-ai-connections-admin.add-model-form.label.fb114bb521fd")}
           <input
             className={ctl + " font-mono"}
             value={model}
@@ -492,18 +475,18 @@ function AddModelForm({ onDone }: { onDone: Report }) {
           />
         </label>
         <label className="flex flex-col gap-1 text-xs text-text-secondary">
-          {L("Navn i valglistene", "Name in the lists")}
+          {t("app-admin-ai-connections-admin.add-model-form.label.fec74b9ea098")}
           <input
             className={ctl}
             value={label}
             maxLength={120}
-            placeholder={L("f.eks. Seedream 5", "e.g. Seedream 5")}
+            placeholder={t("app-admin-ai-connections-admin.add-model-form.placeholder.26d800137d95")}
             onChange={(e) => setLabel(e.target.value)}
             data-testid="admin-ai-add-label"
           />
         </label>
         <label className="flex flex-col gap-1 text-xs text-text-secondary">
-          {L("Pris i USD", "Price in USD")}
+          {t("app-admin-ai-connections-admin.add-model-form.label.1797a6eddd30")}
           <input
             className={ctl}
             value={price}
@@ -514,14 +497,14 @@ function AddModelForm({ onDone }: { onDone: Report }) {
           />
         </label>
         <label className="flex flex-col gap-1 text-xs text-text-secondary">
-          {L("Enhet", "Unit")}
+          {t("app-admin-ai-connections-admin.add-model-form.label.be647b070339")}
           <select className={ctl} value={unit} disabled aria-readonly>
             <option value={unit}>{UNIT_LABEL(unit)}</option>
           </select>
         </label>
       </div>
       <label className="flex flex-col gap-1 text-xs text-text-secondary">
-        {L("Merknad (valgfri)", "Note (optional)")}
+        {t("app-admin-ai-connections-admin.add-model-form.label.82efd2cea02a")}
         <input
           className={ctl}
           value={note}
@@ -531,10 +514,7 @@ function AddModelForm({ onDone }: { onDone: Report }) {
       </label>
       <p className="text-[11px] text-text-tertiary">
         {examples.length
-          ? L(
-              `Modell-ID-er som virker for ${KIND_LABEL(k).toLowerCase()} hos ${providerInfo(provider)?.name ?? provider}, f.eks.: ${examples.join(", ")}. Bare små bokstaver, tall og . _ / -.`,
-              `Model IDs that work for ${KIND_LABEL(k).toLowerCase()} with ${providerInfo(provider)?.name ?? provider}, e.g.: ${examples.join(", ")}. Only lower-case letters, digits and . _ / -.`,
-            )
+          ? t("app-admin-ai-connections-admin.add-model-form.p.5319dca1b322", { value1: String(KIND_LABEL(k).toLowerCase()), value2: String(providerInfo(provider)?.name ?? provider), value3: String(examples.join(", ")) })
           : null}
       </p>
       {error ? (
@@ -549,10 +529,10 @@ function AddModelForm({ onDone }: { onDone: Report }) {
           onClick={() => void save()}
           data-testid="admin-ai-add-save"
         >
-          {L("Legg til modellen", "Add the model")}
+          {t("app-admin-ai-connections-admin.add-model-form.button.c38d85154f17")}
         </Button>
         <Button size="sm" variant="ghost" onClick={() => setOpen(false)}>
-          {L("Avbryt", "Cancel")}
+          {t("app-admin-ai-connections-admin.add-model-form.button.5ed27011dafe")}
         </Button>
       </div>
     </div>
@@ -571,7 +551,7 @@ function ProviderRequests({
   const [error, setError] = useState<string | null>(null);
   async function send() {
     if (!f.name.trim()) {
-      setError(L("Skriv navnet på leverandøren.", "Enter the name of the provider."));
+      setError(t("app-admin-ai-connections-admin.send.set-error.c335ddaa3c3f"));
       return;
     }
     setBusy(true);
@@ -607,21 +587,18 @@ function ProviderRequests({
       data-testid="admin-ai-requests"
     >
       <h3 className="text-[13px] font-semibold text-text-primary">
-        {L("Be om ny leverandør", "Request a new provider")}
+        {t("app-admin-ai-connections-admin.provider-requests.h3.e09b8920084c")}
       </h3>
       <p className="text-xs text-text-tertiary">
-        {L(
-          "En helt ny leverandør (for eksempel Midjourney eller Luma) krever en kobling i koden som utvikleren lager: hvordan nøkkelen sjekkes, hvilke felt som sendes og hvordan resultatet hentes. Fyll ut ønsket her, så ligger det i listen til det er ferdig eller avvist.",
-          "A completely new provider (for example Midjourney or Luma) needs a connection in the code that the developer builds: how the key is checked, which fields are sent and how the result is fetched. Fill in the request here, and it stays in the list until it is done or rejected.",
-        )}
+        {t("app-admin-ai-connections-admin.provider-requests.p.0c72ebb13dfb")}
       </p>
       <div className="grid gap-3 sm:grid-cols-3">
-        {field("name", L("Navn", "Name"), L("f.eks. Luma AI", "e.g. Luma AI"), 120)}
-        {field("website", L("Nettside", "Website"), "https://…", 400)}
-        {field("docsUrl", L("Dokumentasjon (API)", "Documentation (API)"), "https://…", 400)}
+        {field("name", t("app-admin-ai-connections-admin.provider-requests.field.b1afb1e30080"), t("app-admin-ai-connections-admin.provider-requests.field.1412f19c5dad"), 120)}
+        {field("website", t("app-admin-ai-connections-admin.provider-requests.field.ab8c9deb6193"), "https://…", 400)}
+        {field("docsUrl", t("app-admin-ai-connections-admin.provider-requests.field.35e2b0fc81ae"), "https://…", 400)}
       </div>
       <label className="flex flex-col gap-1 text-xs text-text-secondary">
-        {L("Merknad (hva skal den brukes til?)", "Note (what should it be used for?)")}
+        {t("app-admin-ai-connections-admin.provider-requests.label.c3fd39476ecd")}
         <textarea
           className="min-h-[56px] rounded-sm border border-border-control bg-surface-3 px-2 py-1.5 text-[13px] text-text-primary"
           value={f.note}
@@ -643,17 +620,17 @@ function ProviderRequests({
           onClick={() => void send()}
           data-testid="admin-ai-request-send"
         >
-          {L("Send ønsket", "Send the request")}
+          {t("app-admin-ai-connections-admin.provider-requests.button.0f2b86034247")}
         </Button>
       </div>
       {requests.length ? (
         <table className="w-full text-xs" data-testid="admin-ai-request-list">
           <thead className="text-left text-text-tertiary">
             <tr>
-              <th className="px-2 py-1 font-normal">{L("Leverandør", "Provider")}</th>
-              <th className="px-2 py-1 font-normal">{L("Merknad", "Note")}</th>
-              <th className="px-2 py-1 font-normal">{L("Sendt", "Sent")}</th>
-              <th className="px-2 py-1 font-normal">{L("Status", "Status")}</th>
+              <th className="px-2 py-1 font-normal">{t("app-admin-ai-connections-admin.provider-requests.th.4154477001de")}</th>
+              <th className="px-2 py-1 font-normal">{t("app-admin-ai-connections-admin.provider-requests.th.3b9d05c88038")}</th>
+              <th className="px-2 py-1 font-normal">{t("app-admin-ai-connections-admin.provider-requests.th.0e2529fc5e2c")}</th>
+              <th className="px-2 py-1 font-normal">{t("app-admin-ai-connections-admin.provider-requests.th.c25e9a0d5335")}</th>
             </tr>
           </thead>
           <tbody>
@@ -668,7 +645,7 @@ function ProviderRequests({
                       rel="noreferrer noopener"
                       className="block text-accent-brand underline-offset-2 hover:underline"
                     >
-                      {L("Nettside", "Website")}
+                      {t("app-admin-ai-connections-admin.provider-requests.a.ab8c9deb6193")}
                     </a>
                   ) : null}
                   {r.docsUrl ? (
@@ -678,7 +655,7 @@ function ProviderRequests({
                       rel="noreferrer noopener"
                       className="block text-accent-brand underline-offset-2 hover:underline"
                     >
-                      {L("Dokumentasjon", "Documentation")}
+                      {t("app-admin-ai-connections-admin.provider-requests.a.63ea418b9bd9")}
                     </a>
                   ) : null}
                 </td>
@@ -699,7 +676,7 @@ function ProviderRequests({
                     className={ctl + " h-7 text-xs"}
                     value={r.status}
                     onChange={(e) => void status(r.id, e.target.value as ProviderRequest["status"])}
-                    aria-label={L(`Status for ${r.name}`, `Status for ${r.name}`)}
+                    aria-label={t("app-admin-ai-connections-admin.provider-requests.aria-label.14bf549fe45a", { name: String(r.name) })}
                     data-testid="admin-ai-request-status"
                   >
                     {(["open", "done", "rejected"] as const).map((s) => (
@@ -714,7 +691,7 @@ function ProviderRequests({
           </tbody>
         </table>
       ) : (
-        <p className="text-xs text-text-tertiary">{L("Ingen ønsker ennå.", "No requests yet.")}</p>
+        <p className="text-xs text-text-tertiary">{t("app-admin-ai-connections-admin.provider-requests.p.9a2fd15177c9")}</p>
       )}
     </div>
   );

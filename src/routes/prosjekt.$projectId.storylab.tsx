@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useSession } from "@/app/auth/use-session";
 import { StoryLabWorkspace } from "@/app/storylab/StoryLabWorkspace";
 import { useLanguage } from "@/app/i18n/language";
+import { t } from "@/core/i18n/keyed";
 
 const UUID = /^[0-9a-f-]{36}$/;
 
@@ -12,11 +13,11 @@ const UUID = /^[0-9a-f-]{36}$/;
  */
 export const Route = createFileRoute("/prosjekt/$projectId/storylab")({
   head: () => ({ meta: [{ title: "Story Lab – Animatic Studio" },
-    { name: "description", content: L("Karakterarbeid, scenelaboratorium og dialoganalyse i Animatic Studio.", "Character work, scene laboratory and dialogue analysis in Animatic Studio.") },
+    { name: "description", content: t("routes-prosjekt-project-id-storylab.content.content.01bee122f398") },
     // i18n-ignore: standard metadata keys
     { property: "og:title", content: "Story Lab – Animatic Studio" },
     // i18n-ignore: standard metadata keys
-    { property: "og:description", content: L("Utforsk karakterer, analyser scener og prøv dialogvarianter i Animatic Studio.", "Explore characters, analyze scenes and try dialogue variants in Animatic Studio.") },
+    { property: "og:description", content: t("routes-prosjekt-project-id-storylab.content.content.bb77d3e1ff88") },
     // i18n-ignore: standard metadata keys
     { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   validateSearch: (s: Record<string, unknown>): { karakter?: string; scene?: string; forslag?: string; visning?: "canvas"; intervju?: "ny" } => ({

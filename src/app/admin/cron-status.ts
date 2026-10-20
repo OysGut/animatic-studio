@@ -4,6 +4,7 @@
  */
 import { L, locale } from "@/core";
 import type { CronRun } from "@/adapters/account/ai-models.server";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Jobben går hvert minutt; har den ikke kjørt på så lenge, er noe galt. */
 export const CRON_STALE_MINUTES = 10;
@@ -19,25 +20,22 @@ export interface CronSummary {
 }
 
 function ago(minutes: number): string {
-  if (minutes < 1) return L("nettopp", "just now");
-  if (minutes === 1) return L("for 1 minutt siden", "1 minute ago");
-  if (minutes < 120) return L(`for ${minutes} minutter siden`, `${minutes} minutes ago`);
+  if (minutes < 1) return tk("app-admin-cron-status.ago.message.af45a5e15ce8");
+  if (minutes === 1) return tk("app-admin-cron-status.ago.message.8cfe331fedff");
+  if (minutes < 120) return tk("app-admin-cron-status.ago.message.c6efd4662c82", { minutes: String(minutes) });
   const h = Math.floor(minutes / 60);
-  if (h < 48) return L(`for ${h} timer siden`, `${h} hours ago`);
+  if (h < 48) return tk("app-admin-cron-status.ago.message.2398dfc32f40", { h: String(h) });
   const d = Math.floor(h / 24);
-  return L(`for ${d} dager siden`, `${d} days ago`);
+  return tk("app-admin-cron-status.ago.message.086115f60e72", { d: String(d) });
 }
 
 export function cronSummary(run: CronRun | null, now = Date.now()): CronSummary {
   const warning = () =>
-    L(
-      `Bakgrunnsjobben har ikke kjørt de siste ${CRON_STALE_MINUTES} minuttene. Sjekk at appen er publisert og jobben er satt opp i Animatic Studio.`,
-      `The background job has not run in the last ${CRON_STALE_MINUTES} minutes. Check that the app is published and the job is set up in Animatic Studio.`,
-    );
+    tk("app-admin-cron-status.warning.message.1494cbf069ca", { CRON_STALE_MINUTES: String(CRON_STALE_MINUTES) });
   const t = run ? Date.parse(run.at) : Number.NaN;
   if (!run || !Number.isFinite(t))
     return {
-      text: L("Bakgrunnsjobb: har ikke kjørt ennå.", "Background job: has not run yet."),
+      text: tk("app-admin-cron-status.text.text.9d6153356ac8"),
       stale: true,
       warning: warning(),
       error: null,
@@ -51,10 +49,7 @@ export function cronSummary(run: CronRun | null, now = Date.now()): CronSummary 
     : `${d.toLocaleDateString(locale(), { day: "numeric", month: "short" })} ${clock}`;
   const stale = minutes >= CRON_STALE_MINUTES;
   return {
-    text: L(
-      `Bakgrunnsjobb: sist kjørt kl. ${when} (${ago(minutes)}) · ${run.sent} sendt · ${run.done} videoer hentet · ${run.purged} kontoer slettet`,
-      `Background job: last run at ${when} (${ago(minutes)}) · ${run.sent} sent · ${run.done} videos fetched · ${run.purged} accounts deleted`,
-    ),
+    text: tk("app-admin-cron-status.text.text.2f7b3cfcd445", { when: String(when), value2: String(ago(minutes)), sent: String(run.sent), done: String(run.done), purged: String(run.purged) }),
     stale,
     warning: stale ? warning() : null,
     error: run.error,

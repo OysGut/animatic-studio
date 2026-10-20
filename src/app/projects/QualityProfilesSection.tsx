@@ -28,6 +28,7 @@ import { useProjectProviders } from "@/app/ai/use-project-providers";
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { t } from "@/core/i18n/keyed";
 
 const EFFORTS: readonly (EffortLevel | "")[] = ["", "fast", "balanced", "premium"];
 const SIZES: readonly (ImageSize | "")[] = ["", "1K", "2K", "4K"];
@@ -53,7 +54,7 @@ export function QualityProfilesSection({
     for (const d of defaultQualityProfiles()) {
       const e = cmds.run(
         { type: "AddQualityProfile", profileId: newId(), name: d.name, spec: d.spec },
-        L(`Ny kvalitetsprofil «${d.name}»`, `New quality profile "${d.name}"`),
+        t("app-projects-quality-profiles-section.e.cmds-run.5022869935d4", { name: String(d.name) }),
       );
       if (e) {
         setError(e);
@@ -64,19 +65,16 @@ export function QualityProfilesSection({
 
   return (
     <section aria-labelledby="qp-title" className="mt-8" data-testid="quality-profiles-section">
-      <PanelHeader title={L("Kvalitetsprofiler", "Quality profiles")} count={profiles.length} />
+      <PanelHeader title={t("app-projects-quality-profiles-section.quality-profiles-section.title.86c66d620967")} count={profiles.length} />
       <p className="mb-2 text-xs text-text-tertiary">
-        {L(
-          "En profil samler modellvalg, oppløsning, innsatsnivå, antall varianter og eksportinnstillinger. Den aktive profilen brukes som standard ved generering og eksport, og kan overstyres hver gang. Å bytte profil endrer aldri eksisterende resultater.",
-          "A profile gathers model choices, resolution, effort level, number of variants and export settings. The active profile is the default for generation and export, and can be overridden each time. Switching profile never changes existing results.",
-        )}
+        {t("app-projects-quality-profiles-section.quality-profiles-section.p.3d99683fa28f")}
       </p>
       {profiles.length === 0 ? (
         <div className="flex items-center gap-3 text-xs text-text-secondary">
-          <span>{L("Prosjektet har ingen profiler ennå.", "The project has no profiles yet.")}</span>
+          <span>{t("app-projects-quality-profiles-section.quality-profiles-section.span.ad5dc4ee75b6")}</span>
           {editable ? (
             <Button size="sm" variant="secondary" data-testid="quality-profile-add-defaults" onClick={addDefaults}>
-              {L("Legg til standardprofilene", "Add the default profiles")}
+              {t("app-projects-quality-profiles-section.quality-profiles-section.button.96fe3b33278f")}
             </Button>
           ) : null}
         </div>
@@ -93,20 +91,20 @@ export function QualityProfilesSection({
                     cmds.run(
                       { type: "SetActiveQualityProfile", profileId: activeId === p.id ? null : p.id },
                       activeId === p.id
-                        ? L("Fjern aktiv profil", "Clear active profile")
-                        : L(`Sett «${p.name}» som aktiv profil`, `Set "${p.name}" as the active profile`),
+                        ? t("app-projects-quality-profiles-section.quality-profiles-section.cmds-run.81c62df7f64d")
+                        : t("app-projects-quality-profiles-section.quality-profiles-section.cmds-run.c227c9497432", { name: String(p.name) }),
                     ),
                   )
                 }
                 title={
                   activeId === p.id
-                    ? L("Aktiv profil – klikk for å fjerne valget", "Active profile – click to clear")
-                    : L("Sett som aktiv profil", "Set as the active profile")
+                    ? t("app-projects-quality-profiles-section.quality-profiles-section.title.ca935bb26f57")
+                    : t("app-projects-quality-profiles-section.quality-profiles-section.title.6d75ac0a8869")
                 }
                 aria-label={
                   activeId === p.id
-                    ? L("Aktiv profil – klikk for å fjerne valget", "Active profile – click to clear")
-                    : L("Sett som aktiv profil", "Set as the active profile")
+                    ? t("app-projects-quality-profiles-section.quality-profiles-section.aria-label.ca935bb26f57")
+                    : t("app-projects-quality-profiles-section.quality-profiles-section.aria-label.6d75ac0a8869")
                 }
                 className={activeId === p.id ? "text-accent-warm" : "text-text-tertiary hover:text-text-primary"}
               >
@@ -119,27 +117,27 @@ export function QualityProfilesSection({
                   p.spec.resolution ? IMAGE_SIZE_LABEL[p.spec.resolution] : null,
                   p.spec.variants ? L(`${p.spec.variants} ${p.spec.variants === 1 ? "variant" : "varianter"}`, `${p.spec.variants} ${p.spec.variants === 1 ? "variant" : "variants"}`) : null,
                   p.spec.budgetLimit != null
-                    ? L(`høyst ${p.spec.budgetLimit}/mnd`, `max ${p.spec.budgetLimit}/mo`)
+                    ? t("app-projects-quality-profiles-section.quality-profiles-section.p-spec-effort-effort-label-p-spec-effort-null-p-spec-resolution-image-size-label-p-spec-resolution-null-p-spec-variants-l-p-spec-variants-p-spec-variants-1-variant-varianter-p-spec-variants-p-spec-variants-1-variant-variants-null-p-spec-budget-limit-null-l-h-yst-p-spec-budget-limit-mnd-max-p-spec-budget-limit-mo-null-filter.c97aefb7ce63", { budgetLimit: String(p.spec.budgetLimit) })
                     : null,
                 ]
                   .filter(Boolean)
-                  .join(" · ") || L("Ingen valg lagret", "No settings saved")}
+                  .join(" · ") || t("app-projects-quality-profiles-section.quality-profiles-section.span.a1357eca16bc")}
               </span>
               {editable ? (
                 <>
                   <Button size="sm" variant="ghost" data-testid={`quality-profile-edit-${p.id}`} onClick={() => setEditing(p)}>
-                    {L("Endre", "Edit")}
+                    {t("app-projects-quality-profiles-section.quality-profiles-section.button.8c0bf4fd702a")}
                   </Button>
                   <Button
                     size="sm"
                     variant="ghost"
                     data-testid={`quality-profile-remove-${p.id}`}
-                    aria-label={L(`Fjern «${p.name}»`, `Remove "${p.name}"`)}
+                    aria-label={t("app-projects-quality-profiles-section.quality-profiles-section.aria-label.9529252f2ce8", { name: String(p.name) })}
                     onClick={() =>
                       setError(
                         cmds.run(
                           { type: "SetQualityProfileRemoved", profileId: p.id, removed: true },
-                          L(`Fjern kvalitetsprofilen «${p.name}»`, `Remove the quality profile "${p.name}"`),
+                          t("app-projects-quality-profiles-section.quality-profiles-section.cmds-run.a1323399cae1", { name: String(p.name) }),
                         ),
                       )
                     }
@@ -154,7 +152,7 @@ export function QualityProfilesSection({
       )}
       {editable && profiles.length > 0 ? (
         <Button size="sm" variant="secondary" className="mt-2" data-testid="quality-profile-add" onClick={() => setEditing("new")}>
-          <Plus /> {L("Ny profil", "New profile")}
+          <Plus /> {t("app-projects-quality-profiles-section.quality-profiles-section.button.9fa8ff3da0f7")}
         </Button>
       ) : null}
       {error ? (
@@ -178,11 +176,11 @@ export function QualityProfilesSection({
               editing === "new"
                 ? cmds.run(
                     { type: "AddQualityProfile", profileId: newId(), name, spec },
-                    L(`Ny kvalitetsprofil «${name}»`, `New quality profile "${name}"`),
+                    t("app-projects-quality-profiles-section.e.cmds-run.ff9506ab0ff0", { name: String(name) }),
                   )
                 : cmds.run(
                     { type: "UpdateQualityProfile", profileId: editing.id, name, spec },
-                    L(`Endre kvalitetsprofilen «${name}»`, `Edit the quality profile "${name}"`),
+                    t("app-projects-quality-profiles-section.e.cmds-run.48f1f0f3eb47", { name: String(name) }),
                   );
             if (e) {
               setError(e);
@@ -228,76 +226,76 @@ function ProfileDialog({
   return (
     <div
       role="dialog"
-      aria-label={profile ? L("Endre kvalitetsprofil", "Edit quality profile") : L("Ny kvalitetsprofil", "New quality profile")}
+      aria-label={profile ? t("app-projects-quality-profiles-section.profile-dialog.aria-label.e563530ada2f") : t("app-projects-quality-profiles-section.profile-dialog.aria-label.c99e03632a03")}
       className="mt-3 flex flex-col gap-2 border border-border bg-surface-2 p-3 text-xs"
       data-testid="quality-profile-dialog"
     >
       <label className="flex items-center gap-2 text-text-secondary">
-        {L("Navn", "Name")}
+        {t("app-projects-quality-profiles-section.profile-dialog.label.87eb6b0f610e")}
         <Input
           value={name}
           onChange={(e) => setName(e.target.value)}
           className="h-7 w-56 bg-surface-3"
-          aria-label={L("Profilnavn", "Profile name")}
+          aria-label={t("app-projects-quality-profiles-section.profile-dialog.aria-label.8f2415ab9021")}
           data-testid="quality-profile-name"
         />
       </label>
       <div className="flex flex-wrap items-center gap-3">
         <label className="flex items-center gap-1.5 text-text-secondary">
-          {L("Innsatsnivå", "Effort level")}
+          {t("app-projects-quality-profiles-section.profile-dialog.label.199cf4d2cacf")}
           <select
             value={effort}
             onChange={(e) => setEffort(e.target.value as EffortLevel | "")}
             className={sel}
-            aria-label={L("Innsatsnivå", "Effort level")}
+            aria-label={t("app-projects-quality-profiles-section.profile-dialog.aria-label.199cf4d2cacf")}
             data-testid="quality-profile-effort"
           >
             {EFFORTS.map((e) => (
               <option key={e} value={e}>
-                {e === "" ? L("Ikke valgt", "Not chosen") : EFFORT_LABEL[e]}
+                {e === "" ? t("app-projects-quality-profiles-section.profile-dialog.option.990dc7fab9ab") : EFFORT_LABEL[e]}
               </option>
             ))}
           </select>
         </label>
         <label className="flex items-center gap-1.5 text-text-secondary">
-          {L("Oppløsning", "Resolution")}
+          {t("app-projects-quality-profiles-section.profile-dialog.label.76031e8a6db6")}
           <select
             value={resolution}
             onChange={(e) => setResolution(e.target.value as ImageSize | "")}
             className={sel}
-            aria-label={L("Oppløsning", "Resolution")}
+            aria-label={t("app-projects-quality-profiles-section.profile-dialog.aria-label.76031e8a6db6")}
           >
             {SIZES.map((z) => (
               <option key={z} value={z}>
-                {z === "" ? L("Ikke valgt", "Not chosen") : IMAGE_SIZE_LABEL[z]}
+                {z === "" ? t("app-projects-quality-profiles-section.profile-dialog.option.990dc7fab9ab.2") : IMAGE_SIZE_LABEL[z]}
               </option>
             ))}
           </select>
         </label>
         <label className="flex items-center gap-1.5 text-text-secondary">
-          {L("Varianter", "Variants")}
+          {t("app-projects-quality-profiles-section.profile-dialog.label.f2f787c112cc")}
           <Input
             value={variants}
             onChange={(e) => setVariants(e.target.value)}
             className="h-7 w-16 bg-surface-3"
             inputMode="numeric"
-            aria-label={L("Antall varianter", "Number of variants")}
+            aria-label={t("app-projects-quality-profiles-section.profile-dialog.aria-label.270da238aa36")}
           />
         </label>
         <label className="flex items-center gap-1.5 text-text-secondary">
-          {L("Budsjettgrense per måned", "Budget limit per month")}
+          {t("app-projects-quality-profiles-section.profile-dialog.label.b4a69d526434")}
           <Input
             value={budget}
             onChange={(e) => setBudget(e.target.value)}
             className="h-7 w-20 bg-surface-3"
             inputMode="numeric"
-            aria-label={L("Budsjettgrense per måned", "Budget limit per month")}
-            placeholder={L("ingen", "none")}
+            aria-label={t("app-projects-quality-profiles-section.profile-dialog.aria-label.b4a69d526434")}
+            placeholder={t("app-projects-quality-profiles-section.profile-dialog.placeholder.4f87d8e17496")}
           />
         </label>
       </div>
       <fieldset className="flex flex-wrap items-center gap-3">
-        <legend className="sr-only">{L("Modeller per AI-type", "Models per AI type")}</legend>
+        <legend className="sr-only">{t("app-projects-quality-profiles-section.profile-dialog.legend.4b3045abb2ff")}</legend>
         {QUALITY_PROFILE_MODEL_KINDS.map((kind) => {
           const options = providersFor(
             kind === "speech" ? "speech" : kind === "sound" ? "sound" : kind,
@@ -319,10 +317,10 @@ function ProfileDialog({
                   })
                 }
                 className={sel}
-                aria-label={L(`Modell for ${QUALITY_PROFILE_MODEL_KIND_LABEL[kind]}`, `Model for ${QUALITY_PROFILE_MODEL_KIND_LABEL[kind]}`)}
+                aria-label={t("app-projects-quality-profiles-section.profile-dialog.aria-label.2f06acdd0ec3", { value1: String(QUALITY_PROFILE_MODEL_KIND_LABEL[kind]) })}
                 data-testid={`quality-profile-model-${kind}`}
               >
-                <option value="">{L("Fra innsatsnivået", "From the effort level")}</option>
+                <option value="">{t("app-projects-quality-profiles-section.profile-dialog.option.4044f9d0b89b")}</option>
                 {unique.map((o) => (
                   <option key={o.id} value={o.id}>
                     {o.label}
@@ -334,10 +332,10 @@ function ProfileDialog({
         })}
       </fieldset>
       <fieldset className="flex flex-wrap gap-3">
-        <legend>{L("Eksportinnstillinger", "Export settings")}</legend>
-        <label>{L("Format", "Format")} <select className={sel} data-testid="quality-profile-export-format" value={exportFormat} onChange={e=>setExportFormat(e.target.value as typeof exportFormat)}><option value="">{L("Ikke valgt", "Not chosen")}</option><option value="mp4">MP4</option><option value="webm">WebM</option><option value="png-seq">{L("PNG-sekvens", "PNG sequence")}</option><option value="prores">{L("ProRes (MOV)", "ProRes (MOV)")}</option></select></label>
-        <label>{L("Alfa", "Alpha")} <select className={sel} data-testid="quality-profile-export-alpha" value={exportAlpha} onChange={e=>setExportAlpha(e.target.value as typeof exportAlpha)}><option value="">{L("Ikke valgt", "Not chosen")}</option><option value="straight">{L("Rett", "Straight")}</option><option value="premultiplied">{L("Premultiplisert", "Premultiplied")}</option></select></label>
-        <label>{L("Bitrate (kbps)", "Bitrate (kbps)")} <Input type="number" min={100} max={100000} className="h-7 w-24" data-testid="quality-profile-export-bitrate" value={exportBitrate} onChange={e=>setExportBitrate(e.target.value)} /></label>
+        <legend>{t("app-projects-quality-profiles-section.profile-dialog.legend.e04587b485b1")}</legend>
+        <label>{t("app-projects-quality-profiles-section.profile-dialog.label.dba78363fe08")} <select className={sel} data-testid="quality-profile-export-format" value={exportFormat} onChange={e=>setExportFormat(e.target.value as typeof exportFormat)}><option value="">{t("app-projects-quality-profiles-section.profile-dialog.option.990dc7fab9ab.3")}</option><option value="mp4">MP4</option><option value="webm">WebM</option><option value="png-seq">{t("app-projects-quality-profiles-section.profile-dialog.option.648dc83932d1")}</option><option value="prores">{t("app-projects-quality-profiles-section.profile-dialog.option.a6dff85bdd6e")}</option></select></label>
+        <label>{t("app-projects-quality-profiles-section.profile-dialog.label.73288b25da41")} <select className={sel} data-testid="quality-profile-export-alpha" value={exportAlpha} onChange={e=>setExportAlpha(e.target.value as typeof exportAlpha)}><option value="">{t("app-projects-quality-profiles-section.profile-dialog.option.990dc7fab9ab.4")}</option><option value="straight">{t("app-projects-quality-profiles-section.profile-dialog.option.ff806e7ac6e2")}</option><option value="premultiplied">{t("app-projects-quality-profiles-section.profile-dialog.option.5f17b52cdd08")}</option></select></label>
+        <label>{t("app-projects-quality-profiles-section.profile-dialog.label.c3a245760f0d")} <Input type="number" min={100} max={100000} className="h-7 w-24" data-testid="quality-profile-export-bitrate" value={exportBitrate} onChange={e=>setExportBitrate(e.target.value)} /></label>
       </fieldset>
       <div className="flex gap-2">
         <Button
@@ -359,10 +357,10 @@ function ProfileDialog({
             onSave(name, spec);
           }}
         >
-          {L("Lagre", "Save")}
+          {t("app-projects-quality-profiles-section.profile-dialog.button.7dd68c1dc880")}
         </Button>
         <Button size="sm" variant="ghost" onClick={onClose}>
-          {L("Avbryt", "Cancel")}
+          {t("app-projects-quality-profiles-section.profile-dialog.button.1ac177cba613")}
         </Button>
       </div>
     </div>

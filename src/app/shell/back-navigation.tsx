@@ -10,6 +10,7 @@ import { useEffect, useSyncExternalStore } from "react";
 import { Button } from "@/components/ui/button";
 import { L } from "@/core";
 import { pageLabel, recordVisit, type Entry } from "./back-stack";
+import { t } from "@/core/i18n/keyed";
 
 const KEY = "animatic:back-stack";
 
@@ -82,8 +83,8 @@ export function BackButton() {
         goingBack = true;
         void navigate({ href: prev.href });
       }}
-      title={L(`Tilbake til ${label}`, `Back to ${label}`)}
-      aria-label={L(`Tilbake til ${label}`, `Back to ${label}`)}
+      title={t("app-shell-back-navigation.back-button.title.3861550ee4eb", { label: String(label) })}
+      aria-label={t("app-shell-back-navigation.back-button.aria-label.3861550ee4eb", { label: String(label) })}
       className="-ml-2"
     >
       <ArrowLeft />

@@ -6,14 +6,15 @@ import { SchemaBanner } from "@/app/shell/SchemaBanner";
 import { WorkspacePage } from "@/app/workspaces/WorkspacePage";
 import { L } from "@/core";
 import { useLanguage } from "@/app/i18n/language";
+import { t } from "@/core/i18n/keyed";
 
 /** Adminsiden for en arbeidsgruppe (GP1). Tilgangen håndheves i databasen. */
 export const Route = createFileRoute("/gruppe/$workspaceId")({
   head: () => ({ meta: [
-    { title: L("Arbeidsgruppe – Animatic Studio", "Workspace – Animatic Studio") },
-    { name: "description", content: L("Medlemmer, invitasjoner og prosjekter i en arbeidsgruppe.", "Members, invitations and projects in a workspace.") },
-    { property: "og:title", content: L("Arbeidsgruppe – Animatic Studio", "Workspace – Animatic Studio") }, // i18n-ignore: metakode
-    { property: "og:description", content: L("Medlemmer, invitasjoner og prosjekter i en arbeidsgruppe.", "Members, invitations and projects in a workspace.") }, // i18n-ignore: metakode
+    { title: t("routes-gruppe-workspace-id.title.title.73796e5fd612") },
+    { name: "description", content: t("routes-gruppe-workspace-id.content.content.789e02872522") },
+    { property: "og:title", content: t("routes-gruppe-workspace-id.content.content.d76669de2282") }, // i18n-ignore: metakode
+    { property: "og:description", content: t("routes-gruppe-workspace-id.content.content.789e02872522.2") }, // i18n-ignore: metakode
     { property: "og:type", content: "website" }, // i18n-ignore: metakode
     { name: "twitter:card", content: "summary" }, // i18n-ignore: metakode
   ] }),
@@ -28,7 +29,7 @@ function WorkspaceRoute() {
   if (session.status === "signed-out") return <AuthScreen />;
   return (
     <div className="flex min-h-screen flex-col bg-bg-app">
-      <AppHeader email={session.session.user.email} trail={L("Arbeidsgruppe", "Workspace")} />
+      <AppHeader email={session.session.user.email} trail={t("routes-gruppe-workspace-id.workspace-route.trail.16e3d36e939a")} />
       <SchemaBanner />
       <WorkspacePage workspaceId={workspaceId} myId={session.session.user.id} />
     </div>

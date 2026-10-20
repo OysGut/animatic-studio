@@ -5,6 +5,7 @@ import { t } from "@/core/i18n/keyed";
 import nbCatalog from "@/core/i18n/locales/nb.json";
 import enCatalog from "@/core/i18n/locales/en.json";
 import xaCatalog from "@/core/i18n/locales/en-XA.json";
+import runtimeCatalog from "@/core/i18n/runtime.gen.json";
 
 afterEach(() => setLanguage("nb"));
 
@@ -34,8 +35,10 @@ describe("ML2a testspråk en-XA", () => {
     expect(tm("helt ukjent tekst")).toBe("helt ukjent tekst");
   });
   it("t() bruker visningsspråket", () => {
+    // Appen laster bare flyttede nøkler (runtime.gen.json); velg en av dem.
+    const loaded = new Set(Object.keys(runtimeCatalog.nb));
     const [key, msg] = Object.entries(nbCatalog as Record<string, { text: string | null; executable?: boolean; parameters?: unknown[] }>).find(
-      ([, m]) => m.executable !== false && m.text && !/\{/.test(m.text) && !(m.parameters?.length),
+      ([k, m]) => loaded.has(k) && m.executable !== false && m.text && !/\{/.test(m.text) && !(m.parameters?.length),
     )!;
     expect(t(key)).toBe(msg.text);
     setLanguage("en-XA");

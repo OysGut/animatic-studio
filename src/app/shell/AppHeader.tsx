@@ -12,6 +12,7 @@ import { TaskNav } from "./TaskNav";
 import { BookmarkMenu } from "./BookmarkMenu";
 import { AccountWatcher, useMyAccount } from "@/app/account/use-account";
 import { ScriptExplorerPanel } from "@/app/script-explorer/ScriptExplorerPanel";
+import { t } from "@/core/i18n/keyed";
 
 interface AppHeaderProps {
   readonly email?: string | undefined;
@@ -56,7 +57,7 @@ export function AppHeader({ email, trail }: AppHeaderProps) {
         </>
       ) : null}
       <div className="ml-auto flex items-center gap-2">
-        {params.projectId ? <Button variant="ghost" size="icon" data-testid="script-explorer-button" title={L("Manusutforskeren", "Script explorer")} aria-label={L("Manusutforskeren", "Script explorer")} onClick={() => setExplorerOpen(true)}><Globe className="size-4" /></Button> : null}
+        {params.projectId ? <Button variant="ghost" size="icon" data-testid="script-explorer-button" title={t("app-shell-app-header.app-header.title.226fbea0a428")} aria-label={t("app-shell-app-header.app-header.aria-label.226fbea0a428")} onClick={() => setExplorerOpen(true)}><Globe className="size-4" /></Button> : null}
         {params.projectId && email ? <BookmarkMenu projectId={params.projectId} /> : null}
         {params.projectId ? <TaskNav projectId={params.projectId} /> : null}
         {params.projectId ? <GenerationStatus projectId={params.projectId} /> : null}
@@ -70,13 +71,10 @@ export function AppHeader({ email, trail }: AppHeaderProps) {
             to="/admin"
             data-testid="header-admin"
             className="flex h-7 items-center gap-1 rounded-sm px-2 text-xs text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-            title={L(
-              "Administrasjon: brukere, prosjekter og personvern",
-              "Administration: users, projects and privacy",
-            )}
+            title={t("app-shell-app-header.app-header.title.bbf114892f89")}
           >
             <Shield className="size-3.5" aria-hidden />
-            <span className="hidden md:inline">{L("Admin", "Admin")}</span>
+            <span className="hidden md:inline">{t("app-shell-app-header.app-header.span.d9df6d2f7af1")}</span>
           </Link>
         ) : null}
         {email ? (
@@ -95,11 +93,8 @@ export function AppHeader({ email, trail }: AppHeaderProps) {
             }
             title={
               onAccount
-                ? L("Lukk «Min konto»", "Close “My account”")
-                : L(
-                    "Min konto: språk, passord, AI-forbruk og personvern",
-                    "My account: language, password, AI usage and privacy",
-                  )
+                ? t("app-shell-app-header.app-header.title.1edf5c4e8789")
+                : t("app-shell-app-header.app-header.title.13b0f7b3c913")
             }
           >
             <UserRound className="size-3.5 shrink-0" aria-hidden />
@@ -111,11 +106,11 @@ export function AppHeader({ email, trail }: AppHeaderProps) {
             variant="ghost"
             size="sm"
             onClick={() => void signOut()}
-            aria-label={L("Logg ut", "Sign out")}
-            title={L("Logg ut", "Sign out")}
+            aria-label={t("app-shell-app-header.app-header.aria-label.23c7aa0a7071")}
+            title={t("app-shell-app-header.app-header.title.23c7aa0a7071")}
           >
             <LogOut />
-            <span>{L("Logg ut", "Sign out")}</span>
+            <span>{t("app-shell-app-header.app-header.span.23c7aa0a7071")}</span>
           </Button>
         ) : null}
       </div>

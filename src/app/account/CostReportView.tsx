@@ -22,6 +22,7 @@ import {
 } from "@/adapters/account/account.functions";
 import { Button } from "@/components/ui/button";
 import { exportCostReport, type ExportFormat } from "./cost-export";
+import { t as tk } from "@/core/i18n/keyed";
 
 const money = (n: number | null, cur: string) =>
   n === null
@@ -74,10 +75,10 @@ export function CostReportView({
   const nokOk = currency !== "NOK" || (rates.data?.ok ?? false);
   const scopeLabel =
     scope === "account"
-      ? L("Mitt forbruk i alle prosjekter", "My usage in all projects")
+      ? tk("app-account-cost-report-view.scope-label.message.1bd28d168ca5")
       : scope === "mine"
-        ? L("Mitt forbruk i prosjektet", "My usage in the project")
-        : L("Prosjektet totalt (alle medlemmer)", "The project in total (all members)");
+        ? tk("app-account-cost-report-view.scope-label.message.9105670d93c0")
+        : tk("app-account-cost-report-view.scope-label.message.5c9c4aad4c7f");
   const report = useMemo(
     () =>
       buildCostReport({
@@ -88,7 +89,7 @@ export function CostReportView({
           month === "all"
             ? span
               ? `${span.from} – ${span.to}`
-              : L("Hele perioden", "The whole period")
+              : tk("app-account-cost-report-view.period-label.period-label.0ada20877409")
             : monthLabel(month),
         generatedBy,
         currency: nokOk ? currency : "USD",
@@ -128,7 +129,7 @@ export function CostReportView({
     return (
       <p className="flex items-center gap-2 text-xs text-text-tertiary">
         <Loader2 className="size-3.5 animate-spin" aria-hidden />
-        {L("Henter forbruket …", "Fetching the usage …")}
+        {tk("app-account-cost-report-view.cost-report-view.p.ceaeca173f41")}
       </p>
     );
   if (usage.data && !usage.data.ok)
@@ -143,13 +144,13 @@ export function CostReportView({
           className={sel}
           value={month}
           onChange={(e) => setMonth(e.target.value)}
-          aria-label={L("Periode", "Period")}
+          aria-label={tk("app-account-cost-report-view.cost-report-view.aria-label.453e6c187a4c")}
           data-testid="cost-month"
         >
           <option value="all">
             {scope === "account"
-              ? L("Hele perioden", "The whole period")
-              : L("Hele prosjektet", "The whole project")}
+              ? tk("app-account-cost-report-view.cost-report-view.option.56734ca9629b")
+              : tk("app-account-cost-report-view.cost-report-view.option.9bebccc5beb9")}
           </option>
           {months.map((m) => (
             <option key={m} value={m}>
@@ -161,11 +162,11 @@ export function CostReportView({
           className={sel}
           value={currency}
           onChange={(e) => setCurrency(e.target.value as Currency)}
-          aria-label={L("Valuta", "Currency")}
+          aria-label={tk("app-account-cost-report-view.cost-report-view.aria-label.1e8854fe8733")}
           data-testid="cost-currency"
         >
-          <option value="NOK">{L("Kroner (og dollar)", "Kroner (and dollars)")}</option>
-          <option value="USD">{L("Dollar", "Dollars")}</option>
+          <option value="NOK">{tk("app-account-cost-report-view.cost-report-view.option.c33ff407a7af")}</option>
+          <option value="USD">{tk("app-account-cost-report-view.cost-report-view.option.26db8ed7da9c")}</option>
         </select>
         <div className="ml-auto flex gap-1.5">
           {(["pdf", "docx", "xlsx"] as const).map((f) => (
@@ -185,59 +186,56 @@ export function CostReportView({
       </div>
       {currency === "NOK" && rates.isFetched && !nokOk ? (
         <p className="text-[11px] text-status-uncertain">
-          {L(
-            "Kursene fra Norges Bank kunne ikke hentes nå, så beløpene vises i dollar.",
-            "The rates from Norges Bank could not be fetched now, so the amounts are shown in dollars.",
-          )}
+          {tk("app-account-cost-report-view.cost-report-view.p.7828b010f0dc")}
         </p>
       ) : null}
       {error ? <p className="text-xs text-status-danger">{error}</p> : null}
       {!report.lines.length ? (
         <p className="text-xs text-text-tertiary">
-          {L("Ingen AI-bruk i perioden.", "No AI usage in the period.")}
+          {tk("app-account-cost-report-view.cost-report-view.p.53c1cfc327df")}
         </p>
       ) : (
         <>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            <Stat label={L("Jobber", "Jobs")} value={String(report.lines.length)} />
-            <Stat label={L("Sum USD", "Total USD")} value={money(report.totalUsd, "USD")} />
+            <Stat label={tk("app-account-cost-report-view.cost-report-view.label.c8612319559f")} value={String(report.lines.length)} />
+            <Stat label={tk("app-account-cost-report-view.cost-report-view.label.e37f457fa385")} value={money(report.totalUsd, "USD")} />
             {cur === "NOK" ? (
-              <Stat label={L("Sum NOK", "Total NOK")} value={money(report.totalNok, "NOK")} />
+              <Stat label={tk("app-account-cost-report-view.cost-report-view.label.324a52e3e6f8")} value={money(report.totalNok, "NOK")} />
             ) : null}
             {report.lines.some((l) => l.credits !== null) ? (
               <Stat
-                label={L("Runway-kreditter", "Runway credits")}
+                label={tk("app-account-cost-report-view.cost-report-view.label.0d1573b1bcc2")}
                 value={String(report.lines.reduce((t, l) => t + (l.credits ?? 0), 0))}
               />
             ) : null}
           </div>
           <Groups
-            title={L("Per tjeneste og modell", "By service and model")}
+            title={tk("app-account-cost-report-view.cost-report-view.title.94d6137e58c1")}
             groups={report.byService}
             cur={cur}
           />
           {report.byMonth.length > 1 ? (
-            <Groups title={L("Per måned", "By month")} groups={report.byMonth} cur={cur} />
+            <Groups title={tk("app-account-cost-report-view.cost-report-view.title.4d3e52aadb6a")} groups={report.byMonth} cur={cur} />
           ) : null}
           {report.byUser.length > 1 || scope === "project" ? (
-            <Groups title={L("Per person", "By person")} groups={report.byUser} cur={cur} />
+            <Groups title={tk("app-account-cost-report-view.cost-report-view.title.d143b4be389a")} groups={report.byUser} cur={cur} />
           ) : null}
           <details>
             <summary className="cursor-pointer text-xs text-text-secondary">
-              {L(`Alle linjene (${report.lines.length})`, `All lines (${report.lines.length})`)}
+              {tk("app-account-cost-report-view.cost-report-view.summary.b7435a50e708", { length: String(report.lines.length) })}
             </summary>
             <div className="mt-1 max-h-72 overflow-auto rounded-sm border border-border">
               <table className="w-full text-[11px]">
                 <thead className="sticky top-0 bg-surface-2 text-left text-text-tertiary">
                   <tr>
-                    <th className="px-2 py-1">{L("Dato", "Date")}</th>
+                    <th className="px-2 py-1">{tk("app-account-cost-report-view.cost-report-view.th.2ab90e37f418")}</th>
                     {scope === "account" ? (
-                      <th className="px-2 py-1">{L("Prosjekt", "Project")}</th>
+                      <th className="px-2 py-1">{tk("app-account-cost-report-view.cost-report-view.th.98fcce6a5c21")}</th>
                     ) : null}
-                    <th className="px-2 py-1">{L("Hvem", "Who")}</th>
-                    <th className="px-2 py-1">{L("Tjeneste", "Service")}</th>
-                    <th className="px-2 py-1">{L("Gjelder", "Concerns")}</th>
-                    <th className="px-2 py-1 text-right">{L("Mengde", "Qty")}</th>
+                    <th className="px-2 py-1">{tk("app-account-cost-report-view.cost-report-view.th.b3f8944269ce")}</th>
+                    <th className="px-2 py-1">{tk("app-account-cost-report-view.cost-report-view.th.b1ed6168a460")}</th>
+                    <th className="px-2 py-1">{tk("app-account-cost-report-view.cost-report-view.th.b41a537ba27f")}</th>
+                    <th className="px-2 py-1 text-right">{tk("app-account-cost-report-view.cost-report-view.th.797fbe4f6d65")}</th>
                     <th className="px-2 py-1 text-right">USD</th>
                     {cur === "NOK" ? <th className="px-2 py-1 text-right">NOK</th> : null}
                   </tr>

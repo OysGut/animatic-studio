@@ -5,6 +5,7 @@
  * fordelinger, linjene og merknadene.
  */
 import { L, locale, type CostReport, type CostReportGroup } from "@/core";
+import { t } from "@/core/i18n/keyed";
 
 export type ExportFormat = "pdf" | "docx" | "xlsx";
 
@@ -37,27 +38,27 @@ export function reportFileName(r: CostReport, ext: string): string {
 /** Opplysningene øverst i rapporten. */
 export function reportFacts(r: CostReport): [string, string][] {
   return [
-    [L("Prosjekt", "Project"), r.projectName],
-    [L("Utvalg", "Selection"), r.scopeLabel],
-    [L("Periode", "Period"), r.periodLabel],
-    [L("Laget", "Created"), dateTime(r.generatedAt)],
-    [L("Laget av", "Created by"), r.generatedBy],
+    [t("app-account-cost-export.report-facts.message.c0c6bff0e0cd"), r.projectName],
+    [t("app-account-cost-export.report-facts.message.d9b58a50cb38"), r.scopeLabel],
+    [t("app-account-cost-export.report-facts.message.55cf897e6d1b"), r.periodLabel],
+    [t("app-account-cost-export.report-facts.message.dbf0ccafb17c"), dateTime(r.generatedAt)],
+    [t("app-account-cost-export.report-facts.message.3698666b5510"), r.generatedBy],
     [
-      L("Valuta", "Currency"),
+      t("app-account-cost-export.report-facts.message.bfb35afec136"),
       r.currency === "NOK"
-        ? L("Norske kroner (NOK) og USD", "Norwegian kroner (NOK) and USD")
+        ? t("app-account-cost-export.report-facts.message.3c7ac6f3ac85")
         : "USD",
     ],
-    [L("Antall jobber", "Number of jobs"), String(r.lines.length)],
-    [L("Sum USD", "Total USD"), num(r.totalUsd)],
+    [t("app-account-cost-export.report-facts.message.4ca2bf78d649"), String(r.lines.length)],
+    [t("app-account-cost-export.report-facts.message.080892203a0f"), num(r.totalUsd)],
     ...(r.currency === "NOK"
-      ? ([[L("Sum NOK", "Total NOK"), num(r.totalNok)]] as [string, string][])
+      ? ([[t("app-account-cost-export.report-facts.message.6e238939eae9"), num(r.totalNok)]] as [string, string][])
       : []),
   ];
 }
 
 export function groupHead(r: CostReport, first: string): string[] {
-  return [first, L("Jobber", "Jobs"), "USD", ...(r.currency === "NOK" ? ["NOK"] : [])];
+  return [first, t("app-account-cost-export.group-head.message.f1fb1150290a"), "USD", ...(r.currency === "NOK" ? ["NOK"] : [])];
 }
 export function groupRows(r: CostReport, g: readonly CostReportGroup[]): string[][] {
   return g.map((x) => [
@@ -70,20 +71,20 @@ export function groupRows(r: CostReport, g: readonly CostReportGroup[]): string[
 
 export function lineHead(r: CostReport): string[] {
   return [
-    L("Dato", "Date"),
-    L("Prosjekt", "Project"),
-    L("Bestilt av", "Ordered by"),
-    L("Tjeneste", "Service"),
-    L("Modell", "Model"),
-    L("Type", "Type"),
-    L("Gjelder", "Concerns"),
-    L("Mengde", "Quantity"),
-    L("Enhetspris USD", "Unit price USD"),
-    L("Beløp USD", "Amount USD"),
-    L("Kreditter", "Credits"),
-    ...(r.currency === "NOK" ? [L("Kurs", "Rate"), L("Beløp NOK", "Amount NOK")] : []),
-    L("Status", "Status"),
-    L("Leverandørens jobb-ID", "Provider job ID"),
+    t("app-account-cost-export.line-head.message.7d285296cd7a"),
+    t("app-account-cost-export.line-head.message.19ab8b6773d8"),
+    t("app-account-cost-export.line-head.message.56bfe4ac24fa"),
+    t("app-account-cost-export.line-head.message.b565a5abdaa9"),
+    t("app-account-cost-export.line-head.message.92dc4d45163e"),
+    t("app-account-cost-export.line-head.message.2f10fe10f8a8"),
+    t("app-account-cost-export.line-head.message.ed1d835b3dfc"),
+    t("app-account-cost-export.line-head.message.4657045ba1c1"),
+    t("app-account-cost-export.line-head.message.ab6763cf1bf0"),
+    t("app-account-cost-export.line-head.message.a3947b231010"),
+    t("app-account-cost-export.line-head.message.781fec263d62"),
+    ...(r.currency === "NOK" ? [t("app-account-cost-export.line-head.message.cdcc7d064d19"), t("app-account-cost-export.line-head.message.bb8a7ec7ffd7")] : []),
+    t("app-account-cost-export.line-head.message.5059e628802d"),
+    t("app-account-cost-export.line-head.message.02cbde28d51d"),
   ];
 }
 
@@ -157,20 +158,20 @@ export async function toPdf(r: CostReport): Promise<Blob> {
     });
   };
   section(
-    L("Per tjeneste og modell", "By service and model"),
-    groupHead(r, L("Tjeneste · modell", "Service · model")),
+    t("app-account-cost-export.to-pdf.section.36355e558392"),
+    groupHead(r, t("app-account-cost-export.to-pdf.group-head.0738a7a01d71")),
     groupRows(r, r.byService),
   );
-  section(L("Per måned", "By month"), groupHead(r, L("Måned", "Month")), groupRows(r, r.byMonth));
+  section(t("app-account-cost-export.to-pdf.section.ef1ad36a484e"), groupHead(r, t("app-account-cost-export.to-pdf.group-head.3d047da8f73d")), groupRows(r, r.byMonth));
   section(
-    L("Per person", "By person"),
-    groupHead(r, L("Person", "Person")),
+    t("app-account-cost-export.to-pdf.section.5616ad5d4813"),
+    groupHead(r, t("app-account-cost-export.to-pdf.group-head.023ef4286b0e")),
     groupRows(r, r.byUser),
   );
-  section(L("Linjer", "Lines"), lineHead(r), lineRows(r));
+  section(t("app-account-cost-export.to-pdf.section.f2ab0c46b3df"), lineHead(r), lineRows(r));
   section(
-    L("Merknader", "Notes"),
-    [L("Merknad", "Note")],
+    t("app-account-cost-export.to-pdf.section.09af60a8f34f"),
+    [t("app-account-cost-export.to-pdf.section.7f2da456ec9d")],
     r.notes.map((n) => [n]),
   );
   const pages = doc.getNumberOfPages();
@@ -178,7 +179,7 @@ export async function toPdf(r: CostReport): Promise<Blob> {
     doc.setPage(i);
     doc.setFontSize(8);
     doc.text(
-      L(`${r.projectName} – side ${i} av ${pages}`, `${r.projectName} – page ${i} of ${pages}`),
+      t("app-account-cost-export.to-pdf.doc-text.4983827296a1", { projectName: String(r.projectName), i: String(i), pages: String(pages) }),
       margin,
       doc.internal.pageSize.getHeight() - 6,
     );
@@ -213,16 +214,16 @@ export async function toDocx(r: CostReport): Promise<Blob> {
         children: [
           h(r.projectName, d.HeadingLevel.TITLE),
           h(r.title, d.HeadingLevel.HEADING_1),
-          table([L("Opplysning", "Item"), L("Verdi", "Value")], reportFacts(r)),
-          h(L("Per tjeneste og modell", "By service and model"), d.HeadingLevel.HEADING_2),
-          table(groupHead(r, L("Tjeneste · modell", "Service · model")), groupRows(r, r.byService)),
-          h(L("Per måned", "By month"), d.HeadingLevel.HEADING_2),
-          table(groupHead(r, L("Måned", "Month")), groupRows(r, r.byMonth)),
-          h(L("Per person", "By person"), d.HeadingLevel.HEADING_2),
-          table(groupHead(r, L("Person", "Person")), groupRows(r, r.byUser)),
-          h(L("Linjer", "Lines"), d.HeadingLevel.HEADING_2),
+          table([t("app-account-cost-export.children.table.155b0ad70670"), t("app-account-cost-export.children.table.c2853bf5d369")], reportFacts(r)),
+          h(t("app-account-cost-export.children.h.2cee2cdfef55"), d.HeadingLevel.HEADING_2),
+          table(groupHead(r, t("app-account-cost-export.children.group-head.6a237165c76a")), groupRows(r, r.byService)),
+          h(t("app-account-cost-export.children.h.d911c0c60146"), d.HeadingLevel.HEADING_2),
+          table(groupHead(r, t("app-account-cost-export.children.group-head.2817287d1354")), groupRows(r, r.byMonth)),
+          h(t("app-account-cost-export.children.h.eb2197ef5c1d"), d.HeadingLevel.HEADING_2),
+          table(groupHead(r, t("app-account-cost-export.children.group-head.94b225f9ab46")), groupRows(r, r.byUser)),
+          h(t("app-account-cost-export.children.h.f2dec0f0db92"), d.HeadingLevel.HEADING_2),
           table(lineHead(r), lineRows(r)),
-          h(L("Merknader", "Notes"), d.HeadingLevel.HEADING_2),
+          h(t("app-account-cost-export.children.h.dd166de8725f"), d.HeadingLevel.HEADING_2),
           ...r.notes.map((n) => new d.Paragraph({ text: n, bullet: { level: 0 } })),
         ],
       },
@@ -237,7 +238,7 @@ export async function toXlsx(r: CostReport): Promise<Blob> {
   const ExcelJS = (await import("exceljs")).default;
   const wb = new ExcelJS.Workbook();
   wb.creator = "Animatic Studio";
-  const sum = wb.addWorksheet(L("Sammendrag", "Summary"));
+  const sum = wb.addWorksheet(t("app-account-cost-export.sum.wb-add-worksheet.e647192a21b7"));
   sum.addRow([r.projectName]).font = { bold: true, size: 14 };
   sum.addRow([r.title]).font = { bold: true };
   sum.addRow([]);
@@ -250,20 +251,20 @@ export async function toXlsx(r: CostReport): Promise<Blob> {
       sum.addRow([x.key, x.count, x.usd, ...(r.currency === "NOK" ? [x.nok] : [])]);
   };
   group(
-    L("Per tjeneste og modell", "By service and model"),
-    L("Tjeneste · modell", "Service · model"),
+    t("app-account-cost-export.to-xlsx.group.4f07688907f9"),
+    t("app-account-cost-export.to-xlsx.group.4bcdf1838aca"),
     r.byService,
   );
-  group(L("Per måned", "By month"), L("Måned", "Month"), r.byMonth);
-  group(L("Per person", "By person"), L("Person", "Person"), r.byUser);
+  group(t("app-account-cost-export.to-xlsx.group.0e8944420988"), t("app-account-cost-export.to-xlsx.group.58d0d37a9010"), r.byMonth);
+  group(t("app-account-cost-export.to-xlsx.group.735d6529d49b"), t("app-account-cost-export.to-xlsx.group.ce8efb8633e9"), r.byUser);
   sum.addRow([]);
-  sum.addRow([L("Merknader", "Notes")]).font = { bold: true };
+  sum.addRow([t("app-account-cost-export.to-xlsx.sum-add-row.be727f79046f")]).font = { bold: true };
   for (const n of r.notes) sum.addRow([n]);
   sum.getColumn(1).width = 48;
   for (const c of [2, 3, 4]) sum.getColumn(c).width = 14;
 
   // Linjene som tall (ikke tekst), så de kan summeres og filtreres i Excel
-  const ws = wb.addWorksheet(L("Linjer", "Lines"));
+  const ws = wb.addWorksheet(t("app-account-cost-export.ws.wb-add-worksheet.7ff7fe067bfa"));
   ws.addRow(lineHead(r)).font = { bold: true };
   for (const l of r.lines)
     ws.addRow([

@@ -71,7 +71,7 @@ export function inventorySource(source, file = 'src/example.tsx') {
   for (const stmt of sf.statements) if (ts.isImportDeclaration(stmt) && stmt.importClause?.namedBindings && ts.isNamedImports(stmt.importClause.namedBindings)) {
     for (const el of stmt.importClause.namedBindings.elements) {
       const imported = el.propertyName?.text ?? el.name.text;
-      if (['L', 'localized', 'tm', 't'].includes(imported)) aliases.set(el.name.text, imported);
+      if (['L', 'localized', 'tm', 't', 'tLocalized'].includes(imported)) aliases.set(el.name.text, imported);
     }
   }
   const location = (n) => {
@@ -117,6 +117,14 @@ export function inventorySource(source, file = 'src/example.tsx') {
           if (value && ts.isArrayLiteralExpression(value)) pair(prop, value.elements[0], value.elements[1], 'localized', prop.name.getText(sf));
           else references.push({ ...location(prop), kind: 'localized-expression', raw: prop.getText(sf) });
         } else references.push({ ...location(node), kind: 'localized-expression', raw: node.getText(sf) });
+      }
+      if (call === 'tLocalized') {
+        // ML2: fixed lookups by key; every property value must be a literal key.
+        const object = unwrap(node.arguments[0]);
+        if (object && ts.isObjectLiteralExpression(object)) for (const prop of object.properties) {
+          const value = ts.isPropertyAssignment(prop) ? unwrap(prop.initializer) : undefined;
+          references.push({ ...location(prop), kind: 't', raw: prop.getText(sf), key: value && ts.isStringLiteral(value) ? value.text : null, parameterNames: [] });
+        } else references.push({ ...location(node), kind: 't', raw: node.getText(sf), key: null, parameterNames: [] });
       }
       if (call === 'tm' || call === 't') {
         const params = unwrap(node.arguments[1]);
@@ -164,7 +172,12 @@ export function collectInventory(root = ROOT, previous = { entries: [] }) {
     const identity = JSON.stringify([item.file, item.scope, item.kind, item.semantic]);
     incomingCounts.set(identity, (incomingCounts.get(identity) ?? 0) + 1);
   }
-  const used = new Set();
+  // ML2: entries moved to t()/tLocalized keep their frozen ML1 record (text, signature) while referenced.
+  const references = all.flatMap((x) => x.references);
+  const referenced = new Set(references.filter((r) => r.kind === 't' && r.key).map((r) => r.key));
+  const live = new Set();
+  const migrated = (previous.entries ?? []).filter((old) => referenced.has(old.key)).map((old) => ({ ...old, migrated: true }));
+  const used = new Set(migrated.map((m) => m.key));
   const keyConflicts = [];
   const structural = new Map();
   for (const old of previous.entries ?? []) {
@@ -186,8 +199,9 @@ export function collectInventory(root = ROOT, previous = { entries: [] }) {
     let key = old && !used.has(old) ? old : structuralKey ?? `${item.semantic}.${item.signature}`;
     let duplicate = 1;
     while (used.has(key)) key = `${item.semantic}.${item.signature}.${++duplicate}`;
-    item.key = key; used.add(key);
+    item.key = key; used.add(key); live.add(key);
   }
+  entries.push(...migrated.filter((m) => !live.has(m.key)));
   const conflicts = [...keyConflicts];
   const sameNb = new Map();
   for (const item of entries) {
@@ -200,7 +214,7 @@ export function collectInventory(root = ROOT, previous = { entries: [] }) {
     if (item.nb.kind === 'missing' || item.en.kind === 'missing') conflicts.push({ kind: 'missing-pair', key: item.key, file: item.file, line: item.line });
   }
   for (const [text, peers] of sameNb) if (new Set(peers.map((x) => x.en.raw)).size > 1) conflicts.push({ kind: 'same-source-different-translation', text, keys: peers.map((x) => x.key) });
-  return { version: 1, entries, references: all.flatMap((x) => x.references), candidates: all.flatMap((x) => x.candidates), conflicts };
+  return { version: 1, entries, references, candidates: all.flatMap((x) => x.candidates), conflicts };
 }
 export function pseudoText(text) {
   const map = { a: 'á', e: 'ë', i: 'ï', o: 'ô', u: 'ü', A: 'Á', E: 'Ë', I: 'Ï', O: 'Ô', U: 'Ü' };
@@ -214,9 +228,17 @@ export function generatedFiles(inventory) {
     locales[lang][item.key] = { text: value.text, source: value.raw, parameters: value.parameters, executable: value.text !== null && !item.parameterConflict };
   }
   for (const [key, msg] of Object.entries(locales.en)) locales['en-XA'][key] = { ...msg, text: msg.text === null ? null : pseudoText(msg.text) };
-  const summary = { version: 1, entries: inventory.entries.length, files: new Set(inventory.entries.map((e) => e.file)).size, literalPairs: inventory.entries.filter((e) => e.nb.kind === 'literal' && e.en.kind === 'literal').length, templatePairs: inventory.entries.filter((e) => e.nb.kind === 'template' || e.en.kind === 'template').length, dynamicPairs: inventory.entries.filter((e) => e.nb.kind === 'expression' || e.en.kind === 'expression').length, references: inventory.references.length, candidates: inventory.candidates.length, conflicts: inventory.conflicts.length };
+  // Runtime ships only keys referenced by t()/tLocalized; the full catalogs stay build-time artifacts.
+  const runtimeKeys = [...new Set(inventory.references.filter((r) => r.kind === 't' && r.key).map((r) => r.key))].filter((k) => locales.nb[k]).sort();
+  const runtime = { nb: {}, en: {} };
+  for (const key of runtimeKeys) for (const lang of ['nb', 'en']) {
+    const { text, plural, formats } = locales[lang][key];
+    runtime[lang][key] = { text, ...(plural ? { plural } : {}), ...(formats ? { formats } : {}) };
+  }
+  const summary = { version: 1, entries: inventory.entries.length, migrated: inventory.entries.filter((e) => e.migrated).length, files: new Set(inventory.entries.map((e) => e.file)).size, literalPairs: inventory.entries.filter((e) => e.nb.kind === 'literal' && e.en.kind === 'literal').length, templatePairs: inventory.entries.filter((e) => e.nb.kind === 'template' || e.en.kind === 'template').length, dynamicPairs: inventory.entries.filter((e) => e.nb.kind === 'expression' || e.en.kind === 'expression').length, references: inventory.references.length, candidates: inventory.candidates.length, conflicts: inventory.conflicts.length };
   const result = new Map([['scripts/i18n/mapping.v1.json', { version: inventory.version, entries: inventory.entries, conflicts: inventory.conflicts }], ['scripts/i18n/references.v1.json', inventory.references], ['scripts/i18n/candidates.v1.json', inventory.candidates], ['scripts/i18n/inventory-report.json', { ...summary, conflicts: inventory.conflicts }]]);
   for (const [lang, catalog] of Object.entries(locales)) result.set(`src/core/i18n/locales/${lang}.json`, catalog);
+  result.set('src/core/i18n/runtime.gen.json', runtime);
   return new Map([...result].map(([path, obj]) => [path, JSON.stringify(obj, null, 2) + '\n']));
 }
 export function buildInventory(root = ROOT, verify = false) {

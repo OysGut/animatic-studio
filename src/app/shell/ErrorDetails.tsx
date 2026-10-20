@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { L } from "@/core";
 import { errorReport } from "./error-report";
+import { t } from "@/core/i18n/keyed";
 
 /** «Vis teknisk feilmelding» med kopiering, så brukeren kan sende feilen videre (DEC-0091). */
 export function ErrorDetails({ error }: { error: unknown }) {
@@ -12,10 +13,10 @@ export function ErrorDetails({ error }: { error: unknown }) {
   return (
     <details className="mt-6 text-left">
       <summary className="cursor-pointer text-center text-xs text-muted-foreground hover:text-foreground">
-        {L("Vis teknisk feilmelding", "Show technical error message")}
+        {t("app-shell-error-details.error-details.summary.f1c4612e3285")}
       </summary>
       <pre
-        aria-label={L("Teknisk feilmelding", "Technical error message")}
+        aria-label={t("app-shell-error-details.error-details.aria-label.edd22d4751f8")}
         className="mt-2 max-h-60 overflow-auto whitespace-pre-wrap break-words rounded-md border border-input bg-muted p-3 font-mono text-[11px] text-foreground"
       >
         {report}
@@ -31,7 +32,7 @@ export function ErrorDetails({ error }: { error: unknown }) {
           }}
           className="inline-flex items-center justify-center rounded-md border border-input bg-background px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-accent"
         >
-          {copied ? L("Kopiert", "Copied") : L("Kopier feilmeldingen", "Copy the error message")}
+          {copied ? t("app-shell-error-details.error-details.button.41d68082e6c7") : t("app-shell-error-details.error-details.button.369721097502")}
         </button>
       </div>
     </details>
