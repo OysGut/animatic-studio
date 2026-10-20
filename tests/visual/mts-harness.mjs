@@ -123,7 +123,7 @@ export function harness(defaultOut) {
           const shots = [...user.matchAll(/blockId ([0-9a-f-]{36})/g)].map((m) => ({ blockId: m[1], text: "Close-up: she looks up as the snow begins." }));
           text = JSON.stringify({ images, shots });
         } else if (/resolve references/.test(d.system ?? "")) {
-          const links = [...user.matchAll(/ITEM key=(\S+)\nWORD: [^\n]*\nCANDIDATES: ([0-9a-f-]{36})/g)].map((m) => ({ key: m[1], assetId: m[2] }));
+          const links = [...user.matchAll(/ITEM key=(\S+)\nWORD: [^\n]*\nCANDIDATES: ([0-9a-f-]{36})/g)].map((m) => ({ key: m[1], assetId: m[2], confidence: 0.92 }));
           text = JSON.stringify({ links });
         }
         return json({ ok: true, text, provider: "lovable", model: "built-in", usage: { inputTokens: 10, outputTokens: 10 }, costUsd: 0, usedFallback: false, reason: "pref", keyOwner: "lovable", jobId: "00000000-0000-7000-8000-000000090000" });

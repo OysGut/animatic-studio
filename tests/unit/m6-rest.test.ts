@@ -7,6 +7,8 @@ import {
   contextLinkCommands,
   contextLinkSuggestions,
   contextLinksFromJson,
+  contextLinkAssessmentsFromJson,
+  contextLinkDefaultSelected,
   durationForecast,
   estimateProduction,
   filmClips,
@@ -96,6 +98,22 @@ describe("varighetsprognose fra historikk", () => {
 describe("kontekstuell kobling av betegnelser", () => {
   const s0 = fixture.state;
   const main = mainProduction(s0)!;
+
+  it("bare sikre regler er forhåndsvalgt; AI med 92 prosent og manuelt mål krever kryss", () => {
+    const item = { key: "b:hun", occurrenceId: "o", blockId: "b", word: "Hun", assetId: "a", confidence: "sure" as const, rule: "present" as const, candidates: ["a", "b"] };
+    expect(contextLinkDefaultSelected(item, false, false)).toBe(true);
+    expect(contextLinkDefaultSelected(item, true, false)).toBe(false);
+    expect(contextLinkDefaultSelected(item, false, true)).toBe(false);
+    expect(contextLinkDefaultSelected({ ...item, confidence: "uncertain" }, false, false)).toBe(false);
+    const result = contextLinkAssessmentsFromJson({ links: [{ key: item.key, assetId: "b", confidence: 0.92 }] }, [item]);
+    expect(result.get(item.key)).toEqual({ assetId: "b", confidence: 0.92 });
+  });
+
+  it("manglende og ugyldig AI-sikkerhet blir ukjent, ikke et oppdiktet prosenttall", () => {
+    const item = { key: "b:hun", occurrenceId: "o", blockId: "b", word: "Hun", assetId: "a", confidence: "uncertain" as const, rule: "pronoun" as const, candidates: ["a"] };
+    for (const confidence of [undefined, -1, 1.2, NaN, "92 %"])
+      expect(contextLinkAssessmentsFromJson({ links: [{ key: item.key, assetId: "a", confidence }] }, [item]).get(item.key)?.confidence).toBeNull();
+  });
 
   it("tvetydig alias avgjøres av hvem som er til stede, og forslaget blir én SetContextNames som kan angres", () => {
     const occ = orderedOccurrences(s0, main.id).find((o) => o.active && blocksOfVariant(s0, o.variantId).some((b) => b.kind === "action"))!;

@@ -10,7 +10,9 @@ import {
   contextLinkCommands,
   contextLinkPrompt,
   contextLinkSuggestions,
-  contextLinksFromJson,
+  contextLinkAssessmentsFromJson,
+  contextLinkDefaultSelected,
+  locale,
   formatHeading,
   L,
   newId,
@@ -18,6 +20,7 @@ import {
   tm,
   type Asset,
   type ContextLinkSuggestion,
+  type ContextLinkAssessment,
   type ProjectState,
 } from "@/core";
 import { generateText } from "@/adapters/ai/text.functions";
@@ -25,6 +28,8 @@ import type { Commands } from "@/app/project/use-commands";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { usd, useTextEstimate } from "@/app/storylab/storylab-data";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AssetThumb, useAssetCovers } from "./AssetThumb";
 
 const OUT_TOKENS = 1200;
 
@@ -42,12 +47,23 @@ export function ContextLinkSuggestions({
   cmds: Commands;
 }) {
   const all = useMemo(() => contextLinkSuggestions(state, productionId), [state, productionId]);
-  const [ai, setAi] = useState<ReadonlyMap<string, string | null>>(new Map());
-  // Forslagene for denne ressursen: regelens valg, eller AI-ens valg for de usikre
-  const mine = all.filter((x) => (ai.has(x.key) ? ai.get(x.key) === asset.id : x.assetId === asset.id));
+  const [ai, setAi] = useState<ReadonlyMap<string, ContextLinkAssessment>>(new Map());
+  const [targets, setTargets] = useState<ReadonlyMap<string, string>>(new Map());
+  // Panelets forslag blir værende når brukeren bytter mål, også til en annen ressurs.
+  const mine = all.filter((x) => x.assetId === asset.id || ai.get(x.key)?.assetId === asset.id || targets.has(x.key));
   const uncertain = all.filter((x) => x.confidence === "uncertain" && x.candidates.includes(asset.id) && !ai.has(x.key));
-  const [picked, setPicked] = useState<ReadonlySet<string> | null>(null);
-  const chosen = picked ?? new Set(mine.filter((x) => x.confidence === "sure" || ai.has(x.key)).map((x) => x.key));
+  const target = (x: ContextLinkSuggestion) => targets.get(x.key) ?? (ai.has(x.key) ? ai.get(x.key)?.assetId ?? null : x.assetId);
+  const [picked, setPicked] = useState<ReadonlyMap<string, boolean>>(new Map());
+  const chosen = new Set(mine.filter((x) => target(x) && (picked.get(x.key) ?? contextLinkDefaultSelected(x, ai.has(x.key), targets.has(x.key)))).map((x) => x.key));
+  const options = Object.values(state.assets).filter((a) => !a.removed && !a.archived && a.kind !== "sound");
+  const covers = useAssetCovers(state, options.map((a) => a.id));
+  const groups = new Map<string, ContextLinkSuggestion[]>();
+  for (const x of mine) {
+    const key = JSON.stringify([x.word.toLocaleLowerCase(locale()), state.blocks[x.blockId]?.text, target(x), ai.has(x.key) ? "ai" : x.rule]);
+    const group = groups.get(key) ?? [];
+    group.push(x);
+    groups.set(key, group);
+  }
   const [confirm, setConfirm] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -66,7 +82,7 @@ export function ContextLinkSuggestions({
     ai.has(x.key)
       ? L("AI-vurdering", "AI assessment")
       : x.rule === "present"
-        ? L("den eneste av dem i scenen", "the only one of them in the scene")
+        ? x.confidence === "sure" ? L("den eneste av dem i scenen", "the only one of them in the scene") : L("flere mulige mål i scenen", "multiple possible targets in the scene")
         : x.rule === "known_context"
           ? L("samme betegnelse er koblet før", "the same term has been linked before")
           : L("sist nevnte karakter (usikkert)", "last mentioned character (uncertain)");
@@ -80,9 +96,13 @@ export function ContextLinkSuggestions({
         data: { projectId: state.project.id, task: "general", json: true, system: prompt.system, messages: [{ role: "user", content: prompt.user }], maxTokens: OUT_TOKENS },
       });
       if (!r.ok) return setErr(tm(r.message));
-      const m = contextLinksFromJson(parseJsonLoose(r.text), uncertain);
+      const m = contextLinkAssessmentsFromJson(parseJsonLoose(r.text), uncertain);
       setAi(new Map([...ai, ...m]));
-      setPicked(null);
+      setPicked((prev) => {
+        const next = new Map(prev);
+        for (const key of m.keys()) next.set(key, false);
+        return next;
+      });
     } catch (e) {
       setErr(tm((e as Error).message));
     } finally {
@@ -91,7 +111,10 @@ export function ContextLinkSuggestions({
   }
 
   function approve() {
-    const accepted = mine.filter((x) => chosen.has(x.key)).map((x) => ({ ...x, assetId: asset.id }));
+    const accepted = mine.flatMap((x) => {
+      const assetId = target(x);
+      return chosen.has(x.key) && assetId ? [{ ...x, assetId }] : [];
+    });
     const list = contextLinkCommands(state, accepted);
     const group = newId();
     for (const c of list) {
@@ -99,11 +122,11 @@ export function ContextLinkSuggestions({
       if (e) return setErr(e);
     }
     setErr(null);
-    setPicked(null);
+    setPicked(new Map());
     setDone(
       L(
-        `${accepted.length} ${accepted.length === 1 ? "linje er koblet" : "linjer er koblet"} til ${asset.name}. Kan angres.`,
-        `${accepted.length} ${accepted.length === 1 ? "line is linked" : "lines are linked"} to ${asset.name}. Can be undone.`,
+        `${accepted.length} ${accepted.length === 1 ? "linje er koblet" : "linjer er koblet"}. Kan angres.`,
+        `${accepted.length} ${accepted.length === 1 ? "line is linked" : "lines are linked"}. Can be undone.`,
       ),
     );
   }
@@ -112,31 +135,45 @@ export function ContextLinkSuggestions({
     <section data-testid="context-link-suggestions" aria-label={L("Forslag til koblinger", "Suggested links")} className="flex flex-col gap-1.5">
       <h4 className="text-xs font-medium text-text-primary">{L("Forslag til koblinger fra konteksten", "Suggested links from the context")}</h4>
       {mine.length ? (
-        <ul className="max-h-56 overflow-y-auto border border-border bg-surface-1">
-          {mine.map((x) => (
-            <li key={x.key} data-testid="context-link-row" className="border-b border-border last:border-b-0">
-              <label className="flex items-start gap-2 px-2 py-1 text-xs">
-                <input
-                  type="checkbox"
-                  disabled={!editable}
-                  checked={chosen.has(x.key)}
-                  onChange={(e) => {
-                    const n = new Set(chosen);
-                    if (e.target.checked) n.add(x.key);
-                    else n.delete(x.key);
-                    setPicked(n);
-                  }}
-                />
-                <span className="min-w-0">
-                  <span className="block text-[11px] text-text-tertiary">
-                    {scene(x.occurrenceId)} · «{x.word}» · {ruleText(x)}
-                  </span>
-                  <span className="line-clamp-2 text-text-primary">{state.blocks[x.blockId]?.text}</span>
-                </span>
-              </label>
-            </li>
+        <div className="max-h-80 overflow-y-auto border border-border bg-surface-1">
+          {[...groups].map(([key, group]) => (
+            <div key={key} data-testid="context-link-group" className="border-b border-border last:border-b-0">
+              {group.length > 1 ? <p data-testid="context-link-repeat" className="px-2 py-1 text-xs text-text-secondary">{L(
+                `Samme ord og linje i ${group.length} sceneforekomster; samme foreslåtte mål og begrunnelse.`,
+                `Same word and line in ${group.length} scene occurrences; same proposed target and reason.`,
+              )}</p> : null}
+              <ul>
+                {group.map((x) => {
+                  const id = target(x);
+                  const assessed = ai.get(x.key);
+                  const score = targets.has(x.key) ? null : assessed?.confidence ?? null;
+                  return <li key={x.key} data-testid="context-link-row" className="flex items-start gap-2 px-2 py-2 text-xs">
+                    <input type="checkbox" disabled={!editable || !id} aria-label={L(`Velg kobling for «${x.word}» i ${scene(x.occurrenceId)}`, `Select link for “${x.word}” in ${scene(x.occurrenceId)}`)}
+                      checked={chosen.has(x.key)} onChange={(e) => setPicked(new Map(picked).set(x.key, e.target.checked))} />
+                    <div className="flex min-w-0 flex-1 flex-col gap-1">
+                      <div data-testid="context-link-target" className="flex min-w-0 items-center gap-2 text-text-primary">
+                        <span>«{x.word}» →</span>
+                        {id ? <AssetThumb state={state} assetId={id} url={covers[id]} size="sm" /> : null}
+                        <Select value={id ?? ""} disabled={!editable} onValueChange={(value) => {
+                          setTargets(new Map(targets).set(x.key, value));
+                          setPicked(new Map(picked).set(x.key, false));
+                        }}>
+                          <SelectTrigger data-testid="context-link-target-select" aria-label={L("Målressurs", "Target asset")} className="h-8 min-w-0 flex-1 text-xs"><SelectValue placeholder={L("Ingen sikker kobling", "No clear link")} /></SelectTrigger>
+                          <SelectContent>{options.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}</SelectContent>
+                        </Select>
+                      </div>
+                      <span className="text-text-tertiary">{scene(x.occurrenceId)} · {targets.has(x.key) ? L("Manuelt mål", "Manual target") : ruleText(x)}</span>
+                      <span data-testid="context-link-confidence" className="text-text-secondary">{score !== null
+                        ? L(`Sikkerhet: ${new Intl.NumberFormat(locale(), { maximumFractionDigits: 0 }).format(score * 100)} %`, `Confidence: ${new Intl.NumberFormat(locale(), { maximumFractionDigits: 0 }).format(score * 100)} %`)
+                        : L("Sikkerhet: ikke tallfestet", "Confidence: not quantified")}</span>
+                      <span className="line-clamp-2 text-text-primary">{state.blocks[x.blockId]?.text}</span>
+                    </div>
+                  </li>;
+                })}
+              </ul>
+            </div>
           ))}
-        </ul>
+        </div>
       ) : null}
       {editable && mine.length ? (
         <Button size="sm" variant="secondary" className="self-start" data-testid="context-link-approve" disabled={chosen.size === 0} onClick={approve}>

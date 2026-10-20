@@ -83,9 +83,24 @@ for (const lang of ["nb", "en"]) {
     const rows = await sec.getByTestId("context-link-row").count();
     h.check(rows >= 1, "kobling: forslag vises til godkjenning");
     h.check(h.state.commands.length === 0, "kobling: ingenting koblet før godkjenning");
+    h.check(await sec.getByTestId("context-link-repeat").count() >= 1, "kobling: like linjer grupperes med forklaring");
+    const first = sec.getByTestId("context-link-row").first();
+    h.check(await first.getByTestId("context-link-target-select").innerText() === "Maja", "kobling: foreslått mål vises med navn");
+    h.check(await first.getByTestId("asset-thumb").isVisible(), "kobling: målressursen har miniatyr");
+    h.check(!await first.getByRole("checkbox").isChecked(), "kobling: AI-forslag er ikke forhåndsavkrysset");
+    h.check(/92\s*%/.test(await first.getByTestId("context-link-confidence").innerText()), "kobling: AI-sikkerhet vises som 92 prosent");
+    h.check(await sec.getByTestId("context-link-approve").isDisabled(), "kobling: ingen godkjenning uten avkryssing");
+    await first.getByTestId("context-link-target-select").click();
+    await page.getByRole("option", { name: "Bestemor Anne", exact: true }).click();
+    h.check(await first.getByTestId("context-link-target-select").innerText() === "Bestemor Anne", "kobling: mål kan byttes før godkjenning");
+    h.check(!await first.getByRole("checkbox").isChecked(), "kobling: målbytte krever nytt kryss");
+    await first.getByRole("checkbox").check();
+    h.check(/1\s/.test(await sec.getByTestId("context-link-approve").innerText()), "kobling: antallet gjelder bare avkryssede");
     await sec.screenshot({ path: `${h.out}/links-${lang}.png` });
     await sec.getByTestId("context-link-approve").click();
     h.check(await h.eventually(() => h.state.commands.some((c) => c.type === "SetContextNames"), 5000), "kobling: godkjent via kommando (kan angres)");
+    const linked = h.state.commands.filter((c) => c.type === "SetContextNames");
+    h.check(linked.length === 1 && linked[0].assetId !== MAJA, "kobling: bare valgt kobling lagres på det endrede målet");
   });
 }
 await h.finish();
