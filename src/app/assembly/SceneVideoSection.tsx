@@ -246,7 +246,7 @@ export function SceneVideoSection({
               aspect,
               startImagePath: waits ? null : startFor(i),
               candidates,
-              approved: true, qualityProfile: quality.profile ? qualityProfileSnapshot(quality.profile) : null, qualityProfile: quality.profile ? qualityProfileSnapshot(quality.profile) : null,
+              approved: true, qualityProfile: quality.profile ? qualityProfileSnapshot(quality.profile) : null,
               // Sammenheng i køen: venter på siste bilde fra segmentet før (DEC-0071)
               ...(waits ? { queue: true, chainAfter: stored[i - 1]!.id } : {}),
             },
@@ -364,6 +364,7 @@ export function SceneVideoSection({
     return (
       <p className="text-xs text-text-tertiary">
       <QualityProfilePicker state={state} value={quality.choice} disabled={busy} onChange={v => { quality.setChoice(v); setPick(""); setConfirm(null); }} /><QualityProfileBudget error={quality.budgetError} />
+
         {L(
           "Ingen videoleverandør er koblet til. Prosjektets eier kan koble til en under «AI-leverandører» på prosjektlisten (f.eks. Google Veo, Runway, OpenAI Sora eller fal.ai/Kling).",
           "No video provider is connected. The project owner can connect one under “AI providers” on the project list (e.g. Google Veo, Runway, OpenAI Sora or fal.ai/Kling).",

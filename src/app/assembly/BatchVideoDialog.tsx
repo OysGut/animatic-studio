@@ -212,7 +212,7 @@ export function BatchVideoDialog({
               seconds: seconds(w, i),
               aspect,
               startImagePath: after ? null : (fromPrev ?? (start ? start.mediaPath : null)),
-              approved: true, qualityProfile: quality.profile ? qualityProfileSnapshot(quality.profile) : null, qualityProfile: quality.profile ? qualityProfileSnapshot(quality.profile) : null,
+              approved: true, qualityProfile: quality.profile ? qualityProfileSnapshot(quality.profile) : null,
               queue: true,
               priority,
               chainAfter: after,
