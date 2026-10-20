@@ -1,14 +1,16 @@
 # P4 B – Lageksport med alfa (20.10.2026)
-- [ ] Felles compositor med transparent bakgrunn, lagfilter og effektvalg.
-- [ ] AlphaEncoder, strømmet PNG-ZIP og kontrollert WebM VP9-alfa, avbryt og fremdrift.
-- [ ] Felles dialog fra eksport og lagpaneler, prosjektlagrede valg.
-- [ ] Ekte pikseltester, nettlesernedlasting NO/EN, regresjoner, DB og krav REQ-0837–0844.
+- [x] Felles compositor med transparent bakgrunn, lagfilter og effektvalg.
+- [x] AlphaEncoder, PNG-ZIP og kontrollert WebM VP9-alfa, avbryt og fremdrift. Faktisk WebM-alfa venter på nettleser/koder med positiv støtte.
+- [x] Felles dialog fra eksport, lagpanel og Asset Studio, lokale prosjektvalg.
+- [x] Ekte pikseltester og nettlesernedlasting NO/EN (33/33), eksport-/CA8-/MTS-/U5-/DV5-regresjoner, DB 132/132 og krav REQ-0837–0844.
+- [ ] P5: linjekobling med godkjente 1:n/n:1-forslag, kostnadsport, kommandoer, lagring og tester. Kartlagt, ikke implementert.
+- [ ] P6: prosjektprofiler, genererings-/eksportoverstyring, kostnad og øyeblikksbilder, migrasjon og tester. Kartlagt, ikke implementert.
 
 # DV7+DV8 – Avvik, bokmerker og huskelapper (20.10.2026)
 - [x] DV7: felles avviksstatus i drift.ts, røde segmenter, statusikon i sceneeditor/manusutforsker/dialogeditor, ordvis Unicode-diff, gjennomgang med historikk, «Generer alle røde».
 - [x] DV8: personlige bokmerker (RPC + RLS), delte huskelapper via apply_changes, «Merknader og huskelapper» på prosjektsiden.
 - [x] Migrasjon 0062 skrevet og testet lokalt (DB 132/132); krav REQ-0801–0836; dv7/dv8-suiter og regresjoner.
-- [ ] Cloud-kjøring av 0062: Claude kjører den.
+- [x] Cloud 0062 og full DV-verifisering bekreftet av Øystein.
 - [ ] DB-test for reconfirm_dialogue_batch med ekte jobbrader: ikke skrevet (krever full generation_jobs-fixtur).
 
 # DV5+DV6 – Massegenerering og språk (19.10.2026)

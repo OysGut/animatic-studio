@@ -167,7 +167,7 @@ export function drawFilmFrame(
   if (!m) return null;
   if (!m.b) {
     drawClipFrame(ctx, state, m.a, o);
-    if (m.a.clip.monochrome) desaturate(ctx, W, H);
+    if (m.a.clip.monochrome) desaturate(ctx, W, H, o.background === "transparent");
   } else {
     const A = clipLayer(0, state, m.a, o);
     const B = clipLayer(1, state, m.b, o);
