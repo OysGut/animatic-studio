@@ -7,6 +7,7 @@ import { textSpecsOf, useTextFonts } from "@/engine/typography/fonts";
 import { fitView } from "@/app/asset-studio/StudioPreview";
 import { PanelHeader, Toolbar, ToolbarGroup, IconButton } from "@/app/shell/workspace-chrome";
 import { RotateCcw } from "lucide-react";
+import { t as tk } from "@/core/i18n/keyed";
 export function AnimPreview({ state, composition, frame, urls }: { state: ProjectState; composition: Composition; frame: number; urls: Readonly<Record<string, string>> }) {
   const wrap = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -36,15 +37,15 @@ export function AnimPreview({ state, composition, frame, urls }: { state: Projec
   // U5: forhåndsvisningen har scenens bildeformat; resten av panelet er vanlig panelflate (ingen stor svart flate)
   const aspect = `${Math.max(1, composition.width)} / ${Math.max(1, composition.height)}`;
   return <section data-testid="anim-preview" className="flex min-h-0 w-full flex-1 flex-col bg-surface-1">
-    <PanelHeader title={L("Forhåndsvisning", "Preview")} />
+    <PanelHeader title={tk("app-scene-editor-animation-anim-preview.anim-preview.title.92e5e6e4947c")} />
     <Toolbar><ToolbarGroup>
-      <select data-testid="anim-preview-zoom" aria-label={L("Zoom i forhåndsvisningen", "Preview zoom")} value={zoom} onChange={e => { setZoom(e.target.value === "fit" ? "fit" : Number(e.target.value)); setPan({ x: 0, y: 0 }); }} className="h-7 rounded-sm border border-border-control bg-surface-3 text-xs text-text-primary">
-        <option value="fit">{L("Tilpass", "Fit")}</option>
+      <select data-testid="anim-preview-zoom" aria-label={tk("app-scene-editor-animation-anim-preview.anim-preview.aria-label.84dd1e0b5314")} value={zoom} onChange={e => { setZoom(e.target.value === "fit" ? "fit" : Number(e.target.value)); setPan({ x: 0, y: 0 }); }} className="h-7 rounded-sm border border-border-control bg-surface-3 text-xs text-text-primary">
+        <option value="fit">{tk("app-scene-editor-animation-anim-preview.anim-preview.option.4dbd8598c83c")}</option>
          {[0.5, 1, 2, 4].map(z => <option key={z} value={z}>{z * 100}%</option>)}
       </select>
-      <IconButton label={L("Tilbakestill visningen", "Reset view")} onClick={() => { setZoom("fit"); setPan({ x: 0, y: 0 }); }}><RotateCcw /></IconButton>
+      <IconButton label={tk("app-scene-editor-animation-anim-preview.anim-preview.label.3358c1aba7ad")} onClick={() => { setZoom("fit"); setPan({ x: 0, y: 0 }); }}><RotateCcw /></IconButton>
     </ToolbarGroup></Toolbar>
-    <div ref={wrap} data-testid="anim-preview-pan" data-pan-x={pan.x} data-pan-y={pan.y} tabIndex={0} role="img" aria-label={L("Forhåndsvisning av scenen", "Scene preview")}
+    <div ref={wrap} data-testid="anim-preview-pan" data-pan-x={pan.x} data-pan-y={pan.y} tabIndex={0} role="img" aria-label={tk("app-scene-editor-animation-anim-preview.anim-preview.aria-label.a483be00c0b2")}
       style={{ aspectRatio: aspect }}
       className="relative min-h-0 w-full shrink-0 touch-none overflow-hidden border-b border-border bg-media focus-visible:ring-2 focus-visible:ring-focus-ring"
       onPointerDown={e => { e.currentTarget.setPointerCapture(e.pointerId); drag.current = { x: e.clientX, y: e.clientY, pan }; }}
@@ -54,7 +55,7 @@ export function AnimPreview({ state, composition, frame, urls }: { state: Projec
       <canvas ref={canvas} data-testid="anim-preview-canvas" data-frame={frame} className="absolute inset-0 block h-full w-full" />
     </div>
     <div data-testid="anim-preview-layers" className="min-h-0 flex-1 overflow-y-auto bg-surface-1">
-      <PanelHeader title={L("Lag", "Layers")} />
+      <PanelHeader title={tk("app-scene-editor-animation-anim-preview.anim-preview.title.3b951a0b177a")} />
       <ul className="divide-y divide-border">
         {layersOf(state, composition.id).map(layer => <li key={layer.id} className="flex items-center gap-2 px-2 py-1 text-xs text-text-secondary">
           {layer.assetId ? <AssetThumb state={state} assetId={layer.assetId} size="sm" /> : <span className="size-6 shrink-0" aria-hidden />}

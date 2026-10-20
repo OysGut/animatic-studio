@@ -24,6 +24,7 @@ import {
   lowerThirdUses,
   type Run,
 } from "./mts-actions";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Malene i prosjektbiblioteket med nyeste versjon. */
 function projectTemplates(state: ProjectState) {
@@ -70,22 +71,22 @@ export function TextMenu({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <ToolbarButton variant="default" data-testid="mts-text-menu" aria-label={L("Tekst og grafikk", "Text and graphics")}>
+          <ToolbarButton variant="default" data-testid="mts-text-menu" aria-label={tk("app-scene-editor-text-menu.text-menu.aria-label.258937cf8a87")}>
             <Type aria-hidden />
-            <span className="sr-only min-[1400px]:not-sr-only">{L("Tekst", "Text")}</span>
+            <span className="sr-only min-[1400px]:not-sr-only">{tk("app-scene-editor-text-menu.text-menu.span.0c9d947920d5")}</span>
           </ToolbarButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="max-h-[70vh] overflow-auto">
           <DropdownMenuItem data-testid="mts-add-text" onSelect={() => done(addTextLayer(run, composition))}>
-            {L("Legg til tekst", "Add text")}
+            {tk("app-scene-editor-text-menu.text-menu.dropdown-menu-item.561c381e21f3")}
           </DropdownMenuItem>
           <DropdownMenuItem data-testid="mts-add-lower-third" onSelect={() => done(addLowerThird(run, composition))}>
-            {L("Ny lower third", "New lower third")}
+            {tk("app-scene-editor-text-menu.text-menu.dropdown-menu-item.3eb87d0f3000")}
           </DropdownMenuItem>
           {uses.length > 0 ? (
             <>
               <DropdownMenuSeparator />
-              <DropdownMenuLabel>{L("Bruk samme design som i …", "Use the same design as in …")}</DropdownMenuLabel>
+              <DropdownMenuLabel>{tk("app-scene-editor-text-menu.text-menu.dropdown-menu-label.a1c09757a8ee")}</DropdownMenuLabel>
               {uses.map((u) => (
                 <DropdownMenuItem
                   key={u.instanceId}
@@ -102,32 +103,29 @@ export function TextMenu({
                     }
                   }}
                 >
-                  {L(
-                    `${u.sceneLabel} – ${u.templateName} (v${u.versionNumber})`,
-                    `${u.sceneLabel} – ${u.templateName} (v${u.versionNumber})`,
-                  )}
+                  {tk("app-scene-editor-text-menu.text-menu.dropdown-menu-item.eefacd23e8d1", { sceneLabel: String(u.sceneLabel), templateName: String(u.templateName), versionNumber: String(u.versionNumber) })}
                 </DropdownMenuItem>
               ))}
             </>
           ) : null}
           <DropdownMenuSeparator />
           <DropdownMenuItem data-testid="mts-global-templates" onSelect={() => setGlobalOpen(true)}>
-            {L("Fra globalt bibliotek …", "From the global library …")}
+            {tk("app-scene-editor-text-menu.text-menu.dropdown-menu-item.08ecf6fcd8d2")}
           </DropdownMenuItem>
           {templates.length > 0 ? (
             <>
               <DropdownMenuSeparator />
-              <DropdownMenuLabel>{L("Bruk mal", "Use template")}</DropdownMenuLabel>
+              <DropdownMenuLabel>{tk("app-scene-editor-text-menu.text-menu.dropdown-menu-label.779a9dea3449")}</DropdownMenuLabel>
               {templates.map((t) => (
                 <DropdownMenuItem
                   key={t.assetId}
                   data-testid={`mts-apply-template-${t.assetId}`}
                   onSelect={() => {
-                    const r = applyTemplateVersion(run, state, composition, t.versionId, undefined, L(`Bruk mal «${t.name}»`, `Use template “${t.name}”`));
+                    const r = applyTemplateVersion(run, state, composition, t.versionId, undefined, tk("app-scene-editor-text-menu.r.apply-template-version.ba6942789333", { name: String(t.name) }));
                     setError(r.error);
                   }}
                 >
-                  {L(`${t.name} (v${t.number})`, `${t.name} (v${t.number})`)}
+                  {tk("app-scene-editor-text-menu.text-menu.dropdown-menu-item.f4972adfe1bb", { name: String(t.name), number: String(t.number) })}
                 </DropdownMenuItem>
               ))}
             </>
@@ -150,7 +148,7 @@ export function TextMenu({
           const latest = vers.sort((x, y) => y.number - x.number)[0];
           if (latest) {
             const name = fresh.assets[assetId]?.name ?? "";
-            const r = applyTemplateVersion(run, fresh, composition, latest.id, undefined, L(`Bruk mal «${name}»`, `Use template “${name}”`));
+            const r = applyTemplateVersion(run, fresh, composition, latest.id, undefined, tk("app-scene-editor-text-menu.r.apply-template-version.bf65dfd51649", { name: String(name) }));
             setError(r.error);
           }
         }}

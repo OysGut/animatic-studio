@@ -71,6 +71,7 @@ import type { Playback } from "./use-playback";
 import { compositionFieldsOf, layerEventMarks, type LayerEventMark } from "./timeline-helpers";
 import { RetimeDialog } from "./RetimeDialog";
 import { useLanguage } from "@/app/i18n/language";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 /** Standardbredde for lagnavnene; brukeren kan dra i skillet (Mars 2026-10-13), og bredden huskes. */
 const LABEL_W = 160;
@@ -83,13 +84,7 @@ const GUTTER = 8;
 const ROW_H = 24;
 const MAX_ZOOM = 24;
 
-const EASING_LABEL: Record<Easing, string> = localized({
-  linear: ["Jevn", "Linear"],
-  "ease-in": ["Myk start", "Ease in"],
-  "ease-out": ["Myk slutt", "Ease out"],
-  "ease-in-out": ["Myk start og slutt", "Ease in and out"],
-  hold: ["Hold", "Hold"],
-});
+const EASING_LABEL: Record<Easing, string> = tLocalized({ linear: "app-scene-editor-timeline.easing-label.linear.1750f57a6de9", "ease-in": "app-scene-editor-timeline.easing-label.ease-in.9379bba8c3f0", "ease-out": "app-scene-editor-timeline.easing-label.ease-out.56780e4ed77f", "ease-in-out": "app-scene-editor-timeline.easing-label.ease-in-out.0a7a2d9970f5", hold: "app-scene-editor-timeline.easing-label.hold.4f4e14ef5349" });
 
 type Run = (command: Command, label: string) => string | null;
 
@@ -315,14 +310,8 @@ const CameraRow = memo(function CameraRow({
             tabIndex={-1}
             aria-label={
               sh.name
-                ? L(
-                    `Kamerautsnitt ${sh.name}, bilde ${start} til ${end}`,
-                    `Camera shot ${sh.name}, frames ${start} to ${end}`,
-                  )
-                : L(
-                    `Kamerautsnitt, bilde ${start} til ${end}`,
-                    `Camera shot, frames ${start} to ${end}`,
-                  )
+                ? tk("app-scene-editor-timeline.camera-row.aria-label.823cd5dcc566", { name: String(sh.name), start: String(start), end: String(end) })
+                : tk("app-scene-editor-timeline.camera-row.aria-label.861d5076cce8", { start: String(start), end: String(end) })
             }
             aria-pressed={selected}
             onPointerDown={(e) => onShotPointerDown(e, sh, "move")}
@@ -346,7 +335,7 @@ const CameraRow = memo(function CameraRow({
             }}
           >
             <span className="pointer-events-none block truncate px-2 font-medium">
-              {sh.name || L("Utsnitt", "Shot")}
+              {sh.name || tk("app-scene-editor-timeline.camera-row.span.162934d20858")}
             </span>
             {editable ? (
               <>
@@ -431,7 +420,7 @@ const LayerRow = memo(function LayerRow({
         {layer.path ? (
           <span
             aria-hidden
-            title={L("Bevegelsesbane", "Motion path")}
+            title={tk("app-scene-editor-timeline.layer-row.title.adcac36a2b96")}
             className="pointer-events-none absolute bottom-1 h-0.5 rounded-full bg-accent-brand/60"
             style={{
               left: layer.path.startFrame * ppf,
@@ -444,8 +433,8 @@ const LayerRow = memo(function LayerRow({
             key={`swap-${w.frame}`}
             role="button"
             tabIndex={-1}
-            aria-label={L(`Bildeskifte på bilde ${w.frame}`, `Image swap at frame ${w.frame}`)}
-            title={L("Bildeskifte (dra for å flytte)", "Image swap (drag to move)")}
+            aria-label={tk("app-scene-editor-timeline.layer-row.aria-label.1ae0f419d901", { frame: String(w.frame) })}
+            title={tk("app-scene-editor-timeline.layer-row.title.7437d71ba4b9")}
             onPointerDown={(e) => onSwapPointerDown(e, layer.id, w.frame)}
             onPointerMove={onSwapPointerMove}
             onPointerUp={onSwapPointerUp}
@@ -467,8 +456,8 @@ const LayerRow = memo(function LayerRow({
             key={`event-${ev.id}`}
             role="button"
             tabIndex={-1}
-            aria-label={L(`${ev.title} (bilde ${ev.frame})`, `${ev.title} (frame ${ev.frame})`)}
-            title={L(`${ev.title} (bilde ${ev.frame})`, `${ev.title} (frame ${ev.frame})`)}
+            aria-label={tk("app-scene-editor-timeline.layer-row.aria-label.ab359055d0a4", { title: String(ev.title), frame: String(ev.frame) })}
+            title={tk("app-scene-editor-timeline.layer-row.title.ab359055d0a4", { title: String(ev.title), frame: String(ev.frame) })}
             data-testid="layer-event-mark"
             onPointerDown={(e) => onEventPointerDown(e, layer.id, ev.frame)}
             className="absolute bottom-0 z-10 flex h-2.5 w-3 cursor-pointer items-end justify-center"
@@ -485,7 +474,7 @@ const LayerRow = memo(function LayerRow({
               key={f}
               role="button"
               tabIndex={-1}
-              aria-label={L(`Nøkkelbilde på bilde ${f}`, `Keyframe at frame ${f}`)}
+              aria-label={tk("app-scene-editor-timeline.layer-row.aria-label.fd871410aadc", { f: String(f) })}
               aria-pressed={isSel}
               onPointerDown={(e) => onKeyPointerDown(e, layer.id, f)}
               onPointerMove={onKeyPointerMove}
@@ -703,7 +692,7 @@ export function Timeline({
     if (!editable || !keySel || !keyLayer || !keyValid) return;
     updateKeys(
       keyLayer,
-      L("Slett nøkkelbilde", "Delete keyframe"),
+      tk("app-scene-editor-timeline.delete-selected-key.update-keys.1aa7524a08fd"),
       removeKeyframesAt(keyLayer.keyframes, keySel.frame),
     );
     setKeySel(null);
@@ -800,7 +789,7 @@ export function Timeline({
       if (
         updateKeys(
           layer,
-          L("Flytt nøkkelbilde", "Move keyframe"),
+          tk("app-scene-editor-timeline.on-key-pointer-up.update-keys.9d89eeebe521"),
           moveKeyframes(layer.keyframes, draft.from, draft.to),
         )
       ) {
@@ -853,10 +842,7 @@ export function Timeline({
       if (!layer) return;
       if (layer.swaps.some((w) => w.frame === d.to)) {
         setError(
-          L(
-            "Det er allerede et bildeskifte på det bildet.",
-            "There is already an image swap on that frame.",
-          ),
+          tk("app-scene-editor-timeline.on-swap-pointer-up.set-error.5e5cb2a28cef"),
         );
         return;
       }
@@ -875,7 +861,7 @@ export function Timeline({
             },
           ],
         },
-        L("Flytt bildeskifte", "Move image swap"),
+        tk("app-scene-editor-timeline.ok.exec.0d0809ab14af"),
       );
       if (ok) latest.current.playback.setFrame(d.to);
     },
@@ -939,8 +925,8 @@ export function Timeline({
       if (!current) return;
       updateComposition(
         d.mode === "move"
-          ? L("Flytt kamerautsnitt", "Move camera shot")
-          : L("Endre lengde på kamerautsnitt", "Change camera shot length"),
+          ? tk("app-scene-editor-timeline.on-shot-pointer-up.update-composition.9f0664ed9147")
+          : tk("app-scene-editor-timeline.on-shot-pointer-up.update-composition.264a5ac49c4b"),
         {},
         withShot(cam, { ...current, startFrame: draft.startFrame, endFrame: draft.endFrame }),
       );
@@ -1000,7 +986,7 @@ export function Timeline({
     if (frames === durationFrames) return;
     // B-041: brukeren velger metode hver gang scenen endrer lengde
     if (retime) setRetimeTarget(frames);
-    else updateComposition(L("Endre varighet", "Change duration"), { durationFrames: frames });
+    else updateComposition(tk("app-scene-editor-timeline.commit-duration.update-composition.6c54abb88e95"), { durationFrames: frames });
   }
 
   /** Låste tidsrom (SV1): nytt fra avspillingshodet (1 s), eller fjernet. */
@@ -1023,16 +1009,13 @@ export function Timeline({
     const end = Math.min(durationFrames, start + Math.round(fpsN), ...nextStart);
     if (end <= start || list.some((r) => start >= r.startFrame && start < r.endFrame)) {
       setError(
-        L(
-          "Det er ikke plass til et låst tidsrom her. Flytt avspillingshodet.",
-          "There is no room for a locked range here. Move the playhead.",
-        ),
+        tk("app-scene-editor-timeline.add-locked-range.set-error.448f5260954f"),
       );
       return;
     }
     setLockedRanges(
       [...list, { id: newId(), startFrame: start, endFrame: end, label: "" }],
-      L("Lås tidsrom", "Lock time range"),
+      tk("app-scene-editor-timeline.add-locked-range.set-locked-ranges.dc0340911376"),
     );
   }
 
@@ -1071,24 +1054,21 @@ export function Timeline({
     const others = list.filter((r) => r.id !== d.id);
     if (others.some((r) => d.start < r.endFrame && d.end > r.startFrame)) {
       setError(
-        L(
-          "Låste tidsrom kan ikke overlappe hverandre.",
-          "Locked ranges cannot overlap each other.",
-        ),
+        tk("app-scene-editor-timeline.finish-range-drag.set-error.728c710f03b1"),
       );
       return;
     }
     if (d.id === null)
       setLockedRanges(
         [...list, { id: newId(), startFrame: d.start, endFrame: d.end, label: "" }],
-        L("Lås tidsrom", "Lock time range"),
+        tk("app-scene-editor-timeline.finish-range-drag.set-locked-ranges.d10c1d6c567c"),
       );
     else {
       const old = list.find((r) => r.id === d.id);
       if (!old || (old.startFrame === d.start && old.endFrame === d.end)) return;
       setLockedRanges(
         list.map((r) => (r.id === d.id ? { ...r, startFrame: d.start, endFrame: d.end } : r)),
-        L("Endre låst tidsrom", "Change locked range"),
+        tk("app-scene-editor-timeline.finish-range-drag.set-locked-ranges.e722e859f627"),
       );
     }
   }
@@ -1097,7 +1077,7 @@ export function Timeline({
 
   function keyAll() {
     if (!selectedLayer) return;
-    updateKeys(selectedLayer, L("Nøkkelbilde", "Keyframe"), keyAllAt(selectedLayer, frame));
+    updateKeys(selectedLayer, tk("app-scene-editor-timeline.key-all.update-keys.4a6a6c0c18aa"), keyAllAt(selectedLayer, frame));
   }
 
   function addShot() {
@@ -1105,15 +1085,12 @@ export function Timeline({
     const slot = freeShotSlot(composition.camera, frame, Math.round(3 * fpsN), last);
     if (!slot) {
       setError(
-        L(
-          "Det er ikke plass til et nytt kamerautsnitt her. Flytt avspillingshodet.",
-          "There is no room for a new camera shot here. Move the playhead.",
-        ),
+        tk("app-scene-editor-timeline.add-shot.set-error.dd3fcd06065a"),
       );
       return;
     }
     const ok = updateComposition(
-      L("Nytt kamerautsnitt", "New camera shot"),
+      tk("app-scene-editor-timeline.ok.update-composition.068e39844303"),
       {},
       withShot(composition.camera, newShot(composition, id, slot.startFrame, slot.endFrame)),
     );
@@ -1128,7 +1105,7 @@ export function Timeline({
     <div
       ref={rootRef}
       role="region"
-      aria-label={L("Tidslinje", "Timeline")}
+      aria-label={tk("app-scene-editor-timeline.timeline.aria-label.624f74e7ceb5")}
       tabIndex={0}
       onKeyDown={onKeyDown}
       onPointerDownCapture={(e) => {
@@ -1158,19 +1135,19 @@ export function Timeline({
         onSize={setHeight}
         min={150}
         max={560}
-        label={L("Høyde på tidslinjen", "Height of the timeline")}
+        label={tk("app-scene-editor-timeline.timeline.label.26278c01006b")}
       />
       {/* Transport og verktøy */}
       <div className="flex min-h-10 shrink-0 flex-wrap items-center gap-x-1.5 gap-y-1 border-b border-border px-2 py-1">
         <IconButton
-          label={L("Til start (Home)", "To start (Home)")}
+          label={tk("app-scene-editor-timeline.timeline.label.94cab46a8c43")}
           onClick={() => playback.setFrame(0)}
           className="size-7"
         >
           <SkipBack className="size-3.5" />
         </IconButton>
         <IconButton
-          label={L("Forrige bilde (pil venstre)", "Previous frame (left arrow)")}
+          label={tk("app-scene-editor-timeline.timeline.label.807cf7b285c2")}
           onClick={() => playback.setFrame(frame - 1)}
           className="size-7"
         >
@@ -1178,11 +1155,11 @@ export function Timeline({
         </IconButton>
         <button
           type="button"
-          aria-label={playback.playing ? L("Pause", "Pause") : L("Spill av", "Play")}
+          aria-label={playback.playing ? tk("app-scene-editor-timeline.timeline.aria-label.9d44a6c2d1c0") : tk("app-scene-editor-timeline.timeline.aria-label.df853fc99f9b")}
           title={
             playback.playing
-              ? L("Pause (mellomrom)", "Pause (space)")
-              : L("Spill av (mellomrom)", "Play (space)")
+              ? tk("app-scene-editor-timeline.timeline.title.818c0e56796c")
+              : tk("app-scene-editor-timeline.timeline.title.32e5363a4a3f")
           }
           onClick={playback.toggle}
           className={iconButton + " size-7 bg-surface-3 text-text-primary"}
@@ -1190,21 +1167,21 @@ export function Timeline({
           {playback.playing ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}
         </button>
         <IconButton
-          label={L("Neste bilde (pil høyre)", "Next frame (right arrow)")}
+          label={tk("app-scene-editor-timeline.timeline.label.958ccea26d81")}
           onClick={() => playback.setFrame(frame + 1)}
           className="size-7"
         >
           <ChevronRight className="size-3.5" />
         </IconButton>
         <IconButton
-          label={L("Til slutt (End)", "To end (End)")}
+          label={tk("app-scene-editor-timeline.timeline.label.2fec9b07be1e")}
           onClick={() => playback.setFrame(last)}
           className="size-7"
         >
           <SkipForward className="size-3.5" />
         </IconButton>
         <IconButton
-          label={L("Løkke", "Loop")}
+          label={tk("app-scene-editor-timeline.timeline.label.a18955e0b40b")}
           active={playback.loop}
           onClick={() => playback.setLoop(!playback.loop)}
           className="size-7"
@@ -1213,7 +1190,7 @@ export function Timeline({
         </IconButton>
         <span
           className="shrink-0 whitespace-nowrap px-1 font-mono text-[13px] tabular-nums text-text-primary"
-          aria-label={L("Tid", "Time")}
+          aria-label={tk("app-scene-editor-timeline.timeline.aria-label.3369220b3383")}
         >
           {formatTimecode(frame, fps)}
           <span className="text-text-tertiary"> / {formatTimecode(durationFrames, fps)}</span>
@@ -1222,7 +1199,7 @@ export function Timeline({
         <span className="mx-1 h-4 w-px shrink-0 bg-border" aria-hidden="true" />
 
         <label className="flex shrink-0 items-center gap-1.5 text-xs text-text-secondary">
-          {L("Varighet (s)", "Duration (s)")}
+          {tk("app-scene-editor-timeline.timeline.label.51ad68b066b9")}
           <input
             type="number"
             inputMode="decimal"
@@ -1250,10 +1227,7 @@ export function Timeline({
             size="sm"
             variant="ghost"
             className="shrink-0"
-            title={L(
-              "Bruk varigheten som er beregnet fra manuset",
-              "Use the duration calculated from the script",
-            )}
+            title={tk("app-scene-editor-timeline.timeline.title.746ef89f4de8")}
             onClick={() => {
               // B-041: lengdeendringer brukeren gjør, går gjennom metodevalget – unntatt i en scene uten
               // innhold med tidspunkter, eller når den beregnede lengden er den samme.
@@ -1265,12 +1239,12 @@ export function Timeline({
               )
                 setRetimeTarget(calculated);
               else
-                updateComposition(L("Varighet fra manus", "Duration from script"), {
+                updateComposition(tk("app-scene-editor-timeline.timeline.update-composition.3e0b56d97480"), {
                   durationFrames: 0,
                 });
             }}
           >
-            {L("Fra manus", "From script")}
+            {tk("app-scene-editor-timeline.timeline.button.85f295f03ce8")}
           </Button>
         ) : null}
         {retime ? (
@@ -1280,14 +1254,11 @@ export function Timeline({
             className="shrink-0"
             disabled={!editable}
             data-testid="lock-range-button"
-            title={L(
-              "Lås ett sekund fra avspillingshodet, så det står fast når scenen endrer lengde",
-              "Lock one second from the playhead, so it stays fixed when the scene changes length",
-            )}
+            title={tk("app-scene-editor-timeline.timeline.title.b4aaaa2bd07d")}
             onClick={addLockedRange}
           >
             <Lock className="size-3" />
-            {L("Lås tidsrom", "Lock time range")}
+            {tk("app-scene-editor-timeline.timeline.button.c0d9ac462bc3")}
           </Button>
         ) : null}
 
@@ -1297,10 +1268,7 @@ export function Timeline({
           aria-checked={autoKey}
           disabled={!editable}
           onClick={() => onAutoKeyChange(!autoKey)}
-          title={L(
-            "Endringer på et bilde blir nøkkelbilder",
-            "Changes on a frame become keyframes",
-          )}
+          title={tk("app-scene-editor-timeline.timeline.title.580b2504685a")}
           className="inline-flex h-7 shrink-0 items-center gap-1.5 rounded-sm px-1.5 text-xs text-text-secondary hover:bg-surface-3 hover:text-text-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-40"
         >
           <span
@@ -1312,7 +1280,7 @@ export function Timeline({
                 : "border-text-tertiary bg-transparent")
             }
           />
-          {L("Automatiske nøkkelbilder", "Automatic keyframes")}
+          {tk("app-scene-editor-timeline.timeline.button.1dc5451f8322")}
         </button>
 
         <Button
@@ -1320,14 +1288,11 @@ export function Timeline({
           variant="secondary"
           className="shrink-0"
           disabled={!editable || !selectedLayer}
-          title={L(
-            "Nøkkelbilde for alle egenskaper på dette bildet",
-            "Keyframe for all properties on this frame",
-          )}
+          title={tk("app-scene-editor-timeline.timeline.title.bce202839384")}
           onClick={keyAll}
         >
           <Diamond className="size-3" />
-          {L("Nøkkelbilde", "Keyframe")}
+          {tk("app-scene-editor-timeline.timeline.button.f507a12a9b1e")}
         </Button>
         <Button
           size="sm"
@@ -1337,12 +1302,12 @@ export function Timeline({
           onClick={addShot}
         >
           <Video className="size-3" />
-          {L("Nytt kamerautsnitt", "New camera shot")}
+          {tk("app-scene-editor-timeline.timeline.button.66fbce73646c")}
         </Button>
 
         {keyValid && keyLayer ? (
           <label className="flex shrink-0 items-center gap-1.5 text-xs text-text-secondary">
-            {L("Hastighetskurve", "Easing curve")}
+            {tk("app-scene-editor-timeline.timeline.label.8b7e2e58d609")}
             <select
               value={easingNow}
               disabled={!editable}
@@ -1351,7 +1316,7 @@ export function Timeline({
                 if (next && keySel)
                   updateKeys(
                     keyLayer,
-                    L("Endre hastighetskurve", "Change easing curve"),
+                    tk("app-scene-editor-timeline.timeline.update-keys.41b874724500"),
                     setKeyframeEasing(keyLayer.keyframes, keySel.frame, next),
                   );
               }}
@@ -1368,10 +1333,7 @@ export function Timeline({
         {keyValid && keyLayer && easingNow !== "hold" ? (
           <span
             className="flex shrink-0 items-center gap-1.5 text-xs text-text-secondary"
-            title={L(
-              "Styrken på myk start og slutt (som «influence» i After Effects)",
-              "The strength of ease in and out (like “influence” in After Effects)",
-            )}
+            title={tk("app-scene-editor-timeline.timeline.title.93b3cc252828")}
           >
             Ease
             {(["easeIn", "easeOut"] as const).map((key) => {
@@ -1381,17 +1343,11 @@ export function Timeline({
               return (
                 <PercentInput
                   key={key}
-                  label={key === "easeIn" ? L("inn", "in") : L("ut", "out")}
+                  label={key === "easeIn" ? tk("app-scene-editor-timeline.timeline.label.7e00763c5a0f") : tk("app-scene-editor-timeline.timeline.label.b92a408a1185")}
                   title={
                     key === "easeIn"
-                      ? L(
-                          "Ease inn: hvor mykt bevegelsen bremser inn mot dette nøkkelbildet",
-                          "Ease in: how softly the movement slows down into this keyframe",
-                        )
-                      : L(
-                          "Ease ut: hvor mykt bevegelsen starter fra dette nøkkelbildet",
-                          "Ease out: how softly the movement starts from this keyframe",
-                        )
+                      ? tk("app-scene-editor-timeline.timeline.title.5563fee97b5d")
+                      : tk("app-scene-editor-timeline.timeline.title.b47281973e3f")
                   }
                   value={v}
                   disabled={!editable}
@@ -1401,8 +1357,8 @@ export function Timeline({
                     updateKeys(
                       keyLayer,
                       key === "easeIn"
-                        ? L("Endre ease inn", "Change ease in")
-                        : L("Endre ease ut", "Change ease out"),
+                        ? tk("app-scene-editor-timeline.timeline.update-keys.1cb7f8aa217e")
+                        : tk("app-scene-editor-timeline.timeline.update-keys.85d4b47ed891"),
                       setKeyframeEase(keyLayer.keyframes, keySel.frame, { [key]: n }),
                     )
                   }
@@ -1413,10 +1369,10 @@ export function Timeline({
         ) : null}
 
         <span className="ml-auto flex shrink-0 items-center gap-1.5 pl-2 text-xs text-text-tertiary">
-          {L("Zoom", "Zoom")}
+          {tk("app-scene-editor-timeline.timeline.span.6d1a72ff01fd")}
           <input
             type="range"
-            aria-label={L("Zoom tidslinjen", "Zoom the timeline")}
+            aria-label={tk("app-scene-editor-timeline.timeline.aria-label.a851ee98f14c")}
             min={1}
             max={MAX_ZOOM}
             step={0.1}
@@ -1460,14 +1416,14 @@ export function Timeline({
               className="sticky left-0 z-10 shrink-0 border-r border-border-strong bg-surface-2 px-2 text-xs leading-5 text-text-tertiary"
               style={{ width: labelW }}
             >
-              {L("Spor", "Tracks")}
+              {tk("app-scene-editor-timeline.timeline.div.8ad8daaac00b")}
               <PaneResizer
                 edge="right"
                 size={labelW}
                 onSize={setLabelW}
                 min={LABEL_MIN}
                 max={LABEL_MAX}
-                label={L("Bredden på lagnavnene", "Width of the layer names")}
+                label={tk("app-scene-editor-timeline.timeline.label.f8babbeef96d")}
               />
             </div>
             <div style={{ width: GUTTER }} className="shrink-0" aria-hidden="true" />
@@ -1518,8 +1474,8 @@ export function Timeline({
                       tabIndex={-1}
                       aria-label={
                         which === "start"
-                          ? L("Starten av det låste tidsrommet", "Start of the locked range")
-                          : L("Slutten av det låste tidsrommet", "End of the locked range")
+                          ? tk("app-scene-editor-timeline.edge.aria-label.c2fd7068f1bf")
+                          : tk("app-scene-editor-timeline.edge.aria-label.eb8faebeebf9")
                       }
                       aria-valuenow={which === "start" ? r.startFrame : r.endFrame}
                       data-testid={`locked-range-${which}`}
@@ -1548,7 +1504,7 @@ export function Timeline({
                   <div
                     key={r.id}
                     data-testid="locked-range"
-                    title={L("Låst tidsrom", "Locked time range") + (r.label ? `: ${r.label}` : "")}
+                    title={tk("app-scene-editor-timeline.timeline.title.b4fcd96ea698") + (r.label ? `: ${r.label}` : "")}
                     className="absolute inset-y-0 flex items-start justify-end border-x border-accent-warm bg-accent-warm/25"
                     style={{ left: r.startFrame * ppf, width: (r.endFrame - r.startFrame) * ppf }}
                     onPointerDown={(e) => e.stopPropagation()}
@@ -1557,13 +1513,13 @@ export function Timeline({
                     {editable ? (
                       <button
                         type="button"
-                        aria-label={L("Fjern låst tidsrom", "Remove locked range")}
+                        aria-label={tk("app-scene-editor-timeline.timeline.aria-label.fe8575fd6d98")}
                         data-testid="locked-range-remove"
                         className="relative mr-2 text-[11px] leading-none text-text-secondary hover:text-text-primary"
                         onClick={() =>
                           setLockedRanges(
                             timingOf(composition).lockedRanges.filter((x) => x.id !== r.id),
-                            L("Fjern låst tidsrom", "Remove locked range"),
+                            tk("app-scene-editor-timeline.timeline.set-locked-ranges.fe8575fd6d98"),
                           )
                         }
                       >
@@ -1578,10 +1534,7 @@ export function Timeline({
                 <div
                   role="slider"
                   tabIndex={0}
-                  aria-label={L(
-                    "Slutten av scenen (dra for å endre lengden)",
-                    "End of the scene (drag to change the length)",
-                  )}
+                  aria-label={tk("app-scene-editor-timeline.timeline.aria-label.19e7bbeab547")}
                   aria-valuemin={1}
                   aria-valuenow={endDrag?.frames ?? durationFrames}
                   data-testid="scene-end-handle"
@@ -1625,7 +1578,7 @@ export function Timeline({
               style={{ width: labelW }}
             >
               <Video className="size-3.5 shrink-0" />
-              {L("Kamera", "Camera")}
+              {tk("app-scene-editor-timeline.timeline.div.d6df57a05be2")}
             </div>
             <div style={{ width: GUTTER }} className="shrink-0" aria-hidden="true" />
             <div
@@ -1656,7 +1609,7 @@ export function Timeline({
 
           {front.length === 0 ? (
             <p className="sticky left-0 px-3 py-2 text-xs text-text-tertiary">
-              {L("Ingen lag i scenen ennå.", "No layers in the scene yet.")}
+              {tk("app-scene-editor-timeline.timeline.p.709d085af7f0")}
             </p>
           ) : (
             front.map((l) => (
@@ -1759,7 +1712,7 @@ function PercentInput({
             e.currentTarget.blur();
           }
         }}
-        aria-label={L(`Ease ${label} i prosent`, `Ease ${label} in percent`)}
+        aria-label={tk("app-scene-editor-timeline.percent-input.aria-label.f4115d401063", { label: String(label) })}
         className={className + " w-12"}
       />
       %

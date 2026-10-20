@@ -20,6 +20,7 @@ import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 import { movePanelAmong, movePanelTo, type PanelId, type PanelMode } from "./panel-layout";
 import { panelTitle } from "./use-scene-panels";
 import { PanelHeader } from "@/app/shell/workspace-chrome";
+import { t } from "@/core/i18n/keyed";
 
 /** Datatype for dra-og-slipp av et panel (verdien er panelets ID). */
 const PANEL_DRAG_TYPE = "application/x-animatic-panel";
@@ -37,11 +38,8 @@ export function PanelModeButton({
 }) {
   const side = mode === "side";
   const label = side
-    ? L("Vis panelene over hverandre", "Show the panels stacked")
-    : L(
-        "Vis panelene side om side for bedre oversikt",
-        "Show the panels side by side for a better overview",
-      );
+    ? t("app-scene-editor-scene-panels.label.message.0f020b88a184")
+    : t("app-scene-editor-scene-panels.label.message.fe5d7b842d85");
   return (
     <button
       type="button"
@@ -73,10 +71,7 @@ export function PanelBar({
     <div className="flex h-7 shrink-0 items-center gap-2 border-b border-border bg-surface-1 pl-3 pr-1">
       {mode === "side" ? (
         <span className="min-w-0 flex-1 truncate text-[11px] text-text-tertiary">
-          {L(
-            "Dra en overskrift, eller bruk ‹ ›, for å endre rekkefølgen",
-            "Drag a heading, or use ‹ ›, to change the order",
-          )}
+          {t("app-scene-editor-scene-panels.panel-bar.span.6824fcabb1d4")}
         </span>
       ) : (
         <span className="flex-1" />
@@ -122,7 +117,7 @@ export function SidePanels({
 
   return (
     <aside
-      aria-label={L("Paneler side om side", "Panels side by side")}
+      aria-label={t("app-scene-editor-scene-panels.side-panels.aria-label.068795c7bd1b")}
       data-testid="scene-panels-side"
       style={{
         width:
@@ -138,7 +133,7 @@ export function SidePanels({
         onSize={setColWidth}
         min={220}
         max={480}
-        label={L("Bredde på hvert panel", "Width of each panel")}
+        label={t("app-scene-editor-scene-panels.side-panels.label.02abc1f46abf")}
       />
       <PanelBar mode="side" onChange={onMode} />
       <div className="flex min-h-0 flex-1 overflow-x-auto">
@@ -162,8 +157,8 @@ export function SidePanels({
                   type="button"
                   onClick={() => onToggle?.(id)}
                   className="flex min-h-0 w-full flex-1 flex-col items-center gap-2 py-2 text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-                  aria-label={L(`Åpne «${title}»`, `Expand “${title}”`)}
-                  title={L(`Åpne «${title}»`, `Expand “${title}”`)}
+                  aria-label={t("app-scene-editor-scene-panels.side-panels.aria-label.05749e43de9d", { title: String(title) })}
+                  title={t("app-scene-editor-scene-panels.side-panels.title.05749e43de9d", { title: String(title) })}
                   aria-expanded={false}
                   data-panel-toggle={id}
                 >
@@ -224,10 +219,7 @@ export function SidePanels({
                   setDragId(null);
                   setDrop(null);
                 }}
-                title={L(
-                  "Dra overskriften for å flytte panelet",
-                  "Drag the heading to move the panel",
-                )}
+                title={t("app-scene-editor-scene-panels.side-panels.title.9961dedf52c5")}
                 data-panel-heading={id}
                 className="shrink-0 cursor-grab active:cursor-grabbing"
               >
@@ -250,8 +242,8 @@ export function SidePanels({
                   className={iconButton}
                   disabled={i === 0}
                   onClick={() => onOrder(movePanelAmong(order, shown, id, -1))}
-                  aria-label={L(`Flytt «${title}» til venstre`, `Move “${title}” left`)}
-                  title={L("Flytt til venstre", "Move left")}
+                  aria-label={t("app-scene-editor-scene-panels.side-panels.aria-label.d9575f6f2b8f", { title: String(title) })}
+                  title={t("app-scene-editor-scene-panels.side-panels.title.7e5b25396b7a")}
                 >
                   <ChevronLeft className="size-3.5" aria-hidden />
                 </button>
@@ -260,8 +252,8 @@ export function SidePanels({
                   className={iconButton}
                   disabled={i === shown.length - 1}
                   onClick={() => onOrder(movePanelAmong(order, shown, id, 1))}
-                  aria-label={L(`Flytt «${title}» til høyre`, `Move “${title}” right`)}
-                  title={L("Flytt til høyre", "Move right")}
+                  aria-label={t("app-scene-editor-scene-panels.side-panels.aria-label.cfd1c63847fb", { title: String(title) })}
+                  title={t("app-scene-editor-scene-panels.side-panels.title.4dce7f15cb4b")}
                 >
                   <ChevronRight className="size-3.5" aria-hidden />
                 </button>
@@ -303,8 +295,8 @@ function CollapseButton({
       type="button"
       className={iconButton}
       onClick={() => onToggle(id)}
-      aria-label={L(`Lukk «${title}»`, `Collapse “${title}”`)}
-      title={L("Lukk panelet", "Collapse the panel")}
+      aria-label={t("app-scene-editor-scene-panels.collapse-button.aria-label.902466a15e96", { title: String(title) })}
+      title={t("app-scene-editor-scene-panels.collapse-button.title.95e0f1750d3d")}
       aria-expanded
       data-panel-toggle={id}
     >
@@ -354,13 +346,13 @@ export function StackedPanels({
                 aria-expanded={!closed}
                 aria-label={
                   closed
-                    ? L(`Åpne «${title}»`, `Expand “${title}”`)
-                    : L(`Lukk «${title}»`, `Collapse “${title}”`)
+                    ? t("app-scene-editor-scene-panels.stacked-panels.aria-label.8e334c122bd1", { title: String(title) })
+                    : t("app-scene-editor-scene-panels.stacked-panels.aria-label.bc797e439fc9", { title: String(title) })
                 }
                 title={
                   closed
-                    ? L("Åpne panelet", "Expand the panel")
-                    : L("Lukk panelet", "Collapse the panel")
+                    ? t("app-scene-editor-scene-panels.stacked-panels.title.10a0dea2d31c")
+                    : t("app-scene-editor-scene-panels.stacked-panels.title.4e42617380b8")
                 }
                 data-panel-toggle={id}
               >
@@ -378,8 +370,8 @@ export function StackedPanels({
                 className={iconButton}
                 disabled={i === 0}
                 onClick={() => onOrder(movePanelAmong(order, shown, id, -1))}
-                aria-label={L(`Flytt «${title}» opp`, `Move “${title}” up`)}
-                title={L("Flytt opp", "Move up")}
+                aria-label={t("app-scene-editor-scene-panels.stacked-panels.aria-label.e99de2d509a3", { title: String(title) })}
+                title={t("app-scene-editor-scene-panels.stacked-panels.title.2eddb411f770")}
               >
                 <ArrowUp className="size-3.5" aria-hidden />
               </button>
@@ -388,8 +380,8 @@ export function StackedPanels({
                 className={iconButton}
                 disabled={i === shown.length - 1}
                 onClick={() => onOrder(movePanelAmong(order, shown, id, 1))}
-                aria-label={L(`Flytt «${title}» ned`, `Move “${title}” down`)}
-                title={L("Flytt ned", "Move down")}
+                aria-label={t("app-scene-editor-scene-panels.stacked-panels.aria-label.1da57e0d3b83", { title: String(title) })}
+                title={t("app-scene-editor-scene-panels.stacked-panels.title.a229eb92a5ca")}
               >
                 <ArrowDown className="size-3.5" aria-hidden />
               </button>

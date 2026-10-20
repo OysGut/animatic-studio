@@ -2,6 +2,7 @@
 import { isPartSlot, rigPartError, type RigPart } from "./parts";
 import { L } from "../i18n";
 import type { ProjectState } from "../model";
+import { t } from "@/core/i18n/keyed";
 export const RIG_MAX_BYTES = 512 * 1024;
 export const FACE_ANCHORS = ["head", "mouth", "nose", "leftEye", "rightEye"] as const;
 export type FaceAnchor = typeof FACE_ANCHORS[number];
@@ -48,30 +49,30 @@ export interface ExportFlags {
 export const DEFAULT_EXPORT_FLAGS: ExportFlags = { mouth: true, blink: true, overlay: true, masks: true, adjust: true, mode: "burned" };
 export function breathError(b: CharacterBehavior["breath"] | undefined): string | null {
   if (b === undefined) return null;
-  if (!b || typeof b.enabled !== "boolean" || !Number.isFinite(b.periodMs) || b.periodMs < 500 || b.periodMs > 20000 || !Number.isFinite(b.amount) || b.amount < 0 || b.amount > 0.05) return L("Ugyldig pust", "Invalid breathing");
+  if (!b || typeof b.enabled !== "boolean" || !Number.isFinite(b.periodMs) || b.periodMs < 500 || b.periodMs > 20000 || !Number.isFinite(b.amount) || b.amount < 0 || b.amount > 0.05) return t("core-animation-rig.breath-error.message.7b28b3c88d65");
   return null;
 }
 export function exportFlagsError(f: ExportFlags | undefined): string | null {
   if (f === undefined) return null;
-  if (!f || !["mouth", "blink", "overlay", "masks", "adjust"].every(k => typeof (f as unknown as Record<string, unknown>)[k] === "boolean") || (f.mode !== "burned" && f.mode !== "separate")) return L("Ugyldige eksportvalg", "Invalid export options");
+  if (!f || !["mouth", "blink", "overlay", "masks", "adjust"].every(k => typeof (f as unknown as Record<string, unknown>)[k] === "boolean") || (f.mode !== "burned" && f.mode !== "separate")) return t("core-animation-rig.export-flags-error.message.10111a9166c3");
   return null;
 }
 export interface AnimationUse { readonly id: string; readonly revision: number; readonly layerId: string; readonly occurrenceId: string; readonly rigVersionId: string; readonly enabled: boolean; readonly behavior?: UseBehavior; readonly removed: boolean }
 export function rigSpecError(spec: RigSpec): string | null {
-  if (!spec || spec.format !== 1 || !spec.anchors || typeof spec.anchors !== "object" || Array.isArray(spec.anchors)) return L("Ugyldig animasjonsoppsett", "Invalid animation setup");
-  if (new TextEncoder().encode(JSON.stringify(spec)).length > RIG_MAX_BYTES) return L("Oppsettet er større enn 512 kB", "The setup exceeds 512 kB");
+  if (!spec || spec.format !== 1 || !spec.anchors || typeof spec.anchors !== "object" || Array.isArray(spec.anchors)) return t("core-animation-rig.rig-spec-error.message.1ac74d450f78");
+  if (new TextEncoder().encode(JSON.stringify(spec)).length > RIG_MAX_BYTES) return t("core-animation-rig.rig-spec-error.message.7c26bdd97397");
   for (const [key, point] of Object.entries(spec.anchors)) {
-    if (!(FACE_ANCHORS as readonly string[]).includes(key) || !point || !Number.isFinite(point.x) || !Number.isFinite(point.y) || point.x < 0 || point.x > 1 || point.y < 0 || point.y > 1) return L("Ankerpunkter må ligge innenfor bildet", "Anchors must be within the image");
+    if (!(FACE_ANCHORS as readonly string[]).includes(key) || !point || !Number.isFinite(point.x) || !Number.isFinite(point.y) || point.x < 0 || point.x > 1 || point.y < 0 || point.y > 1) return t("core-animation-rig.rig-spec-error.message.2b765a047145");
   }
   if (spec.parts !== undefined) {
-    if (!spec.parts || typeof spec.parts !== "object" || Array.isArray(spec.parts)) return L("Ugyldige rigg-deler", "Invalid rig parts");
-    for (const [slot, part] of Object.entries(spec.parts)) if (!isPartSlot(slot) || rigPartError(part)) return L("Ugyldig rigg-del", "Invalid rig part");
+    if (!spec.parts || typeof spec.parts !== "object" || Array.isArray(spec.parts)) return t("core-animation-rig.rig-spec-error.message.1f68dffe51bb");
+    for (const [slot, part] of Object.entries(spec.parts)) if (!isPartSlot(slot) || rigPartError(part)) return t("core-animation-rig.rig-spec-error.message.339421d88273");
   }
   if (spec.behavior !== undefined) {
     const b = spec.behavior;
-    if (!b || typeof b !== "object" || Array.isArray(b) || breathError(b.breath) || (b.blinkEnabled !== undefined && typeof b.blinkEnabled !== "boolean") || (b.overlayPatternIds !== undefined && (!Array.isArray(b.overlayPatternIds) || b.overlayPatternIds.length > 50))) return L("Ugyldig karakteratferd", "Invalid character behavior");
+    if (!b || typeof b !== "object" || Array.isArray(b) || breathError(b.breath) || (b.blinkEnabled !== undefined && typeof b.blinkEnabled !== "boolean") || (b.overlayPatternIds !== undefined && (!Array.isArray(b.overlayPatternIds) || b.overlayPatternIds.length > 50))) return t("core-animation-rig.rig-spec-error.message.959ab576abb9");
   }
-  if (spec.origin !== undefined && (!spec.origin || !Number.isInteger(spec.origin.globalNumber) || spec.origin.globalNumber < 1 || typeof spec.origin.globalSpecId !== "string")) return L("Ugyldig opprinnelse for oppsettet", "Invalid setup origin");
+  if (spec.origin !== undefined && (!spec.origin || !Number.isInteger(spec.origin.globalNumber) || spec.origin.globalNumber < 1 || typeof spec.origin.globalSpecId !== "string")) return t("core-animation-rig.rig-spec-error.message.e4c01f96bc7c");
   return null;
 }
 export function rigOfVariant(state: ProjectState, variantId: string) {

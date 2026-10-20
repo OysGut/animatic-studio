@@ -42,6 +42,7 @@ import {
   type AudioComposition,
 } from "../audio/composition";
 import { spreadPause, type AlignmentSource } from "../audio/pauses";
+import { t as tk } from "@/core/i18n/keyed";
 
 export type RetimeMethod = "start" | "end" | "pauses" | "stretch_all" | "stretch_visual";
 
@@ -265,7 +266,7 @@ export function planRetime(s: ProjectState, occurrenceId: string, opts: RetimeOp
   if (!occ || !comp)
     return {
       ok: false,
-      reason: L("Scenen har ingen 2D-scene.", "The scene has no 2D scene."),
+      reason: tk("core-composition-retime.reason.reason.7f054393382e"),
       report: emptyReport(0, target, method),
     };
   const before = compositionDuration(s, comp);
@@ -305,14 +306,11 @@ export function planRetime(s: ProjectState, occurrenceId: string, opts: RetimeOp
   const fail = (reason: string): RetimePlan => ({ ok: false, reason, report: report() });
 
   if (d === 0 && !(method === "pauses" && opts.gapChanges?.some((x) => x !== 0)))
-    return fail(L("Varigheten er uendret.", "The duration is unchanged."));
+    return fail(tk("core-composition-retime.plan-retime.fail.dec7ef736723"));
   const extending = d > 0;
   if ((method === "start" || method === "end") && extending && !opts.fill)
     return fail(
-      L(
-        "Velg hva den nye tiden skal vise: frys, bakgrunn eller svart.",
-        "Choose what the new time shows: freeze, background or black.",
-      ),
+      tk("core-composition-retime.plan-retime.fail.bdbe1ae383e2"),
     );
 
   const clips = Object.values(s.audioClips).filter((a) => a.occurrenceId === occ.id && !a.removed);
@@ -361,14 +359,8 @@ export function planRetime(s: ProjectState, occurrenceId: string, opts: RetimeOp
       const secs = (f: number) => (Math.round((f / (fps.num / fps.den)) * 10) / 10).toString();
       return fail(
         method === "pauses"
-          ? L(
-              `Scenen har bare ${secs(free)} s fleksibel tid mellom tale, effekter og låste tidsrom; du ba om ${secs(d)} s. Velg en annen metode eller avbryt.`,
-              `The scene has only ${secs(free)} s of flexible time between speech, effects and locked ranges; you asked for ${secs(d)} s. Choose another method or cancel.`,
-            )
-          : L(
-              `Låste tidsrom tar ${secs(anchored)} s, så scenen kan ikke bli ${secs(target)} s. Velg en annen metode eller avbryt.`,
-              `Locked ranges take ${secs(anchored)} s, so the scene cannot be ${secs(target)} s. Choose another method or cancel.`,
-            ),
+          ? tk("core-composition-retime.plan-retime.fail.09789cd36388", { value1: String(secs(free)), value2: String(secs(d)) })
+          : tk("core-composition-retime.plan-retime.fail.1f00ccf2c49a", { value1: String(secs(anchored)), value2: String(secs(target)) }),
       );
     }
     pieces = r.pieces;
@@ -397,10 +389,7 @@ export function planRetime(s: ProjectState, occurrenceId: string, opts: RetimeOp
         lockedConflicts.push({ kind: "lockedRange", id: r.id, detail: r.label });
     if (lockedConflicts.length)
       return fail(
-        L(
-          "Tiden som fjernes, overlapper et låst tidsrom. Velg en annen metode, fjern låsen eller avbryt.",
-          "The time being removed overlaps a locked range. Choose another method, remove the lock or cancel.",
-        ),
+        tk("core-composition-retime.plan-retime.fail.6648f814ca65"),
       );
   }
 
@@ -569,10 +558,7 @@ export function planRetime(s: ProjectState, occurrenceId: string, opts: RetimeOp
   const dMs = targetMs - beforeMs;
   const cutClip = (a: AudioClip, why: string): RetimePlan =>
     fail(
-      L(
-        `«${a.name || a.kind}» ville blitt kuttet eller havnet utenfor scenen (${why}). Tale og effekter fjernes aldri automatisk. Velg en annen metode eller avbryt.`,
-        `“${a.name || a.kind}” would be cut or end up outside the scene (${why}). Speech and effects are never removed automatically. Choose another method or cancel.`,
-      ),
+      tk("core-composition-retime.cut-clip.fail.aaa64e807ab5", { value1: String(a.name || a.kind), why: String(why) }),
     );
   for (const a of clips) {
     if (method === "stretch_visual") continue;
@@ -597,7 +583,7 @@ export function planRetime(s: ProjectState, occurrenceId: string, opts: RetimeOp
         )
           return cutClip(
             a,
-            tooEarly ? L("før start", "before the start") : L("etter slutt", "after the end"),
+            tooEarly ? tk("core-composition-retime.plan-retime.cut-clip.003cefddaa60") : tk("core-composition-retime.plan-retime.cut-clip.9b380ea76382"),
           );
         if (!isSpeech && off + length <= 0) {
           removeClips.push(a.id);
@@ -696,10 +682,7 @@ export function planRetime(s: ProjectState, occurrenceId: string, opts: RetimeOp
       (st >= targetMs || (en !== null && t.endMs! <= beforeMs && en > targetMs));
     if (st < 0 || late)
       return fail(
-        L(
-          "En kobling mellom manuset og tiden i scenen ville blitt kuttet. Manuskoblinger fjernes aldri automatisk. Velg en annen metode eller avbryt.",
-          "A link between the script and the time in the scene would be cut. Script links are never removed automatically. Choose another method or cancel.",
-        ),
+        tk("core-composition-retime.plan-retime.fail.f31b7c90713b"),
       );
     if (st !== t.startMs || en !== t.endMs) {
       linkFields.push({
@@ -722,20 +705,14 @@ export function planRetime(s: ProjectState, occurrenceId: string, opts: RetimeOp
     note(manual, {
       kind: "clipPart",
       id: p.id,
-      detail: L(
-        "Delene av scenen i monteringen endres ikke; kontroller dem.",
-        "The parts of the scene in the edit are not changed; check them.",
-      ),
+      detail: tk("core-composition-retime.detail.detail.e817e94bbf1c"),
     });
   for (const g of Object.values(s.segments))
     if (g.occurrenceId === occ.id && g.startMs !== undefined)
       note(manual, {
         kind: "segment",
         id: g.id,
-        detail: L(
-          "Segmentet til generering har faste tider; kontroller det.",
-          "The generation segment has fixed times; check it.",
-        ),
+        detail: tk("core-composition-retime.detail.detail.71f09228db28"),
       });
   const transitionSteps: Command[] = [];
   const clampTransition = (o: SceneOccurrence) => {
@@ -748,10 +725,7 @@ export function planRetime(s: ProjectState, occurrenceId: string, opts: RetimeOp
       note(trimmed, {
         kind: "transition",
         id: o.id,
-        detail: L(
-          "Overgangen ble kortet ned til scenens lengde.",
-          "The transition was shortened to the scene length.",
-        ),
+        detail: tk("core-composition-retime.detail.detail.4dac1eb8eb27"),
       });
     }
   };
@@ -766,10 +740,7 @@ export function planRetime(s: ProjectState, occurrenceId: string, opts: RetimeOp
     note(manual, {
       kind: "transition",
       id: "default",
-      detail: L(
-        "Prosjektets standardovergang er lengre enn scenen; endre den eller gi scenen egen overgang.",
-        "The project's default transition is longer than the scene; change it or give the scene its own transition.",
-      ),
+      detail: tk("core-composition-retime.detail.detail.b86844f2fa56"),
     });
 
   // ---------- Kommandoen ----------

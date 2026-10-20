@@ -55,6 +55,7 @@ import {
   type CollapsedGroups,
 } from "./layer-groups";
 import { useLanguage } from "@/app/i18n/language";
+import { t as tk } from "@/core/i18n/keyed";
 
 interface Props {
   readonly state: ProjectState;
@@ -185,11 +186,11 @@ export const LayersPanel = memo(function LayersPanel({
       { type: "UpdateLayers", layers: [{ layerId: l.id, fields: next }] },
       key === "visible"
         ? l.visible
-          ? L("Skjul lag", "Hide layer")
-          : L("Vis lag", "Show layer")
+          ? tk("app-scene-editor-layers-panel.toggle.exec.7c2086edac23")
+          : tk("app-scene-editor-layers-panel.toggle.exec.69e012184db0")
         : l.locked
-          ? L("Lås opp lag", "Unlock layer")
-          : L("Lås lag", "Lock layer"),
+          ? tk("app-scene-editor-layers-panel.toggle.exec.24fc9c23cc98")
+          : tk("app-scene-editor-layers-panel.toggle.exec.0510ed8b106a"),
     );
   }
 
@@ -221,7 +222,7 @@ export const LayersPanel = memo(function LayersPanel({
             compositionId: composition.id,
             fields: {
               kind: "group",
-              name: L(`Gruppe ${n}`, `Group ${n}`),
+              name: tk("app-scene-editor-layers-panel.name.name.289cdc165924", { n: String(n) }),
               assetId: null,
               assetVariantId: null,
               versionId: null,
@@ -241,7 +242,7 @@ export const LayersPanel = memo(function LayersPanel({
           },
         ],
       },
-      L("Ny gruppe", "New group"),
+      tk("app-scene-editor-layers-panel.err.run.23fc3a4989f9"),
       undoGroup,
     );
     if (err) return setError(err);
@@ -252,7 +253,7 @@ export const LayersPanel = memo(function LayersPanel({
           // Den nye gruppen står i ro (nøytral), så laget regnes bare ut av en eventuell gammel gruppe
           layers: [{ layerId: member.id, fields: regroupFields(state, member, layerId, frame) }],
         },
-        L("Ny gruppe", "New group"),
+        tk("app-scene-editor-layers-panel.new-group.exec2.c116b4c93352"),
         undoGroup,
       );
     onSelect(layerId);
@@ -272,14 +273,14 @@ export const LayersPanel = memo(function LayersPanel({
   function forward(l: CompositionLayer) {
     const i = back.findIndex((x) => x.id === l.id);
     if (i < 0 || i >= back.length - 1) return;
-    moveBefore(l.id, back[i + 2]?.id ?? null, L("Flytt lag fram", "Move layer forward"));
+    moveBefore(l.id, back[i + 2]?.id ?? null, tk("app-scene-editor-layers-panel.forward.move-before.99b29c53eb48"));
   }
 
   function backward(l: CompositionLayer) {
     const i = back.findIndex((x) => x.id === l.id);
     const target = back[i - 1];
     if (i <= 0 || !target) return;
-    moveBefore(l.id, target.id, L("Flytt lag bak", "Move layer back"));
+    moveBefore(l.id, target.id, tk("app-scene-editor-layers-panel.backward.move-before.1578a153d0d6"));
   }
 
   /** Rekkefølgen etter slipp foran (inFront: over målet i listen) eller bak målraden, eller null: uendret. */
@@ -329,10 +330,7 @@ export const LayersPanel = memo(function LayersPanel({
               { layerId: dragged.id, fields: regroupFields(state, dragged, target.id, frame) },
             ],
           },
-          L(
-            `Legg «${dragged.name}» i «${target.name}»`,
-            `Put “${dragged.name}” in “${target.name}”`,
-          ),
+          tk("app-scene-editor-layers-panel.err.run.6bc065c6c485", { name: String(dragged.name), name2: String(target.name) }),
           key,
         );
         if (err) return setError(err);
@@ -342,10 +340,7 @@ export const LayersPanel = memo(function LayersPanel({
         setError(
           run(
             { type: "MoveLayer", layerId: draggedId as never, beforeLayerId: before as never },
-            L(
-              `Legg «${dragged.name}» i «${target.name}»`,
-              `Put “${dragged.name}” in “${target.name}”`,
-            ),
+            tk("app-scene-editor-layers-panel.drop-on.run.199aa53d4ad3", { name: String(dragged.name), name2: String(target.name) }),
             key,
           ),
         );
@@ -363,9 +358,9 @@ export const LayersPanel = memo(function LayersPanel({
     const label =
       nextGroup !== dragged.groupId
         ? nextGroup
-          ? L(`Legg «${dragged.name}» i gruppe`, `Put “${dragged.name}” in a group`)
-          : L(`Ta «${dragged.name}» ut av gruppen`, `Take “${dragged.name}” out of the group`)
-        : L("Flytt lag", "Move layer");
+          ? tk("app-scene-editor-layers-panel.label.memo.b931eadf62ef", { name: String(dragged.name) })
+          : tk("app-scene-editor-layers-panel.label.memo.96be501e2dd5", { name: String(dragged.name) })
+        : tk("app-scene-editor-layers-panel.label.memo.17acbb91ef13");
     if (nextGroup !== dragged.groupId && dragged.kind !== "group") {
       const err = run(
         {
@@ -413,12 +408,12 @@ export const LayersPanel = memo(function LayersPanel({
         type: "UpdateLayers",
         layers: [{ layerId: l.id, fields: regroupFields(state, l, null, frame) }],
       },
-      L(`Ta «${l.name}» ut av gruppen`, `Take “${l.name}” out of the group`),
+      tk("app-scene-editor-layers-panel.leave-group.exec.68e9421339ac", { name: String(l.name) }),
     );
   }
 
   return (
-    <section aria-label={L("Lag", "Layers")} className="flex flex-col py-1">
+    <section aria-label={tk("app-scene-editor-layers-panel.layers-panel.aria-label.697f7c407fae")} className="flex flex-col py-1">
       <div className="group flex h-8 shrink-0 items-center gap-1.5 border-b border-border bg-surface-2 px-2">
         <h2
           className={
@@ -427,39 +422,36 @@ export const LayersPanel = memo(function LayersPanel({
               : "text-[11px] font-medium uppercase tracking-wider text-text-tertiary"
           }
         >
-          {L("Lag", "Layers")} ({back.length})
+          {tk("app-scene-editor-layers-panel.layers-panel.h2.697f7c407fae")} ({back.length})
         </h2>
         {editable && back.length > 0 ? (
           <button
             type="button"
             onClick={newGroup}
             className="ml-auto inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 opacity-60 group-hover:opacity-100 focus-visible:opacity-100 text-[11px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-            title={L(
-              "Lag i en gruppe flyttes, roteres og skaleres sammen. Valgt lag legges i gruppen.",
-              "Layers in a group are moved, rotated and scaled together. The selected layer is put in the group.",
-            )}
+            title={tk("app-scene-editor-layers-panel.layers-panel.title.5db177ece09b")}
           >
             <Group className="size-3.5" aria-hidden />
-            {L("Ny gruppe", "New group")}
+            {tk("app-scene-editor-layers-panel.layers-panel.button.5722e9257c30")}
           </button>
         ) : null}
       </div>
       <Button variant="ghost" size="sm" className="justify-start text-xs" data-testid="alpha-export-open" disabled={!back.length}
         onClick={() => setAlphaOpen(true)}>
-        <Download className="size-3.5" />{L("Eksporter lag med gjennomsiktighet …", "Export layers with transparency …")}
+        <Download className="size-3.5" />{tk("app-scene-editor-layers-panel.layers-panel.button.0eca56bd7036")}
       </Button>
       {alphaOpen ? <AlphaExportDialog state={state} composition={composition} open={alphaOpen} onOpenChange={setAlphaOpen}
         {...(selectedLayerId ? { initialLayerIds: [selectedLayerId] } : {})} /> : null}
       {back.length === 0 ? (
         <p className="px-3 pb-2 text-xs text-text-tertiary">
-          {L("Ingen lag ennå. Bruk «Legg til lag».", "No layers yet. Use “Add layer”.")}
+          {tk("app-scene-editor-layers-panel.layers-panel.p.fe2f3b84eaf8")}
         </p>
       ) : (
         <div className="relative">
           <ul
             className="flex flex-col overflow-y-auto"
             style={{ maxHeight: listHeight }}
-            aria-label={L("Lagene, forreste øverst", "Layers, front first")}
+            aria-label={tk("app-scene-editor-layers-panel.layers-panel.aria-label.835dbfad7903")}
           >
             {rows.map(({ layer: l, depth }) => {
               const idx = front.indexOf(l);
@@ -543,19 +535,13 @@ export const LayersPanel = memo(function LayersPanel({
                       aria-expanded={!shut}
                       aria-label={
                         shut
-                          ? L(`Åpne gruppen «${l.name}»`, `Expand the group “${l.name}”`)
-                          : L(`Lukk gruppen «${l.name}»`, `Collapse the group “${l.name}”`)
+                          ? tk("app-scene-editor-layers-panel.layers-panel.aria-label.ae1170cba8dd", { name: String(l.name) })
+                          : tk("app-scene-editor-layers-panel.layers-panel.aria-label.245bee7d36a3", { name: String(l.name) })
                       }
                       title={
                         shut
-                          ? L(
-                              "Åpne gruppen (Alt-klikk: åpne alle)",
-                              "Expand the group (Alt-click: expand all)",
-                            )
-                          : L(
-                              "Lukk gruppen (Alt-klikk: lukk alle)",
-                              "Collapse the group (Alt-click: collapse all)",
-                            )
+                          ? tk("app-scene-editor-layers-panel.layers-panel.title.a1dd0d5373ba")
+                          : tk("app-scene-editor-layers-panel.layers-panel.title.4dcce50c5cf4")
                       }
                       data-testid="layer-group-toggle"
                       onClick={(e) => toggleGroup(l.id, e.altKey)}
@@ -573,10 +559,7 @@ export const LayersPanel = memo(function LayersPanel({
                     type="button"
                     onClick={() => onSelect(l.id)}
                     onDoubleClick={() => onOpenImage?.(l.id)}
-                    title={L(
-                      "Dobbeltklikk for å velge et annet bilde",
-                      "Double-click to choose another image",
-                    )}
+                    title={tk("app-scene-editor-layers-panel.layers-panel.title.486b28947c3e")}
                     aria-pressed={on}
                     className={
                       "flex min-w-0 flex-1 items-center gap-2 py-1 pl-0.5 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
@@ -606,12 +589,12 @@ export const LayersPanel = memo(function LayersPanel({
                           (l.visible ? "text-text-primary" : "text-text-tertiary")
                         }
                       >
-                        {l.name || L("Uten navn", "Without name")}
+                        {l.name || tk("app-scene-editor-layers-panel.layers-panel.span.d03940b16399")}
                       </span>
                       <span className="block truncate text-[11px] text-text-tertiary">
                         {LAYER_KIND_LABEL[l.kind]}
-                        {l.kind === "group" ? L(` · ${members} lag`, ` · ${members} layers`) : ""}
-                        {inGroup ? L(` · i «${group.name}»`, ` · in “${group.name}”`) : ""}
+                        {l.kind === "group" ? tk("app-scene-editor-layers-panel.layers-panel.span.eb5e76617e9d", { members: String(members) }) : ""}
+                        {inGroup ? tk("app-scene-editor-layers-panel.layers-panel.span.cf7fa6b462f3", { name: String(group.name) }) : ""}
                       </span>
                     </span>
                   </button>
@@ -627,8 +610,8 @@ export const LayersPanel = memo(function LayersPanel({
                         className={iconButton}
                         onClick={() => forward(l)}
                         disabled={isFront}
-                        aria-label={L("Flytt lag fram", "Move layer forward")}
-                        title={L("Fram", "Forward")}
+                        aria-label={tk("app-scene-editor-layers-panel.layers-panel.aria-label.5276a2f49f00")}
+                        title={tk("app-scene-editor-layers-panel.layers-panel.title.e73011c56feb")}
                       >
                         <ChevronUp className="size-3.5" />
                       </button>
@@ -637,8 +620,8 @@ export const LayersPanel = memo(function LayersPanel({
                         className={iconButton}
                         onClick={() => backward(l)}
                         disabled={isBack}
-                        aria-label={L("Flytt lag bak", "Move layer back")}
-                        title={L("Bak", "Back")}
+                        aria-label={tk("app-scene-editor-layers-panel.layers-panel.aria-label.4ee512ba28e5")}
+                        title={tk("app-scene-editor-layers-panel.layers-panel.title.5315475e3596")}
                       >
                         <ChevronDown className="size-3.5" />
                       </button>
@@ -647,11 +630,8 @@ export const LayersPanel = memo(function LayersPanel({
                           type="button"
                           className={iconButton}
                           onClick={() => leaveGroup(l)}
-                          aria-label={L(
-                            `Ta «${l.name}» ut av gruppen`,
-                            `Take “${l.name}” out of the group`,
-                          )}
-                          title={L("Ta ut av gruppen", "Take out of the group")}
+                          aria-label={tk("app-scene-editor-layers-panel.layers-panel.aria-label.94acff154dc6", { name: String(l.name) })}
+                          title={tk("app-scene-editor-layers-panel.layers-panel.title.27367b0ba529")}
                         >
                           <Ungroup className="size-3.5" />
                         </button>
@@ -666,22 +646,13 @@ export const LayersPanel = memo(function LayersPanel({
                               state,
                               l,
                               frame,
-                              L(
-                                `Fjern «${l.name}» fra scenen`,
-                                `Remove “${l.name}” from the scene`,
-                              ),
+                              tk("app-scene-editor-layers-panel.layers-panel.remove-layer.0df8ba730439", { name: String(l.name) }),
                             ),
                           );
                           if (on) onSelect(null);
                         }}
-                        aria-label={L(
-                          `Fjern «${l.name}» fra scenen`,
-                          `Remove “${l.name}” from the scene`,
-                        )}
-                        title={L(
-                          "Fjern laget fra scenen (bildet blir i biblioteket, kan angres)",
-                          "Remove the layer from the scene (the image stays in the library, can be undone)",
-                        )}
+                        aria-label={tk("app-scene-editor-layers-panel.layers-panel.aria-label.0df8ba730439", { name: String(l.name) })}
+                        title={tk("app-scene-editor-layers-panel.layers-panel.title.ef4f6a732b66")}
                       >
                         <Trash2 className="size-3.5" />
                       </button>
@@ -693,16 +664,16 @@ export const LayersPanel = memo(function LayersPanel({
                       className={iconButton}
                       onClick={() => toggle(l, "visible")}
                       aria-label={
-                        l.visible ? L("Skjul lag", "Hide layer") : L("Vis lag", "Show layer")
+                        l.visible ? tk("app-scene-editor-layers-panel.layers-panel.aria-label.1580c74b392f") : tk("app-scene-editor-layers-panel.layers-panel.aria-label.c6cbd6ad8f01")
                       }
-                      title={l.visible ? L("Skjul lag", "Hide layer") : L("Vis lag", "Show layer")}
+                      title={l.visible ? tk("app-scene-editor-layers-panel.layers-panel.title.1580c74b392f") : tk("app-scene-editor-layers-panel.layers-panel.title.c6cbd6ad8f01")}
                     >
                       {l.visible ? <Eye className="size-3.5" /> : <EyeOff className="size-3.5" />}
                     </button>
                   ) : l.visible ? null : (
                     <EyeOff
                       className="size-3.5 text-text-tertiary"
-                      aria-label={L("Skjult", "Hidden")}
+                      aria-label={tk("app-scene-editor-layers-panel.layers-panel.aria-label.beabbcc1219a")}
                     />
                   )}
                   {editable ? (
@@ -718,10 +689,10 @@ export const LayersPanel = memo(function LayersPanel({
                       }
                       onClick={() => toggle(l, "locked")}
                       aria-label={
-                        l.locked ? L("Lås opp lag", "Unlock layer") : L("Lås lag", "Lock layer")
+                        l.locked ? tk("app-scene-editor-layers-panel.layers-panel.aria-label.fbadc2253a2e") : tk("app-scene-editor-layers-panel.layers-panel.aria-label.2589ae554009")
                       }
                       title={
-                        l.locked ? L("Lås opp lag", "Unlock layer") : L("Lås lag", "Lock layer")
+                        l.locked ? tk("app-scene-editor-layers-panel.layers-panel.title.fbadc2253a2e") : tk("app-scene-editor-layers-panel.layers-panel.title.2589ae554009")
                       }
                     >
                       {l.locked ? <Lock className="size-3.5" /> : <Unlock className="size-3.5" />}
@@ -729,7 +700,7 @@ export const LayersPanel = memo(function LayersPanel({
                   ) : l.locked ? (
                     <Lock
                       className="size-3.5 text-text-tertiary"
-                      aria-label={L("Låst", "Locked")}
+                      aria-label={tk("app-scene-editor-layers-panel.layers-panel.aria-label.2ba728f52562")}
                     />
                   ) : null}
                 </li>
@@ -742,7 +713,7 @@ export const LayersPanel = memo(function LayersPanel({
             onSize={setListHeight}
             min={80}
             max={900}
-            label={L("Høyde på laglisten", "Height of the layer list")}
+            label={tk("app-scene-editor-layers-panel.layers-panel.label.01e4f93b9cc0")}
           />
         </div>
       )}

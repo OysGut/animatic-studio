@@ -8,6 +8,7 @@ import type { ProjectState } from "../model";
 import { compositionDuration } from "../composition/animate";
 import { compositionForOccurrence, planRetime, type RetimeGap, type RetimePlan } from "../composition/retime";
 import { distributeLargestRemainder } from "../composition/timing";
+import { t } from "@/core/i18n/keyed";
 
 export interface RhythmLine {
   /** Ekstra pause (frames, kan være negativ) foran replikken. */
@@ -75,10 +76,10 @@ export function planRhythm(s: ProjectState, occurrenceId: string, o: RhythmOptio
   const comp = occ ? compositionForOccurrence(s, occ) : undefined;
   const before = comp ? compositionDuration(s, comp) : 0;
   const empty = (error: string): RhythmPlan => ({ gaps: [], beforeFrames: before, afterFrames: before, retime: null, error });
-  if (!occ || !comp) return empty(L("Scenen har ingen 2D-scene.", "The scene has no 2D scene."));
-  if (!Number.isFinite(o.tempo) || o.tempo < RHYTHM_TEMPO_MIN || o.tempo > RHYTHM_TEMPO_MAX) return empty(L("Ugyldig takt", "Invalid tempo"));
+  if (!occ || !comp) return empty(t("core-animation-rhythm.plan-rhythm.empty.331f8bb24222"));
+  if (!Number.isFinite(o.tempo) || o.tempo < RHYTHM_TEMPO_MIN || o.tempo > RHYTHM_TEMPO_MAX) return empty(t("core-animation-rhythm.plan-rhythm.empty.174ccc1c30e4"));
   const gaps = rhythmGaps(s, occurrenceId);
-  if (!gaps.length) return empty(L("Scenen har ingen mellomrom som kan endres.", "The scene has no gaps that can change."));
+  if (!gaps.length) return empty(t("core-animation-rhythm.plan-rhythm.empty.e837d5e358dd"));
   const fps = s.project.fps;
   const frameOfMs = (ms: number) => (ms * fps.num) / (1000 * fps.den);
   const speech = Object.values(s.audioClips)

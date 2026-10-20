@@ -7,6 +7,7 @@
 import { L } from "../i18n";
 import { isUuid } from "../ids";
 import { VISEMES, type Viseme } from "./parts";
+import { t as tk } from "@/core/i18n/keyed";
 
 export const LIPSYNC_ALGORITHM_VERSION = 1;
 export const LIPSYNC_MAX_FRAMES = 100_000;
@@ -69,23 +70,23 @@ export function isViseme(v: unknown): v is Viseme {
 }
 
 export function lipsyncError(r: LipsyncResult): string | null {
-  if (!r || !isUuid(r.id) || !isUuid(r.clipId) || !isUuid(r.takeId)) return L("Ugyldig leppesynk", "Invalid lip sync");
-  if (r.blockId !== null && !isUuid(r.blockId)) return L("Ugyldig leppesynk", "Invalid lip sync");
-  if (r.source !== "rhubarb" && r.source !== "rule") return L("Ukjent leppesynkkilde", "Unknown lip sync source");
-  if (!Number.isInteger(r.algorithmVersion) || r.algorithmVersion < 1) return L("Ugyldig algoritmeversjon", "Invalid algorithm version");
-  if (typeof r.audioHash !== "string" || !r.audioHash || r.audioHash.length > 64) return L("Ugyldig lydhash", "Invalid audio hash");
-  if (typeof r.textHash !== "string" || r.textHash.length > 64) return L("Ugyldig teksthash", "Invalid text hash");
-  if (!Array.isArray(r.spans) || r.spans.length > LIPSYNC_MAX_FRAMES) return L("For mange munnformer", "Too many mouth shapes");
+  if (!r || !isUuid(r.id) || !isUuid(r.clipId) || !isUuid(r.takeId)) return tk("core-animation-lipsync.lipsync-error.message.45f71f08f7fe");
+  if (r.blockId !== null && !isUuid(r.blockId)) return tk("core-animation-lipsync.lipsync-error.message.45f71f08f7fe.2");
+  if (r.source !== "rhubarb" && r.source !== "rule") return tk("core-animation-lipsync.lipsync-error.message.15a418c52981");
+  if (!Number.isInteger(r.algorithmVersion) || r.algorithmVersion < 1) return tk("core-animation-lipsync.lipsync-error.message.89f1c471896c");
+  if (typeof r.audioHash !== "string" || !r.audioHash || r.audioHash.length > 64) return tk("core-animation-lipsync.lipsync-error.message.757bc6ed5a92");
+  if (typeof r.textHash !== "string" || r.textHash.length > 64) return tk("core-animation-lipsync.lipsync-error.message.0798edb28767");
+  if (!Array.isArray(r.spans) || r.spans.length > LIPSYNC_MAX_FRAMES) return tk("core-animation-lipsync.lipsync-error.message.c6c59e3d66b4");
   let prev = -1;
   for (const s of r.spans) {
     if (!s || !Number.isInteger(s.frame) || !Number.isInteger(s.endFrame) || s.frame < 0 || s.endFrame <= s.frame || s.frame < prev || !isViseme(s.viseme))
-      return L("Ugyldig munnformsekvens", "Invalid mouth shape sequence");
+      return tk("core-animation-lipsync.lipsync-error.message.6f61b1cd45ec");
     prev = s.frame;
   }
-  if (!Array.isArray(r.overrides) || r.overrides.length > LIPSYNC_MAX_FRAMES) return L("For mange overstyringer", "Too many overrides");
+  if (!Array.isArray(r.overrides) || r.overrides.length > LIPSYNC_MAX_FRAMES) return tk("core-animation-lipsync.lipsync-error.message.b31655e7a023");
   const seen = new Set<number>();
   for (const o of r.overrides) {
-    if (!o || !Number.isInteger(o.frame) || o.frame < 0 || !isViseme(o.viseme) || seen.has(o.frame)) return L("Ugyldig overstyring", "Invalid override");
+    if (!o || !Number.isInteger(o.frame) || o.frame < 0 || !isViseme(o.viseme) || seen.has(o.frame)) return tk("core-animation-lipsync.lipsync-error.message.a29be9e1df83");
     seen.add(o.frame);
   }
   return null;

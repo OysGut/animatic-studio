@@ -9,6 +9,7 @@ import type { GlobalAssetBundle, GlobalVersion } from "../library/global";
 import type { Command } from "../commands/types";
 import type { AnimationPattern, PatternSpec } from "./patterns";
 import type { AnimationRig, CharacterBehavior, RigSpec } from "./rig";
+import { t } from "@/core/i18n/keyed";
 
 export interface GlobalPatternEntry {
   readonly key: string;
@@ -58,13 +59,10 @@ export function toGlobalRig(
 ): Result<{ variantId: string; rig: GlobalAnimationSpec["rig"]; patterns: GlobalPatternEntry[] }> {
   const v = s.animationRigVersions[rigVersionId];
   const source = v ? s.assetVersions[v.sourceVersionId] : undefined;
-  if (!v || !source) return { ok: false, error: L("Oppsettet finnes ikke", "The setup was not found") };
+  if (!v || !source) return { ok: false, error: t("core-animation-global-rig.error.error.33d895fb262d") };
   const missing = () => ({
     ok: false as const,
-    error: L(
-      "Bildene i oppsettet finnes ikke i det globale biblioteket. Lagre ressursen der først.",
-      "The setup's images are not in the global library. Save the asset there first.",
-    ),
+    error: t("core-animation-global-rig.error.error.0cb206391860"),
   });
   const g = globalOf(source, bundle);
   if (!g) return missing();
@@ -139,7 +137,7 @@ export function planImportGlobalRig(
   if (!source)
     return {
       ok: false,
-      error: L("Bildet oppsettet bygger på, er ikke tatt inn i prosjektet ennå.", "The image the setup is built on is not in the project yet."),
+      error: t("core-animation-global-rig.error.error.18fe93488174"),
     };
   const parts: Record<string, NonNullable<RigSpec["parts"]>[string]> = {};
   for (const [slot, part] of Object.entries(spec.rig.parts ?? {})) {
@@ -152,7 +150,7 @@ export function planImportGlobalRig(
     if (!pv)
       return {
         ok: false,
-        error: L("Et av bildene i oppsettet er ikke tatt inn i prosjektet ennå.", "One of the setup's images is not in the project yet."),
+        error: t("core-animation-global-rig.error.error.91da537ca3cc"),
       };
     parts[slot] = { ...part, versionId: pv.id };
   }
@@ -163,7 +161,7 @@ export function planImportGlobalRig(
   const patternId = new Map<string, string>();
   for (const p of spec.patterns) {
     const id = ids.patternIds[p.key];
-    if (!id) return { ok: false, error: L("Mangler ID for mønster", "Missing pattern ID") };
+    if (!id) return { ok: false, error: t("core-animation-global-rig.error.error.016e0d09557a") };
     patternId.set(p.key, id);
     const pattern: AnimationPattern = { id, revision: 0, rigId, name: p.name, color: p.color, spec: p.spec, removed: false };
     commands.push({ type: "SaveAnimationPattern", pattern });

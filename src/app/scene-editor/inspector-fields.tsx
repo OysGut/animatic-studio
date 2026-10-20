@@ -3,6 +3,7 @@ import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { useRef, useState, type ReactNode } from "react";
 import { Diamond } from "lucide-react";
 import { L } from "@/core";
+import { t } from "@/core/i18n/keyed";
 
 export const inputClass =
   "h-7 w-full min-w-0 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary placeholder:text-text-tertiary disabled:cursor-not-allowed disabled:opacity-50";
@@ -61,13 +62,13 @@ export function KeyMarker({
       aria-pressed={keyed}
       aria-label={
         keyed
-          ? L(`Fjern nøkkelbilde for ${label}`, `Remove keyframe for ${label}`)
-          : L(`Sett nøkkelbilde for ${label}`, `Set keyframe for ${label}`)
+          ? t("app-scene-editor-inspector-fields.key-marker.aria-label.cede78e7bb05", { label: String(label) })
+          : t("app-scene-editor-inspector-fields.key-marker.aria-label.91b98153c212", { label: String(label) })
       }
       title={
         keyed
-          ? L("Fjern nøkkelbilde på dette bildet", "Remove keyframe on this frame")
-          : L("Sett nøkkelbilde på dette bildet", "Set keyframe on this frame")
+          ? t("app-scene-editor-inspector-fields.key-marker.title.d7c2ae24a247")
+          : t("app-scene-editor-inspector-fields.key-marker.title.21ef13d2ac82")
       }
       onClick={(e) => {
         e.preventDefault();

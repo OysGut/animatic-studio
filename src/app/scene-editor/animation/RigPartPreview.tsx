@@ -4,6 +4,7 @@ import type { RigPart } from "@/core/animation/parts";
 import type { RelativePoint } from "@/core/animation/rig";
 import { renderRigPart } from "@/engine/compositor/rig-parts";
 import { loadImage } from "@/engine/export/mouth-sheet";
+import { t } from "@/core/i18n/keyed";
 export function RigPartPreview({ sourceUrl, partUrl, part, anchor }: { sourceUrl: string; partUrl?: string | undefined; part: RigPart; anchor: RelativePoint }) {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
@@ -17,5 +18,5 @@ export function RigPartPreview({ sourceUrl, partUrl, part, anchor }: { sourceUrl
     }).catch(() => {});
     return () => { alive = false; };
   }, [sourceUrl, partUrl, part, anchor]);
-  return <canvas ref={ref} data-testid="ca4-part-preview" aria-label={L("Munnform på karakteren", "Mouth shape on character")} className="max-h-72 w-full object-contain object-top bg-media" />;
+  return <canvas ref={ref} data-testid="ca4-part-preview" aria-label={t("app-scene-editor-animation-rig-part-preview.rig-part-preview.aria-label.5b9eea442ab7")} className="max-h-72 w-full object-contain object-top bg-media" />;
 }
