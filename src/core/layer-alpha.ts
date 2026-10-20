@@ -51,7 +51,14 @@ export function alphaSceneClip(s: ProjectState, c: Composition): FilmClip | null
 }
 export function alphaLayerIds(s: ProjectState, c: Composition, ids: readonly string[]): ReadonlySet<string> {
   const out = new Set(ids);
-  for (const l of layersOf(s, c.id)) if (l.groupId && out.has(l.groupId)) out.add(l.id);
+  const layers = layersOf(s, c.id);
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const l of layers) if (l.groupId && out.has(l.groupId) && !out.has(l.id)) {
+      out.add(l.id); changed = true;
+    }
+  }
   return out;
 }
 export function alphaFileBase(scene: string, layers: readonly string[], start: number, end: number): string {

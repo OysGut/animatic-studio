@@ -37,9 +37,21 @@ export async function supportsVp9Alpha(width: number, height: number): Promise<b
 
 /** Disk-backed staging: the download becomes visible only after successful finalization. */
 export async function openAlphaSink(name: string, mime: string): Promise<ZipSink> {
-  if (!navigator.storage?.getDirectory)
-    throw new Error(L("Nettleseren mangler midlertidig fillagring. Bruk en nyere Chrome eller Edge.",
-      "The browser lacks temporary file storage. Use a newer Chrome or Edge."));
+  if (!navigator.storage?.getDirectory) {
+    const parts: BlobPart[] = [];
+    let link: { url: string; name: string } | null = null;
+    return {
+      write: async chunk => { parts.push(new Uint8Array(chunk).buffer); },
+      close: async () => {
+        const blob = new Blob(parts, { type: mime }); parts.length = 0;
+        const url = URL.createObjectURL(blob); link = { url, name };
+        const a = document.createElement("a"); a.href = url; a.download = name;
+        document.body.appendChild(a); a.click(); a.remove();
+      },
+      abort: async () => { parts.length = 0; if (link) URL.revokeObjectURL(link.url); link = null; },
+      link: () => link,
+    };
+  }
   const root = await navigator.storage.getDirectory();
   const temp = `alpha-${crypto.randomUUID()}`;
   const handle = await root.getFileHandle(temp, { create: true });
@@ -100,19 +112,21 @@ async function webmEncoder(o: AlphaExportOptions, canvas: HTMLCanvasElement): Pr
     throw new Error(L("Denne nettleseren støtter ikke WebM VP9 med alfa. Velg PNG-sekvens.",
       "This browser does not support WebM VP9 with alpha. Choose a PNG sequence."));
   const mb = await import("mediabunny");
+  const input = o.settings.alpha === "premultiplied" ? document.createElement("canvas") : canvas;
+  input.width = canvas.width; input.height = canvas.height;
   const output = new mb.Output({ format: new mb.WebMOutputFormat({ appendOnly: true }),
     target: new mb.AppendOnlyStreamTarget(new WritableStream({ write: chunk => o.sink.write(chunk) })) });
-  const source = new mb.CanvasSource(canvas, { codec: "vp9", quality: mb.QUALITY_HIGH, alpha: "keep" });
+  const source = new mb.CanvasSource(input, { codec: "vp9", quality: mb.QUALITY_HIGH, alpha: "keep" });
   const fps = o.state.project.fps.num / o.state.project.fps.den;
   output.addVideoTrack(source, { frameRate: fps });
   await output.start();
   return {
     encode: async (_canvas, frame) => {
       if (o.settings.alpha === "premultiplied") {
-        const ctx = canvas.getContext("2d");
-        if (ctx) {
+        const ctx = canvas.getContext("2d"), target = input.getContext("2d");
+        if (ctx && target) {
           const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          image.data.set(alphaPixels(image.data, "premultiplied")); ctx.putImageData(image, 0, 0);
+          image.data.set(alphaPixels(image.data, "premultiplied")); target.putImageData(image, 0, 0);
         }
       }
       await source.add(frame / fps, 1 / fps);

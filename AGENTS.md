@@ -44,3 +44,4 @@ Kortversjonen:
 25. MP3 encoding is client-only; owner-confirmed AI-source cleanup rechecks references server-side to protect used media.
 26. Dialogue clips own placement/active choice; versions own file/edit, mirrored only by mirrorDialogueClips. Character rows are projections; voice defaults never touch old audio.
 27. Batches keep leased receipts so paid calls never replay. Drift is computed; bookmarks are private RPC rows; note flags are commands.
+28. Layer alpha exports use drawFilmFrame and format adapters; client-only staging publishes downloads only after successful finalization, preserving preview parity and cancellation.

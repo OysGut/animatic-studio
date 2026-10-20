@@ -71,7 +71,7 @@ for (const lang of ["nb", "en"]) await h.scenario(`p4-${lang}`, occ.id, lang, as
     const r = await VideoEncoder.isConfigSupported({ codec: "vp09.00.10.08", width:64, height:64, bitrate:8000000, alpha:"keep" });
     return r.supported === true && r.config.alpha === "keep";
   });
-  h.check(await h.eventually(async () => await page.getByTestId("alpha-format").locator('option[value="webm-vp9"]').isDisabled() === !supported), `${lang}: WebM sperres når alfa ikke støttes`);
+  h.check(await page.getByTestId("alpha-format").locator('option[value="webm-vp9"]').evaluate(e => e.disabled) === !supported, `${lang}: WebM sperres når alfa ikke støttes`);
 });
 
 await h.scenario("p4-cancel", occ.id, "nb", async page => {
